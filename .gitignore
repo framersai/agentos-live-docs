@@ -1,0 +1,50 @@
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Build output
+dist/
+build/
+out/
+
+# Logs
+logs/
+*.log
+
+# Editor directories and files
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+
+# Testing
+coverage/
+
+# Dependency directories
+jspm_packages/
+bower_components/
+
+# Cache directories
+.npm/
+.eslintcache
+.stylelintcache
+.prettiercache
+.cache/
+
+# TypeScript
+*.tsbuildinfo
+
+# Optional: Local development files
+.local/
