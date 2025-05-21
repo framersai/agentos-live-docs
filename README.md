@@ -44,7 +44,7 @@ Voice Coding Assistant is a full-stack web application that lets you use your vo
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/voice-coding-assistant.git
+   git clone https://github.com/manicinc/voice-coding-assistant.git
    cd voice-coding-assistant
    ```
 

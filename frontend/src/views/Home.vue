@@ -6,9 +6,11 @@
       :mode="mode" 
       :language="language" 
       :generate-diagram="generateDiagram"
+      :audio-mode="audioMode"
       @update:mode="mode = $event"
       @update:language="language = $event"
       @update:generate-diagram="generateDiagram = $event"
+      @update:audio-mode="audioMode = $event"
       @toggle-theme="toggleTheme"
       @logout="logout"
     />
@@ -32,7 +34,9 @@
       <div class="max-w-3xl mx-auto">
         <VoiceInput 
           @transcription="handleTranscription" 
+          @update:audio-mode="audioMode = $event"
           :is-processing="isProcessing"
+          :audio-mode="audioMode"
           ref="voiceInputRef"
         />
       </div>
@@ -44,7 +48,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch, onBeforeUnmount } from 'vue';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStorage } from '@vueuse/core';
 import axios from 'axios';
@@ -63,12 +67,12 @@ const footerRef = ref<InstanceType<typeof Footer> | null>(null);
 const messages = ref<Array<{ role: string; content: string; }>>([]);
 const isProcessing = ref(false);
 const sessionCost = ref(0);
-const isLandscape = ref(window.innerWidth > window.innerHeight);
 
 // Settings
 const mode = useStorage('mode', 'coding');
 const language = useStorage('language', 'python');
 const generateDiagram = useStorage('generateDiagram', true);
+const audioMode = useStorage('audioMode', 'push-to-talk');
 const isDarkMode = useStorage('darkMode', false);
 
 // Set up axios auth header
@@ -85,60 +89,34 @@ onMounted(() => {
   // Get current session cost
   fetchSessionCost();
   
-  // Set up orientation change detection
-  const checkOrientation = () => {
-    isLandscape.value = window.innerWidth > window.innerHeight;
-  };
-  
-  window.addEventListener('resize', checkOrientation);
-  window.addEventListener('orientationchange', checkOrientation);
-  
   // Add welcome message
   setTimeout(() => {
+    const modeDescriptions = {
+      coding: 'coding questions and examples',
+      system_design: 'system design and architecture',
+      meeting: 'meeting summaries and action items',
+      general: 'general assistance and conversation'
+    };
+    
     messages.value.push({ 
       role: 'assistant', 
       content: `# Welcome to Voice Coding Assistant!
       
-I'm ready to help with your ${mode.value === 'coding' ? 'coding questions' : mode.value === 'system_design' ? 'system design needs' : 'meeting summaries'}.
+I'm ready to help with your ${modeDescriptions[mode.value as keyof typeof modeDescriptions] || 'questions'}.
 
-Just press the microphone button and start speaking. I'll transcribe your voice and provide detailed responses.
+**Audio Mode**: ${audioMode.value.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+${audioMode.value === 'continuous' ? '🔴 I\'m listening continuously - just start speaking!' : ''}
+${audioMode.value === 'voice-activation' ? '🎤 I\'ll start recording when I detect your voice' : ''}
+${audioMode.value === 'push-to-talk' ? '⏺️ Press the microphone button and start speaking' : ''}
+
+You can change the audio mode using the dropdown in the header or the cycle button next to the microphone.
 
 How can I assist you today?`
     });
     
-    footerRef.value?.addLog('info', 'Application ready for voice input');
+    footerRef.value?.addLog('info', `Application ready - ${audioMode.value} mode active`);
   }, 500);
-  
-  // Clean up event listeners on unmount
-  onBeforeUnmount(() => {
-    window.removeEventListener('resize', checkOrientation);
-    window.removeEventListener('orientationchange', checkOrientation);
-  });
-  
-  // Load the UX enhancements
-  loadUxEnhancements();
 });
-
-// Load UX enhancements
-const loadUxEnhancements = () => {
-  try {
-    // This would normally be imported as a module, but for this example we'll simulate it
-    const script = document.createElement('script');
-    script.src = '/src/assets/js/ux-enhancements.js';
-    script.async = true;
-    document.body.appendChild(script);
-    
-    script.onload = () => {
-      footerRef.value?.addLog('info', 'UI enhancements loaded');
-    };
-    
-    script.onerror = () => {
-      footerRef.value?.addLog('warning', 'Failed to load UI enhancements');
-    };
-  } catch (error) {
-    console.error('Error loading UX enhancements:', error);
-  }
-};
 
 // Fetch current session cost
 const fetchSessionCost = async () => {
@@ -176,7 +154,7 @@ const handleTranscription = async (text: string) => {
   
   // Add user message
   messages.value.push({ role: 'user', content: text });
-  footerRef.value?.addLog('info', 'Processing voice input');
+  footerRef.value?.addLog('info', `Processing voice input: "${text.substring(0, 50)}${text.length > 50 ? '...' : ''}"`);
   
   // Scroll to bottom of chat
   setTimeout(() => {
