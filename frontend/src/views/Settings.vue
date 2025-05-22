@@ -356,7 +356,7 @@
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStorage } from '@vueuse/core';
-import axios from 'axios';
+import { api, costAPI } from '../utils/api';
 
 // Router
 const router = useRouter();
@@ -638,11 +638,10 @@ onMounted(async () => {
   // Set up authentication first
   const token = localStorage.getItem('token') || sessionStorage.getItem('token');
   if (token) {
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     console.log('Authentication token set for Settings page');
   } else {
     console.warn('No authentication token found');
-    // Redirect to login if no token
     router.push('/login');
     return;
   }
@@ -656,20 +655,23 @@ onBeforeUnmount(() => {
   stopMicrophoneTest();
 });
 
+
 // Fetch current session cost
 const fetchSessionCost = async () => {
   try {
-    const response = await axios.get('/api/cost');
+    const response = await costAPI.getCost();
     sessionCost.value = response.data.sessionCost;
   } catch (error) {
     console.error('Error fetching session cost:', error);
   }
 };
 
+
+
 // Reset session cost
 const resetSession = async () => {
   try {
-    await axios.post('/api/cost', { reset: true });
+    await costAPI.resetCost({ reset: true });
     await fetchSessionCost();
     alert('Session cost reset successfully!');
   } catch (error) {
@@ -685,7 +687,7 @@ const logout = () => {
     sessionStorage.removeItem('token');
     document.cookie = 'auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
     
-    delete axios.defaults.headers.common['Authorization'];
+    delete api.defaults.headers.common['Authorization'];
     router.push('/login');
   }
 };

@@ -1,9 +1,8 @@
 // backend/utils/cost.ts
 import dotenv from 'dotenv';
-import { MODEL_CONFIGS } from '../config/models.js'; // Assuming you have this for accurate LLM costs
+import { MODEL_CONFIGS } from '../config/models.js';
 
-dotenv.config({ path: new URL('../../.env', import.meta.url).pathname });
-
+dotenv.config({ path: new URL('../../../.env', import.meta.url).pathname });
 
 const COST_THRESHOLD = parseFloat(process.env.COST_THRESHOLD || '20.00');
 const WHISPER_COST_PER_MINUTE = 0.006; // Keep this if used by trackWhisperCost
@@ -69,15 +68,17 @@ export function trackLlmCost(
 
 /**
  * Tracks cost for Whisper calls.
+ * Updated to match the signature expected by audio.ts
  */
 export function trackWhisperServiceCost(
   userId: string,
-  durationMinutes: number // Duration of the audio processed by Whisper
+  durationMinutes: number, // Duration of the audio processed by Whisper
+  providedCost?: number // Optional cost override
 ): number {
   const session = initializeSessionCost(userId);
   // Whisper bills for a minimum of 0.01 minutes if duration is less
   const billableMinutes = Math.max(durationMinutes, 0.01);
-  const cost = billableMinutes * WHISPER_COST_PER_MINUTE;
+  const cost = providedCost || (billableMinutes * WHISPER_COST_PER_MINUTE);
   
   session.whisperCost += cost;
   session.totalCost += cost;
@@ -108,6 +109,10 @@ export function resetSessionCost(userId: string): SessionCostDetail {
   });
   return sessionCosts.get(userId)!;
 }
+
+// Export aliases for compatibility with route imports
+export const trackCost = trackLlmCost;
+export const trackWhisperCost = trackWhisperServiceCost;
 
 // Periodically clean up old sessions (e.g., inactive for 24 hours)
 setInterval(() => {

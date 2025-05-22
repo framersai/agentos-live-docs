@@ -10,44 +10,101 @@ export async function configureRouter(): Promise<Router> {
   const router = Router();
   const routesDir = path.join(__dirname, '../routes');
 
-  // Read all route files
-  const routeFiles = fs.readdirSync(routesDir);
-  
-  for (const file of routeFiles) {
-    if (file.endsWith('.ts') || file.endsWith('.js')) {
-      const routePath = `../routes/${file}`;
-      
-      try {
-        // Import route dynamically
-        const routeModule = await import(routePath);
+  console.log('🔧 Configuring routes from:', routesDir);
+
+  try {
+    // Check if routes directory exists
+    if (!fs.existsSync(routesDir)) {
+      console.error('❌ Routes directory does not exist:', routesDir);
+      return router;
+    }
+
+    // Read all route files
+    const routeFiles = fs.readdirSync(routesDir);
+    console.log('📁 Found route files:', routeFiles);
+    
+    for (const file of routeFiles) {
+      if (file.endsWith('.ts') || file.endsWith('.js')) {
+        const routePath = `../routes/${file}`;
         const routeName = file.replace(/\.(ts|js)$/, '');
         
-        // Register HTTP methods if they exist in the module
-        const methods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'];
-        
-        methods.forEach(method => {
-          if (typeof routeModule[method] === 'function') {
-            router[method.toLowerCase() as 'get' | 'post' | 'put' | 'delete' | 'patch'](
-              `/${routeName}`,
-              async (req: Request, res: Response) => {
+        try {
+          console.log(`🔄 Loading route: ${routeName} from ${routePath}`);
+          
+          // Import route dynamically
+          const routeModule = await import(routePath);
+          
+          // Log what we found in the module
+          console.log(`📋 Route ${routeName} exports:`, Object.keys(routeModule));
+          
+          // Register HTTP methods if they exist in the module
+          const methods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'];
+          let registeredCount = 0;
+          
+          methods.forEach(method => {
+            if (typeof routeModule[method] === 'function') {
+              const routeHandler = async (req: Request, res: Response) => {
                 try {
+                  console.log(`📨 Handling ${method} /${routeName}`);
                   await routeModule[method](req, res);
                 } catch (error) {
-                  console.error(`Error in ${method} ${routeName}:`, error);
+                  console.error(`❌ Error in ${method} /${routeName}:`, error);
                   res.status(500).json({
                     message: 'Internal server error',
                     error: process.env.NODE_ENV === 'production' ? undefined : (error as Error).message
                   });
                 }
+              };
+
+              // Use explicit method calls instead of dynamic access
+              switch (method.toLowerCase()) {
+                case 'get':
+                  router.get(`/${routeName}`, routeHandler);
+                  break;
+                case 'post':
+                  router.post(`/${routeName}`, routeHandler);
+                  break;
+                case 'put':
+                  router.put(`/${routeName}`, routeHandler);
+                  break;
+                case 'delete':
+                  router.delete(`/${routeName}`, routeHandler);
+                  break;
+                case 'patch':
+                  router.patch(`/${routeName}`, routeHandler);
+                  break;
+                default:
+                  console.warn(`⚠️  Unsupported HTTP method: ${method}`);
+                  return; // Use return instead of continue in forEach
               }
-            );
-            console.log(`Registered route: ${method} /${routeName}`);
+              
+              registeredCount++;
+              console.log(`✅ Registered route: ${method} /api/${routeName}`);
+            }
+          });
+
+          if (registeredCount === 0) {
+            console.warn(`⚠️  No HTTP methods found in ${routeName} route module`);
           }
-        });
-      } catch (error) {
-        console.error(`Error loading route ${file}:`, error);
+
+        } catch (error) {
+          console.error(`❌ Error loading route ${file}:`, error);
+        }
       }
     }
+
+    // Add a test route to verify the router is working
+    router.get('/test', (req: Request, res: Response) => {
+      res.json({ 
+        message: 'Router is working!', 
+        timestamp: new Date().toISOString(),
+        availableRoutes: routeFiles
+      });
+    });
+    console.log('✅ Added test route: GET /api/test');
+
+  } catch (error) {
+    console.error('❌ Error setting up routes:', error);
   }
 
   return router;

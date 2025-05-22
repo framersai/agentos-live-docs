@@ -266,7 +266,7 @@
 import { ref, onMounted, watch, inject, nextTick } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStorage } from '@vueuse/core';
-import axios from 'axios';
+import { api, chatAPI, costAPI, getAuthHeaders } from '../utils/api';
 import Header from '../components/Header.vue';
 import VoiceInput from '../components/VoiceInput.vue';
 import CompactMessageRenderer from '../components/CompactMessageRenderer.vue';
@@ -389,18 +389,6 @@ const isDarkModeFromStorage = useStorage('darkMode', false);
 const SHARED_PASSWORD_TOKEN = import.meta.env.VITE_SHARED_PASSWORD || "password";
 // @ts-ignore
 const COST_THRESHOLD_STRING = import.meta.env.VITE_COST_THRESHOLD || "20.00";
-
-/**
- * Retrieves authentication headers for API requests.
- * @returns An object containing the Authorization header if a token is set, otherwise an empty object.
- */
-const getAuthHeaders = () => {
-  if (!SHARED_PASSWORD_TOKEN) {
-    console.warn("VITE_SHARED_PASSWORD is not set. Auth headers will be missing.");
-    return {};
-  }
-  return { 'Authorization': `Bearer ${SHARED_PASSWORD_TOKEN}` };
-};
 
 // --- Static Data & Configuration ---
 /**
@@ -608,9 +596,9 @@ const handleSmartTranscription = async (transcription: string) => {
   };
 
   if (autoClear.value) {
-    messages.value = [userMessage]; // Start new exchange
+    messages.value = [userMessage];
     currentMessage.value = userMessage;
-    currentMessageAnalysis.value = null; // Analysis will be for assistant's response
+    currentMessageAnalysis.value = null;
   } else {
     messages.value.push(userMessage);
     await scrollToBottom();
@@ -619,7 +607,7 @@ const handleSmartTranscription = async (transcription: string) => {
   isLoading.value = true;
   loadingStep.value = 'Analyzing input...';
   loadingProgress.value = 10;
-  showInputSuggestions.value = false; // Hide suggestions while processing
+  showInputSuggestions.value = false;
 
   try {
     const basePrompt = buildBaseSystemPrompt();
@@ -627,22 +615,24 @@ const handleSmartTranscription = async (transcription: string) => {
     loadingStep.value = 'Generating response from AI...';
     loadingProgress.value = 40;
 
-    // Prepare messages for API, including the enhanced system prompt
-    const apiRequestMessages = [{ role: 'system', content: enhancedPrompt }, {role: 'user', content: transcription}];
+    const apiRequestMessages = [
+      { role: 'system', content: enhancedPrompt }, 
+      { role: 'user', content: transcription }
+    ];
 
-    const response = await axios.post('/api/chat', {
+    // Use the new API function
+    const response = await chatAPI.sendMessage({
       messages: apiRequestMessages,
       mode: mode.value,
       language: language.value,
-      generateDiagram: generateDiagram.value && userInputAnalysis.shouldGenerateDiagram, // Send diagram generation flag
-      userId: 'default_user' // Replace with actual user ID if implementing multi-user
-    }, { headers: getAuthHeaders() });
+      generateDiagram: generateDiagram.value && userInputAnalysis.shouldGenerateDiagram,
+      userId: 'default_user'
+    });
 
     loadingStep.value = 'Finalizing response...';
     loadingProgress.value = 80;
 
     const assistantResponseContent = response.data.message || response.data.content || "";
-    // Analyze the assistant's response as well
     const assistantInternalAnalysis = contentAnalyzer.analyzeContent(assistantResponseContent, mode.value);
     const assistantMessage: Message = {
       role: 'assistant',
@@ -651,45 +641,61 @@ const handleSmartTranscription = async (transcription: string) => {
       analysis: assistantInternalAnalysis
     };
 
-    await fetchSessionCost(); // Update session cost after successful response
-    updateSessionStats(userInputAnalysis, assistantInternalAnalysis); // Update session stats
+    await fetchSessionCost();
+    updateSessionStats(userInputAnalysis, assistantInternalAnalysis);
     loadingProgress.value = 100;
 
     if (autoClear.value) {
       currentMessage.value = assistantMessage;
       currentMessageAnalysis.value = assistantInternalAnalysis;
-      messages.value = [userMessage, assistantMessage]; // Show the full exchange
+      messages.value = [userMessage, assistantMessage];
     } else {
       messages.value.push(assistantMessage);
       await scrollToBottom();
     }
-    generateSmartSuggestions(assistantInternalAnalysis); // Generate suggestions based on AI response
+    generateSmartSuggestions(assistantInternalAnalysis);
 
-    // Show performance insights after a LeetCode problem if not already shown
     if (userInputAnalysis.type === 'leetcode' && sessionStats.value.problemsSolved > 0 && !showPerformanceInsights.value) {
       setTimeout(() => { showPerformanceInsights.value = true; }, 1500);
     }
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error sending message to /api/chat:', error);
     let errorMessage = 'Failed to process your request. Please try again.';
-    if (axios.isAxiosError(error)) {
-      if (error.response?.status === 401) errorMessage = 'Authentication failed. Please check client credentials or server setup.';
-      else if (error.response?.status === 403) { errorMessage = 'Session cost limit has been reached.'; showCostWarning.value = true; }
-      else if (error.response?.data?.message) errorMessage = error.response.data.message;
+    
+    if (error.response?.status === 401) {
+      errorMessage = 'Authentication failed. Please check credentials.';
+    } else if (error.response?.status === 403) {
+      errorMessage = 'Session cost limit has been reached.';
+      showCostWarning.value = true;
+    } else if (error.response?.data?.message) {
+      errorMessage = error.response.data.message;
     }
+    
     toast?.add({ type: 'error', title: 'API Error', message: errorMessage, duration: 7000 });
 
-    // Create a basic error analysis object for display
     const errorAnalysis: ContentAnalysis = {
-        type: 'error', // This type 'error' should be part of ContentAnalysisType
-        confidence: 1, displayTitle: 'Error Occurred',
-        shouldVisualize: false, shouldGenerateDiagram: false, shouldCreateSlides: false,
-        interactiveElements: false, complexity: null, codeBlocks: [],
-        estimatedReadTime: 0, wordCount: 0, language: null, keywords: ['error'],
-        entities: [], suggestions: [], diagramHints: [],
-        slideCount: 0, slideDuration: 0, slideTopics: [],
+      type: 'error',
+      confidence: 1,
+      displayTitle: 'Error Occurred',
+      shouldVisualize: false,
+      shouldGenerateDiagram: false,
+      shouldCreateSlides: false,
+      interactiveElements: false,
+      complexity: null,
+      codeBlocks: [],
+      estimatedReadTime: 0,
+      wordCount: 0,
+      language: null,
+      keywords: ['error'],
+      entities: [],
+      suggestions: [],
+      diagramHints: [],
+      slideCount: 0,
+      slideDuration: 0,
+      slideTopics: [],
     };
+    
     const errorResponseMessage: Message = {
       role: 'assistant',
       content: `Sorry, I encountered an error: ${errorMessage}`,
@@ -698,14 +704,13 @@ const handleSmartTranscription = async (transcription: string) => {
     };
 
     if (autoClear.value) {
-        currentMessage.value = errorResponseMessage;
-        currentMessageAnalysis.value = errorAnalysis;
-        // Ensure user message is still present before the error if it was the last one
-        if(messages.value.length > 0 && messages.value[messages.value.length-1].role === 'user') {
-            messages.value.push(errorResponseMessage);
-        } else {
-            messages.value = [errorResponseMessage]; // Should ideally be [userMessage, errorResponseMessage]
-        }
+      currentMessage.value = errorResponseMessage;
+      currentMessageAnalysis.value = errorAnalysis;
+      if(messages.value.length > 0 && messages.value[messages.value.length-1].role === 'user') {
+        messages.value.push(errorResponseMessage);
+      } else {
+        messages.value = [errorResponseMessage];
+      }
     } else {
       messages.value.push(errorResponseMessage);
       await scrollToBottom();
@@ -716,6 +721,7 @@ const handleSmartTranscription = async (transcription: string) => {
     loadingProgress.value = 0;
   }
 };
+
 
 /**
  * Handles clicks on example prompts.
@@ -783,33 +789,42 @@ const updateSessionStats = (userInputAnalysis: ContentAnalysis, assistantRespons
   // Note: avgResponseTime would typically be calculated based on actual API response times.
 };
 
+
 /**
  * Fetches the current session cost from the backend and updates UI elements.
- * Shows warnings if the cost approaches or exceeds the defined threshold.
  */
 const fetchSessionCost = async () => {
   try {
-    const response = await axios.get('/api/cost', { headers: getAuthHeaders() });
+    const response = await costAPI.getCost();
     if (response.data && typeof response.data.sessionCost === 'number') {
       sessionCost.value = response.data.sessionCost;
-      const costHardThreshold = parseFloat(COST_THRESHOLD_STRING); // Use the string from env vars
+      // @ts-ignore
+      const costHardThreshold = parseFloat(import.meta.env.VITE_COST_THRESHOLD || '20.00');
       const warningThreshold = costHardThreshold * 0.9;
 
       if (sessionCost.value >= warningThreshold && sessionCost.value < costHardThreshold) {
-        if (!showCostWarning.value) { // Show toast only once when entering warning zone
-            toast?.add({ type: 'warning', title: 'Cost Alert', message: `Approaching session cost limit ($${costHardThreshold.toFixed(2)}). Current: $${sessionCost.value.toFixed(2)}`});
+        if (!showCostWarning.value) {
+          toast?.add({ 
+            type: 'warning', 
+            title: 'Cost Alert', 
+            message: `Approaching session cost limit ($${costHardThreshold.toFixed(2)}). Current: $${sessionCost.value.toFixed(2)}`
+          });
         }
       } else if (sessionCost.value >= costHardThreshold) {
-        showCostWarning.value = true; // Persistently show the banner
-        toast?.add({ type: 'error', title: 'Cost Limit Reached!', message: `Session cost limit of $${costHardThreshold.toFixed(2)} met.`});
+        showCostWarning.value = true;
+        toast?.add({ 
+          type: 'error', 
+          title: 'Cost Limit Reached!', 
+          message: `Session cost limit of $${costHardThreshold.toFixed(2)} met.`
+        });
       } else {
-        showCostWarning.value = false; // Clear warning if cost is below threshold
+        showCostWarning.value = false;
       }
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error fetching session cost:", error);
-    if (axios.isAxiosError(error) && error.response?.status === 401) {
-        toast?.add({ type: 'error', title: 'Auth Error', message: 'Could not update session cost (unauthorized).' });
+    if (error.response?.status === 401) {
+      toast?.add({ type: 'error', title: 'Auth Error', message: 'Could not update session cost (unauthorized).' });
     }
   }
 };
@@ -841,22 +856,22 @@ const formatTime = (timestamp: number) => new Date(timestamp).toLocaleTimeString
  * Clears the chat, resets session cost on the backend, and updates local state.
  */
 const clearChat = async () => {
-  clearChatLocalState(); // Clear local UI state first
+  clearChatLocalState();
   try {
-    // Attempt to reset session cost on the backend (if applicable)
-    const response = await axios.post('/api/cost', { userId: 'default_user', action: 'reset' }, { headers: getAuthHeaders() });
+    const response = await costAPI.resetCost({ userId: 'default_user', action: 'reset' });
     if (response.data && typeof response.data.sessionCost === 'number') {
-        sessionCost.value = response.data.sessionCost; // Should be 0 after reset
+      sessionCost.value = response.data.sessionCost;
     }
     showCostWarning.value = false;
     toast?.add({ type: 'success', title: 'Chat Cleared', message: 'Session has been reset.', duration: 2500 });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error resetting session cost on backend:", error);
     let errorMsg = "Could not reset session on the server.";
-    if (axios.isAxiosError(error) && error.response?.status === 401) errorMsg = 'Authentication failed while trying to clear chat.';
+    if (error.response?.status === 401) {
+      errorMsg = 'Authentication failed while trying to clear chat.';
+    }
     toast?.add({ type: 'error', title: 'Clear Error', message: errorMsg, duration: 4000 });
   }
-  // Reset local session statistics
   sessionStats.value = { problemsSolved: 0, avgResponseTime: 0, topLanguage: 'N/A', totalInteractions: 0 };
   showPerformanceInsights.value = false;
 };

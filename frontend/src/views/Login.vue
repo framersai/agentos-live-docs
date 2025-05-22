@@ -140,7 +140,9 @@
 import { ref, inject, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStorage } from '@vueuse/core';
-import axios from 'axios';
+// Remove: import axios from 'axios';
+// Add:
+import { authAPI, api } from '../utils/api';
 
 // Router
 const router = useRouter();
@@ -172,16 +174,17 @@ const handleLogin = async () => {
     isLoggingIn.value = true;
     errorMessage.value = '';
     
-    const response = await axios.post('/api/auth', {
-      password: password.value
+    const response = await authAPI.login({
+      password: password.value,
+      rememberMe: rememberMe.value
     });
     
     // Store token based on remember me preference
     const storage = rememberMe.value ? localStorage : sessionStorage;
     storage.setItem('token', response.data.token);
     
-    // Set axios default header
-    axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+    // Set default auth header for future requests
+    api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
     
     // Redirect to home
     router.push('/');

@@ -106,6 +106,14 @@ interface AdvancedPatterns {
   };
 }
 
+// Mode to content type mapping for better analysis
+const MODE_TO_CONTENT_TYPE_MAP: Record<string, ContentAnalysisType> = {
+  'coding': 'leetcode',
+  'system_design': 'systemDesign',
+  'meeting': 'documentation',
+  'general': 'general'
+};
+
 export class ContentAnalyzer {
   private readonly patterns: AdvancedPatterns = {
     leetcode: {
@@ -122,10 +130,14 @@ export class ContentAnalyzer {
         'o(n²)', 'o(2^n)', 'o(n log n)', 'linear', 'logarithmic', 'quadratic', 'exponential'
       ],
       patterns: [
-        /(?:problem|question)[:\s]*(.{1,100})/i, /(?:given|input)[:\s]*(.{1,150})/i,
-        /(?:return|output|find)[:\s]*(.{1,100})/i, /(?:example|test case)[:\s]*(.{1,200})/i,
-        /(?:constraint|limit)[s]?[:\s]*(.{1,100})/i, /(?:follow[- ]?up|extension)[:\s]*(.{1,100})/i,
-        /(?:approach|solution|algorithm)[:\s]*(.{1,200})/i, /(?:step \d+|first|second|third|then|next|finally)[:\s]*(.{1,150})/i
+        /(?:problem|question)[:\s]*(.{1,100})/i, 
+        /(?:given|input)[:\s]*(.{1,150})/i,
+        /(?:return|output|find)[:\s]*(.{1,100})/i, 
+        /(?:example|test case)[:\s]*(.{1,200})/i,
+        /(?:constraint|limit)[s]?[:\s]*(.{1,100})/i, 
+        /(?:follow[- ]?up|extension)[:\s]*(.{1,100})/i,
+        /(?:approach|solution|algorithm)[:\s]*(.{1,200})/i, 
+        /(?:step \d+|first|second|third|then|next|finally)[:\s]*(.{1,150})/i
       ],
       problemTypes: [
         'array manipulation', 'string processing', 'tree traversal', 'graph algorithms',
@@ -173,9 +185,20 @@ export class ContentAnalyzer {
       ]
     },
     complexity: {
-      time: [ /time\s+complexity(?:is)?[:\s]*O\(([^)]+)\)/gi, /runtime(?:is)?[:\s]*O\(([^)]+)\)/gi, /(?:takes|runs\s+in)[:\s]*O\(([^)]+)\)/gi ],
-      space: [ /space\s+complexity(?:is)?[:\s]*O\(([^)]+)\)/gi, /memory\s+usage(?:is)?[:\s]*O\(([^)]+)\)/gi, /(?:uses|requires)[:\s]*O\(([^)]+)\)\s*(?:space|memory)/gi ],
-      combined: [ /O\(([^)]+)\)\s*(?:for\s*)?(?:time|space|memory)/gi, /complexity(?:is)?[:\s]*O\(([^)]+)\)/gi ]
+      time: [ 
+        /time\s+complexity(?:\s+is)?[:\s]*O\(([^)]+)\)/gi, 
+        /runtime(?:\s+is)?[:\s]*O\(([^)]+)\)/gi, 
+        /(?:takes|runs\s+in)[:\s]*O\(([^)]+)\)/gi 
+      ],
+      space: [ 
+        /space\s+complexity(?:\s+is)?[:\s]*O\(([^)]+)\)/gi, 
+        /memory\s+usage(?:\s+is)?[:\s]*O\(([^)]+)\)/gi, 
+        /(?:uses|requires)[:\s]*O\(([^)]+)\)\s*(?:space|memory)/gi 
+      ],
+      combined: [ 
+        /O\(([^)]+)\)\s*(?:for\s*)?(?:time|space|memory)/gi, 
+        /complexity(?:\s+is)?[:\s]*O\(([^)]+)\)/gi 
+      ]
     },
     codeBlocks: {
       fenced: /```(?:(\w+)\n)?([\s\S]*?)\n?```/g,
@@ -190,17 +213,63 @@ export class ContentAnalyzer {
   };
 
   private readonly leetcodeProblemKeywords = new Map<string, Partial<ProblemMetadata>>([
-    ['two sum', { difficulty: 'Easy', category: 'Array', approach: 'Hash Map', dataStructures: ['Array', 'Hash Map'], algorithms: ['Hash Table lookup'] }],
-    ['reverse linked list', { difficulty: 'Easy', category: 'Linked List', approach: 'Iterative or Recursive', dataStructures: ['Linked List'], algorithms: ['Two Pointers'] }],
-    ['binary tree inorder traversal', { difficulty: 'Easy', category: 'Tree', approach: 'Recursion or Iteration with Stack', dataStructures: ['Binary Tree', 'Stack'], algorithms: ['DFS']}],
+    ['two sum', { 
+      difficulty: 'Easy', 
+      category: 'Array', 
+      approach: 'Hash Map', 
+      dataStructures: ['Array', 'Hash Map'], 
+      algorithms: ['Hash Table lookup'] 
+    }],
+    ['reverse linked list', { 
+      difficulty: 'Easy', 
+      category: 'Linked List', 
+      approach: 'Iterative or Recursive', 
+      dataStructures: ['Linked List'], 
+      algorithms: ['Two Pointers'] 
+    }],
+    ['binary tree inorder traversal', { 
+      difficulty: 'Easy', 
+      category: 'Tree', 
+      approach: 'Recursion or Iteration with Stack', 
+      dataStructures: ['Binary Tree', 'Stack'], 
+      algorithms: ['DFS']
+    }],
+    ['valid parentheses', {
+      difficulty: 'Easy',
+      category: 'Stack',
+      approach: 'Stack matching',
+      dataStructures: ['Stack'],
+      algorithms: ['Stack operations']
+    }],
+    ['maximum subarray', {
+      difficulty: 'Easy',
+      category: 'Dynamic Programming',
+      approach: 'Kadane\'s Algorithm',
+      dataStructures: ['Array'],
+      algorithms: ['Kadane Algorithm']
+    }]
   ]);
 
   public analyzeContent(content: string, mode: string = 'general'): ContentAnalysis {
     const analysis: ContentAnalysis = {
-      type: 'general', confidence: 0, shouldVisualize: false, shouldGenerateDiagram: false,
-      shouldCreateSlides: false, interactiveElements: false, complexity: null, codeBlocks: [],
-      estimatedReadTime: 0, wordCount: 0, language: null, keywords: [], entities: [],
-      suggestions: [], diagramHints: [], slideCount: 0, slideDuration: 7000, slideTopics: [],
+      type: 'general', 
+      confidence: 0, 
+      shouldVisualize: false, 
+      shouldGenerateDiagram: false,
+      shouldCreateSlides: false, 
+      interactiveElements: false, 
+      complexity: null, 
+      codeBlocks: [],
+      estimatedReadTime: 0, 
+      wordCount: 0, 
+      language: null, 
+      keywords: [], 
+      entities: [],
+      suggestions: [], 
+      diagramHints: [], 
+      slideCount: 0, 
+      slideDuration: 7000, 
+      slideTopics: [],
       displayTitle: 'General Content'
     };
 
@@ -250,7 +319,7 @@ export class ContentAnalyzer {
     if (subtype) {
         return `${type.charAt(0).toUpperCase() + type.slice(1)}: ${subtype.charAt(0).toUpperCase() + subtype.slice(1)}`;
     }
-    const titles: Record<string, string> = {
+    const titles: Record<ContentAnalysisType, string> = {
         leetcode: "LeetCode Problem",
         systemDesign: "System Design Discussion",
         concept: "Conceptual Explanation",
@@ -263,57 +332,107 @@ export class ContentAnalyzer {
   }
 
   private determineContentType(content: string, mode: string): {
-    type: ContentAnalysisType; subtype?: string; confidence: number; keywords: string[];
+    type: ContentAnalysisType; 
+    subtype?: string; 
+    confidence: number; 
+    keywords: string[];
   } {
     const normalizedContent = content.toLowerCase();
-    const scores = new Map<ContentAnalysisType, number>([
-        ['leetcode', 0], ['systemDesign', 0], ['concept', 0],
-        ['tutorial', 0], ['documentation', 0], ['general', 0]
-    ]);
+    const scores: Record<ContentAnalysisType, number> = {
+        'leetcode': 0, 
+        'systemDesign': 0, 
+        'concept': 0,
+        'tutorial': 0, 
+        'documentation': 0, 
+        'general': 0,
+        'error': 0
+    };
     const detectedKeywords: Set<string> = new Set();
     const codeBlockCount = this.extractCodeBlocks(content).length;
 
-    // Scoring logic
+    // Enhanced scoring logic with better keyword weighting
     let leetcodeScore = 0;
-    this.patterns.leetcode.keywords.forEach(kw => { if (normalizedContent.includes(kw)) { leetcodeScore += this.getKeywordWeight(kw); detectedKeywords.add(kw); } });
-    this.patterns.leetcode.patterns.forEach(p => { if (p.test(content)) leetcodeScore += 3; });
-    if (content.match(/```(?:python|java|c\+\+|javascript|swift|kotlin|go|rust)/i)) leetcodeScore += 2;
-    if (normalizedContent.includes("leetcode") || normalizedContent.includes("coding problem")) leetcodeScore += 5;
-    scores.set('leetcode', leetcodeScore);
+    this.patterns.leetcode.keywords.forEach(kw => { 
+      if (normalizedContent.includes(kw)) { 
+        leetcodeScore += this.getKeywordWeight(kw); 
+        detectedKeywords.add(kw); 
+      } 
+    });
+    this.patterns.leetcode.patterns.forEach(p => { 
+      if (p.test(content)) leetcodeScore += 3; 
+    });
+    
+    // Language-specific code blocks boost
+    if (content.match(/```(?:python|java|c\+\+|javascript|swift|kotlin|go|rust|cpp|js|ts)/i)) {
+      leetcodeScore += 2;
+    }
+    
+    // Direct mentions boost
+    if (normalizedContent.includes("leetcode") || normalizedContent.includes("coding problem")) {
+      leetcodeScore += 5;
+    }
+    
+    scores.leetcode = leetcodeScore;
 
     let systemDesignScore = 0;
-    this.patterns.systemDesign.keywords.forEach(kw => { if (normalizedContent.includes(kw)) { systemDesignScore += this.getKeywordWeight(kw); detectedKeywords.add(kw); } });
-    this.patterns.systemDesign.patterns.forEach(p => { if (p.test(content)) systemDesignScore += 4; });
-    if (normalizedContent.includes("design a") || normalizedContent.includes("system architecture")) systemDesignScore += 5;
-    scores.set('systemDesign', systemDesignScore);
+    this.patterns.systemDesign.keywords.forEach(kw => { 
+      if (normalizedContent.includes(kw)) { 
+        systemDesignScore += this.getKeywordWeight(kw); 
+        detectedKeywords.add(kw); 
+      } 
+    });
+    this.patterns.systemDesign.patterns.forEach(p => { 
+      if (p.test(content)) systemDesignScore += 4; 
+    });
+    
+    // System design specific phrases
+    if (normalizedContent.includes("design a") || normalizedContent.includes("system architecture")) {
+      systemDesignScore += 5;
+    }
+    
+    scores.systemDesign = systemDesignScore;
 
+    // Tutorial detection
     if (codeBlockCount > 1 && (normalizedContent.includes("how to") || normalizedContent.includes("step-by-step"))) {
-        scores.set('tutorial', (scores.get('tutorial') || 0) + codeBlockCount * 1.5 + 3);
-    } else if (codeBlockCount > 0 && (normalizedContent.includes("api documentation") || normalizedContent.includes("reference"))) {
-        scores.set('documentation', (scores.get('documentation') || 0) + codeBlockCount * 1 + 2);
+        scores.tutorial = (scores.tutorial || 0) + codeBlockCount * 1.5 + 3;
     }
+    
+    // Documentation detection
+    if (codeBlockCount > 0 && (normalizedContent.includes("api documentation") || normalizedContent.includes("reference"))) {
+        scores.documentation = (scores.documentation || 0) + codeBlockCount * 1 + 2;
+    }
+    
+    // Concept explanation detection
     if (codeBlockCount <= 1 && (normalizedContent.includes("explain") || normalizedContent.includes("what is") || normalizedContent.includes("concept of"))) {
-        scores.set('concept', (scores.get('concept') || 0) + 3);
+        scores.concept = (scores.concept || 0) + 3;
     }
 
+    // Apply mode bias for better context awareness
     const modeBias = this.getModeBias(mode);
-    scores.forEach((score, type) => { if (modeBias.has(type)) scores.set(type, score * (modeBias.get(type) ?? 1)); });
-
-    let maxScore = -1;
-    let initialWinnerType: ContentAnalysisType = 'general';
-    scores.forEach((score, typeKey ) => {
-      const type = typeKey as ContentAnalysisType;
-      if (score > maxScore) {
-        maxScore = score;
-        initialWinnerType = type;
+    (Object.keys(scores) as ContentAnalysisType[]).forEach(type => {
+      if (modeBias.has(type)) {
+        scores[type] = scores[type] * (modeBias.get(type) ?? 1);
       }
     });
-    if (maxScore <= 0 && initialWinnerType === 'general') {
+
+    // Find the winner
+    let maxScore = -1;
+    let winnerType: ContentAnalysisType = 'general';
+    (Object.keys(scores) as ContentAnalysisType[]).forEach(type => {
+      if (scores[type] > maxScore) {
+        maxScore = scores[type];
+        winnerType = type;
+      }
+    });
+    
+    if (maxScore <= 0) {
         maxScore = 0;
+        winnerType = 'general';
     }
 
+    // Determine subtype based on the winning type
     let subtype: string | undefined;
-    switch (initialWinnerType) {
+    switch (winnerType) {
         case 'leetcode':
             subtype = this.determineLeetCodeSubtype(content, Array.from(detectedKeywords));
             break;
@@ -323,26 +442,23 @@ export class ContentAnalyzer {
                 subtype = systemNameMatch[1].trim();
             }
             break;
-        // Default: subtype remains undefined for other types
+        // Other types don't need subtypes for now
     }
 
-    let finalWinnerTypeResult: ContentAnalysisType = initialWinnerType;
-
-    if (maxScore < 3) { // Low confidence override
-      finalWinnerTypeResult = codeBlockCount > 0 ? 'general' : 'concept';
-
-      // If the original type was one that had a subtype (leetcode or systemDesign),
-      // and it's now overridden to 'general' or 'concept', clear the subtype.
-      if (initialWinnerType === 'leetcode' || initialWinnerType === 'systemDesign') {
-        subtype = undefined;
-      }
+    // Low confidence override - if score is too low, fall back to simpler classification
+    if (maxScore < 3) {
+      winnerType = codeBlockCount > 0 ? 'tutorial' : 'concept';
+      // Clear subtype since we're overriding the type
+      subtype = undefined;
     }
 
-    // Fixed: Use string comparison instead of ContentAnalysisType comparison
-    const confidence = Math.min(maxScore / (mode === finalWinnerTypeResult.toString() ? 15 : 25), 1.0);
+    // Calculate confidence based on score and mode alignment
+    const modeExpectedType = MODE_TO_CONTENT_TYPE_MAP[mode];
+    const modeAlignment = modeExpectedType && modeExpectedType === winnerType ? 1.2 : 1.0;
+    const confidence = Math.min((maxScore * modeAlignment) / 25, 1.0);
 
     return {
-      type: finalWinnerTypeResult,
+      type: winnerType,
       subtype,
       confidence,
       keywords: Array.from(detectedKeywords).slice(0, 10)
@@ -353,119 +469,357 @@ export class ContentAnalyzer {
     const metadata: ProblemMetadata = {};
     const normalizedContent = content.toLowerCase();
 
+    // Check against known problems first
     for (const [problemName, knownMeta] of this.leetcodeProblemKeywords) {
         if (normalizedContent.includes(problemName)) {
-            return { ...metadata, ...knownMeta, category: knownMeta.category || problemName };
+            return { 
+              ...metadata, 
+              ...knownMeta, 
+              category: knownMeta.category || problemName.replace(/\b\w/g, l => l.toUpperCase())
+            };
         }
     }
+    
+    // Extract difficulty
     const difficultyMatch = content.match(/\b(easy|medium|hard)(?:\s+(?:problem|question|level))?\b/i);
-    if (difficultyMatch) metadata.difficulty = difficultyMatch[1].charAt(0).toUpperCase() + difficultyMatch[1].slice(1).toLowerCase() as ProblemMetadata['difficulty'];
-    metadata.dataStructures = this.patterns.leetcode.dataStructures.filter(ds => keywords.some(kw => kw.includes(ds.toLowerCase())) || normalizedContent.includes(ds.toLowerCase()));
-    metadata.algorithms = this.patterns.leetcode.algorithms.filter(algo => keywords.some(kw => kw.includes(algo.toLowerCase())) || normalizedContent.includes(algo.toLowerCase()));
-    const approachKeywords = ['brute force', 'optimal', 'recursive', 'iterative', 'dp', 'greedy', 'dynamic programming', 'divide and conquer', 'sliding window', 'two pointers'];
-    for (const approach of approachKeywords) { if (normalizedContent.includes(approach)) { metadata.approach = approach; break; } }
-    const complexityInfo = this.extractComplexity(content);
-    if (complexityInfo) { metadata.timeComplexity = complexityInfo.time; metadata.spaceComplexity = complexityInfo.space; }
-    if (!metadata.category) {
-        if (metadata.dataStructures && metadata.dataStructures.length > 0) metadata.category = metadata.dataStructures[0];
-        else if (metadata.algorithms && metadata.algorithms.length > 0) metadata.category = metadata.algorithms[0];
+    if (difficultyMatch) {
+      const diffStr = difficultyMatch[1].charAt(0).toUpperCase() + difficultyMatch[1].slice(1).toLowerCase();
+      metadata.difficulty = diffStr as ProblemMetadata['difficulty'];
     }
+    
+    // Extract data structures and algorithms from keywords and content
+    metadata.dataStructures = this.patterns.leetcode.dataStructures.filter(ds => 
+      keywords.some(kw => kw.includes(ds.toLowerCase())) || 
+      normalizedContent.includes(ds.toLowerCase())
+    );
+    
+    metadata.algorithms = this.patterns.leetcode.algorithms.filter(algo => 
+      keywords.some(kw => kw.includes(algo.toLowerCase())) || 
+      normalizedContent.includes(algo.toLowerCase())
+    );
+    
+    // Extract approach
+    const approachKeywords = [
+      'brute force', 'optimal', 'recursive', 'iterative', 'dp', 'greedy', 
+      'dynamic programming', 'divide and conquer', 'sliding window', 'two pointers'
+    ];
+    for (const approach of approachKeywords) { 
+      if (normalizedContent.includes(approach)) { 
+        metadata.approach = approach; 
+        break; 
+      } 
+    }
+    
+    // Extract complexity information
+    const complexityInfo = this.extractComplexity(content);
+    if (complexityInfo) { 
+      metadata.timeComplexity = complexityInfo.time; 
+      metadata.spaceComplexity = complexityInfo.space; 
+    }
+    
+    // Set category if not already set
+    if (!metadata.category) {
+        if (metadata.dataStructures && metadata.dataStructures.length > 0) {
+          metadata.category = metadata.dataStructures[0].replace(/\b\w/g, l => l.toUpperCase());
+        } else if (metadata.algorithms && metadata.algorithms.length > 0) {
+          metadata.category = metadata.algorithms[0].replace(/\b\w/g, l => l.toUpperCase());
+        }
+    }
+    
     return metadata;
   }
 
   private extractCodeBlocks(content: string): CodeBlock[] {
     const blocks: CodeBlock[] = [];
+    
+    // Extract fenced code blocks
     const fencedMatches = [...content.matchAll(this.patterns.codeBlocks.fenced)];
     fencedMatches.forEach(match => {
       const language = (match[1] || 'plaintext').toLowerCase();
       const code = match[2] || '';
       blocks.push({
-        type: 'fenced', language, code, fullMatch: match[0],
+        type: 'fenced', 
+        language, 
+        code, 
+        fullMatch: match[0],
         lineCount: code.split('\n').length,
         hasComments: this.patterns.codeBlocks.withComments.test(code),
         complexity: this.estimateCodeComplexity(code)
       });
     });
+    
     return blocks;
   }
 
   private detectLanguage(content: string, codeBlocks: CodeBlock[]): string | null {
+    // First, check declared languages in code blocks
     const declaredLanguages = codeBlocks
       .map(block => block.language)
       .filter(lang => lang && lang !== 'unknown' && lang !== 'plaintext');
+      
     if (declaredLanguages.length > 0) {
       const langCounts = declaredLanguages.reduce((acc, lang) => {
-        acc[lang!] = (acc[lang!] || 0) + 1; return acc;
+        acc[lang!] = (acc[lang!] || 0) + 1; 
+        return acc;
       }, {} as Record<string, number>);
       return Object.keys(langCounts).sort((a,b) => langCounts[b] - langCounts[a])[0];
     }
+    
+    // Fallback to content-based detection
+    const lowerContent = content.toLowerCase();
+    
+    // Python detection
     if (/\b(def|import|class)\s/.test(content) && content.includes(':')) return 'python';
-    if (/\b(function|const|let|var)\s/.test(content) && (content.includes('{') || content.includes('=>'))) return 'javascript';
+    
+    // JavaScript/TypeScript detection
+    if (/\b(function|const|let|var)\s/.test(content) && (content.includes('{') || content.includes('=>'))) {
+      return lowerContent.includes('typescript') || content.includes(': ') ? 'typescript' : 'javascript';
+    }
+    
+    // Java detection
     if (/\b(public\s+(class|static|void)|System\.out\.print)/.test(content)) return 'java';
+    
+    // C++ detection
+    if (/#include|std::/.test(content)) return 'cpp';
+    
     return null;
   }
 
   private generateDiagramHints(analysis: ContentAnalysis, content: string): DiagramHint[] {
     const hints: DiagramHint[] = [];
     const normalizedContent = content.toLowerCase();
+    
+    // System design diagrams
     if (analysis.type === 'systemDesign' || normalizedContent.includes('architecture') || normalizedContent.includes('component diagram')) {
-      hints.push({ type: 'system', description: 'System architecture diagram', priority: 9, mermaidCode: this.generateSystemArchitectureDiagram(content) });
+      hints.push({ 
+        type: 'system', 
+        description: 'System architecture diagram', 
+        priority: 9, 
+        mermaidCode: this.generateSystemArchitectureDiagram(analysis.subtype || 'system') 
+      });
     }
+    
+    // Tree/Graph diagrams for data structure problems
     if (analysis.type === 'leetcode' && analysis.problemMetadata?.dataStructures?.some(ds => ['tree', 'graph'].includes(ds.toLowerCase()))) {
         if (analysis.problemMetadata.dataStructures.includes('tree')) {
-             hints.push({ type: 'tree', description: 'Tree structure visualization', priority: 8, mermaidCode: this.generateTreeDiagram(content) });
+             hints.push({ 
+               type: 'tree', 
+               description: 'Tree structure visualization', 
+               priority: 8, 
+               mermaidCode: this.generateTreeDiagram() 
+             });
         } else {
-             hints.push({ type: 'graph', description: 'Graph structure visualization', priority: 8, mermaidCode: this.generateGraphDiagram(content) });
+             hints.push({ 
+               type: 'graph', 
+               description: 'Graph structure visualization', 
+               priority: 8, 
+               mermaidCode: this.generateGraphDiagram() 
+             });
         }
     }
+    
+    // Flowchart for algorithms
     if (normalizedContent.includes('flowchart') || (normalizedContent.includes('algorithm') && normalizedContent.includes('steps'))) {
-        hints.push({ type: 'flowchart', description: 'Algorithm/process flowchart', priority: 7, mermaidCode: this.generateFlowchartDiagram(content) });
+        hints.push({ 
+          type: 'flowchart', 
+          description: 'Algorithm/process flowchart', 
+          priority: 7, 
+          mermaidCode: this.generateFlowchartDiagram() 
+        });
     }
+    
     return hints.sort((a, b) => b.priority - a.priority);
   }
 
   private generateSuggestions(analysis: ContentAnalysis, content: string): ContentSuggestion[] {
     const suggestions: ContentSuggestion[] = [];
+    
+    // Complexity analysis suggestion
     if (analysis.type === 'leetcode' && !analysis.complexity) {
-      suggestions.push({ type: 'complexity', message: 'Add Big O complexity analysis', priority: 'high' });
+      suggestions.push({ 
+        type: 'complexity', 
+        message: 'Add Big O complexity analysis', 
+        priority: 'high' 
+      });
     }
+    
+    // Code example suggestion
     if (analysis.type === 'concept' && analysis.codeBlocks.length === 0) {
-      suggestions.push({ type: 'code', message: 'Include a code example', priority: 'medium' });
+      suggestions.push({ 
+        type: 'code', 
+        message: 'Include a code example', 
+        priority: 'medium' 
+      });
     }
+    
+    // Diagram suggestion
     if (analysis.shouldGenerateDiagram && analysis.diagramHints.length > 0 && !content.match(this.patterns.diagrams.mermaid)) {
-        suggestions.push({ type: 'diagram', message: `Consider adding a ${analysis.diagramHints[0].type} diagram`, priority: 'high', implementation: analysis.diagramHints[0].mermaidCode});
+        suggestions.push({ 
+          type: 'diagram', 
+          message: `Consider adding a ${analysis.diagramHints[0].type} diagram`, 
+          priority: 'high', 
+          implementation: analysis.diagramHints[0].mermaidCode
+        });
     }
-     if (analysis.wordCount > 700) {
-        suggestions.push({ type: 'explanation', message: 'Summarize key points or break into sections', priority: 'medium' });
+    
+    // Content length suggestion
+    if (analysis.wordCount > 700) {
+        suggestions.push({ 
+          type: 'explanation', 
+          message: 'Summarize key points or break into sections', 
+          priority: 'medium' 
+        });
     }
+    
     return suggestions;
   }
 
-  private generateTreeDiagram(content: string): string { return `graph TD\n    A[Root] --> B(Child1)\n    A --> C(Child2)`; }
-  private generateGraphDiagram(content: string): string { return `graph LR\n    N1 --- N2\n    N2 --- N3\n    N1 --- N3`; }
-  private generateSystemArchitectureDiagram(content: string): string { return `graph TB\n    User --> WebApp[Web App]\n    WebApp --> APIService[API Service]\n    APIService --> Database[(DB)]`; }
-  private generateFlowchartDiagram(content: string): string { return `graph TD\n    Start --> Step1{Decision} -- Yes --> Step2 --> End\n    Step1 -- No --> Step3 --> End`; }
+  // Improved diagram generation methods
+  private generateTreeDiagram(): string { 
+    return `graph TD
+    A[Root] --> B[Left Child]
+    A --> C[Right Child]
+    B --> D[Left Leaf]
+    B --> E[Right Leaf]
+    C --> F[Left Leaf]
+    C --> G[Right Leaf]`; 
+  }
+  
+  private generateGraphDiagram(): string { 
+    return `graph LR
+    N1[Node 1] --- N2[Node 2]
+    N2 --- N3[Node 3]
+    N1 --- N3
+    N3 --- N4[Node 4]`; 
+  }
+  
+  private generateSystemArchitectureDiagram(systemName: string = 'system'): string { 
+    return `graph TB
+    User[👤 User] --> WebApp[🌐 Web Application]
+    WebApp --> APIGateway[🚪 API Gateway]
+    APIGateway --> Service1[📦 ${systemName} Service]
+    APIGateway --> Service2[📦 Auth Service]
+    Service1 --> Database[(🗄️ Database)]
+    Service1 --> Cache[💾 Cache]
+    Service2 --> UserDB[(👥 User DB)]`; 
+  }
+  
+  private generateFlowchartDiagram(): string { 
+    return `graph TD
+    Start([🚀 Start]) --> Input[📥 Input Data]
+    Input --> Process{🔄 Process}
+    Process -->|Success| Output[📤 Output Result]
+    Process -->|Error| ErrorHandle[⚠️ Handle Error]
+    ErrorHandle --> End([🏁 End])
+    Output --> End`; 
+  }
 
-  private getKeywordWeight(keyword: string): number { return ['leetcode', 'system design', 'time complexity', 'big o'].some(h => keyword.includes(h)) ? 2 : 1; }
-  private getModeBias(mode: string): Map<ContentAnalysisType, number> { const bias = new Map<ContentAnalysisType, number>(); if (mode === 'coding') bias.set('leetcode', 1.5).set('tutorial', 1.2); if (mode === 'system_design') bias.set('systemDesign', 1.8); return bias; }
-  private determineLeetCodeSubtype(content: string, keywords: string[]): string { const ds = this.patterns.leetcode.dataStructures.find(d => keywords.includes(d.toLowerCase()) || content.toLowerCase().includes(d.toLowerCase())); const algo = this.patterns.leetcode.algorithms.find(a => keywords.includes(a.toLowerCase()) || content.toLowerCase().includes(a.toLowerCase())); if (ds && algo) return `${ds} + ${algo}`; return ds || algo || 'General Problem'; }
-  private countWords(content: string): number { return content.split(/\s+/).filter(Boolean).length; }
+  // Utility methods with better implementations
+  private getKeywordWeight(keyword: string): number { 
+    const highPriorityKeywords = ['leetcode', 'system design', 'time complexity', 'big o', 'algorithm', 'data structure'];
+    return highPriorityKeywords.some(h => keyword.includes(h)) ? 3 : 1; 
+  }
+  
+  private getModeBias(mode: string): Map<ContentAnalysisType, number> { 
+    const bias = new Map<ContentAnalysisType, number>(); 
+    
+    switch (mode) {
+      case 'coding':
+        bias.set('leetcode', 1.5);
+        bias.set('tutorial', 1.2);
+        break;
+      case 'system_design':
+        bias.set('systemDesign', 1.8);
+        break;
+      case 'meeting':
+        bias.set('documentation', 1.3);
+        break;
+    }
+    
+    return bias; 
+  }
+  
+  private determineLeetCodeSubtype(content: string, keywords: string[]): string { 
+    const normalizedContent = content.toLowerCase();
+    
+    const ds = this.patterns.leetcode.dataStructures.find(d => 
+      keywords.includes(d.toLowerCase()) || normalizedContent.includes(d.toLowerCase())
+    );
+    
+    const algo = this.patterns.leetcode.algorithms.find(a => 
+      keywords.includes(a.toLowerCase()) || normalizedContent.includes(a.toLowerCase())
+    );
+    
+    if (ds && algo) return `${ds} + ${algo}`;
+    return ds || algo || 'General Problem'; 
+  }
+  
+  private countWords(content: string): number { 
+    return content.split(/\s+/).filter(Boolean).length; 
+  }
+  
   private calculateReadTime(content: string): number {
-    const wordsPerMinute = 200; const codeLinesPerMinute = 70;
-    const codeBlockContent = (this.extractCodeBlocks(content) || []).map(b => b.code).join('\n');
+    const wordsPerMinute = 200; 
+    const codeLinesPerMinute = 70;
+    
+    const codeBlockContent = (this.extractCodeBlocks(content) || [])
+      .map(b => b.code)
+      .join('\n');
     const codeLineCount = codeBlockContent.split('\n').length;
+    
     const textContent = content.replace(/```[\s\S]*?```/g, '');
     const textWordCount = this.countWords(textContent);
+    
     const timeForText = (textWordCount / wordsPerMinute) * 60;
     const timeForCode = (codeLineCount / codeLinesPerMinute) * 60;
+    
     return Math.max(15, Math.round(timeForText + timeForCode));
   }
 
   private extractComplexity(content: string): ComplexityInfo | null {
-    const info: ComplexityInfo = {}; const lowerContent = content.toLowerCase(); let match;
-    for (const p of this.patterns.complexity.time) { p.lastIndex = 0; match = p.exec(content); if (match) { info.time = `O(${match[1]})`; break; } }
-    for (const p of this.patterns.complexity.space) { p.lastIndex = 0; match = p.exec(content); if (match) { info.space = `O(${match[1]})`; break; } }
-    if (!info.time && !info.space) { for (const p of this.patterns.complexity.combined) { p.lastIndex = 0; match = p.exec(content); if (match) { if (lowerContent.substring(0, match.index).includes('time')) info.time = `O(${match[1]})`; else if (lowerContent.substring(0, match.index).includes('space')) info.space = `O(${match[1]})`; else { info.time = `O(${match[1]})`; info.space = `O(${match[1]})`;} break; } } }
+    const info: ComplexityInfo = {}; 
+    const lowerContent = content.toLowerCase(); 
+    let match;
+    
+    // Extract time complexity
+    for (const pattern of this.patterns.complexity.time) { 
+      pattern.lastIndex = 0; 
+      match = pattern.exec(content); 
+      if (match) { 
+        info.time = `O(${match[1]})`; 
+        break; 
+      } 
+    }
+    
+    // Extract space complexity
+    for (const pattern of this.patterns.complexity.space) { 
+      pattern.lastIndex = 0; 
+      match = pattern.exec(content); 
+      if (match) { 
+        info.space = `O(${match[1]})`; 
+        break; 
+      } 
+    }
+    
+    // Fallback to combined patterns
+    if (!info.time && !info.space) { 
+      for (const pattern of this.patterns.complexity.combined) { 
+        pattern.lastIndex = 0; 
+        match = pattern.exec(content); 
+        if (match) { 
+          const beforeMatch = lowerContent.substring(0, match.index);
+          if (beforeMatch.includes('time')) {
+            info.time = `O(${match[1]})`;
+          } else if (beforeMatch.includes('space')) {
+            info.space = `O(${match[1]})`;
+          } else { 
+            info.time = `O(${match[1]})`;
+          }
+          break; 
+        } 
+      } 
+    }
+    
     return Object.keys(info).length > 0 ? info : null;
   }
 
@@ -474,8 +828,10 @@ export class ContentAnalyzer {
     const recursionPattern = /(\w+)\s*\([^)]*\)\s*{[\s\S]*?\b\1\b\s*\(/;
 
     let loopCount = (code.match(loopKeywords) || []).length;
+    
+    // Check for nested loops
     if (loopCount > 1 && code.match(/(\s+(for|while|do)[\s\S]*?\n)+\s+(for|while|do)/)) {
-        loopCount = 2;
+        return 'O(N^2)';
     }
 
     if (recursionPattern.test(code)) return 'O(2^N) or O(N)';
@@ -484,11 +840,25 @@ export class ContentAnalyzer {
     return 'O(1)';
   }
 
-  private shouldVisualize(analysis: ContentAnalysis): boolean { return analysis.type === 'leetcode' || analysis.type === 'systemDesign' || (analysis.estimatedReadTime > 120 && analysis.codeBlocks.length > 0) || analysis.diagramHints.length > 0; }
-  private shouldGenerateDiagram(analysis: ContentAnalysis): boolean { return analysis.diagramHints.length > 0 || analysis.type === 'systemDesign' || (analysis.type === 'leetcode' && analysis.problemMetadata?.dataStructures?.some(ds => ['tree', 'graph', 'linked list'].includes(ds.toLowerCase())) === true); }
+  // Analysis decision methods
+  private shouldVisualize(analysis: ContentAnalysis): boolean { 
+    return analysis.type === 'leetcode' || 
+           analysis.type === 'systemDesign' || 
+           (analysis.estimatedReadTime > 120 && analysis.codeBlocks.length > 0) || 
+           analysis.diagramHints.length > 0; 
+  }
+  
+  private shouldGenerateDiagram(analysis: ContentAnalysis): boolean { 
+    return analysis.diagramHints.length > 0 || 
+           analysis.type === 'systemDesign' || 
+           (analysis.type === 'leetcode' && 
+            analysis.problemMetadata?.dataStructures?.some(ds => 
+              ['tree', 'graph', 'linked list'].includes(ds.toLowerCase())
+            ) === true); 
+  }
 
   private shouldCreateSlides(analysis: ContentAnalysis): boolean {
-    return (analysis.shouldVisualize ?? false) &&
+    return (analysis.shouldVisualize) &&
            (analysis.wordCount > 300 ||
             analysis.codeBlocks.length > 0 ||
             analysis.type === 'leetcode' ||
@@ -497,24 +867,107 @@ export class ContentAnalyzer {
 
   private planSlides(content: string, analysis: ContentAnalysis): { count: number; duration: number; topics: string[] } {
     const topics: string[] = [];
-    if (analysis.type === 'leetcode') { topics.push('Problem Statement', 'Approach & Logic'); if (analysis.codeBlocks.length > 0) topics.push('Code Implementation'); if (analysis.complexity) topics.push('Complexity Analysis');
-    } else if (analysis.type === 'systemDesign') { topics.push('Requirements & Goals', 'High-Level Architecture', 'Components Deep-Dive', 'Trade-offs & Scalability');
-    } else { const headers = content.match(/^#{1,3}\s+(.+)$/gm); if (headers && headers.length > 1) { topics.push(...headers.map(h => h.replace(/^#+\s+/, '').trim()).slice(0,5)); } else { const sections = Math.min(5, Math.max(1, Math.ceil(analysis.wordCount / 200))); for (let i = 1; i <= sections; i++) topics.push(`Key Section ${i}`); } }
+    
+    if (analysis.type === 'leetcode') { 
+      topics.push('Problem Statement', 'Approach & Logic'); 
+      if (analysis.codeBlocks.length > 0) topics.push('Code Implementation'); 
+      if (analysis.complexity) topics.push('Complexity Analysis');
+    } else if (analysis.type === 'systemDesign') { 
+      topics.push('Requirements & Goals', 'High-Level Architecture', 'Components Deep-Dive', 'Trade-offs & Scalability');
+    } else { 
+      // Extract headers or create sections based on content
+      const headers = content.match(/^#{1,3}\s+(.+)$/gm); 
+      if (headers && headers.length > 1) { 
+        topics.push(...headers.map(h => h.replace(/^#+\s+/, '').trim()).slice(0,5)); 
+      } else { 
+        const sections = Math.min(5, Math.max(1, Math.ceil(analysis.wordCount / 200))); 
+        for (let i = 1; i <= sections; i++) topics.push(`Key Section ${i}`); 
+      } 
+    }
+    
     if (topics.length === 0) topics.push(analysis.displayTitle || "Overview");
-    const slideDuration = Math.max(5000, Math.min(15000, Math.round(analysis.estimatedReadTime / Math.max(1, topics.length)) * 1000)); // Avoid division by zero
-    return { count: topics.length, duration: slideDuration, topics };
+    
+    // Calculate appropriate slide duration
+    const baseDuration = Math.max(5000, Math.min(15000, 
+      Math.round(analysis.estimatedReadTime / Math.max(1, topics.length)) * 1000
+    ));
+    
+    return { 
+      count: topics.length, 
+      duration: baseDuration, 
+      topics 
+    };
   }
 
   public generateEnhancedPrompt(analysis: ContentAnalysis, originalSystemPrompt: string, language: string): string {
-    let enhancedPrompt = originalSystemPrompt; const langOrDefault = language || 'python';
-    enhancedPrompt += `\n\n## Content Analysis Insights (for AI model awareness):\n- Detected Content Type: ${analysis.type}\n- Detected Subtype/Topic: ${analysis.subtype || 'N/A'}\n- Primary Language (if code present): ${analysis.language || 'N/A'}\n- Estimated Reading Time: ${Math.ceil(analysis.estimatedReadTime / 60)} minutes\n- Keywords: ${analysis.keywords.join(', ')}`;
-    if (analysis.type === 'leetcode') { enhancedPrompt += `\n- LeetCode Problem Metadata: Difficulty: ${analysis.problemMetadata?.difficulty || 'N/A'}, Data Structures: ${analysis.problemMetadata?.dataStructures?.join(', ') || 'N/A'}, Algorithms: ${analysis.problemMetadata?.algorithms?.join(', ') || 'N/A'}`; enhancedPrompt += `\n\n## Instructions for LeetCode Problem Response:\n1.  **Problem Understanding:** Briefly re-state the problem... \n2.  **Solution Approach:** Clearly explain your main approach... \n3.  **Code Implementation:** Provide a complete, correct, and runnable solution in \`\`\`${langOrDefault}\n ... \n\`\`\`...\n4.  **Complexity Analysis:**...\n5.  **(Optional) Alternative Approaches:**...`;
-    } else if (analysis.type === 'systemDesign') { enhancedPrompt += `\n- System Design Keywords: ${analysis.keywords.filter(kw => this.patterns.systemDesign.keywords.includes(kw)).join(', ') || 'N/A'}`; enhancedPrompt += `\n\n## Instructions for System Design Response:\n1.  **Requirements Clarification (if needed):**...\n2.  **High-Level Design:**...\n3.  **Component Deep-Dive:**...\n4.  **Data Storage & Schema:**...\n5.  **Scalability and Availability:**...\n6.  **API Design (example):**...\n7.  **Trade-offs:**...`;
-    } else if (analysis.type === 'tutorial') { enhancedPrompt += `\n\n## Instructions for Tutorial Response:\nProvide a clear, step-by-step tutorial. Include code examples in \`\`\`${analysis.language || langOrDefault}\n ... \n\`\`\` where appropriate...`;
-    } else if (analysis.type === 'concept') { enhancedPrompt += `\n\n## Instructions for Concept Explanation:\nExplain the concept clearly and concisely...`; }
-    if (analysis.shouldGenerateDiagram && analysis.diagramHints.length > 0) { const topHint = analysis.diagramHints[0]; enhancedPrompt += `\n\n**Diagram Request:** Please include a ${topHint.type} diagram using Mermaid syntax...`; }
-    if (analysis.shouldCreateSlides) { enhancedPrompt += `\n\n**Presentation Structure:** Please structure your response with clear Markdown headings for sections like "${analysis.slideTopics.join('", "')}"...`; }
-    enhancedPrompt += `\n\nEnsure your response is well-formatted with Markdown. Be accurate and helpful.`;
+    let enhancedPrompt = originalSystemPrompt; 
+    const langOrDefault = language || 'python';
+    
+    enhancedPrompt += `\n\n## Content Analysis Insights (for AI model awareness):
+- Detected Content Type: ${analysis.type}
+- Detected Subtype/Topic: ${analysis.subtype || 'N/A'}
+- Primary Language (if code present): ${analysis.language || 'N/A'}
+- Estimated Reading Time: ${Math.ceil(analysis.estimatedReadTime / 60)} minutes
+- Keywords: ${analysis.keywords.join(', ')}
+- Confidence Score: ${(analysis.confidence * 100).toFixed(1)}%`;
+
+    if (analysis.type === 'leetcode') { 
+      enhancedPrompt += `\n- LeetCode Problem Metadata: 
+  - Difficulty: ${analysis.problemMetadata?.difficulty || 'N/A'}
+  - Data Structures: ${analysis.problemMetadata?.dataStructures?.join(', ') || 'N/A'}
+  - Algorithms: ${analysis.problemMetadata?.algorithms?.join(', ') || 'N/A'}`;
+      
+      enhancedPrompt += `\n\n## Instructions for LeetCode Problem Response:
+1. **Problem Understanding:** Briefly re-state the problem and clarify any constraints
+2. **Solution Approach:** Clearly explain your main approach and reasoning
+3. **Code Implementation:** Provide a complete, correct, and runnable solution in \`\`\`${langOrDefault}
+   // Your solution here
+   \`\`\`
+4. **Complexity Analysis:** Include time and space complexity with explanation
+5. **(Optional) Alternative Approaches:** Mention other possible solutions if relevant`;
+
+    } else if (analysis.type === 'systemDesign') { 
+      enhancedPrompt += `\n- System Design Keywords: ${analysis.keywords.filter(kw => 
+        this.patterns.systemDesign.keywords.includes(kw)).join(', ') || 'N/A'}`;
+      
+      enhancedPrompt += `\n\n## Instructions for System Design Response:
+1. **Requirements Clarification:** Ask clarifying questions if needed
+2. **High-Level Design:** Provide overall architecture overview
+3. **Component Deep-Dive:** Detail key components and their interactions
+4. **Data Storage & Schema:** Discuss database design and data flow
+5. **Scalability and Availability:** Address performance and reliability concerns
+6. **API Design:** Provide example API endpoints if relevant
+7. **Trade-offs:** Discuss pros/cons of design decisions`;
+
+    } else if (analysis.type === 'tutorial') { 
+      enhancedPrompt += `\n\n## Instructions for Tutorial Response:
+Provide a clear, step-by-step tutorial. Include code examples in \`\`\`${analysis.language || langOrDefault}
+// Your code examples here
+\`\`\` where appropriate. Make it practical and actionable.`;
+
+    } else if (analysis.type === 'concept') { 
+      enhancedPrompt += `\n\n## Instructions for Concept Explanation:
+Explain the concept clearly and concisely. Use analogies or examples where helpful. 
+If relevant, include simple code examples to illustrate the concept.`;
+    }
+    
+    if (analysis.shouldGenerateDiagram && analysis.diagramHints.length > 0) { 
+      const topHint = analysis.diagramHints[0]; 
+      enhancedPrompt += `\n\n**Diagram Request:** Please include a ${topHint.type} diagram using Mermaid syntax:
+\`\`\`mermaid
+${topHint.mermaidCode}
+\`\`\`
+Feel free to modify or enhance this diagram as appropriate.`; 
+    }
+    
+    if (analysis.shouldCreateSlides) { 
+      enhancedPrompt += `\n\n**Presentation Structure:** Please structure your response with clear Markdown headings for sections like:
+${analysis.slideTopics.map(topic => `- ## ${topic}`).join('\n')}
+This will make the content more scannable and organized.`; 
+    }
+    
+    enhancedPrompt += `\n\nEnsure your response is well-formatted with Markdown, be accurate and helpful, and adapt your tone to match the content type detected.`;
+    
     return enhancedPrompt;
   }
 }

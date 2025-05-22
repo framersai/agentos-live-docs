@@ -1,3 +1,4 @@
+// backend/routes/chat.ts
 import { Request, Response } from 'express';
 import { callOpenAI } from '../utils/llm.js';
 import { trackCost, getSessionCost, isThresholdReached } from '../utils/cost.js';
@@ -20,16 +21,34 @@ function loadPromptTemplate(templateName: string): string {
   }
 }
 
-export async function POST(req: Request, res: Response) {
+/**
+ * Handle POST /api/chat - Process chat messages
+ * @param req - Express request object
+ * @param res - Express response object
+ */
+export async function POST(req: Request, res: Response): Promise<void> {
   try {
-    const { mode, messages, language = 'python', generateDiagram = false, userId = 'default' } = req.body;
+    const { mode, messages, language = 'python', generateDiagram = false, userId = 'default_user' } = req.body;
+    
+    // Validate required fields
+    if (!messages || !Array.isArray(messages) || messages.length === 0) {
+      res.status(400).json({
+        message: 'Messages array is required and cannot be empty',
+        error: 'INVALID_MESSAGES'
+      });
+      return;
+    }
     
     // Check if cost threshold reached
     if (isThresholdReached(userId)) {
-      return res.status(403).json({
+      const currentCost = getSessionCost(userId);
+      res.status(403).json({
         message: 'Session cost threshold reached',
-        currentCost: getSessionCost(userId)
+        error: 'COST_THRESHOLD_EXCEEDED',
+        currentCost: currentCost.totalCost,
+        threshold: process.env.COST_THRESHOLD || '20.00'
       });
+      return;
     }
     
     // Get appropriate model for the mode
@@ -46,15 +65,17 @@ export async function POST(req: Request, res: Response) {
     // Prepare messages for API call
     const systemMessage = {
       role: 'system',
-      content: processedTemplate
+      content: processedTemplate || `You are a helpful assistant specializing in ${mode || 'coding'} questions. Please provide clear, detailed responses in ${language}.`
     };
     
     const apiMessages = [systemMessage, ...messages];
     
+    console.log(`Processing chat request - Mode: ${mode}, Model: ${modelName}, User: ${userId}`);
+    
     // Call LLM API
     const response = await callOpenAI(apiMessages, modelName);
     
-    // Track cost
+    // Track cost if usage information is available
     if (response.usage) {
       const { prompt_tokens, completion_tokens } = response.usage;
       const sessionCost = trackCost(
@@ -65,7 +86,7 @@ export async function POST(req: Request, res: Response) {
       );
       
       // Return response with cost information
-      return res.status(200).json({
+      res.status(200).json({
         message: response.text,
         model: response.model,
         usage: response.usage,
@@ -76,18 +97,40 @@ export async function POST(req: Request, res: Response) {
           total_tokens: (prompt_tokens || 0) + (completion_tokens || 0)
         }
       });
+      return;
     }
     
-    return res.status(200).json({
+    // Return response without detailed cost tracking
+    const sessionCostDetail = getSessionCost(userId);
+    res.status(200).json({
       message: response.text,
       model: response.model,
-      sessionCost: getSessionCost(userId)
+      sessionCost: sessionCostDetail.totalCost
     });
+    
   } catch (error) {
     console.error('Error in chat endpoint:', error);
-    return res.status(500).json({
-      message: 'Error processing chat request',
-      error: (error as Error).message
+    
+    // Provide more specific error messages
+    let errorMessage = 'Error processing chat request';
+    let statusCode = 500;
+    
+    if (error instanceof Error) {
+      if (error.message.includes('API key')) {
+        errorMessage = 'AI service configuration error';
+        statusCode = 503;
+      } else if (error.message.includes('rate limit')) {
+        errorMessage = 'AI service rate limit exceeded. Please try again later.';
+        statusCode = 429;
+      } else if (error.message.includes('timeout')) {
+        errorMessage = 'Request timeout. Please try again.';
+        statusCode = 408;
+      }
+    }
+    
+    res.status(statusCode).json({
+      message: errorMessage,
+      error: process.env.NODE_ENV === 'production' ? 'CHAT_ERROR' : (error as Error).message
     });
   }
 }

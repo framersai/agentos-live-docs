@@ -1,6 +1,6 @@
 <template>
   <header 
-    class="app-header sticky top-0 z-40 transition-all backdrop-blur-sm border-b dark:border-gray-800"
+    class="app-header sticky top-0 z-50 transition-all backdrop-blur-md border-b dark:border-gray-800"
     :class="{
       'bg-white/95 dark:bg-gray-900/95': !isFullscreen,
       'bg-transparent': isFullscreen && !isMobileNavOpen,
@@ -9,88 +9,110 @@
   >
     <div class="max-w-7xl mx-auto px-4 sm:px-6" v-show="!isFullscreen || isMobileNavOpen">
       <div class="flex items-center justify-between py-3 md:py-4">
+        <!-- Logo and Title -->
         <div class="flex items-center gap-3">
-          <div class="logo-container">
-            <img src="/src/assets/logo.svg" alt="VCA" class="w-8 h-8 sm:w-10 sm:h-10" />
-          </div>
-          <div class="hidden md:block">
-            <h1 class="text-xl font-semibold text-gray-900 dark:text-gray-100">
-              Voice Coding <span class="text-gradient font-bold">Assistant</span>
-            </h1>
-            <p class="text-xs text-gray-500 dark:text-gray-400">AI-powered voice coding</p>
-          </div>
-          <span class="md:hidden text-lg font-bold text-gray-900 dark:text-white">VCA</span>
+          <router-link to="/" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
+            <div class="logo-container relative">
+              <img src="/src/assets/logo.svg" alt="VCA" class="w-8 h-8 sm:w-10 sm:h-10" />
+              <div class="absolute inset-0 bg-gradient-to-br from-primary-500/20 to-purple-500/20 rounded-full animate-pulse"></div>
+            </div>
+            <div class="hidden md:block">
+              <h1 class="text-xl font-semibold text-gray-900 dark:text-gray-100">
+                Voice Coding <span class="text-gradient font-bold">Assistant</span>
+              </h1>
+              <p class="text-xs text-gray-500 dark:text-gray-400">AI-powered voice coding</p>
+            </div>
+            <span class="md:hidden text-lg font-bold text-gray-900 dark:text-white">VCA</span>
+          </router-link>
         </div>
-        
-        <div class="flex items-center gap-2">
-          <div class="cost-display glass-effect px-3 sm:px-4 py-1.5 rounded-full text-sm font-medium">
-            <span class="hidden sm:inline text-gray-600 dark:text-gray-300">Cost:</span>
-            <span class="font-mono text-primary-600 dark:text-primary-400 font-bold">
-              ${{ sessionCost.toFixed(4) }}
-            </span>
-          </div>
-          
-          <button 
-            @click="toggleFullscreen"
-            class="p-2 rounded-full text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 transition-all"
-            :title="isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'"
-          >
-            <svg v-if="isFullscreen" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 9V4.5M9 9H4.5M9 9L3.75 3.75M15 9h4.5M15 9V4.5M15 9l5.25-5.25M9 15H4.5M9 15v4.5M9 15l-5.25 5.25M15 15h4.5M15 15v4.5m0-4.5l5.25 5.25" />
-            </svg>
-            <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
-            </svg>
-          </button>
-          
-          <button 
-            @click="toggleMobileNav"
-            class="md:hidden p-2 rounded-full text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 transition-all"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path v-if="isMobileNavOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-              <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
-        </div>
-      </div>
 
-      <div class="hidden md:block pb-2">
-        <div class="flex flex-wrap items-center gap-4">
-          <div class="relative">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Mode:</label>
-            <select 
-              v-model="localMode"
-              class="compact-select"
+        <!-- Desktop Navigation -->
+        <nav class="hidden lg:flex items-center gap-6">
+          <!-- Mode Presets Dropdown -->
+          <div class="relative" ref="modeDropdownRef">
+            <button 
+              @click="toggleModeDropdown"
+              class="nav-button flex items-center gap-2"
             >
-              <option v-for="preset in modePresets" :key="preset.value" :value="preset.value">
-                {{ preset.label }}
-              </option>
-            </select>
+              <div class="mode-icon" :class="getModeIconClass()">
+                <component :is="getModeIcon()" class="w-4 h-4" />
+              </div>
+              <span class="font-medium">{{ getModeDisplayName() }}</span>
+              <ChevronDownIcon class="w-4 h-4 transition-transform" :class="{ 'rotate-180': showModeDropdown }" />
+            </button>
+            
+            <div 
+              v-show="showModeDropdown"
+              class="dropdown-menu"
+            >
+              <div class="dropdown-header">
+                <h3 class="font-medium text-gray-900 dark:text-white">Select Mode</h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Choose your assistant type</p>
+              </div>
+              <div class="dropdown-content">
+                <button
+                  v-for="preset in modePresets"
+                  :key="preset.value"
+                  @click="selectMode(preset.value)"
+                  class="dropdown-item"
+                  :class="{ 'active': localMode === preset.value }"
+                >
+                  <div class="flex items-center gap-3">
+                    <div class="mode-icon" :class="preset.iconClass">
+                      <component :is="preset.icon" class="w-4 h-4" />
+                    </div>
+                    <div class="flex-1 text-left">
+                      <div class="font-medium">{{ preset.label }}</div>
+                      <div class="text-xs text-gray-500 dark:text-gray-400">{{ preset.description }}</div>
+                    </div>
+                  </div>
+                </button>
+              </div>
+            </div>
           </div>
-          
-          <div v-if="localMode === 'coding'" class="relative">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Language:</label>
-            <select v-model="localLanguage" class="compact-select">
-              <option value="python">Python</option>
-              <option value="javascript">JavaScript</option>
-              <option value="typescript">TypeScript</option>
-              <option value="java">Java</option>
-              <option value="cpp">C++</option>
-              <option value="go">Go</option>
-              <option value="rust">Rust</option>
-            </select>
+
+          <!-- Language Selector (only for coding mode) -->
+          <div v-if="localMode === 'coding'" class="relative" ref="languageDropdownRef">
+            <button 
+              @click="toggleLanguageDropdown"
+              class="nav-button flex items-center gap-2"
+            >
+              <div class="language-icon">
+                {{ getLanguageIcon(localLanguage) }}
+              </div>
+              <span class="font-medium">{{ localLanguage.charAt(0).toUpperCase() + localLanguage.slice(1) }}</span>
+              <ChevronDownIcon class="w-4 h-4 transition-transform" :class="{ 'rotate-180': showLanguageDropdown }" />
+            </button>
+            
+            <div 
+              v-show="showLanguageDropdown"
+              class="dropdown-menu w-48"
+            >
+              <div class="dropdown-header">
+                <h3 class="font-medium text-gray-900 dark:text-white">Programming Language</h3>
+              </div>
+              <div class="dropdown-content">
+                <button
+                  v-for="lang in programmingLanguages"
+                  :key="lang.value"
+                  @click="selectLanguage(lang.value)"
+                  class="dropdown-item"
+                  :class="{ 'active': localLanguage === lang.value }"
+                >
+                  <div class="flex items-center gap-3">
+                    <span class="language-icon text-lg">{{ lang.icon }}</span>
+                    <div class="flex-1 text-left">
+                      <div class="font-medium">{{ lang.label }}</div>
+                      <div class="text-xs text-gray-500 dark:text-gray-400">{{ lang.description }}</div>
+                    </div>
+                  </div>
+                </button>
+              </div>
+            </div>
           </div>
-          
-          <div class="relative">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Audio:</label>
-            <select v-model="localAudioMode" class="compact-select">
-              <option value="push-to-talk">Push to Talk</option>
-              <option value="continuous">Continuous</option>
-            </select>
-          </div>
-          
-          <div class="flex items-center gap-4 ml-2">
+
+          <!-- Quick Settings -->
+          <div class="flex items-center gap-4">
             <div class="flex items-center gap-2">
               <label class="text-sm text-gray-600 dark:text-gray-400">Auto-Clear:</label>
               <label class="toggle-switch">
@@ -107,71 +129,103 @@
               </label>
             </div>
           </div>
-          
-          <div class="ml-auto flex items-center gap-2">
+        </nav>
+
+        <!-- Right Side Actions -->
+        <div class="flex items-center gap-2">
+          <!-- Cost Display -->
+          <div class="cost-display glass-effect px-3 sm:px-4 py-1.5 rounded-full text-sm font-medium">
+            <span class="hidden sm:inline text-gray-600 dark:text-gray-300">Cost:</span>
+            <span class="font-mono text-primary-600 dark:text-primary-400 font-bold">
+              ${{ sessionCost.toFixed(4) }}
+            </span>
+          </div>
+
+          <!-- Desktop Action Buttons -->
+          <div class="hidden md:flex items-center gap-1">
             <button @click="clearChat" class="action-btn" title="Clear Chat">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1-1H8a1 1 0 00-1 1v3M4 7h16" />
-              </svg>
+              <TrashIcon class="w-4 h-4" />
+            </button>
+            
+            <button @click="toggleFullscreen" class="action-btn" :title="isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'">
+              <ArrowsPointingOutIcon v-if="!isFullscreen" class="w-4 h-4" />
+              <ArrowsPointingInIcon v-else class="w-4 h-4" />
             </button>
             
             <button @click="$emit('toggle-theme')" class="action-btn" title="Toggle Theme">
-              <svg v-if="isDarkMode" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-              </svg>
-              <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-              </svg>
+              <SunIcon v-if="isDarkMode" class="w-4 h-4" />
+              <MoonIcon v-else class="w-4 h-4" />
             </button>
             
-            <button @click="goToSettings" class="action-btn" title="Settings">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
-            </button>
+            <router-link to="/settings" class="action-btn" title="Settings">
+              <CogIcon class="w-4 h-4" />
+            </router-link>
+
+            <router-link to="/about" class="action-btn" title="About">
+              <InformationCircleIcon class="w-4 h-4" />
+            </router-link>
           </div>
+          
+          <!-- Mobile Menu Button -->
+          <button 
+            @click="toggleMobileNav"
+            class="md:hidden p-2 rounded-full text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 transition-all"
+          >
+            <XMarkIcon v-if="isMobileNavOpen" class="w-6 h-6" />
+            <Bars3Icon v-else class="w-6 h-6" />
+          </button>
         </div>
       </div>
     </div>
     
+    <!-- Mobile Navigation Panel -->
     <div 
       v-show="isMobileNavOpen" 
-      class="md:hidden bg-white dark:bg-gray-900 border-t dark:border-gray-800"
+      class="md:hidden bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-t dark:border-gray-800"
     >
-      <div class="p-4 space-y-4">
+      <div class="p-4 space-y-6">
+        <!-- Mode Selection -->
         <div>
-          <label class="block mb-1 text-xs text-gray-600 dark:text-gray-400">Mode</label>
-          <select v-model="localMode" class="mobile-select">
-            <option v-for="preset in modePresets" :key="preset.value" :value="preset.value">
-              {{ preset.label }}
+          <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Assistant Mode</label>
+          <div class="grid grid-cols-2 gap-2">
+            <button
+              v-for="preset in modePresets"
+              :key="preset.value"
+              @click="selectMode(preset.value)"
+              class="mobile-mode-card"
+              :class="{ 'active': localMode === preset.value }"
+            >
+              <div class="mode-icon" :class="preset.iconClass">
+                <component :is="preset.icon" class="w-4 h-4" />
+              </div>
+              <div class="text-xs font-medium">{{ preset.label }}</div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Language Selection (for coding mode) -->
+        <div v-if="localMode === 'coding'">
+          <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Programming Language</label>
+          <select v-model="localLanguage" class="mobile-select">
+            <option v-for="lang in programmingLanguages" :key="lang.value" :value="lang.value">
+              {{ lang.icon }} {{ lang.label }}
             </option>
           </select>
         </div>
-        
-        <div v-if="localMode === 'coding'">
-          <label class="block mb-1 text-xs text-gray-600 dark:text-gray-400">Language</label>
-          <select v-model="localLanguage" class="mobile-select">
-            <option value="python">Python</option>
-            <option value="javascript">JavaScript</option>
-            <option value="typescript">TypeScript</option>
-            <option value="java">Java</option>
-            <option value="cpp">C++</option>
-            <option value="go">Go</option>
-            <option value="rust">Rust</option>
-          </select>
-        </div>
-        
+
+        <!-- Audio Mode -->
         <div>
-          <label class="block mb-1 text-xs text-gray-600 dark:text-gray-400">Audio Mode</label>
+          <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Audio Mode</label>
           <select v-model="localAudioMode" class="mobile-select">
-            <option value="push-to-talk">Push to Talk</option>
-            <option value="continuous">Continuous</option>
+            <option value="push-to-talk">🎙️ Push to Talk</option>
+            <option value="continuous">🔊 Continuous</option>
+            <option value="voice-activation">🎵 Voice Activation</option>
           </select>
         </div>
         
+        <!-- Quick Toggles -->
         <div class="grid grid-cols-2 gap-4">
-          <div class="flex items-center justify-between">
+          <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
             <label class="text-sm text-gray-600 dark:text-gray-400">Auto-Clear</label>
             <label class="toggle-switch">
               <input type="checkbox" v-model="localAutoClear" class="sr-only">
@@ -179,7 +233,7 @@
             </label>
           </div>
           
-          <div class="flex items-center justify-between">
+          <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
             <label class="text-sm text-gray-600 dark:text-gray-400">Diagrams</label>
             <label class="toggle-switch">
               <input type="checkbox" v-model="localGenerateDiagram" class="sr-only">
@@ -188,62 +242,76 @@
           </div>
         </div>
         
-        <div class="grid grid-cols-4 gap-2 pt-3 border-t dark:border-gray-800">
+        <!-- Mobile Action Grid -->
+        <div class="grid grid-cols-3 gap-3 pt-4 border-t dark:border-gray-800">
           <button @click="clearChat" class="mobile-action-btn">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1-1H8a1 1 0 00-1 1v3M4 7h16" />
-            </svg>
-            <span class="text-xs">Clear</span>
+            <TrashIcon class="w-5 h-5" />
+            <span class="text-xs">Clear Chat</span>
           </button>
           
           <button @click="toggleFullscreen" class="mobile-action-btn">
-            <svg v-if="isFullscreen" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 9V4.5M9 9H4.5M9 9L3.75 3.75M15 9h4.5M15 9V4.5M15 9l5.25-5.25M9 15H4.5M9 15v4.5M9 15l-5.25 5.25M15 15h4.5M15 15v4.5m0-4.5l5.25 5.25" />
-            </svg>
-            <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
-            </svg>
-            <span class="text-xs">{{ isFullscreen ? 'Exit' : 'Full' }}</span>
+            <ArrowsPointingOutIcon v-if="!isFullscreen" class="w-5 h-5" />
+            <ArrowsPointingInIcon v-else class="w-5 h-5" />
+            <span class="text-xs">{{ isFullscreen ? 'Exit FS' : 'Fullscreen' }}</span>
           </button>
           
           <button @click="$emit('toggle-theme')" class="mobile-action-btn">
-            <svg v-if="isDarkMode" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-            </svg>
-            <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-            </svg>
+            <SunIcon v-if="isDarkMode" class="w-5 h-5" />
+            <MoonIcon v-else class="w-5 h-5" />
             <span class="text-xs">Theme</span>
           </button>
           
-          <button @click="goToSettings" class="mobile-action-btn">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
+          <router-link to="/settings" @click="isMobileNavOpen = false" class="mobile-action-btn">
+            <CogIcon class="w-5 h-5" />
             <span class="text-xs">Settings</span>
+          </router-link>
+          
+          <router-link to="/about" @click="isMobileNavOpen = false" class="mobile-action-btn">
+            <InformationCircleIcon class="w-5 h-5" />
+            <span class="text-xs">About</span>
+          </router-link>
+          
+          <button @click="$emit('logout')" class="mobile-action-btn text-red-600 dark:text-red-400">
+            <ArrowRightOnRectangleIcon class="w-5 h-5" />
+            <span class="text-xs">Logout</span>
           </button>
         </div>
       </div>
     </div>
     
+    <!-- Fullscreen Controls -->
     <div 
       v-if="isFullscreen" 
-      class="fixed top-4 right-4 z-50 flex items-center gap-2 bg-black/20 backdrop-blur-sm rounded-full p-2"
+      class="fixed top-4 right-4 z-50 flex items-center gap-2 bg-black/30 backdrop-blur-md rounded-full p-2"
     >
       <button @click="toggleFullscreen" class="p-2 text-white hover:bg-white/20 rounded-full transition-colors">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 9V4.5M9 9H4.5M9 9L3.75 3.75M15 9h4.5M15 9V4.5M15 9l5.25-5.25M9 15H4.5M9 15v4.5M9 15l-5.25 5.25M15 15h4.5M15 15v4.5m0-4.5l5.25 5.25" />
-        </svg>
+        <ArrowsPointingInIcon class="w-5 h-5" />
       </button>
     </div>
   </header>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStorage } from '@vueuse/core';
+import {
+  ChevronDownIcon,
+  Bars3Icon,
+  XMarkIcon,
+  TrashIcon,
+  ArrowsPointingOutIcon,
+  ArrowsPointingInIcon,
+  SunIcon,
+  MoonIcon,
+  CogIcon,
+  InformationCircleIcon,
+  ArrowRightOnRectangleIcon,
+  CodeBracketIcon,
+  CpuChipIcon,
+  DocumentTextIcon,
+  ChatBubbleLeftRightIcon
+} from '@heroicons/vue/24/outline';
 
 const router = useRouter();
 
@@ -262,9 +330,10 @@ const emit = defineEmits<{
   'update:generate-diagram': [value: boolean];
   'update:audio-mode': [value: string];
   'update:auto-clear': [value: boolean];
-  'toggle-theme': []; // Vue convention is kebab-case for emitted event names
+  'toggle-theme': [];
   'toggle-fullscreen': [];
   'clear-chat': [];
+  'logout': [];
 }>();
 
 // Local reactive values
@@ -272,54 +341,143 @@ const localMode = ref(props.mode);
 const localLanguage = ref(props.language);
 const localGenerateDiagram = ref(props.generateDiagram);
 const localAudioMode = ref(props.audioMode || 'push-to-talk');
-const localAutoClear = ref(true); // Defaulting to true, adjust if needed from props or settings
+const localAutoClear = ref(true);
+
+// Dropdown states
+const showModeDropdown = ref(false);
+const showLanguageDropdown = ref(false);
 const isMobileNavOpen = ref(false);
 
+// Refs for dropdown positioning
+const modeDropdownRef = ref<HTMLElement | null>(null);
+const languageDropdownRef = ref<HTMLElement | null>(null);
+
 // Get states
-const isDarkMode = useStorage('darkMode', false); // From @vueuse/core, persists theme preference
+const isDarkMode = useStorage('darkMode', false);
 const isFullscreen = computed(() => props.isFullscreen || false);
 
-// Mode presets - simplified for compactness
+// Mode presets with enhanced styling
 const modePresets = [
-  { label: 'Coding Q&A', value: 'coding' },
-  { label: 'System Design', value: 'system_design' },
-  { label: 'Meeting Notes', value: 'meeting' },
-  { label: 'General Chat', value: 'general' }
+  {
+    label: 'Coding Q&A',
+    value: 'coding',
+    description: 'Algorithm problems & debugging',
+    icon: CodeBracketIcon,
+    iconClass: 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
+  },
+  {
+    label: 'System Design',
+    value: 'system_design',
+    description: 'Architecture & scalability',
+    icon: CpuChipIcon,
+    iconClass: 'bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400'
+  },
+  {
+    label: 'Meeting Notes',
+    value: 'meeting',
+    description: 'Transcription & summaries',
+    icon: DocumentTextIcon,
+    iconClass: 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400'
+  },
+  {
+    label: 'General Chat',
+    value: 'general',
+    description: 'Open conversation',
+    icon: ChatBubbleLeftRightIcon,
+    iconClass: 'bg-gray-100 dark:bg-gray-900/30 text-gray-600 dark:text-gray-400'
+  }
 ];
 
-// Methods
-const goToSettings = () => {
-  router.push('/settings');
+// Programming languages with icons
+const programmingLanguages = [
+  { label: 'Python', value: 'python', icon: '🐍', description: 'General purpose' },
+  { label: 'JavaScript', value: 'javascript', icon: '⚡', description: 'Web development' },
+  { label: 'TypeScript', value: 'typescript', icon: '🔷', description: 'Typed JavaScript' },
+  { label: 'Java', value: 'java', icon: '☕', description: 'Enterprise apps' },
+  { label: 'C++', value: 'cpp', icon: '⚙️', description: 'System programming' },
+  { label: 'Go', value: 'go', icon: '🔵', description: 'Cloud & backend' },
+  { label: 'Rust', value: 'rust', icon: '🦀', description: 'Memory safety' },
+  { label: 'Swift', value: 'swift', icon: '🍎', description: 'iOS development' },
+  { label: 'Kotlin', value: 'kotlin', icon: '🟣', description: 'Android & JVM' }
+];
+
+// Helper functions
+const getModeDisplayName = () => modePresets.find(p => p.value === localMode.value)?.label || 'Mode';
+const getModeIcon = () => modePresets.find(p => p.value === localMode.value)?.icon || CodeBracketIcon;
+const getModeIconClass = () => modePresets.find(p => p.value === localMode.value)?.iconClass || 'bg-gray-100 text-gray-600';
+const getLanguageIcon = (lang: string) => programmingLanguages.find(l => l.value === lang)?.icon || '💻';
+
+// Dropdown handlers
+const toggleModeDropdown = () => {
+  showModeDropdown.value = !showModeDropdown.value;
+  showLanguageDropdown.value = false;
+};
+
+const toggleLanguageDropdown = () => {
+  showLanguageDropdown.value = !showLanguageDropdown.value;
+  showModeDropdown.value = false;
+};
+
+const selectMode = (mode: string) => {
+  localMode.value = mode;
+  showModeDropdown.value = false;
   isMobileNavOpen.value = false;
+};
+
+const selectLanguage = (language: string) => {
+  localLanguage.value = language;
+  showLanguageDropdown.value = false;
 };
 
 const toggleMobileNav = () => {
   isMobileNavOpen.value = !isMobileNavOpen.value;
+  showModeDropdown.value = false;
+  showLanguageDropdown.value = false;
 };
 
 const toggleFullscreen = () => {
   emit('toggle-fullscreen');
-  isMobileNavOpen.value = false; // Close mobile nav when toggling fullscreen
+  isMobileNavOpen.value = false;
 };
 
 const clearChat = () => {
   emit('clear-chat');
-  isMobileNavOpen.value = false; // Close mobile nav after clearing chat
+  isMobileNavOpen.value = false;
+  showModeDropdown.value = false;
+  showLanguageDropdown.value = false;
 };
 
-// Watch for prop changes to update local state
+// Close dropdowns when clicking outside
+const handleClickOutside = (event: MouseEvent) => {
+  if (modeDropdownRef.value && !modeDropdownRef.value.contains(event.target as Node)) {
+    showModeDropdown.value = false;
+  }
+  if (languageDropdownRef.value && !languageDropdownRef.value.contains(event.target as Node)) {
+    showLanguageDropdown.value = false;
+  }
+};
+
+// Watch for prop changes
 watch(() => props.mode, (newVal) => { localMode.value = newVal; });
 watch(() => props.language, (newVal) => { localLanguage.value = newVal; });
 watch(() => props.generateDiagram, (newVal) => { localGenerateDiagram.value = newVal; });
 watch(() => props.audioMode, (newVal) => { if (newVal) localAudioMode.value = newVal; });
 
-// Watch for local changes and emit updates (two-way binding pattern for props)
+// Emit changes
 watch(localMode, (newVal) => emit('update:mode', newVal));
 watch(localLanguage, (newVal) => emit('update:language', newVal));
 watch(localGenerateDiagram, (newVal) => emit('update:generate-diagram', newVal));
 watch(localAudioMode, (newVal) => emit('update:audio-mode', newVal));
 watch(localAutoClear, (newVal) => emit('update:auto-clear', newVal));
 
+// Lifecycle
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside);
+});
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside);
+});
 </script>
 
 <style lang="postcss" scoped>
@@ -331,33 +489,49 @@ watch(localAutoClear, (newVal) => emit('update:auto-clear', newVal));
   @apply bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm;
 }
 
-.compact-select, .mobile-select {
-  @apply w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-primary-500 focus:border-primary-500; /* Added focus styles */
-  -webkit-appearance: none; /* Removes default Safari arrow */
-  -moz-appearance: none; /* Removes default Firefox arrow */
-  appearance: none; /* Removes default arrow for other browsers */
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-  background-position: right 0.5rem center;
-  background-repeat: no-repeat;
-  background-size: 1.5em 1.5em;
-  padding-right: 2.5rem; /* Increased padding to prevent text overlap with arrow */
+.nav-button {
+  @apply px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors border border-transparent hover:border-gray-300 dark:hover:border-gray-600;
 }
 
-.compact-select {
-  @apply w-36; /* Slightly wider for better text display */
+.dropdown-menu {
+  @apply absolute top-full mt-2 w-80 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg backdrop-blur-sm z-50;
+}
+
+.dropdown-header {
+  @apply p-4 border-b border-gray-200 dark:border-gray-700;
+}
+
+.dropdown-content {
+  @apply p-2 max-h-64 overflow-y-auto;
+}
+
+.dropdown-item {
+  @apply w-full p-3 text-left hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors;
+}
+
+.dropdown-item.active {
+  @apply bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 border border-primary-200 dark:border-primary-800;
+}
+
+.mode-icon {
+  @apply w-8 h-8 rounded-lg flex items-center justify-center;
+}
+
+.language-icon {
+  @apply w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-sm;
 }
 
 .toggle-switch {
-  @apply relative inline-flex items-center h-4 rounded-full w-8 cursor-pointer;
+  @apply relative inline-flex items-center h-5 rounded-full w-9 cursor-pointer;
 }
 
 .toggle-switch .slider {
-  @apply absolute inset-0 bg-gray-300 dark:bg-gray-700 rounded-full transition-colors duration-200 ease-in-out;
+  @apply absolute inset-0 bg-gray-300 dark:bg-gray-600 rounded-full transition-colors duration-200 ease-in-out;
 }
 
 .toggle-switch .slider:before {
   content: "";
-  @apply absolute h-3 w-3 left-0.5 bottom-0.5 bg-white rounded-full transition-transform duration-200 ease-in-out shadow;
+  @apply absolute h-4 w-4 left-0.5 bottom-0.5 bg-white rounded-full transition-transform duration-200 ease-in-out shadow;
 }
 
 .toggle-switch input:checked + .slider {
@@ -365,38 +539,41 @@ watch(localAutoClear, (newVal) => emit('update:auto-clear', newVal));
 }
 
 .toggle-switch input:checked + .slider:before {
-  transform: translateX(1rem); /* 16px / 4 = 4 units if base font is 16px; 1rem is usually 16px */
+  transform: translateX(1rem);
 }
 
 .action-btn {
-  @apply p-2 rounded-full text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-900 transition-all;
+  @apply p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-all;
+}
+
+.mobile-select {
+  @apply w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white;
+}
+
+.mobile-mode-card {
+  @apply flex flex-col items-center gap-2 p-3 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors;
+}
+
+.mobile-mode-card.active {
+  @apply border-primary-500 dark:border-primary-400 bg-primary-50 dark:bg-primary-900/30;
 }
 
 .mobile-action-btn {
-  @apply flex flex-col items-center justify-center py-2 px-1 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 active:bg-gray-200 dark:active:bg-gray-600 transition-colors;
+  @apply flex flex-col items-center justify-center py-3 px-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors;
 }
 
-/* Ensuring primary colors are defined if not globally available via Tailwind theme */
-.from-primary-500 {
-  --tw-gradient-from: #3b82f6 var(--tw-gradient-from-position); /* Example: blue-500 */
-  --tw-gradient-to: transparent var(--tw-gradient-to-position);
-}
-.to-primary-700 {
-  --tw-gradient-to: #1d4ed8 var(--tw-gradient-to-position); /* Example: blue-700 */
-}
-.bg-primary-600 {
-  background-color: #2563eb; /* Example: blue-600 */
-}
-.dark .bg-primary-500 {
-   background-color: #3b82f6; /* Example: blue-500 */
-}
-.text-primary-600 {
-  color: #2563eb; /* Example: blue-600 */
-}
-.dark .text-primary-400 {
-  color: #60a5fa; /* Example: blue-400 */
-}
-.focus\:ring-primary-500:focus {
-  --tw-ring-color: #3b82f6; /* Example: blue-500 */
-}
+/* Primary color definitions */
+.from-primary-500 { --tw-gradient-from: #3b82f6; }
+.to-primary-700 { --tw-gradient-to: #1d4ed8; }
+.bg-primary-600 { background-color: #2563eb; }
+.text-primary-600 { color: #2563eb; }
+.dark .text-primary-400 { color: #60a5fa; }
+.bg-primary-50 { background-color: #eff6ff; }
+.dark .bg-primary-900\/30 { background-color: rgb(30 58 138 / 0.3); }
+.text-primary-700 { color: #1d4ed8; }
+.dark .text-primary-300 { color: #93c5fd; }
+.border-primary-200 { border-color: #bfdbfe; }
+.dark .border-primary-800 { border-color: #1e40af; }
+.border-primary-500 { border-color: #3b82f6; }
+.dark .border-primary-400 { border-color: #60a5fa; }
 </style>
