@@ -20,10 +20,10 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies and build
-      run: |
-        npm run install-all
-        cd frontend && npm install vue-tsc --save-dev && cd ..
-        npm run build
+        run: |
+          npm run install-all
+          cd frontend && npm install vue-tsc --save-dev && cd ..
+          npm run build
 
 
       - name: Create deployment package
