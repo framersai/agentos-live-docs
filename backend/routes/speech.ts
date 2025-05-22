@@ -39,7 +39,7 @@ const upload = multer({
 });
 
 // Handle audio transcription with Whisper
-export async function POST(req: Request, res: Response) {
+export async function POST(req: Request, res: Response): Promise<any> {
   try {
     // Use multer to handle the file upload
     upload.single('audio')(req, res, async (err) => {
@@ -127,11 +127,12 @@ export async function POST(req: Request, res: Response) {
             originalFilename: req.file.originalname,
             mimeType: req.file.mimetype,
             processingTime: Date.now() - Date.now() // This would be calculated properly in a real implementation
-          }
+          },
+          warning: {}
         };
         
         // Add warnings if cost is getting high
-        if (sessionCost > 1.0) {
+        if (sessionCost.totalCost > 1.0) {
           response.warning = {
             message: 'Session cost is getting high',
             currentCost: sessionCost,
