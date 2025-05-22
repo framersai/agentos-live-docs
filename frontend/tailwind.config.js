@@ -7,65 +7,86 @@ export default {
   darkMode: 'class',
   theme: {
     extend: {
+      spacing: {
+        '18': '4.5rem', // Defines 18 for w-18, h-18, p-18, m-18, etc. (Value: 72px)
+      },
       colors: {
         primary: {
-          50: '#f0fdfa',
-          100: '#ccfbf1',
-          200: '#99f6e4',
-          300: '#5eead4',
-          400: '#2dd4bf',
-          500: '#14b8a6',
-          600: '#0d9488',
-          700: '#0f766e',
-          800: '#115e59',
-          900: '#134e4a',
-          950: '#042f2e',
+          50: '#eff6ff',
+          100: '#dbeafe',
+          200: '#bfdbfe',
+          300: '#93c5fd',
+          400: '#60a5fa',
+          500: '#3b82f6',
+          600: '#2563eb',
+          700: '#1d4ed8',
+          800: '#1e40af',
+          900: '#1e3a8a',
         },
       },
       fontFamily: {
-        sans: ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
-        mono: ['JetBrains Mono', 'monospace'],
-      },
-      typography: {
-        DEFAULT: {
-          css: {
-            maxWidth: '100%',
-            code: {
-              fontWeight: '400',
-              backgroundColor: 'rgba(226, 232, 240, 0.3)',
-              padding: '0.25rem 0.375rem',
-              borderRadius: '0.25rem',
-              fontFamily: '"JetBrains Mono", monospace',
-            },
-            'code::before': {
-              content: '""',
-            },
-            'code::after': {
-              content: '""',
-            },
-            pre: {
-              backgroundColor: '#1e293b',
-              color: '#e2e8f0',
-              borderRadius: '0.5rem',
-              padding: '1rem',
-            },
-          },
-        },
-      },
-      boxShadow: {
-        'inner-light': 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)',
-        'inner-dark': 'inset 0 2px 4px 0 rgba(255, 255, 255, 0.06)',
+        sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+        mono: ['JetBrains Mono', 'Consolas', 'monospace'],
       },
       animation: {
-        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'fade-in': 'fadeIn 0.5s ease-in-out',
+        'slide-up': 'slideUp 0.5s ease-out',
+        'pop-in': 'popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+        // Animations from main.css, now usable as utilities e.g., animate-voice-pulse
+        'voice-pulse': 'voice-pulse 2s infinite ease-in-out',
+        'loading-dots': 'loading-dots 1.4s ease-in-out infinite both',
+        'shimmer': 'shimmer 2s infinite linear', // Adjusted duration and timing
+        'gradient-shift': 'gradient-shift 10s ease infinite',
+        'bounce-subtle': 'bounce-subtle 1.5s infinite ease-in-out',
+        'wiggle': 'wiggle 1.5s ease-in-out infinite',
       },
-      scale: {
-        '102': '1.02',
-        '98': '0.98',
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        slideUp: {
+          '0%': { opacity: '0', transform: 'translateY(20px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        popIn: {
+          '0%': { opacity: '0', transform: 'scale(0.9)' },
+          '100%': { opacity: '1', transform: 'scale(1)' },
+        },
+        'voice-pulse': {
+          '0%': { transform: 'scale(0.95)', opacity: '0.7' },
+          '70%': { transform: 'scale(1.3)', opacity: '0' },
+          '100%': { transform: 'scale(0.95)', opacity: '0' },
+        },
+        'loading-dots': {
+          '0%, 80%, 100%': { transform: 'scale(0)', opacity: '0.5' },
+          '40%': { transform: 'scale(1)', opacity: '1' },
+        },
+        'shimmer': { // A common shimmer effect
+          '0%': { backgroundPosition: '-200% center' },
+          '100%': { backgroundPosition: '200% center' },
+        },
+        'gradient-shift': {
+          '0%, 100%': { backgroundPosition: '0% 50%' },
+          '50%': { backgroundPosition: '100% 50%' },
+        },
+        'bounce-subtle': {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-4px)' },
+        },
+        'wiggle': {
+          '0%, 100%': { transform: 'rotateZ(0)' },
+          '15%': { transform: 'rotateZ(-8deg)' },
+          '30%': { transform: 'rotateZ(6deg)' },
+          '45%': { transform: 'rotateZ(-6deg)' },
+          '60%': { transform: 'rotateZ(4deg)' },
+          '75%': { transform: 'rotateZ(-2deg)' },
+        },
       },
     },
   },
   plugins: [
     require('@tailwindcss/typography'),
+    // Consider adding require('@tailwindcss/forms') for better default form styling if needed
   ],
 }

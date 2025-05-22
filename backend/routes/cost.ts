@@ -1,44 +1,43 @@
-import { Request, Response } from 'express';
-import { getSessionCost, getSessionDetails, resetSessionCost } from '../utils/cost.js';
+// backend/routes/cost.ts
+import { Router, Request, Response } from 'express';
+import { getSessionCost, resetSessionCost } from '../utils/cost.js';
 
-// Get session cost information
-export async function GET(req: Request, res: Response) {
+const router = Router();
+
+// GET current session cost
+router.get('/', (req: Request, res: Response) => {
+  // In a real app, userId would come from the decoded token or session.
+  // For this setup, we rely on the client potentially sending it, or use 'default'.
+  const userId = (req as any).user?.id || req.query.userId || 'default_user'; 
   try {
-    const userId = req.query.userId as string || 'default';
-    
-    const sessionDetails = getSessionDetails(userId);
-    
-    return res.status(200).json({
-      userId,
-      sessionCost: getSessionCost(userId),
-      sessionDetails
+    const costData = getSessionCost(userId as string);
+    res.status(200).json({
+      userId: userId,
+      sessionCost: costData.totalCost, // For direct use in Home.vue
+      detailedCost: costData,
+      message: 'Session cost retrieved successfully.'
     });
   } catch (error) {
-    console.error('Error in cost endpoint:', error);
-    return res.status(500).json({
-      message: 'Error retrieving cost information',
-      error: (error as Error).message
-    });
+    console.error('Error retrieving session cost:', error);
+    res.status(500).json({ message: 'Failed to retrieve session cost', error: (error as Error).message });
   }
-}
+});
 
-// Reset session cost
-export async function POST(req: Request, res: Response) {
+// POST to reset session cost
+router.post('/', (req: Request, res: Response) => {
+  const userId = (req as any).user?.id || req.body.userId || 'default_user';
   try {
-    const { userId = 'default' } = req.body;
-    
-    resetSessionCost(userId);
-    
-    return res.status(200).json({
-      message: 'Session cost reset successfully',
-      userId,
-      sessionCost: 0
+    const newCostData = resetSessionCost(userId as string);
+    res.status(200).json({
+      userId: userId,
+      sessionCost: newCostData.totalCost,
+      detailedCost: newCostData,
+      message: 'Session cost reset successfully.'
     });
   } catch (error) {
-    console.error('Error resetting cost:', error);
-    return res.status(500).json({
-      message: 'Error resetting session cost',
-      error: (error as Error).message
-    });
+    console.error('Error resetting session cost:', error);
+    res.status(500).json({ message: 'Failed to reset session cost', error: (error as Error).message });
   }
-}
+});
+
+export default router;

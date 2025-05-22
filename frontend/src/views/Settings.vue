@@ -485,8 +485,7 @@ const testMicrophone = async () => {
     console.log('Microphone access granted for testing');
     
     // Create audio context
-    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    analyser = audioContext.createAnalyser();
+audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();    analyser = audioContext.createAnalyser();
     microphone = audioContext.createMediaStreamSource(testStream);
     
     analyser.fftSize = 256;

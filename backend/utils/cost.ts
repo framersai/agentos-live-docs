@@ -1,98 +1,121 @@
-import { MODEL_CONFIGS } from '../config/models.js';
-import { COST_THRESHOLD } from '../config/models.js';
+// backend/utils/cost.ts
+import dotenv from 'dotenv';
+import { MODEL_CONFIGS } from '../config/models.js'; // Assuming you have this for accurate LLM costs
 
-// Track session costs
-interface SessionCost {
-  userId: string;
+dotenv.config({ path: new URL('../../.env', import.meta.url).pathname });
+
+
+const COST_THRESHOLD = parseFloat(process.env.COST_THRESHOLD || '20.00');
+const WHISPER_COST_PER_MINUTE = 0.006; // Keep this if used by trackWhisperCost
+
+export interface SessionCostDetail {
   totalCost: number;
-  sessionStart: Date;
-  usageByModel: Record<string, {
-    inputTokens: number;
-    outputTokens: number;
-    cost: number;
-  }>;
+  whisperCost: number;
+  llmCost: number;
+  lastUpdated: number;
+  interactions: number; // To track number of calls contributing to cost
 }
 
-// In-memory store for session costs
-// In a production environment, this would be replaced with a database
-const sessionCosts: Record<string, SessionCost> = {};
+// In-memory store for session costs. In production, consider a database.
+const sessionCosts = new Map<string, SessionCostDetail>();
 
-// Initialize a new session
-export function initSession(userId: string): void {
-  sessionCosts[userId] = {
-    userId,
-    totalCost: 0,
-    sessionStart: new Date(),
-    usageByModel: {}
-  };
+function initializeSessionCost(userId: string): SessionCostDetail {
+  if (!sessionCosts.has(userId)) {
+    sessionCosts.set(userId, {
+      totalCost: 0,
+      whisperCost: 0,
+      llmCost: 0,
+      lastUpdated: Date.now(),
+      interactions: 0,
+    });
+  }
+  return sessionCosts.get(userId)!;
 }
 
-// Track cost for a request
-export function trackCost(
-  userId: string, 
-  modelName: string, 
-  inputTokens: number, 
-  outputTokens: number
+/**
+ * Tracks cost for LLM calls.
+ * Ensure MODEL_CONFIGS is correctly defined in '../config/models.js'
+ * Example MODEL_CONFIGS entry:
+ * 'gpt-4o': { inputCostPer1K: 0.005, outputCostPer1K: 0.015, contextWindow: 128000 }
+ */
+export function trackLlmCost(
+  userId: string,
+  modelName: string,
+  promptTokens: number,
+  completionTokens: number
 ): number {
-  // Create session if it doesn't exist
-  if (!sessionCosts[userId]) {
-    initSession(userId);
+  const session = initializeSessionCost(userId);
+  const modelConfig = MODEL_CONFIGS[modelName] || MODEL_CONFIGS['gpt-4o']; // Fallback to gpt-4o config
+
+  let cost = 0;
+  if (modelConfig) {
+    const inputCost = (promptTokens / 1000) * modelConfig.inputCostPer1K;
+    const outputCost = (completionTokens / 1000) * modelConfig.outputCostPer1K;
+    cost = inputCost + outputCost;
+  } else {
+    console.warn(`Cost configuration for model ${modelName} not found. Using default LLM calculation.`);
+    // Fallback generic calculation if modelConfig is missing (less accurate)
+    cost = ((promptTokens + completionTokens) / 1000) * 0.01; // Generic $0.01 per 1K tokens
   }
   
-  const session = sessionCosts[userId];
-  const modelConfig = MODEL_CONFIGS[modelName] || MODEL_CONFIGS['gpt-4o'];
+  session.llmCost += cost;
+  session.totalCost += cost;
+  session.interactions += 1;
+  session.lastUpdated = Date.now();
   
-  // Calculate costs
-  const inputCost = (inputTokens / 1000) * modelConfig.inputCostPer1K;
-  const outputCost = (outputTokens / 1000) * modelConfig.outputCostPer1K;
-  const totalCost = inputCost + outputCost;
-  
-  // Update session costs
-  session.totalCost += totalCost;
-  
-  // Initialize model tracking if needed
-  if (!session.usageByModel[modelName]) {
-    session.usageByModel[modelName] = {
-      inputTokens: 0,
-      outputTokens: 0,
-      cost: 0
-    };
-  }
-  
-  // Update model usage
-  session.usageByModel[modelName].inputTokens += inputTokens;
-  session.usageByModel[modelName].outputTokens += outputTokens;
-  session.usageByModel[modelName].cost += totalCost;
-  
+  console.log(`LLM Cost for ${modelName} (User: ${userId}): $${cost.toFixed(6)}. Session total: $${session.totalCost.toFixed(6)}`);
   return session.totalCost;
 }
 
-// Check if cost threshold is reached
+/**
+ * Tracks cost for Whisper calls.
+ */
+export function trackWhisperServiceCost(
+  userId: string,
+  durationMinutes: number // Duration of the audio processed by Whisper
+): number {
+  const session = initializeSessionCost(userId);
+  // Whisper bills for a minimum of 0.01 minutes if duration is less
+  const billableMinutes = Math.max(durationMinutes, 0.01);
+  const cost = billableMinutes * WHISPER_COST_PER_MINUTE;
+  
+  session.whisperCost += cost;
+  session.totalCost += cost;
+  session.interactions += 1; // Counting this as an interaction
+  session.lastUpdated = Date.now();
+  
+  console.log(`Whisper Cost (User: ${userId}): $${cost.toFixed(6)} for ${durationMinutes.toFixed(2)} min. Session total: $${session.totalCost.toFixed(6)}`);
+  return session.totalCost;
+}
+
+export function getSessionCost(userId: string): SessionCostDetail {
+  return initializeSessionCost(userId);
+}
+
 export function isThresholdReached(userId: string): boolean {
-  if (!sessionCosts[userId]) {
-    return false;
-  }
-  
-  return sessionCosts[userId].totalCost >= COST_THRESHOLD;
+  const session = sessionCosts.get(userId);
+  return session ? session.totalCost >= COST_THRESHOLD : false;
 }
 
-// Get current session cost
-export function getSessionCost(userId: string): number {
-  if (!sessionCosts[userId]) {
-    return 0;
-  }
-  
-  return sessionCosts[userId].totalCost;
+export function resetSessionCost(userId: string): SessionCostDetail {
+  console.log(`Resetting session cost for user: ${userId}`);
+  sessionCosts.set(userId, {
+    totalCost: 0,
+    whisperCost: 0,
+    llmCost: 0,
+    lastUpdated: Date.now(),
+    interactions: 0,
+  });
+  return sessionCosts.get(userId)!;
 }
 
-// Get detailed session usage
-export function getSessionDetails(userId: string): SessionCost | null {
-  return sessionCosts[userId] || null;
-}
-
-// Reset session cost
-export function resetSessionCost(userId: string): void {
-  if (sessionCosts[userId]) {
-    initSession(userId);
+// Periodically clean up old sessions (e.g., inactive for 24 hours)
+setInterval(() => {
+  const now = Date.now();
+  for (const [userId, session] of sessionCosts.entries()) {
+    if (now - session.lastUpdated > 24 * 60 * 60 * 1000) { // 24 hours
+      sessionCosts.delete(userId);
+      console.log(`Cleaned up inactive session for user: ${userId}`);
+    }
   }
-}
+}, 60 * 60 * 1000); // Check every hour
