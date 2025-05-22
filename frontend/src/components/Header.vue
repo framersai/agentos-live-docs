@@ -293,7 +293,6 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
-import { useRouter } from 'vue-router';
 import { useStorage } from '@vueuse/core';
 import {
   ChevronDownIcon,
@@ -313,7 +312,6 @@ import {
   ChatBubbleLeftRightIcon
 } from '@heroicons/vue/24/outline';
 
-const router = useRouter();
 
 const props = defineProps<{
   sessionCost: number;

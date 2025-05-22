@@ -137,7 +137,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, inject, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStorage } from '@vueuse/core';
 // Remove: import axios from 'axios';

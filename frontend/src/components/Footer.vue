@@ -107,7 +107,6 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
-import { TransitionGroup } from 'vue';
 
 // System logs
 const logs = ref<Array<{level: string; message: string; timestamp: string}>>([]);

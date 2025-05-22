@@ -266,7 +266,7 @@
 import { ref, onMounted, watch, inject, nextTick } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStorage } from '@vueuse/core';
-import { api, chatAPI, costAPI, getAuthHeaders } from '../utils/api';
+import { chatAPI, costAPI } from '../utils/api';
 import Header from '../components/Header.vue';
 import VoiceInput from '../components/VoiceInput.vue';
 import CompactMessageRenderer from '../components/CompactMessageRenderer.vue';

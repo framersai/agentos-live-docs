@@ -167,7 +167,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch, nextTick, onBeforeUnmount, ComponentPublicInstance } from 'vue';
+import { ref, computed, onMounted, watch, nextTick, onBeforeUnmount } from 'vue';
 import { marked } from 'marked';
 import mermaid from 'mermaid';
 // FIX: hljs import was unused directly, now configured with marked (Error 5)

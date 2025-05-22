@@ -427,9 +427,10 @@ export class ContentAnalyzer {
     
     if (maxScore <= 0) {
         maxScore = 0;
-        winnerType = 'general';
+        winnerType = 'general' as any;
     }
 
+    
     // Determine subtype based on the winning type
     let subtype: string | undefined;
     switch (winnerType) {

@@ -36,7 +36,7 @@ const router = createRouter({
 })
 
 // Navigation guard
-router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
+router.beforeEach((to: RouteLocationNormalized, _: RouteLocationNormalized, next: NavigationGuardNext) => {
   const token = localStorage.getItem('token') || sessionStorage.getItem('token')
   const isAuthenticated = token !== null
   

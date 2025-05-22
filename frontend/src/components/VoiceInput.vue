@@ -228,6 +228,7 @@ const editingTranscription = ref('');
 let speechRecognition: any = null; 
 let audioContext: AudioContext | null = null;
 let analyser: AnalyserNode | null = null;
+analyser
 let recordingTimer: number | null = null; // Stores ID from setInterval
 let pauseTimer: number | null = null; // Stores ID from setTimeout
 
