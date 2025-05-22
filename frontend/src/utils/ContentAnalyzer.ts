@@ -59,8 +59,8 @@ export interface ProblemMetadata {
   patterns?: string[];
 }
 
-// Define the union type for content types
-export type ContentAnalysisType = 'leetcode' | 'systemDesign' | 'concept' | 'tutorial' | 'documentation' | 'general';
+// Define the union type for content types - Added 'error' type
+export type ContentAnalysisType = 'leetcode' | 'systemDesign' | 'concept' | 'tutorial' | 'documentation' | 'general' | 'error';
 
 export interface ContentAnalysis {
   type: ContentAnalysisType;
@@ -145,11 +145,11 @@ export class ContentAnalyzer {
     },
     systemDesign: {
       keywords: [
-        'load balancer', 'api gateway', 'microservices', 'database', 'cache', 'cdn', 
-        'message queue', 'pub/sub', 'event streaming', 'service mesh', 'horizontal scaling', 
-        'vertical scaling', 'sharding', 'replication', 'consistency', 'availability', 
-        'partition tolerance', 'cap theorem', 'eventual consistency', 'acid properties', 
-        'base properties', 'event-driven architecture', 'domain-driven design', 'cqrs', 
+        'load balancer', 'api gateway', 'microservices', 'database', 'cache', 'cdn',
+        'message queue', 'pub/sub', 'event streaming', 'service mesh', 'horizontal scaling',
+        'vertical scaling', 'sharding', 'replication', 'consistency', 'availability',
+        'partition tolerance', 'cap theorem', 'eventual consistency', 'acid properties',
+        'base properties', 'event-driven architecture', 'domain-driven design', 'cqrs',
         'event sourcing', 'saga pattern', 'circuit breaker', 'bulkhead pattern', 'rate limiting',
         'kubernetes', 'docker', 'redis', 'elasticsearch', 'kafka', 'rabbitmq',
         'nginx', 'apache', 'mysql', 'postgresql', 'mongodb', 'cassandra', 'design a system',
@@ -179,8 +179,8 @@ export class ContentAnalyzer {
     },
     codeBlocks: {
       fenced: /```(?:(\w+)\n)?([\s\S]*?)\n?```/g,
-      inline: /`([^`\n]+?)`/g, 
-      withComments: /(?:\/\/|#|\/\*[\s\S]*?\*\/|).*/g 
+      inline: /`([^`\n]+?)`/g,
+      withComments: /(?:\/\/|#|\/\*[\s\S]*?\*\/|).*/g
     },
     diagrams: {
       mermaid: /```mermaid\n([\s\S]*?)\n```/g,
@@ -228,10 +228,10 @@ export class ContentAnalyzer {
     } else if (analysis.type === 'systemDesign') {
         analysis.interactiveElements = true;
     }
-    
+
     analysis.diagramHints = this.generateDiagramHints(analysis, content);
-    analysis.suggestions = this.generateSuggestions(analysis, content, mode);
-    
+    analysis.suggestions = this.generateSuggestions(analysis, content);
+
     analysis.shouldVisualize = this.shouldVisualize(analysis);
     analysis.shouldGenerateDiagram = this.shouldGenerateDiagram(analysis);
     analysis.shouldCreateSlides = this.shouldCreateSlides(analysis);
@@ -256,7 +256,8 @@ export class ContentAnalyzer {
         concept: "Conceptual Explanation",
         tutorial: "Tutorial / Guide",
         documentation: "Documentation Snippet",
-        general: "General Content"
+        general: "General Content",
+        error: "Error Occurred"
     };
     return titles[type] || "Content";
   }
@@ -272,7 +273,7 @@ export class ContentAnalyzer {
     const detectedKeywords: Set<string> = new Set();
     const codeBlockCount = this.extractCodeBlocks(content).length;
 
-    // Scoring logic (as before)
+    // Scoring logic
     let leetcodeScore = 0;
     this.patterns.leetcode.keywords.forEach(kw => { if (normalizedContent.includes(kw)) { leetcodeScore += this.getKeywordWeight(kw); detectedKeywords.add(kw); } });
     this.patterns.leetcode.patterns.forEach(p => { if (p.test(content)) leetcodeScore += 3; });
@@ -285,7 +286,7 @@ export class ContentAnalyzer {
     this.patterns.systemDesign.patterns.forEach(p => { if (p.test(content)) systemDesignScore += 4; });
     if (normalizedContent.includes("design a") || normalizedContent.includes("system architecture")) systemDesignScore += 5;
     scores.set('systemDesign', systemDesignScore);
-    
+
     if (codeBlockCount > 1 && (normalizedContent.includes("how to") || normalizedContent.includes("step-by-step"))) {
         scores.set('tutorial', (scores.get('tutorial') || 0) + codeBlockCount * 1.5 + 3);
     } else if (codeBlockCount > 0 && (normalizedContent.includes("api documentation") || normalizedContent.includes("reference"))) {
@@ -298,8 +299,8 @@ export class ContentAnalyzer {
     const modeBias = this.getModeBias(mode);
     scores.forEach((score, type) => { if (modeBias.has(type)) scores.set(type, score * (modeBias.get(type) ?? 1)); });
 
-    let maxScore = -1; // Initialize to -1 so any positive score becomes the max
-    let initialWinnerType: ContentAnalysisType = 'general'; 
+    let maxScore = -1;
+    let initialWinnerType: ContentAnalysisType = 'general';
     scores.forEach((score, typeKey ) => {
       const type = typeKey as ContentAnalysisType;
       if (score > maxScore) {
@@ -307,11 +308,10 @@ export class ContentAnalyzer {
         initialWinnerType = type;
       }
     });
-    if (maxScore <= 0 && initialWinnerType === 'general') { // If general remained default with no score
-        maxScore = 0; // Reset maxScore if it was -1 and general is winner by default
+    if (maxScore <= 0 && initialWinnerType === 'general') {
+        maxScore = 0;
     }
-    
-    // --- TS FIX for TS2367: Use a switch statement for clarity and type safety ---
+
     let subtype: string | undefined;
     switch (initialWinnerType) {
         case 'leetcode':
@@ -325,35 +325,31 @@ export class ContentAnalyzer {
             break;
         // Default: subtype remains undefined for other types
     }
-    // --- END TS FIX for TS2367 ---
 
-    // --- TS FIX for TS2322: Explicitly type finalWinnerTypeResult ---
-    let finalWinnerTypeResult: ContentAnalysisType = initialWinnerType; 
-    
+    let finalWinnerTypeResult: ContentAnalysisType = initialWinnerType;
+
     if (maxScore < 3) { // Low confidence override
-      // The result of the ternary is 'general' | 'concept', which is assignable to ContentAnalysisType
-      finalWinnerTypeResult = codeBlockCount > 0 ? 'general' : 'concept'; 
-      
-      // If the type was significantly changed by the override, clear the subtype.
-      if (finalWinnerTypeResult !== initialWinnerType && 
-         (initialWinnerType === 'leetcode' || initialWinnerType === 'systemDesign')) {
-          subtype = undefined; 
+      finalWinnerTypeResult = codeBlockCount > 0 ? 'general' : 'concept';
+
+      // If the original type was one that had a subtype (leetcode or systemDesign),
+      // and it's now overridden to 'general' or 'concept', clear the subtype.
+      if (initialWinnerType === 'leetcode' || initialWinnerType === 'systemDesign') {
+        subtype = undefined;
       }
     }
-    // --- END TS FIX for TS2322 ---
-    
-    const confidence = Math.min(maxScore / (mode === finalWinnerTypeResult ? 15 : 25), 1.0);
 
-    return { 
-      type: finalWinnerTypeResult, 
-      subtype, 
-      confidence, 
-      keywords: Array.from(detectedKeywords).slice(0, 10) 
+    // Fixed: Use string comparison instead of ContentAnalysisType comparison
+    const confidence = Math.min(maxScore / (mode === finalWinnerTypeResult.toString() ? 15 : 25), 1.0);
+
+    return {
+      type: finalWinnerTypeResult,
+      subtype,
+      confidence,
+      keywords: Array.from(detectedKeywords).slice(0, 10)
     };
   }
 
   private analyzeLeetCodeProblem(content: string, keywords: string[]): ProblemMetadata {
-    // ... (implementation remains the same as previous correct version)
     const metadata: ProblemMetadata = {};
     const normalizedContent = content.toLowerCase();
 
@@ -378,7 +374,6 @@ export class ContentAnalyzer {
   }
 
   private extractCodeBlocks(content: string): CodeBlock[] {
-    // ... (implementation remains the same)
     const blocks: CodeBlock[] = [];
     const fencedMatches = [...content.matchAll(this.patterns.codeBlocks.fenced)];
     fencedMatches.forEach(match => {
@@ -395,7 +390,6 @@ export class ContentAnalyzer {
   }
 
   private detectLanguage(content: string, codeBlocks: CodeBlock[]): string | null {
-    // ... (implementation remains the same)
     const declaredLanguages = codeBlocks
       .map(block => block.language)
       .filter(lang => lang && lang !== 'unknown' && lang !== 'plaintext');
@@ -410,9 +404,8 @@ export class ContentAnalyzer {
     if (/\b(public\s+(class|static|void)|System\.out\.print)/.test(content)) return 'java';
     return null;
   }
-  
+
   private generateDiagramHints(analysis: ContentAnalysis, content: string): DiagramHint[] {
-    // ... (implementation remains the same)
     const hints: DiagramHint[] = [];
     const normalizedContent = content.toLowerCase();
     if (analysis.type === 'systemDesign' || normalizedContent.includes('architecture') || normalizedContent.includes('component diagram')) {
@@ -431,8 +424,7 @@ export class ContentAnalyzer {
     return hints.sort((a, b) => b.priority - a.priority);
   }
 
-  private generateSuggestions(analysis: ContentAnalysis, content: string, mode: string): ContentSuggestion[] {
-    // ... (implementation remains the same)
+  private generateSuggestions(analysis: ContentAnalysis, content: string): ContentSuggestion[] {
     const suggestions: ContentSuggestion[] = [];
     if (analysis.type === 'leetcode' && !analysis.complexity) {
       suggestions.push({ type: 'complexity', message: 'Add Big O complexity analysis', priority: 'high' });
@@ -451,16 +443,15 @@ export class ContentAnalyzer {
 
   private generateTreeDiagram(content: string): string { return `graph TD\n    A[Root] --> B(Child1)\n    A --> C(Child2)`; }
   private generateGraphDiagram(content: string): string { return `graph LR\n    N1 --- N2\n    N2 --- N3\n    N1 --- N3`; }
-  private generateArrayDiagram(content: string): string { return `graph TD\n    subgraph Array\n    0[Value0] --> 1[Value1] --> 2[Value2]\n    end`; }
   private generateSystemArchitectureDiagram(content: string): string { return `graph TB\n    User --> WebApp[Web App]\n    WebApp --> APIService[API Service]\n    APIService --> Database[(DB)]`; }
   private generateFlowchartDiagram(content: string): string { return `graph TD\n    Start --> Step1{Decision} -- Yes --> Step2 --> End\n    Step1 -- No --> Step3 --> End`; }
 
-  private getKeywordWeight(keyword: string): number { /* ... */ return ['leetcode', 'system design', 'time complexity', 'big o'].some(h => keyword.includes(h)) ? 2 : 1; }
-  private getModeBias(mode: string): Map<ContentAnalysisType, number> { /* ... */ const bias = new Map<ContentAnalysisType, number>(); if (mode === 'coding') bias.set('leetcode', 1.5).set('tutorial', 1.2); if (mode === 'system_design') bias.set('systemDesign', 1.8); return bias; }
-  private determineLeetCodeSubtype(content: string, keywords: string[]): string { /* ... */ const ds = this.patterns.leetcode.dataStructures.find(d => keywords.includes(d.toLowerCase()) || content.toLowerCase().includes(d.toLowerCase())); const algo = this.patterns.leetcode.algorithms.find(a => keywords.includes(a.toLowerCase()) || content.toLowerCase().includes(a.toLowerCase())); if (ds && algo) return `${ds} + ${algo}`; return ds || algo || 'General Problem'; }
+  private getKeywordWeight(keyword: string): number { return ['leetcode', 'system design', 'time complexity', 'big o'].some(h => keyword.includes(h)) ? 2 : 1; }
+  private getModeBias(mode: string): Map<ContentAnalysisType, number> { const bias = new Map<ContentAnalysisType, number>(); if (mode === 'coding') bias.set('leetcode', 1.5).set('tutorial', 1.2); if (mode === 'system_design') bias.set('systemDesign', 1.8); return bias; }
+  private determineLeetCodeSubtype(content: string, keywords: string[]): string { const ds = this.patterns.leetcode.dataStructures.find(d => keywords.includes(d.toLowerCase()) || content.toLowerCase().includes(d.toLowerCase())); const algo = this.patterns.leetcode.algorithms.find(a => keywords.includes(a.toLowerCase()) || content.toLowerCase().includes(a.toLowerCase())); if (ds && algo) return `${ds} + ${algo}`; return ds || algo || 'General Problem'; }
   private countWords(content: string): number { return content.split(/\s+/).filter(Boolean).length; }
-  private calculateReadTime(content: string): number { /* ... (implementation remains the same) ... */
-    const wordsPerMinute = 200; const codeLinesPerMinute = 70; 
+  private calculateReadTime(content: string): number {
+    const wordsPerMinute = 200; const codeLinesPerMinute = 70;
     const codeBlockContent = (this.extractCodeBlocks(content) || []).map(b => b.code).join('\n');
     const codeLineCount = codeBlockContent.split('\n').length;
     const textContent = content.replace(/```[\s\S]*?```/g, '');
@@ -471,7 +462,6 @@ export class ContentAnalyzer {
   }
 
   private extractComplexity(content: string): ComplexityInfo | null {
-    // ... (implementation remains the same as previous correct version)
     const info: ComplexityInfo = {}; const lowerContent = content.toLowerCase(); let match;
     for (const p of this.patterns.complexity.time) { p.lastIndex = 0; match = p.exec(content); if (match) { info.time = `O(${match[1]})`; break; } }
     for (const p of this.patterns.complexity.space) { p.lastIndex = 0; match = p.exec(content); if (match) { info.space = `O(${match[1]})`; break; } }
@@ -481,12 +471,11 @@ export class ContentAnalyzer {
 
   private estimateCodeComplexity(code: string): string {
     const loopKeywords = /\b(for|while|do)\b/g;
-    // TS FIX: Corrected Regex for recursion pattern
-    const recursionPattern = /(\w+)\s*\([^)]*\)\s*{[\s\S]*?\b\1\b\s*\(/; 
+    const recursionPattern = /(\w+)\s*\([^)]*\)\s*{[\s\S]*?\b\1\b\s*\(/;
 
     let loopCount = (code.match(loopKeywords) || []).length;
     if (loopCount > 1 && code.match(/(\s+(for|while|do)[\s\S]*?\n)+\s+(for|while|do)/)) {
-        loopCount = 2; 
+        loopCount = 2;
     }
 
     if (recursionPattern.test(code)) return 'O(2^N) or O(N)';
@@ -495,31 +484,28 @@ export class ContentAnalyzer {
     return 'O(1)';
   }
 
-  private shouldVisualize(analysis: ContentAnalysis): boolean { /* ... (same as before) ... */ return analysis.type === 'leetcode' || analysis.type === 'systemDesign' || (analysis.estimatedReadTime > 120 && analysis.codeBlocks.length > 0) || analysis.diagramHints.length > 0; }
-  private shouldGenerateDiagram(analysis: ContentAnalysis): boolean { /* ... (same as before) ... */ return analysis.diagramHints.length > 0 || analysis.type === 'systemDesign' || (analysis.type === 'leetcode' && analysis.problemMetadata?.dataStructures?.some(ds => ['tree', 'graph', 'linked list'].includes(ds.toLowerCase())) === true); }
-  
+  private shouldVisualize(analysis: ContentAnalysis): boolean { return analysis.type === 'leetcode' || analysis.type === 'systemDesign' || (analysis.estimatedReadTime > 120 && analysis.codeBlocks.length > 0) || analysis.diagramHints.length > 0; }
+  private shouldGenerateDiagram(analysis: ContentAnalysis): boolean { return analysis.diagramHints.length > 0 || analysis.type === 'systemDesign' || (analysis.type === 'leetcode' && analysis.problemMetadata?.dataStructures?.some(ds => ['tree', 'graph', 'linked list'].includes(ds.toLowerCase())) === true); }
+
   private shouldCreateSlides(analysis: ContentAnalysis): boolean {
-    // TS FIX: Ensure boolean return by defaulting potentially undefined to false
-    return (analysis.shouldVisualize ?? false) && 
-           (analysis.wordCount > 300 || 
-            analysis.codeBlocks.length > 0 || 
+    return (analysis.shouldVisualize ?? false) &&
+           (analysis.wordCount > 300 ||
+            analysis.codeBlocks.length > 0 ||
             analysis.type === 'leetcode' ||
             analysis.type === 'systemDesign');
   }
 
   private planSlides(content: string, analysis: ContentAnalysis): { count: number; duration: number; topics: string[] } {
-    // ... (implementation remains the same as previous correct version)
     const topics: string[] = [];
     if (analysis.type === 'leetcode') { topics.push('Problem Statement', 'Approach & Logic'); if (analysis.codeBlocks.length > 0) topics.push('Code Implementation'); if (analysis.complexity) topics.push('Complexity Analysis');
     } else if (analysis.type === 'systemDesign') { topics.push('Requirements & Goals', 'High-Level Architecture', 'Components Deep-Dive', 'Trade-offs & Scalability');
     } else { const headers = content.match(/^#{1,3}\s+(.+)$/gm); if (headers && headers.length > 1) { topics.push(...headers.map(h => h.replace(/^#+\s+/, '').trim()).slice(0,5)); } else { const sections = Math.min(5, Math.max(1, Math.ceil(analysis.wordCount / 200))); for (let i = 1; i <= sections; i++) topics.push(`Key Section ${i}`); } }
     if (topics.length === 0) topics.push(analysis.displayTitle || "Overview");
-    const slideDuration = Math.max(5000, Math.min(15000, Math.round(analysis.estimatedReadTime / topics.length) * 1000));
+    const slideDuration = Math.max(5000, Math.min(15000, Math.round(analysis.estimatedReadTime / Math.max(1, topics.length)) * 1000)); // Avoid division by zero
     return { count: topics.length, duration: slideDuration, topics };
   }
 
   public generateEnhancedPrompt(analysis: ContentAnalysis, originalSystemPrompt: string, language: string): string {
-    // ... (implementation remains the same as previous correct version)
     let enhancedPrompt = originalSystemPrompt; const langOrDefault = language || 'python';
     enhancedPrompt += `\n\n## Content Analysis Insights (for AI model awareness):\n- Detected Content Type: ${analysis.type}\n- Detected Subtype/Topic: ${analysis.subtype || 'N/A'}\n- Primary Language (if code present): ${analysis.language || 'N/A'}\n- Estimated Reading Time: ${Math.ceil(analysis.estimatedReadTime / 60)} minutes\n- Keywords: ${analysis.keywords.join(', ')}`;
     if (analysis.type === 'leetcode') { enhancedPrompt += `\n- LeetCode Problem Metadata: Difficulty: ${analysis.problemMetadata?.difficulty || 'N/A'}, Data Structures: ${analysis.problemMetadata?.dataStructures?.join(', ') || 'N/A'}, Algorithms: ${analysis.problemMetadata?.algorithms?.join(', ') || 'N/A'}`; enhancedPrompt += `\n\n## Instructions for LeetCode Problem Response:\n1.  **Problem Understanding:** Briefly re-state the problem... \n2.  **Solution Approach:** Clearly explain your main approach... \n3.  **Code Implementation:** Provide a complete, correct, and runnable solution in \`\`\`${langOrDefault}\n ... \n\`\`\`...\n4.  **Complexity Analysis:**...\n5.  **(Optional) Alternative Approaches:**...`;
