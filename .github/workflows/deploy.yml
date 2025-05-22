@@ -89,14 +89,14 @@ jobs:
           Environment=NODE_ENV=production
           EnvironmentFile=/home/${{ secrets.LINODE_USER }}/voice-coding-assistant/.env
 
-        [Install]
-        WantedBy=multi-user.target
-        EOL
+          [Install]
+          WantedBy=multi-user.target
+          EOL
 
-        sudo mv ~/voice-coding-assistant.service /etc/systemd/system/
-        sudo systemctl daemon-reload
-        sudo systemctl enable voice-coding-assistant
-        sudo systemctl restart voice-coding-assistant
-        sudo systemctl status voice-coding-assistant
+          sudo mv ~/voice-coding-assistant.service /etc/systemd/system/
+          sudo systemctl daemon-reload
+          sudo systemctl enable voice-coding-assistant
+          sudo systemctl restart voice-coding-assistant
+          sudo systemctl status voice-coding-assistant
 
           EOF
