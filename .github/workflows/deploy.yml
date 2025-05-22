@@ -1,0 +1,87 @@
+name: Deploy Voice Coding Assistant to Linode
+
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies and build
+        run: |
+          npm install
+          npm run build
+
+      - name: Create deployment package
+        run: |
+          mkdir -p deployment
+          cp -r frontend backend package.json package-lock.json deployment/
+          cd deployment && tar -czf ../voice-app-deployment.tar.gz .
+
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: 'just-a-placeholder-so-we-dont-get-errors'
+
+      - name: Add Linode to known hosts
+        run: ssh-keyscan -H ${{ secrets.LINODE_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy to Linode
+        run: |
+          scp voice-app-deployment.tar.gz ${{ secrets.LINODE_USER }}@${{ secrets.LINODE_HOST }}:~/
+          ssh ${{ secrets.LINODE_USER }}@${{ secrets.LINODE_HOST }} << 'EOF'
+          mkdir -p ~/voice-coding-assistant
+          rm -rf ~/voice-coding-assistant/*
+          tar -xzf ~/voice-app-deployment.tar.gz -C ~/voice-coding-assistant
+          rm ~/voice-app-deployment.tar.gz
+
+          sudo apt-get update
+          sudo apt-get install -y nodejs npm
+          sudo npm install -g pm2
+
+          cd ~/voice-coding-assistant
+          npm install
+          cd frontend && npm install && cd ../backend && npm install
+
+          echo "Creating .env..."
+          cat > ~/voice-coding-assistant/.env << EOL
+          OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+          OPENROUTER_API_KEY=${{ secrets.OPENROUTER_API_KEY }}
+          PASSWORD=${{ secrets.PASSWORD }}
+          MODEL_PREF_CODING=${{ secrets.MODEL_PREF_CODING }}
+          MODEL_PREF_SYSTEM_DESIGN=${{ secrets.MODEL_PREF_SYSTEM_DESIGN }}
+          MODEL_PREF_SUMMARY=${{ secrets.MODEL_PREF_SUMMARY }}
+          COST_THRESHOLD=${{ secrets.COST_THRESHOLD }}
+          DEFAULT_LANGUAGE=${{ secrets.DEFAULT_LANGUAGE }}
+          TOKEN_LIMIT=${{ secrets.TOKEN_LIMIT }}
+          PORT=${{ secrets.PORT }}
+          FRONTEND_URL=${{ secrets.FRONTEND_URL }}
+          SPEECH_PREFERENCE=${{ secrets.SPEECH_PREFERENCE }}
+          EOL
+
+          echo "Starting backend service with PM2..."
+          pm2 delete voice-backend || true
+          cd ~/voice-coding-assistant/backend
+          pm2 start npm --name "voice-backend" -- start
+          pm2 save
+
+          echo "Starting frontend on port 3000..."
+          cd ~/voice-coding-assistant/frontend
+          npm install -g serve
+          pm2 delete voice-frontend || true
+          pm2 start serve --name "voice-frontend" -- -s out -l 3000
+          pm2 save
+          EOF
