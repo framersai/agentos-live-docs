@@ -82,12 +82,12 @@ jobs:
           [Service]
           Type=simple
           User=${{ secrets.LINODE_USER }}
-          WorkingDirectory=/home/${{ secrets.LINODE_USER }}/voice-coding-assistant/backend
-          ExecStart=/usr/bin/node /home/${{ secrets.LINODE_USER }}/voice-coding-assistant/backend/dist/index.js
+          WorkingDirectory=/${{ secrets.LINODE_USER }}/voice-coding-assistant/backend
+          ExecStart=/usr/bin/node /${{ secrets.LINODE_USER }}/voice-coding-assistant/backend/dist/index.js
           Restart=on-failure
           RestartSec=5
           Environment=NODE_ENV=production
-          EnvironmentFile=/home/${{ secrets.LINODE_USER }}/voice-coding-assistant/.env
+          EnvironmentFile=/${{ secrets.LINODE_USER }}/voice-coding-assistant/.env
 
           [Install]
           WantedBy=multi-user.target
