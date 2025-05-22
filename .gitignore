@@ -48,3 +48,6 @@ bower_components/
 
 # Optional: Local development files
 .local/
+
+# Repomix
+*repomix*

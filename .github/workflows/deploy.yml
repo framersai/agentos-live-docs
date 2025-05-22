@@ -74,16 +74,29 @@ jobs:
           SPEECH_PREFERENCE=${{ secrets.SPEECH_PREFERENCE }}
           EOL
 
-          echo "Starting backend service with PM2..."
-          pm2 delete voice-backend || true
-          cd ~/voice-coding-assistant/backend
-          pm2 start npm --name "voice-backend" -- start
-          pm2 save
+          cat > ~/voice-coding-assistant.service << EOL
+          [Unit]
+          Description=Voice Coding Assistant Backend
+          After=network.target
 
-          echo "Starting frontend on port 3000..."
-          cd ~/voice-coding-assistant/frontend
-          npm install -g serve
-          pm2 delete voice-frontend || true
-          pm2 start serve --name "voice-frontend" -- -s out -l 3000
-          pm2 save
+          [Service]
+          Type=simple
+          User=${{ secrets.LINODE_USER }}
+          WorkingDirectory=/home/${{ secrets.LINODE_USER }}/voice-coding-assistant/backend
+          ExecStart=/usr/bin/node /home/${{ secrets.LINODE_USER }}/voice-coding-assistant/backend/dist/index.js
+          Restart=on-failure
+          RestartSec=5
+          Environment=NODE_ENV=production
+          EnvironmentFile=/home/${{ secrets.LINODE_USER }}/voice-coding-assistant/.env
+
+        [Install]
+        WantedBy=multi-user.target
+        EOL
+
+        sudo mv ~/voice-coding-assistant.service /etc/systemd/system/
+        sudo systemctl daemon-reload
+        sudo systemctl enable voice-coding-assistant
+        sudo systemctl restart voice-coding-assistant
+        sudo systemctl status voice-coding-assistant
+
           EOF
