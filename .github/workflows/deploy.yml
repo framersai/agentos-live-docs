@@ -109,7 +109,7 @@ jobs:
           COST_THRESHOLD=${{ secrets.COST_THRESHOLD }}
           DEFAULT_LANGUAGE=${{ secrets.DEFAULT_LANGUAGE }}
           TOKEN_LIMIT=${{ secrets.TOKEN_LIMIT }}
-          PORT=3001 # Backend will listen internally on 3001, Nginx proxies to it
+          PORT=3333 # Backend will listen internally on 3001, Nginx proxies to it
           FRONTEND_URL=${{ secrets.FRONTEND_URL }} # For CORS settings
           SPEECH_PREFERENCE=${{ secrets.SPEECH_PREFERENCE }}
           NODE_ENV=production
@@ -130,8 +130,8 @@ jobs:
           # Adjust Nginx config paths and proxy_pass in the copied file
           # Replace root path
           sudo sed -i "s|root /usr/share/nginx/html;|root /home/${{ secrets.LINODE_USER }}/voice-coding-assistant/frontend/dist;|g" /etc/nginx/sites-available/voice-coding-assistant.conf
-          # Replace proxy_pass to point to localhost:3001
-          sudo sed -i "s|proxy_pass http://backend:3333;|proxy_pass http://localhost:3001;|g" /etc/nginx/sites-available/voice-coding-assistant.conf
+          # Replace proxy_pass to point to localhost:3333
+          sudo sed -i "s|proxy_pass http://backend:3333;|proxy_pass http://localhost:3333;|g" /etc/nginx/sites-available/voice-coding-assistant.conf
           # Ensure there are no malformed 'Connection' headers.
           # The provided nginx.conf has: proxy_set_header Connection 'upgrade';
           # This is correct. If the error was from a previous or manually edited file, it should be fixed by the clean up.
