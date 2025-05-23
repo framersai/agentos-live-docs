@@ -1,4 +1,4 @@
-name: Deploy Voice Coding Assistant to Linode with Docker
+name: Deploy Voice Coding Assistant to Linode (Nginx only)
 
 on:
   push:
@@ -13,61 +13,104 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # No need for Node.js setup or npm install/build steps here,
-      # as Docker will handle dependencies and builds inside the containers.
-      # The 'npm run install-all' and 'npm run build' are part of the Dockerfiles.
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20' # Use Node.js 20, as specified in package.json
+          cache: 'npm' # Cache npm dependencies for faster builds
+
+      - name: Install root dependencies
+        run: npm install # Install root package.json dependencies (e.g., concurrently)
+
+      - name: Install frontend dependencies and build
+        run: |
+          cd frontend
+          npm install
+          npm run build # Builds the Vue.js application into frontend/dist
+        env:
+          NODE_ENV: production # Ensure production build
+
+      - name: Install backend dependencies and build
+        run: |
+          cd backend
+          npm install
+          npm run build # Transpiles TypeScript to JavaScript into backend/dist
+        env:
+          NODE_ENV: production # Ensure production build
+
+      - name: Create deployment package
+        run: |
+          mkdir -p deployment/frontend/dist
+          mkdir -p deployment/backend/dist
+          mkdir -p deployment/backend/prompts # Copy prompts directory
+          
+          # Copy built frontend assets
+          cp -r frontend/dist/* deployment/frontend/dist/
+          
+          # Copy built backend assets
+          cp -r backend/dist/* deployment/backend/dist/
+          # Copy backend package.json for npm install on server
+          cp backend/package.json deployment/backend/package.json
+          # Copy backend prompts for dynamic loading [cite: 340]
+          cp -r backend/prompts/* deployment/backend/prompts/
+          
+          # Copy Nginx configuration
+          cp frontend/nginx.conf deployment/nginx.conf
+          
+          # Create a tarball of the deployment package
+          cd deployment && tar -czf ../voice-app-deployment.tar.gz .
 
       - name: Install SSH key
         uses: shimataro/ssh-key-action@v2
         with:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          # Known hosts is just a placeholder; for production, generate this securely
-          # and store it as a secret, then use 'known_hosts: ${{ secrets.KNOWN_HOSTS }}'
           known_hosts: 'just-a-placeholder-so-we-dont-get-errors' 
 
       - name: Add Linode to known hosts
         run: ssh-keyscan -H ${{ secrets.LINODE_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Deploy to Linode via Docker Compose
+      - name: Deploy to Linode
         run: |
-          # Copy the entire repository to the Linode server
-          # This ensures all necessary files (Dockerfiles, docker-compose.yml, nginx.conf) are present
-          echo "Copying repository to Linode..."
-          scp -r . ${{ secrets.LINODE_USER }}@${{ secrets.LINODE_HOST }}:~/voice-coding-assistant-temp
-
-          echo "Connecting to Linode and deploying with Docker Compose..."
+          echo "Copying deployment package to Linode..."
+          scp voice-app-deployment.tar.gz ${{ secrets.LINODE_USER }}@${{ secrets.LINODE_HOST }}:~/
+          
+          echo "Connecting to Linode and deploying application..."
           ssh ${{ secrets.LINODE_USER }}@${{ secrets.LINODE_HOST }} << 'EOF'
-          # Ensure Docker and Docker Compose are installed
-          if ! command -v docker &> /dev/null; then
-              echo "Docker not found, installing..."
-              sudo apt-get update
-              sudo apt-get install -y ca-certificates curl gnupg
-              sudo install -m 0755 -d /etc/apt/keyrings
-              curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-              sudo chmod a+r /etc/apt/keyrings/docker.gpg
-              echo "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-              "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
-              sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-              sudo apt-get update
-              sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-              sudo usermod -aG docker ${{ secrets.LINODE_USER }}
-              echo "Docker installed. Please log out and back in for group changes to take effect if running manually."
-              # For CI/CD, the newgrp command below will make the change effective for the current session
-              newgrp docker || true # '|| true' prevents script from failing if newgrp isn't available or fails
-          fi
-
-          # Clean up previous deployment directory and move new one into place
+          
+          # 1. Prepare deployment directory
+          echo "Preparing application directory..."
+          mkdir -p ~/voice-coding-assistant-temp
+          tar -xzf ~/voice-app-deployment.tar.gz -C ~/voice-coding-assistant-temp
+          rm ~/voice-app-deployment.tar.gz
+          
           rm -rf ~/voice-coding-assistant-old
           if [ -d ~/voice-coding-assistant ]; then
               mv ~/voice-coding-assistant ~/voice-coding-assistant-old
           fi
           mv ~/voice-coding-assistant-temp ~/voice-coding-assistant
           
-          cd ~/voice-coding-assistant
+          cd ~/voice-coding-assistant/backend || { echo "ERROR: Could not navigate to backend directory."; exit 1; }
+          
+          # 2. Install Node.js, npm, PM2, and Nginx
+          echo "Installing Node.js, npm, PM2, and Nginx..."
+          sudo apt-get update -y
+          sudo apt-get install -y nodejs npm nginx
+          
+          # Check if Node.js is correctly symlinked (often it's nodejs, not node)
+          if ! command -v node &> /dev/null; then
+              echo "Creating symlink for node command..."
+              sudo ln -s /usr/bin/nodejs /usr/bin/node
+          fi
 
-          # Create .env file from GitHub Actions secrets
-          echo "Creating .env file..."
-          cat > .env << EOL
+          sudo npm install -g pm2
+          
+          # 3. Install backend dependencies (Node.js direct deploy)
+          echo "Installing backend Node.js dependencies on server..."
+          npm install --production # Install only production dependencies
+
+          # 4. Create .env file for the backend
+          echo "Creating .env file for backend..."
+          cat > ~/voice-coding-assistant/.env << EOL
           OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
           OPENROUTER_API_KEY=${{ secrets.OPENROUTER_API_KEY }}
           PASSWORD=${{ secrets.PASSWORD }}
@@ -77,23 +120,77 @@ jobs:
           COST_THRESHOLD=${{ secrets.COST_THRESHOLD }}
           DEFAULT_LANGUAGE=${{ secrets.DEFAULT_LANGUAGE }}
           TOKEN_LIMIT=${{ secrets.TOKEN_LIMIT }}
-          PORT=${{ secrets.PORT }}
-          FRONTEND_URL=${{ secrets.FRONTEND_URL }}
+          PORT=3001 # Backend will listen internally on 3001, Nginx proxies to it
+          FRONTEND_URL=${{ secrets.FRONTEND_URL }} # For CORS settings
           SPEECH_PREFERENCE=${{ secrets.SPEECH_PREFERENCE }}
-          NODE_ENV=production # Ensure production mode for Docker containers
+          NODE_ENV=production
           EOL
+          echo ".env file created."
 
-          # Stop and remove old containers (if any) and then build and start new ones
-          echo "Stopping and removing old Docker containers..."
-          docker compose down || true # '|| true' prevents script from failing if containers don't exist
+          # 5. Configure Nginx
+          echo "Configuring Nginx..."
+          # Backup default config and copy new one
+          sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/default_bak
+          sudo cp ~/voice-coding-assistant/nginx.conf /etc/nginx/sites-available/default
+          
+          # Ensure Nginx config is using the correct paths (important for frontend static files)
+          # Replace placeholder paths in nginx.conf if needed, though the provided one uses /usr/share/nginx/html
+          # which we'll copy to.
+          sudo sed -i "s|root /usr/share/nginx/html;|root /home/${{ secrets.LINODE_USER }}/voice-coding-assistant/frontend/dist;|g" /etc/nginx/sites-available/default
+          # Make sure proxy_pass points to the correct internal backend port
+          sudo sed -i "s|proxy_pass http://backend:3001;|proxy_pass http://localhost:3001;|g" /etc/nginx/sites-available/default
+          
+          sudo nginx -t && sudo systemctl reload nginx || { echo "ERROR: Nginx configuration test failed or reload failed."; exit 1; }
+          sudo systemctl enable nginx || { echo "WARNING: Nginx not enabled to start on boot."; }
+          sudo systemctl start nginx || { echo "ERROR: Nginx failed to start."; exit 1; }
+          echo "Nginx configured and started."
 
-          echo "Building and starting new Docker containers..."
-          docker compose up -d --build
+          # 6. Configure and start backend with PM2
+          echo "Configuring and starting backend with PM2..."
+          # Stop previous PM2 process if running
+          pm2 stop voice-coding-assistant-backend || true
+          pm2 delete voice-coding-assistant-backend || true
+          
+          # Start the backend application using PM2
+          # Assuming server.js is in backend/dist
+          pm2 start dist/server.js --name voice-coding-assistant-backend --output /dev/null --error /dev/null
+          
+          # Save PM2 process list and configure to start on boot
+          pm2 save
+          pm2 startup systemd # This generates and enables a systemd unit for PM2
+          echo "PM2 backend configured and started."
 
-          echo "Docker Compose deployment complete. Checking service status..."
-          docker compose ps
+          # 7. Basic Health Checks
+          echo "Verifying Nginx and PM2 status..."
+          sudo systemctl is-active nginx || { echo "ERROR: Nginx is not active."; exit 1; }
+          pm2 list | grep 'voice-coding-assistant-backend' | grep 'online' || { echo "ERROR: Backend PM2 process is not online."; exit 1; }
+          
+          echo "Waiting for application to become fully responsive via HTTP..."
+          ATTEMPTS=0
+          MAX_ATTEMPTS=15
+          BACKOFF_SECONDS=10
+          APP_HEALTHY=false
 
-          # Optional: Clean up old Docker images and volumes
-          # docker system prune -a -f
+          while [ $ATTEMPTS -lt $MAX_ATTEMPTS ]; do
+              echo "Attempt $((ATTEMPTS+1)) of $MAX_ATTEMPTS: Checking application health endpoint..."
+              # Use the configured frontend URL or localhost on port 80
+              HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost/health)
+              if [ "$HTTP_STATUS" -eq 200 ]; then
+                  echo "Application /health endpoint returned 200 OK. Application is responsive."
+                  APP_HEALTHY=true
+                  break
+              else
+                  echo "Health check failed with status $HTTP_STATUS. Retrying in $BACKOFF_SECONDS seconds..."
+                  sleep $BACKOFF_SECONDS
+              fi
+              ATTEMPTS=$((ATTEMPTS+1))
+          done
+
+          if [ "$APP_HEALTHY" = false ]; then
+              echo "ERROR: Application did not become healthy after $MAX_ATTEMPTS attempts."
+              echo "Review PM2 logs: pm2 logs voice-coding-assistant-backend"
+              exit 1
+          fi
+          echo "Application deployment and verification complete."
 
           EOF
