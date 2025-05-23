@@ -20,7 +20,7 @@ jobs:
           cache: 'npm' # Cache npm dependencies for faster builds
 
       - name: Install root dependencies
-        run: npm install-all # Install root package.json dependencies (e.g., concurrently)
+        run: npm run install-all # Install root package.json dependencies (e.g., concurrently)
 
       # - name: Install frontend dependencies and build
       #   run: |
