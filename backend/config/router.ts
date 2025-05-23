@@ -1,3 +1,4 @@
+// backend/config/router.ts
 import { Router, Request, Response } from 'express';
 import fs from 'fs';
 import path from 'path';
@@ -10,34 +11,30 @@ export async function configureRouter(): Promise<Router> {
   const router = Router();
   const routesDir = path.join(__dirname, '../routes');
 
-  console.log('🔧 Configuring routes from:', routesDir);
+  console.log('üîß Configuring routes from:', routesDir);
 
   try {
-    // Check if routes directory exists
     if (!fs.existsSync(routesDir)) {
-      console.error('❌ Routes directory does not exist:', routesDir);
+      console.error('‚ùå Routes directory does not exist:', routesDir);
       return router;
     }
 
-    // Read all route files
     const routeFiles = fs.readdirSync(routesDir);
-    console.log('📁 Found route files:', routeFiles);
+    console.log('üìÅ Found route files:', routeFiles);
     
     for (const file of routeFiles) {
-      if (file.endsWith('.ts') || file.endsWith('.js')) {
+      // **CHANGE THIS LINE:** Only load .js files in production.
+      // During compilation, .ts files are converted to .js files.
+      // .d.ts files are type declarations and should not be loaded at runtime.
+      if (file.endsWith('.js') && !file.endsWith('.d.js') && !file.endsWith('.map')) { // Exclude .d.js and .map files too
         const routePath = `../routes/${file}`;
-        const routeName = file.replace(/\.(ts|js)$/, '');
+        const routeName = file.replace(/\.js$/, ''); // Adjust regex to match .js only
         
         try {
-          console.log(`🔄 Loading route: ${routeName} from ${routePath}`);
-          
-          // Import route dynamically
+          console.log(`üîÑ Loading route: ${routeName} from ${routePath}`);
           const routeModule = await import(routePath);
+          console.log(`üìã Route ${routeName} exports:`, Object.keys(routeModule));
           
-          // Log what we found in the module
-          console.log(`📋 Route ${routeName} exports:`, Object.keys(routeModule));
-          
-          // Register HTTP methods if they exist in the module
           const methods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'];
           let registeredCount = 0;
           
@@ -45,10 +42,10 @@ export async function configureRouter(): Promise<Router> {
             if (typeof routeModule[method] === 'function') {
               const routeHandler = async (req: Request, res: Response) => {
                 try {
-                  console.log(`📨 Handling ${method} /${routeName}`);
+                  console.log(`üì® Handling ${method} /${routeName}`);
                   await routeModule[method](req, res);
                 } catch (error) {
-                  console.error(`❌ Error in ${method} /${routeName}:`, error);
+                  console.error(`‚ùå Error in ${method} /${routeName}:`, error);
                   res.status(500).json({
                     message: 'Internal server error',
                     error: process.env.NODE_ENV === 'production' ? undefined : (error as Error).message
@@ -56,7 +53,6 @@ export async function configureRouter(): Promise<Router> {
                 }
               };
 
-              // Use explicit method calls instead of dynamic access
               switch (method.toLowerCase()) {
                 case 'get':
                   router.get(`/${routeName}`, routeHandler);
@@ -74,37 +70,36 @@ export async function configureRouter(): Promise<Router> {
                   router.patch(`/${routeName}`, routeHandler);
                   break;
                 default:
-                  console.warn(`⚠️  Unsupported HTTP method: ${method}`);
-                  return; // Use return instead of continue in forEach
+                  console.warn(`‚ö†Ô∏è  Unsupported HTTP method: ${method}`);
+                  return;
               }
               
               registeredCount++;
-              console.log(`✅ Registered route: ${method} /api/${routeName}`);
+              console.log(`‚úÖ Registered route: ${method} /api/${routeName}`);
             }
           });
-
           if (registeredCount === 0) {
-            console.warn(`⚠️  No HTTP methods found in ${routeName} route module`);
+            console.warn(`‚ö†Ô∏è  No HTTP methods found in ${routeName} route module`);
           }
 
         } catch (error) {
-          console.error(`❌ Error loading route ${file}:`, error);
+          console.error(`‚ùå Error loading route ${file}:`, error);
         }
       }
     }
 
-    // Add a test route to verify the router is working
     router.get('/test', (req: Request, res: Response) => {
-      res.json({ 
-        message: 'Router is working!', 
+      res.json({
+        message: 'Router is working!',
         timestamp: new Date().toISOString(),
         availableRoutes: routeFiles
       });
     });
-    console.log('✅ Added test route: GET /api/test');
+    console.log('‚úÖ Added test route: GET /api/test');
 
   } catch (error) {
-    console.error('❌ Error setting up routes:', error);
+    console.error('‚ùå Error setting up routes:', error);
+    throw error;
   }
 
   return router;
