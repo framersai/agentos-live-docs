@@ -24,6 +24,9 @@ jobs:
 
       - name: Build 
         run: |
+          cat > ./frontend/.env << EOL
+          VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}
+          EOL
           npm run build
         env:
           NODE_ENV: production
