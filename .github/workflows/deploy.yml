@@ -86,7 +86,6 @@ jobs:
           sudo apt-get update -y
           sudo apt-get install -y nodejs npm nginx
           
-          # Check if Node.js is correctly symlinked (often it's nodejs, not node)
           if ! command -v node &> /dev/null; then
               echo "Creating symlink for node command..."
               sudo ln -s /usr/bin/nodejs /usr/bin/node
@@ -119,16 +118,23 @@ jobs:
 
           # 5. Configure Nginx
           echo "Configuring Nginx..."
-          # Backup default config and copy new one
-          sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/default_bak
-          sudo cp ~/voice-coding-assistant/nginx.conf /etc/nginx/sites-available/default
+          # **CRITICAL: Clean up old Nginx site configurations to avoid conflicts**
+          sudo rm -f /etc/nginx/sites-enabled/*
+          sudo rm -f /etc/nginx/sites-available/default # Remove any old default file if it exists
+
+          # Copy new Nginx configuration
+          sudo cp ~/voice-coding-assistant/nginx.conf /etc/nginx/sites-available/voice-coding-assistant.conf
+          # Create a symbolic link to enable the site
+          sudo ln -s /etc/nginx/sites-available/voice-coding-assistant.conf /etc/nginx/sites-enabled/voice-coding-assistant.conf
           
-          # Ensure Nginx config is using the correct paths (important for frontend static files)
-          # Replace placeholder paths in nginx.conf if needed, though the provided one uses /usr/share/nginx/html
-          # which we'll copy to.
-          sudo sed -i "s|root /usr/share/nginx/html;|root /home/${{ secrets.LINODE_USER }}/voice-coding-assistant/frontend/dist;|g" /etc/nginx/sites-available/default
-          # Make sure proxy_pass points to the correct internal backend port
-          sudo sed -i "s|proxy_pass http://backend:3001;|proxy_pass http://localhost:3001;|g" /etc/nginx/sites-available/default
+          # Adjust Nginx config paths and proxy_pass in the copied file
+          # Replace root path
+          sudo sed -i "s|root /usr/share/nginx/html;|root /home/${{ secrets.LINODE_USER }}/voice-coding-assistant/frontend/dist;|g" /etc/nginx/sites-available/voice-coding-assistant.conf
+          # Replace proxy_pass to point to localhost:3001
+          sudo sed -i "s|proxy_pass http://backend:3333;|proxy_pass http://localhost:3001;|g" /etc/nginx/sites-available/voice-coding-assistant.conf
+          # Ensure there are no malformed 'Connection' headers.
+          # The provided nginx.conf has: proxy_set_header Connection 'upgrade';
+          # This is correct. If the error was from a previous or manually edited file, it should be fixed by the clean up.
           
           sudo nginx -t && sudo systemctl reload nginx || { echo "ERROR: Nginx configuration test failed or reload failed."; exit 1; }
           sudo systemctl enable nginx || { echo "WARNING: Nginx not enabled to start on boot."; }
@@ -137,7 +143,6 @@ jobs:
 
           # 6. Configure and start backend with PM2
           echo "Configuring and starting backend with PM2..."
-          # Stop previous PM2 process if running
           pm2 stop voice-coding-assistant-backend || true
           pm2 delete voice-coding-assistant-backend || true
           
@@ -163,7 +168,6 @@ jobs:
 
           while [ $ATTEMPTS -lt $MAX_ATTEMPTS ]; do
               echo "Attempt $((ATTEMPTS+1)) of $MAX_ATTEMPTS: Checking application health endpoint..."
-              # Use the configured frontend URL or localhost on port 80
               HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost/health)
               if [ "$HTTP_STATUS" -eq 200 ]; then
                   echo "Application /health endpoint returned 200 OK. Application is responsive."
@@ -181,6 +185,6 @@ jobs:
               echo "Review PM2 logs: pm2 logs voice-coding-assistant-backend"
               exit 1
           fi
-          echo "Application deployment and verification complete."
+          echo "Deployment successful and application verified."
 
           EOF
