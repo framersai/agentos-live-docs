@@ -135,6 +135,11 @@ jobs:
           sudo cp ~/voice-coding-assistant/nginx.conf /etc/nginx/sites-available/voice-coding-assistant.conf
           # Create a symbolic link to enable the site
           sudo ln -s /etc/nginx/sites-available/voice-coding-assistant.conf /etc/nginx/sites-enabled/voice-coding-assistant.conf
+
+          # create ssl
+          # sudo mkdir -p /etc/nginx/ssl
+          echo {{secrets.SSL_CERT}} | base64 -d > /etc/nginx/ssl/cert.pem
+          echo {{secrets.SSL_KEY}} | base64 -d > /etc/nginx/ssl/key.pem
           
           # Adjust Nginx config paths and proxy_pass in the copied file
           # Replace root path
