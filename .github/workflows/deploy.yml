@@ -25,6 +25,8 @@ jobs:
       - name: Build 
         run: |
           npm run build
+          cd frontend
+          sudo cp -r /root/voice-coding-assistant/frontend/dist/* /var/www/voice-coding-assistant/
         env:
           NODE_ENV: production
 
@@ -112,6 +114,7 @@ jobs:
           PORT=3333 # Backend will listen internally on 3001, Nginx proxies to it
           FRONTEND_URL=${{ secrets.FRONTEND_URL }} # For CORS settings
           SPEECH_PREFERENCE=${{ secrets.SPEECH_PREFERENCE }}
+          VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}
           NODE_ENV=production
           EOL
           echo ".env file created."
@@ -129,7 +132,7 @@ jobs:
           
           # Adjust Nginx config paths and proxy_pass in the copied file
           # Replace root path
-          sudo sed -i "s|root /usr/share/nginx/html;|root /home/${{ secrets.LINODE_USER }}/voice-coding-assistant/frontend/dist;|g" /etc/nginx/sites-available/voice-coding-assistant.conf
+          sudo sed -i "s|root /usr/share/nginx/html;|root /${{ secrets.LINODE_USER }}/voice-coding-assistant/frontend/dist;|g" /etc/nginx/sites-available/voice-coding-assistant.conf
           # Replace proxy_pass to point to localhost:3333
           sudo sed -i "s|proxy_pass http://backend:3333;|proxy_pass http://localhost:3333;|g" /etc/nginx/sites-available/voice-coding-assistant.conf
           # Ensure there are no malformed 'Connection' headers.
@@ -168,7 +171,7 @@ jobs:
 
           while [ $ATTEMPTS -lt $MAX_ATTEMPTS ]; do
               echo "Attempt $((ATTEMPTS+1)) of $MAX_ATTEMPTS: Checking application health endpoint..."
-              HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost/health)
+              HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3333/health)
               if [ "$HTTP_STATUS" -eq 200 ]; then
                   echo "Application /health endpoint returned 200 OK. Application is responsive."
                   APP_HEALTHY=true

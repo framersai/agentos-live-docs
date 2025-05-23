@@ -6,7 +6,7 @@ import axios from 'axios';
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3333';
 // @ts-ignore
 const SHARED_PASSWORD = import.meta.env.VITE_SHARED_PASSWORD || 'password';
-
+ 
 // Create axios instance with base configuration
 export const api = axios.create({
   baseURL: API_BASE_URL,
