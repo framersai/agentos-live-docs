@@ -20,35 +20,27 @@ jobs:
           cache: 'npm' # Cache npm dependencies for faster builds
 
       - name: Install root dependencies
-        run: npm install # Install root package.json dependencies (e.g., concurrently)
+        run: npm install-all # Install root package.json dependencies (e.g., concurrently)
 
-      - name: Install frontend dependencies and build
-        run: |
-          cd frontend
-          npm install
-          npm run build # Builds the Vue.js application into frontend/dist
-        env:
-          NODE_ENV: production # Ensure production build
-
-      - name: Install frontend dependencies and build
-        run: |
-          cd frontend
-          npm install # This installs all dependencies, including devDependencies like vue-tsc
+      # - name: Install frontend dependencies and build
+      #   run: |
+      #     cd frontend
+      #     npm install # This installs all dependencies, including devDependencies like vue-tsc
           
-          # Add a check to see if vue-tsc is available in node_modules/.bin
-          if [ -f "./node_modules/.bin/vue-tsc" ]; then
-            echo "vue-tsc found in node_modules/.bin. Proceeding with build."
-          else
-            echo "vue-tsc not found in node_modules/.bin. Attempting to install it again globally for this step."
-            # Fallback: install vue-tsc globally for the runner's environment if not found locally
-            # This is less ideal but can work around some environment issues in CI
-            npm install -g vue-tsc
-          fi
+      #     # Add a check to see if vue-tsc is available in node_modules/.bin
+      #     if [ -f "./node_modules/.bin/vue-tsc" ]; then
+      #       echo "vue-tsc found in node_modules/.bin. Proceeding with build."
+      #     else
+      #       echo "vue-tsc not found in node_modules/.bin. Attempting to install it again globally for this step."
+      #       # Fallback: install vue-tsc globally for the runner's environment if not found locally
+      #       # This is less ideal but can work around some environment issues in CI
+      #       npm install -g vue-tsc
+      #     fi
           
-          # Now, execute the build script
-          npm run build
-        env:
-          NODE_ENV: production
+      #     # Now, execute the build script
+      #     npm run build
+      #   env:
+      #     NODE_ENV: production
 
       - name: Create deployment package
         run: |
