@@ -32,7 +32,7 @@ jobs:
         run: |
           mkdir -p deployment/frontend/dist
           mkdir -p deployment/backend/dist
-          mkdir -p deployment/backend/prompts # Copy prompts directory
+          # mkdir -p deployment/backend/prompts
           
           # Copy built frontend assets
           cp -r frontend/dist/* deployment/frontend/dist/
@@ -42,7 +42,7 @@ jobs:
           # Copy backend package.json for npm install on server
           cp backend/package.json deployment/backend/package.json
           # Copy backend prompts for dynamic loading [cite: 340]
-          cp -r backend/prompts/* deployment/backend/prompts/
+          # cp -r backend/prompts/* deployment/backend/prompts/
           
           # Copy Nginx configuration
           cp frontend/nginx.conf deployment/nginx.conf
