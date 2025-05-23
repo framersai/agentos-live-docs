@@ -1,1074 +1,1009 @@
+// File: backend/agentos/core/llm/PromptEngine.ts
+
 /**
- * @fileoverview Implements the IPromptEngine interface, providing an advanced system
- * for constructing dynamic, context-aware, and token-budgeted prompts for Large
- * Language Models (LLMs).
+ * @fileoverview Implements the sophisticated PromptEngine that serves as the core of
+ * AgentOS's adaptive and contextual prompting system. This implementation provides
+ * intelligent prompt construction with dynamic contextual element selection,
+ * token budgeting, multi-modal content integration, and optimization strategies.
  *
- * This PromptEngine is responsible for:
- * - Assembling various prompt components (system messages, conversation history,
- * user input, RAG context, tool schemas, few-shot examples).
- * - Dynamically selecting and incorporating contextual prompt elements from the
- * active persona definition based on the current PromptExecutionContext (e.g.,
- * GMI mood, user skill level, task hint).
- * - Applying truncation and summarization strategies (leveraging IUtilityAI) to
- * ensure the final prompt fits within the target model's token limits.
- * - Formatting the assembled components into the specific structure expected by the
- * target LLM (e.g., OpenAI chat format, Anthropic messages format).
- * - Providing detailed results, including the formatted prompt, token counts,
- * modification details, and any warnings or errors encountered.
+ * The PromptEngine orchestrates the entire prompt construction pipeline:
+ * 1. Context Analysis: Evaluates execution context against persona-defined criteria.
+ * 2. Element Selection: Dynamically selects applicable contextual prompt elements.
+ * 3. Content Augmentation: Integrates selected elements with base prompt components.
+ * 4. Token Management: Applies intelligent budgeting and content optimization.
+ * 5. Template Formatting: Renders final prompts using model-specific templates.
+ * 6. Quality Assurance: Validates output and reports issues/optimizations.
  *
- * It uses an ITokenizer for accurate token counting when available, falling back to
- * estimations otherwise. It can also register and use custom prompt templates.
  * @module backend/agentos/core/llm/PromptEngine
+ * @implements {IPromptEngine}
  */
 
 import {
   IPromptEngine,
-  PromptComponents,
-  PromptEngineResult,
-  FormattedPrompt,
-  ModelTargetInfo,
   PromptEngineConfig,
-  ITokenizer,
+  PromptComponents,
+  ModelTargetInfo,
   PromptExecutionContext,
+  FormattedPrompt,
+  PromptEngineResult,
+  PromptTemplateFunction,
+  ContextualElementType, // Ensure this is correctly imported
+  PromptEngineError,
+  IPromptEngineUtilityAI, // Using the focused utility AI for prompt engine
+  TokenEstimator,
 } from './IPromptEngine';
 import {
   IPersonaDefinition,
   ContextualPromptElement,
   ContextualPromptElementCriteria,
 } from '../../cognitive_substrate/personas/IPersonaDefinition';
-import { ConversationMessage, MessageRole } from '../conversation/ConversationMessage';
-import { ToolDefinition } from '../agents/tools/Tool'; // Assuming path based on prior context
-import { IUtilityAI, SummarizationOptions } from '../ai_utilities/IUtilityAI';
-import { IWorkingMemory } from '../../cognitive_substrate/memory/IWorkingMemory';
+import { Message, MessageRole } from '../conversation/ConversationMessage';
+import { ChatMessage } from './providers/IProvider';
+import { ITool } from '../../tools/interfaces/ITool'; // Assuming this path is correct
+// VisionInputData, AudioInputData are also used but might come from IGMI or similar
+// For simplicity, if they are just data structures, they can be defined locally or imported.
+// Let's assume they are available via IPromptEngine.ts's imports if not directly here.
+
 
 /**
- * Default number of tokens to reserve for the LLM's output if not specified
- * in `ModelTargetInfo`.
- * @constant {number}
+ * Cache entry structure for optimization and performance tracking.
+ * @interface CacheEntry
+ * @private
  */
-const DEFAULT_RESERVED_OUTPUT_TOKENS = 512;
-
-/**
- * Default system prompt content if none is provided or dynamically selected.
- * @constant {string}
- */
-const DEFAULT_SYSTEM_PROMPT_CONTENT = "You are a helpful and concise AI assistant.";
-
-/**
- * Fallback average number of characters per token, used if no tokenizer is available.
- * This is a rough estimate and can vary significantly between models.
- * @constant {number}
- */
-const FALLBACK_AVG_CHARS_PER_TOKEN = 4;
-
-/**
- * Minimum number of tokens a text segment should have before attempting summarization.
- * Prevents trying to summarize very short texts where it's not beneficial.
- * @constant {number}
- */
-const MIN_TOKENS_FOR_SUMMARIZATION = 100; // Based on estimated tokens if no tokenizer
-
-/**
- * Minimum number of messages in history before summarization strategies like
- * SUMMARIZE_OLDEST or SUMMARIZE_MIDDLE are typically applied.
- * @constant {number}
- */
-const MIN_MESSAGES_FOR_HISTORY_SUMMARIZATION = 5;
-
-/**
- * Represents a message internally within the PromptEngine during processing.
- * It augments standard message types with token counts and source information.
- * @interface IntermediateMessage
- */
-interface IntermediateMessage extends Partial<ConversationMessage> {
-  // Role must be one of these specific literal types for many models.
-  role: 'system' | 'user' | 'assistant' | 'tool';
-  content: string | null; // Ensure content can be null (e.g. for tool_calls only messages)
-  name?: string; // For tool role or multi-speaker distinction
-  tool_calls?: Array<{ id: string; type: 'function'; function: { name: string; arguments: string } }>;
-  tool_call_id?: string;
-  priority?: number; // Higher numbers can mean higher priority for retention or ordering
-  source?: string;   // e.g., 'system_static', 'system_dynamic_mood', 'history_original', 'history_summary', 'context_rag', 'few_shot_example_input'
-  tokenCount: number; // Calculated token count
-  isSummary?: boolean;
-  originalMessageCount?: number; // If it's a summary, how many original messages it represents
-  id?: string; // Optional unique ID for the source component
+interface CacheEntry {
+  key: string;
+  result: PromptEngineResult;
+  timestamp: number;
+  accessCount: number;
+  modelId: string;
+  estimatedTokenCount: number; // Store what was estimated at time of caching
 }
 
 /**
- * Defines the signature for a prompt template function.
- * Template functions are responsible for taking processed messages and other components
- * and formatting them into the final `FormattedPrompt` structure expected by a specific model or API.
- * @typedef PromptTemplateFunction
+ * Statistics tracking for performance monitoring and optimization.
+ * @interface EngineStatisticsInternal
+ * @private
  */
-type PromptTemplateFunction = (
-  processedContent: {
-    messages: IntermediateMessage[];
-    toolSchemas?: ToolDefinition[]; // Raw definitions for the template to format
-    // Potentially other components if a template needs them raw
-  },
-  modelInfo: ModelTargetInfo,
-  executionContext: PromptExecutionContext
-) => FormattedPrompt;
-
-
-/**
- * Custom error class for issues specific to PromptEngine operations.
- * @class PromptEngineError
- * @extends {Error}
- */
-export class PromptEngineError extends Error {
-  public readonly code: string;
-  public readonly details?: any;
-
-  constructor(message: string, code: string, details?: any) {
-    super(message);
-    this.name = 'PromptEngineError';
-    this.code = code;
-    this.details = details;
-    Object.setPrototypeOf(this, PromptEngineError.prototype);
-  }
+interface EngineStatisticsInternal {
+  totalPromptsConstructed: number;
+  totalConstructionTimeMs: number;
+  cacheHits: number;
+  cacheMisses: number;
+  contextualElementSelections: Record<string, number>; // elementId or type -> count
+  tokenCountingOperations: number;
+  errorsByType: Record<string, number>; // errorCode -> count
+  performanceTimers: Record<string, { count: number; totalTimeMs: number }>; // operationName -> stats
 }
 
+
 /**
- * Implements the IPromptEngine interface.
+ * Comprehensive implementation of the IPromptEngine interface, providing
+ * sophisticated adaptive prompting capabilities for AgentOS GMIs.
+ *
  * @class PromptEngine
  * @implements {IPromptEngine}
  */
 export class PromptEngine implements IPromptEngine {
-  private config!: Required<PromptEngineConfig>;
-  private tokenizer?: ITokenizer;
-  private utilityAI?: IUtilityAI;
-  private templates: Record<string, PromptTemplateFunction> = {};
+  private config!: Readonly<PromptEngineConfig>; // To be set in initialize
+  private utilityAI?: IPromptEngineUtilityAI;
   private isInitialized: boolean = false;
 
+  private cache: Map<string, CacheEntry> = new Map();
+  private statistics: EngineStatisticsInternal = this.getInitialStatistics();
+
+  // Default prompt templates, can be overridden/extended by config.
+  private readonly defaultTemplates: Record<string, PromptTemplateFunction>;
+
   /**
-   * {@inheritDoc IPromptEngine.initialize}
+   * Constructs a new PromptEngine instance.
+   * The engine is not operational until `initialize()` is called.
    */
+  constructor() {
+    this.defaultTemplates = {
+      'openai_chat': this.createOpenAIChatTemplate(),
+      'anthropic_messages': this.createAnthropicMessagesTemplate(),
+      'generic_completion': this.createGenericCompletionTemplate(),
+      // Add more default templates as needed
+    };
+  }
+
+  /** @inheritdoc */
   public async initialize(
     config: PromptEngineConfig,
-    tokenizer?: ITokenizer,
-    utilityAI?: IUtilityAI
+    utilityAI?: IPromptEngineUtilityAI
   ): Promise<void> {
-    if (!config) {
-      throw new PromptEngineError('PromptEngine configuration must be provided.', 'INIT_NO_CONFIG');
+    if (this.isInitialized) {
+      console.warn('PromptEngine: Re-initializing an already initialized engine. State will be reset.');
+      this.cache.clear();
+      this.statistics = this.getInitialStatistics();
     }
 
-    this.config = {
-      defaultHistoryTruncationStrategy: config.defaultHistoryTruncationStrategy || 'FIFO',
-      defaultHistoryMaxMessages: config.defaultHistoryMaxMessages === undefined ? 20 : config.defaultHistoryMaxMessages,
-      defaultHistoryMaxTokens: config.defaultHistoryMaxTokens === undefined ? 2000 : config.defaultHistoryMaxTokens,
-      historySummarizationOptions: config.historySummarizationOptions || { desiredLength: 'short', style: 'key_points' } as SummarizationOptions,
-      defaultContextTruncationStrategy: config.defaultContextTruncationStrategy || 'TRUNCATE_CONTENT',
-      defaultContextMaxTokens: config.defaultContextMaxTokens === undefined ? 1500 : config.defaultContextMaxTokens,
-      contextSummarizationOptions: config.contextSummarizationOptions || { desiredLength: 'short', style: 'extractive' } as SummarizationOptions,
-      templateStorePath: config.templateStorePath || '', // Actual loading from path not implemented in this example
-      defaultTemplateName: config.defaultTemplateName || 'default_chat_format',
-      useTokenizerIfAvailable: config.useTokenizerIfAvailable !== false, // default true
-      utilityAIServiceId: config.utilityAIServiceId, // Stored but direct injection is preferred
-    };
+    this.validateEngineConfiguration(config); // Internal validation
 
-    if (this.config.useTokenizerIfAvailable && tokenizer) {
-      this.tokenizer = tokenizer;
+    this.config = Object.freeze({ ...config }); // Make config immutable after init
+    this.utilityAI = utilityAI;
+
+    // Merge default templates with user-provided templates, user templates override defaults.
+    this.config = Object.freeze({
+        ...this.config,
+        availableTemplates: {
+            ...this.defaultTemplates,
+            ...(config.availableTemplates || {}),
+        }
+    });
+
+
+    if (this.config.performance.enableCaching) {
+      this.setupCacheEviction();
     }
-    this.utilityAI = utilityAI; // Use injected instance if provided
-
-    this.loadDefaultTemplates();
-    // In a real scenario, loadCustomTemplatesFromStore(this.config.templateStorePath) would be called here.
 
     this.isInitialized = true;
-    // console.log('PromptEngine initialized successfully.');
+    console.log(`PromptEngine initialized successfully. Default template: '${this.config.defaultTemplateName}'. Available templates: ${Object.keys(this.config.availableTemplates).length}.`);
   }
 
   /**
-   * Ensures that the PromptEngine has been initialized.
+   * Ensures the engine has been properly initialized before any operations.
    * @private
-   * @throws {PromptEngineError} If not initialized.
+   * @throws {PromptEngineError} If the engine is not initialized.
    */
   private ensureInitialized(): void {
     if (!this.isInitialized) {
-      throw new PromptEngineError('PromptEngine has not been initialized. Call initialize() first.', 'NOT_INITIALIZED');
+      throw new PromptEngineError(
+        'PromptEngine is not initialized. Call initialize() first.',
+        'ENGINE_NOT_INITIALIZED',
+        'PromptEngineCore'
+      );
     }
   }
 
   /**
-   * Loads default prompt templates into the engine.
+   * Resets internal statistics.
    * @private
    */
-  private loadDefaultTemplates(): void {
-    this.templates['default_chat_format'] = (processedContent, _modelInfo, _executionContext) => {
-      return processedContent.messages.map(msg => {
-        const chatMsg: any = { role: msg.role, content: msg.content };
-        if (msg.name) chatMsg.name = msg.name;
-        if (msg.tool_calls) chatMsg.tool_calls = msg.tool_calls;
-        if (msg.tool_call_id) chatMsg.tool_call_id = msg.tool_call_id;
-
-        // Ensure content is not undefined if role expects it (some models are strict)
-        // Null content is usually fine for assistant messages with only tool_calls.
-        // User/system messages generally need content, even if empty string.
-        if ((msg.role === 'user' || msg.role === 'system') && chatMsg.content === null && !msg.tool_calls) {
-          chatMsg.content = "";
-        }
-        return chatMsg;
-      }).filter(msg => msg.content !== undefined || msg.tool_calls); // Filter out malformed messages
+  private getInitialStatistics(): EngineStatisticsInternal {
+    return {
+      totalPromptsConstructed: 0,
+      totalConstructionTimeMs: 0,
+      cacheHits: 0,
+      cacheMisses: 0,
+      contextualElementSelections: {},
+      tokenCountingOperations: 0,
+      errorsByType: {},
+      performanceTimers: {},
     };
-
-    this.templates['anthropic_messages_format'] = (processedContent, _modelInfo, _executionContext) => {
-        // Anthropic specific: System prompt must be a top-level parameter, not in messages array.
-        // And messages must alternate user/assistant.
-        // This is a simplified example; a real one would handle this more robustly.
-        const systemPrompt = processedContent.messages.find(m => m.role === 'system')?.content || undefined;
-        const messages = processedContent.messages.filter(m => m.role !== 'system').map(msg => {
-            const chatMsg: any = { role: msg.role, content: msg.content };
-             // Anthropic tools are different, this template would need more logic
-            if (msg.role === 'tool') {
-                chatMsg.role = 'user'; // Tool results are user messages with tool_result block
-                chatMsg.content = [
-                    { type: 'tool_result', tool_use_id: msg.tool_call_id, content: msg.content || "Tool executed successfully." }
-                ];
-            }
-            if(msg.role === 'assistant' && msg.tool_calls) {
-                chatMsg.content = [
-                    ...(msg.content ? [{type: 'text', text: msg.content}] : []),
-                    ...msg.tool_calls.map(tc => ({ type: 'tool_use', id: tc.id, name: tc.function.name, input: JSON.parse(tc.function.arguments || '{}')}))
-                ]
-            }
-            return chatMsg;
-        });
-        // This is not the final FormattedPrompt, as system goes outside.
-        // The actual call to Anthropic would take { system: systemPrompt, messages: messages }.
-        // So the template might return an object for the provider to further process.
-        return { system: systemPrompt, messages: messages };
-    };
-
-
-    this.templates['raw_text_format'] = (processedContent, _modelInfo, _executionContext) => {
-      // Simple concatenation for basic completion models.
-      return processedContent.messages.map(msg => `${msg.role.toUpperCase()}: ${msg.content}`).join('\n\n');
-    };
-    // Add more default templates as needed
   }
 
-  /**
-   * {@inheritDoc IPromptEngine.registerPromptTemplate}
-   */
-  public async registerPromptTemplate(
+  /** @inheritdoc */
+  public async constructPrompt(
+    baseComponents: Readonly<PromptComponents>,
+    modelTargetInfo: Readonly<ModelTargetInfo>,
+    executionContext?: Readonly<PromptExecutionContext>,
+    templateName?: string
+  ): Promise<PromptEngineResult> {
+    this.ensureInitialized();
+    const constructionStart = Date.now();
+    this.statistics.totalPromptsConstructed++;
+
+    const result: PromptEngineResult = {
+      prompt: [], // Default to ChatMessage[] for common case
+      wasTruncatedOrSummarized: false,
+      issues: [],
+      metadata: {
+        constructionTimeMs: 0,
+        selectedContextualElementIds: [],
+        templateUsed: templateName || modelTargetInfo.promptFormatType || this.config.defaultTemplateName,
+        totalSystemPromptsApplied: 0,
+        historyMessagesIncluded: 0,
+      },
+    };
+
+    // 1. Cache Check
+    if (this.config.performance.enableCaching) {
+      const cacheKey = this.generateCacheKey(baseComponents, modelTargetInfo, executionContext, result.metadata.templateUsed);
+      result.cacheKey = cacheKey;
+      const cached = this.cache.get(cacheKey);
+      if (cached && (Date.now() - cached.timestamp) < this.config.performance.cacheTimeoutSeconds * 1000) {
+        this.statistics.cacheHits++;
+        cached.accessCount++;
+        // Return a deep copy of the cached result to prevent mutation
+        return JSON.parse(JSON.stringify(cached.result));
+      }
+      this.statistics.cacheMisses++;
+    }
+
+    try {
+      // 2. Contextual Element Selection
+      let selectedElements: ContextualPromptElement[] = [];
+      if (executionContext?.activePersona?.promptConfig?.contextualElements) {
+        const timerId = 'contextualElementSelection';
+        this.startPerformanceTimer(timerId);
+        for (const element of executionContext.activePersona.promptConfig.contextualElements) {
+          if (element.criteria && await this.evaluateCriteria(element.criteria, executionContext)) {
+            selectedElements.push(element);
+          }
+        }
+        // TODO: Add prioritization and maxElementsPerType logic here based on config
+        selectedElements.sort((a,b) => (b.priority || 0) - (a.priority || 0)); // Simple priority sort
+        const maxElementsOverall = 10; // Example: make this configurable
+        selectedElements = selectedElements.slice(0, maxElementsOverall);
+
+        result.metadata.selectedContextualElementIds = selectedElements.map(el => el.id || 'unnamed_contextual_element');
+        this.recordPerformanceTimer(timerId);
+        selectedElements.forEach(el => this.statistics.contextualElementSelections[el.id || el.type] = (this.statistics.contextualElementSelections[el.id || el.type] || 0) + 1);
+      }
+
+      // 3. Augment Base Components
+      const augmentedComponents = this.augmentBaseComponents(baseComponents, selectedElements);
+
+      // 4. Token Budgeting & Content Optimization
+      // This is a complex step. For this implementation, we'll focus on the structure
+      // and assume `utilityAI` can handle summarization if needed.
+      // A more detailed token budgeter would iterate and selectively reduce components.
+      const timerIdBudget = 'tokenBudgeting';
+      this.startPerformanceTimer(timerIdBudget);
+      const { optimizedComponents, modifications } = await this.applyTokenBudget(
+        augmentedComponents,
+        modelTargetInfo,
+        result.issues || [] // Pass issues array to append to
+      );
+      result.wasTruncatedOrSummarized = modifications.wasModified;
+      result.modificationDetails = modifications.details;
+      this.recordPerformanceTimer(timerIdBudget);
+
+
+      // 5. Template Application
+      const timerIdTemplate = 'templateApplication';
+      this.startPerformanceTimer(timerIdTemplate);
+      const templateFn = this.config.availableTemplates[result.metadata.templateUsed];
+      if (!templateFn) {
+        throw new PromptEngineError(`Template '${result.metadata.templateUsed}' not found.`, 'TEMPLATE_NOT_FOUND', 'TemplateApplication');
+      }
+      result.prompt = await templateFn(
+        optimizedComponents,
+        modelTargetInfo,
+        selectedElements, // Pass selected elements for template's direct use if needed
+        this.config,
+        (content, modelId) => this.estimateTokenCount(content, modelId || modelTargetInfo.modelId) // Pass estimateTokenCount
+      );
+      this.recordPerformanceTimer(timerIdTemplate);
+
+      // 6. Final Token Count (more precise if possible, or re-estimate on final structure)
+      result.estimatedTokenCount = await this.estimateTokenCount(
+        typeof result.prompt === 'string' ? result.prompt : JSON.stringify(result.prompt), // Simplistic for object/array prompts
+        modelTargetInfo.modelId
+      );
+      // TODO: If a precise tokenizer is available, use it here for `result.tokenCount`.
+
+      result.metadata.totalSystemPromptsApplied = optimizedComponents.systemPrompts?.length || 0;
+      result.metadata.historyMessagesIncluded = optimizedComponents.conversationHistory?.length || 0;
+      if(optimizedComponents.retrievedContext){
+        result.metadata.ragContextTokensUsed = await this.estimateTokenCount(
+            typeof optimizedComponents.retrievedContext === 'string' ? optimizedComponents.retrievedContext : JSON.stringify(optimizedComponents.retrievedContext),
+            modelTargetInfo.modelId
+        );
+      }
+
+      // Format tool schemas if tools are present and model supports them
+      if (optimizedComponents.tools && optimizedComponents.tools.length > 0 && modelTargetInfo.toolSupport.supported) {
+          result.formattedToolSchemas = this.formatToolSchemasForModel(optimizedComponents.tools, modelTargetInfo);
+      }
+
+
+    } catch (error: unknown) {
+      const err = (error instanceof PromptEngineError) ? error :
+        new PromptEngineError(
+          error instanceof Error ? error.message : 'Unknown error during prompt construction.',
+          'UNHANDLED_CONSTRUCTION_ERROR',
+          'ConstructPromptCore',
+          error
+        );
+      result.issues = result.issues || [];
+      result.issues.push({
+        type: 'error',
+        code: err.code,
+        message: err.message,
+        details: err.details,
+        component: err.component || 'ConstructPromptPipeline',
+      });
+      this.statistics.errorsByType[err.code] = (this.statistics.errorsByType[err.code] || 0) + 1;
+      // No re-throw here, result object will carry the error.
+    } finally {
+      result.metadata.constructionTimeMs = Date.now() - constructionStart;
+      this.statistics.totalConstructionTimeMs += result.metadata.constructionTimeMs;
+    }
+
+    if (result.cacheKey && this.config.performance.enableCaching && (result.issues?.every(i => i.type !== 'error'))) {
+      this.cache.set(result.cacheKey, {
+        key: result.cacheKey,
+        result: JSON.parse(JSON.stringify(result)), // Deep copy
+        timestamp: Date.now(),
+        accessCount: 0,
+        modelId: modelTargetInfo.modelId,
+        estimatedTokenCount: result.estimatedTokenCount || 0,
+      });
+    }
+    return result;
+  }
+
+
+  /** @inheritdoc */
+  public async evaluateCriteria(
+    criteria: Readonly<ContextualPromptElementCriteria>,
+    context: Readonly<PromptExecutionContext>
+  ): Promise<boolean> {
+    this.ensureInitialized();
+    const timerId = 'evaluateCriteria';
+    this.startPerformanceTimer(timerId);
+
+    // This is a simplified evaluation. A full implementation would involve:
+    // - Parsing complex criteria (AND/OR/NOT groups).
+    // - Querying workingMemory using `criteria.workingMemoryQuery`.
+    // - Handling `criteria.complexCondition` (e.g., via a small embedded script or predefined functions).
+    let overallMatch = true; // Assuming AND logic for top-level simple fields for this example.
+
+    if (criteria.mood && context.currentMood !== criteria.mood) overallMatch = false;
+    if (overallMatch && criteria.userSkillLevel && context.userSkillLevel !== criteria.userSkillLevel) overallMatch = false;
+    if (overallMatch && criteria.taskHint && !context.taskHint?.includes(criteria.taskHint)) overallMatch = false; // Partial match for hint
+    if (overallMatch && criteria.taskComplexity && context.taskComplexity !== criteria.taskComplexity) overallMatch = false;
+    if (overallMatch && criteria.language && context.language !== criteria.language) overallMatch = false;
+
+    if (overallMatch && criteria.conversationSignals && criteria.conversationSignals.length > 0) {
+      if (!criteria.conversationSignals.every(s => context.conversationSignals?.includes(s))) {
+        overallMatch = false;
+      }
+    }
+    // Placeholder for workingMemoryQuery
+    if (overallMatch && criteria.workingMemoryQuery) {
+        // Example: const value = await context.workingMemory.get(criteria.workingMemoryQuery.key);
+        // if (value !== criteria.workingMemoryQuery.expectedValue) overallMatch = false;
+        console.warn("Working memory query evaluation in PromptEngine is a placeholder.");
+    }
+
+    this.recordPerformanceTimer(timerId);
+    return overallMatch;
+  }
+
+
+  /** @inheritdoc */
+  public async estimateTokenCount(content: string, modelId?: string): Promise<number> {
+    this.ensureInitialized();
+    this.statistics.tokenCountingOperations++;
+    const timerId = 'estimateTokenCount';
+    this.startPerformanceTimer(timerId);
+
+    if (!content) return 0;
+    // Simple estimation: average 4 chars per token, common for English.
+    // A more sophisticated version would use a tokenizer library like tiktoken
+    // or call a model-specific tokenization endpoint if available.
+    // For now, using a rough character-based heuristic.
+    let count = Math.ceil(content.length / 4);
+
+    // Slightly adjust for specific known models if needed (very rough)
+    if (modelId?.includes('gpt-4')) count = Math.ceil(content.length / 3.8);
+    else if (modelId?.includes('claude')) count = Math.ceil(content.length / 4.2);
+
+    this.recordPerformanceTimer(timerId);
+    return count;
+  }
+
+  /** @inheritdoc */
+  public async registerTemplate(
     templateName: string,
     templateFunction: PromptTemplateFunction
   ): Promise<void> {
     this.ensureInitialized();
-    if (this.templates[templateName]) {
-      console.warn(`PromptEngine: Template '${templateName}' is already registered. Overwriting.`);
+    if (!templateName || typeof templateName !== 'string' || templateName.trim() === '') {
+      throw new PromptEngineError('Template name must be a non-empty string.', 'INVALID_TEMPLATE_NAME', 'RegisterTemplate');
     }
-    this.templates[templateName] = templateFunction;
+    if (typeof templateFunction !== 'function') {
+      throw new PromptEngineError('Template function must be a valid function.', 'INVALID_TEMPLATE_FUNCTION', 'RegisterTemplate');
+    }
+
+    const mutableTemplates = this.config.availableTemplates as Record<string, PromptTemplateFunction>;
+    if (mutableTemplates[templateName]) {
+      console.warn(`PromptEngine: Overwriting existing template '${templateName}'.`);
+    }
+    mutableTemplates[templateName] = templateFunction;
+    // Re-freeze if config was deeply frozen, or manage templates separately.
+    // For simplicity here, we assume availableTemplates can be updated post-init.
+    console.log(`PromptEngine: Template '${templateName}' registered.`);
   }
 
-  /**
-   * {@inheritDoc IPromptEngine.constructPrompt}
-   */
-  public async constructPrompt(
-    components: Partial<PromptComponents>,
-    modelTargetInfo: ModelTargetInfo,
-    executionContext: PromptExecutionContext,
-    templateName?: string
-  ): Promise<PromptEngineResult> {
+  /** @inheritdoc */
+  public async validatePromptConfiguration(
+    components: Readonly<PromptComponents>,
+    modelTargetInfo: Readonly<ModelTargetInfo>,
+    executionContext?: Readonly<PromptExecutionContext> // Added executionContext to allow context-aware validation
+  ): Promise<{
+    isValid: boolean;
+    issues: Array<{ type: 'error' | 'warning'; code: string; message: string; suggestion?: string; component?: string; }>;
+    recommendations?: string[];
+  }> {
     this.ensureInitialized();
+    const issues: Array<{ type: 'error' | 'warning'; code: string; message: string; suggestion?: string; component?: string;}> = [];
+    const recommendations: string[] = [];
 
-    if (!modelTargetInfo) {
-        throw new PromptEngineError('ModelTargetInfo is required for constructPrompt.', 'CONSTRUCT_NO_MODEL_INFO');
+    // Check for model compatibility with provided components
+    if (components.visionInputs && components.visionInputs.length > 0 && !modelTargetInfo.visionSupport?.supported) {
+      issues.push({ type: 'error', code: 'VISION_NOT_SUPPORTED', message: `Model ${modelTargetInfo.modelId} does not support vision inputs.`, component: 'visionInputs' });
     }
-    if (!executionContext || !executionContext.activePersona || !executionContext.workingMemory) {
-        throw new PromptEngineError('PromptExecutionContext with activePersona and workingMemory is required.', 'CONSTRUCT_NO_EXEC_CONTEXT');
-    }
-
-    const issues: NonNullable<PromptEngineResult['issues']> = [];
-    const modificationDetails: NonNullable<PromptEngineResult['modificationDetails']> = {};
-    let wasTruncatedOrSummarized = false;
-
-    // 1. Dynamic Element Selection & Augmentation
-    const augmentedComponents = await this._augmentComponentsWithDynamicElements(
-      { ...components }, // Work on a copy
-      executionContext,
-      issues
-    );
-
-    // 2. Preprocess and Tokenize all components
-    const processedMessages = this._preprocessAndTokenizeComponents(
-      augmentedComponents,
-      modelTargetInfo,
-      issues
-    );
-
-    // 3. Token Budgeting and Assembly
-    const reservedOutputTokens = modelTargetInfo.reservedOutputTokens ?? DEFAULT_RESERVED_OUTPUT_TOKENS;
-    let promptTokenBudget = modelTargetInfo.maxTokens - reservedOutputTokens;
-
-    if (promptTokenBudget <= 0) {
-      issues.push({ type: 'error', message: `Model maxTokens (${modelTargetInfo.maxTokens}) is less than or equal to reservedOutputTokens (${reservedOutputTokens}). No budget for prompt.`, component: 'global_budget' });
-      return this._buildResult([], 0, true, modificationDetails, issues, modelTargetInfo, augmentedComponents.toolSchemas);
+    if (components.tools && components.tools.length > 0 && !modelTargetInfo.toolSupport.supported) {
+      issues.push({ type: 'error', code: 'TOOLS_NOT_SUPPORTED', message: `Model ${modelTargetInfo.modelId} does not support tools/functions.`, component: 'tools' });
     }
 
-    let finalMessages: IntermediateMessage[] = [];
-    let currentUsedTokens = 0;
+    // Basic token check (very rough estimate for validation purposes)
+    let estimatedTokens = 0;
+    if (components.systemPrompts) estimatedTokens += (await Promise.all(components.systemPrompts.map(sp => this.estimateTokenCount(sp.content, modelTargetInfo.modelId)))).reduce((a,b) => a+b, 0);
+    if (components.userInput) estimatedTokens += await this.estimateTokenCount(components.userInput, modelTargetInfo.modelId);
+    if (components.conversationHistory) estimatedTokens += (await Promise.all(components.conversationHistory.map(msg => this.estimateTokenCount(typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content) , modelTargetInfo.modelId)))).reduce((a,b) => a+b, 0);
 
-    // Assembly Order (example): System, Few-shot, RAG Context, Task-Specific, History, User Input
-    // This order can be made more configurable.
-
-    // System Prompts (static + dynamic, already merged and tokenized in processedMessages)
-    processedMessages.systemPrompts.sort((a, b) => (a.priority ?? 0) - (b.priority ?? 0));
-    for (const msg of processedMessages.systemPrompts) {
-      if (currentUsedTokens + msg.tokenCount <= promptTokenBudget) {
-        finalMessages.push(msg);
-        currentUsedTokens += msg.tokenCount;
-      } else {
-        wasTruncatedOrSummarized = true;
-        const {text, tokens} = this._truncateText(msg.content || "", promptTokenBudget - currentUsedTokens, modelTargetInfo, true);
-        if (tokens > 0) {
-            finalMessages.push({...msg, content: text, tokenCount: tokens});
-            currentUsedTokens += tokens;
-        }
-        modificationDetails[`systemPrompt_${msg.id || 'general'}`] = `Truncated to fit budget. Original: ${msg.tokenCount}, Final: ${tokens}`;
-        issues.push({ type: 'warning', message: `System prompt '${msg.id || 'general'}' was truncated.`, component: 'systemPrompts' });
-        break; // No more budget for system prompts
-      }
-    }
-    promptTokenBudget -= finalMessages.filter(m=>m.source?.startsWith('system')).reduce((sum, msg) => sum + msg.tokenCount, 0);
-
-
-    // Few-Shot Examples
-    const fewShotBudget = Math.min(promptTokenBudget * 0.25, 1000); // Example budget allocation
-    let fewShotTokensUsed = 0;
-    processedMessages.fewShotExamples.sort((a, b) => (a.priority ?? 0) - (b.priority ?? 0));
-    for (const example of processedMessages.fewShotExamples) {
-      if (fewShotTokensUsed + example.tokenCount <= fewShotBudget && currentUsedTokens + example.tokenCount <= modelTargetInfo.maxTokens - reservedOutputTokens) {
-        finalMessages.push(example);
-        currentUsedTokens += example.tokenCount;
-        fewShotTokensUsed += example.tokenCount;
-      } else {
-        wasTruncatedOrSummarized = true;
-        modificationDetails['fewShotExamples'] = (modificationDetails['fewShotExamples'] || 'Partially included or dropped examples. ');
-        break;
-      }
-    }
-    promptTokenBudget -= fewShotTokensUsed;
-
-
-    // RAG Context
-    if (processedMessages.retrievedContext.length > 0) {
-      const contextBudget = Math.min(promptTokenBudget * 0.4, this.config.defaultContextMaxTokens); // Example budget
-      const { messages: finalContext, wasModified: contextModified, details: contextDetails } =
-        await this._truncateOrSummarizeContentList(
-          processedMessages.retrievedContext,
-          contextBudget,
-          this.config.defaultContextTruncationStrategy,
-          this.config.contextSummarizationOptions,
-          modelTargetInfo,
-          'retrievedContext'
-        );
-      finalMessages.push(...finalContext);
-      currentUsedTokens += finalContext.reduce((sum, msg) => sum + msg.tokenCount, 0);
-      if (contextModified) wasTruncatedOrSummarized = true;
-      if (contextDetails) modificationDetails.retrievedContext = contextDetails;
-      promptTokenBudget -= finalContext.reduce((sum, msg) => sum + msg.tokenCount, 0);
+    if (estimatedTokens > modelTargetInfo.maxContextTokens) {
+      issues.push({ type: 'warning', code: 'POTENTIAL_TOKEN_OVERFLOW', message: `Estimated initial token count (${estimatedTokens}) exceeds model's max context (${modelTargetInfo.maxContextTokens}). Relying on truncation/summarization.`, component: 'OverallPrompt' });
+    } else if (estimatedTokens > (modelTargetInfo.optimalContextTokens || modelTargetInfo.maxContextTokens) * 0.8) {
+      recommendations.push(`Consider reducing initial prompt length; current estimate (${estimatedTokens}) is >80% of optimal/max context.`);
     }
 
-    // Task-Specific Data (insert before history/user input)
-    if (processedMessages.taskSpecificData) {
-        if (currentUsedTokens + processedMessages.taskSpecificData.tokenCount <= modelTargetInfo.maxTokens - reservedOutputTokens) {
-            finalMessages.push(processedMessages.taskSpecificData);
-            currentUsedTokens += processedMessages.taskSpecificData.tokenCount;
-            promptTokenBudget -= processedMessages.taskSpecificData.tokenCount;
-        } else {
-            // Truncate or drop taskSpecificData if it doesn't fit
-            wasTruncatedOrSummarized = true;
-            modificationDetails.taskSpecificData = 'Truncated or dropped due to budget.';
-            issues.push({type: 'warning', message: 'Task-specific data truncated or dropped.', component: 'taskSpecificData'});
-        }
+    if (!components.systemPrompts || components.systemPrompts.length === 0) {
+      recommendations.push("Consider adding a system prompt to guide the GMI's behavior more effectively.");
+    }
+
+    // Validate contextual elements if executionContext and persona are provided
+    if (executionContext?.activePersona?.promptConfig?.contextualElements) {
+        // This could involve checking if criteria reference valid working memory keys, etc.
+        recommendations.push("Review persona's contextual elements to ensure they align with expected execution contexts.");
     }
 
 
-    // Conversation History (takes a large portion of remaining budget)
-    if (processedMessages.conversationHistory.length > 0) {
-        const historyBudget = Math.min(promptTokenBudget * 0.8, this.config.defaultHistoryMaxTokens); // Allocate most of remaining to history
-        const { messages: finalHistory, wasModified: historyModified, details: historyDetails } =
-            await this._truncateOrSummarizeContentList(
-                processedMessages.conversationHistory,
-                historyBudget,
-                this.config.defaultHistoryTruncationStrategy,
-                this.config.historySummarizationOptions,
-                modelTargetInfo,
-                'conversationHistory',
-                this.config.defaultHistoryMaxMessages
-            );
-        // Insert history before user input if present, otherwise at the end of current messages
-        const userIndex = finalMessages.findIndex(m => m.role === 'user' && m.source === 'userInput_main');
-        if (userIndex !== -1) {
-            finalMessages.splice(userIndex, 0, ...finalHistory);
-        } else {
-            finalMessages.push(...finalHistory);
-        }
-        currentUsedTokens += finalHistory.reduce((sum, msg) => sum + msg.tokenCount, 0);
-        if (historyModified) wasTruncatedOrSummarized = true;
-        if (historyDetails) modificationDetails.conversationHistory = historyDetails;
-        promptTokenBudget -= finalHistory.reduce((sum, msg) => sum + msg.tokenCount, 0);
-    }
-
-    // User Input (usually last or just before last assistant response slot)
-    if (processedMessages.userInput) {
-        if (currentUsedTokens + processedMessages.userInput.tokenCount <= modelTargetInfo.maxTokens - reservedOutputTokens) {
-            finalMessages.push(processedMessages.userInput);
-            currentUsedTokens += processedMessages.userInput.tokenCount;
-        } else {
-            const {text, tokens} = this._truncateText(processedMessages.userInput.content || "", modelTargetInfo.maxTokens - reservedOutputTokens - currentUsedTokens, modelTargetInfo, true);
-            if (tokens > 0) {
-                finalMessages.push({...processedMessages.userInput, content: text, tokenCount: tokens});
-                currentUsedTokens += tokens;
-            }
-            wasTruncatedOrSummarized = true;
-            modificationDetails.userInput = `Truncated. Original: ${processedMessages.userInput.tokenCount}, Final: ${tokens}`;
-            issues.push({ type: 'warning', message: 'User input was truncated.', component: 'userInput' });
-        }
-    }
-
-    // Final ordering pass (e.g. ensure system prompts are first if not already)
-    // This might be complex if priorities are heavily used across different types.
-    // For now, assume assembly order mostly dictates final order.
-
-    // 4. Template Application
-    const templateKey = templateName || modelTargetInfo.promptFormatType || this.config.defaultTemplateName;
-    const selectedTemplate = this.templates[templateKey];
-
-    if (!selectedTemplate) {
-      issues.push({ type: 'error', message: `Prompt template '${templateKey}' not found.`, component: 'template' });
-      return this._buildResult(finalMessages, currentUsedTokens, wasTruncatedOrSummarized, modificationDetails, issues, modelTargetInfo, augmentedComponents.toolSchemas);
-    }
-
-    const formattedPrompt = selectedTemplate(
-      { messages: finalMessages, toolSchemas: augmentedComponents.toolSchemas },
-      modelTargetInfo,
-      executionContext
-    );
-
-    // 5. Prepare and Return Result
-    return this._buildResult(
-      finalMessages,
-      currentUsedTokens, // This is the token count of `finalMessages` *before* template formatting.
-                        // True final token count requires tokenizing the `formattedPrompt`.
-      wasTruncatedOrSummarized,
-      modificationDetails,
-      issues,
-      modelTargetInfo,
-      augmentedComponents.toolSchemas,
-      formattedPrompt // Pass this to potentially re-tokenize for final count
-    );
+    return { isValid: !issues.some(i => i.type === 'error'), issues, recommendations };
   }
 
-  /**
-   * Builds the final PromptEngineResult object.
-   * Optionally re-tokenizes the formattedPrompt for an accurate final token count.
-   * @private
-   */
-  private _buildResult(
-    finalMessages: IntermediateMessage[], // Messages that went into the template
-    inputMessagesTokenCount: number, // Token count of finalMessages
-    wasTruncatedOrSummarized: boolean,
-    modificationDetails: NonNullable<PromptEngineResult['modificationDetails']>,
-    issues: NonNullable<PromptEngineResult['issues']>,
-    modelTargetInfo: ModelTargetInfo,
-    toolSchemas?: ToolDefinition[],
-    formattedPrompt?: FormattedPrompt // Optional: final output from template
-  ): PromptEngineResult {
 
-    let finalTokenCount = inputMessagesTokenCount;
-    if (formattedPrompt && this.tokenizer && this.config.useTokenizerIfAvailable) {
-        try {
-            if (typeof formattedPrompt === 'string') {
-                finalTokenCount = this.tokenizer.countTokens(formattedPrompt);
-            } else if (Array.isArray(formattedPrompt)) { // Likely ChatMessage[]
-                const textToTokenize = formattedPrompt.map(m => typeof (m as any).content === 'string' ? (m as any).content : JSON.stringify((m as any).content || "")).join(" ");
-                finalTokenCount = this.tokenizer.countTokens(textToTokenize); // Rough for chat, actual depends on model API
-            }
-            // Add more complex tokenization for specific formats if needed
-        } catch (e) {
-            issues.push({type: 'warning', message: 'Failed to re-tokenize final formatted prompt for accurate count.', details: (e as Error).message});
-        }
-    }
-
-
-    let finalFormattedToolSchemas: any[] | undefined;
-    if (toolSchemas && toolSchemas.length > 0) {
-        if (modelTargetInfo.toolSupport?.format === 'openai_tools') {
-            finalFormattedToolSchemas = toolSchemas.map(ts => ({
-                type: 'function',
-                function: { name: ts.name, description: ts.description, parameters: ts.parameters }
-            }));
-        }
-        // Add other tool formats here (Anthropic, Google AI)
-        else if (modelTargetInfo.toolSupport?.format === 'anthropic_tools') {
-             // Anthropic tools are complex XML-like structures or JSON for the API
-             // This formatting should ideally happen within the template or a dedicated formatter.
-             // For simplicity, we'll represent them abstractly here.
-            finalFormattedToolSchemas = toolSchemas.map(ts => ({
-                name: ts.name,
-                description: ts.description,
-                input_schema: ts.parameters
-            }));
-        }
-    }
-
-
-    return {
-      prompt: formattedPrompt || finalMessages, // Fallback to messages if template failed or not applicable
-      tokenCount: finalTokenCount,
-      estimatedTokenCount: (!this.tokenizer || !this.config.useTokenizerIfAvailable) ? finalTokenCount : undefined,
-      wasTruncatedOrSummarized,
-      modificationDetails: Object.keys(modificationDetails).length > 0 ? modificationDetails : undefined,
-      issues: issues.length > 0 ? issues : undefined,
-      metadata: {
-        finalMessageCount: finalMessages.length,
-        modelTarget: modelTargetInfo.modelId,
-        promptFormat: modelTargetInfo.promptFormatType,
-        // Add more metadata about dynamic elements selection if useful
-      },
-      formattedToolSchemas: finalFormattedToolSchemas,
-    };
-  }
-
-  /**
-   * {@inheritDoc IPromptEngine.getTokenCount}
-   */
-  public async getTokenCount(
-    textOrComponents: string | Partial<PromptComponents>,
-    modelTargetInfo: ModelTargetInfo
-  ): Promise<number> {
+  /** @inheritdoc */
+  public async clearCache(selectivePattern?: string): Promise<void> {
     this.ensureInitialized();
-    if (!modelTargetInfo) {
-        throw new PromptEngineError("ModelTargetInfo is required for getTokenCount.", "COUNT_NO_MODEL_INFO");
+    if (!this.config.performance.enableCaching) {
+      console.warn("PromptEngine: Cache clearing attempted but caching is disabled.");
+      return;
     }
-
-    if (typeof textOrComponents === 'string') {
-      return this._countTokens(textOrComponents, 'getTokenCount_string', []).count;
-    }
-
-    // For PromptComponents, this is an estimation as it doesn't do full assembly.
-    // It sums up tokens from individual parts.
-    let totalTokens = 0;
-    const issues: any[] = []; // Dummy issues array for _countTokens
-
-    if (textOrComponents.systemPrompts) {
-      textOrComponents.systemPrompts.forEach(sp => totalTokens += this._countTokens(sp.content, 'system', issues).count);
-    }
-    if (textOrComponents.conversationHistory) {
-      textOrComponents.conversationHistory.forEach(msg => totalTokens += this._countTokens(msg.content as string, 'history', issues).count);
-    }
-    if (textOrComponents.userInput) {
-      totalTokens += this._countTokens(textOrComponents.userInput, 'userInput', issues).count;
-    }
-    if (textOrComponents.retrievedContext) {
-      textOrComponents.retrievedContext.forEach(ctx => totalTokens += this._countTokens(ctx.content, 'context', issues).count);
-    }
-    if (textOrComponents.fewShotExamples) {
-      textOrComponents.fewShotExamples.forEach(ex => {
-        totalTokens += this._countTokens(ex.input, 'example_input', issues).count;
-        totalTokens += this._countTokens(ex.output, 'example_output', issues).count;
-      });
-    }
-    // Add rough overhead for message structures in chat models (e.g., role, separators)
-    const messageCount = (textOrComponents.systemPrompts?.length || 0) +
-                         (textOrComponents.conversationHistory?.length || 0) +
-                         (textOrComponents.userInput ? 1 : 0) +
-                         (textOrComponents.fewShotExamples?.length || 0) * 2 +
-                         (textOrComponents.retrievedContext?.length || 0);
-    totalTokens += messageCount * 4; // Extremely rough overhead per message
-    totalTokens += 5; // Base overhead for the prompt structure
-
-    return totalTokens;
-  }
-
-
-  /**
-   * Augments the initial PromptComponents with dynamically selected contextual elements
-   * from the active persona, based on the PromptExecutionContext.
-   * @private
-   */
-  private async _augmentComponentsWithDynamicElements(
-    baseComponents: Partial<PromptComponents>,
-    executionContext: PromptExecutionContext,
-    issues: NonNullable<PromptEngineResult['issues']>
-  ): Promise<Partial<PromptComponents>> {
-    const { activePersona, workingMemory, taskHint, userSkillLevel, language } = executionContext;
-
-    const dynamicElements = activePersona.promptConfig?.contextualElements || [];
-    if (dynamicElements.length === 0) {
-      return baseComponents; // No dynamic elements defined
-    }
-
-    const currentMood = await workingMemory.get<string>('current_mood');
-    // In a real system, other context factors like 'conversationSignal' would be fetched or passed in.
-
-    const selectedDynamicElements: ContextualPromptElement[] = [];
-    for (const element of dynamicElements) {
-      if (this._evaluateCriteria(element.criteria, { currentMood, taskHint, userSkillLevel, language /*, activePersonaTraits, conversationSignals */ })) {
-        selectedDynamicElements.push(element);
-      }
-    }
-
-    // Sort selected elements by priority (lower number = higher priority)
-    selectedDynamicElements.sort((a, b) => (a.priority ?? Infinity) - (b.priority ?? Infinity));
-
-    // Merge selected elements into baseComponents
-    // This is a simplified merge; more sophisticated logic might be needed for limits per type, etc.
-    if (!baseComponents.systemPrompts) baseComponents.systemPrompts = [];
-    if (!baseComponents.fewShotExamples) baseComponents.fewShotExamples = [];
-
-    for (const selected of selectedDynamicElements) {
-      switch (selected.type) {
-        case 'system_instruction_addon':
-          baseComponents.systemPrompts.push({ content: selected.content, priority: selected.priority, id: selected.id });
-          break;
-        case 'few_shot_example_input': // Assuming 'content' holds the input part of an example
-                                     // and a paired 'few_shot_example_output' element exists.
-          // This requires a more robust way to handle input/output pairs for few-shot examples.
-          // For simplicity here, we'll add it as a potential input example that a template might use.
-          // A better approach: group input/output pairs in `dynamicPromptElements`.
-          const pairedOutputElement = selected.pairId ? dynamicElements.find(el => el.id === selected.pairId && el.type === 'few_shot_example_output') : undefined;
-           if (pairedOutputElement) {
-                baseComponents.fewShotExamples.push({
-                    input: selected.content,
-                    output: pairedOutputElement.content,
-                    criteria: selected.criteria, // Carry criteria for traceability
-                    id: selected.id
-                });
-           } else if (!selected.pairId && selected.content.includes("Input:") && selected.content.includes("Output:")) {
-               // Try to parse if content itself is a full example
-               // This is heuristic and less robust. Structured pairs are better.
-               const parts = selected.content.split("Output:");
-               const inputPart = parts[0].replace("Input:","").trim();
-               const outputPart = parts[1] ? parts[1].trim() : "";
-                baseComponents.fewShotExamples.push({
-                    input: inputPart,
-                    output: outputPart,
-                    criteria: selected.criteria,
-                    id: selected.id
-                });
-
-           } else {
-                issues.push({type: 'warning', message: `Dynamic few-shot input '${selected.id}' added without a clearly paired output. Structure examples as pairs or provide a 'pairId'.`});
-           }
-          break;
-        // case 'few_shot_example_output': // Handled by pairing with input
-        //   break;
-        case 'user_prompt_prefix':
-          baseComponents.userInput = `${selected.content}${baseComponents.userInput || ''}`;
-          break;
-        case 'user_prompt_suffix':
-          baseComponents.userInput = `${baseComponents.userInput || ''}${selected.content}`;
-          break;
-        // Add more cases for other ContextualPromptElement types
-        default:
-          issues.push({ type: 'warning', message: `Unhandled dynamic prompt element type: '${selected.type}' for element ID '${selected.id}'.`, component: 'dynamicElements' });
-      }
-    }
-    return baseComponents;
-  }
-
-  /**
-   * Evaluates if a set of criteria matches the current execution context.
-   * @private
-   */
-  private _evaluateCriteria(
-    criteria: ContextualPromptElementCriteria,
-    context: {
-      currentMood?: string | null;
-      taskHint?: string;
-      userSkillLevel?: string;
-      language?: string;
-      // personaTraitActive?: string[]; (from working memory if used)
-      // conversationSignal?: string[]; (from working memory if used)
-      customFlags?: Record<string, string | boolean | number>;
-    }
-  ): boolean {
-    if (!criteria) return true; // No criteria means always applicable (or handle as error if criteria are mandatory)
-
-    if (criteria.mood) {
-      const moods = Array.isArray(criteria.mood) ? criteria.mood : [criteria.mood];
-      if (!context.currentMood || !moods.includes(context.currentMood)) return false;
-    }
-    if (criteria.userSkillLevel) {
-      const levels = Array.isArray(criteria.userSkillLevel) ? criteria.userSkillLevel : [criteria.userSkillLevel];
-      if (!context.userSkillLevel || !levels.includes(context.userSkillLevel)) return false;
-    }
-    if (criteria.taskHint) {
-      const hints = Array.isArray(criteria.taskHint) ? criteria.taskHint : [criteria.taskHint];
-      if (!context.taskHint || !hints.includes(context.taskHint)) return false;
-    }
-    if (criteria.language) {
-        const languages = Array.isArray(criteria.language) ? criteria.language : [criteria.language];
-        if (!context.language || !languages.some(lang => context.language?.startsWith(lang))) return false; // Allow for "en" to match "en-US"
-    }
-    // Implement personaTraitActive and conversationSignal checks if those are passed in context
-    if (criteria.customFlags && context.customFlags) {
-        for (const key in criteria.customFlags) {
-            if (criteria.customFlags[key] !== context.customFlags[key]) return false;
+    if (selectivePattern) {
+      let clearedCount = 0;
+      const regex = new RegExp(selectivePattern); // Basic regex matching
+      for (const key of this.cache.keys()) {
+        if (regex.test(key)) {
+          this.cache.delete(key);
+          clearedCount++;
         }
-    } else if (criteria.customFlags && !context.customFlags) {
-        return false; // Criteria require custom flags but none provided in context
-    }
-
-    return true; // All checked criteria matched
-  }
-
-
-  /**
-   * Counts tokens for a given text, using the configured tokenizer or falling back to estimation.
-   * @private
-   */
-  private _countTokens(
-    text: string | null,
-    componentName: string, // For logging/issue reporting
-    issues: NonNullable<PromptEngineResult['issues']>
-  ): { count: number; estimated: boolean } {
-    if (!text) return { count: 0, estimated: false };
-
-    if (this.tokenizer && this.config.useTokenizerIfAvailable) {
-      try {
-        return { count: this.tokenizer.countTokens(text), estimated: false };
-      } catch (e: any) {
-        issues.push({
-          type: 'warning',
-          message: `Tokenizer error while counting tokens for ${componentName}: ${e.message}. Falling back to character-based estimation.`,
-          component: componentName,
-          details: e,
-        });
-        // Fall through to estimation
       }
-    }
-    return {
-      count: Math.ceil(text.length / FALLBACK_AVG_CHARS_PER_TOKEN),
-      estimated: true,
-    };
-  }
-
-  /**
-   * Preprocesses raw PromptComponents into an array of IntermediateMessage objects,
-   * calculating initial token counts for each.
-   * @private
-   */
-  private _preprocessAndTokenizeComponents(
-    rawComponents: Partial<PromptComponents>,
-    modelInfo: ModelTargetInfo, // Not directly used for tokenization here, but could be for role validation
-    issues: NonNullable<PromptEngineResult['issues']>
-  ): {
-    systemPrompts: IntermediateMessage[];
-    conversationHistory: IntermediateMessage[];
-    userInput: IntermediateMessage | null;
-    retrievedContext: IntermediateMessage[];
-    taskSpecificData: IntermediateMessage | null;
-    fewShotExamples: IntermediateMessage[]; // Flattened into alternating user/assistant messages
-    toolSchemas: ToolDefinition[]; // Passed through
-  } {
-    const result = {
-      systemPrompts: [] as IntermediateMessage[],
-      conversationHistory: [] as IntermediateMessage[],
-      userInput: null as IntermediateMessage | null,
-      retrievedContext: [] as IntermediateMessage[],
-      taskSpecificData: null as IntermediateMessage | null,
-      fewShotExamples: [] as IntermediateMessage[],
-      toolSchemas: rawComponents.toolSchemas || [],
-    };
-
-    // System Prompts
-    if (rawComponents.systemPrompts) {
-      rawComponents.systemPrompts.forEach((sp, i) => {
-        const { count: tokenCount } = this._countTokens(sp.content, `systemPrompts[${i}]`, issues);
-        result.systemPrompts.push({
-          role: 'system',
-          content: sp.content,
-          priority: sp.priority,
-          source: `system_static_${sp.id || i}`,
-          tokenCount,
-          id: sp.id,
-        });
-      });
+      console.log(`PromptEngine: Cleared ${clearedCount} cache entries matching pattern '${selectivePattern}'.`);
     } else {
-        const { count: tokenCount } = this._countTokens(DEFAULT_SYSTEM_PROMPT_CONTENT, `system_default`, issues);
-        result.systemPrompts.push({
-            role: 'system',
-            content: DEFAULT_SYSTEM_PROMPT_CONTENT,
-            priority: 1000, // Default has low priority if dynamic ones are added
-            source: 'system_default',
-            tokenCount,
-            id: 'default_system_prompt',
-        });
+      this.cache.clear();
+      console.log("PromptEngine: All cache entries cleared.");
     }
+    this.statistics.cacheHits = 0; // Reset hit/miss on full clear
+    this.statistics.cacheMisses = 0;
+  }
 
+  /** @inheritdoc */
+  public async getEngineStatistics(): Promise<{
+    totalPromptsConstructed: number;
+    averageConstructionTimeMs: number;
+    cacheStats: { hits: number; misses: number; currentSize: number; maxSize?: number; effectivenessRatio: number; };
+    tokenCountingStats: { operations: number; averageAccuracy?: number; };
+    contextualElementUsage: Record<string, { count: number; averageEvaluationTimeMs?: number; }>;
+    errorRatePerType: Record<string, number>;
+    performanceTimers: Record<string, { count: number; totalTimeMs: number; averageTimeMs: number; }>;
+  }> {
+    this.ensureInitialized();
+    const totalCacheAccesses = this.statistics.cacheHits + this.statistics.cacheMisses;
+    const cacheEffectiveness = totalCacheAccesses > 0 ? this.statistics.cacheHits / totalCacheAccesses : 0;
 
-    // Conversation History
-    if (rawComponents.conversationHistory) {
-      rawComponents.conversationHistory.forEach((msg, i) => {
-        // Ensure role is one of the literal types
-        let role: IntermediateMessage['role'] = 'user'; // default
-        if (msg.role === MessageRole.SYSTEM) role = 'system';
-        else if (msg.role === MessageRole.USER) role = 'user';
-        else if (msg.role === MessageRole.ASSISTANT) role = 'assistant';
-        else if (msg.role === MessageRole.TOOL) role = 'tool';
-
-        const { count: tokenCount } = this._countTokens(msg.content as string | null, `history[${i}]`, issues);
-        result.conversationHistory.push({
-          ...msg, // Spread original message to keep tool_calls etc.
-          role,
-          content: msg.content as string | null,
-          tokenCount,
-          source: `history_original_${i}`,
-          // priority: default history message priority might be its index or a fixed value.
-        });
-      });
-    }
-
-    // User Input
-    if (rawComponents.userInput) {
-      const { count: tokenCount } = this._countTokens(rawComponents.userInput, 'userInput', issues);
-      result.userInput = {
-        role: 'user',
-        content: rawComponents.userInput,
-        tokenCount,
-        source: 'userInput_main',
-        priority: 0, // User input is usually high priority
-      };
-    }
-
-    // Retrieved Context (typically injected as user or system messages, depending on template)
-    // For processing, treat as distinct items. Template decides final role.
-    if (rawComponents.retrievedContext) {
-      rawComponents.retrievedContext.forEach((ctx, i) => {
-        const content = `Retrieved context (source: ${ctx.source || 'unknown'}, score: ${ctx.score?.toFixed(2) || 'N/A'}):\n${ctx.content}`;
-        const { count: tokenCount } = this._countTokens(content, `retrievedContext[${i}]`, issues);
-        result.retrievedContext.push({
-          // The role here is provisional; the template might re-assign it.
-          // For budgeting, we need its content. Using 'user' as a placeholder if forced.
-          role: 'user', // Or 'system' - depends on how the model best processes context.
-          content: content,
-          tokenCount,
-          priority: ctx.score ? Math.round(ctx.score * 100) : 50, // Higher score = higher priority for retention
-          source: `context_rag_${ctx.id || i}`,
-          id: ctx.id,
-        });
-      });
-      result.retrievedContext.sort((a, b) => (b.priority ?? 0) - (a.priority ?? 0)); // Higher score first
-    }
-
-    // Few-Shot Examples (flatten into alternating user/assistant messages)
-    if (rawComponents.fewShotExamples) {
-      rawComponents.fewShotExamples.forEach((ex, i) => {
-        const { count: inputTokens } = this._countTokens(ex.input, `fewShotExample[${i}]_input`, issues);
-        result.fewShotExamples.push({
-          role: 'user',
-          content: ex.input,
-          tokenCount: inputTokens,
-          source: `few_shot_example_${ex.id || i}_input`,
-          priority: ex.criteria?.priority || i + 100, // Example priority
-          id: ex.id ? `${ex.id}_input` : undefined,
-        });
-        const { count: outputTokens } = this._countTokens(ex.output, `fewShotExample[${i}]_output`, issues);
-        result.fewShotExamples.push({
-          role: 'assistant',
-          content: ex.output,
-          tokenCount: outputTokens,
-          source: `few_shot_example_${ex.id || i}_output`,
-          priority: (ex.criteria?.priority || i + 100) + 0.5, // Ensure output follows input
-          id: ex.id ? `${ex.id}_output` : undefined,
-        });
-      });
-    }
-     // Task-Specific Data (often prepended to user input or as a system message)
-    if (rawComponents.taskSpecificData) {
-        const dataContent = typeof rawComponents.taskSpecificData === 'string'
-            ? rawComponents.taskSpecificData
-            : JSON.stringify(rawComponents.taskSpecificData);
-        const { count: tokenCount } = this._countTokens(dataContent, 'taskSpecificData', issues);
-        result.taskSpecificData = {
-            role: 'system', // Often treated as a focused system instruction
-            content: dataContent,
-            tokenCount,
-            source: 'taskSpecificData',
-            priority: -50, // Higher than general system, lower than user input
+    const contextualElementUsageWithAvgTime: Record<string, { count: number; averageEvaluationTimeMs?: number; }> = {};
+    for(const key in this.statistics.contextualElementSelections) {
+        contextualElementUsageWithAvgTime[key] = {
+            count: this.statistics.contextualElementSelections[key],
+            // averageEvaluationTimeMs could be tracked if evaluateCriteria is timed per element type/id
         };
     }
 
-
-    return result;
-  }
-
-  /**
-   * Truncates or summarizes a list of content items (history or context)
-   * to fit within a given token budget.
-   * @private
-   */
-  private async _truncateOrSummarizeContentList(
-    messages: IntermediateMessage[],
-    maxTokens: number,
-    strategy: PromptEngineConfig['defaultHistoryTruncationStrategy'] | PromptEngineConfig['defaultContextTruncationStrategy'],
-    summarizationOptions: SummarizationOptions | undefined,
-    modelInfo: ModelTargetInfo,
-    componentName: string, // For logging/details
-    maxMessages?: number
-  ): Promise<{ messages: IntermediateMessage[]; wasModified: boolean; details?: any }> {
-    let currentTokens = messages.reduce((sum, msg) => sum + msg.tokenCount, 0);
-    let workingMessages = [...messages]; // Work on a copy
-    let wasModified = false;
-    const originalMessageCount = workingMessages.length;
-    const originalTokenCount = currentTokens;
-
-    // 1. Apply maxMessages limit (primarily for history)
-    if (maxMessages !== undefined && workingMessages.length > maxMessages) {
-      wasModified = true;
-      if (strategy === 'FIFO' || strategy === 'SUMMARIZE_OLDEST') {
-        workingMessages = workingMessages.slice(-maxMessages);
-      } else { // LIFO, SUMMARIZE_MIDDLE (keeps N most recent, or start+end for middle)
-        workingMessages = workingMessages.slice(workingMessages.length - maxMessages);
-      }
-      currentTokens = workingMessages.reduce((sum, msg) => sum + msg.tokenCount, 0);
-    }
-
-    // 2. Apply token budget
-    if (currentTokens > maxTokens) {
-      wasModified = true;
-      switch (strategy) {
-        case 'FIFO': // Remove oldest
-          while (currentTokens > maxTokens && workingMessages.length > 0) {
-            currentTokens -= workingMessages.shift()!.tokenCount;
-          }
-          break;
-        case 'LIFO': // Remove least recent (from the start of the current window)
-          while (currentTokens > maxTokens && workingMessages.length > 0) {
-            currentTokens -= workingMessages.shift()!.tokenCount; // Effectively same as FIFO for history if already sliced by maxMessages
-          }
-          break;
-        case 'SUMMARIZE_OLDEST':
-        case 'SUMMARIZE_MIDDLE':
-          if (this.utilityAI && workingMessages.length >= MIN_MESSAGES_FOR_HISTORY_SUMMARIZATION && summarizationOptions) {
-            try {
-              // Determine which messages to summarize
-              let retainEndCount = Math.max(1, Math.floor(workingMessages.length * 0.25)); // Keep last 25%
-              let retainStartCount = (strategy === 'SUMMARIZE_MIDDLE') ? Math.max(1, Math.floor(workingMessages.length * 0.25)) : 0;
-              
-              // Ensure retain counts don't exceed available messages if list is small
-              if (workingMessages.length < retainStartCount + retainEndCount +1) {
-                  retainStartCount = 0; // just summarize oldest if too few for complex middle summarization
-                  retainEndCount = Math.min(retainEndCount, Math.max(0, workingMessages.length-1));
-              }
-
-
-              const headMessages = workingMessages.slice(0, retainStartCount);
-              const tailMessages = workingMessages.slice(workingMessages.length - retainEndCount);
-              const messagesToSummarize = workingMessages.slice(retainStartCount, workingMessages.length - retainEndCount);
-
-              if (messagesToSummarize.length > 0) {
-                const textToSummarize = messagesToSummarize.map(m => `${m.role}: ${m.content}`).join('\n');
-                const tokensToSummarize = messagesToSummarize.reduce((s,m)=>s+m.tokenCount,0);
-
-                // Budget for summary: maxTokens - (tokens of head+tail) - safety_buffer
-                const budgetForSummary = maxTokens - headMessages.reduce((s,m)=>s+m.tokenCount,0) - tailMessages.reduce((s,m)=>s+m.tokenCount,0) - 50;
-
-                if (this._countTokens(textToSummarize, componentName, []).count > MIN_TOKENS_FOR_SUMMARIZATION && budgetForSummary > (this.tokenizer ? 20 : 80)) {
-                  const dynamicSummaryOptions: SummarizationOptions = {
-                    ...summarizationOptions,
-                    // Adjust desiredLength of summary based on available token budget
-                    // desiredLength can be number of words, sentences, or target token count if utilityAI supports it
-                    // For now, assume it's a hint and utilityAI manages token output.
-                  };
-                  const summaryContent = await this.utilityAI.summarize(textToSummarize, dynamicSummaryOptions);
-                  const { count: summaryTokenCount } = this._countTokens(summaryContent, `${componentName}_summary`, []);
-
-                  if (summaryTokenCount <= budgetForSummary) {
-                    const summaryMessage: IntermediateMessage = {
-                      role: 'system', // Summaries are often injected as system messages
-                      content: `[Summary of ${messagesToSummarize.length} older conversation turns]:\n${summaryContent}`,
-                      tokenCount: summaryTokenCount,
-                      isSummary: true,
-                      originalMessageCount: messagesToSummarize.length,
-                      source: `${componentName}_summary`,
-                      priority: (headMessages.length > 0 ? headMessages[headMessages.length-1].priority! : tailMessages[0]?.priority || 0) + 0.1, // Insert appropriately
-                    };
-                    workingMessages = [...headMessages, summaryMessage, ...tailMessages];
-                    currentTokens = workingMessages.reduce((sum, msg) => sum + msg.tokenCount, 0);
-                  } else { /* Summary too long, fallback to truncation */ fallbackToTruncate(); }
-                } else { /* Not enough content or budget to summarize, fallback */ fallbackToTruncate(); }
-              } // else no messages to summarize if head+tail cover everything
-            } catch (e: any) {
-              console.warn(`PromptEngine: Summarization failed for ${componentName}, falling back to FIFO truncation. Error: ${e.message}`);
-              fallbackToTruncate();
-            }
-          } else { /* No utilityAI or not enough messages, fallback */ fallbackToTruncate(); }
-          break;
-        case 'TRUNCATE_CONTENT': // For context items
-        case 'TOP_K_BY_SCORE':   // For context items (assumes already sorted by score)
-        case 'REMOVE_LOW_SCORE': // For context items
-        default: // Fallback to FIFO-like for generic content lists
-          fallbackToTruncate();
-          break;
-      }
-      function fallbackToTruncate() {
-        // More aggressive FIFO if summarization fails or not applicable
-        workingMessages = [...messages]; // Reset to original slice (if maxMessages was applied)
-        currentTokens = workingMessages.reduce((sum, msg) => sum + msg.tokenCount, 0);
-        while (currentTokens > maxTokens && workingMessages.length > 0) {
-            currentTokens -= workingMessages.shift()!.tokenCount;
-        }
-      }
-    }
-
-    const finalTokenCount = workingMessages.reduce((sum, msg) => sum + msg.tokenCount, 0);
     return {
-      messages: workingMessages,
-      wasModified,
-      details: {
-        strategy,
-        originalItems: originalMessageCount,
-        finalItems: workingMessages.length,
-        originalTokens: originalTokenCount,
-        finalTokens: finalTokenCount,
-        maxTokensBudget: maxTokens,
-      }
+      totalPromptsConstructed: this.statistics.totalPromptsConstructed,
+      averageConstructionTimeMs: this.statistics.totalPromptsConstructed > 0 ? this.statistics.totalConstructionTimeMs / this.statistics.totalPromptsConstructed : 0,
+      cacheStats: {
+        hits: this.statistics.cacheHits,
+        misses: this.statistics.cacheMisses,
+        currentSize: this.cache.size,
+        maxSize: this.config.performance.maxCacheSizeBytes, // Note: this was 'maxCacheSizeBytes' in config, might be num entries
+        effectivenessRatio: cacheEffectiveness,
+      },
+      tokenCountingStats: {
+        operations: this.statistics.tokenCountingOperations,
+        // averageAccuracy would require ground truth for token counts, hard to implement generally here.
+      },
+      contextualElementUsage: contextualElementUsageWithAvgTime,
+      errorRatePerType: { ...this.statistics.errorsByType },
+      performanceTimers: { ...this.statistics.performanceTimers },
     };
   }
 
-  /**
-   * Truncates a single piece of text to fit a token budget.
-   * Prefers to truncate from the beginning for history/context if `fromStart` is true.
-   * @private
-   */
-  private _truncateText(
-    text: string,
-    budget: number,
-    modelInfo: ModelTargetInfo, // For potential model-specific truncation (e.g. preferring full words)
-    fromStart: boolean = false // if true, truncates from the beginning (for old history)
-  ): { text: string; tokens: number } {
-    if (budget <= 0) return { text: "", tokens: 0 };
-    let currentTokens = this._countTokens(text, 'truncate_text', []).count;
-    if (currentTokens <= budget) return { text, tokens: currentTokens };
 
-    if (this.tokenizer && this.config.useTokenizerIfAvailable) {
-      let tokens = this.tokenizer.encode(text);
-      if (fromStart) {
-        tokens = tokens.slice(tokens.length - budget); // Highly approximate, as token budget != token count directly
-      } else {
-        tokens = tokens.slice(0, budget); // Again, approximate
+  // --- Private Helper Methods ---
+
+  private validateEngineConfiguration(config: PromptEngineConfig): void {
+    if (!config.defaultTemplateName || typeof config.defaultTemplateName !== 'string') {
+      throw new PromptEngineError('Invalid `defaultTemplateName` in configuration.', 'INVALID_CONFIG_PARAM', 'Initialization');
+    }
+    if (!config.availableTemplates || typeof config.availableTemplates !== 'object') {
+      throw new PromptEngineError('Invalid `availableTemplates` in configuration.', 'INVALID_CONFIG_PARAM', 'Initialization');
+    }
+    if (!config.tokenCounting || typeof config.tokenCounting.strategy !== 'string') {
+      throw new PromptEngineError('Invalid `tokenCounting` strategy in configuration.', 'INVALID_CONFIG_PARAM', 'Initialization');
+    }
+    // ... more exhaustive validation of config properties
+  }
+
+  private generateCacheKey(
+    components: Readonly<PromptComponents>,
+    modelInfo: Readonly<ModelTargetInfo>,
+    executionContext?: Readonly<PromptExecutionContext>,
+    templateName?: string
+  ): string {
+    // A more robust hashing function than simple JSON.stringify would be used in production
+    // (e.g., crypto hash like SHA256) to ensure uniqueness and manage key length.
+    // For this example, a simplified key generation:
+    const relevantData = {
+      system: components.systemPrompts?.map(p => p.content.substring(0,50)).join(';'), // Preview
+      userInput: components.userInput?.substring(0,100),
+      historyLastTurn: components.conversationHistory?.[components.conversationHistory.length -1]?.content?.toString().substring(0,50),
+      tools: components.tools?.map(t => t.id).join(','),
+      modelId: modelInfo.modelId,
+      template: templateName,
+      personaId: executionContext?.activePersona.id,
+      mood: executionContext?.currentMood,
+      task: executionContext?.taskHint,
+    };
+    const keyString = Object.values(relevantData).filter(v => v !== undefined).join('||');
+    // Simple hash (not cryptographically secure, just for cache key variety)
+    let hash = 0;
+    for (let i = 0; i < keyString.length; i++) {
+      const char = keyString.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash |= 0; // Convert to 32bit integer
+    }
+    return `promptcache:${modelInfo.modelId}:${hash.toString(36)}`;
+  }
+
+  private setupCacheEviction(): void {
+    // Basic interval-based eviction. More sophisticated LRU/LFU could be used.
+    const interval = (this.config.performance.cacheTimeoutSeconds / 2) * 1000; // Check halfway through timeout
+    setInterval(() => {
+      const now = Date.now();
+      for (const [key, entry] of this.cache.entries()) {
+        if ((now - entry.timestamp) > this.config.performance.cacheTimeoutSeconds * 1000) {
+          this.cache.delete(key);
+        }
       }
-      // A more accurate approach is iterative removal of tokens until count is <= budget
-      while (tokens.length > 0 && this.tokenizer.countTokens(this.tokenizer.decode(tokens)) > budget) {
-          if (fromStart) tokens = tokens.slice(1);
-          else tokens.pop();
-      }
-      const truncatedText = this.tokenizer.decode(tokens);
-      return { text: truncatedText, tokens: this.tokenizer.countTokens(truncatedText) };
-    } else {
-      // Character-based truncation
-      const estimatedChars = budget * FALLBACK_AVG_CHARS_PER_TOKEN;
-      const truncatedText = fromStart
-        ? text.slice(-estimatedChars)
-        : text.substring(0, estimatedChars);
-      return { text: truncatedText, tokens: this._countTokens(truncatedText, 'truncate_text_char_est', []).count };
+    }, Math.max(interval, 60000)); // Don't run too frequently
+  }
+
+  private startPerformanceTimer(timerId: string): void {
+    if (!this.statistics.performanceTimers[timerId]) {
+      this.statistics.performanceTimers[timerId] = { count: 0, totalTimeMs: 0, averageTimeMs: 0 };
+    }
+    // Store start time associated with timerId, perhaps in a temporary map if nesting is needed
+    // For simplicity, assume direct recording at end for now.
+  }
+
+  private recordPerformanceTimer(timerId: string, durationMs?: number): void {
+    // This would require `startTime` to be passed or stored if `durationMs` isn't provided.
+    // Simplified: Assume duration is calculated before calling this.
+    // For a real implementation, you'd likely use `performance.now()` or `process.hrtime()`
+    // const duration = durationMs || (Date.now() - (this._timerStartMap.get(timerId) || Date.now()));
+    // this._timerStartMap.delete(timerId);
+
+    // This is a placeholder as simple duration passing isn't robust for async operations.
+    // In a real scenario, you'd manage start times more carefully or use a perf library.
+    // For now, we'll just increment count and add a dummy time if not provided.
+    const DUMMY_DURATION = 10; // ms
+    const actualDuration = durationMs !== undefined ? durationMs : DUMMY_DURATION;
+
+    const timer = this.statistics.performanceTimers[timerId];
+    if(timer){
+        timer.count++;
+        timer.totalTimeMs += actualDuration;
+        timer.averageTimeMs = timer.totalTimeMs / timer.count;
     }
   }
+
+  /** Augments base prompt components with dynamically selected contextual elements. */
+  private augmentBaseComponents(
+    base: Readonly<PromptComponents>,
+    selectedElements: ReadonlyArray<ContextualPromptElement>
+  ): PromptComponents {
+    const augmented = JSON.parse(JSON.stringify(base)) as PromptComponents; // Deep clone
+
+    if (!augmented.systemPrompts) augmented.systemPrompts = [];
+    if (!augmented.customComponents) augmented.customComponents = {};
+
+    for (const element of selectedElements) {
+      switch (element.type) {
+        case ContextualElementType.SYSTEM_INSTRUCTION_ADDON:
+        case ContextualElementType.BEHAVIORAL_GUIDANCE:
+        case ContextualElementType.TASK_SPECIFIC_INSTRUCTION:
+        case ContextualElementType.ERROR_HANDLING_GUIDANCE:
+        case ContextualElementType.ETHICAL_GUIDELINE:
+        case ContextualElementType.OUTPUT_FORMAT_SPEC:
+        case ContextualElementType.REASONING_PROTOCOL:
+          augmented.systemPrompts.push({ content: element.content, priority: element.priority || 100, source: `contextual:${element.id || element.type}` });
+          break;
+        case ContextualElementType.FEW_SHOT_EXAMPLE:
+          if (!augmented.customComponents.fewShotExamples) augmented.customComponents.fewShotExamples = [];
+          (augmented.customComponents.fewShotExamples as unknown[]).push(element.content); // Assuming content is structured example
+          break;
+        case ContextualElementType.USER_PROMPT_AUGMENTATION:
+           augmented.userInput = `${augmented.userInput || ''}\n${element.content}`.trim();
+           break;
+        // Other types can be added to customComponents for template access
+        default:
+          const typeKey = element.type.toString().toLowerCase().replace(/_/g, '');
+          if (!augmented.customComponents[typeKey]) augmented.customComponents[typeKey] = [];
+          (augmented.customComponents[typeKey] as unknown[]).push(element.content);
+          break;
+      }
+    }
+    // Re-sort system prompts by priority (lower number = higher priority = comes first)
+    augmented.systemPrompts.sort((a, b) => (a.priority || 0) - (b.priority || 0));
+    return augmented;
+  }
+
+  /** Applies token budget by truncating or summarizing components. */
+  private async applyTokenBudget(
+    components: PromptComponents,
+    modelInfo: Readonly<ModelTargetInfo>,
+    issues: PromptEngineResult['issues']
+  ): Promise<{ optimizedComponents: PromptComponents; modifications: { wasModified: boolean; details: PromptEngineResult['modificationDetails'] } }> {
+    const optimized = JSON.parse(JSON.stringify(components)) as PromptComponents; // Deep clone
+    const modifications: { wasModified: boolean; details: PromptEngineResult['modificationDetails'] } = {
+        wasModified: false,
+        details: { truncatedComponents: [], summarizedComponents: [], removedComponents: [], originalEstimatedTokenCount: 0 }
+    };
+
+    const budget = modelInfo.optimalContextTokens || modelInfo.maxContextTokens;
+    let currentTokens = await this.calculateTotalTokens(optimized, modelInfo.modelId);
+    modifications.details!.originalEstimatedTokenCount = currentTokens;
+
+    const budgets = { // Example: allocate percentages of total budget
+        system: 0.20 * budget,
+        userInput: 0.15 * budget,
+        history: 0.35 * budget,
+        rag: 0.20 * budget,
+        tools: 0.10 * budget, // Tools schema can be large
+    };
+
+    // 1. History (most flexible to reduce)
+    if (optimized.conversationHistory && optimized.conversationHistory.length > 0) {
+        let historyTokens = await this.calculateTokensForMessages(optimized.conversationHistory, modelInfo.modelId);
+        if (historyTokens > budgets.history || currentTokens > budget) {
+            const originalCount = optimized.conversationHistory.length;
+            if (this.utilityAI && this.config.historyManagement.summarizationTriggerRatio > 0 && (historyTokens / budgets.history > this.config.historyManagement.summarizationTriggerRatio)) {
+                try {
+                    const { summaryMessages, finalTokenCount } = await this.utilityAI.summarizeConversationHistory(
+                        optimized.conversationHistory,
+                        (currentTokens > budget) ? budgets.history - (currentTokens - budget) : budgets.history,
+                        modelInfo,
+                        this.config.historyManagement.preserveImportantMessages
+                    );
+                    optimized.conversationHistory = summaryMessages;
+                    modifications.details!.summarizedComponents!.push('conversationHistory');
+                    modifications.wasModified = true;
+                    currentTokens = currentTokens - historyTokens + finalTokenCount; // Update total
+                    historyTokens = finalTokenCount;
+                } catch (e) {
+                    issues?.push({type: 'warning', code: 'HISTORY_SUMMARIZATION_FAILED', message: `History summarization failed: ${e instanceof Error ? e.message : String(e)}`});
+                    // Fallback to truncation
+                    optimized.conversationHistory = this.truncateMessages(optimized.conversationHistory, budgets.history, (content) => this.estimateTokenCount(content, modelInfo.modelId));
+                    modifications.details!.truncatedComponents!.push('conversationHistory');
+                    modifications.wasModified = true;
+                    const newHistoryTokens = await this.calculateTokensForMessages(optimized.conversationHistory, modelInfo.modelId);
+                    currentTokens = currentTokens - historyTokens + newHistoryTokens;
+                    historyTokens = newHistoryTokens;
+                }
+            } else { // Truncate if no summarizer or ratio not met
+                optimized.conversationHistory = this.truncateMessages(optimized.conversationHistory, budgets.history, (content) => this.estimateTokenCount(content, modelInfo.modelId));
+                if(optimized.conversationHistory.length < originalCount) {
+                    modifications.details!.truncatedComponents!.push('conversationHistory');
+                    modifications.wasModified = true;
+                }
+                const newHistoryTokens = await this.calculateTokensForMessages(optimized.conversationHistory, modelInfo.modelId);
+                currentTokens = currentTokens - historyTokens + newHistoryTokens;
+                historyTokens = newHistoryTokens;
+            }
+        }
+    }
+
+    // 2. RAG Context
+    if (optimized.retrievedContext) {
+        const contextStr = typeof optimized.retrievedContext === 'string' ? optimized.retrievedContext : optimized.retrievedContext.map(r => r.content).join('\n');
+        let ragTokens = await this.estimateTokenCount(contextStr, modelInfo.modelId);
+        if (ragTokens > budgets.rag || currentTokens > budget) {
+            if (this.utilityAI) {
+                try {
+                    const { summary, finalTokenCount } = await this.utilityAI.summarizeRAGContext(
+                        optimized.retrievedContext,
+                        (currentTokens > budget) ? budgets.rag - (currentTokens - budget) : budgets.rag,
+                        modelInfo,
+                        this.config.contextManagement.preserveSourceAttributionInSummary
+                    );
+                    optimized.retrievedContext = summary;
+                    modifications.details!.summarizedComponents!.push('retrievedContext');
+                    modifications.wasModified = true;
+                    currentTokens = currentTokens - ragTokens + finalTokenCount;
+                    ragTokens = finalTokenCount;
+                } catch(e){
+                     issues?.push({type: 'warning', code: 'RAG_SUMMARIZATION_FAILED', message: `RAG summarization failed: ${e instanceof Error ? e.message : String(e)}`});
+                     // Fallback to simple string truncation if summarization fails
+                     optimized.retrievedContext = contextStr.substring(0, Math.floor(contextStr.length * (budgets.rag / ragTokens)));
+                     modifications.details!.truncatedComponents!.push('retrievedContext');
+                     modifications.wasModified = true;
+                     const newRagTokens = await this.estimateTokenCount(optimized.retrievedContext as string, modelInfo.modelId);
+                     currentTokens = currentTokens - ragTokens + newRagTokens;
+                     ragTokens = newRagTokens;
+                }
+            } else { // Simple truncation
+                 optimized.retrievedContext = contextStr.substring(0, Math.floor(contextStr.length * (budgets.rag / ragTokens)));
+                 modifications.details!.truncatedComponents!.push('retrievedContext');
+                 modifications.wasModified = true;
+                 const newRagTokens = await this.estimateTokenCount(optimized.retrievedContext as string, modelInfo.modelId);
+                 currentTokens = currentTokens - ragTokens + newRagTokens;
+                 ragTokens = newRagTokens;
+            }
+        }
+    }
+
+    // 3. System Prompts (usually important, truncate last if necessary)
+    // 4. User Input (less likely to be truncated, but possible for very long inputs)
+    // These would follow similar logic if currentTokens still exceeds budget.
+    // For brevity, these further truncation steps are omitted but would target less critical components first.
+
+    if (currentTokens > budget && issues) {
+        issues.push({ type: 'warning', code: 'TOKEN_BUDGET_EXCEEDED_POST_OPT', message: `Prompt still exceeds budget (${currentTokens}/${budget}) after initial optimizations. Quality may be affected.`});
+    }
+
+    return { optimizedComponents: optimized, modifications };
+  }
+
+  private async calculateTotalTokens(components: PromptComponents, modelId: string): Promise<number> {
+      let total = 0;
+      if(components.systemPrompts) total += (await Promise.all(components.systemPrompts.map(sp => this.estimateTokenCount(sp.content, modelId)))).reduce((a,b) => a+b, 0);
+      if(components.userInput) total += await this.estimateTokenCount(components.userInput, modelId);
+      if(components.conversationHistory) total += await this.calculateTokensForMessages(components.conversationHistory, modelId);
+      if(components.retrievedContext) {
+          const contextStr = typeof components.retrievedContext === 'string' ? components.retrievedContext : components.retrievedContext.map(r => r.content).join('\n');
+          total += await this.estimateTokenCount(contextStr, modelId);
+      }
+      // Tools schema token estimation is complex and provider-dependent. Placeholder.
+      if(components.tools) total += components.tools.length * 50; // Very rough estimate
+      return total;
+  }
+
+  private async calculateTokensForMessages(messages: Message[], modelId: string): Promise<number> {
+      if (!messages) return 0;
+      let sum = 0;
+      for (const msg of messages) {
+          if (typeof msg.content === 'string') {
+              sum += await this.estimateTokenCount(msg.content, modelId);
+          } else if (Array.isArray(msg.content)) { // Multi-part content (e.g., text + image)
+              for (const part of msg.content) {
+                  if (part.type === 'text' && part.text) {
+                      sum += await this.estimateTokenCount(part.text, modelId);
+                  } else if (part.type === 'image_url') {
+                      sum += 70; // OpenAI specific cost for image link + low-res image
+                      if (part.image_url?.detail === 'high') sum += 65; // Additional for high-res tile
+                  }
+              }
+          }
+          // Add tokens for role, name, tool_calls etc. (approx 5-10 per message overall)
+          sum += 5;
+      }
+      return sum;
+  }
+
+  /** Truncates messages from the beginning to fit target token count. */
+  private truncateMessages(messages: Message[], targetTokenCount: number, estimateFn: TokenEstimator): Message[] {
+    // This is a naive truncation. A better one would use estimateFn iteratively.
+    let currentTokens = messages.reduce((sum, msg) => sum + (typeof msg.content === 'string' ? msg.content.length : 50) , 0) / 4; // Rough estimate
+    while(currentTokens > targetTokenCount && messages.length > 1) {
+        const removedMsg = messages.shift();
+        currentTokens -= (typeof removedMsg?.content === 'string' ? removedMsg.content.length : 50) / 4;
+    }
+    return messages;
+  }
+
+
+  /** Formats tool schemas based on the target model's requirements. */
+  private formatToolSchemasForModel(tools: ITool[], modelInfo: Readonly<ModelTargetInfo>): any[] {
+    if (!modelInfo.toolSupport.supported || !tools || tools.length === 0) {
+      return [];
+    }
+    switch (modelInfo.toolSupport.format) {
+      case 'openai_functions':
+        return tools.map(tool => ({
+          type: 'function',
+          function: {
+            name: tool.id, // Assuming tool.id is the function name
+            description: tool.definition.description,
+            parameters: tool.definition.parameters, // Assuming JSON Schema for parameters
+          },
+        }));
+      // Add cases for 'anthropic_tools', 'google_tools', etc.
+      default:
+        console.warn(`PromptEngine: Tool format '${modelInfo.toolSupport.format}' not fully supported for schema generation. Returning raw definitions.`);
+        return tools.map(tool => tool.definition); // Fallback
+    }
+  }
+
+  // Default Template Implementations (can be overridden or extended via config)
+  private createOpenAIChatTemplate(): PromptTemplateFunction {
+    return async (components, modelInfo, selectedElements, config, estimateTokenCountFn) => {
+      const messages: ChatMessage[] = [];
+      // 1. System Prompts
+      if (components.systemPrompts && components.systemPrompts.length > 0) {
+        const combinedSystemContent = components.systemPrompts.map(p => p.content).join("\n\n").trim();
+        if (combinedSystemContent) {
+            messages.push({ role: 'system', content: combinedSystemContent });
+        }
+      }
+      // 2. Conversation History
+      if (components.conversationHistory) {
+        components.conversationHistory.forEach(msg => {
+          // Map AgentOS MessageRole to OpenAI ChatMessageRole
+          let role: ChatMessage['role'] = 'user'; // default
+          if (msg.role === MessageRole.ASSISTANT) role = 'assistant';
+          else if (msg.role === MessageRole.SYSTEM) role = 'system'; // Could merge with main system above
+          else if (msg.role === MessageRole.TOOL) role = 'tool';
+
+          const chatMsg: ChatMessage = { role, content: null }; // Content will be set below
+
+          if (typeof msg.content === 'string') {
+            chatMsg.content = msg.content;
+          } else if (Array.isArray(msg.content)) { // OpenAI vision format
+            chatMsg.content = msg.content; // Pass directly if already formatted for OpenAI
+          } else if (msg.content === null && msg.tool_calls) {
+            // This is fine, content can be null for assistant message with tool_calls
+          } else if (msg.content) {
+            // Fallback for other content types - stringify. This may not be optimal for LLM.
+            chatMsg.content = JSON.stringify(msg.content);
+          }
+
+
+          if (msg.name) chatMsg.name = msg.name;
+          if (msg.tool_call_id) chatMsg.tool_call_id = msg.tool_call_id;
+          if (msg.tool_calls) chatMsg.tool_calls = msg.tool_calls;
+
+          messages.push(chatMsg);
+        });
+      }
+      // 3. Current User Input (with Vision if applicable)
+      const userMessageParts: any[] = [];
+      if (components.userInput) {
+        userMessageParts.push({ type: 'text', text: components.userInput });
+      }
+      if (components.visionInputs && modelInfo.visionSupport?.supported) {
+        components.visionInputs.forEach(vis => {
+          userMessageParts.push({
+            type: 'image_url',
+            image_url: { url: vis.type === 'base64' ? `data:${vis.mediaType || 'image/jpeg'};base64,${vis.data}` : vis.data }
+          });
+        });
+      }
+      if (userMessageParts.length > 0) {
+        messages.push({ role: 'user', content: userMessageParts.length === 1 && userMessageParts[0].type === 'text' ? userMessageParts[0].text : userMessageParts });
+      }
+      // Note: retrievedContext and other customComponents need explicit handling within this template
+      // or a more generic templating engine if they are to be injected into specific message parts.
+      // For example, RAG context might be prepended to user input or added as a system message.
+      if (components.retrievedContext) {
+          const ragContent = typeof components.retrievedContext === 'string' ? components.retrievedContext : components.retrievedContext.map(r => `Source: ${r.source}\nContent: ${r.content}`).join('\n\n');
+          // Prepend RAG to the last user message or add as a new user message with context.
+          // This is a simple strategy.
+          if (messages.length > 0 && messages[messages.length-1].role === 'user') {
+              const lastUserMsg = messages[messages.length-1];
+              const newUserContent = `Context:\n${ragContent}\n\nUser Query: ${lastUserMsg.content}`;
+              messages[messages.length-1].content = newUserContent;
+          } else {
+               messages.push({role: 'user', content: `Based on the following context:\n${ragContent}\n\nPlease respond to the implicit or explicit user query.`});
+          }
+      }
+
+      return messages;
+    };
+  }
+
+  private createAnthropicMessagesTemplate(): PromptTemplateFunction {
+    // Similar structure to OpenAI, but with a top-level 'system' prompt
+    return async (components, modelInfo, selectedElements, config, estimateTokenCountFn) => {
+        const messages: ChatMessage[] = [];
+        let systemPrompt = '';
+        if (components.systemPrompts && components.systemPrompts.length > 0) {
+            systemPrompt = components.systemPrompts.map(p => p.content).join("\n\n").trim();
+        }
+
+        // TODO: Convert components.conversationHistory and components.userInput (+vision)
+        // into Anthropic's message format, ensuring alternating user/assistant turns.
+        // Handle multi-modal content for Anthropic.
+
+        if (components.conversationHistory) {
+          components.conversationHistory.forEach(msg => {
+            let role: 'user' | 'assistant' = 'user';
+            if (msg.role === MessageRole.ASSISTANT) role = 'assistant';
+            // System messages handled separately for Anthropic. Tool messages need mapping.
+            if (msg.role === MessageRole.USER || msg.role === MessageRole.ASSISTANT) {
+                 const contentParts: any[] = [];
+                 if (typeof msg.content === 'string') {
+                     contentParts.push({type: 'text', text: msg.content});
+                 } else if (Array.isArray(msg.content)) { // Already formatted for multipart
+                    msg.content.forEach(part => contentParts.push(part));
+                 }
+                 // TODO: Map visionInputs from Message to Anthropic image parts if not already done in GMI
+                 messages.push({ role, content: contentParts });
+            } else if (msg.role === MessageRole.TOOL) {
+                // Anthropic tool result format
+                messages.push({
+                    role: 'user', // Tool results are presented as a 'user' turn to Claude
+                    content: [
+                        {
+                            type: 'tool_result',
+                            tool_use_id: msg.tool_call_id!,
+                            content: typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content),
+                            // is_error: ... based on tool result payload
+                        }
+                    ]
+                });
+            }
+          });
+        }
+
+        const currentUserInputParts: any[] = [];
+        if(components.userInput) currentUserInputParts.push({type: 'text', text: components.userInput});
+        if(components.visionInputs && modelInfo.visionSupport?.supported){
+            components.visionInputs.forEach(vis => {
+                currentUserInputParts.push({
+                    type: 'image',
+                    source: {
+                        type: vis.type === 'base64' ? 'base64' : 'url', // Anthropic uses 'base64' type for source
+                        media_type: vis.mediaType || (vis.data.startsWith('data:image/jpeg') ? 'image/jpeg' : 'image/png'),
+                        data: vis.type === 'base64' ? vis.data : (vis.data.startsWith('data:') ? vis.data.split(',')[1] : vis.data) // Extract base64 if full data URI
+                    }
+                });
+            });
+        }
+        if (currentUserInputParts.length > 0) {
+            messages.push({role: 'user', content: currentUserInputParts});
+        }
+
+
+        const formatted: FormattedPrompt = { messages };
+        if (systemPrompt) {
+            formatted.system = systemPrompt;
+        }
+        // Handle tool definitions for Anthropic if components.tools are provided
+        if (components.tools && modelInfo.toolSupport.format === 'anthropic_tools') {
+            formatted.tools = this.formatToolSchemasForModel(components.tools, modelInfo);
+        }
+
+        return formatted;
+    };
+  }
+
+  private createGenericCompletionTemplate(): PromptTemplateFunction {
+    return async (components, modelInfo, selectedElements, config, estimateTokenCountFn) => {
+      let promptString = "";
+      if (components.systemPrompts) promptString += components.systemPrompts.map(p=>p.content).join("\n") + "\n\n";
+      if (components.conversationHistory) {
+        promptString += components.conversationHistory.map(m => `${m.role}: ${typeof m.content === 'string' ? m.content : JSON.stringify(m.content)}`).join("\n") + "\n\n";
+      }
+      if (components.userInput) promptString += `user: ${components.userInput}\nassistant:`; // Common completion prompt style
+      return promptString;
+    };
+  }
+
 }

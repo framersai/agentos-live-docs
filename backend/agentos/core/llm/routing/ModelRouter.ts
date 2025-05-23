@@ -1,149 +1,243 @@
-// backend/agentos/core/llm/routing/ModelRouter.ts
+// File: backend/agentos/core/llm/routing/ModelRouter.ts
+
+/**
+ * @fileoverview Implements a rule-based model router for AgentOS.
+ * This router selects an AI model and provider by evaluating a prioritized list of configurable rules
+ * against the provided `ModelRouteParams`. It supports conditions based on task hints,
+ * agent IDs, required capabilities, optimization preferences, language, and custom evaluators.
+ * If no rules match, it falls back to a configured default model and provider.
+ *
+ * This implementation aims for clarity, extensibility through custom conditions, and adherence
+ * to the `IModelRouter` interface.
+ *
+ * @module backend/agentos/core/llm/routing/ModelRouter
+ * @implements {IModelRouter}
+ */
 
 import { IModelRouter, ModelRouteParams, ModelRouteResult } from './IModelRouter';
-import { ConversationContext } from '../../conversation/ConversationContext';
-import { IProvider } from '../providers/IProvider';
-import { AIModelProviderManager } from '../providers/AIModelProviderManager'; // To look up providers
-import { AgentConfig } from '../../agents/AgentCore'; // To access agent's model preferences
+import { IProvider, ModelInfo } from '../providers/IProvider';
+import { AIModelProviderManager } from '../providers/AIModelProviderManager';
+import { ProviderError } from '../providers/errors/ProviderError'; // Assuming base error class
 
 /**
- * @fileoverview A rule-based implementation of IModelRouter for AgentOS.
- * It selects models based on a configurable set of rules matching query content,
- * agent preferences, required capabilities, and optimization goals.
- * @module agentos/core/llm/routing/ModelRouter
+ * Custom error class for ModelRouter specific operational errors.
+ * @class ModelRouterError
+ * @extends {Error}
  */
+export class ModelRouterError extends Error {
+  /**
+   * A unique code identifying the type of error.
+   * @example 'INITIALIZATION_FAILED', 'RULE_EVALUATION_ERROR', 'NO_MODEL_MATCHED'
+   */
+  public readonly code: string;
+  /** Optional details or context about the error. */
+  public readonly details?: unknown;
+
+  /**
+   * Creates an instance of ModelRouterError.
+   * @param {string} message - A human-readable description of the error.
+   * @param {string} code - A unique code identifying the type of error.
+   * @param {unknown} [details] - Optional details or context about the error.
+   */
+  constructor(message: string, code: string, details?: unknown) {
+    super(message);
+    this.name = 'ModelRouterError';
+    this.code = code;
+    this.details = details;
+    Object.setPrototypeOf(this, ModelRouterError.prototype);
+  }
+}
 
 /**
- * Defines a single routing rule.
+ * Defines a single routing rule that determines model selection based on conditions.
+ * Rules are evaluated in order of priority.
  */
 export interface RoutingRule {
-  /** A unique ID for the rule (for logging/debugging). */
+  /** A unique identifier for the rule, useful for logging and debugging. */
   id: string;
-  /** Description of the rule's purpose. */
+  /** An optional description of the rule's purpose and logic. */
   description?: string;
-  /** Priority of the rule (lower numbers evaluated first). @default 0 */
+  /**
+   * Priority of the rule. Lower numbers are evaluated first.
+   * @default 0
+   */
   priority?: number;
-  /** Conditions that must ALL be met for this rule to apply. */
+  /**
+   * A set of conditions that must ALL be met for this rule's action to be applied.
+   * If a condition field is omitted, it is not checked.
+   */
   conditions: {
-    /** Keywords or regex patterns to match in the user query or task description. Case-insensitive. */
-    queryContains?: string[];
-    /** Specific agent ID requesting the model. */
+    /** Keywords or regex patterns to match in `ModelRouteParams.query` or `ModelRouteParams.taskHint`. Case-insensitive. */
+    queryOrTaskHintContains?: string[];
+    /** Matches `ModelRouteParams.requestingAgentId`. */
     requestingAgentId?: string;
-    /** Required capabilities from the model (e.g., "tool_calling", "json_output"). */
-    requiredCapabilities?: string[]; // All must be present
-    /** Matches the optimization preference. */
+    /** Matches `ModelRouteParams.personaId`. */
+    personaId?: string;
+    /**
+     * All specified capabilities must be present in the candidate model's `ModelInfo.capabilities`.
+     * @example ["tool_use", "json_mode"]
+     */
+    requiredCapabilities?: string[];
+    /** Matches `ModelRouteParams.optimizationPreference`. */
     optimizationPreference?: ModelRouteParams['optimizationPreference'];
-    /** Matches the specified language. */
+    /** Matches `ModelRouteParams.language`. */
     language?: string;
-    /** Custom condition evaluator function name (advanced, requires a registry of evaluators). */
-    customCondition?: string; // e.g., "isUserPremium"
-    /** Parameters for the custom condition. */
-    customConditionParams?: Record<string, any>;
+    /**
+     * Name of a custom condition evaluator function registered with the router.
+     * Allows for complex, programmatic condition checking.
+     * @example "isUserPremiumTier"
+     */
+    customCondition?: string;
+    /** Parameters to be passed to the `customCondition` evaluator function. */
+    customConditionParams?: Record<string, unknown>;
   };
-  /** Action to take if conditions are met: specify the target model and provider. */
+  /** The action to take if all conditions are met, specifying the target model and provider. */
   action: {
-    /** ID of the provider to use (must be configured in AIModelProviderManager). */
+    /** ID of the provider to use (must be configured in `AIModelProviderManager`). */
     providerId: string;
     /** ID of the model to use on that provider. */
     modelId: string;
-    /** Optional reasoning for this choice. */
+    /** Optional reasoning for this choice, to be included in `ModelRouteResult.reasoning`. */
     reasoning?: string;
-    /** Optional cost tier. */
-    estimatedCostTier?: string;
+    /** Optional classification of the estimated cost tier (e.g., "low", "medium", "high"). */
+    estimatedCostTier?: ModelRouteParams['estimatedCostTier'];
   };
 }
 
 /**
- * Configuration for the RuleBasedModelRouter.
+ * Configuration for the `ModelRouter`.
  */
-export interface RuleBasedModelRouterConfig {
-  /** An array of routing rules, typically loaded from a JSON/YAML file. */
+export interface ModelRouterConfig {
+  /**
+   * An array of routing rules. These are sorted by priority before evaluation.
+   * @see {@link RoutingRule}
+   */
   rules: RoutingRule[];
   /**
-   * Default provider ID to use if no rules match or if a matched rule doesn't specify one.
-   * Must be a valid providerId configured in AIModelProviderManager.
+   * Default provider ID to use if no rules match or if a matched rule's provider is unavailable.
+   * This provider must be configured in the `AIModelProviderManager`.
    */
   defaultProviderId: string;
   /**
-   * Default model ID to use if no rules match or if a matched rule doesn't specify one.
-   * Must be available on the defaultProviderId.
+   * Default model ID to use if no rules match.
+   * This model must be available on the `defaultProviderId`.
    */
   defaultModelId: string;
-  /** Optional default reasoning if no rules match and defaults are used. */
+  /** Optional reasoning to use when the default model is selected. */
   defaultReasoning?: string;
   /**
    * A map of custom condition evaluator functions.
-   * Key is the `customCondition` string from a rule, value is a function.
-   * `(params: ModelRouteParams, conditionParams: Record<string, any>) => boolean`
+   * The key is the `customCondition` string specified in a rule's conditions,
+   * and the value is the evaluator function.
+   * The function receives `ModelRouteParams` and the rule's `customConditionParams`,
+   * and should return `true` if the condition is met, `false` otherwise.
+   * @example
+   * customConditionEvaluators: {
+   * "isUserPremiumTier": async (params, ruleParams) => params.userSubscriptionTier?.isPremium || false
+   * }
    */
-  customConditionEvaluators?: Record<string, (params: ModelRouteParams, conditionParams: Record<string, any>) => boolean>;
+  customConditionEvaluators?: Record<
+    string,
+    (params: ModelRouteParams, conditionParams: Record<string, unknown>) => Promise<boolean> | boolean
+  >;
 }
 
 /**
  * @class ModelRouter
- * Implements IModelRouter using a declarative, rule-based approach.
+ * @implements {IModelRouter}
+ * A rule-based implementation of `IModelRouter`. It selects an AI model by evaluating
+ * a configured set of rules in order of priority. This router is designed to be
+ * flexible and extensible through declarative rules and custom condition evaluators.
  */
 export class ModelRouter implements IModelRouter {
-  public readonly routerId = 'rule_based_router_v1.0';
-  private config!: Required<RuleBasedModelRouterConfig>; // Note: `rules` will be part of this
+  /** @inheritdoc */
+  public readonly routerId = 'rule_based_router_v1.1'; // Version incremented
+  private config!: ModelRouterConfig; // Marked as definitely assigned due to initialize
   private providerManager!: AIModelProviderManager;
-  private initialized: boolean = false;
+  private isInitialized: boolean = false;
 
+  /**
+   * Constructs a ModelRouter instance.
+   * The router must be initialized via `initialize()` before use.
+   */
   constructor() {}
 
   /**
-   * Initializes the RuleBasedModelRouter.
-   * @param {RuleBasedModelRouterConfig} config - Configuration containing routing rules and defaults.
-   * @param {AIModelProviderManager} providerManager - Instance of AIModelProviderManager.
+   * Ensures the router has been properly initialized.
+   * @private
+   * @throws {ModelRouterError} If not initialized.
    */
+  private ensureInitialized(): void {
+    if (!this.isInitialized) {
+      throw new ModelRouterError(
+        'ModelRouter is not initialized. Call initialize() first.',
+        'NOT_INITIALIZED'
+      );
+    }
+  }
+
+  /** @inheritdoc */
   public async initialize(
-    config: RuleBasedModelRouterConfig,
-    providerManager: AIModelProviderManager
+    config: ModelRouterConfig, // Using the more specific ModelRouterConfig
+    providerManager: AIModelProviderManager,
+    // PromptEngine is not used by this rule-based router implementation, but kept for interface compliance if needed elsewhere.
+    _promptEngine?: any
   ): Promise<void> {
-    if (!config.rules || !config.defaultProviderId || !config.defaultModelId) {
-      throw new Error("RuleBasedModelRouterConfig requires 'rules', 'defaultProviderId', and 'defaultModelId'.");
+    if (!config) {
+      throw new ModelRouterError("Configuration object is required for ModelRouter initialization.", 'INIT_CONFIG_MISSING');
+    }
+    if (!config.rules || !Array.isArray(config.rules)) {
+      throw new ModelRouterError("Configuration 'rules' array is required.", 'INIT_RULES_MISSING');
+    }
+    if (!config.defaultProviderId || !config.defaultModelId) {
+      throw new ModelRouterError(
+        "Configuration requires 'defaultProviderId' and 'defaultModelId'.",
+        'INIT_DEFAULTS_MISSING'
+      );
     }
     if (!providerManager) {
-        throw new Error("RuleBasedModelRouter requires an AIModelProviderManager instance.");
+      throw new ModelRouterError(
+        'AIModelProviderManager instance is required for ModelRouter initialization.',
+        'INIT_PROVIDER_MANAGER_MISSING'
+      );
     }
 
     this.config = {
-        defaultReasoning: "Default model selection as no specific rules matched.",
-        customConditionEvaluators: {}, // Ensure it's always an object
-        ...config, // User config overrides defaults
-        rules: [...config.rules].sort((a, b) => (a.priority || 0) - (b.priority || 0)), // Sort rules by priority
+      ...config,
+      rules: [...config.rules].sort((a, b) => (a.priority || 0) - (b.priority || 0)), // Sort rules by priority
+      customConditionEvaluators: config.customConditionEvaluators || {},
+      defaultReasoning: config.defaultReasoning || 'Default model selection as no specific rules matched.',
     };
     this.providerManager = providerManager;
-    this.initialized = true;
+    this.isInitialized = true;
     console.log(`ModelRouter (${this.routerId}) initialized with ${this.config.rules.length} rules.`);
   }
 
-  private ensureInitialized(): void {
-    if (!this.initialized) {
-      throw new Error("ModelRouter is not initialized. Call initialize() first.");
-    }
-  }
-
-  /**
-   * Selects a model by evaluating rules in order of priority.
-   * @param {ModelRouteParams} params - Parameters for the routing decision.
-   * @returns {Promise<ModelRouteResult | null>} The routing result or null if no suitable model is found.
-   */
-  public async selectModel(params: ModelRouteParams): Promise<ModelRouteResult | null> {
+  /** @inheritdoc */
+  public async selectModel(
+    params: ModelRouteParams,
+    availableModels?: ModelInfo[] // Router can use this or fetch its own
+  ): Promise<ModelRouteResult | null> {
     this.ensureInitialized();
 
-    const queryLower = params.query?.toLowerCase();
+    const allKnownModels = availableModels || await this.providerManager.listAllAvailableModels();
+    if (allKnownModels.length === 0) {
+        console.warn("ModelRouter: No models available from AIModelProviderManager. Cannot route.");
+        return null;
+    }
+
+    const contextQuery = params.query?.toLowerCase() || '';
+    const contextTaskHint = params.taskHint?.toLowerCase() || '';
+    const combinedSearchText = `${contextQuery} ${contextTaskHint}`.trim();
 
     for (const rule of this.config.rules) {
       let conditionsMet = true;
 
-      // Check queryContains
-      if (rule.conditions.queryContains && queryLower) {
-        if (!rule.conditions.queryContains.some(keyword => queryLower.includes(keyword.toLowerCase()))) {
+      // Check queryOrTaskHintContains
+      if (rule.conditions.queryOrTaskHintContains) {
+        if (!combinedSearchText || !rule.conditions.queryOrTaskHintContains.some(keyword => combinedSearchText.includes(keyword.toLowerCase()))) {
           conditionsMet = false;
         }
-      } else if (rule.conditions.queryContains && !queryLower) {
-          conditionsMet = false; // Rule requires query but none provided
       }
 
       // Check requestingAgentId
@@ -151,69 +245,96 @@ export class ModelRouter implements IModelRouter {
         conditionsMet = false;
       }
 
-      // Check requiredCapabilities (conceptual - provider/model should declare these)
-      if (conditionsMet && rule.conditions.requiredCapabilities) {
-        // This would require a way to get capabilities of potential models from providerManager
-        // For now, this is a placeholder for a more advanced capability matching.
-        // Assume for now that if a rule specifies capabilities, it's pre-vetted that the target model has them.
+      // Check personaId
+      if (conditionsMet && rule.conditions.personaId && rule.conditions.personaId !== params.personaId) {
+        conditionsMet = false;
       }
 
       // Check optimizationPreference
       if (conditionsMet && rule.conditions.optimizationPreference && rule.conditions.optimizationPreference !== params.optimizationPreference) {
         conditionsMet = false;
       }
-      
+
       // Check language
       if (conditionsMet && rule.conditions.language && rule.conditions.language.toLowerCase() !== params.language?.toLowerCase()) {
         conditionsMet = false;
       }
 
-      // Check customCondition
-      if (conditionsMet && rule.conditions.customCondition) {
-        const evaluator = this.config.customConditionEvaluators[rule.conditions.customCondition];
-        if (evaluator) {
-          if (!evaluator(params, rule.conditions.customConditionParams || {})) {
-            conditionsMet = false;
+      // If basic conditions met, fetch target model info to check capabilities
+      let targetModelInfo: ModelInfo | undefined;
+      if (conditionsMet) {
+          targetModelInfo = allKnownModels.find(m => m.modelId === rule.action.modelId && m.providerId === rule.action.providerId);
+          if (!targetModelInfo) {
+              conditionsMet = false; // Target model specified in rule not found/available
           }
-        } else {
-          console.warn(`ModelRouter: Custom condition evaluator '${rule.conditions.customCondition}' not found for rule '${rule.id}'. Skipping condition.`);
-          // conditionsMet = false; // Or treat as true and log warning
+      }
+
+      // Check requiredCapabilities against the targetModelInfo
+      if (conditionsMet && targetModelInfo && rule.conditions.requiredCapabilities) {
+        if (!rule.conditions.requiredCapabilities.every(reqCap => targetModelInfo!.capabilities.includes(reqCap))) {
+          conditionsMet = false;
         }
       }
 
-      if (conditionsMet) {
-        const provider = this.providerManager.getProvider(rule.action.providerId);
-        if (provider) {
-          // Future: Check if provider.modelIsAvailable(rule.action.modelId)
-          console.log(`ModelRouter: Rule '${rule.id}' matched. Selecting model '${rule.action.modelId}' on provider '${rule.action.providerId}'.`);
+      // Check customCondition
+      if (conditionsMet && rule.conditions.customCondition) {
+        const evaluator = this.config.customConditionEvaluators![rule.conditions.customCondition];
+        if (evaluator) {
+          try {
+            if (!(await evaluator(params, rule.conditions.customConditionParams || {}))) {
+              conditionsMet = false;
+            }
+          } catch (evalError: unknown) {
+            console.error(`ModelRouter: Error evaluating custom condition '${rule.conditions.customCondition}' for rule '${rule.id}':`, evalError);
+            conditionsMet = false; // Treat evaluation error as condition not met
+          }
+        } else {
+          console.warn(`ModelRouter: Custom condition evaluator '${rule.conditions.customCondition}' not found for rule '${rule.id}'. Rule skipped.`);
+          conditionsMet = false; // Skip rule if evaluator is missing
+        }
+      }
+
+      if (conditionsMet && targetModelInfo) {
+        const provider = this.providerManager.getProvider(targetModelInfo.providerId);
+        if (provider?.isInitialized) {
+          console.log(`ModelRouter (${this.routerId}): Rule '${rule.id}' matched. Selecting model '${targetModelInfo.modelId}' on provider '${targetModelInfo.providerId}'.`);
           return {
             provider: provider,
-            modelId: rule.action.modelId,
+            modelId: targetModelInfo.modelId,
+            modelInfo: targetModelInfo,
             reasoning: rule.action.reasoning || rule.description || `Matched rule '${rule.id}'`,
             estimatedCostTier: rule.action.estimatedCostTier,
-            confidence: 0.9, // Higher confidence for explicit rule match
-            metadata: { matchedRuleId: rule.id },
+            confidence: 0.9, // High confidence for explicit rule match
+            metadata: { matchedRuleId: rule.id, source: this.routerId },
           };
         } else {
-          console.warn(`ModelRouter: Rule '${rule.id}' matched but provider '${rule.action.providerId}' not found.`);
+          console.warn(`ModelRouter (${this.routerId}): Rule '${rule.id}' matched, but provider '${targetModelInfo.providerId}' for model '${targetModelInfo.modelId}' is not available or initialized.`);
         }
       }
     }
 
     // If no rules matched, use defaults
     const defaultProvider = this.providerManager.getProvider(this.config.defaultProviderId);
-    if (defaultProvider) {
-      console.log(`ModelRouter: No specific rules matched. Using default model '${this.config.defaultModelId}' on provider '${this.config.defaultProviderId}'.`);
-      return {
-        provider: defaultProvider,
-        modelId: this.config.defaultModelId,
-        reasoning: this.config.defaultReasoning,
-        confidence: 0.5, // Lower confidence for default
-        metadata: { usingDefaults: true },
-      };
+    if (defaultProvider?.isInitialized) {
+      const defaultModelInfo = allKnownModels.find(m => m.modelId === this.config.defaultModelId && m.providerId === this.config.defaultProviderId);
+      if (defaultModelInfo) {
+        console.log(`ModelRouter (${this.routerId}): No specific rules matched. Using default model '${defaultModelInfo.modelId}' on provider '${defaultModelInfo.providerId}'.`);
+        return {
+          provider: defaultProvider,
+          modelId: defaultModelInfo.modelId,
+          modelInfo: defaultModelInfo,
+          reasoning: this.config.defaultReasoning!,
+          confidence: 0.5, // Lower confidence for default
+          metadata: { usingDefaults: true, source: this.routerId },
+        };
+      } else {
+          console.warn(`ModelRouter (${this.routerId}): Default model '${this.config.defaultModelId}' on provider '${this.config.defaultProviderId}' not found in available models.`);
+      }
+    } else {
+        console.warn(`ModelRouter (${this.routerId}): Default provider '${this.config.defaultProviderId}' not found or not initialized.`);
     }
 
-    console.error(`ModelRouter: No rules matched AND default provider '${this.config.defaultProviderId}' not found. Cannot select a model.`);
+    console.error(`ModelRouter (${this.routerId}): No rules matched AND default model/provider configuration is invalid or unavailable. Cannot select a model.`);
     return null; // No model could be selected
   }
 }

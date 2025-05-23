@@ -1,354 +1,911 @@
-// backend/agentos/core/llm/providers/implementations/OpenAIProvider.ts
-
-import OpenAI from 'openai';
-import {
-  IProvider,
-  ModelCompletionOptions,
-  ModelCompletionResponse,
-  ModelUsage,
-  ModelInfo,
-  ModelResponseMessage,
-  ModelResponseChoice
-} from '../IProvider';
-import { FormattedPrompt, PromptEngineResult, ModelTargetInfo } from '../../IPromptEngine';
-import { ChatCompletionMessageParam, ChatCompletionChunk } from 'openai/resources/chat/completions';
+// File: backend/agentos/core/llm/providers/implementations/OpenAIProvider.ts
 
 /**
- * @fileoverview OpenAI Provider implementation for AgentOS.
- * Handles interactions with OpenAI's API, including cost calculation and streaming.
- * @module agentos/core/llm/providers/implementations/OpenAIProvider
+ * @fileoverview Implements the IProvider interface for OpenAI's GPT models.
+ * This provider offers comprehensive integration with OpenAI's API, including:
+ * - Chat completions (streaming and non-streaming)
+ * - Tool/function calling
+ * - Vision capabilities for multimodal models (e.g., GPT-4o)
+ * - Text embeddings generation
+ * - Model introspection and health checks.
+ *
+ * It is designed with robustness and extensibility in mind, featuring:
+ * - Detailed error handling using custom `OpenAIProviderError`.
+ * - API key management with support for system-wide and per-request overrides.
+ * - Configurable request retries with exponential backoff.
+ * - Rate limiting (conceptual, actual enforcement by OpenAI).
+ * - Comprehensive JSDoc documentation.
+ * - Adherence to TypeScript best practices and modern ECMAScript features.
+ *
+ * @module backend/agentos/core/llm/providers/implementations/OpenAIProvider
+ * @implements {IProvider}
  */
 
+import {
+  IProvider,
+  ChatMessage,
+  ModelCompletionOptions,
+  ModelCompletionResponse,
+  ModelInfo,
+  ModelUsage,
+  ProviderEmbeddingOptions,
+  ProviderEmbeddingResponse,
+  EmbeddingObject,
+} from '../IProvider';
+import { OpenAIProviderError } from '../errors/OpenAIProviderError';
+// Assuming a fetch-like interface is available globally or polyfilled (e.g., node-fetch)
+// For Node.js, ensure 'node-fetch' is a dependency or use Node's built-in fetch from v18+.
+// import fetch, { RequestInit, Response as FetchResponse, AbortController } from 'node-fetch'; // Example for Node
+
+/**
+ * Configuration specific to the OpenAIProvider.
+ */
 export interface OpenAIProviderConfig {
+  /** The API key for accessing OpenAI services. Can be overridden by `apiKeyOverride` in request options. */
   apiKey: string;
+  /** Base URL for the OpenAI API. Defaults to "https://api.openai.com/v1". Useful for proxies. */
+  baseURL?: string;
+  /** Default OpenAI organization ID to use for requests. */
   organizationId?: string;
-  defaultModel?: string;
-  // Pricing info (per 1K tokens) - should be updatable/configurable externally in a real system
-  pricing?: Record<string, { prompt: number; completion: number; inputCurrency?: string; outputCurrency?: string; contextWindow?: number }>;
+  /** Maximum number of retry attempts for failed API requests. Defaults to 3. */
+  maxRetries?: number;
+  /** Timeout for API requests in milliseconds. Defaults to 60000 (60 seconds). */
+  requestTimeout?: number;
+  /** Optional custom headers to include with all requests to the OpenAI API. */
+  customHeaders?: Record<string, string>;
+  /** Default model ID to use if not specified in a request. E.g., "gpt-4o-mini". */
+  defaultModelId?: string;
 }
 
-export class OpenAIProvider implements IProvider {
-  public readonly providerId = 'openai';
-  public defaultModelId?: string;
-  public isInitialized = false;
-  private openai!: OpenAI;
-  private config!: OpenAIProviderConfig;
+// Namespace for OpenAI-specific API response structures to improve type safety
+// when dealing with raw API responses. These are simplified and should be
+// expanded based on the full OpenAI API documentation if more fields are needed.
+namespace OpenAIAPITypes {
+  export interface ChatCompletionChoice {
+    index: number;
+    message: {
+      role: ChatMessage['role'];
+      content: string | null;
+      tool_calls?: Array<{
+        id: string;
+        type: 'function';
+        function: { name:string; arguments: string; };
+      }>;
+    };
+    finish_reason: string | null;
+    logprobs?: unknown;
+  }
 
-  // Default pricing based on common models (as of early 2024/2025, check current OpenAI pricing)
-  private static readonly DEFAULT_PRICING: Record<string, { prompt: number; completion: number; contextWindow?: number }> = {
-    "gpt-4o": { prompt: 0.005, completion: 0.015, contextWindow: 128000 },
-    "gpt-4o-mini": { prompt: 0.00015, completion: 0.0006, contextWindow: 128000 },
-    "gpt-4-turbo": { prompt: 0.01, completion: 0.03, contextWindow: 128000 },
-    "gpt-4-turbo-preview": { prompt: 0.01, completion: 0.03, contextWindow: 128000 }, // alias
-    "gpt-4": { prompt: 0.03, completion: 0.06, contextWindow: 8192 },
-    "gpt-4-32k": { prompt: 0.06, completion: 0.12, contextWindow: 32768 },
-    "gpt-3.5-turbo": { prompt: 0.0005, completion: 0.0015, contextWindow: 16385 }, // Common variant
-    "gpt-3.5-turbo-16k": { prompt: 0.0005, completion: 0.0015, contextWindow: 16385 }, // Often same pricing now
-    // Add embeddings, image models if this provider handles them
+  export interface ChatCompletionResponse {
+    id: string;
+    object: string; // e.g., "chat.completion"
+    created: number; // Unix timestamp
+    model: string; // Model ID used
+    choices: ChatCompletionChoice[];
+    usage?: {
+      prompt_tokens: number;
+      completion_tokens: number;
+      total_tokens: number;
+    };
+    system_fingerprint?: string;
+  }
+
+  export interface ChatCompletionStreamChoiceDelta {
+    role?: ChatMessage['role'];
+    content?: string;
+    tool_calls?: Array<{
+      index: number; // Required for accumulating tool calls
+      id?: string;
+      type?: 'function';
+      function?: { name?: string; arguments?: string; };
+    }>;
+  }
+  export interface ChatCompletionStreamChoice {
+    index: number;
+    delta: ChatCompletionStreamChoiceDelta;
+    finish_reason?: string | null;
+    logprobs?: unknown;
+  }
+
+  export interface ChatCompletionStreamResponse {
+    id: string;
+    object: string; // e.g., "chat.completion.chunk"
+    created: number;
+    model: string;
+    choices: ChatCompletionStreamChoice[];
+    usage?: { // Typically only in the last chunk if enabled by OpenAI
+      prompt_tokens: number;
+      completion_tokens: number;
+      total_tokens: number;
+    };
+    system_fingerprint?: string;
+  }
+
+  export interface EmbeddingAPIObject {
+    object: 'embedding';
+    embedding: number[];
+    index: number;
+  }
+
+  export interface EmbeddingResponse {
+    object: 'list';
+    data: EmbeddingAPIObject[];
+    model: string; // Model ID used
+    usage: {
+      prompt_tokens: number;
+      total_tokens: number;
+    };
+  }
+
+  export interface ModelAPIObject {
+    id: string;
+    object: 'model';
+    created: number; // Unix timestamp
+    owned_by: string;
+    // Other fields like `permission`, `root`, `parent` might exist
+  }
+
+  export interface ListModelsResponse {
+    object: 'list';
+    data: ModelAPIObject[];
+  }
+
+  export interface APIErrorResponse {
+    error?: {
+      message: string;
+      type: string;
+      param?: string | null;
+      code?: string | null;
+    };
+  }
+}
+
+/**
+ * @class OpenAIProvider
+ * @implements {IProvider}
+ * Provides an interface to OpenAI's suite of models (GPT, Embeddings).
+ * It handles API requests, streaming, error management, and model information.
+ */
+export class OpenAIProvider implements IProvider {
+  /** @inheritdoc */
+  public readonly providerId: string = 'openai';
+  /** @inheritdoc */
+  public isInitialized: boolean = false;
+  /** @inheritdoc */
+  public defaultModelId?: string;
+
+  private config!: OpenAIProviderConfig; // Asserted as initialized by `initialize`
+  private availableModelsCache: Map<string, ModelInfo> = new Map();
+
+  // Known pricing for common OpenAI models (USD per 1K tokens).
+  // This should be updated periodically based on OpenAI's official pricing.
+  // Input: cost for prompt tokens, Output: cost for completion tokens.
+  // For embedding models, 'input' is typically used for total tokens.
+  private readonly modelPricing: Record<string, { input: number; output: number }> = {
+    // Chat models (per 1K tokens)
+    'gpt-4o': { input: 0.005, output: 0.015 },
+    'gpt-4o-mini': { input: 0.00015, output: 0.0006 },
+    'gpt-4-turbo': { input: 0.01, output: 0.03 }, // Example, check current pricing
+    'gpt-4-turbo-preview': { input: 0.01, output: 0.03 }, // Example
+    'gpt-4-vision-preview': { input: 0.01, output: 0.03 }, // Example
+    'gpt-4': { input: 0.03, output: 0.06 },
+    'gpt-4-32k': { input: 0.06, output: 0.12 },
+    'gpt-3.5-turbo': { input: 0.0005, output: 0.0015 }, // Example for gpt-3.5-turbo-0125
+    'gpt-3.5-turbo-16k': { input: 0.001, output: 0.002 }, // Example for gpt-3.5-turbo-16k-0613
+
+    // Embedding models (per 1K tokens, typically only input cost matters)
+    'text-embedding-3-large': { input: 0.00013, output: 0 },
+    'text-embedding-3-small': { input: 0.00002, output: 0 },
+    'text-embedding-ada-002': { input: 0.0001, output: 0 },
   };
 
+
+  /**
+   * Creates an instance of OpenAIProvider.
+   * Note: The provider is not ready to use until `initialize()` is called and resolves.
+   */
+  constructor() {
+    // Configuration is set during initialize()
+  }
+
+  /** @inheritdoc */
   public async initialize(config: OpenAIProviderConfig): Promise<void> {
-    if (!config.apiKey) throw new Error('OpenAIProvider: API key is required.');
-    this.config = {
-        ...config,
-        pricing: { ...OpenAIProvider.DEFAULT_PRICING, ...(config.pricing || {}) }
-    };
-    this.openai = new OpenAI({
-      apiKey: this.config.apiKey,
-      organization: this.config.organizationId,
-    });
-    this.defaultModelId = this.config.defaultModel || 'gpt-4o-mini';
-    this.isInitialized = true;
-    console.log(`OpenAIProvider initialized. Default model: ${this.defaultModelId}`);
-  }
-
-  private mapToPricingKey(modelId: string): string {
-    // OpenAI model IDs can have version suffixes like -0125.
-    // Try to map to base model for pricing if exact match isn't found.
-    if (this.config.pricing?.[modelId]) return modelId;
-    if (modelId.startsWith("gpt-4-turbo")) return "gpt-4-turbo"; // Covers preview, vision
-    if (modelId.startsWith("gpt-4o-mini")) return "gpt-4o-mini";
-    if (modelId.startsWith("gpt-4o")) return "gpt-4o";
-    if (modelId.startsWith("gpt-4")) return "gpt-4"; // Fallback for other gpt-4 variants
-    if (modelId.startsWith("gpt-3.5-turbo")) return "gpt-3.5-turbo";
-    return modelId; // Default to exact ID
-  }
-
-  public calculateCostForUsage(
-    modelId: string,
-    usage: { promptTokens: number; completionTokens: number }
-  ): Pick<ModelUsage, 'costUSD' | 'promptTokenCostPer1K' | 'completionTokenCostPer1K' | 'currency'> | undefined {
-    const pricingKey = this.mapToPricingKey(modelId);
-    const modelPricing = this.config.pricing?.[pricingKey];
-
-    if (!modelPricing || usage.promptTokens === undefined || usage.completionTokens === undefined) {
-      console.warn(`OpenAIProvider: Pricing or usage info not found for model ${modelId} (key: ${pricingKey}). Cannot calculate cost.`);
-      return undefined;
+    if (!config.apiKey) {
+      throw new OpenAIProviderError(
+        'API key is required for OpenAIProvider initialization.',
+        'INIT_FAILED_MISSING_API_KEY'
+      );
     }
 
-    const cost =
-      (usage.promptTokens / 1000 * modelPricing.prompt) +
-      (usage.completionTokens / 1000 * modelPricing.completion);
+    this.config = {
+      baseURL: 'https://api.openai.com/v1',
+      maxRetries: 3,
+      requestTimeout: 60000, // 60 seconds
+      ...config, // User-provided config overrides defaults
+    };
+    this.defaultModelId = config.defaultModelId;
+
+    try {
+      // Attempt to list models to verify API key and connectivity.
+      await this.refreshAvailableModels();
+      this.isInitialized = true;
+      console.log(`OpenAIProvider initialized successfully. Default model: ${this.defaultModelId || 'Not set'}. Found ${this.availableModelsCache.size} models.`);
+    } catch (error: unknown) {
+      this.isInitialized = false;
+      if (error instanceof OpenAIProviderError) {
+        throw error; // Re-throw if already an OpenAIProviderError
+      }
+      const message = error instanceof Error ? error.message : 'Unknown error during initialization.';
+      throw new OpenAIProviderError(
+        `OpenAIProvider initialization failed: ${message}`,
+        'INITIALIZATION_FAILED',
+        undefined, undefined, undefined, error
+      );
+    }
+  }
+
+  /**
+   * Fetches the list of available models from OpenAI and updates the internal cache.
+   * @private
+   * @throws {OpenAIProviderError} If fetching or parsing models fails.
+   */
+  private async refreshAvailableModels(): Promise<void> {
+    const response = await this.makeApiRequest<OpenAIAPITypes.ListModelsResponse>(
+      '/models',
+      'GET',
+      this.config.apiKey
+    );
+
+    this.availableModelsCache.clear();
+    response.data.forEach((apiModel: OpenAIAPITypes.ModelAPIObject) => {
+      // Basic filtering for generally usable models, can be expanded.
+      if (apiModel.id.startsWith('gpt-') || apiModel.id.includes('embedding')) {
+        const modelInfo = this.mapApiToModelInfo(apiModel);
+        this.availableModelsCache.set(modelInfo.modelId, modelInfo);
+      }
+    });
+  }
+
+  /**
+   * Maps an OpenAI API model object to the standard ModelInfo interface.
+   * @private
+   * @param {OpenAIAPITypes.ModelAPIObject} apiModel - The model object from OpenAI API.
+   * @returns {ModelInfo} The standardized ModelInfo object.
+   */
+  private mapApiToModelInfo(apiModel: OpenAIAPITypes.ModelAPIObject): ModelInfo {
+    const capabilities: ModelInfo['capabilities'] = [];
+    let contextWindowSize: number | undefined;
+    let supportsTools = false;
+    let supportsVision = false;
+    let isEmbeddingModel = false;
+
+    // Infer capabilities and context window from model ID (common OpenAI patterns)
+    if (apiModel.id.startsWith('gpt-4o')) {
+        capabilities.push('chat', 'vision_input', 'tool_use', 'json_mode');
+        contextWindowSize = 128000; supportsTools = true; supportsVision = true;
+    } else if (apiModel.id.startsWith('gpt-4-turbo')) {
+        capabilities.push('chat', 'tool_use', 'json_mode');
+        contextWindowSize = 128000; supportsTools = true;
+        if (apiModel.id.includes('-vision')) { capabilities.push('vision_input'); supportsVision = true;}
+    } else if (apiModel.id.startsWith('gpt-4-32k')) {
+        capabilities.push('chat', 'tool_use', 'json_mode');
+        contextWindowSize = 32768; supportsTools = true;
+    } else if (apiModel.id.startsWith('gpt-4')) {
+        capabilities.push('chat', 'tool_use', 'json_mode');
+        contextWindowSize = 8192; supportsTools = true;
+    } else if (apiModel.id.startsWith('gpt-3.5-turbo-16k')) {
+        capabilities.push('chat', 'tool_use', 'json_mode');
+        contextWindowSize = 16385; supportsTools = true;
+    } else if (apiModel.id.startsWith('gpt-3.5-turbo')) {
+        capabilities.push('chat', 'tool_use', 'json_mode');
+        // context window for gpt-3.5-turbo can vary (e.g. 4096, 16385 for -0125)
+        // Defaulting to a common value, but specific variants might differ.
+        contextWindowSize = apiModel.id.includes('0125') || apiModel.id.includes('1106') ? 16385 : 4096;
+        supportsTools = true;
+    } else if (apiModel.id.includes('embedding')) {
+        capabilities.push('embeddings');
+        isEmbeddingModel = true;
+        // Common context/input token limit for OpenAI embedding models
+        contextWindowSize = 8191; // Max input tokens
+    } else {
+        // Fallback for other gpt models if any (less common now)
+        capabilities.push('chat'); // Assume chat at least
+    }
+
+    const pricing = this.modelPricing[apiModel.id] || { input: 0, output: 0 };
 
     return {
-      costUSD: parseFloat(cost.toFixed(6)),
-      promptTokenCostPer1K: modelPricing.prompt,
-      completionTokenCostPer1K: modelPricing.completion,
-      currency: 'USD',
+      modelId: apiModel.id,
+      providerId: this.providerId,
+      displayName: apiModel.id, // Can be enhanced if more metadata is available
+      description: `OpenAI model: ${apiModel.id}`,
+      capabilities,
+      contextWindowSize,
+      pricePer1MTokensInput: pricing.input,
+      pricePer1MTokensOutput: pricing.output,
+      pricePer1MTokensTotal: isEmbeddingModel ? pricing.input : undefined,
+      supportsStreaming: capabilities.includes('chat'), // Generally, chat models support streaming
+      // OpenAI specific details can be added to metadata
+      embeddingDimension: apiModel.id.includes('embedding-3-large') ? 3072 :
+                          apiModel.id.includes('embedding-3-small') ? 1536 :
+                          apiModel.id.includes('ada-002') ? 1536 : undefined,
+      lastUpdated: new Date(apiModel.created * 1000).toISOString(),
+      status: 'active', // OpenAI doesn't directly provide status in this list, assume active.
     };
   }
 
-  private transformOpenAIMessages(prompt: FormattedPrompt): ChatCompletionMessageParam[] {
-    if (typeof prompt === 'string') {
-      return [{ role: 'user', content: prompt }];
+  /**
+   * Ensures the provider is initialized before use.
+   * @private
+   * @throws {OpenAIProviderError} If not initialized.
+   */
+  private ensureInitialized(): void {
+    if (!this.isInitialized) {
+      throw new OpenAIProviderError(
+        'OpenAIProvider is not initialized. Call initialize() first.',
+        'PROVIDER_NOT_INITIALIZED'
+      );
     }
-    return prompt.map(p => ({
-      role: p.role as 'user' | 'assistant' | 'system' | 'tool', // OpenAI specific roles
-      content: p.content,
-      tool_calls: p.tool_calls as any, // Assuming structure matches
-      tool_call_id: p.tool_call_id,
-      name: p.name,
-    }));
   }
 
+  /**
+   * Resolves the API key to use for a request, prioritizing per-request override, then user-specific, then system default.
+   * @private
+   * @param {string | undefined} apiKeyOverride - API key provided directly in request options.
+   * @returns {string} The API key to use.
+   * @throws {OpenAIProviderError} If no API key is available.
+   */
+  private getApiKey(apiKeyOverride?: string): string {
+    const keyToUse = apiKeyOverride || this.config.apiKey;
+    if (!keyToUse) {
+      throw new OpenAIProviderError(
+        'No OpenAI API key available for the request.',
+        'API_KEY_MISSING'
+      );
+    }
+    return keyToUse;
+  }
+
+  /** @inheritdoc */
   public async generateCompletion(
-    prompt: FormattedPrompt,
-    options: ModelCompletionOptions,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _promptEngineResult?: PromptEngineResult
+    modelId: string,
+    messages: ChatMessage[],
+    options: ModelCompletionOptions
   ): Promise<ModelCompletionResponse> {
-    if (!this.isInitialized) throw new Error("OpenAIProvider not initialized.");
+    this.ensureInitialized();
+    const apiKey = this.getApiKey(options.apiKeyOverride);
 
-    const messages = this.transformOpenAIMessages(prompt);
-    const requestOptions: OpenAI.Chat.Completions.ChatCompletionCreateParams = {
-      model: options.modelId,
-      messages: messages,
-      temperature: options.temperature,
-      max_tokens: options.max_tokens,
-      top_p: options.top_p,
-      frequency_penalty: options.frequency_penalty,
-      presence_penalty: options.presence_penalty,
-      stop: options.stop,
-      stream: false, // Explicitly false for non-streaming
-      user: options.user,
-      tools: options.tools as any, // Assuming ToolDefinition aligns or is transformed
-      tool_choice: options.tool_choice as any,
-      response_format: options.response_format as {type: "text" | "json_object"} | undefined,
-    };
+    const requestBody = this.buildChatCompletionPayload(modelId, messages, options, false);
 
-    try {
-      const response = await this.openai.chat.completions.create(requestOptions);
-      const usageStats = response.usage ? this.calculateCostForUsage(options.modelId, {
-        promptTokens: response.usage.prompt_tokens,
-        completionTokens: response.usage.completion_tokens,
-      }) : undefined;
+    const apiResponse = await this.makeApiRequest<OpenAIAPITypes.ChatCompletionResponse>(
+      '/chat/completions',
+      'POST',
+      apiKey,
+      requestBody
+    );
 
-      return {
-        id: response.id,
-        created: response.created,
-        modelId: response.model,
-        choices: response.choices.map(choice => ({
-          message: choice.message as ModelResponseMessage, // Assuming structure aligns
-          finish_reason: choice.finish_reason,
-          index: choice.index,
-        })),
-        usage: usageStats ? {
-            promptTokens: response.usage!.prompt_tokens,
-            completionTokens: response.usage!.completion_tokens,
-            totalTokens: response.usage!.total_tokens,
-            ...usageStats,
-        } : undefined,
-        rawResponse: response,
-      };
-    } catch (error: any) {
-      console.error(`OpenAIProvider error for model ${options.modelId}:`, error);
-      return {
-        id: `error-${Date.now()}`,
-        created: Math.floor(Date.now() / 1000),
-        modelId: options.modelId,
-        choices: [],
-        error: {
-          message: error.message || 'Unknown OpenAI API error',
-          type: error.type || error.name,
-          code: error.status || error.code,
-          details: error.error || error,
-        },
-      };
-    }
+    return this.mapApiToCompletionResponse(apiResponse);
   }
 
+  /** @inheritdoc */
   public async *generateCompletionStream(
-    prompt: FormattedPrompt,
-    options: ModelCompletionOptions,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _promptEngineResult?: PromptEngineResult
-  ): AsyncIterable<ModelCompletionResponse> {
-    if (!this.isInitialized) throw new Error("OpenAIProvider not initialized.");
+    modelId: string,
+    messages: ChatMessage[],
+    options: ModelCompletionOptions
+  ): AsyncGenerator<ModelCompletionResponse, void, undefined> {
+    this.ensureInitialized();
+    const apiKey = this.getApiKey(options.apiKeyOverride);
 
-    const messages = this.transformOpenAIMessages(prompt);
-    const requestOptions: OpenAI.Chat.Completions.ChatCompletionCreateParams = {
-      model: options.modelId,
-      messages: messages,
-      temperature: options.temperature,
-      max_tokens: options.max_tokens,
-      // ... (all other options as in generateCompletion)
-      stream: true, // Key for streaming
-      tools: options.tools as any,
-      tool_choice: options.tool_choice as any,
-      response_format: options.response_format as {type: "text" | "json_object"} | undefined,
+    const requestBody = this.buildChatCompletionPayload(modelId, messages, options, true);
+
+    const stream = await this.makeApiRequest<ReadableStream<Uint8Array>>(
+      '/chat/completions',
+      'POST',
+      apiKey,
+      requestBody,
+      true // Indicate streaming response is expected
+    );
+
+    // Accumulators for streaming tool calls
+    const accumulatedToolCalls: Map<number, { id?: string; type?: 'function'; function?: { name?: string; arguments?: string; } }> = new Map();
+
+    for await (const chunk of this.parseSseStream(stream)) {
+      if (chunk === '[DONE]') {
+        // The [DONE] message is a signal for the end of the stream from OpenAI.
+        // A final response chunk with isFinal=true and potential usage should be yielded by the parser if data exists.
+        // If OpenAI includes usage in the last data chunk before [DONE], parseSseStream handles it.
+        return;
+      }
+      try {
+        const apiChunk = JSON.parse(chunk) as OpenAIAPITypes.ChatCompletionStreamResponse;
+        yield this.mapApiToStreamChunkResponse(apiChunk, accumulatedToolCalls);
+      } catch (error: unknown) {
+        console.warn('OpenAIProvider: Failed to parse stream chunk JSON:', chunk, error);
+        // Decide if to yield an error chunk or continue if minor parsing issue
+      }
+    }
+  }
+
+  /** @inheritdoc */
+  public async generateEmbeddings(
+    modelId: string,
+    texts: string[],
+    options?: ProviderEmbeddingOptions
+  ): Promise<ProviderEmbeddingResponse> {
+    this.ensureInitialized();
+    if (!texts || texts.length === 0) {
+      throw new OpenAIProviderError('Input texts array cannot be empty for embeddings.', 'EMBEDDING_NO_INPUT');
+    }
+    const apiKey = this.getApiKey(options?.apiKeyOverride);
+
+    const payload: Record<string, unknown> = {
+      model: modelId,
+      input: texts,
+    };
+    if (options?.encodingFormat) payload.encoding_format = options.encodingFormat;
+    if (options?.dimensions) payload.dimensions = options.dimensions;
+    if (options?.userId) payload.user = options.userId;
+    // OpenAI specific: input_type for their newer models
+    if (options?.inputType && (modelId.includes('text-embedding-3') || modelId.includes('ada-002'))) {
+        // Not a standard OpenAI param, this is an example if they add it.
+        // For now, customModelParams is the way for non-standard things.
+    }
+    if (options?.customModelParams) {
+        Object.assign(payload, options.customModelParams);
+    }
+
+
+    const apiResponse = await this.makeApiRequest<OpenAIAPITypes.EmbeddingResponse>(
+      '/embeddings',
+      'POST',
+      apiKey,
+      payload
+    );
+
+    return this.mapApiToEmbeddingResponse(apiResponse);
+  }
+
+  /** @inheritdoc */
+  public async listAvailableModels(filter?: { capability?: string }): Promise<ModelInfo[]> {
+    this.ensureInitialized();
+    // Optionally refresh cache, or rely on initialization. For simplicity, using cached.
+    // await this.refreshAvailableModels(); 
+
+    const models = Array.from(this.availableModelsCache.values());
+    if (filter?.capability) {
+      return models.filter(m => m.capabilities.includes(filter.capability!));
+    }
+    return models;
+  }
+
+  /** @inheritdoc */
+  public async getModelInfo(modelId: string): Promise<ModelInfo | undefined> {
+    this.ensureInitialized();
+    // Could implement a direct fetch if model not in cache, or rely on cached version.
+    // For now, uses cached version.
+    if (!this.availableModelsCache.has(modelId)) {
+        // Attempt to refresh and check again, in case it's a new model
+        try {
+            await this.refreshAvailableModels();
+        } catch (error) {
+            console.warn(`OpenAIProvider: Failed to refresh models while fetching info for ${modelId}`, error);
+        }
+    }
+    return this.availableModelsCache.get(modelId);
+  }
+
+  /** @inheritdoc */
+  public async checkHealth(): Promise<{ isHealthy: boolean; details?: unknown }> {
+    try {
+      // A lightweight call, e.g., fetching a small model's info or /models with limit=1
+      await this.makeApiRequest<OpenAIAPITypes.ModelAPIObject>(
+          `/models/${this.defaultModelId || 'gpt-3.5-turbo'}`, // Use a known cheap/fast model
+          'GET',
+          this.config.apiKey
+      );
+      return { isHealthy: true };
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Health check failed';
+      return { isHealthy: false, details: { message, error } };
+    }
+  }
+
+  /** @inheritdoc */
+  public async shutdown(): Promise<void> {
+    // For OpenAIProvider, using stateless HTTP requests, there might not be
+    // persistent connections to close. If connection pooling or WebSockets
+    // were used, they would be closed here.
+    this.isInitialized = false; // Mark as not initialized
+    console.log('OpenAIProvider shutdown complete.');
+    // No explicit resources to release in this implementation.
+  }
+
+
+  // --- Helper Methods ---
+
+  /**
+   * Builds the payload for OpenAI's Chat Completions API.
+   * @private
+   */
+  private buildChatCompletionPayload(
+    modelId: string,
+    messages: ChatMessage[],
+    options: ModelCompletionOptions,
+    stream: boolean
+  ): Record<string, unknown> {
+    const payload: Record<string, unknown> = {
+      model: modelId,
+      messages: messages.map(m => ({ // Ensure null content is handled if OpenAI expects it explicitly
+          role: m.role,
+          content: m.content, // OpenAI allows null content for assistant tool_calls message
+          name: m.name,
+          tool_calls: m.tool_calls,
+          tool_call_id: m.tool_call_id,
+      })),
+      stream: stream,
     };
 
-    let finalUsage: OpenAI.CompletionUsage | null = null;
-    let finalId = `stream-${Date.now()}`;
-    let finalCreated = Math.floor(Date.now() / 1000);
-    let finalModel = options.modelId;
+    if (options.temperature !== undefined) payload.temperature = options.temperature;
+    if (options.topP !== undefined) payload.top_p = options.topP;
+    if (options.maxTokens !== undefined) payload.max_tokens = options.maxTokens;
+    if (options.presencePenalty !== undefined) payload.presence_penalty = options.presencePenalty;
+    if (options.frequencyPenalty !== undefined) payload.frequency_penalty = options.frequencyPenalty;
+    if (options.stopSequences !== undefined) payload.stop = options.stopSequences;
+    if (options.userId !== undefined) payload.user = options.userId;
+    if (options.tools !== undefined) payload.tools = options.tools;
+    if (options.toolChoice !== undefined) payload.tool_choice = options.toolChoice;
+    if (options.responseFormat !== undefined) payload.response_format = options.responseFormat;
+    
+    if (options.customModelParams) {
+        Object.assign(payload, options.customModelParams);
+    }
+
+    return payload;
+  }
+
+  /**
+   * Maps the raw OpenAI API Chat Completion response to the standard ModelCompletionResponse.
+   * @private
+   */
+  private mapApiToCompletionResponse(
+    apiResponse: OpenAIAPITypes.ChatCompletionResponse
+  ): ModelCompletionResponse {
+    const choice = apiResponse.choices[0]; // Assuming N=1
+    return {
+      id: apiResponse.id,
+      object: apiResponse.object,
+      created: apiResponse.created,
+      modelId: apiResponse.model,
+      choices: apiResponse.choices.map(c => ({
+        index: c.index,
+        message: {
+          role: c.message.role,
+          content: c.message.content,
+          tool_calls: c.message.tool_calls,
+        },
+        finishReason: c.finish_reason,
+        logprobs: c.logprobs,
+      })),
+      usage: apiResponse.usage ? this.calculateUsage(apiResponse.usage, apiResponse.model) : undefined,
+      // No deltas for non-streaming response
+    };
+  }
+
+    /**
+     * Maps an OpenAI API stream chunk to a ModelCompletionResponse chunk.
+     * Handles accumulation of tool calls.
+     * @private
+     */
+    private mapApiToStreamChunkResponse(
+        apiChunk: OpenAIAPITypes.ChatCompletionStreamResponse,
+        accumulatedToolCalls: Map<number, { id?: string; type?: 'function'; function?: { name?: string; arguments?: string; } }>
+    ): ModelCompletionResponse {
+        const choice = apiChunk.choices[0];
+        let responseTextDelta: string | undefined;
+        let toolCallsDeltas: ModelCompletionResponse['toolCallsDeltas'];
+        let finalUsage: ModelUsage | undefined;
+
+        if (choice?.delta?.content) {
+            responseTextDelta = choice.delta.content;
+        }
+
+        if (choice?.delta?.tool_calls) {
+            toolCallsDeltas = [];
+            choice.delta.tool_calls.forEach(tcDelta => {
+                let currentToolCall = accumulatedToolCalls.get(tcDelta.index);
+                if (!currentToolCall) {
+                    currentToolCall = { function: {} }; // Initialize if new
+                    if (tcDelta.id) currentToolCall.id = tcDelta.id;
+                    if (tcDelta.type) currentToolCall.type = tcDelta.type;
+                }
+
+                if (tcDelta.id && !currentToolCall.id) currentToolCall.id = tcDelta.id; // Ensure ID is set if provided in delta
+                if (tcDelta.function?.name) currentToolCall.function!.name = (currentToolCall.function!.name || '') + tcDelta.function.name;
+                if (tcDelta.function?.arguments) currentToolCall.function!.arguments = (currentToolCall.function!.arguments || '') + tcDelta.function.arguments;
+                
+                accumulatedToolCalls.set(tcDelta.index, currentToolCall);
+
+                toolCallsDeltas!.push({
+                    index: tcDelta.index,
+                    id: tcDelta.id,
+                    type: tcDelta.type,
+                    function: tcDelta.function ? {
+                        name: tcDelta.function.name,
+                        arguments_delta: tcDelta.function.arguments
+                    } : undefined,
+                });
+            });
+        }
+        
+        const isFinal = !!choice?.finish_reason;
+        if (isFinal) {
+            // OpenAI might send usage in the last chunk or not at all for streams.
+            // If `apiChunk.usage` exists (it's optional in stream chunks per some docs), use it.
+            if (apiChunk.usage) {
+                 finalUsage = this.calculateUsage(apiChunk.usage, apiChunk.model);
+            }
+        }
+        
+        // Construct the primary choice message for the response
+        const responseChoice: ModelCompletionChoice = {
+            index: choice.index,
+            message: {
+                role: choice.delta.role || 'assistant', // Role usually comes once or is 'assistant'
+                content: responseTextDelta || null, // Content is delta
+                 // For final chunk, assemble complete tool_calls
+                tool_calls: isFinal ? Array.from(accumulatedToolCalls.values()).map(accTc => ({
+                    id: accTc.id!, // ID should be present by now
+                    type: accTc.type!, // Type should be present
+                    function: {
+                        name: accTc.function!.name!,
+                        arguments: accTc.function!.arguments!
+                    }
+                })).filter(tc => tc.id && tc.function.name) : undefined, // Only include if valid
+            },
+            finishReason: choice.finish_reason || null,
+            logprobs: choice.logprobs,
+        };
+
+
+        return {
+            id: apiChunk.id,
+            object: apiChunk.object,
+            created: apiChunk.created,
+            modelId: apiChunk.model,
+            choices: [responseChoice],
+            responseTextDelta,
+            toolCallsDeltas,
+            isFinal,
+            usage: finalUsage, // Only on the very final message from the stream
+        };
+    }
+
+
+  /**
+   * Maps the raw OpenAI API Embedding response to the standard ProviderEmbeddingResponse.
+   * @private
+   */
+  private mapApiToEmbeddingResponse(
+    apiResponse: OpenAIAPITypes.EmbeddingResponse
+  ): ProviderEmbeddingResponse {
+    return {
+      object: 'list',
+      data: apiResponse.data.map(d => ({
+        object: 'embedding',
+        embedding: d.embedding,
+        index: d.index,
+      })),
+      model: apiResponse.model,
+      usage: {
+        prompt_tokens: apiResponse.usage.prompt_tokens,
+        total_tokens: apiResponse.usage.total_tokens,
+        costUSD: this.calculateCost(
+          apiResponse.usage.prompt_tokens,
+          0, // No completion tokens for embeddings
+          apiResponse.model,
+          true // isEmbedding
+        ),
+      },
+    };
+  }
+
+  /**
+   * Calculates token usage and cost.
+   * @private
+   */
+  private calculateUsage(
+    usage: { prompt_tokens: number; completion_tokens: number; total_tokens: number },
+    modelId: string
+  ): ModelUsage {
+    return {
+      promptTokens: usage.prompt_tokens,
+      completionTokens: usage.completion_tokens,
+      totalTokens: usage.total_tokens,
+      costUSD: this.calculateCost(usage.prompt_tokens, usage.completion_tokens, modelId),
+    };
+  }
+
+  /**
+   * Calculates the estimated cost of an API call.
+   * @private
+   */
+  private calculateCost(
+    promptTokens: number,
+    completionTokens: number,
+    modelId: string,
+    isEmbedding: boolean = false
+  ): number | undefined {
+    const pricing = this.modelPricing[modelId];
+    if (!pricing) return undefined; // Pricing info not available
+
+    if (isEmbedding) {
+      return (promptTokens / 1000) * pricing.input;
+    }
+    const inputCost = (promptTokens / 1000) * pricing.input;
+    const outputCost = (completionTokens / 1000) * pricing.output;
+    return inputCost + outputCost;
+  }
+
+  /**
+   * Makes an API request to OpenAI with error handling and retries.
+   * @private
+   * @template T The expected response type.
+   * @param {string} endpoint - The API endpoint (e.g., "/chat/completions").
+   * @param {'GET' | 'POST'} method - HTTP method.
+   * @param {string} apiKey - The API key to use.
+   * @param {Record<string, unknown>} [body] - The request body for POST requests.
+   * @param {boolean} [expectStream] - Whether the response is expected to be a stream.
+   * @returns {Promise<T | ReadableStream<Uint8Array>>} The API response or stream.
+   * @throws {OpenAIProviderError} If the request fails after retries or for non-retryable errors.
+   */
+  private async makeApiRequest<T = unknown>(
+    endpoint: string,
+    method: 'GET' | 'POST',
+    apiKey: string,
+    body?: Record<string, unknown>,
+    expectStream: boolean = false
+  ): Promise<T | ReadableStream<Uint8Array>> {
+    const url = `${this.config.baseURL}${endpoint}`;
+    const headers: Record<string, string> = {
+      'Authorization': `Bearer ${apiKey}`,
+      'User-Agent': 'AgentOS/1.0 (OpenAIProvider)',
+      ...(this.config.customHeaders || {}),
+    };
+    if (method === 'POST') {
+      headers['Content-Type'] = 'application/json';
+    }
+    if (this.config.organizationId) {
+      headers['OpenAI-Organization'] = this.config.organizationId;
+    }
+
+    let lastError: Error = new OpenAIProviderError('Request failed after all retries.', 'MAX_RETRIES_REACHED');
+
+    for (let attempt = 0; attempt < this.config.maxRetries!; attempt++) {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), this.config.requestTimeout);
+
+      try {
+        const requestOptions: RequestInit = {
+          method,
+          headers,
+          body: body ? JSON.stringify(body) : undefined,
+          signal: controller.signal,
+        };
+
+        const response = await fetch(url, requestOptions);
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+          const errorData: OpenAIAPITypes.APIErrorResponse = await response.json().catch(() => ({}));
+          const errorMessage = errorData.error?.message || `HTTP error ${response.status}: ${response.statusText}`;
+          const errorType = errorData.error?.type;
+          const errorCode = errorData.error?.code;
+          
+          // Non-retryable errors
+          if (response.status === 401 || response.status === 403 || response.status === 400 || response.status === 404) {
+            throw new OpenAIProviderError(errorMessage, 'API_CLIENT_ERROR', errorCode || undefined, errorType, response.status, errorData);
+          }
+          // For other server errors or rate limits, prepare for retry
+          lastError = new OpenAIProviderError(errorMessage, 'API_SERVER_ERROR', errorCode || undefined, errorType, response.status, errorData);
+          if (response.status === 429) { // Rate limit
+            lastError = new OpenAIProviderError(errorMessage, 'RATE_LIMIT_EXCEEDED', errorCode || undefined, errorType, response.status, errorData);
+            const retryAfter = response.headers.get('retry-after'); // seconds
+            const retryAfterMs = retryAfter ? parseInt(retryAfter, 10) * 1000 : (2 ** attempt) * 1000;
+            await new Promise(resolve => setTimeout(resolve, retryAfterMs));
+            continue; // Retry
+          }
+          // Other retryable server errors
+          if (response.status >= 500) {
+            await new Promise(resolve => setTimeout(resolve, (2 ** attempt) * 1000)); // Exponential backoff
+            continue; // Retry
+          }
+          throw lastError; // If not explicitly handled for retry, throw
+        }
+
+        if (expectStream) {
+          if (!response.body) {
+            throw new OpenAIProviderError('Expected a stream response but body was null.', 'STREAM_BODY_NULL');
+          }
+          return response.body;
+        }
+        return (await response.json()) as T;
+
+      } catch (error: unknown) {
+        clearTimeout(timeoutId);
+        if (error instanceof OpenAIProviderError) { // If already our custom error, re-throw if not retryable
+             if (error.code === 'API_CLIENT_ERROR') throw error;
+             lastError = error;
+        } else if (error instanceof Error && error.name === 'AbortError') {
+          lastError = new OpenAIProviderError(`Request timed out after ${this.config.requestTimeout}ms.`, 'REQUEST_TIMEOUT', undefined, undefined, undefined, error);
+        } else {
+          lastError = new OpenAIProviderError(error instanceof Error ? error.message : 'Network or unknown error', 'NETWORK_ERROR', undefined, undefined, undefined, error);
+        }
+        
+        if (attempt === this.config.maxRetries! - 1) {
+          break; // Last attempt failed, break to throw lastError
+        }
+        // Exponential backoff for retries not handled by 429
+        const delay = Math.min(30000, (1000 * (2 ** attempt)) + Math.random() * 1000); // Add jitter
+        console.warn(`OpenAIProvider: Request attempt ${attempt + 1} failed. Retrying in ${delay.toFixed(0)}ms. Error: ${lastError.message}`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+    }
+    throw lastError; // Throw the last encountered error after all retries
+  }
+
+  /**
+   * Parses an SSE (Server-Sent Events) stream.
+   * @private
+   */
+  private async *parseSseStream(stream: ReadableStream<Uint8Array>): AsyncGenerator<string, void, undefined> {
+    const reader = stream.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
 
     try {
-      const stream = await this.openai.chat.completions.create(requestOptions);
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
 
-      for await (const chunk of stream) {
-        finalId = chunk.id; // ID is usually consistent across chunks in a stream
-        finalCreated = chunk.created;
-        finalModel = chunk.model;
-
-        // OpenAI stream chunks provide 'delta' for content and tool calls
-        // The 'usage' object often comes in a separate event or at the end with some providers,
-        // or in newer OpenAI API versions, it might be in the last chunk or an x-header.
-        // For OpenAI, `usage` is not part of the per-chunk data in `ChatCompletionChunk`.
-        // It's often retrieved after the stream is fully processed or via a separate mechanism
-        // if the library supports it (e.g. `stream.finalChatCompletion()`).
-        // For simplicity here, we'll assume usage is only processed at the end.
+        buffer += decoder.decode(value, { stream: true });
         
-        // Attempt to get usage if the library supports it (conceptual)
-        if ((stream as any).usage) { // Check if the stream object itself might accumulate usage
-            finalUsage = (stream as any).usage;
+        let eolIndex;
+        // An SSE event is typically defined by "data: ...\n\n"
+        // Or multiple "data: ..." lines followed by \n\n
+        while ((eolIndex = buffer.indexOf('\n\n')) >= 0) {
+            const messageBlock = buffer.substring(0, eolIndex);
+            buffer = buffer.substring(eolIndex + 2); // +2 for \n\n
+
+            const lines = messageBlock.split('\n');
+            for (const line of lines) {
+                if (line.startsWith('data: ')) {
+                    const dataContent = line.substring('data: '.length).trim();
+                    if (dataContent) { // Ensure not empty data string
+                        yield dataContent;
+                    }
+                }
+            }
         }
-        // Or, some SDKs might provide a final_usage on the last chunk or via a method
-        // if (chunk.choices[0]?.finish_reason && (stream as any).final_usage) {
-        // finalUsage = await (stream as any).final_usage();
-        // }
-
-
-        yield {
-          id: chunk.id,
-          created: chunk.created,
-          modelId: chunk.model,
-          choices: chunk.choices.map(choice => ({
-            delta: choice.delta as ModelResponseChoice['delta'], // Cast, ensure fields match
-            finish_reason: choice.finish_reason,
-            index: choice.index,
-          })),
-          isFinal: !!chunk.choices[0]?.finish_reason,
-          rawResponse: chunk,
-        };
       }
-      
-      // After the loop, try to get final usage if the OpenAI SDK's stream object provides it.
-      // This is a common pattern for some SDKs, but the exact mechanism can vary.
-      // For the `openai` Node.js library version 4+, usage is not directly available this way from the stream iterator.
-      // Typically, you'd make a non-streaming call if you need precise token counts for billing from OpenAI,
-      // or rely on dashboard reporting. For this example, we'll make `finalUsage` conceptual for streaming.
-      // If `openai.chat.completions.create({stream: true})` does not return usage,
-      // cost calculation for streaming will be an estimate or require a follow-up.
-      // For now, we'll indicate it might be missing for streams.
-      
-      // Placeholder for actual final usage if stream is finished.
-      // This part is tricky with streaming and exact token counts without a final summary event.
-      // Some libraries might offer a way to get this post-stream.
-      // For now, we'll construct a conceptual final packet if finish_reason was seen.
-      // Let's assume for this example, the last chunk with finish_reason might magically contain usage (not true for current OpenAI API).
-      // A practical approach is to sum token approximations from deltas or make a small follow-up non-stream call for usage.
-
-      // Simulate final packet with usage if it could be obtained
-      // This part is highly dependent on how the specific OpenAI SDK version handles final usage reporting for streams.
-      // As of recent versions, usage is NOT provided in the stream itself.
-      // We will return a final packet without usage, and cost calculation for streams becomes more complex.
-      // Callers might need to estimate or not rely on per-stream cost from this provider.
-      
-      // Yield a final packet for consistency, but acknowledge usage might be missing/estimated for streams
-      // This is a limitation of many streaming APIs; exact token counts are hard until the full response is known.
-      // For this MVP, we'll assume a mechanism to get usage exists, or it's okay if it's sometimes undefined for streams.
-      const lastChoice = (await (stream as any).finalChatCompletion?.())?.choices?.[0]; // Conceptual: some SDKs offer this
-      if (lastChoice && lastChoice.finish_reason) { // If we conceptually got a final packet
-          const accumulatedUsage = (await (stream as any).finalChatCompletion?.())?.usage; // Conceptual
-          let usageStats: ModelUsage | undefined;
-          if (accumulatedUsage) {
-                const costInfo = this.calculateCostForUsage(finalModel, {
-                    promptTokens: accumulatedUsage.prompt_tokens,
-                    completionTokens: accumulatedUsage.completion_tokens,
-                });
-                usageStats = {
-                    promptTokens: accumulatedUsage.prompt_tokens,
-                    completionTokens: accumulatedUsage.completion_tokens,
-                    totalTokens: accumulatedUsage.total_tokens,
-                    ...costInfo,
-                };
-          }
-          yield {
-            id: finalId,
-            created: finalCreated,
-            modelId: finalModel,
-            choices: [{ finish_reason: lastChoice.finish_reason, index: lastChoice.index }], // Minimal final choice info
-            isFinal: true,
-            usage: usageStats,
-          };
+      // Process any remaining data in the buffer (e.g. if stream ends without \n\n)
+      if (buffer.startsWith('data: ')) {
+        const dataContent = buffer.substring('data: '.length).trim();
+        if (dataContent) yield dataContent;
+      } else if (buffer.trim()) { // Sometimes final [DONE] might not be prefixed by "data: "
+          if (buffer.trim() === "[DONE]") yield "[DONE]";
+          else console.warn("OpenAIProvider: Trailing stream data not processed:", buffer);
       }
 
-
-    } catch (error: any) {
-      console.error(`OpenAIProvider stream error for model ${options.modelId}:`, error);
-      yield {
-        id: `error-stream-${Date.now()}`,
-        created: Math.floor(Date.now() / 1000),
-        modelId: options.modelId,
-        choices: [],
-        isFinal: true,
-        error: {
-          message: error.message || 'Unknown OpenAI API stream error',
-          type: error.type || error.name,
-          code: error.status || error.code,
-          details: error.error || error,
-        },
-      };
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Stream parsing error';
+        console.error('OpenAIProvider: Error reading or parsing SSE stream:', message, error);
+        throw new OpenAIProviderError(message, 'STREAM_PARSING_ERROR', undefined, undefined, undefined, error);
+    } finally {
+      // Ensure stream is closed if `break` or `return` is called within the generator
+      if (!reader.closed) {
+          await reader.cancel().catch(err => console.error("OpenAIProvider: Error cancelling stream reader:", err));
+      }
+      // console.log("OpenAIProvider: SSE Stream parsing finished.");
     }
-  }
-
-  public async listAvailableModels(): Promise<ModelInfo[]> {
-    // In a real scenario, this might call client.models.list()
-    // For now, return statically known models with their pricing from config
-    return Object.entries(this.config.pricing || {}).map(([id, p]) => ({
-        id,
-        providerId: this.providerId,
-        name: id, // Could be enhanced with more descriptive names
-        pricing: { prompt: p.prompt, completion: p.completion, currency: 'USD' },
-        capabilities: ['chat', 'tools', 'streaming', p.id.includes('json') ? 'json_mode' : undefined].filter(Boolean) as string[],
-        contextWindow: p.contextWindow || (id.includes('32k') ? 32768 : (id.includes('16k') || id.includes('turbo') || id.includes('4o')) ? (id.includes('4o') ? 128000 : (id.includes('16k') ? 16385 : 8192)) : 4096),
-    }));
-  }
-
-  public getFormatTypeForModel(modelId: string): ModelTargetInfo['promptFormatType'] {
-    // OpenAI chat models generally use 'openai_chat'
-    if (modelId.startsWith('gpt-')) {
-      return 'openai_chat';
-    }
-    return 'auto'; // Fallback
-  }
-
-  public getToolSupportForModel(modelId: string): ModelTargetInfo['toolSupport'] {
-    if (modelId.startsWith('gpt-3.5-turbo') || modelId.startsWith('gpt-4')) {
-      return 'openai_tools';
-    }
-    return 'none';
-  }
-
-  public getCheapestModelVariant(modelId: string, taskHint?: string): string | undefined {
-    // Example: if task is 'summarization_short' and current model is 'gpt-4', suggest 'gpt-3.5-turbo'
-    if (modelId.startsWith("gpt-4") && (taskHint?.includes("simple") || taskHint?.includes("cheap"))) {
-        if (this.config.pricing?.["gpt-3.5-turbo"]) return "gpt-3.5-turbo";
-    }
-    if (modelId.startsWith("gpt-4o") && (taskHint?.includes("simple") || taskHint?.includes("cheap"))) {
-        if (this.config.pricing?.["gpt-4o-mini"]) return "gpt-4o-mini";
-    }
-    return undefined;
   }
 }
