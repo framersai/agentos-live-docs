@@ -28,7 +28,6 @@
     # Copy compiled output and other necessary files
     COPY --from=builder /app/dist ./dist
     # COPY --from=builder /app/prompts ./prompts
-    COPY --from=builder /app/.env ./.env
     
     # Set environment
     ENV NODE_ENV=production
