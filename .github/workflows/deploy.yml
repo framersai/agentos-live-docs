@@ -25,8 +25,6 @@ jobs:
       - name: Build 
         run: |
           npm run build
-          cd frontend
-          sudo cp -r /root/voice-coding-assistant/frontend/dist/* /var/www/voice-coding-assistant/
         env:
           NODE_ENV: production
 
@@ -81,6 +79,9 @@ jobs:
           fi
           mv ~/voice-coding-assistant-temp ~/voice-coding-assistant
           
+          # move frontend to where it can be accessible by nginx
+          sudo cp -r ~/voice-coding-assistant/frontend/dist/* /var/www/voice-coding-assistant/
+
           cd ~/voice-coding-assistant/backend || { echo "ERROR: Could not navigate to backend directory."; exit 1; }
           
           # 2. Install Node.js, npm, PM2, and Nginx
