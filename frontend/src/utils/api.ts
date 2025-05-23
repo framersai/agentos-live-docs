@@ -3,7 +3,7 @@ import axios from 'axios';
 
 // Get environment variables (Vite exposes them via import.meta.env)
 // @ts-ignore
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3333';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
 // @ts-ignore
 const SHARED_PASSWORD = import.meta.env.VITE_SHARED_PASSWORD || 'password';
  

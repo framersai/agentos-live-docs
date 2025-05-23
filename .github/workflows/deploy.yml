@@ -84,17 +84,19 @@ jobs:
 
           cd ~/voice-coding-assistant/backend || { echo "ERROR: Could not navigate to backend directory."; exit 1; }
           
-          # 2. Install Node.js, npm, PM2, and Nginx
-          echo "Installing Node.js, npm, PM2, and Nginx..."
-          sudo apt-get update -y
-          sudo apt-get install -y nodejs npm nginx
-          
-          if ! command -v node &> /dev/null; then
-              echo "Creating symlink for node command..."
-              sudo ln -s /usr/bin/nodejs /usr/bin/node
-          fi
 
-          sudo npm install -g pm2
+          # Already installed on the server
+          # # 2. Install Node.js, npm, PM2, and Nginx
+          # echo "Installing Node.js, npm, PM2, and Nginx..."
+          # sudo apt-get update -y
+          # sudo apt-get install -y nodejs npm nginx
+          
+          # if ! command -v node &> /dev/null; then
+          #     echo "Creating symlink for node command..."
+          #     sudo ln -s /usr/bin/nodejs /usr/bin/node
+          # fi
+
+          # sudo npm install -g pm2
           
           # 3. Install backend dependencies (Node.js direct deploy)
           echo "Installing backend Node.js dependencies on server..."
