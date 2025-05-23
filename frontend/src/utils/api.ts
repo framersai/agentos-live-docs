@@ -16,6 +16,9 @@ export const api = axios.create({
   },
 });
 
+// delete this line
+console.log("API_BASE_URL:", API_BASE_URL);
+
 // Auth helper functions
 export const getAuthHeaders = () => {
   const token = localStorage.getItem('token') || sessionStorage.getItem('token') || SHARED_PASSWORD;
