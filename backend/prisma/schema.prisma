@@ -1,0 +1,101 @@
+// backend/prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+/// @model
+/// Represents a user in the system.
+model User {
+  id              String         @id @default(uuid()) @map("uuid")
+  username        String         @unique
+  email           String         @unique
+  passwordHash    String
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  lastLoginAt     DateTime?
+  subscriptionTierId String?
+  subscriptionTier  SubscriptionTier? @relation(fields: [subscriptionTierId], references: [id])
+  apiKeys         UserApiKey[]
+  conversations   Conversation[]
+  workingMemory   GMIWorkingMemoryEntry[] // Persistent working memory entries for GMIs
+  gmiSnapshots    GMISnapshot[]
+}
+
+/// @model
+/// Stores encrypted API keys for different LLM providers per user.
+model UserApiKey {
+  id              String   @id @default(uuid()) @map("uuid")
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  providerId      String   // e.g., "openai", "openrouter"
+  encryptedKey    String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([userId, providerId]) // A user can only have one API key per provider
+}
+
+/// @model
+/// Defines available subscription tiers and their entitlements.
+model SubscriptionTier {
+  id               String       @id @default(uuid()) @map("uuid")
+  name             String       @unique
+  description      String?
+  level            Int          @unique // e.g., 0 for Free, 1 for Basic, 2 for Premium
+  maxGmiInstances  Int          @default(1)
+  maxApiKeys       Int          @default(1)
+  maxConversationHistoryTurns Int @default(20)
+  maxContextWindowTokens Int    @default(4096)
+  dailyCostLimitUsd Float       @default(0.0) // 0.0 for free, limits for paid tiers
+  isPublic         Boolean      @default(false) // Whether this tier is accessible to public/unauthenticated users
+  features         String[]     // JSON array of feature flags, e.g., ["CAN_GENERATE_UI_BLOCK_JS"]
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  users            User[]       // Users assigned to this tier
+}
+
+/// @model
+/// Represents a single conversation history.
+model Conversation {
+  id              String             @id @default(uuid()) @map("uuid")
+  userId          String?            // Null for unauthenticated sessions
+  user            User?              @relation(fields: [userId], references: [id], onDelete: SetNull)
+  title           String             @default("New Conversation")
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+  messages        ConversationMessage[] // Related messages
+  gmiInstanceId   String?            // The GMI instance this conversation is primarily tied to
+  sessionDetails  Json?              // Store GMI session-specific details (e.g., initial persona, mood)
+}
+
+/// @model
+/// Represents a single message within a conversation.
+model ConversationMessage {
+  id            String       @id @default(uuid()) @map("uuid")
+  conversationId String
+  conversation  Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  role          String       // "user", "assistant", "system", "tool"
+  content       String       // Text content of the message
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  toolCalls     Json?        // Optional JSON array of tool calls for assistant messages
+  toolCallId    String?      // Optional ID for tool result messages, linking to the tool call
+  multimodalData Json?       // Optional JSON for image/audio data references in prompts
+}
+
+/// @model
+/// Represents a key-value entry in a GMI's working memory.
+/// This allows working memory to persist across GMI deactivations/reactivations.
+model GMIWorkingMemoryEntry {
+  id          String   @id @default(uuid()) @map("uuid")
+  gmiInstanceId String   // The ID of the GMI instance this memory belongs to
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  key         String
+  value       String   // St

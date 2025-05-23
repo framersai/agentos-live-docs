@@ -1,0 +1,226 @@
+// backend/agentos/cognitive_substrate/personas/IPersonaDefinition.ts
+
+import { ModelCompletionOptions } from '../../core/llm/providers/IProvider';
+import { PromptEngineConfig } from '../../core/llm/IPromptEngine';
+import { ITool } from '../../tools/interfaces/ITool'; // Import ITool for tool schemas
+
+/**
+ * @fileoverview Defines the interface for a Persona Definition, which configures
+ * the behavior, capabilities, and operational parameters of a Generalized Mind Instance (GMI).
+ * This file now unifies persona traits with the underlying agent implementation details,
+ * making the PersonaDefinition truly define a complete agent persona.
+ * @module agentos/cognitive_substrate/personas/IPersonaDefinition
+ */
+
+/**
+ * @typedef {Object} PersonaVoiceConfig
+ * Configuration for the persona's voice when generating audio output.
+ * @property {string} [provider] - The TTS provider to utilize (e.g., 'elevenlabs', 'azure_tts', 'browser_tts').
+ * @property {string} [voiceId] - The ID of the specific voice to use (provider-specific).
+ * @property {string} [languageCode] - Optional language code of the voice (e.g., 'en-US', 'es-ES').
+ * @property {Record<string, any>} [customParams] - Any additional provider-specific parameters.
+ * @property {Record<string, Record<string, any>>} [moodToVoiceStyleMap] - Maps moods to specific voice style parameters.
+ */
+export interface PersonaVoiceConfig {
+  provider?: string;
+  voiceId?: string;
+  languageCode?: string;
+  customParams?: Record<string, any>;
+  moodToVoiceStyleMap?: Record<string, Record<string, any>>;
+}
+
+/**
+ * @typedef {Object} PersonaAvatarConfig
+ * Configuration for the persona's visual representation (avatar).
+ * @property {'static_image' | 'animated_image' | 'realtime_generative'} [type] - The type of avatar.
+ * @property {string} [sourceUrl] - URL to a static or animated image.
+ * @property {string} [descriptionForGeneration] - A prompt or description for generating a real-time avatar.
+ * @property {Record<string, { sourceUrl?: string; generationPromptSuffix?: string }>} [moodToAvatarStateMap] - Maps moods to different avatar states or generation prompts.
+ */
+export interface PersonaAvatarConfig {
+  type?: 'static_image' | 'animated_image' | 'realtime_generative';
+  sourceUrl?: string;
+  descriptionForGeneration?: string;
+  moodToAvatarStateMap?: Record<string, { sourceUrl?: string; generationPromptSuffix?: string }>;
+}
+
+/**
+ * @typedef {Object} PersonaMoodAdaptationConfig
+ * Configuration for how the persona adapts its mood based on feedback or context.
+ * @property {boolean} enabled - Whether mood adaptation is enabled for this persona.
+ * @property {number} [sensitivityFactor] - How sensitive the persona is to mood changes (0-1).
+ * @property {string} defaultMood - The default mood of the persona (e.g., 'neutral', 'helpful').
+ * @property {string[]} [allowedMoods] - A list of moods this persona can exhibit.
+ * @property {Record<string, string>} [moodPrompts] - Map of moods to specific prompt additions that influence tone.
+ */
+export interface PersonaMoodAdaptationConfig {
+  enabled: boolean;
+  sensitivityFactor?: number;
+  defaultMood: string;
+  allowedMoods?: string[];
+  moodPrompts?: Record<string, string>; // Added moodPrompts for dynamic tone control
+}
+
+/**
+ * @typedef {Object} ModelTargetPreference
+ * Defines a preference for a specific model or model family for certain tasks.
+ * Used by GMI to intelligently select the best LLM.
+ * @property {string} [taskHint] - A hint for which tasks this preference applies (e.g., 'code_generation', 'general_conversation', '*' for all).
+ * @property {string} [modelId] - The ID of a specific model (e.g., 'gpt-4o', 'llama3').
+ * @property {string} [providerId] - The ID of the preferred provider for this model (e.g., 'openai', 'ollama').
+ * @property {string} [modelFamily] - The family of models (e.g., 'gpt-4', 'claude-3').
+ * @property {'fastest' | 'balanced' | 'best'} [minQualityTier] - Minimum quality tier required.
+ * @property {number} [maxCostPerKiloTokenInput] - Maximum acceptable cost per 1k input tokens.
+ * @property {number} [maxCostPerKiloTokenOutput] - Maximum acceptable cost per 1k output tokens.
+ * @property {string[]} [requiredCapabilities] - Specific capabilities the model must have (e.g., 'tool_use', 'vision_input').
+ */
+export type ModelTargetPreference = {
+  taskHint?: string;
+  modelId?: string;
+  providerId?: string;
+  modelFamily?: string;
+  minQualityTier?: 'fastest' | 'balanced' | 'best';
+  maxCostPerKiloTokenInput?: number;
+  maxCostPerKiloTokenOutput?: number;
+  requiredCapabilities?: string[];
+};
+
+/**
+ * @typedef {Object} PersonaCostSavingStrategy
+ * Defines how a persona prioritizes cost vs. quality in model selection.
+ */
+export type PersonaCostSavingStrategy = 'always_cheapest' | 'balance_quality_cost' | 'prioritize_quality' | 'user_preference';
+
+/**
+ * @typedef {Object} PersonaConversationContextConfig
+ * Configuration for how the persona manages and uses conversation history.
+ * @property {number} [maxMessages] - The maximum number of messages to keep in memory.
+ * @property {number} [maxTokens] - The maximum number of tokens for the entire context.
+ * @property {'truncate' | 'summarize' | 'hybrid'} [overflowStrategy] - How to handle context overflow.
+ * @property {boolean} [includeToolResults] - Whether to include tool results in the summarized/truncated context.
+ * @property {boolean} [includeSystemMessages] - Whether to include system messages.
+ */
+export interface PersonaConversationContextConfig {
+  maxMessages?: number;
+  maxTokens?: number;
+  overflowStrategy?: 'truncate' | 'summarize' | 'hybrid';
+  includeToolResults?: boolean;
+  includeSystemMessages?: boolean;
+}
+
+/**
+ * @typedef {Object} IPersonaDefinition
+ * The core interface defining a complete persona for a Generalized Mind Instance (GMI).
+ * This combines behavioral traits, operational parameters, tool access, and model preferences.
+ */
+export interface IPersonaDefinition {
+  id: string;
+  name: string;
+  description: string;
+  version: string;
+  /**
+   * The core system prompt(s) for the persona. Can be a string, a template object,
+   * or an array of content-priority pairs for layered system prompts.
+   */
+  baseSystemPrompt: string | { template: string; variables?: string[] } | Array<{ content: string; priority?: number }>;
+  
+  personalityTraits?: Record<string, any>;
+  moodAdaptation?: PersonaMoodAdaptationConfig;
+  voiceConfig?: PersonaVoiceConfig;
+  avatarConfig?: PersonaAvatarConfig;
+  defaultLanguage?: string;
+
+  /**
+   * Preferences for model selection. These guide the GMI's `_selectModelForTask` logic.
+   */
+  modelTargetPreferences?: ModelTargetPreference[];
+  /**
+   * Default LLM completion options for this persona, unless overridden by user input.
+   */
+  defaultModelCompletionOptions?: Partial<ModelCompletionOptions>;
+  /**
+   * Strategy for balancing cost vs. quality in model selection.
+   */
+  costSavingStrategy?: PersonaCostSavingStrategy;
+
+  /**
+   * List of tool IDs that this persona is authorized to use.
+   */
+  toolIds?: string[];
+  /**
+   * General capabilities or prefixes that this persona is allowed to access
+   * (e.g., 'CAN_USE_TOOLS', 'CAN_GENERATE_UI_BLOCK_JS', 'tool_'). Used for granular permissioning.
+   */
+  allowedCapabilities?: string[];
+  
+  /**
+   * Defines the input modalities this persona can process.
+   */
+  allowedInputModalities?: Array<'text' | 'audio_stream_segment' | 'audio_file_url' | 'vision_image_url' | 'vision_image_base64' | 'vision_video_frame_base64' | 'vision_video_file_url'>;
+  /**
+   * Defines the output modalities this persona can generate.
+   */
+  allowedOutputModalities?: Array<'text' | 'audio_tts' | 'image_generation' | 'ui_block_generation'>; // Added 'ui_block_generation'
+
+  /**
+   * Overrides for the PromptEngine configuration when this persona is active.
+   */
+  promptEngineConfigOverrides?: Partial<PromptEngineConfig>;
+  
+  /**
+   * The minimum subscription tier required to access this persona.
+   */
+  minSubscriptionTier?: string; // Changed to optional, if not set, it's generally free or available to all
+  /**
+   * If true, this persona is publicly accessible even without specific tier checks (unless minSubscriptionTier is set).
+   */
+  isPublic?: boolean;
+  /**
+   * Keywords that might activate this persona in a multi-persona environment.
+   */
+  activationKeywords?: string[];
+  /**
+   * Strengths or areas of expertise of this persona.
+   */
+  strengths?: string[];
+  /**
+   * How the persona prefers to interact with the UI.
+   */
+  uiInteractionStyle?: 'suggestive' | 'directive' | 'collaborative' | 'silent'; // Added 'silent'
+
+  /**
+   * Initial knowledge or rules to be imprinted into the GMI's working memory upon persona activation.
+   */
+  initialMemoryImprints?: Array<{ key: string; value: any }>; // Changed to key-value pairs
+
+  /**
+   * Meta-prompts used by the GMI's internal meta-reasoning engine when this persona is active.
+   */
+  metaPrompts?: {
+    explainUnexpectedSituation?: string;
+    clarifyNewFeatureRequest?: string;
+    selfCorrectOutput?: string;
+    decideNextActionOrPersona?: string; // For GMI to decide if it needs to switch or consult another persona
+    useLLMRouterForModelSelection?: boolean; // Hint to use the LLMModelRouter for model selection
+    analyzeUserIntent?: string; // For understanding complex user queries
+    generateToolCallRationale?: string; // For explaining why a tool is being called
+    summarizeConversation?: string; // For GMI to prompt itself to summarize conversation
+  };
+
+  /**
+   * Configuration for how this persona's conversation context is managed.
+   */
+  conversationContextConfig?: PersonaConversationContextConfig;
+
+  /**
+   * Optional. Definition of tools directly embedded within the persona, or references to global tools.
+   * This allows for 'persona-specific' tools that are unique to this persona.
+   * If both `toolIds` and `embeddedTools` are present, `embeddedTools` take precedence for the same `id`.
+   */
+  embeddedTools?: ITool[]; // Can define tools directly here
+  
+  /**
+   * Any other arbitrary persona-specific properties.
+   */
+  [key: string]: any;
+}
