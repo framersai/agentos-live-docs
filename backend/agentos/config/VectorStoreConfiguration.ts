@@ -1,234 +1,252 @@
-// backend/agentos/config/VectorStoreConfiguration.ts
-
 /**
  * @fileoverview Defines configuration structures for vector store providers
  * and the overall VectorStoreManager. This allows for flexible setup of
- * different vector database backends (Pinecone, Weaviate, local, in-memory).
+ * different vector database backends (e.g., Pinecone, Weaviate, local, in-memory options)
+ * and logical RAG collections that map to these physical stores.
+ *
  * @module backend/agentos/config/VectorStoreConfiguration
+ * @see ../rag/IVectorStore.ts for `VectorStoreProviderConfig` and related types.
+ * @see ../rag/IVectorStoreManager.ts for the manager interface using this config.
  */
 
-import { VectorStoreProviderConfig } from '../rag/IVectorStore'; // Assuming IVectorStore defines this base
+// This import is crucial. VectorStoreProviderConfig is the base for all specific provider configs.
+// It will be defined in `../rag/IVectorStore.ts`.
+import { VectorStoreProviderConfig } from '../rag/IVectorStore';
 
 /**
  * Specific configuration for an InMemoryVectorStore.
+ * Suitable for development, testing, or scenarios where data persistence is not required
+ * or is handled externally.
+ *
  * @interface InMemoryVectorStoreConfig
  * @extends VectorStoreProviderConfig
- * @property {'in_memory'} providerId - Must be 'in_memory'.
- * @property {string} [persistPath] - Optional path to a file for persisting the in-memory store on shutdown/startup.
- * @property {'tf_idf' | 'basic_vector'} [similarityMode='basic_vector'] -
- * 'tf_idf': Uses TF-IDF and cosine similarity from 'natural' library for very lightweight, text-based similarity.
- * Embeddings provided to upsert will be ignored; TF-IDF vectors generated internally.
- * 'basic_vector': Stores and uses provided numerical embeddings with cosine similarity.
- * @property {number} [defaultEmbeddingDimension] - Required if similarityMode is 'basic_vector' and no global default.
+ * @property {'in_memory'} type - Identifier for the in-memory provider type.
+ * @property {string} [persistPath] - Optional file path for persisting the in-memory store's state
+ * on shutdown and reloading on startup. If not provided, data is purely ephemeral.
+ * @property {'cosine' | 'euclidean' | 'dotproduct'} [similarityMetric='cosine'] - The similarity metric to use
+ * for vector comparisons if the implementation supports it directly.
+ * @property {number} [defaultEmbeddingDimension] - The embedding dimension this store expects.
+ * Crucial if not globally defined or if the store needs explicit dimensioning.
  */
 export interface InMemoryVectorStoreConfig extends VectorStoreProviderConfig {
-  providerId: 'in_memory';
+  type: 'in_memory';
   persistPath?: string;
-  similarityMode?: 'tf_idf' | 'basic_vector';
+  similarityMetric?: 'cosine' | 'euclidean' | 'dotproduct';
   defaultEmbeddingDimension?: number;
 }
 
 /**
  * Specific configuration for a local, file-based, or embedded VectorStore.
- * This could be for SQLite with vector extensions, LanceDB, local ChromaDB etc.
+ * This can represent stores like SQLite with vector extensions (e.g., VSS), LanceDB,
+ * or local instances of ChromaDB.
+ *
  * @interface LocalFileVectorStoreConfig
  * @extends VectorStoreProviderConfig
- * @property {'local_file' | 'lancedb' | 'chromadb_local'} providerId - Specific local provider type.
+ * @property {'local_file_vss' | 'lancedb' | 'chromadb_local'} type - Specific local provider type.
  * @property {string} databasePath - Path to the database file or directory.
- * @property {number} [defaultEmbeddingDimension] - Required if no global default.
- * @property {Record<string, any>} [connectionParams] - Additional parameters for the specific local DB.
+ * @property {number} [defaultEmbeddingDimension] - The embedding dimension this store expects.
+ * @property {Record<string, any>} [connectionParams] - Additional parameters specific to the chosen
+ * local database (e.g., table names, read/write modes).
  */
 export interface LocalFileVectorStoreConfig extends VectorStoreProviderConfig {
-  providerId: 'local_file' | 'lancedb' | 'chromadb_local'; // Example local provider IDs
+  type: 'local_file_vss' | 'lancedb' | 'chromadb_local'; // Example local provider types
   databasePath: string;
   defaultEmbeddingDimension?: number;
   connectionParams?: Record<string, any>;
 }
 
 /**
- * Specific configuration for Pinecone.
+ * Specific configuration for a Pinecone vector store.
+ *
  * @interface PineconeVectorStoreConfig
  * @extends VectorStoreProviderConfig
- * @property {'pinecone'} providerId - Must be 'pinecone'.
- * @property {string} apiKey - Pinecone API key.
- * @property {string} environment - Pinecone environment (e.g., 'us-west1-gcp').
- * @property {string} [defaultIndexName] - Default Pinecone index to use. (Corresponds to collectionName).
- * @property {number} [defaultEmbeddingDimension] - Required if no global default.
- * @property {string} [similarityMetric='cosine'] - Default similarity metric for new indexes.
+ * @property {'pinecone'} type - Identifier for the Pinecone provider type.
+ * @property {string} apiKey - Pinecone API key. Ensure this is securely managed (e.g., via environment variables).
+ * @property {string} environment - Pinecone environment (e.g., 'gcp-starter', 'us-east-1-aws').
+ * @property {number} [defaultEmbeddingDimension] - Default embedding dimension for collections created
+ * or managed by this provider instance if not specified per collection.
+ * @property {'cosine' | 'euclidean' | 'dotproduct'} [similarityMetric='cosine'] - Default similarity metric for new Pinecone indexes
+ * created through this configuration, if applicable.
  */
 export interface PineconeVectorStoreConfig extends VectorStoreProviderConfig {
-  providerId: 'pinecone';
-  apiKey: string;
-  environment: string; // e.g., 'gcp-starter', 'us-east-1-aws', etc.
-  defaultIndexName?: string; // Pinecone uses 'index' for collection
+  type: 'pinecone';
+  apiKey: string; // Should be sourced from environment variables
+  environment: string;
   defaultEmbeddingDimension?: number;
   similarityMetric?: 'cosine' | 'euclidean' | 'dotproduct';
 }
 
 /**
- * Specific configuration for Weaviate.
+ * Specific configuration for a Weaviate vector store.
+ *
  * @interface WeaviateVectorStoreConfig
  * @extends VectorStoreProviderConfig
- * @property {'weaviate'} providerId - Must be 'weaviate'.
- * @property {string} scheme - Connection scheme ('http' or 'https').
- * @property {string} host - Weaviate instance host (e.g., 'localhost:8080' or a cloud endpoint).
- * @property {string} [apiKey] - Optional API key for Weaviate Cloud Services (WCS) or secured instances.
- * @property {string} [defaultClassName] - Default Weaviate class name to use. (Corresponds to collectionName).
- * @property {number} [defaultEmbeddingDimension] - Required if no global default.
- * @property {Record<string, any>} [headers] - Optional additional headers for connection.
+ * @property {'weaviate'} type - Identifier for the Weaviate provider type.
+ * @property {string} scheme - Connection scheme, typically 'http' or 'https'.
+ * @property {string} host - Weaviate instance host and port (e.g., 'localhost:8080' or a cloud endpoint like 'your-cluster.weaviate.network').
+ * @property {string} [apiKey] - Optional API key, e.g., for Weaviate Cloud Services (WCS) or API key-secured instances.
+ * @property {number} [defaultEmbeddingDimension] - Default embedding dimension for collections (classes)
+ * created or managed by this provider instance.
+ * @property {Record<string, string>} [headers] - Optional additional HTTP headers for the connection (e.g., for custom authentication).
+ * @property {string} [grpcHost] - Optional gRPC host and port for performance-sensitive operations, if supported and configured.
  */
 export interface WeaviateVectorStoreConfig extends VectorStoreProviderConfig {
-  providerId: 'weaviate';
+  type: 'weaviate';
   scheme: 'http' | 'https';
-  host: string; // e.g., "localhost:8080" or "your-cluster.weaviate.network"
-  apiKey?: string;
-  defaultClassName?: string; // Weaviate uses 'class' for collection
+  host: string;
+  apiKey?: string; // For WCS or auth-enabled instances
   defaultEmbeddingDimension?: number;
   headers?: Record<string, string>;
+  grpcHost?: string;
 }
 
 /**
  * A union type representing configuration for any supported vector store provider.
- * Add new specific provider configs to this union.
+ * When adding support for a new vector store, define its specific configuration interface
+ * (extending `VectorStoreProviderConfig`) and include it in this union.
  */
 export type AnyVectorStoreProviderConfig =
   | InMemoryVectorStoreConfig
   | LocalFileVectorStoreConfig
   | PineconeVectorStoreConfig
   | WeaviateVectorStoreConfig
-  // Add other provider configurations here, e.g.
-  // | QdrantVectorStoreConfig
-  // | MilvusVectorStoreConfig
-  | VectorStoreProviderConfig; // Fallback for generic or future providers
+  // Example: | QdrantVectorStoreConfig
+  // Example: | MilvusVectorStoreConfig
+  | VectorStoreProviderConfig; // Fallback for generic or user-defined providers not yet typed explicitly.
 
 /**
  * Configuration for the VectorStoreManager.
+ * The manager is responsible for initializing and providing access to various
+ * vector store instances based on these configurations.
+ *
  * @interface VectorStoreManagerConfig
- * @property {AnyVectorStoreProviderConfig[]} providers - An array of configurations for each vector store provider to be initialized.
- * @property {string} [defaultProviderId] - The ID of the vector store provider to use by default if not specified.
- * If not set, the first provider in the list might be used as default.
- * @property {number} [defaultEmbeddingDimension] - A system-wide default embedding dimension if a provider/collection
- * doesn't specify its own. Useful for embedding model consistency.
+ * @property {string} managerId - A unique identifier for this manager instance, useful if multiple managers exist.
+ * @property {AnyVectorStoreProviderConfig[]} providers - An array of configurations for each vector store provider
+ * instance to be initialized and managed.
+ * @property {string} [defaultProviderId] - The `id` (from `VectorStoreProviderConfig.id`) of the vector store provider
+ * to use by default if an operation does not specify one. If not set, the first provider in the
+ * `providers` list might be used, or an error might be thrown if a default is required.
+ * @property {number} [defaultEmbeddingDimension] - A system-wide default embedding dimension. This can be
+ * used by providers or collections if they don't have a specific dimension defined, ensuring
+ * consistency with embedding models.
  */
 export interface VectorStoreManagerConfig {
+  managerId: string;
   providers: AnyVectorStoreProviderConfig[];
   defaultProviderId?: string;
   defaultEmbeddingDimension?: number;
 }
 
 /**
- * Represents a named collection configuration within the RAG system.
- * This allows different GMIs or personas to use different sets of data
- * or different configurations for the same underlying provider.
+ * Configuration for a logical RAG Data Source (often called a "collection" or "index").
+ * This structure defines how a logical unit of data within the RAG system maps to a
+ * physical collection in a specific vector store provider and its associated behaviors.
  *
- * @interface RagCollectionConfig
- * @property {string} collectionId - A unique identifier for this RAG collection (e.g., "global_wiki", "gmi_xyz_personal_notes").
- * @property {string} displayName - A user-friendly name for the collection.
- * @property {string} description - A brief description of the collection's purpose or content.
- * @property {string} vectorStoreProviderId - The ID of the VectorStoreProvider (from VectorStoreManagerConfig) to use for this collection.
- * @property {string} actualCollectionNameInProvider - The actual name of the index/class/collection in the underlying vector DB
- * (e.g., "agentos-main-kb" in Pinecone, "KnowledgeItem" class in Weaviate).
- * @property {boolean} isDefaultQueryCollection - If true, GMI might query this collection by default if no specific collection is targeted.
- * @property {boolean} isDefaultStorageCollection - If true, GMI/WorkingMemory might store new data here by default.
- * @property {string[]} relevantPersonaIds - Optional list of persona IDs that primarily use or are relevant to this collection.
- * @property {string[]} authorizedUserRoles - Optional list of user roles authorized to access/contribute to this collection.
- * @property {any} [preprocessingRules] - Configuration for statistical preprocessing before ingestion into this collection
- * (e.g., { summarization: "medium", keywords: true }).
- * @property {any} [retrievalParameters] - Default retrieval parameters for this collection (e.g., { topK: 7, minScore: 0.75 }).
+ * @interface RagDataSourceConfig
+ * @property {string} dataSourceId - A unique identifier for this RAG data source (e.g., "global_wiki", "gmi_xyz_personal_notes").
+ * This ID is used by `RetrievalAugmentor`'s `RagCategoryBehavior` to map logical categories to these sources.
+ * @property {string} displayName - A user-friendly name for the data source.
+ * @property {string} [description] - An optional description of the data source's purpose or content.
+ * @property {string} vectorStoreProviderId - The `id` of the `VectorStoreProviderConfig` (from `VectorStoreManagerConfig.providers`)
+ * that this data source will use for storage and retrieval.
+ * @property {string} actualNameInProvider - The actual name of the index, class, or collection in the underlying
+ * vector database (e.g., "agentos-main-kb" in Pinecone, "KnowledgeItem" class in Weaviate). This is provider-specific.
+ * @property {number} [embeddingDimension] - The embedding dimension expected for documents stored in this data source.
+ * This should match the embedding models used to populate it. Overrides provider/manager defaults.
+ * @property {boolean} [isDefaultQuerySource=false] - If true, this data source might be queried by default if no specific
+ * source is targeted in a retrieval request.
+ * @property {boolean} [isDefaultIngestionSource=false] - If true, new data might be ingested into this source by default.
+ * @property {string[]} [relevantPersonaIds] - Optional list of persona IDs that primarily use or are relevant to this data source.
+ * Can be used for access control or context-aware routing.
+ * @property {string[]} [authorizedUserRoles] - Optional list of user roles authorized to access or contribute to this
+ * data source (e.g., ['admin', 'editor', 'user_tier_premium']).
+ * @property {Record<string, any>} [providerSpecificSettings] - Any additional settings specific to the
+ * underlying vector store provider for this particular data source (e.g., custom indexing parameters for Pinecone,
+ * schema details for Weaviate).
+ * @property {object} [metadataSchema] - Optional: A simple schema defining expected metadata fields and their types
+ * for documents within this data source, aiding in validation and consistent querying.
+ * Example: `{ "author": "string", "creationDate": "date", "version": "number" }`
  */
-export interface RagCollectionConfig {
-  collectionId: string;
+export interface RagDataSourceConfig {
+  dataSourceId: string;
   displayName: string;
-  description: string;
+  description?: string;
   vectorStoreProviderId: string;
-  actualCollectionNameInProvider: string;
-  isDefaultQueryCollection?: boolean;
-  isDefaultStorageCollection?: boolean;
+  actualNameInProvider: string;
+  embeddingDimension?: number;
+  isDefaultQuerySource?: boolean;
+  isDefaultIngestionSource?: boolean;
   relevantPersonaIds?: string[];
-  authorizedUserRoles?: string[]; // e.g., ['admin', 'editor', 'user_tier_premium']
-  preprocessingRules?: {
-    minLength?: number; // Min text length to be considered for storage
-    minNoveltyScore?: number; // Min novelty score from StatisticalUtilityAI
-    summarization?: 'short' | 'medium' | 'none'; // Pre-summarization before embedding
-    extractKeywordsForMetadata?: boolean;
-    targetChunkSize?: number; // For text splitting
-  };
-  retrievalParameters?: {
-    defaultTopK?: number;
-    defaultMinScore?: number;
-  };
+  authorizedUserRoles?: string[];
+  providerSpecificSettings?: Record<string, any>;
+  metadataSchema?: Record<string, 'string' | 'number' | 'boolean' | 'date' | 'string[]' | 'number[]'>;
 }
 
-
 /**
- * Overall configuration for the Retrieval Augmented Generation system.
- * @interface RagSystemConfig
- * @property {VectorStoreManagerConfig} vectorStoreManagerConfig - Configuration for all underlying vector store providers.
- * @property {RagCollectionConfig[]} collections - Defines the different logical RAG collections available in the system.
- * @property {string} defaultEmbeddingModelId - Default model ID to use for generating embeddings (e.g., "text-embedding-ada-002").
- * This would be used by an EmbeddingManager.
- * @property {string} defaultEmbeddingProviderId - Default provider ID for the embedding model.
- * @property {Record<string, any>} [ingestionDefaults] - Default settings for data ingestion across collections.
- * @property {Record<string, any>} [queryDefaults] - Default settings for queries across collections.
+ * Overall configuration for the entire RAG system's data persistence and retrieval layer.
+ * This top-level configuration object would typically be part of a larger application configuration.
+ *
+ * @interface RagDataLayerConfig
+ * @property {VectorStoreManagerConfig} vectorStoreManager - Configuration for the `VectorStoreManager`,
+ * which includes all physical vector store provider setups.
+ * @property {RagDataSourceConfig[]} dataSources - An array defining all logical RAG data sources (collections)
+ * available in the system, mapping them to the configured vector store providers.
+ * @property {string} [defaultEmbeddingModelIdForSystem] - An optional global default embedding model ID for the RAG data layer.
+ * This can inform choices if `EmbeddingManager` needs a hint or if data sources don't specify.
+ * @property {number} [defaultEmbeddingDimensionForSystem] - An optional global default embedding dimension,
+ * further ensuring consistency if not specified at lower levels.
  */
-export interface RagSystemConfig {
-  vectorStoreManagerConfig: VectorStoreManagerConfig;
-  collections: RagCollectionConfig[];
-  defaultEmbeddingModelId: string; // e.g., "text-embedding-3-small"
-  defaultEmbeddingProviderId: string; // e.g., "openai" or "ollama_local_embeddings"
-  // Potentially add default configurations for EmbeddingManager here if it's complex
+export interface RagDataLayerConfig {
+  vectorStoreManager: VectorStoreManagerConfig;
+  dataSources: RagDataSourceConfig[];
+  defaultEmbeddingModelIdForSystem?: string;
+  defaultEmbeddingDimensionForSystem?: number;
 }
 
 // Example of how this configuration might be structured in a main system config file:
 /*
-const systemConfiguration = {
-  // ... other system configs
-  rag: {
-    vectorStoreManagerConfig: {
-      defaultProviderId: 'pinecone_main',
-      defaultEmbeddingDimension: 1536,
-      providers: [
-        {
-          providerId: 'pinecone_main',
-          apiKey: process.env.PINECONE_API_KEY,
-          environment: process.env.PINECONE_ENVIRONMENT,
-          defaultIndexName: 'agentos-knowledge-base',
-          defaultEmbeddingDimension: 1536,
-        } as PineconeVectorStoreConfig,
-        {
-          providerId: 'in_memory_dev',
-          similarityMode: 'basic_vector',
-          defaultEmbeddingDimension: 384, // for a smaller local model
-        } as InMemoryVectorStoreConfig,
-      ],
-    },
-    collections: [
+const systemRagDataLayerConfig: RagDataLayerConfig = {
+  vectorStoreManager: {
+    managerId: 'main-vsm',
+    defaultProviderId: 'pinecone_main_prod',
+    defaultEmbeddingDimension: 1536, // System-wide default if not specified lower
+    providers: [
       {
-        collectionId: 'global_wiki',
-        displayName: 'Global Knowledge Wiki',
-        description: 'Shared knowledge base for all agents.',
-        vectorStoreProviderId: 'pinecone_main',
-        actualCollectionNameInProvider: 'agentos-global-wiki-prod',
-        isDefaultQueryCollection: true,
-        isDefaultStorageCollection: true,
-        preprocessingRules: {
-          summarization: 'medium',
-          extractKeywordsForMetadata: true,
-        },
-        retrievalParameters: { defaultTopK: 5 }
-      },
+        id: 'pinecone_main_prod', // Matches VectorStoreProviderConfig.id
+        type: 'pinecone',
+        apiKey: process.env.PINECONE_API_KEY!,
+        environment: process.env.PINECONE_ENVIRONMENT!,
+        defaultEmbeddingDimension: 1536, // Provider-level default
+      } as PineconeVectorStoreConfig,
       {
-        collectionId: 'user_personal_notes',
-        displayName: 'User Personal Notes',
-        description: 'Personal notes and memories for individual users (data segregation implied by metadata).',
-        vectorStoreProviderId: 'pinecone_main', // Could also be a different provider
-        actualCollectionNameInProvider: 'agentos-user-notes-prod',
-        // This collection would be queried with user_id in metadataFilter
-      }
+        id: 'in_memory_dev_store',
+        type: 'in_memory',
+        defaultEmbeddingDimension: 384, // For a smaller local/dev model
+      } as InMemoryVectorStoreConfig,
     ],
-    defaultEmbeddingModelId: 'text-embedding-3-small',
-    defaultEmbeddingProviderId: 'openai',
-  } as RagSystemConfig,
-  // ... other service configs
+  },
+  dataSources: [
+    {
+      dataSourceId: 'global_company_wiki',
+      displayName: 'Global Company Wiki',
+      description: 'Shared knowledge base for all company agents and employees.',
+      vectorStoreProviderId: 'pinecone_main_prod',
+      actualNameInProvider: 'company-wiki-prod-v2', // e.g., Pinecone index name
+      embeddingDimension: 1536, // Specific to this data source's content
+      isDefaultQuerySource: true,
+      metadataSchema: { "department": "string", "lastReviewed": "date" }
+    },
+    {
+      dataSourceId: 'user_personal_notes_main',
+      displayName: 'User Personal Notes (Encrypted)',
+      description: 'Personal notes and memories for individual users. Data segregated by user ID in metadata filters.',
+      vectorStoreProviderId: 'pinecone_main_prod',
+      actualNameInProvider: 'user-notes-prod-encrypted',
+      embeddingDimension: 1536,
+      // This collection would typically be queried with a strong `userId` metadata filter.
+    }
+  ],
+  defaultEmbeddingModelIdForSystem: "text-embedding-3-large", // Hint for new unconfigured parts of system
+  defaultEmbeddingDimensionForSystem: 1536,
 };
 */

@@ -1,0 +1,57 @@
+{
+  "general": {
+    "internal_error": "An internal server error occurred",
+    "network_error": "Network connection error",
+    "timeout": "Request timed out",
+    "rate_limit": "Too many requests. Please try again later",
+    "maintenance": "Service is temporarily unavailable for maintenance",
+    "not_found": "The requested resource was not found",
+    "forbidden": "You don't have permission to access this resource",
+    "bad_request": "Invalid request data",
+    "validation_failed": "Data validation failed"
+  },
+  "auth": {
+    "authentication_required": "Authentication is required",
+    "invalid_token": "Invalid authentication token",
+    "expired_token": "Authentication token has expired",
+    "insufficient_permissions": "Insufficient permissions",
+    "account_disabled": "Account has been disabled",
+    "login_failed": "Login failed",
+    "registration_failed": "Registration failed",
+    "password_reset_failed": "Password reset failed"
+  },
+  "api": {
+    "missing_api_key": "API key is required",
+    "invalid_api_key": "Invalid API key",
+    "api_quota_exceeded": "API quota exceeded",
+    "provider_error": "External API provider error",
+    "model_not_available": "Requested model is not available",
+    "insufficient_credits": "Insufficient credits to complete request"
+  },
+  "conversation": {
+    "conversation_not_found": "Conversation not found",
+    "message_too_long": "Message exceeds maximum length",
+    "conversation_limit_reached": "Maximum number of conversations reached",
+    "history_limit_reached": "Conversation history limit reached",
+    "invalid_message_format": "Invalid message format",
+    "transcription_failed": "Voice transcription failed",
+    "generation_failed": "Response generation failed"
+  },
+  "subscription": {
+    "tier_not_found": "Subscription tier not found",
+    "upgrade_failed": "Subscription upgrade failed",
+    "downgrade_failed": "Subscription downgrade failed",
+    "payment_failed": "Payment processing failed",
+    "subscription_expired": "Subscription has expired",
+    "limit_exceeded": "Subscription limit exceeded",
+    "invalid_subscription": "Invalid subscription status"
+  },
+  "file": {
+    "upload_failed": "File upload failed",
+    "file_too_large": "File size exceeds maximum limit",
+    "invalid_file_type": "Invalid file type",
+    "file_not_found": "File not found",
+    "processing_failed": "File processing failed",
+    "storage_error": "File storage error"
+  }
+}

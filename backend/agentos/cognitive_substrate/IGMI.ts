@@ -1,727 +1,562 @@
 /**
- * @fileoverview This file defines the IGMI (Generalized Mind Instance) interface,
- * which serves as the core contract for all cognitive engines within AgentOS.
- * A GMI is responsible for embodying a persona, processing inputs, managing its
- * internal state and memory, orchestrating interactions with LLMs and tools,
- * and generating responses. This interface emphasizes adaptability, streaming,
- * and robust error handling.
- *
- * The IGMI interface is designed to be implemented by classes that can handle
- * complex cognitive loops, adapt to user feedback, manage persona-specific
- * configurations, and provide detailed tracing for observability.
+ * @fileoverview Defines the core interface (IGMI) for a Generalized Mind Instance,
+ * its configuration, inputs, outputs, states, and related data structures.
+ * The GMI is the central cognitive engine in AgentOS.
  * @module backend/agentos/cognitive_substrate/IGMI
  */
 
-import { IPersonaDefinition, PersonaStateOverride } from './personas/IPersonaDefinition';
+import { IPersonaDefinition } from './personas/IPersonaDefinition';
 import { IWorkingMemory } from './memory/IWorkingMemory';
+import { IPromptEngine } from '../core/llm/IPromptEngine';
+import { IRetrievalAugmentor } from '../rag/IRetrievalAugmentor';
 import { AIModelProviderManager } from '../core/llm/providers/AIModelProviderManager';
-import { PromptEngine } from '../core/llm/PromptEngine';
-import { ToolExecutor } from '../tools/ToolExecutor';
-import { IModelRouter } from '../core/llm/routing/IModelRouter';
-import { ConversationContext, Message } from '../core/conversation/ConversationContext';
-import { IAuthService } from '../../services/user_auth/AuthService';
-import { ISubscriptionService } from '../../services/user_auth/SubscriptionService';
-import { ConversationManager } from '../core/conversation/ConversationManager';
-import { PrismaClient } from '@prisma/client'; // Assuming PrismaClient is used for some underlying operations
+import { IUtilityAI } from '../core/ai_utilities/IUtilityAI';
+import { IToolOrchestrator } from '../tools/IToolOrchestrator'; // Ensured import
+import { ModelUsage } from '../core/llm/providers/IProvider';
 
 /**
- * Represents a segment of vision input data.
- * @interface VisionInputData
+ * Defines the possible moods a GMI can be in, influencing its behavior and responses.
+ * These moods can be adapted based on interaction context or self-reflection.
+ * @enum {string}
  */
-export interface VisionInputData {
-  /**
-   * The type of vision data provided.
-   * 'url': The data is a URL pointing to an image.
-   * 'base64': The data is a base64 encoded image string.
-   * @type {'url' | 'base64'}
-   */
-  type: 'url' | 'base64';
-
-  /**
-   * The actual vision data (URL string or base64 encoded image string).
-   * @type {string}
-   */
-  data: string;
-
-  /**
-   * Optional media type of the image (e.g., 'image/jpeg', 'image/png').
-   * Important for base64 encoded data.
-   * @type {string}
-   * @optional
-   */
-  mediaType?: string;
-
-  /**
-   * Optional description or caption for the image, which can aid the GMI's understanding.
-   * @type {string}
-   * @optional
-   */
-  description?: string;
+export enum GMIMood {
+  NEUTRAL = 'neutral',
+  FOCUSED = 'focused',
+  EMPATHETIC = 'empathetic',
+  CURIOUS = 'curious',
+  ASSERTIVE = 'assertive',
+  ANALYTICAL = 'analytical',
+  FRUSTRATED = 'frustrated', // Internal state, may or may not be expressed
+  CREATIVE = 'creative',
+  // Add more moods as the system evolves
 }
 
 /**
- * Represents a segment of audio input data.
- * @interface AudioInputData
+ * Defines the primary operational states of a GMI.
+ * @enum {string}
  */
-export interface AudioInputData {
-  /**
-   * The type of audio data provided.
-   * 'url': The data is a URL pointing to an audio file.
-   * 'base64': The data is a base64 encoded audio string.
-   * 'transcription_id': An ID referencing a pre-transcribed audio segment.
-   * @type {'url' | 'base64' | 'transcription_id'}
-   */
-  type: 'url' | 'base64' | 'transcription_id';
-
-  /**
-   * The actual audio data or reference ID.
-   * @type {string}
-   */
-  data: string;
-
-  /**
-   * Optional media type of the audio (e.g., 'audio/wav', 'audio/mpeg').
-   * Important for base64 encoded data or URLs if not inferable.
-   * @type {string}
-   * @optional
-   */
-  mediaType?: string;
-
-  /**
-   * Optional textual transcription of the audio, if already available.
-   * Providing this can save a transcription step for the GMI.
-   * @type {string}
-   * @optional
-   */
-  transcription?: string;
+export enum GMIPrimeState {
+  IDLE = 'idle', // Initial state before initialization
+  INITIALIZING = 'initializing',
+  READY = 'ready', // Ready to process turns
+  PROCESSING = 'processing', // Actively processing a turn (could be LLM call or internal logic)
+  AWAITING_TOOL_RESULT = 'awaiting_tool_result', // LLM requested tools, GMI is executing them
+  REFLECTING = 'reflecting', // Performing self-reflection cycle
+  ERRORED = 'errored', // Encountered a critical error, may need reset or intervention
+  SHUTTING_DOWN = 'shutting_down',
+  SHUTDOWN = 'shutdown',
 }
 
 /**
- * Represents user feedback provided to the GMI for adaptation.
- * @interface UserFeedback
+ * Represents the contextual information about the user interacting with the GMI.
+ * This data helps the GMI tailor its responses and behavior.
+ * @interface UserContext
  */
-export interface UserFeedback {
+export interface UserContext {
+  /** A unique identifier for the user. */
+  userId: string;
   /**
-   * Optional sentiment expressed by the user regarding a previous interaction or output.
-   * @type {'positive' | 'negative' | 'neutral' | string}
-   * @optional
-   * @example "positive", "confusing_output", "too_verbose"
+   * The user's skill level related to the current domain or task.
+   * @example "novice", "intermediate", "expert"
    */
-  sentiment?: 'positive' | 'negative' | 'neutral' | string;
-
+  skillLevel?: string;
   /**
-   * Optional explicit correction provided by the user for a previous output.
-   * @type {string}
-   * @optional
-   */
-  correction?: string;
-
-  /**
-   * Optional key-value pairs representing user preferences that should be remembered or applied.
-   * @type {Record<string, any>}
-   * @optional
-   * @example { "preferred_language": "Python", "coding_style": "functional" }
+   * A record of user preferences that can influence GMI behavior.
+   * @example { "output_format": "markdown", "verbosity": "concise" }
    */
   preferences?: Record<string, any>;
-
+  /** A summary of past interactions with this user, potentially used for personalization. */
+  pastInteractionSummary?: string;
   /**
-   * Optional reference to a specific message ID or interaction this feedback pertains to.
-   * @type {string}
-   * @optional
+   * Current sentiment of the user, if detectable.
+   * @example "positive", "negative", "neutral"
    */
-  targetInteractionId?: string;
-
-  /**
-   * Any additional structured feedback data.
-   * @type {any}
-   * @optional
-   */
-  customData?: any;
+  currentSentiment?: string;
+  /** Other relevant user-specific attributes. */
+  [key: string]: any; // For extensibility
 }
 
 /**
- * Input structure for a single turn of interaction with the GMI.
- * This comprehensive structure encapsulates all necessary information for the GMI
- * to process a user's request or continue an ongoing task.
+ * Represents the contextual information about the task the GMI is currently handling.
+ * @interface TaskContext
+ */
+export interface TaskContext {
+  /** A unique identifier for the current task or sub-task. */
+  taskId: string;
+  /**
+   * The domain of the current task.
+   * @example "coding_python", "financial_data_analysis", "travel_planning"
+   */
+  domain?: string;
+  /**
+   * The perceived complexity of the current task.
+   * @example "low", "medium", "high", "very_high"
+   */
+  complexity?: string;
+  /** The specific goal or objective of the current task. */
+  goal?: string;
+  /** Current status of the task. */
+  status?: 'not_started' | 'in_progress' | 'blocked' | 'requires_clarification' | 'completed' | 'failed';
+  /** Detailed requirements, constraints, or input data for the task. */
+  requirements?: string;
+  /** Progress of the task, if measurable (e.g., 0-100). */
+  progress?: number;
+  /** Other relevant task-specific attributes. */
+  [key: string]: any; // For extensibility
+}
+
+/**
+ * Describes a request from the LLM to call a specific tool/function.
+ * This structure is typically part of the LLM's response when it decides a tool is needed.
+ *
+ * @interface ToolCallRequest
+ * @property {string} id - A unique identifier for this specific tool call instance, often generated by the LLM.
+ * This ID is crucial for matching the tool call request with its corresponding result.
+ * @property {string} name - The name of the function/tool to be called (e.g., "searchWeb", "getCurrentWeather").
+ * This name should match one of the tools available to the GMI/LLM, corresponding to `ITool.name`.
+ * @property {Record<string, any>} arguments - An object containing the arguments for the tool.
+ * The LLM typically generates this as a JSON object (or a string that needs parsing into one).
+ * The structure of these arguments must conform to the input schema (`ITool.inputSchema`) of the specified tool.
+ */
+export interface ToolCallRequest {
+  id: string;
+  name: string;
+  arguments: Record<string, any>; // LLM usually provides this as object after parsing its own JSON string output
+}
+
+/**
+ * Represents the result of a tool execution, structured to be sent back to the LLM.
+ *
+ * @interface ToolCallResult
+ * @property {string} toolCallId - The ID from the original `ToolCallRequest` this result corresponds to.
+ * This allows the LLM to correlate the result with its request.
+ * @property {string} toolName - The name of the tool that was executed. Matches `ToolCallRequest.name`.
+ * @property {any} output - The output data from the tool execution.
+ * For the LLM, this is typically a string (e.g., JSON.stringify(actualToolOutput) or a descriptive text).
+ * The actual type depends on what the tool produces and how it's best represented for the LLM.
+ * @property {boolean} [isError=false] - Flag indicating if an error occurred during the tool's execution.
+ * @property {any} [errorDetails] - If `isError` is true, this field provides details about the error.
+ * This could be an error message string or a more structured error object.
+ */
+export interface ToolCallResult {
+  toolCallId: string;
+  toolName: string;
+  output: any; // For LLM, often stringified JSON or descriptive text of error/success
+  isError?: boolean;
+  errorDetails?: any;
+}
+
+/**
+ * Base configuration required to initialize a GMI instance.
+ * This includes dependencies on other core AgentOS services and managers.
+ *
+ * @interface GMIBaseConfig
+ * @property {IWorkingMemory} workingMemory - The working memory instance for this GMI.
+ * @property {IPromptEngine} promptEngine - The prompt engineering engine.
+ * @property {AIModelProviderManager} llmProviderManager - Manager for LLM providers.
+ * @property {IUtilityAI} utilityAI - Service for auxiliary AI tasks.
+ * @property {IToolOrchestrator} toolOrchestrator - The orchestrator for managing and executing tools.
+ * @property {IRetrievalAugmentor} [retrievalAugmentor] - Optional RAG system.
+ * @property {string} [defaultLlmProviderId] - Optional default LLM provider ID.
+ * @property {string} [defaultLlmModelId] - Optional default LLM model ID.
+ * @property {Record<string, any>} [customSettings] - Other custom GMI runtime settings.
+ */
+export interface GMIBaseConfig {
+  workingMemory: IWorkingMemory;
+  promptEngine: IPromptEngine;
+  llmProviderManager: AIModelProviderManager;
+  utilityAI: IUtilityAI;
+  toolOrchestrator: IToolOrchestrator; // Integrated
+  retrievalAugmentor?: IRetrievalAugmentor;
+  defaultLlmProviderId?: string;
+  defaultLlmModelId?: string;
+  customSettings?: Record<string, any>;
+}
+
+/**
+ * Defines the type of interaction or input being provided to the GMI.
+ * @enum {string}
+ */
+export enum GMIInteractionType {
+  TEXT = 'text', // User sends simple text
+  MULTIMODAL_CONTENT = 'multimodal_content', // User sends complex content (e.g., text + image URLs/data)
+  TOOL_RESPONSE = 'tool_response', // System provides result of a GMI-initiated tool call back to the GMI
+  SYSTEM_MESSAGE = 'system_message', // System sends an advisory message or instruction to GMI
+  LIFECYCLE_EVENT = 'lifecycle_event', // e.g., memory lifecycle event for GMI to react to
+}
+
+/**
+ * Represents a single turn of input to the GMI.
  * @interface GMITurnInput
  */
 export interface GMITurnInput {
-  /**
-   * The unique identifier for the user interacting with the GMI.
-   * This is crucial for context, personalization, and access control.
-   * @type {string}
-   */
+  /** A unique identifier for this specific interaction/turn. */
+  interactionId: string;
+  /** The ID of the user initiating this turn. */
   userId: string;
-
+  /** Optional: ID of the current session or conversation. */
+  sessionId?: string;
+  /** The type of interaction. */
+  type: GMIInteractionType;
   /**
-   * The unique identifier for the current session. A session can span multiple turns.
-   * @type {string}
+   * The primary content of the input.
+   * - For `TEXT`: string.
+   * - For `MULTIMODAL_CONTENT`: structured object (e.g., `[{type: 'text', text: '...'}, {type: 'image_url', image_url: '...'}]`).
+   * - For `TOOL_RESPONSE`: a `ToolCallResult` object (or array if multiple tools were called in parallel by LLM).
+   * - For `SYSTEM_MESSAGE`: string or structured object.
    */
-  sessionId: string;
-
-  /**
-   * The unique identifier for the conversation this turn belongs to.
-   * A conversation can span multiple sessions if persisted and reloaded.
-   * @type {string}
-   * @optional // Might be undefined if it's the first turn of a new conversation
-   */
-  conversationId?: string;
-
-  /**
-   * The primary textual input from the user for this turn.
-   * Can be null if the turn is driven by other inputs (e.g., tool result, system event).
-   * @type {string | null}
-   * @optional
-   */
-  textInput?: string | null;
-
-  /**
-   * An array of vision input data segments (e.g., images).
-   * Allows for multimodal input where the GMI needs to process visual information.
-   * @type {VisionInputData[]}
-   * @optional
-   */
-  visionInputs?: VisionInputData[];
-
-  /**
-   * Audio input data for this turn.
-   * The GMI might handle transcription internally or expect pre-transcribed text.
-   * @type {AudioInputData}
-   * @optional
-   */
-  audioInput?: AudioInputData;
-
-  /**
-   * User-provided API keys for specific LLM providers, allowing users to use their own quotas.
-   * The keys are mapped by provider ID (e.g., "openai", "anthropic").
-   * @type {Record<string, string>}
-   * @optional
-   */
-  userApiKeys?: Record<string, string>;
-
-  /**
-   * A hint about the primary task or intent of this turn.
-   * This can help the GMI in selecting appropriate models, tools, or reasoning strategies.
-   * @type {string}
-   * @optional
-   * @example "code_generation", "data_analysis", "general_query", "summarize_document"
-   */
-  taskHint?: string;
-
-  /**
-   * Structured user feedback related to previous interactions, used for GMI adaptation.
-   * @type {UserFeedback}
-   * @optional
-   */
-  userFeedback?: UserFeedback;
-
-  /**
-   * If specified, instructs the GMI to attempt to switch to this persona ID.
-   * @type {string}
-   * @optional
-   */
-  explicitPersonaSwitchId?: string;
-
-  /**
-   * Allows for direct overrides of specific GMI/persona state variables in working memory
-   * for the current turn. This is an advanced feature for fine-grained control.
-   * @type {PersonaStateOverride[]}
-   * @optional
-   */
-  personaStateOverrides?: PersonaStateOverride[];
-
-  /**
-   * Overrides for model selection for the current turn.
-   * Allows users or systems to guide the GMI's choice of LLM.
-   * @type {ModelSelectionOverrides}
-   * @optional
-   */
-  modelSelectionOverrides?: ModelSelectionOverrides;
-
-  /**
-   * Arbitrary metadata that can be passed along with the input for custom processing or logging.
-   * @type {Record<string, any>}
-   * @optional
-   */
+  content: string | ToolCallResult | ToolCallResult[] | Record<string, any> | Array<Record<string, any>>;
+  /** Timestamp of when the input was generated or received. Defaults to now if not provided. */
+  timestamp?: Date;
+  /** Allows overriding parts of the GMI's current UserContext for this turn. */
+  userContextOverride?: Partial<UserContext>;
+  /** Allows overriding parts of the GMI's current TaskContext for this turn. */
+  taskContextOverride?: Partial<TaskContext>;
+  /** Any additional metadata associated with this input. */
   metadata?: Record<string, any>;
 }
 
 /**
- * Represents a request from the GMI to execute one or more tools.
- * @interface ToolCall
+ * Defines the type of content in a `GMIOutputChunk`.
+ * @enum {string}
  */
-export interface ToolCall {
-  /**
-   * A unique identifier for this specific tool call instance, generated by the LLM.
-   * This ID is used to correlate the call with its result.
-   * @type {string}
-   */
-  id: string;
-
-  /**
-   * The type of the tool call, typically 'function' for standard tool execution.
-   * @type {'function'}
-   */
-  type: 'function'; // Currently, only 'function' type is standard.
-
-  /**
-   * Contains the details of the function to be called.
-   * @type {{ name: string; arguments: Record<string, any>; }}
-   */
-  function: {
-    /**
-     * The name of the tool/function to be executed. This should match a registered tool ID.
-     * @type {string}
-     */
-    name: string;
-    /**
-     * The arguments for the tool, parsed into a JavaScript object.
-     * The LLM typically provides these as a JSON string, which should be parsed before this stage.
-     * @type {Record<string, any>}
-     */
-    arguments: Record<string, any>;
-  };
+export enum GMIOutputChunkType {
+  TEXT_DELTA = 'text_delta',          // A segment of a streamed text response.
+  TOOL_CALL_REQUEST = 'tool_call_request', // GMI (via LLM) is requesting one or more tools to be called. The content will be ToolCallRequest[].
+  // TOOL_CALL_DELTA = 'tool_call_delta', // Future: For streaming arguments of a tool call as LLM generates them.
+  REASONING_STATE_UPDATE = 'reasoning_state_update', // An update on GMI's internal thought process (e.g., "Now searching RAG...").
+  FINAL_RESPONSE_MARKER = 'final_response_marker', // Signals the end of a complete logical response from GMI for the current interaction.
+  ERROR = 'error',                  // An error occurred during GMI processing. Content provides error details.
+  SYSTEM_MESSAGE = 'system_message',  // A message from GMI/system not part of direct response (e.g., "Context saved.").
+  USAGE_UPDATE = 'usage_update',      // Provides interim or final token usage information for the turn.
+  LATENCY_REPORT = 'latency_report',  // Provides timing information for different stages of processing.
 }
 
 /**
- * Represents the payload of a result from a tool execution.
- * @interface ToolResultPayload
- */
-export interface ToolResultPayload {
-  /**
-   * Indicates whether the tool execution was successful or resulted in an error.
-   * @type {'success' | 'error'}
-   */
-  type: 'success' | 'error';
-
-  /**
-   * The output data from the tool if the execution was successful.
-   * The structure of this data is tool-dependent.
-   * @type {any}
-   * @optional
-   */
-  result?: any;
-
-  /**
-   * Details of the error if the tool execution failed.
-   * @type {{ message: string; code?: string; details?: any; }}
-   * @optional
-   */
-  error?: {
-    message: string;
-    code?: string; // Optional error code (e.g., 'TOOL_TIMEOUT', 'INVALID_ARGUMENTS')
-    details?: any; // Additional structured error information
-  };
-
-  /**
-   * Optional: The format of the `result` data (e.g., 'json', 'text', 'image_url').
-   * @type {string}
-   * @optional
-   */
-  contentType?: string;
-}
-
-/**
- * Represents a chunk of output data yielded by the GMI during streaming.
- * This is the primary mechanism for real-time communication from the GMI.
+ * Represents a chunk of output streamed from the GMI during turn processing.
+ *
  * @interface GMIOutputChunk
+ * @property {GMIOutputChunkType} type - The type of content in this chunk.
+ * @property {any} content - The actual content of the chunk, its structure depends on `type`.
+ * - `TEXT_DELTA`: string (the text segment).
+ * - `TOOL_CALL_REQUEST`: `ToolCallRequest[]` (one or more tool calls requested by LLM).
+ * - `REASONING_STATE_UPDATE`: string (description of the current reasoning state).
+ * - `ERROR`: string (error message) or an object with error details.
+ * - `SYSTEM_MESSAGE`: string (the system message).
+ * - `USAGE_UPDATE`: `ModelUsage` object.
+ * @property {string} [chunkId] - Optional unique ID for this specific chunk.
+ * @property {string} interactionId - Corresponds to the `GMITurnInput.interactionId` this chunk relates to.
+ * @property {Date} timestamp - When this chunk was generated.
+ * @property {boolean} [isFinal=false] - If `type` is `FINAL_RESPONSE_MARKER`, this is true.
+ * For `TEXT_DELTA`, true if it's the last text chunk of a sentence/paragraph, or end of LLM stream.
+ * @property {string} [finishReason] - If `isFinal` is true (especially for LLM text streams), the reason for finishing (e.g., "stop", "length", "tool_calls").
+ * @property {ModelUsage} [usage] - Token usage information, often provided with `TEXT_DELTA` or `FINAL_RESPONSE_MARKER`.
+ * @property {any} [errorDetails] - If `type` is `ERROR`, structured details about the error.
+ * @property {Record<string, any>} [metadata] - Additional metadata for this chunk.
  */
-export type GMIOutputChunk =
-  | {
-      type: 'GMIResponseChunk';
-      streamId: string;
-      isFinal: false;
-      gmiInstanceId: string;
-      personaId: string;
-      responseTextDelta?: string; // Delta of the textual response
-      toolCallDelta?: Partial<ToolCall>; // Partial tool call information as it's streamed
-      uiCommandDelta?: any; // Partial UI command
-      usage?: ModelUsage; // Incremental usage for this chunk
-      timestamp?: string; // Timestamp of this chunk generation
-    }
-  | {
-      type: 'ToolCallRequest'; // Indicates LLM decided to call tools, GMI is now yielding them
-      streamId: string;
-      isFinal: false; // Not final for the turn, but final for this specific LLM interaction round
-      gmiInstanceId: string;
-      personaId: string;
-      toolCalls: ToolCall[]; // Complete tool call objects
-      responseText?: string | null; // Any text generated by LLM before deciding to call tools
-      usage: CostAggregator; // Accumulated usage up to this point
-      reasoningTrace: ReasoningTrace[];
-    }
-  | {
-      type: 'ToolResultProcessed'; // Emitted after GMI processes a tool result internally before continuing thought
-      streamId: string;
-      isFinal: false;
-      gmiInstanceId: string;
-      personaId: string;
-      toolCallId: string;
-      toolName: string;
-      status: 'success' | 'error';
-      message?: string; // e.g., "Tool executed successfully, GMI is now processing the result."
-    }
-  | {
-      type: 'SystemProgress'; // For GMI to report internal state or progress
-      streamId: string;
-      isFinal: false;
-      gmiInstanceId: string;
-      personaId: string;
-      message: string;
-      statusCode: string; // e.g., 'MODEL_SELECTED', 'PROMPT_CONSTRUCTED', 'ADAPTATION_COMPLETE'
-      progressPercentage?: number; // Optional progress indicator (0-100)
-      metadata?: Record<string, any>;
-    }
-  | {
-      type: 'Error'; // A fatal error chunk, indicates the stream will terminate.
-      streamId: string;
-      isFinal: true;
-      gmiInstanceId: string;
-      personaId: string;
-      error: { code: string; message: string; details?: any };
-      usage: CostAggregator; // Usage up to the point of error
-      reasoningTrace: ReasoningTrace[];
-      responseText: null; // Explicitly null for error type
-    }
-  | {
-      type: 'FinalResponse'; // The final conclusive output for the turn.
-      streamId: string;
-      isFinal: true;
-      gmiInstanceId: string;
-      personaId:string;
-      responseText: string | null;
-      toolCalls?: ToolCall[]; // If the final action was a tool call (less common for FinalResponse)
-      uiCommands?: any[]; // Final UI commands
-      audioOutput?: { textToSpeak: string; voiceConfig?: any };
-      imageOutput?: VisionInputData; // e.g., if an image was generated
-      usage: CostAggregator;
-      reasoningTrace: ReasoningTrace[];
-      error?: { code: string; message: string; details?: any }; // Non-fatal error or warning with the final response
-      conversationContext?: ConversationContext; // Optional: include the updated conversation context state
-    };
-
-
-/**
- * Represents the fully aggregated output of a GMI turn after all streaming is complete.
- * This is the type returned by the generator when it's done.
- * Note: `GMIOutputChunk` now serves for both streaming chunks and the final resolved object
- * by using `isFinal: true` and specific `type` values like 'FinalResponse' or 'Error'.
- * This `GMIOutput` type can be considered a union of the possible terminal `GMIOutputChunk` types.
- */
-export type GMIOutput = Extract<GMIOutputChunk, { isFinal: true }>;
-
-
-/**
- * Represents a snapshot of the GMI's operational state.
- * This allows for persistence, migration, or debugging of GMI instances.
- * @interface IGMISnapshot
- */
-export interface IGMISnapshot {
-  /** The ID of the GMI instance this snapshot belongs to. */
-  gmiInstanceId: string;
-  /** ISO timestamp of when the snapshot was created. */
-  timestamp: string;
-  /** Version of the snapshot schema, for handling migrations. */
-  version: string;
-  /** ID of the GMI's currently active primary persona. */
-  currentPrimaryPersonaId: string;
-  /** List of IDs of all persona definitions known/available to the GMI at the time of snapshot. */
-  availablePersonaIds: string[];
-  /** A snapshot of the GMI's working memory contents. */
-  workingMemorySnapshot: Record<string, any>;
-  /** A snapshot of the GMI's conversation context. */
-  conversationContextSnapshot: any; // Define a specific snapshot type for ConversationContext
-  /** A snapshot of the GMI's reasoning trace for the current or last turn. */
-  reasoningTraceSnapshot?: ReasoningTrace[];
-  /** Current adaptive mood of the GMI, if applicable. */
-  currentMood?: string;
-  /** Any other relevant state information specific to the GMI implementation. */
-  customState?: Record<string, any>;
+export interface GMIOutputChunk {
+  type: GMIOutputChunkType;
+  content: any;
+  chunkId?: string;
+  interactionId: string;
+  timestamp: Date;
+  isFinal?: boolean;
+  finishReason?: string;
+  usage?: ModelUsage;
+  errorDetails?: any;
+  metadata?: Record<string, any>;
 }
 
 /**
- * Represents a single step or event in the GMI's reasoning process for a turn.
- * Used for tracing, debugging, and understanding GMI behavior.
+ * Types of entries that can appear in a GMI's reasoning trace.
+ * @enum {string}
+ */
+export enum ReasoningEntryType {
+  LIFECYCLE = 'LIFECYCLE',
+  INTERACTION_START = 'INTERACTION_START',
+  INTERACTION_END = 'INTERACTION_END',
+  STATE_CHANGE = 'STATE_CHANGE',
+  PROMPT_CONSTRUCTION_START = 'PROMPT_CONSTRUCTION_START',
+  PROMPT_CONSTRUCTION_DETAIL = 'PROMPT_CONSTRUCTION_DETAIL',
+  PROMPT_CONSTRUCTION_COMPLETE = 'PROMPT_CONSTRUCTION_COMPLETE',
+  LLM_CALL_START = 'LLM_CALL_START',
+  LLM_CALL_COMPLETE = 'LLM_CALL_COMPLETE',
+  LLM_RESPONSE_CHUNK = 'LLM_RESPONSE_CHUNK',
+  LLM_USAGE = 'LLM_USAGE',
+  TOOL_CALL_REQUESTED = 'TOOL_CALL_REQUESTED',
+  TOOL_PERMISSION_CHECK_START = 'TOOL_PERMISSION_CHECK_START',
+  TOOL_PERMISSION_CHECK_RESULT = 'TOOL_PERMISSION_CHECK_RESULT',
+  TOOL_ARGUMENT_VALIDATION = 'TOOL_ARGUMENT_VALIDATION',
+  TOOL_EXECUTION_START = 'TOOL_EXECUTION_START',
+  TOOL_EXECUTION_RESULT = 'TOOL_EXECUTION_RESULT', // Contains the ToolCallResult or summary
+  RAG_QUERY_START = 'RAG_QUERY_START',
+  RAG_QUERY_DETAIL = 'RAG_QUERY_DETAIL',
+  RAG_QUERY_RESULT = 'RAG_QUERY_RESULT',
+  RAG_INGESTION_START = 'RAG_INGESTION_START',
+  RAG_INGESTION_COMPLETE = 'RAG_INGESTION_COMPLETE',
+  SELF_REFLECTION_TRIGGERED = 'SELF_REFLECTION_TRIGGERED',
+  SELF_REFLECTION_START = 'SELF_REFLECTION_START',
+  SELF_REFLECTION_DETAIL = 'SELF_REFLECTION_DETAIL',
+  SELF_REFLECTION_COMPLETE = 'SELF_REFLECTION_COMPLETE',
+  MEMORY_LIFECYCLE_EVENT_RECEIVED = 'MEMORY_LIFECYCLE_EVENT_RECEIVED',
+  MEMORY_LIFECYCLE_NEGOTIATION_START = 'MEMORY_LIFECYCLE_NEGOTIATION_START',
+  MEMORY_LIFECYCLE_RESPONSE_SENT = 'MEMORY_LIFECYCLE_RESPONSE_SENT',
+  HEALTH_CHECK_REQUESTED = 'HEALTH_CHECK_REQUESTED',
+  HEALTH_CHECK_RESULT = 'HEALTH_CHECK_RESULT',
+  WARNING = 'WARNING',
+  ERROR = 'ERROR',
+  DEBUG = 'DEBUG',
+}
+
+/**
+ * A single entry in the GMI's reasoning trace, providing an auditable log of its operations.
+ * @interface ReasoningTraceEntry
+ */
+export interface ReasoningTraceEntry {
+  timestamp: Date;
+  type: ReasoningEntryType;
+  message: string;
+  details?: Record<string, any>;
+}
+
+/**
+ * The complete reasoning trace for a GMI instance or a specific turn.
  * @interface ReasoningTrace
  */
 export interface ReasoningTrace {
-  /** Sequence number of this trace event within the turn. */
-  sequence: number;
-  /** Timestamp of the event. */
+  gmiId: string;
+  personaId: string;
+  turnId?: string; // Optional: Associate entries with a specific interaction turn
+  entries: ReasoningTraceEntry[];
+}
+
+/**
+ * Represents an event related to memory lifecycle management that the GMI needs to be aware of or act upon.
+ * This event is typically emitted by a `MemoryLifecycleManager`.
+ *
+ * @interface MemoryLifecycleEvent
+ * @property {string} eventId - Unique ID for this lifecycle event.
+ * @property {Date} timestamp - When the event was generated.
+ * @property {'EVICTION_PROPOSED' | 'ARCHIVAL_PROPOSED' | 'DELETION_PROPOSED' | 'SUMMARY_PROPOSED' | 'RETENTION_REVIEW_PROPOSED' | 'NOTIFICATION' | 'EVALUATION_PROPOSED'} type - The type of lifecycle event.
+ * @property {string} gmiId - The ID of the GMI this event pertains to (if item is GMI-specific).
+ * @property {string} [personaId] - The Persona ID if the memory item is persona-specific.
+ * @property {string} itemId - The unique ID of the memory item in question.
+ * @property {string} dataSourceId - The data source where the item resides (e.g., RAG collection ID).
+ * @property {string} [category] - The logical category of the memory item (e.g., from `RagMemoryCategory`).
+ * @property {string} itemSummary - A brief summary or description of the memory item.
+ * @property {string} reason - The reason why this lifecycle event was triggered (e.g., "Exceeded retention period", "Storage quota nearing limit").
+ * @property {LifecycleAction} proposedAction - The action the `MemoryLifecycleManager` proposes to take on the item.
+ * @property {boolean} negotiable - True if the GMI can influence the outcome of this event (e.g., prevent deletion, propose alternative).
+ * @property {Record<string, any>} [metadata] - Additional metadata related to the event or item.
+ */
+export interface MemoryLifecycleEvent {
+  eventId: string;
   timestamp: Date;
-  /** Type of event (e.g., 'ModelSelection', 'PromptConstruction', 'ToolCall', 'Adaptation'). */
-  event: string;
-  /** Human-readable details or summary of the event. */
-  details: string;
-  /** Optional structured data associated with the event (e.g., selected model ID, prompt content, tool arguments). */
-  data?: any;
+  type: 'EVICTION_PROPOSED' | 'ARCHIVAL_PROPOSED' | 'DELETION_PROPOSED' | 'SUMMARY_PROPOSED' | 'RETENTION_REVIEW_PROPOSED' | 'NOTIFICATION' | 'EVALUATION_PROPOSED';
+  gmiId: string; // Which GMI owns or is primarily associated with this memory item
+  personaId?: string;
+  itemId: string; // ID of the memory item (e.g., document chunk ID in RAG)
+  dataSourceId: string;
+  category?: string; // e.g., RagMemoryCategory
+  itemSummary: string; // A human-readable summary of the item for the GMI to understand
+  reason: string; // Why this event is occurring
+  proposedAction: LifecycleAction; // The action the MemoryLifecycleManager wants to take
+  negotiable: boolean; // Can the GMI influence this?
+  metadata?: Record<string, any>;
 }
 
 /**
- * Aggregates cost and usage information for all model calls within a GMI turn.
- * @interface CostAggregator
+ * Defines the possible actions a GMI can take or that can be proposed/taken regarding a memory item.
+ * This is used in `MemoryLifecycleEvent.proposedAction` and `LifecycleActionResponse.actionTaken`.
+ * @enum {string}
  */
-export interface CostAggregator {
-  /** Total estimated cost in USD for all calls in the turn. */
-  totalCostUSD: number;
-  /** Array of usage details for each individual model call. */
-  calls: Array<{
-    providerId: string;
-    modelId: string;
-    usage: ModelUsage;
+export type LifecycleAction =
+  | 'ALLOW_ACTION'         // GMI allows the proposed action from MemoryLifecycleManager.
+  | 'PREVENT_ACTION'       // GMI explicitly prevents the proposed action.
+  | 'DELETE'               // GMI requests/confirms deletion.
+  | 'ARCHIVE'              // GMI requests/confirms archival.
+  | 'SUMMARIZE_AND_DELETE' // GMI requests summarization then deletion.
+  | 'SUMMARIZE_AND_ARCHIVE'// GMI requests summarization then archival.
+  | 'RETAIN_FOR_DURATION'  // GMI requests retention for an additional, specified duration.
+  | 'MARK_AS_CRITICAL'     // GMI marks the item as critical, implying high retention priority.
+  | 'NO_ACTION_TAKEN'      // GMI reviewed but decided no specific action is needed from its side.
+  | 'ACKNOWLEDGE_NOTIFICATION';// GMI acknowledges a non-negotiable notification.
+
+
+/**
+ * The GMI's response to a `MemoryLifecycleEvent`.
+ *
+ * @interface LifecycleActionResponse
+ * @property {string} gmiId - The ID of the GMI responding.
+ * @property {string} eventId - The ID of the `MemoryLifecycleEvent` this is a response to.
+ * @property {LifecycleAction} actionTaken - The action the GMI has decided upon or agreed to.
+ * @property {string} [rationale] - GMI's reasoning for its decision.
+ * @property {string} [requestedRetentionDuration] - If `actionTaken` is `RETAIN_FOR_DURATION`, this specifies
+ * the requested duration (e.g., "PT7D" for 7 days ISO 8601 duration, or simple "7d").
+ * @property {Record<string, any>} [metadata] - Additional metadata or parameters related to the GMI's response.
+ */
+export interface LifecycleActionResponse {
+  gmiId: string;
+  eventId: string;
+  actionTaken: LifecycleAction;
+  rationale?: string;
+  requestedRetentionDuration?: string; // e.g., "PT7D" (ISO 8601 duration)
+  metadata?: Record<string, any>;
+}
+
+/**
+ * A report on the GMI's health, including its sub-components.
+ * @interface GMIHealthReport
+ */
+export interface GMIHealthReport {
+  gmiId: string;
+  personaId: string;
+  timestamp: Date;
+  overallStatus: 'HEALTHY' | 'DEGRADED' | 'UNHEALTHY' | 'ERROR';
+  currentState: GMIPrimeState;
+  memoryHealth?: {
+    overallStatus: 'OPERATIONAL' | 'DEGRADED' | 'ERROR' | 'LIMITED';
+    workingMemoryStats?: { itemCount: number; [key: string]: any };
+    ragSystemStats?: { isHealthy: boolean; details?: any }; // From IRetrievalAugmentor.checkHealth()
+    lifecycleManagerStats?: { isHealthy: boolean; details?: any }; // From IMemoryLifecycleManager.checkHealth()
+    issues?: Array<{ severity: 'critical' | 'warning' | 'info'; description: string; component: string; details?: any }>;
+  };
+  dependenciesStatus?: Array<{
+    componentName: string;
+    status: 'HEALTHY' | 'UNHEALTHY' | 'DEGRADED' | 'UNKNOWN';
+    details?: any;
   }>;
-}
-
-/**
- * Base configuration and shared dependencies required by a GMI instance.
- * This is typically provided by the GMIManager when creating a GMI.
- * @interface GMIBaseConfig
- */
-export interface GMIBaseConfig {
-  /** Manages all available AI model providers. */
-  providerManager: AIModelProviderManager;
-  /** Engine for constructing prompts dynamically. */
-  promptEngine: PromptEngine;
-  /** Executor for running tools. */
-  toolExecutor: ToolExecutor;
-  /** Service for user authentication and API key management. */
-  authService: IAuthService;
-  /** Service for managing user subscriptions and entitlements. */
-  subscriptionService: ISubscriptionService;
-  /** Manages conversation contexts. */
-  conversationManager: ConversationManager;
-  /** Optional. Router for selecting models based on criteria. */
-  modelRouter?: IModelRouter;
-  /** Prisma client for database interactions, if needed by GMI or its components. */
-  prisma?: PrismaClient; // Made optional, GMI itself might not always need direct DB access
-  /** Any other global configurations or shared services. */
-  [key: string]: any;
-}
-
-/**
- * Overrides for model selection parameters, allowing external input to influence
- * which model the GMI chooses for a particular task.
- * @interface ModelSelectionOverrides
- */
-export interface ModelSelectionOverrides {
-  /**
-   * Explicitly request a specific model ID. If provided, the GMI will try to use this model,
-   * subject to availability and persona constraints.
-   * @type {string}
-   * @optional
-   */
-  preferredModelId?: string;
-
-  /**
-   * Explicitly request a model from a specific provider ID.
-   * Useful in conjunction with `preferredModelId` or `modelFamily`.
-   * @type {string}
-   * @optional
-   */
-  preferredProviderId?: string;
-
-  /**
-   * Request a model from a specific family (e.g., "gpt-4", "claude-3").
-   * The GMI will select the best available model from this family.
-   * @type {string}
-   * @optional
-   */
-  modelFamily?: string;
-
-  /**
-   * Specify a minimum quality tier for the model.
-   * @type {'fastest' | 'balanced' | 'best'}
-   * @optional
-   */
-  minQualityTier?: 'fastest' | 'balanced' | 'best';
-
-  /**
-   * Override the temperature setting for the LLM call.
-   * @type {number}
-   * @optional
-   */
-  temperature?: number;
-
-  /**
-   * Override the maximum number of tokens to generate.
-   * @type {number}
-   * @optional
-   */
-  maxTokens?: number;
-
-  /**
-   * Override the top_p (nucleus sampling) parameter.
-   * @type {number}
-   * @optional
-   */
-  topP?: number;
-
-  /**
-   * List of capabilities the selected model absolutely must have for this turn.
-   * @type {string[]}
-   * @optional
-   * @example ["tool_use", "vision_input"]
-   */
-  requiredCapabilities?: string[];
+  recentErrors?: ReasoningTraceEntry[]; // Last few critical errors from reasoning trace
+  uptimeSeconds?: number;
+  activeTurnsProcessed?: number; // Since last reset/init
 }
 
 
 /**
- * Interface for a Generalized Mind Instance (GMI).
- * Defines the contract for the core cognitive engine of AgentOS.
  * @interface IGMI
+ * @description Defines the contract for a Generalized Mind Instance (GMI).
+ * The GMI is the core cognitive engine, responsible for processing interactions,
+ * managing state, and generating responses based on its active Persona and various
+ * contextual inputs.
  */
 export interface IGMI {
   /**
-   * Unique identifier for this GMI instance.
+   * A unique identifier for this GMI instance.
    * @readonly
    * @type {string}
    */
-  readonly instanceId: string;
+  readonly gmiId: string;
 
   /**
-   * The conversation context associated with this GMI instance.
-   * This holds the history of interactions and other contextual data for the current conversation.
-   * @type {ConversationContext}
+   * Timestamp of when this GMI instance was created.
+   * @readonly
+   * @type {Date}
    */
-  conversationContext: ConversationContext;
-
+  readonly creationTimestamp: Date;
 
   /**
-   * Initializes the GMI instance with its foundational persona, a list of all available personas
-   * it might switch to, its working memory, and its conversation context.
-   * This method must be called before the GMI can process any turns.
+   * Initializes the GMI with a specific Persona and its base configuration.
+   * This method must be called before the GMI can process any interactions.
    *
    * @async
-   * @param {IPersonaDefinition} initialPersona - The persona definition to activate initially.
-   * @param {IPersonaDefinition[]} availablePersonas - All persona definitions known to the system,
-   * allowing the GMI to potentially switch personas later.
-   * @param {IWorkingMemory} workingMemory - The working memory instance for this GMI to use.
-   * @param {ConversationContext} conversationContext - The conversation context for this GMI.
+   * @param {IPersonaDefinition} persona - The persona definition that dictates the GMI's behavior.
+   * @param {GMIBaseConfig} config - The base configuration including necessary service dependencies.
    * @returns {Promise<void>} A promise that resolves upon successful initialization.
-   * @throws {Error} If initialization fails (e.g., invalid persona, memory setup issues).
+   * @throws {GMIError | Error} If initialization fails due to invalid persona, config, or dependency issues.
    */
-  initialize(
-    initialPersona: IPersonaDefinition,
-    availablePersonas: IPersonaDefinition[],
-    workingMemory: IWorkingMemory,
-    conversationContext: ConversationContext
-  ): Promise<void>;
+  initialize(persona: IPersonaDefinition, config: GMIBaseConfig): Promise<void>;
 
   /**
-   * Retrieves the ID of the currently active primary persona for this GMI.
+   * Retrieves the currently active Persona definition for this GMI.
    *
-   * @returns {string} The ID of the current primary persona.
-   * @throws {Error} If no persona is currently active.
+   * @returns {IPersonaDefinition} The active persona.
+   * @throws {GMIError} If the GMI is not initialized.
    */
-  getCurrentPrimaryPersonaId(): string;
+  getPersona(): IPersonaDefinition;
 
   /**
-   * Retrieves the full definition of the currently active primary persona.
-   *
-   * @returns {IPersonaDefinition | undefined} The active persona definition, or undefined if none is active.
+   * Gets the unique ID of this GMI instance.
+   * @returns {string} The GMI ID.
    */
-  getCurrentPersonaDefinition(): IPersonaDefinition | undefined;
+  getGMIId(): string;
 
   /**
-   * Activates a specific persona for the GMI. This involves loading the persona's
-   * configuration, applying initial memory imprints, and potentially clearing
-   * session-specific adaptations if switching from a different persona.
-   *
-   * @async
-   * @param {string} personaId - The ID of the persona to activate.
-   * @returns {Promise<void>} A promise that resolves when the persona is successfully activated.
-   * @throws {Error} If the persona with the given ID is not found or activation fails.
+   * Gets the current primary operational state of the GMI.
+   * @returns {GMIPrimeState} The current state.
    */
-  activatePersona(personaId: string): Promise<void>;
+  getCurrentState(): GMIPrimeState;
 
   /**
-   * Processes a single turn of interaction. This is an asynchronous generator that
-   * yields chunks of the GMI's output in real-time (e.g., text deltas, tool call requests).
-   * The generator completes by yielding a final `GMIOutput` object that summarizes the turn.
+   * Processes a single turn of interaction (e.g., user input, tool result)
+   * and streams GMI output chunks. This is the primary method for interacting with the GMI.
    *
    * @async
    * @generator
-   * @param {GMITurnInput} input - The comprehensive input for the current turn.
-   * @yields {GMIOutputChunk} Successive chunks of the GMI's processing output.
-   * @returns {AsyncGenerator<GMIOutputChunk, GMIOutput, undefined>} The generator,
-   * which on completion (return) provides the final `GMIOutput` for the turn.
+   * @param {GMITurnInput} turnInput - The input for the current turn.
+   * @yields {GMIOutputChunk} Chunks of the GMI's output, which can include text deltas,
+   * tool call requests, reasoning state updates, or errors.
+   * @throws {GMIError} If the GMI is not in a state to process turns or if a critical unrecoverable error occurs.
    */
-  processTurnStream(input: GMITurnInput): AsyncGenerator<GMIOutputChunk, GMIOutput, undefined>;
+  processTurnStream(turnInput: GMITurnInput): AsyncGenerator<GMIOutputChunk, void, undefined>;
 
   /**
-   * Handles the result of an external tool execution that was previously requested by the GMI.
-   * After processing the tool result, the GMI may continue its reasoning process, potentially
-   * leading to further LLM calls or a final response. This method produces a single,
-   * conclusive `GMIOutput` for this tool result processing step.
+   * Retrieves the GMI's reasoning trace, providing an audit trail of its internal operations.
+   * Returns a read-only copy.
    *
-   * @async
-   * @param {string} toolCallId - The ID of the original tool call request.
-   * @param {string} originalToolName - The name of the tool that was executed.
-   * @param {ToolResultPayload} toolResultPayload - The structured payload containing the tool's output or error.
-   * @param {string} userId - The ID of the user context for this operation.
-   * @param {Record<string, string>} [userApiKeys] - Optional user-provided API keys for subsequent LLM calls.
-   * @param {ModelSelectionOverrides} [modelSelectionOverrides] - Optional overrides for model selection for the LLM call processing the tool result.
-   * @returns {Promise<GMIOutput>} The GMI's output after processing the tool result. This could be a
-   * `FinalResponse` or another `ToolCallRequest` if the GMI decides to call another tool.
+   * @returns {Readonly<ReasoningTrace>} The reasoning trace.
    */
-  handleToolResult(
-    toolCallId: string,
-    originalToolName: string,
-    toolResultPayload: ToolResultPayload,
-    userId: string,
-    userApiKeys?: Record<string, string>,
-    modelSelectionOverrides?: ModelSelectionOverrides
-  ): Promise<GMIOutput>; // Returns a single GMIOutput, not a stream.
+  getReasoningTrace(): Readonly<ReasoningTrace>;
 
   /**
-   * Allows the GMI to adapt its internal state (e.g., mood, preferences stored in working memory)
-   * based on explicit user feedback.
+   * (Internal Method, exposed for potential external triggering or advanced control)
+   * Triggers the GMI's self-reflection cycle based on its active Persona's configuration.
+   * During self-reflection, the GMI analyzes its recent performance, interactions, and state
+   * to adapt its internal parameters (e.g., mood, understanding of user skill).
+   * This method should ideally be called by the GMI itself periodically or based on triggers.
    *
    * @async
-   * @param {UserFeedback} feedback - The structured feedback provided by the user.
-   * @param {string} userId - The ID of the user providing the feedback (for context).
-   * @returns {Promise<void>} A promise that resolves when the adaptation has been processed.
+   * @returns {Promise<void>} A promise that resolves when the self-reflection cycle is complete.
+   * @throws {GMIError} If an error occurs during the reflection process.
    */
-  adapt(feedback: UserFeedback, userId: string): Promise<void>;
+  _triggerAndProcessSelfReflection(): Promise<void>;
 
   /**
-   * Creates a snapshot of the GMI's current operational state. This includes
-   * the active persona, working memory, conversation context, and other relevant state.
+   * Handles a memory lifecycle event, typically invoked by a `MemoryLifecycleManager`.
+   * The GMI evaluates the event (e.g., a proposal to evict a memory item) and responds
+   * with its decision or preference, potentially after internal reasoning or LLM consultation.
    *
    * @async
-   * @returns {Promise<IGMISnapshot>} A promise that resolves with the snapshot object.
-   * @throws {Error} If snapshot creation fails.
+   * @param {MemoryLifecycleEvent} event - The memory lifecycle event details.
+   * @returns {Promise<LifecycleActionResponse>} The GMI's response to the event, indicating the action it deems appropriate.
+   * @throws {GMIError} If an error occurs while processing the event.
    */
-  createSnapshot(): Promise<IGMISnapshot>;
+  onMemoryLifecycleEvent(event: MemoryLifecycleEvent): Promise<LifecycleActionResponse>;
 
   /**
-   * Restores the GMI's internal state from a previously created snapshot.
-   * This will rehydrate the working memory, conversation context, and reactivate
-   * the correct persona.
+   * Analyzes the GMI's current memory state (working memory, RAG system connections, etc.)
+   * and returns a health report subsection focused on memory.
    *
    * @async
-   * @param {IGMISnapshot} snapshot - The snapshot object to restore from.
-   * @param {IPersonaDefinition[]} availablePersonas - All persona definitions known to the system,
-   * needed to ensure the snapshot's persona can be re-activated.
-   * @param {IWorkingMemory} workingMemory - The working memory instance to restore into.
-   * @param {ConversationContext} conversationContext - The conversation context to restore into.
-   * @returns {Promise<void>} A promise that resolves when the state has been restored.
-   * @throws {Error} If restoration fails (e.g., snapshot incompatibility, missing persona).
+   * @returns {Promise<GMIHealthReport['memoryHealth']>} A report on the GMI's memory health.
+   * @throws {GMIError} If analysis fails.
    */
-  restoreFromSnapshot(
-    snapshot: IGMISnapshot,
-    availablePersonas: IPersonaDefinition[],
-    workingMemory: IWorkingMemory, // Pass instances to restore into
-    conversationContext: ConversationContext
-  ): Promise<void>;
+  analyzeAndReportMemoryHealth(): Promise<GMIHealthReport['memoryHealth']>;
 
   /**
-   * Gracefully closes the GMI instance, releasing any held resources such as
-   * connections to memory stores or other services.
+   * Performs a comprehensive health check of the GMI, including its internal state,
+   * memory systems, and critical dependencies (e.g., LLM providers).
    *
    * @async
-   * @returns {Promise<void>} A promise that resolves when the GMI is closed.
+   * @returns {Promise<GMIHealthReport>} A detailed health report for the GMI.
    */
-  close(): Promise<void>;
+  getOverallHealth(): Promise<GMIHealthReport>;
+
+  /**
+   * Gracefully shuts down the GMI instance, releasing any held resources and
+   * ensuring a clean termination.
+   *
+   * @async
+   * @returns {Promise<void>} A promise that resolves when shutdown is complete.
+   */
+  shutdown(): Promise<void>;
 }
