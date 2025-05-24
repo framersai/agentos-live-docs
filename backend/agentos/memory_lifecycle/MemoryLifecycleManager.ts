@@ -1,15 +1,15 @@
 /**
  * @fileoverview Implements the MemoryLifecycleManager (MemoryLifecycleManager),
  * responsible for enforcing data retention and eviction policies on memories
- * stored within the AgentOS RAG system.
- *
- * It interprets configured policies, interacts with Vector Stores (via IVectorStoreManager)
- * to identify and act upon data items, and negotiates with GMI instances via
- * a GMIResolver for decisions regarding potentially critical memories.
+ * stored within the AgentOS RAG system. It uses IUtilityAI for summarization tasks
+ * and interacts with IVectorStoreManager to query and act on stored items.
+ * GMI negotiation is a key feature for handling potentially critical memories.
  *
  * @module backend/agentos/memory_lifecycle/MemoryLifecycleManager
  * @see ./IMemoryLifecycleManager.ts for the interface definition.
  * @see ../config/MemoryLifecycleManagerConfiguration.ts for configuration.
+ * @see ../core/ai_utilities/IUtilityAI.ts for summarization.
+ * @see ../rag/IVectorStore.ts and ../rag/IVectorStoreManager.ts
  */
 
 import { v4 as uuidv4 } from 'uuid';
@@ -22,63 +22,69 @@ import {
 import {
   MemoryLifecycleManagerConfig,
   MemoryLifecyclePolicy,
-  PolicyAction as ConfigPolicyActionDetails,
+  PolicyAction as ConfigPolicyActionDetails, // Renamed to avoid conflict in this file
 } from '../config/MemoryLifecycleManagerConfiguration';
 import { IVectorStoreManager } from '../rag/IVectorStoreManager';
-import { IVectorStore, VectorDocument, MetadataFilter, RetrievedVectorDocument } from '../rag/IVectorStore';
+import { IVectorStore, VectorDocument, MetadataFilter, RetrievedVectorDocument, QueryOptions as VectorStoreQueryOptions } from '../rag/IVectorStore';
 import { IGMI, MemoryLifecycleEvent, LifecycleAction, LifecycleActionResponse } from '../cognitive_substrate/IGMI';
-import { IUtilityAI } from '../core/ai_utilities/IUtilityAI';
+import { IUtilityAI, SummarizationOptions } from '../core/ai_utilities/IUtilityAI';
 import { RagMemoryCategory } from '../rag/IRetrievalAugmentor';
 import { GMIError, GMIErrorCode } from '../../utils/errors';
+// import * as path from 'path'; // Only if dealing with file paths for archiveTargetId
 
-// Helper to parse duration strings like "PT24H", "7d", "30m" into milliseconds
-const parseDurationToMs = (durationStr: string): number | null => {
+/**
+ * Helper to parse duration strings (e.g., "7d", "24h", "30m") into milliseconds.
+ * Supports simple formats; for full ISO 8601 duration, a more robust parser is needed.
+ * @param {string} [durationStr] - The duration string.
+ * @returns {number | null} Milliseconds or null if parsing fails.
+ * @internal
+ */
+const parseDurationToMs = (durationStr?: string): number | null => {
     if (!durationStr) return null;
-    // Basic parsing, can be expanded for full ISO 8601 duration or more formats
-    const matchDays = durationStr.match(/^(\d+)d$/i);
-    if (matchDays) return parseInt(matchDays[1], 10) * 24 * 60 * 60 * 1000;
-    const matchHours = durationStr.match(/^(\d+)h$/i);
-    if (matchHours) return parseInt(matchHours[1], 10) * 60 * 60 * 1000;
-    const matchMinutes = durationStr.match(/^(\d+)m$/i);
-    if (matchMinutes) return parseInt(matchMinutes[1], 10) * 60 * 1000;
-    // TODO: Add more robust ISO 8601 duration parsing if needed e.g. for PT formats
-    try { // Attempt ISO 8601 Duration (very basic for PTxH, PTxM, PTxS)
-        if (durationStr.startsWith('PT')) {
-            let totalMs = 0;
-            const hourMatch = durationStr.match(/(\d+)H/);
-            if (hourMatch) totalMs += parseInt(hourMatch[1],10) * 3600 * 1000;
-            const minuteMatch = durationStr.match(/(\d+)M/);
-            if (minuteMatch) totalMs += parseInt(minuteMatch[1],10) * 60 * 1000;
-            const secondMatch = durationStr.match(/(\d+)S/);
-            if (secondMatch) totalMs += parseInt(secondMatch[1],10) * 1000;
-            if (totalMs > 0) return totalMs;
-        }
-    } catch (e) { /* ignore parse error, fall through */ }
+    const s = durationStr.toLowerCase();
+    const dayMatch = s.match(/^(\d+)d$/);
+    if (dayMatch) return parseInt(dayMatch[1], 10) * 24 * 60 * 60 * 1000;
+    const hourMatch = s.match(/^(\d+)h$/);
+    if (hourMatch) return parseInt(hourMatch[1], 10) * 60 * 60 * 1000;
+    const minuteMatch = s.match(/^(\d+)m$/);
+    if (minuteMatch) return parseInt(minuteMatch[1], 10) * 60 * 1000;
+    // Basic ISO 8601 Duration (PT H, M, S)
+    if (s.startsWith('pt')) {
+        let totalMs = 0;
+        const hourMatchIso = s.match(/(\d+)h/); if (hourMatchIso) totalMs += parseInt(hourMatchIso[1],10) * 3600 * 1000;
+        const minuteMatchIso = s.match(/(\d+)m/); if (minuteMatchIso) totalMs += parseInt(minuteMatchIso[1],10) * 60 * 1000;
+        const secondMatchIso = s.match(/(\d+)s/); if (secondMatchIso) totalMs += parseInt(secondMatchIso[1],10) * 1000;
+        if (totalMs > 0) return totalMs;
+    }
+    console.warn(`MemoryLifecycleManager: Could not parse duration string "${durationStr}". Supported formats: "Xd", "Xh", "Xm", or simple ISO "PTXHXM".`);
     return null;
 };
 
-
 /**
- * Represents an item targeted by a lifecycle policy.
+ * Represents an item identified as a candidate for a lifecycle action.
+ * Includes necessary details for processing and negotiation.
  * @internal
  */
 interface LifecycleCandidateItem {
-  id: string; // Item ID in the vector store (chunk ID)
+  id: string; // Vector store item ID (e.g., chunk ID)
   dataSourceId: string;
-  collectionName: string;
+  collectionName: string; // Actual name in the vector store
   gmiOwnerId?: string;
   personaOwnerId?: string;
   category?: RagMemoryCategory;
-  timestamp?: Date; // Creation or last modification timestamp
+  timestamp?: Date; // Creation/last modification timestamp of the item
   metadata: Record<string, any>;
-  contentSummary?: string; // Optional, for negotiation
-  vectorStoreRef: IVectorStore; // Reference to the store it's in
+  textContent?: string; // Full text content, fetched if needed for summarization
+  contentSummary?: string; // A pre-existing or brief summary of the item
+  vectorStoreRef: IVectorStore; // Reference to the specific IVectorStore instance
 }
 
 
 /**
  * @class MemoryLifecycleManager
  * @implements {IMemoryLifecycleManager}
+ * Manages the lifecycle of stored memories by enforcing configured policies,
+ * handling data retention, eviction, archival, and negotiating with GMIs.
  */
 export class MemoryLifecycleManager implements IMemoryLifecycleManager {
   public readonly managerId: string;
@@ -91,7 +97,7 @@ export class MemoryLifecycleManager implements IMemoryLifecycleManager {
 
   /**
    * Constructs a MemoryLifecycleManager instance.
-   * Not operational until `initialize` is called.
+   * The manager is not operational until `initialize` is called.
    */
   constructor() {
     this.managerId = `mlm-${uuidv4()}`;
@@ -108,56 +114,68 @@ export class MemoryLifecycleManager implements IMemoryLifecycleManager {
   ): Promise<void> {
     if (this.isInitialized) {
       console.warn(`MemoryLifecycleManager (ID: ${this.managerId}) already initialized. Re-initializing.`);
-      await this.shutdown(); // Clear previous state and timers
+      await this.shutdown(); // Gracefully stop previous instance timers and state
     }
 
-    if (!config) throw new GMIError('MemoryLifecycleManagerConfig cannot be null.', GMIErrorCode.CONFIG_ERROR);
-    if (!vectorStoreManager) throw new GMIError('IVectorStoreManager dependency is missing.', GMIErrorCode.DEPENDENCY_ERROR);
-    if (!gmiResolver) throw new GMIError('GMIResolverFunction dependency is missing.', GMIErrorCode.DEPENDENCY_ERROR);
+    if (!config) throw new GMIError('MemoryLifecycleManagerConfig cannot be null.', GMIErrorCode.CONFIG_ERROR, { managerId: this.managerId });
+    if (!vectorStoreManager) throw new GMIError('IVectorStoreManager dependency is missing for MemoryLifecycleManager.', GMIErrorCode.DEPENDENCY_ERROR, { managerId: this.managerId });
+    if (!gmiResolver) throw new GMIError('GMIResolverFunction dependency is missing for MemoryLifecycleManager.', GMIErrorCode.DEPENDENCY_ERROR, { managerId: this.managerId });
 
-    this.config = config;
+    this.config = {
+        defaultCheckInterval: "PT6H", // Default to 6 hours
+        defaultGMINegotiationTimeoutMs: 30000,
+        dryRunMode: false,
+        maxConcurrentOperations: 5,
+        gmiOwnerIdMetadataField: "gmiOwnerId",
+        personaOwnerIdMetadataField: "personaOwnerId",
+        itemTimestampMetadataField: "creationTimestamp",
+        ...config, // User config overrides defaults
+    };
     this.vectorStoreManager = vectorStoreManager;
     this.gmiResolver = gmiResolver;
     this.utilityAI = utilityAI;
 
-    // Validate policies (basic checks)
+    // Validate policies for dependencies
     this.config.policies.forEach(p => {
       if (p.action.type.startsWith('summarize_') && !this.utilityAI) {
-        throw new GMIError(`Policy '${p.policyId}' requires summarization but IUtilityAI dependency is not provided.`, GMIErrorCode.CONFIG_ERROR, { policyId: p.policyId });
-      }
-      if (p.trigger?.type === 'periodic' && p.trigger.checkInterval) {
-        if (!parseDurationToMs(p.trigger.checkInterval)) {
-            console.warn(`MemoryLifecycleManager (ID: ${this.managerId}): Policy '${p.policyId}' has an invalid periodic checkInterval '${p.trigger.checkInterval}'. It may not run as expected.`);
-        }
+        throw new GMIError(`Policy '${p.policyId}' requires summarization, but IUtilityAI dependency was not provided to MemoryLifecycleManager.`, GMIErrorCode.CONFIG_ERROR, { policyId: p.policyId });
       }
     });
 
     this.isInitialized = true;
     this.setupPeriodicChecks();
-    console.log(`MemoryLifecycleManager (ID: ${this.managerId}) initialized with ${this.config.policies.length} policies.`);
+    console.log(`MemoryLifecycleManager (ID: ${this.managerId}) initialized. Policies: ${this.config.policies.length}. DryRun: ${this.config.dryRunMode}.`);
   }
 
+  /**
+   * Ensures the manager is initialized before performing operations.
+   * @private
+   */
   private ensureInitialized(): void {
     if (!this.isInitialized) {
-      throw new GMIError(`MemoryLifecycleManager (ID: ${this.managerId}) is not initialized.`, GMIErrorCode.NOT_INITIALIZED);
+      throw new GMIError(`MemoryLifecycleManager (ID: ${this.managerId}) is not initialized. Call initialize() first.`, GMIErrorCode.NOT_INITIALIZED);
     }
   }
 
   /**
-   * Sets up periodic policy enforcement based on the configuration.
+   * Sets up periodic policy enforcement based on configuration.
    * @private
    */
   private setupPeriodicChecks(): void {
-    if (this.periodicCheckTimer) {
-      clearInterval(this.periodicCheckTimer);
-    }
-    const intervalMs = parseDurationToMs(this.config.defaultCheckInterval || "PT6H"); // Default to 6 hours if not specified
+    if (this.periodicCheckTimer) clearInterval(this.periodicCheckTimer);
+
+    const intervalMs = parseDurationToMs(this.config.defaultCheckInterval);
     if (intervalMs && intervalMs > 0) {
       this.periodicCheckTimer = setInterval(async () => {
+        if (this.config.dryRunMode) {
+            console.log(`[DRY RUN] MemoryLifecycleManager (ID: ${this.managerId}): Periodic policy enforcement check triggered.`);
+            // In dry run, we might still want to log what *would* be done.
+            // To do that, enforcePolicies would need to be called, and it respects dryRunMode.
+        }
         console.log(`MemoryLifecycleManager (ID: ${this.managerId}): Running periodic policy enforcement...`);
         try {
+          // Enforce policies that are periodic or general age-based
           await this.enforcePolicies({
-            // Filter for policies that have a periodic trigger or are purely age-based without specific trigger
             policyIds: this.config.policies
                             .filter(p => p.isEnabled !== false && (p.trigger?.type === 'periodic' || (!p.trigger && p.retentionDays && p.retentionDays > 0)))
                             .map(p => p.policyId)
@@ -166,7 +184,7 @@ export class MemoryLifecycleManager implements IMemoryLifecycleManager {
           console.error(`MemoryLifecycleManager (ID: ${this.managerId}): Error during periodic policy enforcement: ${error.message}`, error);
         }
       }, intervalMs);
-      console.log(`MemoryLifecycleManager (ID: ${this.managerId}): Scheduled periodic policy enforcement every ${intervalMs / 1000} seconds.`);
+      console.log(`MemoryLifecycleManager (ID: ${this.managerId}): Scheduled periodic policy enforcement (interval: ${intervalMs / 1000}s). DryRun: ${this.config.dryRunMode}.`);
     }
   }
 
@@ -178,7 +196,7 @@ export class MemoryLifecycleManager implements IMemoryLifecycleManager {
     const startTime = new Date();
     const report: LifecycleEnforcementReport = {
       startTime,
-      endTime: startTime, // Will be updated
+      endTime: startTime, // Will update at the end
       policiesEvaluated: 0,
       itemsScanned: 0,
       itemsAffected: 0,
@@ -189,321 +207,368 @@ export class MemoryLifecycleManager implements IMemoryLifecycleManager {
 
     const policiesToEvaluate = this.config.policies.filter(p =>
       p.isEnabled !== false &&
-      (!filter?.policyIds || filter.policyIds.includes(p.policyId))
+      (!filter?.policyIds || filter.policyIds.length === 0 || filter.policyIds.includes(p.policyId))
     ).sort((a, b) => (a.priority || 0) - (b.priority || 0));
 
     report.policiesEvaluated = policiesToEvaluate.length;
+    this.addTraceToReport(report, undefined, undefined, undefined, `Starting policy enforcement. Evaluating ${report.policiesEvaluated} policies. DryRun: ${report.wasDryRun}.`);
 
     for (const policy of policiesToEvaluate) {
       report.policyResults![policy.policyId] = { itemsProcessed: 0, actionsTaken: {} };
+      let policyCandidatesFound = 0;
       try {
         const candidates = await this.findPolicyCandidates(policy, filter);
-        report.itemsScanned += candidates.length; // Approximation, actual scan might be different
+        policyCandidatesFound = candidates.length;
+        report.itemsScanned += candidates.length;
+
+        if (candidates.length > 0) {
+            this.addTraceToReport(report, undefined, policy.policyId, undefined, `Found ${candidates.length} candidate items for policy.`);
+        }
 
         for (const candidate of candidates) {
           report.policyResults![policy.policyId].itemsProcessed++;
           const actionToTake = await this.negotiateAndDetermineAction(candidate, policy);
 
-          if (actionToTake && actionToTake !== 'NO_ACTION_TAKEN') { // NO_ACTION_TAKEN could be a valid LifecycleAction
-            if (!this.config.dryRunMode) {
-              await this.executeLifecycleAction(candidate, policy.action, actionToTake);
-            }
-            report.itemsAffected++;
+          if (actionToTake && actionToTake !== 'NO_ACTION_TAKEN') {
+            // Store the intended action before actual execution for accurate reporting
             const actionKey = actionToTake as string;
             report.policyResults![policy.policyId].actionsTaken[actionKey] = (report.policyResults![policy.policyId].actionsTaken[actionKey] || 0) + 1;
+            report.itemsAffected++; // Count as affected if an action *would* be taken
+
+            if (!this.config.dryRunMode) { // Only execute if not dry run
+              await this.executeLifecycleAction(candidate, policy.action, actionToTake, report);
+            } else {
+                this.addTraceToReport(report, candidate.id, policy.policyId, actionToTake, `[DRY RUN] Would execute action.`);
+            }
+          } else {
+              this.addTraceToReport(report, candidate.id, policy.policyId, 'NO_ACTION_TAKEN', `No action taken after negotiation or due to policy outcome.`);
           }
         }
       } catch (error: any) {
-        console.error(`MemoryLifecycleManager (ID: ${this.managerId}): Error enforcing policy '${policy.policyId}': ${error.message}`, error);
-        report.errors?.push({ policyId: policy.policyId, message: `Error during policy enforcement: ${error.message}`, details: error.toString() });
+        const gmiErr = GMIError.wrap(error, GMIErrorCode.PROCESSING_ERROR, `Error enforcing policy '${policy.policyId}'.`);
+        console.error(`${this.managerId}: ${gmiErr.message}`, gmiErr.details?.underlyingError);
+        report.errors?.push({ policyId: policy.policyId, message: gmiErr.message, details: gmiErr.toPlainObject() });
       }
+      this.addTraceToReport(report, undefined, policy.policyId, undefined, `Finished processing policy. Candidates found: ${policyCandidatesFound}.`);
     }
 
     report.endTime = new Date();
-    console.log(`MemoryLifecycleManager (ID: ${this.managerId}): Policy enforcement completed. ${report.itemsAffected} items affected (DryRun: ${report.wasDryRun}).`);
+    const durationMs = report.endTime.getTime() - report.startTime.getTime();
+    this.addTraceToReport(report, undefined, undefined, undefined, `Policy enforcement completed in ${durationMs}ms. ${report.itemsAffected} items affected.`);
+    console.log(`MemoryLifecycleManager (ID: ${this.managerId}): Policy enforcement completed. ${report.itemsAffected} items affected (DryRun: ${report.wasDryRun}). Duration: ${durationMs}ms.`);
     return report;
   }
 
+
   /**
-   * Finds candidate items that a given policy might apply to.
+   * Finds candidate items for a given policy.
+   * This is a complex method that needs to interact with IVectorStoreManager and IVectorStore.
    * @private
    */
   private async findPolicyCandidates(policy: MemoryLifecyclePolicy, enforcementFilter?: PolicyEnforcementFilter): Promise<LifecycleCandidateItem[]> {
-    const candidates: LifecycleCandidateItem[] = [];
-    const targetDataSourceIds = new Set<string>();
+    const allCandidateItems: LifecycleCandidateItem[] = [];
+    const timestampField = this.config.itemTimestampMetadataField!; // Assumed to be configured
+    const gmiOwnerField = this.config.gmiOwnerIdMetadataField!;
+    const personaOwnerField = this.config.personaOwnerIdMetadataField!;
 
-    // Determine which data sources to scan based on policy and enforcement filter
+    // Determine data sources to scan
+    let dsIdsToScan: string[] = [];
     if (policy.appliesTo.dataSourceIds && policy.appliesTo.dataSourceIds.length > 0) {
-        policy.appliesTo.dataSourceIds.forEach(id => {
-            if (!enforcementFilter?.dataSourceIds || enforcementFilter.dataSourceIds.includes(id)) {
-                targetDataSourceIds.add(id);
-            }
-        });
-    } else if (enforcementFilter?.dataSourceIds) { // Policy applies to all, but enforcement is filtered
-        enforcementFilter.dataSourceIds.forEach(id => targetDataSourceIds.add(id));
-    } else { // Policy applies to all, enforcement filter also applies to all known
-        this.vectorStoreManager.listDataSourceIds().forEach(id => targetDataSourceIds.add(id));
+        dsIdsToScan = policy.appliesTo.dataSourceIds;
+    } else {
+        dsIdsToScan = this.vectorStoreManager.listDataSourceIds(); // Scan all if policy doesn't specify
+    }
+    // Further filter by enforcementFilter if provided
+    if (enforcementFilter?.dataSourceIds && enforcementFilter.dataSourceIds.length > 0) {
+        dsIdsToScan = dsIdsToScan.filter(id => enforcementFilter.dataSourceIds!.includes(id));
     }
 
+    for (const dsId of dsIdsToScan) {
+      try {
+        const { store, collectionName, dimension } = await this.vectorStoreManager.getStoreForDataSource(dsId);
+        let combinedFilter: MetadataFilter = { ...(policy.appliesTo.metadataFilter || {}) };
 
-    for (const dsId of targetDataSourceIds) {
-        try {
-            const { store, collectionName, dimension } = await this.vectorStoreManager.getStoreForDataSource(dsId);
-            
-            // Construct metadata filter for querying the store
-            // This is complex: combine policy.appliesTo.metadataFilter, policy.appliesTo.categories (needs mapping),
-            // retentionDays, and enforcementFilter context (gmiOwnerId, personaOwnerId).
-            let combinedFilter: MetadataFilter = { ...policy.appliesTo.metadataFilter };
-
-            if (policy.appliesTo.categories && policy.appliesTo.categories.length > 0) {
-                // Assuming a 'category' field in metadata. This is a simplification.
-                // A better mapping from RagMemoryCategory to metadata queries might be needed.
-                combinedFilter['category'] = { $in: policy.appliesTo.categories as string[] };
-            }
-            if (policy.retentionDays && policy.retentionDays > 0) {
-                const cutoffDate = new Date(Date.now() - policy.retentionDays * 24 * 60 * 60 * 1000);
-                const timestampField = this.config.itemTimestampMetadataField || "creationTimestamp";
-                combinedFilter[timestampField] = { $lt: cutoffDate.toISOString() as any }; // Cast as 'any' if type expects number for $lt
-            }
-
-            const gmiOwnerField = this.config.gmiOwnerIdMetadataField || "gmiOwnerId";
-            const ownerGMI = enforcementFilter?.gmiOwnerId || policy.appliesTo.gmiOwnerId;
-            if (ownerGMI) combinedFilter[gmiOwnerField] = ownerGMI;
-            
-            const personaOwnerField = this.config.personaOwnerIdMetadataField || "personaOwnerId";
-            const ownerPersona = enforcementFilter?.personaOwnerId || policy.appliesTo.personaOwnerId;
-            if(ownerPersona) combinedFilter[personaOwnerField] = ownerPersona;
-
-
-            // Fetch ALL documents matching the filter to evaluate. This could be inefficient for large stores.
-            // Real-world scenario might use scrolling search or sampling if store supports it.
-            // Or, if eviction is based on threshold, get counts first, then select victims by strategy.
-            // For age-based retention, a query with date filter is more direct.
-            // This simplified version fetches and then filters.
-            // A better way for age: `query(collectionName, DUMMY_EMBEDDING_IF_NEEDED_BY_STORE, { filter: combinedFilter, topK: VERY_LARGE_NUMBER })`
-            // Some stores allow metadata-only queries without an embedding.
-            // For now, let's assume we need to iterate or the store supports metadata-only queries.
-            // This part is highly dependent on IVectorStore capabilities for metadata-only iteration/querying.
-            // Placeholder: conceptual iteration or broad query.
-            // For a robust implementation, this section needs deep integration with IVectorStore search capabilities.
-            // For now, we can't fetch ALL without an embedding. This method needs rethinking for how to get candidates.
-            //
-            // Let's assume a conceptual `store.scan({ filter: combinedFilter })` or similar method.
-            // If not, this manager might need to periodically query for a subset of old items.
-            //
-            // If policy.evictionStrategy and trigger is on_storage_threshold:
-            // 1. Get current count/size from store.getStats(collectionName).
-            // 2. If threshold exceeded, query for `N` items based on evictionStrategy (e.g., oldest `N` items).
-            // This is complex.
-            //
-            // For now, let's focus on the age-based retention use-case with a filter.
-            // The `query` method needs an embedding. This makes policy application difficult without a reference embedding.
-            //
-            // Simplification: Assume we can get items by metadata filter.
-            // If IVectorStore had a `queryByMetadata(filter, options)` method, this would be ideal.
-            // Lacking that, this is a conceptual placeholder.
-             console.warn(`MemoryLifecycleManager (ID: ${this.managerId}): Finding policy candidates for policy '${policy.policyId}' on data source '${dsId}' is currently conceptual and relies on vector store's ability to efficiently query by metadata combined with date ranges. A full scan or specialized store queries might be needed in practice.`);
-
-            // Conceptual: Fetch items matching combinedFilter from 'store' in 'collectionName'.
-            // const matchedItemsFromStore: RetrievedVectorDocument[] = await store.conceptualQueryByMetadata(collectionName, combinedFilter);
-            // For each matchedItem:
-            // candidates.push({ /* ... populate LifecycleCandidateItem ... */ vectorStoreRef: store });
-
-        } catch (error: any) {
-            console.error(`MemoryLifecycleManager (ID: ${this.managerId}): Error accessing data source '${dsId}' for policy '${policy.policyId}': ${error.message}`, error);
-            report.errors?.push({ policyId: policy.policyId, message: `Error accessing data source ${dsId}: ${error.message}`});
+        // Apply category filter (assuming 'category' metadata field)
+        const targetCategories = enforcementFilter?.categories || policy.appliesTo.categories;
+        if (targetCategories && targetCategories.length > 0) {
+          combinedFilter['category'] = { $in: targetCategories as string[] };
         }
+
+        // Apply GMI owner filter
+        const targetGmiOwner = enforcementFilter?.gmiOwnerId || policy.appliesTo.gmiOwnerId;
+        if (targetGmiOwner) {
+          combinedFilter[gmiOwnerField] = targetGmiOwner;
+        }
+        // Apply Persona owner filter
+        const targetPersonaOwner = enforcementFilter?.personaOwnerId || policy.appliesTo.personaOwnerId;
+        if (targetPersonaOwner) {
+          combinedFilter[personaOwnerField] = targetPersonaOwner;
+        }
+
+        // Apply retentionDays filter
+        if (policy.retentionDays && policy.retentionDays > 0) {
+          const cutoffDate = new Date(Date.now() - policy.retentionDays * 24 * 60 * 60 * 1000);
+          // Ensure the filter for timestamp is compatible with how store handles date comparisons
+          combinedFilter[timestampField] = { $lt: cutoffDate.toISOString() as any };
+        }
+
+        // How to query without an embedding for lifecycle purposes?
+        // This is a MAJOR DEPENDENCY on IVectorStore capabilities.
+        // Assumption 1: store.query with a null/empty embedding and filter works.
+        // Assumption 2: store might have a specific scanByMetadata (not in IVectorStore yet).
+        // Assumption 3: We fetch a large number of recent items and filter client-side (inefficient).
+        //
+        // For now, let's log a warning and return empty, highlighting this gap.
+        // To make this "work" in a limited fashion, one could query for *everything* (topK very large)
+        // without an embedding if the store supports it, but this is dangerous and slow.
+        if (Object.keys(combinedFilter).length > 0) {
+            console.warn(`MemoryLifecycleManager (${this.managerId}): Policy '${policy.policyId}' for DS '${dsId}' requires metadata-based querying. ` +
+                         `Current IVectorStore.query typically requires an embedding. Efficiently finding candidates for lifecycle ` +
+                         `management based purely on metadata (like age, category, owner) needs specific IVectorStore support ` +
+                         `(e.g., scanByMetadata, or query with null embedding vector and strong filter support). ` +
+                         `This implementation will yield no candidates for this policy run if such support isn't available and used.`);
+            // Placeholder: If a store *could* do this with a special query:
+            // const queryOptions: VectorStoreQueryOptions = { filter: combinedFilter, topK: 10000, includeMetadata: true, includeTextContent: policy.action.type.startsWith('summarize_') };
+            // const result: QueryResult = await store.query(collectionName, [], queryOptions); // Pass empty/null vector?
+            // result.documents.forEach(doc => { /* convert to LifecycleCandidateItem */ });
+        } else {
+             console.warn(`MemoryLifecycleManager (${this.managerId}): Policy '${policy.policyId}' for DS '${dsId}' has no effective filters (age, category, metadata). Scanning all items is not feasible. Skipping candidate search for this policy on this data source.`);
+        }
+
+      } catch (error: any) {
+        console.error(`MemoryLifecycleManager (ID: ${this.managerId}): Error preparing to find candidates for policy '${policy.policyId}' on DS '${dsId}': ${error.message}`, error);
+        this.addTraceToReport(undefined, undefined, policy.policyId, undefined, `Error processing DS '${dsId}': ${error.message}`);
+      }
     }
-    return candidates; // This will be empty due to the placeholder above.
+    return allCandidateItems; // Will be empty due to current placeholder logic above
   }
 
-  /**
-   * Negotiates with the GMI (if applicable) and determines the final lifecycle action.
-   * @private
-   */
   private async negotiateAndDetermineAction(candidate: LifecycleCandidateItem, policy: MemoryLifecyclePolicy): Promise<LifecycleAction | null> {
     if (policy.gmiNegotiation?.enabled && candidate.gmiOwnerId) {
       const gmiInstance = await this.gmiResolver(candidate.gmiOwnerId, candidate.personaOwnerId);
       if (gmiInstance) {
         const event: MemoryLifecycleEvent = {
-          eventId: uuidv4(),
-          timestamp: new Date(),
-          type: this.mapPolicyActionToEventType(policy.action.type), // e.g., EVICTION_PROPOSED
-          gmiId: candidate.gmiOwnerId,
-          personaId: candidate.personaOwnerId,
-          itemId: candidate.id,
-          dataSourceId: candidate.dataSourceId,
-          category: candidate.category,
-          itemSummary: candidate.contentSummary || `Item ID: ${candidate.id}`, // Needs better summary generation
-          reason: policy.description || `Policy '${policy.policyId}' triggered.`,
-          proposedAction: policy.action.type as LifecycleAction, // Map config action to LifecycleAction
-          negotiable: true,
+            eventId: uuidv4(), timestamp: new Date(), type: this.mapPolicyActionToEventType(policy.action.type),
+            gmiId: candidate.gmiOwnerId, personaId: candidate.personaOwnerId, itemId: candidate.id,
+            dataSourceId: candidate.dataSourceId, category: candidate.category?.toString(),
+            itemSummary: candidate.contentSummary || candidate.textContent?.substring(0, 200) || `Item ID: ${candidate.id}`,
+            reason: policy.description || `Policy '${policy.policyId}' triggered.`,
+            proposedAction: policy.action.type as LifecycleAction, // Map from ConfigPolicyActionDetails['type']
+            negotiable: true, metadata: candidate.metadata
         };
-
         try {
-          const timeout = policy.gmiNegotiation.timeoutMs || this.config.defaultGMINegotiationTimeoutMs || 30000;
+          const timeout = policy.gmiNegotiation.timeoutMs || this.config.defaultGMINegotiationTimeoutMs!;
           const negotiationPromise = gmiInstance.onMemoryLifecycleEvent(event);
           const response = await Promise.race([
             negotiationPromise,
-            new Promise<LifecycleActionResponse>(resolve => setTimeout(() => resolve({
-                gmiId: candidate.gmiOwnerId!,
-                eventId: event.eventId,
-                actionTaken: policy.gmiNegotiation!.defaultActionOnTimeout || 'ALLOW_ACTION',
-                rationale: 'GMI negotiation timed out.',
-            }), timeout))
+            new Promise<LifecycleActionResponse>((_, reject) =>
+              setTimeout(() => reject(new GMIError("GMI negotiation timed out", GMIErrorCode.TIMEOUT, { itemId: candidate.id })), timeout)
+            )
           ]);
-          
-          console.log(`MemoryLifecycleManager (ID: ${this.managerId}): GMI '${candidate.gmiOwnerId}' responded with '${response.actionTaken}' for item '${candidate.id}'.`);
-          return response.actionTaken; // This is the GMI's decision or default on timeout
+          console.log(`MLM (${this.managerId}): GMI '${candidate.gmiOwnerId}' responded with '${response.actionTaken}' for item '${candidate.id}'.`);
+          return response.actionTaken;
         } catch (error: any) {
-          console.error(`MemoryLifecycleManager (ID: ${this.managerId}): Error negotiating with GMI '${candidate.gmiOwnerId}' for item '${candidate.id}': ${error.message}`, error);
-          return policy.gmiNegotiation.defaultActionOnTimeout || 'ALLOW_ACTION'; // Fallback on error
+          const gmiErr = GMIError.wrap(error, GMIErrorCode.PROCESSING_ERROR, `Error/timeout negotiating with GMI '${candidate.gmiOwnerId}' for item '${candidate.id}'.`);
+          console.error(`${this.managerId}: ${gmiErr.message}`, gmiErr.details?.underlyingError);
+          return policy.gmiNegotiation.defaultActionOnTimeout || 'ALLOW_ACTION'; // Fallback
         }
       } else {
-        console.warn(`MemoryLifecycleManager (ID: ${this.managerId}): Owning GMI '${candidate.gmiOwnerId}' for item '${candidate.id}' not found or resolved. Applying default action or policy action directly.`);
-        return policy.action.type as LifecycleAction; // Or a specific default for unresolved GMI
+         console.warn(`MLM (${this.managerId}): Owning GMI '${candidate.gmiOwnerId}' for item '${candidate.id}' not found/resolved. Applying configured action directly.`);
+         return policy.action.type as LifecycleAction;
       }
     }
-    // No negotiation, or GMI not applicable/found, apply policy's intended action directly.
-    return policy.action.type as LifecycleAction;
+    return policy.action.type as LifecycleAction; // No negotiation configured
   }
 
   private mapPolicyActionToEventType(actionType: ConfigPolicyActionDetails['type']): MemoryLifecycleEvent['type'] {
-      switch (actionType) {
-          case 'delete':
-          case 'summarize_and_delete':
-              return 'EVICTION_PROPOSED';
-          case 'archive':
-          case 'summarize_and_archive':
-              return 'ARCHIVAL_PROPOSED';
-          case 'notify_gmi_owner':
-              return 'NOTIFICATION'; // Or a more specific type like 'RETENTION_REVIEW_PROPOSED'
-          default:
-              return 'EVALUATION_PROPOSED'; // Generic
-      }
+    // ... (mapping logic as before) ...
+    switch (actionType) {
+        case 'delete': return 'DELETION_PROPOSED';
+        case 'summarize_and_delete': return 'EVICTION_PROPOSED';
+        case 'archive': return 'ARCHIVAL_PROPOSED';
+        case 'summarize_and_archive': return 'ARCHIVAL_PROPOSED';
+        case 'notify_gmi_owner': return 'NOTIFICATION';
+        default: return 'EVALUATION_PROPOSED';
+    }
   }
 
-  /**
-   * Executes the determined lifecycle action on the item.
-   * @private
-   */
-  private async executeLifecycleAction(candidate: LifecycleCandidateItem, configuredAction: ConfigPolicyActionDetails, determinedAction: LifecycleAction): Promise<void> {
-    console.log(`MemoryLifecycleManager (ID: ${this.managerId}): Executing action '${determinedAction}' on item '${candidate.id}' from '${candidate.dataSourceId}/${candidate.collectionName}' (DryRun: ${this.config.dryRunMode}).`);
-    
+  private async executeLifecycleAction(
+    candidate: LifecycleCandidateItem,
+    configuredActionDetails: ConfigPolicyActionDetails,
+    determinedAction: LifecycleAction, // This is the action post-negotiation
+    report?: LifecycleEnforcementReport // For adding detailed traces
+  ): Promise<void> {
+    const dryRunPrefix = this.config.dryRunMode ? "[DRY RUN] " : "";
+    const logPreamble = `${dryRunPrefix}MLM (${this.managerId}): Item '${candidate.id}' from '${candidate.dataSourceId}/${candidate.collectionName}'. Action: '${determinedAction}'. Policy: '${configuredActionDetails.policyId}'.`;
+    console.log(logPreamble);
+    this.addTraceToReport(report, candidate.id, configuredActionDetails.policyId, determinedAction, "Preparing to execute action.");
+
+
     if (this.config.dryRunMode) {
-        return; // Do not execute in dry run mode
+        this.addTraceToReport(report, candidate.id, configuredActionDetails.policyId, determinedAction, "Dry run: No actual change made.");
+        return;
     }
 
-    // Map LifecycleAction back to more detailed ConfigPolicyActionDetails if needed, or use determinedAction directly.
-    // For now, assume determinedAction is one of 'delete', 'archive', etc.
-    
+    let effectiveConfigActionType = configuredActionDetails.type;
+    if (determinedAction === 'ALLOW_ACTION') {
+        effectiveConfigActionType = configuredActionDetails.type; // Proceed with original policy action
+    } else if (['PREVENT_ACTION', 'NO_ACTION_TAKEN', 'ACKNOWLEDGE_NOTIFICATION'].includes(determinedAction)) {
+        this.addTraceToReport(report, candidate.id, configuredActionDetails.policyId, determinedAction, "Action prevented or no change required.");
+        return;
+    } else {
+        // GMI specified a concrete action (DELETE, ARCHIVE, etc.)
+        effectiveConfigActionType = determinedAction as ConfigPolicyActionDetails['type'];
+    }
+
     try {
-        switch (determinedAction) {
-            case 'DELETE': // Corresponds to policy 'delete' or 'summarize_and_delete' after summary
-            case 'SUMMARIZE_AND_DELETE': // Actual summarization step needs to happen first
-                if (configuredAction.type.startsWith('summarize_') && this.utilityAI) {
-                    // const summary = await this.utilityAI.summarizeDocument(candidate.contentSummary || candidate.id, {}); // Placeholder
-                    // If summaryDataSourceId exists, ingest summary there.
-                    // console.log(`MemoryLifecycleManager (ID: ${this.managerId}): Item '${candidate.id}' summarized (conceptual).`);
-                }
-                await candidate.vectorStoreRef.delete(candidate.collectionName, [candidate.id]);
-                console.log(`MemoryLifecycleManager (ID: ${this.managerId}): Item '${candidate.id}' deleted.`);
-                break;
-
-            case 'ARCHIVE': // Corresponds to 'archive' or 'summarize_and_archive'
-            case 'SUMMARIZE_AND_ARCHIVE':
-                if (configuredAction.type.startsWith('summarize_') && this.utilityAI) {
-                    // Summarize logic...
-                }
-                // Archival logic: this is complex.
-                // It might involve:
-                // 1. Retrieving the full document from candidate.vectorStoreRef.
-                // 2. Storing it in an archive system (e.g., S3, different DB) identified by configuredAction.archiveTargetId.
-                // 3. Deleting it from the original candidate.vectorStoreRef.
-                console.warn(`MemoryLifecycleManager (ID: ${this.managerId}): Archival for item '${candidate.id}' is conceptual. Requires archive store integration.`);
-                // For now, simulate by deleting if it's summarize_and_archive, else just log.
-                if (configuredAction.deleteOriginalAfterSummary !== false || determinedAction === 'ARCHIVE') { // Simplification
-                     await candidate.vectorStoreRef.delete(candidate.collectionName, [candidate.id]);
-                     console.log(`MemoryLifecycleManager (ID: ${this.managerId}): Item '${candidate.id}' conceptually archived (original deleted).`);
-                } else {
-                     console.log(`MemoryLifecycleManager (ID: ${this.managerId}): Item '${candidate.id}' conceptually archived (original kept).`);
-                }
-                break;
-            
-            case 'ALLOW_ACTION': // GMI allowed the policy's proposed action
-                // Re-evaluate policy.action.type and execute that. This is recursive conceptually.
-                // For simplicity, assume ALLOW_ACTION means the original `policy.action.type`
-                await this.executeLifecycleAction(candidate, configuredAction, configuredAction.type as LifecycleAction);
-                break;
-
-            case 'PREVENT_ACTION':
-            case 'NO_ACTION_TAKEN': // Explicitly no action or GMI prevented it.
-                 console.log(`MemoryLifecycleManager (ID: ${this.managerId}): Action on item '${candidate.id}' prevented or no action taken based on GMI negotiation or policy.`);
-                break;
-            // Handle PROPOSE_ALTERNATIVE_ACTION - more complex, may involve re-evaluation or different steps.
-            default:
-                console.warn(`MemoryLifecycleManager (ID: ${this.managerId}): Unknown or unhandled lifecycle action '${determinedAction}' for item '${candidate.id}'.`);
+      let summaryText: string | undefined;
+      if (effectiveConfigActionType.startsWith('summarize_')) {
+        if (!this.utilityAI) {
+          throw new GMIError("Summarization action requires IUtilityAI, but it's not configured for MLM.", GMIErrorCode.MISSING_DEPENDENCY);
         }
+        if (!candidate.textContent) {
+          // TODO: Attempt to fetch textContent for candidate.id from candidate.vectorStoreRef
+          // This would require IVectorStore to have a method like `getDocumentById(collectionName, id): Promise<VectorDocument | undefined>`
+          this.addTraceToReport(report, candidate.id, configuredActionDetails.policyId, determinedAction, `Error: Full textContent missing for summarization.`);
+          throw new GMIError(`Full textContent for item '${candidate.id}' required for summarization was not available. Candidate must be populated with textContent by findPolicyCandidates.`, GMIErrorCode.MISSING_DATA);
+        }
+        const summarizationOpts: SummarizationOptions = {
+            desiredLength: 'short', // Make this configurable via policy.action.summarizationOptions
+            method: 'abstractive_llm', // Make this configurable
+            modelId: configuredActionDetails.llmModelForSummary || this.config.defaultSummarizationModelId,
+        };
+        this.addTraceToReport(report, candidate.id, configuredActionDetails.policyId, determinedAction, `Starting summarization with options: ${JSON.stringify(summarizationOpts)}`);
+        summaryText = await this.utilityAI.summarize(candidate.textContent!, summarizationOpts);
+        this.addTraceToReport(report, candidate.id, configuredActionDetails.policyId, determinedAction, `Summarization complete. Summary length: ${summaryText.length}.`);
+
+        if (configuredActionDetails.summaryDataSourceId && summaryText) {
+          // Ingesting summary is a RAG operation, ideally not done directly by MLM.
+          // MLM could emit an event "SummaryCreatedEvent { originalItemId, summaryText, targetDataSource }"
+          // For now, we log the intent.
+          const summaryDocId = `summary_of_${candidate.id.replace(/[^a-zA-Z0-9-_]/g, '_')}`; // Sanitize ID
+          this.addTraceToReport(report, candidate.id, configuredActionDetails.policyId, determinedAction, `Summary (New ID: ${summaryDocId}) for item '${candidate.id}' to be ingested to DS '${configuredActionDetails.summaryDataSourceId}'. (This step is conceptual, requiring RAG interaction).`);
+          console.log(`MLM (${this.managerId}): Summary for item '${candidate.id}' (ID: ${summaryDocId}) intended for DS '${configuredActionDetails.summaryDataSourceId}'.`);
+        }
+      }
+
+      // Perform Delete or Archive based on the effectiveActionType
+      if (effectiveActionType === 'delete' || (effectiveActionType === 'summarize_and_delete' && (configuredActionDetails.deleteOriginalAfterSummary !== false || summaryText !== undefined))) {
+        await candidate.vectorStoreRef.delete(candidate.collectionName, [candidate.id]);
+        this.addTraceToReport(report, candidate.id, configuredActionDetails.policyId, determinedAction, `Item deleted successfully.`);
+      } else if (effectiveActionType === 'archive' || (effectiveActionType === 'summarize_and_archive' && (configuredActionDetails.deleteOriginalAfterSummary !== false || summaryText !== undefined))) {
+        const archiveTarget = configuredActionDetails.archiveTargetId || this.config.defaultArchiveStoreId;
+        this.addTraceToReport(report, candidate.id, configuredActionDetails.policyId, determinedAction, `Archival to '${archiveTarget}' is conceptual. Original item (if configured) deleted.`);
+        // TODO: Implement actual archival logic (e.g., move to different storage).
+        // For now, we simulate by deleting if configured to do so after conceptual archive.
+        if (configuredActionDetails.deleteOriginalAfterSummary !== false || effectiveActionType === 'archive') {
+             await candidate.vectorStoreRef.delete(candidate.collectionName, [candidate.id]);
+        }
+      } else if (effectiveActionType === 'notify_gmi_owner') {
+         this.addTraceToReport(report, candidate.id, configuredActionDetails.policyId, determinedAction, `GMI owner notification action type; no direct data modification by MLM here.`);
+      }
+      // Other actions like RETAIN_FOR_DURATION, MARK_AS_CRITICAL would involve updating item metadata.
+      // This requires IVectorStore to support metadata updates, e.g., `updateMetadata(collectionName, itemId, metadataPatch)`.
+
     } catch (error: any) {
-        console.error(`MemoryLifecycleManager (ID: ${this.managerId}): Error executing action '${determinedAction}' on item '${candidate.id}': ${error.message}`, error);
-        throw new GMIError(`Failed to execute lifecycle action '${determinedAction}' on item '${candidate.id}'.`, GMIErrorCode.PROCESSING_ERROR, { itemId: candidate.id, action: determinedAction, error: error.toString() });
+      const gmiErr = GMIError.wrap(error, GMIErrorCode.PROCESSING_ERROR, `Failed to execute lifecycle action '${effectiveActionType}' on item '${candidate.id}'.`);
+      this.addTraceToReport(report, candidate.id, configuredActionDetails.policyId, determinedAction, `Error: ${gmiErr.message}`);
+      console.error(`MLM (${this.managerId}): Error during executeLifecycleAction for item '${candidate.id}', action '${effectiveActionType}': ${gmiErr.message}`, gmiErr.details?.underlyingError);
+      throw gmiErr;
     }
   }
 
-  /**
-   * @inheritdoc
-   */
-  public async processSingleItemLifecycle(itemContext: {
-    itemId: string;
-    dataSourceId: string;
-    gmiOwnerId?: string;
-    personaOwnerId?: string;
-    category?: RagMemoryCategory;
-    metadata?: Record<string, any>;
-    contentSummary?: string;
-  }, triggeringReason?: string): Promise<{ actionTaken: LifecycleAction; details?: any }> {
+  public async processSingleItemLifecycle(
+    itemContext: {
+      itemId: string; dataSourceId: string; gmiOwnerId?: string; personaOwnerId?: string;
+      category?: RagMemoryCategory; metadata?: Record<string, any>;
+      contentSummary?: string; textContent?: string; // textContent is important if summarization needed
+    },
+    triggeringReason?: string
+  ): Promise<{ actionTaken: LifecycleAction; details?: any }> {
     this.ensureInitialized();
-    // Find matching policies for this item
-    // Construct LifecycleCandidateItem
-    // Negotiate and determine action
-    // Execute action (if not dry run)
-    // This is a complex flow similar to a focused part of enforcePolicies
-    console.warn(`MemoryLifecycleManager (ID: ${this.managerId}): processSingleItemLifecycle for '${itemContext.itemId}' triggered by '${triggeringReason}' - conceptual implementation.`);
-    // Placeholder:
-    // 1. Find relevant policies based on itemContext (category, dsId, metadata)
-    // 2. For each policy, check if retentionDays etc. apply
-    // 3. If a policy matches, create LifecycleCandidateItem
-    // 4. Call negotiateAndDetermineAction
-    // 5. Call executeLifecycleAction
-    // For now, return a default
-    return { actionTaken: 'NO_ACTION_TAKEN', details: "processSingleItemLifecycle is conceptual." };
+    const logPreamble = `MLM (${this.managerId}): processSingleItemLifecycle for '${itemContext.itemId}', Reason: ${triggeringReason || 'manual'}.`;
+    console.log(logPreamble);
+
+    const { store, collectionName } = await this.vectorStoreManager.getStoreForDataSource(itemContext.dataSourceId);
+    const candidate: LifecycleCandidateItem = {
+      id: itemContext.itemId,
+      dataSourceId: itemContext.dataSourceId,
+      collectionName,
+      gmiOwnerId: itemContext.gmiOwnerId,
+      personaOwnerId: itemContext.personaOwnerId,
+      category: itemContext.category,
+      metadata: itemContext.metadata || {},
+      contentSummary: itemContext.contentSummary,
+      textContent: itemContext.textContent, // Important for summarization if policy needs it
+      vectorStoreRef: store,
+      timestamp: itemContext.metadata?.[this.config.itemTimestampMetadataField!] ? new Date(itemContext.metadata[this.config.itemTimestampMetadataField!]) : undefined,
+    };
+
+    const applicablePolicies = this.config.policies.filter(p => {
+      if (p.isEnabled === false) return false;
+      // Match appliesTo criteria
+      let matches = true;
+      if (p.appliesTo.categories && !p.appliesTo.categories.some(cat => cat === candidate.category)) matches = false;
+      if (p.appliesTo.dataSourceIds && !p.appliesTo.dataSourceIds.includes(candidate.dataSourceId)) matches = false;
+      if (p.appliesTo.gmiOwnerId && p.appliesTo.gmiOwnerId !== candidate.gmiOwnerId) matches = false;
+      if (p.appliesTo.personaOwnerId && p.appliesTo.personaOwnerId !== candidate.personaOwnerId) matches = false;
+      // TODO: Implement check against p.appliesTo.metadataFilter and candidate.metadata
+      // if (p.appliesTo.metadataFilter && !checkFilter(candidate.metadata, p.appliesTo.metadataFilter)) matches = false;
+      if (!matches) return false;
+
+      // Check retention if policy is age-based
+      if (p.retentionDays && p.retentionDays > 0) {
+        if (!candidate.timestamp) {
+          console.warn(`${logPreamble} Item '${candidate.id}' missing timestamp for retention check with policy '${p.policyId}'. Assuming not expired.`);
+          return false; // Cannot evaluate age-based policy without timestamp
+        }
+        const cutoffDate = new Date(Date.now() - p.retentionDays * 24 * 60 * 60 * 1000);
+        if (candidate.timestamp > cutoffDate) {
+          return false; // Item is newer than retention period
+        }
+      }
+      // TODO: Add checks for other trigger types if applicable for single item processing
+      return true;
+    }).sort((a,b) => (a.priority || 0) - (b.priority || 0));
+
+    if (applicablePolicies.length === 0) {
+      const msg = `No applicable lifecycle policies found for item '${itemContext.itemId}'.`;
+      console.log(`${logPreamble} ${msg}`);
+      return { actionTaken: 'NO_ACTION_TAKEN', details: msg };
+    }
+    
+    const policyToApply = applicablePolicies[0]; // Highest priority
+    console.log(`${logPreamble} Applying policy '${policyToApply.policyId}'.`);
+
+    const action = await this.negotiateAndDetermineAction(candidate, policyToApply);
+    let reportForSingleItem: LifecycleEnforcementReport | undefined; // Create a mini-report for tracing this one action
+
+    if (action && action !== 'NO_ACTION_TAKEN') {
+      await this.executeLifecycleAction(candidate, policyToApply.action, action, reportForSingleItem);
+      const detailsMsg = `Action '${action}' executed based on policy '${policyToApply.policyId}'.`;
+      this.addTraceToReport(reportForSingleItem, candidate.id, policyToApply.policyId, action, detailsMsg);
+      return { actionTaken: action, details: detailsMsg };
+    }
+    const detailsMsg = `No action executed for item '${itemContext.itemId}' based on policy '${policyToApply.policyId}' and GMI negotiation.`;
+    this.addTraceToReport(reportForSingleItem, candidate.id, policyToApply.policyId, 'NO_ACTION_TAKEN', detailsMsg);
+    return { actionTaken: 'NO_ACTION_TAKEN', details: detailsMsg };
   }
 
-
-  /**
-   * @inheritdoc
-   */
-  public async checkHealth(): Promise<{ isHealthy: boolean; details?: Record<string, unknown> }> {
-    if (!this.isInitialized) {
-      return { isHealthy: false, details: { message: `MemoryLifecycleManager (ID: ${this.managerId}) not initialized.` } };
-    }
-    // Basic check: manager is initialized.
-    // Could also check connectivity to VSM or if policies are loaded.
+  public async checkHealth(): Promise<{ isHealthy: boolean; details?: Record<string, unknown>; dependencies?: any[] }> {
+    // ... (implementation as previously provided, ensure all deps are checked) ...
+    if (!this.isInitialized) return {isHealthy: false, details: {message: `MLM (ID: ${this.managerId}) not initialized.`}};
+    const vsmHealth = await this.vectorStoreManager.checkHealth();
+    const utilAIHealth = this.utilityAI ? await this.utilityAI.checkHealth() : {isHealthy: true, details: "UtilityAI not configured for MLM"};
     return {
-      isHealthy: true,
-      details: {
-        managerId: this.managerId,
-        status: 'Initialized',
-        policyCount: this.config.policies.length,
-        dryRunMode: this.config.dryRunMode,
-        periodicCheckInterval: this.config.defaultCheckInterval,
-      },
+        isHealthy: this.isInitialized && vsmHealth.isOverallHealthy && utilAIHealth.isHealthy,
+        details: { managerId: this.managerId, status: 'Initialized', policyCount: this.config.policies.length, dryRunMode: this.config.dryRunMode },
+        dependencies: [
+            {name: 'VectorStoreManager', isHealthy: vsmHealth.isOverallHealthy, details: vsmHealth},
+            {name: 'UtilityAI', isHealthy: utilAIHealth.isHealthy, details: utilAIHealth.details}
+        ]
     };
   }
 
-  /**
-   * @inheritdoc
-   */
   public async shutdown(): Promise<void> {
     if (!this.isInitialized) {
       console.log(`MemoryLifecycleManager (ID: ${this.managerId}): Shutdown called but not initialized.`);
@@ -515,6 +580,50 @@ export class MemoryLifecycleManager implements IMemoryLifecycleManager {
       this.periodicCheckTimer = undefined;
     }
     this.isInitialized = false;
-    console.log(`MemoryLifecycleManager (ID: ${this.managerId}) shut down.`);
+    console.log(`MemoryLifecycleManager (ID: ${this.managerId}) shut down successfully.`);
   }
+
+  /**
+   * Helper to add entries to the enforcement report's error/trace log.
+   * This is an internal helper.
+   * @param report The report to add to.
+   * @param itemId ID of the item being processed.
+   * @param policyId ID of the policy being applied.
+   * @param action Action taken or intended.
+   * @param message Descriptive message.
+   * @param details Additional details.
+   * @private
+   */
+  private addTraceToReport(
+      report: LifecycleEnforcementReport | undefined,
+      itemId: string | undefined,
+      policyId: string | undefined,
+      action: LifecycleAction | null | undefined,
+      message: string,
+      details?: any
+  ): void {
+      if (report && report.errors) { // Using 'errors' field as a general trace log for actions/errors
+          report.errors.push({
+              itemId,
+              policyId,
+              action: action || undefined, // Ensure action is string or undefined
+              message,
+              details
+          });
+      } else {
+          // If no report (e.g. processSingleItem), just log to console
+          console.debug(`MLM Trace (${this.managerId}): Item: ${itemId}, Policy: ${policyId}, Action: ${action}, Msg: ${message}`, details || '');
+      }
+  }
+}
+
+// Ensure MemoryLifecycleManagerConfig in its own file reflects these potential additions:
+declare module '../../config/MemoryLifecycleManagerConfiguration' {
+    interface PolicyAction { // Augment existing PolicyAction
+        llmModelForSummary?: string;
+        // summarizationOptions can be added here if more fine-grained control per policy is needed
+    }
+    interface MemoryLifecycleManagerConfig {
+        defaultSummarizationModelId?: string; // Fallback LLM model for summarization
+    }
 }

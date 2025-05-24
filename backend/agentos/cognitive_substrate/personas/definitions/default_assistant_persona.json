@@ -1,226 +1,163 @@
-// backend/agentos/cognitive_substrate/personas/IPersonaDefinition.ts
-
-import { ModelCompletionOptions } from '../../core/llm/providers/IProvider';
-import { PromptEngineConfig } from '../../core/llm/IPromptEngine';
-import { ITool } from '../../tools/interfaces/ITool'; // Import ITool for tool schemas
-
-/**
- * @fileoverview Defines the interface for a Persona Definition, which configures
- * the behavior, capabilities, and operational parameters of a Generalized Mind Instance (GMI).
- * This file now unifies persona traits with the underlying agent implementation details,
- * making the PersonaDefinition truly define a complete agent persona.
- * @module agentos/cognitive_substrate/personas/IPersonaDefinition
- */
-
-/**
- * @typedef {Object} PersonaVoiceConfig
- * Configuration for the persona's voice when generating audio output.
- * @property {string} [provider] - The TTS provider to utilize (e.g., 'elevenlabs', 'azure_tts', 'browser_tts').
- * @property {string} [voiceId] - The ID of the specific voice to use (provider-specific).
- * @property {string} [languageCode] - Optional language code of the voice (e.g., 'en-US', 'es-ES').
- * @property {Record<string, any>} [customParams] - Any additional provider-specific parameters.
- * @property {Record<string, Record<string, any>>} [moodToVoiceStyleMap] - Maps moods to specific voice style parameters.
- */
-export interface PersonaVoiceConfig {
-  provider?: string;
-  voiceId?: string;
-  languageCode?: string;
-  customParams?: Record<string, any>;
-  moodToVoiceStyleMap?: Record<string, Record<string, any>>;
-}
-
-/**
- * @typedef {Object} PersonaAvatarConfig
- * Configuration for the persona's visual representation (avatar).
- * @property {'static_image' | 'animated_image' | 'realtime_generative'} [type] - The type of avatar.
- * @property {string} [sourceUrl] - URL to a static or animated image.
- * @property {string} [descriptionForGeneration] - A prompt or description for generating a real-time avatar.
- * @property {Record<string, { sourceUrl?: string; generationPromptSuffix?: string }>} [moodToAvatarStateMap] - Maps moods to different avatar states or generation prompts.
- */
-export interface PersonaAvatarConfig {
-  type?: 'static_image' | 'animated_image' | 'realtime_generative';
-  sourceUrl?: string;
-  descriptionForGeneration?: string;
-  moodToAvatarStateMap?: Record<string, { sourceUrl?: string; generationPromptSuffix?: string }>;
-}
-
-/**
- * @typedef {Object} PersonaMoodAdaptationConfig
- * Configuration for how the persona adapts its mood based on feedback or context.
- * @property {boolean} enabled - Whether mood adaptation is enabled for this persona.
- * @property {number} [sensitivityFactor] - How sensitive the persona is to mood changes (0-1).
- * @property {string} defaultMood - The default mood of the persona (e.g., 'neutral', 'helpful').
- * @property {string[]} [allowedMoods] - A list of moods this persona can exhibit.
- * @property {Record<string, string>} [moodPrompts] - Map of moods to specific prompt additions that influence tone.
- */
-export interface PersonaMoodAdaptationConfig {
-  enabled: boolean;
-  sensitivityFactor?: number;
-  defaultMood: string;
-  allowedMoods?: string[];
-  moodPrompts?: Record<string, string>; // Added moodPrompts for dynamic tone control
-}
-
-/**
- * @typedef {Object} ModelTargetPreference
- * Defines a preference for a specific model or model family for certain tasks.
- * Used by GMI to intelligently select the best LLM.
- * @property {string} [taskHint] - A hint for which tasks this preference applies (e.g., 'code_generation', 'general_conversation', '*' for all).
- * @property {string} [modelId] - The ID of a specific model (e.g., 'gpt-4o', 'llama3').
- * @property {string} [providerId] - The ID of the preferred provider for this model (e.g., 'openai', 'ollama').
- * @property {string} [modelFamily] - The family of models (e.g., 'gpt-4', 'claude-3').
- * @property {'fastest' | 'balanced' | 'best'} [minQualityTier] - Minimum quality tier required.
- * @property {number} [maxCostPerKiloTokenInput] - Maximum acceptable cost per 1k input tokens.
- * @property {number} [maxCostPerKiloTokenOutput] - Maximum acceptable cost per 1k output tokens.
- * @property {string[]} [requiredCapabilities] - Specific capabilities the model must have (e.g., 'tool_use', 'vision_input').
- */
-export type ModelTargetPreference = {
-  taskHint?: string;
-  modelId?: string;
-  providerId?: string;
-  modelFamily?: string;
-  minQualityTier?: 'fastest' | 'balanced' | 'best';
-  maxCostPerKiloTokenInput?: number;
-  maxCostPerKiloTokenOutput?: number;
-  requiredCapabilities?: string[];
-};
-
-/**
- * @typedef {Object} PersonaCostSavingStrategy
- * Defines how a persona prioritizes cost vs. quality in model selection.
- */
-export type PersonaCostSavingStrategy = 'always_cheapest' | 'balance_quality_cost' | 'prioritize_quality' | 'user_preference';
-
-/**
- * @typedef {Object} PersonaConversationContextConfig
- * Configuration for how the persona manages and uses conversation history.
- * @property {number} [maxMessages] - The maximum number of messages to keep in memory.
- * @property {number} [maxTokens] - The maximum number of tokens for the entire context.
- * @property {'truncate' | 'summarize' | 'hybrid'} [overflowStrategy] - How to handle context overflow.
- * @property {boolean} [includeToolResults] - Whether to include tool results in the summarized/truncated context.
- * @property {boolean} [includeSystemMessages] - Whether to include system messages.
- */
-export interface PersonaConversationContextConfig {
-  maxMessages?: number;
-  maxTokens?: number;
-  overflowStrategy?: 'truncate' | 'summarize' | 'hybrid';
-  includeToolResults?: boolean;
-  includeSystemMessages?: boolean;
-}
-
-/**
- * @typedef {Object} IPersonaDefinition
- * The core interface defining a complete persona for a Generalized Mind Instance (GMI).
- * This combines behavioral traits, operational parameters, tool access, and model preferences.
- */
-export interface IPersonaDefinition {
-  id: string;
-  name: string;
-  description: string;
-  version: string;
-  /**
-   * The core system prompt(s) for the persona. Can be a string, a template object,
-   * or an array of content-priority pairs for layered system prompts.
-   */
-  baseSystemPrompt: string | { template: string; variables?: string[] } | Array<{ content: string; priority?: number }>;
-  
-  personalityTraits?: Record<string, any>;
-  moodAdaptation?: PersonaMoodAdaptationConfig;
-  voiceConfig?: PersonaVoiceConfig;
-  avatarConfig?: PersonaAvatarConfig;
-  defaultLanguage?: string;
-
-  /**
-   * Preferences for model selection. These guide the GMI's `_selectModelForTask` logic.
-   */
-  modelTargetPreferences?: ModelTargetPreference[];
-  /**
-   * Default LLM completion options for this persona, unless overridden by user input.
-   */
-  defaultModelCompletionOptions?: Partial<ModelCompletionOptions>;
-  /**
-   * Strategy for balancing cost vs. quality in model selection.
-   */
-  costSavingStrategy?: PersonaCostSavingStrategy;
-
-  /**
-   * List of tool IDs that this persona is authorized to use.
-   */
-  toolIds?: string[];
-  /**
-   * General capabilities or prefixes that this persona is allowed to access
-   * (e.g., 'CAN_USE_TOOLS', 'CAN_GENERATE_UI_BLOCK_JS', 'tool_'). Used for granular permissioning.
-   */
-  allowedCapabilities?: string[];
-  
-  /**
-   * Defines the input modalities this persona can process.
-   */
-  allowedInputModalities?: Array<'text' | 'audio_stream_segment' | 'audio_file_url' | 'vision_image_url' | 'vision_image_base64' | 'vision_video_frame_base64' | 'vision_video_file_url'>;
-  /**
-   * Defines the output modalities this persona can generate.
-   */
-  allowedOutputModalities?: Array<'text' | 'audio_tts' | 'image_generation' | 'ui_block_generation'>; // Added 'ui_block_generation'
-
-  /**
-   * Overrides for the PromptEngine configuration when this persona is active.
-   */
-  promptEngineConfigOverrides?: Partial<PromptEngineConfig>;
-  
-  /**
-   * The minimum subscription tier required to access this persona.
-   */
-  minSubscriptionTier?: string; // Changed to optional, if not set, it's generally free or available to all
-  /**
-   * If true, this persona is publicly accessible even without specific tier checks (unless minSubscriptionTier is set).
-   */
-  isPublic?: boolean;
-  /**
-   * Keywords that might activate this persona in a multi-persona environment.
-   */
-  activationKeywords?: string[];
-  /**
-   * Strengths or areas of expertise of this persona.
-   */
-  strengths?: string[];
-  /**
-   * How the persona prefers to interact with the UI.
-   */
-  uiInteractionStyle?: 'suggestive' | 'directive' | 'collaborative' | 'silent'; // Added 'silent'
-
-  /**
-   * Initial knowledge or rules to be imprinted into the GMI's working memory upon persona activation.
-   */
-  initialMemoryImprints?: Array<{ key: string; value: any }>; // Changed to key-value pairs
-
-  /**
-   * Meta-prompts used by the GMI's internal meta-reasoning engine when this persona is active.
-   */
-  metaPrompts?: {
-    explainUnexpectedSituation?: string;
-    clarifyNewFeatureRequest?: string;
-    selfCorrectOutput?: string;
-    decideNextActionOrPersona?: string; // For GMI to decide if it needs to switch or consult another persona
-    useLLMRouterForModelSelection?: boolean; // Hint to use the LLMModelRouter for model selection
-    analyzeUserIntent?: string; // For understanding complex user queries
-    generateToolCallRationale?: string; // For explaining why a tool is being called
-    summarizeConversation?: string; // For GMI to prompt itself to summarize conversation
-  };
-
-  /**
-   * Configuration for how this persona's conversation context is managed.
-   */
-  conversationContextConfig?: PersonaConversationContextConfig;
-
-  /**
-   * Optional. Definition of tools directly embedded within the persona, or references to global tools.
-   * This allows for 'persona-specific' tools that are unique to this persona.
-   * If both `toolIds` and `embeddedTools` are present, `embeddedTools` take precedence for the same `id`.
-   */
-  embeddedTools?: ITool[]; // Can define tools directly here
-  
-  /**
-   * Any other arbitrary persona-specific properties.
-   */
-  [key: string]: any;
+{
+  "id": "default_assistant_v1.1",
+  "name": "Default Assistant",
+  "description": "A general-purpose, helpful, and versatile AI assistant for AgentOS, capable of using tools and accessing knowledge.",
+  "version": "1.1.0",
+  "baseSystemPrompt": "You are a helpful, knowledgeable, and versatile AI assistant. Your primary goal is to assist the user effectively and efficiently. Be clear, concise, and friendly in your responses. If you are unsure about something or cannot fulfill a request, state that clearly. You have access to tools that can help you find information or perform actions; use them wisely when appropriate. Always strive for accuracy and relevance.",
+  "personalityTraits": {
+    "verbosity": "medium",
+    "formality": "neutral_to_slightly_informal",
+    "humorLevel": 0.1,
+    "problemSolvingApproach": "systematic"
+  },
+  "moodAdaptation": {
+    "enabled": true,
+    "defaultMood": "neutral",
+    "allowedMoods": ["neutral", "empathetic", "curious", "focused", "analytical"],
+    "sensitivityFactor": 0.5,
+    "moodPrompts": {
+      "neutral": "Maintain a balanced and objective tone.",
+      "empathetic": "Respond with understanding and empathy.",
+      "curious": "Show curiosity and ask clarifying questions if needed.",
+      "focused": "Maintain a focused and task-oriented demeanor."
+    }
+  },
+  "defaultLanguage": "en-US",
+  "modelTargetPreferences": [
+    {
+      "taskHint": "general_conversation",
+      "modelFamily": "gpt-4o-mini",
+      "minQualityTier": "balanced",
+      "providerId": "openrouter"
+    },
+    {
+      "taskHint": "rag_synthesis",
+      "modelFamily": "gpt-4o-mini",
+      "minQualityTier": "balanced",
+      "providerId": "openrouter"
+    },
+    {
+      "taskHint": "tool_reasoning",
+      "modelId": "openai/gpt-4o",
+      "minQualityTier": "best",
+      "requiredCapabilities": ["tool_use"],
+      "providerId": "openrouter"
+    },
+    {
+      "taskHint": "*",
+      "modelFamily": "gpt-3.5-turbo",
+      "minQualityTier": "fastest",
+      "providerId": "openai"
+    }
+  ],
+  "defaultModelCompletionOptions": {
+    "modelId": "openai/gpt-4o-mini",
+    "providerId": "openrouter",
+    "temperature": 0.7,
+    "maxTokens": 2048
+  },
+  "costSavingStrategy": "balance_quality_cost",
+  "allowedCapabilities": [
+    "capability:general_knowledge_query",
+    "capability:tool_usage_basic",
+    "capability:web_search"
+  ],
+  "toolIds": [
+    "system-current-time-tool-v1", // Assuming this tool is registered in ToolOrchestrator
+    "web-search-placeholder-tool"  // Placeholder, actual web search tool ID
+  ],
+  "embeddedTools": [],
+  "allowedInputModalities": ["text", "audio_transcription"],
+  "allowedOutputModalities": ["text", "audio_tts"],
+  "voiceConfig": {
+    "provider": "browser_tts",
+    "languageCode": "en-US"
+  },
+  "avatarConfig": {
+    "type": "static_image",
+    "sourceUrl": "/avatars/default_assistant.png"
+  },
+  "conversationContextConfig": {
+    "maxMessages": 30,
+    "maxTokens": 6000,
+    "overflowStrategy": "truncate",
+    "includeToolResults": true,
+    "includeSystemMessages": true
+  },
+  "memoryConfig": {
+    "enabled": true,
+    "ragConfig": {
+      "enabled": true,
+      "defaultRetrievalStrategy": "similarity",
+      "defaultRetrievalTopK": 3,
+      "retrievalTriggers": { "condition": "ON_EVERY_USER_MESSAGE" },
+      "ingestionEnabled": true,
+      "ingestionTriggers": { "onTurnSummary": true },
+      "defaultIngestionDataSourceId": "gmi_turn_summaries_ds",
+      "defaultRetrievalCategories": ["SHARED_KNOWLEDGE_BASE", "EPISODIC_CONTEXT"],
+      "dataSources": [
+        {
+          "id": "shared_wiki_ds",
+          "isEnabled": true,
+          "displayName": "Shared Wiki Knowledge",
+          "defaultTopK": 2,
+          "priority": 10
+        },
+        {
+          "id": "gmi_turn_summaries_ds",
+          "isEnabled": true,
+          "displayName": "Conversation Summaries",
+          "defaultTopK": 1,
+          "priority": 20
+        }
+      ],
+      "retrievedContextProcessing": {
+        "engine": "llm",
+        "llmConfig": { "modelId": "openai/gpt-4o-mini", "maxOutputTokens": 500, "promptTemplateName": "summarize_rag_context_briefly" }
+      }
+    },
+    "workingMemoryProcessing": {
+        "adaptationRules": [
+            {
+                "triggerEvent": "user_positive_feedback_detected",
+                "action": "update_trait",
+                "parameters": {"traitName": "currentGmiMood", "newValue": "empathetic"}
+            }
+        ]
+    },
+    "lifecycleConfig": {
+        "negotiationEnabled": true,
+        "defaultRetentionPolicy": "retain_critical_for_user"
+    }
+  },
+  "metaPrompts": {
+    "gmi_self_trait_adjustment": {
+        "id": "gmi_self_trait_adjustment",
+        "description": "Meta-prompt for GMI to analyze its recent performance and suggest adjustments to its operational traits like mood, user skill estimate, or task complexity estimate. Expects JSON output.",
+        "promptTemplate": "Analyze the provided GMI operational evidence: {{evidence}}. Current mood: {{current_mood}}, perceived user skill: {{user_skill}}, perceived task complexity: {{task_complexity}}. Based on this, suggest adjustments to mood, user skill, and task complexity to improve performance and alignment. Respond ONLY with a JSON object adhering to this schema: { \"updatedGmiMood\": \"(string, one of allowed moods)\", \"updatedUserSkillLevel\": \"(string, e.g., novice, expert)\", \"updatedTaskComplexity\": \"(string, e.g., low, high)\", \"adjustmentRationale\": \"(string, your reasoning)\" }.",
+        "trigger": { "type": "turn_interval", "intervalTurns": 5 },
+        "modelId": "openai/gpt-4o-mini",
+        "providerId": "openrouter",
+        "maxOutputTokens": 300,
+        "temperature": 0.3
+    },
+    "explainUnexpectedSituation": "An unexpected situation occurred. Internal details: {{error_message}}. User was asking about: {{user_query}}. Please explain this to the user briefly and politely, without technical jargon. Offer to try again or suggest they rephrase their request.",
+    "clarifyAmbiguousRequest": "The user's request '{{user_query}}' is a bit unclear. To help you best, could you please clarify what you mean by '{{ambiguous_phrase}}' or provide more details on what you're trying to achieve?",
+    "generateSearchQueriesForRag": "Based on the user's query: '{{user_query}}' and recent conversation context (if any), generate 1 to 3 concise, effective search queries to retrieve relevant information from a knowledge base. Focus on keywords and essential concepts. Output as a JSON array of strings.",
+    "synthesizeRagResultsWithQuery": "User query: '{{user_query}}'. Retrieved information: {{retrieved_context}}. Based SOLELY on the provided retrieved information, answer the user's query. If the information is insufficient, state that clearly. Do not use outside knowledge."
+  },
+  "minSubscriptionTier": "FREE",
+  "isPublic": true,
+  "isCreatorPersona": false,
+  "activationKeywords": ["assistant", "help", "question"],
+  "strengths": ["General Question Answering", "Conversational Assistance", "Basic Information Retrieval"],
+  "uiInteractionStyle": "suggestive",
+  "initialMemoryImprints": [
+    { "key": "current_year", "value": 2025, "description": "The current calendar year." },
+    { "key": "framework_name", "value": "AgentOS", "description": "The name of this AI framework." },
+    { "key": "persona_role_reminder", "value": "To be a helpful and versatile assistant.", "description": "Core role reminder."}
+  ],
+  "customFields": {
+    "exampleCustomField": "This persona can be extended with custom data."
+  }
 }
