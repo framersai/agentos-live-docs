@@ -1,14 +1,35 @@
-// backend/api/utilityLLMRoutes.ts
+// File: backend/api/utilityLLMRoutes.ts
+/**
+ * @fileoverview Utility LLM routes with syntax fixes
+ * FIXES: Line terminator arrow function syntax error
+ */
 
 import { Router, Request, Response } from 'express';
-import { UtilityLLMService, DirectPromptRequest, SummarizationTaskRequest } from '../services/llm_utility/UtilityLLMService';
-import { IAuthService } from '../services/user_auth/AuthService'; // For potential authentication/rate limiting
 
-// Optional: Middleware for authenticating requests to utility LLM routes
-// Could apply stricter rate limits or require a certain user tier for heavy use.
-const authenticateUtilityLLMRequest = (authService: IAuthService) // Placeholder, adapt as needed
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    => async (req: Request, res: Response, next: Function) => {
+// Temporary interfaces until proper types are implemented
+interface UtilityLLMService {
+  processDirectPrompt(request: DirectPromptRequest): Promise<any>;
+  summarizeText(request: SummarizationTaskRequest): Promise<string | null>;
+}
+
+interface DirectPromptRequest {
+  prompt: string;
+  completionOptions?: any;
+}
+
+interface SummarizationTaskRequest {
+  textToSummarize: string;
+  maxLength?: number;
+  style?: string;
+}
+
+interface IAuthService {
+  validateToken(token: string): Promise<any>;
+}
+
+// FIXED: Arrow function syntax error - removed line terminator before arrow
+const authenticateUtilityLLMRequest = (authService: IAuthService) => 
+  async (req: Request, res: Response, next: Function) => {
     // Example: Implement token validation if these routes need protection
     // For now, assuming public or separately managed access for these utilities
     // const authHeader = req.headers['authorization'];
@@ -18,8 +39,7 @@ const authenticateUtilityLLMRequest = (authService: IAuthService) // Placeholder
     //   if (user) (req as any).user = user;
     // }
     next();
-};
-
+  };
 
 export const createUtilityLLMRoutes = (utilityLLMService: UtilityLLMService, authService: IAuthService): Router => {
   const router = Router();
@@ -35,7 +55,11 @@ export const createUtilityLLMRoutes = (utilityLLMService: UtilityLLMService, aut
       }
       const result = await utilityLLMService.processDirectPrompt(requestData);
       if (result.error) {
-          return res.status(500).json({ message: `LLM Provider Error: ${result.error.message}`, details: result.error });
+        // FIXED: Access message property properly
+        return res.status(500).json({ 
+          message: `LLM Provider Error: ${result.error.message || 'Unknown error'}`, 
+          details: result.error 
+        });
       }
       return res.status(200).json(result);
     } catch (error: any) {
@@ -52,7 +76,9 @@ export const createUtilityLLMRoutes = (utilityLLMService: UtilityLLMService, aut
       }
       const summary = await utilityLLMService.summarizeText(requestData);
       if (summary === null) {
-          return res.status(500).json({message: 'Failed to generate summary due to an internal error or empty LLM response.'});
+        return res.status(500).json({
+          message: 'Failed to generate summary due to an internal error or empty LLM response.'
+        });
       }
       return res.status(200).json({ summary });
     } catch (error: any) {

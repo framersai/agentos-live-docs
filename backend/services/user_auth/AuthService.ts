@@ -1,656 +1,677 @@
-// File: backend/services/user_auth/AuthService.ts
 /**
- * @fileoverview Implements the Authentication Service (AuthService) for AgentOS.
- * This service handles user registration, login, session management (JWT-based),
- * password security (hashing, reset), and management of user-provided API keys
- * for LLM providers, with secure encryption for keys. It leverages Prisma for
- * database interaction and follows SOTA security practices.
+ * @fileoverview Authentication Service (AuthService) implementation for the Voice Chat Assistant.
+ * This service provides concrete logic for user registration, login (email/password and Google OAuth),
+ * session management via JWTs, password recovery, and secure handling of user-provided API keys
+ * for external Large Language Model (LLM) providers. It leverages Prisma for database interactions,
+ * bcrypt for password hashing, jsonwebtoken for JWTs, and google-auth-library for Google OAuth.
  *
- * Key security considerations:
- * - Password Hashing: Uses bcrypt for strong, salted password hashing.
- * - JWT Security: Uses JWTs for stateless session management, signed with a strong secret.
- * JWTs have an expiration time. HTTPS is mandatory for transmitting tokens.
- * - API Key Encryption: User-provided API keys are encrypted at rest using AES-256-CBC.
- * The encryption key must be managed securely (e.g., via environment variables or a secrets manager).
- * - Input Validation: Assumes basic input validation (e.g., presence of fields) is done
- * at the route handler level. More complex validation (e.g., password strength, email format)
- * is handled here.
- * - Error Handling: Uses custom `AuthServiceError` with specific error codes for clear error reporting.
- * - Session Management: Creates session records in the database tied to JWTs, allowing for
- * server-side session invalidation (logout) and activity tracking.
+ * Core functionalities include:
+ * - Secure user registration with password hashing and email verification hooks (conceptual).
+ * - Login mechanisms for traditional credentials and Google OAuth 2.0.
+ * - Generation and validation of JWTs for stateless session management.
+ * - Secure encryption (AES-256-CBC) and decryption of user-provided API keys.
+ * - Management of user sessions, including creation, validation, and invalidation (logout).
+ * - Password change and reset functionalities.
+ * - Linking OAuth identities to local user accounts.
+ * - Adherence to SOTA security practices for authentication and data handling.
  *
  * @module backend/services/user_auth/AuthService
+ * @version 1.1.0
+ * @see IAuthService For the service contract.
+ * @see GMIError For custom error handling.
  */
 
-import { PrismaClient, User as PrismaUser, UserApiKey as PrismaUserApiKey, UserSession as PrismaUserSession, SubscriptionTier as PrismaSubscriptionTier } from '@prisma/client';
-import bcrypt from 'bcryptjs';
+import {
+  PrismaClient,
+  User as PrismaUser,
+  UserApiKey as PrismaUserApiKey,
+  UserSession as PrismaUserSession,
+  Account as PrismaAccount, // Used for OAuth account linking
+  // SubscriptionTier as PrismaSubscriptionTier, // Not directly manipulated here beyond reading
+} from '@prisma/client';
+import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
-import { IAuthService, AuthTokenPayload, AuthenticationResult, UserApiKeyInfo } from './IAuthService';
-import { PublicUser, User } from './User';
-import { ISubscriptionTier, SubscriptionTier } from './SubscriptionTier';
-import { GMIError, GMIErrorCode } from '../../utils/errors'; // Using a centralized error system
+import { OAuth2Client, TokenPayload as GoogleTokenPayload } from 'google-auth-library';
 
-// Configuration defaults - ensure these are robust for production or overridden via environment variables.
-const DEFAULT_SALT_ROUNDS = 12; // Increased salt rounds for better security
-const DEFAULT_JWT_SECRET = 'YOUR_VERY_SECURE_AND_REPLACEABLE_DEFAULT_JWT_SECRET_KEY_MIN_32_CHARS_LONG';
-const DEFAULT_JWT_EXPIRES_IN = '1d'; // Standard JWT expiry (e.g., "1d", "7h", "30m")
-const DEFAULT_SESSION_EXPIRES_IN_MS = 24 * 60 * 60 * 1000; // 1 day for DB session record validity
-const DEFAULT_API_KEY_ENCRYPTION_ALGORITHM = 'aes-256-cbc';
-const DEFAULT_PASSWORD_RESET_TOKEN_BYTES = 32; // Size of the raw reset token
-const DEFAULT_PASSWORD_RESET_EXPIRY_MS = 1 * 60 * 60 * 1000; // 1 hour for reset token validity
-const DEFAULT_EMAIL_VERIFICATION_TOKEN_BYTES = 32;
-const DEFAULT_EMAIL_VERIFICATION_EXPIRY_MS = 24 * 60 * 60 * 1000; // 24 hours for email verification
+import { GMIError, GMIErrorCode, ErrorFactory } from '../../utils/errors';
+import {
+  IAuthService,
+  AuthTokenPayload,
+  AuthenticationResult,
+  UserApiKeyInfo,
+  OAuthInitiateResult,
+} from './IAuthService';
+import { PublicUser } from './User'; // Using PublicUser from your User.ts
+import { ISubscriptionTier } from './SubscriptionTier'; // Using your SubscriptionTier.ts
 
-/**
- * Custom error class for Authentication Service specific errors, extending GMIError.
- * This allows for more granular error handling and identification.
- * @class AuthServiceError
- * @extends {GMIError}
- */
-class AuthServiceError extends GMIError {
-  /**
-   * Creates an instance of AuthServiceError.
-   * @param {string} message - The human-readable error message.
-   * @param {GMIErrorCode} code - A specific error code from GMIErrorCode.
-   * @param {any} [details] - Optional additional context or the underlying error.
-   */
-  constructor(message: string, code: GMIErrorCode, details?: any) {
-    super(message, code, details);
-    this.name = 'AuthServiceError';
-    Object.setPrototypeOf(this, AuthServiceError.prototype);
-  }
-}
+// Alias for PrismaUser for internal use when full user object is needed.
+type InternalUserType = PrismaUser;
 
-// --- Conceptual Email Service ---
-// In a real application, this would be a fully implemented service using a provider like SendGrid, Nodemailer, etc.
-interface IEmailService {
-  sendPasswordResetEmail(to: string, resetLink: string, username: string): Promise<void>;
-  sendEmailVerificationEmail(to: string, verificationLink: string, username: string): Promise<void>;
-}
-
-class MockEmailService implements IEmailService {
-  async sendPasswordResetEmail(to: string, resetLink: string, username: string): Promise<void> {
-    console.log(`AuthService (MockEmailService): Sending password reset email to ${to} for user ${username}.`);
-    console.log(`Reset Link (Mock): ${resetLink}`);
-    // Simulate email sending
-  }
-  async sendEmailVerificationEmail(to: string, verificationLink: string, username: string): Promise<void> {
-    console.log(`AuthService (MockEmailService): Sending email verification to ${to} for user ${username}.`);
-    console.log(`Verification Link (Mock): ${verificationLink}`);
-  }
-}
-// --- End Conceptual Email Service ---
-
-
-/**
- * Implements IAuthService for managing user authentication, sessions, API keys, and password operations.
- * It integrates with Prisma for data persistence and uses standard cryptographic libraries for security.
- *
- * @class AuthService
- * @implements {IAuthService}
- */
 export class AuthService implements IAuthService {
   private prisma: PrismaClient;
   private jwtSecret: string;
   private jwtExpiresIn: string;
-  private sessionExpiresInMs: number;
-  private apiKeyEncryptionKey: Buffer; // Ensure this is a Buffer for crypto functions
-  private emailService: IEmailService; // For password resets and email verification
+  private apiKeyEncryptionKey?: Buffer; // Must be 32 bytes for AES-256
+  private googleOAuthClient?: OAuth2Client;
+  private googleCallbackUrl?: string;
+
+  // private emailService: IEmailService; // Placeholder for a dedicated email service
 
   /**
-   * Creates an instance of AuthService.
-   * @param {PrismaClient} prisma - The Prisma client for database interaction.
-   * @param {IEmailService} [emailService] - Optional email service. Defaults to MockEmailService.
-   * @param {object} [config] - Optional configuration for JWT and API key encryption.
-   * @param {string} [config.jwtSecret] - Secret key for signing JWTs. Defaults to `process.env.JWT_SECRET` or a placeholder.
-   * @param {string} [config.jwtExpiresIn] - How long JWTs are valid (e.g., "1d"). Defaults to `process.env.JWT_EXPIRES_IN` or a placeholder.
-   * @param {string} [config.apiKeyEncryptionKeyHex] - HEX encoded 32-byte key for AES-256 encryption of API keys.
-   * Defaults to `process.env.API_KEY_ENCRYPTION_KEY_HEX` or a generated (insecure) key.
-   * @param {number} [config.sessionExpiresInMs] - Duration in milliseconds for database session records to be considered valid.
+   * Constructs an instance of the AuthService.
+   * Initializes JWT settings, API key encryption, and the Google OAuth client based on provided
+   * configuration or environment variables.
+   *
+   * @constructor
+   * @param {PrismaClient} prisma - The Prisma client instance for database interactions.
+   * @param {object} [config] - Optional configuration overrides.
+   * @param {string} [config.jwtSecret] - JWT signing secret.
+   * @param {string} [config.jwtExpiresIn] - JWT expiration duration string.
+   * @param {string} [config.apiKeyEncryptionKeyHex] - Hex-encoded AES-256 key for API key encryption.
+   * @param {string} [config.googleClientId] - Google OAuth Client ID.
+   * @param {string} [config.googleClientSecret] - Google OAuth Client Secret.
+   * @param {string} [config.googleCallbackUrl] - Google OAuth Callback URL.
    */
   constructor(
     prisma: PrismaClient,
-    emailService?: IEmailService,
-    config?: { jwtSecret?: string; jwtExpiresIn?: string; apiKeyEncryptionKeyHex?: string, sessionExpiresInMs?: number }
+    config?: {
+      jwtSecret?: string;
+      jwtExpiresIn?: string;
+      apiKeyEncryptionKeyHex?: string;
+      googleClientId?: string;
+      googleClientSecret?: string;
+      googleCallbackUrl?: string;
+    }
+    // emailService?: IEmailService, // Future: inject email service
   ) {
     this.prisma = prisma;
-    this.jwtSecret = config?.jwtSecret || process.env.JWT_SECRET || DEFAULT_JWT_SECRET;
-    this.jwtExpiresIn = config?.jwtExpiresIn || process.env.JWT_EXPIRES_IN || DEFAULT_JWT_EXPIRES_IN;
-    this.sessionExpiresInMs = config?.sessionExpiresInMs || DEFAULT_SESSION_EXPIRES_IN_MS;
-    this.emailService = emailService || new MockEmailService(); 
+    // this.emailService = emailService;
 
-    const envEncryptionKeyHex = process.env.API_KEY_ENCRYPTION_KEY_HEX;
-    const configEncryptionKeyHex = config?.apiKeyEncryptionKeyHex;
+    this.jwtSecret = config?.jwtSecret || process.env.JWT_SECRET || 'UNSAFE_DEFAULT_JWT_SECRET_CHANGE_ME_PLEASE_!@#$%^&*()_+';
+    this.jwtExpiresIn = config?.jwtExpiresIn || process.env.JWT_EXPIRES_IN || '7d';
 
-    if (configEncryptionKeyHex && configEncryptionKeyHex.length === 64) {
-        this.apiKeyEncryptionKey = Buffer.from(configEncryptionKeyHex, 'hex');
-    } else if (envEncryptionKeyHex && envEncryptionKeyHex.length === 64) {
-        this.apiKeyEncryptionKey = Buffer.from(envEncryptionKeyHex, 'hex');
+    if (this.jwtSecret === 'UNSAFE_DEFAULT_JWT_SECRET_CHANGE_ME_PLEASE_!@#$%^&*()_+' || (this.jwtSecret || '').length < 64) {
+      if (process.env.NODE_ENV === 'production') {
+        console.error("CRITICAL SECURITY WARNING: JWT_SECRET is weak or using default. This is highly insecure for production. Please set a strong, random secret of at least 64 characters.");
+        // throw ErrorFactory.configuration("JWT_SECRET is insecure for production."); // Consider throwing in prod
+      } else {
+        console.warn("⚠️ JWT_SECRET is weak or using default. Fine for dev, but CHANGE for production with a strong, random secret of at least 64 characters.");
+      }
+    }
+
+    const apiKeyHex = config?.apiKeyEncryptionKeyHex || process.env.API_KEY_ENCRYPTION_KEY_HEX;
+    if (apiKeyHex) {
+      try {
+        const keyBuffer = Buffer.from(apiKeyHex, 'hex');
+        if (keyBuffer.length !== 32) { // AES-256 requires a 32-byte key
+          console.warn(`⚠️ API_KEY_ENCRYPTION_KEY_HEX is not 32 bytes (is ${keyBuffer.length} bytes). AES-256 encryption will fail or be compromised. Ensure it's a 64-character hex string.`);
+        } else {
+          this.apiKeyEncryptionKey = keyBuffer;
+          console.log("✅ API Key Encryption configured.");
+        }
+      } catch (e) {
+        console.warn(`⚠️ Invalid API_KEY_ENCRYPTION_KEY_HEX format. Must be a valid hex string. Encryption disabled: ${(e as Error).message}`);
+      }
     } else {
-        console.warn(
-        "AuthService WARNING: API_KEY_ENCRYPTION_KEY_HEX not provided or invalid (must be 64 hex chars for a 32-byte key). " +
-        "A default, insecure key will be used. THIS IS NOT SAFE FOR PRODUCTION. " +
-        "Please set API_KEY_ENCRYPTION_KEY_HEX environment variable or provide in config."
-        );
-        this.apiKeyEncryptionKey = crypto.createHash('sha256').update('default_insecure_dev_key_!@#_CHANGE_ME_IN_ENV').digest(); // Creates a 32-byte buffer
+      console.warn("⚠️ API_KEY_ENCRYPTION_KEY_HEX is not set. User API key storage will be unencrypted and insecure.");
     }
 
-    if (this.jwtSecret === DEFAULT_JWT_SECRET && process.env.NODE_ENV === 'production') {
-      console.error("AuthService CRITICAL SECURITY WARNING: Using default JWT secret in production. This is highly insecure. Set a strong, unique JWT_SECRET environment variable.");
-      // Consider throwing an error in production if default secret is used to enforce secure configuration.
-      // throw new AuthServiceError("CRITICAL: Default JWT secret used in production.", GMIErrorCode.SECURITY_RISK);
-    }
-     console.log("AuthService instantiated.");
+    // Initialize Google OAuth Client
+    this._initializeGoogleClient(config);
   }
 
+  /**
+   * Helper to initialize or re-initialize the Google OAuth client.
+   * @private
+   */
+  private _initializeGoogleClient(config?: {
+    googleClientId?: string;
+    googleClientSecret?: string;
+    googleCallbackUrl?: string;
+  }): void {
+    const googleClientId = config?.googleClientId || process.env.GOOGLE_CLIENT_ID;
+    const googleClientSecret = config?.googleClientSecret || process.env.GOOGLE_CLIENT_SECRET;
+    const callbackUrl = config?.googleCallbackUrl || process.env.GOOGLE_CALLBACK_URL;
+
+    if (googleClientId && googleClientSecret && callbackUrl) {
+      this.googleOAuthClient = new OAuth2Client(googleClientId, googleClientSecret, callbackUrl);
+      this.googleCallbackUrl = callbackUrl; // Store for use in generateAuthUrl
+      console.log("✅ Google OAuth client configured.");
+    } else {
+      console.warn("⚠️ Google OAuth credentials (GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_CALLBACK_URL) not fully configured. Google OAuth will be unavailable.");
+      this.googleOAuthClient = undefined;
+      this.googleCallbackUrl = undefined;
+    }
+  }
+
+
   /** @inheritdoc */
-  public async initialize(config?: { jwtSecret?: string; jwtExpiresIn?: string, apiKeyEncryptionKeyHex?: string }): Promise<void> {
-    // Re-apply config if provided during initialize (e.g., for deferred setup or testing)
+  async initialize(config?: { /* Same as constructor config */ }): Promise<void> {
+    // Re-apply config if provided during explicit initialization (e.g., in server.ts)
     if (config?.jwtSecret) this.jwtSecret = config.jwtSecret;
     if (config?.jwtExpiresIn) this.jwtExpiresIn = config.jwtExpiresIn;
-    if (config?.apiKeyEncryptionKeyHex && config.apiKeyEncryptionKeyHex.length === 64) {
-        this.apiKeyEncryptionKey = Buffer.from(config.apiKeyEncryptionKeyHex, 'hex');
+
+    if (config?.apiKeyEncryptionKeyHex) {
+      try {
+        const keyBuffer = Buffer.from(config.apiKeyEncryptionKeyHex, 'hex');
+        if (keyBuffer.length === 32) {
+            this.apiKeyEncryptionKey = keyBuffer;
+        } else {
+             console.warn("⚠️ API_KEY_ENCRYPTION_KEY_HEX in initialize config must be a 32-byte hex string.");
+        }
+      } catch (e) {
+          console.warn(`⚠️ Invalid API_KEY_ENCRYPTION_KEY_HEX format in initialize config: ${(e as Error).message}`);
+      }
     }
-    // Potentially re-check critical configurations like JWT secret and encryption key for production readiness.
-    if (this.jwtSecret === DEFAULT_JWT_SECRET && process.env.NODE_ENV === 'production') {
-      console.error("AuthService CRITICAL SECURITY WARNING (post-initialize): Using default JWT secret in production.");
-    }
-    const keySource = config?.apiKeyEncryptionKeyHex || process.env.API_KEY_ENCRYPTION_KEY_HEX;
-    if ((!keySource || keySource.length !== 64) && process.env.NODE_ENV === 'production') {
-         console.error("AuthService CRITICAL SECURITY WARNING (post-initialize): API Key Encryption Key is not securely configured for production.");
-    }
+    // Re-initialize Google OAuth client if new config details are provided that differ or were missing
+    this._initializeGoogleClient(config);
     console.log("AuthService initialized/re-configured.");
   }
 
   /** @inheritdoc */
-  public async registerUser(username: string, email: string, password: string): Promise<PublicUser> {
-    if (!username || !email || !password) {
-      throw new AuthServiceError("Username, email, and password are required.", GMIErrorCode.VALIDATION_ERROR, { fields: ['username', 'email', 'password'] });
+  async registerUser(username: string, email: string, password: string): Promise<PublicUser> {
+    if (!password || password.length < 8) { // Basic password policy
+        throw ErrorFactory.validation('Password must be at least 8 characters long.', { field: 'password' });
     }
-    if (password.length < 8) { // Example: Basic password policy
-      throw new AuthServiceError("Password must be at least 8 characters long.", GMIErrorCode.VALIDATION_ERROR, { field: 'password', reason: 'length_too_short' });
-    }
-    const lowerEmail = email.toLowerCase();
-    // Basic email format validation (more comprehensive validation might use a library)
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(lowerEmail)) {
-        throw new AuthServiceError("Invalid email format.", GMIErrorCode.VALIDATION_ERROR, { field: 'email' });
-    }
+    // Normalize email to lowercase for consistent uniqueness checks
+    const normalizedEmail = email.toLowerCase();
 
-    const existingUserByEmail = await this.prisma.user.findUnique({ where: { email: lowerEmail } });
-    if (existingUserByEmail) {
-      throw new AuthServiceError("Email address is already registered.", GMIErrorCode.REGISTRATION_EMAIL_EXISTS, { email });
-    }
-    const existingUserByUsername = await this.prisma.user.findUnique({ where: { username } });
-    if (existingUserByUsername) {
-      throw new AuthServiceError("Username is already taken.", GMIErrorCode.REGISTRATION_USERNAME_EXISTS, { username });
-    }
-
-    const passwordHash = await bcrypt.hash(password, DEFAULT_SALT_ROUNDS);
-    const emailVerificationToken = crypto.randomBytes(DEFAULT_EMAIL_VERIFICATION_TOKEN_BYTES).toString('hex');
-
-    try {
-      const newUser = await this.prisma.user.create({
-        data: {
-          username,
-          email: lowerEmail,
-          passwordHash,
-          emailVerified: false, // Require email verification
-          emailVerificationToken: crypto.createHash('sha256').update(emailVerificationToken).digest('hex'), // Store hashed token
-          // Default subscriptionTierId logic:
-          // Assign 'Free' tier by default. Assumes 'Free' tier exists (seeded).
-          subscriptionTier: { connect: { name: 'Free' } }, // Example: Connect to Free tier by name
-        },
-      });
-      
-      // Conceptually send verification email
-      // In a real app, construct verificationLink with base URL + token
-      // const verificationLink = `${process.env.APP_BASE_URL}/verify-email?token=${emailVerificationToken}`;
-      // await this.emailService.sendEmailVerificationEmail(newUser.email, verificationLink, newUser.username);
-
-      return User.fromPrisma(newUser).toPublicUser();
-    } catch (error: any) {
-      console.error("AuthService: Error during user registration in database:", error);
-      if (error.code === 'P2002') { // Prisma unique constraint violation
-          if (error.meta?.target?.includes('email')) {
-              throw new AuthServiceError("Email address is already registered.", GMIErrorCode.REGISTRATION_EMAIL_EXISTS, { email });
-          }
-          if (error.meta?.target?.includes('username')) {
-             throw new AuthServiceError("Username is already taken.", GMIErrorCode.REGISTRATION_USERNAME_EXISTS, { username });
-          }
-      }
-      throw new AuthServiceError("User registration failed due to a server error.", GMIErrorCode.DATABASE_ERROR, { underlyingError: error.message });
-    }
-  }
-
-  /** @inheritdoc */
-  public async loginUser(identifier: string, password: string, deviceInfo?: string, ipAddress?: string): Promise<AuthenticationResult> {
-    const lowerIdentifier = identifier.toLowerCase();
-    const userRecord = await this.prisma.user.findFirst({
-      where: {
-        OR: [
-          { email: lowerIdentifier },
-          { username: identifier }, 
-        ],
-      },
+    const existingUser = await this.prisma.user.findFirst({
+      where: { OR: [{ username: { equals: username, mode: 'insensitive' } }, { email: normalizedEmail }] }
     });
 
-    if (!userRecord) {
-      throw new AuthServiceError("Invalid username/email or password.", GMIErrorCode.AUTHENTICATION_INVALID_CREDENTIALS);
-    }
-    if (!userRecord.emailVerified) { // Enforce email verification
-        // Conceptually: Resend verification email option could be offered
-        // await this.resendVerificationEmail(userRecord.email); 
-        throw new AuthServiceError("Please verify your email address to log in.", GMIErrorCode.AUTHENTICATION_EMAIL_NOT_VERIFIED, {userId: userRecord.id});
-    }
-    if (!(await bcrypt.compare(password, userRecord.passwordHash))) {
-      throw new AuthServiceError("Invalid username/email or password.", GMIErrorCode.AUTHENTICATION_INVALID_CREDENTIALS);
+    if (existingUser) {
+      if (existingUser.username.toLowerCase() === username.toLowerCase()) {
+        throw ErrorFactory.authentication('Username already exists. Please choose a different one.', { username }, GMIErrorCode.REGISTRATION_USERNAME_EXISTS);
+      } else { // Email must be the match
+        throw ErrorFactory.authentication('An account with this email address already exists.', { email }, GMIErrorCode.REGISTRATION_EMAIL_EXISTS);
+      }
     }
 
-    const sessionId = crypto.randomBytes(16).toString('hex');
-    const tokenExpiresAt = new Date(Date.now() + this.sessionExpiresInMs);
+    const passwordHash = await bcrypt.hash(password, 12);
+    const verificationToken = crypto.randomBytes(32).toString('hex'); // For email verification
 
-    const tokenPayload: AuthTokenPayload = {
-      userId: userRecord.id,
-      username: userRecord.username,
-      sessionId: sessionId,
-      // roles: userRecord.roles || [], // If User model had roles
-    };
+    const user = await this.prisma.user.create({
+      data: { username, email: normalizedEmail, passwordHash, emailVerified: false, emailVerificationToken: verificationToken }
+    });
+
+    // TODO: Implement actual email sending for verification
+    // try {
+    //   await this.emailService.sendVerificationEmail(user.email, verificationToken);
+    // } catch (emailError) {
+    //   console.error(`Failed to send verification email to ${user.email}:`, emailError);
+    //   // Decide if registration should fail or proceed with unverified email. For now, proceed.
+    // }
+    console.log(`INFO: User ${user.username} registered. Verification token: ${verificationToken}. (Email sending not implemented)`);
+
+    return this.toPublicUser(user);
+  }
+
+  /** @inheritdoc */
+  async loginUser(identifier: string, password: string, deviceInfo?: string, ipAddress?: string): Promise<AuthenticationResult> {
+    const normalizedIdentifier = identifier.includes('@') ? identifier.toLowerCase() : identifier;
+    const user = await this.prisma.user.findFirst({
+      where: {
+        OR: [
+          { email: normalizedIdentifier },
+          { username: normalizedIdentifier }
+        ]
+      }
+    });
+
+    if (!user) {
+      throw ErrorFactory.authentication('Invalid username/email or password.');
+    }
+    if (!user.passwordHash) { // User might exist but only through OAuth
+      throw ErrorFactory.authentication('Password login is not enabled for this account. Try an alternative login method.');
+    }
+
+    // TODO: Implement email verification check if desired
+    // if (!user.emailVerified) {
+    //   throw ErrorFactory.authentication('Please verify your email address before logging in.', {}, GMIErrorCode.AUTHENTICATION_EMAIL_NOT_VERIFIED);
+    // }
+
+    const isValidPassword = await bcrypt.compare(password, user.passwordHash);
+    if (!isValidPassword) {
+      throw ErrorFactory.authentication('Invalid username/email or password.');
+    }
+
+    return this._generateAuthResult(user, deviceInfo, ipAddress);
+  }
+
+  /**
+   * Generates an authentication result (JWT, session) for a given user.
+   * @private
+   */
+  private async _generateAuthResult(user: PrismaUser, deviceInfo?: string, ipAddress?: string): Promise<AuthenticationResult> {
+    const sessionId = crypto.randomUUID();
+    const expiresInMs = this._parseJwtExpiresIn(this.jwtExpiresIn);
+    const expiresAt = new Date(Date.now() + expiresInMs);
+
+    const session = await this.prisma.userSession.create({
+      data: {
+        userId: user.id,
+        token: sessionId, // This 'token' field in UserSession is the session's own ID, not the JWT itself.
+        deviceInfo: deviceInfo?.substring(0, 255), // Truncate if too long
+        ipAddress,
+        expiresAt,
+        lastAccessed: new Date(), // Set on creation
+      }
+    });
+
+    const tokenPayload: AuthTokenPayload = { userId: user.id, username: user.username, sessionId: session.id };
     const token = jwt.sign(tokenPayload, this.jwtSecret, { expiresIn: this.jwtExpiresIn });
 
-    try {
-      const session = await this.prisma.userSession.create({
-        data: {
-          id: sessionId,
-          userId: userRecord.id,
-          token: token, // Storing for reference/audit, not for validation if JWT is self-contained
-          deviceInfo: deviceInfo || 'Unknown Device',
-          ipAddress: ipAddress || 'Unknown IP',
-          expiresAt: tokenExpiresAt,
-          isActive: true,
-        },
-      });
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: { lastLoginAt: new Date() }
+    });
 
-      await this.prisma.user.update({
-        where: { id: userRecord.id },
-        data: { lastLoginAt: new Date() },
-      });
-      const appUser = User.fromPrisma(userRecord);
-      return {
-        user: appUser.toPublicUser(),
-        token,
-        tokenExpiresAt,
-        session,
-      };
-    } catch (error: any) {
-      console.error("AuthService: Error creating session or updating last login:", error);
-      throw new AuthServiceError("Login failed due to a server error during session creation.", GMIErrorCode.SESSION_ERROR, { underlyingError: error.message });
-    }
+    return { user: this.toPublicUser(user), token, tokenExpiresAt: expiresAt, session };
   }
 
   /** @inheritdoc */
-  public async logoutUser(token: string): Promise<void> {
+  async logoutUser(token: string): Promise<void> {
     try {
-      const payload = jwt.verify(token, this.jwtSecret) as AuthTokenPayload; // Throws if invalid/expired
-      if (payload && payload.sessionId) {
-        const updatedSessions = await this.prisma.userSession.updateMany({
-          where: { id: payload.sessionId, userId: payload.userId, isActive: true },
-          data: { isActive: false, updatedAt: new Date() },
+      const decoded = jwt.verify(token, this.jwtSecret) as AuthTokenPayload;
+      if (decoded?.sessionId) {
+        await this.prisma.userSession.updateMany({
+          where: { id: decoded.sessionId, userId: decoded.userId, isActive: true },
+          data: { isActive: false, expiresAt: new Date() } // Mark inactive and effectively expire now
         });
-        if (updatedSessions.count === 0) {
-            console.warn(`AuthService: No active session found to invalidate for sessionId ${payload.sessionId} and userId ${payload.userId}. Logout might be for an already inactive/invalid session.`);
-        }
-      } else {
-        console.warn("AuthService: Logout attempted for token without a valid sessionId in payload. Cannot invalidate DB session record.");
       }
-    } catch (error: any) {
-      // If token is invalid (e.g., expired, tampered), it's effectively "logged out" from a stateless JWT perspective.
-      // Log the error but don't necessarily throw to the client, as their goal (being logged out) is met.
-      console.warn(`AuthService: Error during JWT validation or session update on logout: ${error.message}. Token may have already been invalid.`);
+    } catch (error) {
+      // Log error but don't fail the client-side logout. Token might be already invalid.
+      console.warn('[AuthService] Error during server-side session invalidation on logout:', (error as Error).message);
     }
   }
 
   /** @inheritdoc */
-  public async validateToken(token: string): Promise<AuthTokenPayload | null> {
+  async validateToken(token: string): Promise<AuthTokenPayload | null> {
     try {
-      const payload = jwt.verify(token, this.jwtSecret) as AuthTokenPayload;
-      if (!payload.userId || !payload.sessionId) {
-        console.warn("AuthService: Token payload missing userId or sessionId.");
-        return null;
-      }
+      const decoded = jwt.verify(token, this.jwtSecret) as AuthTokenPayload;
+      // Check if the session associated with this token is still active and not expired
       const session = await this.prisma.userSession.findUnique({
-        where: { id: payload.sessionId },
+        where: { id: decoded.sessionId, userId: decoded.userId, isActive: true, expiresAt: { gt: new Date() } }
       });
-      if (!session || !session.isActive || session.userId !== payload.userId || new Date() > session.expiresAt) {
-        console.log(`AuthService: Session validation failed for sessionId ${payload.sessionId}. Session found: ${!!session}, isActive: ${session?.isActive}, userIdMatch: ${session?.userId === payload.userId}, notExpired: ${session ? new Date() <= session.expiresAt : 'N/A'}`);
-        return null;
-      }
-      return payload;
-    } catch (error: any) { // Catches JWT errors like TokenExpiredError, JsonWebTokenError
-      console.log(`AuthService: JWT validation failed: ${error.message}`);
+      return session ? decoded : null;
+    } catch (error) {
+      // Catches invalid signature, malformed token, expired token (by JWT's own exp claim)
       return null;
     }
   }
 
   /** @inheritdoc */
-  public async getUserById(userId: string): Promise<PrismaUser | null> {
-    if (!userId) return null;
+  async initiateGoogleOAuth(): Promise<OAuthInitiateResult> {
+    if (!this.googleOAuthClient || !this.googleCallbackUrl) {
+      throw ErrorFactory.configuration(
+        'Google OAuth is not configured on the server. Please check GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, and GOOGLE_CALLBACK_URL environment variables.',
+        { provider: 'google' }
+      );
+    }
+    const scopes = [
+      'openid', // Standard OIDC scope
+      'https://www.googleapis.com/auth/userinfo.profile', // Access user's basic profile info
+      'https://www.googleapis.com/auth/userinfo.email',   // Access user's email address
+    ];
+    const redirectUrl = this.googleOAuthClient.generateAuthUrl({
+      access_type: 'offline', // Request a refresh token for long-term access if needed.
+      scope: scopes,
+      // prompt: 'consent', // Optional: forces consent screen every time. Good for dev, remove for prod.
+      redirect_uri: this.googleCallbackUrl, // Must match one of the authorized redirect URIs in Google Cloud Console
+    });
+    return { redirectUrl };
+  }
+
+  /** @inheritdoc */
+  async handleGoogleOAuthCallback(code: string, deviceInfo?: string, ipAddress?: string): Promise<AuthenticationResult> {
+    if (!this.googleOAuthClient) {
+      throw ErrorFactory.configuration('Google OAuth is not configured.', { provider: 'google' });
+    }
+
+    try {
+      const { tokens } = await this.googleOAuthClient.getToken(code);
+      this.googleOAuthClient.setCredentials(tokens); // Allows client to make authenticated requests if needed
+
+      if (!tokens.id_token) {
+        throw ErrorFactory.authentication('Google OAuth did not return an ID token.', { provider: 'google' }, GMIErrorCode.OAUTH_ID_TOKEN_MISSING);
+      }
+
+      const ticket = await this.googleOAuthClient.verifyIdToken({
+          idToken: tokens.id_token,
+          audience: process.env.GOOGLE_CLIENT_ID, // Verifies the token was issued to your client
+      });
+      const payload = ticket.getPayload();
+
+      if (!payload || !payload.sub || !payload.email) {
+        throw ErrorFactory.authentication('Invalid Google ID token payload.', { provider: 'google', missingFields: !payload?.sub ? 'sub' : !payload?.email ? 'email' : 'unknown' }, GMIErrorCode.OAUTH_INVALID_TOKEN_PAYLOAD);
+      }
+
+      const googleUserId = payload.sub;
+      const email = payload.email.toLowerCase(); // Normalize email
+      const emailVerified = payload.email_verified || false;
+      // Construct username: prefer 'name', then 'given_name', then derive from email.
+      let username = payload.name || payload.given_name || email.split('@')[0].replace(/[^a-zA-Z0-9_]/g, '');
+
+      // Find existing OAuth account or local user by email
+      let account = await this.prisma.account.findUnique({
+        where: { provider_providerAccountId: { provider: 'google', providerAccountId: googleUserId } },
+        include: { user: true } // Include the user linked to this account
+      });
+
+      let localUser: PrismaUser;
+
+      if (account?.user) { // OAuth account and linked user already exist
+        localUser = account.user;
+        // Optionally update stored OAuth tokens if changed (e.g., new access_token)
+        await this.prisma.account.update({
+            where: { id: account.id },
+            data: {
+                access_token: tokens.access_token || undefined, // Store new access token
+                refresh_token: tokens.refresh_token || account.refresh_token, // Preserve old refresh token if new one isn't provided
+                expires_at: tokens.expiry_date ? Math.floor(tokens.expiry_date / 1000) : account.expires_at, // Update expiry
+                scope: tokens.scope || account.scope,
+            }
+        });
+      } else { // No existing Google Account record for this googleUserId
+        // Check if a user with this email already exists (e.g., signed up via email/password)
+        const existingUserByEmail = await this.prisma.user.findUnique({ where: { email } });
+
+        if (existingUserByEmail) { // User exists, link this Google OAuth account to them
+          localUser = existingUserByEmail;
+          if (!localUser.emailVerified && emailVerified) { // If Google says email is verified, update our record
+            await this.prisma.user.update({ where: {id: localUser.id }, data: { emailVerified: true }});
+            localUser.emailVerified = true;
+          }
+        } else { // New user: create local user record
+          username = await this._generateUniqueUsername(username); // Ensure username is unique
+          localUser = await this.prisma.user.create({
+            data: {
+              email,
+              username,
+              emailVerified, // Trust Google's verification status
+              passwordHash: null, // No local password for OAuth-only signup initially
+            }
+          });
+        }
+
+        // Create the Account record to link Google ID to the localUser
+        await this.prisma.account.create({
+          data: {
+            userId: localUser.id,
+            provider: 'google',
+            providerAccountId: googleUserId,
+            access_token: tokens.access_token || undefined,
+            refresh_token: tokens.refresh_token || undefined,
+            expires_at: tokens.expiry_date ? Math.floor(tokens.expiry_date / 1000) : undefined,
+            token_type: tokens.token_type || undefined,
+            scope: tokens.scope || undefined,
+          }
+        });
+      }
+
+      // Generate local session and JWT for the (found or created) localUser
+      return this._generateAuthResult(localUser, deviceInfo, ipAddress);
+
+    } catch (error: any) {
+      console.error('[AuthService] Google OAuth Callback Error:', error.response?.data || error.message, error.stack);
+      if (error instanceof GMIError) throw error; // Re-throw known GMIError
+      // Wrap unknown errors
+      throw ErrorFactory.authentication('Google OAuth authentication process failed.', { provider: 'google', details: error.message }, GMIErrorCode.OAUTH_AUTHENTICATION_FAILED);
+    }
+  }
+
+  /** @inheritdoc */
+  async changePassword(userId: string, oldPassword: string, newPassword: string): Promise<void> {
+    const user = await this.getUserById(userId);
+    if (!user) throw ErrorFactory.notFound('User not found.');
+    if (!user.passwordHash) { // Check if user has a password set (might be OAuth only)
+      throw ErrorFactory.authentication('Password-based login is not set up for this account. Cannot change password.');
+    }
+
+    const isValidPassword = await bcrypt.compare(oldPassword, user.passwordHash);
+    if (!isValidPassword) {
+      throw ErrorFactory.authentication('Incorrect current password.');
+    }
+    if (newPassword.length < 8) { // Enforce minimum password length
+      throw ErrorFactory.validation('New password must be at least 8 characters long.');
+    }
+
+    const newPasswordHash = await bcrypt.hash(newPassword, 12);
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { passwordHash: newPasswordHash, updatedAt: new Date(), resetPasswordToken: null, resetPasswordExpires: null } // Clear any pending reset tokens
+    });
+  }
+
+  /** @inheritdoc */
+  async requestPasswordReset(email: string): Promise<{ resetToken: string }> {
+    const normalizedEmail = email.toLowerCase();
+    const user = await this.getUserByEmail(normalizedEmail);
+    if (!user) {
+      // To prevent email enumeration, don't reveal if user exists. Log it server-side.
+      console.info(`Password reset requested for non-existent email: ${normalizedEmail}`);
+      // Simulate success to the client
+      return { resetToken: 'simulated_token_email_not_sent_if_user_does_not_exist' };
+    }
+    if (!user.passwordHash) {
+      // User exists but is OAuth-only, guide them differently or allow setting a password.
+      // For now, we'll proceed as if they could set one.
+      console.info(`Password reset requested for OAuth-only user: ${normalizedEmail}. Allowing password setup.`);
+    }
+
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const resetPasswordExpires = new Date(Date.now() + 3600000); // Token valid for 1 hour
+
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: { resetPasswordToken: resetToken, resetPasswordExpires, updatedAt: new Date() }
+    });
+
+    // TODO: Implement actual email sending using an EmailService
+    // await this.emailService.sendPasswordResetEmail(user.email, resetToken, user.username);
+    console.log(`INFO: Password reset token for ${user.email}: ${resetToken} (Actual email sending not implemented)`);
+    // In a real app, you would not return the token here. This is for dev/testing.
+    return { resetToken };
+  }
+
+  /** @inheritdoc */
+  async resetPassword(resetToken: string, newPassword: string): Promise<void> {
+    if (newPassword.length < 8) {
+      throw ErrorFactory.validation('New password must be at least 8 characters long.');
+    }
+
+    const user = await this.prisma.user.findFirst({
+      where: { resetPasswordToken: resetToken, resetPasswordExpires: { gt: new Date() } }
+    });
+
+    if (!user) {
+      throw ErrorFactory.authentication('Password reset token is invalid or has expired.', {}, GMIErrorCode.PASSWORD_RESET_TOKEN_INVALID);
+    }
+
+    const passwordHash = await bcrypt.hash(newPassword, 12);
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: {
+        passwordHash, // Set the new password
+        resetPasswordToken: null, // Invalidate the token
+        resetPasswordExpires: null,
+        emailVerified: user.emailVerified || true, // Consider user verified if they complete password reset
+        updatedAt: new Date()
+      }
+    });
+  }
+
+  /** @inheritdoc */
+  async getUserById(userId: string): Promise<PrismaUser | null> {
     return this.prisma.user.findUnique({ where: { id: userId } });
   }
 
   /** @inheritdoc */
-  public async getPublicUserById(userId: string): Promise<PublicUser | null> {
-    const userRecord = await this.getUserById(userId);
-    return userRecord ? User.fromPrisma(userRecord).toPublicUser() : null;
+  async getPublicUserById(userId: string): Promise<PublicUser | null> {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    return user ? this.toPublicUser(user) : null;
   }
 
   /** @inheritdoc */
-  public async getUserByUsername(username: string): Promise<PrismaUser | null> {
-    if (!username) return null;
+  async getUserByUsername(username: string): Promise<PrismaUser | null> {
     return this.prisma.user.findUnique({ where: { username } });
   }
 
   /** @inheritdoc */
-  public async getUserByEmail(email: string): Promise<PrismaUser | null> {
-    if (!email) return null;
+  async getUserByEmail(email: string): Promise<PrismaUser | null> {
     return this.prisma.user.findUnique({ where: { email: email.toLowerCase() } });
   }
 
   /** @inheritdoc */
-  public async changePassword(userId: string, oldPasswordPlainText: string, newPasswordPlainText: string): Promise<void> {
-    const userRecord = await this.prisma.user.findUnique({ where: { id: userId } });
-    if (!userRecord) {
-      throw new AuthServiceError("User not found.", GMIErrorCode.USER_NOT_FOUND, { userId });
-    }
-    if (!(await bcrypt.compare(oldPasswordPlainText, userRecord.passwordHash))) {
-      throw new AuthServiceError("Incorrect old password.", GMIErrorCode.AUTHENTICATION_INVALID_CREDENTIALS);
-    }
-    if (newPasswordPlainText.length < 8) { // Consistent password policy
-      throw new AuthServiceError("New password must be at least 8 characters long.", GMIErrorCode.VALIDATION_ERROR, { field: 'newPassword', reason: 'length_too_short' });
-    }
-    const newPasswordHash = await bcrypt.hash(newPasswordPlainText, DEFAULT_SALT_ROUNDS);
-    try {
-        await this.prisma.user.update({
-        where: { id: userId },
-        data: { passwordHash: newPasswordHash, updatedAt: new Date(), resetPasswordToken: null, resetPasswordExpires: null }, // Clear any pending reset tokens
-        });
-    } catch (error: any) {
-        console.error(`AuthService: Error updating password for user ${userId}:`, error);
-        throw new AuthServiceError("Failed to change password due to a server error.", GMIErrorCode.DATABASE_ERROR, { underlyingError: error.message });
-    }
+  async isUserValid(userId: string): Promise<boolean> {
+    const user = await this.getUserById(userId);
+    // Add additional checks like user.isActive, !user.isBanned if those fields exist
+    return !!user; // && user.emailVerified; (optional strict check)
   }
 
   /** @inheritdoc */
-  public async requestPasswordReset(email: string): Promise<{ resetToken: string }> {
-    const userRecord = await this.getUserByEmail(email.toLowerCase());
-    if (!userRecord) {
-      console.warn(`AuthService: Password reset requested for non-existent email: ${email}. Responding as if successful to prevent email enumeration.`);
-      // To prevent email enumeration, we don't reveal if the email exists.
-      // Generate a dummy token for consistent response time, though it won't be sent or usable.
-      return { resetToken: crypto.randomBytes(DEFAULT_PASSWORD_RESET_TOKEN_BYTES).toString('hex') };
-    }
-
-    const resetToken = crypto.randomBytes(DEFAULT_PASSWORD_RESET_TOKEN_BYTES).toString('hex');
-    const resetPasswordExpires = new Date(Date.now() + DEFAULT_PASSWORD_RESET_EXPIRY_MS);
-
-    try {
-        await this.prisma.user.update({
-            where: { id: userRecord.id },
-            data: {
-                resetPasswordToken: crypto.createHash('sha256').update(resetToken).digest('hex'), // Store hashed token
-                resetPasswordExpires,
-                updatedAt: new Date(),
-            },
-        });
-
-        // const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`; // Construct actual link
-        // await this.emailService.sendPasswordResetEmail(userRecord.email, resetLink, userRecord.username);
-        // For now, returning the plain token for testing/simulation. In production, this token is part of the link sent via email.
-        return { resetToken };
-    } catch (error: any) {
-        console.error(`AuthService: Error processing password reset request for ${email}:`, error);
-        throw new AuthServiceError("Failed to initiate password reset due to a server error.", GMIErrorCode.PASSWORD_RESET_ERROR, { underlyingError: error.message });
-    }
-  }
-
-  /** @inheritdoc */
-  public async resetPassword(resetToken: string, newPasswordPlainText: string): Promise<void> {
-    if (!resetToken || !newPasswordPlainText) {
-        throw new AuthServiceError("Reset token and new password are required.", GMIErrorCode.VALIDATION_ERROR);
-    }
-    if (newPasswordPlainText.length < 8) {
-      throw new AuthServiceError("New password must be at least 8 characters long.", GMIErrorCode.VALIDATION_ERROR, { field: 'newPassword', reason: 'length_too_short' });
-    }
-    const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex');
-
-    const userRecord = await this.prisma.user.findFirst({
-      where: {
-        resetPasswordToken: hashedToken,
-        resetPasswordExpires: { gt: new Date() }, // Check if token is not expired
-      },
-    });
-
-    if (!userRecord) {
-      throw new AuthServiceError("Password reset token is invalid or has expired.", GMIErrorCode.PASSWORD_RESET_TOKEN_INVALID);
-    }
-
-    const newPasswordHash = await bcrypt.hash(newPasswordPlainText, DEFAULT_SALT_ROUNDS);
-    try {
-        await this.prisma.user.update({
-            where: { id: userRecord.id },
-            data: {
-                passwordHash: newPasswordHash,
-                resetPasswordToken: null, // Clear the token after use
-                resetPasswordExpires: null,
-                emailVerified: userRecord.emailVerified || true, // Optionally verify email on password reset
-                updatedAt: new Date(),
-            },
-        });
-    } catch (error: any) {
-        console.error(`AuthService: Error resetting password for user ${userRecord.id}:`, error);
-        throw new AuthServiceError("Failed to reset password due to a server error.", GMIErrorCode.DATABASE_ERROR, { underlyingError: error.message });
-    }
-  }
-
-  // --- User-Provided API Key Management ---
-
-  /**
-   * Encrypts an API key using AES-256-CBC.
-   * @param apiKey The plain-text API key.
-   * @returns The IV and encrypted key, colon-separated, in hex format.
-   */
-  private encryptApiKey(apiKey: string): string {
-    const iv = crypto.randomBytes(16); // Generate a new IV for each encryption
-    const cipher = crypto.createCipheriv(DEFAULT_API_KEY_ENCRYPTION_ALGORITHM, this.apiKeyEncryptionKey, iv);
-    let encrypted = cipher.update(apiKey, 'utf8', 'hex');
-    encrypted += cipher.final('hex');
-    return `${iv.toString('hex')}:${encrypted}`; // Prepend IV for use during decryption
-  }
-
-  /**
-   * Decrypts an API key previously encrypted with `encryptApiKey`.
-   * @param encryptedData The IV:encryptedKey string.
-   * @returns The decrypted API key.
-   * @throws {AuthServiceError} If decryption fails.
-   */
-  private decryptApiKey(encryptedData: string): string {
-    try {
-        const parts = encryptedData.split(':');
-        if (parts.length !== 2) {
-            throw new Error("Invalid encrypted data format for API key (IV missing or malformed).");
-        }
-        const iv = Buffer.from(parts[0], 'hex');
-        const encryptedText = parts[1];
-        const decipher = crypto.createDecipheriv(DEFAULT_API_KEY_ENCRYPTION_ALGORITHM, this.apiKeyEncryptionKey, iv);
-        let decrypted = decipher.update(encryptedText, 'hex', 'utf8');
-        decrypted += decipher.final('utf8');
-        return decrypted;
-    } catch (error: any) {
-        console.error("AuthService: API Key Decryption failed.", error);
-        throw new AuthServiceError("API Key decryption failed. The key may be corrupted or the system's encryption key may have changed.", GMIErrorCode.ENCRYPTION_DECRYPTION_ERROR, { underlyingError: error.message });
-    }
-  }
-
-  /** @inheritdoc */
-  public async saveUserApiKey(userId: string, providerId: string, apiKey: string, keyName?: string): Promise<UserApiKeyInfo> {
-    const userRecord = await this.getUserById(userId); // Ensures user exists
-    if (!userRecord) {
-      throw new AuthServiceError("User not found. Cannot save API key.", GMIErrorCode.USER_NOT_FOUND, { userId });
-    }
-    if (!providerId || !apiKey) {
-        throw new AuthServiceError("Provider ID and API key are required.", GMIErrorCode.VALIDATION_ERROR);
-    }
-
-    const encryptedKey = this.encryptApiKey(apiKey);
-    const effectiveKeyName = keyName || providerId; // Default keyName to providerId if not given
-
-    try {
-        const upsertedApiKey = await this.prisma.userApiKey.upsert({
-            where: { userId_providerId: { userId, providerId } },
-            update: { encryptedKey, keyName: effectiveKeyName, isActive: true, updatedAt: new Date() },
-            create: {
-                userId,
-                providerId,
-                encryptedKey,
-                keyName: effectiveKeyName,
-                isActive: true,
-            },
-        });
-        return {
-            id: upsertedApiKey.id,
-            providerId: upsertedApiKey.providerId,
-            keyName: upsertedApiKey.keyName,
-            isActive: upsertedApiKey.isActive,
-            createdAt: upsertedApiKey.createdAt,
-            updatedAt: upsertedApiKey.updatedAt,
-            maskedKeyPreview: apiKey ? `${apiKey.substring(0, 4)}...${apiKey.substring(apiKey.length - 4)}` : undefined,
-        };
-    } catch (error: any) {
-        console.error(`AuthService: Error saving API key for user ${userId}, provider ${providerId}:`, error);
-        throw new AuthServiceError("Failed to save API key due to a server error.", GMIErrorCode.DATABASE_ERROR, { underlyingError: error.message });
-    }
-  }
-
-  /** @inheritdoc */
-  public async getUserApiKeys(userId: string): Promise<UserApiKeyInfo[]> {
-    const apiKeyRecords = await this.prisma.userApiKey.findMany({
-      where: { userId, isActive: true }, // Optionally filter by isActive, or return all and indicate status
-      orderBy: { providerId: 'asc' },
-    });
-
-    return apiKeyRecords.map(k => {
-      let maskedKeyPreview: string | undefined = "[Encrypted]"; // Default if decryption fails or not attempted for list view
-      // For a list view, we typically don't decrypt all keys just for a preview.
-      // A more secure preview might be stored (e.g., last 4 chars) or not shown at all.
-      // If a preview of the actual key is desired for this list:
-      // try {
-      //   const decrypted = this.decryptApiKey(k.encryptedKey);
-      //   maskedKeyPreview = `${decrypted.substring(0, Math.min(4, decrypted.length))}...${decrypted.substring(Math.max(0, decrypted.length - 4))}`;
-      // } catch (e) { /* maskedKeyPreview remains "[Encrypted]" or "[Error]" */ }
-      
-      return {
-        id: k.id,
-        providerId: k.providerId,
-        keyName: k.keyName,
-        isActive: k.isActive,
-        createdAt: k.createdAt,
-        updatedAt: k.updatedAt,
-        maskedKeyPreview: k.encryptedKey ? "••••••••••••" : undefined, // Generic mask for list
-      };
+  async validateUserSession(sessionId: string, userId: string): Promise<PrismaUserSession | null> {
+    return this.prisma.userSession.findFirst({
+      where: { id: sessionId, userId: userId, isActive: true, expiresAt: { gt: new Date() } }
     });
   }
 
   /** @inheritdoc */
-  public async getDecryptedUserApiKey(userId: string, providerId: string): Promise<string | null> {
-    const apiKeyRecord = await this.prisma.userApiKey.findUnique({
-      where: { userId_providerId: { userId, providerId }, isActive: true },
+  async getUserSubscriptionTier(userId: string): Promise<ISubscriptionTier | null> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      include: { subscriptionTier: true } // Eager load the tier
     });
-    if (!apiKeyRecord) {
+    // Ensure the PrismaSubscriptionTier is compatible with ISubscriptionTier or perform mapping
+    return user?.subscriptionTier as ISubscriptionTier ?? null;
+  }
+
+  /** @inheritdoc */
+  async saveUserApiKey(userId: string, providerId: string, apiKey: string, keyName?: string): Promise<UserApiKeyInfo> {
+    if (!this.apiKeyEncryptionKey) {
+      throw ErrorFactory.configuration('API key encryption service is not configured.', { detail: "API_KEY_ENCRYPTION_KEY_HEX is missing or invalid." });
+    }
+
+    const iv = crypto.randomBytes(16); // Initialization Vector for AES-CBC
+    const cipher = crypto.createCipheriv('aes-256-cbc', this.apiKeyEncryptionKey, iv);
+    let encryptedPayload = cipher.update(apiKey, 'utf8', 'hex');
+    encryptedPayload += cipher.final('hex');
+    const storedEncryptedKey = `${iv.toString('hex')}:${encryptedPayload}`; // Prepend IV for decryption
+
+    // Upsert based on the unique constraint (userId, providerId)
+    // keyName is descriptive. If a user saves a new key for the same provider, it updates the existing one.
+    const userApiKey = await this.prisma.userApiKey.upsert({
+      where: { userId_providerId: { userId, providerId } },
+      update: { encryptedKey: storedEncryptedKey, keyName: keyName || null, isActive: true, updatedAt: new Date() },
+      create: { userId, providerId, encryptedKey: storedEncryptedKey, keyName: keyName || null, isActive: true, lastUsedAt: null },
+    });
+    return this.toUserApiKeyInfo(userApiKey, apiKey); // Pass original key for masking in the info object
+  }
+
+  /** @inheritdoc */
+  async getUserApiKeys(userId: string): Promise<UserApiKeyInfo[]> {
+    const apiKeys = await this.prisma.userApiKey.findMany({ where: { userId } });
+    // When listing, we don't have the original key, so maskedKeyPreview will be generic or based on stored partial data if any.
+    return apiKeys.map(k => this.toUserApiKeyInfo(k));
+  }
+
+  /** @inheritdoc */
+  async getDecryptedUserApiKey(userId: string, providerId: string, keyName?: string | null): Promise<string | null> {
+    // Note: keyName is currently not part of the unique constraint `@@unique([userId, providerId])`.
+    // This method will fetch the single key associated with userId and providerId.
+    // If the schema were to change to allow multiple named keys per provider, this lookup would need adjustment.
+    if (!this.apiKeyEncryptionKey) {
+        console.warn("[AuthService] API key decryption was attempted, but the API_KEY_ENCRYPTION_KEY_HEX is not configured. Decryption is not possible.");
+        return null; // Or throw an error if this is considered a critical misconfiguration for this operation.
+                     // throw ErrorFactory.configuration('API key encryption service is not configured.');
+    }
+
+    const userApiKey = await this.prisma.userApiKey.findUnique({
+      where: { userId_providerId: { userId, providerId }, isActive: true }
+    });
+
+    if (!userApiKey || !userApiKey.isActive) {
       return null; // Key not found or not active
     }
+
     try {
-        return this.decryptApiKey(apiKeyRecord.encryptedKey);
-    } catch (error) {
-        console.error(`AuthService: Failed to decrypt API key for user ${userId}, provider ${providerId}.`, error);
-        // Depending on policy, either return null or re-throw a specific error.
-        // Returning null might be safer to prevent leaking info about decryption issues.
-        return null;
-    }
-  }
-
-  /** @inheritdoc */
-  public async deleteUserApiKey(userId: string, apiKeyRecordId: string): Promise<void> {
-    // First, verify the key belongs to the user to prevent unauthorized deletion
-    const keyRecord = await this.prisma.userApiKey.findUnique({ where: { id: apiKeyRecordId } });
-    if (!keyRecord) {
-      throw new AuthServiceError("API key record not found.", GMIErrorCode.RESOURCE_NOT_FOUND, { apiKeyRecordId });
-    }
-    if (keyRecord.userId !== userId) {
-      throw new AuthServiceError("User not authorized to delete this API key.", GMIErrorCode.PERMISSION_DENIED, { userId, apiKeyRecordId });
-    }
-    try {
-        await this.prisma.userApiKey.delete({ where: { id: apiKeyRecordId } });
-    } catch (error: any) {
-        console.error(`AuthService: Error deleting API key ${apiKeyRecordId} for user ${userId}:`, error);
-        if (error.code === 'P2025') { // Prisma's "Record to delete does not exist"
-            throw new AuthServiceError("API key record not found for deletion.", GMIErrorCode.RESOURCE_NOT_FOUND, { apiKeyRecordId });
-        }
-        throw new AuthServiceError("Failed to delete API key due to a server error.", GMIErrorCode.DATABASE_ERROR, { underlyingError: error.message });
-    }
-  }
-
-  /** @inheritdoc */
-  public async isUserValid(userId: string): Promise<boolean> {
-    const userRecord = await this.getUserById(userId);
-    if (!userRecord) return false;
-    // Add more checks as needed, e.g., user.isBanned, user.isActive (if such fields exist)
-    return userRecord.emailVerified; // Example: require email verification for user to be "valid"
-  }
-
-  /** @inheritdoc */
-  public async validateUserSession(sessionId: string, userId: string): Promise<PrismaUserSession | null> {
-    if (!sessionId || !userId) return null;
-    const session = await this.prisma.userSession.findUnique({
-      where: { id: sessionId },
-    });
-
-    if (!session) return null; // Session ID does not exist
-    if (session.userId !== userId) return null; // Session belongs to a different user
-    if (!session.isActive) return null; // Session has been logged out/invalidated
-    if (new Date() > session.expiresAt) { // Session has expired
-      // Optionally, mark as inactive if found expired
-      await this.prisma.userSession.update({ where: {id: sessionId}, data: {isActive: false}});
-      return null;
-    }
-    return session;
-  }
-
-  /** @inheritdoc */
-  public async getUserSubscriptionTier(userId: string): Promise<ISubscriptionTier | null> {
-    const userWithTier = await this.prisma.user.findUnique({
-      where: { id: userId },
-      include: { subscriptionTier: true },
-    });
-
-    if (!userWithTier || !userWithTier.subscriptionTier) {
-      // Attempt to assign 'Free' tier if no tier is assigned and user exists
-      if (userWithTier) {
-        const freeTier = await this.prisma.subscriptionTier.findUnique({where: {name: 'Free'}});
-        if (freeTier) {
-          try {
-            await this.prisma.user.update({
-              where: {id: userId},
-              data: {subscriptionTierId: freeTier.id}
-            });
-            return SubscriptionTier.fromPrisma(freeTier);
-          } catch (error) {
-            console.error(`AuthService: Failed to assign Free tier to user ${userId}:`, error);
-            return null;
-          }
-        }
+      const parts = userApiKey.encryptedKey.split(':');
+      if (parts.length !== 2) { // IV:EncryptedKey
+        throw new Error("Invalid stored encrypted API key format: missing IV separator.");
       }
-      return null;
+      const iv = Buffer.from(parts[0], 'hex');
+      const encryptedText = parts[1];
+      const decipher = crypto.createDecipheriv('aes-256-cbc', this.apiKeyEncryptionKey, iv);
+      let decryptedKey = decipher.update(encryptedText, 'hex', 'utf8');
+      decryptedKey += decipher.final('utf8');
+
+      // Optionally, update lastUsedAt timestamp (consider performance implications if called frequently)
+      // await this.prisma.userApiKey.update({ where: { id: userApiKey.id }, data: { lastUsedAt: new Date() }});
+      return decryptedKey;
+    } catch (error: any) {
+      console.error(`[AuthService] Failed to decrypt API key (ID: ${userApiKey.id}) for user ${userId}, provider ${providerId}: ${error.message}`);
+      // Do not expose details of decryption failure to client, but log them.
+      throw ErrorFactory.internal('Failed to access API key due to a decryption error.', { keyId: userApiKey.id });
     }
-    return SubscriptionTier.fromPrisma(userWithTier.subscriptionTier);
+  }
+
+  /** @inheritdoc */
+  async deleteUserApiKey(userId: string, apiKeyRecordId: string): Promise<void> {
+    // First, verify the key belongs to the user to prevent unauthorized deletion
+    const apiKey = await this.prisma.userApiKey.findUnique({
+      where: { id: apiKeyRecordId }
+    });
+
+    if (!apiKey || apiKey.userId !== userId) {
+      throw ErrorFactory.notFound('API key not found or you do not have permission to delete it.');
+    }
+
+    await this.prisma.userApiKey.delete({
+      where: { id: apiKeyRecordId }
+    });
+  }
+
+  /**
+   * Converts a PrismaUser object to a PublicUser object, omitting sensitive fields.
+   * @private
+   */
+  private toPublicUser(user: PrismaUser): PublicUser {
+    return {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      emailVerified: user.emailVerified,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+      lastLoginAt: user.lastLoginAt,
+      subscriptionTierId: user.subscriptionTierId,
+    };
+  }
+
+  /**
+   * Converts a PrismaUserApiKey object to a UserApiKeyInfo object for safe display.
+   * @private
+   */
+  private toUserApiKeyInfo(apiKey: PrismaUserApiKey, originalKeyForMasking?: string): UserApiKeyInfo {
+    let maskedKeyPreview = '••••••••••••••••'; // Default generic mask if original key isn't available
+    if (originalKeyForMasking && originalKeyForMasking.length > 8) {
+        // Show first 4 and last 4 characters for a more informative mask
+        maskedKeyPreview = `${originalKeyForMasking.substring(0, 4)}...${originalKeyForMasking.substring(originalKeyForMasking.length - 4)}`;
+    } else if (originalKeyForMasking) { // Shorter keys, just show first few
+        maskedKeyPreview = `${originalKeyForMasking.substring(0, Math.min(originalKeyForMasking.length, 4))}...`;
+    }
+    // If no originalKeyForMasking, the default generic mask is used.
+
+    return {
+      id: apiKey.id,
+      providerId: apiKey.providerId,
+      keyName: apiKey.keyName,
+      isActive: apiKey.isActive,
+      createdAt: apiKey.createdAt,
+      updatedAt: apiKey.updatedAt,
+      maskedKeyPreview,
+    };
   }
 }

@@ -1,23 +1,21 @@
 // File: backend/agentos/api/types/AgentOSResponse.ts
-// backend/agentos/api/types/AgentOSResponse.ts
-
-import {
-  ToolCallRequest, // Changed from ToolCall
-  AudioOutputConfig,
-  ImageOutputConfig,
-  UICommand,
-  ReasoningTraceEntry as ReasoningTrace, // Assuming ReasoningTrace in IGMI is ReasoningTraceEntry[]
-  CostAggregator,
-} from '../../cognitive_substrate/IGMI';
-import { ConversationContext } from '../../core/conversation/ConversationContext'; // Import for final output
-import { IPersonaDefinition } from '../../cognitive_substrate/personas/IPersonaDefinition';
-
 /**
  * @fileoverview Defines the unified streaming output structure for the AgentOS API.
  * This interface allows for real-time delivery of text deltas, tool call requests,
  * system progress, and final comprehensive responses from the AgentOS.
  * @module backend/agentos/api/types/AgentOSResponse
  */
+
+import {
+  ToolCallRequest, // Ensure this is what IGMI.ts exports, as suggested by your comment
+  AudioOutputConfig,
+  ImageOutputConfig,
+  UICommand,
+  ReasoningTraceEntry as ReasoningTrace, // Assuming ReasoningTrace in IGMI is ReasoningTraceEntry[]
+  CostAggregator,
+} from '../../cognitive_substrate/IGMI';
+import { ConversationContext } from '../../core/conversation/ConversationContext';
+import { IPersonaDefinition } from '../../cognitive_substrate/personas/IPersonaDefinition';
 
 /**
  * @enum {string} AgentOSResponseChunkType
@@ -77,7 +75,7 @@ export interface AgentOSSystemProgressChunk extends AgentOSResponseChunk {
  */
 export interface AgentOSToolCallRequestChunk extends AgentOSResponseChunk {
   type: AgentOSResponseChunkType.TOOL_CALL_REQUEST;
-  toolCalls: ToolCallRequest[]; // Changed from ToolCall
+  toolCalls: ToolCallRequest[]; // Using ToolCallRequest consistently
   rationale?: string;
 }
 
@@ -114,7 +112,7 @@ export interface AgentOSUICommandChunk extends AgentOSResponseChunk {
 export interface AgentOSFinalResponseChunk extends AgentOSResponseChunk {
   type: AgentOSResponseChunkType.FINAL_RESPONSE;
   finalResponseText: string | null;
-  finalToolCalls?: ToolCallRequest[]; // Changed from ToolCall
+  finalToolCalls?: ToolCallRequest[]; // Using ToolCallRequest consistently
   finalUiCommands?: UICommand[];
   audioOutput?: AudioOutputConfig;
   imageOutput?: ImageOutputConfig;
@@ -132,7 +130,7 @@ export interface AgentOSFinalResponseChunk extends AgentOSResponseChunk {
  */
 export interface AgentOSErrorChunk extends AgentOSResponseChunk {
   type: AgentOSResponseChunkType.ERROR;
-  code: string;
+  code: string; // This should align with GMIErrorCode values
   message: string;
   details?: any;
 }

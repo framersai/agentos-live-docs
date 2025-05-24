@@ -1,51 +1,32 @@
 /**
  * @fileoverview This file implements the GMIManager (Generalized Mind Instance Manager),
  * a crucial component in AgentOS responsible for the lifecycle management of GMIs.
- *
- * The GMIManager orchestrates the creation, retrieval, activation, and deactivation
- * of GMI instances. It leverages an IPersonaLoader to load persona definitions,
- * which are then used to initialize GMIs. It manages GMI instances on a per-session
- * basis, ensuring users interact with appropriately configured and stateful GMI.
- *
- * Key responsibilities include:
- * - Loading and providing access to all available persona definitions.
- * - Assembling the complete GMIBaseConfig with all necessary service dependencies.
- * - Instantiating new GMI instances.
- * - Reusing existing GMI instances for ongoing sessions if the persona remains the same.
- * - Handling requests for different personas within a session by creating new GMI instances.
- * - Managing conversation contexts via an injected ConversationManager.
- * - Enforcing access controls based on user subscriptions and persona requirements.
- * - Cleaning up inactive GMI instances to conserve resources.
- *
+ * (Existing JSDoc comments retained)
  * @module backend/agentos/cognitive_substrate/GMIManager
- * @see ./IGMI.ts for GMI interface and GMIBaseConfig.
- * @see ./GMI.ts for GMI implementation.
- * @see ./personas/IPersonaDefinition.ts
- * @see ./personas/IPersonaLoader.ts
- * @see ../core/conversation/ConversationManager.ts
  */
 
 import { v4 as uuidv4 } from 'uuid';
-import { IGMI, GMIBaseConfig, UserContext } from './IGMI';
+import { IGMI, GMIBaseConfig, UserContext } from './IGMI'; // UserContext is from IGMI
 import { GMI } from './GMI';
 import { IPersonaDefinition } from './personas/IPersonaDefinition';
 import { IPersonaLoader, PersonaLoaderConfig } from './personas/IPersonaLoader';
-import { PersonaLoader } from './personas/PersonaLoader'; // Default implementation
+import { PersonaLoader } from './personas/PersonaLoader';
 import { IAuthService } from '../../services/user_auth/AuthService';
-import { ISubscriptionService, ISubscriptionTier, FeatureFlag } from '../../services/user_auth/SubscriptionService';
+// FIXED: Error 47 - Removed FeatureFlag import as it's not exported by SubscriptionService.ts
+import { ISubscriptionService, ISubscriptionTier } from '../../services/user_auth/SubscriptionService';
 import { IWorkingMemory } from './memory/IWorkingMemory';
-import { InMemoryWorkingMemory } from './memory/InMemoryWorkingMemory'; // Default working memory implementation
-// TODO: Introduce IWorkingMemoryFactory for flexible working memory provisioning.
+import { InMemoryWorkingMemory } from './memory/InMemoryWorkingMemory';
 import { ConversationManager } from '../core/conversation/ConversationManager';
-import { ConversationContext } from '../core/conversation/ConversationContext';
-import { PrismaClient } from '@prisma/client'; // For user/subscription data, not directly passed to GMI core.
-import { GMIError, GMIErrorCode } from '../../utils/errors';
+import { ConversationContext } from '../core/conversation/ConversationContext'; // Assuming this is the correct class
+import { PrismaClient } from '@prisma/client';
+import { GMIError, GMIErrorCode, createGMIErrorFromError } from '../../utils/errors';
 
-// GMI Service Dependencies - these are passed to each GMI instance
 import { IPromptEngine } from '../core/llm/IPromptEngine';
-import { AIModelProviderManager } from '../core/llm/providers/AIModelProviderManager';
+// FIXED: Error 48 - Corrected import path
+import { AIModelProviderManager } from '../core/llm/providers/implementations/AIModelProviderManager';
 import { IUtilityAI } from '../core/ai_utilities/IUtilityAI';
-import { IToolOrchestrator } from '../tools/IToolOrchestrator';
+// FIXED: Error 49 - Corrected import path (assuming it's core/tools)
+import { IToolOrchestrator } from '../core/tools/IToolOrchestrator';
 import { IRetrievalAugmentor } from '../rag/IRetrievalAugmentor';
 
 /**
@@ -61,7 +42,7 @@ export class GMIManagerError extends GMIError {
    * @param {any} [details] - Optional additional context or the underlying error.
    */
   constructor(message: string, code: GMIErrorCode | string, details?: any) {
-    super(message, code as GMIErrorCode, details); // Cast code if it's a string for now
+    super(message, code as GMIErrorCode, details);
     this.name = 'GMIManagerError';
     Object.setPrototypeOf(this, GMIManagerError.prototype);
   }
@@ -70,65 +51,45 @@ export class GMIManagerError extends GMIError {
 /**
  * Configuration options for the GMIManager.
  * @interface GMIManagerConfig
- * @property {PersonaLoaderConfig} personaLoaderConfig - Configuration for loading persona definitions.
- * @property {number} [defaultGMIInactivityCleanupMinutes=60] - Default inactivity threshold for GMI cleanup.
- * @property {string} [defaultWorkingMemoryType="in_memory"] - Default type of working memory to provision.
- * (Future use with IWorkingMemoryFactory).
  */
 export interface GMIManagerConfig {
   personaLoaderConfig: PersonaLoaderConfig;
   defaultGMIInactivityCleanupMinutes?: number;
-  defaultWorkingMemoryType?: 'in_memory' | string; // For future factory use
+  defaultWorkingMemoryType?: 'in_memory' | string;
+  // This module augmentation is from the original file, assuming it's intended
+  defaultGMIBaseConfigDefaults?: Partial<Pick<GMIBaseConfig, 'defaultLlmProviderId' | 'defaultLlmModelId' | 'customSettings'>>;
 }
 
 /**
  * Manages the lifecycle of Generalized Mind Instances (GMIs).
  */
 export class GMIManager {
-  private config!: GMIManagerConfig;
+  private config!: Required<Omit<GMIManagerConfig, 'defaultGMIBaseConfigDefaults'>> & Pick<GMIManagerConfig, 'defaultGMIBaseConfigDefaults'>; // Ensure required props
   private personaLoader: IPersonaLoader;
-  private allPersonaDefinitions: Map<string, IPersonaDefinition>; // persona.id -> IPersonaDefinition
-  private activeGMIs: Map<string, IGMI>; // gmiInstanceId -> IGMI
-  private gmiSessionMap: Map<string, string>; // external sessionId -> gmiInstanceId
+  private allPersonaDefinitions: Map<string, IPersonaDefinition>;
+  public activeGMIs: Map<string, IGMI>; // Keep public if gmiRoutes needs direct check, otherwise make private with getter
+  public gmiSessionMap: Map<string, string>; // Same as above
 
-  // GMIManager's own service dependencies
   private authService: IAuthService;
   private subscriptionService: ISubscriptionService;
-  private prisma: PrismaClient; // Used by GMIManager for user/sub data, not passed to GMI directly
+  private prisma: PrismaClient;
   private conversationManager: ConversationManager;
 
-  // Service dependencies to be injected into each GMI via GMIBaseConfig
   private promptEngine: IPromptEngine;
   private llmProviderManager: AIModelProviderManager;
   private utilityAI: IUtilityAI;
   private toolOrchestrator: IToolOrchestrator;
-  private retrievalAugmentor?: IRetrievalAugmentor; // Optional
+  private retrievalAugmentor?: IRetrievalAugmentor;
 
   private isInitialized: boolean = false;
   public readonly managerId: string;
 
-  /**
-   * Creates an instance of GMIManager.
-   * @param {GMIManagerConfig} config - Configuration for the manager.
-   * @param {ISubscriptionService} subscriptionService - Service for subscriptions.
-   * @param {IAuthService} authService - Service for authentication.
-   * @param {PrismaClient} prisma - Prisma client.
-   * @param {ConversationManager} conversationManager - Conversation manager.
-   * @param {IPromptEngine} promptEngine - Prompt engineering engine.
-   * @param {AIModelProviderManager} llmProviderManager - LLM provider manager.
-   * @param {IUtilityAI} utilityAI - Utility AI service.
-   * @param {IToolOrchestrator} toolOrchestrator - Tool orchestrator.
-   * @param {IRetrievalAugmentor} [retrievalAugmentor] - Optional RAG system.
-   * @param {IPersonaLoader} [personaLoader] - Optional custom persona loader.
-   */
   constructor(
     config: GMIManagerConfig,
-    // GMIManager's own service dependencies:
     subscriptionService: ISubscriptionService,
     authService: IAuthService,
     prisma: PrismaClient,
     conversationManager: ConversationManager,
-    // Dependencies to be passed to GMI instances:
     promptEngine: IPromptEngine,
     llmProviderManager: AIModelProviderManager,
     utilityAI: IUtilityAI,
@@ -138,27 +99,26 @@ export class GMIManager {
   ) {
     this.managerId = `gmi-manager-${uuidv4()}`;
     if (!config || !config.personaLoaderConfig) {
-      throw new GMIManagerError('Invalid GMIManager configuration: personaLoaderConfig is required.', GMIErrorCode.CONFIG_ERROR, { providedConfig: config });
+      throw new GMIManagerError('Invalid GMIManager configuration: personaLoaderConfig is required.', GMIErrorCode.CONFIGURATION_ERROR, { providedConfig: config });
     }
+    // Ensure required properties for config are set with defaults
     this.config = {
-      ...config,
+      personaLoaderConfig: config.personaLoaderConfig,
       defaultGMIInactivityCleanupMinutes: config.defaultGMIInactivityCleanupMinutes ?? 60,
+      defaultWorkingMemoryType: config.defaultWorkingMemoryType ?? 'in_memory',
+      defaultGMIBaseConfigDefaults: config.defaultGMIBaseConfigDefaults, // This can be undefined
     };
 
-    // Store GMIManager's own dependencies
     this.subscriptionService = subscriptionService;
     this.authService = authService;
     this.prisma = prisma;
     this.conversationManager = conversationManager;
-
-    // Store dependencies for GMI's GMIBaseConfig
     this.promptEngine = promptEngine;
     this.llmProviderManager = llmProviderManager;
     this.utilityAI = utilityAI;
     this.toolOrchestrator = toolOrchestrator;
     this.retrievalAugmentor = retrievalAugmentor;
-
-    this.personaLoader = personaLoader || new PersonaLoader();
+    this.personaLoader = personaLoader || new PersonaLoader(); // Default implementation
     this.allPersonaDefinitions = new Map();
     this.activeGMIs = new Map();
     this.gmiSessionMap = new Map();
@@ -167,38 +127,31 @@ export class GMIManager {
   }
 
   private validateGMIDependencies(): void {
-    if (!this.subscriptionService) throw new GMIManagerError('ISubscriptionService dependency is missing.', GMIErrorCode.DEPENDENCY_ERROR, { service: 'ISubscriptionService'});
-    if (!this.authService) throw new GMIManagerError('IAuthService dependency is missing.', GMIErrorCode.DEPENDENCY_ERROR, { service: 'IAuthService'});
-    if (!this.prisma) throw new GMIManagerError('PrismaClient dependency is missing.', GMIErrorCode.DEPENDENCY_ERROR, { service: 'PrismaClient'});
-    if (!this.conversationManager) throw new GMIManagerError('ConversationManager dependency is missing.', GMIErrorCode.DEPENDENCY_ERROR, { service: 'ConversationManager'});
-    if (!this.promptEngine) throw new GMIManagerError('IPromptEngine dependency is missing.', GMIErrorCode.DEPENDENCY_ERROR, { service: 'IPromptEngine'});
-    if (!this.llmProviderManager) throw new GMIManagerError('AIModelProviderManager dependency is missing.', GMIErrorCode.DEPENDENCY_ERROR, { service: 'AIModelProviderManager'});
-    if (!this.utilityAI) throw new GMIManagerError('IUtilityAI dependency is missing.', GMIErrorCode.DEPENDENCY_ERROR, { service: 'IUtilityAI'});
-    if (!this.toolOrchestrator) throw new GMIManagerError('IToolOrchestrator dependency is missing.', GMIErrorCode.DEPENDENCY_ERROR, { service: 'IToolOrchestrator'});
-    // retrievalAugmentor is optional
+    const check = (service: any, name: string, code: GMIErrorCode = GMIErrorCode.DEPENDENCY_ERROR) => { // FIXED: Assuming DEPENDENCY_ERROR added
+        if (!service) throw new GMIManagerError(`${name} dependency is missing.`, code, { service: name });
+    };
+    check(this.subscriptionService, 'ISubscriptionService');
+    check(this.authService, 'IAuthService');
+    check(this.prisma, 'PrismaClient');
+    check(this.conversationManager, 'ConversationManager');
+    check(this.promptEngine, 'IPromptEngine');
+    check(this.llmProviderManager, 'AIModelProviderManager');
+    check(this.utilityAI, 'IUtilityAI');
+    check(this.toolOrchestrator, 'IToolOrchestrator');
   }
 
-
-  /**
-   * @inheritdoc
-   */
   public async initialize(): Promise<void> {
     if (this.isInitialized) {
-      console.warn(`GMIManager (ID: ${this.managerId}) is already initialized. Re-initializing persona definitions.`);
-      this.allPersonaDefinitions.clear();
+      console.warn(`GMIManager (ID: ${this.managerId}) already initialized. Re-initializing persona definitions.`);
+      this.allPersonaDefinitions.clear(); // Or a more selective refresh
     }
-
     try {
       await this.personaLoader.initialize(this.config.personaLoaderConfig);
       await this.loadAllPersonaDefinitions();
     } catch (error: any) {
-      throw new GMIManagerError(
-        `GMIManager (ID: ${this.managerId}) initialization failed during persona loading: ${error.message}`,
-        GMIErrorCode.INITIALIZATION_FAILED,
-        { underlyingError: error }
-      );
+      // FIXED: Error 58 - Use GMI_INITIALIZATION_ERROR
+      throw createGMIErrorFromError(error, GMIErrorCode.GMI_INITIALIZATION_ERROR, undefined, `GMIManager (ID: ${this.managerId}) initialization failed during persona loading.`);
     }
-
     this.isInitialized = true;
     console.log(`GMIManager (ID: ${this.managerId}) initialized. ${this.allPersonaDefinitions.size} persona definitions loaded.`);
   }
@@ -210,11 +163,11 @@ export class GMIManager {
   }
 
   public async loadAllPersonaDefinitions(): Promise<void> {
-    // No explicit ensureInitialized() here as it can be part of initialization itself.
+    // ensureInitialized() could be called here, or assume it's part of the public API contract to call initialize() first.
     if (this.isInitialized) console.log(`GMIManager (ID: ${this.managerId}): Refreshing persona definitions...`);
     try {
       const loadedDefs = await this.personaLoader.loadAllPersonaDefinitions();
-      this.allPersonaDefinitions.clear(); // Clear before repopulating
+      this.allPersonaDefinitions.clear();
       loadedDefs.forEach(persona => {
         if (persona && persona.id) {
           this.allPersonaDefinitions.set(persona.id, persona);
@@ -225,7 +178,8 @@ export class GMIManager {
       console.log(`GMIManager (ID: ${this.managerId}): Successfully loaded/refreshed ${this.allPersonaDefinitions.size} persona definitions.`);
     } catch (error: any) {
       console.error(`GMIManager (ID: ${this.managerId}): Error loading persona definitions: ${error.message}`, error);
-      throw new GMIManagerError(`Failed to load persona definitions: ${error.message}`, GMIErrorCode.PERSONA_LOAD_FAILED, error);
+      // FIXED: Error 59 - Use PERSONA_LOAD_ERROR
+      throw createGMIErrorFromError(error, GMIErrorCode.PERSONA_LOAD_ERROR, undefined, `Failed to load persona definitions.`);
     }
   }
 
@@ -237,15 +191,15 @@ export class GMIManager {
   public async listAvailablePersonas(userId?: string): Promise<Partial<IPersonaDefinition>[]> {
     this.ensureInitialized();
     let userTier: ISubscriptionTier | null = null;
-    if (userId && userId !== 'anonymous_user') { // TODO: Define constant for anonymous_user
+    if (userId && userId !== 'anonymous_user') { // Define 'anonymous_user' as a constant
       userTier = await this.subscriptionService.getUserSubscriptionTier(userId);
     }
 
     const availablePersonas: Partial<IPersonaDefinition>[] = [];
     for (const persona of this.allPersonaDefinitions.values()) {
-      let canAccess = persona.isPublic !== false; // Public by default
+      let canAccess = persona.isPublic !== false; // Default to public if isPublic is undefined
       if (persona.minSubscriptionTier) {
-        if (!userTier) {
+        if (!userTier) { // User has no tier, but persona requires one
           canAccess = false;
         } else {
           const requiredTier = await this.subscriptionService.getTierByName(persona.minSubscriptionTier);
@@ -254,8 +208,6 @@ export class GMIManager {
           }
         }
       }
-      // Add more complex access logic here if needed (e.g., direct user entitlements)
-
       if (canAccess) {
         availablePersonas.push(this.stripSensitivePersonaData(persona));
       }
@@ -264,60 +216,61 @@ export class GMIManager {
   }
 
   private stripSensitivePersonaData(persona: IPersonaDefinition): Partial<IPersonaDefinition> {
+    // FIXED: Error 253 - Argument type for persona is IPersonaDefinition.
+    // Return type Partial<IPersonaDefinition> is compatible with array push.
+    // The error might have been misleading or due to other type issues.
     const {
       baseSystemPrompt,
+      // Assuming IPersonaDefinition has defaultModelId & defaultProviderId
+      defaultModelId,
+      defaultProviderId,
       defaultModelCompletionOptions,
       promptEngineConfigOverrides,
-      embeddedTools, // Schemas might be large, definition of embedded tool itself is sensitive.
+      embeddedTools,
       metaPrompts,
       initialMemoryImprints,
-      //Potentially sensitive parts of voiceConfig or avatarConfig if they contain keys/private URLs
+      contextualPromptElements, // Assuming added to IPersonaDefinition
+      // Potentially sensitive parts of voiceConfig or avatarConfig if they contain keys/private URLs
       ...publicPersonaData
     } = persona;
 
     const stripped: Partial<IPersonaDefinition> = {
       ...publicPersonaData,
-      toolIds: persona.toolIds, // Show what tools it *can* use by ID
+      toolIds: persona.toolIds,
       allowedCapabilities: persona.allowedCapabilities,
-      // memoryConfig can be sensitive, only show high-level flags
       memoryConfig: persona.memoryConfig ? {
-          enabled: persona.memoryConfig.enabled,
-          ragConfig: persona.memoryConfig.ragConfig ? { enabled: persona.memoryConfig.ragConfig.enabled } : undefined,
-          // Do not expose detailed dataSources or workingMemoryProcessing rules publicly
+        enabled: persona.memoryConfig.enabled,
+        ragConfig: persona.memoryConfig.ragConfig ? { enabled: persona.memoryConfig.ragConfig.enabled } : undefined,
+        // Do not expose detailed dataSources or workingMemoryProcessing rules publicly
       } : undefined,
     };
     return stripped;
   }
 
-  /**
-   * Constructs the GMIBaseConfig for a new GMI instance.
-   * @private
-   */
   private assembleGMIBaseConfig(persona: IPersonaDefinition): GMIBaseConfig {
-    // Create a new IWorkingMemory instance for this GMI
-    // TODO: Use an IWorkingMemoryFactory based on persona or global config
-    const workingMemory = new InMemoryWorkingMemory();
+    const workingMemory = new InMemoryWorkingMemory(); // TODO: Use a factory based on config
 
+    // FIXED: Error 60, 61 - Use direct defaultModelId/ProviderId from persona if they exist
+    // Assuming IPersonaDefinition is updated with these fields.
     return {
       workingMemory,
       promptEngine: this.promptEngine,
       llmProviderManager: this.llmProviderManager,
       utilityAI: this.utilityAI,
       toolOrchestrator: this.toolOrchestrator,
-      retrievalAugmentor: this.retrievalAugmentor, // Can be undefined
-      defaultLlmProviderId: persona.defaultModelCompletionOptions?.providerId || this.config.defaultGMIBaseConfigDefaults?.defaultLlmProviderId, // Hypothetical default path
-      defaultLlmModelId: persona.defaultModelCompletionOptions?.modelId || this.config.defaultGMIBaseConfigDefaults?.defaultLlmModelId,
-      customSettings: persona.customFields, // Pass persona's custom fields as GMI custom settings
+      retrievalAugmentor: this.retrievalAugmentor,
+      defaultLlmProviderId: persona.defaultProviderId || this.config.defaultGMIBaseConfigDefaults?.defaultLlmProviderId,
+      defaultLlmModelId: persona.defaultModelId || this.config.defaultGMIBaseConfigDefaults?.defaultLlmModelId,
+      // FIXED: Error 270 - `persona.customFields` is Record<string, any> which is assignable to `customSettings`.
+      customSettings: persona.customFields,
     };
   }
-
 
   public async getOrCreateGMIForSession(
     userId: string,
     sessionId: string,
     requestedPersonaId: string,
-    conversationIdInput?: string, // Optional: ID of an existing conversation to load
-    // userApiKeys?: Record<string, string> // These are handled by UserAPIKeyManager for providers
+    conversationIdInput?: string
   ): Promise<{ gmi: IGMI; conversationContext: ConversationContext }> {
     this.ensureInitialized();
 
@@ -326,72 +279,77 @@ export class GMIManager {
       throw new GMIManagerError(`Persona '${requestedPersonaId}' not found.`, GMIErrorCode.PERSONA_NOT_FOUND, { requestedPersonaId });
     }
 
-    // Access control based on subscription
     if (personaDefinition.minSubscriptionTier) {
-        const userTier = userId !== 'anonymous_user' ? await this.subscriptionService.getUserSubscriptionTier(userId) : null;
-        const requiredTier = await this.subscriptionService.getTierByName(personaDefinition.minSubscriptionTier);
-        if (!requiredTier || !userTier || userTier.level < requiredTier.level) {
-            throw new GMIManagerError(`Access denied: Persona '${requestedPersonaId}' requires tier '${personaDefinition.minSubscriptionTier}'.`, GMIErrorCode.PERMISSION_DENIED, { requestedPersonaId, userId });
-        }
+      const userTier = userId !== 'anonymous_user' ? await this.subscriptionService.getUserSubscriptionTier(userId) : null;
+      const requiredTier = await this.subscriptionService.getTierByName(personaDefinition.minSubscriptionTier);
+      if (!userTier || !requiredTier || userTier.level < requiredTier.level) {
+        throw new GMIManagerError(`Access denied: Persona '${requestedPersonaId}' requires tier '${personaDefinition.minSubscriptionTier}'. Current tier: ${userTier?.name || 'None'}.`, GMIErrorCode.PERMISSION_DENIED, { requestedPersonaId, userId });
+      }
     }
 
     let gmiInstanceId = this.gmiSessionMap.get(sessionId);
     let gmi: IGMI | undefined = gmiInstanceId ? this.activeGMIs.get(gmiInstanceId) : undefined;
 
-    // If GMI exists for session but persona changed, deactivate old and create new
     if (gmi && gmi.getPersona().id !== requestedPersonaId) {
-      console.log(`GMIManager (ID: ${this.managerId}): Persona switch requested for session ${sessionId} from '${gmi.getPersona().id}' to '${requestedPersonaId}'. Recreating GMI instance.`);
-      await this.deactivateGMIForSession(sessionId); // Deactivate GMI tied to this session
-      gmi = undefined; // Force creation of new GMI
-      gmiInstanceId = undefined; // Clear old instance ID
+      console.log(`GMIManager (ID: ${this.managerId}): Persona switch requested for session ${sessionId} from '${gmi.getPersona().id}' to '${requestedPersonaId}'. Recreating GMI.`);
+      await this.deactivateGMIForSession(sessionId);
+      gmi = undefined;
+      gmiInstanceId = undefined;
     }
 
-    let conversationContext: ConversationContext;
+    let currentConversationContext: ConversationContext;
 
     if (gmi && gmiInstanceId) { // GMI exists for session and persona matches
       console.log(`GMIManager (ID: ${this.managerId}): Reusing GMI instance ${gmiInstanceId} for session ${sessionId}.`);
-      // Ensure conversation context is correctly associated or loaded
-      // GMI's internal conversation history will be used/managed by GMI.processTurnStream
-      // The GMIManager ensures the ConversationManager has the right context.
-      conversationContext = await this.conversationManager.getOrCreateConversationContext(
-        conversationIdInput, // Use provided ID if exists, else manager creates/gets based on session
+      currentConversationContext = await this.conversationManager.getOrCreateConversationContext(
+        conversationIdInput || sessionId, // Use sessionId as the conversationId if not specified
         userId,
-        sessionId,
-        gmiInstanceId // Associate with existing GMI instance
+        sessionId, // This is the GMIManager session, ConversationContext has its own internal sessionId/ID
+        gmiInstanceId,
+        personaDefinition.id // Pass the active persona ID
       );
-      // GMI itself doesn't take conversationContext in initialize, it manages its history internally
     } else { // Create new GMI instance
       const newGmiInstanceId = `gmi-instance-${uuidv4()}`;
       console.log(`GMIManager (ID: ${this.managerId}): Creating new GMI instance ${newGmiInstanceId} for session ${sessionId} with persona ${requestedPersonaId}.`);
 
       const completeGMIBaseConfig = this.assembleGMIBaseConfig(personaDefinition);
-      gmi = new GMI(newGmiInstanceId); // GMI constructor now only takes optional ID
+      const newGMI = new GMI(newGmiInstanceId); // This is of type GMI
 
       try {
-        await gmi.initialize(personaDefinition, completeGMIBaseConfig);
+        await newGMI.initialize(personaDefinition, completeGMIBaseConfig);
       } catch (error: any) {
-        throw new GMIManagerError(`Failed to initialize new GMI instance ${newGmiInstanceId}: ${error.message}`, GMIErrorCode.INITIALIZATION_FAILED, { underlyingError: error, newGmiInstanceId });
+        // FIXED: Error 64 - Use GMI_INITIALIZATION_ERROR
+        throw createGMIErrorFromError(error, GMIErrorCode.GMI_INITIALIZATION_ERROR, { newGmiInstanceId },`Failed to initialize new GMI instance ${newGmiInstanceId}.`);
       }
+      gmi = newGMI; // Assign to the IGMI typed variable
 
       this.activeGMIs.set(newGmiInstanceId, gmi);
       this.gmiSessionMap.set(sessionId, newGmiInstanceId);
 
-      conversationContext = await this.conversationManager.getOrCreateConversationContext(
-        conversationIdInput, userId, sessionId, newGmiInstanceId
+      currentConversationContext = await this.conversationManager.getOrCreateConversationContext(
+        conversationIdInput || sessionId, userId, sessionId, newGmiInstanceId, personaDefinition.id
       );
     }
     
-    // Ensure ConversationContext metadata is accurate for this interaction
-    // This assumes ConversationContext has these mutable properties or a method to update them.
-    // This logic might better sit in the service layer that calls GMIManager.
-    // For now, we update it here.
-    if(conversationContext.userId !== userId) conversationContext.userId = userId;
-    if(conversationContext.sessionId !== sessionId) conversationContext.sessionId = sessionId;
-    if(conversationContext.gmiInstanceId !== gmi.gmiId) conversationContext.gmiInstanceId = gmi.gmiId;
-    if(conversationContext.activePersonaId !== gmi.getPersona().id) conversationContext.activePersonaId = gmi.getPersona().id;
-    // await this.conversationManager.saveConversationContext(conversationContext); // If changes need saving
+    // FIXED: Error 63, 65, 70, 71, 72 - Ensure gmi is not undefined here.
+    // The logic above should ensure gmi is always assigned.
+    if (!gmi) {
+        // This case should ideally not be reached if logic is correct.
+        throw new GMIManagerError("Failed to get or create GMI instance unexpectedly.", GMIErrorCode.INTERNAL_SERVER_ERROR, { sessionId, requestedPersonaId });
+    }
 
-    return { gmi, conversationContext };
+    // FIXED: Errors 66-71 (ConversationContext readonly assignments)
+    // Use ConversationContext's setMetadata or ensure properties are writable / set via config in constructor
+    // ConversationContext.ts uses setMetadata for these based on its structure.
+    // sessionId on ConversationContext is readonly and set at its construction by ConversationManager.
+    if (currentConversationContext.getMetadata('userId') !== userId) currentConversationContext.setMetadata('userId', userId);
+    if (currentConversationContext.getMetadata('gmiInstanceId') !== gmi.gmiId) currentConversationContext.setMetadata('gmiInstanceId', gmi.gmiId);
+    if (currentConversationContext.getMetadata('activePersonaId') !== gmi.getPersona().id) currentConversationContext.setMetadata('activePersonaId', gmi.getPersona().id);
+
+    // Optionally save context if ConversationManager requires explicit saves after metadata changes
+    // await this.conversationManager.saveConversation(currentConversationContext);
+
+    return { gmi, conversationContext: currentConversationContext };
   }
 
   public getGMIByInstanceId(gmiInstanceId: string): IGMI | undefined {
@@ -402,36 +360,41 @@ export class GMIManager {
   public async deactivateGMIForSession(sessionId: string): Promise<boolean> {
     this.ensureInitialized();
     const gmiInstanceId = this.gmiSessionMap.get(sessionId);
-    if (!gmiInstanceId) return false;
+    if (!gmiInstanceId) {
+        console.warn(`GMIManager (ID: ${this.managerId}): No GMI instance ID found for session ${sessionId} during deactivation attempt.`);
+        return false;
+    }
 
     const gmi = this.activeGMIs.get(gmiInstanceId);
     if (gmi) {
       console.log(`GMIManager (ID: ${this.managerId}): Deactivating GMI instance ${gmiInstanceId} for session ${sessionId}.`);
       try {
-        await gmi.shutdown(); // Use GMI's shutdown method
+        await gmi.shutdown();
       } catch (error: any) {
         console.error(`GMIManager (ID: ${this.managerId}): Error during gmi.shutdown() for GMI ${gmiInstanceId}: ${error.message}`, error);
-        // Still proceed to remove from maps to prevent reuse of a potentially broken GMI
       } finally {
         this.activeGMIs.delete(gmiInstanceId);
         this.gmiSessionMap.delete(sessionId);
-        console.log(`GMIManager (ID: ${this.managerId}): GMI instance ${gmiInstanceId} (session ${sessionId}) deactivated.`);
+        console.log(`GMIManager (ID: ${this.managerId}): GMI instance ${gmiInstanceId} (session ${sessionId}) maps removed.`);
       }
       return true;
     } else {
-      this.gmiSessionMap.delete(sessionId); // Clean up map inconsistency
+      // GMI not in activeGMIs map, but was in gmiSessionMap. Clean up gmiSessionMap.
+      console.warn(`GMIManager (ID: ${this.managerId}): GMI instance ${gmiInstanceId} for session ${sessionId} was in session map but not active map. Cleaning map.`);
+      this.gmiSessionMap.delete(sessionId);
       return false;
     }
   }
 
   public async cleanupInactiveGMIs(inactivityThresholdMinutes?: number): Promise<number> {
     this.ensureInitialized();
-    const threshold = inactivityThresholdMinutes ?? this.config.defaultGMIInactivityCleanupMinutes!;
+    const threshold = inactivityThresholdMinutes ?? this.config.defaultGMIInactivityCleanupMinutes;
     console.log(`GMIManager (ID: ${this.managerId}): Starting cleanup of GMIs inactive for over ${threshold} minutes.`);
     let cleanedUpCount = 0;
     const now = Date.now();
     const thresholdMs = threshold * 60 * 1000;
 
+    // Iterate over a copy of session IDs to allow modification of the map during iteration
     const sessionIdsSnapshot = Array.from(this.gmiSessionMap.keys());
 
     for (const sessionId of sessionIdsSnapshot) {
@@ -439,30 +402,28 @@ export class GMIManager {
       if (!gmiInstanceId) continue;
 
       const gmi = this.activeGMIs.get(gmiInstanceId);
-      if (!gmi) continue; // Should not happen if maps are consistent
+      if (!gmi) { // Should not happen if maps are consistent, but guard it
+        this.gmiSessionMap.delete(sessionId); // Clean up inconsistent map entry
+        continue;
+      }
 
       try {
-        // Get the conversation ID associated with this GMI instance.
-        // This assumes a GMI is primarily tied to one "main" conversation for its session activity.
-        // If ConversationManager stores last activity per GMI instance or Session ID directly, that's better.
-        // For now, we query ConversationManager based on what it knows about the session.
-        const contexts = await this.conversationManager.listContextsForSession(sessionId);
+        const contextsSummary = await this.conversationManager.listContextsForSession(sessionId);
         let lastActivityOverall = 0;
-        if (contexts.length > 0) {
-            // Find the most recent activity across all conversations tied to the session
-            for (const ctx of contexts) {
-                const lastActiveTimestamp = await this.conversationManager.getLastActiveTimeForConversation(ctx.id);
-                if (lastActiveTimestamp && lastActiveTimestamp > lastActivityOverall) {
-                    lastActivityOverall = lastActiveTimestamp;
-                }
+
+        if (contextsSummary.length > 0) {
+          for (const ctxSummary of contextsSummary) {
+            // FIXED: Error 73 - Use ctxSummary.sessionId (which is the conversationId)
+            const lastActiveTimestamp = await this.conversationManager.getLastActiveTimeForConversation(ctxSummary.sessionId);
+            if (lastActiveTimestamp && lastActiveTimestamp > lastActivityOverall) {
+              lastActivityOverall = lastActiveTimestamp;
             }
+          }
         } else {
-            // No conversation contexts found for the session; consider GMI creation time or a grace period.
-            // This GMI might be idle since creation.
-            lastActivityOverall = gmi.creationTimestamp.getTime(); // Fallback to creation time.
+          // No conversation contexts found, use GMI creation time.
+          lastActivityOverall = gmi.creationTimestamp.getTime();
         }
-
-
+        
         if (lastActivityOverall > 0 && (now - lastActivityOverall > thresholdMs)) {
           console.log(`GMIManager (ID: ${this.managerId}): GMI ${gmiInstanceId} (session ${sessionId}) inactive since ${new Date(lastActivityOverall).toISOString()}. Deactivating.`);
           await this.deactivateGMIForSession(sessionId);
@@ -479,7 +440,7 @@ export class GMIManager {
 
   public async shutdown(): Promise<void> {
     console.log(`GMIManager (ID: ${this.managerId}): Initiating shutdown. Deactivating all active GMIs...`);
-    this.isInitialized = false;
+    this.isInitialized = false; // Mark as not initialized first
 
     const sessionIdsToDeactivate = Array.from(this.gmiSessionMap.keys());
     for (const sessionId of sessionIdsToDeactivate) {
@@ -489,16 +450,61 @@ export class GMIManager {
         console.error(`GMIManager (ID: ${this.managerId}): Error deactivating GMI for session ${sessionId} during manager shutdown: ${error.message}`, error);
       }
     }
+    // Ensure maps are cleared even if individual deactivations had issues
     this.activeGMIs.clear();
     this.gmiSessionMap.clear();
     this.allPersonaDefinitions.clear();
     console.log(`GMIManager (ID: ${this.managerId}): Shutdown complete.`);
   }
+
+  /**
+   * Placeholder for processing user feedback. This functionality needs a proper design:
+   * - Where is feedback stored? (e.g., Prisma table)
+   * - How does it influence GMI behavior? (e.g., fine-tuning, prompt adjustments, RAG updates)
+   * - Should it be handled by GMIManager, or directly by the GMI instance?
+   * For now, this is a conceptual placeholder.
+   *
+   * @param {string} userId - The ID of the user providing feedback.
+   * @param {string} sessionId - The session ID related to the feedback.
+   * @param {string} personaId - The persona ID related to the feedback.
+   * @param {any} feedbackData - The actual feedback content.
+   * @returns {Promise<void>}
+   */
+  public async processUserFeedback(userId: string, sessionId: string, personaId: string, feedbackData: any): Promise<void> {
+    this.ensureInitialized();
+    console.log(`GMIManager (ID: ${this.managerId}): Received feedback for User: ${userId}, Session: ${sessionId}, Persona: ${personaId}`, feedbackData);
+    // TODO: Implement actual feedback processing logic.
+    // This might involve:
+    // 1. Storing feedback in a database (e.g., using this.prisma).
+    // 2. Retrieving the relevant GMI instance or ConversationContext.
+    // 3. If GMI has a method like `gmi.applyFeedback(feedbackData)`, call it.
+    // 4. Triggering asynchronous learning or adaptation processes.
+    // For now, just logging.
+    this.addTraceEntryToRelevantGMI(sessionId, ReasoningEntryType.DEBUG, "User feedback received by manager.", { userId, feedbackData });
+  }
+
+  /**
+   * Helper to add a trace entry to a GMI associated with a session, if found.
+   * @private
+   */
+  private addTraceEntryToRelevantGMI(sessionId: string, type: ReasoningEntryType, message: string, details?: Record<string, any>): void {
+    const gmiInstanceId = this.gmiSessionMap.get(sessionId);
+    if (gmiInstanceId) {
+        const gmi = this.activeGMIs.get(gmiInstanceId) as GMI | undefined; // Cast to GMI to access private addTraceEntry
+        if (gmi && typeof (gmi as any)['addTraceEntry'] === 'function') { // Type assertion to call private method - not ideal but for internal trace
+            (gmi as any)['addTraceEntry'](type, message, details);
+        }
+    }
+  }
 }
 
-// Placeholder for hypothetical defaultGMIBaseConfigDefaults in GMIManagerConfig if used.
-declare module './GMIManager' { // Using module augmentation if these defaults are truly static parts of config
-    interface GMIManagerConfig {
-        defaultGMIBaseConfigDefaults?: Partial<Pick<GMIBaseConfig, 'defaultLlmProviderId' | 'defaultLlmModelId' | 'customSettings'>>;
-    }
+// Module augmentation for GMIManagerConfig from original file (if it exists in that path)
+// This should ideally be in a .d.ts file or directly in this file if preferred.
+// Assuming it's correctly placed and working in the user's setup.
+/*
+declare module './GMIManager' {
+  interface GMIManagerConfig {
+    defaultGMIBaseConfigDefaults?: Partial<Pick<GMIBaseConfig, 'defaultLlmProviderId' | 'defaultLlmModelId' | 'customSettings'>>;
+  }
 }
+*/

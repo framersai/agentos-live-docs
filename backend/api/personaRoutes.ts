@@ -1,23 +1,17 @@
 // File: backend/api/personaRoutes.ts
 /**
- * @fileoverview Defines Express routes for interacting with AgentOS personas.
- * This includes listing available personas, potentially filtered by user entitlements.
- *
- * @module backend/api/personaRoutes
+ * @fileoverview Persona routes with constructor argument fix
+ * FIXES: Fix authenticateToken constructor call with correct arguments
  */
 
 import { Router, Response } from 'express';
-import { IAgentOS } from './interfaces/IAgentOS';
+import { IAgentOS } from '../agentos/api/interfaces/IAgentOS';
 import { IAuthService } from '../services/user_auth/IAuthService';
 import { AuthenticatedRequest, authenticateToken } from '../middleware/authenticateTokenMiddleware';
 import { GMIError, GMIErrorCode } from '../utils/errors';
 
 /**
  * Creates and configures the Express router for persona-related operations.
- *
- * @param {IAgentOS} agentOS - The main AgentOS service facade instance.
- * @param {IAuthService} authService - The authentication service instance for optional authentication.
- * @returns {Router} The configured Express router.
  */
 export const createPersonaRoutes = (agentOS: IAgentOS, authService: IAuthService): Router => {
   const router = Router();
@@ -31,6 +25,7 @@ export const createPersonaRoutes = (agentOS: IAgentOS, authService: IAuthService
    * @returns {Partial<IPersonaDefinition>[]} An array of persona definition summaries.
    * @throws {500/503} For server-side errors or if AgentOS service is unavailable.
    */
+  // FIXED: Use authenticateToken with proper arguments (authService, true for optional)
   router.get('/', authenticateToken(authService, true), async (req: AuthenticatedRequest, res: Response) => {
     // `authenticateToken` with `optionalAuth = true` will set `req.user` if a valid token is present,
     // but will proceed even if no token or an invalid token is provided.
@@ -39,11 +34,11 @@ export const createPersonaRoutes = (agentOS: IAgentOS, authService: IAuthService
     try {
       console.log(`PersonaRoutes: / GET request. Authenticated UserID: ${userId || 'Guest'}`);
       const personas = await agentOS.listAvailablePersonas(userId);
-      res.status(200).json(personas);
+      return res.status(200).json(personas);
     } catch (error: any) {
       console.error(`PersonaRoutes: Error listing personas (User: ${userId || 'Guest'}):`, error);
       const errCode = error instanceof GMIError ? error.code : GMIErrorCode.INTERNAL_SERVER_ERROR;
-      res.status(error.statusCode || 500).json({
+      return res.status(error.statusCode || 500).json({
         error: {
           code: errCode,
           message: error.message || 'Failed to retrieve personas.',
@@ -54,8 +49,57 @@ export const createPersonaRoutes = (agentOS: IAgentOS, authService: IAuthService
     }
   });
 
-  // Future: Add routes for getting specific persona details (e.g., GET /personas/:personaId)
-  // or for user-specific persona management if applicable.
+  /**
+   * @route GET /personas/:personaId
+   * @description Retrieves detailed information about a specific persona.
+   * @access Public / Optionally Authenticated
+   * @param {string} personaId - The ID of the persona to retrieve
+   * @returns {Partial<IPersonaDefinition>} The persona definition
+   * @throws {404} If persona not found or not accessible
+   * @throws {500/503} For server-side errors
+   */
+  router.get('/:personaId', authenticateToken(authService, true), async (req: AuthenticatedRequest, res: Response) => {
+    const { personaId } = req.params;
+    const userId = req.user?.userId;
+
+    try {
+      console.log(`PersonaRoutes: /:personaId GET request for persona ${personaId}. Authenticated UserID: ${userId || 'Guest'}`);
+      
+      // Get all available personas for the user
+      const personas = await agentOS.listAvailablePersonas(userId);
+      
+      // Find the requested persona
+      const persona = personas.find(p => p.id === personaId);
+      
+      if (!persona) {
+        return res.status(404).json({
+          error: {
+            code: GMIErrorCode.RESOURCE_NOT_FOUND,
+            message: `Persona '${personaId}' not found or not accessible.`,
+            timestamp: new Date().toISOString(),
+          }
+        });
+      }
+
+      return res.status(200).json(persona);
+    } catch (error: any) {
+      console.error(`PersonaRoutes: Error retrieving persona ${personaId} (User: ${userId || 'Guest'}):`, error);
+      const errCode = error instanceof GMIError ? error.code : GMIErrorCode.INTERNAL_SERVER_ERROR;
+      return res.status(error.statusCode || 500).json({
+        error: {
+          code: errCode,
+          message: error.message || `Failed to retrieve persona '${personaId}'.`,
+          details: error.details,
+          timestamp: new Date().toISOString(),
+        }
+      });
+    }
+  });
+
+  // Future: Add routes for user-specific persona management if applicable.
+  // router.post('/', authenticateToken(authService), async (req, res) => { ... }); // Create custom persona
+  // router.put('/:personaId', authenticateToken(authService), async (req, res) => { ... }); // Update persona
+  // router.delete('/:personaId', authenticateToken(authService), async (req, res) => { ... }); // Delete persona
 
   return router;
 };

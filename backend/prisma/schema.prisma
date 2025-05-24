@@ -1,236 +1,341 @@
-// File: backend/prisma/schema.prisma
+/**
+ * Prisma schema for the Voice Chat Assistant backend.
+ * Defines the database structure including users, authentication, subscriptions,
+ * AgentOS components (GMIs, conversations, memory), and application configuration.
+ * Version: 1.1 (Integrated OAuth Account model and refined existing models)
+ */
 
 generator client {
   provider = "prisma-client-js"
+  // previewFeatures = ["postgresqlExtensions"] // Uncomment if using pgvector or other extensions
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  // extensions = [pgvector] // Example for pgvector extension
 }
 
-/// @model
+/// @model User
 /// Represents a user in the system with complete authentication and subscription management.
+/// Users can sign up with email/password or via OAuth providers.
 model User {
-  id                    String                    @id @default(uuid()) @map("uuid")
-  username              String                    @unique
-  email                 String                    @unique
-  passwordHash          String
-  emailVerified         Boolean                   @default(false)
-  emailVerificationToken String?
-  resetPasswordToken    String?
-  resetPasswordExpires  DateTime?
-  createdAt             DateTime                  @default(now())
-  updatedAt             DateTime                  @updatedAt
-  lastLoginAt           DateTime?
-  subscriptionTierId    String?
-  
+  id                       String    @id @default(uuid()) @map("uuid")
+  username                 String    @unique
+  email                    String    @unique
+  passwordHash             String? // Optional: Null for users who only sign up via OAuth
+  emailVerified            Boolean   @default(false)
+  emailVerificationToken   String?   @unique // Token for verifying email address
+  resetPasswordToken       String?   @unique // Token for password reset process
+  resetPasswordExpires     DateTime? // Expiry for password reset token
+  createdAt                DateTime  @default(now())
+  updatedAt                DateTime  @updatedAt
+  lastLoginAt              DateTime?
+  subscriptionTierId       String?
+
   // Relationships
-  subscriptionTier      SubscriptionTier?         @relation(fields: [subscriptionTierId], references: [id])
-  apiKeys               UserApiKey[]
-  conversations         Conversation[]
-  workingMemory         GMIWorkingMemoryEntry[]   // Persistent working memory entries for GMIs
-  gmiSnapshots          GMISnapshot[]
-  sessions              UserSession[]
-  
+  subscriptionTier         SubscriptionTier?        @relation(fields: [subscriptionTierId], references: [id], onDelete: SetNull)
+  apiKeys                  UserApiKey[]             @relation("UserApiKeys")
+  conversations            Conversation[]           @relation("UserConversations")
+  workingMemory            GMIWorkingMemoryEntry[]  @relation("UserWorkingMemory") // User-specific memory not tied to a GMI
+  gmiSnapshots             GMISnapshot[]            @relation("UserGmiSnapshots")  // User-owned snapshots
+  sessions                 UserSession[]            @relation("UserSessions")
+  accounts                 Account[]                @relation("UserAccounts")      // OAuth accounts linked to this user
+  gmiInstances             GMIInstance[]            @relation("UserGmiInstances")  // GMIs owned by this user
+  usageRecords             UsageRecord[]            @relation("UserUsageRecords")  // Usage records for this user
+
   // LemonSqueezy integration
-  lemonSqueezyCustomerId String?                  @unique
-  lemonSqueezySubscriptionId String?             @unique
-  subscriptionStatus    String?                   // active, canceled, expired, etc.
-  subscriptionEndsAt    DateTime?
-  
+  lemonSqueezyCustomerId   String?                  @unique
+  lemonSqueezySubscriptionId String?                @unique
+  subscriptionStatus       String?                  // e.g., active, past_due, trialing, cancelled, unpaid, expired
+  subscriptionEndsAt       DateTime?                // When the current subscription period ends or grace period expires
+
   @@map("users")
 }
 
-/// @model
+/// @model Account
+/// Links an OAuth provider account (like Google, GitHub) to a local User.
+/// This allows a user to sign in using different third-party services.
+model Account {
+  id                String    @id @default(uuid()) @map("uuid")
+  userId            String    @map("user_id")
+  user              User      @relation("UserAccounts", fields: [userId], references: [id], onDelete: Cascade)
+
+  provider          String    // Identifier for the OAuth provider (e.g., "google", "github")
+  providerAccountId String    @map("provider_account_id") // User's unique ID from the OAuth provider
+
+  access_token      String?   @db.Text // OAuth access token (handle with care, consider encryption or short-lived storage)
+  refresh_token     String?   @db.Text // OAuth refresh token (handle with care, encrypt if stored)
+  expires_at        Int?      // Unix timestamp (seconds since epoch) for access_token expiry
+  token_type        String?   // Type of token (e.g., "Bearer")
+  scope             String?   @db.Text // Scopes granted by the user to this application
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@unique([provider, providerAccountId], name: "provider_account_unique")
+  @@index([userId])
+  @@map("accounts")
+}
+
+
+/// @model UserSession
 /// User sessions for JWT token management and device tracking.
+/// Each login or token issuance can create a session record.
 model UserSession {
-  id          String   @id @default(uuid())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  token       String   @unique // JWT token or session identifier
-  deviceInfo  String?  // User agent, device info
-  ipAddress   String?
-  isActive    Boolean  @default(true)
-  expiresAt   DateTime
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
+  id           String   @id @default(uuid()) @map("uuid")
+  userId       String   @map("user_id")
+  user         User     @relation("UserSessions", fields: [userId], references: [id], onDelete: Cascade)
+  token        String   @unique @db.Text // Can store a reference (e.g., JTI) or a hash of a revokable session token
+  deviceInfo   String?  // User-Agent or other device identifiers
+  ipAddress    String?
+  isActive     Boolean  @default(true) // Whether the session is currently active
+  expiresAt    DateTime // When the session/token is set to expire
+  lastAccessed DateTime @default(now()) @updatedAt // Track when the session was last used
+  createdAt    DateTime @default(now())
+  // No updatedAt needed if lastAccessed serves that purpose for session activity
+
+  @@index([userId, isActive, expiresAt]) // For querying active sessions and cleanup
   @@map("user_sessions")
 }
 
-/// @model
+/// @model UserApiKey
 /// Stores encrypted API keys for different LLM providers per user.
+/// These are keys provided by the user to allow the application to act on their behalf with external services.
 model UserApiKey {
-  id              String   @id @default(uuid()) @map("uuid")
-  userId          String
-  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  providerId      String   // e.g., "openai", "openrouter", "anthropic"
-  encryptedKey    String
-  keyName         String?  // Optional user-friendly name
-  isActive        Boolean  @default(true)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id             String   @id @default(uuid()) @map("uuid")
+  userId         String   @map("user_id")
+  user           User     @relation("UserApiKeys", fields: [userId], references: [id], onDelete: Cascade)
+  providerId     String   @map("provider_id") // e.g., "openai", "openrouter", "anthropic"
+  encryptedKey   String   @db.Text // AES-256 encrypted API key, potentially including IV
+  keyName        String?  // Optional user-friendly name for the key
+  isActive       Boolean  @default(true)
+  lastUsedAt     DateTime? // Timestamp of when the key was last successfully used
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
-  @@unique([userId, providerId]) // A user can only have one API key per provider
+  @@unique([userId, providerId], name: "user_provider_api_key_unique") // A user can only have one API key per provider. keyName is descriptive.
+  @@index([userId, providerId, isActive])
   @@map("user_api_keys")
 }
 
-/// @model
+/// @model SubscriptionTier
 /// Defines available subscription tiers and their entitlements.
+/// Governs access to features, usage limits, and pricing.
 model SubscriptionTier {
-  id                          String    @id @default(uuid()) @map("uuid")
-  name                        String    @unique
+  id                          String   @id @default(uuid()) @map("uuid")
+  name                        String   @unique // e.g., "Free", "Pro", "Enterprise"
   description                 String?
-  level                       Int       @unique // e.g., 0 for Free, 1 for Basic, 2 for Premium
-  maxGmiInstances             Int       @default(1)
-  maxApiKeys                  Int       @default(1)
-  maxConversationHistoryTurns Int       @default(20)
-  maxContextWindowTokens      Int       @default(4096)
-  dailyCostLimitUsd           Float     @default(0.0) // 0.0 for free, limits for paid tiers
-  monthlyCostLimitUsd         Float     @default(0.0)
-  isPublic                    Boolean   @default(false) // Whether this tier is accessible to public/unauthenticated users
-  features                    String[]  // JSON array of feature flags
-  
+  level                       Int      @unique // Numerical level for comparison (e.g., 0 for Free, 1 for Basic, 2 for Premium)
+  maxGmiInstances             Int      @default(1) // Max concurrent GMI instances
+  maxApiKeys                  Int      @default(1) // Max user-provided API keys allowed
+  maxConversationHistoryTurns Int      @default(20) // Limit for conversation history retention or processing
+  maxContextWindowTokens      Int      @default(4096) // Max context window for LLM interactions under this tier
+  dailyCostLimitUsd           Float    @default(0.0) // Daily spending cap (0.0 for unlimited or free tiers)
+  monthlyCostLimitUsd         Float    @default(0.0) // Monthly spending cap
+  isPublic                    Boolean  @default(false) // Can anonymous users (if supported) access features of this tier?
+  features                    String[] // Array of feature flags or capability identifiers (e.g., "advanced_rag", "custom_personas")
+
   // LemonSqueezy integration
-  lemonSqueezyProductId       String?   @unique
-  lemonSqueezyVariantId       String?   @unique
-  priceMonthlyUsd             Float?    // Monthly price in USD
-  priceYearlyUsd              Float?    // Yearly price in USD
-  
-  createdAt                   DateTime  @default(now())
-  updatedAt                   DateTime  @updatedAt
-  users                       User[]    // Users assigned to this tier
-  
+  lemonSqueezyProductId       String?  @unique @map("lemon_squeezy_product_id")
+  lemonSqueezyVariantId       String?  @unique @map("lemon_squeezy_variant_id")
+  priceMonthlyUsd             Float?   // Monthly price in USD
+  priceYearlyUsd              Float?   // Yearly price in USD
+
+  createdAt                   DateTime @default(now())
+  updatedAt                   DateTime @updatedAt
+  users                       User[]   // Users currently on this subscription tier
+
   @@map("subscription_tiers")
 }
 
-/// @model
-/// Represents a single conversation history.
+/// @model Conversation
+/// Represents a single conversation history, typically between a user and a GMI.
 model Conversation {
-  id              String                  @id @default(uuid()) @map("uuid")
-  userId          String?                 // Null for unauthenticated sessions
-  user            User?                   @relation(fields: [userId], references: [id], onDelete: SetNull)
-  title           String                  @default("New Conversation")
-  language        String                  @default("en") // i18n support
-  createdAt       DateTime                @default(now())
-  updatedAt       DateTime                @updatedAt
-  messages        ConversationMessage[]   // Related messages
-  gmiInstanceId   String?                 // The GMI instance this conversation is primarily tied to
-  sessionDetails  Json?                   // Store GMI session-specific details (e.g., initial persona, mood)
-  isArchived      Boolean                 @default(false)
-  tags            String[]                // User-defined tags for organization
-  
+  id                String                @id @default(uuid()) @map("uuid")
+  userId            String?               @map("user_id") // Nullable for unauthenticated/public GMI interactions
+  user              User?                 @relation("UserConversations", fields: [userId], references: [id], onDelete: SetNull)
+  gmiInstanceId     String?               @map("gmi_instance_id") // The GMI instance this conversation is primarily tied to
+  gmiInstance       GMIInstance?          @relation("GmiConversations", fields: [gmiInstanceId], references: [id], onDelete: SetNull)
+  title             String                @default("New Conversation")
+  language          String                @default("en-US") // BCP 47 language tag
+  summary           String?               @db.Text // Auto-generated summary of the conversation
+  currentContext    Json?                 // Current conversational context (e.g., RAG results, tool states, UI state)
+  isArchived        Boolean               @default(false)
+  tags              String[]              // User-defined or AI-suggested tags for organization
+  costUsd           Float                 @default(0.0) // Total accumulated cost for this conversation
+  tokenCount        Int                   @default(0)   // Total accumulated tokens for this conversation
+  createdAt         DateTime              @default(now())
+  updatedAt         DateTime              @updatedAt
+  messages          ConversationMessage[] @relation("ConversationMessages")
+
+  @@index([userId, isArchived, updatedAt]) // For user's conversation list
+  @@index([gmiInstanceId])
   @@map("conversations")
 }
 
-/// @model
+/// @model ConversationMessage
 /// Represents a single message within a conversation.
 model ConversationMessage {
-  id              String       @id @default(uuid()) @map("uuid")
-  conversationId  String
-  conversation    Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-  role            String       // "user", "assistant", "system", "tool"
-  content         String       // Text content of the message
-  createdAt       DateTime     @default(now())
-  updatedAt       DateTime     @updatedAt
-  toolCalls       Json?        // Optional JSON array of tool calls for assistant messages
-  toolCallId      String?      // Optional ID for tool result messages, linking to the tool call
-  multimodalData  Json?        // Optional JSON for image/audio data references in prompts
-  
-  // Voice-specific fields
-  audioUrl        String?      // URL to stored audio file
-  audioTranscript String?      // Transcribed text from audio
-  voiceSettings   Json?        // TTS settings used for this message
-  
+  id               String       @id @default(uuid()) @map("uuid")
+  conversationId   String       @map("conversation_id")
+  conversation     Conversation @relation("ConversationMessages", fields: [conversationId], references: [id], onDelete: Cascade)
+  role             String       // "user", "assistant", "system", "tool_request", "tool_response"
+  content          String       @db.Text
+  name             String?      // Optional name for tool calls (function name) or user identity override
+  toolCalls        Json?        // For assistant: list of tool calls requested [{id, type, function: {name, arguments}}]
+  toolCallId       String?      @map("tool_call_id") // For tool_response: the ID of the tool_call this message is a result for
+
+  multimodalData   Json?        // References to images, audio files, etc. (e.g., { type: "image_url", image_url: { url: "..." }})
+  audioUrl         String?      // If this message originated from a recorded audio from user, or is a TTS audio from assistant
+  voiceSettings    Json?        // TTS settings used if this message was synthesized as speech
+
+  costUsd          Float?       @default(0.0) // Cost associated with generating/processing this message
+  tokenCount       Int?         @default(0)   // Token count for this message
+  metadata         Json?        // Model used, latency, processing time, annotations, UI rendering hints, feedback status
+
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt // Use for edits, reactions, etc.
+
+  @@index([conversationId, createdAt]) // Essential for ordering messages
   @@map("conversation_messages")
 }
 
-/// @model
-/// Represents a key-value entry in a GMI's working memory.
-/// This allows working memory to persist across GMI deactivations/reactivations.
-model GMIWorkingMemoryEntry {
-  id              String    @id @default(uuid()) @map("uuid")
-  gmiInstanceId   String    // The ID of the GMI instance this memory belongs to
-  userId          String?
-  user            User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
-  key             String
-  value           String    // Stored as JSON string for complex data
-  category        String    @default("general") // memory category for organization
-  importance      Float     @default(1.0) // importance score for memory eviction
-  accessCount     Int       @default(0) // track access frequency
-  lastAccessedAt  DateTime  @default(now())
-  expiresAt       DateTime? // optional expiration
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+/// @model GMIInstance
+/// Represents an active instance of a Generalized Mind Instance (Agent).
+/// Tied to a user and a specific persona configuration.
+model GMIInstance {
+  id                   String         @id @default(uuid()) @map("uuid")
+  userId               String         @map("user_id")
+  user                 User           @relation("UserGmiInstances", fields: [userId], references: [id], onDelete: Cascade)
+  personaId            String         @map("persona_id") // Identifier for the persona definition used
+  currentConversationId String?        @unique @map("current_conversation_id") // The conversation this GMI is actively engaged in
+  // currentConversation  Conversation? @relation(name: "ActiveGMIConversation", fields: [currentConversationId], references: [id], onDelete: SetNull) // Avoids naming conflict if Conversation also points here
+  isActive             Boolean        @default(true) // Whether the GMI is active or archived/disabled
+  lastInteractedAt     DateTime       @default(now()) @updatedAt
+  snapshotIntervalMinutes Int?        // GMI-specific configuration for auto-snapshots
+  memoryPersistenceStrategy String?   // e.g., "full", "summary_only", "volatile"
 
-  @@unique([gmiInstanceId, key]) // Each GMI instance can only have one entry per key
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
+
+  // Relationships
+  conversations        Conversation[] @relation("GmiConversations") // All conversations handled by this GMI
+  workingMemoryEntries GMIWorkingMemoryEntry[] @relation("GmiWorkingMemory")
+  snapshots            GMISnapshot[]  @relation("GmiSnapshots")
+
+  @@index([userId, isActive, lastInteractedAt])
+  @@map("gmi_instances")
+}
+
+/// @model GMIWorkingMemoryEntry
+/// Represents a key-value entry in a GMI's working memory.
+model GMIWorkingMemoryEntry {
+  id              String      @id @default(uuid()) @map("uuid")
+  gmiInstanceId   String?     @map("gmi_instance_id") // Optional: Memory can be user-scoped or GMI-scoped
+  gmiInstance     GMIInstance? @relation("GmiWorkingMemory", fields: [gmiInstanceId], references: [id], onDelete: Cascade)
+  userId          String      @map("user_id") // All memory entries are associated with a user
+  user            User        @relation("UserWorkingMemory", fields: [userId], references: [id], onDelete: Cascade)
+
+  key             String      // The key for the memory entry
+  value           String      @db.Text // Stored as JSON string for complex data
+  category        String      @default("general") // e.g., "user_preferences", "session_state", "facts"
+  importance      Float       @default(1.0)      // For memory eviction strategies
+  accessCount     Int         @default(0)
+  lastAccessedAt  DateTime    @default(now()) @updatedAt
+  expiresAt       DateTime?   // Optional expiration for volatile memory
+
+  createdAt       DateTime    @default(now())
+  // No separate updatedAt, lastAccessedAt serves this for memory logic
+
+  @@unique([userId, gmiInstanceId, key], name: "user_gmi_memory_key_unique") // A user's GMI has unique keys
+  @@index([gmiInstanceId, lastAccessedAt])
+  @@index([userId, category, lastAccessedAt]) // For user-scoped memory retrieval
   @@map("gmi_working_memory_entries")
 }
 
-/// @model
-/// Represents a snapshot of a GMI's complete state for backup/restore functionality.
+/// @model GMISnapshot
+/// Represents a snapshot of a GMI's complete state.
 model GMISnapshot {
-  id              String   @id @default(uuid()) @map("uuid")
-  gmiInstanceId   String   // The ID of the GMI instance this snapshot belongs to
-  userId          String?
-  user            User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
-  name            String   // User-friendly name for the snapshot
-  description     String?
-  snapshotData    Json     // Complete GMI state serialized as JSON
-  version         String   @default("1.0") // snapshot format version
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id              String      @id @default(uuid()) @map("uuid")
+  gmiInstanceId   String      @map("gmi_instance_id")
+  gmiInstance     GMIInstance @relation("GmiSnapshots", fields: [gmiInstanceId], references: [id], onDelete: Cascade)
+  userId          String      @map("user_id") // User who owns this snapshot (same as GMI owner)
+  user            User        @relation("UserGmiSnapshots", fields: [userId], references: [id], onDelete: Cascade)
 
+  name            String      // User-friendly name for the snapshot
+  description     String?
+  snapshotData    Json        // Complete GMI state serialized as JSON (includes relevant memory, settings)
+  version         String      @default("1.0") // Snapshot format version for compatibility
+  createdAt       DateTime    @default(now())
+  // No updatedAt for snapshots typically, they are point-in-time
+
+  @@index([gmiInstanceId, createdAt])
   @@map("gmi_snapshots")
 }
 
-/// @model
-/// Tracks usage and costs for billing and analytics.
+/// @model UsageRecord
+/// Tracks usage and costs for billing, analytics, and rate limiting.
 model UsageRecord {
-  id              String   @id @default(uuid()) @map("uuid")
-  userId          String?  // Null for anonymous usage
-  conversationId  String?  // Link to conversation if applicable
-  provider        String   // LLM provider used
-  model           String   // Specific model used
-  tokensInput     Int      @default(0)
-  tokensOutput    Int      @default(0)
-  costUsd         Float    @default(0.0)
-  requestType     String   // chat, completion, embedding, etc.
-  createdAt       DateTime @default(now())
-  
+  id               String    @id @default(uuid()) @map("uuid")
+  userId           String?   @map("user_id") // Null for system-wide or unauthenticated usage
+  user             User?     @relation("UserUsageRecords", fields: [userId], references: [id], onDelete: SetNull)
+  conversationId   String?   @map("conversation_id") // Link to conversation if applicable
+  gmiInstanceId    String?   @map("gmi_instance_id") // Link to GMIInstance if applicable
+  correlationId    String?   // Optional: Link to specific message ID or tool call ID for detailed tracing
+
+  provider         String    // Service provider (e.g., "OpenAI", "OpenRouter", "ElevenLabs", "InternalTool")
+  model            String?   // Specific model used (e.g., "gpt-4o-mini", "whisper-1", "code-interpreter")
+  requestType      String    // Type of request (e.g., "chat_completion", "embedding", "transcription", "tts", "tool_execution")
+  tokensInput      Int       @default(0)
+  tokensOutput     Int       @default(0)
+  durationMs       Int?      // For time-based services like audio processing (milliseconds)
+  costUsd          Float     @default(0.0)
+  metadata         Json?     // Additional metadata (e.g., region, specific API endpoint called)
+
+  createdAt        DateTime  @default(now())
+
   @@index([userId, createdAt])
-  @@index([createdAt])
+  @@index([provider, model, createdAt]) // For analyzing costs per provider/model
   @@map("usage_records")
 }
 
-/// @model
-/// Vector embeddings for RAG system integration.
+/// @model VectorEmbedding
+/// Represents vector embeddings for RAG. Conceptual; actual storage might be in a dedicated vector DB.
 model VectorEmbedding {
-  id              String   @id @default(uuid()) @map("uuid")
-  userId          String?  // Owner of this embedding
-  content         String   // Original text content
-  embedding       Float[]  // Vector embedding array
-  metadata        Json?    // Additional metadata
-  source          String?  // Source document/conversation
-  namespace       String   @default("default") // Namespace for organization
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  
-  @@index([userId, namespace])
+  id            String   @id @default(uuid()) @map("uuid")
+  userId        String?  @map("user_id") // Owner of this embedding, for multi-tenancy
+  // user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull) // Relation if needed
+  content       String   @db.Text // Original text content that was embedded
+  // embedding  Unsupported("vector") // Prisma doesn't natively support vector type yet without extensions. Use Float[] or Json for pgvector.
+  embedding     Float[]  // For databases like PostgreSQL with array support. For pgvector, this might be different.
+  metadata      Json?    // Additional metadata (e.g., source document ID, chunk number, URL, user-defined tags)
+  source        String?  // Identifier for the source document or conversation
+  namespace     String   @default("default") // Namespace for organization (e.g., per user, per project, per persona)
+  modelUsed     String?  // Embedding model used (e.g., "text-embedding-3-small")
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt // If embeddings can be updated/re-embedded
+
+  @@index([userId, namespace]) // For filtering by user/namespace
+  // @@index([embedding], type: Ivfflat) // Example for pgvector index, syntax depends on adapter/extension
   @@map("vector_embeddings")
 }
 
-/// @model
-/// Application configuration and feature flags.
+/// @model AppConfig
+/// Application-level configuration settings and feature flags stored in the database.
 model AppConfig {
-  id          String   @id @default(uuid()) @map("uuid")
-  key         String   @unique
-  value       String   // JSON string for complex values
-  description String?
-  isPublic    Boolean  @default(false) // Whether this config is visible to frontend
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
+  id            String   @id @default(uuid()) @map("uuid")
+  key           String   @unique // Unique key for the configuration setting (e.g., "MAINTENANCE_MODE", "DEFAULT_USER_TIER_ID")
+  value         String   @db.Text // Value of the setting, often stored as a JSON string for complex types
+  description   String?  // Description of what this configuration key does
+  isPublic      Boolean  @default(false) // Whether this config value can be exposed to unauthenticated clients
+  valueType     String   @default("string") // "string", "boolean", "number", "json_object", "json_array" - helps in parsing
+  group         String   @default("general") // Grouping for organization (e.g., "feature_flags", "limits", "integrations")
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([group, key])
   @@map("app_config")
 }

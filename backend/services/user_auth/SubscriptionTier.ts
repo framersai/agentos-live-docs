@@ -1,124 +1,272 @@
 // File: backend/services/user_auth/SubscriptionTier.ts
 /**
- * @fileoverview Defines the SubscriptionTier domain model and its interface for AgentOS.
- * This model represents a subscription level within the system, detailing its properties,
- * entitlements, and pricing information. It aligns with the Prisma schema for the
- * SubscriptionTier entity and provides a clean, typed representation for use throughout the application.
- *
- * @module backend/services/user_auth/SubscriptionTier
+ * @fileoverview SubscriptionTier class and interface with proper exports
+ * FIXES: Export SubscriptionTier type properly
  */
 
-import { SubscriptionTier as PrismaSubscriptionTierType } from '@prisma/client';
+import { SubscriptionTier as PrismaSubscriptionTier } from '@prisma/client';
 
-/**
- * @interface ISubscriptionTier
- * @description Defines the structure and properties for a subscription tier.
- * This interface ensures that all parts of the system interacting with subscription tiers
- * adhere to a consistent data model.
- *
- * @property {string} id - The unique identifier for the subscription tier (e.g., UUID).
- * @property {string} name - The human-readable name of the tier (e.g., "Free", "Basic", "Premium"). Should be unique.
- * @property {string | null} description - A brief description of the tier and its benefits.
- * @property {number} level - A numerical level representing the hierarchy or rank of the tier (e.g., 0 for Free, 1 for Basic). Used for comparison.
- * @property {number} maxGmiInstances - The maximum number of concurrent GMI (Generalized Mind Instance) instances a user on this tier can have.
- * @property {number} maxApiKeys - The maximum number of user-provided LLM API keys a user on this tier can store.
- * @property {number} maxConversationHistoryTurns - The maximum number of turns to retain in a conversation history for users on this tier.
- * @property {number} maxContextWindowTokens - The maximum context window size (in tokens) preferred or enforced for LLMs used by users on this tier.
- * @property {number} dailyCostLimitUsd - The daily spending limit in USD for services that incur costs (e.g., LLM API usage) for users on this tier.
- * @property {number} monthlyCostLimitUsd - The monthly spending limit in USD. (Added based on common practice, matches Prisma schema)
- * @property {boolean} isPublic - Indicates if this tier is available to unauthenticated or newly registered users by default.
- * @property {string[]} features - An array of feature flags or strings representing specific entitlements granted by this tier (e.g., "ADVANCED_TOOLS", "API_ACCESS").
- * @property {string | null} lemonSqueezyProductId - Optional Product ID from LemonSqueezy associated with this tier.
- * @property {string | null} lemonSqueezyVariantId - Optional Variant ID from LemonSqueezy for this specific tier/plan.
- * @property {number | null} priceMonthlyUsd - The monthly price of this tier in USD.
- * @property {number | null} priceYearlyUsd - The yearly price of this tier in USD.
- * @property {Date} createdAt - Timestamp of when the tier definition was created.
- * @property {Date} updatedAt - Timestamp of the last update to the tier definition.
- */
-export interface ISubscriptionTier {
+// FIXED: Export SubscriptionTier interface
+export interface SubscriptionTier {
   id: string;
   name: string;
-  description: string | null;
+  description?: string | null;
   level: number;
   maxGmiInstances: number;
   maxApiKeys: number;
   maxConversationHistoryTurns: number;
   maxContextWindowTokens: number;
   dailyCostLimitUsd: number;
-  monthlyCostLimitUsd: number; // Added for completeness from schema
+  monthlyCostLimitUsd: number;
   isPublic: boolean;
   features: string[];
-  lemonSqueezyProductId?: string | null; // Added from schema
-  lemonSqueezyVariantId?: string | null; // Added from schema
-  priceMonthlyUsd?: number | null; // Added from schema
-  priceYearlyUsd?: number | null; // Added from schema
+  lemonSqueezyProductId?: string | null;
+  lemonSqueezyVariantId?: string | null;
+  priceMonthlyUsd?: number | null;
+  priceYearlyUsd?: number | null;
   createdAt: Date;
   updatedAt: Date;
 }
 
 /**
- * Represents a subscription tier in the AgentOS system.
- * This class provides a clean interface for accessing tier properties,
- * mirroring the Prisma `SubscriptionTier` model and implementing `ISubscriptionTier`.
- * It facilitates the transformation of database records into domain objects.
- *
- * @class SubscriptionTier
- * @implements {ISubscriptionTier}
+ * Subscription tier capabilities and limits.
  */
-export class SubscriptionTier implements ISubscriptionTier {
-  public readonly id: string;
-  public name: string;
-  public description: string | null;
-  public level: number;
-  public maxGmiInstances: number;
-  public maxApiKeys: number;
-  public maxConversationHistoryTurns: number;
-  public maxContextWindowTokens: number;
-  public dailyCostLimitUsd: number;
-  public monthlyCostLimitUsd: number;
-  public isPublic: boolean;
-  public features: string[];
-  public lemonSqueezyProductId: string | null;
-  public lemonSqueezyVariantId: string | null;
-  public priceMonthlyUsd: number | null;
-  public priceYearlyUsd: number | null;
-  public readonly createdAt: Date;
-  public updatedAt: Date;
+export interface TierCapabilities {
+  canAccessPersona: (personaId: string) => boolean;
+  canCreateAPIKeys: (currentCount: number) => boolean;
+  canCreateGMIInstances: (currentCount: number) => boolean;
+  hasFeature: (feature: string) => boolean;
+  isWithinDailyCostLimit: (currentCost: number) => boolean;
+  isWithinMonthlyCostLimit: (currentCost: number) => boolean;
+}
+
+/**
+ * SubscriptionTier class with utility methods.
+ */
+export class SubscriptionTier {
+  private constructor(private data: SubscriptionTier) {}
 
   /**
-   * Private constructor to enforce creation via `fromPrisma` static method.
-   * @param {PrismaSubscriptionTierType} prismaTier - The Prisma SubscriptionTier object.
+   * Creates a SubscriptionTier instance from Prisma data.
    */
-  private constructor(prismaTier: PrismaSubscriptionTierType) {
-    this.id = prismaTier.id;
-    this.name = prismaTier.name;
-    this.description = prismaTier.description;
-    this.level = prismaTier.level;
-    this.maxGmiInstances = prismaTier.maxGmiInstances;
-    this.maxApiKeys = prismaTier.maxApiKeys;
-    this.maxConversationHistoryTurns = prismaTier.maxConversationHistoryTurns;
-    this.maxContextWindowTokens = prismaTier.maxContextWindowTokens;
-    this.dailyCostLimitUsd = prismaTier.dailyCostLimitUsd;
-    this.monthlyCostLimitUsd = prismaTier.monthlyCostLimitUsd;
-    this.isPublic = prismaTier.isPublic;
-    this.features = prismaTier.features; // Prisma stores string[] as is
-    this.lemonSqueezyProductId = prismaTier.lemonSqueezyProductId;
-    this.lemonSqueezyVariantId = prismaTier.lemonSqueezyVariantId;
-    this.priceMonthlyUsd = prismaTier.priceMonthlyUsd;
-    this.priceYearlyUsd = prismaTier.priceYearlyUsd;
-    this.createdAt = prismaTier.createdAt;
-    this.updatedAt = prismaTier.updatedAt;
+  static fromPrisma(prismaTier: PrismaSubscriptionTier): SubscriptionTier {
+    return new SubscriptionTier({
+      id: prismaTier.id,
+      name: prismaTier.name,
+      description: prismaTier.description,
+      level: prismaTier.level,
+      maxGmiInstances: prismaTier.maxGmiInstances,
+      maxApiKeys: prismaTier.maxApiKeys,
+      maxConversationHistoryTurns: prismaTier.maxConversationHistoryTurns,
+      maxContextWindowTokens: prismaTier.maxContextWindowTokens,
+      dailyCostLimitUsd: prismaTier.dailyCostLimitUsd,
+      monthlyCostLimitUsd: prismaTier.monthlyCostLimitUsd,
+      isPublic: prismaTier.isPublic,
+      features: prismaTier.features,
+      lemonSqueezyProductId: prismaTier.lemonSqueezyProductId,
+      lemonSqueezyVariantId: prismaTier.lemonSqueezyVariantId,
+      priceMonthlyUsd: prismaTier.priceMonthlyUsd,
+      priceYearlyUsd: prismaTier.priceYearlyUsd,
+      createdAt: prismaTier.createdAt,
+      updatedAt: prismaTier.updatedAt,
+    });
   }
 
   /**
-   * Static factory method to create a SubscriptionTier instance from a Prisma SubscriptionTier object.
-   * This is the preferred way to instantiate SubscriptionTier domain objects from database records.
-   *
-   * @static
-   * @param {PrismaSubscriptionTierType} prismaTier - The Prisma SubscriptionTier object from the database.
-   * @returns {SubscriptionTier} A new instance of the SubscriptionTier domain model.
+   * Gets the full tier data.
    */
-  public static fromPrisma(prismaTier: PrismaSubscriptionTierType): SubscriptionTier {
-    return new SubscriptionTier(prismaTier);
+  getData(): SubscriptionTier {
+    return { ...this.data };
+  }
+
+  /**
+   * Gets the tier ID.
+   */
+  get id(): string {
+    return this.data.id;
+  }
+
+  /**
+   * Gets the tier name.
+   */
+  get name(): string {
+    return this.data.name;
+  }
+
+  /**
+   * Gets the tier description.
+   */
+  get description(): string | null {
+    return this.data.description;
+  }
+
+  /**
+   * Gets the tier level (higher numbers = more privileges).
+   */
+  get level(): number {
+    return this.data.level;
+  }
+
+  /**
+   * Gets the maximum number of GMI instances allowed.
+   */
+  get maxGmiInstances(): number {
+    return this.data.maxGmiInstances;
+  }
+
+  /**
+   * Gets the maximum number of API keys allowed.
+   */
+  get maxApiKeys(): number {
+    return this.data.maxApiKeys;
+  }
+
+  /**
+   * Gets the maximum conversation history turns.
+   */
+  get maxConversationHistoryTurns(): number {
+    return this.data.maxConversationHistoryTurns;
+  }
+
+  /**
+   * Gets the maximum context window tokens.
+   */
+  get maxContextWindowTokens(): number {
+    return this.data.maxContextWindowTokens;
+  }
+
+  /**
+   * Gets the daily cost limit in USD.
+   */
+  get dailyCostLimitUsd(): number {
+    return this.data.dailyCostLimitUsd;
+  }
+
+  /**
+   * Gets the monthly cost limit in USD.
+   */
+  get monthlyCostLimitUsd(): number {
+    return this.data.monthlyCostLimitUsd;
+  }
+
+  /**
+   * Checks if this tier is available to public/unauthenticated users.
+   */
+  get isPublic(): boolean {
+    return this.data.isPublic;
+  }
+
+  /**
+   * Gets the feature flags for this tier.
+   */
+  get features(): string[] {
+    return [...this.data.features];
+  }
+
+  /**
+   * Gets the monthly price in USD.
+   */
+  get priceMonthlyUsd(): number | null {
+    return this.data.priceMonthlyUsd;
+  }
+
+  /**
+   * Gets the yearly price in USD.
+   */
+  get priceYearlyUsd(): number | null {
+    return this.data.priceYearlyUsd;
+  }
+
+  /**
+   * Checks if this tier has a specific feature.
+   */
+  hasFeature(feature: string): boolean {
+    return this.data.features.includes(feature);
+  }
+
+  /**
+   * Checks if this tier is free.
+   */
+  isFree(): boolean {
+    return this.data.level === 0 || this.data.name.toLowerCase() === 'free';
+  }
+
+  /**
+   * Checks if this tier is a paid tier.
+   */
+  isPaid(): boolean {
+    return !this.isFree();
+  }
+
+  /**
+   * Checks if user can create more GMI instances.
+   */
+  canCreateMoreGMIs(currentCount: number): boolean {
+    return currentCount < this.data.maxGmiInstances;
+  }
+
+  /**
+   * Checks if user can create more API keys.
+   */
+  canCreateMoreApiKeys(currentCount: number): boolean {
+    return currentCount < this.data.maxApiKeys;
+  }
+
+  /**
+   * Checks if a cost amount is within daily limit.
+   */
+  isWithinDailyCostLimit(currentCost: number): boolean {
+    if (this.data.dailyCostLimitUsd === 0) {
+      return currentCost === 0; // Free tier
+    }
+    return currentCost <= this.data.dailyCostLimitUsd;
+  }
+
+  /**
+   * Checks if a cost amount is within monthly limit.
+   */
+  isWithinMonthlyCostLimit(currentCost: number): boolean {
+    if (this.data.monthlyCostLimitUsd === 0) {
+      return currentCost === 0; // Free tier
+    }
+    return currentCost <= this.data.monthlyCostLimitUsd;
+  }
+
+  /**
+   * Gets tier capabilities helper object.
+   */
+  getCapabilities(): TierCapabilities {
+    return {
+      canAccessPersona: (personaId: string) => {
+        // Basic implementation - in real app, would check persona requirements
+        return this.data.level >= 0;
+      },
+      canCreateAPIKeys: (currentCount: number) => this.canCreateMoreApiKeys(currentCount),
+      canCreateGMIInstances: (currentCount: number) => this.canCreateMoreGMIs(currentCount),
+      hasFeature: (feature: string) => this.hasFeature(feature),
+      isWithinDailyCostLimit: (currentCost: number) => this.isWithinDailyCostLimit(currentCost),
+      isWithinMonthlyCostLimit: (currentCost: number) => this.isWithinMonthlyCostLimit(currentCost),
+    };
+  }
+
+  /**
+   * Compares this tier with another tier.
+   */
+  isHigherThan(otherTier: SubscriptionTier): boolean {
+    return this.data.level > otherTier.level;
+  }
+
+  /**
+   * Compares this tier with another tier.
+   */
+  isLowerThan(otherTier: SubscriptionTier): boolean {
+    return this.data.level < otherTier.level;
+  }
+
+  /**
+   * Compares this tier with another tier.
+   */
+  isSameLevel(otherTier: SubscriptionTier): boolean {
+    return this.data.level === otherTier.level;
   }
 }

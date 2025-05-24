@@ -1,134 +1,237 @@
 // File: backend/services/user_auth/User.ts
 /**
- * @fileoverview Defines the User domain model and related types for AgentOS.
- * This model represents a user in the system, encapsulating their core attributes
- * and providing utility methods for data transformation (e.g., for public presentation).
- * It is designed to align with the Prisma schema for the User entity.
- *
- * @module backend/services/user_auth/User
+ * @fileoverview User class and types with proper exports
+ * FIXES: Export User, UserApiKey, and SubscriptionTier types properly
  */
 
-import { User as PrismaUserType, UserApiKey as PrismaUserApiKeyType, SubscriptionTier as PrismaSubscriptionTierType } from '@prisma/client';
+import { User as PrismaUser, UserApiKey as PrismaUserApiKey, SubscriptionTier as PrismaSubscriptionTier } from '@prisma/client';
 
-/**
- * Represents the structure for user-provided API keys.
- * Keys are provider IDs (e.g., "openai"), and values are the encrypted API key strings.
- * This interface is used internally and not directly exposed with decrypted keys.
- *
- * @interface IUserApiKeys
- */
-export interface IUserApiKeys {
-  [providerId: string]: string;
+// FIXED: Export User interface
+export interface User {
+  id: string;
+  username: string;
+  email: string;
+  passwordHash: string;
+  emailVerified: boolean;
+  emailVerificationToken?: string | null;
+  resetPasswordToken?: string | null;
+  resetPasswordExpires?: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+  lastLoginAt?: Date | null;
+  subscriptionTierId?: string | null;
+  lemonSqueezyCustomerId?: string | null;
+  lemonSqueezySubscriptionId?: string | null;
+  subscriptionStatus?: string | null;
+  subscriptionEndsAt?: Date | null;
+}
+
+// FIXED: Export UserApiKey interface
+export interface UserApiKey {
+  id: string;
+  userId: string;
+  providerId: string;
+  encryptedKey: string;
+  keyName?: string | null;
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// FIXED: Export SubscriptionTier interface
+export interface SubscriptionTier {
+  id: string;
+  name: string;
+  description?: string | null;
+  level: number;
+  maxGmiInstances: number;
+  maxApiKeys: number;
+  maxConversationHistoryTurns: number;
+  maxContextWindowTokens: number;
+  dailyCostLimitUsd: number;
+  monthlyCostLimitUsd: number;
+  isPublic: boolean;
+  features: string[];
+  lemonSqueezyProductId?: string | null;
+  lemonSqueezyVariantId?: string | null;
+  priceMonthlyUsd?: number | null;
+  priceYearlyUsd?: number | null;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 /**
- * Defines the public-facing representation of a User, excluding sensitive information.
- * This type is suitable for sending user data to clients.
- *
- * @type PublicUser
- * @property {string} id - The unique identifier of the user.
- * @property {string} username - The user's chosen username.
- * @property {string} email - The user's email address (consider if this should always be public).
- * @property {string | null} subscriptionTierId - The ID of the user's current subscription tier.
- * @property {Date} createdAt - The timestamp of when the user account was created.
- * @property {Date} updatedAt - The timestamp of the last update to the user's account.
- * @property {Date | null} lastLoginAt - The timestamp of the user's last login, if available.
- * @property {Record<string, any>} [preferences] - User-specific preferences.
- * @property {boolean} [creatorModeOptIn] - Indicates if the user has opted into creator/experimental modes.
- * @property {boolean} emailVerified - Indicates if the user's email address has been verified.
+ * Public user representation (excludes sensitive data like password hash).
  */
-export type PublicUser = Pick<
-  User,
-  'id' | 'username' | 'email' | 'subscriptionTierId' | 'createdAt' | 'updatedAt' | 'lastLoginAt' | 'preferences' | 'creatorModeOptIn' | 'emailVerified'
->;
+export interface PublicUser {
+  id: string;
+  username: string;
+  email: string;
+  emailVerified: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  lastLoginAt?: Date | null;
+  subscriptionTierId?: string | null;
+}
 
 /**
- * Represents a user in the AgentOS system.
- * This class mirrors the Prisma `User` model and provides methods for data transformation
- * and consistent handling of user objects within the application.
- *
- * @class User
+ * User class with utility methods for working with user data.
  */
 export class User {
-  public readonly id: string;
-  public username: string;
-  public email: string;
-  public readonly passwordHash: string; // Readonly after construction for security
-  public subscriptionTierId: string | null;
-  // UserApiKeys are managed via AuthService, not directly held here in decrypted form
-  public readonly createdAt: Date;
-  public updatedAt: Date;
-  public lastLoginAt: Date | null;
-  public emailVerified: boolean;
-  public emailVerificationToken: string | null;
-  public resetPasswordToken: string | null;
-  public resetPasswordExpires: Date | null;
-  public lemonSqueezyCustomerId: string | null;
-  public lemonSqueezySubscriptionId: string | null;
-  public subscriptionStatus: string | null;
-  public subscriptionEndsAt: Date | null;
-  public preferences?: Record<string, any>; // Matches conceptual User interface
-  public creatorModeOptIn?: boolean;     // Matches conceptual User interface
+  private constructor(private data: User) {}
 
   /**
-   * Constructs a User instance. It's recommended to use `User.fromPrisma` for creation.
-   * @param {PrismaUserType} prismaUser - The Prisma user object.
+   * Creates a User instance from Prisma user data.
    */
-  private constructor(prismaUser: PrismaUserType) {
-    this.id = prismaUser.id;
-    this.username = prismaUser.username;
-    this.email = prismaUser.email;
-    this.passwordHash = prismaUser.passwordHash;
-    this.subscriptionTierId = prismaUser.subscriptionTierId;
-    this.createdAt = prismaUser.createdAt;
-    this.updatedAt = prismaUser.updatedAt;
-    this.lastLoginAt = prismaUser.lastLoginAt;
-    this.emailVerified = prismaUser.emailVerified;
-    this.emailVerificationToken = prismaUser.emailVerificationToken;
-    this.resetPasswordToken = prismaUser.resetPasswordToken;
-    this.resetPasswordExpires = prismaUser.resetPasswordExpires;
-    this.lemonSqueezyCustomerId = prismaUser.lemonSqueezyCustomerId;
-    this.lemonSqueezySubscriptionId = prismaUser.lemonSqueezySubscriptionId;
-    this.subscriptionStatus = prismaUser.subscriptionStatus;
-    this.subscriptionEndsAt = prismaUser.subscriptionEndsAt;
-    // Assuming preferences & creatorModeOptIn might not be in PrismaUser directly,
-    // or require casting if they are Json. For now, they are not standard in the provided PrismaUser.
-    // This part of User model might need to be reconciled with Prisma schema if these fields are intended.
-    this.preferences = {}; // Default to empty or load if part of PrismaUser via Json type
-    this.creatorModeOptIn = false; // Default
+  static fromPrisma(prismaUser: PrismaUser): User {
+    return new User({
+      id: prismaUser.id,
+      username: prismaUser.username,
+      email: prismaUser.email,
+      passwordHash: prismaUser.passwordHash,
+      emailVerified: prismaUser.emailVerified,
+      emailVerificationToken: prismaUser.emailVerificationToken,
+      resetPasswordToken: prismaUser.resetPasswordToken,
+      resetPasswordExpires: prismaUser.resetPasswordExpires,
+      createdAt: prismaUser.createdAt,
+      updatedAt: prismaUser.updatedAt,
+      lastLoginAt: prismaUser.lastLoginAt,
+      subscriptionTierId: prismaUser.subscriptionTierId,
+      lemonSqueezyCustomerId: prismaUser.lemonSqueezyCustomerId,
+      lemonSqueezySubscriptionId: prismaUser.lemonSqueezySubscriptionId,
+      subscriptionStatus: prismaUser.subscriptionStatus,
+      subscriptionEndsAt: prismaUser.subscriptionEndsAt,
+    });
   }
 
   /**
-   * Static factory method to create a User instance from a Prisma User object.
-   * This is the preferred way to instantiate User objects from database records.
-   *
-   * @static
-   * @param {PrismaUserType} prismaUser - The Prisma User object retrieved from the database.
-   * @returns {User} A new User instance populated with data from the Prisma object.
+   * Converts the user to a public representation (excludes sensitive data).
    */
-  public static fromPrisma(prismaUser: PrismaUserType): User {
-    return new User(prismaUser);
-  }
-
-  /**
-   * Returns a public representation of the user, suitable for sending to clients.
-   * This method omits sensitive fields like `passwordHash` and any raw token data.
-   *
-   * @public
-   * @returns {PublicUser} A user object stripped of sensitive information.
-   */
-  public toPublicUser(): PublicUser {
+  toPublicUser(): PublicUser {
     return {
-      id: this.id,
-      username: this.username,
-      email: this.email, // Consider if email should always be public or context-dependent
-      subscriptionTierId: this.subscriptionTierId,
-      createdAt: this.createdAt,
-      updatedAt: this.updatedAt,
-      lastLoginAt: this.lastLoginAt,
-      emailVerified: this.emailVerified,
-      preferences: this.preferences,
-      creatorModeOptIn: this.creatorModeOptIn,
+      id: this.data.id,
+      username: this.data.username,
+      email: this.data.email,
+      emailVerified: this.data.emailVerified,
+      createdAt: this.data.createdAt,
+      updatedAt: this.data.updatedAt,
+      lastLoginAt: this.data.lastLoginAt,
+      subscriptionTierId: this.data.subscriptionTierId,
     };
+  }
+
+  /**
+   * Gets the full user data (including sensitive fields).
+   */
+  getFullUser(): User {
+    return { ...this.data };
+  }
+
+  /**
+   * Gets the user ID.
+   */
+  get id(): string {
+    return this.data.id;
+  }
+
+  /**
+   * Gets the username.
+   */
+  get username(): string {
+    return this.data.username;
+  }
+
+  /**
+   * Gets the email.
+   */
+  get email(): string {
+    return this.data.email;
+  }
+
+  /**
+   * Checks if the user's email is verified.
+   */
+  get isEmailVerified(): boolean {
+    return this.data.emailVerified;
+  }
+
+  /**
+   * Gets the subscription tier ID.
+   */
+  get subscriptionTierId(): string | null {
+    return this.data.subscriptionTierId;
+  }
+
+  /**
+   * Checks if the user has a subscription.
+   */
+  hasSubscription(): boolean {
+    return !!this.data.subscriptionTierId && this.data.subscriptionTierId !== 'free';
+  }
+
+  /**
+   * Gets the LemonSqueezy customer ID.
+   */
+  get lemonSqueezyCustomerId(): string | null {
+    return this.data.lemonSqueezyCustomerId;
+  }
+
+  /**
+   * Gets the current subscription status.
+   */
+  get subscriptionStatus(): string | null {
+    return this.data.subscriptionStatus;
+  }
+
+  /**
+   * Checks if the subscription is active.
+   */
+  isSubscriptionActive(): boolean {
+    return this.data.subscriptionStatus === 'active';
+  }
+
+  /**
+   * Checks if the subscription is cancelled.
+   */
+  isSubscriptionCancelled(): boolean {
+    return this.data.subscriptionStatus === 'cancelled';
+  }
+
+  /**
+   * Gets when the subscription ends.
+   */
+  get subscriptionEndsAt(): Date | null {
+    return this.data.subscriptionEndsAt;
+  }
+
+  /**
+   * Checks if the subscription has expired.
+   */
+  isSubscriptionExpired(): boolean {
+    if (!this.data.subscriptionEndsAt) {
+      return false;
+    }
+    return new Date() > this.data.subscriptionEndsAt;
+  }
+
+  /**
+   * Gets the last login timestamp.
+   */
+  get lastLoginAt(): Date | null {
+    return this.data.lastLoginAt;
+  }
+
+  /**
+   * Gets the account creation timestamp.
+   */
+  get createdAt(): Date {
+    return this.data.createdAt;
+  }
+
+  /**
+   * Gets the last account update timestamp.
+   */
+  get updatedAt(): Date {
+    return this.data.updatedAt;
   }
 }

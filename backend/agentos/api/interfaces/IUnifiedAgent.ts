@@ -1,8 +1,8 @@
 // backend/agentos/api/interfaces/IUnifiedAgent.ts
 
 import { ConversationContext } from '../../core/conversation/ConversationContext';
-import { AgentOSResponseChunkType, AgentOSResponse } from '../types/AgentOSResponse';
-import { ToolCall } from '../../cognitive_substrate/IGMI';
+// import { AgentOSResponseChunkType, AgentOSResponse } from '../types/AgentOSResponse'; // Not used in this file
+import { ToolCallRequest, UICommand } from '../../cognitive_substrate/IGMI'; // Corrected import
 import { IPersonaDefinition } from '../../cognitive_substrate/personas/IPersonaDefinition'; // To reflect persona's definition
 
 /**
@@ -21,8 +21,8 @@ import { IPersonaDefinition } from '../../cognitive_substrate/personas/IPersonaD
  * @typedef {Object} UnifiedAgentOutput
  * @property {string | null} [responseText] - The textual response from the agent. Can be `null`
  * if the agent is primarily performing tool calls or UI commands.
- * @property {ToolCall[]} [toolCalls] - An array of tool calls the agent wants to execute.
- * @property {any[]} [uiCommands] - An array of UI commands the agent wants the frontend to render/execute.
+ * @property {ToolCallRequest[]} [toolCalls] - An array of tool call requests the agent wants to execute.
+ * @property {UICommand[]} [uiCommands] - An array of UI commands the agent wants the frontend to render/execute.
  * @property {boolean} isComplete - Indicates if the agent considers its current task or turn complete.
  * If `false`, the GMI may continue iterating (e.g., waiting for tool results).
  * @property {Error | null} [error] - An error object if the agent encountered a problem.
@@ -30,8 +30,8 @@ import { IPersonaDefinition } from '../../cognitive_substrate/personas/IPersonaD
  */
 export interface UnifiedAgentOutput {
   responseText?: string | null;
-  toolCalls?: ToolCall[];
-  uiCommands?: any[]; // TODO: Replace 'any[]' with actual UICommand[] from IGMI
+  toolCalls?: ToolCallRequest[]; // Corrected type
+  uiCommands?: UICommand[];      // Corrected type
   isComplete: boolean;
   error?: Error | null;
   metadata?: Record<string, any>;
