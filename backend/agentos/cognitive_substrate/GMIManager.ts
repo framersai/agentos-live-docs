@@ -23,7 +23,7 @@ import { GMIError, GMIErrorCode, createGMIErrorFromError } from '../../utils/err
 
 import { IPromptEngine } from '../core/llm/IPromptEngine';
 // FIXED: Error 48 - Corrected import path
-import { AIModelProviderManager } from '../core/llm/providers/implementations/AIModelProviderManager';
+import { AIModelProviderManager } from '../core/llm/providers/AIModelProviderManager';
 import { IUtilityAI } from '../core/ai_utilities/IUtilityAI';
 // FIXED: Error 49 - Corrected import path (assuming it's core/tools)
 import { IToolOrchestrator } from '../core/tools/IToolOrchestrator';

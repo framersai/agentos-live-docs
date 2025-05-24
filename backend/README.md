@@ -17,10 +17,14 @@ Welcome to the backend service for the Voice Chat Assistant application. This se
    - [Health Check](#health-check)
 5. [📂 Project Structure](#-project-structure)
 6. [⚙️ Core Services](#️-core-services)
-7. [📡 API Endpoints](#-api-endpoints)
-8. [🧪 Testing](#-testing)
-9. [🚀 Deployment](#-deployment)
-10. [🤝 Contributing](#-contributing)
+7. [🔐 Authentication](#-authentication)
+8. [📡 API Endpoints](#-api-endpoints)
+9. [🌊 Streaming API](#-streaming-api)
+10. [⚠️ Error Handling](#️-error-handling)
+11. [🧪 Testing](#-testing)
+12. [🚀 Deployment](#-deployment)
+13. [🤝 Contributing](#-contributing)
+14. [📚 Further Reading](#-further-reading)
 
 ---
 
@@ -30,46 +34,61 @@ The backend is the central nervous system of the Voice Chat Assistant. It handle
 
 - **User Authentication**: Secure registration, login (email/password & Google OAuth), session management
 - **AgentOS Integration**: Manages Generalized Mind Instances (GMIs), personas, LLM connections, RAG, and tool execution
-- **API Services**: Provides RESTful APIs for frontend communication
+- **API Services**: Provides RESTful APIs for frontend communication with streaming support
 - **Data Persistence**: Uses PostgreSQL via Prisma ORM for all application data
 - **Caching**: Utilizes Redis for performance optimization
-- **Real-time Communication**: (Planned/Conceptual) WebSocket integration for features like live transcription or streaming responses
+- **Real-time Communication**: WebSocket integration for features like live transcription and streaming responses
+
+### 🏗️ Architecture Overview
+
+- **RESTful Design**: Built on REST principles for predictable interactions
+- **JSON Communication**: Uses JSON for request/response bodies
+- **JWT Authentication**: Employs JWT Bearer tokens for secure access
+- **Streaming-First**: Core GMI interactions use `application/x-ndjson` streaming
+- **Base URL**: All API endpoints are prefixed with `/api/v1`
 
 ---
 
 ## ✨ Features
 
 ### 🔐 Robust Authentication
-- JWT-based sessions
-- OAuth 2.0 (Google)
-- Secure password handling
-- API key management
+- JWT-based sessions with secure token management
+- OAuth 2.0 (Google) integration
+- Secure password handling with bcrypt
+- API key management for LLM providers
+- Password reset functionality
 
 ### 🧠 Modular AgentOS Core
 Extensible framework for building and managing sophisticated AI agents:
-- **Persona Management**
-- **LLM Provider Abstraction** (OpenAI, OpenRouter, Ollama)
-- **Tool Orchestration and Execution**
-- **Retrieval Augmented Generation (RAG)** with Vector Stores (Pinecone)
-- **Conversation Management** and Persistent Memory
+- **Persona Management**: Dynamic AI personality system
+- **LLM Provider Abstraction**: Support for OpenAI, OpenRouter, Ollama
+- **Tool Orchestration and Execution**: Extensible tool system
+- **Retrieval Augmented Generation (RAG)**: Vector stores with Pinecone
+- **Conversation Management**: Persistent memory and context handling
+- **Streaming Responses**: Real-time AI interactions
 
 ### 💳 Subscription Management
-Integration with LemonSqueezy (conceptual hooks) for handling user subscription tiers and features
+- Integration with LemonSqueezy for payment processing
+- Tiered subscription system with feature gating
+- Webhook handling for subscription events
 
 ### 🛡️ Additional Features
 - **Comprehensive Error Handling**: Standardized error codes and responses
-- **Configurable**: Behavior driven by environment variables and database configurations
+- **Health Monitoring**: System health checks and service status
+- **Configurable**: Environment-driven configuration
+- **Scalable**: Docker-ready with horizontal scaling support
 
 ---
 
 ## 🏛️ Architecture Highlights
 
-- **TypeScript**: For type safety and robust code
-- **Node.js & Express.js**: For the web server and API framework
-- **Prisma**: Modern ORM for PostgreSQL database interactions
-- **Service-Oriented Design**: Logic encapsulated in services (e.g., `AuthService`, `SubscriptionService`, `GMIManager`)
+- **TypeScript**: Full type safety and robust development experience
+- **Node.js & Express.js**: High-performance web server and API framework
+- **Prisma**: Modern ORM with type-safe database operations
+- **Service-Oriented Design**: Modular business logic separation
 - **Interface-Driven**: Promotes loose coupling and testability
-- **Dockerized**: For consistent development and deployment environments
+- **Dockerized**: Consistent development and deployment environments
+- **Streaming Architecture**: Real-time response handling
 
 ---
 
@@ -79,17 +98,15 @@ Follow these steps to get the backend service running locally.
 
 ### Prerequisites
 
-- **Node.js**: Version 20.x or later (check `.nvmrc` or `package.json` engines if specified)
-- **pnpm** (preferred) or **npm/yarn**: For package management. The project is set up with `pnpm` in its Dockerfiles
+- **Node.js**: Version 20.x or later
+- **pnpm** (preferred) or **npm/yarn**: Package management
   ```bash
   npm install -g pnpm
   ```
-- **Docker & Docker Compose**: For running PostgreSQL, Redis, and potentially other services like Ollama
-- **PostgreSQL Instance**: Can be run via Docker (see `docker-compose.yml`) or a local installation
+- **Docker & Docker Compose**: For running PostgreSQL, Redis, and other services
+- **PostgreSQL Instance**: Database server (can be run via Docker)
 
 ### Cloning the Repository
-
-If you haven't already, clone the main project repository:
 
 ```bash
 git clone <repository-url>
@@ -98,238 +115,422 @@ cd voice-chat-assistant
 
 ### Environment Variables (.env)
 
-The backend relies on environment variables for configuration.
-
-1. Navigate to the root of the project
-2. Copy the `.env.sample` file to a new file named `.env`:
+1. Copy the sample environment file:
    ```bash
    cp .env.sample .env
    ```
 
-3. Edit the `.env` file in the project root with your specific configurations. Key variables for the backend include:
+2. Configure the following variables:
 
 #### Core Configuration
-- `PORT`: Port the backend server will run on (e.g., `3001`)
-- `NODE_ENV`: Environment mode (`development`, `production`)
-- `APP_URL`: The public base URL of your backend (e.g., `http://localhost:3001`)
+```env
+PORT=3001
+NODE_ENV=development
+APP_URL=http://localhost:3001
+```
 
 #### Database & Cache
-- `DATABASE_URL`: Connection string for your PostgreSQL database
-  - For local development outside Docker: `postgresql://USER:PASSWORD@HOST:PORT/DATABASE_NAME`
-  - If using docker-compose.yml (recommended for dev): `postgresql://vca_user:yourpassword@postgres:5432/voice_chat_assistant`
-- `REDIS_URL`: Connection string for your Redis instance
-  - For local development outside Docker: `redis://localhost:6379`
-  - If using docker-compose.yml: `redis://redis:6379`
+```env
+DATABASE_URL=postgresql://vca_user:yourpassword@postgres:5432/voice_chat_assistant
+REDIS_URL=redis://redis:6379
+```
 
 #### Security
-- `JWT_SECRET`: A long, strong, random string for signing JWTs (at least 64 characters)
-- `API_KEY_ENCRYPTION_KEY_HEX`: A 32-byte (64-character) hex string for encrypting user API keys
-  ```bash
-  openssl rand -hex 32
-  ```
+```env
+JWT_SECRET=your-super-long-jwt-secret-at-least-64-characters-long
+API_KEY_ENCRYPTION_KEY_HEX=your-32-byte-hex-string-for-api-key-encryption
+```
+
+Generate encryption key:
+```bash
+openssl rand -hex 32
+```
 
 #### LLM API Keys
-- `OPENAI_API_KEY`
-- `OPENROUTER_API_KEY`
-- etc.
+```env
+OPENAI_API_KEY=your-openai-api-key
+OPENROUTER_API_KEY=your-openrouter-api-key
+```
 
-#### Google OAuth Credentials (if testing OAuth)
-- `GOOGLE_CLIENT_ID`
-- `GOOGLE_CLIENT_SECRET`
-- `GOOGLE_CALLBACK_URL` (e.g., `http://localhost:3001/api/v1/auth/google/callback`)
-  > **Note**: Ensure this matches your Google Cloud Console setup
+#### Google OAuth (Optional)
+```env
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+GOOGLE_CALLBACK_URL=http://localhost:3001/api/v1/auth/google/callback
+```
 
 #### AgentOS Configuration
-- `PERSONA_DEFINITIONS_PATH`: Path to persona JSON files, usually relative to the backend directory (e.g., `./backend/agentos/cognitive_substrate/personas/definitions`)
+```env
+PERSONA_DEFINITIONS_PATH=./backend/agentos/cognitive_substrate/personas/definitions
+```
 
 ### Installing Dependencies
 
-Navigate to the backend directory and install dependencies:
-
 ```bash
 cd backend
-pnpm install # or npm install / yarn install
+pnpm install
 ```
 
 ### Database Setup (Prisma)
 
-Ensure your PostgreSQL server is running and accessible.
-
 1. **Generate Prisma Client**:
-   This is often run automatically post-install, but can be run manually:
    ```bash
    npx prisma generate
    ```
 
 2. **Apply Migrations**:
-   This will create or update your database schema based on `prisma/schema.prisma`:
    ```bash
-   # For development (prompts for name)
-   npx prisma migrate dev --name your_migration_name
+   # Development
+   npx prisma migrate dev --name init
    
-   # For applying existing migrations in CI/CD or production-like setup
+   # Production
    npx prisma migrate deploy
    ```
 
-   If you prefer to directly push schema changes without creating migration files (common in early dev):
-   ```bash
-   npx prisma db push --skip-generate
-   ```
-
-3. **(Optional) Seed the Database**:
-   If you have a seed script (`prisma/seed.ts`) to populate initial data (e.g., default subscription tiers, admin user):
+3. **Seed Database** (Optional):
    ```bash
    npx prisma db seed
    ```
 
 ### Running the Backend
 
-Start the backend development server:
-
 ```bash
 npm run dev
 ```
 
-This typically uses `tsx` for hot-reloading TypeScript code. The server will usually run on the port specified in your `.env` file (e.g., `http://localhost:3001`).
+The server will start on `http://localhost:3001` with hot-reloading enabled.
 
 ### Health Check
 
-Once the server is running, you can check its health status by navigating to:
-
+Verify the service is running:
+```bash
+curl http://localhost:3001/health
 ```
-http://localhost:<PORT>/health
-```
-
-Example: `http://localhost:3001/health`
-
-This endpoint provides information about the server status, database connectivity, and initialized services.
 
 ---
 
 ## 📂 Project Structure
 
-A brief overview of key directories within `backend/`:
-
 ```
 backend/
-├── src/ (or /)                    # Main source code
-│   ├── api/                       # Route definitions
-│   │   ├── authRoutes.ts
-│   │   └── agentosRoutes.ts
-│   ├── agentos/                   # Core AgentOS framework
-│   │   ├── api/                   # AgentOS public-facing API
+├── src/
+│   ├── api/                       # API route definitions
+│   │   ├── authRoutes.ts         # Authentication routes
+│   │   ├── agentosRoutes.ts      # AgentOS interaction routes
+│   │   └── personaRoutes.ts      # Persona management routes
+│   ├── agentos/                   # AgentOS framework
+│   │   ├── api/                   # Public AgentOS API
 │   │   ├── cognitive_substrate/   # Core reasoning & memory
-│   │   ├── core/                  # Foundational elements
-│   │   └── rag/                   # Retrieval Augmented Generation
+│   │   ├── core/                  # Foundational components
+│   │   │   ├── llm/              # LLM provider abstractions
+│   │   │   └── tools/            # Tool system
+│   │   └── rag/                   # RAG implementation
 │   ├── config/                    # Application configuration
-│   ├── middleware/                # Custom Express middleware
+│   ├── middleware/                # Express middleware
 │   ├── prisma/                    # Database schema & migrations
-│   ├── services/                  # Business logic layers
-│   ├── types/                     # TypeScript type definitions
+│   ├── services/                  # Business logic
+│   │   └── user_auth/            # Authentication services
+│   ├── types/                     # TypeScript definitions
 │   └── utils/                     # Utility functions
-├── locales/                       # Internationalization files
-├── server.ts                      # Main application entry point
-├── db.ts                          # Prisma client initialization
-├── tsconfig.json                  # TypeScript configuration
-├── package.json                   # Dependencies & scripts
-└── Dockerfile                     # Docker image instructions
+├── locales/                       # Internationalization
+├── server.ts                      # Application entry point
+├── db.ts                          # Database connection
+└── Dockerfile                     # Container definition
 ```
 
 ---
 
 ## ⚙️ Core Services
 
-| Service | Location | Description |
-|---------|----------|-------------|
-| **AuthService** | `services/user_auth/AuthService.ts` | Manages all aspects of user authentication and authorization |
-| **SubscriptionService** | `services/user_auth/SubscriptionService.ts` | Handles user subscription tiers, features, and limits |
-| **GMIManager** | `agentos/cognitive_substrate/GMIManager.ts` | Manages the lifecycle and state of Generalized Mind Instances (GMIs) |
-| **AgentOSOrchestrator** | `agentos/api/AgentOSOrchestrator.ts` | Coordinates complex interactions involving GMIs, tools, and conversations |
-| **AIModelProviderManager** | `agentos/core/llm/providers/implementations/AIModelProviderManager.ts` | Manages connections and interactions with various LLM providers |
-| **ToolOrchestrator** | `agentos/core/tools/ToolOrchestrator.ts` | Manages the availability and execution of tools for agents |
+| Service | Location | Responsibility |
+|---------|----------|----------------|
+| **AuthService** | `services/user_auth/AuthService.ts` | User authentication, JWT management, OAuth integration |
+| **SubscriptionService** | `services/user_auth/SubscriptionService.ts` | Subscription tiers, payment processing, feature gates |
+| **GMIManager** | `agentos/cognitive_substrate/GMIManager.ts` | GMI lifecycle, state management, conversation handling |
+| **AgentOSOrchestrator** | `agentos/api/AgentOSOrchestrator.ts` | Complex AI interactions, tool coordination |
+| **AIModelProviderManager** | `agentos/core/llm/providers/implementations/AIModelProviderManager.ts` | LLM provider connections, model routing |
+| **ToolOrchestrator** | `agentos/core/tools/ToolOrchestrator.ts` | Tool discovery, execution, result handling |
+
+---
+
+## 🔐 Authentication
+
+The API uses JWT Bearer tokens for authentication with support for multiple authentication methods.
+
+### 🔄 Authentication Flow
+
+1. **Register**: Create account via `POST /api/v1/auth/register`
+2. **Login**: Get JWT token via `POST /api/v1/auth/login`
+3. **Access**: Include token in requests:
+   ```
+   Authorization: Bearer <YOUR_JWT_ACCESS_TOKEN>
+   ```
+4. **Logout**: Invalidate session via `POST /api/v1/auth/logout`
+
+### 🌐 Access Levels
+
+- **Public**: Health checks, public persona listings
+- **Authenticated**: Full API access based on subscription tier
+- **Guest**: Limited demo access with designated guest userId
 
 ---
 
 ## 📡 API Endpoints
 
-The primary API is versioned under `/api/v1/`. Key resource groups include:
+All endpoints use the base URL `/api/v1`
 
-### Authentication
-- **`/api/v1/auth/`** - User registration, login (email/password, OAuth), logout, profile management
+### 🏥 Health Check
+```http
+GET /health
+```
+Returns server operational status and service health.
 
-### AgentOS Core
-- **`/api/v1/agentos/`** - Core interaction endpoints with AgentOS (e.g., sending messages to GMIs, receiving responses)
-- **`/api/v1/personas/`** - Listing and retrieving details about available AI personas
-- **`/api/v1/gmi/`** - (If applicable) Direct GMI management or interaction endpoints
+### 🔑 Authentication Endpoints
 
-### Speech Processing
-- **`/api/v1/speech/`** - Endpoints for speech-to-text (e.g., Whisper) and text-to-speech
+#### User Management
+```http
+POST /auth/register          # Register new user
+POST /auth/login             # Authenticate user
+POST /auth/logout            # Invalidate session
+GET  /auth/me                # Get user profile
+```
 
-### Webhooks
-- **`/api/webhooks/`** - Webhook handlers for third-party services (e.g., LemonSqueezy)
+#### Password Management
+```http
+POST /auth/me/change-password      # Change password
+POST /auth/request-password-reset  # Request reset token
+POST /auth/reset-password          # Reset with token
+```
 
-> **Note**: Refer to API documentation or route definition files (e.g., `api/authRoutes.ts`) for detailed endpoint specifications.
+#### API Key Management
+```http
+POST   /auth/me/api-keys                    # Add/update LLM API key
+GET    /auth/me/api-keys                    # List user's API keys
+DELETE /auth/me/api-keys/:apiKeyRecordId    # Delete API key
+```
+
+### 🤖 AgentOS Core Endpoints
+
+#### Chat Interactions (Streaming)
+```http
+POST /agentos/chat/turn        # Process chat turn with GMI
+POST /agentos/chat/tool_result # Submit tool execution result
+```
+
+### 🎭 Persona Endpoints
+```http
+GET /personas                  # List available personas
+```
+
+### 💳 Payment Webhooks
+```http
+POST /webhooks/lemonsqueezy           # Handle payment events
+GET  /webhooks/lemonsqueezy/health    # Webhook health check
+```
+
+---
+
+## 🌊 Streaming API
+
+Core AgentOS interactions use streaming responses for real-time AI interactions.
+
+### 📡 Streaming Characteristics
+
+- **Content-Type**: `application/x-ndjson` (newline-delimited JSON)
+- **Format**: Each line contains a separate JSON object
+- **Processing**: Handle chunks incrementally as they arrive
+- **Completion**: `isFinal: true` indicates response completion
+
+### 🔄 Client Implementation
+
+```javascript
+const response = await fetch('/api/v1/agentos/chat/turn', {
+  method: 'POST',
+  headers: {
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(requestData)
+});
+
+const reader = response.body.getReader();
+const decoder = new TextDecoder();
+
+while (true) {
+  const { done, value } = await reader.read();
+  if (done) break;
+  
+  const chunk = decoder.decode(value);
+  const lines = chunk.split('\n').filter(line => line.length > 0);
+  
+  for (const line of lines) {
+    const data = JSON.parse(line);
+    
+    switch (data.type) {
+      case 'text_delta':
+        appendToChat(data.textDelta);
+        break;
+      case 'final_response':
+        markChatComplete(data.finalResponseText);
+        break;
+      case 'error':
+        handleStreamError(data);
+        break;
+    }
+  }
+}
+```
+
+### 🚨 Stream Error Handling
+
+- **Pre-stream errors**: Standard HTTP error responses
+- **Mid-stream errors**: `AgentOSErrorChunk` objects within stream
+- **Connection issues**: Implement retry logic with exponential backoff
+
+---
+
+## ⚠️ Error Handling
+
+The API returns standardized JSON error responses for consistent error handling.
+
+### 📋 Error Response Structure
+
+```json
+{
+  "error": {
+    "code": "ERROR_CODE_STRING",
+    "message": "Human-readable error description",
+    "details": {},
+    "timestamp": "2025-05-24T12:00:00.000Z"
+  }
+}
+```
+
+### 📊 HTTP Status Codes
+
+| Status | Description | Usage |
+|--------|-------------|-------|
+| **200** | ✅ OK | Request successful |
+| **201** | ✅ Created | Resource created successfully |
+| **204** | ✅ No Content | Success with empty response |
+| **400** | ❌ Bad Request | Invalid input or validation errors |
+| **401** | ❌ Unauthorized | Missing or invalid authentication |
+| **403** | ❌ Forbidden | Insufficient permissions |
+| **404** | ❌ Not Found | Resource doesn't exist |
+| **409** | ❌ Conflict | Resource conflict (duplicate email) |
+| **500** | ❌ Internal Error | Unexpected server issues |
+| **503** | ❌ Service Unavailable | Downstream service issues |
 
 ---
 
 ## 🧪 Testing
 
-> **Note**: This section should be updated based on actual testing setup
-
-To run tests:
+Run the test suite:
 
 ```bash
-npm test # Or pnpm test
+npm test
 ```
-
-This will execute tests defined using Vitest (as per `package.json`). Ensure tests cover critical services, API endpoints, and AgentOS components.
 
 ### Testing Strategy
 
-Consider implementing:
+- **Unit Tests**: Individual functions and classes
+- **Integration Tests**: Service interactions and API endpoints
+- **End-to-End Tests**: Complete user workflows
+- **Load Tests**: Performance under stress
 
-- **Unit tests** for individual functions and classes
-- **Integration tests** for service interactions and API endpoints (using tools like Supertest)
-- **End-to-end tests** (less common for pure backend, but possible if simulating client calls)
+### Test Configuration
+
+Tests use Vitest with coverage reporting. Ensure tests cover:
+- Authentication flows
+- AgentOS interactions
+- Error handling
+- Streaming responses
 
 ---
 
 ## 🚀 Deployment
 
-The backend is designed to be deployed as a Docker container. The Dockerfile in the backend directory defines the build process.
+### Docker Deployment
 
-### Building the Docker Image
+1. **Build the image**:
+   ```bash
+   docker build -t voice-chat-backend:latest -f backend/Dockerfile .
+   ```
 
-```bash
-docker build -t your-repo/voice-chat-assistant-backend:latest -f backend/Dockerfile .
-```
+2. **Run with Docker Compose**:
+   ```bash
+   docker-compose up -d
+   ```
 
-> **Important**: Ensure the build context `.` is the project root if the Dockerfile uses `COPY ../...` or adjust paths accordingly. The provided Dockerfile assumes context is `backend/`.
+### Production Configuration
 
-### Running the Container
+Ensure the following for production:
+- Set `NODE_ENV=production`
+- Use strong JWT secrets
+- Configure proper database connections
+- Set up Redis for caching
+- Configure SSL/TLS termination
+- Set up monitoring and logging
 
-The `docker-compose.yml` file in the project root provides a complete setup for running the backend along with its dependencies (PostgreSQL, Redis) for both development and production-like environments.
+### Environment Setup
 
-For production, ensure:
-- `NODE_ENV=production` is set
-- The production stage of the Dockerfile is used
+- **Development**: Use `docker-compose.yml` for local services
+- **Staging**: Deploy with production-like configuration
+- **Production**: Use managed services for database and cache
 
 ---
 
 ## 🤝 Contributing
 
-Please refer to the main `CONTRIBUTING.md` in the project root for guidelines on how to contribute to the backend development.
-
 ### Development Standards
 
-Ensure code adheres to:
-- **Linting rules**: `npm run lint`
-- **Formatting standards**: `npm run format`
-- **Documentation**: Include appropriate documentation and tests
-- **Testing**: Write comprehensive tests for new features
+- **Code Style**: Follow ESLint and Prettier configurations
+- **Testing**: Write tests for new features
+- **Documentation**: Update API documentation for changes
+- **Type Safety**: Maintain full TypeScript coverage
+
+### Development Workflow
+
+1. **Fork** the repository
+2. **Create** feature branch: `git checkout -b feature/amazing-feature`
+3. **Commit** changes: `git commit -m 'Add amazing feature'`
+4. **Push** to branch: `git push origin feature/amazing-feature`
+5. **Open** Pull Request
+
+### Code Quality
+
+```bash
+npm run lint          # Check code style
+npm run format        # Format code
+npm run type-check    # Verify TypeScript
+npm test              # Run test suite
+```
 
 ---
 
-## 📞 Support
+## 📚 Further Reading
 
-For questions, issues, or contributions, please refer to the project's main documentation or open an issue in the repository.
+Explore additional documentation for deeper understanding:
+
+| Topic | Document | Description |
+|-------|----------|-------------|
+| 🏗️ **Architecture** | `docs/ARCHITECTURE.MD` | System architecture and design patterns |
+| 🚀 **Getting Started** | `docs/GETTING-STARTED.MD` | Setup guide and initial API calls |
+| 💭 **Prompt Engineering** | `backend/agentos/docs/PROMPTS.MD` | Effective prompt design strategies |
+| 🔍 **RAG System** | `backend/agentos/docs/RAG.MD` | Retrieval Augmented Generation implementation |
+| 🛠️ **Tools** | `backend/agentos/docs/TOOLS.MD` | Available tools and system architecture |
+| 🧠 **Memory Lifecycle** | `backend/agentos/docs/MEMORY_LIFECYCLE.MD` | Memory management and persistence |
+
+---
+
+## 📞 Support & Community
+
+- **Issues**: Report bugs and request features via GitHub Issues
+- **Discussions**: Join community discussions for questions and ideas
+- **Documentation**: Contribute to documentation improvements
+- **Security**: Report security issues privately to the maintainers
+
+---
+
+**Voice Chat Assistant Backend v1.0.0**  
+*Built with ❤️ for the AgentOS Community*

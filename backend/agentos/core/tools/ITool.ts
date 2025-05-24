@@ -1,53 +1,75 @@
+// File: backend/agentos/core/tools/ITool.ts
 /**
  * @fileoverview Defines the ITool interface, the core contract for any tool
  * that can be invoked within the AgentOS ecosystem, typically by a GMI.
  * This interface ensures that all tools provide necessary metadata for discovery,
  * schema validation, permission checking, and execution.
  *
- * @module backend/agentos/tools/ITool
+ * @module backend/agentos/core/tools/ITool
  */
 
-import { GMIError } from '../../utils/errors'; // Assuming a GMIError utility
-import { UserContext } from '../cognitive_substrate/IGMI'; // For potential context pass-through
+import { GMIError } from '../../utils/errors';
+import { UserContext } from '../cognitive_substrate/IGMI';
 
 /**
  * Represents a JSON schema definition.
- * For simplicity, using Record<string, any>. In a production system,
- * this would ideally be a more specific type imported from a JSON schema library
- * (e.g., JSONSchema7 from 'json-schema').
+ * This type is used to define the expected structure for tool inputs and outputs,
+ * enabling validation and clear contracts for LLMs.
+ * @see https://json-schema.org/
  * @typedef {object} JSONSchemaObject
+ * @example
+ * const schema: JSONSchemaObject = {
+ * type: "object",
+ * properties: {
+ * query: { type: "string", description: "The search query." },
+ * max_results: { type: "integer", minimum: 1, default: 5 }
+ * },
+ * required: ["query"]
+ * };
  */
-export type JSONSchemaObject = Record<string, any>; // Replace with a proper JSON Schema type if available
+export type JSONSchemaObject = Record<string, any>;
 
 /**
- * Defines the outcome of a tool's execution.
+ * Defines the standardized outcome of a tool's execution.
+ * It captures whether the execution was successful, the resulting output data,
+ * or any error information if it failed.
  *
  * @interface ToolExecutionResult
- * @property {boolean} success - Indicates whether the tool execution was successful.
- * @property {any} [output] - The output data from the tool if successful. The structure
- * should ideally conform to the tool's `outputSchema`.
- * @property {string} [error] - An error message if execution failed.
- * @property {string} [contentType="application/json"] - MIME type of the output, if not JSON (e.g., "text/plain", "image/png").
- * @property {Record<string, any>} [details] - Additional details or metadata about the execution or error.
+ * @template TOutput The expected type of the `output` data if the tool executes successfully. Defaults to `any`.
+ * @property {boolean} success - Indicates whether the tool execution was successful. `true` for success, `false` for failure.
+ * @property {TOutput} [output] - The output data from the tool if successful. The structure
+ * of this data should ideally conform to the tool's `outputSchema` (if defined).
+ * @property {string} [error] - A human-readable error message if the execution failed (`success` is `false`).
+ * @property {string} [contentType="application/json"] - The MIME type of the `output` data.
+ * Defaults to "application/json". Other common types include "text/plain", "image/png", etc.
+ * This helps consumers of the tool result to correctly interpret the output.
+ * @property {Record<string, any>} [details] - An optional object for any additional details or metadata
+ * about the execution or error. This can include things like error codes, stack traces (for debugging),
+ * performance metrics, or other contextual information.
  */
 export interface ToolExecutionResult<TOutput = any> {
   success: boolean;
   output?: TOutput;
   error?: string;
-  contentType?: string;
+  contentType?: string; // Default should be 'application/json' if not specified by tool
   details?: Record<string, any>;
 }
 
 /**
- * Defines the invocation context for a tool's execution.
- * This provides the tool with necessary information about the caller and environment.
+ * Defines the invocation context passed to a tool's `execute` method.
+ * This context provides the tool with essential information about the calling entity (GMI, Persona),
+ * the user, and the overall session, enabling context-aware tool execution.
  *
  * @interface ToolExecutionContext
- * @property {string} gmiId - The ID of the GMI invoking the tool.
- * @property {string} personaId - The ID of the active persona.
- * @property {UserContext} userContext - Contextual information about the user.
- * @property {string} [correlationId] - An optional ID to correlate this tool call with other operations or logs.
- * @property {Record<string, any>} [sessionData] - Ephemeral session data, potentially from GMI's working memory.
+ * @property {string} gmiId - The unique identifier of the GMI (Generalized Mind Instance) that is invoking the tool.
+ * @property {string} personaId - The unique identifier of the active Persona within the GMI that requested the tool execution.
+ * @property {UserContext} userContext - Contextual information about the end-user associated with the current interaction,
+ * which might include user ID, preferences, skill level, etc.
+ * @property {string} [correlationId] - An optional identifier used to correlate this specific tool call with other
+ * operations, logs, or events across different parts of the system. Useful for tracing and debugging.
+ * @property {Record<string, any>} [sessionData] - Optional. Ephemeral data relevant to the current session, potentially
+ * sourced from the GMI's working memory or the orchestrator. This allows tools to access dynamic session state
+ * if needed for their operation (e.g., user's current location, temporary files).
  */
 export interface ToolExecutionContext {
   gmiId: string;
@@ -59,31 +81,28 @@ export interface ToolExecutionContext {
 
 /**
  * @interface ITool
+ * @template TInput - The type of the input arguments object this tool expects. Defaults to `any`. It should ideally be a specific interface matching the `inputSchema`.
+ * @template TOutput - The type of the output data this tool produces upon successful execution. Defaults to `any`. It should ideally be a specific interface matching the `outputSchema`.
  * @description The core interface that all tools within AgentOS must implement.
- * It provides a standardized way for tools to declare their capabilities,
- * input/output schemas, and execution logic.
- *
- * This interface is crucial for:
- * - Discovery: Allowing GMIs or a ToolOrchestrator to find available tools.
- * - LLM Interaction: Providing schemas and descriptions for LLMs to generate valid tool calls.
- * - Validation: Enabling robust validation of inputs and outputs.
- * - Execution: A consistent method to invoke the tool's functionality.
- * - Permissions: Declaring capabilities required to use the tool.
+ * It provides a standardized way for tools to declare their identity, capabilities,
+ * input/output schemas, required permissions, and the core execution logic.
+ * This standardization is crucial for tool discovery, LLM interaction, validation, and orchestrated execution.
  */
 export interface ITool<TInput extends Record<string, any> = any, TOutput = any> {
   /**
-   * A unique identifier for the tool within the system (e.g., "web-search-engine", "code-interpreter-v2").
-   * This ID is used for internal registration and management.
-   * Should be kebab-case or snake_case.
+   * A globally unique identifier for this specific tool (e.g., "web-search-engine-v1.2", "stock-price-fetcher").
+   * This ID is used for internal registration, management, and precise identification.
+   * It's recommended to use a namespaced, versioned format (e.g., `vendor-toolname-version`).
    * @type {string}
    * @readonly
    */
   readonly id: string;
 
   /**
-   * The functional name of the tool, as it should be used by an LLM in a tool call request
-   * (e.g., "searchWeb", "executePythonCode"). This name must be unique among tools
-   * made available to a given GMI/LLM.
+   * The functional name of the tool, as it should be presented to and used by an LLM in a tool call request
+   * (e.g., "searchWeb", "executePythonCode", "getWeatherForecast").
+   * This name must be unique among the set of tools made available to a given GMI/LLM at any time.
+   * It should be concise, descriptive, and typically in camelCase or snake_case.
    * @type {string}
    * @readonly
    */
@@ -91,26 +110,30 @@ export interface ITool<TInput extends Record<string, any> = any, TOutput = any> 
 
   /**
    * A concise, human-readable title or display name for the tool.
-   * Used in UIs, logs, or when presenting tool options.
+   * Used in user interfaces, logs, or when presenting tool options to developers or users.
    * @type {string}
    * @readonly
-   * @example "Web Search", "Python Code Interpreter"
+   * @example "Web Search Engine", "Advanced Python Code Interpreter"
    */
   readonly displayName: string;
 
   /**
-   * A detailed description of what the tool does, its purpose, and when it should be used.
+   * A detailed, natural language description of what the tool does, its primary purpose,
+   * typical use cases, and any important considerations or limitations for its use.
    * This description is critical for an LLM to understand the tool's capabilities and
-   * decide when to invoke it. Should be clear, comprehensive, and provide usage guidance.
+   * make informed decisions about when and how to invoke it. It should be comprehensive enough
+   * for the LLM to grasp the tool's semantics.
    * @type {string}
    * @readonly
    */
   readonly description: string;
 
   /**
-   * The JSON schema defining the structure and types of the input arguments object
-   * that this tool expects. This schema is used by the LLM to construct valid arguments
-   * and by the ToolExecutor for validation before execution.
+   * The JSON schema defining the structure, types, and constraints of the input arguments object
+   * that this tool expects. This schema is used by:
+   * 1. LLMs: To construct valid argument objects when requesting a tool call.
+   * 2. `ToolExecutor`: For validating the arguments before invoking the tool's `execute` method.
+   * It should follow the JSON Schema specification.
    * @see https://json-schema.org/
    * @type {JSONSchemaObject}
    * @readonly
@@ -118,97 +141,102 @@ export interface ITool<TInput extends Record<string, any> = any, TOutput = any> 
   readonly inputSchema: JSONSchemaObject;
 
   /**
-   * Optional: The JSON schema defining the structure and types of the output object
+   * Optional. The JSON schema defining the structure and types of the output object
    * that this tool will produce upon successful execution.
-   * This helps in validating the tool's output and provides clarity for consumers of the tool's result.
-   * @type {JSONSchemaObject}
+   * Providing an output schema helps in validating the tool's output, provides clarity for
+   * consumers of the tool's result (including other tools or the GMI), and can aid the LLM
+   * in understanding what to expect back from the tool.
+   * @type {JSONSchemaObject | undefined}
    * @optional
    * @readonly
    */
   readonly outputSchema?: JSONSchemaObject;
 
   /**
-   * Optional: An array of capability strings that the active Persona (or GMI) must possess
-   * to be authorized to use this tool. If empty or undefined, the tool might be generally available
-   * or rely on other permission mechanisms.
-   * @type {string[]}
+   * Optional. An array of capability strings (e.g., "capability:filesystem:read", "capability:network:external_api")
+   * that the active Persona (or GMI configuration) must possess to be authorized to use this tool.
+   * If this array is empty or undefined, the tool might be generally available or rely on other
+   * permission mechanisms (e.g., user subscription tiers).
+   * @type {string[] | undefined}
    * @optional
    * @readonly
-   * @example ["capability:web_search", "capability:execute_code_unsafe"]
+   * @example `["capability:web_search", "capability:execute_code_unsafe"]`
    */
   readonly requiredCapabilities?: string[];
 
   /**
-   * Optional: A category or group to which this tool belongs (e.g., "data_analysis", "communication", "file_system").
-   * Useful for organizing tools and for filtering.
-   * @type {string}
+   * Optional. A category or group to which this tool belongs (e.g., "data_analysis", "communication", "file_system", "image_generation").
+   * This is useful for organizing tools, for filtering in UIs or registries, and potentially for
+   * aiding an LLM in selecting from a large set of tools.
+   * @type {string | undefined}
    * @optional
    * @readonly
    */
   readonly category?: string;
 
   /**
-   * Optional: Version of the tool (e.g., "1.0.0", "2.1-beta").
-   * @type {string}
+   * Optional. The version of the tool (e.g., "1.0.0", "2.1-beta", "2024-05-24").
+   * Useful for managing updates and compatibility.
+   * @type {string | undefined}
    * @optional
    * @readonly
    */
   readonly version?: string;
 
   /**
-   * Optional: Indicates if the tool might have side effects (e.g., writing to a database, sending an email).
-   * Defaults to `false`. LLMs might be more cautious with tools having side effects.
-   * @type {boolean}
+   * Optional. Indicates if the tool might have side effects on external systems
+   * (e.g., writing to a database, sending an email, making a purchase, modifying a file).
+   * Defaults to `false` if not specified. LLMs or orchestrators might handle tools with side effects
+   * with greater caution, potentially requiring explicit user confirmation.
+   * @type {boolean | undefined}
    * @optional
    * @readonly
    */
   readonly hasSideEffects?: boolean;
 
   /**
-   * Executes the tool's core logic with the provided arguments.
+   * Executes the core logic of the tool with the provided arguments and execution context.
+   * This method is asynchronous and should encapsulate the tool's primary functionality.
+   * Implementations should handle their own internal errors gracefully and package them
+   * into the `ToolExecutionResult` object.
    *
+   * @public
    * @async
-   * @param {TInput} args - The arguments for the tool, which should have been validated
-   * against `inputSchema` by the caller (e.g., ToolExecutor).
-   * @param {ToolExecutionContext} context - The execution context providing information about
-   * the GMI, user, and session.
-   * @returns {Promise<ToolExecutionResult<TOutput>>} A promise that resolves with an object
-   * containing the execution result (output or error).
-   * @throws {GMIError | Error} While tools should ideally return errors within the `ToolExecutionResult`,
-   * critical or unexpected failures during execution might still throw. It's recommended
-   * that tools catch their own internal errors and package them into the `ToolExecutionResult`.
-   *
-   * @example
-   * async execute(args: { query: string }, context: ToolExecutionContext): Promise<ToolExecutionResult<{ searchResults: any[] }>> {
-   * try {
-   * // ... perform web search using args.query ...
-   * // const results = await searchProvider.search(args.query);
-   * return { success: true, output: { searchResults: results } };
-   * } catch (e: any) {
-   * return { success: false, error: `Web search failed: ${e.message}`, details: e };
-   * }
-   * }
+   * @param {TInput} args - The input arguments for the tool. These arguments are expected to have been
+   * validated against the tool's `inputSchema` by the calling system (e.g., `ToolExecutor`).
+   * @param {ToolExecutionContext} context - The execution context, providing information about
+   * the GMI, user, current session, and any correlation IDs for tracing.
+   * @returns {Promise<ToolExecutionResult<TOutput>>} A promise that resolves with a `ToolExecutionResult` object,
+   * which contains the `success` status, the `output` data (if successful), or an `error` message (if failed).
+   * @throws {GMIError | Error} While tools should ideally capture errors and return them in `ToolExecutionResult.error`,
+   * critical, unrecoverable, or unexpected system-level failures during execution might still result in a thrown exception.
+   * The `ToolExecutor` should be prepared to catch these.
    */
   execute(args: TInput, context: ToolExecutionContext): Promise<ToolExecutionResult<TOutput>>;
 
   /**
-   * Optional: Validates the input arguments against the tool's `inputSchema`.
-   * While the ToolExecutor might perform validation, tools can provide their own
-   * more specific or nuanced validation logic if needed.
+   * Optional. Provides a hook for tools to implement custom validation logic for their input arguments,
+   * potentially more specific or nuanced than standard JSON schema validation.
+   * While the `ToolExecutor` typically performs schema validation based on `inputSchema` before calling `execute`,
+   * this method allows the tool itself to perform additional checks if necessary.
    *
-   * @param {Record<string, any>} args - The arguments to validate.
-   * @returns {{ isValid: boolean; errors?: any[] }} An object indicating if validation passed,
-   * and an array of validation errors if it failed.
+   * @public
+   * @param {Record<string, any>} args - The raw arguments object to validate.
+   * @returns {{ isValid: boolean; errors?: any[] }} An object indicating if the arguments are valid.
+   * If `isValid` is `false`, the `errors` array should contain objects or strings describing the validation failures.
    * @optional
    */
   validateArgs?(args: Record<string, any>): { isValid: boolean; errors?: any[] };
 
   /**
-   * Optional: A method to gracefully shut down or clean up resources used by the tool,
-   * if any (e.g., close database connections, stop background processes).
-   * Called by the system when the tool or the ToolExecutor is being shut down.
+   * Optional. A method to gracefully shut down the tool and release any resources it holds
+   * (e.g., database connections, network listeners, file handles, child processes).
+   * This is called by the system (e.g., `ToolExecutor` or `ToolOrchestrator`) during application shutdown
+   * or when a tool is being unregistered dynamically.
+   *
+   * @public
    * @async
-   * @returns {Promise<void>}
+   * @returns {Promise<void>} A promise that resolves when the tool has completed its shutdown procedures.
    * @optional
    */
   shutdown?(): Promise<void>;

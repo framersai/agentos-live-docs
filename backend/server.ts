@@ -58,7 +58,7 @@ class HybridUtilityAI implements IUtilityAI {
 }
 
 // FIXED: Import AIModelProviderManager from implementations folder
-import { AIModelProviderManager, AIModelProviderManagerConfig, ProviderConfigEntry } from './agentos/core/llm/providers/implementations/AIModelProviderManager';
+import { AIModelProviderManager, AIModelProviderManagerConfig, ProviderConfigEntry } from './agentos/core/llm/providers/AIModelProviderManager';
 
 // FIXED: Import PromptEngine and config from correct locations
 import { PromptEngine } from './agentos/core/llm/PromptEngine';

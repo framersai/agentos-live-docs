@@ -53,7 +53,7 @@ import { IRetrievalAugmentor, RagRetrievalOptions, RagDocumentInput, RagIngestio
 // FIXED: Corrected types from IProvider.ts
 import { ChatMessage, ModelCompletionOptions, ModelCompletionResponse, ModelUsage, IProvider } from '../core/llm/providers/IProvider';
 // FIXED: Corrected import path for AIModelProviderManager
-import { AIModelProviderManager } from '../core/llm/providers/implementations/AIModelProviderManager';
+import { AIModelProviderManager } from '../core/llm/providers/AIModelProviderManager';
 import { IUtilityAI, SummarizationOptions, ParseJsonOptions } from '../core/ai_utilities/IUtilityAI';
 // FIXED: Corrected import path for IToolOrchestrator
 import { IToolOrchestrator, ToolDefinitionForLLM } from '../core/tools/IToolOrchestrator';

@@ -1,17 +1,31 @@
+// File: backend/agentos/core/tools/ToolOrchestrator.ts
 /**
  * @fileoverview Implements the ToolOrchestrator class, which serves as the central
- * hub for managing and executing tools within the AgentOS system.
+ * hub for managing, discovering, authorizing, and orchestrating the execution of tools
+ * within the AgentOS system.
  *
- * The ToolOrchestrator coordinates with the ToolPermissionManager to authorize
- * tool calls and with the ToolExecutor to perform the actual execution. It provides
- * a unified interface for GMIs to interact with the tool ecosystem.
+ * The ToolOrchestrator acts as a facade over the `ToolPermissionManager` and `ToolExecutor`.
+ * It provides a unified and simplified interface for higher-level components, such as GMIs
+ * (Generalized Mind Instances) or the main AgentOS orchestrator, to interact with the tool ecosystem.
  *
- * @module backend/agentos/tools/ToolOrchestrator
+ * Key Responsibilities:
+ * - **Tool Registration**: Manages an internal registry of available `ITool` instances.
+ * - **Tool Discovery**: Provides methods like `listAvailableTools()` to get tool definitions
+ * suitable for LLM consumption (e.g., for function calling).
+ * - **Permission Enforcement**: Collaborates with `IToolPermissionManager` to authorize tool calls
+ * based on Persona capabilities, user subscriptions, or other defined policies.
+ * - **Execution Delegation**: Delegates the actual tool execution (including argument validation)
+ * to the `ToolExecutor`.
+ * - **Result Formatting**: Standardizes and returns tool execution results (`ToolCallResult`).
+ * - **Lifecycle Management**: Handles initialization and shutdown of itself and potentially registered tools.
+ *
+ * @module backend/agentos/core/tools/ToolOrchestrator
  * @see ./IToolOrchestrator.ts for the interface definition.
- * @see ./ITool.ts
- * @see ./IToolPermissionManager.ts
- * @see ./ToolExecutor.ts
- * @see ../config/ToolOrchestratorConfig.ts
+ * @see ./ITool.ts for the core tool contract.
+ * @see ./IToolPermissionManager.ts for permission management.
+ * @see ./ToolExecutor.ts for actual tool execution logic.
+ * @see ../config/ToolOrchestratorConfig.ts for configuration options.
+ * @see ../cognitive_substrate/IGMI.ts for GMI-related types like ToolCallResult.
  */
 
 import { v4 as uuidv4 } from 'uuid';
@@ -19,54 +33,112 @@ import {
   IToolOrchestrator,
   ToolDefinitionForLLM,
 } from './IToolOrchestrator';
-import { ITool } from './ITool';
+import { ITool, ToolExecutionResult as CoreToolExecutionResult } from './ITool'; // Renamed to avoid conflict
 import { IToolPermissionManager, PermissionCheckContext } from './IToolPermissionManager';
 import { ToolExecutor, ToolExecutionRequestDetails } from './ToolExecutor';
-import { ToolOrchestratorConfig } from '../config/ToolOrchestratorConfig';
-import { ToolCallResult, UserContext } from '../cognitive_substrate/IGMI';
-import { GMIError, GMIErrorCode } from '../../utils/errors';
+import { ToolOrchestratorConfig } from '../config/ToolOrchestratorConfig'; // Corrected import path
+import { ToolCallResult, UserContext } from '../cognitive_substrate/IGMI'; // Path seems correct
+import { GMIError, GMIErrorCode, createGMIErrorFromError } from '../../utils/errors'; // Path seems correct
 
 /**
  * @class ToolOrchestrator
  * @implements {IToolOrchestrator}
- * Central component for tool management, authorization, and execution routing.
+ * @description The central component responsible for the comprehensive management of tools,
+ * including their registration, discovery, permission-based authorization, and the
+ * orchestration of their execution. It acts as a facade, simplifying tool interactions
+ * for higher-level system components like GMIs.
  */
 export class ToolOrchestrator implements IToolOrchestrator {
+  /**
+   * A unique identifier for this ToolOrchestrator instance.
+   * Useful for logging and debugging in systems with multiple orchestrators.
+   * @public
+   * @readonly
+   * @type {string}
+   */
   public readonly orchestratorId: string;
-  private config: ToolOrchestratorConfig;
+
+  /**
+   * The configuration settings for this ToolOrchestrator instance.
+   * @private
+   * @type {Readonly<Required<ToolOrchestratorConfig>>}
+   */
+  private config!: Readonly<Required<ToolOrchestratorConfig>>; // Note: Full type after defaults
+
+  /**
+   * The permission manager instance used to authorize tool calls.
+   * @private
+   * @type {IToolPermissionManager}
+   */
   private permissionManager!: IToolPermissionManager;
+
+  /**
+   * The tool executor instance responsible for the actual invocation of tool logic.
+   * @private
+   * @type {ToolExecutor}
+   */
   private toolExecutor!: ToolExecutor;
-  private readonly toolRegistry: Map<string, ITool>; // Tool name -> ITool instance
+
+  /**
+   * An in-memory registry mapping tool functional names (`ITool.name`) to their `ITool` instances.
+   * @private
+   * @readonly
+   * @type {Map<string, ITool>}
+   */
+  private readonly toolRegistry: Map<string, ITool>;
+
+  /**
+   * Flag indicating whether the orchestrator has been successfully initialized.
+   * @private
+   * @type {boolean}
+   */
   private isInitialized: boolean = false;
 
-  // Default configuration values
-  private static readonly DEFAULT_CONFIG: Required<Omit<ToolOrchestratorConfig, 'orchestratorId' | 'globalDisabledTools' | 'customParameters' | 'toolRegistrySettings'>> & { toolRegistrySettings: Required<NonNullable<ToolOrchestratorConfig['toolRegistrySettings']>>} = {
+  /**
+   * Default configuration values for the ToolOrchestrator.
+   * These are applied if not overridden by the user-provided configuration during initialization.
+   * @private
+   * @static
+   * @readonly
+   */
+  private static readonly DEFAULT_CONFIG: Required<ToolOrchestratorConfig> = {
+    orchestratorId: '', // Will be overridden by instance specific ID
     defaultToolCallTimeoutMs: 30000,
     maxConcurrentToolCalls: 10,
     logToolCalls: true,
+    globalDisabledTools: [],
     toolRegistrySettings: {
         allowDynamicRegistration: true,
         persistRegistry: false,
-    }
+        persistencePath: undefined,
+    },
+    customParameters: {},
   };
-
 
   /**
    * Constructs a ToolOrchestrator instance.
-   * Not operational until `initialize` is called.
+   * The orchestrator is not operational and tools cannot be used until the `initialize`
+   * method has been successfully called.
    */
   constructor() {
     this.orchestratorId = `tool-orch-${uuidv4()}`;
     this.toolRegistry = new Map<string, ITool>();
-    // Apply defaults, to be overridden by provided config in initialize
-    this.config = {
-        orchestratorId: this.orchestratorId,
-        ...ToolOrchestrator.DEFAULT_CONFIG
-    };
+    // Initialize with defaults; will be properly set in initialize()
+    this.config = { ...ToolOrchestrator.DEFAULT_CONFIG, orchestratorId: this.orchestratorId };
   }
 
   /**
    * @inheritdoc
+   * Initializes the ToolOrchestrator with its configuration, essential dependencies
+   * (Permission Manager, Tool Executor), and an optional set of initial tools to register.
+   * This method must be called before the orchestrator can be used.
+   *
+   * @param {ToolOrchestratorConfig | undefined} config - Optional configuration settings. If undefined, default values will be used.
+   * @param {IToolPermissionManager} permissionManager - An instance of the tool permission manager.
+   * @param {ToolExecutor} toolExecutor - An instance of the tool executor.
+   * @param {ITool[]} [initialTools] - An optional array of `ITool` instances to register at startup.
+   * @returns {Promise<void>}
+   * @throws {GMIError} if essential dependencies are missing (`GMIErrorCode.DEPENDENCY_ERROR`) or if configuration is invalid.
    */
   public async initialize(
     config: ToolOrchestratorConfig | undefined,
@@ -75,97 +147,133 @@ export class ToolOrchestrator implements IToolOrchestrator {
     initialTools?: ITool[],
   ): Promise<void> {
     if (this.isInitialized) {
-      console.warn(`ToolOrchestrator (ID: ${this.orchestratorId}) already initialized. Re-initializing.`);
-      // Consider shutting down existing registered tools if any
-      await this.shutdownRegisteredTools();
+      console.warn(`ToolOrchestrator (ID: ${this.orchestratorId}): Attempting to re-initialize an already initialized instance. Existing tools will be cleared and re-registered if provided.`);
+      await this.shutdownRegisteredTools(); // Gracefully shutdown existing tools before clearing
       this.toolRegistry.clear();
     }
 
-    this.config = {
-        orchestratorId: this.orchestratorId,
-        ...ToolOrchestrator.DEFAULT_CONFIG, // Apply defaults first
-        ...config, // Override with provided config
-        toolRegistrySettings: { // Deep merge for nested objects
-            ...ToolOrchestrator.DEFAULT_CONFIG.toolRegistrySettings,
-            ...config?.toolRegistrySettings,
+    // Merge provided config with defaults, ensuring nested objects are also merged.
+    const baseConfig = { ...ToolOrchestrator.DEFAULT_CONFIG, orchestratorId: this.orchestratorId };
+    this.config = Object.freeze({
+        ...baseConfig,
+        ...(config || {}),
+        toolRegistrySettings: {
+            ...baseConfig.toolRegistrySettings,
+            ...(config?.toolRegistrySettings || {}),
         }
-    };
+    });
 
-
-    if (!permissionManager) throw new GMIError('IToolPermissionManager dependency is required.', GMIErrorCode.DEPENDENCY_ERROR, { orchestratorId: this.orchestratorId });
-    if (!toolExecutor) throw new GMIError('ToolExecutor dependency is required.', GMIErrorCode.DEPENDENCY_ERROR, { orchestratorId: this.orchestratorId });
+    if (!permissionManager) {
+      throw new GMIError('IToolPermissionManager dependency is required for ToolOrchestrator initialization.', GMIErrorCode.DEPENDENCY_ERROR, { orchestratorId: this.orchestratorId, missingDependency: 'IToolPermissionManager' });
+    }
+    if (!toolExecutor) {
+      throw new GMIError('ToolExecutor dependency is required for ToolOrchestrator initialization.', GMIErrorCode.DEPENDENCY_ERROR, { orchestratorId: this.orchestratorId, missingDependency: 'ToolExecutor' });
+    }
 
     this.permissionManager = permissionManager;
     this.toolExecutor = toolExecutor;
 
     if (initialTools && initialTools.length > 0) {
+      console.log(`ToolOrchestrator (ID: ${this.orchestratorId}): Registering ${initialTools.length} initial tools...`);
       for (const tool of initialTools) {
-        await this.registerTool(tool); // Use the public method for consistency
+        try {
+          await this.registerTool(tool); // Uses the public registration method for consistency and validation.
+        } catch (registrationError: any) {
+            // Log the error but continue initializing other tools/orchestrator parts.
+            console.error(`ToolOrchestrator (ID: ${this.orchestratorId}): Failed to register initial tool '${tool.name || tool.id}': ${registrationError.message}`, registrationError);
+        }
       }
     }
 
     this.isInitialized = true;
-    console.log(`ToolOrchestrator (ID: ${this.orchestratorId}) initialized successfully. Registered tools: ${this.toolRegistry.size}.`);
+    console.log(`ToolOrchestrator (ID: ${this.orchestratorId}) initialized successfully. Configuration applied. Registered tools: ${this.toolRegistry.size}.`);
   }
 
   /**
-   * Ensures the orchestrator is initialized.
+   * Ensures the ToolOrchestrator has been initialized before performing operations.
    * @private
+   * @throws {GMIError} if the orchestrator is not initialized (`GMIErrorCode.NOT_INITIALIZED`).
    */
   private ensureInitialized(): void {
     if (!this.isInitialized) {
-      throw new GMIError(`ToolOrchestrator (ID: ${this.orchestratorId}) is not initialized.`, GMIErrorCode.NOT_INITIALIZED);
+      throw new GMIError(
+        `ToolOrchestrator (ID: ${this.orchestratorId}) is not initialized. Please call the initialize() method.`,
+        GMIErrorCode.NOT_INITIALIZED,
+        { component: 'ToolOrchestrator' }
+      );
     }
   }
 
   /**
    * @inheritdoc
+   * Registers a tool with the orchestrator, making it available for discovery and execution.
+   * The tool's `name` is used as the primary key in the registry and must be unique.
+   *
+   * @param {ITool} tool - The tool instance to register. Must conform to `ITool`.
+   * @returns {Promise<void>}
+   * @throws {GMIError}
+   * - If dynamic tool registration is disabled by configuration (`GMIErrorCode.OPERATION_NOT_ALLOWED`).
+   * - If the provided tool object is invalid (e.g., missing `id` or `name`) (`GMIErrorCode.INVALID_ARGUMENT`).
+   * - If a tool with the same `name` is already registered (`GMIErrorCode.ALREADY_EXISTS`).
    */
   public async registerTool(tool: ITool): Promise<void> {
     this.ensureInitialized();
-    if (!this.config.toolRegistrySettings?.allowDynamicRegistration) {
-      throw new GMIError("Dynamic tool registration is disabled by configuration.", GMIErrorCode.OPERATION_NOT_ALLOWED, { toolName: tool.name });
+    if (!this.config.toolRegistrySettings.allowDynamicRegistration) {
+      throw new GMIError("Dynamic tool registration is currently disabled by configuration.", GMIErrorCode.OPERATION_NOT_ALLOWED, { toolName: tool?.name, orchestratorId: this.orchestratorId });
     }
-    if (!tool || !tool.name || !tool.id) {
-      throw new GMIError("Invalid tool provided for registration: missing name or id.", GMIErrorCode.INVALID_ARGUMENT, { tool });
+    if (!tool || typeof tool.name !== 'string' || !tool.name.trim() || typeof tool.id !== 'string' || !tool.id.trim()) {
+      throw new GMIError("Invalid tool object provided for registration: 'id' and 'name' properties are required and must be non-empty strings.", GMIErrorCode.INVALID_ARGUMENT, { receivedTool: tool });
     }
     if (this.toolRegistry.has(tool.name)) {
-      throw new GMIError(`Tool with name '${tool.name}' (ID: '${tool.id}') is already registered. Tool names must be unique.`, GMIErrorCode.ALREADY_EXISTS, { toolName: tool.name });
+      throw new GMIError(`A tool with the name '${tool.name}' (attempted ID: '${tool.id}') is already registered. The existing tool has ID: '${this.toolRegistry.get(tool.name)?.id}'. Tool names must be unique.`, GMIErrorCode.ALREADY_EXISTS, { toolName: tool.name, existingToolId: this.toolRegistry.get(tool.name)?.id });
     }
     if (this.config.globalDisabledTools?.includes(tool.name) || this.config.globalDisabledTools?.includes(tool.id)) {
-        console.warn(`ToolOrchestrator (ID: ${this.orchestratorId}): Tool '${tool.name}' (ID: '${tool.id}') is globally disabled and cannot be registered or will not be executable.`);
-        // Decide whether to throw an error or just warn and not make it executable
-        // For now, let it be registered but processToolCall will check globalDisabledTools.
+        console.warn(`ToolOrchestrator (ID: ${this.orchestratorId}): Tool '${tool.name}' (ID: '${tool.id}') is listed as globally disabled. It will be registered but may not be executable if checks are enforced later.`);
+        // Depending on policy, could throw an error here or allow registration but prevent execution.
     }
     this.toolRegistry.set(tool.name, tool);
-    console.log(`ToolOrchestrator (ID: ${this.orchestratorId}): Tool '${tool.name}' (ID: '${tool.id}') registered.`);
+    console.log(`ToolOrchestrator (ID: ${this.orchestratorId}): Tool '${tool.name}' (ID: '${tool.id}', Version: ${tool.version || 'N/A'}) successfully registered.`);
   }
 
   /**
    * @inheritdoc
+   * Unregisters a tool from the orchestrator using its functional name.
+   * If the tool implements a `shutdown` method, it will be called prior to removal.
+   *
+   * @param {string} toolName - The functional name (`ITool.name`) of the tool to unregister.
+   * @returns {Promise<boolean>} `true` if the tool was found and successfully unregistered, `false` otherwise.
+   * @throws {GMIError} If dynamic tool unregistration is disabled by configuration (`GMIErrorCode.OPERATION_NOT_ALLOWED`).
    */
   public async unregisterTool(toolName: string): Promise<boolean> {
     this.ensureInitialized();
-    if (!this.config.toolRegistrySettings?.allowDynamicRegistration) {
-      throw new GMIError("Dynamic tool unregistration is disabled by configuration.", GMIErrorCode.OPERATION_NOT_ALLOWED, { toolName });
+    if (!this.config.toolRegistrySettings.allowDynamicRegistration) {
+      throw new GMIError("Dynamic tool unregistration is currently disabled by configuration.", GMIErrorCode.OPERATION_NOT_ALLOWED, { toolName, orchestratorId: this.orchestratorId });
     }
     const tool = this.toolRegistry.get(toolName);
     if (tool && typeof tool.shutdown === 'function') {
         try {
+            console.log(`ToolOrchestrator (ID: ${this.orchestratorId}): Calling shutdown for tool '${toolName}' during unregistration...`);
             await tool.shutdown();
-        } catch(e: any) {
-            console.error(`ToolOrchestrator (ID: ${this.orchestratorId}): Error during shutdown of tool '${toolName}' while unregistering: ${e.message}`, e);
+        } catch(shutdownError: any) {
+            console.error(`ToolOrchestrator (ID: ${this.orchestratorId}): Error during shutdown of tool '${toolName}' (ID: '${tool.id}') while unregistering: ${shutdownError.message}`, shutdownError);
+            // Log error but continue with unregistration.
         }
     }
     const success = this.toolRegistry.delete(toolName);
     if (success) {
-      console.log(`ToolOrchestrator (ID: ${this.orchestratorId}): Tool '${toolName}' unregistered.`);
+      console.log(`ToolOrchestrator (ID: ${this.orchestratorId}): Tool '${toolName}' successfully unregistered.`);
+    } else {
+      console.warn(`ToolOrchestrator (ID: ${this.orchestratorId}): Attempted to unregister tool '${toolName}', but it was not found in the registry.`);
     }
     return success;
   }
 
   /**
    * @inheritdoc
+   * Retrieves a registered tool instance by its functional name.
+   *
+   * @param {string} toolName - The `name` property of the tool to retrieve.
+   * @returns {Promise<ITool | undefined>} The `ITool` instance if found; otherwise, `undefined`.
    */
   public async getTool(toolName: string): Promise<ITool | undefined> {
     this.ensureInitialized();
@@ -174,6 +282,15 @@ export class ToolOrchestrator implements IToolOrchestrator {
 
   /**
    * @inheritdoc
+   * Lists tools available for use, formatted for LLM consumption.
+   * This method can filter tools based on the provided context, such as Persona capabilities
+   * and user permissions, by consulting the `IToolPermissionManager`.
+   *
+   * @param {object} [context] - Optional context for filtering the list of tools.
+   * @param {string} [context.personaId] - ID of the requesting Persona.
+   * @param {string[]} [context.personaCapabilities] - Capabilities of the Persona.
+   * @param {UserContext} [context.userContext] - The user's context.
+   * @returns {Promise<ToolDefinitionForLLM[]>} A list of tool definitions suitable for an LLM.
    */
   public async listAvailableTools(context?: {
     personaId?: string;
@@ -181,187 +298,226 @@ export class ToolOrchestrator implements IToolOrchestrator {
     userContext?: UserContext;
   }): Promise<ToolDefinitionForLLM[]> {
     this.ensureInitialized();
-    const availableTools: ToolDefinitionForLLM[] = [];
+    const availableToolsLLM: ToolDefinitionForLLM[] = [];
 
     for (const tool of this.toolRegistry.values()) {
       if (this.config.globalDisabledTools?.includes(tool.name) || this.config.globalDisabledTools?.includes(tool.id)) {
-        continue; // Skip globally disabled tools
+        if (this.config.logToolCalls) console.log(`ToolOrchestrator: Tool '${tool.name}' skipped from listing as it's globally disabled.`);
+        continue;
       }
 
-      // If context is provided, check permissions
+      // If full context for permission check is provided, use it.
       if (context && context.personaId && context.userContext && context.personaCapabilities) {
         const permissionContext: PermissionCheckContext = {
           tool,
           personaId: context.personaId,
           personaCapabilities: context.personaCapabilities,
           userContext: context.userContext,
-          // gmiId can be added if available and needed by permission manager
+          // gmiId could be part of a broader context if available
         };
-        const permissionResult = await this.permissionManager.isExecutionAllowed(permissionContext);
-        if (!permissionResult.isAllowed) {
-          continue; // Skip tools not allowed for this context
+        try {
+            const permissionResult = await this.permissionManager.isExecutionAllowed(permissionContext);
+            if (!permissionResult.isAllowed) {
+                if (this.config.logToolCalls) console.log(`ToolOrchestrator: Tool '${tool.name}' not listed for persona '${context.personaId}' due to permission: ${permissionResult.reason}`);
+                continue; // Skip tools not allowed for this context
+            }
+        } catch(permError: any) {
+            console.error(`ToolOrchestrator: Error checking permission for tool '${tool.name}': ${permError.message}. Excluding from list.`, permError);
+            continue;
         }
       }
+      // If no context, or partial context, all non-disabled tools are listed.
+      // A more sophisticated approach might require full context for any listing.
 
-      availableTools.push({
+      availableToolsLLM.push({
         name: tool.name,
         description: tool.description,
-        inputSchema: tool.inputSchema,
-        outputSchema: tool.outputSchema,
+        inputSchema: tool.inputSchema, // LLMs often call this 'parameters'
+        // outputSchema: tool.outputSchema, // Less commonly used by LLMs for function defs but good for documentation
       });
     }
-    return availableTools;
+    return availableToolsLLM;
   }
 
   /**
    * @inheritdoc
+   * Processes a tool call request. It validates permissions via `IToolPermissionManager`,
+   * then delegates argument validation and execution to `ToolExecutor`.
+   * The final result is formatted as `ToolCallResult` for the GMI.
+   *
+   * @param {ToolExecutionRequestDetails} requestDetails - Comprehensive details for the tool call.
+   * @returns {Promise<ToolCallResult>} The result of the tool call, formatted for GMI consumption.
    */
   public async processToolCall(requestDetails: ToolExecutionRequestDetails): Promise<ToolCallResult> {
     this.ensureInitialized();
-    const { toolCallRequest, gmiId, personaId, personaCapabilities, userContext } = requestDetails;
+    const { toolCallRequest, gmiId, personaId, personaCapabilities, userContext, correlationId } = requestDetails;
     const toolName = toolCallRequest.function.name;
-    const toolCallId = toolCallRequest.id; // From LLM
+    const llmProvidedCallId = toolCallRequest.id; // ID from the LLM's tool_call object
 
-    const logPrefix = `ToolOrchestrator (ID: ${this.orchestratorId}, GMI: ${gmiId}, CallID: ${toolCallId}):`;
+    const logPrefix = `ToolOrchestrator (ID: ${this.orchestratorId}, GMI: ${gmiId}, Persona: ${personaId}, LLMCallID: ${llmProvidedCallId}, Tool: ${toolName}):`;
 
     if (this.config.logToolCalls) {
-      console.log(`${logPrefix} Received tool call request for '${toolName}' with args:`, toolCallRequest.function.arguments);
+      console.log(`${logPrefix} Received tool call request. Args:`, toolCallRequest.function.arguments);
     }
 
     const tool = this.toolRegistry.get(toolName);
     if (!tool) {
-      const errorMsg = `Tool '${toolName}' not found in registry.`;
+      const errorMsg = `Tool '${toolName}' not found in orchestrator registry.`;
       console.error(`${logPrefix} ${errorMsg}`);
-      return { toolCallId, toolName, isError: true, errorDetails: { message: errorMsg, code: GMIErrorCode.TOOL_NOT_FOUND }, output: null };
+      return { tool_call_id: llmProvidedCallId, toolName, output: null, isError: true, errorDetails: { message: errorMsg, code: GMIErrorCode.TOOL_NOT_FOUND } };
     }
     
     if (this.config.globalDisabledTools?.includes(tool.name) || this.config.globalDisabledTools?.includes(tool.id)) {
-      const errorMsg = `Tool '${toolName}' (ID: '${tool.id}') is globally disabled.`;
+      const errorMsg = `Attempted to execute globally disabled tool '${toolName}' (ID: '${tool.id}').`;
       console.warn(`${logPrefix} ${errorMsg}`);
-      return { toolCallId, toolName, isError: true, errorDetails: { message: errorMsg, code: GMIErrorCode.TOOL_DISABLED }, output: null };
+      return { tool_call_id: llmProvidedCallId, toolName, output: null, isError: true, errorDetails: { message: errorMsg, code: GMIErrorCode.TOOL_PERMISSION_DENIED } };
     }
 
-    // 1. Check Permissions
-    const permissionContext: PermissionCheckContext = {
-      tool,
-      personaId,
-      personaCapabilities,
-      userContext,
-      gmiId,
-    };
-    const permissionResult = await this.permissionManager.isExecutionAllowed(permissionContext);
+    const permissionContext: PermissionCheckContext = { tool, personaId, personaCapabilities, userContext, gmiId };
+    let permissionResult: PermissionCheckResult;
+    try {
+        permissionResult = await this.permissionManager.isExecutionAllowed(permissionContext);
+    } catch (permError: any) {
+        const errorMsg = `Error during permission check for tool '${toolName}'.`;
+        console.error(`${logPrefix} ${errorMsg}`, permError);
+        const wrappedError = createGMIErrorFromError(permError, GMIErrorCode.PERMISSION_DENIED, permissionContext, errorMsg);
+        return { tool_call_id: llmProvidedCallId, toolName, output: null, isError: true, errorDetails: { message: wrappedError.message, code: wrappedError.code, details: wrappedError.details } };
+    }
 
     if (!permissionResult.isAllowed) {
-      const errorMsg = permissionResult.reason || `Permission denied for tool '${toolName}'.`;
+      const errorMsg = permissionResult.reason || `Permission denied by ToolPermissionManager for tool '${toolName}'.`;
       console.warn(`${logPrefix} ${errorMsg}`, permissionResult.details);
-      return { toolCallId, toolName, isError: true, errorDetails: { message: errorMsg, code: GMIErrorCode.PERMISSION_DENIED, details: permissionResult.details }, output: null };
+      return { tool_call_id: llmProvidedCallId, toolName, output: null, isError: true, errorDetails: { message: errorMsg, code: GMIErrorCode.PERMISSION_DENIED, details: permissionResult.details } };
     }
 
-    // 2. Execute via ToolExecutor (which handles schema validation)
-    // The ToolExecutor expects ToolExecutionRequestDetails. We pass it through.
-    let executionResult: ToolExecutionResult;
-    try {
-      executionResult = await this.toolExecutor.executeTool(requestDetails);
-    } catch (executorError: any) {
-        // This catch is for unexpected errors from ToolExecutor itself, not tool's own errors handled within ToolExecutionResult
-        const errorMsg = `Unexpected error during tool execution pipeline for '${toolName}'.`;
-        console.error(`${logPrefix} ${errorMsg}`, executorError);
-        return { toolCallId, toolName, isError: true, errorDetails: { message: errorMsg, code: GMIErrorCode.TOOL_EXECUTION_FAILED, details: executorError.toString() }, output: null };
-    }
-
-
-    // 3. Format and Return Result
     if (this.config.logToolCalls) {
-        console.log(`${logPrefix} Tool '${toolName}' execution result: Success: ${executionResult.success}, Output:`, executionResult.output ? JSON.stringify(executionResult.output).substring(0,100) + '...' : 'N/A', `Error: ${executionResult.error || 'N/A'}`);
+        console.log(`${logPrefix} Permissions granted for tool '${toolName}'. Proceeding to executor.`);
     }
 
-    if (!executionResult.success) {
-      return {
-        toolCallId,
-        toolName,
-        isError: true,
-        errorDetails: { message: executionResult.error || `Tool '${toolName}' failed without a specific error message.`, details: executionResult.details },
-        output: null, // Or executionResult.output if partial results are possible on failure
-      };
+    // Execution request details are already structured for ToolExecutor
+    let coreExecutionResult: CoreToolExecutionResult;
+    try {
+      coreExecutionResult = await this.toolExecutor.executeTool(requestDetails);
+    } catch (executorPipelineError: any) {
+      // This catches unexpected errors from ToolExecutor's own pipeline, not errors from the tool's execute method (which are in coreExecutionResult.error)
+      const errorMsg = `Unexpected error within ToolExecutor pipeline while processing '${toolName}'.`;
+      console.error(`${logPrefix} ${errorMsg}`, executorPipelineError);
+      const wrappedError = createGMIErrorFromError(executorPipelineError, GMIErrorCode.TOOL_EXECUTION_FAILED, requestDetails, errorMsg);
+      return { tool_call_id: llmProvidedCallId, toolName, output: null, isError: true, errorDetails: { message: wrappedError.message, code: wrappedError.code, details: wrappedError.details } };
     }
 
+    if (this.config.logToolCalls) {
+        const outputPreview = coreExecutionResult.output ? JSON.stringify(coreExecutionResult.output).substring(0, 200) + (JSON.stringify(coreExecutionResult.output).length > 200 ? '...' : '') : 'N/A';
+        console.log(`${logPrefix} Tool '${toolName}' execution completed by executor. Success: ${coreExecutionResult.success}. Output Preview: ${outputPreview}. Error: ${coreExecutionResult.error || 'N/A'}`);
+    }
+
+    // Map CoreToolExecutionResult to ToolCallResult for GMI
     return {
-      toolCallId,
-      toolName,
-      output: executionResult.output, // The actual output from the tool
-      isError: false,
-      // contentType: executionResult.contentType, // If ToolCallResult supports contentType
+      tool_call_id: llmProvidedCallId, // This is the ID from the LLM request
+      toolName: toolName, // Name of the tool that was called
+      output: coreExecutionResult.success ? coreExecutionResult.output : null, // Output from the tool
+      isError: !coreExecutionResult.success,
+      errorDetails: !coreExecutionResult.success ? {
+          message: coreExecutionResult.error || `Tool '${toolName}' failed.`,
+          details: coreExecutionResult.details, // Additional details from executor/tool
+          // code: GMIErrorCode.TOOL_EXECUTION_ERROR, // Could map internal tool error codes here
+      } : undefined,
+      // contentType: coreExecutionResult.contentType, // If ToolCallResult needs this
     };
   }
 
   /**
    * @inheritdoc
+   * Checks the health of the ToolOrchestrator and its key dependencies (Permission Manager, Executor).
+   *
+   * @returns {Promise<{ isHealthy: boolean; details?: any }>} An object indicating overall health and details from components.
    */
   public async checkHealth(): Promise<{ isHealthy: boolean; details?: any }> {
     this.ensureInitialized();
-    let executorHealth = { isHealthy: true, details: "ToolExecutor health not explicitly checked by orchestrator's basic health check." };
-    if(this.toolExecutor && typeof (this.toolExecutor as any).checkHealth === 'function') { // Basic check if ToolExecutor has health method
-        try {
-            executorHealth = await (this.toolExecutor as any).checkHealth();
-        } catch (e) {
-            executorHealth = {isHealthy: false, details: "Failed to get ToolExecutor health."};
-        }
+    let pmHealth = { isHealthy: true, details: "ToolPermissionManager health not explicitly checked or no checkHealth method." };
+    if(this.permissionManager && typeof (this.permissionManager as any).checkHealth === 'function') {
+        try { pmHealth = await (this.permissionManager as any).checkHealth(); }
+        catch (e: any) { pmHealth = {isHealthy: false, details: `Failed to get ToolPermissionManager health: ${e.message}`}; }
     }
-     let permissionManagerHealth = { isHealthy: true, details: "ToolPermissionManager health not explicitly checked by orchestrator's basic health check." };
-     // Add similar check for permissionManager if it gets a health check method
 
+    let execHealth = { isHealthy: true, details: "ToolExecutor health not explicitly checked or no checkHealth method." };
+    if(this.toolExecutor && typeof (this.toolExecutor as any).checkHealth === 'function') {
+        try { execHealth = await (this.toolExecutor as any).checkHealth(); }
+        catch (e: any) { execHealth = {isHealthy: false, details: `Failed to get ToolExecutor health: ${e.message}`}; }
+    }
 
-    const isHealthy = this.isInitialized && executorHealth.isHealthy && permissionManagerHealth.isHealthy;
+    const isOverallHealthy = this.isInitialized && pmHealth.isHealthy && execHealth.isHealthy;
 
     return {
-      isHealthy,
+      isHealthy: isOverallHealthy,
       details: {
         orchestratorId: this.orchestratorId,
-        status: this.isInitialized ? 'Initialized' : 'Not Initialized',
+        status: this.isInitialized ? 'INITIALIZED' : 'NOT_INITIALIZED',
         registeredToolCount: this.toolRegistry.size,
-        config: this.config, // Be mindful of exposing sensitive parts of config
-        toolExecutorStatus: executorHealth,
-        permissionManagerStatus: permissionManagerHealth,
+        configSnapshot: { // Expose non-sensitive parts of config
+            logToolCalls: this.config.logToolCalls,
+            allowDynamicRegistration: this.config.toolRegistrySettings.allowDynamicRegistration,
+            globalDisabledToolsCount: this.config.globalDisabledTools.length,
+        },
+        permissionManagerStatus: pmHealth,
+        toolExecutorStatus: execHealth,
       },
     };
   }
-
+  
   /**
-   * Shuts down registered tools that have a shutdown method.
+   * Shuts down all registered tools that implement the `shutdown` method.
+   * This is typically called as part of the orchestrator's own shutdown sequence.
    * @private
+   * @async
    */
   private async shutdownRegisteredTools(): Promise<void> {
+     console.log(`ToolOrchestrator (ID: ${this.orchestratorId}): Shutting down registered tools...`);
+     // Prefer using ToolExecutor's bulk shutdown if available and it manages tool instances
      if (this.toolExecutor && typeof this.toolExecutor.shutdownAllTools === 'function') {
-        await this.toolExecutor.shutdownAllTools();
-    } else {
-        // Manual shutdown if executor doesn't have a bulk method
-        for (const tool of this.toolRegistry.values()) {
-            if (typeof tool.shutdown === 'function') {
-                try {
-                    await tool.shutdown();
-                } catch (e: any) {
-                    console.error(`ToolOrchestrator (ID: ${this.orchestratorId}): Error shutting down tool '${tool.name}': ${e.message}`);
-                }
-            }
+        try {
+            await this.toolExecutor.shutdownAllTools();
+            console.log(`ToolOrchestrator (ID: ${this.orchestratorId}): ToolExecutor completed shutdownAllTools.`);
+        } catch (e: any) {
+            console.error(`ToolOrchestrator (ID: ${this.orchestratorId}): Error during ToolExecutor.shutdownAllTools: ${e.message}`, e);
         }
-    }
+     } else {
+         // Manual shutdown if executor doesn't have a bulk method or if orchestrator owns tool instances directly
+         for (const tool of this.toolRegistry.values()) {
+             if (typeof tool.shutdown === 'function') {
+                 try {
+                     await tool.shutdown();
+                 } catch (e: any) {
+                     console.error(`ToolOrchestrator (ID: ${this.orchestratorId}): Error shutting down tool '${tool.name}' (ID: '${tool.id}'): ${e.message}`);
+                 }
+             }
+         }
+         console.log(`ToolOrchestrator (ID: ${this.orchestratorId}): Manual shutdown attempt for registered tools complete.`);
+     }
   }
-
 
   /**
    * @inheritdoc
+   * Gracefully shuts down the ToolOrchestrator. This involves shutting down any
+   * registered tools that require cleanup and clearing the internal tool registry.
+   * Dependencies like `IToolPermissionManager` and `ToolExecutor` are assumed to be managed
+   * externally if they were injected.
    */
   public async shutdown(): Promise<void> {
     if (!this.isInitialized) {
-      console.log(`ToolOrchestrator (ID: ${this.orchestratorId}): Shutdown called but not initialized.`);
+      console.log(`ToolOrchestrator (ID: ${this.orchestratorId}): Shutdown called, but orchestrator was not initialized or already shut down.`);
       return;
     }
-    console.log(`ToolOrchestrator (ID: ${this.orchestratorId}): Shutting down...`);
+    console.log(`ToolOrchestrator (ID: ${this.orchestratorId}): Initiating shutdown sequence...`);
+    
     await this.shutdownRegisteredTools();
     this.toolRegistry.clear();
-    // Shutdown dependencies if orchestrator "owns" them.
-    // For now, assuming executor and permissionManager lifecycles are managed externally if passed in.
-    this.isInitialized = false;
-    console.log(`ToolOrchestrator (ID: ${this.orchestratorId}) shut down.`);
+    
+    // If this orchestrator "owned" the permissionManager or toolExecutor instances
+    // (i.e., created them itself), it should call their shutdown methods here.
+    // Assuming they are injected, their lifecycle is managed externally.
+
+    this.isInitialized = false; // Mark as uninitialized
+    console.log(`ToolOrchestrator (ID: ${this.orchestratorId}) shutdown complete. Registry cleared.`);
   }
 }
