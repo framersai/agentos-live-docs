@@ -17,8 +17,7 @@ import { IGMI, GMITurnInput, GMIOutputChunk, GMIOutput, ToolCall, ToolResultPayl
 import { ConversationManager } from '../core/conversation/ConversationManager';
 import { ConversationContext } from '../core/conversation/ConversationContext';
 import { ToolOrchestrator } from '../tools/ToolOrchestrator';
-import { ToolExecutionResult } from '../tools/interfaces/ToolResult'; // Assuming this type exists
-import { StreamingManager } from '../core/streaming/StreamingManager'; // For advanced streaming logic
+import { ToolExecutionResult } from '../tools/interfaces/ToolResult';
 import { v4 as uuidv4 } from 'uuid';
 
 /**
@@ -54,13 +53,11 @@ export interface AgentOSOrchestratorConfig {
  * @property {ToolOrchestrator} toolOrchestrator - Orchestrates the execution of tools.
  * @property {ConversationManager} conversationManager - Manages loading and saving
  * of persistent conversation contexts.
- * @property {StreamingManager} streamingManager - Manages the buffering and delivery of streaming chunks.
  */
 export interface AgentOSOrchestratorDependencies {
   gmiManager: GMIManager;
   toolOrchestrator: ToolOrchestrator;
   conversationManager: ConversationManager;
-  streamingManager: StreamingManager;
 }
 
 /**
@@ -88,9 +85,9 @@ export class AgentOSOrchestrator {
     sessionId: string,
     personaId: string,
     conversationId: string,
-    conversationContext: ConversationContext, // Keep a reference to the active context
-    bufferedResponseChunks: AgentOSResponse[], // For non-immediate delivery of tool results, etc.
-    // Additional state for tracking tool call IDs and their streams if needed
+    conversationContext: ConversationContext,
+    bufferedResponseChunks: AgentOSResponse[],
+    userApiKeys?: Record<string, string>,
   }> = new Map();
 
   constructor() {}
@@ -114,8 +111,8 @@ export class AgentOSOrchestrator {
       return;
     }
 
-    if (!dependencies.gmiManager || !dependencies.toolOrchestrator || !dependencies.conversationManager || !dependencies.streamingManager) {
-      throw new Error('AgentOSOrchestrator: Missing essential dependencies (gmiManager, toolOrchestrator, conversationManager, streamingManager).');
+    if (!dependencies.gmiManager || !dependencies.toolOrchestrator || !dependencies.conversationManager) {
+      throw new Error('AgentOSOrchestrator: Missing essential dependencies (gmiManager, toolOrchestrator, conversationManager).');
     }
 
     this.config = {
@@ -132,6 +129,78 @@ export class AgentOSOrchestrator {
     if (!this.initialized) {
       throw new Error('AgentOSOrchestrator is not initialized. Call initialize() first.');
     }
+  }
+
+  /**
+   * Helper method to create response chunks without StreamingManager
+   */
+  private createChunk(
+    type: AgentOSResponseChunkType,
+    streamId: string,
+    gmiInstanceId: string,
+    personaId: string,
+    isFinal: boolean,
+    data: any
+  ): AgentOSResponse {
+    const baseChunk = {
+      type,
+      streamId,
+      gmiInstanceId,
+      personaId,
+      isFinal,
+      timestamp: new Date().toISOString(),
+    };
+
+    switch (type) {
+      case AgentOSResponseChunkType.TEXT_DELTA:
+        return { ...baseChunk, textDelta: data.textDelta } as AgentOSTextDeltaChunk;
+      case AgentOSResponseChunkType.SYSTEM_PROGRESS:
+        return { ...baseChunk, message: data.message, progressPercentage: data.progressPercentage, statusCode: data.statusCode } as AgentOSSystemProgressChunk;
+      case AgentOSResponseChunkType.TOOL_CALL_REQUEST:
+        return { ...baseChunk, toolCalls: data.toolCalls, rationale: data.rationale } as AgentOSToolCallRequestChunk;
+      case AgentOSResponseChunkType.TOOL_RESULT_EMISSION:
+        return { ...baseChunk, toolCallId: data.toolCallId, toolName: data.toolName, toolResult: data.toolResult, isSuccess: data.isSuccess, errorMessage: data.errorMessage } as AgentOSToolResultEmissionChunk;
+      case AgentOSResponseChunkType.UI_COMMAND:
+        return { ...baseChunk, uiCommands: data.uiCommands } as AgentOSUICommandChunk;
+      case AgentOSResponseChunkType.ERROR:
+        return { ...baseChunk, code: data.code, message: data.message, details: data.details } as AgentOSErrorChunk;
+      case AgentOSResponseChunkType.FINAL_RESPONSE:
+        return { 
+          ...baseChunk, 
+          finalResponseText: data.finalResponseText,
+          finalToolCalls: data.finalToolCalls,
+          finalUiCommands: data.finalUiCommands,
+          audioOutput: data.audioOutput,
+          imageOutput: data.imageOutput,
+          usage: data.usage,
+          reasoningTrace: data.reasoningTrace,
+          error: data.error,
+          updatedConversationContext: data.updatedConversationContext,
+          activePersonaDetails: data.activePersonaDetails
+        } as AgentOSFinalResponseChunk;
+      default:
+        throw new Error(`Unknown chunk type: ${type}`);
+    }
+  }
+
+  /**
+   * Helper method to create error chunks
+   */
+  private createErrorChunk(
+    streamId: string,
+    personaId: string,
+    code: string,
+    message: string,
+    details?: any
+  ): AgentOSErrorChunk {
+    return this.createChunk(
+      AgentOSResponseChunkType.ERROR,
+      streamId,
+      'unknown',
+      personaId,
+      true,
+      { code, message, details }
+    ) as AgentOSErrorChunk;
   }
 
   /**
@@ -153,10 +222,10 @@ export class AgentOSOrchestrator {
   public async *orchestrateTurn(input: AgentOSInput): AsyncGenerator<AgentOSResponse> {
     this.ensureInitialized();
 
-    const streamId = uuidv4(); // Unique ID for this orchestration stream
+    const streamId = uuidv4();
     let gmi: IGMI | undefined;
     let conversationContext: ConversationContext | undefined;
-    let personaIdToUse = input.selectedPersonaId; // This might change if the GMI decides to switch
+    let personaIdToUse = input.selectedPersonaId;
 
     try {
       console.log(`Orchestrator: Starting turn for stream ${streamId}, user ${input.userId}, session ${input.sessionId}`);
@@ -165,21 +234,20 @@ export class AgentOSOrchestrator {
       try {
         const result = await this.dependencies.gmiManager.getOrCreateGMIForPersona(
           input.userId,
-          input.sessionId, // Session ID is now the key for GMI management
+          input.sessionId,
           personaIdToUse,
-          input.conversationId, // Pass conversationId for loading existing context
-          input.options?.preferredModelId, // Pass preferences for GMI initialization
+          input.conversationId,
+          input.options?.preferredModelId,
           input.options?.preferredProviderId,
           input.userApiKeys
         );
         gmi = result.gmi;
         conversationContext = result.conversationContext;
-        // Update the personaIdToUse if the GMI returned an active persona
         personaIdToUse = gmi.getCurrentPrimaryPersonaId();
 
-        // Register the active stream for later tool result handling
+        // Register the active stream
         this.activeStreams.set(streamId, {
-          iterator: gmi.processTurnStream({} as GMITurnInput), // Placeholder, actual GMI stream starts below
+          iterator: gmi.processTurnStream({} as GMITurnInput),
           gmi: gmi,
           userId: input.userId,
           sessionId: input.sessionId,
@@ -187,9 +255,10 @@ export class AgentOSOrchestrator {
           conversationId: conversationContext.id,
           conversationContext: conversationContext,
           bufferedResponseChunks: [],
+          userApiKeys: input.userApiKeys,
         });
 
-        yield this.dependencies.streamingManager.createChunk(
+        yield this.createChunk(
           AgentOSResponseChunkType.SYSTEM_PROGRESS,
           streamId,
           gmi.instanceId,
@@ -200,14 +269,14 @@ export class AgentOSOrchestrator {
 
       } catch (err: any) {
         console.error(`Orchestrator: Failed to get/create GMI or load context for stream ${streamId}:`, err);
-        yield this.dependencies.streamingManager.createErrorChunk(
+        yield this.createErrorChunk(
           streamId,
           personaIdToUse || 'unknown',
           'GMI_INIT_ERROR',
           `Failed to prepare agent: ${err.message}`,
           err
         );
-        return; // Terminate early
+        return;
       }
 
       // Initial GMI turn input
@@ -220,9 +289,9 @@ export class AgentOSOrchestrator {
         userApiKeys: input.userApiKeys,
         userFeedback: input.userFeedback,
         explicitPersonaSwitchId: input.selectedPersonaId,
-        taskHint: 'user_query', // Default hint
-        personaStateOverrides: [], // Can be populated by options if needed
-        modelSelectionOverrides: { // Pass through model selection preferences from AgentOSInput
+        taskHint: 'user_query',
+        personaStateOverrides: [],
+        modelSelectionOverrides: {
           preferredModelId: input.options?.preferredModelId,
           preferredProviderId: input.options?.preferredProviderId,
           temperature: input.options?.temperature,
@@ -234,6 +303,7 @@ export class AgentOSOrchestrator {
       let currentGMIOutput: GMIOutputChunk | null = null;
       let toolCallIteration = 0;
       let isGMIProcessingComplete = false;
+      let finalGMIResult: GMIOutput | undefined; // Move this to broader scope
 
       // Loop for GMI processing and tool execution
       while (!isGMIProcessingComplete && toolCallIteration <= this.config.maxToolCallIterations) {
@@ -242,22 +312,13 @@ export class AgentOSOrchestrator {
 
         let gmiStream: AsyncGenerator<GMIOutputChunk, GMIOutput, undefined>;
         if (currentGMIOutput && currentGMIOutput.type === 'ToolCallRequest' && currentGMIOutput.toolCalls) {
-          // This path handles GMI's *next* turn after tool results are fed back.
-          // The GMI.handleToolResult method would be the continuation.
-          // For now, we simulate by re-calling processTurnStream with updated context.
-          // A more robust design: handleToolResult returns an AsyncGenerator too.
-          // The provided GMI.ts implementation *does* make handleToolResult return GMIOutput,
-          // so we need to bridge that.
           console.error("Orchestrator: Direct tool call iteration loop is currently simplified. GMI.handleToolResult doesn't return a stream iterator directly.");
-          // We will adjust this to call the new handleToolResult and then potentially restart the main loop with its output.
-          // For now, assume GMI.processTurnStream handles subsequent internal turns.
         }
 
         // Start or continue the GMI's processing stream
-        gmiStream = gmi.processTurnStream(gmiInput); // Pass original input, GMI gets its own history/state
+        gmiStream = gmi.processTurnStream(gmiInput);
 
         let accumulatedToolCalls: ToolCall[] = [];
-        let finalGMIResult: GMIOutput | undefined;
 
         for await (const gmiChunk of gmiStream) {
           currentGMIOutput = gmiChunk;
@@ -267,43 +328,34 @@ export class AgentOSOrchestrator {
           switch (gmiChunk.type) {
             case 'GMIResponseChunk':
               if (gmiChunk.responseTextDelta) {
-                yield this.dependencies.streamingManager.createChunk(
+                yield this.createChunk(
                   AgentOSResponseChunkType.TEXT_DELTA,
                   streamId, gmi.instanceId, personaIdToUse, false, { textDelta: gmiChunk.responseTextDelta }
                 );
               }
-              // Handle streaming tool calls delta accumulation if GMI supports it
-              if (gmiChunk.toolCallsDeltas && gmiChunk.toolCallsDeltas.length > 0) {
-                // This is a complex part. The GMI.ts provided accumulates these,
-                // but the orchestrator needs to recognize when a full tool call object is formed.
-                // For now, we assume GMI.processTurnStream yields a full `ToolCallRequest` chunk
-                // when it's ready for execution, rather than just deltas.
-                // If deltas are processed, we'd need internal state in orchestrator to build `ToolCall` objects.
-              }
               break;
             case 'SystemProgress':
-              yield this.dependencies.streamingManager.createChunk(
+              yield this.createChunk(
                 AgentOSResponseChunkType.SYSTEM_PROGRESS,
                 streamId, gmi.instanceId, personaIdToUse, false, { message: gmiChunk.message, progressPercentage: gmiChunk.progressPercentage, statusCode: gmiChunk.statusCode }
               );
               break;
-            case 'ToolCallRequest': // GMI indicates it wants to call tools
+            case 'ToolCallRequest':
               if (gmiChunk.toolCalls && gmiChunk.toolCalls.length > 0) {
-                accumulatedToolCalls.push(...gmiChunk.toolCalls); // Accumulate all tools requested
-                yield this.dependencies.streamingManager.createChunk(
+                accumulatedToolCalls.push(...gmiChunk.toolCalls);
+                yield this.createChunk(
                   AgentOSResponseChunkType.TOOL_CALL_REQUEST,
                   streamId, gmi.instanceId, personaIdToUse, false,
                   { toolCalls: gmiChunk.toolCalls, rationale: gmiChunk.responseText || 'Agent requires tool execution.' }
                 );
-                // The stream is not final yet, but GMI wants to pause for tool execution.
-                isGMIProcessingComplete = false; // GMI will continue after tool results
-                finalGMIResult = gmiChunk; // This is actually the output with tool calls
-                break; // Break the FOR loop to execute tools
+                isGMIProcessingComplete = false;
+                finalGMIResult = gmiChunk;
+                break;
               }
               break;
             case 'UICommand':
               if (gmiChunk.uiCommands && gmiChunk.uiCommands.length > 0) {
-                yield this.dependencies.streamingManager.createChunk(
+                yield this.createChunk(
                   AgentOSResponseChunkType.UI_COMMAND,
                   streamId, gmi.instanceId, personaIdToUse, false, { uiCommands: gmiChunk.uiCommands }
                 );
@@ -311,42 +363,43 @@ export class AgentOSOrchestrator {
               break;
             case 'Error':
               console.error(`Orchestrator: GMI error chunk for stream ${streamId}:`, gmiChunk.error);
-              yield this.dependencies.streamingManager.createErrorChunk(
+              yield this.createErrorChunk(
                 streamId,
                 personaIdToUse,
                 gmiChunk.error?.code || 'GMI_ERROR',
                 gmiChunk.error?.message || 'An unknown GMI error occurred.',
                 gmiChunk.error?.details
               );
-              finalGMIResult = gmiChunk; // Capture error as final result
-              isGMIProcessingComplete = true; // Terminate this logical turn
-              break;
-            case 'FinalResponse': // This is the final output from GMI
               finalGMIResult = gmiChunk;
-              isGMIProcessingComplete = true; // Signal completion
+              isGMIProcessingComplete = true;
+              break;
+            case 'FinalResponse':
+              finalGMIResult = gmiChunk;
+              isGMIProcessingComplete = true;
               break;
           }
 
-          if (gmiChunk.isFinal && !gmiChunk.toolCalls) { // GMI explicitly says it's final and not calling tools
+          if (gmiChunk.isFinal && !gmiChunk.toolCalls) {
             finalGMIResult = gmiChunk;
             isGMIProcessingComplete = true;
-            break; // Exit the for-await loop
+            break;
           }
-        } // End of GMI stream for-await
+        }
 
         // If GMI requested tool calls, execute them and re-loop
         if (finalGMIResult && finalGMIResult.toolCalls && finalGMIResult.toolCalls.length > 0 && !finalGMIResult.isFinal) {
           console.log(`Orchestrator: GMI requested ${finalGMIResult.toolCalls.length} tool calls for stream ${streamId}.`);
-          // Execute tools concurrently
+          
+          // Execute tools concurrently with proper typing
           const toolResults: ToolExecutionResult[] = await Promise.all(
-            finalGMIResult.toolCalls.map(toolCall =>
+            finalGMIResult.toolCalls.map((toolCall: ToolCall) =>
               this.dependencies.toolOrchestrator.executeTool(
-                toolCall.function.name, // toolId
-                toolCall.function.arguments, // args
+                toolCall.function.name,
+                toolCall.function.arguments,
                 input.userId,
                 gmi!.instanceId,
                 conversationContext!.id,
-                toolCall.id // toolCallId
+                toolCall.id
               )
             )
           );
@@ -358,21 +411,18 @@ export class AgentOSOrchestrator {
               ? { type: 'success', result: result.output }
               : { type: 'error', error: { code: result.errorCode || 'TOOL_EXEC_FAILED', message: result.errorMessage || 'Unknown tool error.' } };
 
-            // IMPORTANT: Call GMI's handleToolResult to continue its processing
-            // GMI's handleToolResult returns a single GMIOutput, not a stream generator.
-            // This means GMI makes its new "decision" after the tool call.
             const nextGMIOutput: GMIOutput = await gmi!.handleToolResult(
               result.callId,
               result.toolId,
               toolResultPayload,
               input.userId,
-              input.userApiKeys || {} // Pass user API keys for subsequent LLM calls within GMI
+              input.userApiKeys || {}
             );
-            currentGMIOutput = nextGMIOutput; // Update currentGMIOutput to be the result of handleToolResult
-            isGMIProcessingComplete = nextGMIOutput.isFinal; // Check if GMI is now complete
+            currentGMIOutput = nextGMIOutput;
+            isGMIProcessingComplete = nextGMIOutput.isFinal;
 
             // Yield a chunk indicating tool result emission
-            yield this.dependencies.streamingManager.createChunk(
+            yield this.createChunk(
               AgentOSResponseChunkType.TOOL_RESULT_EMISSION,
               streamId, gmi!.instanceId, personaIdToUse, false,
               {
@@ -386,56 +436,53 @@ export class AgentOSOrchestrator {
 
             // If GMI's response to the tool result contains text, yield it
             if (nextGMIOutput.responseText) {
-              yield this.dependencies.streamingManager.createChunk(
+              yield this.createChunk(
                 AgentOSResponseChunkType.TEXT_DELTA,
                 streamId, gmi!.instanceId, personaIdToUse, false,
                 { textDelta: nextGMIOutput.responseText }
               );
             }
+            
             // If GMI's response to the tool result contains UI commands, yield them
             if (nextGMIOutput.uiCommands && nextGMIOutput.uiCommands.length > 0) {
-              yield this.dependencies.streamingManager.createChunk(
+              yield this.createChunk(
                 AgentOSResponseChunkType.UI_COMMAND,
                 streamId, gmi!.instanceId, personaIdToUse, false,
                 { uiCommands: nextGMIOutput.uiCommands }
               );
             }
 
-            // If GMI decides to make *new* tool calls after processing the previous one,
-            // we should re-enter the tool execution loop.
-            // This is handled by setting isGMIProcessingComplete = false and allowing the while loop to continue.
+            // If GMI decides to make new tool calls after processing the previous one
             if (nextGMIOutput.toolCalls && nextGMIOutput.toolCalls.length > 0) {
-              accumulatedToolCalls = nextGMIOutput.toolCalls; // Override with new tool calls
-              isGMIProcessingComplete = false; // Need to loop again for new tools
-              break; // Break out of inner toolResults loop to re-enter outer while loop
+              accumulatedToolCalls = nextGMIOutput.toolCalls;
+              isGMIProcessingComplete = false;
+              break;
             }
+            
             // If GMI signals final after handling tool result, break the loop
             if (nextGMIOutput.isFinal) {
-              finalGMIResult = nextGMIOutput; // This is the final result of the turn
+              finalGMIResult = nextGMIOutput;
               isGMIProcessingComplete = true;
-              break; // Break out of toolResults loop and main while loop
+              break;
             }
           }
-          // If the inner loop finished without GMI signaling final or new tool calls,
-          // then the GMI's last response (currentGMIOutput) should be final for this iteration.
         } else {
-          // If no tool calls were requested or finalGMIResult already handled it
           isGMIProcessingComplete = (finalGMIResult && finalGMIResult.isFinal) ?? false;
         }
 
-        // If max tool call iterations reached, force termination and yield error/warning
+        // If max tool call iterations reached, force termination
         if (toolCallIteration >= this.config.maxToolCallIterations && !isGMIProcessingComplete) {
           console.warn(`Orchestrator: Max tool call iterations reached for stream ${streamId}. Forcing stream termination.`);
-          yield this.dependencies.streamingManager.createErrorChunk(
+          yield this.createErrorChunk(
             streamId,
             personaIdToUse,
             'MAX_TOOL_ITERATIONS_EXCEEDED',
             'Agent reached maximum tool call iterations. Please clarify your request or try a different approach.',
             { maxIterations: this.config.maxToolCallIterations }
           );
-          isGMIProcessingComplete = true; // Force exit
+          isGMIProcessingComplete = true;
         }
-      } // End of main while loop (GMI processing + tool execution)
+      }
 
       // Final processing after GMI is complete or loop terminates
       if (finalGMIResult) {
@@ -446,25 +493,28 @@ export class AgentOSOrchestrator {
         }
 
         // Construct and yield final response chunk
-        yield this.dependencies.streamingManager.createFinalResponseChunk(
+        yield this.createChunk(
+          AgentOSResponseChunkType.FINAL_RESPONSE,
           streamId,
-          gmi!.instanceId, // gmi is guaranteed to be defined here
+          gmi!.instanceId,
           personaIdToUse,
-          finalGMIResult.responseText,
-          finalGMIResult.toolCalls,
-          finalGMIResult.uiCommands,
-          finalGMIResult.audioOutput,
-          finalGMIResult.imageOutput,
-          finalGMIResult.usage,
-          finalGMIResult.reasoningTrace,
-          finalGMIResult.error,
-          conversationContext, // Include the updated conversation context in the final chunk
-          gmi!.getCurrentPersonaDefinition() // Pass the full persona definition for active details
+          true,
+          {
+            finalResponseText: finalGMIResult.responseText,
+            finalToolCalls: finalGMIResult.toolCalls,
+            finalUiCommands: finalGMIResult.uiCommands,
+            audioOutput: finalGMIResult.audioOutput,
+            imageOutput: finalGMIResult.imageOutput,
+            usage: finalGMIResult.usage,
+            reasoningTrace: finalGMIResult.reasoningTrace,
+            error: finalGMIResult.error,
+            updatedConversationContext: conversationContext,
+            activePersonaDetails: gmi!.getCurrentPersonaDefinition()
+          }
         );
       } else {
-        // Fallback if no finalGMIResult was produced (e.g., unexpected early termination)
         console.error(`Orchestrator: No final GMI result for stream ${streamId}. Unexpected termination.`);
-        yield this.dependencies.streamingManager.createErrorChunk(
+        yield this.createErrorChunk(
           streamId,
           personaIdToUse,
           'ORCHESTRATOR_NO_FINAL_GMI_OUTPUT',
@@ -475,7 +525,7 @@ export class AgentOSOrchestrator {
 
     } catch (error: any) {
       console.error(`Orchestrator: Critical error in orchestrateTurn for stream ${streamId}:`, error);
-      yield this.dependencies.streamingManager.createErrorChunk(
+      yield this.createErrorChunk(
         streamId,
         personaIdToUse || 'unknown',
         'ORCHESTRATOR_CRITICAL_ERROR',
@@ -483,7 +533,6 @@ export class AgentOSOrchestrator {
         error
       );
     } finally {
-      // Clean up active stream registration
       this.activeStreams.delete(streamId);
       console.log(`Orchestrator: Stream ${streamId} finished and cleaned up.`);
     }
@@ -491,19 +540,7 @@ export class AgentOSOrchestrator {
 
   /**
    * Handles the result of an external tool execution, feeding it back into the
-   * relevant GMI instance for continued processing. This method is typically
-   * called asynchronously (e.g., via a webhook) after a tool has completed.
-   *
-   * @async
-   * @generator
-   * @param {string} streamId - The original stream ID that initiated the tool call.
-   * @param {string} toolCallId - The unique ID of the tool call whose result is being provided.
-   * @param {string} toolName - The name of the tool that was executed.
-   * @param {any} toolOutput - The raw output or result from the tool execution.
-   * @param {boolean} isSuccess - Indicates whether the tool execution was successful.
-   * @param {string} [errorMessage] - An optional error message if `isSuccess` is false.
-   * @yields {AgentOSResponse} - A stream of `AgentOSResponse` chunks representing
-   * the agent's continued thought process and response.
+   * relevant GMI instance for continued processing.
    */
   public async *orchestrateToolResult(
     streamId: string,
@@ -518,9 +555,9 @@ export class AgentOSOrchestrator {
     const activeStreamInfo = this.activeStreams.get(streamId);
     if (!activeStreamInfo) {
       console.error(`Orchestrator: Received tool result for unknown or inactive streamId: ${streamId}`);
-      yield this.dependencies.streamingManager.createErrorChunk(
+      yield this.createErrorChunk(
         streamId,
-        'unknown', // Persona ID unknown for inactive stream
+        'unknown',
         'INACTIVE_STREAM',
         `Tool result received for an inactive or unknown stream (${streamId}).`,
         { toolCallId, toolName, isSuccess, errorMessage }
@@ -528,7 +565,7 @@ export class AgentOSOrchestrator {
       return;
     }
 
-    const { gmi, userId, userApiKeys, conversationContext, personaId } = activeStreamInfo; // Assuming userApiKeys are stored
+    const { gmi, userId, conversationContext, personaId, userApiKeys } = activeStreamInfo;
     const toolResultPayload: ToolResultPayload = isSuccess
       ? { type: 'success', result: toolOutput }
       : { type: 'error', error: { code: 'EXTERNAL_TOOL_ERROR', message: errorMessage || 'External tool execution failed.' } };
@@ -536,8 +573,7 @@ export class AgentOSOrchestrator {
     console.log(`Orchestrator: Feeding tool result for stream ${streamId}, tool call ${toolCallId} (${toolName}) back to GMI.`);
 
     try {
-      // Yield a chunk indicating tool result emission (even if GMI just produced it internally, external trigger is important)
-      yield this.dependencies.streamingManager.createChunk(
+      yield this.createChunk(
         AgentOSResponseChunkType.TOOL_RESULT_EMISSION,
         streamId, gmi.instanceId, personaId, false,
         {
@@ -549,33 +585,32 @@ export class AgentOSOrchestrator {
         }
       );
 
-      // Call GMI's handleToolResult to process the outcome. This *will* lead to a new LLM call inside GMI.
-      // GMI's handleToolResult returns a single GMIOutput, not a stream, for simplicity.
       const gmiResponseAfterTool: GMIOutput = await gmi.handleToolResult(
         toolCallId,
         toolName,
         toolResultPayload,
         userId,
-        userApiKeys // Need to pass userApiKeys back to GMI for its internal LLM calls
+        userApiKeys || {}
       );
 
-      // Now, yield chunks based on GMI's full response after processing the tool result
       if (gmiResponseAfterTool.responseText) {
-        yield this.dependencies.streamingManager.createChunk(
+        yield this.createChunk(
           AgentOSResponseChunkType.TEXT_DELTA,
           streamId, gmi.instanceId, personaId, false,
           { textDelta: gmiResponseAfterTool.responseText }
         );
       }
+      
       if (gmiResponseAfterTool.uiCommands && gmiResponseAfterTool.uiCommands.length > 0) {
-        yield this.dependencies.streamingManager.createChunk(
+        yield this.createChunk(
           AgentOSResponseChunkType.UI_COMMAND,
           streamId, gmi.instanceId, personaId, false,
           { uiCommands: gmiResponseAfterTool.uiCommands }
         );
       }
+      
       if (gmiResponseAfterTool.error) {
-        yield this.dependencies.streamingManager.createErrorChunk(
+        yield this.createErrorChunk(
           streamId,
           personaId,
           gmiResponseAfterTool.error.code,
@@ -584,26 +619,19 @@ export class AgentOSOrchestrator {
         );
       }
 
-      // Check if GMI is now final or requests new tool calls
       let isGMIProcessingComplete = gmiResponseAfterTool.isFinal;
       let newToolCalls: ToolCall[] | undefined = gmiResponseAfterTool.toolCalls;
 
-      // Handle subsequent tool calls initiated by GMI after processing the result
       if (newToolCalls && newToolCalls.length > 0) {
         console.log(`Orchestrator: GMI requested new tool calls after processing previous result for stream ${streamId}.`);
-        yield this.dependencies.streamingManager.createChunk(
+        yield this.createChunk(
           AgentOSResponseChunkType.TOOL_CALL_REQUEST,
           streamId, gmi.instanceId, personaId, false,
           { toolCalls: newToolCalls, rationale: 'Agent requires further tool execution after previous tool result.' }
         );
 
-        // This is a recursive step: the orchestrator now effectively re-enters the
-        // tool execution loop within this new "mini-turn" initiated by the GMI.
-        // For simplicity, we'll execute them immediately and then yield the final GMI result.
-        // A more complex implementation might have an internal state machine here.
-
         const subsequentToolResults: ToolExecutionResult[] = await Promise.all(
-          newToolCalls.map(newToolCall =>
+          newToolCalls.map((newToolCall: ToolCall) =>
             this.dependencies.toolOrchestrator.executeTool(
               newToolCall.function.name,
               newToolCall.function.arguments,
@@ -616,7 +644,7 @@ export class AgentOSOrchestrator {
         );
 
         for (const subResult of subsequentToolResults) {
-          yield this.dependencies.streamingManager.createChunk(
+          yield this.createChunk(
             AgentOSResponseChunkType.TOOL_RESULT_EMISSION,
             streamId, gmi.instanceId, personaId, false,
             {
@@ -627,24 +655,25 @@ export class AgentOSOrchestrator {
               errorMessage: subResult.errorMessage,
             }
           );
-          // And then feed *these* results back to GMI for a final wrap-up
+          
           const finalWrapUpGMIOutput = await gmi.handleToolResult(
             subResult.callId,
             subResult.toolId,
             subResult.isSuccess ? { type: 'success', result: subResult.output } : { type: 'error', error: { code: subResult.errorCode || 'SUB_TOOL_ERROR', message: subResult.errorMessage || 'Subsequent tool failed.' } },
             userId,
-            userApiKeys // Pass user API keys
+            userApiKeys || {}
           );
 
           if (finalWrapUpGMIOutput.responseText) {
-            yield this.dependencies.streamingManager.createChunk(
+            yield this.createChunk(
               AgentOSResponseChunkType.TEXT_DELTA,
               streamId, gmi.instanceId, personaId, false,
               { textDelta: finalWrapUpGMIOutput.responseText }
             );
           }
+          
           if (finalWrapUpGMIOutput.uiCommands && finalWrapUpGMIOutput.uiCommands.length > 0) {
-            yield this.dependencies.streamingManager.createChunk(
+            yield this.createChunk(
               AgentOSResponseChunkType.UI_COMMAND,
               streamId, gmi.instanceId, personaId, false,
               { uiCommands: finalWrapUpGMIOutput.uiCommands }
@@ -652,12 +681,10 @@ export class AgentOSOrchestrator {
           }
 
           if (finalWrapUpGMIOutput.isFinal) {
-            isGMIProcessingComplete = true; // The agent is finally done
+            isGMIProcessingComplete = true;
           } else if (finalWrapUpGMIOutput.toolCalls && finalWrapUpGMIOutput.toolCalls.length > 0) {
-             // If we get *another* tool call, this path needs more sophisticated handling or a hard limit.
-             // For now, we'll just yield a warning and force final.
              console.warn(`Orchestrator: GMI requested excessive chained tool calls for stream ${streamId}. Forcing final response.`);
-             yield this.dependencies.streamingManager.createErrorChunk(
+             yield this.createErrorChunk(
                streamId,
                personaId,
                'EXCESSIVE_TOOL_CHAINING',
@@ -678,46 +705,52 @@ export class AgentOSOrchestrator {
         }
 
         // Yield final response chunk
-        yield this.dependencies.streamingManager.createFinalResponseChunk(
+        yield this.createChunk(
+          AgentOSResponseChunkType.FINAL_RESPONSE,
           streamId,
           gmi.instanceId,
           personaId,
-          gmiResponseAfterTool.responseText,
-          gmiResponseAfterTool.toolCalls,
-          gmiResponseAfterTool.uiCommands,
-          gmiResponseAfterTool.audioOutput,
-          gmiResponseAfterTool.imageOutput,
-          gmiResponseAfterTool.usage,
-          gmiResponseAfterTool.reasoningTrace,
-          gmiResponseAfterTool.error,
-          conversationContext,
-          gmi.getCurrentPersonaDefinition()
+          true,
+          {
+            finalResponseText: gmiResponseAfterTool.responseText,
+            finalToolCalls: gmiResponseAfterTool.toolCalls,
+            finalUiCommands: gmiResponseAfterTool.uiCommands,
+            audioOutput: gmiResponseAfterTool.audioOutput,
+            imageOutput: gmiResponseAfterTool.imageOutput,
+            usage: gmiResponseAfterTool.usage,
+            reasoningTrace: gmiResponseAfterTool.reasoningTrace,
+            error: gmiResponseAfterTool.error,
+            updatedConversationContext: conversationContext,
+            activePersonaDetails: gmi.getCurrentPersonaDefinition()
+          }
         );
       } else {
         // If GMI is not final but did not request new tools, it's an intermediate response.
-        // This scenario means the GMI expects more input from the user or an external event.
-        // For simplicity, we'll mark this as final for the tool result processing call.
         console.warn(`Orchestrator: GMI response after tool result for stream ${streamId} was not final and had no new tool calls. Forcing finalization of this tool result processing request.`);
-        yield this.dependencies.streamingManager.createFinalResponseChunk(
+        yield this.createChunk(
+          AgentOSResponseChunkType.FINAL_RESPONSE,
           streamId,
           gmi.instanceId,
           personaId,
-          gmiResponseAfterTool.responseText,
-          gmiResponseAfterTool.toolCalls,
-          gmiResponseAfterTool.uiCommands,
-          gmiResponseAfterTool.audioOutput,
-          gmiResponseAfterTool.imageOutput,
-          gmiResponseAfterTool.usage,
-          gmiResponseAfterTool.reasoningTrace,
-          gmiResponseAfterTool.error,
-          conversationContext,
-          gmi.getCurrentPersonaDefinition()
+          true,
+          {
+            finalResponseText: gmiResponseAfterTool.responseText,
+            finalToolCalls: gmiResponseAfterTool.toolCalls,
+            finalUiCommands: gmiResponseAfterTool.uiCommands,
+            audioOutput: gmiResponseAfterTool.audioOutput,
+            imageOutput: gmiResponseAfterTool.imageOutput,
+            usage: gmiResponseAfterTool.usage,
+            reasoningTrace: gmiResponseAfterTool.reasoningTrace,
+            error: gmiResponseAfterTool.error,
+            updatedConversationContext: conversationContext,
+            activePersonaDetails: gmi.getCurrentPersonaDefinition()
+          }
         );
       }
 
     } catch (error: any) {
       console.error(`Orchestrator: Critical error in orchestrateToolResult for stream ${streamId}:`, error);
-      yield this.dependencies.streamingManager.createErrorChunk(
+      yield this.createErrorChunk(
         streamId,
         personaId,
         'ORCHESTRATOR_TOOL_RESULT_CRITICAL_ERROR',

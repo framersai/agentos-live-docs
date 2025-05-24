@@ -1,30 +1,183 @@
+# File: docker-compose.yml
 version: '3.8'
 
 services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: vca-postgres
+    environment:
+      POSTGRES_DB: voice_chat_assistant
+      POSTGRES_USER: vca_user
+      POSTGRES_PASSWORD: vca_secure_password_change_in_production
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/prisma/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+    networks:
+      - voice_chat_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vca_user -d voice_chat_assistant"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: vca-redis
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - voice_chat_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
+  # Voice Chat Assistant Backend
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      target: development
+    container_name: vca-backend
     ports:
       - "3001:3001"
     environment:
-      - NODE_ENV=production
-    env_file:
-      - .env
+      # Core Application
+      - NODE_ENV=development
+      - PORT=3001
+      - FRONTEND_URL=http://localhost:3000
+      - APP_URL=http://localhost:3001
+      - LOG_LEVEL=debug
+      
+      # Database & Cache
+      - DATABASE_URL=postgresql://vca_user:vca_secure_password_change_in_production@postgres:5432/voice_chat_assistant
+      - REDIS_URL=redis://redis:6379
+      
+      # Authentication & Security
+      - JWT_SECRET=voice_chat_assistant_super_secure_jwt_secret_change_in_production_min_64_chars
+      - JWT_EXPIRES_IN=7d
+      - API_KEY_ENCRYPTION_KEY_HEX=a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456
+      
+      # LLM Provider API Keys (override with your actual keys)
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - OLLAMA_BASE_URL=http://ollama:11434
+      
+      # Pinecone Configuration
+      - PINECONE_API_KEY=${PINECONE_API_KEY:-pcsk_6ta4TK_Rjf4favtTHDmqL2YYtYecXwwgox9o2rGCeP8gQm3w3nGkkdzz5PK21994FLKrCW}
+      - PINECONE_ENVIRONMENT=us-east-1
+      - PINECONE_INDEX_NAME=vca
+      
+      # Model Preferences
+      - MODEL_PREF_GENERAL_CHAT=openai/gpt-4o-mini
+      - MODEL_PREF_CODING=openai/gpt-4o
+      - MODEL_PREF_DEFAULT_EMBEDDING=openai/text-embedding-3-small
+      
+      # Voice Chat Assistant Configuration
+      - DEFAULT_PERSONA_ID=voice_assistant_persona
+      - MAX_ACTIVE_CONVERSATIONS_IN_MEMORY=1000
+      - ENABLE_CONVERSATION_SUMMARIZATION=true
+      - COST_THRESHOLD=20.00
+      - PERSONA_DEFINITIONS_PATH=/app/backend/agentos/cognitive_substrate/personas/definitions
+      
+      # Storage
+      - STORAGE_PROVIDER=local_fs
+      - LOCAL_STORAGE_BASE_PATH=/app/storage
+      
     volumes:
-      - ./prompts:/app/prompts
+      - ./backend:/app
+      - /app/node_modules
+      - vca_storage:/app/storage
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - voice_chat_network
+    command: >
+      sh -c "
+        echo 'Waiting for database to be ready...' &&
+        npm run db:generate &&
+        npm run db:push &&
+        echo 'Database setup complete. Starting server...' &&
+        npm run dev
+      "
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
     restart: unless-stopped
 
+  # Voice Chat Assistant Frontend
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      target: development
+    container_name: vca-frontend
     ports:
-      - "80:80"
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - VITE_API_BASE_URL=http://localhost:3001/api/v1
+      - VITE_WS_URL=ws://localhost:3001
+      - VITE_APP_TITLE=Voice Chat Assistant
+      - VITE_APP_DESCRIPTION=An Intelligent, Voice-First Conversational AI Platform
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
     depends_on:
       - backend
+    networks:
+      - voice_chat_network
+    command: npm run dev -- --host 0.0.0.0
     restart: unless-stopped
 
+  # Optional: Ollama for local LLM
+  ollama:
+    image: ollama/ollama:latest
+    container_name: vca-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - voice_chat_network
+    profiles:
+      - "local-llm"
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  ollama_data:
+    driver: local
+  vca_storage:
+    driver: local
+
 networks:
-  default:
+  voice_chat_network:
     driver: bridge
+
+# Quick Start Commands:
+# 1. Basic setup: docker-compose up -d
+# 2. With local LLM: docker-compose --profile local-llm up -d
+# 3. View logs: docker-compose logs -f backend
+# 4. Stop: docker-compose down
