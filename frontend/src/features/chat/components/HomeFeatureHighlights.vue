@@ -22,44 +22,36 @@ import { PrismaClient, Conversation as PrismaConversation, ConversationMessage a
 /**
  * Configuration for the ConversationManager.
  * Defines settings for managing conversation contexts, including persistence options.
- *
- * @interface ConversationManagerConfig
- * @property {Partial<ConversationContextConfig>} [defaultConversationContextConfig] - Default configuration for newly created ConversationContext instances.
- * @property {number} [maxActiveConversationsInMemory=1000] - Maximum number of active conversations to keep in memory. LRU eviction may apply.
- * @property {number} [inactivityTimeoutMs=3600000] - Timeout in milliseconds for inactive conversations. If set, a cleanup process
- * might be implemented to evict conversations inactive for this duration. (Currently conceptual)
- * @property {boolean} [persistenceEnabled=false] - Controls whether Prisma is used for database persistence of conversations.
- * If true, a PrismaClient instance must be provided during initialization.
  */
 export interface ConversationManagerConfig {
+  /** Default configuration for newly created ConversationContext instances. */
   defaultConversationContextConfig?: Partial<ConversationContextConfig>;
+  /** Maximum number of active conversations to keep in memory. LRU eviction may apply. */
   maxActiveConversationsInMemory?: number;
+  /**
+   * Timeout in milliseconds for inactive conversations. If set, a cleanup process
+   * might be implemented to evict conversations inactive for this duration. (Currently conceptual)
+   * @default 3600000 (1 hour)
+   */
   inactivityTimeoutMs?: number;
+  /**
+   * Controls whether Prisma is used for database persistence of conversations.
+   * If true, a PrismaClient instance must be provided during initialization.
+   * @default false
+   */
   persistenceEnabled?: boolean;
 }
 
-/**
- * Defines the structure for creating Prisma ConversationMessage records, ensuring correct typing for JSON fields.
- * @private
- * @typedef {Object} PrismaMessageCreateInput
- * @property {string} id - The unique ID of the message.
- * @property {string} conversationId - The ID of the conversation this message belongs to.
- * @property {Date} timestamp - The timestamp of the message (Prisma expects Date).
- * @property {object | null} [tool_calls] - Tool calls associated with the message, stored as JSON.
- * @property {object | null} [metadata] - Metadata associated with the message, stored as JSON.
- * @property {object | null} [multimodalData] - Multimodal data associated with the message, stored as JSON.
- * @property {object | null} [voiceSettings] - Voice settings for the message, stored as JSON.
- */
-type PrismaMessageCreateInput = Omit<PrismaConversationMessageModel, 'conversationId' | 'createdAt' | 'updatedAt' > & {
-  // id is part of Omit, but explicitly listed for clarity as it's required for createMany
-  // conversationId is added separately in createMany
-  timestamp: Date;
-  tool_calls?: object | null;
-  metadata?: object | null;
+// Helper type for Prisma message creation, ensuring proper JSON handling.
+type PrismaMessageCreateInput = Omit<PrismaConversationMessageModel, 'id' | 'conversationId' | 'createdAt' | 'updatedAt'> & {
+  id: string; // id is required for createMany if not autoincrement and not cuid()/uuid() by default on model
+  conversationId: string;
+  timestamp: Date; // Prisma expects Date, ConversationMessage uses number
+  tool_calls?: object | null; // Prisma schema might use Json type
+  metadata?: object | null;   // Prisma schema might use Json type
   multimodalData?: object | null;
   voiceSettings?: object | null;
 };
-
 
 /**
  * @class ConversationManager
@@ -69,49 +61,11 @@ type PrismaMessageCreateInput = Omit<PrismaConversationMessageModel, 'conversati
  * GMI interactions.
  */
 export class ConversationManager {
-  /**
-   * Configuration for the ConversationManager instance.
-   * @private
-   * @type {Required<ConversationManagerConfig>}
-   */
   private config!: Required<ConversationManagerConfig>;
-
-  /**
-   * In-memory cache for active ConversationContext instances.
-   * Key: Conversation ID (sessionId of ConversationContext).
-   * Value: ConversationContext instance.
-   * @private
-   * @type {Map<string, ConversationContext>}
-   */
   private activeConversations: Map<string, ConversationContext>;
-
-  /**
-   * Optional IUtilityAI service instance, passed to ConversationContexts.
-   * @private
-   * @type {IUtilityAI | undefined}
-   */
   private utilityAIService?: IUtilityAI;
-
-  /**
-   * Optional PrismaClient instance for database interaction.
-   * @private
-   * @type {PrismaClient | undefined}
-   */
   private prisma?: PrismaClient;
-
-  /**
-   * Flag indicating if the manager has been successfully initialized.
-   * @private
-   * @type {boolean}
-   */
   private initialized: boolean = false;
-
-  /**
-   * Unique identifier for this ConversationManager instance.
-   * @public
-   * @readonly
-   * @type {string}
-   */
   public readonly managerId: string;
 
   /**
@@ -127,7 +81,6 @@ export class ConversationManager {
    * Initializes the ConversationManager with its configuration and dependencies.
    * This method sets up persistence if enabled and prepares the manager for operation.
    *
-   * @public
    * @async
    * @param {ConversationManagerConfig} config - Configuration for the manager.
    * @param {IUtilityAI} [utilityAIService] - Optional IUtilityAI instance, primarily
@@ -143,7 +96,9 @@ export class ConversationManager {
     prismaClient?: PrismaClient
   ): Promise<void> {
     if (this.initialized) {
-      console.warn(`ConversationManager (ID: ${this.managerId}) already initialized. Consider if re-initialization is intended and its effects on state.`);
+      console.warn(`ConversationManager (ID: ${this.managerId}) already initialized. Re-initializing could lead to unexpected state if not handled carefully.`);
+      // Potentially add logic to re-initialize or prevent re-initialization based on desired behavior.
+      // For now, allow re-initialization but log a warning.
     }
 
     this.config = {
@@ -151,7 +106,7 @@ export class ConversationManager {
       maxActiveConversationsInMemory: config.maxActiveConversationsInMemory ?? 1000,
       inactivityTimeoutMs: config.inactivityTimeoutMs ?? 3600000, // 1 hour
       persistenceEnabled: config.persistenceEnabled ?? false,
-      ...config, // Spread last to ensure explicit config values override defaults if provided
+      ...config,
     };
 
     this.utilityAIService = utilityAIService;
@@ -159,11 +114,17 @@ export class ConversationManager {
 
     if (this.config.persistenceEnabled && !this.prisma) {
       console.warn(`ConversationManager (ID: ${this.managerId}): Persistence is enabled in config, but no PrismaClient was provided. Persistence will be effectively disabled.`);
-      this.config.persistenceEnabled = false;
+      this.config.persistenceEnabled = false; // Correct the state
     }
 
     this.initialized = true;
     console.log(`ConversationManager (ID: ${this.managerId}) initialized. Persistence: ${this.config.persistenceEnabled}. Max in-memory: ${this.config.maxActiveConversationsInMemory}.`);
+
+    // Conceptual: Start periodic cleanup task for inactive conversations
+    // if (this.config.inactivityTimeoutMs > 0 && this.config.maxActiveConversationsInMemory > 0) {
+    //   // setInterval(() => this.cleanupInactiveConversations(), this.config.inactivityTimeoutMs / 2);
+    //   console.log(`ConversationManager (ID: ${this.managerId}): Inactive conversation cleanup conceptualized (interval: ${this.config.inactivityTimeoutMs / 2}ms).`);
+    // }
   }
 
   /**
@@ -186,16 +147,15 @@ export class ConversationManager {
    * If no `conversationId` is provided, a new one is generated.
    * Manages in-memory cache size by evicting the oldest conversation if capacity is reached.
    *
-   * @public
    * @async
-   * @param {string} [conversationId] - Optional ID of an existing conversation. This ID will also be used as the `ConversationContext.sessionId`.
+   * @param {string} [conversationId] - Optional ID of an existing conversation.
    * @param {string} [userId] - ID of the user associated with the conversation.
    * @param {string} [gmiInstanceId] - ID of the GMI instance this conversation is for.
    * @param {string} [activePersonaId] - ID of the active persona for the conversation.
    * @param {Record<string, any>} [initialMetadata={}] - Initial metadata for a new conversation.
    * @param {Partial<ConversationContextConfig>} [overrideConfig] - Config overrides for a new context.
    * @returns {Promise<ConversationContext>} The created or retrieved ConversationContext.
-   * @throws {GMIError} If essential parameters for creating a new context are missing or if an error occurs.
+   * @throws {GMIError} If GMI/User context is missing for a new conversation.
    */
   public async getOrCreateConversationContext(
     conversationId?: string,
@@ -210,10 +170,10 @@ export class ConversationManager {
 
     let context = this.activeConversations.get(effectiveConversationId);
     if (context) {
-      // Update context identifiers if provided and different. These setters should exist on ConversationContext or be handled via setMetadata.
-      if (userId && context.getMetadata('userId') !== userId) context.setMetadata('userId', userId);
-      if (gmiInstanceId && context.getMetadata('gmiInstanceId') !== gmiInstanceId) context.setMetadata('gmiInstanceId', gmiInstanceId);
-      if (activePersonaId && context.getMetadata('activePersonaId') !== activePersonaId) context.setMetadata('activePersonaId', activePersonaId);
+      // Update context identifiers if provided and different
+      if (userId && context.userId !== userId) context.setMetadata('userId', userId);
+      if (gmiInstanceId && context.gmiInstanceId !== gmiInstanceId) context.setMetadata('gmiInstanceId', gmiInstanceId);
+      if (activePersonaId && context.activePersonaId !== activePersonaId) context.setMetadata('activePersonaId', activePersonaId);
       context.setMetadata('_lastAccessed', Date.now());
       return context;
     }
@@ -230,14 +190,15 @@ export class ConversationManager {
       }
     }
 
-    const contextConfig: ConversationContextConfig = {
+    // Create new context if not found in memory or DB (or if persistence disabled)
+    const contextConfig: Partial<ConversationContextConfig> = {
       ...this.config.defaultConversationContextConfig,
       userId: userId || this.config.defaultConversationContextConfig?.userId,
       gmiInstanceId: gmiInstanceId || this.config.defaultConversationContextConfig?.gmiInstanceId,
       activePersonaId: activePersonaId || this.config.defaultConversationContextConfig?.activePersonaId,
       utilityAI: this.utilityAIService || this.config.defaultConversationContextConfig?.utilityAI,
-      ...(overrideConfig || {}), // Apply overrides
-    } as ConversationContextConfig; // Cast as fully required after merging
+      ...overrideConfig,
+    };
 
     const newContext = new ConversationContext(effectiveConversationId, contextConfig, [], initialMetadata);
     newContext.setMetadata('_lastAccessed', Date.now());
@@ -249,10 +210,11 @@ export class ConversationManager {
 
     if (this.config.persistenceEnabled && this.prisma) {
       await this.saveConversationToDB(newContext).catch(err => {
-        console.error(`ConversationManager (ID: ${this.managerId}): Failed to save newly created conversation ${effectiveConversationId} to DB. It will only exist in memory. Error:`, err);
+        console.error(`ConversationManager (ID: ${this.managerId}): Failed to save newly created conversation ${effectiveConversationId} to DB:`, err);
+        // Decide if this should throw or just log. For now, log and continue with in-memory.
       });
     }
-    console.log(`ConversationManager (ID: ${this.managerId}): Created new conversation ${effectiveConversationId}. UserID: ${userId}, GMI ID: ${gmiInstanceId}`);
+    console.log(`ConversationManager (ID: ${this.managerId}): Created new conversation ${effectiveConversationId}.`);
     return newContext;
   }
 
@@ -260,7 +222,6 @@ export class ConversationManager {
    * Retrieves a conversation by its ID.
    * Tries in-memory cache first, then persistent storage if enabled.
    *
-   * @public
    * @async
    * @param {string} conversationId - The ID of the conversation to retrieve.
    * @returns {Promise<ConversationContext | undefined>} The conversation context or undefined if not found.
@@ -273,7 +234,6 @@ export class ConversationManager {
       return context;
     }
     if (this.config.persistenceEnabled && this.prisma) {
-      console.log(`ConversationManager (ID: ${this.managerId}): Cache miss for ${conversationId}. Attempting to load from DB.`);
       context = await this.loadConversationFromDB(conversationId);
       if (context) {
         if (this.activeConversations.size >= this.config.maxActiveConversationsInMemory) {
@@ -284,7 +244,6 @@ export class ConversationManager {
         return context;
       }
     }
-    console.log(`ConversationManager (ID: ${this.managerId}): Conversation ${conversationId} not found in memory or DB.`);
     return undefined;
   }
 
@@ -292,7 +251,6 @@ export class ConversationManager {
    * Saves a conversation context.
    * Updates it in the in-memory cache and persists to the database if enabled.
    *
-   * @public
    * @async
    * @param {ConversationContext} context - The conversation context to save.
    * @returns {Promise<void>}
@@ -313,10 +271,9 @@ export class ConversationManager {
   /**
    * Deletes a conversation from both in-memory cache and persistent storage (if enabled).
    *
-   * @public
    * @async
    * @param {string} conversationId - The ID of the conversation to delete.
-   * @returns {Promise<boolean>} True if deletion was successful or conversation didn't exist in the first place; false on DB error (excluding not found).
+   * @returns {Promise<boolean>} True if deletion was successful or conversation didn't exist; false on DB error.
    */
   public async deleteConversation(conversationId: string): Promise<boolean> {
     this.ensureInitialized();
@@ -327,11 +284,12 @@ export class ConversationManager {
         await this.prisma.conversation.delete({ where: { id: conversationId } });
         console.log(`ConversationManager (ID: ${this.managerId}): Conversation ${conversationId} deleted from DB.`);
       } catch (error: any) {
-        if (error.code === 'P2025') { // Prisma's "Record to delete does not exist"
-          console.log(`ConversationManager (ID: ${this.managerId}): Conversation ${conversationId} not found in DB for deletion (or already deleted).`);
+        // Prisma throws P2025 if record not found, which is acceptable for delete.
+        if (error.code === 'P2025') {
+          console.log(`ConversationManager (ID: ${this.managerId}): Conversation ${conversationId} not found in DB for deletion, or already deleted.`);
         } else {
           console.error(`ConversationManager (ID: ${this.managerId}): Error deleting conversation ${conversationId} from DB: ${error.message}`, error);
-          return false; // Indicate a true DB error
+          return false; // Indicate DB error
         }
       }
     }
@@ -342,7 +300,6 @@ export class ConversationManager {
   /**
    * Lists the IDs of all conversations currently active in memory.
    *
-   * @public
    * @async
    * @returns {Promise<string[]>} An array of active conversation IDs.
    */
@@ -350,47 +307,47 @@ export class ConversationManager {
     this.ensureInitialized();
     return Array.from(this.activeConversations.keys());
   }
-
+  
   /**
    * Retrieves summary information for contexts associated with a given session ID.
-   * In the current design, `ConversationContext.sessionId` is the primary ID for a conversation.
-   * If a "session" in a broader sense can encompass multiple distinct conversations,
-   * this method would need adjustment or the Conversation model would need a `sessionId` field.
-   * This implementation assumes `sessionId` refers to the `ConversationContext.sessionId`.
+   * Currently, one sessionId maps to one ConversationContext.
    *
-   * @public
    * @async
-   * @param {string} sessionId - The session ID (which is the conversation ID in this context).
-   * @returns {Promise<Partial<ConversationContext>[]>} An array containing a partial representation
-   * of the conversation context if found, otherwise an empty array.
+   * @param {string} sessionId - The session ID.
+   * @returns {Promise<Partial<ConversationContext>[]>} An array of partial conversation context objects.
    */
-  public async listContextsForSession(sessionId: string): Promise<Partial<Pick<ConversationContext, 'sessionId' | 'createdAt'>>[]> {
+  public async listContextsForSession(sessionId: string): Promise<Partial<ConversationContext>[]> {
     this.ensureInitialized();
-    const context = this.activeConversations.get(sessionId);
-    if (context) {
-      return [{ sessionId: context.sessionId, createdAt: context.createdAt }];
+    // In current model, one sessionId implies one ConversationContext if associated.
+    // The manager uses conversationId as the primary key. If session implies multiple conversations, logic would change.
+    // This method seems to intend listing conversations FOR a session.
+    // A direct mapping session -> conversation is not maintained here, but ConversationContext holds sessionID.
+    // Let's assume for now it lists based on finding active conversations that match the session ID in metadata.
+
+    const matchingContexts: Partial<ConversationContext>[] = [];
+    for (const context of this.activeConversations.values()) {
+      // Assuming ConversationContext stores sessionId in its metadata if provided.
+      // However, ConversationContext constructor now takes sessionId directly as its own ID.
+      // So if a "session" can span multiple "conversations", this needs clarification.
+      // If sessionId IS conversationId:
+      if (context.sessionId === sessionId) {
+         matchingContexts.push({ sessionId: context.sessionId, createdAt: context.createdAt });
+      }
     }
-    // Optionally, try loading from DB if not in memory to provide info
-    if (this.config.persistenceEnabled && this.prisma) {
-        const dbConvo = await this.prisma.conversation.findUnique({
-            where: { id: sessionId },
-            select: { id: true, createdAt: true }
-        });
-        if (dbConvo) {
-            return [{ sessionId: dbConvo.id, createdAt: dbConvo.createdAt.getTime() }];
-        }
-    }
-    return [];
+    // If persistence is on, could also query DB for conversations associated with a session ID if schema supported it.
+    // The current Prisma schema `Conversation` model does not have a direct `sessionId` field, but `gmiInstanceId` could be related.
+    // And `ConversationContext` has `sessionId` as its own primary ID.
+
+    return matchingContexts;
   }
 
   /**
-   * Gets the last active time for a conversation, typically the timestamp of the last message or update.
-   * Checks in-memory cache first, then persistent storage if enabled.
+   * Gets the last active time for a conversation.
+   * Checks in-memory first, then database if persistence is enabled.
    *
-   * @public
    * @async
    * @param {string} conversationId - The ID of the conversation.
-   * @returns {Promise<number | undefined>} Timestamp of last activity (Unix epoch ms), or undefined if not found.
+   * @returns {Promise<number | undefined>} Timestamp of last activity, or undefined if not found.
    */
   public async getLastActiveTimeForConversation(conversationId: string): Promise<number | undefined> {
     this.ensureInitialized();
@@ -403,11 +360,11 @@ export class ConversationManager {
       try {
         const convo = await this.prisma.conversation.findUnique({
           where: { id: conversationId },
-          select: { updatedAt: true } // 'updatedAt' is a good proxy for last activity
+          select: { updatedAt: true }
         });
         return convo?.updatedAt.getTime();
       } catch (error) {
-        console.error(`ConversationManager (ID: ${this.managerId}): Error fetching 'updatedAt' for conversation ${conversationId} from DB:`, error);
+        console.error(`ConversationManager (ID: ${this.managerId}): Error fetching updatedAt for ${conversationId} from DB:`, error);
         return undefined;
       }
     }
@@ -415,11 +372,9 @@ export class ConversationManager {
   }
 
   /**
-   * Evicts the oldest (Least Recently Used based on `_lastAccessed` metadata)
-   * conversation from the in-memory cache.
-   * If persistence is enabled, ensures the conversation is saved to DB before eviction.
+   * Evicts the oldest (Least Recently Used) conversation from the in-memory cache.
+   * If persistence is enabled, ensures the conversation is saved before eviction.
    * @private
-   * @async
    */
   private async evictOldestConversation(): Promise<void> {
     if (this.activeConversations.size === 0) return;
@@ -437,14 +392,14 @@ export class ConversationManager {
 
     if (oldestSessionId) {
       const contextToEvict = this.activeConversations.get(oldestSessionId);
-      console.warn(`ConversationManager (ID: ${this.managerId}): Max in-memory conversations reached (${this.activeConversations.size}/${this.config.maxActiveConversationsInMemory}). Evicting conversation ${oldestSessionId}. Last accessed: ${new Date(oldestTimestamp).toISOString()}`);
-      
+      console.warn(`ConversationManager (ID: ${this.managerId}): Max in-memory conversations reached (${this.activeConversations.size}/${this.config.maxActiveConversationsInMemory}). Evicting session ${oldestSessionId}.`);
       if (contextToEvict && this.config.persistenceEnabled && this.prisma) {
         try {
           await this.saveConversationToDB(contextToEvict);
-          console.log(`ConversationManager (ID: ${this.managerId}): Successfully saved conversation ${oldestSessionId} to DB before eviction.`);
+          console.log(`ConversationManager (ID: ${this.managerId}): Saved conversation ${oldestSessionId} before eviction.`);
         } catch (error) {
-          console.error(`ConversationManager (ID: ${this.managerId}): Failed to save conversation ${oldestSessionId} to DB before eviction. Data might be lost if not already persisted. Error:`, error);
+          console.error(`ConversationManager (ID: ${this.managerId}): Failed to save conversation ${oldestSessionId} to DB before eviction:`, error);
+          // Decide if eviction should still proceed. For now, it will.
         }
       }
       this.activeConversations.delete(oldestSessionId);
@@ -454,7 +409,7 @@ export class ConversationManager {
   /**
    * Saves a ConversationContext to the database using Prisma.
    * This is an upsert operation: creates if not exists, updates if exists.
-   * Handles serialization of messages and metadata within a transaction.
+   * Handles serialization of messages and metadata.
    *
    * @async
    * @private
@@ -463,69 +418,69 @@ export class ConversationManager {
    */
   private async saveConversationToDB(context: ConversationContext): Promise<void> {
     if (!this.prisma || !this.config.persistenceEnabled) return;
-    
-    const contextJSON = context.toJSON() as {
-        sessionId: string;
-        createdAt: number;
-        messages: InternalConversationMessage[];
-        config: any; // Contains utilityAIServiceId
-        sessionMetadata: Record<string, any>;
-    };
+    const contextJSON = context.toJSON() as any; // Full serializable state
 
     try {
       await this.prisma.$transaction(async (tx) => {
-        const conversationUpdateData = {
-          userId: context.userId, // Assuming userId is a direct property or getter on ConversationContext
-          gmiInstanceId: context.gmiInstanceId,
-          title: (contextJSON.sessionMetadata?.title as string) || `Conversation from ${new Date(context.createdAt).toLocaleDateString()}`,
-          language: context.currentLanguage,
-          sessionDetails: contextJSON.sessionMetadata || {},
-          isArchived: (contextJSON.sessionMetadata?.isArchived as boolean) ?? false,
-          tags: (contextJSON.sessionMetadata?.tags as string[]) ?? [],
-          updatedAt: new Date(),
-        };
-
+        // Upsert Conversation record
         await tx.conversation.upsert({
           where: { id: context.sessionId },
-          update: conversationUpdateData,
+          update: {
+            userId: context.userId,
+            gmiInstanceId: context.gmiInstanceId,
+            // activePersonaId: context.activePersonaId, // Prisma schema for Conversation doesn't have activePersonaId directly
+            title: (contextJSON.sessionMetadata?.title as string) || `Conversation from ${new Date(context.createdAt).toLocaleDateString()}`,
+            language: context.currentLanguage,
+            sessionDetails: contextJSON.sessionMetadata || {}, // Store all metadata here
+            updatedAt: new Date(), // Ensure updatedAt is fresh
+          },
           create: {
             id: context.sessionId,
             createdAt: new Date(context.createdAt),
-            ...conversationUpdateData,
+            updatedAt: new Date(),
+            userId: context.userId,
+            gmiInstanceId: context.gmiInstanceId,
+            title: (contextJSON.sessionMetadata?.title as string) || `New Conversation (${context.sessionId.substring(0,8)})`,
+            language: context.currentLanguage,
+            sessionDetails: contextJSON.sessionMetadata || {},
           },
         });
 
+        // Delete existing messages and re-insert to ensure order and consistency
         await tx.conversationMessage.deleteMany({ where: { conversationId: context.sessionId } });
 
         if (contextJSON.messages && contextJSON.messages.length > 0) {
-          const messagesToCreate = contextJSON.messages.map((msg): PrismaMessageCreateInput => {
-            // Ensure complex objects are valid JSON or null for Prisma
-            const serializeIfObject = (data: any): object | null => (typeof data === 'object' && data !== null) ? data : null;
-            
+          const messagesToCreate: PrismaMessageCreateInput[] = contextJSON.messages.map((msg: InternalConversationMessage) => {
+            // Ensure complex objects like tool_calls and metadata are Prisma-compatible (JSON)
+            const toolCallsForDb = msg.tool_calls ? JSON.parse(JSON.stringify(msg.tool_calls)) : null;
+            const metadataForDb = msg.metadata ? JSON.parse(JSON.stringify(msg.metadata)) : null;
+            const multimodalDataForDb = (msg as any).multimodalData ? JSON.parse(JSON.stringify((msg as any).multimodalData)) : null; // Assuming multimodalData on InternalConversationMessage
+            const voiceSettingsForDb = (msg as any).voiceSettings ? JSON.parse(JSON.stringify((msg as any).voiceSettings)) : null;
+
+
             return {
-              id: msg.id,
-              role: msg.role.toString(),
-              content: typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content), // Stringify if not already string
-              timestamp: new Date(msg.timestamp), // Prisma 'createdAt' for message will be auto by DB
-              tool_calls: serializeIfObject(msg.tool_calls),
-              toolCallId: msg.tool_call_id,
-              multimodalData: serializeIfObject((msg as any).multimodalData),
-              audioUrl: (msg as any).audioUrl,
-              audioTranscript: (msg as any).audioTranscript,
-              voiceSettings: serializeIfObject((msg as any).voiceSettings),
-              // Prisma model for ConversationMessage doesn't have 'name', 'originalMessagesSummarizedCount', or a generic 'metadata' field.
-              // These would need schema changes or be stored within 'content' or 'sessionDetails' of the Conversation.
-              // For now, fields not in Prisma's ConversationMessage model are omitted.
+              id: msg.id, // Assuming msg.id is a string UUID
+              conversationId: context.sessionId,
+              role: msg.role.toString(), // Store enum as string
+              content: typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content), // Stringify non-string content
+              timestamp: new Date(msg.timestamp),
+              // name: msg.name, // Prisma schema for ConversationMessage doesn't have 'name'
+              tool_calls: toolCallsForDb,
+              toolCallId: msg.tool_call_id, // Corrected from tool_call_id
+              // originalMessagesSummarizedCount: msg.originalMessagesSummarizedCount, // Not in Prisma schema
+              metadata: metadataForDb, // Not directly in Prisma schema, map to a specific field or ignore
+              multimodalData: multimodalDataForDb, // Prisma schema has this
+              audioUrl: (msg as any).audioUrl, // Prisma schema has this
+              audioTranscript: (msg as any).audioTranscript, // Prisma schema has this
+              voiceSettings: voiceSettingsForDb, // Prisma schema has this
             };
           });
-
-          // Batch create messages
           await tx.conversationMessage.createMany({
-            data: messagesToCreate.map(m => ({...m, conversationId: context.sessionId })),
+            data: messagesToCreate,
           });
         }
       });
-      // console.debug(`ConversationManager (ID: ${this.managerId}): Conversation ${context.sessionId} successfully saved to DB.`);
+      // console.debug(`ConversationManager (ID: ${this.managerId}): Conversation ${context.sessionId} saved to DB.`);
     } catch (error: any) {
       console.error(`ConversationManager (ID: ${this.managerId}): Error saving conversation ${context.sessionId} to DB: ${error.message}`, error);
       throw new GMIError(`Failed to save conversation ${context.sessionId} to database.`, GMIErrorCode.DATABASE_ERROR, { underlyingError: error.message, stack: error.stack });
@@ -540,7 +495,7 @@ export class ConversationManager {
    * @private
    * @param {string} conversationId - The ID of the conversation to load.
    * @returns {Promise<ConversationContext | undefined>} The loaded ConversationContext or undefined if not found.
-   * @throws {GMIError} If the database operation fails or data inconsistency is detected.
+   * @throws {GMIError} If the database operation fails.
    */
   private async loadConversationFromDB(conversationId: string): Promise<ConversationContext | undefined> {
     if (!this.prisma || !this.config.persistenceEnabled) return undefined;
@@ -548,7 +503,7 @@ export class ConversationManager {
     try {
       const convoData = await this.prisma.conversation.findUnique({
         where: { id: conversationId },
-        include: { messages: { orderBy: { createdAt: 'asc' } } },
+        include: { messages: { orderBy: { createdAt: 'asc' } } }, // Order by createdAt to maintain sequence
       });
 
       if (!convoData) return undefined;
@@ -556,82 +511,61 @@ export class ConversationManager {
       const internalMessages: InternalConversationMessage[] = convoData.messages.map(dbMsg => {
         let parsedContent: InternalConversationMessage['content'];
         try {
-           // Content in DB is always string (or stringified JSON). Try to parse if it's complex.
-          if (dbMsg.content && (dbMsg.content.startsWith('{') && dbMsg.content.endsWith('}')) || (dbMsg.content.startsWith('[') && dbMsg.content.endsWith(']'))) {
+          // Attempt to parse if it looks like JSON, otherwise use as string
+          if (dbMsg.content && (dbMsg.content.startsWith('{') || dbMsg.content.startsWith('['))) {
             parsedContent = JSON.parse(dbMsg.content);
           } else {
             parsedContent = dbMsg.content;
           }
         } catch (e) {
-          console.warn(`ConversationManager (ID: ${this.managerId}): Failed to parse content for message ${dbMsg.id} from DB as JSON, using as string. Content: "${dbMsg.content?.substring(0,100)}..."`);
-          parsedContent = dbMsg.content;
+          parsedContent = dbMsg.content; // Fallback to string if parsing fails
         }
-
-        // Reconstruct the internal ConversationMessage.
-        // Ensure all fields from InternalConversationMessage are considered.
-        // Fields not in PrismaConversationMessageModel (like 'name', 'originalMessagesSummarizedCount') need to be handled:
-        // they won't be populated from DB unless schema changes or they were stored in a JSON 'metadata' field.
-        const messageOptions: Partial<Omit<InternalConversationMessage, 'id' | 'timestamp' | 'role' | 'content'>> = {
-            tool_calls: dbMsg.toolCalls ? (dbMsg.toolCalls as any) : undefined,
-            tool_call_id: dbMsg.toolCallId || undefined,
-            metadata: dbMsg.metadata ? (dbMsg.metadata as any) : undefined, // If Prisma model had a metadata field
-            // Map multimodal and voice fields
-            ...(dbMsg.multimodalData && { multimodalData: dbMsg.multimodalData as any }),
-            ...((dbMsg as any).audioUrl && { audioUrl: (dbMsg as any).audioUrl }),
-            ...((dbMsg as any).audioTranscript && { audioTranscript: (dbMsg as any).audioTranscript }),
-            ...((dbMsg as any).voiceSettings && { voiceSettings: (dbMsg as any).voiceSettings as any }),
-        };
-        // Add 'name' if it were present in Prisma model or part of a JSON metadata field.
-        // if (dbMsg.name) messageOptions.name = dbMsg.name;
-
-
+        
         return createConversationMessage(
-            dbMsg.role as MessageRole, // Ensure role string from DB is valid MessageRole
+            dbMsg.role as MessageRole, // Assuming roles align or need mapping
             parsedContent,
             {
-                ...messageOptions, // Spread other properties
-                id: dbMsg.id, // Use the ID from DB
-                timestamp: dbMsg.createdAt.getTime(), // Use createdAt as the message timestamp
+                id: dbMsg.id,
+                timestamp: dbMsg.createdAt.getTime(), // Use createdAt from DB message as timestamp
+                // name: dbMsg.name, // Not in Prisma schema for ConversationMessage
+                tool_calls: dbMsg.toolCalls ? (dbMsg.toolCalls as any) : undefined,
+                tool_call_id: dbMsg.toolCallId || undefined,
+                // originalMessagesSummarizedCount: dbMsg.originalMessagesSummarizedCount, // Not in schema
+                metadata: dbMsg.metadata ? (dbMsg.metadata as any) : undefined, // Not in schema, map from convoData.sessionDetails?
+                // Multimodal and voice fields from Prisma model need to be mapped here
+                ...(dbMsg.multimodalData && { multimodalData: dbMsg.multimodalData as any }),
+                ...(dbMsg.audioUrl && { audioUrl: dbMsg.audioUrl }),
+                ...(dbMsg.audioTranscript && { audioTranscript: dbMsg.audioTranscript }),
+                ...(dbMsg.voiceSettings && { voiceSettings: dbMsg.voiceSettings as any }),
             }
         );
       });
       
-      const sessionMetadataFromDB = convoData.sessionDetails as Record<string, any> || {};
+      const contextConfigOverrides: Partial<ConversationContextConfig> = {
+        userId: convoData.userId || undefined,
+        gmiInstanceId: convoData.gmiInstanceId || undefined,
+        // activePersonaId should be part of sessionDetails if needed for context rehydration.
+        // For example: (convoData.sessionDetails as any)?.activePersonaId
+        utilityAI: this.utilityAIService, // Inject the manager's utilityAI service
+        // Other flags like summarization options might come from defaultConversationContextConfig or be persisted in sessionDetails
+        ...(this.config.defaultConversationContextConfig || {}),
+        ...((convoData.sessionDetails as any)?.contextConfigOverrides || {}), // if context-specific config was persisted
+      };
 
-      // Reconstruct the ConversationContextConfig that was active when this context was last saved, if stored.
-      // Or, apply current defaults and allow overrides from sessionMetadata.
-      const contextSpecificConfig = (sessionMetadataFromDB.contextConfigOverrides as Partial<ConversationContextConfig>) || {};
-      const finalContextConfig: ConversationContextConfig = {
-        ...this.config.defaultConversationContextConfig, // Start with manager defaults
-        userId: convoData.userId || this.config.defaultConversationContextConfig?.userId,
-        gmiInstanceId: convoData.gmiInstanceId || this.config.defaultConversationContextConfig?.gmiInstanceId,
-        activePersonaId: (sessionMetadataFromDB.activePersonaId as string) || this.config.defaultConversationContextConfig?.activePersonaId,
-        utilityAI: this.utilityAIService, // Always inject current utilityAI instance
-        ...contextSpecificConfig, // Apply persisted context-specific overrides
-      } as ConversationContextConfig; // Ensure all required fields are present
-
-      // Use ConversationContext.fromJSON for robust rehydration
+      // The ConversationContext constructor expects sessionId, config, initialMessages, initialMetadata
+      // convoData.sessionDetails already holds initialMetadata effectively
       const context = ConversationContext.fromJSON(
-        {
+        { // Reconstruct the JSON structure ConversationContext.fromJSON expects
           sessionId: convoData.id,
           createdAt: convoData.createdAt.getTime(),
-          messages: internalMessages,
-          config: { // This config is for fromJSON's internal use, not the full ConversationContextConfig
-            ...finalContextConfig, // Pass full config for fromJSON to pick what it needs
-            utilityAIServiceId: this.utilityAIService?.utilityId, // For fromJSON to potentially re-fetch if provider was different
+          messages: internalMessages, // Pass the mapped InternalConversationMessage[]
+          config: { // Reconstruct config for fromJSON
+            ...contextConfigOverrides,
+            utilityAIServiceId: this.utilityAIService?.utilityId, // Pass serviceId if available
           },
-          sessionMetadata: sessionMetadataFromDB,
+          sessionMetadata: convoData.sessionDetails as Record<string, any> || {},
         },
-        (serviceId) => { // utilityAIProvider function for fromJSON
-            if (this.utilityAIService && serviceId === this.utilityAIService.utilityId) {
-                return this.utilityAIService;
-            }
-            // Log if a different serviceId was stored but cannot be resolved now
-            if (serviceId && (!this.utilityAIService || serviceId !== this.utilityAIService.utilityId)) {
-                console.warn(`ConversationManager (ID: ${this.managerId}): Conversation ${conversationId} stored utilityAIServiceId '${serviceId}' which differs from current or is unavailable.`);
-            }
-            return this.utilityAIService; // Default to current manager's service
-        }
+        (serviceId) => serviceId === this.utilityAIService?.utilityId ? this.utilityAIService : undefined
       );
       
       console.log(`ConversationManager (ID: ${this.managerId}): Conversation ${conversationId} loaded from DB with ${internalMessages.length} messages.`);
@@ -644,21 +578,20 @@ export class ConversationManager {
 
   /**
    * Shuts down the ConversationManager.
-   * If persistence is enabled, ensures all active conversations are saved to the database.
-   * Clears the in-memory cache of conversations.
+   * If persistence is enabled, ensures all active conversations are saved.
+   * Clears the in-memory cache.
    *
-   * @public
    * @async
    * @returns {Promise<void>}
    */
   public async shutdown(): Promise<void> {
     if (!this.initialized) {
-        console.warn(`ConversationManager (ID: ${this.managerId}) shutdown called but was not initialized.`);
+        console.warn(`ConversationManager (ID: ${this.managerId}) shutdown called but not initialized.`);
         return;
     }
     console.log(`ConversationManager (ID: ${this.managerId}): Shutting down...`);
     if (this.config.persistenceEnabled && this.prisma) {
-      console.log(`ConversationManager (ID: ${this.managerId}): Saving all active conversations (${this.activeConversations.size}) before shutdown...`);
+      console.log(`ConversationManager (ID: ${this.managerId}): Saving all active conversations before shutdown...`);
       let savedCount = 0;
       for (const context of this.activeConversations.values()) {
         try {
@@ -668,10 +601,10 @@ export class ConversationManager {
           console.error(`ConversationManager (ID: ${this.managerId}): Error saving conversation ${context.sessionId} during shutdown:`, error);
         }
       }
-      console.log(`ConversationManager (ID: ${this.managerId}): ${savedCount} active conversations processed for saving.`);
+      console.log(`ConversationManager (ID: ${this.managerId}): ${savedCount} active conversations saved.`);
     }
     this.activeConversations.clear();
     this.initialized = false; // Mark as not initialized after cleanup
-    console.log(`ConversationManager (ID: ${this.managerId}): Shutdown complete. In-memory cache cleared.`);
+    console.log(`ConversationManager (ID: ${this.managerId}): Shutdown complete.`);
   }
 }

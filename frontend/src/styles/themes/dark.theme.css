@@ -1,0 +1,77 @@
+/* File: frontend/src/styles/themes/dark.theme.css */
+
+/**
+ * @file dark.theme.css
+ * @description Overrides for CSS custom properties for the Dark Theme.
+ * Applied when the `html` or a root element has the class `.theme-dark`.
+ */
+.theme-dark {
+  /* === BRAND COLORS (Example: Darker/muted primary) === */
+  --app-primary-rgb: 96, 165, 250; /* Tailwind blue-400 */
+  --app-primary-color-light: #60a5fa; /* blue-400 */
+  --app-primary-color-dark: #2563eb; /* blue-600 */
+  /* --app-primary-contrast-text-color: #111827; /* Darker text on lighter blue */
+
+  --app-accent-rgb: 52, 211, 153; /* Tailwind emerald-400 */
+  /* --app-accent-contrast-text-color: #064e3b; */
+
+  /* === SEMANTIC COLORS (Adjusted for dark background) === */
+  --app-success-text-strong: #a7f3d0; /* emerald-200 */
+  --app-success-bg-subtle: rgba(16, 185, 129, 0.1); /* emerald-500 with opacity */
+  --app-success-border-color: #34d399; /* emerald-400 */
+
+  --app-warning-text-strong: #fde68a; /* amber-200 */
+  --app-warning-bg-subtle: rgba(245, 158, 11, 0.1);
+  --app-warning-border-color: #fbbf24; /* amber-400 */
+
+  --app-danger-text-strong: #fca5a5; /* red-400 */
+  --app-danger-bg-subtle: rgba(239, 68, 68, 0.1);
+  --app-danger-border-color: #f87171; /* red-400 */
+
+  --app-info-text-strong: #93c5fd; /* blue-300 */
+  --app-info-bg-subtle: rgba(59, 130, 246, 0.1);
+  --app-info-border-color: #60a5fa; /* blue-400 */
+
+
+  /* === TEXT COLORS === */
+  --app-text-color: #e5e7eb; /* Tailwind gray-200 */
+  --app-text-secondary-color: #9ca3af; /* Tailwind gray-400 */
+  --app-text-muted-color: #6b7280; /* Tailwind gray-500 */
+  --app-heading-color: #f9fafb; /* Tailwind gray-50 */
+  --app-link-color: var(--app-primary-color-light);
+  --app-link-hover-color: #dbeafe; /* primary-200 */
+  --app-text-on-accent: #064e3b; /* Darker text on lighter accent */
+
+  /* === BACKGROUND & SURFACE COLORS === */
+  --app-bg-color: #111827; /* Tailwind gray-900 */
+  --app-bg-alt-color: #0f172a; /* Tailwind slate-900 */
+  --app-surface-color: #1f2937; /* Tailwind gray-800 */
+  --app-surface-alt-color: #374151; /* Tailwind gray-700 */
+  --app-surface-raised-color: #2c3747; /* Slightly lighter than surface */
+  --app-surface-inset-color: #171e2b; /* Slightly darker than surface */
+  --app-surface-hover-color: #313c50;
+  --app-surface-color-transparent: rgba(31, 41, 55, 0.85); /* gray-800 with opacity */
+  --app-surface-color-transparent-heavy: rgba(31, 41, 55, 0.95);
+
+
+  /* === BORDER & DIVIDER COLORS === */
+  --app-border-color: #374151; /* Tailwind gray-700 */
+  --app-border-color-light: #4b5563; /* Tailwind gray-600 */
+  --app-border-color-extralight: #2c3747; /* Darker than gray-700 */
+  --app-input-focus-ring-color: rgba(var(--app-primary-rgb), 0.35); /* Adjusted alpha for dark */
+
+  /* === SHADOWS (Often need to be more subtle or use highlights in dark mode) === */
+  --app-shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.15);
+  --app-shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 2px -1px rgba(0, 0, 0, 0.15);
+  --app-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -2px rgba(0, 0, 0, 0.2);
+  /* ... adjust other shadows for dark theme ... */
+
+  /* === Code Blocks Dark Theme === */
+  --app-code-bg-color: #161b22; /* GitHub dark-like */
+  --app-code-text-color: #c9d1d9;
+  --app-code-border-color: #30363d;
+  --app-inline-code-bg-color: #282c34;
+  --app-inline-code-text-color: #abb2bf;
+
+  /* Other dark theme specific overrides */
+}

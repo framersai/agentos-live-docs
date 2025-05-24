@@ -39,17 +39,23 @@
  * @description Displays a list of clickable smart suggestions for the user,
  * often related to the current chat context or AI capabilities.
  * These suggestions are themeable, accessible, and voice-navigable.
+ * @property {ChatSuggestion[]} suggestions - Array of suggestion objects to display.
+ * @property {string} [title] - Optional title for the suggestions section.
+ * @property {string} [voiceTargetIdPrefix='chat-suggestions-'] - Prefix for voice target IDs.
+ * @property {boolean} [isScrollable=true] - If the list should be horizontally scrollable.
+ * @emits suggestion-clicked - When a suggestion chip is clicked.
  */
 import { computed, PropType } from 'vue';
 import { useI18n } from '../../../composables/useI18n';
-import type { ChatSuggestion } from '../store/chat.store'; // Using ChatSuggestion from chat.store
+import type { ChatSuggestion } from '../store/chat.store';
 import AppButton from '../../../components/common/AppButton.vue';
-// Import icons that might be used by suggestions, or pass them as components in ChatSuggestion object
-// For example: import { LightBulbIcon, CogIcon } from '@heroicons/vue/24/outline';
+// Example icons could be imported here if ChatSuggestion provides icon component names as strings
+// import { LightBulbIcon, CogIcon } from '@heroicons/vue/24/outline';
 
 const props = defineProps({
   /**
    * An array of suggestion objects to display.
+   * Each suggestion should conform to the `ChatSuggestion` interface.
    * @type {ChatSuggestion[]}
    * @required
    */
@@ -59,14 +65,16 @@ const props = defineProps({
   },
   /**
    * Optional title for the suggestions section.
+   * If not provided, no title will be displayed.
    * @type {string}
+   * @default ''
    */
   title: {
     type: String,
-    default: '', // Default to empty, can be set to t('chat.smartSuggestions.defaultTitle') by parent
+    default: '',
   },
   /**
-   * Prefix for voice target IDs to ensure uniqueness.
+   * Prefix for voice target IDs to ensure uniqueness within the parent component.
    * @type {string}
    * @default 'chat-suggestions-'
    */
@@ -77,6 +85,7 @@ const props = defineProps({
   /**
    * Determines if the list of suggestions should be horizontally scrollable if it overflows.
    * @type {boolean}
+   * @default true
    */
   isScrollable: {
     type: Boolean,
@@ -94,17 +103,19 @@ const emit = defineEmits<{
 
 const { t } = useI18n();
 
-/** Handles the click event on a suggestion chip. */
-const onSuggestionClick = (suggestion: ChatSuggestion) => {
+/**
+ * Handles the click event on a suggestion chip.
+ * Emits the 'suggestion-clicked' event with the clicked suggestion data.
+ * @param {ChatSuggestion} suggestion - The suggestion object that was clicked.
+ */
+const onSuggestionClick = (suggestion: ChatSuggestion): void => {
   emit('suggestion-clicked', suggestion);
 };
 </script>
 
 <style scoped>
 .chat-smart-suggestions {
-  /* Container for suggestions, typically shown above or below the chat input */
-  padding: var(--space-2, 0.5rem) 0; /* Vertical padding */
-  /* background-color: var(--app-suggestions-bg, var(--app-surface-alt-color)); */ /* Optional distinct background */
+  padding: var(--space-2, 0.5rem) 0;
 }
 
 .suggestions-header {
@@ -112,38 +123,33 @@ const onSuggestionClick = (suggestion: ChatSuggestion) => {
 }
 
 .suggestions-title {
-  font-size: var(--app-font-size-xs, 0.75rem); /* Tailwind text-xs */
+  font-size: var(--app-font-size-xs, 0.75rem);
   font-weight: var(--app-font-weight-medium, 500);
   color: var(--app-text-muted-color);
   text-transform: uppercase;
-  letter-spacing: 0.05em; /* Tailwind tracking-wider */
+  letter-spacing: 0.05em;
 }
 
 .suggestions-list {
   display: flex;
-  flex-wrap: nowrap; /* Default to nowrap for horizontal scrolling */
-  gap: var(--space-2, 0.5rem); /* Tailwind gap-2 */
+  flex-wrap: nowrap;
+  gap: var(--space-2, 0.5rem);
 }
 .suggestions-list.scrollable {
   overflow-x: auto;
   padding-bottom: var(--space-2, 0.5rem); /* Space for scrollbar */
-  /* Custom scrollbar styling for horizontal scroll */
 }
 .suggestions-list.scrollable::-webkit-scrollbar { height: 6px; }
 .suggestions-list.scrollable::-webkit-scrollbar-track { background: var(--app-scrollbar-track-bg-light, var(--app-surface-inset-color)); border-radius: 3px;}
 .suggestions-list.scrollable::-webkit-scrollbar-thumb { background: var(--app-scrollbar-thumb-bg-light, var(--app-border-color)); border-radius: 3px;}
 
-
-/* Styling for individual suggestion chips (AppButton variant="custom") */
-.suggestion-chip.app-button { /* Target AppButton's root */
-  /* Override AppButton defaults for chip-like appearance if needed */
-  padding: var(--app-chip-padding-y, 0.375rem) var(--app-chip-padding-x, 0.75rem); /* Tailwind py-1.5 px-3 */
+.suggestion-chip.app-button {
+  padding: var(--app-chip-padding-y, 0.375rem) var(--app-chip-padding-x, 0.75rem);
   border-radius: var(--app-chip-border-radius, var(--app-border-radius-pill));
   font-size: var(--app-font-size-sm, 0.875rem);
   font-weight: var(--app-font-weight-medium);
-  line-height: 1.25; /* Tailwind leading-tight */
-  white-space: nowrap; /* Prevent suggestions from wrapping */
-
+  line-height: 1.25;
+  white-space: nowrap;
   background-color: var(--app-chip-bg, var(--app-surface-raised-color));
   color: var(--app-chip-text-color, var(--app-text-secondary-color));
   border: 1px solid var(--app-chip-border-color, var(--app-border-color));
@@ -157,27 +163,14 @@ const onSuggestionClick = (suggestion: ChatSuggestion) => {
   transform: translateY(-1px);
   box-shadow: var(--app-shadow-sm);
 }
-.suggestion-chip.app-button:active {
-  transform: translateY(0);
-  background-color: var(--app-chip-active-bg, var(--app-primary-bg-subtle));
-}
 .suggestion-chip.app-button.has-icon .suggestion-text {
   margin-left: var(--space-1h, 0.375rem);
 }
 .suggestion-icon {
-  width: 0.875rem; /* Tailwind w-3.5 h-3.5 */
+  width: 0.875rem;
   height: 0.875rem;
-  color: var(--app-chip-icon-color, currentColor); /* Inherit or set specific color */
+  color: var(--app-chip-icon-color, currentColor);
   opacity: 0.8;
-}
-
-/* Suggestion types for varied styling (optional) */
-.suggestion-type-clarification { /* Example */
-  /* border-left: 3px solid var(--app-info-color); */
-}
-.suggestion-type-action { /* Example */
-  /* background-color: var(--app-accent-bg-subtle); */
-  /* color: var(--app-accent-text-strong); */
 }
 
 /* Holographic Theme Adjustments */

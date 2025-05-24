@@ -1,0 +1,107 @@
+/* File: frontend/src/styles/themes/holographic.theme.css */
+
+/**
+ * @file holographic.theme.css
+ * @description Overrides for CSS custom properties for the Holographic Theme.
+ * Applied when the `html` or a root element has the class `.theme-holographic`.
+ * This theme aims for a futuristic, neon-glow, translucent panel aesthetic.
+ */
+.theme-holographic {
+  /* === BRAND COLORS (Vibrant, Neon-like) === */
+  --app-primary-rgb: 0, 242, 255; /* Bright Cyan */
+  --app-primary-color-light: rgb(var(--app-primary-rgb));
+  --app-primary-color-dark: color-mix(in srgb, rgb(var(--app-primary-rgb)) 80%, black);
+  --app-primary-contrast-text-color: var(--holographic-bg-start); /* Dark text on bright accent */
+
+  --app-secondary-rgb: 200, 200, 255; /* Light Lavender */
+  --app-secondary-contrast-text-color: var(--holographic-bg-start);
+
+  --app-accent-rgb: 255, 0, 150; /* Bright Magenta */
+  --app-accent-contrast-text-color: #ffffff;
+
+  /* === SEMANTIC COLORS (Neon Glows) === */
+  --app-success-rgb: 0, 255, 170; /* Bright Mint Green */
+  --app-success-text-strong: rgb(var(--app-success-rgb));
+  --app-success-bg-subtle: rgba(var(--app-success-rgb), 0.1);
+  --app-success-border-color: rgba(var(--app-success-rgb), 0.4);
+
+  --app-warning-rgb: 255, 221, 0; /* Bright Yellow */
+  --app-warning-text-strong: rgb(var(--app-warning-rgb));
+  --app-warning-bg-subtle: rgba(var(--app-warning-rgb), 0.1);
+  --app-warning-border-color: rgba(var(--app-warning-rgb), 0.4);
+
+  --app-danger-rgb: 255, 77, 128; /* Bright Pink/Red */
+  --app-danger-text-strong: rgb(var(--app-danger-rgb));
+  --app-danger-bg-subtle: rgba(var(--app-danger-rgb), 0.1);
+  --app-danger-border-color: rgba(var(--app-danger-rgb), 0.4);
+
+  --app-info-rgb: var(--holographic-accent-rgb); /* Use main holographic accent */
+  --app-info-text-strong: rgb(var(--app-info-rgb));
+  --app-info-bg-subtle: rgba(var(--app-info-rgb), 0.1);
+  --app-info-border-color: rgba(var(--app-info-rgb), 0.4);
+
+  /* === TEXT COLORS === */
+  --app-text-color: var(--holographic-text-primary);
+  --app-text-secondary-color: var(--holographic-text-secondary);
+  --app-text-muted-color: var(--holographic-text-muted);
+  --app-heading-color: var(--holographic-text-accent); /* Headings use accent */
+  --app-link-color: var(--holographic-accent);
+  --app-link-hover-color: color-mix(in srgb, var(--holographic-accent) 80%, white);
+  --app-text-on-accent: var(--holographic-bg-start);
+
+
+  /* === BACKGROUND & SURFACE COLORS === */
+  --app-bg-color: var(--holographic-bg-start); /* Base page background for this theme */
+  --app-bg-alt-color: var(--holographic-bg-mid);
+  --app-surface-color: var(--holographic-panel-bg); /* Cards, modals default */
+  --app-surface-alt-color: rgba(var(--holographic-panel-rgb), 0.7); /* Slightly more opaque panels */
+  --app-surface-raised-color: rgba(var(--holographic-panel-rgb), 0.8);
+  --app-surface-inset-color: rgba(var(--holographic-panel-rgb), 0.4);
+  --app-surface-hover-color: rgba(var(--holographic-panel-rgb), 0.9);
+  --app-surface-color-transparent: rgba(var(--holographic-panel-rgb), 0.65);
+  --app-surface-color-transparent-heavy: rgba(var(--holographic-panel-rgb), 0.85);
+
+
+  /* === BORDER & DIVIDER COLORS === */
+  --app-border-color: var(--holographic-border-translucent);
+  --app-border-color-light: var(--holographic-border-subtle);
+  --app-border-color-extralight: var(--holographic-border-very-subtle);
+  --app-focus-ring-color: var(--holographic-accent);
+
+  /* === SHADOWS (Replaced with Glows) === */
+  --app-shadow-xs: none; /* Holographic typically uses glows, not traditional shadows */
+  --app-shadow-sm: var(--holographic-glow-xs-accent);
+  --app-shadow-md: var(--holographic-glow-sm-accent);
+  --app-shadow-lg: var(--holographic-glow-md-accent);
+  --app-shadow-xl: 0 0 35px rgba(var(--holographic-accent-rgb), 0.4);
+  --app-shadow-2xl: 0 0 50px rgba(var(--holographic-accent-rgb), 0.5);
+  --app-shadow-inner: inset 0 0 8px rgba(var(--holographic-accent-rgb), 0.2);
+
+  /* === FONTS === */
+  /* Consider a more futuristic sans-serif or stick to Plus Jakarta Sans if preferred */
+  /* --app-font-family-sans: 'Orbitron', 'Plus Jakarta Sans', ... ; */
+  --app-font-weight-semibold: 500; /* Holographic often uses slightly lighter bold weights */
+  --app-font-weight-bold: 600;
+
+  /* === Code Blocks Holographic Theme === */
+  --app-code-bg-color: rgba(var(--holographic-panel-rgb), 0.7);
+  --app-code-text-color: var(--holographic-text-primary);
+  --app-code-border-color: var(--holographic-border-translucent);
+  --app-inline-code-bg-color: rgba(var(--holographic-accent-rgb), 0.15);
+  --app-inline-code-text-color: var(--holographic-accent);
+
+  /* Other specific holographic overrides */
+  --app-cursor-color: var(--holographic-accent);
+  --app-scrollbar-thumb-bg: rgba(var(--holographic-accent-rgb), 0.5);
+  --app-scrollbar-thumb-hover-bg: rgba(var(--holographic-accent-rgb), 0.7);
+  --app-scrollbar-track-bg: rgba(var(--holographic-panel-rgb), 0.2);
+
+  /* Global background for the theme */
+  background-image: var(--holographic-bg-main-gradient);
+}
+
+/* Apply the main gradient to body when theme is active */
+.theme-holographic body {
+    background-image: var(--holographic-bg-main-gradient);
+    background-attachment: fixed; /* Keep gradient fixed during scroll */
+}

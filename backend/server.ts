@@ -1,4 +1,13 @@
-// backend/server.ts
+// File: backend/server.ts
+/**
+ * @fileoverview Main server entry point for the AgentOS backend.
+ * This file initializes and configures the Express application, including middleware,
+ * core SOTA services, API routes, and global error handling. It orchestrates the startup
+ * sequence of the application, ensuring all components are ready for operation.
+ *
+ * @module backend/server
+ */
+
 import express, { NextFunction, Request, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -7,278 +16,450 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
-import fs from 'fs'; // Import fs to check for frontend dist path
+import fs from 'fs';
+import { PrismaClient } from '@prisma/client';
 
-// Import Prisma client and connection functions
-import prisma, { connectToDatabase, disconnectFromDatabase } from './db.js';
+// Database utilities
+import prismaInstance, { connectToDatabase, disconnectFromDatabase } from './db';
 
-// Core AgentOS Services and Managers
-import { AIModelProviderManager, AIModelProviderManagerConfig, ProviderConfigEntry } from './agentos/core/llm/providers/AIModelProviderManager.js';
-import { PromptEngine } from './agentos/core/llm/PromptEngine.js';
-import { AuthService, IAuthService } from './services/user_auth/AuthService.js';
-import { SubscriptionService, ISubscriptionService } from './services/user_auth/SubscriptionService.js';
-import { UtilityLLMService } from './services/llm_utility/UtilityLLMService.js';
-import { GMIManager, GMIManagerConfig } from './agentos/cognitive_substrate/GMIManager.js';
-import { LLMModelRouter, LLMModelRouterConfig } from './agentos/core/llm/routing/LLMModelRouter.js';
-import { User } from './services/user_auth/User.js'; // For User API key storage
+// SOTA Core AgentOS Services and Managers
+import { IAuthService, AuthService } from './services/user_auth/AuthService';
+import { ISubscriptionService, SubscriptionService } from './services/user_auth/SubscriptionService';
+import { ILemonSqueezyService, LemonSqueezyService, LemonSqueezyConfig } from './services/payment/LemonSqueezyService';
+import { IUtilityAI } from './agentos/core/ai_utilities/IUtilityAI';
+import { HybridUtilityAI, HybridUtilityAIConfig } from './agentos/core/ai_utilities/HybridUtilityAI'; // Defaulting to Hybrid
 
-// Import API routes (assuming these are in their respective files)
-// We'll define these later, but keep the imports here for structure
-import { createAuthRoutes } from './api/authRoutes.js';
-import { createGMIRoutes } from './api/gmiRoutes.js';
-import { createUtilityLLMRoutes } from './api/utilityLLMRoutes.js';
+import { AIModelProviderManager, AIModelProviderManagerConfig, ProviderConfigEntry } from './agentos/core/llm/providers/AIModelProviderManager';
+import { PromptEngine, PromptEngineConfig } from './agentos/core/llm/PromptEngine';
+import { ConversationManager, ConversationManagerConfig } from './agentos/core/conversation/ConversationManager';
+import { GMIManager, GMIManagerConfig } from './agentos/cognitive_substrate/GMIManager';
+import { ToolOrchestrator, ToolOrchestratorConfig } from './agentos/core/tools/ToolOrchestrator';
+import { ToolPermissionManager, ToolPermissionManagerConfig } from './agentos/core/tools/ToolPermissionManager';
+import { StreamingManager, StreamingManagerConfig } from './agentos/core/streaming/StreamingManager'; // Assuming this exists and is SOTA
+import { AgentOSOrchestrator, AgentOSOrchestratorConfig, AgentOSOrchestratorDependencies } from './agentos/api/AgentOSOrchestrator';
+import { AgentOS, AgentOSConfig, IAgentOS } from './agentos/api/AgentOS'; // The main service facade
 
+// API Route Creators
+import { createAuthRoutes } from './api/authRoutes';
+import { createLemonSqueezyWebhooksRoutes } from './api/webhooks/LemonSqueezyWebhooksRoutes';
+import { createAgentOSRoutes } from './api/agentosRoutes';
+import { createPersonaRoutes } from './api/personaRoutes';
+// Placeholders for other routes if they are to be kept and refactored:
+// import { createGMIRoutes } from './api/gmiRoutes';
+// import { createUtilityLLMRoutes } from './api/utilityLLMRoutes';
+
+import { GMIError, GMIErrorCode } from './utils/errors';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Load environment variables from the root .env file
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = parseInt(process.env.PORT || '3001', 10);
 
-// Essential Middleware
+// --- Essential Middleware ---
+// Helmet for security headers (CSP might need to be fine-tuned for production)
 app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'"], // 'unsafe-inline' temporarily for Vue dev, should be refined
-      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-      fontSrc: ["'self'", "https://fonts.gstatic.com"],
-      connectSrc: [
-        "'self'",
-        "https://api.openai.com",
-        "https://openrouter.ai",
-        process.env.OLLAMA_BASE_URL || "http://localhost:11434", // Ensure Ollama URL is included
-      ],
-      imgSrc: ["'self'", "data:", "blob:"], // Added blob for potential webcam image uploads
-      mediaSrc: ["'self'", "blob:"], // For audio/video streams
-      frameSrc: ["'self'"], // For sandboxing UI blocks in iframes
-    },
-  },
+  contentSecurityPolicy: process.env.NODE_ENV === 'production' ? undefined : false,
 }));
-app.use(morgan('dev'));
-app.use(cookieParser());
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ extended: true, limit: '50mb' }));
-
+// CORS configuration
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  // 'x-user-api-keys' header is deprecated, use Authorization for JWT and body for API keys.
-  // We'll add custom middleware to extract user API keys from the authenticated user's session/DB.
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000', // Be specific in production
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-  credentials: true
+  credentials: true,
 }));
+app.options('*', cors()); // Handle pre-flight requests for all routes
+app.use(morgan('dev')); // HTTP request logger
+app.use(cookieParser()); // Parse cookies
+app.use(express.json({ limit: '10mb' })); // Parse JSON bodies, increased limit for potential base64 data
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-app.options('*', cors());
 
-// --- Global Services Initialization (asynchronous) ---
-let authService: IAuthService;
-let subscriptionService: ISubscriptionService;
-let providerManager: AIModelProviderManager;
-let globalPromptEngine: PromptEngine;
-let utilityLLMService: UtilityLLMService;
-let gmiManager: GMIManager;
-let llmModelRouter: LLMModelRouter | undefined;
+// --- Global Service Instances (to be initialized) ---
+let authServiceInstance: IAuthService;
+let subscriptionServiceInstance: ISubscriptionService;
+let lemonSqueezyServiceInstance: ILemonSqueezyService;
+let modelProviderManagerInstance: AIModelProviderManager;
+let promptEngineInstance: PromptEngine;
+let conversationManagerInstance: ConversationManager;
+let utilityAIServiceInstance: IUtilityAI;
+let toolPermissionManagerInstance: ToolPermissionManager;
+let toolOrchestratorInstance: ToolOrchestrator;
+let streamingManagerInstance: StreamingManager;
+let gmiManagerInstance: GMIManager;
+let agentOSOrchestratorInstance: AgentOSOrchestrator;
+let agentOSFacadeInstance: IAgentOS; // Main AgentOS service facade
 
-async function initializeGlobalServices() {
-  console.log("🚀 Initializing global services...");
+/**
+ * Initializes all global services and dependencies for the AgentOS backend.
+ * This function is called once at server startup. The order of initialization
+ * is critical to satisfy inter-service dependencies.
+ * @async
+ * @throws {Error} If any critical service fails to initialize.
+ */
+async function initializeGlobalServices(): Promise<void> {
+  console.log('🚀 AgentOS Backend: Initializing global services...');
 
-  // Connect to the database first
   await connectToDatabase();
 
-  // 1. AIModelProviderManager
-  const providerConfigs: ProviderConfigEntry[] = [];
-  if (process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY !== "YOUR_SYSTEM_OPENAI_KEY") {
-    providerConfigs.push({
-      providerId: 'openai', enabled: true,
-      config: { apiKey: process.env.OPENAI_API_KEY, defaultModel: 'gpt-4o-mini' },
-      isDefault: !process.env.OPENROUTER_API_KEY && (!process.env.OLLAMA_BASE_URL || process.env.OLLAMA_BASE_URL === "false"),
-    });
+  // 1. Payment Gateway Service (LemonSqueezy)
+  const lsApiKey = process.env.LEMONSQUEEZY_API_KEY;
+  const lsStoreId = process.env.LEMONSQUEEZY_STORE_ID;
+  const lsWebhookSecret = process.env.LEMONSQUEEZY_WEBHOOK_SECRET;
+  if (!lsApiKey || !lsStoreId || !lsWebhookSecret) {
+    console.warn("⚠️ LEMONSQUEEZY_API_KEY, LEMONSQUEEZY_STORE_ID, or LEMONSQUEEZY_WEBHOOK_SECRET not set. Payment features will be severely limited or non-functional.");
+    // Depending on strictness, could throw error here.
   }
-  if (process.env.OPENROUTER_API_KEY && process.env.OPENROUTER_API_KEY !== "YOUR_SYSTEM_OPENROUTER_KEY") {
-    providerConfigs.push({
-      providerId: 'openrouter', enabled: true,
-      config: {
-        apiKey: process.env.OPENROUTER_API_KEY,
-        defaultModel: 'openai/gpt-3.5-turbo',
-        referer: process.env.APP_URL || `http://localhost:${PORT}`,
-        appName: 'AgentOS_CognitoSynth_App'
-      },
-      isDefault: !!process.env.OPENROUTER_API_KEY,
-    });
-  }
-  if (process.env.OLLAMA_BASE_URL && process.env.OLLAMA_BASE_URL !== "false") {
-    providerConfigs.push({
-      providerId: 'ollama', enabled: true,
-      config: { baseURL: process.env.OLLAMA_BASE_URL, defaultModel: 'llama3:latest' },
-    });
-  }
-  if (providerConfigs.length === 0) {
-    console.warn("⚠️ No system-level LLM provider API keys found in .env. Some functionalities might be limited to user-provided keys or local models if Ollama is not configured.");
-  } else if (!providerConfigs.some(p => p.isDefault)) {
-    // If multiple are configured but none marked default, make the first one default.
-    if (providerConfigs.length > 0) providerConfigs[0].isDefault = true;
-  }
-
-  const providerManagerConfig: AIModelProviderManagerConfig = { providers: providerConfigs };
-  providerManager = new AIModelProviderManager();
-  await providerManager.initialize(providerManagerConfig);
-  console.log("✅ AIModelProviderManager initialized.");
-
-  // 2. PromptEngine
-  globalPromptEngine = new PromptEngine();
-  await globalPromptEngine.initialize({}); // No specific config needed for basic init
-  console.log("✅ Global PromptEngine initialized.");
-
-  // 3. Auth Service (now uses Prisma for user & API key persistence)
-  // Pass prisma instance to AuthService
-  authService = new AuthService(prisma); 
-  console.log("✅ AuthService initialized.");
-
-  // 4. Subscription Service (now uses Prisma for subscription tiers)
-  // Pass prisma instance to SubscriptionService
-  subscriptionService = new SubscriptionService(authService, prisma); 
-  await subscriptionService.ensureDefaultTiersExist(); // Ensure default tiers are in DB on startup
-  console.log("✅ SubscriptionService initialized.");
-
-  // 5. UtilityLLMService
-  utilityLLMService = new UtilityLLMService(providerManager, globalPromptEngine);
-  console.log("✅ UtilityLLMService initialized.");
-
-  // 6. Optional LLMModelRouter
-  if (process.env.ROUTING_LLM_PROVIDER_ID && process.env.ROUTING_LLM_MODEL_ID) {
-    const routerConfig: LLMModelRouterConfig = {
-      routingModelProviderId: process.env.ROUTING_LLM_PROVIDER_ID,
-      routingModelId: process.env.ROUTING_LLM_MODEL_ID,
-    };
-    llmModelRouter = new LLMModelRouter();
-    await llmModelRouter.initialize(routerConfig, providerManager, globalPromptEngine);
-    console.log("✅ LLMModelRouter initialized.");
-  }
-
-  // 7. GMIManager (now passes prisma for future persistent memory/snapshots)
-  const gmiManagerConfig: GMIManagerConfig = {
-    personaDefinitionPath: path.resolve(__dirname, './agentos/cognitive_substrate/personas/definitions'),
-    defaultGMIBaseConfig: {
-      providerManager: providerManager,
-      promptEngine: globalPromptEngine,
-      modelRouter: llmModelRouter,
-      prisma: prisma, // Pass prisma client for GMI's internal use (e.g., working memory persistence, snapshots)
-    }
+  const lsConfig: LemonSqueezyConfig = {
+    apiKey: lsApiKey!,
+    storeId: lsStoreId!,
+    webhookSecret: lsWebhookSecret!,
+    // productMap can be loaded from ENV or a config file
+    // Example: productMap: JSON.parse(process.env.LEMONSQUEEZY_PRODUCT_MAP || '{}')
   };
-  gmiManager = new GMIManager(gmiManagerConfig, subscriptionService, authService /* Pass authService for user API keys */);
-  await gmiManager.loadAllPersonaDefinitions();
-  console.log("✅ GMIManager initialized and personas loaded.");
+  lemonSqueezyServiceInstance = new LemonSqueezyService(prismaInstance, lsConfig);
+  if (lemonSqueezyServiceInstance.initialize) {
+    await lemonSqueezyServiceInstance.initialize();
+  }
+  console.log('✅ LemonSqueezyService initialized.');
+
+  // 2. Authentication Service
+  authServiceInstance = new AuthService(prismaInstance, undefined /* Provide Real EmailService */, {
+    jwtSecret: process.env.JWT_SECRET,
+    jwtExpiresIn: process.env.JWT_EXPIRES_IN,
+    apiKeyEncryptionKeyHex: process.env.API_KEY_ENCRYPTION_KEY_HEX,
+  });
+  if (authServiceInstance.initialize) {
+    await authServiceInstance.initialize();
+  }
+  console.log('✅ AuthService initialized.');
+
+  // 3. Subscription Service
+  subscriptionServiceInstance = new SubscriptionService(prismaInstance, authServiceInstance, lemonSqueezyServiceInstance);
+  await subscriptionServiceInstance.initialize(); // Ensures default tiers exist
+  console.log('✅ SubscriptionService initialized.');
+
+  // 4. AI Model Provider Manager
+  const providerManagerConfig: AIModelProviderManagerConfig = {
+    providers: [ /* Dynamically load from env or config file */
+      ...(process.env.OPENAI_API_KEY ? [{ providerId: 'openai', enabled: true, config: { apiKey: process.env.OPENAI_API_KEY, defaultModelId: 'gpt-4o-mini' }, isDefaultSystemProvider: !process.env.OPENROUTER_API_KEY }] : []),
+      ...(process.env.OPENROUTER_API_KEY ? [{ providerId: 'openrouter', enabled: true, config: { apiKey: process.env.OPENROUTER_API_KEY, defaultModelId: 'openai/gpt-4o-mini', siteUrl: process.env.APP_URL, appName: 'AgentOS' }, isDefaultSystemProvider: !!process.env.OPENROUTER_API_KEY }] : []),
+      ...(process.env.OLLAMA_BASE_URL ? [{ providerId: 'ollama', enabled: true, config: { baseURL: process.env.OLLAMA_BASE_URL, defaultModelId: 'llama3:8b' }}] : [])
+    ]
+  };
+  modelProviderManagerInstance = new AIModelProviderManager();
+  await modelProviderManagerInstance.initialize(providerManagerConfig);
+  console.log('✅ AIModelProviderManager initialized.');
+
+  // 5. Utility AI Service (Global Instance)
+  const hybridAIConfig: HybridUtilityAIConfig = {
+      llmUtilityConfig: { defaultModelId: process.env.UTILITY_LLM_MODEL_ID || 'gpt-3.5-turbo' }, // Ensure this model is available via a provider
+      // statisticalUtilityConfig: { resourcePath: 'path/to/nlp/resources' } // Configure if using statistical methods
+  };
+  utilityAIServiceInstance = new HybridUtilityAI(modelProviderManagerInstance, hybridAIConfig);
+  await utilityAIServiceInstance.initialize(hybridAIConfig);
+  console.log('✅ UtilityAIService (Hybrid) initialized.');
+
+  // 6. Prompt Engine
+  const promptEngineConfig: PromptEngineConfig = { /* Populate from ENV or a dedicated config file */
+    defaultTemplateName: 'openai_chat', // Example
+    // tokenCounting: { strategy: 'tiktoken', modelMappings: { ... } } // Example for more precise counting
+  };
+  promptEngineInstance = new PromptEngine();
+  await promptEngineInstance.initialize(promptEngineConfig, utilityAIServiceInstance);
+  console.log('✅ PromptEngine initialized.');
+
+  // 7. Tool Permission Manager
+  const toolPermissionManagerConfig: ToolPermissionManagerConfig = { /* ... */ };
+  toolPermissionManagerInstance = new ToolPermissionManager();
+  await toolPermissionManagerInstance.initialize(toolPermissionManagerConfig);
+  console.log('✅ ToolPermissionManager initialized.');
+
+  // 8. Tool Orchestrator
+  const toolOrchestratorConfig: ToolOrchestratorConfig = { /* ... */ };
+  toolOrchestratorInstance = new ToolOrchestrator(toolPermissionManagerInstance); // Injects TPM
+  await toolOrchestratorInstance.initialize(toolOrchestratorConfig);
+  console.log('✅ ToolOrchestrator initialized.');
+
+  // 9. Conversation Manager
+  const conversationManagerConfig: ConversationManagerConfig = {
+    persistenceEnabled: true,
+    maxActiveConversationsInMemory: parseInt(process.env.MAX_ACTIVE_CONVERSATIONS_IN_MEMORY || '1000', 10),
+    defaultConversationContextConfig: {
+      enableAutomaticSummarization: process.env.ENABLE_CONVERSATION_SUMMARIZATION === 'true',
+      maxHistoryLengthMessages: 100, // Example
+    }
+   };
+  conversationManagerInstance = new ConversationManager();
+  await conversationManagerInstance.initialize(conversationManagerConfig, utilityAIServiceInstance, prismaInstance);
+  console.log('✅ ConversationManager initialized.');
+
+  // 10. Streaming Manager
+  const streamingManagerConfig: StreamingManagerConfig = { /* ... */ };
+  streamingManagerInstance = new StreamingManager();
+  await streamingManagerInstance.initialize(streamingManagerConfig);
+  console.log('✅ StreamingManager initialized.');
+  
+  // 11. GMI Manager
+  const gmiManagerConfig: GMIManagerConfig = {
+    personaLoaderConfig: { personaDefinitionPath: path.resolve(__dirname, './agentos/cognitive_substrate/personas/definitions') },
+    defaultGMIInactivityCleanupMinutes: 60,
+  };
+  gmiManagerInstance = new GMIManager(
+    gmiManagerConfig,
+    subscriptionServiceInstance,
+    authServiceInstance,
+    prismaInstance,
+    conversationManagerInstance,
+    promptEngineInstance,
+    modelProviderManagerInstance,
+    utilityAIServiceInstance,
+    toolOrchestratorInstance
+    // retrievalAugmentor would be passed here
+  );
+  await gmiManagerInstance.initialize();
+  console.log('✅ GMIManager initialized.');
+
+  // 12. AgentOS Orchestrator
+  const agentOSOrchestratorConfig: AgentOSOrchestratorConfig = {
+    enableConversationalPersistence: conversationManagerConfig.persistenceEnabled,
+    maxToolCallIterations: 5,
+  };
+  const orchestratorDeps: AgentOSOrchestratorDependencies = {
+    gmiManager: gmiManagerInstance,
+    toolOrchestrator: toolOrchestratorInstance,
+    conversationManager: conversationManagerInstance,
+    streamingManager: streamingManagerInstance,
+    authService: authServiceInstance,
+    subscriptionService: subscriptionServiceInstance,
+  };
+  agentOSOrchestratorInstance = new AgentOSOrchestrator();
+  await agentOSOrchestratorInstance.initialize(agentOSOrchestratorConfig, orchestratorDeps);
+  console.log('✅ AgentOSOrchestrator initialized.');
+
+  // 13. Main AgentOS Service Facade
+  const agentOSFacadeConfig: AgentOSConfig = {
+    gmiManagerConfig,
+    orchestratorConfig: agentOSOrchestratorConfig,
+    promptEngineConfig,
+    toolOrchestratorConfig,
+    toolPermissionManagerConfig,
+    conversationManagerConfig,
+    streamingManagerConfig,
+    modelProviderManagerConfig,
+    defaultPersonaId: process.env.DEFAULT_PERSONA_ID || 'default_assistant_persona',
+    prisma: prismaInstance,
+    authService: authServiceInstance,
+    subscriptionService: subscriptionServiceInstance,
+    utilityAIService: utilityAIServiceInstance,
+  };
+  agentOSFacadeInstance = new AgentOS();
+  await agentOSFacadeInstance.initialize(agentOSFacadeConfig);
+  console.log('✅ AgentOS Service Facade initialized.');
+
+  console.log('🎉 All global services initialized successfully!');
 }
 
 // --- API Routes Setup ---
-// Health check remains accessible without any auth.
-app.get('/health', (req: Request, res: Response) => {
+app.get('/health', async (req: Request, res: Response) => {
+  let dbHealthy = false;
+  try {
+    await prismaInstance.$queryRaw`SELECT 1`;
+    dbHealthy = true;
+  } catch (e) { /* dbHealthy remains false */ }
+
   res.status(200).json({
     status: 'OK',
     timestamp: new Date().toISOString(),
-    port: PORT,
-    servicesInitialized: !!gmiManager // Basic check
+    servicesInitialized: !!agentOSFacadeInstance,
+    databaseConnected: dbHealthy,
+    nodeVersion: process.version,
+    environment: process.env.NODE_ENV || 'development',
   });
 });
 
-// Mount new API routes under /api/v1
-// Authentication is handled within each route module as needed
+// Mount SOTA Authentication Routes
 app.use('/api/v1/auth', (req, res, next) => {
-  if (!authService || !subscriptionService) return res.status(503).json({message: "Auth services not ready."});
-  createAuthRoutes(authService, subscriptionService)(req, res, next);
-});
-app.use('/api/v1/gmi', (req, res, next) => {
-  if (!gmiManager || !authService || !providerManager) return res.status(503).json({message: "GMI services not ready."});
-  createGMIRoutes(gmiManager, authService, providerManager, prisma)(req, res, next); // Pass prisma here for Conversation persistence
-});
-app.use('/api/v1/utility', (req, res, next) => {
-  if (!utilityLLMService || !authService) return res.status(503).json({message: "Utility services not ready."});
-  createUtilityLLMRoutes(utilityLLMService, authService)(req, res, next);
+  if (!authServiceInstance || !subscriptionServiceInstance) {
+    return res.status(503).json({ error: { code: GMIErrorCode.SERVICE_UNAVAILABLE, message: "Authentication or Subscription services not ready." }});
+  }
+  createAuthRoutes(authServiceInstance, subscriptionServiceInstance)(req, res, next);
 });
 
-// The /api/v1/me/api-keys endpoint logic is now handled in authRoutes.ts
-// Removed the inline definition here as it will be part of authRoutes.ts
+// Mount Core AgentOS Interaction Routes
+app.use('/api/v1/agentos', (req, res, next) => {
+  if (!agentOSFacadeInstance) {
+     return res.status(503).json({ error: { code: GMIErrorCode.SERVICE_UNAVAILABLE, message: "AgentOS service not ready." }});
+  }
+  // Note: authServiceInstance is passed to createAgentOSRoutes for the authenticateToken middleware
+  createAgentOSRoutes(agentOSFacadeInstance, authServiceInstance)(req, res, next);
+});
+
+// Mount Persona Listing Routes
+app.use('/api/v1/personas', (req, res, next) => {
+   if (!agentOSFacadeInstance) {
+     return res.status(503).json({ error: { code: GMIErrorCode.SERVICE_UNAVAILABLE, message: "AgentOS service not ready for personas." }});
+  }
+  // Note: authServiceInstance is passed to createPersonaRoutes for optional authentication in the middleware
+  createPersonaRoutes(agentOSFacadeInstance, authServiceInstance)(req, res, next);
+});
+
+// Mount LemonSqueezy Webhook Routes
+// Ensure LemonSqueezyService and SubscriptionService are passed if webhook handlers need them for complex logic
+app.use('/api/webhooks', (req, res, next) => {
+  if(!lemonSqueezyServiceInstance || !subscriptionServiceInstance) {
+    return res.status(503).json({ error: { code: GMIErrorCode.SERVICE_UNAVAILABLE, message: "Payment webhook processing services not ready." }});
+  }
+  // The createLemonSqueezyWebhooksRoutes should ideally accept dependencies.
+  // If it instantiates its own, ensure it gets the right Prisma client.
+  // For now, assuming it might need access to the global subscriptionServiceInstance for full processing.
+  createLemonSqueezyWebhooksRoutes(prismaInstance, subscriptionServiceInstance, lemonSqueezyServiceInstance)(req, res, next);
+});
+
+
+// Example: Placeholder for other existing/future route modules.
+// Ensure they are updated to use the initialized service instances and SOTA auth.
+// console.log("Note: Other routes like 'gmiRoutes' and 'utilityLLMRoutes' from the original server.ts are not mounted in this refactor. They would need to be updated and integrated similarly if still required.");
+// app.use('/api/v1/gmi', (req, res, next) => { /* ... createGMIRoutes(gmiManagerInstance, authServiceInstance, ...) ... */ });
+// app.use('/api/v1/utility', (req, res, next) => { /* ... createUtilityLLMRoutes(utilityServiceInstance, authServiceInstance, ...) ... */ });
+
 
 // Catch-all for /api/v1 routes not found
 app.use('/api/v1/*', (req: Request, res: Response) => {
   res.status(404).json({
-    message: `API V1 endpoint not found: ${req.method} ${req.originalUrl}`,
-    error: 'ENDPOINT_NOT_FOUND_V1',
+    error: {
+      code: GMIErrorCode.ENDPOINT_NOT_FOUND,
+      message: `API V1 endpoint not found: ${req.method} ${req.originalUrl}`,
+      timestamp: new Date().toISOString(),
+    }
   });
 });
 
-// --- Frontend Serving (Production) & Server Start ---
+// --- Frontend Serving & Server Start ---
 async function startServer() {
-  await initializeGlobalServices();
+  try {
+    await initializeGlobalServices(); // Ensure all services are up
 
-  if (process.env.NODE_ENV === 'production') {
-    const frontendDistPath = path.join(__dirname, '../../frontend/dist');
-    if (fs.existsSync(path.join(frontendDistPath, 'index.html'))) { // Check if frontend build exists
-      app.use(express.static(frontendDistPath));
-      app.get('*', (req: Request, res: Response, next: NextFunction) => {
-        if (!req.originalUrl.startsWith('/api')) {
-          res.sendFile(path.join(frontendDistPath, 'index.html'));
-        } else {
-          next(); // Important to pass to API 404 handler if it's an API path
+    // Serve frontend static files in production or if explicitly configured
+    if (process.env.NODE_ENV === 'production' || process.env.SERVE_FRONTEND === 'true') {
+      const frontendDistPath = path.resolve(__dirname, '../../frontend/dist');
+      if (fs.existsSync(path.join(frontendDistPath, 'index.html'))) {
+        app.use(express.static(frontendDistPath));
+        // SPA fallback: For any route not starting with /api, serve index.html
+        app.get('*', (req: Request, res: Response, next: NextFunction) => {
+          if (!req.originalUrl.startsWith('/api') && !req.originalUrl.startsWith('/socket.io')) { // Also avoid for socket.io if used
+            res.sendFile(path.join(frontendDistPath, 'index.html'));
+          } else {
+            next(); // Pass to API 404 handler or other specific middleware
+          }
+        });
+        console.log(`📦 Serving frontend static files from: ${frontendDistPath}`);
+      } else {
+        console.warn(`⚠️ Frontend 'dist' folder not found at ${frontendDistPath}. SPA will not be served by this backend.`);
+      }
+    }
+
+    // SOTA Global Error Handler (must be the last piece of middleware)
+    app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+      console.error(`🚨 Global Error Handler caught an error for ${req.method} ${req.originalUrl}:`, err);
+      if (res.headersSent) {
+        return next(err); // Delegate to Express default if headers already sent
+      }
+      
+      let statusCode = 500;
+      let errorCode: string = GMIErrorCode.INTERNAL_SERVER_ERROR;
+      let message = 'An unexpected internal server error occurred.';
+      let details: any = undefined;
+
+      if (err instanceof GMIError) {
+        statusCode = err.recommendedHttpStatusCode || 400; // GMIError could suggest a status code
+        errorCode = err.code;
+        message = err.message;
+        details = err.details;
+      } else if (err.status || err.statusCode) { // Standard Express error convention
+        statusCode = err.status || err.statusCode;
+        message = err.message || message;
+      }
+      // For other types of errors, they'll fall into the defaults above.
+
+      res.status(statusCode).json({
+        error: {
+          code: errorCode,
+          message: message,
+          details: process.env.NODE_ENV !== 'production' ? details : undefined, // Show details only in non-prod
+          stack: process.env.NODE_ENV !== 'production' ? err.stack : undefined, // Show stack only in non-prod
+          timestamp: new Date().toISOString(),
         }
       });
-    } else {
-      console.warn(`⚠️ Frontend dist folder not found at ${frontendDistPath}. SPA fallback might not work.`);
+    });
+
+    const server = app.listen(PORT, () => {
+      console.log(`✨ AgentOS Backend Server is live and listening on port ${PORT} in ${process.env.NODE_ENV || 'development'} mode.`);
+      console.log(`🌐 Frontend URL for CORS (expected): ${process.env.FRONTEND_URL || 'http://localhost:3000'}`);
+      console.log(`🔗 API Base Path: /api/v1`);
+      console.log(`   ├── /auth/... (User authentication, API keys, etc.)`);
+      console.log(`   ├── /agentos/... (Core AgentOS interactions: chat, tool results)`);
+      console.log(`   ├── /personas/... (Persona listing and details)`);
+      console.log(`   └── /webhooks/... (Payment gateway webhooks like LemonSqueezy)`);
+      console.log(`🩺 Health check endpoint: /health`);
+    });
+
+    // Graceful shutdown handling
+    const signals: NodeJS.Signals[] = ['SIGINT', 'SIGTERM'];
+    signals.forEach(signal => {
+      process.on(signal, async () => {
+        console.log(`\n👋 ${signal} signal received. Initiating graceful shutdown of AgentOS backend...`);
+        
+        // Stop accepting new connections
+        server.close(async () => {
+          console.log('✅ HTTP server closed to new connections.');
+          
+          // Shutdown AgentOS facade and its components
+          if (agentOSFacadeInstance && agentOSFacadeInstance.shutdown) {
+            try {
+              await agentOSFacadeInstance.shutdown();
+              console.log('✅ AgentOS Facade and its components shut down successfully.');
+            } catch (e) {
+              console.error("❌ Error during AgentOS Facade shutdown:", e);
+            }
+          } else {
+            console.warn("AgentOS Facade not available for shutdown or shutdown method missing.");
+          }
+
+          // Disconnect from the database
+          try {
+            await disconnectFromDatabase();
+            console.log('✅ Disconnected from database.');
+          } catch (e) {
+            console.error("❌ Error disconnecting from database:", e);
+          }
+          
+          console.log('🚪 AgentOS backend shut down gracefully.');
+          process.exit(0); // Exit process
+        });
+
+        // Force shutdown if server doesn't close gracefully within a timeout
+        setTimeout(() => {
+            console.error('⚠️ Graceful shutdown timed out after 10 seconds. Forcing exit.');
+            process.exit(1); // Force exit
+        }, 10000); // 10 seconds timeout
+      });
+    });
+
+  } catch (error) {
+    console.error('❌ FATAL: Failed to initialize services and start server:', error);
+    // Attempt to disconnect DB even on fatal startup error if prismaInstance might be connected
+    if (prismaInstance && typeof prismaInstance.$disconnect === 'function') {
+        await disconnectFromDatabase().catch(e => console.error("Error disconnecting database during fatal startup error:", e));
     }
+    process.exit(1); // Exit with error code
   }
-
-  // Global Error Handler (should be last middleware)
-  app.use((err: any, req: Request, res: Response, _next: NextFunction) => {
-    console.error(`🚨 Global error for ${req.method} ${req.originalUrl}:`, err.message);
-    if (process.env.NODE_ENV !== 'production') {
-      console.error(err.stack);
-    }
-    res.status(err.status || 500).json({
-      message: err.message || 'An unexpected server error occurred.',
-      error: process.env.NODE_ENV === 'production' ? 'SERVER_ERROR' : {
-        type: err.type || err.name || 'UNHANDLED_EXCEPTION',
-        message: err.message,
-        code: err.code,
-        stack: process.env.NODE_ENV === 'production' ? undefined : err.stack,
-      }
-    });
-  });
-
-  const server = app.listen(PORT, () => {
-    console.log(`✨ Server running on port ${PORT} in ${process.env.NODE_ENV || 'development'} mode.`);
-    console.log(`🌐 Frontend URL for CORS: ${process.env.FRONTEND_URL || 'http://localhost:3000'}`);
-    console.log('API V1 Endpoints at /api/v1/...');
-    console.log('  - /auth (register, login, me, api-keys)');
-    console.log('  - /gmi (interact/:personaId, etc.)');
-    console.log('  - /utility (direct-prompt, summarize, etc.)');
-  });
-
-  // Handle graceful shutdown
-  process.on('SIGTERM', () => {
-    console.log('SIGTERM signal received: closing HTTP server');
-    server.close(async () => {
-      console.log('HTTP server closed.');
-      await disconnectFromDatabase();
-      process.exit(0);
-    });
-  });
-
-  process.on('SIGINT', () => {
-    console.log('SIGINT signal received: closing HTTP server');
-    server.close(async () => {
-      console.log('HTTP server closed.');
-      await disconnectFromDatabase();
-      process.exit(0);
-    });
-  });
 }
 
-startServer().catch(error => {
-  console.error('❌ FATAL: Failed to initialize services and start server:', error);
-  process.exit(1);
-});
+// Start the server
+startServer();
 
-export default app;
+export default app; // Export app for potential testing or programmatic use (e.g., serverless functions)

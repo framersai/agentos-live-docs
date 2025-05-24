@@ -1,0 +1,280 @@
+/* File: frontend/src/styles/_variables.css */
+
+/**
+ * @file _variables.css
+ * @description Defines global CSS custom properties (design tokens) for the application's theming system.
+ * These variables provide default values, effectively constituting the 'light theme'.
+ * Other theme files (dark.theme.css, holographic.theme.css) will override these variables
+ * within their respective theme class scopes (e.g., .theme-dark, .theme-holographic).
+ *
+ * Naming Convention:
+ * --app-[category]-[property]-[variant/state]
+ * Example: --app-primary-color, --app-text-color-hover, --app-surface-color-raised
+ *
+ * Categories:
+ * - Brand: Core brand colors (primary, secondary, accent).
+ * - Semantic: Colors for states (success, warning, error, info).
+ * - Text: Colors for various text elements.
+ * - Background: Colors for page backgrounds, surfaces, panels.
+ * - Border: Colors and styles for borders and dividers.
+ * - Shadow: Definitions for various shadow levels.
+ * - Font: Font families, sizes, weights.
+ * - Spacing: Common spacing units (can complement Tailwind).
+ * - Radius: Border radii for elements.
+ * - Transition: Default transition durations and timing functions.
+ * - Z-Index: Stacking order for global elements.
+ * - Specific Component Vars: (e.g., --app-button-primary-bg) if needed beyond general categories.
+ * - Holographic: Variables specific to the holographic theme's unique effects.
+ */
+
+:root {
+  /* === BRAND COLORS === */
+  /* These are base colors, specific component usage might derive from these or use direct semantic colors */
+  --app-primary-rgb: 59, 130, 246; /* Tailwind blue-500 */
+  --app-primary-color: rgb(var(--app-primary-rgb));
+  --app-primary-color-light: #93c5fd; /* primary-300 */
+  --app-primary-color-dark: #1d4ed8; /* primary-700 */
+  --app-primary-contrast-text-color: #ffffff; /* Text on primary color */
+
+  --app-secondary-rgb: 107, 114, 128; /* Tailwind gray-500 */
+  --app-secondary-color: rgb(var(--app-secondary-rgb));
+  --app-secondary-color-light: #9ca3af; /* gray-400 */
+  --app-secondary-color-dark: #374151; /* gray-700 */
+  --app-secondary-contrast-text-color: #ffffff;
+
+  --app-accent-rgb: 22, 163, 74; /* Tailwind green-500 */
+  --app-accent-color: rgb(var(--app-accent-rgb));
+  --app-accent-color-light: #34d399; /* green-400 */
+  --app-accent-color-dark: #059669; /* green-600 */
+  --app-accent-contrast-text-color: #ffffff;
+
+  /* === SEMANTIC COLORS === */
+  --app-success-rgb: 16, 185, 129; /* Tailwind emerald-500 */
+  --app-success-color: rgb(var(--app-success-rgb));
+  --app-success-text-color: var(--app-success-color);
+  --app-success-text-strong: #065f46; /* emerald-800 */
+  --app-success-bg-subtle: #ecfdf5; /* emerald-50 */
+  --app-success-border-color: #6ee7b7; /* emerald-300 */
+  --app-success-contrast-text-color: #ffffff;
+
+
+  --app-warning-rgb: 245, 158, 11; /* Tailwind amber-500 */
+  --app-warning-color: rgb(var(--app-warning-rgb));
+  --app-warning-text-color: var(--app-warning-color);
+  --app-warning-text-strong: #92400e; /* amber-800 */
+  --app-warning-bg-subtle: #fffbeb; /* amber-50 */
+  --app-warning-border-color: #fcd34d; /* amber-300 */
+
+  --app-danger-rgb: 239, 68, 68; /* Tailwind red-500 */
+  --app-danger-color: rgb(var(--app-danger-rgb));
+  --app-danger-text-color: var(--app-danger-color);
+  --app-danger-text-strong: #991b1b; /* red-800 */
+  --app-danger-bg-subtle: #fee2e2; /* red-50 */
+  --app-danger-border-color: #fca5a5; /* red-300 */
+
+  --app-info-rgb: 59, 130, 246; /* Tailwind blue-500 */
+  --app-info-color: rgb(var(--app-info-rgb));
+  --app-info-text-color: var(--app-info-color);
+  --app-info-text-strong: #1e40af; /* blue-800 */
+  --app-info-bg-subtle: #eff6ff; /* blue-50 */
+  --app-info-border-color: #93c5fd; /* blue-300 */
+  --app-info-contrast-text-color: #ffffff;
+
+  /* === TEXT COLORS === */
+  --app-text-color: #1f2937; /* Tailwind gray-800 */
+  --app-text-secondary-color: #4b5563; /* Tailwind gray-600 */
+  --app-text-muted-color: #6b7280; /* Tailwind gray-500 */
+  --app-heading-color: #111827; /* Tailwind gray-900 */
+  --app-link-color: var(--app-primary-color);
+  --app-link-hover-color: var(--app-primary-color-dark);
+  --app-text-on-accent: var(--app-primary-contrast-text-color); /* Text on primary/accent backgrounds */
+
+  /* === BACKGROUND & SURFACE COLORS === */
+  --app-bg-color: #ffffff; /* Main page background */
+  --app-bg-alt-color: #f9fafb; /* Slightly off-white, like Tailwind gray-50 */
+  --app-surface-color: #ffffff; /* Card backgrounds, modals, etc. */
+  --app-surface-alt-color: #f3f4f6; /* Tailwind gray-100, for elements on surfaces */
+  --app-surface-raised-color: #ffffff; /* For elements that need to appear slightly elevated */
+  --app-surface-inset-color: #f3f4f6; /* For elements that appear inset, like some input backgrounds */
+  --app-surface-hover-color: #f0f0f0; /* Generic hover for surfaces */
+  --app-surface-color-transparent: rgba(255, 255, 255, 0.85); /* For blurred headers/footers */
+  --app-surface-color-transparent-heavy: rgba(255, 255, 255, 0.95);
+
+  /* === BORDER & DIVIDER COLORS === */
+  --app-border-color: #d1d5db; /* Tailwind gray-300 - default border */
+  --app-border-color-light: #e5e7eb; /* Tailwind gray-200 - lighter border/divider */
+  --app-border-color-extralight: #f3f4f6; /* Tailwind gray-100 - very subtle */
+  --app-border-color-dark: #4b5563; /* For dark theme borders when on light surface */
+  --app-input-border-color: var(--app-border-color);
+  --app-input-focus-border-color: var(--app-primary-color);
+  --app-focus-ring-color: var(--app-primary-color); /* For focus-visible outlines */
+
+  /* === SHADOWS === */
+  --app-shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --app-shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  --app-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --app-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --app-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --app-shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  --app-shadow-inner: inset 0 2px 4px 0 rgba(0,0,0,0.05);
+
+  /* === FONTS === */
+  --app-font-family-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --app-font-family-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  --app-font-size-xs: 0.75rem;   /* 12px */
+  --app-font-size-sm: 0.875rem;  /* 14px */
+  --app-font-size-base: 1rem;    /* 16px */
+  --app-font-size-lg: 1.125rem;  /* 18px */
+  --app-font-size-xl: 1.25rem;   /* 20px */
+  --app-font-size-2xl: 1.5rem;   /* 24px */
+  --app-font-size-3xl: 1.875rem; /* 30px */
+  --app-font-size-4xl: 2.25rem;  /* 36px */
+
+  --app-font-weight-light: 300;
+  --app-font-weight-normal: 400;
+  --app-font-weight-medium: 500;
+  --app-font-weight-semibold: 600;
+  --app-font-weight-bold: 700;
+  --app-font-weight-extrabold: 800;
+
+  /* === SPACING (Complementary to Tailwind) === */
+  /* Used for consistent padding/margins in custom component CSS */
+  --space-px: 1px;
+  --space-0h: 0.125rem; /* half of space-1 (2px) */
+  --space-1: 0.25rem;   /* 4px */
+  --space-1h: 0.375rem; /* 6px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px */
+  --space-5: 1.25rem;   /* 20px */
+  --space-6: 1.5rem;    /* 24px */
+  --space-8: 2rem;      /* 32px */
+  --space-10: 2.5rem;   /* 40px */
+  --space-12: 3rem;     /* 48px */
+
+  /* === BORDER RADIUS === */
+  --app-border-radius-sm: 0.25rem;  /* 4px */
+  --app-border-radius-md: 0.375rem; /* 6px */
+  --app-border-radius-lg: 0.5rem;   /* 8px */
+  --app-border-radius-xl: 0.75rem;  /* 12px */
+  --app-border-radius-2xl: 1rem;  /* 16px */
+  --app-border-radius-full: 9999px;
+  --app-badge-border-radius: var(--app-border-radius-full);
+  --app-chip-border-radius: var(--app-border-radius-full);
+
+  /* === TRANSITIONS & ANIMATIONS === */
+  --app-duration-fast: 150ms;
+  --app-duration-normal: 300ms;
+  --app-duration-slow: 500ms;
+  --app-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --app-ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --app-ease-spring: cubic-bezier(0.68, -0.55, 0.27, 1.55);
+
+  /* === Z-INDEXES (Example Scale) === */
+  --z-index-dropdown: 1000;
+  --z-index-sticky: 1020;
+  --z-index-modal-backdrop: 2000;
+  --z-index-modal: 2010;
+  --z-index-notification: 3000;
+  --z-index-tooltip: 4000;
+  /* Specifics for layout parts */
+  --z-index-header: 950;
+  --z-index-page-header: 900; /* If page has its own sticky header */
+  --z-index-mobile-sidebar: 1100;
+  --z-index-mobile-sidebar-overlay: 1099;
+  --z-index-chat-input: 500;
+  --z-index-side-panel: 800;
+  --z-index-fullscreen-view: 2000;
+  --z-index-fullscreen-overlay: 2050;
+  --z-index-fullscreen-controls: 2060;
+
+
+  /* === UI ELEMENT SPECIFIC (Examples) === */
+  /* AppButton */
+  --app-button-font-weight: var(--app-font-weight-medium);
+  --app-button-border-radius: var(--app-border-radius-md);
+  --app-button-padding-y: var(--space-2);
+  --app-button-padding-x: var(--space-4);
+  /* ... (primary, secondary, etc. button specific vars could go here or in component styles using base vars) */
+
+  /* AppInput */
+  --app-input-bg: var(--app-surface-color);
+  --app-input-text-color: var(--app-text-color);
+  --app-input-border-color: var(--app-border-color);
+  --app-input-border-radius: var(--app-border-radius-md);
+  --app-input-padding-y: var(--space-2h, 0.625rem); /* 10px */
+  --app-input-padding-x: var(--space-3, 0.75rem);
+  --app-input-font-size: var(--app-font-size-base);
+  --app-input-line-height: 1.5;
+  --app-input-placeholder-color: var(--app-text-muted-color);
+  --app-input-focus-border-color: var(--app-primary-color);
+  --app-input-focus-ring-color: rgba(var(--app-primary-rgb), 0.25);
+  /* ... (disabled, error states) ... */
+
+  /* AppCard */
+  --app-card-bg: var(--app-surface-color);
+  --app-card-text-color: var(--app-text-color);
+  --app-card-border-radius: var(--app-border-radius-lg);
+  --app-card-border-color: var(--app-border-color);
+  --app-card-shadow-elevated: var(--app-shadow-md);
+  --app-card-padding-md: var(--space-4); /* Default body padding */
+
+
+  /* === HOLOGRAPHIC THEME BASE (Defaults for the theme, to be activated by .theme-holographic class) === */
+  /* These are foundational values; specific component styling for holographic will use these */
+  --holographic-accent-rgb: 0, 242, 255; /* Cyan-like accent */
+  --holographic-accent: rgb(var(--holographic-accent-rgb));
+  --holographic-accent-text-strong: #ffffff; /* Text on accent color */
+
+  --holographic-secondary-accent-rgb: 255, 51, 204; /* Magenta-like secondary accent */
+  --holographic-secondary-accent: rgb(var(--holographic-secondary-accent-rgb));
+
+  --holographic-bg-start: #0a0f1f; /* Deep dark blue/purple */
+  --holographic-bg-mid: #0d1225;
+  --holographic-bg-end: #101830;
+  --holographic-bg-main-gradient: linear-gradient(170deg, var(--holographic-bg-start) 0%, var(--holographic-bg-mid) 60%, var(--holographic-bg-end) 100%);
+  --holographic-bg-gradient-subtle: linear-gradient(170deg, color-mix(in srgb, var(--holographic-bg-start) 90%, black) 0%, color-mix(in srgb, var(--holographic-bg-mid) 90%, black) 100%);
+
+
+  --holographic-panel-rgb: 20, 30, 70; /* Slightly lighter dark blue for panels */
+  --holographic-panel-bg: rgba(var(--holographic-panel-rgb), 0.5); /* Semi-transparent panel */
+  --holographic-panel-bg-translucent: rgba(var(--holographic-panel-rgb), 0.65);
+  --holographic-panel-bg-translucent-deep: rgba(var(--holographic-panel-rgb), 0.3);
+  --holographic-panel-bg-opaque: rgb(var(--holographic-panel-rgb));
+
+  --holographic-text-primary: #e0e0ff; /* Light lavender/blue text */
+  --holographic-text-secondary: #b0b0e0; /* Slightly darker for secondary text */
+  --holographic-text-muted: #8080c0; /* Muted text */
+  --holographic-text-accent: var(--holographic-accent); /* Text in accent color */
+  --holographic-text-on-accent: var(--holographic-bg-start); /* Text on accent backgrounds */
+
+  --holographic-border: rgba(var(--holographic-accent-rgb), 0.5);
+  --holographic-border-translucent: rgba(var(--holographic-accent-rgb), 0.3);
+  --holographic-border-subtle: rgba(var(--holographic-accent-rgb), 0.2);
+  --holographic-border-very-subtle: rgba(var(--holographic-accent-rgb), 0.1);
+
+  --holographic-glow-xs-accent: 0 0 5px rgba(var(--holographic-accent-rgb), 0.7);
+  --holographic-glow-sm-accent: 0 0 10px rgba(var(--holographic-accent-rgb), 0.5);
+  --holographic-glow-md-accent: 0 0 18px rgba(var(--holographic-accent-rgb), 0.4);
+  --holographic-glow-sm-panel: 0 0 10px rgba(var(--holographic-panel-rgb), 0.3);
+
+  --holographic-blur-xs: blur(2px);
+  --holographic-blur-sm: blur(4px);
+  --app-blur-sm: blur(var(--space-1)); /* General purpose blur, re-used by holo */
+  --app-blur-md: blur(var(--space-2));
+  --holographic-blur-md: blur(8px);
+  --holographic-blur-lg: blur(12px);
+
+  --app-code-bg-color: #f3f4f6; /* For code blocks in light/default theme */
+  --app-code-text-color: #1f2937;
+  --app-code-border-color: #e5e7eb;
+
+  /* Semantic colors adapted for holographic, can be overridden in .theme-holographic */
+  --holographic-success-color: #00ffaa;
+  --holographic-warning-color: #ffdd00;
+  --holographic-danger-color: #ff4d80;
+  --holographic-info-color: var(--holographic-accent);
+
+  /* Add more foundational holographic variables here */
+}

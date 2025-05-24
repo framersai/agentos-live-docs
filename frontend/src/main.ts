@@ -6,26 +6,27 @@
  * This file orchestrates the bootstrapping of the application.
  * @module main
  */
-import { createApp, App as VueAppInstance, provide, h } from 'vue';
+import { createApp, App as VueAppInstance, provide } from 'vue'; // Removed h as it wasn't used directly here
 import { createPinia, Pinia } from 'pinia';
 import { Router } from 'vue-router';
-import { I18n } from 'vue-i18n'; // Import I18n type
+import { I18n } from 'vue-i18n';
 
 import App from './App.vue';
 import { createAppRouter } from './router';
-import { setupI18nPlugin, useI18n, LanguageCode, LocaleMessages } from './composables/useI18n';
-import { apiService, IApiService, ApiServiceConfig } from './services/apiService';
+import { setupI18nPlugin, LanguageCode, LocaleMessages } from './composables/useI18n'; // useI18n itself is not directly used here, but setupI18nPlugin is
+import { apiService, IApiService } from './services/apiService'; // Removed ApiServiceConfig as it's not used here
 import { seoService, ISeoService } from './services/seoService';
 import { storageService, IStorageService } from './services/storageService';
-import { useAuthStore } from './features/auth/store/auth.store';
-import { useUiStore } from './store/ui.store'; // For global loading, holographic theme state
+import { voiceCommandService, IVoiceCommandService } from './services/voiceCommandService'; // Added VoiceCommandService
+import { dynamicUIAgent, DynamicUIAgentService } from './services/dynamicUIAgent.service'; // Added DynamicUIAgentService
 
-// Import global styles: Order can be important.
-import './assets/main.css'; // Should primarily contain Tailwind directives and base imports
-import './styles/_base.css';
-import './styles/_typography.css';
-import './styles/_animations.css'; // For holographic effects
-import './styles/_accessibility.css';
+
+import { useAuthStore } from './features/auth/store/auth.store';
+import { useUiStore } from './store/ui.store';
+import { useVoiceStore } from './store/voice.store'; // Ensure this is created and imported
+
+// Import THE ONE main CSS file that handles all other @imports internally.
+import './assets/main.css';
 
 /**
  * Asynchronously initializes and mounts the Vue application.
@@ -44,11 +45,12 @@ async function bootstrap(): Promise<void> {
     console.debug('[Bootstrap] Pinia initialized.');
 
     // Provide core services via Vue's provide/inject system for Composition API usage.
-    // This is generally preferred over attaching to globalProperties for better type safety and testability.
     app.provide<IApiService>('apiService', apiService);
     app.provide<ISeoService>('seoService', seoService);
     app.provide<IStorageService>('storageService', storageService);
-    // Add other services like notificationService, voiceCommandService here once created.
+    app.provide<IVoiceCommandService>('voiceCommandService', voiceCommandService);
+    app.provide<DynamicUIAgentService>('dynamicUIAgent', dynamicUIAgent);
+    // Add other services like notificationService (often part of UiStore actions)
 
     // 2. Initialize Vue Router
     const router: Router = createAppRouter();
@@ -57,67 +59,69 @@ async function bootstrap(): Promise<void> {
 
     // 3. Initialize Internationalization (vue-i18n)
     const i18nInstance: I18n<LocaleMessages, LanguageCode> = await setupI18nPlugin(app);
-    app.provide<I18n<LocaleMessages, LanguageCode>>('i18n', i18nInstance);
+    app.provide<I18n<LocaleMessages, LanguageCode>>('i18n', i18nInstance); // Provide the instance
     console.debug('[Bootstrap] vue-i18n initialized.');
 
-    // Make $t available globally for convenience in templates if still desired,
-    // though `useI18n()` is preferred in <script setup>.
+    // Make $t and $i18n globally available on component instances (Options API).
+    // For Composition API, use `useI18n()`.
     app.config.globalProperties.$t = i18nInstance.global.t;
     app.config.globalProperties.$i18n = i18nInstance.global;
 
-
-    // 4. Initialize Authentication State (and other critical stores)
-    // The authStore might need the router for redirects, so initialize after router.
+    // 4. Initialize Core Stores & Services that depend on plugins
     const authStore = useAuthStore();
-    const uiStore = useUiStore(); // Initialize UI store for global loading, theme, etc.
+    const uiStore = useUiStore();
+    const voiceStore = useVoiceStore(); // Initialize voice store
 
-    // Configure ApiService's onUnauthorized callback to use the authStore for logout.
-    (apiService as any).onUnauthorizedCallback = async () => { // Cast to any if method is private/not on interface
-      await authStore.logout(); // Perform logout actions (clear state, token)
-      router.push({ name: 'Login', query: { sessionExpired: 'true' } });
-    };
+    // Initialize theme from storage/system preference
+    uiStore.initializeTheme();
 
-    // Attempt to initialize auth state (e.g., check for persisted token)
-    // This is now handled within router.beforeEach by authStore.initializeAuth()
-    // but an initial call might still be useful depending on app flow.
-    // await authStore.initializeAuth();
-    console.debug('[Bootstrap] Auth store initialized.');
+    // Configure ApiService's onUnauthorized callback AFTER authStore is available
+    apiService.setOnUnauthorizedCallback(async () => { // Ensure onUnauthorizedCallback is public in ApiService or use a setter
+      await authStore.logout(); // Auth store handles actual logout logic and navigation
+    });
+
+    // Initialize auth state (checks for persisted token)
+    // This is now typically handled by the router guard calling authStore.initializeAuth()
+    // await authStore.initializeAuth(); // Call it once here if not solely relying on router guard
+    // If router guard handles it, ensure Pinia is setup BEFORE router for guard to access store.
+
+    // Initialize Voice Command Service (depends on stores being ready)
+    await voiceCommandService.initialize();
+    console.debug('[Bootstrap] Core stores and services initialized.');
 
 
-    // 5. Global Error Handler for Vue
+    // 5. Global Vue Error Handler
     app.config.errorHandler = (err, instance, info) => {
       console.error('[Vue ErrorHandler] Unhandled error:', err);
       console.error('[Vue ErrorHandler] Component instance:', instance);
       console.error('[Vue ErrorHandler] Vue-specific info:', info);
-      // Optionally send to an error tracking service like Sentry/Bugsnag
-      // uiStore.showGlobalError('An unexpected error occurred. Please try refreshing the page.');
+      // Example: uiStore.addNotification({ type: 'error', title: 'Application Error', message: 'An unexpected error occurred.' });
+      // In production, send to an error tracking service.
     };
 
     // 6. Wait for router to be ready before mounting
-    // This ensures any async operations in navigation guards (like auth checks) complete.
+    // This ensures async operations in navigation guards (like authStore.initializeAuth()) complete.
     await router.isReady();
-    console.debug('[Bootstrap] Router is ready.');
+    console.debug('[Bootstrap] Vue Router is ready.');
 
     // 7. Mount the application to the DOM
     app.mount('#app');
-    console.info(`[Bootstrap] Application mounted. Environment: ${import.meta.env.MODE}. Version: ${import.meta.env.VITE_APP_VERSION || 'N/A'}`);
+    console.info(`[Bootstrap] Voice Chat Assistant mounted. Mode: ${import.meta.env.MODE}. Version: ${import.meta.env.VITE_APP_VERSION || 'N/A'}`);
 
-  } catch (error) {
+  } catch (error: any) { // Catch any type of error during bootstrap
     console.error("[Bootstrap] Critical error during application initialization:", error);
-    // Display a user-friendly error message in the DOM if #app exists
     const appRoot = document.getElementById('app');
     if (appRoot) {
       appRoot.innerHTML = `
-        <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 30px; text-align: center; color: #d32f2f; background-color: #ffebee; border: 1px solid #ffcdd2; border-radius: 8px; margin: 20px;">
-          <h1 style="font-size: 24px; margin-bottom: 15px;">Application Initialization Failed</h1>
-          <p style="font-size: 16px; margin-bottom: 10px;">We're sorry, but a critical error occurred while starting the application. Our team has been notified.</p>
-          <p style="font-size: 14px; color: #757575;">Please try refreshing the page. If the problem persists, please contact support.</p>
-          ${import.meta.env.DEV ? `<pre style="font-size: 12px; color: #424242; text-align: left; background-color: #f5f5f5; padding: 10px; border-radius: 4px; margin-top: 15px; white-space: pre-wrap; word-break: break-all;">${(error as Error).message}\n${(error as Error).stack}</pre>` : ''}
+        <div style="font-family: 'Plus Jakarta Sans', sans-serif; padding: 2rem; text-align: center; color: #ef4444; background-color: #fee2e2; border: 1px solid #fca5a5; border-radius: 0.5rem; margin: 1rem;">
+          <h1 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 0.75rem;">Application Initialization Failed</h1>
+          <p style="font-size: 1rem; margin-bottom: 0.5rem;">A critical error occurred while starting Voice Chat Assistant.</p>
+          <p style="font-size: 0.875rem; color: #7f1d1d;">Please try refreshing the page. If the problem persists, contact support.</p>
+          ${import.meta.env.DEV ? `<pre style="font-size: 0.75rem; color: #4b5563; text-align: left; background-color: #f3f4f6; padding: 0.5rem; border-radius: 0.25rem; margin-top: 1rem; white-space: pre-wrap; word-break: break-all;">${error.message}\n${error.stack}</pre>` : ''}
         </div>
       `;
     }
-    // Re-throw to make it clear in the console that bootstrapping failed.
-    throw error;
+    throw error; // Re-throw to make it clear in the console that bootstrapping failed.
   }
 }
 

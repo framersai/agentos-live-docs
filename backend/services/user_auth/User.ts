@@ -1,104 +1,134 @@
-// backend/services/user_auth/User.ts
-import { User as PrismaUser } from '@prisma/client';
+// File: backend/services/user_auth/User.ts
+/**
+ * @fileoverview Defines the User domain model and related types for AgentOS.
+ * This model represents a user in the system, encapsulating their core attributes
+ * and providing utility methods for data transformation (e.g., for public presentation).
+ * It is designed to align with the Prisma schema for the User entity.
+ *
+ * @module backend/services/user_auth/User
+ */
+
+import { User as PrismaUserType, UserApiKey as PrismaUserApiKeyType, SubscriptionTier as PrismaSubscriptionTierType } from '@prisma/client';
 
 /**
+ * Represents the structure for user-provided API keys.
+ * Keys are provider IDs (e.g., "openai"), and values are the encrypted API key strings.
+ * This interface is used internally and not directly exposed with decrypted keys.
+ *
  * @interface IUserApiKeys
- * Defines the structure for user-provided API keys, where keys are provider IDs
- * and values are the encrypted API key strings.
  */
 export interface IUserApiKeys {
   [providerId: string]: string;
 }
 
 /**
- * @interface User
- * Defines the core properties of a user in the AgentOS system, mirroring the Prisma `User` model.
- * This interface represents the full data model, including sensitive fields that should not be
- * exposed directly to the client without transformation.
+ * Defines the public-facing representation of a User, excluding sensitive information.
+ * This type is suitable for sending user data to clients.
+ *
+ * @type PublicUser
+ * @property {string} id - The unique identifier of the user.
+ * @property {string} username - The user's chosen username.
+ * @property {string} email - The user's email address (consider if this should always be public).
+ * @property {string | null} subscriptionTierId - The ID of the user's current subscription tier.
+ * @property {Date} createdAt - The timestamp of when the user account was created.
+ * @property {Date} updatedAt - The timestamp of the last update to the user's account.
+ * @property {Date | null} lastLoginAt - The timestamp of the user's last login, if available.
+ * @property {Record<string, any>} [preferences] - User-specific preferences.
+ * @property {boolean} [creatorModeOptIn] - Indicates if the user has opted into creator/experimental modes.
+ * @property {boolean} emailVerified - Indicates if the user's email address has been verified.
  */
-export interface User {
-  /** Unique identifier for the user (e.g., UUID). */
-  id: string;
-  /** User's email address (should be unique). */
-  email: string;
-  /** Hashed password for the user. */
-  passwordHash: string;
-  /** The ID of the subscription tier the user belongs to. */
-  subscriptionTierId: string;
-  /** Stores user-provided API keys, encrypted at rest. Key: providerId, Value: encrypted API key. */
-  apiKeys?: IUserApiKeys | null; // Changed to match Prisma's `Json?` type (can be null)
-  /** Timestamp of user creation. */
-  createdAt: Date;
-  /** Timestamp of last update to user profile. */
-  updatedAt: Date;
-  /** Timestamp of the user's last login. */
-  lastLogin?: Date | null; // Optional and can be null
-  /** Current active JWT token for revocation, if a system was implemented to store/revoke these server-side. */
-  jwtToken?: string | null; // Optional and can be null
-
-  // Added based on previous architecture discussion for GMI state and user preferences
-  /** Any other user-specific preferences or metadata. */
-  preferences?: Record<string, any>;
-  /** Tracks if user has opted into experimental/creator modes. */
-  creatorModeOptIn?: boolean;
-}
+export type PublicUser = Pick<
+  User,
+  'id' | 'username' | 'email' | 'subscriptionTierId' | 'createdAt' | 'updatedAt' | 'lastLoginAt' | 'preferences' | 'creatorModeOptIn' | 'emailVerified'
+>;
 
 /**
+ * Represents a user in the AgentOS system.
+ * This class mirrors the Prisma `User` model and provides methods for data transformation
+ * and consistent handling of user objects within the application.
+ *
  * @class User
- * Represents a user in the AgentOS system. This class provides utility methods
- * for transforming Prisma `User` objects into a more accessible domain model,
- * particularly for creating public-facing versions.
  */
-export class User implements User { // Implements the interface for type consistency
-  public id: string;
+export class User {
+  public readonly id: string;
+  public username: string;
   public email: string;
-  public passwordHash: string;
-  public subscriptionTierId: string;
-  public apiKeys?: IUserApiKeys | null;
-  public createdAt: Date;
+  public readonly passwordHash: string; // Readonly after construction for security
+  public subscriptionTierId: string | null;
+  // UserApiKeys are managed via AuthService, not directly held here in decrypted form
+  public readonly createdAt: Date;
   public updatedAt: Date;
-  public lastLogin?: Date | null;
-  public jwtToken?: string | null;
-  public preferences?: Record<string, any>;
-  public creatorModeOptIn?: boolean;
-
+  public lastLoginAt: Date | null;
+  public emailVerified: boolean;
+  public emailVerificationToken: string | null;
+  public resetPasswordToken: string | null;
+  public resetPasswordExpires: Date | null;
+  public lemonSqueezyCustomerId: string | null;
+  public lemonSqueezySubscriptionId: string | null;
+  public subscriptionStatus: string | null;
+  public subscriptionEndsAt: Date | null;
+  public preferences?: Record<string, any>; // Matches conceptual User interface
+  public creatorModeOptIn?: boolean;     // Matches conceptual User interface
 
   /**
-   * Creates an instance of the User class from a Prisma User model.
-   * @param prismaUser The raw Prisma User object retrieved from the database.
+   * Constructs a User instance. It's recommended to use `User.fromPrisma` for creation.
+   * @param {PrismaUserType} prismaUser - The Prisma user object.
    */
-  constructor(prismaUser: PrismaUser) {
+  private constructor(prismaUser: PrismaUserType) {
     this.id = prismaUser.id;
+    this.username = prismaUser.username;
     this.email = prismaUser.email;
     this.passwordHash = prismaUser.passwordHash;
     this.subscriptionTierId = prismaUser.subscriptionTierId;
-    // Prisma Json type for apiKeys might be null or already an object, handle gracefully
-    this.apiKeys = prismaUser.apiKeys ? (prismaUser.apiKeys as unknown as IUserApiKeys) : null;
     this.createdAt = prismaUser.createdAt;
     this.updatedAt = prismaUser.updatedAt;
-    this.lastLogin = prismaUser.lastLogin;
-    this.jwtToken = prismaUser.jwtToken;
-    this.preferences = prismaUser.preferences ? (prismaUser.preferences as Record<string, any>) : undefined;
-    this.creatorModeOptIn = prismaUser.creatorModeOptIn || false; // Default to false if not set
+    this.lastLoginAt = prismaUser.lastLoginAt;
+    this.emailVerified = prismaUser.emailVerified;
+    this.emailVerificationToken = prismaUser.emailVerificationToken;
+    this.resetPasswordToken = prismaUser.resetPasswordToken;
+    this.resetPasswordExpires = prismaUser.resetPasswordExpires;
+    this.lemonSqueezyCustomerId = prismaUser.lemonSqueezyCustomerId;
+    this.lemonSqueezySubscriptionId = prismaUser.lemonSqueezySubscriptionId;
+    this.subscriptionStatus = prismaUser.subscriptionStatus;
+    this.subscriptionEndsAt = prismaUser.subscriptionEndsAt;
+    // Assuming preferences & creatorModeOptIn might not be in PrismaUser directly,
+    // or require casting if they are Json. For now, they are not standard in the provided PrismaUser.
+    // This part of User model might need to be reconciled with Prisma schema if these fields are intended.
+    this.preferences = {}; // Default to empty or load if part of PrismaUser via Json type
+    this.creatorModeOptIn = false; // Default
   }
 
   /**
-   * Creates a User instance from a Prisma User object.
-   * This static factory method provides a clean way to convert database results.
-   * @param prismaUser The Prisma User object.
-   * @returns The User instance.
+   * Static factory method to create a User instance from a Prisma User object.
+   * This is the preferred way to instantiate User objects from database records.
+   *
+   * @static
+   * @param {PrismaUserType} prismaUser - The Prisma User object retrieved from the database.
+   * @returns {User} A new User instance populated with data from the Prisma object.
    */
-  static fromPrisma(prismaUser: PrismaUser): User {
+  public static fromPrisma(prismaUser: PrismaUserType): User {
     return new User(prismaUser);
   }
 
   /**
-   * Returns a representation of the user that can be safely sent to the client,
-   * excluding sensitive information like password hash and encrypted API keys.
-   * @returns A user object without the password hash and encrypted API keys.
+   * Returns a public representation of the user, suitable for sending to clients.
+   * This method omits sensitive fields like `passwordHash` and any raw token data.
+   *
+   * @public
+   * @returns {PublicUser} A user object stripped of sensitive information.
    */
-  toPublicUser(): Omit<User, 'passwordHash' | 'apiKeys' | 'jwtToken'> {
-    const { passwordHash, apiKeys, jwtToken, ...publicUser } = this;
-    return publicUser;
+  public toPublicUser(): PublicUser {
+    return {
+      id: this.id,
+      username: this.username,
+      email: this.email, // Consider if email should always be public or context-dependent
+      subscriptionTierId: this.subscriptionTierId,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
+      lastLoginAt: this.lastLoginAt,
+      emailVerified: this.emailVerified,
+      preferences: this.preferences,
+      creatorModeOptIn: this.creatorModeOptIn,
+    };
   }
 }

@@ -1,0 +1,77 @@
+/* File: frontend/src/assets/main.css */
+
+/* Import fonts first - these must come before other CSS rules */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+/* Import Tailwind base, components, and utilities */
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* Import CSS Custom Properties - these define the default (light) theme */
+@import '../styles/_variables.css';
+
+/* Import Theme Overrides - these are scoped by .theme-dark and .theme-holographic */
+@import '../styles/themes/dark.theme.css';
+@import '../styles/themes/holographic.theme.css';
+
+/* Import Global Base Styles (elements like body, h1-h6, links, etc. using CSS vars) */
+@import '../styles/_base.css';          /* General element styling */
+@import '../styles/_typography.css';    /* Typography scale and helpers */
+@import '../styles/_animations.css';    /* Global animations, transitions */
+@import '../styles/_accessibility.css'; /* Accessibility specific styles */
+@import '../styles/_utilities.css';     /* Custom utility classes */
+
+/* Import component-level global styles if any (rare, prefer scoped) */
+/* @import '../styles/components/_buttons.css'; */
+
+/*
+  Your existing responsive.css content should ideally be integrated into:
+  1. Tailwind's responsive prefixes (sm:, md:, lg:).
+  2. Scoped styles within components using media queries.
+  3. Global responsive adjustments in _base.css or here if truly global.
+  For now, I'll assume its relevant parts are handled or will be migrated.
+  If responsive.css contains critical global overrides, it can be imported last:
+  @import './responsive.css';
+*/
+
+/* Ensure default-view-padding is defined if used by AboutView */
+.default-view-padding {
+  padding-top: var(--app-main-content-padding-y, var(--space-6));
+  padding-bottom: var(--app-main-content-padding-y, var(--space-6));
+  /* Horizontal padding usually handled by .app-container */
+}
+
+.app-container { /* Global container for max-width and horizontal padding */
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--app-container-padding-x, var(--space-4));
+  padding-right: var(--app-container-padding-x, var(--space-4));
+}
+@media (min-width: 640px) { /* sm */
+  .app-container { max-width: var(--container-sm, 640px); }
+}
+@media (min-width: 768px) { /* md */
+  .app-container { max-width: var(--container-md, 768px); }
+}
+@media (min-width: 1024px) { /* lg */
+  .app-container { max-width: var(--container-lg, 1024px); }
+}
+@media (min-width: 1280px) { /* xl */
+  .app-container { max-width: var(--container-xl, 1280px); }
+}
+@media (min-width: 1536px) { /* 2xl */
+  .app-container { max-width: var(--container-2xl, 1536px); }
+}
+
+/* Fancy Scrollbar (as used in ChatContextPanel and MessagesDisplayContainer) */
+.fancy-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+.fancy-scrollbar::-webkit-scrollbar-track { background: var(--app-scrollbar-track-bg, transparent); }
+.fancy-scrollbar::-webkit-scrollbar-thumb { background: var(--app-scrollbar-thumb-bg, var(--app-border-color)); border-radius: 3px;}
+.fancy-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--app-scrollbar-thumb-hover-bg, var(--app-text-muted-color)); }
+
+.theme-holographic .fancy-scrollbar::-webkit-scrollbar-track { background: rgba(var(--holographic-panel-rgb), 0.1); }
+.theme-holographic .fancy-scrollbar::-webkit-scrollbar-thumb { background: rgba(var(--holographic-accent-rgb), 0.3); }
+.theme-holographic .fancy-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(var(--holographic-accent-rgb), 0.5); }
