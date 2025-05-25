@@ -1,6 +1,5 @@
 <template>
   <div class="voice-input-wrapper">
-    <!-- Transcription History Overlay -->
     <transition name="slide-up">
       <div v-if="showTranscriptionHistory && transcriptionHistory.length > 0" class="transcription-history-overlay">
         <div class="history-header">
@@ -12,8 +11,8 @@
           </button>
         </div>
         <div class="history-content">
-          <div v-for="item in transcriptionHistory" :key="item.id" 
-               class="history-item" 
+          <div v-for="item in transcriptionHistory" :key="item.id"
+               class="history-item"
                :class="{ 'history-item-sent': item.sent }">
             <span class="history-time">{{ formatTime(item.timestamp) }}</span>
             <p class="history-text">{{ item.text }}</p>
@@ -25,7 +24,6 @@
       </div>
     </transition>
 
-    <!-- Main Input Container -->
     <div class="input-container glass-morphism">
       <div class="input-header">
         <div class="mode-indicator">
@@ -60,16 +58,15 @@
         <div class="voice-controls">
           <button
             @click="toggleRecording"
-            :class="['voice-button', { 
-              'recording': isMicrophoneActive, 
-              'processing': props.isProcessing, 
-              'disabled': !micAccessInitiallyChecked || permissionStatus === 'denied'
+            :class="['voice-button', {
+              'recording': isMicrophoneActive && !props.isProcessing,
+              'processing': props.isProcessing,
+              'disabled': !micAccessInitiallyChecked || permissionStatus === 'denied' || permissionStatus === 'error'
             }]"
             :title="getButtonTitle()"
-            :disabled="props.isProcessing || !micAccessInitiallyChecked || permissionStatus === 'denied'"
+            :disabled="props.isProcessing || !micAccessInitiallyChecked || permissionStatus === 'denied' || permissionStatus === 'error'"
           >
             <div class="button-content">
-              <!-- Processing State -->
               <div v-if="props.isProcessing" class="processing-state">
                 <div class="processing-spinner">
                   <div class="spinner-blade"></div>
@@ -78,8 +75,7 @@
                   <div class="spinner-blade"></div>
                 </div>
               </div>
-              
-              <!-- Recording State -->
+
               <div v-else-if="isMicrophoneActive" class="recording-state">
                 <svg class="icon-recording" viewBox="0 0 24 24" fill="currentColor">
                   <rect x="6" y="6" width="12" height="12" rx="2" />
@@ -90,8 +86,7 @@
                   <div class="pulse-ring pulse-ring-3"></div>
                 </div>
               </div>
-              
-              <!-- Idle State -->
+
               <div v-else class="idle-state">
                 <svg class="icon-microphone" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
@@ -116,45 +111,46 @@
         </div>
       </div>
 
-      <!-- Status Bar -->
       <div class="status-bar">
         <div class="status-section">
           <transition name="status-fade" mode="out-in">
-            <div v-if="permissionStatus !== 'granted' && permissionStatus !== ''" 
+            <div v-if="permissionStatus !== 'granted' && permissionStatus !== '' && micAccessInitiallyChecked"
                  :key="permissionStatus"
                  :class="['status-item', getPermissionStatusClass()]">
               <div class="status-icon">
-                <svg v-if="permissionStatus === 'denied'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg v-if="permissionStatus === 'denied' || permissionStatus === 'error'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <svg v-else class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                <svg v-else-if="permissionStatus === 'prompt'" class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                 </svg>
               </div>
               <span class="status-text">{{ permissionMessage }}</span>
-              <button v-if="permissionStatus === 'denied'" @click="requestMicrophonePermissionsAndGetStream" class="retry-button">
+              <button v-if="permissionStatus === 'denied' || permissionStatus === 'error'" @click="requestMicrophonePermissionsAndGetStream" class="retry-button">
                 Retry
               </button>
             </div>
 
-            <div v-else-if="isMicrophoneActive" :key="'recording'" class="status-item status-recording">
+            <div v-else-if="isMicrophoneActive && !props.isProcessing" :key="'recording'" class="status-item status-recording">
               <div class="recording-indicator">
                 <div class="recording-dot"></div>
               </div>
               <span class="status-text">{{ getRecordingStatusText() }}</span>
-              <span class="recording-timer">{{ formatDuration(recordingSeconds) }}</span>
+              <span v-if="isRecording || (isWebSpeechListening && (isPttMode || isVoiceActivationMode))" class="recording-timer">{{ formatDuration(recordingSeconds) }}</span>
             </div>
-
+              <div v-else-if="props.isProcessing" :key="'processing'" class="status-item status-processing">
+                  <span class="status-text">Assistant is processing...</span>
+              </div>
             <div v-else :key="'idle'" class="status-item status-idle">
               <span class="status-text">{{ getIdleStatusText() }}</span>
             </div>
           </transition>
         </div>
 
-        <div v-if="audioLevelDisplay > 0" class="audio-level-indicator">
+        <div v-if="audioLevelDisplay > 0 && isMicrophoneActive" class="audio-level-indicator">
           <div class="audio-bars">
-            <div v-for="i in 5" :key="i" 
-                 class="audio-bar" 
+            <div v-for="i in 5" :key="i"
+                 class="audio-bar"
                  :class="{ 'active': audioLevelDisplay >= i * 20 }"
                  :style="{ height: `${Math.min(100, audioLevelDisplay)}%` }">
             </div>
@@ -162,9 +158,8 @@
         </div>
       </div>
 
-      <!-- Continuous Mode Transcription Preview -->
       <transition name="slide-fade">
-        <div v-if="isContinuousMode && speechPreference === 'webspeech' && (liveTranscriptWebSpeech || pendingTranscriptWebSpeech)" 
+        <div v-if="isContinuousMode && speechPreference === 'webspeech' && (liveTranscriptWebSpeech || pendingTranscriptWebSpeech)"
              class="continuous-preview">
           <div class="preview-header">
             <span class="preview-label">Live Transcription</span>
@@ -197,16 +192,14 @@
         </div>
       </transition>
 
-      <!-- Voice Activation Visualization -->
       <transition name="fade">
-        <div v-if="isVoiceActivationMode && isWebSpeechListening" class="vad-visualization">
+        <div v-if="isVoiceActivationMode && isWebSpeechListening && vadCanvasRef" class="vad-visualization">
           <canvas ref="vadCanvasRef" width="200" height="50"></canvas>
           <div class="vad-threshold-line" :style="{ bottom: `${voiceActivationThreshold * 100}%` }"></div>
         </div>
       </transition>
     </div>
 
-    <!-- Edit Modal -->
     <transition name="modal-fade">
       <div v-if="showEditModal" class="modal-overlay" @click.self="cancelEdit">
         <div class="modal-content glass-morphism">
@@ -218,12 +211,13 @@
               </svg>
             </button>
           </div>
-          <textarea 
-            v-model="editingTranscription" 
+          <textarea
+            v-model="editingTranscription"
             class="modal-textarea"
             placeholder="Edit your transcription here..."
             @keydown.ctrl.enter="saveEdit"
             @keydown.meta.enter="saveEdit"
+            ref="editModalTextareaRef"
           ></textarea>
           <div class="modal-footer">
             <button @click="cancelEdit" class="btn-secondary">Cancel</button>
@@ -241,22 +235,20 @@
 </template>
 
 <script lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount, watch, inject, defineComponent, nextTick } from 'vue';
-import { useStorage } from '@vueuse/core';
-import { speechAPI } from '../utils/api';
-
-// Speech Recognition types
+// Ensure this is declare global, not module
 declare global {
   interface Window {
     SpeechRecognition: typeof SpeechRecognition;
     webkitSpeechRecognition: typeof SpeechRecognition;
+    AudioContext: typeof AudioContext;
+    webkitAudioContext: typeof AudioContext;
   }
   interface SpeechRecognitionEvent extends Event {
     readonly resultIndex: number;
     readonly results: SpeechRecognitionResultList;
   }
-  interface SpeechRecognitionErrorEvent extends Event {
-    readonly error: string;
+  interface SpeechRecognitionErrorEvent extends Event { // Changed from SpeechRecognitionError
+    readonly error: string; // DOMException names like 'not-allowed', 'network'
     readonly message: string;
   }
   interface SpeechRecognition extends EventTarget {
@@ -278,11 +270,17 @@ declare global {
     onspeechend: ((this: SpeechRecognition, ev: Event) => any) | null;
     onstart: ((this: SpeechRecognition, ev: Event) => any) | null;
   }
-  var SpeechRecognition: {
+  var SpeechRecognition: { // eslint-disable-line no-var
     prototype: SpeechRecognition;
     new(): SpeechRecognition;
   };
 }
+
+
+import { ref, computed, onMounted, onBeforeUnmount, watch, inject, defineComponent, nextTick, Ref } from 'vue';
+import { useStorage } from '@vueuse/core';
+import { speechAPI } from '@/utils/api'; // Ensure this path is correct based on your structure
+import { AUTH_TOKEN_KEY } from '@/utils/constants'; // Assuming constants.ts is in utils
 
 interface TranscriptionHistoryItem {
   id: string;
@@ -298,44 +296,45 @@ export default defineComponent({
       type: Boolean,
       required: true,
     },
-    audioMode: {
+    audioMode: { // This prop might be deprecated if currentAudioMode from useStorage is the source of truth
       type: String,
-      required: true,
+      required: true, // Default can be set via useStorage
     }
   },
   emits: {
     transcription: (value: string) => typeof value === 'string',
-    'update:audio-mode': (value: string) => typeof value === 'string',
-    'permission-update': (status: 'granted' | 'denied' | 'prompt') =>
-      ['granted', 'denied', 'prompt'].includes(status),
+    'update:audio-mode': (value: string) => typeof value === 'string', // To sync with parent if needed
+    'permission-update': (status: 'granted' | 'denied' | 'prompt' | 'error') =>
+      ['granted', 'denied', 'prompt', 'error'].includes(status),
   },
   setup(props, { emit }) {
-    const toast = inject('toast') as any;
+    const toast = inject('toast') as any; // Replace with proper type if available
 
     // Core State
     const textInput = ref('');
     const textareaRef = ref<HTMLTextAreaElement | null>(null);
-    const isRecording = ref(false);
-    const isWebSpeechListening = ref(false);
+    const editModalTextareaRef = ref<HTMLTextAreaElement | null>(null);
+    const isRecording = ref(false); // True if MediaRecorder is active (for Whisper) OR if WebSpeech is in PTT/VAD and speech started
+    const isWebSpeechListening = ref(false); // True if WebSpeech recognition.start() has been called and not ended/aborted
     const permissionStatus = ref<'prompt' | 'granted' | 'denied' | 'error' | ''>('');
     const permissionMessage = ref('');
     const micAccessInitiallyChecked = ref(false);
 
     // Transcription State
-    const interimTranscriptWebSpeech = ref('');
-    const finalTranscriptWebSpeech = ref('');
-    const liveTranscriptWebSpeech = ref('');
-    const pendingTranscriptWebSpeech = ref('');
-    const transcriptionHistory = ref<TranscriptionHistoryItem[]>([]);
+    const interimTranscriptWebSpeech = ref(''); // For WebSpeech PTT/VAD interim
+    const finalTranscriptWebSpeech = ref('');   // For WebSpeech PTT/VAD final
+    const liveTranscriptWebSpeech = ref('');    // For WebSpeech Continuous live interim
+    const pendingTranscriptWebSpeech = ref(''); // For WebSpeech Continuous finalized parts
+    const transcriptionHistory = useStorage<TranscriptionHistoryItem[]>('vca-transcriptionHistory', []);
     const showTranscriptionHistory = ref(false);
 
     // Recording State
     let mediaRecorder: MediaRecorder | null = null;
     let audioChunks: Blob[] = [];
-    let activeWhisperStream: MediaStream | null = null;
+    let activeStream: MediaStream | null = null; // Single stream for both WebSpeech analyzer and MediaRecorder
     let audioContext: AudioContext | null = null;
     let analyser: AnalyserNode | null = null;
-    let microphone: MediaStreamAudioSourceNode | null = null;
+    let microphoneSourceNode: MediaStreamAudioSourceNode | null = null;
 
     // Timers
     const recordingSeconds = ref(0);
@@ -343,9 +342,12 @@ export default defineComponent({
     const pauseDetectedWebSpeech = ref(false);
     const pauseCountdownWebSpeech = ref(0);
     let pauseTimerIdWebSpeech: number | null = null;
+    let vadSilenceTimer: number | null = null; // Kept from new file, though usage not shown in snippet.
+
 
     // Audio Level Monitoring
-    const audioLevelDisplay = ref(0);
+    const audioLevelDisplay = ref(0); // 0-100 for display
+    const rawAudioLevel = ref(0); // 0-1 for VAD logic
     let audioMonitoringInterval: number | null = null;
 
     // Edit Modal
@@ -355,14 +357,14 @@ export default defineComponent({
     // Canvas for VAD
     const vadCanvasRef = ref<HTMLCanvasElement | null>(null);
 
-    // Settings
-    const speechPreference = useStorage<'webspeech' | 'whisper'>('speechPreference', 'webspeech');
-    const selectedAudioDevice = useStorage<string>('selectedAudioDevice', '');
-    const currentAudioMode = useStorage<string>('vca-audioMode', props.audioMode);
-    const voiceActivationThreshold = useStorage<number>('voiceActivationThreshold', 0.05);
-    const silenceTimeoutVAD = useStorage<number>('silenceTimeoutMsVAD', 2000);
-    const autoSendOnPauseWebSpeech = useStorage<boolean>('autoSendOnPauseWebSpeech', true);
-    const pauseTimeoutContinuousWebSpeech = useStorage<number>('pauseTimeoutMsContinuousWebSpeech', 3000);
+    // Settings from useStorage
+    const speechPreference = useStorage<'webspeech' | 'whisper'>('vca-speechPreference', 'webspeech');
+    const selectedAudioDevice = useStorage<string>('vca-selectedAudioDevice', '');
+    const currentAudioMode = useStorage<string>('vca-audioMode', props.audioMode); // Source of truth for audio mode
+    const voiceActivationThreshold = useStorage<number>('vca-voiceActivationThreshold', 0.05); // 0 to 1
+    const silenceTimeoutVAD = useStorage<number>('vca-silenceTimeoutMsVAD', 2000); // ms
+    const autoSendOnPauseWebSpeech = useStorage<boolean>('vca-autoSendOnPauseWebSpeech', true);
+    const pauseTimeoutContinuousWebSpeech = useStorage<number>('vca-pauseTimeoutMsContinuousWebSpeech', 3000); // ms
 
     // Speech Recognition Instance
     let recognition: SpeechRecognition | null = null;
@@ -373,41 +375,39 @@ export default defineComponent({
     const isContinuousMode = computed(() => currentAudioMode.value === 'continuous');
     const isVoiceActivationMode = computed(() => currentAudioMode.value === 'voice-activation');
 
-    // Icon Components
-    const PushToTalkIcon = {
-      template: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /></svg>`
-    };
-    
-    const ContinuousIcon = {
-      template: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`
-    };
-    
-    const VoiceActivationIcon = {
-      template: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" /></svg>`
-    };
+    // Icon Components (as objects for dynamic rendering)
+    const PushToTalkIcon = { template: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /></svg>` };
+    const ContinuousIcon = { template: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>` };
+    const VoiceActivationIcon = { template: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" /></svg>`};
 
-    // Helper Methods
+    // --- Helper Methods ---
     const getButtonTitle = (): string => {
       if (props.isProcessing) return 'Assistant is processing...';
       if (!micAccessInitiallyChecked.value) return 'Initializing microphone...';
       if (permissionStatus.value === 'denied') return 'Microphone access denied';
-      if (permissionStatus.value === 'error') return `Microphone error: ${permissionMessage.value}`;
+      if (permissionStatus.value === 'error') return `Microphone error: ${permissionMessage.value || 'Unknown error'}`;
 
       if (isMicrophoneActive.value) {
         if (isContinuousMode.value) return 'Stop continuous listening';
         if (isVoiceActivationMode.value) return 'Stop voice activation';
-        return 'Release to stop recording';
+        return 'Release to stop recording'; // PTT
       }
 
+      // Not active
       if (isContinuousMode.value) return 'Start continuous listening';
       if (isVoiceActivationMode.value) return 'Start voice activation';
-      return 'Hold to record';
+      return 'Hold to record'; // PTT
     };
 
     const getPlaceholderText = (): string => {
-      if (isContinuousMode.value) return 'Or type your message... (Continuous mode active)';
-      if (isVoiceActivationMode.value) return 'Or type your message... (Voice activation active)';
-      return 'Or type your message here...';
+      if (isMicrophoneActive.value) {
+          if (isPttMode.value) return "Recording... release to send.";
+          if (isContinuousMode.value) return "Listening continuously...";
+          if (isVoiceActivationMode.value) return "Listening for voice...";
+      }
+      if (isContinuousMode.value) return 'Type or click mic for continuous...';
+      if (isVoiceActivationMode.value) return 'Type or click mic for voice activation...';
+      return 'Type or hold mic to record...';
     };
 
     const getModeDisplayText = (): string => {
@@ -417,90 +417,140 @@ export default defineComponent({
     };
 
     const getModeIndicatorClass = (): string => {
+      if (props.isProcessing) return 'mode-dot-standby'; // Could be a specific processing color
       if (isMicrophoneActive.value) return 'mode-dot-active';
-      if (isContinuousMode.value || isVoiceActivationMode.value) return 'mode-dot-standby';
+      if ((isContinuousMode.value || isVoiceActivationMode.value) && permissionStatus.value === 'granted') return 'mode-dot-standby';
       return 'mode-dot-idle';
     };
 
     const getRecordingStatusText = (): string => {
-      if (props.isProcessing) return 'Processing...';
-      if (isPttMode.value) return 'Recording...';
-      if (isContinuousMode.value) {
-        if (speechPreference.value === 'webspeech') {
-          if (pauseDetectedWebSpeech.value) return 'Pause detected';
-          return 'Listening continuously...';
-        } else {
-          return 'Recording for Whisper...';
-        }
+      if (props.isProcessing) return 'Assistant is processing...'; // Already handled by a separate v-else-if in template
+
+      if (speechPreference.value === 'webspeech') {
+          if (isPttMode.value && isWebSpeechListening.value) return 'Recording (Browser)...';
+          if (isContinuousMode.value) {
+              if (pauseDetectedWebSpeech.value) return 'Pause detected, auto-sending soon...';
+              return isWebSpeechListening.value ? 'Listening continuously (Browser)...' : 'Continuous mode ready (Browser)';
+          }
+          if (isVoiceActivationMode.value) {
+              return isWebSpeechListening.value ? (isRecording.value ? 'Voice detected, recording (Browser)...' : 'Listening for voice (Browser)...') : 'Voice activation ready (Browser)';
+          }
+      } else { // whisper
+          if (isPttMode.value && isRecording.value) return 'Recording (Whisper)...';
+          if (isContinuousMode.value) {
+              // Hybrid mode: WebSpeech for VAD, MediaRecorder for actual recording
+              if (isRecording.value) return 'Recording audio segment (Whisper)...';
+              return isWebSpeechListening.value ? 'Listening for speech (Whisper VAD)...' : 'Continuous mode ready (Whisper)';
+          }
+          if (isVoiceActivationMode.value) {
+              if (isRecording.value) return 'Voice detected, recording (Whisper)...';
+              return isWebSpeechListening.value ? 'Listening for voice (Whisper VAD)...' : 'Voice activation ready (Whisper)';
+          }
       }
-      if (isVoiceActivationMode.value) return 'Voice detected, recording...';
-      return 'Ready';
+      return 'Ready'; // Fallback
     };
+
 
     const getIdleStatusText = (): string => {
-      if (isContinuousMode.value) return 'Continuous mode ready';
-      if (isVoiceActivationMode.value) return 'Listening for voice...';
-      return 'Ready to record';
+      if (props.isProcessing) return 'Assistant is processing...';
+      if (permissionStatus.value === 'granted') {
+        if (isContinuousMode.value) return `Continuous mode ready (${getTranscriptionMethodDisplay()})`;
+        if (isVoiceActivationMode.value) return `Listening for voice (${getTranscriptionMethodDisplay()})`;
+        return `Ready to record (${getTranscriptionMethodDisplay()})`;
+      }
+      return 'Mic not ready or permission needed';
     };
 
+
     const getPermissionStatusClass = (): string => {
-      if (permissionStatus.value === 'granted') return 'status-success';
+      if (permissionStatus.value === 'granted') return 'status-success'; // Should not be visible if granted.
       if (permissionStatus.value === 'denied' || permissionStatus.value === 'error') return 'status-error';
       if (permissionStatus.value === 'prompt') return 'status-warning';
       return '';
     };
 
-    const getTranscriptionMethodDisplay = (): string => {
-      return speechPreference.value === 'whisper' ? 'Whisper API' : 'Browser Speech';
-    };
-
-    const getAudioModeDisplay = (mode: string): string => {
-      const modes: Record<string, string> = {
-        'push-to-talk': 'Push to Talk',
-        'continuous': 'Continuous',
-        'voice-activation': 'Voice Activation',
-      };
-      return modes[mode] || 'Unknown';
-    };
-
-    const getAudioModeIcon = () => {
-      if (isContinuousMode.value) return ContinuousIcon;
-      if (isVoiceActivationMode.value) return VoiceActivationIcon;
-      return PushToTalkIcon;
-    };
-
-    const formatTime = (timestamp: number): string => {
-      const date = new Date(timestamp);
-      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-    };
-
+    const getTranscriptionMethodDisplay = (): string => speechPreference.value === 'whisper' ? 'Whisper API' : 'Browser Speech';
+    const getAudioModeDisplay = (mode: string): string => ({ 'push-to-talk': 'Push to Talk', 'continuous': 'Continuous', 'voice-activation': 'Voice Activation' }[mode] || 'Unknown');
+    const getAudioModeIcon = () => isContinuousMode.value ? ContinuousIcon : isVoiceActivationMode.value ? VoiceActivationIcon : PushToTalkIcon;
+    const formatTime = (timestamp: number): string => new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
     const formatDuration = (seconds: number): string => {
-      const mins = Math.floor(seconds / 60);
-      const secs = Math.floor(seconds % 60);
-      return `${mins}:${secs.toString().padStart(2, '0')}`;
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `<span class="math-inline">\{mins\}\:</span>{secs.toString().padStart(2, '0')}`;
     };
 
-    // Audio Level Monitoring
+    const drawVADVisualization = (dataArray: Uint8Array) => {
+      const canvas = vadCanvasRef.value;
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      const width = canvas.width;
+      const height = canvas.height;
+
+      ctx.fillStyle = 'rgba(30, 41, 59, 0.5)'; // Dark background for VAD
+      ctx.fillRect(0, 0, width, height);
+
+      const barWidth = width / dataArray.length * 2.5;
+      let x = 0;
+
+      for (let i = 0; i < dataArray.length; i++) {
+        const barHeight = (dataArray[i] / 255) * height;
+        const hue = (i / dataArray.length) * 120 + 200; // Color range for bars
+        ctx.fillStyle = `hsla(${hue}, 70%, 50%, 0.8)`;
+        ctx.fillRect(x, height - barHeight, barWidth, barHeight);
+        x += barWidth + 1;
+      }
+    };
+
+    // --- Audio Processing & VAD ---
     const startAudioLevelMonitoring = () => {
-      if (!analyser) return;
-      
+      if (!analyser || !activeStream || activeStream.getAudioTracks().length === 0 || !activeStream.getAudioTracks()[0].enabled) {
+        rawAudioLevel.value = 0;
+        audioLevelDisplay.value = 0;
+        return;
+      }
       const dataArray = new Uint8Array(analyser.frequencyBinCount);
-      
       audioMonitoringInterval = window.setInterval(() => {
-        if (!analyser) return;
-        
+        if (!analyser || !activeStream || !activeStream.active) { // Ensure stream is still active
+            stopAudioLevelMonitoring();
+            return;
+        }
         analyser.getByteFrequencyData(dataArray);
         let sum = 0;
-        for (let i = 0; i < dataArray.length; i++) {
-          sum += dataArray[i];
+        for (let i = 0; i < dataArray.length; i++) sum += dataArray[i];
+        const average = dataArray.length > 0 ? sum / dataArray.length : 0;
+        rawAudioLevel.value = average / 128; // Normalized 0-1
+        audioLevelDisplay.value = Math.min(100, rawAudioLevel.value * 100);
+
+        if (isVoiceActivationMode.value && vadCanvasRef.value && analyser) {
+             drawVADVisualization(dataArray);
         }
-        const average = sum / dataArray.length;
-        audioLevelDisplay.value = Math.min(100, (average / 128) * 100);
-        
-        // Draw VAD visualization if in voice activation mode
-        if (isVoiceActivationMode.value && vadCanvasRef.value) {
-          drawVADVisualization(dataArray);
+
+        // VAD logic for whisper voice activation
+        if (isVoiceActivationMode.value && speechPreference.value === 'whisper' && isWebSpeechListening.value /* VAD listener active */) {
+            if (rawAudioLevel.value > voiceActivationThreshold.value) {
+                if (!isRecording.value) { // Not already recording with MediaRecorder
+                    console.log('VAD: Voice detected for Whisper, starting MediaRecorder');
+                    stopWebSpeechRecognition(); // Stop VAD listener briefly
+                    startWhisperMediaRecorder(); // Start actual recording
+                }
+                if (vadSilenceTimer) clearTimeout(vadSilenceTimer);
+                vadSilenceTimer = window.setTimeout(() => {
+                    if (isRecording.value) { // Still recording with MediaRecorder
+                        console.log('VAD: Silence detected for Whisper, stopping MediaRecorder');
+                        stopWhisperMediaRecorder();
+                         // Optionally restart WebSpeech VAD listener immediately if desired
+                        if (!isWebSpeechListening.value && permissionStatus.value === 'granted') {
+                           console.log('VAD: Restarting WebSpeech VAD post-silence.');
+                           startWebSpeechRecognition();
+                        }
+                    }
+                }, silenceTimeoutVAD.value);
+            }
         }
+
+
       }, 50);
     };
 
@@ -510,119 +560,100 @@ export default defineComponent({
         audioMonitoringInterval = null;
       }
       audioLevelDisplay.value = 0;
+      rawAudioLevel.value = 0;
+       if (vadCanvasRef.value) { // Clear VAD canvas
+            const ctx = vadCanvasRef.value.getContext('2d');
+            if (ctx) {
+                ctx.clearRect(0, 0, vadCanvasRef.value.width, vadCanvasRef.value.height);
+            }
+        }
     };
 
-    const drawVADVisualization = (dataArray: Uint8Array) => {
-      const canvas = vadCanvasRef.value;
-      if (!canvas) return;
-      
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
-      
-      const width = canvas.width;
-      const height = canvas.height;
-      
-      ctx.fillStyle = 'rgba(30, 41, 59, 0.5)';
-      ctx.fillRect(0, 0, width, height);
-      
-      const barWidth = width / dataArray.length * 2.5;
-      let x = 0;
-      
-      for (let i = 0; i < dataArray.length; i++) {
-        const barHeight = (dataArray[i] / 255) * height;
-        
-        const hue = (i / dataArray.length) * 120 + 200;
-        ctx.fillStyle = `hsla(${hue}, 70%, 50%, 0.8)`;
-        
-        ctx.fillRect(x, height - barHeight, barWidth, barHeight);
-        x += barWidth + 1;
-      }
-    };
-
-    // Microphone Permission Management
     const requestMicrophonePermissionsAndGetStream = async (): Promise<MediaStream | null> => {
       permissionMessage.value = 'Requesting microphone access...';
       permissionStatus.value = 'prompt';
       emit('permission-update', 'prompt');
 
       try {
+        // Close existing audio context and stream before requesting a new one
+        if (activeStream) {
+            activeStream.getTracks().forEach(track => track.stop());
+            activeStream = null;
+        }
+        if (audioContext && audioContext.state !== 'closed') {
+            await audioContext.close();
+            audioContext = null;
+        }
+
         const constraints: MediaStreamConstraints = {
           audio: selectedAudioDevice.value
             ? { deviceId: { exact: selectedAudioDevice.value }, echoCancellation: true, noiseSuppression: true, autoGainControl: true }
             : { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
         };
-        
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
-        
-        // Set up audio context for level monitoring
+        activeStream = stream;
+
         audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
         analyser = audioContext.createAnalyser();
-        microphone = audioContext.createMediaStreamSource(stream);
-        analyser.fftSize = 256;
-        microphone.connect(analyser);
-        
+        microphoneSourceNode = audioContext.createMediaStreamSource(stream);
+        analyser.fftSize = 256; // Smaller FFT size for faster response, less detail
+        analyser.smoothingTimeConstant = 0.5; // Adjust smoothing
+        microphoneSourceNode.connect(analyser);
+        // Do NOT connect analyser to destination if only for monitoring, unless required for WebSpeech with specific setup
+
         permissionStatus.value = 'granted';
         permissionMessage.value = 'Microphone ready';
         emit('permission-update', 'granted');
-        
-        setTimeout(() => {
-          if (permissionStatus.value === 'granted') permissionMessage.value = '';
-        }, 3000);
-        
+        setTimeout(() => { if (permissionStatus.value === 'granted') permissionMessage.value = ''; }, 3000);
         micAccessInitiallyChecked.value = true;
         return stream;
       } catch (err: any) {
         console.error('Microphone permission error:', err);
-        
         if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
           permissionStatus.value = 'denied';
-          permissionMessage.value = 'Microphone access denied';
-        } else if (err.name === 'NotFoundError') {
+          permissionMessage.value = 'Microphone access denied.';
+        } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
           permissionStatus.value = 'error';
-          permissionMessage.value = 'No microphone found';
+          permissionMessage.value = 'No microphone found.';
         } else {
           permissionStatus.value = 'error';
-          permissionMessage.value = `Error: ${err.message}`;
+          permissionMessage.value = `Mic error: ${err.message || err.name}`;
         }
-        
-        emit('permission-update', permissionStatus.value as 'denied' | 'prompt');
+        emit('permission-update', permissionStatus.value as 'denied' | 'error');
         micAccessInitiallyChecked.value = true;
+        activeStream = null; // Ensure stream is null on error
         return null;
       }
     };
 
-    // WebSpeech API Logic
     const initializeWebSpeech = (): boolean => {
-      if (recognition) return true;
-      
-      const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SpeechRecognitionAPI) {
+      if (!('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
         if (speechPreference.value === 'webspeech') {
-          permissionMessage.value = 'Web Speech API not supported';
-          toast?.add({
-            type: 'error',
-            title: 'Browser Not Supported',
-            message: 'Web Speech API is not available in this browser.'
-          });
+            permissionMessage.value = 'Web Speech API not supported in this browser.';
+            permissionStatus.value = 'error';
+            toast?.add({ type: 'error', title: 'Browser Not Supported', message: permissionMessage.value });
         }
         return false;
       }
-      
+      const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (recognition) return true; // Already initialized
+
       recognition = new SpeechRecognitionAPI();
-      recognition.continuous = isContinuousMode.value || isVoiceActivationMode.value;
-      recognition.interimResults = true;
-      recognition.lang = 'en-US';
+      recognition.lang = 'en-US'; // Consider making this configurable
 
       recognition.onstart = () => {
         isWebSpeechListening.value = true;
         console.log('WebSpeech: Started listening');
+        if (isPttMode.value || (isVoiceActivationMode.value && speechPreference.value === 'webspeech')) {
+            isRecording.value = true; // For WebSpeech PTT/VAD visual cues
+            startRecordingTimer();
+        }
         startAudioLevelMonitoring();
       };
 
       recognition.onresult = (event: SpeechRecognitionEvent) => {
         let interim = '';
         let finalPart = '';
-        
         for (let i = event.resultIndex; i < event.results.length; ++i) {
           const transcript = event.results[i][0].transcript;
           if (event.results[i].isFinal) {
@@ -635,363 +666,390 @@ export default defineComponent({
         if (isContinuousMode.value && speechPreference.value === 'webspeech') {
           liveTranscriptWebSpeech.value = interim;
           if (finalPart.trim()) {
-            pendingTranscriptWebSpeech.value = (pendingTranscriptWebSpeech.value + ' ' + finalPart).trim();
-            liveTranscriptWebSpeech.value = '';
+            pendingTranscriptWebSpeech.value = (pendingTranscriptWebSpeech.value + ' ' + finalPart.trim()).trim();
+            liveTranscriptWebSpeech.value = ''; // Clear live after final part
             resetPauseDetectionWebSpeech();
           }
-        } else if (isContinuousMode.value && speechPreference.value === 'whisper') {
-          // Hybrid mode: use WebSpeech for VAD
-          liveTranscriptWebSpeech.value = interim;
-        } else {
-          // PTT or VAD mode
+        } else { // PTT or VAD for WebSpeech
           interimTranscriptWebSpeech.value = finalTranscriptWebSpeech.value + interim;
           if (finalPart.trim()) {
-            finalTranscriptWebSpeech.value += finalPart;
+            finalTranscriptWebSpeech.value += finalPart.trim() + ' '; // Accumulate final parts
           }
         }
       };
 
       recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
-        console.error('WebSpeech Error:', event.error);
-        stopAllAudioProcessing();
-        
-        if (event.error === 'not-allowed') {
+        console.error('WebSpeech Error:', event.error, event.message);
+        isWebSpeechListening.value = false;
+        isRecording.value = false; // Reset recording state for WebSpeech
+        clearRecordingTimer();
+        stopAudioLevelMonitoring();
+
+        if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
           permissionStatus.value = 'denied';
-          permissionMessage.value = 'Microphone access denied';
-          emit('permission-update', 'denied');
+          permissionMessage.value = 'Microphone access denied for speech recognition.';
+        } else if (event.error === 'no-speech') {
+          permissionMessage.value = 'No speech detected. Please try again.';
+           if (isPttMode.value) { // Only show toast for PTT on no-speech
+              toast?.add({ type: 'warning', title: 'No Speech', message: permissionMessage.value });
+           }
+        } else if (event.error === 'network') {
+            permissionMessage.value = 'Network error during speech recognition.';
+        } else if (event.error === 'aborted') {
+            permissionMessage.value = 'Speech input aborted.';
         } else {
           permissionStatus.value = 'error';
-          permissionMessage.value = `Speech error: ${event.error}`;
+          permissionMessage.value = `Speech error: ${event.error}. ${event.message || ''}`.trim();
         }
-        
-        toast?.add({
-          type: 'error',
-          title: 'Speech Recognition Error',
-          message: permissionMessage.value
-        });
+         // For continuous modes, we might not want to show a toast for every minor error.
+        if (event.error !== 'no-speech' && event.error !== 'aborted') { // Avoid toast for common non-critical errors in continuous
+            toast?.add({ type: 'error', title: 'Speech Error', message: permissionMessage.value });
+        }
+        // Attempt to restart in continuous/VAD if it wasn't a fatal error like 'not-allowed'
+        if ((isContinuousMode.value || isVoiceActivationMode.value) && event.error !== 'not-allowed' && event.error !== 'service-not-allowed' && permissionStatus.value === 'granted') {
+            console.log('WebSpeech error, attempting restart for continuous/VAD.');
+            setTimeout(() => startWebSpeechRecognition(), 1000); // Delay before restart
+        }
       };
 
       recognition.onend = () => {
         console.log('WebSpeech: Ended');
+        const wasListening = isWebSpeechListening.value;
         isWebSpeechListening.value = false;
         stopAudioLevelMonitoring();
 
-        // Handle different modes
-        if (isContinuousMode.value || isVoiceActivationMode.value) {
-          if (!props.isProcessing && permissionStatus.value === 'granted') {
-            // Restart continuous listening
-            setTimeout(() => {
-              if ((isContinuousMode.value || isVoiceActivationMode.value) && !isWebSpeechListening.value) {
-                startWebSpeechRecognition();
-              }
-            }, 100);
-          }
-        } else if (isPttMode.value && finalTranscriptWebSpeech.value.trim()) {
-          // Send PTT transcription
-          sendTranscription(finalTranscriptWebSpeech.value.trim());
-          cleanUpAfterTranscription();
+
+        if (isPttMode.value && speechPreference.value === 'webspeech') {
+            if (finalTranscriptWebSpeech.value.trim()) {
+                sendTranscription(finalTranscriptWebSpeech.value.trim());
+            } else if (wasListening && !interimTranscriptWebSpeech.value.trim()) { // If it was listening but got nothing
+                // console.log('WebSpeech PTT: No final transcription, possibly due to no speech.');
+                // No-speech error is handled in onerror.
+            }
+            isRecording.value = false;
+            clearRecordingTimer();
+            cleanUpAfterTranscription(); // Clear transcripts for PTT
+        } else if ((isContinuousMode.value || isVoiceActivationMode.value) && speechPreference.value === 'webspeech') {
+            if (permissionStatus.value === 'granted' && !props.isProcessing) {
+                 // Only restart if explicitly stopped by something other than user toggle or mode change
+                console.log("WebSpeech onEnd for Continuous/VAD. Re-evaluating start.");
+                // This restart logic can be tricky. If user manually stopped, it shouldn't restart.
+                // Consider if `toggleRecording` should handle restart logic more explicitly.
+                // For now, if the mode is still active and permission granted, try to restart.
+                if (isMicrophoneActive.value) { // If main button state implies it should be active
+                    setTimeout(() => {
+                        if ((isContinuousMode.value || isVoiceActivationMode.value) && !isWebSpeechListening.value && isMicrophoneActive.value) {
+                             console.log('WebSpeech: Restarting for continuous/VAD from onend.');
+                             startWebSpeechRecognition();
+                        }
+                    }, 250); // Short delay before restart
+                } else {
+                     isRecording.value = false; // Ensure visual state is correct
+                     clearRecordingTimer();
+                }
+            } else {
+                 isRecording.value = false; // Ensure visual state is correct
+                 clearRecordingTimer();
+            }
+        } else {
+             isRecording.value = false;
+             clearRecordingTimer();
         }
       };
 
       recognition.onspeechstart = () => {
         console.log('WebSpeech: Speech detected');
-        if (isVoiceActivationMode.value && !isRecording.value) {
-          isRecording.value = true;
-          startRecordingTimer();
+        clearTimeout(vadSilenceTimer); // Clear VAD silence timer if speech starts (for Whisper VAD)
+
+        if (isVoiceActivationMode.value && speechPreference.value === 'webspeech' && !isRecording.value) {
+          // isRecording.value should already be true due to onstart if PTT/VAD WebSpeech
         }
-        if (isContinuousMode.value && speechPreference.value === 'whisper' && !isRecording.value) {
-          startWhisperMediaRecorder();
+        // For hybrid Whisper continuous: WebSpeech detects speech, then we start MediaRecorder
+        if (isContinuousMode.value && speechPreference.value === 'whisper' && !isRecording.value /* MediaRecorder not active */) {
+            console.log('WebSpeech VAD (for Whisper continuous) detected speech, starting MediaRecorder.');
+            startWhisperMediaRecorder(); // This will set isRecording.value = true
         }
       };
 
       recognition.onspeechend = () => {
         console.log('WebSpeech: Speech ended');
-        if (isContinuousMode.value && speechPreference.value === 'whisper' && isRecording.value) {
-          stopWhisperMediaRecorder();
+        // For hybrid Whisper continuous: WebSpeech speech ends, stop MediaRecorder
+        if (isContinuousMode.value && speechPreference.value === 'whisper' && isRecording.value /* MediaRecorder is active */) {
+            console.log('WebSpeech VAD (for Whisper continuous) detected speech end, stopping MediaRecorder.');
+            stopWhisperMediaRecorder(); // This will handle sending, then restart WebSpeech VAD via onstop
+        }
+        // For WebSpeech VAD, onspeechend might mean stop recording
+        if (isVoiceActivationMode.value && speechPreference.value === 'webspeech') {
+            // WebSpeech will stop itself and onend will handle transcription
+             console.log('WebSpeech VAD: Speech ended. Recognition will stop and process.');
         }
       };
-
       return true;
     };
 
     const startWebSpeechRecognition = async (): Promise<boolean> => {
       if (!recognition && !initializeWebSpeech()) return false;
-      
+      if (isWebSpeechListening.value) {
+         console.log("WebSpeech: Already listening.");
+         return true;
+      }
+
       if (permissionStatus.value !== 'granted') {
+        const stream = await requestMicrophonePermissionsAndGetStream(); // This sets activeStream
+        if (!stream) return false;
+      }
+      if (!activeStream && permissionStatus.value === 'granted') { // Edge case: permission granted but stream lost
         const stream = await requestMicrophonePermissionsAndGetStream();
         if (!stream) return false;
       }
 
-      finalTranscriptWebSpeech.value = '';
+
+      finalTranscriptWebSpeech.value = ''; // Reset for PTT/VAD
       interimTranscriptWebSpeech.value = '';
-      
+
+      recognition!.continuous = isContinuousMode.value || (isVoiceActivationMode.value && speechPreference.value === 'webspeech') || (isContinuousMode.value && speechPreference.value === 'whisper'); // Continuous for VAD in whisper
+      recognition!.interimResults = true; // Always true for better UX
+
       try {
-        if (recognition!.continuous !== (isContinuousMode.value || isVoiceActivationMode.value)) {
-          recognition!.continuous = isContinuousMode.value || isVoiceActivationMode.value;
-        }
         recognition!.start();
         return true;
       } catch (e: any) {
-        if (e.name === 'InvalidStateError' && isWebSpeechListening.value) {
-          return true; // Already started
+        if (e.name === 'InvalidStateError') { // Already started or starting
+          console.warn('WebSpeech: InvalidStateError on start, likely already started.');
+          isWebSpeechListening.value = true; // Assume it's or will be listening
+          return true;
         }
         console.error('Error starting WebSpeech:', e);
-        permissionMessage.value = `Could not start speech recognition: ${e.message}`;
+        permissionMessage.value = `Could not start speech recognition: ${e.message || e.name}`;
         permissionStatus.value = 'error';
         isWebSpeechListening.value = false;
         return false;
       }
     };
 
-    const stopWebSpeechRecognition = () => {
+    const stopWebSpeechRecognition = (abort = false) => {
       if (recognition && isWebSpeechListening.value) {
-        recognition.stop();
+        console.log(`WebSpeech: Stopping${abort ? ' (aborting)' : ''}...`);
+        if (abort) recognition.abort();
+        else recognition.stop();
       }
+      // isWebSpeechListening will be set to false in onend/onerror
     };
 
-    // Whisper MediaRecorder Logic
     const startWhisperMediaRecorder = async (): Promise<boolean> => {
-      const stream = await requestMicrophonePermissionsAndGetStream();
-      if (!stream) return false;
+      if (isRecording.value) {
+          console.log("MediaRecorder: Already recording.");
+          return true;
+      }
+      // Ensure stream is active, request if not
+      if (!activeStream || !activeStream.active) {
+          const stream = await requestMicrophonePermissionsAndGetStream();
+          if (!stream) return false;
+      }
+      if (!activeStream) return false; // Should not happen if previous check passed
 
-      activeWhisperStream = stream;
       audioChunks = [];
-      
-      const options = { mimeType: 'audio/webm;codecs=opus' };
-      
+      const options = { mimeType: 'audio/webm;codecs=opus' }; // Opus is generally good
       try {
         if (!MediaRecorder.isTypeSupported(options.mimeType)) {
-          console.warn(`${options.mimeType} not supported, using default`);
-          mediaRecorder = new MediaRecorder(activeWhisperStream);
+          console.warn(`${options.mimeType} not supported by MediaRecorder, using default.`);
+          mediaRecorder = new MediaRecorder(activeStream);
         } else {
-          mediaRecorder = new MediaRecorder(activeWhisperStream, options);
+          mediaRecorder = new MediaRecorder(activeStream, options);
         }
       } catch (e) {
         console.error('Failed to create MediaRecorder:', e);
-        toast?.add({
-          type: 'error',
-          title: 'Recording Error',
-          message: 'Failed to initialize audio recorder'
-        });
-        activeWhisperStream.getTracks().forEach(track => track.stop());
-        activeWhisperStream = null;
+        toast?.add({ type: 'error', title: 'Recording Error', message: 'Failed to initialize audio recorder.' });
+        // Do not stop tracks of activeStream here if WebSpeech VAD is using it
         return false;
       }
 
       mediaRecorder.ondataavailable = (event) => {
-        audioChunks.push(event.data);
+        if (event.data.size > 0) audioChunks.push(event.data);
       };
 
       mediaRecorder.onstop = async () => {
-        if (activeWhisperStream) {
-          activeWhisperStream.getTracks().forEach(track => track.stop());
-        }
-        activeWhisperStream = null;
-
+        // Note: Do not stop activeStream tracks here if it's shared with WebSpeech VAD
+        // activeStream management should be more global or handled on component unmount / mode change.
         const audioBlob = new Blob(audioChunks, { type: mediaRecorder?.mimeType || 'audio/webm' });
-        audioChunks = [];
-        
-        if (audioBlob.size > 1000) {
+        audioChunks = []; // Clear for next recording
+
+        if (audioBlob.size > 1000) { // Check if there's enough audio data
           await transcribeWithWhisper(audioBlob);
         } else {
-          console.warn('Whisper: Audio too small or empty');
-          if (!isContinuousMode.value) {
-            toast?.add({
-              type: 'warning',
-              title: 'No Audio',
-              message: 'No audio was recorded'
-            });
+          console.warn('Whisper: Audio too small or empty, not sending.');
+          if (!isContinuousMode.value && !isVoiceActivationMode.value) { // Only toast for PTT
+            toast?.add({ type: 'warning', title: 'No Audio', message: 'No significant audio was recorded.' });
           }
         }
-        
-        isRecording.value = false;
+        isRecording.value = false; // MediaRecorder specifically
         clearRecordingTimer();
 
-        // Restart WebSpeech VAD for hybrid continuous mode
-        if (isContinuousMode.value && speechPreference.value === 'whisper' && !isWebSpeechListening.value) {
-          console.log('Restarting WebSpeech VAD');
-          startWebSpeechRecognition();
+        // If in hybrid continuous/VAD Whisper mode, restart WebSpeech for VAD
+        if ((isContinuousMode.value || isVoiceActivationMode.value) && speechPreference.value === 'whisper' && !isWebSpeechListening.value && isMicrophoneActive.value /* Check main button state */) {
+            console.log('MediaRecorder stopped. Restarting WebSpeech VAD for Whisper hybrid mode.');
+            startWebSpeechRecognition();
+        } else if (!isMicrophoneActive.value) { // If main toggle is off, ensure WebSpeech is also off
+            stopWebSpeechRecognition(true);
         }
       };
 
-      mediaRecorder.onerror = (event) => {
+      mediaRecorder.onerror = (event: Event) => {
         console.error('MediaRecorder error:', event);
-        toast?.add({
-          type: 'error',
-          title: 'Recording Error',
-          message: 'Failed to record audio'
-        });
-        if (activeWhisperStream) {
-          activeWhisperStream.getTracks().forEach(track => track.stop());
-        }
-        activeWhisperStream = null;
+        toast?.add({ type: 'error', title: 'Recording Error', message: 'MediaRecorder failed during recording.' });
         isRecording.value = false;
         clearRecordingTimer();
+        // Don't stop activeStream tracks here, might be used by WebSpeech VAD
       };
 
-      mediaRecorder.start();
-      isRecording.value = true;
+      mediaRecorder.start(isContinuousMode.value || isVoiceActivationMode.value ? 10000 : undefined); // Chunk duration for continuous/VAD, or rely on manual stop for PTT
+      isRecording.value = true; // MediaRecorder is active
       startRecordingTimer();
-      startAudioLevelMonitoring();
+      startAudioLevelMonitoring(); // Ensure monitoring is active
       console.log('MediaRecorder started');
       return true;
     };
 
     const stopWhisperMediaRecorder = () => {
       if (mediaRecorder && mediaRecorder.state === 'recording') {
-        mediaRecorder.stop();
-        console.log('MediaRecorder stopped');
+        mediaRecorder.stop(); // This will trigger onstop
+        console.log('MediaRecorder stopping...');
       } else {
-        if (activeWhisperStream) {
-          activeWhisperStream.getTracks().forEach(track => track.stop());
-        }
-        activeWhisperStream = null;
-        isRecording.value = false;
+        isRecording.value = false; // Ensure state is correct if already stopped
       }
-      stopAudioLevelMonitoring();
+      // stopAudioLevelMonitoring(); // Don't stop if WebSpeech VAD is still running
     };
 
     const transcribeWithWhisper = async (audioBlob: Blob) => {
       if (props.isProcessing) {
-        toast?.add({
-          type: 'info',
-          title: 'Busy',
-          message: 'Assistant is busy, please wait'
-        });
+        toast?.add({ type: 'info', title: 'Busy', message: 'Assistant is busy, please wait.' });
         return;
       }
-
-      toast?.add({
-        type: 'info',
-        title: 'Processing',
-        message: 'Sending audio to Whisper...'
-      });
-
+      // No specific toast for sending to Whisper, processing state should be clear from UI
       try {
         const formData = new FormData();
         formData.append('audio', audioBlob, `audio-${Date.now()}.webm`);
-
-        const response = await speechAPI.transcribe(formData);
+        const response = await speechAPI.transcribe(formData); // Assuming speechAPI.transcribe handles props.isProcessing
         if (response.data.transcription) {
           sendTranscription(response.data.transcription);
         } else {
-          throw new Error(response.data.message || 'Empty transcription');
+          throw new Error(response.data.message || 'Empty transcription from Whisper.');
         }
       } catch (error: any) {
         console.error('Whisper transcription error:', error);
         toast?.add({
           type: 'error',
           title: 'Transcription Error',
-          message: error.response?.data?.message || error.message || 'Failed to transcribe audio'
+          message: error.response?.data?.message || error.message || 'Failed to transcribe audio with Whisper.'
         });
       }
     };
 
     // Main Control Functions
     const startAudioCapture = async () => {
-      if (props.isProcessing) return;
+        if (props.isProcessing || isMicrophoneActive.value /* Overall active state */) return;
 
-      let success = false;
-      
-      if (speechPreference.value === 'webspeech') {
-        success = await startWebSpeechRecognition();
-        if (success && (isPttMode.value || isVoiceActivationMode.value)) {
-          isRecording.value = true;
+        let success = false;
+        if (permissionStatus.value !== 'granted') {
+            const stream = await requestMicrophonePermissionsAndGetStream();
+            if (!stream) return false; // Permission denied or error
         }
-      } else {
-        // Whisper mode
-        if (isContinuousMode.value) {
-          // Hybrid mode: WebSpeech for VAD
-          success = await startWebSpeechRecognition();
-        } else {
-          // Direct Whisper recording
-          success = await startWhisperMediaRecorder();
-        }
-      }
 
-      if (success && isPttMode.value) {
-        startRecordingTimer();
-      }
+        if (speechPreference.value === 'webspeech') {
+            success = await startWebSpeechRecognition();
+            // isRecording for WebSpeech PTT/VAD is handled in its onstart
+        } else { // 'whisper'
+            if (isContinuousMode.value || isVoiceActivationMode.value) {
+                // Hybrid: Start WebSpeech for VAD, which then triggers MediaRecorder
+                success = await startWebSpeechRecognition();
+            } else { // PTT Whisper
+                success = await startWhisperMediaRecorder();
+            }
+        }
+        if (success) {
+            // isMicrophoneActive computed property will update.
+        }
     };
 
-    const stopAudioCapture = () => {
-      if (speechPreference.value === 'webspeech') {
-        stopWebSpeechRecognition();
-      } else {
-        if (isRecording.value) {
-          stopWhisperMediaRecorder();
+    const stopAudioCapture = (abortWebSpeech = false) => {
+        console.log("Stopping audio capture...");
+        if (speechPreference.value === 'webspeech') {
+            stopWebSpeechRecognition(abortWebSpeech); // Will set its own states in onEnd
+        } else { // 'whisper'
+            if (isRecording.value) { // MediaRecorder active
+                stopWhisperMediaRecorder(); // Will set isRecording to false in onstop
+            }
+            if (isWebSpeechListening.value) { // WebSpeech VAD for hybrid Whisper
+                stopWebSpeechRecognition(abortWebSpeech);
+            }
         }
-        if (isWebSpeechListening.value) {
-          stopWebSpeechRecognition();
-        }
-      }
-      
-      clearRecordingTimer();
-      clearPauseTimerWebSpeech();
-      pauseDetectedWebSpeech.value = false;
 
-      // Send pending continuous transcription
-      if (isContinuousMode.value && speechPreference.value === 'webspeech' && pendingTranscriptWebSpeech.value.trim()) {
-        sendPendingWebSpeechTranscription();
-      }
+        clearRecordingTimer(); // Clears timer and resets recordingSeconds
+        clearPauseTimerWebSpeech();
+        pauseDetectedWebSpeech.value = false;
+        stopAudioLevelMonitoring(); // Stop monitoring when explicitly stopping capture
+
+        // Send pending continuous WebSpeech transcription if any
+        if (isContinuousMode.value && speechPreference.value === 'webspeech' && pendingTranscriptWebSpeech.value.trim()) {
+            sendPendingWebSpeechTranscription();
+        }
+        // isMicrophoneActive will update based on isRecording and isWebSpeechListening
     };
 
     const toggleRecording = async () => {
       if (props.isProcessing) return;
-      
-      if (!micAccessInitiallyChecked.value || permissionStatus.value === 'prompt') {
-        const stream = await requestMicrophonePermissionsAndGetStream();
-        if (!stream) return;
-      }
-      
-      if (permissionStatus.value === 'denied' || permissionStatus.value === 'error') {
-        toast?.add({
-          type: 'error',
-          title: 'Microphone Error',
-          message: permissionMessage.value
-        });
-        return;
-      }
 
       if (isMicrophoneActive.value) {
-        stopAudioCapture();
+        stopAudioCapture(true); // Abort WebSpeech if stopping manually
       } else {
+        // Ensure permissions before starting
+        if (permissionStatus.value !== 'granted') {
+            const stream = await requestMicrophonePermissionsAndGetStream();
+            if (!stream) { // Permission denied or error
+                toast?.add({ type: 'error', title: 'Microphone Access', message: permissionMessage.value || 'Could not access microphone.' });
+                return;
+            }
+        }
         await startAudioCapture();
       }
     };
 
+
     // Mode Switching
     const cycleAudioMode = () => {
-      stopAudioCapture();
+      stopAudioCapture(true); // Abort any ongoing WebSpeech
       const modes = ['push-to-talk', 'continuous', 'voice-activation'];
       const currentIndex = modes.indexOf(currentAudioMode.value);
       currentAudioMode.value = modes[(currentIndex + 1) % modes.length];
-      
-      toast?.add({
-        type: 'info',
-        title: 'Audio Mode',
-        message: `Switched to ${getAudioModeDisplay(currentAudioMode.value)}`
-      });
-      
+      toast?.add({ type: 'info', title: 'Audio Mode Switched', message: `Now in ${getAudioModeDisplay(currentAudioMode.value)}` });
       emit('update:audio-mode', currentAudioMode.value);
+
+      // If new mode is continuous or VAD and permission granted, auto-start
+      if ((isContinuousMode.value || isVoiceActivationMode.value) && permissionStatus.value === 'granted') {
+        nextTick(() => { // Ensure state updates propagate
+           if (!isMicrophoneActive.value) startAudioCapture();
+        });
+      }
     };
 
     const toggleSpeechMethod = () => {
-      stopAudioCapture();
+      stopAudioCapture(true); // Abort any ongoing WebSpeech
       speechPreference.value = speechPreference.value === 'webspeech' ? 'whisper' : 'webspeech';
-      
-      toast?.add({
-        type: 'info',
-        title: 'STT Method',
-        message: `Using ${getTranscriptionMethodDisplay()}`
-      });
+      toast?.add({ type: 'info', title: 'STT Method Switched', message: `Now using ${getTranscriptionMethodDisplay()}` });
+
+      // If current mode is continuous or VAD and permission granted, auto-start with new method
+      if ((isContinuousMode.value || isVoiceActivationMode.value) && permissionStatus.value === 'granted') {
+         nextTick(() => {
+            if (!isMicrophoneActive.value) startAudioCapture();
+         });
+      }
     };
 
     // Text Input Handling
     const handleTextInput = () => {
       if (textareaRef.value) {
         textareaRef.value.style.height = 'auto';
-        textareaRef.value.style.height = `${Math.min(textareaRef.value.scrollHeight, 120)}px`;
+        textareaRef.value.style.height = `${Math.min(textareaRef.value.scrollHeight, 120)}px`; // Max height 120px
       }
     };
 
@@ -999,7 +1057,7 @@ export default defineComponent({
       if (textInput.value.trim() && !isMicrophoneActive.value && !props.isProcessing) {
         sendTranscription(textInput.value.trim());
         textInput.value = '';
-        nextTick(() => handleTextInput());
+        nextTick(() => handleTextInput()); // Reset height
       }
     };
 
@@ -1007,18 +1065,14 @@ export default defineComponent({
     const sendTranscription = (text: string) => {
       if (text.trim()) {
         emit('transcription', text.trim());
-        
-        // Add to history
         transcriptionHistory.value.unshift({
-          id: `${Date.now()}-${Math.random()}`,
+          id: `<span class="math-inline">\{Date\.now\(\)\}\-</span>{Math.random().toString(36).substring(7)}`,
           text: text.trim(),
           timestamp: Date.now(),
-          sent: true
+          sent: true // Assume sent, could be updated by parent if sending fails
         });
-        
-        // Keep only last 10 items
-        if (transcriptionHistory.value.length > 10) {
-          transcriptionHistory.value = transcriptionHistory.value.slice(0, 10);
+        if (transcriptionHistory.value.length > 10) { // Keep last 10
+          transcriptionHistory.value.pop();
         }
       }
     };
@@ -1026,29 +1080,33 @@ export default defineComponent({
     const sendPendingWebSpeechTranscription = () => {
       if (pendingTranscriptWebSpeech.value.trim()) {
         sendTranscription(pendingTranscriptWebSpeech.value.trim());
-        clearPendingWebSpeechTranscription();
       }
+      clearPendingWebSpeechTranscription(); // Clear after sending
     };
 
     const clearPendingWebSpeechTranscription = () => {
       pendingTranscriptWebSpeech.value = '';
-      liveTranscriptWebSpeech.value = '';
+      liveTranscriptWebSpeech.value = ''; // Also clear live part
       clearPauseTimerWebSpeech();
       pauseDetectedWebSpeech.value = false;
       pauseCountdownWebSpeech.value = 0;
     };
 
     const editPendingTranscription = () => {
-      if (speechPreference.value === 'webspeech' && isContinuousMode.value) {
+      if (speechPreference.value === 'webspeech' && isContinuousMode.value && pendingTranscriptWebSpeech.value.trim()) {
         editingTranscription.value = pendingTranscriptWebSpeech.value;
         showEditModal.value = true;
+        nextTick(() => editModalTextareaRef.value?.focus());
       }
     };
 
     const saveEdit = () => {
-      pendingTranscriptWebSpeech.value = editingTranscription.value;
+      if (editingTranscription.value.trim()) {
+        pendingTranscriptWebSpeech.value = editingTranscription.value.trim();
+        sendPendingWebSpeechTranscription(); // This will also clear things
+      }
       showEditModal.value = false;
-      sendPendingWebSpeechTranscription();
+      editingTranscription.value = '';
     };
 
     const cancelEdit = () => {
@@ -1058,42 +1116,49 @@ export default defineComponent({
 
     const resendTranscription = (item: TranscriptionHistoryItem) => {
       sendTranscription(item.text);
-      item.sent = true;
+      // Optionally, update the item's sent status or move it to top again
+      item.sent = true; // Assuming resending means it's "sent now"
+      const index = transcriptionHistory.value.findIndex(h => h.id === item.id);
+      if (index > -1) {
+        const [removed] = transcriptionHistory.value.splice(index, 1);
+        transcriptionHistory.value.unshift(removed);
+      }
     };
 
-    // Pause Detection for Continuous Mode
+    // Pause Detection for Continuous Mode (WebSpeech)
     const resetPauseDetectionWebSpeech = () => {
       clearPauseTimerWebSpeech();
       pauseDetectedWebSpeech.value = false;
       pauseCountdownWebSpeech.value = 0;
 
-      if (isContinuousMode.value && speechPreference.value === 'webspeech' && 
-          pendingTranscriptWebSpeech.value.trim() && isWebSpeechListening.value && 
+      if (isContinuousMode.value && speechPreference.value === 'webspeech' &&
+          pendingTranscriptWebSpeech.value.trim() && isWebSpeechListening.value &&
           autoSendOnPauseWebSpeech.value) {
-        
+
         pauseTimerIdWebSpeech = window.setTimeout(() => {
-          if (pendingTranscriptWebSpeech.value.trim() && isWebSpeechListening.value && 
+          if (pendingTranscriptWebSpeech.value.trim() && isWebSpeechListening.value &&
               autoSendOnPauseWebSpeech.value && isContinuousMode.value) {
-            
+
             pauseDetectedWebSpeech.value = true;
             pauseCountdownWebSpeech.value = pauseTimeoutContinuousWebSpeech.value;
-            
+
             const countdownInterval = setInterval(() => {
-              if (!pauseDetectedWebSpeech.value || !isContinuousMode.value) {
+              if (!pauseDetectedWebSpeech.value || !isContinuousMode.value || !isWebSpeechListening.value) {
                 clearInterval(countdownInterval);
+                pauseDetectedWebSpeech.value = false; // Ensure it's reset
                 return;
               }
-              
               pauseCountdownWebSpeech.value -= 100;
               if (pauseCountdownWebSpeech.value <= 0) {
                 clearInterval(countdownInterval);
-                if (pauseDetectedWebSpeech.value && isContinuousMode.value) {
+                if (pauseDetectedWebSpeech.value && isContinuousMode.value && pendingTranscriptWebSpeech.value.trim()) {
                   sendPendingWebSpeechTranscription();
                 }
+                pauseDetectedWebSpeech.value = false; // Reset after sending or if condition changed
               }
             }, 100);
           }
-        }, 500);
+        }, 500); // Time after speech finalizes before considering it a pause
       }
     };
 
@@ -1101,19 +1166,13 @@ export default defineComponent({
     const startRecordingTimer = () => {
       clearRecordingTimer();
       recordingSeconds.value = 0;
-      
       recordingTimerId = window.setInterval(() => {
         recordingSeconds.value += 0.1;
-        
-        // Max recording time check
-        if ((isPttMode.value || (isVoiceActivationMode.value && speechPreference.value === 'whisper')) && 
+        // Max recording time for PTT or VAD Whisper chunks
+        if ((isPttMode.value || (isVoiceActivationMode.value && speechPreference.value === 'whisper')) &&
             isRecording.value && recordingSeconds.value >= 60) {
-          toast?.add({
-            type: 'info',
-            title: 'Recording Limit',
-            message: 'Recording stopped after 60 seconds'
-          });
-          stopAudioCapture();
+          toast?.add({ type: 'info', title: 'Recording Limit', message: 'Max recording time (60s) reached.' });
+          stopAudioCapture(speechPreference.value === 'webspeech'); // Abort WebSpeech if it was that
         }
       }, 100);
     };
@@ -1135,42 +1194,42 @@ export default defineComponent({
 
     // Cleanup
     const cleanUpAfterTranscription = () => {
-      isRecording.value = false;
-      isWebSpeechListening.value = false;
+      // isRecording and isWebSpeechListening are managed by their respective stop functions
       interimTranscriptWebSpeech.value = '';
       finalTranscriptWebSpeech.value = '';
-      liveTranscriptWebSpeech.value = '';
-      audioChunks = [];
-      clearRecordingTimer();
+      // liveTranscriptWebSpeech and pendingTranscriptWebSpeech are for continuous, not general cleanup
+      audioChunks = []; // Cleared in MediaRecorder.onstop
+      clearRecordingTimer(); // Usually called by stop functions
     };
 
-    const stopAllAudioProcessing = () => {
+    const stopAllAudioProcessing = (abortWebSpeech = true) => { // Default to abort for immediate stop
+      console.log("Stopping all audio processing...");
       if (recognition) {
         try {
-          if (isWebSpeechListening.value) {
-            recognition.abort();
-          } else {
-            recognition.stop();
-          }
-        } catch (e) {
-          console.warn('Error stopping WebSpeech:', e);
-        }
+            if (isWebSpeechListening.value) {
+                 if (abortWebSpeech) recognition.abort(); else recognition.stop();
+            }
+        } catch (e) { console.warn('Error stopping/aborting WebSpeech:', e); }
       }
-      isWebSpeechListening.value = false;
+      isWebSpeechListening.value = false; // Force state
 
       if (mediaRecorder && mediaRecorder.state === 'recording') {
-        try {
-          mediaRecorder.stop();
-        } catch (e) {
-          console.warn('Error stopping MediaRecorder:', e);
-        }
+        try { mediaRecorder.stop(); }
+        catch (e) { console.warn('Error stopping MediaRecorder:', e); }
       }
-      isRecording.value = false;
+      isRecording.value = false; // Force state
 
-      if (activeWhisperStream) {
-        activeWhisperStream.getTracks().forEach(track => track.stop());
-        activeWhisperStream = null;
+      if (activeStream) {
+        activeStream.getTracks().forEach(track => track.stop());
+        activeStream = null;
       }
+      if (audioContext && audioContext.state !== 'closed') {
+        audioContext.close().catch(e => console.warn("Error closing AudioContext:", e));
+        audioContext = null;
+      }
+      microphoneSourceNode = null;
+      analyser = null;
+
 
       stopAudioLevelMonitoring();
       cleanUpAfterTranscription();
@@ -1181,192 +1240,153 @@ export default defineComponent({
 
     // Lifecycle Hooks
     onMounted(async () => {
-      currentAudioMode.value = props.audioMode;
-      
-      if (speechPreference.value === 'webspeech' && typeof window !== 'undefined') {
+      currentAudioMode.value = props.audioMode; // Initialize from prop
+
+      if (typeof window !== 'undefined') { // Initialize WebSpeech if available, regardless of initial preference
         initializeWebSpeech();
       }
 
-      // Check microphone permissions
       if (navigator.permissions) {
         try {
           const perm = await navigator.permissions.query({ name: 'microphone' as PermissionName });
           permissionStatus.value = perm.state;
-          
           if (perm.state === 'granted') {
             permissionMessage.value = '';
             emit('permission-update', 'granted');
-            
-            if (isContinuousMode.value || isVoiceActivationMode.value) {
-              startAudioCapture();
+            // Auto-start if continuous/VAD and permission already granted
+            if ((isContinuousMode.value || isVoiceActivationMode.value)) {
+               await startAudioCapture();
             }
           } else if (perm.state === 'prompt') {
-            permissionMessage.value = 'Click the microphone to grant access';
+            permissionMessage.value = 'Click the microphone to grant access.';
             emit('permission-update', 'prompt');
-          } else {
-            permissionMessage.value = 'Microphone access denied in browser settings';
+          } else { // denied
+            permissionMessage.value = 'Microphone access denied in browser settings.';
             emit('permission-update', 'denied');
           }
-        } catch (e) {
-          console.warn('Permissions API error:', e);
-          // Fallback
-          const stream = await requestMicrophonePermissionsAndGetStream();
-          if (stream) {
-            stream.getTracks().forEach(track => track.stop());
-            if (isContinuousMode.value || isVoiceActivationMode.value) {
-              startAudioCapture();
+          perm.onchange = () => {
+            permissionStatus.value = perm.state;
+            if (perm.state === 'granted' && (isContinuousMode.value || isVoiceActivationMode.value) && !isMicrophoneActive.value) {
+                startAudioCapture();
+            } else if (perm.state !== 'granted' && isMicrophoneActive.value) {
+                stopAllAudioProcessing();
             }
-          }
+          };
+        } catch (e) {
+          console.warn('Permissions API query error:', e, 'Falling back to direct request for status.');
+          // Fallback: try a quiet request to infer status or prime for user action.
+          // This is tricky as direct request shows UI. We'll rely on user click for first actual request if prompt.
         } finally {
           micAccessInitiallyChecked.value = true;
         }
-      } else {
-        // No Permissions API
+      } else { // No Permissions API
         micAccessInitiallyChecked.value = true;
+        permissionMessage.value = 'Permissions API not supported. Click mic to request.';
       }
     });
 
     onBeforeUnmount(() => {
       stopAllAudioProcessing();
-      
-      if (recognition) {
-        recognition.onstart = null;
-        recognition.onresult = null;
-        recognition.onerror = null;
-        recognition.onend = null;
-        recognition.onspeechstart = null;
-        recognition.onspeechend = null;
+      if (recognition) { // Full cleanup of listeners
+        recognition.onstart = null; recognition.onresult = null; recognition.onerror = null;
+        recognition.onend = null; recognition.onspeechstart = null; recognition.onspeechend = null;
+        recognition.onaudiostart = null; recognition.onaudioend = null; recognition.onsoundstart = null;
+        recognition.onsoundend = null; recognition.onnomatch = null;
         recognition = null;
       }
-      
       if (mediaRecorder) {
-        mediaRecorder.ondataavailable = null;
-        mediaRecorder.onstop = null;
-        mediaRecorder.onerror = null;
+        mediaRecorder.ondataavailable = null; mediaRecorder.onstop = null; mediaRecorder.onerror = null;
         mediaRecorder = null;
       }
-      
-      if (audioContext && audioContext.state !== 'closed') {
-        audioContext.close();
-        audioContext = null;
-      }
-      
-      clearRecordingTimer();
-      clearPauseTimerWebSpeech();
-      stopAudioLevelMonitoring();
     });
 
     // Watchers
-    watch(() => props.audioMode, (newMode) => {
-      if (newMode !== currentAudioMode.value) {
-        stopAllAudioProcessing();
-        currentAudioMode.value = newMode;
-        
-        if ((newMode === 'continuous' || newMode === 'voice-activation') && 
-            permissionStatus.value === 'granted') {
-          setTimeout(() => {
-            if (currentAudioMode.value === newMode) {
-              startAudioCapture();
-            }
-          }, 100);
-        }
+    watch(() => props.audioMode, (newMode, oldMode) => {
+      if (newMode !== oldMode) { // Ensure currentAudioMode (useStorage) is also updated if prop changes
+        console.log(`audioMode prop changed from ${oldMode} to ${newMode}. Syncing currentAudioMode.`);
+        stopAllAudioProcessing(true);
+        currentAudioMode.value = newMode; // This will trigger the currentAudioMode watcher
       }
     });
+
+    watch(currentAudioMode, (newMode, oldMode) => {
+        if (newMode === oldMode) return;
+        console.log(`currentAudioMode (useStorage) changed from ${oldMode} to ${newMode}.`);
+        stopAllAudioProcessing(true); // Abort WebSpeech on mode change
+
+        if (recognition) { // Update WebSpeech continuous setting for next start
+            const needsContinuous = newMode === 'continuous' ||
+                                 (newMode === 'voice-activation' && speechPreference.value === 'webspeech') ||
+                                 (newMode === 'continuous' && speechPreference.value === 'whisper');
+            if (recognition.continuous !== needsContinuous) {
+                console.log(`WebSpeech 'continuous' flag will be set to ${needsContinuous} on next start.`);
+                // The flag is set inside startWebSpeechRecognition before calling .start()
+            }
+        }
+
+        // Auto-start if new mode is continuous/VAD and permissions are good
+        if ((newMode === 'continuous' || newMode === 'voice-activation') && permissionStatus.value === 'granted') {
+            setTimeout(() => { // Allow state to settle
+               if (currentAudioMode.value === newMode && !isMicrophoneActive.value) { // Check again before starting
+                  startAudioCapture();
+               }
+            }, 100);
+        }
+        // Clear specific transcripts on mode change
+        liveTranscriptWebSpeech.value = '';
+        pendingTranscriptWebSpeech.value = '';
+        finalTranscriptWebSpeech.value = '';
+        interimTranscriptWebSpeech.value = '';
+    });
+
 
     watch(speechPreference, (newPref, oldPref) => {
-      if (newPref !== oldPref) {
-        stopAllAudioProcessing();
-        
-        if (newPref === 'webspeech' && typeof window !== 'undefined') {
-          initializeWebSpeech();
-        }
-        
-        if ((currentAudioMode.value === 'continuous' || currentAudioMode.value === 'voice-activation') && 
-            permissionStatus.value === 'granted') {
-          setTimeout(() => {
-            startAudioCapture();
-          }, 100);
-        }
+      if (newPref === oldPref) return;
+      console.log(`Speech preference changed from ${oldPref} to ${newPref}.`);
+      stopAllAudioProcessing(true);
+
+      if (newPref === 'webspeech' && typeof window !== 'undefined' && !recognition) {
+        initializeWebSpeech();
+      }
+
+      // Auto-start if current mode is continuous/VAD and permissions are good
+      if ((currentAudioMode.value === 'continuous' || currentAudioMode.value === 'voice-activation') && permissionStatus.value === 'granted') {
+        setTimeout(() => { // Allow state to settle
+            if (speechPreference.value === newPref && !isMicrophoneActive.value) { // Check again
+                startAudioCapture();
+            }
+        }, 100);
       }
     });
 
-    watch(currentAudioMode, (newMode) => {
-      if (recognition) {
-        const needsContinuous = newMode === 'continuous' || newMode === 'voice-activation';
-        if (recognition.continuous !== needsContinuous) {
-          console.log(`WebSpeech continuous will be ${needsContinuous} on next start`);
-        }
-      }
-    });
 
-    // Return all reactive properties and methods
     return {
+      props, // Expose props for template if needed directly, though usually not
       // Template refs
-      textInput,
-      textareaRef,
-      vadCanvasRef,
-      
+      textInput, textareaRef, vadCanvasRef, editModalTextareaRef,
       // State
-      isRecording,
-      isWebSpeechListening,
-      permissionStatus,
-      permissionMessage,
-      micAccessInitiallyChecked,
-      interimTranscriptWebSpeech,
-      liveTranscriptWebSpeech,
-      pendingTranscriptWebSpeech,
-      transcriptionHistory,
-      showTranscriptionHistory,
-      recordingSeconds,
-      pauseDetectedWebSpeech,
-      pauseCountdownWebSpeech,
-      audioLevelDisplay,
-      showEditModal,
-      editingTranscription,
-      
+      isRecording, isWebSpeechListening, permissionStatus, permissionMessage, micAccessInitiallyChecked,
+      interimTranscriptWebSpeech, liveTranscriptWebSpeech, pendingTranscriptWebSpeech,
+      transcriptionHistory, showTranscriptionHistory,
+      recordingSeconds, pauseDetectedWebSpeech, pauseCountdownWebSpeech,
+      audioLevelDisplay, rawAudioLevel, // Expose rawAudioLevel if needed for other computations/display
+      showEditModal, editingTranscription,
       // Settings
-      speechPreference,
-      currentAudioMode,
-      voiceActivationThreshold,
-      autoSendOnPauseWebSpeech,
-      pauseTimeoutContinuousWebSpeech,
-      
+      speechPreference, currentAudioMode, voiceActivationThreshold, autoSendOnPauseWebSpeech, pauseTimeoutContinuousWebSpeech,
       // Computed
-      isMicrophoneActive,
-      isPttMode,
-      isContinuousMode,
-      isVoiceActivationMode,
-      
-      // Methods
-      getButtonTitle,
-      getPlaceholderText,
-      getModeDisplayText,
-      getModeIndicatorClass,
-      getRecordingStatusText,
-      getIdleStatusText,
-      getPermissionStatusClass,
-      getTranscriptionMethodDisplay,
-      getAudioModeDisplay,
-      getAudioModeIcon,
-      formatTime,
-      formatDuration,
-      toggleRecording,
-      cycleAudioMode,
-      toggleSpeechMethod,
-      handleTextInput,
-      handleTextSubmit,
-      sendPendingWebSpeechTranscription,
-      clearPendingWebSpeechTranscription,
-      editPendingTranscription,
-      saveEdit,
-      cancelEdit,
-      resendTranscription,
-      requestMicrophonePermissionsAndGetStream,
-      
-      // Components
-      PushToTalkIcon,
-      ContinuousIcon,
-      VoiceActivationIcon,
+      isMicrophoneActive, isPttMode, isContinuousMode, isVoiceActivationMode,
+      // Methods (ensure all used in template are returned)
+      getButtonTitle, getPlaceholderText, getModeDisplayText, getModeIndicatorClass,
+      getRecordingStatusText, getIdleStatusText, getPermissionStatusClass,
+      getTranscriptionMethodDisplay, getAudioModeDisplay, getAudioModeIcon,
+      formatTime, formatDuration,
+      toggleRecording, cycleAudioMode, toggleSpeechMethod,
+      handleTextInput, handleTextSubmit,
+      sendPendingWebSpeechTranscription, clearPendingWebSpeechTranscription, editPendingTranscription,
+      saveEdit, cancelEdit, resendTranscription,
+      requestMicrophonePermissionsAndGetStream, // For retry button
+      // Icon Components
+      PushToTalkIcon, ContinuousIcon, VoiceActivationIcon,
     };
   }
 });
