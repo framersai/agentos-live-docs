@@ -52,14 +52,15 @@ import { ToolOrchestratorConfig } from '../config/ToolOrchestratorConfig';
 import { ToolOrchestrator } from '../core/tools/ToolOrchestrator';
 import { IToolPermissionManager, ToolPermissionManagerConfig } from '../core/tools/permissions/IToolPermissionManager';
 import { ToolPermissionManager } from '../core/tools/permissions/ToolPermissionManager';
-import { IAuthService } from '../../services/user_auth/AuthService';
+import { IAuthService } from '../../services/user_auth/IAuthService';
 import { ISubscriptionService } from '../../services/user_auth/SubscriptionService';
 import { IUtilityAI } from '../core/ai_utilities/IUtilityAI';
 import { ConversationManager, ConversationManagerConfig } from '../core/conversation/ConversationManager';
 import { ConversationContext } from '../core/conversation/ConversationContext';
 import { PrismaClient } from '@prisma/client';
 import { IPersonaDefinition } from '../cognitive_substrate/personas/IPersonaDefinition';
-import { StreamingManager, StreamingManagerConfig, StreamId, IStreamClient, StreamClientId } from '../core/streaming/StreamingManager';
+import { StreamingManager, StreamingManagerConfig, StreamId } from '../core/streaming/StreamingManager';
+import { IStreamClient, StreamClientId } from '../core/streaming/IStreamClient';
 import { GMIError, GMIErrorCode } from '../../utils/errors';
 import { v4 as uuidv4 } from 'uuid';
 

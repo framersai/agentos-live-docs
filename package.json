@@ -34,5 +34,7 @@
   "devDependencies": {
     "concurrently": "^8.2.2"
   },
-  "dependencies": {}
+  "dependencies": {
+    "express-validator": "^7.2.1"
+  }
 }

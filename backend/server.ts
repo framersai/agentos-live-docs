@@ -1,17 +1,19 @@
 // File: backend/server.ts
 /**
- * @fileoverview Main server entry point for the AgentOS backend.
- * This file initializes and configures the Express application, including middleware,
- * core SOTA services, API routes, and global error handling. It orchestrates the startup
- * sequence of the application, ensuring all components are ready for operation.
- *
+ * @fileoverview Updated server integration with proper route mounting and service initialization.
+ * This file orchestrates the complete Voice Chat Assistant backend system with full
+ * AgentOS integration, authentication, and API route configuration.
+ * 
+ * Key Updates:
+ * - Proper route factory function calls with required parameters
+ * - Correct service dependency injection
+ * - Enhanced error handling and logging
+ * - Complete middleware chain setup
+ * - Production-ready configuration
+ * 
  * @module backend/server
- */
-
-// File: backend/server.ts - Import fixes only (top section)
-/**
- * @fileoverview Server.ts import path fixes
- * FIXES: Correct import paths for AgentOS modules and interfaces
+ * @author Voice Chat Assistant Team
+ * @version 1.0.0
  */
 
 import express, { NextFunction, Request, Response } from 'express';
@@ -23,504 +25,616 @@ import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import fs from 'fs';
-import { PrismaClient } from '@prisma/client';
 
 // Database utilities
 import prismaInstance, { connectToDatabase, disconnectFromDatabase } from './db';
 
-// FIXED: Core AgentOS Services and Managers with correct import paths
-import { AuthService } from './services/user_auth/AuthService';
+// Core AgentOS Services and Managers
 import { IAuthService } from './services/user_auth/IAuthService';
+import { AuthService } from './services/user_auth/AuthService';
 import { ISubscriptionService, SubscriptionService } from './services/user_auth/SubscriptionService';
 import { ILemonSqueezyService, LemonSqueezyService, LemonSqueezyConfig } from './services/payment/LemonSqueezyService';
 
-// FIXED: Import IUtilityAI from the correct location
-import { IUtilityAI } from './agentos/core/ai_utilities/IUtilityAI';
+// AgentOS Core System
+import { AgentOS } from './agentos/api/AgentOS';
+import { IAgentOS } from './agentos/api/interfaces/IAgentOS';
 
-// FIXED: Remove HybridUtilityAI import that was causing module error - create placeholder instead
-interface HybridUtilityAIConfig {
-  llmUtilityConfig: { defaultModelId: string };
-  statisticalUtilityConfig?: { resourcePath: string };
-}
-
-class HybridUtilityAI implements IUtilityAI {
-  constructor(modelProviderManager: any, config: HybridUtilityAIConfig) {
-    // Placeholder implementation
-  }
-
-  async initialize(config: HybridUtilityAIConfig): Promise<void> {
-    console.log('HybridUtilityAI: Placeholder initialization');
-  }
-
-  // Add other required IUtilityAI methods as placeholders
-  async processUtilityRequest(request: any): Promise<any> {
-    return { result: 'placeholder' };
-  }
-}
-
-// FIXED: Import AIModelProviderManager from implementations folder
-import { AIModelProviderManager, AIModelProviderManagerConfig, ProviderConfigEntry } from './agentos/core/llm/providers/AIModelProviderManager';
-
-// FIXED: Import PromptEngine and config from correct locations
-import { PromptEngine } from './agentos/core/llm/PromptEngine';
-import { PromptEngineConfig } from './agentos/core/llm/IPromptEngine'; // Config is typically in interface file
-
-// FIXED: Import ConversationManager from correct path
-import { ConversationManager, ConversationManagerConfig } from './agentos/core/conversation/ConversationManager';
-
-// FIXED: Import GMIManager from correct location
-import { GMIManager, GMIManagerConfig } from './agentos/cognitive_substrate/GMIManager';
-
-// FIXED: Import ToolOrchestrator from correct path (core/tools not just tools)
-import { ToolOrchestrator } from './agentos/core/tools/ToolOrchestrator';
-import { ToolOrchestratorConfig } from './agentos/core/tools/IToolOrchestrator';
-
-// FIXED: Import ToolPermissionManager from correct path
-import { ToolPermissionManager } from './agentos/core/tools/permissions/ToolPermissionManager';
-import { ToolPermissionManagerConfig } from './agentos/core/tools/IToolPermissionManager';
-
-// FIXED: Create StreamingManager placeholder since it doesn't exist yet
-interface StreamingManagerConfig {
-  maxConcurrentStreams?: number;
-  streamTimeoutMs?: number;
-}
-
-class StreamingManager {
-  async initialize(config: StreamingManagerConfig): Promise<void> {
-    console.log('StreamingManager: Placeholder initialization');
-  }
-
-  async shutdown(): Promise<void> {
-    console.log('StreamingManager: Placeholder shutdown');
-  }
-}
-
-// FIXED: Import AgentOSOrchestrator from correct location
-import { AgentOSOrchestrator, AgentOSOrchestratorConfig, AgentOSOrchestratorDependencies } from './agentos/api/AgentOSOrchestrator';
-
-// FIXED: Import main AgentOS facade
-import { AgentOS, AgentOSConfig, IAgentOS } from './agentos/api/AgentOS';
-
-// API Route Creators
+// API Route Factories
 import { createAuthRoutes } from './api/authRoutes';
-import { createLemonSqueezyWebhooksRoutes } from './api/webhooks/lemonSqueezyWebhooksRoutes'; // FIXED: lowercase filename
 import { createAgentOSRoutes } from './api/agentosRoutes';
 import { createPersonaRoutes } from './api/personaRoutes';
+import { createLemonSqueezyWebhooksRoutes } from './api/webhooks/lemonSqueezyWebhooksRoutes';
 
+// Error handling utilities
 import { GMIError, GMIErrorCode } from './utils/errors';
-
-// Rest of server.ts implementation would continue with these corrected imports...
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Load environment variables from the root .env file
+// Load environment variables from root .env file
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 const app = express();
 const PORT = parseInt(process.env.PORT || '3001', 10);
 
-// --- Essential Middleware ---
-// Helmet for security headers (CSP might need to be fine-tuned for production)
+// =============================================================================
+// MIDDLEWARE SETUP
+// Essential middleware for security, parsing, and request handling
+// =============================================================================
+
+// Security middleware with production-ready configuration
 app.use(helmet({
   contentSecurityPolicy: process.env.NODE_ENV === 'production' ? undefined : false,
+  crossOriginEmbedderPolicy: false, // Required for some AI model APIs
 }));
-// CORS configuration
-app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000', // Be specific in production
+
+// CORS configuration with environment-specific settings
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production' 
+    ? [process.env.FRONTEND_URL, process.env.APP_URL].filter(Boolean)
+    : [process.env.FRONTEND_URL || 'http://localhost:3000', 'http://localhost:5173'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  allowedHeaders: [
+    'Content-Type', 
+    'Authorization', 
+    'X-Requested-With', 
+    'X-Request-ID',
+    'Accept',
+    'Origin'
+  ],
   credentials: true,
-}));
-app.options('*', cors()); // Handle pre-flight requests for all routes
-app.use(morgan('dev')); // HTTP request logger
-app.use(cookieParser()); // Parse cookies
-app.use(express.json({ limit: '10mb' })); // Parse JSON bodies, increased limit for potential base64 data
+  maxAge: 86400, // 24 hours preflight cache
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // Handle preflight requests
+
+// Request parsing and logging middleware
+app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
+app.use(cookieParser());
+app.use(express.json({ limit: '10mb' })); // Increased limit for potential file uploads
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+// Request ID middleware for tracking
+app.use((req: Request, res: Response, next: NextFunction) => {
+  req.headers['x-request-id'] = req.headers['x-request-id'] || `req-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  res.setHeader('X-Request-ID', req.headers['x-request-id']);
+  next();
+});
 
-// --- Global Service Instances (to be initialized) ---
+// =============================================================================
+// GLOBAL SERVICE INSTANCES
+// Core services that will be initialized during startup
+// =============================================================================
+
 let authServiceInstance: IAuthService;
 let subscriptionServiceInstance: ISubscriptionService;
 let lemonSqueezyServiceInstance: ILemonSqueezyService;
-let modelProviderManagerInstance: AIModelProviderManager;
-let promptEngineInstance: PromptEngine;
-let conversationManagerInstance: ConversationManager;
-let utilityAIServiceInstance: IUtilityAI;
-let toolPermissionManagerInstance: ToolPermissionManager;
-let toolOrchestratorInstance: ToolOrchestrator;
-let streamingManagerInstance: StreamingManager;
-let gmiManagerInstance: GMIManager;
-let agentOSOrchestratorInstance: AgentOSOrchestrator;
-let agentOSFacadeInstance: IAgentOS; // Main AgentOS service facade
+let agentOSInstance: IAgentOS;
 
 /**
- * Initializes all global services and dependencies for the AgentOS backend.
- * This function is called once at server startup. The order of initialization
- * is critical to satisfy inter-service dependencies.
+ * Initializes all global services required for the Voice Chat Assistant backend.
+ * Services are initialized in dependency order to ensure proper integration.
+ * 
  * @async
- * @throws {Error} If any critical service fails to initialize.
+ * @function initializeGlobalServices
+ * @throws {Error} If any critical service fails to initialize
  */
 async function initializeGlobalServices(): Promise<void> {
-  console.log('🚀 AgentOS Backend: Initializing global services...');
+  console.log('🚀 Voice Chat Assistant Backend: Initializing global services...');
 
+  // Connect to database first
   await connectToDatabase();
 
-  // 1. Payment Gateway Service (LemonSqueezy)
-  const lsApiKey = process.env.LEMONSQUEEZY_API_KEY;
-  const lsStoreId = process.env.LEMONSQUEEZY_STORE_ID;
-  const lsWebhookSecret = process.env.LEMONSQUEEZY_WEBHOOK_SECRET;
-  if (!lsApiKey || !lsStoreId || !lsWebhookSecret) {
-    console.warn("⚠️ LEMONSQUEEZY_API_KEY, LEMONSQUEEZY_STORE_ID, or LEMONSQUEEZY_WEBHOOK_SECRET not set. Payment features will be severely limited or non-functional.");
-    // Depending on strictness, could throw error here.
-  }
+  // 1. Initialize Payment Service (LemonSqueezy)
+  console.log('📦 Initializing LemonSqueezy payment service...');
   const lsConfig: LemonSqueezyConfig = {
-    apiKey: lsApiKey!,
-    storeId: lsStoreId!,
-    webhookSecret: lsWebhookSecret!,
-    // productMap can be loaded from ENV or a config file
-    // Example: productMap: JSON.parse(process.env.LEMONSQUEEZY_PRODUCT_MAP || '{}')
+    apiKey: process.env.LEMONSQUEEZY_API_KEY || '',
+    storeId: process.env.LEMONSQUEEZY_STORE_ID || '',
+    webhookSecret: process.env.LEMONSQUEEZY_WEBHOOK_SECRET || '',
   };
+
+  if (!lsConfig.apiKey || !lsConfig.storeId || !lsConfig.webhookSecret) {
+    console.warn("⚠️ LemonSqueezy configuration incomplete. Payment features will be limited.");
+  }
+
   lemonSqueezyServiceInstance = new LemonSqueezyService(prismaInstance, lsConfig);
   if (lemonSqueezyServiceInstance.initialize) {
     await lemonSqueezyServiceInstance.initialize();
   }
-  console.log('✅ LemonSqueezyService initialized.');
+  console.log('✅ LemonSqueezy service initialized');
 
-  // 2. Authentication Service
-  authServiceInstance = new AuthService(prismaInstance, undefined /* Provide Real EmailService */, {
+  // 2. Initialize Authentication Service
+  console.log('🔐 Initializing authentication service...');
+  authServiceInstance = new AuthService(prismaInstance, undefined, {
     jwtSecret: process.env.JWT_SECRET,
     jwtExpiresIn: process.env.JWT_EXPIRES_IN,
     apiKeyEncryptionKeyHex: process.env.API_KEY_ENCRYPTION_KEY_HEX,
+    googleClientId: process.env.GOOGLE_CLIENT_ID,
+    googleClientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    googleCallbackUrl: process.env.GOOGLE_CALLBACK_URL,
   });
+
   if (authServiceInstance.initialize) {
     await authServiceInstance.initialize();
   }
-  console.log('✅ AuthService initialized.');
+  console.log('✅ Authentication service initialized');
 
-  // 3. Subscription Service
-  subscriptionServiceInstance = new SubscriptionService(prismaInstance, authServiceInstance, lemonSqueezyServiceInstance);
-  await subscriptionServiceInstance.initialize(); // Ensures default tiers exist
-  console.log('✅ SubscriptionService initialized.');
-
-  // 4. AI Model Provider Manager
-  const providerManagerConfig: AIModelProviderManagerConfig = {
-    providers: [ /* Dynamically load from env or config file */
-      ...(process.env.OPENAI_API_KEY ? [{ providerId: 'openai', enabled: true, config: { apiKey: process.env.OPENAI_API_KEY, defaultModelId: 'gpt-4o-mini' }, isDefaultSystemProvider: !process.env.OPENROUTER_API_KEY }] : []),
-      ...(process.env.OPENROUTER_API_KEY ? [{ providerId: 'openrouter', enabled: true, config: { apiKey: process.env.OPENROUTER_API_KEY, defaultModelId: 'openai/gpt-4o-mini', siteUrl: process.env.APP_URL, appName: 'AgentOS' }, isDefaultSystemProvider: !!process.env.OPENROUTER_API_KEY }] : []),
-      ...(process.env.OLLAMA_BASE_URL ? [{ providerId: 'ollama', enabled: true, config: { baseURL: process.env.OLLAMA_BASE_URL, defaultModelId: 'llama3:8b' }}] : [])
-    ]
-  };
-  modelProviderManagerInstance = new AIModelProviderManager();
-  await modelProviderManagerInstance.initialize(providerManagerConfig);
-  console.log('✅ AIModelProviderManager initialized.');
-
-  // 5. Utility AI Service (Global Instance)
-  const hybridAIConfig: HybridUtilityAIConfig = {
-      llmUtilityConfig: { defaultModelId: process.env.UTILITY_LLM_MODEL_ID || 'gpt-3.5-turbo' }, // Ensure this model is available via a provider
-      // statisticalUtilityConfig: { resourcePath: 'path/to/nlp/resources' } // Configure if using statistical methods
-  };
-  utilityAIServiceInstance = new HybridUtilityAI(modelProviderManagerInstance, hybridAIConfig);
-  await utilityAIServiceInstance.initialize(hybridAIConfig);
-  console.log('✅ UtilityAIService (Hybrid) initialized.');
-
-  // 6. Prompt Engine
-  const promptEngineConfig: PromptEngineConfig = { /* Populate from ENV or a dedicated config file */
-    defaultTemplateName: 'openai_chat', // Example
-    // tokenCounting: { strategy: 'tiktoken', modelMappings: { ... } } // Example for more precise counting
-  };
-  promptEngineInstance = new PromptEngine();
-  await promptEngineInstance.initialize(promptEngineConfig, utilityAIServiceInstance);
-  console.log('✅ PromptEngine initialized.');
-
-  // 7. Tool Permission Manager
-  const toolPermissionManagerConfig: ToolPermissionManagerConfig = { /* ... */ };
-  toolPermissionManagerInstance = new ToolPermissionManager();
-  await toolPermissionManagerInstance.initialize(toolPermissionManagerConfig);
-  console.log('✅ ToolPermissionManager initialized.');
-
-  // 8. Tool Orchestrator
-  const toolOrchestratorConfig: ToolOrchestratorConfig = { /* ... */ };
-  toolOrchestratorInstance = new ToolOrchestrator(toolPermissionManagerInstance); // Injects TPM
-  await toolOrchestratorInstance.initialize(toolOrchestratorConfig);
-  console.log('✅ ToolOrchestrator initialized.');
-
-  // 9. Conversation Manager
-  const conversationManagerConfig: ConversationManagerConfig = {
-    persistenceEnabled: true,
-    maxActiveConversationsInMemory: parseInt(process.env.MAX_ACTIVE_CONVERSATIONS_IN_MEMORY || '1000', 10),
-    defaultConversationContextConfig: {
-      enableAutomaticSummarization: process.env.ENABLE_CONVERSATION_SUMMARIZATION === 'true',
-      maxHistoryLengthMessages: 100, // Example
-    }
-   };
-  conversationManagerInstance = new ConversationManager();
-  await conversationManagerInstance.initialize(conversationManagerConfig, utilityAIServiceInstance, prismaInstance);
-  console.log('✅ ConversationManager initialized.');
-
-  // 10. Streaming Manager
-  const streamingManagerConfig: StreamingManagerConfig = { /* ... */ };
-  streamingManagerInstance = new StreamingManager();
-  await streamingManagerInstance.initialize(streamingManagerConfig);
-  console.log('✅ StreamingManager initialized.');
-  
-  // 11. GMI Manager
-  const gmiManagerConfig: GMIManagerConfig = {
-    personaLoaderConfig: { personaDefinitionPath: path.resolve(__dirname, './agentos/cognitive_substrate/personas/definitions') },
-    defaultGMIInactivityCleanupMinutes: 60,
-  };
-  gmiManagerInstance = new GMIManager(
-    gmiManagerConfig,
-    subscriptionServiceInstance,
-    authServiceInstance,
-    prismaInstance,
-    conversationManagerInstance,
-    promptEngineInstance,
-    modelProviderManagerInstance,
-    utilityAIServiceInstance,
-    toolOrchestratorInstance
-    // retrievalAugmentor would be passed here
+  // 3. Initialize Subscription Service
+  console.log('💳 Initializing subscription service...');
+  subscriptionServiceInstance = new SubscriptionService(
+    prismaInstance, 
+    authServiceInstance, 
+    lemonSqueezyServiceInstance
   );
-  await gmiManagerInstance.initialize();
-  console.log('✅ GMIManager initialized.');
+  await subscriptionServiceInstance.initialize();
+  console.log('✅ Subscription service initialized');
 
-  // 12. AgentOS Orchestrator
-  const agentOSOrchestratorConfig: AgentOSOrchestratorConfig = {
-    enableConversationalPersistence: conversationManagerConfig.persistenceEnabled,
-    maxToolCallIterations: 5,
-  };
-  const orchestratorDeps: AgentOSOrchestratorDependencies = {
-    gmiManager: gmiManagerInstance,
-    toolOrchestrator: toolOrchestratorInstance,
-    conversationManager: conversationManagerInstance,
-    streamingManager: streamingManagerInstance,
-    authService: authServiceInstance,
-    subscriptionService: subscriptionServiceInstance,
-  };
-  agentOSOrchestratorInstance = new AgentOSOrchestrator();
-  await agentOSOrchestratorInstance.initialize(agentOSOrchestratorConfig, orchestratorDeps);
-  console.log('✅ AgentOSOrchestrator initialized.');
-
-  // 13. Main AgentOS Service Facade
-  const agentOSFacadeConfig: AgentOSConfig = {
-    gmiManagerConfig,
-    orchestratorConfig: agentOSOrchestratorConfig,
-    promptEngineConfig,
-    toolOrchestratorConfig,
-    toolPermissionManagerConfig,
-    conversationManagerConfig,
-    streamingManagerConfig,
-    modelProviderManagerConfig,
+  // 4. Initialize AgentOS System
+  console.log('🧠 Initializing AgentOS system...');
+  const agentOSConfig = {
     defaultPersonaId: process.env.DEFAULT_PERSONA_ID || 'default_assistant_persona',
-    prisma: prismaInstance,
+    personaDefinitionsPath: process.env.PERSONA_DEFINITIONS_PATH || './backend/agentos/cognitive_substrate/personas/definitions',
+    modelProviders: {
+      openai: {
+        apiKey: process.env.OPENAI_API_KEY,
+        defaultModel: process.env.MODEL_PREF_GENERAL_CHAT || 'gpt-4o-mini',
+      },
+      openrouter: {
+        apiKey: process.env.OPENROUTER_API_KEY,
+        defaultModel: process.env.MODEL_PREF_GENERAL_CHAT || 'openai/gpt-4o-mini',
+        siteUrl: process.env.APP_URL,
+        appName: 'Voice Chat Assistant',
+      },
+      ollama: {
+        baseURL: process.env.OLLAMA_BASE_URL || 'http://localhost:11434',
+        defaultModel: 'llama3.2:3b',
+      },
+    },
+    database: prismaInstance,
     authService: authServiceInstance,
     subscriptionService: subscriptionServiceInstance,
-    utilityAIService: utilityAIServiceInstance,
   };
-  agentOSFacadeInstance = new AgentOS();
-  await agentOSFacadeInstance.initialize(agentOSFacadeConfig);
-  console.log('✅ AgentOS Service Facade initialized.');
+
+  agentOSInstance = new AgentOS();
+  await agentOSInstance.initialize(agentOSConfig);
+  console.log('✅ AgentOS system initialized');
 
   console.log('🎉 All global services initialized successfully!');
 }
 
-// --- API Routes Setup ---
-app.get('/health', async (req: Request, res: Response) => {
-  let dbHealthy = false;
-  try {
-    await prismaInstance.$queryRaw`SELECT 1`;
-    dbHealthy = true;
-  } catch (e) { /* dbHealthy remains false */ }
+// =============================================================================
+// HEALTH CHECK ENDPOINT
+// Provides system status information for monitoring and load balancers
+// =============================================================================
 
-  res.status(200).json({
+app.get('/health', async (req: Request, res: Response) => {
+  const healthCheck = {
     status: 'OK',
     timestamp: new Date().toISOString(),
-    servicesInitialized: !!agentOSFacadeInstance,
-    databaseConnected: dbHealthy,
-    nodeVersion: process.version,
+    uptime: process.uptime(),
+    version: process.env.npm_package_version || '1.0.0',
     environment: process.env.NODE_ENV || 'development',
-  });
-});
+    services: {
+      database: false,
+      agentOS: false,
+      authentication: false,
+      subscription: false,
+    },
+    memory: {
+      used: Math.round(process.memoryUsage().heapUsed / 1024 / 1024),
+      total: Math.round(process.memoryUsage().heapTotal / 1024 / 1024),
+    },
+  };
 
-// Mount SOTA Authentication Routes
-app.use('/api/v1/auth', (req, res, next) => {
-  if (!authServiceInstance || !subscriptionServiceInstance) {
-    return res.status(503).json({ error: { code: GMIErrorCode.SERVICE_UNAVAILABLE, message: "Authentication or Subscription services not ready." }});
+  // Check database connectivity
+  try {
+    await prismaInstance.$queryRaw`SELECT 1`;
+    healthCheck.services.database = true;
+  } catch (error) {
+    console.error('Health check - Database error:', error);
   }
-  createAuthRoutes(authServiceInstance, subscriptionServiceInstance)(req, res, next);
+
+  // Check service availability
+  healthCheck.services.agentOS = !!agentOSInstance;
+  healthCheck.services.authentication = !!authServiceInstance;
+  healthCheck.services.subscription = !!subscriptionServiceInstance;
+
+  const allServicesHealthy = Object.values(healthCheck.services).every(service => service === true);
+  const statusCode = allServicesHealthy ? 200 : 503;
+
+  res.status(statusCode).json(healthCheck);
 });
 
-// Mount Core AgentOS Interaction Routes
-app.use('/api/v1/agentos', (req, res, next) => {
-  if (!agentOSFacadeInstance) {
-     return res.status(503).json({ error: { code: GMIErrorCode.SERVICE_UNAVAILABLE, message: "AgentOS service not ready." }});
+// =============================================================================
+// API ROUTES SETUP
+// Mount all API routes with proper service dependencies
+// =============================================================================
+
+/**
+ * Service availability middleware that ensures required services are initialized
+ * before allowing access to API endpoints.
+ */
+const ensureServicesReady = (requiredServices: string[]) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    const serviceMap: Record<string, any> = {
+      auth: authServiceInstance,
+      subscription: subscriptionServiceInstance,
+      agentOS: agentOSInstance,
+      payment: lemonSqueezyServiceInstance,
+    };
+
+    const missingServices = requiredServices.filter(service => !serviceMap[service]);
+    
+    if (missingServices.length > 0) {
+      const errorResponse = {
+        error: {
+          code: GMIErrorCode.SERVICE_UNAVAILABLE,
+          message: `Required services not available: ${missingServices.join(', ')}`,
+          details: { missingServices, requiredServices },
+          timestamp: new Date().toISOString(),
+        },
+      };
+      return res.status(503).json(errorResponse);
+    }
+
+    next();
+  };
+};
+
+// Authentication Routes
+app.use('/api/v1/auth', 
+  ensureServicesReady(['auth', 'subscription']),
+  (req, res, next) => {
+    const authRouter = createAuthRoutes(authServiceInstance, subscriptionServiceInstance);
+    authRouter(req, res, next);
   }
-  // Note: authServiceInstance is passed to createAgentOSRoutes for the authenticateToken middleware
-  createAgentOSRoutes(agentOSFacadeInstance, authServiceInstance)(req, res, next);
-});
+);
 
-// Mount Persona Listing Routes
-app.use('/api/v1/personas', (req, res, next) => {
-   if (!agentOSFacadeInstance) {
-     return res.status(503).json({ error: { code: GMIErrorCode.SERVICE_UNAVAILABLE, message: "AgentOS service not ready for personas." }});
+// AgentOS Core Routes
+app.use('/api/v1/agentos',
+  ensureServicesReady(['agentOS', 'auth']),
+  (req, res, next) => {
+    const agentOSRouter = createAgentOSRoutes(agentOSInstance, authServiceInstance);
+    agentOSRouter(req, res, next);
   }
-  // Note: authServiceInstance is passed to createPersonaRoutes for optional authentication in the middleware
-  createPersonaRoutes(agentOSFacadeInstance, authServiceInstance)(req, res, next);
-});
+);
 
-// Mount LemonSqueezy Webhook Routes
-// Ensure LemonSqueezyService and SubscriptionService are passed if webhook handlers need them for complex logic
-app.use('/api/webhooks', (req, res, next) => {
-  if(!lemonSqueezyServiceInstance || !subscriptionServiceInstance) {
-    return res.status(503).json({ error: { code: GMIErrorCode.SERVICE_UNAVAILABLE, message: "Payment webhook processing services not ready." }});
+// Persona Management Routes
+app.use('/api/v1/personas',
+  ensureServicesReady(['agentOS', 'auth']),
+  (req, res, next) => {
+    const personaRouter = createPersonaRoutes(agentOSInstance, authServiceInstance);
+    personaRouter(req, res, next);
   }
-  // The createLemonSqueezyWebhooksRoutes should ideally accept dependencies.
-  // If it instantiates its own, ensure it gets the right Prisma client.
-  // For now, assuming it might need access to the global subscriptionServiceInstance for full processing.
-  createLemonSqueezyWebhooksRoutes(prismaInstance, subscriptionServiceInstance, lemonSqueezyServiceInstance)(req, res, next);
-});
+);
 
+// Payment Webhook Routes
+app.use('/api/webhooks',
+  ensureServicesReady(['payment', 'subscription']),
+  (req, res, next) => {
+    const webhookRouter = createLemonSqueezyWebhooksRoutes(
+      prismaInstance, 
+      subscriptionServiceInstance, 
+      lemonSqueezyServiceInstance
+    );
+    webhookRouter(req, res, next);
+  }
+);
 
-// Example: Placeholder for other existing/future route modules.
-// Ensure they are updated to use the initialized service instances and SOTA auth.
-// console.log("Note: Other routes like 'gmiRoutes' and 'utilityLLMRoutes' from the original server.ts are not mounted in this refactor. They would need to be updated and integrated similarly if still required.");
-// app.use('/api/v1/gmi', (req, res, next) => { /* ... createGMIRoutes(gmiManagerInstance, authServiceInstance, ...) ... */ });
-// app.use('/api/v1/utility', (req, res, next) => { /* ... createUtilityLLMRoutes(utilityServiceInstance, authServiceInstance, ...) ... */ });
+// =============================================================================
+// API ERROR HANDLING
+// Catch-all for API routes and comprehensive error handling
+// =============================================================================
 
-
-// Catch-all for /api/v1 routes not found
+// 404 handler for API routes
 app.use('/api/v1/*', (req: Request, res: Response) => {
-  res.status(404).json({
+  const errorResponse = {
     error: {
       code: GMIErrorCode.ENDPOINT_NOT_FOUND,
-      message: `API V1 endpoint not found: ${req.method} ${req.originalUrl}`,
+      message: `API endpoint not found: ${req.method} ${req.originalUrl}`,
+      details: { 
+        method: req.method, 
+        path: req.originalUrl,
+        availableEndpoints: [
+          'POST /api/v1/auth/login',
+          'POST /api/v1/auth/register',
+          'GET /api/v1/auth/me',
+          'POST /api/v1/agentos/process',
+          'GET /api/v1/agentos/personas',
+          'GET /api/v1/personas',
+        ],
+      },
       timestamp: new Date().toISOString(),
-    }
-  });
+    },
+  };
+  
+  res.status(404).json(errorResponse);
 });
 
-// --- Frontend Serving & Server Start ---
-async function startServer() {
-  try {
-    await initializeGlobalServices(); // Ensure all services are up
+// =============================================================================
+// FRONTEND SERVING (PRODUCTION)
+// Serve static frontend files and handle SPA routing
+// =============================================================================
 
-    // Serve frontend static files in production or if explicitly configured
-    if (process.env.NODE_ENV === 'production' || process.env.SERVE_FRONTEND === 'true') {
-      const frontendDistPath = path.resolve(__dirname, '../../frontend/dist');
-      if (fs.existsSync(path.join(frontendDistPath, 'index.html'))) {
-        app.use(express.static(frontendDistPath));
-        // SPA fallback: For any route not starting with /api, serve index.html
-        app.get('*', (req: Request, res: Response, next: NextFunction) => {
-          if (!req.originalUrl.startsWith('/api') && !req.originalUrl.startsWith('/socket.io')) { // Also avoid for socket.io if used
-            res.sendFile(path.join(frontendDistPath, 'index.html'));
-          } else {
-            next(); // Pass to API 404 handler or other specific middleware
-          }
-        });
-        console.log(`📦 Serving frontend static files from: ${frontendDistPath}`);
-      } else {
-        console.warn(`⚠️ Frontend 'dist' folder not found at ${frontendDistPath}. SPA will not be served by this backend.`);
-      }
-    }
+async function setupFrontendServing() {
+  if (process.env.NODE_ENV === 'production' || process.env.SERVE_FRONTEND === 'true') {
+    const frontendDistPath = path.resolve(__dirname, '../../frontend/dist');
+    
+    if (fs.existsSync(path.join(frontendDistPath, 'index.html'))) {
+      // Serve static files with proper caching headers
+      app.use(express.static(frontendDistPath, {
+        maxAge: process.env.NODE_ENV === 'production' ? '1y' : '0',
+        etag: true,
+        lastModified: true,
+      }));
 
-    // SOTA Global Error Handler (must be the last piece of middleware)
-    app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-      console.error(`🚨 Global Error Handler caught an error for ${req.method} ${req.originalUrl}:`, err);
-      if (res.headersSent) {
-        return next(err); // Delegate to Express default if headers already sent
-      }
-      
-      let statusCode = 500;
-      let errorCode: string = GMIErrorCode.INTERNAL_SERVER_ERROR;
-      let message = 'An unexpected internal server error occurred.';
-      let details: any = undefined;
-
-      if (err instanceof GMIError) {
-        statusCode = err.recommendedHttpStatusCode || 400; // GMIError could suggest a status code
-        errorCode = err.code;
-        message = err.message;
-        details = err.details;
-      } else if (err.status || err.statusCode) { // Standard Express error convention
-        statusCode = err.status || err.statusCode;
-        message = err.message || message;
-      }
-      // For other types of errors, they'll fall into the defaults above.
-
-      res.status(statusCode).json({
-        error: {
-          code: errorCode,
-          message: message,
-          details: process.env.NODE_ENV !== 'production' ? details : undefined, // Show details only in non-prod
-          stack: process.env.NODE_ENV !== 'production' ? err.stack : undefined, // Show stack only in non-prod
-          timestamp: new Date().toISOString(),
+      // SPA fallback - serve index.html for non-API routes
+      app.get('*', (req: Request, res: Response, next: NextFunction) => {
+        // Skip API routes and websocket connections
+        if (req.originalUrl.startsWith('/api') || req.originalUrl.startsWith('/socket.io')) {
+          return next();
         }
-      });
-    });
-
-    const server = app.listen(PORT, () => {
-      console.log(`✨ AgentOS Backend Server is live and listening on port ${PORT} in ${process.env.NODE_ENV || 'development'} mode.`);
-      console.log(`🌐 Frontend URL for CORS (expected): ${process.env.FRONTEND_URL || 'http://localhost:3000'}`);
-      console.log(`🔗 API Base Path: /api/v1`);
-      console.log(`   ├── /auth/... (User authentication, API keys, etc.)`);
-      console.log(`   ├── /agentos/... (Core AgentOS interactions: chat, tool results)`);
-      console.log(`   ├── /personas/... (Persona listing and details)`);
-      console.log(`   └── /webhooks/... (Payment gateway webhooks like LemonSqueezy)`);
-      console.log(`🩺 Health check endpoint: /health`);
-    });
-
-    // Graceful shutdown handling
-    const signals: NodeJS.Signals[] = ['SIGINT', 'SIGTERM'];
-    signals.forEach(signal => {
-      process.on(signal, async () => {
-        console.log(`\n👋 ${signal} signal received. Initiating graceful shutdown of AgentOS backend...`);
         
-        // Stop accepting new connections
-        server.close(async () => {
-          console.log('✅ HTTP server closed to new connections.');
-          
-          // Shutdown AgentOS facade and its components
-          if (agentOSFacadeInstance && agentOSFacadeInstance.shutdown) {
-            try {
-              await agentOSFacadeInstance.shutdown();
-              console.log('✅ AgentOS Facade and its components shut down successfully.');
-            } catch (e) {
-              console.error("❌ Error during AgentOS Facade shutdown:", e);
-            }
-          } else {
-            console.warn("AgentOS Facade not available for shutdown or shutdown method missing.");
-          }
-
-          // Disconnect from the database
-          try {
-            await disconnectFromDatabase();
-            console.log('✅ Disconnected from database.');
-          } catch (e) {
-            console.error("❌ Error disconnecting from database:", e);
-          }
-          
-          console.log('🚪 AgentOS backend shut down gracefully.');
-          process.exit(0); // Exit process
-        });
-
-        // Force shutdown if server doesn't close gracefully within a timeout
-        setTimeout(() => {
-            console.error('⚠️ Graceful shutdown timed out after 10 seconds. Forcing exit.');
-            process.exit(1); // Force exit
-        }, 10000); // 10 seconds timeout
+        res.sendFile(path.join(frontendDistPath, 'index.html'));
       });
-    });
 
-  } catch (error) {
-    console.error('❌ FATAL: Failed to initialize services and start server:', error);
-    // Attempt to disconnect DB even on fatal startup error if prismaInstance might be connected
-    if (prismaInstance && typeof prismaInstance.$disconnect === 'function') {
-        await disconnectFromDatabase().catch(e => console.error("Error disconnecting database during fatal startup error:", e));
+      console.log(`📦 Serving frontend static files from: ${frontendDistPath}`);
+    } else {
+      console.warn(`⚠️ Frontend 'dist' folder not found at ${frontendDistPath}. Frontend will not be served by this backend.`);
     }
-    process.exit(1); // Exit with error code
   }
 }
 
-// Start the server
-startServer();
+// =============================================================================
+// GLOBAL ERROR HANDLER
+// Comprehensive error handling for all routes and middleware
+// =============================================================================
 
-export default app; // Export app for potential testing or programmatic use (e.g., serverless functions)
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  const requestId = req.headers['x-request-id'] as string || `error-${Date.now()}`;
+  
+  console.error(`🚨 Global Error Handler [${requestId}] - ${req.method} ${req.originalUrl}:`, {
+    error: err.message,
+    stack: process.env.NODE_ENV !== 'production' ? err.stack : undefined,
+    userId: (req as any).user?.userId,
+    body: req.method !== 'GET' ? req.body : undefined,
+  });
+
+  // If response headers already sent, delegate to Express default handler
+  if (res.headersSent) {
+    return next(err);
+  }
+
+  let statusCode = 500;
+  let errorCode: string = GMIErrorCode.INTERNAL_SERVER_ERROR;
+  let message = 'An unexpected internal server error occurred.';
+  let details: any = undefined;
+
+  // Handle different error types
+  if (err instanceof GMIError) {
+    statusCode = err.recommendedHttpStatusCode || 400;
+    errorCode = err.code;
+    message = err.message;
+    details = err.details;
+  } else if (err.status || err.statusCode) {
+    statusCode = err.status || err.statusCode;
+    message = err.message || message;
+    errorCode = `HTTP_${statusCode}`;
+  } else if (err.name === 'ValidationError') {
+    statusCode = 400;
+    errorCode = GMIErrorCode.VALIDATION_ERROR;
+    message = 'Request validation failed';
+    details = err.details || err.errors;
+  } else if (err.name === 'UnauthorizedError') {
+    statusCode = 401;
+    errorCode = GMIErrorCode.AUTHENTICATION_REQUIRED;
+    message = 'Authentication required';
+  } else if (err.code === 'ECONNREFUSED' || err.code === 'ENOTFOUND') {
+    statusCode = 503;
+    errorCode = GMIErrorCode.SERVICE_UNAVAILABLE;
+    message = 'External service unavailable';
+    details = { serviceError: err.code };
+  }
+
+  const errorResponse = {
+    error: {
+      code: errorCode,
+      message: message,
+      details: process.env.NODE_ENV !== 'production' ? details : undefined,
+      stack: process.env.NODE_ENV !== 'production' ? err.stack : undefined,
+      timestamp: new Date().toISOString(),
+      requestId,
+    },
+  };
+
+  res.status(statusCode).json(errorResponse);
+});
+
+// =============================================================================
+// SERVER STARTUP AND SHUTDOWN HANDLING
+// Graceful startup and shutdown with proper cleanup
+// =============================================================================
+
+/**
+ * Starts the Voice Chat Assistant server with all services initialized.
+ * Handles graceful startup, service initialization, and error recovery.
+ */
+async function startServer() {
+  try {
+    console.log('🚀 Starting Voice Chat Assistant Backend Server...');
+    console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`🔗 Frontend URL: ${process.env.FRONTEND_URL || 'http://localhost:3000'}`);
+
+    // Initialize all global services
+    await initializeGlobalServices();
+
+    // Setup frontend serving if configured
+    await setupFrontendServing();
+
+    // Start HTTP server
+    const server = app.listen(PORT, () => {
+      console.log(`✨ Voice Chat Assistant Backend is live on port ${PORT}`);
+      console.log(`🌐 Health check: http://localhost:${PORT}/health`);
+      console.log(`📡 API Base: http://localhost:${PORT}/api/v1`);
+      console.log(`   ├── 🔐 /auth/* (Authentication & user management)`);
+      console.log(`   ├── 🧠 /agentos/* (AI interactions & streaming)`);
+      console.log(`   ├── 🎭 /personas/* (AI persona management)`);
+      console.log(`   └── 🪝 /webhooks/* (Payment & external integrations)`);
+      
+      // Log feature flags and configuration
+      const features = {
+        registration: process.env.REGISTRATION_ENABLED !== 'false',
+        oauth: !!(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET),
+        payments: !!(process.env.LEMONSQUEEZY_API_KEY && process.env.LEMONSQUEEZY_STORE_ID),
+        ollama: !!process.env.OLLAMA_BASE_URL,
+        frontendServing: process.env.NODE_ENV === 'production' || process.env.SERVE_FRONTEND === 'true',
+      };
+      
+      console.log(`🎛️ Features: ${Object.entries(features).filter(([_, enabled]) => enabled).map(([name]) => name).join(', ')}`);
+    });
+
+    // Configure server timeouts for long-running AI requests
+    server.timeout = 300000; // 5 minutes
+    server.keepAliveTimeout = 65000; // 65 seconds
+    server.headersTimeout = 66000; // 66 seconds
+
+    // =============================================================================
+    // GRACEFUL SHUTDOWN HANDLING
+    // Ensures proper cleanup of resources and connections
+    // =============================================================================
+
+    const gracefulShutdown = async (signal: string) => {
+      console.log(`\n👋 ${signal} received. Initiating graceful shutdown...`);
+      
+      // Stop accepting new connections
+      server.close(async () => {
+        console.log('✅ HTTP server closed to new connections');
+        
+        try {
+          // Shutdown AgentOS system
+          if (agentOSInstance && agentOSInstance.shutdown) {
+            console.log('🧠 Shutting down AgentOS system...');
+            await agentOSInstance.shutdown();
+            console.log('✅ AgentOS system shutdown complete');
+          }
+
+          // Cleanup authentication service
+          if (authServiceInstance && authServiceInstance.cleanup) {
+            console.log('🔐 Cleaning up authentication service...');
+            await authServiceInstance.cleanup();
+            console.log('✅ Authentication service cleanup complete');
+          }
+
+          // Cleanup subscription service
+          if (subscriptionServiceInstance && subscriptionServiceInstance.cleanup) {
+            console.log('💳 Cleaning up subscription service...');
+            await subscriptionServiceInstance.cleanup();
+            console.log('✅ Subscription service cleanup complete');
+          }
+
+          // Disconnect from database
+          console.log('🗄️ Disconnecting from database...');
+          await disconnectFromDatabase();
+          console.log('✅ Database disconnection complete');
+
+          console.log('🚪 Voice Chat Assistant backend shutdown complete');
+          process.exit(0);
+          
+        } catch (shutdownError) {
+          console.error('❌ Error during graceful shutdown:', shutdownError);
+          process.exit(1);
+        }
+      });
+
+      // Force shutdown if graceful shutdown takes too long
+      setTimeout(() => {
+        console.error('⚠️ Graceful shutdown timed out after 15 seconds. Forcing exit.');
+        process.exit(1);
+      }, 15000);
+    };
+
+    // Handle different shutdown signals
+    process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+    process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+    process.on('SIGUSR2', () => gracefulShutdown('SIGUSR2')); // Nodemon restart
+
+    // Handle uncaught exceptions and unhandled rejections
+    process.on('uncaughtException', (error) => {
+      console.error('❌ FATAL: Uncaught Exception:', error);
+      console.error('Stack:', error.stack);
+      gracefulShutdown('UNCAUGHT_EXCEPTION');
+    });
+
+    process.on('unhandledRejection', (reason, promise) => {
+      console.error('❌ FATAL: Unhandled Promise Rejection at:', promise);
+      console.error('Reason:', reason);
+      gracefulShutdown('UNHANDLED_REJECTION');
+    });
+
+    // Log successful startup
+    console.log('🎉 Voice Chat Assistant Backend started successfully!');
+    
+  } catch (startupError) {
+    console.error('❌ FATAL: Failed to start Voice Chat Assistant Backend:', startupError);
+    console.error('Stack:', startupError instanceof Error ? startupError.stack : 'No stack trace available');
+    
+    // Attempt cleanup even on startup failure
+    try {
+      if (prismaInstance) {
+        await disconnectFromDatabase();
+        console.log('✅ Database disconnected during startup failure cleanup');
+      }
+    } catch (cleanupError) {
+      console.error('❌ Error during startup failure cleanup:', cleanupError);
+    }
+    
+    process.exit(1);
+  }
+}
+
+// =============================================================================
+// APPLICATION BOOTSTRAP
+// Start the server and handle any bootstrap errors
+// =============================================================================
+
+// Validate critical environment variables before starting
+const requiredEnvVars = [
+  'DATABASE_URL',
+  'JWT_SECRET',
+  'API_KEY_ENCRYPTION_KEY_HEX',
+];
+
+const missingEnvVars = requiredEnvVars.filter(varName => !process.env[varName]);
+
+if (missingEnvVars.length > 0) {
+  console.error('❌ FATAL: Missing required environment variables:');
+  missingEnvVars.forEach(varName => {
+    console.error(`   - ${varName}`);
+  });
+  console.error('\n📝 Please check your .env file and ensure all required variables are set.');
+  process.exit(1);
+}
+
+// Validate JWT secret strength
+if (process.env.JWT_SECRET && process.env.JWT_SECRET.length < 32) {
+  console.error('❌ FATAL: JWT_SECRET must be at least 32 characters long for security.');
+  process.exit(1);
+}
+
+// Validate API key encryption key format
+if (process.env.API_KEY_ENCRYPTION_KEY_HEX && !/^[0-9a-fA-F]{64}$/.test(process.env.API_KEY_ENCRYPTION_KEY_HEX)) {
+  console.error('❌ FATAL: API_KEY_ENCRYPTION_KEY_HEX must be a 64-character hexadecimal string (32 bytes).');
+  console.error('💡 Generate one using: openssl rand -hex 32');
+  process.exit(1);
+}
+
+// Start the server
+startServer().catch((bootstrapError) => {
+  console.error('❌ FATAL: Server bootstrap failed:', bootstrapError);
+  console.error('Stack:', bootstrapError instanceof Error ? bootstrapError.stack : 'No stack trace available');
+  process.exit(1);
+});
+
+// Export app for testing purposes
+export default app;
