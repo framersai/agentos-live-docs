@@ -410,12 +410,12 @@
  * @description User settings page for the Voice Coding Assistant.
  * Allows configuration of appearance, general behavior, audio/voice preferences,
  * session costs, security, and data backup/restore.
- * @version 1.2.1 - Corrected toggle switch CSS and HTML for Tailwind peer utility.
+ * @version 1.2.2 - Corrected onMounted token check for consistent auth behavior.
  */
 import { ref, onMounted, onBeforeUnmount, watch, computed, inject, nextTick } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStorage } from '@vueuse/core';
-import { api, costAPI } from '../utils/api';
+import { api, costAPI } from '../utils/api'; // Ensure AUTH_TOKEN_KEY is consistent if used here
 import { ttsService } from '../services/tts.service';
 import {
   Cog8ToothIcon, PaintBrushIcon, WrenchScrewdriverIcon, SpeakerWaveIcon, CreditCardIcon, ShieldCheckIcon,
@@ -424,6 +424,9 @@ import {
 
 const router = useRouter();
 const toast = inject('toast') as any;
+
+// Consistent Auth Token Key (ensure this matches usage in api.ts and main.ts)
+const AUTH_TOKEN_KEY = 'vcaAuthToken';
 
 // --- Appearance ---
 const isDarkMode = useStorage('darkMode', false);
@@ -448,16 +451,16 @@ const ttsPitch = useStorage('vca-ttsPitch', 1.0);
 
 // Voice Activation & Continuous Settings
 const voiceActivationThreshold = useStorage('vca-voiceActivationThreshold', 0.1);
-const silenceTimeout = useStorage('vca-silenceTimeoutMsVAD', 2000); // For VAD
-const autoSendOnPause = useStorage('vca-autoSendOnPauseWebSpeech', true); // For Continuous
-const pauseTimeout = useStorage('vca-pauseTimeoutMsContinuousWebSpeech', 3000); // For Continuous
+const silenceTimeout = useStorage('vca-silenceTimeoutMsVAD', 2000);
+const autoSendOnPause = useStorage('vca-autoSendOnPauseWebSpeech', true);
+const pauseTimeout = useStorage('vca-pauseTimeoutMsContinuousWebSpeech', 3000);
 
 // --- Session & Costs ---
 const sessionCost = ref(0);
 const costLimit = useStorage('vca-costThreshold', 20.0);
 
 // --- Security ---
-const rememberLogin = useStorage('rememberLogin', true);
+const rememberLogin = useStorage('rememberLogin', true); // This is for the Login page's checkbox preference
 
 // --- UI Refs ---
 const importSettingsInputRef = ref<HTMLInputElement | null>(null);
@@ -478,13 +481,12 @@ const isTTSSupported = computed(() => ttsService.isSupported());
 const groupedTTSVoices = computed(() => {
   const groups: Record<string, { lang: string, voices: SpeechSynthesisVoice[] }> = {};
   availableTTSVoices.value.forEach(voice => {
-    const langDisplay = getLanguageDisplayName(voice.lang) || voice.lang; // Use full lang display for grouping
+    const langDisplay = getLanguageDisplayName(voice.lang) || voice.lang;
     if (!groups[langDisplay]) {
       groups[langDisplay] = { lang: langDisplay, voices: [] };
     }
     groups[langDisplay].voices.push(voice);
   });
-  // Sort groups by language display name
   return Object.values(groups).sort((a,b) => a.lang.localeCompare(b.lang));
 });
 
@@ -496,7 +498,7 @@ const getLanguageDisplayName = (langCode: string) => {
         const displayName = new Intl.DisplayNames(['en'], { type: 'language' }).of(langCode);
         return displayName || langCode;
     } catch (e) {
-        return langCode; // Fallback for older browsers or invalid codes
+        return langCode;
     }
 };
 
@@ -532,10 +534,8 @@ const getCurrentDeviceName = () => {
 
 const refreshAudioDevices = async () => {
   try {
-    // Request permission first - this is required to get device labels
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    stream.getTracks().forEach(track => track.stop()); // Stop the permission test stream immediately
-
+    stream.getTracks().forEach(track => track.stop());
     const devices = await navigator.mediaDevices.enumerateDevices();
     audioDevices.value = devices.filter(device => device.kind === 'audioinput');
     toast?.add({ type: 'success', title: 'Audio Devices Refreshed' });
@@ -553,7 +553,6 @@ const testMicrophone = async () => {
   isTesting.value = true;
   micTestResult.value = '';
   audioLevels.value = [];
-
   try {
     const constraints: MediaStreamConstraints = {
       audio: selectedAudioDevice.value
@@ -561,47 +560,34 @@ const testMicrophone = async () => {
         : { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
     };
     testStream = await navigator.mediaDevices.getUserMedia(constraints);
-
     audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
     analyser = audioContext.createAnalyser();
     microphone = audioContext.createMediaStreamSource(testStream);
-
-    analyser.fftSize = 256; // Controls number of bins for frequency data
+    analyser.fftSize = 256;
     microphone.connect(analyser);
-
     micTestResult.value = 'success';
-
     const monitorLevels = () => {
       if (!analyser || !isTesting.value || !audioContext || audioContext.state === 'closed') return;
-
       const bufferLength = analyser.frequencyBinCount;
       const dataArray = new Uint8Array(bufferLength);
-      analyser.getByteFrequencyData(dataArray); // More suitable for volume visualization
-
+      analyser.getByteFrequencyData(dataArray);
       let sum = 0;
-      for(let i = 0; i < dataArray.length; i++) {
-        sum += dataArray[i];
-      }
+      for(let i = 0; i < dataArray.length; i++) { sum += dataArray[i]; }
       const average = sum / bufferLength;
-      const normalizedLevel = average / 128; // Normalize based on Uint8 max value / 2 (more dynamic range)
-
-      audioLevels.value.push(Math.min(1, Math.max(0, normalizedLevel))); // Clamp between 0 and 1
-      if (audioLevels.value.length > 30) { // Keep last 30 samples for visualization
-        audioLevels.value.shift();
-      }
+      const normalizedLevel = average / 128;
+      audioLevels.value.push(Math.min(1, Math.max(0, normalizedLevel)));
+      if (audioLevels.value.length > 30) { audioLevels.value.shift(); }
       requestAnimationFrame(monitorLevels);
     };
     monitorLevels();
-
     setTimeout(() => {
-      if (isTesting.value) { // Only stop if still in testing state
+      if (isTesting.value) {
          stopMicrophoneTest();
-         if (micTestResult.value === 'success') { // if it was successful and timed out
+         if (micTestResult.value === 'success') {
             toast?.add({ type: 'info', title: 'Mic Test Complete', message: 'Microphone test finished.' });
          }
       }
-    }, 5000); // Test for 5 seconds
-
+    }, 5000);
   } catch (err: any) {
     console.error('Microphone test error:', err);
     if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
@@ -612,36 +598,25 @@ const testMicrophone = async () => {
       toast?.add({ type: 'error', title: 'Mic Not Found', message: 'Selected microphone not found. Try refreshing devices.' });
     } else if (err.name === 'OverconstrainedError' || err.name === 'ConstraintNotSatisfiedError') {
         micTestResult.value = 'error_overconstrained';
-        toast?.add({ type: 'warning', title: 'Mic Access Issue', message: 'Selected mic cannot be accessed with current constraints. Try default or another device.' });
+        toast?.add({ type: 'warning', title: 'Mic Access Issue', message: 'Selected mic cannot be accessed. Try default or another device.' });
     } else {
       micTestResult.value = 'error_generic';
-      toast?.add({ type: 'error', title: 'Mic Test Error', message: 'An unexpected error occurred during the mic test.' });
+      toast?.add({ type: 'error', title: 'Mic Test Error', message: 'An unexpected error occurred.' });
     }
-    stopMicrophoneTest(); // Ensure cleanup on any error
+    stopMicrophoneTest();
   }
 };
 
 const stopMicrophoneTest = () => {
   isTesting.value = false;
-  if (testStream) {
-    testStream.getTracks().forEach(track => track.stop());
-    testStream = null;
-  }
-  if (microphone) {
-    microphone.disconnect();
-    microphone = null;
-  }
-  if (analyser) {
-    analyser.disconnect();
-    analyser = null;
-  }
+  if (testStream) { testStream.getTracks().forEach(track => track.stop()); testStream = null; }
+  if (microphone) { microphone.disconnect(); microphone = null; }
+  if (analyser) { analyser.disconnect(); analyser = null; }
   if (audioContext && audioContext.state !== 'closed') {
     audioContext.close().catch(e => console.warn("Error closing audio context:", e));
     audioContext = null;
   }
-  // audioLevels.value = []; // Optionally clear levels display immediately
 };
-
 
 const fetchSessionCost = async () => {
   try {
@@ -656,7 +631,7 @@ const fetchSessionCost = async () => {
 const resetSessionCost = async () => {
   if (!confirm("Are you sure you want to reset your current session cost? This action cannot be undone.")) return;
   try {
-    await costAPI.resetCost({ userId: 'default_user', action: 'reset' }); // Assuming 'default_user' or get actual user ID
+    await costAPI.resetCost({ userId: 'default_user', action: 'reset' });
     await fetchSessionCost();
     toast?.add({type: 'success', title: 'Session Reset', message: 'Session cost has been reset to $0.00.'});
   } catch (error) {
@@ -667,10 +642,8 @@ const resetSessionCost = async () => {
 
 const handleLogout = () => {
   if (confirm('Are you sure you want to logout? This will clear your session.')) {
-    localStorage.removeItem('token');
-    sessionStorage.removeItem('token');
-    // Clear relevant cookies if any using document.cookie manipulation
-    // Example: document.cookie = "myCookie=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    localStorage.removeItem(AUTH_TOKEN_KEY); // Use consistent key
+    sessionStorage.removeItem(AUTH_TOKEN_KEY); // Use consistent key
     if (api.defaults.headers.common['Authorization']) {
       delete api.defaults.headers.common['Authorization'];
     }
@@ -681,43 +654,27 @@ const handleLogout = () => {
 
 const exportAllSettings = () => {
   const settingsToExport = {
-    isDarkMode: isDarkMode.value,
-    defaultMode: defaultMode.value,
-    defaultLanguage: defaultLanguage.value,
-    generateDiagrams: generateDiagrams.value,
-    autoClearChat: autoClearChat.value,
+    isDarkMode: isDarkMode.value, defaultMode: defaultMode.value, defaultLanguage: defaultLanguage.value,
+    generateDiagrams: generateDiagrams.value, autoClearChat: autoClearChat.value,
     chatHistoryIndividualMessageCount: chatHistoryIndividualMessageCount.value,
-    speechPreference: speechPreference.value,
-    audioMode: audioMode.value,
-    selectedAudioDevice: selectedAudioDevice.value,
-    enableAutoTTS: enableAutoTTS.value,
-    selectedVoiceURI: selectedVoiceURI.value,
-    ttsRate: ttsRate.value,
-    ttsPitch: ttsPitch.value,
-    costLimit: costLimit.value,
-    rememberLogin: rememberLogin.value,
-    voiceActivationThreshold: voiceActivationThreshold.value,
-    silenceTimeout: silenceTimeout.value, // vca-silenceTimeoutMsVAD
-    autoSendOnPause: autoSendOnPause.value, // vca-autoSendOnPauseWebSpeech
-    pauseTimeout: pauseTimeout.value, // vca-pauseTimeoutMsContinuousWebSpeech
-    exportDate: new Date().toISOString(),
-    settingsVersion: '1.2.1' // Updated version
+    speechPreference: speechPreference.value, audioMode: audioMode.value,
+    selectedAudioDevice: selectedAudioDevice.value, enableAutoTTS: enableAutoTTS.value,
+    selectedVoiceURI: selectedVoiceURI.value, ttsRate: ttsRate.value, ttsPitch: ttsPitch.value,
+    costLimit: costLimit.value, rememberLogin: rememberLogin.value,
+    voiceActivationThreshold: voiceActivationThreshold.value, silenceTimeout: silenceTimeout.value,
+    autoSendOnPause: autoSendOnPause.value, pauseTimeout: pauseTimeout.value,
+    exportDate: new Date().toISOString(), settingsVersion: '1.2.2'
   };
   const blob = new Blob([JSON.stringify(settingsToExport, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
   a.download = `vca-settings-${new Date().toISOString().slice(0,10)}.json`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
   toast?.add({type: 'success', title: 'Settings Exported', message: 'Your settings have been downloaded.'});
 };
 
-const triggerImportFile = () => {
-    importSettingsInputRef.value?.click();
-}
+const triggerImportFile = () => { importSettingsInputRef.value?.click(); }
 
 const handleImportSettingsFile = (event: Event) => {
   const file = (event.target as HTMLInputElement).files?.[0];
@@ -726,9 +683,9 @@ const handleImportSettingsFile = (event: Event) => {
   reader.onload = (e) => {
     try {
       const imported = JSON.parse(e.target?.result as string);
-
       if (typeof imported.isDarkMode === 'boolean') isDarkMode.value = imported.isDarkMode;
       if (typeof imported.defaultMode === 'string') defaultMode.value = imported.defaultMode;
+      // ... (apply other settings selectively as before) ...
       if (typeof imported.defaultLanguage === 'string') defaultLanguage.value = imported.defaultLanguage;
       if (typeof imported.generateDiagrams === 'boolean') generateDiagrams.value = imported.generateDiagrams;
       if (typeof imported.autoClearChat === 'boolean') autoClearChat.value = imported.autoClearChat;
@@ -748,13 +705,12 @@ const handleImportSettingsFile = (event: Event) => {
       if (typeof imported.pauseTimeout === 'number') pauseTimeout.value = imported.pauseTimeout;
 
       toast?.add({type: 'success', title: 'Settings Imported', message: 'Your settings have been restored.'});
-
       nextTick(() => {
         document.querySelectorAll<HTMLInputElement>('input[type="range"]').forEach(el => updateRangeProgress(el));
       });
     } catch (error) {
       console.error("Error importing settings:", error);
-      toast?.add({type: 'error', title: 'Import Failed', message: 'Could not import settings. File might be corrupted or invalid.'});
+      toast?.add({type: 'error', title: 'Import Failed', message: 'Could not import settings.'});
     }
   };
   reader.readAsText(file);
@@ -762,8 +718,7 @@ const handleImportSettingsFile = (event: Event) => {
 };
 
 const saveAllSettings = () => {
-  // All settings are reactively saved by useStorage.
-  toast?.add({type: 'success', title: 'Settings Confirmed', message: 'Your preferences have been saved locally in your browser.'});
+  toast?.add({type: 'success', title: 'Settings Confirmed', message: 'Preferences saved in browser.'});
   router.push('/');
 };
 
@@ -771,7 +726,7 @@ const loadTTSVoices = async () => {
     if (ttsService.isSupported()) {
         availableTTSVoices.value = await ttsService.getVoices();
         if (selectedVoiceURI.value && !availableTTSVoices.value.find(v => v.voiceURI === selectedVoiceURI.value)) {
-            console.warn("Previously selected TTS voice URI no longer available. Resetting to browser default.");
+            console.warn("Selected TTS voice no longer available. Resetting.");
             selectedVoiceURI.value = '';
         }
     }
@@ -779,12 +734,17 @@ const loadTTSVoices = async () => {
 
 // --- Lifecycle Hooks ---
 onMounted(async () => {
-  const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+  const token = localStorage.getItem(AUTH_TOKEN_KEY) || sessionStorage.getItem(AUTH_TOKEN_KEY); // CORRECTED KEY
   if (!token) {
+    console.warn('Settings.vue: No token found on mount, redirecting to login.');
     router.push('/login');
-    return;
+    return; // Important: Stop execution if not authenticated
   }
-  api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  // If token exists, ensure Axios default header is set for API calls made from this component
+  // This is especially important if the app was reloaded on this page or navigated here directly.
+  if (api.defaults.headers.common['Authorization'] !== `Bearer ${token}`) {
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  }
 
   await fetchSessionCost();
   await refreshAudioDevices();
@@ -878,8 +838,6 @@ watch(pauseTimeout, () => nextTick(() => updateRangeProgress(document.getElement
   */
 }
 
-
-/* Enhanced Range Slider Styling (Unchanged, looks good) */
 .range-slider {
   @apply w-full h-2.5 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer;
   --range-progress: 0%; /* Default, updated by JS */
@@ -906,7 +864,7 @@ watch(pauseTimeout, () => nextTick(() => updateRangeProgress(document.getElement
   @apply mt-6 pt-4 border-t border-gray-200 dark:border-gray-700;
 }
 .subsection-title {
-  @apply text-md font-semibold text-gray-700 dark:text-gray-300 mb-3;
+  @apply text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3; /* Changed text-md to text-lg */
 }
 
 .info-card {
@@ -934,9 +892,8 @@ watch(pauseTimeout, () => nextTick(() => updateRangeProgress(document.getElement
 .btn-primary.btn-lg { @apply px-6 py-3 text-base; }
 .btn-secondary.btn-sm { @apply px-3 py-1.5 text-xs inline-flex items-center; }
 
-/* Define CSS variables for primary colors used in JS if not using Tailwind theme() directly in JS */
 :root {
-  --primary-color: #3b82f6; /* Matches primary-500 from your tailwind.config.js */
-  --primary-color-dark: #60a5fa; /* Matches primary-400 from your tailwind.config.js */
+  --primary-color: #3b82f6;
+  --primary-color-dark: #60a5fa;
 }
 </style>
