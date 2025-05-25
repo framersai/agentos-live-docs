@@ -25,10 +25,10 @@
           <div class="welcome-container">
              <div class="welcome-header">
                <div class="logo-container">
-                 <img src="/src/assets/logo.svg" alt="Voice Coding Assistant" class="logo" />
+                 <img src="/src/assets/logo.svg" alt="Voice Chat Assistant" class="logo" />
                </div>
-               <h1 class="main-title">Voice Coding Assistant</h1>
-               <p class="main-subtitle">AI-powered coding help with intelligent problem detection</p>
+               <h1 class="main-title">Voice Chat Assistant</h1>
+               <!-- <p class="main-subtitle">AI-powered coding help with intelligent problem detection</p> -->
              </div>
              <div class="examples-section">
                <h3 class="section-title">Try asking:</h3>
