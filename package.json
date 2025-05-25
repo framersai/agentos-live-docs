@@ -4,11 +4,23 @@
   "description": "A real-time voice-driven coding assistant web app",
   "main": "index.js",
   "scripts": {
-    "install-all": "npm install && cd frontend && npm install && cd ../backend && npm install",
-    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm run dev\"",
-    "build": "cd frontend && npm run build && cd ../backend && npm run build",
+    "install-all": "npm install && (cd frontend && npm install) && (cd backend && npm install)",
+    "dev": "concurrently \"npm:dev:backend\" \"npm:dev:frontend\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build": "(cd frontend && npm run build) && (cd backend && npm run build)",
     "start": "cd backend && npm start",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "docker:dev": "docker-compose up --build",
+    "docker:prod": "docker-compose --profile production up --build -d",
+    "docker:stop": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "lint": "concurrently \"npm:lint:backend\" \"npm:lint:frontend\"",
+    "lint:backend": "cd backend && npm run lint",
+    "lint:frontend": "cd frontend && npm run lint",
+    "prisma:generate": "cd backend && npx prisma generate",
+    "prisma:migrate:dev": "cd backend && npx prisma migrate dev",
+    "prisma:studio": "cd backend && npx prisma studio",
+    "test": "echo \"Test scripts to be defined in frontend/ and backend/ packages\" && exit 0"
   },
   "keywords": [
     "voice",
@@ -17,42 +29,10 @@
     "speech-to-text",
     "AI"
   ],
-  "author": "",
+  "author": "Manic.agency",
   "license": "MIT",
   "devDependencies": {
     "concurrently": "^8.2.2"
   },
-  "dependencies": {
-    "@prisma/client": "^6.8.2",
-    "@types/bcryptjs": "^2.4.6",
-    "@types/cookie-parser": "^1.4.8",
-    "@types/cors": "^2.8.18",
-    "@types/express": "^5.0.2",
-    "@types/jsonwebtoken": "^9.0.9",
-    "@types/morgan": "^1.9.9",
-    "@types/multer": "^1.4.12",
-    "@types/natural": "^5.1.5",
-    "@types/node": "^22.15.21",
-    "ajv": "^8.17.1",
-    "ajv-formats": "^3.0.1",
-    "bcryptjs": "^3.0.2",
-    "cookie-parser": "^1.4.7",
-    "cors": "^2.8.5",
-    "cross-env": "^7.0.3",
-    "dotenv": "^16.5.0",
-    "express": "^5.1.0",
-    "express-rate-limit": "^7.5.0",
-    "helmet": "^8.1.0",
-    "jsonwebtoken": "^9.0.2",
-    "lru-cache": "^11.1.0",
-    "morgan": "^1.10.0",
-    "multer": "^2.0.0",
-    "natural": "^8.1.0",
-    "node-fetch": "^3.3.2",
-    "openai": "^4.103.0",
-    "ts-node-dev": "^2.0.0",
-    "tsx": "^4.19.4",
-    "typescript": "^5.8.3",
-    "uuid": "^11.1.0"
-  }
+  "dependencies": {}
 }

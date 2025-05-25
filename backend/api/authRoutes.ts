@@ -1,692 +1,1488 @@
+// File: backend/api/authRoutes.ts
 /**
- * @file backend/api/authRoutes.ts
- * @module backend/api/authRoutes
- * @version 1.2.2
- *
- * @description
- * This module defines the Express router for all authentication-related API endpoints.
- * It handles a comprehensive set of authentication operations including:
- * - User registration (email/password).
- * - User login (email/password and Google OAuth 2.0).
- * - User logout and session invalidation.
- * - Email verification.
- * - User profile retrieval and updates.
- * - Password change and password reset flows.
- * - Management of user-provided API keys for external LLM services.
- * - Retrieval of subscription information (current tier, usage stats).
- * - Administrative actions like assigning subscription tiers and listing users (role-protected).
- *
- * Routes are designed to be RESTful and use services (`IAuthService`, `ISubscriptionService`)
- * for business logic. Protected routes leverage an authentication middleware (`authenticateToken`).
- * Input validation is performed for request bodies, and standardized error responses are generated
- * using `GMIError` and `ErrorFactory`.
- *
- * Key Dependencies:
- * - `express`: For router creation and request/response handling.
- * - `../services/user_auth/IAuthService`: Service contract for authentication logic.
- * - `../services/user_auth/ISubscriptionService`: Service contract for subscription logic.
- * - `../middleware/authenticateTokenMiddleware`: For protecting routes.
- * - `../utils/errors`: For standardized error handling.
- * - `../services/user_auth/User`: For `PublicUser` type definition.
- * - `@prisma/client`: For `PrismaUser` type definition.
- */
+ * @fileoverview Comprehensive authentication routes implementation for the Voice Chat Assistant.
+ * This module provides a complete suite of authentication endpoints including user registration,
+ * login, OAuth flows, password management, profile management, and API key management.
+ * All routes are designed with enterprise-grade security, validation, and error handling.
+ *
+ * Key Features:
+ * - JWT-based authentication with configurable expiration
+ * - Rate limiting for security-sensitive operations
+ * - Comprehensive input validation using express-validator
+ * - OAuth 2.0 integration (Google, GitHub)
+ * - Secure password reset flow with time-limited tokens
+ * - Email verification system
+ * - User API key management with encryption
+ * - Subscription tier integration
+ * - Comprehensive error handling and logging
+ *
+ * @module backend/api/authRoutes
+ * @requires express
+ * @requires express-validator
+ * @requires express-rate-limit
+ * @requires ../services/user_auth/IAuthService
+ * @requires ../services/user_auth/ISubscriptionService
+ * @requires ../middleware/jwtAuthMiddleware
+ * @requires ../utils/errors
+ * @author Voice Chat Assistant Team
+ * @version 1.0.0
+ */
 
 import { Router, Request, Response, NextFunction } from 'express';
-import { User as PrismaUser } from '@prisma/client'; // Import PrismaUser for type consistency
-import {
-  IAuthService,
-  AuthenticationResult,
-  UserApiKeyInfo,
-  AuthTokenPayload,
-  OAuthInitiateResult,
-  UserProfileUpdateData,
-} from '../services/user_auth/IAuthService';
-import { ISubscriptionService, ISubscriptionTier } from '../services/user_auth/SubscriptionService';
-import { User as DomainUser, PublicUser } from '../services/user_auth/User'; // Renamed import to DomainUser to avoid conflict
-import { AuthenticatedRequest, authenticateToken } from '../middleware/authenticateTokenMiddleware';
-import { GMIError, GMIErrorCode, ErrorFactory } from '../utils/errors';
-
-// --- Data Transfer Object (DTO) Interfaces ---
-// These define the expected shape of incoming data for various authentication operations.
+import { body, query, param, validationResult, ValidationError } from 'express-validator';
+import rateLimit from 'express-rate-limit';
+import { IAuthService } from '../services/user_auth/IAuthService';
+import { ISubscriptionService } from '../services/user_auth/ISubscriptionService';
+import { AuthenticatedRequest, createJwtAuthMiddleware } from '../middleware/jwtAuthMiddleware';
+import { GMIError, GMIErrorCode, createGMIErrorFromError } from '../utils/errors';
 
 /**
- * @interface RegisterUserDto
- * @description Data Transfer Object for user registration request body.
- * @property {string} [username] - The desired username for the new user.
- * @property {string} [email] - The user's email address.
- * @property {string} [password] - The user's plain-text password.
- */
-interface RegisterUserDto { username?: string; email?: string; password?: string; }
+ * Interface representing the structure of validation error details.
+ * Used to standardize validation error responses across all endpoints.
+ *
+ * @interface ValidationErrorDetails
+ */
+interface ValidationErrorDetails {
+  [field: string]: string;
+}
 
 /**
- * @interface LoginUserDto
- * @description Data Transfer Object for user login request body.
- * @property {string} [identifier] - The user's username or email address.
- * @property {string} [password] - The user's plain-text password.
- * @property {boolean} [rememberMe=false] - Optional flag indicating if the session should be persisted longer (e.g., via a persistent cookie).
- */
-interface LoginUserDto { identifier?: string; password?: string; rememberMe?: boolean; }
+ * Interface for standardized API error responses.
+ * Ensures consistent error structure across all authentication endpoints.
+ *
+ * @interface ApiErrorResponse
+ */
+interface ApiErrorResponse {
+  error: {
+    code: string;
+    message: string;
+    details?: ValidationErrorDetails | Record<string, any>;
+    timestamp: string;
+  };
+}
 
 /**
- * @interface ChangePasswordDto
- * @description Data Transfer Object for the change password request body.
- * @property {string} [oldPassword] - The user's current (old) password for verification.
- * @property {string} [newPassword] - The new password the user wishes to set.
- */
-interface ChangePasswordDto { oldPassword?: string; newPassword?: string; }
+ * Interface for successful authentication responses.
+ * Standardizes the structure of successful auth operations.
+ *
+ * @interface AuthSuccessResponse
+ * @template T - The type of additional data included in the response
+ */
+interface AuthSuccessResponse<T = any> {
+  success: boolean;
+  message: string;
+  user?: any;
+  token?: string;
+  tokenExpiresAt?: string;
+  subscription?: any;
+  data?: T;
+}
 
 /**
- * @interface RequestPasswordResetDto
- * @description Data Transfer Object for initiating a password reset request.
- * @property {string} [email] - The email address associated with the account for which the password reset is requested.
- */
-interface RequestPasswordResetDto { email?: string; }
+ * Validation middleware that processes express-validator results and returns
+ * standardized error responses for invalid input data.
+ *
+ * @function handleValidationErrors
+ * @param {Request} req - Express request object containing validation results
+ * @param {Response} res - Express response object for sending error responses
+ * @param {NextFunction} next - Express next function to continue middleware chain
+ * @returns {void | Response} Either continues to next middleware or returns error response
+ */
+const handleValidationErrors = (req: Request, res: Response, next: NextFunction): void | Response => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const validationErrors: ValidationErrorDetails = errors.array().reduce(
+      (acc: ValidationErrorDetails, error: ValidationError) => {
+        const field = 'path' in error ? error.path : 'unknown';
+        acc[field] = error.msg;
+        return acc;
+      },
+      {}
+    );
 
-/**
- * @interface ResetPasswordDto
- * @description Data Transfer Object for completing a password reset using a token.
- * @property {string} [resetToken] - The password reset token received by the user (typically via email).
- * @property {string} [newPassword] - The new password to be set for the account.
- */
-interface ResetPasswordDto { resetToken?: string; newPassword?: string; }
+    const errorResponse: ApiErrorResponse = {
+      error: {
+        code: GMIErrorCode.VALIDATION_ERROR,
+        message: 'Input validation failed. Please check your data and try again.',
+        details: validationErrors,
+        timestamp: new Date().toISOString(),
+      },
+    };
 
-/**
- * @interface UserApiKeyDto
- * @description Data Transfer Object for creating or updating a user's API key for an external provider.
- * @property {string} [providerId] - A unique identifier for the LLM provider (e.g., "openai", "anthropic").
- * @property {string} [apiKey] - The actual API key value provided by the user.
- * @property {string} [keyName] - An optional, user-friendly name or label for the API key.
- */
-interface UserApiKeyDto { providerId?: string; apiKey?: string; keyName?: string; }
-
-/**
- * @interface AssignTierDto
- * @description Data Transfer Object for assigning a subscription tier, typically an administrative action.
- * @property {string} [userId] - The ID of the user to whom the tier is being assigned (used by admins).
- * @property {string} [newTierId] - The unique identifier of the new subscription tier to assign.
- */
-interface AssignTierDto { userId?: string; newTierId?: string; }
-
-/**
- * @interface VerifyEmailDto
- * @description Data Transfer Object for verifying a user's email address.
- * @property {string} [verificationToken] - The unique token sent to the user's email for verification.
- */
-interface VerifyEmailDto { verificationToken?: string; }
-
-
-/**
- * Creates and configures the Express router for all authentication-related API endpoints.
- * This function wires up all authentication-related endpoints to their respective
- * service methods in `IAuthService` and `ISubscriptionService`.
- * It applies authentication middleware (`authenticateToken`) to routes that require an authenticated user session.
- * Basic input validation is performed directly in the route handlers, with more complex validation
- * potentially handled within the service layer. Standardized error responses are generated using `GMIError` and `ErrorFactory`.
- *
- * @function createAuthRoutes
- * @param {IAuthService} authService - An instance of the authentication service, conforming to `IAuthService`.
- * @param {ISubscriptionService} subscriptionService - An instance of the subscription service, conforming to `ISubscriptionService`.
- * @returns {Router} The configured Express router for authentication and user management.
- *
- * @example
- * // In server.ts or your main application setup file:
- * // const authServiceInstance = new AuthService(prismaClient, authConfig);
- * // const subscriptionServiceInstance = new SubscriptionService(prismaClient, authServiceInstance, paymentServiceInstance);
- * // const authApiRouter = createAuthRoutes(authServiceInstance, subscriptionServiceInstance);
- * // app.use('/api/v1/auth', authApiRouter); // Mount the auth router
- */
-export const createAuthRoutes = (
-  authService: IAuthService,
-  subscriptionService: ISubscriptionService
-): Router => {
-  const router = Router();
-
-  // --- User Registration ---
-  /**
-   * @route POST /api/v1/auth/register
-   * @description Registers a new user account.
-   * Validates input (username, email, password), creates the user record, hashes the password,
-   * and typically initiates an email verification process by generating a token.
-   * Upon successful registration, a default subscription tier (e.g., "Free") is assigned to the new user.
-   * @access Public
-   * @body {RegisterUserDto} Requires `username`, `email`, and `password`.
-   * Username must be 3-30 characters, alphanumeric with `_.-`.
-   * Password must be at least 8 characters. Email must be a valid format.
-   * @response {201} Created - Returns the `PublicUser` object and a success message indicating email verification is pending.
-   * @response {400} Bad Request - If validation fails (e.g., missing fields, weak password, invalid email format). Provides `GMIErrorCode.VALIDATION_ERROR`.
-   * @response {409} Conflict - If the chosen username or email address already exists in the system. Provides `GMIErrorCode.REGISTRATION_USERNAME_EXISTS` or `GMIErrorCode.REGISTRATION_EMAIL_EXISTS`.
-   * @response {500} Internal Server Error - If an unexpected error occurs during the registration process. Provides `GMIErrorCode.INTERNAL_SERVER_ERROR`.
-   */
-  router.post('/register', async (req: Request, res: Response, next: NextFunction) => {
-    const { username, email, password } = req.body as RegisterUserDto;
-
-    if (!username || !email || !password) {
-      return next(ErrorFactory.validation('Username, email, and password are required fields.'));
-    }
-    if (username.length < 3 || username.length > 30) {
-      return next(ErrorFactory.validation('Username must be between 3 and 30 characters long.', { field: 'username' }));
-    }
-    if (!/^[a-zA-Z0-9_.-]+$/.test(username)) { // Stricter username validation
-        return next(ErrorFactory.validation('Username can only contain letters, numbers, and the characters "_", ".", "-".', { field: 'username' }));
-    }
-    if (password.length < 8) {
-      return next(ErrorFactory.validation('Password must be at least 8 characters long.', { field: 'password' }));
-    }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return next(ErrorFactory.validation('Invalid email address format.', { field: 'email' }));
-    }
-
-    try {
-      const publicUser: PublicUser = await authService.registerUser(username, email, password);
-      const freeTier = await subscriptionService.getTierByName('Free');
-      if (freeTier && publicUser?.id) {
-        await subscriptionService.assignTierToUser(publicUser.id, freeTier.id);
-      } else {
-        console.warn(`[AuthRoutes] Default 'Free' tier not found for new user ${publicUser?.id} or user ID was null after registration.`);
-      }
-      return res.status(201).json({
-        user: publicUser,
-        message: 'User registered successfully. Please check your email for a verification link to activate your account.'
-      });
-    } catch (error) {
-      return next(error); // Delegate to centralized error handler
-    }
-  });
-
-  // --- Email/Password Login ---
-  /**
-   * @route POST /api/v1/auth/login
-   * @description Authenticates an existing user using their identifier (username or email) and password.
-   * On successful authentication, it issues a JWT and creates a user session record.
-   * The JWT is set as an HttpOnly cookie to mitigate XSS risks.
-   * @access Public
-   * @body {LoginUserDto} Requires `identifier` (username or email) and `password`. Optionally accepts `rememberMe` (boolean) to extend cookie persistence.
-   * @response {200} OK - Login successful. Returns `PublicUser` data and `tokenExpiresAt`. Sets an `authToken` HttpOnly cookie.
-   * @response {400} Bad Request - If `identifier` or `password` are missing. See `GMIErrorCode.VALIDATION_ERROR`.
-   * @response {401} Unauthorized - If credentials are invalid. See `GMIErrorCode.AUTHENTICATION_INVALID_CREDENTIALS`.
-   * @response {403} Forbidden - If email verification is required and not completed. See `GMIErrorCode.AUTHENTICATION_EMAIL_NOT_VERIFIED`.
-   * @response {500} Internal Server Error - For unexpected server issues during login. See `GMIErrorCode.INTERNAL_SERVER_ERROR`.
-   */
-  router.post('/login', async (req: Request, res: Response, next: NextFunction) => {
-    const { identifier, password, rememberMe = false } = req.body as LoginUserDto; // Default rememberMe to false
-    if (!identifier || !password) {
-      return next(ErrorFactory.validation('Both username/email (identifier) and password are required.'));
-    }
-
-    try {
-      const deviceInfo = req.headers['user-agent'] || 'Unknown Device';
-      const ipAddress = req.ip; // Note: Ensure Express 'trust proxy' is configured if behind a reverse proxy.
-      const authResult: AuthenticationResult = await authService.loginUser(identifier, password, deviceInfo, ipAddress);
-
-      res.cookie('authToken', authResult.token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production', // Only send cookie over HTTPS in production
-        maxAge: rememberMe ? (authResult.tokenExpiresAt.getTime() - Date.now()) : undefined, // Persistent if rememberMe, session-only otherwise
-        sameSite: 'lax', // Good balance for CSRF protection
-        path: '/',
-      });
-
-      return res.status(200).json({
-        user: authResult.user,
-        tokenExpiresAt: authResult.tokenExpiresAt, // Useful for client to know session duration
-        message: 'Login successful.'
-      });
-    } catch (error) {
-      return next(error);
-    }
-  });
-
-  // --- Google OAuth Routes ---
-  /**
-   * @route GET /api/v1/auth/google
-   * @description Initiates the Google OAuth 2.0 authentication flow.
-   * This endpoint generates the Google authorization URL (consent screen) and redirects the user's browser to it.
-   * @access Public
-   * @response {302} Found - Redirects the client to Google's OAuth consent screen.
-   * @response {500} Internal Server Error or {503} Service Unavailable - If Google OAuth is not configured server-side or if there's an issue generating the URL. Relevant `GMIErrorCode` will be provided.
-   */
-  router.get('/google', async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const { redirectUrl }: OAuthInitiateResult = await authService.initiateGoogleOAuth();
-      res.redirect(redirectUrl); // HTTP 302 Redirect
-    } catch (error) {
-      console.error('[AuthRoutes] /google - Error initiating Google OAuth flow:', error);
-      return next(error);
-    }
-  });
-
-  /**
-   * @route GET /api/v1/auth/google/callback
-   * @description Handles the callback from Google after a user attempts OAuth authentication.
-   * It exchanges the received authorization `code` for Google tokens, verifies the ID token,
-   * retrieves user information from Google, and then either finds an existing local user account
-   * (by matching Google ID or email) or creates a new local user account. The Google identity is
-   * linked to this local user. Finally, a local application-specific session JWT is issued (via HttpOnly cookie).
-   * @access Public
-   * @query {string} code - The authorization code provided by Google upon successful user authentication and consent.
-   * @query {string} [state] - Optional: The state parameter, if one was included in the initial authorization request (for CSRF protection or context). Not explicitly used in this basic flow but good to be aware of.
-   * @query {string} [error] - Optional: An error code provided by Google if the authentication failed at Google's end (e.g., "access_denied").
-   * @query {string} [error_description] - Optional: A human-readable description of the error from Google.
-   * @response {200} OK - Google OAuth successful, and the user is logged into the application. Returns `PublicUser` data and `tokenExpiresAt`. Sets an `authToken` HttpOnly cookie.
-   * Alternatively, this endpoint might redirect to a frontend URL (e.g., `/oauth-success`) which then fetches user data.
-   * @response {400} Bad Request - If the `code` is missing or an `error` is returned from Google. See `GMIErrorCode.OAUTH_MISSING_AUTH_CODE` or `GMIErrorCode.OAUTH_AUTHENTICATION_FAILED`.
-   * @response {500} Internal Server Error - If there's an issue processing the callback on the server-side (e.g., token exchange failure, database error). See `GMIErrorCode.OAUTH_AUTHENTICATION_FAILED` or `GMIErrorCode.INTERNAL_SERVER_ERROR`.
-   */
-  router.get('/google/callback', async (req: Request, res: Response, next: NextFunction) => {
-    const { code, error: oauthProviderError, error_description: oauthProviderErrorDescription } = req.query;
-
-    if (oauthProviderError) {
-      // An error occurred at the OAuth provider (e.g., user denied consent)
-      return next(ErrorFactory.authentication(
-        `Google OAuth authentication failed at provider: ${oauthProviderError} (${oauthProviderErrorDescription || 'No additional description provided.'})`,
-        { provider: 'google', providerErrorCode: oauthProviderError as string },
-        GMIErrorCode.OAUTH_AUTHENTICATION_FAILED
-      ));
-    }
-
-    if (!code || typeof code !== 'string') {
-      return next(ErrorFactory.authentication(
-        'Google OAuth callback is missing the required authorization code.',
-        { provider: 'google' },
-        GMIErrorCode.OAUTH_MISSING_AUTH_CODE
-      ));
-    }
-
-    try {
-      const deviceInfo = req.headers['user-agent'] || 'Unknown Device';
-      const ipAddress = req.ip;
-      const authResult: AuthenticationResult = await authService.handleGoogleOAuthCallback(code, deviceInfo, ipAddress);
-
-      res.cookie('authToken', authResult.token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        maxAge: authResult.tokenExpiresAt.getTime() - Date.now(), // Cookie lifetime matches JWT expiry
-        sameSite: 'lax',
-        path: '/',
-      });
-
-      // Option: Redirect to a frontend page that handles post-OAuth logic
-      // (e.g., closes a popup, navigates to dashboard, fetches user data via /me).
-      // This is often preferred for Single Page Applications.
-      // Example: return res.redirect(`${process.env.FRONTEND_URL}/auth/oauth/success`);
-
-      // For now, returning JSON consistent with the password login flow for API-based clients:
-      return res.status(200).json({
-        user: authResult.user,
-        tokenExpiresAt: authResult.tokenExpiresAt,
-        message: 'Google OAuth authentication successful. User is now logged in.',
-      });
-
-    } catch (error) {
-      console.error('[AuthRoutes] /google/callback - Error processing Google OAuth callback in backend:', error);
-      // Handle errors that occur during backend processing of the callback (e.g., token exchange, user creation)
-      // A redirect to a frontend error page can be more user-friendly here.
-      // Example:
-      // const clientErrorCode = (error instanceof GMIError) ? error.code : GMIErrorCode.OAUTH_AUTHENTICATION_FAILED;
-      // return res.redirect(`${process.env.FRONTEND_URL}/auth/oauth/error?code=${encodeURIComponent(clientErrorCode)}`);
-      return next(error); // Let the global error handler provide a structured JSON error response
-    }
-  });
-
-
-  // --- Logout ---
-  /**
-   * @route POST /api/v1/auth/logout
-   * @description Logs out the currently authenticated user by invalidating their server-side session
-   * and instructing the client to clear any stored authentication tokens (e.g., by clearing the HttpOnly cookie).
-   * @access Protected (Requires a valid JWT via `authenticateToken` middleware)
-   * @response {200} OK - Logout successful. Includes a confirmation message.
-   * @response {401} Unauthorized - If no valid authentication token is provided (should be handled by middleware, but included for completeness).
-   * @response {500} Internal Server Error - If an unexpected error occurs during server-side session invalidation.
-   */
-  router.post('/logout', authenticateToken(authService), async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-    // `authenticateToken` middleware ensures `req.user` is populated if token is valid.
-    // The token used by the middleware is what needs to be associated with the session to invalidate.
-    const tokenToInvalidate = req.headers.authorization?.split(' ')[1] || req.cookies?.authToken;
-
-    if (!tokenToInvalidate) {
-      // This case should ideally not be reached if `authenticateToken` middleware is correctly applied and functioning.
-      return next(ErrorFactory.authentication('No active session token found for logout. This should not happen if route is protected.', {}, GMIErrorCode.AUTHENTICATION_TOKEN_MISSING));
-    }
-
-    try {
-      await authService.logoutUser(tokenToInvalidate); // Pass the actual JWT string for session invalidation
-      // Instruct client to clear the HttpOnly cookie
-      res.clearCookie('authToken', {
-        path: '/',
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-      });
-      return res.status(200).json({ message: 'Logout successful. Your session has been terminated.' });
-    } catch (error) {
-      // Even if server-side invalidation has an issue, client should still clear its token.
-      // The error here is primarily for server logging.
-      return next(error);
-    }
-  });
-
-  // --- Email Verification ---
-  /**
-   * @route POST /api/v1/auth/verify-email
-   * @description Verifies a user's email address using a provided verification token.
-   * This is typically called when a user clicks a verification link sent to their email.
-   * @access Public
-   * @body {VerifyEmailDto} Requires `verificationToken`.
-   * @response {200} OK - Email verified successfully. User can now log in (if verification was a prerequisite).
-   * @response {400} Bad Request - If the `verificationToken` is missing, malformed, invalid, or expired. See `GMIErrorCode.VALIDATION_ERROR` or `GMIErrorCode.EMAIL_VERIFICATION_TOKEN_INVALID`.
-   * @response {500} Internal Server Error - For unexpected server issues during the verification process.
-   */
-  router.post('/verify-email', async (req: Request, res: Response, next: NextFunction) => {
-    const { verificationToken } = req.body as VerifyEmailDto;
-    if (!verificationToken || typeof verificationToken !== 'string') {
-      return next(ErrorFactory.validation('A valid email verification token is required.'));
-    }
-
-    try {
-      await authService.verifyEmail(verificationToken); // This method was added to IAuthService/AuthService
-      return res.status(200).json({ message: 'Email verified successfully. Your account is now active.' });
-    } catch (error) {
-      // If error is GMIError and specifically EMAIL_VERIFICATION_TOKEN_INVALID, use that.
-      if (error instanceof GMIError && error.code === GMIErrorCode.EMAIL_VERIFICATION_TOKEN_INVALID) {
-        // The ErrorFactory.validation doesn't take a GMIErrorCode as a third parameter.
-        // We should pass the original GMIError to next() to preserve its code and status.
-        return next(error);
-      }
-      return next(error); // For other types of errors.
-    }
-  });
-
-
-  // --- Protected Routes (all routes below require a valid JWT via `authenticateToken` middleware) ---
-  // The middleware is applied once here for all subsequent route definitions in this router instance.
-  router.use(authenticateToken(authService));
-
-  /**
-   * @route GET /api/v1/auth/me
-   * @description Retrieves the profile (PublicUser) and current subscription tier of the authenticated user.
-   * @access Protected
-   * @response {200} OK - Returns an object containing `user` (`PublicUser` data) and `tier` (`ISubscriptionTier` data or null).
-   * @response {404} Not Found - If the authenticated user's profile cannot be found in the database (e.g., data inconsistency). See `GMIErrorCode.USER_NOT_FOUND`.
-   * @response {500} Internal Server Error - For other unexpected server issues.
-   */
-  router.get('/me', async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-    const userId = req.user!.userId; // `req.user` is guaranteed by `authenticateToken`
-    try {
-      const publicUser = await authService.getPublicUserById(userId);
-      if (!publicUser) {
-        // This scenario (valid token but user not found) indicates a data integrity issue or a race condition post-deletion.
-        return next(ErrorFactory.notFound(`Authenticated user profile for ID ${userId} could not be retrieved. The account may have been recently deactivated.`, { userId }));
-      }
-      const tier: ISubscriptionTier | null = await authService.getUserSubscriptionTier(userId);
-      return res.status(200).json({ user: publicUser, tier });
-    } catch (error) {
-      return next(error);
-    }
-  });
-
-  /**
-   * @route PUT /api/v1/auth/me
-   * @description Updates the profile (e.g., username, email) of the currently authenticated user.
-   * If the email address is changed, it typically triggers a re-verification process for the new email.
-   * @access Protected
-   * @body {UserProfileUpdateData} An object containing the fields to update (e.g., `username`, `email`). At least one field must be provided.
-   * @response {200} OK - Profile updated successfully. Returns the updated `PublicUser` object and a success message.
-   * @response {400} Bad Request - If no update data is provided, or if validation fails for provided fields (e.g., invalid email format, username too short/long or already taken). See `GMIErrorCode.VALIDATION_ERROR`.
-   * @response {409} Conflict - If the new username or email is already in use by another account. See `GMIErrorCode.REGISTRATION_USERNAME_EXISTS` or `GMIErrorCode.REGISTRATION_EMAIL_EXISTS`.
-   * @response {500} Internal Server Error - For unexpected server issues during the update.
-   */
-  router.put('/me', async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-    const updateData = req.body as UserProfileUpdateData; // Type assertion for request body
-    const userId = req.user!.userId;
-
-    if (Object.keys(updateData).length === 0 || (updateData.username === undefined && updateData.email === undefined)) {
-      return next(ErrorFactory.validation('No update data provided. At least one field (e.g., username, email) must be specified for update.'));
-    }
-    // More specific validation (e.g., username length, email format) should be handled by the AuthService.updateUserProfile method.
-
-    try {
-      const updatedUser: PublicUser = await authService.updateUserProfile(userId, updateData);
-      return res.status(200).json({ user: updatedUser, message: 'User profile updated successfully.' });
-    } catch (error) {
-      return next(error);
-    }
-  });
-
-  /**
-   * @route POST /api/v1/auth/me/change-password
-   * @description Allows the currently authenticated user to change their password.
-   * Requires the user's current (old) password for verification before setting the new password.
-   * @access Protected
-   * @body {ChangePasswordDto} Requires `oldPassword` and `newPassword`. New password must meet complexity requirements (e.g., min 8 characters).
-   * @response {200} OK - Password changed successfully.
-   * @response {400} Bad Request - If required fields are missing or the new password is too weak. See `GMIErrorCode.VALIDATION_ERROR`.
-   * @response {401} Unauthorized - If the provided `oldPassword` is incorrect. See `GMIErrorCode.AUTHENTICATION_INVALID_CREDENTIALS`.
-   * @response {500} Internal Server Error - For unexpected server issues.
-   */
-  router.post('/me/change-password', async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-    const { oldPassword, newPassword } = req.body as ChangePasswordDto;
-    const userId = req.user!.userId;
-
-    if (!oldPassword || !newPassword) {
-      return next(ErrorFactory.validation('Both old password and new password are required fields.'));
-    }
-    if (newPassword.length < 8) { // Consistent password length validation with registration
-      return next(ErrorFactory.validation('New password must be at least 8 characters long.'));
-    }
-
-    try {
-      await authService.changePassword(userId, oldPassword, newPassword);
-      return res.status(200).json({ message: 'Password changed successfully.' });
-    } catch (error) {
-      return next(error);
-    }
-  });
-
-
-  // --- User API Key Management (Protected) ---
-  /**
-   * @route POST /api/v1/auth/me/api-keys
-   * @description Adds a new API key for the authenticated user, associated with a specific LLM provider.
-   * The API key value is encrypted before storage.
-   * @access Protected
-   * @body {UserApiKeyDto} Requires `providerId` and `apiKey`. Optional `keyName` for labeling the key.
-   * @response {201} Created - API key saved successfully. Returns `UserApiKeyInfo` (with masked key) and a success message.
-   * @response {400} Bad Request - Missing required fields or invalid `providerId`. See `GMIErrorCode.VALIDATION_ERROR`.
-   * @response {500} Internal Server Error - If encryption fails or due to other server issues. See `GMIErrorCode.CONFIGURATION_ERROR` or `GMIErrorCode.INTERNAL_SERVER_ERROR`.
-   */
-  router.post('/me/api-keys', async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-    const { providerId, apiKey, keyName } = req.body as UserApiKeyDto;
-    const userId = req.user!.userId;
-
-    if (!providerId || !apiKey) {
-      return next(ErrorFactory.validation('Both providerId and apiKey value are required.'));
-    }
-    // Consider adding validation for `providerId` against a list of known/supported providers if applicable.
-
-    try {
-      const apiKeyInfo: UserApiKeyInfo = await authService.saveUserApiKey(userId, providerId, apiKey, keyName);
-      return res.status(201).json({
-        apiKey: apiKeyInfo, // Contains maskedKeyPreview, id, providerId, keyName, etc.
-        message: 'API key saved successfully.'
-      });
-    } catch (error) {
-      return next(error);
-    }
-  });
-
-  /**
-   * @route GET /api/v1/auth/me/api-keys
-   * @description Retrieves a list of all API keys registered by the currently authenticated user.
-   * Returns `UserApiKeyInfo` objects, which include masked previews, not the actual keys.
-   * @access Protected
-   * @response {200} OK - Returns an object containing an array of `apiKeys` (`UserApiKeyInfo[]`).
-   * @response {500} Internal Server Error.
-   */
-  router.get('/me/api-keys', async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-    const userId = req.user!.userId;
-    try {
-      const apiKeys: UserApiKeyInfo[] = await authService.getUserApiKeys(userId);
-      return res.status(200).json({ apiKeys });
-    } catch (error) {
-      return next(error);
-    }
-  });
-
-  /**
-   * @route DELETE /api/v1/auth/me/api-keys/:apiKeyRecordId
-   * @description Deletes a specific API key record owned by the authenticated user.
-   * The `apiKeyRecordId` is the UUID of the `UserApiKey` database record.
-   * @access Protected
-   * @param {string} apiKeyRecordId - The UUID of the API key record to delete, passed as a URL parameter.
-   * @response {200} OK - API key deleted successfully. Includes a confirmation message. (Alternatively, 204 No Content).
-   * @response {400} Bad Request - If `apiKeyRecordId` is missing or malformed. See `GMIErrorCode.VALIDATION_ERROR`.
-   * @response {404} Not Found - If the API key record is not found or not owned by the authenticated user. See `GMIErrorCode.RESOURCE_NOT_FOUND`.
-   * @response {500} Internal Server Error.
-   */
-  router.delete('/me/api-keys/:apiKeyRecordId', async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-    const userId = req.user!.userId;
-    const { apiKeyRecordId } = req.params;
-
-    if (!apiKeyRecordId) { // Basic check; further validation (e.g., UUID format) could be added.
-      return next(ErrorFactory.validation('API key record ID (apiKeyRecordId) path parameter is required.'));
-    }
-
-    try {
-      await authService.deleteUserApiKey(userId, apiKeyRecordId);
-      return res.status(200).json({ message: 'API key deleted successfully.' });
-      // Or, for a typical DELETE success with no content to return:
-      // return res.status(204).send();
-    } catch (error) {
-      return next(error);
-    }
-  });
-
-
-  // --- Subscription Info (Protected) ---
-  /**
-   * @route GET /api/v1/auth/me/subscription
-   * @description Retrieves the current subscription tier details and relevant usage statistics for the authenticated user.
-   * @access Protected
-   * @response {200} OK - Returns an object containing `tier` (`ISubscriptionTier` or null) and `usage` (user-specific usage statistics object).
-   * @response {500} Internal Server Error.
-   */
-  router.get('/me/subscription', async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-    const userId = req.user!.userId;
-    try {
-      const tier: ISubscriptionTier | null = await authService.getUserSubscriptionTier(userId);
-      // `getUserUsageStats` would be part of ISubscriptionService contract
-      const usageStats = await subscriptionService.getUserUsageStats(userId);
-      return res.status(200).json({
-        tier,
-        usage: usageStats, // Structure of usageStats depends on ISubscriptionService.getUserUsageStats()
-        message: tier ? `Current subscription tier: ${tier.name}` : 'No active subscription found or user is on a default plan.'
-      });
-    } catch (error) {
-      return next(error);
-    }
-  });
-
-
-  // --- Admin Routes (Example - Require 'ADMIN' role, checked within handler) ---
-  // These routes demonstrate administrative actions and should have robust role-based authorization.
-
-  /**
-   * @route POST /api/v1/auth/admin/assign-tier
-   * @description (Admin Only) Assigns a specified subscription tier to a target user.
-   * Requires the caller to have an 'ADMIN' role.
-   * @access Protected (Admin)
-   * @body {AssignTierDto} Requires `newTierId`. Optionally `userId` if admin is assigning to another user; otherwise, defaults to authenticated admin's own ID (less common for this action).
-   * @response {200} OK - Tier assigned successfully. Returns the updated `PublicUser` and their new `ISubscriptionTier`.
-   * @response {400} Bad Request - Missing `userId` (if admin context) or `newTierId`. See `GMIErrorCode.VALIDATION_ERROR`.
-   * @response {403} Forbidden - If the authenticated user is not an admin. See `GMIErrorCode.PERMISSION_DENIED`.
-   * @response {404} Not Found - If the target `userId` or `newTierId` does not exist. See `GMIErrorCode.USER_NOT_FOUND` or `GMIErrorCode.RESOURCE_NOT_FOUND`.
-   * @response {500} Internal Server Error.
-   */
-  router.post('/admin/assign-tier', async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-    // Robust role check from JWT payload (assuming roles are part of AuthTokenPayload)
-    if (!req.user?.roles?.includes('ADMIN')) {
-      return next(ErrorFactory.permissionDenied('Administrative privileges are required to assign subscription tiers.'));
-    }
-
-    const { userId: targetUserIdParam, newTierId } = req.body as AssignTierDto;
-    // Admin must specify the target user ID for this operation.
-    if (!targetUserIdParam || typeof targetUserIdParam !== 'string') {
-      return next(ErrorFactory.validation('Target User ID (userId) is required for tier assignment by an administrator.'));
-    }
-    if (!newTierId || typeof newTierId !== 'string') {
-      return next(ErrorFactory.validation('New Tier ID (newTierId) is required.'));
-    }
-
-    try {
-      // `assignTierToUser` is part of ISubscriptionService
-      const updatedPrismaUser: PrismaUser = await subscriptionService.assignTierToUser(targetUserIdParam, newTierId);
-      // Convert PrismaUser to PublicUser for response. Assuming `authService` can do this or `DomainUser` class is used.
-      const publicUser: PublicUser = (authService as any).toPublicUser?.(updatedPrismaUser) || DomainUser.fromPrisma(updatedPrismaUser).toPublicUser();
-      const newTierDetails = await authService.getUserSubscriptionTier(targetUserIdParam);
-
-      return res.status(200).json({
-        message: `Subscription tier '${newTierDetails?.name || newTierId}' successfully assigned to user ${targetUserIdParam}.`,
-        user: publicUser,
-        tier: newTierDetails
-      });
-    } catch (error) {
-      return next(error);
-    }
-  });
-
-  /**
-   * @route GET /api/v1/auth/admin/users
-   * @description (Admin Only) Lists all users in the system. Requires ADMIN role.
-   * This is a placeholder; a full implementation would include pagination, filtering, and sorting.
-   * @access Protected (Admin)
-   * @query {number} [page=1] - Page number for pagination.
-   * @query {number} [limit=20] - Number of users per page.
-   * @query {string} [search] - Search term for filtering users.
-   * @response {501} Not Implemented - Indicates the feature is planned but not yet available.
-   * @response {403} Forbidden - If the authenticated user is not an admin. See `GMIErrorCode.PERMISSION_DENIED`.
-   */
-  router.get('/admin/users', async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-    if (!req.user?.roles?.includes('ADMIN')) {
-      return next(ErrorFactory.permissionDenied('Administrative privileges required to list users.'));
-    }
-    // TODO: Implement robust user listing logic in AuthService or a dedicated UserService.
-    // This would involve querying users with pagination, search, and sorting.
-    // Example:
-    // const { page = 1, limit = 20, search = '' } = req.query;
-    // const usersListResult = await authService.listAllUsers({ page: +page, limit: +limit, search: search as string });
-    // return res.status(200).json(usersListResult);
-    return next(new GMIError('Admin user listing feature is not yet implemented.', GMIErrorCode.NOT_IMPLEMENTED, undefined, undefined, 501));
-  });
-
-
-  // --- Publicly Accessible Routes for Tier Information (No Auth Middleware directly on this specific route) ---
-  // These are defined outside the `router.use(authenticateToken(authService));` block if it were placed earlier to protect all subsequent routes.
-  // If this route itself does not need authentication, it should be defined before any `router.use(authenticateToken)`.
-  // Given the current structure where `authenticateToken` is applied to individual routes or route groups,
-  // this route is effectively public unless `authenticateToken` is applied to it specifically or to a parent router.
-
-  /**
-   * @route GET /api/v1/auth/tiers
-   * @description Retrieves a list of all publicly available subscription tiers.
-   * This might be used for a pricing page or for users to see available upgrade options.
-   * @access Public (or protected, depending on application requirements for viewing tiers)
-   * @response {200} OK - Returns an array of `ISubscriptionTier` objects.
-   * @response {500} Internal Server Error - If an error occurs while fetching tiers.
-   */
-  router.get('/tiers', async (req: Request, res: Response, next: NextFunction) => {
-    // If this route needs to be protected (e.g., only logged-in users can see tiers),
-    // apply `authenticateToken(authService)` middleware here.
-    // For a public pricing page, it might remain unprotected.
-    try {
-      // `getAllTiers` might filter for only publicly visible tiers if such a distinction exists.
-      const tiers: ISubscriptionTier[] = await subscriptionService.getAllTiers();
-      return res.status(200).json({ tiers });
-    } catch (error) {
-      return next(error);
-    }
-  });
-
-  return router;
+    return res.status(400).json(errorResponse);
+  }
+  next();
 };
+
+/**
+ * Comprehensive rate limiting configurations for different types of authentication operations.
+ * These limits are designed to prevent abuse while allowing legitimate usage patterns.
+ *
+ * @namespace authRateLimits
+ */
+const authRateLimits = {
+  /**
+   * Strict rate limiting for high-security operations like login, registration, and password reset.
+   * Applied to prevent brute force attacks and account enumeration.
+   */
+  strict: rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes sliding window
+    max: 5, // Maximum 5 attempts per window per IP
+    message: {
+      error: {
+        code: GMIErrorCode.RATE_LIMIT_EXCEEDED,
+        message: 'Too many authentication attempts. Please wait 15 minutes before trying again.',
+        details: { retryAfter: '15 minutes' },
+        timestamp: new Date().toISOString(),
+      },
+    },
+    standardHeaders: true, // Include standard rate limit headers
+    legacyHeaders: false, // Disable legacy X-RateLimit headers
+    skipSuccessfulRequests: false, // Count both successful and failed requests
+    skipFailedRequests: false,
+  }),
+
+  /**
+   * Moderate rate limiting for general authentication endpoints like profile updates.
+   * Allows more frequent legitimate operations while still preventing abuse.
+   */
+  moderate: rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes sliding window
+    max: 20, // Maximum 20 requests per window per IP
+    message: {
+      error: {
+        code: GMIErrorCode.RATE_LIMIT_EXCEEDED,
+        message: 'Too many requests. Please slow down and try again later.',
+        details: { retryAfter: '15 minutes' },
+        timestamp: new Date().toISOString(),
+      },
+    },
+    standardHeaders: true,
+    legacyHeaders: false,
+  }),
+
+  /**
+   * Lenient rate limiting for read-only operations and general API access.
+   * Designed to prevent excessive API usage without hindering normal operation.
+   */
+  lenient: rateLimit({
+    windowMs: 5 * 60 * 1000, // 5 minutes sliding window
+    max: 100, // Maximum 100 requests per window per IP
+    message: {
+      error: {
+        code: GMIErrorCode.RATE_LIMIT_EXCEEDED,
+        message: 'Too many requests. Please wait a few minutes before trying again.',
+        details: { retryAfter: '5 minutes' },
+        timestamp: new Date().toISOString(),
+      },
+    },
+    standardHeaders: true,
+    legacyHeaders: false,
+  }),
+};
+
+/**
+ * Comprehensive validation rules for user registration.
+ * Ensures data integrity, security, and consistent user experience.
+ *
+ * @constant {ValidationChain[]} registerValidation
+ */
+const registerValidation = [
+  body('username')
+    .trim()
+    .isLength({ min: 3, max: 30 })
+    .withMessage('Username must be between 3 and 30 characters long')
+    .matches(/^[a-zA-Z0-9_.-]+$/)
+    .withMessage('Username can only contain letters, numbers, dots, hyphens, and underscores')
+    .custom(async (value) => {
+      if (value.toLowerCase().includes('admin') || value.toLowerCase().includes('system')) {
+        throw new Error('Username cannot contain reserved words');
+      }
+      return true;
+    }),
+
+  body('email')
+    .trim()
+    .isEmail()
+    .withMessage('Please provide a valid email address')
+    .normalizeEmail({
+      gmail_remove_dots: false,
+      gmail_remove_subaddress: false,
+      outlookdotcom_remove_subaddress: false,
+      yahoo_remove_subaddress: false,
+    })
+    .isLength({ max: 254 })
+    .withMessage('Email address is too long'),
+
+  body('passwordPlainText')
+    .isLength({ min: 8, max: 128 })
+    .withMessage('Password must be between 8 and 128 characters long')
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/)
+    .withMessage('Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character (@$!%*?&)'),
+
+  body('confirmPassword')
+    .custom((value, { req }) => {
+      if (value !== req.body.passwordPlainText) {
+        throw new Error('Password confirmation does not match password');
+      }
+      return true;
+    }),
+
+  body('acceptTerms')
+    .isBoolean()
+    .withMessage('Terms acceptance must be a boolean value')
+    .custom((value) => {
+      if (!value) {
+        throw new Error('You must accept the terms of service to register');
+      }
+      return true;
+    }),
+];
+
+/**
+ * Validation rules for user login operations.
+ * Balances security with user experience for authentication flow.
+ *
+ * @constant {ValidationChain[]} loginValidation
+ */
+const loginValidation = [
+  body('email')
+    .trim()
+    .isEmail()
+    .withMessage('Please provide a valid email address')
+    .normalizeEmail(),
+
+  body('passwordPlainText')
+    .notEmpty()
+    .withMessage('Password is required')
+    .isLength({ min: 1, max: 128 }) // Min 1 to allow any non-empty password for validation, actual strength checked by service/db
+    .withMessage('Password length is invalid'),
+
+  body('rememberMe')
+    .optional()
+    .isBoolean()
+    .withMessage('Remember me must be a boolean value'),
+];
+
+/**
+ * Validation rules for password change operations.
+ * Ensures secure password updates with proper verification.
+ *
+ * @constant {ValidationChain[]} passwordChangeValidation
+ */
+const passwordChangeValidation = [
+  body('currentPassword')
+    .notEmpty()
+    .withMessage('Current password is required')
+    .isLength({ min: 1, max: 128 })
+    .withMessage('Current password length is invalid'),
+
+  body('newPassword')
+    .isLength({ min: 8, max: 128 })
+    .withMessage('New password must be between 8 and 128 characters long')
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/)
+    .withMessage('New password must contain at least one lowercase letter, one uppercase letter, one number, and one special character')
+    .custom((value, { req }) => {
+      if (value === req.body.currentPassword) {
+        throw new Error('New password must be different from current password');
+      }
+      return true;
+    }),
+
+  body('confirmNewPassword')
+    .custom((value, { req }) => {
+      if (value !== req.body.newPassword) {
+        throw new Error('New password confirmation does not match new password');
+      }
+      return true;
+    }),
+];
+
+/**
+ * Validation rules for API key management operations.
+ * Ensures proper handling of sensitive API credentials.
+ *
+ * @constant {ValidationChain[]} apiKeyValidation
+ */
+const apiKeyValidation = [
+  body('providerId')
+    .trim()
+    .notEmpty()
+    .withMessage('Provider ID is required')
+    .isLength({ min: 1, max: 50 })
+    .withMessage('Provider ID must be between 1 and 50 characters')
+    .matches(/^[a-zA-Z0-9_-]+$/)
+    .withMessage('Provider ID can only contain letters, numbers, underscores, and hyphens'),
+
+  body('apiKey')
+    .trim()
+    .notEmpty()
+    .withMessage('API key is required')
+    .isLength({ min: 10, max: 500 }) // Adjusted max length for potentially long API keys
+    .withMessage('API key length is invalid'),
+
+  body('keyName')
+    .optional()
+    .trim()
+    .isLength({ max: 100 })
+    .withMessage('Key name cannot exceed 100 characters')
+    .matches(/^[a-zA-Z0-9\s._-]*$/) // Allow spaces, dots, underscores, hyphens in key name
+    .withMessage('Key name contains invalid characters'),
+];
+
+/**
+ * Creates and configures the complete authentication router with all endpoints.
+ * This function serves as the main factory for the authentication system,
+ * integrating all services and middleware into a cohesive API.
+ *
+ * @function createAuthRoutes
+ * @param {IAuthService} authService - Initialized authentication service instance
+ * @param {ISubscriptionService} subscriptionService - Initialized subscription management service
+ * @returns {Router} Fully configured Express router with all authentication endpoints
+ * @throws {Error} If required services are not provided or are invalid
+ *
+ * @example
+ * ```typescript
+ * const authRouter = createAuthRoutes(authService, subscriptionService);
+ * app.use('/api/v1/auth', authRouter);
+ * ```
+ */
+export function createAuthRoutes(
+  authService: IAuthService,
+  subscriptionService: ISubscriptionService
+): Router {
+  // Validate required dependencies
+  if (!authService) {
+    throw new Error('AuthService instance is required to create authentication routes');
+  }
+  if (!subscriptionService) {
+    throw new Error('SubscriptionService instance is required to create authentication routes');
+  }
+
+  const router = Router();
+  const requireAuth = createJwtAuthMiddleware(authService);
+
+  // =============================================================================
+  // PUBLIC AUTHENTICATION ENDPOINTS
+  // These endpoints do not require authentication and are available to all users
+  // =============================================================================
+
+  /**
+   * @route POST /api/v1/auth/register
+   * @description Register a new user account with comprehensive validation and security checks.
+   * Creates a new user, sends verification email, and returns authentication token.
+   * @access Public
+   * @rateLimit Strict (5 requests per 15 minutes)
+   * @validation Full registration validation with password strength and email format checks
+   */
+  router.post('/register',
+    authRateLimits.strict,
+    registerValidation,
+    handleValidationErrors,
+    async (req: Request, res: Response): Promise<Response> => {
+      try {
+        const { username, email, passwordPlainText, acceptTerms } = req.body;
+        const clientInfo = {
+          userAgent: req.headers['user-agent'] || 'Unknown',
+          ipAddress: req.ip || req.connection.remoteAddress || 'Unknown',
+          acceptLanguage: req.headers['accept-language'],
+        };
+
+        const registrationEnabled = process.env.REGISTRATION_ENABLED !== 'false';
+        if (!registrationEnabled) {
+          const errorResponse: ApiErrorResponse = {
+            error: {
+              code: GMIErrorCode.FEATURE_DISABLED,
+              message: 'New user registration is currently disabled. Please contact support for assistance.',
+              details: { feature: 'registration', status: 'disabled' },
+              timestamp: new Date().toISOString(),
+            },
+          };
+          return res.status(403).json(errorResponse);
+        }
+
+        console.log(`[AuthRoutes] Registration attempt for email: ${email}, username: ${username}`);
+
+        const user = await authService.registerUser(username, email, passwordPlainText, {
+          acceptedTerms: acceptTerms,
+          clientInfo,
+        });
+
+        const subscription = await subscriptionService.getUserSubscription(user.id);
+        console.log(`[AuthRoutes] User registered successfully: ${user.id} (${username})`);
+
+        const successResponse: AuthSuccessResponse = {
+          success: true,
+          message: 'Registration successful! Please check your email to verify your account.',
+          user: {
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            emailVerified: user.emailVerified,
+            createdAt: user.createdAt,
+          },
+          subscription: subscription ? {
+            id: subscription.id,
+            name: subscription.name,
+            level: subscription.level,
+            features: subscription.features,
+          } : null,
+        };
+        return res.status(201).json(successResponse);
+      } catch (error: any) {
+        console.error('[AuthRoutes] Registration error:', error);
+        if (error instanceof GMIError) {
+          const statusCode =
+            error.code === GMIErrorCode.REGISTRATION_EMAIL_EXISTS ||
+            error.code === GMIErrorCode.REGISTRATION_USERNAME_EXISTS ? 409 : 400;
+          const errorResponse: ApiErrorResponse = {
+            error: {
+              code: error.code,
+              message: error.message,
+              details: error.details,
+              timestamp: new Date().toISOString(),
+            },
+          };
+          return res.status(statusCode).json(errorResponse);
+        }
+        const errorResponse: ApiErrorResponse = {
+          error: {
+            code: GMIErrorCode.INTERNAL_SERVER_ERROR,
+            message: 'Registration failed due to an internal error. Please try again later.',
+            timestamp: new Date().toISOString(),
+          },
+        };
+        return res.status(500).json(errorResponse);
+      }
+    }
+  );
+
+  /**
+   * @route POST /api/v1/auth/login
+   * @description Authenticate user with email and password, returning JWT token and user information.
+   * Supports "remember me" functionality for extended session duration.
+   * @access Public
+   * @rateLimit Strict (5 requests per 15 minutes)
+   * @validation Email format and password presence validation
+   */
+  router.post('/login',
+    authRateLimits.strict,
+    loginValidation,
+    handleValidationErrors,
+    async (req: Request, res: Response): Promise<Response> => {
+      try {
+        const { email, passwordPlainText, rememberMe = false } = req.body;
+        const clientInfo = {
+          userAgent: req.headers['user-agent'] || 'Unknown',
+          ipAddress: req.ip || req.connection.remoteAddress || 'Unknown',
+          acceptLanguage: req.headers['accept-language'],
+        };
+
+        console.log(`[AuthRoutes] Login attempt for email: ${email}`);
+
+        const authResult = await authService.loginUser(
+          email,
+          passwordPlainText,
+          clientInfo.userAgent,
+          clientInfo.ipAddress,
+          { rememberMe }
+        );
+
+        const subscription = await subscriptionService.getUserSubscription(authResult.user.id);
+        console.log(`[AuthRoutes] User logged in successfully: ${authResult.user.id} (${authResult.user.username})`);
+
+        const successResponse: AuthSuccessResponse = {
+          success: true,
+          message: 'Login successful',
+          user: {
+            id: authResult.user.id,
+            username: authResult.user.username,
+            email: authResult.user.email,
+            emailVerified: authResult.user.emailVerified,
+            subscriptionTierId: authResult.user.subscriptionTierId,
+          },
+          token: authResult.token,
+          tokenExpiresAt: authResult.tokenExpiresAt,
+          subscription: subscription ? {
+            id: subscription.id,
+            name: subscription.name,
+            level: subscription.level,
+            features: subscription.features,
+            maxGmiInstances: subscription.maxGmiInstances,
+            dailyCostLimitUsd: subscription.dailyCostLimitUsd,
+            monthlyCostLimitUsd: subscription.monthlyCostLimitUsd,
+          } : null,
+        };
+        return res.status(200).json(successResponse);
+      } catch (error: any) {
+        console.error('[AuthRoutes] Login error:', error);
+        if (error instanceof GMIError) {
+          const statusCode = error.code === GMIErrorCode.AUTHENTICATION_INVALID_CREDENTIALS ? 401 : 400;
+          const errorResponse: ApiErrorResponse = {
+            error: {
+              code: error.code,
+              message: error.message,
+              details: error.details,
+              timestamp: new Date().toISOString(),
+            },
+          };
+          return res.status(statusCode).json(errorResponse);
+        }
+        const errorResponse: ApiErrorResponse = {
+          error: {
+            code: GMIErrorCode.INTERNAL_SERVER_ERROR,
+            message: 'Login failed due to an internal error. Please try again later.',
+            timestamp: new Date().toISOString(),
+          },
+        };
+        return res.status(500).json(errorResponse);
+      }
+    }
+  );
+
+  /**
+   * @route GET /api/v1/auth/google
+   * @description Initiate Google OAuth 2.0 authentication flow.
+   * Redirects user to Google's authentication server with appropriate scopes.
+   * @access Public
+   * @rateLimit Moderate (20 requests per 15 minutes)
+   */
+  router.get('/google',
+    authRateLimits.moderate,
+    async (req: Request, res: Response): Promise<Response | void> => {
+      try {
+        const state = req.query.state as string || undefined;
+        const redirectUri = req.query.redirect_uri as string || undefined;
+        console.log('[AuthRoutes] Initiating Google OAuth flow');
+        const oauthResult = await authService.initiateGoogleOAuth(state, redirectUri);
+        return res.redirect(oauthResult.redirectUrl);
+      } catch (error: any) {
+        console.error('[AuthRoutes] Google OAuth initiation error:', error);
+        if (error instanceof GMIError) {
+          const errorResponse: ApiErrorResponse = {
+            error: {
+              code: error.code,
+              message: error.message,
+              details: error.details,
+              timestamp: new Date().toISOString(),
+            },
+          };
+          return res.status(400).json(errorResponse);
+        }
+        const errorResponse: ApiErrorResponse = {
+          error: {
+            code: GMIErrorCode.OAUTH_AUTHENTICATION_FAILED,
+            message: 'Failed to initiate Google OAuth. Please try again later.',
+            timestamp: new Date().toISOString(),
+          },
+        };
+        return res.status(500).json(errorResponse);
+      }
+    }
+  );
+
+  /**
+   * @route GET /api/v1/auth/google/callback
+   * @description Handle Google OAuth 2.0 callback and complete authentication.
+   * Processes authorization code and creates or logs in user account.
+   * @access Public
+   * @rateLimit Moderate (20 requests per 15 minutes)
+   * @validation Authorization code presence validation
+   */
+  router.get('/google/callback',
+    authRateLimits.moderate,
+    query('code').notEmpty().withMessage('Authorization code is required'),
+    query('state').optional().isString(),
+    handleValidationErrors,
+    async (req: Request, res: Response): Promise<Response | void> => {
+      try {
+        const { code, state } = req.query;
+        const clientInfo = {
+          userAgent: req.headers['user-agent'] || 'Unknown',
+          ipAddress: req.ip || req.connection.remoteAddress || 'Unknown',
+        };
+        console.log('[AuthRoutes] Processing Google OAuth callback');
+        const authResult = await authService.handleGoogleOAuthCallback(
+          code as string,
+          clientInfo.userAgent,
+          clientInfo.ipAddress,
+          state as string
+        );
+        const subscription = await subscriptionService.getUserSubscription(authResult.user.id);
+        console.log(`[AuthRoutes] Google OAuth successful for user: ${authResult.user.id}`);
+        const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+        const redirectUrl = `${frontendUrl}/auth/callback?token=${authResult.token}&success=true`;
+        return res.redirect(redirectUrl);
+      } catch (error: any) {
+        console.error('[AuthRoutes] Google OAuth callback error:', error);
+        const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+        const errorRedirectUrl = `${frontendUrl}/auth/callback?error=oauth_failed`;
+        return res.redirect(errorRedirectUrl);
+      }
+    }
+  );
+
+  /**
+   * @route POST /api/v1/auth/forgot-password
+   * @description Request password reset token via email.
+   * Always returns success to prevent email enumeration attacks.
+   * @access Public
+   * @rateLimit Strict (5 requests per 15 minutes)
+   * @validation Email format validation
+   */
+  router.post('/forgot-password',
+    authRateLimits.strict,
+    body('email')
+      .trim()
+      .isEmail()
+      .withMessage('Valid email address is required')
+      .normalizeEmail(),
+    handleValidationErrors,
+    async (req: Request, res: Response): Promise<Response> => {
+      try {
+        const { email } = req.body;
+        const clientInfo = {
+          userAgent: req.headers['user-agent'] || 'Unknown',
+          ipAddress: req.ip || req.connection.remoteAddress || 'Unknown',
+        };
+        console.log(`[AuthRoutes] Password reset requested for email: ${email}`);
+        await authService.requestPasswordReset(email, clientInfo);
+        const successResponse: AuthSuccessResponse = {
+          success: true,
+          message: 'If an account with that email address exists, a password reset link has been sent.',
+        };
+        return res.status(200).json(successResponse);
+      } catch (error: any) {
+        console.error('[AuthRoutes] Password reset request error:', error);
+        const successResponse: AuthSuccessResponse = {
+          success: true,
+          message: 'If an account with that email address exists, a password reset link has been sent.',
+        };
+        return res.status(200).json(successResponse);
+      }
+    }
+  );
+
+  /**
+   * @route POST /api/v1/auth/reset-password
+   * @description Reset password using valid reset token.
+   * Validates token and updates user password with new secure hash.
+   * @access Public
+   * @rateLimit Strict (5 requests per 15 minutes)
+   * @validation Token presence and new password strength validation
+   */
+  router.post('/reset-password',
+    authRateLimits.strict,
+    [
+      body('token')
+        .trim()
+        .notEmpty()
+        .withMessage('Reset token is required')
+        .isLength({ min: 32, max: 128 })
+        .withMessage('Invalid reset token format'),
+      body('newPassword')
+        .isLength({ min: 8, max: 128 })
+        .withMessage('Password must be between 8 and 128 characters long')
+        .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/)
+        .withMessage('Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character'),
+      body('confirmPassword')
+        .custom((value, { req }) => {
+          if (value !== req.body.newPassword) {
+            throw new Error('Password confirmation does not match new password');
+          }
+          return true;
+        }),
+    ],
+    handleValidationErrors,
+    async (req: Request, res: Response): Promise<Response> => {
+      try {
+        const { token, newPassword } = req.body;
+        const clientInfo = {
+          userAgent: req.headers['user-agent'] || 'Unknown',
+          ipAddress: req.ip || req.connection.remoteAddress || 'Unknown',
+        };
+        console.log('[AuthRoutes] Password reset attempt with token');
+        await authService.resetPassword(token, newPassword, clientInfo);
+        console.log('[AuthRoutes] Password reset successful');
+        const successResponse: AuthSuccessResponse = {
+          success: true,
+          message: 'Password has been reset successfully. You can now log in with your new password.',
+        };
+        return res.status(200).json(successResponse);
+      } catch (error: any) {
+        console.error('[AuthRoutes] Password reset error:', error);
+        if (error instanceof GMIError) {
+          const statusCode =
+            error.code === GMIErrorCode.PASSWORD_RESET_TOKEN_INVALID ||
+            error.code === GMIErrorCode.PASSWORD_RESET_TOKEN_EXPIRED ? 400 : 500;
+          const errorResponse: ApiErrorResponse = {
+            error: {
+              code: error.code,
+              message: error.message,
+              details: error.details,
+              timestamp: new Date().toISOString(),
+            },
+          };
+          return res.status(statusCode).json(errorResponse);
+        }
+        const errorResponse: ApiErrorResponse = {
+          error: {
+            code: GMIErrorCode.INTERNAL_SERVER_ERROR,
+            message: 'Password reset failed due to an internal error. Please try again later.',
+            timestamp: new Date().toISOString(),
+          },
+        };
+        return res.status(500).json(errorResponse);
+      }
+    }
+  );
+
+  /**
+   * @route GET /api/v1/auth/verify-email
+   * @description Verify user email address using verification token.
+   * Confirms email ownership and activates account features.
+   * @access Public
+   * @rateLimit Moderate (20 requests per 15 minutes)
+   * @validation Verification token presence validation
+   */
+  router.get('/verify-email',
+    authRateLimits.moderate,
+    query('token')
+      .trim()
+      .notEmpty()
+      .withMessage('Verification token is required')
+      .isLength({ min: 32, max: 128 })
+      .withMessage('Invalid verification token format'),
+    handleValidationErrors,
+    async (req: Request, res: Response): Promise<Response> => {
+      try {
+        const { token } = req.query;
+        console.log('[AuthRoutes] Email verification attempt');
+        const user = await authService.verifyEmail(token as string);
+        console.log(`[AuthRoutes] Email verified successfully for user: ${user.id}`);
+        const successResponse: AuthSuccessResponse = {
+          success: true,
+          message: 'Email address verified successfully! Your account is now fully activated.',
+          user: {
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            emailVerified: user.emailVerified,
+          },
+        };
+        return res.status(200).json(successResponse);
+      } catch (error: any) {
+        console.error('[AuthRoutes] Email verification error:', error);
+        if (error instanceof GMIError) {
+          const statusCode =
+            error.code === GMIErrorCode.EMAIL_VERIFICATION_TOKEN_INVALID ||
+            error.code === GMIErrorCode.EMAIL_VERIFICATION_TOKEN_EXPIRED ? 400 : 500;
+          const errorResponse: ApiErrorResponse = {
+            error: {
+              code: error.code,
+              message: error.message,
+              details: error.details,
+              timestamp: new Date().toISOString(),
+            },
+          };
+          return res.status(statusCode).json(errorResponse);
+        }
+        const errorResponse: ApiErrorResponse = {
+          error: {
+            code: GMIErrorCode.INTERNAL_SERVER_ERROR,
+            message: 'Email verification failed due to an internal error. Please try again later.', // Completed message
+            timestamp: new Date().toISOString(),
+          },
+        };
+        return res.status(500).json(errorResponse);
+      }
+    }
+  );
+
+  // =============================================================================
+  // AUTHENTICATED USER ENDPOINTS
+  // These endpoints require valid JWT authentication
+  // =============================================================================
+
+  /**
+   * @route GET /api/v1/auth/me
+   * @description Get current authenticated user's profile, subscription, and API keys.
+   * Returns comprehensive user information for dashboard and profile management.
+   * @access Private (Requires Authentication)
+   * @rateLimit Lenient (100 requests per 5 minutes)
+   */
+  router.get('/me',
+    requireAuth,
+    authRateLimits.lenient,
+    async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+      try {
+        const userId = req.user!.userId;
+        console.log(`[AuthRoutes] Profile request for user: ${userId}`);
+
+        const [user, subscription, apiKeys] = await Promise.all([
+          authService.getPublicUserById(userId),
+          subscriptionService.getUserSubscription(userId),
+          authService.getUserApiKeys(userId),
+        ]);
+
+        if (!user) {
+          const errorResponse: ApiErrorResponse = {
+            error: {
+              code: GMIErrorCode.USER_NOT_FOUND,
+              message: 'User profile not found. Please log in again.',
+              timestamp: new Date().toISOString(),
+            },
+          };
+          return res.status(404).json(errorResponse);
+        }
+
+        const successResponse: AuthSuccessResponse = {
+          success: true,
+          message: 'Profile retrieved successfully',
+          user: {
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            emailVerified: user.emailVerified,
+            subscriptionTierId: user.subscriptionTierId,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt,
+          },
+          subscription: subscription ? {
+            id: subscription.id,
+            name: subscription.name,
+            description: subscription.description,
+            level: subscription.level,
+            features: subscription.features,
+            maxGmiInstances: subscription.maxGmiInstances,
+            maxApiKeys: subscription.maxApiKeys,
+            maxConversationHistoryTurns: subscription.maxConversationHistoryTurns,
+            dailyCostLimitUsd: subscription.dailyCostLimitUsd,
+            monthlyCostLimitUsd: subscription.monthlyCostLimitUsd,
+            priceMonthlyUsd: subscription.priceMonthlyUsd,
+            priceYearlyUsd: subscription.priceYearlyUsd,
+          } : null,
+          data: {
+            apiKeys: apiKeys.map(key => ({
+              id: key.id,
+              providerId: key.providerId,
+              keyName: key.keyName,
+              isActive: key.isActive,
+              createdAt: key.createdAt,
+              updatedAt: key.updatedAt,
+            })),
+            totalApiKeys: apiKeys.length,
+          },
+        };
+        return res.status(200).json(successResponse);
+      } catch (error: any) {
+        console.error('[AuthRoutes] Get profile error:', error);
+        const errorResponse: ApiErrorResponse = {
+          error: {
+            code: GMIErrorCode.INTERNAL_SERVER_ERROR,
+            message: 'Failed to retrieve user profile. Please try again later.',
+            timestamp: new Date().toISOString(),
+          },
+        };
+        return res.status(500).json(errorResponse);
+      }
+    }
+  );
+
+  /**
+   * @route PUT /api/v1/auth/me
+   * @description Update authenticated user's profile information.
+   * Allows updating username, email, and other profile fields with validation.
+   * @access Private (Requires Authentication)
+   * @rateLimit Moderate (20 requests per 15 minutes)
+   * @validation Optional username and email validation
+   */
+  router.put('/me',
+    requireAuth,
+    authRateLimits.moderate,
+    [
+      body('username')
+        .optional()
+        .trim()
+        .isLength({ min: 3, max: 30 })
+        .withMessage('Username must be between 3 and 30 characters')
+        .matches(/^[a-zA-Z0-9_.-]+$/)
+        .withMessage('Username can only contain letters, numbers, dots, hyphens, and underscores'),
+      body('email')
+        .optional()
+        .trim()
+        .isEmail()
+        .withMessage('Please provide a valid email address')
+        .normalizeEmail(),
+      body('displayName')
+        .optional()
+        .trim()
+        .isLength({ max: 100 })
+        .withMessage('Display name cannot exceed 100 characters'),
+      body('bio')
+        .optional()
+        .trim()
+        .isLength({ max: 500 })
+        .withMessage('Bio cannot exceed 500 characters'),
+    ],
+    handleValidationErrors,
+    async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+      try {
+        const userId = req.user!.userId;
+        const updateData = req.body;
+        const clientInfo = {
+          userAgent: req.headers['user-agent'] || 'Unknown',
+          ipAddress: req.ip || req.connection.remoteAddress || 'Unknown',
+        };
+        console.log(`[AuthRoutes] Profile update request for user: ${userId}`);
+        const { password, passwordPlainText, id, createdAt, updatedAt, ...safeUpdateData } = updateData;
+        const updatedUser = await authService.updateUserProfile(userId, safeUpdateData, clientInfo);
+        console.log(`[AuthRoutes] Profile updated successfully for user: ${userId}`);
+        const successResponse: AuthSuccessResponse = {
+          success: true,
+          message: 'Profile updated successfully.',
+          user: {
+            id: updatedUser.id,
+            username: updatedUser.username,
+            email: updatedUser.email,
+            emailVerified: updatedUser.emailVerified,
+            displayName: updatedUser.displayName,
+            bio: updatedUser.bio,
+            updatedAt: updatedUser.updatedAt,
+          },
+        };
+        return res.status(200).json(successResponse);
+      } catch (error: any) {
+        console.error('[AuthRoutes] Profile update error:', error);
+        if (error instanceof GMIError) {
+          const statusCode = error.code.includes('EXISTS') ? 409 : 400;
+          const errorResponse: ApiErrorResponse = {
+            error: {
+              code: error.code,
+              message: error.message,
+              details: error.details,
+              timestamp: new Date().toISOString(),
+            },
+          };
+          return res.status(statusCode).json(errorResponse);
+        }
+        const errorResponse: ApiErrorResponse = {
+          error: {
+            code: GMIErrorCode.INTERNAL_SERVER_ERROR,
+            message: 'Failed to update profile. Please try again later.',
+            timestamp: new Date().toISOString(),
+          },
+        };
+        return res.status(500).json(errorResponse);
+      }
+    }
+  );
+
+  /**
+   * @route POST /api/v1/auth/change-password
+   * @description Change authenticated user's password with current password verification.
+   * Requires current password for security and validates new password strength.
+   * @access Private (Requires Authentication)
+   * @rateLimit Strict (5 requests per 15 minutes)
+   * @validation Current password verification and new password strength validation
+   */
+  router.post('/change-password',
+    requireAuth,
+    authRateLimits.strict,
+    passwordChangeValidation,
+    handleValidationErrors,
+    async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+      try {
+        const userId = req.user!.userId;
+        const { currentPassword, newPassword } = req.body;
+        const clientInfo = {
+          userAgent: req.headers['user-agent'] || 'Unknown',
+          ipAddress: req.ip || req.connection.remoteAddress || 'Unknown',
+        };
+        console.log(`[AuthRoutes] Password change request for user: ${userId}`);
+        await authService.changePassword(userId, currentPassword, newPassword, clientInfo);
+        console.log(`[AuthRoutes] Password changed successfully for user: ${userId}`);
+        const successResponse: AuthSuccessResponse = {
+          success: true,
+          message: 'Password changed successfully. Please log in again with your new password.',
+        };
+        return res.status(200).json(successResponse);
+      } catch (error: any) {
+        console.error('[AuthRoutes] Password change error:', error);
+        if (error instanceof GMIError) {
+          const statusCode = error.code === GMIErrorCode.AUTHENTICATION_INVALID_CREDENTIALS ? 400 : 500;
+          const errorResponse: ApiErrorResponse = {
+            error: {
+              code: error.code,
+              message: error.message,
+              details: error.details,
+              timestamp: new Date().toISOString(),
+            },
+          };
+          return res.status(statusCode).json(errorResponse);
+        }
+        const errorResponse: ApiErrorResponse = {
+          error: {
+            code: GMIErrorCode.INTERNAL_SERVER_ERROR,
+            message: 'Failed to change password. Please try again later.',
+            timestamp: new Date().toISOString(),
+          },
+        };
+        return res.status(500).json(errorResponse);
+      }
+    }
+  );
+
+  /**
+   * @route POST /api/v1/auth/logout
+   * @description Logout current authenticated session and invalidate token.
+   * Cleans up server-side session data and blacklists the current token.
+   * @access Private (Requires Authentication)
+   * @rateLimit Lenient (100 requests per 5 minutes)
+   */
+  router.post('/logout',
+    requireAuth,
+    authRateLimits.lenient,
+    async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+      try {
+        const userId = req.user!.userId;
+        const token = req.headers.authorization?.split(' ')[1];
+        console.log(`[AuthRoutes] Logout request for user: ${userId}`);
+        if (token) {
+          await authService.logoutUser(token);
+          console.log(`[AuthRoutes] User logged out successfully: ${userId}`);
+        }
+        const successResponse: AuthSuccessResponse = {
+          success: true,
+          message: 'Logged out successfully.',
+        };
+        return res.status(200).json(successResponse);
+      } catch (error: any) {
+        console.error('[AuthRoutes] Logout error:', error);
+        const successResponse: AuthSuccessResponse = { // Still return success for UX
+          success: true,
+          message: 'Logged out successfully.',
+        };
+        return res.status(200).json(successResponse);
+      }
+    }
+  );
+
+  // =============================================================================
+  // API KEY MANAGEMENT ENDPOINTS
+  // These endpoints manage user's API keys for external services
+  // =============================================================================
+
+  /**
+   * @route GET /api/v1/auth/api-keys
+   * @description Get all API keys for the authenticated user.
+   * Returns list of user's API keys without exposing the actual key values.
+   * @access Private (Requires Authentication)
+   * @rateLimit Lenient (100 requests per 5 minutes)
+   */
+  router.get('/api-keys',
+    requireAuth,
+    authRateLimits.lenient,
+    async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+      try {
+        const userId = req.user!.userId;
+        console.log(`[AuthRoutes] API keys request for user: ${userId}`);
+        const apiKeys = await authService.getUserApiKeys(userId);
+        const successResponse: AuthSuccessResponse = {
+          success: true,
+          message: 'API keys retrieved successfully',
+          data: {
+            apiKeys: apiKeys.map(key => ({
+              id: key.id,
+              providerId: key.providerId,
+              keyName: key.keyName || `${key.providerId} Key`,
+              isActive: key.isActive,
+              createdAt: key.createdAt,
+              updatedAt: key.updatedAt,
+            })),
+            totalKeys: apiKeys.length,
+          },
+        };
+        return res.status(200).json(successResponse);
+      } catch (error: any) {
+        console.error('[AuthRoutes] Get API keys error:', error);
+        const errorResponse: ApiErrorResponse = {
+          error: {
+            code: GMIErrorCode.INTERNAL_SERVER_ERROR,
+            message: 'Failed to retrieve API keys. Please try again later.',
+            timestamp: new Date().toISOString(),
+          },
+        };
+        return res.status(500).json(errorResponse);
+      }
+    }
+  );
+
+  /**
+   * @route POST /api/v1/auth/api-keys
+   * @description Add or update an API key for external service integration.
+   * Encrypts and securely stores the API key for the user's account.
+   * @access Private (Requires Authentication)
+   * @rateLimit Moderate (20 requests per 15 minutes)
+   * @validation Provider ID, API key, and optional key name validation
+   */
+  router.post('/api-keys',
+    requireAuth,
+    authRateLimits.moderate,
+    apiKeyValidation,
+    handleValidationErrors,
+    async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+      try {
+        const userId = req.user!.userId;
+        const { providerId, apiKey, keyName } = req.body;
+        console.log(`[AuthRoutes] API key creation request for user: ${userId}, provider: ${providerId}`);
+
+        const subscription = await subscriptionService.getUserSubscription(userId);
+        if (subscription) {
+          const currentApiKeys = await authService.getUserApiKeys(userId);
+          if (currentApiKeys.length >= subscription.maxApiKeys) {
+            const errorResponse: ApiErrorResponse = {
+              error: {
+                code: GMIErrorCode.SUBSCRIPTION_LIMIT_EXCEEDED,
+                message: `API key limit exceeded. Your ${subscription.name} plan allows up to ${subscription.maxApiKeys} API keys.`,
+                details: {
+                  currentCount: currentApiKeys.length,
+                  maxAllowed: subscription.maxApiKeys,
+                  subscriptionTier: subscription.name,
+                },
+                timestamp: new Date().toISOString(),
+              },
+            };
+            return res.status(403).json(errorResponse);
+          }
+        }
+
+        const savedKey = await authService.saveUserApiKey(userId, providerId, apiKey, keyName);
+        console.log(`[AuthRoutes] API key saved successfully for user: ${userId}, provider: ${providerId}`);
+        const successResponse: AuthSuccessResponse = {
+          success: true,
+          message: `API key for ${providerId} saved successfully.`,
+          data: {
+            apiKey: {
+              id: savedKey.id,
+              providerId: savedKey.providerId,
+              keyName: savedKey.keyName || `${savedKey.providerId} Key`,
+              isActive: savedKey.isActive,
+              createdAt: savedKey.createdAt,
+            },
+          },
+        };
+        return res.status(201).json(successResponse);
+      } catch (error: any) {
+        console.error('[AuthRoutes] Save API key error:', error);
+        if (error instanceof GMIError) {
+          const statusCode = error.code === GMIErrorCode.API_KEY_DUPLICATE ? 409 : 400;
+          const errorResponse: ApiErrorResponse = {
+            error: {
+              code: error.code,
+              message: error.message,
+              details: error.details,
+              timestamp: new Date().toISOString(),
+            },
+          };
+          return res.status(statusCode).json(errorResponse);
+        }
+        const errorResponse: ApiErrorResponse = {
+          error: {
+            code: GMIErrorCode.INTERNAL_SERVER_ERROR,
+            message: 'Failed to save API key. Please try again later.',
+            timestamp: new Date().toISOString(),
+          },
+        };
+        return res.status(500).json(errorResponse);
+      }
+    }
+  );
+
+  /**
+   * @route PUT /api/v1/auth/api-keys/:keyId
+   * @description Update an existing API key's metadata (name, active status).
+   * Allows users to manage their API key configurations without exposing key values.
+   * @access Private (Requires Authentication)
+   * @rateLimit Moderate (20 requests per 15 minutes)
+   * @validation Key ID parameter and optional update fields validation
+   */
+  router.put('/api-keys/:keyId',
+    requireAuth,
+    authRateLimits.moderate,
+    [
+      param('keyId')
+        .trim()
+        .notEmpty()
+        .withMessage('API key ID is required')
+        .isUUID()
+        .withMessage('Invalid API key ID format'),
+      body('keyName')
+        .optional()
+        .trim()
+        .isLength({ max: 100 })
+        .withMessage('Key name cannot exceed 100 characters'),
+      body('isActive')
+        .optional()
+        .isBoolean()
+        .withMessage('Active status must be a boolean value'),
+    ],
+    handleValidationErrors,
+    async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+      try {
+        const userId = req.user!.userId;
+        const { keyId } = req.params;
+        const updateData = req.body;
+        console.log(`[AuthRoutes] API key update request for user: ${userId}, key: ${keyId}`);
+        const updatedKey = await authService.updateUserApiKey(userId, keyId, updateData);
+        console.log(`[AuthRoutes] API key updated successfully for user: ${userId}, key: ${keyId}`);
+        const successResponse: AuthSuccessResponse = {
+          success: true,
+          message: 'API key updated successfully.',
+          data: {
+            apiKey: {
+              id: updatedKey.id,
+              providerId: updatedKey.providerId,
+              keyName: updatedKey.keyName,
+              isActive: updatedKey.isActive,
+              updatedAt: updatedKey.updatedAt,
+            },
+          },
+        };
+        return res.status(200).json(successResponse);
+      } catch (error: any) {
+        console.error('[AuthRoutes] Update API key error:', error);
+        if (error instanceof GMIError) {
+          const statusCode = error.code === GMIErrorCode.NOT_FOUND ? 404 : 400;
+          const errorResponse: ApiErrorResponse = {
+            error: {
+              code: error.code,
+              message: error.message,
+              details: error.details,
+              timestamp: new Date().toISOString(),
+            },
+          };
+          return res.status(statusCode).json(errorResponse);
+        }
+        const errorResponse: ApiErrorResponse = {
+          error: {
+            code: GMIErrorCode.INTERNAL_SERVER_ERROR,
+            message: 'Failed to update API key. Please try again later.',
+            timestamp: new Date().toISOString(),
+          },
+        };
+        return res.status(500).json(errorResponse);
+      }
+    }
+  );
+
+  /**
+   * @route DELETE /api/v1/auth/api-keys/:keyId
+   * @description Delete an API key from the user's account.
+   * Permanently removes the API key and its encrypted data from the system.
+   * @access Private (Requires Authentication)
+   * @rateLimit Moderate (20 requests per 15 minutes)
+   * @validation Key ID parameter validation
+   */
+  router.delete('/api-keys/:keyId',
+    requireAuth,
+    authRateLimits.moderate,
+    param('keyId')
+      .trim()
+      .notEmpty()
+      .withMessage('API key ID is required')
+      .isUUID()
+      .withMessage('Invalid API key ID format'),
+    handleValidationErrors,
+    async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+      try {
+        const userId = req.user!.userId;
+        const { keyId } = req.params;
+        console.log(`[AuthRoutes] API key deletion request for user: ${userId}, key: ${keyId}`);
+        await authService.deleteUserApiKey(userId, keyId);
+        console.log(`[AuthRoutes] API key deleted successfully for user: ${userId}, key: ${keyId}`);
+        const successResponse: AuthSuccessResponse = {
+          success: true,
+          message: 'API key deleted successfully.',
+        };
+        return res.status(200).json(successResponse);
+      } catch (error: any) {
+        console.error('[AuthRoutes] Delete API key error:', error);
+        if (error instanceof GMIError) {
+          const statusCode = error.code === GMIErrorCode.NOT_FOUND ? 404 : 400;
+          const errorResponse: ApiErrorResponse = {
+            error: {
+              code: error.code,
+              message: error.message,
+              details: error.details,
+              timestamp: new Date().toISOString(),
+            },
+          };
+          return res.status(statusCode).json(errorResponse);
+        }
+        const errorResponse: ApiErrorResponse = {
+          error: {
+            code: GMIErrorCode.INTERNAL_SERVER_ERROR,
+            message: 'Failed to delete API key. Please try again later.',
+            timestamp: new Date().toISOString(),
+          },
+        };
+        return res.status(500).json(errorResponse);
+      }
+    }
+  );
+
+  // =============================================================================
+  // ACCOUNT MANAGEMENT ENDPOINTS
+  // Additional endpoints for comprehensive account management
+  // =============================================================================
+
+  /**
+   * @route POST /api/v1/auth/resend-verification
+   * @description Resend email verification token for unverified accounts.
+   * Allows users to request a new verification email if the original was lost or expired.
+   * @access Private (Requires Authentication)
+   * @rateLimit Strict (5 requests per 15 minutes)
+   */
+  router.post('/resend-verification',
+    requireAuth,
+    authRateLimits.strict,
+    async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+      try {
+        const userId = req.user!.userId;
+        console.log(`[AuthRoutes] Resend verification request for user: ${userId}`);
+        await authService.resendEmailVerification(userId);
+        console.log(`[AuthRoutes] Verification email resent for user: ${userId}`);
+        const successResponse: AuthSuccessResponse = {
+          success: true,
+          message: 'Verification email has been resent. Please check your inbox.',
+        };
+        return res.status(200).json(successResponse);
+      } catch (error: any) {
+        console.error('[AuthRoutes] Resend verification error:', error);
+        if (error instanceof GMIError) {
+          const errorResponse: ApiErrorResponse = {
+            error: {
+              code: error.code,
+              message: error.message,
+              details: error.details,
+              timestamp: new Date().toISOString(),
+            },
+          };
+          return res.status(400).json(errorResponse); // Or appropriate status code based on error type
+        }
+        const errorResponse: ApiErrorResponse = {
+          error: {
+            code: GMIErrorCode.INTERNAL_SERVER_ERROR,
+            message: 'Failed to resend verification email. Please try again later.',
+            timestamp: new Date().toISOString(),
+          },
+        };
+        return res.status(500).json(errorResponse);
+      }
+    }
+  );
+
+  /**
+   * @route GET /api/v1/auth/sessions
+   * @description Get list of active sessions for the authenticated user.
+   * Allows users to view and manage their active login sessions across devices.
+   * @access Private (Requires Authentication)
+   * @rateLimit Lenient (100 requests per 5 minutes)
+   */
+  router.get('/sessions',
+    requireAuth,
+    authRateLimits.lenient,
+    async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+      try {
+        const userId = req.user!.userId;
+        console.log(`[AuthRoutes] Sessions request for user: ${userId}`);
+        const sessions = await authService.getUserSessions(userId);
+        const successResponse: AuthSuccessResponse = {
+          success: true,
+          message: 'Active sessions retrieved successfully',
+          data: {
+            sessions: sessions.map(session => ({
+              id: session.id,
+              deviceInfo: session.deviceInfo,
+              ipAddress: session.ipAddress,
+              lastActiveAt: session.lastActiveAt,
+              createdAt: session.createdAt,
+              isCurrent: session.id === req.user!.sessionId,
+            })),
+            totalSessions: sessions.length,
+          },
+        };
+        return res.status(200).json(successResponse);
+      } catch (error: any) {
+        console.error('[AuthRoutes] Get sessions error:', error);
+        const errorResponse: ApiErrorResponse = {
+          error: {
+            code: GMIErrorCode.INTERNAL_SERVER_ERROR,
+            message: 'Failed to retrieve sessions. Please try again later.',
+            timestamp: new Date().toISOString(),
+          },
+        };
+        return res.status(500).json(errorResponse);
+      }
+    }
+  );
+
+  /**
+   * @route DELETE /api/v1/auth/sessions/:sessionId
+   * @description Terminate a specific user session.
+   * Allows users to log out from specific devices/sessions for security.
+   * @access Private (Requires Authentication)
+   * @rateLimit Moderate (20 requests per 15 minutes)
+   * @validation Session ID parameter validation
+   */
+  router.delete('/sessions/:sessionId',
+    requireAuth,
+    authRateLimits.moderate,
+    param('sessionId')
+      .trim()
+      .notEmpty()
+      .withMessage('Session ID is required')
+      .isUUID()
+      .withMessage('Invalid session ID format'),
+    handleValidationErrors,
+    async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+      try {
+        const userId = req.user!.userId;
+        const { sessionId } = req.params;
+        console.log(`[AuthRoutes] Session termination request for user: ${userId}, session: ${sessionId}`);
+        await authService.terminateUserSession(userId, sessionId);
+        console.log(`[AuthRoutes] Session terminated successfully for user: ${userId}, session: ${sessionId}`);
+        const successResponse: AuthSuccessResponse = {
+          success: true,
+          message: 'Session terminated successfully.',
+        };
+        return res.status(200).json(successResponse);
+      } catch (error: any) {
+        console.error('[AuthRoutes] Terminate session error:', error);
+        if (error instanceof GMIError) {
+          const statusCode = error.code === GMIErrorCode.NOT_FOUND ? 404 : 400;
+          const errorResponse: ApiErrorResponse = {
+            error: {
+              code: error.code,
+              message: error.message,
+              details: error.details,
+              timestamp: new Date().toISOString(),
+            },
+          };
+          return res.status(statusCode).json(errorResponse);
+        }
+        const errorResponse: ApiErrorResponse = {
+          error: {
+            code: GMIErrorCode.INTERNAL_SERVER_ERROR,
+            message: 'Failed to terminate session. Please try again later.',
+            timestamp: new Date().toISOString(),
+          },
+        };
+        return res.status(500).json(errorResponse);
+      }
+    }
+  );
+
+  return router;
+}

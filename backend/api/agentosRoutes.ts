@@ -15,124 +15,145 @@
  */
 
 import express, { Router, Request, Response, NextFunction } from 'express';
-import { IAgentOS } from '../agentos/api/interfaces/IAgentOS' // Corrected: Path to interface
-import { AgentOSInput, UserFeedbackPayload, ProcessingOptions } from '../agentos/api/types/AgentOSInput'; // Corrected: Path to types
-import { AgentOSResponse, AgentOSResponseChunkType, AgentOSErrorChunk } from '../agentos/api/types/AgentOSResponse'; // Corrected: Path to types
-import { GMIError, GMIErrorCode, createGMIErrorFromError } from '../utils/errors'; // Corrected: Path based on common structure
+import { IAgentOS } from '../agentos/api/interfaces/IAgentOS';
+import { AgentOSInput, UserFeedbackPayload } from '../agentos/api/types/AgentOSInput'; // ProcessingOptions removed as not used directly here
+import { AgentOSResponse, AgentOSResponseChunkType, AgentOSErrorChunk } from '../agentos/api/types/AgentOSResponse';
+import { GMIError, GMIErrorCode, createGMIErrorFromError } from '../utils/errors'; // Path relative to api/
 
 /**
  * Creates and configures the Express Router for AgentOS API endpoints.
+ * It sets up routes for processing requests, handling tool results, listing personas,
+ * retrieving conversation history, and submitting user feedback.
+ * All streaming endpoints use Server-Sent Events (SSE) for real-time communication.
  *
- * @param {IAgentOS} agentOSService - An initialized instance of the AgentOS service (implementing IAgentOS).
- * @returns {Router} An Express.js Router instance with AgentOS routes defined.
- * @throws {Error} If `agentOSService` is not provided.
+ * @function createAgentOSRoutes
+ * @param {IAgentOS} agentOSService - An initialized instance of the AgentOS service, conforming to the `IAgentOS` interface.
+ * This service instance will handle the core logic for all API requests.
+ * @returns {Router} An Express.js Router instance with all AgentOS API routes defined and configured.
+ * @throws {Error} If the `agentOSService` instance is not provided, as it is essential for route functionality.
  */
 export function createAgentOSRoutes(agentOSService: IAgentOS): Router {
   if (!agentOSService) {
-    throw new Error("AgentOS service instance is required to create agentOSRoutes.");
+    // This is a critical setup error, indicating a problem with how the application is wired.
+    throw new Error("AgentOS service instance (IAgentOS) is required to create agentOSRoutes.");
   }
 
   const router: Router = express.Router();
 
   /**
    * @route POST /api/agentos/process
-   * @description Processes a user request or initiates an agent task.
-   * Expects an AgentOSInput object in the request body.
-   * Streams AgentOSResponse chunks back to the client.
-   * Uses Server-Sent Events (SSE) for streaming.
+   * @description Endpoint for processing a user request or initiating an agent task.
+   * The request body must conform to the `AgentOSInput` interface.
+   * Responses are streamed back to the client using Server-Sent Events (SSE), allowing for
+   * real-time updates as the agent processes the input and generates output.
    *
-   * @param {Request<{}, {}, AgentOSInput>} req - Express request object. Body should conform to AgentOSInput.
-   * @param {Response} res - Express response object, used for SSE streaming.
-   * @param {NextFunction} next - Express next middleware function for error handling.
-   * @returns {void} - Does not return directly, streams responses or calls next(error).
+   * @param {Request<{}, {}, AgentOSInput>} req - The Express request object. The request body is expected to be `AgentOSInput`.
+   * @param {Response} res - The Express response object, which will be configured for SSE streaming.
+   * @param {NextFunction} next - The Express next middleware function, used for passing errors to the centralized error handler.
+   * @returns {Promise<void>} Does not return a value directly but manages the streaming response or calls `next(error)`.
    */
   router.post('/process', async (req: Request<{}, {}, AgentOSInput>, res: Response, next: NextFunction): Promise<void> => {
     try {
       const input: AgentOSInput = req.body;
 
-      // Basic input validation (more comprehensive validation should be in AgentOSInput or a validation layer)
       if (!input || !input.userId || !input.sessionId || (input.textInput === undefined && !input.visionInputs && !input.audioInput)) {
         const validationError = new GMIError(
-          'Invalid input: userId, sessionId, and at least one input modality (text, vision, audio) are required.',
+          'Invalid input for /process: userId, sessionId, and at least one input modality (textInput, visionInputs, or audioInput) are required.',
           GMIErrorCode.VALIDATION_ERROR,
-          { providedInput: input },
+          { providedInput: input, missingFields: "userId, sessionId, or primary input" },
           undefined,
-          400
+          400 // Bad Request
         );
-        return next(validationError); // Pass to error handler
+        // Ensure next is called to pass control to an error handling middleware
+        return next(validationError);
       }
 
-      console.log(`[AgentOSRoutes] /process: Received request for user ${input.userId}, session ${input.sessionId}`);
+      console.log(`[AgentOSRoutes][${new Date().toISOString()}] POST /process: Received request for User: ${input.userId}, Session: ${input.sessionId}, Persona: ${input.selectedPersonaId || 'default'}`);
 
-      // Setup SSE headers
       res.setHeader('Content-Type', 'text/event-stream');
       res.setHeader('Cache-Control', 'no-cache');
+      res.setHeader('X-Accel-Buffering', 'no'); // Useful for Nginx to disable buffering for SSE
       res.setHeader('Connection', 'keep-alive');
-      res.flushHeaders(); // Send headers immediately
+      res.flushHeaders(); // Send headers immediately to establish the SSE connection
 
-      const streamIdForClientLog = input.sessionId || 'unknown-stream'; // For logging client-side
+      const streamIdForClientLog = input.sessionId || input.conversationId || 'unknown-process-stream';
 
-      // Heartbeat to keep connection alive if no data is sent for a while
       const heartbeatInterval = setInterval(() => {
         if (!res.writableEnded) {
-            res.write(`event: heartbeat\ndata: ${new Date().toISOString()}\n\n`);
+            try {
+                res.write(`event: heartbeat\ndata: ${new Date().toISOString()}\n\n`);
+            } catch (e: any) {
+                console.error(`[AgentOSRoutes][${new Date().toISOString()}] POST /process: Error writing heartbeat for stream ${streamIdForClientLog}: ${e.message}`);
+                clearInterval(heartbeatInterval);
+                if(!res.writableEnded) res.end();
+            }
         } else {
             clearInterval(heartbeatInterval);
         }
-      }, 25000); // Every 25 seconds
+      }, 25000); // Send a heartbeat every 25 seconds
 
       res.on('close', () => {
-        console.log(`[AgentOSRoutes] /process: Client disconnected for stream associated with session ${streamIdForClientLog}`);
+        console.log(`[AgentOSRoutes][${new Date().toISOString()}] POST /process: Client disconnected for stream associated with session ${streamIdForClientLog}. Cleaning up heartbeat.`);
         clearInterval(heartbeatInterval);
-        // TODO: Implement stream cancellation/cleanup logic in AgentOS or Orchestrator if client disconnects.
-        // For example: agentOSService.cancelStream(streamIdFromProcessRequest);
-        res.end();
+        // NOTE: Consider notifying agentOSService to cancel/cleanup the underlying GMI stream if the client disconnects.
+        // This requires agentOSService to expose such a method and the orchestrator to track active streams by client connection.
+        // Example: if (agentOSService.cancelStream) agentOSService.cancelStream(streamIdFromProcessRequest);
+        if(!res.writableEnded) res.end(); // Ensure response is ended if not already
       });
 
-      // Process the request and stream chunks
       const responseGenerator = agentOSService.processRequest(input);
       for await (const chunk of responseGenerator) {
-        if (res.writableEnded) { // Check if client disconnected
-            console.warn(`[AgentOSRoutes] /process: Attempted to write to a closed response stream for session ${streamIdForClientLog}. Terminating stream processing.`);
-            // TODO: Ensure underlying GMI/Orchestrator stream is also cancelled/cleaned up.
+        if (res.writableEnded) {
+            console.warn(`[AgentOSRoutes][${new Date().toISOString()}] POST /process: Attempted to write to a closed response stream for session ${streamIdForClientLog}. Terminating stream processing for this request.`);
+            break; 
+        }
+        try {
+            res.write(`id: ${chunk.timestamp}\nevent: ${chunk.type}\ndata: ${JSON.stringify(chunk)}\n\n`);
+        } catch (e: any) {
+            console.error(`[AgentOSRoutes][${new Date().toISOString()}] POST /process: Error writing chunk to stream ${streamIdForClientLog}: ${e.message}`, chunk);
+            clearInterval(heartbeatInterval); // Stop heartbeat on write error
+            if(!res.writableEnded) res.end();
             break;
         }
-        res.write(`id: ${chunk.timestamp}\nevent: ${chunk.type}\ndata: ${JSON.stringify(chunk)}\n\n`);
       }
       
       if (!res.writableEnded) {
-        res.write(`event: stream_end\ndata: {"message": "Stream finished."}\n\n`);
-        res.end();
+        try {
+            res.write(`event: stream_end\ndata: ${JSON.stringify({ message: "AgentOS stream processing finished."})}\n\n`);
+        } catch (e: any) {
+            console.error(`[AgentOSRoutes][${new Date().toISOString()}] POST /process: Error writing stream_end event for ${streamIdForClientLog}: ${e.message}`);
+        } finally {
+            if (!res.writableEnded) res.end();
+        }
       }
-
     } catch (error: unknown) {
-      console.error(`[AgentOSRoutes] /process: Error during request processing:`, error);
-      // Ensure that the error is an instance of GMIError or wrapped into one
       const gmiError = createGMIErrorFromError(
         error instanceof Error ? error : new Error(String(error)),
         GMIErrorCode.INTERNAL_SERVER_ERROR,
-        { route: '/process' },
-        'Failed to process agent request.'
+        { route: '/api/agentos/process', input: req.body },
+        'An unexpected error occurred while processing the agent request.'
       );
-      // If headers not sent, use standard error middleware. Otherwise, try to send an error event if stream open.
+      console.error(`[AgentOSRoutes][${new Date().toISOString()}] POST /process: Unhandled error:`, gmiError.message, gmiError.details);
+      
       if (!res.headersSent) {
-        return next(gmiError);
+        return next(gmiError); // Pass to Express error handler
       } else if (!res.writableEnded) {
+        // Attempt to send an error event over SSE if connection is still open
         try {
-            const errorChunk: AgentOSErrorChunk = {
+            const errorChunkForClient: AgentOSErrorChunk = {
                 type: AgentOSResponseChunkType.ERROR,
-                streamId: req.body?.sessionId || 'error-stream',
-                gmiInstanceId: 'N/A',
-                personaId: req.body?.selectedPersonaId || 'N/A',
+                streamId: req.body?.sessionId || `error-stream-${Date.now()}`,
+                gmiInstanceId: (gmiError.details as any)?.gmiInstanceId || 'N/A_Error',
+                personaId: (gmiError.details as any)?.personaId || req.body?.selectedPersonaId || 'N/A_Error',
                 isFinal: true,
                 timestamp: new Date().toISOString(),
                 code: gmiError.code.toString(),
-                message: gmiError.message,
+                message: gmiError.message, // Send the original message for more detail if appropriate
                 details: gmiError.details || { name: gmiError.name },
             };
-            res.write(`event: ${AgentOSResponseChunkType.ERROR}\ndata: ${JSON.stringify(errorChunk)}\n\n`);
-        } catch (sseError) {
-            console.error(`[AgentOSRoutes] /process: Failed to send error event over SSE:`, sseError);
+            res.write(`event: ${AgentOSResponseChunkType.ERROR}\ndata: ${JSON.stringify(errorChunkForClient)}\n\n`);
+        } catch (sseError: any) {
+            console.error(`[AgentOSRoutes][${new Date().toISOString()}] POST /process: Failed to send error event over SSE after headers sent: ${sseError.message}`);
         } finally {
             if (!res.writableEnded) res.end();
         }
@@ -142,90 +163,109 @@ export function createAgentOSRoutes(agentOSService: IAgentOS): Router {
 
   /**
    * @route POST /api/agentos/tool_result
-   * @description Submits the result of a tool execution back to AgentOS for continued processing.
-   * Expects streamId, toolCallId, toolName, toolOutput, isSuccess, and optionally errorMessage.
-   * Streams AgentOSResponse chunks back.
+   * @description Endpoint for submitting the result of a tool execution back to AgentOS.
+   * This allows the agent to continue processing based on the tool's output.
+   * The request body should contain `streamId`, `toolCallId`, `toolName`, `toolOutput`, `isSuccess`, and optionally `errorMessage`.
+   * Responses are streamed back using SSE.
    *
    * @param {Request} req - Express request object.
-   * @param {Response} res - Express response object for SSE.
-   * @param {NextFunction} next - Express next middleware function.
-   * @returns {void}
+   * @param {Response} res - Express response object, configured for SSE streaming.
+   * @param {NextFunction} next - Express next middleware function for error handling.
+   * @returns {Promise<void>}
    */
   router.post('/tool_result', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const { streamId, toolCallId, toolName, toolOutput, isSuccess, errorMessage } = req.body;
     try {
-      const { streamId, toolCallId, toolName, toolOutput, isSuccess, errorMessage } = req.body;
-
-      if (!streamId || !toolCallId || !toolName || typeof isSuccess !== 'boolean') {
+      if (typeof streamId !== 'string' || typeof toolCallId !== 'string' || typeof toolName !== 'string' || typeof isSuccess !== 'boolean') {
         const validationError = new GMIError(
-          'Invalid tool result input: streamId, toolCallId, toolName, and isSuccess are required.',
+          'Invalid tool result input: streamId, toolCallId, toolName, and isSuccess (boolean) are required fields.',
           GMIErrorCode.VALIDATION_ERROR,
           { receivedBody: req.body },
-          undefined,
-          400
+          undefined, 400
         );
         return next(validationError);
       }
-      console.log(`[AgentOSRoutes] /tool_result: Received result for stream ${streamId}, tool ${toolName}, call ${toolCallId}`);
+      console.log(`[AgentOSRoutes][${new Date().toISOString()}] POST /tool_result: Received result for Stream: ${streamId}, Tool: ${toolName}, CallID: ${toolCallId}, Success: ${isSuccess}`);
 
       res.setHeader('Content-Type', 'text/event-stream');
       res.setHeader('Cache-Control', 'no-cache');
+      res.setHeader('X-Accel-Buffering', 'no');
       res.setHeader('Connection', 'keep-alive');
       res.flushHeaders();
 
       const heartbeatInterval = setInterval(() => {
         if (!res.writableEnded) {
-            res.write(`event: heartbeat\ndata: ${new Date().toISOString()}\n\n`);
+            try {
+                 res.write(`event: heartbeat\ndata: ${new Date().toISOString()}\n\n`);
+            } catch (e: any) {
+                console.error(`[AgentOSRoutes][${new Date().toISOString()}] POST /tool_result: Error writing heartbeat for stream ${streamId}: ${e.message}`);
+                clearInterval(heartbeatInterval);
+                if(!res.writableEnded) res.end();
+            }
         } else {
             clearInterval(heartbeatInterval);
         }
       }, 25000);
 
       res.on('close', () => {
-        console.log(`[AgentOSRoutes] /tool_result: Client disconnected for stream ${streamId}`);
+        console.log(`[AgentOSRoutes][${new Date().toISOString()}] POST /tool_result: Client disconnected for stream ${streamId}. Cleaning up heartbeat.`);
         clearInterval(heartbeatInterval);
-        res.end();
+        if(!res.writableEnded) res.end();
       });
 
       const responseGenerator = agentOSService.handleToolResult(streamId, toolCallId, toolName, toolOutput, isSuccess, errorMessage);
       for await (const chunk of responseGenerator) {
          if (res.writableEnded) { 
-            console.warn(`[AgentOSRoutes] /tool_result: Attempted to write to a closed response stream for ${streamId}.`);
+            console.warn(`[AgentOSRoutes][${new Date().toISOString()}] POST /tool_result: Attempted to write to a closed response stream for ${streamId}. Terminating response generation for this request.`);
             break;
         }
-        res.write(`id: ${chunk.timestamp}\nevent: ${chunk.type}\ndata: ${JSON.stringify(chunk)}\n\n`);
+        try {
+            res.write(`id: ${chunk.timestamp}\nevent: ${chunk.type}\ndata: ${JSON.stringify(chunk)}\n\n`);
+        } catch (e: any) {
+            console.error(`[AgentOSRoutes][${new Date().toISOString()}] POST /tool_result: Error writing chunk to stream ${streamId}: ${e.message}`, chunk);
+            clearInterval(heartbeatInterval);
+            if(!res.writableEnded) res.end();
+            break;
+        }
       }
 
       if (!res.writableEnded) {
-        res.write(`event: stream_end\ndata: {"message": "Tool result processing stream finished."}\n\n`);
-        res.end();
+        try {
+            res.write(`event: stream_end\ndata: ${JSON.stringify({ message: "AgentOS tool result processing stream finished."})}\n\n`);
+        } catch (e: any) {
+            console.error(`[AgentOSRoutes][${new Date().toISOString()}] POST /tool_result: Error writing stream_end event for ${streamId}: ${e.message}`);
+        } finally {
+           if (!res.writableEnded) res.end();
+        }
       }
 
     } catch (error: unknown) {
-      console.error(`[AgentOSRoutes] /tool_result: Error processing tool result:`, error);
       const gmiError = createGMIErrorFromError(
         error instanceof Error ? error : new Error(String(error)),
-        GMIErrorCode.TOOL_ERROR,
-        { route: '/tool_result', body: req.body },
+        GMIErrorCode.TOOL_ERROR, // More specific than INTERNAL_SERVER_ERROR if error is from tool result handling logic
+        { route: '/api/agentos/tool_result', body: req.body },
         'Failed to process tool result.'
       );
+      console.error(`[AgentOSRoutes][${new Date().toISOString()}] POST /tool_result: Unhandled error:`, gmiError.message, gmiError.details);
+      
        if (!res.headersSent) {
         return next(gmiError);
-      } else if (!res.writableEnded) {
+      } else if (!res.writableEnded){
         try {
-             const errorChunk: AgentOSErrorChunk = {
+             const errorChunkForClient: AgentOSErrorChunk = {
                 type: AgentOSResponseChunkType.ERROR,
-                streamId: req.body?.streamId || 'error-stream-tool_result',
-                gmiInstanceId: 'N/A',
-                personaId: 'N/A', // Persona ID might not be readily available here without more context
+                streamId: streamId || `error-stream-tool_result-${Date.now()}`,
+                gmiInstanceId: (gmiError.details as any)?.gmiInstanceId || 'N/A_Error',
+                personaId: (gmiError.details as any)?.personaId || 'N/A_Error',
                 isFinal: true,
                 timestamp: new Date().toISOString(),
                 code: gmiError.code.toString(),
                 message: gmiError.message,
                 details: gmiError.details || { name: gmiError.name },
             };
-            res.write(`event: ${AgentOSResponseChunkType.ERROR}\ndata: ${JSON.stringify(errorChunk)}\n\n`);
-        } catch (sseError) {
-            console.error(`[AgentOSRoutes] /tool_result: Failed to send error event over SSE:`, sseError);
+            res.write(`event: ${AgentOSResponseChunkType.ERROR}\ndata: ${JSON.stringify(errorChunkForClient)}\n\n`);
+        } catch (sseError: any) {
+            console.error(`[AgentOSRoutes][${new Date().toISOString()}] POST /tool_result: Failed to send error event over SSE after headers sent: ${sseError.message}`);
         } finally {
             if (!res.writableEnded) res.end();
         }
@@ -235,93 +275,110 @@ export function createAgentOSRoutes(agentOSService: IAgentOS): Router {
 
   /**
    * @route GET /api/agentos/personas
-   * @description Lists all available personas, potentially filtered by user context.
-   * @param {Request} req - Express request object. Query param `userId` can be used for filtering.
+   * @description Retrieves a list of available persona definitions.
+   * This can be used by client applications to allow users to select an agent persona.
+   * Optionally, a `userId` can be provided as a query parameter to filter personas
+   * based on user-specific access rights or subscription tiers.
+   *
+   * @param {Request} req - Express request object. Supports `userId` as a query parameter.
    * @param {Response} res - Express response object.
-   * @param {NextFunction} next - Express next middleware function.
+   * @param {NextFunction} next - Express next middleware function for error handling.
+   * @returns {Promise<void>} Sends a JSON array of partial persona definitions or calls `next(error)`.
    */
-  router.get('/personas', async (req: Request, res: Response, next: NextFunction) => {
+  router.get('/personas', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const userId = req.query.userId as string | undefined; // Assuming userId might be passed for filtering
+      const userId = req.query.userId as string | undefined;
+      if (userId && typeof userId !== 'string') {
+        return next(new GMIError('Invalid userId parameter: must be a string.', GMIErrorCode.VALIDATION_ERROR, { userId }, undefined, 400));
+      }
       const personas = await agentOSService.listAvailablePersonas(userId);
       res.json(personas);
     } catch (error: unknown) {
-      console.error(`[AgentOSRoutes] /personas: Error listing personas:`, error);
-      return next(createGMIErrorFromError(
+       const gmiError = createGMIErrorFromError(
         error instanceof Error ? error : new Error(String(error)),
-        GMIErrorCode.INTERNAL_SERVER_ERROR,
-        { route: '/personas' },
-        'Failed to list available personas.'
-      ));
+        GMIErrorCode.INTERNAL_SERVER_ERROR, // Could be more specific if agentOSService throws specific GMIError
+        { route: '/api/agentos/personas', userId: req.query.userId },
+        'Failed to retrieve the list of available personas.'
+      );
+      console.error(`[AgentOSRoutes][${new Date().toISOString()}] GET /personas: Error:`, gmiError.message, gmiError.details);
+      return next(gmiError);
     }
   });
 
   /**
    * @route GET /api/agentos/conversation/:conversationId
-   * @description Retrieves the history for a specific conversation.
-   * Requires `userId` as a query parameter for authorization.
-   * @param {Request<{conversationId: string}, {}, {}, {userId: string}>} req - Express request. `conversationId` from params, `userId` from query.
+   * @description Retrieves the history for a specific conversation, identified by `conversationId`.
+   * A `userId` query parameter is required for authorization to ensure users can only access
+   * conversations they are permitted to view.
+   *
+   * @param {Request<{conversationId: string}, {}, {}, {userId?: string}>} req - Express request object.
+   * `conversationId` is a URL parameter. `userId` is an optional query parameter (but functionally required by the handler).
    * @param {Response} res - Express response object.
-   * @param {NextFunction} next - Express next middleware function.
+   * @param {NextFunction} next - Express next middleware function for error handling.
+   * @returns {Promise<void>} Sends a JSON representation of the conversation history or calls `next(error)`.
    */
-  router.get('/conversation/:conversationId', async (req: Request<{conversationId: string}, {}, {}, {userId?: string}>, res: Response, next: NextFunction) => {
+  router.get('/conversation/:conversationId', async (req: Request<{conversationId: string}, {}, {}, {userId?: string}>, res: Response, next: NextFunction): Promise<void> => {
+    const { conversationId } = req.params;
+    const userId = req.query.userId;
+
     try {
-      const { conversationId } = req.params;
-      const userId = req.query.userId;
-
-      if (!userId) {
-        return next(new GMIError('User ID is required to fetch conversation history.', GMIErrorCode.VALIDATION_ERROR, { missingParam: 'userId' }, undefined, 400));
+      if (!userId || typeof userId !== 'string') {
+        return next(new GMIError('User ID (userId) query parameter is required and must be a string to fetch conversation history.', GMIErrorCode.VALIDATION_ERROR, { missingParam: 'userId', conversationId }, undefined, 400));
       }
-      if (!conversationId) {
-        return next(new GMIError('Conversation ID is required.', GMIErrorCode.VALIDATION_ERROR, { missingParam: 'conversationId' }, undefined, 400));
+      if (!conversationId) { // Should be caught by route definition, but good practice
+        return next(new GMIError('Conversation ID path parameter is required.', GMIErrorCode.VALIDATION_ERROR, { missingParam: 'conversationId' }, undefined, 400));
       }
 
-      const history = await agentOSService.getConversationHistory(conversationId, userId);
-      if (!history) {
-        return next(new GMIError(`Conversation history not found for ID '${conversationId}' or access denied.`, GMIErrorCode.RESOURCE_NOT_FOUND, { conversationId, userId }, undefined, 404));
+      const historyContext = await agentOSService.getConversationHistory(conversationId, userId);
+      if (!historyContext) {
+        // User might not have access, or conversation doesn't exist.
+        return next(new GMIError(`Conversation history not found for ID '${conversationId}' or access denied for user '${userId}'.`, GMIErrorCode.RESOURCE_NOT_FOUND, { conversationId, userIdAttempted: userId }, undefined, 404));
       }
-      res.json(history.toJSON()); // Assuming ConversationContext has a toJSON method
+      res.json(historyContext.toJSON()); // Assuming ConversationContext has a toJSON method for serialization
     } catch (error: unknown) {
-      console.error(`[AgentOSRoutes] /conversation/:conversationId : Error fetching history:`, error);
-       return next(createGMIErrorFromError(
+      const gmiError = createGMIErrorFromError(
         error instanceof Error ? error : new Error(String(error)),
-        GMIErrorCode.INTERNAL_SERVER_ERROR,
-        { route: `/conversation/${req.params.conversationId}` },
+        GMIErrorCode.INTERNAL_SERVER_ERROR, // Could be more specific if agentOSService throws specific GMIError
+        { route: `/api/agentos/conversation/${conversationId}`, userId },
         'Failed to retrieve conversation history.'
-      ));
+      );
+      console.error(`[AgentOSRoutes][${new Date().toISOString()}] GET /conversation/${conversationId}: Error:`, gmiError.message, gmiError.details);
+      return next(gmiError);
     }
   });
 
   /**
    * @route POST /api/agentos/feedback
-   * @description Submits user feedback for a specific interaction.
-   * Expects `userId`, `sessionId`, `personaId`, and `feedbackPayload` in the request body.
+   * @description Allows users to submit feedback on an agent's performance or a specific interaction.
+   * The request body must include `userId`, `sessionId`, `personaId`, and a `feedbackPayload` object.
+   *
    * @param {Request<{}, {}, {userId: string, sessionId: string, personaId: string, feedbackPayload: UserFeedbackPayload}>} req - Express request.
    * @param {Response} res - Express response object.
-   * @param {NextFunction} next - Express next middleware function.
+   * @param {NextFunction} next - Express next middleware function for error handling.
+   * @returns {Promise<void>} Sends a 202 Accepted response or calls `next(error)`.
    */
-  router.post('/feedback', async (req: Request<{}, {}, {userId: string, sessionId: string, personaId: string, feedbackPayload: UserFeedbackPayload}>, res: Response, next: NextFunction) => {
+  router.post('/feedback', async (req: Request<{}, {}, {userId: string, sessionId: string, personaId: string, feedbackPayload: UserFeedbackPayload}>, res: Response, next: NextFunction): Promise<void> => {
     try {
       const { userId, sessionId, personaId, feedbackPayload } = req.body;
-      if (!userId || !sessionId || !personaId || !feedbackPayload) {
+      if (!userId || !sessionId || !personaId || !feedbackPayload || typeof feedbackPayload !== 'object') {
          return next(new GMIError(
-          'Invalid feedback submission: userId, sessionId, personaId, and feedbackPayload are required.',
+          'Invalid feedback submission: userId, sessionId, personaId, and a valid feedbackPayload object are required.',
           GMIErrorCode.VALIDATION_ERROR,
           { receivedBody: req.body },
-          undefined,
-          400
+          undefined, 400
         ));
       }
       await agentOSService.receiveFeedback(userId, sessionId, personaId, feedbackPayload);
-      res.status(202).json({ message: 'Feedback received successfully and queued for processing.' });
+      res.status(202).json({ message: 'Feedback received successfully and has been queued for processing.' });
     } catch (error: unknown) {
-      console.error(`[AgentOSRoutes] /feedback: Error processing feedback:`, error);
-      return next(createGMIErrorFromError(
+      const gmiError = createGMIErrorFromError(
         error instanceof Error ? error : new Error(String(error)),
-        GMIErrorCode.GMI_FEEDBACK_ERROR,
-        { route: '/feedback', body: req.body },
-        'Failed to process user feedback.'
-      ));
+        GMIErrorCode.GMI_FEEDBACK_ERROR, // Specific error code for feedback issues
+        { route: '/api/agentos/feedback', bodyPreview: { userId: req.body.userId, sessionId: req.body.sessionId, personaId: req.body.personaId } },
+        'Failed to process user feedback submission.'
+      );
+      console.error(`[AgentOSRoutes][${new Date().toISOString()}] POST /feedback: Error:`, gmiError.message, gmiError.details);
+      return next(gmiError);
     }
   });
 

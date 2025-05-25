@@ -1,30 +1,53 @@
 // File: backend/middleware/i18n.ts
+/**
+ * @fileoverview Initializes and configures i18next for internationalization (i18n)
+ * within the Express application. It sets up language detection, translation
+ * file loading, and provides middleware and utility functions for handling
+ * translations in requests and responses.
+ *
+ * Key Features:
+ * - Initialization of i18next with filesystem backend for loading translations.
+ * - Language detection from headers, query parameters, cookies.
+ * - Normalization of language codes to supported formats.
+ * - Custom middleware to make specific translation functions available on Express `Request` objects.
+ * - Helper functions for translating keys and retrieving translation bundles.
+ *
+ * @module backend/middleware/i18n
+ */
 
-import i18next from 'i18next';
+import i18next, { i18n as I18nInstanceType, TFunction } from 'i18next';
 import i18nextFsBackend from 'i18next-fs-backend';
 import i18nextHttpMiddleware from 'i18next-http-middleware';
 import { Request, Response, NextFunction } from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-// @ts-ignore
+// @ts-ignore - Common workaround for __dirname in ESM
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 /**
- * Supported languages configuration
+ * Defines the list of BCP 47 language tags supported by the application.
+ * @constant {string[]} SUPPORTED_LANGUAGES
  */
-export const SUPPORTED_LANGUAGES = [
-  'en-US', 'es-ES', 'fr-FR', 'de-DE', 'it-IT', 
+export const SUPPORTED_LANGUAGES: readonly string[] = [
+  'en-US', 'es-ES', 'fr-FR', 'de-DE', 'it-IT',
   'pt-BR', 'ja-JP', 'ko-KR', 'zh-CN'
-];
-
-export const DEFAULT_LANGUAGE = 'en-US';
+] as const;
 
 /**
- * Language code mapping for shorter codes
+ * The default language to use if no language can be detected or if the
+ * detected language is not supported.
+ * @constant {string} DEFAULT_LANGUAGE
  */
-const LANGUAGE_MAP: Record<string, string> = {
+export const DEFAULT_LANGUAGE: typeof SUPPORTED_LANGUAGES[0] = 'en-US';
+
+/**
+ * Maps short language codes (e.g., "en") to their full supported BCP 47 counterparts (e.g., "en-US").
+ * @constant {Record<string, string>} LANGUAGE_MAP
+ * @private
+ */
+const LANGUAGE_MAP: Record<string, typeof SUPPORTED_LANGUAGES[number]> = {
   'en': 'en-US',
   'es': 'es-ES',
   'fr': 'fr-FR',
@@ -37,191 +60,251 @@ const LANGUAGE_MAP: Record<string, string> = {
 };
 
 /**
- * Initialize i18next with backend resources
+ * Asynchronously initializes the i18next instance.
+ * @async
+ * @private
+ * @function initializeI18n
+ * @returns {Promise<void>} A promise that resolves when i18next is successfully initialized.
  */
 async function initializeI18n(): Promise<void> {
+  if (i18next.isInitialized) {
+    return;
+  }
   await i18next
     .use(i18nextFsBackend)
     .use(i18nextHttpMiddleware.LanguageDetector)
     .init({
-      // Language settings
       lng: DEFAULT_LANGUAGE,
       fallbackLng: DEFAULT_LANGUAGE,
-      supportedLngs: SUPPORTED_LANGUAGES,
-      
-      // Namespace settings
+      supportedLngs: [...SUPPORTED_LANGUAGES],
       defaultNS: 'common',
       ns: ['common', 'auth', 'errors', 'emails', 'api'],
-      
-      // Backend configuration
       backend: {
-        loadPath: path.join(__dirname, '../locales/{{lng}}/{{ns}}.json'),
-        addPath: path.join(__dirname, '../locales/{{lng}}/{{ns}}.missing.json'),
+        loadPath: path.join(__dirname, '../../locales/{{lng}}/{{ns}}.json'),
+        addPath: path.join(__dirname, '../../locales/{{lng}}/{{ns}}.missing.json'),
       },
-      
-      // Detection settings
       detection: {
-        order: ['header', 'querystring', 'cookie', 'session'],
-        lookupHeader: 'accept-language',
+        order: ['querystring', 'cookie', 'header'],
         lookupQuerystring: 'lng',
-        lookupCookie: 'i18next',
-        lookupSession: 'lng',
+        lookupCookie: 'i18next-lng',
+        lookupHeader: 'accept-language',
         caches: ['cookie'],
-        cookieMinutes: 60 * 24 * 30, // 30 days
         cookieOptions: {
+          path: '/',
           httpOnly: true,
           secure: process.env.NODE_ENV === 'production',
           sameSite: 'strict',
+          maxAge: 60 * 60 * 24 * 30 * 1000,
         },
       },
-      
-      // Development settings
       saveMissing: process.env.NODE_ENV === 'development',
       debug: process.env.NODE_ENV === 'development',
-      
-      // Interpolation settings
       interpolation: {
-        escapeValue: false, // React already does escaping
+        escapeValue: false,
       },
-      
-      // React settings (for consistency with frontend)
       react: {
         useSuspense: false,
       },
     });
 
-  console.log('✅ i18next initialized successfully');
+  console.log('✅ i18next initialized successfully with filesystem backend.');
 }
 
 /**
- * Normalize language code to supported format
+ * Normalizes a given language code to one of the application's supported formats.
+ * @export
+ * @function normalizeLanguageCode
+ * @param {string} [lang] - The language code string to normalize.
+ * @returns {string} The normalized, supported language code, or the default language.
  */
-export function normalizeLanguageCode(lang?: string): string {
+export function normalizeLanguageCode(lang?: string): typeof SUPPORTED_LANGUAGES[number] {
   if (!lang) return DEFAULT_LANGUAGE;
-  
-  // Handle short codes (en -> en-US)
-  if (LANGUAGE_MAP[lang]) {
-    return LANGUAGE_MAP[lang];
+  const lowerLang = lang.toLowerCase().trim();
+
+  const supportedLangMatch = SUPPORTED_LANGUAGES.find(sl => sl.toLowerCase() === lowerLang);
+  if (supportedLangMatch) {
+    return supportedLangMatch;
   }
-  
-  // Handle full codes (en-US)
-  if (SUPPORTED_LANGUAGES.includes(lang)) {
-    return lang;
+
+  if (LANGUAGE_MAP[lowerLang]) {
+    return LANGUAGE_MAP[lowerLang];
   }
-  
-  // Handle partial matches (en-GB -> en-US)
-  const shortCode = lang.split('-')[0];
+
+  const shortCode = lowerLang.split('-')[0];
   if (LANGUAGE_MAP[shortCode]) {
     return LANGUAGE_MAP[shortCode];
   }
-  
   return DEFAULT_LANGUAGE;
 }
 
 /**
- * Custom language detection middleware
+ * Custom Express middleware for refining language detection and ensuring i18next state.
+ * This middleware should run AFTER `i18nextHttpMiddleware.handle` to leverage its detection
+ * and then apply any specific overrides or ensure custom request properties are set.
+ *
+ * @export
+ * @param {Request} req - Express request object.
+ * @param {Response} res - Express response object.
+ * @param {NextFunction} next - Express next middleware function.
  */
-export const languageDetectionMiddleware = (req: Request, res: Response, next: NextFunction): void => {
-  // Try to detect language from various sources
-  let detectedLang = DEFAULT_LANGUAGE;
-  
-  // 1. Check Authorization header for user preference (from JWT)
-  if (req.headers.authorization) {
-    try {
-      // This would be implemented with JWT decoding
-      // const token = req.headers.authorization.split(' ')[1];
-      // const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      // detectedLang = decoded.language || DEFAULT_LANGUAGE;
-    } catch (error) {
-      // Ignore JWT errors for language detection
-    }
+export const customLanguageHandlerMiddleware = (req: Request, res: Response, next: NextFunction): void => {
+  let languageToSet: string | undefined = req.lng;
+
+  // --- Begin Custom Override Logic ---
+  // Example: Prioritize a language from a JWT claim (if you implement this)
+  // const jwtPayload = decodeJwtFromRequest(req); // Your function to get payload
+  // if (jwtPayload && jwtPayload.languagePreference) {
+  //   languageToSet = jwtPayload.languagePreference;
+  // }
+
+  if (req.query.force_lang && typeof req.query.force_lang === 'string') {
+    languageToSet = req.query.force_lang;
   }
-  
-  // 2. Check query parameter
-  if (req.query.lang) {
-    detectedLang = normalizeLanguageCode(req.query.lang as string);
+  // --- End Custom Override Logic ---
+
+  const normalizedLang = normalizeLanguageCode(languageToSet);
+  req.customLanguage = normalizedLang;
+  const i18nInstanceForRequest = req.i18n || i18next;
+
+  if (i18nInstanceForRequest.language !== normalizedLang) {
+    // FIX (Error 4): Provide an explicit type for 'err' in the callback.
+    // The callback for changeLanguage is typically (err: Error | null | undefined, t: TFunction) => void
+    i18nInstanceForRequest.changeLanguage(normalizedLang, (err: Error | null | undefined) => {
+      if (err) {
+        console.error(`i18n: Error changing language to '${normalizedLang}' on i18next instance for request:`, err);
+      }
+      req.lng = normalizedLang;
+      res.setHeader('Content-Language', normalizedLang);
+      next();
+    });
+  } else {
+    if(req.lng !== normalizedLang) req.lng = normalizedLang;
+    res.setHeader('Content-Language', normalizedLang);
+    next();
   }
-  
-  // 3. Check Accept-Language header
-  if (!req.query.lang && req.headers['accept-language']) {
-    const acceptLanguage = req.headers['accept-language'];
-    const preferredLang = acceptLanguage.split(',')[0].split(';')[0];
-    detectedLang = normalizeLanguageCode(preferredLang);
-  }
-  
-  // 4. Check cookie
-  if (req.cookies?.i18next) {
-    detectedLang = normalizeLanguageCode(req.cookies.i18next);
-  }
-  
-  // Set the language for this request
-  req.language = detectedLang;
-  
-  // Set response header for frontend
-  res.setHeader('Content-Language', detectedLang);
-  
-  next();
 };
 
 /**
- * Translation helper function for use in routes
+ * A global translation helper function that wraps `i18next.t`.
+ * It ensures a string return type, falling back to the key if a string translation is not found.
+ *
+ * @export
+ * @function t
+ * @param {string} key - The translation key.
+ * @param {any} [options] - Options for i18next.t (e.g., interpolation values).
+ * @param {string} [language] - Optional. Specific language code. Defaults to current i18next language.
+ * @returns {string} The translated string, or the key as a fallback.
  */
 export function t(key: string, options?: any, language?: string): string {
-  const lng = language || DEFAULT_LANGUAGE;
-  return i18next.t(key, { ...options, lng });
+  const lngToUse = language || i18next.language || DEFAULT_LANGUAGE;
+  const resolvedOptions = { ...options, lng: lngToUse };
+  const translation = i18next.t(key, resolvedOptions);
+
+  if (typeof translation === 'string') {
+    return translation;
+  }
+
+  if (process.env.NODE_ENV === 'development') {
+    const valueType = typeof translation;
+    const valueStr = valueType === 'object' ? JSON.stringify(translation) : String(translation);
+    console.warn(
+      `i18n (global t): Expected string for key '${key}' (lang: '${lngToUse}'), received ${valueType}. Value: ${valueStr.substring(0, 100)}. Returning key.`
+    );
+  }
+  return key;
 }
 
 /**
- * Get translations for a specific namespace and language
+ * Retrieves the entire translation resource bundle for a specific namespace and language.
+ *
+ * @export
+ * @function getTranslations
+ * @param {string} namespace - The namespace for which to retrieve translations.
+ * @param {string} [language] - Optional. The language code. Defaults to current i18next language.
+ * @returns {Record<string, any>} Translations for the namespace and language. Empty object on failure.
  */
-export function getTranslations(namespace: string, language: string = DEFAULT_LANGUAGE): Record<string, any> {
-  const normalizedLang = normalizeLanguageCode(language);
-  
+export function getTranslations(namespace: string, language?: string): Record<string, any> {
+  const langToUse = normalizeLanguageCode(language || i18next.language || DEFAULT_LANGUAGE);
   try {
-    return i18next.getResourceBundle(normalizedLang, namespace) || {};
+    const bundle = i18next.getResourceBundle(langToUse, namespace);
+    return bundle || {};
   } catch (error) {
-    console.warn(`Failed to get translations for ${namespace}:${normalizedLang}`, error);
+    console.warn(`i18n: Failed to get translations for namespace '${namespace}' in language '${langToUse}'.`, error);
     return {};
   }
 }
 
 /**
- * Middleware to add translation helpers to request
+ * Express middleware that attaches custom, type-safe i18n helper functions
+ * (`translate` and `getLocaleBundles`) to the Express `Request` object.
+ * These helpers use the request's detected language.
+ *
+ * @export
+ * @param {Request} req - Express request object.
+ * @param {Response} res - Express response object.
+ * @param {NextFunction} next - Express next middleware function.
  */
-export const translationMiddleware = (req: Request, res: Response, next: NextFunction): void => {
-  const userLanguage = req.language || DEFAULT_LANGUAGE;
-  
-  // Add translation function to request
-  req.t = (key: string, options?: any) => t(key, options, userLanguage);
-  
-  // Add function to get full translation bundle
-  req.getTranslations = (namespace: string) => getTranslations(namespace, userLanguage);
-  
+export const customTranslationHelpersMiddleware = (req: Request, res: Response, next: NextFunction): void => {
+  const userLanguage = req.customLanguage || req.lng || DEFAULT_LANGUAGE;
+  const tForRequest = req.i18n ? req.i18n.t : (keyFromT: string, optionsFromT: any) => i18next.t(keyFromT, {...optionsFromT, lng: userLanguage});
+
+  req.translate = (key: string, options?: any): string => {
+    const translation = tForRequest(key, options);
+    if (typeof translation === 'string') {
+        return translation;
+    }
+    if (process.env.NODE_ENV === 'development') {
+        const valueType = typeof translation;
+        const valueStr = valueType === 'object' ? JSON.stringify(translation) : String(translation);
+        console.warn(
+        `i18n (req.translate): Expected string for key '${key}' (lang: '${userLanguage}'), received ${valueType}. Value: ${valueStr.substring(0,100)}. Returning key.`
+        );
+    }
+    return key;
+  };
+
+  req.getLocaleBundles = (namespace: string): Record<string, any> => {
+    return getTranslations(namespace, userLanguage);
+  };
+
   next();
 };
 
 /**
- * Express middleware setup for i18n
+ * Sets up and configures all i18n-related middleware for the Express application.
+ *
+ * @export
+ * @async
+ * @function setupI18nMiddleware
+ * @returns {Promise<Array<Function>>} A promise resolving to an array of Express middleware functions.
  */
-export async function setupI18nMiddleware() {
+export async function setupI18nMiddleware(): Promise<Array<(req: Request, res: Response, next: NextFunction) => void>> {
   await initializeI18n();
-  
+
   return [
     i18nextHttpMiddleware.handle(i18next),
-    languageDetectionMiddleware,
-    translationMiddleware,
+    customLanguageHandlerMiddleware,
+    customTranslationHelpersMiddleware,
   ];
 }
 
-// Type augmentation for Express Request
+// Type augmentation for the Express Request object.
 declare global {
   namespace Express {
     interface Request {
-      language?: string;
-      t?: (key: string, options?: any) => string;
-      getTranslations?: (namespace: string) => Record<string, any>;
+      i18n?: I18nInstanceType;
+      lng?: string;
+      languages?: string[];
+      t: TFunction; // This 't' is the standard one from i18next-http-middleware
+      customLanguage?: string;
+      translate?: (key: string, options?: any) => string;
+      getLocaleBundles?: (namespace: string) => Record<string, any>;
     }
   }
 }
 
+/**
+ * Exports the initialized i18next instance for direct use if needed elsewhere.
+ * @default i18next
+ */
 export default i18next;

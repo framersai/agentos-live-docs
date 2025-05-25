@@ -6,14 +6,16 @@
  * @module backend/agentos/cognitive_substrate/IGMI
  */
 
-import { IPersonaDefinition, MetaPromptDefinition } from './personas/IPersonaDefinition'; // Added MetaPromptDefinition
+import { IPersonaDefinition, MetaPromptDefinition } from './personas/IPersonaDefinition';
 import { IWorkingMemory } from './memory/IWorkingMemory';
 import { IPromptEngine } from '../core/llm/IPromptEngine';
 import { IRetrievalAugmentor } from '../rag/IRetrievalAugmentor';
-import { AIModelProviderManager } from '../core/llm/AIModelProviderManager'; // Corrected path
+// Assuming AIModelProviderManager is correctly exported from this path
+import { AIModelProviderManager } from '../core/llm/providers/AIModelProviderManager';
 import { IUtilityAI } from '../core/ai_utilities/IUtilityAI';
-import { IToolOrchestrator } from '../tools/IToolOrchestrator';
-import { ModelUsage, ChatMessage } from '../core/llm/providers/IProvider'; // Used ChatMessage
+// Assuming IToolOrchestrator is correctly exported from this path
+import { IToolOrchestrator } from '../core/tools/IToolOrchestrator';
+import { ModelUsage, ChatMessage } from '../core/llm/providers/IProvider';
 
 /**
  * Defines the possible moods a GMI can be in, influencing its behavior and responses.
@@ -41,7 +43,7 @@ export enum GMIPrimeState {
   READY = 'ready',
   PROCESSING = 'processing',
   AWAITING_TOOL_RESULT = 'awaiting_tool_result',
-  REFLECTING = 'reflecting',
+  REFLECTING = 'reflecting', // Added based on GMI.ts usage
   ERRORED = 'errored',
   SHUTTING_DOWN = 'shutting_down',
   SHUTDOWN = 'shutdown',
@@ -187,13 +189,18 @@ export enum GMIInteractionType {
 export interface GMITurnInput {
   interactionId: string;
   userId: string;
-  sessionId?: string;
+  sessionId?: string; // GMI specific session/conversation ID
   type: GMIInteractionType;
   content: string | ToolCallResult | ToolCallResult[] | Record<string, any> | Array<Record<string, any>>;
   timestamp?: Date;
   userContextOverride?: Partial<UserContext>;
   taskContextOverride?: Partial<TaskContext>;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, any> & {
+    options?: Partial<ModelCompletionOptions & { preferredModelId?: string; preferredProviderId?: string; toolChoice?: any; responseFormat?: any }>; // Added for GMI.ts usage
+    userApiKeys?: Record<string, string>; // Added for GMI.ts usage
+    userFeedback?: any; // Added for GMI.ts usage
+    explicitPersonaSwitchId?: string; // Added for GMI.ts usage
+  };
 }
 
 /**
@@ -206,10 +213,10 @@ export enum GMIOutputChunkType {
   REASONING_STATE_UPDATE = 'reasoning_state_update',
   FINAL_RESPONSE_MARKER = 'final_response_marker',
   ERROR = 'error',
-  SYSTEM_MESSAGE = 'system_message',
+  SYSTEM_MESSAGE = 'system_message', // Renamed from GMI.ts's SystemProgress to match Orchestrator
   USAGE_UPDATE = 'usage_update',
   LATENCY_REPORT = 'latency_report',
-  UI_COMMAND = 'ui_command', // Added to match GMI.ts usage
+  UI_COMMAND = 'ui_command',
 }
 
 /**
@@ -225,28 +232,8 @@ export interface GMIOutputChunk {
   isFinal?: boolean;
   finishReason?: string;
   usage?: ModelUsage;
-  errorDetails?: any;
+  errorDetails?: any; // Can hold GMIError.toPlainObject()
   metadata?: Record<string, any>;
-}
-
-/**
- * Represents the complete, non-chunked output of a GMI turn or significant processing step (like after a tool result).
- * This interface can be expanded to include more fields as needed for a full response.
- * @export
- * @interface GMIOutput
- */
-export interface GMIOutput {
-    isFinal: boolean;
-    responseText?: string | null;
-    toolCalls?: ToolCallRequest[];
-    uiCommands?: UICommand[]; // Using UICommand from IGMI.ts itself
-    audioOutput?: AudioOutputConfig; // Using AudioOutputConfig from IGMI.ts itself
-    imageOutput?: ImageOutputConfig; // Using ImageOutputConfig from IGMI.ts itself
-    usage?: CostAggregator;
-    reasoningTrace?: ReasoningTraceEntry[];
-    error?: { code: string; message: string; details?: any };
-    // Add other fields that constitute a complete GMI response if different from a chunk.
-    // For now, making it structurally similar to what might be aggregated from chunks.
 }
 
 /**
@@ -255,12 +242,12 @@ export interface GMIOutput {
  * @interface AudioOutputConfig
  */
 export interface AudioOutputConfig {
-    provider: string; // e.g., 'elevenlabs', 'browser_tts'
+    provider: string;
     voiceId?: string;
-    textToSpeak: string; // The text that was or should be spoken
-    url?: string; // URL to the generated audio file
-    format?: string; // e.g., 'mp3', 'wav'
-    languageCode?: string; // BCP-47
+    textToSpeak: string;
+    url?: string;
+    format?: string;
+    languageCode?: string;
     customParams?: Record<string, any>;
 }
 
@@ -270,11 +257,11 @@ export interface AudioOutputConfig {
  * @interface ImageOutputConfig
  */
 export interface ImageOutputConfig {
-    provider?: string; // e.g., 'dall-e', 'stable-diffusion'
+    provider?: string;
     promptUsed?: string;
-    imageUrl?: string; // URL to the generated image
-    base64Data?: string; // Base64 encoded image data
-    format?: string; // e.g., 'png', 'jpeg'
+    imageUrl?: string;
+    base64Data?: string;
+    format?: string;
     metadata?: Record<string, any>;
 }
 
@@ -284,10 +271,28 @@ export interface ImageOutputConfig {
  * @interface UICommand
  */
 export interface UICommand {
-    commandId: string; // e.g., 'render_block', 'show_notification', 'navigate_to'
-    targetElementId?: string; // Optional: ID of a UI element to target
-    payload: Record<string, any>; // Data for the command
+    commandId: string;
+    targetElementId?: string;
+    payload: Record<string, any>;
     metadata?: Record<string, any>;
+}
+
+/**
+ * Represents the complete, non-chunked output of a GMI turn or significant processing step.
+ * This is typically the TReturn type of an AsyncGenerator yielding GMIOutputChunk.
+ * @export
+ * @interface GMIOutput
+ */
+export interface GMIOutput {
+    isFinal: boolean;
+    responseText?: string | null;
+    toolCalls?: ToolCallRequest[];
+    uiCommands?: UICommand[];
+    audioOutput?: AudioOutputConfig;
+    imageOutput?: ImageOutputConfig;
+    usage?: CostAggregator;
+    reasoningTrace?: ReasoningTraceEntry[]; // Included for final consolidated trace
+    error?: { code: string; message: string; details?: any };
 }
 
 
@@ -295,7 +300,7 @@ export interface UICommand {
  * Types of entries that can appear in a GMI's reasoning trace.
  * @enum {string}
  */
-export enum ReasoningEntryType {
+export enum ReasoningEntryType { // Must be imported into GMIManager if used there
   LIFECYCLE = 'LIFECYCLE',
   INTERACTION_START = 'INTERACTION_START',
   INTERACTION_END = 'INTERACTION_END',
@@ -317,13 +322,13 @@ export enum ReasoningEntryType {
   RAG_QUERY_DETAIL = 'RAG_QUERY_DETAIL',
   RAG_QUERY_RESULT = 'RAG_QUERY_RESULT',
   RAG_INGESTION_START = 'RAG_INGESTION_START',
-  RAG_INGESTION_DETAIL = 'RAG_INGESTION_DETAIL', // Added this
+  RAG_INGESTION_DETAIL = 'RAG_INGESTION_DETAIL',
   RAG_INGESTION_COMPLETE = 'RAG_INGESTION_COMPLETE',
   SELF_REFLECTION_TRIGGERED = 'SELF_REFLECTION_TRIGGERED',
   SELF_REFLECTION_START = 'SELF_REFLECTION_START',
   SELF_REFLECTION_DETAIL = 'SELF_REFLECTION_DETAIL',
   SELF_REFLECTION_COMPLETE = 'SELF_REFLECTION_COMPLETE',
-  SELF_REFLECTION_SKIPPED = 'SELF_REFLECTION_SKIPPED', // Added this
+  SELF_REFLECTION_SKIPPED = 'SELF_REFLECTION_SKIPPED',
   MEMORY_LIFECYCLE_EVENT_RECEIVED = 'MEMORY_LIFECYCLE_EVENT_RECEIVED',
   MEMORY_LIFECYCLE_NEGOTIATION_START = 'MEMORY_LIFECYCLE_NEGOTIATION_START',
   MEMORY_LIFECYCLE_RESPONSE_SENT = 'MEMORY_LIFECYCLE_RESPONSE_SENT',
@@ -352,7 +357,8 @@ export interface ReasoningTraceEntry {
 export interface ReasoningTrace {
   gmiId: string;
   personaId: string;
-  turnId?: string;
+  turnId?: string; // Made optional as per GMI.ts usage
+  sessionId?: string; // Added based on GMI.ts usage (Error 41)
   entries: ReasoningTraceEntry[];
 }
 
@@ -425,7 +431,7 @@ export interface GMIHealthReport {
   };
   dependenciesStatus?: Array<{
     componentName: string;
-    status: 'HEALTHY' | 'UNHEALTHY' | 'DEGRADED' | 'UNKNOWN';
+    status: 'HEALTHY' | 'UNHEALTHY' | 'DEGRADED' | 'UNKNOWN' | 'ERROR'; // Added 'ERROR'
     details?: any;
   }>;
   recentErrors?: ReasoningTraceEntry[];
@@ -433,36 +439,40 @@ export interface GMIHealthReport {
   activeTurnsProcessed?: number;
 }
 
+/**
+ * Options for LLM completion, compatible with IProvider.ModelCompletionOptions.
+ * @interface ModelCompletionOptions
+ */
+export interface ModelCompletionOptions extends Record<string, any> {
+    temperature?: number;
+    maxTokens?: number;
+    topP?: number;
+    topK?: number;
+    presencePenalty?: number;
+    frequencyPenalty?: number;
+    stopSequences?: string[];
+    responseFormat?: { type: 'text' | 'json_object' }; // Simplified example
+    stream?: boolean;
+    userId?: string;
+    tools?: any[]; // Simplified, should align with IProvider if more specific tool definition is used there
+    toolChoice?: any; // Simplified
+}
 
 /**
  * @interface IGMI
  * @description Defines the contract for a Generalized Mind Instance (GMI).
  */
 export interface IGMI {
-  readonly gmiId: string;
+  readonly gmiId: string; // Corrected: was instanceId in AgentOSOrchestrator
   readonly creationTimestamp: Date;
 
   initialize(persona: IPersonaDefinition, config: GMIBaseConfig): Promise<void>;
-  getPersona(): IPersonaDefinition;
-  getGMIId(): string;
+  getPersona(): IPersonaDefinition; // Corrected: was getCurrentPersonaDefinition in AgentOSOrchestrator
+  getCurrentPrimaryPersonaId(): string; // Added for AgentOSOrchestrator
+  getGMIId(): string; // This or gmiId property directly.
   getCurrentState(): GMIPrimeState;
-  processTurnStream(turnInput: GMITurnInput): AsyncGenerator<GMIOutputChunk, void, undefined>;
+  processTurnStream(turnInput: GMITurnInput): AsyncGenerator<GMIOutputChunk, GMIOutput, undefined>; // Corrected TReturn to GMIOutput
 
-  /**
-   * Handles the result of a tool execution and continues processing.
-   * This method is called after an LLM-requested tool has been executed externally (or by ToolOrchestrator)
-   * and its result needs to be fed back to the GMI/LLM.
-   *
-   * @async
-   * @param {string} toolCallId - The ID of the original tool call request.
-   * @param {string} toolName - The name of the tool that was executed.
-   * @param {ToolResultPayload} resultPayload - The result of the tool execution (success or error).
-   * @param {string} userId - The ID of the user for context.
-   * @param {Record<string, string>} [userApiKeys] - Optional user-specific API keys for LLM providers.
-   * @returns {Promise<GMIOutput>} A promise that resolves to the GMI's complete output after processing the tool result.
-   * This output might include further text, new tool calls, or a final response.
-   * @throws {GMIError} If an error occurs during processing of the tool result.
-   */
   handleToolResult(
     toolCallId: string,
     toolName: string,

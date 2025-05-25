@@ -2,247 +2,314 @@
 
 ## 1. Overview
 
-The AgentOS Tool System is a foundational part of the platform, designed to empower Generative Mind Instances (GMIs) and other agents with the ability to interact with external systems, perform computations, fetch data, and execute a wide array of actions beyond their inherent generative capabilities.
+The AgentOS Tool System is a foundational pillar of the platform, empowering Generative Mind Instances (GMIs) and other AI agents with the ability to interact with the external world, perform computations, retrieve information, and execute a wide array of specialized actions beyond their innate generative capabilities. This system allows agents to overcome the limitations of their training data and perform real-time, contextually relevant tasks.
 
 **Core Principles**:
 
-* **Interface-Driven Design**: Tools adhere to a common `ITool` interface, promoting consistency and interoperability.
-* **Schema-Validated Interactions**: Tool inputs and outputs are defined by JSON schemas, ensuring clarity for LLMs and enabling robust validation.
-* **Permission-Controlled Execution**: Tool usage is governed by a permission system, checking Persona capabilities and user subscription tiers.
-* **Orchestrated Management**: A `ToolOrchestrator` serves as the central hub for tool registration, discovery, and invocation, working in concert with a `ToolExecutor` and `IToolPermissionManager`.
-* **Extensibility**: The system is designed to be easily extensible with new tools.
+* **Interface-Driven Design**: All tools adhere to a common `ITool` interface, ensuring consistency, interoperability, and clear contracts for development and integration.
+* **Schema-Validated Interactions**: Tool inputs and outputs are rigorously defined by JSON schemas. This enables LLMs to reliably construct valid tool calls and allows the system to validate arguments and results, enhancing robustness.
+* **Permission-Controlled Execution**: Tool usage is governed by a sophisticated permission system. The `ToolPermissionManager` checks if a Persona possesses the necessary capabilities and if the user's subscription tier grants access to specific tool-related features.
+* **Orchestrated Management**: A central `ToolOrchestrator` acts as the primary interface to the tool ecosystem. It manages tool registration, facilitates discovery by LLMs/GMIs, and coordinates the entire invocation pipeline, including permission checks and delegation to the `ToolExecutor`.
+* **Extensibility and Modularity**: The system is designed for easy extension with new custom tools, promoting a rich and growing ecosystem of capabilities for agents.
 
-This document outlines the key components, workflow, and best practices for developing and using tools within AgentOS.
+This document provides a comprehensive guide to understanding, using, and developing tools within the AgentOS framework.
 
 ---
 
 ## 2. Core Components & Their Roles 🧩
 
-The tool system comprises several key interfaces and classes:
+The tool system is composed of several interconnected interfaces and classes:
 
 ### 2.1. `ITool` Interface
 * **File**: `backend/agentos/core/tools/ITool.ts`
-* **Purpose**: The fundamental contract that every tool must implement.
+* **Purpose**: This is the fundamental contract that every tool within AgentOS must implement. It standardizes how tools declare their identity, purpose, input/output structures, required permissions, and execution logic.
 * **Key Properties**:
-    * `id: string`: Unique system-wide identifier (e.g., "web-search-tool-v1").
-    * `name: string`: Functional name used by LLMs for invocation (e.g., "searchWeb"). Must be unique among tools available to an LLM.
-    * `displayName: string`: Human-readable name (e.g., "Web Search").
-    * `description: string`: Detailed explanation of the tool's function, for LLM understanding and user documentation.
+    * `id: string`: A globally unique identifier for the tool (e.g., "web-search-tool-v1.2").
+    * `name: string`: The functional name used by LLMs for invocation (e.g., "searchWeb"). Must be unique among tools available to an LLM.
+    * `displayName: string`: A human-readable name (e.g., "Web Search").
+    * `description: string`: A detailed explanation of the tool's function, crucial for LLM understanding.
     * `inputSchema: JSONSchemaObject`: JSON schema defining expected input arguments.
     * `outputSchema?: JSONSchemaObject`: Optional JSON schema for the tool's successful output.
-    * `requiredCapabilities?: string[]`: Optional list of Persona capabilities needed to use the tool.
-    * `category?: string`: Organizational category (e.g., "Data Analysis", "Communication").
-    * `version?: string`: Tool version.
-    * `hasSideEffects?: boolean`: Indicates if the tool modifies external state.
+    * `requiredCapabilities?: string[]`: Optional list of Persona capabilities needed to use the tool (e.g., `"capability:filesystem:read"`).
+    * `category?: string`: Organizational category (e.g., "Data Analysis", "File System").
+    * `version?: string`: Tool version string.
+    * `hasSideEffects?: boolean`: Flag indicating if the tool modifies external state (default: `false`).
 * **Key Methods**:
-    * `execute(args: TInput, context: ToolExecutionContext): Promise<ToolExecutionResult<TOutput>>`: The core logic of the tool.
+    * `execute(args: TInput, context: ToolExecutionContext): Promise<ToolExecutionResult<TOutput>>`: The core method containing the tool's operational logic.
 
 ### 2.2. `Tool` Abstract Class
-* **File**: `backend/agentos/core/agents/tools/Tool.ts`
-* **Purpose**: A recommended abstract base class that implements `ITool`. Concrete tools should extend this class.
+* **File**: `backend/agentos/core/agents/tools/Tool.ts` (Note: Path relative to agents, but logically part of the tool system structure).
+* **Purpose**: A recommended abstract base class that implements `ITool`. Concrete tool implementations should extend this class to inherit common functionality and ensure adherence to the `ITool` contract.
 * **Features**:
-    * Initializes all `ITool` properties via its constructor.
-    * Declares `execute` as an abstract method, forcing subclasses to implement it.
-    * Provides default implementations for `validateArgs` (basic) and `shutdown` (no-op).
-    * Includes a `getDefinitionForLLM()` method to format tool information for LLMs.
+    * Provides a constructor to initialize all standard `ITool` properties.
+    * Declares the `execute` method as `public abstract`, forcing subclasses to provide their specific implementation.
+    * Offers default (often no-op) implementations for optional `ITool` methods like `validateArgs` and `shutdown`.
+    * Includes a `getDefinitionForLLM()` method to conveniently format the tool's essential information (`name`, `description`, `inputSchema`) into a `ToolDefinition` object suitable for LLM consumption.
 
-### 2.3. `ToolDefinition` Type (in `Tool.ts`)
-* **Purpose**: Defines the structure for describing a tool to an LLM.
+### 2.3. `ToolDefinition` Type (Defined in `Tool.ts`)
+* **Purpose**: Specifies the structure of information about a tool that is passed to Large Language Models. This enables LLMs to understand how to correctly format requests for tool execution (function calling).
 * **Properties**:
-    * `name: string`: Functional name.
-    * `description: string`: Tool description.
-    * `parameters: JSONSchemaObject`: Input schema (derived from `ITool.inputSchema`).
+    * `name: string`: The functional name of the tool.
+    * `description: string`: A detailed description of the tool's functionality.
+    * `parameters: JSONSchemaObject`: The JSON schema for the tool's input arguments (derived from `ITool.inputSchema`).
 
-### 2.4. `ToolExecutionContext` Interface (in `ITool.ts`)
-* **Purpose**: Provides context to a tool during its execution.
-* **Properties**: `gmiId`, `personaId`, `userContext`, `correlationId?`, `sessionData?`.
+### 2.4. `ToolExecutionContext` Interface (Defined in `ITool.ts`)
+* **Purpose**: Provides essential contextual information to a tool during its execution.
+* **Properties**:
+    * `gmiId: string`: ID of the GMI invoking the tool.
+    * `personaId: string`: ID of the active Persona.
+    * `userContext: UserContext`: Contextual information about the user (e.g., ID, preferences).
+    * `correlationId?: string`: Optional ID for tracing and correlating operations.
+    * `sessionData?: Record<string, any>`: Optional ephemeral session data.
 
-### 2.5. `ToolExecutionResult` Interface (in `ITool.ts`)
-* **Purpose**: Standardized format for the outcome of a tool's execution.
-* **Properties**: `success: boolean`, `output?: TOutput`, `error?: string`, `contentType?`, `details?`.
+### 2.5. `ToolExecutionResult` Interface (Defined in `ITool.ts`)
+* **Purpose**: A standardized structure for returning the outcome of a tool's execution.
+* **Properties**:
+    * `success: boolean`: `true` if execution was successful, `false` otherwise.
+    * `output?: TOutput`: The data produced by the tool (if successful).
+    * `error?: string`: A human-readable error message (if execution failed).
+    * `contentType?: string`: MIME type of the output (defaults to "application/json").
+    * `details?: Record<string, any>`: Additional metadata or error details.
 
 ### 2.6. `ToolExecutor` Class
 * **File**: `backend/agentos/core/tools/ToolExecutor.ts`
-* **Purpose**: Directly handles the validation of arguments against a tool's `inputSchema` (using Ajv) and invokes the `tool.execute()` method. It formats the outcome into a `ToolExecutionResult`.
-* **Responsibilities**: Argument validation, execution invocation, basic error packaging.
+* **Purpose**: Responsible for the direct execution of tools. It validates input arguments against the tool's `inputSchema` using the Ajv library and then calls the tool's `execute` method.
+* **Key Responsibilities**:
+    * Maintaining a registry of `ITool` instances.
+    * Performing JSON schema validation of tool arguments.
+    * Invoking the `tool.execute()` method with the validated arguments and `ToolExecutionContext`.
+    * Handling exceptions from tool execution and packaging results/errors into `ToolExecutionResult`.
+    * Registering default/example tools.
 
 ### 2.7. `IToolPermissionManager` Interface & `ToolPermissionManager` Class
 * **Files**: `backend/agentos/core/tools/IToolPermissionManager.ts`, `backend/agentos/core/tools/ToolPermissionManager.ts`
-* **Purpose**: Manages and enforces permissions for tool usage.
+* **Purpose**: Centralizes the logic for authorizing tool usage.
 * **Key Methods**:
-    * `isExecutionAllowed(context: PermissionCheckContext): Promise<PermissionCheckResult>`: Checks if a tool call is authorized based on Persona capabilities, user subscription features (via `ISubscriptionService`), and other rules.
-* **Key Types**:
-    * `PermissionCheckContext`: Input for permission checks.
-    * `PermissionCheckResult`: Output of permission checks.
-    * `ToolPermissionManagerConfig`: Configuration for its behavior.
+    * `isExecutionAllowed(context: PermissionCheckContext): Promise<PermissionCheckResult>`: Determines if a tool call is permitted by checking Persona capabilities against `tool.requiredCapabilities` and verifying user subscription features (via `ISubscriptionService`) against `toolToSubscriptionFeatures` mapping in its configuration.
+* **Key Associated Types**:
+    * `PermissionCheckContext`: Contains all necessary information (tool, persona, user) for a permission decision.
+    * `PermissionCheckResult`: The outcome of the permission check (`isAllowed`, `reason`).
+    * `ToolPermissionManagerConfig`: Configuration including `strictCapabilityChecking` and `toolToSubscriptionFeatures`.
 
 ### 2.8. `IToolOrchestrator` Interface & `ToolOrchestrator` Class
 * **Files**: `backend/agentos/core/tools/IToolOrchestrator.ts`, `backend/agentos/core/tools/ToolOrchestrator.ts`
-* **Purpose**: Acts as the central coordinator for the entire tool subsystem.
-* **Responsibilities**:
-    * Tool Registration: Manages an internal registry of available `ITool` instances.
-    * Tool Discovery: Provides methods like `listAvailableTools()` to get `ToolDefinitionForLLM` objects suitable for LLM consumption.
-    * Orchestrating Execution: When a GMI requests a tool call, the `ToolOrchestrator` uses the `IToolPermissionManager` to authorize the call and then delegates to the `ToolExecutor` to run the tool.
-* **Key Types**:
-    * `ToolDefinitionForLLM`: Standardized tool description for LLMs.
+* **Purpose**: Serves as the primary facade and central coordinator for all tool-related operations within AgentOS.
+* **Key Responsibilities**:
+    * **Tool Registration & Management**: Maintains an internal registry of `ITool` instances. Supports dynamic registration if configured.
+    * **Tool Discovery**: Implements `listAvailableTools()` to provide LLM-consumable `ToolDefinitionForLLM` objects, respecting permissions if context is provided.
+    * **Orchestrating Execution**: When `processToolCall()` is invoked (typically by a GMI or higher-level orchestrator), it:
+        1.  Retrieves the target `ITool` from its registry.
+        2.  Consults the `IToolPermissionManager` to authorize the call.
+        3.  If authorized, delegates the execution (including argument validation) to the `ToolExecutor`.
+        4.  Receives the `ToolExecutionResult` from the executor.
+        5.  Formats this into a `ToolCallResult` (as defined in `IGMI.ts`) and returns it to the caller.
+    * **Lifecycle Management**: Handles its own initialization and shutdown, including shutting down registered tools.
 
 ### 2.9. `ToolOrchestratorConfig` Interface
 * **File**: `backend/agentos/config/ToolOrchestratorConfig.ts`
 * **Purpose**: Defines configuration options for the `ToolOrchestrator`.
-* **Properties**: `defaultToolCallTimeoutMs`, `maxConcurrentToolCalls`, `logToolCalls`, `globalDisabledTools`, `toolRegistrySettings`.
+* **Key Properties**: `orchestratorId?`, `defaultToolCallTimeoutMs?`, `maxConcurrentToolCalls?`, `logToolCalls?`, `globalDisabledTools?`, `toolRegistrySettings?`.
 
 ---
 
 ## 3. Workflow of a Tool Call 🔄
 
-A typical tool call initiated by a GMI (or an agent) flows through the system as follows:
+The sequence of operations when an agent decides to use a tool is as follows:
 
-1.  **GMI Decision**: The GMI, based on its reasoning and the current context, decides to use a tool.
-2.  **Tool Call Request**: The GMI (or the LLM it uses) generates a `ToolCallRequest` (defined in `IGMI.ts`), specifying the tool's `name` and `arguments`.
-3.  **Orchestration Entry**: This request, along with contextual information (`gmiId`, `personaId`, `personaCapabilities`, `userContext`), is packaged into `ToolExecutionRequestDetails` and sent to `ToolOrchestrator.processToolCall()`.
-4.  **Permission Check**: The `ToolOrchestrator` retrieves the `ITool` instance from its registry. It then calls `IToolPermissionManager.isExecutionAllowed()` with a `PermissionCheckContext`.
-5.  **Authorization**: The `ToolPermissionManager` checks:
-    * If the Persona has the `tool.requiredCapabilities`.
-    * If the user's subscription tier (via `ISubscriptionService`) grants access to any `FeatureFlag`s associated with the tool in `ToolPermissionManagerConfig`.
-6.  **Execution (if permitted)**:
-    * The `ToolOrchestrator` passes the `ToolExecutionRequestDetails` to the `ToolExecutor.executeTool()`.
-    * The `ToolExecutor` validates the `toolCallRequest.function.arguments` against the `tool.inputSchema` using Ajv.
-    * If validation passes, the `ToolExecutor` calls the specific `tool.execute(parsedArgs, executionContext)` method.
-7.  **Result Handling**:
-    * The tool's `execute` method returns a `Promise<ToolExecutionResult>`.
-    * The `ToolExecutor` returns this result.
-    * The `ToolOrchestrator` takes the `ToolExecutionResult` and formats it into a `ToolCallResult` (defined in `IGMI.ts`), which includes the original `toolCallId`.
-8.  **Feedback to GMI**: The `ToolCallResult` is sent back to the GMI, which then processes the tool's output to continue its reasoning or formulate a response.
+1.  **Agent Decision**: An agent (e.g., a GMI driven by an LLM) determines that a tool is needed to fulfill the current request or goal.
+2.  **Request Formulation**: The agent/LLM generates a `ToolCallRequest` (see `IGMI.ts`), which includes:
+    * `id`: A unique ID for this specific call request (generated by the LLM).
+    * `function.name`: The functional name of the tool to be invoked (must match `ITool.name`).
+    * `function.arguments`: A JSON string (or pre-parsed object by the time it reaches `ToolExecutor`) representing the arguments for the tool, conforming to its `inputSchema`.
+3.  **Orchestration Request**: This `ToolCallRequest`, along with essential context (`gmiId`, `personaId`, `personaCapabilities`, `userContext`), is packaged into `ToolExecutionRequestDetails` and passed to `ToolOrchestrator.processToolCall()`.
+4.  **Tool Retrieval**: The `ToolOrchestrator` looks up the `ITool` instance in its registry using `toolCallRequest.function.name`. If not found, an error is returned.
+5.  **Permission Check**: The `ToolOrchestrator` creates a `PermissionCheckContext` and calls `IToolPermissionManager.isExecutionAllowed()`. The `ToolPermissionManager`:
+    * Verifies if the calling Persona possesses all capabilities listed in `tool.requiredCapabilities`.
+    * Checks if the user's subscription (via `ISubscriptionService`) grants access to any `FeatureFlag`s specifically mapped to this tool in its configuration.
+    * Returns a `PermissionCheckResult`. If not allowed, the orchestrator returns an error `ToolCallResult`.
+6.  **Execution Delegation (if permitted)**:
+    * The `ToolOrchestrator` passes the `ToolExecutionRequestDetails` to `ToolExecutor.executeTool()`.
+    * The `ToolExecutor`:
+        * Validates `toolCallRequest.function.arguments` against the `tool.inputSchema` using Ajv. If invalid, an error `ToolExecutionResult` is returned.
+        * Constructs a `ToolExecutionContext`.
+        * Invokes the `tool.execute(parsedArgs, executionContext)` method.
+7.  **Result Processing**:
+    * The specific `ITool` implementation performs its task and returns a `Promise<ToolExecutionResult>`. This result includes a `success` flag, `output` data (on success), or an `error` message (on failure).
+    * The `ToolExecutor` receives this result.
+    * The `ToolOrchestrator` receives the `CoreToolExecutionResult` from the executor and transforms it into a `ToolCallResult` (as defined in `IGMI.ts`), ensuring the `tool_call_id` from the original LLM request is included for correlation.
+8.  **Feedback to Agent**: The `ToolCallResult` is returned to the agent/GMI, which then uses the tool's output (or error information) to continue its reasoning process or formulate a response to the user.
 
 ---
 
 ## 4. Defining and Registering a New Tool ✍️
 
-To add a new tool to AgentOS:
+Developing and integrating a new tool into AgentOS involves these primary steps:
 
-1.  **Implement `ITool`**:
-    * It's highly recommended to create a new class that extends the abstract `Tool` class (from `backend/agentos/core/agents/tools/Tool.ts`).
-    * Provide all required properties in the constructor (ID, name, display name, description, input schema).
-    * The `name` property must be unique and suitable for LLM function calling.
-    * The `description` must be clear and comprehensive for the LLM.
-    * The `inputSchema` must be a valid JSON Schema object detailing all expected parameters, their types, and whether they are required.
+1.  **Implement the `ITool` Interface**:
+    * Create a new TypeScript class for your tool. It is **strongly recommended** to extend the abstract `Tool` class found in `backend/agentos/core/agents/tools/Tool.ts`.
+    * In your tool's constructor, call `super()` with an object containing all the required properties from the `ITool` interface:
+        * `id`: A unique, versioned string (e.g., "my-company-email-sender-v1.0").
+        * `name`: The LLM-callable function name (e.g., "sendEmail").
+        * `displayName`: A human-friendly name (e.g., "Email Sending Service").
+        * `description`: A clear, detailed description for the LLM and for documentation. Explain parameters and expected outcomes.
+        * `inputSchema`: A valid `JSONSchemaObject` defining all input parameters, their types (string, number, boolean, object, array), descriptions, and whether they are required. Use nested objects for complex parameters.
+        * `outputSchema` (optional but recommended): A `JSONSchemaObject` for the successful output structure.
+        * `requiredCapabilities` (optional): An array of capability strings if access to this tool should be restricted.
+        * `category` (optional): e.g., "Communication", "Data Processing".
+        * `version` (optional): e.g., "1.0.2".
+        * `hasSideEffects` (optional): `true` if the tool modifies external state (e.g., sends email, writes to DB). Defaults to `false`.
+    * Implement the `public abstract async execute(args: TInput, context: ToolExecutionContext): Promise<ToolExecutionResult<TOutput>>` method. This is where your tool's core logic resides.
+        * Perform the tool's action using the provided `args` and `context`.
+        * Handle any internal errors gracefully.
+        * Return a `ToolExecutionResult` object:
+            * Set `success: true` and populate `output` upon successful completion.
+            * Set `success: false` and provide an `error` message and optionally `details` upon failure.
+    * Optionally, override `validateArgs` for custom validation beyond JSON schema, or `shutdown` for resource cleanup.
 
     ```typescript
-    // Example: src/tools/MyCustomTool.ts
-    import { Tool, ToolDefinition, ToolExecutionContext, ToolExecutionResult } from '../../core/agents/tools/Tool';
-    import { JSONSchemaObject } from '../../core/tools/ITool'; // Path depends on ITool.ts location
+    // Example: backend/agentos/core/tools/implementations/SampleCalculatorTool.ts
+    import { Tool, ToolDefinition, ToolExecutionContext, ToolExecutionResult, JSONSchemaObject } from '../../agents/tools/Tool'; // Adjust path as needed
 
-    interface MyToolInput {
-      param1: string;
-      param2?: number;
+    interface CalculatorInput {
+      operation: 'add' | 'subtract' | 'multiply' | 'divide';
+      operand1: number;
+      operand2: number;
     }
 
-    interface MyToolOutput {
-      result: string;
-      processedValue: number;
+    interface CalculatorOutput {
+      result: number;
+      details: string;
     }
 
-    export class MyCustomTool extends Tool<MyToolInput, MyToolOutput> {
+    export class SampleCalculatorTool extends Tool<CalculatorInput, CalculatorOutput> {
       constructor() {
         super({
-          id: "my-custom-tool-v1",
-          name: "myCustomFunction", // Name for LLM
-          displayName: "My Custom Tool",
-          description: "This tool performs a custom action based on param1 and optional param2.",
+          id: "sample-calculator-v1.0",
+          name: "calculateNumericalExpression",
+          displayName: "Simple Calculator",
+          description: "Performs basic arithmetic operations (add, subtract, multiply, divide) on two numbers.",
           inputSchema: {
             type: "object",
             properties: {
-              param1: { type: "string", description: "The first required parameter." },
-              param2: { type: "number", description: "An optional second parameter." }
+              operation: { type: "string", enum: ["add", "subtract", "multiply", "divide"], description: "The arithmetic operation to perform." },
+              operand1: { type: "number", description: "The first number." },
+              operand2: { type: "number", description: "The second number." }
             },
-            required: ["param1"]
-          } as JSONSchemaObject, // Cast if your schema type is more specific
+            required: ["operation", "operand1", "operand2"]
+          } as JSONSchemaObject,
           outputSchema: {
             type: "object",
             properties: {
-              result: { type: "string" },
-              processedValue: { type: "number" }
+              result: { type: "number", description: "The result of the calculation." },
+              details: {type: "string", description: "A string describing the operation performed."}
             },
-            required: ["result", "processedValue"]
+            required: ["result", "details"]
           } as JSONSchemaObject,
-          category: "Custom Utilities",
+          category: "Utilities",
+          version: "1.0.0",
           hasSideEffects: false,
         });
       }
 
-      public async execute(args: MyToolInput, context: ToolExecutionContext): Promise<ToolExecutionResult<MyToolOutput>> {
+      public async execute(args: CalculatorInput, context: ToolExecutionContext): Promise<ToolExecutionResult<CalculatorOutput>> {
+        let resultValue: number;
         try {
-          // Your tool's logic here
-          const outputValue = (args.param1 || "").toUpperCase() + " - " + (args.param2 || 0);
+          switch (args.operation) {
+            case "add": resultValue = args.operand1 + args.operand2; break;
+            case "subtract": resultValue = args.operand1 - args.operand2; break;
+            case "multiply": resultValue = args.operand1 * args.operand2; break;
+            case "divide":
+              if (args.operand2 === 0) {
+                return { success: false, error: "Cannot divide by zero.", details: { operation: args.operation, operands: [args.operand1, args.operand2] } };
+              }
+              resultValue = args.operand1 / args.operand2;
+              break;
+            default:
+              // Should be caught by schema validation, but good to have a fallback
+              return { success: false, error: `Invalid operation: ${args.operation}` };
+          }
           return {
             success: true,
-            output: { result: "Success!", processedValue: (args.param2 || 0) * 2 }
+            output: { result: resultValue, details: `${args.operand1} ${args.operation} ${args.operand2} = ${resultValue}` }
           };
-        } catch (error: any) {
-          return {
-            success: false,
-            error: `MyCustomTool failed: ${error.message}`,
-            details: { stack: error.stack }
-          };
+        } catch (e: any) {
+          return { success: false, error: `Calculation error: ${e.message}`, details: { stack: e.stack } };
         }
       }
     }
     ```
 
-2.  **Register the Tool**:
-    * Tool instances need to be registered with the `ToolOrchestrator`. This is typically done during the orchestrator's initialization by passing an array of `ITool` instances.
-    * If `allowDynamicRegistration` is enabled in `ToolOrchestratorConfig`, tools can also be registered or unregistered at runtime using `toolOrchestrator.registerTool(new MyCustomTool())`.
+2.  **Register the Tool with `ToolOrchestrator`**:
+    * Typically, tools are instantiated and registered when the `ToolOrchestrator` itself is initialized. This is done by passing an array of `ITool` instances to `toolOrchestrator.initialize(..., ..., ..., [new MyCustomTool()])`.
+    * If `allowDynamicRegistration` is `true` in the `ToolOrchestratorConfig`, you can also register tools at runtime:
+        `await toolOrchestrator.registerTool(new MyCustomTool());`
 
 ---
 
-## 5. LLM Interaction 🤖
+## 5. LLM Interaction & Tool Definitions 🤖
 
-For LLMs to effectively use tools (via function/tool calling):
+For an LLM to effectively use tools (e.g., via OpenAI's function calling or Anthropic's tool use features), it needs clear and accurate definitions of the available tools.
 
-* The `ToolOrchestrator.listAvailableTools()` method provides a list of `ToolDefinitionForLLM` objects. This list is what should be passed to the LLM in its prompt.
-* **Crucial for LLM**:
-    * `name`: Must be precise and match what the LLM will output.
-    * `description`: Must clearly explain what the tool does, when to use it, and what it achieves. The LLM heavily relies on this to make decisions.
-    * `parameters` (from `inputSchema`): Must accurately define all input arguments, their types, and if they are required. Descriptions for each parameter are also vital.
+* The `ToolOrchestrator.listAvailableTools()` method returns an array of `ToolDefinitionForLLM` objects. This is the structure that should be formatted and provided to the LLM in its system prompt or as part of the API call options.
+* A `ToolDefinitionForLLM` includes:
+    * `name: string`: The exact function name the LLM must use.
+    * `description: string`: The LLM relies heavily on this to understand what the tool does, its parameters, and when it's appropriate to use it. **This description should be crafted for the LLM, not just for humans.**
+    * `inputSchema: JSONSchemaObject` (referred to as `parameters` by OpenAI): This schema tells the LLM the names, types, descriptions, and requirement status of each argument for the tool.
 
-Poorly defined descriptions or schemas will lead to the LLM misusing tools or failing to provide correct arguments.
+**Best Practices for LLM Tool Definitions**:
+* **Clarity and Conciseness**: Descriptions should be unambiguous and to the point.
+* **Parameter Descriptions**: Each property in the `inputSchema.properties` should have a clear `description` explaining what it is and any constraints or expected formats.
+* **Required Parameters**: Clearly mark required parameters in the `inputSchema.required` array.
+* **Enum for Choices**: If a parameter accepts a fixed set of string values, use `enum` in its schema definition.
+* **Iterate**: Test how the LLM interprets your tool descriptions and schemas, and refine them based on its behavior.
 
 ---
 
 ## 6. Configuration ⚙️
 
-* **`ToolOrchestratorConfig`** (`backend/agentos/config/ToolOrchestratorConfig.ts`):
-    * `logToolCalls`: Set to `true` for easier debugging of tool interactions.
-    * `globalDisabledTools`: Useful for quickly disabling tools system-wide.
-    * `toolRegistrySettings.allowDynamicRegistration`: Controls if tools can be added/removed after startup.
-* **`ToolPermissionManagerConfig`** (`backend/agentos/core/tools/IToolPermissionManager.ts`):
-    * `strictCapabilityChecking`: Enforces that Personas must have all capabilities listed in a tool's `requiredCapabilities`.
-    * `toolToSubscriptionFeatures`: Maps tools to specific `FeatureFlag`s that a user's subscription must grant access to.
+Key configuration files influence the tool system:
+
+* **`backend/agentos/config/ToolOrchestratorConfig.ts` (`ToolOrchestratorConfig`)**:
+    * `logToolCalls`: (Default: `true`) Essential for debugging. Set to `false` in production for performance if logs are too verbose.
+    * `globalDisabledTools`: A list of tool `name`s or `id`s to disable system-wide.
+    * `toolRegistrySettings.allowDynamicRegistration`: (Default: `true`) Controls if tools can be added/removed after the orchestrator starts.
+* **`backend/agentos/core/tools/IToolPermissionManager.ts` (`ToolPermissionManagerConfig`)**:
+    * `strictCapabilityChecking`: (Default: `true`) If `true`, a Persona must have *all* capabilities listed in a tool's `requiredCapabilities`.
+    * `toolToSubscriptionFeatures`: Maps tool `id`s or `name`s to arrays of `FeatureFlag` strings. The `ToolPermissionManager` uses this with `ISubscriptionService` to check if a user's plan grants access.
 
 ---
 
 ## 7. Best Practices for Tool Development ⭐
 
-* **Idempotency**: Design tools to be idempotent whenever possible (i.e., calling them multiple times with the same inputs yields the same result without unintended additional side effects).
-* **Clear Schemas**: Invest time in well-defined JSON schemas for inputs and outputs. Use descriptions for all properties.
-* **Robust Error Handling**: Within a tool's `execute` method, catch specific errors and return them in the `ToolExecutionResult.error` field with helpful `details`. Avoid letting unexpected exceptions bubble up.
-* **Security**:
-    * Be extremely cautious with tools that have side effects (`hasSideEffects: true`), especially those executing code, accessing files, or calling external APIs with write permissions.
-    * Validate and sanitize all inputs thoroughly, even after schema validation.
-    * Leverage `requiredCapabilities` and work with the `ToolPermissionManager` to ensure only authorized Personas/users can access sensitive tools.
-* **Single Responsibility**: Aim for tools that perform a specific, well-defined task. Avoid overly complex tools that try to do too much.
-* **Contextual Awareness**: Use the `ToolExecutionContext` if the tool needs information about the user, persona, or session to perform its task correctly.
-* **Documentation**: Besides the `description` for the LLM, maintain good internal documentation for complex tools.
+* **Single Responsibility Principle**: Design tools that perform one specific, well-defined task. Avoid creating monolithic tools that try to do too many unrelated things.
+* **Idempotency**: Where feasible, make tools idempotent. This means calling a tool multiple times with the same input should produce the same result or state change without unintended cumulative effects.
+* **Clear and Robust Schemas**: Invest significant effort in designing comprehensive and accurate JSON schemas for both `inputSchema` and `outputSchema`. Use descriptions for all properties.
+* **Thorough Error Handling**: Within each tool's `execute` method:
+    * Anticipate potential failure points.
+    * Catch specific exceptions.
+    * Return a `ToolExecutionResult` with `success: false`, a clear `error` message, and relevant `details` (e.g., error codes, context). Avoid letting raw exceptions propagate out of `execute` if possible.
+* **Security is Paramount**:
+    * **Input Sanitization/Validation**: Always assume inputs (even if schema-validated) could be crafted maliciously. Sanitize inputs if they are used in system commands, database queries, or API calls.
+    * **Principle of Least Privilege**: Tools should only have the minimum permissions necessary to perform their function.
+    * **Side Effects (`hasSideEffects: true`)**: Clearly flag tools that modify external state. The system (or GMI) might require user confirmation before executing such tools.
+    * **Secrets Management**: Never hardcode API keys or sensitive credentials within tool code. Use environment variables or a secure secrets management system, accessed via the `ToolExecutionContext` or injected configuration if absolutely necessary and handled securely.
+* **Contextual Awareness**: Leverage the `ToolExecutionContext` (e.g., `userContext`, `personaId`) if the tool's behavior needs to adapt based on the user or the calling agent.
+* **Comprehensive Documentation**:
+    * The `description` field in `ITool` is for the LLM.
+    * Maintain separate, detailed developer documentation for complex tools, explaining their internal logic, dependencies, and potential failure modes.
+* **Testability**: Design tools to be easily testable in isolation. Mock dependencies and use unit/integration tests.
+* **Performance**: Be mindful of the performance implications of your tool, especially if it involves network requests or heavy computation. Implement timeouts and efficient resource usage. Report execution duration if relevant.
 
 ---
 
-## 8. Future Enhancements (Conceptual) 🚀
+## 8. Future Enhancements & Considerations 🚀
 
-* **Tool Versioning**: More sophisticated handling of multiple tool versions.
-* **Dynamic Tool Loading**: Loading tools from external plugins or modules at runtime.
-* **Tool Usage Analytics**: Tracking tool usage, success/failure rates, and performance.
-* **Advanced Permission Scopes**: More granular permission controls beyond simple capability strings.
-* **Tool Chaining DSL**: A higher-level way for GMIs or developers to define sequences or graphs of tool calls.
-* **Automatic Schema Generation**: Utilities to help generate JSON schemas from TypeScript interfaces for tool inputs/outputs.
+* **Tool Versioning**: Implement more sophisticated strategies for managing and selecting between different versions of a tool.
+* **Dynamic Tool Discovery & Loading**: Allow the system to discover and load tools from external plugins, modules, or a remote registry at runtime.
+* **Tool Usage Analytics & Monitoring**: Integrate robust logging and metrics for tracking tool usage frequency, success/failure rates, execution times, and costs.
+* **Advanced Permission Scopes**: Introduce more granular permission controls beyond simple capability strings, possibly integrating with a more comprehensive RBAC/ABAC system.
+* **Tool Chaining & Composition**: Develop higher-level mechanisms or DSLs for defining and executing sequences or graphs of tool calls (workflows).
+* **Standardized Error Codes for Tools**: Define a common set of error codes that tools can use within their `ToolExecutionResult.details` for more consistent error handling by consuming systems.
+* **Automatic Schema Generation**: Utilities to help generate JSON schemas from TypeScript interfaces for tool inputs/outputs, reducing boilerplate.
 
-This tool system provides a powerful and extensible way to enhance the capabilities of AI agents within AgentOS.
+By adhering to these guidelines and leveraging the provided components, developers can build a powerful and reliable ecosystem of tools that significantly extend the capabilities of AgentOS.

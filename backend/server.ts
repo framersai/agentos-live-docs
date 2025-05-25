@@ -29,7 +29,8 @@ import { PrismaClient } from '@prisma/client';
 import prismaInstance, { connectToDatabase, disconnectFromDatabase } from './db';
 
 // FIXED: Core AgentOS Services and Managers with correct import paths
-import { IAuthService, AuthService } from './services/user_auth/AuthService';
+import { AuthService } from './services/user_auth/AuthService';
+import { IAuthService } from './services/user_auth/IAuthService';
 import { ISubscriptionService, SubscriptionService } from './services/user_auth/SubscriptionService';
 import { ILemonSqueezyService, LemonSqueezyService, LemonSqueezyConfig } from './services/payment/LemonSqueezyService';
 
@@ -75,7 +76,7 @@ import { ToolOrchestrator } from './agentos/core/tools/ToolOrchestrator';
 import { ToolOrchestratorConfig } from './agentos/core/tools/IToolOrchestrator';
 
 // FIXED: Import ToolPermissionManager from correct path
-import { ToolPermissionManager } from './agentos/core/tools/ToolPermissionManager';
+import { ToolPermissionManager } from './agentos/core/tools/permissions/ToolPermissionManager';
 import { ToolPermissionManagerConfig } from './agentos/core/tools/IToolPermissionManager';
 
 // FIXED: Create StreamingManager placeholder since it doesn't exist yet

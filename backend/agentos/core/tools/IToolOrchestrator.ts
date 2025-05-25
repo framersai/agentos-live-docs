@@ -12,10 +12,10 @@
  */
 
 import { ITool, JSONSchemaObject } from './ITool';
-import { IToolPermissionManager } from './IToolPermissionManager';
+import { IToolPermissionManager } from './permissions/IToolPermissionManager';
 import { ToolExecutor, ToolExecutionRequestDetails } from './ToolExecutor';
-import { ToolOrchestratorConfig } from '../config/ToolOrchestratorConfig';
-import { ToolCallResult, UserContext } from '../cognitive_substrate/IGMI';
+import { ToolOrchestratorConfig } from '../../config/ToolOrchestratorConfig';
+import { ToolCallResult, UserContext } from '../../cognitive_substrate/IGMI';
 
 /**
  * Represents the information about a tool that is suitable for an LLM

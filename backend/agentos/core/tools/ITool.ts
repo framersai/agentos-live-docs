@@ -8,8 +8,8 @@
  * @module backend/agentos/core/tools/ITool
  */
 
-import { GMIError } from '../../utils/errors';
-import { UserContext } from '../cognitive_substrate/IGMI';
+import { GMIError } from '../../../utils/errors';
+import { UserContext } from '../../cognitive_substrate/IGMI';
 
 /**
  * Represents a JSON schema definition.
@@ -51,7 +51,7 @@ export interface ToolExecutionResult<TOutput = any> {
   success: boolean;
   output?: TOutput;
   error?: string;
-  contentType?: string; // Default should be 'application/json' if not specified by tool
+  contentType?: string; 
   details?: Record<string, any>;
 }
 
