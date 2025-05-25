@@ -18,7 +18,7 @@ dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 // Initialize express app
 const app = express();
-const PORT = process.env.PORT || 3001;  // Changed from 3333 to 3001
+const PORT = process.env.PORT || 3333;  // Changed from 3333 to 3001
 
 // Middleware
 app.use(helmet());
