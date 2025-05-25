@@ -3,7 +3,7 @@
  * @description Handles requests to the /api/chat endpoint, processing chat messages
  * using the configured LLM services with conversation memory and tracking API usage costs.
  * Includes specialized system prompts for different modes, particularly a detailed structure for interview mode.
- * @version 2.2.1 // You might consider bumping this to 2.2.2 after fixes
+ * @version 2.2.1
  */
 
 import { Request, Response } from 'express';
@@ -21,44 +21,27 @@ import { callLlm } from '../../core/llm/llm.factory';
 import { LlmProviderId } from '../../core/llm/llm.config.service';
 import { CostService } from '../../core/cost/cost.service';
 import { MODEL_PREFERENCES, getModelPrice, ModelConfig } from '../../../config/models.config';
-// Corrected import for IChatCompletionParams
 import { IChatMessage, ILlmUsage, IChatCompletionParams } from '../../core/llm/llm.interfaces';
 
-/**
- * In-memory store for conversation histories.
- * For production, consider a more persistent and scalable solution like Redis or a database.
- * @interface IConversation
- */
 interface IConversation {
-  /** Array of messages in the conversation. */
   messages: IChatMessage[];
-  /** Timestamp of the last activity in this conversation. */
   lastActivity: number;
 }
 const conversationHistories = new Map<string, IConversation>();
 
-// Configuration constants from environment variables with defaults
 const MAX_HISTORY_MESSAGES_CONFIG = parseInt(process.env.MAX_CONVERSATIONAL_HISTORY_MESSAGES || '100', 10);
-const DEFAULT_HISTORY_MESSAGES_CONFIG = parseInt(process.env.DEFAULT_MAX_HISTORY_MESSAGES || '10', 10); // This is interpreted as PAIRS
+const DEFAULT_HISTORY_MESSAGES_CONFIG = parseInt(process.env.DEFAULT_MAX_HISTORY_MESSAGES || '10', 10);
 const MAX_PROMPT_TOKENS_CONFIG = parseInt(process.env.DEFAULT_MAX_PROMPT_TOKENS || '8000', 10);
 const SESSION_COST_THRESHOLD_USD = parseFloat(process.env.COST_THRESHOLD_USD_PER_SESSION || '2.00');
 const DISABLE_COST_LIMITS_CONFIG = process.env.DISABLE_COST_LIMITS === 'true';
 const LLM_DEFAULT_TEMPERATURE = parseFloat(process.env.LLM_DEFAULT_TEMPERATURE || '0.7');
 const LLM_DEFAULT_MAX_TOKENS = parseInt(process.env.LLM_DEFAULT_MAX_TOKENS || '2048', 10);
 
-
-/**
- * Loads a prompt template by its name from the /prompts directory at the project root.
- *
- * @param {string} templateName - The name of the prompt template (e.g., 'coding', 'system_design') without the .md extension.
- * @returns {string} The content of the prompt template. Returns a fallback if the template is not found.
- */
 function loadPromptTemplate(templateName: string): string {
   try {
     const promptPath = path.join(__projectRoot, 'prompts', `${templateName}.md`);
     if (!fs.existsSync(promptPath)) {
       console.warn(`ChatRoutes: Prompt template not found: ${promptPath}. Using default fallback for mode "${templateName}".`);
-      // Generic fallback prompt structure
       return `You are a helpful AI assistant operating in "{{MODE}}" mode.
 Current preferred programming language for code examples is {{LANGUAGE}}.
 The user is interacting with you in real-time. Messages may be part of an ongoing conversation, potentially with delays.
@@ -77,49 +60,31 @@ Adjust your responses and decision-making accordingly, maintaining context from 
   }
 }
 
-/**
- * Truncates conversation history to stay within estimated token limits.
- * Prioritizes keeping the system message (if any) and the most recent user/assistant messages.
- *
- * @param {IChatMessage[]} messages - The full list of messages including system and history.
- * @param {number} maxTokens - The maximum number of estimated tokens allowed for the prompt payload.
- * @returns {IChatMessage[]} The truncated list of messages.
- */
 function truncateHistoryByTokenEstimate(messages: IChatMessage[], maxTokens: number): IChatMessage[] {
   let estimatedTokens = 0;
   const truncatedMessages: IChatMessage[] = [];
   const systemMessage = messages.find(m => m.role === 'system');
 
   if (systemMessage) {
-    estimatedTokens += Math.ceil(systemMessage.content.length / 3.5); // Simple estimation
+    estimatedTokens += Math.ceil(systemMessage.content.length / 3.5);
     truncatedMessages.push(systemMessage);
   }
 
-  // Iterate from newest to oldest, skipping system message if already added
   for (let i = messages.length - 1; i >= 0; i--) {
     const msg = messages[i];
-    if (msg.role === 'system') continue; // Already handled
-
+    if (msg.role === 'system') continue;
     const msgTokens = Math.ceil(msg.content.length / 3.5);
     if (estimatedTokens + msgTokens <= maxTokens) {
-      truncatedMessages.splice(systemMessage ? 1 : 0, 0, msg); // Insert after system message or at the beginning
+      truncatedMessages.splice(systemMessage ? 1 : 0, 0, msg);
       estimatedTokens += msgTokens;
     } else {
       console.warn(`ChatRoutes: History truncated. Estimated tokens ${estimatedTokens + msgTokens} exceeded max ${maxTokens}. Last message considered: "${msg.content.substring(0,50)}..."`);
-      break; // Stop adding messages if limit exceeded
+      break;
     }
   }
   return truncatedMessages;
 }
 
-
-/**
- * Calculates the cost of an LLM interaction based on token usage and model pricing.
- *
- * @param {string} modelId - The ID of the LLM model used.
- * @param {ILlmUsage | undefined} usage - Token usage statistics from the LLM response.
- * @returns {number} The calculated cost in USD. Returns 0 if data is unavailable.
- */
 function calculateLlmCost(modelId: string, usage?: ILlmUsage): number {
   if (!usage || typeof usage.prompt_tokens !== 'number' || typeof usage.completion_tokens !== 'number') {
     console.warn(`ChatRoutes: Cost calculation skipped for model "${modelId}" due to missing or invalid usage data (prompt_tokens: ${usage?.prompt_tokens}, completion_tokens: ${usage?.completion_tokens}).`);
@@ -130,19 +95,13 @@ function calculateLlmCost(modelId: string, usage?: ILlmUsage): number {
     console.warn(`ChatRoutes: Cost calculation skipped. Pricing for model "${modelId}" not found.`);
     return 0;
   }
-  // Ensure prompt_tokens and completion_tokens are not null before calculation
   const promptTokens = usage.prompt_tokens ?? 0;
   const completionTokens = usage.completion_tokens ?? 0;
-
   const inputCost = (promptTokens / 1000) * modelPriceConfig.inputCostPer1K;
   const outputCost = (completionTokens / 1000) * modelPriceConfig.outputCostPer1K;
   return inputCost + outputCost;
 }
 
-/**
- * @typedef ChatRequestBody
- * @description Expected structure of the request body for the POST /api/chat endpoint.
- */
 interface ChatRequestBody {
   mode: string;
   messages: IChatMessage[];
@@ -150,21 +109,13 @@ interface ChatRequestBody {
   generateDiagram?: boolean;
   userId?: string;
   conversationId?: string;
-  maxHistoryMessages?: number; // Number of PAIRS of user/assistant messages
+  maxHistoryMessages?: number;
   systemPromptOverride?: string;
   tutorMode?: boolean;
   tutorLevel?: string;
   interviewMode?: boolean;
 }
 
-/**
- * Handles POST requests to /api/chat for processing chat messages.
- *
- * @async
- * @param {Request} req - Express request object.
- * @param {Response} res - Express response object.
- * @returns {Promise<void>}
- */
 export async function POST(req: Request, res: Response): Promise<void> {
   try {
     const {
@@ -184,10 +135,7 @@ export async function POST(req: Request, res: Response): Promise<void> {
     const effectiveUserId = (req as any).user?.id || userIdFromRequest;
 
     if (!currentRequestMessages || !Array.isArray(currentRequestMessages) || currentRequestMessages.length === 0) {
-      res.status(400).json({
-        message: 'Messages array is required and cannot be empty.',
-        error: 'INVALID_MESSAGES_PAYLOAD',
-      });
+      res.status(400).json({ message: 'Messages array is required and cannot be empty.', error: 'INVALID_MESSAGES_PAYLOAD'});
       return;
     }
 
@@ -216,28 +164,33 @@ export async function POST(req: Request, res: Response): Promise<void> {
     const historyToConsider = conversation.messages.slice(-effectiveMaxIndividualHistoryMessages);
 
     let modelIdForMode: string;
-    const modelPrefsKey = (mode in MODEL_PREFERENCES) ? mode as keyof typeof MODEL_PREFERENCES : 'default';
+    // Determine the key to use for MODEL_PREFERENCES. If mode specific key doesn't exist, fallback to 'default'.
+    const modelPrefsKey = (MODEL_PREFERENCES && mode in MODEL_PREFERENCES) ? mode as keyof typeof MODEL_PREFERENCES : 'default';
 
-    // Updated model selection logic
     if (interviewMode && mode === 'coding') {
       modelIdForMode = process.env.MODEL_PREF_INTERVIEW_TUTOR || MODEL_PREFERENCES.coding || MODEL_PREFERENCES.default;
-      console.log(`ChatRoutes: Interview Mode selected. Model: ${modelIdForMode} (Env: ${process.env.MODEL_PREF_INTERVIEW_TUTOR}, Pref.Coding: ${MODEL_PREFERENCES.coding})`);
+      console.log(`ChatRoutes: Interview Mode selected. Model: ${modelIdForMode}`);
     } else if (tutorMode && mode === 'coding') {
       modelIdForMode = process.env.MODEL_PREF_CODING_TUTOR || process.env.MODEL_PREF_INTERVIEW_TUTOR || MODEL_PREFERENCES.coding || MODEL_PREFERENCES.default;
-      console.log(`ChatRoutes: Tutor Mode selected. Model: ${modelIdForMode} (Env CodingTutor: ${process.env.MODEL_PREF_CODING_TUTOR}, Env InterviewTutor: ${process.env.MODEL_PREF_INTERVIEW_TUTOR}, Pref.Coding: ${MODEL_PREFERENCES.coding})`);
-    } else if (mode in MODEL_PREFERENCES) {
-        // Type assertion is safe due to the check `mode in MODEL_PREFERENCES`
-      modelIdForMode = MODEL_PREFERENCES[mode as keyof typeof MODEL_PREFERENCES];
+      console.log(`ChatRoutes: Tutor Mode selected. Model: ${modelIdForMode}`);
+    } else if (MODEL_PREFERENCES && MODEL_PREFERENCES[modelPrefsKey]) {
+      modelIdForMode = MODEL_PREFERENCES[modelPrefsKey];
     } else {
-      console.warn(`ChatRoutes: Mode "${mode}" not found in MODEL_PREFERENCES. Using default model: ${MODEL_PREFERENCES.default}`);
-      modelIdForMode = MODEL_PREFERENCES.default;
+      // This path is taken if modelPrefsKey is 'default' or if MODEL_PREFERENCES itself is undefined/empty.
+      // Ensure MODEL_PREFERENCES and MODEL_PREFERENCES.default are always validly defined in models.config.ts
+      const defaultModel = MODEL_PREFERENCES?.default || process.env.ROUTING_LLM_MODEL_ID || 'openai/gpt-4o-mini'; // Robust default
+      console.warn(`ChatRoutes: Mode "${mode}" (resolved to key "${modelPrefsKey}") not found in MODEL_PREFERENCES or MODEL_PREFERENCES is not fully configured. Using determined default model: ${defaultModel}`);
+      modelIdForMode = defaultModel;
     }
+
 
     let systemPromptContent: string;
     if (systemPromptOverride) {
       systemPromptContent = systemPromptOverride;
     } else {
-      const templateName = modelPrefsKey === 'default' ? 'general_chat' : modelPrefsKey;
+      // If mode was "general" and "general" was not in MODEL_PREFERENCES, modelPrefsKey became "default".
+      // Then templateName becomes "general_chat". This means "prompts/general_chat.md" is expected.
+      const templateName = modelPrefsKey === 'default' && mode === 'general' ? 'general_chat' : modelPrefsKey;
       let templateContent = loadPromptTemplate(templateName);
       templateContent = templateContent
         .replace(/{{LANGUAGE}}/g, language)
@@ -255,6 +208,7 @@ Your goal is to provide a fluid, natural, and contextually intelligent interacti
 `;
 
       if (interviewMode && mode === 'coding') {
+        // ... (interview instructions remain the same)
         additionalInstructions += `
 
 ## FAANG Senior Level Coding Interview Mode (ES4-ES5 Target Level) - STRICT RESPONSE STRUCTURE:
@@ -323,43 +277,47 @@ Present information in digestible chunks.
     console.log(`ChatRoutes: User [${effectiveUserId}] Conv [${conversationId}] Mode [${mode}] Model [${modelIdForMode}]`);
     console.log(`ChatRoutes: Sending ${finalApiMessages.length} messages to LLM. System prompt length: ${systemMessage.content.length} chars.`);
 
-    const llmParams: IChatCompletionParams = { // Type IChatCompletionParams is now imported
+    const llmParams: IChatCompletionParams = {
       temperature: LLM_DEFAULT_TEMPERATURE,
       max_tokens: LLM_DEFAULT_MAX_TOKENS,
-      user: effectiveUserId, // Pass effectiveUserId to LLM for tracking/moderation
+      user: effectiveUserId,
     };
 
+    // CRITICAL: The 'callLlm' function and the LLM services it uses (OpenAiLlmService, OpenRouterLlmService)
+    // are responsible for the following, which are CAUSING YOUR ERRORS:
+    // 1. If 'modelIdForMode' is 'openrouter/some/model' and 'routingProviderId' is 'openrouter',
+    //    the OpenRouterLlmService MUST strip 'openrouter/' before sending to OpenRouter API.
+    //    OpenRouter expects 'some/model', not 'openrouter/some/model'.
+    // 2. If 'callLlm' falls back to 'openai' provider, it MUST pass a VALID OpenAI model ID
+    //    (e.g., 'gpt-4o-mini', 'gpt-4o') to OpenAiLlmService, not the string 'openai'.
+    //    This might involve parsing 'modelIdForMode' or using a default OpenAI model.
     const llmResponse = await callLlm(
         finalApiMessages,
         modelIdForMode,
         llmParams,
-        process.env.ROUTING_LLM_PROVIDER_ID as LlmProviderId | undefined,
-        effectiveUserId // Pass user ID for potential internal LLM factory usage (e.g., logging, specific routing)
+        process.env.ROUTING_LLM_PROVIDER_ID as LlmProviderId | undefined, // e.g., 'openrouter'
+        effectiveUserId
     );
     const costOfThisCall = calculateLlmCost(llmResponse.model, llmResponse.usage);
 
     CostService.trackCost(
       effectiveUserId, 'llm', costOfThisCall, llmResponse.model,
-      // Correctly handle potential null from usage by converting to undefined
       llmResponse.usage?.prompt_tokens ?? undefined,
       llmResponse.usage?.completion_tokens ?? undefined,
       { conversationId, mode }
     );
     const sessionCostDetail = CostService.getSessionCost(effectiveUserId);
 
-    // Add current user message and assistant response to history
     currentRequestMessages.forEach(msg => conversation!.messages.push(msg));
     if (llmResponse.text) {
       conversation!.messages.push({ role: 'assistant', content: llmResponse.text });
     }
-    // Simple history cap, consider more sophisticated summarization/trimming for long conversations
-    if (conversation!.messages.length > MAX_HISTORY_MESSAGES_CONFIG * 2 + 50) { // Allow some buffer over strict limit
-        const numToSlice = MAX_HISTORY_MESSAGES_CONFIG * 2; // Keep the configured number of PAIRS
+    if (conversation!.messages.length > MAX_HISTORY_MESSAGES_CONFIG * 2 + 50) {
+        const numToSlice = MAX_HISTORY_MESSAGES_CONFIG * 2;
         console.log(`ChatRoutes: Trimming conversation history for ${historyKey} from ${conversation!.messages.length} to ~${numToSlice} messages.`);
         conversation!.messages = conversation!.messages.slice(-numToSlice);
-        // Placeholder: Here you might trigger a summarization process for the trimmed part
     }
-    conversationHistories.set(historyKey, conversation!); // Update the map
+    conversationHistories.set(historyKey, conversation!);
 
     res.status(200).json({
       content: llmResponse.text,
@@ -368,37 +326,32 @@ Present information in digestible chunks.
       sessionCost: sessionCostDetail,
       costOfThisCall: costOfThisCall,
       conversationId,
-      historySize: conversation?.messages.length, // Current size after adding new messages
+      historySize: conversation?.messages.length,
     });
 
   } catch (error: any) {
-    console.error('ChatRoutes: Error in /api/chat POST endpoint:', error.stack || error);
+    console.error('ChatRoutes: Error in /api/chat POST endpoint:', error.stack || error); // Log the full stack
     if (res.headersSent) return;
 
     let errorMessage = 'Error processing chat request.';
     let statusCode = 500;
     let errorCode = 'CHAT_PROCESSING_ERROR';
 
+    // Specific error checks from your existing code (looks reasonable)
     if (error.message?.includes('API key') || error.response?.data?.error?.message?.includes('API key')) {
       errorMessage = 'AI service provider API key is invalid or missing.';
-      statusCode = 503; // Service Unavailable (misconfigured external service)
-      errorCode = 'API_KEY_ERROR';
+      statusCode = 503; errorCode = 'API_KEY_ERROR';
     } else if (error.message?.includes('rate limit') || error.status === 429 || error.response?.status === 429) {
       errorMessage = 'AI service rate limit exceeded. Please try again later.';
-      statusCode = 429;
-      errorCode = 'RATE_LIMIT_EXCEEDED';
+      statusCode = 429; errorCode = 'RATE_LIMIT_EXCEEDED';
     } else if (error.code === 'ECONNABORTED' || error.message?.toLowerCase().includes('timeout')) {
         errorMessage = 'Request to AI service timed out. Please try again.';
-        statusCode = 408; // Request Timeout
-        errorCode = 'REQUEST_TIMEOUT';
+        statusCode = 408; errorCode = 'REQUEST_TIMEOUT';
     } else if (error.response?.data?.error?.type === 'insufficient_quota' || error.message?.includes('credits')) {
         errorMessage = 'AI service account has insufficient funds or quota exceeded.';
-        statusCode = 402; // Payment Required
-        errorCode = 'INSUFFICIENT_FUNDS_OR_QUOTA';
+        statusCode = 402; errorCode = 'INSUFFICIENT_FUNDS_OR_QUOTA';
     } else if (error.status) { // For errors from 'http-errors' or similar libraries
-        statusCode = error.status;
-        errorMessage = error.message || errorMessage;
-        errorCode = error.code || errorCode;
+        statusCode = error.status; errorMessage = error.message || errorMessage; errorCode = error.code || errorCode;
     } else if (error.response?.status) { // For errors from Axios or other HTTP clients
         statusCode = error.response.status;
         errorMessage = error.response.data?.message || error.response.data?.error?.message || errorMessage;
