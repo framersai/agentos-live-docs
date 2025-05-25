@@ -8,7 +8,7 @@ export default {
   theme: {
     extend: {
       spacing: {
-        '18': '4.5rem', // Defines 18 for w-18, h-18, p-18, m-18, etc. (Value: 72px)
+        '18': '4.5rem',
       },
       colors: {
         primary: {
@@ -23,19 +23,30 @@ export default {
           800: '#1e40af',
           900: '#1e3a8a',
         },
+        gray: {
+          850: '#182134',
+        }
       },
       fontFamily: {
         sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
         mono: ['JetBrains Mono', 'Consolas', 'monospace'],
       },
+      fontSize: { // Added 'md' here
+        'xs': '0.75rem',   /* 12px */
+        'sm': '0.875rem',  /* 14px */
+        'md': '1rem',      /* 16px, equivalent to text-base */
+        'base': '1rem',    /* 16px (Tailwind default) */
+        'lg': '1.125rem',  /* 18px */
+        'xl': '1.25rem',   /* 20px */
+        // Add other sizes as needed
+      },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-in-out',
         'slide-up': 'slideUp 0.5s ease-out',
         'pop-in': 'popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
-        // Animations from main.css, now usable as utilities e.g., animate-voice-pulse
         'voice-pulse': 'voice-pulse 2s infinite ease-in-out',
-        'loading-dots': 'loading-dots 1.4s ease-in-out infinite both',
-        'shimmer': 'shimmer 2s infinite linear', // Adjusted duration and timing
+        'loading-dots': 'loading-dots 1.4s ease-in-out infinite both', // Note: keyframe name is 'loading-dots' but main.css uses 'dot-loader-anim'
+        'shimmer': 'shimmer 2s infinite linear',
         'gradient-shift': 'gradient-shift 10s ease infinite',
         'bounce-subtle': 'bounce-subtle 1.5s infinite ease-in-out',
         'wiggle': 'wiggle 1.5s ease-in-out infinite',
@@ -58,11 +69,16 @@ export default {
           '70%': { transform: 'scale(1.3)', opacity: '0' },
           '100%': { transform: 'scale(0.95)', opacity: '0' },
         },
-        'loading-dots': {
-          '0%, 80%, 100%': { transform: 'scale(0)', opacity: '0.5' },
+        'loading-dots': { // For animate-loading-dots
+          '0%, 80%, 100%': { transform: 'scale(0)', opacity: '0.5' }, // Original uses scale(0)
           '40%': { transform: 'scale(1)', opacity: '1' },
         },
-        'shimmer': { // A common shimmer effect
+        // Ensure 'dot-loader-anim' from main.css @layer utilities is consistent or defined here if used as animate-dot-loader-anim
+        'dot-loader-anim': { // As defined in main.css @layer utilities for .dots-loader
+            '0%, 80%, 100%': { transform: 'scale(0.5)', opacity: '0.5' },
+            '40%': { transform: 'scale(1)', opacity: '1' },
+        },
+        'shimmer': {
           '0%': { backgroundPosition: '-200% center' },
           '100%': { backgroundPosition: '200% center' },
         },
@@ -87,6 +103,5 @@ export default {
   },
   plugins: [
     require('@tailwindcss/typography'),
-    // Consider adding require('@tailwindcss/forms') for better default form styling if needed
   ],
 }

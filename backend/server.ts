@@ -1,5 +1,12 @@
 // File: backend/server.ts
-import express from 'express';
+/**
+ * @file Main backend server setup for the Voice Coding Assistant.
+ * @version 1.0.1 - Added fs import for existsSync.
+ * @description Initializes an Express application, configures middleware (CORS, Helmet, Morgan, etc.),
+ * sets up API routes, serves the frontend in production, and handles global errors.
+ */
+
+import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
@@ -7,118 +14,167 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
+import fs from 'fs'; // <-- Added import for 'fs' module
+
+// Assuming these are compiled to .js in the same directory structure or tsx/ts-node is used
 import { configureRouter } from './config/router.js';
 import { authMiddleware } from './middleware/auth.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Load environment variables from root directory
-dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+// Load environment variables from the project root directory
+// This assumes .env file is in the parent directory of the 'backend' folder (i.e., project root)
+// If server.ts is in 'backend/src/', this should be path.resolve(__dirname, '../../.env')
+// Given the current path, it implies server.ts is in 'backend/server.ts'
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
-// Initialize express app
 const app = express();
-const PORT = process.env.PORT || 3333;  // Changed from 3333 to 3001
+const PORT = process.env.PORT || 3001;
+const NODE_ENV = process.env.NODE_ENV || 'development';
 
-// Middleware
-app.use(helmet());
-app.use(morgan('dev'));
-app.use(cookieParser());
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+// Core Middleware
+app.use(helmet()); // Secure app by setting various HTTP headers
+app.use(morgan(NODE_ENV === 'development' ? 'dev' : 'combined')); // HTTP request logger
+app.use(cookieParser()); // Parse Cookie header
+app.use(express.json({ limit: '50mb' })); // Parse JSON request bodies
+app.use(express.urlencoded({ extended: true, limit: '50mb' })); // Parse URL-encoded request bodies
 
-// Configure CORS
-app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',  // Changed from 3000 to 3000 (correct)
+// CORS Configuration
+const corsOptions = {
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000', // Default to common Vue dev port
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-  credentials: true
-}));
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'X-Requested-With',
+    'X-CSRF-Token',
+    'X-Client-Version' // <-- Added this header
+  ],
+  credentials: true,
+  optionsSuccessStatus: 200 // Some legacy browsers choke on 204
+};
+app.use(cors(corsOptions));
+// Explicitly handle OPTIONS preflight requests for all routes
+app.options('*', cors(corsOptions));
 
-// Handle OPTIONS requests for CORS preflight
-app.options('*', cors());
-
-// Health check endpoint (no auth required)
-app.get('/health', (req, res) => {
-  res.status(200).json({ 
-    status: 'OK', 
+// Health Check Endpoint (Publicly Accessible)
+app.get('/health', (req: Request, res: Response) => {
+  res.status(200).json({
+    status: 'OK',
     timestamp: new Date().toISOString(),
-    port: PORT 
+    message: `Backend server is healthy on port ${PORT}.`,
+    environment: NODE_ENV,
   });
 });
 
-// Set up API routes with authentication middleware
-const setupRoutes = async () => {
+// API Routes Setup
+const setupApiRoutes = async (): Promise<void> => {
   try {
-    const router = await configureRouter();
-    
-    // All /api routes will go through authMiddleware
-    app.use('/api', authMiddleware, router);
-    
-    // Add a catch-all for unmatched API routes
-    app.use('/api/*', (req, res) => {
+    const apiRouter = await configureRouter(); // configureRouter should return an express.Router instance
+
+    // Apply authentication middleware to all /api routes.
+    // The authMiddleware should have its own logic to exclude specific paths like /api/auth/login if needed.
+    app.use('/api', authMiddleware, apiRouter);
+
+    // Centralized 404 handler for API routes not matched by apiRouter
+    // This should be the last middleware for the /api path.
+    app.use('/api', (req: Request, res: Response) => {
+      const availableEndpoints = [ // This list should be dynamically generated or maintained carefully
+        'POST /api/auth (Login)',
+        'GET /api/auth (Check Status)',
+        'DELETE /api/auth (Logout)',
+        'POST /api/chat (Process Chat)',
+        'POST /api/diagram (Generate Diagram)',
+        'POST /api/stt (Transcribe Audio - formerly /api/speech)', // Assuming new path
+        'GET /api/stt/stats (STT Stats - formerly /api/speech/stats)',
+        'POST /api/tts (Synthesize Speech)',
+        'GET /api/tts/voices (List TTS Voices)',
+        'GET /api/cost (Get Session Cost)',
+        'POST /api/cost (Reset Session Cost)',
+      ];
       res.status(404).json({
-        message: `API endpoint not found: ${req.method} ${req.path}`,
+        message: `API endpoint not found: ${req.method} ${req.originalUrl}`,
         error: 'ENDPOINT_NOT_FOUND',
-        availableEndpoints: [
-          'POST /api/auth',
-          'POST /api/chat', 
-          'GET /api/cost',
-          'POST /api/cost',
-          'POST /api/speech',
-          'GET /api/speech'
-        ]
+        availableApiRoutes: availableEndpoints, // More descriptive key
       });
     });
-    
-    // Serve static frontend in production
-    if (process.env.NODE_ENV === 'production') {
-      const frontendDistPath = path.join(__dirname, '../../frontend/dist');
-      app.use(express.static(frontendDistPath));
-      
-      app.get('*', (req, res) => {
-        res.sendFile(path.join(frontendDistPath, 'index.html'));
-      });
-    }
-    
-    // Start server
-    app.listen(PORT, () => {
-      console.log(`🚀 Server running on port ${PORT}`);
-      console.log(`📡 Frontend URL configured for CORS: ${process.env.FRONTEND_URL || 'http://localhost:3000'}`);
-      console.log(`🔑 Auth password configured: ${process.env.PASSWORD ? 'Yes' : 'No'}`);
-      
-      if (!process.env.PASSWORD) {
-        console.warn('⚠️  WARNING: PASSWORD is not set in the .env file. Authentication will fail.');
-      }
-      
-      // Log available routes
-      console.log('📋 Available API endpoints:');
-      console.log('   POST /api/auth - Authentication');
-      console.log('   POST /api/chat - Chat with AI');
-      console.log('   GET  /api/cost - Get session cost');
-      console.log('   POST /api/cost - Reset session cost');
-      console.log('   POST /api/speech - Transcribe audio');
-      console.log('   GET  /api/speech - Get speech stats');
-    });
+
   } catch (error) {
-    console.error('❌ Failed to configure routes:', error);
-    throw error;
+    console.error('❌ Failed to configure API routes:', error);
+    throw error; // Propagate error to be caught by main startup
   }
 };
 
-// Global error handling middleware (should be last)
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error('Global error handler:', err.stack);
-  res.status(err.status || 500).json({
-    message: err.message || 'Something went wrong on the server.',
-    error: process.env.NODE_ENV === 'production' ? {} : { message: err.message, stack: err.stack }
-  });
+
+// Static Frontend Serving (Production Only)
+if (NODE_ENV === 'production') {
+  // Path assumes server.ts is in 'backend/', and 'frontend/' is a sibling directory
+  const frontendDistPath = path.join(__dirname, '../frontend/dist');
+  console.log(`Production mode: Attempting to serve frontend from ${frontendDistPath}`);
+
+  if (fs.existsSync(frontendDistPath)) {
+    app.use(express.static(frontendDistPath));
+    // SPA Fallback: For any GET request not handled by API or static files, serve index.html
+    app.get('*', (req: Request, res: Response) => {
+      // Check if the request looks like an API call to avoid SPA fallback for missing API endpoints
+      if (req.originalUrl.startsWith('/api/')) {
+        // This case should ideally be handled by the API 404 handler above
+        res.status(404).json({ message: 'API endpoint not found via SPA fallback.' });
+      } else {
+        res.sendFile(path.resolve(frontendDistPath, 'index.html'));
+      }
+    });
+    console.log(`Serving static files from ${frontendDistPath} and SPA fallback enabled.`);
+  } else {
+    console.warn(`⚠️ WARNING: Production mode detected, but frontend distribution path not found at ${frontendDistPath}. Frontend will not be served by this server.`);
+  }
+}
+
+// Global Error Handling Middleware
+// This must be the last piece of middleware added.
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  console.error('Global Error Handler:', err.name, '-', err.message);
+  if (NODE_ENV === 'development' && err.stack) {
+    console.error(err.stack);
+  }
+
+  // If headers have already been sent, delegate to the default Express error handler
+  if (res.headersSent) {
+    return next(err);
+  }
+
+  const statusCode = err.status || err.statusCode || 500;
+  const errorResponse = {
+    message: err.message || 'An unexpected internal server error occurred.',
+    error: err.code || err.name || 'INTERNAL_SERVER_ERROR',
+    ...(NODE_ENV === 'development' && { stack: err.stack }), // Include stack in dev
+  };
+
+  res.status(statusCode).json(errorResponse);
 });
 
-// Initialize routes and start server
-setupRoutes().catch(error => {
-  console.error('❌ Failed to start server:', error);
-  process.exit(1);
-});
+// Start the Server
+const startServer = async () => {
+  try {
+    await setupApiRoutes(); // Ensure API routes are configured before listening
+
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on port ${PORT} in ${NODE_ENV} mode.`);
+      console.log(`📡 Frontend URL for CORS: ${process.env.FRONTEND_URL || 'http://localhost:3000'}`);
+      if (process.env.PASSWORD) {
+        console.log('🔑 Basic authentication password is configured.');
+      } else {
+        console.warn('⚠️ CRITICAL SECURITY WARNING: MASTER PASSWORD (process.env.PASSWORD) is NOT SET. API endpoints will be unprotected or authentication will fail.');
+      }
+      // Add more startup logs as needed, e.g., database connection status
+    });
+  } catch (error) {
+    console.error('❌ Critical failure during server startup sequence:', error);
+    process.exit(1); // Exit if server cannot initialize routes or start
+  }
+};
+
+startServer();
 
 export default app;
