@@ -1,9 +1,10 @@
+// File: backend/src/features/chat/chat.routes.ts
 /**
  * @file Chat API route handlers with conversational history support and dynamic LLM provider selection.
  * @description Handles requests to the /api/chat endpoint, processing chat messages
  * using the configured LLM services with conversation memory and tracking API usage costs.
  * Includes specialized system prompts for different modes, particularly a detailed structure for interview mode.
- * @version 2.2.1
+ * @version 2.3.0 - Refactored interview prompt loading, enhanced logging for model selection.
  */
 
 import { Request, Response } from 'express';
@@ -12,16 +13,19 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 
-// Ensure .env is loaded relative to the project root for backend specific settings
-const __filename = fileURLToPath(import.meta.url); // backend/src/features/chat/chat.routes.ts
-const __projectRoot = path.resolve(path.dirname(__filename), '../../../..'); // up to project root
+const __filename = fileURLToPath(import.meta.url);
+const __projectRoot = path.resolve(path.dirname(__filename), '../../../..');
 dotenv.config({ path: path.join(__projectRoot, '.env') });
 
-import { callLlm } from '../../core/llm/llm.factory';
-import { LlmProviderId } from '../../core/llm/llm.config.service';
+import { callLlm, initializeLlmServices } from '../../core/llm/llm.factory'; // Ensure initializeLlmServices is available
+import { LlmProviderId, LlmConfigService } from '../../core/llm/llm.config.service';
 import { CostService } from '../../core/cost/cost.service';
 import { MODEL_PREFERENCES, getModelPrice, ModelConfig } from '../../../config/models.config';
 import { IChatMessage, ILlmUsage, IChatCompletionParams } from '../../core/llm/llm.interfaces';
+
+// Initialize LLM services once when the module is loaded
+// This ensures that the factory and its dependent config service are ready.
+initializeLlmServices();
 
 interface IConversation {
   messages: IChatMessage[];
@@ -30,7 +34,7 @@ interface IConversation {
 const conversationHistories = new Map<string, IConversation>();
 
 const MAX_HISTORY_MESSAGES_CONFIG = parseInt(process.env.MAX_CONVERSATIONAL_HISTORY_MESSAGES || '100', 10);
-const DEFAULT_HISTORY_MESSAGES_CONFIG = parseInt(process.env.DEFAULT_MAX_HISTORY_MESSAGES || '10', 10);
+const DEFAULT_HISTORY_MESSAGES_CONFIG = parseInt(process.env.DEFAULT_MAX_HISTORY_MESSAGES || '10', 10); // User+Assistant pairs
 const MAX_PROMPT_TOKENS_CONFIG = parseInt(process.env.DEFAULT_MAX_PROMPT_TOKENS || '8000', 10);
 const SESSION_COST_THRESHOLD_USD = parseFloat(process.env.COST_THRESHOLD_USD_PER_SESSION || '2.00');
 const DISABLE_COST_LIMITS_CONFIG = process.env.DISABLE_COST_LIMITS === 'true';
@@ -66,16 +70,18 @@ function truncateHistoryByTokenEstimate(messages: IChatMessage[], maxTokens: num
   const systemMessage = messages.find(m => m.role === 'system');
 
   if (systemMessage) {
-    estimatedTokens += Math.ceil(systemMessage.content.length / 3.5);
+    estimatedTokens += Math.ceil(systemMessage.content.length / 3.5); // Rough estimate
     truncatedMessages.push(systemMessage);
   }
 
+  // Iterate from newest to oldest, excluding system message already added
   for (let i = messages.length - 1; i >= 0; i--) {
     const msg = messages[i];
-    if (msg.role === 'system') continue;
+    if (msg.role === 'system') continue; // Skip system messages here, already handled
+
     const msgTokens = Math.ceil(msg.content.length / 3.5);
     if (estimatedTokens + msgTokens <= maxTokens) {
-      truncatedMessages.splice(systemMessage ? 1 : 0, 0, msg);
+      truncatedMessages.splice(systemMessage ? 1 : 0, 0, msg); // Insert after system or at beginning
       estimatedTokens += msgTokens;
     } else {
       console.warn(`ChatRoutes: History truncated. Estimated tokens ${estimatedTokens + msgTokens} exceeded max ${maxTokens}. Last message considered: "${msg.content.substring(0,50)}..."`);
@@ -109,30 +115,30 @@ interface ChatRequestBody {
   generateDiagram?: boolean;
   userId?: string;
   conversationId?: string;
-  maxHistoryMessages?: number;
+  maxHistoryMessages?: number; // Number of user/assistant PAIRS
   systemPromptOverride?: string;
   tutorMode?: boolean;
-  tutorLevel?: string;
-  interviewMode?: boolean;
+  tutorLevel?: string; // e.g., 'beginner', 'intermediate', 'expert'
+  interviewMode?: boolean; // Flag to trigger interview-specific logic
 }
 
 export async function POST(req: Request, res: Response): Promise<void> {
   try {
     const {
-      mode = 'general',
+      mode = 'general', // default mode if not specified
       messages: currentRequestMessages,
       language = process.env.DEFAULT_LANGUAGE || 'python',
       generateDiagram = false,
       userId: userIdFromRequest = 'default_user',
-      conversationId = 'default_conversation',
-      maxHistoryMessages = DEFAULT_HISTORY_MESSAGES_CONFIG,
+      conversationId = 'default_conversation', // Client should manage and send this
+      maxHistoryMessages = DEFAULT_HISTORY_MESSAGES_CONFIG, // Number of user/assistant PAIRS
       systemPromptOverride,
-      tutorMode = process.env.FEATURE_FLAG_ENABLE_CODING_TUTOR_MODE === 'true',
+      tutorMode = false, // Default to false, can be enabled by client
       tutorLevel = 'intermediate',
-      interviewMode = process.env.FEATURE_FLAG_ENABLE_INTERVIEW_MODE === 'true',
+      interviewMode = false, // Default to false, can be enabled by client
     } = req.body as ChatRequestBody;
 
-    const effectiveUserId = (req as any).user?.id || userIdFromRequest;
+    const effectiveUserId = (req as any).user?.id || userIdFromRequest; // Get user ID from auth or fallback
 
     if (!currentRequestMessages || !Array.isArray(currentRequestMessages) || currentRequestMessages.length === 0) {
       res.status(400).json({ message: 'Messages array is required and cannot be empty.', error: 'INVALID_MESSAGES_PAYLOAD'});
@@ -159,28 +165,32 @@ export async function POST(req: Request, res: Response): Promise<void> {
       conversation.lastActivity = Date.now();
     }
 
-    const effectiveMaxHistoryPairs = Math.min(maxHistoryMessages, MAX_HISTORY_MESSAGES_CONFIG);
-    const effectiveMaxIndividualHistoryMessages = effectiveMaxHistoryPairs * 2;
+    // maxHistoryMessages is pairs, so double for individual messages
+    const effectiveMaxIndividualHistoryMessages = Math.min(maxHistoryMessages, MAX_HISTORY_MESSAGES_CONFIG) * 2;
     const historyToConsider = conversation.messages.slice(-effectiveMaxIndividualHistoryMessages);
 
     let modelIdForMode: string;
-    // Determine the key to use for MODEL_PREFERENCES. If mode specific key doesn't exist, fallback to 'default'.
-    const modelPrefsKey = (MODEL_PREFERENCES && mode in MODEL_PREFERENCES) ? mode as keyof typeof MODEL_PREFERENCES : 'default';
+    let promptTemplateName: string = mode; // Default template name is the mode itself
 
     if (interviewMode && mode === 'coding') {
       modelIdForMode = process.env.MODEL_PREF_INTERVIEW_TUTOR || MODEL_PREFERENCES.coding || MODEL_PREFERENCES.default;
-      console.log(`ChatRoutes: Interview Mode selected. Model: ${modelIdForMode}`);
+      promptTemplateName = 'coding_interviewer';
+      console.log(`ChatRoutes: Interview Mode active. Model: ${modelIdForMode}, Prompt: ${promptTemplateName}.md`);
     } else if (tutorMode && mode === 'coding') {
-      modelIdForMode = process.env.MODEL_PREF_CODING_TUTOR || process.env.MODEL_PREF_INTERVIEW_TUTOR || MODEL_PREFERENCES.coding || MODEL_PREFERENCES.default;
-      console.log(`ChatRoutes: Tutor Mode selected. Model: ${modelIdForMode}`);
-    } else if (MODEL_PREFERENCES && MODEL_PREFERENCES[modelPrefsKey]) {
-      modelIdForMode = MODEL_PREFERENCES[modelPrefsKey];
+      modelIdForMode = process.env.MODEL_PREF_CODING_TUTOR || MODEL_PREFERENCES.coding || MODEL_PREFERENCES.default;
+      promptTemplateName = 'coding_tutor';
+      console.log(`ChatRoutes: Tutor Mode active. Model: ${modelIdForMode}, Prompt: ${promptTemplateName}.md`);
     } else {
-      // This path is taken if modelPrefsKey is 'default' or if MODEL_PREFERENCES itself is undefined/empty.
-      // Ensure MODEL_PREFERENCES and MODEL_PREFERENCES.default are always validly defined in models.config.ts
-      const defaultModel = MODEL_PREFERENCES?.default || process.env.ROUTING_LLM_MODEL_ID || 'openai/gpt-4o-mini'; // Robust default
-      console.warn(`ChatRoutes: Mode "${mode}" (resolved to key "${modelPrefsKey}") not found in MODEL_PREFERENCES or MODEL_PREFERENCES is not fully configured. Using determined default model: ${defaultModel}`);
-      modelIdForMode = defaultModel;
+      const modelPrefsKey = (MODEL_PREFERENCES && mode in MODEL_PREFERENCES) ? mode as keyof typeof MODEL_PREFERENCES : 'default';
+      modelIdForMode = MODEL_PREFERENCES[modelPrefsKey] || MODEL_PREFERENCES.default;
+      // If mode is 'general', but 'general' isn't in MODEL_PREFERENCES, modelPrefsKey becomes 'default'.
+      // We want to load 'general_chat.md' specifically for this case.
+      if (modelPrefsKey === 'default' && mode === 'general') {
+          promptTemplateName = 'general_chat';
+      } else {
+          promptTemplateName = modelPrefsKey; // e.g., 'coding', 'system_design'
+      }
+      console.log(`ChatRoutes: Standard Mode. Mode: ${mode} (key: ${modelPrefsKey}), Model: ${modelIdForMode}, Prompt: ${promptTemplateName}.md`);
     }
 
 
@@ -188,85 +198,29 @@ export async function POST(req: Request, res: Response): Promise<void> {
     if (systemPromptOverride) {
       systemPromptContent = systemPromptOverride;
     } else {
-      // If mode was "general" and "general" was not in MODEL_PREFERENCES, modelPrefsKey became "default".
-      // Then templateName becomes "general_chat". This means "prompts/general_chat.md" is expected.
-      const templateName = modelPrefsKey === 'default' && mode === 'general' ? 'general_chat' : modelPrefsKey;
-      let templateContent = loadPromptTemplate(templateName);
+      let templateContent = loadPromptTemplate(promptTemplateName);
+      // Basic replacements
       templateContent = templateContent
         .replace(/{{LANGUAGE}}/g, language)
         .replace(/{{MODE}}/g, mode)
         .replace(/{{GENERATE_DIAGRAM}}/g, generateDiagram ? 'true' : 'false');
 
-      let additionalInstructions = `
+      // Tutor-specific replacements
+      if (tutorMode && mode === 'coding') {
+        templateContent = templateContent.replace(/{{TUTOR_LEVEL}}/g, tutorLevel);
+      }
+      
+      // Generic additional instructions placeholder (can be empty if not needed by the specific prompt)
+      const baseAdditionalInstructions = `
 ## Conversation Context & Real-Time Interaction (IMPORTANT):
-You are an integral part of a DYNAMIC, REAL-TIME conversational application.
+You are an integral part of a DYNAMIC, REAL-TIME conversational application, "Voice Chat Assistant".
 The user's messages represent an ONGOING dialogue. They may arrive with delays, reflect thinking-aloud processes, or be refinements of previous thoughts.
 Your responses MUST be highly adaptable and maintain strong contextual awareness from the provided history.
 This is NOT a static Q&A. Assume the conversation can and will pick up where it left off.
 Prioritize clarity, accuracy, and helpfulness. Actively use the conversation history to avoid redundancy unless explicitly asked for clarification or repetition.
 Your goal is to provide a fluid, natural, and contextually intelligent interaction.
 `;
-
-      if (interviewMode && mode === 'coding') {
-        // ... (interview instructions remain the same)
-        additionalInstructions += `
-
-## FAANG Senior Level Coding Interview Mode (ES4-ES5 Target Level) - STRICT RESPONSE STRUCTURE:
-You are an expert interviewer conducting a FAANG-style coding interview for a Senior Software Engineer (L4/L5) role.
-The candidate has approximately 20-25 minutes per problem.
-Your response MUST be structured meticulously into distinct sections using ONLY the specified H2 Markdown headers below.
-Do NOT use H3 or other headers for these primary sections. Be precise with the section titles.
-
-## Section 1: Initial Concepts & Data Structures
-**(Frontend Target Display: ~5-10 seconds). Goal: Quick, foundational grasp for someone needing initial guidance.**
-- VERY CONCISELY introduce the core concept(s) or data structure(s) for an *initial, simplified understanding*.
-- Use simple analogies if appropriate for rapid comprehension.
-- Briefly mention relevant data structures (e.g., arrays, hash maps, trees, graphs) at a high level.
-- *Crucial: This section must be extremely brief and introductory.*
-- Frame explanations to gently guide someone who may not have deep prior knowledge of the specific optimal technique.
-
-## Section 2: Optimal Solution - Detailed Explanation
-**(Frontend Target Display: ~30-45 seconds). Goal: In-depth theoretical understanding.**
-- Thoroughly explain the OPTIMAL algorithm step-by-step. Describe the logic, choices made, and key trade-offs.
-- This is the most detailed *theoretical* portion, establishing the "why" before the "how" (code).
-- Briefly discuss why this approach is superior to obvious naive solutions without deep diving into them here.
-
-## Section 3: Final Code & In-Depth Analysis
-**(Frontend Target Display: Remainder of time). Goal: Practical implementation and comprehensive analysis.**
-- **A. Optimal Solution Code:** Provide the complete, runnable, and well-commented code for the optimal solution in \`\`\`${language}
-// Your well-structured and commented code here
-\`\`\`
-- **B. Code Explanation:** Detail how the code implements the optimal algorithm from Section 2. Explain key segments or tricky parts.
-- **C. Complexity Analysis:**
-    - **Time Complexity:** State the Big O time complexity (e.g., O(N log N)) AND provide a clear, concise justification for this.
-    - **Space Complexity:** State the Big O space complexity (e.g., O(N)) AND provide a clear, concise justification.
-- **D. Alternative Approaches & Considerations (Visually distinct on frontend - use this exact divider):**
-    \`---alt_solutions_divider---\`
-    *(This content below the divider will be styled differently, e.g., smaller font, by the frontend)*
-    - Briefly describe 1-2 alternative approaches (e.g., brute-force, less optimal but valid trade-offs).
-    - For each alternative: Concisely state its Time and Space Complexity. Briefly explain its core idea and why it's different or less optimal than the main solution.
-    - *DO NOT provide full code for these alternatives unless it's trivial (1-3 lines) or specifically requested in a follow-up.*
-    - Optionally, briefly mention edge cases or follow-up considerations if highly relevant and not covered.
-
-Remember, the frontend will parse these "## Section X:" headers to structure the display.
-Your language should initially be accessible, then ramp up in depth for the optimal solution.
-`;
-      } else if (tutorMode) {
-        additionalInstructions += `
-## Interactive Coding Tutor Mode (Level: ${tutorLevel}):
-Adapt your explanations to the student's level: ${tutorLevel}.
-- **Beginner:** Use simple analogies, avoid jargon, break concepts into tiny steps, provide many examples, check understanding frequently.
-- **Intermediate:** Balance technical accuracy with clarity, provide context and connections, include practice problems, gradually introduce complexity.
-- **Expert:** Dive deep into technical details, discuss edge cases and optimizations, connect to advanced topics, challenge with complex scenarios.
-Always aim to:
-1. Provide interactive elements or thought exercises if possible.
-2. Create mini-quizzes or questions to test understanding.
-3. Suggest practice problems or next steps for learning.
-4. Offer encouragement and constructive feedback.
-Present information in digestible chunks.
-`;
-      }
-      templateContent = templateContent.replace(/{{ADDITIONAL_INSTRUCTIONS}}/g, additionalInstructions);
+      templateContent = templateContent.replace(/{{ADDITIONAL_INSTRUCTIONS}}/g, baseAdditionalInstructions);
       systemPromptContent = templateContent;
     }
 
@@ -279,32 +233,24 @@ Present information in digestible chunks.
 
     const llmParams: IChatCompletionParams = {
       temperature: LLM_DEFAULT_TEMPERATURE,
-      max_tokens: LLM_DEFAULT_MAX_TOKENS,
+      max_tokens: LLM_DEFAULT_MAX_TOKENS, // Ensure this is a reasonable value
       user: effectiveUserId,
     };
 
-    // CRITICAL: The 'callLlm' function and the LLM services it uses (OpenAiLlmService, OpenRouterLlmService)
-    // are responsible for the following, which are CAUSING YOUR ERRORS:
-    // 1. If 'modelIdForMode' is 'openrouter/some/model' and 'routingProviderId' is 'openrouter',
-    //    the OpenRouterLlmService MUST strip 'openrouter/' before sending to OpenRouter API.
-    //    OpenRouter expects 'some/model', not 'openrouter/some/model'.
-    // 2. If 'callLlm' falls back to 'openai' provider, it MUST pass a VALID OpenAI model ID
-    //    (e.g., 'gpt-4o-mini', 'gpt-4o') to OpenAiLlmService, not the string 'openai'.
-    //    This might involve parsing 'modelIdForMode' or using a default OpenAI model.
     const llmResponse = await callLlm(
         finalApiMessages,
         modelIdForMode,
         llmParams,
-        process.env.ROUTING_LLM_PROVIDER_ID as LlmProviderId | undefined, // e.g., 'openrouter'
+        process.env.ROUTING_LLM_PROVIDER_ID as LlmProviderId | undefined,
         effectiveUserId
     );
-    const costOfThisCall = calculateLlmCost(llmResponse.model, llmResponse.usage);
 
+    const costOfThisCall = calculateLlmCost(llmResponse.model, llmResponse.usage);
     CostService.trackCost(
-      effectiveUserId, 'llm', costOfThisCall, llmResponse.model,
-      llmResponse.usage?.prompt_tokens ?? undefined,
-      llmResponse.usage?.completion_tokens ?? undefined,
-      { conversationId, mode }
+        effectiveUserId, 'llm', costOfThisCall, llmResponse.model,
+        llmResponse.usage?.prompt_tokens ?? undefined,
+        llmResponse.usage?.completion_tokens ?? undefined,
+        { conversationId, mode }
     );
     const sessionCostDetail = CostService.getSessionCost(effectiveUserId);
 
@@ -312,7 +258,8 @@ Present information in digestible chunks.
     if (llmResponse.text) {
       conversation!.messages.push({ role: 'assistant', content: llmResponse.text });
     }
-    if (conversation!.messages.length > MAX_HISTORY_MESSAGES_CONFIG * 2 + 50) {
+    // Prune history if it gets too long (beyond max configured pairs + buffer)
+    if (conversation!.messages.length > (MAX_HISTORY_MESSAGES_CONFIG * 2 + 50) ) {
         const numToSlice = MAX_HISTORY_MESSAGES_CONFIG * 2;
         console.log(`ChatRoutes: Trimming conversation history for ${historyKey} from ${conversation!.messages.length} to ~${numToSlice} messages.`);
         conversation!.messages = conversation!.messages.slice(-numToSlice);
@@ -330,14 +277,13 @@ Present information in digestible chunks.
     });
 
   } catch (error: any) {
-    console.error('ChatRoutes: Error in /api/chat POST endpoint:', error.stack || error); // Log the full stack
+    console.error('ChatRoutes: Error in /api/chat POST endpoint:', error.stack || error);
     if (res.headersSent) return;
 
     let errorMessage = 'Error processing chat request.';
     let statusCode = 500;
     let errorCode = 'CHAT_PROCESSING_ERROR';
 
-    // Specific error checks from your existing code (looks reasonable)
     if (error.message?.includes('API key') || error.response?.data?.error?.message?.includes('API key')) {
       errorMessage = 'AI service provider API key is invalid or missing.';
       statusCode = 503; errorCode = 'API_KEY_ERROR';
@@ -347,12 +293,12 @@ Present information in digestible chunks.
     } else if (error.code === 'ECONNABORTED' || error.message?.toLowerCase().includes('timeout')) {
         errorMessage = 'Request to AI service timed out. Please try again.';
         statusCode = 408; errorCode = 'REQUEST_TIMEOUT';
-    } else if (error.response?.data?.error?.type === 'insufficient_quota' || error.message?.includes('credits')) {
+    } else if (error.response?.data?.error?.type === 'insufficient_quota' || error.message?.includes('credits') || error.message?.includes('quota')) {
         errorMessage = 'AI service account has insufficient funds or quota exceeded.';
         statusCode = 402; errorCode = 'INSUFFICIENT_FUNDS_OR_QUOTA';
-    } else if (error.status) { // For errors from 'http-errors' or similar libraries
+    } else if (error.status) {
         statusCode = error.status; errorMessage = error.message || errorMessage; errorCode = error.code || errorCode;
-    } else if (error.response?.status) { // For errors from Axios or other HTTP clients
+    } else if (error.response?.status) {
         statusCode = error.response.status;
         errorMessage = error.response.data?.message || error.response.data?.error?.message || errorMessage;
         errorCode = error.response.data?.error?.code || error.response.data?.error_type || errorCode;
