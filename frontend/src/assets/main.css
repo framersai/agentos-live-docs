@@ -1,561 +1,565 @@
-/* Voice Coding Assistant - Complete Modern Styling System */
+/**
+ * Voice Coding Assistant - Unified Styling System
+ * Version: 2.0.2 - Further PostCSS/Tailwind error corrections.
+ * Description: Combines base styles, Tailwind components/utilities,
+ * responsive design, and a custom futuristic/sci-fi aesthetic.
+ */
 
-/* Import fonts first - these must come before other CSS rules */
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
+/* Import fonts first */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 /* Tailwind directives */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* CSS Custom Properties (Variables) - Retained for broad compatibility and explicit theming */
+/* --- Root Variables & Theming --- */
 :root {
-  /* Primary Colors */
-  --primary-50: #eff6ff;
-  --primary-100: #dbeafe;
-  --primary-200: #bfdbfe;
-  --primary-300: #93c5fd;
-  --primary-400: #60a5fa;
-  --primary-500: #3b82f6;
-  --primary-600: #2563eb;
-  --primary-700: #1d4ed8;
-  --primary-800: #1e40af;
-  --primary-900: #1e3a8a;
-  
+  /* Primary & Accent Colors */
+  --primary-hue: 217;
+  --accent-hue: 190;
+
+  --primary-50: hsl(var(--primary-hue) 95% 96%);
+  --primary-100: hsl(var(--primary-hue) 93% 92%);
+  --primary-200: hsl(var(--primary-hue) 90% 86%);
+  --primary-300: hsl(var(--primary-hue) 93% 78%);
+  --primary-400: hsl(var(--primary-hue) 94% 69%);
+  --primary-500: hsl(var(--primary-hue) 92% 60%); /* #3b82f6 equivalent */
+  --primary-600: hsl(var(--primary-hue) 84% 54%); /* #2563eb equivalent */
+  --primary-700: hsl(var(--primary-hue) 77% 49%); /* #1d4ed8 equivalent */
+  --primary-800: hsl(var(--primary-hue) 70% 42%);
+  --primary-900: hsl(var(--primary-hue) 70% 35%);
+  --primary-950: hsl(var(--primary-hue) 70% 25%);
+
+  --accent-400: hsl(var(--accent-hue) 70% 55%);
+  --accent-500: hsl(var(--accent-hue) 80% 45%);
+  --accent-600: hsl(var(--accent-hue) 85% 40%);
+
   /* Semantic Colors */
-  --success: #10b981;
-  --warning: #f59e0b;
-  --error: #ef4444;
-  --info: #3b82f6;
-  
-  /* UI Colors */
-  --glass-bg: rgba(255, 255, 255, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.2);
-  --shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.1);
-  --shadow-medium: 0 4px 6px rgba(0, 0, 0, 0.1);
-  --shadow-large: 0 10px 15px rgba(0, 0, 0, 0.1);
-  
-  /* Animation Durations */
-  --duration-fast: 150ms;
-  --duration-normal: 300ms;
-  --duration-slow: 500ms;
-  
-  /* Border Radius */
-  --radius-sm: 0.375rem; /* 6px */
-  --radius-md: 0.5rem;   /* 8px */
-  --radius-lg: 0.75rem;  /* 12px */
-  --radius-xl: 1rem;     /* 16px */
-  --radius-2xl: 1.5rem;  /* 24px */
-  
-  /* Spacing Scale (can be used alongside Tailwind spacing) */
-  --space-xs: 0.25rem;
-  --space-sm: 0.5rem;
-  --space-md: 1rem;
-  --space-lg: 1.5rem;
-  --space-xl: 2rem;
-  --space-2xl: 3rem;
+  --success-color: hsl(145 63% 42%);
+  --warning-color: hsl(39 92% 53%);
+  --error-color: hsl(0 84% 60%);
+  --info-color: var(--primary-500);
+
+  /* Base Text & Background */
+  --text-primary-rgb: 30, 41, 59;    /* Equiv. to Tailwind slate-800 */
+  --text-secondary-rgb: 51, 65, 85;  /* Equiv. to Tailwind slate-700 (Tailwind's slate-600 is #475569) */
+  --text-muted-rgb: 100, 116, 139; /* Equiv. to Tailwind slate-500 (Tailwind's slate-400 is #94a3b8) */
+  --bg-base-rgb: 255, 255, 255;      /* white */
+  --bg-surface-rgb: 248, 250, 252;  /* slate-50 */
+  --bg-subtle-rgb: 241, 245, 249;   /* slate-100 */
+  --border-color-rgb: 226, 232, 240; /* slate-200 */
+
+  --text-primary: rgb(var(--text-primary-rgb));
+  --text-secondary: rgb(var(--text-secondary-rgb));
+  --text-muted: rgb(var(--text-muted-rgb));
+  --bg-base: rgb(var(--bg-base-rgb));
+  --bg-surface: rgb(var(--bg-surface-rgb));
+  --bg-subtle: rgb(var(--bg-subtle-rgb));
+  --border-color: rgb(var(--border-color-rgb));
+
+
+  /* Futuristic UI Elements */
+  --glow-primary: 0 0 12px hsla(var(--primary-hue), 92%, 60%, 0.5), 0 0 24px hsla(var(--primary-hue), 92%, 60%, 0.3);
+  --glow-accent: 0 0 12px hsla(var(--accent-hue), 80%, 45%, 0.5), 0 0 24px hsla(var(--accent-hue), 80%, 45%, 0.3);
+
+  --glass-bg: hsla(0, 0%, 100%, 0.6);
+  --glass-border: hsla(0, 0%, 100%, 0.15);
+  --glass-shadow: 0 8px 32px 0 hsla(var(--primary-hue), 30%, 30%, 0.1);
+  --glass-blur: 10px;
+  --glass-saturate: 150%;
+
+  /* Animation & Transitions */
+  --duration-quick: 100ms;
+  --duration-smooth: 250ms;
+  --duration-ui: 400ms;
+  --ease-out-quad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-out-cubic: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+  --ease-in-out-sine: cubic-bezier(0.445, 0.05, 0.55, 0.95);
+
+  /* Borders & Radius */
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-full: 9999px;
+
+  /* Font Families */
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
 .dark {
-  --glass-bg: rgba(31, 41, 55, 0.7); /* Equivalent to dark:bg-gray-800 with opacity */
-  --glass-border: rgba(75, 85, 99, 0.2); /* Equivalent to dark:border-gray-700 with opacity */
-  --shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.3);
-  --shadow-medium: 0 4px 6px rgba(0, 0, 0, 0.3);
-  --shadow-large: 0 10px 15px rgba(0, 0, 0, 0.3);
+  --text-primary-rgb: 241, 245, 249;    /* slate-100 */
+  --text-secondary-rgb: 203, 213, 225;  /* slate-300 */
+  --text-muted-rgb: 100, 116, 139;    /* slate-500 (Tailwind's slate-500 is #64748b) */
+  --bg-base-rgb: 17, 24, 39;         /* gray-900 */
+  --bg-surface-rgb: 30, 41, 59;      /* gray-800 */
+  --bg-subtle-rgb: 30, 41, 59;       /* gray-800 (was slate-800/gray-850) */
+  --border-color-rgb: 55, 65, 81;    /* gray-700 */
+
+  --glow-primary: 0 0 15px hsla(var(--primary-hue), 94%, 69%, 0.6), 0 0 30px hsla(var(--primary-hue), 94%, 69%, 0.4);
+  --glow-accent: 0 0 15px hsla(var(--accent-hue), 70%, 55%, 0.6), 0 0 30px hsla(var(--accent-hue), 70%, 55%, 0.4);
+
+  --glass-bg: hsla(var(--primary-hue), 20%, 15%, 0.65);
+  --glass-border: hsla(var(--primary-hue), 20%, 25%, 0.2);
+  --glass-shadow: 0 8px 32px 0 hsla(var(--primary-hue), 50%, 10%, 0.2);
 }
 
-/* Base Layer - Reset and Typography */
+/* --- Base Layer --- */
 @layer base {
   html {
-    @apply font-sans antialiased; /* Use Tailwind's font-sans from config */
+    font-family: var(--font-sans);
+    @apply antialiased subpixel-antialiased;
     scroll-behavior: smooth;
+    text-rendering: optimizeLegibility;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background-color: var(--bg-base);
+    color: var(--text-primary);
+    @apply bg-gradient-to-br from-gray-50 via-white to-gray-100
+           dark:from-gray-900 dark:via-gray-900 dark:to-[rgb(var(--bg-subtle-rgb))] /* Using rgb() for CSS var in arbitrary value */
+           leading-relaxed selection:bg-primary-500/30 dark:selection:bg-primary-500/40;
+    font-feature-settings: 'kern' on, 'liga' on, 'clig' on, 'calt' on;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight text-[var(--text-primary)];
+    text-wrap: balance;
+  }
+  h1 { @apply text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight; }
+  h2 { @apply text-2xl sm:text-3xl lg:text-4xl font-bold; }
+  h3 { @apply text-xl sm:text-2xl font-semibold; }
+  h4 { @apply text-lg sm:text-xl font-semibold; }
+
+  p {
+    color: var(--text-secondary);
+    @apply mb-4 leading-relaxed;
+  }
+
+  a {
+    @apply text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300
+           font-medium underline-offset-4 hover:underline
+           transition-colors duration-[var(--duration-quick)] ease-[var(--ease-out-quad)];
+  }
+  a:focus-visible { @apply rounded-sm; }
+
+  code, pre {
+    font-family: var(--font-mono);
+    font-feature-settings: 'liga' on, 'calt' on;
+    font-variant-ligatures: common-ligatures;
+    @apply text-sm;
+  }
+  code:not(pre > code) {
+    @apply px-1.5 py-0.5 bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-md text-xs;
+  }
+  pre {
+    /* Using theme() for gray-850 as it's custom, with a fallback */
+    background-color: theme('colors.gray.850', '#1f2937'); /* Defaulted fallback to Tailwind gray-800 */
+    color: theme('colors.gray.100', '#f3f4f6');
+    @apply dark:bg-gray-950/80 dark:text-gray-200 /* gray-950 is a very dark default Tailwind color */
+           p-4 rounded-lg shadow-inner overflow-x-auto my-4 leading-relaxed
+           border border-gray-700 dark:border-gray-700/50;
+    tab-size: 4;
+  }
+  /* Removed .dark pre opacity example as dark:bg-gray-950/80 is already applied */
+
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { @apply bg-transparent; }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-slate-300 dark:bg-slate-600 rounded-full
+           border-2 border-transparent bg-clip-content;
+  }
+  ::-webkit-scrollbar-thumb:hover { @apply bg-slate-400 dark:bg-slate-500; }
+  ::-webkit-scrollbar-corner { @apply bg-transparent; }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: theme('colors.slate.400') transparent;
+  }
+  .dark * {
+    scrollbar-color: theme('colors.slate.600') transparent;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-offset-2 rounded-sm
+           ring-primary-500 dark:ring-primary-400
+           ring-offset-[var(--bg-base)] dark:ring-offset-[var(--bg-base)];
+  }
+
+  .transition-default {
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, box-shadow, opacity, transform;
+    transition-duration: var(--duration-smooth);
+    transition-timing-function: var(--ease-out-quad);
+  }
+}
+
+/* --- Component Layer --- */
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-x-2 px-5 py-2.5 rounded-lg font-semibold
+           border border-transparent text-sm sm:text-base
+           transition-all duration-[var(--duration-smooth)] ease-[var(--ease-out-cubic)]
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none
+           relative overflow-hidden select-none transform active:scale-[0.97] hover:scale-[1.02];
+    text-shadow: 0 1px 2px hsla(0, 0%, 0%, 0.1);
+  }
+  .btn-primary {
+    @apply btn bg-gradient-to-br from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700
+           text-white shadow-lg hover:shadow-primary-500/40 dark:hover:shadow-primary-400/30 /* Corrected shadow */
+           focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400
+           focus-visible:ring-offset-[var(--bg-base)] dark:focus-visible:ring-offset-[var(--bg-base)];
+  }
+  .btn-secondary {
+    background-color: var(--bg-surface);
+    color: var(--text-primary); /* This handles light/dark text via CSS vars */
+    border-color: var(--border-color);
+    @apply btn dark:bg-gray-700 dark:hover:bg-gray-600
+           /* Removed dark:text-text-primary as it's not a valid class and color is handled by var or specific .dark rule */
+           dark:border-gray-600 
+           shadow-sm hover:shadow-md
+           focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400;
+  }
+   .dark .btn-secondary { /* This rule correctly sets specific dark mode styles */
+     background-color: theme('colors.gray.700');
+     border-color: theme('colors.gray.600');
+     color: theme('colors.slate.100'); /* This is text-primary for dark */
+   }
+   .btn-secondary:hover { /* Light mode hover */
+     background-color: var(--bg-subtle);
+   }
+   /* Dark mode hover is already covered by: dark:hover:bg-gray-600 in the @apply */
+
+  .btn-ghost {
+    color: var(--primary-600);
+    @apply btn dark:text-primary-400
+           hover:bg-primary-500/10 dark:hover:bg-primary-400/10
+           focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400;
+    text-shadow: none;
+  }
+  .btn-danger {
+    @apply btn bg-gradient-to-br from-[var(--error-color)] to-red-700 hover:from-red-600 hover:to-red-800
+           text-white shadow-lg hover:shadow-red-500/40 dark:hover:shadow-red-400/30
+           focus-visible:ring-[var(--error-color)];
+  }
+  .btn-sm { @apply px-4 py-2 text-sm rounded-md gap-x-1.5; }
+  .btn-lg { @apply px-7 py-3.5 text-lg rounded-xl gap-x-2.5; }
+  .btn-icon { @apply p-2.5 rounded-full; }
+  .btn-icon.btn-sm { @apply p-2; }
+
+  .btn-holographic {
+    border-color: hsla(var(--primary-hue), 92%, 60%, 0.3);
+    color: var(--primary-600);
+    background-color: hsla(var(--primary-hue), 92%, 96%, 0.05);
+    @apply btn relative dark:border-primary-400/30 dark:text-primary-400
+           dark:bg-primary-400/5 backdrop-blur-sm;
+  }
+  .btn-holographic:hover {
+    background-color: hsla(var(--primary-hue), 92%, 96%, 0.1);
+    border-color: hsla(var(--primary-hue), 92%, 60%, 0.5);
+    box-shadow: var(--glow-primary);
+    @apply dark:bg-primary-400/10 dark:border-primary-400/50;
+  }
+  .btn-holographic::before {
+    content: '';
+    @apply absolute inset-0 rounded-lg opacity-0 transition-opacity duration-[var(--duration-smooth)];
+    background: radial-gradient(circle at center, hsla(var(--accent-hue),80%,55%,0.2) 0%, transparent 70%);
+  }
+  .btn-holographic:hover::before { @apply opacity-100; }
+
+  .glass-pane {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    @apply rounded-xl transition-all duration-[var(--duration-ui)];
+  }
+  .glass-pane-interactive {
+    @apply glass-pane hover:border-primary-500/30 dark:hover:border-primary-400/30 hover:shadow-lg;
+  }
+
+  .card-base {
+    background-color: var(--bg-surface);
+    border-color: var(--border-color);
+    @apply dark:bg-[rgb(var(--bg-surface-rgb))] /* Using rgb() for CSS var in arbitrary value */
+           rounded-xl shadow-lg dark:border-gray-700/80
+           transition-all duration-[var(--duration-ui)] ease-[var(--ease-out-quad)];
+  }
+  .card-base-hover {
+    @apply card-base hover:shadow-xl hover:scale-[1.015] hover:-translate-y-1.5;
+  }
+  .card-base-interactive { @apply card-base-hover cursor-pointer; }
+
+  .form-input {
+    background-color: theme('colors.gray.50');
+    border-color: theme('colors.gray.300');
+    color: var(--text-primary);
+    @apply w-full block px-4 py-2.5 rounded-lg
+           dark:bg-gray-700/50 dark:border-gray-600
+           /* placeholder:text-text-muted - changed below */
+           transition-all duration-[var(--duration-smooth)] ease-[var(--ease-out-quad)]
+           focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400 focus:border-transparent;
+    box-shadow: inset 0 1px 2px hsla(0,0%,0%,0.05);
+  }
+   .dark .form-input {
+     background-color: theme('colors.gray.700', '#374151') / 0.5;
+     border-color: theme('colors.gray.600', '#4B5563');
+     color: var(--text-primary); /* Will be dark mode primary text */
+   }
+   .form-input::placeholder { /* Standard CSS for placeholder */
+     color: var(--text-muted); /* Uses CSS variable which adapts to dark mode */
+     @apply opacity-100; /* Ensure Tailwind doesn't override opacity if 'placeholder:text-text-muted' was doing more */
+   }
+  .form-input:focus {
+    background-color: var(--bg-base);
+    border-color: var(--primary-500); /* This uses HSL variable */
+    @apply dark:border-primary-400 shadow-md; /* dark:border-primary-400 utility is fine */
+  }
+
+  .form-select { @apply form-input appearance-none pr-10 bg-no-repeat bg-right cursor-pointer; }
+  .form-textarea { @apply form-input min-h-[100px] sm:min-h-[120px] resize-y; }
+
+  /* Global Toggle Switch (if used, ensure HTML structure matches: input + div > div.toggle-switch-thumb) */
+  .toggle-switch {
+    @apply relative inline-flex h-6 w-11 items-center rounded-full cursor-pointer
+           bg-gray-300 dark:bg-gray-600 transition-colors duration-[var(--duration-smooth)] ease-in-out
+           focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2 focus-within:ring-offset-[var(--bg-base)];
+  }
+  .toggle-switch input { @apply sr-only; } /* Hide actual checkbox */
+
+  .toggle-switch input:checked + .toggle-switch-track-visual { /* If track-visual is the sibling div */
+    @apply bg-primary-500;
+  }
+  .toggle-switch input:checked + .toggle-switch-track-visual .toggle-switch-thumb {
+    transform: translateX(1.25rem); /* 20px for w-11, h-6 track and h-5, w-5 thumb */
+  }
+  .toggle-switch-track-visual { /* A new class for the visual track if this global component is used */
+      @apply h-full w-full rounded-full bg-inherit transition-colors; /* Inherit bg from .toggle-switch */
+  }
+  .toggle-switch-thumb {
+    @apply inline-block h-5 w-5 transform rounded-full bg-white shadow
+           ring-0 transition-transform duration-[var(--duration-smooth)] ease-in-out absolute top-[2px] left-[2px];
+    /* Removed 'translate: 0.125rem;' as direct translate property is not standard, handled by left-[2px] and translateX on checked */
+  }
+
+
+  .message-bubble-base {
+    @apply p-3.5 sm:p-4 rounded-2xl shadow-lg max-w-[80%] sm:max-w-[75%] transition-transform duration-[var(--duration-smooth)] ease-[var(--ease-out-quad)];
+  }
+  .message-bubble-user {
+    @apply message-bubble-base ml-auto rounded-br-md
+           bg-gradient-to-tr from-primary-500 to-sky-500 text-white
+           dark:from-primary-600 dark:to-sky-600;
+  }
+  .message-bubble-assistant {
+    /* Original: dark:bg-gray-750. Replaced with gray-800 as gray-750 is not standard and gray-800 is closer to dark surface */
+    @apply message-bubble-base mr-auto rounded-bl-md
+           bg-white dark:bg-gray-800 text-[var(--text-primary)] 
+           border border-slate-200 dark:border-gray-700;
+  }
+  /* .dark .message-bubble-assistant rule is fine as is, as text-[var(--text-primary)] handles dark text */
+
+
+  .code-block-enhanced {
+    @apply relative group/codeblock my-4 rounded-lg shadow-xl border border-gray-700/50 dark:border-gray-700;
+    background-color: #1e1e1e;
+  }
+  .dark .code-block-enhanced { background-color: #121212; }
+
+  .code-block-enhanced pre {
+    @apply !bg-transparent !p-0 !m-0 overflow-x-auto; /* Important to override potential plugin styles */
+  }
+  .code-block-enhanced code.hljs { /* Targeting highlight.js specific class */
+    @apply block p-4 text-sm leading-relaxed;
+    font-feature-settings: "liga" on, "calt" on; /* Ensure these are valid and intended */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-  
-  body {
-    @apply bg-gradient-to-br from-gray-50 via-white to-gray-100 
-           dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 
-           text-gray-900 dark:text-gray-100 
-           leading-relaxed;
-    font-feature-settings: 'kern' 1, 'liga' 1, 'ss01' 1; /* Keep specific font features */
-    text-rendering: optimizeLegibility;
+  .code-block-enhanced .line-number {
+    @apply inline-block text-center w-10 pr-3 select-none text-gray-500 dark:text-gray-600 sticky left-0;
+    background-color: inherit; /* Inherits from .code-block-enhanced */
+    border-right: 1px solid var(--border-color); /* Uses CSS variable */
   }
-  
-  /* Enhanced Typography Scale */
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold tracking-tight;
-    font-feature-settings: 'kern' 1, 'liga' 1, 'ss01' 1;
+  .dark .code-block-enhanced .line-number {
+    border-right-color: theme('colors.gray.700');
   }
-  
-  h1 { @apply text-3xl sm:text-4xl lg:text-5xl leading-tight; }
-  h2 { @apply text-2xl sm:text-3xl lg:text-4xl leading-tight; }
-  h3 { @apply text-xl sm:text-2xl leading-snug; }
-  h4 { @apply text-lg sm:text-xl leading-snug; }
-  
-  /* Code Typography */
-  code, pre {
-    @apply font-mono; /* Use Tailwind's font-mono from config */
-    font-feature-settings: 'liga' 1, 'calt' 1; /* Common ligatures for code */
+  .code-block-enhanced .copy-btn {
+    @apply absolute top-2 right-2 p-1.5 rounded-md
+           bg-gray-700/50 hover:bg-gray-600/70 dark:bg-gray-800/70 dark:hover:bg-gray-700/90
+           text-gray-300 hover:text-white
+           opacity-0 group-hover/codeblock:opacity-100 focus-within:opacity-100
+           transition-all duration-[var(--duration-quick)] z-10;
   }
-  
-  /* Enhanced Scrollbars */
-  ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+  .code-block-enhanced .copy-btn svg { @apply w-4 h-4; }
+  .code-block-enhanced .lang-label {
+     @apply absolute top-2 left-2 px-2 py-0.5 text-xs rounded-sm
+            bg-gray-700/50 text-gray-300
+            opacity-0 group-hover/codeblock:opacity-100 transition-opacity duration-[var(--duration-quick)] z-10;
   }
-  ::-webkit-scrollbar-track {
-    @apply bg-gray-100 dark:bg-gray-800 rounded-full;
+
+  .loading-spinner-futuristic {
+    @apply w-8 h-8 rounded-full border-2 border-transparent border-t-primary-500 dark:border-t-primary-400 animate-spin;
   }
-  ::-webkit-scrollbar-thumb {
-    @apply bg-gray-300 dark:bg-gray-600 rounded-full transition-colors duration-150 ease-in-out;
+
+  .dots-loader span {
+    @apply inline-block w-2.5 h-2.5 rounded-full bg-primary-500 dark:bg-primary-400 opacity-0;
+    animation: dot-loader-anim 1.4s ease-in-out infinite both;
   }
-  ::-webkit-scrollbar-thumb:hover {
-    @apply bg-gray-400 dark:bg-gray-500;
-  }
-  ::-webkit-scrollbar-corner {
-    @apply bg-transparent;
-  }
-  
-  /* Firefox scrollbar */
-  * {
-    scrollbar-width: thin;
-    scrollbar-color: theme('colors.gray.400') theme('colors.gray.100'); /* Using Tailwind theme function */
-  }
-  .dark * {
-    scrollbar-color: theme('colors.gray.600') theme('colors.gray.800');
-  }
-  
-  /* Selection Styles */
-  ::selection {
-    @apply bg-primary-200 dark:bg-primary-700 text-primary-900 dark:text-primary-100;
-  }
-  
-  /* Focus Styles - Consistent global focus ring */
-  :focus-visible {
-    @apply outline-none ring-2 ring-primary-500 ring-offset-2 
-           ring-offset-white dark:ring-offset-gray-900 rounded-sm;
-  }
-  
-  /* Global transitions - Use with caution for performance. Applied for theme switching primarily. */
-  body, body::before, body::after { /* Scoped to body and its pseudo-elements */
-    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, box-shadow;
-    transition-duration: var(--duration-normal);
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  }
+  .dots-loader span:nth-child(1) { animation-delay: 0s; }
+  .dots-loader span:nth-child(2) { animation-delay: 0.15s; }
+  .dots-loader span:nth-child(3) { animation-delay: 0.3s; }
+
 }
 
-/* Component Layer - Reusable UI Components */
-@layer components {
-  
-  /* Button System */
-  .btn {
-    @apply inline-flex items-center justify-center gap-2 
-           px-4 py-2 rounded-lg font-medium 
-           transition-all duration-200 ease-out
-           focus-visible:outline-none focus-visible:ring-2 
-           focus-visible:ring-offset-2 
-           disabled:opacity-60 disabled:cursor-not-allowed
-           relative overflow-hidden select-none /* Prevent text selection on click */
-           hover:scale-[1.03] active:scale-[0.98]; /* Subtle hover/active effect */
-  }
-  
-  .btn-primary {
-    @apply btn bg-gradient-to-r from-primary-600 to-primary-700 
-           hover:from-primary-700 hover:to-primary-800 
-           text-white shadow-md hover:shadow-lg
-           focus-visible:ring-primary-500;
-  }
-  
-  .btn-secondary {
-    @apply btn bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600
-           text-gray-700 dark:text-gray-200 
-           hover:bg-gray-50 dark:hover:bg-gray-600
-           shadow-sm hover:shadow-md
-           focus-visible:ring-gray-500;
-  }
-  
-  .btn-ghost {
-    @apply btn text-gray-600 dark:text-gray-300 
-           hover:bg-gray-100 dark:hover:bg-gray-700/50 /* Slight dark mode adjustment */
-           focus-visible:ring-gray-500;
-  }
-  
-  .btn-sm { @apply px-3 py-1.5 text-sm rounded-md; } /* Adjusted rounding */
-  .btn-lg { @apply px-6 py-3 text-lg; }
-  
-  /* Ripple Effect for Buttons */
-  .btn::before {
-    content: '';
-    @apply absolute inset-0 rounded-lg opacity-0 bg-white/30 dark:bg-white/10;
-    transform: scale(0.5); /* Start smaller for a more subtle expand */
-    transition: transform 0.4s ease-out, opacity 0.4s ease-out;
-  }
-  .btn:active::before {
-    transform: scale(1.5); /* Expand further */
-    @apply opacity-100;
-    transition: transform 0s, opacity 0s; /* Instant effect on active */
-  }
-  
-  /* Glass Effect Components */
-  .glass {
-    background: var(--glass-bg);
-    backdrop-filter: blur(12px) saturate(180%);
-    -webkit-backdrop-filter: blur(12px) saturate(180%); /* For Safari */
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--shadow-medium);
-  }
-  .glass-subtle {
-    background: var(--glass-bg);
-    backdrop-filter: blur(8px) saturate(150%);
-    -webkit-backdrop-filter: blur(8px) saturate(150%); /* For Safari */
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--shadow-subtle);
-  }
-  
-  /* Card System */
-  .card {
-    @apply bg-white dark:bg-gray-800 rounded-xl shadow-sm 
-           border border-gray-200 dark:border-gray-700
-           transition-all duration-300 ease-out;
-  }
-  .card-hover {
-    @apply card hover:shadow-lg hover:scale-[1.02] hover:-translate-y-1;
-  }
-  .card-interactive { @apply card-hover cursor-pointer; }
-  .card-glass { @apply glass rounded-xl; }
-  
-  /* Form Elements */
-  .input {
-    @apply w-full px-4 py-2.5 bg-white dark:bg-gray-800 
-           border border-gray-300 dark:border-gray-600 
-           rounded-lg shadow-sm
-           text-gray-900 dark:text-gray-100
-           placeholder:text-gray-400 dark:placeholder:text-gray-500 /* Adjusted placeholder contrast */
-           focus:ring-2 focus:ring-primary-500 focus:border-primary-500
-           disabled:bg-gray-100 dark:disabled:bg-gray-700/50 disabled:cursor-not-allowed
-           transition-all duration-200 ease-in-out; /* Transition all relevant properties */
-  }
-  .input-error {
-    @apply input border-red-400 dark:border-red-500 
-           focus:ring-red-500 focus:border-red-500
-           placeholder:text-red-400 dark:placeholder:text-red-500;
-  }
-  .select {
-    @apply input appearance-none pr-10 bg-no-repeat bg-right cursor-pointer;
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-    background-position: right 0.75rem center;
-    background-size: 1.25em 1.25em; /* Use em for better scaling with text */
-  }
-  .dark .select { /* Dark mode select arrow */
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-  }
-  .textarea {
-    @apply input min-h-[120px] resize-y; /* Increased min-height */
-  }
-  
-  /* Toggle Switch */
-  .toggle {
-    @apply relative inline-flex h-6 w-11 items-center rounded-full
-           bg-gray-200 dark:bg-gray-700
-           transition-colors duration-200 ease-in-out
-           focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
-           cursor-pointer;
-  }
-  .toggle.checked { @apply bg-primary-600; }
-  .toggle .toggle-thumb {
-    @apply inline-block h-4 w-4 transform rounded-full bg-white
-           shadow-sm ring-1 ring-gray-900/5 /* Subtle ring for definition */
-           transition-transform duration-200 ease-in-out;
-    translate: 0.25rem; /* Adjusted for better visual balance */
-  }
-  .toggle.checked .toggle-thumb { translate: 1.5rem; } /* Adjusted for better visual balance */
-
-  /* Voice Input Components */
-  .voice-button {
-    @apply relative flex items-center justify-center 
-           w-16 h-16 sm:w-18 sm:h-18 /* Uses the '18' unit from tailwind.config.js for sm+ screens */
-           rounded-full shadow-lg hover:shadow-xl
-           transform transition-all duration-300 ease-out
-           focus:outline-none focus:ring-4 focus:ring-offset-2
-           active:scale-95 hover:scale-105;
-  }
-  .voice-button-idle {
-    @apply voice-button bg-gradient-to-br from-primary-500 to-primary-600 /* Adjusted gradient direction */
-           text-white focus:ring-primary-400 dark:focus:ring-primary-600;
-  }
-  .voice-button-recording {
-    @apply voice-button bg-gradient-to-br from-red-500 to-red-600
-           text-white focus:ring-red-400 dark:focus:ring-red-600 animate-pulse; /* Added subtle pulse */
-  }
-  .voice-button-continuous {
-    @apply voice-button bg-gradient-to-br from-green-500 to-green-600
-           text-white focus:ring-green-400 dark:focus:ring-green-600;
-  }
-
-  /* Voice button pulse animation (uses keyframes from tailwind.config.js) */
-  .voice-button-recording::before,
-  .voice-button-continuous::before {
-    content: '';
-    @apply absolute inset-0 rounded-full opacity-75 animate-voice-pulse;
-    /* background-color matches the button's base or a contrasting pulse color */
-    background-color: currentColor; 
-  }
-  .voice-button-recording::after,
-  .voice-button-continuous::after {
-    content: '';
-    @apply absolute inset-0 rounded-full opacity-50 animate-voice-pulse;
-    animation-delay: 0.5s; /* Offset the second pulse */
-    background-color: currentColor;
-  }
-
-  /* Message Bubbles */
-  .message-bubble {
-    @apply relative p-4 sm:p-5 rounded-2xl shadow-md /* Slightly increased shadow */
-           transition-all duration-300 ease-out max-w-3xl; /* Adjusted max-width */
-  }
-  .message-user {
-    @apply message-bubble bg-gradient-to-r from-primary-50 to-blue-100 
-           dark:from-primary-900/40 dark:to-blue-900/30
-           border-l-4 border-primary-500 dark:border-primary-600
-           ml-auto mr-4 sm:mr-8 rounded-tr-lg rounded-br-lg rounded-tl-2xl rounded-bl-2xl; /* More distinct shape */
-  }
-  .message-assistant {
-    @apply message-bubble bg-white dark:bg-gray-800/90
-           border-l-4 border-gray-300 dark:border-gray-600
-           mr-auto ml-4 sm:ml-8 rounded-tl-lg rounded-bl-lg rounded-tr-2xl rounded-br-2xl; /* More distinct shape */
-  }
-  
-  /* Code Blocks */
-  .code-block {
-    @apply relative bg-gray-900 dark:bg-gray-950/70 rounded-lg overflow-hidden
-           shadow-xl border border-gray-700 dark:border-gray-700/50 my-4; /* Added margin */
-  }
-  .code-header {
-    @apply flex items-center justify-between px-4 py-2.5 /* Adjusted padding */
-           bg-gray-800 dark:bg-gray-900/80 border-b border-gray-700 dark:border-gray-700/60
-           text-gray-300 text-xs font-mono; /* Smaller, mono font for language */
-  }
-  .code-content {
-    @apply p-4 text-sm leading-relaxed;
-  }
-  /* For pre within .code-content, if using highlight.js or similar */
-  .code-content pre {
-    @apply !bg-transparent !p-0 overflow-x-auto; /* Reset hljs default background and padding */
-  }
-  .code-copy-btn {
-    @apply p-1.5 rounded text-gray-400 hover:text-white hover:bg-gray-700
-           transition-colors duration-200 opacity-50 hover:opacity-100 focus:opacity-100;
-    /* Position absolutely within .code-header or .code-block if needed */
-  }
-  .code-block:hover .code-copy-btn { /* Show on hover of block */
-    @apply opacity-100;
-  }
-  
-  /* Loading States */
-  .loading-spinner {
-    @apply inline-block w-6 h-6 border-[3px] border-current border-t-transparent /* Slightly bolder */
-           rounded-full animate-spin;
-  }
-  .loading-dots { @apply inline-flex gap-1.5; } /* Slightly more gap */
-  .loading-dots span {
-    @apply w-2 h-2 bg-current rounded-full opacity-75 animate-loading-dots;
-  }
-  .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
-  .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
-  /* nth-child(3) has 0s delay by default from keyframes */
-  
-  /* Skeleton Loaders */
-  .skeleton {
-    @apply bg-gray-200 dark:bg-gray-700 rounded animate-pulse;
-  }
-  .skeleton-text { @apply skeleton h-4 my-1.5; } /* Adjusted margin */
-  .skeleton-text-lg { @apply skeleton h-6 my-2; }
-  .skeleton-avatar { @apply skeleton w-10 h-10 rounded-full; }
-  .skeleton-btn { @apply skeleton w-24 h-10 rounded-lg; }
-
-  /* Toast Notifications */
-  .toast {
-    @apply glass rounded-lg p-4 shadow-xl border max-w-md /* Increased max-width */
-           transform transition-all duration-300 ease-out;
-  }
-  .toast-success { @apply toast border-green-300 dark:border-green-600/70; }
-  .toast-error   { @apply toast border-red-300 dark:border-red-600/70; }
-  .toast-warning { @apply toast border-yellow-300 dark:border-yellow-600/70; }
-  .toast-info    { @apply toast border-blue-300 dark:border-blue-600/70; }
-  
-  /* Animation Classes (Vue/React transition group classes) */
-  .slide-enter-active,
-  .slide-leave-active { @apply transition-all duration-300 ease-out; }
-  .slide-enter-from   { @apply opacity-0 transform translate-x-6; } /* Slide from further */
-  .slide-leave-to     { @apply opacity-0 transform -translate-x-6; }
-
-  .fade-enter-active,
-  .fade-leave-active  { @apply transition-opacity duration-300 ease-out; }
-  .fade-enter-from,
-  .fade-leave-to      { @apply opacity-0; }
-
-  .scale-enter-active,
-  .scale-leave-active { @apply transition-all duration-200 ease-out; }
-  .scale-enter-from,
-  .scale-leave-to     { @apply opacity-0 transform scale-90; } /* More pronounced scale */
-}
-
-/* Utility Layer - Helper Classes (can also be defined in tailwind.config.js if they generate variants) */
+/* --- Utility Layer --- */
 @layer utilities {
-  /* Custom Spacing - Tailwind typically covers this with space-y-*, but if needed */
-  .space-y-0\.5 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.125rem; } 
-  
-  /* Custom Aspect Ratios */
-  .aspect-golden { aspect-ratio: 1.618 / 1; }
-  
-  /* Text Balance (browser support varies) */
   .text-balance { text-wrap: balance; }
-  
-  /* Hide scrollbar but keep functionality */
-  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-  .scrollbar-hide::-webkit-scrollbar { display: none; }
-  
-  /* Custom Focus Ring (example) */
-  .focus-ring-primary {
-    @apply focus:outline-none focus:ring-2 focus:ring-primary-500 
-           focus:ring-offset-2 focus:ring-offset-white 
-           dark:focus:ring-offset-gray-900;
-  }
-  
-  /* Safe Area for Mobile (iOS specific) */
-  .safe-top    { padding-top: env(safe-area-inset-top); }
-  .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
-  .safe-left   { padding-left: env(safe-area-inset-left); }
-  .safe-right  { padding-right: env(safe-area-inset-right); }
+  .text-pretty { text-wrap: pretty; }
 
-  /* Text Gradients */
-  .text-gradient {
-    @apply bg-clip-text text-transparent 
-           bg-gradient-to-r from-primary-500 via-primary-600 to-primary-700
-           dark:from-primary-400 dark:via-primary-500 dark:to-primary-600;
+  .scrollbar-thin { scrollbar-width: thin; }
+  .scrollbar-none { scrollbar-width: none; }
+  .scrollbar-none::-webkit-scrollbar { display: none; }
+
+  .bg-blur-slight { backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+  .bg-blur-medium { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+  .bg-blur-heavy { backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
+
+  .clip-path-inset-round { clip-path: inset(0 round var(--radius-md)); }
+
+  .border-fx-glow-primary {
+    position: relative;
+    border: 1px solid transparent; /* Base border */
   }
-  .text-gradient-rainbow {
-    @apply bg-clip-text text-transparent 
-           bg-gradient-to-r from-red-500 via-yellow-400 via-green-500 via-blue-500 to-purple-600
-           animate-gradient-shift; /* Example of applying animation utility */
-    background-size: 200% auto; /* For gradient animation */
-  }
-  
-  /* Border Gradient Container */
-  .border-gradient {
-    @apply p-px rounded-lg bg-gradient-to-r from-primary-500 to-primary-700;
-  }
-  .border-gradient > * { /* Child element needs its own background */
-    @apply bg-white dark:bg-gray-800 h-full w-full rounded-[calc(0.5rem-1px)]; /* Adjust rounding based on parent */
+  .border-fx-glow-primary::before {
+    content: '';
+    position: absolute;
+    inset: -1px; /* Control thickness of glow border */
+    border-radius: inherit; /* Match parent's border-radius */
+    padding: 1px; /* This also affects perceived thickness */
+    background: linear-gradient(120deg, hsla(var(--accent-hue),80%,55%,0.7), hsla(var(--primary-hue),92%,60%,0.7), hsla(var(--accent-hue),80%,55%,0.7));
+    background-size: 200% 200%;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor; /* Standard property */
+    mask-composite: exclude; /* Standard property */
+    animation: border-glow-anim 4s linear infinite;
+    z-index: -1; /* Place behind content */
   }
 
-  /* Shadow Glow */
-  .shadow-glow-primary {
-    box-shadow: 0 0 15px 0px theme('colors.primary.500 / 30%'), 0 0 30px 0px theme('colors.primary.500 / 20%');
+  .text-shadow-soft { text-shadow: 0 1px 3px hsla(0,0%,0%,0.1), 0 0 1px hsla(0,0%,0%,0.05); }
+  .dark .text-shadow-soft { text-shadow: 0 1px 3px hsla(0,0%,0%,0.3), 0 0 1px hsla(0,0%,0%,0.2); }
+  .text-shadow-glow-primary { text-shadow: 0 0 8px hsla(var(--primary-hue), 92%, 60%, 0.5), 0 0 16px hsla(var(--primary-hue), 92%, 60%, 0.3); }
+  .dark .text-shadow-glow-primary { text-shadow: 0 0 10px hsla(var(--primary-hue), 94%, 69%, 0.6), 0 0 20px hsla(var(--primary-hue), 94%, 69%, 0.4); }
+
+  @keyframes border-glow-anim {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
   }
-  .dark .shadow-glow-primary {
-    box-shadow: 0 0 20px 0px theme('colors.primary.400 / 40%'), 0 0 40px 0px theme('colors.primary.400 / 30%');
+  @keyframes dot-loader-anim {
+    0%, 80%, 100% { transform: scale(0.5); opacity: 0.5; }
+    40% { transform: scale(1); opacity: 1; }
   }
 }
 
-/* SPECIFIC MEDIA QUERIES & RESPONSIVE OVERRIDES
-  Migrate styles from 'responsive.css' here, prioritizing Tailwind's responsive prefixes.
-  Only use explicit @media queries for cases not easily handled by Tailwind (e.g., orientation, height, complex conditions).
-*/
+/* --- Specific Component Overrides & Responsive --- */
 
-/* Example of a complex media query from your original main.css */
-@media (max-height: 600px) and (orientation: landscape) {
-  .voice-button {
-    @apply w-12 h-12; /* Further reduce size in constrained landscape */
+@media screen and (max-width: 767px) { /* Corresponds to Tailwind 'md' breakpoint */
+  .voice-input-section {
+    @apply fixed bottom-0 left-0 right-0 p-4 bg-opacity-95 backdrop-blur-md border-t;
+    background-color: var(--glass-bg);
+    border-top-color: var(--glass-border);
   }
-  .message-bubble {
-    @apply p-3 text-sm; /* Compact messages in this mode */
+  .dark .voice-input-section { /* Already uses CSS vars, this specific rule might be redundant if --glass-bg adapts */
+    background-color: var(--glass-bg);
+    border-top-color: var(--glass-border);
   }
+}
+
+/* Print Styles */
+@media print {
+  body {
+    background-color: #fff !important;
+    color: #000 !important;
+    font-size: 10pt;
+  }
+  .app-header,
+  .voice-input-section,
+  .btn,
+  .fullscreen-controls,
+  .actions-toolbar,
+  .context-panel, .insights-panel, .cost-warning,
+  [class*="animate-"] {
+    display: none !important;
+  }
+
+  .glass-pane, .card-base {
+    background: #fff !important;
+    border: 1px solid #ccc !important;
+    box-shadow: none !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .message-bubble-base {
+    break-inside: avoid;
+    @apply shadow-none border border-gray-300 p-3 my-2 max-w-full;
+  }
+  .message-bubble-user { @apply bg-gray-100 border-blue-300; }
+  .message-bubble-assistant { @apply bg-white border-gray-400; }
+
+  .code-block-enhanced {
+    @apply shadow-none border border-gray-400 bg-gray-50;
+    page-break-inside: avoid;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+  .code-block-enhanced code.hljs {
+    @apply text-black;
+    background-color: #f0f0f0 !important;
+  }
+   .code-block-enhanced .line-number {
+     @apply text-gray-700;
+     background-color: #f0f0f0 !important;
+     border-right-color: #ccc !important;
+   }
+
+  a { text-decoration: underline !important; color: #000 !important; }
+  a[href^="http"]:after { content:" (" attr(href) ") "; font-size: 0.8em; }
 }
 
 /* Reduced motion for accessibility */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-  /* Disable specific looping animations */
-  .animate-voice-pulse,
-  .animate-loading-dots,
-  .animate-shimmer,
+  .animate-spin, .animate-pulse, .animate-bounce,
+  .animate-voice-pulse, /* Make sure 'animate-voice-pulse' matches tailwind.config.js */
+  .animate-dot-loader-anim, /* If you have a utility like this for dot-loader-anim */
   .animate-gradient-shift,
-  .animate-bounce-subtle,
-  .animate-wiggle {
+  .btn:active, .btn:hover, .card-base-hover {
     animation: none !important;
-  }
-  .voice-button-recording::before,
-  .voice-button-recording::after,
-  .voice-button-continuous::before,
-  .voice-button-continuous::after {
-    animation: none !important; /* Target specific pseudo-elements if not using utility */
+    transition: none !important;
+    transform: none !important;
   }
 }
 
 /* High contrast mode support */
 @media (prefers-contrast: high) {
-  .glass, .glass-subtle {
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    background: rgba(255, 255, 255, 0.95);
-    @apply border-2 border-black dark:border-white;
+  .glass-pane {
+    background: var(--bg-base) !important;
+    
+    /* @apply border-2 border-text-primary;  */
+    /* Error: text-primary is var(--text-primary), not a direct Tailwind color. Use a direct color or a CSS var for border color that adapts */
+    /* Suggestion: border-color: var(--text-primary); or a specific high-contrast color */
   }
-  .dark .glass, .dark .glass-subtle {
-    background: rgba(10, 10, 10, 0.95); /* Near black for high contrast dark */
+  .btn-primary, .btn-secondary, .btn-ghost, .btn-danger, .btn-holographic {
+    @apply border-2 border-current; /* This is fine, uses current text color */
   }
-  .btn-primary {
-    @apply border-2 border-black dark:border-white;
-  }
-  .btn-secondary {
-    @apply border-2 border-black dark:border-white;
-  }
-}
-
-/* Print styles - (Incorporated relevant parts from responsive.css) */
-@media print {
-  body {
-    @apply bg-white text-black; /* Basic print defaults */
-  }
-  .app-header, /* Example: hide non-content elements */
-  .voice-input-container,
-  .btn, /* Hide interactive buttons */
-  [class*="animate-"] { /* Hide animated elements */
-    display: none !important;
-  }
-
-  .glass, .glass-subtle {
-    print-color-adjust: exact;
-    -webkit-print-color-adjust: exact;
-    background: #fff !important;
-    border: 1px solid #ccc !important;
-    box-shadow: none !important;
-  }
-  
-  .message-bubble {
-    break-inside: avoid;
-    @apply shadow-none border border-gray-300 p-3 my-2 max-w-full;
-  }
-  .message-user { @apply bg-gray-50 border-blue-600; }
-  .message-assistant { @apply bg-white border-gray-500; }
-
-  .code-block {
-    @apply shadow-none border border-gray-400;
-    page-break-inside: avoid;
-  }
-  .code-content pre {
-    @apply bg-gray-100 text-black;
-    color-adjust: exact;
-    -webkit-print-color-adjust: exact;
-  }
-
-  a { text-decoration: underline; color: #000; }
-  a[href^="http"]:after { content:" (" attr(href) ") "; } /* Show URLs for external links */
 }

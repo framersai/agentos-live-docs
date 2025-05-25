@@ -1,6 +1,6 @@
 // File: backend/utils/cost.ts (Updated imports)
 import dotenv from 'dotenv';
-import { MODEL_CONFIGS } from '../config/models'; // Removed .js extension
+import { MODEL_CONFIGS } from '../config/models.config'; // Removed .js extension
 
 dotenv.config({ path: new URL('../../../.env', import.meta.url).pathname });
 
