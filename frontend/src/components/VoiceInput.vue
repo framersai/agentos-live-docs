@@ -225,10 +225,11 @@ export default defineComponent({
     /** True if any form of recording or listening is active. */
     const isMicrophoneActive = computed(() => isRecording.value || isWebSpeechListening.value);
     const isPttMode = computed(() => currentAudioMode.value === 'push-to-talk');
-    const isContinuousMode = computed(() => currentAudioMode.value === 'continuous');
-    const isVoiceActivationMode = computed(() => currentAudioMode.value === 'voice-activation');
+    // Define the missing computed properties
+    const isContinuousMode = computed(() => props.audioMode === 'continuous');
+    const isVoiceActivationMode = computed(() => props.audioMode === 'voice-activation');
 
-    // --- Helper Methods ---
+        // --- Helper Methods ---
     const getButtonTitle = (): string => {
       if (props.isProcessing) return 'Assistant is processing...';
       if (!micAccessInitiallyChecked.value) return 'Initializing microphone...';
