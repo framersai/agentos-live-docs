@@ -1,682 +1,91 @@
-/* Voice Coding Assistant - Responsive Styles */
-/* Mobile-first approach with progressive enhancement */
+/* ────────────────────────────────────────────────────────────────
+   Voice‑Coding Assistant – Responsive Layer
+   File: responsive.css • v3.0.0 • 2025‑05‑25
+   ----------------------------------------------------------------
+   Progressive‑enhancement: mobile‑first → widescreen.
+   Complementary to main.css – only layout / spacing adjustments.
+   ALL colours pull from the CSS‑vars theme defined in main.css so
+   dark‑mode stays perfect. Pure Tailwind utilities inside @apply.
+   ----------------------------------------------------------------*/
 
-/* Base Mobile Styles (320px+) */
-@media screen and (min-width: 320px) {
-  .app-container {
-    min-height: 100vh;
-    padding: 0.5rem;
-  }
-  
-  .chat-container {
-    height: calc(100vh - 8rem);
-    overflow-y: auto;
-  }
-  
-  .voice-input-container {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 1rem;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    border-top: 1px solid #e5e7eb;
-  }
-  
-  .dark .voice-input-container {
-    background: rgba(17, 24, 39, 0.95);
-    border-top-color: #374151;
-  }
-  
-  /* Compact message bubbles for mobile */
-  .message-bubble {
-    margin: 0.5rem 0;
-    padding: 0.75rem;
-    border-radius: 1rem;
-    max-width: 100%;
-  }
-  
-  /* Code blocks - horizontal scroll on mobile */
-  .message-bubble pre {
-    overflow-x: auto;
-    font-size: 0.75rem;
-    line-height: 1.4;
-    padding: 0.5rem;
-    border-radius: 0.5rem;
-  }
-  
-  /* Fullscreen optimizations for mobile */
-  .fullscreen-container {
-    position: fixed;
-    inset: 0;
-    z-index: 100;
-    background: white;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .dark .fullscreen-container {
-    background: #111827;
-  }
-  
-  .fullscreen-content {
-    flex: 1;
-    overflow-y: auto;
-    padding: 1rem;
-  }
-  
-  /* Slideshow optimizations */
-  .slideshow-container {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .slide-content {
-    flex: 1;
-    overflow-y: auto;
-    padding: 1rem;
-  }
-  
-  /* Complexity analysis - stack vertically on mobile */
-  .complexity-panel {
-    padding: 0.75rem;
-  }
-  
-  .complexity-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 0.5rem;
-  }
-  
-  .complexity-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.5rem;
-    background: #f9fafb;
-    border-radius: 0.5rem;
-  }
-  
-  .dark .complexity-item {
-    background: #1f2937;
-  }
+/* xs (≥320px) — base mobile already handled by utilities  --------- */
+
+/* sm‑landscape (≥568px & landscape) */
+@media (min-width:568px) and (orientation:landscape){
+  .chat-container{height:calc(100vh-6rem);}             /* tighter header */
+  .voice-input-container{@apply p-3 backdrop-blur-md;}
+  .complexity-grid{@apply grid-cols-2;}
 }
 
-/* Small Mobile Landscape (568px+) */
-@media screen and (min-width: 568px) and (orientation: landscape) {
-  .chat-container {
-    height: calc(100vh - 6rem);
-  }
-  
-  .voice-input-container {
-    padding: 0.75rem 1rem;
-  }
-  
-  .complexity-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-  
-  /* Adjust header for landscape */
-  .app-header {
-    padding: 0.5rem 1rem;
-  }
-  
-  .app-header .py-3 {
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-  }
+/* md (≥768px) — portrait tablets ----------------------------------*/
+@media (min-width:768px){
+  .app-container{@apply px-6;}                          /* bigger gutters */
+  .chat-container{@apply mx-auto max-w-4xl;}            /* centred column */
+  .voice-input-container{position:static;@apply bg-transparent border-none p-0 backdrop-blur-0;}
+  .message-bubble{@apply max-w-[85%] my-4 p-6 text-base rounded-2xl;}
+  .slideshow-desktop{display:grid;grid-template-columns:1fr_250px;gap:2rem;height:100%;}
+  .slideshow-navigation{@apply flex flex-col gap-2 p-4 rounded-lg overflow-y-auto bg-[var(--c-bg-3)]/40;}
+  .slide-nav-item{@apply px-3 py-2 rounded-md text-sm transition-colors cursor-pointer border border-transparent;}
+  .slide-nav-item:hover{@apply bg-[var(--c-bg-2)] border-[var(--c-bdr)];}
+  .slide-nav-item.active{@apply bg-[var(--pri-500)] text-white;}
+  .complexity-grid{@apply grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4;}
 }
 
-/* Large Mobile (414px+) */
-@media screen and (min-width: 414px) {
-  .message-bubble {
-    padding: 1rem;
-    margin: 0.75rem 0;
-  }
-  
-  .message-bubble pre {
-    font-size: 0.875rem;
-    padding: 0.75rem;
-  }
-  
-  .slide-content {
-    padding: 1.5rem;
-  }
-  
-  .complexity-panel {
-    padding: 1rem;
-  }
+/* lg (≥1024px) — landscape tablets / small laptops ----------------*/
+@media (min-width:1024px){
+  .chat-container{height:calc(100vh-12rem);}             /* more breathing */
+  .message-bubble{@apply max-w-[75%] p-8 text-lg;}
+  .slideshow-desktop{grid-template-columns:1fr_300px;}
+  .mermaid-diagram{max-height:60vh;overflow:auto;}
 }
 
-/* Tablet Portrait (768px+) */
-@media screen and (min-width: 768px) {
-  .app-container {
-    padding: 1rem;
-  }
-  
-  .chat-container {
-    height: calc(100vh - 10rem);
-    max-width: 4xl;
-    margin: 0 auto;
-  }
-  
-  .voice-input-container {
-    position: static;
-    background: transparent;
-    backdrop-filter: none;
-    border: none;
-    padding: 1rem 0;
-  }
-  
-  .message-bubble {
-    max-width: 85%;
-    margin: 1rem auto;
-    padding: 1.5rem;
-  }
-  
-  .user-bubble {
-    margin-left: auto;
-    margin-right: 1rem;
-  }
-  
-  .assistant-bubble {
-    margin-right: auto;
-    margin-left: 1rem;
-  }
-  
-  /* Code blocks - better formatting for tablets */
-  .message-bubble pre {
-    font-size: 0.875rem;
-    line-height: 1.5;
-    padding: 1rem;
-    border-radius: 0.75rem;
-  }
-  
-  /* Fullscreen mode adjustments */
-  .fullscreen-container {
-    border-radius: 1rem;
-    margin: 1rem;
-    inset: 1rem;
-  }
-  
-  .fullscreen-content {
-    padding: 2rem;
-  }
-  
-  /* Slideshow - side-by-side layout option */
-  .slideshow-desktop {
-    display: grid;
-    grid-template-columns: 1fr 250px;
-    gap: 2rem;
-    height: 100%;
-  }
-  
-  .slideshow-navigation {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    padding: 1rem;
-    background: #f9fafb;
-    border-radius: 0.75rem;
-    overflow-y: auto;
-  }
-  
-  .dark .slideshow-navigation {
-    background: #1f2937;
-  }
-  
-  .slide-nav-item {
-    padding: 0.75rem;
-    text-align: left;
-    border-radius: 0.5rem;
-    border: 1px solid transparent;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-size: 0.875rem;
-  }
-  
-  .slide-nav-item:hover {
-    background: white;
-    border-color: #e5e7eb;
-  }
-  
-  .dark .slide-nav-item:hover {
-    background: #374151;
-    border-color: #4b5563;
-  }
-  
-  .slide-nav-item.active {
-    background: #3b82f6;
-    color: white;
-  }
-  
-  /* Complexity analysis - horizontal layout */
-  .complexity-grid {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-  }
-  
-  .complexity-item {
-    padding: 1rem;
-    text-align: center;
-  }
+/* xl (≥1280px) — desktops -----------------------------------------*/
+@media (min-width:1280px){
+  .app-container{@apply px-10;}
+  .chat-container{@apply max-w-6xl;}
+  .code-explanation-layout{display:grid;grid-template-columns:1fr_1fr;gap:2rem;align-items:start;}
+  .code-section{position:sticky;top:2rem;}
+  .fullscreen-content{@apply p-12 max-w-[1400px] mx-auto;}
+  .slideshow-desktop{grid-template-columns:350px_1fr;}
 }
 
-/* Tablet Landscape (1024px+) */
-@media screen and (min-width: 1024px) {
-  .chat-container {
-    height: calc(100vh - 12rem);
-  }
-  
-  .message-bubble {
-    max-width: 75%;
-    padding: 2rem;
-  }
-  
-  .message-bubble pre {
-    font-size: 1rem;
-    line-height: 1.6;
-    padding: 1.5rem;
-  }
-  
-  /* Enhanced slideshow for larger screens */
-  .slideshow-desktop {
-    grid-template-columns: 1fr 300px;
-  }
-  
-  .slideshow-navigation {
-    padding: 1.5rem;
-  }
-  
-  .slide-nav-item {
-    padding: 1rem;
-  }
-  
-  /* Diagram rendering */
-  .mermaid-diagram {
-    max-height: 60vh;
-    overflow: auto;
-  }
-  
-  .mermaid-diagram svg {
-    max-width: 100%;
-    height: auto;
-  }
-  
-  /* Code complexity visualization */
-  .complexity-visual {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-    margin-top: 1rem;
-  }
-  
-  .complexity-chart {
-    background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
-    border-radius: 1rem;
-    padding: 1.5rem;
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .dark .complexity-chart {
-    background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
-  }
-  
-  .complexity-chart::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, #10b981, #f59e0b, #ef4444);
-  }
+/* 2xl (≥1536px) — large monitors ----------------------------------*/
+@media (min-width:1536px){
+  .chat-container{@apply max-w-7xl;}
+  .fullscreen-content{@apply max-w-[1600px] p-16;}
+  .message-bubble{@apply max-w-[65%] p-10 text-xl;}
+  .code-explanation-layout{grid-template-columns:1.2fr_1fr;gap:3rem;}
+  .slideshow-desktop{grid-template-columns:400px_1fr;}
 }
 
-/* Desktop (1280px+) */
-@media screen and (min-width: 1280px) {
-  .app-container {
-    padding: 2rem;
-  }
-  
-  .chat-container {
-    max-width: 6xl;
-  }
-  
-  .message-bubble {
-    max-width: 70%;
-  }
-  
-  /* Side-by-side code and explanation layout */
-  .code-explanation-layout {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-    align-items: start;
-  }
-  
-  .code-section {
-    position: sticky;
-    top: 2rem;
-  }
-  
-  .explanation-section {
-    padding: 1rem;
-  }
-  
-  /* Enhanced fullscreen mode */
-  .fullscreen-container {
-    margin: 0;
-    inset: 0;
-    border-radius: 0;
-  }
-  
-  .fullscreen-content {
-    padding: 3rem;
-    max-width: 1400px;
-    margin: 0 auto;
-  }
-  
-  /* Advanced slideshow features */
-  .slideshow-desktop {
-    grid-template-columns: 350px 1fr;
-  }
-  
-  .slideshow-progress-indicators {
-    display: flex;
-    gap: 0.5rem;
-    justify-content: center;
-    margin-top: 1rem;
-  }
-  
-  .progress-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #d1d5db;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  
-  .progress-dot.active {
-    background: #3b82f6;
-    transform: scale(1.25);
-  }
-  
-  .progress-dot:hover {
-    background: #6b7280;
-  }
+/* Retina & hi‑dpi tweaks ------------------------------------------*/
+@media (-webkit-min-device-pixel-ratio:2),(min-resolution:192dpi){
+  .logo-container img{image-rendering:-webkit-optimize-contrast;image-rendering:crisp-edges;}
+  .mermaid-diagram svg{shape-rendering:geometricPrecision;}
 }
 
-/* Large Desktop (1536px+) */
-@media screen and (min-width: 1536px) {
-  .chat-container {
-    max-width: 7xl;
-  }
-  
-  .fullscreen-content {
-    max-width: 1600px;
-    padding: 4rem;
-  }
-  
-  .message-bubble {
-    max-width: 65%;
-    padding: 2.5rem;
-  }
-  
-  .message-bubble pre {
-    font-size: 1.1rem;
-    line-height: 1.7;
-    padding: 2rem;
-  }
-  
-  /* Ultra-wide layout optimizations */
-  .code-explanation-layout {
-    grid-template-columns: 1.2fr 1fr;
-    gap: 3rem;
-  }
-  
-  .slideshow-desktop {
-    grid-template-columns: 400px 1fr;
-  }
+/* Motion‑reduced ---------------------------------------------------*/
+@media (prefers-reduced-motion:reduce){
+  *{@apply transition-none animate-none;} /* nuke subtle anims */
 }
 
-/* High DPI / Retina Displays */
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-  .logo-container img {
-    image-rendering: -webkit-optimize-contrast;
-    image-rendering: crisp-edges;
-  }
-  
-  .mermaid-diagram svg {
-    shape-rendering: geometricPrecision;
-  }
+/* Print -----------------------------------------------------------*/
+@media print{
+  .app-header,.voice-input-container,.quick-actions,.slideshow-navigation,.slide-progress{display:none!important;}
+  .chat-container{position:static;height:auto;background:#fff;color:#000;}
+  .message-bubble{@apply border border-slate-300 my-4 max-w-full break-inside-avoid;}
+  .message-bubble pre{@apply bg-slate-100 text-slate-900 border border-slate-300;}
 }
 
-/* Reduced Motion Preferences */
-@media (prefers-reduced-motion: reduce) {
-  .slideshow-container {
-    transition: none;
-  }
-  
-  .slide-content {
-    animation: none;
-  }
-  
-  .wave-animation {
-    animation: none;
-  }
-  
-  .loading-animation div {
-    animation: none;
-  }
-  
-  .progress-dot {
-    transition: none;
-  }
-  
-  .message-bubble {
-    transition: none;
-  }
+/* High‑contrast ----------------------------------------------------*/
+@media (prefers-contrast:high){
+  .message-bubble{border:2px solid currentColor;}
+  .complexity-item{@apply border border-slate-500;}
 }
 
-/* Print Styles */
-@media print {
-  .app-header,
-  .voice-input-container,
-  .quick-actions,
-  .slideshow-navigation,
-  .slide-progress {
-    display: none !important;
-  }
-  
-  .fullscreen-container,
-  .chat-container {
-    position: static;
-    height: auto;
-    background: white;
-    color: black;
-  }
-  
-  .message-bubble {
-    break-inside: avoid;
-    border: 1px solid #ccc;
-    margin: 1rem 0;
-    max-width: 100%;
-  }
-  
-  .message-bubble pre {
-    background: #f5f5f5 !important;
-    color: #333 !important;
-    border: 1px solid #ddd;
-  }
-  
-  .mermaid-diagram svg {
-    max-height: none;
-  }
-}
-
-/* Dark Mode Specific Responsive Adjustments */
-@media (prefers-color-scheme: dark) {
-  .voice-input-container {
-    background: rgba(17, 24, 39, 0.95);
-    border-top-color: #374151;
-  }
-  
-  .fullscreen-container {
-    background: #111827;
-  }
-}
-
-/* Touch Device Optimizations */
-@media (hover: none) and (pointer: coarse) {
-  /* Increase touch targets */
-  .action-btn,
-  .mobile-action-btn {
-    min-height: 44px;
-    min-width: 44px;
-  }
-  
-  .toggle-switch {
-    min-height: 44px;
-    padding: 0.5rem;
-  }
-  
-  .slide-nav-item {
-    min-height: 48px;
-    display: flex;
-    align-items: center;
-  }
-  
-  /* Prevent zoom on input focus */
-  input, select, textarea {
-    font-size: 16px;
-  }
-  
-  /* Better scroll indicators */
-  .chat-container::-webkit-scrollbar {
-    width: 8px;
-  }
-  
-  .chat-container::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 4px;
-  }
-}
-
-/* Foldable Device Support */
-@media (spanning: single-fold-vertical) {
-  .slideshow-desktop {
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr auto;
-  }
-  
-  .slideshow-navigation {
-    display: flex;
-    flex-direction: row;
-    overflow-x: auto;
-    overflow-y: visible;
-    height: auto;
-  }
-  
-  .slide-nav-item {
-    flex-shrink: 0;
-    min-width: 150px;
-  }
-}
-
-@media (spanning: single-fold-horizontal) {
-  .fullscreen-container {
-    display: grid;
-    grid-template-rows: 1fr 1fr;
-  }
-  
-  .fullscreen-content {
-    overflow-y: auto;
-  }
-  
-  .quick-actions {
-    position: sticky;
-    bottom: 0;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-  }
-  
-  .dark .quick-actions {
-    background: rgba(17, 24, 39, 0.95);
-  }
-}
-
-/* Animation Utilities for Different Screen Sizes */
-@keyframes slideInMobile {
-  from {
-    transform: translateY(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-@keyframes slideInDesktop {
-  from {
-    transform: translateX(-100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-@media (max-width: 767px) {
-  .slide-enter-active {
-    animation: slideInMobile 0.3s ease-out;
-  }
-}
-
-@media (min-width: 768px) {
-  .slide-enter-active {
-    animation: slideInDesktop 0.3s ease-out;
-  }
-}
-
-/* Accessibility Enhancements */
-@media (prefers-contrast: high) {
-  .message-bubble {
-    border: 2px solid;
-  }
-  
-  .user-bubble {
-    border-color: #1d4ed8;
-  }
-  
-  .assistant-bubble {
-    border-color: #374151;
-  }
-  
-  .complexity-item {
-    border: 1px solid #6b7280;
-  }
-}
-
-/* Focus-visible support for better keyboard navigation */
-@supports selector(:focus-visible) {
-  .action-btn:focus {
-    outline: none;
-  }
-  
-  .action-btn:focus-visible {
-    outline: 2px solid #3b82f6;
-    outline-offset: 2px;
-  }
-  
-  .slide-nav-item:focus-visible {
-    outline: 2px solid #3b82f6;
-    outline-offset: 2px;
-  }
+/* Touch‑targets ----------------------------------------------------*/
+@media (hover:none) and (pointer:coarse){
+  .action-btn{min-height:44px;min-width:44px;} .slide-nav-item{min-height:48px;}
+  input,select,textarea{font-size:16px;} /* avoid iOS zoom */
+  .chat-container::-webkit-scrollbar{width:8px;} .chat-container::-webkit-scrollbar-thumb{background:rgba(0,0,0,.3);border-radius:4px;}
 }

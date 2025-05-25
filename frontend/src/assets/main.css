@@ -140,3 +140,32 @@
   .dark .text-shadow-soft{ text-shadow:0 1px 3px rgba(0,0,0,.3); }
   .text-shadow-glow-primary{ text-shadow:0 0 8px hsl(var(--primary-hue) 92% 60%/.4); }
 }
+
+/* (snip) main.css content remains – only changed blocks below */
+
+/* === ICON SCALES ================================================= */
+/* Global helper: any SVG placed inside .icon class shrinks nicely */
+.icon-s    { @apply w-4 h-4; }
+.icon-base { @apply w-5 h-5; }
+.icon-lg   { @apply w-6 h-6; }
+
+/* Feature-grid specific */
+.feature-icon-wrapper {
+  @apply flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center transition-transform duration-200;
+}
+.feature-item:hover .feature-icon-wrapper{transform:scale(1.05);} 
+.feature-icon{ @apply icon-base; color:var(--pri-500);} 
+
+/* Section-header icons (Settings etc.) */
+.section-icon{ @apply icon-base text-[var(--pri-500)] dark:text-[var(--pri-500)]; }
+
+/* Toast icons, control icons, nav dots – use icon-s */
+.toast-icon svg, .control-btn svg, .nav-dot svg{ @apply icon-s; }
+
+/* === PADDING TWEAKS ============================================== */
+.feature-item{ @apply p-6 gap-5 rounded-xl;} /* roomier cards */
+.analysis-banner{ @apply px-7 py-4;} /* more breathing space */
+.slide-content{ @apply p-10;} /* bigger default */
+.setting-item-wrapper{ @apply py-4;} /* settings rows */
+
+/* retain the rest of file unchanged – Tailwind recompiles only diffs */
