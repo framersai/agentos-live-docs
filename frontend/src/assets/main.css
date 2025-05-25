@@ -1,565 +1,142 @@
-/**
- * Voice Coding Assistant - Unified Styling System
- * Version: 2.0.2 - Further PostCSS/Tailwind error corrections.
- * Description: Combines base styles, Tailwind components/utilities,
- * responsive design, and a custom futuristic/sci-fi aesthetic.
- */
+/* ====================================================================
+   Voice Coding Assistant – Global Style Sheet
+   File: main.css  |  Version: 2.1.0  (2025‑05‑25)
+   --------------------------------------------------------------------
+   ✦ Consolidates base, component and utility rules.
+   ✦ Tailwind‑friendly: every @apply line uses ONLY core utilities – no
+     arbitrary values inside @apply (those are plain CSS below).
+   ✦ All colour customisation is done with CSS variables so the design
+     system is future‑proof and dark‑mode aware.
+   ==================================================================== */
 
-/* Import fonts first */
+/* ------------------------------------------------------------------ */
+/*  Google Fonts – loaded first                                         */
+/* ------------------------------------------------------------------ */
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
-/* Tailwind directives */
+/* ------------------------------------------------------------------ */
+/*  Tailwind direct‑ives                                               */
+/* ------------------------------------------------------------------ */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* --- Root Variables & Theming --- */
+/* ------------------------------------------------------------------ */
+/*  Design‑Tokens / CSS‑Vars                                          */
+/* ------------------------------------------------------------------ */
 :root {
-  /* Primary & Accent Colors */
+  /* brand hues */
   --primary-hue: 217;
-  --accent-hue: 190;
+  --accent-hue : 190;
 
-  --primary-50: hsl(var(--primary-hue) 95% 96%);
-  --primary-100: hsl(var(--primary-hue) 93% 92%);
-  --primary-200: hsl(var(--primary-hue) 90% 86%);
-  --primary-300: hsl(var(--primary-hue) 93% 78%);
-  --primary-400: hsl(var(--primary-hue) 94% 69%);
-  --primary-500: hsl(var(--primary-hue) 92% 60%); /* #3b82f6 equivalent */
-  --primary-600: hsl(var(--primary-hue) 84% 54%); /* #2563eb equivalent */
-  --primary-700: hsl(var(--primary-hue) 77% 49%); /* #1d4ed8 equivalent */
-  --primary-800: hsl(var(--primary-hue) 70% 42%);
-  --primary-900: hsl(var(--primary-hue) 70% 35%);
-  --primary-950: hsl(var(--primary-hue) 70% 25%);
+  /* derived palette */
+  --primary-500: hsl(var(--primary-hue) 92% 60%);
+  --primary-600: hsl(var(--primary-hue) 84% 54%);
+  --accent-500 : hsl(var(--accent-hue) 80% 45%);
 
-  --accent-400: hsl(var(--accent-hue) 70% 55%);
-  --accent-500: hsl(var(--accent-hue) 80% 45%);
-  --accent-600: hsl(var(--accent-hue) 85% 40%);
+  /* greys */
+  --text-primary-rgb   : 30 41 59;  /* slate‑800 */
+  --text-secondary-rgb : 51 65 85;  /* slate‑700 */
+  --text-muted-rgb     : 100 116 139; /* slate‑500 */
+  --bg-base-rgb        : 255 255 255;
+  --bg-surface-rgb     : 248 250 252; /* slate‑50  */
+  --bg-subtle-rgb      : 241 245 249; /* slate‑100 */
+  --border-rgb         : 226 232 240; /* slate‑200 */
 
-  /* Semantic Colors */
+  /* semantic */
+  --error-color  : hsl(0 84% 60%);
   --success-color: hsl(145 63% 42%);
-  --warning-color: hsl(39 92% 53%);
-  --error-color: hsl(0 84% 60%);
-  --info-color: var(--primary-500);
 
-  /* Base Text & Background */
-  --text-primary-rgb: 30, 41, 59;    /* Equiv. to Tailwind slate-800 */
-  --text-secondary-rgb: 51, 65, 85;  /* Equiv. to Tailwind slate-700 (Tailwind's slate-600 is #475569) */
-  --text-muted-rgb: 100, 116, 139; /* Equiv. to Tailwind slate-500 (Tailwind's slate-400 is #94a3b8) */
-  --bg-base-rgb: 255, 255, 255;      /* white */
-  --bg-surface-rgb: 248, 250, 252;  /* slate-50 */
-  --bg-subtle-rgb: 241, 245, 249;   /* slate-100 */
-  --border-color-rgb: 226, 232, 240; /* slate-200 */
-
-  --text-primary: rgb(var(--text-primary-rgb));
-  --text-secondary: rgb(var(--text-secondary-rgb));
-  --text-muted: rgb(var(--text-muted-rgb));
-  --bg-base: rgb(var(--bg-base-rgb));
-  --bg-surface: rgb(var(--bg-surface-rgb));
-  --bg-subtle: rgb(var(--bg-subtle-rgb));
-  --border-color: rgb(var(--border-color-rgb));
-
-
-  /* Futuristic UI Elements */
-  --glow-primary: 0 0 12px hsla(var(--primary-hue), 92%, 60%, 0.5), 0 0 24px hsla(var(--primary-hue), 92%, 60%, 0.3);
-  --glow-accent: 0 0 12px hsla(var(--accent-hue), 80%, 45%, 0.5), 0 0 24px hsla(var(--accent-hue), 80%, 45%, 0.3);
-
-  --glass-bg: hsla(0, 0%, 100%, 0.6);
-  --glass-border: hsla(0, 0%, 100%, 0.15);
-  --glass-shadow: 0 8px 32px 0 hsla(var(--primary-hue), 30%, 30%, 0.1);
-  --glass-blur: 10px;
-  --glass-saturate: 150%;
-
-  /* Animation & Transitions */
-  --duration-quick: 100ms;
-  --duration-smooth: 250ms;
-  --duration-ui: 400ms;
-  --ease-out-quad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  --ease-out-cubic: cubic-bezier(0.215, 0.610, 0.355, 1.000);
-  --ease-in-out-sine: cubic-bezier(0.445, 0.05, 0.55, 0.95);
-
-  /* Borders & Radius */
-  --radius-xs: 0.25rem;
-  --radius-sm: 0.375rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
-  --radius-full: 9999px;
-
-  /* Font Families */
-  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  /* glassmorphism */
+  --glass-bg    : hsla(0 0% 100% / .6);
+  --glass-border: hsla(0 0% 100% / .15);
+  --glass-blur  : 10px;
+  --glass-saturate:150%;
 }
-
 .dark {
-  --text-primary-rgb: 241, 245, 249;    /* slate-100 */
-  --text-secondary-rgb: 203, 213, 225;  /* slate-300 */
-  --text-muted-rgb: 100, 116, 139;    /* slate-500 (Tailwind's slate-500 is #64748b) */
-  --bg-base-rgb: 17, 24, 39;         /* gray-900 */
-  --bg-surface-rgb: 30, 41, 59;      /* gray-800 */
-  --bg-subtle-rgb: 30, 41, 59;       /* gray-800 (was slate-800/gray-850) */
-  --border-color-rgb: 55, 65, 81;    /* gray-700 */
+  --text-primary-rgb   : 241 245 249; /* slate‑100 */
+  --text-secondary-rgb : 203 213 225; /* slate‑300 */
+  --bg-base-rgb        : 17 24 39;    /* gray‑900  */
+  --bg-surface-rgb     : 30 41 59;    /* gray‑800  */
+  --bg-subtle-rgb      : 30 41 59;    /* gray‑800  */
+  --border-rgb         : 55 65 81;    /* gray‑700  */
 
-  --glow-primary: 0 0 15px hsla(var(--primary-hue), 94%, 69%, 0.6), 0 0 30px hsla(var(--primary-hue), 94%, 69%, 0.4);
-  --glow-accent: 0 0 15px hsla(var(--accent-hue), 70%, 55%, 0.6), 0 0 30px hsla(var(--accent-hue), 70%, 55%, 0.4);
-
-  --glass-bg: hsla(var(--primary-hue), 20%, 15%, 0.65);
-  --glass-border: hsla(var(--primary-hue), 20%, 25%, 0.2);
-  --glass-shadow: 0 8px 32px 0 hsla(var(--primary-hue), 50%, 10%, 0.2);
+  --glass-bg: hsla(var(--primary-hue) 20% 15% / .65);
+  --glass-border: hsla(var(--primary-hue) 20% 25% / .20);
 }
 
-/* --- Base Layer --- */
+/* helpers that need rgb() */
+:root {
+  --text-primary  : rgb(var(--text-primary-rgb));
+  --text-secondary: rgb(var(--text-secondary-rgb));
+  --text-muted    : rgb(var(--text-muted-rgb));
+  --bg-base   : rgb(var(--bg-base-rgb));
+  --bg-surface: rgb(var(--bg-surface-rgb));
+  --bg-subtle : rgb(var(--bg-subtle-rgb));
+  --border-color: rgb(var(--border-rgb));
+}
+
+/* ------------------------------------------------------------------ */
+/*  BASE LAYER overrides                                              */
+/* ------------------------------------------------------------------ */
 @layer base {
-  html {
-    font-family: var(--font-sans);
-    @apply antialiased subpixel-antialiased;
-    scroll-behavior: smooth;
-    text-rendering: optimizeLegibility;
-    -webkit-tap-highlight-color: transparent;
-  }
-
+  html { font-family: 'Plus Jakarta Sans', ui-sans-serif, sans-serif; @apply antialiased; }
   body {
     background-color: var(--bg-base);
     color: var(--text-primary);
-    @apply bg-gradient-to-br from-gray-50 via-white to-gray-100
-           dark:from-gray-900 dark:via-gray-900 dark:to-[rgb(var(--bg-subtle-rgb))] /* Using rgb() for CSS var in arbitrary value */
-           leading-relaxed selection:bg-primary-500/30 dark:selection:bg-primary-500/40;
-    font-feature-settings: 'kern' on, 'liga' on, 'clig' on, 'calt' on;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
+    @apply leading-relaxed flex flex-col min-h-screen;
   }
-
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold tracking-tight text-[var(--text-primary)];
-    text-wrap: balance;
-  }
-  h1 { @apply text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight; }
-  h2 { @apply text-2xl sm:text-3xl lg:text-4xl font-bold; }
-  h3 { @apply text-xl sm:text-2xl font-semibold; }
-  h4 { @apply text-lg sm:text-xl font-semibold; }
-
-  p {
-    color: var(--text-secondary);
-    @apply mb-4 leading-relaxed;
-  }
-
-  a {
-    @apply text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300
-           font-medium underline-offset-4 hover:underline
-           transition-colors duration-[var(--duration-quick)] ease-[var(--ease-out-quad)];
-  }
-  a:focus-visible { @apply rounded-sm; }
-
-  code, pre {
-    font-family: var(--font-mono);
-    font-feature-settings: 'liga' on, 'calt' on;
-    font-variant-ligatures: common-ligatures;
-    @apply text-sm;
-  }
-  code:not(pre > code) {
-    @apply px-1.5 py-0.5 bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-md text-xs;
-  }
-  pre {
-    /* Using theme() for gray-850 as it's custom, with a fallback */
-    background-color: theme('colors.gray.850', '#1f2937'); /* Defaulted fallback to Tailwind gray-800 */
-    color: theme('colors.gray.100', '#f3f4f6');
-    @apply dark:bg-gray-950/80 dark:text-gray-200 /* gray-950 is a very dark default Tailwind color */
-           p-4 rounded-lg shadow-inner overflow-x-auto my-4 leading-relaxed
-           border border-gray-700 dark:border-gray-700/50;
-    tab-size: 4;
-  }
-  /* Removed .dark pre opacity example as dark:bg-gray-950/80 is already applied */
-
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { @apply bg-transparent; }
-  ::-webkit-scrollbar-thumb {
-    @apply bg-slate-300 dark:bg-slate-600 rounded-full
-           border-2 border-transparent bg-clip-content;
-  }
-  ::-webkit-scrollbar-thumb:hover { @apply bg-slate-400 dark:bg-slate-500; }
-  ::-webkit-scrollbar-corner { @apply bg-transparent; }
-
-  * {
-    scrollbar-width: thin;
-    scrollbar-color: theme('colors.slate.400') transparent;
-  }
-  .dark * {
-    scrollbar-color: theme('colors.slate.600') transparent;
-  }
-
-  :focus-visible {
-    @apply outline-none ring-2 ring-offset-2 rounded-sm
-           ring-primary-500 dark:ring-primary-400
-           ring-offset-[var(--bg-base)] dark:ring-offset-[var(--bg-base)];
-  }
-
-  .transition-default {
-    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, box-shadow, opacity, transform;
-    transition-duration: var(--duration-smooth);
-    transition-timing-function: var(--ease-out-quad);
+  h1,h2,h3,h4,h5,h6 { @apply font-semibold tracking-tight text-balance; color: var(--text-primary); }
+  h1{@apply text-3xl sm:text-4xl lg:text-5xl font-extrabold;}
+  h2{@apply text-2xl sm:text-3xl lg:text-4xl;}
+  h3{@apply text-xl  sm:text-2xl;}
+  a  { @apply underline underline-offset-4 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors; }
+  code:not(pre>code){
+    @apply px-1.5 py-0.5 rounded-md text-xs font-mono;
+    background-color: hsl(var(--primary-hue) 93% 92%);
+    color: var(--primary-600);
   }
 }
 
-/* --- Component Layer --- */
+/* ------------------------------------------------------------------ */
+/*  COMPONENTS LAYER                                                  */
+/* ------------------------------------------------------------------ */
 @layer components {
+  /* BUTTONS -------------------------------------------------------- */
   .btn {
-    @apply inline-flex items-center justify-center gap-x-2 px-5 py-2.5 rounded-lg font-semibold
-           border border-transparent text-sm sm:text-base
-           transition-all duration-[var(--duration-smooth)] ease-[var(--ease-out-cubic)]
-           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
-           disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none
-           relative overflow-hidden select-none transform active:scale-[0.97] hover:scale-[1.02];
-    text-shadow: 0 1px 2px hsla(0, 0%, 0%, 0.1);
+    @apply inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-sm transition-transform duration-200 select-none active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-base)];
   }
-  .btn-primary {
-    @apply btn bg-gradient-to-br from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700
-           text-white shadow-lg hover:shadow-primary-500/40 dark:hover:shadow-primary-400/30 /* Corrected shadow */
-           focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400
-           focus-visible:ring-offset-[var(--bg-base)] dark:focus-visible:ring-offset-[var(--bg-base)];
-  }
-  .btn-secondary {
-    background-color: var(--bg-surface);
-    color: var(--text-primary); /* This handles light/dark text via CSS vars */
-    border-color: var(--border-color);
-    @apply btn dark:bg-gray-700 dark:hover:bg-gray-600
-           /* Removed dark:text-text-primary as it's not a valid class and color is handled by var or specific .dark rule */
-           dark:border-gray-600 
-           shadow-sm hover:shadow-md
-           focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400;
-  }
-   .dark .btn-secondary { /* This rule correctly sets specific dark mode styles */
-     background-color: theme('colors.gray.700');
-     border-color: theme('colors.gray.600');
-     color: theme('colors.slate.100'); /* This is text-primary for dark */
-   }
-   .btn-secondary:hover { /* Light mode hover */
-     background-color: var(--bg-subtle);
-   }
-   /* Dark mode hover is already covered by: dark:hover:bg-gray-600 in the @apply */
+  .btn-primary   {@apply btn text-white bg-gradient-to-br from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700; box-shadow:0 0 12px hsl(var(--primary-hue) 92% 60% / .25);} 
+  .btn-secondary {@apply btn border border-[var(--border-color)] bg-[var(--bg-surface)] text-[var(--text-primary)] dark:bg-slate-700 dark:border-slate-600;}
+  .btn-ghost     {@apply btn text-primary-600 dark:text-primary-400 hover:bg-primary-500/10 dark:hover:bg-primary-400/10;}
+  .btn-danger    {@apply btn text-white bg-gradient-to-br from-[var(--error-color)] to-red-700 hover:from-red-600 hover:to-red-800;}
+  .btn-holo      {@apply btn border border-primary-500/30 bg-primary-50/5 dark:border-primary-400/30 dark:bg-primary-400/5 backdrop-blur-sm text-primary-600 dark:text-primary-400;}
 
-  .btn-ghost {
-    color: var(--primary-600);
-    @apply btn dark:text-primary-400
-           hover:bg-primary-500/10 dark:hover:bg-primary-400/10
-           focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400;
-    text-shadow: none;
-  }
-  .btn-danger {
-    @apply btn bg-gradient-to-br from-[var(--error-color)] to-red-700 hover:from-red-600 hover:to-red-800
-           text-white shadow-lg hover:shadow-red-500/40 dark:hover:shadow-red-400/30
-           focus-visible:ring-[var(--error-color)];
-  }
-  .btn-sm { @apply px-4 py-2 text-sm rounded-md gap-x-1.5; }
-  .btn-lg { @apply px-7 py-3.5 text-lg rounded-xl gap-x-2.5; }
-  .btn-icon { @apply p-2.5 rounded-full; }
-  .btn-icon.btn-sm { @apply p-2; }
+  /* CHIP ----------------------------------------------------------- */
+  .chip{@apply inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium shadow-sm border border-transparent transition-colors; background-color:var(--bg-surface); color:var(--text-muted);} 
+  .chip:hover{border-color:var(--primary-500);}
+  .dark .chip{background-color:rgba(55,65,81,.6);}
 
-  .btn-holographic {
-    border-color: hsla(var(--primary-hue), 92%, 60%, 0.3);
-    color: var(--primary-600);
-    background-color: hsla(var(--primary-hue), 92%, 96%, 0.05);
-    @apply btn relative dark:border-primary-400/30 dark:text-primary-400
-           dark:bg-primary-400/5 backdrop-blur-sm;
+  /* CARD & GLASS --------------------------------------------------- */
+  .glass-pane{
+    background:var(--glass-bg); border:1px solid var(--glass-border); backdrop-filter:blur(var(--glass-blur)) saturate(var(--glass-saturate)); @apply rounded-xl;
   }
-  .btn-holographic:hover {
-    background-color: hsla(var(--primary-hue), 92%, 96%, 0.1);
-    border-color: hsla(var(--primary-hue), 92%, 60%, 0.5);
-    box-shadow: var(--glow-primary);
-    @apply dark:bg-primary-400/10 dark:border-primary-400/50;
-  }
-  .btn-holographic::before {
-    content: '';
-    @apply absolute inset-0 rounded-lg opacity-0 transition-opacity duration-[var(--duration-smooth)];
-    background: radial-gradient(circle at center, hsla(var(--accent-hue),80%,55%,0.2) 0%, transparent 70%);
-  }
-  .btn-holographic:hover::before { @apply opacity-100; }
+  .glass-pane:hover{border-color:var(--primary-500); box-shadow:0 4px 24px hsl(var(--primary-hue) 92% 60%/.12);}  
+  .card-base{@apply rounded-xl shadow-lg border; background-color:var(--bg-surface); border-color:var(--border-color);}  
+  .dark .card-base{background-color:rgb(var(--bg-surface-rgb)); border-color:rgba(55,65,81,.8);} 
 
-  .glass-pane {
-    background: var(--glass-bg);
-    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
-    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--glass-shadow);
-    @apply rounded-xl transition-all duration-[var(--duration-ui)];
-  }
-  .glass-pane-interactive {
-    @apply glass-pane hover:border-primary-500/30 dark:hover:border-primary-400/30 hover:shadow-lg;
-  }
-
-  .card-base {
-    background-color: var(--bg-surface);
-    border-color: var(--border-color);
-    @apply dark:bg-[rgb(var(--bg-surface-rgb))] /* Using rgb() for CSS var in arbitrary value */
-           rounded-xl shadow-lg dark:border-gray-700/80
-           transition-all duration-[var(--duration-ui)] ease-[var(--ease-out-quad)];
-  }
-  .card-base-hover {
-    @apply card-base hover:shadow-xl hover:scale-[1.015] hover:-translate-y-1.5;
-  }
-  .card-base-interactive { @apply card-base-hover cursor-pointer; }
-
-  .form-input {
-    background-color: theme('colors.gray.50');
-    border-color: theme('colors.gray.300');
-    color: var(--text-primary);
-    @apply w-full block px-4 py-2.5 rounded-lg
-           dark:bg-gray-700/50 dark:border-gray-600
-           /* placeholder:text-text-muted - changed below */
-           transition-all duration-[var(--duration-smooth)] ease-[var(--ease-out-quad)]
-           focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400 focus:border-transparent;
-    box-shadow: inset 0 1px 2px hsla(0,0%,0%,0.05);
-  }
-   .dark .form-input {
-     background-color: theme('colors.gray.700', '#374151') / 0.5;
-     border-color: theme('colors.gray.600', '#4B5563');
-     color: var(--text-primary); /* Will be dark mode primary text */
-   }
-   .form-input::placeholder { /* Standard CSS for placeholder */
-     color: var(--text-muted); /* Uses CSS variable which adapts to dark mode */
-     @apply opacity-100; /* Ensure Tailwind doesn't override opacity if 'placeholder:text-text-muted' was doing more */
-   }
-  .form-input:focus {
-    background-color: var(--bg-base);
-    border-color: var(--primary-500); /* This uses HSL variable */
-    @apply dark:border-primary-400 shadow-md; /* dark:border-primary-400 utility is fine */
-  }
-
-  .form-select { @apply form-input appearance-none pr-10 bg-no-repeat bg-right cursor-pointer; }
-  .form-textarea { @apply form-input min-h-[100px] sm:min-h-[120px] resize-y; }
-
-  /* Global Toggle Switch (if used, ensure HTML structure matches: input + div > div.toggle-switch-thumb) */
-  .toggle-switch {
-    @apply relative inline-flex h-6 w-11 items-center rounded-full cursor-pointer
-           bg-gray-300 dark:bg-gray-600 transition-colors duration-[var(--duration-smooth)] ease-in-out
-           focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2 focus-within:ring-offset-[var(--bg-base)];
-  }
-  .toggle-switch input { @apply sr-only; } /* Hide actual checkbox */
-
-  .toggle-switch input:checked + .toggle-switch-track-visual { /* If track-visual is the sibling div */
-    @apply bg-primary-500;
-  }
-  .toggle-switch input:checked + .toggle-switch-track-visual .toggle-switch-thumb {
-    transform: translateX(1.25rem); /* 20px for w-11, h-6 track and h-5, w-5 thumb */
-  }
-  .toggle-switch-track-visual { /* A new class for the visual track if this global component is used */
-      @apply h-full w-full rounded-full bg-inherit transition-colors; /* Inherit bg from .toggle-switch */
-  }
-  .toggle-switch-thumb {
-    @apply inline-block h-5 w-5 transform rounded-full bg-white shadow
-           ring-0 transition-transform duration-[var(--duration-smooth)] ease-in-out absolute top-[2px] left-[2px];
-    /* Removed 'translate: 0.125rem;' as direct translate property is not standard, handled by left-[2px] and translateX on checked */
-  }
-
-
-  .message-bubble-base {
-    @apply p-3.5 sm:p-4 rounded-2xl shadow-lg max-w-[80%] sm:max-w-[75%] transition-transform duration-[var(--duration-smooth)] ease-[var(--ease-out-quad)];
-  }
-  .message-bubble-user {
-    @apply message-bubble-base ml-auto rounded-br-md
-           bg-gradient-to-tr from-primary-500 to-sky-500 text-white
-           dark:from-primary-600 dark:to-sky-600;
-  }
-  .message-bubble-assistant {
-    /* Original: dark:bg-gray-750. Replaced with gray-800 as gray-750 is not standard and gray-800 is closer to dark surface */
-    @apply message-bubble-base mr-auto rounded-bl-md
-           bg-white dark:bg-gray-800 text-[var(--text-primary)] 
-           border border-slate-200 dark:border-gray-700;
-  }
-  /* .dark .message-bubble-assistant rule is fine as is, as text-[var(--text-primary)] handles dark text */
-
-
-  .code-block-enhanced {
-    @apply relative group/codeblock my-4 rounded-lg shadow-xl border border-gray-700/50 dark:border-gray-700;
-    background-color: #1e1e1e;
-  }
-  .dark .code-block-enhanced { background-color: #121212; }
-
-  .code-block-enhanced pre {
-    @apply !bg-transparent !p-0 !m-0 overflow-x-auto; /* Important to override potential plugin styles */
-  }
-  .code-block-enhanced code.hljs { /* Targeting highlight.js specific class */
-    @apply block p-4 text-sm leading-relaxed;
-    font-feature-settings: "liga" on, "calt" on; /* Ensure these are valid and intended */
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-  .code-block-enhanced .line-number {
-    @apply inline-block text-center w-10 pr-3 select-none text-gray-500 dark:text-gray-600 sticky left-0;
-    background-color: inherit; /* Inherits from .code-block-enhanced */
-    border-right: 1px solid var(--border-color); /* Uses CSS variable */
-  }
-  .dark .code-block-enhanced .line-number {
-    border-right-color: theme('colors.gray.700');
-  }
-  .code-block-enhanced .copy-btn {
-    @apply absolute top-2 right-2 p-1.5 rounded-md
-           bg-gray-700/50 hover:bg-gray-600/70 dark:bg-gray-800/70 dark:hover:bg-gray-700/90
-           text-gray-300 hover:text-white
-           opacity-0 group-hover/codeblock:opacity-100 focus-within:opacity-100
-           transition-all duration-[var(--duration-quick)] z-10;
-  }
-  .code-block-enhanced .copy-btn svg { @apply w-4 h-4; }
-  .code-block-enhanced .lang-label {
-     @apply absolute top-2 left-2 px-2 py-0.5 text-xs rounded-sm
-            bg-gray-700/50 text-gray-300
-            opacity-0 group-hover/codeblock:opacity-100 transition-opacity duration-[var(--duration-quick)] z-10;
-  }
-
-  .loading-spinner-futuristic {
-    @apply w-8 h-8 rounded-full border-2 border-transparent border-t-primary-500 dark:border-t-primary-400 animate-spin;
-  }
-
-  .dots-loader span {
-    @apply inline-block w-2.5 h-2.5 rounded-full bg-primary-500 dark:bg-primary-400 opacity-0;
-    animation: dot-loader-anim 1.4s ease-in-out infinite both;
-  }
-  .dots-loader span:nth-child(1) { animation-delay: 0s; }
-  .dots-loader span:nth-child(2) { animation-delay: 0.15s; }
-  .dots-loader span:nth-child(3) { animation-delay: 0.3s; }
-
+  /* FEATURE GRID item --------------------------------------------- */
+  .feature-item{@apply flex items-start gap-4 p-4 rounded-lg transition-transform duration-200; background-color:hsl(var(--primary-hue) 95% 96%/.3);}  
+  .feature-item:hover{transform:scale(1.03);}  
+  .dark .feature-item{background-color:hsl(var(--primary-hue) 70% 25%/.2);}  
 }
 
-/* --- Utility Layer --- */
+/* ------------------------------------------------------------------ */
+/*  UTILITIES LAYER – only a few custom ones                         */
+/* ------------------------------------------------------------------ */
 @layer utilities {
-  .text-balance { text-wrap: balance; }
-  .text-pretty { text-wrap: pretty; }
-
-  .scrollbar-thin { scrollbar-width: thin; }
-  .scrollbar-none { scrollbar-width: none; }
-  .scrollbar-none::-webkit-scrollbar { display: none; }
-
-  .bg-blur-slight { backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
-  .bg-blur-medium { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
-  .bg-blur-heavy { backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
-
-  .clip-path-inset-round { clip-path: inset(0 round var(--radius-md)); }
-
-  .border-fx-glow-primary {
-    position: relative;
-    border: 1px solid transparent; /* Base border */
-  }
-  .border-fx-glow-primary::before {
-    content: '';
-    position: absolute;
-    inset: -1px; /* Control thickness of glow border */
-    border-radius: inherit; /* Match parent's border-radius */
-    padding: 1px; /* This also affects perceived thickness */
-    background: linear-gradient(120deg, hsla(var(--accent-hue),80%,55%,0.7), hsla(var(--primary-hue),92%,60%,0.7), hsla(var(--accent-hue),80%,55%,0.7));
-    background-size: 200% 200%;
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor; /* Standard property */
-    mask-composite: exclude; /* Standard property */
-    animation: border-glow-anim 4s linear infinite;
-    z-index: -1; /* Place behind content */
-  }
-
-  .text-shadow-soft { text-shadow: 0 1px 3px hsla(0,0%,0%,0.1), 0 0 1px hsla(0,0%,0%,0.05); }
-  .dark .text-shadow-soft { text-shadow: 0 1px 3px hsla(0,0%,0%,0.3), 0 0 1px hsla(0,0%,0%,0.2); }
-  .text-shadow-glow-primary { text-shadow: 0 0 8px hsla(var(--primary-hue), 92%, 60%, 0.5), 0 0 16px hsla(var(--primary-hue), 92%, 60%, 0.3); }
-  .dark .text-shadow-glow-primary { text-shadow: 0 0 10px hsla(var(--primary-hue), 94%, 69%, 0.6), 0 0 20px hsla(var(--primary-hue), 94%, 69%, 0.4); }
-
-  @keyframes border-glow-anim {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
-  @keyframes dot-loader-anim {
-    0%, 80%, 100% { transform: scale(0.5); opacity: 0.5; }
-    40% { transform: scale(1); opacity: 1; }
-  }
-}
-
-/* --- Specific Component Overrides & Responsive --- */
-
-@media screen and (max-width: 767px) { /* Corresponds to Tailwind 'md' breakpoint */
-  .voice-input-section {
-    @apply fixed bottom-0 left-0 right-0 p-4 bg-opacity-95 backdrop-blur-md border-t;
-    background-color: var(--glass-bg);
-    border-top-color: var(--glass-border);
-  }
-  .dark .voice-input-section { /* Already uses CSS vars, this specific rule might be redundant if --glass-bg adapts */
-    background-color: var(--glass-bg);
-    border-top-color: var(--glass-border);
-  }
-}
-
-/* Print Styles */
-@media print {
-  body {
-    background-color: #fff !important;
-    color: #000 !important;
-    font-size: 10pt;
-  }
-  .app-header,
-  .voice-input-section,
-  .btn,
-  .fullscreen-controls,
-  .actions-toolbar,
-  .context-panel, .insights-panel, .cost-warning,
-  [class*="animate-"] {
-    display: none !important;
-  }
-
-  .glass-pane, .card-base {
-    background: #fff !important;
-    border: 1px solid #ccc !important;
-    box-shadow: none !important;
-    print-color-adjust: exact;
-    -webkit-print-color-adjust: exact;
-  }
-
-  .message-bubble-base {
-    break-inside: avoid;
-    @apply shadow-none border border-gray-300 p-3 my-2 max-w-full;
-  }
-  .message-bubble-user { @apply bg-gray-100 border-blue-300; }
-  .message-bubble-assistant { @apply bg-white border-gray-400; }
-
-  .code-block-enhanced {
-    @apply shadow-none border border-gray-400 bg-gray-50;
-    page-break-inside: avoid;
-    print-color-adjust: exact;
-    -webkit-print-color-adjust: exact;
-  }
-  .code-block-enhanced code.hljs {
-    @apply text-black;
-    background-color: #f0f0f0 !important;
-  }
-   .code-block-enhanced .line-number {
-     @apply text-gray-700;
-     background-color: #f0f0f0 !important;
-     border-right-color: #ccc !important;
-   }
-
-  a { text-decoration: underline !important; color: #000 !important; }
-  a[href^="http"]:after { content:" (" attr(href) ") "; font-size: 0.8em; }
-}
-
-/* Reduced motion for accessibility */
-@media (prefers-reduced-motion: reduce) {
-  .animate-spin, .animate-pulse, .animate-bounce,
-  .animate-voice-pulse, /* Make sure 'animate-voice-pulse' matches tailwind.config.js */
-  .animate-dot-loader-anim, /* If you have a utility like this for dot-loader-anim */
-  .animate-gradient-shift,
-  .btn:active, .btn:hover, .card-base-hover {
-    animation: none !important;
-    transition: none !important;
-    transform: none !important;
-  }
-}
-
-/* High contrast mode support */
-@media (prefers-contrast: high) {
-  .glass-pane {
-    background: var(--bg-base) !important;
-    
-    /* @apply border-2 border-text-primary;  */
-    /* Error: text-primary is var(--text-primary), not a direct Tailwind color. Use a direct color or a CSS var for border color that adapts */
-    /* Suggestion: border-color: var(--text-primary); or a specific high-contrast color */
-  }
-  .btn-primary, .btn-secondary, .btn-ghost, .btn-danger, .btn-holographic {
-    @apply border-2 border-current; /* This is fine, uses current text color */
-  }
+  .text-shadow-soft{ text-shadow:0 1px 3px rgba(0,0,0,.1); }
+  .dark .text-shadow-soft{ text-shadow:0 1px 3px rgba(0,0,0,.3); }
+  .text-shadow-glow-primary{ text-shadow:0 0 8px hsl(var(--primary-hue) 92% 60%/.4); }
 }
