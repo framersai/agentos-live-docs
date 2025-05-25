@@ -1,14 +1,33 @@
 // File: src/views/Settings.vue
 <template>
   <div class="settings-page-container min-h-screen bg-gray-100 dark:bg-gray-950 text-gray-900 dark:text-gray-50">
-    <div class="sm:hidden sticky top-0 bg-white dark:bg-gray-900 py-3 px-4 z-30 border-b border-gray-200 dark:border-gray-700/80 shadow-sm">
+
+    <header class="sticky top-0 z-30 glass-pane shadow-md border-b-[var(--glass-border)]">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <img src="/src/assets/logo.svg" alt="Voice Chat Assistant Logo" class="w-9 h-9 sm:w-10 sm:h-10" />
+            <h1 class="text-xl sm:text-2xl font-bold text-[var(--text-primary)]">
+              Settings
+            </h1>
+          </div>
+          <button @click="goHome" class="btn btn-ghost btn-sm" title="Back to Home">
+            <ArrowLeftIcon class="h-4 w-4" />
+            Back to App
+          </button>
+        </div>
+      </div>
+    </header>
+
+
+    <!-- <div class="sm:hidden sticky top-0 bg-white dark:bg-gray-900 py-3 px-4 z-30 border-b border-gray-200 dark:border-gray-700/80 shadow-sm">
       <div class="flex items-center">
         <button @click="goBack" class="mr-2 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700/60 transition-colors" aria-label="Back">
           <ArrowLeftIcon class="h-5 w-5 text-gray-700 dark:text-gray-300" />
         </button>
         <h1 class="text-lg font-semibold">Settings</h1>
       </div>
-    </div>
+    </div> -->
 
     <main class="max-w-2xl mx-auto py-6 sm:py-10 px-4">
       <div class="hidden sm:block mb-10 text-center">
@@ -311,6 +330,7 @@ const SettingsItem = defineAsyncComponent(() => Promise.resolve({
 
 
 const router = useRouter();
+const goHome = () => router.push('/');
 const toast = inject('toast') as any;
 const AUTH_TOKEN_KEY = 'vcaAuthToken';
 
