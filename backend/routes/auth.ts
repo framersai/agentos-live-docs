@@ -1,8 +1,14 @@
-// backend/routes/auth.ts
+// File: backend/routes/auth.ts
 import { Request, Response } from 'express';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-dotenv.config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// **CRITICAL FIX**: Load .env from the correct path (root directory)
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 /**
  * Handle POST /api/auth - User authentication
@@ -13,6 +19,9 @@ export async function POST(req: Request, res: Response): Promise<void> {
   try {
     const { password, rememberMe = false } = req.body;
     const correctPassword = process.env.PASSWORD;
+
+    console.log('Debug - Environment PASSWORD exists:', !!correctPassword);
+    console.log('Debug - Received password exists:', !!password);
 
     if (!correctPassword) {
       console.error('Server configuration error: PASSWORD not set in environment');
@@ -32,6 +41,7 @@ export async function POST(req: Request, res: Response): Promise<void> {
     }
 
     if (password !== correctPassword) {
+      console.log('Debug - Password mismatch. Expected length:', correctPassword.length, 'Received length:', password.length);
       res.status(401).json({
         message: 'Invalid password',
         error: 'INVALID_CREDENTIALS'
@@ -52,6 +62,7 @@ export async function POST(req: Request, res: Response): Promise<void> {
       });
     }
 
+    console.log('Authentication successful for user');
     res.status(200).json({
       message: 'Authentication successful',
       token: token,

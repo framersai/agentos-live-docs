@@ -1,4 +1,4 @@
-// backend/server.ts
+// File: backend/server.ts
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -18,7 +18,7 @@ dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 // Initialize express app
 const app = express();
-const PORT = process.env.PORT || 3333;
+const PORT = process.env.PORT || 3001;  // Changed from 3333 to 3001
 
 // Middleware
 app.use(helmet());
@@ -29,7 +29,7 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // Configure CORS
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000',  // Changed from 3000 to 3000 (correct)
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   credentials: true

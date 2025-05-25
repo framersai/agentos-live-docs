@@ -1,6 +1,6 @@
-// backend/utils/cost.ts
+// File: backend/utils/cost.ts (Updated imports)
 import dotenv from 'dotenv';
-import { MODEL_CONFIGS } from '../config/models.js';
+import { MODEL_CONFIGS } from '../config/models'; // Removed .js extension
 
 dotenv.config({ path: new URL('../../../.env', import.meta.url).pathname });
 
@@ -33,7 +33,7 @@ function initializeSessionCost(userId: string): SessionCostDetail {
 
 /**
  * Tracks cost for LLM calls.
- * Ensure MODEL_CONFIGS is correctly defined in '../config/models.js'
+ * Ensure MODEL_CONFIGS is correctly defined in '../config/models'
  * Example MODEL_CONFIGS entry:
  * 'gpt-4o': { inputCostPer1K: 0.005, outputCostPer1K: 0.015, contextWindow: 128000 }
  */

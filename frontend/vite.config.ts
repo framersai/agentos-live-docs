@@ -1,3 +1,4 @@
+// File: frontend/vite.config.ts
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import path from 'path'
@@ -23,10 +24,10 @@ export default defineConfig({
     },
   },
   server: {
-    port: 3434,
+    port: 3000,  // Changed from 3434 to 3000
     proxy: {
       '/api': {
-        target: 'http://localhost:3333',
+        target: 'http://localhost:3001',  // Changed from 3333 to 3001
         changeOrigin: true,
       },
     },

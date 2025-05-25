@@ -1,3 +1,4 @@
+// File: frontend/src/main.ts
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { 
@@ -12,6 +13,7 @@ import './assets/main.css'
 import Home from './views/Home.vue'
 import Login from './views/Login.vue'
 import Settings from './views/Settings.vue'
+import About from './views/About.vue'
 
 // Create router
 const router = createRouter({
@@ -31,6 +33,11 @@ const router = createRouter({
       path: '/settings',
       component: Settings,
       meta: { requiresAuth: true }
+    },
+    {
+      path: '/about',
+      component: About,
+      meta: { requiresAuth: false } // About page accessible to all
     }
   ]
 })

@@ -1,8 +1,8 @@
-// backend/routes/chat.ts
+// File: backend/routes/chat.ts (Updated imports)
 import { Request, Response } from 'express';
-import { callOpenAI } from '../utils/llm.js';
-import { trackCost, getSessionCost, isThresholdReached } from '../utils/cost.js';
-import { MODEL_PREFERENCES } from '../config/models.js';
+import { callOpenAI } from '../utils/llm'; // Removed .js extension
+import { trackCost, getSessionCost, isThresholdReached } from '../utils/cost'; // Removed .js extension
+import { MODEL_PREFERENCES } from '../config/models'; // Removed .js extension
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
