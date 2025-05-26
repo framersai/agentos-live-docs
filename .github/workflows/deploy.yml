@@ -49,7 +49,7 @@ jobs:
 
           # Copy ecosystem.config.js for PM2
           # Ensure ecosystem.config.js is in the backend directory in the deployment package
-          cp backend/ecosystem.config.js deployment/backend/ecosystem.config.js
+          cp backend/ecosystem.config.json deployment/backend/ecosystem.config.js
 
           # Copy Nginx configuration
           cp frontend/nginx.conf deployment/nginx.conf
@@ -150,7 +150,7 @@ jobs:
           pm2 delete voice-coding-assistant-backend || true
 
           # CHANGE 2: Refer to ecosystem.config.js directly, since you are already in the backend directory
-          pm2 start ecosystem.config.js --env production --output /dev/null --error /dev/null
+          pm2 start ecosystem.config.json --env production --output /dev/null --error /dev/null
 
           # Save PM2 process list and configure to start on boot
           pm2 save
