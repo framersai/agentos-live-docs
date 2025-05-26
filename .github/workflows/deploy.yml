@@ -150,7 +150,7 @@ jobs:
           pm2 delete voice-coding-assistant-backend || true
 
           # CHANGE 2: Refer to ecosystem.config.js directly, since you are already in the backend directory
-          pm2 start ecosystem.config.json --env production --output /dev/null --error /dev/null
+          pm2 start ecosystem.config.json
 
           # Save PM2 process list and configure to start on boot
           pm2 save
