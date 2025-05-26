@@ -1,358 +1,445 @@
-// File: backend/src/core/audio/audio.service.ts
 
+// File: backend/src/core/audio/audio.service.ts
 /**
- * @file Service for handling audio processing tasks like STT and TTS.
- * @version 1.2.0 - Corrected OpenAI Transcription type to TranscriptionVerbose and segment speaker handling.
- * @description This service acts as a facade for various audio providers (e.g., OpenAI Whisper for STT, OpenAI TTS).
- * It also includes utilities for cost estimation and audio analysis.
+ * @file Audio Service
+ * @description Handles audio processing tasks including Speech-to-Text (STT) and Text-to-Speech (TTS)
+ * using various providers like OpenAI Whisper and OpenAI TTS.
+ * @version 1.2.1 - Corrected TypeScript errors and interface alignments.
  */
 
+import fs from 'fs/promises';
+import path from 'path';
+import os from 'os';
+import { fileURLToPath } from 'url'; // Added import for ES Modules
 import OpenAI from 'openai';
-import { ITranscriptionResult, ISttOptions, ISttProvider, ITranscriptionSegment } from './stt.interfaces'; 
-import { ITtsResult, ITtsOptions, ITtsProvider, IAvailableVoice } from './tts.interfaces';
+import type { SpeechCreateParams } from 'openai/resources/audio/speech'; // For OpenAI specific types
+
+// --- Temporary Interface Definitions (These should live in their respective .interfaces.ts files) ---
+// Assuming these are the intended structures based on usage and errors.
+
+/**
+ * @interface ISttRequestOptions (Should be in stt.interfaces.ts)
+ * @description Options for an STT request.
+ */
+export interface ISttRequestOptions {
+  language?: string; // BCP-47 language tag
+  prompt?: string;
+  responseFormat?: 'json' | 'text' | 'srt' | 'verbose_json' | 'vtt';
+  model?: string; // e.g., 'whisper-1'
+  temperature?: number; // For Whisper
+}
+
+/**
+ * @interface ITranscriptionResult (Should be in stt.interfaces.ts)
+ * @description Represents the result of a speech transcription.
+ */
+export interface ITranscriptionResult {
+  text: string;
+  language?: string;
+  durationSeconds?: number;
+  cost: number;
+  providerResponse?: any;
+  usage?: { // Added usage property
+    durationMinutes: number;
+    modelUsed: string;
+    [key: string]: any;
+  };
+}
+
+/**
+ * @interface ITtsOptions (Should be in tts.interfaces.ts)
+ * @description Defines options for Text-to-Speech synthesis.
+ */
+export interface ITtsOptions {
+  voice?: string;
+  model?: string;
+  outputFormat?: SpeechCreateParams['response_format']; // Use OpenAI's specific type
+  speakingRate?: number; // Typically 0.25 to 4.0 for OpenAI
+  languageCode?: string; // For browser TTS primarily
+  providerId?: string; // Added providerId
+  [key: string]: any; // Allow other provider-specific options
+}
+
+/**
+ * @interface IAvailableVoice (Should be in tts.interfaces.ts)
+ * @description Represents an available TTS voice.
+ */
+export interface IAvailableVoice {
+  id: string;
+  name: string;
+  lang: string;
+  gender?: string; // Or other relevant properties
+  provider: string;
+  isDefault?: boolean;
+}
+
+/**
+ * @interface ITtsResult (Should be in tts.interfaces.ts)
+ * @description Represents the result of a TTS synthesis.
+ */
+export interface ITtsResult {
+  audioBuffer: Buffer;
+  mimeType: string;
+  cost: number;
+  voiceUsed?: string;
+  providerName?: string;
+  durationSeconds?: number; // Optional, as it might not always be available
+  usage?: { // Added usage property
+    characters: number;
+    modelUsed: string;
+    [key: string]: any;
+  };
+}
+
+/**
+ * @interface ISttProvider (Should be in stt.interfaces.ts)
+ * @description Defines the contract for a Speech-to-Text provider.
+ */
+export interface ISttProvider {
+  getProviderName(): string;
+  transcribe(audioBuffer: Buffer, originalFileName: string, options: ISttRequestOptions): Promise<ITranscriptionResult>;
+}
+
+/**
+ * @interface ITtsProvider (Should be in tts.interfaces.ts)
+ * @description Defines the contract for a Text-to-Speech provider.
+ */
+export interface ITtsProvider {
+  getProviderName(): string;
+  synthesize(text: string, options: ITtsOptions): Promise<ITtsResult>; // Renamed from synthesizeSpeech
+  listAvailableVoices(): Promise<IAvailableVoice[]>;
+}
+
+// --- End of Temporary Interface Definitions ---
+
+
 import { CostService } from '../cost/cost.service';
-import { Readable } from 'stream';
-import { LlmConfigService, LlmProviderId } from '../llm/llm.config.service';
 import dotenv from 'dotenv';
 
-dotenv.config();
+// Load .env from project root
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const projectRoot = path.resolve(__dirname, '../../../../'); // backend/src/core/audio -> project root
+dotenv.config({ path: path.join(projectRoot, '.env') });
 
-/**
- * Utility class for audio cost calculations and limits.
- */
-export class AudioCostUtils {
-  public static readonly WHISPER_API_COST_PER_MINUTE = 0.006;
-  public static readonly MAX_FILE_SIZE_BYTES = 25 * 1024 * 1024;
-  public static readonly OPENAI_TTS_COST_PER_1K_CHARS = 0.015;
-  public static readonly OPENAI_TTS_HD_COST_PER_1K_CHARS = 0.030;
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const WHISPER_MODEL_DEFAULT = 'whisper-1';
+const OPENAI_TTS_MODEL_DEFAULT : SpeechCreateParams['model'] = 'tts-1'; // Ensure type matches OpenAI SDK
+const OPENAI_TTS_VOICE_DEFAULT : SpeechCreateParams['voice'] = 'alloy'; // Ensure type matches OpenAI SDK
 
-  public static calculateWhisperCost(durationSeconds: number): number {
-    if (durationSeconds <= 0) return 0;
-    const durationMinutes = durationSeconds / 60;
-    return durationMinutes * this.WHISPER_API_COST_PER_MINUTE;
-  }
-
-  public static calculateOpenAiTtsCost(text: string, model: string = 'tts-1'): number {
-    const charCount = text.length;
-    if (charCount === 0) return 0;
-    const costPer1kChars = model.toLowerCase().includes('-hd')
-      ? this.OPENAI_TTS_HD_COST_PER_1K_CHARS
-      : this.OPENAI_TTS_COST_PER_1K_CHARS;
-    return (charCount / 1000) * costPer1kChars;
-  }
+if (!OPENAI_API_KEY) {
+  console.warn('AudioService: OPENAI_API_KEY is not set. OpenAI dependent services (Whisper, OpenAI TTS) will fail.');
 }
 
-/**
- * Interface for the result of basic audio analysis for cost estimation.
- */
-export interface IAudioAnalysisResult {
-  fileSizeBytes: number;
-  estimatedDurationSeconds?: number;
-  estimatedCostUSD: number;
-  isOptimal: boolean;
-  recommendations: string[];
-}
+const openai = OPENAI_API_KEY ? new OpenAI({ apiKey: OPENAI_API_KEY }) : null;
 
-// --- STT Provider Implementation (OpenAI Whisper) ---
+// --- STT Providers ---
 
-class OpenAIWhisperProvider implements ISttProvider {
-  private openai: OpenAI | null = null;
-  private llmConfigService: LlmConfigService;
-
-  constructor(llmConfigServiceInstance: LlmConfigService) {
-    this.llmConfigService = llmConfigServiceInstance;
-    const openAIConfig = this.llmConfigService.getProviderConfig(LlmProviderId.OPENAI);
-    
-    if (openAIConfig?.apiKey) {
-      this.openai = new OpenAI({ apiKey: openAIConfig.apiKey });
-    } else {
-      console.error('OpenAIWhisperProvider: OpenAI API key is not configured. STT will not function.');
-    }
-  }
+class WhisperApiSttProvider implements ISttProvider {
+  private readonly providerName = "OpenAI Whisper API";
 
   public getProviderName(): string {
-    return 'OpenAIWhisper';
+    return this.providerName;
   }
-
-  async transcribe(
-    audioBuffer: Buffer,
-    originalFileName: string,
-    options: ISttOptions
-  ): Promise<ITranscriptionResult> {
-    if (!this.openai) {
-        throw new Error('OpenAIWhisperProvider is not initialized due to missing API key.');
+  
+  async transcribe(audioBuffer: Buffer, originalFileName: string, options: ISttRequestOptions): Promise<ITranscriptionResult> {
+    if (!openai) {
+      throw new Error('OpenAI API key not configured. Whisper STT unavailable.');
     }
+
+    const tempFilePath = path.join(os.tmpdir(), `whisper-audio-${Date.now()}-${originalFileName}`);
+    await fs.writeFile(tempFilePath, audioBuffer);
+    
+    // fs.open returns a FileHandle, its createReadStream method can be used directly.
+    const fileHandle = await fs.open(tempFilePath, 'r');
+
     try {
-      const audioStream = Readable.from(audioBuffer);
-      const fileNameForApi = originalFileName.includes('.') ? originalFileName : `${originalFileName}.mp3`;
-
-      const transcriptionParams: OpenAI.Audio.Transcriptions.TranscriptionCreateParams = {
-        file: {
-          name: fileNameForApi,
-          [Symbol.toStringTag]: 'File',
-          // @ts-ignore SDK might expect a proper File object
-          [Symbol.asyncIterator]: () => audioStream[Symbol.asyncIterator](),
-        } as unknown as File,
-        model: (options.model as OpenAI.Audio.Transcriptions.TranscriptionCreateParams['model']) || 'whisper-1',
-        language: options.language,
-        prompt: options.phrases?.join(', '),
-        response_format: 'verbose_json', 
-        temperature: options.temperature,
-        // timestamp_granularities: options.enableSpeakerDiarization ? ['segment', 'word'] : ['segment'] // Example if needed
-      };
+      const transcriptionInput = await OpenAI.toFile(fileHandle.createReadStream(), originalFileName);
       
-      // Corrected Type: Use TranscriptionVerbose as suggested by TS error
-      const response: OpenAI.Audio.Transcriptions.TranscriptionVerbose = 
-        await this.openai.audio.transcriptions.create(transcriptionParams) as OpenAI.Audio.Transcriptions.TranscriptionVerbose;
+      const transcription = await openai.audio.transcriptions.create({
+        file: transcriptionInput,
+        model: options.model || WHISPER_MODEL_DEFAULT,
+        language: options.language,
+        prompt: options.prompt,
+        response_format: options.responseFormat || 'json',
+        temperature: options.temperature,
+      });
 
-      const durationSeconds = response.duration;
-      const cost = AudioCostUtils.calculateWhisperCost(durationSeconds);
-
-      // The OpenAI.Audio.Transcriptions.TranscriptionSegment type might not have 'speaker'.
-      // We adapt based on what 'verbose_json' actually returns.
-      // If 'speaker' is part of the API response for segments (even if not in SDK type), handle it.
-      const segments: ITranscriptionSegment[] | undefined = response.segments?.map(
-        (s: any) => { // Use 'any' for s if SDK type is too restrictive and API returns more
-          const segment: ITranscriptionSegment = {
-            text: s.text,
-            startTime: s.start,
-            endTime: s.end,
-            confidence: s.avg_logprob, // This is avg_logprob, not direct confidence
-          };
-          // Check if 'speaker' property exists on the segment from the API response
-          if (s.hasOwnProperty('speaker')) {
-            segment.speaker = s.speaker?.toString();
-          }
-          return segment;
-        }
-      );
-
-      return {
-        text: response.text,
-        language: response.language,
-        durationSeconds: durationSeconds,
-        segments: segments,
-        cost,
-        providerResponse: response,
-        isFinal: true,
-      };
-    } catch (error: any) {
-      console.error(`${this.getProviderName()}: Transcription error - ${error.message}`, error.response?.data || error);
-      let clientMessage = `Failed to transcribe audio with ${this.getProviderName()}.`;
-      let clientCode = `${this.getProviderName().toUpperCase()}_TRANSCRIPTION_FAILED`;
-
-      if (error.response) {
-        clientMessage = error.response.data?.error?.message || clientMessage;
-        if (error.response.status === 401) clientCode = 'API_KEY_INVALID';
-        if (error.response.status === 429) clientCode = 'QUOTA_EXCEEDED';
-        if (error.response.status === 400 && clientMessage.includes('format')) {
-            clientCode = 'UNSUPPORTED_FORMAT';
-        }
-      } else if (error.message?.includes('Unsupported audio format')) {
-        clientCode = 'UNSUPPORTED_FORMAT';
+      const text = (transcription as any).text || ''; 
+      
+      let durationSeconds = 0;
+      if (options.responseFormat === 'verbose_json' && (transcription as any).duration) {
+        durationSeconds = (transcription as any).duration;
+      } else {
+        const typicalBytesPerSecond = 16000 * 2; 
+        durationSeconds = audioBuffer.length / typicalBytesPerSecond; 
       }
       
-      const customError = new Error(clientMessage);
-      (customError as any).code = clientCode;
-      (customError as any).originalError = error;
-      (customError as any).status = error.response?.status || 500;
-      throw customError;
+      const costPerMinute = parseFloat(process.env.WHISPER_API_COST_PER_MINUTE || "0.006");
+      const cost = (durationSeconds / 60) * costPerMinute;
+
+      return {
+        text: text,
+        language: (transcription as any).language || options.language,
+        durationSeconds: durationSeconds,
+        cost: cost,
+        providerResponse: transcription,
+        usage: { // Added usage object
+            durationMinutes: durationSeconds / 60,
+            modelUsed: options.model || WHISPER_MODEL_DEFAULT,
+        }
+      };
+    } finally {
+      await fileHandle.close();
+      await fs.unlink(tempFilePath).catch(err => console.error(`AudioService: Failed to delete temp file ${tempFilePath}:`, err));
     }
   }
 }
 
-// --- TTS Provider Implementation (OpenAI TTS) ---
-class OpenAiTtsProvider implements ITtsProvider {
-  private openai: OpenAI | null = null;
-  private llmConfigService: LlmConfigService;
 
-  constructor(llmConfigServiceInstance: LlmConfigService) {
-    this.llmConfigService = llmConfigServiceInstance;
-    const openAIConfig = this.llmConfigService.getProviderConfig(LlmProviderId.OPENAI);
+// --- TTS Providers ---
 
-    if (openAIConfig?.apiKey) {
-      this.openai = new OpenAI({ apiKey: openAIConfig.apiKey });
-    } else {
-      console.error('OpenAiTtsProvider: OpenAI API key is not configured. TTS will not function.');
+class BrowserTtsProvider implements ITtsProvider {
+    private readonly providerName = "Browser Web Speech API (Conceptual)";
+  
+    public getProviderName(): string {
+      return this.providerName;
     }
-  }
+  
+    async synthesize(text: string, options: ITtsOptions): Promise<ITtsResult> { // Renamed method
+      console.warn("AudioService: BrowserTtsProvider is conceptual for backend. Cannot synthesize speech server-side.");
+      throw new Error("Browser TTS cannot be directly used by the backend service.");
+    }
+  
+    async listAvailableVoices(): Promise<IAvailableVoice[]> {
+      console.warn("AudioService: BrowserTtsProvider cannot list voices from the backend.");
+      return [];
+    }
+}
+
+class OpenAiTtsProvider implements ITtsProvider {
+  private readonly providerName = "OpenAI TTS API";
+  public readonly costPer1KChars = parseFloat(process.env.OPENAI_TTS_COST_PER_1K_CHARS || "0.000015");
 
   public getProviderName(): string {
-    return 'OpenAITTS';
+    return this.providerName;
   }
 
-  async synthesize(text: string, options: ITtsOptions): Promise<ITtsResult> {
-    if (!this.openai) {
-        throw new Error('OpenAiTtsProvider is not initialized due to missing API key.');
+  async synthesize(text: string, options: ITtsOptions): Promise<ITtsResult> { // Renamed method
+    if (!openai) {
+      throw new Error('OpenAI API key not configured. OpenAI TTS unavailable.');
     }
-    try {
-      const model = (options.model || 'tts-1') as 'tts-1' | 'tts-1-hd';
-      const voice = (options.voice || 'alloy') as 'alloy'|'echo'|'fable'|'onyx'|'nova'|'shimmer';
-      const outputFormat = (options.outputFormat || 'mp3') as 'mp3'|'opus'|'aac'|'flac';
+    if (text.length > 4096) {
+        throw new Error('Text input for OpenAI TTS exceeds maximum length of 4096 characters.');
+    }
 
-      const ttsParams: OpenAI.Audio.Speech.SpeechCreateParams = {
-        model: model,
+    try {
+      const ttsPayload: SpeechCreateParams = {
+        model: (options.model as SpeechCreateParams['model']) || OPENAI_TTS_MODEL_DEFAULT,
+        voice: (options.voice as SpeechCreateParams['voice']) || OPENAI_TTS_VOICE_DEFAULT,
         input: text,
-        voice: voice,
-        response_format: outputFormat,
+        response_format: options.outputFormat || 'mp3', // Default to 'mp3'
         speed: options.speakingRate,
       };
-
-      const response = await this.openai.audio.speech.create(ttsParams);
       
-      const audioBuffer = Buffer.from(await response.arrayBuffer());
-      const cost = AudioCostUtils.calculateOpenAiTtsCost(text, model);
-
-      let mimeType = 'audio/mpeg';
-      if (outputFormat === 'opus') mimeType = 'audio/opus';
-      else if (outputFormat === 'aac') mimeType = 'audio/aac';
-      else if (outputFormat === 'flac') mimeType = 'audio/flac';
+      const speechResponse = await openai.audio.speech.create(ttsPayload);
+      
+      const audioBuffer = Buffer.from(await speechResponse.arrayBuffer());
+      const charactersBilled = text.length;
+      const cost = (charactersBilled / 1000) * this.costPer1KChars;
       
       return {
         audioBuffer,
-        mimeType,
+        mimeType: `audio/${ttsPayload.response_format === 'aac' ? 'aac' : ttsPayload.response_format === 'opus' ? 'opus' : ttsPayload.response_format === 'flac' ? 'flac' : 'mpeg'}`, // Adjust mime type
         cost,
-        providerResponse: { status: 'success', model, voice, format: outputFormat },
-        voiceUsed: voice,
+        voiceUsed: ttsPayload.voice,
+        providerName: this.providerName,
+        usage: { // Added usage object
+            characters: text.length,
+            modelUsed: String(ttsPayload.model),
+        }
       };
-
     } catch (error: any) {
-      console.error(`${this.getProviderName()}: TTS synthesis error - ${error.message}`, error.response?.data || error);
-      let clientMessage = `Failed to synthesize speech with ${this.getProviderName()}.`;
-      let clientCode = `${this.getProviderName().toUpperCase()}_TTS_FAILED`;
-
-      if (error.response) {
-        clientMessage = error.response.data?.error?.message || clientMessage;
-        if (error.response.status === 401) clientCode = 'API_KEY_INVALID';
-        if (error.response.status === 429) clientCode = 'QUOTA_EXCEEDED';
-        if (error.response.status === 400) clientCode = 'BAD_REQUEST';
+      console.error(`AudioService: OpenAI TTS synthesis error:`, error.message || error);
+      if (error.response && error.response.data) {
+        console.error("OpenAI TTS API Error Details:", error.response.data);
       }
-      
-      const customError = new Error(clientMessage);
-      (customError as any).code = clientCode;
-      (customError as any).originalError = error;
-      (customError as any).status = error.response?.status || 500;
-      throw customError;
+      throw new Error(`OpenAI TTS synthesis failed: ${error.message}`);
     }
   }
 
-  async listVoices(): Promise<IAvailableVoice[]> {
-    const voices = [
-      { id: 'alloy', name: 'Alloy', provider: this.getProviderName() },
-      { id: 'echo', name: 'Echo', provider: this.getProviderName() },
-      { id: 'fable', name: 'Fable', provider: this.getProviderName() },
-      { id: 'onyx', name: 'Onyx', provider: this.getProviderName() },
-      { id: 'nova', name: 'Nova', provider: this.getProviderName() },
-      { id: 'shimmer', name: 'Shimmer', provider: this.getProviderName() },
-    ];
-    return Promise.resolve(voices);
+  async listAvailableVoices(): Promise<IAvailableVoice[]> {
+    const voices: SpeechCreateParams['voice'][] = ['alloy', 'echo', 'fable', 'onyx', 'nova', 'shimmer'];
+    return voices.map(voice => ({
+      id: voice!, // Assert voice is not undefined
+      name: voice!.charAt(0).toUpperCase() + voice!.slice(1),
+      lang: 'en', 
+      gender: 'neutral', 
+      provider: this.providerName,
+    }));
   }
 }
 
-// --- Audio Service ---
-
 class AudioService {
   private sttProvider: ISttProvider;
-  private ttsProvider: ITtsProvider;
-  private llmConfigService: LlmConfigService;
+  private ttsProviders: Map<string, ITtsProvider>;
+  private defaultTtsProviderId: string;
 
   constructor() {
-    this.llmConfigService = new LlmConfigService();
-    this.sttProvider = new OpenAIWhisperProvider(this.llmConfigService);
-    this.ttsProvider = new OpenAiTtsProvider(this.llmConfigService);
-    console.log(`AudioService initialized with STT: ${this.sttProvider.getProviderName()} and TTS: ${this.ttsProvider.getProviderName()}`);
+    this.sttProvider = new WhisperApiSttProvider(); 
+
+    this.ttsProviders = new Map();
+    this.ttsProviders.set('browser_tts', new BrowserTtsProvider()); 
+    if (openai) {
+        this.ttsProviders.set('openai_tts', new OpenAiTtsProvider());
+        this.defaultTtsProviderId = process.env.DEFAULT_SPEECH_PREFERENCE_TTS_PROVIDER === 'openai_tts' ? 'openai_tts' : 'browser_tts';
+        if (this.defaultTtsProviderId === 'browser_tts' && !openai) { // If default is browser but openai was intended and failed
+            console.warn("AudioService: OpenAI TTS not available, but was set as preferred. TTS might not function as expected on backend.");
+        } else if (!openai && process.env.DEFAULT_SPEECH_PREFERENCE_TTS_PROVIDER === 'openai_tts') {
+            this.defaultTtsProviderId = 'browser_tts'; // Fallback if openAI not configured but was default
+             console.warn("AudioService: OpenAI TTS preferred but not configured, falling back to conceptual browser_tts for default.");
+        } else if (openai) {
+             this.defaultTtsProviderId = process.env.DEFAULT_SPEECH_PREFERENCE_TTS_PROVIDER || 'openai_tts';
+        }
+
+    } else {
+        this.defaultTtsProviderId = 'browser_tts'; 
+        console.warn("AudioService: OpenAI API key not configured. OpenAI TTS provider not initialized. Defaulting to conceptual browser_tts.");
+    }
+
+    console.log(`AudioService initialized. Default STT: ${this.sttProvider.getProviderName()}. Default TTS: ${this.defaultTtsProviderId}`);
   }
 
-  async transcribe(
+  public setSttProvider(providerId: 'whisper_api' | string): void {
+    if (providerId === 'whisper_api') {
+      this.sttProvider = new WhisperApiSttProvider();
+    } else {
+      throw new Error(`AudioService: Unknown STT provider ID: ${providerId}`);
+    }
+    console.log(`AudioService: STT provider set to ${this.sttProvider.getProviderName()}`);
+  }
+
+  async transcribeAudio(
     audioBuffer: Buffer,
     originalFileName: string,
-    options: ISttOptions,
-    userId: string
+    options: ISttRequestOptions,
+    userId: string,
   ): Promise<ITranscriptionResult> {
-    if (audioBuffer.length > AudioCostUtils.MAX_FILE_SIZE_BYTES) {
-        const err = new Error(
-            `Audio file size (${(audioBuffer.length / (1024*1024)).toFixed(1)}MB) exceeds maximum of ${AudioCostUtils.MAX_FILE_SIZE_BYTES / (1024*1024)}MB.`
-        );
-        (err as any).code = 'FILE_TOO_LARGE';
-        (err as any).status = 413;
-        throw err;
-    }
-    
-    const result = await this.sttProvider.transcribe(audioBuffer, originalFileName, options);
-    
-    CostService.trackCost(
-      userId,
-      'stt',
-      result.cost,
-      `${this.sttProvider.getProviderName()}${options.model ? `/${options.model}` : ''}`,
-      result.durationSeconds, 
-      result.text.length 
-    );
-    
-    return result;
-  }
-
-  async synthesizeSpeech(
-    text: string,
-    options: ITtsOptions,
-    userId: string
-  ): Promise<ITtsResult> {
-    const result = await this.ttsProvider.synthesize(text, options);
-
-    CostService.trackCost(
-      userId,
-      'tts',
-      result.cost,
-      `${this.ttsProvider.getProviderName()}${options.model ? `/${options.model}` : ''}`,
-      text.length, 
-      result.durationSeconds || (result.audioBuffer.length / 16000 / 2) 
-    );
-
-    return result;
-  }
-
-  async analyzeAudioForCost(audioBuffer: Buffer): Promise<IAudioAnalysisResult> {
-    const fileSizeBytes = audioBuffer.length;
-    let estimatedDurationSeconds: number | undefined;
-    let estimatedCostUSD = 0;
-    let isOptimal = true;
-    const recommendations: string[] = [];
-
-    estimatedDurationSeconds = fileSizeBytes / (16 * 1024); 
-    estimatedCostUSD = AudioCostUtils.calculateWhisperCost(estimatedDurationSeconds);
-
-    if (fileSizeBytes > AudioCostUtils.MAX_FILE_SIZE_BYTES) {
-      isOptimal = false;
-      recommendations.push(
-        `File size (${(fileSizeBytes / (1024*1024)).toFixed(1)}MB) exceeds recommended maximum of ${AudioCostUtils.MAX_FILE_SIZE_BYTES / (1024*1024)}MB. Consider compressing or shortening.`
+    try {
+      const result = await this.sttProvider.transcribe(audioBuffer, originalFileName, options);
+      CostService.trackCost(
+        userId,
+        'stt',
+        result.cost,
+        options.model || this.sttProvider.getProviderName(),
+        audioBuffer.length, 
+        result.text?.length || 0,
+        { 
+            provider: this.sttProvider.getProviderName(), 
+            durationSeconds: result.durationSeconds,
+            language: result.language
+        }
       );
+      return result;
+    } catch (error: any) {
+        console.error(`AudioService: Error during STT processing with ${this.sttProvider.getProviderName()}:`, error.message);
+        throw error;
     }
+  }
+
+  async synthesizeSpeech(text: string, options: ITtsOptions, userId: string): Promise<ITtsResult> {
+    // Use providerId from options if present, otherwise use .env default, otherwise use service default
+    const providerIdToUse = options.providerId || process.env.DEFAULT_SPEECH_PREFERENCE_TTS_PROVIDER || this.defaultTtsProviderId;
+    const ttsProvider = this.ttsProviders.get(providerIdToUse);
+
+    if (!ttsProvider) {
+      throw new Error(`AudioService: TTS provider '${providerIdToUse}' not found or not configured.`);
+    }
+    
+    // Ensure options for OpenAI provider are correctly defaulted if it's the chosen one
+    const finalOptions = { ...options };
+    if (providerIdToUse === 'openai_tts') {
+        finalOptions.model = options.model || OPENAI_TTS_MODEL_DEFAULT;
+        finalOptions.voice = options.voice || OPENAI_TTS_VOICE_DEFAULT;
+        finalOptions.outputFormat = options.outputFormat || 'mp3';
+    }
+
+
+    try {
+      console.log(`AudioService: Synthesizing speech with ${ttsProvider.getProviderName()}. Text length: ${text.length}`);
+      const result = await ttsProvider.synthesize(text, finalOptions); // Changed to .synthesize
+      CostService.trackCost(
+        userId,
+        'tts',
+        result.cost,
+        finalOptions.model || ttsProvider.getProviderName(),
+        text.length, 
+        result.audioBuffer.length, 
+        { 
+            provider: ttsProvider.getProviderName(), 
+            voice: result.voiceUsed,
+            format: result.mimeType.split('/')[1]
+        }
+      );
+      return result;
+    } catch (error: any) {
+        console.error(`AudioService: Error during TTS processing with ${ttsProvider.getProviderName()}:`, error.message);
+        throw error;
+    }
+  }
+
+  async listAvailableTtsVoices(providerId?: string): Promise<IAvailableVoice[]> {
+    if (providerId) {
+      const ttsProvider = this.ttsProviders.get(providerId);
+      if (!ttsProvider) {
+        console.warn(`AudioService: TTS provider '${providerId}' not found when listing voices.`);
+        return [];
+      }
+      return ttsProvider.listAvailableVoices();
+    } else {
+      let allVoices: IAvailableVoice[] = [];
+      for (const [_id, provider] of this.ttsProviders) {
+        try {
+            const voices = await provider.listAvailableVoices();
+            allVoices = allVoices.concat(voices);
+        } catch (error: any) {
+            console.warn(`AudioService: Could not list voices for provider ${_id}: ${error.message}`);
+        }
+      }
+      return allVoices;
+    }
+  }
+
+  async analyzeAudio(audioBuffer: Buffer): Promise<{duration: number, fileSize: number, estimatedCost: number, isOptimal: boolean, recommendations: string[], mimeType?: string}> {
+    const fileSize = audioBuffer.length;
+    const bytesPerSecond = 32000; 
+    const duration = fileSize / bytesPerSecond;
+    const costPerMinute = parseFloat(process.env.WHISPER_API_COST_PER_MINUTE || "0.006");
+    const estimatedCost = (duration / 60) * costPerMinute;
 
     return {
-      fileSizeBytes,
-      estimatedDurationSeconds,
-      estimatedCostUSD,
-      isOptimal,
-      recommendations,
+        duration,
+        fileSize,
+        estimatedCost,
+        isOptimal: true, 
+        recommendations: [],
+        mimeType: 'audio/webm' 
     };
   }
 
-  public setSttProvider(provider: ISttProvider): void {
-    this.sttProvider = provider;
-    console.log(`AudioService STT provider updated to: ${provider.getProviderName()}`);
-  }
-
-  public setTtsProvider(provider: ITtsProvider): void {
-    this.ttsProvider = provider;
-    console.log(`AudioService TTS provider updated to: ${provider.getProviderName()}`);
-  }
-
-  public async listAvailableTtsVoices(): Promise<IAvailableVoice[]> {
-    if (this.ttsProvider.listVoices) {
-      return this.ttsProvider.listVoices();
+  async getSpeechProcessingStats(userId?: string): Promise<object> {
+    const openAITtsProvider = this.ttsProviders.get('openai_tts');
+    let openAITTSCostInfo = 'N/A (OpenAI TTS provider not available)';
+    if (openAITtsProvider && openAITtsProvider instanceof OpenAiTtsProvider) {
+        openAITTSCostInfo = String(openAITtsProvider.costPer1KChars);
     }
-    console.warn(`AudioService: Current TTS provider ${this.ttsProvider.getProviderName()} does not support listing voices.`);
-    return Promise.resolve([]);
+
+    return {
+        sttProvider: this.sttProvider.getProviderName(),
+        defaultTtsProvider: this.defaultTtsProviderId,
+        availableTtsProviders: Array.from(this.ttsProviders.keys()),
+        whisperCostPerMinute: process.env.WHISPER_API_COST_PER_MINUTE || "0.006",
+        openAITTSCostPer1KChars: openAITTSCostInfo,
+    };
   }
 }
 
