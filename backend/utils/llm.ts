@@ -4,8 +4,7 @@ import axios from 'axios';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import fs from 'fs';
-import { MODEL_CONFIGS } from '../config/models.config';
+import { MODEL_PRICING } from '../config/models.config';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -138,7 +137,7 @@ export function calculateCost(
   outputTokens: number,
   modelName: string
 ): number {
-  const modelConfig = MODEL_CONFIGS[modelName] || MODEL_CONFIGS['gpt-4o'];
+  const modelConfig = MODEL_PRICING[modelName] || MODEL_PRICING['gpt-4o'];
   
   const inputCost = (inputTokens / 1000) * modelConfig.inputCostPer1K;
   const outputCost = (outputTokens / 1000) * modelConfig.outputCostPer1K;
