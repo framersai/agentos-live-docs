@@ -1,6 +1,6 @@
 [
     {
-      "name": "voice-coding-backend",
+      "name": "voice-backend",
       "script": "dist/server.js",
       "node_args": "--import tsx/esm",
       "exec_mode": "fork",
