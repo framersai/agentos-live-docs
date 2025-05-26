@@ -47,6 +47,10 @@ jobs:
           # Copy backend prompts for dynamic loading [cite: 340]
           # cp -r backend/prompts/* deployment/backend/prompts/
           
+
+          # Copy ecosystem.config.js for PM2
+          cp backend/ecosystem.config.js deployment/backend/ecosystem.config.js
+          
           # Copy Nginx configuration
           cp frontend/nginx.conf deployment/nginx.conf
           
