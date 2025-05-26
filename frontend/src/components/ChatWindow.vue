@@ -44,7 +44,7 @@ import Message from './Message.vue';
 
 // Props
 const props = defineProps<{
-  messages: Array<{ role: string; content: string }>;
+  messages: Array<{ role: "user" | "assistant"; content: string }>;
   isLoading: boolean;
 }>();
 
