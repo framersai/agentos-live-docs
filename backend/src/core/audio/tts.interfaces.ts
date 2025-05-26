@@ -1,11 +1,14 @@
 // File: backend/src/core/audio/tts.interfaces.ts
-
 /**
  * @file Defines interfaces for Text-to-Speech (TTS) services.
- * @version 1.0.1 - Added providerName to ITtsResult.
+ * @version 1.1.0 - Updated ITtsOptions with providerId and stricter outputFormat.
+ * Added usage to ITtsResult. Standardized listAvailableVoices.
  * @description This file contains type definitions for TTS results,
  * provider-specific options, and TTS service configurations.
  */
+
+// Import SpeechCreateParams for strict typing of output formats from OpenAI SDK
+import type { SpeechCreateParams } from 'openai/resources/audio/speech';
 
 /**
  * Represents the result of a Text-to-Speech (TTS) operation.
@@ -54,6 +57,16 @@ export interface ITtsResult {
    * @type {string | undefined}
    */
   providerName?: string;
+
+  /**
+   * Optional: Usage statistics for the TTS operation.
+   * @type {{ characters: number; modelUsed: string; [key: string]: any; } | undefined}
+   */
+  usage?: {
+    characters: number;
+    modelUsed: string;
+    [key: string]: any; // For any other provider-specific usage data
+  };
 }
 
 /**
@@ -67,11 +80,13 @@ export interface IAvailableVoice {
   /** Gender of the voice, if specified by the provider. */
   gender?: 'male' | 'female' | 'neutral' | string;
   /** Language codes supported by this voice (e.g., "en-US", "es-ES"). */
-  languageCodes?: string[];
+  lang: string; // Changed from languageCodes for consistency with typical usage
   /** Description or characteristics of the voice. */
   description?: string;
   /** The provider this voice belongs to. */
   provider: string;
+  /** Indicates if this is a default voice for its language/provider. */
+  isDefault?: boolean;
 }
 
 /**
@@ -86,16 +101,16 @@ export interface ITtsOptions {
   voice?: string;
 
   /**
-   * The desired output format of the audio (e.g., 'mp3', 'opus', 'aac', 'flac').
-   * Support varies by provider.
-   * @type {string | undefined}
+   * The desired output format of the audio.
+   * Aligned with OpenAI's SpeechCreateParams for better type safety.
+   * @type {SpeechCreateParams['response_format'] | undefined}
    * @default "mp3"
    */
-  outputFormat?: 'mp3' | 'opus' | 'aac' | 'flac' | string;
+  outputFormat?: SpeechCreateParams['response_format']; // Uses specific literals: 'mp3' | 'opus' | 'aac' | 'flac'
 
   /**
    * The speaking rate (speed). Provider-specific interpretation.
-   * Often a multiplier (e.g., 1.0 is normal, 0.5 is half speed, 2.0 is double speed).
+   * Often a multiplier (e.g., 1.0 is normal, 0.5 is half speed, 2.0 is double speed for OpenAI).
    * @type {number | undefined}
    * @default 1.0
    */
@@ -127,6 +142,13 @@ export interface ITtsOptions {
   model?: string;
 
   /**
+   * Optional: The ID of the TTS provider to use (e.g., "openai_tts", "browser_tts").
+   * If not provided, a system default will be used.
+   * @type {string | undefined}
+   */
+  providerId?: string;
+
+  /**
    * Additional provider-specific options.
    * @type {{ [key: string]: any } | undefined}
    */
@@ -145,7 +167,7 @@ export interface ITtsProvider {
    * @returns {Promise<ITtsResult>} A promise that resolves with the TTS result.
    * @throws {Error} If synthesis fails due to API errors, configuration issues, or unsupported options.
    */
-  synthesize(
+  synthesize( // Method name confirmed as 'synthesize'
     text: string,
     options: ITtsOptions
   ): Promise<ITtsResult>;
@@ -158,7 +180,8 @@ export interface ITtsProvider {
 
   /**
    * Optional: Lists available voices for the provider.
+   * Changed from listVoices to listAvailableVoices for consistency with audio.service.ts implementation.
    * @returns {Promise<IAvailableVoice[]>} A promise that resolves with a list of available voices.
    */
-  listVoices?(): Promise<IAvailableVoice[]>;
+  listAvailableVoices?(): Promise<IAvailableVoice[]>;
 }

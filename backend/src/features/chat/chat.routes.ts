@@ -3,8 +3,8 @@
  * @file Chat API route handlers with conversational history support and dynamic LLM provider selection.
  * @description Handles requests to the /api/chat endpoint, processing chat messages
  * using the configured LLM services with conversation memory and tracking API usage costs.
- * Includes specialized system prompts for different modes, particularly a detailed structure for interview mode.
- * @version 2.3.0 - Refactored interview prompt loading, enhanced logging for model selection.
+ * Includes specialized system prompts for different modes.
+ * @version 2.4.0 - Added support for tutor, diary, and business meeting modes with specific prompts.
  */
 
 import { Request, Response } from 'express';
@@ -17,14 +17,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __projectRoot = path.resolve(path.dirname(__filename), '../../../..');
 dotenv.config({ path: path.join(__projectRoot, '.env') });
 
-import { callLlm, initializeLlmServices } from '../../core/llm/llm.factory'; // Ensure initializeLlmServices is available
-import { LlmProviderId, LlmConfigService } from '../../core/llm/llm.config.service';
+import { callLlm, initializeLlmServices } from '../../core/llm/llm.factory';
+import { LlmProviderId } from '../../core/llm/llm.config.service';
 import { CostService } from '../../core/cost/cost.service';
-import { MODEL_PREFERENCES, getModelPrice, ModelConfig } from '../../../config/models.config';
+import { MODEL_PREFERENCES, getModelPrice, ModelConfig, MODEL_PRICING } from '../../../config/models.config'; // Adjusted path
 import { IChatMessage, ILlmUsage, IChatCompletionParams } from '../../core/llm/llm.interfaces';
 
-// Initialize LLM services once when the module is loaded
-// This ensures that the factory and its dependent config service are ready.
 initializeLlmServices();
 
 interface IConversation {
@@ -34,13 +32,18 @@ interface IConversation {
 const conversationHistories = new Map<string, IConversation>();
 
 const MAX_HISTORY_MESSAGES_CONFIG = parseInt(process.env.MAX_CONVERSATIONAL_HISTORY_MESSAGES || '100', 10);
-const DEFAULT_HISTORY_MESSAGES_CONFIG = parseInt(process.env.DEFAULT_MAX_HISTORY_MESSAGES || '10', 10); // User+Assistant pairs
+const DEFAULT_HISTORY_MESSAGES_CONFIG = parseInt(process.env.DEFAULT_MAX_HISTORY_MESSAGES || '10', 10);
 const MAX_PROMPT_TOKENS_CONFIG = parseInt(process.env.DEFAULT_MAX_PROMPT_TOKENS || '8000', 10);
 const SESSION_COST_THRESHOLD_USD = parseFloat(process.env.COST_THRESHOLD_USD_PER_SESSION || '2.00');
 const DISABLE_COST_LIMITS_CONFIG = process.env.DISABLE_COST_LIMITS === 'true';
 const LLM_DEFAULT_TEMPERATURE = parseFloat(process.env.LLM_DEFAULT_TEMPERATURE || '0.7');
 const LLM_DEFAULT_MAX_TOKENS = parseInt(process.env.LLM_DEFAULT_MAX_TOKENS || '2048', 10);
 
+/**
+ * Loads a prompt template from the /prompts directory.
+ * @param {string} templateName - The name of the template file (without .md extension).
+ * @returns {string} The content of the prompt template.
+ */
 function loadPromptTemplate(templateName: string): string {
   try {
     const promptPath = path.join(__projectRoot, 'prompts', `${templateName}.md`);
@@ -64,20 +67,27 @@ Adjust your responses and decision-making accordingly, maintaining context from 
   }
 }
 
+/**
+ * Truncates chat history by an estimated token count to fit within a maximum.
+ * @param {IChatMessage[]} messages - The full list of messages, including system prompt.
+ * @param {number} maxTokens - The maximum estimated tokens allowed for the history.
+ * @returns {IChatMessage[]} The potentially truncated list of messages.
+ */
 function truncateHistoryByTokenEstimate(messages: IChatMessage[], maxTokens: number): IChatMessage[] {
   let estimatedTokens = 0;
   const truncatedMessages: IChatMessage[] = [];
   const systemMessage = messages.find(m => m.role === 'system');
 
   if (systemMessage) {
-    estimatedTokens += Math.ceil(systemMessage.content.length / 3.5); // Rough estimate
+    // Rough estimate: average 4 chars per token, but let's be generous for shorter system prompts.
+    // For LLMs, it's closer to 1 token per ~4 chars for English.
+    estimatedTokens += Math.ceil(systemMessage.content.length / 3.5); 
     truncatedMessages.push(systemMessage);
   }
 
-  // Iterate from newest to oldest, excluding system message already added
   for (let i = messages.length - 1; i >= 0; i--) {
     const msg = messages[i];
-    if (msg.role === 'system') continue; // Skip system messages here, already handled
+    if (msg.role === 'system') continue;
 
     const msgTokens = Math.ceil(msg.content.length / 3.5);
     if (estimatedTokens + msgTokens <= maxTokens) {
@@ -91,15 +101,21 @@ function truncateHistoryByTokenEstimate(messages: IChatMessage[], maxTokens: num
   return truncatedMessages;
 }
 
+/**
+ * Calculates the cost of an LLM call based on usage and model pricing.
+ * @param {string} modelId - The ID of the model used.
+ * @param {ILlmUsage | undefined} usage - Token usage data (prompt_tokens, completion_tokens).
+ * @returns {number} The calculated cost in USD.
+ */
 function calculateLlmCost(modelId: string, usage?: ILlmUsage): number {
   if (!usage || typeof usage.prompt_tokens !== 'number' || typeof usage.completion_tokens !== 'number') {
-    console.warn(`ChatRoutes: Cost calculation skipped for model "${modelId}" due to missing or invalid usage data (prompt_tokens: ${usage?.prompt_tokens}, completion_tokens: ${usage?.completion_tokens}).`);
+    console.warn(`ChatRoutes: Cost calculation skipped for model "${modelId}" due to missing/invalid usage data.`);
     return 0;
   }
   const modelPriceConfig: ModelConfig | undefined = getModelPrice(modelId);
   if (!modelPriceConfig) {
     console.warn(`ChatRoutes: Cost calculation skipped. Pricing for model "${modelId}" not found.`);
-    return 0;
+    return MODEL_PRICING['default'] ? (usage.prompt_tokens / 1000 * MODEL_PRICING['default'].inputCostPer1K) + (usage.completion_tokens / 1000 * MODEL_PRICING['default'].outputCostPer1K) : 0;
   }
   const promptTokens = usage.prompt_tokens ?? 0;
   const completionTokens = usage.completion_tokens ?? 0;
@@ -108,37 +124,57 @@ function calculateLlmCost(modelId: string, usage?: ILlmUsage): number {
   return inputCost + outputCost;
 }
 
+/**
+ * @interface ChatRequestBody
+ * @description Defines the structure of the request body for the chat endpoint.
+ */
 interface ChatRequestBody {
+  /** The operational mode or agent type (e.g., "coding", "diary", "tutor"). */
   mode: string;
+  /** Array of current messages in the conversation. */
   messages: IChatMessage[];
+  /** Preferred programming language for code examples (if applicable). */
   language?: string;
+  /** Hint for diagram generation (if applicable). */
   generateDiagram?: boolean;
+  /** User identifier, typically injected by auth middleware. */
   userId?: string;
+  /** Unique identifier for the conversation session. */
   conversationId?: string;
-  maxHistoryMessages?: number; // Number of user/assistant PAIRS
+  /** Max number of user/assistant message PAIRS to retain in history. */
+  maxHistoryMessages?: number;
+  /** Optional override for the system prompt. */
   systemPromptOverride?: string;
-  tutorMode?: boolean;
-  tutorLevel?: string; // e.g., 'beginner', 'intermediate', 'expert'
-  interviewMode?: boolean; // Flag to trigger interview-specific logic
+  /** Specific flag for tutor mode, if 'mode' is generic like 'custom_agent'. */
+  tutorMode?: boolean; 
+  /** Specific level for tutor, e.g., 'beginner', 'intermediate'. */
+  tutorLevel?: string;
+  /** Specific flag for interview mode. */
+  interviewMode?: boolean; 
 }
 
+/**
+ * Handles POST requests to the /api/chat endpoint.
+ * @param {Request} req - The Express request object.
+ * @param {Response} res - The Express response object.
+ * @returns {Promise<void>}
+ */
 export async function POST(req: Request, res: Response): Promise<void> {
   try {
     const {
-      mode = 'general', // default mode if not specified
+      mode = 'general',
       messages: currentRequestMessages,
       language = process.env.DEFAULT_LANGUAGE || 'python',
       generateDiagram = false,
-      userId: userIdFromRequest = 'default_user',
-      conversationId = 'default_conversation', // Client should manage and send this
-      maxHistoryMessages = DEFAULT_HISTORY_MESSAGES_CONFIG, // Number of user/assistant PAIRS
+      userId: userIdFromRequest = 'default_user_chat', // Fallback if auth is not used or fails
+      conversationId = `conv_${Date.now()}_${Math.random().toString(36).substring(2,7)}`, // Generate a new one if not provided
+      maxHistoryMessages = DEFAULT_HISTORY_MESSAGES_CONFIG,
       systemPromptOverride,
-      tutorMode = false, // Default to false, can be enabled by client
-      tutorLevel = 'intermediate',
-      interviewMode = false, // Default to false, can be enabled by client
+      tutorLevel = 'intermediate', // Default tutor level
     } = req.body as ChatRequestBody;
 
-    const effectiveUserId = (req as any).user?.id || userIdFromRequest; // Get user ID from auth or fallback
+    // @ts-ignore - req.user is custom property set by auth middleware
+    const effectiveUserId = req.user?.id || userIdFromRequest;
 
     if (!currentRequestMessages || !Array.isArray(currentRequestMessages) || currentRequestMessages.length === 0) {
       res.status(400).json({ message: 'Messages array is required and cannot be empty.', error: 'INVALID_MESSAGES_PAYLOAD'});
@@ -165,33 +201,34 @@ export async function POST(req: Request, res: Response): Promise<void> {
       conversation.lastActivity = Date.now();
     }
 
-    // maxHistoryMessages is pairs, so double for individual messages
     const effectiveMaxIndividualHistoryMessages = Math.min(maxHistoryMessages, MAX_HISTORY_MESSAGES_CONFIG) * 2;
     const historyToConsider = conversation.messages.slice(-effectiveMaxIndividualHistoryMessages);
 
     let modelIdForMode: string;
-    let promptTemplateName: string = mode; // Default template name is the mode itself
+    let promptTemplateName: string = mode; // Default template name matches mode
 
-    if (interviewMode && mode === 'coding') {
-      modelIdForMode = process.env.MODEL_PREF_INTERVIEW_TUTOR || MODEL_PREFERENCES.coding || MODEL_PREFERENCES.default;
-      promptTemplateName = 'coding_interviewer';
-      console.log(`ChatRoutes: Interview Mode active. Model: ${modelIdForMode}, Prompt: ${promptTemplateName}.md`);
-    } else if (tutorMode && mode === 'coding') {
-      modelIdForMode = process.env.MODEL_PREF_CODING_TUTOR || MODEL_PREFERENCES.coding || MODEL_PREFERENCES.default;
-      promptTemplateName = 'coding_tutor';
-      console.log(`ChatRoutes: Tutor Mode active. Model: ${modelIdForMode}, Prompt: ${promptTemplateName}.md`);
-    } else {
-      const modelPrefsKey = (MODEL_PREFERENCES && mode in MODEL_PREFERENCES) ? mode as keyof typeof MODEL_PREFERENCES : 'default';
-      modelIdForMode = MODEL_PREFERENCES[modelPrefsKey] || MODEL_PREFERENCES.default;
-      // If mode is 'general', but 'general' isn't in MODEL_PREFERENCES, modelPrefsKey becomes 'default'.
-      // We want to load 'general_chat.md' specifically for this case.
-      if (modelPrefsKey === 'default' && mode === 'general') {
-          promptTemplateName = 'general_chat';
-      } else {
-          promptTemplateName = modelPrefsKey; // e.g., 'coding', 'system_design'
-      }
-      console.log(`ChatRoutes: Standard Mode. Mode: ${mode} (key: ${modelPrefsKey}), Model: ${modelIdForMode}, Prompt: ${promptTemplateName}.md`);
+    // Determine model and prompt template based on mode
+    // Ensure MODEL_PREFERENCES in models.config.ts has entries like 'diary', 'tutor', etc.
+    const modeKey = mode.toLowerCase() as keyof typeof MODEL_PREFERENCES;
+    if (MODEL_PREFERENCES[modeKey]) {
+        modelIdForMode = MODEL_PREFERENCES[modeKey];
+        // Standardize prompt names, e.g. coding_tutor.md, coding_interviewer.md from .env
+        if (mode === 'coding_tutor' || mode === 'coding_interviewer') {
+             promptTemplateName = mode; // Use directly if named specifically
+        } else {
+            promptTemplateName = modeKey; // e.g. 'diary' loads 'diary.md'
+        }
+    } else if (mode === 'coding' && req.body.interviewMode) { // Special handling for interview sub-mode
+        modelIdForMode = MODEL_PREFERENCES.interview_tutor || MODEL_PREFERENCES.coding;
+        promptTemplateName = 'coding_interviewer';
+    } else if (mode === 'coding' && req.body.tutorMode) { // Special handling for tutor sub-mode within coding
+        modelIdForMode = MODEL_PREFERENCES.coding_tutor || MODEL_PREFERENCES.coding;
+        promptTemplateName = 'coding_tutor';
+    } else { // Fallback for general or unspecified modes
+        modelIdForMode = MODEL_PREFERENCES.general || MODEL_PREFERENCES.default;
+        promptTemplateName = (mode === 'general' || mode === 'general_chat') ? 'general_chat' : mode;
     }
+    console.log(`ChatRoutes: Mode: "${mode}", Effective Prompt Template: "${promptTemplateName}.md", Model: "${modelIdForMode}"`);
 
 
     let systemPromptContent: string;
@@ -199,18 +236,12 @@ export async function POST(req: Request, res: Response): Promise<void> {
       systemPromptContent = systemPromptOverride;
     } else {
       let templateContent = loadPromptTemplate(promptTemplateName);
-      // Basic replacements
       templateContent = templateContent
         .replace(/{{LANGUAGE}}/g, language)
-        .replace(/{{MODE}}/g, mode)
-        .replace(/{{GENERATE_DIAGRAM}}/g, generateDiagram ? 'true' : 'false');
+        .replace(/{{MODE}}/g, mode) // Actual mode passed in request
+        .replace(/{{GENERATE_DIAGRAM}}/g, generateDiagram ? 'true' : 'false')
+        .replace(/{{TUTOR_LEVEL}}/g, tutorLevel); // For tutor prompt
 
-      // Tutor-specific replacements
-      if (tutorMode && mode === 'coding') {
-        templateContent = templateContent.replace(/{{TUTOR_LEVEL}}/g, tutorLevel);
-      }
-      
-      // Generic additional instructions placeholder (can be empty if not needed by the specific prompt)
       const baseAdditionalInstructions = `
 ## Conversation Context & Real-Time Interaction (IMPORTANT):
 You are an integral part of a DYNAMIC, REAL-TIME conversational application, "Voice Chat Assistant".
@@ -220,8 +251,7 @@ This is NOT a static Q&A. Assume the conversation can and will pick up where it 
 Prioritize clarity, accuracy, and helpfulness. Actively use the conversation history to avoid redundancy unless explicitly asked for clarification or repetition.
 Your goal is to provide a fluid, natural, and contextually intelligent interaction.
 `;
-      templateContent = templateContent.replace(/{{ADDITIONAL_INSTRUCTIONS}}/g, baseAdditionalInstructions);
-      systemPromptContent = templateContent;
+      systemPromptContent = templateContent.replace(/{{ADDITIONAL_INSTRUCTIONS}}/g, baseAdditionalInstructions);
     }
 
     const systemMessage: IChatMessage = { role: 'system', content: systemPromptContent };
@@ -233,24 +263,26 @@ Your goal is to provide a fluid, natural, and contextually intelligent interacti
 
     const llmParams: IChatCompletionParams = {
       temperature: LLM_DEFAULT_TEMPERATURE,
-      max_tokens: LLM_DEFAULT_MAX_TOKENS, // Ensure this is a reasonable value
-      user: effectiveUserId,
+      max_tokens: LLM_DEFAULT_MAX_TOKENS,
+      user: effectiveUserId, // Pass user ID for tracking/moderation if supported by LLM provider
     };
 
     const llmResponse = await callLlm(
-        finalApiMessages,
-        modelIdForMode,
-        llmParams,
-        process.env.ROUTING_LLM_PROVIDER_ID as LlmProviderId | undefined,
-        effectiveUserId
+      finalApiMessages,
+      modelIdForMode,
+      llmParams,
+      process.env.ROUTING_LLM_PROVIDER_ID as LlmProviderId | undefined, // Explicit provider from .env
+      effectiveUserId // For cost tracking association
     );
-
     const costOfThisCall = calculateLlmCost(llmResponse.model, llmResponse.usage);
     CostService.trackCost(
-        effectiveUserId, 'llm', costOfThisCall, llmResponse.model,
-        llmResponse.usage?.prompt_tokens ?? undefined,
-        llmResponse.usage?.completion_tokens ?? undefined,
-        { conversationId, mode }
+      effectiveUserId, 
+      'llm', 
+      costOfThisCall, 
+      llmResponse.model,
+      llmResponse.usage?.prompt_tokens ?? undefined, // Convert null to undefined
+      llmResponse.usage?.completion_tokens ?? undefined, // Convert null to undefined
+      { conversationId, mode }
     );
     const sessionCostDetail = CostService.getSessionCost(effectiveUserId);
 
@@ -258,10 +290,8 @@ Your goal is to provide a fluid, natural, and contextually intelligent interacti
     if (llmResponse.text) {
       conversation!.messages.push({ role: 'assistant', content: llmResponse.text });
     }
-    // Prune history if it gets too long (beyond max configured pairs + buffer)
-    if (conversation!.messages.length > (MAX_HISTORY_MESSAGES_CONFIG * 2 + 50) ) {
+    if (conversation!.messages.length > (MAX_HISTORY_MESSAGES_CONFIG * 2 + 50) ) { // Prune history
         const numToSlice = MAX_HISTORY_MESSAGES_CONFIG * 2;
-        console.log(`ChatRoutes: Trimming conversation history for ${historyKey} from ${conversation!.messages.length} to ~${numToSlice} messages.`);
         conversation!.messages = conversation!.messages.slice(-numToSlice);
     }
     conversationHistories.set(historyKey, conversation!);
@@ -270,7 +300,7 @@ Your goal is to provide a fluid, natural, and contextually intelligent interacti
       content: llmResponse.text,
       model: llmResponse.model,
       usage: llmResponse.usage,
-      sessionCost: sessionCostDetail,
+      sessionCost: sessionCostDetail, // Total session cost
       costOfThisCall: costOfThisCall,
       conversationId,
       historySize: conversation?.messages.length,
@@ -284,26 +314,23 @@ Your goal is to provide a fluid, natural, and contextually intelligent interacti
     let statusCode = 500;
     let errorCode = 'CHAT_PROCESSING_ERROR';
 
+    // Simplified error checking, specific checks can be more granular
     if (error.message?.includes('API key') || error.response?.data?.error?.message?.includes('API key')) {
-      errorMessage = 'AI service provider API key is invalid or missing.';
-      statusCode = 503; errorCode = 'API_KEY_ERROR';
+      errorMessage = 'AI service provider API key is invalid or missing.'; statusCode = 503; errorCode = 'API_KEY_ERROR';
     } else if (error.message?.includes('rate limit') || error.status === 429 || error.response?.status === 429) {
-      errorMessage = 'AI service rate limit exceeded. Please try again later.';
-      statusCode = 429; errorCode = 'RATE_LIMIT_EXCEEDED';
+      errorMessage = 'AI service rate limit exceeded. Please try again later.'; statusCode = 429; errorCode = 'RATE_LIMIT_EXCEEDED';
+    } else if (error.message?.includes('insufficient_quota') || error.message?.includes('credits')) {
+      errorMessage = 'AI service account has insufficient funds or quota exceeded.'; statusCode = 402; errorCode = 'INSUFFICIENT_FUNDS_OR_QUOTA';
     } else if (error.code === 'ECONNABORTED' || error.message?.toLowerCase().includes('timeout')) {
-        errorMessage = 'Request to AI service timed out. Please try again.';
-        statusCode = 408; errorCode = 'REQUEST_TIMEOUT';
-    } else if (error.response?.data?.error?.type === 'insufficient_quota' || error.message?.includes('credits') || error.message?.includes('quota')) {
-        errorMessage = 'AI service account has insufficient funds or quota exceeded.';
-        statusCode = 402; errorCode = 'INSUFFICIENT_FUNDS_OR_QUOTA';
-    } else if (error.status) {
+      errorMessage = 'Request to AI service timed out. Please try again.'; statusCode = 408; errorCode = 'REQUEST_TIMEOUT';
+    } else if (error.status) { // If error object has a status property
         statusCode = error.status; errorMessage = error.message || errorMessage; errorCode = error.code || errorCode;
-    } else if (error.response?.status) {
+    } else if (error.response?.status) { // Axios-like error
         statusCode = error.response.status;
         errorMessage = error.response.data?.message || error.response.data?.error?.message || errorMessage;
         errorCode = error.response.data?.error?.code || error.response.data?.error_type || errorCode;
     }
-
+    
     res.status(statusCode).json({
       message: errorMessage,
       error: errorCode,
