@@ -107,22 +107,7 @@ jobs:
 
           # 4. Create .env file for the backend
           echo "Creating .env file for backend..."
-          cat > ~/voice-coding-assistant/.env << EOL
-          OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
-          OPENROUTER_API_KEY=${{ secrets.OPENROUTER_API_KEY }}
-          PASSWORD=${{ secrets.PASSWORD }}
-          MODEL_PREF_CODING=${{ secrets.MODEL_PREF_CODING }}
-          MODEL_PREF_SYSTEM_DESIGN=${{ secrets.MODEL_PREF_SYSTEM_DESIGN }}
-          MODEL_PREF_SUMMARY=${{ secrets.MODEL_PREF_SUMMARY }}
-          COST_THRESHOLD=${{ secrets.COST_THRESHOLD }}
-          DEFAULT_LANGUAGE=${{ secrets.DEFAULT_LANGUAGE }}
-          TOKEN_LIMIT=${{ secrets.TOKEN_LIMIT }}
-          PORT=3333 # Backend will listen internally on 3001, Nginx proxies to it
-          FRONTEND_URL=${{ secrets.FRONTEND_URL }} # For CORS settings
-          SPEECH_PREFERENCE=${{ secrets.SPEECH_PREFERENCE }}
-          VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}
-          NODE_ENV=production
-          EOL
+          echo "${{ secrets.ENV }}" > ~/voice-coding-assistant/.env
           echo ".env file created."
 
           # 5. Configure Nginx

@@ -113,6 +113,7 @@ export const MODEL_PREFERENCES = {
   coding_tutor: process.env.MODEL_PREF_CODING_TUTOR || 'openai/gpt-4o-mini', // For coding_tutor mode
   utility: process.env.UTILITY_LLM_MODEL_ID || 'openai/gpt-4o-mini', // For internal tasks like summarization
   default: process.env.ROUTING_LLM_MODEL_ID || 'openai/gpt-4o-mini', // System-wide default if no mode matches
+  diagram_generation: undefined
 };
 
 // Log the loaded model preferences for verification during startup

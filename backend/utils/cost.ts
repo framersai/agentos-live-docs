@@ -1,6 +1,6 @@
 // File: backend/utils/cost.ts (Updated imports)
 import dotenv from 'dotenv';
-import { MODEL_CONFIGS } from '../config/models.config'; // Removed .js extension
+import { MODEL_PRICING } from '../config/models.config'; // Removed .js extension
 
 dotenv.config({ path: new URL('../../../.env', import.meta.url).pathname });
 
@@ -44,7 +44,7 @@ export function trackLlmCost(
   completionTokens: number
 ): number {
   const session = initializeSessionCost(userId);
-  const modelConfig = MODEL_CONFIGS[modelName] || MODEL_CONFIGS['gpt-4o']; // Fallback to gpt-4o config
+  const modelConfig = MODEL_PRICING[modelName] || MODEL_PRICING['gpt-4o']; // Fallback to gpt-4o config
 
   let cost = 0;
   if (modelConfig) {
