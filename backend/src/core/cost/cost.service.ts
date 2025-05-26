@@ -1,8 +1,7 @@
 // File: backend/src/core/cost/cost.service.ts
-
 /**
  * @file Manages and tracks API usage costs for different services.
- * @version 1.1.0 - Added DISABLE_COST_LIMITS environment variable check.
+ * @version 1.2.0 - Enhanced trackCost to include detailed units and metadata.
  * @description This service provides a centralized way to record costs
  * associated with LLM interactions, STT transcriptions, TTS synthesis,
  * and other potentially costly API calls. It supports per-user session
@@ -14,7 +13,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
-const __projectRoot = path.resolve(path.dirname(__filename), '../../../../'); // Adjusted path
+const __projectRoot = path.resolve(path.dirname(__filename), '../../../../');
 dotenv.config({ path: path.join(__projectRoot, '.env'), override: true });
 
 
@@ -34,10 +33,14 @@ export interface ICostEntry {
   costUSD: number;
   /** Timestamp of when the cost was incurred. */
   timestamp: Date;
-  /** Number of input units (e.g., tokens, characters, seconds). */
+  /** Number of input units (e.g., tokens for LLM, characters for TTS, bytes or seconds for STT). */
   inputUnits?: number;
-  /** Number of output units (e.g., tokens, characters, seconds). */
+  /** Label for input units (e.g., 'tokens', 'characters', 'bytes', 'seconds'). */
+  inputUnitType?: string;
+  /** Number of output units (e.g., tokens for LLM, bytes for TTS audio, characters for STT text). */
   outputUnits?: number;
+  /** Label for output units. */
+  outputUnitType?: string;
   /** Additional metadata related to the cost entry. */
   metadata?: Record<string, any>;
 }
@@ -52,10 +55,14 @@ export interface ISessionCostDetail {
   totalCost: number;
   /** Breakdown of costs by service type. */
   costsByService: {
-    [serviceType: string]: number;
+    [serviceType: string]: {
+        totalCost: number;
+        count: number;
+        details?: Array<{model?: string, cost: number, timestamp: Date}>; // Optional: store recent transactions per service
+    };
   };
-  /** List of individual cost entries for the session. */
-  entries: ICostEntry[];
+  /** List of individual cost entries for the session. Limited for performance. */
+  entries: ICostEntry[]; // Consider limiting the size of this array in memory
   /** Timestamp of when the session tracking started or last reset. */
   sessionStartTime: Date;
 }
@@ -68,6 +75,7 @@ const GLOBAL_COST_THRESHOLD_USD_PER_MONTH = parseFloat(
 const DEFAULT_SESSION_COST_THRESHOLD_USD = parseFloat(
   process.env.COST_THRESHOLD_USD_PER_SESSION || '2.00'
 );
+const MAX_SESSION_ENTRIES_TO_STORE = 100; // Limit how many detailed entries are kept in memory per session
 
 export class CostService {
   /**
@@ -79,8 +87,10 @@ export class CostService {
    * @param {number} costUSD - The cost incurred in USD.
    * @param {string} [modelOrSubType] - The specific model or sub-service used.
    * @param {number} [inputUnits] - Number of input units.
+   * @param {string} [inputUnitType='units'] - Label for input units.
    * @param {number} [outputUnits] - Number of output units.
-   * @param {Record<string, any>} [metadata] - Additional metadata.
+   * @param {string} [outputUnitType='units'] - Label for output units.
+   * @param {Record<string, any>} [metadata] - Additional metadata (e.g., provider, specific parameters).
    * @returns {ICostEntry} The created cost entry.
    */
   public static trackCost(
@@ -89,7 +99,9 @@ export class CostService {
     costUSD: number,
     modelOrSubType?: string,
     inputUnits?: number,
+    inputUnitType: string = 'units', // Default unit type
     outputUnits?: number,
+    outputUnitType: string = 'units', // Default unit type
     metadata?: Record<string, any>
   ): ICostEntry {
     if (costUSD < 0) {
@@ -105,7 +117,9 @@ export class CostService {
       costUSD,
       timestamp: new Date(),
       inputUnits,
+      inputUnitType,
       outputUnits,
+      outputUnitType,
       metadata,
     };
 
@@ -121,12 +135,40 @@ export class CostService {
 
     const userSession = sessionCosts.get(userId)!;
     userSession.totalCost += costUSD;
-    userSession.costsByService[serviceType] = (userSession.costsByService[serviceType] || 0) + costUSD;
+    
+    if (!userSession.costsByService[serviceType]) {
+        userSession.costsByService[serviceType] = { totalCost: 0, count: 0, details: [] };
+    }
+    userSession.costsByService[serviceType].totalCost += costUSD;
+    userSession.costsByService[serviceType].count += 1;
+    // Optionally, add a summary of this transaction to details (be mindful of memory)
+    // userSession.costsByService[serviceType].details?.push({ model: modelOrSubType, cost: costUSD, timestamp: entry.timestamp });
+
+
     userSession.entries.push(entry);
+    if (userSession.entries.length > MAX_SESSION_ENTRIES_TO_STORE) {
+        userSession.entries.shift(); // Keep only the most recent entries
+    }
 
     globalMonthlyCostUSD += costUSD;
 
-    console.log(`CostService: User [${userId}] ${serviceType} (${modelOrSubType || 'N/A'}) cost: $${costUSD.toFixed(6)}. Session total: $${userSession.totalCost.toFixed(6)}. Global monthly: $${globalMonthlyCostUSD.toFixed(2)}`);
+    // Construct a detailed log message
+    let logMessage = `CostService: User [${userId}] Service [${serviceType}]`;
+    if (modelOrSubType) logMessage += ` Model [${modelOrSubType}]`;
+    if (metadata?.provider) logMessage += ` Provider [${metadata.provider}]`;
+    logMessage += ` Cost [$${costUSD.toFixed(6)}]`;
+    if (inputUnits !== undefined) logMessage += ` Input [${inputUnits} ${inputUnitType}]`;
+    if (outputUnits !== undefined) logMessage += ` Output [${outputUnits} ${outputUnitType}]`;
+    if (metadata) {
+        const printableMeta = {...metadata}; // Clone to avoid modifying original
+        delete printableMeta.provider; // Already logged
+        if(Object.keys(printableMeta).length > 0) {
+            logMessage += ` Meta ${JSON.stringify(printableMeta)}`;
+        }
+    }
+    logMessage += ` || SessionTotal [$${userSession.totalCost.toFixed(6)}] GlobalMonthly [$${globalMonthlyCostUSD.toFixed(2)}]`;
+    
+    console.log(logMessage);
     
     if (process.env.DISABLE_COST_LIMITS !== 'true' && globalMonthlyCostUSD > GLOBAL_COST_THRESHOLD_USD_PER_MONTH) {
         console.warn(`CostService: GLOBAL MONTHLY COST THRESHOLD EXCEEDED! Current: $${globalMonthlyCostUSD.toFixed(2)}, Threshold: $${GLOBAL_COST_THRESHOLD_USD_PER_MONTH.toFixed(2)}`);
@@ -167,7 +209,7 @@ export class CostService {
    */
   public static isSessionCostThresholdReached(userId: string, explicitThresholdUSD?: number): boolean {
     if (process.env.DISABLE_COST_LIMITS === 'true') {
-      console.log("CostService: Cost limit checks are disabled via DISABLE_COST_LIMITS=true.");
+      // console.log("CostService: Cost limit checks are disabled via DISABLE_COST_LIMITS=true."); // Can be noisy
       return false;
     }
 
@@ -180,7 +222,7 @@ export class CostService {
     
     const reached = userSession.totalCost >= thresholdToUse;
     if (reached) {
-        console.warn(`CostService: User [${userId}] session cost $${userSession.totalCost.toFixed(2)} has reached/exceeded threshold $${thresholdToUse.toFixed(2)}.`);
+        console.warn(`CostService: User [${userId}] session cost $${userSession.totalCost.toFixed(4)} has reached/exceeded threshold $${thresholdToUse.toFixed(2)}.`);
     }
     return reached;
   }
