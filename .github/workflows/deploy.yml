@@ -147,7 +147,7 @@ jobs:
           
           # Start the backend application using PM2
           # Assuming server.js is in backend/dist
-          pm2 start ecosystem.config.js --env production --output /dev/null --error /dev/null
+          pm2 start backend/ecosystem.config.js --env production --output /dev/null --error /dev/null
           
           # Save PM2 process list and configure to start on boot
           pm2 save
