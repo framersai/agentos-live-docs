@@ -146,10 +146,10 @@ jobs:
 
           # 6. Configure and start backend with PM2
           echo "Configuring and starting backend with PM2..."
-          pm2 stop voice-coding-assistant-backend || true
-          pm2 delete voice-coding-assistant-backend || true
+          pm2 stop voice-backend || true
+          pm2 delete voice-backend || true
 
-          # CHANGE 2: Refer to ecosystem.config.js directly, since you are already in the backend directory
+          # CHANGE 2: Refer to ecosystem.config.json directly, since you are already in the backend directory
           pm2 start ecosystem.config.json
 
           # Save PM2 process list and configure to start on boot
@@ -160,7 +160,7 @@ jobs:
           # 7. Basic Health Checks
           echo "Verifying Nginx and PM2 status..."
           sudo systemctl is-active nginx || { echo "ERROR: Nginx is not active."; exit 1; }
-          pm2 list | grep 'voice-coding-assistant-backend' | grep 'online' || { echo "ERROR: Backend PM2 process is not online."; exit 1; }
+          pm2 list | grep 'voice-backend' | grep 'online' || { echo "ERROR: Backend PM2 process is not online."; exit 1; }
 
           echo "Waiting for application to become fully responsive via HTTP..."
           ATTEMPTS=0
