@@ -55,7 +55,7 @@ export default defineComponent({
     'toggle-theme', 'toggle-fullscreen', 'clear-chat', 'logout',
     'show-prior-chat-log'
   ],
-  setup(props, { emit }) {
+  setup(_, { emit }) {
     const uiStore = useUiStore();
 
     // Assuming VoiceApplicationSettings now includes currentAppMode, preferredCodingLanguage, autoClearChat, generateDiagrams

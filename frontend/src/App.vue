@@ -70,10 +70,9 @@
 <script setup lang="ts">
 import { ref, onMounted, watch, provide, readonly } from 'vue';
 import { useStorage } from '@vueuse/core';
-import { useRouter, useRoute } from 'vue-router';
+import { useRouter } from 'vue-router';
 
 const router = useRouter();
-const route = useRoute(); // To get current route for :key on component
 
 const isDarkMode = useStorage('darkMode', false);
 const isLoading = ref(false);
@@ -99,7 +98,7 @@ const addToast = (toastDetails: Omit<Toast, 'id'>) => {
 
   toasts.value.unshift(newToast); // Add to the top for visibility
 
-  if (newToast.duration > 0) {
+  if (newToast.duration! > 0) {
     setTimeout(() => {
       removeToast(id);
     }, newToast.duration);
