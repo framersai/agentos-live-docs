@@ -49,7 +49,7 @@ jobs:
 
           # Copy ecosystem.config.js for PM2
           # Ensure ecosystem.config.js is in the backend directory in the deployment package
-          cp backend/ecosystem.config.json deployment/backend/ecosystem.config.js
+          cp backend/ecosystem.config.json deployment/backend/ecosystem.config.json
 
           # Copy Nginx configuration
           cp frontend/nginx.conf deployment/nginx.conf
