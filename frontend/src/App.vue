@@ -1,4 +1,3 @@
-// File: frontend/src/App.vue
 <template>
   <div :class="{ 'dark': isDarkMode }" class="app-wrapper">
     <div
@@ -7,6 +6,7 @@
       :class="{ 'opacity-100': isLoading, 'opacity-0 pointer-events-none': !isLoading }"
       role="status"
       aria-live="polite"
+      aria-label="Loading application"
     >
       <div class="loading-animation">
         <div></div>
@@ -18,14 +18,13 @@
     <a href="#main-content" class="skip-link">Skip to main content</a>
 
     <div id="main-content" class="min-h-screen app-container flex-grow flex flex-col">
-      <router-view v-slot="{ Component, route }">
-        <Transition name="page" mode="out-in">
-          <component :is="Component" :key="route.path" />
+      <router-view v-slot="{ Component, route: currentRoute }"> <Transition name="page" mode="out-in">
+          <component :is="Component" :key="currentRoute.path" />
         </Transition>
       </router-view>
     </div>
 
-    <div aria-live="assertive" class="fixed bottom-4 right-4 z-[9990] space-y-3 max-w-sm w-full sm:w-auto">
+    <div aria-live="assertive" class="fixed bottom-4 right-4 z-[9990] space-y-3 max-w-sm w-full sm:w-auto toast-notifications-container">
       <TransitionGroup name="toast" tag="div">
         <div
           v-for="toast in toasts"
@@ -70,10 +69,10 @@
 <script setup lang="ts">
 import { ref, onMounted, watch, provide, readonly } from 'vue';
 import { useStorage } from '@vueuse/core';
-import { useRouter, useRoute } from 'vue-router';
+import { useRouter } from 'vue-router'; // useRoute was removed as it was unused
 
 const router = useRouter();
-const route = useRoute(); // To get current route for :key on component
+// const route = useRoute(); // Removed: This was declared but not used in the script. Template uses route from v-slot.
 
 const isDarkMode = useStorage('darkMode', false);
 const isLoading = ref(false);
@@ -91,18 +90,21 @@ let toastIdCounter = 0;
 
 const addToast = (toastDetails: Omit<Toast, 'id'>) => {
   const id = toastIdCounter++;
-  const newToast: Toast = {
+  const newToast: Toast = { // Explicitly type newToast as Toast
     id,
     ...toastDetails,
-    duration: toastDetails.duration === undefined ? 5000 : toastDetails.duration,
+    // Ensure duration is always a number.
+    duration: toastDetails.duration === undefined || toastDetails.duration === null ? 5000 : toastDetails.duration,
   };
 
-  toasts.value.unshift(newToast); // Add to the top for visibility
+  toasts.value.unshift(newToast);
 
-  if (newToast.duration > 0) {
+  // newToast.duration is now guaranteed to be a number by the logic above.
+  // Use non-null assertion operator `!` because TypeScript might still infer from the interface.
+  if (newToast.duration! > 0) {
     setTimeout(() => {
       removeToast(id);
-    }, newToast.duration);
+    }, newToast.duration!); // Line 102: Error resolved by non-null assertion or ensuring type is narrowed
   }
   return id;
 };
@@ -133,6 +135,7 @@ const setLoading = (loading: boolean) => {
   isLoading.value = loading;
 };
 
+// Provide toast and loading utilities to child components
 provide('toast', {
   add: addToast,
   remove: removeToast,
@@ -141,18 +144,20 @@ provide('toast', {
 provide('loading', {
   show: () => setLoading(true),
   hide: () => setLoading(false),
-  isLoading: readonly(isLoading) // Provide readonly access to loading state
+  isLoading: readonly(isLoading)
 });
 
+// Watch for dark mode changes and update the HTML class
 watch(isDarkMode, (newVal) => {
   if (newVal) {
     document.documentElement.classList.add('dark');
   } else {
     document.documentElement.classList.remove('dark');
   }
-}, { immediate: true });
+}, { immediate: true }); // Apply on initial load
 
 onMounted(() => {
+  // Set initial dark mode based on system preference if not already set
   if (localStorage.getItem('darkMode') === null) {
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     isDarkMode.value = prefersDark;
@@ -161,19 +166,19 @@ onMounted(() => {
   let loadingTimer: number | undefined;
 
   router.beforeEach((to, from, next) => {
-    if (to.path !== from.path) { // Only show loading for actual navigation
+    if (to.path !== from.path) {
       setLoading(true);
     }
     next();
   });
 
   router.afterEach((to, from) => {
-     if (to.path !== from.path) {
-        if(loadingTimer) clearTimeout(loadingTimer);
-        loadingTimer = window.setTimeout(() => {
-            setLoading(false);
-        }, 200); // Slightly shorter delay
-     }
+    if (to.path !== from.path) {
+      if (loadingTimer) window.clearTimeout(loadingTimer); // Use window.clearTimeout
+      loadingTimer = window.setTimeout(() => {
+        setLoading(false);
+      }, 200);
+    }
   });
 
   router.onError((error) => {
@@ -187,7 +192,9 @@ onMounted(() => {
     });
   });
 
-  const hasVisited = localStorage.getItem('vcaHasVisited'); // Use a more specific key
+  // Welcome toast logic
+  const hasVisitedKey = 'vcaHasVisited'; // Use a constant for the key
+  const hasVisited = localStorage.getItem(hasVisitedKey);
   if (!hasVisited) {
     setTimeout(() => {
       addToast({
@@ -196,23 +203,22 @@ onMounted(() => {
         message: 'Explore features and settings. Use your voice to interact.',
         duration: 7000
       });
-      localStorage.setItem('vcaHasVisited', 'true');
+      localStorage.setItem(hasVisitedKey, 'true');
     }, 1200);
   }
 });
 </script>
 
-<style>
+<style lang="postcss">
 /* Global App Wrapper */
 .app-wrapper {
   @apply min-h-screen flex flex-col bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* App Container Background - more subtle and modern */
+/* App Container Background */
 .app-container {
   @apply flex-grow transition-opacity duration-300 ease-in-out;
-  /* Removed direct background images for a cleaner default, can be added per-page or theme */
 }
 
 /* Page Transitions */
@@ -229,10 +235,10 @@ onMounted(() => {
   transform: translateY(-8px);
 }
 
-/* Toast Animations (using TransitionGroup compatible names) */
+/* Toast Animations */
 .toast-enter-active,
 .toast-leave-active {
-  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* Bouncy effect */
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
 }
 .toast-enter-from {
   opacity: 0;
@@ -242,7 +248,7 @@ onMounted(() => {
   opacity: 0;
   transform: translateY(30px) scale(0.9);
 }
-.toast-move { /* For reordering if toasts are added/removed not just at ends */
+.toast-move {
   transition: transform 0.3s ease;
 }
 
@@ -256,17 +262,18 @@ onMounted(() => {
 .loading-animation {
   display: inline-block;
   position: relative;
-  width: 60px; /* Slightly smaller */
+  width: 60px;
   height: 60px;
 }
 .loading-animation div {
   box-sizing: border-box;
   display: block;
   position: absolute;
-  width: 48px; /* Adjusted for new size */
+  width: 48px;
   height: 48px;
   margin: 6px;
-  border: 5px solid theme('colors.primary.500'); /* Use theme color */
+  /* Using theme() directive for Tailwind colors */
+  border: 5px solid theme('colors.primary.500');
   border-radius: 50%;
   animation: loading-animation-spin 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
   border-color: theme('colors.primary.500') transparent transparent transparent;
@@ -280,11 +287,11 @@ onMounted(() => {
   100% { transform: rotate(360deg); }
 }
 
-/* Ensuring html, body take full height for sticky footer patterns if needed */
-html, body, #app {
+/* Ensuring html, body take full height */
+html, body, #app { /* Assuming your Vue app is mounted on #app */
   height: 100%;
 }
 body {
-  @apply font-sans antialiased; /* Apply a base font stack if not already in main.css */
+  @apply font-sans antialiased; /* Ensure base font styles are applied */
 }
 </style>

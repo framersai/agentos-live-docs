@@ -134,6 +134,7 @@ const isLoggingIn = ref(false);
 const errorMessage = ref('');
 
 // --- Development/Debug ---
+// @ts-ignore
 const showDevControls = ref(import.meta.env.DEV); // Show only in development
 const showTestUI = ref(false);
 

@@ -1,246 +1,154 @@
-// File: src/components/Footer.vue
+// File: frontend/src/components/Footer.vue
 /**
  * @file Footer.vue
  * @description Global application footer. Displays version, status, attributions, and system logs.
- * @version 2.0.0 - Enhanced design, Frame.dev attribution, refined logs UI.
+ * @version 2.1.1 - Corrected Tailwind CSS class for icon sizing.
  */
+<script setup lang="ts">
+import { ref, computed, onMounted, onUnmounted } from 'vue'; // Removed defineAsyncComponent as SystemLogDisplay is directly imported
+import SystemLogDisplay from './ui/SystemLogDisplay.vue';
+import { CogIcon, CommandLineIcon, CloudIcon, WifiIcon, NoSymbolIcon } from '@heroicons/vue/24/outline';
+
+const repositoryUrl = ref('https://github.com/manicinc/voice-coding-assistant');
+const logsOpen = ref(false);
+const apiStatus = ref<'Operational' | 'Degraded' | 'Down' | 'Checking'>('Checking');
+let apiStatusInterval: number | undefined;
+
+const apiStatusInfo = computed(() => {
+  switch (apiStatus.value) {
+    case 'Operational': return { text: 'API Operational', color: 'text-green-500 dark:text-green-400', icon: WifiIcon, dotColor: 'bg-green-500' };
+    case 'Degraded': return { text: 'API Degraded', color: 'text-yellow-500 dark:text-yellow-400', icon: CloudIcon, dotColor: 'bg-yellow-500' };
+    case 'Down': return { text: 'API Down', color: 'text-red-500 dark:text-red-400', icon: NoSymbolIcon, dotColor: 'bg-red-500' };
+    default: return { text: 'Checking API...', color: 'text-gray-500 dark:text-gray-400', icon: CogIcon, dotColor: 'bg-gray-500' };
+  }
+});
+
+const toggleLogsPanel = () => {
+  logsOpen.value = !logsOpen.value;
+};
+
+const checkApiStatus = async () => {
+  // This is a placeholder. In a real app, you would make an API call, e.g., to a /health endpoint.
+  // For now, cycle through statuses for demo.
+  const statuses: Array<'Operational' | 'Degraded' | 'Down'> = ['Operational', 'Degraded', 'Down'];
+  apiStatus.value = statuses[Math.floor(Math.random() * statuses.length)];
+};
+
+onMounted(() => {
+  checkApiStatus(); // Initial check
+  apiStatusInterval = window.setInterval(checkApiStatus, 30000); // Check every 30 seconds
+});
+
+onUnmounted(() => {
+  if (apiStatusInterval) clearInterval(apiStatusInterval);
+});
+</script>
+
 <template>
-  <footer class="border-t border-gray-200 dark:border-gray-700/50 bg-gray-50/70 dark:bg-gray-900/70 backdrop-blur-md text-sm">
-    <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="py-6 md:py-8">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
-          <div class="flex flex-col items-center md:items-start text-center md:text-left">
-            <div class="flex items-center gap-2">
-              <img src="/src/assets/logo.svg" alt="VCA Logo" class="w-6 h-6" />
-              <span class="font-semibold text-gray-800 dark:text-gray-100">Voice Coding Assistant</span>
-            </div>
-            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1.5">
-              Version 1.0.1 | Status: <span class="font-medium" :class="apiStatus === 'Operational' ? 'text-green-500' : 'text-yellow-500'">{{ apiStatus }}</span>
-            </p>
-          </div>
+  <footer class="app-footer relative z-30">
+    <Transition name="slide-up-fade-logs">
+      <div v-if="logsOpen" class="logs-panel-wrapper fixed bottom-16 sm:bottom-20 left-0 right-0 px-2 sm:px-4 pointer-events-none">
+         <div class="max-w-4xl mx-auto pointer-events-auto">
+           <SystemLogDisplay />
+         </div>
+      </div>
+    </Transition>
 
-          <div class="text-center space-y-2">
-             <p class="text-xs text-gray-600 dark:text-gray-300">
-              Lovingly crafted by <a href="https://manic.agency" target="_blank" rel="noopener noreferrer" class="font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 transition-colors">Manic.Agency</a>
-            </p>
-            <p class="text-xs text-gray-600 dark:text-gray-300">
-              Proudly tagged by
-              <a href="https://frame.dev" target="_blank" rel="noopener noreferrer" class="font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 transition-colors">frame.dev</a>
-              <span class="mx-1">|</span>
-              <a href="https://github.com/wearetheframers" target="_blank" rel="noopener noreferrer" class="font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 transition-colors">@wearetheframers</a>
-            </p>
-          </div>
-
-          <div class="flex flex-col items-center md:items-end gap-3">
-            <div class="flex items-center gap-4">
-              <router-link
-                to="/about"
-                class="text-xs font-medium text-gray-500 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400 transition-colors"
-              >
-                About
-              </router-link>
-              <a
-                :href="repositoryUrl"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="text-gray-400 hover:text-primary-600 dark:text-gray-500 dark:hover:text-primary-400 transition-colors"
-                title="View source on GitHub"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                </svg>
-              </a>
-            </div>
-            <button
-              @click="toggleLogs"
-              class="px-3 py-1.5 text-xs rounded-full flex items-center gap-1.5 transition-all focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
-              :class="logsOpen ? 'bg-primary-500 text-white shadow-md' : 'bg-gray-200/70 dark:bg-gray-700/70 text-gray-700 dark:text-gray-300 hover:bg-gray-300/70 dark:hover:bg-gray-600/70'"
-            >
-              <span class="inline-block w-2 h-2 rounded-full animate-pulse" :class="apiStatus === 'Operational' ? 'bg-green-400' : 'bg-yellow-400'"></span>
-              <span>System Logs</span>
-              <span class="text-xs opacity-70">({{ logs.length }})</span>
-            </button>
-          </div>
+    <div class="footer-content-wrapper">
+      <div class="footer-main-row">
+        <div class="footer-branding">
+          <img src="/src/assets/logo.svg" alt="VCA Logo" class="w-6 h-6 text-primary-500" />
+          <span class="font-semibold text-sm text-gray-700 dark:text-gray-200">Voice Chat Assistant</span>
+          <span class="text-xs text-gray-400 dark:text-gray-500 hidden sm:inline">v1.5.0</span>
         </div>
 
-        <Transition name="expand">
-          <div v-if="logsOpen" class="mt-6 p-4 bg-white dark:bg-gray-800/50 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-            <div class="flex items-center justify-between mb-3">
-              <h4 class="text-base font-semibold text-gray-800 dark:text-gray-100">System Activity</h4>
-              <div class="flex items-center gap-3">
-                <button
-                  @click="downloadLogs"
-                  class="text-xs font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 transition-colors"
-                  title="Download logs"
-                >
-                  Download
-                </button>
-                <button
-                  @click="clearLogs"
-                  class="text-xs font-medium text-red-600 hover:text-red-500 dark:text-red-400 dark:hover:text-red-300 transition-colors"
-                  title="Clear logs"
-                >
-                  Clear
-                </button>
-              </div>
+        <div class="footer-status-and-actions">
+            <div class="api-status-indicator" :title="apiStatusInfo.text">
+                <component :is="apiStatusInfo.icon" class="w-4 h-4 mr-1.5" :class="apiStatusInfo.color" />
+                <span class="text-xs hidden md:inline" :class="apiStatusInfo.color">{{ apiStatusInfo.text }}</span>
+                <span class="status-dot-indicator" :class="apiStatusInfo.dotColor"></span>
             </div>
 
-            <div class="logs-container h-40 overflow-y-auto bg-gray-50 dark:bg-gray-900/80 rounded-md border border-gray-200 dark:border-gray-700 p-3 text-xs font-mono">
-              <div v-if="logs.length === 0" class="h-full flex items-center justify-center text-gray-500 dark:text-gray-400 italic">
-                No logs to display. System is quiet.
-              </div>
-              <div v-for="(log, index) in logs" :key="index" class="mb-1.5 last:mb-0 whitespace-pre-wrap break-words">
-                <span class="font-semibold" :class="getLogLevelClass(log.level)">[{{ log.level.toUpperCase() }}]</span>
-                <span class="text-gray-500 dark:text-gray-400 ml-1 mr-2">{{ log.timestamp }}</span>
-                <span class="text-gray-700 dark:text-gray-300">{{ log.message }}</span>
-              </div>
-            </div>
-          </div>
-        </Transition>
+            <button @click="toggleLogsPanel" class="logs-toggle-button" :class="{ 'active': logsOpen }" title="Toggle System Logs">
+                <CommandLineIcon class="w-4 h-4" />
+                <span class="hidden sm:inline text-xs">System Logs</span>
+            </button>
+
+            <a :href="repositoryUrl" target="_blank" rel="noopener noreferrer" class="footer-icon-link" title="View Source on GitHub">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="w-4 h-4 fill-current"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+            </a>
+             <router-link to="/settings" class="footer-icon-link" title="Settings">
+                <CogIcon class="w-4 h-4" />
+            </router-link>
+        </div>
+      </div>
+      <div class="footer-copyright">
+        &copy; {{ new Date().getFullYear() }} Voice Chat Assistant. Powered by AI.
       </div>
     </div>
   </footer>
 </template>
 
-<script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue';
-
-interface LogEntry {
-  level: 'info' | 'warning' | 'error' | 'debug';
-  message: string;
-  timestamp: string;
-}
-
-const repositoryUrl = ref('https://github.com/manic-agency/voice-coding-assistant'); // Or your specific repo
-
-const logs = ref<LogEntry[]>([]);
-const logsOpen = ref(false);
-const apiStatus = ref<'Operational' | 'Degraded' | 'Down'>('Operational');
-
-let apiStatusInterval: number | undefined;
-let demoLogInterval: number | undefined;
-
-const addLog = (level: LogEntry['level'], message: string) => {
-  const now = new Date();
-  const timestamp = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
-  logs.value.push({ level, message, timestamp });
-
-  if (logs.value.length > 150) { // Keep a bit more logs
-    logs.value.shift();
-  }
-
-  if (logsOpen.value) {
-    setTimeout(() => {
-      const container = document.querySelector('.logs-container');
-      if (container) {
-        container.scrollTop = container.scrollHeight;
-      }
-    }, 50);
-  }
-};
-
-const toggleLogs = () => {
-  logsOpen.value = !logsOpen.value;
-  if(logsOpen.value) {
-    addLog('info', 'Log panel opened.');
-  } else {
-    // No need to log panel close unless for debugging the panel itself
-  }
-};
-
-const clearLogs = () => {
-  logs.value = [];
-  addLog('info', 'Logs cleared by user.');
-};
-
-const downloadLogs = () => {
-  const logContent = logs.value.map(log =>
-    `${log.timestamp} [${log.level.toUpperCase()}] ${log.message}`
-  ).join('\n');
-
-  const blob = new Blob([logContent], { type: 'text/plain;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `vca-logs-${new Date().toISOString().slice(0, 10)}.txt`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-  addLog('info', 'Logs downloaded.');
-};
-
-const getLogLevelClass = (level: LogEntry['level']) => {
-  switch (level) {
-    case 'error': return 'text-red-500 dark:text-red-400';
-    case 'warning': return 'text-yellow-500 dark:text-yellow-400';
-    case 'debug': return 'text-purple-500 dark:text-purple-400';
-    case 'info':
-    default: return 'text-blue-500 dark:text-blue-400';
-  }
-};
-
-const checkApiStatus = async () => {
-  // Simulated API status check
-  const statuses: typeof apiStatus.value[] = ['Operational', 'Operational', 'Operational', 'Degraded', 'Down'];
-  const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
-  if (apiStatus.value !== randomStatus) {
-    apiStatus.value = randomStatus;
-    addLog(randomStatus === 'Operational' ? 'info' : (randomStatus === 'Degraded' ? 'warning' : 'error'), `API status changed to: ${randomStatus}`);
-  }
-};
-
-defineExpose({ addLog });
-
-onMounted(() => {
-  addLog('info', 'Footer initialized. Application ready.');
-  checkApiStatus();
-  apiStatusInterval = window.setInterval(checkApiStatus, 30000); // Check every 30 seconds
-
-  // Demo logs for UI purposes if needed during development, can be removed for production
-  demoLogInterval = window.setInterval(() => {
-    const randomMessages = [
-      'User login successful', 'Chat session started', 'Voice command received',
-      'Transcription processing', 'LLM response generated', 'TTS synthesis complete'
-    ];
-    addLog('debug', randomMessages[Math.floor(Math.random() * randomMessages.length)]);
-  }, 60000); // Add a debug log every minute
-});
-
-onUnmounted(() => {
-  if (apiStatusInterval) clearInterval(apiStatusInterval);
-  if (demoLogInterval) clearInterval(demoLogInterval);
-});
-
-</script>
-
 <style scoped>
-.logs-container::-webkit-scrollbar {
-  width: 6px;
+.app-footer {
+  @apply bg-gray-50 dark:bg-slate-900 border-t border-gray-200 dark:border-slate-800 text-xs text-gray-600 dark:text-gray-400;
 }
-.logs-container::-webkit-scrollbar-track {
-  @apply bg-gray-100 dark:bg-gray-800 rounded-full;
+.footer-content-wrapper {
+  @apply max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4;
 }
-.logs-container::-webkit-scrollbar-thumb {
-  @apply bg-gray-400 dark:bg-gray-600 rounded-full;
+.footer-main-row {
+  @apply flex flex-col sm:flex-row items-center justify-between gap-3;
 }
-.logs-container::-webkit-scrollbar-thumb:hover {
-  @apply bg-gray-500 dark:bg-gray-500;
+.footer-branding {
+  @apply flex items-center gap-2;
+}
+.footer-status-and-actions {
+  @apply flex items-center gap-2 sm:gap-3;
+}
+.api-status-indicator {
+    @apply flex items-center px-2.5 py-1 rounded-full bg-gray-100 dark:bg-slate-800 text-xs font-medium border border-transparent;
+}
+.status-dot-indicator {
+    @apply w-2 h-2 rounded-full ml-1.5 md:ml-2;
+    animation: pulseStatus 2s infinite;
+}
+@keyframes pulseStatus {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
 }
 
-.expand-enter-active,
-.expand-leave-active {
-  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); /* Smoother ease */
-  max-height: 600px; /* Increased max-height for logs */
-  overflow: hidden;
+.logs-toggle-button {
+  @apply flex items-center px-2.5 py-1 rounded-full text-xs font-medium transition-colors
+         bg-gray-100 hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-slate-700 
+         text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-slate-700;
 }
-.expand-enter-from,
-.expand-leave-to {
-  max-height: 0;
+.logs-toggle-button.active {
+  @apply bg-primary-500 hover:bg-primary-600 text-white dark:bg-primary-500 dark:hover:bg-primary-600 border-transparent;
+}
+.footer-icon-link {
+  @apply p-1.5 rounded-md text-gray-400 hover:text-primary-600 dark:text-gray-500 dark:hover:text-primary-400 transition-colors;
+}
+.footer-icon-link svg {
+  /* Corrected to use arbitrary values for specific pixel-equivalent sizes not in default scale */
+  /* 1.125rem = 18px. w-4 is 1rem (16px), w-5 is 1.25rem (20px) */
+  @apply w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem] fill-current;
+}
+
+.footer-copyright {
+  @apply text-center text-gray-400 dark:text-gray-500 pt-3 mt-3 border-t border-gray-200 dark:border-slate-800 text-[0.7rem] sm:text-xs;
+}
+
+/* Logs Panel Wrapper & Transition */
+.logs-panel-wrapper {
+  /* Max width will be controlled by the inner div */
+}
+.slide-up-fade-logs-enter-active,
+.slide-up-fade-logs-leave-active {
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+.slide-up-fade-logs-enter-from,
+.slide-up-fade-logs-leave-to {
+  transform: translateY(100%);
   opacity: 0;
-  margin-top: 0; /* Ensure no margin when collapsed */
-  padding-top: 0;
-  padding-bottom: 0;
-  border-width: 0;
 }
 </style>
