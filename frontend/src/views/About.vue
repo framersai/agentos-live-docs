@@ -1,659 +1,520 @@
-<script lang="ts">
+// File: frontend/src/views/About.vue
 /**
- * @file AboutView.vue
- * @description Provides comprehensive, engaging information about the Voice Chat Assistant.
- * This view details its purpose, core features, the technology stack, its foundation on AgentOS,
- * upcoming subscription tiers, and privacy commitments. It is designed to be visually appealing,
- * informative, and reflect the SOTA nature of the application.
- * @version 2.0.0
- * @author Manic.Agency
- *
- * @component AboutView
- * @description The main view for presenting information about the application.
- * It uses various child components and imported icons to display content in a structured
- * and aesthetically pleasing manner.
+ * @file Enhanced About Page - Unified Theme & Technical Architecture Deep Dive
+ * @description About page refactored to align with global main.css, incorporating DiagramViewer
+ * for architectural diagrams and detailed AgentOS technical information.
+ * @version 2.4.1 - Fixed GithubIcon runtime compilation, refined DiagramViewer integration notes.
  */
 
-import { defineComponent, computed } from 'vue';
-import { useRouter } from 'vue-router';
-import {
-  ArrowLeftIcon,
-  QuestionMarkCircleIcon,
-  BoltIcon,
-  CubeTransparentIcon,
-  ShieldCheckIcon,
-  LinkIcon,
-  UserIcon,
-  MicrophoneIcon,
-  SparklesIcon,
-  CodeBracketSquareIcon,
-  CpuChipIcon,
-  DocumentTextIcon,
-  TvIcon,
-  PresentationChartLineIcon,
-  AdjustmentsHorizontalIcon,
-  CurrencyDollarIcon,
-  SunIcon,
-  CheckBadgeIcon,
-  GlobeAltIcon,
-  RocketLaunchIcon,
-  AcademicCapIcon,
-  UsersIcon,
-  WrenchScrewdriverIcon,
-  EyeIcon,
-  ScaleIcon
-} from '@heroicons/vue/24/outline';
-
-export default defineComponent({
-  name: 'AboutView',
-  components: {
-    ArrowLeftIcon,
-    QuestionMarkCircleIcon,
-    BoltIcon,
-    CubeTransparentIcon,
-    ShieldCheckIcon,
-    LinkIcon,
-    UserIcon,
-    MicrophoneIcon,
-    SparklesIcon,
-    CodeBracketSquareIcon,
-    CpuChipIcon,
-    DocumentTextIcon,
-    TvIcon,
-    PresentationChartLineIcon,
-    AdjustmentsHorizontalIcon,
-    CurrencyDollarIcon,
-    SunIcon,
-    CheckBadgeIcon,
-    GlobeAltIcon,
-    RocketLaunchIcon,
-    AcademicCapIcon,
-    UsersIcon,
-    WrenchScrewdriverIcon,
-    EyeIcon,
-    ScaleIcon
-  },
-  setup() {
-    const router = useRouter();
-    const goHome = () => router.push('/');
-    const currentYear = computed(() => new Date().getFullYear());
-
-    const subscriptionTiers = [
-      {
-        name: 'Free',
-        priceMonthly: 0,
-        priceYearly: 0,
-        description: 'Basic voice chat functionality with limited usage.',
-        features: [
-          'Core Voice Chat',
-          'Limited Conversation History (10 turns)',
-          '1 Active Assistant Profile',
-          'Basic AI Models',
-          'Community Support'
-        ],
-        bgColor: 'bg-slate-100 dark:bg-slate-800',
-        textColor: 'text-slate-700 dark:text-slate-300',
-        buttonClass: 'btn-secondary',
-        highlight: false
-      },
-      {
-        name: 'Basic',
-        priceMonthly: 9.99,
-        priceYearly: 99.99,
-        description: 'Enhanced voice chat with more features and higher limits.',
-        features: [
-          'All Free Features',
-          'Extended History (50 turns)',
-          '3 Active Assistant Profiles',
-          'Advanced AI Models Option',
-          'Custom Personas',
-          'Conversation Export',
-          'Email Support'
-        ],
-        bgColor: 'bg-primary-50 dark:bg-primary-900/30',
-        textColor: 'text-primary-700 dark:text-primary-300',
-        buttonClass: 'btn-primary',
-        highlight: true
-      },
-      {
-        name: 'Pro',
-        priceMonthly: 29.99,
-        priceYearly: 299.99,
-        description: 'Advanced features with extensive usage and priority support.',
-        features: [
-          'All Basic Features',
-          'Unlimited History (200 turns)',
-          '10 Active Assistant Profiles',
-          'Premium AI Models Access',
-          'Advanced Tools Integration (Coming Soon)',
-          'API Access (Coming Soon)',
-          'Team Collaboration (Coming Soon)',
-          'Priority Support'
-        ],
-        bgColor: 'bg-sky-50 dark:bg-sky-900/20',
-        textColor: 'text-sky-700 dark:text-sky-300',
-        buttonClass: 'btn-holographic',
-        highlight: false
-      }
-    ];
-
-    return { goHome, currentYear, subscriptionTiers };
-  }
-});
-</script>
-
 <template>
-  <div class="about-page-container min-h-screen bg-gradient-to-br from-[var(--bg-base)] via-[var(--bg-subtle)] to-[var(--accent-500)]/10 dark:from-[var(--bg-base)] dark:via-gray-950 dark:to-[var(--accent-500)]/5 text-[var(--text-primary)]">
-    <!-- Header -->
-    <header class="sticky top-0 z-30 glass-pane shadow-md border-b-[var(--glass-border)]">
-      <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
+  <div class="about-page min-h-screen text-[var(--text-primary)] transition-colors duration-300">
+    <header class="sticky top-0 z-30 glass-pane">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-3">
-            <img src="/src/assets/logo.svg" alt="Voice Chat Assistant Logo" class="w-9 h-9 sm:w-10 sm:h-10" />
-            <h1 class="text-xl sm:text-2xl font-bold text-[var(--text-primary)]">
+            <img src="/src/assets/logo.svg" alt="Voice Chat Assistant" class="w-10 h-10 sm:w-12 sm:h-12 animate-float" />
+            <h1 class="text-xl sm:text-2xl font-bold text-shadow-glow-primary">
               About Voice Chat Assistant
             </h1>
           </div>
-          <button @click="goHome" class="btn btn-ghost btn-sm" title="Back to Home">
-            <ArrowLeftIcon class="h-4 w-4" />
-            Back to App
+          <button @click="goHome" class="btn btn-ghost btn-sm">
+            <ArrowLeftIcon class="icon-s mr-1 sm:mr-2" />
+            <span class="hidden sm:inline">Back to App</span>
+            <span class="sm:hidden">Back</span>
           </button>
         </div>
       </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
-      <div class="space-y-16 sm:space-y-24">
-        <!-- Hero Section -->
-        <section class="text-center py-12 sm:py-16 rounded-xl card-base relative overflow-hidden border-fx-glow-primary">
-          <div class="absolute inset-0 opacity-5 dark:opacity-[0.03] pointer-events-none">
-            <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <pattern id="heroPattern" patternUnits="userSpaceOnUse" width="50" height="50" patternTransform="scale(2) rotate(45)">
-                  <path d="M0 50V0H50" fill="none" stroke="hsl(var(--primary-hue) 92% 60% / 0.5)" stroke-width="1" />
-                </pattern>
-              </defs>
-              <rect width="100%" height="100%" fill="url(#heroPattern)" />
-            </svg>
-          </div>
-          <div class="relative z-10">
-            <img src="/src/assets/logo.svg" alt="Voice Chat Assistant Logo" class="w-24 h-24 sm:w-32 sm:h-32 mx-auto mb-6 p-3 bg-[var(--bg-subtle)] dark:bg-[var(--bg-surface-rgb)] rounded-full shadow-xl border border-[var(--border-color)]" />
-            <h2 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-[var(--text-primary)] mb-4 tracking-tight text-shadow-soft">
-              <span class="block">The Future of Interaction is Voice.</span>
-              <span class="block text-transparent bg-clip-text bg-gradient-to-r from-[var(--primary-500)] via-[var(--accent-500)] to-teal-500 text-shadow-glow-primary">
-                Meet Voice Chat Assistant
-              </span>
-            </h2>
-            <p class="text-lg sm:text-xl text-[var(--text-secondary)] max-w-3xl mx-auto leading-relaxed">
-              Revolutionize your workflow. Speak your code, design systems, analyze meetings, and engage with AI that truly understands context, powered by the groundbreaking AgentOS framework.
-            </p>
-            <div class="mt-8 flex flex-wrap justify-center items-center gap-3 sm:gap-4 text-xs sm:text-sm text-[var(--text-muted)]">
-              <span class="chip">Version: 2.0.0 (SaaS Evolution)</span>
-              <span class="chip">Core AI: AgentOS Powered</span>
-              <span class="chip">Tech: Vue 3 + TypeScript</span>
+    <main class="relative z-20 max-w-7xl mx-auto px-4 py-10 sm:py-12 space-y-16 sm:space-y-24">
+      <section class="text-center pt-8 sm:pt-12">
+        <div class="inline-block p-1 rounded-full bg-gradient-to-r from-[var(--primary-500)] to-[var(--accent-500)] mb-8 animate-float animation-delay-500">
+          <img src="/src/assets/logo.svg" alt="Logo" class="w-24 h-24 sm:w-32 sm:h-32 p-4 bg-[var(--bg-subtle)] rounded-full" />
+        </div>
+        <h2 class="text-5xl md:text-7xl font-extrabold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-[var(--primary-600)] via-[var(--accent-500)] to-[var(--primary-500)] text-shadow-soft">
+          The Future is Voice
+        </h2>
+        <p class="text-xl md:text-2xl text-[var(--text-secondary)] max-w-3xl mx-auto">
+          Powered by AgentOS, Voice Chat Assistant revolutionizes how you interact with AI through natural conversation.
+        </p>
+      </section>
+
+      <section>
+        <div class="card-base p-8 md:p-12 rounded-xl">
+          <h3 class="text-3xl md:text-4xl font-bold mb-10 text-center text-shadow-glow-primary">Our Mission</h3>
+          <div class="grid md:grid-cols-3 gap-8">
+            <div class="mission-item text-center p-4 rounded-lg transition-shadow duration-300 hover:shadow-xl">
+              <div class="mission-icon-container bg-gradient-to-br from-purple-500 to-pink-500">
+                <RocketLaunchIcon class="w-10 h-10" />
+              </div>
+              <h4 class="text-xl font-semibold mb-2 mt-4 text-[var(--text-primary)]">Innovate</h4>
+              <p class="text-[var(--text-secondary)] text-sm">Push the boundaries of AI interaction with cutting-edge voice technology.</p>
+            </div>
+            <div class="mission-item text-center p-4 rounded-lg transition-shadow duration-300 hover:shadow-xl">
+              <div class="mission-icon-container bg-gradient-to-br from-blue-500 to-cyan-500">
+                <UsersIcon class="w-10 h-10" />
+              </div>
+              <h4 class="text-xl font-semibold mb-2 mt-4 text-[var(--text-primary)]">Empower</h4>
+              <p class="text-[var(--text-secondary)] text-sm">Enable developers and creators to achieve more with AI assistance.</p>
+            </div>
+            <div class="mission-item text-center p-4 rounded-lg transition-shadow duration-300 hover:shadow-xl">
+              <div class="mission-icon-container bg-gradient-to-br from-green-500 to-emerald-500">
+                <SparklesIcon class="w-10 h-10" />
+              </div>
+              <h4 class="text-xl font-semibold mb-2 mt-4 text-[var(--text-primary)]">Transform</h4>
+              <p class="text-[var(--text-secondary)] text-sm">Reshape how humans and AI collaborate through natural conversation.</p>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <!-- Coming Soon Banner -->
-        <section class="py-10 px-6 sm:px-8 rounded-xl bg-gradient-to-r from-[var(--primary-600)] via-[var(--accent-500)] to-teal-600 text-white shadow-2xl relative overflow-hidden">
-          <div class="absolute -top-10 -right-10 opacity-20">
-            <SparklesIcon class="w-48 h-48 transform rotate-12" />
-          </div>
-          <div class="relative z-10 text-center">
-            <RocketLaunchIcon class="w-16 h-16 mx-auto mb-4 text-white/80" />
-            <h3 class="text-3xl sm:text-4xl font-bold mb-3">Full SaaS Experience Unleashed Soon!</h3>
-            <p class="text-lg sm:text-xl opacity-90 mb-6 max-w-2xl mx-auto">
-              Get ready! Advanced features, powerful tools, and flexible subscription tiers are on their way to elevate your AI interactions to unprecedented levels.
-            </p>
-            <a href="#subscription-tiers" class="btn bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm">
-              Explore Upcoming Tiers
-            </a>
-          </div>
-        </section>
-
-        <!-- How It Works Section -->
-        <section class="content-section card-base" aria-labelledby="how-to-use-title">
-          <div class="section-icon-bg">
-            <QuestionMarkCircleIcon class="section-icon-svg" />
-          </div>
-          <h3 id="how-to-use-title" class="section-title-text">How It Works</h3>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
-            <div class="instruction-card glass-pane-interactive">
-              <div class="mb-4 text-[var(--primary-500)]"><UserIcon class="w-10 h-10 mx-auto" /></div>
-              <h4 class="font-semibold text-lg mb-2 text-[var(--text-primary)]">1. Select Your Assistant</h4>
-              <p class="text-sm text-[var(--text-secondary)]">Choose a specialized AI persona (e.g., Code Architect, Meeting Analyst) to tailor expertise for your task.</p>
-            </div>
-            <div class="instruction-card glass-pane-interactive">
-              <div class="mb-4 text-green-500"><MicrophoneIcon class="w-10 h-10 mx-auto" /></div>
-              <h4 class="font-semibold text-lg mb-2 text-[var(--text-primary)]">2. Engage with Voice</h4>
-              <p class="text-sm text-[var(--text-secondary)]">Activate voice input. Use natural language for commands, queries, or dictation. Control modes in Settings.</p>
-            </div>
-            <div class="instruction-card glass-pane-interactive">
-              <div class="mb-4 text-purple-500"><SparklesIcon class="w-10 h-10 mx-auto" /></div>
-              <h4 class="font-semibold text-lg mb-2 text-[var(--text-primary)]">3. Experience AI Assistance</h4>
-              <p class="text-sm text-[var(--text-secondary)]">The AI processes your request, dynamically providing code, diagrams, insights, or summaries in an adaptive interface.</p>
+      <section>
+        <h3 class="text-3xl md:text-4xl font-bold text-center mb-12 text-shadow-glow-primary">Deep Dive into AgentOS</h3>
+        <div class="space-y-6 max-w-4xl mx-auto">
+          <div class="card-base rounded-xl overflow-hidden">
+            <button @click="toggleSection('philosophy')" class="expandable-header">
+              <span class="text-[var(--text-primary)] font-semibold">🧠 Foundation & Philosophy</span>
+              <ChevronDownIcon class="w-6 h-6 transition-transform duration-300 text-[var(--primary-500)]" :class="{'rotate-180': openSections.philosophy}" />
+            </button>
+            <div v-if="openSections.philosophy" class="expandable-content prose dark:prose-invert max-w-none">
+              <h4>Beyond Static AI: The Adaptive Intelligence Paradigm</h4>
+              <p>Traditional AI systems follow: Input → Processing → Output. AgentOS introduces: Context → Adaptation → Personalized Intelligence.</p>
+              <h5>Core Philosophical Principles:</h5>
+              <ul>
+                <li><strong>Context is the Foundation:</strong> Understanding the situation, person, and moment.</li>
+                <li><strong>Personas Enable Consistent Intelligence:</strong> A cognitive framework for thinking, adapting, and evolving.</li>
+                <li><strong>Memory Creates Continuity:</strong> Building on experiences, learning from outcomes.</li>
+                <li><strong>Safety Through Understanding:</strong> Constitutional AI for context-aware ethical decisions.</li>
+              </ul>
+              <p class="italic text-sm">A Generalized Mind Instance (GMI) is an adaptive AI entity, not just a chatbot.</p>
+               <p class="text-sm">
+                AgentOS is a collaborative effort by 
+                <a href="https://github.com/wearetheframers" target="_blank" rel="noopener noreferrer">The Framers</a> 
+                and 
+                <a href="https://github.com/manicinc" target="_blank" rel="noopener noreferrer">Manic Inc</a>.
+              </p>
             </div>
           </div>
-        </section>
 
-        <!-- Features Showcase -->
-        <section class="content-section card-base" aria-labelledby="features-title">
-          <div class="section-icon-bg">
-            <BoltIcon class="section-icon-svg" />
-          </div>
-          <h3 id="features-title" class="section-title-text">Powerful Features at Your Fingertips</h3>
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-8">
-            <!-- Advanced Voice Interaction -->
-            <div class="feature-item">
-              <div class="feature-icon-wrapper bg-[var(--primary-100)] dark:bg-[var(--primary-900)]/30">
-                <MicrophoneIcon class="feature-icon text-[var(--primary-500)]" />
-              </div>
-              <div>
-                <h4 class="feature-name">Advanced Voice Interaction</h4>
-                <p class="feature-desc">Real-time STT (Whisper & Web Speech API), LLM intent parsing, and full voice control.</p>
-              </div>
-            </div>
-
-            <!-- AI-Driven Dynamic UI -->
-            <div class="feature-item">
-              <div class="feature-icon-wrapper bg-green-100 dark:bg-green-900/30">
-                <CodeBracketSquareIcon class="feature-icon text-green-500" />
-              </div>
-              <div>
-                <h4 class="feature-name">AI-Driven Dynamic UI</h4>
-                <p class="feature-desc">Interface adapts in real-time, presenting contextually relevant information and tools.</p>
-              </div>
-            </div>
-
-            <!-- Intelligent AgentOS Assistants -->
-            <div class="feature-item">
-              <div class="feature-icon-wrapper bg-purple-100 dark:bg-purple-900/30">
-                <CpuChipIcon class="feature-icon text-purple-500" />
-              </div>
-              <div>
-                <h4 class="feature-name">Intelligent AgentOS Assistants</h4>
-                <p class="feature-desc">Sophisticated AI personas with custom capabilities and complex reasoning.</p>
-              </div>
-            </div>
-
-            <!-- Adaptive Content Display -->
-            <div class="feature-item">
-              <div class="feature-icon-wrapper bg-sky-100 dark:bg-sky-900/30">
-                <TvIcon class="feature-icon text-sky-500" />
-              </div>
-              <div>
-                <h4 class="feature-name">Adaptive Content Display</h4>
-                <p class="feature-desc">Complex info broken into digestible slides, plus Mermaid.js diagram rendering.</p>
-              </div>
-            </div>
-
-            <!-- Rich Content Tools -->
-            <div class="feature-item">
-              <div class="feature-icon-wrapper bg-yellow-100 dark:bg-yellow-900/30">
-                <DocumentTextIcon class="feature-icon text-yellow-500" />
-              </div>
-              <div>
-                <h4 class="feature-name">Rich Content Tools</h4>
-                <p class="feature-desc">Meeting summaries, code explanations, system design, interview practice, and more.</p>
-              </div>
-            </div>
-
-            <!-- Highly Customizable -->
-            <div class="feature-item">
-              <div class="feature-icon-wrapper bg-indigo-100 dark:bg-indigo-900/30">
-                <AdjustmentsHorizontalIcon class="feature-icon text-indigo-500" />
-              </div>
-              <div>
-                <h4 class="feature-name">Highly Customizable</h4>
-                <p class="feature-desc">Personalize themes (Light, Dark, Holographic), audio settings, personas, and more.</p>
-              </div>
-            </div>
-
-            <!-- Transparent Cost Tracking -->
-            <div class="feature-item">
-              <div class="feature-icon-wrapper bg-rose-100 dark:bg-rose-900/30">
-                <CurrencyDollarIcon class="feature-icon text-rose-500" />
-              </div>
-              <div>
-                <h4 class="feature-name">Transparent Cost Tracking</h4>
-                <p class="feature-desc">Monitor API usage costs in real-time with configurable session limits.</p>
-              </div>
-            </div>
-
-            <!-- Secure User Management -->
-            <div class="feature-item">
-              <div class="feature-icon-wrapper bg-pink-100 dark:bg-pink-900/30">
-                <UsersIcon class="feature-icon text-pink-500" />
-              </div>
-              <div>
-                <h4 class="feature-name">Secure User Management</h4>
-                <p class="feature-desc">Robust authentication, profile management, and upcoming subscription tiers.</p>
-              </div>
-            </div>
-
-            <!-- Beautiful Themes -->
-            <div class="feature-item">
-              <div class="feature-icon-wrapper bg-lime-100 dark:bg-lime-900/30">
-                <SunIcon class="feature-icon text-lime-500" />
-              </div>
-              <div>
-                <h4 class="feature-name">Beautiful Themes</h4>
-                <p class="feature-desc">Light, Dark, and a unique Holographic mode for a stunning visual experience.</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- Powered by AgentOS -->
-        <section class="content-section card-base-hover" aria-labelledby="agentos-title">
-          <div class="section-icon-bg">
-            <AcademicCapIcon class="section-icon-svg opacity-50 dark:opacity-30" />
-          </div>
-          <h3 id="agentos-title" class="section-title-text">Empowered by <span class="text-transparent bg-clip-text bg-gradient-to-r from-[var(--accent-500)] to-teal-400">AgentOS</span></h3>
-          <div class="prose dark:prose-invert max-w-none text-[var(--text-secondary)] text-lg leading-relaxed">
-            <p>
-              Voice Chat Assistant's intelligence is supercharged by <strong>AgentOS</strong>, our revolutionary, in-development framework designed to build truly adaptive, context-aware AI systems. AgentOS moves beyond traditional AI by creating Generalized Mind Instances (GMIs) – AI entities that understand context, learn from interactions, and deliver personalized experiences.
-            </p>
-            <p>
-              AgentOS is a collaborative effort by <strong>The Framers</strong> (GitHub: <a href="https://github.com/wearetheframers" target="_blank" rel="noopener noreferrer">wearetheframers</a>) and <strong>Manic Inc.</strong> (GitHub: <a href="https://github.com/manicinc" target="_blank" rel="noopener noreferrer">manicinc</a>). This foundational technology will be hosted and shared via <a href="https://frame.dev" target="_blank" rel="noopener noreferrer">frame.dev</a> and <a href="https://manic.agency" target="_blank" rel="noopener noreferrer">manic.agency</a>.
-            </p>
-            <h4 class="text-xl font-semibold text-[var(--text-primary)] mt-8 mb-3">Current AgentOS Capabilities in VCA:</h4>
-            <ul class="list-disc list-inside space-y-1 marker:text-[var(--primary-500)]">
-              <li>Dynamic UI rendering based on conversational context.</li>
-              <li>Management of specialized AI assistant personas and modes.</li>
-              <li>Sophisticated prompt engineering for nuanced AI responses.</li>
-            </ul>
-          </div>
-        </section>
-
-        <!-- AgentOS Roadmap -->
-        <section class="content-section card-base" aria-labelledby="agentos-roadmap-title">
-          <div class="section-icon-bg">
-            <RocketLaunchIcon class="section-icon-svg opacity-50 dark:opacity-30" />
-          </div>
-          <h3 id="agentos-roadmap-title" class="section-title-text"><span class="text-transparent bg-clip-text bg-gradient-to-r from-[var(--accent-500)] to-teal-400">AgentOS</span>: The Road Ahead (Exciting Developments Incoming!)</h3>
-          <div class="prose dark:prose-invert max-w-none text-[var(--text-secondary)] text-lg leading-relaxed">
-            <p>While AgentOS already brings significant power to VCA, its full potential is rapidly unfolding. We are actively working on expanding its capabilities:</p>
-            <p class="mb-6">
-              <strong>Current Agent Focus:</strong> Our agents within VCA are primarily focused on advanced conversational tasks and dynamic information presentation.
-              <span class="block mt-2 p-3 bg-[var(--bg-subtle)] dark:bg-gray-800/60 border-l-4 border-[var(--primary-500)] rounded-md text-sm">
-                <strong>Note:</strong> Features like external tool integration, direct inter-agent communication, and advanced visual understanding are part of our exciting future roadmap and are not yet enabled in the current VCA version.
-              </span>
-            </p>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-              <div class="flex items-start gap-3">
-                <WrenchScrewdriverIcon class="w-7 h-7 text-[var(--primary-500)] flex-shrink-0 mt-1" />
-                <div><strong class="text-[var(--text-primary)]">Advanced Tool System & Orchestration:</strong> Enabling agents to seamlessly utilize external tools and APIs.</div>
-              </div>
-              <div class="flex items-start gap-3">
-                <AcademicCapIcon class="w-7 h-7 text-[var(--primary-500)] flex-shrink-0 mt-1" />
-                <div><strong class="text-[var(--text-primary)]">Sophisticated RAG & Knowledge Integration:</strong> Deeper knowledge grounding for highly accurate and context-rich responses.</div>
-              </div>
-              <div class="flex items-start gap-3">
-                <UsersIcon class="w-7 h-7 text-[var(--primary-500)] flex-shrink-0 mt-1" />
-                <div><strong class="text-[var(--text-primary)]">Multi-Agent Coordination:</strong> Allowing multiple GMIs to collaborate intelligently on complex tasks.</div>
-              </div>
-              <div class="flex items-start gap-3">
-                <EyeIcon class="w-7 h-7 text-[var(--primary-500)] flex-shrink-0 mt-1" />
-                <div><strong class="text-[var(--text-primary)]">Vision Capabilities:</strong> Empowering agents to understand and process images and visual data.</div>
-              </div>
-              <div class="flex items-start gap-3">
-                <ScaleIcon class="w-7 h-7 text-[var(--primary-500)] flex-shrink-0 mt-1" />
-                <div><strong class="text-[var(--text-primary)]">Constitutional AI & Enhanced Safety:</strong> Implementing robust ethical frameworks and safety protocols.</div>
-              </div>
-              <div class="flex items-start gap-3">
-                <SparklesIcon class="w-7 h-7 text-[var(--primary-500)] flex-shrink-0 mt-1" />
-                <div><strong class="text-[var(--text-primary)]">And much more:</strong> Continuously evolving to create truly adaptive and intelligent AI systems.</div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- Subscription Tiers -->
-        <section id="subscription-tiers" class="content-section card-base" aria-labelledby="subscription-tiers-title">
-          <div class="section-icon-bg">
-            <CurrencyDollarIcon class="section-icon-svg opacity-60 dark:opacity-30" />
-          </div>
-          <h3 id="subscription-tiers-title" class="section-title-text">Unlock More Power: Upcoming Subscription Tiers</h3>
-          <p class="text-center text-lg text-[var(--text-secondary)] -mt-4 mb-10 max-w-2xl mx-auto">
-            Choose the plan that best fits your needs. All paid plans include yearly options for extra savings! (Final features and pricing subject to change upon official launch.)
-          </p>
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 items-stretch">
-            <div
-              v-for="tier in subscriptionTiers"
-              :key="tier.name"
-              :class="[
-                'tier-card card-base p-6 sm:p-8 flex flex-col rounded-xl transition-all duration-300 ease-out hover:shadow-2xl',
-                tier.bgColor,
-                tier.highlight ? 'border-2 border-[var(--primary-500)] scale-105 shadow-2xl relative z-10' : 'border border-[var(--border-color)]'
-              ]"
-            >
-              <div v-if="tier.highlight" class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 px-4 py-1 bg-[var(--primary-500)] text-white text-xs font-semibold rounded-full shadow-md">Most Popular</div>
-              <h4 :class="['text-2xl font-bold mb-2 text-center', tier.textColor]">{{ tier.name }}</h4>
-              <div class="text-center mb-4">
-                <span :class="['text-4xl font-extrabold', tier.textColor]">${{ tier.priceMonthly.toFixed(2) }}</span>
-                <span :class="['text-sm', tier.textColor, 'opacity-80']">/month</span>
-              </div>
-              <p :class="['text-sm text-center mb-6 min-h-[40px]', tier.textColor, 'opacity-90']">{{ tier.description }}</p>
-
-              <ul class="space-y-3 mb-8 flex-grow">
-                <li v-for="feature in tier.features" :key="feature" class="flex items-start gap-2">
-                  <CheckBadgeIcon :class="['w-5 h-5 flex-shrink-0 mt-0.5', tier.textColor, 'opacity-70']" />
-                  <span :class="['text-sm', tier.textColor]">{{ feature }}</span>
+          <div class="card-base rounded-xl overflow-hidden">
+            <button @click="toggleSection('components')" class="expandable-header">
+              <span class="text-[var(--text-primary)] font-semibold">🛠️ Core System Components</span>
+              <ChevronDownIcon class="w-6 h-6 transition-transform duration-300 text-[var(--primary-500)]" :class="{'rotate-180': openSections.components}" />
+            </button>
+            <div v-if="openSections.components" class="expandable-content prose dark:prose-invert max-w-none">
+              <p>AgentOS is built upon a modular architecture enabling robust and flexible AI systems:</p>
+              <ul class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1">
+                <li v-for="component in agentOsComponents" :key="component" class="flex items-center !my-1">
+                  <SparklesIcon class="icon-s mr-2 text-[var(--accent-500)] flex-shrink-0" /> {{ component }}
                 </li>
               </ul>
-              <button :class="['btn w-full mt-auto', tier.buttonClass, tier.highlight ? '' : 'opacity-80 hover:opacity-100']">
-                Coming Soon
-              </button>
-              <div v-if="tier.priceYearly > 0" :class="['text-xs text-center mt-3', tier.textColor, 'opacity-70']">
-                Or ${{ tier.priceYearly.toFixed(2) }}/year (Save ~16%)
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h3 class="text-3xl md:text-4xl font-bold text-center mb-12 text-shadow-glow-primary">AgentOS Technical Architecture</h3>
+        <div class="space-y-12">
+          <div class="card-base p-6 md:p-8 rounded-xl">
+            <h4 class="text-2xl font-semibold mb-4 text-[var(--text-primary)]">System Architecture Overview</h4>
+            <div class="prose dark:prose-invert max-w-none mb-6 text-sm sm:text-base">
+                <p>
+                AgentOS comprises a sophisticated ecosystem designed for adaptive AI. Key layers include the User Interface, an Orchestration Layer managing Generalized Mind Instances (GMIs) and context, Core Services for personas and knowledge, and connections to various LLM Providers. This modular design allows for scalability and flexibility.
+                </p>
+            </div>
+            <DiagramViewer :diagramCode="diagrams.systemOverview" diagramType="mermaid" />
+          </div>
+
+          <div class="card-base p-6 md:p-8 rounded-xl">
+            <h4 class="text-2xl font-semibold mb-4 text-[var(--text-primary)]">Data Flow Architecture</h4>
+            <div class="prose dark:prose-invert max-w-none mb-6 text-sm sm:text-base">
+                <p>
+                Data in AgentOS flows from user input (voice or text) through the Frontend to the Backend Orchestrator. The orchestrator analyzes context, retrieves relevant information from knowledge bases (RAG), constructs an adaptive prompt, and sends it to the LLM. The LLM's response is then processed, formatted, and delivered back to the user, often resulting in dynamic UI updates. This interactive loop enables continuous learning and adaptation based on user interactions and feedback.
+                </p>
+            </div>
+            <DiagramViewer :diagramCode="diagrams.dataFlow" diagramType="mermaid" />
+          </div>
+
+          <div class="card-base p-6 md:p-8 rounded-xl">
+            <h4 class="text-2xl font-semibold mb-4 text-[var(--text-primary)]">Prompt Engine Architecture</h4>
+            <div class="prose dark:prose-invert max-w-none mb-6 text-sm sm:text-base">
+                <p>
+                The Prompt Engine is central to AgentOS's intelligence. It dynamically constructs prompts by first analyzing the input query and session context via the Context Analyzer. Then, the Element Selector chooses relevant persona definitions, contextual elements, and knowledge base information. Finally, the Prompt Assembler combines these pieces into an optimized, formatted prompt ready for the LLM, enabling truly adaptive and context-aware responses.
+                </p>
+            </div>
+            <DiagramViewer :diagramCode="diagrams.promptEngine" diagramType="mermaid" />
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h3 class="text-3xl md:text-4xl font-bold text-center mb-12 text-shadow-glow-primary">Choose Your Plan</h3>
+        <div class="grid md:grid-cols-3 gap-6 lg:gap-8 items-stretch">
+          <div class="card-base p-6 flex flex-col text-center relative transition-all duration-300 ease-out hover:shadow-xl hover:-translate-y-1">
+            <div class="pricing-header mb-6">
+              <h4 class="text-2xl font-bold text-[var(--text-primary)]">Free</h4>
+              <div class="mt-2">
+                <span class="text-4xl font-extrabold text-[var(--text-primary)]">$0</span>
+                <span class="text-[var(--text-muted)]">/month</span>
+              </div>
+            </div>
+            <ul class="pricing-features space-y-3 text-sm text-[var(--text-secondary)] mb-8 flex-grow">
+              <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-s text-green-500" /> 100 requests/day</li>
+              <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-s text-green-500" /> Basic AI models</li>
+              <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-s text-green-500" /> Voice input</li>
+              <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-s text-green-500" /> 1 agent profile</li>
+              <li class="flex items-center justify-center gap-2"><XMarkIcon class="icon-s text-red-500" /> Advanced features</li>
+              <li class="flex items-center justify-center gap-2"><XMarkIcon class="icon-s text-red-500" /> Priority support</li>
+            </ul>
+            <button class="btn btn-secondary w-full mt-auto">Get Started</button>
+          </div>
+
+          <div class="card-base p-6 flex flex-col text-center relative transition-all duration-300 ease-out hover:shadow-2xl hover:-translate-y-1 scale-100 md:scale-105 border-2 border-[var(--primary-500)] shadow-lg shadow-primary-500/20 dark:shadow-primary-400/20">
+            <div class="chip absolute -top-3.5 left-1/2 -translate-x-1/2 bg-[var(--primary-500)] text-white border-none px-3 py-1 text-xs">Most Popular</div>
+            <div class="pricing-header mb-6 pt-2">
+              <h4 class="text-2xl font-bold text-[var(--primary-500)]">Pro</h4>
+              <div class="mt-2">
+                <span class="text-4xl font-extrabold text-[var(--primary-500)]">$29</span>
+                <span class="text-[var(--text-muted)]">/month</span>
+              </div>
+            </div>
+            <ul class="pricing-features space-y-3 text-sm text-[var(--text-secondary)] mb-8 flex-grow">
+              <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-s text-green-500" /> Unlimited requests</li>
+              <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-s text-green-500" /> Premium AI models</li>
+              <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-s text-green-500" /> All voice features</li>
+              <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-s text-green-500" /> 5 agent profiles</li>
+              <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-s text-green-500" /> Advanced tools</li>
+              <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-s text-green-500" /> Email support</li>
+            </ul>
+            <button class="btn btn-primary w-full mt-auto">Upgrade to Pro</button>
+          </div>
+
+          <div class="card-base p-6 flex flex-col text-center relative transition-all duration-300 ease-out hover:shadow-xl hover:-translate-y-1">
+            <div class="pricing-header mb-6">
+              <h4 class="text-2xl font-bold text-[var(--text-primary)]">Enterprise</h4>
+              <div class="mt-2">
+                <span class="text-4xl font-extrabold text-[var(--text-primary)]">$99</span>
+                <span class="text-[var(--text-muted)]">/month</span>
+              </div>
+            </div>
+            <ul class="pricing-features space-y-3 text-sm text-[var(--text-secondary)] mb-8 flex-grow">
+              <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-s text-green-500" /> Everything in Pro</li>
+              <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-s text-green-500" /> Custom AI models</li>
+              <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-s text-green-500" /> API access</li>
+              <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-s text-green-500" /> Unlimited agents</li>
+              <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-s text-green-500" /> Team collaboration</li>
+              <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-s text-green-500" /> Priority support</li>
+            </ul>
+            <button class="btn btn-secondary w-full mt-auto">Contact Sales</button>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h3 class="text-3xl md:text-4xl font-bold text-center mb-12 text-shadow-glow-primary">AgentOS Roadmap</h3>
+        <div class="roadmap-container-unified">
+          <div class="roadmap-line-unified"></div>
+          <div v-for="(item, index) in roadmapItems" :key="item.quarter" 
+               class="roadmap-item-unified"
+               :class="index % 2 === 0 ? 'justify-start text-left' : 'justify-end text-right'">
+            <div class="roadmap-content-wrapper-unified" :class="index % 2 === 0 ? 'md:ml-8' : 'md:mr-8'">
+              <div class="roadmap-dot-unified" :class="index % 2 === 0 ? 'md:-left-4' : 'md:-right-4'"></div>
+              <div class="card-base p-6 rounded-lg">
+                <h4 class="text-xl font-bold mb-2 text-[var(--text-primary)]">{{ item.quarter }}</h4>
+                <ul class="space-y-2 text-[var(--text-secondary)] text-sm">
+                  <li v-for="feature in item.features" :key="feature" class="flex items-start" :class="index % 2 === 0 ? '' : 'md:flex-row-reverse'">
+                     <span class="mr-2 md:mr-0 text-[var(--primary-500)]" :class="index % 2 === 0 ? 'md:mr-2' : 'md:ml-2 '">&bull;</span>
+                    <span>{{ feature }}</span>
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <!-- Tech Stack -->
-        <section class="content-section card-base" aria-labelledby="tech-stack-title">
-          <div class="section-icon-bg">
-            <CubeTransparentIcon class="section-icon-svg" />
-          </div>
-          <h3 id="tech-stack-title" class="section-title-text">Built With SOTA Technologies</h3>
-          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-5 text-center">
-            <div class="tech-item-futuristic">Vue.js 3</div>
-            <div class="tech-item-futuristic">TypeScript</div>
-            <div class="tech-item-futuristic">Tailwind CSS</div>
-            <div class="tech-item-futuristic">Vite</div>
-            <div class="tech-item-futuristic">Node.js / Express.js</div>
-            <div class="tech-item-futuristic">AgentOS</div>
-            <div class="tech-item-futuristic">OpenAI & OpenRouter</div>
-            <div class="tech-item-futuristic">PostgreSQL & Prisma</div>
-            <div class="tech-item-futuristic">Docker</div>
-            <div class="tech-item-futuristic">LemonSqueezy (Planned)</div>
-          </div>
-        </section>
-
-        <!-- Privacy & Security -->
-        <section class="content-section card-base" aria-labelledby="privacy-title">
-          <div class="section-icon-bg">
-            <ShieldCheckIcon class="section-icon-svg" />
-          </div>
-          <h3 id="privacy-title" class="section-title-text">Your Privacy & Security Matters</h3>
-          <ul class="space-y-4 text-[var(--text-secondary)] text-sm sm:text-base">
-            <li class="flex items-start gap-3"><CheckBadgeIcon class="privacy-icon text-green-500 dark:text-green-400" /><span><strong>Client-Side Processing Emphasis:</strong> Many operations, including initial voice processing (WebSpeech), are handled directly in your browser to minimize data transmission.</span></li>
-            <li class="flex items-start gap-3"><CheckBadgeIcon class="privacy-icon text-green-500 dark:text-green-400" /><span><strong>Secure API Communication:</strong> All communication with backend services and AI APIs is encrypted over HTTPS.</span></li>
-            <li class="flex items-start gap-3"><CheckBadgeIcon class="privacy-icon text-green-500 dark:text-green-400" /><span><strong>No Long-Term Voice Storage by Us:</strong> Voice recordings sent for transcription (e.g., to Whisper) are processed by third-party API providers according to their policies and are not stored long-term on our servers.</span></li>
-            <li class="flex items-start gap-3"><CheckBadgeIcon class="privacy-icon text-green-500 dark:text-green-400" /><span><strong>User-Controlled Data:</strong> You control your preferences for audio input, data display, conversation history, and API cost limits.</span></li>
-            <li class="flex items-start gap-3"><CheckBadgeIcon class="privacy-icon text-green-500 dark:text-green-400" /><span><strong>Open & Transparent:</strong> Key parts of the application's code will be available for review, fostering trust and community collaboration. (Source code links coming soon).</span></li>
-          </ul>
-        </section>
-
-        <!-- Credits -->
-        <section class="content-section card-base" aria-labelledby="credits-title">
-          <div class="section-icon-bg">
-            <LinkIcon class="section-icon-svg" />
-          </div>
-          <h3 id="credits-title" class="section-title-text">Credits & Community</h3>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm">
-            <div>
-              <h4 class="font-semibold text-[var(--text-primary)] text-lg mb-3">Developed & Powered By:</h4>
-              <a href="https://manic.agency" target="_blank" rel="noopener noreferrer" class="link-item-futuristic group">
-                <GlobeAltIcon class="link-icon" />
-                <span class="link-text">Manic.Agency</span>
-                <span class="link-description">Digital Artisans Crafting SOTA Solutions</span>
-              </a>
-              <a href="https://frame.dev" target="_blank" rel="noopener noreferrer" class="link-item-futuristic group mt-3">
-                <svg viewBox="0 0 24 24" class="link-icon fill-current"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" /></svg>
-                <span class="link-text">Frame.dev (AgentOS Platform)</span>
-                <span class="link-description">The Future of Adaptive AI Frameworks</span>
-              </a>
-            </div>
-            <div>
-              <h4 class="font-semibold text-[var(--text-primary)] text-lg mb-3">Connect with Our Teams:</h4>
-              <a href="https://github.com/manicinc" target="_blank" rel="noopener noreferrer" class="link-item-futuristic group">
-                <svg xmlns="http://www.w3.org/2000/svg" class="link-icon" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047 0.138 3.006 0.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-                </svg>
-                <span class="link-text">Manic Inc. on GitHub</span>
-                <span class="link-description">VCA Application & Core Development</span>
-              </a>
-              <a href="https://github.com/wearetheframers" target="_blank" rel="noopener noreferrer" class="link-item-futuristic group mt-3">
-                <svg xmlns="http://www.w3.org/2000/svg" class="link-icon" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047 0.138 3.006 0.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-                </svg>
-                <span class="link-text">The Framers on GitHub</span>
-                <span class="link-description">AgentOS Framework Development</span>
-              </a>
-            </div>
-          </div>
-        </section>
-
-        <!-- Footer -->
-        <section class="text-center text-sm text-[var(--text-muted)] pt-10 border-t border-[var(--border-color)] dark:border-[var(--border-color-rgb)]/30">
-          <p>&copy; {{ currentYear }} Voice Chat Assistant by Manic.Agency & The Framers. All rights reserved.</p>
-          <p class="mt-1">
-            This platform is evolving. Features and services are subject to change.
+      <footer class="pt-12 sm:pt-16 text-center">
+        <div class="card-base p-8 md:p-10 rounded-xl">
+          <p class="text-[var(--text-secondary)] mb-6">
+            Voice Chat Assistant is powered by AgentOS.
+            <br class="hidden sm:block">
+            Proudly developed by
+            <a href="https://manic.agency" target="_blank" rel="noopener noreferrer">Manic Inc.</a>
+            &amp;
+            <a href="https://frame.dev" target="_blank" rel="noopener noreferrer">The Framers</a>.
           </p>
-        </section>
-      </div>
+          <div class="flex justify-center items-center gap-5 sm:gap-6 mb-6">
+            <a href="https://manic.agency" target="_blank" rel="noopener noreferrer" class="footer-link group" aria-label="Manic Agency Website">
+              <GlobeAltIcon class="icon-lg"/>
+              <span class="footer-link-tooltip group-hover:opacity-100 group-hover:visible">Manic.Agency</span>
+            </a>
+            <a href="https://frame.dev" target="_blank" rel="noopener noreferrer" class="footer-link group" aria-label="Frame.dev Website">
+               <CubeTransparentIcon class="icon-lg"/>
+               <span class="footer-link-tooltip group-hover:opacity-100 group-hover:visible">Frame.dev</span>
+            </a>
+            <a href="https://github.com/manicinc" target="_blank" rel="noopener noreferrer" class="footer-link group" aria-label="Manic Inc. GitHub">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" role="img" aria-label="GitHub" class="icon-lg">
+                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+              </svg>
+              <span class="footer-link-tooltip group-hover:opacity-100 group-hover:visible">Manic Inc. GitHub</span>
+            </a>
+            <a href="https://github.com/wearetheframers" target="_blank" rel="noopener noreferrer" class="footer-link group" aria-label="The Framers GitHub">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" role="img" aria-label="GitHub" class="icon-lg">
+                 <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+              </svg>
+               <span class="footer-link-tooltip group-hover:opacity-100 group-hover:visible">The Framers GitHub</span>
+            </a>
+          </div>
+           <p class="text-xs text-[var(--text-muted)]">&copy; {{ new Date().getFullYear() }} Voice Chat Assistant. All rights reserved.</p>
+        </div>
+      </footer>
     </main>
   </div>
 </template>
 
-<style scoped>
-/************************************
- * Tailwind‑friendly scoped styles  *
- ***********************************/
+<script setup lang="ts">
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+// Make sure this path is correct for your project structure
+import DiagramViewer from '@/components/DiagramViewer.vue'; 
+import {
+  ArrowLeftIcon, RocketLaunchIcon, UsersIcon, SparklesIcon, CheckIcon, XMarkIcon,
+  ChevronDownIcon, GlobeAltIcon, CubeTransparentIcon,
+} from '@heroicons/vue/24/outline';
 
-/* ---------- Helpers ---------- */
-.text-shadow-soft          { text-shadow: 0 1px 3px hsla(0,0%,0%,.1), 0 0 1px hsla(0,0%,0%,.05); }
-.dark .text-shadow-soft    { text-shadow: 0 1px 3px hsla(0,0%,0%,.3), 0 0 1px hsla(0,0%,0%,.2); }
-.text-shadow-glow-primary  { text-shadow: 0 0 8px hsla(var(--primary-hue) 92% 60%/.5),0 0 16px hsla(var(--primary-hue) 92% 60%/.3); }
-.dark .text-shadow-glow-primary{ text-shadow:0 0 10px hsla(var(--primary-hue) 94% 69%/.6),0 0 20px hsla(var(--primary-hue) 94% 69%/.4); }
+const router = useRouter();
+const goHome = () => router.push('/');
 
-/* ---------- Chip ---------- */
-.chip {
-  @apply px-3 py-1.5 rounded-full text-xs font-medium shadow-sm border border-transparent transition-colors;
-  background-color: var(--bg-surface);
-  color: var(--text-muted);
-}
-.dark .chip { background-color: rgba(55,65,81,.6); }
-.chip:hover { border-color: hsl(var(--primary-hue) 92% 60%/.3); }
+const openSections = ref({
+  philosophy: false,
+  components: false,
+});
 
-/* ---------- Buttons ---------- */
-.btn {
-  @apply inline-flex items-center justify-center gap-x-2 px-5 py-2.5 rounded-lg font-semibold text-sm select-none transition-transform duration-200 ease-out active:scale-[0.97] hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2;
-}
-.btn-primary {
-  @apply btn text-white bg-gradient-to-br from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400;
-  box-shadow: 0 0 12px hsl(var(--primary-hue) 92% 60%/.25);
-}
-.btn-primary:hover { box-shadow: 0 0 16px hsl(var(--primary-hue) 92% 60%/.35); }
+const toggleSection = (section: 'philosophy' | 'components') => {
+  openSections.value[section] = !openSections.value[section];
+};
 
-.btn-secondary {
-  @apply btn border border-[var(--border-color)] bg-[var(--bg-surface)] text-[var(--text-primary)] dark:bg-gray-700 dark:border-gray-600;
-}
-.btn-secondary:hover { background-color: var(--bg-subtle); }
-.dark .btn-secondary:hover { background-color: rgba(55,65,81,.8); }
+const agentOsComponents = [
+  "Persona Definition System", "Prompt Engine Architecture", "Working Memory & Context",
+  "RAG & Knowledge Integration", "Tool System & Orchestration", "Authentication & Security",
+  "Streaming & Real-time Features", "Adaptive Prompting", "Constitutional AI & Safety"
+];
 
-.btn-ghost {
-  @apply btn text-primary-600 dark:text-primary-400 hover:bg-primary-500/10 dark:hover:bg-primary-400/10 focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400;
+const roadmapItems = [
+  { quarter: "Q1 2025", features: ["Enhanced voice recognition", "Multi-language support", "Custom agent creation"] },
+  { quarter: "Q2 2025", features: ["Vision capabilities", "Real-time collaboration", "Advanced tool integration"] },
+  { quarter: "Q3 2025", features: ["Multi-agent systems", "Autonomous workflows", "Enterprise features"] },
+  { quarter: "Q4 2025", features: ["AGI capabilities (Exploratory)", "Full autonomy mode (Alpha)", "Global deployment infra"] }
+];
+
+// Mermaid Diagram Codes
+const diagrams = {
+  systemOverview: `
+    graph TD
+        UI[User Interface] --> ORCH[Orchestration Layer];
+        subgraph ORCH [Orchestration Layer]
+            style ORCH fill:var(--bg-subtle),stroke:var(--primary-300),stroke-width:2px,color:var(--text-primary)
+            GMI_MGR[GMI Manager]
+            CTX_ENG[Context Engine]
+            PRMPT_ENG[Prompt Engine]
+        end
+        ORCH --> CS[Core Services];
+        subgraph CS [Core Services]
+            style CS fill:var(--bg-subtle),stroke:var(--primary-300),stroke-width:2px,color:var(--text-primary)
+            PERSONA_DB[Persona DB]
+            KB[Knowledge Base/RAG]
+            TOOL_REG[Tool Registry]
+        end
+        ORCH --> LLM[LLM Providers];
+        CS --> LLM;
+
+        style UI fill:var(--primary-100),stroke:var(--primary-500),color:var(--text-primary)
+        style LLM fill:var(--accent-400),stroke:var(--accent-600),color:var(--text-primary)
+        style GMI_MGR fill:var(--bg-surface),color:var(--text-primary)
+        style CTX_ENG fill:var(--bg-surface),color:var(--text-primary)
+        style PRMPT_ENG fill:var(--bg-surface),color:var(--text-primary)
+        style PERSONA_DB fill:var(--bg-surface),color:var(--text-primary)
+        style KB fill:var(--bg-surface),color:var(--text-primary)
+        style TOOL_REG fill:var(--bg-surface),color:var(--text-primary)
+  `,
+  dataFlow: `
+    sequenceDiagram
+        actor User
+        participant FE as Frontend
+        participant BE as Backend Orchestrator
+        participant LLM
+        participant KB as Knowledge Base (RAG)
+
+        User->>FE: Input (Voice/Text)
+        FE->>BE: Process Request (Input, Session Context)
+        BE->>BE: Analyze Context & User Profile
+        BE->>KB: Retrieve Relevant Info
+        KB-->>BE: Contextual Data
+        BE->>BE: Construct Adaptive Prompt
+        BE->>LLM: Send Prompt
+        LLM-->>BE: Generate Response Stream
+        BE->>BE: Process & Format Response
+        BE-->>FE: Deliver Processed Response / UI Updates
+        FE-->>User: Display Response & Adaptive UI
+  `,
+  promptEngine: `
+    graph LR
+        InputContext[User Query + Session Context] --> CA;
+        PersonaDef[Persona Definition] --> ES;
+        Knowledge[Knowledge Base] -.-> CA;
+        subgraph PromptEngine [Prompt Engine]
+            direction LR
+            style PromptEngine fill:var(--bg-subtle),stroke:var(--primary-300),stroke-width:2px,color:var(--text-primary)
+            CA(Context Analyzer) --> ES(Element Selector);
+            ES --> PA(Prompt Assembler);
+            PA --> FP[Formatted Prompt to LLM];
+        end
+        style InputContext fill:var(--primary-100),stroke:var(--primary-500),color:var(--text-primary)
+        style PersonaDef fill:var(--primary-100),stroke:var(--primary-500),color:var(--text-primary)
+        style Knowledge fill:var(--accent-400),stroke:var(--accent-600),color:var(--text-primary)
+        style CA fill:var(--bg-surface),color:var(--text-primary)
+        style ES fill:var(--bg-surface),color:var(--text-primary)
+        style PA fill:var(--bg-surface),color:var(--text-primary)
+        style FP fill:var(--primary-200),stroke:var(--primary-600),color:var(--text-primary)
+  `
+};
+
+</script>
+
+<style lang="postcss" scoped>
+/* Scoped styles for About.vue - Aligned with global main.css */
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.animate-float {
+  animation: float 3.5s ease-in-out infinite;
+}
+.animation-delay-500 {
+  animation-delay: 0.5s;
 }
 
-.btn-danger {
-  @apply btn text-white bg-gradient-to-br from-[var(--error-color)] to-red-700 hover:from-red-600 hover:to-red-800 focus-visible:ring-[var(--error-color)];
-  box-shadow: 0 0 12px hsl(0 84% 60%/.3);
+.mission-icon-container {
+  @apply w-20 h-20 mx-auto mb-4 rounded-full flex items-center justify-center text-white shadow-md;
+  transition: transform 0.3s var(--ease-out-quad), box-shadow 0.3s var(--ease-out-quad);
 }
-.btn-danger:hover { box-shadow: 0 0 16px hsl(0 84% 60%/.45); }
-
-.btn-holographic {
-  @apply btn border border-primary-500/30 bg-primary-50/5 dark:border-primary-400/30 dark:bg-primary-400/5 backdrop-blur-sm text-primary-600 dark:text-primary-400;
-}
-.btn-holographic:hover {
-  border-color: hsl(var(--primary-hue) 92% 60%/.5);
-  background-color: hsl(var(--primary-hue) 92% 96%/.1);
-  box-shadow: 0 0 12px hsl(var(--primary-hue) 92% 60%/.4);
+.mission-item:hover .mission-icon-container {
+  transform: scale(1.1) translateY(-5px);
 }
 
-/* ---------- Card / Glass ---------- */
-.glass-pane {
-  background: var(--glass-bg);
-  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow);
-  border-radius: 1rem;
-  transition: box-shadow .3s var(--ease-out-quad), border-color .3s var(--ease-out-quad);
+.expandable-header {
+  @apply w-full flex justify-between items-center p-5 sm:p-6 text-left text-lg sm:text-xl cursor-pointer;
+  transition: background-color 0.2s var(--ease-out-quad);
 }
-.glass-pane-interactive:hover { border-color: hsl(var(--primary-hue) 92% 60%/.3); box-shadow: 0 4px 20px hsl(var(--primary-hue) 92% 60%/.15); }
+.expandable-header:hover {
+  background-color: hsla(var(--primary-hue), 80%, 50%, 0.03); /* Softer hover */
+}
+.dark .expandable-header:hover {
+  background-color: hsla(var(--primary-hue), 50%, 80%, 0.03); /* Softer hover */
+}
+.expandable-content {
+  @apply p-5 sm:p-6 pt-0;
+}
+/* Prose class handles typography within expandable content */
+.expandable-content.prose :deep(h4),
+.expandable-content.prose :deep(h5) {
+  color: var(--text-primary); /* Ensure prose headings use themed color */
+  @apply mt-4 mb-2;
+}
 
-.card-base {
-  background-color: var(--bg-surface);
+/* Pricing card specific content styling */
+.pricing-header {
+  @apply pb-6 border-b border-[var(--border-color)];
+}
+.pricing-features {
+  @apply text-center;
+}
+.pricing-features li {
+  @apply py-1.5;
+}
+.pricing-features .icon-s {
+  @apply mr-2;
+}
+
+/* Unified Roadmap Styles */
+.roadmap-container-unified {
+  @apply relative max-w-4xl mx-auto py-8;
+}
+.roadmap-line-unified {
+  @apply absolute top-0 left-4 md:left-1/2 w-1 h-full bg-[var(--primary-300)] dark:bg-[var(--primary-700)] md:-translate-x-1/2;
+  box-shadow: 0 0 6px hsla(var(--primary-hue), 70%, 50%, 0.2);
+}
+.dark .roadmap-line-unified {
+  box-shadow: 0 0 8px hsla(var(--primary-hue), 70%, 60%, 0.3);
+}
+
+.roadmap-item-unified {
+  @apply relative mb-10 md:mb-8 flex;
+}
+.roadmap-item-unified:last-child {
+  @apply mb-0;
+}
+
+.roadmap-content-wrapper-unified {
+  @apply w-full relative;
+}
+.roadmap-dot-unified {
+  @apply absolute top-1/2 -translate-y-1/2 w-4 h-4 rounded-full border-2 border-[var(--bg-base)] dark:border-[var(--bg-surface)];
+  background-color: var(--primary-500);
+  box-shadow: 0 0 0 3px hsla(var(--primary-hue), 92%, 60%, 0.3);
+}
+.dark .roadmap-dot-unified {
+  box-shadow: 0 0 0 3px hsla(var(--primary-hue), 94%, 69%, 0.4);
+}
+
+@media (max-width: 767.98px) { /* Mobile: all items on one side */
+  .roadmap-line-unified { @apply left-4 -translate-x-0; }
+  .roadmap-dot-unified { @apply left-0 -translate-x-1/2 top-1; }
+  .roadmap-content-wrapper-unified { @apply w-full pl-10; }
+   .roadmap-item-unified { @apply justify-start text-left; }
+  .roadmap-item-unified .card-base { @apply text-left; }
+  .roadmap-item-unified ul li { @apply justify-start; }
+  .roadmap-item-unified ul li span:first-child { @apply mr-2; }
+}
+
+@media (min-width: 768px) { /* Desktop: alternating sides */
+  .roadmap-content-wrapper-unified { @apply w-[calc(50%-2rem)] pl-0; }
+  .roadmap-item-unified:nth-child(odd) .roadmap-content-wrapper-unified { @apply md:ml-[calc(50%+2rem)] text-left; }
+  .roadmap-item-unified:nth-child(odd) .roadmap-dot-unified { @apply md:left-1/2 md:-ml-2 top-6; }
+  .roadmap-item-unified:nth-child(even) { @apply md:flex-row-reverse; }
+  .roadmap-item-unified:nth-child(even) .roadmap-content-wrapper-unified { @apply md:mr-[calc(50%+2rem)] text-right; }
+  .roadmap-item-unified:nth-child(even) .roadmap-dot-unified { @apply md:right-1/2 md:-mr-2 top-6; }
+  .roadmap-item-unified:nth-child(odd) ul li { @apply md:justify-start; }
+  .roadmap-item-unified:nth-child(even) ul li { @apply md:flex-row-reverse md:justify-end text-right; }
+  .roadmap-item-unified:nth-child(even) ul li span:first-child { @apply md:mr-0 md:ml-2; }
+}
+
+/* Footer Links */
+.footer-link {
+  @apply relative inline-block text-[var(--text-muted)] hover:text-[var(--primary-500)] transition-colors duration-200;
+}
+.dark .footer-link {
+  @apply text-[var(--text-muted)] hover:text-[var(--primary-400)];
+}
+.footer-link .icon-lg { color: currentColor; }
+.footer-link-tooltip {
+  @apply absolute -bottom-10 left-1/2 -translate-x-1/2 px-2 py-1 bg-slate-700 dark:bg-slate-800 text-white text-xs rounded-md opacity-0 invisible transition-all duration-200 whitespace-nowrap pointer-events-none;
+}
+.footer-link-tooltip::after {
+  @apply content-[''] absolute -top-2 left-1/2 -translate-x-1/2 border-4 border-transparent border-b-slate-700 dark:border-b-slate-800;
+}
+
+/* Diagram Viewer specific styling within About page for context */
+.about-page :deep(.mermaid-diagram) { /* Targeting the class inside DiagramViewer */
+  @apply text-center p-2 rounded-md;
+  background-color: var(--bg-surface); /* Use themed background */
   border: 1px solid var(--border-color);
-  border-radius: 1rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,.04);
-  transition: transform .3s var(--ease-out-quad), box-shadow .3s var(--ease-out-quad);
 }
-.dark .card-base { background-color: rgb(var(--bg-surface-rgb)); border-color: rgba(55,65,81,.8); }
-.card-base-hover:hover { transform: translateY(-6px) scale(1.015); box-shadow: 0 6px 24px rgba(0,0,0,.08); }
-
-/* ---------- Feature Grid ---------- */
-.feature-item {
-  @apply flex items-start gap-4 p-4 rounded-lg transition-transform duration-200 ease-out;
-  background-color: hsl(var(--primary-hue) 95% 96%/.3);
+.about-page :deep(.mermaid-diagram svg) {
+  max-width: 100%;
+  height: auto;
+  /* Mermaid theme should handle internal colors based on DiagramViewer's theme prop */
 }
-.dark .feature-item { background-color: hsl(var(--primary-hue) 70% 25%/.2); }
-.feature-item:hover { transform: scale(1.03); }
-
-.feature-icon-wrapper {@apply flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center transition-transform;}
-.feature-item:hover .feature-icon-wrapper { transform: scale(1.1); }
-
-/* ---------- Chip, tech badge, etc. ---------- */
-.tech-item-futuristic {
-  @apply p-3 sm:p-4 rounded-lg text-sm font-medium shadow-md transition-transform duration-200 ease-out;
-  background-color: var(--bg-subtle);
-  color: var(--text-secondary);
-}
-.tech-item-futuristic:hover { transform: scale(1.05); box-shadow: 0 4px 16px rgba(0,0,0,.06); }
-.dark .tech-item-futuristic { background-color: var(--bg-surface); }
-
-/* ---------- Links ---------- */
-.link-item-futuristic {
-  @apply flex flex-col p-4 rounded-lg transition-transform duration-200 ease-out;
-  background-color: var(--bg-subtle);
-  color: var(--text-secondary);
-}
-.link-item-futuristic:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 6px 20px rgba(0,0,0,.08); }
-.dark .link-item-futuristic { background-color: var(--bg-surface); }
-
-.link-icon { @apply w-6 h-6 mb-2; color: hsl(var(--primary-hue) 92% 60%); }
-.link-item-futuristic:hover .link-icon { color: hsl(var(--accent-hue) 80% 45%); }
-
-/* ---------- Prose tweaks ---------- */
-.prose a { text-decoration: none; font-weight: 500; color: hsl(var(--primary-hue) 84% 54%); transition: color .2s; }
-.prose a:hover { text-decoration: underline; color: hsl(var(--primary-hue) 77% 49%); }
-.dark .prose a { color: hsl(var(--primary-hue) 70% 69%); }
-.dark .prose a:hover { color: hsl(var(--primary-hue) 70% 79%); }
-
 </style>

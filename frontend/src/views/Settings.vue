@@ -19,16 +19,6 @@
       </div>
     </header>
 
-
-    <!-- <div class="sm:hidden sticky top-0 bg-white dark:bg-gray-900 py-3 px-4 z-30 border-b border-gray-200 dark:border-gray-700/80 shadow-sm">
-      <div class="flex items-center">
-        <button @click="goBack" class="mr-2 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700/60 transition-colors" aria-label="Back">
-          <ArrowLeftIcon class="h-5 w-5 text-gray-700 dark:text-gray-300" />
-        </button>
-        <h1 class="text-lg font-semibold">Settings</h1>
-      </div>
-    </div> -->
-
     <main class="max-w-2xl mx-auto py-6 sm:py-10 px-4">
       <div class="hidden sm:block mb-10 text-center">
         <div class="inline-flex items-center gap-3">
@@ -73,7 +63,7 @@
                 <option value="cpp">C++</option>
                 <option value="go">Go</option>
                 <option value="rust">Rust</option>
-                 <option value="php">PHP</option>
+                <option value="php">PHP</option>
                 <option value="ruby">Ruby</option>
                 <option value="swift">Swift</option>
                 <option value="kotlin">Kotlin</option>
@@ -112,7 +102,7 @@
                   {{ device.label || `Microphone ${device.deviceId.substring(0,12)}...` }}
                 </option>
               </select>
-              <button @click="triggerRefreshAudioDevices" class="btn-secondary-outline btn-sm mt-2.5 w-full sm:w-auto">
+              <button @click="triggerRefreshAudioDevices" class="btn btn-secondary-outline btn-sm mt-2.5 w-full sm:w-auto">
                 <ArrowPathIcon class="h-4 w-4 mr-1.5" /> Refresh Devices
               </button>
             </SettingsItem>
@@ -198,7 +188,7 @@
           <div class="setting-subsection mt-8">
             <h4 class="subsection-title">Microphone Test</h4>
             <div class="flex flex-col sm:flex-row items-start sm:items-center gap-x-4 mt-3">
-              <button @click="testMicrophone" :disabled="isTestingMic" class="btn-secondary btn-sm mb-2 sm:mb-0">
+              <button @click="testMicrophone" :disabled="isTestingMic" class="btn btn-secondary btn-sm mb-2 sm:mb-0">
                 <span v-if="isTestingMic" class="flex items-center"><SpinnerIcon class="mr-2" /> Testing...</span>
                 <span v-else>Test Microphone</span>
               </button>
@@ -221,7 +211,7 @@
             <div class="info-card">
               <h4 class="info-card-title">Current Session Cost</h4>
               <p class="info-card-value text-primary-600 dark:text-primary-400">${{ currentSessionCost.toFixed(4) }}</p>
-              <button @click="resetSessionCost" class="btn-secondary-outline btn-sm mt-2.5">Reset Cost</button>
+              <button @click="resetSessionCost" class="btn btn-secondary-outline btn-sm mt-2.5">Reset Cost</button>
             </div>
             <div class="info-card">
               <h4 class="info-card-title">Configured Cost Limit</h4>
@@ -244,7 +234,7 @@
           <div class="danger-zone mt-8">
             <h4 class="subsection-title text-red-500 dark:text-red-400">Danger Zone</h4>
             <div class="mt-3">
-                <button @click="handleLogout" class="btn-danger btn-sm">
+                <button @click="handleLogout" class="btn btn-danger btn-sm">
                     <ArrowLeftOnRectangleIcon class="h-4 w-4 mr-1.5"/> Logout
                 </button>
                 <p class="setting-description mt-1">This will log you out of the application.</p>
@@ -254,12 +244,12 @@
 
         <SettingsSection title="Data Management" :icon="ArrowDownTrayIcon">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <button @click="exportAllSettings" class="btn-secondary">
+            <button @click="exportAllSettings" class="btn btn-secondary">
               <ArrowUpTrayIcon class="h-5 w-5 mr-2" /> Export Settings
             </button>
             <div class="relative">
               <input ref="importSettingsInputRef" type="file" accept=".json,.txt" @change="handleImportSettingsFile" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" aria-label="Import settings file">
-              <button @click="triggerImportFile" class="btn-secondary w-full">
+              <button @click="triggerImportFile" class="btn btn-secondary w-full">
                 <ArrowDownTrayIcon class="h-5 w-5 mr-2" /> Import Settings
               </button>
             </div>
@@ -269,7 +259,7 @@
       </div>
 
       <div class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700/80 flex justify-center sm:justify-end">
-        <button @click="confirmAndGoBack" class="btn-primary btn-lg">
+        <button @click="confirmAndGoBack" class="btn btn-primary btn-lg">
           <CheckCircleIcon class="h-5 w-5 mr-2" /> Done
         </button>
       </div>
@@ -335,8 +325,6 @@ const toast = inject('toast') as any;
 const AUTH_TOKEN_KEY = 'vcaAuthToken';
 
 // --- Centralized Settings from voiceSettingsManager ---
-// Assuming VoiceApplicationSettings is extended in voice.settings.service.ts
-// to include: defaultMode, defaultLanguage, generateDiagrams, autoClearChat, costLimit
 const vcaSettings = voiceSettingsManager.settings;
 
 // --- Settings managed by conversationManager ---
@@ -347,8 +335,6 @@ const chatHistoryCount = ref(conversationManager.getHistoryMessageCount());
 watch(chatHistoryCount, (newVal) => {
   conversationManager.setHistoryMessageCount(newVal);
 });
-// If conversationManager.currentMessagesToKeepCount were directly exposed and reactive:
-// const chatHistoryCount = conversationManager.currentMessagesToKeepCount; // Would be simpler
 
 // --- Local UI Settings ---
 const isDarkModeLocal = useStorage('darkMode', false);
@@ -390,7 +376,6 @@ const groupedCurrentTTSVoices = computed(() => {
     }
     groups[langDisplay].voices.push(voiceOpt);
   });
-  // Sort groups by language display name, then voices within each group by name
   return Object.values(groups)
     .sort((a,b) => a.lang.localeCompare(b.lang))
     .map(group => {
@@ -429,7 +414,7 @@ const micTestResultClass = computed(() => {
 });
 
 // --- Methods ---
-const goBack = () => router.push('/');
+const goBack = () => router.push('/'); // This was in commented out HTML, but not used by visible buttons. Keeping if needed.
 const confirmAndGoBack = () => {
     toast?.add({ type: 'info', title: 'Preferences Applied', message: 'Your settings are saved automatically.' });
     router.push('/');
@@ -513,7 +498,7 @@ const testMicrophone = async () => {
       const average = dataArray.length > 0 ? sum / dataArray.length : 0;
       const normalizedLevel = Math.min(1, Math.max(0, average / 128));
       micAudioLevels.value.push(normalizedLevel);
-      if (micAudioLevels.value.length > 60) micAudioLevels.value.shift(); // Keep more samples for smoother bar display
+      if (micAudioLevels.value.length > 60) micAudioLevels.value.shift();
       frameId = requestAnimationFrame(monitorLevels);
     };
     monitorLevels();
@@ -521,7 +506,7 @@ const testMicrophone = async () => {
     setTimeout(() => {
       if (isTestingMic.value) {
         stopMicrophoneTest();
-        if (micTestResult.value === 'success' && micAudioLevels.value.some(l => l > 0.1)) { // Check if any significant audio was detected
+        if (micTestResult.value === 'success' && micAudioLevels.value.some(l => l > 0.1)) {
              toast?.add({ type: 'success', title: 'Mic Test Complete', message: 'Microphone detected audio input.' });
         } else if (micTestResult.value === 'success') {
              toast?.add({ type: 'warning', title: 'Mic Test Complete', message: 'Microphone is working, but no significant audio was detected. Check input levels.' });
@@ -530,27 +515,83 @@ const testMicrophone = async () => {
     }, 5000);
   } catch (err: any) {
     console.error('Microphone test error:', err);
-    // ... (error handling as before) ...
+    if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+      micTestResult.value = 'error_permission';
+      toast?.add({ type: 'error', title: 'Mic Permission Denied', message: 'Please enable microphone access in your browser settings.' });
+    } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+      micTestResult.value = 'error_notfound';
+      toast?.add({ type: 'error', title: 'Mic Not Found', message: 'No microphone was found, or the selected one is unavailable.' });
+    } else if (err.name === 'NotReadableError' || err.name === 'TrackStartError' || err.name === 'OverconstrainedError') {
+      micTestResult.value = 'error_overconstrained';
+      toast?.add({ type: 'error', title: 'Mic Inaccessible', message: 'The microphone is currently in use or cannot be accessed with the current settings.' });
+    } else {
+      micTestResult.value = 'error_generic';
+      toast?.add({ type: 'error', title: 'Mic Test Error', message: 'An unexpected error occurred during the microphone test.' });
+    }
     stopMicrophoneTest();
   }
 };
 
-const stopMicrophoneTest = () => { /* ... (same as your provided code) ... */ };
-const fetchCurrentSessionCost = async () => { /* ... (same as your provided code) ... */ };
-const resetSessionCost = async () => { /* ... (same as your provided code) ... */ };
-const handleLogout = () => { /* ... (same as your provided code, ensure AUTH_TOKEN_KEY is used) ... */ };
+const stopMicrophoneTest = () => {
+  isTestingMic.value = false;
+  if (micTestStreamLocal) {
+    micTestStreamLocal.getTracks().forEach(track => track.stop());
+    micTestStreamLocal = null;
+  }
+  if (micTestMicrophone) {
+    micTestMicrophone.disconnect();
+    micTestMicrophone = null;
+  }
+  if (micTestAnalyser) {
+    micTestAnalyser.disconnect(); // Though typically analyser isn't disconnected this way, source disconnect is enough
+    micTestAnalyser = null;
+  }
+  if (micTestAudioContext && micTestAudioContext.state !== 'closed') {
+    micTestAudioContext.close().catch(e => console.error("Error closing mic test audio context", e));
+    micTestAudioContext = null;
+  }
+  // Don't clear micAudioLevels here, user might want to see the last levels
+};
+
+const fetchCurrentSessionCost = async () => {
+  try {
+    const response = await costAPI.getSessionCost();
+    currentSessionCost.value = response.data.totalCost || 0;
+  } catch (error) {
+    console.error("Failed to fetch session cost:", error);
+    // toast?.add({ type: 'error', title: 'Cost Fetch Failed', message: 'Could not retrieve current session cost.' });
+  }
+};
+
+const resetSessionCost = async () => {
+  try {
+    await costAPI.resetSessionCost();
+    currentSessionCost.value = 0;
+    toast?.add({ type: 'success', title: 'Session Cost Reset', message: 'The current session cost has been reset to $0.00.' });
+  } catch (error) {
+    console.error("Failed to reset session cost:", error);
+    toast?.add({ type: 'error', title: 'Cost Reset Failed', message: 'Could not reset the session cost.' });
+  }
+};
+
+const handleLogout = () => {
+  const storage = rememberLoginLocal.value ? localStorage : sessionStorage;
+  storage.removeItem(AUTH_TOKEN_KEY);
+  mainApi.defaults.headers.common['Authorization'] = '';
+  delete mainApi.defaults.headers.common['Authorization']; // Ensure it's fully removed
+  voiceSettingsManager.resetToDefaults(); // Optional: Reset settings on logout
+  conversationManager.clearHistory(); // Optional: Clear conversation history
+  toast?.add({ type: 'success', title: 'Logged Out', message: 'You have been successfully logged out.' });
+  router.push('/login');
+};
 
 const exportAllSettings = () => {
   const settingsToExport = {
-    // Local UI settings
     isDarkMode: isDarkModeLocal.value,
     rememberLogin: rememberLoginLocal.value,
-    // Centralized VCA settings
-    ...JSON.parse(JSON.stringify(vcaSettings)), // Deep copy of all VCA settings
-    // Conversation manager specific settings
+    ...JSON.parse(JSON.stringify(vcaSettings)),
     chatHistoryIndividualMessageCount: conversationManager.getHistoryMessageCount(),
-    // Metadata
-    vcaSettingsVersion: '1.3.0', // Increment this if settings structure changes significantly
+    vcaSettingsVersion: '1.3.0',
     exportDate: new Date().toISOString(),
   };
 
@@ -577,10 +618,9 @@ const handleImportSettingsFile = (event: Event) => {
       
       if (typeof imported.chatHistoryIndividualMessageCount === 'number') {
         conversationManager.setHistoryMessageCount(imported.chatHistoryIndividualMessageCount);
-        chatHistoryCount.value = conversationManager.getHistoryMessageCount(); // Sync local ref for UI
+        chatHistoryCount.value = conversationManager.getHistoryMessageCount();
       }
 
-      // Apply settings to voiceSettingsManager (iterate over known keys of VoiceApplicationSettings)
       const vcaSettingKeys = Object.keys(voiceSettingsManager.defaultSettings || {}) as Array<keyof VoiceApplicationSettings>;
       vcaSettingKeys.forEach(key => {
         if (key in imported && typeof imported[key] === typeof vcaSettings[key]) {
@@ -613,17 +653,13 @@ onMounted(async () => {
   }
 
   await fetchCurrentSessionCost();
-  // voiceSettingsManager handles its own onMounted loading for devices/voices
-  // We can trigger a refresh if needed, or ensure its loaded status is checked
   if (!voiceSettingsManager.audioInputDevicesLoaded.value) {
     await voiceSettingsManager.loadAudioInputDevices();
   }
   if (!voiceSettingsManager.ttsVoicesLoaded.value && vcaSettings.autoPlayTts) {
     await voiceSettingsManager.loadAllTtsVoices();
   }
-  // Sync local chatHistoryCount ref with manager's current value
   chatHistoryCount.value = conversationManager.getHistoryMessageCount();
-
 
   nextTick(() => {
     document.querySelectorAll<HTMLInputElement>('input[type="range"].range-slider').forEach(el => updateRangeProgress(el));
@@ -638,13 +674,12 @@ watch(isDarkModeLocal, (newVal) => {
   document.documentElement.classList.toggle('dark', newVal);
 }, { immediate: true });
 
-// Update range progress for all sliders when settings object changes (e.g., after import)
 watch(vcaSettings, () => {
     nextTick(() => {
         document.querySelectorAll<HTMLInputElement>('input[type="range"].range-slider').forEach(el => updateRangeProgress(el));
     });
 }, { deep: true });
-watch(chatHistoryCount, () => { // Also for chat history specific slider
+watch(chatHistoryCount, () => {
      nextTick(() => {
         const el = document.getElementById('chatHistoryLength') as HTMLInputElement | null;
         if(el) updateRangeProgress(el);
@@ -659,13 +694,12 @@ watch(chatHistoryCount, () => { // Also for chat history specific slider
 }
 .settings-section-card {
   @apply bg-white dark:bg-gray-800/60 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700/50;
-  /* Removed backdrop-blur from section cards for potentially better performance on complex pages */
 }
 
 .section-header {
   @apply flex items-center gap-3 pb-4 mb-6 border-b border-gray-200 dark:border-gray-700;
 }
-.section-icon {
+.section-icon { /* Local style for SettingsSection icons */
   @apply h-6 w-6 text-primary-500 dark:text-primary-400;
 }
 .section-title {
@@ -673,14 +707,13 @@ watch(chatHistoryCount, () => { // Also for chat history specific slider
 }
 
 .setting-item-wrapper {
-  @apply py-3 sm:py-4; /* Consistent padding */
+  @apply py-3 sm:py-4;
 }
 .setting-item-wrapper.full-width-desc-item .setting-item-label-action {
-  /* For items like range sliders where label is above */
   @apply flex-col items-start;
 }
 .setting-item-wrapper.full-width-desc-item .setting-label {
-  @apply mb-2; /* Space between label and control if stacked */
+  @apply mb-2;
 }
 .setting-item-wrapper.full-width-desc-item .setting-description {
     @apply pt-1.5 text-left;
@@ -691,22 +724,19 @@ watch(chatHistoryCount, () => { // Also for chat history specific slider
 }
 .setting-label {
   @apply text-sm font-medium text-gray-800 dark:text-gray-200 flex-shrink-0 cursor-default;
-  /* Removed fixed width, let flexbox handle it */
 }
 .setting-control {
-  @apply flex-grow flex sm:justify-end items-center; /* Push controls to the right on sm+ */
+  @apply flex-grow flex sm:justify-end items-center;
 }
 .setting-item-label-action .setting-control {
-  @apply w-full sm:w-auto; /* Allow control to take full width on mobile, auto on larger */
+  @apply w-full sm:w-auto;
 }
 .setting-description {
   @apply text-xs text-gray-500 dark:text-gray-400 mt-1;
 }
 .setting-item-wrapper:not(.full-width-desc-item) .setting-item-label-action + .setting-description {
     @apply pt-1 sm:text-right;
-    /* Ensure description is correctly aligned if it's for the whole item, not just control */
 }
-
 
 /* Form Inputs */
 .select-input {
@@ -725,18 +755,18 @@ watch(chatHistoryCount, () => { // Also for chat history specific slider
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
 }
 
-.toggle-switch { /* Container for the input and the visual track */
+.toggle-switch {
   @apply relative inline-flex items-center h-6 w-11 cursor-pointer flex-shrink-0;
 }
 .toggle-switch-track {
   @apply w-11 h-6 bg-gray-300 dark:bg-gray-600 rounded-full transition-colors duration-200 ease-in-out
-         peer-focus:ring-2 peer-focus:ring-offset-2 peer-focus:ring-primary-500 dark:peer-focus:ring-offset-gray-950
-         peer-checked:bg-primary-600 dark:peer-checked:bg-primary-500;
+          peer-focus:ring-2 peer-focus:ring-offset-2 peer-focus:ring-primary-500 dark:peer-focus:ring-offset-gray-950
+          peer-checked:bg-primary-600 dark:peer-checked:bg-primary-500;
 }
-.toggle-switch-track::after { /* The thumb */
+.toggle-switch-track::after {
   @apply content-[''] absolute top-0.5 left-[2px] bg-white border-gray-300 dark:border-gray-500 border rounded-full h-5 w-5
-         transition-all duration-200 ease-in-out shadow-sm
-         peer-checked:translate-x-full peer-checked:border-white;
+          transition-all duration-200 ease-in-out shadow-sm
+          peer-checked:translate-x-full peer-checked:border-white;
 }
 
 .range-slider {
@@ -782,34 +812,35 @@ watch(chatHistoryCount, () => { // Also for chat history specific slider
     @apply mt-8 p-5 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700/50 rounded-lg;
 }
 
-/* Buttons */
-.btn-primary, .btn-secondary, .btn-danger, .btn-secondary-outline {
-  @apply px-4 py-2 rounded-lg text-sm font-medium border
-         focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-gray-950
-         transition-all duration-150 ease-in-out inline-flex items-center justify-center shadow-sm hover:shadow-md;
-}
-.btn-primary {
-  @apply bg-primary-600 hover:bg-primary-700 text-white border-transparent focus:ring-primary-500;
-}
-.btn-secondary {
-  @apply bg-gray-200 hover:bg-gray-300 text-gray-800 border-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-600 focus:ring-gray-400;
-}
-.btn-secondary-outline {
-  @apply bg-transparent hover:bg-gray-100 text-gray-700 border-gray-300 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700/60 focus:ring-gray-500;
-}
-.btn-danger {
-  @apply bg-red-600 hover:bg-red-700 text-white border-transparent focus:ring-red-500;
-}
-.btn-lg { @apply px-6 py-2.5 text-base; }
-.btn-sm { @apply px-3 py-1.5 text-xs; }
+/* Buttons: Rely on global .btn from main.css for base styles. Define only local variants/sizes. */
+/* Ensure buttons in template use 'btn' class first, e.g., class="btn btn-primary btn-lg" */
 
-:root { /* For range slider progress, ensure primary is defined in Tailwind config */
+.btn-secondary-outline {
+  @apply px-4 py-2 text-sm font-medium border /* Padding & font from original local shared btn style */
+         bg-transparent hover:bg-gray-100 text-gray-700 border-gray-300 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700/60
+         focus:ring-gray-500 shadow-sm hover:shadow-md;
+  /* This class expects 'btn' to be applied alongside it for full styling (focus rings, transitions etc from global .btn) */
+}
+.btn-lg {
+  @apply px-6 py-2.5 text-base; /* Specific padding and text size for large buttons */
+}
+.btn-sm {
+  @apply px-3 py-1.5 text-xs; /* Specific padding and text size for small buttons */
+}
+
+/* :root variables for range slider are defined here, but should ideally be in a global scope if used elsewhere,
+   or be fully encapsulated if this component is truly standalone.
+   Assuming primary colors are set up in Tailwind config based on main.css HSL vars. */
+:root {
   --primary-color: theme('colors.primary.600', #3b82f6);
   --primary-color-dark: theme('colors.primary.500', #60a5fa);
   --range-track-bg: theme('colors.gray.300', #d1d5db);
   --range-track-bg-dark: theme('colors.gray.700', #374151);
 }
-.dark { /* Ensure dark mode overrides are specific enough if :root is also used by Tailwind base */
-  --primary-color: theme('colors.primary.500', #60a5fa);
+/* This .dark block for --primary-color seems redundant if Tailwind handles dark variants of primary.600 correctly.
+   However, if it's specifically for the range slider, it might be okay.
+   Tailwind's dark mode typically handles this via `dark:bg-primary-500` etc. */
+.dark {
+  /* --primary-color: theme('colors.primary.500', #60a5fa); // Potentially overridden by Tailwind's dark variant system for other elements */
 }
 </style>
