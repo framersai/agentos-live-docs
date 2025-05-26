@@ -1,9 +1,8 @@
 /**
  * Voice Coding Assistant - Unified Styling System
- * Version: 2.1.1 - Linter compatibility fixes
- * Description: Consolidates base styles, Tailwind components/utilities,
- * responsive design, and a custom futuristic/sci-fi aesthetic.
- * This version addresses linter errors by ensuring HSL with alpha is compatible.
+ * Version: 2.2.0 - Futuristic Sleek Elegant Revamp
+ * Description: Base styles, Tailwind components/utilities, responsive design,
+ * and a custom futuristic aesthetic with enhanced dark mode and readability.
  */
 
 /* Import fonts first */
@@ -17,41 +16,44 @@
 
 /* --- Root Variables & Theming --- */
 :root {
-  /* brand hues */
-  --primary-hue: 217;
-  --accent-hue: 190;
+  /* Brand Hues - Cool and Modern */
+  --primary-hue: 220; /* Deep Blue */
+  --accent-hue: 180;  /* Teal/Cyan */
+  --neutral-hue: 220; /* For grays, can be same as primary or different */
 
-  /* derived palette */
-  --primary-50: hsl(var(--primary-hue) 95% 96%);
-  --primary-100: hsl(var(--primary-hue) 93% 92%);
-  --primary-200: hsl(var(--primary-hue) 90% 86%);
-  --primary-300: hsl(var(--primary-hue) 93% 78%);
-  --primary-400: hsl(var(--primary-hue) 94% 69%);
-  --primary-500: hsl(var(--primary-hue) 92% 60%); /* #3b82f6 equivalent */
-  --primary-600: hsl(var(--primary-hue) 84% 54%); /* #2563eb equivalent */
-  --primary-700: hsl(var(--primary-hue) 77% 49%); /* #1d4ed8 equivalent */
-  --primary-800: hsl(var(--primary-hue) 70% 42%);
-  --primary-900: hsl(var(--primary-hue) 70% 35%);
-  --primary-950: hsl(var(--primary-hue) 70% 25%);
+  /* Primary Palette (Deep Blue based) */
+  --primary-50: hsl(var(--primary-hue) 95% 97%);
+  --primary-100: hsl(var(--primary-hue) 93% 94%);
+  --primary-200: hsl(var(--primary-hue) 90% 88%);
+  --primary-300: hsl(var(--primary-hue) 93% 80%);
+  --primary-400: hsl(var(--primary-hue) 94% 72%);
+  --primary-500: hsl(var(--primary-hue) 92% 65%); /* Main interactive blue */
+  --primary-600: hsl(var(--primary-hue) 84% 58%); /* Slightly darker for depth */
+  --primary-700: hsl(var(--primary-hue) 77% 50%);
+  --primary-800: hsl(var(--primary-hue) 70% 43%);
+  --primary-900: hsl(var(--primary-hue) 70% 36%);
+  --primary-950: hsl(var(--primary-hue) 70% 28%);
 
-  --accent-400: hsl(var(--accent-hue) 70% 55%);
-  --accent-500: hsl(var(--accent-hue) 80% 45%);
-  --accent-600: hsl(var(--accent-hue) 85% 40%);
+  /* Accent Palette (Teal/Cyan based) */
+  --accent-300: hsl(var(--accent-hue) 70% 70%);
+  --accent-400: hsl(var(--accent-hue) 75% 60%); /* Brighter accent */
+  --accent-500: hsl(var(--accent-hue) 80% 50%); /* Main accent */
+  --accent-600: hsl(var(--accent-hue) 85% 45%);
 
   /* Semantic Colors */
-  --success-color: hsl(145 63% 42%);
-  --warning-color: hsl(39 92% 53%);
-  --error-color: hsl(0 84% 60%);
+  --success-color: hsl(150 65% 45%); /* Vibrant Green */
+  --warning-color: hsl(40 95% 55%); /* Bright Amber */
+  --error-color: hsl(0 85% 60%);   /* Clear Red */
   --info-color: var(--primary-500);
 
-  /* Base Text & Background */
-  --text-primary-rgb: 30, 41, 59;     /* Equiv. to Tailwind slate-800 */
-  --text-secondary-rgb: 51, 65, 85;  /* Equiv. to Tailwind slate-700 */
-  --text-muted-rgb: 100, 116, 139;    /* Equiv. to Tailwind slate-500 */
-  --bg-base-rgb: 255, 255, 255;       /* white */
-  --bg-surface-rgb: 248, 250, 252;   /* slate-50 */
-  --bg-subtle-rgb: 241, 245, 249;    /* slate-100 */
-  --border-color-rgb: 226, 232, 240; /* slate-200 */
+  /* Base Text & Background (Light Theme) */
+  --text-primary-rgb: 17, 24, 39;     /* gray-900 for strong contrast */
+  --text-secondary-rgb: 55, 65, 81;  /* gray-700 for subtext */
+  --text-muted-rgb: 107, 114, 128;   /* gray-500 for placeholders, tertiary info */
+  --bg-base-rgb: 249, 250, 251;       /* gray-50, very light gray */
+  --bg-surface-rgb: 255, 255, 255;   /* white for cards, inputs */
+  --bg-subtle-rgb: 243, 244, 246;     /* gray-100 for hover, subtle divisions */
+  --border-color-rgb: 229, 231, 235; /* gray-200 for subtle borders */
 
   --text-primary: rgb(var(--text-primary-rgb));
   --text-secondary: rgb(var(--text-secondary-rgb));
@@ -62,29 +64,28 @@
   --border-color: rgb(var(--border-color-rgb));
 
   /* Futuristic UI Elements */
-  --glow-primary: 0 0 12px hsla(var(--primary-hue), 92%, 60%, 0.5), 0 0 24px hsla(var(--primary-hue), 92%, 60%, 0.3);
-  --glow-accent: 0 0 12px hsla(var(--accent-hue), 80%, 45%, 0.5), 0 0 24px hsla(var(--accent-hue), 80%, 45%, 0.3);
+  --glow-primary: 0 0 10px hsla(var(--primary-hue), 92%, 65%, 0.35), 0 0 20px hsla(var(--primary-hue), 92%, 65%, 0.2);
+  --glow-accent: 0 0 10px hsla(var(--accent-hue), 80%, 50%, 0.4), 0 0 20px hsla(var(--accent-hue), 80%, 50%, 0.25);
 
-  --glass-bg: hsla(0, 0%, 100%, 0.6);
-  --glass-border: hsla(0, 0%, 100%, 0.15);
-  --glass-shadow: 0 8px 32px 0 hsla(var(--primary-hue), 30%, 30%, 0.1);
-  --glass-blur: 10px;
-  --glass-saturate: 150%;
+  --glass-bg: hsla(var(--neutral-hue), 20%, 98%, 0.6); /* Light glass */
+  --glass-border: hsla(var(--neutral-hue), 20%, 100%, 0.18);
+  --glass-shadow: 0 8px 32px 0 hsla(var(--neutral-hue), 25%, 30%, 0.12);
+  --glass-blur: 12px; /* More pronounced blur */
+  --glass-saturate: 120%;
 
   /* Animation & Transitions */
-  --duration-quick: 100ms;
-  --duration-smooth: 250ms;
-  --duration-ui: 400ms;
-  --ease-out-quad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  --ease-out-cubic: cubic-bezier(0.215, 0.610, 0.355, 1.000);
-  --ease-in-out-sine: cubic-bezier(0.445, 0.05, 0.55, 0.95);
+  --duration-quick: 150ms;
+  --duration-smooth: 300ms;
+  --duration-ui: 450ms;
+  --ease-out-quad: cubic-bezier(0.455, 0.03, 0.515, 0.955); /* Smoother ease */
+  --ease-out-cubic: cubic-bezier(0.33, 1, 0.68, 1); /* Fast out */
+  --ease-in-out-sine: cubic-bezier(0.37, 0, 0.63, 1);
 
   /* Borders & Radius */
-  --radius-xs: 0.25rem;
-  --radius-sm: 0.375rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
+  --radius-sm: 0.375rem; /* 6px */
+  --radius-md: 0.625rem; /* 10px for a softer, modern feel */
+  --radius-lg: 0.875rem; /* 14px */
+  --radius-xl: 1.25rem;  /* 20px */
   --radius-full: 9999px;
 
   /* Font Families */
@@ -93,20 +94,21 @@
 }
 
 .dark {
-  --text-primary-rgb: 241, 245, 249;     /* slate-100 */
-  --text-secondary-rgb: 203, 213, 225;   /* slate-300 */
-  --text-muted-rgb: 102, 114, 132;       /* Equivalent to Tailwind's slate-500 (#64748b), but as RGB for consistency */
-  --bg-base-rgb: 17, 24, 39;            /* gray-900 */
-  --bg-surface-rgb: 30, 41, 59;         /* gray-800 */
-  --bg-subtle-rgb: 48, 59, 78;          /* Slightly lighter than surface for dark subtle, e.g. gray-850 like */
-  --border-color-rgb: 55, 65, 81;       /* gray-700 */
+  /* Dark Theme Overrides */
+  --text-primary-rgb: 241, 245, 249;    /* slate-100 */
+  --text-secondary-rgb: 203, 213, 225;  /* slate-300 */
+  --text-muted-rgb: 148, 163, 184;      /* slate-400 */
+  --bg-base-rgb: 15, 23, 42;            /* slate-900 - Deep dark blueish */
+  --bg-surface-rgb: 30, 41, 59;         /* slate-800 - For cards, inputs */
+  --bg-subtle-rgb: 49, 60, 79;          /* Slightly lighter than surface for dark subtle elements */
+  --border-color-rgb: 51, 65, 85;       /* slate-700 for borders */
 
-  --glow-primary: 0 0 15px hsla(var(--primary-hue), 94%, 69%, 0.6), 0 0 30px hsla(var(--primary-hue), 94%, 69%, 0.4);
-  --glow-accent: 0 0 15px hsla(var(--accent-hue), 70%, 55%, 0.6), 0 0 30px hsla(var(--accent-hue), 70%, 55%, 0.4);
+  --glow-primary: 0 0 12px hsla(var(--primary-hue), 94%, 72%, 0.5), 0 0 24px hsla(var(--primary-hue), 94%, 72%, 0.35);
+  --glow-accent: 0 0 12px hsla(var(--accent-hue), 75%, 60%, 0.5), 0 0 24px hsla(var(--accent-hue), 75%, 60%, 0.35);
 
-  --glass-bg: hsla(var(--primary-hue), 20%, 15%, 0.65);
-  --glass-border: hsla(var(--primary-hue), 20%, 25%, 0.2);
-  --glass-shadow: 0 8px 32px 0 hsla(var(--primary-hue), 50%, 10%, 0.3); /* Slightly increased dark shadow */
+  --glass-bg: hsla(var(--neutral-hue), 15%, 12%, 0.65); /* Darker glass */
+  --glass-border: hsla(var(--neutral-hue), 10%, 20%, 0.25);
+  --glass-shadow: 0 10px 35px 0 hsla(var(--neutral-hue), 30%, 5%, 0.3); /* More pronounced dark shadow */
 }
 
 /* --- Base Layer --- */
@@ -117,14 +119,16 @@
     scroll-behavior: smooth;
     text-rendering: optimizeLegibility;
     -webkit-tap-highlight-color: transparent;
+    color-scheme: light dark; /* Inform browser about theme support */
   }
 
   body {
     background-color: var(--bg-base);
     color: var(--text-primary);
-    @apply bg-gradient-to-br from-slate-50 via-white to-blue-50
-            dark:from-gray-900 dark:via-gray-850 dark:to-gray-950 /* Adjusted dark gradient */
-            leading-relaxed selection:bg-primary-500/30 dark:selection:bg-primary-400/40;
+    /* Subtle gradient for depth, can be adjusted or removed for flatter design */
+    @apply bg-gradient-to-br from-slate-100 via-gray-50 to-blue-100/30
+           dark:from-slate-900 dark:via-gray-950 dark:to-slate-800/50
+           leading-relaxed selection:bg-primary-500/30 dark:selection:bg-primary-400/30;
     font-feature-settings: 'kern' on, 'liga' on, 'clig' on, 'calt' on;
     min-height: 100vh;
     display: flex;
@@ -134,7 +138,7 @@
 
   h1, h2, h3, h4, h5, h6 {
     @apply font-semibold tracking-tight text-[var(--text-primary)];
-    text-wrap: balance;
+    text-wrap: balance; /* Improve headline wrapping */
   }
   h1 { @apply text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight; }
   h2 { @apply text-2xl sm:text-3xl lg:text-4xl font-bold; }
@@ -143,338 +147,315 @@
 
   p {
     color: var(--text-secondary);
-    @apply mb-4 leading-relaxed;
+    @apply mb-4 leading-relaxed text-base; /* Ensure base size for p */
   }
 
   a {
     @apply text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300
-            font-medium underline-offset-4 hover:underline
-            transition-colors duration-[var(--duration-quick)] ease-[var(--ease-out-quad)];
+           font-medium underline-offset-4 hover:underline
+           transition-colors duration-[var(--duration-quick)] ease-[var(--ease-out-quad)];
   }
-  a:focus-visible { @apply rounded-sm; }
+  a:focus-visible { @apply rounded-sm; } /* Outline handled by global focus-visible */
 
   code, pre {
     font-family: var(--font-mono);
-    font-feature-settings: 'liga' on, 'calt' on; /* Ensure "on" or 1 */
+    font-feature-settings: 'liga' on, 'calt' on;
     font-variant-ligatures: common-ligatures;
     @apply text-sm;
   }
-  code:not(pre > code) {
-    @apply px-1.5 py-0.5 bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300 rounded-md text-xs;
+  code:not(pre > code) { /* Inline code */
+    @apply px-1.5 py-0.5 bg-primary-100 dark:bg-primary-800/40 text-primary-700 dark:text-primary-300 rounded-md text-xs;
   }
-  pre {
-    background-color: hsl(220, 13%, 18%); /* A common dark theme editor background like 'night owl' */
-    color: hsl(220, 14%, 71%);
-    @apply dark:bg-gray-950 dark:text-gray-200
-            p-4 rounded-lg shadow-inner overflow-x-auto my-4 leading-relaxed
-            border border-gray-300 dark:border-gray-700/50;
+  pre { /* Code blocks */
+    background-color: hsl(220, 20%, 15%); /* Darker, more modern for code */
+    color: hsl(220, 15%, 80%);
+    @apply dark:bg-slate-900/70 dark:text-slate-200
+           p-4 rounded-lg shadow-inner overflow-x-auto my-4 leading-relaxed
+           border border-slate-300/50 dark:border-slate-700/50;
     tab-size: 4;
   }
 
-  ::-webkit-scrollbar { width: 8px; height: 8px; } /* Slightly larger for easier grab */
-  
-  ::-webkit-scrollbar-track { 
-    background-color: hsla(0,0%,0%,0.05); /* Light mode default */
-  }
-  .dark ::-webkit-scrollbar-track {
-    background-color: hsla(0,0%,100%,0.05); /* Dark mode style */
-  }
-
+  /* Custom Scrollbars - Sleek & Modern */
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background-color: hsla(var(--neutral-hue), 10%, 50%, 0.08); border-radius: var(--radius-sm); }
+  .dark ::-webkit-scrollbar-track { background-color: hsla(var(--neutral-hue), 10%, 10%, 0.15); }
   ::-webkit-scrollbar-thumb {
-    @apply bg-slate-400 dark:bg-slate-600 rounded-full
-            border-2 border-transparent bg-clip-content;
+    @apply bg-slate-400 dark:bg-slate-600 rounded-full border-2 border-transparent bg-clip-content;
+    transition: background-color var(--duration-quick) ease;
   }
   ::-webkit-scrollbar-thumb:hover { @apply bg-slate-500 dark:bg-slate-500; }
   ::-webkit-scrollbar-corner { @apply bg-transparent; }
-
   * { /* Firefox scrollbar */
     scrollbar-width: thin;
-    scrollbar-color: var(--text-muted) transparent; /* Uses CSS vars */
+    scrollbar-color: var(--text-muted) transparent; /* Uses CSS vars, ensure these offer enough contrast */
   }
 
+  /* Global Focus Visible Style */
   :focus-visible {
-    @apply outline-none ring-2 ring-offset-2 rounded-sm
-            ring-primary-500 dark:ring-primary-400
-            ring-offset-[var(--bg-base)] dark:ring-offset-[var(--bg-base)];
+    @apply outline-none ring-2 ring-offset-2 rounded-md
+           ring-primary-500 dark:ring-primary-400
+           ring-offset-[var(--bg-surface)] dark:ring-offset-[var(--bg-base)]; /* Offset from surface or base */
   }
 
+  /* Default transition for many elements */
   .transition-default {
-    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, box-shadow, opacity, transform;
+    transition-property: color, background-color, border-color, box-shadow, opacity, transform;
     transition-duration: var(--duration-smooth);
-    transition-timing-function: var(--ease-out-quad);
+    transition-timing-function: var(--ease-out-cubic);
   }
 }
 
 /* --- Component Layer --- */
 @layer components {
+  /* Buttons - Refined and Sleek */
   .btn {
-    @apply inline-flex items-center justify-center gap-x-2 px-5 py-2.5 rounded-lg font-semibold
-            border border-transparent text-sm sm:text-base
-            transition-all duration-[var(--duration-smooth)] ease-[var(--ease-out-cubic)]
-            focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
-            disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none
-            relative overflow-hidden select-none transform active:scale-[0.97] hover:scale-[1.02];
-    text-shadow: 0 1px 1px hsla(0, 0%, 0%, 0.1);
+    @apply inline-flex items-center justify-center gap-x-2 px-5 py-2.5 rounded-[var(--radius-md)] font-semibold
+           border border-transparent text-sm sm:text-base
+           transition-all duration-[var(--duration-smooth)] ease-[var(--ease-out-cubic)]
+           focus-visible:outline-none /* Handled by global :focus-visible */
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none
+           relative overflow-hidden select-none transform active:scale-[0.96] hover:scale-[1.03];
+    text-shadow: 0 1px 1px hsla(0, 0%, 0%, 0.05);
   }
   .btn-primary {
-    @apply btn bg-gradient-to-br from-primary-500 to-primary-600 hover:from-primary-500 hover:to-primary-500 /* Hold color on hover */
-            text-white shadow-lg hover:shadow-primary-500/50 dark:hover:shadow-primary-400/40
-            focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400
-            focus-visible:ring-offset-[var(--bg-base)] dark:focus-visible:ring-offset-[var(--bg-base)];
-    /* Corrected HSL to HSLA for linter compatibility */
-    box-shadow: 0 4px 10px hsla(var(--primary-hue), 92%, 60%, 0.25), 0 1px 3px hsla(var(--primary-hue), 92%, 60%, 0.2);
+    @apply btn bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-500
+           text-white shadow-lg hover:shadow-primary-500/40 dark:shadow-primary-600/40 dark:hover:shadow-primary-500/50;
+    box-shadow: 0 4px 12px hsla(var(--primary-hue), 92%, 60%, 0.2), 0 1px 3px hsla(var(--primary-hue), 92%, 60%, 0.15);
   }
-   .btn-primary:hover {
-     /* Corrected HSL to HSLA for linter compatibility */
-     box-shadow: 0 6px 14px hsla(var(--primary-hue), 92%, 60%, 0.30), 0 2px 5px hsla(var(--primary-hue), 92%, 60%, 0.30);
+  .btn-primary:hover {
+    box-shadow: 0 6px 16px hsla(var(--primary-hue), 92%, 60%, 0.25), 0 2px 5px hsla(var(--primary-hue), 92%, 60%, 0.25);
   }
 
   .btn-secondary {
     background-color: var(--bg-surface);
     color: var(--text-primary);
     border-color: var(--border-color);
-    @apply btn shadow-sm hover:shadow-md
-            focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400;
+    @apply btn shadow-md hover:shadow-lg hover:border-slate-300 dark:hover:border-slate-500;
   }
   .dark .btn-secondary {
-    background-color: theme('colors.slate.700'); /* Explicit for dark */
-    border-color: theme('colors.slate.600');
-    color: theme('colors.slate.100');
-  }
-  .btn-secondary:hover { /* Light mode hover */
-    background-color: var(--bg-subtle);
-    border-color: hsl(var(--primary-hue) 90% 80%); /* Subtle primary hint */
+    background-color: hsl(var(--neutral-hue) 15% 25%); /* Slightly off-black/blue */
+    border-color: hsl(var(--neutral-hue) 15% 30%);
+    color: var(--text-primary);
   }
   .dark .btn-secondary:hover {
-    background-color: theme('colors.slate.600');
-    border-color: theme('colors.slate.500');
+    background-color: hsl(var(--neutral-hue) 15% 22%);
+    border-color: hsl(var(--neutral-hue) 15% 35%);
   }
 
   .btn-ghost {
     color: var(--primary-600);
     @apply btn dark:text-primary-400
-            hover:bg-primary-500/10 dark:hover:bg-primary-400/10
-            focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400;
-    text-shadow: none;
+           hover:bg-primary-500/10 dark:hover:bg-primary-400/15
+           shadow-none; /* Remove text-shadow-none from @apply */
+    text-shadow: none;  /* Apply as a direct CSS rule */
   }
   .btn-danger {
-    @apply btn bg-gradient-to-br from-[var(--error-color)] to-red-700 hover:from-[var(--error-color)] hover:to-red-600
-            text-white shadow-lg hover:shadow-red-500/50 dark:hover:shadow-red-400/40
-            focus-visible:ring-[var(--error-color)];
-    box-shadow: 0 4px 10px hsla(0, 84%, 60%, 0.25); /* Corrected HSL to HSLA */
-  }
-  .btn-danger:hover {
-     box-shadow: 0 6px 14px hsla(0, 84%, 60%, 0.35); /* Corrected HSL to HSLA */
+    @apply btn bg-gradient-to-r from-[var(--error-color)] to-red-700 hover:from-[var(--error-color)] hover:to-red-600
+           text-white shadow-lg hover:shadow-red-500/40 dark:shadow-red-600/40 dark:hover:shadow-red-500/50;
   }
 
-  .btn-sm { @apply px-4 py-2 text-sm rounded-md gap-x-1.5; }
-  .btn-lg { @apply px-7 py-3.5 text-lg rounded-xl gap-x-2.5; }
-  .btn-icon { @apply p-2.5 rounded-full; }
+  /* Button Sizes */
+  .btn-sm { @apply px-4 py-2 text-xs rounded-[var(--radius-sm)] gap-x-1.5; }
+  .btn-lg { @apply px-7 py-3 text-base sm:text-lg rounded-[var(--radius-lg)] gap-x-2.5; }
+  .btn-icon { @apply p-2.5 rounded-[var(--radius-md)]; } /* Consistent radius */
   .btn-icon.btn-sm { @apply p-2; }
 
-  .btn-holographic {
-    border-color: hsla(var(--primary-hue), 92%, 60%, 0.3);
-    color: var(--primary-600);
-    background-color: hsla(var(--primary-hue), 92%, 96%, 0.05);
-    @apply btn relative dark:border-primary-400/30 dark:text-primary-400
-            dark:bg-primary-950/20 backdrop-blur-sm; /* Adjusted dark bg */
-  }
-  .btn-holographic:hover {
-    background-color: hsla(var(--primary-hue), 92%, 96%, 0.15);
-    border-color: hsla(var(--primary-hue), 92%, 60%, 0.6);
-    box-shadow: var(--glow-primary);
-    @apply dark:bg-primary-950/40 dark:border-primary-400/60;
-  }
-  .btn-holographic::before {
-    content: '';
-    @apply absolute inset-0 rounded-lg opacity-0 transition-opacity duration-[var(--duration-smooth)];
-    background: radial-gradient(circle at center, hsla(var(--accent-hue),80%,55%,0.2) 0%, transparent 70%);
-    z-index: -1; /* Ensure pseudo-element is behind text */
-  }
-  .btn-holographic:hover::before { @apply opacity-75; }
-
+  /* Glassmorphism Elements */
   .glass-pane {
     background: var(--glass-bg);
     backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
     -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
     border: 1px solid var(--glass-border);
     box-shadow: var(--glass-shadow);
-    @apply rounded-xl transition-all duration-[var(--duration-ui)] ease-[var(--ease-out-quad)];
+    @apply rounded-[var(--radius-xl)] transition-all duration-[var(--duration-ui)] ease-[var(--ease-out-quad)];
   }
   .glass-pane-interactive {
-    @apply glass-pane hover:border-primary-500/40 dark:hover:border-primary-400/40 hover:shadow-xl dark:hover:shadow-primary-500/20;
+    @apply glass-pane hover:border-primary-500/30 dark:hover:border-primary-400/30 hover:shadow-xl dark:hover:shadow-primary-700/20;
   }
 
+  /* Cards - Refined */
   .card-base {
-    background-color: var(--bg-base); /* Use --bg-base for true white in light mode */
+    background-color: var(--bg-surface);
     border: 1px solid var(--border-color);
-    @apply dark:bg-gray-800 /* Explicit dark background */
-            rounded-xl shadow-lg dark:border-gray-700
-            transition-all duration-[var(--duration-ui)] ease-[var(--ease-out-quad)];
+    @apply rounded-[var(--radius-lg)] shadow-xl dark:shadow-2xl dark:shadow-black/20
+           transition-all duration-[var(--duration-ui)] ease-[var(--ease-out-quad)];
   }
+  .dark .card-base { background-color: var(--bg-surface); border-color: var(--border-color); } /* Use CSS vars */
+
   .card-base-hover {
-    @apply card-base hover:shadow-xl hover:scale-[1.015] hover:-translate-y-1;
+    @apply card-base hover:shadow-2xl dark:hover:shadow-primary-900/30 hover:scale-[1.02] hover:-translate-y-1.5;
   }
   .card-base-interactive { @apply card-base-hover cursor-pointer; }
 
+  /* Forms - Sleek and Modern */
   .form-input, .form-select, .form-textarea {
-    background-color: var(--bg-surface); /* Use var for light mode */
-    border: 1px solid var(--border-color); /* Use var for light mode */
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
     color: var(--text-primary);
-    @apply w-full block px-4 py-2.5 rounded-lg
-            dark:bg-slate-700 dark:border-slate-600 dark:text-slate-100 /* More specific dark theme */
-            transition-all duration-[var(--duration-smooth)] ease-[var(--ease-out-quad)]
-            focus:outline-none focus:ring-2 focus:border-transparent; /* border-transparent on focus with ring */
-    box-shadow: inset 0 1px 2px hsla(0,0%,0%,0.05);
+    @apply w-full block px-4 py-3 rounded-[var(--radius-md)] text-base
+           transition-all duration-[var(--duration-smooth)] ease-[var(--ease-out-quad)]
+           focus:outline-none focus:ring-2 focus:border-transparent; /* Modern focus: ring, no border change */
+    box-shadow: inset 0 1px 2px hsla(var(--neutral-hue),20%,50%,0.07);
+  }
+  .dark .form-input, .dark .form-select, .dark .form-textarea {
+    background-color: hsl(var(--neutral-hue), 15%, 22%); /* Darker input */
+    border-color: hsl(var(--neutral-hue), 15%, 30%);
+    color: var(--text-primary);
+    box-shadow: inset 0 1px 2px hsla(var(--neutral-hue),20%,5%,0.2);
   }
   .form-input::placeholder, .form-textarea::placeholder {
     color: var(--text-muted);
     @apply opacity-100;
   }
   .form-input:focus, .form-select:focus, .form-textarea:focus {
-    background-color: var(--bg-base);
-    border-color: var(--primary-500); /* Fallback, ring should take precedence */
+    background-color: var(--bg-surface); /* Keep bg consistent on focus */
+    /* Ring is handled by global :focus-visible or direct focus:ring-* */
     @apply ring-primary-500 dark:ring-primary-400 shadow-md;
   }
-  .form-select {
-    @apply appearance-none pr-10 cursor-pointer;
+  .form-select { /* Custom select arrow */
+    @apply appearance-none pr-12 cursor-pointer; /* Increased padding for arrow */
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='rgb(var(--text-muted-rgb))' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-    background-position: right 0.75rem center;
+    background-position: right 1rem center;
     background-repeat: no-repeat;
-    background-size: 1.25em 1.25em;
+    background-size: 1.1em 1.1em; /* Slightly larger arrow */
   }
-  .dark .form-select { /* SVG needs to adapt if text-muted-rgb changes significantly in dark mode */
-     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='rgb(var(--text-secondary-rgb))' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e"); /* Using secondary for better contrast */
+  .dark .form-select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='rgb(var(--text-muted-rgb))' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
   }
-  .form-textarea { @apply min-h-[100px] sm:min-h-[120px] resize-y; }
+  .form-textarea { @apply min-h-[120px] sm:min-h-[150px] resize-y leading-relaxed py-3; }
 
-  .toggle-switch {
-    @apply relative inline-flex h-6 w-11 items-center rounded-full cursor-pointer
-            transition-colors duration-[var(--duration-smooth)] ease-in-out
-            focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-[var(--bg-base)];
+  /* Toggle Switches - Refined */
+  .toggle-switch { /* The main container for the toggle */
+    @apply relative inline-flex h-7 w-12 items-center rounded-full cursor-pointer
+           transition-colors duration-[var(--duration-smooth)] ease-in-out
+           focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-[var(--bg-base)] focus-within:ring-primary-500;
   }
-  .toggle-switch input { @apply sr-only; } /* The 'peer' utility should be applied directly to the input element in your HTML template if needed for peer-based styling. */  .toggle-switch .toggle-switch-track-visual { /* Track visual */
-    @apply h-full w-full rounded-full bg-slate-300 peer-focus:ring-2 peer-focus:ring-primary-500/50
-            dark:bg-slate-600 peer-checked:bg-primary-500 dark:peer-checked:bg-primary-500 transition-colors;
+  .toggle-switch-track { /* The visual track of the switch */
+    @apply h-full w-full rounded-full bg-slate-300 dark:bg-slate-600
+           peer-checked:bg-primary-500 dark:peer-checked:bg-primary-500 transition-colors;
   }
-  .toggle-switch .toggle-switch-thumb { /* Thumb */
-    @apply inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0
-            transition-transform duration-[var(--duration-smooth)] ease-in-out absolute top-[2px] left-[2px]
-            peer-checked:translate-x-full;
+  .toggle-switch-track::after { /* The thumb */
+    content: '';
+    @apply absolute top-1 left-1 bg-white border-gray-300 dark:border-gray-500 border rounded-full h-5 w-5
+           shadow-sm transition-transform duration-[var(--duration-smooth)] ease-[var(--ease-out-cubic)]
+           peer-checked:translate-x-full peer-checked:border-white;
   }
 
+  /* Message Bubbles - Modernized */
   .message-bubble-base {
-    @apply p-3.5 sm:p-4 rounded-2xl shadow-lg max-w-[80%] sm:max-w-[75%] transition-transform duration-[var(--duration-smooth)] ease-[var(--ease-out-quad)];
+    @apply p-3.5 sm:p-4 rounded-[var(--radius-lg)] shadow-lg max-w-[80%] sm:max-w-[75%] transition-all duration-[var(--duration-smooth)] ease-[var(--ease-out-quad)] text-base;
   }
   .message-bubble-user {
-    @apply message-bubble-base ml-auto rounded-br-lg /* Sharper edge */
-            bg-gradient-to-tr from-primary-500 to-sky-500 text-white
-            dark:from-primary-600 dark:to-sky-600;
+    @apply message-bubble-base ml-auto rounded-br-md /* Sharper edge for tail */
+           bg-gradient-to-br from-primary-500 to-primary-600 text-white
+           dark:from-primary-600 dark:to-primary-700;
   }
   .message-bubble-assistant {
-    @apply message-bubble-base mr-auto rounded-bl-lg /* Sharper edge */
-            bg-slate-100 dark:bg-slate-800 text-[var(--text-primary)]
-            border border-slate-200 dark:border-slate-700;
+    @apply message-bubble-base mr-auto rounded-bl-md /* Sharper edge for tail */
+           bg-gray-100 dark:bg-slate-750 text-[var(--text-primary)]
+           border border-gray-200 dark:border-slate-700;
   }
 
-  .code-block-enhanced {
-    @apply relative group/codeblock my-4 rounded-lg shadow-xl border dark:border-gray-700;
-    background-color: #f8fafc; /* slate-50 for light mode code blocks */
-    border-color: var(--border-color);
+  /* Code Blocks - Enhanced from Message.vue, for global use */
+  .code-block-wrapper {
+    @apply relative my-4 rounded-[var(--radius-md)] shadow-lg border dark:border-slate-700 overflow-hidden; /* Removed group/codeblock */
+    background-color: hsl(var(--neutral-hue), 15%, 18%); /* Darker base for code */
   }
-  .dark .code-block-enhanced {
-    background-color: #0f172a; /* slate-900 for dark mode */
-    border-color: theme('colors.slate.700');
+  .dark .code-block-wrapper {
+    background-color: hsl(var(--neutral-hue), 15%, 12%); /* Even darker for dark mode */
   }
-  .code-block-enhanced pre {
-    @apply !bg-transparent !shadow-none !border-none !p-0 !m-0 overflow-x-auto;
+  .code-block-wrapper pre {
+    @apply !bg-transparent !shadow-none !border-none !p-0 !m-0 overflow-x-auto; /* Reset pre styles */
   }
-  .code-block-enhanced code.hljs { /* Using .hljs as per your example template */
+  .code-block-wrapper code.hljs { /* Styles for the highlighted code itself */
     @apply block p-4 text-sm leading-relaxed;
     font-feature-settings: "liga" on, "calt" on;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    color: hsl(var(--neutral-hue), 15%, 85%); /* Light text on dark bg */
   }
-  .code-block-enhanced .line-number {
-    @apply inline-block text-center w-10 pr-3 select-none text-slate-400 dark:text-slate-600 sticky left-0;
-    background-color: inherit;
-    border-right: 1px solid var(--border-color);
+  .code-block-wrapper .line-number {
+    @apply inline-block text-center w-10 pr-3 select-none text-slate-500 dark:text-slate-600 sticky left-0;
+    background-color: inherit; /* Inherit from .code-block-wrapper */
+    border-right: 1px solid hsl(var(--neutral-hue), 15%, 25%);
   }
-  .dark .code-block-enhanced .line-number {
-    border-right-color: theme('colors.slate.700');
+  .dark .code-block-wrapper .line-number {
+    border-right-color: hsl(var(--neutral-hue), 15%, 18%);
   }
-  .code-block-enhanced .copy-btn {
+  .copy-code-button { /* Shared style for copy buttons */
     @apply absolute top-2.5 right-2.5 p-1.5 rounded-md
-            bg-slate-200/50 hover:bg-slate-300/70 dark:bg-slate-700/70 dark:hover:bg-slate-600/90
-            text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-slate-100
-            opacity-0 group-hover/codeblock:opacity-100 focus-within:opacity-100
-            transition-all duration-[var(--duration-quick)] z-10;
+           bg-slate-700/50 hover:bg-slate-600/70 dark:bg-slate-200/20 dark:hover:bg-slate-100/30
+           text-slate-300 hover:text-slate-100 dark:text-slate-400 dark:hover:text-slate-200
+           opacity-0 group-hover/codeblock:opacity-100 focus-within:opacity-100 /* More persistent on focus */
+           transition-all duration-[var(--duration-quick)] z-10;
   }
-  .code-block-enhanced .copy-btn svg { @apply w-4 h-4; }
-  .code-block-enhanced .lang-label {
+  .copy-code-button svg { @apply w-4 h-4; }
+  .code-language-label { /* Shared style for lang labels */
     @apply absolute bottom-2 right-2.5 px-2 py-0.5 text-xs rounded-sm
-            bg-slate-200/50 text-slate-600 dark:bg-slate-700/70 dark:text-slate-300
-            opacity-0 group-hover/codeblock:opacity-100 transition-opacity duration-[var(--duration-quick)] z-10;
+           bg-slate-700/50 text-slate-300 dark:bg-slate-200/20 dark:text-slate-400
+           opacity-0 group-hover/codeblock:opacity-100 transition-opacity duration-[var(--duration-quick)] z-10 pointer-events-none;
   }
 
-  .loading-spinner-futuristic {
-    @apply w-8 h-8 rounded-full border-2 border-transparent border-t-primary-500 dark:border-t-primary-400 animate-spin;
-  }
-  .dots-loader span {
-    @apply inline-block w-2.5 h-2.5 rounded-full bg-primary-500 dark:bg-primary-400 opacity-0;
-    animation: dot-loader-anim 1.4s ease-in-out infinite both;
-  }
-  .dots-loader span:nth-child(1) { animation-delay: 0s; }
-  .dots-loader span:nth-child(2) { animation-delay: 0.15s; }
-  .dots-loader span:nth-child(3) { animation-delay: 0.3s; }
-
-  /* CHIP (Integrated from Main_Old.css) */
+  /* --- Integrated Component Styles from Original --- */
+  /* Chips - Sleek version */
   .chip {
-    @apply inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium shadow-sm border border-transparent transition-colors duration-[var(--duration-smooth)]; 
-    background-color:var(--bg-surface); 
-    color:var(--text-muted);
-  } 
+    @apply inline-flex items-center px-3.5 py-1.5 rounded-[var(--radius-full)] text-xs font-medium shadow
+           transition-all duration-[var(--duration-smooth)] ease-[var(--ease-out-quad)];
+    background-color:var(--bg-subtle);
+    border: 1px solid var(--border-color);
+    color:var(--text-secondary);
+  }
   .chip:hover{
-    border-color:hsla(var(--primary-hue), 92%, 70%, 0.5);
+    border-color:hsla(var(--primary-hue), 92%, 70%, 0.6);
     color: var(--text-primary);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px hsla(var(--primary-hue), 50%, 50%, 0.1);
   }
   .dark .chip{
-    background-color:hsla(var(--primary-hue), 20%, 25%, 0.5);
-    border-color: hsla(var(--primary-hue), 20%, 35%, 0.5);
-  }
-  .dark .chip:hover{
-    border-color:hsla(var(--primary-hue), 80%, 70%, 0.6);
+    background-color:hsl(var(--neutral-hue), 15%, 25%);
+    border-color: hsl(var(--neutral-hue), 15%, 30%);
     color: var(--text-secondary);
   }
+  .dark .chip:hover{
+    border-color:hsla(var(--primary-hue), 80%, 70%, 0.5);
+    background-color:hsl(var(--neutral-hue), 15%, 22%);
+    box-shadow: 0 2px 8px hsla(var(--primary-hue), 50%, 10%, 0.2);
+  }
 
-  /* FEATURE GRID ITEM (Integrated from Main_Old.css) */
+  /* Feature Grid Item - Modernized */
   .feature-item {
-    @apply flex items-start gap-4 p-6 rounded-xl transition-transform duration-[var(--duration-smooth)];
-    background-color:hsla(var(--primary-hue), 95%, 96%, 0.7); /* Slightly more opacity */
-  }  
+    @apply flex items-start gap-x-5 p-6 rounded-[var(--radius-lg)] transition-all duration-[var(--duration-smooth)] ease-[var(--ease-out-quad)];
+    background-color:var(--bg-surface);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 12px hsla(var(--neutral-hue), 20%, 50%, 0.05);
+  }
   .feature-item:hover {
-    transform:scale(1.03) translateY(-2px); /* Added slight lift */
-    background-color:hsla(var(--primary-hue), 95%, 94%, 0.9);
-    box-shadow: 0 4px 12px hsla(var(--primary-hue), 50%, 50%, 0.08);
-  }  
+    transform:scale(1.025) translateY(-3px);
+    background-color:var(--bg-surface); /* Keep bg same, rely on shadow */
+    box-shadow: 0 8px 24px hsla(var(--primary-hue), 50%, 50%, 0.12);
+    border-color: hsla(var(--primary-hue), 90%, 80%, 0.7);
+  }
   .dark .feature-item {
-    background-color:hsla(var(--primary-hue), 70%, 20%, 0.3); /* Darker, more thematic */
-  }  
+    background-color:var(--bg-surface); /* Using CSS var for dark mode */
+    border-color: var(--border-color);
+    box-shadow: 0 4px 12px hsla(var(--neutral-hue), 15%, 5%, 0.1);
+  }
   .dark .feature-item:hover {
-    background-color:hsla(var(--primary-hue), 70%, 25%, 0.5);
-    box-shadow: 0 4px 12px hsla(var(--primary-hue), 50%, 10%, 0.15);
+    background-color:hsl(var(--neutral-hue), 15%, 20%); /* Slight change for hover */
+    box-shadow: 0 8px 24px hsla(var(--primary-hue), 50%, 10%, 0.2);
+    border-color: hsla(var(--primary-hue), 70%, 50%, 0.6);
   }
   .feature-icon-wrapper {
-    @apply flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center transition-transform duration-[var(--duration-smooth)];
+    @apply flex-shrink-0 w-11 h-11 sm:w-12 sm:h-12 rounded-[var(--radius-md)] flex items-center justify-center
+           bg-primary-100 dark:bg-primary-800/50
+           transition-transform duration-[var(--duration-smooth)] ease-[var(--ease-out-quad)];
   }
-  .feature-item:hover .feature-icon-wrapper { transform: scale(1.1); }
-  .feature-icon { 
-    @apply icon-base; 
-    color:var(--primary-500); 
+  .feature-item:hover .feature-icon-wrapper { transform: scale(1.1) rotate(-5deg); }
+  .feature-icon {
+    @apply icon-base; /* From .icon-base utility */
+    color:var(--primary-600);
   }
-  .dark .feature-icon {
-     color: var(--primary-400);
-  }
+  .dark .feature-icon { color: var(--primary-400); }
 }
 
 /* --- Utility Layer --- */
@@ -486,186 +467,130 @@
   .scrollbar-none { scrollbar-width: none; }
   .scrollbar-none::-webkit-scrollbar { display: none; }
 
-  .bg-blur-slight { backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
-  .bg-blur-medium { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
-  .bg-blur-heavy { backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
+  /* Background Blurs */
+  .bg-blur-sm { backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+  .bg-blur-md { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+  .bg-blur-lg { backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
 
-  .clip-path-inset-round { clip-path: inset(0 round var(--radius-md)); }
+  /* Text Shadows */
+  .text-shadow-soft { text-shadow: 0 2px 4px hsla(0,0%,0%,0.06); }
+  .dark .text-shadow-soft { text-shadow: 0 2px 5px hsla(0,0%,0%,0.3); }
+  .text-glow-primary { text-shadow: 0 0 8px hsla(var(--primary-hue), 92%, 65%, 0.5); }
+  .dark .text-glow-primary { text-shadow: 0 0 10px hsla(var(--primary-hue), 94%, 72%, 0.6); }
 
-  .border-fx-glow-primary {
-    position: relative;
-    border: 1px solid transparent;
-  }
-  .border-fx-glow-primary::before {
-    content: '';
-    position: absolute;
-    inset: -1px; 
-    border-radius: inherit;
-    padding: 1px; 
-    background: linear-gradient(120deg, hsla(var(--accent-hue),80%,55%,0.7), hsla(var(--primary-hue),92%,60%,0.7), hsla(var(--accent-hue),80%,55%,0.7));
-    background-size: 200% 200%;
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor; 
-    mask-composite: exclude; 
-    animation: border-glow-anim 4s linear infinite;
-    z-index: -1;
-  }
-  .dark .border-fx-glow-primary::before {
-     background: linear-gradient(120deg, hsla(var(--accent-hue),70%,65%,0.8), hsla(var(--primary-hue),90%,70%,0.8), hsla(var(--accent-hue),70%,65%,0.8));
-  }
-
-  .text-shadow-soft { text-shadow: 0 1px 3px hsla(0,0%,0%,0.08), 0 0 1px hsla(0,0%,0%,0.04); } /* Softer */
-  .dark .text-shadow-soft { text-shadow: 0 1px 3px hsla(0,0%,0%,0.35), 0 0 1px hsla(0,0%,0%,0.25); }
-  .text-shadow-glow-primary { text-shadow: var(--glow-primary); } /* Use variable */
-  /* Dark mode for text-shadow-glow-primary is handled by variable override */
-
-  /* Generic Icon Styling & Scales (Integrated from Main_Old.css) */
-  .icon-s   { @apply w-4 h-4; }
+  /* Generic Icon Sizing */
+  .icon-xs   { @apply w-3.5 h-3.5; }
+  .icon-sm   { @apply w-4 h-4; }
   .icon-base { @apply w-5 h-5; }
   .icon-lg   { @apply w-6 h-6; }
+  .icon-xl   { @apply w-8 h-8; }
 
-  .section-icon { /* Generic for section headers */
-    @apply icon-base; 
-    color:var(--primary-600); /* Slightly darker for more presence */
+  /* Gradient Text */
+  .text-gradient-primary {
+    @apply bg-gradient-to-r from-primary-500 to-accent-500 bg-clip-text text-transparent;
   }
-  .dark .section-icon {
-    color: var(--primary-400); 
+  .dark .text-gradient-primary {
+    @apply from-primary-400 to-accent-400;
   }
-  
-  /* Animations from PublicHome.vue example, made global */
-  .animate-pulse-slow {
-    animation: pulse-slow-anim 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+
+  /* Animations */
+  .animate-pulse-subtle { animation: pulse-subtle-anim 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+  @keyframes pulse-subtle-anim {
+    0%, 100% { opacity: 1; }
+    50% { opacity: .6; }
   }
-  @keyframes pulse-slow-anim {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: .7; transform: scale(1.05); }
+  .animate-gradient-bg { /* For backgrounds */
+    background-size: 250% 250%;
+    animation: gradient-bg-anim 10s ease infinite;
   }
-  .animate-gradient {
-    background-size: 200% 200%;
-    animation: gradient-anim 5s ease infinite;
-  }
-  @keyframes gradient-anim {
+  @keyframes gradient-bg-anim {
     0%, 100% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
   }
-  @keyframes border-glow-anim {
+  @keyframes border-glow-anim { /* Reused from original */
     0% { background-position: 0% 50%; }
-    50% { background-position: 200% 50%; } /* Wider movement for border glow */
+    50% { background-position: 200% 50%; }
     100% { background-position: 0% 50%; }
   }
-  @keyframes dot-loader-anim {
+  /* Dot Loader from App.vue, slightly different animation */
+  @keyframes dot-loader-anim { /* Reused from original */
     0%, 80%, 100% { transform: scale(0.5); opacity: 0.5; }
     40% { transform: scale(1); opacity: 1; }
   }
 }
 
 /* --- Specific Component Overrides & Responsive --- */
-
-@media screen and (max-width: 767px) { /* Corresponds to Tailwind 'md' breakpoint */
-  .voice-input-section { /* Example from Unified.css, good as is if --glass-bg adapts */
-    @apply fixed bottom-0 left-0 right-0 p-4 bg-opacity-95 backdrop-blur-md border-t;
-    background-color: var(--glass-bg);
+/* Mobile specific adjustments (example for a specific component if needed) */
+@media screen and (max-width: 767px) { /* Tailwind 'md' breakpoint */
+  .voice-input-section-mobile { /* Example, assuming .voice-input-section exists */
+    @apply fixed bottom-0 left-0 right-0 p-4 bg-opacity-80 backdrop-blur-lg border-t z-50;
+    background-color: var(--glass-bg); /* Use glass for mobile input bar */
     border-top-color: var(--glass-border);
   }
 }
 
-/* Print Styles */
+/* Print Styles - Refined */
 @media print {
-  body {
-    background: #fff !important; /* Important to override complex gradients */
-    color: #000 !important;
-    font-size: 10pt;
-  }
-  .app-header,
-  .voice-input-section,
-  .btn, /* Hides all buttons; consider if some should be printable */
-  .fullscreen-controls,
-  .actions-toolbar,
-  .context-panel, .insights-panel, .cost-warning,
-  [class*="animate-"], [class*="hover:"], [class*="focus-visible:"] /* Hide animations & interactive states */ {
+  body { background: #fff !important; color: #000 !important; font-size: 10pt; }
+  .app-header, .app-footer, .voice-input-section-mobile, .btn,
+  .toast-notifications-container, .skip-link, [data-no-print="true"] {
     display: none !important;
-    animation: none !important;
-    transition: none !important;
   }
-
   .glass-pane, .card-base {
-    background: #fff !important;
-    border: 1px solid #bbb !important; /* Lighter border for print */
-    box-shadow: none !important;
-    print-color-adjust: exact;
-    -webkit-print-color-adjust: exact;
+    background: #fff !important; border: 1px solid #ccc !important; box-shadow: none !important;
+    print-color-adjust: exact; -webkit-print-color-adjust: exact;
   }
-
-  .message-bubble-base {
-    break-inside: avoid;
-    @apply shadow-none border border-gray-300 p-3 my-2 max-w-full;
-  }
-  .message-bubble-user { @apply bg-gray-100 text-black border-blue-300; }
-  .message-bubble-assistant { @apply bg-white text-black border-gray-400; }
-
-  .code-block-enhanced {
-    @apply shadow-none border border-gray-400 bg-slate-50; /* Changed from gray-50 to slate-50 */
-    page-break-inside: avoid;
-    print-color-adjust: exact;
-    -webkit-print-color-adjust: exact;
-  }
-  .code-block-enhanced code.hljs { /* Target specific hljs for print */
-    color: #111 !important; /* Ensure high contrast for code */
-    background-color: #f5f5f5 !important; /* Light background for printed code */
-  }
-  .code-block-enhanced .line-number {
-    @apply text-gray-600; /* Darker for print */
-    background-color: #f5f5f5 !important;
-    border-right-color: #ccc !important;
-  }
-
+  .message-bubble-base { break-inside: avoid; @apply shadow-none border border-gray-300 p-3 my-2 max-w-full; }
+  .message-bubble-user { @apply bg-gray-100 text-black; }
+  .message-bubble-assistant { @apply bg-white text-black; }
+  .code-block-wrapper { @apply shadow-none border border-gray-300 bg-gray-50; page-break-inside: avoid; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  .code-block-wrapper code.hljs { color: #111 !important; background-color: #f9f9f9 !important; }
+  .code-block-wrapper .line-number { @apply text-gray-500; background-color: #f9f9f9 !important; border-right-color: #ddd !important; }
   a { text-decoration: underline !important; color: #000 !important; }
-  a[href^="http"]:not([href*="localhost"]):after { content:" (" attr(href) ") "; font-size: 0.8em; color: #555; } /* Avoid for local links */
-  /* Remove icons from links in print */
+  a[href^="http"]:not([href*="localhost"]):after { content:" (" attr(href) ") "; font-size: 0.8em; color: #444; }
   a svg { display: none !important; }
 }
 
-/* Reduced motion for accessibility */
+/* Reduced Motion - Enhanced */
 @media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; } /* Disable smooth scroll */
+  html { scroll-behavior: auto !important; }
   *, *::before, *::after {
-    animation-duration: 0.01ms !important;
+    animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    transition-duration: 0.001ms !important;
     transition-delay: 0ms !important;
-    animation-play-state: paused !important; /* Pause complex animations */
+    animation-play-state: paused !important;
   }
-  /* Keep some essential transforms if they don't cause issues, or disable them */
-  .btn:active { transform: none !important; } /* Add !important */
-  .btn:hover { transform: none !important; } /* Add !important */
-  .card-base-hover:hover { transform: none !important; } /* Add !important */
-  .feature-item:hover { transform: none !important; } /* Add !important */
-  .feature-item:hover .feature-icon-wrapper { transform: none !important; } /* Add !important */
+  /* Allow essential opacity transitions for visibility, but kill transforms */
+  .transition-opacity { transition-property: opacity !important; }
+  [class*="hover:scale"], [class*="active:scale"], [class*="translate"] { transform: none !important; }
 }
 
-/* High contrast mode support */
-@media (prefers-contrast: high) {
-  .glass-pane, .card-base { /* Ensure high contrast for cards */
-    background: var(--bg-base) !important; 
-    border: 2px solid;
-    border-color: var(--text-primary); /* Use CSS var for dynamic color */
+/* High Contrast Mode - More Robust */
+@media (prefers-contrast: more) { /* 'more' is more specific than 'high' */
+  .glass-pane, .card-base {
+    background: var(--bg-base) !important;
+    border: 2px solid var(--text-primary) !important; /* Emphasize border */
   }
-  .btn-primary, .btn-secondary, .btn-ghost, .btn-danger, .btn-holographic {
-    @apply border-2 border-current bg-transparent; /* Use current text color for border, transparent bg */
-    color: var(--text-primary) !important; /* Ensure text is high contrast */
-    text-shadow: none !important;
-    box-shadow: none !important;
+  .btn {
+    @apply border-2 !important;
+    border-color: currentColor !important; /* Use text color for border */
+    background-image: none !important; /* Remove gradients */
+    background-color: var(--bg-base) !important; /* Base bg */
+    color: var(--text-primary) !important; /* Strong text */
+    text-shadow: none !important; box-shadow: none !important;
   }
-  .btn-primary { /* Specific override for primary button in high contrast */
-    background: var(--text-primary) !important;
+  .btn-primary { /* Primary button should stand out */
+    background-color: var(--text-primary) !important;
     color: var(--bg-base) !important;
     border-color: var(--text-primary) !important;
   }
-   /* Add other high contrast styles as needed for specific elements */
-  img, svg:not(.decorative-svg) { /* Example: Add outline to images/icons, avoid for purely decorative SVGs if needed */
-    outline: 1px solid;
-    outline-color: var(--text-primary);
-    outline-offset: 1px;
+  img, svg:not([role="presentation"]) { /* Add outline to meaningful images/icons */
+    outline: 2px solid currentColor !important;
+    outline-offset: 2px;
   }
+  /* Remove decorative shadows and glows */
+  [class*="shadow-"], [style*="box-shadow"] { box-shadow: none !important; }
+  [class*="glow-"] { text-shadow: none !important; }
+  .text-gradient-primary { color: var(--text-primary) !important; background-image: none !important; }
 }

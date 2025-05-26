@@ -20,6 +20,7 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "@types/natural": "^5.1.5",
     "concurrently": "^8.2.2"
   }
 }
