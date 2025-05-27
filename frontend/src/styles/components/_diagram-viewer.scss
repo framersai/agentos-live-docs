@@ -32,7 +32,10 @@
     .spinner-ephemeral { // Themed spinner
       width: 2rem; // 32px
       height: 2rem;
-      border: 3px solid hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.2);
+      border: 3px solid
+        hsla(var(--color-accent-primary-h),
+        var(--color-accent-primary-s),
+        var(--color-accent-primary-l), 0.2);
       border-top-color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
       border-radius: var.$radius-full;
       animation: spin var.$duration-pulse-fast linear infinite; // spin keyframes from _keyframes.scss

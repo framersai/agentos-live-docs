@@ -125,7 +125,7 @@
   $secondary-accent-var-prefix: '--color-holographic-glow-2', // Secondary glow color for conic gradient
   $border-width: 2px,
   $animation-duration: 3s,
-  $radius: var.$radius-holo,
+  $radius: var.$radius-holographic-default,
   // SCSS Fallbacks for glow colors
   $fb-glow1-h: var.$default-color-holographic-glow-1-h, $fb-glow1-s: var.$default-color-holographic-glow-1-s, $fb-glow1-l: var.$default-color-holographic-glow-1-l, $fb-glow1-a: var.$default-color-holographic-glow-1-a,
   $fb-glow2-h: var.$default-color-holographic-glow-2-h, $fb-glow2-s: var.$default-color-holographic-glow-2-s, $fb-glow2-l: var.$default-color-holographic-glow-2-l, $fb-glow2-a: var.$default-color-holographic-glow-2-a

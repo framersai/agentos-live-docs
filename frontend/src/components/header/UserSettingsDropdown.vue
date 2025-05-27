@@ -160,7 +160,7 @@ const getThemeIndicatorColor = (theme: ThemeDefinition): string => {
         <div v-if="auth.isAuthenticated.value" class="dropdown-user-info-ephemeral">
           <UserCircleIcon class="user-avatar-icon-ephemeral" />
           <div>
-            <p class="user-name-ephemeral">Authenticated User</p> {/* Replace with actual user data if available */}
+            <p class="user-name-ephemeral">Authenticated User</p> 
             <p class="user-status-ephemeral">Online</p>
           </div>
         </div>
@@ -237,65 +237,84 @@ const getThemeIndicatorColor = (theme: ThemeDefinition): string => {
 </template>
 
 <style lang="scss" scoped>
+/* ============================================================================
+ *  UserSettingsDropdown – Ephemeral Harmony
+ *  Fixed: mixin names, namespace, no @extend ordering issues
+ * ========================================================================== */
 @use '@/styles/abstracts/variables' as var;
-@use '@/styles/abstracts/mixins' as mixins;
-@use '@/styles/components/buttons'; // For potentially extending/using button mixins
+@use '@/styles/abstracts/mixins'    as mixins;
+@use '@/styles/components/buttons'  as btn;   // ← all button mixins live here
 
+/* ───────── Trigger button (top-right icon) ───────── */
 .user-settings-trigger-button-ephemeral {
-  @include buttons.btn-icon; // Use the btn-icon mixin
-  // Override or add specific styles
-  color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
-  border-radius: var.$radius-full;
-  padding: var.$spacing-xs; // Adjust padding for header context
-  background-color: transparent;
-  border: 1px solid transparent; // For consistent box model
+  @include btn.base-button-styles;
+  @include btn.btn-icon-modifier;
+  @include btn.btn-ghost-look;
 
-  &:hover, &:focus-visible {
-    background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.7);
-    color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
-    border-color: hsla(var(--color-border-secondary-h),var(--color-border-secondary-s),var(--color-border-secondary-l), 0.3);
+  color: hsl(var(--color-text-secondary-h),
+             var(--color-text-secondary-s),
+             var(--color-text-secondary-l));
+  border-radius: var.$radius-full;
+  padding: var.$spacing-xs;
+  background-color: transparent;
+  border: 1px solid transparent;
+
+  &:hover,
+  &:focus-visible {
+    background-color: hsla(var(--color-bg-tertiary-h),
+                           var(--color-bg-tertiary-s),
+                           var(--color-bg-tertiary-l), 0.7);
+    color: hsl(var(--color-text-primary-h),
+               var(--color-text-primary-s),
+               var(--color-text-primary-l));
+    border-color: hsla(var(--color-border-secondary-h),
+                       var(--color-border-secondary-s),
+                       var(--color-border-secondary-l), 0.3);
     outline: none;
   }
-  .icon-trigger { width: 1.5rem; height: 1.5rem; } // 24px, good size for header action
+
+  .icon-trigger { width: 1.5rem; height: 1.5rem; }
 }
 
+/* ───────── Dropdown card container ───────── */
 .user-settings-dropdown-menu-ephemeral {
   position: absolute;
   top: calc(100% + #{var.$spacing-sm});
   right: 0;
   z-index: var.$z-index-dropdown;
-  width: 300px; // Good width for this type of dropdown
+  width: 300px;
   min-width: 280px;
-  padding: var.$spacing-sm; // Overall padding for the card
-  border-radius: var.$radius-xl; // Consistent large radius
-  color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
-  
-  // Apply a neomorphic or glassmorphic style. Let's use neomorphic extrude for this.
-  &.card-neo-raised-ephemeral { // More specific class name
+  padding: var.$spacing-sm;
+  border-radius: var.$radius-xl;
+
+  color: hsl(var(--color-text-primary-h),
+             var(--color-text-primary-s),
+             var(--color-text-primary-l));
+
+  &.card-neo-raised-ephemeral {
     @include mixins.neomorphic-extrude(
       hsl(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l)),
-      4px, // distance
-      10px, // blur
-      var(--shadow-opacity-medium), // Use medium opacity for more definition
+      4px, 10px,
+      var(--shadow-opacity-medium), var(--shadow-opacity-medium),
       var.$radius-xl,
-      var(--shadow-color-h),
-      var(--color-shadow-s),
-      var(--color-shadow-l),
-      calc(var(--color-shadow-l) + var(--shadow-highlight-modifier))
+      var(--shadow-color-h), var(--shadow-color-s), var(--shadow-color-l),
+      calc(var(--shadow-color-l) + var(--shadow-highlight-modifier))
     );
-    // Add a subtle border to enhance the raised effect on some backgrounds
-    border: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.1);
+    border: 1px solid hsla(var(--color-border-primary-h),
+                           var(--color-border-primary-s),
+                           var(--color-border-primary-l), 0.1);
   }
 }
 
+/* transition: unchanged */
 .dropdown-float-neomorphic-enter-active,
 .dropdown-float-neomorphic-leave-active {
-  transition: opacity 0.2s var.$ease-out-quad, transform 0.25s var.$ease-elastic; // Use elastic for a bit of bounce
+  transition: opacity 0.2s var.$ease-out-quad,
+              transform 0.25s var.$ease-elastic;
 }
 .dropdown-float-neomorphic-enter-from,
-.dropdown-float-neomorphic-leave-to {
-  opacity: 0;
-  transform: translateY(10px) scale(0.95);
+.dropdown-float-neomorphic-leave-to   {
+  opacity: 0; transform: translateY(10px) scale(0.95);
 }
 
 .dropdown-user-info-ephemeral {
@@ -316,7 +335,7 @@ const getThemeIndicatorColor = (theme: ThemeDefinition): string => {
   }
   .user-name-ephemeral {
     font-weight: 600;
-    font-size: var.$font-size-base;
+    font-size: var.$font-size-base-default;
     color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
   }
   .user-status-ephemeral {
@@ -356,18 +375,18 @@ const getThemeIndicatorColor = (theme: ThemeDefinition): string => {
   grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); // Adjust minmax for item width
   gap: var.$spacing-sm;
 }
+/* ───────── Theme buttons ───────── */
+.theme-selector-grid-ephemeral {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: var.$spacing-sm;
+}
 
 .theme-button-ephemeral {
-  @include buttons.btn-subtle; // Assuming a new mixin for subtle, less prominent buttons
-  // Or use existing and override:
-  // @include buttons.btn-ghost;
-  // background-color: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.4) !important;
-  // border-color: hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.3) !important;
-  // color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l)) !important;
+  @include btn.base-button-styles;
+  @include btn.btn-ghost-look;
 
-  display: flex;
-  align-items: center;
-  gap: var.$spacing-sm;
+  display: flex; align-items: center; gap: var.$spacing-sm;
   padding: var.$spacing-xs var.$spacing-sm;
   border-radius: var.$radius-md;
   font-size: var.$font-size-sm;
@@ -375,90 +394,74 @@ const getThemeIndicatorColor = (theme: ThemeDefinition): string => {
   transition: all var.$duration-quick var.$ease-out-quad;
 
   &:hover {
-    background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.8) !important;
-    border-color: hsla(var(--color-border-interactive-h), var(--color-border-interactive-s), var(--color-border-interactive-l), 0.5) !important;
-    color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l)) !important;
+    background-color: hsla(var(--color-bg-tertiary-h),
+                           var(--color-bg-tertiary-s),
+                           var(--color-bg-tertiary-l), 0.8) !important;
+    border-color: hsla(var(--color-border-interactive-h),
+                       var(--color-border-interactive-s),
+                       var(--color-border-interactive-l), 0.5) !important;
+    color: hsl(var(--color-text-primary-h),
+               var(--color-text-primary-s),
+               var(--color-text-primary-l)) !important;
     transform: scale(1.02);
   }
 
   &.active {
-    background-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.2) !important;
-    border-color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l)) !important;
-    color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l)) !important;
+    background-color: hsla(var(--color-accent-interactive-h),
+                           var(--color-accent-interactive-s),
+                           var(--color-accent-interactive-l), 0.2) !important;
+    border-color: hsl(var(--color-accent-interactive-h),
+                      var(--color-accent-interactive-s),
+                      var(--color-accent-interactive-l)) !important;
+    color: hsl(var(--color-accent-interactive-h),
+               var(--color-accent-interactive-s),
+               var(--color-accent-interactive-l)) !important;
     font-weight: 600;
-    box-shadow: inset 0 0 5px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.1);
+    box-shadow: inset 0 0 5px hsla(var(--color-accent-interactive-h),
+                                   var(--color-accent-interactive-s),
+                                   var(--color-accent-interactive-l), 0.1);
     .checkmark-icon-ephemeral { display: inline-block; }
   }
-   // Visual cues for dark/light themes
-  &.dark-theme-preview .theme-indicator-ephemeral { border: 2px solid hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l), 0.5); }
-  &.light-theme-preview .theme-indicator-ephemeral { border: 2px solid hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l), 0.2); }
-
 
   .theme-indicator-ephemeral {
-    width: 14px; height: 14px;
-    border-radius: var.$radius-full;
-    flex-shrink: 0;
-    box-shadow: inset 0 0 2px hsla(0,0%,0%,0.2);
+    width: 14px; height: 14px; border-radius: var.$radius-full;
+    flex-shrink: 0; box-shadow: inset 0 0 2px hsla(0,0%,0%,0.2);
   }
-  .theme-name-ephemeral {
-    flex-grow: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .checkmark-icon-ephemeral {
-    display: none; margin-left: auto;
-    width: 1rem; height: 1rem;
-    color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
-  }
+
+  .theme-name-ephemeral   { flex-grow: 1; overflow: hidden; text-overflow: ellipsis; }
+  .checkmark-icon-ephemeral { display: none; width: 1rem; height: 1rem; }
 }
 
+/* ───────── Action buttons (settings, about, etc.) ───────── */
 .dropdown-action-group-ephemeral {
-  padding: var.$spacing-xs var.$spacing-sm; // Consistent padding
-  display: flex;
-  flex-direction: column;
-  gap: var.$spacing-xs; // Small gap between items in a group
+  padding: var.$spacing-xs var.$spacing-sm;
+  display: flex; flex-direction: column; gap: var.$spacing-xs;
 }
 
 .dropdown-item-ephemeral {
-  @include buttons.btn-subtle; // Base subtle button style
-  // Override for dropdown context:
-  width: 100%;
-  justify-content: flex-start !important; // Align icon and text to start
+  @include btn.base-button-styles;
+  @include btn.btn-ghost-look;
+
+  width: 100%; justify-content: flex-start !important;
   padding: var.$spacing-sm var.$spacing-md !important;
-  font-size: var.$font-size-base !important;
+  font-size: var.$font-size-base-default !important;
   border-radius: var.$radius-md !important;
-  gap: var.$spacing-md !important; // More gap between icon and text
+  gap: var.$spacing-md !important;
 
-  &:hover, &:focus-visible {
-    background-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.1) !important;
-    color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l)) !important;
-    outline: none;
-    transform: translateX(3px); // Subtle shift on hover
-  }
-  .item-icon-ephemeral {
-    width: 1.125rem; height: 1.125rem; // 18px
-    opacity: 0.7;
-  }
-  &:hover .item-icon-ephemeral, &:focus-visible .item-icon-ephemeral {
-    opacity: 1;
+  &:hover,
+  &:focus-visible {
+    background-color: hsla(var(--color-accent-interactive-h),
+                           var(--color-accent-interactive-s),
+                           var(--color-accent-interactive-l), 0.1) !important;
+    color: hsl(var(--color-accent-interactive-h),
+               var(--color-accent-interactive-s),
+               var(--color-accent-interactive-l)) !important;
+    transform: translateX(3px);
   }
 
-  &.logout-item-ephemeral {
-    color: hsl(var(--color-error-h), var(--color-error-s), var(--color-error-l));
-    .item-icon-ephemeral { color: hsl(var(--color-error-h), var(--color-error-s), var(--color-error-l)); }
-    &:hover, &:focus-visible {
-      background-color: hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.1) !important;
-      color: hsl(var(--color-error-h), var(--color-error-s), calc(var(--color-error-l) - 5%)) !important;
-      .item-icon-ephemeral { color: hsl(var(--color-error-h), var(--color-error-s), calc(var(--color-error-l) - 5%)) !important; }
-    }
-  }
-  &.login-item-ephemeral {
-    color: hsl(var(--color-success-h), var(--color-success-s), var(--color-success-l));
-    .item-icon-ephemeral { color: hsl(var(--color-success-h), var(--color-success-s), var(--color-success-l)); }
-     &:hover, &:focus-visible {
-      background-color: hsla(var(--color-success-h), var(--color-success-s), var(--color-success-l), 0.1) !important;
-      color: hsl(var(--color-success-h), var(--color-success-s), calc(var(--color-success-l) - 5%)) !important;
-      .item-icon-ephemeral { color: hsl(var(--color-success-h), var(--color-success-s), calc(var(--color-success-l) - 5%)) !important; }
-    }
-  }
+  .item-icon-ephemeral { width: 1.125rem; height: 1.125rem; opacity: 0.7; }
+  &:hover   .item-icon-ephemeral,
+  &:focus-visible .item-icon-ephemeral { opacity: 1; }
 }
 
 </style>

@@ -1,119 +1,62 @@
-// File: frontend/src/styles/abstracts/theme-engine.scss
-/**
- * @file _theme-engine.scss
- * @description Generates CSS custom properties for each theme based on SCSS maps
- * from _theme-definitions.scss (which should be aligned with themes.config.ts).
- * Applies a default theme and allows switching via a 'data-theme' attribute on the html element.
- * @version 3.0.0 - Simplified to only output what themes.config.ts provides.
- * SCSS variable fallbacks are now primarily in _variables.scss for mixin/function use.
- */
+@use 'sass:map';
+/* tailwindcss-disable */
+/* tailwindcss-intellisense-disable */
 
-@use './theme-definitions.scss' as themes; // SCSS maps mirroring themes.config.ts
-@use '../abstracts/variables' as var; // For SCSS fallbacks if needed, though CSS vars are primary
+/* ---------------------------------------------------------------------------
+ * Theme Engine – generates CSS-variables for every palette
+ *----------------------------------------------------------------------------*/
 
-// Set base :root variables from the default theme map.
-// The ThemeManager.ts will set the initial data-theme attribute.
-// This :root block ensures that if JS fails or data-theme is somehow missing,
-// there are *some* default CSS variables based on the primary theme config.
-// It should match one of the themes defined in ThemeManager.ts (e.g., 'aurora-light' or 'ephemeral-holo-dark').
-// Let's use 'aurora-light' as the base for :root if no data-theme is present initially.
+// 1 — bring the individual maps into scope
+@use './theme-definitions.scss' as themes; // $theme-warm-embrace, …
+
+// 2 — master registry (id → {is-dark, map})
+$theme-registry: (
+  'warm-embrace':   ('is-dark': false, 'map': themes.$theme-warm-embrace),
+  'twilight-neo':   ('is-dark': true,  'map': themes.$theme-twilight-neo),
+  'aurora-daybreak':('is-dark': false, 'map': themes.$theme-aurora-daybreak),
+);
+
+// 3 — optional aliases for legacy IDs
+$theme-aliases: (
+  'ephemeral-holo-dark': 'twilight-neo',
+  'aurora-light':        'aurora-daybreak',
+  'legacy-warm-embrace': 'warm-embrace',
+  'legacy-twilight-neo': 'twilight-neo',
+);
+
+// 4 — helper mixin
+@mixin apply-theme($map) {
+  @each $prop, $val in $map { #{$prop}: #{$val}; }
+}
+
+// 5 — output
+$default-theme: 'aurora-daybreak'; // keep in sync with ThemeManager.ts
+
+/* Fallback root vars (JS disabled) */
 :root {
-  @each $property, $value in themes.$theme-aurora-daybreak { // Or your chosen absolute default
-    #{$property}: #{$value};
-  }
-  // Set default color-scheme for the base theme
-  color-scheme: light; // Assuming aurora-daybreak is light
-
-  // --- Global Fallback CSS Custom Properties from SCSS Variables ---
-  // These ensure that common SCSS variables are also available as CSS variables for general use,
-  // even if not explicitly defined in every theme's CSS variable map (though they should be for themeability).
-  // This acts as a safety net or a way to expose SCSS design tokens as CSS vars.
-  
-  // Typography
-  --font-family-sans-serif: #{var.$font-family-sans};
-  --font-family-monospace: #{var.$font-family-mono};
-  --font-family-display: #{var.$font-family-display};
-  --font-size-base: #{var.$font-size-base-default};
-  --letter-spacing-base: #{var.$letter-spacing-base-default};
-  --line-height-base: #{var.$line-height-base-default};
-
-  // Radii
-  --radius-xs: #{var.$radius-xs};
-  --radius-sm: #{var.$radius-sm};
-  --radius-md: #{var.$radius-md};
-  --radius-lg: #{var.$radius-lg};
-  --radius-xl: #{var.$radius-xl};
-  --radius-2xl: #{var.$radius-2xl};
-  --radius-3xl: #{var.$radius-3xl};
-  --radius-full: #{var.$radius-full};
-  --radius-holographic: #{var.$radius-holographic-default};
-
-  // Spacing & Layout
-  --spacing-unit: #{var.$spacing-unit};
-  --spacing-xs: #{var.$spacing-xs};
-  --spacing-sm: #{var.$spacing-sm};
-  --spacing-md: #{var.$spacing-md};
-  --spacing-lg: #{var.$spacing-lg};
-  --spacing-xl: #{var.$spacing-xl};
-  --header-height: #{var.$header-height-default};
-  --footer-height: #{var.$footer-height-default};
-  --chat-log-height: #{var.$chat-log-height-default};
-
-  // Animation & Transitions
-  --duration-quick: #{var.$duration-quick};
-  --duration-smooth: #{var.$duration-smooth};
-  --duration-movement: #{var.$duration-movement};
-  --ease-out-quad: #{var.$ease-out-quad};
-  --ease-out-quint: #{var.$ease-out-quint};
-  --ease-in-out-sine: #{var.$ease-in-out-sine};
-  --ease-elastic: #{var.$ease-elastic};
-
-  // Default blur for glass effects
-  --blur-glass-fallback: #{var.$blur-glass-default}; // If a theme doesn't provide --blur-glass
-
-  // Default shadow depth values (full shadow strings)
-  --shadow-depth-sm-fallback: #{var.$scss-box-shadow-sm};
-  --shadow-depth-md-fallback: #{var.$scss-box-shadow-md};
-  --shadow-depth-lg-fallback: #{var.$scss-box-shadow-lg};
+  @include apply-theme(map.get(map.get($theme-registry, $default-theme), 'map'));
+  color-scheme: if(
+    map.get(map.get($theme-registry, $default-theme), 'is-dark'),
+    dark, light
+  );
 }
 
-// Generate CSS custom properties for each theme defined in SCSS maps
-// These will be applied when html[data-theme="theme-id"] is set.
-
-html[data-theme="ephemeral-holo-dark"] {
-  @each $property, $value in themes.$theme-ephemeral-holo-dark {
-    #{$property}: #{$value};
+/* one selector per real theme */
+@each $id, $meta in $theme-registry {
+  html[data-theme="#{$id}"] {
+    @include apply-theme(map.get($meta, 'map'));
+    color-scheme: if(map.get($meta, 'is-dark'), dark, light);
   }
-  color-scheme: dark;
 }
 
-html[data-theme="aurora-light"] {
-  @each $property, $value in themes.$theme-aurora-daybreak { // Corrected from $theme-aurora-light
-    #{$property}: #{$value};
-  }
-  color-scheme: light;
-}
+/* alias selectors (duplicate the vars, no @extend) */
+@each $alias, $target in $theme-aliases {
+  $target-meta: map.get($theme-registry, $target);
+  $target-map : map.get($target-meta, 'map');
+  $target-dark: map.get($target-meta, 'is-dark');
 
-html[data-theme="legacy-warm-embrace"] {
-  @each $property, $value in themes.$theme-warm-embrace { // Name of map in _theme-definitions
-    #{$property}: #{$value};
+  html[data-theme="#{$alias}"] {
+    @include apply-theme($target-map);
+    color-scheme: if($target-dark, dark, light);
   }
-  color-scheme: light;
 }
-
-html[data-theme="legacy-twilight-neo"] {
-  @each $property, $value in themes.$theme-twilight-neo { // Name of map in _theme-definitions
-    #{$property}: #{$value};
-  }
-  color-scheme: dark;
-}
-
-// Add selectors for other themes (e.g., "BioSynth Light", "Ephemeral Glass") as they are defined
-// in themes.config.ts and mirrored in _theme-definitions.scss.
-// Example:
-// html[data-theme="biosynth-light"] {
-//   @each $property, $value in themes.$theme-biosynth-light { // Assuming $theme-biosynth-light map exists
-//     #{$property}: #{$value};
-//   }
-//   color-scheme: light;
-// }

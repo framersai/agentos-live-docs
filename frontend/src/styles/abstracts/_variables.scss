@@ -201,3 +201,9 @@ $default-color-info-h: 190; $default-color-info-s: 70%; $default-color-info-l: 5
 $default-color-success-h: 140; $default-color-success-s: 60%; $default-color-success-l: 50%;
 $default-color-warning-h: 40; $default-color-warning-s: 80%; $default-color-warning-l: 55%;
 $default-color-error-h: 0; $default-color-error-s: 75%; $default-color-error-l: 58%;
+
+/* Near the other radius tokens */
+$radius-holographic-default: 0.625rem; // 10px
+
+/* ↓ add this alias so legacy code keeps working */
+$radius-holo: $radius-holographic-default;
