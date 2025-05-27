@@ -149,22 +149,5 @@ const onShowPriorChatLog = () => {
 // This scoped style block is for very specific, one-off adjustments if necessary.
 
 // Placeholder styles for fallback content - ensure they are minimal and don't conflict
-.nav-button-placeholder, .user-settings-trigger-placeholder {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: 38px; // Match button height
-  padding: 0 var.$spacing-md;
-  border-radius: var.$radius-md;
-  background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.2);
-  color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
-  font-size: var.$font-size-sm;
-  animation: subtlePulse 1.5s infinite ease-in-out; // Use a global pulse animation
-  min-width: 80px; // Example width
-}
-.user-settings-trigger-placeholder {
-  width: 40px; /* Approx size of the user icon button */
-  min-width: 40px;
-  padding: 0;
-}
+
 </style>
