@@ -1,15 +1,15 @@
-// File: frontend/src/components/agents/common/AgentChatLog.vue
 /**
  * @file AgentChatLog.vue
  * @description Displays the conversational chat history for the active agent.
- * @version 1.0.2 - Correctly maps ChatMessage to MessageData for the Message component.
+ * @version 1.0.3 - Corrected onMounted import and moved styles to SCSS.
  */
 <script setup lang="ts">
-import { computed, watch, nextTick, PropType, ref as vueRef } from 'vue';
-import { useChatStore, type ChatMessage } from '@/store/chat.store';
+import { computed, watch, nextTick, PropType, ref as vueRef, onMounted } from 'vue'; // <-- ADDED onMounted HERE
+import { useChatStore } from '@/store/chat.store';
 import Message from '@/components/Message.vue';
-import type { MessageData } from '@/components/Message.vue'; // Import MessageData
+import type { MessageData } from '@/components/Message.vue';
 import type { AgentId } from '@/services/agent.service';
+import type { ChatMessage as StoreChatMessage } from '@/store/chat.store';
 
 const props = defineProps({
     agentId: {
@@ -21,18 +21,18 @@ const props = defineProps({
 const chatStore = useChatStore();
 const chatLogRef = vueRef<HTMLElement | null>(null);
 
-// Filter 'system' messages and map to MessageData if other properties differ significantly
-// For now, the main difference is the 'role' type.
 const displayableMessages = computed((): MessageData[] => {
     return chatStore.getMessagesForAgent(props.agentId)
-        .filter(msg => msg.role === 'user' || msg.role === 'assistant')
+        .filter(msg => msg.role === 'user' || msg.role === 'assistant' || msg.role === 'error' || msg.role === 'tool')
         .map(msg => ({
-            // Explicitly map to MessageData properties
-            role: msg.role as 'user' | 'assistant', // Cast here is safe due to filter
-            content: msg.content ?? '', // Ensure content is always a string
+            id: msg.id, // ID is crucial for MessageData
+            role: msg.role as MessageData['role'],
+            content: msg.content ?? '',
             timestamp: msg.timestamp,
-            // id: msg.id, // Message.vue doesn't use 'id' prop based on its MessageData interface
-            // Any other properties on ChatMessage not in MessageData are implicitly dropped here
+            isError: msg.isError,
+            tool_calls: msg.tool_calls,
+            tool_call_id: msg.tool_call_id,
+            name: msg.name,
         }));
 });
 
@@ -48,9 +48,16 @@ const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {
 };
 
 watch(displayableMessages, () => {
-    scrollToBottom('auto'); // Use 'auto' for instant scroll on new messages if preferred
+    scrollToBottom('auto');
 }, { deep: true, immediate: true });
 
+onMounted(() => {
+  nextTick(scrollToBottom);
+});
+
+defineExpose({
+  scrollToBottom
+});
 </script>
 
 <template>
@@ -58,45 +65,13 @@ watch(displayableMessages, () => {
         <transition-group name="chat-message-fade" tag="div">
             <Message
                 v-for="(message, index) in displayableMessages"
-                :key="message.timestamp ? `msg-${message.timestamp}-${index}` : `msg-fallback-${index}`" 
+                :key="message.id ?? `msg-fallback-${message.timestamp}-${index}`" 
                 :message="message"
                 class="chat-message-item"
             />
         </transition-group>
-        <div v-if="displayableMessages.length === 0" class="text-center py-10 text-slate-500 italic text-sm">
+        <div v-if="displayableMessages.length === 0" class="empty-chat-placeholder">
             Chat log is empty for {{ agentId }}. Start a conversation!
         </div>
     </div>
 </template>
-
-<style lang="postcss" scoped>
-.agent-chat-log {
-    background-color: rgba(10, 5, 20, 0.1);
-    min-height: 200px;
-}
-
-.chat-message-item {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.chat-message-fade-enter-active {
-    transition: all 0.4s ease-out;
-}
-.chat-message-fade-leave-active {
-    transition: all 0.3s ease-in;
-}
-
-.chat-message-fade-enter-from {
-    opacity: 0;
-    transform: translateY(20px);
-}
-.chat-message-fade-leave-to {
-    opacity: 0;
-    transform: scale(0.95) translateY(-10px);
-}
-
-.chat-message-fade-move {
-  transition: transform 0.3s ease-out;
-}
-</style>

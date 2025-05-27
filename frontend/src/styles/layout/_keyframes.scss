@@ -1,0 +1,108 @@
+// File: frontend/src/styles/animations/_keyframes.scss
+/**
+ * @file _keyframes.scss
+ * @description Defines custom @keyframes for animations used in the "Ephemeral Harmony" design system.
+ * Includes effects for UI elements, transitions, and voice interaction visualizations.
+ * @version 2.0.0
+ */
+
+@use '../abstracts/variables' as var;
+
+// Core UI Animations (from Tailwind config, now centralized here for SCSS use)
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes slideInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes subtlePulse { // Generic subtle pulse
+  0%, 100% { transform: scale(1); opacity: var(--opacity-start, 1); }
+  50% { transform: scale(var(--scale-pulse, 1.02)); opacity: var(--opacity-pulse, 0.85); }
+}
+
+@keyframes subtleGlow { // For text or small elements
+  from { text-shadow: 0 0 4px hsla(var(--color-accent-glow-h), var(--color-accent-glow-s), var(--color-accent-glow-l), calc(var(--color-accent-glow-a) * 0.7)); }
+  to { text-shadow: 0 0 10px hsla(var(--color-accent-glow-h), var(--color-accent-glow-s), var(--color-accent-glow-l), var(--color-accent-glow-a)),
+                   0 0 1px hsla(var(--color-accent-glow-h), var(--color-accent-glow-s), var(--color-accent-glow-l), var(--color-accent-glow-a)); }
+}
+
+// Holographic & Ephemeral Animations
+@keyframes holoShimmer { // For background gradients or borders (animates background-position)
+  0% { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+
+@keyframes ephemeralAppear { // For messages in ephemeral chat log
+  from { opacity: 0; transform: scale(0.95) translateY(15px); }
+  to { opacity: var(--opacity-final, 0.9); transform: scale(1) translateY(0); }
+}
+
+@keyframes ephemeralVanish { // For messages fading out (if implemented)
+  from { opacity: var(--opacity-start, 0.9); transform: scale(1) translateY(0); }
+  to { opacity: 0; transform: scale(0.95) translateY(-15px); }
+}
+
+// Voice Visualization Keyframes
+@keyframes voiceAuraPulse { // For a soft, breathing aura effect
+  0% { transform: scale(0.7); opacity: 0; }
+  50% { opacity: var(--voice-pulse-opacity, 0.6); } // Use CSS var for themeable opacity
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+@keyframes voiceLightStreak { // For the header AI status indicator's streak
+  0% { transform: translateX(-100%); opacity: 0.5; } // Streak starts off-left
+  50% { opacity: 1; }
+  100% { transform: translateX(330%); opacity: 0.5; } // Streak moves across and off-right (30% width of streak, 100% / 30% = 3.33 * 100% = 333%)
+}
+
+@keyframes ephemeralRipples { // For concentric ripples
+  from {
+    transform: scale(0);
+    opacity: 0.7;
+    // border-color: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.7);
+  }
+  to {
+    transform: scale(3); // Adjust scale for ripple size
+    opacity: 0;
+    // border-color: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0);
+  }
+}
+
+@keyframes holographicParticleDrift {
+  0% { transform: translate(0, 0) rotate(0deg); opacity: 0.1; }
+  25% { transform: translate(5px, 10px) rotate(10deg); opacity: 0.3; }
+  50% { transform: translate(-5px, 20px) rotate(-10deg); opacity: 0.2; }
+  75% { transform: translate(0px, 10px) rotate(5deg); opacity: 0.4; }
+  100% { transform: translate(0, 0) rotate(0deg); opacity: 0.1; }
+}
+
+@keyframes holographicParticleActive { // When voice is active
+  0% { opacity: 0.5; transform: scale(1.1); filter: brightness(1.2); }
+  50% { opacity: 0.8; transform: scale(1); filter: brightness(1.5); }
+  100% { opacity: 0.5; transform: scale(1.1); filter: brightness(1.2); }
+}
+
+// Animated Border Glow (from holographic-border-glow mixin)
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+// Blinking cursor for streaming text
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}

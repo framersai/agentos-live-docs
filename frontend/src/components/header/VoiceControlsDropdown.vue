@@ -155,84 +155,60 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="relative" ref="dropdownRef">
-  <button
+  <div class="vcd" ref="dropdownRef"> <button
       @click="toggleDropdown"
       id="voice-settings-button"
-      class="nav-button"
-      aria-haspopup="true"
-      :aria-expanded="isOpen" title="Voice & Speech Settings"
+      class="vcd__trigger" aria-haspopup="true"
+      :aria-expanded="isOpen ? 'true' : 'false'" title="Voice & Speech Settings"
     >
       <AdjustmentsHorizontalIcon class="icon-sm" />
-      <span class="font-medium text-sm hidden md:inline">Voice</span>
-      <ChevronDownIcon class="icon-xs transition-transform" :class="{ 'rotate-180': isOpen }" />
-    </button>
+      <span class="vcd__trigger-text">Voice</span> <ChevronDownIcon class="icon-xs vcd__trigger-chevron" :class="{ 'rotated': isOpen }" /> </button>
 
     <transition name="dropdown-float">
       <div
         v-show="isOpen"
-        class="dropdown-menu w-72 sm:w-80 md:w-[22rem]"
-        role="menu"
+        class="vcd__menu" role="menu"
         aria-orientation="vertical"
         aria-labelledby="voice-settings-button"
       >
-        <div class="dropdown-header">
-          <h3 class="dropdown-title">Voice & Speech Output</h3>
-          <button @click="navigateToSettings" class="p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700/60 transition-colors" title="Go to All Settings">
-            <Cog6ToothIcon class="icon-sm text-gray-500 dark:text-gray-400"/>
+        <div class="vcd__header"> <h3 class="vcd__title">Voice & Speech Output</h3> <button @click="navigateToSettings" class="vcd__settings-btn" title="Go to All Settings"> <Cog6ToothIcon class="icon-sm"/>
           </button>
         </div>
 
-        <div class="dropdown-content p-4 space-y-5">
-          <div class="flex items-center justify-between">
-            <label for="autoPlayTtsToggleHeader" class="dropdown-label">Auto-Play Responses</label>
-            <label class="toggle-switch">
+        <div class="vcd__content"> <div class="flex items-center justify-between">
+            <label for="autoPlayTtsToggleHeader" class="vcd__label">Auto-Play Responses</label> <label class="toggle-switch-analog">
               <input id="autoPlayTtsToggleHeader" type="checkbox" :checked="settings.autoPlayTts" @change="toggleAutoPlayTts" class="sr-only peer" />
-              <div class="toggle-switch-track"></div>
-            </label>
+              <span class="toggle-switch-track"></span> <span class="toggle-switch-knob"></span>  </label>
           </div>
 
           <div>
-            <label class="dropdown-label-sm mb-2">TTS Provider: <span class="font-semibold text-primary-600 dark:text-primary-400">{{ currentProviderLabel }}</span></label>
-            <div class="grid grid-cols-2 gap-2.5">
-              <button @click="selectProvider('browser_tts')" :class="['btn-tab-sm', settings.ttsProvider === 'browser_tts' ? 'active' : '']">Browser</button>
-              <button @click="selectProvider('openai_tts')" :class="['btn-tab-sm', settings.ttsProvider === 'openai_tts' ? 'active' : '']">OpenAI</button>
-            </div>
+            <label class="vcd__label-sm">TTS Provider: <span class="vcd__label-value">{{ currentProviderLabel }}</span></label> <div class="vcd__provider-tabs"> <button @click="selectProvider('browser_tts')" :class="['vcd__provider-tab', settings.ttsProvider === 'browser_tts' ? 'active' : '']">Browser</button> <button @click="selectProvider('openai_tts')" :class="['vcd__provider-tab', settings.ttsProvider === 'openai_tts' ? 'active' : '']">OpenAI</button> </div>
           </div>
 
           <div v-if="voicesAreLoaded">
-            <label for="voiceSelectHeader" class="dropdown-label-sm mb-1.5">Voice: <span class="font-semibold text-primary-600 dark:text-primary-400 truncate max-w-[150px] inline-block align-bottom">{{ currentVoiceName }}</span></label>
-            <div class="relative">
+            <label for="voiceSelectHeader" class="vcd__label-sm">Voice: <span class="vcd__label-value truncate">{{ currentVoiceName }}</span></label> <div class="relative">
               <select id="voiceSelectHeader" :value="settings.selectedTtsVoiceId || ''" @change="selectVoice($event)"
-                class="form-select w-full" :disabled="currentProviderVoices.length === 0">
+                class="form-select-analog w-full" :disabled="currentProviderVoices.length === 0">
                 <option v-if="currentProviderVoices.length === 0" value="" disabled>No voices for {{currentProviderLabel}}</option>
-                <option v-else value="">Default for {{currentProviderLabel}}</option> <option v-for="voice in currentProviderVoices" :key="voice.id" :value="voice.id">
+                <option v-else value="">Default for {{currentProviderLabel}}</option>
+                <option v-for="voice in currentProviderVoices" :key="voice.id" :value="voice.id">
                   {{ voice.name.length > 35 ? voice.name.substring(0,32)+'...' : voice.name }} ({{ voice.lang }})
                 </option>
               </select>
             </div>
           </div>
-          <div v-else class="dropdown-label-sm text-center py-2 text-gray-500 dark:text-gray-400 italic">Loading voices...</div>
-
-          <div class="space-y-4 pt-1">
+          <div v-else class="vcd__label-sm text-center py-2 text-gray-500 dark:text-gray-400 italic">Loading voices...</div> <div class="vcd__range-slider-group pt-1"> <div>
+              <label :for="'volumeSliderHeader-' + settings.ttsProvider" class="vcd__label-sm">Volume: <span class="font-semibold">{{ Math.round(settings.ttsVolume * 100) }}%</span></label> <input type="range" :id="'volumeSliderHeader-' + settings.ttsProvider" :value="settings.ttsVolume" @input="handleRangeInput('ttsVolume', $event)" min="0" max="1" step="0.01" class="vcd__range-slider" /> </div>
             <div>
-              <label :for="'volumeSliderHeader-' + settings.ttsProvider" class="dropdown-label-sm mb-1.5">Volume: <span class="font-semibold">{{ Math.round(settings.ttsVolume * 100) }}%</span></label>
-              <input type="range" :id="'volumeSliderHeader-' + settings.ttsProvider" :value="settings.ttsVolume" @input="handleRangeInput('ttsVolume', $event)" min="0" max="1" step="0.01" class="range-slider-compact" />
-            </div>
-            <div>
-              <label :for="'rateSliderHeader-' + settings.ttsProvider" class="dropdown-label-sm mb-1.5">Rate: <span class="font-semibold">{{ settings.ttsRate.toFixed(1) }}x</span></label>
-              <input type="range" :id="'rateSliderHeader-' + settings.ttsProvider" :value="settings.ttsRate" @input="handleRangeInput('ttsRate', $event)" min="0.5" max="2.5" step="0.1" class="range-slider-compact" />
-            </div>
+              <label :for="'rateSliderHeader-' + settings.ttsProvider" class="vcd__label-sm">Rate: <span class="font-semibold">{{ settings.ttsRate.toFixed(1) }}x</span></label>
+              <input type="range" :id="'rateSliderHeader-' + settings.ttsProvider" :value="settings.ttsRate" @input="handleRangeInput('ttsRate', $event)" min="0.5" max="2.5" step="0.1" class="vcd__range-slider" /> </div>
             <div v-if="settings.ttsProvider === 'browser_tts'">
-              <label :for="'pitchSliderHeader-' + settings.ttsProvider" class="dropdown-label-sm mb-1.5">Pitch: <span class="font-semibold">{{ settings.ttsPitch.toFixed(1) }}</span></label>
-              <input type="range" :id="'pitchSliderHeader-' + settings.ttsProvider" :value="settings.ttsPitch" @input="handleRangeInput('ttsPitch', $event)" min="0" max="2" step="0.1" class="range-slider-compact" />
-            </div>
+              <label :for="'pitchSliderHeader-' + settings.ttsProvider" class="vcd__label-sm">Pitch: <span class="font-semibold">{{ settings.ttsPitch.toFixed(1) }}</span></label>
+              <input type="range" :id="'pitchSliderHeader-' + settings.ttsProvider" :value="settings.ttsPitch" @input="handleRangeInput('ttsPitch', $event)" min="0" max="2" step="0.1" class="vcd__range-slider" /> </div>
           </div>
         </div>
 
-        <div class="dropdown-footer">
-          <button @click="navigateToSettings" class="btn btn-ghost btn-sm w-full justify-center text-sm">
-            <Cog6ToothIcon class="icon-sm mr-1.5" /> All Settings
+        <div class="vcd__footer"> <button @click="navigateToSettings" class="vcd__footer-btn-all-settings"> <Cog6ToothIcon class="icon-sm mr-1.5" /> All Settings
           </button>
         </div>
       </div>
@@ -240,69 +216,3 @@ export default defineComponent({
   </div>
 </template>
 
-<style scoped lang="postcss">
-/* Using global .nav-button, .dropdown-menu, .dropdown-header, .dropdown-content, .form-select, .toggle-switch */
-/* Specific styles or overrides for VoiceControlsDropdown */
-
-.dropdown-title {
-  @apply text-base font-semibold text-gray-800 dark:text-gray-100;
-}
-.dropdown-label { /* For main labels like Auto-Play */
-   @apply text-sm font-medium text-gray-700 dark:text-gray-200 cursor-pointer;
-}
-.dropdown-label-sm { /* For sub-labels like Volume, Rate */
-  @apply block text-xs font-medium text-gray-500 dark:text-gray-400;
-}
-
-.btn-tab-sm { /* Smaller tabs for provider selection */
-  @apply px-3 py-1.5 text-xs font-semibold rounded-md border transition-colors duration-150 ease-in-out flex-1 text-center
-        shadow-sm hover:shadow focus-visible:ring-2 focus-visible:ring-offset-1 dark:focus-visible:ring-offset-gray-900; /* CORRECTED: Was dark:focus-visible:ring-offset-gray-850 */
-  @apply border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700/40
-        hover:bg-gray-50 dark:hover:bg-gray-700;
-}
-.btn-tab-sm.active {
-  @apply bg-primary-500 text-white border-primary-500 dark:bg-primary-500 dark:border-primary-500
-        hover:bg-primary-600 dark:hover:bg-primary-600 shadow-md;
-}
-.btn-tab-sm:disabled {
-  @apply opacity-60 cursor-not-allowed bg-gray-100 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 dark:text-gray-500;
-}
-
-.range-slider-compact {
-  @apply w-full h-2 bg-gray-200 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer transition-opacity hover:opacity-90;
-  --slider-progress: 0%; /* Will be updated by JS */
-  background-color: theme('colors.gray.300'); /* Default to light track */
-  background-image: linear-gradient(to right, theme('colors.primary.500') var(--slider-progress), transparent var(--slider-progress));
-}
-.dark .range-slider-compact {
-  background-color: theme('colors.gray.600'); /* Default to dark track */
-  background-image: linear-gradient(to right, theme('colors.primary.400') var(--slider-progress), transparent var(--slider-progress));
-}
-
-.range-slider-compact::-webkit-slider-thumb {
-  @apply appearance-none w-4 h-4 bg-primary-600 dark:bg-primary-400 rounded-full cursor-pointer shadow
-        border-2 border-white dark:border-gray-700;
-}
-.range-slider-compact::-moz-range-thumb {
-  @apply w-4 h-4 bg-primary-600 dark:bg-primary-400 rounded-full cursor-pointer border-0 shadow;
-}
-
-.dropdown-footer {
-  @apply px-3 py-2.5 border-t border-gray-200 dark:border-gray-700/60;
-}
-
-/* Dropdown animation - subtle float and fade */
-.dropdown-float-enter-active,
-.dropdown-float-leave-active {
-  transition: opacity 0.2s var(--ease-out-cubic), transform 0.2s var(--ease-out-cubic); /* Assuming --ease-out-cubic is defined in main.css or tailwind.config */
-}
-.dropdown-float-enter-from,
-.dropdown-float-leave-to {
-  opacity: 0;
-  transform: translateY(-12px) scale(0.95);
-}
-
-.icon-sm { @apply w-4 h-4; }
-.icon-xs { @apply w-3.5 h-3.5; }
-
-</style>

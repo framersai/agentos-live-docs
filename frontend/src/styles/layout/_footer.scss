@@ -1,0 +1,248 @@
+// File: frontend/src/styles/layout/_footer.scss
+/**
+ * @file _footer.scss
+ * @description Styles for the main application footer for the "Ephemeral Harmony" theme.
+ * Features a minimal, themed appearance with status indicators, branding, and quick actions.
+ * @version 2.1.1 - Corrected neomorphic mixin calls.
+ */
+
+@use '../abstracts/variables' as var;
+@use '../abstracts/mixins' as mixins;
+
+// Base class for the footer element in Footer.vue
+.app-footer-ephemeral {
+  height: var(--footer-height, var.$footer-height);
+  padding: 0 var.$spacing-md;
+  display: flex;
+  flex-direction: column; // Allow for main row and copyright row
+  align-items: center;
+  justify-content: center; // Center content within the footer height
+  position: relative; // For positioning elements like the logs panel wrapper if it's triggered from here
+  z-index: var.$z-index-sticky - 1; // Below header, but above main content if overlapping
+
+  // Subtle background, less pronounced than header
+  background-color: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.4);
+  backdrop-filter: blur(calc(var(--blur-glass) / 2));
+  -webkit-backdrop-filter: blur(calc(var(--blur-glass) / 2));
+  border-top: 1px solid hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), calc(var(--color-border-glass-a) * 0.5));
+  box-shadow: 0 -3px 15px hsla(var(--shadow-color-h), var(--shadow-color-s), var(--shadow-color-l), 0.03);
+
+  color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+  font-size: var.$font-size-sm;
+  width: 100%; // Ensure it spans the full width
+
+  transition: background-color var.$duration-smooth var.$ease-out-quad,
+              border-color var.$duration-smooth var.$ease-out-quad,
+              color var.$duration-smooth var.$ease-out-quad;
+
+  .footer-content-wrapper-ephemeral {
+    width: 100%;
+    max-width: var.$site-max-width; // Assuming a site max-width variable
+    padding: var.$spacing-xs 0;   // Minimal vertical padding for the content row
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .footer-main-row-ephemeral {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap; // Allow wrapping on smaller screens
+    align-items: center;
+    justify-content: space-between;
+    gap: var.$spacing-sm;
+  }
+
+  .footer-branding-ephemeral {
+    display: flex;
+    align-items: center;
+    gap: var.$spacing-sm;
+
+    .footer-logo-ephemeral {
+      width: 1.75rem; // 28px
+      height: 1.75rem;
+      opacity: 0.7;
+      filter: drop-shadow(0 0 2px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.3));
+    }
+
+    .brand-text-group {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start; // Align text to the left if stacked
+
+      .brand-title-ephemeral {
+        font-family: var(--font-display, var.$font-family-display);
+        font-size: var.$font-size-sm;
+        font-weight: 500;
+        color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+        line-height: 1.2;
+      }
+      .brand-powered-by-ephemeral {
+        font-size: 0.65rem; // xxs
+        color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+        line-height: 1.2;
+        a {
+          color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+          &:hover {
+            color: hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l));
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+  }
+
+  .footer-status-actions-ephemeral {
+    display: flex;
+    align-items: center;
+    gap: var.$spacing-xs; // Smaller gap for action buttons
+  }
+
+  .api-status-indicator-ephemeral {
+    display: inline-flex;
+    align-items: center;
+    padding: calc(var.$spacing-xs * 0.75) var.$spacing-sm;
+    border-radius: var.$radius-full; // Pill shape
+    background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.5);
+    border: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.2);
+    font-size: 0.7rem; // Smaller text for status
+    line-height: 1;
+
+    .icon { // Class for heroicons
+      width: 0.875rem; // 14px
+      height: 0.875rem;
+      margin-right: var.$spacing-xs;
+    }
+
+    .status-text {
+      // Color set by JS based on status
+    }
+
+    .status-dot {
+      width: 0.5rem; // 8px
+      height: 0.5rem;
+      border-radius: var.$radius-full;
+      margin-left: var.$spacing-xs;
+      // background-color set by JS
+      box-shadow: 0 0 3px 0px currentColor; // Glow with its own color
+    }
+  }
+
+  .footer-action-button-ephemeral {
+    @include mixins.neomorphic-extrude(
+      hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.7), // 1. $bg-color
+      2px, // 2. $distance
+      4px, // 3. $blur
+      calc(var(--shadow-opacity-soft) * 0.5), // 4. $light-shadow-opacity
+      calc(var(--shadow-opacity-soft) * 0.7), // 5. $dark-shadow-opacity
+      var.$radius-md, // 6. $radius
+      // Corrected shadow parameters:
+      var(--shadow-color-h), // 7. $shadow-h
+      var(--shadow-color-s), // 8. $shadow-s
+      var(--shadow-color-l), // 9. $base-shadow-l
+      calc(var(--shadow-color-l) + var(--shadow-highlight-modifier)) // 10. $highlight-l
+    );
+    display: inline-flex;
+    align-items: center;
+    gap: calc(var.$spacing-xs * 0.5);
+    padding: calc(var.$spacing-xs * 1.25) var.$spacing-sm; // Smaller padding
+    font-size: 0.7rem; // Smaller text
+    color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+    line-height: 1;
+    border: none; // Neomorphic handles edges
+
+    &:hover {
+      color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+      filter: brightness(1.1);
+      // Neomorphic hover state can be adjusted here if default mixin :active is not enough
+    }
+    &:active {
+      // Uses mixin's default active state, can be overridden if needed
+      filter: brightness(0.95);
+    }
+
+    &.active { // For toggled states like Logs button - CORRECTED CALL
+      @include mixins.neomorphic-inset(
+        hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), calc(var(--color-bg-secondary-l) - 2%), 0.8), // $fill-color
+        2px, // $blur
+        3px, // $distance
+        calc(var(--shadow-opacity-soft) * 0.6), // $dark-shadow-opacity
+        calc(var(--shadow-opacity-soft) * 0.6), // $light-shadow-opacity
+        var.$radius-md, // $radius
+        // Shadow color components:
+        var(--shadow-color-h), // $shadow-h
+        var(--shadow-color-s), // $shadow-s
+        var(--shadow-color-l), // $dark-shadow-l
+        calc(var(--shadow-color-l) + var(--shadow-highlight-modifier)) // $light-shadow-l
+      );
+      color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+    }
+
+    .icon { // Class for heroicons within these buttons
+      width: 1rem; // 16px
+      height: 1rem;
+      opacity: 0.8;
+    }
+    &:hover .icon {
+      opacity: 1;
+    }
+  }
+
+  .footer-attributions-ephemeral {
+    width: 100%;
+    text-align: center;
+    font-size: 0.65rem; // xxs
+    padding-top: var.$spacing-xs;
+    margin-top: var.$spacing-xs;
+    border-top: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.1);
+    color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), calc(var(--color-text-muted-l) + 5%)); // Slightly lighter muted text
+    font-family: var(--font-mono, var.$font-family-mono);
+    letter-spacing: 0.02em;
+
+    a {
+      color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), calc(var(--color-text-muted-l) + 10%));
+      text-decoration: none;
+      &:hover {
+        color: hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l));
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+// Logs Panel Specifics
+.logs-panel-wrapper-ephemeral {
+  position: fixed; // Fixed position relative to viewport
+  bottom: calc(var(--footer-height, var.$footer-height) - 1px); // Sit just above the footer line
+  left: 0;
+  right: 0;
+  padding: 0 var.$spacing-sm; // Horizontal padding
+  z-index: var.$z-index-sticky - 2; // Below footer, above main content if footer is transparent
+  pointer-events: none; // Wrapper doesn't block interactions
+
+  .logs-display-card-ephemeral { // The actual SystemLogDisplay component
+    @include mixins.glassmorphic-pane(
+      hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.85), // More opaque glass
+      hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.4),
+      calc(var(--blur-glass) * 0.75), // Slightly less blur
+      var(--shadow-depth-lg)
+    );
+    border-radius: var.$radius-lg var.$radius-lg 0 0; // Rounded top corners
+    max-height: 45vh; // Max height for the logs panel
+    overflow: hidden; // SystemLogDisplay itself will handle internal scroll
+    pointer-events: auto; // Log display is interactive
+    margin: 0 auto; // Center if max-width is applied
+    max-width: 900px; // Max width for the logs panel
+  }
+}
+
+// Transition for the logs panel
+.slide-up-fade-logs-enter-active,
+.slide-up-fade-logs-leave-active {
+  transition: transform var.$duration-smooth var.$ease-out-expo, opacity var.$duration-smooth var.$ease-out-expo;
+}
+.slide-up-fade-logs-enter-from,
+.slide-up-fade-logs-leave-to {
+  transform: translateY(20px) scale(0.98);
+  opacity: 0;
+}

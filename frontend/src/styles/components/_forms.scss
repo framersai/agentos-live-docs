@@ -1,0 +1,224 @@
+/**
+ * @file _forms.scss
+ * @description Base styling for form elements (inputs, textareas, selects)
+ * for the "Ephemeral Harmony" theme, featuring neomorphic and holographic touches.
+ * @version 2.0.1 - Corrected SVG arrow colors and neomorphic mixin calls.
+ */
+
+@use '../abstracts/variables' as var;
+@use '../abstracts/mixins' as mixins;
+
+// Common base for form inputs, textareas, and selects
+.form-element-base {
+  display: block;
+  width: 100%;
+  padding: var.$spacing-sm var.$spacing-md;
+  font-family: var(--font-sans, var.$font-family-sans);
+  font-size: var.$font-size-base;
+  line-height: var.$line-height-base;
+  color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+  background-color: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.5); // Semi-transparent bg
+  border: 1px solid hsl(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l));
+  border-radius: var.$radius-lg; // Consistent radius
+  transition: border-color var.$duration-quick var.$ease-out-quad,
+              box-shadow var.$duration-quick var.$ease-out-quad,
+              background-color var.$duration-quick var.$ease-out-quad;
+
+  // Subtle inset shadow for a slightly depressed look
+  box-shadow: inset 0 1px 3px hsla(var(--shadow-color-h), var(--shadow-color-s), var(--shadow-color-l), 0.1);
+
+  &::placeholder {
+    color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+    opacity: 0.7;
+  }
+
+  &:focus,
+  &:focus-visible {
+    outline: none;
+    border-color: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.8);
+    background-color: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.8); // More opaque on focus
+    // Holographic focus glow
+    box-shadow: inset 0 1px 3px hsla(var(--shadow-color-h), var(--shadow-color-s), var(--shadow-color-l), 0.05),
+                0 0 0 2px hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l),0.5), // Offset clear
+                0 0 0 4px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.5),
+                0 0 12px 2px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.3);
+  }
+
+  &:disabled,
+  &[disabled] {
+    background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.3);
+    border-color: hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.2);
+    color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+    cursor: not-allowed;
+    opacity: 0.6;
+    box-shadow: none;
+  }
+}
+
+// Specific styles for different form elements
+.form-input { // For <input type="text">, <input type="email">, etc.
+  @extend .form-element-base;
+  // Any input-specific overrides
+}
+
+.form-textarea {
+  @extend .form-element-base;
+  min-height: 80px; // Default min-height
+  resize: vertical; // Allow vertical resize
+}
+
+.form-select {
+  @extend .form-element-base;
+  appearance: none;
+  // Custom select arrow using themed SVG or CSS
+  // CORRECTED SVG fill to use hsla with CSS variables directly
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='hsla(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l), 1)'%3E%3Cpath d='M7 10l5 5 5-5H7z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var.$spacing-md center;
+  background-size: 1.5em 1.5em; // Adjust size of the arrow
+  padding-right: calc(var.$spacing-md * 2 + 1.5em); // Ensure space for arrow
+
+  &:disabled {
+    // CORRECTED SVG fill for disabled state
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='hsla(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l), 0.5)'%3E%3Cpath d='M7 10l5 5 5-5H7z'/%3E%3C/svg%3E");
+  }
+}
+
+// Analog style select (from Header.vue mobile, adapted)
+.form-select-analog {
+  @extend .form-select; // Inherit base select styles
+  // Override for analog feel
+  background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.7);
+  border: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.4);
+  // CORRECTED CALL to neomorphic-inset
+  @include mixins.neomorphic-inset(
+    hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.7), // $fill-color
+    2px, // $blur
+    4px, // $distance
+    var(--shadow-opacity-soft), // $dark-shadow-opacity
+    var(--shadow-opacity-soft), // $light-shadow-opacity
+    var.$radius-lg, // $radius
+    // Shadow color components:
+    var(--shadow-color-h),
+    var(--shadow-color-s),
+    var(--shadow-color-l),
+    calc(var(--shadow-color-l) + var(--shadow-highlight-modifier))
+  );
+
+  &:focus,
+  &:focus-visible {
+    border-color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+    // Keep holographic focus from .form-element-base
+  }
+}
+
+// Toggle Switch (from Header.vue, generalized)
+.toggle-switch-analog {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  height: 28px; // Adjust size as needed
+  width: 52px;  // Adjust size
+
+  // The actual checkbox input, hidden but accessible
+  .toggle-switch-input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  // The track of the switch
+  .toggle-switch-track {
+    width: 100%;
+    height: 100%;
+    background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.6);
+    border-radius: var.$radius-full;
+    transition: background-color var.$duration-quick var.$ease-out-quad;
+    // CORRECTED CALL to neomorphic-inset
+    @include mixins.neomorphic-inset( // Track itself is inset
+      hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.6), // $fill-color
+      2px, // $blur
+      3px, // $distance
+      0.05, // $dark-shadow-opacity
+      0.08, // $light-shadow-opacity
+      var.$radius-full, // $radius
+      // Shadow color components:
+      var(--shadow-color-h),
+      var(--shadow-color-s),
+      var(--shadow-color-l),
+      calc(var(--shadow-color-l) + var(--shadow-highlight-modifier))
+    );
+
+    // Checked state styling for the track
+    .toggle-switch-input:checked + & {
+      background-color: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.7);
+      // CORRECTED CALL to neomorphic-inset
+      @include mixins.neomorphic-inset(
+        hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.7), // $fill-color
+        2px, // $blur
+        3px, // $distance
+        0.05, // $dark-shadow-opacity
+        0.08, // $light-shadow-opacity
+        var.$radius-full, // $radius
+        // Shadow color components:
+        var(--shadow-color-h),
+        var(--shadow-color-s),
+        var(--shadow-color-l),
+        calc(var(--shadow-color-l) + var(--shadow-highlight-modifier))
+      );
+    }
+  }
+
+  // The knob of the switch
+  .toggle-switch-knob {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 22px; // Knob size
+    height: 22px;
+    background-color: hsl(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l)); // Solid knob
+    border-radius: 50%;
+    transition: transform var.$duration-smooth var.$ease-elastic;
+    // CORRECTED CALL to neomorphic-extrude
+    @include mixins.neomorphic-extrude( // Knob is extruded
+      hsl(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l)), // $bg-color
+      2px,  // $distance
+      4px,  // $blur
+      0.2,  // $light-shadow-opacity
+      0.15, // $dark-shadow-opacity
+      50%,  // $radius
+      // Shadow color components:
+      var(--shadow-color-h),
+      var(--shadow-color-s),
+      var(--shadow-color-l),
+      calc(var(--shadow-color-l) + var(--shadow-highlight-modifier))
+    );
+
+    // Checked state styling for the knob
+    .toggle-switch-input:checked ~ & { // General sibling combinator
+      transform: translateX(24px); // (width of track - width of knob - 2*offset)
+      background-color: hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l)); // Change knob color when active
+      // CORRECTED CALL to neomorphic-extrude
+      @include mixins.neomorphic-extrude(
+        hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l)), // $bg-color
+        2px,  // $distance
+        4px,  // $blur
+        0.2,  // $light-shadow-opacity
+        0.15, // $dark-shadow-opacity
+        50%,  // $radius
+        // Shadow color components:
+        var(--shadow-color-h),
+        var(--shadow-color-s),
+        var(--shadow-color-l),
+        calc(var(--shadow-color-l) + var(--shadow-highlight-modifier))
+      );
+    }
+  }
+
+  // Focus state for accessibility
+  .toggle-switch-input:focus-visible + .toggle-switch-track {
+     @include mixins.focus-ring('--color-bg-primary', '--color-accent-primary');
+  }
+}
