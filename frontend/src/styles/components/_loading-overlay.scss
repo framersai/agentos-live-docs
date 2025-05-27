@@ -1,0 +1,79 @@
+// File: frontend/src/styles/components/_loading-overlay.scss
+/**
+ * @file _loading-overlay.scss
+ * @description Styles for the global loading overlay.
+ * "Ephemeral Harmony" theme.
+ * @version 1.0.0
+ */
+
+@use '../abstracts/variables' as var;
+@use '../abstracts/mixins' as mixins;
+
+.loading-overlay-ephemeral {
+  position: fixed;
+  inset: 0;
+  z-index: var.$z-index-dev-tools + 100; // Highest z-index
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: opacity var.$duration-smooth var.$ease-out-quad;
+
+  // Semi-transparent backdrop with blur
+  background-color: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.7);
+  backdrop-filter: blur(calc(var(--blur-glass) / 2));
+  -webkit-backdrop-filter: blur(calc(var(--blur-glass) / 2));
+
+  .loading-animation-content { // Wrapper for spinner and text
+    text-align: center;
+    padding: var.$spacing-xl;
+    // Optional: give it a subtle glass card look itself if desired
+    // @include mixins.glassmorphic-pane(...);
+  }
+
+  .loading-spinner-ephemeral {
+    position: relative;
+    width: 64px; // Standardized size
+    height: 64px;
+    margin: 0 auto var.$spacing-lg;
+
+    .spinner-blade-ephemeral {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 6px;  // Blade width
+      height: 18px; // Blade height
+      margin-left: -3px; // Center the blade
+      margin-top: -9px;  // Center the blade
+      border-radius: 3px; // Rounded blades
+      background: linear-gradient(
+        to bottom,
+        hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.9),
+        hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.9)
+      );
+      box-shadow: 0 0 5px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.5);
+      transform-origin: center 9px; // Rotate around the bottom center of the blade relative to spinner center
+      opacity: 0;
+      animation: spinnerBladeFade var.$duration-pulse-medium linear infinite; // Keyframe from _keyframes.scss
+    }
+
+    // Apply rotation and animation delay to each blade
+    @for $i from 1 through 8 {
+      .spinner-blade-ephemeral:nth-child(#{$i}) {
+        transform: rotate(#{($i - 1) * 45}deg) translateY(-10px); // Adjust translateY for blade position from center
+        animation-delay: #{-1s + ($i - 1) * 0.125}s;
+      }
+    }
+  }
+
+  .loading-text-ephemeral {
+    font-family: var(--font-display, var.$font-family-display);
+    font-size: var.$font-size-lg;
+    font-weight: 500;
+    color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+    @include mixins.text-glow('--color-accent-primary', 5px);
+    letter-spacing: 0.05em;
+    animation: subtlePulse var.$duration-pulse-slow infinite;
+    --opacity-pulse: 0.7; // Customize pulse for loading text
+  }
+}

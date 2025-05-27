@@ -1,158 +1,129 @@
-// components/DiagramViewer.vue
-<template>
-  <div class="diagram-viewer-wrapper mt-4 p-2 bg-[var(--bg-subtle)] dark:bg-[var(--bg-surface)] rounded-lg shadow-sm border border-[var(--border-color)] dark:border-[var(--border-color)]">
-    <div v-if="isLoading" class="flex items-center justify-center p-8 min-h-[150px]">
-      <div class="w-8 h-8 border-2 rounded-full animate-spin diagram-spinner"></div>
-    </div>
-    
-    <div v-else-if="renderError" class="p-4 text-red-600 dark:text-red-400 text-sm">
-      <p class="font-semibold">Error Rendering Diagram:</p>
-      <p class="mt-1 text-xs">{{ renderError }}</p>
-      <div class="mt-3 p-3 bg-[var(--bg-base)] dark:bg-gray-800 border border-[var(--border-color)] dark:border-gray-700 rounded overflow-x-auto">
-        <pre class="text-xs whitespace-pre-wrap break-all"><code>{{ diagramCode }}</code></pre>
-      </div>
-    </div>
-    
-    <div v-else>
-      <div v-if="diagramType === 'mermaid'" ref="mermaidContainer" class="mermaid-diagram-container">
-      </div>
-      
-      <div v-else class="p-4">
-        <p class="mb-2 text-sm text-[var(--text-secondary)]">
-          Diagram type "{{ diagramType }}" display not yet implemented. Showing code instead:
-        </p>
-        <div class="p-3 bg-[var(--bg-base)] dark:bg-gray-800 border border-[var(--border-color)] dark:border-gray-700 rounded overflow-x-auto">
-          <pre class="text-xs whitespace-pre-wrap break-all"><code>{{ diagramCode }}</code></pre>
-        </div>
-      </div>
-    </div>
-    
-    <div class="mt-2 pt-2 border-t border-[var(--border-color)] dark:border-gray-700 flex justify-end" 
-         v-if="!isLoading && !renderError && diagramType === 'mermaid' && hasRenderedMermaidContent">
-      <button 
-        @click="saveDiagram"
-        class="px-2.5 py-1.5 text-xs font-medium rounded-md transition-colors 
-               bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 
-               text-[var(--text-secondary)] hover:text-[var(--text-primary)]
-               focus-visible:ring-2 focus-visible:ring-[var(--primary-500)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-subtle)]"
-      >
-        Save Diagram
-      </button>
-    </div>
-  </div>
-</template>
-
+// File: frontend/src/components/DiagramViewer.vue
+/**
+ * @file DiagramViewer.vue
+ * @description Component to render Mermaid diagrams with caching and dynamic theming
+ * for the "Ephemeral Harmony" design system.
+ * @version 2.1.0 - Integrated with global ThemeManager.
+ */
 <script setup lang="ts">
-// components/DiagramViewer.vue
 import { ref, onMounted, onBeforeUnmount, watch, nextTick, computed } from 'vue';
 import mermaid from 'mermaid';
 import localforage from 'localforage';
+import { themeManager } from '@/theme/ThemeManager'; // Import our theme manager
 
-// Props
 const props = defineProps<{
   diagramCode: string;
-  diagramType: string;
+  diagramType: string; // Currently only 'mermaid' is fully supported
 }>();
 
-// Refs
 const mermaidContainer = ref<HTMLElement | null>(null);
-const isLoading = ref(false); // Start as false, set to true when actually rendering
+const isLoading = ref(false);
 const renderError = ref('');
-const currentTheme = ref(localStorage.getItem('darkMode') === 'true' ? 'dark' : 'default');
-let isMounted = false; // Track mounted state
+const isComponentMounted = ref(false);
 
-// Computed
-const hasRenderedMermaidContent = computed(() => {
-  return mermaidContainer.value?.innerHTML?.includes('<svg');
+// Observe our global theme manager for changes
+const currentMermaidTheme = computed(() => {
+  const theme = themeManager.getCurrentTheme().value;
+  return theme?.isDark ? 'dark' : 'neutral';
+  // Mermaid themes: 'default' (light, like 'neutral'), 'dark', 'neutral', 'forest'
+  // 'neutral' often works well for light themes if 'default' has issues or too much contrast.
 });
 
-// --- Helper Functions ---
+const hasRenderedMermaidContent = computed(() => {
+  return mermaidContainer.value?.querySelector('svg') !== null;
+});
+
 function simpleHash(str: string): string {
   let hash = 0;
   if (str.length === 0) return 'h0';
   for (let i = 0; i < str.length; i++) {
     const char = str.charCodeAt(i);
     hash = (hash << 5) - hash + char;
-    hash |= 0; 
+    hash |= 0;
   }
-  return 'h' + (hash >>> 0).toString(36);
+  return 'h' + (hash >>> 0).toString(36).slice(-8);
 }
 
-// --- Core Logic ---
 const renderDiagram = async () => {
-  if (!isMounted) { // Don't attempt to render if not mounted
-    // console.log('DiagramViewer: Attempted to render before component is mounted.');
-    return;
-  }
+  if (!isComponentMounted.value) return;
 
   if (props.diagramType !== 'mermaid') {
     isLoading.value = false;
-    renderError.value = '';
-    if (mermaidContainer.value) mermaidContainer.value.innerHTML = '';
+    renderError.value = `Diagram type "${props.diagramType}" is not supported for rendering.`;
+    if (mermaidContainer.value) mermaidContainer.value.innerHTML = ''; // Clear if previously rendered
     return;
   }
 
   if (!props.diagramCode || props.diagramCode.trim() === '') {
     isLoading.value = false;
-    renderError.value = 'Diagram code is empty.';
+    renderError.value = 'Diagram code is empty. Nothing to render.';
     if (mermaidContainer.value) mermaidContainer.value.innerHTML = '';
     return;
   }
-  
+
   isLoading.value = true;
   renderError.value = '';
-  
-  // This nextTick is crucial to ensure the container div is truly in the DOM
-  // especially if the component's own visibility was just toggled.
-  await nextTick(); 
+  await nextTick();
 
   if (!mermaidContainer.value) {
-    console.error('DiagramViewer: Mermaid container ref is not available in the DOM for rendering.');
-    renderError.value = 'Diagram container element failed to initialize in the DOM. It might be hidden or not yet rendered.';
+    renderError.value = "Diagram container element not found in the DOM. Rendering aborted.";
     isLoading.value = false;
     return;
   }
-  
-  mermaidContainer.value.innerHTML = ''; // Clear previous content
+  mermaidContainer.value.innerHTML = ''; // Clear previous content before rendering new
 
   try {
-    const uniqueDiagramId = `m-${simpleHash(props.diagramCode.slice(0, 50) + Date.now().toString() + Math.random().toString(16).slice(2))}`;
-    const cacheKey = `diagram-cache-${simpleHash(props.diagramCode + currentTheme.value)}`;
+    const diagramId = `mermaid-diag-${simpleHash(props.diagramCode.slice(0, 50) + Date.now())}`;
+    const cacheKey = `diagram-cache-${simpleHash(props.diagramCode + currentMermaidTheme.value)}`; // Theme influences cache
     const cachedSvg = await localforage.getItem<string>(cacheKey);
-    
+
     if (cachedSvg) {
-      if (mermaidContainer.value) mermaidContainer.value.innerHTML = cachedSvg;
+      mermaidContainer.value.innerHTML = cachedSvg;
+      // Note: For complex diagrams with interactivity, `bindFunctions` might be needed even for cached SVGs.
+      // This would require storing more than just the SVG string or re-binding.
+      // For now, we assume cached SVGs are primarily for visual display.
       isLoading.value = false;
       return;
     }
-    
+
+    // Initialize Mermaid with dynamic theme
     mermaid.initialize({
       startOnLoad: false,
-      theme: currentTheme.value,
-      securityLevel: 'loose',
-      fontSize: 14,
-      // @ts-expect-error 'suppressErrorRendering' is a valid runtime option
-      suppressErrorRendering: true, 
-      flowchart: { htmlLabels: true },
-      sequence: { showSequenceNumbers: true }
+      theme: currentMermaidTheme.value,
+      securityLevel: 'loose', // Review based on content source
+      fontSize: 14, // Base font size for diagrams
+      // @ts-expect-error 'suppressErrorRendering' is a valid runtime option, may not be in all TS defs for Mermaid
+      suppressErrorRendering: true,
+      flowchart: { htmlLabels: true, useMaxWidth: true },
+      sequence: { showSequenceNumbers: true, useMaxWidth: true },
+      gantt: { useMaxWidth: true },
+      // Add other diagram type configs if needed
     });
 
-    const { svg, bindFunctions } = await mermaid.render(uniqueDiagramId, props.diagramCode);
-    
-    if (mermaidContainer.value) {
-        mermaidContainer.value.innerHTML = svg;
-        if (bindFunctions) bindFunctions(mermaidContainer.value);
-        await localforage.setItem(cacheKey, svg);
-    } else {
-        throw new Error("Mermaid container became unavailable during async rendering.");
+    if (!props.diagramCode.trim()) { // Final check before render call
+        throw new Error("Cannot render an empty diagram string.");
     }
-    
+
+    const { svg, bindFunctions } = await mermaid.render(diagramId, props.diagramCode);
+
+    if (mermaidContainer.value) { // Check ref again as it's an async operation
+      mermaidContainer.value.innerHTML = svg;
+      if (bindFunctions) {
+        bindFunctions(mermaidContainer.value); // For clickable nodes, etc.
+      }
+      await localforage.setItem(cacheKey, svg); // Cache the newly rendered SVG
+    } else {
+        // This case should ideally not be hit if the initial check passed, but good for safety.
+        console.warn("DiagramViewer: Mermaid container became unavailable during async rendering. SVG not appended to DOM.");
+    }
+
   } catch (error: any) {
     console.error('DiagramViewer: Error rendering Mermaid diagram:', error);
-    let errorMessage = 'Failed to render diagram.';
+    let errorMessage = 'Failed to render diagram. Check console for details.';
     if (error instanceof Error) errorMessage = error.message;
     else if (typeof error === 'string') errorMessage = error;
-    if (error && typeof error.str === 'string') errorMessage += ` Details: ${error.str}`;
+    // Mermaid often throws an error object with a 'str' property for details
+    if (error && typeof error.str === 'string') errorMessage = `${errorMessage} Details: ${error.str}`;
     renderError.value = errorMessage;
   } finally {
     isLoading.value = false;
@@ -160,136 +131,111 @@ const renderDiagram = async () => {
 };
 
 const saveDiagram = () => {
-  // ... (saveDiagram logic remains the same)
-  if (!mermaidContainer.value || props.diagramType !== 'mermaid') return;
+  if (!mermaidContainer.value || props.diagramType !== 'mermaid' || !hasRenderedMermaidContent.value) return;
   const svgElement = mermaidContainer.value.querySelector('svg');
   if (!svgElement) {
     console.warn('DiagramViewer: No SVG element found to save.');
+    renderError.value = "Could not find SVG content to save.";
     return;
   }
-  const serializer = new XMLSerializer();
-  let svgString = serializer.serializeToString(svgElement);
-  if (!svgString.match(/^<svg[^>]+"http:\/\/www\.w3\.org\/2000\/svg"/)) {
-    svgString = svgString.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
+
+  if (!svgElement.getAttribute('xmlns')) {
+    svgElement.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
   }
+  // Add a background to the SVG for better standalone viewing if theme is dark
+  if (themeManager.getCurrentTheme().value?.isDark) {
+    const bgRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    bgRect.setAttribute('width', '100%');
+    bgRect.setAttribute('height', '100%');
+    bgRect.setAttribute('fill', getComputedStyle(document.documentElement).getPropertyValue('--color-bg-primary').trim() || '#1a1a1a');
+    svgElement.prepend(bgRect); // Add as first child to be background
+  }
+
+
+  const serializer = new XMLSerializer();
+  const svgString = serializer.serializeToString(svgElement);
+
   const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `diagram-${simpleHash(props.diagramCode.slice(0,30))}-${Date.now()}.svg`;
+  a.download = `diagram-${simpleHash(props.diagramCode.slice(0,30))}.svg`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 };
 
-// --- Lifecycle Hooks and Watchers ---
-
-onMounted(async () => {
-  // The watcher with immediate: true might have already tried.
-  // This onMounted call provides a more reliable point AFTER the element is in DOM.
-  if (props.diagramCode && props.diagramType) {
-    await renderDiagram();
-  } else {
-    isLoading.value = false; // Ensure loading state is false if no diagram to render
-    if (!props.diagramCode && props.diagramType === 'mermaid') {
-        renderError.value = 'Diagram code is empty.';
-    }
-     // Clear container if it exists but no code/type
-    if (mermaidContainer.value) mermaidContainer.value.innerHTML = '';
-  }
-});
-
-watch(
-  [() => props.diagramCode, () => props.diagramType, currentTheme], 
-  async ([newCode, newType, newTheme], [oldCode, oldType, oldTheme]) => {
-    if (!isMounted) return; // Don't do anything if not mounted yet
-
-    const hasRelevantChange = newCode !== oldCode || newType !== oldType || newTheme !== oldTheme;
-    const needsRender = newCode && newType === 'mermaid' && (hasRelevantChange || !mermaidContainer.value?.hasChildNodes());
-
-    if (needsRender) {
-      await renderDiagram();
-    } else if (!newCode && newType === 'mermaid') { 
-      isLoading.value = false;
-      renderError.value = 'Diagram code is empty.';
-      if (mermaidContainer.value) mermaidContainer.value.innerHTML = '';
-    } else if (newType !== 'mermaid') {
-      isLoading.value = false;
-      renderError.value = ''; 
-      if (mermaidContainer.value) mermaidContainer.value.innerHTML = '';
-    }
-  },
-  { deep: true } // No immediate: true, onMounted handles initial render
-);
-
-let themeWatcherInterval: number | undefined;
 onMounted(() => {
-  themeWatcherInterval = window.setInterval(() => {
-    const newThemeValue = localStorage.getItem('darkMode') === 'true' ? 'dark' : 'default';
-    if (newThemeValue !== currentTheme.value) {
-      currentTheme.value = newThemeValue;
-    }
-  }, 1000);
+  isComponentMounted.value = true;
+  if (props.diagramCode && props.diagramType === 'mermaid') {
+    renderDiagram();
+  }
 });
 
 onBeforeUnmount(() => {
-  isMounted = false;
-  if (themeWatcherInterval) {
-    clearInterval(themeWatcherInterval);
-  }
+  isComponentMounted.value = false;
 });
+
+// Watch for changes in diagram code, type, or the computed Mermaid theme
+watch(
+  [() => props.diagramCode, () => props.diagramType, currentMermaidTheme],
+  ([newCode, newType, newTheme], [oldCode, oldType, oldTheme]) => {
+    if (!isComponentMounted.value) return;
+
+    const codeOrTypeChanged = newCode !== oldCode || newType !== oldType;
+    const themeChanged = newTheme !== oldTheme;
+
+    if (codeOrTypeChanged || themeChanged) {
+      renderDiagram();
+    }
+  },
+  { deep: false } // Watch props shallowly; currentMermaidTheme is a computed ref
+);
 
 </script>
 
-<style lang="postcss" scoped>
-.diagram-viewer-wrapper {
-  background-color: var(--bg-subtle);
-  border-color: var(--border-color);
-}
-.dark .diagram-viewer-wrapper {
-  background-color: var(--bg-surface);
-  border-color: var(--border-color);
-}
+<template>
+  <div class="diagram-viewer-wrapper-ephemeral">
+    <div v-if="isLoading" class="loading-indicator-ephemeral">
+      <div class="spinner-ephemeral"></div>
+    </div>
 
-.mermaid-diagram-container {
-  @apply overflow-auto p-2 rounded-md;
-  background-color: var(--bg-base);
-  min-height: 100px; /* Ensure container has some height */
-  border: 1px solid var(--border-color); /* Add a border to the diagram area */
-}
-.dark .mermaid-diagram-container {
-  background-color: var(--bg-surface); /* Or a specific dark bg for diagrams */
-  border-color: var(--border-color);
-}
+    <div v-else-if="renderError" class="render-error-ephemeral">
+      <p class="error-title">Diagram Rendering Error</p>
+      <p class="error-message">{{ renderError }}</p>
+      <details class="error-code-block">
+        <summary class="cursor-pointer text-xs py-1 hover:text-[var(--color-text-primary)]">Show Diagram Code</summary>
+        <pre><code class="language-mermaid">{{ diagramCode }}</code></pre>
+      </details>
+    </div>
 
-.mermaid-diagram-container :deep(svg) {
-  @apply mx-auto block;
-  max-width: 100%;
-  height: auto;
-}
+    <div v-else>
+      <div v-if="diagramType === 'mermaid'" ref="mermaidContainer" class="mermaid-diagram-container-ephemeral">
+        <p v-if="!hasRenderedMermaidContent && !isLoading && !renderError" class="p-4 text-sm text-[var(--color-text-muted)] text-center">
+          Ready to render diagram.
+        </p>
+      </div>
 
-.diagram-spinner {
-  border-color: var(--primary-200, #dbeafe); 
-  border-top-color: var(--primary-500, #3b82f6);
-}
-.dark .diagram-spinner {
-  border-color: var(--primary-800, #3730a3); 
-  border-top-color: var(--primary-400, #60a5fa);
-}
+      <div v-else-if="diagramCode && diagramType !== 'mermaid'" class="p-4 text-sm text-[var(--color-text-secondary)]">
+        <p class="mb-1">Diagram type "{{ diagramType }}" is not yet supported for visual rendering.</p>
+        <p class="text-xs">Displaying code block:</p>
+        <div class="error-code-block mt-2"><pre><code>{{ diagramCode }}</code></pre></div>
+      </div>
+       <div v-else-if="!diagramCode && diagramType === 'mermaid'" class="p-4 text-sm text-[var(--color-text-muted)] text-center">
+          No diagram code provided.
+      </div>
+    </div>
 
-.p-4.text-red-600 { /* For light mode errors */
-  color: var(--error-color, #dc2626);
-}
-.dark .p-4.text-red-400 { /* For dark mode errors */
-  color: hsl(0, 70%, 70%); /* Lighter red for dark backgrounds */
-}
-.p-4 pre { /* Styling for the code block in error message */
-  background-color: hsla(0,0%,50%,0.05);
-  border: 1px solid hsla(0,0%,50%,0.1);
-}
-.dark .p-4 pre {
-  background-color: hsla(0,0%,20%,0.2);
-  border: 1px solid hsla(0,0%,30%,0.3);
-}
+    <div class="diagram-actions-ephemeral"
+         v-if="!isLoading && !renderError && diagramType === 'mermaid' && hasRenderedMermaidContent">
+      <button @click="saveDiagram" class="save-diagram-button">
+        Save as SVG
+      </button>
+    </div>
+  </div>
+</template>
+
+<style lang="scss">
+// Styles are in frontend/src/styles/components/_diagram-viewer.scss
 </style>

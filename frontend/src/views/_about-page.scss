@@ -1,0 +1,527 @@
+// File: frontend/src/styles/views/_about-page.scss
+/**
+ * @file _about-page.scss
+ * @description Styles for the About page, "Ephemeral Harmony" theme.
+ * @version 1.0.0
+ */
+
+@use '../abstracts/variables' as var;
+@use '../abstracts/mixins' as mixins;
+
+.about-page-ephemeral { // Root class for the About.vue main div
+  min-height: 100vh;
+  background-color: hsl(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l));
+  color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+  overflow-x: hidden; // Prevent horizontal scroll
+
+  // Apply subtle background effects if desired for static pages too
+  position: relative;
+  &::before { // Example: subtle noise overlay
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: var.$z-index-negative;
+    background-image: var(--bg-noise-texture);
+    opacity: var(--bg-noise-opacity, 0.02);
+    pointer-events: none;
+  }
+
+  .about-header-ephemeral { // Class for the <header> element
+    position: sticky;
+    top: 0;
+    z-index: var.$z-index-sticky;
+    @include mixins.glassmorphic-pane(
+      hsla(var(--color-bg-glass-h), var(--color-bg-glass-s), var(--color-bg-glass-l), 0.8), // Slightly more opaque for readability
+      hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.4),
+      var(--blur-glass),
+      var(--shadow-depth-md)
+    );
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    border-bottom: 1px solid hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.3);
+
+    .header-content-wrapper { // Inner div for max-width and padding
+      max-width: var.$site-max-width; // Assuming a site max-width variable
+      margin: 0 auto;
+      padding: var.$spacing-sm var.$spacing-md;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo-title-group {
+      display: flex;
+      align-items: center;
+      gap: var.$spacing-sm;
+      .logo-img { // Class for the <img> tag
+        width: 2.5rem; // 40px
+        height: 2.5rem;
+        animation: subtlePulse var.$duration-pulse-slow infinite; // Use subtlePulse keyframe
+        --scale-pulse: 1.05;
+        --opacity-pulse: 0.9;
+        filter: drop-shadow(0 0 5px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.3));
+      }
+      .page-title { // Class for the <h1>
+        font-family: var(--font-display, var.$font-family-display);
+        font-size: var.$font-size-xl;
+        font-weight: 600;
+        color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+        @include mixins.text-glow('--color-accent-primary', 4px);
+      }
+    }
+    // Back button will use .btn .btn-ghost .btn-sm classes
+  }
+
+  .about-main-content {
+    position: relative; // For z-indexing if needed above background effects
+    z-index: var.$z-index-base;
+    max-width: calc(var.$site-max-width * 0.9); // Slightly narrower for content pages
+    margin: 0 auto;
+    padding: var.$spacing-xl var.$spacing-md;
+    display: flex;
+    flex-direction: column;
+    gap: var.$spacing-2xl; // Generous spacing between sections
+  }
+
+  .about-section {
+    // Common styling for sections if any, or rely on card styles
+  }
+
+  .hero-section {
+    text-align: center;
+    padding-top: var.$spacing-lg;
+
+    .hero-logo-wrapper {
+      display: inline-block;
+      padding: calc(var.$spacing-xs / 2);
+      border-radius: var.$radius-full;
+      margin-bottom: var.$spacing-lg;
+      animation: subtlePulse var.$duration-pulse-long infinite alternate;
+      --scale-pulse: 1.03;
+      background: linear-gradient(45deg,
+        hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l)),
+        hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l))
+      );
+      .hero-logo {
+        width: 6rem; // 96px
+        height: 6rem;
+        padding: var.$spacing-sm;
+        background-color: hsl(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l));
+        border-radius: var.$radius-full;
+      }
+    }
+    .hero-title {
+      font-size: clamp(2.5rem, 1.5rem + 4vw, 4.5rem); // Responsive title
+      font-weight: 800;
+      margin-bottom: var.$spacing-sm;
+      font-family: var(--font-display, var.$font-family-display);
+      @include mixins.gradient-text(to right,
+        hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l)),
+        hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l))
+      );
+      letter-spacing: -0.02em;
+    }
+    .hero-subtitle {
+      font-size: var.$font-size-lg;
+      color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+      max-width: 65ch; // Optimal line length
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+  }
+
+  .mission-section {
+    .section-title { /* ... */ }
+    .mission-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var.$spacing-lg;
+    }
+    .mission-item-card { // Will use .card-glass or .card-neo
+      text-align: center;
+      padding: var.$spacing-lg;
+      .mission-icon-wrapper { // The colored circle
+        width: 4.5rem; // 72px
+        height: 4.5rem;
+        margin: 0 auto var.$spacing-md;
+        border-radius: var.$radius-full;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white; // Icon color
+        box-shadow: var(--shadow-depth-md);
+        transition: transform var.$duration-quick var.$ease-out-quad;
+        .icon { width: 2rem; height: 2rem; } // Heroicon size
+      }
+      &:hover .mission-icon-wrapper {
+        transform: scale(1.1) translateY(-3px);
+      }
+      .mission-item-title {
+        font-size: var.$font-size-xl;
+        font-weight: 600;
+        color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+        margin-bottom: var.$spacing-xs;
+        font-family: var(--font-display);
+      }
+      .mission-item-description {
+        font-size: var.$font-size-sm;
+        color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+        line-height: 1.6;
+      }
+    }
+  }
+
+  .expandable-section-card { // Will use .card-glass or .card-neo
+    overflow: hidden; // Important for transition of content
+    .expandable-header-button {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var.$spacing-md calc(var.$spacing-md * 1.25);
+      text-align: left;
+      font-size: var.$font-size-lg;
+      font-weight: 500;
+      font-family: var(--font-display);
+      color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+      background-color: transparent; // Handled by card
+      border: none;
+      cursor: pointer;
+      transition: background-color var.$duration-quick;
+      &:hover {
+        background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.2);
+      }
+      .chevron-icon { // Class for the ChevronDownIcon
+        width: 1.25rem; height: 1.25rem;
+        color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+        transition: transform var.$duration-smooth var.$ease-out-expo;
+        &.rotated {
+          transform: rotate(180deg);
+        }
+      }
+    }
+    .expandable-content-wrapper {
+      // Using a transition component in Vue for height might be better,
+      // but for CSS only, max-height transition is an option.
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s var.$ease-in-out-sine, padding 0.5s var.$ease-in-out-sine;
+      &.open {
+        max-height: 1000px; // Large enough value
+        // padding for content is applied to .prose-content-ephemeral
+      }
+      .prose-content-ephemeral { // The div with v-html or prose content
+        padding: 0 calc(var.$spacing-md * 1.25) var.$spacing-md calc(var.$spacing-md * 1.25);
+        // Prose styles will be applied by Tailwind Typography plugin
+        // Ensure prose colors are themeable (they are by default with CSS vars)
+        // :deep() might be needed if prose classes are inside v-html
+      }
+    }
+  }
+
+  .agentos-components-list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var.$spacing-sm;
+    li {
+      display: flex;
+      align-items: center;
+      padding: var.$spacing-xs 0;
+      font-size: var.$font-size-sm;
+      color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+      .icon { // For SparklesIcon
+        width: 1.125rem; height: 1.125rem;
+        margin-right: var.$spacing-sm;
+        color: hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l));
+      }
+    }
+  }
+
+  .diagram-section-card { // Will use .card-glass or .card-neo
+    padding: var.$spacing-lg;
+    .diagram-title {
+      font-size: var.$font-size-xl;
+      font-weight: 600;
+      font-family: var(--font-display);
+      margin-bottom: var.$spacing-sm;
+      color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+    }
+    .diagram-description {
+      font-size: var.$font-size-sm;
+      color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+      margin-bottom: var.$spacing-md;
+      line-height: 1.6;
+    }
+    // DiagramViewer itself will be styled by _diagram-viewer.scss
+  }
+
+  .pricing-section {
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: var.$spacing-lg;
+      align-items: stretch; // Make cards same height if desired
+    }
+    .pricing-card-ephemeral { // Will use .card-neo or .card-glass
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+      padding: var.$spacing-xl var.$spacing-lg; // More padding for pricing cards
+      transition: transform var.$duration-smooth var.$ease-out-expo, box-shadow var.$duration-smooth;
+
+      &:hover {
+        transform: translateY(-5px) scale(1.02);
+        box-shadow: var(--shadow-depth-lg), 0 0 20px hsla(var(--color-accent-primary-h),var(--color-accent-primary-s),var(--color-accent-primary-l),0.2);
+      }
+
+      &.featured-plan { // For "Most Popular"
+        border-width: 2px;
+        border-color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+        transform: scale(1.03); // Slightly larger
+        position: relative; // For the chip
+        z-index: var.$z-index-base + 1;
+        &:hover { transform: translateY(-5px) scale(1.05); }
+
+        .plan-chip {
+          position: absolute;
+          top: calc(var.$spacing-sm * -1 - 2px); // Position above card
+          left: 50%;
+          transform: translateX(-50%);
+          background: linear-gradient(45deg,
+            hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l)),
+            hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l))
+          );
+          color: white; // Assuming accents are light enough for dark text, or use on-accent text color
+          padding: calc(var.$spacing-xs / 2) var.$spacing-sm;
+          font-size: var.$font-size-xs;
+          font-weight: 600;
+          border-radius: var.$radius-full;
+          box-shadow: var(--shadow-depth-sm);
+        }
+      }
+
+      .plan-title {
+        font-size: 1.75rem; // Larger title for plans
+        font-weight: 700;
+        font-family: var(--font-display);
+        color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+        margin-bottom: var.$spacing-xs;
+      }
+      .plan-price-wrapper {
+        margin-bottom: var.$spacing-lg;
+        .plan-price {
+          font-size: 2.75rem; // Large price
+          font-weight: 800;
+          font-family: var(--font-display);
+          color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+          @include mixins.text-glow('--color-accent-primary', 8px);
+        }
+        .price-period {
+          font-size: var.$font-size-sm;
+          color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+        }
+      }
+      .plan-features-list {
+        list-style: none;
+        padding: 0;
+        margin-bottom: var.$spacing-xl;
+        flex-grow: 1; // Allow list to take available space
+        display: flex;
+        flex-direction: column;
+        gap: var.$spacing-sm;
+        li {
+          display: flex;
+          align-items: center;
+          justify-content: center; // Center features
+          font-size: var.$font-size-sm;
+          color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+          .icon { // For CheckIcon/XMarkIcon
+            width: 1.125rem; height: 1.125rem;
+            margin-right: var.$spacing-xs;
+            &.icon-success { color: hsl(var(--color-success-h), var(--color-success-s), var(--color-success-l)); }
+            &.icon-error { color: hsl(var(--color-error-h), var(--color-error-s), var(--color-error-l)); }
+          }
+        }
+      }
+      .plan-button { // Will use .btn .btn-primary or .btn-secondary
+        width: 100%;
+        margin-top: auto; // Push button to bottom
+      }
+    }
+  }
+
+  .roadmap-section {
+    .roadmap-container-ephemeral { // Styles for the overall roadmap timeline
+      position: relative;
+      max-width: 800px; // Or theme variable
+      margin: 0 auto;
+      padding: var.$spacing-lg 0;
+      &::before { // The central timeline
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 19px; // Align with dot center if dots are 40px wide
+        width: 3px; // Thickness of the line
+        background: linear-gradient(to bottom,
+          hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.2),
+          hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.5),
+          hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.2)
+        );
+        border-radius: 3px;
+        border-radius: 3px;
+        // md:transform: translateX(-50%); // Center the line
+      }
+
+      @media (min-width: var.$breakpoint-md) {
+        &::before {
+          left: 50%; // Center on medium screens
+          transform: translateX(-50%);
+        }
+      }
+    .roadmap-item-ephemeral { // Each item on the roadmap
+      position: relative;
+      margin-bottom: var.$spacing-xl;
+      padding-left: calc(var.$spacing-xl + var.$spacing-md); // Space for dot and line
+      // md:padding-left: 0; // Reset for alternating layout
+      // md:width: 50%;
+
+      .roadmap-dot-ephemeral {
+        position: absolute;
+        left: 0;
+        top: calc(var.$font-size-xl * var.$line-height-heading / 2); // Align with title center
+        transform: translate(-50%, -50%);
+        width: 20px;
+        height: 20px;
+        border-radius: var.$radius-full;
+        background-color: hsl(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l));
+        border: 3px solid hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+        box-shadow: 0 0 10px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.5);
+        z-index: var.$z-index-base;
+      }
+      .roadmap-content-card { // Will use .card-glass or .card-neo
+        .quarter-title {
+          font-size: var.$font-size-xl;
+          font-weight: 600;
+          font-family: var(--font-display);
+          color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+          margin-bottom: var.$spacing-xs;
+        }
+        .features-list {
+          list-style: none;
+          padding: 0;
+          li {
+            font-size: var.$font-size-sm;
+            color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+            padding-left: var.$spacing-md;
+            position: relative;
+            margin-bottom: calc(var.$spacing-xs / 2);
+            &::before {
+              content: '✧'; // Sparkle or other themed bullet
+              position: absolute;
+              left: 0;
+              color: hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l));
+              opacity: 0.7;
+            }
+          }
+        }
+      }
+
+      // Alternating layout for medium screens and up
+      // @media (min-width: var.$breakpoint-md) {
+      //   &:nth-child(even) {
+      //     margin-left: 50%;
+      //     padding-left: calc(var.$spacing-xl + var.$spacing-md);
+      //     padding-right: 0;
+      //     .roadmap-dot-ephemeral { left: 0; /* Adjust to align with central line */ }
+      //   }
+      //   &:nth-child(odd) {
+      //     margin-right: 50%;
+      //     padding-right: calc(var.$spacing-xl + var.$spacing-md);
+      //     padding-left: 0;
+      //     text-align: right;
+      //     .roadmap-dot-ephemeral { left: 100%; /* Adjust to align with central line */ }
+      //     .features-list li { padding-left: 0; padding-right: var.$spacing-md; &::before { left: auto; right: 0; }}
+      //   }
+      // }
+    }
+    } // <-- Add this closing brace for .roadmap-container-ephemeral
+  }
+
+  .about-footer-ephemeral { // Styling for the footer section on the About page
+    text-align: center;
+    padding-top: var.$spacing-xl;
+    .footer-card { // Will use .card-glass or .card-neo
+      padding: var.$spacing-lg;
+      .footer-text {
+        color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+        margin-bottom: var.$spacing-md;
+        line-height: 1.7;
+        a { // Links in footer text
+          color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+          font-weight: 500;
+          &:hover {
+            text-decoration: underline;
+            color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), calc(var(--color-accent-primary-l) + 10%));
+          }
+        }
+      }
+      .social-links-group {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: var.$spacing-lg;
+        margin-bottom: var.$spacing-md;
+        .social-link { // Class for each <a> tag
+          color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+          transition: color var.$duration-quick, transform var.$duration-quick;
+          &:hover {
+            color: hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l));
+            transform: scale(1.1);
+          }
+          .icon { // For SVG icons inside links
+            width: 1.75rem; height: 1.75rem;
+          }
+        }
+      }
+      .copyright-text {
+        font-size: var.$font-size-xs;
+        color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+        opacity: 0.8;
+      }
+    }
+  }
+
+  // General section title styling
+  .section-title-ephemeral {
+    font-size: clamp(1.8rem, 1.2rem + 2.5vw, 3rem);
+    font-weight: 700;
+    font-family: var(--font-display);
+    text-align: center;
+    margin-bottom: var.$spacing-xl;
+    color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+    @include mixins.text-glow('--color-accent-primary', 8px); // Use primary accent for section titles
+    position: relative;
+    padding-bottom: var.$spacing-sm;
+
+    // Subtle underline accent
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 3px;
+      background: linear-gradient(to right,
+        hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0),
+        hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.8),
+        hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0)
+      );
+      border-radius: 3px;
+    }
+  }
+}

@@ -1,0 +1,119 @@
+// File: frontend/src/styles/layout/_chat-interface.scss
+/**
+ * @file _chat-interface.scss
+ * @description Styles for the top-positioned, ephemeral, semi-transparent chat log area.
+ * Designed for a fluid, holographic feel where recent messages are briefly visible.
+ * @version 2.1.0 - Enhanced message appearance and scroll behavior.
+ */
+
+@use '../abstracts/variables' as var;
+@use '../abstracts/mixins' as mixins;
+
+.ephemeral-chat-log-container { // Wrapper div if needed for positioning context
+  position: fixed; // Or absolute if header is part of the scrollable viewport
+  top: calc(var(--header-height, var.$header-height) + var.$spacing-sm); // Position below header with some gap
+  left: 50%;
+  transform: translateX(-50%);
+  width: clamp(320px, 50vw, 600px); // Responsive width, max 600px
+  max-height: var(--chat-log-height, var.$chat-log-height); // Defined in variables
+  z-index: var.$z-index-ephemeral-chat;
+  pointer-events: none; // Container itself doesn't block interactions with content below
+}
+
+.ephemeral-chat-log { // The actual scrollable list
+  width: 100%;
+  height: 100%; // Fills the container
+  overflow-y: auto;
+  padding: var.$spacing-sm var.$spacing-md;
+  border-radius: var.$radius-lg; // Rounded corners for the glass pane
+  display: flex;
+  flex-direction: column-reverse; // New messages appear at bottom and push old ones up
+  pointer-events: auto; // Scrollable area should be interactive
+
+  @include mixins.glassmorphic-pane(
+    var(--color-bg-glass),
+    var(--color-border-glass),
+    var(--blur-glass),
+    var(--shadow-depth-md)
+  );
+  // Override border-radius from mixin if full-width not desired
+  // border-radius: var.$radius-xl;
+
+  // Custom scrollbar for this specific element
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    background-color: transparent; // Keep glass effect
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.3);
+    border-radius: var.$radius-full;
+    &:hover {
+      background-color: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.5);
+    }
+  }
+  scrollbar-width: thin;
+  scrollbar-color: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.3) transparent;
+
+
+  // Fade-out effect at the top (now effective due to flex-direction: column-reverse)
+  &::after { // Changed from ::before due to flex-reverse
+    content: '';
+    position: sticky;
+    top: 0; // Sticks to the top of the scrollport
+    display: block;
+    width: 100%;
+    height: 2.5rem; // Adjust height of fade
+    background: linear-gradient(to bottom, var(--color-bg-glass) 60%, transparent);
+    pointer-events: none;
+    z-index: 1; // Above messages
+  }
+
+  .message-item-ephemeral {
+    // Common styling for messages in this log
+    padding: calc(var.$spacing-xs * 1.5) var.$spacing-sm;
+    border-radius: var.$radius-md;
+    margin-top: var.$spacing-xs; // Spacing between messages (since it's column-reverse, margin-top works)
+    max-width: 90%; // Messages don't take full width
+    font-size: var.$font-size-sm;
+    line-height: 1.5;
+    word-break: break-word;
+    animation: ephemeralMessageIn var.$duration-movement var.$ease-out-quint forwards;
+    // Older messages could have reduced opacity or be targeted by JS to be removed after a while
+    // For now, relying on max-height and scroll.
+
+    &.user {
+      background: hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.15);
+      color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+      margin-left: auto; // Align user messages to right
+      border: 1px solid hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.2);
+    }
+
+    &.assistant {
+      background: hsla(var(--color-voice-ai-h), var(--color-voice-ai-s), var(--color-voice-ai-l), 0.15);
+      color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+      margin-right: auto; // Align AI messages to left
+      border: 1px solid hsla(var(--color-voice-ai-h), var(--color-voice-ai-s), var(--color-voice-ai-l), 0.2);
+
+      // Subtle holographic touch for AI messages
+      position: relative;
+      &::before {
+        content: '';
+        position: absolute;
+        left: -1px;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: linear-gradient(to bottom,
+          hsla(var(--color-voice-ai-h), var(--color-voice-ai-s), var(--color-voice-ai-l), 0.8),
+          hsla(var(--color-voice-ai-h), var(--color-voice-ai-s), calc(var(--color-voice-ai-l) + 15%), 0.5)
+        );
+        border-radius: var.$radius-sm 0 0 var.$radius-sm;
+        opacity: 0.7;
+        filter: blur(0.5px);
+      }
+    }
+    // Animation defined in _keyframes.scss or Tailwind config (ephemeralAppear)
+  }
+}

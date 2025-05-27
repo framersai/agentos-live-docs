@@ -1,0 +1,141 @@
+/**
+ * @file _main-content.scss
+ * @description Styles for the main content area of the application.
+ * Ensures proper padding, scrolling, and theme integration for a fluid experience.
+ * @version 2.0.1+ - Switched button extends to mixin includes, minor comment integration from v2.0.0.
+ */
+
+@use '../abstracts/variables' as var;
+@use '../abstracts/mixins' as commonMixins; // General project mixins from _mixins.scss
+@use '../components/buttons' as buttonsFile; // To access the button mixins from _buttons.scss
+
+// Applied to the <main> element or a primary wrapper within it
+.app-layout__main-content {
+  flex-grow: 1;
+  position: relative; // For absolute positioned children or overlays like loading states
+  overflow-y: auto;   // Primary scroll for main content
+  padding: var.$spacing-lg; // Generous padding around the content area
+
+  @media (max-width: var.$breakpoint-sm) {
+    padding: var.$spacing-md; // Reduced padding on smaller screens
+  }
+
+  // Apply custom scrollbar styling (defined in _global.scss or via mixin)
+  // This class can be added in the template: class="app-layout__main-content"
+  // and if you want the scrollbar here:
+  // @include commonMixins.custom-scrollbar(
+  //   '--color-accent-primary', // Example prefix
+  //   0.4, // base alpha
+  //   0.6, // hover alpha
+  //   hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.15) // track color
+  // );
+
+
+  // Subtle background texture or pattern for depth, less prominent than body background effects.
+  // This could be a very faint, almost imperceptible static noise or a slow-moving abstract gradient.
+  // It relies on CSS custom properties that can be set by themes.
+  &::before {
+    content: '';
+    position: absolute; // Changed to absolute to scroll with content (consistent with v2.0.0 comment)
+    inset: 0;
+    z-index: var.$z-index-negative;
+    background-image: var(--bg-main-content-pattern, none);
+    background-size: var(--bg-main-content-pattern-size, 200px 200px); // Example size
+    background-repeat: var(--bg-main-content-pattern-repeat, repeat);
+    opacity: var(--bg-main-content-opacity, 0.02); // Very subtle
+    pointer-events: none;
+    // animation: mainContentBgAnimation 120s linear infinite alternate; // Example slow animation from v2.0.0 (remains commented)
+  }
+}
+
+// General purpose content panel or card used within the main content area
+.content-panel-ephemeral {
+  @include commonMixins.glassmorphic-pane(
+    var(--color-bg-glass),
+    var(--color-border-glass),
+    var(--blur-glass),
+    var(--shadow-depth-md)
+  );
+  border-radius: var.$radius-2xl; // Consistent large radius for panels
+  padding: var.$spacing-lg;
+  margin-bottom: var.$spacing-lg; // Spacing between panels
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  // Example of a subtle animated border for interactive panels
+  &.interactive-panel {
+    cursor: pointer;
+    transition: transform var.$duration-quick var.$ease-out-quad,
+                box-shadow var.$duration-smooth var.$ease-out-quad;
+
+    @include commonMixins.holographic-border-glow(
+      '--color-accent-secondary', // Use secondary accent for these borders
+      1px,
+      8s, // Slower animation for ambient effect
+      var.$radius-2xl
+    );
+
+    &:hover {
+      transform: translateY(-4px) scale(1.005);
+      box-shadow: var(--shadow-depth-lg), // Increase shadow on hover
+                  0 0 20px hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.2);
+    }
+  }
+}
+
+// Placeholder for welcome messages or empty states within main content views
+.welcome-placeholder-ephemeral {
+  // If this should look like a card, you could @extend .content-panel-ephemeral;
+  // Or apply the glassmorphic-pane mixin directly:
+  // @include commonMixins.glassmorphic-pane(var(--color-bg-glass), var(--color-border-glass), var(--blur-glass), var(--shadow-depth-md));
+  // border-radius: var.$radius-2xl;
+  // For now, styling it independently based on the v2.0.1 structure (not a card by default):
+  text-align: center;
+  padding: var.$spacing-xl var.$spacing-lg; // More padding for welcome states
+  margin-bottom: var.$spacing-lg; // If it's not the only element
+
+  .welcome-icon { // e.g., a SparklesIcon or similar
+    width: 60px;
+    height: 60px;
+    margin: 0 auto var.$spacing-lg;
+    color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+    opacity: 0.7;
+    animation: subtlePulse 3s var.$ease-in-out-sine infinite; // Ensure subtlePulse keyframes are defined
+    --scale-pulse: 1.1; // Customize pulse for this icon
+  }
+
+  .welcome-title {
+    font-family: var(--font-display, var.$font-family-display);
+    font-size: clamp(1.5rem, 1rem + 2vw, 2.25rem);
+    font-weight: 600;
+    color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+    margin-bottom: var.$spacing-sm;
+    @include commonMixins.text-glow('--color-accent-primary');
+  }
+
+  .welcome-message {
+    font-size: var.$font-size-base;
+    color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+    max-width: 600px;
+    margin: 0 auto var.$spacing-lg;
+    line-height: 1.7;
+  }
+
+  .example-prompts-grid-ephemeral {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var.$spacing-sm;
+  }
+
+  .prompt-tag-ephemeral {
+    // Using a button style for these clickable tags
+    @include buttonsFile.btn-secondary; // This composite mixin includes base styles + secondary look
+    // Apply size modifications and overrides AFTER the main variant mixin
+    font-size: var.$font-size-xs !important; // Override if btn-secondary has different font-size
+    padding: var.$spacing-xs var.$spacing-sm !important; // Override padding
+    // cursor: pointer; // Inherited from base-button-styles if it's interactive
+  }
+}
