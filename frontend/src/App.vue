@@ -83,6 +83,7 @@
 </template>
 
 <script setup lang="ts">
+
 import { ref, computed, onMounted, provide, readonly, type Component as VueComponent } from 'vue';
 import { useRouter } from 'vue-router';
 import AppHeader from '@/components/Header.vue'; // Assuming path is correct
