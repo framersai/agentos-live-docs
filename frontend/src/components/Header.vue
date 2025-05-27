@@ -1,514 +1,718 @@
-// File: src/components/Header.vue
+// File: frontend/src/components/Header.vue
 /**
  * @file Header.vue
- * @description Global application header component. Provides navigation, centralized voice settings,
- * cost display, theme/fullscreen toggles, and adapts for different view modes.
- * @version 2.0.1 - Merged old logic for dropdowns and quick settings, refined mobile nav.
- */
+ * @description Global application header, redesigned for a "Holographic Analog-esque" theme.
+ * Provides navigation, mode/language selection, quick access to voice/other settings,
+ * cost display, and UI toggles, featuring holographic visuals and tactile analog-style buttons.
+ * @version 4.0.0 - Holographic Analog-esque redesign.
+ * @author AI Architect
+ */// File: frontend/src/components/Header.vue
+/**
+ * @file Header.vue
+ * @description Global application header, redesigned for a "Holographic Analog-esque" theme.
+ * Provides navigation, mode/language selection, quick access to voice/other settings,
+ * cost display, and UI toggles, featuring holographic visuals and tactile analog-style buttons.
+ * @version 4.0.1 - Added missing icon component registrations.
+ * @author AI Architect
+ */
 <script lang="ts">
-import { ref, computed, watch, onMounted, onUnmounted, defineComponent, defineAsyncComponent } from 'vue';
-import { useStorage } from '@vueuse/core';
-import { RouterLink } from 'vue-router'; // useRouter is not directly used in template, but good to list if setup uses it for logic
-import { voiceSettingsManager, VoiceApplicationSettings } from '@/services/voice.settings.service'; // Central settings
-import { useUiStore } from '@/store/ui.store'; // Pinia store for UI states
+import {
+  ref,
+  computed,
+  onMounted,
+  onUnmounted,
+  defineComponent,
+  defineAsyncComponent,
+  type Component as VueComponent,
+} from 'vue';
+import { RouterLink } from 'vue-router';
+import { voiceSettingsManager, type AudioInputMode } from '@/services/voice.settings.service';
+import { useUiStore } from '@/store/ui.store';
+import { useAgentStore } from '@/store/agent.store';
+import { agentService, type IAgentDefinition, type AgentId } from '@/services/agent.service';
+import { useChatStore } from '@/store/chat.store';
 
-// Async load heavy dropdown for better initial perf
 const VoiceControlsDropdown = defineAsyncComponent(() => import('./header/VoiceControlsDropdown.vue'));
 
 import {
-  ChevronDownIcon, Bars3Icon, XMarkIcon, TrashIcon, Cog8ToothIcon,
-  ArrowsPointingOutIcon, ArrowsPointingInIcon, SunIcon, MoonIcon,
-  InformationCircleIcon, ArrowRightOnRectangleIcon, CodeBracketIcon, CpuChipIcon,
-  DocumentTextIcon, ChatBubbleLeftRightIcon, SquaresPlusIcon, AdjustmentsHorizontalIcon, ClockIcon,
-  PencilSquareIcon, SparklesIcon // Example for possible new icons if needed
+  ChevronDownIcon, Bars3Icon, XMarkIcon, Cog8ToothIcon,
+  SquaresPlusIcon, PhotoIcon,
+  ArrowsPointingOutIcon, ArrowsPointingInIcon, SunIcon, MoonIcon,
+  InformationCircleIcon, ArrowRightOnRectangleIcon, DocumentTextIcon,
+  LanguageIcon, AdjustmentsHorizontalIcon, ClockIcon, PencilSquareIcon,
+  TrashIcon as TrashIconOutline, CpuChipIcon,
+  SpeakerWaveIcon, MicrophoneIcon, PauseCircleIcon, PlayCircleIcon
 } from '@heroicons/vue/24/outline';
 
+// Additional interfaces (ModePreset, LanguageOption) remain the same as in the user-provided file.
 interface ModePreset {
-  label: string;
-  value: string;
-  description: string;
-  icon: any; // Vue component type
-  iconClass: string;
+  label: string;
+  value: AgentId;
+  description: string;
+  icon: VueComponent;
+  iconClass: string;
+}
+interface LanguageOption {
+  label: string;
+  value: string;
+  icon?: string;
 }
 
-interface LanguageOption {
-  label: string;
-  value: string;
-  icon: string; // Emoji or short code for display
-  description: string;
-}
 
 export default defineComponent({
-  name: 'AppHeader',
-  components: {
-    RouterLink, VoiceControlsDropdown,
-    ChevronDownIcon, Bars3Icon, XMarkIcon, TrashIcon, Cog8ToothIcon,
-    ArrowsPointingOutIcon, ArrowsPointingInIcon, SunIcon, MoonIcon,
-    InformationCircleIcon, ArrowRightOnRectangleIcon, CodeBracketIcon, CpuChipIcon,
-    DocumentTextIcon, ChatBubbleLeftRightIcon, SquaresPlusIcon, AdjustmentsHorizontalIcon, ClockIcon,
-    PencilSquareIcon, SparklesIcon // Ensure all used icons are registered
-  },
-  props: {
-    sessionCost: { type: Number, required: true },
-  },
-  emits: [
-    'toggle-theme', 'toggle-fullscreen', 'clear-chat', 'logout',
-    'show-prior-chat-log'
-  ],
-  setup(_, { emit }) {
-    const uiStore = useUiStore();
+  name: 'AppHeaderHolographic',
+  components: {
+    RouterLink,
+    VoiceControlsDropdown,
+    ChevronDownIcon, Bars3Icon, XMarkIcon, Cog8ToothIcon,
+    ArrowsPointingOutIcon, ArrowsPointingInIcon, SunIcon, MoonIcon, // Ensured these are registered
+    InformationCircleIcon, ArrowRightOnRectangleIcon, DocumentTextIcon,
+    LanguageIcon, SquaresPlusIcon, PhotoIcon, AdjustmentsHorizontalIcon,
+    ClockIcon, PencilSquareIcon, TrashIconOutline, CpuChipIcon, SpeakerWaveIcon,
+    MicrophoneIcon, PauseCircleIcon, PlayCircleIcon
+  },
+  props: {
+    sessionCost: { type: Number, default: 0 },
+    isUserListening: { type: Boolean, default: false },
+    isAssistantSpeaking: { type: Boolean, default: false },
+  },
+  emits: [
+    'toggle-theme', 'toggle-fullscreen', 'clear-chat-and-session',
+    'logout', 'show-prior-chat-log'
+  ],
+  setup(props, { emit }) {
+    const uiStore = useUiStore();
+    const agentStore = useAgentStore();
+    const chatStore = useChatStore();
+    const appSettings = voiceSettingsManager.settings;
 
-    // Assuming VoiceApplicationSettings now includes currentAppMode, preferredCodingLanguage, autoClearChat, generateDiagrams
-    const appSettings = voiceSettingsManager.settings as VoiceApplicationSettings & {
-        currentAppMode: string; // Define expected extended properties for type safety here
-        preferredCodingLanguage: string;
-        autoClearChat: boolean;
-        generateDiagrams: boolean;
-    };
+    const showModeDropdown = ref(false);
+    const modeDropdownRef = ref<HTMLElement | null>(null);
+    const showLanguageDropdown = ref(false);
+    const languageDropdownRef = ref<HTMLElement | null>(null);
+    const isMobileNavOpen = ref(false);
 
+    const isDarkMode = computed(() => uiStore.isDarkMode);
+    const isFullscreenActive = computed(() => uiStore.isFullscreen);
+    const showHeaderInFullscreen = computed(() => uiStore.showHeaderInFullscreenMinimal);
 
-    // Local UI state for header dropdowns
-    const showModeDropdown = ref(false);
-    const modeDropdownRef = ref<HTMLElement | null>(null);
-    const showLanguageDropdown = ref(false);
-    const languageDropdownRef = ref<HTMLElement | null>(null);
+    const modePresets = computed<ModePreset[]>(() =>
+      agentService.getAllAgents().map(agent => ({
+        label: agent.label, value: agent.id,
+        description: agent.description.substring(0, 70) + (agent.description.length > 70 ? '...' : ''),
+        icon: agent.icon, iconClass: agent.iconClass,
+      }))
+    );
 
-    const isMobileNavOpen = ref(false);
+    const activeAgentDisplay = computed(() => {
+      const currentAgent = agentStore.activeAgent || agentService.getDefaultAgent();
+      return { label: currentAgent.label, icon: currentAgent.icon, iconClass: currentAgent.iconClass };
+    });
 
-    const isDarkMode = useStorage('darkMode', false);
-    const isFullscreenActive = computed(() => uiStore.isFullscreen);
-    const showHeaderInFullscreen = computed(() => uiStore.showHeaderInFullscreenMinimal);
+    const programmingLanguages: LanguageOption[] = [
+      { label: 'Python', value: 'python', icon: '🐍' }, { label: 'JavaScript', value: 'javascript', icon: '⚡' },
+      { label: 'TypeScript', value: 'typescript', icon: '🔷' }, { label: 'Java', value: 'java', icon: '☕️' },
+      { label: 'C++', value: 'cpp', icon: '🅲+' }, { label: 'Go', value: 'go', icon: '🐹' },
+      { label: 'Rust', value: 'rust', icon: '🦀' }, { label: 'PHP', value: 'php', icon: '🐘' },
+    ];
 
-    const modePresets: ModePreset[] = [
-        { label: 'Coding Q&A', value: 'coding', description: 'Algorithm problems & debugging', icon: CodeBracketIcon, iconClass: 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' },
-        { label: 'System Design', value: 'system_design', description: 'Architecture & scalability', icon: CpuChipIcon, iconClass: 'bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400' },
-        { label: 'Meeting Notes', value: 'meeting', description: 'Transcription & summaries', icon: DocumentTextIcon, iconClass: 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400' },
-        { label: 'General Chat', value: 'general', description: 'Open conversation', icon: ChatBubbleLeftRightIcon, iconClass: 'bg-gray-100 dark:bg-gray-900/30 text-gray-600 dark:text-gray-400' }
-    ];
+    const currentLanguageDisplay = computed(() =>
+      programmingLanguages.find(l => l.value === appSettings.preferredCodingLanguage) ||
+      programmingLanguages.find(l => l.value === appSettings.defaultLanguage) ||
+      programmingLanguages[0]
+    );
 
-    const programmingLanguages: LanguageOption[] = [
-        { label: 'Python', value: 'python', icon: '🐍', description: 'General purpose' },
-        { label: 'JavaScript', value: 'javascript', icon: '⚡', description: 'Web development' },
-        { label: 'TypeScript', value: 'typescript', icon: '🔷', description: 'Typed JavaScript' },
-        { label: 'Java', value: 'java', icon: '☕', description: 'Enterprise apps' },
-    ];
+    const toggleDropdown = (type: 'mode' | 'language') => {
+      if (type === 'mode') {
+        showModeDropdown.value = !showModeDropdown.value;
+        if (showModeDropdown.value) showLanguageDropdown.value = false;
+      } else if (type === 'language') {
+        showLanguageDropdown.value = !showLanguageDropdown.value;
+        if (showLanguageDropdown.value) showModeDropdown.value = false;
+      }
+    };
 
-    const getModeDisplayName = () => modePresets.find(p => p.value === appSettings.currentAppMode)?.label || 'Select Mode';
-    const getModeIcon = () => modePresets.find(p => p.value === appSettings.currentAppMode)?.icon || SquaresPlusIcon;
-    const getModeIconClass = () => modePresets.find(p => p.value === appSettings.currentAppMode)?.iconClass || 'bg-gray-100 text-gray-600';
-    const getLanguageDisplayName = () => programmingLanguages.find(l => l.value === appSettings.preferredCodingLanguage)?.label || 'Language';
-    const getLanguageIcon = (langValue: string) => programmingLanguages.find(l => l.value === langValue)?.icon || '🧑‍💻';
+    const selectAppMode = (modeValue: AgentId) => {
+      agentStore.setActiveAgent(modeValue);
+      showModeDropdown.value = false; closeMobileNav();
+    };
 
+    const selectCodingLanguage = (languageValue: string) => {
+      voiceSettingsManager.updateSetting('preferredCodingLanguage', languageValue);
+      showLanguageDropdown.value = false; closeMobileNav();
+    };
 
-    const toggleModeDropdown = () => {
-      showModeDropdown.value = !showModeDropdown.value;
-      if (showModeDropdown.value) showLanguageDropdown.value = false; // Close other dropdown
-    };
+    const toggleMobileNav = () => isMobileNavOpen.value = !isMobileNavOpen.value;
+    const closeMobileNav = () => { isMobileNavOpen.value = false; };
 
-    const toggleLanguageDropdown = () => {
-      showLanguageDropdown.value = !showLanguageDropdown.value;
-      if (showLanguageDropdown.value) showModeDropdown.value = false; // Close other dropdown
-    };
+    const handleClearChatAndSession = () => { emit('clear-chat-and-session'); closeMobileNav(); };
+    const handleToggleFullscreenEmit = () => { emit('toggle-fullscreen'); closeMobileNav(); }; // Renamed to avoid conflict
+    const handleToggleTheme = () => { uiStore.toggleTheme(); }; // Directly call store action
+    const handleLogout = () => { emit('logout'); closeMobileNav(); };
+    const handleShowPriorChatLog = () => { emit('show-prior-chat-log'); closeMobileNav(); };
 
-    const selectAppMode = (modeValue: string) => {
-      appSettings.currentAppMode = modeValue;
-      showModeDropdown.value = false;
-      if(isMobileNavOpen.value) isMobileNavOpen.value = false;
-    };
+    const handleClickOutside = (event: MouseEvent) => {
+      if (modeDropdownRef.value && !modeDropdownRef.value.contains(event.target as Node)) showModeDropdown.value = false;
+      if (languageDropdownRef.value && !languageDropdownRef.value.contains(event.target as Node)) showLanguageDropdown.value = false;
+    };
 
-    const selectCodingLanguage = (languageValue: string) => {
-      appSettings.preferredCodingLanguage = languageValue;
-      showLanguageDropdown.value = false;
-      if(isMobileNavOpen.value) isMobileNavOpen.value = false;
-    };
+    onMounted(() => {
+      document.addEventListener('click', handleClickOutside, true);
+      if(!uiStore.theme) uiStore.initializeTheme();
+    });
 
-    const toggleMobileNav = () => {
-      isMobileNavOpen.value = !isMobileNavOpen.value;
-      showModeDropdown.value = false;
-      showLanguageDropdown.value = false;
-    };
+    onUnmounted(() => document.removeEventListener('click', handleClickOutside, true));
 
-    const handleClearChat = () => { emit('clear-chat'); if(isMobileNavOpen.value) isMobileNavOpen.value = false; };
-    const handleToggleFullscreen = () => {
-        emit('toggle-fullscreen');
-        if(isMobileNavOpen.value) isMobileNavOpen.value = false;
-        if (uiStore.isFullscreen) showHeaderInFullscreen.value = false; // Hide options when exiting FS via button
-    };
-    const handleToggleTheme = () => { emit('toggle-theme'); }; // Mobile nav can stay open
-    const handleLogout = () => { emit('logout'); if(isMobileNavOpen.value) isMobileNavOpen.value = false; };
-    const handleShowPriorChatLog = () => { emit('show-prior-chat-log'); if(isMobileNavOpen.value) isMobileNavOpen.value = false; }
+    const toggleShowHeaderInFullscreen = () => uiStore.toggleShowHeaderInFullscreenMinimal();
+    
+    const navLinks = ref([
+      { name: 'Settings', path: '/settings', icon: Cog8ToothIcon },
+    ]);
+    
+    const isAiActive = computed(() => props.isAssistantSpeaking || chatStore.isMainContentStreaming);
+    const isUserActive = computed(() => props.isUserListening);
 
-    const handleClickOutside = (event: MouseEvent) => {
-      if (modeDropdownRef.value && !modeDropdownRef.value.contains(event.target as Node)) {
-        showModeDropdown.value = false;
-      }
-      if (languageDropdownRef.value && !languageDropdownRef.value.contains(event.target as Node)) {
-        showLanguageDropdown.value = false;
-      }
-    };
-
-    onMounted(() => { document.addEventListener('click', handleClickOutside, true); });
-    onUnmounted(() => { document.removeEventListener('click', handleClickOutside, true); });
-    
-    const toggleShowHeaderInFullscreen = () => uiStore.toggleShowHeaderInFullscreenMinimal();
-
-    const navLinks = ref([
-        { name: 'Home', path: '/', icon: null },
-        { name: 'Settings', path: '/settings', icon: Cog8ToothIcon },
-        { name: 'About', path: '/about', icon: InformationCircleIcon },
-    ]);
-
-    // Watchers for direct settings changes (e.g., from VoiceControlsDropdown or other components)
-    // This is primarily for UI elements in the header that need to react, like displayed names/icons.
-    // The actual state change is handled by the service.
-    watch(() => appSettings.currentAppMode, () => { /* Force re-render if needed, but computed should handle */ });
-    watch(() => appSettings.preferredCodingLanguage, () => { /* Force re-render */ });
-
-
-    return {
-      appSettings,
-      voiceSettingsManager, // For direct access if needed, e.g., non-setting reactive states
-      isDarkMode,
-      isFullscreenActive,
-      showHeaderInFullscreen,
-      toggleShowHeaderInFullscreen,
-      isMobileNavOpen,
-      toggleMobileNav,
-      
-      showModeDropdown,
-      modeDropdownRef,
-      toggleModeDropdown,
-      selectAppMode,
-      getModeDisplayName, getModeIcon, getModeIconClass,
-      modePresets,
-
-      showLanguageDropdown,
-      languageDropdownRef,
-      toggleLanguageDropdown,
-      selectCodingLanguage,
-      getLanguageDisplayName, getLanguageIcon,
-      programmingLanguages,
-
-      handleClearChat, handleToggleFullscreen, handleToggleTheme, handleLogout, handleShowPriorChatLog,
-      navLinks,
-      AdjustmentsHorizontalIcon, ClockIcon, PencilSquareIcon, SparklesIcon
-    };
-  },
+    return {
+      appSettings, isDarkMode, isFullscreenActive, showHeaderInFullscreen, toggleShowHeaderInFullscreen,
+      isMobileNavOpen, toggleMobileNav, closeMobileNav, showModeDropdown, modeDropdownRef,
+      showLanguageDropdown, languageDropdownRef, toggleDropdown, selectAppMode, activeAgentDisplay,
+      modePresets, selectCodingLanguage, currentLanguageDisplay, programmingLanguages,
+      handleClearChatAndSession, 
+      handleToggleFullscreen: handleToggleFullscreenEmit, // Use renamed emitter
+      handleToggleTheme, 
+      handleLogout, handleShowPriorChatLog,
+      navLinks, uiStore, agentStore,
+      isAiActive, isUserActive,
+      // Ensure icons used in the template are returned if not globally registered or auto-imported by <script setup>
+      // For Options API, they are handled by the `components` option.
+    };
+  },
 });
 </script>
 
 <template>
   <header
-    class="app-header sticky top-0 z-40 transition-all duration-300 ease-in-out"
+    class="app-header header-glass-holographic"
     :class="{
-      'bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg border-b border-gray-200 dark:border-gray-700': !isFullscreenActive || showHeaderInFullscreen,
-      'bg-transparent pointer-events-none': isFullscreenActive && !showHeaderInFullscreen && !isMobileNavOpen,
-      'opacity-0 translate-y-[-100%]': isFullscreenActive && !showHeaderInFullscreen && !isMobileNavOpen,
-      'opacity-100 translate-y-0': !isFullscreenActive || showHeaderInFullscreen || isMobileNavOpen,
-      'shadow-lg': !isFullscreenActive && !isMobileNavOpen
+      'is-fullscreen-hidden': isFullscreenActive && !showHeaderInFullscreen && !isMobileNavOpen,
+      'ai-active-glow-holographic': isAiActive,
+      'user-active-glow-holographic': isUserActive && !isAiActive,
     }"
   >
-    <div class="max-w-screen-xl mx-auto px-3 sm:px-4 lg:px-6" v-show="!isFullscreenActive || showHeaderInFullscreen || isMobileNavOpen">
-      <div class="flex items-center justify-between h-16 md:h-18">
-        <div class="flex items-center gap-2 sm:gap-3">
-          <RouterLink to="/" class="flex items-center gap-2 sm:gap-3 hover:opacity-80 transition-opacity" @click="isMobileNavOpen = false">
-            <img src="/src/assets/logo.svg" alt="VCA Logo" class="w-8 h-8 sm:w-10 sm:h-10 shrink-0" />
-            <div class="hidden md:block">
-              <h1 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 leading-tight">
-                Voice Chat <span class="text-primary-600 dark:text-primary-400">Assistant</span>
-              </h1>
-            </div>
-            <span class="md:hidden text-lg sm:text-xl font-bold text-gray-900 dark:text-white">VCA</span>
+    <div class="header-content-wrapper">
+      <div class="header-main-row">
+        <div class="header-logo-section">
+          <RouterLink to="/app" class="logo-link-holographic" @click="closeMobileNav" aria-label="Go to Dashboard">
+            <img src="@/assets/logo.svg" alt="VCA Logo" class="logo-image-holographic" />
+            <h1 class="app-title-full-holographic">
+              VOICE CHAT <span class="app-title-accent-holographic text-glow-accent">ASSISTANT</span>
+            </h1>
+            <span class="app-title-short-holographic">VCA</span>
           </RouterLink>
+          <div class="activity-indicator-container">
+              <div v-if="isAiActive" class="activity-indicator ai-speaking-indicator-holographic animate-speaking-indicator-anim" title="Assistant is processing/speaking">
+                <SpeakerWaveIcon class="icon-xs text-accent-focus"/>
+              </div>
+              <div v-else-if="isUserActive" class="activity-indicator user-listening-indicator-holographic animate-listening-indicator-anim animation-delay-300" title="Listening to you">
+                <MicrophoneIcon class="icon-xs text-holo-green"/>
+              </div>
+            </div>
         </div>
 
-        <nav class="hidden lg:flex items-center space-x-1 xl:space-x-2">
+        <nav class="desktop-nav-holographic" aria-label="Main desktop navigation">
           <div class="relative" ref="modeDropdownRef">
-            <button @click="toggleModeDropdown" class="nav-button flex items-center gap-1.5">
-              <component :is="getModeIcon()" class="w-4 h-4 shrink-0" :class="getModeIconClass().replace('bg-', 'text-').replace('dark:bg-', 'dark:text-')" />
-              <span class="font-medium text-sm">{{ getModeDisplayName() }}</span>
-              <ChevronDownIcon class="w-3.5 h-3.5 transition-transform" :class="{ 'rotate-180': showModeDropdown }" />
+            <button @click="toggleDropdown('mode')" class="nav-button-analog group" id="mode-button" aria-haspopup="true" :aria-expanded="showModeDropdown.toString()">
+              <component :is="activeAgentDisplay.icon || CpuChipIcon" class="icon-sm shrink-0" :class="activeAgentDisplay.iconClass || 'text-primary-focus'" />
+              <span class="nav-button-text">{{ activeAgentDisplay.label }}</span>
+              <ChevronDownIcon class="icon-xs nav-chevron-analog" :class="{ 'rotate-180': showModeDropdown }" />
             </button>
-            <transition name="dropdown-fade">
-              <div v-show="showModeDropdown" class="dropdown-menu w-72">
-                <div class="dropdown-header"><h3 class="font-medium">Select Mode</h3></div>
-                <div class="dropdown-content p-2">
-                  <button
-                    v-for="preset in modePresets" :key="preset.value" @click="selectAppMode(preset.value)"
-                    class="dropdown-item w-full" :class="{ 'active': appSettings.currentAppMode === preset.value }"
-                  >
-                    <div class="flex items-center gap-3">
-                      <div class="mode-icon-sm" :class="preset.iconClass"><component :is="preset.icon" class="w-4 h-4" /></div>
-                      <div class="flex-1 text-left">
-                        <div class="font-medium text-sm">{{ preset.label }}</div>
-                        <div class="text-xs text-gray-500 dark:text-gray-400">{{ preset.description }}</div>
-                      </div>
+            <transition name="dropdown-float">
+              <div v-show="showModeDropdown" class="dropdown-menu-holographic w-80 origin-top-left sm:origin-top-right" role="menu" aria-orientation="vertical" aria-labelledby="mode-button">
+                <div class="dropdown-header-holographic"><h3 class="dropdown-title">Select Assistant Mode</h3></div>
+                <div class="dropdown-content-holographic p-2 max-h-96 overflow-y-auto custom-scrollbar-thin">
+                  <button v-for="preset in modePresets" :key="preset.value" @click="selectAppMode(preset.value)"
+                    class="dropdown-item-holographic w-full group" :class="{ 'active': agentStore.activeAgentId === preset.value }" role="menuitemradio" :aria-checked="agentStore.activeAgentId === preset.value">
+                    <div class="mode-icon-dd-holographic" :class="preset.iconClass || 'bg-neutral-bg-elevated text-neutral-text-muted'"><component :is="preset.icon" class="icon-base" /></div>
+                    <div class="flex-1 text-left">
+                      <div class="dropdown-item-label">{{ preset.label }}</div>
+                      <div class="dropdown-item-desc">{{ preset.description }}</div>
                     </div>
                   </button>
                 </div>
               </div>
             </transition>
           </div>
-          
-          <div v-if="appSettings.currentAppMode === 'coding'" class="relative" ref="languageDropdownRef">
-            <button @click="toggleLanguageDropdown" class="nav-button flex items-center gap-1.5">
-               <span class="text-lg leading-none">{{ getLanguageIcon(appSettings.preferredCodingLanguage) }}</span>
-              <span class="font-medium text-sm">{{ getLanguageDisplayName() }}</span>
-              <ChevronDownIcon class="w-3.5 h-3.5 transition-transform" :class="{ 'rotate-180': showLanguageDropdown }" />
+
+          <div v-if="agentStore.activeAgent?.showLanguageSelector" class="relative" ref="languageDropdownRef">
+              <button @click="toggleDropdown('language')" class="nav-button-analog group" id="language-button" aria-haspopup="true" :aria-expanded="showLanguageDropdown.toString()">
+              <LanguageIcon class="icon-sm shrink-0 text-primary-focus"/>
+              <span class="nav-button-text">{{ currentLanguageDisplay.label }}</span>
+              <ChevronDownIcon class="icon-xs nav-chevron-analog" :class="{ 'rotate-180': showLanguageDropdown }" />
             </button>
-            <transition name="dropdown-fade">
-                <div v-show="showLanguageDropdown" class="dropdown-menu w-64">
-                    <div class="dropdown-header"><h3 class="font-medium">Programming Language</h3></div>
-                    <div class="dropdown-content p-2 max-h-72 overflow-y-auto">
-                        <button
-                            v-for="lang in programmingLanguages" :key="lang.value" @click="selectCodingLanguage(lang.value)"
-                            class="dropdown-item w-full" :class="{ 'active': appSettings.preferredCodingLanguage === lang.value }">
-                            <div class="flex items-center gap-3">
-                                <span class="text-base">{{ lang.icon }}</span>
-                                <div class="flex-1 text-left">
-                                    <div class="font-medium text-sm">{{ lang.label }}</div>
-                                    <div class="text-xs text-gray-500 dark:text-gray-400">{{ lang.description }}</div>
-                                </div>
-                            </div>
-                        </button>
-                    </div>
-                </div>
+            <transition name="dropdown-float">
+              <div v-show="showLanguageDropdown" class="dropdown-menu-holographic w-64 origin-top-left sm:origin-top-right" role="menu" aria-orientation="vertical" aria-labelledby="language-button">
+                  <div class="dropdown-header-holographic"><h3 class="dropdown-title">Programming Language</h3></div>
+                  <div class="dropdown-content-holographic p-2 max-h-72 overflow-y-auto custom-scrollbar-thin">
+                    <button v-for="lang in programmingLanguages" :key="lang.value" @click="selectCodingLanguage(lang.value)"
+                      class="dropdown-item-holographic w-full group" :class="{ 'active': appSettings.preferredCodingLanguage === lang.value }" role="menuitemradio" :aria-checked="appSettings.preferredCodingLanguage === lang.value">
+                      <span class="text-lg mr-2.5 min-w-[1.5rem] text-center text-glow-subtle" aria-hidden="true">{{ lang.icon }}</span>
+                      <span class="dropdown-item-label">{{ lang.label }}</span>
+                    </button>
+                  </div>
+              </div>
             </transition>
           </div>
 
           <Suspense>
-            <VoiceControlsDropdown />
+            <VoiceControlsDropdown button-class="nav-button-analog" text-class="nav-button-text" icon-class="icon-sm text-primary-focus" chevron-class="nav-chevron-analog" />
             <template #fallback>
-              <button class="nav-button flex items-center gap-1.5 opacity-50 cursor-default">
-                <AdjustmentsHorizontalIcon class="w-4 h-4" /> <span class="text-sm">Voice...</span>
+              <button class="nav-button-analog opacity-50 cursor-default" disabled>
+                <AdjustmentsHorizontalIcon class="icon-sm text-primary-focus" /> <span class="nav-button-text">Voice...</span>
               </button>
             </template>
           </Suspense>
           
-          <div class="flex items-center gap-3 pl-2" v-if="appSettings.currentAppMode === 'coding' || appSettings.currentAppMode === 'system_design'">
-            <div class="flex items-center gap-1.5" title="Generate diagrams for relevant content">
-                <label for="diagramToggleDesktop" class="text-xs text-gray-600 dark:text-gray-400 cursor-pointer">Diagrams</label>
-                <label class="toggle-switch-xs">
-                    <input id="diagramToggleDesktop" type="checkbox" v-model="appSettings.generateDiagrams" class="sr-only">
-                    <span class="slider-xs"></span>
-                </label>
-            </div>
-          </div>
-          <div class="flex items-center gap-1.5 pl-2" title="Auto-clear chat after each response">
-              <label for="autoClearToggleDesktop" class="text-xs text-gray-600 dark:text-gray-400 cursor-pointer">Auto-Clear</label>
-              <label class="toggle-switch-xs">
-                  <input id="autoClearToggleDesktop" type="checkbox" v-model="appSettings.autoClearChat" class="sr-only">
-                  <span class="slider-xs"></span>
-              </label>
-          </div>
-
-
-          <RouterLink
-            v-for="link in navLinks.filter(l => l.path !== '/')" :key="link.path" :to="link.path"
-            class="nav-button flex items-center gap-1.5"
-            active-class="nav-button-active"
-          >
-            <component v-if="link.icon" :is="link.icon" class="w-4 h-4" />
-            <span class="font-medium text-sm">{{ link.name }}</span>
+          <RouterLink v-for="link in navLinks" :key="link.path" :to="link.path" class="nav-button-analog group" active-class="nav-button-analog-active">
+            <component v-if="link.icon" :is="link.icon" class="icon-sm shrink-0 text-primary-focus" />
+            <span class="nav-button-text">{{ link.name }}</span>
           </RouterLink>
         </nav>
 
-        <div class="flex items-center gap-1.5 sm:gap-2">
-          <div class="cost-display glass-effect px-2.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium">
-            <span class="hidden sm:inline text-gray-600 dark:text-gray-300">Cost: </span>
-            <span class="font-mono text-primary-600 dark:text-primary-400 font-bold">${{ sessionCost.toFixed(3) }}</span>
+        <div class="header-actions-section">
+          <div class="quick-toggles-group-analog">
+              <div class="quick-toggle-item-analog" title="Toggle Diagram Generation">
+                <label class="toggle-switch-analog">
+                  <input id="diagramToggleDesktop" type="checkbox" v-model="appSettings.generateDiagrams" class="sr-only peer" />
+                  <div class="toggle-switch-track-analog"></div>
+                  <div class="toggle-switch-knob-analog"></div>
+                </label>
+                <label for="diagramToggleDesktop" class="quick-toggle-label-icon-analog"><PhotoIcon class="icon-sm" /></label>
+              </div>
+              <div v-if="agentStore.activeAgent?.supportsAutoClear"
+                    class="quick-toggle-item-analog" title="Toggle Auto-Clear Input">
+                <label class="toggle-switch-analog">
+                  <input id="autoClearToggleDesktop" type="checkbox" v-model="appSettings.autoClearChat" class="sr-only peer" />
+                  <div class="toggle-switch-track-analog"></div>
+                  <div class="toggle-switch-knob-analog"></div>
+                </label>
+                <label for="autoClearToggleDesktop" class="quick-toggle-label-icon-analog"><TrashIconOutline class="icon-sm" /></label>
+              </div>
           </div>
 
-          <div class="hidden md:flex items-center gap-0.5 sm:gap-1">
-            <button @click="handleShowPriorChatLog" class="action-btn" title="Show Chat History Log">
-                <ClockIcon class="w-4 h-4" />
+          <div class="cost-display-analog" title="Current session estimated cost">
+            <span class="cost-label hidden sm:inline">Cost: </span>
+            <span class="cost-value-analog">${{ sessionCost.toFixed(4) }}</span>
+          </div>
+
+          <div class="desktop-action-buttons">
+            <button @click="handleShowPriorChatLog" class="action-btn-analog" title="View Chat History Log"><ClockIcon class="icon-base" /></button>
+            <button @click="handleClearChatAndSession" class="action-btn-analog" title="Clear Chat & Session"><TrashIconOutline class="icon-base" /></button>
+            <button @click="handleToggleFullscreen" class="action-btn-analog" :title="isFullscreenActive ? 'Exit Fullscreen' : 'Enter Fullscreen'">
+              <component :is="isFullscreenActive ? ArrowsPointingInIcon : ArrowsPointingOutIcon" class="icon-base" />
             </button>
-            <button @click="handleClearChat" class="action-btn" title="Clear Chat & Reset Cost"><TrashIcon class="w-4 h-4" /></button>
-            <button @click="handleToggleFullscreen" class="action-btn" :title="isFullscreenActive ? 'Exit Fullscreen' : 'Enter Fullscreen'">
-              <ArrowsPointingOutIcon v-if="!isFullscreenActive" class="w-4 h-4" />
-              <ArrowsPointingInIcon v-else class="w-4 h-4" />
+            <button @click="handleToggleTheme" class="action-btn-analog" title="Toggle Theme">
+              <component :is="isDarkMode ? SunIcon : MoonIcon" class="icon-base" />
             </button>
-            <button @click="handleToggleTheme" class="action-btn" title="Toggle Theme">
-              <SunIcon v-if="isDarkMode" class="w-4 h-4" /> <MoonIcon v-else class="w-4 h-4" />
+              <button @click="handleLogout" class="action-btn-analog logout-btn-analog" title="Logout">
+              <ArrowRightOnRectangleIcon class="icon-base"/>
             </button>
           </div>
 
-          <button @click="toggleMobileNav" class="lg:hidden action-btn" aria-label="Toggle mobile menu" :aria-expanded="isMobileNavOpen.toString()">
-            <XMarkIcon v-if="isMobileNavOpen" class="w-5 h-5" /> <Bars3Icon v-else class="w-5 h-5" />
+          <button @click="toggleMobileNav" class="mobile-nav-toggle-analog btn btn-icon btn-ghost lg:hidden" aria-label="Toggle mobile menu" :aria-expanded="isMobileNavOpen.toString()">
+            <component :is="isMobileNavOpen ? XMarkIcon : Bars3Icon" class="icon-base" />
           </button>
         </div>
       </div>
     </div>
 
     <transition name="slide-down-panel">
-      <div
-        v-show="isMobileNavOpen && (!isFullscreenActive || showHeaderInFullscreen)"
-        class="lg:hidden mobile-nav-panel"
-        role="dialog" aria-modal="true"
-      >
-        <div class="p-4 space-y-4 max-h-[calc(100vh-4.5rem)] overflow-y-auto">
-            <section>
-                <h3 class="mobile-section-title">Assistant Mode</h3>
-                 <div class="grid grid-cols-2 gap-2.5">
-                    <button
-                        v-for="preset in modePresets" :key="preset.value" @click="selectAppMode(preset.value)"
-                        class="mobile-mode-card" :class="{ 'active': appSettings.currentAppMode === preset.value }"
-                    >
-                        <div class="mode-icon-sm" :class="preset.iconClass"><component :is="preset.icon" class="w-5 h-5" /></div>
-                        <span class="text-xs font-medium">{{ preset.label }}</span>
-                    </button>
-                </div>
-            </section>
-
-            <section v-if="appSettings.currentAppMode === 'coding'">
-                <h3 class="mobile-section-title">Programming Language</h3>
-                <select v-model="appSettings.preferredCodingLanguage" @change="selectCodingLanguage(($event.target as HTMLSelectElement).value)" class="mobile-select">
-                    <option v-for="lang in programmingLanguages" :key="lang.value" :value="lang.value">
-                        {{ lang.icon }} {{ lang.label }}
-                    </option>
-                </select>
-            </section>
-
-            <section>
-                <h3 class="mobile-section-title">Quick Settings</h3>
-                <div class="space-y-2.5">
-                    <div class="mobile-toggle-item">
-                        <label for="autoClearToggleMobile" class="cursor-pointer">Auto-Clear Chat</label>
-                        <label class="toggle-switch-sm"><input id="autoClearToggleMobile" type="checkbox" v-model="appSettings.autoClearChat" class="sr-only"><span class="slider-sm"></span></label>
-                    </div>
-                    <div v-if="appSettings.currentAppMode === 'coding' || appSettings.currentAppMode === 'system_design'" class="mobile-toggle-item">
-                        <label for="diagramToggleMobile" class="cursor-pointer">Generate Diagrams</label>
-                        <label class="toggle-switch-sm"><input id="diagramToggleMobile" type="checkbox" v-model="appSettings.generateDiagrams" class="sr-only"><span class="slider-sm"></span></label>
-                    </div>
-                </div>
-            </section>
-            
-            <nav class="border-t border-gray-200 dark:border-gray-700 pt-4 space-y-1">
-                <RouterLink v-for="link in navLinks.filter(l => l.path !== '/')" :key="link.path" :to="link.path" @click="toggleMobileNav" class="mobile-nav-link">
-                    <component v-if="link.icon" :is="link.icon" class="w-5 h-5 mr-3" />
-                    {{ link.name }}
-                </RouterLink>
-            </nav>
-
-            <div class="pt-4 border-t border-gray-200 dark:border-gray-700 space-y-3">
-                <button @click="handleShowPriorChatLog" class="mobile-action-btn-full"><ClockIcon class="w-5 h-5 mr-2"/> Chat History Log</button>
-                <button @click="handleClearChat" class="mobile-action-btn-full"><TrashIcon class="w-5 h-5 mr-2"/> Clear Chat</button>
-                <button @click="handleToggleTheme" class="mobile-action-btn-full">
-                    <SunIcon v-if="isDarkMode" class="w-5 h-5 mr-2" /> <MoonIcon v-else class="w-5 h-5 mr-2" /> Toggle Theme
-                </button>
-                <button @click="handleToggleFullscreen" class="mobile-action-btn-full">
-                    <ArrowsPointingOutIcon v-if="!isFullscreenActive" class="w-5 h-5 mr-2" /> <ArrowsPointingInIcon v-else class="w-5 h-5 mr-2" />
-                    {{ isFullscreenActive ? 'Exit Fullscreen' : 'Enter Fullscreen' }}
-                </button>
-                <button @click="handleLogout" class="mobile-action-btn-full text-red-600 dark:text-red-400">
-                    <ArrowRightOnRectangleIcon class="w-5 h-5 mr-2"/> Logout
-                </button>
+      <div v-show="isMobileNavOpen && (!uiStore.isFullscreen || uiStore.showHeaderInFullscreenMinimal)" class="mobile-nav-panel-holographic" role="dialog" aria-modal="true">
+        <div class="mobile-nav-content custom-scrollbar-thin">
+          <section class="mobile-section">
+            <h3 class="mobile-section-title-holographic">Assistant Mode</h3>
+            <div class="grid grid-cols-2 gap-3">
+              <button v-for="preset in modePresets" :key="preset.value" @click="selectAppMode(preset.value)"
+                class="mobile-mode-card-analog" :class="{ 'active': agentStore.activeAgentId === preset.value }">
+                <div class="mode-icon-dd-holographic p-2.5" :class="preset.iconClass || 'bg-neutral-bg-elevated text-neutral-text-muted'"><component :is="preset.icon" class="icon-xl" /></div>
+                <span class="mobile-mode-label">{{ preset.label }}</span>
+              </button>
             </div>
+          </section>
+
+          <section v-if="agentStore.activeAgent?.showLanguageSelector" class="mobile-section">
+            <h3 class="mobile-section-title-holographic">Programming Language</h3>
+            <select :value="appSettings.preferredCodingLanguage" @change="selectCodingLanguage(($event.target as HTMLSelectElement).value)" class="form-select-analog w-full text-base">
+              <option v-for="lang in programmingLanguages" :key="lang.value" :value="lang.value">
+                {{ lang.icon }} {{ lang.label }}
+              </option>
+            </select>
+          </section>
+          
+          <section class="mobile-section">
+              <h3 class="mobile-section-title-holographic">Quick Toggles</h3>
+              <div class="space-y-3.5">
+                <div class="mobile-toggle-item-analog">
+                    <PhotoIcon class="icon-base mr-2.5 text-neutral-text-muted"/>
+                    <label for="diagramToggleMobile" class="mobile-toggle-label">Generate Diagrams</label>
+                    <label class="toggle-switch-analog ml-auto">
+                      <input id="diagramToggleMobile" type="checkbox" v-model="appSettings.generateDiagrams" class="sr-only peer" />
+                      <div class="toggle-switch-track-analog"></div><div class="toggle-switch-knob-analog"></div>
+                    </label>
+                </div>
+                <div v-if="agentStore.activeAgent?.supportsAutoClear" class="mobile-toggle-item-analog">
+                    <TrashIconOutline class="icon-base mr-2.5 text-neutral-text-muted"/>
+                    <label for="autoClearToggleMobile" class="mobile-toggle-label">Auto-Clear Input</label>
+                    <label class="toggle-switch-analog ml-auto">
+                      <input id="autoClearToggleMobile" type="checkbox" v-model="appSettings.autoClearChat" class="sr-only peer" />
+                      <div class="toggle-switch-track-analog"></div><div class="toggle-switch-knob-analog"></div>
+                    </label>
+                </div>
+              </div>
+            </section>
+
+          <nav class="mobile-nav-links">
+            <RouterLink v-for="link in navLinks" :key="link.path" :to="link.path" @click="closeMobileNav" class="mobile-nav-link-analog" active-class="mobile-nav-link-analog-active">
+              <component v-if="link.icon" :is="link.icon" class="icon-base mr-3 shrink-0" />
+              {{ link.name }}
+            </RouterLink>
+          </nav>
+
+          <div class="mobile-action-buttons">
+            <button @click="handleShowPriorChatLog" class="btn-analog mobile-action-btn-full"><ClockIcon class="icon-base mr-2"/> Chat History</button>
+            <button @click="handleClearChatAndSession" class="btn-analog mobile-action-btn-full"><TrashIconOutline class="icon-base mr-2"/> Clear Chat & Cost</button>
+            <button @click="handleToggleTheme" class="btn-analog mobile-action-btn-full">
+              <component :is="isDarkMode ? SunIcon : MoonIcon" class="icon-base mr-2" /> Toggle Theme
+            </button>
+            <button @click="handleToggleFullscreen" class="btn-analog mobile-action-btn-full">
+              <component :is="isFullscreenActive ? ArrowsPointingInIcon : ArrowsPointingOutIcon" class="icon-base mr-2" />
+              {{ isFullscreenActive ? 'Exit Fullscreen' : 'Enter Fullscreen' }}
+            </button>
+            <button @click="handleLogout" class="btn-analog btn-analog-danger mobile-action-btn-full"> <ArrowRightOnRectangleIcon class="icon-base mr-2"/> Logout
+            </button>
+          </div>
         </div>
       </div>
     </transition>
 
-    <div v-if="isFullscreenActive && !showHeaderInFullscreen" class="fixed top-3 right-3 z-50 flex items-center gap-2">
-      <button @click="toggleShowHeaderInFullscreen" class="fullscreen-minimal-btn" title="Show Menu">
-        <Bars3Icon class="w-5 h-5" />
-      </button>
-      <button @click="handleToggleFullscreen" class="fullscreen-minimal-btn" title="Exit Fullscreen">
-        <ArrowsPointingInIcon class="w-5 h-5" />
-      </button>
+    <div v-if="isFullscreenActive && !showHeaderInFullscreen" class="fullscreen-interaction-buttons">
+      <button @click="toggleShowHeaderInFullscreen" class="fullscreen-minimal-btn-holographic" title="Show Menu"><Bars3Icon class="icon-base" /></button>
+      <button @click="handleToggleFullscreen" class="fullscreen-minimal-btn-holographic" title="Exit Fullscreen"><ArrowsPointingInIcon class="icon-base" /></button>
     </div>
-    <div v-if="isFullscreenActive && showHeaderInFullscreen" class="fixed top-3 right-3 z-[60]">
-      <button @click="toggleShowHeaderInFullscreen" class="fullscreen-minimal-btn" title="Hide Menu">
-        <XMarkIcon class="w-5 h-5" />
-      </button>
+    <div v-if="isFullscreenActive && showHeaderInFullscreen" class="fixed top-4 right-4 z-[60]">
+      <button @click="toggleShowHeaderInFullscreen" class="fullscreen-minimal-btn-holographic" title="Hide Menu"><XMarkIcon class="icon-base" /></button>
     </div>
   </header>
 </template>
 
 <style lang="postcss" scoped>
-/* Base styles from your new Header.vue, adapted for clarity and new elements */
-.app-header.opacity-0 { pointer-events: none; }
+/* Holographic, Analog-esque Header Styles - Version 4.0.2 (Fix text and shadow classes) */
 
-.nav-button {
-  @apply inline-flex items-center px-3 py-2 text-sm font-medium rounded-lg
-        text-gray-700 dark:text-gray-300
-        hover:bg-gray-100 dark:hover:bg-gray-700/60
-        focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:outline-none
-        transition-colors duration-150;
-}
-.nav-button-active {
-  @apply bg-primary-50 dark:bg-primary-500/20 text-primary-600 dark:text-primary-300;
+.app-header { /* Base class, already in original CSS */
+  @apply transition-all duration-[var(--duration-smooth)] ease-[var(--ease-out-quad)];
+  /* Leverage header-glass from main.css for base glassmorphism, then enhance */
 }
 
-.action-btn {
-  @apply p-2 rounded-lg text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200
-        hover:bg-gray-100 dark:hover:bg-gray-700/60 transition-all
-        focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:outline-none;
+.header-glass-holographic {
+  /* Using header-glass from main.css as a base, enhancing it here */
+  @apply border-b;
+  background: hsl(var(--bg-base-hsl) / 0.65); /* Slightly less opaque for more "holo" */
+  backdrop-filter: blur(24px) saturate(180%); /* More blur and saturation */
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-bottom-color: hsl(var(--primary-focus-hsl) / 0.25);
+  box-shadow: 0 2px 20px hsl(var(--primary-dark-hsl)/0.15), inset 0 -1px 0 hsl(var(--primary-focus-hsl)/0.1);
+}
+.dark .header-glass-holographic {
+  background: hsl(var(--bg-base-hsl-dark) / 0.7);
+  border-bottom-color: hsl(var(--accent-focus-hsl) / 0.3);
+  box-shadow: 0 2px 25px hsl(var(--accent-dark-hsl)/0.2), inset 0 -1px 0 hsl(var(--accent-focus-hsl)/0.15);
 }
 
-.cost-display {
-  @apply bg-gray-50 dark:bg-gray-800/70 border border-gray-200 dark:border-gray-700/50 backdrop-blur-sm;
+
+.app-header.ai-active-glow-holographic { /* Enhanced glow */
+  box-shadow: 0 0 35px 8px hsl(var(--accent-focus-hsl)/0.5), inset 0 0 20px hsl(var(--accent-focus-hsl)/0.2), 0 2px 20px hsl(var(--primary-dark-hsl)/0.1);
+  border-bottom-color: hsl(var(--accent-focus-hsl)/0.6);
+}
+.app-header.user-active-glow-holographic { /* Enhanced glow */
+  box-shadow: 0 0 35px 8px hsl(var(--holo-green-hsl)/0.5), inset 0 0 20px hsl(var(--holo-green-hsl)/0.2), 0 2px 20px hsl(var(--primary-dark-hsl)/0.1);
+  border-bottom-color: hsl(var(--holo-green-hsl)/0.6);
 }
 
-.dropdown-menu {
-  @apply absolute top-full mt-1.5 right-0 origin-top-right bg-white dark:bg-gray-850 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl backdrop-blur-md z-50;
-  min-width: 16rem;
+.app-header.is-fullscreen-hidden {
+  @apply opacity-0 -translate-y-full pointer-events-none;
 }
-.dropdown-header { @apply px-3.5 py-2.5 border-b border-gray-200 dark:border-gray-700 text-sm; }
-.dropdown-header h3 { @apply text-gray-800 dark:text-gray-100; }
-.dropdown-content { @apply p-1.5; } /* Padding for items container */
-.dropdown-item {
-  @apply w-full flex items-center gap-3 px-3 py-2.5 text-left hover:bg-gray-100 dark:hover:bg-gray-700/70 rounded-lg transition-colors text-sm text-gray-700 dark:text-gray-200;
-}
-.dropdown-item.active {
-  @apply bg-primary-50 dark:bg-primary-500/20 text-primary-600 dark:text-primary-300 font-semibold;
-}
-.mode-icon-sm { @apply w-8 h-8 rounded-lg flex items-center justify-center text-base; }
 
-/* Mobile Navigation Panel */
-.mobile-nav-panel {
-  @apply absolute top-full left-0 right-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-t border-gray-200 dark:border-gray-700 shadow-xl;
+.header-content-wrapper { @apply max-w-screen-2xl mx-auto px-3 sm:px-4 lg:px-6; }
+.header-main-row { @apply flex items-center justify-between h-[var(--header-height)]; }
+
+/* Logo and Title - Holographic styling */
+.header-logo-section { @apply flex items-center shrink-0 gap-3; }
+.logo-link-holographic {
+  @apply flex items-center gap-2 sm:gap-2.5 transition-opacity duration-[var(--duration-quick)] focus-visible:ring-inset rounded-sm;
 }
-.mobile-nav-link {
-  @apply flex items-center px-4 py-3 text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700/60 rounded-lg transition-colors;
+.logo-link-holographic:hover .logo-image-holographic {
+  transform: rotate(10deg) scale(1.2);
+  filter: brightness(1.5) drop-shadow(0 0 15px hsl(var(--primary-focus-hsl)/0.7));
 }
-.mobile-action-btn-full { /* For buttons like clear chat, logout in mobile panel */
-  @apply flex items-center justify-start w-full px-4 py-3 text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700/60 rounded-lg transition-colors;
+.logo-link-holographic:hover .app-title-full-holographic,
+.logo-link-holographic:hover .app-title-short-holographic {
+  @apply text-glow-primary opacity-100;
+  color: hsl(var(--primary-light-hsl));
 }
-.mobile-section-title { @apply block mb-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider; }
-.mobile-select { @apply w-full px-3 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-1 focus:ring-primary-500 focus:border-primary-500; }
-.mobile-mode-card { @apply flex flex-col items-center justify-center gap-1.5 p-3 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-center; }
-.mobile-mode-card.active { @apply border-primary-500 dark:border-primary-400 bg-primary-50 dark:bg-primary-700/20 text-primary-700 dark:text-primary-300; }
-.mobile-toggle-item { @apply flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800/60 rounded-lg text-sm text-gray-700 dark:text-gray-300; }
+.dark .logo-link-holographic:hover .app-title-full-holographic,
+.dark .logo-link-holographic:hover .app-title-short-holographic {
+  color: hsl(var(--primary-focus-hsl));
+}
+
+.logo-image-holographic {
+  @apply w-9 h-9 sm:w-10 sm:h-10 shrink-0 rounded-md transition-all duration-[var(--duration-smooth)] ease-[var(--ease-elastic)];
+  filter: drop-shadow(0 0 10px hsl(var(--primary-focus-hsl)/0.6));
+}
+
+.app-title-full-holographic {
+  @apply hidden md:block text-xl sm:text-2xl font-bold tracking-wider uppercase opacity-90;
+  font-family: var(--font-display);
+  color: hsl(var(--text-primary-hsl));
+  text-shadow: 0 0 6px hsl(var(--primary-color-hsl)/0.3);
+}
+.app-title-accent-holographic { /* Uses text-glow-accent utility */
+  color: hsl(var(--accent-focus-hsl));
+  opacity: 1;
+}
+.app-title-short-holographic {
+  @apply md:hidden text-xl font-bold uppercase opacity-90;
+  font-family: var(--font-display);
+  color: hsl(var(--text-primary-hsl));
+  text-shadow: 0 0 6px hsl(var(--primary-color-hsl)/0.3);
+}
+
+/* Activity Indicators - Holographic pulse */
+.activity-indicator-container { @apply w-7 h-7 relative ml-1.5; }
+.activity-indicator { @apply absolute inset-0 rounded-full flex items-center justify-center; }
+.ai-speaking-indicator-holographic {
+  background-color: hsl(var(--accent-focus-hsl)/0.15);
+  box-shadow: 0 0 10px hsl(var(--accent-focus-hsl)/0.5), inset 0 0 5px hsl(var(--accent-focus-hsl)/0.2);
+}
+.user-listening-indicator-holographic {
+  background-color: hsl(var(--holo-green-hsl)/0.15);
+  box-shadow: 0 0 10px hsl(var(--holo-green-hsl)/0.5), inset 0 0 5px hsl(var(--holo-green-hsl)/0.2);
+}
+
+/* Desktop Navigation - Analog Buttons */
+.desktop-nav-holographic { @apply hidden lg:flex items-center gap-x-1 xl:gap-x-1.5; }
+
+.nav-button-analog {
+  @apply h-11 inline-flex items-center px-3.5 xl:px-4 py-2 rounded-[var(--radius-md)] text-sm font-medium
+         transition-all duration-[var(--duration-quick)] ease-[var(--ease-out-quad)] relative
+         border border-neutral-border/50 dark:border-neutral-border-dark/70
+         bg-neutral-bg-surface/70 dark:bg-neutral-bg-elevated/70
+         text-neutral-text-secondary dark:text-neutral-text-secondary
+         shadow-analog-outset hover:shadow-interactive-hover active:shadow-analog-inset
+         hover:bg-neutral-bg-elevated/80 dark:hover:bg-neutral-bg-surface/80
+         hover:text-neutral-text dark:hover:text-neutral-text
+         hover:border-neutral-border dark:hover:border-neutral-border-light/70
+         focus-visible:ring-2 focus-visible:ring-accent-focus focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-bg;
+}
+.nav-button-analog .nav-button-text { @apply hidden xl:inline ml-1.5 tracking-wide; }
+.nav-button-analog .nav-chevron-analog {
+  @apply ml-1.5 text-neutral-text-muted group-hover:text-neutral-text transition-transform duration-[var(--duration-quick)];
+}
+.nav-button-analog.nav-button-analog-active, /* Custom active class */
+.nav-button-analog.router-link-active, /* Default Vue Router active class */
+.nav-button-analog.router-link-exact-active { /* Default Vue Router exact active class */
+  @apply text-primary-focus dark:text-primary-light bg-primary-500/10 dark:bg-primary-dark/20
+         border-primary-focus/50 dark:border-primary-focus/40 font-semibold shadow-analog-inset;
+}
+.nav-button-analog:active { @apply scale-[0.97] brightness-95; }
+
+/* Quick Toggles - Analog Switches */
+.quick-toggles-group-analog { @apply hidden sm:flex items-center gap-x-3.5 border-l border-neutral-border/40 dark:border-neutral-border-dark/50 ml-3 pl-3.5; }
+.quick-toggle-item-analog { @apply flex items-center gap-x-2; }
+.quick-toggle-label-icon-analog {
+  @apply text-neutral-text-muted hover:text-primary-focus dark:hover:text-primary-light cursor-pointer transition-colors duration-[var(--duration-quick)];
+}
+
+.toggle-switch-analog { /* Base defined in main.css, specific styling here */
+  @apply relative inline-flex h-6 w-11 items-center rounded-full cursor-pointer
+         transition-colors duration-[var(--duration-smooth)] ease-in-out
+         focus-within:ring-2 focus-within:ring-offset-1 focus-within:ring-offset-transparent focus-within:ring-accent-focus;
+}
+.toggle-switch-track-analog {
+  @apply h-full w-full rounded-full bg-neutral-border/70 dark:bg-neutral-border-dark/50
+         peer-checked:bg-primary-500 dark:peer-checked:bg-primary-focus
+         transition-colors shadow-analog-inset;
+}
+.toggle-switch-knob-analog {
+  @apply absolute top-[3px] left-[3px] bg-neutral-bg-surface dark:bg-neutral-300 border border-neutral-border dark:border-neutral-border-light/30
+         rounded-full h-[1.125rem] w-[1.125rem] shadow-md
+         transition-transform duration-[var(--duration-smooth)] ease-[var(--ease-elastic)]
+         peer-checked:translate-x-[calc(100%-0.2rem)] peer-checked:border-transparent dark:peer-checked:bg-white;
+  background-image: linear-gradient(145deg, hsl(var(--neutral-hue-light) 20% 98%), hsl(var(--neutral-hue-light) 20% 88%));
+}
+.dark .toggle-switch-knob-analog {
+  background-image: linear-gradient(145deg, hsl(var(--neutral-hue-dark) 10% 40%), hsl(var(--neutral-hue-dark) 10% 30%));
+}
 
 
-/* Small Toggle Switch (from old, can be used for desktop too if needed) */
-.toggle-switch-xs { @apply relative inline-flex items-center h-4 rounded-full w-7 cursor-pointer; }
-.toggle-switch-xs .slider-xs { @apply absolute inset-0 bg-gray-300 dark:bg-gray-600 rounded-full transition-colors duration-200 ease-in-out; }
-.toggle-switch-xs .slider-xs:before { content: ""; @apply absolute h-3 w-3 left-[2px] bottom-[2px] bg-white rounded-full transition-transform duration-200 ease-in-out shadow; }
-.toggle-switch-xs input:checked + .slider-xs { @apply bg-primary-500 dark:bg-primary-500; }
-.toggle-switch-xs input:checked + .slider-xs:before { transform: translateX(0.625rem); /* 10px */ }
+/* Header Actions - Analog Theming */
+.header-actions-section { @apply flex items-center gap-x-1 sm:gap-x-1.5; }
 
-/* Regular Toggle Switch (from old, mobile specific) */
-.toggle-switch-sm { @apply relative inline-flex items-center h-5 rounded-full w-9 cursor-pointer; }
-.toggle-switch-sm .slider-sm { @apply absolute inset-0 bg-gray-300 dark:bg-gray-600 rounded-full transition-colors duration-200 ease-in-out; }
-.toggle-switch-sm .slider-sm:before { content: ""; @apply absolute h-4 w-4 left-[2px] bottom-[2px] bg-white rounded-full transition-transform duration-200 ease-in-out shadow; }
-.toggle-switch-sm input:checked + .slider-sm { @apply bg-primary-500 dark:bg-primary-500; }
-.toggle-switch-sm input:checked + .slider-sm:before { transform: translateX(0.75rem); /* 12px */ }
+.cost-display-analog { /* Analog VFD/LCD style */
+  @apply bg-black/80 dark:bg-black/60
+         border border-primary-900/40 dark:border-neutral-border-dark/40
+         px-3.5 py-2 rounded-[var(--radius-sm)] text-xs sm:text-sm shadow-analog-inset backdrop-blur-sm;
+  min-width: 90px; text-align: right;
+}
+.cost-display-analog .cost-label { color: hsl(var(--holo-cyan-hsl)/0.7); @apply font-mono text-xs; }
+.cost-display-analog .cost-value-analog {
+  @apply font-mono text-holo-cyan font-bold tracking-wider;
+  text-shadow: 0 0 3px hsl(var(--holo-cyan-hsl)/0.8), 0 0 6px hsl(var(--holo-cyan-hsl)/0.5);
+}
+
+.desktop-action-buttons { @apply hidden md:flex items-center gap-x-0.5; }
+.action-btn-analog { /* Using .btn structure from main.css */
+  @apply btn btn-icon btn-ghost p-2.5 rounded-[var(--radius-md)] text-neutral-text-secondary hover:text-primary-focus
+        border border-transparent hover:border-primary-focus/20 hover:bg-primary-500/5
+        dark:hover:text-primary-light dark:hover:border-primary-light/20 dark:hover:bg-primary-light/5
+        shadow-none hover:shadow-interactive active:shadow-analog-inset active:scale-[0.95];
+}
+.action-btn-analog.logout-btn-analog {
+  @apply hover:text-error-dark dark:hover:text-error-light hover:border-error-dark/30 dark:hover:border-error-light/30 hover:bg-error-dark/5 dark:hover:bg-error-light/5;
+}
+.action-btn-analog .icon-base { @apply opacity-80 group-hover:opacity-100; }
+
+
+.mobile-nav-toggle-analog { /* Uses btn, btn-icon, btn-ghost. Theming applied via those classes */
+  @apply text-neutral-text-secondary hover:text-primary-focus;
+}
+
+
+/* Dropdown Menu - Holographic Styling */
+.dropdown-menu-holographic {
+  @apply absolute top-full mt-2.5 z-50 glass-pane rounded-[var(--radius-lg)] shadow-holo-lg border-primary-focus/20 dark:border-accent-focus/30;
+  min-width: 280px;
+}
+.dropdown-header-holographic { @apply px-4 py-3 border-b border-primary-focus/10 dark:border-accent-focus/15; }
+.dropdown-title { @apply text-xs font-bold text-neutral-text-muted uppercase tracking-wider; }
+.dropdown-content-holographic { /* For scrollable area within dropdown */ }
+
+.dropdown-item-holographic { /* Holographic list item */
+  @apply w-full flex items-center gap-x-3 px-3 py-2.5 text-left rounded-[var(--radius-md)]
+         text-neutral-text-secondary hover:text-primary-focus dark:hover:text-accent-light
+         hover:bg-primary-500/10 dark:hover:bg-accent-dark/15 focus-visible:bg-primary-500/15
+         transition-all duration-[var(--duration-quick)] cursor-pointer;
+}
+.dropdown-item-holographic.active {
+  @apply bg-primary-500/20 text-primary-focus dark:bg-accent-dark/25 dark:text-accent-light font-semibold
+         shadow-inner shadow-primary-dark/10 dark:shadow-accent-dark/15;
+}
+.mode-icon-dd-holographic {
+  @apply w-10 h-10 p-2 rounded-[var(--radius-md)] flex items-center justify-center text-lg shrink-0 shadow-sm
+         bg-primary-500/5 dark:bg-accent-500/10 border border-primary-500/10 dark:border-accent-500/15;
+}
+.dropdown-item-label { @apply font-medium text-sm; }
+.dropdown-item-desc { @apply text-xs text-neutral-text-muted mt-0.5 group-hover:text-neutral-text-secondary dark:group-hover:text-neutral-text-muted; }
+
+
+/* Mobile Navigation - Holographic Panel, Analog Controls */
+.mobile-nav-panel-holographic {
+  @apply lg:hidden absolute top-full left-0 right-0 shadow-2xl glass-pane;
+  border-top: 1px solid hsl(var(--primary-focus-hsl)/0.3);
+  border-bottom-left-radius: 0; border-bottom-right-radius: 0;
+}
+.mobile-nav-content { @apply p-4 space-y-5 max-h-[calc(100vh-var(--header-height)-1rem)] overflow-y-auto; }
+.mobile-section { @apply pb-4 mb-4 border-b border-neutral-border/20 dark:border-neutral-border-dark/30 last:border-b-0 last:pb-0 last:mb-0; }
+.mobile-section-title-holographic {
+  @apply block mb-3 text-xs font-bold text-neutral-text-muted uppercase tracking-wider;
+  text-shadow: 0 0 3px hsl(var(--text-muted-hsl)/0.5);
+}
+
+.mobile-mode-card-analog { /* Analog card style for mobile */
+  @apply flex flex-col items-center justify-center gap-1.5 p-3.5 border rounded-[var(--radius-lg)]
+         transition-all text-center shadow-analog-outset active:scale-95 duration-[var(--duration-quick)] ease-[var(--ease-out-quad)]
+         border-neutral-border/60 dark:border-neutral-border-dark/70
+         bg-neutral-bg-surface/80 dark:bg-neutral-bg-elevated/80 text-neutral-text-secondary;
+}
+.mobile-mode-card-analog:hover {
+  @apply border-primary-focus/50 dark:border-accent-focus/60
+        bg-primary-500/5 dark:bg-accent-500/5 shadow-interactive-hover;
+}
+.mobile-mode-card-analog.active {
+  @apply border-primary-focus dark:border-accent-focus bg-primary-500/10 dark:bg-accent-dark/15
+         text-primary-focus dark:text-accent-light font-semibold
+         transform scale-[1.02] shadow-analog-inset;
+}
+.mobile-mode-label { @apply text-xs font-medium mt-1.5; }
+
+.form-select-analog { /* For mobile language select */
+  @apply form-select; /* Use base from main.css or tailwind forms plugin */
+  /* Specific analog overrides if needed */
+  @apply bg-neutral-bg-subtle/80 dark:bg-neutral-bg-elevated/70 border-neutral-border-light/70 dark:border-neutral-border-dark/60 shadow-analog-inset;
+}
+.form-select-analog:focus {
+  @apply border-accent-focus ring-accent-focus shadow-holo-sm;
+}
+
+.mobile-toggle-item-analog {
+  @apply flex items-center justify-between p-3 rounded-[var(--radius-md)] bg-neutral-bg-subtle/70 dark:bg-neutral-bg-elevated/60 shadow-sm border border-neutral-border/30 dark:border-neutral-border-dark/40;
+}
+.mobile-toggle-label { @apply font-medium text-sm text-neutral-text; }
+
+.mobile-nav-links { @apply space-y-1.5; }
+.mobile-nav-link-analog { /* Analog style for mobile links */
+  @apply flex items-center px-3.5 py-3 text-base font-medium rounded-[var(--radius-lg)] transition-colors duration-[var(--duration-quick)]
+         text-neutral-text-secondary hover:bg-primary-500/10 hover:text-primary-focus
+         dark:hover:bg-accent-dark/15 dark:hover:text-accent-light;
+}
+.mobile-nav-link-analog.mobile-nav-link-analog-active {
+  @apply bg-primary-500/15 text-primary-focus dark:bg-accent-dark/20 dark:text-accent-light font-semibold;
+}
+
+.mobile-action-buttons { @apply pt-4 space-y-2.5; }
+.btn-analog { /* General analog button for mobile, uses .btn from main.css as base */
+  @apply btn btn-secondary text-sm py-3; /* Default to secondary analog style */
+  /* Ensure it has analog shadows & feel */
+  @apply shadow-analog-outset hover:shadow-interactive-hover active:shadow-analog-inset active:scale-[0.97];
+}
+.btn-analog.btn-analog-danger { /* Specific danger style for analog */
+  @apply btn btn-danger; /* Uses .btn-danger from main.css which has a gradient */
+  @apply shadow-lg hover:shadow-error/50; /* Ensure it has analog shadows if desired or keep main.css style */
+}
+.mobile-action-btn-full {
+  @apply w-full justify-center;
+}
+
+
+/* Fullscreen Interaction Buttons - Holographic Style */
+.fullscreen-interaction-buttons { @apply fixed top-4 right-4 z-[60] flex items-center gap-3; }
+.fullscreen-minimal-btn-holographic {
+  @apply btn btn-icon bg-neutral-bg-elevated/50 text-neutral-text /* CORRECTED HERE */
+         hover:bg-neutral-bg-elevated/80 shadow-holo-md border-neutral-border/30 backdrop-blur-md
+         dark:bg-neutral-bg-elevated/60 dark:border-neutral-border-dark/40 dark:hover:bg-neutral-bg-elevated
+         rounded-[var(--radius-md)];
+  transition: all var(--duration-quick) ease-in-out;
+}
+.fullscreen-minimal-btn-holographic:hover {
+  @apply shadow-holo-lg scale-[1.05];
+  color: hsl(var(--accent-focus-hsl));
+}
 
 
 /* Transitions */
-.dropdown-fade-enter-active, .dropdown-fade-leave-active { transition: opacity 0.15s ease-out, transform 0.15s ease-out; }
-.dropdown-fade-enter-from, .dropdown-fade-leave-to { opacity: 0; transform: translateY(-8px) scale(0.98); }
+.dropdown-float-enter-active, .dropdown-float-leave-active { transition: opacity 0.2s var(--ease-out-quad), transform 0.2s var(--ease-out-quad); }
+.dropdown-float-enter-from, .dropdown-float-leave-to { opacity: 0; transform: translateY(-12px) scale(0.92); }
 
-.slide-down-panel-enter-active, .slide-down-panel-leave-active { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease-out; }
-.slide-down-panel-enter-from, .slide-down-panel-leave-to { transform: translateY(-20%); opacity: 0; }
+.slide-down-panel-enter-active { transition: transform 0.35s var(--ease-out-expo), opacity 0.3s var(--ease-out-quad); }
+.slide-down-panel-leave-active { transition: transform 0.25s var(--ease-in-quad), opacity 0.2s var(--ease-in-quad); }
+.slide-down-panel-enter-from, .slide-down-panel-leave-to { transform: translateY(-100%); opacity: 0; }
 
-.fullscreen-minimal-btn {
-  @apply p-2.5 bg-black/40 dark:bg-white/20 backdrop-blur-md rounded-full text-white hover:bg-black/50 dark:hover:bg-white/30 transition-colors shadow-lg;
+
+/* Ensure custom scrollbar uses new theme if not already covered by global styles */
+.custom-scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--primary-focus-hsl)/0.4) transparent; /* Or accent if preferred */
 }
-
-/* Ensure primary colors are defined for Tailwind JIT if not used elsewhere (placeholders for safety) */
-.bg-primary-50 { } .dark\:bg-primary-500\/20 { } .text-primary-600 { } .dark\:text-primary-300 { }
-.border-primary-500 { } .dark\:border-primary-400 { }
-.bg-primary-600 { } .dark\:text-primary-400 { }
+.custom-scrollbar-thin::-webkit-scrollbar { @apply w-1.5 h-1.5; }
+.custom-scrollbar-thin::-webkit-scrollbar-track { @apply bg-transparent; }
+.custom-scrollbar-thin::-webkit-scrollbar-thumb { background-color: hsl(var(--primary-focus-hsl)/0.4); @apply rounded-full; }
+.custom-scrollbar-thin::-webkit-scrollbar-thumb:hover { background-color: hsl(var(--primary-focus-hsl)/0.6); }
 </style>

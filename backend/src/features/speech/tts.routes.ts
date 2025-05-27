@@ -1,14 +1,14 @@
 // File: backend/src/features/speech/tts.routes.ts
 /**
  * @file Text-to-Speech (TTS) API route handlers.
- * @version 1.2.2 - Aligned with updated ITtsOptions from tts.interfaces.ts.
+ * @version 1.3.1 - Corrected ITtsOptions usage and scope for outputFormat.
  * @description Handles requests to the /api/tts endpoint for synthesizing speech from text
  * using the configured TTS provider (e.g., OpenAI TTS via AudioService).
  */
 
 import { Request, Response } from 'express';
 import { audioService } from '../../core/audio/audio.service';
-// ITtsOptions now expected to have providerId and stricter outputFormat from tts.interfaces.ts
+// Ensure ITtsOptions is imported correctly and matches the definition in tts.interfaces.ts
 import { ITtsOptions, ITtsResult, IAvailableVoice } from '../../core/audio/tts.interfaces';
 import { CostService } from '../../core/cost/cost.service';
 import dotenv from 'dotenv';
@@ -16,46 +16,38 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import type { SpeechCreateParams } from 'openai/resources/audio/speech';
 
-// Load .env from project root
 const __filename = fileURLToPath(import.meta.url);
 const __projectRoot = path.resolve(path.dirname(__filename), '../../../..');
 dotenv.config({ path: path.join(__projectRoot, '.env') });
 
-/**
- * @interface ITtsRequestBody
- * @description Defines the expected structure of the request body for TTS synthesis.
- * 'outputFormat' uses OpenAI's specific types for type safety when constructing ITtsOptions.
- */
 interface ITtsRequestBody {
   text: string;
   voice?: string;
-  model?: string;
-  outputFormat?: SpeechCreateParams['response_format']; // Align with strict type
-  speakingRate?: number;
+  model?: SpeechCreateParams['model'];
+  outputFormat?: SpeechCreateParams['response_format'];
+  speed?: number;
+  pitch?: number;
+  volume?: number;
   languageCode?: string;
   userId?: string;
   providerId?: string;
 }
 
-/**
- * Handles POST requests to /api/tts for speech synthesis.
- * @param {Request} req - The Express request object.
- * @param {Response} res - The Express response object.
- * @returns {Promise<void>}
- */
 export async function POST(req: Request, res: Response): Promise<void> {
   const body: ITtsRequestBody = req.body;
   const {
     text,
     voice,
     model,
-    outputFormat, // Now correctly typed via ITtsRequestBody
-    speakingRate,
+    outputFormat, // This is from req.body
+    speed,
+    pitch,
+    volume,
     languageCode,
     providerId,
   } = body;
 
-  // @ts-ignore - req.user is custom property set by auth middleware
+  // @ts-ignore
   const userId = req.user?.id || body.userId || 'default_user_tts';
 
   if (!text || typeof text !== 'string' || text.trim().length === 0) {
@@ -85,25 +77,21 @@ export async function POST(req: Request, res: Response): Promise<void> {
       return;
     }
 
-    // This ttsServiceOptions object will be passed to audioService.synthesizeSpeech
-    // Its type ITtsOptions comes from tts.interfaces.ts.
-    // If tts.interfaces.ts has been updated as suggested, this will be type-correct.
+    // Construct ttsServiceOptions ensuring it matches ITtsOptions
     const ttsServiceOptions: ITtsOptions = {
       voice: voice,
-      model: model || process.env.OPENAI_TTS_DEFAULT_MODEL,
-      outputFormat: outputFormat || 'mp3', // 'mp3' is a valid SpeechCreateParams['response_format']
-      speakingRate: speakingRate,
+      model: model,
+      outputFormat: outputFormat, // from req.body
+      speed: speed,
+      pitch: pitch,
+      volume: volume,
       languageCode: languageCode,
-      providerId: effectiveProviderId, // This key must exist in ITtsOptions from tts.interfaces.ts
+      providerId: effectiveProviderId,
+      // providerSpecificOptions can be added if needed
     };
+    
+    console.log(`TTS Routes: User [${userId}] Requesting TTS - Provider: ${effectiveProviderId}, Model: ${model || 'default'}, Voice: ${voice || 'default'}, Speed: ${speed}, Pitch: ${pitch}, Volume: ${volume}`);
 
-    if (ttsServiceOptions.providerId === 'openai_tts' && !ttsServiceOptions.voice) {
-        ttsServiceOptions.voice = process.env.OPENAI_TTS_DEFAULT_VOICE || 'alloy';
-    }
-
-    console.log(`TTS Routes: Request for user ${userId}. Provider: ${ttsServiceOptions.providerId}. Text: "${text.substring(0, 50)}...". Options:`, { ...ttsServiceOptions });
-
-    // audioService.synthesizeSpeech expects ITtsOptions from tts.interfaces.ts
     const ttsResult: ITtsResult = await audioService.synthesizeSpeech(
       text,
       ttsServiceOptions,
@@ -111,16 +99,21 @@ export async function POST(req: Request, res: Response): Promise<void> {
     );
     
     const providerNameForResult = ttsResult.providerName || ttsServiceOptions.providerId || 'UnknownProvider';
-    console.log(`TTS Routes: Synthesized audio for user ${userId}. Cost: $${ttsResult.cost.toFixed(6)}, Format: ${ttsResult.mimeType}, Provider: ${providerNameForResult}, Voice: ${ttsResult.voiceUsed}`);
+    console.log(`TTS Routes: User [${userId}] Synthesized audio. Cost: $${ttsResult.cost.toFixed(6)}, Format: ${ttsResult.mimeType}, Provider: ${providerNameForResult}, Voice: ${ttsResult.voiceUsed}`);
 
     res.setHeader('Content-Type', ttsResult.mimeType);
-    const actualOutputFormat = ttsResult.mimeType.split('/')[1] || ttsServiceOptions.outputFormat || 'mp3';
-    res.setHeader('Content-Disposition', `inline; filename="speech.${actualOutputFormat}"`);
+    // Use ttsServiceOptions.outputFormat for consistency if mimeType parsing is tricky
+    const actualOutputFormatHeader = ttsServiceOptions.outputFormat || ttsResult.mimeType.split('/')[1] || 'mp3';
+    res.setHeader('Content-Disposition', `inline; filename="speech.${actualOutputFormatHeader}"`);
     res.setHeader('X-TTS-Cost', ttsResult.cost.toFixed(6));
     res.setHeader('X-TTS-Voice', ttsResult.voiceUsed || 'default');
     res.setHeader('X-TTS-Provider', providerNameForResult);
     if (ttsResult.durationSeconds) {
-      res.setHeader('X-TTS-Duration-Seconds', ttsResult.durationSeconds.toString());
+      res.setHeader('X-TTS-Duration-Seconds', ttsResult.durationSeconds.toFixed(3));
+    }
+    if (ttsResult.usage) {
+        res.setHeader('X-TTS-Model-Used', ttsResult.usage.modelUsed);
+        res.setHeader('X-TTS-Characters', ttsResult.usage.characters.toString());
     }
     
     res.status(200).send(ttsResult.audioBuffer);
@@ -130,11 +123,11 @@ export async function POST(req: Request, res: Response): Promise<void> {
     if (res.headersSent) {
       return;
     }
-    // ... (error handling remains the same) ...
     let errorMessage = 'Error synthesizing speech.';
     let errorCode = 'TTS_SYNTHESIS_ERROR';
     let statusCode = ttsError.status || 500;
 
+    // Error handling logic from your original file...
     if (ttsError.message?.includes('API key') || ttsError.message?.includes('authentication')) {
       errorMessage = 'TTS service API key not configured properly, is invalid, or authentication failed.';
       errorCode = 'TTS_API_AUTH_ERROR';
@@ -167,19 +160,12 @@ export async function POST(req: Request, res: Response): Promise<void> {
   }
 }
 
-/**
- * Handles GET requests to /api/tts/voices to list available TTS voices.
- * @param {Request} req - The Express request object.
- * @param {Response} res - The Express response object.
- * @returns {Promise<void>}
- */
 export async function GET(req: Request, res: Response): Promise<void> {
     try {
-        // @ts-ignore - req.user is custom property set by auth middleware
+        // @ts-ignore 
         const userId = req.user?.id || 'public_user_tts_voices';
         const providerFilter = req.query.providerId as string | undefined;
 
-        // Assuming audioService.listAvailableTtsVoices is the correct method name matching ITtsProvider
         const voices: IAvailableVoice[] = await audioService.listAvailableTtsVoices(providerFilter);
         
         console.log(`TTS Routes: User ${userId} requested available voices. Provider filter: ${providerFilter || 'all'}. Found: ${voices.length}`);
@@ -192,7 +178,7 @@ export async function GET(req: Request, res: Response): Promise<void> {
     } catch (error: any) {
         console.error("TTS Routes: Error fetching available voices:", error.message, error.stack);
         if (res.headersSent) {
-         return;
+          return;
         }
         res.status(500).json({
             message: "Failed to fetch available TTS voices.",
