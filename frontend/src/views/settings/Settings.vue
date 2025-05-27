@@ -370,31 +370,39 @@
 
 <script setup lang="ts">
 import {
-  ref, onMounted, onBeforeUnmount, watch, computed, inject, nextTick, h, type WritableComputedRef
+  ref, computed, watch, onMounted, onBeforeUnmount, inject, nextTick, h,
+  type WritableComputedRef,
 } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStorage } from '@vueuse/core';
+
 import { api as mainApi, costAPI } from '@/utils/api';
-import { voiceSettingsManager, type VoiceApplicationSettings, type VoiceOption } from '@/services/voice.settings.service';
+import {
+  voiceSettingsManager,
+  type VoiceApplicationSettings,
+  type VoiceOption,
+} from '@/services/voice.settings.service';
 import { conversationManager } from '@/services/conversation.manager';
 import {
   advancedConversationManager,
   HistoryStrategyPreset,
   type AdvancedHistoryConfig,
-  DEFAULT_ADVANCED_HISTORY_CONFIG
+  DEFAULT_ADVANCED_HISTORY_CONFIG,
 } from '@/services/advancedConversation.manager';
 import type { ToastService } from '@/services/services';
-
-import { agentService } from '@/services/agent.service'; // AgentId removed as it's not directly used
+import { agentService } from '@/services/agent.service';
 import { AUTH_TOKEN_KEY, MAX_CHAT_HISTORY_MESSAGES_CONFIGURABLE } from '@/utils/constants';
+
 import SettingsSection from '@/components/settings/SettingsSection.vue';
 import SettingsItem from '@/components/settings/SettingsItem.vue';
-import { useUiStore } from '@/store/ui.store'; // Added import for uiStore
-import { useChatStore } from '@/store/chat.store'; // Added import for chatStore
+
+import { useUiStore } from '@/store/ui.store';   // ← NEW store
+import { useChatStore } from '@/store/chat.store';
 
 import {
-  Cog8ToothIcon, PaintBrushIcon, WrenchScrewdriverIcon, SpeakerWaveIcon, CreditCardIcon, ShieldCheckIcon,
-  ArrowDownTrayIcon, ArrowUpTrayIcon, ArrowLeftIcon, CheckCircleIcon, ArrowPathIcon, ArrowLeftOnRectangleIcon,
+  Cog8ToothIcon, PaintBrushIcon, WrenchScrewdriverIcon, SpeakerWaveIcon,
+  CreditCardIcon, ShieldCheckIcon, ArrowDownTrayIcon, ArrowUpTrayIcon,
+  ArrowLeftIcon, CheckCircleIcon, ArrowPathIcon, ArrowLeftOnRectangleIcon,
   AcademicCapIcon,
 } from '@heroicons/vue/24/outline';
 
@@ -409,10 +417,21 @@ const SpinnerIcon = {
   }
 };
 
-const router = useRouter();
+
+const router  = useRouter();
+const toast   = inject<ToastService>('toast');
+const uiStore = useUiStore();
+
+// --- dark‑mode toggle now proxies to theme engine ---
+const isDarkModeLocal: WritableComputedRef<boolean> = computed({
+  get: () => uiStore.isDarkMode,
+  set: (val) => uiStore.setDarkMode(val),
+});
+
+// ---------------------------------------------------------------------------
+//  availableAgentModeOptions now guards optional public flag
+// ---------------------------------------------------------------------------
 const goHome = () => router.push('/'); // Assumes Home or PrivateHome based on auth
-const toast = inject<ToastService>('toast');
-const uiStore = useUiStore(); // Use the store instance
 
 const vcaSettings = voiceSettingsManager.settings;
 const MIN_CHAT_HISTORY_FOR_SLIDER = 2;
@@ -435,10 +454,16 @@ const availablePresetDisplayNames = computed<Array<{key: HistoryStrategyPreset, 
     });
 });
 
+
+// --- Agent list helper now guards optional public flag --------------------------------
 const availableAgentModeOptions = computed(() => {
-  return agentService.getAllAgents()
-    .filter(agent => agent.isPubliclyAvailable || ['diary', 'businessMeeting', 'systemDesigner', 'codingInterviewer'].includes(agent.id))
-    .map(agent => ({ value: agent.id, label: agent.label }));
+  return agentService
+    .getAllAgents()
+    .filter((agent) => {
+      const isPublic = (agent as any).isPubliclyAvailable ?? (agent as any).public ?? false;
+      return isPublic || ['diary','businessMeeting','systemDesigner','codingInterviewer'].includes(agent.id);
+    })
+    .map((agent) => ({ value: agent.id, label: agent.label }));
 });
 
 watch(() => advancedConversationManager.config.value, (managerConfig) => {
@@ -474,12 +499,6 @@ const resetAllAdvancedSettingsToGlobalDefaults = () => {
     advancedConversationManager.updateConfig(globalDefaultConfig);
     toast?.add({type: 'success', title: 'Advanced Settings Reset', message: 'All advanced history settings reset to global defaults.'});
 };
-
-// Use uiStore for dark mode state, isDarkModeLocal can be a WritableComputedRef or just a local ref synced
-const isDarkModeLocal: WritableComputedRef<boolean> = computed({
-  get: () => uiStore.isDarkMode,
-  set: (val) => uiStore.setTheme(val ? 'dark' : 'light'),
-});
 
 const rememberLoginLocal = useStorage('vcaRememberLogin', true);
 
@@ -857,10 +876,11 @@ watch(isDarkModeLocal, (newVal) => {
 }, { immediate: true }); // immediate might cause a double-set if uiStore also initializes from storage. uiStore's initializeTheme should be robust.
 
 // Watcher for uiStore's theme to sync back to isDarkModeLocal if changed elsewhere (e.g., header button)
-watch(() => uiStore.theme, (newThemeVal) => {
-    if (newThemeVal && isDarkModeLocal.value !== (newThemeVal === 'dark')) {
-        isDarkModeLocal.value = newThemeVal === 'dark';
-    }
+// Keep dark-mode toggle in sync if some other part of the app changes the active theme
+watch(() => uiStore.isDarkMode, (newIsDark) => {
+  if (isDarkModeLocal.value !== newIsDark) {
+    isDarkModeLocal.value = newIsDark;
+  }
 });
 
 // Sync useAdvancedHistoryManager (local ref for UI toggle) with vcaSettings.useAdvancedMemory (service state)

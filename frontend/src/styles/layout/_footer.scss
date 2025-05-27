@@ -11,7 +11,7 @@
 
 // Base class for the footer element in Footer.vue
 .app-footer-ephemeral {
-  height: var(--footer-height, var.$footer-height);
+  height: var(--footer-height, #{var.$footer-height-default});
   padding: 0 var.$spacing-md;
   display: flex;
   flex-direction: column; // Allow for main row and copyright row
@@ -213,7 +213,7 @@
 // Logs Panel Specifics
 .logs-panel-wrapper-ephemeral {
   position: fixed; // Fixed position relative to viewport
-  bottom: calc(var(--footer-height, var.$footer-height) - 1px); // Sit just above the footer line
+  bottom: calc(var(--footer-height, var.$footer-height-default) - 1px); // Sit just above the footer line
   left: 0;
   right: 0;
   padding: 0 var.$spacing-sm; // Horizontal padding

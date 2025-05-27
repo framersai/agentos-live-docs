@@ -1,79 +1,62 @@
-// File: frontend/src/styles/themes/_theme-engine.scss
-/**
- * @file _theme-engine.scss
- * @description Generates CSS custom properties for each theme based on SCSS maps.
- * Applies a default theme and allows switching via a 'data-theme' attribute on the html element.
- * @version 2.0.0
- */
+@use 'sass:map';
+/* tailwindcss-disable */
+/* tailwindcss-intellisense-disable */
 
-@use './theme-definitions.scss' as themes; // Import theme definitions from _themes-definitions.scss
-@use '../abstracts/variables' as var; // For accessing base SCSS variables if needed
+/* ---------------------------------------------------------------------------
+ * Theme Engine – generates CSS-variables for every palette
+ *----------------------------------------------------------------------------*/
 
-// Default Theme: Set 'Warm Embrace' as the :root default
+// 1 — bring the individual maps into scope
+@use './theme-definitions.scss' as themes; // $theme-warm-embrace, …
+
+// 2 — master registry (id → {is-dark, map})
+$theme-registry: (
+  'warm-embrace':   ('is-dark': false, 'map': themes.$theme-warm-embrace),
+  'twilight-neo':   ('is-dark': true,  'map': themes.$theme-twilight-neo),
+  'aurora-daybreak':('is-dark': false, 'map': themes.$theme-aurora-daybreak),
+);
+
+// 3 — optional aliases for legacy IDs
+$theme-aliases: (
+  'ephemeral-holo-dark': 'twilight-neo',
+  'aurora-light':        'aurora-daybreak',
+  'legacy-warm-embrace': 'warm-embrace',
+  'legacy-twilight-neo': 'twilight-neo',
+);
+
+// 4 — helper mixin
+@mixin apply-theme($map) {
+  @each $prop, $val in $map { #{$prop}: #{$val}; }
+}
+
+// 5 — output
+$default-theme: 'aurora-daybreak'; // keep in sync with ThemeManager.ts
+
+/* Fallback root vars (JS disabled) */
 :root {
-  @each $property, $value in themes.$theme-warm-embrace {
-    #{$property}: #{$value};
-  }
-  // Set default color-scheme for the base theme
-  color-scheme: light; // Assuming Warm Embrace is predominantly light
-
-  // Define fallback CSS custom properties for core variables from _variables.scss
-  // This ensures they are available as CSS vars even if not overridden by a specific theme property.
-  --font-sans: #{var.$font-family-sans};
-  --font-mono: #{var.$font-family-mono};
-  --font-display: #{var.$font-family-display};
-
-  --radius-xs: #{var.$radius-xs};
-  --radius-sm: #{var.$radius-sm};
-  --radius-md: #{var.$radius-md};
-  --radius-lg: #{var.$radius-lg};
-  --radius-xl: #{var.$radius-xl};
-  --radius-2xl: #{var.$radius-2xl};
-  --radius-3xl: #{var.$radius-3xl};
-  --radius-full: #{var.$radius-full};
-  --radius-holo: #{var.$radius-holo};
-
-  --spacing-unit: #{var.$spacing-unit};
-  --spacing-xs: #{var.$spacing-xs};
-  --spacing-sm: #{var.$spacing-sm};
-  --spacing-md: #{var.$spacing-md};
-  --spacing-lg: #{var.$spacing-lg};
-  --spacing-xl: #{var.$spacing-xl};
-
-  --header-height: #{var.$header-height};
-  --footer-height: #{var.$footer-height};
-  --chat-log-height: #{var.$chat-log-height};
-
-  --duration-quick: #{var.$duration-quick};
-  --duration-smooth: #{var.$duration-smooth};
-  --duration-movement: #{var.$duration-movement};
-  --ease-out-quad: #{var.$ease-out-quad};
-  --ease-out-quint: #{var.$ease-out-quint};
-  --ease-in-out-sine: #{var.$ease-in-out-sine};
+  @include apply-theme(map.get(map.get($theme-registry, $default-theme), 'map'));
+  color-scheme: if(
+    map.get(map.get($theme-registry, $default-theme), 'is-dark'),
+    dark, light
+  );
 }
 
-// Twilight Neo Theme
-html[data-theme="twilight-neo"] {
-  @each $property, $value in themes.$theme-twilight-neo {
-    #{$property}: #{$value};
+/* one selector per real theme */
+@each $id, $meta in $theme-registry {
+  html[data-theme="#{$id}"] {
+    @include apply-theme(map.get($meta, 'map'));
+    color-scheme: if(map.get($meta, 'is-dark'), dark, light);
   }
-  color-scheme: dark;
 }
 
-// Aurora Daybreak Theme
-html[data-theme="aurora-daybreak"] {
-  @each $property, $value in themes.$theme-aurora-daybreak {
-    #{$property}: #{$value};
+/* alias selectors (duplicate the vars, no @extend) */
+@each $alias, $target in $theme-aliases {
+  $target-meta: map.get($theme-registry, $target);
+  $target-map : map.get($target-meta, 'map');
+  $target-dark: map.get($target-meta, 'is-dark');
+
+  html[data-theme="#{$alias}"] {
+    @include apply-theme($target-map);
+    color-scheme: if($target-dark, dark, light);
   }
-  color-scheme: light;
 }
-
-// Example for a future theme (ensure $theme-nebula is defined in _themes-definitions.scss)
-// html[data-theme="nebula"] {
-//   @each $property, $value in themes.$theme-nebula {
-//     #{$property}: #{$value};
-//   }
-//   color-scheme: dark;
-// }
-
-// Add other theme selectors here as they are defined.

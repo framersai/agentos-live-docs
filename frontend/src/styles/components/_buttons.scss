@@ -1,57 +1,60 @@
 // File: frontend/src/styles/components/_buttons.scss
 /**
  * @file _buttons.scss
- * @description Base styling and mixins for button components.
- * Implements neomorphic and holographic effects, leveraging theme variables and mixins.
- * @version 3.0.0 - Refactored to a full mixin-based system.
+ * @description Base styling & mixins for button components.
+ * @version 3.0.1 – variable names synced with _variables.scss
  */
 
 @use '../abstracts/variables' as var;
-@use '../abstracts/mixins' as commonMixins; // General project mixins
+@use '../abstracts/mixins'    as commonMixins;
 
-// --- BASE BUTTON STYLES MIXIN ---
+// ─────────────────────────────────────────────────────────────────────────────
+// BASE BUTTON MIXIN
+// ─────────────────────────────────────────────────────────────────────────────
 @mixin base-button-styles {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var.$spacing-xs;
   padding: var.$spacing-sm var.$spacing-lg;
-  border-radius: var.$radius-holo;
-  font-family: var(--font-sans, var.$font-family-sans);
-  font-size: var.$font-size-base;
+
+  border-radius: var.$radius-holographic-default;
+
+  font-family: var(--font-sans, #{var.$font-family-sans});
+  font-size: var.$font-size-base-default;
   font-weight: 600;
   line-height: 1.2;
   text-align: center;
   text-decoration: none;
   white-space: nowrap;
+
   cursor: pointer;
   user-select: none;
   border: 1px solid transparent;
+
   transition: var.$duration-quick var.$ease-out-quad;
-  transition-property: background-color, border-color, color, box-shadow, transform, filter;
+  transition-property: background-color, border-color, color, box-shadow,
+                       transform, filter;
   will-change: transform, box-shadow;
 
-  &:hover {
-    filter: brightness(1.1);
+  &:hover   { filter: brightness(1.1); }
+  &:active  { transform: scale(0.97); filter: brightness(0.95); }
+
+  &:disabled,
+  &[disabled] {
+    opacity: 0.5; cursor: not-allowed; pointer-events: none; filter: saturate(0.5);
   }
-  &:active {
-    transform: scale(0.97);
-    filter: brightness(0.95);
-  }
-  &:disabled, &[disabled] {
-    opacity: 0.5;
-    cursor: not-allowed;
-    pointer-events: none;
-    filter: saturate(0.5);
-  }
+
   &:focus-visible {
     @include commonMixins.focus-ring('--color-bg-primary', '--color-accent-primary');
   }
-  .icon { // Default icon size within a button
-    width: 1.2em;
-    height: 1.2em;
-  }
+
+  .icon { width: 1.2em; height: 1.2em; }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// APPEARANCE (“look”) MIXINS
+// ─────────────────────────────────────────────────────────────────────────────
 
 // --- BUTTON VARIANT "LOOK" MIXINS (Specific visual styles) ---
 @mixin btn-primary-look {
@@ -88,27 +91,30 @@
 @mixin btn-secondary-look {
   @include commonMixins.neomorphic-extrude(
     hsl(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l)),
-    4px, 8px, var(--shadow-opacity-soft), var(--shadow-opacity-soft), var.$radius-holo,
+    4px, 8px,
+    var(--shadow-opacity-soft), var(--shadow-opacity-soft),
+    var.$radius-holographic-default,
     var(--shadow-color-h), var(--shadow-color-s), var(--shadow-color-l),
     calc(var(--shadow-color-l) + var(--shadow-highlight-modifier))
   );
   color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
   border-color: transparent;
 
-  &:hover { // Combines with base hover
-    filter: brightness(1.05);
-  }
-  &:active { // Overrides base active for neomorphic inset
+  &:hover  { filter: brightness(1.05); }
+  &:active {
     @include commonMixins.neomorphic-inset(
       hsl(var(--color-bg-secondary-h), var(--color-bg-secondary-s), calc(var(--color-bg-secondary-l) - 2%)),
-      3px, 6px, var(--shadow-opacity-soft), var(--shadow-opacity-soft), var.$radius-holo,
+      3px, 6px,
+      var(--shadow-opacity-soft), var(--shadow-opacity-soft),
+      var.$radius-holographic-default,
       var(--shadow-color-h), var(--shadow-color-s), var(--shadow-color-l),
       calc(var(--shadow-color-l) + var(--shadow-highlight-modifier))
     );
-    transform: scale(0.98); // Unique active scale for neomorphic
+    transform: scale(0.98);
     filter: none;
   }
 }
+
 
 @mixin btn-ghost-look {
   background-color: transparent;
@@ -156,60 +162,60 @@
   }
 }
 
-// --- BUTTON MODIFIER MIXINS (for size, shape etc.) ---
+// ─────────────────────────────────────────────────────────────────────────────
+// SIZE / SHAPE MODIFIERS
+// ─────────────────────────────────────────────────────────────────────────────
 @mixin btn-icon-modifier {
   padding: var.$spacing-sm;
   gap: 0;
-  .icon {
-    width: 1.5em;
-    height: 1.5em;
-  }
+  .icon { width: 1.5em; height: 1.5em; }
 }
 
 @mixin btn-xs-modifier {
   padding: calc(var.$spacing-xs * 0.75) var.$spacing-sm;
   font-size: var.$font-size-xs;
-  border-radius: calc(var.$radius-holo * 0.6);
+  border-radius: calc(var.$radius-holographic-default * 0.6);
   .icon { width: 0.8em; height: 0.8em; }
 }
 @mixin btn-sm-modifier {
   padding: calc(var.$spacing-xs * 1.5) var.$spacing-md;
   font-size: var.$font-size-sm;
-  border-radius: calc(var.$radius-holo * 0.8);
+  border-radius: calc(var.$radius-holographic-default * 0.8);
   .icon { width: 1em; height: 1em; }
 }
 @mixin btn-lg-modifier {
   padding: var.$spacing-md var.$spacing-xl;
   font-size: var.$font-size-lg;
-  border-radius: calc(var.$radius-holo * 1.2);
+  border-radius: calc(var.$radius-holographic-default * 1.2);
   .icon { width: 1.3em; height: 1.3em; }
 }
 @mixin btn-xl-modifier {
   padding: var.$spacing-lg var.$spacing-2xl;
   font-size: var.$font-size-xl;
-  border-radius: calc(var.$radius-holo * 1.5);
+  border-radius: calc(var.$radius-holographic-default * 1.5);
   .icon { width: 1.5em; height: 1.5em; }
 }
 
-// --- COMPOSITE BUTTON MIXINS (for easy inclusion of full button styles) ---
-@mixin btn { @include base-button-styles; }
-@mixin btn-primary { @include base-button-styles; @include btn-primary-look; }
-@mixin btn-secondary { @include base-button-styles; @include btn-secondary-look; }
-@mixin btn-ghost { @include base-button-styles; @include btn-ghost-look; }
-@mixin btn-error { @include base-button-styles; @include btn-error-look; }
+// ─────────────────────────────────────────────────────────────────────────────
+// COMPOSITE MIXINS
+// ─────────────────────────────────────────────────────────────────────────────
+@mixin btn          { @include base-button-styles; }
+@mixin btn-primary  { @include base-button-styles; @include btn-primary-look; }
+@mixin btn-secondary{ @include base-button-styles; @include btn-secondary-look; }
+@mixin btn-ghost    { @include base-button-styles; @include btn-ghost-look; }
+@mixin btn-error    { @include base-button-styles; @include btn-error-look; }
 
-// --- CSS CLASS DEFINITIONS (for direct use in HTML if needed) ---
-// These ensure the classes are available globally if you use them directly in HTML.
-.btn { @include btn; }
-.btn-primary { @include btn-primary; }
+// ─────────────────────────────────────────────────────────────────────────────
+// (Optional) GLOBAL UTILITY CLASSES
+// ─────────────────────────────────────────────────────────────────────────────
+.btn           { @include btn; }
+.btn-primary   { @include btn-primary; }
 .btn-secondary { @include btn-secondary; }
-.btn-ghost { @include btn-ghost; }
-.btn-error { @include btn-error; }
+.btn-ghost     { @include btn-ghost; }
+.btn-error     { @include btn-error; }
 
-// Modifier classes - to be used alongside a base or variant class
-// e.g., <button class="btn btn-primary btn-sm">
 .btn-icon { @include btn-icon-modifier; }
-.btn-xs { @include btn-xs-modifier; }
-.btn-sm { @include btn-sm-modifier; }
-.btn-lg { @include btn-lg-modifier; }
-.btn-xl { @include btn-xl-modifier; }
+.btn-xs   { @include btn-xs-modifier;   }
+.btn-sm   { @include btn-sm-modifier;   }
+.btn-lg   { @include btn-lg-modifier;   }
+.btn-xl   { @include btn-xl-modifier;   }

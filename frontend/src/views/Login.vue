@@ -2,31 +2,28 @@
 /**
  * @file Login.vue
  * @description Login page for the Voice Coding Assistant, revamped with a holographic analog theme.
- * @version 2.0.1 - Corrected undefined animation classes.
- * @notes
- * - Incorporates new theme styling.
- * - Includes Footer.vue.
- * - Ensures light/dark mode functionality.
+ * @version 2.0.2 - Corrected theme interactions, removed unused Footer.
  */
 <script setup lang="ts">
-// ... script content remains the same ...
 import { ref, onMounted, computed, inject } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useStorage } from '@vueuse/core';
 import { authAPI, api } from '@/utils/api';
-import { AUTH_TOKEN_KEY } from '@/router'; // Corrected from constants to router if that's the source
+import { AUTH_TOKEN_KEY } from '@/router';
 import { LockClosedIcon, EyeIcon, EyeSlashIcon, ExclamationTriangleIcon, SunIcon, MoonIcon, BeakerIcon } from '@heroicons/vue/24/outline';
 import { useUiStore } from '@/store/ui.store';
+import { themeManager } from '@/theme/ThemeManager'; // Added: Import themeManager
 import type { ToastService } from '@/services/services';
-import Footer from '@/components/Footer.vue'; // Import Footer
+// Removed: import Footer from '@/components/Footer.vue'; // Unused variable
 
 const router = useRouter();
 const route = useRoute();
-const uiStore = useUiStore();
+const uiStore = useUiStore(); // This should be the v2.0.0 version of uiStore
 const toast = inject<ToastService>('toast');
 
 // --- Theme State ---
-const isDarkMode = computed(() => uiStore.isDarkMode);
+// Corrected: Read from uiStore.isCurrentThemeDark which derives from ThemeManager
+const isDarkMode = computed(() => uiStore.isCurrentThemeDark);
 
 // --- Form Data ---
 const password = ref('');
@@ -37,11 +34,21 @@ const errorMessage = ref('');
 
 // --- Development/Debug ---
 const showDevControls = ref(import.meta.env.DEV);
-const showTestUI = ref(false); // Added this missing ref from template usage
+const showTestUI = ref(false); // Was previously missing ref from template, now consistent
 
 // --- Methods ---
 const toggleTheme = () => {
-  uiStore.toggleTheme();
+  // Corrected: Interact with themeManager directly for theme changes
+  const currentTheme = themeManager.getCurrentTheme().value;
+  if (currentTheme?.isDark) {
+    // Toggle to a default light theme
+    const lightTheme = themeManager.getAvailableThemes().find(t => !t.isDark && t.id === 'aurora-light');
+    themeManager.setTheme(lightTheme?.id || 'legacy-warm-embrace'); // Fallback
+  } else {
+    // Toggle to a default dark theme
+    const darkTheme = themeManager.getAvailableThemes().find(t => t.isDark && t.id === 'ephemeral-holo-dark');
+    themeManager.setTheme(darkTheme?.id || 'legacy-twilight-neo'); // Fallback
+  }
 };
 
 const handleLogin = async () => {
@@ -49,30 +56,25 @@ const handleLogin = async () => {
     errorMessage.value = 'Please enter the application password.';
     return;
   }
-
   isLoggingIn.value = true;
   errorMessage.value = '';
-
   try {
     const response = await authAPI.login({
       password: password.value,
       rememberMe: rememberMe.value
     });
-
     const token = response.data.token;
-
     if (token) {
       const storage = rememberMe.value ? localStorage : sessionStorage;
       storage.setItem(AUTH_TOKEN_KEY, token);
       api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      // Call the login function from useAuth composable if it's responsible for setting global auth state
+      // For now, assuming this direct token setting is sufficient for the auth guard.
       toast?.add({ type: 'success', title: 'Login Successful', message: 'Welcome back!' });
-
       const redirectPath = route.query.redirect as string | undefined;
       if (redirectPath && redirectPath !== '/' && redirectPath !== '/login') {
         await router.replace(redirectPath);
       } else {
-        // Assuming 'AuthenticatedHome' is the name for the private home page, adjust if different
-        // Or directly use router.replace({ path: '/' }); if PrivateHome is at root for authenticated users
         await router.replace({ name: 'AuthenticatedHome' });
       }
     } else {
@@ -95,13 +97,13 @@ const handleLogin = async () => {
 
 // --- Lifecycle Hooks ---
 onMounted(async () => {
-  uiStore.initializeTheme(); // Ensures theme is set based on preference or system
+  // Removed: uiStore.initializeTheme(); Theme is initialized globally by ThemeManager in App.vue
+  // The themeManager.initialize() in App.vue will handle initial theme setup.
 
   const token = localStorage.getItem(AUTH_TOKEN_KEY) || sessionStorage.getItem(AUTH_TOKEN_KEY);
   if (token) {
     api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     console.log("[Login.vue] User already has a token, redirecting.");
-    // Assuming 'AuthenticatedHome' is the correct route name
     await router.replace({ name: 'AuthenticatedHome' });
     return;
   }
@@ -112,22 +114,19 @@ onMounted(async () => {
       reasonMessage = "Your session was invalid or unauthorized. Please log in again.";
     }
     toast?.add({ type: 'warning', title: 'Session Expired', message: reasonMessage, duration: 7000 });
-    // Clear the query params to prevent re-showing the toast on refresh
     await router.replace({ query: {} });
   }
 });
 </script>
 
-
-<template>
-<div class="login-page-wrapper">
+<template> <div class="login-page-wrapper">
     <div class="login-content-area">
       <div class="login-container w-full max-w-md space-y-8">
         <div class="text-center">
           <div class="logo-wrapper">
             <img class="logo-image" src="@/assets/logo.svg" alt="Voice Coding Assistant Logo" />
           </div>
-          <h1 class="app-main-title text-glow-primary"> {/* Added text-glow-primary here */}
+          <h1 class="app-main-title text-glow-primary">
             Voice Chat Assistant
           </h1>
           <p class="app-subtitle">
@@ -135,7 +134,7 @@ onMounted(async () => {
           </p>
         </div>
 
-        <div class="login-card glass-pane"> {/* Added glass-pane here */}
+        <div class="login-card glass-pane">
           <form @submit.prevent="handleLogin" class="space-y-6 p-6 sm:p-8">
             <div>
               <label for="password" class="form-label">
@@ -200,7 +199,7 @@ onMounted(async () => {
                   <ExclamationTriangleIcon class="icon-base text-error" />
                 </div>
                 <div class="ml-3">
-                  <p class="text-sm text-error-content">{{ errorMessage }}</p> {/* Changed to text-error-content */}
+                  <p class="text-sm text-error-content">{{ errorMessage }}</p>
                 </div>
               </div>
             </div>
@@ -224,7 +223,6 @@ onMounted(async () => {
     </div>
     </div>
 </template>
-
 <style scoped lang="postcss">
 /* Define Keyframes for animated gradient background */
 @keyframes gradient-animation {
