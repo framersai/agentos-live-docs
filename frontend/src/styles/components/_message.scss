@@ -1,9 +1,10 @@
 // File: frontend/src/styles/components/_message.scss
 /**
  * @file _message.scss
- * @description Styles for individual chat messages (user & assistant bubbles)
- * for the "Ephemeral Harmony" theme.
- * @version 1.0.0
+ * @description Styles for the Message.vue component, Ephemeral Harmony theme.
+ * Features holographic/glassmorphic message bubbles, enhanced typography,
+ * and clear distinction between sender roles.
+ * @version 3.0.0
  */
 
 @use '../abstracts/variables' as var;
@@ -12,233 +13,309 @@
 .message-wrapper-ephemeral {
   display: flex;
   margin-bottom: var.$spacing-md; // Space between messages
-  animation: ephemeralMessageIn var.$duration-movement var.$ease-out-quint forwards; // Global appear animation
+  opacity: 0; // Start hidden for entry animation
+  animation: ephemeralMessageIn var.$duration-movement var.$ease-out-quint forwards;
 
+  // General alignment and max-width for bubbles
   &.user-message-wrapper {
     justify-content: flex-end;
+    .message-container-ephemeral {
+      margin-left: auto; // Pushes bubble to the right
+      max-width: 85%;
+      @media (min-width: var.$breakpoint-sm) { max-width: 75%; }
+      @media (min-width: var.$breakpoint-lg) { max-width: 65%; }
+    }
   }
-  &.assistant-message-wrapper {
+
+  &.assistant-message-wrapper,
+  &.tool-message-wrapper, // Tool messages often originate from assistant action
+  &.system-message-wrapper,
+  &.error-message-wrapper {
     justify-content: flex-start;
+    .message-container-ephemeral {
+      margin-right: auto; // Pushes bubble to the left
+      max-width: 85%;
+       @media (min-width: var.$breakpoint-sm) { max-width: 75%; }
+      @media (min-width: var.$breakpoint-lg) { max-width: 65%; }
+    }
   }
 }
 
 .message-container-ephemeral {
-  padding: var.$spacing-sm calc(var.$spacing-sm * 1.5);
-  border-radius: var.$radius-xl; // Softer, larger radius
-  max-width: 80%; // Max width of a bubble
-  box-shadow: var(--shadow-depth-sm);
-  transition: background-color var.$duration-smooth, border-color var.$duration-smooth, box-shadow var.$duration-smooth;
-  position: relative; // For avatar positioning and accents
-  overflow: hidden; // For potential ::before/::after accents
+  padding: calc(var.$spacing-sm * 1.25) var.$spacing-md;
+  border-radius: var.$radius-xl; // Generous radius
+  position: relative;
+  overflow: hidden; // For pseudo-elements and effects
+  transition: transform 0.2s var.$ease-out-quad, box-shadow 0.3s var.$ease-out-quad;
 
-  // Subtler glass effect for message bubbles
+  // Base glassmorphic look for all bubbles
   @include mixins.glassmorphic-pane(
-    hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.6), // Default glass for assistant
-    hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.3),
-    calc(var(--blur-glass) * 0.7), // Less blur
-    var(--shadow-depth-sm)
+    hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.5), // Base glass bg
+    hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.3), // Base glass border
+    var(--blur-glass),
+    var(--shadow-depth-sm) // Base subtle shadow
   );
 
-
-  &.user-bubble-ephemeral {
-    @include mixins.glassmorphic-pane( // User uses accent color for glass
-      hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.4), // User voice color, more transparent
-      hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.3),
-      calc(var(--blur-glass) * 0.7),
-      var(--shadow-depth-sm)
-    );
-    color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l)); // Ensure good contrast
-    border-bottom-right-radius: var.$radius-sm; // Classic bubble tail
-    margin-left: var.$spacing-lg; // Push away from edge
-  }
-
-  &.assistant-bubble-ephemeral {
-    // Uses the default glassmorphic pane from above.
-    border-bottom-left-radius: var.$radius-sm; // Classic bubble tail
-    margin-right: var.$spacing-lg; // Push away from edge
-
-    // Optional: Subtle holographic line accent for AI messages
-    &::after {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 10%;
-      bottom: 10%;
-      width: 3px;
-      background: linear-gradient(to bottom,
-        hsla(var(--color-voice-ai-h), var(--color-voice-ai-s), calc(var(--color-voice-ai-l) + 10%), 0.1),
-        hsla(var(--color-voice-ai-h), var(--color-voice-ai-s), var(--color-voice-ai-l), 0.7) 50%,
-        hsla(var(--color-voice-ai-h), var(--color-voice-ai-s), calc(var(--color-voice-ai-l) + 10%), 0.1)
-      );
-      border-radius: 3px;
-      opacity: 0.6;
-      filter: blur(0.5px);
-      animation: subtlePulse var.$duration-pulse-slow infinite alternate;
-      --opacity-start: 0.4;
-      --opacity-pulse: 0.8;
-      --scale-pulse: 1; // No scale for this line pulse
-    }
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-depth-md); // Slightly lift on hover
   }
 }
+
+// Role-specific bubble styling
+.user-bubble-ephemeral {
+  background-color: hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.15);
+  border-color: hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.3);
+  // Optional: A subtle right-aligned holographic accent for user messages
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0; right: -1px;
+    width: 3px;
+    background: linear-gradient(to bottom,
+      hsla(var(--color-voice-user-h), var(--color-voice-user-s), calc(var(--color-voice-user-l) + 10%), 0.5),
+      hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.8)
+    );
+    border-radius: 0 var.$radius-xl var.$radius-xl 0;
+    opacity: 0.6;
+    filter: blur(1px);
+  }
+}
+
+.assistant-bubble-ephemeral {
+  background-color: hsla(var(--color-voice-ai-speaking-h), var(--color-voice-ai-speaking-s), var(--color-voice-ai-speaking-l), 0.1);
+  border-color: hsla(var(--color-voice-ai-speaking-h), var(--color-voice-ai-speaking-s), var(--color-voice-ai-speaking-l), 0.25);
+  // Holographic accent for AI messages
+  @include mixins.holographic-border-glow(
+    '--color-voice-ai-speaking', // Uses -h, -s, -l, -a from this prefix
+    '--color-accent-secondary', // Secondary color for gradient mix
+    1px, // border-width
+    4s,  // animation-duration
+    var.$radius-xl // border-radius
+  );
+}
+
+.tool-bubble-ephemeral {
+  background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.6);
+  border-color: hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.4);
+  border-left-width: 3px;
+  border-left-color: hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l));
+}
+
+.system-error-bubble-ephemeral { // For system and error messages
+  background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.4);
+  border-color: hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.3);
+  font-style: italic;
+  font-size: var.$font-size-sm;
+
+  &.message-role-error { // Specifically for error messages
+    background-color: hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.1);
+    border-color: hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.3);
+    color: hsl(var(--color-error-h), var(--color-error-s), calc(var(--color-error-l) + 5%)); // Ensure text is readable
+  }
+}
+
 
 .message-header-ephemeral {
   display: flex;
   align-items: center;
-  gap: var.$spacing-xs;
-  margin-bottom: calc(var.$spacing-sm * 0.75);
+  margin-bottom: var.$spacing-sm;
+  gap: var.$spacing-sm;
+}
+
+.avatar-wrapper-ephemeral {
+  width: 32px; // Increased size
+  height: 32px;
+  border-radius: var.$radius-full;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.5);
+  border: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.3);
+  box-shadow: var(--shadow-depth-xs); // SCSS variable fallback if CSS var not set
+
+  &.avatar-user { background-color: hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.2); }
+  &.avatar-assistant { background-color: hsla(var(--color-voice-ai-speaking-h), var(--color-voice-ai-speaking-s), var(--color-voice-ai-speaking-l), 0.2); }
+  &.avatar-tool { background-color: hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.2); }
+  &.avatar-system, &.avatar-error { background-color: hsla(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l), 0.2); }
+  &.avatar-error { background-color: hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.2); }
+
+  .avatar-svg-ephemeral {
+    width: 18px; // Icon size within avatar
+    height: 18px;
+    opacity: 0.9;
+    // Colors will be inherited or can be set per role
+    color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+  }
+}
+
+.sender-name-ephemeral {
+  font-weight: 600;
+  font-size: var.$font-size-sm; // Slightly larger sender name
+  color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+  letter-spacing: 0.01em;
+}
+
+.timestamp-ephemeral {
   font-size: var.$font-size-xs;
-
-  .avatar-wrapper-ephemeral {
-    width: 28px; // Standard avatar size
-    height: 28px;
-    border-radius: var.$radius-full;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    box-shadow: var(--shadow-depth-sm);
-
-    &.avatar-user {
-      background-color: hsl(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l));
-    }
-    &.avatar-assistant {
-      background-color: hsl(var(--color-voice-ai-h), var(--color-voice-ai-s), var(--color-voice-ai-l));
-    }
-    .avatar-svg-ephemeral { // For Heroicons
-      width: 16px;
-      height: 16px;
-      color: white; // Assuming avatars have light icons on colored bg
-    }
-  }
-
-  .sender-name-ephemeral {
-    font-weight: 600;
-    color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
-    .user-bubble-ephemeral & { // Specific text color if needed inside user bubble due to its bg
-       color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), calc(var(--color-text-primary-l) + 5%));
-    }
-  }
-
-  .timestamp-ephemeral {
-    margin-left: auto;
-    color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
-    opacity: 0.8;
-  }
+  color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+  margin-left: auto; // Pushes timestamp to the right of the header
+  padding-left: var.$spacing-sm;
 }
 
 .message-content-area-ephemeral {
-  // Uses .prose for markdown content, which has its own themeable styles via Tailwind Typography
-  // Ensure prose colors are harmonious with bubble backgrounds.
-  color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
-  font-size: var.$font-size-base; // Let prose handle specifics for p, ul, etc.
-  line-height: 1.6;
-  word-wrap: break-word; // Ensure long words break
+  font-size: var(--font-size-base); // Use themed base font size
+  line-height: var(--line-height-base); // Use themed base line height
+  letter-spacing: var(--letter-spacing-base); // Use themed base letter spacing
+  color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 
-  // Customizations for prose within message bubbles
+  // Enhanced prose styles for markdown content
+  // Tailwind's @tailwindcss/typography plugin is good, but we can add specifics
+  :deep(h1), :deep(h2), :deep(h3), :deep(h4) { // Using :deep for slotted/v-html content
+    color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l)) !important;
+    margin-top: var.$spacing-md !important;
+    margin-bottom: var.$spacing-sm !important;
+    padding-bottom: var.$spacing-xs !important;
+    border-bottom: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.3) !important;
+  }
   :deep(p) {
-    margin-bottom: var.$spacing-xs !important; // More compact paragraph spacing in bubbles
-    &:last-child {
-      margin-bottom: 0 !important;
-    }
+    margin-bottom: var.$spacing-sm !important;
+    line-height: 1.75; // More readable line height for prose
   }
   :deep(ul), :deep(ol) {
-    margin-top: var.$spacing-xs !important;
-    margin-bottom: var.$spacing-xs !important;
-    padding-left: var.$spacing-md !important; // Standard list indent
+    margin-left: 0 !important;
+    padding-left: var.$spacing-lg !important;
+    li { margin-bottom: calc(var.$spacing-xs / 2) !important; }
+    li::marker {
+      color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l)) !important;
+    }
   }
-  :deep(li) {
-    margin-bottom: calc(var.$spacing-xs / 2) !important;
+  :deep(a) {
+    color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l)) !important;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    font-weight: 500;
+    &:hover {
+      color: hsl(var(--color-accent-interactive-h), calc(var(--color-accent-interactive-s) + 5%), calc(var(--color-accent-interactive-l) - 8%)) !important;
+    }
   }
-
-  // Code blocks within messages
-  :deep(.code-block-wrapper) { // Wrapper added by Message.vue script
-    position: relative;
-    margin: var.$spacing-sm 0;
-    border-radius: var.$radius-lg;
-    overflow: hidden; // For language label and copy button positioning
-    background-color: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.4); // Slightly different from main pre
-    border: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.3);
-    box-shadow: var(--shadow-depth-sm);
+  :deep(code:not(pre code)) { // Inline code
+    background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.6) !important;
+    color: hsl(var(--color-text-accent-h), var(--color-text-accent-s), var(--color-text-accent-l)) !important;
+    padding: 0.15em 0.4em !important;
+    border-radius: var.$radius-sm !important;
+    font-size: 0.9em !important; // Relative to surrounding text
+    border: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.3) !important;
   }
   :deep(pre) {
-    // Reset some global pre styles if needed for bubble context
-    margin: 0 !important;
-    border-radius: 0 !important; // Wrapper has radius
-    border: none !important;
-    background-color: transparent !important; // Wrapper provides bg
-    padding: var.$spacing-sm var.$spacing-md !important;
-    font-size: var.$font-size-sm * 0.95 !important; // Slightly smaller code in bubbles
-    color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l)) !important;
-    // Ensure scrollbar is themed if pre is scrollable
-     @include mixins.custom-scrollbar(
-      hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.4),
-      hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.2)
-    );
-  }
-  :deep(code.hljs) { // Base HLJS class
-    // HLJS theme (e.g., atom-one-dark) provides most colors.
-    // Ensure its background is transparent to see the pre's background.
-    background: none !important;
-  }
-  :deep(.line-number) { // From Message.vue script
-    color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l)) !important;
-    opacity: 0.6;
-    padding-right: var.$spacing-sm !important;
-    border-right-color: hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.2) !important;
-  }
-  :deep(.code-language-label) { // From Message.vue script
-    position: absolute;
-    top: var.$spacing-xs;
-    right: calc(var.$spacing-xs + 36px); // Next to copy button
-    background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.7);
-    color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
-    padding: calc(var.$spacing-xs / 2) var.$spacing-xs;
-    font-size: 0.65rem;
-    border-radius: var.$radius-sm;
-    opacity: 0;
-    transition: opacity var.$duration-quick;
-  }
-  :deep(.code-block-wrapper:hover .code-language-label) {
-    opacity: 1;
-  }
-  :deep(.copy-code-button) { // From Message.vue script
-    position: absolute;
-    top: var.$spacing-xs;
-    right: var.$spacing-xs;
-    background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.7) !important;
-    color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l)) !important;
-    border-radius: var.$radius-sm !important;
-    opacity: 0;
-    transition: opacity var.$duration-quick;
-    padding: calc(var.$spacing-xs / 1.5) !important;
-    &:hover {
-      background-color: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.2) !important;
-      color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l)) !important;
+    background-color: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), calc(var(--color-bg-primary-l) + 3%), 0.8) !important; // Slightly different from bubble bg
+    border: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.2) !important;
+    border-radius: var.$radius-lg !important;
+    padding: var.$spacing-md !important;
+    margin: var.$spacing-md 0 !important;
+    box-shadow: inset 0 2px 8px hsla(var(--shadow-color-h), var(--color-shadow-s), var(--color-shadow-l), 0.1);
+    code {
+      font-size: 0.9em !important; // Relative to pre
+      line-height: 1.6; // Good for code readability
     }
-    svg { width: 1rem; height: 1rem; }
-  }
-  :deep(.code-block-wrapper:hover .copy-code-button) {
-    opacity: 1;
   }
 
-  // Inline code within prose
-  :deep(p > code), :deep(li > code) {
-    // Uses styles from _typography.scss for inline code
-    // Override if needed for message bubble context
-    background-color: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.4);
-    border-color: hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.3);
+  // Line numbers and copy button styling (from Message.vue's dynamic creation)
+  .code-block-wrapper {
+    position: relative;
+    margin: var.$spacing-md 0;
+    border-radius: var.$radius-lg;
+    overflow: hidden; // For rounded corners on pre
+    background-color: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), calc(var(--color-bg-primary-l) + 3%), 0.8);
+    border: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.2);
+
+    .code-language-label {
+      position: absolute;
+      top: var.$spacing-xs;
+      right: var.$spacing-md + 36px; // Space for copy button
+      font-size: var.$font-size-xs;
+      font-family: var(--font-mono);
+      color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+      padding: 2px var.$spacing-xs;
+      background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.5);
+      border-radius: var.$radius-sm;
+      text-transform: uppercase;
+      opacity: 0.7;
+    }
+
+    .copy-code-button {
+      position: absolute;
+      top: var.$spacing-xs;
+      right: var.$spacing-xs;
+      padding: calc(var.$spacing-xs / 2);
+      border-radius: var.$radius-sm;
+      background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.5);
+      color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+      border: 1px solid transparent;
+      opacity: 0.6;
+      transition: opacity 0.2s, background-color 0.2s, color 0.2s, border-color 0.2s;
+      &:hover {
+        opacity: 1;
+        background-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.2);
+        color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
+        border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.3);
+      }
+      svg { width: 16px; height: 16px; }
+    }
+
+    pre {
+      margin: 0 !important; // Reset margin if set by prose
+      padding-top: calc(var.$spacing-md + var.$spacing-sm) !important; // Space for lang/copy button
+      padding-left: var.$spacing-sm !important; // Minimal left padding for line numbers
+      background-color: transparent !important; // Wrapper has background
+      border: none !important;
+      box-shadow: none !important;
+
+      .line-number {
+        display: inline-block;
+        width: 2.5em; // Space for up to 3-digit line numbers
+        text-align: right;
+        padding-right: var.$spacing-sm;
+        margin-right: var.$spacing-sm;
+        color: hsla(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l), 0.5);
+        border-right: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.2);
+        user-select: none; // Prevent selection of line numbers
+        position: sticky; // If pre is scrollable horizontally
+        left: 0;
+        background-color: inherit; // Match pre background
+      }
+      .line-content {
+        // Content of the line
+      }
+    }
   }
 
-  .diagram-placeholder-ephemeral { // Placeholder for diagram viewer
-    margin: var.$spacing-sm 0;
-    padding: var.$spacing-sm;
-    font-size: var.$font-size-xs;
+  // Diagram placeholder/viewer
+  .diagram-placeholder-ephemeral {
     font-style: italic;
-    text-align: center;
     color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
-    background-color: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.2);
-    border: 1px dashed hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.3);
-    border-radius: var.$radius-md;
+    padding: var.$spacing-sm 0;
   }
-  // DiagramViewer itself will have its own themed styles
+  .embedded-diagram-viewer {
+    margin-top: var.$spacing-md;
+    // DiagramViewer itself will have styles from _diagram-viewer.scss
+  }
 }
+
+// Tool specific display
+.tool-content-display {
+  :deep(pre) {
+    // Specific styling for JSON output from tools
+    background-color: hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.05) !important;
+    border-color: hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.15) !important;
+    code.language-json .hljs-string {
+      color: hsl(var(--color-success-h), var(--color-success-s), calc(var(--color-success-l) + 10%)) !important; // Brighter strings for JSON
+    }
+  }
+}
+
+// Message entry animation from _keyframes.scss
+// @keyframes ephemeralMessageIn { ... }

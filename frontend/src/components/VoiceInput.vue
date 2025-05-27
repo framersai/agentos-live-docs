@@ -2,8 +2,8 @@
 /**
  * @file VoiceInput.vue
  * @description Handles voice input, transcription, audio mode management,
- * and local transcription history with "Ephemeral Harmony" styling.
- * @version 2.1.0 - Ephemeral Harmony redesign with new features.
+ * and text input, featuring a new animated send button for "Ephemeral Harmony".
+ * @version 3.0.0
  */
 
 <template>
@@ -47,10 +47,18 @@
       <button
         @click="handleTextSubmit"
         :disabled="!textInput.trim() || isMicrophoneActive || props.isProcessing"
-        class="send-button-ephemeral"
+        class="send-button-ephemeral-v2" 
         aria-label="Send text message"
-        title="Send Text Message">
-        <PaperAirplaneIcon class="icon" />
+        title="Send Text Message"
+      >
+        <span class="send-icon-animated-wrapper">
+            <svg class="send-icon-animated" viewBox="0 0 24 24" fill="none" xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)">
+                <path d="M21.6127 11.0034C21.9187 11.1574 22.1287 11.4374 22.1787 11.7584C22.2287 12.0784 22.1127 12.4054 21.8757 12.6264L4.33773 29.0944C4.04373 29.3674 3.64273 29.4754 3.26373 29.3784C2.88573 29.2804 2.59173 28.9894 2.49873 28.6144L0.102732 19.8264C-0.00826806 19.4054 -0.020268 18.9604 0.071732 18.5384L2.28573 1.96543C2.37873 1.53143 2.71373 1.19143 3.14973 1.09843C3.58573 1.00543 4.03673 1.12743 4.36473 1.43143L21.6127 11.0034Z" class="send-icon-shape"/>
+                <path d="M2.32178 19.0299L21.4338 11.9999L2.32178 1.96492" class="send-icon-trail send-icon-trail-1"/>
+                <path d="M2.32178 19.0299L16.0978 11.9999L2.32178 1.96492" class="send-icon-trail send-icon-trail-2"/>
+                 <path d="M2.32178 19.0299L10.7618 11.9999L2.32178 1.96492" class="send-icon-trail send-icon-trail-3"/>
+            </svg>
+        </span>
       </button>
     </div>
 
@@ -93,34 +101,33 @@
       </div>
 
       <div class="audio-mode-selector-wrapper" ref="audioModeDropdownRef">
-        <button @click="toggleAudioModeDropdown" class="audio-mode-button" aria-haspopup="true" :aria-expanded="showAudioModeDropdown">
-            <component :is="currentAudioModeIcon" class="icon" />
-            <span class="hidden sm:inline">{{ currentAudioModeLabel }}</span>
-            <ChevronDownIcon class="chevron-icon icon-xs" :class="{'open': showAudioModeDropdown}" />
+        <button @click="toggleAudioModeDropdown" class="audio-mode-button btn btn-ghost-ephemeral btn-sm-ephemeral" aria-haspopup="true" :aria-expanded="showAudioModeDropdown">
+            <component :is="currentAudioModeIcon" class="icon-sm" />
+            <span class="hidden sm:inline ml-1.5">{{ currentAudioModeLabel }}</span>
+            <ChevronDownIcon class="chevron-icon icon-xs ml-auto" :class="{'open': showAudioModeDropdown}" />
         </button>
-        <transition name="dropdown-float">
-            <div v-if="showAudioModeDropdown" class="audio-mode-dropdown">
+        <transition name="dropdown-float-neomorphic">
+            <div v-if="showAudioModeDropdown" class="audio-mode-dropdown card-neo-raised">
+                 <div class="dropdown-header-holographic !py-1.5 !px-2.5"><h3 class="dropdown-title !text-xs">Audio Mode</h3></div>
                 <button v-for="mode in audioModeOptions" :key="mode.value" @click="selectAudioMode(mode.value)"
-                        class="audio-mode-item" :class="{'active': settings.audioInputMode === mode.value}">
-                    <component :is="mode.icon" class="icon" />
+                        class="audio-mode-item dropdown-item-holographic" :class="{'active': settings.audioInputMode === mode.value}">
+                    <component :is="mode.icon" class="icon-sm mr-2" />
                     {{ mode.label }}
+                     <CheckIcon v-if="settings.audioInputMode === mode.value" class="icon-xs ml-auto text-[var(--color-accent-interactive)]" />
                 </button>
             </div>
         </transition>
       </div>
 
       <div class="secondary-controls-ephemeral">
-        <button @click="showTranscriptionHistory = !showTranscriptionHistory" class="control-btn-ephemeral" title="Transcription History">
-          <ClockIcon class="icon"/>
+        <button @click="showTranscriptionHistory = !showTranscriptionHistory" class="control-btn-ephemeral btn btn-ghost-ephemeral btn-icon-ephemeral" title="Transcription History">
+          <ClockIcon class="icon-base"/>
         </button>
-        <button v-if="isContinuousMode && sttPreference === 'browser_webspeech_api' && pendingTranscriptWebSpeech.trim()" @click="editPendingTranscription" class="control-btn-ephemeral" title="Edit pending transcript">
-          <PencilIcon class="icon"/>
+        <button v-if="isContinuousMode && sttPreference === 'browser_webspeech_api' && pendingTranscriptWebSpeech.trim()" @click="editPendingTranscription" class="control-btn-ephemeral btn btn-ghost-ephemeral btn-icon-ephemeral" title="Edit pending transcript">
+          <PencilIcon class="icon-base"/>
         </button>
-        <button v-if="isContinuousMode && sttPreference === 'browser_webspeech_api' && pendingTranscriptWebSpeech.trim()" @click="clearPendingWebSpeechTranscription" class="control-btn-ephemeral" title="Clear pending transcript">
-          <TrashIcon class="icon"/>
-        </button>
-        <button v-if="isMicrophoneActive && (isContinuousMode || isVoiceActivationMode)" @click="() => stopAudioCapture(true)" class="control-btn-ephemeral stop-btn-ephemeral" title="Stop Listening/Recording">
-          <StopCircleIcon class="icon"/>
+         <button v-if="isMicrophoneActive && (isContinuousMode || isVoiceActivationMode)" @click="() => stopAudioCapture(true)" class="control-btn-ephemeral btn btn-ghost-ephemeral btn-icon-ephemeral stop-btn-ephemeral" title="Stop Listening/Recording">
+          <StopCircleIcon class="icon-base"/>
         </button>
       </div>
     </div>
@@ -133,16 +140,16 @@
       aria-label="Voice activity visualization">
     </canvas>
      <div v-if="isVoiceActivationMode && sttPreference === 'browser_webspeech_api' && isMicrophoneActive" class="web-speech-vad-active-indicator text-xs text-center p-1 text-neutral-text-muted">
-      WebSpeech VAD Active (Browser handles silence detection)
+      WebSpeech VAD Active
     </div>
 
 
-    <Transition name="modal-fade-holographic">
+    <Transition name="modal-holographic-translucent">
       <div v-if="showTranscriptionHistory" class="modal-overlay-ephemeral" @click.self="showTranscriptionHistory = false">
-        <div class="modal-content-ephemeral" role="dialog" aria-modal="true" aria-labelledby="history-title">
+        <div class="modal-content-ephemeral card-glass-interactive max-w-lg w-full" role="dialog" aria-modal="true" aria-labelledby="history-title">
           <div class="modal-header-ephemeral">
             <h3 id="history-title" class="modal-title-ephemeral">Transcription History</h3>
-            <button @click="showTranscriptionHistory = false" class="modal-close-button-ephemeral" aria-label="Close history">
+            <button @click="showTranscriptionHistory = false" class="modal-close-button-ephemeral btn btn-icon-ephemeral btn-ghost-ephemeral" aria-label="Close history">
               <XMarkIcon class="icon-base"/>
             </button>
           </div>
@@ -151,25 +158,25 @@
               <li v-for="item in transcriptionHistory" :key="item.id" class="history-item-ephemeral">
                 <div class="history-item-text-ephemeral">{{ item.text }}</div>
                 <div class="history-item-meta-ephemeral">
-                  <span class="timestamp-ephemeral">{{ formatTime(item.timestamp) }}</span>
-                  <button @click="resendTranscription(item)" class="resend-btn-ephemeral" title="Resend this transcription">
+                  <span class="timestamp-ephemeral text-xs">{{ formatTime(item.timestamp) }}</span>
+                  <button @click="resendTranscription(item)" class="resend-btn-ephemeral btn btn-link-ephemeral btn-xs-ephemeral" title="Resend this transcription">
                     Resend
                   </button>
                 </div>
               </li>
             </ul>
-            <p v-else class="text-neutral-text-muted italic text-center p-4">No transcription history yet.</p>
+            <p v-else class="text-[var(--color-text-muted)] italic text-center p-4">No transcription history yet.</p>
           </div>
         </div>
       </div>
     </Transition>
 
-    <Transition name="modal-fade-holographic">
+    <Transition name="modal-holographic-translucent">
         <div v-if="showEditModal" class="modal-overlay-ephemeral" @click.self="cancelEdit">
-          <div class="modal-content-ephemeral sm:max-w-lg" role="dialog" aria-modal="true" aria-labelledby="edit-title">
+          <div class="modal-content-ephemeral card-glass-interactive sm:max-w-lg w-full" role="dialog" aria-modal="true" aria-labelledby="edit-title">
             <div class="modal-header-ephemeral">
               <h3 id="edit-title" class="modal-title-ephemeral">Edit Transcription</h3>
-              <button @click="cancelEdit" class="modal-close-button-ephemeral" aria-label="Cancel edit">
+              <button @click="cancelEdit" class="modal-close-button-ephemeral btn btn-icon-ephemeral btn-ghost-ephemeral" aria-label="Cancel edit">
                 <XMarkIcon class="icon-base"/>
               </button>
             </div>
@@ -177,22 +184,19 @@
               <textarea
                 ref="editModalTextareaRef"
                 v-model="editingTranscription"
-                class="voice-textarea-ephemeral w-full min-h-[120px]"
+                class="voice-textarea-ephemeral w-full min-h-[120px] !bg-[hsla(var(--color-bg-secondary-h),var(--color-bg-secondary-s),var(--color-bg-secondary-l),0.7)]"
                 aria-label="Edit transcription text"
               ></textarea>
             </div>
             <div class="modal-footer-ephemeral">
-              <button @click="cancelEdit" class="btn btn-secondary btn-sm">Cancel</button>
-              <button @click="saveEdit" class="btn btn-primary btn-sm">Save & Send</button>
+              <button @click="cancelEdit" class="btn btn-secondary-ephemeral btn-sm-ephemeral">Cancel</button>
+              <button @click="saveEdit" class="btn btn-primary-ephemeral btn-sm-ephemeral">Save & Send</button>
             </div>
           </div>
         </div>
       </Transition>
-
   </div>
 </template>
-
-as the previous version with "ephemeral" classes
 
 <script lang="ts">
 /**

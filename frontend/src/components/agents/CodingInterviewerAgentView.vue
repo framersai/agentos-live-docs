@@ -150,7 +150,7 @@ async function callInterviewerLLM(userInput: string) {
       processedHistory: processedHistoryFromClient,
       mode: props.agentConfig.id,
       language: preferredLang,
-      generateDiagram: props.agentConfig.canGenerateDiagrams && voiceSettingsManager.settings.generateDiagrams,
+      generateDiagram: props.agentConfig.capabilities?.canGenerateDiagrams && voiceSettingsManager.settings.generateDiagrams,
       userId: 'frontend_user_interviewer', 
       conversationId: chatStore.getCurrentConversationId(props.agentId),
       systemPromptOverride: finalSystemPrompt,
