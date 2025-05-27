@@ -3,23 +3,22 @@
  * @file Header.vue
  * @description Global application header, redesigned for "Ephemeral Harmony" theme.
  * Features dynamic logo and hearing icon, a unified user/settings dropdown,
- * reactive login/logout state, and improved visual integration with the "alive" app feel.
- * @version 6.0.0
+ * a new site navigation dropdown, reactive login/logout state,
+ * and improved visual integration with the "alive" app feel.
+ * @version 6.1.0 - Added SiteMenuDropdown and refined structure.
  */
 <script setup lang="ts">
-import { computed, defineAsyncComponent, ref } from 'vue';
+import { computed, defineAsyncComponent } from 'vue';
 import { RouterLink, useRouter } from 'vue-router';
 import { useAuth } from '../composables/useAuth';
 import { useUiStore } from '@/store/ui.store';
-import { useAgentStore } from '@/store/agent.store';
 import { useChatStore } from '@/store/chat.store';
 import { useCostStore } from '@/store/cost.store';
-// Ensure icon imports are here if not globally registered or handled by UserSettingsDropdown
-import { /* Relevant icons if needed directly */ } from '@heroicons/vue/24/outline';
 
 // Async Components
 const UserSettingsDropdown = defineAsyncComponent(() => import('./header/UserSettingsDropdown.vue'));
 const VoiceControlsDropdown = defineAsyncComponent(() => import('./header/VoiceControlsDropdown.vue'));
+const SiteMenuDropdown = defineAsyncComponent(() => import('./header/SiteMenuDropdown.vue')); // New
 
 // Props
 const props = defineProps({
@@ -29,47 +28,39 @@ const props = defineProps({
   isAssistantSpeaking: { type: Boolean, default: false },
 });
 
-// Emits: These are re-emitted from UserSettingsDropdown for App.vue to handle
+// Emits
 const emit = defineEmits<{
   (e: 'clear-chat-and-session'): void;
   (e: 'show-prior-chat-log'): void;
+  (e: 'toggle-theme'): void; // For UserSettingsDropdown
+  (e: 'toggle-fullscreen'): void; // For UserSettingsDropdown
+  (e: 'logout'): void; // For SiteMenuDropdown
 }>();
 
 // Stores & Composables
-const auth = useAuth(); // For isAuthenticated status
+const auth = useAuth();
 const uiStore = useUiStore();
-const agentStore = useAgentStore(); // Potentially for agent-specific header elements if any in future
-const chatStore = useChatStore(); // For isMainContentStreaming
+const chatStore = useChatStore();
 const costStore = useCostStore();
 const router = useRouter();
 
 // Computed States
 const sessionCost = computed(() => costStore.totalSessionCost);
 const isFullscreenActive = computed(() => uiStore.isBrowserFullscreenActive);
-
-// Determine the overall "AI active" state (speaking or processing response)
 const isAiStateActive = computed(() => props.isAssistantSpeaking || chatStore.isMainContentStreaming);
-// User is considered "active" if listening AND AI is not currently overriding that state by speaking/processing
 const isUserStateActive = computed(() => props.isUserListening && !isAiStateActive.value);
 
-// Methods for header elements or passthrough emits
+// Methods
 const handleLogoClick = () => {
-  // Navigate to the appropriate home page based on authentication
-  if (auth.isAuthenticated.value) {
-    router.push({ name: 'AuthenticatedHome' });
-  } else {
-    router.push({ name: 'PublicHome' });
-  }
+  router.push({ name: auth.isAuthenticated.value ? 'AuthenticatedHome' : 'PublicHome' });
 };
 
-// Handlers for events bubbled up from UserSettingsDropdown
-const onClearChatAndSession = () => {
-  emit('clear-chat-and-session');
-};
-
-const onShowPriorChatLog = () => {
-  emit('show-prior-chat-log');
-};
+// Passthrough handlers for events from child dropdowns
+const onClearChatAndSession = () => emit('clear-chat-and-session');
+const onShowPriorChatLog = () => emit('show-prior-chat-log');
+const onToggleTheme = () => emit('toggle-theme');
+const onToggleFullscreen = () => emit('toggle-fullscreen');
+const onLogout = () => emit('logout');
 
 </script>
 
@@ -77,7 +68,7 @@ const onShowPriorChatLog = () => {
   <header
     class="app-header-ephemeral"
     :class="{
-      'fullscreen-active': isFullscreenActive, // For potential style adjustments when browser is fullscreen
+      'fullscreen-active': isFullscreenActive,
       'ai-speaking-active': isAiStateActive,
       'user-listening-active': isUserStateActive,
     }"
@@ -117,8 +108,9 @@ const onShowPriorChatLog = () => {
 
       <div class="header-right-section">
         <Suspense>
-          <VoiceControlsDropdown class="hidden md:flex" /> <template #fallback>
-            <div class="nav-button-placeholder">Voice...</div>
+          <VoiceControlsDropdown class="hidden md:flex voice-controls-header-integration" />
+          <template #fallback>
+            <div class="nav-button-placeholder w-8 h-8 bg-neutral-700/30 rounded-full animate-pulse"></div>
           </template>
         </Suspense>
 
@@ -129,14 +121,27 @@ const onShowPriorChatLog = () => {
         >
           <span class="cost-value">${{ sessionCost.toFixed(3) }}</span>
         </div>
-        
+
         <Suspense>
           <UserSettingsDropdown
             @clear-chat-and-session="onClearChatAndSession"
             @show-prior-chat-log="onShowPriorChatLog"
+            @toggle-theme="onToggleTheme"
+            @toggle-fullscreen="onToggleFullscreen"
+            class="user-settings-header-integration"
           />
           <template #fallback>
-            <div class="user-settings-trigger-placeholder"></div>
+            <div class="nav-button-placeholder w-8 h-8 bg-neutral-700/30 rounded-full animate-pulse"></div>
+          </template>
+        </Suspense>
+
+        <Suspense>
+          <SiteMenuDropdown
+            @logout="onLogout"
+            class="site-menu-header-integration"
+          />
+          <template #fallback>
+             <div class="nav-button-placeholder w-8 h-8 bg-neutral-700/30 rounded-full animate-pulse"></div>
           </template>
         </Suspense>
       </div>
@@ -146,8 +151,20 @@ const onShowPriorChatLog = () => {
 
 <style lang="scss" scoped>
 // Styles are primarily in frontend/src/styles/layout/_header.scss
-// This scoped style block is for very specific, one-off adjustments if necessary.
 
 // Placeholder styles for fallback content - ensure they are minimal and don't conflict
+.nav-button-placeholder {
+  // Mimic button size for layout stability during suspense
+  // background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.3);
+  // border-radius: var.$radius-full;
+  // @apply animate-pulse;
+}
 
+// Integration classes for fine-tuning placement if needed.
+.voice-controls-header-integration,
+.user-settings-header-integration,
+.site-menu-header-integration {
+  // Add specific alignment or margin tweaks if the gap from .header-right-section is not enough
+  // e.g., display: flex; align-items: center;
+}
 </style>
