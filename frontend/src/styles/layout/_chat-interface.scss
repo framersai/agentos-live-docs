@@ -11,11 +11,11 @@
 
 .ephemeral-chat-log-container { // Wrapper div if needed for positioning context
   position: fixed; // Or absolute if header is part of the scrollable viewport
-  top: calc(var(--header-height, var.$header-height) + var.$spacing-sm); // Position below header with some gap
+  top: calc(var(--header-height, var.$header-height-default) + var.$spacing-sm); // Position below header with some gap
   left: 50%;
   transform: translateX(-50%);
   width: clamp(320px, 50vw, 600px); // Responsive width, max 600px
-  max-height: var(--chat-log-height, var.$chat-log-height); // Defined in variables
+  max-height: var(--chat-log-height, var.$chat-log-height-default); // Defined in variables
   z-index: var.$z-index-ephemeral-chat;
   pointer-events: none; // Container itself doesn't block interactions with content below
 }

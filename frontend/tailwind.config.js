@@ -1,3 +1,4 @@
+/* tailwindcss-intellisense-disable */
 // File: frontend/tailwind.config.js
 /** @type {import('tailwindcss').Config} */
 import plugin from 'tailwindcss/plugin';

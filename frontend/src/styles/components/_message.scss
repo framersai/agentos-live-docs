@@ -235,7 +235,7 @@
     .code-language-label {
       position: absolute;
       top: var.$spacing-xs;
-      right: var.$spacing-md + 36px; // Space for copy button
+      right: calc(var.$spacing-md + 36px); // rem + px → allowed inside calc()
       font-size: var.$font-size-xs;
       font-family: var(--font-mono);
       color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
