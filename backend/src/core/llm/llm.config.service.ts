@@ -1,197 +1,253 @@
 /**
- * @file Manages LLM provider configurations.
- * @description This service is responsible for loading, storing, and providing access
- * to configurations for various LLM providers (OpenAI, OpenRouter, Anthropic, Ollama).
- * It centralizes how API keys and other provider-specific settings are handled.
- * Implements a singleton pattern for consistent access to configurations.
- * @version 1.2.1 - Enhanced logging for missing keys and clarified default logic.
- */
+ * @file Manages LLM provider configurations and agent-specific model/prompt/tool definitions.
+ * @description This service loads, stores, and provides access to configurations
+ * for LLM providers and maps agent modes to specific LLM models, prompt templates, and callable tools.
+ * @version 1.4.1 - Added DiaryAgentTools.
+ */
 
-import { ILlmProviderConfig } from './llm.interfaces';
+import { ILlmProviderConfig, ILlmTool } from './llm.interfaces';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { MODEL_PREFERENCES } from '../../../config/models.config';
+
+// Import other agent tool arrays as they are created
+import { TutorAgentTools } from '../../tools/tutor.tools';
+import { CodingAssistantAgentTools } from '../../tools/codingAssistant.tools';
+import { DiaryAgentTools } from '../../tools/diary.tools';
 
 const __filename = fileURLToPath(import.meta.url);
 const __projectRoot = path.resolve(path.dirname(__filename), '../../../..');
-// Ensure .env is loaded relative to the project root. 'override: true' can be useful
-// if .env files are loaded in multiple places, ensuring this one takes precedence for these variables.
 dotenv.config({ path: path.join(__projectRoot, '.env'), override: true });
 
 /**
- * Enum for supported LLM provider identifiers.
- */
+ * @enum {string} LlmProviderId
+ * @description Enum for supported LLM provider identifiers.
+ */
 export enum LlmProviderId {
-  OPENAI = 'openai',
-  OPENROUTER = 'openrouter',
-  ANTHROPIC = 'anthropic',
-  OLLAMA = 'ollama',
+  OPENAI = 'openai',
+  OPENROUTER = 'openrouter',
+  ANTHROPIC = 'anthropic',
+  OLLAMA = 'ollama',
 }
 
 /**
- * Service class for managing LLM provider configurations.
- */
+ * @interface AgentLLMDefinition
+ * @description Defines the LLM model, prompt template, provider, and callable tools for a specific agent mode.
+ */
+export interface AgentLLMDefinition {
+  modelId: string;
+  promptTemplateKey: string;
+  providerId: LlmProviderId;
+  callableTools?: ILlmTool[];
+}
+
+/**
+ * @class LlmConfigService
+ * @classdesc Service class for managing LLM provider configurations and agent definitions.
+ */
 export class LlmConfigService {
-  private static instance: LlmConfigService;
-  private readonly providerConfigs: Map<LlmProviderId, ILlmProviderConfig>;
+  private static instance: LlmConfigService;
+  private readonly providerConfigs: Map<LlmProviderId, ILlmProviderConfig>;
+  private readonly agentToolDefinitions: Map<string, ILlmTool[]>;
 
-  private constructor() {
-    this.providerConfigs = new Map<LlmProviderId, ILlmProviderConfig>();
-    this.loadConfigurations();
-  }
-
-  public static getInstance(): LlmConfigService {
-    if (!LlmConfigService.instance) {
-      LlmConfigService.instance = new LlmConfigService();
-    }
-    return LlmConfigService.instance;
-  }
-
-  private loadConfigurations(): void {
-    console.log('LlmConfigService: Loading LLM provider configurations from environment variables...');
-
-    // OpenAI Configuration
-    const openAIApiKey = process.env.OPENAI_API_KEY;
-    if (openAIApiKey && openAIApiKey.trim() !== '' && !openAIApiKey.startsWith('YOUR_') && !openAIApiKey.endsWith('_HERE')) {
-      this.providerConfigs.set(LlmProviderId.OPENAI, {
-        providerId: LlmProviderId.OPENAI,
-        apiKey: openAIApiKey,
-        baseUrl: process.env.OPENAI_API_BASE_URL || 'https://api.openai.com/v1',
-        defaultModel: process.env.MODEL_PREF_OPENAI_DEFAULT || 'gpt-4o-mini',
-      });
-      console.log('LlmConfigService: OpenAI configuration LOADED.');
-    } else {
-      console.warn('LlmConfigService: OpenAI API key (OPENAI_API_KEY) is missing, a placeholder, or invalid. OpenAI provider will be UNAVAILABLE for direct calls.');
-    }
-
-    // OpenRouter Configuration
-    const openRouterApiKey = process.env.OPENROUTER_API_KEY;
-    if (openRouterApiKey && openRouterApiKey.trim() !== '' && !openRouterApiKey.startsWith('YOUR_') && !openRouterApiKey.endsWith('_HERE')) {
-      this.providerConfigs.set(LlmProviderId.OPENROUTER, {
-        providerId: LlmProviderId.OPENROUTER,
-        apiKey: openRouterApiKey,
-        baseUrl: process.env.OPENROUTER_API_BASE_URL || 'https://openrouter.ai/api/v1',
-        defaultModel: process.env.MODEL_PREF_OPENROUTER_DEFAULT || 'openai/gpt-4o-mini', // Example: OpenRouter often uses provider-prefixed models
-        additionalHeaders: {
-          "HTTP-Referer": process.env.APP_URL || `http://localhost:${process.env.PORT || 3001}`,
-          "X-Title": process.env.APP_NAME || "Voice Coding Assistant", // Changed from Voice Chat Assistant
-        },
-      });
-      console.log('LlmConfigService: OpenRouter configuration LOADED.');
-    } else {
-      console.warn('LlmConfigService: OpenRouter API key (OPENROUTER_API_KEY) is missing or a placeholder. OpenRouter provider will be UNAVAILABLE.');
-    }
-
-    // Anthropic Configuration
-    const anthropicApiKey = process.env.ANTHROPIC_API_KEY;
-    if (anthropicApiKey && anthropicApiKey.trim() !== '' && !anthropicApiKey.startsWith('YOUR_') && !anthropicApiKey.endsWith('_HERE')) {
-      this.providerConfigs.set(LlmProviderId.ANTHROPIC, {
-        providerId: LlmProviderId.ANTHROPIC,
-        apiKey: anthropicApiKey,
-        baseUrl: process.env.ANTHROPIC_API_BASE_URL || 'https://api.anthropic.com/v1',
-        defaultModel: process.env.MODEL_PREF_ANTHROPIC_DEFAULT || 'claude-3-haiku-20240307', // Changed to a more common/recent one
-        additionalHeaders: { "anthropic-version": "2023-06-01" } // Check for latest required version
-      });
-      console.log('LlmConfigService: Anthropic configuration LOADED.');
-    } else {
-      console.info('LlmConfigService: Anthropic API key (ANTHROPIC_API_KEY) not provided. Anthropic provider will be unavailable.');
-    }
-
-    // Ollama Configuration
-    const ollamaBaseUrl = process.env.OLLAMA_BASE_URL;
-    if (ollamaBaseUrl && ollamaBaseUrl.trim() !== '') {
-        this.providerConfigs.set(LlmProviderId.OLLAMA, {
-            providerId: LlmProviderId.OLLAMA,
-            apiKey: undefined, // Ollama typically doesn't use API keys for local instances
-            baseUrl: ollamaBaseUrl,
-            defaultModel: process.env.MODEL_PREF_OLLAMA_DEFAULT || 'llama3:latest', // Using :latest tag
-        });
-        console.log(`LlmConfigService: Ollama configuration LOADED. Base URL: ${ollamaBaseUrl}`);
-    } else {
-        console.info('LlmConfigService: OLLAMA_BASE_URL not provided. Ollama provider will be unavailable.');
-    }
-    console.log(`LlmConfigService: Initialization complete. Configured providers: ${Array.from(this.providerConfigs.keys()).join(', ') || 'None'}`);
-  }
-
-  public getProviderConfig(providerId: LlmProviderId): ILlmProviderConfig | undefined {
-    return this.providerConfigs.get(providerId);
-  }
-  
-  public isProviderAvailable(providerId: LlmProviderId): boolean {
-    const config = this.providerConfigs.get(providerId);
-    if (!config) return false;
-    if (providerId === LlmProviderId.OLLAMA) return !!config.baseUrl; // Ollama needs a base URL
-    return !!config.apiKey; // Other providers typically need an API key
-  }
-
-  public getAvailableProviders(): LlmProviderId[] {
-    return Array.from(this.providerConfigs.keys()).filter(providerId => this.isProviderAvailable(providerId));
-  }
-
-  public getDefaultProviderAndModel(): { providerId: LlmProviderId; modelId: string } {
-    const envRoutingProviderId = process.env.ROUTING_LLM_PROVIDER_ID?.toLowerCase() as LlmProviderId | undefined;
-    const envRoutingModelId = process.env.ROUTING_LLM_MODEL_ID;
-
-    if (envRoutingProviderId && this.isProviderAvailable(envRoutingProviderId)) {
-      const providerConfig = this.providerConfigs.get(envRoutingProviderId)!;
-      const modelIdToUse = envRoutingModelId || providerConfig.defaultModel;
-      if (modelIdToUse) {
-        console.log(`LlmConfigService: Using ROUTING_LLM_PROVIDER_ID: ${envRoutingProviderId}, Model: ${modelIdToUse}`);
-        return { providerId: envRoutingProviderId, modelId: modelIdToUse };
-      }
-    }
-
-    // Define a preferred order of providers to check if the .env routing isn't set or valid
-    const preferredOrder: LlmProviderId[] = [
-        LlmProviderId.OPENROUTER,
-        LlmProviderId.OPENAI,
-        LlmProviderId.ANTHROPIC,
-        LlmProviderId.OLLAMA,
-    ];
-
-    for (const providerId of preferredOrder) {
-        if (this.isProviderAvailable(providerId)) {
-            const config = this.providerConfigs.get(providerId)!;
-            if (config.defaultModel) {
-                console.log(`LlmConfigService: Defaulting to first available configured provider in preferred order: ${providerId}, Model: ${config.defaultModel}`);
-                return { providerId, modelId: config.defaultModel };
-            }
-        }
-    }
-    
-    console.error("LlmConfigService: CRITICAL - No usable LLM provider configuration could be resolved. All LLM calls will likely fail. Please check your .env file for API keys and base URLs (OPENAI_API_KEY, OPENROUTER_API_KEY, ANTHROPIC_API_KEY, OLLAMA_BASE_URL) and model preferences.");
-    throw new Error("LlmConfigService: No usable LLM provider configuration found.");
-  }
-
-  public getFallbackProviderId(): LlmProviderId | undefined {
-    const fallbackId = process.env.FALLBACK_LLM_PROVIDER_ID?.toLowerCase() as LlmProviderId | undefined;
-    if (fallbackId && this.isProviderAvailable(fallbackId)) {
-      console.log(`LlmConfigService: Using FALLBACK_LLM_PROVIDER_ID: ${fallbackId}`);
-      return fallbackId;
-    }
-    if (fallbackId) { // If set but not available
-        console.warn(`LlmConfigService: FALLBACK_LLM_PROVIDER_ID "${fallbackId}" is set in .env but the provider is not configured or available. Fallback will be ignored.`);
-    }
-    return undefined;
-  }
-
-  public getDefaultOpenAIModel(): string {
-    const openAiConfig = this.providerConfigs.get(LlmProviderId.OPENAI);
-    return openAiConfig?.defaultModel || process.env.MODEL_PREF_OPENAI_DEFAULT || 'gpt-4o-mini';
-  }
-
-  public getDefaultOpenRouterModel(): string {
-    const openRouterConfig = this.providerConfigs.get(LlmProviderId.OPENROUTER);
-    return openRouterConfig?.defaultModel || process.env.MODEL_PREF_OPENROUTER_DEFAULT || 'openai/gpt-4o-mini';
-  }
-
-  public getDefaultAnthropicModel(): string {
-    const anthropicConfig = this.providerConfigs.get(LlmProviderId.ANTHROPIC);
-    return anthropicConfig?.defaultModel || process.env.MODEL_PREF_ANTHROPIC_DEFAULT || 'claude-3-haiku-20240307';
+  private constructor() {
+    this.providerConfigs = new Map<LlmProviderId, ILlmProviderConfig>();
+    this.agentToolDefinitions = new Map<string, ILlmTool[]>();
+    this.loadConfigurations();
+    this.loadAgentToolDefinitions();
   }
 
+  public static getInstance(): LlmConfigService {
+    if (!LlmConfigService.instance) {
+      LlmConfigService.instance = new LlmConfigService();
+    }
+    return LlmConfigService.instance;
+  }
+
+  private loadConfigurations(): void {
+    // ... (provider loading logic remains the same as previously provided) ...
+    console.log('[LlmConfigService] Loading LLM provider configurations...');
+
+    const openAIApiKey = process.env.OPENAI_API_KEY;
+    if (openAIApiKey && openAIApiKey.trim() !== '' && !openAIApiKey.startsWith('YOUR_') && !openAIApiKey.endsWith('_HERE')) {
+      this.providerConfigs.set(LlmProviderId.OPENAI, {
+        providerId: LlmProviderId.OPENAI,
+        apiKey: openAIApiKey,
+        baseUrl: process.env.OPENAI_API_BASE_URL || 'https://api.openai.com/v1',
+        defaultModel: process.env.MODEL_PREF_OPENAI_DEFAULT || 'gpt-4o-mini',
+      });
+      console.log('[LlmConfigService] OpenAI configuration LOADED.');
+    } else {
+      console.warn('[LlmConfigService] OpenAI API key (OPENAI_API_KEY) missing or invalid. OpenAI provider UNAVAILABLE for direct calls.');
+    }
+
+    const openRouterApiKey = process.env.OPENROUTER_API_KEY;
+    if (openRouterApiKey && openRouterApiKey.trim() !== '' && !openRouterApiKey.startsWith('YOUR_') && !openRouterApiKey.endsWith('_HERE')) {
+      this.providerConfigs.set(LlmProviderId.OPENROUTER, {
+        providerId: LlmProviderId.OPENROUTER,
+        apiKey: openRouterApiKey,
+        baseUrl: process.env.OPENROUTER_API_BASE_URL || 'https://openrouter.ai/api/v1',
+        defaultModel: process.env.MODEL_PREF_OPENROUTER_DEFAULT || 'openai/gpt-4o-mini',
+        additionalHeaders: {
+          "HTTP-Referer": process.env.APP_URL || `http://localhost:${process.env.PORT || 3001}`,
+          "X-Title": process.env.APP_NAME || "Voice Coding Assistant",
+        },
+      });
+      console.log('[LlmConfigService] OpenRouter configuration LOADED.');
+    } else {
+      console.warn('[LlmConfigService] OpenRouter API key (OPENROUTER_API_KEY) missing or invalid. OpenRouter provider UNAVAILABLE.');
+    }
+
+    const anthropicApiKey = process.env.ANTHROPIC_API_KEY;
+    if (anthropicApiKey && anthropicApiKey.trim() !== '' && !anthropicApiKey.startsWith('YOUR_') && !anthropicApiKey.endsWith('_HERE')) {
+      this.providerConfigs.set(LlmProviderId.ANTHROPIC, {
+        providerId: LlmProviderId.ANTHROPIC,
+        apiKey: anthropicApiKey,
+        baseUrl: process.env.ANTHROPIC_API_BASE_URL || 'https://api.anthropic.com/v1',
+        defaultModel: process.env.MODEL_PREF_ANTHROPIC_DEFAULT || 'claude-3-haiku-20240307',
+        additionalHeaders: { "anthropic-version": "2023-06-01" }
+      });
+      console.log('[LlmConfigService] Anthropic configuration LOADED.');
+    } else {
+      console.info('[LlmConfigService] Anthropic API key (ANTHROPIC_API_KEY) not provided. Anthropic provider UNAVAILABLE.');
+    }
+
+    const ollamaBaseUrl = process.env.OLLAMA_BASE_URL;
+    if (ollamaBaseUrl && ollamaBaseUrl.trim() !== '') {
+        this.providerConfigs.set(LlmProviderId.OLLAMA, {
+            providerId: LlmProviderId.OLLAMA,
+            apiKey: undefined,
+            baseUrl: ollamaBaseUrl,
+            defaultModel: process.env.MODEL_PREF_OLLAMA_DEFAULT || 'llama3:latest',
+        });
+        console.log(`[LlmConfigService] Ollama configuration LOADED. Base URL: ${ollamaBaseUrl}`);
+    } else {
+        console.info('[LlmConfigService] OLLAMA_BASE_URL not provided. Ollama provider UNAVAILABLE.');
+    }
+    console.log(`[LlmConfigService] Provider configuration loading complete. Configured: ${Array.from(this.providerConfigs.keys()).join(', ') || 'None'}`);
+  }
+
+  private loadAgentToolDefinitions(): void {
+    console.log('[LlmConfigService] Loading agent tool definitions...');
+    this.agentToolDefinitions.set('tutor', TutorAgentTools);
+    console.log(`[LlmConfigService] Loaded ${TutorAgentTools.length} tools for agent 'tutor'.`);
+
+    this.agentToolDefinitions.set('coding', CodingAssistantAgentTools); // Assuming 'coding' is the promptTemplateKey for CodingAssistant
+    console.log(`[LlmConfigService] Loaded ${CodingAssistantAgentTools.length} tools for agent 'coding'.`);
+
+    this.agentToolDefinitions.set('diary', DiaryAgentTools); // New: For Diary agent
+    console.log(`[LlmConfigService] Loaded ${DiaryAgentTools.length} tools for agent 'diary'.`);
+    // Add other agents' tools here as they are defined
+    // e.g., this.agentToolDefinitions.set('coding_interviewer', CodingInterviewerAgentTools);
+  }
+
+  public getProviderConfig(providerId: LlmProviderId): ILlmProviderConfig | undefined {
+    return this.providerConfigs.get(providerId);
+  }
+  
+  public isProviderAvailable(providerId: LlmProviderId): boolean {
+    const config = this.providerConfigs.get(providerId);
+    if (!config) return false;
+    return (providerId === LlmProviderId.OLLAMA) ? !!config.baseUrl : !!config.apiKey;
+  }
+
+  public getAvailableProviders(): LlmProviderId[] {
+    return Array.from(this.providerConfigs.keys()).filter(providerId => this.isProviderAvailable(providerId));
+  }
+
+  public getDefaultProviderAndModel(): { providerId: LlmProviderId; modelId: string } {
+    // ... (logic remains the same as previously provided) ...
+    const envRoutingProviderId = process.env.ROUTING_LLM_PROVIDER_ID?.toLowerCase() as LlmProviderId | undefined;
+    const envRoutingModelId = process.env.ROUTING_LLM_MODEL_ID;
+
+    if (envRoutingProviderId && this.isProviderAvailable(envRoutingProviderId)) {
+      const providerConfig = this.providerConfigs.get(envRoutingProviderId)!;
+      const modelIdToUse = envRoutingModelId || providerConfig.defaultModel;
+      if (modelIdToUse) {
+        return { providerId: envRoutingProviderId, modelId: modelIdToUse };
+      }
+    }
+    const preferredOrder: LlmProviderId[] = [ LlmProviderId.OPENROUTER, LlmProviderId.OPENAI, LlmProviderId.ANTHROPIC, LlmProviderId.OLLAMA ];
+    for (const providerId of preferredOrder) {
+      if (this.isProviderAvailable(providerId)) {
+        const config = this.providerConfigs.get(providerId)!;
+        if (config.defaultModel) {
+          return { providerId, modelId: config.defaultModel };
+        }
+      }
+    }
+    throw new Error("LlmConfigService: No usable LLM provider configuration found.");
+  }
+
+  public getFallbackProviderId(): LlmProviderId | undefined {
+    // ... (logic remains the same as previously provided) ...
+    const fallbackId = process.env.FALLBACK_LLM_PROVIDER_ID?.toLowerCase() as LlmProviderId | undefined;
+    if (fallbackId && this.isProviderAvailable(fallbackId)) return fallbackId;
+    return undefined;
+  }
+
+  public getDefaultOpenAIModel(): string {
+    return this.providerConfigs.get(LlmProviderId.OPENAI)?.defaultModel || process.env.MODEL_PREF_OPENAI_DEFAULT || 'gpt-4o-mini';
+  }
+  public getDefaultOpenRouterModel(): string {
+    return this.providerConfigs.get(LlmProviderId.OPENROUTER)?.defaultModel || process.env.MODEL_PREF_OPENROUTER_DEFAULT || 'openai/gpt-4o-mini';
+  }
+  public getDefaultAnthropicModel(): string {
+    return this.providerConfigs.get(LlmProviderId.ANTHROPIC)?.defaultModel || process.env.MODEL_PREF_ANTHROPIC_DEFAULT || 'claude-3-haiku-20240307';
+  }
   public getDefaultOllamaModel(): string {
-    const ollamaConfig = this.providerConfigs.get(LlmProviderId.OLLAMA);
-    return ollamaConfig?.defaultModel || process.env.MODEL_PREF_OLLAMA_DEFAULT || 'llama3:latest';
+    return this.providerConfigs.get(LlmProviderId.OLLAMA)?.defaultModel || process.env.MODEL_PREF_OLLAMA_DEFAULT || 'llama3:latest';
+  }
+
+  public getAgentDefinitionFromMode(
+    mode: string,
+    isInterviewSubMode: boolean = false,
+    isTutorSubMode: boolean = false
+  ): AgentLLMDefinition {
+    const modeKey = mode.toLowerCase();
+    let effectiveModelId: string;
+    let effectivePromptKey: string = modeKey;
+    const systemDefaultChoice = this.getDefaultProviderAndModel();
+    effectiveModelId = systemDefaultChoice.modelId;
+    let providerId = systemDefaultChoice.providerId;
+    let callableTools: ILlmTool[] | undefined = undefined;
+
+    // Determine prompt key and specific model preferences
+    if (modeKey === 'coding') {
+      if (isInterviewSubMode) {
+        effectiveModelId = MODEL_PREFERENCES.interview_tutor || MODEL_PREFERENCES.coding_tutor || MODEL_PREFERENCES.coding || systemDefaultChoice.modelId;
+        effectivePromptKey = 'coding_interviewer';
+      } else if (isTutorSubMode) {
+        effectiveModelId = MODEL_PREFERENCES.coding_tutor || MODEL_PREFERENCES.coding || systemDefaultChoice.modelId;
+        effectivePromptKey = 'coding_tutor';
+      } else {
+        effectiveModelId = MODEL_PREFERENCES.coding || systemDefaultChoice.modelId;
+        effectivePromptKey = 'coding';
+      }
+    } else if (MODEL_PREFERENCES[modeKey as keyof typeof MODEL_PREFERENCES]) {
+      effectiveModelId = MODEL_PREFERENCES[modeKey as keyof typeof MODEL_PREFERENCES];
+      effectivePromptKey = modeKey;
+    } else {
+      console.warn(`[LlmConfigService] No specific model preference for mode '${modeKey}'. Using system default: ${systemDefaultChoice.modelId}.`);
+      effectiveModelId = systemDefaultChoice.modelId;
+      effectivePromptKey = (modeKey === 'general' || modeKey === 'general_chat' || !modeKey) ? 'general_chat' : modeKey;
+    }
+    
+    // Assign tools based on the determined effectivePromptKey (which usually matches the agent's primary identifier)
+    callableTools = this.agentToolDefinitions.get(effectivePromptKey) || undefined;
+    
+    const modelProviderPrefixMatch = effectiveModelId.match(/^([a-zA-Z0-9_-]+)\//);
+    if (modelProviderPrefixMatch && modelProviderPrefixMatch[1]) {
+      const potentialProviderFromModel = modelProviderPrefixMatch[1].toLowerCase() as LlmProviderId;
+      if (Object.values(LlmProviderId).includes(potentialProviderFromModel) && this.isProviderAvailable(potentialProviderFromModel)) {
+        providerId = potentialProviderFromModel;
+      } else {
+        console.warn(`[LlmConfigService] Model ID "${effectiveModelId}" contains a prefix "${potentialProviderFromModel}" for an unavailable provider. System default provider "${providerId}" will be used.`);
+      }
+    }
+
+    console.log(`[LlmConfigService] Resolved for mode '${mode}' (interview: ${isInterviewSubMode}, tutor: ${isTutorSubMode}): Model='${effectiveModelId}', PromptKey='${effectivePromptKey}', Provider='${providerId}', Tools: ${callableTools?.length || 0}`);
+    return { modelId: effectiveModelId, promptTemplateKey: effectivePromptKey, providerId, callableTools };
   }
 }

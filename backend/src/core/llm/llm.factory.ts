@@ -1,303 +1,255 @@
+// File: backend/src/core/llm/llm.factory.ts
 /**
- * @file LLM Factory with Robust Model ID Handling and Fallback
- * @description Factory for creating LLM service instances and routing requests intelligently.
- * Handles provider selection, model ID adaptation, and fallback mechanisms.
- * @version 2.0.1 - Enhanced logging and comments for model processing logic.
- */
+ * @file LLM Service Factory and Unified Call Function
+ * @description Provides a factory to get LLM service instances and a unified `callLlm`
+ * function to interact with them. This abstracts the specific LLM provider details.
+ * @version 1.2.0 - Propagated tool parameters to LLM services in callLlm.
+ */
 
+import { LlmConfigService, LlmProviderId } from './llm.config.service';
 import { OpenAiLlmService } from './openai.llm.service';
 import { OpenRouterLlmService } from './openrouter.llm.service';
-// TODO: Import AnthropicLlmService and OllamaLlmService when implemented
+// Import other LLM services (Anthropic, Ollama) as they are implemented
 // import { AnthropicLlmService } from './anthropic.llm.service';
 // import { OllamaLlmService } from './ollama.llm.service';
-import { LlmConfigService, LlmProviderId } from './llm.config.service';
 import {
-  IChatMessage,
-  ILlmResponse,
-  IChatCompletionParams,
-  ILlmService
+  IChatMessage,
+  ILlmResponse,
+  ILlmService,
+  IChatCompletionParams,
+  ILlmTool,
 } from './llm.interfaces';
+import { CostService } from '../cost/cost.service';
+import { getModelPrice } from '../../../config/models.config';
 
-const llmServices: Map<LlmProviderId, ILlmService> = new Map();
-let configServiceInstance: LlmConfigService | null = null;
-
-/**
- * Initializes all LLM services based on available configurations.
- * Should be called once at application startup.
- * @param {LlmConfigService} [configSvc] - Optional LlmConfigService instance (for testing).
- */
-export function initializeLlmServices(configSvc?: LlmConfigService): void {
-  configServiceInstance = configSvc || LlmConfigService.getInstance();
-  llmServices.clear(); // Clear any existing services if re-initializing
-
-  console.log('LLM Factory: Initializing LLM services...');
-
-  if (configServiceInstance.isProviderAvailable(LlmProviderId.OPENAI)) {
-    try {
-      llmServices.set(LlmProviderId.OPENAI, new OpenAiLlmService(configServiceInstance.getProviderConfig(LlmProviderId.OPENAI)!));
-      console.log('LLM Factory: OpenAI service INITIALIZED.');
-    } catch (error: any) {
-      console.error('LLM Factory: FAILED to initialize OpenAI service:', error.message);
-    }
-  }
-
-  if (configServiceInstance.isProviderAvailable(LlmProviderId.OPENROUTER)) {
-    try {
-      llmServices.set(LlmProviderId.OPENROUTER, new OpenRouterLlmService(configServiceInstance.getProviderConfig(LlmProviderId.OPENROUTER)!));
-      console.log('LLM Factory: OpenRouter service INITIALIZED.');
-    } catch (error: any) {
-      console.error('LLM Factory: FAILED to initialize OpenRouter service:', error.message);
-    }
-  }
-
-  if (configServiceInstance.isProviderAvailable(LlmProviderId.ANTHROPIC)) {
-    // Assuming AnthropicLlmService exists and is imported
-    // try {
-    //   llmServices.set(LlmProviderId.ANTHROPIC, new AnthropicLlmService(configServiceInstance.getProviderConfig(LlmProviderId.ANTHROPIC)!));
-    //   console.log('LLM Factory: Anthropic service INITIALIZED.');
-    // } catch (error: any) {
-    //   console.error('LLM Factory: FAILED to initialize Anthropic service:', error.message);
-    // }
-     console.log('LLM Factory: Anthropic provider is configured, but AnthropicLlmService is not yet fully integrated in factory.');
-  }
-
-  if (configServiceInstance.isProviderAvailable(LlmProviderId.OLLAMA)) {
-    // Assuming OllamaLlmService exists and is imported
-    // try {
-    //   llmServices.set(LlmProviderId.OLLAMA, new OllamaLlmService(configServiceInstance.getProviderConfig(LlmProviderId.OLLAMA)!));
-    //   console.log('LLM Factory: Ollama service INITIALIZED.');
-    // } catch (error: any) {
-    //   console.error('LLM Factory: FAILED to initialize Ollama service:', error.message);
-    // }
-     console.log('LLM Factory: Ollama provider is configured, but OllamaLlmService is not yet fully integrated in factory.');
-  }
-
-  console.log('LLM Factory: Initialization complete. Active services for providers:', Array.from(llmServices.keys()).join(', ') || 'NONE');
-  if (llmServices.size === 0) {
-    console.warn("LLM Factory: WARNING - No LLM services were successfully initialized. All LLM-dependent features will fail. Check API key configurations in .env and service implementations.");
-  }
-}
+let llmConfigService: LlmConfigService;
+const serviceCache: Map<LlmProviderId | string, ILlmService> = new Map();
 
 /**
- * Extracts the potential provider from a model ID string.
- * @param {string} modelId - The full model ID (e.g., 'openrouter/openai/gpt-4o-mini', 'openai/gpt-4o-mini', 'gpt-4o-mini').
- * @returns {LlmProviderId | null} The extracted provider ID or null if not identifiable.
- */
-function extractProviderFromModelId(modelId: string): LlmProviderId | null {
-  if (!modelId || typeof modelId !== 'string') return null;
-  const parts = modelId.split('/');
-  const potentialProvider = parts[0].toLowerCase();
-
-  if (Object.values(LlmProviderId).includes(potentialProvider as LlmProviderId)) {
-    return potentialProvider as LlmProviderId;
-  }
-  // Heuristics for provider-less model names (less reliable)
-  if (/\b(gpt|davinci|turbo|ada|babbage|curie|text-embedding)\b/i.test(modelId)) return LlmProviderId.OPENAI;
-  if (modelId.startsWith('claude-')) return LlmProviderId.ANTHROPIC;
-  if (modelId.includes('llama') || modelId.includes('mistral') || modelId.includes('phi')) { // Common Ollama model names
-    // This is ambiguous if OpenRouter also serves these without prefix.
-    // For now, don't default to Ollama unless explicitly prefixed or configured.
+ * Initializes the LLM configuration service. Must be called once at application startup.
+ * @async
+ * @returns {Promise<void>}
+ * @throws {Error} If initialization fails.
+ */
+export async function initializeLlmServices(): Promise<void> {
+  if (llmConfigService) {
+    console.warn('[LLM Factory] LLM services already initialized.');
+    return;
   }
-  return null;
+  try {
+    llmConfigService = LlmConfigService.getInstance(); // This loads .env internally
+    console.log('[LLM Factory] LLMConfigService instance obtained.');
+    // Pre-initialize default or commonly used providers if desired
+    // For example, initialize the default provider:
+    const defaultProvider = llmConfigService.getDefaultProviderAndModel();
+    if (defaultProvider?.providerId) {
+        getLlmService(defaultProvider.providerId); // This will cache it
+        console.log(`[LLM Factory] Pre-initialized service for default provider: ${defaultProvider.providerId}`);
+    }
+
+  } catch (error) {
+    console.error('[LLM Factory] CRITICAL: Failed to initialize LlmConfigService:', error);
+    throw new Error(`Failed to initialize LLM services: ${(error as Error).message}`);
+  }
 }
 
 /**
- * Processes a model ID string to make it suitable for the target provider's API.
- * @param {string} modelId - The original model ID.
- * @param {LlmProviderId} targetProviderId - The provider the model ID is being prepared for.
- * @param {LlmConfigService} configSvc - The configuration service instance.
- * @returns {string} The processed model ID.
- */
-function processModelIdForProvider(modelId: string, targetProviderId: LlmProviderId, configSvc: LlmConfigService): string {
-  console.log(`LLM Factory: Processing model ID '${modelId}' for target provider '${targetProviderId}'`);
-  let processedModelId = modelId;
+ * Retrieves an instance of an LLM service based on the provider ID.
+ * Caches service instances for reuse.
+ * @param {LlmProviderId | string} providerId - The identifier of the LLM provider.
+ * @returns {ILlmService} An instance of the LLM service.
+ * @throws {Error} If the provider is not configured, not supported, or initialization fails.
+ */
+export function getLlmService(providerId: LlmProviderId | string): ILlmService {
+  if (!llmConfigService) {
+    throw new Error('[LLM Factory] LlmConfigService not initialized. Call initializeLlmServices() first.');
+  }
 
-  switch (targetProviderId) {
-    case LlmProviderId.OPENAI:
-      if (processedModelId.startsWith(`${LlmProviderId.OPENROUTER}/${LlmProviderId.OPENAI}/`)) {
-        processedModelId = processedModelId.substring(`${LlmProviderId.OPENROUTER}/${LlmProviderId.OPENAI}/`.length);
-      } else if (processedModelId.startsWith(`${LlmProviderId.OPENAI}/`)) {
-        processedModelId = processedModelId.substring(`${LlmProviderId.OPENAI}/`.length);
-      }
-      if (!processedModelId || processedModelId.includes('/') || !(/\b(gpt|davinci|turbo|ada|babbage|curie|text-embedding)\b/i.test(processedModelId))) {
-          const defaultOpenAIModel = configSvc.getDefaultOpenAIModel();
-          console.warn(`LLM Factory: Model ID '${modelId}' (processed to '${processedModelId}') seems invalid for OpenAI. Using OpenAI default: '${defaultOpenAIModel}'.`);
-          processedModelId = defaultOpenAIModel;
-      }
-      break;
+  if (serviceCache.has(providerId)) {
+    return serviceCache.get(providerId)!;
+  }
 
-    case LlmProviderId.OPENROUTER:
-      if (processedModelId.startsWith(`${LlmProviderId.OPENROUTER}/`)) { // Remove redundant 'openrouter/' prefix
-        processedModelId = processedModelId.substring(`${LlmProviderId.OPENROUTER}/`.length);
-      }
-      // Ensure OpenRouter models are provider-prefixed if they are known provider models
-      else if (!processedModelId.includes('/') && (/\b(gpt|davinci|turbo|ada|babbage|curie|text-embedding)\b/i.test(processedModelId))) {
-        processedModelId = `${LlmProviderId.OPENAI}/${processedModelId}`;
-      } else if (!processedModelId.includes('/') && processedModelId.startsWith('claude-')) {
-        processedModelId = `${LlmProviderId.ANTHROPIC}/${processedModelId}`;
-      }
-      if (!processedModelId.includes('/')) { // OpenRouter expects 'provider/model'
-          const defaultOpenRouterModel = configSvc.getDefaultOpenRouterModel();
-          console.warn(`LLM Factory: Model ID '${modelId}' (processed to '${processedModelId}') for OpenRouter is ambiguous (missing provider slug like 'openai/model'). Using OpenRouter default: '${defaultOpenRouterModel}'.`);
-          processedModelId = defaultOpenRouterModel; // Safer to default if format is wrong
-      }
-      break;
+  const providerConfig = llmConfigService.getProviderConfig(providerId as LlmProviderId);
+  if (!providerConfig) {
+    throw new Error(`[LLM Factory] Configuration not found for LLM provider: ${providerId}`);
+  }
 
-    case LlmProviderId.ANTHROPIC:
-        if (processedModelId.includes('/')) { // Strip prefixes like 'openrouter/anthropic/' or 'anthropic/'
-            processedModelId = processedModelId.substring(processedModelId.lastIndexOf('/') + 1);
-        }
-        if (!processedModelId.startsWith('claude-')) {
-            const defaultAnthropicModel = configSvc.getDefaultAnthropicModel();
-            console.warn(`LLM Factory: Model ID '${modelId}' (processed to '${processedModelId}') seems invalid for Anthropic. Using Anthropic default: '${defaultAnthropicModel}'.`);
-            processedModelId = defaultAnthropicModel;
-        }
-        break;
+  let service: ILlmService;
+  switch (providerId) {
+    case LlmProviderId.OPENAI:
+      service = new OpenAiLlmService(providerConfig);
+      break;
+    case LlmProviderId.OPENROUTER:
+      service = new OpenRouterLlmService(providerConfig);
+      break;
+    // case LlmProviderId.ANTHROPIC:
+    //   service = new AnthropicLlmService(providerConfig);
+    //   break;
+    // case LlmProviderId.OLLAMA:
+    //   service = new OllamaLlmService(providerConfig);
+    //   break;
+    default:
+      throw new Error(`[LLM Factory] Unsupported LLM provider: ${providerId}`);
+  }
 
-    case LlmProviderId.OLLAMA:
-        if (processedModelId.includes('/')) { // Strip prefixes e.g. 'ollama/llama3' -> 'llama3'
-            processedModelId = processedModelId.substring(processedModelId.lastIndexOf('/') + 1);
-        }
-        // Ollama model names can be simple like 'llama3' or 'mistral:7b'. No extensive validation here, provider will handle.
-        break;
-  }
-  console.log(`LLM Factory: Final processed model ID for provider '${targetProviderId}' is '${processedModelId}' (from original '${modelId}')`);
-  return processedModelId;
+  serviceCache.set(providerId, service);
+  console.log(`[LLM Factory] Service for provider "${providerId}" initialized and cached.`);
+  return service;
 }
 
 /**
- * Determines the best provider and processed model ID for a given request.
- * @param {string} requestedModelId - The model ID from the request.
- * @param {LlmConfigService} configSvc - The configuration service.
- * @param {LlmProviderId} [preferredProviderIdFromEnv] - An optional preferred provider from .env.
- * @returns {{ providerId: LlmProviderId; modelId: string }}
- * @throws {Error} If no suitable provider can be found.
- */
-function selectProviderAndModel(
-  requestedModelId: string,
-  configSvc: LlmConfigService,
-  preferredProviderIdFromEnv?: LlmProviderId
-): { providerId: LlmProviderId; modelId: string } {
-  console.log(`LLM Factory: Selecting provider for requestedModelId='${requestedModelId}', preferredProviderIdFromEnv='${preferredProviderIdFromEnv || 'None'}'`);
-
-  if (preferredProviderIdFromEnv && configSvc.isProviderAvailable(preferredProviderIdFromEnv)) {
-    const modelForService = processModelIdForProvider(requestedModelId, preferredProviderIdFromEnv, configSvc);
-    console.log(`LLM Factory: Selected provider via preferredProviderIdFromEnv: '${preferredProviderIdFromEnv}', Processed Model: '${modelForService}'.`);
-    return { providerId: preferredProviderIdFromEnv, modelId: modelForService };
-  }
-
-  const extractedProvider = extractProviderFromModelId(requestedModelId);
-  if (extractedProvider && configSvc.isProviderAvailable(extractedProvider)) {
-    const modelForService = processModelIdForProvider(requestedModelId, extractedProvider, configSvc);
-    console.log(`LLM Factory: Selected provider via extractedProvider from modelId: '${extractedProvider}', Processed Model: '${modelForService}'.`);
-    return { providerId: extractedProvider, modelId: modelForService };
-  }
-
-  const { providerId: defaultSystemProvider, modelId: defaultSystemModel } = configSvc.getDefaultProviderAndModel();
-  if (configSvc.isProviderAvailable(defaultSystemProvider)) {
-      // Use requestedModelId if it's a simple name, otherwise use the defaultSystemModel (which might be provider-prefixed)
-      const modelNameToProcess = !requestedModelId.includes('/') ? requestedModelId : defaultSystemModel;
-      const modelForDefaultProvider = processModelIdForProvider(modelNameToProcess, defaultSystemProvider, configSvc);
-      console.log(`LLM Factory: Selected provider via system default: '${defaultSystemProvider}', Original Requested: '${requestedModelId}', Processed Model (using '${modelNameToProcess}' as base for processing): '${modelForDefaultProvider}'.`);
-      return { providerId: defaultSystemProvider, modelId: modelForDefaultProvider };
-  }
-
-  console.error(`LLM Factory: CRITICAL - Could not select any provider for requestedModelId='${requestedModelId}'. No providers available or match criteria.`);
-  throw new Error('LLM Factory: No suitable LLM provider available for the request. Check configurations and API keys.');
-}
-
-/**
- * Main function to call an LLM with automatic provider selection, model ID processing, and fallback.
- * @param {IChatMessage[]} messages - Array of chat messages.
- * @param {string} requestedModelId - The initially requested model ID (e.g., from mode config).
- * @param {IChatCompletionParams} [params] - Optional LLM parameters.
- * @param {LlmProviderId} [routingProviderIdFromEnv] - Preferred provider from environment or routing config.
- * @param {string} [userId] - Optional user ID for logging/tracking.
- * @returns {Promise<ILlmResponse>} The LLM's response.
- * @throws {Error} If the primary and fallback attempts fail, or no providers are available.
- */
+ * Unified function to make a chat completion request to an LLM.
+ * It selects the appropriate service based on providerId or default configuration.
+ * Handles cost tracking for the LLM call.
+ *
+ * @param {IChatMessage[]} messages - Array of messages for the chat completion.
+ * @param {string} [modelId] - Specific model ID to use. If not provided, uses default for the chosen provider.
+ * @param {IChatCompletionParams} [params] - Optional parameters for the completion (temperature, max_tokens, tools, etc.).
+ * @param {LlmProviderId | string} [providerId] - Specific provider to use. If not provided, uses default from config.
+ * @param {string} [userIdForCostTracking='system_user_llm_factory'] - User ID for cost tracking.
+ * @returns {Promise<ILlmResponse>} The LLM's response.
+ * @throws {Error} If LLM call fails or configuration is missing.
+ */
 export async function callLlm(
-  messages: IChatMessage[],
-  requestedModelId: string,
-  params?: IChatCompletionParams,
-  routingProviderIdFromEnv?: LlmProviderId,
-  userId?: string
+  messages: IChatMessage[],
+  modelId?: string,
+  params?: IChatCompletionParams,
+  providerId?: LlmProviderId | string,
+  userIdForCostTracking: string = 'system_user_llm_factory'
 ): Promise<ILlmResponse> {
-  if (!configServiceInstance || llmServices.size === 0) {
-    console.warn("LLM Factory: Config service not initialized or no LLM services loaded. Attempting re-initialization...");
-    initializeLlmServices();
-    if (!configServiceInstance || llmServices.size === 0) {
-        console.error("LLM Factory: CRITICAL - LlmConfigService or LLM services still not available after re-initialization attempt. LLM calls will fail.");
-        throw new Error("LLM Factory critical error: LLM services or configuration not available.");
-    }
-  }
+  if (!llmConfigService) {
+    console.error("[LLM Factory] LlmConfigService not initialized. Call initializeLlmServices() first.");
+    // Attempt to initialize it on the fly if called before explicit init (e.g. in tests or scripts)
+    // This is a fallback, proper app startup should call initializeLlmServices.
+    await initializeLlmServices();
+    if (!llmConfigService) { // Check again after attempt
+        throw new Error("[LLM Factory] Critical: LlmConfigService failed to initialize on demand.");
+    }
+    console.warn("[LLM Factory] LlmConfigService was initialized on-demand by callLlm. Ensure initializeLlmServices() is part of your application's startup sequence.");
+  }
 
-  console.log(`LLM Factory: callLlm invoked. User: ${userId || 'N/A'}, Requested Model: '${requestedModelId}', Env Routing Provider: '${routingProviderIdFromEnv || 'None'}'`);
+  let effectiveProviderId: LlmProviderId | string;
+  let effectiveModelId: string;
 
-  let primaryAttempt: { providerId: LlmProviderId; modelId: string };
-  try {
-    primaryAttempt = selectProviderAndModel(requestedModelId, configServiceInstance, routingProviderIdFromEnv);
-  } catch (selectionError: any) {
-    console.error(`LLM Factory: Error selecting provider for primary attempt: ${selectionError.message}`);
-    throw selectionError;
-  }
+  if (providerId) {
+    effectiveProviderId = providerId;
+    const serviceInstance = getLlmService(effectiveProviderId); // Ensures provider is valid
+    effectiveModelId = modelId || llmConfigService.getProviderConfig(effectiveProviderId as LlmProviderId)?.defaultModel || '';
+    if (!effectiveModelId) {
+        throw new Error(`[LLM Factory] No model ID provided and no default model configured for provider: ${effectiveProviderId}`);
+    }
+    // If modelId is prefixed (e.g., "openai/gpt-4o") and providerId is OpenRouter, that's fine.
+    // If modelId is prefixed and providerId is specific (e.g., OpenAI), the service should handle stripping the prefix.
+  } else if (modelId && modelId.includes('/')) {
+    // Model ID has a provider prefix, e.g., "openai/gpt-4o-mini" or "anthropic/claude-3-opus"
+    const [inferredProvider, ...modelNameParts] = modelId.split('/');
+    const inferredProviderId = inferredProvider.toLowerCase() as LlmProviderId;
 
-  const service = llmServices.get(primaryAttempt.providerId);
-  if (!service) {
-    console.error(`LLM Factory: Service for selected primary provider '${primaryAttempt.providerId}' not found. This indicates an initialization mismatch.`);
-    throw new Error(`LLM service for provider '${primaryAttempt.providerId}' is not initialized or available.`);
-  }
-
-  console.log(`LLM Factory: Primary LLM Call - Provider: '${primaryAttempt.providerId}', Model: '${primaryAttempt.modelId}'`);
-  try {
-    const response = await service.generateChatCompletion(messages, primaryAttempt.modelId, params);
-    console.log(`LLM Factory: Successfully received response from ${primaryAttempt.providerId} using model ${response.model}.`);
-    return response;
-  } catch (serviceError: any) {
-    console.warn(`LLM Factory: Primary call with Provider '${primaryAttempt.providerId}', Model '${primaryAttempt.modelId}' FAILED. Error: ${serviceError.message}`);
-
-    let fallbackProviderIdToTry: LlmProviderId | undefined;
-    const configuredFallback = configServiceInstance.getFallbackProviderId();
-
-    if (configuredFallback && configuredFallback !== primaryAttempt.providerId && llmServices.has(configuredFallback)) {
-      fallbackProviderIdToTry = configuredFallback;
-      console.log(`LLM Factory: Specific fallback provider configured: '${fallbackProviderIdToTry}'`);
-    } else {
-      // Auto-toggle logic if no specific different fallback is configured or primary was the configured fallback
-      if (primaryAttempt.providerId === LlmProviderId.OPENROUTER && llmServices.has(LlmProviderId.OPENAI)) {
-        fallbackProviderIdToTry = LlmProviderId.OPENAI;
-      } else if (primaryAttempt.providerId === LlmProviderId.OPENAI && llmServices.has(LlmProviderId.OPENROUTER)) {
-        fallbackProviderIdToTry = LlmProviderId.OPENROUTER;
-      }
-      // Add more auto-toggle pairs (e.g., Anthropic <-> OpenRouter if Anthropic is via OpenRouter or direct)
-      if (fallbackProviderIdToTry) {
-        console.log(`LLM Factory: Auto-selected fallback provider: '${fallbackProviderIdToTry}'`);
+    if (llmConfigService.isProviderAvailable(inferredProviderId)) {
+      effectiveProviderId = inferredProviderId;
+      effectiveModelId = modelNameParts.join('/'); // The actual model name for that provider
+      // If the inferredProviderId is 'openrouter', then effectiveModelId should remain prefixed for OpenRouter service.
+      // The specific services (OpenAiLlmService, etc.) will handle if they need to strip their own prefix.
+      // For OpenRouterLlmService, it often expects the prefix.
+      if (effectiveProviderId === LlmProviderId.OPENROUTER) {
+        effectiveModelId = modelId; // Pass the full prefixed model to OpenRouter
       }
-    }
 
-    if (fallbackProviderIdToTry) {
-      const fallbackService = llmServices.get(fallbackProviderIdToTry);
-      if (fallbackService) {
-        console.log(`LLM Factory: Attempting fallback to Provider '${fallbackProviderIdToTry}'.`);
-        const fallbackModelForService = processModelIdForProvider(requestedModelId, fallbackProviderIdToTry, configServiceInstance);
-        
-        console.log(`LLM Factory: Fallback LLM Call - Provider: '${fallbackProviderIdToTry}', Model: '${fallbackModelForService}'`);
-        try {
-          const fallbackResponse = await fallbackService.generateChatCompletion(messages, fallbackModelForService, params);
-          console.log(`LLM Factory: Successfully received response from fallback provider ${fallbackProviderIdToTry} using model ${fallbackResponse.model}.`);
-          return fallbackResponse;
-        } catch (fallbackError: any) {
-          console.error(`LLM Factory: Fallback call to Provider '${fallbackProviderIdToTry}', Model '${fallbackModelForService}' ALSO FAILED. Error: ${fallbackError.message}`);
-          // Do not re-throw fallbackError immediately, prefer original error unless only fallback was attempted.
-          // But since primary already failed, now throw the fallbackError.
-          throw fallbackError;
-        }
-      } else {
-         console.error(`LLM Factory: Fallback provider '${fallbackProviderIdToTry}' was selected, but its service is not available/initialized. Cannot attempt fallback.`);
-      }
-    } else {
-      console.warn(`LLM Factory: No suitable or available fallback provider found after primary provider '${primaryAttempt.providerId}' failed.`);
-    }
-    throw serviceError; // Re-throw the original serviceError if no fallback was successful
-  }
+    } else {
+      console.warn(`[LLM Factory] Provider inferred from modelId "${modelId}" (${inferredProviderId}) is not available. Falling back to default provider.`);
+      const defaultChoice = llmConfigService.getDefaultProviderAndModel();
+      effectiveProviderId = defaultChoice.providerId;
+      effectiveModelId = modelId; // Pass original modelId, let default provider sort it out or fail
+    }
+  } else {
+    // No providerId, and modelId has no prefix (or modelId is also undefined)
+    const defaultChoice = llmConfigService.getDefaultProviderAndModel();
+    effectiveProviderId = defaultChoice.providerId;
+    effectiveModelId = modelId || defaultChoice.modelId;
+  }
+
+  if (!effectiveModelId) {
+    throw new Error(`[LLM Factory] Could not resolve a model ID for provider ${effectiveProviderId}.`);
+  }
+  
+  const service = getLlmService(effectiveProviderId);
+  
+  // If the service is NOT OpenRouter and the effectiveModelId STILL has a prefix matching this service's providerId,
+  // the service's mapToProviderModelId method should handle it.
+  // Example: service is OpenAiLlmService, effectiveModelId is "openai/gpt-4o". OpenAiLlmService.mapToProviderModelId will strip "openai/".
+  // If service is OpenRouterLlmService, effectiveModelId is "openai/gpt-4o". OpenRouterLlmService.mapToProviderModelId expects this.
+
+  console.log(`[LLM Factory] Calling LLM via provider: "${effectiveProviderId}", model: "${effectiveModelId}"`);
+
+  try {
+    // Propagate tool parameters if they exist in `params`
+    const completionParams: IChatCompletionParams = {
+      ...params,
+      tools: params?.tools,
+      tool_choice: params?.tool_choice,
+    };
+
+    const response = await service.generateChatCompletion(messages, effectiveModelId, completionParams);
+
+    // Cost Tracking
+    const modelPriceInfo = getModelPrice(response.model || effectiveModelId);
+    if (response.usage && modelPriceInfo) {
+      const cost = ( (response.usage.prompt_tokens || 0) / 1000) * modelPriceInfo.inputCostPer1K +
+                   ( (response.usage.completion_tokens || 0) / 1000) * modelPriceInfo.outputCostPer1K;
+      CostService.trackCost(
+        userIdForCostTracking,
+        'llm',
+        cost,
+        response.model || effectiveModelId,
+        response.usage.prompt_tokens || 0, 'tokens',
+        response.usage.completion_tokens || 0, 'tokens',
+        { provider: effectiveProviderId, stopReason: response.stopReason, hasToolCalls: !!response.toolCalls?.length }
+      );
+    } else if (response.usage) {
+        console.warn(`[LLM Factory] Usage reported by LLM for model ${response.model || effectiveModelId}, but no pricing info found. Cost not tracked for this call.`);
+    }
+
+    return response;
+  } catch (error: any) {
+    console.error(`[LLM Factory] Error during callLlm with provider ${effectiveProviderId}, model ${effectiveModelId}: ${error.message}`, error.stack);
+    // Try fallback if configured and error is likely retryable (e.g., not auth error)
+    // Basic check, can be more sophisticated:
+    const isRetryableError = !(error.response?.status === 401 || error.response?.status === 403 || error.response?.status === 400);
+
+    if (isRetryableError) {
+        const fallbackProviderId = llmConfigService.getFallbackProviderId();
+        if (fallbackProviderId && fallbackProviderId !== effectiveProviderId) {
+            console.warn(`[LLM Factory] Attempting fallback to provider: ${fallbackProviderId} due to error with ${effectiveProviderId}.`);
+            try {
+                // Important: Decide if you use the same modelId or a default for the fallback provider
+                const fallbackService = getLlmService(fallbackProviderId);
+                const fallbackModelId = modelId || llmConfigService.getProviderConfig(fallbackProviderId)?.defaultModel || effectiveModelId; // Re-evaluate model for fallback
+                
+                const fallbackResponse = await fallbackService.generateChatCompletion(messages, fallbackModelId, params);
+                
+                // Cost tracking for fallback call
+                const fallbackModelPriceInfo = getModelPrice(fallbackResponse.model || fallbackModelId);
+                if (fallbackResponse.usage && fallbackModelPriceInfo) {
+                    const fallbackCost = ((fallbackResponse.usage.prompt_tokens || 0) / 1000) * fallbackModelPriceInfo.inputCostPer1K +
+                                       ((fallbackResponse.usage.completion_tokens || 0) / 1000) * fallbackModelPriceInfo.outputCostPer1K;
+                    CostService.trackCost(
+                        userIdForCostTracking,
+                        'llm_fallback', // Distinguish fallback cost
+                        fallbackCost,
+                        fallbackResponse.model || fallbackModelId,
+                        fallbackResponse.usage.prompt_tokens || 0, 'tokens',
+                        fallbackResponse.usage.completion_tokens || 0, 'tokens',
+                        { originalProvider: effectiveProviderId, provider: fallbackProviderId, stopReason: fallbackResponse.stopReason, hasToolCalls: !!fallbackResponse.toolCalls?.length }
+                    );
+                }
+                return fallbackResponse;
+            } catch (fallbackError: any) {
+                console.error(`[LLM Factory] Fallback LLM call also failed for provider ${fallbackProviderId}: ${fallbackError.message}`);
+                // Throw original error or a combined error
+                throw error; // Re-throw original error after fallback failure
+            }
+        }
+    }
+    throw error; // Re-throw error if not retryable or no fallback
+  }
 }

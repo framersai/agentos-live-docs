@@ -123,7 +123,7 @@ const downloadLogs = () => {
   max-height: 300px; /* Or whatever max height is desired */
 }
 .log-header {
-  @apply flex items-center justify-between p-2 sm:p-3 border-b border-slate-700 bg-slate-850 rounded-t-lg sticky top-0 z-10;
+  @apply flex items-center justify-between p-2 sm:p-3 border-b border-slate-700 bg-slate-950 rounded-t-lg sticky top-0 z-10;
 }
 .log-title {
   @apply text-sm font-semibold text-slate-200;

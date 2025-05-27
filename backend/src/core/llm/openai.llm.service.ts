@@ -4,7 +4,7 @@
  * @file OpenAI LLM Service Implementation.
  * @description Provides an implementation of the ILlmService interface for interacting
  * with OpenAI's API. It uses the official OpenAI Node.js library.
- * @version 1.0.0
+ * @version 1.1.0 - Added support for tool/function calling.
  */
 
 import OpenAI from 'openai';
@@ -15,6 +15,8 @@ import {
   ILlmService,
   ILlmProviderConfig,
   ILlmUsage,
+  ILlmTool,
+  ILlmToolCall,
 } from './llm.interfaces';
 import { LlmProviderId } from './llm.config.service';
 
@@ -47,7 +49,7 @@ export class OpenAiLlmService implements ILlmService {
    *
    * @param {IChatMessage[]} messages - The array of chat messages.
    * @param {string} modelId - The OpenAI model ID (e.g., "gpt-4o-mini").
-   * @param {IChatCompletionParams} [params] - Optional parameters for the completion.
+   * @param {IChatCompletionParams} [params] - Optional parameters for the completion, including tools.
    * @returns {Promise<ILlmResponse>} A promise that resolves to the LLM response.
    * @throws {Error} If the API call fails.
    */
@@ -56,26 +58,29 @@ export class OpenAiLlmService implements ILlmService {
     modelId: string,
     params?: IChatCompletionParams
   ): Promise<ILlmResponse> {
-    const MappedModelId = this.mapToProviderModelId(modelId);
+    const mappedModelId = this.mapToProviderModelId(modelId);
     try {
       const requestPayload: OpenAI.Chat.Completions.ChatCompletionCreateParamsNonStreaming = {
-        model: MappedModelId,
+        model: mappedModelId,
         messages: messages as OpenAI.Chat.ChatCompletionMessageParam[], // Cast to OpenAI's type
         temperature: params?.temperature ?? parseFloat(process.env.LLM_DEFAULT_TEMPERATURE || '0.7'),
         max_tokens: params?.max_tokens ?? parseInt(process.env.LLM_DEFAULT_MAX_TOKENS || '2048'),
         top_p: params?.top_p,
         stop: params?.stop,
         user: params?.user,
+        tools: params?.tools as OpenAI.Chat.Completions.ChatCompletionTool[] | undefined, // Pass tools
+        tool_choice: params?.tool_choice as OpenAI.Chat.Completions.ChatCompletionToolChoiceOption | undefined, // Pass tool_choice
       };
 
       // Remove undefined optional parameters to avoid API errors
       Object.keys(requestPayload).forEach(key => {
-        if (requestPayload[key as keyof typeof requestPayload] === undefined) {
-          delete requestPayload[key as keyof typeof requestPayload];
+        const typedKey = key as keyof typeof requestPayload;
+        if (requestPayload[typedKey] === undefined) {
+          delete requestPayload[typedKey];
         }
       });
       
-      console.log(`OpenAiLlmService: Calling OpenAI with model: ${MappedModelId}`);
+      console.log(`OpenAiLlmService: Calling OpenAI with model: ${mappedModelId}`);
       const response = await this.openai.chat.completions.create(requestPayload);
 
       const usage = response.usage
@@ -86,21 +91,35 @@ export class OpenAiLlmService implements ILlmService {
           }
         : undefined;
 
+      const choice = response.choices[0];
+      let toolCalls: ILlmToolCall[] | undefined = undefined;
+
+      if (choice?.message?.tool_calls) {
+        toolCalls = choice.message.tool_calls.map(tc => ({
+          id: tc.id,
+          type: tc.type,
+          function: {
+            name: tc.function.name,
+            arguments: tc.function.arguments,
+          },
+        }));
+      }
+
       return {
-        text: response.choices[0]?.message?.content ?? null,
-        model: response.model || MappedModelId, // Use model from response if available
+        text: choice?.message?.content ?? null,
+        model: response.model || mappedModelId,
         usage,
         id: response.id,
-        stopReason: response.choices[0]?.finish_reason,
+        stopReason: choice?.finish_reason,
+        toolCalls,
         providerResponse: response,
       };
     } catch (error: any) {
-      console.error(`OpenAiLlmService: Error calling OpenAI API for model ${MappedModelId}:`, error.message);
+      console.error(`OpenAiLlmService: Error calling OpenAI API for model ${mappedModelId}:`, error.message);
       if (error.response?.data) {
         console.error('OpenAI API Error Details:', JSON.stringify(error.response.data, null, 2));
       }
-      // Re-throw a more structured error or handle it based on application needs
-      throw new Error(`OpenAI API request failed for model ${MappedModelId}: ${error.message}`);
+      throw new Error(`OpenAI API request failed for model ${mappedModelId}: ${error.message}`);
     }
   }
 

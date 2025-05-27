@@ -274,7 +274,8 @@ export class RateLimiter {
         }
         next();
       } catch (error: any) {
-        console.error('RateLimiter: Error during rate limiting process:', error.message, error.stack);
+        // Ignore error redis is not working or available for rate limiting
+        // console.error('RateLimiter: Error during rate limiting process:', error.message, error.stack);
         next(); // Fail open
       }
     };
