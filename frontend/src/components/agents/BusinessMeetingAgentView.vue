@@ -109,7 +109,7 @@ const handleNewUserInput = async (text: string) => {
     let finalSystemPrompt = currentAgentSystemPrompt.value
       .replace(/{{USER_QUERY_TOPIC_OR_TITLE_SUGGESTION}}/g, `Summary of Provided Notes`)
       .replace(/{{USER_QUERY}}/g, text) 
-      .replace(/{{GENERATE_DIAGRAM}}/g, (props.agentConfig.canGenerateDiagrams && voiceSettingsManager.settings.generateDiagrams).toString())
+      .replace(/{{GENERATE_DIAGRAM}}/g, (props.agentConfig.capabilities?.canGenerateDiagrams && voiceSettingsManager.settings.generateDiagrams).toString())
       .replace(/{{AGENT_CONTEXT_JSON}}/g, JSON.stringify(agentStore.currentAgentContext || {}))
       .replace(/{{ADDITIONAL_INSTRUCTIONS}}/g, 'Ensure the output strictly follows the specified Markdown format for meeting summaries, using headings for sections.');
     
@@ -134,7 +134,7 @@ const handleNewUserInput = async (text: string) => {
       processedHistory: processedHistoryFromClient,
       mode: props.agentConfig.id,
       language: voiceSettingsManager.settings.speechLanguage,
-      generateDiagram: props.agentConfig.canGenerateDiagrams && voiceSettingsManager.settings.generateDiagrams,
+      generateDiagram: props.agentConfig.capabilities?.canGenerateDiagrams && voiceSettingsManager.settings.generateDiagrams,
       userId: 'frontend_user_meeting',
       conversationId: chatStore.getCurrentConversationId(props.agentId),
       systemPromptOverride: finalSystemPrompt,

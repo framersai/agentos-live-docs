@@ -3,137 +3,188 @@
  * @file _chat-window.scss
  * @description Styles for the ChatWindow.vue component, displaying chat messages,
  * welcome placeholder, and loading indicators with "Ephemeral Harmony" styling.
- * @version 1.0.2 - Fully switched to button mixins.
+ * @version 2.0.1 - Enhanced holographic feel, typography, and loading state.
  */
 
 @use '../abstracts/variables' as var;
-@use '../abstracts/mixins' as commonMixins; // General mixins from _mixins.scss
-@use './buttons' as buttonsFile; // To access the button mixins from _buttons.scss
+@use '../abstracts/mixins' as mixins;
+@use './buttons' as buttonsFile; // For prompt tag styling
 
 .chat-window-container-ephemeral {
   flex-grow: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: var.$spacing-md;
+  padding: var.$spacing-lg var.$spacing-xl; // More generous padding
   display: flex;
-  flex-direction: column;
+  flex-direction: column; // Ensure wrapper itself can manage direct children if any outside messages-wrapper
   position: relative;
+  background-color: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.3); // Base transparency
 
-  @include commonMixins.custom-scrollbar(
-    '--color-accent-secondary', // $thumb-color-var-prefix
-    0.45,                       // $thumb-base-alpha
-    0.65,                       // $thumb-hover-alpha
-    hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.1) // $track-color
+  // Subtle animated holographic grid background for the chat window itself
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: var(--bg-holo-grid-pattern); // From theme via _global.scss or _theme-engine.scss
+    background-size: var(--bg-holo-grid-size, 60px) var(--bg-holo-grid-size, 60px); // Larger grid
+    opacity: var(--bg-holo-grid-opacity, 0.025); // Very subtle
+    animation: holoGridScroll var.$duration-pulse-long * 10 linear infinite alternate; // Extremely slow scroll
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  @include mixins.custom-scrollbar(
+    '--color-accent-interactive',
+    0.35, // Base alpha
+    0.55, // Hover alpha
+    '--color-bg-primary', // Track color prefix
+    0.1,  // Track alpha
+    7px   // Width - slightly slimmer
   );
 }
 
 .chat-messages-wrapper-ephemeral {
   display: flex;
   flex-direction: column;
-  gap: var.$spacing-sm;
+  gap: var.$spacing-lg; // Increased gap for better message separation
   width: 100%;
+  padding-bottom: var.$spacing-md; // Space at the very end
+  position: relative; // For z-index context if needed
+  z-index: 1; // Above the ::before pseudo-element
 }
 
 .welcome-placeholder-ephemeral {
   text-align: center;
-  margin: auto;
-  padding: var.$spacing-lg;
-  max-width: 600px;
+  margin: auto; // Vertically and horizontally center if wrapper is flex
+  padding: var.$spacing-2xl var.$spacing-lg; // Ample padding
+  max-width: 700px;
   color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+  opacity: 0;
+  animation: fadeIn 0.9s var.$ease-out-expo 0.2s forwards; // Slightly delayed, smoother fade-in
+  border-radius: var.$radius-2xl;
+  @include mixins.glassmorphic-pane(
+    hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.4),
+    hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.2),
+    calc(var(--blur-glass) * 0.8), // Adjusted blur
+    var(--shadow-depth-md)
+  );
 
-  .welcome-logo {
-    width: 60px;
-    height: 60px;
-    margin: 0 auto var.$spacing-lg;
-    opacity: 0.7;
-    animation: subtlePulse 3s var.$ease-in-out-sine infinite;
-    --scale-pulse: 1.05;
-    --opacity-start: 0.6;
-    --opacity-pulse: 0.8;
-    filter: drop-shadow(0 0 8px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.3));
+
+  .welcome-logo-ephemeral {
+    width: 80px; // Larger, more impactful logo
+    height: 80px;
+    margin: 0 auto var.$spacing-xl;
+    opacity: 0.85;
+    animation: breathingEffect 4s var.$ease-in-out-sine infinite; // Use new breathing keyframe
+    --scale-breath: 1.06; // Customize breathing effect
+    --opacity-idle: 0.75;
+    --opacity-breath: 0.95;
+    filter: drop-shadow(0 0 18px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.55));
   }
 
-  .welcome-title {
-    font-family: var(--font-display, var.$font-family-display);
-    font-size: clamp(1.5rem, 1rem + 2vw, 2.25rem);
+  .welcome-title-ephemeral {
+    font-family: var(--font-family-display, var.$font-family-display);
+    font-size: clamp(2rem, 1.5rem + 3vw, 3rem); // Even larger title
     font-weight: 600;
     color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
-    margin-bottom: var.$spacing-sm;
-    @include commonMixins.text-glow('--color-accent-primary', 6px);
+    margin-bottom: var.$spacing-lg; // More space after title
+    letter-spacing: -0.015em; // Refined letter spacing
+    @include mixins.text-glow('--color-accent-primary', 10px, 0.75); // More prominent glow
   }
 
-  .welcome-subtitle {
-    font-size: var.$font-size-base;
-    line-height: 1.7;
-    margin: 0 auto var.$spacing-lg;
-    max-width: 50ch;
+  .welcome-subtitle-ephemeral {
+    font-size: calc(var(--font-size-base) * 1.1); // Larger subtitle
+    line-height: 1.8; // More line height
+    margin: 0 auto var.$spacing-xl;
+    max-width: 60ch;
+    color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), calc(var(--color-text-secondary-l) + 8%));
+    opacity: 0.95;
   }
 
   .example-prompts-grid-ephemeral {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: var.$spacing-sm;
+    gap: var.$spacing-md;
+    margin-top: var.$spacing-lg;
   }
 
   .prompt-tag-ephemeral {
-    @include buttonsFile.btn-secondary; // This composite mixin includes base styles + secondary look
-    @include buttonsFile.btn-xs-modifier; // Apply extra small size modifications
-    // Override padding again if btn-xs-modifier doesn't match desired, or adjust btn-xs-modifier mixin
-    padding: var.$spacing-xs var.$spacing-sm !important;
+    @include buttonsFile.btn;
+    @include mixins.neomorphic-extrude( // More tactile prompt tags
+      hsl(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l)),
+      3px, 6px, // distance, blur
+      var(--shadow-opacity-soft), // opacity CSS var
+      var.$radius-lg, // More rounded
+      var(--shadow-color-h), var(--color-shadow-s), var(--color-shadow-l), // Shadow color CSS vars
+      calc(var(--color-shadow-l) + var(--shadow-highlight-modifier)) // Highlight lightness CSS var
+    );
+    font-size: var.$font-size-sm !important;
+    padding: calc(var.$spacing-xs * 1.1) var.$spacing-md !important; // Adjusted padding
+    color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
     cursor: default;
+    transition: transform 0.2s var.$ease-out-quad, box-shadow 0.2s var.$ease-out-quad;
+    &:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: // Enhanced hover shadow for neomorphic extrude
+        5px 5px 10px hsla(var(--shadow-color-h), var(--color-shadow-s), var(--color-shadow-l), calc(var(--shadow-opacity-soft) * 1.2)),
+        -5px -5px 10px hsla(var(--shadow-color-h), var(--color-shadow-s), calc(var(--color-shadow-l) + var(--shadow-highlight-modifier)), calc(var(--shadow-opacity-soft) * 1.2));
+      color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+    }
   }
 }
 
 .message-item-in-log {
-  // Styles applied to the root of the Message.vue component instance if needed
+  // Message styling is handled by _message.scss
+  // Animation for message entry is also in _message.scss (ephemeralMessageIn)
 }
 
 .loading-indicator-chat-ephemeral {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: var.$spacing-md auto;
-  padding: var.$spacing-sm;
-  width: max-content;
-  border-radius: var.$radius-md;
-  background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.5);
+  margin: var.$spacing-xl auto; // More prominent margin
+  padding: var.$spacing-lg var.$spacing-xl;
+  min-width: 240px;
+  border-radius: var.$radius-xl; // Larger radius
+  @include mixins.glassmorphic-pane(
+    hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.7),
+    hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.3),
+    calc(var(--blur-glass) * 0.8),
+    var(--shadow-depth-md)
+  );
+  box-shadow: 0 0 20px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.15); // Subtle glow around loading indicator
 
   .spinner-dots-ephemeral {
     display: flex;
     align-items: center;
-
     .dot-ephemeral {
-      width: 8px;
-      height: 8px;
-      margin: 0 3px;
-      background-color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+      width: 12px; // Larger, more visible dots
+      height: 12px;
+      margin: 0 5px;
+      background-color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
       border-radius: 100%;
       display: inline-block;
       animation: bounceDelay var.$duration-pulse-medium infinite ease-in-out both;
+      // Holographic touch for dots
+      box-shadow: 0 0 10px 2px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.6),
+                  inset 0 0 3px hsla(var(--color-accent-interactive-h), calc(var(--color-accent-interactive-s) + 10%), calc(var(--color-accent-interactive-l) + 15%), 0.7);
+      filter: brightness(1.1);
 
-      &:nth-child(1) { animation-delay: -0.32s; }
-      &:nth-child(2) { animation-delay: -0.16s; }
+      &.dot-1 { animation-delay: -0.32s; }
+      &.dot-2 { animation-delay: -0.16s; }
+      &.dot-3 { animation-delay: 0s; }
     }
   }
 
-  .loading-text {
-    font-size: var.$font-size-sm;
-    color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+  .loading-text-ephemeral {
+    font-size: var(--font-size-lg); // Larger, clearer loading text
+    color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), calc(var(--color-text-secondary-l) + 5%));
+    margin-left: var.$spacing-lg;
+    letter-spacing: 0.025em;
+    font-weight: 500;
+    @include mixins.text-glow('--color-accent-interactive', 4px, 0.5);
   }
 }
 
-@keyframes bounceDelay {
-  0%, 80%, 100% { transform: scale(0); }
-  40% { transform: scale(1.0); }
-}
-
-// If the error on line 98 was for a hypothetical .chat-window-send-button:
-// This section might not exist in your current _chat-window.scss if it was part of my earlier placeholder.
-// If you have a send button styled here, apply the mixins like this:
-/*
-.chat-window-send-button { // Example selector
-  @include buttonsFile.btn-primary; // Applies base styles and primary look
-  @include buttonsFile.btn-icon-modifier; // Applies icon button modifications
-}
-*/
+// Keyframes (bounceDelay, fadeIn, subtlePulse, breathingEffect, holoGridScroll) should be in _keyframes.scss

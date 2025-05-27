@@ -3,34 +3,48 @@
  * @file _global.scss
  * @description Global styles for html, body, custom scrollbars, focus states,
  * and other site-wide base appearance settings. Utilizes CSS custom properties
- * set by the theme engine.
- * @version 2.1.0 - Corrected focus-ring mixin call.
+ * set by the theme engine. Enhanced for "alive" feel.
+ * @version 3.0.0
  */
 
 @use '../abstracts/variables' as var;
-@use '../abstracts/mixins' as mixins; // This should correctly load the updated _mixins.scss
+@use '../abstracts/mixins' as mixins;
 
 html {
-  font-size: 100%;
+  font-size: 100%; // Base for rem units
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
-  // color-scheme is set by _theme-engine.scss
+  // color-scheme is set by _theme-engine.scss via data-theme
+  // Default to primary background color
+  background-color: hsl(var(--color-bg-primary-h, var.$default-color-bg-primary-h), var(--color-bg-primary-s, var.$default-color-bg-primary-s), var(--color-bg-primary-l, var.$default-color-bg-primary-l));
+  color: hsl(var(--color-text-primary-h, var.$default-color-text-primary-h), var(--color-text-primary-s, var.$default-color-text-primary-s), var(--color-text-primary-l, var.$default-color-text-primary-l));
+  transition: background-color var.$duration-smooth var.$ease-out-quad, color var.$duration-smooth var.$ease-out-quad;
 }
 
 body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  overflow-x: hidden;
+  overflow-x: hidden; // Prevent horizontal scroll from rogue elements
+  font-family: var(--font-family-sans-serif, var.$font-family-sans); // Fallback from SCSS vars
+  font-size: var(--font-size-base, var.$font-size-base-default);
+  line-height: var(--line-height-base, var.$line-height-base-default);
+  letter-spacing: var(--letter-spacing-base, var.$letter-spacing-base-default);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 
-  &::before { // Global subtle noise background
+  // Global subtle noise/pattern background (themeable)
+  &::before {
     content: '';
     position: fixed;
     inset: 0;
     z-index: var.$z-index-negative;
-    background-image: var(--bg-noise-texture, none);
-    opacity: var(--bg-noise-opacity, 0.02);
+    background-image: var(--bg-noise-texture, none); // e.g., url('/assets/noise.png') or a CSS gradient
+    background-size: var(--bg-noise-size, 200px);
+    opacity: var(--bg-noise-opacity, 0.015);
     pointer-events: none;
+    animation: holoGridScroll 60s linear infinite alternate; // Slow scroll for texture
   }
 }
 
@@ -38,93 +52,114 @@ body {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
+  // overflow: hidden; // Handled by .app-layout-ephemeral
 }
 
 // --- Custom Scrollbars (Global Fallback) ---
-// Webkit
+// Webkit-based browsers
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 10px; // Slightly wider for better touch/grab
   height: 10px;
 }
 ::-webkit-scrollbar-track {
-  background-color: hsla(var(--color-bg-secondary-h, 0), var(--color-bg-secondary-s, 0%), var(--color-bg-secondary-l, 0%), 0.15); // Subtle track
+  background-color: hsla(var(--color-bg-secondary-h, var.$default-color-bg-secondary-h), var(--color-bg-secondary-s, var.$default-color-bg-secondary-s), var(--color-bg-secondary-l, var.$default-color-bg-secondary-l), 0.2);
   border-radius: var.$radius-sm;
 }
 ::-webkit-scrollbar-thumb {
-  background-color: hsla(var(--color-accent-primary-h, 260), var(--color-accent-primary-s, 75%), var(--color-accent-primary-l, 60%), 0.45);
+  background-color: hsla(var(--color-accent-interactive-h, var.$default-color-accent-interactive-h), var(--color-accent-interactive-s, var.$default-color-accent-interactive-s), var(--color-accent-interactive-l, var.$default-color-accent-interactive-l), 0.5);
   border-radius: var.$radius-full;
-  border: 2px solid transparent;
-  background-clip: content-box;
+  border: 2px solid hsla(var(--color-bg-secondary-h, var.$default-color-bg-secondary-h), var(--color-bg-secondary-s, var.$default-color-bg-secondary-s), var(--color-bg-secondary-l, var.$default-color-bg-secondary-l), 0.2); // Creates inset effect
+  background-clip: padding-box; // Ensures border doesn't overlap thumb color
   transition: background-color var.$duration-quick var.$ease-out-quad;
   &:hover {
-    background-color: hsla(var(--color-accent-primary-h, 260), var(--color-accent-primary-s, 75%), var(--color-accent-primary-l, 60%), 0.65);
+    background-color: hsla(var(--color-accent-interactive-h, var.$default-color-accent-interactive-h), var(--color-accent-interactive-s, var.$default-color-accent-interactive-s), var(--color-accent-interactive-l, var.$default-color-accent-interactive-l), 0.7);
   }
 }
 // Firefox
 * {
-  scrollbar-width: thin;
-  scrollbar-color: hsla(var(--color-accent-primary-h, 260), var(--color-accent-primary-s, 75%), var(--color-accent-primary-l, 60%), 0.45)
-                   hsla(var(--color-bg-secondary-h, 0), var(--color-bg-secondary-s, 0%), var(--color-bg-secondary-l, 0%), 0.15);
+  scrollbar-width: auto; // Or 'thin'
+  scrollbar-color: hsla(var(--color-accent-interactive-h, var.$default-color-accent-interactive-h), var(--color-accent-interactive-s, var.$default-color-accent-interactive-s), var(--color-accent-interactive-l, var.$default-color-accent-interactive-l), 0.5)
+                   hsla(var(--color-bg-secondary-h, var.$default-color-bg-secondary-h), var(--color-bg-secondary-s, var.$default-color-bg-secondary-s), var(--color-bg-secondary-l, var.$default-color-bg-secondary-l), 0.2);
 }
 
 // --- Global Focus States ---
+// Using Tailwind's focus-visible utilities is often preferred for component-level focus,
+// but a global fallback can be set.
 :focus-visible {
   @include mixins.focus-ring(
-    // Parameters for the focus-ring mixin:
-    // $base-bg-var-name (CSS var for background under the offset space)
-    // $ring-accent-var-name (CSS var prefix for the ring color - H, S, L components)
-    // $offset-width (optional, defaults to 2px in mixin)
-    // $ring-thickness (optional, defaults to 2px in mixin)
-    // $ring-opacity (optional, defaults to 0.7 in mixin)
-    $base-bg-var-name: '--color-bg-primary',     // e.g., uses var(--color-bg-primary) for the space
-    $ring-accent-var-name: '--color-accent-primary' // e.g., uses var(--color-accent-primary-h), -s, -l for ring color
+    '--color-bg-primary', // Background under the offset space
+    '--color-accent-interactive', // Ring color
+    2px, // $offset-width
+    2px, // $ring-thickness
+    0.8 // $ring-opacity - more visible
   );
 }
 
-// --- Skip Link ---
-.skip-link-ephemeral { // Ensure class name consistency if used from App.vue
+// --- Skip Link --- (from App.vue styles, themed)
+.skip-link-ephemeral {
   position: absolute;
   left: -9999px;
-  top: var.$spacing-sm;
+  top: var.$spacing-md;
   z-index: var.$z-index-dev-tools;
-  padding: var.$spacing-sm var.$spacing-md;
+  padding: var.$spacing-sm var.$spacing-lg;
   border-radius: var.$radius-md;
   font-weight: 600;
   text-decoration: none;
-  background-color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
-  color: hsl(var(--color-text-on-primary-h), var(--color-text-on-primary-s), var(--color-text-on-primary-l));
-  box-shadow: var(--shadow-depth-lg);
-  transition: transform 0.2s var.$ease-out-quad, opacity 0.2s var.$ease-out-quad;
-  transform: translateY(-150%); // Start further off-screen
+  background-color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
+  color: hsl(var(--color-text-on-primary-h), var(--color-text-on-primary-s), var(--color-text-on-primary-l)); // Assuming accent-interactive uses on-primary for text
+  box-shadow: var(--shadow-depth-lg, var.$scss-box-shadow-lg);
+  transition: transform 0.25s var.$ease-out-expo, opacity 0.2s var.$ease-out-quad;
+  transform: translateY(-120%);
   opacity: 0;
 
   &:focus,
-  &:active {
+  &:active { // Combined for consistency on focus
     left: var.$spacing-md;
     transform: translateY(0);
     opacity: 1;
   }
 }
 
-// --- Global Transition Utility ---
+// --- Global Transition Utility --- (can be removed if Tailwind transitions are always used)
 .transition-default {
   transition-property: color, background-color, border-color, box-shadow, opacity, transform, filter;
   transition-duration: var(--duration-smooth, var.$duration-smooth);
   transition-timing-function: var(--ease-out-quad, var.$ease-out-quad);
 }
 
-// --- Background Patterns (CSS Vars defined in themes) ---
+// --- Holographic Grid Overlay (used by App.vue or layouts) ---
 .fixed-holo-grid-overlay {
   position: fixed;
   inset: 0;
   width: 100%;
   height: 100%;
-  background-image: var(--bg-holo-grid-pattern); // Theme variable
-  background-size: var(--bg-holo-grid-size, 40px) var(--bg-holo-grid-size, 40px); // Theme variable
+  background-image: var(--bg-holo-grid-pattern);
+  background-size: var(--bg-holo-grid-size, 50px) var(--bg-holo-grid-size, 50px);
   pointer-events: none;
-  z-index: var.$z-index-negative;
-  opacity: var(--bg-holo-grid-opacity, 0.04); // Theme variable
-  animation: holoGridScroll var.$duration-pulse-long * 6 linear infinite; // Very slow scroll
+  z-index: calc(var.$z-index-negative + 1); // Just above the body::before noise
+  opacity: var(--bg-holo-grid-opacity, 0.03);
+  animation: holoGridScroll var.$duration-pulse-long * 8 linear infinite alternate; // Very slow, alternating scroll
 }
 
-// Ensure holoGridScroll keyframes are in _keyframes.scss (they were added previously)
+// High contrast selection for better accessibility
+::selection {
+  background-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.8);
+  color: hsl(var(--color-text-on-primary-h), var(--color-text-on-primary-s), var(--color-text-on-primary-l));
+  text-shadow: none;
+}
+
+// General link styling if not handled by Tailwind's prose or component-specific styles
+a {
+  color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
+  text-decoration: none;
+  transition: color var.$duration-quick ease-out, text-decoration-color var.$duration-quick ease-out;
+
+  &:hover,
+  &:focus-visible {
+    // Darken/saturate the interactive accent color slightly on hover
+    color: hsl(var(--color-accent-interactive-h), calc(var(--color-accent-interactive-s) + 5%), calc(var(--color-accent-interactive-l) - 8%));
+    text-decoration: underline;
+    text-decoration-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.5);
+    text-underline-offset: 3px; // Improve underline appearance
+  }
+}

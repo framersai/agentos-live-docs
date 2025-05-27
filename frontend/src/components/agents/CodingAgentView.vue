@@ -101,7 +101,7 @@ const handleNewUserInput = async (text: string): Promise<void> => {
     let finalSystemPrompt = currentAgentSystemPrompt.value
       .replace(/{{LANGUAGE}}/g, preferredLang)
       .replace(/{{USER_QUERY}}/g, text) 
-      .replace(/{{GENERATE_DIAGRAM}}/g, (props.agentConfig.canGenerateDiagrams && voiceSettingsManager.settings.generateDiagrams).toString())
+      .replace(/{{GENERATE_DIAGRAM}}/g, (props.agentConfig.capabilities?.canGenerateDiagrams && voiceSettingsManager.settings.generateDiagrams).toString())
       .replace(/{{AGENT_CONTEXT_JSON}}/g, JSON.stringify(agentStore.currentAgentContext || {}))
       .replace(/{{ADDITIONAL_INSTRUCTIONS}}/g, 'You will receive a ContextBundle. Base your coding assistance response on it. Structure explanations for slides using Markdown headings or ---SLIDE_BREAK---. Ensure code is in fenced blocks. Use tools like `generateCodeSnippet` or `explainCodeSegment` if the user intent matches.');
       
@@ -126,7 +126,7 @@ const handleNewUserInput = async (text: string): Promise<void> => {
       processedHistory: processedHistoryFromClient,
       mode: props.agentConfig.id,
       language: preferredLang,
-      generateDiagram: props.agentConfig.canGenerateDiagrams && voiceSettingsManager.settings.generateDiagrams,
+      generateDiagram: props.agentConfig.capabilities?.canGenerateDiagrams && voiceSettingsManager.settings.generateDiagrams,
       userId: 'frontend_user_coding',
       conversationId: chatStore.getCurrentConversationId(props.agentId),
       systemPromptOverride: finalSystemPrompt,

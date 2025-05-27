@@ -2,218 +2,307 @@
 /**
  * @file _voice-controls-dropdown.scss
  * @description Styles for the VoiceControlsDropdown component, Ephemeral Harmony theme.
- * @version 1.0.2 - Corrected shadow variable usage in glassmorphic-pane.
+ * Enhanced for holographic/neomorphic feel and improved interactivity.
+ * @version 2.0.0
  */
 
-@use '../abstracts/variables' as var; // Path from components/ to abstracts/
-@use '../abstracts/mixins' as commonMixins; // General project mixins from _mixins.scss
-@use './buttons' as buttonsFile; // To access the button mixins from _buttons.scss
+@use '../abstracts/variables' as var;
+@use '../abstracts/mixins' as mixins;
+@use './buttons' as buttonsFile; // For button mixins
 
 .vcd { // Root class for VoiceControlsDropdown
   position: relative;
 
-  &__trigger {
-    @include buttonsFile.btn-secondary;
+  &__trigger { // Style for the button that opens this dropdown
+    @include buttonsFile.btn; // Apply base button styles
+    @include buttonsFile.btn-secondary-look; // Use secondary button appearance
+    // Specific overrides for header context:
+    padding: calc(var.$spacing-xs * 1.5) var.$spacing-sm !important;
+    font-size: var.$font-size-sm !important;
+    height: 38px; // Match other header buttons
+    gap: var.$spacing-xs !important;
+
     .icon-sm { width: 1.125rem; height: 1.125rem; }
-    .icon-xs { width: 0.875rem; height: 0.875rem; }
+    .icon-xs { width: 0.75rem; height: 0.75rem; margin-left: var.$spacing-xs; } // Chevron
     .vcd__trigger-text {
       font-weight: 500;
-      font-size: var.$font-size-sm;
-      @media (min-width: var.$breakpoint-md) { display: inline; }
-      @media (max-width: calc(var.$breakpoint-md - 1px)) { display: none; }
+      // Display logic for text via Tailwind usually (e.g., hidden sm:inline)
     }
-    .vcd__trigger-chevron {
-      transition: transform var.$duration-quick;
-      &.rotated { transform: rotate(180deg); }
-    }
+    .vcd__trigger-chevron.rotated { transform: rotate(180deg); }
   }
 
-  &__menu {
-    @include commonMixins.glassmorphic-pane(
-      var(--color-bg-glass-dropdown, hsla(var(--color-bg-tertiary-h, var.$default-color-bg-tertiary-h), var(--color-bg-tertiary-s, var.$default-color-bg-tertiary-s), var(--color-bg-tertiary-l, var.$default-color-bg-tertiary-l), 0.9)),
-      var(--color-border-glass-dropdown, hsla(var(--color-accent-primary-h, var.$default-accent-primary-h), var(--color-accent-primary-s, var.$default-accent-primary-s), var(--color-accent-primary-l, var.$default-accent-primary-l), 0.3)),
-      var(--blur-glass-dropdown, #{var.$blur-glass}),
-      // CORRECTED: Use the new full SCSS box-shadow definition variable as the fallback.
-      // The CSS custom property --shadow-depth-dropdown should also be a full box-shadow string.
-      var(--shadow-depth-dropdown, #{var.$scss-box-shadow-lg})
+  &__menu { // The dropdown panel itself
+    @include mixins.neomorphic-extrude( // Using neomorphic raised panel
+      hsl(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l)), // Base from primary background
+      5px, // distance
+      12px, // blur
+      var(--shadow-opacity-soft), // light/dark shadow opacity (use CSS var for themeability)
+      var.$radius-xl, // Neomorphic cards often have larger radii
+      var(--shadow-color-h), // CSS var for shadow hue
+      var(--color-shadow-s), // CSS var for shadow saturation (ensure name consistency with themes.config)
+      var(--color-shadow-l), // CSS var for base shadow lightness
+      calc(var(--color-shadow-l) + var(--shadow-highlight-modifier)) // CSS var for highlight lightness modifier
     );
+    // For a glassmorphic alternative:
+    // @include mixins.glassmorphic-pane(
+    //   hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.85), // More opaque glass
+    //   hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.4),
+    //   var(--blur-glass),
+    //   var(--shadow-depth-lg)
+    // );
     border-radius: var.$radius-xl;
     position: absolute;
-    top: calc(100% + #{var.$spacing-xs});
+    top: calc(100% + #{var.$spacing-sm}); // Position below trigger
     right: 0;
     z-index: var.$z-index-dropdown;
-    width: 18rem;
-    overflow: hidden;
+    width: 280px; // Default width
+    overflow: hidden; // For rounded corners and content
+    color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
 
-    @media (min-width: var.$breakpoint-sm) { width: 20rem; }
-    @media (min-width: var.$breakpoint-md) { width: 22rem; }
 
-    &.dropdown-float-enter-active,
-    &.dropdown-float-leave-active {
-      transition: opacity 0.2s var.$ease-out-cubic, transform 0.2s var.$ease-out-cubic;
+    @media (min-width: var.$breakpoint-sm) { width: 300px; }
+
+    // Transition for appearing/disappearing
+    &.dropdown-float-neomorphic-enter-active, // Match transition name from UserSettingsDropdown
+    &.dropdown-float-neomorphic-leave-active {
+      transition: opacity 0.25s var.$ease-out-expo, transform 0.3s var.$ease-out-expo;
     }
-    &.dropdown-float-enter-from,
-    &.dropdown-float-leave-to {
+    &.dropdown-float-neomorphic-enter-from,
+    &.dropdown-float-neomorphic-leave-to {
       opacity: 0;
-      transform: translateY(-12px) scale(0.95);
+      transform: translateY(15px) scale(0.95);
     }
   }
 
   &__header {
     padding: var.$spacing-sm var.$spacing-md;
-    border-bottom: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.15);
+    border-bottom: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.2);
     display: flex;
     align-items: center;
     justify-content: space-between;
+    background-color: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.3); // Subtle header bg
   }
 
   &__title {
-    font-size: var.$font-size-base;
+    font-size: var.$font-size-xs; // Smaller title for this dropdown
     font-weight: 600;
-    color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+    color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
-  &__settings-btn {
+  &__settings-btn { // Button to go to full settings page
     @include buttonsFile.btn-ghost;
     @include buttonsFile.btn-icon-modifier;
-    padding: calc(var.$spacing-xs / 2) !important;
-    border-radius: var.$radius-md;
-    &:hover {
-      background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.4);
-    }
+    padding: calc(var.$spacing-xs / 1.5) !important; // Smaller padding
+    border-radius: var.$radius-sm;
     .icon-sm {
-      width: 1.25rem; height: 1.25rem;
+      width: 1.125rem; height: 1.125rem; // Consistent icon size
       color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+    }
+    &:hover .icon-sm {
+      color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
     }
   }
 
   &__content {
-    padding: var.$spacing-lg;
-    > *:not(:last-child) {
-      margin-bottom: calc(var.$spacing-unit * 5);
-    }
+    padding: var.$spacing-md var.$spacing-lg; // More padding for content
+    display: flex;
+    flex-direction: column;
+    gap: var.$spacing-lg; // Increased gap between control groups
+    @include mixins.custom-scrollbar('--color-accent-secondary', 0.3, 0.5, '--color-bg-primary', 0.1, 6px);
+    max-height: 70vh; // Prevent excessive height
+    overflow-y: auto;
   }
 
-  &__label {
+  // Styling for labels and values (e.g., "Volume: 80%")
+  &__label, &__label-sm {
+    display: block;
     font-size: var.$font-size-sm;
     font-weight: 500;
     color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
-    cursor: pointer;
-  }
-
-  &__label-sm {
-    display: block;
-    font-size: var.$font-size-xs;
-    font-weight: 500;
-    color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
     margin-bottom: var.$spacing-xs;
-    .vcd__label-value {
-        font-weight: 600;
-        color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
-        &.truncate { /* styles for truncate if needed */ }
+    .vcd__label-value { // The "80%" part
+      font-weight: 600;
+      color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
+      @include mixins.text-glow('--color-accent-interactive', 3px, 0.4);
     }
   }
-  
+  &__label-sm { font-size: var.$font-size-xs; }
+
+  // Toggle switch styling (Auto-Play Responses)
+  // Assuming .toggle-switch-analog is a global or imported style.
+  // If not, define its holographic/tactile version here. Example:
+  .toggle-switch-analog {
+    // Referencing existing styles for this, ensure it's themed.
+    // If it needs specific holographic overrides:
+    // .toggle-switch-track { ... }
+    // .toggle-switch-knob { ... }
+    // input:checked + .toggle-switch-track { background-color: hsl(var(--color-accent-interactive-h), ...); }
+  }
+
+  // Provider Tabs (Browser / OpenAI)
   &__provider-tabs {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: calc(var.$spacing-xs * 2.5);
+    grid-template-columns: repeat(2, 1fr); // Equal width tabs
+    gap: var.$spacing-sm;
+    margin-bottom: var.$spacing-md;
+  }
+  &__provider-tab {
+    @include buttonsFile.btn; // Base
+    // Softer, slightly inset look for tabs
+    @include mixins.neomorphic-inset(
+      hsl(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l)),
+      5px, 3px, // blur, distance
+      var(--shadow-opacity-soft), // dark/light opacity var
+      var.$radius-md,
+      var(--shadow-color-h), var(--color-shadow-s), var(--color-shadow-l),
+      calc(var(--color-shadow-l) + var(--shadow-highlight-modifier))
+    );
+    padding: var.$spacing-xs var.$spacing-sm !important;
+    font-size: var.$font-size-xs !important;
+    font-weight: 500 !important; // Less bold than primary buttons
+    color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+    transition: all var.$duration-quick var.$ease-out-quad;
+
+    &:hover {
+      color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
+      transform: translateY(-1px);
+      filter: brightness(1.05);
+    }
+    &.active {
+      @include mixins.neomorphic-extrude( // Active tab is raised
+        hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l)),
+        3px, 6px, // distance, blur
+        0.15, // lighter shadow opacity for active accent
+        var.$radius-md,
+        var(--shadow-color-h), var(--color-shadow-s), var(--color-shadow-l),
+        calc(var(--color-shadow-l) + var(--shadow-highlight-modifier))
+      );
+      color: hsl(var(--color-text-on-primary-h), var(--color-text-on-primary-s), var(--color-text-on-primary-l)); // Assuming accent-interactive uses on-primary text
+      font-weight: 600 !important;
+      &:hover { filter: brightness(1.1); }
+    }
   }
 
-  &__provider-tab {
-    @include buttonsFile.btn;
-    padding: calc(var.$spacing-xs * 1.5) var.$spacing-sm !important;
-    font-size: var.$font-size-xs !important;
-    font-weight: 600 !important;
-    border-radius: var.$radius-md !important;
-    border-width: 1px;
-    transition: background-color var.$duration-quick, color var.$duration-quick, border-color var.$duration-quick, box-shadow var.$duration-quick;
-    flex: 1;
-    text-align: center;
-    box-shadow: var(--shadow-depth-xs, 0 1px 2px 0 rgba(0,0,0,0.03));
-    border-color: hsl(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l));
-    color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
-    background-color: hsl(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l));
-    &:hover {
-      background-color: hsl(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l));
-      box-shadow: var(--shadow-depth-sm, 0 2px 4px 0 rgba(0,0,0,0.05));
-      filter: none;
+  // Voice Select Dropdown (<select>)
+  .form-select-analog { // Assuming this is a global class for styled selects
+    // Ensure it fits the holographic theme. Example overrides:
+    background-color: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.7);
+    border: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.5);
+    color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+    border-radius: var.$radius-md;
+    padding: var.$spacing-sm calc(var.$spacing-sm * 1.5); // Consistent padding
+    box-shadow: inset 0 1px 3px hsla(var(--shadow-color-h), var(--color-shadow-s), var(--color-shadow-l), 0.1);
+    &:focus {
+      border-color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
+      box-shadow: inset 0 1px 2px hsla(var(--shadow-color-h),var(--color-shadow-s),var(--color-shadow-l),0.05),
+                  0 0 0 2px hsla(var(--color-accent-interactive-h),var(--color-accent-interactive-s),var(--color-accent-interactive-l),0.2);
     }
-    &:focus-visible { /* see previous for example */ }
-    &.active {
-      background-color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
-      color: hsl(var(--color-text-on-primary-h), var(--color-text-on-primary-s), var(--color-text-on-primary-l));
-      border-color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
-      box-shadow: var(--shadow-depth-md);
+  }
+
+  // Range Sliders (Volume, Rate, Pitch)
+  &__range-slider-group {
+    display: flex;
+    flex-direction: column;
+    gap: var.$spacing-md; // Space between sliders
+  }
+  &__range-slider {
+    width: 100%;
+    height: 8px; // Slightly thicker track
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent; // Track styled by ::-webkit-slider-runnable-track or ::-moz-range-track
+    cursor: pointer;
+    border-radius: var.$radius-full;
+    position: relative; // For pseudo-elements if needed for glow track
+
+    // Track base (the groove)
+    &::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 100%;
+      background: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.6);
+      border-radius: var.$radius-full;
+      border: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.3);
+      box-shadow: inset 0 1px 2px hsla(var(--shadow-color-h), var(--color-shadow-s), var(--color-shadow-l), 0.1);
+    }
+    &::-moz-range-track { /* Similar styling for Firefox */
+      width: 100%; height: 100%;
+      background: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.6);
+      border-radius: var.$radius-full;
+      border: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.3);
+      box-shadow: inset 0 1px 2px hsla(var(--shadow-color-h), var(--color-shadow-s), var(--color-shadow-l), 0.1);
+    }
+
+    // Filled part of the track (progress) - JS updates --slider-progress
+    // Using a pseudo-element for the fill to allow more complex styling (e.g. gradient, glow)
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      height: 100%;
+      width: var(--slider-progress, 0%); // JS controlled
+      background: linear-gradient(to right,
+        hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l)),
+        hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), calc(var(--color-accent-interactive-l) + 10%), 0.8)
+      );
+      border-radius: var.$radius-full;
+      z-index: 0;
+      box-shadow: 0 0 5px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.3);
+    }
+
+
+    // Thumb (the draggable part)
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px; // Larger thumb
+      height: 18px;
+      background-color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), calc(var(--color-accent-interactive-l) + 5%));
+      border-radius: var.$radius-full;
+      border: 2px solid hsl(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l)); // Contrast border
+      box-shadow: var(--shadow-depth-sm), 0 0 8px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.4);
+      margin-top: -5px; // Adjust to center on track ( (track_height - thumb_height) / 2 )
+      transition: transform 0.15s var.$ease-out-quad, box-shadow 0.15s var.$ease-out-quad;
+      position: relative; z-index: 1; // Above fill
       &:hover {
-         background-color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), calc(var(--color-accent-primary-l) - 5%));
+        transform: scale(1.1);
+        box-shadow: var(--shadow-depth-md), 0 0 12px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.6);
+      }
+       &:active {
+        transform: scale(1.05);
+        box-shadow: var(--shadow-depth-sm), 0 0 10px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.5);
       }
     }
-  }
-
-  &__range-slider-group {
-     > *:not(:last-child) {
-        margin-bottom: var.$spacing-sm;
-     }
-  }
-
-
-  &__range-slider {
-    // Styles from .range-slider-compact PostCSS
-    width: 100%;
-    height: 0.5rem; // h-2
-    background-color: hsl(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l)); // bg-gray-200 dark:bg-gray-600
-    border-radius: var.$radius-full; // rounded-lg
-    appearance: none;
-    cursor: pointer;
-    transition: opacity var.$duration-quick;
-    --slider-progress: 0%; /* Will be updated by JS */
-    
-    background-image: linear-gradient(to right, hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l)) var(--slider-progress), transparent var(--slider-progress));
-    // .dark & { background-image: linear-gradient(to right, hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), calc(var(--color-accent-primary-l) - 10%)) var(--slider-progress), transparent var(--slider-progress)); }
-
-
-    &:hover { opacity: 0.9; }
-
-    &::-webkit-slider-thumb {
-      appearance: none;
-      width: 1rem; // w-4
-      height: 1rem; // h-4
-      background-color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), calc(var(--color-accent-primary-l) + 5%));
-      // .dark & { background-color: ... }
+    &::-moz-range-thumb { /* Similar styling for Firefox */
+      width: 18px; height: 18px;
+      background-color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), calc(var(--color-accent-interactive-l) + 5%));
       border-radius: var.$radius-full;
-      cursor: pointer;
-      box-shadow: var(--shadow-depth-sm);
       border: 2px solid hsl(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l));
-      // .dark & { border-color: ... }
-    }
-    &::-moz-range-thumb {
-      width: 1rem;
-      height: 1rem;
-      background-color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), calc(var(--color-accent-primary-l) + 5%));
-      border-radius: var.$radius-full;
-      cursor: pointer;
-      border: 0;
-      box-shadow: var(--shadow-depth-sm);
+      box-shadow: var(--shadow-depth-sm), 0 0 8px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.4);
+      transition: transform 0.15s var.$ease-out-quad, box-shadow 0.15s var.$ease-out-quad;
+       &:hover { /* same as -webkit-slider-thumb:hover */ }
+       &:active { /* same as -webkit-slider-thumb:active */ }
     }
   }
+
 
   &__footer {
-    padding: calc(var.$spacing-xs * 2.5) var.$spacing-sm; // px-3 py-2.5
-    border-top: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.2);
-    // .dark & { border-color: ... }
+    padding: var.$spacing-sm var.$spacing-md; // Reduced padding
+    border-top: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.2);
+    background-color: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.2); // Subtle footer bg
   }
 
   &__footer-btn-all-settings {
     @include buttonsFile.btn-ghost;
     @include buttonsFile.btn-sm-modifier;
     width: 100%;
-    justify-content: center !important; // Ensure text is centered if icon present
-    font-size: var.$font-size-sm !important; // text-sm
-
-    .icon-sm { // For Cog6ToothIcon
-      width: 1.125rem; height: 1.125rem; // icon-sm from PostCSS
-      margin-right: calc(var.$spacing-unit * 1.5); // mr-1.5
+    justify-content: center !important;
+    color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+    &:hover {
+      color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
+      background-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.1);
     }
+    .icon-sm { margin-right: var.$spacing-xs; }
   }
 }

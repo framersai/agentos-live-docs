@@ -2,164 +2,183 @@
 /**
  * @file PrivateHome.vue
  * @description Authenticated home view using UnifiedChatLayout for the "Ephemeral Harmony" theme.
- * Hosts the main AI agent framework, allowing interaction with various AI agents and their specific UIs.
- * @version 2.1.0 - Refactored to use UnifiedChatLayout, full Ephemeral Harmony styling.
+ * @version 3.0.2 - TypeScript error corrections (promptModules, eventData, capabilities access).
  */
 <script setup lang="ts">
-import { ref, computed, onMounted, inject, watch, shallowRef, type Component as VueComponentType, defineAsyncComponent } from 'vue';
+import { ref, computed, onMounted, inject, watch, type Component as VueComponentType, defineAsyncComponent } from 'vue';
 import { useRouter } from 'vue-router';
 import type { ToastService } from '@/services/services';
-import { agentService, type AgentId, type IAgentDefinition } from '@/services/agent.service';
+import { agentService, type AgentId, type IAgentDefinition } from '@/services/agent.service'; // IAgentDefinition now includes capabilities
 import { useAgentStore } from '@/store/agent.store';
 import { useChatStore, type MainContent } from '@/store/chat.store';
-import { voiceSettingsManager } from '@/services/voice.settings.service'; // For default audioInputMode if needed by VoiceInput
+import { voiceSettingsManager } from '@/services/voice.settings.service';
+import { useAuth } from '@/composables/useAuth';
+import {
+  chatAPI,
+  type ChatMessagePayloadFE,
+  type ProcessedHistoryMessageFE, // Kept for potential future use with more complex history
+  type ChatMessageFE,
+} from '@/utils/api';
 
-// Import New Layout and Core UI Components
 import UnifiedChatLayout from '@/components/layouts/UnifiedChatLayout.vue';
-// MainContentView can still be used as a wrapper or default display within the slot if an agent doesn't have a custom UI
 import MainContentView from '@/components/agents/common/MainContentView.vue';
-import CompactMessageRenderer from '@/components/CompactMessageRenderer.vue'; // For agents that use it
+import CompactMessageRenderer from '@/components/CompactMessageRenderer.vue';
 
-// Icons for placeholder/dashboard state
-import { ShieldCheckIcon, UserGroupIcon, SparklesIcon as SparklesIconOutline } from '@heroicons/vue/24/outline';
+import { ShieldCheckIcon, SparklesIcon as SparklesIconOutline, CodeBracketSquareIcon } from '@heroicons/vue/24/outline';
 
-// --- Store and Service Initialization ---
+// --- Dynamic Prompt Loading ---
+const rawPromptModules = import.meta.glob('../../../../prompts/*.md', { as: 'raw', import: 'default' });
+const promptModules: Record<string, () => Promise<string>> = {};
+for (const key in rawPromptModules) {
+  const mod = rawPromptModules[key];
+  promptModules[key] = () => {
+    const result = mod();
+    return result instanceof Promise ? result : Promise.resolve(result);
+  };
+}
+
 const toast = inject<ToastService>('toast');
-const router = useRouter(); // For navigation (e.g., to settings, or if an agent triggers a route change)
+const router = useRouter();
 const agentStore = useAgentStore();
 const chatStore = useChatStore();
+const auth = useAuth();
 
-// --- Component State ---
 const activeAgent = computed<IAgentDefinition | undefined>(() => agentStore.activeAgent);
 const currentAgentUiComponent = computed<VueComponentType | string | undefined>(() => {
-  // Resolve async components correctly if uiComponent is a function returning a promise
   if (typeof activeAgent.value?.uiComponent === 'function') {
     return defineAsyncComponent(activeAgent.value.uiComponent as () => Promise<VueComponentType>);
   }
-  return activeAgent.value?.uiComponent; // String name or direct component
+  return activeAgent.value?.uiComponent;
 });
 
-const isVoiceInputCurrentlyProcessing = ref(false); // Managed by events from VoiceInput via UnifiedChatLayout
-const agentViewRef = ref<any>(null); // Ref to the dynamic agent UI component instance
+const isLoadingResponse = ref(false);
+const isVoiceInputCurrentlyProcessing = ref(false);
+const agentViewRef = ref<any>(null);
 
-/**
- * @computed mainContentForLayout
- * @description Determines the content to be displayed in the main area if the active agent
- * does not have a specific UI component or if a default/welcome message is needed.
- */
-const mainContentForLayout = computed<MainContent | null>(() => {
+const mainContentComputed = computed<MainContent | null>(() => {
   if (!activeAgent.value) {
     return {
-      agentId: 'private-dashboard-placeholder' as AgentId,
-      type: 'custom-component', // Key to render the placeholder
-      data: 'PrivateDashboardPlaceholder',
-      title: 'Welcome Back',
-      timestamp: Date.now(),
+      agentId: 'private-dashboard-placeholder' as AgentId, type: 'custom-component',
+      data: 'PrivateDashboardPlaceholder', title: 'Welcome Back', timestamp: Date.now(),
     };
   }
-  // If an agent is active but has no specific UI (currentAgentUiComponent is undefined),
-  // MainContentView might display its default welcome or messages from chatStore.
-  // This allows agents to simply use markdown/compact messages without a dedicated view component.
-  if (!currentAgentUiComponent.value) {
-      return chatStore.getMainContentForAgent(activeAgent.value.id) || {
-          agentId: activeAgent.value.id,
-          type: 'welcome', // Default to welcome message for agent
-          data: `Welcome to the ${activeAgent.value.label} assistant. How can I help you today?`,
-          title: activeAgent.value.label,
-          timestamp: Date.now()
-      };
-  }
-  // If there's a specific UI component, it handles its own content.
-  // We might pass chatStore.getMainContentForAgent(activeAgent.value.id) as a prop to it if needed.
-  return null; // Or return a minimal object indicating custom UI is active
+  // If agent has a specific UI component, it handles rendering, mainContentComputed is null for this case.
+  if (currentAgentUiComponent.value) return null;
+
+  // Otherwise, provide default content from chatStore or a welcome message.
+  return chatStore.getMainContentForAgent(activeAgent.value.id) || {
+      agentId: activeAgent.value.id, type: 'welcome',
+      data: `Welcome to the ${activeAgent.value.label} assistant. How can I assist you today?`,
+      title: activeAgent.value.label, timestamp: Date.now()
+  };
 });
 
-
-/**
- * @function handleTranscriptionFromLayout
- * @description Handles transcription received from UnifiedChatLayout (which gets it from VoiceInput).
- * Delegates to the active agent's UI if it has a specific input handler,
- * otherwise performs a default chat interaction.
- * @param {string} transcription - The transcribed text from the user.
- * @async
- */
 const handleTranscriptionFromLayout = async (transcription: string): Promise<void> => {
-  if (!transcription.trim()) return;
-  if (!activeAgent.value) {
-    toast?.add({ type: 'warning', title: 'No Agent Selected', message: 'Please select an agent from the header menu to interact.' });
+  if (!transcription.trim() || !activeAgent.value) {
+    if(!activeAgent.value) toast?.add({ type: 'warning', title: 'No Agent Selected', message: 'Please select an agent.' });
     return;
   }
 
-  isVoiceInputCurrentlyProcessing.value = true; // Indicate that processing has started
+  isVoiceInputCurrentlyProcessing.value = true;
+  isLoadingResponse.value = true;
 
-  // Prioritize agent-specific input handler
-  if (agentViewRef.value && typeof agentViewRef.value.handleNewUserInput === 'function') {
+  // Use agent's custom input handler if it's defined and the agent view exists
+  if (activeAgent.value.capabilities?.handlesOwnInput && agentViewRef.value && typeof agentViewRef.value.handleNewUserInput === 'function') {
     try {
-      // The agent-specific UI component is responsible for:
-      // 1. Adding the user message to the chatStore.
-      // 2. Making API calls if necessary.
-      // 3. Adding assistant responses to the chatStore.
-      // 4. Updating its own main content view (or emitting events for PrivateHome to do so).
-      // 5. Managing its own internal loading/processing state and eventually signaling completion.
       await agentViewRef.value.handleNewUserInput(transcription);
-      // Assume the agent component will emit an event or directly set a shared state
-      // to indicate when its processing is complete. For now, we rely on @set-processing-state event.
     } catch (error) {
       console.error(`[PrivateHome] Error in agent's (${activeAgent.value.id}) custom input handler:`, error);
-      toast?.add({type: 'error', title: 'Agent Interaction Error', message: 'The active agent encountered an issue.'});
-      isVoiceInputCurrentlyProcessing.value = false; // Reset on error
+      toast?.add({type: 'error', title: 'Agent Error', message: 'The agent encountered an issue.'});
+      isVoiceInputCurrentlyProcessing.value = false;
+      isLoadingResponse.value = false;
     }
-  } else {
-    // Default chat interaction if no specific agent handler (e.g., send to a generic backend endpoint)
+  } else { // Fallback default chat interaction
     const agentId = activeAgent.value.id;
-    console.log(`[PrivateHome] Default chat handler for agent ${agentId}, input: "${transcription}"`);
-
-    chatStore.addMessage({ role: 'user', content: transcription, agentId: agentId });
+    chatStore.addMessage({ role: 'user', content: transcription, agentId: agentId, timestamp: Date.now() });
     chatStore.setMainContentStreaming(true, `Consulting ${activeAgent.value.label}...`);
 
-    // TODO: Replace with actual chatAPI.sendMessage or sendMessageStream call for authenticated users
-    // This would involve constructing the payload similar to PublicHome.vue but without rate limit concerns
-    // and potentially with more context or user-specific data.
     try {
-        // Example: Construct payload
-        // const history = await chatStore.getHistoryForApi(...);
-        // const payload = { messages: [...], mode: agentId, ...};
-        // const response = await chatAPI.sendMessage(payload); // or sendMessageStream
+      const systemPromptKey = activeAgent.value.systemPromptKey || 'general_chat';
+      const modulePath = `../../../../prompts/${systemPromptKey}.md`;
+      let systemPromptText = `You are ${activeAgent.value.label}.`;
+      if (promptModules[modulePath]) {
+        systemPromptText = (await promptModules[modulePath]())
+          .replace(/{{LANGUAGE}}/g, voiceSettingsManager.settings.preferredCodingLanguage || 'not specified')
+          .replace(/{{MODE}}/g, agentId)
+          .replace(/{{GENERATE_DIAGRAM}}/g, (activeAgent.value.capabilities?.canGenerateDiagrams && voiceSettingsManager.settings.generateDiagrams).toString())
+          .replace(/{{ADDITIONAL_INSTRUCTIONS}}/g, '');
+      } else {
+        console.warn(`[PrivateHome] System prompt module not found: ${modulePath}.`);
+      }
+      
+      const historyForApi: ProcessedHistoryMessageFE[] = await chatStore.getHistoryForApi(agentId, transcription, systemPromptText, {
+        numRecentMessagesToPrioritize: activeAgent.value.capabilities?.maxChatHistory || 10,
+        maxContextTokens: voiceSettingsManager.settings.useAdvancedMemory ? 4000 : (activeAgent.value.capabilities?.maxChatHistory || 10) * 150,
+      });
+      
+      const messagesForApiPayload: ChatMessageFE[] = historyForApi.map(hMsg => ({
+        role: hMsg.role, content: hMsg.content, timestamp: hMsg.timestamp, 
+        tool_call_id: hMsg.tool_call_id, tool_calls: hMsg.tool_calls, name: hMsg.name,
+      }));
+      if (!messagesForApiPayload.find(m => m.role === 'user' && m.content === transcription)) {
+         messagesForApiPayload.push({ role: 'user', content: transcription, timestamp: Date.now()});
+      }
+      messagesForApiPayload.sort((a,b) => (a.timestamp || 0) - (b.timestamp || 0));
 
-        // MOCK RESPONSE FOR NOW
-        await new Promise(resolve => setTimeout(resolve, 1500 + Math.random() * 1000));
-        const mockResponse = `This is a simulated response from ${activeAgent.value.label} to your query: "${transcription.substring(0, 40)}..."`;
-        
-        chatStore.addMessage({ role: 'assistant', content: mockResponse, agentId: agentId });
-        chatStore.updateMainContent({
-            agentId: agentId,
-            type: activeAgent.value.capabilities?.usesCompactRenderer ? 'compact-message-renderer-data' : 'markdown',
-            data: mockResponse,
-            title: `${activeAgent.value.label} Says`,
-            timestamp: Date.now()
-        });
+      const payload: ChatMessagePayloadFE = {
+        messages: [ { role: 'system', content: systemPromptText }, ...messagesForApiPayload ],
+        mode: systemPromptKey,
+        language: voiceSettingsManager.settings.preferredCodingLanguage,
+        generateDiagram: activeAgent.value.capabilities?.canGenerateDiagrams && voiceSettingsManager.settings.generateDiagrams,
+        userId: auth.currentToken.value ? `user_priv_${auth.currentToken.value.slice(-8)}` : 'private_user_unknown',
+        conversationId: chatStore.getCurrentConversationId(agentId),
+        stream: true,
+      };
 
+      let accumulatedResponse = "";
+      await chatAPI.sendMessageStream(
+        payload,
+        (chunk: string) => { accumulatedResponse += chunk; chatStore.setMainContentStreaming(true, accumulatedResponse); },
+        () => { 
+          chatStore.setMainContentStreaming(false);
+          if (activeAgent.value) {
+            chatStore.addMessage({ role: 'assistant', content: accumulatedResponse, agentId: activeAgent.value.id, model: "StreamedModel (Private)", timestamp: Date.now() });
+            chatStore.updateMainContent({
+              agentId: activeAgent.value.id,
+              type: activeAgent.value.capabilities?.usesCompactRenderer ? 'compact-message-renderer-data' : 'markdown',
+              data: accumulatedResponse, title: `${activeAgent.value.label} Response`, timestamp: Date.now()
+            });
+          }
+          isVoiceInputCurrentlyProcessing.value = false; isLoadingResponse.value = false;
+        },
+        (error: Error | any) => { 
+            console.error(`[PrivateHome] Stream API error for agent ${agentId}:`, error);
+            const errorMsg = error.message || "Stream error.";
+            if(activeAgent.value) {
+                chatStore.addMessage({ role: 'error', content: `Error: ${errorMsg}`, agentId, timestamp: Date.now() });
+                chatStore.updateMainContent({
+                    agentId, type: 'markdown', data: `### Stream Error\n${errorMsg}`,
+                    title: `Error with ${activeAgent.value.label}`, timestamp: Date.now()
+                });
+            }
+            chatStore.setMainContentStreaming(false); isVoiceInputCurrentlyProcessing.value = false; isLoadingResponse.value = false;
+        }
+      );
     } catch (error: any) {
-        console.error(`[PrivateHome] Default chat handler API error for agent ${agentId}:`, error);
-        const errorMsg = error.response?.data?.message || error.message || "An unexpected error occurred.";
-        chatStore.addMessage({ role: 'error', content: `Error: ${errorMsg}`, agentId });
-         chatStore.updateMainContent({
-            agentId, type: 'markdown', data: `### Interaction Error\n${errorMsg}`,
-            title: `Error with ${activeAgent.value.label}`, timestamp: Date.now()
-        });
-    } finally {
-        chatStore.setMainContentStreaming(false);
-        isVoiceInputCurrentlyProcessing.value = false; // Reset after default handler completes
+      console.error(`[PrivateHome] Chat API error for agent ${agentId}:`, error);
+      const errorMsg = error.response?.data?.message || error.message || "An unexpected error occurred.";
+       if(activeAgent.value) {
+            chatStore.addMessage({ role: 'error', content: `Error: ${errorMsg}`, agentId, timestamp: Date.now() });
+            chatStore.updateMainContent({
+                agentId, type: 'markdown', data: `### Interaction Error\n${errorMsg}`,
+                title: `Error with ${activeAgent.value.label}`, timestamp: Date.now()
+            });
+       }
+      chatStore.setMainContentStreaming(false); isVoiceInputCurrentlyProcessing.value = false; isLoadingResponse.value = false;
     }
   }
 };
 
-/**
- * @function handleAgentViewEventFromSlot
- * @description Handles custom events emitted by dynamically loaded agent UI components
- * that are slotted into MainContentView.
- * @param {any} eventData - The data emitted by the agent component.
- */
 const handleAgentViewEventFromSlot = (eventData: any): void => {
   if (!activeAgent.value) return;
   console.log(`[PrivateHome] Event from agent UI (${activeAgent.value.label}):`, eventData);
@@ -167,28 +186,25 @@ const handleAgentViewEventFromSlot = (eventData: any): void => {
   switch (eventData.type) {
     case 'updateMainContent':
       chatStore.updateMainContent({
-        agentId: activeAgent.value.id,
-        type: eventData.payload.type || 'markdown',
-        data: eventData.payload.data,
-        title: eventData.payload.title || `${activeAgent.value.label} Update`,
+        agentId: activeAgent.value.id, type: eventData.payload.type || 'markdown',
+        data: eventData.payload.data, title: eventData.payload.title || `${activeAgent.value.label} Update`,
         timestamp: Date.now(),
       });
       break;
     case 'addChatMessage':
       chatStore.addMessage({
-        agentId: activeAgent.value.id,
-        role: eventData.payload.role || 'assistant', // Default to assistant if role not specified
-        content: eventData.payload.content,
-        ...(eventData.payload.extra || {}) // For model, usage, tool_calls etc.
+        agentId: activeAgent.value.id, timestamp: Date.now(), role: eventData.payload.role || 'assistant',
+        content: eventData.payload.content, ...(eventData.payload.extra || {})
       });
       break;
-    case 'setProcessingState': // Allows agent UI to control the global voice input processing state
+    case 'setProcessingState':
       isVoiceInputCurrentlyProcessing.value = !!eventData.payload.isProcessing;
+      isLoadingResponse.value = !!eventData.payload.isProcessing;
       if (!eventData.payload.isProcessing && chatStore.isMainContentStreaming) {
-         chatStore.setMainContentStreaming(false); // Ensure streaming display stops if agent signals completion
+         chatStore.setMainContentStreaming(false);
       }
       break;
-    case 'requestGlobalAction': // Example: Agent requests a global action like navigation
+    case 'requestGlobalAction':
       if (eventData.action === 'navigateTo' && eventData.payload?.route) {
         router.push(eventData.payload.route);
       }
@@ -199,41 +215,31 @@ const handleAgentViewEventFromSlot = (eventData: any): void => {
 };
 
 onMounted(() => {
-  // Agent store initialization (in agent.store.ts) should ensure an agent is active.
-  // If not, or if the active agent isn't suitable for PrivateHome, set a default.
   if (!agentStore.activeAgentId || !agentService.getAgentById(agentStore.activeAgentId)) {
-    const defaultPrivateAgent = agentService.getAgentById('general') || agentService.getDefaultAgent(); // Choose an appropriate default
+    const defaultPrivateAgent = agentService.getAgentById('general') || agentService.getDefaultAgent();
     if (defaultPrivateAgent) {
       agentStore.setActiveAgent(defaultPrivateAgent.id);
     } else {
-      console.error("[PrivateHome] Critical: No default private agent found to activate.");
-      // Display an error message in the main content area
-      chatStore.updateMainContent({
-        agentId: 'system-error' as AgentId,
-        type: 'markdown',
-        data: "### System Error\nNo default agent could be loaded. Please contact support.",
-        title: "Initialization Error",
-        timestamp: Date.now()
+      console.error("[PrivateHome] Critical: No default private agent found.");
+       chatStore.updateMainContent({
+        agentId: 'system-error' as AgentId, type: 'markdown',
+        data: "### System Error\nNo default agent could be loaded.",
+        title: "Initialization Error", timestamp: Date.now()
       });
     }
   } else {
-      // Ensure content for the already active agent is loaded/displayed
-      chatStore.ensureMainContentForAgent(agentStore.activeAgentId);
+     chatStore.ensureMainContentForAgent(agentStore.activeAgentId);
   }
 });
 
-// Watch for changes in the active agent from the store (e.g., selected via AppHeader)
 watch(() => agentStore.activeAgentId, (newAgentId, oldAgentId) => {
-    if (newAgentId && newAgentId !== oldAgentId) {
-        console.log(`[PrivateHome] Active agent changed to: ${newAgentId}. Old: ${oldAgentId}`);
-        // The agentStore's setActiveAgent should handle clearing old context and
-        // chatStore.ensureMainContentForAgent for the new agent.
-        // Reset local processing state if agent changes.
-        isVoiceInputCurrentlyProcessing.value = false;
-        if(chatStore.isMainContentStreaming) chatStore.setMainContentStreaming(false);
-    }
+  if (newAgentId && newAgentId !== oldAgentId) {
+    isVoiceInputCurrentlyProcessing.value = false;
+    isLoadingResponse.value = false;
+    if(chatStore.isMainContentStreaming) chatStore.setMainContentStreaming(false);
+    chatStore.ensureMainContentForAgent(newAgentId);
+  }
 });
-
 </script>
 
 <template>
@@ -241,63 +247,81 @@ watch(() => agentStore.activeAgentId, (newAgentId, oldAgentId) => {
     <UnifiedChatLayout
       :is-voice-input-processing="isVoiceInputCurrentlyProcessing"
       @transcription="handleTranscriptionFromLayout"
-      @voice-input-processing="(status: boolean) => isVoiceInputCurrentlyProcessing = status"
+      @voice-input-processing="(status: boolean) => { isVoiceInputCurrentlyProcessing = status; if (status) isLoadingResponse = true; }"
     >
       <template #main-content>
-        <MainContentView :agent="activeAgent" v-if="activeAgent" class="agent-ui-slot-wrapper">
+        <MainContentView :agent="activeAgent" class="main-content-view-wrapper-ephemeral" v-if="activeAgent">
           <transition name="agent-ui-fade" mode="out-in">
             <component
               :is="currentAgentUiComponent"
-              v-if="currentAgentUiComponent && typeof currentAgentUiComponent !== 'string'"
+              v-if="currentAgentUiComponent && typeof currentAgentUiComponent !== 'string' && activeAgent.capabilities?.handlesOwnInput"
               :key="activeAgent.id + '-dynamic-ui'"
               ref="agentViewRef"
               :agent-id="activeAgent.id"
               :agent-config="activeAgent"
               @agent-event="handleAgentViewEventFromSlot"
-              @set-processing-state="(status: boolean) => isVoiceInputCurrentlyProcessing = status"
-              />
-            <div v-else-if="mainContentForLayout && mainContentForLayout.type !== 'custom-component'"
-                 class="h-full flex-grow overflow-y-auto custom-scrollbar-thin">
+              @set-processing-state="(status: boolean) => { isVoiceInputCurrentlyProcessing = status; isLoadingResponse = status; if (!status && chatStore.isMainContentStreaming) chatStore.setMainContentStreaming(false); }"
+            />
+            <div v-else-if="mainContentComputed && mainContentComputed.type !== 'custom-component'"
+                 class="content-renderer-container-ephemeral">
                 <CompactMessageRenderer
-                  v-if="activeAgent?.capabilities?.usesCompactRenderer && mainContentForLayout.type === 'compact-message-renderer-data'"
-                  :content="mainContentForLayout.data"
-                  :mode="activeAgent.id"
-                  class="p-1 h-full"
+                    v-if="activeAgent?.capabilities?.usesCompactRenderer && mainContentComputed.type === 'compact-message-renderer-data'"
+                    :content="mainContentComputed.data"
+                    :mode="activeAgent.id"
+                    class="content-renderer-ephemeral"
                 />
-                <div v-else-if="mainContentForLayout.type === 'markdown' || mainContentForLayout.type === 'welcome'"
-                     class="prose-ephemeral max-w-none p-4 md:p-6 h-full"
-                     v-html="chatStore.isMainContentStreaming && chatStore.currentMainContentData?.agentId === activeAgent.id ?
-                               chatStore.streamingMainContentText + '<span class=\'streaming-cursor-ephemeral\'>|</span>' :
-                               mainContentForLayout.data"
-                     aria-atomic="true">
+                <div v-else-if="mainContentComputed.type === 'markdown' || mainContentComputed.type === 'welcome'"
+                    class="prose-ephemeral content-renderer-ephemeral"
+                    v-html="isLoadingResponse && chatStore.isMainContentStreaming && chatStore.currentMainContentData?.agentId === activeAgent.id ?
+                                chatStore.streamingMainContentText + '<span class=\'streaming-cursor-ephemeral\'>|</span>' :
+                                mainContentComputed.data"
+                    aria-atomic="true">
                 </div>
-                 <div v-else-if="mainContentForLayout.type === 'error'"
-                     class="prose-ephemeral prose-error max-w-none p-4 md:p-6 h-full"
-                     v-html="mainContentForLayout.data"
-                     aria-atomic="true">
+                <div v-else-if="mainContentComputed.type === 'error'"
+                    class="prose-ephemeral prose-error content-renderer-ephemeral"
+                    v-html="mainContentComputed.data"
+                    aria-atomic="true">
                 </div>
-                <div v-else class="p-4 text-[var(--color-text-muted)] italic h-full">
-                    <p>Agent: {{ activeAgent.label }}</p>
-                    <p>Displaying content of type: <strong>{{ mainContentForLayout.type }}</strong>.</p>
-                    <pre v-if="typeof mainContentForLayout.data === 'object'" class="text-xs whitespace-pre-wrap">{{ JSON.stringify(mainContentForLayout.data, null, 2) }}</pre>
-                    <div v-else v-html="mainContentForLayout.data"></div>
+                 <div v-else class="content-renderer-ephemeral text-[var(--color-text-muted)] italic">
+                    <p>Content for {{ activeAgent.label }} (Type: {{ mainContentComputed.type }})</p>
                 </div>
             </div>
-            <div v-else-if="mainContentForLayout?.type === 'custom-component' && mainContentForLayout.data === 'PrivateDashboardPlaceholder'"
-                 class="private-dashboard-placeholder">
+            <div v-else-if="mainContentComputed?.type === 'custom-component' && mainContentComputed.data === 'PrivateDashboardPlaceholder'"
+                 class="private-dashboard-placeholder-ephemeral">
               <ShieldCheckIcon class="dashboard-icon-ephemeral" />
               <h2 class="dashboard-title-ephemeral">Secure AI Workspace</h2>
               <p class="dashboard-subtitle-ephemeral">
-                Welcome to your personalized AI environment. Select an assistant from the header to begin.
+                Welcome! Select an assistant from the header menu to begin your tasks.
               </p>
+               <button @click="router.push('/settings')" class="btn btn-secondary-ephemeral mt-4">
+                  <CodeBracketSquareIcon class="icon-sm mr-2"/> Configure Agents & Settings
+              </button>
+            </div>
+             <div v-else-if="isLoadingResponse" class="loading-placeholder-ephemeral">
+              <div class="loading-animation-content">
+                <div class="loading-spinner-ephemeral !w-12 !h-12">
+                  <div v-for="i in 8" :key="`blade-${i}`" class="spinner-blade-ephemeral !w-1.5 !h-4"></div>
+                </div>
+                <p class="loading-text-ephemeral !text-base mt-3">Agent is working...</p>
+              </div>
             </div>
           </transition>
         </MainContentView>
-
-        <div v-else class="private-dashboard-placeholder">
+        <div v-else-if="mainContentComputed?.type === 'custom-component' && mainContentComputed.data === 'PrivateDashboardPlaceholder'"
+             class="private-dashboard-placeholder-ephemeral">
+            <ShieldCheckIcon class="dashboard-icon-ephemeral" />
+            <h2 class="dashboard-title-ephemeral">Secure AI Workspace</h2>
+            <p class="dashboard-subtitle-ephemeral">
+              Please select an agent from the header menu to begin.
+            </p>
+             <button @click="router.push('/settings')" class="btn btn-secondary-ephemeral mt-4">
+                <CodeBracketSquareIcon class="icon-sm mr-2"/> Configure Agents & Settings
+            </button>
+        </div>
+        <div v-else class="private-dashboard-placeholder-ephemeral">
             <SparklesIconOutline class="dashboard-icon-ephemeral !text-[var(--color-text-muted)]" />
-            <h2 class="dashboard-title-ephemeral">Initializing Agents...</h2>
-            <p class="dashboard-subtitle-ephemeral">Please wait or select an agent if the menu is available.</p>
+            <h2 class="dashboard-title-ephemeral">Initializing Interface...</h2>
+            <p class="dashboard-subtitle-ephemeral">Please wait a moment.</p>
         </div>
       </template>
     </UnifiedChatLayout>
@@ -305,40 +329,5 @@ watch(() => agentStore.activeAgentId, (newAgentId, oldAgentId) => {
 </template>
 
 <style lang="scss">
-// Styles for PrivateHome are in frontend/src/styles/views/_private-home.scss
-// and shared component styles.
-
-// Agent UI fade transition (can be globalized in _transitions.scss if used elsewhere)
-.agent-ui-fade-enter-active,
-.agent-ui-fade-leave-active {
-  transition: opacity 0.3s var(--ease-out-quad);
-}
-.agent-ui-fade-enter-from,
-.agent-ui-fade-leave-to {
-  opacity: 0;
-}
-
-// Ensure the slotted component in MainContentView fills the space
-// This should ideally be handled by MainContentView's own styling or the slotted component itself.
-// :deep() is used if MainContentView wraps the slot in another div.
-.agent-ui-slot-wrapper {
-  > :deep(*) { // Targets the root element of the component passed into the slot
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden; // Important: Slotted component should manage its own scrolling
-  }
-  // If the slotted item is just a div for prose, it needs to scroll
-  > :deep(.prose-ephemeral) {
-    overflow-y: auto;
-    flex-grow: 1; // Make sure it takes space
-  }
-}
-
-// Styles for prose when used for error messages within the private home
-.prose-ephemeral.prose-error {
-    h3, h4 { color: hsl(var(--color-error-h), var(--color-error-s), var(--color-error-l)) !important;}
-    p, li { color: hsl(var(--color-error-h), var(--color-error-s), calc(var(--color-error-l) + 10%)) !important;}
-}
+// Styles in frontend/src/styles/views/_private-home.scss
 </style>
