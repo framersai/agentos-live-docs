@@ -22,7 +22,7 @@ jobs:
       - name: Install root dependencies
         run: npm run install-all # Install root package.json dependencies (e.g., concurrently)
 
-      - name: Build 
+      - name: Build
         run: |
           cat > ./frontend/.env << EOL
           VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}
@@ -36,20 +36,24 @@ jobs:
           mkdir -p deployment/frontend/dist
           mkdir -p deployment/backend/dist
           # mkdir -p deployment/backend/prompts
-          
+
           # Copy built frontend assets
           cp -r frontend/dist/* deployment/frontend/dist/
-          
+
           # Copy built backend assets
           cp -r backend/dist/* deployment/backend/dist/
           # Copy backend package.json for npm install on server
           cp backend/package.json deployment/backend/package.json
-          # Copy backend prompts for dynamic loading [cite: 340]
+          # Copy backend prompts for dynamic loading
           # cp -r backend/prompts/* deployment/backend/prompts/
-          
+
+          # Copy ecosystem.config.js for PM2
+          # Ensure ecosystem.config.js is in the backend directory in the deployment package
+          cp backend/ecosystem.config.json deployment/backend/ecosystem.config.json
+
           # Copy Nginx configuration
           cp frontend/nginx.conf deployment/nginx.conf
-          
+
           # Create a tarball of the deployment package
           cd deployment && tar -czf ../voice-app-deployment.tar.gz .
 
@@ -57,7 +61,7 @@ jobs:
         uses: shimataro/ssh-key-action@v2
         with:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          known_hosts: 'just-a-placeholder-so-we-dont-get-errors' 
+          known_hosts: 'just-a-placeholder-so-we-dont-get-errors'
 
       - name: Add Linode to known hosts
         run: ssh-keyscan -H ${{ secrets.LINODE_HOST }} >> ~/.ssh/known_hosts
@@ -66,63 +70,48 @@ jobs:
         run: |
           echo "Copying deployment package to Linode..."
           scp voice-app-deployment.tar.gz ${{ secrets.LINODE_USER }}@${{ secrets.LINODE_HOST }}:~/
-          
+
           echo "Connecting to Linode and deploying application..."
           ssh ${{ secrets.LINODE_USER }}@${{ secrets.LINODE_HOST }} << 'EOF'
-          
+
           # 1. Prepare deployment directory
           echo "Preparing application directory..."
           mkdir -p ~/voice-coding-assistant-temp
           tar -xzf ~/voice-app-deployment.tar.gz -C ~/voice-coding-assistant-temp
           rm ~/voice-app-deployment.tar.gz
-          
+
           rm -rf ~/voice-coding-assistant-old
           if [ -d ~/voice-coding-assistant ]; then
               mv ~/voice-coding-assistant ~/voice-coding-assistant-old
           fi
           mv ~/voice-coding-assistant-temp ~/voice-coding-assistant
-          
+
           # move frontend to where it can be accessible by nginx
           sudo cp -r ~/voice-coding-assistant/frontend/dist/* /var/www/voice-coding-assistant/
 
+          # CHANGE 1: Navigate to the *root* of your backend application (where package.json and ecosystem.config.js are)
           cd ~/voice-coding-assistant/backend || { echo "ERROR: Could not navigate to backend directory."; exit 1; }
-          
 
           # Already installed on the server
           # # 2. Install Node.js, npm, PM2, and Nginx
           # echo "Installing Node.js, npm, PM2, and Nginx..."
           # sudo apt-get update -y
           # sudo apt-get install -y nodejs npm nginx
-          
+
           # if ! command -v node &> /dev/null; then
-          #     echo "Creating symlink for node command..."
-          #     sudo ln -s /usr/bin/nodejs /usr/bin/node
+          #    echo "Creating symlink for node command..."
+          #    sudo ln -s /usr/bin/nodejs /usr/bin/node
           # fi
 
           # sudo npm install -g pm2
-          
+
           # 3. Install backend dependencies (Node.js direct deploy)
           echo "Installing backend Node.js dependencies on server..."
           npm install --production # Install only production dependencies
 
           # 4. Create .env file for the backend
           echo "Creating .env file for backend..."
-          cat > ~/voice-coding-assistant/.env << EOL
-          OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
-          OPENROUTER_API_KEY=${{ secrets.OPENROUTER_API_KEY }}
-          PASSWORD=${{ secrets.PASSWORD }}
-          MODEL_PREF_CODING=${{ secrets.MODEL_PREF_CODING }}
-          MODEL_PREF_SYSTEM_DESIGN=${{ secrets.MODEL_PREF_SYSTEM_DESIGN }}
-          MODEL_PREF_SUMMARY=${{ secrets.MODEL_PREF_SUMMARY }}
-          COST_THRESHOLD=${{ secrets.COST_THRESHOLD }}
-          DEFAULT_LANGUAGE=${{ secrets.DEFAULT_LANGUAGE }}
-          TOKEN_LIMIT=${{ secrets.TOKEN_LIMIT }}
-          PORT=3333 # Backend will listen internally on 3001, Nginx proxies to it
-          FRONTEND_URL=${{ secrets.FRONTEND_URL }} # For CORS settings
-          SPEECH_PREFERENCE=${{ secrets.SPEECH_PREFERENCE }}
-          VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}
-          NODE_ENV=production
-          EOL
+          echo "${{ secrets.ENV }}" > ~/voice-coding-assistant/.env
           echo ".env file created."
 
           # 5. Configure Nginx
@@ -140,16 +129,16 @@ jobs:
           sudo sh -c mkdir -p /etc/nginx/ssl
           sudo sh -c 'printf "%s" "${{ secrets.SSL_CERT }}" > /etc/nginx/ssl/cert.pem'
           sudo sh -c 'printf "%s" "${{ secrets.SSL_KEY }}" > /etc/nginx/ssl/key.pem'
-          
+
           # Adjust Nginx config paths and proxy_pass in the copied file
           # Replace root path
-          sudo sed -i "s|root /usr/share/nginx/html;|root /${{ secrets.LINODE_USER }}/voice-coding-assistant/frontend/dist;|g" /etc/nginx/sites-available/voice-coding-assistant.conf
+          sudo sed -i "s|root /usr/share/nginx/html;|root /home/${{ secrets.LINODE_USER }}/voice-coding-assistant/frontend/dist;|g" /etc/nginx/sites-available/voice-coding-assistant.conf
           # Replace proxy_pass to point to localhost:3333
           sudo sed -i "s|proxy_pass http://backend:3333;|proxy_pass http://localhost:3333;|g" /etc/nginx/sites-available/voice-coding-assistant.conf
           # Ensure there are no malformed 'Connection' headers.
           # The provided nginx.conf has: proxy_set_header Connection 'upgrade';
           # This is correct. If the error was from a previous or manually edited file, it should be fixed by the clean up.
-          
+
           sudo nginx -t && sudo systemctl reload nginx || { echo "ERROR: Nginx configuration test failed or reload failed."; exit 1; }
           sudo systemctl enable nginx || { echo "WARNING: Nginx not enabled to start on boot."; }
           sudo systemctl start nginx || { echo "ERROR: Nginx failed to start."; exit 1; }
@@ -157,13 +146,12 @@ jobs:
 
           # 6. Configure and start backend with PM2
           echo "Configuring and starting backend with PM2..."
-          pm2 stop voice-coding-assistant-backend || true
-          pm2 delete voice-coding-assistant-backend || true
-          
-          # Start the backend application using PM2
-          # Assuming server.js is in backend/dist
-          pm2 start dist/server.js --name voice-coding-assistant-backend --output /dev/null --error /dev/null
-          
+          pm2 stop voice-backend || true
+          pm2 delete voice-backend || true
+
+          # CHANGE 2: Refer to ecosystem.config.json directly, since you are already in the backend directory
+          pm2 start ecosystem.config.json
+
           # Save PM2 process list and configure to start on boot
           pm2 save
           pm2 startup systemd # This generates and enables a systemd unit for PM2
@@ -172,8 +160,8 @@ jobs:
           # 7. Basic Health Checks
           echo "Verifying Nginx and PM2 status..."
           sudo systemctl is-active nginx || { echo "ERROR: Nginx is not active."; exit 1; }
-          pm2 list | grep 'voice-coding-assistant-backend' | grep 'online' || { echo "ERROR: Backend PM2 process is not online."; exit 1; }
-          
+          pm2 list | grep 'voice-backend' | grep 'online' || { echo "ERROR: Backend PM2 process is not online."; exit 1; }
+
           echo "Waiting for application to become fully responsive via HTTP..."
           ATTEMPTS=0
           MAX_ATTEMPTS=15
