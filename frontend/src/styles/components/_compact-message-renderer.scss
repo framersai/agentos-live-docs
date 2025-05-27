@@ -1,0 +1,437 @@
+// File: frontend/src/styles/components/_compact-message-renderer.scss
+/**
+ * @file _compact-message-renderer.scss
+ * @description Styles for the CompactMessageRenderer component.
+ * "Ephemeral Harmony" theme, styling slideshows, content analysis, diagrams, and toolbars.
+ * @version 1.0.1 - Switched to button mixins.
+ */
+
+@use '../abstracts/variables' as var;
+@use '../abstracts/mixins' as commonMixins; // General mixins from _mixins.scss
+@use './buttons' as buttonsFile; // To access the button mixins from _buttons.scss
+
+// --- Root Container ---
+.compact-message-renderer-ephemeral {
+  @include commonMixins.glassmorphic-pane(
+    hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.75),
+    hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.4),
+    var(--blur-glass),
+    var(--shadow-depth-lg)
+  );
+  border-radius: var.$radius-xl;
+  overflow: hidden; // Important for child elements and transitions
+  display: flex;
+  flex-direction: column;
+  color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+
+  &.fullscreen {
+    position: fixed;
+    inset: 0;
+    z-index: var.$z-index-modal + 10; // Above modals if it can go fullscreen over them
+    border-radius: 0;
+    border-width: 0; // No border in fullscreen
+  }
+
+  // Type-specific border accents (subtle)
+  &.coding-problem-ephemeral {
+    border-left: 4px solid hsl(var(--color-info-h), var(--color-info-s), var(--color-info-l));
+  }
+  &.system-design-ephemeral {
+    border-left: 4px solid hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l));
+  }
+}
+
+// --- Analysis Banner ---
+.analysis-banner-ephemeral {
+  padding: var.$spacing-sm var.$spacing-md;
+  border-bottom: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.2);
+  font-size: var.$font-size-sm;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var.$spacing-md;
+  flex-wrap: wrap; // Allow wrapping on small screens
+
+  // Base styles for banner types
+  &.banner-type-base {
+    background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.3);
+  }
+  &.banner-type-leetcode {
+    @extend .banner-type-base; // This extend is within the same file, usually fine.
+    background-color: hsla(var(--color-info-h), var(--color-info-s), var(--color-info-l), 0.1);
+    color: hsl(var(--color-info-h), var(--color-info-s), calc(var(--color-info-l) - 10%));
+    .icon { color: hsl(var(--color-info-h), var(--color-info-s), var(--color-info-l)); }
+  }
+  &.banner-type-system-design {
+    @extend .banner-type-base; // This extend is within the same file, usually fine.
+    background-color: hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.1);
+    color: hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), calc(var(--color-accent-secondary-l) - 10%));
+    .icon { color: hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l)); }
+  }
+  &.banner-type-general {
+    @extend .banner-type-base; // Generic look - This extend is within the same file, usually fine.
+  }
+
+  .info-group {
+    display: flex;
+    align-items: center;
+    gap: var.$spacing-xs;
+    .icon { width: 1.25rem; height: 1.25rem; }
+    .title-text { font-weight: 600; }
+  }
+  .meta-group {
+    display: flex;
+    align-items: center;
+    gap: var.$spacing-md;
+    font-size: var.$font-size-xs;
+    color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+  }
+
+  .difficulty-badge-ephemeral {
+    padding: calc(var.$spacing-xs / 2) var.$spacing-xs;
+    font-size: 0.65rem; // xxs
+    font-weight: 600;
+    border-radius: var.$radius-sm;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border: 1px solid;
+
+    &.difficulty-easy {
+      color: hsl(var(--color-success-h), var(--color-success-s), calc(var(--color-success-l) - 5%));
+      background-color: hsla(var(--color-success-h), var(--color-success-s), var(--color-success-l), 0.1);
+      border-color: hsla(var(--color-success-h), var(--color-success-s), var(--color-success-l), 0.3);
+    }
+    &.difficulty-medium {
+      color: hsl(var(--color-warning-h), var(--color-warning-s), calc(var(--color-warning-l) - 15%));
+      background-color: hsla(var(--color-warning-h), var(--color-warning-s), var(--color-warning-l), 0.1);
+      border-color: hsla(var(--color-warning-h), var(--color-warning-s), var(--color-warning-l), 0.3);
+    }
+    &.difficulty-hard {
+      color: hsl(var(--color-error-h), var(--color-error-s), calc(var(--color-error-l) - 5%));
+      background-color: hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.1);
+      border-color: hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.3);
+    }
+  }
+}
+
+// --- Slideshow Mode ---
+.slideshow-container-ephemeral {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow: hidden;
+
+  .slideshow-header-ephemeral {
+    padding: var.$spacing-sm var.$spacing-md;
+    border-bottom: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.2);
+
+    .slide-info-ephemeral {
+      min-width: 0;
+      .slide-title-text {
+        font-family: var(--font-display);
+        font-size: var.$font-size-lg;
+        font-weight: 500;
+        color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+        margin-bottom: calc(var.$spacing-xs / 2);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        @include commonMixins.text-glow('--color-accent-secondary', 3px);
+      }
+      .slide-meta-ephemeral {
+        display: flex;
+        align-items: center;
+        gap: var.$spacing-md;
+        font-size: var.$font-size-xs;
+        color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+      }
+    }
+    .slide-controls-ephemeral {
+      display: flex;
+      align-items: center;
+      gap: var.$spacing-xs;
+      .control-button-ephemeral {
+        @include buttonsFile.btn-ghost; // Includes base styles + ghost look
+        @include buttonsFile.btn-icon-modifier; // Applies icon button modifications
+        padding: calc(var.$spacing-xs * 1.25) !important; // Override default padding
+        .icon { width: 1.125rem; height: 1.125rem; }
+        &:disabled { opacity: 0.4; }
+      }
+    }
+  }
+
+  .slide-content-wrapper-ephemeral {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: var.$spacing-md var.$spacing-lg;
+    @include commonMixins.custom-scrollbar(
+      hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.3),
+      transparent
+    );
+
+    .slide-content-inner-ephemeral {
+      // @extend .prose-ephemeral; // If .prose-ephemeral is complex/defined elsewhere, this might also need a mixin.
+                               // For now, assuming it's a simple local class or handled by Tailwind Typography.
+      font-size: calc(1rem * var(--content-font-scale, 1));
+      line-height: calc(1.7 * var(--content-font-scale, 1));
+
+      &.fullscreen-slide-content {
+        font-size: calc(1.125rem * var(--content-font-scale, 1));
+        line-height: calc(1.8 * var(--content-font-scale, 1));
+      }
+      &.type-code-slide {
+        :deep(pre) {
+          background-color: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.5) !important;
+        }
+      }
+      :deep(.enhanced-code-block) {
+        background-color: hsl(var(--code-block-bg-h, var.$--color-bg-primary-h), var(--code-block-bg-s, var.$--color-bg-primary-s), var(--code-block-bg-l, calc(var.$--color-bg-primary-l) - 3%));
+        border-radius: var.$radius-lg;
+        overflow: hidden;
+        margin: var.$spacing-md 0;
+        border: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.3);
+        .code-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: var.$spacing-xs var.$spacing-sm;
+          background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.3);
+          font-size: var.$font-size-xs;
+          color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+          .code-language {}
+          .copy-code-btn {
+            @include buttonsFile.btn-ghost;
+            @include buttonsFile.btn-xs-modifier;
+            padding: calc(var.$spacing-xs / 2) var.$spacing-xs !important; // Override
+            color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+            &:hover { color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l)); }
+          }
+        }
+        pre {
+          margin: 0 !important;
+          code.line-numbered {
+            counter-reset: line;
+            .line-content::before {
+              counter-increment: line;
+              content: counter(line);
+              display: inline-block;
+              width: 2.5em;
+              padding-right: var.$spacing-sm;
+              margin-right: var.$spacing-sm;
+              text-align: right;
+              color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l), 0.6);
+              border-right: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.2);
+              position: sticky;
+              left: 0;
+              background-color: inherit;
+            }
+          }
+        }
+      }
+      // Complexity breakdown styling (from original, themed)
+      :deep(.complexity-breakdown) {
+        text-align: center; margin: var.$spacing-lg 0;
+        h3 { font-size: var.$font-size-lg; font-weight: 500; margin-bottom: var.$spacing-md; color: hsl(var(--color-text-primary-h),var(--color-text-primary-s),var(--color-text-primary-l));}
+        .complexity-cards {
+          display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var.$spacing-md; margin: var.$spacing-md 0;
+          .complexity-card {
+            padding: var.$spacing-md; border-radius: var.$radius-lg;
+            @include mixins.glassmorphic-pane(
+              hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.5),
+              hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.2),
+              calc(var(--blur-glass) * 0.5), var(--shadow-depth-sm)
+            );
+            &.time { border-left: 3px solid hsl(var(--color-info-h),var(--color-info-s),var(--color-info-l));}
+            &.space { border-left: 3px solid hsl(var(--color-success-h),var(--color-success-s),var(--color-success-l));}
+            h4 { font-size: var.$font-size-base; font-weight: 500; margin-bottom: var.$spacing-xs; display: flex; align-items: center; gap: var.$spacing-xs; color: hsl(var(--color-text-secondary-h),var(--color-text-secondary-s),var(--color-text-secondary-l));}
+            .complexity-value { font-family: var(--font-mono); font-size: var.$font-size-lg; font-weight: 600; margin-bottom: var.$spacing-xs; color: hsl(var(--color-text-primary-h),var(--color-text-primary-s),var(--color-text-primary-l));}
+            p { font-size: var.$font-size-xs; color: hsl(var(--color-text-muted-h),var(--color-text-muted-s),var(--color-text-muted-l)); margin:0; }
+          }
+        }
+    }
+    .slide-diagram-ephemeral {
+      margin-top: var.$spacing-md;
+      .diagram-container-inner {
+        @extend .diagram-viewer-wrapper-ephemeral; // This extend is to a class within the same components folder, might be okay or need namespacing.
+                                                 // For max safety, diagram-viewer-wrapper-ephemeral could also become a mixin.
+        padding: var.$spacing-sm;
+        .mermaid-diagram {
+          display: flex; justify-content: center; align-items: center;
+          :deep(svg) { max-width: 100%; height: auto; }
+        }
+      }
+    }
+  }
+  }
+
+  .autoplay-progress-bar-ephemeral {
+    padding: var.$spacing-xs var.$spacing-md;
+    background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.1);
+    flex-shrink: 0;
+    .progress-track {
+      width: 100%; height: 6px;
+      background-color: hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.2);
+      border-radius: var.$radius-full; overflow: hidden; margin-bottom: calc(var.$spacing-xs / 2);
+      .progress-fill-animated {
+        height: 100%;
+        background: linear-gradient(90deg,
+          hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l)),
+          hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l))
+        );
+        border-radius: var.$radius-full;
+        transition: width 0.1s linear; // Smooth progress update
+        animation: holoShimmer var.$duration-pulse-long linear infinite; // Add shimmer to progress
+        background-size: 200% 100%;
+      }
+    }
+    .progress-text-label {
+      font-size: 0.65rem; // xxs
+      color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+      text-align: right;
+    }
+
+  .slide-navigation-dots-ephemeral {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var.$spacing-xs;
+    padding: var.$spacing-sm 0;
+    flex-shrink: 0;
+    border-top: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.1);
+
+    .nav-dot-button {
+      width: 10px; height: 10px;
+      border-radius: var.$radius-full;
+      background-color: hsla(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l), 0.3);
+      border: 1px solid transparent;
+      transition: background-color var.$duration-quick, transform var.$duration-quick, box-shadow var.$duration-quick;
+      cursor: pointer;
+      &:hover {
+        background-color: hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.5);
+        transform: scale(1.1);
+      }
+      &.active {
+        background-color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+        transform: scale(1.2);
+        box-shadow: 0 0 8px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.5);
+      }
+    }
+}
+
+// --- Single Content Mode ---
+.single-content-view-ephemeral {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: var.$spacing-lg;
+  @include mixins.custom-scrollbar(
+    hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.4),
+    transparent
+  );
+
+  .content-html-wrapper {
+    // @extend .prose-ephemeral; // See comment above for .prose-ephemeral
+    font-size: calc(1rem * var(--content-font-scale, 1));
+    line-height: calc(1.75 * var(--content-font-scale, 1));
+  }
+  
+  &.fullscreen-active-content {
+    padding: var.$spacing-xl;
+    .content-html-wrapper {
+      font-size: calc(1.125rem * var(--content-font-scale, 1));
+    }
+  }
+
+  .diagrams-section-ephemeral {
+    margin-top: var.$spacing-xl;
+    .diagrams-section-title {
+      font-size: var.$font-size-lg; font-weight: 500; margin-bottom: var.$spacing-md;
+      color: hsl(var(--color-text-secondary-h),var(--color-text-secondary-s),var(--color-text-secondary-l));
+      border-bottom: 1px solid hsla(var(--color-border-primary-h),var(--color-border-primary-s),var(--color-border-primary-l),0.2);
+      padding-bottom: var.$spacing-sm;
+    }
+    .diagram-instance-wrapper { // Wrapper for each DiagramViewer instance
+      margin-bottom: var.$spacing-lg;
+      // DiagramViewer will use its own themed styles (_diagram-viewer.scss)
+    }
+  }
+
+  .complexity-panel-ephemeral, .code-execution-panel-ephemeral {
+    margin-top: var.$spacing-xl;
+    padding: var.$spacing-lg;
+    border-radius: var.$radius-lg;
+    background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.3);
+    border: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.2);
+
+     .panel-title-text {
+      font-size: var.$font-size-lg; font-weight: 600; margin-bottom: var.$spacing-md;
+      color: hsl(var(--color-text-primary-h),var(--color-text-primary-s),var(--color-text-primary-l));
+      font-family: var(--font-display);
+    }
+    // Complexity Grid
+    .complexity-grid-items {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var.$spacing-md;
+      .complexity-item-ephemeral {
+        padding: var.$spacing-sm; border-radius: var.$radius-md;
+        background-color: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.4);
+        &.full-width-item { grid-column: 1 / -1; }
+        .complexity-label-text { font-size: var.$font-size-xs; color: hsl(var(--color-text-muted-h),var(--color-text-muted-s),var(--color-text-muted-l)); margin-bottom: calc(var.$spacing-xs / 2); }
+        .complexity-value-text { font-family: var(--font-mono); font-weight: 500;
+          &.good { color: hsl(var(--color-success-h),var(--color-success-s),var(--color-success-l)); }
+          &.fair { color: hsl(var(--color-warning-h),var(--color-warning-s),var(--color-warning-l)); }
+          &.poor { color: hsl(var(--color-error-h),var(--color-error-s),var(--color-error-l)); }
+          &.unknown { color: hsl(var(--color-text-muted-h),var(--color-text-muted-s),var(--color-text-muted-l)); }
+        }
+        .complexity-approach-text { font-size: var.$font-size-sm; line-height: 1.6; }
+      }
+    }
+    // Test Cases
+    .test-cases-list { space-y: var.$spacing-md; }
+    .test-case-item {
+      padding: var.$spacing-sm; border-radius: var.$radius-md;
+      background-color: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.4);
+      font-size: var.$font-size-sm;
+      div { margin-bottom: calc(var.$spacing-xs / 2); strong { font-weight: 500; color: hsl(var(--color-text-secondary-h),var(--color-text-secondary-s),var(--color-text-secondary-l));} }
+      .run-test-button {
+        // Assuming btn-secondary-ephemeral is standard .btn-secondary
+        @include buttonsFile.btn-secondary;
+        @include buttonsFile.btn-sm-modifier;
+        margin-top: var.$spacing-sm;
+          }
+          }
+      }
+    }
+  }
+}
+
+// --- Actions Toolbar ---
+.actions-toolbar-ephemeral {
+  padding: var.$spacing-sm var.$spacing-md;
+  border-top: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.2);
+  background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var.$spacing-sm;
+  flex-shrink: 0;
+
+  .action-button-group {
+    display: flex;
+    align-items: center;
+    gap: var.$spacing-xs;
+  }
+  .action-button-ephemeral {
+    // Assuming btn-secondary-ephemeral is standard .btn-secondary
+    @include buttonsFile.btn-secondary;
+    @include buttonsFile.btn-sm-modifier;
+    padding: calc(var.$spacing-xs * 1.25) var.$spacing-sm !important; // Override
+    gap: var.$spacing-xs;
+    .icon { width: 1rem; height: 1rem; }
+    .action-text-label { @apply hidden sm:inline; }
+  }
+}

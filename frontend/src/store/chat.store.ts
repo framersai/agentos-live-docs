@@ -109,6 +109,7 @@ export interface MainContent {
     | 'custom-component'
     | 'welcome'
     | 'loading'
+    | 'error'
     | 'diary-entry-viewer';
   /** The actual data for the content. Structure depends on the `type`. */
   data: any;

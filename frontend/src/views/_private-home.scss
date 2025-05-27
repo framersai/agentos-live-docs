@@ -1,0 +1,63 @@
+// File: frontend/src/styles/views/_private-home.scss
+/**
+ * @file _private-home.scss
+ * @description Styles specific to the PrivateHome view for "Ephemeral Harmony" theme.
+ * Leverages UnifiedChatLayout for main structure.
+ * @version 1.0.0
+ */
+
+@use '../abstracts/variables' as var;
+@use '../abstracts/mixins' as mixins;
+
+.private-home-view-ephemeral { // Root class for the PrivateHome.vue main div
+  // Most layout and appearance will be handled by UnifiedChatLayout.
+  // This file is for elements truly unique to the *PrivateHome view itself*,
+  // not elements within the shared layout (like header, footer, voice input).
+
+  // Example: If PrivateHome has a specific welcome screen or dashboard elements
+  // that appear *instead of* an agent UI in the main content slot.
+  .private-dashboard-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: var.$spacing-xl;
+    height: 100%; // If it's meant to fill the content slot fully
+
+    .dashboard-icon-ephemeral {
+      width: 5rem;
+      height: 5rem;
+      margin-bottom: var.$spacing-lg;
+      color: hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l));
+      opacity: 0.7;
+      animation: subtlePulse var.$duration-pulse-long * 1.5 infinite alternate;
+      --scale-pulse: 1.03;
+      --opacity-pulse: 0.9;
+    }
+
+    .dashboard-title-ephemeral {
+      font-family: var(--font-display);
+      font-size: var.$font-size-xl * 1.8;
+      font-weight: 600;
+      color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+      margin-bottom: var.$spacing-sm;
+      @include mixins.text-glow('--color-accent-secondary', 6px);
+    }
+    .dashboard-subtitle-ephemeral {
+      color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+      line-height: 1.6;
+      max-width: 60ch;
+    }
+  }
+
+  // Styles for how agent-specific UIs are presented if any wrapper is needed by PrivateHome
+  // beyond what MainContentView.vue or the agent UI itself provides.
+  .agent-ui-slot-wrapper {
+    height: 100%;
+    width: 100%;
+    display: flex; // Ensure slotted component can grow
+    flex-direction: column;
+    overflow: hidden; // Clip content
+  }
+}

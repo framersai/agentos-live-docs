@@ -1,0 +1,360 @@
+/**
+ * @file _voice-input.scss
+ * @description Styles for the VoiceInput component in the "Ephemeral Harmony" theme.
+ * Features holographic/glassmorphic elements, responsive microphone button,
+ * animated live transcription display, and themed controls.
+ * @version 2.1.4 - Fully corrected button mixin usage and variable references.
+ */
+
+@use '../abstracts/variables' as var; // For SCSS variables like $spacing-md, $ease-out-sine
+@use '../abstracts/mixins' as mixins; // <-- This line makes 'mixins.' work
+@use './buttons' as buttonsFile; // To access the button mixins from _buttons.scss
+
+.voice-input-panel-ephemeral {
+  @include mixins.glassmorphic-pane(
+    hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.7),
+    hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.4),
+    var(--blur-glass), // This is a CSS custom property
+    var(--shadow-depth-lg) // This is a CSS custom property
+  );
+  border-radius: var.$radius-2xl;
+  padding: var.$spacing-md;
+  display: flex;
+  flex-direction: column;
+  gap: var.$spacing-sm;
+  transition: border-color var.$duration-smooth, box-shadow var.$duration-smooth;
+
+  &.processing, &.microphone-error {
+    border-color: hsla(var(--color-warning-h), var(--color-warning-s), var(--color-warning-l), 0.6);
+    box-shadow: var(--shadow-depth-lg), // CSS custom property
+                0 0 15px hsla(var(--color-warning-h), var(--color-warning-s), var(--color-warning-l), 0.3);
+  }
+  &.microphone-denied {
+    border-color: hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.6);
+  }
+}
+
+.input-area-ephemeral {
+  display: flex;
+  align-items: flex-end;
+  gap: var.$spacing-sm;
+}
+
+.voice-textarea-ephemeral {
+  flex-grow: 1;
+  resize: none;
+  padding: var.$spacing-sm calc(var.$spacing-sm * 1.5);
+  font-size: var.$font-size-base;
+  line-height: 1.5;
+  border-radius: var.$radius-lg;
+  min-height: 48px;
+  max-height: 150px;
+  background-color: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.5);
+  color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+  border: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.3);
+  box-shadow: inset 0 1px 3px hsla(var(--shadow-color-h), var(--shadow-color-s), var(--shadow-color-l), 0.1); // Assumes --shadow-color-* CSS vars exist
+  transition: border-color var.$duration-quick, box-shadow var.$duration-quick;
+
+  &::placeholder {
+    color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+    opacity: 0.8;
+  }
+  &:focus {
+    outline: none;
+    border-color: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.7);
+    box-shadow: inset 0 1px 3px hsla(var(--shadow-color-h), var(--shadow-color-s), var(--shadow-color-l), 0.05),
+                0 0 0 2px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.2);
+  }
+  &:disabled {
+    background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.3);
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+}
+
+.send-button-ephemeral {
+  @include buttonsFile.btn-primary;
+  @include buttonsFile.btn-icon-modifier;
+  height: 48px;
+  width: 48px;
+  border-radius: var.$radius-lg;
+  .icon {
+    width: 1.3em;
+    height: 1.3em;
+  }
+}
+
+.live-transcript-display-ephemeral {
+  min-height: 2.5rem;
+  padding: var.$spacing-xs var.$spacing-sm;
+  margin-bottom: var.$spacing-xs;
+  border-radius: var.$radius-md;
+  font-size: var.$font-size-sm;
+  line-height: 1.4;
+  color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+  background-color: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.3);
+  border: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.2);
+  overflow: hidden;
+  transition: background-color var.$duration-quick;
+
+  p { margin: 0; animation: transcriptTextAppear 0.5s var.$ease-out-quint forwards; }
+  .interim-transcript-ephemeral { /* ... */ }
+  .finalized-part-ephemeral { /* ... */ }
+  .pending-transcript-ephemeral { /* ... */ }
+  .whisper-status-ephemeral { /* ... */ }
+  .streaming-cursor-ephemeral {
+    display: inline-block;
+    animation: blink var.$duration-pulse-fast step-end infinite;
+    color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+    margin-left: 1px;
+    font-weight: 200;
+  }
+}
+
+@keyframes transcriptTextAppear {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.controls-main-row-ephemeral {
+  display: flex;
+  align-items: center;
+  gap: var.$spacing-sm;
+}
+
+.mic-button-ephemeral {
+  @include buttonsFile.btn;
+  @include buttonsFile.btn-icon-modifier;
+  width: 52px;
+  height: 52px;
+  border-radius: var.$radius-full;
+  position: relative;
+  overflow: visible;
+
+  @include mixins.neomorphic-extrude(
+    hsl(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l)),
+    4px, 8px, var(--shadow-opacity-soft), var(--shadow-opacity-soft), var.$radius-full,
+    var(--shadow-color-h), var(--shadow-color-s), var(--shadow-color-l),
+    calc(var(--shadow-color-l) + var(--shadow-highlight-modifier))
+  );
+  color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+
+  &.listening {
+    @include mixins.neomorphic-inset(
+      hsl(var(--color-bg-secondary-h), var(--color-bg-secondary-s), calc(var(--color-bg-secondary-l) - 3%)),
+      3px, 6px, var(--shadow-opacity-soft), var(--shadow-opacity-soft), var.$radius-full,
+      var(--shadow-color-h), var(--shadow-color-s), var(--shadow-color-l),
+      calc(var(--shadow-color-l) + var(--shadow-highlight-modifier))
+    );
+    color: hsl(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l));
+    &::before {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: inherit;
+      background: transparent;
+      box-shadow: 0 0 0 0 hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.5);
+      animation: micListeningPulse 1.5s infinite var.$ease-out-sine; // Uses SCSS var $ease-out-sine
+      z-index: -1;
+    }
+  }
+
+  &.recording-whisper {
+    @include mixins.neomorphic-inset( 
+      hsl(var(--color-bg-secondary-h), var(--color-bg-secondary-s), calc(var(--color-bg-secondary-l) - 3%)),
+      3px, 6px, var(--shadow-opacity-soft), var(--shadow-opacity-soft), var.$radius-full,
+      var(--shadow-color-h), var(--shadow-color-s), var(--shadow-color-l),
+      calc(var(--shadow-color-l) + var(--shadow-highlight-modifier))
+    );
+    color: hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l));
+    &::before {
+      box-shadow: 0 0 0 0 hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.5);
+      animation: micListeningPulse 1.2s infinite var.$ease-out-sine; // Uses SCSS var $ease-out-sine
+    }
+  }
+
+  &.processing {
+    @include mixins.neomorphic-extrude(
+      hsl(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l)),
+      4px, 8px, var(--shadow-opacity-soft), var(--shadow-opacity-soft), var.$radius-full,
+      var(--shadow-color-h), var(--shadow-color-s), var(--shadow-color-l),
+      calc(var(--shadow-color-l) + var(--shadow-highlight-modifier))
+    );
+    color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+    cursor: default;
+    &::after { /* spinner styles */ }
+  }
+
+  &.mic-error, &.mic-denied {
+    @include mixins.neomorphic-extrude(
+      hsl(var(--color-error-h), var(--color-error-s), calc(var(--color-error-l) + 20%)),
+      4px, 8px, var(--shadow-opacity-soft), var(--shadow-opacity-soft), var.$radius-full,
+      var(--shadow-color-h), var(--shadow-color-s), var(--shadow-color-l),
+      calc(var(--shadow-color-l) + var(--shadow-highlight-modifier))
+    );
+    color: hsl(var(--color-error-h), var(--color-error-s), calc(var(--color-error-l) - 10%));
+    cursor: not-allowed;
+    &:hover { filter: none; }
+  }
+}
+
+// Keyframes (micListeningPulse, spin, blink) should be in your global _keyframes.scss
+// @keyframes micListeningPulse { ... } 
+
+.status-display-ephemeral {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  font-size: var.$font-size-xs;
+  gap: calc(var.$spacing-xs / 2);
+
+  .mode-indicator-wrapper-ephemeral {
+    display: flex;
+    align-items: center;
+    gap: calc(var.$spacing-xs * 0.75);
+  }
+  .mode-dot-ephemeral {
+    width: 8px;
+    height: 8px;
+    border-radius: var.$radius-full;
+    transition: background-color var.$duration-quick, box-shadow var.$duration-quick;
+    &.idle { background-color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l)); }
+    &.standby {
+      background-color: hsl(var(--color-warning-h), var(--color-warning-s), var(--color-warning-l));
+      box-shadow: 0 0 5px 1px hsla(var(--color-warning-h), var(--color-warning-s), var(--color-warning-l), 0.6);
+    }
+    &.active {
+      background-color: hsl(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l));
+      box-shadow: 0 0 7px 2px hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.7);
+      animation: subtlePulse var.$duration-pulse-medium infinite; // Assumes subtlePulse is in _keyframes.scss
+      --scale-pulse: 1.1; --opacity-pulse: 0.8;
+    }
+  }
+  .mode-text-ephemeral {
+    color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .transcription-status-ephemeral {
+    color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+    min-height: 1.2em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    .countdown {
+      color: hsl(var(--color-warning-h), var(--color-warning-s), var(--color-warning-l));
+    }
+  }
+  .permission-status-ephemeral {
+    font-size: 0.65rem;
+    &.error { color: hsl(var(--color-error-h), var(--color-error-s), var(--color-error-l)); }
+    &.warning { color: hsl(var(--color-warning-h), var(--color-warning-s), var(--color-warning-l)); }
+    &.success { color: hsl(var(--color-success-h), var(--color-success-s), var(--color-success-l)); }
+  }
+}
+
+.secondary-controls-ephemeral {
+  display: flex;
+  align-items: center;
+  gap: var.$spacing-xs;
+  margin-left: auto;
+
+  
+  .control-btn-ephemeral {
+    @include buttonsFile.btn-ghost;
+    @include buttonsFile.btn-icon-modifier;
+    padding: calc(var.$spacing-xs * 1.5) !important;
+    border-radius: var.$radius-md;
+    color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+    .icon { width: 1.125em; height: 1.125em; } // Override from btn-icon-modifier if needed
+
+    &:hover { // Specific hover
+      color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+      background-color: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.1);
+    }
+    &.stop-btn-ephemeral {
+      color: hsl(var(--color-error-h), var(--color-error-s), var(--color-error-l));
+      &:hover {
+        background-color: hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.1);
+      }
+    }
+  }
+}
+
+.vad-canvas-ephemeral {
+  width: 100%;
+  height: 30px;
+  margin-top: var.$spacing-xs;
+  border-radius: var.$radius-sm;
+  border: 1px solid hsla(var(--color-border-translucent-h), var(--color-border-translucent-s), var(--color-border-translucent-l), var(--color-border-translucent-a, 0.2));
+  background: linear-gradient(to bottom,
+    hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.1),
+    hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.2)
+  );
+  opacity: 0.7;
+  transition: opacity var.$duration-quick;
+  &:has(+ .mic-button-ephemeral.listening) {
+    opacity: 1;
+  }
+}
+
+.history-list-ephemeral {
+  // Styles for transcription history list items (if not already covered by _modals.scss or elsewhere)
+}
+.history-item-ephemeral {
+  // Individual history item (if not already covered by _modals.scss or elsewhere)
+}
+
+.audio-mode-selector-wrapper {
+  position: relative;
+}
+.audio-mode-button {
+  @include buttonsFile.btn-secondary; // Composite mixin (includes base)
+  // Specific overrides:
+  padding: calc(var.$spacing-xs * 1.25) var.$spacing-sm !important;
+  font-size: var.$font-size-xs;
+  gap: calc(var.$spacing-xs * 0.5);
+  min-width: 120px;
+
+  .icon { margin-right: var.$spacing-xs; }
+  .chevron-icon { margin-left: auto; transition: transform var.$duration-quick; }
+  &.open .chevron-icon { transform: rotate(180deg); }
+}
+
+.audio-mode-dropdown {
+  @include mixins.glassmorphic-pane(
+    var(--color-bg-glass),
+    var(--color-border-glass),
+    var(--blur-glass),
+    var(--shadow-depth-lg)
+  );
+  position: absolute;
+  bottom: calc(100% + #{var.$spacing-xs});
+  right: 0;
+  width: max-content;
+  min-width: 200px;
+  border-radius: var.$radius-lg;
+  z-index: var.$z-index-dropdown;
+  padding: var.$spacing-xs;
+
+  .audio-mode-item {
+    @include buttonsFile.btn-ghost; // Composite mixin (includes base)
+    // Specific overrides:
+    width: 100%;
+    justify-content: flex-start;
+    font-size: var.$font-size-sm;
+    padding: var.$spacing-sm !important;
+    border-radius: var.$radius-md;
+
+    &.active {
+      background-color: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.15);
+      color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+      font-weight: 500;
+    }
+    .icon { margin-right: var.$spacing-sm; }
+  }
+}

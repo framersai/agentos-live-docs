@@ -1,0 +1,72 @@
+// File: frontend/src/styles/utilities/_helpers.scss
+/**
+ * @file _helpers.scss
+ * @description Utility helper classes for the "Ephemeral Harmony" design system.
+ * Includes common utilities like screen-reader only text, clearfix, etc.
+ * @version 1.0.0
+ */
+
+// Screen-reader only text
+// Use this class to hide text visually but keep it accessible to screen readers.
+// Useful for icon buttons, landmark labels, etc.
+.sr-only,
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important; // Use -1px to prevent layout shifts if the element has a border or outline
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important; // Prevent line breaks
+  border: 0 !important;
+}
+
+// Unhide screen-reader only text when it's focused (e.g., skip links)
+.sr-only-focusable:active,
+.sr-only-focusable:focus,
+.visually-hidden-focusable:active,
+.visually-hidden-focusable:focus {
+  position: static !important;
+  width: auto !important;
+  height: auto !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: visible !important;
+  clip: auto !important;
+  white-space: normal !important;
+}
+
+// Clearfix: For containing floats
+// While modern layouts (flexbox, grid) reduce the need for clearfixes,
+// it can still be useful in some legacy situations or with third-party content.
+.clearfix::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+// Example: Forced word break (if not handled by Tailwind's break-words/break-all)
+.force-word-break {
+  word-break: break-word; // More common
+  // or overflow-wrap: break-word; (standard)
+  // or word-wrap: break-word; (legacy)
+}
+
+// Example: Disable pointer events (useful for overlaying elements that shouldn't be interactive)
+.pointer-events-none {
+  pointer-events: none;
+}
+
+.pointer-events-auto {
+  pointer-events: auto;
+}
+
+// Example: A simple class to hide an element completely (display: none)
+// Tailwind has `hidden`, so this might be redundant unless you need a specific non-Tailwind class.
+.u-hidden {
+  display: none !important;
+}
+
+// Add other general-purpose utility classes as your project needs them.
+// For example, specific text truncation, aspect ratio helpers (if not using Tailwind's aspect-ratio plugin), etc.

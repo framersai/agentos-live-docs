@@ -1,0 +1,640 @@
+/**
+ * @file _header.scss
+ * @description Styles for the main application header, "Ephemeral Harmony" theme.
+ * Features glassmorphism, holographic accents, themed controls, and activity indicators.
+ * @version 2.1.2+ - Switched all button extends to mixin includes, with missing styles from v2.1.1 re-integrated.
+ */
+
+@use '../abstracts/variables' as var;
+@use '../abstracts/mixins' as commonMixins; // General project mixins from _mixins.scss
+@use '../components/buttons' as buttonsFile; // To access the button mixins from _buttons.scss
+
+.app-header-ephemeral { // Main header class
+  height: var(--header-height, var.$header-height);
+  padding: 0 var.$spacing-md;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: var.$z-index-sticky;
+
+  @include commonMixins.glassmorphic-pane(
+    var(--color-bg-glass),
+    var(--color-border-glass),
+    var(--blur-glass),
+    var(--shadow-depth-md)
+  );
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+  border-bottom: 1px solid var(--color-border-glass);
+
+  transition: background-color var.$duration-smooth var.$ease-out-quad,
+              backdrop-filter var.$duration-smooth var.$ease-out-quad,
+              border-color var.$duration-smooth var.$ease-out-quad,
+              box-shadow var.$duration-smooth var.$ease-out-quad;
+
+  &.fullscreen-hidden {
+    opacity: 0;
+    transform: translateY(-100%);
+    pointer-events: none;
+  }
+
+  // Glow effect when AI or User is active
+  &.ai-active-glow {
+    box-shadow: var(--shadow-depth-md),
+                0 0 25px 6px hsla(var(--color-voice-ai-h), var(--color-voice-ai-s), var(--color-voice-ai-l), 0.35);
+    border-bottom-color: hsla(var(--color-voice-ai-h), var(--color-voice-ai-s), var(--color-voice-ai-l), 0.5);
+  }
+  &.user-active-glow {
+    box-shadow: var(--shadow-depth-md),
+                0 0 25px 6px hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.35);
+    border-bottom-color: hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.5);
+  }
+}
+
+.header-content-wrapper-ephemeral {
+  width: 100%;
+  max-width: var.$site-max-width;
+  margin: 0 auto;
+  padding: 0 var.$spacing-sm;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.header-main-row-ephemeral {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+}
+
+// Logo Section
+.header-logo-section-ephemeral {
+  display: flex;
+  align-items: center;
+  gap: var.$spacing-sm;
+  flex-shrink: 0;
+}
+
+.logo-link-ephemeral {
+  display: flex;
+  align-items: center;
+  gap: var.$spacing-xs;
+  transition: opacity var.$duration-quick;
+  color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+
+  &:hover, &:focus-visible {
+    opacity: 0.85;
+    .logo-image-ephemeral {
+      transform: rotate(15deg) scale(1.15);
+      filter: drop-shadow(0 0 12px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.6));
+    }
+    .app-title-full-ephemeral, .app-title-short-ephemeral {
+      @include commonMixins.text-glow('--color-accent-primary', 5px);
+    }
+  }
+  &:focus-visible {
+    @include commonMixins.focus-ring('--color-bg-primary', '--color-accent-primary');
+    border-radius: var.$radius-sm;
+  }
+}
+
+.logo-image-ephemeral {
+  width: 36px;
+  height: 36px;
+  transition: transform var.$duration-smooth var.$ease-elastic, filter var.$duration-smooth var.$ease-out-quad;
+  filter: drop-shadow(0 0 8px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.4));
+}
+
+.app-title-full-ephemeral,
+.app-title-short-ephemeral {
+  font-family: var(--font-display, var.$font-family-display);
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  transition: color var.$duration-quick, text-shadow var.$duration-quick;
+}
+.app-title-full-ephemeral {
+  font-size: var.$font-size-lg;
+  text-transform: uppercase;
+  .app-title-accent-ephemeral {
+    color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+    font-weight: 700;
+  }
+}
+.app-title-short-ephemeral {
+  display: none;
+  font-size: var.$font-size-xl;
+}
+
+// Activity Indicators - Styles from v2.1.1
+.activity-indicator-wrapper-ephemeral {
+  width: 28px;
+  height: 28px;
+  position: relative;
+  margin-left: var.$spacing-xs;
+}
+.activity-indicator-ephemeral {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .icon-xs { width: 14px; height: 14px; } // Specific size for these icons
+
+  &.ai-speaking {
+    background-color: hsla(var(--color-voice-ai-h), var(--color-voice-ai-s), var(--color-voice-ai-l), 0.15);
+    box-shadow: 0 0 12px hsla(var(--color-voice-ai-h), var(--color-voice-ai-s), var(--color-voice-ai-l), 0.5),
+                inset 0 0 6px hsla(var(--color-voice-ai-h), var(--color-voice-ai-s), var(--color-voice-ai-l), 0.2);
+    animation: voiceAuraPulse 1.5s infinite; // Use defined keyframe (ensure voiceAuraPulse is defined globally or in _keyframes.scss)
+    --voice-pulse-opacity: 0.6; // Customize opacity for this instance
+    .icon-xs { color: hsl(var(--color-voice-ai-h), var(--color-voice-ai-s), var(--color-voice-ai-l)); }
+  }
+  &.user-listening {
+    background-color: hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.15);
+    box-shadow: 0 0 12px hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.5),
+                inset 0 0 6px hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.2);
+    animation: voiceAuraPulse 1.8s infinite; // Slightly different timing
+    --voice-pulse-opacity: 0.5;
+    .icon-xs { color: hsl(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l)); }
+  }
+}
+
+// Desktop Navigation
+.desktop-nav-ephemeral {
+  display: none;
+  align-items: center;
+  gap: var.$spacing-xs;
+  @media (min-width: var.$breakpoint-lg) {
+    display: flex;
+  }
+}
+
+.nav-button-ephemeral {
+  @include buttonsFile.btn-secondary; // Composite mixin: includes base styles + secondary look
+  // Specific overrides for nav buttons:
+  padding: calc(var.$spacing-sm - 2px) var.$spacing-md !important;
+  font-size: var.$font-size-sm;
+  height: 38px;
+
+  .nav-button-icon {
+    width: 18px; height: 18px;
+    color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+    transition: color var.$duration-quick;
+  }
+  &:hover .nav-button-icon, &.active .nav-button-icon { // .active icon color from v2.1.2
+    color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+  }
+  .nav-chevron-ephemeral {
+    margin-left: var.$spacing-xs;
+    transition: transform var.$duration-quick;
+    &.rotate-180 { transform: rotate(180deg); }
+  }
+
+  &.active { // Active state from Vue Router, combining v2.1.1 inset and v2.1.2 overrides
+    @include commonMixins.neomorphic-inset( 
+      hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.1), // $fill-color
+      3px, // $blur
+      5px, // $distance
+      0.1, // $dark-shadow-opacity
+      0.15, // $light-shadow-opacity
+      var.$radius-md, // $radius
+      var(--shadow-color-h), 
+      var(--shadow-color-s), 
+      var(--shadow-color-l), 
+      calc(var(--shadow-color-l) + var(--shadow-highlight-modifier))
+    );
+    color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+    font-weight: 600;
+    // .nav-button-icon color already handled above for .active
+  }
+}
+
+// Header Actions - Styles from v2.1.1
+.header-actions-section-ephemeral {
+  display: flex;
+  align-items: center;
+  gap: var.$spacing-xs;
+}
+
+.quick-toggles-group-ephemeral {
+  display: none; 
+  align-items: center;
+  gap: var.$spacing-md;
+  padding-left: var.$spacing-md;
+  margin-left: var.$spacing-sm;
+  border-left: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.2);
+  @media (min-width: var.$breakpoint-sm) {
+    display: flex;
+  }
+}
+.quick-toggle-item-ephemeral {
+  display: flex;
+  align-items: center;
+  gap: var.$spacing-xs;
+}
+.quick-toggle-label-icon-ephemeral {
+  color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+  cursor: pointer;
+  transition: color var.$duration-quick;
+  &:hover {
+    color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+  }
+  .icon-sm { width: 18px; height: 18px; }
+}
+
+.cost-display-ephemeral {
+  background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.4);
+  backdrop-filter: blur(3px);
+  border: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.2);
+  padding: calc(var.$spacing-xs + 2px) var.$spacing-sm; 
+  border-radius: var.$radius-md;
+  font-family: var(--font-mono, var.$font-family-mono);
+  font-size: var.$font-size-xs;
+  min-width: 90px;
+  text-align: right;
+  margin-left: var.$spacing-sm; 
+  box-shadow: inset 0 1px 2px hsla(var(--shadow-color-h), var(--shadow-color-s), var(--shadow-color-l), 0.1);
+
+  .cost-label-ephemeral {
+    color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+  }
+  .cost-value-ephemeral {
+    color: hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l)); 
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    @include commonMixins.text-glow('--color-accent-secondary', 4px);
+  }
+}
+
+.desktop-action-buttons-ephemeral {
+  display: none;
+  align-items: center;
+  gap: 0;
+  margin-left: var.$spacing-sm;
+  @media (min-width: var.$breakpoint-md) {
+    display: flex;
+  }
+}
+
+.action-btn-ephemeral {
+  @include buttonsFile.btn-ghost; 
+  @include buttonsFile.btn-icon-modifier; 
+  padding: var.$spacing-sm !important;
+  border-radius: var.$radius-md; 
+  color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+
+  &:hover, &:focus-visible { 
+    color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+    background-color: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.1);
+  }
+  &.logout {
+    &:hover, &:focus-visible {
+      color: hsl(var(--color-error-h), var(--color-error-s), var(--color-error-l));
+      background-color: hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.1);
+    }
+  }
+}
+
+.mobile-nav-toggle-ephemeral {
+  @include buttonsFile.btn-ghost; 
+  @include buttonsFile.btn-icon-modifier; 
+  color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+  margin-left: var.$spacing-sm;
+  // display logic handled by Tailwind classes based on breakpoint (e.g. lg:hidden)
+  @media (min-width: var.$breakpoint-lg) { 
+    // display: none; // Example if not handled by Tailwind
+  }
+}
+
+// Dropdown Menu styles - Styles from v2.1.1
+.dropdown-menu-ephemeral {
+  position: absolute;
+  top: calc(100% + #{var.$spacing-xs}); 
+  right: 0; 
+  z-index: var.$z-index-dropdown;
+  @include commonMixins.glassmorphic-pane(
+    hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.9), 
+    hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.3),
+    var(--blur-glass),
+    var(--shadow-depth-lg)
+  );
+  border-radius: var.$radius-xl; 
+  min-width: 280px; 
+}
+
+.dropdown-header-ephemeral {
+  padding: var.$spacing-sm var.$spacing-md;
+  border-bottom: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.15);
+}
+.dropdown-title-ephemeral {
+  font-size: var.$font-size-xs;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+}
+
+.dropdown-content-ephemeral { 
+  padding: var.$spacing-xs;
+  max-height: 320px; 
+  overflow-y: auto;
+  // Apply custom scrollbar (thin variant) if needed via classes in template
+}
+
+.dropdown-item-ephemeral {
+  display: flex;
+  align-items: center;
+  gap: var.$spacing-sm;
+  width: 100%;
+  padding: var.$spacing-sm var.$spacing-md;
+  border-radius: var.$radius-lg; 
+  text-align: left;
+  color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+  transition: background-color var.$duration-quick, color var.$duration-quick, transform var.$duration-quick;
+  cursor: pointer;
+
+  &:hover, &:focus-visible {
+    background-color: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.1);
+    color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+    outline: none;
+    transform: translateX(2px);
+  }
+
+  &.active {
+    background-color: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.2);
+    color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+    font-weight: 600;
+    box-shadow: inset 0 1px 2px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), calc(var(--color-accent-primary-l) - 20%), 0.2);
+  }
+}
+
+.dropdown-item-icon-ephemeral {
+  width: 36px; height: 36px;
+  padding: var.$spacing-xs;
+  border-radius: var.$radius-md;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.5);
+  border: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.2);
+  .icon-base { 
+    width: 20px; height: 20px;
+  }
+}
+.dropdown-item-text-wrapper-ephemeral {
+  display: flex;
+  flex-direction: column;
+}
+.dropdown-item-label-ephemeral {
+  font-size: var.$font-size-sm;
+  font-weight: 500;
+}
+.dropdown-item-desc-ephemeral {
+  font-size: var.$font-size-xs;
+  color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+  margin-top: 2px;
+  line-height: 1.3;
+  .group:hover &, .group:focus-visible &, .group.active & { 
+    color: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), calc(var(--color-accent-primary-l) + 10%), 0.8);
+  }
+}
+.dropdown-item-icon-emoji-ephemeral { 
+  font-size: var.$font-size-lg;
+  min-width: 28px; 
+  text-align: center;
+  margin-right: var.$spacing-xs;
+  opacity: 0.8;
+  .group:hover &, .group:focus-visible &, .group.active & {
+    opacity: 1;
+  }
+}
+
+// Mobile Navigation Panel - Styles from v2.1.1
+.mobile-nav-panel-ephemeral {
+  position: absolute; 
+  top: 100%; 
+  left: 0;
+  right: 0;
+  z-index: var.$z-index-dropdown - 1; 
+  @include commonMixins.glassmorphic-pane(
+    hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.95), 
+    var(--color-border-glass),
+    var(--blur-glass),
+    var(--shadow-depth-lg)
+  );
+  border-top: 1px solid hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.5);
+  border-radius: 0 0 var.$radius-xl var.$radius-xl; 
+  // display logic handled by Vue component state and Tailwind classes
+}
+
+.mobile-nav-content-ephemeral {
+  padding: var.$spacing-md;
+  max-height: calc(100vh - var(--header-height, var.$header-height) - var.$spacing-md); 
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var.$spacing-lg; 
+}
+
+.mobile-nav-section-ephemeral {
+  padding-bottom: var.$spacing-md;
+  margin-bottom: var.$spacing-md;
+  border-bottom: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.15);
+  &:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+  }
+}
+
+.mobile-nav-section-title-ephemeral {
+  display: block;
+  margin-bottom: var.$spacing-sm;
+  font-size: var.$font-size-xs;
+  font-weight: 700;
+  color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+  text-transform: uppercase;
+  letter-spacing: 0.075em;
+  @include commonMixins.text-glow('--color-text-muted', 3px);
+}
+
+.mobile-mode-grid-ephemeral {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var.$spacing-sm;
+}
+
+.mobile-mode-card-ephemeral {
+  @include buttonsFile.btn-secondary; // Composite mixin
+  flex-direction: column;
+  gap: var.$spacing-xs;
+  padding: var.$spacing-md var.$spacing-sm !important;
+  height: auto;
+  text-align: center;
+  font-size: var.$font-size-xs;
+  border-width: 1px; 
+
+  &.active { 
+    @include commonMixins.neomorphic-inset(
+      hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.15), 
+      3px, 
+      5px, 
+      0.1, 
+      0.15, 
+      var.$radius-lg, // Note: v2.1.1 used $radius-lg here
+      var(--shadow-color-h),
+      var(--shadow-color-s),
+      var(--shadow-color-l),
+      calc(var(--shadow-color-l) + var(--shadow-highlight-modifier))
+    );
+    color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+    .dropdown-item-icon-ephemeral { // Copied from v2.1.2 .active
+      background-color: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.2);
+      border-color: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.3);
+      .icon-xl { color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));}
+    }
+  }
+  .icon-xl { width: 28px; height: 28px; }
+}
+
+.mobile-mode-label-ephemeral { // From v2.1.1
+  margin-top: var.$spacing-xs;
+  font-weight: 500;
+}
+
+.mobile-toggles-wrapper-ephemeral { // From v2.1.1
+  display: flex;
+  flex-direction: column;
+  gap: var.$spacing-sm;
+}
+.mobile-toggle-item-ephemeral { // From v2.1.1
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var.$spacing-sm;
+  border-radius: var.$radius-lg;
+  background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.4);
+  border: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.1);
+}
+.mobile-toggle-icon-ephemeral { // From v2.1.1
+  color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+  margin-right: var.$spacing-sm;
+}
+.mobile-toggle-label-ephemeral { // From v2.1.1
+  flex-grow: 1;
+  font-size: var.$font-size-sm;
+  font-weight: 500;
+  color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+}
+
+.mobile-main-nav-ephemeral { // From v2.1.1 (container)
+  display: flex;
+  flex-direction: column;
+  gap: var.$spacing-xs;
+}
+
+.mobile-nav-link-ephemeral {
+  @include buttonsFile.btn-ghost; // Composite mixin
+  justify-content: flex-start;
+  padding: var.$spacing-sm var.$spacing-md !important;
+  font-size: var.$font-size-base;
+
+  &.active { // RouterLink active
+    background-color: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.15);
+    color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+    font-weight: 600;
+  }
+  .mobile-nav-link-icon-ephemeral { margin-right: var.$spacing-sm; }
+}
+
+.mobile-action-buttons-ephemeral {
+  display: flex;
+  flex-direction: column;
+  gap: var.$spacing-sm;
+  padding-top: var.$spacing-md;
+  border-top: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.15);
+
+  .mobile-full-width-btn-ephemeral {
+    @include buttonsFile.btn-secondary; // Default to secondary for base and look
+    width: 100%;
+    justify-content: center;
+    padding: var.$spacing-md !important;
+    font-size: var.$font-size-sm;
+
+    // For .btn-error variant, rely on adding .btn-error class in HTML,
+    // assuming .btn-error is defined in _buttons.scss using its own mixin.
+    // e.g. <button class="mobile-full-width-btn-ephemeral btn-error">
+    
+    .icon-base { margin-right: var.$spacing-xs;}
+  }
+}
+
+// Fullscreen Controls - Styles from v2.1.1
+.fullscreen-controls-ephemeral {
+  position: fixed;
+  top: var.$spacing-md;
+  right: var.$spacing-md;
+  z-index: var.$z-index-popover + 5; 
+  display: flex;
+  gap: var.$spacing-sm;
+}
+.fullscreen-close-header-btn-ephemeral { 
+  position: fixed;
+  top: var.$spacing-md;
+  right: var.$spacing-md;
+  z-index: var.$z-index-sticky + 5; 
+}
+
+.fullscreen-control-btn-ephemeral {
+  @include buttonsFile.btn; 
+  @include buttonsFile.btn-icon-modifier; 
+  background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.7);
+  backdrop-filter: blur(5px);
+  border: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.3);
+  color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+  @include commonMixins.holographic-border-glow('--color-accent-secondary', 1px, 6s, var.$radius-md);
+  padding: var.$spacing-sm !important;
+
+  &:hover {
+    background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.9);
+    color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+  }
+}
+
+// Transitions - Styles from v2.1.1
+.dropdown-transition-ephemeral-enter-active,
+.dropdown-transition-ephemeral-leave-active {
+  transition: opacity var.$duration-quick var.$ease-out-quad, transform var.$duration-quick var.$ease-out-quad;
+}
+.dropdown-transition-ephemeral-enter-from,
+.dropdown-transition-ephemeral-leave-to {
+  opacity: 0;
+  transform: translateY(-10px) scale(0.95);
+}
+
+.mobile-nav-transition-ephemeral-enter-active {
+  transition: transform var.$duration-smooth var.$ease-out-expo, opacity var.$duration-smooth var.$ease-out-quad;
+}
+.mobile-nav-transition-ephemeral-leave-active {
+  transition: transform var.$duration-quick var.$ease-in-quad, opacity var.$duration-quick var.$ease-in-quad;
+}
+.mobile-nav-transition-ephemeral-enter-from,
+.mobile-nav-transition-ephemeral-leave-to {
+  transform: translateY(-100%); 
+  opacity: 0;
+}
+
+// Ensure keyframes like voiceAuraPulse are defined (e.g., in _keyframes.scss or a general animations file)
+// Example:
+// @keyframes voiceAuraPulse {
+//   0%, 100% { box-shadow: 0 0 8px hsla(var(--color-current-voice-h, 0), var(--color-current-voice-s, 0%), var(--color-current-voice-l, 50%), 0.2); opacity: var(--voice-pulse-opacity, 0.4); }
+//   50% { box-shadow: 0 0 16px 4px hsla(var(--color-current-voice-h, 0), var(--color-current-voice-s, 0%), var(--color-current-voice-l, 50%), 0.4); opacity: 1; }
+// }
+// (Adjust keyframe definition as per your project's needs)
+

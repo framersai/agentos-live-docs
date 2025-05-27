@@ -1,0 +1,60 @@
+// File: frontend/src/assets/main.scss
+/**
+ * @file main.scss
+ * @description Main SCSS entry point for the "Ephemeral Harmony" design system.
+ * @version 2.2.1 - Added import for message component styles.
+ */
+
+// 1. Abstracts
+@use '../styles/abstracts/variables' as var;
+// @use '../styles/abstracts/functions';
+@use '../styles/abstracts/mixins';
+@use '../styles/abstracts/theme-definitions';
+
+// 2. Theme Engine
+@use '../styles/abstracts/theme-engine';
+
+// 3. Base Styles
+@use '../styles/base/reset';
+@use '../styles/base/typography';
+@use '../styles/base/global';
+
+// 4. Layout Styles
+@use '../styles/layout/app';
+@use '../styles/layout/header';
+@use '../styles/layout/footer';
+@use '../styles/layout/chat-interface'; // Renamed from _ephemeral-chat-log (file name was correct, import name fixed)
+@use '../styles/layout/unified-chat-layout';
+
+// 5. Animations & Transitions
+@use '../styles/animations/keyframes';
+@use '../styles/animations/transitions';
+
+// 6. Component Styles
+@use '../styles/components/buttons';
+@use '../styles/components/cards';
+@use '../styles/components/forms';
+@use '../styles/components/modals';
+@use '../styles/components/voice-input';
+@use '../styles/components/toasts';
+@use '../styles/components/loading-overlay';
+@use '../styles/components/diagram-viewer';
+@use '../styles/components/message';             // Added
+@use '../styles/components/ephemeral-chat-log'; // Styles for the EphemeralChatLog component itself
+@use '../styles/components/voice-controls-dropdown'; // <-- ADD THIS
+@use '../styles/components/agents/agent-chat-log'; // <-- ADD THIS
+// 7. View-Specific Styles
+// @use '../styles/views/public-home';
+// @use '../styles/views/private-home';
+// @use '../styles/views/about-page';
+
+// 8. Utility Classes
+@use '../styles/utilities/helpers';
+@use '../styles/components/chat-window'; // Added
+// 9. Tailwind CSS Directives
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// 10. Print Styles (Optional)
+// @use '../styles/base/print';

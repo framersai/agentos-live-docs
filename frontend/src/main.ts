@@ -8,8 +8,7 @@ import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import App from './App.vue';
 import router from './router'; // Import the router from the new file
-import './assets/main.css';
-
+import './assets/main.scss';
 // Import AUTH_TOKEN_KEY if needed directly in main, though it's mostly used by router/auth logic
 // export const AUTH_TOKEN_KEY = 'vcaAuthToken'; // Already exported from router/index.ts
 
