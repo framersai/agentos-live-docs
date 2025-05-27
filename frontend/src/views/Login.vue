@@ -127,7 +127,7 @@ onMounted(async () => {
             <img class="logo-image" src="@/assets/logo.svg" alt="Voice Coding Assistant Logo" />
           </div>
           <h1 class="app-main-title">
-            Voice Coding Assistant
+            Voice Chat Assistant
           </h1>
           <p class="app-subtitle">
             Unlock the power of AI. Sign in to continue.
