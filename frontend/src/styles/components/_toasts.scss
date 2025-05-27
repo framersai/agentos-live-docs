@@ -69,7 +69,7 @@
 
   .toast-title-ephemeral {
     font-family: var(--font-display, var.$font-family-display);
-    font-size: var.$font-size-base;
+    font-size: var.$font-size-base-default;
     font-weight: 600;
     color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
     margin-bottom: calc(var.$spacing-xs / 2);

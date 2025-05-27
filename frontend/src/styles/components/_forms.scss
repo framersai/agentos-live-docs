@@ -14,8 +14,8 @@
   width: 100%;
   padding: var.$spacing-sm var.$spacing-md;
   font-family: var(--font-sans, var.$font-family-sans);
-  font-size: var.$font-size-base;
-  line-height: var.$line-height-base;
+  font-size: var.$font-size-base-default;
+  line-height: var.$line-height-base-default;
   color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
   background-color: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.5); // Semi-transparent bg
   border: 1px solid hsl(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l));

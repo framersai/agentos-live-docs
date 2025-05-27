@@ -2,86 +2,100 @@
 /**
  * @file ChatWindow.vue
  * @description Main panel for displaying chat messages with "Ephemeral Harmony" styling.
- * @version 2.0.0 - Ephemeral Harmony theme integration.
+ * Manages message rendering, welcome placeholder, and loading state indication.
+ * @version 3.0.0 - Enhanced holographic styling and refined placeholder/loading states.
  */
 <script setup lang="ts">
-import { ref, onMounted, watch, onBeforeUnmount, nextTick, type PropType } from 'vue';
-import Message from './Message.vue'; // Assumes Message.vue is refactored
-import type { ChatMessage as StoreChatMessage } from '@/store/chat.store'; // Using the more complete type from store
-import { SparklesIcon } from '@heroicons/vue/24/outline'; // For welcome placeholder
+import { ref, onMounted, watch, onBeforeUnmount, nextTick, type PropType, computed } from 'vue';
+import Message from './Message.vue';
+import type { ChatMessage as StoreChatMessage } from '@/store/chat.store';
+import { useAgentStore } from '@/store/agent.store';
+import { agentService } from '@/services/agent.service';
 
-// ChatWindowMessage interface remains the same as your provided file
-interface ChatWindowMessage extends Omit<StoreChatMessage, 'agentId' | 'tool_calls' | 'tool_call_id' | 'name' | 'model' | 'usage' | 'estimatedTokenCount' | 'processedTokens' | 'relevanceScore'> {
-  // This component primarily cares about id, role, content, timestamp for rendering message bubbles.
-  // If it needs more, they should be added or Message.vue's MessageData should be used directly if compatible.
-  // For now, this ensures type compatibility with the iterated 'messages' prop.
-  // The Message.vue component itself expects a more complete MessageData (which now includes 'tool').
-}
-
-
+// Props
 const props = defineProps({
+  /**
+   * @prop {Array<StoreChatMessage>} messages - Array of chat messages to display.
+   */
   messages: {
-    type: Array as PropType<Array<StoreChatMessage>>, // Expecting full StoreChatMessage now
+    type: Array as PropType<Array<StoreChatMessage>>,
     required: true,
   },
+  /**
+   * @prop {boolean} isLoading - Indicates if the assistant is currently loading a response.
+   */
   isLoading: {
     type: Boolean,
     required: true,
   }
 });
 
+// Refs
 const chatContainerRef = ref<HTMLElement | null>(null);
-// isLandscape can be removed if not used for specific layout changes within this component anymore
-// const isLandscape = ref(false);
+const agentStore = useAgentStore();
 
+// Computed properties
+const currentAgent = computed(() => agentStore.activeAgent || agentService.getDefaultAgent());
+
+const welcomeTitle = computed(() => {
+  if (currentAgent.value?.id === 'general' || !currentAgent.value) {
+    return "Voice Chat Assistant";
+  }
+  return `${currentAgent.value.label}`;
+});
+
+const welcomeSubtitle = computed(() => {
+  if (currentAgent.value?.id === 'general' || !currentAgent.value) {
+    return "Ready to assist. How can I help you today? Try asking about coding, system design, or just chat!";
+  }
+  return currentAgent.value.description || `The ${currentAgent.value.label} is ready. What's on your mind?`;
+});
+
+const examplePrompts = computed(() => {
+  return currentAgent.value?.examplePrompts || [
+    "Explain Python decorators",
+    "Design a scalable chat app",
+    "Summarize this meeting's key points",
+    "Brainstorm ideas for a new project"
+  ];
+});
+
+
+// Methods
+/**
+ * @function scrollToBottom
+ * @description Scrolls the chat container to the latest message.
+ * Uses smooth scrolling for a better user experience.
+ */
 const scrollToBottom = () => {
   if (chatContainerRef.value) {
-    // Smooth scroll for a nicer feel
     chatContainerRef.value.scrollTo({
-        top: chatContainerRef.value.scrollHeight,
-        behavior: 'smooth'
+      top: chatContainerRef.value.scrollHeight,
+      behavior: 'smooth'
     });
   }
 };
 
+// Watchers
 watch(
   () => [props.messages.length, props.isLoading],
   ([messagesLength, isLoadingValue], [prevMessagesLength, prevIsLoadingValue]) => {
-    if (messagesLength !== prevMessagesLength || (isLoadingValue && !prevIsLoadingValue)) {
+    // Scroll to bottom if new messages are added or loading starts/stops
+    if (messagesLength !== prevMessagesLength || isLoadingValue !== prevIsLoadingValue) {
       nextTick(() => {
         scrollToBottom();
       });
     }
   },
-  { flush: 'post' }
+  { flush: 'post' } // Ensure DOM is updated before scrolling
 );
 
-/*
-const updateOrientation = () => {
-  if (typeof window !== 'undefined') {
-    isLandscape.value = window.innerWidth > window.innerHeight;
-  }
-};
-
+// Lifecycle Hooks
 onMounted(() => {
-  if (typeof window !== 'undefined') {
-    window.addEventListener('resize', updateOrientation);
-    updateOrientation();
-  }
-  nextTick(scrollToBottom);
+  nextTick(scrollToBottom); // Initial scroll to bottom
 });
 
-onBeforeUnmount(() => {
-  if (typeof window !== 'undefined') {
-    window.removeEventListener('resize', updateOrientation);
-  }
-});
-*/
-onMounted(() => {
-  nextTick(scrollToBottom);
-});
-
-
+// Expose methods to parent components if needed
 defineExpose({
   scrollToBottom
 });
@@ -93,19 +107,27 @@ defineExpose({
     class="chat-window-container-ephemeral"
     role="log"
     aria-live="polite"
+    aria-relevant="additions text"
   >
     <div class="chat-messages-wrapper-ephemeral">
       <div v-if="messages.length === 0 && !isLoading" class="welcome-placeholder-ephemeral">
-        <img src="/src/assets/logo.svg" alt="VCA Logo" class="welcome-logo" />
-        <h2 class="welcome-title">Voice Chat Assistant</h2>
-        <p class="welcome-subtitle">
-          Ready to assist. Select an agent or type your query in the input below.
-          Explore coding, system design, or simply chat!
+        <img 
+          :src="currentAgent?.iconPath || '/src/assets/logo.svg'" 
+          :alt="`${currentAgent?.label || 'VCA'} Logo`" 
+          class="welcome-logo-ephemeral" 
+        />
+        <h2 class="welcome-title-ephemeral">{{ welcomeTitle }}</h2>
+        <p class="welcome-subtitle-ephemeral">
+          {{ welcomeSubtitle }}
         </p>
-        <div class="example-prompts-grid-ephemeral">
-          <div class="prompt-tag-ephemeral">"Explain Python decorators"</div>
-          <div class="prompt-tag-ephemeral">"Design a scalable chat app"</div>
-          <div class="prompt-tag-ephemeral">"Brainstorm ideas for..."</div>
+        <div v-if="examplePrompts.length > 0" class="example-prompts-grid-ephemeral">
+          <div 
+            v-for="(prompt, index) in examplePrompts.slice(0, 4)" 
+            :key="`prompt-${index}`" 
+            class="prompt-tag-ephemeral"
+          >
+            {{ prompt }}
+          </div>
         </div>
       </div>
 
@@ -116,24 +138,20 @@ defineExpose({
         class="message-item-in-log"
       />
 
-      <div v-if="isLoading" class="loading-indicator-chat-ephemeral">
+      <div v-if="isLoading" class="loading-indicator-chat-ephemeral" aria-label="Assistant is thinking">
         <div class="spinner-dots-ephemeral">
-          <div class="dot-ephemeral"></div>
-          <div class="dot-ephemeral"></div>
-          <div class="dot-ephemeral"></div>
+          <div class="dot-ephemeral dot-1"></div>
+          <div class="dot-ephemeral dot-2"></div>
+          <div class="dot-ephemeral dot-3"></div>
         </div>
-        <p class="loading-text ml-3">Assistant is thinking...</p>
+        <p class="loading-text-ephemeral">Assistant is responding...</p>
       </div>
     </div>
   </div>
 </template>
 
 <style lang="scss">
-// All styles are now in frontend/src/styles/components/_chat-window.scss
-// Ensure component-specific scrollbar classes if needed are applied or mixin is used.
-.message-item-in-log {
-  // Optional: add a slight margin if the gap from flex in wrapper is not enough
-  // For transitions if messages are added/removed from this list specifically:
-  // transition: all 0.3s var(--ease-out-quad);
-}
+// Styles are in frontend/src/styles/components/_chat-window.scss
+// This ensures that the component-specific styles are co-located with the component logic
+// while still being part of the global SCSS build process.
 </style>
