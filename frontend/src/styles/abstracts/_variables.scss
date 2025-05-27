@@ -67,7 +67,6 @@ $chat-log-height-default: 200px;
 // Visual effect defaults (used as fallbacks or base values for CSS vars if not set by theme)
 $blur-glass-default: 10px;
 
-// -----------------------------------------------------------------------------
 // Shadows
 // -----------------------------------------------------------------------------
 $shadow-offset-sm: 2px;
@@ -82,12 +81,16 @@ $default-shadow-color-l: 30%; // Darker base for shadows, themes control lightne
 $default-shadow-opacity-soft: 0.08;
 $default-shadow-opacity-medium: 0.12;
 $default-shadow-opacity-strong: 0.18;
+$default-shadow-opacity-deep: 0.15; // Added: Default opacity for deeper shadows (adjust value as needed)
 $default-shadow-highlight-modifier: '+25%'; // % to add to L for neomorphic highlight
 
 // Predefined full shadow definitions for SCSS use (e.g., as mixin defaults)
 $scss-shadow-color-string-soft: hsla($default-shadow-color-h, $default-shadow-color-s, $default-shadow-color-l, $default-shadow-opacity-soft);
 $scss-shadow-color-string-medium: hsla($default-shadow-color-h, $default-shadow-color-s, $default-shadow-color-l, $default-shadow-opacity-medium);
 $scss-shadow-color-string-strong: hsla($default-shadow-color-h, $default-shadow-color-s, $default-shadow-color-l, $default-shadow-opacity-strong);
+// Consider adding one for deep if used directly in SCSS, e.g.:
+// $scss-shadow-color-string-deep: hsla($default-shadow-color-h, $default-shadow-color-s, $default-shadow-color-l, $default-shadow-opacity-deep);
+
 
 $scss-box-shadow-sm: 0 #{$shadow-offset-sm} calc(#{$shadow-offset-sm} * 1.5) #{$scss-shadow-color-string-soft};
 $scss-box-shadow-md: 0 #{$shadow-offset-md} calc(#{$shadow-offset-md} * 2) #{$scss-shadow-color-string-medium};

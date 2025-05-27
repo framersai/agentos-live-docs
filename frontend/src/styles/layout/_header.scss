@@ -3,16 +3,16 @@
  * @file _header.scss
  * @description Styles for the main application header, "Ephemeral Harmony" theme.
  * Features glassmorphism, holographic accents, themed controls, dynamic activity indicators,
- * and integrates the new UserSettingsDropdown and VoiceControlsDropdown.
- * @version 3.0.0
+ * and integrates the new UserSettingsDropdown, SiteMenuDropdown, and VoiceControlsDropdown.
+ * @version 3.1.0 - Added SiteMenuDropdown integration.
  */
 
 @use '../abstracts/variables' as var;
 @use '../abstracts/mixins' as mixins;
-@use '../components/buttons' as buttonsFile; // For potential direct use or reference
+@use '../components/buttons' as buttonsFile;
 
 .app-header-ephemeral {
-  height: var(--header-height, 64px);
+  height: var(--header-height, 64px); // Use CSS var, fallback to SCSS var
   padding: 0 var.$spacing-md; // Main horizontal padding
   display: flex;
   align-items: center;
@@ -22,25 +22,30 @@
   z-index: var.$z-index-sticky;
 
   @include mixins.glassmorphic-pane(
-    hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.45), // More transparent for header
-    hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.2), // Softer border
-    calc(var(--blur-glass) * 1.1), // Slightly more blur for header distinctness
-    var(--shadow-depth-sm)
+    '--color-bg-primary', // CSS Var prefix for HSL components
+    '--color-border-glass', // CSS Var prefix for HSL components
+    '--blur-glass', // CSS Var for blur amount
+    '--shadow-depth-sm', // CSS Var for box-shadow string
+    // SCSS Fallbacks (only if CSS vars are somehow not defined)
+    var.$default-color-bg-primary-h, var.$default-color-bg-primary-s, var.$default-color-bg-primary-l, 0.45, // bg
+    var.$default-color-border-glass-h, var.$default-color-border-glass-s, var.$default-color-border-glass-l, 0.2, // border
+    var.$blur-glass-default, // blur
+    var.$scss-box-shadow-sm // shadow
   );
   border-bottom: 1px solid hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.2);
-  transition: all var.$duration-smooth var.$ease-out-quad; // For theme changes and active states
+  transition: all var.$duration-smooth var.$ease-out-quad;
 
-  &.ai-speaking-active { // Class from App.vue
+  &.ai-speaking-active {
     border-bottom-color: hsla(var(--color-voice-ai-speaking-h), var(--color-voice-ai-speaking-s), var(--color-voice-ai-speaking-l), 0.7);
     box-shadow: var(--shadow-depth-sm),
-                0 0 25px 5px hsla(var(--color-voice-ai-speaking-h), var(--color-voice-ai-speaking-s), var(--color-voice-ai-speaking-l), 0.35),
-                inset 0 -2px 5px hsla(var(--color-voice-ai-speaking-h), var(--color-voice-ai-speaking-s), var(--color-voice-ai-speaking-l), 0.1); // Inner glow from bottom
+      0 0 25px 5px hsla(var(--color-voice-ai-speaking-h), var(--color-voice-ai-speaking-s), var(--color-voice-ai-speaking-l), 0.35),
+      inset 0 -2px 5px hsla(var(--color-voice-ai-speaking-h), var(--color-voice-ai-speaking-s), var(--color-voice-ai-speaking-l), 0.1);
   }
-  &.user-listening-active { // Class from App.vue
-     border-bottom-color: hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.7);
-     box-shadow: var(--shadow-depth-sm),
-                 0 0 25px 5px hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.35),
-                 inset 0 -2px 5px hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.1);
+  &.user-listening-active {
+    border-bottom-color: hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.7);
+    box-shadow: var(--shadow-depth-sm),
+      0 0 25px 5px hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.35),
+      inset 0 -2px 5px hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.1);
   }
 }
 
@@ -48,26 +53,27 @@
   width: 100%;
   max-width: var.$site-max-width;
   margin: 0 auto;
-  padding: 0 var.$spacing-xs; // Reduced inner padding for more space
-  display: grid; // Using grid for more structured layout
+  padding: 0 var.$spacing-xs;
+  display: grid;
   grid-template-columns: auto 1fr auto; // Logo | Center (Hearing Icon) | Controls
   align-items: center;
   height: 100%;
   gap: var.$spacing-md;
 
   @media (max-width: var.$breakpoint-md) {
-    grid-template-columns: auto 1fr; // Logo | Controls (Hearing icon might hide or move to controls)
-    .header-center-section { display: none; } // Hide hearing icon on medium and down by default
+    grid-template-columns: auto 1fr; // Logo | Controls
+    .header-center-section { display: none; }
   }
   @media (max-width: var.$breakpoint-sm) {
-     gap: var.$spacing-sm; // Tighter gap on small screens
+    gap: var.$spacing-sm;
+    padding: 0 var.$spacing-xs; // Ensure some padding on smallest screens
   }
 }
 
 .header-left-section {
   display: flex;
   align-items: center;
-  justify-self: start; // Align to the start of its grid area
+  justify-self: start;
 }
 
 .logo-title-link-ephemeral {
@@ -85,144 +91,139 @@
       filter: drop-shadow(0 0 12px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.8));
     }
     .app-title-ephemeral {
-       @include mixins.text-glow('--color-accent-primary', 7px, 0.9);
+      @include mixins.text-glow('--color-accent-primary', 7px, 0.9); // Use SCSS var names for mixin
     }
   }
   &:focus-visible {
     outline: none;
-    border-radius: var.$radius-sm; // For focus ring visibility
-    @include mixins.focus-ring('--color-bg-primary', '--color-accent-primary', 1px, 2px, 0.9);
+    border-radius: var.$radius-sm;
+    @include mixins.focus-ring(
+      '--color-bg-primary', // CSS Var prefix
+      '--color-accent-primary', // CSS Var prefix
+      1px, 2px, 0.9,
+      // SCSS Fallbacks
+      var.$default-color-bg-primary-h, var.$default-color-bg-primary-s, var.$default-color-bg-primary-l,
+      var.$default-color-accent-primary-h, var.$default-color-accent-primary-s, var.$default-color-accent-primary-l
+    );
   }
 }
 
 .app-logo-ephemeral {
-  width: 36px;
-  height: 36px;
+  width: 32px; // Slightly smaller default
+  height: 32px;
   transition: transform 0.4s var.$ease-elastic, filter 0.3s var.$ease-out-quad;
   filter: drop-shadow(0 0 8px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.6));
-  // The SVG animation itself is preserved.
+
+  @media (min-width: var.$breakpoint-sm) {
+    width: 36px;
+    height: 36px;
+  }
 }
 
 .app-title-ephemeral {
   font-family: var(--font-family-display, var.$font-family-display);
-  font-size: clamp(1.1rem, 0.9rem + 0.6vw, 1.35rem); // Responsive title
+  font-size: clamp(1rem, 0.8rem + 0.6vw, 1.25rem); // Slightly smaller responsive title
   line-height: 1;
   letter-spacing: 0.01em;
-  white-space: nowrap; // Prevent title wrapping if possible
-  @include mixins.text-glow('--color-accent-primary', 6px, 0.7);
+  white-space: nowrap;
+  @include mixins.text-glow('--color-accent-primary', 6px, 0.7); // Use SCSS var names for mixin
   transition: text-shadow 0.3s var.$ease-out-quad;
-  .font-light { opacity: 0.75; font-weight: 300; } // Style the "Assistant" part
+  .font-light { opacity: 0.75; font-weight: 300; }
+
+  @media (min-width: var.$breakpoint-sm) {
+    font-size: clamp(1.1rem, 0.9rem + 0.6vw, 1.35rem);
+  }
 }
 
 .header-center-section {
-  justify-self: center; // Center in its grid area
+  justify-self: center;
 }
 
 .hearing-icon-wrapper-ephemeral {
-  width: 40px; // Standardized size
-  height: 40px;
+  width: 38px; // Standardized size
+  height: 38px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: var.$radius-full;
   transition: all var.$duration-smooth var.$ease-out-quad;
-  position: relative; // For pseudo-element glows
+  position: relative;
 
-  // Base animated glow for idle state
-  &::before {
+  &::before { // Base ambient animated glow
     content: '';
     position: absolute;
-    inset: -3px;
+    inset: -2px; // Tighter glow
     border-radius: inherit;
     background: conic-gradient(
       from 0deg,
-      hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.1),
       hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.05),
-      hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.1)
+      hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.02),
+      hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.05)
     );
-    animation: spin 8s linear infinite; // Slow spin for subtle ambient glow
+    animation: spin 10s linear infinite; // Slower ambient spin
     z-index: -1;
-    opacity: 0.7;
+    opacity: 0.6;
+    transition: opacity 0.3s, background 0.3s, inset 0.3s;
   }
 
-
   .hearing-icon-svg {
-    width: 90%; // SVG fills most of the wrapper
-    height: 90%;
-    opacity: 0.6;
+    width: 85%;
+    height: 85%;
+    opacity: 0.5;
     transition: opacity 0.3s, transform 0.3s var.$ease-out-quad;
-    // The SVG internal animations provide the "breathing"
+    // Consider how the SVG's internal animation interacts with these wrapper states
+    // The SVG itself has its own complex animations.
+    // We might need to control those via JS or further CSS if direct prop changes aren't enough.
   }
 
   &.idle {
-    .hearing-icon-svg { opacity: 0.4; transform: scale(0.95); }
-     &::before { opacity: 0.5; animation-duration: 12s; }
+    .hearing-icon-svg { opacity: 0.35; transform: scale(0.9); }
+    &::before { opacity: 0.4; animation-duration: 15s; inset: -1px; }
   }
 
-  &.listening { // User is speaking
-    background-color: hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.1);
-    &::before { // Brighter, more active glow
+  &.listening { // User is speaking - Bright pulsating user color
+    background-color: hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.08);
+    &::before {
       background: conic-gradient(
         from 0deg,
-        hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.3),
-        hsla(var(--color-voice-user-h), var(--color-voice-user-s), calc(var(--color-voice-user-l) + 10%), 0.15),
-        hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.3)
+        hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.25),
+        hsla(var(--color-voice-user-h), var(--color-voice-user-s), calc(var(--color-voice-user-l) + 10%), 0.1),
+        hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.25)
       );
-      animation-duration: 3s; // Faster spin
+      animation-duration: 3s; animation-name: spin, subtlePulse; --scale-pulse: 1.1; --opacity-pulse: 1;
+      opacity: 0.9;
+      inset: -3px;
+    }
+    .hearing-icon-svg { opacity: 0.9; transform: scale(1); }
+  }
+
+  &.speaking { // AI is speaking - Bright pulsating AI color
+    background-color: hsla(var(--color-voice-ai-speaking-h), var(--color-voice-ai-speaking-s), var(--color-voice-ai-speaking-l), 0.08);
+    &::before {
+      background: conic-gradient(
+        from 0deg,
+        hsla(var(--color-voice-ai-speaking-h), var(--color-voice-ai-speaking-s), var(--color-voice-ai-speaking-l), 0.3),
+        hsla(var(--color-voice-ai-speaking-h), var(--color-voice-ai-speaking-s), calc(var(--color-voice-ai-speaking-l) + 10%), 0.15),
+        hsla(var(--color-voice-ai-speaking-h), var(--color-voice-ai-speaking-s), var(--color-voice-ai-speaking-l), 0.3)
+      );
+      animation-duration: 2.5s; animation-name: spin, subtlePulse; --scale-pulse: 1.12; --opacity-pulse: 1;
       opacity: 1;
-      inset: -4px; // Larger glow effect
+      inset: -4px;
     }
     .hearing-icon-svg { opacity: 1; transform: scale(1.05); }
-  }
-  &.speaking { // AI is speaking
-    background-color: hsla(var(--color-voice-ai-speaking-h), var(--color-voice-ai-speaking-s), var(--color-voice-ai-speaking-l), 0.1);
-     &::before {
-      background: conic-gradient(
-        from 0deg,
-        hsla(var(--color-voice-ai-speaking-h), var(--color-voice-ai-speaking-s), var(--color-voice-ai-speaking-l), 0.35),
-        hsla(var(--color-voice-ai-speaking-h), var(--color-voice-ai-speaking-s), calc(var(--color-voice-ai-speaking-l) + 10%), 0.2),
-        hsla(var(--color-voice-ai-speaking-h), var(--color-voice-ai-speaking-s), var(--color-voice-ai-speaking-l), 0.35)
-      );
-      animation-duration: 2.5s;
-      opacity: 1;
-      inset: -5px;
-    }
-    .hearing-icon-svg { opacity: 1; transform: scale(1); }
   }
 }
 
 .header-right-section {
   display: flex;
   align-items: center;
-  gap: var.$spacing-sm; // Default gap for items in this section
-  justify-self: end; // Align to the end of its grid area
+  gap: var.$spacing-xs; // Tighter gap by default
+  justify-self: end;
 
-  @media (min-width: var.$breakpoint-md) {
-    gap: var.$spacing-md; // More space on larger screens
+  @media (min-width: var.$breakpoint-sm) {
+    gap: var.$spacing-sm;
   }
 }
-
-.desktop-quick-nav-ephemeral {
-  display: flex; // Shown by default, hidden by Tailwind classes on smaller screens if Header.vue uses md:flex
-  align-items: center;
-  gap: var.$spacing-xs;
-}
-
-// VoiceControlsDropdown styles are now in its own SCSS file.
-// The trigger button for it can inherit from .nav-button-ephemeral or have specific styling here.
-// Example if VoiceControlsDropdown trigger needs unique styling:
-:deep(.vcd__trigger) { // Targeting the trigger from VoiceControlsDropdown.vue
-  // @include buttonsFile.btn-secondary; // Or a different base
-  // Override padding, font-size etc. if needed
-  // padding: calc(var.$spacing-xs * 1.5) var.$spacing-sm !important;
-  // font-size: var.$font-size-sm !important;
-  // color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
-  // &:hover {
-  //   color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
-  //   background-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.08);
-  // }
-}
-
 
 .session-cost-display-ephemeral {
   padding: calc(var.$spacing-xs + 1px) var.$spacing-sm;
@@ -232,36 +233,33 @@
   color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
   background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.5);
   border: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.4);
-  min-width: 75px; // Ensure it has some width
+  min-width: 70px;
   text-align: right;
   white-space: nowrap;
   transition: all var.$duration-quick;
-  @include mixins.text-glow('--color-accent-secondary', 3px, 0.3); // Subtle glow
+  @include mixins.text-glow('--color-accent-secondary', 3px, 0.2); // Use SCSS var names for mixin
 
   .cost-value {
     font-weight: 600;
     color: hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l));
   }
-   &:hover {
+  &:hover {
     background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.7);
     border-color: hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.5);
   }
 }
 
-// UserSettingsDropdown trigger (if not styled sufficiently by its own component)
-:deep(.user-settings-trigger-button) {
-  // Example of additional styling if needed
-  // color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
-  // &:hover {
-  //   background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.8);
-  // }
+// Ensure dropdown trigger buttons are consistently styled
+// These styles will apply to the trigger buttons of UserSettingsDropdown, SiteMenuDropdown, VoiceControlsDropdown
+// if they use the common .btn-ghost-ephemeral.btn-icon-ephemeral classes.
+.btn.btn-ghost-ephemeral.btn-icon-ephemeral {
+  color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+  &:hover, &:focus-visible {
+    color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
+    background-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.08);
+  }
 }
 
-// Fallback for mobile nav toggle if needed (though likely handled by UserSettingsDropdown internally now or Tailwind)
-// .mobile-nav-toggle-ephemeral { /* ... */ }
-
-// General structure for dropdown menus in header (if not handled by UserSettingsDropdown styles)
-.dropdown-menu-ephemeral { /* This was from original Header.vue SCSS, likely UserSettingsDropdown.vue handles its own menu */ }
-.dropdown-header-ephemeral { /* ... */ }
-.dropdown-title-ephemeral { /* ... */ }
-// ... other generic dropdown item styles might be centralized or per-dropdown component ...
+// Ensure dropdowns have consistent styling (assuming they use card-neo-raised or similar)
+// And that dropdown items use .dropdown-item-holographic for consistent look & feel.
+// Specifics for .dropdown-item-holographic might be in a global _dropdowns.scss or _cards.scss
