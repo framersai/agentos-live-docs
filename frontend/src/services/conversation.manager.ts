@@ -1,4 +1,3 @@
-// File: frontend/src/services/conversation.manager.ts
 /**
  * @file Conversation History Manager
  * @description Manages the conversation history for the chat interface,
@@ -6,7 +5,7 @@
  * to prepare a segment of the conversation history, typically the most recent messages,
  * to be sent to the LLM backend. The size of this history segment is configurable
  * by the user via settings, with sensible defaults.
- * @version 1.1.0 - Clarified message count interpretation and constants.
+ * @version 1.1.1 - Added clearHistory method stub.
  */
 import { ref, watch, Ref } from 'vue'; // Added Ref
 import { useStorage } from '@vueuse/core';
@@ -46,11 +45,6 @@ export interface ConversationMessage {
 }
 
 // Default number of individual messages (user + assistant) to keep.
-// This aligns with DEFAULT_MAX_HISTORY_MESSAGES from .env if it means 10 pairs (20 messages),
-// or 10 individual messages. The manager itself deals with individual messages.
-// The backend's chat.routes.ts interprets the 'maxHistoryMessages' param as pairs.
-// So, a client-side setting of 20 individual messages here would be appropriate for 10 pairs.
-// Let's set the default to 20 individual messages (10 pairs) as per typical LLM history context.
 const DEFAULT_INDIVIDUAL_MESSAGES_COUNT = parseInt(
   useStorage('defaultIndividualMessagesCount', 20).value.toString()
 );
@@ -114,9 +108,8 @@ class ConversationManager {
   public setHistoryMessageCount(count: number): void {
     const validatedCount = this.validateHistorySize(count);
     this.currentMessagesToKeepCount.value = validatedCount;
-    // Persist this choice using useStorage (already handled by constructor's useStorage)
     const storedHistorySize = useStorage('chatHistoryIndividualMessageCount', DEFAULT_INDIVIDUAL_MESSAGES_COUNT);
-    storedHistorySize.value = validatedCount; // Ensure the watcher for storedHistorySize also updates it if called externally.
+    storedHistorySize.value = validatedCount;
   }
 
   /**
@@ -129,21 +122,10 @@ class ConversationManager {
 
   /**
    * Prepares the conversation history for sending to the LLM API.
-   * It takes a slice of the most recent messages based on the configured count
-   * or an optional token limit.
-   *
-   * The primary role is to select a subset of allMessages.
-   * System messages from historical context are typically filtered out by this method,
-   * as the backend usually prepends a fresh, dynamic system prompt.
-   *
    * @param {ConversationMessage[]} allMessages - The complete list of messages in the current session.
    * @param {number} [maxMessagesToSend] - Override for the number of individual messages to send.
-   * Uses the user-configured currentMessagesToKeepCount if not provided.
    * @param {number} [maxTokenEstimate] - Optional: An estimated maximum token count for the history payload.
-   * If provided, history will be truncated to fit this limit,
-   * prioritizing the most recent messages.
-   * @returns {ConversationMessage[]} A slice of the allMessages array representing the relevant history
-   * to be sent to the API.
+   * @returns {ConversationMessage[]} A slice of the allMessages array.
    */
   public prepareHistoryForApi(
     allMessages: ConversationMessage[],
@@ -154,22 +136,16 @@ class ConversationManager {
       ? this.validateHistorySize(maxMessagesToSend)
       : this.currentMessagesToKeepCount.value;
 
-    // Take the last N messages. These are individual messages.
     let historySlice = allMessages.slice(-numMessages);
 
-    // If a token limit is provided, further truncate the historySlice.
     if (maxTokenEstimate && maxTokenEstimate > 0) {
       let currentTokenEstimate = 0;
       const tokenLimitedHistory: ConversationMessage[] = [];
-
-      // Iterate from newest to oldest to preserve recent context within token limit.
       for (let i = historySlice.length - 1; i >= 0; i--) {
         const message = historySlice[i];
-        // Simple token estimation, can be replaced with a more accurate tokenizer if needed.
         const messageTokens = Math.ceil(message.content.length / CHARS_PER_TOKEN_ESTIMATE);
-
         if (currentTokenEstimate + messageTokens <= maxTokenEstimate) {
-          tokenLimitedHistory.unshift(message); // Add to the beginning to maintain chronological order.
+          tokenLimitedHistory.unshift(message);
           currentTokenEstimate += messageTokens;
         } else {
           console.warn(
@@ -177,20 +153,16 @@ class ConversationManager {
               currentTokenEstimate + messageTokens
             } > ${maxTokenEstimate}. Last message considered: "${message.content.substring(0,30)}..."`
           );
-          break; // Stop if adding this message exceeds the token limit.
+          break;
         }
       }
       historySlice = tokenLimitedHistory;
     }
 
-    // Filter out any historical system messages if we are sending more than just one message.
-    // The backend will typically add its own dynamic system prompt to the API call.
-    // This prevents stale or conflicting system messages from polluting the context.
     if (historySlice.length > 1) {
       historySlice = historySlice.filter(msg => msg.role !== 'system');
     } else if (historySlice.length === 1 && historySlice[0].role === 'system') {
-      // If the only message selected is a system message (e.g., an initial prompt from user), keep it.
-      // This scenario is less common for typical chat history but handled for completeness.
+      // Keep if only message is system
     }
 
     console.log(`ConversationManager: Prepared ${historySlice.length} messages for API.`);
@@ -200,9 +172,6 @@ class ConversationManager {
   /**
    * Utility function to add a new message to a conversation history array
    * and ensure the history does not exceed the configured maximum size.
-   * Note: Home.vue or similar view components usually manage the primary messages array.
-   * This method can be useful for auxiliary history management if needed elsewhere.
-   *
    * @param {ConversationMessage[]} currentHistory - The current array of messages.
    * @param {ConversationMessage} newMessage - The new message to add.
    * @returns {ConversationMessage[]} The updated history array, truncated if necessary.
@@ -213,18 +182,32 @@ class ConversationManager {
   ): ConversationMessage[] {
     const updatedHistory = [...currentHistory, newMessage];
     if (updatedHistory.length > this.currentMessagesToKeepCount.value) {
-      // Slice from the end to keep the most recent messages.
       return updatedHistory.slice(-this.currentMessagesToKeepCount.value);
     }
     return updatedHistory;
+  }
+
+  /**
+   * Clears the conversation history.
+   * IMPORTANT: The actual implementation of clearing history depends on how
+   * messages are stored (e.g., Pinia store, localStorage, global ref).
+   * This is a placeholder and needs to be adapted to your application's state management.
+   */
+  public clearHistory(): void {
+    console.log('ConversationManager: clearHistory() called. Implement actual history clearing logic here.');
+    // Example: If messages are in localStorage under 'chatMessages'
+    // localStorage.removeItem('chatMessages');
+    // Or if you use a Pinia store, dispatch an action:
+    // import { useMessageStore } from '@/stores/messageStore'; // Adjust path
+    // const messageStore = useMessageStore();
+    // messageStore.clearAllMessages();
+
+    // For now, this method serves to resolve the TypeScript error.
+    // You MUST implement the logic specific to your application.
   }
 }
 
 /**
  * Singleton instance of the ConversationManager.
- * Use this instance throughout the frontend application to manage conversation history context.
- * @example
- * import { conversationManager } from './conversation.manager';
- * const historyForApi = conversationManager.prepareHistoryForApi(allMyMessages);
  */
 export const conversationManager = new ConversationManager();

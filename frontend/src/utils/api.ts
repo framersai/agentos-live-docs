@@ -1,341 +1,419 @@
+// File: frontend/src/utils/api.ts
 /**
- * @file API Utility
- * @description Centralized Axios instance and API endpoint definitions for frontend-backend communication.
- * Handles base URL configuration, authentication token injection, and basic error interception.
- * All functions are designed to be type-safe and adhere to modern TypeScript practices.
- * @version 1.1.0 - Updated auth token key and STT endpoint paths. Added TTS API placeholder.
- */
+ * @file API Utility
+ * @description Centralized Axios instance and API endpoint definitions for frontend-backend communication.
+ * Handles base URL configuration, authentication token injection, and basic error interception.
+ * All functions are designed to be type-safe and adhere to modern TypeScript practices.
+ * @version 1.3.5 - Refined auth header logic to only send valid JWTs.
+ */
 import axios, { type AxiosInstance, type InternalAxiosRequestConfig, type AxiosResponse } from 'axios';
 
 // Environment variables for API configuration.
-// These should be set in your .env file and accessed via Vite's import.meta.env.
-// Example: VITE_API_BASE_URL=http://localhost:3001
-// @ts-ignore
-const API_BASE_URL: string = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
-// SHARED_PASSWORD is used as a fallback if no dynamic token is present.
-// This is generally not recommended for production but can be useful for simplified auth in development.
-// @ts-ignore
-const SHARED_PASSWORD_FALLBACK: string = import.meta.env.VITE_SHARED_PASSWORD || 'password';
+const API_BASE_URL: string = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api';
+// const SHARED_PASSWORD_FALLBACK: string = import.meta.env.VITE_SHARED_PASSWORD || 'password'; // Fallback for dev mode token removed for clarity
 
 /**
- * Key used for storing the authentication token in localStorage/sessionStorage.
- * @constant {string}
- */
-const AUTH_TOKEN_KEY: string = 'vcaAuthToken';
+ * Key used for storing the authentication token.
+ * @constant {string}
+ */
+export const AUTH_TOKEN_KEY: string = 'vcaAuthToken';
 
 /**
- * Main Axios instance configured for the Voice Coding Assistant API.
- * It includes the base URL, a default timeout, and common headers.
- * Interceptors are attached for request and response handling.
- * @type {AxiosInstance}
- */
+ * Main Axios instance for API communication.
+ * @type {AxiosInstance}
+ */
 export const api: AxiosInstance = axios.create({
-  baseURL: API_BASE_URL,
-  timeout: 45000, // Increased timeout to 45 seconds for potentially long LLM responses
-  headers: {
-    'Content-Type': 'application/json',
-    'X-Client-Version': '1.2.0', // Example custom header for client version tracking
-  },
+  baseURL: API_BASE_URL,
+  timeout: 90000, // Increased timeout for potentially long operations
+  headers: {
+    'Content-Type': 'application/json',
+    'X-Client-Version': '1.3.5', 
+  },
 });
 
-console.log(`API Service Initialized. Base URL: ${API_BASE_URL}`);
+console.log(`[API Service] Initialized. Base URL: ${api.defaults.baseURL}`);
 
 /**
- * Retrieves the current authentication token from storage.
- * Prioritizes localStorage, then sessionStorage.
- * @returns {string | null} The authentication token or null if not found.
+ * @function getAuthToken
+ * @description Retrieves the authentication token from localStorage or sessionStorage.
+ * @returns {string | null} The token, or null if not found.
  */
 const getAuthToken = (): string | null => {
-  return localStorage.getItem(AUTH_TOKEN_KEY) || sessionStorage.getItem(AUTH_TOKEN_KEY);
+  if (typeof window === 'undefined') return null;
+  return localStorage.getItem(AUTH_TOKEN_KEY) || sessionStorage.getItem(AUTH_TOKEN_KEY);
 };
 
 /**
- * Builds the Authorization header object.
- * Uses the stored token or falls back to the shared password mechanism if no token is found.
- * @returns {Record<string, string>} An object containing the Authorization header, or an empty object.
+ * @function getAuthHeaders
+ * @description Constructs authentication headers. Only includes Authorization if a valid token exists.
+ * @returns {Record<string, string>} Authentication headers.
  */
 export const getAuthHeaders = (): Record<string, string> => {
-  const token = getAuthToken();
-  const effectiveToken = token || SHARED_PASSWORD_FALLBACK; // Fallback for simplified dev auth
-
-  if (!effectiveToken) {
-    console.warn("API: No authentication token or fallback password available.");
-    return {};
-  }
-  return { 'Authorization': `Bearer ${effectiveToken}` };
+  const token = getAuthToken();
+  if (token) { // Only add Authorization header if a token actually exists
+    return { 'Authorization': `Bearer ${token}` };
+  }
+  return {}; // Return empty object if no token, allowing public requests
 };
 
-// --- Axios Interceptors ---
-
-/**
- * Request Interceptor:
- * Automatically injects the Authorization header into outgoing requests
- * if it's not already present. This ensures all API calls are authenticated.
- */
 api.interceptors.request.use(
-  (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
-    if (!config.headers.Authorization) {
-      const authHeaders = getAuthHeaders();
-      if (authHeaders.Authorization) {
-        config.headers.Authorization = authHeaders.Authorization;
-      }
-    }
-    // Log outgoing requests in development for debugging
-    // @ts-ignore
-    if (import.meta.env.DEV) {
-      console.log(`API Request: ${config.method?.toUpperCase()} ${config.url}`, config.data || config.params || '');
-    }
-    return config;
-  },
-  (error: any): Promise<any> => {
-    console.error('API Request Interceptor Error:', error);
-    return Promise.reject(error);
-  }
+  (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
+    // Only add Authorization header if it's not already present AND a valid token exists.
+    // This prevents overriding specific auth headers if set manually for a particular request.
+    if (!config.headers.Authorization) {
+      const authHeaders = getAuthHeaders(); // This now only returns a header if a valid token is found
+      if (authHeaders.Authorization) {
+        config.headers.Authorization = authHeaders.Authorization;
+      }
+    }
+    return config;
+  },
+  (error: any): Promise<any> => {
+    console.error('[API Service] Request Interceptor Error:', error);
+    return Promise.reject(error);
+  }
 );
 
-/**
- * Response Interceptor:
- * Handles global API response scenarios, particularly authentication errors (401).
- * If a 401 Unauthorized error is received, it clears any stored invalid tokens
- * and redirects the user to the login page.
- */
 api.interceptors.response.use(
-  (response: AxiosResponse): AxiosResponse => {
-    // Log successful responses in development
-    // @ts-ignore
-    if (import.meta.env.DEV) {
-      // console.log(`API Response: ${response.status} from ${response.config.url}`, response.data);
-    }
-    return response;
-  },
-  (error: any): Promise<any> => {
-    console.error(
-      `API Response Error: Status ${error.response?.status} from ${error.config?.url}`,
-      error.response?.data || error.message
-    );
+  (response: AxiosResponse): AxiosResponse => response,
+  (error: any): Promise<any> => {
+    const status = error.response?.status;
+    const url = error.config?.url;
+    const data = error.response?.data;
+    console.error(`[API Service] Response Error: Status ${status} from ${url}`, data || error.message);
 
-    if (error.response?.status === 401) {
-      // Clear potentially invalid tokens
-      localStorage.removeItem(AUTH_TOKEN_KEY);
-      sessionStorage.removeItem(AUTH_TOKEN_KEY);
-      delete api.defaults.headers.common['Authorization']; // Clear from current Axios instance
-
-      // Redirect to login if not already on the login page
-      if (window.location.pathname !== '/login') {
-        console.log('API: Unauthorized (401). Redirecting to login.');
-        // Consider using Vue Router for navigation if this utility is used within a Vue app context
-        // For simplicity here, using window.location
-        window.location.href = '/login?sessionExpired=true';
-      }
-    }
-    return Promise.reject(error);
-  }
+    if (status === 401 && typeof window !== 'undefined') {
+      const currentToken = getAuthToken(); // Check if a token was present
+      if (currentToken) { // Only clear and redirect if there was a token that failed
+        localStorage.removeItem(AUTH_TOKEN_KEY);
+        sessionStorage.removeItem(AUTH_TOKEN_KEY);
+        delete api.defaults.headers.common['Authorization']; // Also clear from default instance headers if set
+        console.warn('[API Service] Unauthorized (401) with existing token. Clearing token and redirecting to login.');
+        // Avoid redirect loop if already on login or public page
+        if (window.location.pathname !== '/login' && !window.location.pathname.startsWith('/welcome')) {
+          window.location.href = `/login?sessionExpired=true&reason=unauthorized&redirectTo=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+        }
+      } else {
+        console.warn('[API Service] Unauthorized (401) but no token was present. Frontend auth state might be inconsistent or this is a public route with server-side auth issues.');
+      }
+    }
+    return Promise.reject(error);
+  }
 );
 
-// --- API Endpoint Definitions ---
+// --- Shared Type Definitions for API Payloads & Responses ---
+// (ILlmUsageFE, ILlmToolCallFunctionFE, ILlmToolCallFE, AuthResponseFE, LogoutResponseFE - remain the same)
+// (ChatMessageFE, ProcessedHistoryMessageFE, ChatMessagePayloadFE - remain the same)
+// (SessionCostDetailsFE, BaseChatResponseDataFE, TextResponseDataFE, FunctionCallResponseDataFE, ChatResponseDataFE - remain the same)
+// (TranscriptionResponseFE, SttStatsResponseFE - remain the same)
+// (TTSRequestPayloadFE, TTSVoiceFE, TTSAvailableVoicesResponseFE - remain the same)
+// (ResetCostPayloadFE, ResetCostResponseFE - remain the same)
+// (DiagramRequestPayloadFE, DiagramResponseFE - remain the same)
 
-/**
- * @namespace authAPI
- * @description Endpoints related to user authentication.
- */
+export interface ILlmUsageFE {
+  prompt_tokens: number | null;
+  completion_tokens: number | null;
+  total_tokens: number | null;
+}
+
+export interface ILlmToolCallFunctionFE {
+  name: string;
+  arguments: string;
+}
+
+export interface ILlmToolCallFE {
+  id: string;
+  type: 'function';
+  function: ILlmToolCallFunctionFE;
+}
+
+export interface AuthResponseFE {
+  token?: string;
+  user: { id: string; [key: string]: any };
+  message: string;
+  authenticated?: boolean;
+}
+
+export interface LogoutResponseFE {
+  message: string;
+}
+
 export const authAPI = {
-  /**
-   * Authenticates a user with the provided password and "remember me" preference.
-   * @param {object} credentials - User credentials.
-   * @param {string} credentials.password - The user's password.
-   * @param {boolean} [credentials.rememberMe=false] - If true, token is stored in localStorage, otherwise sessionStorage.
-   * @returns {Promise<AxiosResponse<any>>} Promise resolving to the authentication response.
-   * Expected response: `{ token: string, user: object, message: string }`
-   */
-  login: (credentials: { password: string; rememberMe?: boolean }): Promise<AxiosResponse<{token: string, user: any, message: string}>> =>
-    api.post('/api/auth', credentials),
-
-  /**
-   * Checks the current authentication status of the user.
-   * Relies on the Authorization header being set by interceptors.
-   * @returns {Promise<AxiosResponse<any>>} Promise resolving to the authentication status.
-   * Expected response: `{ authenticated: boolean, user?: object, message: string }`
-   */
-  checkStatus: (): Promise<AxiosResponse<{authenticated: boolean, user?: any}>> => api.get('/api/auth'),
-
-   /**
-   * Logs the user out. Clears authentication cookies/tokens on the backend.
-   * @returns {Promise<AxiosResponse<any>>} Promise resolving to the logout confirmation.
-   */
-  logout: (): Promise<AxiosResponse<{message: string}>> => api.delete('/api/auth'),
+  login: (credentials: { password: string; rememberMe?: boolean }): Promise<AxiosResponse<AuthResponseFE>> =>
+    api.post('/auth', credentials),
+  checkStatus: (): Promise<AxiosResponse<AuthResponseFE>> => api.get('/auth'),
+  logout: (): Promise<AxiosResponse<LogoutResponseFE>> => api.delete('/auth'),
 };
 
-/**
- * @typedef ChatMessagePayload
- * @property {Array<{role: string, content: string}>} messages - The array of messages for the chat.
- * @property {string} mode - The operational mode (e.g., "coding", "system_design").
- * @property {string} language - Preferred programming language.
- * @property {boolean} [generateDiagram] - Hint for diagram generation.
- * @property {string} [userId] - User identifier.
- * @property {string} [conversationId] - Conversation identifier.
- * @property {number} [maxHistoryMessages] - Number of message pairs for history.
- * @property {boolean} [interviewMode] - Flag for interview mode.
- */
-export interface ChatMessagePayload {
-  messages: Array<{role: string, content: string}>;
-  mode: string;
-  language: string;
-  generateDiagram?: boolean;
-  userId?: string;
-  conversationId?: string;
-  maxHistoryMessages?: number;
-  interviewMode?: boolean;
+export interface ChatMessageFE {
+  role: 'user' | 'assistant' | 'system' | 'tool';
+  content: string | null;
+  timestamp?: number;
+  agentId?: string;
+  tool_call_id?: string;
+  tool_calls?: ILlmToolCallFE[];
+  name?: string;
 }
 
-/**
- * @typedef ChatResponseData
- * @property {string} content - The AI's response content.
- * @property {string} model - The model used for the response.
- * @property {object} [usage] - Token usage statistics.
- * @property {object} sessionCost - Current session cost details.
- * @property {number} costOfThisCall - Cost of this specific API call.
- * @property {string} conversationId - ID of the conversation.
- */
-export interface ChatResponseData {
-  content: string;
-  model: string;
-  usage?: { prompt_tokens: number; completion_tokens: number; total_tokens: number };
-  sessionCost: any; // Define further if structure is known
-  costOfThisCall: number;
-  conversationId: string;
+export interface ProcessedHistoryMessageFE extends ChatMessageFE {
+  id?: string;
+  estimatedTokenCount?: number;
+  processedTokens?: string[];
+  relevanceScore?: number;
+}
+export interface ChatMessagePayloadFE {
+  messages: ChatMessageFE[];
+  processedHistory?: ProcessedHistoryMessageFE[];
+  mode: string;
+  language?: string;
+  generateDiagram?: boolean;
+  userId?: string;
+  conversationId?: string;
+  systemPromptOverride?: string;
+  tutorMode?: boolean;
+  tutorLevel?: string;
+  interviewMode?: boolean;
+  stream?: boolean;
+  tool_response?: {
+    tool_call_id: string;
+    tool_name: string;
+    output: string;
+  };
 }
 
+export interface SessionCostDetailsFE {
+  userId: string;
+  sessionCost: number;
+  costsByService: Record<string, { totalCost: number; count: number; details?: Array<{ model?: string; cost: number; timestamp: string}> }>;
+  sessionStartTime: string;
+  entryCount: number;
+  globalMonthlyCost: number;
+  threshold: number;
+  isThresholdReached: boolean;
+}
 
-/**
- * @namespace chatAPI
- * @description Endpoints for AI chat interactions.
- */
+interface BaseChatResponseDataFE {
+  model: string;
+  usage?: ILlmUsageFE;
+  sessionCost: SessionCostDetailsFE;
+  costOfThisCall: number;
+  conversationId: string;
+}
+
+export interface TextResponseDataFE extends BaseChatResponseDataFE {
+  type?: 'text_response' | undefined;
+  content: string | null;
+  discernment?: 'RESPOND' | 'ACTION_ONLY' | 'IGNORE' | 'CLARIFY';
+  message?: string;
+}
+
+export interface FunctionCallResponseDataFE extends BaseChatResponseDataFE {
+  type: 'function_call_data';
+  toolName: string;
+  toolArguments: Record<string, any>;
+  toolCallId: string;
+  discernment?: 'TOOL_CALL_PENDING';
+  assistantMessageText?: string | null;
+}
+
+export type ChatResponseDataFE = TextResponseDataFE | FunctionCallResponseDataFE;
+
 export const chatAPI = {
-  /**
-   * Sends a message payload to the AI chat system.
-   * @param {ChatMessagePayload} data - The chat message data.
-   * @returns {Promise<AxiosResponse<ChatResponseData>>} Promise resolving to the AI's response.
-   */
-  sendMessage: (data: ChatMessagePayload): Promise<AxiosResponse<ChatResponseData>> =>
-    api.post('/api/chat', data),
+  sendMessage: (data: ChatMessagePayloadFE): Promise<AxiosResponse<ChatResponseDataFE>> =>
+    api.post('/chat', data),
+  sendMessageStream: async (
+    data: ChatMessagePayloadFE,
+    onChunkReceived: (chunk: string) => void,
+    onStreamEnd: () => void,
+    onStreamError: (error: Error) => void
+  ): Promise<void> => {
+    const payload = { ...data, stream: true };
+    try {
+      const response = await fetch(`${API_BASE_URL}/chat`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...getAuthHeaders(),
+          'X-Client-Version': '1.3.5',
+          'Accept': 'text/event-stream',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const errorBody = await response.json().catch(() => ({ message: response.statusText, error: response.statusText }));
+        throw new Error(`API Error: ${response.status} ${errorBody.message || errorBody.error || response.statusText}`);
+      }
+      if (!response.body) throw new Error("Stream body is null.");
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+      // eslint-disable-next-line no-constant-condition
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) {
+          if (buffer.trim()) {
+            try {
+                const finalDataObject = JSON.parse(buffer);
+                if (finalDataObject && typeof finalDataObject === 'object' && !finalDataObject.content) {
+                    console.info("[API Service] Stream ended with metadata:", finalDataObject);
+                } else if (finalDataObject && finalDataObject.content) {
+                     onChunkReceived(finalDataObject.content);
+                } else {
+                    onChunkReceived(buffer);
+                }
+            } catch(e) {
+                onChunkReceived(buffer);
+            }
+          }
+          break;
+        }
+        buffer += decoder.decode(value, { stream: true });
+        let newlineIndex;
+        while ((newlineIndex = buffer.indexOf('\n')) >= 0) {
+          const line = buffer.substring(0, newlineIndex).trim();
+          buffer = buffer.substring(newlineIndex + 1);
+          if (line.startsWith('data: ')) {
+            const jsonData = line.substring('data: '.length);
+            try {
+              const parsedChunk = JSON.parse(jsonData);
+              if (parsedChunk.type === 'chunk' && typeof parsedChunk.content === 'string') {
+                onChunkReceived(parsedChunk.content);
+              } else if (parsedChunk.type === 'tool_call_delta') {
+                console.log("Tool call delta:", parsedChunk); // Placeholder for actual delta handling
+              } else if (parsedChunk.type === 'final_response_metadata') {
+                console.info("[API Service] Stream received final metadata:", parsedChunk);
+              }
+            } catch (e) {
+              console.warn('[API Service] Failed to parse JSON chunk from stream:', jsonData, e);
+              if(jsonData && !line.startsWith("event:") && !line.startsWith("id:") && !line.startsWith(":")) {
+                      // Attempt to pass raw data if not typical SSE control line
+                 onChunkReceived(jsonData); 
+                  }
+            }
+          } else if (line) {
+            // Handle non-SSE formatted lines if necessary, or log them
+            if (!line.startsWith("event:") && !line.startsWith("id:") && !line.startsWith(":")) {
+                 onChunkReceived(line); // Pass as a raw chunk
+            }
+          }
+        }
+      }
+      if (onStreamEnd) onStreamEnd();
+    } catch (error: any) {
+      console.error('[API Service] sendMessageStream error:', error);
+      if (onStreamError) onStreamError(error);
+      else throw error; // Re-throw if no custom error handler
+    }
+  },
 };
 
-/**
- * @typedef TranscriptionResponse
- * @property {string} transcription - The transcribed text.
- * @property {number} [durationSeconds] - Duration of the audio.
- * @property {number} cost - Cost of the transcription.
- * @property {number} sessionCost - Current total session cost.
- */
-export interface TranscriptionResponse {
-    transcription: string;
-    durationSeconds?: number;
-    cost: number;
-    sessionCost: number;
-    // ... other potential fields like analysis, metadata
+
+export interface TranscriptionResponseFE {
+  transcription: string;
+  durationSeconds?: number;
+  cost: number;
+  sessionCost: SessionCostDetailsFE;
+  message?: string;
+  analysis?: any;
+  metadata?: any;
 }
 
-/**
- * @namespace speechAPI
- * @description Endpoints for Speech-to-Text (STT) services.
- */
+export interface SttStatsResponseFE {
+  sttProvider: string;
+  defaultTtsProvider: string;
+  availableTtsProviders: string[];
+  whisperCostPerMinute: string;
+  openAITTSCostInfo: string;
+  openaiTtsDefaultModel: string;
+  openaiTtsDefaultVoice: string;
+  openaiTtsDefaultSpeed: number;
+  currentSessionCost: number;
+  sessionCostThreshold: number;
+}
+
+
 export const speechAPI = {
-  /**
-   * Transcribes audio data using the configured STT service on the backend (e.g., Whisper).
-   * @param {FormData} audioData - FormData object containing the audio file (e.g., under the key 'audio').
-   * @returns {Promise<AxiosResponse<TranscriptionResponse>>} Promise resolving to the transcription result.
-   */
-  transcribe: (audioData: FormData): Promise<AxiosResponse<TranscriptionResponse>> =>
-    api.post('/api/stt', audioData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-      timeout: 60000, // Longer timeout for potentially large audio files
-    }),
-
-  /**
-   * Retrieves statistics related to STT processing from the backend.
-   * This might include pricing, supported formats, etc.
-   * @returns {Promise<AxiosResponse<any>>} Promise resolving to speech statistics.
-   */
-  getStats: (): Promise<AxiosResponse<any>> => api.get('/api/stt/stats'),
+  transcribe: (audioData: FormData): Promise<AxiosResponse<TranscriptionResponseFE>> =>
+    api.post('/stt', audioData, {
+      headers: { 'Content-Type': 'multipart/form-data', ...getAuthHeaders() },
+      timeout: 90000, // Increased timeout for potentially large audio files
+    }),
+  getStats: (): Promise<AxiosResponse<SttStatsResponseFE>> => api.get('/stt/stats'),
 };
 
-/**
- * @typedef TTSRequestPayload
- * @property {string} text - Text to synthesize.
- * @property {string} [voice] - Preferred voice ID.
- * @property {string} [model] - TTS model (e.g., "tts-1", "tts-1-hd").
- * @property {string} [outputFormat] - Desired audio output format (e.g., "mp3", "opus").
- */
-export interface TTSRequestPayload {
-    text: string;
-    voice?: string;
-    model?: string;
-    outputFormat?: 'mp3' | 'opus' | 'aac' | 'flac' | string;
-    // Add other ITtsOptions as needed, e.g. speakingRate
+export interface TTSRequestPayloadFE {
+  text: string;
+  voice?: string; // For OpenAI, this is a voice name like 'alloy'; for browser, it's a voiceURI
+  model?: string; // e.g., 'tts-1', 'tts-1-hd' for OpenAI
+  outputFormat?: 'mp3' | 'opus' | 'aac' | 'flac' | string;
+  speed?: number;
+  // Pitch and volume are usually client-side for browser; OpenAI TTS doesn't support pitch.
+  languageCode?: string; // Useful for some backend providers, less so for browser if voiceURI is specific
+  providerId?: string; // Helps backend determine routing if not obvious from voice ID
 }
 
-/**
- * @namespace ttsAPI
- * @description Endpoints for Text-to-Speech (TTS) services (backend-driven).
- */
+export interface TTSVoiceFE {
+  id: string; // For browser: voiceURI. For OpenAI: voice name (e.g., 'alloy')
+  name: string;
+  lang?: string;
+  gender?: string;
+  provider?: string; // 'browser' or 'openai' or other backend provider id
+  isDefault?: boolean;
+}
+
+export interface TTSAvailableVoicesResponseFE {
+    voices: TTSVoiceFE[];
+    count: number;
+    message: string;
+}
+
 export const ttsAPI = {
-  /**
-   * Synthesizes speech from text using a backend TTS service.
-   * The response is expected to be an audio blob.
-   * @param {TTSRequestPayload} data - The TTS request payload.
-   * @returns {Promise<AxiosResponse<Blob>>} Promise resolving to an audio Blob.
-   */
-  synthesize: (data: TTSRequestPayload): Promise<AxiosResponse<Blob>> =>
-    api.post('/api/tts', data, {
-        responseType: 'blob', // Expecting binary audio data
-    }),
-
-  /**
-   * Lists available TTS voices from the backend service.
-   * @returns {Promise<AxiosResponse<Array<{id: string, name: string, lang?: string}>>>} Promise resolving to a list of voices.
-   */
-  getAvailableVoices: (): Promise<AxiosResponse<Array<{id: string, name: string, lang?: string}>>> =>
-    api.get('/api/tts/voices'),
+  synthesize: (data: TTSRequestPayloadFE): Promise<AxiosResponse<Blob>> =>
+    api.post('/tts', data, { responseType: 'blob', ...getAuthHeaders() }), // Ensure auth for usage tracking if needed
+  getAvailableVoices: (): Promise<AxiosResponse<TTSAvailableVoicesResponseFE>> =>
+    api.get('/tts/voices', { headers: getAuthHeaders() }), // Auth if listing voices has cost or is protected
 };
 
 
-/**
- * @namespace costAPI
- * @description Endpoints for managing and tracking API usage costs.
- */
+export interface ResetCostPayloadFE {
+  action?: 'reset' | 'reset_global';
+  userId?: string; // Optional: for admin resetting specific user
+}
+
+export interface ResetCostResponseFE {
+  message: string;
+  sessionCost: number;
+  sessionStartTime: string;
+  costsByService: Record<string, { totalCost: number; count: number }>;
+  globalMonthlyCost?: number; // Only if global reset
+}
+
 export const costAPI = {
-  /**
-   * Retrieves the current session's cost information from the backend.
-   * @returns {Promise<AxiosResponse<any>>} Promise resolving to cost data.
-   * Expected: `{ sessionCost: number, costsByService: object, ... }`
-   */
-  getCost: (): Promise<AxiosResponse<any>> => api.get('/api/cost'),
-
-  /**
-   * Resets the session cost counter on the backend.
-   * @param {object} [data] - Optional parameters for the reset action (e.g., `{ action: 'reset', userId: '...' }`).
-   * @returns {Promise<AxiosResponse<any>>} Promise resolving to the reset confirmation.
-   */
-  resetCost: (data?: { action?: string; userId?: string }): Promise<AxiosResponse<any>> =>
-    api.post('/api/cost', data),
+  getSessionCost: (): Promise<AxiosResponse<SessionCostDetailsFE>> => api.get('/cost'), // Auth applied by interceptor
+  resetSessionCost: (data: ResetCostPayloadFE = { action: 'reset' }): Promise<AxiosResponse<ResetCostResponseFE>> =>
+    api.post('/cost', data), // Auth applied by interceptor
 };
 
-/**
- * @namespace diagramAPI
- * @description Endpoints for generating diagrams.
- */
+export interface DiagramRequestPayloadFE {
+  description: string;
+  type?: string; // e.g., "mermaid-flowchart", "mermaid-sequence"
+  userId?: string; // For backend tracking
+}
+
+export interface DiagramResponseFE {
+  diagramCode: string;
+  type: string;
+  model: string;
+  usage?: ILlmUsageFE;
+  sessionCost: SessionCostDetailsFE;
+  cost: number; // Cost of this specific diagram generation
+}
+
 export const diagramAPI = {
-  /**
-   * Sends a description to the backend to generate diagram code (e.g., Mermaid).
-   * @param {object} data - Diagram generation parameters.
-   * @param {string} data.description - Textual description of the diagram.
-   * @param {string} [data.type="mermaid"] - Type of diagram to generate.
-   * @param {string} [data.userId] - User identifier.
-   * @returns {Promise<AxiosResponse<any>>} Promise resolving to diagram data.
-   * Expected: `{ diagramCode: string, type: string, model: string, ... }`
-   */
-  generate: (data: { description: string; type?: string; userId?: string }): Promise<AxiosResponse<any>> =>
-    api.post('/api/diagram', data),
+  generate: (data: DiagramRequestPayloadFE): Promise<AxiosResponse<DiagramResponseFE>> =>
+    api.post('/diagram', data), // Auth applied by interceptor
 };
 
 export default api;
