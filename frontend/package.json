@@ -11,6 +11,7 @@
   "dependencies": {
     "@headlessui/vue": "^1.7.16",
     "@heroicons/vue": "^2.2.0",
+    "@tailwindcss/forms": "^0.5.10",
     "@vueuse/core": "^10.6.1",
     "axios": "^1.6.2",
     "highlight.js": "^11.11.1",
@@ -19,6 +20,8 @@
     "mermaid": "^10.9.3",
     "page-flip": "^2.0.7",
     "pinia": "^2.1.7",
+    "porter-stemmer": "^0.9.1",
+    "string-similarity": "^4.0.4",
     "vue": "^3.3.8",
     "vue-router": "^4.2.5"
   },
@@ -26,6 +29,8 @@
     "@tailwindcss/typography": "^0.5.10",
     "@types/marked": "^6.0.0",
     "@types/node": "^20.10.0",
+    "@types/string-similarity": "^4.0.2",
+    "@types/uuid": "^10.0.0",
     "@vitejs/plugin-vue": "^4.5.0",
     "autoprefixer": "^10.4.16",
     "postcss": "^8.4.31",

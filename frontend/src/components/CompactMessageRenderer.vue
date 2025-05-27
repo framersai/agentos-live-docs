@@ -92,7 +92,10 @@
       <div v-if="diagrams.length > 0" class="diagrams-section">
         <h4 class="diagrams-title">Visual Diagrams</h4>
         <div v-for="(_, index) in diagrams" :key="index" class="diagram-container">
-<div :ref="el => { diagramRefs[index] = el as (HTMLElement | null); }" class="mermaid-diagram"></div>        </div>
+        <div 
+          :ref="(el: HTMLElement | null) => { diagramRefs[index] = el as (HTMLElement | null); }" 
+          class="mermaid-diagram"
+        ></div>
       </div>
     </div>
 
@@ -164,6 +167,7 @@
       </div>
     </div>
   </div>
+</div>
 </template>
 
 <script setup lang="ts">

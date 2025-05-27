@@ -1,7 +1,7 @@
 /**
  * @file VoiceControlsDropdown.vue
  * @description Dropdown component for managing voice and TTS settings in the header.
- * @version 1.2.0 - Fixed duplicate property errors, unused imports, empty CSS rules, and refined slider update logic.
+ * @version 1.2.2 - Ensured correction for non-existent Tailwind ring offset class.
  */
 <script lang="ts">
 import { defineComponent, ref, computed, onMounted, onUnmounted, watch } from 'vue';
@@ -64,10 +64,8 @@ export default defineComponent({
 
     onMounted(() => {
       document.addEventListener('click', handleClickOutside, true);
-      // Initialize slider fills when component mounts if dropdown is initially open (though unlikely here)
-      // or to ensure styles are applied if values are set programmatically before first interaction.
       if (isOpen.value) {
-        requestAnimationFrame(updateAllSliderFills); // Use rAF for updates after DOM is ready
+        requestAnimationFrame(updateAllSliderFills);
       }
     });
 
@@ -77,7 +75,6 @@ export default defineComponent({
 
     const selectProvider = (provider: VoiceApplicationSettings['ttsProvider']) => {
       voiceSettingsManager.updateSetting('ttsProvider', provider);
-      // Voices for the new provider might take a moment to load; sliders will update via watchers if settings change.
     };
 
     const selectVoice = (event: Event) => {
@@ -90,10 +87,8 @@ export default defineComponent({
       const target = event.target as HTMLInputElement;
       const parsedValue = parseFloat(target.value);
       if (!isNaN(parsedValue)) {
-        // Cast to 'any' then to the specific type to satisfy TypeScript if keys have varied numeric types (e.g. number, float)
-        // This assumes that all settings updated here are numeric.
         voiceSettingsManager.updateSetting(key, parsedValue as any);
-        updateSliderFillForElement(target); // Update individual slider on input
+        updateSliderFillForElement(target);
       }
     };
 
@@ -124,29 +119,22 @@ export default defineComponent({
       }
     });
 
-    // Watch for changes in relevant settings to update sliders, especially if changed programmatically
     watch(
       () => [settings.ttsVolume, settings.ttsRate, settings.ttsPitch, settings.ttsProvider],
       () => {
         if (isOpen.value) {
-          // Use nextTick to ensure DOM has potentially re-rendered if provider change altered available sliders
           requestAnimationFrame(updateAllSliderFills);
         }
       },
-      { deep: true, flush: 'post' } // flush post to ensure DOM elements are updated if provider changes inputs
+      { deep: true, flush: 'post' }
     );
 
-    // When dropdown opens, ensure sliders are visually updated
     watch(isOpen, (newVal) => {
       if (newVal) {
-        // Use nextTick or rAF to ensure elements are visible and measurable
         requestAnimationFrame(updateAllSliderFills);
       }
     });
 
-    // This return statement should contain unique keys.
-    // The errors you encountered indicated duplicates in the version of the file being linted.
-    // Ensure this list is exactly as you intend it, with no repeated property names.
     return {
       isOpen,
       dropdownRef,
@@ -161,9 +149,6 @@ export default defineComponent({
       currentVoiceName,
       currentProviderLabel,
       navigateToSettings,
-      // Expose the single-element updater if needed by @input directly for performance
-      // or rely on the watchers. For this setup, direct call in handleRangeInput is good.
-      // updateSliderFillForElement, // Not strictly needed to return if only used internally or via handleRangeInput
     };
   },
 });
@@ -263,7 +248,7 @@ export default defineComponent({
   @apply text-base font-semibold text-gray-800 dark:text-gray-100;
 }
 .dropdown-label { /* For main labels like Auto-Play */
-  @apply text-sm font-medium text-gray-700 dark:text-gray-200 cursor-pointer;
+   @apply text-sm font-medium text-gray-700 dark:text-gray-200 cursor-pointer;
 }
 .dropdown-label-sm { /* For sub-labels like Volume, Rate */
   @apply block text-xs font-medium text-gray-500 dark:text-gray-400;
@@ -271,7 +256,7 @@ export default defineComponent({
 
 .btn-tab-sm { /* Smaller tabs for provider selection */
   @apply px-3 py-1.5 text-xs font-semibold rounded-md border transition-colors duration-150 ease-in-out flex-1 text-center
-        shadow-sm hover:shadow focus-visible:ring-2 focus-visible:ring-offset-1 dark:focus-visible:ring-offset-gray-850;
+        shadow-sm hover:shadow focus-visible:ring-2 focus-visible:ring-offset-1 dark:focus-visible:ring-offset-gray-900; /* CORRECTED: Was dark:focus-visible:ring-offset-gray-850 */
   @apply border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700/40
         hover:bg-gray-50 dark:hover:bg-gray-700;
 }
@@ -286,8 +271,6 @@ export default defineComponent({
 .range-slider-compact {
   @apply w-full h-2 bg-gray-200 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer transition-opacity hover:opacity-90;
   --slider-progress: 0%; /* Will be updated by JS */
-  /* Apply the base background color that the gradient will go over */
-  /* For light mode, this is gray-300. For dark mode, gray-600 (from @apply above) */
   background-color: theme('colors.gray.300'); /* Default to light track */
   background-image: linear-gradient(to right, theme('colors.primary.500') var(--slider-progress), transparent var(--slider-progress));
 }
@@ -298,7 +281,7 @@ export default defineComponent({
 
 .range-slider-compact::-webkit-slider-thumb {
   @apply appearance-none w-4 h-4 bg-primary-600 dark:bg-primary-400 rounded-full cursor-pointer shadow
-        border-2 border-white dark:border-gray-700; /* Make thumb pop a bit */
+        border-2 border-white dark:border-gray-700;
 }
 .range-slider-compact::-moz-range-thumb {
   @apply w-4 h-4 bg-primary-600 dark:bg-primary-400 rounded-full cursor-pointer border-0 shadow;
@@ -311,7 +294,7 @@ export default defineComponent({
 /* Dropdown animation - subtle float and fade */
 .dropdown-float-enter-active,
 .dropdown-float-leave-active {
-  transition: opacity 0.2s var(--ease-out-cubic), transform 0.2s var(--ease-out-cubic);
+  transition: opacity 0.2s var(--ease-out-cubic), transform 0.2s var(--ease-out-cubic); /* Assuming --ease-out-cubic is defined in main.css or tailwind.config */
 }
 .dropdown-float-enter-from,
 .dropdown-float-leave-to {
@@ -322,8 +305,4 @@ export default defineComponent({
 .icon-sm { @apply w-4 h-4; }
 .icon-xs { @apply w-3.5 h-3.5; }
 
-/* Comments for removed empty rules:
-.form-select {}
-.toggle-switch {}
-*/
 </style>

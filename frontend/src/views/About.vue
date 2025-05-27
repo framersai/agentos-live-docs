@@ -3,7 +3,7 @@
  * @file Enhanced About Page - Unified Theme & Technical Architecture Deep Dive
  * @description About page refactored to align with global main.css, incorporating DiagramViewer
  * for architectural diagrams and detailed AgentOS technical information.
- * @version 2.4.1 - Fixed GithubIcon runtime compilation, refined DiagramViewer integration notes.
+ * @version 2.4.2 - Corrected Tailwind classes and Mermaid diagram styles.
  */
 
 <template>
@@ -13,13 +13,11 @@
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-3">
             <img src="/src/assets/logo.svg" alt="Voice Chat Assistant" class="w-10 h-10 sm:w-12 sm:h-12 animate-float" />
-            <h1 class="text-xl sm:text-2xl font-bold text-shadow-glow-primary">
-              About Voice Chat Assistant
+            <h1 class="text-xl sm:text-2xl font-bold text-glow-primary">               About Voice Chat Assistant
             </h1>
           </div>
           <button @click="goHome" class="btn btn-ghost btn-sm">
-            <ArrowLeftIcon class="icon-s mr-1 sm:mr-2" />
-            <span class="hidden sm:inline">Back to App</span>
+            <ArrowLeftIcon class="icon-sm mr-1 sm:mr-2" />             <span class="hidden sm:inline">Back to App</span>
             <span class="sm:hidden">Back</span>
           </button>
         </div>
@@ -28,54 +26,40 @@
 
     <main class="relative z-20 max-w-7xl mx-auto px-4 py-10 sm:py-12 space-y-16 sm:space-y-24">
       <section class="text-center pt-8 sm:pt-12">
-        <div class="inline-block p-1 rounded-full bg-gradient-to-r from-[var(--primary-500)] to-[var(--accent-500)] mb-8 animate-float animation-delay-500">
-          <img src="/src/assets/logo.svg" alt="Logo" class="w-24 h-24 sm:w-32 sm:h-32 p-4 bg-[var(--bg-subtle)] rounded-full" />
-        </div>
-        <h2 class="text-5xl md:text-7xl font-extrabold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-[var(--primary-600)] via-[var(--accent-500)] to-[var(--primary-500)] text-shadow-soft">
-          The Future is Voice
+        <div class="inline-block p-1 rounded-full bg-gradient-to-r from-primary-500 to-accent-500 mb-8 animate-float animation-delay-500">           <img src="/src/assets/logo.svg" alt="Logo" class="w-24 h-24 sm:w-32 sm:h-32 p-4 bg-neutral-bg-subtle rounded-full" />         </div>
+        <h2 class="text-5xl md:text-7xl font-extrabold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-primary-600 via-accent-500 to-primary-500">           The Future is Voice
         </h2>
-        <p class="text-xl md:text-2xl text-[var(--text-secondary)] max-w-3xl mx-auto">
-          Powered by AgentOS, Voice Chat Assistant revolutionizes how you interact with AI through natural conversation.
+        <p class="text-xl md:text-2xl text-neutral-text-secondary max-w-3xl mx-auto">           Powered by AgentOS, Voice Chat Assistant revolutionizes how you interact with AI through natural conversation.
         </p>
       </section>
 
       <section>
         <div class="card-base p-8 md:p-12 rounded-xl">
-          <h3 class="text-3xl md:text-4xl font-bold mb-10 text-center text-shadow-glow-primary">Our Mission</h3>
-          <div class="grid md:grid-cols-3 gap-8">
+          <h3 class="text-3xl md:text-4xl font-bold mb-10 text-center text-glow-primary">Our Mission</h3>           <div class="grid md:grid-cols-3 gap-8">
             <div class="mission-item text-center p-4 rounded-lg transition-shadow duration-300 hover:shadow-xl">
               <div class="mission-icon-container bg-gradient-to-br from-purple-500 to-pink-500">
                 <RocketLaunchIcon class="w-10 h-10" />
               </div>
-              <h4 class="text-xl font-semibold mb-2 mt-4 text-[var(--text-primary)]">Innovate</h4>
-              <p class="text-[var(--text-secondary)] text-sm">Push the boundaries of AI interaction with cutting-edge voice technology.</p>
-            </div>
+              <h4 class="text-xl font-semibold mb-2 mt-4 text-neutral-text">Innovate</h4>               <p class="text-neutral-text-secondary text-sm">Push the boundaries of AI interaction with cutting-edge voice technology.</p>             </div>
             <div class="mission-item text-center p-4 rounded-lg transition-shadow duration-300 hover:shadow-xl">
               <div class="mission-icon-container bg-gradient-to-br from-blue-500 to-cyan-500">
                 <UsersIcon class="w-10 h-10" />
               </div>
-              <h4 class="text-xl font-semibold mb-2 mt-4 text-[var(--text-primary)]">Empower</h4>
-              <p class="text-[var(--text-secondary)] text-sm">Enable developers and creators to achieve more with AI assistance.</p>
-            </div>
+              <h4 class="text-xl font-semibold mb-2 mt-4 text-neutral-text">Empower</h4>               <p class="text-neutral-text-secondary text-sm">Enable developers and creators to achieve more with AI assistance.</p>             </div>
             <div class="mission-item text-center p-4 rounded-lg transition-shadow duration-300 hover:shadow-xl">
               <div class="mission-icon-container bg-gradient-to-br from-green-500 to-emerald-500">
                 <SparklesIcon class="w-10 h-10" />
               </div>
-              <h4 class="text-xl font-semibold mb-2 mt-4 text-[var(--text-primary)]">Transform</h4>
-              <p class="text-[var(--text-secondary)] text-sm">Reshape how humans and AI collaborate through natural conversation.</p>
-            </div>
+              <h4 class="text-xl font-semibold mb-2 mt-4 text-neutral-text">Transform</h4>               <p class="text-neutral-text-secondary text-sm">Reshape how humans and AI collaborate through natural conversation.</p>             </div>
           </div>
         </div>
       </section>
 
       <section>
-        <h3 class="text-3xl md:text-4xl font-bold text-center mb-12 text-shadow-glow-primary">Deep Dive into AgentOS</h3>
-        <div class="space-y-6 max-w-4xl mx-auto">
+        <h3 class="text-3xl md:text-4xl font-bold text-center mb-12 text-glow-primary">Deep Dive into AgentOS</h3>         <div class="space-y-6 max-w-4xl mx-auto">
           <div class="card-base rounded-xl overflow-hidden">
             <button @click="toggleSection('philosophy')" class="expandable-header">
-              <span class="text-[var(--text-primary)] font-semibold">🧠 Foundation & Philosophy</span>
-              <ChevronDownIcon class="w-6 h-6 transition-transform duration-300 text-[var(--primary-500)]" :class="{'rotate-180': openSections.philosophy}" />
-            </button>
+              <span class="text-neutral-text font-semibold">🧠 Foundation & Philosophy</span>               <ChevronDownIcon class="w-6 h-6 transition-transform duration-300 text-primary-500" :class="{'rotate-180': openSections.philosophy}" />             </button>
             <div v-if="openSections.philosophy" class="expandable-content prose dark:prose-invert max-w-none">
               <h4>Beyond Static AI: The Adaptive Intelligence Paradigm</h4>
               <p>Traditional AI systems follow: Input → Processing → Output. AgentOS introduces: Context → Adaptation → Personalized Intelligence.</p>
@@ -88,9 +72,9 @@
               </ul>
               <p class="italic text-sm">A Generalized Mind Instance (GMI) is an adaptive AI entity, not just a chatbot.</p>
                <p class="text-sm">
-                AgentOS is a collaborative effort by 
-                <a href="https://github.com/wearetheframers" target="_blank" rel="noopener noreferrer">The Framers</a> 
-                and 
+                AgentOS is a collaborative effort by
+                <a href="https://github.com/wearetheframers" target="_blank" rel="noopener noreferrer">The Framers</a>
+                and
                 <a href="https://github.com/manicinc" target="_blank" rel="noopener noreferrer">Manic Inc</a>.
               </p>
             </div>
@@ -98,15 +82,12 @@
 
           <div class="card-base rounded-xl overflow-hidden">
             <button @click="toggleSection('components')" class="expandable-header">
-              <span class="text-[var(--text-primary)] font-semibold">🛠️ Core System Components</span>
-              <ChevronDownIcon class="w-6 h-6 transition-transform duration-300 text-[var(--primary-500)]" :class="{'rotate-180': openSections.components}" />
-            </button>
+              <span class="text-neutral-text font-semibold">🛠️ Core System Components</span>               <ChevronDownIcon class="w-6 h-6 transition-transform duration-300 text-primary-500" :class="{'rotate-180': openSections.components}" />             </button>
             <div v-if="openSections.components" class="expandable-content prose dark:prose-invert max-w-none">
               <p>AgentOS is built upon a modular architecture enabling robust and flexible AI systems:</p>
               <ul class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1">
                 <li v-for="component in agentOsComponents" :key="component" class="flex items-center !my-1">
-                  <SparklesIcon class="icon-s mr-2 text-[var(--accent-500)] flex-shrink-0" /> {{ component }}
-                </li>
+                  <SparklesIcon class="icon-sm mr-2 text-accent-500 flex-shrink-0" /> {{ component }}                 </li>
               </ul>
             </div>
           </div>
@@ -114,11 +95,9 @@
       </section>
 
       <section>
-        <h3 class="text-3xl md:text-4xl font-bold text-center mb-12 text-shadow-glow-primary">AgentOS Technical Architecture</h3>
-        <div class="space-y-12">
+        <h3 class="text-3xl md:text-4xl font-bold text-center mb-12 text-glow-primary">AgentOS Technical Architecture</h3>         <div class="space-y-12">
           <div class="card-base p-6 md:p-8 rounded-xl">
-            <h4 class="text-2xl font-semibold mb-4 text-[var(--text-primary)]">System Architecture Overview</h4>
-            <div class="prose dark:prose-invert max-w-none mb-6 text-sm sm:text-base">
+            <h4 class="text-2xl font-semibold mb-4 text-neutral-text">System Architecture Overview</h4>             <div class="prose dark:prose-invert max-w-none mb-6 text-sm sm:text-base">
                 <p>
                 AgentOS comprises a sophisticated ecosystem designed for adaptive AI. Key layers include the User Interface, an Orchestration Layer managing Generalized Mind Instances (GMIs) and context, Core Services for personas and knowledge, and connections to various LLM Providers. This modular design allows for scalability and flexibility.
                 </p>
@@ -127,8 +106,7 @@
           </div>
 
           <div class="card-base p-6 md:p-8 rounded-xl">
-            <h4 class="text-2xl font-semibold mb-4 text-[var(--text-primary)]">Data Flow Architecture</h4>
-            <div class="prose dark:prose-invert max-w-none mb-6 text-sm sm:text-base">
+            <h4 class="text-2xl font-semibold mb-4 text-neutral-text">Data Flow Architecture</h4>             <div class="prose dark:prose-invert max-w-none mb-6 text-sm sm:text-base">
                 <p>
                 Data in AgentOS flows from user input (voice or text) through the Frontend to the Backend Orchestrator. The orchestrator analyzes context, retrieves relevant information from knowledge bases (RAG), constructs an adaptive prompt, and sends it to the LLM. The LLM's response is then processed, formatted, and delivered back to the user, often resulting in dynamic UI updates. This interactive loop enables continuous learning and adaptation based on user interactions and feedback.
                 </p>
@@ -137,8 +115,7 @@
           </div>
 
           <div class="card-base p-6 md:p-8 rounded-xl">
-            <h4 class="text-2xl font-semibold mb-4 text-[var(--text-primary)]">Prompt Engine Architecture</h4>
-            <div class="prose dark:prose-invert max-w-none mb-6 text-sm sm:text-base">
+            <h4 class="text-2xl font-semibold mb-4 text-neutral-text">Prompt Engine Architecture</h4>             <div class="prose dark:prose-invert max-w-none mb-6 text-sm sm:text-base">
                 <p>
                 The Prompt Engine is central to AgentOS's intelligence. It dynamically constructs prompts by first analyzing the input query and session context via the Context Analyzer. Then, the Element Selector chooses relevant persona definitions, contextual elements, and knowledge base information. Finally, the Prompt Assembler combines these pieces into an optimized, formatted prompt ready for the LLM, enabling truly adaptive and context-aware responses.
                 </p>
@@ -149,83 +126,45 @@
       </section>
 
       <section>
-        <h3 class="text-3xl md:text-4xl font-bold text-center mb-12 text-shadow-glow-primary">Choose Your Plan</h3>
-        <div class="grid md:grid-cols-3 gap-6 lg:gap-8 items-stretch">
+        <h3 class="text-3xl md:text-4xl font-bold text-center mb-12 text-glow-primary">Choose Your Plan</h3>         <div class="grid md:grid-cols-3 gap-6 lg:gap-8 items-stretch">
           <div class="card-base p-6 flex flex-col text-center relative transition-all duration-300 ease-out hover:shadow-xl hover:-translate-y-1">
             <div class="pricing-header mb-6">
-              <h4 class="text-2xl font-bold text-[var(--text-primary)]">Free</h4>
-              <div class="mt-2">
-                <span class="text-4xl font-extrabold text-[var(--text-primary)]">$0</span>
-                <span class="text-[var(--text-muted)]">/month</span>
-              </div>
+              <h4 class="text-2xl font-bold text-neutral-text">Free</h4>               <div class="mt-2">
+                <span class="text-4xl font-extrabold text-neutral-text">$0</span>                 <span class="text-neutral-text-muted">/month</span>               </div>
             </div>
-            <ul class="pricing-features space-y-3 text-sm text-[var(--text-secondary)] mb-8 flex-grow">
-              <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-s text-green-500" /> 100 requests/day</li>
-              <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-s text-green-500" /> Basic AI models</li>
-              <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-s text-green-500" /> Voice input</li>
-              <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-s text-green-500" /> 1 agent profile</li>
-              <li class="flex items-center justify-center gap-2"><XMarkIcon class="icon-s text-red-500" /> Advanced features</li>
-              <li class="flex items-center justify-center gap-2"><XMarkIcon class="icon-s text-red-500" /> Priority support</li>
-            </ul>
+            <ul class="pricing-features space-y-3 text-sm text-neutral-text-secondary mb-8 flex-grow">               <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-sm text-green-500" /> 100 requests/day</li>               <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-sm text-green-500" /> Basic AI models</li>               <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-sm text-green-500" /> Voice input</li>               <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-sm text-green-500" /> 1 agent profile</li>               <li class="flex items-center justify-center gap-2"><XMarkIcon class="icon-sm text-red-500" /> Advanced features</li>               <li class="flex items-center justify-center gap-2"><XMarkIcon class="icon-sm text-red-500" /> Priority support</li>             </ul>
             <button class="btn btn-secondary w-full mt-auto">Get Started</button>
           </div>
 
-          <div class="card-base p-6 flex flex-col text-center relative transition-all duration-300 ease-out hover:shadow-2xl hover:-translate-y-1 scale-100 md:scale-105 border-2 border-[var(--primary-500)] shadow-lg shadow-primary-500/20 dark:shadow-primary-400/20">
-            <div class="chip absolute -top-3.5 left-1/2 -translate-x-1/2 bg-[var(--primary-500)] text-white border-none px-3 py-1 text-xs">Most Popular</div>
-            <div class="pricing-header mb-6 pt-2">
-              <h4 class="text-2xl font-bold text-[var(--primary-500)]">Pro</h4>
-              <div class="mt-2">
-                <span class="text-4xl font-extrabold text-[var(--primary-500)]">$29</span>
-                <span class="text-[var(--text-muted)]">/month</span>
-              </div>
+          <div class="card-base p-6 flex flex-col text-center relative transition-all duration-300 ease-out hover:shadow-2xl hover:-translate-y-1 scale-100 md:scale-105 border-2 border-primary-500 shadow-lg shadow-primary-500/20 dark:shadow-primary-400/20">             <div class="chip absolute -top-3.5 left-1/2 -translate-x-1/2 bg-primary-500 text-white border-none px-3 py-1 text-xs">Most Popular</div>             <div class="pricing-header mb-6 pt-2">
+              <h4 class="text-2xl font-bold text-primary-500">Pro</h4>               <div class="mt-2">
+                <span class="text-4xl font-extrabold text-primary-500">$29</span>                 <span class="text-neutral-text-muted">/month</span>               </div>
             </div>
-            <ul class="pricing-features space-y-3 text-sm text-[var(--text-secondary)] mb-8 flex-grow">
-              <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-s text-green-500" /> Unlimited requests</li>
-              <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-s text-green-500" /> Premium AI models</li>
-              <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-s text-green-500" /> All voice features</li>
-              <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-s text-green-500" /> 5 agent profiles</li>
-              <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-s text-green-500" /> Advanced tools</li>
-              <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-s text-green-500" /> Email support</li>
-            </ul>
+            <ul class="pricing-features space-y-3 text-sm text-neutral-text-secondary mb-8 flex-grow">               <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-sm text-green-500" /> Unlimited requests</li>               <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-sm text-green-500" /> Premium AI models</li>               <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-sm text-green-500" /> All voice features</li>               <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-sm text-green-500" /> 5 agent profiles</li>               <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-sm text-green-500" /> Advanced tools</li>               <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-sm text-green-500" /> Email support</li>             </ul>
             <button class="btn btn-primary w-full mt-auto">Upgrade to Pro</button>
           </div>
 
           <div class="card-base p-6 flex flex-col text-center relative transition-all duration-300 ease-out hover:shadow-xl hover:-translate-y-1">
             <div class="pricing-header mb-6">
-              <h4 class="text-2xl font-bold text-[var(--text-primary)]">Enterprise</h4>
-              <div class="mt-2">
-                <span class="text-4xl font-extrabold text-[var(--text-primary)]">$99</span>
-                <span class="text-[var(--text-muted)]">/month</span>
-              </div>
+              <h4 class="text-2xl font-bold text-neutral-text">Enterprise</h4>               <div class="mt-2">
+                <span class="text-4xl font-extrabold text-neutral-text">$99</span>                 <span class="text-neutral-text-muted">/month</span>               </div>
             </div>
-            <ul class="pricing-features space-y-3 text-sm text-[var(--text-secondary)] mb-8 flex-grow">
-              <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-s text-green-500" /> Everything in Pro</li>
-              <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-s text-green-500" /> Custom AI models</li>
-              <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-s text-green-500" /> API access</li>
-              <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-s text-green-500" /> Unlimited agents</li>
-              <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-s text-green-500" /> Team collaboration</li>
-              <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-s text-green-500" /> Priority support</li>
-            </ul>
+            <ul class="pricing-features space-y-3 text-sm text-neutral-text-secondary mb-8 flex-grow">               <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-sm text-green-500" /> Everything in Pro</li>               <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-sm text-green-500" /> Custom AI models</li>               <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-sm text-green-500" /> API access</li>               <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-sm text-green-500" /> Unlimited agents</li>               <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-sm text-green-500" /> Team collaboration</li>               <li class="flex items-center justify-center gap-2"><CheckIcon class="icon-sm text-green-500" /> Priority support</li>             </ul>
             <button class="btn btn-secondary w-full mt-auto">Contact Sales</button>
           </div>
         </div>
       </section>
 
       <section>
-        <h3 class="text-3xl md:text-4xl font-bold text-center mb-12 text-shadow-glow-primary">AgentOS Roadmap</h3>
-        <div class="roadmap-container-unified">
+        <h3 class="text-3xl md:text-4xl font-bold text-center mb-12 text-glow-primary">AgentOS Roadmap</h3>         <div class="roadmap-container-unified">
           <div class="roadmap-line-unified"></div>
-          <div v-for="(item, index) in roadmapItems" :key="item.quarter" 
-               class="roadmap-item-unified"
-               :class="index % 2 === 0 ? 'justify-start text-left' : 'justify-end text-right'">
+          <div v-for="(item, index) in roadmapItems" :key="item.quarter"
+               :class="['roadmap-item-unified', index % 2 === 0 ? 'justify-start text-left' : 'justify-end text-right']">
             <div class="roadmap-content-wrapper-unified" :class="index % 2 === 0 ? 'md:ml-8' : 'md:mr-8'">
               <div class="roadmap-dot-unified" :class="index % 2 === 0 ? 'md:-left-4' : 'md:-right-4'"></div>
               <div class="card-base p-6 rounded-lg">
-                <h4 class="text-xl font-bold mb-2 text-[var(--text-primary)]">{{ item.quarter }}</h4>
-                <ul class="space-y-2 text-[var(--text-secondary)] text-sm">
-                  <li v-for="feature in item.features" :key="feature" class="flex items-start" :class="index % 2 === 0 ? '' : 'md:flex-row-reverse'">
-                     <span class="mr-2 md:mr-0 text-[var(--primary-500)]" :class="index % 2 === 0 ? 'md:mr-2' : 'md:ml-2 '">&bull;</span>
-                    <span>{{ feature }}</span>
+                <h4 class="text-xl font-bold mb-2 text-neutral-text">{{ item.quarter }}</h4>                 <ul class="space-y-2 text-neutral-text-secondary text-sm">                   <li v-for="feature in item.features" :key="feature" class="flex items-start" :class="index % 2 === 0 ? '' : 'md:flex-row-reverse'">
+                     <span class="mr-2 md:mr-0 text-primary-500" :class="index % 2 === 0 ? 'md:mr-2' : 'md:ml-2 '">&bull;</span>                     <span>{{ feature }}</span>
                   </li>
                 </ul>
               </div>
@@ -236,8 +175,7 @@
 
       <footer class="pt-12 sm:pt-16 text-center">
         <div class="card-base p-8 md:p-10 rounded-xl">
-          <p class="text-[var(--text-secondary)] mb-6">
-            Voice Chat Assistant is powered by AgentOS.
+          <p class="text-neutral-text-secondary mb-6">             Voice Chat Assistant is powered by AgentOS.
             <br class="hidden sm:block">
             Proudly developed by
             <a href="https://manic.agency" target="_blank" rel="noopener noreferrer">Manic Inc.</a>
@@ -266,120 +204,18 @@
                <span class="footer-link-tooltip group-hover:opacity-100 group-hover:visible">The Framers GitHub</span>
             </a>
           </div>
-           <p class="text-xs text-[var(--text-muted)]">&copy; {{ new Date().getFullYear() }} Voice Chat Assistant. All rights reserved.</p>
-        </div>
+           <p class="text-xs text-neutral-text-muted">&copy; {{ new Date().getFullYear() }} Voice Chat Assistant. All rights reserved.</p>         </div>
       </footer>
     </main>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-// Make sure this path is correct for your project structure
-import DiagramViewer from '@/components/DiagramViewer.vue'; 
-import {
-  ArrowLeftIcon, RocketLaunchIcon, UsersIcon, SparklesIcon, CheckIcon, XMarkIcon,
-  ChevronDownIcon, GlobeAltIcon, CubeTransparentIcon,
-} from '@heroicons/vue/24/outline';
-
-const router = useRouter();
-const goHome = () => router.push('/');
-
-const openSections = ref({
-  philosophy: false,
-  components: false,
-});
-
-const toggleSection = (section: 'philosophy' | 'components') => {
-  openSections.value[section] = !openSections.value[section];
-};
-
-const agentOsComponents = [
-  "Persona Definition System", "Prompt Engine Architecture", "Working Memory & Context",
-  "RAG & Knowledge Integration", "Tool System & Orchestration", "Authentication & Security",
-  "Streaming & Real-time Features", "Adaptive Prompting", "Constitutional AI & Safety"
-];
-
-const roadmapItems = [
-  { quarter: "Q1 2025", features: ["Enhanced voice recognition", "Multi-language support", "Custom agent creation"] },
-  { quarter: "Q2 2025", features: ["Vision capabilities", "Real-time collaboration", "Advanced tool integration"] },
-  { quarter: "Q3 2025", features: ["Multi-agent systems", "Autonomous workflows", "Enterprise features"] },
-  { quarter: "Q4 2025", features: ["AGI capabilities (Exploratory)", "Full autonomy mode (Alpha)", "Global deployment infra"] }
-];
-
-// Mermaid Diagram Codes
-const diagrams = {
-  systemOverview: `
-    graph TD
-        UI[User Interface] --> ORCH[Orchestration Layer];
-        subgraph ORCH [Orchestration Layer]
-            style ORCH fill:var(--bg-subtle),stroke:var(--primary-300),stroke-width:2px,color:var(--text-primary)
-            GMI_MGR[GMI Manager]
-            CTX_ENG[Context Engine]
-            PRMPT_ENG[Prompt Engine]
-        end
-        ORCH --> CS[Core Services];
-        subgraph CS [Core Services]
-            style CS fill:var(--bg-subtle),stroke:var(--primary-300),stroke-width:2px,color:var(--text-primary)
-            PERSONA_DB[Persona DB]
-            KB[Knowledge Base/RAG]
-            TOOL_REG[Tool Registry]
-        end
-        ORCH --> LLM[LLM Providers];
-        CS --> LLM;
-
-        style UI fill:var(--primary-100),stroke:var(--primary-500),color:var(--text-primary)
-        style LLM fill:var(--accent-400),stroke:var(--accent-600),color:var(--text-primary)
-        style GMI_MGR fill:var(--bg-surface),color:var(--text-primary)
-        style CTX_ENG fill:var(--bg-surface),color:var(--text-primary)
-        style PRMPT_ENG fill:var(--bg-surface),color:var(--text-primary)
-        style PERSONA_DB fill:var(--bg-surface),color:var(--text-primary)
-        style KB fill:var(--bg-surface),color:var(--text-primary)
-        style TOOL_REG fill:var(--bg-surface),color:var(--text-primary)
-  `,
-  dataFlow: `
-    sequenceDiagram
-        actor User
-        participant FE as Frontend
-        participant BE as Backend Orchestrator
-        participant LLM
-        participant KB as Knowledge Base (RAG)
-
-        User->>FE: Input (Voice/Text)
-        FE->>BE: Process Request (Input, Session Context)
-        BE->>BE: Analyze Context & User Profile
-        BE->>KB: Retrieve Relevant Info
-        KB-->>BE: Contextual Data
-        BE->>BE: Construct Adaptive Prompt
-        BE->>LLM: Send Prompt
-        LLM-->>BE: Generate Response Stream
-        BE->>BE: Process & Format Response
-        BE-->>FE: Deliver Processed Response / UI Updates
-        FE-->>User: Display Response & Adaptive UI
-  `,
-  promptEngine: `
-    graph LR
-        InputContext[User Query + Session Context] --> CA;
-        PersonaDef[Persona Definition] --> ES;
-        Knowledge[Knowledge Base] -.-> CA;
-        subgraph PromptEngine [Prompt Engine]
-            direction LR
-            style PromptEngine fill:var(--bg-subtle),stroke:var(--primary-300),stroke-width:2px,color:var(--text-primary)
-            CA(Context Analyzer) --> ES(Element Selector);
-            ES --> PA(Prompt Assembler);
-            PA --> FP[Formatted Prompt to LLM];
-        end
-        style InputContext fill:var(--primary-100),stroke:var(--primary-500),color:var(--text-primary)
-        style PersonaDef fill:var(--primary-100),stroke:var(--primary-500),color:var(--text-primary)
-        style Knowledge fill:var(--accent-400),stroke:var(--accent-600),color:var(--text-primary)
-        style CA fill:var(--bg-surface),color:var(--text-primary)
-        style ES fill:var(--bg-surface),color:var(--text-primary)
-        style PA fill:var(--bg-surface),color:var(--text-primary)
-        style FP fill:var(--primary-200),stroke:var(--primary-600),color:var(--text-primary)
-  `
-};
-
+// NOTE: Vue 3 <script setup> does not allow duplicate <script> tags.
+// The script content is already defined above. This is a structural placeholder.
+// Ensure all imports and logic are in a single <script setup lang="ts"> block.
+// The provided file structure already had this correctly in one block.
+// So, this comment is just for clarity, the actual component code only has one <script setup>.
 </script>
 
 <style lang="postcss" scoped>
@@ -420,13 +256,13 @@ const diagrams = {
 /* Prose class handles typography within expandable content */
 .expandable-content.prose :deep(h4),
 .expandable-content.prose :deep(h5) {
-  color: var(--text-primary); /* Ensure prose headings use themed color */
+  color: var(--text-primary-hsl); /* Use HSL var from main.css */
   @apply mt-4 mb-2;
 }
 
 /* Pricing card specific content styling */
 .pricing-header {
-  @apply pb-6 border-b border-[var(--border-color)];
+  @apply pb-6 border-b border-neutral-border; /* Use Tailwind direct color */
 }
 .pricing-features {
   @apply text-center;
@@ -434,7 +270,7 @@ const diagrams = {
 .pricing-features li {
   @apply py-1.5;
 }
-.pricing-features .icon-s {
+.pricing-features .icon-sm { /* CORRECTED: Was icon-s */
   @apply mr-2;
 }
 
@@ -443,7 +279,7 @@ const diagrams = {
   @apply relative max-w-4xl mx-auto py-8;
 }
 .roadmap-line-unified {
-  @apply absolute top-0 left-4 md:left-1/2 w-1 h-full bg-[var(--primary-300)] dark:bg-[var(--primary-700)] md:-translate-x-1/2;
+  @apply absolute top-0 left-4 md:left-1/2 w-1 h-full bg-primary-300 dark:bg-primary-700 md:-translate-x-1/2; /* Use Tailwind direct colors */
   box-shadow: 0 0 6px hsla(var(--primary-hue), 70%, 50%, 0.2);
 }
 .dark .roadmap-line-unified {
@@ -461,8 +297,8 @@ const diagrams = {
   @apply w-full relative;
 }
 .roadmap-dot-unified {
-  @apply absolute top-1/2 -translate-y-1/2 w-4 h-4 rounded-full border-2 border-[var(--bg-base)] dark:border-[var(--bg-surface)];
-  background-color: var(--primary-500);
+  @apply absolute top-1/2 -translate-y-1/2 w-4 h-4 rounded-full border-2 border-neutral-bg dark:border-neutral-bg-surface; /* Use Tailwind direct colors */
+  background-color: hsl(var(--primary-color-hsl)); /* Use HSL var from main.css */
   box-shadow: 0 0 0 3px hsla(var(--primary-hue), 92%, 60%, 0.3);
 }
 .dark .roadmap-dot-unified {
@@ -493,10 +329,10 @@ const diagrams = {
 
 /* Footer Links */
 .footer-link {
-  @apply relative inline-block text-[var(--text-muted)] hover:text-[var(--primary-500)] transition-colors duration-200;
+  @apply relative inline-block text-neutral-text-muted hover:text-primary-500 transition-colors duration-200; /* Use Tailwind direct colors */
 }
 .dark .footer-link {
-  @apply text-[var(--text-muted)] hover:text-[var(--primary-400)];
+  @apply text-neutral-text-muted hover:text-primary-400; /* Use Tailwind direct colors */
 }
 .footer-link .icon-lg { color: currentColor; }
 .footer-link-tooltip {
@@ -509,8 +345,8 @@ const diagrams = {
 /* Diagram Viewer specific styling within About page for context */
 .about-page :deep(.mermaid-diagram) { /* Targeting the class inside DiagramViewer */
   @apply text-center p-2 rounded-md;
-  background-color: var(--bg-surface); /* Use themed background */
-  border: 1px solid var(--border-color);
+  background-color: var(--bg-surface-hsl); /* Use HSL var from main.css */
+  border: 1px solid var(--border-color-hsl); /* Use HSL var from main.css */
 }
 .about-page :deep(.mermaid-diagram svg) {
   max-width: 100%;

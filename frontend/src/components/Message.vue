@@ -267,10 +267,11 @@ watch(() => props.message.content, () => {
   border-bottom-right-radius: 0.25rem; /* Bubble tail */
 }
 .assistant-bubble-container {
-  @apply bg-white dark:bg-gray-750 text-gray-800 dark:text-gray-100 border border-gray-200 dark:border-gray-700;
-  border-bottom-left-radius: 0.25rem; /* Bubble tail */
+@apply bg-neutral-bg-surface dark:bg-neutral-bg-elevated 
+        text-neutral-text dark:text-neutral-text 
+        border border-neutral-border dark:border-neutral-border-dark;
+border-bottom-left-radius: 0.25rem; /* Bubble tail */
 }
-
 .message-header {
   @apply flex items-center gap-2 mb-2;
 }

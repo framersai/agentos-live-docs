@@ -4,7 +4,7 @@
  * @file OpenRouter LLM Service Implementation.
  * @description Provides an implementation of the ILlmService interface for interacting
  * with the OpenRouter API, which acts as a gateway to various LLM providers.
- * @version 1.0.0
+ * @version 1.1.0 - Added support for tool/function calling (passed through).
  */
 
 import axios, { AxiosInstance } from 'axios';
@@ -15,11 +15,14 @@ import {
   ILlmService,
   ILlmProviderConfig,
   ILlmUsage,
+  ILlmTool,
+  ILlmToolCall
 } from './llm.interfaces';
 import { LlmProviderId } from './llm.config.service';
 
 /**
  * Implements the ILlmService for the OpenRouter provider.
+ * OpenRouter often passes through OpenAI-compatible parameters, including tool_calls.
  */
 export class OpenRouterLlmService implements ILlmService {
   readonly providerId = LlmProviderId.OPENROUTER;
@@ -54,7 +57,7 @@ export class OpenRouterLlmService implements ILlmService {
    *
    * @param {IChatMessage[]} messages - The array of chat messages.
    * @param {string} modelId - The OpenRouter model ID (e.g., "openai/gpt-4o-mini", "anthropic/claude-3-haiku").
-   * @param {IChatCompletionParams} [params] - Optional parameters for the completion.
+   * @param {IChatCompletionParams} [params] - Optional parameters for the completion, including tools.
    * @returns {Promise<ILlmResponse>} A promise that resolves to the LLM response.
    * @throws {Error} If the API call fails.
    */
@@ -63,28 +66,30 @@ export class OpenRouterLlmService implements ILlmService {
     modelId: string,
     params?: IChatCompletionParams
   ): Promise<ILlmResponse> {
-    const MappedModelId = this.mapToProviderModelId(modelId);
+    const mappedModelId = this.mapToProviderModelId(modelId);
     try {
-      const payload = {
-        model: MappedModelId,
+      const payload: Record<string, any> = { // Use Record<string, any> for flexibility with OpenRouter
+        model: mappedModelId,
         messages,
         temperature: params?.temperature ?? parseFloat(process.env.LLM_DEFAULT_TEMPERATURE || '0.7'),
         max_tokens: params?.max_tokens ?? parseInt(process.env.LLM_DEFAULT_MAX_TOKENS || '2048'),
         top_p: params?.top_p,
         stop: params?.stop,
         user: params?.user,
-        // OpenRouter specific: site_url and app_name can be passed via headers
-        // Or specific transformations/routing parameters if needed
+        stream: params?.stream ?? false, // OpenRouter supports stream, though we default to non-streamed here
+        // Pass tool parameters if present (OpenRouter passes these to compatible models like OpenAI's)
+        tools: params?.tools,
+        tool_choice: params?.tool_choice,
       };
       
       // Remove undefined optional parameters
       Object.keys(payload).forEach(key => {
-        if (payload[key as keyof typeof payload] === undefined) {
-          delete payload[key as keyof typeof payload];
+        if (payload[key] === undefined) {
+          delete payload[key];
         }
       });
 
-      console.log(`OpenRouterLlmService: Calling OpenRouter with model: ${MappedModelId}`);
+      console.log(`OpenRouterLlmService: Calling OpenRouter with model: ${mappedModelId}`);
       const response = await this.apiClient.post('/chat/completions', payload);
 
       const responseData = response.data;
@@ -96,25 +101,41 @@ export class OpenRouterLlmService implements ILlmService {
           }
         : undefined;
 
+      const choice = responseData.choices[0];
+      let toolCalls: ILlmToolCall[] | undefined = undefined;
+
+      // OpenRouter passes through OpenAI's tool_calls structure
+      if (choice?.message?.tool_calls) {
+        toolCalls = choice.message.tool_calls.map((tc: any) => ({ // Use 'any' for tc if OpenRouter's exact type is unknown
+          id: tc.id,
+          type: tc.type,
+          function: {
+            name: tc.function.name,
+            arguments: tc.function.arguments,
+          },
+        }));
+      }
+
       return {
-        text: responseData.choices[0]?.message?.content ?? null,
-        model: responseData.model || MappedModelId, // Use model from response if available
+        text: choice?.message?.content ?? null,
+        model: responseData.model || mappedModelId,
         usage,
         id: responseData.id,
-        stopReason: responseData.choices[0]?.finish_reason,
+        stopReason: choice?.finish_reason,
+        toolCalls,
         providerResponse: responseData,
       };
     } catch (error: any) {
-      console.error(`OpenRouterLlmService: Error calling OpenRouter API for model ${MappedModelId}:`, error.message);
+      console.error(`OpenRouterLlmService: Error calling OpenRouter API for model ${mappedModelId}:`, error.message);
       if (error.response?.data) {
         console.error('OpenRouter API Error Details:', JSON.stringify(error.response.data, null, 2));
-         const errorData = error.response.data.error;
+          const errorData = error.response.data.error;
         let specificMessage = errorData?.message || error.message;
         if (error.response.status === 401) specificMessage = `Invalid OpenRouter API key. ${specificMessage}`;
         if (error.response.status === 402) specificMessage = `OpenRouter Insufficient Funds. ${specificMessage}`;
-        throw new Error(`OpenRouter API request failed for model ${MappedModelId}: ${specificMessage}`);
+        throw new Error(`OpenRouter API request failed for model ${mappedModelId}: ${specificMessage}`);
       }
-      throw new Error(`OpenRouter API request failed for model ${MappedModelId}: ${error.message}`);
+      throw new Error(`OpenRouter API request failed for model ${mappedModelId}: ${error.message}`);
     }
   }
 
@@ -125,11 +146,7 @@ export class OpenRouterLlmService implements ILlmService {
    * @returns {string} The OpenRouter-compatible model ID.
    */
   private mapToProviderModelId(modelId: string): string {
-    // OpenRouter expects models to be prefixed with provider, e.g., "openai/gpt-4o-mini"
-    // If a model like "gpt-4o-mini" is passed, assume it's OpenAI for OpenRouter.
     if (!modelId.includes('/')) {
-      // A common case is users providing OpenAI model names directly.
-      // More sophisticated mapping might be needed for other providers.
       console.warn(`OpenRouterLlmService: Model ID "${modelId}" does not have a provider prefix. Assuming "openai/${modelId}".`);
       return `openai/${modelId}`;
     }

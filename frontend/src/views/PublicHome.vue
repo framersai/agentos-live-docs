@@ -2,19 +2,38 @@
 /**
  * @file PublicHome.vue
  * @description Public-facing home page with rate-limited access to selected AI agents.
- * @version 1.1.2 - Corrected activeAgentId access, typed params, and cleaned up unused variables/CSS.
+ * Uses Vite's import.meta.glob for robust dynamic loading of prompt files.
+ * Style updated for a visually stunning, elegant, minimal, analog holographic, and futuristic retro theme.
+ * @version 1.3.0
+ * @author Voice Coding Assistant Team
+ *
+ * @notes
+ * - v1.3.0: Major style overhaul for new theme. Replaced default Tailwind colors with theme variables.
+ * Leverages global styles from main.css for buttons and other components.
+ * - v1.2.5: Switched to import.meta.glob for loading prompts to improve Vite compatibility.
+ * Ensured correct relative path for prompts.
  */
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, inject, watch, shallowRef } from 'vue';
 import { useRouter } from 'vue-router';
-import { api, chatAPI, type ChatMessagePayload } from '@/utils/api';
+import {
+  api,
+  chatAPI,
+  type ChatMessagePayloadFE,
+  type ProcessedHistoryMessageFE,
+  type ChatMessageFE,
+  type ChatResponseDataFE,
+  type TextResponseDataFE,
+  type FunctionCallResponseDataFE,
+} from '@/utils/api';
 import { agentService, type IAgentDefinition, type AgentId } from '@/services/agent.service';
-import { useAgentStore } from '@/store/agent.store'; // Import agentStore
-import { useChatStore, type ChatMessage, type MainContent } from '@/store/chat.store';
-import { voiceSettingsManager } from '@/services/voice.settings.service';
+import { useAgentStore } from '@/store/agent.store';
+import { useChatStore, type ChatMessage as StoreChatMessage, type MainContent } from '@/store/chat.store';
+import { voiceSettingsManager, type AudioInputMode } from '@/services/voice.settings.service';
 import type { ToastService } from '@/services/services';
 
+// Import UI Components
 import VoiceInput from '@/components/VoiceInput.vue';
 import Footer from '@/components/Footer.vue';
 import AnimatedLogo from '@/components/ui/AnimatedLogo.vue';
@@ -23,12 +42,20 @@ import AgentChatLog from '@/components/agents/common/AgentChatLog.vue';
 import CompactMessageRenderer from '@/components/CompactMessageRenderer.vue';
 
 import {
-  ExclamationTriangleIcon, // Now used for rate limit warning in template
   SparklesIcon,
   KeyIcon,
   ChevronDownIcon,
+  InformationCircleIcon, // For rate limit info
 } from '@heroicons/vue/24/outline';
+import { Cog6ToothIcon as Cog6ToothIconSolid } from '@heroicons/vue/24/solid'; // Example for a filled icon if needed
 
+// --- Dynamic Prompt Loading using import.meta.glob ---
+const promptModules: Record<string, string> = import.meta.glob('../../../../prompts/*.md', { as: 'raw', eager: true });
+
+/**
+ * @interface RateLimitInfo
+ * @description Defines the structure for public user rate limit information.
+ */
 interface RateLimitInfo {
   tier: 'public' | 'authenticated';
   ip?: string;
@@ -41,7 +68,7 @@ interface RateLimitInfo {
 
 const router = useRouter();
 const toast = inject<ToastService>('toast');
-const agentStore = useAgentStore(); // Instantiate agentStore
+const agentStore = useAgentStore();
 const chatStore = useChatStore();
 
 const availablePublicAgents = shallowRef<IAgentDefinition[]>([]);
@@ -50,122 +77,130 @@ const showPublicAgentSelector = ref(false);
 const publicAgentSelectorDropdownRef = ref<HTMLElement | null>(null);
 
 const isLoadingResponse = ref(false);
-const isVoiceInputProcessing = ref(false);
+const isVoiceInputProcessing = ref(false); // This will drive voice input UI state
 const currentSystemPrompt = ref('');
-
 const rateLimitInfo = ref<RateLimitInfo | null>(null);
 
 const mainContentToDisplay = computed<MainContent | null>(() => {
-    if (!currentPublicAgent.value) return null;
-    return chatStore.getMainContentForAgent(currentPublicAgent.value.id);
+  if (!currentPublicAgent.value) return null;
+  return chatStore.getMainContentForAgent(currentPublicAgent.value.id);
 });
 
-const fetchRateLimitInfo = async () => {
+const fetchRateLimitInfo = async (): Promise<void> => {
   try {
     const response = await api.get('/api/rate-limit/status');
     if (response.data.tier === 'authenticated') {
-      router.push({ name: 'PrivateHome' });
+      router.push({ name: 'PrivateHome' }); // Redirect to PrivateHome if authenticated
       return;
     }
     rateLimitInfo.value = {
       ...response.data,
       resetAt: response.data.resetAt ? new Date(response.data.resetAt) : new Date(Date.now() + 24 * 60 * 60 * 1000)
     };
-  } catch (error) {
-    console.error('PublicHome: Failed to fetch rate limit info:', error);
-    toast?.add({ type: 'error', title: 'Network Error', message: 'Could not fetch usage details.' });
+  } catch (error: any) {
+    console.error('PublicHome: Failed to fetch rate limit info:', error.response?.data || error.message);
+    toast?.add({ type: 'error', title: 'Network Error', message: 'Could not fetch usage details. Please try refreshing.' });
   }
 };
 
-const loadPublicAgents = () => {
+const loadPublicAgents = (): void => {
   const allPublic = agentService.getPublicAgents();
-  availablePublicAgents.value = allPublic.filter(agent => 
+  availablePublicAgents.value = allPublic.filter(agent =>
     agent.id !== 'codingAssistant' && agent.id !== 'codingInterviewer'
   );
-  
   if (availablePublicAgents.value.length > 0) {
     const defaultPublicAgent = availablePublicAgents.value.find(a => a.id === 'general') || availablePublicAgents.value[0];
-    currentPublicAgent.value = defaultPublicAgent; 
-    // For PublicHome, we might not always want to force the global agentStore to this public agent
-    // if an authenticated user (with a different active agent in their private session) happens to visit PublicHome.
-    // However, if no agent is set or the current one isn't public, setting a sensible default is good.
-    if (!agentStore.activeAgent || !agentStore.activeAgent.isPubliclyAvailable || 
-        agentStore.activeAgent.id === 'codingAssistant' || agentStore.activeAgent.id === 'codingInterviewer') {
-      agentStore.setActiveAgent(defaultPublicAgent.id);
-    } else if(agentStore.activeAgentId !== defaultPublicAgent.id && availablePublicAgents.value.find(a => a.id === agentStore.activeAgentId)) {
-      // If the current global agent is public and available here, use it
-      currentPublicAgent.value = agentStore.activeAgent;
+    currentPublicAgent.value = defaultPublicAgent;
+    if (agentStore.activeAgentId !== defaultPublicAgent.id) {
+        agentStore.setActiveAgent(defaultPublicAgent.id);
     }
-
-
+    chatStore.ensureMainContentForAgent(defaultPublicAgent.id);
   } else {
-    console.warn("PublicHome: No publicly available agents configured (excluding coding agents).");
+    console.warn("PublicHome: No publicly available agents configured (excluding coding/interview agents).");
     currentPublicAgent.value = null;
-  }
-  loadAgentSystemPrompt();
-};
-
-const selectPublicAgent = (agentId: AgentId) => {
-  const agent = availablePublicAgents.value.find(a => a.id === agentId);
-  if (agent) {
-    currentPublicAgent.value = agent;
-    agentStore.setActiveAgent(agentId); 
-    showPublicAgentSelector.value = false;
-    chatStore.clearAgentData(agentId);
-     chatStore.updateMainContent({
-        agentId: agent.id,
+      chatStore.updateMainContent({
+        agentId: 'system-notice' as AgentId,
         type: 'markdown',
-        data: `### Welcome to ${agent.label}!\n${agent.description}\n\n${agent.inputPlaceholder || 'How can I assist you today?'}`,
-        title: `${agent.label} Ready`,
+        data: `### No Public Agents Available\n\nWe're sorry, but there are currently no public agents available for preview. Please check back later or log in for full access.`,
+        title: `Agents Unavailable`,
         timestamp: Date.now(),
     });
-    loadAgentSystemPrompt();
-    toast?.add({ type: 'info', title: 'Assistant Changed', message: `Now chatting with ${agent.label}.`, duration: 2000 });
   }
 };
 
-const loadAgentSystemPrompt = async () => {
+const selectPublicAgent = (agentId: AgentId): void => {
+  const agent = availablePublicAgents.value.find(a => a.id === agentId);
+  if (agent && currentPublicAgent.value?.id !== agentId) {
+    currentPublicAgent.value = agent;
+    agentStore.setActiveAgent(agentId);
+    showPublicAgentSelector.value = false;
+    chatStore.clearAgentData(agentId); // Clear previous agent's transient data
+    chatStore.ensureMainContentForAgent(agentId); // Setup welcome/default content
+    toast?.add({ type: 'info', title: 'Assistant Changed', message: `Now chatting with ${agent.label}.`, duration: 2000 });
+  } else if (agent && currentPublicAgent.value?.id === agentId) {
+    showPublicAgentSelector.value = false;
+  }
+};
+
+const loadAgentSystemPrompt = (): void => {
   if (currentPublicAgent.value?.systemPromptKey) {
-    try {
-      const module = await import(/* @vite-ignore */ `../../../../prompts/${currentPublicAgent.value.systemPromptKey}.md?raw`);
-      currentSystemPrompt.value = module.default;
-    } catch (e) {
-      console.error(`[PublicHome] Failed to load system prompt: ${currentPublicAgent.value.systemPromptKey}.md`, e);
-      currentSystemPrompt.value = "You are a helpful AI assistant for public users. Keep responses brief.";
+    const promptFileName = `${currentPublicAgent.value.systemPromptKey}.md`;
+    const globKey = `../../../../prompts/${promptFileName}`;
+    if (promptModules[globKey]) {
+      currentSystemPrompt.value = promptModules[globKey];
+    } else {
+      console.error(`[PublicHome] Prompt not found in glob for key: ${globKey}. Available keys:`, Object.keys(promptModules));
+      currentSystemPrompt.value = "You are a helpful AI assistant for public users. Keep responses brief and friendly.";
     }
   } else {
-    currentSystemPrompt.value = "You are a helpful AI assistant for public users. Keep responses brief.";
+    currentSystemPrompt.value = "You are a helpful AI assistant for public users. Keep responses brief and friendly.";
   }
 };
 
-watch(currentPublicAgent, loadAgentSystemPrompt);
+watch(currentPublicAgent, loadAgentSystemPrompt, { immediate: true });
 
-const onTranscriptionReceived = async (transcription: string) => {
+const onTranscriptionReceived = async (transcription: string): Promise<void> => {
   if (!transcription.trim() || isLoadingResponse.value || !currentPublicAgent.value) return;
-  
+
   if (rateLimitInfo.value && rateLimitInfo.value.tier === 'public' && rateLimitInfo.value.remaining !== undefined && rateLimitInfo.value.remaining <= 0) {
-    toast?.add({
-      type: 'error',
-      title: 'Daily Limit Reached',
-      message: 'Please try again tomorrow or log in for unlimited access.'
-    });
+    toast?.add({ type: 'error', title: 'Daily Limit Reached', message: 'Please try again tomorrow or log in for unlimited access.'});
     return;
   }
 
   const agentId = currentPublicAgent.value.id;
-  const userMessage: ChatMessage = {
-    id: `user-public-${Date.now()}-${Math.random().toString(36).substring(2,7)}`,
-    role: 'user',
-    content: transcription,
-    timestamp: Date.now(),
-    agentId: agentId,
+  const userMessageForStore: Omit<StoreChatMessage, 'id' | 'timestamp'> = {
+    role: 'user', content: transcription, agentId: agentId,
   };
-  chatStore.addMessage(userMessage);
+  const userMessageInStore = chatStore.addMessage(userMessageForStore);
+
   isLoadingResponse.value = true;
-  chatStore.setMainContentStreaming(true, `Processing your request for "${transcription.substring(0,30)}..."`);
+  chatStore.setMainContentStreaming(true, `Processing your request for "${transcription.substring(0, 30)}..."`);
 
   try {
-    const historyForApi = chatStore.getHistoryForApi(agentId, currentPublicAgent.value.capabilities?.maxChatHistory || 5);
+    const historyFromStore: ProcessedHistoryMessageFE[] = await chatStore.getHistoryForApi(
+      agentId, transcription, currentSystemPrompt.value,
+      {
+        maxContextTokens: voiceSettingsManager.settings.useAdvancedMemory ? 2000 : (currentPublicAgent.value.capabilities?.maxChatHistory || 5) * 150,
+        numRecentMessagesToPrioritize: currentPublicAgent.value.capabilities?.maxChatHistory || 5,
+      }
+    );
+
+    const messagesForApiPayload: ChatMessageFE[] = historyFromStore.map(hMsg => ({
+        role: hMsg.role, content: hMsg.content, timestamp: hMsg.timestamp,
+        tool_call_id: hMsg.tool_call_id, tool_calls: hMsg.tool_calls, name: hMsg.name,
+    }));
+
+    const isCurrentUserMessageInPayload = messagesForApiPayload.some(
+        msg => msg.role === 'user' && msg.content === transcription && msg.timestamp === userMessageInStore.timestamp
+    );
+    if (!isCurrentUserMessageInPayload) {
+        messagesForApiPayload.push({
+            role: 'user',
+            content: transcription,
+            timestamp: userMessageInStore.timestamp,
+        });
+    }
+    messagesForApiPayload.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
 
     let finalSystemPrompt = currentSystemPrompt.value
         .replace(/{{LANGUAGE}}/g, voiceSettingsManager.settings.preferredCodingLanguage)
@@ -173,55 +208,62 @@ const onTranscriptionReceived = async (transcription: string) => {
         .replace(/{{GENERATE_DIAGRAM}}/g, (currentPublicAgent.value.canGenerateDiagrams && voiceSettingsManager.settings.generateDiagrams).toString())
         .replace(/{{ADDITIONAL_INSTRUCTIONS}}/g, 'Your public persona is helpful but slightly more concise. You cannot assist with detailed coding interview preparations.');
 
-    const payload: ChatMessagePayload = {
-      messages: [{ role: 'system', content: finalSystemPrompt }, ...historyForApi],
+    const payload: ChatMessagePayloadFE = {
+      messages: [
+        { role: 'system', content: finalSystemPrompt },
+        ...messagesForApiPayload
+      ],
       mode: currentPublicAgent.value.systemPromptKey,
       language: voiceSettingsManager.settings.preferredCodingLanguage,
       generateDiagram: currentPublicAgent.value.canGenerateDiagrams && voiceSettingsManager.settings.generateDiagrams,
-      userId: rateLimitInfo.value?.ip || 'public_user',
+      userId: rateLimitInfo.value?.ip || `public_user_${Date.now().toString(36)}`,
       conversationId: chatStore.getCurrentConversationId(agentId),
     };
 
     const response = await chatAPI.sendMessage(payload);
-    const assistantMessageContent = response.data.content || "I'm not sure how to respond to that right now.";
+    const responseData = response.data as ChatResponseDataFE;
+
+    let assistantMessageContent: string | null = "I'm not sure how to respond to that right now.";
+    let toolCallsForStore: StoreChatMessage['tool_calls'] | undefined = undefined;
+
+    if (responseData.type === 'function_call_data') {
+        const funcCallData = responseData as FunctionCallResponseDataFE;
+        assistantMessageContent = funcCallData.assistantMessageText || `Okay, I need to use the ${funcCallData.toolName} tool.`;
+        toolCallsForStore = [{
+            id: funcCallData.toolCallId, type: 'function',
+            function: { name: funcCallData.toolName, arguments: JSON.stringify(funcCallData.toolArguments) }
+        }];
+        toast?.add({type: 'info', title: 'Tool Call Requested', message: `Assistant wants to use ${funcCallData.toolName}. Public preview does not execute tools.`});
+    } else {
+        const textData = responseData as TextResponseDataFE;
+        assistantMessageContent = textData.content;
+    }
+
     chatStore.addMessage({
-      id: `assistant-public-${Date.now()}-${Math.random().toString(36).substring(2,7)}`,
-      role: 'assistant',
-      content: assistantMessageContent,
-      timestamp: Date.now(),
-      agentId: agentId,
-      model: response.data.model,
-      usage: response.data.usage,
+      role: 'assistant', content: assistantMessageContent, agentId: agentId,
+      model: responseData.model, usage: responseData.usage, tool_calls: toolCallsForStore,
     });
+
     chatStore.updateMainContent({
         agentId: agentId,
         type: currentPublicAgent.value.capabilities?.usesCompactRenderer ? 'compact-message-renderer-data' : 'markdown',
-        data: assistantMessageContent,
-        title: `Response`,
-        timestamp: Date.now()
+        data: assistantMessageContent, title: `Response`, timestamp: Date.now()
     });
+
     await fetchRateLimitInfo();
+
   } catch (error: any) {
-    console.error('PublicHome: Chat API error:', error);
+    console.error('PublicHome: Chat API error:', error.response?.data || error.message);
     const errorMsg = error.response?.data?.message || error.message || 'An error occurred processing your request.';
     chatStore.addMessage({
-      id: `error-public-${Date.now()}-${Math.random().toString(36).substring(2,7)}`,
-      role: 'assistant',
-      content: `Sorry, an error occurred: ${errorMsg}`,
-      timestamp: Date.now(),
-      agentId: agentId,
-      isError: true,
+      role: 'assistant', content: `Sorry, an error occurred: ${errorMsg}`,
+      agentId: agentId, isError: true,
     });
     chatStore.updateMainContent({
-        agentId: agentId,
-        type: 'markdown',
-        data: `### Error\n${errorMsg}`,
-        title: `Error`,
-        timestamp: Date.now()
+        agentId: agentId, type: 'markdown', data: `### Error\n${errorMsg}`,
+        title: `Error Processing Request`, timestamp: Date.now()
     });
-    if (error.response?.status === 429) {
-      await fetchRateLimitInfo();
-    }
+    if (error.response?.status === 429) await fetchRateLimitInfo();
   } finally {
     isLoadingResponse.value = false;
     chatStore.setMainContentStreaming(false);
@@ -229,13 +271,13 @@ const onTranscriptionReceived = async (transcription: string) => {
 };
 
 const formatResetTime = (dateValue?: string | Date): string => {
-  if (!dateValue) return 'later';
+  if (!dateValue) return 'in the next 24 hours';
   const date = typeof dateValue === 'string' ? new Date(dateValue) : dateValue;
   if (isNaN(date.getTime())) return 'soon';
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 };
 
-const handleClickOutsidePublicAgentSelector = (event: MouseEvent) => {
+const handleClickOutsidePublicAgentSelector = (event: MouseEvent): void => {
   if (publicAgentSelectorDropdownRef.value && !publicAgentSelectorDropdownRef.value.contains(event.target as Node)) {
     showPublicAgentSelector.value = false;
   }
@@ -247,7 +289,7 @@ onMounted(async () => {
   await fetchRateLimitInfo();
   loadPublicAgents();
   document.addEventListener('click', handleClickOutsidePublicAgentSelector, true);
-  rateLimitInterval = window.setInterval(fetchRateLimitInfo, 60000);
+  rateLimitInterval = window.setInterval(fetchRateLimitInfo, 60000); // Check rate limit every minute
 });
 
 onUnmounted(() => {
@@ -257,34 +299,38 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="public-home-container min-h-screen flex flex-col">
-    <header class="sticky top-0 z-30 glass-pane-header shadow-lg">
+  <div class="public-home-container min-h-screen flex flex-col bg-neutral-bg text-neutral-text">
+    <header class="header-glass sticky top-0 z-30">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-3">
-            <AnimatedLogo class="w-10 h-10 sm:w-12 sm:h-12" />
+            <AnimatedLogo class="w-10 h-10 sm:w-12 sm:h-12 text-primary-500" />
             <div>
-              <h1 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-100">
+              <h1 class="text-xl sm:text-2xl font-display font-bold text-glow-primary">
                 Voice Chat Assistant
               </h1>
-              <p class="text-xs text-gray-600 dark:text-gray-400">Public Preview</p>
+              <p class="text-xs text-neutral-text-muted">Public Preview</p>
             </div>
           </div>
           <div class="flex items-center gap-3">
-            <div v-if="rateLimitInfo && rateLimitInfo.tier === 'public' && rateLimitInfo.limit !== undefined && rateLimitInfo.used !== undefined" class="hidden sm:flex items-center gap-2 text-sm">
-              <span class="text-gray-600 dark:text-gray-400">Daily Usage:</span>
+            <div v-if="rateLimitInfo && rateLimitInfo.tier === 'public'" class="hidden sm:flex items-center gap-2 text-sm">
+              <InformationCircleIcon class="w-5 h-5 text-neutral-text-muted" aria-hidden="true" />
+              <span class="text-neutral-text-secondary">Daily Usage:</span>
               <div class="flex items-center gap-1.5">
-                <div class="w-28 h-2.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden shadow-inner">
-                  <div 
-                    class="h-full bg-gradient-to-r from-sky-400 to-blue-500 dark:from-sky-500 dark:to-blue-600 transition-all duration-300 ease-out"
-                    :style="{ width: `${(rateLimitInfo.used / rateLimitInfo.limit) * 100}%` }"
+                <div class="w-28 h-2.5 bg-neutral-border-light dark:bg-neutral-border-dark rounded-full overflow-hidden shadow-analog-inset">
+                  <div
+                    class="h-full bg-gradient-to-r from-accent-500 to-primary-500 transition-all duration-300 ease-out"
+                    :style="{ width: `${rateLimitInfo.limit && rateLimitInfo.limit > 0 && rateLimitInfo.used !== undefined ? (rateLimitInfo.used / rateLimitInfo.limit) * 100 : 0}%` }"
+                    aria-label="Current usage percentage"
                   ></div>
                 </div>
-                <span class="text-xs font-mono text-gray-500 dark:text-gray-400">{{ rateLimitInfo.remaining ?? 'N/A' }}/{{ rateLimitInfo.limit ?? 'N/A' }}</span>
+                <span class="text-xs font-mono text-neutral-text-muted" aria-label="Usage count">
+                  {{ rateLimitInfo.remaining ?? 'N/A' }} left
+                </span>
               </div>
             </div>
-            <router-link to="/login" class="btn-primary btn-sm">
-              <KeyIcon class="w-4 h-4 mr-1.5" />
+            <router-link to="/login" class="btn btn-primary btn-sm">
+              <KeyIcon class="icon-sm mr-1.5" aria-hidden="true" />
               Pro Access
             </router-link>
           </div>
@@ -294,25 +340,26 @@ onUnmounted(() => {
 
     <div class="flex-grow flex flex-col overflow-hidden">
         <div v-if="currentPublicAgent" class="flex-grow flex flex-col lg:flex-row agent-content-layout-public overflow-hidden">
-            <div v-if="availablePublicAgents.length > 1" class="p-3 border-b lg:border-b-0 lg:border-r border-gray-200 dark:border-gray-700/50 public-agent-selector-area">
+            <div v-if="availablePublicAgents.length > 1" class="p-3 border-b lg:border-b-0 lg:border-r border-neutral-border public-agent-selector-area">
                 <div class="relative">
-                    <button @click="showPublicAgentSelector = !showPublicAgentSelector" class="w-full btn btn-secondary btn-sm flex items-center justify-between gap-1.5">
+                    <button @click="showPublicAgentSelector = !showPublicAgentSelector" class="btn btn-secondary btn-sm w-full flex items-center justify-between gap-1.5" aria-haspopup="true" :aria-expanded="showPublicAgentSelector.toString()">
                         <div class="flex items-center gap-2">
-                            <component :is="currentPublicAgent.icon" class="w-4 h-4" :class="currentPublicAgent.iconClass" />
+                            <component :is="currentPublicAgent.icon || SparklesIcon" class="icon-sm" :class="currentPublicAgent.iconClass || 'text-primary-500'" aria-hidden="true" />
                             <span>{{ currentPublicAgent.label }}</span>
                         </div>
-                        <ChevronDownIcon class="w-4 h-4 transition-transform duration-200" :class="{'rotate-180': showPublicAgentSelector}" />
+                        <ChevronDownIcon class="icon-sm transition-transform duration-200" :class="{'rotate-180': showPublicAgentSelector}" aria-hidden="true" />
                     </button>
                     <transition name="dropdown-fade">
-                        <div v-if="showPublicAgentSelector" class="dropdown-menu-public absolute top-full left-0 mt-1 w-full origin-top-right z-50" ref="publicAgentSelectorDropdownRef">
-                            <div class="p-1">
+                        <div v-if="showPublicAgentSelector" class="dropdown-menu-public absolute top-full left-0 mt-1 w-full origin-top-right z-50 glass-pane rounded-[var(--radius-md)] shadow-holo-lg" ref="publicAgentSelectorDropdownRef" role="menu">
+                            <div class="p-1 space-y-1">
                                 <button
                                 v-for="agentDef in availablePublicAgents" :key="agentDef.id"
                                 @click="selectPublicAgent(agentDef.id)"
                                 class="dropdown-item-public w-full"
                                 :class="{ 'active': currentPublicAgent.id === agentDef.id }"
+                                role="menuitem"
                                 >
-                                <component :is="agentDef.icon" class="w-5 h-5 mr-2 shrink-0" :class="agentDef.iconClass" />
+                                <component :is="agentDef.icon || SparklesIcon" class="icon-base mr-2.5 shrink-0" :class="agentDef.iconClass || 'text-primary-500'" aria-hidden="true" />
                                 <span class="text-sm font-medium">{{ agentDef.label }}</span>
                                 </button>
                             </div>
@@ -321,52 +368,58 @@ onUnmounted(() => {
                 </div>
             </div>
 
-            <MainContentView :agent="currentPublicAgent" class="main-content-panel-public">
+            <MainContentView :agent="currentPublicAgent" class="main-content-panel-public" aria-live="polite">
                 <template v-if="mainContentToDisplay">
                     <CompactMessageRenderer
                         v-if="currentPublicAgent.capabilities?.usesCompactRenderer && mainContentToDisplay.type === 'compact-message-renderer-data'"
                         :content="mainContentToDisplay.data"
                         :mode="currentPublicAgent.id"
-                        class="flex-grow overflow-y-auto p-1"
+                        class="flex-grow overflow-y-auto p-1 custom-scrollbar"
                     />
-                    <div v-else-if="mainContentToDisplay.type === 'markdown'"
-                        class="prose prose-sm sm:prose-base dark:prose-invert max-w-none p-4 md:p-6 flex-grow overflow-y-auto"
-                        v-html="chatStore.isMainContentStreaming && agentStore.activeAgentId === currentPublicAgent.id ? chatStore.streamingMainContentText + '▋' : mainContentToDisplay.data"
+                    <div v-else-if="mainContentToDisplay.type === 'markdown' || mainContentToDisplay.type === 'welcome'"
+                        class="prose prose-sm sm:prose-base dark:prose-invert max-w-none p-4 md:p-6 flex-grow overflow-y-auto custom-scrollbar"
+                        v-html="chatStore.isMainContentStreaming && agentStore.activeAgentId === currentPublicAgent.id ? chatStore.streamingMainContentText + '<span class=\'streaming-cursor\'>▋</span>' : mainContentToDisplay.data"
+                        aria-atomic="true"
                     ></div>
-                     <div v-else class="p-4 text-slate-400 italic">
-                        Content type: {{ mainContentToDisplay.type }}.
+                     <div v-else class="p-4 text-neutral-text-muted italic custom-scrollbar">
+                        <p>Displaying content of type: {{ mainContentToDisplay.type }}.</p>
+                        <pre v-if="typeof mainContentToDisplay.data === 'object'">{{ JSON.stringify(mainContentToDisplay.data, null, 2) }}</pre>
+                        <p v-else>{{ mainContentToDisplay.data }}</p>
                     </div>
                 </template>
                 <div v-else-if="!isLoadingResponse" class="flex-grow flex items-center justify-center p-6">
-                    <div class="text-center text-gray-500 dark:text-gray-400">
-                        <SparklesIcon class="w-12 h-12 mx-auto mb-3 opacity-50" />
+                    <div class="text-center text-neutral-text-muted">
+                        <SparklesIcon class="w-12 h-12 mx-auto mb-3 opacity-50 text-primary-300 animate-pulse-subtle" aria-hidden="true" />
                         <p class="text-lg">{{ currentPublicAgent.inputPlaceholder || 'Ask me anything!' }}</p>
-                        <div v-if="rateLimitInfo && rateLimitInfo.tier === 'public' && rateLimitInfo.remaining !== undefined && rateLimitInfo.remaining < 20 && rateLimitInfo.remaining > 0" class="mt-4 inline-flex items-center gap-2 px-3 py-1.5 bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-300 rounded-lg text-xs">
-                            <ExclamationTriangleIcon class="w-4 h-4" />
-                            <span>Low daily requests remaining: {{ rateLimitInfo.remaining }}</span>
-                        </div>
                     </div>
                 </div>
-                 <div v-if="isLoadingResponse && chatStore.isMainContentStreaming && agentStore.activeAgentId === currentPublicAgent.id" 
-                     class="absolute inset-0 bg-gray-500/10 backdrop-blur-sm flex items-center justify-center text-gray-600 dark:text-gray-300 p-4">
-                     <div class="prose prose-sm dark:prose-invert max-w-full" v-html="chatStore.streamingMainContentText + '▋'"></div>
-                 </div>
+                 <div v-if="isLoadingResponse && chatStore.isMainContentStreaming && agentStore.activeAgentId === currentPublicAgent.id"
+                      class="absolute inset-0 bg-neutral-bg/50 dark:bg-neutral-bg-dark/50 backdrop-blur-sm flex items-center justify-center text-neutral-text p-4"
+                      aria-label="Assistant is typing"
+                  >
+                    <div class="loading-animation text-center">
+                        <div class="loading-spinner"> <div class="spinner-blade"></div><div class="spinner-blade"></div><div class="spinner-blade"></div><div class="spinner-blade"></div>
+                            <div class="spinner-blade"></div><div class="spinner-blade"></div><div class="spinner-blade"></div><div class="spinner-blade"></div>
+                        </div>
+                        <p class="loading-text mt-4" v-html="chatStore.streamingMainContentText + '<span class=\'streaming-cursor\'>▋</span>'" aria-atomic="true"></p>
+                    </div>
+                </div>
             </MainContentView>
 
-            <AgentChatLog :agent-id="currentPublicAgent.id" class="chat-log-panel-public" />
+            <AgentChatLog :agent-id="currentPublicAgent.id" class="chat-log-panel-public custom-scrollbar" />
         </div>
          <div v-else class="flex-grow flex items-center justify-center p-8 text-center">
-            <SparklesIcon class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-500 mb-4 animate-pulse"/>
-            <p class="text-xl text-gray-700 dark:text-gray-300">Assistant is currently unavailable.</p>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">No public agents are configured or available at this time.</p>
+            <Cog6ToothIconSolid class="w-16 h-16 mx-auto text-neutral-border mb-4 animate-spin animation-duration-3s" aria-hidden="true"/>
+            <p class="text-xl text-neutral-text">Assistant is currently unavailable.</p>
+            <p class="text-sm text-neutral-text-secondary mt-2">Please check back later or try logging in for full access.</p>
         </div>
     </div>
 
-    <div v-if="currentPublicAgent" class="sticky bottom-0 z-20 p-3 sm:p-4 bg-white/70 dark:bg-gray-950/70 backdrop-blur-md border-t border-gray-200 dark:border-gray-700/50 voice-input-section-public">
-        <div v-if="rateLimitInfo && rateLimitInfo.tier === 'public' && rateLimitInfo.remaining !== undefined && rateLimitInfo.remaining <= 0" class="text-center py-3">
-            <p class="text-red-600 dark:text-red-400 font-semibold mb-1">Daily Limit Reached</p>
-            <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">Resets around {{ formatResetTime(rateLimitInfo.resetAt) }}.</p>
-            <router-link to="/login" class="btn-primary btn-sm">Unlock Pro Access</router-link>
+    <div v-if="currentPublicAgent" class="sticky bottom-0 z-20 p-3 sm:p-4 voice-input-section-public">
+        <div v-if="rateLimitInfo && rateLimitInfo.tier === 'public' && rateLimitInfo.remaining !== undefined && rateLimitInfo.remaining <= 0" class="text-center py-3 card-base p-4">
+            <p class="text-error-DEFAULT font-semibold mb-1 text-lg">Daily Limit Reached</p>
+            <p class="text-xs text-neutral-text-muted mb-2">Resets around {{ formatResetTime(rateLimitInfo.resetAt) }}.</p>
+            <router-link to="/login" class="btn btn-primary btn-sm">Unlock Pro Access</router-link>
         </div>
         <VoiceInput
             v-else
@@ -374,107 +427,135 @@ onUnmounted(() => {
             :audio-mode="voiceSettingsManager.settings.audioInputMode"
             :input-placeholder="currentPublicAgent.inputPlaceholder || 'Ask a question (public access)...'"
             @transcription="onTranscriptionReceived"
-            @update:audio-mode="(newMode: 'push-to-talk' | 'continuous' | 'voice-activation') => voiceSettingsManager.updateSetting('audioInputMode', newMode)"
+            @update:audio-mode="(newMode: AudioInputMode) => voiceSettingsManager.updateSetting('audioInputMode', newMode)"
             @processing="(status: boolean) => isVoiceInputProcessing = status"
+            :class="[
+                'transition-all duration-300 ease-out',
+                isVoiceInputProcessing ? 'shadow-holo-md border-accent-focus' : 'shadow-interactive',
+            ]"
         />
     </div>
-    <Footer class="app-footer-public"/>
+    <!-- <Footer class="app-footer-public"/> -->
   </div>
 </template>
 
 <style scoped>
-.glass-pane-header {
-  background-color: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(1rem);
-  border-bottom-width: 1px;
-  border-color: rgba(229, 231, 235, 0.5);
-}
-.dark .glass-pane-header {
-  background-color: rgba(3, 7, 18, 0.7);
-  border-color: rgba(55, 65, 81, 0.5);
-}
-.animate-pulse-slow { animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+/* Using global styles from main.css mostly. Scoped styles are for layout specifics or overrides. */
 
-.agent-content-layout-public { display: flex; flex-direction: column; }
-@media (min-width: 1024px) { .agent-content-layout-public { flex-direction: row; } }
+.public-home-container {
+  /* Backgrounds and base text colors are set by Tailwind utilities using CSS vars from main.css */
+}
 
-.public-agent-selector-area { /* No empty rules */ }
+/* The .header-glass class is already defined in main.css, ensure it's applied to header tag or a div inside it */
+
+.agent-content-layout-public {
+  /* Handled by Tailwind flex classes */
+}
+.public-agent-selector-area {
+  @apply lg:max-w-xs xl:max-w-sm; /* Constrain width on larger screens */
+}
 
 .dropdown-menu-public {
-  background-color: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(1rem);
-  border-width: 1px;
-  border-color: rgb(229 231 235);
-  border-radius: 0.5rem;
-  box-shadow: theme('boxShadow.xl');
-  z-index: 50;
-}
-.dark .dropdown-menu-public {
-  background-color: rgba(30, 41, 59, 0.9);
-  border-color: rgb(55 65 81);
-}
-.dropdown-item-public {
-  display: flex;
-  align-items: center;
-  padding: 0.5rem 0.75rem; /* Equivalent to px-3 py-2 */
-  text-align: left;
-  color: theme('colors.gray.700');
-  border-radius: 0.375rem; /* rounded-md */
-  transition-property: background-color, color;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
-}
-.dark .dropdown-item-public { color: theme('colors.gray.200'); }
-.dropdown-item-public:hover { background-color: theme('colors.gray.100'); }
-.dark .dropdown-item-public:hover { background-color: theme('colors.slate.700'); }
-.dropdown-item-public.active {
-  background-color: theme('colors.blue.50');
-  color: theme('colors.blue.600');
-  font-weight: 600;
-}
-.dark .dropdown-item-public.active {
-  background-color: rgba(59, 130, 246, 0.2);
-  color: theme('colors.blue.300');
+  /* .glass-pane and .rounded-[var(--radius-md)] .shadow-holo-lg are applied directly in template */
+  /* Additional specific dropdown styling if needed beyond glass-pane */
+  @apply border-none; /* glass-pane already has border */
 }
 
-.main-content-panel-public { flex: 3 1 0%; min-height: 300px; overflow-y: auto; position: relative; }
+.dropdown-item-public {
+  @apply flex items-center px-3 py-2.5 text-left text-neutral-text rounded-[var(--radius-sm)]
+         transition-all duration-[var(--duration-quick)] ease-[var(--ease-out-quad)]
+         hover:bg-primary-500/10 hover:text-primary-500 dark:hover:bg-primary-500/20 dark:hover:text-primary-light;
+}
+.dropdown-item-public.active {
+  @apply bg-primary-500/20 text-primary-600 dark:bg-primary-light/20 dark:text-primary-light font-semibold;
+}
+.dropdown-item-public .icon-base {
+   @apply text-primary-400 dark:text-primary-light group-hover:text-primary-500 dark:group-hover:text-primary-focus;
+}
+.dropdown-item-public.active .icon-base {
+   @apply text-primary-600 dark:text-primary-light;
+}
+
+
+.dropdown-fade-enter-active,
+.dropdown-fade-leave-active {
+  transition: opacity var(--duration-quick) var(--ease-out-quad), transform var(--duration-quick) var(--ease-out-quad);
+}
+.dropdown-fade-enter-from,
+.dropdown-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-10px) scale(0.95);
+}
+
+.main-content-panel-public {
+  flex: 3 1 0%;
+  min-height: 300px; /* Ensure content area has some base height */
+  @apply relative overflow-y-auto; /* Ensure custom-scrollbar utility applies if needed */
+}
+
 .chat-log-panel-public {
   flex: 2 1 0%;
-  min-height: 200px;
-  max-height: 40vh;
-  overflow-y: auto;
-  background-color: rgba(240, 245, 255, 0.3);
-  border-top-width: 1px;
-  border-color: rgba(229, 231, 235, 0.5);
+  min-height: 200px; /* Ensure content area has some base height */
+  @apply bg-neutral-bg-subtle/50 dark:bg-neutral-bg-elevated/30
+         border-t lg:border-t-0 lg:border-l border-neutral-border/70
+         overflow-y-auto p-2 sm:p-3;
 }
+/* Responsive layout adjustments for chat and main content panels */
 @media (min-width: 1024px) {
-    .chat-log-panel-public {
-        max-height: none;
-        border-top-width: 0px;
-        border-left-width: 1px;
-        border-color: rgba(229, 231, 235, 0.5);
-    }
-    .dark .chat-log-panel-public { border-left-color: rgba(55, 65, 81, 0.5); }
-}
-.dark .chat-log-panel-public {
-    background-color: rgba(10, 5, 20, 0.2);
-    border-top-color: rgba(55, 65, 81, 0.5);
+  .main-content-panel-public {
+    max-height: calc(100vh - var(--header-height) - var(--footer-height) - 4rem); /* Adjust 4rem for voice input section */
+  }
+  .chat-log-panel-public {
+    max-height: calc(100vh - var(--header-height) - var(--footer-height) - 4rem);
+  }
 }
 
-.voice-input-section-public { /* Basic structure only */ }
+
+.voice-input-section-public {
+  @apply bg-neutral-bg/80 dark:bg-neutral-bg-elevated/80 backdrop-blur-md
+         border-t border-neutral-border/70 shadow-lg;
+}
+
 .app-footer-public {
-    background-color: rgba(249, 250, 251, 0.7);
-    border-top-width: 1px;
-    border-color: rgba(229, 231, 235, 0.7);
-}
-.dark .app-footer-public {
-    background-color: rgba(15, 23, 42, 0.7);
-    border-color: rgba(30, 41, 59, 0.7);
+  /* Uses global styles or can be themed here if specific override is needed */
+   @apply bg-neutral-bg-subtle/50 border-t border-neutral-border/50 text-neutral-text-muted;
 }
 
-.btn-primary { /* Copied from previous version for consistency */ }
-.dark .btn-primary { /* Copied */ }
-.btn-secondary { /* Copied */ }
-.dark .btn-secondary { /* Copied */ }
-.btn-sm { /* Copied */ }
+.streaming-cursor {
+  animation: blink 1s step-end infinite;
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Custom scrollbar for specific panels if needed, or rely on global from main.css */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background-color: hsl(var(--bg-subtle-hsl) / 0.5);
+  border-radius: var(--radius-sm);
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: hsl(var(--primary-color-hsl) / 0.5);
+  border-radius: var(--radius-full);
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: hsl(var(--primary-focus-hsl) / 0.7);
+}
+.dark .custom-scrollbar::-webkit-scrollbar-track {
+  background-color: hsl(var(--bg-elevated-hsl-dark) / 0.5);
+}
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: hsl(var(--primary-light-hsl) / 0.4);
+}
+.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: hsl(var(--primary-light-hsl) / 0.6);
+}
+
+/* Removing locally scoped .btn-primary, .btn-secondary as main.css provides these */
 </style>

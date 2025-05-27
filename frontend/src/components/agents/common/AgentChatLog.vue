@@ -29,7 +29,7 @@ const displayableMessages = computed((): MessageData[] => {
         .map(msg => ({
             // Explicitly map to MessageData properties
             role: msg.role as 'user' | 'assistant', // Cast here is safe due to filter
-            content: msg.content,
+            content: msg.content ?? '', // Ensure content is always a string
             timestamp: msg.timestamp,
             // id: msg.id, // Message.vue doesn't use 'id' prop based on its MessageData interface
             // Any other properties on ChatMessage not in MessageData are implicitly dropped here
