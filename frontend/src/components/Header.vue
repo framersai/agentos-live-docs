@@ -202,7 +202,7 @@ export default defineComponent({
     <div class="header-content-wrapper">
       <div class="header-main-row">
         <div class="header-logo-section">
-          <RouterLink to="/app" class="logo-link-holographic" @click="closeMobileNav" aria-label="Go to Dashboard">
+          <RouterLink to="/" class="logo-link-holographic" @click="closeMobileNav" aria-label="Go to Dashboard">
             <img src="@/assets/logo.svg" alt="VCA Logo" class="logo-image-holographic" />
             <h1 class="app-title-full-holographic">
               VOICE CHAT <span class="app-title-accent-holographic text-glow-accent">ASSISTANT</span>

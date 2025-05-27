@@ -300,43 +300,7 @@ onUnmounted(() => {
 
 <template>
   <div class="public-home-container min-h-screen flex flex-col bg-neutral-bg text-neutral-text">
-    <header class="header-glass sticky top-0 z-30">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <AnimatedLogo class="w-10 h-10 sm:w-12 sm:h-12 text-primary-500" />
-            <div>
-              <h1 class="text-xl sm:text-2xl font-display font-bold text-glow-primary">
-                Voice Chat Assistant
-              </h1>
-              <p class="text-xs text-neutral-text-muted">Public Preview</p>
-            </div>
-          </div>
-          <div class="flex items-center gap-3">
-            <div v-if="rateLimitInfo && rateLimitInfo.tier === 'public'" class="hidden sm:flex items-center gap-2 text-sm">
-              <InformationCircleIcon class="w-5 h-5 text-neutral-text-muted" aria-hidden="true" />
-              <span class="text-neutral-text-secondary">Daily Usage:</span>
-              <div class="flex items-center gap-1.5">
-                <div class="w-28 h-2.5 bg-neutral-border-light dark:bg-neutral-border-dark rounded-full overflow-hidden shadow-analog-inset">
-                  <div
-                    class="h-full bg-gradient-to-r from-accent-500 to-primary-500 transition-all duration-300 ease-out"
-                    :style="{ width: `${rateLimitInfo.limit && rateLimitInfo.limit > 0 && rateLimitInfo.used !== undefined ? (rateLimitInfo.used / rateLimitInfo.limit) * 100 : 0}%` }"
-                    aria-label="Current usage percentage"
-                  ></div>
-                </div>
-                <span class="text-xs font-mono text-neutral-text-muted" aria-label="Usage count">
-                  {{ rateLimitInfo.remaining ?? 'N/A' }} left
-                </span>
-              </div>
-            </div>
-            <router-link to="/login" class="btn btn-primary btn-sm">
-              <KeyIcon class="icon-sm mr-1.5" aria-hidden="true" />
-              Pro Access
-            </router-link>
-          </div>
-        </div>
-      </div>
-    </header>
+    
 
     <div class="flex-grow flex flex-col overflow-hidden">
         <div v-if="currentPublicAgent" class="flex-grow flex flex-col lg:flex-row agent-content-layout-public overflow-hidden">

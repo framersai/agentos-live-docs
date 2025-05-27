@@ -37,13 +37,13 @@ const isAuthenticated = (): boolean => {
 
 const routes: Array<RouteRecordRaw> = [
     {
-        path: '/',
+        path: '/pro',
         name: 'AuthenticatedHome',
         component: PrivateHome,
-        meta: { requiresAuth: true, title: 'My Assistant Dashboard' }
+        meta: { requiresAuth: true, title: 'Pro - Voice Chat Assistant' }
     },
     {
-        path: '/welcome', 
+        path: '/', 
         name: 'PublicHome',
         component: PublicHome,
         meta: { guest: true, title: 'Welcome - Voice Chat Assistant' }
