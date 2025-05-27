@@ -1,0 +1,139 @@
+// File: frontend/src/styles/components/_chat-window.scss
+/**
+ * @file _chat-window.scss
+ * @description Styles for the ChatWindow.vue component, displaying chat messages,
+ * welcome placeholder, and loading indicators with "Ephemeral Harmony" styling.
+ * @version 1.0.2 - Fully switched to button mixins.
+ */
+
+@use '../abstracts/variables' as var;
+@use '../abstracts/mixins' as commonMixins; // General mixins from _mixins.scss
+@use './buttons' as buttonsFile; // To access the button mixins from _buttons.scss
+
+.chat-window-container-ephemeral {
+  flex-grow: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: var.$spacing-md;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+
+  @include commonMixins.custom-scrollbar(
+    '--color-accent-secondary', // $thumb-color-var-prefix
+    0.45,                       // $thumb-base-alpha
+    0.65,                       // $thumb-hover-alpha
+    hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.1) // $track-color
+  );
+}
+
+.chat-messages-wrapper-ephemeral {
+  display: flex;
+  flex-direction: column;
+  gap: var.$spacing-sm;
+  width: 100%;
+}
+
+.welcome-placeholder-ephemeral {
+  text-align: center;
+  margin: auto;
+  padding: var.$spacing-lg;
+  max-width: 600px;
+  color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+
+  .welcome-logo {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto var.$spacing-lg;
+    opacity: 0.7;
+    animation: subtlePulse 3s var.$ease-in-out-sine infinite;
+    --scale-pulse: 1.05;
+    --opacity-start: 0.6;
+    --opacity-pulse: 0.8;
+    filter: drop-shadow(0 0 8px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.3));
+  }
+
+  .welcome-title {
+    font-family: var(--font-display, var.$font-family-display);
+    font-size: clamp(1.5rem, 1rem + 2vw, 2.25rem);
+    font-weight: 600;
+    color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+    margin-bottom: var.$spacing-sm;
+    @include commonMixins.text-glow('--color-accent-primary', 6px);
+  }
+
+  .welcome-subtitle {
+    font-size: var.$font-size-base;
+    line-height: 1.7;
+    margin: 0 auto var.$spacing-lg;
+    max-width: 50ch;
+  }
+
+  .example-prompts-grid-ephemeral {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var.$spacing-sm;
+  }
+
+  .prompt-tag-ephemeral {
+    @include buttonsFile.btn-secondary; // This composite mixin includes base styles + secondary look
+    @include buttonsFile.btn-xs-modifier; // Apply extra small size modifications
+    // Override padding again if btn-xs-modifier doesn't match desired, or adjust btn-xs-modifier mixin
+    padding: var.$spacing-xs var.$spacing-sm !important;
+    cursor: default;
+  }
+}
+
+.message-item-in-log {
+  // Styles applied to the root of the Message.vue component instance if needed
+}
+
+.loading-indicator-chat-ephemeral {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: var.$spacing-md auto;
+  padding: var.$spacing-sm;
+  width: max-content;
+  border-radius: var.$radius-md;
+  background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.5);
+
+  .spinner-dots-ephemeral {
+    display: flex;
+    align-items: center;
+
+    .dot-ephemeral {
+      width: 8px;
+      height: 8px;
+      margin: 0 3px;
+      background-color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+      border-radius: 100%;
+      display: inline-block;
+      animation: bounceDelay var.$duration-pulse-medium infinite ease-in-out both;
+
+      &:nth-child(1) { animation-delay: -0.32s; }
+      &:nth-child(2) { animation-delay: -0.16s; }
+    }
+  }
+
+  .loading-text {
+    font-size: var.$font-size-sm;
+    color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+  }
+}
+
+@keyframes bounceDelay {
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1.0); }
+}
+
+// If the error on line 98 was for a hypothetical .chat-window-send-button:
+// This section might not exist in your current _chat-window.scss if it was part of my earlier placeholder.
+// If you have a send button styled here, apply the mixins like this:
+/*
+.chat-window-send-button { // Example selector
+  @include buttonsFile.btn-primary; // Applies base styles and primary look
+  @include buttonsFile.btn-icon-modifier; // Applies icon button modifications
+}
+*/

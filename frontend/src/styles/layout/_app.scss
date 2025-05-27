@@ -1,0 +1,88 @@
+// File: frontend/src/styles/layout/_app.scss
+/**
+ * @file _app.scss
+ * @description Specific layout styles for the main App.vue shell.
+ * @version 1.0.0
+ */
+
+@use '../abstracts/variables' as var;
+
+.app-shell-ephemeral { // New root class for App.vue's main div
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  // Background color and text color are set by body styles in _typography.scss
+  // and theme variables.
+  // Add subtle global background pattern here if not on body
+  // position: relative; // For ::before pseudo-elements if needed
+  // overflow: hidden; // If background effects should not cause scroll
+}
+
+.app-layout-ephemeral {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow: hidden; // Prevent content from causing App.vue scroll
+  position: relative; // For positioning of fixed/absolute children like EphemeralChatLog
+}
+
+.app-layout-header-ephemeral { // Wrapper for <AppHeader>
+  flex-shrink: 0;
+  // z-index handled by .app-header itself
+}
+
+.app-layout-main-content-ephemeral { // Wrapper for <router-view>
+  flex-grow: 1;
+  position: relative; // For stacking context of pages
+  overflow-y: auto; // Only main content should scroll if page is long
+  overflow-x: hidden;
+  // Apply custom scrollbar styling using the mixin if needed globally for main content areas
+  // Or individual pages/views can apply it.
+  // padding-top: calc(var(--header-height) + var(--chat-log-height) + var.$spacing-lg); // Space if EphemeralChatLog is NOT fixed
+  // Padding will now be managed by UnifiedChatLayout internally
+
+  // Page transitions (from App.vue styles)
+  .page-fade-enter-active,
+  .page-fade-leave-active {
+    transition: opacity var(--duration-smooth) var(--ease-in-out-sine),
+                transform var(--duration-smooth) var(--ease-in-out-sine);
+  }
+  .page-fade-enter-from {
+    opacity: 0;
+    transform: translateY(15px) scale(0.99); // Subtle slide and scale
+  }
+  .page-fade-leave-to {
+    opacity: 0;
+    transform: translateY(-15px) scale(0.99);
+  }
+}
+
+.app-layout-footer-ephemeral { // Wrapper for <AppFooter>
+  flex-shrink: 0;
+  // z-index handled by .app-footer itself
+}
+
+// Skip Link (from App.vue styles, themed)
+.skip-link-ephemeral {
+  position: absolute; // Changed from fixed to be within app layout if app layout is scroll container
+  left: -9999px;
+  top: var.$spacing-sm; // Position from top of app-layout
+  z-index: var.$z-index-dev-tools; // Very high
+  padding: var.$spacing-sm var.$spacing-md;
+  border-radius: var.$radius-md;
+  font-weight: 600;
+  text-decoration: none;
+  background-color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+  color: hsl(var(--color-text-on-primary-h), var(--color-text-on-primary-s), var(--color-text-on-primary-l));
+  box-shadow: var(--shadow-depth-lg);
+  transition: transform 0.2s var.$ease-out-quad, opacity 0.2s var.$ease-out-quad;
+  transform: translateY(-100%);
+  opacity: 0;
+
+  &:focus,
+  &:active {
+    left: var.$spacing-md;
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

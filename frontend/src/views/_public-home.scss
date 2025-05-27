@@ -1,0 +1,133 @@
+/**
+ * @file _public-home.scss
+ * @description Styles specific to the PublicHome view for "Ephemeral Harmony" theme.
+ * @version 1.0.1+ - Switched button extends to mixin includes, integrated details from v1.0.0.
+ */
+
+@use '../abstracts/variables' as var;
+@use '../abstracts/mixins' as commonMixins; // General project mixins from _mixins.scss
+@use '../components/buttons' as buttonsFile; // To access the button mixins from _buttons.scss
+
+.public-home-view-ephemeral { // Root class for the PublicHome.vue main div
+  // The UnifiedChatLayout will handle most of the structural display.
+  // This file is for elements *unique* to PublicHome.
+
+  .public-header-override { // If PublicHome needs a slightly different header presentation than PrivateHome
+    // Example: perhaps a more prominent "Login/Sign Up" button
+    // This would be applied to a wrapper around AppHeader or specific elements within it via slots if AppHeader supports it.
+  }
+
+  .rate-limit-banner-ephemeral {
+    padding: var.$spacing-sm var.$spacing-md;
+    margin: var.$spacing-md auto; // Centered, with margin
+    max-width: 600px; // Constrain width
+    border-radius: var.$radius-lg;
+    text-align: center;
+    font-size: var.$font-size-sm;
+
+    @include commonMixins.glassmorphic-pane(
+      hsla(var(--color-warning-h), var(--color-warning-s), var(--color-warning-l), 0.15), // Warning tint for glass
+      hsla(var(--color-warning-h), var(--color-warning-s), var(--color-warning-l), 0.3),
+      calc(var(--blur-glass) * 0.5), // Less blur
+      var(--shadow-depth-sm)
+    );
+    color: hsl(var(--color-warning-h), var(--color-warning-s), calc(var(--color-warning-l) - 10%)); // Darker warning text
+
+    strong {
+      font-weight: 600;
+    }
+
+    .login-prompt-link { // For the "Log in for unlimited access"
+      @include buttonsFile.btn-primary;      // Composite mixin for primary button (includes base styles)
+      @include buttonsFile.btn-sm-modifier;    // Applies small size modifications
+      margin-top: var.$spacing-sm;
+      display: inline-block; // Allow margin-top
+    }
+  }
+
+  // Styling for the agent selector specific to PublicHome, if it's different from the main header's.
+  // The main header's agent selector might be hidden or altered for public view.
+  .public-agent-selector-ephemeral {
+    margin-bottom: var.$spacing-md;
+    display: flex;
+    justify-content: center; // Center the selector if it's a standalone element
+
+    .agent-selector-button { // The button that opens the dropdown
+      @include buttonsFile.btn-secondary; // Composite mixin for secondary button (includes base styles)
+      min-width: 200px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .selected-agent-icon { // Class for the agent icon
+        width: 1.25em;
+        height: 1.25em;
+        margin-right: var.$spacing-xs;
+      }
+      .chevron-icon {
+        transition: transform var.$duration-quick;
+        &.open {
+          transform: rotate(180deg);
+        }
+      }
+    }
+
+    .agent-selector-dropdown { // The dropdown panel
+      // Assuming .dropdown-menu-holographic is a class defined elsewhere (e.g. _header.scss or a new _dropdowns.scss)
+      // or could be replaced with a mixin call if it's a shared style.
+      // Example: @extend .dropdown-menu-holographic; 
+      // If dropdown-menu-holographic has its own base styles that also need abstracting,
+      // it could become @include commonMixins.dropdown-menu-holographic-styles;
+      position: absolute; // Example, actual positioning will depend on implementation
+      z-index: var.$z-index-dropdown;
+      // ... other dropdown styles ...
+      // Position relative to the button will be handled by Vue Teleport or Popper.js or simple CSS
+    }
+  }
+
+  // Welcome message or "No agent selected" state specific to public view
+  .public-welcome-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: var.$spacing-xl;
+    margin: var.$spacing-lg auto;
+    max-width: 700px;
+    min-height: 300px; // Ensure it has some presence
+
+    @include commonMixins.glassmorphic-pane(
+      hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.5),
+      hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.2),
+      var(--blur-glass),
+      var(--shadow-depth-md)
+    );
+    border-radius: var.$radius-2xl;
+
+    .hero-icon-ephemeral { // For the SparklesIcon or similar
+      width: 4rem;
+      height: 4rem;
+      margin-bottom: var.$spacing-lg;
+      color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+      opacity: 0.6;
+      animation: subtlePulse var.$duration-pulse-long infinite; // Ensure subtlePulse keyframes are defined
+      --scale-pulse: 1.05;
+      --opacity-pulse: 0.8;
+    }
+
+    .welcome-title-ephemeral {
+      font-family: var(--font-display);
+      font-size: var.$font-size-xl * 1.5; // Larger welcome title
+      font-weight: 600;
+      color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+      margin-bottom: var.$spacing-sm;
+      @include commonMixins.text-glow(); // Default accent glow
+    }
+    .welcome-subtitle-ephemeral {
+      color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+      line-height: 1.6;
+    }
+  }
+  // ... any other styles for public home ...
+}

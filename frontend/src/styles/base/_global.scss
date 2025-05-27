@@ -1,0 +1,130 @@
+// File: frontend/src/styles/base/_global.scss
+/**
+ * @file _global.scss
+ * @description Global styles for html, body, custom scrollbars, focus states,
+ * and other site-wide base appearance settings. Utilizes CSS custom properties
+ * set by the theme engine.
+ * @version 2.1.0 - Corrected focus-ring mixin call.
+ */
+
+@use '../abstracts/variables' as var;
+@use '../abstracts/mixins' as mixins; // This should correctly load the updated _mixins.scss
+
+html {
+  font-size: 100%;
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  // color-scheme is set by _theme-engine.scss
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+
+  &::before { // Global subtle noise background
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: var.$z-index-negative;
+    background-image: var(--bg-noise-texture, none);
+    opacity: var(--bg-noise-opacity, 0.02);
+    pointer-events: none;
+  }
+}
+
+#app {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+// --- Custom Scrollbars (Global Fallback) ---
+// Webkit
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background-color: hsla(var(--color-bg-secondary-h, 0), var(--color-bg-secondary-s, 0%), var(--color-bg-secondary-l, 0%), 0.15); // Subtle track
+  border-radius: var.$radius-sm;
+}
+::-webkit-scrollbar-thumb {
+  background-color: hsla(var(--color-accent-primary-h, 260), var(--color-accent-primary-s, 75%), var(--color-accent-primary-l, 60%), 0.45);
+  border-radius: var.$radius-full;
+  border: 2px solid transparent;
+  background-clip: content-box;
+  transition: background-color var.$duration-quick var.$ease-out-quad;
+  &:hover {
+    background-color: hsla(var(--color-accent-primary-h, 260), var(--color-accent-primary-s, 75%), var(--color-accent-primary-l, 60%), 0.65);
+  }
+}
+// Firefox
+* {
+  scrollbar-width: thin;
+  scrollbar-color: hsla(var(--color-accent-primary-h, 260), var(--color-accent-primary-s, 75%), var(--color-accent-primary-l, 60%), 0.45)
+                   hsla(var(--color-bg-secondary-h, 0), var(--color-bg-secondary-s, 0%), var(--color-bg-secondary-l, 0%), 0.15);
+}
+
+// --- Global Focus States ---
+:focus-visible {
+  @include mixins.focus-ring(
+    // Parameters for the focus-ring mixin:
+    // $base-bg-var-name (CSS var for background under the offset space)
+    // $ring-accent-var-name (CSS var prefix for the ring color - H, S, L components)
+    // $offset-width (optional, defaults to 2px in mixin)
+    // $ring-thickness (optional, defaults to 2px in mixin)
+    // $ring-opacity (optional, defaults to 0.7 in mixin)
+    $base-bg-var-name: '--color-bg-primary',     // e.g., uses var(--color-bg-primary) for the space
+    $ring-accent-var-name: '--color-accent-primary' // e.g., uses var(--color-accent-primary-h), -s, -l for ring color
+  );
+}
+
+// --- Skip Link ---
+.skip-link-ephemeral { // Ensure class name consistency if used from App.vue
+  position: absolute;
+  left: -9999px;
+  top: var.$spacing-sm;
+  z-index: var.$z-index-dev-tools;
+  padding: var.$spacing-sm var.$spacing-md;
+  border-radius: var.$radius-md;
+  font-weight: 600;
+  text-decoration: none;
+  background-color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+  color: hsl(var(--color-text-on-primary-h), var(--color-text-on-primary-s), var(--color-text-on-primary-l));
+  box-shadow: var(--shadow-depth-lg);
+  transition: transform 0.2s var.$ease-out-quad, opacity 0.2s var.$ease-out-quad;
+  transform: translateY(-150%); // Start further off-screen
+  opacity: 0;
+
+  &:focus,
+  &:active {
+    left: var.$spacing-md;
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+// --- Global Transition Utility ---
+.transition-default {
+  transition-property: color, background-color, border-color, box-shadow, opacity, transform, filter;
+  transition-duration: var(--duration-smooth, var.$duration-smooth);
+  transition-timing-function: var(--ease-out-quad, var.$ease-out-quad);
+}
+
+// --- Background Patterns (CSS Vars defined in themes) ---
+.fixed-holo-grid-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-image: var(--bg-holo-grid-pattern); // Theme variable
+  background-size: var(--bg-holo-grid-size, 40px) var(--bg-holo-grid-size, 40px); // Theme variable
+  pointer-events: none;
+  z-index: var.$z-index-negative;
+  opacity: var(--bg-holo-grid-opacity, 0.04); // Theme variable
+  animation: holoGridScroll var.$duration-pulse-long * 6 linear infinite; // Very slow scroll
+}
+
+// Ensure holoGridScroll keyframes are in _keyframes.scss (they were added previously)

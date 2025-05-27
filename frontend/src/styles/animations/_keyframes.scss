@@ -1,0 +1,161 @@
+// File: frontend/src/styles/animations/_keyframes.scss
+/**
+ * @file _keyframes.scss
+ * @description Defines custom @keyframes for animations used in the "Ephemeral Harmony" design system.
+ * Includes effects for UI elements, transitions, voice interaction visualizations, and ambient backgrounds.
+ * @version 2.1.0 - Added background effect keyframes.
+ */
+
+@use '../abstracts/variables' as var;
+
+// -----------------------------------------------------------------------------
+// Core UI Animations
+// -----------------------------------------------------------------------------
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes slideInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes subtlePulse { // Generic subtle pulse
+  0%, 100% { transform: scale(1); opacity: var(--opacity-start, 1); }
+  50% { transform: scale(var(--scale-pulse, 1.02)); opacity: var(--opacity-pulse, 0.85); }
+}
+
+@keyframes subtleGlow { // For text or small elements
+  from { text-shadow: 0 0 4px hsla(var(--color-accent-glow-h, 180), var(--color-accent-glow-s, 90%), var(--color-accent-glow-l, 60%), calc(var(--color-accent-glow-a, 0.4) * 0.7)); }
+  to { text-shadow: 0 0 10px hsla(var(--color-accent-glow-h, 180), var(--color-accent-glow-s, 90%), var(--color-accent-glow-l, 60%), var(--color-accent-glow-a, 0.4)),
+                   0 0 1px hsla(var(--color-accent-glow-h, 180), var(--color-accent-glow-s, 90%), var(--color-accent-glow-l, 60%), var(--color-accent-glow-a, 0.4)); }
+}
+
+// -----------------------------------------------------------------------------
+// Holographic & Ephemeral Animations
+// -----------------------------------------------------------------------------
+@keyframes holoShimmer { // For background gradients or borders (animates background-position)
+  0% { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+
+@keyframes ephemeralMessageIn { // For messages in ephemeral chat log
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); } // Target opacity handled by class
+}
+
+@keyframes ephemeralVanish { // For messages fading out (if implemented with JS class toggle)
+  from { opacity: var(--opacity-start, 0.9); transform: scale(1) translateY(0); }
+  to { opacity: 0; transform: scale(0.95) translateY(-10px); }
+}
+
+// -----------------------------------------------------------------------------
+// Voice Visualization Keyframes
+// -----------------------------------------------------------------------------
+@keyframes voiceAuraPulse { // For a soft, breathing aura effect around mic or AI indicator
+  0% { transform: scale(0.7); opacity: 0; }
+  50% { opacity: var(--voice-pulse-opacity, 0.6); }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+@keyframes voiceLightStreak { // For the header AI status indicator's streak
+  0% { transform: translateX(-100%); opacity: 0.5; }
+  50% { opacity: 1; }
+  100% { transform: translateX(330%); opacity: 0.5; }
+}
+
+@keyframes ephemeralRipples { // For concentric ripples from a point
+  from {
+    transform: scale(0);
+    opacity: 0.7;
+    // border-color: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.7);
+  }
+  to {
+    transform: scale(3); // Adjust scale for ripple size
+    opacity: 0;
+    // border-color: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0);
+  }
+}
+
+@keyframes holographicParticleDrift { // Slow, ambient drift for background particles
+  0% { transform: translate(0, 0) rotate(0deg); opacity: 0.05; } // Start subtle
+  25% { transform: translate(var(--particle-drift-x, 5px), var(--particle-drift-y, 10px)) rotate(10deg); opacity: 0.15; }
+  50% { transform: translate(calc(var(--particle-drift-x, 5px) * -0.5), calc(var(--particle-drift-y, 10px) * 2)) rotate(-5deg); opacity: 0.1; }
+  75% { transform: translate(calc(var(--particle-drift-x, 5px) * 0.2), calc(var(--particle-drift-y, 10px) * 0.5)) rotate(5deg); opacity: 0.2; }
+  100% { transform: translate(0, 0) rotate(0deg); opacity: 0.05; }
+}
+
+@keyframes holographicParticleActive { // When voice or an event triggers more activity
+  0% { opacity: var(--particle-active-opacity-start, 0.3); transform: scale(1.05); filter: brightness(1.1); }
+  50% { opacity: var(--particle-active-opacity-peak, 0.6); transform: scale(1); filter: brightness(1.3); }
+  100% { opacity: var(--particle-active-opacity-start, 0.3); transform: scale(1.05); filter: brightness(1.1); }
+}
+
+// -----------------------------------------------------------------------------
+// Animated Border Glow (Spin for conic gradient)
+// -----------------------------------------------------------------------------
+@keyframes spin { // General purpose spin, used by holographic-border-glow mixin
+  to { transform: rotate(360deg); }
+}
+
+// -----------------------------------------------------------------------------
+// Blinking cursor for streaming text
+// -----------------------------------------------------------------------------
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+// -----------------------------------------------------------------------------
+// Background Effects from UnifiedChatLayout
+// -----------------------------------------------------------------------------
+@keyframes orbitEffect { // For the orbiting shapes in the background
+  from { transform: rotate(0deg) /* translateX, translateY set by JS/style binding */ ; }
+  to { transform: rotate(360deg) /* translateX, translateY set by JS/style binding */ ; }
+}
+
+@keyframes shapeTransformEffect { // For the individual orbiting shapes
+  from { transform: scale(0.8) rotate(-25deg); opacity: var(--shape-opacity-from, 0.5); }
+  to { transform: scale(1.2) rotate(25deg); opacity: var(--shape-opacity-to, 0.8); }
+}
+
+@keyframes holoGridScroll { // For the subtle holographic grid background
+  0% { background-position: 0 0; }
+  100% { background-position: var(--bg-holo-grid-size, 40px) var(--bg-holo-grid-size, 40px); }
+  // Or for a more "flowing" effect:
+  // 100% { background-position: 0 var(--bg-holo-grid-size, 40px); } // Scrolls only vertically
+}
+
+// -----------------------------------------------------------------------------
+// Loading Spinner (from App.vue, can be centralized here)
+// -----------------------------------------------------------------------------
+@keyframes spinnerBladeFade { // For the loading spinner blades
+  0%, 39.9% { opacity: 0; } // Start invisible
+  40% { opacity: 1; }
+  100% { opacity: 0; transform: rotate(360deg); } // Fade out as it completes a "cycle" conceptually
+}
+
+// -----------------------------------------------------------------------------
+// Specific Component Animations (e.g., from Header.vue)
+// -----------------------------------------------------------------------------
+@keyframes micListeningPulse { // From _voice-input.scss, good to centralize
+  0% { box-shadow: 0 0 0 0px hsla(var(--color-voice-user-h, 270), var(--color-voice-user-s, 90%), var(--color-voice-user-l, 70%), 0.5); opacity: 0.7; }
+  70% { box-shadow: 0 0 0 10px hsla(var(--color-voice-user-h, 270), var(--color-voice-user-s, 90%), var(--color-voice-user-l, 70%), 0); opacity: 0; }
+  100% { box-shadow: 0 0 0 0px hsla(var(--color-voice-user-h, 270), var(--color-voice-user-s, 90%), var(--color-voice-user-l, 70%), 0); opacity: 0; }
+}
+
+@keyframes pulseStatus { // From Footer.vue status dot
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.85); }
+}

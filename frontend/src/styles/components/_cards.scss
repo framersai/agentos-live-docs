@@ -1,0 +1,107 @@
+/**
+ * @file _cards.scss
+ * @description Base styling for card components.
+ * Showcases themeable glassmorphic and neomorphic card styles.
+ * @version 2.0.1 - Corrected neomorphic mixin calls.
+ */
+
+@use '../abstracts/variables' as var;
+@use '../abstracts/mixins' as mixins;
+
+// Base Card Style - to be extended
+.card-base {
+  border-radius: var.$radius-xl; // Generous radius for cards
+  padding: var.$spacing-lg;
+  transition: var.$duration-smooth var.$ease-out-quad;
+  transition-property: background-color, border-color, box-shadow, transform;
+  will-change: transform, box-shadow;
+}
+
+// Glassmorphic Card
+.card-glass {
+  @extend .card-base;
+  @include mixins.glassmorphic-pane(
+    var(--color-bg-glass),
+    var(--color-border-glass),
+    var(--blur-glass),
+    var(--shadow-depth-lg) // Deeper shadow for prominent glass cards
+  );
+
+  &:hover {
+    // Subtle lift and brighter border/shadow on hover
+    transform: translateY(-3px) scale(1.01);
+    border-color: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), calc(var(--color-border-glass-a) + 0.2));
+    box-shadow: 0 12px 35px hsla(var(--shadow-color-h), var(--shadow-color-s), var(--shadow-color-l), calc(var(--shadow-opacity-deep) + 0.05)), // Slightly stronger shadow
+                0 0 15px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.1); // Subtle accent glow
+  }
+}
+
+// Neomorphic Card (Extruded)
+.card-neo {
+  @extend .card-base;
+  // CORRECTED CALL to neomorphic-extrude
+  @include mixins.neomorphic-extrude(
+    hsl(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l)), // 1. $bg-color
+    6px,  // 2. $distance
+    15px, // 3. $blur
+    var(--shadow-opacity-soft), // 4. $light-shadow-opacity
+    var(--shadow-opacity-soft),   // 5. $dark-shadow-opacity
+    var.$radius-xl, // 6. $radius
+    // Corrected shadow parameters:
+    var(--shadow-color-h), // 7. $shadow-h
+    var(--shadow-color-s), // 8. $shadow-s (Ensure var name is correct)
+    var(--shadow-color-l), // 9. $base-shadow-l
+    calc(var(--shadow-color-l) + var(--shadow-highlight-modifier)) // 10. $highlight-l
+  );
+  // Neomorphic cards usually don't have an explicit border
+  border: none;
+
+  &:hover {
+    // Slightly increase shadow distance/intensity for hover 'lift'
+    // CORRECTED CALL to neomorphic-extrude
+    @include mixins.neomorphic-extrude(
+      hsl(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l)), // 1. $bg-color
+      8px,  // 2. $distance
+      18px, // 3. $blur
+      calc(var(--shadow-opacity-soft) * 1.2), // 4. $light-shadow-opacity
+      calc(var(--shadow-opacity-soft) * 1.2), // 5. $dark-shadow-opacity
+      var.$radius-xl, // 6. $radius
+      // Corrected shadow parameters:
+      var(--shadow-color-h), // 7. $shadow-h
+      var(--shadow-color-s), // 8. $shadow-s (Ensure var name is correct)
+      var(--shadow-color-l), // 9. $base-shadow-l
+      calc(var(--shadow-color-l) + var(--shadow-highlight-modifier)) // 10. $highlight-l
+    );
+    transform: translateY(-2px);
+  }
+}
+
+// Interactive Card (can be glass or neo, with additional hover cues)
+.card-interactive {
+  cursor: pointer;
+  // Add specific interactive states here if needed, beyond hover of card-glass/card-neo
+  // For example, a more pronounced transform or glow
+  &:hover {
+    // Already handled by .card-glass:hover and .card-neo:hover
+    // This class primarily signals interactivity for JS or parent selectors.
+  }
+
+  &:active {
+    transform: translateY(0px) scale(0.99); // Slight press down for interactive cards
+  }
+}
+
+// Card with a subtle holographic border accent
+.card-holo-accent {
+  @extend .card-glass; // Base it on glass, or make a new base
+  @include mixins.holographic-border-glow(
+    '--color-accent-secondary', // Use secondary accent for this example
+    1px, // Thickness
+    3s,  // Animation duration
+    var.$radius-xl
+  );
+
+  // Override padding if the mixin's pseudo-elements interfere
+  // Ensure content within the card has its own padding if card-base padding is removed.
+  // > * { padding: var.$spacing-lg; }
+}

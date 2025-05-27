@@ -34,6 +34,8 @@
     "@vitejs/plugin-vue": "^4.5.0",
     "autoprefixer": "^10.4.16",
     "postcss": "^8.4.31",
+    "sass": "^1.89.0",
+    "sass-loader": "^16.0.5",
     "tailwindcss": "^3.3.5",
     "typescript": "^5.3.2",
     "vite": "^5.0.0",

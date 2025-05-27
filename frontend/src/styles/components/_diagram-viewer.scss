@@ -1,0 +1,109 @@
+// File: frontend/src/styles/components/_diagram-viewer.scss
+/**
+ * @file _diagram-viewer.scss
+ * @description Styles for the DiagramViewer component, themed for "Ephemeral Harmony".
+ * @version 1.0.1 - Updated to use base-button-styles mixin.
+ */
+
+@use '../abstracts/variables' as var;
+@use '../abstracts/mixins' as mixins; // General mixins
+@use './buttons' as buttonsFile; // <-- ADD THIS LINE to access the mixin from _buttons.scss
+
+.diagram-viewer-wrapper-ephemeral { // New root class for the themed viewer
+  margin-top: var.$spacing-md;
+  padding: var.$spacing-xs; // Outer padding for the wrapper
+  border-radius: var.$radius-lg;
+  transition: background-color var.$duration-smooth, border-color var.$duration-smooth;
+
+  @include mixins.glassmorphic-pane(
+    hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.6), // Use tertiary for less emphasis
+    hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.3),
+    calc(var(--blur-glass) * 0.8), // Slightly less blur
+    var(--shadow-depth-sm)
+  );
+
+  .loading-indicator-ephemeral {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var.$spacing-xl;
+    min-height: 150px;
+
+    .spinner-ephemeral { // Themed spinner
+      width: 2rem; // 32px
+      height: 2rem;
+      border: 3px solid hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.2);
+      border-top-color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+      border-radius: var.$radius-full;
+      animation: spin var.$duration-pulse-fast linear infinite; // spin keyframes from _keyframes.scss
+    }
+  }
+
+  .render-error-ephemeral {
+    padding: var.$spacing-md;
+    color: hsl(var(--color-error-h), var(--color-error-s), var(--color-error-l));
+    font-size: var.$font-size-sm;
+
+    .error-title {
+      font-weight: 600;
+      color: hsl(var(--color-error-h), var(--color-error-s), calc(var(--color-error-l) - 10%)); // Darker error title
+    }
+    .error-message {
+      margin-top: var.$spacing-xs;
+      font-size: var.$font-size-xs;
+    }
+    .error-code-block { // The <pre> block for showing code on error
+      margin-top: var.$spacing-sm;
+      padding: var.$spacing-sm;
+      background-color: hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.05);
+      border: 1px solid hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.2);
+      border-radius: var.$radius-md;
+      overflow-x: auto;
+      // CORRECTED call to custom-scrollbar if its signature was also updated (using example from previous fixes)
+      @include mixins.custom-scrollbar(
+        '--color-error', // Assuming --color-error-h, -s, -l vars exist
+        0.4,
+        0.6,
+        hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.1)
+      );
+      pre { margin: 0; padding: 0; background: none; border: none; }
+      code { font-size: 0.75rem; color: hsl(var(--color-error-h), var(--color-error-s), calc(var(--color-error-l) - 5%)); }
+    }
+  }
+
+  .mermaid-diagram-container-ephemeral { // The div that will contain the SVG
+    overflow: auto; // Ensure diagram can be scrolled if it's too large
+    padding: var.$spacing-sm;
+    border-radius: var.$radius-md;
+    background-color: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.3); // Subtle bg for diagram itself
+    min-height: 150px; // Ensure container has some height for loading/error states
+    display: flex; // For centering SVG if it's smaller than container
+    align-items: center;
+    justify-content: center;
+
+    :deep(svg) {
+      display: block; // Ensure SVG takes block layout
+      max-width: 100%;
+      height: auto; // Maintain aspect ratio
+    }
+  }
+
+  .diagram-actions-ephemeral {
+    margin-top: var.$spacing-sm;
+    padding-top: var.$spacing-sm;
+    border-top: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.2);
+    display: flex;
+    justify-content: flex-end;
+
+    .save-diagram-button { // Use our button styles
+      // CORRECTED: Replace @extend .btn with @include mixin
+      @include buttonsFile.base-button-styles;
+      // These extends might still work if .btn-secondary and .btn-sm are defined
+      // in _buttons.scss and primarily add their own styles on top of a .btn
+      // (which now gets its base styles from the mixin).
+      // If these also cause issues, they would need to become mixins too.
+      @extend .btn-secondary; // Secondary neomorphic style
+      @extend .btn-sm;       // Small size
+    }
+  }
+}

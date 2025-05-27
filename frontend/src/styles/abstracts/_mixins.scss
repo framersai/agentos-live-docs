@@ -1,0 +1,214 @@
+// File: frontend/src/styles/abstracts/_mixins.scss
+/**
+ * @file _mixins.scss
+ * @description SCSS mixins for creating neomorphic effects, holographic elements,
+ * glassmorphism, text effects, voice interaction visualizations, and focus states.
+ * @version 2.3.1 - Corrected custom-scrollbar mixin to handle CSS variables for thumb colors.
+ */
+
+@use 'sass:math';
+@use 'sass:color';
+@use 'variables' as var; // Ensure this path is correct for your project structure
+
+// -----------------------------------------------------------------------------
+// Glassmorphism
+// -----------------------------------------------------------------------------
+@mixin glassmorphic-pane(
+  $bg-color: hsla(0, 0%, 100%, 0.1),
+  $border-color: hsla(0, 0%, 100%, 0.2),
+  $blur-amount: 10px, // This can be a CSS var like var(--blur-glass-default, #{var.$blur-glass})
+  // CORRECTED DEFAULT: Use a full shadow definition variable from _variables.scss
+  $shadow: var.$scss-box-shadow-md // Uses the new full shadow definition
+) {
+  background-color: $bg-color;
+  backdrop-filter: blur($blur-amount);
+  -webkit-backdrop-filter: blur($blur-amount);
+  border: 1px solid $border-color;
+  box-shadow: $shadow; // The $shadow parameter MUST be a complete box-shadow string
+}
+
+
+// -----------------------------------------------------------------------------
+// Neomorphism
+// -----------------------------------------------------------------------------
+@mixin neomorphic-inset(
+  $fill-color,
+  $blur,
+  $distance,
+  $dark-shadow-opacity,
+  $light-shadow-opacity,
+  $radius,
+  $shadow-h,
+  $shadow-s,
+  $dark-shadow-l,
+  $light-shadow-l
+) {
+  border-radius: $radius;
+  background-color: $fill-color;
+  $dark-shadow-color-val: hsla(#{$shadow-h}, #{$shadow-s}, #{$dark-shadow-l}, #{$dark-shadow-opacity});
+  $light-shadow-color-val: hsla(#{$shadow-h}, #{$shadow-s}, #{$light-shadow-l}, #{$light-shadow-opacity});
+  box-shadow: inset #{$distance} #{$distance} #{($distance * 1.5)} #{$dark-shadow-color-val},
+              inset #{-$distance} #{-$distance} #{($distance * 1.5)} #{$light-shadow-color-val};
+}
+
+@mixin neomorphic-extrude(
+  $bg-color,
+  $distance,
+  $blur,
+  $light-shadow-opacity,
+  $dark-shadow-opacity,
+  $radius,
+  $shadow-h,
+  $shadow-s,
+  $base-shadow-l,
+  $highlight-l
+) {
+  border-radius: $radius;
+  background-color: $bg-color;
+  $light-shadow-color-val: hsla(#{$shadow-h}, #{$shadow-s}, #{$highlight-l}, #{$light-shadow-opacity});
+  $dark-shadow-color-val: hsla(#{$shadow-h}, #{$shadow-s}, #{$base-shadow-l}, #{$dark-shadow-opacity});
+  box-shadow: #{$distance} #{$distance} #{$blur} #{$dark-shadow-color-val},
+              #{-$distance} #{-$distance} #{$blur} #{$light-shadow-color-val};
+}
+
+// -----------------------------------------------------------------------------
+// Holographic Effects
+// -----------------------------------------------------------------------------
+@mixin holographic-border-glow(
+  $accent-var-prefix,
+  $border-width: 2px,
+  $animation-duration: 3s,
+  $radius: var.$radius-md
+) {
+  position: relative;
+  border-radius: $radius;
+  z-index: 0;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -$border-width;
+    left: -$border-width;
+    right: -$border-width;
+    bottom: -$border-width;
+    border-radius: inherit;
+    padding: $border-width;
+    background: conic-gradient(
+      from 0deg,
+      hsla(var(#{$accent-var-prefix}-h), var(#{$accent-var-prefix}-s), calc(var(#{$accent-var-prefix}-l) + 20%), 0.9),
+      hsla(var(#{$accent-var-prefix}-h), var(#{$accent-var-prefix}-s), var(#{$accent-var-prefix}-l), 0.2),
+      hsla(var(#{$accent-var-prefix}-h), var(#{$accent-var-prefix}-s), calc(var(#{$accent-var-prefix}-l) + 10%), 0.8),
+      hsla(var(#{$accent-var-prefix}-h), var(#{$accent-var-prefix}-s), var(#{$accent-var-prefix}-l), 0.2),
+      hsla(var(#{$accent-var-prefix}-h), var(#{$accent-var-prefix}-s), calc(var(#{$accent-var-prefix}-l) + 20%), 0.9)
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: spin $animation-duration linear infinite;
+    z-index: -1;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Text Effects
+// -----------------------------------------------------------------------------
+@mixin text-glow(
+  $color-var-prefix: '--color-accent-primary',
+  $glow-radius: 6px,
+  $glow-alpha: 0.7,
+  $default-h: 260,
+  $default-s: 75%,
+  $default-l: 60%
+) {
+  text-shadow: 0 0 $glow-radius hsla(
+    var(#{$color-var-prefix}-h, $default-h),
+    var(#{$color-var-prefix}-s, $default-s),
+    var(#{$color-var-prefix}-l, $default-l),
+    $glow-alpha
+  );
+}
+
+@mixin gradient-text($direction, $color-stops...) {
+  background: linear-gradient($direction, $color-stops);
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -moz-text-fill-color: transparent;
+  text-fill-color: transparent;
+}
+
+// -----------------------------------------------------------------------------
+// Focus States
+// -----------------------------------------------------------------------------
+@mixin focus-ring(
+  $base-bg-var-name: '--color-bg-primary',
+  $ring-accent-var-name: '--color-accent-primary',
+  $offset-width: 2px,
+  $ring-thickness: 2px,
+  $ring-opacity: 0.7
+) {
+  outline: none;
+  box-shadow: 0 0 0 $offset-width var(#{$base-bg-var-name}),
+              0 0 0 ($offset-width + $ring-thickness) hsla(
+                var(#{$ring-accent-var-name}-h),
+                var(#{$ring-accent-var-name}-s),
+                var(#{$ring-accent-var-name}-l),
+                $ring-opacity
+              );
+}
+
+// -----------------------------------------------------------------------------
+// Custom Scrollbar --- CORRECTED MIXIN ---
+// -----------------------------------------------------------------------------
+/**
+ * Applies custom scrollbar styling using CSS variables for thumb colors.
+ *
+ * @param {String} $thumb-color-var-prefix - CSS custom property prefix for thumb's HSL components (e.g., '--color-accent-primary').
+ * @param {Number (0-1)} $thumb-base-alpha - Base alpha transparency for the thumb.
+ * @param {Number (0-1)} $thumb-hover-alpha - Alpha transparency for the thumb on hover.
+ * @param {Color} $track-color - Background color for the scrollbar track (can be a direct color or hsla() with CSS vars).
+ * @param {Length} $width - Width of the scrollbar.
+ * @param {Length} $border-radius - Border-radius for thumb and track.
+ */
+@mixin custom-scrollbar(
+  $thumb-color-var-prefix: '--color-accent-primary',
+  $thumb-base-alpha: 0.4,
+  $thumb-hover-alpha: 0.65,
+  $track-color: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.3),
+  $width: 8px,
+  $border-radius: var.$radius-full
+) {
+  // Construct the thumb colors using the prefix and alphas
+  $thumb-base-color-val: hsla(var(#{$thumb-color-var-prefix}-h), var(#{$thumb-color-var-prefix}-s), var(#{$thumb-color-var-prefix}-l), #{$thumb-base-alpha});
+  $thumb-hover-color-val: hsla(var(#{$thumb-color-var-prefix}-h), var(#{$thumb-color-var-prefix}-s), var(#{$thumb-color-var-prefix}-l), #{$thumb-hover-alpha});
+
+  &::-webkit-scrollbar {
+    width: $width;
+    height: $width;
+  }
+  &::-webkit-scrollbar-track {
+    background-color: $track-color;
+    border-radius: $border-radius;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: $thumb-base-color-val;
+    border-radius: $border-radius;
+    border: if($width > 4px, 2px solid transparent, 1px solid transparent);
+    background-clip: content-box;
+    transition: background-color var.$duration-quick var.$ease-out-quad;
+    &:hover {
+      background-color: $thumb-hover-color-val;
+    }
+  }
+  // For Firefox
+  scrollbar-width: thin;
+  scrollbar-color: $thumb-base-color-val $track-color;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
