@@ -1,23 +1,28 @@
+// File: frontend/src/App.vue
 /**
  * @file App.vue
- * @version 5.0.3 - Resolved AgentService method calls.
+ * @version 5.0.4 - Resolved unused AgentId import warning.
  * @description Main application shell. Handles global state initialization, theming, toasts, and routing.
  */
 <script setup lang="ts">
 import { ref, computed, onMounted, provide, readonly, type Component as VueComponent, watch } from 'vue';
-import { useRouter, type RouteLocationNormalized } from 'vue-router'; // Added RouteLocationNormalized
+import { useRouter, type RouteLocationNormalized } from 'vue-router';
 import AppHeader from '@/components/Header.vue';
 import AppFooter from '@/components/Footer.vue';
 
 import { useCostStore } from './store/cost.store';
 import { useAgentStore } from '@/store/agent.store';
 import { useChatStore } from '@/store/chat.store';
-import { themeManager, type ThemeDefinition } from '@/theme/ThemeManager'; // Added ThemeDefinition
+import { themeManager, type ThemeDefinition } from '@/theme/ThemeManager';
 import { useUiStore } from '@/store/ui.store';
 import { useAuth } from '@/composables/useAuth';
 import { voiceSettingsManager } from './services/voice.settings.service';
 import { ttsService } from './services/tts.service';
-import { agentService, type AgentId } from '@/services/agent.service'; // Added AgentId
+// AgentId type import removed as it's not directly used for annotations within this file,
+// and type safety for agentService methods should flow from its own module.
+// The type `AgentId` is still known to TypeScript when using `agentService` methods
+// because `agent.service.ts` exports it and TypeScript resolves it.
+import { agentService } from '@/services/agent.service';
 
 import {
   CheckCircleIcon as SuccessIcon, XCircleIcon as ErrorIcon,
@@ -33,27 +38,24 @@ const piniaUiStore = useUiStore();
 const auth = useAuth();
 
 const isLoadingApp = ref<boolean>(true);
-provide('loading', readonly({ // Provide isLoading as a readonly ref
+provide('loading', readonly({
   show: () => isLoadingApp.value = true,
   hide: () => isLoadingApp.value = false,
-  isLoading: isLoadingApp 
+  isLoading: isLoadingApp
 }));
-// const loading = { isLoading: readonly(isLoadingApp) }; // This local const isn't used elsewhere
 
 const templateThemeId = computed(() => piniaUiStore.currentThemeId);
 
 const handleToggleTheme = () => {
-  const currentThemeDef = themeManager.getCurrentTheme().value; // Get the ThemeDefinition object
+  const currentThemeDef = themeManager.getCurrentTheme().value;
   if (currentThemeDef?.isDark) {
-    // Find a light theme, prefer 'aurora-daybreak'
     const lightTheme = themeManager.getAvailableThemes().find(t => !t.isDark && t.id === 'aurora-daybreak') ||
-                       themeManager.getAvailableThemes().find(t => !t.isDark); // Fallback to any light theme
-    themeManager.setTheme(lightTheme?.id || 'aurora-daybreak'); // Fallback to default light ID
+                       themeManager.getAvailableThemes().find(t => !t.isDark);
+    themeManager.setTheme(lightTheme?.id || 'aurora-daybreak');
   } else {
-    // Find a dark theme, prefer 'magenta-mystic' (new default dark)
     const darkTheme = themeManager.getAvailableThemes().find(t => t.isDark && t.id === 'magenta-mystic') ||
-                      themeManager.getAvailableThemes().find(t => t.isDark); // Fallback to any dark theme
-    themeManager.setTheme(darkTheme?.id || 'magenta-mystic'); // Fallback to default dark ID
+                      themeManager.getAvailableThemes().find(t => t.isDark);
+    themeManager.setTheme(darkTheme?.id || 'magenta-mystic');
   }
 };
 
@@ -78,14 +80,14 @@ const addToast = (toastDetails: Omit<Toast, 'id'>): number => {
     ...toastDetails,
     duration: toastDetails.duration === undefined ? 7000 : toastDetails.duration,
   };
-  toasts.value.unshift(newToast); // Add to the beginning to show newest on top
+  toasts.value.unshift(newToast);
   if (newToast.duration && newToast.duration > 0) {
     setTimeout(() => removeToast(id), newToast.duration);
   }
   return id;
 };
 const removeToast = (id: number): void => {
-  toasts.value = toasts.value.filter(t => t.id !== id); // More robust removal
+  toasts.value = toasts.value.filter(t => t.id !== id);
 };
 const toastManager = { add: addToast, remove: removeToast, toasts: readonly(toasts) };
 provide('toast', toastManager);
@@ -104,13 +106,10 @@ const sessionCost = computed(() => costStore.totalSessionCost);
 const handleClearChatAndSession = async () => {
   addToast({ type: 'info', title: 'Clearing Session', message: 'Wiping chat history and session costs...' });
   if (agentStore.activeAgentId) {
-    // Use the activeAgentId from the store directly
-    await chatStore.clearAgentData(agentStore.activeAgentId); 
-    // Ensure main content for the now-cleared agent is reset (e.g., to its welcome message)
-    chatStore.ensureMainContentForAgent(agentStore.activeAgentId); 
+    await chatStore.clearAgentData(agentStore.activeAgentId);
+    chatStore.ensureMainContentForAgent(agentStore.activeAgentId);
   } else {
-    // If no agent is active, maybe clear all data or data for a default agent
-    chatStore.clearAllAgentData(); // Or specific logic
+    chatStore.clearAllAgentData();
   }
   await costStore.resetSessionCost();
   addToast({ type: 'success', title: 'Session Cleared', message: 'Chat and costs for current session reset.' });
@@ -118,16 +117,14 @@ const handleClearChatAndSession = async () => {
 
 const handleLogoutFromHeader = async () => {
   addToast({ type: 'info', title: 'Logging Out', message: 'Please wait...' });
-  await auth.logout(false); 
-  
-  // Reset all relevant stores
+  await auth.logout(false);
+
   costStore.$reset();
   chatStore.$reset();
-  agentStore.$reset(); // This will reset activeAgentId to initial/default
+  agentStore.$reset();
   piniaUiStore.$reset();
 
   addToast({ type: 'success', title: 'Logged Out', message: 'Successfully logged out.' });
-  // Router guard should handle redirect to /login
   if (router.currentRoute.value.name !== 'Login') {
     router.push({ name: 'Login' }).catch(err => console.error("[App.vue] Router push to Login failed after logout:", err));
   }
@@ -137,16 +134,15 @@ const handleShowPriorChatLog = () => {
   addToast({ type: 'info', title: 'Feature Pending', message: 'Full chat history log viewer is planned for a future update.' });
 };
 
-const routeTransitionName = ref('page-fade'); // Default transition
+const routeTransitionName = ref('page-fade');
 
-// Use RouteLocationNormalized for 'to' and 'from' types
 router.beforeEach((to: RouteLocationNormalized, _from: RouteLocationNormalized, next: () => void) => {
   isLoadingApp.value = true;
   routeTransitionName.value = (typeof to.meta.transition === 'string' ? to.meta.transition : 'page-fade');
   next();
 });
 router.afterEach(() => {
-  setTimeout(() => { isLoadingApp.value = false; }, 250); // Slightly reduced delay
+  setTimeout(() => { isLoadingApp.value = false; }, 250);
 });
 router.onError((error) => {
   console.error('[App.vue] Router Error:', error);
@@ -162,13 +158,12 @@ provide('updateUserListeningState', (isListening: boolean) => {
 });
 
 onMounted(async () => {
-  isLoadingApp.value = true; // Start with loading true
-  // console.log('[App.vue] Initializing application core services.');
+  isLoadingApp.value = true;
   themeManager.initialize();
-  piniaUiStore.initializeUiState(); // Initializes theme from localStorage via ThemeManager
+  piniaUiStore.initializeUiState();
   
-  await auth.checkAuthStatus(); // Crucial to wait for this before deciding default agent
-  await voiceSettingsManager.initialize(); // Load voice settings
+  await auth.checkAuthStatus();
+  await voiceSettingsManager.initialize();
 
   if (auth.isAuthenticated.value) {
     if (costStore.totalSessionCost === 0 && !costStore.isLoadingCost) {
@@ -176,25 +171,22 @@ onMounted(async () => {
     }
   }
 
-  // Set initial agent AFTER auth status is known
   if (!agentStore.activeAgentId || !agentService.getAgentById(agentStore.activeAgentId)) {
     const defaultAgent = auth.isAuthenticated.value ? agentService.getDefaultAgent() : agentService.getDefaultPublicAgent();
     if (defaultAgent) {
       agentStore.setActiveAgent(defaultAgent.id);
     } else {
       console.error("[App.vue] CRITICAL: No default agent could be set on mount.");
-      // Fallback or error display
       addToast({type: 'error', title: 'Agent Init Error', message: 'Could not load a default assistant.'});
     }
-  } else {
-    // Ensure content for already active agent is loaded if navigating back etc.
+  } else if (agentStore.activeAgentId) { // Ensure content if agentId is valid
     chatStore.ensureMainContentForAgent(agentStore.activeAgentId);
   }
 
-  setTimeout(() => { isLoadingApp.value = false; }, 350); // Adjusted delay
 
-  // Welcome toast for new theme version
-  const hasVisitedKey = 'vcaHasVisited_EphemeralHarmony_v5.0.3_App'; // Update version
+  setTimeout(() => { isLoadingApp.value = false; }, 350);
+
+  const hasVisitedKey = 'vcaHasVisited_EphemeralHarmony_v5.0.4_App'; // Updated version
   if (!localStorage.getItem(hasVisitedKey)) {
     setTimeout(() => {
       addToast({
@@ -215,7 +207,7 @@ watch(
     }
   },
   { immediate: true }
-); // deep is not necessary for primitive/flat objects
+);
 
 </script>
 
