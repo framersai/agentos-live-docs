@@ -19,6 +19,7 @@ import * as sttApiRoutes from '../src/features/speech/stt.routes.js';
 import * as ttsApiRoutes from '../src/features/speech/tts.routes.js';
 import * as costApiRoutes from '../src/features/cost/cost.routes.js';
 import { rateLimiter } from '../middleware/ratelimiter'; // For fetching public rate limit status
+import * as promptApiRoutes from '../src/features/prompts/prompt.routes.js';
 
 /**
  * Configures and returns the main API router with all routes registered.
@@ -37,6 +38,8 @@ export async function configureRouter(): Promise<Router> {
     router.get('/auth', authMiddleware, authApiRoutes.GET);    // Check status
     router.delete('/auth', authMiddleware, authApiRoutes.DELETE); // Logout
     console.log('✅ Registered auth routes');
+
+    router.get('/prompts/:filename', promptApiRoutes.GET);
 
     // --- Publicly Accessible Informational Routes ---
     // This endpoint allows frontend to get info about public rate limits.

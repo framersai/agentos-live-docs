@@ -9,6 +9,7 @@ import type { ToastService } from '@/services/services';
 import CompactMessageRenderer from '@/components/CompactMessageRenderer.vue';
 import { DocumentMagnifyingGlassIcon, PlayIcon as PlaySolidIcon, PauseIcon as PauseSolidIcon, ArrowPathIcon } from '@heroicons/vue/24/solid';
 import { marked } from 'marked'; // Used by renderMarkdownView
+import { promptAPI } from "../../utils/api"
 
 declare var mermaid: any; // Assume mermaid is globally available
 
@@ -56,15 +57,17 @@ const contentDisplayAreaId = computed(() => `${props.agentId}-main-content-area-
 
 const fetchSystemPrompt = async () => {
   if (props.agentConfig.systemPromptKey) {
-    try {
-      const module = await import(/* @vite-ignore */ `../../../../prompts/${props.agentConfig.systemPromptKey}.md?raw`);
-      currentAgentSystemPrompt.value = module.default as string; // Ensure it's string
-    } catch (e) {
-      console.error(`[${agentDisplayName.value}] Error loading prompt:`, e);
-      currentAgentSystemPrompt.value = "ERROR: LC-Audit system prompt could not be loaded.";
-      toast?.add({ type: 'error', title: 'Critical Error', message: 'LC-Audit system prompt missing.' });
-    }
+  try {
+    currentAgentSystemPrompt.value = (await promptAPI.getPrompt(`${props.agentConfig.systemPromptKey}.md`)).data.content
+    
+    // currentAgentSystemPrompt.value = promptText;
+  } catch (e) {
+    console.error(`[${agentDisplayName.value}] Error loading prompt:`, e);
+    currentAgentSystemPrompt.value = "ERROR: LC-Audit system prompt could not be loaded.";
+    toast?.add({ type: 'error', title: 'Critical Error', message: 'LC-Audit system prompt missing.' });
   }
+}
+
 };
 watch(() => props.agentConfig.systemPromptKey, fetchSystemPrompt, { immediate: true });
 

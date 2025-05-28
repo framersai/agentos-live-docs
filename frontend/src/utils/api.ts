@@ -16,7 +16,6 @@ const API_BASE_URL: string = import.meta.env.VITE_API_BASE_URL || 'http://localh
  * @constant {string}
  */
 export const AUTH_TOKEN_KEY: string = 'vcaAuthToken';
-
 /**
  * Main Axios instance for API communication.
  * Configured with a base URL, timeout, and default headers.
@@ -704,6 +703,32 @@ export const diagramAPI = {
   generate: (data: DiagramRequestPayloadFE): Promise<AxiosResponse<DiagramResponseFE>> =>
     api.post('/diagram', data),
 };
+
+/**
+ * Interface for the response when fetching a prompt.
+ */
+export interface PromptResponseFE {
+  /** The content of the prompt, typically a markdown string. */
+  content: string;
+  /** A message from the server, e.g., "Prompt retrieved successfully." */
+  message: string;
+  /** The filename of the retrieved prompt. */
+  filename: string;
+}
+
+/**
+ * Provides API methods for retrieving prompts.
+ */
+export const promptAPI = {
+  /**
+   * Fetches the content of a specific prompt file from the backend.
+   * @param {string} filename - The name of the prompt file (e.g., 'coding_interviewer.md').
+   * @returns {Promise<AxiosResponse<PromptResponseFE>>} A promise resolving to the prompt content.
+   */
+  getPrompt: (filename: string): Promise<AxiosResponse<PromptResponseFE>> =>
+    api.get(`/prompts/${filename}`),
+};
+
 
 /**
  * Default export of the configured Axios instance (`api`).
