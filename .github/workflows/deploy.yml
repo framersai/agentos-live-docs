@@ -35,7 +35,7 @@ jobs:
         run: |
           mkdir -p deployment/frontend/dist
           mkdir -p deployment/backend/dist
-          # mkdir -p deployment/backend/prompts
+          mkdir -p deployment/prompts
 
           # Copy built frontend assets
           cp -r frontend/dist/* deployment/frontend/dist/
