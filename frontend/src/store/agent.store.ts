@@ -1,215 +1,196 @@
-// File: frontend/src/store/agent.store.ts
 /**
  * @file agent.store.ts
- * @description Pinia store for managing the currently active AI agent, its context,
- * and related UI state such as loading status and errors.
- * @version 1.1.1 - Corrected TTS voice setting keys, removed unused AgentState interface.
- * Added JSDoc for all members.
+ * @description Pinia store for managing the currently active AI agent and its context.
+ * @version 1.2.2 - Fully corrected based on TS errors and updated agent.service.ts.
  */
 import { defineStore } from 'pinia';
-import { ref, computed, watch, readonly, type Ref } from 'vue';
-import { agentService, type AgentId, type IAgentDefinition } from '@/services/agent.service'; // Assumes agent.service.ts is v1.1.0+
-import { voiceSettingsManager, type VoiceApplicationSettings } from '@/services/voice.settings.service';
+import { ref, computed, watch, readonly, type Component as VueComponentType } from 'vue';
+import { agentService, type AgentId, type IAgentDefinition } from '@/services/agent.service';
+import { voiceSettingsManager, type VoiceApplicationSettings, type TutorLevel } from '@/services/voice.settings.service';
 import { useChatStore } from './chat.store';
 
-export const useAgentStore = defineStore('agent', () => {
-  /** The ID of the currently active agent. @private */
-  const _activeAgentId = ref<AgentId>(
-    (voiceSettingsManager.settings.currentAppMode as AgentId) || agentService.getDefaultPublicAgent().id
-  );
-  /** Loading state during agent switching or initialization. @public @readonly */
-  const isLoadingAgent = ref<boolean>(false);
-  /** Error message if agent operations fail. @public @readonly */
-  const agentError = ref<string | null>(null);
-  /**
-   * Reactive store for agent-specific contextual data (e.g., interview stage, tutor topic).
-   * Cleared on agent switch. Modified via `updateAgentContext`.
-   * @public
-   * @readonly
-   */
-  const currentAgentContext = ref<Record<string, any>>({});
+type VoicePersonaObject = { name?: string; voiceId?: string; lang?: string };
 
-  /**
-   * @computed activeAgent
-   * @description Retrieves the full definition of the currently active agent.
-   * @returns {Readonly<IAgentDefinition> | undefined} The active agent's definition.
-   */
+export const useAgentStore = defineStore('agent', () => {
+  const _activeAgentId = ref<AgentId>(getInitialActiveAgentId());
+  const isLoadingAgent = ref<boolean>(false);
+  const agentError = ref<string | null>(null);
+  const currentAgentContextInternal = ref<Record<string, any>>({});
+
+  function getInitialActiveAgentId(): AgentId {
+    const modeFromSettings = voiceSettingsManager.settings.currentAppMode as AgentId;
+    if (modeFromSettings && agentService.getAgentById(modeFromSettings)) {
+      return modeFromSettings;
+    }
+    
+    // Defaulting logic relies on agentService methods which should now be robust
+    // App.vue might set this more definitively after auth check.
+    const defaultPublic = agentService.getDefaultPublicAgent();
+    if (defaultPublic) {
+      if (voiceSettingsManager.settings.currentAppMode !== defaultPublic.id) {
+        voiceSettingsManager.updateSetting('currentAppMode', defaultPublic.id);
+      }
+      return defaultPublic.id;
+    }
+    
+    const anyDefault = agentService.getDefaultAgent();
+    if (anyDefault) {
+      if (voiceSettingsManager.settings.currentAppMode !== anyDefault.id) {
+        voiceSettingsManager.updateSetting('currentAppMode', anyDefault.id);
+      }
+      return anyDefault.id;
+    }
+
+    console.error("[AgentStore] Critical: No initial or default agent could be determined. Defaulting to 'general_chat'.");
+    return 'general_chat'; // Ensure 'general_chat' is a defined AgentId
+  }
+
   const activeAgent = computed<Readonly<IAgentDefinition> | undefined>(() => {
     return agentService.getAgentById(_activeAgentId.value);
   });
 
-  /**
-   * @computed activeAgentSystemPromptKey
-   * @description Gets the system prompt key for the active agent.
-   * @returns {string} The system prompt key.
-   */
   const activeAgentSystemPromptKey = computed<string>(() => {
-    return activeAgent.value?.systemPromptKey || agentService.getDefaultAgent().systemPromptKey;
+    return activeAgent.value?.systemPromptKey || 
+           (agentService.getDefaultAgent()?.systemPromptKey) || 
+           'general_chat';
   });
 
-  /**
-   * @computed activeAgentInputPlaceholder
-   * @description Gets the input placeholder for the active agent.
-   * @returns {string} The placeholder text.
-   */
   const activeAgentInputPlaceholder = computed<string>(() => {
-    return activeAgent.value?.inputPlaceholder || 'Ask or tell me anything...';
+    return activeAgent.value?.inputPlaceholder || 'How can I assist you today?';
   });
 
-  /**
-   * @computed activeAgentAvatar
-   * @description Gets the avatar URL for the active agent.
-   * @returns {string} Path to the avatar image.
-   */
-  const activeAgentAvatar = computed<string>(() => {
+  // Corrected: iconPath and avatar are optional on IAgentDefinition
+  const activeAgentIcon = computed<{ component: VueComponentType | string | undefined, class?: string, path?: string }>(() => {
     const agent = activeAgent.value;
-    // Assuming avatars are in public/assets/avatars/ for direct linking
-    const avatarFilename = agent?.avatar || 'default_avatar.svg';
-    return `/assets/avatars/${avatarFilename}`;
+    if (!agent) return { component: undefined };
+    if (agent.iconComponent) {
+        return { component: agent.iconComponent, class: agent.iconClass };
+    }
+    // Fallback to iconPath or avatar if iconComponent is not provided
+    const path = agent.iconPath || agent.avatar;
+    return { component: undefined, path: path, class: agent.iconClass };
+  });
+  
+  const activeAgentThemeColor = computed<string | undefined>(() => {
+    return activeAgent.value?.themeColor; // Added to IAgentDefinition
   });
 
-  /**
-   * @computed activeAgentThemeColor
-   * @description Gets the theme color hint for the active agent.
-   * @returns {string} A CSS color value or CSS variable.
-   */
-  const activeAgentThemeColor = computed<string>(() => {
-    return activeAgent.value?.themeColor || 'var(--primary-500)';
-  });
-
-  /**
-   * @computed activeAgentHolographicElement
-   * @description Gets an identifier for a holographic UI element for the active agent.
-   * @returns {string | undefined} Identifier string or undefined.
-   */
   const activeAgentHolographicElement = computed<string | undefined>(() => {
-    return activeAgent.value?.holographicElement;
+    return activeAgent.value?.holographicElement; // Added to IAgentDefinition
   });
 
-  /**
-   * @function setActiveAgent
-   * @description Sets the active agent, updates related voice settings, and clears context.
-   * @param {AgentId} agentId - The ID of the agent to activate.
-   * @async
-   * @returns {Promise<void>}
-   */
-  async function setActiveAgent(agentId: AgentId): Promise<void> {
-    if (_activeAgentId.value === agentId && activeAgent.value) {
+  const currentAgentPersonaVoice = computed<string | VoicePersonaObject | undefined>(() => {
+    return activeAgent.value?.defaultVoicePersona; // Added to IAgentDefinition
+  });
+
+
+  async function setActiveAgent(agentIdParam: AgentId | null | undefined): Promise<void> {
+    let agentIdToSet = agentIdParam;
+
+    if (!agentIdToSet) {
+        // Determine default based on auth, assuming auth status is available or App.vue calls this appropriately
+        // This is a simplified default setting; App.vue has more context for auth.
+        const defaultAgent = agentService.getDefaultAgent(); 
+        if (defaultAgent) {
+            agentIdToSet = defaultAgent.id;
+        } else {
+            agentError.value = "No valid agent ID provided and no default agent available.";
+            console.error(agentError.value);
+            isLoadingAgent.value = false;
+            return;
+        }
+    }
+    
+    if (_activeAgentId.value === agentIdToSet && activeAgent.value) {
       isLoadingAgent.value = false;
-      return;
+      return; 
     }
 
     isLoadingAgent.value = true;
     agentError.value = null;
-    const chatStore = useChatStore();
+    const chatStoreInstance = useChatStore();
     const previousAgentId = _activeAgentId.value;
 
-    if (activeAgent.value) { // If there was a previously active agent
-        chatStore.clearMainContentForAgent(previousAgentId);
+    if (previousAgentId && previousAgentId !== agentIdToSet) {
+        chatStoreInstance.clearMainContentForAgent(previousAgentId);
+        // Consider clearing chat history for previous agent too, or make it configurable
+        // chatStoreInstance.clearAgentData(previousAgentId); 
     }
+    
+    currentAgentContextInternal.value = {}; 
 
-    const newAgent = agentService.getAgentById(agentId);
+    const newAgent = agentService.getAgentById(agentIdToSet);
 
     if (newAgent) {
       _activeAgentId.value = newAgent.id;
-      currentAgentContext.value = {}; // Reset context for the new agent
-
       if (voiceSettingsManager.settings.currentAppMode !== newAgent.id) {
-        voiceSettingsManager.updateSetting('currentAppMode', newAgent.id as string);
+        voiceSettingsManager.updateSetting('currentAppMode', newAgent.id);
       }
-
       if (newAgent.defaultVoicePersona) {
         const persona = newAgent.defaultVoicePersona;
-        if (typeof persona === 'string') {
-          console.log(`[AgentStore] Applying voice persona name: ${persona}`);
-          // If your TTS service can select voice by name across providers, you might have a generic setting.
-          // Otherwise, this string name might be for display or a convention.
-        } else if (typeof persona === 'object' && persona.name) {
-          console.log(`[AgentStore] Applying voice persona: Name='${persona.name}', VoiceID='${persona.voiceId}', Lang='${persona.lang}'`);
-          if (persona.voiceId) {
-            // This single key should store the ID/URI of the voice.
-            // The TTS service itself will know how to use this ID based on the current TTS provider.
-            voiceSettingsManager.updateSetting('selectedTtsVoiceId', persona.voiceId);
-          }
-          if (persona.lang && voiceSettingsManager.settings.speechLanguage !== persona.lang) {
-            voiceSettingsManager.updateSetting('speechLanguage', persona.lang);
-          }
+        if (typeof persona === 'object' && (persona.name || persona.voiceId)) {
+          if (persona.voiceId) voiceSettingsManager.updateSetting('selectedTtsVoiceId', persona.voiceId);
+          if (persona.lang) voiceSettingsManager.updateSetting('speechLanguage', persona.lang);
         }
       }
-      console.log(`[AgentStore] Active agent set to: ${newAgent.label} (ID: ${newAgent.id})`);
     } else {
-      agentError.value = `Agent with ID "${agentId}" not found. Reverting to default public agent.`;
+      agentError.value = `Agent with ID "${agentIdToSet}" not found. Reverting to default.`;
       console.error(agentError.value);
-      const defaultAgent = agentService.getDefaultPublicAgent();
-      _activeAgentId.value = defaultAgent.id;
-      if (voiceSettingsManager.settings.currentAppMode !== defaultAgent.id) {
-        voiceSettingsManager.updateSetting('currentAppMode', defaultAgent.id as string);
+      const fallbackAgent = agentService.getDefaultAgent();
+      if (fallbackAgent) {
+        _activeAgentId.value = fallbackAgent.id;
+        if (voiceSettingsManager.settings.currentAppMode !== fallbackAgent.id) {
+          voiceSettingsManager.updateSetting('currentAppMode', fallbackAgent.id);
+        }
+      } else {
+        _activeAgentId.value = 'general_chat'; // Hard fallback if no default agent
+        console.error("[AgentStore] CRITICAL: No default agent available.");
       }
     }
-    chatStore.ensureMainContentForAgent(_activeAgentId.value); // Load welcome/existing content for new agent
+    chatStoreInstance.ensureMainContentForAgent(_activeAgentId.value);
     isLoadingAgent.value = false;
   }
 
-  /**
-   * @function updateAgentContext
-   * @description Merges new data into `currentAgentContext` for the active agent.
-   * @param {Record<string, any>} contextData - Data to merge.
-   */
   function updateAgentContext(contextData: Record<string, any>): void {
-    currentAgentContext.value = { ...currentAgentContext.value, ...contextData };
+    currentAgentContextInternal.value = { ...currentAgentContextInternal.value, ...contextData };
   }
 
-  /**
-   * @function clearAgentContext
-   * @description Clears `currentAgentContext` for the active agent.
-   */
+  function getAgentContext(agentIdParam?: AgentId): Readonly<Record<string, any>> {
+    // This store currently only holds context for the *active* agent.
+    // If an agentId is passed and it's not the active one, it returns an empty object.
+    if (agentIdParam && agentIdParam !== _activeAgentId.value) {
+        return readonly({});
+    }
+    return readonly(currentAgentContextInternal.value);
+  }
+
   function clearAgentContext(): void {
-    currentAgentContext.value = {};
+    currentAgentContextInternal.value = {};
   }
 
-  // Watch for external changes to currentAppMode from voiceSettingsManager
   watch(() => voiceSettingsManager.settings.currentAppMode, (newMode) => {
-    if (newMode && newMode !== _activeAgentId.value) {
-      const agentExists = agentService.getAgentById(newMode as AgentId);
-      if (agentExists) {
-        setActiveAgent(newMode as AgentId);
-      } else {
-        console.warn(`[AgentStore] Watched 'currentAppMode' ("${newMode}") does not match known agent. Reverting.`);
-        setActiveAgent(agentService.getDefaultPublicAgent().id);
-      }
+    const currentModeAsAgentId = newMode as AgentId;
+    if (newMode && currentModeAsAgentId !== _activeAgentId.value) {
+      // setActiveAgent handles if agentExists internally
+      setActiveAgent(currentModeAsAgentId);
     }
-  }, { immediate: false }); // Run only on changes, not immediately (initial sync is separate)
-
-  // Initial synchronization of _activeAgentId with voiceSettingsManager or default
-  const initialModeFromSettings = voiceSettingsManager.settings.currentAppMode as AgentId;
-  const initialAgentDef = agentService.getAgentById(initialModeFromSettings);
-  if (initialAgentDef) {
-    _activeAgentId.value = initialAgentDef.id;
-  } else {
-    const defaultPublicAgent = agentService.getDefaultPublicAgent();
-    _activeAgentId.value = defaultPublicAgent.id;
-    if (voiceSettingsManager.settings.currentAppMode !== defaultPublicAgent.id) {
-      voiceSettingsManager.updateSetting('currentAppMode', defaultPublicAgent.id);
-    }
-  }
-  // Call ensureMainContentForAgent after the store is fully setup
-  // This needs to be deferred or called carefully to avoid circular dependency issues with chatStore
-  // One way is to call it from App.vue onMounted, or via a setTimeout if really needed here.
-  // For now, let's assume agent views or App.vue will trigger initial content load.
-
+  });
+  
   return {
     activeAgentId: readonly(_activeAgentId),
     isLoadingAgent: readonly(isLoadingAgent),
     agentError: readonly(agentError),
-    currentAgentContext: readonly(currentAgentContext),
-    activeAgent,
+    currentAgentContext: computed(() => getAgentContext(_activeAgentId.value)),
+    activeAgent, // Readonly computed
     activeAgentSystemPromptKey,
     activeAgentInputPlaceholder,
-    activeAgentAvatar,
+    activeAgentIcon,
     activeAgentThemeColor,
     activeAgentHolographicElement,
+    currentAgentPersonaVoice,
     setActiveAgent,
     updateAgentContext,
     clearAgentContext,
+    getAgentContext,
   };
 });

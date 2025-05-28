@@ -1,0 +1,289 @@
+// File: frontend/src/styles/components/agents/_agent-card.scss
+/**
+ * @file _agent-card.scss
+ * @description Styles for the AgentCard.vue component within the Agent Hub.
+ * Implements "Ephemeral Harmony" styling with interactive neomorphic/glass effects and animations.
+ * @version 1.0.0
+ */
+
+@use '../../abstracts/variables' as var;
+@use '../../abstracts/mixins' as mixins;
+@use '../cards' as cardsFile; // For base card styles and looks
+
+.agent-card-ephemeral {
+  @include cardsFile.card-base-styles;
+  // Start with a subtle neomorphic extrusion as the base for cards
+  @include mixins.neomorphic-extrude(
+    '--color-bg-secondary', // Base background for cards
+    4px, 10px, // distance, blur
+    '--shadow-opacity-soft',
+    var.$radius-xl, // Card radius
+    '--shadow-color-h', '--shadow-color-s', '--shadow-color-l', '--shadow-highlight-modifier',
+    var.$default-color-bg-secondary-h, var.$default-color-bg-secondary-s, var.$default-color-bg-secondary-l,
+    var.$default-shadow-opacity-soft, var.$default-shadow-color-h, var.$default-shadow-color-s, var.$default-shadow-color-l, var.$default-shadow-highlight-l-factor
+  );
+  border: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.05); // Barely visible border
+  
+  display: flex; // Allows content wrapper to grow
+  flex-direction: column;
+  height: 100%; // Fill grid cell
+  min-height: 240px; // Min height for content
+  cursor: pointer;
+  transition: transform 0.25s var.$ease-out-expo, 
+              box-shadow 0.3s var.$ease-out-expo, 
+              border-color 0.3s var.$ease-out-quad;
+  will-change: transform, box-shadow; // Hint for browser
+
+  // Interactive Hover State (for non-locked cards)
+  &.card-interactive-ephemeral:hover {
+    transform: translateY(-6px) scale(1.03);
+    border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.3);
+    // Enhance neomorphic shadow and add an accent glow
+    @include mixins.neomorphic-extrude(
+      '--color-bg-secondary', 6px, 14px, '--shadow-opacity-medium', var.$radius-xl,
+      '--shadow-color-h', '--shadow-color-s', '--shadow-color-l', '--shadow-highlight-modifier',
+      var.$default-color-bg-secondary-h, var.$default-color-bg-secondary-s, var.$default-color-bg-secondary-l,
+      var.$default-shadow-opacity-medium, var.$default-shadow-color-h, var.$default-shadow-color-s, var.$default-shadow-color-l, var.$default-shadow-highlight-l-factor
+    );
+    box-shadow: // Existing neomorphic shadows from mixin will be here, add outer glow
+      0 0 20px 3px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.25),
+      // Re-declare base neomorphic shadow if mixin doesn't stack well with additional shadows
+      6px 6px 14px hsla(var(--shadow-color-h),var(--shadow-color-s),var(--shadow-color-l), var(--shadow-opacity-medium)), 
+      -6px -6px 14px hsla(var(--shadow-color-h),var(--shadow-color-s),calc(var(--shadow-color-l) + var(--shadow-highlight-modifier)), var(--shadow-opacity-medium));
+  }
+
+  &.is-active-agent {
+    border-width: 2px;
+    border-color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
+    transform: scale(1.01); // Slight scale for active
+    @include mixins.neomorphic-extrude( // Slightly stronger extrusion for active
+      '--color-bg-secondary', 5px, 12px, '--shadow-opacity-medium', var.$radius-xl,
+      '--shadow-color-h', '--shadow-color-s', '--shadow-color-l', '--shadow-highlight-modifier',
+      var.$default-color-bg-secondary-h, var.$default-color-bg-secondary-s, calc(var.$default-color-bg-secondary-l) - 2%, // Slightly darker active card base
+      var.$default-shadow-opacity-medium, var.$default-shadow-color-h, var.$default-shadow-color-s, var.$default-shadow-color-l, var.$default-shadow-highlight-l-factor
+    );
+     box-shadow: 0 0 25px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.4),
+                // Re-declare base neomorphic shadow
+                5px 5px 12px hsla(var(--shadow-color-h),var(--shadow-color-s),var(--shadow-color-l), var(--shadow-opacity-medium)), 
+                -5px -5px 12px hsla(var(--shadow-color-h),var(--shadow-color-s),calc(var(--shadow-color-l) + var(--shadow-highlight-modifier)), var(--shadow-opacity-medium));
+  }
+
+  &.is-locked-agent {
+    cursor: not-allowed;
+    // Overlay handles visual locking
+    .agent-card-content-wrapper-ephemeral {
+      filter: grayscale(60%) opacity(0.6); // Desaturate and fade content behind overlay
+    }
+    &:hover { transform: none; box-shadow: inherit; } // No hover animation for locked
+  }
+}
+
+.locked-overlay-ephemeral {
+  position: absolute;
+  inset: 0;
+  background-color: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.8);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  border-radius: inherit;
+  color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+  text-align: center;
+  padding: var.$spacing-md;
+  animation: fadeIn 0.3s var.$ease-out-quad;
+
+  .locked-icon {
+    width: 2.25rem; height: 2.25rem;
+    margin-bottom: var.$spacing-xs;
+    opacity: 0.7;
+    color: hsl(var(--color-warning-h), var(--color-warning-s), var(--color-warning-l));
+  }
+  .locked-text {
+    font-weight: 600;
+    font-size: var.$font-size-sm;
+    letter-spacing: 0.02em;
+  }
+}
+
+.agent-card-content-wrapper-ephemeral {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  padding: var.$spacing-md; // Consistent internal padding from card-base-styles
+}
+
+.agent-card-header-ephemeral {
+  display: flex;
+  align-items: center;
+  gap: var.$spacing-sm;
+  margin-bottom: var.$spacing-sm;
+  position: relative; // For info button absolute positioning
+
+  .agent-icon-wrapper-ephemeral {
+    width: 44px; height: 44px;
+    border-radius: var.$radius-lg;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    // Subtle background for the icon itself, can be themed via iconClass
+    background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.6);
+    border: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.15);
+    padding: var.$spacing-xs;
+    box-shadow: inset 0 1px 2px hsla(var(--shadow-color-h),var(--shadow-color-s),var(--shadow-color-l), 0.05);
+
+    .agent-icon-ephemeral {
+      width: 24px; height: 24px;
+      color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l)); // Default icon color
+      opacity: 0.9;
+    }
+  }
+
+  .agent-title-group-ephemeral { flex-grow: 1; min-width: 0; }
+  .agent-name-ephemeral {
+    font-size: var.$font-size-lg;
+    font-weight: 600;
+    color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+    line-height: 1.25;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .agent-category-ephemeral {
+    font-size: var.$font-size-xs;
+    color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    opacity: 0.8;
+  }
+
+  .selected-checkmark-ephemeral {
+    width: 1.5rem; height: 1.5rem;
+    color: hsl(var(--color-success-h), var(--color-success-s), calc(var(--color-success-l) - 5%));
+    margin-left: var.$spacing-sm;
+    flex-shrink: 0;
+    filter: drop-shadow(0 0 6px hsla(var(--color-success-h),var(--color-success-s),var(--color-success-l),0.6));
+    animation: subtlePulse 2s infinite alternate; --scale-pulse: 1.1; --opacity-pulse: 1;
+  }
+  .info-button-ephemeral { // Button styling comes from .btn classes
+    position: absolute;
+    top: calc(var.$spacing-xs * -0.25); // Adjust for better alignment
+    right: calc(var.$spacing-xs * -0.25);
+    color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+    .icon-xs { width: 1.2rem; height: 1.2rem; } // Make info icon slightly larger than default btn-xs-ephemeral icon
+    &:hover {
+      color: hsl(var(--color-info-h), var(--color-info-s), var(--color-info-l));
+      background-color: hsla(var(--color-info-h),var(--color-info-s),var(--color-info-l), 0.1) !important;
+    }
+  }
+}
+
+.agent-description-ephemeral {
+  font-size: var.$font-size-sm;
+  color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+  line-height: 1.6;
+  flex-grow: 1;
+  margin-bottom: var.$spacing-md;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: calc(1.6em * 3); // Ensure space for 3 lines even if text is shorter
+}
+
+.agent-details-section-ephemeral {
+  margin-top: auto; // Push to bottom
+  padding-top: var.$spacing-sm;
+  border-top: 1px solid hsla(var(--color-border-primary-h),var(--color-border-primary-s),var(--color-border-primary-l), 0.1);
+}
+
+.agent-tags-ephemeral, .agent-capabilities-ephemeral {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var.$spacing-xs * 0.75); // Slightly tighter gap for chips
+  align-items: center;
+  margin-bottom: var.$spacing-xs;
+  &:last-child { margin-bottom: 0; }
+
+  .details-section-icon {
+    width: 1rem; height: 1rem;
+    color: hsl(var(--color-text-muted-h),var(--color-text-muted-s),var(--color-text-muted-l));
+    opacity: 0.6;
+    margin-right: calc(var.$spacing-xs / 2);
+    flex-shrink: 0;
+  }
+  .tags-list-ephemeral, .capabilities-list-ephemeral {
+    display: flex;
+    flex-wrap: wrap;
+    gap: calc(var.$spacing-xs * 0.75);
+  }
+}
+
+.tag-chip-ephemeral, .capability-chip-ephemeral {
+  font-size: calc(var.$font-size-xs * 0.9); // Smaller chips
+  padding: 0.2rem 0.6rem;
+  border-radius: var.$radius-full;
+  background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.8); // More opaque chips
+  color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), calc(var(--color-text-muted-l) + 5%));
+  border: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.15);
+  font-weight: 500;
+  white-space: nowrap;
+  box-shadow: 0 1px 2px hsla(var(--shadow-color-h),var(--shadow-color-s),var(--shadow-color-l), 0.05); // Subtle shadow for chips
+
+  &.more-tags-chip { font-style: italic; opacity: 0.7; }
+}
+
+.capability-chip-ephemeral {
+  border-radius: var.$radius-sm;
+  background-color: hsla(var(--color-info-h), var(--color-info-s), var(--color-info-l), 0.12);
+  color: hsl(var(--color-info-h), var(--color-info-s), calc(var(--color-info-l) - 10%));
+  border-color: hsla(var(--color-info-h), var(--color-info-s), var(--color-info-l), 0.25);
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var.$spacing-xs / 2);
+  .capability-icon-ephemeral {
+    width: 0.85em; height: 0.85em; opacity: 0.8;
+  }
+}
+
+.access-tier-badge-ephemeral {
+  position: absolute;
+  bottom: var.$spacing-sm;
+  right: var.$spacing-sm;
+  font-size: calc(var.$font-size-xs * 0.75);
+  font-weight: 700; // Bolder badge text
+  padding: 0.2rem 0.5rem;
+  border-radius: var.$radius-sm;
+  text-transform: uppercase;
+  letter-spacing: 0.075em; // Wider spacing
+  opacity: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var.$spacing-xs * 0.5);
+  border: 1px solid transparent;
+  line-height: 1;
+  box-shadow: 0 1px 3px hsla(var(--shadow-color-h),var(--shadow-color-s),var(--shadow-color-l),0.1);
+
+  .tier-icon { width: 0.75em; height: 0.75em; margin-right: 2px; }
+
+  &.tier--public { /* Generally not shown, but if so: */
+    background-color: hsla(var(--color-success-h), var(--color-success-s), var(--color-success-l), 0.2);
+    color: hsl(var(--color-success-h), var(--color-success-s), calc(var(--color-success-l) - 20%));
+    border-color: hsla(var(--color-success-h), var(--color-success-s), var(--color-success-l), 0.4);
+  }
+  &.tier--member {
+    background-color: hsla(var(--color-info-h), var(--color-info-s), var(--color-info-l), 0.2);
+    color: hsl(var(--color-info-h), var(--color-info-s), calc(var(--color-info-l) - 20%));
+    border-color: hsla(var(--color-info-h), var(--color-info-s), var(--color-info-l), 0.4);
+  }
+  &.tier--premium { // Example for a premium tier badge
+    background: linear-gradient(135deg, hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l)), hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l)));
+    color: hsl(var(--color-text-on-primary-h), var(--color-text-on-primary-s), var(--color-text-on-primary-l)); // Assuming primary accent is dark enough for light text
+    border-color: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), calc(var(--color-accent-primary-l) - 10%), 0.5);
+    @include mixins.text-glow(hsl(var(--color-text-on-primary-h), var(--color-text-on-primary-s), var(--color-text-on-primary-l)), 2px, var.$default-color-text-on-primary-h,var.$default-color-text-on-primary-s,var.$default-color-text-on-primary-l,0.5);
+    .tier-icon { color: hsl(var(--color-text-on-primary-h), var(--color-text-on-primary-s), var(--color-text-on-primary-l)); }
+  }
+}
+
+// Animation for Agent Card entry in the grid
+// Use the existing .agent-card-list-transition from AgentHub.vue's style block

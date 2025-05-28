@@ -2,28 +2,27 @@
 /**
  * @file ui.store.ts
  * @description Pinia store for UI state management, including theme, fullscreen, etc.
- * @version 2.1.2 - Added setThemeFlexible action.
+ * @version 2.1.4 - Corrected watch import and parameter typing.
  */
 import { defineStore } from 'pinia';
-import { ref, readonly, computed, type Ref } from 'vue';
+import { ref, readonly, computed, watch, type Ref } from 'vue'; // Added watch
+import { usePreferredDark } from '@vueuse/core';
 import {
   themeManager,
   DEFAULT_DARK_THEME_ID,
   DEFAULT_LIGHT_THEME_ID,
-  type ThemeDefinition, // Ensure ThemeDefinition is exported from ThemeManager or themes.config
+  type ThemeDefinition,
 } from '@/theme/ThemeManager';
 
-// Interface for the actual theme object if needed, assuming ThemeDefinition is correct
 type ThemeObjectType = ThemeDefinition | undefined;
 
-// Interfaces
 export interface UiState {
   isFullscreen: Readonly<Ref<boolean>>;
   showHeaderInFullscreenMinimal: Readonly<Ref<boolean>>;
   isBrowserFullscreenActive: Readonly<Ref<boolean>>;
   isCurrentThemeDark: Readonly<Ref<boolean>>;
   currentThemeId: Readonly<Ref<string>>;
-  theme: Readonly<Ref<ThemeObjectType>>; // Use ThemeObjectType
+  theme: Readonly<Ref<ThemeObjectType>>;
   isDarkMode: Readonly<Ref<boolean>>;
   isLightMode: Readonly<Ref<boolean>>;
 }
@@ -37,7 +36,7 @@ export interface UiActions {
   toggleBrowserFullscreen: () => Promise<void>;
   setTheme: (id: string) => void;
   setDarkMode: (flag: boolean) => void;
-  setThemeFlexible: (idOrMode: string) => void; // Added
+  setThemeFlexible: (idOrMode: string) => void;
 }
 
 type FullUiStore = UiState & UiActions;
@@ -47,15 +46,16 @@ export const useUiStore = defineStore('ui', (): FullUiStore => {
   const _showHeaderInFullscreenMinimal = ref(false);
   const _isBrowserFullscreenActive = ref<boolean>(typeof document !== 'undefined' && !!document.fullscreenElement);
 
-  const themeRefInternal = themeManager.getCurrentTheme(); // This is Ref<ThemeDefinition | undefined>
-  
-  // Explicitly type theme to match what getCurrentTheme returns
+  const preferredDark = usePreferredDark(); // Get the ref from usePreferredDark
+  const isSystemDark = ref(preferredDark.value); // Local ref to track system preference
+
+  const themeRefInternal = themeManager.getCurrentTheme();
   const theme = computed(() => themeRefInternal.value);
 
   const isCurrentThemeDark = computed(() => theme.value?.isDark ?? false);
-  const currentThemeId     = computed(() => theme.value?.id ?? DEFAULT_DARK_THEME_ID); // Fallback consistent with ThemeManager
+  const currentThemeId = computed(() => theme.value?.id ?? (isSystemDark.value ? DEFAULT_DARK_THEME_ID : DEFAULT_LIGHT_THEME_ID));
 
-  const isDarkMode  = computed(() => isCurrentThemeDark.value);
+  const isDarkMode = computed(() => isCurrentThemeDark.value);
   const isLightMode = computed(() => !isCurrentThemeDark.value);
 
   const setFullscreen = (val: boolean) => {
@@ -65,6 +65,7 @@ export const useUiStore = defineStore('ui', (): FullUiStore => {
     }
   };
   const toggleFullscreen = () => setFullscreen(!_isFullscreen.value);
+
   const toggleShowHeaderInFullscreenMinimal = () => {
     if (_isFullscreen.value) _showHeaderInFullscreenMinimal.value = !_showHeaderInFullscreenMinimal.value;
   };
@@ -92,7 +93,7 @@ export const useUiStore = defineStore('ui', (): FullUiStore => {
   const _handleFsChange = () => {
     const active = typeof document !== 'undefined' && !!document.fullscreenElement;
     _isBrowserFullscreenActive.value = active;
-    setFullscreen(active); // Keep internal fullscreen in sync
+    setFullscreen(active);
   };
 
   const initializeUiState = () => {
@@ -102,21 +103,27 @@ export const useUiStore = defineStore('ui', (): FullUiStore => {
       document.addEventListener('mozfullscreenchange', _handleFsChange);
       document.addEventListener('MSFullscreenChange', _handleFsChange);
     }
-    // ThemeManager.initialize() is called in App.vue, which sets the initial document attributes.
-    // This store then reads from ThemeManager.
+    // Watch for changes in system dark mode preference
+    watch(preferredDark, (newVal: boolean) => { // Explicitly typed newVal
+      isSystemDark.value = newVal;
+      // ThemeManager's initialize (called in App.vue) and its own watch on isSystemDark
+      // will handle applying the theme if the user hasn't made a manual selection.
+      // This local isSystemDark ref is primarily for the initial currentThemeId computation.
+      if (!themeManager.hasUserManuallySelectedTheme.value) {
+        themeManager.setTheme(newVal ? DEFAULT_DARK_THEME_ID : DEFAULT_LIGHT_THEME_ID);
+      }
+    });
   };
 
   const setTheme = (id: string) => {
-    themeManager.setTheme(id); // Delegate to ThemeManager to apply and persist
+    themeManager.setTheme(id);
   };
 
   const setDarkMode = (flag: boolean) => {
-    // Use themeManager's logic for default dark/light themes
     const targetThemeId = flag ? DEFAULT_DARK_THEME_ID : DEFAULT_LIGHT_THEME_ID;
     themeManager.setTheme(targetThemeId);
   };
 
-  // Added setThemeFlexible
   const setThemeFlexible = (idOrMode: string) => {
     if (idOrMode === 'dark')  themeManager.setTheme(DEFAULT_DARK_THEME_ID);
     else if (idOrMode === 'light') themeManager.setTheme(DEFAULT_LIGHT_THEME_ID);
@@ -129,7 +136,7 @@ export const useUiStore = defineStore('ui', (): FullUiStore => {
     isBrowserFullscreenActive: readonly(_isBrowserFullscreenActive),
     isCurrentThemeDark,
     currentThemeId,
-    theme: readonly(theme) as Readonly<Ref<ThemeObjectType>>, // Ensure the exposed type matches
+    theme: readonly(theme) as Readonly<Ref<ThemeObjectType>>,
     isDarkMode,
     isLightMode,
 
@@ -141,6 +148,6 @@ export const useUiStore = defineStore('ui', (): FullUiStore => {
     toggleBrowserFullscreen,
     setTheme,
     setDarkMode,
-    setThemeFlexible, // Expose new action
+    setThemeFlexible,
   };
 });

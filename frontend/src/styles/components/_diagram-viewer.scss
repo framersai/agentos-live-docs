@@ -1,112 +1,159 @@
 // File: frontend/src/styles/components/_diagram-viewer.scss
 /**
  * @file _diagram-viewer.scss
- * @description Styles for the DiagramViewer component, themed for "Ephemeral Harmony".
- * @version 1.0.1 - Updated to use base-button-styles mixin.
+ * @description Styles for the DiagramViewer.vue component, themed for "Ephemeral Harmony".
+ * Provides styling for loading states, error messages, the diagram container, and actions.
+ * @version 1.0.2 - Updated button styling to use mixins directly for consistency.
  */
 
 @use '../abstracts/variables' as var;
-@use '../abstracts/mixins' as mixins; // General mixins
-@use './buttons' as buttonsFile; // <-- ADD THIS LINE to access the mixin from _buttons.scss
+@use '../abstracts/mixins' as mixins;     // General mixins
+@use './buttons' as buttonsFile;          // Button styles and mixins
 
-.diagram-viewer-wrapper-ephemeral { // New root class for the themed viewer
-  margin-top: var.$spacing-md;
-  padding: var.$spacing-xs; // Outer padding for the wrapper
+// Define a mixin for the shared wrapper styles
+@mixin diagram-viewer-wrapper-shared-styles {
+  // margin-top: var.$spacing-md; // Keep margin specific to the main wrapper or pass as param if needed
   border-radius: var.$radius-lg;
   transition: background-color var.$duration-smooth, border-color var.$duration-smooth;
 
+  // Apply a glassmorphic pane effect for the wrapper
+  // Note on $blur-amount-css-var:
+  // This parameter expects the NAME of a CSS variable, e.g., '--blur-diagram-viewer'.
+  // Your theme setup (theme-definitions.scss) would define:
+  // --blur-diagram-viewer: calc(var(--blur-glass) * 0.8);
+  // If such a specific variable isn't defined, it will use the $default-blur SCSS fallback.
+  @include commonMixins.glassmorphic-pane(
+    $bg-color-css-var-prefix: '--color-bg-tertiary',
+    $border-color-css-var-prefix: '--color-border-glass',
+    $blur-amount-css-var: '--blur-diagram-viewer', // Use a dedicated CSS variable for this component's blur
+    $shadow-css-var: '--shadow-depth-sm',
+    // SCSS Fallbacks
+    $default-bg-h: var.$default-color-bg-tertiary-h, $default-bg-s: var.$default-color-bg-tertiary-s, $default-bg-l: var.$default-color-bg-tertiary-l, $default-bg-a: 0.6,
+    $default-border-h: var.$default-color-border-glass-h, $default-border-s: var.$default-color-border-glass-s, $default-border-l: var.$default-color-border-glass-l, $default-border-a: 0.3,
+    $default-blur: calc(var.$default-blur-glass * 0.8), // SCSS fallback value if --blur-diagram-viewer is not set
+    $default-shadow: var.$scss-box-shadow-sm
+  );
+}
+
+.diagram-viewer-wrapper-ephemeral { // Root class for the themed diagram viewer
+  margin-top: var.$spacing-md;          // Space above the viewer
+  padding: var.$spacing-xs;             // Outer padding for the wrapper itself
+  border-radius: var.$radius-lg;        // Consistent rounded corners
+  transition: background-color var.$duration-smooth, border-color var.$duration-smooth; // Smooth transitions for theming
+
+  // Apply a glassmorphic pane effect for the wrapper
   @include mixins.glassmorphic-pane(
-    hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.6), // Use tertiary for less emphasis
-    hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.3),
-    calc(var(--blur-glass) * 0.8), // Slightly less blur
-    var(--shadow-depth-sm)
+    // CSS Variable Prefixes (theme provides actual HSL values)
+    $bg-color-css-var-prefix: '--color-bg-tertiary', // Use tertiary background for less emphasis than primary content
+    $border-color-css-var-prefix: '--color-border-glass',
+    $blur-amount-css-var: calc(var(--blur-glass) * 0.8), // Slightly less blur for nested components
+    $shadow-css-var: '--shadow-depth-sm', // Softer shadow for a less imposing look
+    // SCSS Fallbacks
+    $default-bg-h: var.$default-color-bg-tertiary-h, $default-bg-s: var.$default-color-bg-tertiary-s, $default-bg-l: var.$default-color-bg-tertiary-l, $default-bg-a: 0.6,
+    $default-border-h: var.$default-color-border-glass-h, $default-border-s: var.$default-color-border-glass-s, $default-border-l: var.$default-color-border-glass-l, $default-border-a: 0.3,
+    $default-blur: calc(var.$default-blur-glass * 0.8),
+    $default-shadow: var.$scss-box-shadow-sm
   );
 
-  .loading-indicator-ephemeral {
+  .loading-indicator-ephemeral { // Styles for the loading state
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: var.$spacing-xl;
-    min-height: 150px;
+    padding: var.$spacing-xl;       // Ample padding for loading indicator
+    min-height: 150px;              // Ensure a minimum height
 
-    .spinner-ephemeral { // Themed spinner
+    .spinner-ephemeral { // Themed spinner animation
       width: 2rem; // 32px
       height: 2rem;
-      border: 3px solid
-        hsla(var(--color-accent-primary-h),
-        var(--color-accent-primary-s),
-        var(--color-accent-primary-l), 0.2);
-      border-top-color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
-      border-radius: var.$radius-full;
-      animation: spin var.$duration-pulse-fast linear infinite; // spin keyframes from _keyframes.scss
+      border: 3px solid hsla(
+        var(--color-accent-primary-h, var.$default-color-accent-primary-h),
+        var(--color-accent-primary-s, var.$default-color-accent-primary-s),
+        var(--color-accent-primary-l, var.$default-color-accent-primary-l),
+        0.2 // Spinner track opacity
+      );
+      border-top-color: hsl( // Spinner active segment color
+        var(--color-accent-primary-h, var.$default-color-accent-primary-h),
+        var(--color-accent-primary-s, var.$default-color-accent-primary-s),
+        var(--color-accent-primary-l, var.$default-color-accent-primary-l)
+      );
+      border-radius: var.$radius-full; // Circular spinner
+      animation: spin var.$duration-pulse-fast linear infinite; // 'spin' keyframe from _keyframes.scss
     }
   }
 
-  .render-error-ephemeral {
+  .render-error-ephemeral { // Styles for displaying rendering errors
     padding: var.$spacing-md;
-    color: hsl(var(--color-error-h), var(--color-error-s), var(--color-error-l));
+    color: hsl(var(--color-error-text-h, var.$default-color-error-text-h), var(--color-error-text-s, var.$default-color-error-text-s), var(--color-error-text-l, var.$default-color-error-text-l)); // Use specific error text color from theme
     font-size: var.$font-size-sm;
+    background-color: hsla(var(--color-error-h, var.$default-color-error-h), var(--color-error-s, var.$default-color-error-s), var(--color-error-l, var.$default-color-error-l), 0.1); // Faint error background
+    border-left: 3px solid hsl(var(--color-error-h, var.$default-color-error-h), var(--color-error-s, var.$default-color-error-s), var(--color-error-l, var.$default-color-error-l)); // Error accent border
 
     .error-title {
       font-weight: 600;
-      color: hsl(var(--color-error-h), var(--color-error-s), calc(var(--color-error-l) - 10%)); // Darker error title
+      // Darker error title for emphasis, relative to the error color itself
+      color: hsl(var(--color-error-h, var.$default-color-error-h), var(--color-error-s, var.$default-color-error-s), calc(var(--color-error-l, #{var.$default-color-error-l}) - 10%));
     }
     .error-message {
       margin-top: var.$spacing-xs;
       font-size: var.$font-size-xs;
     }
-    .error-code-block { // The <pre> block for showing code on error
+    .error-code-block { // For displaying Mermaid code that caused an error
       margin-top: var.$spacing-sm;
       padding: var.$spacing-sm;
-      background-color: hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.05);
-      border: 1px solid hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.2);
+      background-color: hsla(var(--color-error-h, var.$default-color-error-h), var(--color-error-s, var.$default-color-error-s), var(--color-error-l, var.$default-color-error-l), 0.05); // Very faint error background for code
+      border: 1px solid hsla(var(--color-error-h, var.$default-color-error-h), var(--color-error-s, var.$default-color-error-s), var(--color-error-l, var.$default-color-error-l), 0.2);
       border-radius: var.$radius-md;
-      overflow-x: auto;
-      // CORRECTED call to custom-scrollbar if its signature was also updated (using example from previous fixes)
-      @include mixins.custom-scrollbar(
-        '--color-error', // Assuming --color-error-h, -s, -l vars exist
-        0.4,
-        0.6,
-        hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.1)
+      overflow-x: auto; // Allow horizontal scroll for long code lines
+      
+      @include mixins.custom-scrollbar( // Error-themed scrollbar for this block
+        $thumb-color-var-prefix: '--color-error', // Use error color for thumb
+        $thumb-base-alpha: 0.4,
+        $thumb-hover-alpha: 0.6,
+        $track-color-var-prefix: '--color-error', // Use error color for track
+        $track_alpha: 0.1, // Very faint track
+        $width: 6px // Slimmer scrollbar for code blocks
       );
-      pre { margin: 0; padding: 0; background: none; border: none; }
-      code { font-size: 0.75rem; color: hsl(var(--color-error-h), var(--color-error-s), calc(var(--color-error-l) - 5%)); }
+      pre { margin: 0; padding: 0; background: none; border: none; } // Reset pre styles
+      code { 
+        font-size: 0.75rem; // Smaller font for code
+        // Slightly less intense error color for code text
+        color: hsl(var(--color-error-h, var.$default-color-error-h), var(--color-error-s, var.$default-color-error-s), calc(var(--color-error-l, #{var.$default-color-error-l}) - 5%));
+      }
     }
   }
 
-  .mermaid-diagram-container-ephemeral { // The div that will contain the SVG
-    overflow: auto; // Ensure diagram can be scrolled if it's too large
+  .mermaid-diagram-container-ephemeral { // The div that will directly contain the Mermaid SVG
+    overflow: auto; // Ensure diagram can be scrolled if it's too large for its container
     padding: var.$spacing-sm;
-    border-radius: var.$radius-md;
-    background-color: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.3); // Subtle bg for diagram itself
-    min-height: 150px; // Ensure container has some height for loading/error states
-    display: flex; // For centering SVG if it's smaller than container
+    border-radius: var.$radius-md; // Rounded corners for the diagram area itself
+    background-color: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.3); // Subtle background for the diagram
+    min-height: 150px; // Ensure container has some height for loading/error states and small diagrams
+    display: flex;     // For centering SVG if it's smaller than the container
     align-items: center;
     justify-content: center;
 
-    :deep(svg) {
-      display: block; // Ensure SVG takes block layout
-      max-width: 100%;
-      height: auto; // Maintain aspect ratio
+    :deep(svg) { // Styles for the <svg> element rendered by Mermaid
+      display: block;      // Ensure SVG takes block layout, helps with sizing
+      max-width: 100%;     // Responsive: SVG scales down to fit container width
+      height: auto;        // Maintain aspect ratio
+      // Mermaid diagrams often have their own internal styling based on the theme passed to Mermaid.
+      // Specific overrides to SVG elements (nodes, edges, text) can be done here if needed,
+      // but it's generally better to configure Mermaid's theme if possible.
+      // Example: :deep(svg .node rect) { fill: var(--my-custom-node-fill); }
     }
   }
 
-  .diagram-actions-ephemeral {
+  .diagram-actions-ephemeral { // Container for action buttons like "Save Diagram"
     margin-top: var.$spacing-sm;
     padding-top: var.$spacing-sm;
-    border-top: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.2);
+    border-top: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.2); // Separator line
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-end; // Align buttons to the right
 
-    .save-diagram-button { // Use our button styles
-      // CORRECTED: Replace @extend .btn with @include mixin
-      @include buttonsFile.base-button-styles;
-      // These extends might still work if .btn-secondary and .btn-sm are defined
-      // in _buttons.scss and primarily add their own styles on top of a .btn
-      // (which now gets its base styles from the mixin).
-      // If these also cause issues, they would need to become mixins too.
-      @extend .btn-secondary; // Secondary neomorphic style
-      @extend .btn-sm;       // Small size
+    .save-diagram-button {
+      @include buttonsFile.btn-secondary; // Apply secondary button style (base + look)
+      @include buttonsFile.btn-sm-modifier;   // Apply small size modifications
+      // Any additional specific styles for this button can go here.
     }
   }
 }

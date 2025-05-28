@@ -101,7 +101,7 @@ const handleNewUserInput = async (text: string): Promise<void> => {
     let finalSystemPrompt = currentAgentSystemPrompt.value
       .replace(/{{LANGUAGE}}/g, preferredLang)
       .replace(/{{USER_QUERY}}/g, text) 
-      .replace(/{{GENERATE_DIAGRAM}}/g, (props.agentConfig.capabilities?.canGenerateDiagrams && voiceSettingsManager.settings.generateDiagrams).toString())
+      .replace(/{{GENERATE_DIAGRAM}}/g, ((props.agentConfig.capabilities?.canGenerateDiagrams && voiceSettingsManager.settings?.generateDiagrams) ?? false).toString())
       .replace(/{{AGENT_CONTEXT_JSON}}/g, JSON.stringify(agentStore.currentAgentContext || {}))
       .replace(/{{ADDITIONAL_INSTRUCTIONS}}/g, 'You will receive a ContextBundle. Base your coding assistance response on it. Structure explanations for slides using Markdown headings or ---SLIDE_BREAK---. Ensure code is in fenced blocks. Use tools like `generateCodeSnippet` or `explainCodeSegment` if the user intent matches.');
       
@@ -255,60 +255,103 @@ onMounted(() => {
   </div>
 </template>
 
+
+
 <style scoped lang="postcss">
+:root { /* Or :host, or directly on .coding-agent-view */
+  --agent-coding-accent-hue: var(--accent-hue-rose, 340); /* Fallback to 340 (rose) */
+  --agent-coding-accent-saturation: 70%;
+  --agent-coding-accent-lightness: 50%;
+}
+
 .coding-agent-view {
   background-color: var(--bg-agent-view-dark, theme('colors.slate.800'));
   color: var(--text-primary-dark, theme('colors.slate.100'));
 }
 
 .agent-header-controls {
-  border-bottom-color: hsla(var(--accent-hue-rose, 340), 60%, 50%, 0.3); /* Rose-ish accent */
+  border-bottom-color: hsla(var(--agent-coding-accent-hue), var(--agent-coding-accent-saturation), var(--agent-coding-accent-lightness), 0.3); /* Rose-ish accent */
   background-color: var(--bg-header-dark, theme('colors.slate.950'));
 }
 
+/* Loading curtain overlay */
 .loading-curtain {
   @apply absolute inset-0 flex flex-col items-center justify-center z-10;
-  background-color: rgba(var(--bg-base-rgb-dark, 26, 32, 44), 0.6);
-  backdrop-filter: blur(4px);
+  background-color: rgba(var(--bg-base-rgb-dark, 26, 32, 44), 0.6); /* Themed base background with opacity */
+  backdrop-filter: blur(4px); /* Frosted glass effect */
 }
 
+/* Small loading animation specific to this agent (can be generalized if structure is common) */
+.loading-animation-small {
+  /* Base styles for the container are implicitly set by Tailwind if used, or can be added here */
+  /* Example: @apply relative w-8 h-8; */
+}
 .loading-animation-small > div {
-  box-sizing: border-box; @apply block absolute w-8 h-8 m-1 border-2 rounded-full animate-spin;
-  border-color: hsla(var(--accent-hue-rose, 340), 70%, 50%, 0.2) transparent transparent transparent;
+  box-sizing: border-box;
+  @apply block absolute w-8 h-8 m-1 border-2 rounded-full animate-spin; /* Tailwind for base structure and spin */
+  /* Spinner colors using the agent's accent hue */
+  border-color: hsla(var(--agent-coding-accent-hue), var(--agent-coding-accent-saturation), var(--agent-coding-accent-lightness), 0.2) transparent transparent transparent;
 }
-.loading-animation-small > div:nth-child(1) { animation-delay: -0.45s; }
-.loading-animation-small > div:nth-child(2) { animation-delay: -0.3s;  border-top-color: hsl(var(--accent-hue-rose, 340), 70%, 60%); }
-.loading-animation-small > div:nth-child(3) { animation-delay: -0.15s; border-top-color: hsl(var(--accent-hue-rose, 340), 70%, 70%); }
+/* Staggered animation delays and slightly varied top border colors for a more dynamic look */
+.loading-animation-small > div:nth-child(1) { 
+  animation-delay: -0.45s; 
+}
+.loading-animation-small > div:nth-child(2) { 
+  animation-delay: -0.3s;
+  border-top-color: hsl(var(--agent-coding-accent-hue), var(--agent-coding-accent-saturation), calc(var(--agent-coding-accent-lightness) + 10%)); /* Brighter segment */
+}
+.loading-animation-small > div:nth-child(3) { 
+  animation-delay: -0.15s; 
+  border-top-color: hsl(var(--agent-coding-accent-hue), var(--agent-coding-accent-saturation), calc(var(--agent-coding-accent-lightness) + 20%)); /* Even brighter segment */
+}
+/* Ensure 'animate-spin' keyframes are globally available */
 
 
+/* Custom scrollbar with the agent's accent color */
 .custom-scrollbar-futuristic {
   &::-webkit-scrollbar {
-    @apply w-1.5 h-1.5;
+    @apply w-1.5 h-1.5; /* Slim scrollbar */
   }
   &::-webkit-scrollbar-track {
-    background-color: hsla(var(--neutral-hue), 20%, 20%, 0.3);
+    background-color: hsla(var(--neutral-hue, 220), 20%, 20%, 0.3); /* Themed track */
     @apply rounded-full;
   }
   &::-webkit-scrollbar-thumb {
-    background-color: hsla(var(--accent-hue-rose, 340), 75%, 60%, 0.6); /* Rose accent */
+    background-color: hsla(var(--agent-coding-accent-hue), calc(var(--agent-coding-accent-saturation) + 5%), calc(var(--agent-coding-accent-lightness) + 10%), 0.6); /* Themed thumb */
     @apply rounded-full;
-    border: 1px solid hsla(var(--neutral-hue), 20%, 15%, 0.5);
+    border: 1px solid hsla(var(--neutral-hue, 220), 20%, 15%, 0.5); /* Subtle border on thumb */
   }
   &::-webkit-scrollbar-thumb:hover {
-    background-color: hsla(var(--accent-hue-rose, 340), 75%, 70%, 0.8);
+    background-color: hsla(var(--agent-coding-accent-hue), calc(var(--agent-coding-accent-saturation) + 5%), calc(var(--agent-coding-accent-lightness) + 10%), 0.8); /* Brighter thumb on hover */
   }
+  /* Firefox scrollbar styling */
   scrollbar-width: thin;
-  scrollbar-color: hsla(var(--accent-hue-rose, 340), 75%, 60%, 0.6) hsla(var(--neutral-hue), 20%, 20%, 0.3);
+  scrollbar-color: hsla(var(--agent-coding-accent-hue), calc(var(--agent-coding-accent-saturation) + 5%), calc(var(--agent-coding-accent-lightness) + 10%), 0.6) hsla(var(--neutral-hue, 220), 20%, 20%, 0.3);
 }
 
+/* Deep styling for rendered Markdown content (prose) */
 :deep(.prose) {
-  h1, h2, h3 { @apply text-[var(--text-primary-dark)] border-b border-[var(--border-color-dark)] pb-1; }
-  p, li { @apply text-[var(--text-secondary-dark)]; }
-  a { @apply text-rose-400 hover:text-rose-300; }
-  strong { @apply text-[var(--text-primary-dark)]; }
-  code:not(pre code) { @apply bg-slate-700 text-emerald-400 px-1.5 py-0.5 rounded-md text-xs; }
-  pre { 
-    @apply bg-slate-900/70 border border-slate-700 text-sm; 
+  h1, h2, h3 {
+    @apply text-[var(--text-primary-dark)] border-b border-[var(--border-color-dark)] pb-1 mb-3; /* Added mb-3 for spacing */
+  }
+  p, li {
+    @apply text-[var(--text-secondary-dark)] my-2; /* Added my-2 for spacing */
+  }
+  a {
+    /* Link color using agent's accent */
+    @apply hover:text-[color:hsl(var(--agent-coding-accent-hue),var(--agent-coding-accent-saturation),calc(var(--agent-coding-accent-lightness)-5%))];
+    color: hsl(var(--agent-coding-accent-hue), var(--agent-coding-accent-saturation), var(--agent-coding-accent-lightness));
+  }
+  strong {
+    @apply text-[var(--text-primary-dark)];
+  }
+  code:not(pre code) { /* Inline code snippets */
+    /* Consider theming these colors if they should change with the theme */
+    @apply bg-slate-700 text-emerald-400 px-1.5 py-0.5 rounded-md text-xs; 
+  }
+  pre { /* Code blocks */
+    /* Consider theming these colors, perhaps using specific CSS vars for code blocks */
+    @apply bg-slate-900/70 border border-slate-700 text-sm my-3 p-3; /* Added my-3 and p-3 for spacing */
   }
 }
 </style>

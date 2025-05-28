@@ -1,70 +1,77 @@
-// File: frontend/src/styles/abstracts/theme-engine.scss
+// File: frontend/src/styles/abstracts/_theme-engine.scss
 /**
  * @file _theme-engine.scss
  * @description Generates CSS custom variables for every theme palette.
- * Corrected SASS map access from `map-get` to `map.get`.
- * @version 2.0.1 - Corrected map.get syntax.
+ * Default theme updated to Magenta Mystic.
+ * @version 2.1.1 - Added Tailwind CSS IntelliSense disable comments.
  */
 @use 'sass:map';
-/* tailwindcss-disable */
-/* tailwindcss-intellisense-disable */
+@use './theme-definitions.scss' as themes;
 
-// 1. bring the individual theme maps into this file
-@use './theme-definitions.scss' as themes; // $theme-warm-embrace etc.
-
-// 2. shape a master map that also stores whether each theme is dark
 $theme-registry: (
-  'warm-embrace': ('is-dark': false, 'map': themes.$theme-warm-embrace),
-  'twilight-neo': ('is-dark': true, 'map': themes.$theme-twilight-neo),
-  'aurora-daybreak': ('is-dark': false, 'map': themes.$theme-aurora-daybreak),
-  // Add new themes here, e.g.:
-  // 'magenta-mystic': ('is-dark': true, 'map': themes.$theme-magenta-mystic),
+  'magenta-mystic': ('is-dark': true,  'map': themes.$theme-magenta-mystic), // New default dark
+  'twilight-neo':   ('is-dark': true,  'map': themes.$theme-twilight-neo),
+  'aurora-daybreak':('is-dark': false, 'map': themes.$theme-aurora-daybreak),
+  'warm-embrace':   ('is-dark': false, 'map': themes.$theme-warm-embrace)
 );
 
-// 3. optional aliases so legacy IDs keep working
+// Aliases to map legacy theme names or provide simpler alternatives
 $theme-aliases: (
   'ephemeral-holo-dark': 'twilight-neo',
-  'aurora-light': 'aurora-daybreak',
+  'aurora-light':        'aurora-daybreak',
   'legacy-warm-embrace': 'warm-embrace',
   'legacy-twilight-neo': 'twilight-neo',
+  'default-dark':        'magenta-mystic', // Alias for default dark theme
+  'default-light':       'aurora-daybreak' // Alias for default light theme
 );
 
-// 4. mixin that prints all custom props for one map
-@mixin apply-theme($map-arg) { // Renamed $map to $map-arg to avoid conflict if $map is a global var elsewhere
-  @each $prop, $val in $map-arg {
+// Mixin to apply a theme map to a selector
+@mixin apply-theme($theme-map-arg) {
+  @each $prop, $val in $theme-map-arg {
+    /* tailwindcss-intellisense-disable */
     #{$prop}: #{$val};
+    /* tailwindcss-intellisense-enable */
   }
 }
 
-// 5. FUTURE-PROOF output ------------------------------------------------------
-$default-theme: 'aurora-daybreak'; // keep in sync with ThemeManager.ts
+// Default theme (can be overridden by user preference via data-theme on <html>)
+$default-theme-name: 'magenta-mystic'; // Updated default theme
 
-/* :root fallback (in case JS never runs) */
 :root {
-  @include apply-theme(map.get(map.get($theme-registry, $default-theme), 'map'));
+  /* tailwindcss-intellisense-disable */
+  @include apply-theme(map.get(map.get($theme-registry, $default-theme-name), 'map'));
   color-scheme: if(
-    map.get(map.get($theme-registry, $default-theme), 'is-dark'), // Corrected: map.get
+    map.get(map.get($theme-registry, $default-theme-name), 'is-dark'),
     dark,
     light
   );
+  /* tailwindcss-intellisense-enable */
 }
 
-/* one data-theme selector per real theme ------------------------------ */
-@each $id, $meta in $theme-registry {
-  html[data-theme='#{$id}'] {
-    @include apply-theme(map.get($meta, 'map')); // Corrected: map.get
-    color-scheme: if(map.get($meta, 'is-dark'), dark, light); // Corrected: map.get
+// Generate theme overrides for specific data-theme attributes
+@each $theme-id, $theme-meta in $theme-registry {
+  html[data-theme='#{$theme-id}'] {
+    /* tailwindcss-intellisense-disable */
+    @include apply-theme(map.get($theme-meta, 'map'));
+    color-scheme: if(map.get($theme-meta, 'is-dark'), dark, light);
+    /* tailwindcss-intellisense-enable */
   }
 }
 
-/* alias selectors (duplicate the vars, no @extend) */
-@each $alias, $target in $theme-aliases {
-  $target-meta: map.get($theme-registry, $target); // Corrected: map.get
-  $target-map: map.get($target-meta, 'map'); // Corrected: map.get
-  $target-dark: map.get($target-meta, 'is-dark'); // Corrected: map.get
+// Generate styles for aliased themes
+@each $alias-name, $target-theme-name in $theme-aliases {
+  $target-meta-data: map.get($theme-registry, $target-theme-name);
+  @if $target-meta-data {
+    $target-theme-map: map.get($target-meta-data, 'map');
+    $is-target-dark: map.get($target-meta-data, 'is-dark');
 
-  html[data-theme='#{$alias}'] {
-    @include apply-theme($target-map);
-    color-scheme: if($target-dark, dark, light);
+    html[data-theme='#{$alias-name}'] {
+      /* tailwindcss-intellisense-disable */
+      @include apply-theme($target-theme-map);
+      color-scheme: if($is-target-dark, dark, light);
+      /* tailwindcss-intellisense-enable */
+    }
+  } @else {
+    @warn "Theme alias target '#{$target-theme-name}' not found in registry for alias '#{$alias-name}'.";
   }
 }

@@ -288,7 +288,7 @@
             '--color-bg-secondary', 3px, 6px, '--shadow-opacity-soft', var.$radius-lg,
             '--shadow-color-h', '--color-shadow-s', '--color-shadow-l', '--shadow-highlight-modifier',
             var.$default-color-bg-secondary-h, var.$default-color-bg-secondary-s, var.$default-color-bg-secondary-l,
-            var.$default-shadow-opacity-soft, var.$default-shadow-color-h, var.$default-shadow-color-s, var.$default-shadow-color-l, var.$default-shadow-highlight-modifier
+            var.$default-shadow-opacity-soft, var.$default-shadow-color-h, var.$default-shadow-color-s, var.$default-shadow-color-l, var.$default-shadow-highlight-l-factor
         );
     }
     .component-item-icon {
@@ -484,7 +484,7 @@
         '--color-bg-secondary', 2px, 5px, '--shadow-opacity-soft', var.$radius-lg,
          '--shadow-color-h', '--color-shadow-s', '--color-shadow-l', '--shadow-highlight-modifier',
          var.$default-color-bg-secondary-h, var.$default-color-bg-secondary-s, var.$default-color-bg-secondary-l,
-         var.$default-shadow-opacity-soft, var.$default-shadow-color-h, var.$default-shadow-color-s, var.$default-shadow-color-l, var.$default-shadow-highlight-modifier
+         var.$default-shadow-opacity-soft, var.$default-shadow-color-h, var.$default-shadow-color-s, var.$default-shadow-color-l, var.$default-shadow-highlight-l-factor
       );
   }
   .roadmap-quarter-title {
@@ -575,7 +575,7 @@
     '--color-bg-secondary', 6px, 12px, '--shadow-opacity-soft', var.$radius-xl,
     '--shadow-color-h', '--color-shadow-s', '--color-shadow-l', '--shadow-highlight-modifier',
     var.$default-color-bg-secondary-h, var.$default-color-bg-secondary-s, var.$default-color-bg-secondary-l,
-    var.$default-shadow-opacity-soft, var.$default-shadow-color-h, var.$default-shadow-color-s, var.$default-shadow-color-l, var.$default-shadow-highlight-modifier
+    var.$default-shadow-opacity-soft, var.$default-shadow-color-h, var.$default-shadow-color-s, var.$default-shadow-color-l, var.$default-shadow-highlight-l-factor
   );
    transition: transform var.$duration-smooth var.$ease-out-expo, box-shadow var.$duration-smooth var.$ease-out-expo;
   &:hover {
@@ -584,7 +584,7 @@
       '--color-bg-secondary', 8px, 16px, '--shadow-opacity-deep', var.$radius-xl,
       '--shadow-color-h', '--color-shadow-s', '--color-shadow-l', '--shadow-highlight-modifier',
        var.$default-color-bg-secondary-h, var.$default-color-bg-secondary-s, var.$default-color-bg-secondary-l,
-       var.$default-shadow-opacity-deep, var.$default-shadow-color-h, var.$default-shadow-color-s, var.$default-shadow-color-l, var.$default-shadow-highlight-modifier
+       var.$default-shadow-opacity-deep, var.$default-shadow-color-h, var.$default-shadow-color-s, var.$default-shadow-color-l, var.$default-shadow-highlight-l-factor
     );
   }
 }

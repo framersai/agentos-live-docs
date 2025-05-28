@@ -1,38 +1,49 @@
 // File: frontend/src/styles/components/_compact-message-renderer.scss
 /**
  * @file _compact-message-renderer.scss
- * @description Styles for the CompactMessageRenderer component.
- * "Ephemeral Harmony" theme, styling slideshows, content analysis, diagrams, and toolbars.
- * @version 1.0.1 - Switched to button mixins.
+ * @description Styles for the CompactMessageRenderer.vue component.
+ * This component is designed for rich content display, including slideshows,
+ * content analysis banners, diagrams, and interactive toolbars, all themed
+ * for "Ephemeral Harmony".
+ * @version 1.0.2 - Ensured consistent mixin usage and button styling.
  */
 
 @use '../abstracts/variables' as var;
-@use '../abstracts/mixins' as commonMixins; // General mixins from _mixins.scss
-@use './buttons' as buttonsFile; // To access the button mixins from _buttons.scss
+@use '../abstracts/mixins' as commonMixins; // General mixins
+@use './buttons' as buttonsFile;          // For button styles and mixins
+@use './diagram-viewer' as diagramViewer; // Import to access the mixin
 
-// --- Root Container ---
+// --- Root Container for the Compact Message Renderer ---
 .compact-message-renderer-ephemeral {
+  // Apply a glassmorphic pane effect for the main container
   @include commonMixins.glassmorphic-pane(
-    hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.75),
-    hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.4),
-    var(--blur-glass),
-    var(--shadow-depth-lg)
+    // CSS Variable Prefixes (theme engine provides actual HSL values)
+    $bg-color-css-var-prefix: '--color-bg-secondary', // Use secondary background for a slightly different glass tint
+    $border-color-css-var-prefix: '--color-border-glass',
+    $blur-amount-css-var: '--blur-glass',
+    $shadow-css-var: '--shadow-depth-lg', // Prominent shadow for a floating effect
+    // SCSS Fallbacks
+    $default-bg-h: var.$default-color-bg-secondary-h, $default-bg-s: var.$default-color-bg-secondary-s, $default-bg-l: var.$default-color-bg-secondary-l, $default-bg-a: 0.75, // Slightly more opaque glass
+    $default-border-h: var.$default-color-border-glass-h, $default-border-s: var.$default-color-border-glass-s, $default-border-l: var.$default-color-border-glass-l, $default-border-a: 0.4,
+    $default-blur: var.$default-blur-glass,
+    $default-shadow: var.$scss-box-shadow-lg
   );
-  border-radius: var.$radius-xl;
-  overflow: hidden; // Important for child elements and transitions
+  border-radius: var.$radius-xl; // Generous radius
+  overflow: hidden; // Crucial for child elements, transitions, and ensuring effects like blur are contained
   display: flex;
-  flex-direction: column;
-  color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+  flex-direction: column; // Stack header, content, footer vertically
+  color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l)); // Default text color
 
+  // Styles for when the renderer is in fullscreen mode
   &.fullscreen {
     position: fixed;
-    inset: 0;
-    z-index: var.$z-index-modal + 10; // Above modals if it can go fullscreen over them
-    border-radius: 0;
-    border-width: 0; // No border in fullscreen
+    inset: 0; // Cover the entire viewport
+    z-index: calc(var.$z-index-modal + 10); // Ensure it's above modals if it can go fullscreen over them
+    border-radius: 0; // No rounded corners in fullscreen
+    border-width: 0;  // No border in fullscreen
   }
 
-  // Type-specific border accents (subtle)
+  // Type-specific border accents for quick visual identification (subtle)
   &.coding-problem-ephemeral {
     border-left: 4px solid hsl(var(--color-info-h), var(--color-info-s), var(--color-info-l));
   }
@@ -41,45 +52,45 @@
   }
 }
 
-// --- Analysis Banner ---
+// --- Analysis Banner (e.g., for LeetCode problem info) ---
 .analysis-banner-ephemeral {
   padding: var.$spacing-sm var.$spacing-md;
-  border-bottom: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.2);
+  border-bottom: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.2); // Subtle separator
   font-size: var.$font-size-sm;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var.$spacing-md;
-  flex-wrap: wrap; // Allow wrapping on small screens
+  flex-wrap: wrap; // Allow wrapping on smaller screens
 
   // Base styles for banner types
-  &.banner-type-base {
-    background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.3);
+  &.banner-type-base { // A generic base look
+    background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.3); // Slightly different background
   }
-  &.banner-type-leetcode {
-    @extend .banner-type-base; // This extend is within the same file, usually fine.
-    background-color: hsla(var(--color-info-h), var(--color-info-s), var(--color-info-l), 0.1);
-    color: hsl(var(--color-info-h), var(--color-info-s), calc(var(--color-info-l) - 10%));
+  &.banner-type-leetcode { // Specific styling for LeetCode context
+    @extend .banner-type-base; // Inherit base styles
+    background-color: hsla(var(--color-info-h), var(--color-info-s), var(--color-info-l), 0.1); // Info color tint
+    color: hsl(var(--color-info-h), var(--color-info-s), calc(var(--color-info-l) - 10%)); // Darker info text
     .icon { color: hsl(var(--color-info-h), var(--color-info-s), var(--color-info-l)); }
   }
+  // Add other banner types (system-design, general) similarly if needed
   &.banner-type-system-design {
-    @extend .banner-type-base; // This extend is within the same file, usually fine.
+    @extend .banner-type-base;
     background-color: hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.1);
     color: hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), calc(var(--color-accent-secondary-l) - 10%));
     .icon { color: hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l)); }
   }
-  &.banner-type-general {
-    @extend .banner-type-base; // Generic look - This extend is within the same file, usually fine.
-  }
+   &.banner-type-general { @extend .banner-type-base; }
 
-  .info-group {
+
+  .info-group { // For title, icon
     display: flex;
     align-items: center;
     gap: var.$spacing-xs;
     .icon { width: 1.25rem; height: 1.25rem; }
     .title-text { font-weight: 600; }
   }
-  .meta-group {
+  .meta-group { // For difficulty, tags, etc.
     display: flex;
     align-items: center;
     gap: var.$spacing-md;
@@ -87,14 +98,14 @@
     color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
   }
 
-  .difficulty-badge-ephemeral {
+  .difficulty-badge-ephemeral { // Badge for difficulty level
     padding: calc(var.$spacing-xs / 2) var.$spacing-xs;
-    font-size: 0.65rem; // xxs
+    font-size: 0.65rem; // Extra small text
     font-weight: 600;
     border-radius: var.$radius-sm;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    border: 1px solid;
+    border: 1px solid; // Border color set by difficulty type
 
     &.difficulty-easy {
       color: hsl(var(--color-success-h), var(--color-success-s), calc(var(--color-success-l) - 5%));
@@ -117,9 +128,9 @@
 // --- Slideshow Mode ---
 .slideshow-container-ephemeral {
   display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  overflow: hidden;
+  flex-direction: column; // Header, content, navigation vertically stacked
+  flex-grow: 1;          // Take available space
+  overflow: hidden;        // Content scrolls, not the container
 
   .slideshow-header-ephemeral {
     padding: var.$spacing-sm var.$spacing-md;
@@ -127,23 +138,23 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    flex-shrink: 0;
-    background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.2);
+    flex-shrink: 0; // Header should not shrink
+    background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.2); // Subtle header background
 
-    .slide-info-ephemeral {
-      min-width: 0;
+    .slide-info-ephemeral { // Container for title and meta
+      min-width: 0; // Allow text to truncate
       .slide-title-text {
-        font-family: var(--font-display);
+        font-family: var(--font-display, #{var.$font-family-display});
         font-size: var.$font-size-lg;
         font-weight: 500;
         color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
         margin-bottom: calc(var.$spacing-xs / 2);
         white-space: nowrap;
         overflow: hidden;
-        text-overflow: ellipsis;
-        @include commonMixins.text-glow('--color-accent-secondary', 3px);
+        text-overflow: ellipsis; // Truncate long titles
+        @include commonMixins.text-glow($glow-color-var-prefix: '--color-accent-secondary', $glow-radius: 3px); // Subtle glow on title
       }
-      .slide-meta-ephemeral {
+      .slide-meta-ephemeral { // For slide number, etc.
         display: flex;
         align-items: center;
         gap: var.$spacing-md;
@@ -151,51 +162,58 @@
         color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
       }
     }
-    .slide-controls-ephemeral {
+    .slide-controls-ephemeral { // Prev/Next buttons
       display: flex;
       align-items: center;
       gap: var.$spacing-xs;
       .control-button-ephemeral {
-        @include buttonsFile.btn-ghost; // Includes base styles + ghost look
-        @include buttonsFile.btn-icon-modifier; // Applies icon button modifications
-        padding: calc(var.$spacing-xs * 1.25) !important; // Override default padding
-        .icon { width: 1.125rem; height: 1.125rem; }
-        &:disabled { opacity: 0.4; }
+        @include buttonsFile.btn-ghost; // Use ghost button style
+        @include buttonsFile.btn-icon-modifier; // Make it an icon button
+        padding: calc(var.$spacing-xs * 1.25) !important; // Specific padding for these controls
+        .icon { width: 1.125rem; height: 1.125rem; } // Specific icon size
+        &:disabled { opacity: 0.4; } // Standard disabled style
       }
     }
   }
 
-  .slide-content-wrapper-ephemeral {
+  .slide-content-wrapper-ephemeral { // Area for the actual slide content
     flex-grow: 1;
-    overflow-y: auto;
+    overflow-y: auto; // Content itself scrolls
     padding: var.$spacing-md var.$spacing-lg;
+    // Custom scrollbar for slide content
     @include commonMixins.custom-scrollbar(
-      hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.3),
-      transparent
+      $thumb-color-var-prefix: '--color-accent-primary', 
+      $thumb-base-alpha: 0.3, 
+      $track_alpha: 0.05 // Very subtle track for content area
     );
 
     .slide-content-inner-ephemeral {
-      // @extend .prose-ephemeral; // If .prose-ephemeral is complex/defined elsewhere, this might also need a mixin.
-                               // For now, assuming it's a simple local class or handled by Tailwind Typography.
+      // Assuming .prose-ephemeral or similar class is applied for markdown content styling by parent/Tailwind
+      // These provide scaling based on a CSS variable if dynamic font sizing is implemented.
       font-size: calc(1rem * var(--content-font-scale, 1));
       line-height: calc(1.7 * var(--content-font-scale, 1));
 
-      &.fullscreen-slide-content {
+      &.fullscreen-slide-content { // Larger text in fullscreen
         font-size: calc(1.125rem * var(--content-font-scale, 1));
         line-height: calc(1.8 * var(--content-font-scale, 1));
       }
-      &.type-code-slide {
-        :deep(pre) {
+      &.type-code-slide { // Specific adjustments for slides containing mainly code
+        :deep(pre) { // Target preformatted text blocks deeply
+          // Ensure code blocks have a distinct background, potentially less transparent
           background-color: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.5) !important;
         }
       }
+      // Enhanced Code Block Styling (if using custom component/wrapper)
       :deep(.enhanced-code-block) {
-        background-color: hsl(var(--code-block-bg-h, var.$--color-bg-primary-h), var(--code-block-bg-s, var.$--color-bg-primary-s), var(--code-block-bg-l, calc(var.$--color-bg-primary-l) - 3%));
+        // Using CSS variables for code block theming, defined in theme-definitions
+        background-color: hsl(var(--color-bg-code-block-h), var(--color-bg-code-block-s), var(--color-bg-code-block-l));
+        color: hsl(var(--color-text-code-block-h), var(--color-text-code-block-s), var(--color-text-code-block-l));
         border-radius: var.$radius-lg;
         overflow: hidden;
         margin: var.$spacing-md 0;
         border: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.3);
-        .code-header {
+        
+        .code-header { /* Header for language name and copy button */
           display: flex;
           align-items: center;
           justify-content: space-between;
@@ -203,149 +221,181 @@
           background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.3);
           font-size: var.$font-size-xs;
           color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
-          .code-language {}
+          
           .copy-code-btn {
             @include buttonsFile.btn-ghost;
             @include buttonsFile.btn-xs-modifier;
-            padding: calc(var.$spacing-xs / 2) var.$spacing-xs !important; // Override
+            padding: calc(var.$spacing-xs / 2) var.$spacing-xs !important; // Very small padding
             color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
             &:hover { color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l)); }
           }
         }
         pre {
-          margin: 0 !important;
+          margin: 0 !important; // Reset margin for pre inside this wrapper
+          // Line numbering styles (assumes JS adds 'line-numbered' and 'line-content')
           code.line-numbered {
             counter-reset: line;
             .line-content::before {
               counter-increment: line;
               content: counter(line);
               display: inline-block;
-              width: 2.5em;
+              width: 2.5em; // Space for line numbers
               padding-right: var.$spacing-sm;
               margin-right: var.$spacing-sm;
               text-align: right;
-              color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l), 0.6);
+              color: hsla(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l), 0.6);
               border-right: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.2);
-              position: sticky;
+              position: sticky; // Keep line numbers visible on horizontal scroll
               left: 0;
-              background-color: inherit;
+              background-color: inherit; // Match pre background
             }
           }
         }
       }
-      // Complexity breakdown styling (from original, themed)
+      // Complexity Breakdown Styling (themed)
       :deep(.complexity-breakdown) {
-        text-align: center; margin: var.$spacing-lg 0;
-        h3 { font-size: var.$font-size-lg; font-weight: 500; margin-bottom: var.$spacing-md; color: hsl(var(--color-text-primary-h),var(--color-text-primary-s),var(--color-text-primary-l));}
+        text-align: center; 
+        margin: var.$spacing-lg 0;
+        h3 { 
+          font-size: var.$font-size-lg; 
+          font-weight: 500; 
+          margin-bottom: var.$spacing-md; 
+          color: hsl(var(--color-text-primary-h),var(--color-text-primary-s),var(--color-text-primary-l));
+        }
         .complexity-cards {
-          display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var.$spacing-md; margin: var.$spacing-md 0;
+          display: grid; 
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+          gap: var.$spacing-md; 
+          margin: var.$spacing-md 0;
           .complexity-card {
-            padding: var.$spacing-md; border-radius: var.$radius-lg;
-            @include mixins.glassmorphic-pane(
-              hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.5),
-              hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.2),
-              calc(var(--blur-glass) * 0.5), var(--shadow-depth-sm)
+            padding: var.$spacing-md; 
+            border-radius: var.$radius-lg;
+            @include commonMixins.glassmorphic-pane( // Glass effect for complexity cards
+              $bg-color-css-var-prefix: '--color-bg-tertiary', $default-bg-a: 0.5,
+              $border-color-css-var-prefix: '--color-border-glass', $default-border-a: 0.2,
+              $blur-amount-css-var: calc(var(--blur-glass) * 0.5),
+              $shadow-css-var: '--shadow-depth-sm'
             );
-            &.time { border-left: 3px solid hsl(var(--color-info-h),var(--color-info-s),var(--color-info-l));}
-            &.space { border-left: 3px solid hsl(var(--color-success-h),var(--color-success-s),var(--color-success-l));}
-            h4 { font-size: var.$font-size-base; font-weight: 500; margin-bottom: var.$spacing-xs; display: flex; align-items: center; gap: var.$spacing-xs; color: hsl(var(--color-text-secondary-h),var(--color-text-secondary-s),var(--color-text-secondary-l));}
-            .complexity-value { font-family: var(--font-mono); font-size: var.$font-size-lg; font-weight: 600; margin-bottom: var.$spacing-xs; color: hsl(var(--color-text-primary-h),var(--color-text-primary-s),var(--color-text-primary-l));}
+            &.time { border-left: 3px solid hsl(var(--color-info-h),var(--color-info-s),var(--color-info-l));} // Accent for time
+            &.space { border-left: 3px solid hsl(var(--color-success-h),var(--color-success-s),var(--color-success-l));} // Accent for space
+            h4 { 
+              font-size: var.$font-size-base-default; font-weight: 500; margin-bottom: var.$spacing-xs; 
+              display: flex; align-items: center; gap: var.$spacing-xs; 
+              color: hsl(var(--color-text-secondary-h),var(--color-text-secondary-s),var(--color-text-secondary-l));
+            }
+            .complexity-value { 
+              font-family: var(--font-mono, #{var.$font-family-mono}); 
+              font-size: var.$font-size-lg; font-weight: 600; margin-bottom: var.$spacing-xs; 
+              color: hsl(var(--color-text-primary-h),var(--color-text-primary-s),var(--color-text-primary-l));
+            }
             p { font-size: var.$font-size-xs; color: hsl(var(--color-text-muted-h),var(--color-text-muted-s),var(--color-text-muted-l)); margin:0; }
           }
         }
+      }
     }
+    // Diagram styling within a slide
     .slide-diagram-ephemeral {
       margin-top: var.$spacing-md;
       .diagram-container-inner {
-        @extend .diagram-viewer-wrapper-ephemeral; // This extend is to a class within the same components folder, might be okay or need namespacing.
-                                                 // For max safety, diagram-viewer-wrapper-ephemeral could also become a mixin.
-        padding: var.$spacing-sm;
-        .mermaid-diagram {
-          display: flex; justify-content: center; align-items: center;
-          :deep(svg) { max-width: 100%; height: auto; }
+        // If .diagram-viewer-wrapper-ephemeral is defined in _diagram-viewer.scss, extend is fine.
+        // For better decoupling, consider making shared wrapper properties a mixin.
+        // @extend .diagram-viewer-wrapper-ephemeral; 
+        padding: var.$spacing-sm; // Specific padding for diagrams within slides
+        .mermaid-diagram { // Styles for the Mermaid SVG container
+          display: flex; 
+          justify-content: center; 
+          align-items: center;
+          :deep(svg) { max-width: 100%; height: auto; } // Ensure SVG is responsive
         }
       }
     }
   }
-  }
 
+  // Autoplay Progress Bar
   .autoplay-progress-bar-ephemeral {
     padding: var.$spacing-xs var.$spacing-md;
-    background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.1);
-    flex-shrink: 0;
+    background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.1); // Subtle background
+    flex-shrink: 0; // Prevent shrinking
     .progress-track {
       width: 100%; height: 6px;
-      background-color: hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.2);
-      border-radius: var.$radius-full; overflow: hidden; margin-bottom: calc(var.$spacing-xs / 2);
-      .progress-fill-animated {
+      background-color: hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.2); // Track color
+      border-radius: var.$radius-full; 
+      overflow: hidden; 
+      margin-bottom: calc(var.$spacing-xs / 2);
+      .progress-fill-animated { // The moving fill part
         height: 100%;
-        background: linear-gradient(90deg,
+        background: linear-gradient(90deg, // Animated gradient fill
           hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l)),
           hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l))
         );
         border-radius: var.$radius-full;
-        transition: width 0.1s linear; // Smooth progress update
-        animation: holoShimmer var.$duration-pulse-long linear infinite; // Add shimmer to progress
-        background-size: 200% 100%;
+        transition: width 0.1s linear; // Smooth width update for progress
+        animation: holoShimmer var.$duration-pulse-long linear infinite; // Shimmer effect on progress bar
+        background-size: 200% 100%; // For holoShimmer animation
       }
     }
-    .progress-text-label {
-      font-size: 0.65rem; // xxs
+    .progress-text-label { // Text like "Next slide in..."
+      font-size: 0.65rem; // Extra small text
       color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
       text-align: right;
     }
+  }
 
+  // Slide Navigation Dots
   .slide-navigation-dots-ephemeral {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: var.$spacing-xs;
     padding: var.$spacing-sm 0;
-    flex-shrink: 0;
-    border-top: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.1);
+    flex-shrink: 0; // Prevent shrinking
+    border-top: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.1); // Subtle separator
 
-    .nav-dot-button {
+    .nav-dot-button { // Individual dot button
       width: 10px; height: 10px;
-      border-radius: var.$radius-full;
-      background-color: hsla(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l), 0.3);
+      border-radius: var.$radius-full; // Circular dots
+      background-color: hsla(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l), 0.3); // Default dot color
       border: 1px solid transparent;
       transition: background-color var.$duration-quick, transform var.$duration-quick, box-shadow var.$duration-quick;
       cursor: pointer;
       &:hover {
-        background-color: hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.5);
+        background-color: hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.5); // Accent on hover
         transform: scale(1.1);
       }
-      &.active {
-        background-color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+      &.active { // Active slide dot
+        background-color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l)); // Primary accent for active
         transform: scale(1.2);
-        box-shadow: 0 0 8px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.5);
+        box-shadow: 0 0 8px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.5); // Glow for active dot
       }
     }
+  }
 }
 
-// --- Single Content Mode ---
+// --- Single Content Mode (No slides, just one block of content) ---
 .single-content-view-ephemeral {
   flex-grow: 1;
-  overflow-y: auto;
+  overflow-y: auto; // Content scrolls
   padding: var.$spacing-lg;
-  @include mixins.custom-scrollbar(
-    hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.4),
-    transparent
+  @include commonMixins.custom-scrollbar(
+    $thumb-color-var-prefix: '--color-accent-primary', 
+    $thumb-base-alpha: 0.4, 
+    $track_alpha: 0.05 // Very subtle track
   );
 
-  .content-html-wrapper {
-    // @extend .prose-ephemeral; // See comment above for .prose-ephemeral
-    font-size: calc(1rem * var(--content-font-scale, 1));
-    line-height: calc(1.75 * var(--content-font-scale, 1));
+  .content-html-wrapper { // Wrapper for v-html content
+    // Assumes .prose-ephemeral or similar Tailwind Typography class handles base markdown styling
+    font-size: calc(1rem * var(--content-font-scale, 1)); // Scalable font size
+    line-height: calc(1.75 * var(--content-font-scale, 1)); // Scalable line height
   }
   
-  &.fullscreen-active-content {
-    padding: var.$spacing-xl;
+  &.fullscreen-active-content { // Styles when this view is fullscreen
+    padding: var.$spacing-xl; // More padding in fullscreen
     .content-html-wrapper {
-      font-size: calc(1.125rem * var(--content-font-scale, 1));
+      font-size: calc(1.125rem * var(--content-font-scale, 1)); // Slightly larger text
     }
   }
 
+  // Section for Diagrams if present in single content mode
   .diagrams-section-ephemeral {
     margin-top: var.$spacing-xl;
     .diagrams-section-title {
@@ -356,31 +406,33 @@
     }
     .diagram-instance-wrapper { // Wrapper for each DiagramViewer instance
       margin-bottom: var.$spacing-lg;
-      // DiagramViewer will use its own themed styles (_diagram-viewer.scss)
+      // DiagramViewer component will use its own themed styles from _diagram-viewer.scss
     }
   }
 
+  // Panels for Complexity, Code Execution, etc.
   .complexity-panel-ephemeral, .code-execution-panel-ephemeral {
     margin-top: var.$spacing-xl;
     padding: var.$spacing-lg;
     border-radius: var.$radius-lg;
-    background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.3);
-    border: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.2);
+    background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.3); // Subtle panel background
+    border: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.2); // Subtle border
 
-     .panel-title-text {
+    .panel-title-text {
       font-size: var.$font-size-lg; font-weight: 600; margin-bottom: var.$spacing-md;
       color: hsl(var(--color-text-primary-h),var(--color-text-primary-s),var(--color-text-primary-l));
-      font-family: var(--font-display);
+      font-family: var(--font-display, #{var.$font-family-display}); // Use display font for panel titles
     }
     // Complexity Grid
     .complexity-grid-items {
       display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var.$spacing-md;
       .complexity-item-ephemeral {
         padding: var.$spacing-sm; border-radius: var.$radius-md;
-        background-color: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.4);
-        &.full-width-item { grid-column: 1 / -1; }
+        background-color: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.4); // Slightly different item background
+        &.full-width-item { grid-column: 1 / -1; } // For items spanning full width
         .complexity-label-text { font-size: var.$font-size-xs; color: hsl(var(--color-text-muted-h),var(--color-text-muted-s),var(--color-text-muted-l)); margin-bottom: calc(var.$spacing-xs / 2); }
-        .complexity-value-text { font-family: var(--font-mono); font-weight: 500;
+        .complexity-value-text { 
+          font-family: var(--font-mono, #{var.$font-family-mono}); font-weight: 500;
           &.good { color: hsl(var(--color-success-h),var(--color-success-s),var(--color-success-l)); }
           &.fair { color: hsl(var(--color-warning-h),var(--color-warning-s),var(--color-warning-l)); }
           &.poor { color: hsl(var(--color-error-h),var(--color-error-s),var(--color-error-l)); }
@@ -389,49 +441,47 @@
         .complexity-approach-text { font-size: var.$font-size-sm; line-height: 1.6; }
       }
     }
-    // Test Cases
-    .test-cases-list { space-y: var.$spacing-md; }
+    // Test Cases List
+    .test-cases-list { /* Assuming space-y utility from Tailwind or manual margin */ }
     .test-case-item {
       padding: var.$spacing-sm; border-radius: var.$radius-md;
       background-color: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.4);
       font-size: var.$font-size-sm;
-      div { margin-bottom: calc(var.$spacing-xs / 2); strong { font-weight: 500; color: hsl(var(--color-text-secondary-h),var(--color-text-secondary-s),var(--color-text-secondary-l));} }
+      div { margin-bottom: calc(var.$spacing-xs / 2); 
+        strong { font-weight: 500; color: hsl(var(--color-text-secondary-h),var(--color-text-secondary-s),var(--color-text-secondary-l));} 
+      }
       .run-test-button {
-        // Assuming btn-secondary-ephemeral is standard .btn-secondary
-        @include buttonsFile.btn-secondary;
-        @include buttonsFile.btn-sm-modifier;
+        @include buttonsFile.btn-secondary; // Apply secondary button style
+        @include buttonsFile.btn-sm-modifier;  // Make it a small button
         margin-top: var.$spacing-sm;
-          }
-          }
       }
     }
   }
 }
 
-// --- Actions Toolbar ---
+// --- Actions Toolbar (e.g., for fullscreen toggle, copy content) ---
 .actions-toolbar-ephemeral {
   padding: var.$spacing-sm var.$spacing-md;
-  border-top: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.2);
-  background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.2);
+  border-top: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.2); // Separator line
+  background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.2); // Subtle background
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
+  justify-content: space-between; // Space out button groups
+  flex-wrap: wrap; // Allow wrapping on small screens
   gap: var.$spacing-sm;
-  flex-shrink: 0;
+  flex-shrink: 0; // Toolbar should not shrink
 
-  .action-button-group {
+  .action-button-group { // Group related action buttons
     display: flex;
     align-items: center;
     gap: var.$spacing-xs;
   }
   .action-button-ephemeral {
-    // Assuming btn-secondary-ephemeral is standard .btn-secondary
-    @include buttonsFile.btn-secondary;
-    @include buttonsFile.btn-sm-modifier;
-    padding: calc(var.$spacing-xs * 1.25) var.$spacing-sm !important; // Override
-    gap: var.$spacing-xs;
-    .icon { width: 1rem; height: 1rem; }
-    .action-text-label { @apply hidden sm:inline; }
+    @include buttonsFile.btn-secondary; // Use secondary button style for actions
+    @include buttonsFile.btn-sm-modifier;   // Make action buttons small
+    padding: calc(var.$spacing-xs * 1.25) var.$spacing-sm !important; // Fine-tune padding
+    gap: var.$spacing-xs; // Gap between icon and text
+    .icon { width: 1rem; height: 1rem; } // Icon size for action buttons
+    .action-text-label { @apply hidden sm:inline; } // Hide text label on small screens (Tailwind utility)
   }
 }

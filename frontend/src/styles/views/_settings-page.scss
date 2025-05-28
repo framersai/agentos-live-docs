@@ -123,37 +123,57 @@
   margin-top: var.$spacing-sm;
 }
 
-// Input Styles - Ephemeral Harmony
-.select-input-ephemeral {
+.select-input-ephemeral,
+.input-field-sm-ephemeral { // Grouping similar input fields
+  // Base styles (neomorphic-inset, padding, border, etc.) remain the same
   @include mixins.neomorphic-inset(
     '--color-bg-primary', 4px, 2px, '--shadow-opacity-soft', var.$radius-lg,
     '--shadow-color-h', '--shadow-color-s', '--shadow-color-l', '--shadow-highlight-modifier',
     var.$default-color-bg-primary-h, var.$default-color-bg-primary-s, var.$default-color-bg-primary-l,
     var.$default-shadow-opacity-soft,
     var.$default-shadow-color-h, var.$default-shadow-color-s, var.$default-shadow-color-l,
-    var.$default-shadow-highlight-modifier
+    var.$default-shadow-highlight-l-factor
   );
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='hsl(#{var(--color-text-muted-h)}, #{var(--color-text-muted-s)}, #{var(--color-text-muted-l)})'%3E%3Cpath fill-rule='evenodd' d='M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.23 8.29a.75.75 0 01.02-1.06z' clip-rule='evenodd'/%3E%3C/svg%3E");
-  background-position: right 0.75rem center;
-  background-repeat: no-repeat;
-  background-size: 1.25em 1.25em;
-  padding: var.$spacing-sm calc(var.$spacing-lg + 1rem) var.$spacing-sm var.$spacing-md;
-  border: 1px solid hsla(var(--color-border-secondary-h),var(--color-border-secondary-s),var(--color-border-secondary-l), 0.4);
+  appearance: none; // For select
+  background-position: right 0.75rem center; // For select chevron
+  background-repeat: no-repeat; // For select chevron
+  background-size: 1.25em 1.25em; // For select chevron
+  padding-right: 2.5rem; // For select chevron
+  border: 1px solid hsla(var(--color-border-secondary-h),var(--color-border-secondary-s),var(--color-border-secondary-l), 0.3); // Slightly softer initial border
   color: hsl(var(--color-text-primary-h),var(--color-text-primary-s),var(--color-text-primary-l));
   font-size: var.$font-size-sm;
   width: 100%;
-  transition: border-color var.$duration-quick, box-shadow var.$duration-quick;
+  transition: border-color var.$duration-smooth, box-shadow var.$duration-smooth, background-color var.$duration-smooth; // Smoother transitions
   line-height: 1.5;
 
-  &:focus {
+  &.input-field-sm-ephemeral { // Specifics for smaller text inputs
+    padding: var.$spacing-xs var.$spacing-sm;
+    max-width: 120px;
+    background-image: none; // No chevron for text inputs
+  }
+  &:not(.input-field-sm-ephemeral){ // Apply select chevron only to selects
+     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='hsl(#{var(--color-text-muted-h)}, #{var(--color-text-muted-s)}, #{var(--color-text-muted-l)})'%3E%3Cpath fill-rule='evenodd' d='M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.23 8.29a.75.75 0 01.02-1.06z' clip-rule='evenodd'/%3E%3C/svg%3E");
+  }
+
+
+  &:hover {
+    border-color: hsla(var(--color-accent-interactive-h),var(--color-accent-interactive-s),var(--color-accent-interactive-l), 0.4); // Softer hover border
+    // Keep the neomorphic inset shadows on hover, perhaps slightly adjust bg
+    background-color: hsl(var(--color-bg-primary-h), var(--color-bg-primary-s), calc(var(--color-bg-primary-l) + 1%));
+  }
+
+  &:focus, &:focus-visible {
     outline: none;
-    border-color: hsla(var(--color-accent-interactive-h),var(--color-accent-interactive-s),var(--color-accent-interactive-l), 0.8);
-    @include mixins.focus-ring(
-        '--color-bg-primary',
-        '--color-accent-interactive',
-        0px, 2px, 0.5
-    );
+    border-color: hsla(var(--color-accent-interactive-h),var(--color-accent-interactive-s),var(--color-accent-interactive-l), 0.6) !important; // Clearer border color
+    // The neomorphic-inset mixin already applies an inset box-shadow.
+    // On focus, we want to enhance this, not create a hard outer ring.
+    // We will add an animated subtle outer glow.
+    // The original inset shadows should remain.
+    animation: inputFocusGlowPulse 2s infinite ease-in-out;
+    // Explicitly re-state base inset shadows if animation overrides. But animation target is box-shadow, so it should.
+    // To combine, you might need to include the inset values within the keyframes or use multiple shadows carefully.
+    // For simplicity, inputFocusGlowPulse will define the full box-shadow on focus.
+    // Let's ensure the inputFocusGlowPulse animation also includes the inset part.
   }
 }
 
@@ -176,7 +196,7 @@
     '--color-bg-tertiary', 3px, 1px, '--shadow-opacity-soft', var.$radius-full,
     '--shadow-color-h', '--shadow-color-s', '--shadow-color-l', '--shadow-highlight-modifier',
     var.$default-color-bg-tertiary-h, var.$default-color-bg-tertiary-s, var.$default-color-bg-tertiary-l,
-    var.$default-shadow-opacity-soft, var.$default-shadow-color-h, var.$default-shadow-color-s, var.$default-shadow-color-l, var.$default-shadow-highlight-modifier
+    var.$default-shadow-opacity-soft, var.$default-shadow-color-h, var.$default-shadow-color-s, var.$default-shadow-color-l, var.$default-shadow-highlight-l-factor
   );
 
   &::before { // Track fill
@@ -235,7 +255,7 @@
       '--color-bg-tertiary', 3px, 2px, '--shadow-opacity-soft', var.$radius-full,
       '--shadow-color-h', '--shadow-color-s', '--shadow-color-l', '--shadow-highlight-modifier',
       var.$default-color-bg-tertiary-h,var.$default-color-bg-tertiary-s,var.$default-color-bg-tertiary-l,
-      var.$default-shadow-opacity-soft,var.$default-shadow-color-h,var.$default-shadow-color-s,var.$default-shadow-color-l,var.$default-shadow-highlight-modifier
+      var.$default-shadow-opacity-soft,var.$default-shadow-color-h,var.$default-shadow-color-s,var.$default-shadow-color-l,var.$default-shadow-highlight-l-factor
     );
     display: flex; // To align knob
     align-items: center;
@@ -249,7 +269,7 @@
       '--color-bg-primary', 2px, 4px, '--shadow-opacity-soft', var.$radius-full,
       '--shadow-color-h', '--shadow-color-s', '--shadow-color-l', '--shadow-highlight-modifier',
       var.$default-color-bg-primary-h,var.$default-color-bg-primary-s,var.$default-color-bg-primary-l,
-      var.$default-shadow-opacity-soft,var.$default-shadow-color-h,var.$default-shadow-color-s,var.$default-shadow-color-l,var.$default-shadow-highlight-modifier
+      var.$default-shadow-opacity-soft,var.$default-shadow-color-h,var.$default-shadow-color-s,var.$default-shadow-color-l,var.$default-shadow-highlight-l-factor
     );
     // position: absolute; top: 3px; left: 3px; // Replaced by flex alignment
     margin-left: 3px; // Initial position
@@ -261,20 +281,25 @@
       '--color-accent-interactive', 3px, 2px, '--shadow-opacity-soft', var.$radius-full,
       '--shadow-color-h', '--shadow-color-s', '--shadow-color-l', '--shadow-highlight-modifier',
       var.$default-color-accent-interactive-h, var.$default-color-accent-interactive-s, var.$default-color-accent-interactive-l,
-      var.$default-shadow-opacity-soft, var.$default-shadow-color-h, var.$default-shadow-color-s, var.$default-shadow-color-l, var.$default-shadow-highlight-modifier
+      var.$default-shadow-opacity-soft, var.$default-shadow-color-h, var.$default-shadow-color-s, var.$default-shadow-color-l, var.$default-shadow-highlight-l-factor
     );
     .knob {
       transform: translateX(24px); // 52px track width - 22px knob - 3px left margin - 3px right margin = 24px travel
       background-color: hsl(var(--color-bg-primary-h),var(--color-bg-primary-s), calc(var(--color-bg-primary-l) + 5%));
     }
   }
-   input:focus-visible + .track {
-    @include mixins.focus-ring(
-        '--color-bg-primary',
-        '--color-accent-interactive',
-        2px, 2px, 0.6
-    );
-  }
+    input:focus-visible + .track { // Focus on the track
+        // Replace hard ring with a softer, pulsing glow around the track
+        outline: none;
+        animation: inputFocusGlowPulse 2s infinite ease-in-out; 
+        // The animation adds a box-shadow, so ensure it doesn't conflict badly with neomorphic-inset on track
+        // The keyframes for inputFocusGlowPulse will need to be designed to complement this.
+        // Alternatively, a simpler focus:
+        // box-shadow: 
+        //   inset 0 1px 3px hsla(var(--shadow-color-h),var(--shadow-color-s),var(--shadow-color-l), 0.15), // from neomorphic-inset
+        //   0 0 0 2px hsl(var(--color-bg-primary-h),var(--color-bg-primary-s),var(--color-bg-primary-l)), // offset space
+        //   0 0 0 4px hsla(var(--color-accent-interactive-h),var(--color-accent-interactive-s),var(--color-accent-interactive-l),0.5); // softer ring
+    }
 }
 
 // Subsections within SettingsSection
@@ -392,7 +417,7 @@
         var.$default-color-accent-interactive-h, var.$default-color-accent-interactive-s, var.$default-color-accent-interactive-l,
         var.$default-shadow-opacity-soft,
         var.$default-shadow-color-h, var.$default-shadow-color-s, var.$default-shadow-color-l,
-        var.$default-shadow-highlight-modifier
+        var.$default-shadow-highlight-l-factor
       );
       color: hsl(var(--color-text-on-primary-h),var(--color-text-on-primary-s),var(--color-text-on-primary-l));
       border-color: hsl(var(--color-accent-interactive-h),var(--color-accent-interactive-s),calc(var(--color-accent-interactive-l) - 10%));

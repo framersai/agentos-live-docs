@@ -1,20 +1,15 @@
-/**
- * @file SystemDesignerAgentView.vue
- * @description UI component for the System Design AI agent "Architecton".
- * Facilitates collaborative system design with a focus on diagram generation and structured explanations.
- * @version 0.2.1 - Corrected API response handling.
- */
 <script setup lang="ts">
 import { ref, computed, inject, watch, onMounted, PropType } from 'vue';
 import { useAgentStore } from '@/store/agent.store';
 import { useChatStore, type ChatMessage as StoreChatMessage, type MainContent } from '@/store/chat.store';
 import type { IAgentDefinition } from '@/services/agent.service';
 import { voiceSettingsManager } from '@/services/voice.settings.service';
-import { chatAPI, type ChatMessagePayloadFE, type TextResponseDataFE, type FunctionCallResponseDataFE, type ChatResponseDataFE } from '@/utils/api';
+import { chatAPI, type ChatMessagePayloadFE, type ChatResponseDataFE } from '@/utils/api';
 import type { ToastService } from '@/services/services';
 import CompactMessageRenderer from '@/components/CompactMessageRenderer.vue';
-import { LightBulbIcon, CodeBracketSquareIcon } from '@heroicons/vue/24/outline';
-import { marked } from 'marked';
+// Icon for Architecton - BuildingBlocksIcon or similar would be fitting. Using LightBulbIcon as placeholder if not available.
+import { LightBulbIcon, CodeBracketSquareIcon, ShareIcon } from '@heroicons/vue/24/outline'; // ShareIcon for potential future use
+import { marked } from 'marked'; // Ensure marked is configured for Mermaid if it's not handled by CompactMessageRenderer
 import type { AdvancedHistoryConfig } from '@/services/advancedConversation.manager';
 
 const props = defineProps({
@@ -24,6 +19,8 @@ const props = defineProps({
 
 const emit = defineEmits<{
   (e: 'agent-event', event: { type: 'view_mounted', agentId: string, label?: string }): void;
+  // Feature Idea: Could emit an event when a diagram is significantly updated for other UI elements to react
+  // (e.g., 'diagram-updated', diagramCode: string): void;
 }>();
 
 const agentStore = useAgentStore();
@@ -31,9 +28,10 @@ const chatStore = useChatStore();
 const toast = inject<ToastService>('toast');
 
 const isLoadingResponse = ref(false);
-const currentAgentSystemPrompt = ref('');
+const currentAgentSystemPrompt = ref(''); // Will be populated by Architecton's prompt
 
 const mainContentToDisplay = computed<MainContent | null>(() => chatStore.getMainContentForAgent(props.agentId));
+const agentDisplayName = computed(() => props.agentConfig.label || "Architecton");
 
 const fetchSystemPrompt = async () => {
   if (props.agentConfig.systemPromptKey) {
@@ -41,19 +39,19 @@ const fetchSystemPrompt = async () => {
       const module = await import(/* @vite-ignore */ `../../../../prompts/${props.agentConfig.systemPromptKey}.md?raw`);
       currentAgentSystemPrompt.value = module.default;
     } catch (e) {
-      console.error(`[${props.agentId}Agent] Failed to load system prompt: ${props.agentConfig.systemPromptKey}.md`, e);
-      currentAgentSystemPrompt.value = "You are Architecton, a System Design AI. Help design and diagram complex systems collaboratively. Use Markdown headings or ---SLIDE_BREAK--- for main content formatting. Use the 'generateArchitectureDiagram' tool for diagram creation or updates.";
+      console.error(`[${agentDisplayName.value}Agent] Failed to load system prompt: ${props.agentConfig.systemPromptKey}.md`, e);
+      currentAgentSystemPrompt.value = "You are Architecton, a System Design AI. Help design complex systems with diagrams and explanations. Focus on NFRs and trade-offs.";
     }
   } else {
-    currentAgentSystemPrompt.value = "You are Architecton, a System Design AI. Help design and diagram complex systems collaboratively. Use Markdown headings or ---SLIDE_BREAK--- for main content formatting. Use the 'generateArchitectureDiagram' tool for diagram creation or updates.";
+    currentAgentSystemPrompt.value = "You are Architecton, a System Design AI. Help design complex systems with diagrams and explanations. Focus on NFRs and trade-offs.";
   }
 };
 watch(() => props.agentConfig.systemPromptKey, fetchSystemPrompt, { immediate: true });
 
 const getRecentDesignContext = (): string => {
   const context = agentStore.currentAgentContext;
-  if (context?.focus_area) return `your previous focus on ${context.focus_area}`;
-  if (context?.current_diagram_mermaid_code) return `the existing diagram we were working on`;
+  if (context?.focus_area) return `our previous focus on ${context.focus_area}`;
+  if (context?.current_diagram_mermaid_code) return `the existing diagram (Mermaid code provided in context)`;
   return "our last design discussion";
 };
 
@@ -67,28 +65,33 @@ const handleNewUserInput = async (text: string) => {
   isLoadingResponse.value = true;
   
   const currentTitle = mainContentToDisplay.value?.title || "System Design Discussion";
-  const loadingMessage = `## ${currentTitle.replace("Processing...", "").replace("Ready", "").trim()}\n\nUpdating design based on: *"${text.substring(0, 50)}..."*\n\n<div class="flex justify-center items-center p-8"><div class="spinner-designer"></div><span class="ml-3 text-slate-400">Architecting...</span></div>`;
+  const loadingMessage = `## ${currentTitle.replace(/Processing...|Ready/g, "").trim()}\n\nUpdating design based on: *"${text.substring(0, 50)}..."*\n\n<div class="flex justify-center items-center p-8 architecton-spinner-container"><div class="architecton-spinner"></div><span class="ml-3 text-slate-400 dark:text-slate-500">Architecting...</span></div>`;
   chatStore.updateMainContent({
     agentId: props.agentId, type: 'markdown', data: loadingMessage,
     title: `Processing: ${text.substring(0, 30)}...`, timestamp: Date.now()
   });
+  chatStore.setMainContentStreaming(true, loadingMessage);
 
   try {
     const recentContextSummary = getRecentDesignContext();
+    // Extract current diagram from main content if not already in agent context (more robust)
+    const currentDiagramInView = extractMermaidCode(mainContentToDisplay.value?.data);
+    const agentContextForLLM = {
+        ...agentStore.currentAgentContext,
+        current_diagram_mermaid_code: currentDiagramInView || agentStore.currentAgentContext?.current_diagram_mermaid_code // Prefer diagram from view if available
+    };
+
     let finalSystemPrompt = currentAgentSystemPrompt.value
       .replace(/{{LANGUAGE}}/g, voiceSettingsManager.settings.preferredCodingLanguage)
       .replace(/{{USER_QUERY}}/g, text)
       .replace(/{{RECENT_TOPICS_SUMMARY}}/gi, recentContextSummary)
-      .replace(/{{GENERATE_DIAGRAM}}/g, "true")
-      .replace(/{{AGENT_CONTEXT_JSON}}/g, JSON.stringify({
-        ...agentStore.currentAgentContext,
-        current_diagram_mermaid_code: extractMermaidCode(mainContentToDisplay.value?.data)
-      }))
-      .replace(/{{ADDITIONAL_INSTRUCTIONS}}/g, 'Focus on iterative diagram updates and clear explanations. Use Markdown headings for sections or ---SLIDE_BREAK--- for CompactMessageRenderer. Utilize the `generateArchitectureDiagram` tool for diagram creation/updates.');
+      .replace(/{{GENERATE_DIAGRAM}}/g, "true") // Architecton should always try to generate/update diagrams
+      .replace(/{{AGENT_CONTEXT_JSON}}/g, JSON.stringify(agentContextForLLM))
+      .replace(/{{ADDITIONAL_INSTRUCTIONS}}/g, 'Focus on iterative diagram updates and clear explanations for slides. Utilize Mermaid for diagrams.');
 
     const maxHistoryMessages = typeof props.agentConfig.capabilities?.maxChatHistory === 'number' 
         ? props.agentConfig.capabilities.maxChatHistory 
-        : 10;
+        : 12; // System design can have longer context
     const historyConfigOverride: Partial<AdvancedHistoryConfig> = {
         numRecentMessagesToPrioritize: maxHistoryMessages,
         simpleRecencyMessageCount: maxHistoryMessages
@@ -103,68 +106,84 @@ const handleNewUserInput = async (text: string) => {
       processedHistory: processedHistoryFromClient,
       mode: props.agentConfig.id,
       language: voiceSettingsManager.settings.preferredCodingLanguage,
-      generateDiagram: true,
-      userId: 'frontend_user_designer',
+      generateDiagram: true, // Override: Architecton's main purpose
+      userId: 'frontend_user_architecton',
       conversationId: chatStore.getCurrentConversationId(props.agentId),
       systemPromptOverride: finalSystemPrompt,
+      stream: true, // Enable streaming for potentially long explanations
     };
     
-    const response = await chatAPI.sendMessage(payload);
-    const responseData = response.data;
-    let assistantMessageContent: string | null = null;
-    let mainContentTitle = `System Design: Iteration on "${text.substring(0, 30)}..."`;
-    let mainContentType: MainContent['type'] = props.agentConfig.capabilities?.usesCompactRenderer ? 'compact-message-renderer-data' : 'markdown';
+    let accumulatedContent = "";
+    chatStore.clearStreamingMainContent();
 
+    await chatAPI.sendMessageStream(
+        payload,
+        (chunk) => {
+            accumulatedContent += chunk;
+            chatStore.appendStreamingMainContent(chunk);
+            chatStore.updateMainContent({
+                agentId: props.agentId,
+                type: props.agentConfig.capabilities?.usesCompactRenderer ? 'compact-message-renderer-data' : 'markdown',
+                data: accumulatedContent,
+                title: `Architecton's Design: Iteration on "${text.substring(0,25)}..."`,
+                timestamp: Date.now(),
+            });
+        },
+        () => { // onStreamEnd
+            isLoadingResponse.value = false;
+            chatStore.setMainContentStreaming(false);
+            const finalContent = accumulatedContent.trim();
+            if (!finalContent) {
+                chatStore.updateMainContent({
+                    agentId: props.agentId, type: 'markdown',
+                    data: mainContentToDisplay.value?.data?.replace(/## .*Updating design based on.*Architecting.../s, "Ready for next design input.") || "How can we refine the design?",
+                    title: `Architecton Ready`, timestamp: Date.now()
+                });
+                return;
+            }
+            chatStore.addMessage({
+                role: 'assistant',
+                content: `Okay, I've updated the design in the main view. ${finalContent.includes("```mermaid") ? "Diagram updated." : "Discussion updated."} What are your thoughts on this iteration?`,
+                timestamp: Date.now(), agentId: props.agentId,
+            });
+             chatStore.updateMainContent({
+                agentId: props.agentId,
+                type: props.agentConfig.capabilities?.usesCompactRenderer ? 'compact-message-renderer-data' : 'markdown',
+                data: finalContent, // This will contain Markdown with Mermaid code blocks
+                title: `Architecton's Design: Iteration on "${text.substring(0,25)}..."`,
+                timestamp: Date.now(),
+            });
+            // After rendering, ensure Mermaid diagrams are processed
+            // This might be handled globally or by CompactMessageRenderer. If not:
+            // nextTick(() => { if (typeof mermaid !== 'undefined') mermaid.run(); });
+        },
+        (error) => { // onStreamError
+            console.error(`[${agentDisplayName.value}Agent] Stream error:`, error);
+            const errorMessage = error.message || "Architecton had an issue updating the design.";
+            toast?.add({ type: 'error', title: `${agentDisplayName.value} Error`, message: errorMessage });
+            chatStore.addMessage({ role: 'error', content: `Sorry, I encountered an issue: ${errorMessage}`, agentId: props.agentId });
+            chatStore.updateMainContent({
+                agentId: props.agentId, type: 'markdown',
+                data: `### Error Updating Design\n\n*${errorMessage.replace(/</g, '&lt;').replace(/>/g, '&gt;')}*`,
+                title: 'Design Error', timestamp: Date.now()
+            });
+            isLoadingResponse.value = false; 
+            chatStore.setMainContentStreaming(false);
+        }
+    );
 
-    if (responseData.type === 'function_call_data') {
-        console.log(`[${props.agentConfig.label}Agent] Received function call request: ${responseData.toolName}`);
-        // Assuming the diagram tool's output (Mermaid code) will be sent back by the user/frontend
-        // For now, the assistant's preliminary text will be shown.
-        assistantMessageContent = `Architecton is working on the diagram: **${responseData.toolName}**.\n\nArguments: \`\`\`json\n${JSON.stringify(responseData.toolArguments, null, 2)}\n\`\`\`\n\n${responseData.assistantMessageText || ''}`;
-        mainContentTitle = `Tool Call: ${responseData.toolName}`;
-        mainContentType = 'markdown';
-
-        chatStore.addMessage({
-            role: 'assistant', 
-            content: `Requesting diagram generation via ${responseData.toolName}. ${responseData.assistantMessageText || ''}`, 
-            agentId: props.agentId, 
-            model: responseData.model,
-            tool_calls: [{id: responseData.toolCallId, type:'function', function: {name: responseData.toolName, arguments: JSON.stringify(responseData.toolArguments)}}]
-        });
-        // The frontend would then hypothetically execute this (e.g. calling a diagram service or itself if it's just LLM generating mermaid)
-        // and send back a 'tool' role message. Here, we just display the request.
-    } else { // TextResponseDataFE
-        assistantMessageContent = responseData.content || "I'm processing your design input. One moment.";
-        const diagramUpdateNote = assistantMessageContent && assistantMessageContent.includes("```mermaid") ? "Diagram updated." : "Discussion updated.";
-        chatStore.addMessage({
-            role: 'assistant',
-            content: `Okay, I've updated the design in the main view. ${diagramUpdateNote} What are your thoughts on this iteration?`,
-            timestamp: Date.now(), agentId: props.agentId, model: responseData.model, usage: responseData.usage,
-        });
-    }
-    
-    chatStore.updateMainContent({
-      agentId: props.agentId,
-      type: mainContentType,
-      data: assistantMessageContent,
-      title: mainContentTitle,
-      timestamp: Date.now(),
-    });
-
-  } catch (error: any) {
-    console.error(`[${props.agentConfig.label}Agent] Chat API error:`, error);
-    const errorMessage = error.response?.data?.message || error.message || 'An error occurred.';
-    toast?.add({ type: 'error', title: `${props.agentConfig.label} Error`, message: errorMessage });
+  } catch (error: any) { // Catch errors from setting up the stream
+    console.error(`[${agentDisplayName.value}Agent] Chat API error:`, error);
+    const errorMessage = error.response?.data?.message || error.message || 'An error occurred with Architecton.';
+    toast?.add({ type: 'error', title: `${agentDisplayName.value} Error`, message: errorMessage });
+    chatStore.addMessage({ role: 'error', content: `Sorry, I encountered an issue: ${errorMessage}`, agentId: props.agentId });
     chatStore.updateMainContent({
       agentId: props.agentId, type: 'markdown',
       data: `### Error Updating Design\n\n*${errorMessage.replace(/</g, '&lt;').replace(/>/g, '&gt;')}*`,
       title: 'Design Error', timestamp: Date.now()
     });
-    chatStore.addMessage({
-      role: 'error', content: `Sorry, I encountered an issue: ${errorMessage}`, agentId: props.agentId,
-    });
-  } finally { 
     isLoadingResponse.value = false; 
+    chatStore.setMainContentStreaming(false);
   }
 };
 
@@ -178,98 +197,224 @@ const extractMermaidCode = (markdownText: any): string | undefined => {
 defineExpose({ handleNewUserInput });
 
 onMounted(() => {
-  console.log(`[${props.agentConfig.label}] View Mounted`);
-  emit('agent-event', { type: 'view_mounted', agentId: props.agentId, label: props.agentConfig.label });
+  console.log(`[${agentDisplayName.value}] View Mounted. Config:`, props.agentConfig);
+  emit('agent-event', { type: 'view_mounted', agentId: props.agentId, label: agentDisplayName.value });
   if (!mainContentToDisplay.value) {
-    chatStore.ensureMainContentForAgent(props.agentId);
+    const welcomeMarkdown = `
+<div class="architecton-welcome-container">
+  <svg xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 mx-auto architecton-icon-glow">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 0 0 6 16.5h12M3.75 3h-1.5m1.5 0h16.5M3.75 3V1.5M12.75 3v11.25A2.25 2.25 0 0 1 10.5 16.5H6M12.75 3h1.5m-1.5 0h7.5M12.75 3V1.5M6 16.5h12M6 16.5H4.5M20.25 16.5H18M18 16.5l.75-3.75M18 16.5l-.75 3.75M18 16.5l2.25-.75M18 16.5l-2.25.75M6 16.5l.75-3.75M6 16.5l-.75 3.75M6 16.5l2.25-.75M6 16.5l-2.25.75" />
+  </svg>
+  <h2 class="architecton-welcome-title">Architecton: System Design Assistant</h2>
+  <p class="architecton-welcome-subtitle">${props.agentConfig.description || 'Ready to collaboratively design and diagram complex systems.'}</p>
+  <p class="architecton-welcome-prompt">${props.agentConfig.inputPlaceholder || 'Describe the system you want to design, or the problem to solve.'}</p>
+</div>`;
+    chatStore.updateMainContent({
+        agentId: props.agentId, type: 'markdown', data: welcomeMarkdown,
+        title: `${agentDisplayName.value} Ready`, timestamp: Date.now()
+    });
+  } else {
+      chatStore.ensureMainContentForAgent(props.agentId);
   }
+  
+  // Watch for changes in main content to update diagram context in store
   watch(mainContentToDisplay, (newContent) => {
     if (newContent && (newContent.type === 'markdown' || newContent.type === 'compact-message-renderer-data')) {
       const diagram = extractMermaidCode(newContent.data);
       if (diagram) {
-        agentStore.updateAgentContext({ current_diagram_mermaid_code: diagram });
+        agentStore.updateAgentContext({ current_diagram_mermaid_code: diagram, agentId: props.agentId });
       }
     }
-  }, {deep: true});
+  }, {deep: true, immediate: true });
 });
 
 </script>
 
 <template>
-  <div class="system-designer-view flex flex-col h-full w-full overflow-hidden">
-    <div class="agent-header-controls p-2 px-3 border-b border-indigo-500/20 dark:border-slate-700/50 flex items-center justify-between gap-2">
+  <div class="system-designer-view architecton-view flex flex-col h-full w-full overflow-hidden">
+    <div class="agent-header-controls architecton-header p-2 px-3 border-b flex items-center justify-between gap-2 text-sm">
       <div class="flex items-center gap-2">
-        <CodeBracketSquareIcon class="w-5 h-5 shrink-0" :class="props.agentConfig.iconClass || 'text-indigo-400'" />
-        <span class="font-semibold text-sm">{{ props.agentConfig.label }}</span>
+        <CodeBracketSquareIcon class="w-6 h-6 shrink-0 architecton-icon" :class="props.agentConfig.iconClass" />
+        <span class="font-semibold text-lg architecton-title">{{ agentDisplayName }}</span>
       </div>
-    </div>
+      </div>
 
-    <div class="flex-grow relative min-h-0 custom-scrollbar-futuristic overflow-y-auto">
-      <div v-if="isLoadingResponse" class="loading-overlay-designer">
-        <div class="spinner-designer"></div>
-        <p class="mt-2 text-sm text-slate-400">Architecting your system...</p>
+    <div class="flex-grow relative min-h-0 custom-scrollbar-futuristic architecton-scrollbar overflow-y-auto">
+      <div v-if="isLoadingResponse && !chatStore.isMainContentStreaming" class="loading-overlay-designer architecton-loading-overlay">
+        <div class="architecton-spinner-container"><div class="architecton-spinner"></div></div>
+        <p class="mt-2 text-sm architecton-loading-text">Architecton is crafting the design...</p>
       </div>
       
-      <template v-if="mainContentToDisplay && !isLoadingResponse">
+      <template v-if="mainContentToDisplay">
         <CompactMessageRenderer
-          v-if="props.agentConfig.capabilities?.usesCompactRenderer && (mainContentToDisplay.type === 'compact-message-renderer-data' || mainContentToDisplay.type === 'markdown' || mainContentToDisplay.type === 'loading')" 
-          :content="mainContentToDisplay.data as string" 
+          v-if="props.agentConfig.capabilities?.usesCompactRenderer && 
+                (mainContentToDisplay.type === 'compact-message-renderer-data' || 
+                 (mainContentToDisplay.type === 'markdown' && !chatStore.isMainContentStreaming) ||
+                 mainContentToDisplay.type === 'loading')"
+          :content="chatStore.isMainContentStreaming && agentStore.activeAgentId === props.agentId 
+                      ? chatStore.streamingMainContentText 
+                      : mainContentToDisplay.data as string"
           :mode="props.agentConfig.id"
-          class="p-1 h-full"
+          class="p-1 h-full architecton-compact-renderer"
         />
         <div v-else-if="mainContentToDisplay.type === 'markdown' || mainContentToDisplay.type === 'welcome' || mainContentToDisplay.type === 'loading'"
-             class="prose prose-sm sm:prose-base dark:prose-invert max-w-none p-4 md:p-6 h-full"
+             class="prose prose-sm sm:prose-base dark:prose-invert max-w-none p-4 md:p-6 h-full architecton-prose-content"
              :class="{'flex flex-col items-center justify-center text-center': mainContentToDisplay.type === 'welcome' && !mainContentToDisplay.data?.includes('###')}"
-             v-html="marked.parse(mainContentToDisplay.data as string)" 
-        ></div>
-        <div v-else class="p-4 text-slate-400 italic h-full flex items-center justify-center">
-          {{ agentConfig.label }} is ready. Main content type: {{ mainContentToDisplay.type }}.
+             v-html="chatStore.isMainContentStreaming && agentStore.activeAgentId === props.agentId 
+                      ? marked.parse(chatStore.streamingMainContentText + '▋')
+                      : marked.parse(mainContentToDisplay.data as string)" 
+        >
+        </div>
+        <div v-else class="p-4 text-slate-400 dark:text-slate-500 italic h-full flex items-center justify-center architecton-placeholder">
+          {{ agentDisplayName }} is ready. (Content Type: {{ mainContentToDisplay.type }})
         </div>
       </template>
-      <div v-else-if="!isLoadingResponse" class="flex-grow flex items-center justify-center h-full p-4">
-        <div class="text-center text-slate-400 dark:text-slate-500">
-          <LightBulbIcon class="w-12 h-12 mx-auto mb-3 opacity-60"/>
-          <p>{{ props.agentConfig.inputPlaceholder || 'Describe the system you want to design.' }}</p>
-        </div>
+      <div v-else-if="!isLoadingResponse" class="flex-grow flex flex-col items-center justify-center h-full p-4 text-center architecton-empty-state">
+        <LightBulbIcon class="w-12 h-12 mx-auto mb-3 text-[var(--agent-architecton-accent-color-muted)] opacity-60"/>
+        <p class="text-slate-400 dark:text-slate-500">{{ props.agentConfig.inputPlaceholder || 'Describe the system you want to design.' }}</p>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped lang="postcss">
-.system-designer-view {
-  background-color: var(--bg-agent-view-dark, theme('colors.slate.800'));
+/* Define Architecton's specific accent colors and theme properties */
+.architecton-view { /* Apply to the root of this component for variable scoping */
+  --agent-architecton-accent-hue: var(--accent-hue-indigo, 240); /* Indigo */
+  --agent-architecton-accent-saturation: 65%;
+  --agent-architecton-accent-lightness: 55%;
+  --agent-architecton-accent-color: hsl(var(--agent-architecton-accent-hue), var(--agent-architecton-accent-saturation), var(--agent-architecton-accent-lightness));
+  --agent-architecton-accent-color-muted: hsla(var(--agent-architecton-accent-hue), var(--agent-architecton-accent-saturation), var(--agent-architecton-accent-lightness), 0.7);
+  --agent-architecton-accent-color-darker: hsl(var(--agent-architecton-accent-hue), var(--agent-architecton-accent-saturation), calc(var(--agent-architecton-accent-lightness) - 10%));
+  
+  background-color: var(--bg-agent-view-dark, theme('colors.slate.900')); /* Slightly different base */
   color: var(--text-primary-dark, theme('colors.slate.100'));
+
+  /* Optional: Subtle blueprint grid background */
+  /* position: relative;
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(hsla(var(--agent-architecton-accent-hue), 50%, 30%, 0.07) 1px, transparent 1px),
+                      linear-gradient(90deg, hsla(var(--agent-architecton-accent-hue), 50%, 30%, 0.07) 1px, transparent 1px);
+    background-size: 20px 20px;
+    opacity: 0.5;
+    pointer-events: none;
+    z-index: 0;
+  }
+  > * { position: relative; z-index: 1; } */
 }
-.agent-header-controls {
-  border-bottom-color: hsla(var(--accent-hue-indigo, 240), 60%, 50%, 0.3);
+
+.architecton-header {
+  border-bottom-color: hsla(var(--agent-architecton-accent-hue), var(--agent-architecton-accent-saturation), var(--agent-architecton-accent-lightness), 0.4);
   background-color: var(--bg-header-dark, theme('colors.slate.950'));
+  padding-top: theme('spacing.3');
+  padding-bottom: theme('spacing.3');
 }
-.loading-overlay-designer {
+
+.architecton-icon {
+  color: var(--agent-architecton-accent-color);
+  filter: drop-shadow(0 0 4px var(--agent-architecton-accent-color-muted));
+}
+.architecton-title {
+  color: var(--text-primary-dark, theme('colors.slate.100'));
+  /* text-shadow: 0 0 6px hsla(var(--agent-architecton-accent-hue), var(--agent-architecton-accent-saturation), var(--agent-architecton-accent-lightness), 0.2); */
+}
+
+/* Loading Overlay & Spinner for Architecton */
+.architecton-loading-overlay {
   @apply absolute inset-0 flex flex-col items-center justify-center z-10;
-  background-color: rgba(var(--bg-base-rgb-dark, 20, 20, 30), 0.7);
+  background-color: rgba(var(--bg-base-rgb-dark, 20, 25, 35), 0.7); /* Slightly bluer dark base */
+  backdrop-filter: blur(2.5px);
 }
-.spinner-designer {
-  @apply w-10 h-10 border-4 rounded-full animate-spin;
-  border-color: hsla(var(--accent-hue-indigo, 240), 50%, 50%, 0.2);
-  border-top-color: hsl(var(--accent-hue-indigo, 240), 50%, 60%);
+.architecton-spinner-container { /* If using a more complex spinner, style its container */
+  @apply relative w-10 h-10;
+}
+.architecton-spinner { /* Spinner from original file */
+  @apply w-full h-full border-4 rounded-full animate-spin;
+  border-color: hsla(var(--agent-architecton-accent-hue), var(--agent-architecton-accent-saturation), var(--agent-architecton-accent-lightness), 0.25);
+  border-top-color: var(--agent-architecton-accent-color);
+}
+.architecton-loading-text {
+  color: var(--agent-architecton-accent-color-muted);
+  font-weight: 500;
 }
 
-.custom-scrollbar-futuristic {
-  &::-webkit-scrollbar { @apply w-1.5 h-1.5; }
-  &::-webkit-scrollbar-track { background-color: hsla(var(--neutral-hue), 20%, 20%, 0.3); @apply rounded-full; }
-  &::-webkit-scrollbar-thumb { background-color: hsla(var(--accent-hue-indigo, 240), 75%, 60%, 0.6); @apply rounded-full; border: 1px solid hsla(var(--neutral-hue), 20%, 15%, 0.5); }
-  &::-webkit-scrollbar-thumb:hover { background-color: hsla(var(--accent-hue-indigo, 240), 75%, 70%, 0.8); }
-  scrollbar-width: thin;
-  scrollbar-color: hsla(var(--accent-hue-indigo, 240), 75%, 60%, 0.6) hsla(var(--neutral-hue), 20%, 20%, 0.3);
+/* Custom Scrollbar for Architecton */
+.architecton-scrollbar {
+  &::-webkit-scrollbar { @apply w-2 h-2; }
+  &::-webkit-scrollbar-track { background-color: hsla(var(--neutral-hue, 230), 20%, 18%, 0.4); @apply rounded-full; }
+  &::-webkit-scrollbar-thumb {
+    background-color: hsla(var(--agent-architecton-accent-hue), var(--agent-architecton-accent-saturation), var(--agent-architecton-accent-lightness), 0.65);
+    @apply rounded-full;
+    border: 2px solid hsla(var(--neutral-hue, 230), 20%, 18%, 0.4);
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: var(--agent-architecton-accent-color);
+  }
+  scrollbar-width: auto;
+  scrollbar-color: hsla(var(--agent-architecton-accent-hue), var(--agent-architecton-accent-saturation), var(--agent-architecton-accent-lightness), 0.65) hsla(var(--neutral-hue, 230), 20%, 18%, 0.4);
 }
 
-:deep(.prose) {
-  h1, h2, h3 { @apply text-[var(--text-primary-dark)] border-b border-[var(--border-color-dark)] pb-1 mb-3; }
-  p, li { @apply text-[var(--text-secondary-dark)] my-2; }
-  a { @apply text-indigo-400 hover:text-indigo-300; }
-  strong { @apply text-[var(--text-primary-dark)]; }
-  code:not(pre code) { @apply bg-slate-700 text-rose-400 px-1.5 py-0.5 rounded-md text-xs; }
-  pre { @apply bg-slate-900/70 border border-slate-700 text-sm my-3 p-3; }
+/* Styling for Prose content rendered by Architecton */
+.architecton-prose-content, .architecton-compact-renderer :deep(.prose) { /* Target prose within compact renderer too */
+  :deep(h1), :deep(h2), :deep(h3), :deep(h4) {
+    @apply text-[var(--text-primary-dark)] border-b pb-1.5 mb-3;
+    border-bottom-color: hsla(var(--agent-architecton-accent-hue), var(--agent-architecton-accent-saturation), var(--agent-architecton-accent-lightness), 0.35);
+    color: hsl(var(--agent-architecton-accent-hue), var(--agent-architecton-accent-saturation), calc(var(--agent-architecton-accent-lightness) + 15%)); /* Brighter headings for emphasis */
+  }
+  :deep(p), :deep(li) {
+    @apply text-[var(--text-secondary-dark)] my-2.5 leading-relaxed;
+  }
+  :deep(a) {
+    color: var(--agent-architecton-accent-color);
+    @apply hover:underline hover:text-[var(--agent-architecton-accent-color-darker)];
+  }
+  :deep(strong) {
+    color: hsl(var(--agent-architecton-accent-hue), var(--agent-architecton-accent-saturation), calc(var(--agent-architecton-accent-lightness) + 10%));
+  }
+  :deep(code:not(pre code)) { /* Inline code */
+    @apply px-1.5 py-1 rounded-md text-xs;
+    background-color: hsla(var(--agent-architecton-accent-hue), var(--agent-architecton-accent-saturation, 30%), var(--agent-architecton-accent-lightness, 25%), 0.2);
+    color: hsl(var(--agent-architecton-accent-hue), var(--agent-architecton-accent-saturation, 50%), calc(var(--agent-architecton-accent-lightness, 50%) + 20%));
+    border: 1px solid hsla(var(--agent-architecton-accent-hue), var(--agent-architecton-accent-saturation, 30%), var(--agent-architecton-accent-lightness, 25%), 0.3);
+  }
+  :deep(pre) { /* Code blocks, especially for Mermaid diagrams */
+    @apply border text-sm my-4 p-0 rounded-lg architecton-scrollbar overflow-auto; /* Apply scrollbar, remove padding for mermaid */
+    /* Background for code blocks, distinct for diagrams */
+    background-color: hsla(var(--neutral-hue, 220), 25%, 12%, 0.8); /* Dark, slightly transparent for diagrams */
+    border-color: hsla(var(--agent-architecton-accent-hue), var(--agent-architecton-accent-saturation), var(--agent-architecton-accent-lightness), 0.25);
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.25);
+    /* Mermaid specific: ensure diagram takes up space and is centered */
+    code.language-mermaid { /* Or just pre > .mermaid if that's how it's rendered */
+        @apply block text-center p-2 sm:p-4; 
+        /* Mermaid themes are usually set via JS, but basic text color for code block can be set */
+        color: var(--text-primary-dark);
+    }
+  }
 }
+
+/* Welcome message specific styling */
+.architecton-welcome-container {
+  @apply text-center p-6 flex flex-col items-center justify-center h-full;
+}
+.architecton-icon-glow {
+  color: var(--agent-architecton-accent-color);
+  filter: drop-shadow(0 0 12px hsla(var(--agent-architecton-accent-hue), var(--agent-architecton-accent-saturation), var(--agent-architecton-accent-lightness), 0.6));
+  animation: subtlePulse 3.5s infinite ease-in-out;
+  --scale-pulse: 1.03;
+  --opacity-pulse: 0.85;
+}
+.architecton-welcome-title {
+  @apply text-2xl sm:text-3xl font-bold mt-3 mb-1.5;
+  color: hsl(var(--agent-architecton-accent-hue), var(--agent-architecton-accent-saturation), calc(var(--agent-architecton-accent-lightness) + 25%));
+}
+.architecton-welcome-subtitle {
+  @apply text-md sm:text-lg text-[var(--text-secondary-dark)] mb-5 max-w-lg;
+}
+.architecton-welcome-prompt {
+  @apply text-sm sm:text-base text-[var(--text-muted-dark)] italic;
+}
+
 </style>

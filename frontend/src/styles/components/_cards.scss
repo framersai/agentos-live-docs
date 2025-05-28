@@ -1,103 +1,137 @@
 // File: frontend/src/styles/components/_cards.scss
 /**
  * @file _cards.scss
- * @description Base styling & mixins for card components.
- * Showcases themeable glassmorphic and neomorphic card styles.
- * @version 2.0.3 - Refactored to use explicit 'look' mixins for better reusability.
+ * @description Base styling & reusable "look" mixins for card components.
+ * Showcases themeable glassmorphic and neomorphic card styles, suitable for
+ * various content containers within the "Ephemeral Harmony" design system.
+ * @version 2.0.4 - Ensured robust SCSS variable fallbacks in mixin calls.
  */
 
 @use '../abstracts/variables' as var;
 @use '../abstracts/mixins' as mixins;
 
-// --- Base Card Style Mixin ---
+// --- Base Card Style Mixin (Structural & Common Interactive Properties) ---
 @mixin card-base-styles {
-  border-radius: var.$radius-xl; // Generous radius for cards
-  padding: var.$spacing-lg;
-  transition: var.$duration-smooth var.$ease-out-quad;
+  border-radius: var.$radius-xl; // Generous radius for a modern card feel
+  padding: var.$spacing-lg;      // Default padding, can be overridden
+  transition: var.$duration-smooth var.$ease-out-quad; // Smooth transitions for interactions
   transition-property: background-color, border-color, box-shadow, transform;
-  will-change: transform, box-shadow;
-  position: relative; // Often useful for pseudo-elements or absolutely positioned children
-  overflow: hidden; // Good default for cards that might have glows or pseudo-elements
+  will-change: transform, box-shadow; // Hint for performance on animated properties
+  position: relative; // Useful for ::before/::after pseudo-elements or absolutely positioned children
+  overflow: hidden;   // Good default for cards that might have glows or complex backgrounds
 }
 
-// --- Look Mixins (Visuals only, no base styles) ---
+// --- Look Mixins (Define specific visual appearances) ---
+
+// Glassmorphic Card Look
 @mixin card-glass-look {
   @include mixins.glassmorphic-pane(
-    // CSS Variable prefixes for HSL values & Alpha
-    '--color-bg-glass',
-    '--color-border-glass',
+    // CSS Variable prefixes for HSL values & Alpha for glass background and border
+    $bg-color-css-var-prefix: '--color-bg-glass',
+    $border-color-css-var-prefix: '--color-border-glass',
     // CSS Variable for blur amount
-    '--blur-glass',
-    // CSS Variable for the full box-shadow string
-    '--shadow-depth-lg',
-    // SCSS Fallback HSL(A) values for background
-    var.$default-color-bg-glass-h, var.$default-color-bg-glass-s, var.$default-color-bg-glass-l, var.$default-color-bg-glass-a,
+    $blur-amount-css-var: '--blur-glass',
+    // CSS Variable for the full box-shadow string (e.g., depth)
+    $shadow-css-var: '--shadow-depth-lg',
+    // SCSS Fallback HSL(A) values for background (if CSS vars not available)
+    $default-bg-h: var.$default-color-bg-glass-h, 
+    $default-bg-s: var.$default-color-bg-glass-s, 
+    $default-bg-l: var.$default-color-bg-glass-l, 
+    $default-bg-a: var.$default-color-bg-glass-a,
     // SCSS Fallback HSL(A) values for border
-    var.$default-color-border-glass-h, var.$default-color-border-glass-s, var.$default-color-border-glass-l, var.$default-color-border-glass-a,
+    $default-border-h: var.$default-color-border-glass-h, 
+    $default-border-s: var.$default-color-border-glass-s, 
+    $default-border-l: var.$default-color-border-glass-l, 
+    $default-border-a: var.$default-color-border-glass-a,
     // SCSS Fallback for blur amount
-    var.$default-blur-glass,
+    $default-blur: var.$default-blur-glass,
     // SCSS Fallback for the full box-shadow string
-    var.$scss-box-shadow-lg
+    $default-shadow: var.$scss-box-shadow-lg
   );
 
   &:hover {
-    transform: translateY(-3px) scale(1.01);
-    border-color: hsla(var(--color-accent-primary-h, var.$default-color-accent-primary-h), var(--color-accent-primary-s, var.$default-color-accent-primary-s), var(--color-accent-primary-l, var.$default-color-accent-primary-l), calc(var(--color-border-glass-a, #{var.$default-color-border-glass-a}) + 0.2));
-    box-shadow: 0 12px 35px hsla(var(--shadow-color-h, var.$default-shadow-color-h), var(--shadow-color-s, var.$default-shadow-color-s), var(--shadow-color-l, var.$default-shadow-color-l), calc(var(--shadow-opacity-deep, #{var.$default-shadow-opacity-deep}) + 0.05)),
-                0 0 15px hsla(var(--color-accent-primary-h, var.$default-color-accent-primary-h), var(--color-accent-primary-s, var.$default-color-accent-primary-s), var(--color-accent-primary-l, var.$default-color-accent-primary-l), 0.1);
+    transform: translateY(-3px) scale(1.01); // Subtle lift and scale on hover
+    // Enhance border accent on hover using primary accent color
+    border-color: hsla(
+      var(--color-accent-primary-h, var.$default-color-accent-primary-h),
+      var(--color-accent-primary-s, var.$default-color-accent-primary-s),
+      var(--color-accent-primary-l, var.$default-color-accent-primary-l),
+      // Make border more opaque on hover, relative to its themed base opacity
+      calc(var(--color-border-glass-a, #{var.$default-color-border-glass-a}) + 0.2) 
+    );
+    // Deepen shadow and add a hint of accent glow on hover
+    box-shadow: 
+      0 12px 35px hsla(
+        var(--shadow-color-h, var.$default-shadow-color-h),
+        var(--shadow-color-s, var.$default-shadow-color-s),
+        var(--shadow-color-l, var.$default-shadow-color-l),
+        // Make shadow slightly more opaque on hover
+        calc(var(--shadow-opacity-deep, #{var.$default-shadow-opacity-deep}) + 0.05)
+      ),
+      0 0 15px hsla( // Accent glow
+        var(--color-accent-primary-h, var.$default-color-accent-primary-h),
+        var(--color-accent-primary-s, var.$default-color-accent-primary-s),
+        var(--color-accent-primary-l, var.$default-color-accent-primary-l),
+        0.1 // Subtle glow opacity
+      );
   }
 }
 
+// Neomorphic Card Look (Extruded)
 @mixin card-neo-look {
   @include mixins.neomorphic-extrude(
-    '--color-bg-secondary',
-    6px,
-    15px,
-    '--shadow-opacity-soft',
-    var.$radius-xl, // Use the radius defined in card-base-styles if consistent, or pass as arg
-    '--shadow-color-h',
-    '--shadow-color-s',
-    '--shadow-color-l',
-    '--shadow-highlight-modifier',
-    var.$default-color-bg-secondary-h, var.$default-color-bg-secondary-s, var.$default-color-bg-secondary-l,
-    var.$default-shadow-opacity-soft,
-    var.$default-shadow-color-h, var.$default-shadow-color-s, var.$default-shadow-color-l,
-    var.$default-shadow-highlight-modifier
+    $bg-color-var-prefix: '--color-bg-secondary', // Base background from secondary theme color
+    $distance: 6px,    // Shadow distance
+    $blur: 15px,       // Shadow blur
+    $shadow-opacity-var: '--shadow-opacity-soft', // Use soft shadow opacity
+    $radius: var.$radius-xl, // Consistent card radius
+    $shadow-h-var: '--shadow-color-h',
+    $shadow-s-var: '--shadow-color-s',
+    $shadow-l-var: '--shadow-color-l',
+    $highlight-l-modifier-css-var: '--shadow-highlight-modifier',
+    // SCSS Fallbacks
+    $fb-bg-h: var.$default-color-bg-secondary-h, $fb-bg-s: var.$default-color-bg-secondary-s, $fb-bg-l: var.$default-color-bg-secondary-l,
+    $fb-shadow-op: var.$default-shadow-opacity-soft,
+    $fb-shadow-h: var.$default-shadow-color-h, $fb-shadow-s: var.$default-shadow-color-s, $fb-shadow-l: var.$default-shadow-color-l,
+    $fb-highlight-l-factor: var.$default-shadow-highlight-l-factor
   );
-  border: none;
+  border: none; // Neomorphic styles typically don't use a visible border line
 
   &:hover {
+    // Slightly increase extrusion effect on hover
     @include mixins.neomorphic-extrude(
-      '--color-bg-secondary',
-      8px,
-      18px,
-      '--shadow-opacity-deep', // Using a deeper opacity variable for hover
-      var.$radius-xl,
-      '--shadow-color-h',
-      '--shadow-color-s',
-      '--shadow-color-l',
-      '--shadow-highlight-modifier',
-      var.$default-color-bg-secondary-h, var.$default-color-bg-secondary-s, var.$default-color-bg-secondary-l,
-      var.$default-shadow-opacity-deep,
-      var.$default-shadow-color-h, var.$default-shadow-color-s, var.$default-shadow-color-l,
-      var.$default-shadow-highlight-modifier
+      $bg-color-var-prefix: '--color-bg-secondary',
+      $distance: 8px,  // Increased distance
+      $blur: 18px,     // Increased blur
+      $shadow-opacity-var: '--shadow-opacity-deep', // Use a deeper shadow opacity on hover
+      $radius: var.$radius-xl,
+      $shadow-h-var: '--shadow-color-h',
+      $shadow-s-var: '--shadow-color-s',
+      $shadow-l-var: '--shadow-color-l',
+      $highlight-l-modifier-css-var: '--shadow-highlight-modifier',
+      // SCSS Fallbacks
+      $fb-bg-h: var.$default-color-bg-secondary-h, $fb-bg-s: var.$default-color-bg-secondary-s, $fb-bg-l: var.$default-color-bg-secondary-l,
+      $fb-shadow-op: var.$default-shadow-opacity-deep, // Fallback to deeper opacity
+      $fb-shadow-h: var.$default-shadow-color-h, $fb-shadow-s: var.$default-shadow-color-s, $fb-shadow-l: var.$default-shadow-color-l,
+      $fb-highlight-l-factor: var.$default-shadow-highlight-l-factor
     );
-    transform: translateY(-2px);
+    transform: translateY(-2px); // Slight lift
   }
 }
 
-@mixin card-holo-accent-look { // Mixin for just the holographic border accent part
+// Holographic Accent Border Look (Can be combined with other card looks)
+@mixin card-holo-accent-look {
+  // Applies an animated holographic border glow
   @include mixins.holographic-border-glow(
-    '--color-accent-secondary',
-    '--color-accent-primary',
-    1px,
-    3s,
-    var.$radius-xl // Assuming it matches the base card radius
+    $accent-color-var-prefix: '--color-accent-secondary', // Primary color for the glow gradient
+    $secondary-accent-var-prefix: '--color-accent-primary', // Secondary color for the glow gradient
+    $border-width: 1px,       // Thickness of the glowing border
+    $animation-duration: 3s,  // Speed of the gradient animation
+    $radius: var.$radius-xl   // Match the card's border-radius
   );
 }
 
-
-// --- Utility Classes (Apply these in HTML or @extend if necessary) ---
+// --- Utility Classes (Apply these in HTML or @extend if appropriate) ---
 .card-base {
   @include card-base-styles;
 }
@@ -112,42 +146,52 @@
   @include card-neo-look;
 }
 
-.card-interactive { // This class is more for signaling interactivity via JS/parent selectors
+// Utility class to signal interactive behavior (e.g., cursor change, active state)
+.card-interactive {
   cursor: pointer;
   &:active {
-    transform: translateY(0px) scale(0.99);
+    transform: translateY(0px) scale(0.99); // Subtle press effect
   }
 }
 
+// Composite utility class for a card with a holographic accent border
 .card-holo-accent {
   @include card-base-styles;
-  @include card-glass-look; // Example: holo accent on a glass card
-  @include card-holo-accent-look;
+  @include card-glass-look; // Example: Holo accent on a glass card base
+  @include card-holo-accent-look; // Add the holographic border
 }
 
-// Specific card variants for About page, using the new "look" mixins
-// This helps keep _about-page.scss cleaner by just including these.
-// These could also be global utility classes if used widely.
-.card-glass-interactive--about { // Example
+// --- Specific Card Variants (Can be used for themed sections like About page) ---
+// These demonstrate combining base styles, look mixins, and interactive behavior.
+
+.card-glass-interactive--about { // Example: Glass card for "About" page features
   @include card-base-styles;
   @include card-glass-look;
-  @extend .card-interactive; // Add interactive behavior
+  @extend .card-interactive; // Add interactive behaviors
 }
 
-.card-neo-interactive--about { // Example
+.card-neo-interactive--about { // Example: Neomorphic card for "About" page features
   @include card-base-styles;
   @include card-neo-look;
-  @extend .card-interactive; // Add interactive behavior
+  @extend .card-interactive; // Add interactive behaviors
 }
 
-.card-neo-subtle--about { // Example
+.card-neo-subtle--about { // Example: A more subdued neomorphic card
   @include card-base-styles;
-  // Could define a 'card-neo-subtle-look' mixin or directly call neomorphic-extrude with different params
+  // Apply neomorphic extrude with slightly different parameters for a subtler effect
   @include mixins.neomorphic-extrude(
-    '--color-bg-secondary', 3px, 6px, '--shadow-opacity-soft', var.$radius-lg, /* smaller radius */
-    '--shadow-color-h', '--color-shadow-s', '--color-shadow-l', '--shadow-highlight-modifier',
-    var.$default-color-bg-secondary-h, var.$default-color-bg-secondary-s, var.$default-color-bg-secondary-l,
-    var.$default-shadow-opacity-soft, var.$default-shadow-color-h, var.$default-shadow-color-s, var.$default-shadow-color-l, var.$default-shadow-highlight-modifier
+    $bg-color-var-prefix: '--color-bg-secondary',
+    $distance: 3px, // Reduced distance
+    $blur: 6px,     // Reduced blur
+    $shadow-opacity-var: '--shadow-opacity-soft',
+    $radius: var.$radius-lg, // Could use a smaller radius if desired, e.g., var.$radius-lg
+    $shadow-h-var: '--shadow-color-h', $shadow-s-var: '--shadow-color-s', $shadow-l-var: '--shadow-color-l',
+    $highlight-l-modifier-css-var: '--shadow-highlight-modifier',
+    // SCSS Fallbacks
+    $fb-bg-h: var.$default-color-bg-secondary-h, $fb-bg-s: var.$default-color-bg-secondary-s, $fb-bg-l: var.$default-color-bg-secondary-l,
+    $fb-shadow-op: var.$default-shadow-opacity-soft,
+    $fb-shadow-h: var.$default-shadow-color-h, $fb-shadow-s: var.$default-shadow-color-s, $fb-shadow-l: var.$default-shadow-color-l,
+    $fb-highlight-l-factor: var.$default-shadow-highlight-l-factor
   );
   border: none;
 }
