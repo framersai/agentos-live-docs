@@ -1,333 +1,316 @@
-// File: frontend/src/styles/layout/_header.scss
 /**
  * @file _header.scss
- * @description Fully Revamped Styles for the Header.vue component.
- * Implements "Ephemeral Harmony" aesthetics, responsiveness, direct controls,
- * mobile navigation, animated logo, reactive agent title, and enhanced effects.
- * @version 6.0.0 - Full Header Revamp.
+ * @description Styles for the Header.vue component ("Ephemeral Harmony" theme).
+ * Includes responsive design, mobile navigation panel, and dropdown positioning helpers.
+ * @version 6.1.1 - Refined dropdown panel max-height and mobile nav item styling.
  */
 
 @use '../abstracts/variables' as var;
 @use '../abstracts/mixins' as mixins;
-@use '../components/buttons' as buttonsFile;
-@use '../components/dropdowns' as dropdownsFile;
+@use '../components/buttons' as buttonsFile; 
+// Assuming _buttons.scss and _dropdowns.scss are imported in main.scss
+// and their mixins/classes are available if used via @extend.
+// For clarity, direct @include is preferred for complex button/dropdown structures here.
 
+// --- Base Header Structure ---
 .app-header-ephemeral {
-  --header-actual-height: 68px; // Standard height
-  --header-padding-x: #{var.$spacing-md};
-  --header-bg-alpha: 0.8; // Base alpha for header glass
-  --header-blur: #{calc(var.$default-blur-glass + 2px)};
+  --header-height-desktop: 72px;
+  --header-height-mobile: 60px; // Standardized mobile header height
+  --header-padding-x-desktop: #{var.$spacing-lg};
+  --header-padding-x-mobile: #{var.$spacing-md};
+  --header-bg-alpha: 0.8; // Slightly less transparent for better readability of content behind
+  --header-blur: #{var.$default-blur-glass}; // Standard glass blur
 
-  @media (max-width: var.$breakpoint-sm) {
-    --header-actual-height: 60px; // Slimmer on mobile
-    --header-padding-x: #{var.$spacing-sm};
+  height: var(--header-height-mobile);
+  padding: 0 var(--header-padding-x-mobile);
+  
+  @media (min-width: var.$breakpoint-md) { // Apply desktop height starting from md
+    height: var(--header-height-desktop);
+    padding: 0 var(--header-padding-x-desktop);
   }
 
-  height: var(--header-actual-height);
-  padding: 0 var(--header-padding-x);
   display: flex;
   align-items: center;
   justify-content: center;
-  position: sticky;
-  top: 0;
-  z-index: var.$z-index-sticky + 10; // High z-index
+  position: sticky; top: 0; left: 0; right: 0;
+  z-index: var.$z-index-sticky + 10;
 
   background-color: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), var(--header-bg-alpha));
   backdrop-filter: blur(var(--header-blur));
   -webkit-backdrop-filter: blur(var(--header-blur));
-  border-bottom: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.15);
-  box-shadow: var(--shadow-depth-md); // Base shadow for depth
+  border-bottom: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.15);
+  box-shadow: var(--shadow-depth-md, var.$scss-box-shadow-md);
   transition: background-color var.$duration-smooth var.$ease-out-quad,
-              border-bottom-color var.$duration-smooth var.$ease-out-quad,
-              box-shadow var.$duration-smooth var.$ease-out-quad;
+              border-bottom-color var.$duration-smooth var.$ease-out-quad;
   
-  // Reactive overlay for dynamic background effects
-  &::before {
-    content: '';
-    position: absolute;
-    inset: -1px; // Slight outset to cover border for glow effects
-    background: transparent;
-    opacity: 0;
+  &::before { // For active state glows
+    content: ''; position: absolute; inset: -1px; 
+    border-radius: inherit; background: transparent; opacity: 0;
     transition: opacity var.$duration-smooth ease-in-out, background var.$duration-smooth ease-in-out;
-    z-index: -1;
-    pointer-events: none;
-    animation: none;
-    border-radius: inherit;
+    z-index: -1; pointer-events: none; animation: none;
   }
 
   &.ai-speaking-active {
-    border-bottom-color: hsla(var(--color-voice-ai-speaking-h), var(--color-voice-ai-speaking-s), var(--color-voice-ai-speaking-l), 0.5);
+    border-bottom-color: hsla(var(--color-voice-ai-speaking-h), var(--color-voice-ai-speaking-s), var(--color-voice-ai-speaking-l), 0.55);
     &::before {
       opacity: 1;
-      background: radial-gradient(ellipse at 50% 120%, hsla(var(--color-voice-ai-speaking-h), var(--color-voice-ai-speaking-s), var(--color-voice-ai-speaking-l), 0.15) 0%, transparent 65%);
+      background: radial-gradient(ellipse at 50% 140%, hsla(var(--color-voice-ai-speaking-h), var(--color-voice-ai-speaking-s), var(--color-voice-ai-speaking-l), 0.15) 0%, transparent 68%);
       animation: headerPulse var.$duration-pulse-medium * 0.75 infinite alternate;
     }
   }
   &.user-listening-active {
-    border-bottom-color: hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.5);
-     &::before {
+    border-bottom-color: hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.55);
+    &::before {
       opacity: 1;
-      background: radial-gradient(ellipse at 50% 120%, hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.12) 0%, transparent 65%);
-      animation: headerPulse var.$duration-pulse-medium * 0.9 infinite alternate;
+      background: radial-gradient(ellipse at 50% 140%, hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.12) 0%, transparent 68%);
+      animation: headerPulse var.$duration-pulse-medium infinite alternate;
     }
   }
 }
 
-.header-content-wrapper-ephemeral {
-  width: 100%;
-  max-width: var.$site-max-width;
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 100%;
+.header-content-wrapper-ephemeral { /* Max width container */
+  width: 100%; max-width: var.$site-max-width; margin: 0 auto;
+  display: flex; justify-content: space-between; align-items: center; height: 100%;
 }
 
-// --- Left Section: Logo & Agent Info ---
+// --- Left Section: Logo & Current Agent ---
 .header-left-section {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0; // Prevent undue shrinking
-  gap: var.$spacing-sm; // Space between logo and agent title display
-
-  .animated-logo-link { // Clickable area for the logo
-    display: inline-block; // To allow padding
-    padding: var.$spacing-xs * 0.5;
-    margin: calc(var.$spacing-xs * -0.5); // Negative margin to keep visual alignment
-    border-radius: var.$radius-sm;
-    transition: background-color var.$duration-quick;
-    &:hover {
-      background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.15);
-    }
-    &:focus-visible {
-      @include mixins.focus-ring('--color-bg-primary', '--color-accent-interactive', 0px, 2px);
-    }
+  display: flex; align-items: center; flex-shrink: 0; gap: var.$spacing-lg; // Generous gap
+  .animated-logo-link {
+    display: inline-flex; // For better alignment of AnimatedLogo
+    padding: var.$spacing-xs; margin: calc(var.$spacing-xs * -1); // Click area increase
+    border-radius: var.$radius-md;
+    &:hover, &:focus-visible { background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.1); }
+    &:focus-visible { @include mixins.focus-ring('--color-bg-primary', '--color-accent-interactive'); }
   }
 }
-
 .current-agent-display-header {
-  display: flex;
-  align-items: center;
-  gap: var.$spacing-xs;
-  padding: calc(var.$spacing-xs * 0.5) var.$spacing-sm;
-  border-radius: var.$radius-md;
-  background-color: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.1);
-  border: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.08);
-  max-width: 200px; // Initial max-width, adjust with media queries
+  display: none; // Hidden on mobile by default
+  @media (min-width: var.$breakpoint-md) { // Visible from medium screens up
+    display: flex; align-items: center; gap: var.$spacing-sm;
+    padding: var.$spacing-xs var.$spacing-sm; border-radius: var.$radius-lg;
+    background-color: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.3);
+    border: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.2);
+    max-width: 180px;
+    @media (min-width: var.$breakpoint-lg) { max-width: 220px; }
+    @media (min-width: var.$breakpoint-xl) { max-width: 260px; }
 
-  .agent-icon-header {
-    width: 20px; height: 20px;
-    flex-shrink: 0;
-    opacity: 0.8;
-    // Color can be set by agent.iconClass or themed default
-    color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
-  }
-  .agent-name-header {
-    font-size: var.$font-size-sm;
-    font-weight: 500;
-    color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    animation: subtleGlimmer 4.5s ease-in-out infinite alternate; // Slower, more subtle
-  }
-
-  @media (max-width: var.$breakpoint-lg) { // Hide/simplify on medium screens
-    display: none; // Or show only icon
+    .agent-icon-header { width: 24px; height: 24px; opacity: 0.9; color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l)); }
+    .agent-name-header {
+      font-size: var.$font-size-sm; font-weight: 500;
+      color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
   }
 }
-
 
 // --- Center Section: Hearing Icon ---
 .header-center-section {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-grow: 1; // Takes up space to center the hearing icon relative to overall header
-  // On smaller screens, this might get squeezed. The hearing icon can be moved.
-  @media (max-width: #{var.$breakpoint-md - 1px}) { // Below medium
-    position: absolute; // Allow it to center properly without affecting flexbox of left/right
-    left: 50%;
-    transform: translateX(-50%);
-    pointer-events: none; // So it doesn't interfere with mobile trigger
-    .hearing-icon-wrapper-ephemeral { pointer-events: auto; } // Allow click on icon itself if interactive
-  }
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  pointer-events: none;
+  @media (max-width: calc(var.$breakpoint-lg - 1px)) { display: none; } // Hide on screens with mobile menu
 }
+.hearing-icon-wrapper-ephemeral { /* From original, ensure it has pointer-events: auto; */
+    pointer-events: auto;
+    // ... other hearing icon styles ...
+    transition: transform 0.3s var.$ease-elastic, box-shadow var.$duration-smooth;
+    .hearing-icon-svg { width: 32px; height: 32px; /* Adjust size as needed */ }
 
-.hearing-icon-wrapper-ephemeral { /* Base styles from v4.1.1 are good */
-  // Further enhance reactivity
-  transition: all var.$duration-smooth var.$ease-out-quad, box-shadow var.$duration-smooth, transform 0.4s var.$ease-elastic;
-   &.listening, &.speaking {
-    transform: scale(1.1); // Make it slightly larger when active
-    &::before { // Stronger pulse effect from v4.1.1 is good
-        animation-duration: 1.2s !important;
-        --scale-pulse: 1.35 !important;
-        --opacity-pulse: 1 !important;
-        inset: -6px !important; // Wider glow
+    &.listening, &.speaking {
+        transform: scale(1.15);
+        img { animation: subtlePulse 1.2s infinite alternate; } // Make sure subtlePulse is defined for img
     }
-  }
+    // Add more distinct aura/glow from _header.scss v4 if desired
 }
 
-// --- Right Section: Desktop Controls & Mobile Trigger ---
-.header-right-section { // Common wrapper for desktop controls and mobile trigger placeholder
-  display: flex;
-  align-items: center;
-  gap: var.$spacing-xs;
-  justify-content: flex-end;
-}
-
-.desktop-controls-ephemeral { // Shown on lg+
-  display: none; // Hidden by default, shown by media query
-  align-items: center;
-  gap: var.$spacing-xs;
-  @media (min-width: var.$breakpoint-lg) { display: flex; }
-  @media (min-width: var.$breakpoint-xl) { gap: var.$spacing-sm; }
-
-  .header-control-item { display: flex; align-items: center; }
-}
-
-// Shared styling for direct icon buttons in the header
-.direct-header-button,
-.header-control-item > .btn-ghost-ephemeral.btn-icon-ephemeral, // Targets dropdown triggers
-:deep(.agent-hub-trigger-button) { // Target button inside AgentHubTrigger
-  @include buttonsFile.btn-ghost;
-  @include buttonsFile.btn-icon-modifier; // Makes it suitable for icon-only
-  padding: var.$spacing-sm !important;
-  border-radius: var.$radius-md !important;
-  color: hsl(var(--color-text-secondary-h),var(--color-text-secondary-s),var(--color-text-secondary-l), 0.9);
-  border: 1px solid transparent; // Base for focus ring offset
-
-  .icon-base { width: 1.3rem; height: 1.3rem; opacity: 0.75; transition: transform 0.2s, color 0.2s; }
-  .icon-xs { width: 0.9rem; height: 0.9rem; transition: transform 0.2s, color 0.2s; opacity: 0.7;}
-
-
-  &:hover, &:focus-visible, &[aria-expanded="true"] {
-    background-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.15) !important;
-    color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l)) !important;
-    border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.25);
-    .icon-base, .icon-xs { transform: scale(1.12); opacity: 1; }
-  }
-  &:focus-visible {
-    @include mixins.focus-ring('--color-bg-primary', '--color-accent-interactive', 0px, 2px, 0.8);
-  }
-}
-
-.direct-link-ephemeral { // For About/Settings text links on desktop
-  .link-text-ephemeral {
-    font-size: var.$font-size-xs;
-    font-weight: 500;
-    margin-left: var.$spacing-xs * 0.75;
-    letter-spacing: 0.01em;
-    @media (max-width: calc(var.$breakpoint-xl - 1px)) { display: none; }
-  }
-}
-
-
-// --- Mobile Navigation ---
-.mobile-menu-trigger-wrapper-ephemeral {
+// --- Right Section: Desktop Controls ---
+.header-right-section.desktop-controls-ephemeral {
   display: none;
-  @media (max-width: calc(var.$breakpoint-lg - 1px)) {
-    display: flex;
-    align-items: center;
-    gap: var.$spacing-xs; // Space between agent hub trigger and hamburger on mobile
-  }
-}
-.mobile-menu-trigger-button {
-  // Uses .btn .btn-ghost-ephemeral .btn-icon-ephemeral from above common style
-  padding: var.$spacing-sm !important;
-  .icon-base { width: 2rem; height: 2rem; } // Larger hamburger
-}
-.mobile-agent-hub-trigger { // If AgentHubTrigger is used in mobile header bar
-    // Styles inherited from .direct-header-button or .header-control-item > button
-    // Make icon slightly smaller if needed for mobile bar
-    :deep(.icon-base) { width: 1.5rem; height: 1.5rem; }
-    :deep(.trigger-text-ephemeral) { display: none; } // No text on mobile bar
+  @media (min-width: var.$breakpoint-lg) { display: flex; align-items: center; gap: var.$spacing-xs; }
+  .header-control-item { position: relative; } // For dropdown context
 }
 
+// Common style for icon buttons in header (desktop & mobile trigger)
+.direct-header-button,
+.header-control-item > .btn-ghost-ephemeral, // Targets buttons used as dropdown triggers
+:deep(.agent-hub-trigger-button), // Targets button inside AgentHubTrigger.vue
+.mobile-menu-trigger-button,
+.mobile-agent-hub-trigger {
+  @include buttonsFile.btn; // Base structural styles from _buttons.scss
+  @include buttonsFile.btn-ghost-look; // Visuals for ghost button
+  @include buttonsFile.btn-icon-modifier; // Padding & icon sizing for icon-only
+  
+  padding: var.$spacing-sm !important; // Override for consistent header icon button size
+  border-radius: var.$radius-lg !important;
+  color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+
+  .icon-base, .icon-sm, .icon-xs { // Standardize icon sizes used in header buttons
+    width: 1.35rem; height: 1.35rem; opacity: 0.8; transition: opacity 0.2s, transform 0.2s;
+    @media (min-width: var.$breakpoint-xl) { width: 1.5rem; height: 1.5rem; }
+  }
+  &:hover, &:focus-visible, &[aria-expanded="true"] {
+    background-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.12) !important;
+    color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l)) !important;
+    .icon-base, .icon-sm, .icon-xs { opacity: 1; transform: scale(1.08); }
+  }
+   &:focus-visible { // Ensure focus ring is from _mixins.scss
+    @include mixins.focus-ring(
+      '--color-bg-primary', // Use primary bg for the clear offset
+      '--color-accent-interactive', // Ring color
+      0px, // No visible offset from element edge for these small buttons
+      2px  // Ring thickness
+    );
+  }
+}
+.session-cost-display-ephemeral { /* Styles as before */ }
+
+// --- Mobile Navigation Specifics ---
+.mobile-menu-trigger-wrapper-ephemeral {
+  display: flex; align-items: center; gap: var.$spacing-xs;
+  @media (min-width: var.$breakpoint-lg) { display: none; }
+}
+.mobile-menu-trigger-button .icon-base { width: 1.75rem; height: 1.75rem; }
+.mobile-agent-hub-trigger :deep(.icon-base) { width: 1.6rem; height: 1.6rem; }
 
 .mobile-nav-panel-ephemeral {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
   @include mixins.glassmorphic-pane(
-    '--color-bg-primary', '--color-border-primary', calc(var(--blur-glass) * 2), 'none',
-    var.$default-color-bg-primary-h, var.$default-color-bg-primary-s, var.$default-color-bg-primary-l, 0.985, // Highly opaque
-    var.$default-color-border-primary-h, var.$default-color-border-primary-s, var.$default-color-border-primary-l, 0.2,
-    calc(var.$default-blur-glass * 2)
+    '--color-bg-primary', '--color-border-secondary', calc(var.$default-blur-glass + 6px), 'none',
+    var.$default-color-bg-primary-h, var.$default-color-bg-primary-s, var.$default-color-bg-primary-l, 0.98, // Highly opaque
+    var.$default-color-border-secondary-h, var.$default-color-border-secondary-s, var.$default-color-border-secondary-l, 0.2
   );
-  z-index: var.$z-index-sticky + 15; // High, but below potential global modals like AgentHub
-  display: flex;
-  flex-direction: column;
-  padding: 0;
-  box-shadow: var.$shadow-depth-xl; // Add shadow to pop it out
+  z-index: var.$z-index-sticky + 100; // Very high
+  display: flex; flex-direction: column;
+  box-shadow: var.$shadow-depth-xl; // Strong shadow
 
   .mobile-nav-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 var.$spacing-md;
-    height: var(--header-actual-height); // Match main header height
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 var(--header-padding-x-mobile); height: var(--header-height-mobile);
     border-bottom: 1px solid hsla(var(--color-border-primary-h),var(--color-border-primary-s),var(--color-border-primary-l), 0.1);
     flex-shrink: 0;
+    @media (min-width: var.$breakpoint-md) { height: var(--header-height-desktop); padding: 0 var.$spacing-lg; }
 
     .mobile-nav-logo :deep(.animated-logo-ephemeral) {
-      gap: var.$spacing-xs;
-      .logo-img-animated { width: 26px; height: 26px;}
-      .title-text-animated { font-size: var.$font-size-base-default * 1.1; }
-      .app-name-main { color: hsl(var(--color-logo-primary-h,var(--color-accent-primary-h))); }
-      .app-name-subtitle { display: none; } // Keep it compact
+      .logo-img-animated { width: 28px; height: 28px;}
+      .title-text-animated { font-size: calc(var.$font-size-base-default * 1.15); }
+      .app-name-subtitle { display: none; }
     }
-    .mobile-nav-close-button {
-      @include buttonsFile.btn-ghost; @include buttonsFile.btn-icon-modifier;
-      padding: var.$spacing-sm !important;
-      .icon-base { width: 1.75rem; height: 1.75rem; }
-    }
+    .mobile-nav-agent-title-compact { /* Styles as before */ }
+    .mobile-nav-close-button { /* Uses direct-header-button styling via class in template */ }
   }
 
   .mobile-nav-content-ephemeral {
-    padding: var.$spacing-md; // Reduced padding for mobile nav items
-    flex-grow: 1;
-    overflow-y: auto;
-    @include mixins.custom-scrollbar('--color-accent-interactive', 0.4, 0.6, '--color-bg-secondary', 0.1, 5px);
+    padding: var.$spacing-sm; 
+    @media (min-width: var.$breakpoint-sm) { padding: var.$spacing-md; }
+    flex-grow: 1; overflow-y: auto;
+    @include mixins.custom-scrollbar('--color-accent-interactive', 0.4, 0.6, '--color-bg-secondary', 0.05, 5px);
   }
 
-  .mobile-nav-agent-title {
-    font-size: var.$font-size-sm; font-weight: 500;
-    color: hsl(var(--color-text-muted-h),var(--color-text-muted-s),var(--color-text-muted-l));
-    padding: var.$spacing-xs var.$spacing-sm; margin-bottom: var.$spacing-sm; text-align: center;
-    background-color: hsla(var(--color-bg-secondary-h),var(--color-bg-secondary-s),var(--color-bg-secondary-l),0.15);
-    border-radius: var.$radius-sm; display: flex; align-items: center; justify-content: center; gap: var.$spacing-xs;
-    .agent-icon-mobile-nav { width: 1.25rem; height: 1.25rem; opacity: 0.8;}
-  }
-
-  .mobile-nav-item {
-    @include dropdownsFile.dropdown-item-ephemeral;
-    font-size: var.$font-size-base-default * 1.1 !important; // Larger for touch
-    padding: var.$spacing-md var.$spacing-md !important;
-    border-radius: var.$radius-lg !important;
-    &.prominent-action { // For "Explore Assistants"
-        @include buttonsFile.btn-secondary; // Make it look like a secondary button
-        justify-content: center !important;
-        margin-bottom: var.$spacing-sm;
-        color: hsl(var(--color-text-primary-h),var(--color-text-primary-s),var(--color-text-primary-l)) !important;
-        &:hover {
-            color: hsl(var(--color-accent-interactive-h),var(--color-accent-interactive-s),var(--color-accent-interactive-l)) !important;
-        }
+  .mobile-nav-item { /* Consistent styling for all nav items */
+    display: flex; align-items: center; width: 100%;
+    padding: var.$spacing-md; // Good touch target
+    font-size: var.$font-size-lg; 
+    text-align: left; border-radius: var.$radius-lg;
+    color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+    transition: background-color 0.15s, color 0.15s;
+    margin-bottom: var.$spacing-xs;
+    
+    &:hover, &:focus-visible {
+      background-color: hsla(var(--color-accent-interactive-h),var(--color-accent-interactive-s),var(--color-accent-interactive-l),0.12);
+      color: hsl(var(--color-accent-interactive-h),var(--color-accent-interactive-s),var(--color-accent-interactive-l));
+      outline: none;
     }
-    .nav-item-icon { width: 1.5rem; height: 1.5rem; margin-right: var.$spacing-md;}
+    &:focus-visible {
+        @include mixins.focus-ring('--color-bg-primary', '--color-accent-interactive', 2px, 2px, 0.7);
+    }
+    &.prominent-action { /* For main actions like Explore or Login */
+      @include buttonsFile.btn; /* Use base button styles */
+      @include buttonsFile.btn-secondary-look; /* Apply secondary look */
+      padding: var.$spacing-md var.$spacing-lg !important; // Override padding
+      font-size: var.$font-size-base-default * 1.1 !important;
+      justify-content: center !important;
+      margin-top: var.$spacing-sm; margin-bottom: var.$spacing-md;
+      color: hsl(var(--color-text-primary-h),var(--color-text-primary-s),var(--color-text-primary-l)) !important; // Ensure text color contrasts with secondary look
+      &:hover {
+        color: hsl(var(--color-accent-interactive-h),var(--color-accent-interactive-s),var(--color-accent-interactive-l)) !important;
+        // Hover effects from btn-secondary-look will apply
+      }
+    }
+    &.logout-item { // Specific for logout
+      color: hsl(var(--color-warning-h),var(--color-warning-s),var(--color-warning-l));
+      .nav-item-icon { color: hsl(var(--color-warning-h),var(--color-warning-s),var(--color-warning-l));}
+      &:hover, &:focus-visible {
+        color: hsl(var(--color-error-h),var(--color-error-s),var(--color-error-l));
+        background-color: hsla(var(--color-error-h),var(--color-error-s),var(--color-error-l),0.1);
+        .nav-item-icon { color: hsl(var(--color-error-h),var(--color-error-s),var(--color-error-l));}
+      }
+    }
+    .nav-item-icon { width: 1.5rem; height: 1.5rem; margin-right: var.$spacing-md; opacity: 0.65; transition: opacity 0.15s; }
+    &:hover .nav-item-icon, &:focus-visible .nav-item-icon { opacity: 1; }
   }
-  .mobile-nav-divider { @include dropdownsFile.dropdown-divider-ephemeral; margin: var.$spacing-md 0; }
-  .mobile-nav-section-title { @include dropdownsFile.dropdown-section-title-ephemeral; font-size: var.$font-size-xs; padding-left: var.$spacing-sm; }
+  .mobile-nav-divider { height: 1px; background-color: hsla(var(--color-border-secondary-h),var(--color-border-secondary-s),var(--color-border-secondary-l),0.12); margin: var.$spacing-lg 0; }
+  .mobile-nav-section-title { font-size: var.$font-size-xs; color: hsl(var(--color-text-muted-h),var(--color-text-muted-s),var(--color-text-muted-l)); text-transform: uppercase; letter-spacing: 0.075em; padding: 0 var.$spacing-xs var.$spacing-sm; }
   
   .theme-selector-grid-mobile {
-    display: flex; flex-direction: column; gap: var.$spacing-xs; margin: var.$spacing-xs 0;
-    .theme-button-mobile { /* Uses .mobile-nav-item base */
-        font-size: var.$font-size-base-default * 0.95 !important;
-        .mini-icon { width: 1rem; height: 1rem; margin-right: var.$spacing-sm; }
-        .checkmark-icon-mobile { margin-left:auto; width:1rem; height:1rem; }
+    display: grid; grid-template-columns: 1fr 1fr; gap: var.$spacing-sm; margin: var.$spacing-sm 0 var.$spacing-md;
+    .theme-button-mobile {
+      // Uses .mobile-nav-item styles, with some overrides
+      font-size: var.$font-size-xs !important; // Smaller text for theme names
+      padding: var.$spacing-sm !important;
+      border: 1px solid hsla(var(--color-border-secondary-h),var(--color-border-secondary-s),var(--color-border-secondary-l),0.15);
+      .mini-icon { width: 1rem; height: 1rem; margin-right: var.$spacing-xs;}
+      .checkmark-icon-mobile { margin-left:auto; width:1rem; height:1rem; color: hsl(var(--color-accent-interactive-h),var(--color-accent-interactive-s),var(--color-accent-interactive-l));}
+      &.active {
+        border-color: hsl(var(--color-accent-interactive-h),var(--color-accent-interactive-s),var(--color-accent-interactive-l));
+        background-color: hsla(var(--color-accent-interactive-h),var(--color-accent-interactive-s),var(--color-accent-interactive-l),0.1);
+        font-weight: 500;
+        color: hsl(var(--color-accent-interactive-h),var(--color-accent-interactive-s),var(--color-accent-interactive-l));
+      }
+      &:not(.active):hover {
+         background-color: hsla(var(--color-bg-tertiary-h),var(--color-bg-tertiary-s),var(--color-bg-tertiary-l),0.2);
+      }
     }
   }
 }
 
+// --- Dropdown Panel Positioning (Generic helper for header dropdowns) ---
+// Classes like .theme-dropdown-header are applied to the PARENT of the dropdown panel trigger
+// This ensures the dropdown panel (.dropdown-menu-private or .agent-selector-dropdown-panel-ephemeral)
+// is positioned relative to its trigger item within the header.
+.header-control-item { // Ensure dropdown triggers have relative positioning context
+  position: relative;
+
+  // General styling for dropdowns originating from header items
+  // This assumes dropdowns use a common class like .dropdown-panel-base or specific one.
+  // For example, if ThemeSelectionDropdown.vue renders a root div with .dropdown-menu-private
+  > .dropdown-menu-private, // From UserSettingsDropdown, VoiceControlsDropdown etc.
+  > .theme-selection-dropdown-panel, // Specific class if ThemeSelectionDropdown has one
+  > .agent-selector-dropdown-panel-ephemeral { // From AgentHubTrigger if it renders its own panel
+    position: absolute;
+    right: 0; 
+    top: calc(100% + #{var.$spacing-xs}); // Open below the trigger by default
+    z-index: var.$z-index-dropdown + 5;
+    min-width: 260px; // Decent default min-width
+    
+    // Critical for preventing "overextending past the top":
+    max-height: calc(85vh - var(--header-actual-height) - #{var.$spacing-lg}); // Max height, leaving space
+    overflow-y: auto;
+    @include mixins.custom-scrollbar('--color-accent-interactive', 0.45, 0.65, '--color-bg-tertiary', 0.15, 6px);
+
+    // Standard dropdown appearance from _dropdowns.scss (if available) or defined here
+    @include mixins.glassmorphic-pane(
+      '--color-bg-secondary', '--color-border-glass', 
+      var.$default-blur-glass, '--shadow-depth-lg',
+      var.$default-color-bg-secondary-h, var.$default-color-bg-secondary-s, var.$default-color-bg-secondary-l, 0.9, // More opaque dropdown
+      var.$default-color-border-glass-h, var.$default-color-border-glass-s, var.$default-color-border-glass-l, 0.3
+    );
+    border-radius: var.$radius-lg;
+    padding: var.$spacing-xs; // Inner padding for dropdown content
+  }
+}
+// AgentHub modal itself is handled by its own styles for positioning if it's a full modal overlay
+
+// Mobile Nav Transitions (as provided by user)
 .mobile-nav-slide-from-right-enter-active,
 .mobile-nav-slide-from-right-leave-active {
   transition: transform 0.35s var.$ease-out-expo, opacity 0.3s var.$ease-out-quad;
@@ -335,5 +318,11 @@
 .mobile-nav-slide-from-right-enter-from,
 .mobile-nav-slide-from-right-leave-to {
   transform: translateX(100%);
-  opacity: 0.7;
+  opacity: 0.8;
+}
+
+// Keyframe for headerPulse (ensure this is defined in _keyframes.scss or here if not)
+@keyframes headerPulse { 
+  0%, 100% { transform: scaleY(1); opacity: 0.6; }
+  50% { transform: scaleY(1.02) translateY(-1px); opacity: 1; }
 }
