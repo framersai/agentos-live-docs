@@ -1,227 +1,252 @@
 // File: frontend/src/styles/components/_chat-window.scss
 /**
  * @file _chat-window.scss
- * @description Styles for the ChatWindow.vue component, "Ephemeral Harmony" theme.
- * Focuses on a visually rich and focused main chat area, with engaging welcome
- * and loading states.
- * @version 3.0.0 - Ephemeral Harmony visual overhaul.
+ * @description Styles for the ChatWindow.vue component, adhering to the "Ephemeral Harmony" theme.
+ * Features a refined main chat panel, an engaging welcome placeholder, themed loading states,
+ * and improved focus on the conversation flow.
+ * @version 3.0.1 - Ensured consistent variable usage and mixin application.
  */
 
 @use '../abstracts/variables' as var;
 @use '../abstracts/mixins' as mixins;
-@use './buttons' as buttonsFile; // For prompt tag styling
+@use './buttons' as buttonsFile; // For potential button mixin usage (e.g., prompt tags)
+@use './cards' as cardsFile;   // For styling welcome placeholder like a card
 
 .chat-window-container-ephemeral {
-  flex-grow: 1; // Takes up available vertical space
-  overflow-y: auto; // Enables scrolling for the message list
+  flex-grow: 1; // Takes available vertical space
+  overflow-y: auto; // Main scroll for messages
   overflow-x: hidden;
-  padding: var.$spacing-md var.$spacing-lg; // Consistent padding
-  display: flex; // Using flex to help center content if it's narrower than window
+  padding: var.$spacing-md;
+  display: flex;
   flex-direction: column;
-  position: relative; // For pseudo-elements like background grid
+  position: relative; // For ::before pseudo-element background and other positioned children
 
-  // Subtle, theme-aware background for the chat window itself
-  // This will sit on top of any global background effects from UnifiedChatLayout
-  background-color: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.4); // Slightly transparent primary
+  // Use a slightly darker/more opaque version of primary background for distinction
+  background-color: hsla(
+    var(--color-bg-primary-h, var.$default-color-bg-primary-h),
+    var(--color-bg-primary-s, var.$default-color-bg-primary-s),
+    calc(var(--color-bg-primary-l, #{var.$default-color-bg-primary-l}) - 2%), // Slightly darker
+    0.75 // Moderately opaque, allowing some page background to show through if desired
+  );
 
-  // Optional: Very subtle border to define the chat area if not using a card-like wrapper around messages
-  // border: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.1);
-  // border-radius: var.$radius-lg; // If it's treated as a distinct panel
-
-  // Maintain the subtle holographic grid, but ensure it's very faint
+  // Refined holographic grid background for depth, very subtle
   &::before {
     content: '';
     position: absolute;
     inset: 0;
-    background-image: var(--bg-holo-grid-pattern);
-    background-size: var(--bg-holo-grid-size, 70px) var(--bg-holo-grid-size, 70px); // Larger, sparser grid
-    opacity: var(--bg-holo-grid-opacity, 0.015); // Extremely subtle
-    animation: holoGridScroll var.$duration-pulse-long * 15 linear infinite alternate; // Very, very slow
-    pointer-events: none;
+    background-image: var(--bg-holo-grid-pattern); // Defined in theme or _global.scss
+    background-size: var(--bg-holo-grid-size, 60px) var(--bg-holo-grid-size, 60px);
+    opacity: var(--bg-holo-grid-opacity, 0.02); // Extremely subtle
+    animation: holoGridScroll var.$duration-pulse-long * 12 linear infinite alternate; // Very slow scroll
+    pointer-events: none; // Does not interfere with interactions
     z-index: 0; // Behind content
   }
 
+  // Custom scrollbar for the chat window
   @include mixins.custom-scrollbar(
-    '--color-accent-interactive', // CSS Var prefix for thumb HSL
-    0.4, // base alpha
-    0.6, // hover alpha
-    '--color-bg-primary', // CSS Var prefix for track HSL (use a very subtle version of primary bg)
-    0.05, // track alpha (almost invisible track)
-    6px // width (slim scrollbar)
+    // Thumb color uses interactive accent, track is very subtle against primary background
+    $thumb-color-var-prefix: '--color-accent-interactive', 
+    $thumb-base-alpha: 0.45, 
+    $thumb-hover-alpha: 0.65,
+    $track-color-var-prefix: '--color-bg-primary', 
+    $track_alpha: 0.1, // Very subtle track
+    $width: 7px
   );
+
+  @media (min-width: var.$breakpoint-sm) {
+    padding: var.$spacing-lg; // More padding on larger screens for better layout
+  }
 }
 
 .chat-messages-wrapper-ephemeral {
   display: flex;
   flex-direction: column;
-  gap: var.$spacing-lg; // Generous gap between messages for readability
+  gap: var.$spacing-lg * 1.25; // Generous gap between messages for readability
   width: 100%;
-  max-width: 900px; // Max width for the message flow column
-  margin: 0 auto; // Center the message flow column within the chat window
-  padding: var.$spacing-md 0; // Vertical padding for the message list
-  position: relative;
-  z-index: 1; // Above the ::before grid
+  max-width: 920px; // Constrains message flow width for better reading on wide screens
+  margin: 0 auto;    // Center the message flow horizontally
+  padding: var.$spacing-md 0 var.$spacing-xl; // Vertical padding, more at the bottom for input area
+  position: relative; // Ensure it's above the ::before pseudo-element of parent
+  z-index: 1;
 }
 
-// --- Welcome Placeholder ---
+// --- Welcome Placeholder (Displayed when chat is empty) ---
 .welcome-placeholder-ephemeral {
-  text-align: center;
-  margin: auto; // Vertically and horizontally center
-  padding: var.$spacing-xl * 1.5 var.$spacing-lg; // Increased padding
-  max-width: 650px; // Constrained width for focus
-  color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
-  opacity: 0;
-  animation: fadeIn 0.8s var.$ease-out-expo 0.1s forwards;
-  border-radius: var.$radius-2xl; // Large radius for card feel
+  @include cardsFile.card-base-styles; // Use base card styles for padding, radius
+  @include cardsFile.card-neo-look;    // Apply neomorphic "look" for depth
+  
+  padding: calc(var.$spacing-xl * 1.5) var.$spacing-lg !important; // More prominent padding for welcome
 
-  // Apply a distinct, premium card style
-  @include mixins.neomorphic-extrude(
-    '--color-bg-secondary', // CSS Var prefix for HSL
-    5px, 12px, // distance, blur
-    '--shadow-opacity-medium', // opacity var
-    var.$radius-2xl,
-    '--shadow-color-h', '--shadow-color-s', '--shadow-color-l', '--shadow-highlight-modifier',
-    var.$default-color-bg-secondary-h, var.$default-color-bg-secondary-s, var.$default-color-bg-secondary-l,
-    var.$default-shadow-opacity-medium,
-    var.$default-shadow-color-h, var.$default-shadow-color-s, var.$default-shadow-color-l,
-    var.$default-shadow-highlight-modifier
-  );
-  border: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.15);
+  text-align: center;
+  margin: auto; // Center within the chat window if it's the only content
+  max-width: 700px; // Constrain width
+  color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+  opacity: 0; // Fade in animation
+  animation: fadeIn 0.7s var.$ease-out-expo 0.15s forwards; // Keyframe defined in _keyframes.scss
 
   .welcome-logo-ephemeral {
-    width: clamp(70px, 12vw, 90px); // Prominent logo
-    height: clamp(70px, 12vw, 90px);
+    width: clamp(75px, 13vw, 100px); // Responsive logo size
+    height: clamp(75px, 13vw, 100px);
     margin: 0 auto var.$spacing-lg;
-    opacity: 0.9;
-    animation: breathingEffect 3.5s var.$ease-in-out-sine infinite alternate;
-    --scale-breath: 1.08;
-    --opacity-idle: 0.8;
-    --opacity-breath: 1;
-    filter: drop-shadow(0 0 20px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.6));
+    opacity: 0.85;
+    // Assumes breathingEffect keyframes are defined for subtle animation
+    animation: breathingEffect 3.8s var.$ease-in-out-sine infinite alternate; 
+    // CSS variables for animation parameters, can be themed
+    --scale-breath: 1.07;
+    --opacity-idle: 0.78;
+    --opacity-breath: 0.98;
+    filter: drop-shadow(0 0 22px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.6));
   }
 
   .welcome-title-ephemeral {
-    font-family: var(--font-family-display, var.$font-family-display);
-    font-size: clamp(1.8rem, 1.2rem + 2.5vw, 2.8rem); // Larger, impactful title
-    font-weight: 700; // Bolder
+    font-family: var(--font-display, #{var.$font-family-display}); // Use display font
+    font-size: clamp(2rem, 1.4rem + 3vw, 3rem); // Responsive title font size
+    font-weight: 700;
     color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
-    margin-bottom: var.$spacing-md; // Good space after title
-    letter-spacing: -0.02em;
-    text-wrap: balance;
-    @include mixins.text-glow(
-        '--color-accent-primary', 12px,
-        var.$default-color-accent-primary-h,var.$default-color-accent-primary-s,var.$default-color-accent-primary-l,0.65
+    margin-bottom: var.$spacing-md;
+    letter-spacing: -0.02em; // Slight tightening for display text
+    text-wrap: balance; // Improve text wrapping for multi-line titles
+    @include mixins.text-glow( // Subtle glow effect on the title
+      $glow-color-var-prefix: '--color-accent-primary', 
+      $glow-radius: 10px,
+      // SCSS Fallbacks
+      $fb-glow-h: var.$default-color-accent-primary-h,
+      $fb-glow-s: var.$default-color-accent-primary-s,
+      $fb-glow-l: var.$default-color-accent-primary-l,
+      $fb-glow-a: 0.7
     );
   }
 
   .welcome-subtitle-ephemeral {
-    font-size: var.$font-size-lg * 0.95; // Increased subtitle size
-    line-height: 1.75;
+    font-size: calc(var.$font-size-base-default * 1.15); // Slightly larger than base
+    line-height: 1.8;
     margin: 0 auto var.$spacing-xl;
-    max-width: 55ch; // Focused subtitle
-    color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), calc(var(--color-text-secondary-l) + 5%)); // Brighter secondary text
-    opacity: 0.9;
+    max-width: 58ch; // Optimal line length for readability
+    color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), calc(var(--color-text-secondary-l) + 8%)); // Slightly brighter secondary text
+    opacity: 0.92;
   }
 
   .example-prompts-grid-ephemeral {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: var.$spacing-sm; // Tighter gap for tags
+    gap: var.$spacing-sm;
     margin-top: var.$spacing-lg;
   }
 
   .prompt-tag-ephemeral {
-    @include buttonsFile.btn; // Base button structure
-    // Apply a subtle neomorphic inset or a soft glass chip style
-    @include mixins.neomorphic-inset(
-      '--color-bg-primary', // Inset against primary bg for contrast with extruded card
-      3px, 5px, // distance, blur
-      '--shadow-opacity-soft',
-      var.$radius-md, // Smaller radius for tags
-      '--shadow-color-h', '--shadow-color-s', '--shadow-color-l', '--shadow-highlight-modifier',
-       var.$default-color-bg-primary-h, var.$default-color-bg-primary-s, var.$default-color-bg-primary-l,
-       var.$default-shadow-opacity-soft, var.$default-shadow-color-h, var.$default-shadow-color-s, var.$default-shadow-color-l, var.$default-shadow-highlight-modifier
+    @include buttonsFile.base-button-styles; // Use base button structure
+    // Apply a tactile neomorphic look for prompt tags
+    @include mixins.neomorphic-extrude(
+      $bg-color-var-prefix: '--color-bg-tertiary', // Use tertiary background for tags
+      $distance: 2px,  // Subtler extrusion distance
+      $blur: 5px,      // Subtler blur
+      $shadow-opacity-var: '--shadow-opacity-soft',
+      $radius: var.$radius-md, // Smaller radius for tags
+      $shadow-h-var: '--shadow-color-h', $shadow-s-var: '--shadow-color-s', $shadow-l-var: '--shadow-color-l',
+      $highlight-l-modifier-css-var: '--shadow-highlight-modifier',
+      // SCSS Fallbacks
+      $fb-bg-h: var.$default-color-bg-tertiary-h, $fb-bg-s: var.$default-color-bg-tertiary-s, $fb-bg-l: var.$default-color-bg-tertiary-l,
+      $fb-shadow-op: var.$default-shadow-opacity-soft,
+      $fb-shadow-h: var.$default-shadow-color-h, $fb-shadow-s: var.$default-shadow-color-s, $fb-shadow-l: var.$default-shadow-color-l,
+      $fb-highlight-l-factor: var.$default-shadow-highlight-l-factor
     );
-    font-size: var.$font-size-xs !important; // Smaller font for tags
-    padding: calc(var.$spacing-xs * 0.9) var.$spacing-sm !important;
+    font-size: var.$font-size-xs !important; // Override base button font size
+    padding: var.$spacing-xs var.$spacing-sm !important; // Override base button padding
     color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
-    border-color: hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.2);
-    cursor: default; // Not interactive in this placeholder usually
-    transition: transform 0.15s var.$ease-out-quad, box-shadow 0.15s var.$ease-out-quad;
+    border: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.1); // Very subtle border
+    cursor: pointer;
+    transition: transform 0.15s var.$ease-out-quad, box-shadow 0.15s var.$ease-out-quad, background-color 0.15s;
 
-    &:hover { // Subtle hover effect if they become clickable later
-      transform: scale(1.03);
-      filter: none;
-      color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+    &:hover {
+      transform: translateY(-2px) scale(1.03); // Lift on hover
+      // Switch to inset effect for a "pressed" feel
+      @include mixins.neomorphic-inset(
+        $fill-color-var-prefix: '--color-bg-primary', // Inset against primary background
+        $blur: 4px, $distance: 2px, 
+        $shadow-opacity-var: '--shadow-opacity-soft', 
+        $radius: var.$radius-md,
+        $shadow-h-var: '--shadow-color-h', $shadow-s-var: '--shadow-color-s', $shadow-l-var: '--shadow-color-l',
+        $highlight-l-modifier-css-var: '--shadow-highlight-modifier',
+        // SCSS Fallbacks
+        $fb-fill-h: var.$default-color-bg-primary-h, $fb-fill-s: var.$default-color-bg-primary-s, $fb-fill-l: var.$default-color-bg-primary-l,
+        $fb-shadow-op: var.$default-shadow-opacity-soft,
+        $fb-shadow-h: var.$default-shadow-color-h, $fb-shadow-s: var.$default-shadow-color-s, $fb-shadow-l: var.$default-shadow-color-l,
+        $fb-highlight-l-factor: var.$default-shadow-highlight-l-factor
+      );
+      color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l)); // Change text to accent color
+      border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.3);
+    }
+    &:active {
+      transform: translateY(0px) scale(0.98); // Press down effect
     }
   }
 }
 
-
-// --- Loading Indicator ---
+// --- Loading Indicator (Displayed while AI is responding) ---
 .loading-indicator-chat-ephemeral {
   display: flex;
-  flex-direction: column; // Stack spinner and text
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin: var.$spacing-xl auto;
+  margin: var.$spacing-xl auto; // Centered with margin
   padding: var.$spacing-lg var.$spacing-xl;
-  min-width: 260px;
+  min-width: 280px; // Ensure it's substantial enough
   border-radius: var.$radius-xl;
   
-  // Use a subtle glass pane for the loading indicator
+  // Apply a consistent glassmorphic look
   @include mixins.glassmorphic-pane(
-    '--color-bg-secondary',
-    '--color-border-glass',
-    calc(var(--blur-glass) * 0.7),
-    'var(--shadow-depth-sm)', // Softer shadow for loading state
-    // Fallbacks
-    var.$default-color-bg-secondary-h, var.$default-color-bg-secondary-s, var.$default-color-bg-secondary-l, 0.6,
-    var.$default-color-border-glass-h, var.$default-color-border-glass-s, var.$default-color-border-glass-l, 0.25,
-    calc(var.$default-blur-glass * 0.7),
-    var.$scss-box-shadow-sm
+    $bg-color-css-var-prefix: '--color-bg-secondary', // Use secondary background for glass
+    $border-color-css-var-prefix: '--color-border-glass',
+    $blur-amount-css-var: calc(var(--blur-glass) * 0.8), // Slightly less blur than main cards
+    $shadow-css-var: '--shadow-depth-sm', // Softer shadow
+    // SCSS Fallbacks
+    $default-bg-h: var.$default-color-bg-secondary-h, $default-bg-s: var.$default-color-bg-secondary-s, $default-bg-l: var.$default-color-bg-secondary-l, $default-bg-a: 0.7,
+    $default-border-h: var.$default-color-border-glass-h, $default-border-s: var.$default-color-border-glass-s, $default-border-l: var.$default-color-border-glass-l, $default-border-a: 0.3,
+    $default-blur: calc(var.$default-blur-glass * 0.8),
+    $default-shadow: var.$scss-box-shadow-sm
   );
-  // Add a subtle pulsing holographic glow around the loading indicator
-  animation: subtleHoloGlowPulse 2s infinite alternate;
+  // Assumes subtleHoloGlowPulse keyframes are defined for a gentle pulsing glow
+  animation: subtleHoloGlowPulse 2.5s infinite alternate;
 
   .spinner-dots-ephemeral {
     display: flex;
     align-items: center;
-    margin-bottom: var.$spacing-md; // Space between dots and text
+    margin-bottom: var.$spacing-md;
     .dot-ephemeral {
-      width: 10px; // Standard dot size
-      height: 10px;
-      margin: 0 4px; // Tighter dot spacing
+      width: 11px;
+      height: 11px;
+      margin: 0 5px;
       background-color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
       border-radius: 50%;
-      animation: bounceDelay var.$duration-pulse-medium infinite ease-in-out both;
-      box-shadow: 0 0 8px 1px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.5);
-      
-      &.dot-1 { animation-delay: -0.30s; } // Adjusted delays for smoother 3-dot bounce
+      // Assumes bounceDelay keyframes are defined for dot animation
+      animation: bounceDelay 1.4s infinite ease-in-out both; 
+      box-shadow: 0 0 12px 2px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.65),
+                  inset 0 0 4px hsla(var(--color-accent-interactive-h), calc(var(--color-accent-interactive-s) + 10%), calc(var(--color-accent-interactive-l) + 15%), 0.8); // Inner glow
+      filter: brightness(1.15);
+
+      &.dot-1 { animation-delay: -0.30s; }
       &.dot-2 { animation-delay: -0.15s; }
       &.dot-3 { animation-delay: 0s; }
     }
   }
 
   .loading-text-ephemeral {
-    font-size: calc(var.$font-size-base-default); // Standard base size for clarity
-    color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), calc(var(--color-text-secondary-l) + 10%)); // Brighter secondary
+    font-size: calc(var.$font-size-base-default * 1.05); // Clearer loading text
+    color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), calc(var(--color-text-secondary-l) + 15%)); // Brighter secondary text
     font-weight: 500;
-    letter-spacing: 0.015em;
-    @include mixins.text-glow(
-        '--color-accent-interactive', 3px,
-        var.$default-color-accent-interactive-h,var.$default-color-accent-interactive-s,var.$default-color-accent-interactive-l, 0.4
+    letter-spacing: 0.02em;
+    @include mixins.text-glow( // Subtle text glow
+      $glow-color-var-prefix: '--color-accent-interactive', 
+      $glow-radius: 4px,
+      // SCSS Fallbacks
+      $fb-glow-h: var.$default-color-accent-interactive-h,
+      $fb-glow-s: var.$default-color-accent-interactive-s,
+      $fb-glow-l: var.$default-color-accent-interactive-l,
+      $fb-glow-a: 0.45
     );
   }
 }
 
-// Keyframes (should be in _keyframes.scss)
-// @keyframes bounceDelay { ... }
-// @keyframes fadeIn { ... }
-// @keyframes breathingEffect { from { transform: scale(1); opacity: var(--opacity-idle, 0.8); } to { transform: scale(var(--scale-breath, 1.05)); opacity: var(--opacity-breath, 1); } }
-// @keyframes holoGridScroll { ... }
-// @keyframes subtleHoloGlowPulse { 
-//   0% { box-shadow: 0 0 15px 2px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.1); }
-//   100% { box-shadow: 0 0 25px 5px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.25); }
-// }
+// Ensure keyframes: fadeIn, breathingEffect, holoGridScroll, bounceDelay, subtleHoloGlowPulse
+// are defined in a global _keyframes.scss file.

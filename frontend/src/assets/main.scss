@@ -2,35 +2,42 @@
 /**
  * @file main.scss
  * @description Main SCSS entry point for the "Ephemeral Harmony" design system.
- * @version 2.2.1 - Added import for message component styles.
+ * This file orchestrates the import of all SCSS partials, establishing
+ * a structured and maintainable styling foundation for the application.
  */
 
 // 1. Abstracts
-@use '../styles/abstracts/variables' as var;
-// @use '../styles/abstracts/functions';
+// Import foundational SCSS tools: variables, functions (if any), mixins, and theme definitions.
+// These do not output CSS on their own but are used by other SCSS files.
+@use '../styles/abstracts/variables' as var; // Aliased for potential direct use, though primarily for configuration.
 @use '../styles/abstracts/mixins';
 @use '../styles/abstracts/theme-definitions';
 
 // 2. Theme Engine
+// Applies the theme definitions to generate CSS custom properties.
 @use '../styles/abstracts/theme-engine';
 
 // 3. Base Styles
+// Global resets, base typography, and default element styling.
 @use '../styles/base/reset';
 @use '../styles/base/typography';
 @use '../styles/base/global';
 
 // 4. Layout Styles
+// Styles for major layout containers and structure (e.g., header, footer, main app layout).
 @use '../styles/layout/app';
 @use '../styles/layout/header';
 @use '../styles/layout/footer';
-@use '../styles/layout/chat-interface'; // Renamed from _ephemeral-chat-log (file name was correct, import name fixed)
-@use '../styles/layout/unified-chat-layout';
+@use '../styles/layout/chat-interface'; // Styles for the overall chat interface structure.
+@use '../styles/layout/unified-chat-layout'; // Styles for the unified chat page layout.
 
 // 5. Animations & Transitions
+// Global keyframe animations and transition utility classes.
 @use '../styles/animations/keyframes';
 @use '../styles/animations/transitions';
 
 // 6. Component Styles
+// Individual UI component styles, organized by component name or category.
 @use '../styles/components/buttons';
 @use '../styles/components/cards';
 @use '../styles/components/forms';
@@ -39,23 +46,39 @@
 @use '../styles/components/toasts';
 @use '../styles/components/loading-overlay';
 @use '../styles/components/diagram-viewer';
-@use '../styles/components/message';             // Added
-@use '../styles/components/ephemeral-chat-log'; // Styles for the EphemeralChatLog component itself
-@use '../styles/components/voice-controls-dropdown'; // <-- ADD THIS
-@use '../styles/components/agents/agent-chat-log'; // <-- ADD THIS
+@use '../styles/components/message';
+@use '../styles/components/ephemeral-chat-log';
+@use '../styles/components/voice-controls-dropdown';
+@use '../styles/components/dropdowns'; // General dropdown styles
+@use '../styles/components/chat-window';
+
+// Agent-specific component styles
+@use '../styles/components/agents/agent-chat-log';
+@use '../styles/components/agents/agent-hub';
+@use '../styles/components/agents/agent-card';
+@use '../styles/components/compact-message-renderer'; // Styles for the compact message display.
+// Note: Styles for individual Agent Views (e.g., CodingAgentView) are typically scoped within their .vue files using <style lang="postcss">.
+
 // 7. View-Specific Styles
+// Styles for specific pages or views if they don't fit into components.
 @use '../styles/views/public-home';
 @use '../styles/views/private-home';
 @use '../styles/views/about-page';
+@use '../styles/views/settings-page';
+
 // 8. Utility Classes
+// Helper classes for common styling adjustments (e.g., spacing, alignment, visibility).
 @use '../styles/utilities/helpers';
-@use '../styles/components/chat-window'; // Added
-@use '../styles/components/dropdowns'; // <-- ADD THIS IMPORT
-@use '../styles/views/settings-page'; // <-- THIS IS THE IMPORTANT IMPORT
+
 // 9. Tailwind CSS Directives
+// Integration of Tailwind CSS. The order relative to custom styles can be important.
+// Placing them here allows custom base styles to be established first,
+// and then Tailwind's base, components, and utilities are layered on top.
+// For advanced @layer usage with Tailwind, consult Tailwind documentation.
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 // 10. Print Styles (Optional)
+// Dedicated styles for print media, if needed.
 // @use '../styles/base/print';

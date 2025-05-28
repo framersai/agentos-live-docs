@@ -109,7 +109,9 @@ const handleNewUserInput = async (text: string) => {
     let finalSystemPrompt = currentAgentSystemPrompt.value
       .replace(/{{USER_QUERY_TOPIC_OR_TITLE_SUGGESTION}}/g, `Summary of Provided Notes`)
       .replace(/{{USER_QUERY}}/g, text) 
-      .replace(/{{GENERATE_DIAGRAM}}/g, (props.agentConfig.capabilities?.canGenerateDiagrams && voiceSettingsManager.settings.generateDiagrams).toString())
+      .replace(
+        /{{GENERATE_DIAGRAM}}/g,
+        ((props.agentConfig.capabilities?.canGenerateDiagrams && voiceSettingsManager.settings?.generateDiagrams) ?? false).toString())
       .replace(/{{AGENT_CONTEXT_JSON}}/g, JSON.stringify(agentStore.currentAgentContext || {}))
       .replace(/{{ADDITIONAL_INSTRUCTIONS}}/g, 'Ensure the output strictly follows the specified Markdown format for meeting summaries, using headings for sections.');
     
@@ -278,67 +280,126 @@ onMounted(() => {
   </div>
 </template>
 
+
 <style scoped lang="postcss">
+/* Define a local CSS variable for the agent's specific accent hue, if not globally themed */
+:root { /* Or :host, or directly on .business-meeting-agent-view if preferred for scoping without affecting :root */
+  --agent-meeting-accent-hue: var(--accent-hue-cyan, 180); /* Fallback to 180 (cyan) */
+  --agent-meeting-accent-saturation: 60%;
+  --agent-meeting-accent-lightness: 50%;
+}
+
 .business-meeting-agent-view {
+  /* Use theme variables for background and text, with fallbacks to Tailwind theme colors */
   background-color: var(--bg-agent-view-dark, theme('colors.slate.800'));
   color: var(--text-primary-dark, theme('colors.slate.100'));
 }
+
 .agent-header-controls {
-  border-bottom-color: hsla(var(--accent-hue-cyan, 180), 60%, 50%, 0.3); /* Cyan-ish accent */
-  background-color: var(--bg-header-dark, theme('colors.slate.950'));
+  /* Use the locally defined accent hue for the border */
+  border-bottom-color: hsla(var(--agent-meeting-accent-hue), var(--agent-meeting-accent-saturation), var(--agent-meeting-accent-lightness), 0.3);
+  background-color: var(--bg-header-dark, theme('colors.slate.950')); /* Themed header background */
 }
+
 .notes-input-panel {
-  border-color: hsla(var(--neutral-hue), 15%, 30%, 0.5);
-  background-color: hsla(var(--neutral-hue), 15%, 18%, 0.3);
+  /* Using neutral theme variables for less emphasis */
+  border-color: hsla(var(--neutral-hue, 220), 15%, 30%, 0.5); /* Fallback for --neutral-hue */
+  background-color: hsla(var(--neutral-hue, 220), 15%, 18%, 0.3);
 }
+
 .notes-input-panel textarea {
-  background-color: hsla(var(--neutral-hue), 15%, 15%, 0.7);
-  border-color: hsla(var(--neutral-hue), 15%, 25%, 0.7);
-  color: var(--text-primary-dark);
+  background-color: hsla(var(--neutral-hue, 220), 15%, 15%, 0.7);
+  border-color: hsla(var(--neutral-hue, 220), 15%, 25%, 0.7);
+  color: var(--text-primary-dark, theme('colors.slate.100'));
+  
   &:focus {
-    border-color: hsl(var(--accent-hue-cyan, 180), 70%, 60%); /* Cyan focus */
-    box-shadow: 0 0 0 2px hsla(var(--accent-hue-cyan, 180), 70%, 60%, 0.3);
+    /* Focus ring using the agent's accent color */
+    border-color: hsl(var(--agent-meeting-accent-hue), var(--agent-meeting-accent-saturation), calc(var(--agent-meeting-accent-lightness) + 10%)); /* Brighter for focus */
+    box-shadow: 0 0 0 2px hsla(var(--agent-meeting-accent-hue), var(--agent-meeting-accent-saturation), calc(var(--agent-meeting-accent-lightness) + 10%), 0.3);
   }
 }
+
 .summary-display-panel {
-  background-color: hsla(var(--neutral-hue), 15%, 20%, 0.2);
+  background-color: hsla(var(--neutral-hue, 220), 15%, 20%, 0.2); /* Subtle background for summary */
 }
 
+/* Loading overlay for when the agent is processing */
 .loading-overlay-meeting {
   @apply absolute inset-0 flex flex-col items-center justify-center z-10;
-  background-color: rgba(var(--bg-base-rgb-dark, 26, 32, 44), 0.6); /* Use dark base for curtain */
-  backdrop-filter: blur(4px);
+  /* Use a themed base background color for the overlay curtain, with opacity */
+  background-color: rgba(var(--bg-base-rgb-dark, 26, 32, 44), 0.6); /* Assuming --bg-base-rgb-dark is defined (e.g., "26, 32, 44") */
+  backdrop-filter: blur(4px); /* Frosted glass effect */
 }
 
+/* Spinner animation for loading state */
 .spinner-meeting {
-  @apply w-10 h-10 border-4 rounded-full animate-spin;
-  border-color: hsla(var(--accent-hue-cyan, 180), 60%, 50%, 0.2); /* Cyan accent */
-  border-top-color: hsl(var(--accent-hue-cyan, 180), 60%, 50%);
+  @apply w-10 h-10 border-4 rounded-full animate-spin; /* Tailwind classes for base spinner */
+  /* Spinner colors using the agent's accent hue */
+  border-color: hsla(var(--agent-meeting-accent-hue), var(--agent-meeting-accent-saturation), var(--agent-meeting-accent-lightness), 0.2); /* Softer track color */
+  border-top-color: hsl(var(--agent-meeting-accent-hue), var(--agent-meeting-accent-saturation), var(--agent-meeting-accent-lightness)); /* Prominent top color for spin effect */
 }
-/* Removed redundant @keyframes spin_meeting_agent_v2 */
+/* Keyframes for spin are expected to be global (_keyframes.scss) */
 
-.custom-scrollbar-futuristic {
-  &::-webkit-scrollbar { @apply w-1.5 h-1.5; }
-  &::-webkit-scrollbar-track { background-color: hsla(var(--neutral-hue), 20%, 20%, 0.3); @apply rounded-full; }
-  &::-webkit-scrollbar-thumb { background-color: hsla(var(--accent-hue-cyan, 180), 75%, 60%, 0.6); @apply rounded-full; border: 1px solid hsla(var(--neutral-hue), 20%, 15%, 0.5); }
-  &::-webkit-scrollbar-thumb:hover { background-color: hsla(var(--accent-hue-cyan, 180), 75%, 70%, 0.8); }
+/* Custom scrollbar styling with the agent's accent color */
+.custom-scrollbar-futuristic { /* Apply this class to elements needing this scrollbar */
+  &::-webkit-scrollbar {
+    @apply w-1.5 h-1.5; /* Slim scrollbar */
+  }
+  &::-webkit-scrollbar-track {
+    background-color: hsla(var(--neutral-hue, 220), 20%, 20%, 0.3); /* Themed track */
+    @apply rounded-full;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: hsla(var(--agent-meeting-accent-hue), calc(var(--agent-meeting-accent-saturation) + 15%), calc(var(--agent-meeting-accent-lightness) + 10%), 0.6); /* Themed thumb */
+    @apply rounded-full;
+    border: 1px solid hsla(var(--neutral-hue, 220), 20%, 15%, 0.5); /* Subtle border on thumb */
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: hsla(var(--agent-meeting-accent-hue), calc(var(--agent-meeting-accent-saturation) + 15%), calc(var(--agent-meeting-accent-lightness) + 10%), 0.8); /* Brighter thumb on hover */
+  }
+  /* Firefox scrollbar styling */
   scrollbar-width: thin;
-  scrollbar-color: hsla(var(--accent-hue-cyan, 180), 75%, 60%, 0.6) hsla(var(--neutral-hue), 20%, 20%, 0.3);
+  scrollbar-color: hsla(var(--agent-meeting-accent-hue), calc(var(--agent-meeting-accent-saturation) + 15%), calc(var(--agent-meeting-accent-lightness) + 10%), 0.6) hsla(var(--neutral-hue, 220), 20%, 20%, 0.3);
 }
 
-.btn.btn-xs {
-  @apply px-2.5 py-1 text-xs;
+/* Ensure .btn and .btn-xs utilities from Tailwind or _buttons.scss are effective */
+/* If using global SCSS for .btn-xs, this @apply might be redundant or could be replaced by direct class usage in template. */
+/* Assuming .btn and .btn-primary are available from global styles or Tailwind config */
+.btn.btn-xs { /* This targets elements with BOTH .btn and .btn-xs */
+  /* Ensure these values align with global .btn-xs if defined, or Tailwind's vision for btn-xs */
+  @apply px-2.5 py-1 text-xs; 
 }
 
+/* Deep styling for rendered Markdown content (prose) */
 :deep(.prose) {
-  h1, h2, h3 { @apply text-[var(--text-primary-dark)] border-b border-[var(--border-color-dark)] pb-1; }
-  p, li { @apply text-[var(--text-secondary-dark)]; }
-  a { @apply text-cyan-400 hover:text-cyan-300; }
-  strong { @apply text-[var(--text-primary-dark)]; }
-  code:not(pre code) { @apply bg-slate-700 text-emerald-400 px-1.5 py-0.5 rounded-md text-xs; }
-  pre { @apply bg-slate-900/70 border border-slate-700 text-sm; }
-  table { @apply w-full; }
-  th { @apply bg-slate-700/50 text-slate-300; }
-  td, th { @apply border border-slate-600 px-2 py-1; }
+  h1, h2, h3 {
+    @apply text-[var(--text-primary-dark)] border-b border-[var(--border-color-dark)] pb-1; /* Use themed text and border variables */
+  }
+  p, li {
+    @apply text-[var(--text-secondary-dark)]; /* Use themed secondary text variable */
+  }
+  a {
+    /* Link color using agent's accent */
+    @apply hover:text-[color:hsl(var(--agent-meeting-accent-hue),var(--agent-meeting-accent-saturation),calc(var(--agent-meeting-accent-lightness)-5%))];
+    color: hsl(var(--agent-meeting-accent-hue), var(--agent-meeting-accent-saturation), var(--agent-meeting-accent-lightness));
+  }
+  strong {
+    @apply text-[var(--text-primary-dark)];
+  }
+  code:not(pre code) { /* Inline code snippets */
+    @apply bg-slate-700 text-emerald-400 px-1.5 py-0.5 rounded-md text-xs; /* Consider theming these colors */
+  }
+  pre { /* Code blocks */
+    @apply bg-slate-900/70 border border-slate-700 text-sm; /* Consider theming */
+  }
+  table { 
+    @apply w-full; 
+  }
+  th { 
+    @apply bg-slate-700/50 text-slate-300; /* Consider theming */
+  }
+  td, th { 
+    @apply border border-slate-600 px-2 py-1; /* Consider theming */
+  }
 }
 </style>

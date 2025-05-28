@@ -21,6 +21,7 @@ html {
   transition: background-color var.$duration-smooth var.$ease-out-quad, color var.$duration-smooth var.$ease-out-quad;
 }
 
+
 body {
   min-height: 100vh;
   display: flex;
@@ -46,6 +47,12 @@ body {
     pointer-events: none;
     animation: holoGridScroll 60s linear infinite alternate; // Slow scroll for texture
   }
+}
+
+
+// In _global.scss or _helpers.scss
+body.overflow-hidden-by-app-overlay {
+  overflow: hidden !important; // Force it
 }
 
 #app {

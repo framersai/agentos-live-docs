@@ -1,20 +1,19 @@
 // File: frontend/src/components/header/SiteMenuDropdown.vue
 /**
  * @file SiteMenuDropdown.vue
- * @description A dropdown menu for site-wide navigation links and auth actions,
- * styled for "Ephemeral Harmony" for a more special and prominent look.
- * @version 1.1.0 - Adopted shared dropdown styles.
+ * @description Dropdown for site navigation (About, Settings) and Auth. Uses shared "Ephemeral Harmony" styles.
+ * @version 1.2.0 - Adopts fully shared dropdown styles.
  */
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
-import { RouterLink } from 'vue-router'; // useRouter not needed here if only navigating via RouterLink
+import { RouterLink } from 'vue-router';
 import { useAuth } from '@/composables/useAuth';
 import {
   InformationCircleIcon,
-  Cog6ToothIcon,
+  Cog8ToothIcon,
   ArrowLeftOnRectangleIcon,
   ArrowRightOnRectangleIcon,
-  SquaresPlusIcon, // New, more "menu-like" icon
+  SquaresPlusIcon, // Main trigger icon
 } from '@heroicons/vue/24/outline';
 
 const auth = useAuth();
@@ -38,67 +37,44 @@ onUnmounted(() => document.removeEventListener('mousedown', handleClickOutside))
 </script>
 
 <template>
-  <div class="site-menu-dropdown-container relative" ref="dropdownRef">
-    <button
+  <div ref="dropdownRef"
       @click="toggleDropdown"
-      class="site-menu-trigger-button btn btn-ghost-ephemeral btn-icon-ephemeral"
-      aria-label="Open site menu"
+      class="btn btn-ghost-ephemeral btn-icon-ephemeral site-menu-trigger-button"
       :aria-expanded="isOpen"
       title="Menu"
     >
-      <SquaresPlusIcon class="icon-base site-menu-trigger-icon" />
-    </button>
+      <SquaresPlusIcon class="icon-base icon-trigger" /> 
 
-    <Transition name="dropdown-float-neomorphic">
+    <Transition name="dropdown-float-enhanced">
       <div
         v-if="isOpen"
-        class="dropdown-panel-ephemeral absolute right-0 mt-2 w-60 origin-top-right" 
+        class="dropdown-panel-ephemeral absolute right-0 mt-2 w-64 origin-top-right" 
         role="menu"
         aria-orientation="vertical"
-        aria-labelledby="site-menu-trigger-button"
       >
         <div class="dropdown-header-ephemeral">
-            <h3 class="dropdown-title">Navigation</h3>
+            <h3 class="dropdown-title">Main Menu</h3>
         </div>
         <div class="dropdown-content-ephemeral" role="none">
-          <RouterLink
-            to="/about"
-            class="dropdown-item-ephemeral group"
-            role="menuitem"
-            @click="closeDropdown"
-          >
+          <RouterLink to="/about" class="dropdown-item-ephemeral group" role="menuitem" @click="closeDropdown">
             <InformationCircleIcon class="dropdown-item-icon" aria-hidden="true" />
             About VCA
           </RouterLink>
-          <RouterLink
-            to="/settings"
-            class="dropdown-item-ephemeral group"
-            role="menuitem"
-            @click="closeDropdown"
-          >
-            <Cog6ToothIcon class="dropdown-item-icon" aria-hidden="true" />
+          <RouterLink to="/settings" class="dropdown-item-ephemeral group" role="menuitem" @click="closeDropdown">
+            <Cog8ToothIcon class="dropdown-item-icon" aria-hidden="true" />
             App Settings
           </RouterLink>
 
           <div class="dropdown-divider-ephemeral my-1.5"></div>
 
           <template v-if="auth.isAuthenticated.value">
-            <button
-              @click="handleLogout"
-              class="dropdown-item-ephemeral group w-full"
-              role="menuitem"
-            >
+            <button @click="handleLogout" class="dropdown-item-ephemeral group w-full logout-item-ephemeral" role="menuitem">
               <ArrowLeftOnRectangleIcon class="dropdown-item-icon" aria-hidden="true" />
               Logout
             </button>
           </template>
           <template v-else>
-            <RouterLink
-              to="/login"
-              class="dropdown-item-ephemeral group"
-              role="menuitem"
-              @click="closeDropdown"
-            >
+            <RouterLink to="/login" class="dropdown-item-ephemeral group login-item-ephemeral" role="menuitem" @click="closeDropdown">
               <ArrowRightOnRectangleIcon class="dropdown-item-icon" aria-hidden="true" />
               Login / Sign Up
             </RouterLink>
@@ -110,35 +86,37 @@ onUnmounted(() => document.removeEventListener('mousedown', handleClickOutside))
 </template>
 
 <style lang="scss" scoped>
-@use '@/styles/abstracts/variables' as var; // For specific overrides if needed
+@use '@/styles/abstracts/variables' as var;
 
-// The .site-menu-trigger-button will inherit from global .btn-ghost-ephemeral.btn-icon-ephemeral
-// defined in _header.scss or _buttons.scss
-.site-menu-trigger-icon {
-  // Specific animations for this icon if desired
-  transition: transform 0.25s var.$ease-out-expo;
+// Trigger button will primarily use styles from _header.scss's
+// .header-control-item > button or .mobile-menu-trigger-button
+.site-menu-trigger-button {
+  // any specific overrides if needed
+  .icon-trigger { /* already styled by .icon-base in _header.scss */ }
 }
 
-.site-menu-trigger-button:hover .site-menu-trigger-icon,
-.site-menu-trigger-button[aria-expanded='true'] .site-menu-trigger-icon {
-  transform: scale(1.1) rotate(180deg); // Example: more engaging animation
+// Panel and items use shared styles from _dropdowns.scss
+// Specific item type styling
+.logout-item-ephemeral {
+  // color: hsl(var(--color-error-h), var(--color-error-s), var(--color-error-l)) !important;
+  &:hover {
+    // background-color: hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.1) !important;
+  }
+}
+.login-item-ephemeral {
+   // color: hsl(var(--color-success-h), var(--color-success-s), var(--color-success-l)) !important;
+   &:hover {
+    // background-color: hsla(var(--color-success-h), var(--color-success-s), var(--color-success-l), 0.1) !important;
+   }
 }
 
-// Dropdown panel and items use shared styles from _dropdowns.scss by applying classes like:
-// .dropdown-panel-ephemeral
-// .dropdown-header-ephemeral, .dropdown-title
-// .dropdown-content-ephemeral
-// .dropdown-item-ephemeral, .dropdown-item-icon
-// .dropdown-divider-ephemeral
-
-// Ensure the transition name matches one defined in animations/_transitions.scss
-.dropdown-float-neomorphic-enter-active,
-.dropdown-float-neomorphic-leave-active {
-  transition: opacity var.$duration-quick var.$ease-out-quad, transform var.$duration-quick var.$ease-out-quad;
+.dropdown-float-enhanced-enter-active,
+.dropdown-float-enhanced-leave-active {
+  transition: opacity 0.25s var.$ease-out-quint, transform 0.3s var.$ease-elastic;
 }
-.dropdown-float-neomorphic-enter-from,
-.dropdown-float-neomorphic-leave-to {
+.dropdown-float-enhanced-enter-from,
+.dropdown-float-enhanced-leave-to {
   opacity: 0;
-  transform: translateY(-12px) scale(0.92); // Slightly more pronounced transition
+  transform: translateY(12px) scale(0.92);
 }
 </style>
