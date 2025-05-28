@@ -50,8 +50,8 @@
 // 8. Utility Classes
 @use '../styles/utilities/helpers';
 @use '../styles/components/chat-window'; // Added
-
-
+@use '../styles/components/dropdowns'; // <-- ADD THIS IMPORT
+@use '../styles/views/settings-page'; // <-- THIS IS THE IMPORTANT IMPORT
 // 9. Tailwind CSS Directives
 @tailwind base;
 @tailwind components;

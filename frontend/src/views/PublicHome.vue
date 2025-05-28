@@ -38,7 +38,7 @@ import {
 
 // Dynamic Prompt Loading
 // Corrected import.meta.glob: Removed 'as' option, using only 'query'.
-const rawPromptModules = import.meta.glob('../../../../prompts/*.md', { query: '?raw', import: "default", eager: false });
+const rawPromptModules = import.meta.glob("../../../../prompts/*.md", { query: "?raw", import: "default", eager: false });
 const promptModules: Record<string, () => Promise<string>> = {};
 for (const key in rawPromptModules) {
   const mod = rawPromptModules[key];

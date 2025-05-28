@@ -1,0 +1,111 @@
+// File: frontend/src/styles/components/_dropdowns.scss
+/**
+ * @file _dropdowns.scss
+ * @description Shared styles for dropdown menus (panels and items) 
+ * for the "Ephemeral Harmony" theme. Aims for a premium, consistent look.
+ * @version 1.0.1 - Corrected mixin namespace alias.
+ */
+
+@use '../abstracts/variables' as var;
+@use '../abstracts/mixins' as mixins; // Correct alias for _mixins.scss
+@use './buttons' as buttonsFile;     // For item styling if based on buttons
+
+// --- Base Dropdown Panel Style ---
+@mixin dropdown-panel-ephemeral {
+  @include mixins.neomorphic-extrude( 
+    '--color-bg-primary', 
+    5px, 
+    15px, 
+    '--shadow-opacity-medium', 
+    var.$radius-lg, 
+    '--shadow-color-h', '--shadow-color-s', '--shadow-color-l', '--shadow-highlight-modifier', 
+    var.$default-color-bg-primary-h, var.$default-color-bg-primary-s, var.$default-color-bg-primary-l,
+    var.$default-shadow-opacity-medium,
+    var.$default-shadow-color-h, var.$default-shadow-color-s, var.$default-shadow-color-l,
+    var.$default-shadow-highlight-modifier
+  );
+  
+  border: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.2);
+  padding: var.$spacing-xs; 
+  min-width: 220px; 
+  z-index: var.$z-index-dropdown;
+}
+
+// --- Dropdown Header Style ---
+@mixin dropdown-header-ephemeral {
+  padding: var.$spacing-sm var.$spacing-md;
+  border-bottom: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.15);
+  margin: calc(var.$spacing-xs * -1) calc(var.$spacing-xs * -1) var.$spacing-xs; 
+  
+  .dropdown-title { 
+    font-size: var.$font-size-xs;
+    font-weight: 600;
+    color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+    text-transform: uppercase;
+    letter-spacing: 0.075em;
+  }
+}
+
+// --- Dropdown Content Area Style ---
+@mixin dropdown-content-ephemeral {
+  padding: var.$spacing-xs; 
+  max-height: 70vh; 
+  overflow-y: auto;
+  @include mixins.custom-scrollbar( // Correctly uses 'mixins'
+    '--color-accent-interactive', 0.5, 0.7, 
+    '--color-bg-tertiary', 0.2, 
+    5px 
+  );
+}
+
+// --- Dropdown Item Style ---
+@mixin dropdown-item-ephemeral {
+  @include buttonsFile.btn-ghost; 
+  width: 100%;
+  justify-content: flex-start !important; 
+  align-items: center;
+  padding: var.$spacing-sm var.$spacing-md !important;
+  border-radius: var.$radius-md !important; 
+  font-size: var.$font-size-sm !important; 
+  color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+  text-align: left;
+  
+  .dropdown-item-icon { 
+    width: 1.125rem; 
+    height: 1.125rem;
+    margin-right: var.$spacing-sm;
+    color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+    transition: color var.$duration-quick;
+    flex-shrink: 0;
+  }
+
+  &:hover, &.router-link-active, &.active { 
+    background-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.1) !important;
+    color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l)) !important;
+    
+    .dropdown-item-icon {
+      color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
+    }
+  }
+  &:focus-visible { 
+    @include mixins.focus-ring( // CORRECTED: Uses 'mixins' namespace
+      '--color-bg-primary', 
+      '--color-accent-interactive',
+      1px, 1px, 0.8
+    );
+  }
+}
+
+// --- Dropdown Divider ---
+@mixin dropdown-divider-ephemeral {
+  height: 1px;
+  background-color: hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.15);
+  margin: var.$spacing-xs 0;
+}
+
+// --- Utility Classes (Optional) ---
+.dropdown-panel-ephemeral { @include dropdown-panel-ephemeral; }
+.dropdown-header-ephemeral { @include dropdown-header-ephemeral; }
+.dropdown-content-ephemeral { @include dropdown-content-ephemeral; }
+.dropdown-item-ephemeral { @include dropdown-item-ephemeral; }
+.dropdown-divider-ephemeral { @include dropdown-divider-ephemeral; }
