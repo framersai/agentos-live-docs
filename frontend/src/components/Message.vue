@@ -143,16 +143,16 @@ const renderMessageContent = async () => {
   const originalCodeRenderer = renderer.code;
   renderer.code = (code, languageInfo, isEscaped) => {
     const langString = (languageInfo || '').match(/\S*/)?.[0] || 'plaintext';
-    const highlighted = highlightFn(code, langString);
-    const withLineNumbers = addLineNumbersAndLangLabel(highlighted, langString);
+    const highlighted = highlightFn(code, langString); // Your existing highlightFn
+    // Ensure addLineNumbersAndLangLabel produces <span class="line-number"> and <span class="line-content">
+    const withLineNumbers = addLineNumbersAndLangLabel(highlighted, langString); 
     
-    // Wrap in the structure expected by the SCSS for copy button and lang label
     return `
       <div class="code-block-wrapper group/codeblock" data-lang="${langString}" data-raw-code="${encodeURIComponent(code)}">
         <div class="code-header-ephemeral">
           <span class="code-language-label">${langString}</span>
           <button class="copy-code-button" aria-label="Copy code" title="Copy code">
-            ${ICONS.DOCUMENT_DUPLICATE}
+            ${ICONS.DOCUMENT_DUPLICATE} 
           </button>
         </div>
         <pre><code class="language-${langString} hljs">${withLineNumbers}</code></pre>

@@ -2,428 +2,360 @@
 /**
  * @file About.vue - Ephemeral Harmony Theme
  * @description About page showcasing AgentOS philosophy, architecture, plans, and roadmap.
- * Styled with the "Ephemeral Harmony" design system.
- * @version 3.1.0 - Full Ephemeral Harmony redesign, data integration, and TS fixes.
+ * Fully redesigned with the "Ephemeral Harmony" design system for a modern, engaging, and
+ * visually striking presentation.
+ * @version 4.0.0 - Complete Ephemeral Harmony redesign.
  */
 <script setup lang="ts">
-import { ref, reactive, type Component as VueComponent } from 'vue';
+import { ref, reactive, type Component as VueComponent, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import DiagramViewer from '@/components/DiagramViewer.vue'; // Ensure this is the refactored version
+import DiagramViewer from '@/components/DiagramViewer.vue';
+import { themeManager } from '@/theme/ThemeManager'; // To potentially influence diagram themes dynamically
 
 import {
   ArrowLeftIcon,
   ChevronDownIcon,
-  SparklesIcon, // Outline by default is fine for lists
+  SparklesIcon,
   UsersIcon,
   RocketLaunchIcon,
   CheckIcon,
   XMarkIcon,
   GlobeAltIcon,
   CubeTransparentIcon,
-  // For GitHub icons, using a simple path or importing a dedicated SVG component is often better
-  // For simplicity, I'll use a placeholder or assume you have a way to render GitHub icons.
-  // If not, Heroicons doesn't have a direct GitHub mark.
+  AcademicCapIcon, // For Philosophy
+  AdjustmentsHorizontalIcon, // For Components
+  MapIcon, // For Roadmap
+  CurrencyDollarIcon, // For Pricing
+  CodeBracketSquareIcon, // For Architecture
+  LightBulbIcon, // For Mission
 } from '@heroicons/vue/24/outline';
-// Import other icons as needed by your actual data
 
 const router = useRouter();
+const currentThemeIsDark = computed(() => themeManager.getCurrentTheme().value?.isDark || false);
 
 /**
  * Navigates to the main application page.
- * @function goHome
  */
 const goHome = (): void => {
-  // Assuming 'PrivateHome' is the main authenticated route, or 'PublicHome' if it's the general entry
-  router.push({ name: 'PrivateHome' });
+  router.push({ name: 'PublicHome' }); // Or AuthenticatedHome if appropriate context
 };
 
-// --- Data for Expandable Sections ---
-type OpenSectionsKeys = 'philosophy' | 'components'; // Add more keys as sections are added
+// Data for Expandable Sections
+type OpenSectionsKeys = 'philosophy' | 'components' | 'architecture';
 const openSections = reactive<Record<OpenSectionsKeys, boolean>>({
-  philosophy: true, // Default to open
+  philosophy: true,
   components: false,
+  architecture: false,
 });
 
 /**
  * Toggles the visibility of an expandable section.
- * @function toggleSection
- * @param {OpenSectionsKeys} sectionKey - The key of the section to toggle.
  */
 const toggleSection = (sectionKey: OpenSectionsKeys): void => {
   openSections[sectionKey] = !openSections[sectionKey];
 };
 
-// --- AgentOS Components Data ---
+// AgentOS Components Data
 interface AgentOsComponentItem {
   name: string;
-  icon: VueComponent; // Using VueComponent type
+  icon: VueComponent;
+  description: string;
 }
 const agentOsComponents = ref<AgentOsComponentItem[]>([
-  { name: 'Adaptive Context Engine', icon: SparklesIcon },
-  { name: 'Dynamic Persona Manager', icon: SparklesIcon },
-  { name: 'Multi-Layered Memory Core', icon: SparklesIcon },
-  { name: 'LLM Orchestration & Failover', icon: SparklesIcon },
-  { name: 'Knowledge Synthesis (RAG+)', icon: SparklesIcon },
-  { name: 'Real-time Voice I/O Pipeline', icon: SparklesIcon },
-  { name: 'Extensible Tool Integration Bus', icon: SparklesIcon },
-  { name: 'Proactive Goal & Task Planner', icon: SparklesIcon },
-  { name: 'Ethical AI & Safety Governor', icon: SparklesIcon },
-  { name: 'User Preference & Learning Module', icon: SparklesIcon },
+  { name: 'Adaptive Context Engine', icon: SparklesIcon, description: 'Dynamically understands and utilizes conversational context.' },
+  { name: 'Dynamic Persona Manager', icon: UsersIcon, description: 'Manages and adapts AI personas for consistent and tailored interactions.' },
+  { name: 'Multi-Layered Memory Core', icon: CubeTransparentIcon, description: 'Handles short-term, long-term, and semantic memory.' },
+  { name: 'LLM Orchestration & Failover', icon: RocketLaunchIcon, description: 'Intelligently routes requests to various LLMs with robust error handling.' },
+  { name: 'Knowledge Synthesis (RAG+)', icon: AcademicCapIcon, description: 'Advanced Retrieval Augmented Generation for informed responses.' },
+  { name: 'Real-time Voice I/O Pipeline', icon: AdjustmentsHorizontalIcon, description: 'Optimized for low-latency voice transcription and synthesis.' },
+  { name: 'Extensible Tool Integration Bus', icon: CodeBracketSquareIcon, description: 'Allows seamless integration of external tools and APIs.' },
+  { name: 'Proactive Goal & Task Planner', icon: MapIcon, description: 'Enables agents to set and pursue complex goals.' },
+  { name: 'Ethical AI & Safety Governor', icon: CheckIcon, description: 'Ensures responsible AI behavior with configurable guardrails.' },
+  { name: 'User Preference & Learning Module', icon: LightBulbIcon, description: 'Learns from interactions to personalize the user experience.' },
 ]);
 
-// --- Mermaid Diagrams Data ---
+// Mermaid Diagrams Data
 const diagrams = ref({
   systemOverview: `
     graph TD
-      subgraph User Interaction Layer
+      subgraph User Interaction Layer [📱 User Interaction Layer]
         UI[🌐 User Interface (Ephemeral Harmony)]
       end
-      subgraph Orchestration & Intelligence Core
+      subgraph Orchestration & Intelligence Core [⚙️ Orchestration & Intelligence Core]
         Orchestrator[⚡ AgentOS Orchestrator]
         GMI{"🧠 Generalized Mind Instance (GMI)"}
       end
-      subgraph Core Services
+      subgraph Core Services [🛠️ Core Services]
         Persona[🎭 Persona Engine]
-        Memory[💾 Memory Core (Short/Long Term)]
+        Memory[💾 Memory Core]
         Knowledge[📚 Knowledge Interface (RAG)]
-        Tools[🛠️ Tool & Function Executor]
+        Tools[🔧 Tool & Function Executor]
       end
-      subgraph External Systems
-        LLMs[☁️ LLM Providers (OpenAI, OpenRouter, etc.)]
+      subgraph External Systems [☁️ External Systems]
+        LLMs[🤖 LLM Providers]
         APIs[🔌 External APIs & Services]
         DataSources[📊 User Data Sources]
       end
 
       UI --> Orchestrator;
       Orchestrator --> GMI;
-      GMI --> Persona;
-      GMI --> Memory;
-      GMI --> Knowledge;
-      GMI --> Tools;
+      GMI --> Persona; GMI --> Memory; GMI --> Knowledge; GMI --> Tools;
       GMI --> LLMs;
-      Knowledge --> DataSources;
-      Tools --> APIs;
+      Knowledge --> DataSources; Tools --> APIs;
 
-      classDef default fill:var(--color-bg-tertiary),stroke:var(--color-border-primary),color:var(--color-text-primary);
-      classDef accent fill:var(--color-accent-primary),stroke:var(--color-bg-primary),color:var(--color-text-on-primary),fontWeight:bold;
-      class UI,Orchestrator,LLMs,APIs,DataSources accent;
+      classDef default fill:var(--color-bg-tertiary),stroke:var(--color-border-primary),color:var(--color-text-primary),rx:var(--radius-md),ry:var(--radius-md);
+      classDef userInteraction fill:var(--color-accent-primary-light-hsl, var(--color-accent-primary)),stroke:var(--color-accent-primary),color:var(--color-text-on-primary),fontWeight:bold;
+      classDef orchestration fill:var(--color-accent-secondary-light-hsl, var(--color-accent-secondary)),stroke:var(--color-accent-secondary),color:var(--color-text-on-secondary),fontWeight:bold;
+      classDef coreSvc fill:hsla(var(--color-bg-tertiary-h),var(--color-bg-tertiary-s),var(--color-bg-tertiary-l),0.8),stroke:var(--color-border-secondary);
+      classDef external fill:hsla(var(--color-bg-secondary-h),var(--color-bg-secondary-s),var(--color-bg-secondary-l),0.7),stroke:var(--color-border-secondary);
+
+      class UI,UserInteractionLayer userInteraction;
+      class Orchestrator,GMI,OrchestrationIntelligenceCore orchestration;
+      class Persona,Memory,Knowledge,Tools,CoreServices coreSvc;
+      class LLMs,APIs,DataSources,ExternalSystems external;
   `,
+  // Data Flow and Prompt Engine diagrams are good as they are, ensure DiagramViewer handles them.
   dataFlow: `
     sequenceDiagram
       actor User
-      participant F as Frontend (Ephemeral Harmony UI)
-      participant O as AgentOS Orchestrator (Backend)
-      participant KB as Knowledge Base (VectorDB/RAG)
+      participant F as Frontend (UI)
+      participant O as AgentOS Orchestrator
+      participant KB as Knowledge Base (RAG)
       participant LLM as Large Language Model
 
       User->>+F: Input (Voice/Text)
-      F->>+O: Secure API Request (Input, Session Context, AgentID)
-      O->>O: 1. Analyze Context & Intent
-      O->>+KB: 2. Query Relevant Knowledge
-      KB-->>-O: 3. Retrieved Information Chunks
-      O->>O: 4. Construct Adaptive Prompt (Persona, History, Knowledge, Tools)
-      O->>+LLM: 5. Optimized Prompt to LLM
-      LLM-->>-O: 6. Raw LLM Response (Text, Tool Calls)
-      O->>O: 7. Process Response (Format, Safety Check, Tool Invocation if any)
-      O-->>-F: 8. Structured Output (Text, UI Directives)
-      F->>-User: Display Formatted Response / Speak
+      F->>+O: API Request (Input, Context)
+      O->>O: 1. Analyze Intent
+      O->>+KB: 2. Query Knowledge
+      KB-->>-O: 3. Retrieved Info
+      O->>O: 4. Build Adaptive Prompt
+      O->>+LLM: 5. Send Prompt to LLM
+      LLM-->>-O: 6. LLM Response
+      O->>O: 7. Process & Format Response
+      O-->>-F: 8. Structured Output
+      F->>-User: Display / Speak
   `,
   promptEngine: `
     graph LR
       UserInput[🗣️ User Input] --> QueryAnalyzer;
       SessionCtx[📝 Session Context] --> QueryAnalyzer;
       QueryAnalyzer -- Intent & Entities --> PromptStrategist;
-
-      subgraph PersonaContext [🎭 Active Persona Profile]
+      subgraph PersonaContext [🎭 Active Persona]
         PersonaDef[Core Directives]
-        PersonaMem[Persona-specific Memories]
-        PersonaStyle[Communication Style]
+        PersonaMem[Memories]
+        PersonaStyle[Style]
       end
-
-      subgraph KnowledgeContext [📚 Knowledge Retrieval]
-        RelevantDocs[Retrieved Documents (RAG)]
-        DBQueries[Database Query Results]
+      subgraph KnowledgeContext [📚 Knowledge]
+        Docs[Retrieved Docs (RAG)]
+        DBRes[DB Results]
       end
-
-      subgraph ToolContext [🛠️ Available Tools]
-        ToolDefinitions[Tool Signatures & Descriptions]
+      subgraph ToolContext [🛠️ Tools]
+        ToolDefs[Tool Signatures]
       end
-
-      PromptStrategist -- Selected Elements --> PromptAssembler;
+      PromptStrategist --> PromptAssembler;
       PersonaContext --> PromptStrategist;
       KnowledgeContext --> PromptStrategist;
       ToolContext --> PromptStrategist;
-
-      PromptAssembler -- Structured Prompt Segments --> FinalFormatter;
-      FinalFormatter --> OptimizedLLMPrompt[🚀 Optimized LLM Prompt];
-
-      classDef node fill:var(--color-bg-secondary),stroke:var(--color-border-primary),color:var(--color-text-secondary);
-      classDef process fill:var(--color-accent-secondary),stroke:var(--color-bg-primary),color:var(--color-text-on-secondary),fontWeight:bold;
-      classDef data fill:var(--color-bg-tertiary),stroke:var(--color-border-primary),color:var(--color-text-muted);
-      class QueryAnalyzer,PromptStrategist,PromptAssembler,FinalFormatter process;
-      class UserInput,SessionCtx,OptimizedLLMPrompt data;
+      PromptAssembler --> FinalFormatter;
+      FinalFormatter --> OptimizedLLMPrompt[🚀 Optimized Prompt];
   `,
 });
 
-// --- Roadmap Data ---
-interface RoadmapFeature {
-  name: string;
-  description?: string; // Optional more detailed description
-  status: 'Idea' | 'Planned' | 'In Progress' | 'Beta' | 'Completed';
-}
-interface RoadmapQuarter {
-  id: string; // e.g., "q3-2025"
-  quarter: string; // e.g., "Q3"
-  year: number;
-  themeTitle: string; // Main theme for the quarter
-  features: RoadmapFeature[];
-}
+// Roadmap Data (simplified structure for example, expand as needed)
+interface RoadmapFeature { name: string; status: 'Idea' | 'Planned' | 'In Progress' | 'Beta' | 'Completed'; description?: string; }
+interface RoadmapQuarter { id: string; quarter: string; year: number; themeTitle: string; features: RoadmapFeature[]; }
 const roadmapItems = ref<RoadmapQuarter[]>([
-  {
-    id: 'q3-2025', quarter: 'Q3', year: 2025, themeTitle: 'Deeper Context & Personalization',
-    features: [
-      { name: 'Proactive Suggestion Engine (v1)', status: 'In Progress', description: 'AI anticipates needs based on ongoing tasks and history.' },
-      { name: 'User-Uploaded Knowledge Integration', status: 'In Progress', description: 'Allow users to securely connect personal document repositories.' },
-      { name: 'Cross-Session Memory Linking', status: 'Planned', description: 'Enable recalling relevant information from distinct past conversations.' },
-    ],
-  },
-  {
-    id: 'q4-2025', quarter: 'Q4', year: 2025, themeTitle: 'Richer Interactions & Outputs',
-    features: [
-      { name: 'Basic Image Comprehension (via multimodal LLM)', status: 'Planned', description: 'Allow users to input images for context or queries.' },
-      { name: 'Structured Data Generation (Tables, Lists)', status: 'Planned', description: 'AI can format responses as structured data, not just text.' },
-      { name: 'Interactive Holographic Avatar (Proof of Concept)', status: 'Idea', description: 'Early exploration into more embodied AI representation.' },
-    ],
-  },
-  {
-    id: 'q1-2026', quarter: 'Q1', year: 2026, themeTitle: 'Extensibility & Developer Focus',
-    features: [
-      { name: 'AgentOS Core API (Alpha)', status: 'Planned', description: 'Expose core functionalities for third-party developers.' },
-      { name: 'Simplified Tool Creation Framework', status: 'Planned', description: 'Easier SDK for building and integrating custom tools.' },
-      { name: 'Community Hub for Agents & Tools (Concept)', status: 'Idea', description: 'A place to share and discover AgentOS extensions.' },
-    ],
-  },
+  { id: 'q3-2025', quarter: 'Q3', year: 2025, themeTitle: 'Enhanced Context & Personalization', features: [
+    { name: 'Proactive Suggestion Engine (v1)', status: 'In Progress', description: 'AI anticipates user needs.' },
+    { name: 'User Document Integration', status: 'Planned', description: 'Connect personal knowledge repositories.' },
+  ]},
+  { id: 'q4-2025', quarter: 'Q4', year: 2025, themeTitle: 'Richer Interactions & Outputs', features: [
+    { name: 'Basic Image Comprehension', status: 'Planned', description: 'Allow image inputs for context.' },
+    { name: 'Structured Data Generation', status: 'Idea', description: 'AI formats responses like tables/lists.' },
+  ]},
 ]);
 
-// --- Pricing Tiers Data ---
+// Pricing Tiers Data (simplified structure)
 interface PlanFeatureItem { text: string; available: boolean; }
-interface PricingPlanItem {
-  name: string; price: string; period: string; features: PlanFeatureItem[];
-  buttonText: string; buttonClass: string[]; isFeatured?: boolean; action?: () => void;
-  glowColorVar?: string; // CSS variable name for featured glow
-}
+interface PricingPlanItem { name: string; price: string; period: string; features: PlanFeatureItem[]; buttonText: string; isFeatured?: boolean; }
 const pricingPlans = ref<PricingPlanItem[]>([
-  {
-    name: 'Explorer', price: '$0', period: '/month',
-    features: [
-      { text: 'Limited Daily Interactions', available: true }, { text: 'Standard AI Models', available: true },
-      { text: 'Core Voice Capabilities', available: true }, { text: '1 Personal Agent Profile', available: true },
-      { text: 'Basic Contextual Memory', available: true }, { text: 'Community Forum Support', available: true },
-      { text: 'Limited Diagram Generation', available: false }, { text: 'Advanced RAG Features', available: false },
-    ],
-    buttonText: 'Start Exploring', buttonClass: ['btn-secondary-ephemeral'], // Use new button classes
-    action: () => router.push({ name: 'PublicHome' })
-  },
-  {
-    name: 'Creator', price: '$29', period: '/month', isFeatured: true, glowColorVar: '--color-accent-primary',
-    features: [
-      { text: 'High Volume Interactions', available: true }, { text: 'Premium AI Models (GPT-4, Claude 3)', available: true },
-      { text: 'Full Voice & Audio Features', available: true }, { text: 'Up to 5 Agent Profiles', available: true },
-      { text: 'Enhanced Memory & RAG', available: true }, { text: 'Full Diagram Generation', available: true },
-      { text: 'Early Access to New Features', available: true }, { text: 'Priority Email Support', available: true },
-    ],
-    buttonText: 'Unlock Creator', buttonClass: ['btn-primary-ephemeral'],
-    action: () => { /* router.push('/subscribe/creator') or similar */ }
-  },
-  {
-    name: 'Architect', price: 'Custom', period: '(Contact Us)',
-    features: [
-      { text: 'Everything in Creator Plan', available: true }, { text: 'Enterprise-Grade Interaction Volume', available: true },
-      { text: 'Custom Model Fine-Tuning', available: true }, { text: 'Dedicated API Access & SLAs', available: true },
-      { text: 'Unlimited Agent Profiles & Teams', available: true }, { text: 'On-Premise Deployment Options', available: true },
-      { text: 'Bespoke Feature Development', available: true }, { text: 'Dedicated Architect Support', available: true },
-    ],
-    buttonText: 'Contact Sales', buttonClass: ['btn-secondary-ephemeral'],
-    action: () => { /* router.push('/contact-sales') */ }
-  },
+  { name: 'Explorer', price: '$0', period: '/month', features: [
+    { text: 'Limited Daily Interactions', available: true }, { text: 'Standard AI Models', available: true },
+    { text: 'Basic Contextual Memory', available: true },{ text: 'Community Support', available: true },
+    { text: 'Advanced RAG', available: false }, { text: 'Priority Support', available: false },
+  ], buttonText: 'Start Exploring' },
+  { name: 'Creator', price: '$29', period: '/month', isFeatured: true, features: [
+    { text: 'High Volume Interactions', available: true }, { text: 'Premium AI Models', available: true },
+    { text: 'Enhanced Memory & RAG', available: true }, { text: 'Full Diagram Generation', available: true },
+    { text: 'Early Access Features', available: true }, { text: 'Priority Email Support', available: true },
+  ], buttonText: 'Unlock Creator' },
 ]);
 
-// Icons for mission section
-const missionIcons = {
-  innovate: RocketLaunchIcon,
-  empower: UsersIcon,
-  transform: SparklesIcon,
-};
+// Mission Data
+const missionItems = ref([
+    { title: 'Innovate', description: 'Push the boundaries of AI interaction with cutting-edge voice technology and adaptive intelligence.', icon: RocketLaunchIcon, accentVar: '--color-accent-primary' },
+    { title: 'Empower', description: 'Enable developers, creators, and users to achieve more through intuitive and personalized AI assistance.', icon: UsersIcon, accentVar: '--color-accent-secondary' },
+    { title: 'Transform', description: 'Reshape how humans and AI collaborate, making technology a natural extension of thought.', icon: SparklesIcon, accentVar: '--color-info' /* Example different accent */ },
+]);
+
 </script>
 
 <template>
   <div class="about-page-ephemeral">
     <header class="about-header-ephemeral">
-      <div class="header-content-wrapper">
+      <div class="header-content-container">
         <div class="logo-title-group">
-          <img src="/src/assets/logo.svg" alt="Voice Chat Assistant Logo" class="logo-img" />
-          <h1 class="page-title">About VCA & AgentOS</h1>
+          <img src="@/assets/logo.svg" alt="Voice Chat Assistant Logo" class="header-logo-img" />
+          <h1 class="main-page-title">About AgentOS & VCA</h1>
         </div>
-        <button @click="goHome" class="btn btn-ghost btn-sm">
-          <ArrowLeftIcon class="icon-sm mr-1.5" />
+        <button @click="goHome" class="btn btn-secondary-ephemeral btn-sm back-button-ephemeral">
+          <ArrowLeftIcon class="icon-sm" />
           Back to App
         </button>
       </div>
     </header>
 
-    <main class="about-main-content">
-      <section class="hero-section">
+    <main class="about-main-content-area">
+      <section class="hero-section-about card-glass-interactive--hero">
         <div class="hero-logo-wrapper">
-          <img src="/src/assets/logo.svg" alt="AgentOS Logo" class="hero-logo" />
+          <img src="@/assets/logo.svg" alt="AgentOS Logo" class="hero-logo-main spinning-glow-logo" />
         </div>
-        <h2 class="hero-title">The Future is Conversational.</h2>
-        <p class="hero-subtitle">
-          Voice Chat Assistant, powered by the <strong class="font-semibold text-[var(--color-accent-secondary)]">AgentOS</strong> framework,
+        <h2 class="hero-main-title">The Future is Conversational. Seamlessly Intelligent.</h2>
+        <p class="hero-sub-title">
+          Voice Chat Assistant, powered by the <strong class="highlight-text">AgentOS</strong> framework,
           redefines human-AI interaction. Experience truly adaptive intelligence that understands, remembers, and evolves with you.
         </p>
+         <a href="#mission" class="btn btn-primary-ephemeral btn-lg hero-cta-button">Discover Our Vision</a>
       </section>
 
-      <section class="mission-section">
-        <h3 class="section-title-ephemeral">Our Mission</h3>
-        <div class="mission-grid">
-          <div class="mission-item-card card-glass-interactive">
-             <div class="mission-icon-wrapper" style="background-image: linear-gradient(135deg, hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l)) 0%, hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), calc(var(--color-accent-secondary-l) - 10%)) 100%);">
-              <component :is="missionIcons.innovate" class="icon" />
+      <section id="mission" class="mission-section-about content-section-ephemeral">
+        <h3 class="section-title-main"><LightBulbIcon class="section-title-icon"/>Our Mission</h3>
+        <div class="mission-grid-about">
+          <div v-for="item in missionItems" :key="item.title"
+               class="mission-item-card-about card-neo-interactive"
+               :style="{'--card-accent-color': `hsl(var(${item.accentVar}-h), var(${item.accentVar}-s), var(${item.accentVar}-l))`}">
+            <div class="mission-card-icon-wrapper">
+              <component :is="item.icon" class="mission-card-icon" />
             </div>
-            <h4 class="mission-item-title">Innovate</h4>
-            <p class="mission-item-description">Push the boundaries of AI interaction with cutting-edge voice technology and adaptive intelligence.</p>
-          </div>
-          <div class="mission-item-card card-glass-interactive">
-            <div class="mission-icon-wrapper" style="background-image: linear-gradient(135deg, hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l)) 0%, hsl(180, 70%, 50%) 100%);"> {/* Example direct HSL */}
-              <component :is="missionIcons.empower" class="icon" />
-            </div>
-            <h4 class="mission-item-title">Empower</h4>
-            <p class="mission-item-description">Enable developers, creators, and users to achieve more through intuitive and personalized AI assistance.</p>
-          </div>
-          <div class="mission-item-card card-glass-interactive">
-             <div class="mission-icon-wrapper" style="background-image: linear-gradient(135deg, hsl(180, 70%, 50%) 0%, hsl(145, 60%, 55%) 100%);">  {/* Example direct HSL */}
-              <component :is="missionIcons.transform" class="icon" />
-            </div>
-            <h4 class="mission-item-title">Transform</h4>
-            <p class="mission-item-description">Reshape how humans and AI collaborate, making technology a natural extension of thought.</p>
+            <h4 class="mission-card-title">{{ item.title }}</h4>
+            <p class="mission-card-description">{{ item.description }}</p>
           </div>
         </div>
       </section>
 
-      <section class="agentos-deep-dive">
-        <h3 class="section-title-ephemeral">Deep Dive into AgentOS</h3>
-        <div class="space-y-8"> {/* Increased spacing */}
-          <div class="expandable-section-card card-neo-interactive">
-            <button @click="toggleSection('philosophy')" class="expandable-header-button">
-              <span class="flex items-center gap-2"> <CubeTransparentIcon class="icon-base text-[var(--color-accent-primary)]" /> Foundation & Philosophy</span>
-              <ChevronDownIcon class="chevron-icon" :class="{'rotated': openSections.philosophy}" />
+      <section id="agentos" class="agentos-deep-dive-about content-section-ephemeral">
+        <h3 class="section-title-main"><CubeTransparentIcon class="section-title-icon"/>Deep Dive into AgentOS</h3>
+        <div class="expandable-sections-container">
+          <div class="expandable-section-card-about card-glass-interactive">
+            <button @click="toggleSection('philosophy')" class="expandable-header-button-about">
+              <span class="expandable-title-text"><AcademicCapIcon class="expandable-title-icon"/>Foundation & Philosophy</span>
+              <ChevronDownIcon class="chevron-indicator-about" :class="{'rotated': openSections.philosophy}" />
             </button>
-            <div class="expandable-content-wrapper" :class="{'open': openSections.philosophy}">
-              <div class="prose-content-ephemeral prose dark:prose-invert max-w-none">
+            <div class="expandable-content-wrapper-about" :class="{'open': openSections.philosophy}">
+              <div class="prose-enhanced-about">
                 <h4>Beyond Static AI: The Adaptive Intelligence Paradigm</h4>
                 <p>Traditional AI systems often follow a linear path: Input → Fixed Processing → Output. AgentOS introduces a dynamic, cyclical model: <strong>Context → Adaptation → Personalized Intelligence → Action → Feedback → Context Refinement</strong>. This allows for continuous learning and evolution.</p>
                 <h5>Core Philosophical Principles:</h5>
                 <ul>
-                  <li><strong>Context is King:</strong> Deep understanding of the immediate task, user history, environmental cues, and emotional tone.</li>
-                  <li><strong>Personas as Cognitive Frameworks:</strong> Agents operate with defined yet adaptable personas, ensuring consistent behavior while allowing for nuanced responses.</li>
-                  <li><strong>Memory for Continuity & Growth:</strong> Robust short-term (session) and long-term (persistent) memory systems enable learning from past interactions and user preferences.</li>
-                  <li><strong>Safety & Ethics by Design:</strong> Incorporating "Constitutional AI" principles and customizable guardrails for responsible and context-aware decision-making.</li>
+                  <li><strong>Context is King:</strong> Deep understanding of tasks, history, cues, and tone.</li>
+                  <li><strong>Personas as Cognitive Frameworks:</strong> Defined yet adaptable personas for consistency.</li>
+                  <li><strong>Memory for Continuity & Growth:</strong> Robust short & long-term memory systems.</li>
+                  <li><strong>Safety & Ethics by Design:</strong> "Constitutional AI" principles and guardrails.</li>
                 </ul>
-                <p class="italic opacity-80">An AgentOS Generalized Mind Instance (GMI) is not just a chatbot; it's an adaptive AI entity designed for complex, ongoing interaction and task completion.</p>
+                <p class="italic opacity-80">An AgentOS Generalized Mind Instance (GMI) is an adaptive AI entity for complex, ongoing interaction.</p>
               </div>
             </div>
           </div>
 
-          <div class="expandable-section-card card-neo-interactive">
-            <button @click="toggleSection('components')" class="expandable-header-button">
-               <span class="flex items-center gap-2"> <SparklesIcon class="icon-base text-[var(--color-accent-secondary)]" /> Core System Components</span>
-              <ChevronDownIcon class="chevron-icon" :class="{'rotated': openSections.components}" />
+          <div class="expandable-section-card-about card-glass-interactive">
+            <button @click="toggleSection('components')" class="expandable-header-button-about">
+              <span class="expandable-title-text"><AdjustmentsHorizontalIcon class="expandable-title-icon"/>Core System Components</span>
+              <ChevronDownIcon class="chevron-indicator-about" :class="{'rotated': openSections.components}" />
             </button>
-            <div class="expandable-content-wrapper" :class="{'open': openSections.components}">
-              <div class="prose-content-ephemeral prose dark:prose-invert max-w-none">
-                <p>AgentOS is architected with modularity and scalability at its core, featuring components like:</p>
-                <ul class="agentos-components-list">
-                  <li v-for="item in agentOsComponents" :key="item.name">
-                    <component :is="item.icon" class="icon" /> {{ item.name }}
-                  </li>
-                </ul>
+            <div class="expandable-content-wrapper-about" :class="{'open': openSections.components}">
+              <p class="mb-4 text-lg">AgentOS is architected with modularity and scalability, featuring:</p>
+              <div class="components-grid-about">
+                <div v-for="item in agentOsComponents" :key="item.name" class="component-item-card-about card-neo-subtle">
+                    <component :is="item.icon" class="component-item-icon" />
+                    <h5 class="component-item-name">{{ item.name }}</h5>
+                    <p class="component-item-description">{{ item.description }}</p>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section class="architecture-diagrams">
-        <h3 class="section-title-ephemeral">AgentOS Technical Architecture</h3>
-        <div class="space-y-10"> {/* Increased spacing */}
-          <div class="diagram-section-card card-glass-interactive">
-            <h4 class="diagram-title">System Overview</h4>
-            <p class="diagram-description">A high-level view of AgentOS, showcasing its major interacting components from user interface to LLM providers, emphasizing the central role of the Orchestrator and Generalized Mind Instance (GMI).</p>
-            <DiagramViewer :diagramCode="diagrams.systemOverview" diagramType="mermaid" />
-          </div>
-          <div class="diagram-section-card card-glass-interactive">
-            <h4 class="diagram-title">Data Flow Architecture</h4>
-            <p class="diagram-description">Illustrates the typical sequence of data processing from user input to AI response, highlighting context analysis, knowledge retrieval (RAG), and adaptive prompt generation.</p>
-            <DiagramViewer :diagramCode="diagrams.dataFlow" diagramType="mermaid" />
-          </div>
-          <div class="diagram-section-card card-glass-interactive">
-            <h4 class="diagram-title">Prompt Engine Architecture</h4>
-            <p class="diagram-description">Details the internal workings of the Prompt Engine, which dynamically constructs optimized prompts by selecting and assembling persona definitions, contextual elements, and knowledge.</p>
-            <DiagramViewer :diagramCode="diagrams.promptEngine" diagramType="mermaid" />
-          </div>
+      <section id="architecture" class="architecture-diagrams-about content-section-ephemeral">
+         <button @click="toggleSection('architecture')" class="expandable-header-button-about section-title-main --expandable">
+            <span class="expandable-title-text"><CodeBracketSquareIcon class="section-title-icon"/>AgentOS Technical Architecture</span>
+            <ChevronDownIcon class="chevron-indicator-about --section-title" :class="{'rotated': openSections.architecture}" />
+        </button>
+        <div class="expandable-content-wrapper-about" :class="{'open': openSections.architecture}">
+            <div class="diagrams-grid-about">
+                <div class="diagram-card-about card-glass-interactive">
+                <h4 class="diagram-card-title">System Overview</h4>
+                <p class="diagram-card-description">High-level view of AgentOS, from UI to LLMs, highlighting the Orchestrator and GMI.</p>
+                <DiagramViewer :diagramCode="diagrams.systemOverview" diagramType="mermaid" :is-dark-mode="currentThemeIsDark" class="diagram-viewer-about"/>
+                </div>
+                <div class="diagram-card-about card-glass-interactive">
+                <h4 class="diagram-card-title">Data Flow Architecture</h4>
+                <p class="diagram-card-description">Illustrates data processing from user input to AI response, including RAG and prompt generation.</p>
+                <DiagramViewer :diagramCode="diagrams.dataFlow" diagramType="mermaid" :is-dark-mode="currentThemeIsDark" class="diagram-viewer-about"/>
+                </div>
+                <div class="diagram-card-about card-glass-interactive">
+                <h4 class="diagram-card-title">Adaptive Prompt Engine</h4>
+                <p class="diagram-card-description">Details the dynamic construction of optimized LLM prompts.</p>
+                <DiagramViewer :diagramCode="diagrams.promptEngine" diagramType="mermaid" :is-dark-mode="currentThemeIsDark" class="diagram-viewer-about"/>
+                </div>
+            </div>
         </div>
       </section>
 
-      <section class="pricing-section">
-        <h3 class="section-title-ephemeral">Subscription Tiers</h3>
-        <div class="pricing-grid">
+      <section id="pricing" class="pricing-section-about content-section-ephemeral">
+        <h3 class="section-title-main"><CurrencyDollarIcon class="section-title-icon"/>Subscription Tiers</h3>
+        <div class="pricing-grid-about">
           <div v-for="plan in pricingPlans" :key="plan.name"
-               class="pricing-card-ephemeral"
-               :class="[
-                  plan.isFeatured ? 'card-neo-interactive featured-plan' : 'card-glass-interactive',
-                  { 'featured-glow-primary': plan.isFeatured && plan.glowColorVar === '--color-accent-primary' },
-                  { 'featured-glow-secondary': plan.isFeatured && plan.glowColorVar === '--color-accent-secondary' }
-               ]">
-            <div v-if="plan.isFeatured" class="plan-chip">{{ plan.name === 'Creator' ? 'Most Popular' : 'Premium' }}</div>
-            <div class="plan-title-wrapper">
-              <h4 class="plan-title">{{ plan.name }}</h4>
-              <div class="plan-price-wrapper">
-                <span class="plan-price">{{ plan.price }}</span>
-                <span class="price-period">{{ plan.period }}</span>
-              </div>
+               class="pricing-plan-card-about"
+               :class="[plan.isFeatured ? 'card-neo-interactive featured-plan-glow' : 'card-glass-interactive']">
+            <div v-if="plan.isFeatured" class="featured-chip-about">Most Popular</div>
+            <h4 class="plan-title-about">{{ plan.name }}</h4>
+            <div class="plan-price-container-about">
+              <span class="plan-price-value">{{ plan.price }}</span>
+              <span class="plan-price-period">{{ plan.period }}</span>
             </div>
-            <ul class="plan-features-list">
-              <li v-for="feature in plan.features" :key="feature.text">
-                <component :is="feature.available ? CheckIcon : XMarkIcon" class="icon" :class="feature.available ? 'icon-success' : 'icon-error'" />
+            <ul class="plan-features-list-about">
+              <li v-for="feature in plan.features" :key="feature.text" class="plan-feature-item">
+                <component :is="feature.available ? CheckIcon : XMarkIcon"
+                           class="feature-icon" :class="feature.available ? 'icon-success' : 'icon-error'" />
                 {{ feature.text }}
               </li>
             </ul>
-            <button :class="['btn', ...plan.buttonClass, 'plan-button']" @click="plan.action ? plan.action() : null">
+            <button class="btn plan-button-about" :class="[plan.isFeatured ? 'btn-primary-ephemeral' : 'btn-secondary-ephemeral']">
               {{ plan.buttonText }}
             </button>
           </div>
         </div>
       </section>
 
-      <section class="roadmap-section">
-        <h3 class="section-title-ephemeral">Product Roadmap</h3>
-        <div class="roadmap-container-ephemeral">
+      <section id="roadmap" class="roadmap-section-about content-section-ephemeral">
+        <h3 class="section-title-main"><MapIcon class="section-title-icon"/>Product Roadmap</h3>
+        <div class="roadmap-timeline-container-about">
           <div v-for="(item, index) in roadmapItems" :key="item.id"
-               class="roadmap-item-ephemeral"
-               :class="{ 'item-right-aligned': index % 2 !== 0 }"> {/* Basic alignment for now, more complex via CSS */}
-            <div class="roadmap-dot-ephemeral"></div>
-            <div class="roadmap-content-card card-neo-interactive">
-              <h4 class="quarter-title">
-                {{ item.quarter }} {{ item.year }}
-              </h4>
-              <p class="roadmap-theme-title">{{ item.themeTitle }}</p>
-              <ul class="features-list">
-                <li v-for="feature in item.features" :key="feature.name">
-                  <strong>
-                    {{ feature.name }}
-                    <span class="status-badge" :class="`status-${feature.status.toLowerCase().replace(' ', '-')}`">{{ feature.status }}</span>
-                  </strong>
-                  <p v-if="feature.description" class="text-xs opacity-80 ml-4">{{ feature.description }}</p>
+               class="roadmap-item-container-about"
+               :class="{ 'align-right': index % 2 !== 0 }">
+            <div class="roadmap-item-dot"></div>
+            <div class="roadmap-item-line"></div>
+            <div class="roadmap-item-content-card card-neo-subtle">
+              <h4 class="roadmap-quarter-title">{{ item.quarter }} {{ item.year }}</h4>
+              <p class="roadmap-quarter-theme">{{ item.themeTitle }}</p>
+              <ul class="roadmap-features-list">
+                <li v-for="feature in item.features" :key="feature.name" class="roadmap-feature-item">
+                  <strong class="feature-name-roadmap">{{ feature.name }}</strong>
+                  <span class="status-badge-roadmap" :class="`status-${feature.status.toLowerCase().replace(/\s+/g, '-')}`">
+                    {{ feature.status }}
+                  </span>
+                  <p v-if="feature.description" class="feature-description-roadmap">{{ feature.description }}</p>
                 </li>
               </ul>
             </div>
@@ -431,29 +363,17 @@ const missionIcons = {
         </div>
       </section>
 
-      <footer class="about-footer-ephemeral">
-        <div class="footer-card card-glass">
-          <p class="footer-text">
-            Voice Chat Assistant is an innovative project <strong class="text-[var(--color-accent-primary)]">Powered by AgentOS</strong>.
+      <footer class="about-page-footer-ephemeral">
+        <div class="footer-content-inner-about card-glass">
+          <p class="footer-credits-text">
+            Voice Chat Assistant is <strong class="highlight-text">Powered by AgentOS</strong>.
             <br class="hidden sm:inline">
-            Proudly developed in collaboration by
-            <a href="https://frame.dev" target="_blank" rel="noopener noreferrer">The Framers</a> &amp;
-            <a href="https://manic.agency" target="_blank" rel="noopener noreferrer">Manic Inc</a>.
+            Developed by <a href="https://frame.dev" target="_blank" rel="noopener noreferrer" class="footer-link">The Framers</a> &amp;
+            <a href="https://manic.agency" target="_blank" rel="noopener noreferrer" class="footer-link">Manic Inc</a>.
           </p>
-          <div class="social-links-group">
-             <a href="https://github.com/AgentOSAIs/AgentOS" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="AgentOS GitHub">
-              <CubeTransparentIcon class="icon" />
-            </a>
-            <a href="https://github.com/wearetheframers" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="The Framers GitHub">
-              <UsersIcon class="icon" />
-            </a>
-             <a href="https://github.com/manicinc" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Manic Inc. GitHub">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" class="icon w-[1.6rem] h-[1.6rem]">
-                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
-              </svg>
-            </a>
-          </div>
-          <p class="copyright-text">&copy; {{ new Date().getFullYear() }} AgentOS Initiative. All rights reserved.</p>
+          <div class="footer-social-links-group">
+             </div>
+          <p class="copyright-text-about">&copy; {{ new Date().getFullYear() }} AgentOS Initiative. All Rights Reserved.</p>
         </div>
       </footer>
     </main>
@@ -461,6 +381,6 @@ const missionIcons = {
 </template>
 
 <style lang="scss">
-// Styles are in frontend/src/styles/views/_about-page.scss
+// Styles will be in frontend/src/styles/views/_about-page.scss
 // Ensure this file is imported in main.scss
 </style>

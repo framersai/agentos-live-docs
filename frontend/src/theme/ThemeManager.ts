@@ -9,7 +9,7 @@
 import { ref, readonly, watch, type Ref } from 'vue';
 import { useStorage, usePreferredDark } from '@vueuse/core';
 import { availableThemes, type ThemeDefinition } from './themes.config';
-
+export type { ThemeDefinition } from './themes.config';
 // ---------------------------------------------------------------------------
 // “Constants” the whole app may import
 // (⚠️  IDs **must** match the SCSS maps: $theme-twilight-neo, etc.)

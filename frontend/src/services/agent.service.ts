@@ -38,6 +38,7 @@ export interface IAgentDefinition {
   label: string;
   description: string;
   systemPromptKey: string;
+  iconComponent?: any; // Add this line to allow iconComponent usage
   inputPlaceholder: string;
   uiComponent?: string | (() => Promise<VueComponentType>);
   icon?: VueComponentType;

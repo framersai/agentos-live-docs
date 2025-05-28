@@ -1,218 +1,258 @@
+// File: frontend/src/components/header/VoiceControlsDropdown.vue
 /**
  * @file VoiceControlsDropdown.vue
- * @description Dropdown component for managing voice and TTS settings in the header.
- * @version 1.2.2 - Ensured correction for non-existent Tailwind ring offset class.
+ * @description Dropdown for voice input and output controls (STT, TTS, Audio Mode, Global Mute).
+ * @version 2.1.0 - Added Global Mute button.
  */
-<script lang="ts">
-import { defineComponent, ref, computed, onMounted, onUnmounted, watch } from 'vue';
-import { SpeakerWaveIcon, ChevronDownIcon, AdjustmentsHorizontalIcon, CheckIcon as SolidCheckIcon } from '@heroicons/vue/24/solid';
-import { Cog6ToothIcon } from '@heroicons/vue/24/outline';
-import { voiceSettingsManager } from '@/services/voice.settings.service';
-import type { VoiceOption, VoiceApplicationSettings } from '@/services/voice.settings.service'; // Use import type
-import { useRouter } from 'vue-router';
+<script setup lang="ts">
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
+import { voiceSettingsManager, type AudioInputMode, type VoiceApplicationSettings } from '@/services/voice.settings.service';
+import { useUiStore } from '@/store/ui.store';
+import {
+  AdjustmentsHorizontalIcon,
+  ChevronDownIcon,
+  MicrophoneIcon as PTTModeIcon, // Push-to-talk
+  SpeakerWaveIcon as ContinuousModeIcon, // Continuous listening / TTS On
+  SpeakerWaveIcon, // For TTS unmuted icon
+  SpeakerXMarkIcon as TTSMutedIcon, // TTS Muted
+  CpuChipIcon as VADModeIcon, // Voice Activation
+  CheckIcon,
+  CloudIcon as WhisperIcon,
+  ComputerDesktopIcon as BrowserSTTIcon,
+  MoonIcon, SunIcon // For theme toggle example if moved here
+} from '@heroicons/vue/24/outline';
+import type { Component as VueComponentType } from 'vue'; // Correct type import
 
-export default defineComponent({
-  name: 'VoiceControlsDropdown',
-  components: {
-    SpeakerWaveIcon,
-    ChevronDownIcon,
-    SolidCheckIcon,
-    AdjustmentsHorizontalIcon,
-    Cog6ToothIcon
-  },
-  setup() {
-    const isOpen = ref(false);
-    const dropdownRef = ref<HTMLElement | null>(null);
-    const router = useRouter();
+const settings = voiceSettingsManager.settings; // Reactive settings object
+const uiStore = useUiStore();
 
-    // Reactive access to settings and related data from the service
-    const settings = voiceSettingsManager.settings;
-    const currentProviderVoices = voiceSettingsManager.ttsVoicesForCurrentProvider; // ComputedRef<VoiceOption[]>
-    const voicesAreLoaded = voiceSettingsManager.ttsVoicesLoaded; // Ref<boolean>
+const isOpen = ref(false);
+const dropdownRef = ref<HTMLElement | null>(null);
 
-    const toggleDropdown = () => {
-      isOpen.value = !isOpen.value;
-    };
+const toggleDropdown = () => isOpen.value = !isOpen.value;
+const closeDropdown = () => isOpen.value = false;
 
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.value && !dropdownRef.value.contains(event.target as Node)) {
-        isOpen.value = false;
-      }
-    };
+const handleClickOutside = (event: MouseEvent) => {
+  if (dropdownRef.value && !dropdownRef.value.contains(event.target as Node)) {
+    closeDropdown();
+  }
+};
 
-    const updateSliderFillForElement = (element: HTMLInputElement | null) => {
-      if (element && typeof element.min === 'string' && typeof element.max === 'string' && typeof element.value === 'string') {
-        const value = parseFloat(element.value);
-        const min = parseFloat(element.min);
-        const max = parseFloat(element.max);
-        if (!isNaN(value) && !isNaN(min) && !isNaN(max) && (max - min !== 0)) {
-          const percentage = ((value - min) / (max - min)) * 100;
-          element.style.setProperty('--slider-progress', `${Math.max(0, Math.min(100, percentage))}%`);
-        } else if (max - min === 0 && value >= min) { // Handle case where min equals max
-           element.style.setProperty('--slider-progress', `100%`);
-        } else {
-           element.style.setProperty('--slider-progress', `0%`);
-        }
-      }
-    };
+onMounted(() => document.addEventListener('mousedown', handleClickOutside));
+onUnmounted(() => document.removeEventListener('mousedown', handleClickOutside));
 
-    const updateAllSliderFills = () => {
-      if (dropdownRef.value) {
-        dropdownRef.value.querySelectorAll<HTMLInputElement>('.range-slider-compact').forEach(updateSliderFillForElement);
-      }
-    };
-
-    onMounted(() => {
-      document.addEventListener('click', handleClickOutside, true);
-      if (isOpen.value) {
-        requestAnimationFrame(updateAllSliderFills);
-      }
-    });
-
-    onUnmounted(() => {
-      document.removeEventListener('click', handleClickOutside, true);
-    });
-
-    const selectProvider = (provider: VoiceApplicationSettings['ttsProvider']) => {
-      voiceSettingsManager.updateSetting('ttsProvider', provider);
-    };
-
-    const selectVoice = (event: Event) => {
-      const target = event.target as HTMLSelectElement;
-      const voiceId = target.value;
-      voiceSettingsManager.updateSetting('selectedTtsVoiceId', voiceId === "null" || voiceId === "" ? null : voiceId);
-    };
-
-    const handleRangeInput = (key: keyof VoiceApplicationSettings, event: Event) => {
-      const target = event.target as HTMLInputElement;
-      const parsedValue = parseFloat(target.value);
-      if (!isNaN(parsedValue)) {
-        voiceSettingsManager.updateSetting(key, parsedValue as any);
-        updateSliderFillForElement(target);
-      }
-    };
-
-    const toggleAutoPlayTts = () => {
-      voiceSettingsManager.updateSetting('autoPlayTts', !settings.autoPlayTts);
-    };
-
-    const navigateToSettings = () => {
-      isOpen.value = false;
-      router.push('/settings');
-    };
-
-    const currentVoiceName = computed(() => {
-      const voice = voiceSettingsManager.getCurrentTtsVoice();
-      if (voice) {
-        return voice.name.length > 25 ? voice.name.substring(0, 22) + '...' : voice.name;
-      }
-      if (!voicesAreLoaded.value) return "Loading...";
-      if (currentProviderVoices.value.length === 0) return "No Voices";
-      return "Default";
-    });
-
-    const currentProviderLabel = computed(() => {
-      switch (settings.ttsProvider) {
-        case 'browser_tts': return 'Browser';
-        case 'openai_tts': return 'OpenAI';
-        default: return 'Provider';
-      }
-    });
-
-    watch(
-      () => [settings.ttsVolume, settings.ttsRate, settings.ttsPitch, settings.ttsProvider],
-      () => {
-        if (isOpen.value) {
-          requestAnimationFrame(updateAllSliderFills);
-        }
-      },
-      { deep: true, flush: 'post' }
-    );
-
-    watch(isOpen, (newVal) => {
-      if (newVal) {
-        requestAnimationFrame(updateAllSliderFills);
-      }
-    });
-
-    return {
-      isOpen,
-      dropdownRef,
-      settings,
-      currentProviderVoices,
-      voicesAreLoaded,
-      toggleDropdown,
-      selectProvider,
-      selectVoice,
-      handleRangeInput,
-      toggleAutoPlayTts,
-      currentVoiceName,
-      currentProviderLabel,
-      navigateToSettings,
-    };
-  },
+// Audio Input Modes
+interface AudioModeOption { label: string; value: AudioInputMode; icon: VueComponentType; description: string; }
+const audioModeOptions = computed<AudioModeOption[]>(() => [
+  { label: 'Push-to-Talk', value: 'push-to-talk', icon: PTTModeIcon, description: "Hold mic to speak." },
+  { label: 'Continuous', value: 'continuous', icon: ContinuousModeIcon, description: "Mic stays on." },
+  { label: 'Voice Activate', value: 'voice-activation', icon: VADModeIcon, description: "Mic activates on speech." },
+]);
+const selectedAudioMode = computed({
+  get: () => settings.audioInputMode,
+  set: (val) => voiceSettingsManager.updateSetting('audioInputMode', val),
 });
+
+// STT Preference
+interface STTOption { label: string; value: VoiceApplicationSettings['sttPreference']; icon: VueComponentType; description: string; }
+const sttOptions = computed<STTOption[]>(() => [
+  { label: 'Browser STT', value: 'browser_webspeech_api', icon: BrowserSTTIcon, description: "Fast, uses browser's engine." },
+  { label: 'Whisper API', value: 'whisper_api', icon: WhisperIcon, description: "High accuracy, uses OpenAI." },
+]);
+const selectedSTTPreference = computed({
+  get: () => settings.sttPreference,
+  set: (val) => voiceSettingsManager.updateSetting('sttPreference', val),
+});
+
+// Global TTS Mute
+const isGlobalMuteActive = computed({
+    get: () => !settings.autoPlayTts, // Muted if autoPlayTts is false
+    set: (isMuted) => voiceSettingsManager.updateSetting('autoPlayTts', !isMuted)
+});
+const toggleGlobalMute = () => {
+    isGlobalMuteActive.value = !isGlobalMuteActive.value;
+};
+
+
+// Watch for settings changes to ensure UI consistency if modified elsewhere (e.g. Settings page)
+watch(() => settings.audioInputMode, (newVal) => {
+  if (selectedAudioMode.value !== newVal) selectedAudioMode.value = newVal;
+});
+watch(() => settings.sttPreference, (newVal) => {
+  if (selectedSTTPreference.value !== newVal) selectedSTTPreference.value = newVal;
+});
+watch(() => settings.autoPlayTts, (newVal) => {
+    if (isGlobalMuteActive.value === newVal) { // isGlobalMuteActive is inverse of autoPlayTts
+        isGlobalMuteActive.value = !newVal;
+    }
+});
+
 </script>
 
 <template>
-  <div class="vcd" ref="dropdownRef"> <button
+  <div class="voice-controls-dropdown-container relative" ref="dropdownRef">
+    <button
       @click="toggleDropdown"
-      id="voice-settings-button"
-      class="vcd__trigger" aria-haspopup="true"
-      :aria-expanded="isOpen ? 'true' : 'false'" title="Voice & Speech Settings"
+      class="voice-controls-trigger-button btn btn-ghost-ephemeral btn-icon-ephemeral"
+      aria-label="Open Voice Controls"
+      :aria-expanded="isOpen"
+      title="Voice Settings"
     >
-      <AdjustmentsHorizontalIcon class="icon-sm" />
-      <span class="vcd__trigger-text">Voice</span> <ChevronDownIcon class="icon-xs vcd__trigger-chevron" :class="{ 'rotated': isOpen }" /> </button>
+      <AdjustmentsHorizontalIcon class="icon-base" />
+    </button>
 
-    <transition name="dropdown-float">
+    <Transition name="dropdown-float-neomorphic">
       <div
-        v-show="isOpen"
-        class="vcd__menu" role="menu"
+        v-if="isOpen"
+        class="dropdown-panel-ephemeral absolute right-0 mt-2 w-72 origin-top-right"
+        role="menu"
         aria-orientation="vertical"
-        aria-labelledby="voice-settings-button"
+        aria-labelledby="voice-controls-trigger-button"
       >
-        <div class="vcd__header"> <h3 class="vcd__title">Voice & Speech Output</h3> <button @click="navigateToSettings" class="vcd__settings-btn" title="Go to All Settings"> <Cog6ToothIcon class="icon-sm"/>
-          </button>
+        <div class="dropdown-header-ephemeral">
+          <h3 class="dropdown-title">Voice & Audio Controls</h3>
         </div>
+        <div class="dropdown-content-ephemeral custom-scrollbar-thin">
+          <button
+            @click="toggleGlobalMute"
+            class="dropdown-item-ephemeral group w-full"
+            role="menuitemcheckbox"
+            :aria-checked="isGlobalMuteActive"
+            title="Toggle Text-to-Speech Mute"
+            >
+            <component :is="isGlobalMuteActive ? TTSMutedIcon : SpeakerWaveIcon" class="dropdown-item-icon" aria-hidden="true"/>
+            <span>{{ isGlobalMuteActive ? 'Unmute TTS' : 'Mute TTS' }}</span>
+            <span class="status-dot-indicator ml-auto" :class="{'active-dot': !isGlobalMuteActive, 'inactive-dot': isGlobalMuteActive}"></span>
+          </button>
 
-        <div class="vcd__content"> <div class="flex items-center justify-between">
-            <label for="autoPlayTtsToggleHeader" class="vcd__label">Auto-Play Responses</label> <label class="toggle-switch-analog">
-              <input id="autoPlayTtsToggleHeader" type="checkbox" :checked="settings.autoPlayTts" @change="toggleAutoPlayTts" class="sr-only peer" />
-              <span class="toggle-switch-track"></span> <span class="toggle-switch-knob"></span>  </label>
-          </div>
+          <div class="dropdown-divider-ephemeral my-1.5"></div>
 
-          <div>
-            <label class="vcd__label-sm">TTS Provider: <span class="vcd__label-value">{{ currentProviderLabel }}</span></label> <div class="vcd__provider-tabs"> <button @click="selectProvider('browser_tts')" :class="['vcd__provider-tab', settings.ttsProvider === 'browser_tts' ? 'active' : '']">Browser</button> <button @click="selectProvider('openai_tts')" :class="['vcd__provider-tab', settings.ttsProvider === 'openai_tts' ? 'active' : '']">OpenAI</button> </div>
-          </div>
-
-          <div v-if="voicesAreLoaded">
-            <label for="voiceSelectHeader" class="vcd__label-sm">Voice: <span class="vcd__label-value truncate">{{ currentVoiceName }}</span></label> <div class="relative">
-              <select id="voiceSelectHeader" :value="settings.selectedTtsVoiceId || ''" @change="selectVoice($event)"
-                class="form-select-analog w-full" :disabled="currentProviderVoices.length === 0">
-                <option v-if="currentProviderVoices.length === 0" value="" disabled>No voices for {{currentProviderLabel}}</option>
-                <option v-else value="">Default for {{currentProviderLabel}}</option>
-                <option v-for="voice in currentProviderVoices" :key="voice.id" :value="voice.id">
-                  {{ voice.name.length > 35 ? voice.name.substring(0,32)+'...' : voice.name }} ({{ voice.lang }})
-                </option>
-              </select>
+          <div class="setting-group-in-dropdown px-2 py-1">
+            <label class="setting-group-label-dropdown">Input Mode</label>
+            <div class="options-grid-dropdown">
+              <button
+                v-for="mode in audioModeOptions"
+                :key="mode.value"
+                @click="selectedAudioMode = mode.value; closeDropdown();"
+                class="option-button-dropdown group"
+                :class="{'active': selectedAudioMode === mode.value}"
+                :title="mode.description"
+              >
+                <component :is="mode.icon" class="option-icon-dropdown" />
+                <span class="option-label-dropdown">{{ mode.label }}</span>
+              </button>
             </div>
           </div>
-          <div v-else class="vcd__label-sm text-center py-2 text-gray-500 dark:text-gray-400 italic">Loading voices...</div> <div class="vcd__range-slider-group pt-1"> <div>
-              <label :for="'volumeSliderHeader-' + settings.ttsProvider" class="vcd__label-sm">Volume: <span class="font-semibold">{{ Math.round(settings.ttsVolume * 100) }}%</span></label> <input type="range" :id="'volumeSliderHeader-' + settings.ttsProvider" :value="settings.ttsVolume" @input="handleRangeInput('ttsVolume', $event)" min="0" max="1" step="0.01" class="vcd__range-slider" /> </div>
-            <div>
-              <label :for="'rateSliderHeader-' + settings.ttsProvider" class="vcd__label-sm">Rate: <span class="font-semibold">{{ settings.ttsRate.toFixed(1) }}x</span></label>
-              <input type="range" :id="'rateSliderHeader-' + settings.ttsProvider" :value="settings.ttsRate" @input="handleRangeInput('ttsRate', $event)" min="0.5" max="2.5" step="0.1" class="vcd__range-slider" /> </div>
-            <div v-if="settings.ttsProvider === 'browser_tts'">
-              <label :for="'pitchSliderHeader-' + settings.ttsProvider" class="vcd__label-sm">Pitch: <span class="font-semibold">{{ settings.ttsPitch.toFixed(1) }}</span></label>
-              <input type="range" :id="'pitchSliderHeader-' + settings.ttsProvider" :value="settings.ttsPitch" @input="handleRangeInput('ttsPitch', $event)" min="0" max="2" step="0.1" class="vcd__range-slider" /> </div>
-          </div>
-        </div>
 
-        <div class="vcd__footer"> <button @click="navigateToSettings" class="vcd__footer-btn-all-settings"> <Cog6ToothIcon class="icon-sm mr-1.5" /> All Settings
-          </button>
-        </div>
+          <div class="dropdown-divider-ephemeral my-1.5"></div>
+
+          <div class="setting-group-in-dropdown px-2 py-1">
+            <label class="setting-group-label-dropdown">Speech Recognition (STT)</label>
+             <div class="options-grid-dropdown">
+                <button
+                    v-for="stt in sttOptions"
+                    :key="stt.value"
+                    @click="selectedSTTPreference = stt.value; closeDropdown();"
+                    class="option-button-dropdown group"
+                    :class="{'active': selectedSTTPreference === stt.value}"
+                    :title="stt.description"
+                >
+                    <component :is="stt.icon" class="option-icon-dropdown" />
+                    <span class="option-label-dropdown">{{ stt.label }}</span>
+                </button>
+            </div>
+          </div>
+          </div>
       </div>
-    </transition>
+    </Transition>
   </div>
 </template>
 
+<style lang="scss" scoped>
+@use '@/styles/abstracts/variables' as var;
+/* Styles for this component will be in _voice-controls-dropdown.scss */
+/* This scoped block is for very specific, one-off overrides or adjustments */
+
+/* The dropdown panel and items will use shared styles from _dropdowns.scss */
+/* by applying classes like .dropdown-panel-ephemeral, .dropdown-item-ephemeral etc. */
+
+.setting-group-in-dropdown {
+  margin-bottom: var.$spacing-sm;
+}
+.setting-group-label-dropdown {
+  display: block;
+  font-size: var.$font-size-xs;
+  font-weight: 500;
+  color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+  margin-bottom: var.$spacing-xs;
+  padding-left: var.$spacing-xs; // Align with items
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.options-grid-dropdown {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); // Responsive grid for options
+  gap: var.$spacing-xs;
+}
+
+.option-button-dropdown {
+  @apply flex flex-col items-center justify-center p-2 rounded-md text-xs;
+  background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.4);
+  border: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.3);
+  color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+  transition: all var.$duration-quick;
+  min-height: 60px; // Ensure consistent height
+
+  .option-icon-dropdown {
+    width: 1.5rem; // 24px
+    height: 1.5rem;
+    margin-bottom: var.$spacing-xs * 0.5;
+    opacity: 0.7;
+  }
+  .option-label-dropdown {
+    font-weight: 500;
+  }
+
+  &:hover {
+    background-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.1);
+    border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.4);
+    color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
+    .option-icon-dropdown { opacity: 1; }
+  }
+
+  &.active {
+    background-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.2);
+    border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.6);
+    color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
+    font-weight: 600;
+    box-shadow: inset 0 1px 3px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.2);
+    .option-icon-dropdown { opacity: 1; }
+  }
+}
+
+.status-dot-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: var.$radius-full;
+    background-color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l), 0.5);
+    transition: background-color var.$duration-quick;
+    &.active-dot {
+        background-color: hsl(var(--color-success-h), var(--color-success-s), var(--color-success-l));
+        box-shadow: 0 0 5px 1px hsla(var(--color-success-h), var(--color-success-s), var(--color-success-l), 0.7);
+    }
+    &.inactive-dot {
+         background-color: hsl(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.7);
+    }
+}
+
+.dropdown-float-neomorphic-enter-active,
+.dropdown-float-neomorphic-leave-active {
+  transition: opacity var.$duration-quick var.$ease-out-quad, transform var.$duration-quick var.$ease-out-quad;
+}
+.dropdown-float-neomorphic-enter-from,
+.dropdown-float-neomorphic-leave-to {
+  opacity: 0;
+  transform: translateY(-12px) scale(0.92);
+}
+</style>
