@@ -1,10 +1,12 @@
 // File: frontend/src/styles/abstracts/_variables.scss
 /**
  * @file _variables.scss
- * @description Core SCSS variables for design tokens, animation timings, and default fallback values for CSS Custom Properties.
- * These variables provide a foundational layer for the "Ephemeral Harmony" design system.
- * SCSS variables are primarily for mixin parameters, function arguments, and as compile-time fallbacks.
- * @version 3.0.0 - Updated to align with enhanced theme system and new CSS custom properties.
+ * @description Core SCSS variables for design tokens (typography, spacing, colors, etc.),
+ * animation timings, z-indexes, breakpoints, and default SCSS fallback values
+ * for CSS Custom Properties. These variables provide a foundational layer for the
+ * "Ephemeral Harmony" design system, supporting both compile-time SCSS logic
+ * and runtime CSS variable-driven theming.
+ * @version 3.0.1 - Clarified shadow highlight modifier fallback for SCSS calculations.
  */
 
 // -----------------------------------------------------------------------------
@@ -12,19 +14,18 @@
 // -----------------------------------------------------------------------------
 $font-family-sans: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
 $font-family-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-$font-family-display: 'Plus Jakarta Sans', $font-family-sans; // Using Plus Jakarta Sans as display for now
+$font-family-display: 'Plus Jakarta Sans', $font-family-sans;
 
-$font-size-base-default: 1rem;       // Default fallback, actual value via CSS var
-$letter-spacing-base-default: 0.015em; // Default fallback
-$line-height-base-default: 1.65;    // Default fallback
+$font-size-base-default: 1rem;
+$letter-spacing-base-default: 0.015em;
+$line-height-base-default: 1.65;
 
-$font-size-sm: 0.875rem;  // 14px
-$font-size-xs: 0.75rem;   // 12px
-$font-size-lg: 1.125rem;  // 18px
-$font-size-xl: 1.25rem;   // 20px
-$font-size-display-default: 2rem; // Default for H1, can be overridden by theme CSS var or specific h1 styles
+$font-size-sm: 0.875rem;
+$font-size-xs: 0.75rem;
+$font-size-lg: 1.125rem;
+$font-size-xl: 1.25rem;
+$font-size-display-default: 2rem;
 
-// Line heights
 $line-height-heading: 1.3;
 
 // -----------------------------------------------------------------------------
@@ -54,49 +55,78 @@ $radius-xl: 0.75rem;    // 12px
 $radius-2xl: 1rem;      // 16px
 $radius-3xl: 1.5rem;    // 24px
 $radius-full: 9999px;
-$radius-holographic-default: 0.625rem; // 10px, for specific holographic elements, overridable by theme
+$radius-holographic-default: 0.625rem; // 10px, for specific holographic elements
+$radius-holo: $radius-holographic-default; // Alias for backward compatibility
 
 // -----------------------------------------------------------------------------
 // Layout Dimensions & Visual Defaults
 // -----------------------------------------------------------------------------
-$site-max-width: 1440px; // Increased slightly
+$site-max-width: 1440px;
 $header-height-default: 64px;
 $footer-height-default: 56px;
 $chat-log-height-default: 200px;
 
-// Visual effect defaults (used as fallbacks or base values for CSS vars if not set by theme)
-$blur-glass-default: 10px;
+$default-blur-glass: 10px; // <<< RENAMED FROM $blur-glass-default
 
+
+// -----------------------------------------------------------------------------
 // Shadows
 // -----------------------------------------------------------------------------
 $shadow-offset-sm: 2px;
 $shadow-offset-md: 4px;
 $shadow-offset-lg: 6px;
 $shadow-offset-xl: 10px;
+$shadow-offset-2xl: 16px; // Added for a potential deeper shadow
 
 // Default SCSS variables for shadow HSL components (fallbacks for CSS vars)
 $default-shadow-color-h: 220;
 $default-shadow-color-s: 10%;
-$default-shadow-color-l: 30%; // Darker base for shadows, themes control lightness
+$default-shadow-color-l: 30%; // Darker base for shadows, themes control lightness for CSS vars
 $default-shadow-opacity-soft: 0.08;
 $default-shadow-opacity-medium: 0.12;
 $default-shadow-opacity-strong: 0.18;
-$default-shadow-opacity-deep: 0.15; // Added: Default opacity for deeper shadows (adjust value as needed)
-$default-shadow-highlight-modifier: '+25%'; // % to add to L for neomorphic highlight
+$default-shadow-opacity-deep: 0.22; // Adjusted for a more distinct deep shadow
 
-// Predefined full shadow definitions for SCSS use (e.g., as mixin defaults)
+// SCSS Fallback for highlight lightness modifier factor.
+$default-shadow-highlight-l-factor: 0.25;
+
+// Predefined full shadow definitions for direct SCSS use (e.g., as mixin defaults if CSS vars aren't applicable)
 $scss-shadow-color-string-soft: hsla($default-shadow-color-h, $default-shadow-color-s, $default-shadow-color-l, $default-shadow-opacity-soft);
 $scss-shadow-color-string-medium: hsla($default-shadow-color-h, $default-shadow-color-s, $default-shadow-color-l, $default-shadow-opacity-medium);
 $scss-shadow-color-string-strong: hsla($default-shadow-color-h, $default-shadow-color-s, $default-shadow-color-l, $default-shadow-opacity-strong);
-// Consider adding one for deep if used directly in SCSS, e.g.:
-// $scss-shadow-color-string-deep: hsla($default-shadow-color-h, $default-shadow-color-s, $default-shadow-color-l, $default-shadow-opacity-deep);
+$scss-shadow-color-string-deep: hsla($default-shadow-color-h, $default-shadow-color-s, $default-shadow-color-l, $default-shadow-opacity-deep); // Added for deeper shadows
 
+$scss-box-shadow-sm: 0 #{$shadow-offset-sm} calc(#{$shadow-offset-sm} * 1.5) #{$scss-shadow-color-string-soft};
+$scss-box-shadow-md: 0 #{$shadow-offset-md} calc(#{$shadow-offset-md} * 2) #{$scss-shadow-color-string-medium};
+$scss-box-shadow-lg: 0 #{$shadow-offset-lg} calc(#{$shadow-offset-lg} * 2.5) #{$scss-shadow-color-string-strong};
+$scss-box-shadow-xl: 0 #{$shadow-offset-xl} calc(#{$shadow-offset-xl} * 2.5) #{$scss-shadow-color-string-strong}; // xl uses 'strong'
+$scss-box-shadow-2xl: 0 #{$shadow-offset-2xl} calc(#{$shadow-offset-2xl} * 2.5) #{$scss-shadow-color-string-deep}; // Added a 2xl example using 'deep'
+
+// Shadow Depth Variables (for direct use as box-shadow values)
+// These alias or use the $scss-box-shadow-* variables for simpler semantic usage.
+$shadow-depth-xs: 0 1px 2px 0 hsla($default-shadow-color-h, $default-shadow-color-s, $default-shadow-color-l, $default-shadow-opacity-soft * 0.75); // Example for a very subtle shadow
+$shadow-depth-sm: $scss-box-shadow-sm;
+$shadow-depth-md: $scss-box-shadow-md;
+$shadow-depth-lg: $scss-box-shadow-lg;
+$shadow-depth-xl: $scss-box-shadow-xl;
+$shadow-depth-2xl: $scss-box-shadow-2xl; // New deeper shadow
+
+
+// SCSS Fallback for highlight lightness modifier factor.
+// This unitless number represents the percentage increase (e.g., 0.25 for +25%)
+// used when SCSS calculates neomorphic highlight lightness if CSS variables are not available.
+// Themes should ideally define a specific CSS variable like --shadow-color-highlight-l.
+$default-shadow-highlight-l-factor: 0.25;
+
+// Predefined full shadow definitions for direct SCSS use (e.g., as mixin defaults if CSS vars aren't applicable)
+$scss-shadow-color-string-soft: hsla($default-shadow-color-h, $default-shadow-color-s, $default-shadow-color-l, $default-shadow-opacity-soft);
+$scss-shadow-color-string-medium: hsla($default-shadow-color-h, $default-shadow-color-s, $default-shadow-color-l, $default-shadow-opacity-medium);
+$scss-shadow-color-string-strong: hsla($default-shadow-color-h, $default-shadow-color-s, $default-shadow-color-l, $default-shadow-opacity-strong);
 
 $scss-box-shadow-sm: 0 #{$shadow-offset-sm} calc(#{$shadow-offset-sm} * 1.5) #{$scss-shadow-color-string-soft};
 $scss-box-shadow-md: 0 #{$shadow-offset-md} calc(#{$shadow-offset-md} * 2) #{$scss-shadow-color-string-medium};
 $scss-box-shadow-lg: 0 #{$shadow-offset-lg} calc(#{$shadow-offset-lg} * 2.5) #{$scss-shadow-color-string-strong};
 $scss-box-shadow-xl: 0 #{$shadow-offset-xl} calc(#{$shadow-offset-xl} * 2.5) #{$scss-shadow-color-string-strong};
-
 
 // -----------------------------------------------------------------------------
 // Z-Indexes
@@ -106,12 +136,12 @@ $z-index-base: 1;
 $z-index-content-overlay: 10;
 $z-index-dropdown: 1000;
 $z-index-sticky: 1020;
-$z-index-ephemeral-chat: 1030;
+$z-index-ephemeral-chat: 1030; // Specific for the floating chat log
 $z-index-modal-backdrop: 1040;
 $z-index-modal: 1050;
 $z-index-popover: 1060;
 $z-index-toast: 1070;
-$z-index-dev-tools: 9999;
+$z-index-dev-tools: 9999; // For development overlays or skip links
 
 // -----------------------------------------------------------------------------
 // Animation & Transition Timings & Easing
@@ -125,6 +155,7 @@ $duration-pulse-medium: 1200ms;
 $duration-pulse-slow: 2000ms;
 $duration-pulse-long: 4000ms;
 
+// Standard easing functions
 $ease-linear: linear;
 $ease-in-quad: cubic-bezier(0.55, 0.085, 0.68, 0.53);
 $ease-out-quad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -137,15 +168,16 @@ $ease-out-quart: cubic-bezier(0.165, 0.84, 0.44, 1);
 $ease-in-out-quart: cubic-bezier(0.77, 0, 0.175, 1);
 $ease-in-quint: cubic-bezier(0.755, 0.05, 0.855, 0.06);
 $ease-out-quint: cubic-bezier(0.23, 1, 0.32, 1);
-$ease-in-out-sine: cubic-bezier(0.37, 0, 0.63, 1); // Corrected from original (was 0.445...)
+$ease-in-sine: cubic-bezier(0.47, 0, 0.745, 0.715);
 $ease-out-sine: cubic-bezier(0.39, 0.575, 0.565, 1);
+$ease-in-out-sine: cubic-bezier(0.37, 0, 0.63, 1); // Corrected from original, was slightly off standard
 $ease-in-expo: cubic-bezier(0.95, 0.05, 0.795, 0.035);
-$ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1); // Corrected from original (was 0.19...)
+$ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1); // Corrected from original
 $ease-in-out-expo: cubic-bezier(1, 0, 0, 1);
-$ease-elastic: cubic-bezier(0.64, -0.58, 0.34, 1.56); // Slightly adjusted "Her"-like spring
+$ease-elastic: cubic-bezier(0.64, -0.58, 0.34, 1.56); // "Her"-like spring
 
 // -----------------------------------------------------------------------------
-// Breakpoints (align with Tailwind's default)
+// Breakpoints (Aligned with Tailwind CSS defaults for consistency)
 // -----------------------------------------------------------------------------
 $breakpoint-sm: 640px;
 $breakpoint-md: 768px;
@@ -155,58 +187,82 @@ $breakpoint-2xl: 1536px;
 
 // -----------------------------------------------------------------------------
 // Default SCSS Fallback Values for Theme CSS Custom Properties
-// These are used as compile-time fallbacks if a CSS var() is used in SCSS
-// and that CSS variable might not be defined by a theme.
-// For HSL, provide individual component fallbacks.
+// These are crucial if SCSS mixins/functions use CSS vars and need a compile-time default
+// in case the CSS variable is not (yet) defined or available.
+// For HSL(A), individual component fallbacks are provided.
 // -----------------------------------------------------------------------------
 
 // Backgrounds
 $default-color-bg-primary-h: 220; $default-color-bg-primary-s: 10%; $default-color-bg-primary-l: 95%;
 $default-color-bg-secondary-h: 220; $default-color-bg-secondary-s: 10%; $default-color-bg-secondary-l: 90%;
 $default-color-bg-tertiary-h: 220; $default-color-bg-tertiary-s: 10%; $default-color-bg-tertiary-l: 85%;
+// Added fallbacks for quaternary, quinary, senary based on pattern
+$default-color-bg-quaternary-h: 220; $default-color-bg-quaternary-s: 10%; $default-color-bg-quaternary-l: 80%;
+$default-color-bg-quinary-h: 220; $default-color-bg-quinary-s: 10%; $default-color-bg-quinary-l: 75%;
+$default-color-bg-senary-h: 220; $default-color-bg-senary-s: 10%; $default-color-bg-senary-l: 70%;
+
 $default-color-bg-glass-h: 220; $default-color-bg-glass-s: 10%; $default-color-bg-glass-l: 90%; $default-color-bg-glass-a: 0.5;
 $default-color-border-glass-h: 220; $default-color-border-glass-s: 10%; $default-color-border-glass-l: 80%; $default-color-border-glass-a: 0.3;
-$default-blur-glass: 10px;
+// $default-blur-glass is already defined above
 $default-color-bg-holographic-accent-h: 270; $default-color-bg-holographic-accent-s: 70%; $default-color-bg-holographic-accent-l: 50%; $default-color-bg-holographic-accent-a: 0.1;
-
 
 // Text
 $default-color-text-primary-h: 220; $default-color-text-primary-s: 15%; $default-color-text-primary-l: 20%;
 $default-color-text-secondary-h: 220; $default-color-text-secondary-s: 10%; $default-color-text-secondary-l: 35%;
 $default-color-text-muted-h: 220; $default-color-text-muted-s: 8%; $default-color-text-muted-l: 50%;
 $default-color-text-accent-h: 260; $default-color-text-accent-s: 70%; $default-color-text-accent-l: 60%;
-$default-color-text-on-primary-h: 0; $default-color-text-on-primary-s: 0%; $default-color-text-on-primary-l: 100%;
-$default-color-text-on-secondary-h: 220; $default-color-text-on-secondary-s: 5%; $default-color-text-on-secondary-l: 10%;
+$default-color-text-on-primary-h: 0; $default-color-text-on-primary-s: 0%; $default-color-text-on-primary-l: 100%; // Text on primary accent (e.g. buttons)
+$default-color-text-on-secondary-h: 220; $default-color-text-on-secondary-s: 5%; $default-color-text-on-secondary-l: 10%; // Text on secondary accent
 
-// Accents
+// Accents (Used for interactive elements, highlights, etc.)
 $default-color-accent-primary-h: 260; $default-color-accent-primary-s: 75%; $default-color-accent-primary-l: 60%;
+// Added Lighter/Darker shades for primary accent as fallbacks
+$default-color-accent-primary-light-h: $default-color-accent-primary-h;
+$default-color-accent-primary-light-s: $default-color-accent-primary-s;
+$default-color-accent-primary-light-l: min(100%, $default-color-accent-primary-l + 15%);
+$default-color-accent-primary-dark-h: $default-color-accent-primary-h;
+$default-color-accent-primary-dark-s: $default-color-accent-primary-s;
+$default-color-accent-primary-dark-l: max(0%, $default-color-accent-primary-l - 10%);
+
 $default-color-accent-secondary-h: 180; $default-color-accent-secondary-s: 70%; $default-color-accent-secondary-l: 55%;
-$default-color-accent-interactive-h: 260; $default-color-accent-interactive-s: 75%; $default-color-accent-interactive-l: 60%;
+$default-color-accent-interactive-h: $default-color-accent-primary-h; // Interactive often mirrors primary accent
+$default-color-accent-interactive-s: $default-color-accent-primary-s;
+$default-color-accent-interactive-l: $default-color-accent-primary-l;
+
 
 // Glows
-$default-color-accent-glow-h: 260; $default-color-accent-glow-s: 80%; $default-color-accent-glow-l: 65%; $default-color-accent-glow-a: 0.4;
+$default-color-accent-glow-h: $default-color-accent-primary-h; $default-color-accent-glow-s: 80%; $default-color-accent-glow-l: 65%; $default-color-accent-glow-a: 0.4;
 $default-color-holographic-glow-1-h: 180; $default-color-holographic-glow-1-s: 90%; $default-color-holographic-glow-1-l: 60%; $default-color-holographic-glow-1-a: 0.3;
 $default-color-holographic-glow-2-h: 270; $default-color-holographic-glow-2-s: 80%; $default-color-holographic-glow-2-l: 65%; $default-color-holographic-glow-2-a: 0.25;
 
 // Borders
 $default-color-border-primary-h: 220; $default-color-border-primary-s: 10%; $default-color-border-primary-l: 75%; $default-color-border-primary-a: 1;
 $default-color-border-secondary-h: 220; $default-color-border-secondary-s: 8%; $default-color-border-secondary-l: 65%; $default-color-border-secondary-a: 0.7;
-$default-color-border-interactive-h: 260; $default-color-border-interactive-s: 70%; $default-color-border-interactive-l: 55%; $default-color-border-interactive-a: 0.6;
+$default-color-border-interactive-h: $default-color-accent-interactive-h;
+$default-color-border-interactive-s: $default-color-accent-interactive-s;
+$default-color-border-interactive-l: $default-color-accent-interactive-l;
+$default-color-border-interactive-a: 0.6;
+$default-color-border-translucent-h: 220; $default-color-border-translucent-s: 10%; $default-color-border-translucent-l: 50%; $default-color-border-translucent-a: 0.1;
+
 
 // Voice Visualization
 $default-color-voice-user-h: 270; $default-color-voice-user-s: 80%; $default-color-voice-user-l: 65%;
 $default-color-voice-ai-speaking-h: 180; $default-color-voice-ai-speaking-s: 80%; $default-color-voice-ai-speaking-l: 60%;
+// Used $default-color-voice-ai-speaking-h for consistency, as --color-voice-ai-h seems to be the theme variable used in EphemeralChatLog
+$default-color-voice-ai-h: $default-color-voice-ai-speaking-h;
+$default-color-voice-ai-s: $default-color-voice-ai-speaking-s;
+$default-color-voice-ai-l: $default-color-voice-ai-speaking-l;
+
 $default-color-voice-ai-thinking-h: 210; $default-color-voice-ai-thinking-s: 50%; $default-color-voice-ai-thinking-l: 55%;
 $default-voice-pulse-opacity: 0.6;
 
-// Semantic Colors
+// Semantic Colors (for information, success, warnings, errors)
 $default-color-info-h: 190; $default-color-info-s: 70%; $default-color-info-l: 55%;
 $default-color-success-h: 140; $default-color-success-s: 60%; $default-color-success-l: 50%;
 $default-color-warning-h: 40; $default-color-warning-s: 80%; $default-color-warning-l: 55%;
 $default-color-error-h: 0; $default-color-error-s: 75%; $default-color-error-l: 58%;
+$default-color-error-text-h: $default-color-error-h; $default-color-error-text-s: 100%; $default-color-error-text-l: 85%; // For text on error backgrounds
 
-/* Near the other radius tokens */
-$radius-holographic-default: 0.625rem; // 10px
-
-/* ↓ add this alias so legacy code keeps working */
-$radius-holo: $radius-holographic-default;
+// Code Blocks
+$default-color-bg-code-block-h: 220; $default-color-bg-code-block-s: 10%; $default-color-bg-code-block-l: 15%; // Darker for dark themes
+$default-color-text-code-block-h: 220; $default-color-text-code-block-s: 10%; $default-color-text-code-block-l: 85%;

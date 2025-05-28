@@ -24,6 +24,7 @@
     "concurrently": "^8.2.2"
   },
   "dependencies": {
+    "highlight.js": "^11.11.1",
     "stemmer": "^2.0.1"
   }
 }

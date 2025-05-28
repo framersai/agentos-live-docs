@@ -159,3 +159,90 @@
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.6; transform: scale(0.85); }
 }
+
+// --- Added/Updated for Header Revamp ---
+
+// For AnimatedLogo.vue (if not scoped there)
+@keyframes subtle-spin-logo {
+  from { transform: rotate(0deg) scale(1); }
+  to { transform: rotate(360deg) scale(1); }
+}
+
+@keyframes logo-pulse-ephemeral {
+  0% {
+    filter: drop-shadow(0 0 7px hsla(var(--color-logo-primary-h, var.$default-color-accent-primary-h), var(--color-logo-primary-s, var.$default-color-accent-primary-s), var(--color-logo-primary-l, var.$default-color-accent-primary-l), 0.6)) saturate(1);
+    transform: scale(1);
+  }
+  50% {
+    filter: drop-shadow(0 0 14px hsla(var(--color-logo-primary-h), var(--color-logo-primary-s), var(--color-logo-primary-l), 0.8)) 
+            drop-shadow(0 0 5px hsla(var(--color-logo-secondary-h, var.$default-color-accent-secondary-h), var(--color-logo-secondary-s, var.$default-color-accent-secondary-s), var(--color-logo-secondary-l, var.$default-color-accent-secondary-l), 0.5)) 
+            saturate(1.25) brightness(1.1);
+    transform: scale(1.08);
+  }
+  100% {
+    filter: drop-shadow(0 0 7px hsla(var(--color-logo-primary-h), var(--color-logo-primary-s), var(--color-logo-primary-l), 0.6)) saturate(1);
+    transform: scale(1);
+  }
+}
+
+@keyframes letter-entrance-ephemeral {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes letter-wave-ephemeral {
+  0%, 100% { transform: translateY(0) scale(1) rotate(0deg); }
+  50% { transform: translateY(-1.5px) scale(1.02) rotate(0.5deg); }
+}
+@keyframes letter-wave-main-ephemeral {
+  0%, 100% { transform: translateY(0) scale(1) rotate(0deg); }
+  50% { transform: translateY(-1.5px) scale(1.03) rotate(-0.5deg); }
+}
+
+// For Agent Title Glimmer
+@keyframes subtleGlimmer {
+  0%, 100% {
+    text-shadow: 
+      0 0 2px hsla(var(--color-text-primary-h), var(--color-text-primary-s), calc(var(--color-text-primary-l) + 20%), 0.3), // Base soft glow matching text
+      0 0 5px hsla(var(--color-accent-glow-h), var(--color-accent-glow-s), var(--color-accent-glow-l), 0.15),     // Faint accent sparkle
+      0 0 10px hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.1); // Wider, very faint secondary sparkle
+  }
+  50% {
+    text-shadow: 
+      0 0 3px hsla(var(--color-text-primary-h), var(--color-text-primary-s), calc(var(--color-text-primary-l) + 25%), 0.4),
+      0 0 8px hsla(var(--color-accent-glow-h), var(--color-accent-glow-s), var(--color-accent-glow-l), 0.25), // Slightly stronger accent sparkle
+      1px 1px 12px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.15); // Sporadic primary sparkle
+  }
+}
+
+// For Header Background Reactivity
+@keyframes headerPulse { 
+  0% { transform: scaleY(1) translateY(0); opacity: 0.7; } // Pulse from bottom up slightly
+  50% { transform: scaleY(1.05) translateY(-2px); opacity: 1; }
+  100% { transform: scaleY(1) translateY(0); opacity: 0.7; }
+}
+
+
+@keyframes inputFocusGlowPulse {
+  0% {
+    box-shadow: 0 0 7px 1px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.15),
+                inset 0 0 3px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.05);
+  }
+  50% {
+    box-shadow: 0 0 12px 3px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.25),
+                inset 0 0 4px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.1);
+  }
+  100% {
+    box-shadow: 0 0 7px 1px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.15),
+                inset 0 0 3px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.05);
+  }
+}
+
+// --- Subtle Card Hover Shine/Glimmer (Example) ---
+// This can be applied to card backgrounds or pseudo-elements on hover
+@keyframes cardHoverShine {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}

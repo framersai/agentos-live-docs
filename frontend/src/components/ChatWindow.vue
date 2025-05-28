@@ -1,16 +1,14 @@
-// File: frontend/src/components/ChatWindow.vue
 /**
  * @file ChatWindow.vue
- * @description Main panel for displaying chat messages, welcome placeholder, and loading state,
- * styled with "Ephemeral Harmony" for a visually rich and focused experience.
- * @version 3.1.0 - Enhanced holographic styling and refined placeholder/loading states.
+ * @description Main panel for displaying chat messages, welcome placeholder, and loading state.
+ * @version 3.1.6 - Final review and alignment with current AgentId and IAgentDefinition.
  */
 <script setup lang="ts">
-import { ref, onMounted, watch, onBeforeUnmount, nextTick, type PropType, computed } from 'vue';
-import Message from './Message.vue'; // Will be styled by _message.scss
+import { ref, onMounted, watch, nextTick, type PropType, computed } from 'vue';
+import Message from './Message.vue';
 import type { ChatMessage as StoreChatMessage } from '@/store/chat.store';
 import { useAgentStore } from '@/store/agent.store';
-import { agentService, type IAgentDefinition } from '@/services/agent.service'; // Import IAgentDefinition
+import { type IAgentDefinition, type AgentId } from '@/services/agent.service'; // AgentId used for comparisons
 
 const props = defineProps({
   messages: {
@@ -23,61 +21,81 @@ const props = defineProps({
   }
 });
 
+const emit = defineEmits<{
+  (e: 'example-prompt-click', promptText: string): void;
+}>();
+
 const chatContainerRef = ref<HTMLElement | null>(null);
 const agentStore = useAgentStore();
 
-// Use IAgentDefinition for better typing
-const currentAgent = computed<IAgentDefinition | undefined>(() => agentStore.activeAgent || agentService.getDefaultAgent());
+const currentAgent = computed<IAgentDefinition | undefined>(() => agentStore.activeAgent);
 
-const welcomeTitle = computed(() => {
-  if (!currentAgent.value || currentAgent.value.id === 'general') { // Assuming 'general' is a generic/default ID
+// Use canonical agent IDs for comparison
+const isGenericWelcome = computed(() => {
+  if (!currentAgent.value) return true; // If no agent, show generic welcome
+  return currentAgent.value.id === 'general_chat' || currentAgent.value.id === 'public-quick-helper';
+});
+
+const welcomeTitle = computed<string>(() => {
+  if (isGenericWelcome.value) {
     return "Voice Chat Assistant";
   }
-  return `${currentAgent.value.label || 'Assistant'} Ready`; // More engaging title
+  return `${currentAgent.value?.label || 'Assistant'} Ready`;
 });
 
-const welcomeSubtitle = computed(() => {
-  if (!currentAgent.value || currentAgent.value.id === 'general') {
-    return "How can I assist you today? Feel free to ask about coding, system design, or anything else!";
+const welcomeSubtitle = computed<string>(() => {
+  if (isGenericWelcome.value) {
+    return "How can I assist you today? Feel free to ask anything!";
   }
-  return currentAgent.value.description || `The ${currentAgent.value.label} is active. What's on your mind?`;
+  return currentAgent.value?.description || `The ${currentAgent.value?.label || 'Assistant'} is active. What's on your mind?`;
 });
 
-const examplePrompts = computed(() => {
-  return currentAgent.value?.examplePrompts || [ // Ensure examplePrompts is part of IAgentDefinition
+// examplePrompts is now a valid optional property on IAgentDefinition
+const examplePromptsToDisplay = computed<string[]>(() => {
+  if (currentAgent.value?.examplePrompts && currentAgent.value.examplePrompts.length > 0) {
+    return currentAgent.value.examplePrompts;
+  }
+  // Default prompts if agent doesn't define any, or for generic welcome
+  return [
     "Explain Quantum Entanglement",
-    "Draft an email to my team",
-    "Debug this Python snippet",
-    "What's the weather like in Tokyo?"
+    "Draft an email to my team about the new project.",
+    "Give me ideas for a healthy breakfast.",
+    "What's the weather like in Tokyo today?"
   ];
 });
 
-const scrollToBottom = () => {
+const agentIconSource = computed(() => {
+    if (currentAgent.value?.iconComponent) return null; // Handled by <component :is>
+    // iconPath and avatar are optional legacy fields in IAgentDefinition
+    if (currentAgent.value?.iconPath) return currentAgent.value.iconPath;
+    if (currentAgent.value?.avatar) return currentAgent.value.avatar;
+    return '/src/assets/logo.svg'; // Global fallback
+});
+
+const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {
   if (chatContainerRef.value) {
-    // A slight delay can help if messages are rendering and causing height changes.
-    setTimeout(() => {
-        if(chatContainerRef.value) { // Check again in case it became null
+    nextTick(() => {
+        if(chatContainerRef.value) {
             chatContainerRef.value.scrollTo({
                 top: chatContainerRef.value.scrollHeight,
-                behavior: 'smooth'
+                behavior: behavior
             });
         }
-    }, 50); // 50ms delay
+    });
   }
 };
 
-watch(
-  () => [props.messages.length, props.isLoading],
-  () => {
-    nextTick(() => {
-      scrollToBottom();
-    });
-  },
-  { flush: 'post' }
-);
+watch(() => props.messages.length, () => { scrollToBottom('smooth'); }, { flush: 'post' });
+watch(() => props.isLoading, (newIsLoading, oldIsLoading) => {
+    if (oldIsLoading && !newIsLoading && props.messages.length > 0) { // Response finished loading
+        scrollToBottom('smooth');
+    } else if (newIsLoading) { // New message or loading started
+        scrollToBottom('auto'); // Faster scroll if content might jump
+    }
+});
 
 onMounted(() => {
-  nextTick(scrollToBottom);
+  scrollToBottom('auto'); // Initial scroll without smooth behavior
 });
 
 defineExpose({
@@ -95,24 +113,39 @@ defineExpose({
   >
     <div class="chat-messages-wrapper-ephemeral">
       <div v-if="messages.length === 0 && !isLoading" class="welcome-placeholder-ephemeral">
+        <component 
+            v-if="currentAgent?.iconComponent && typeof currentAgent.iconComponent !== 'string'"
+            :is="currentAgent.iconComponent"
+            class="welcome-logo-ephemeral"
+            :class="currentAgent.iconClass" 
+            aria-hidden="true"
+        />
         <img
-          :src="currentAgent?.iconPath || '/src/assets/logo.svg'"
+          v-else-if="agentIconSource"
+          :src="agentIconSource" 
           :alt="`${currentAgent?.label || 'VCA'} Logo`"
           class="welcome-logo-ephemeral"
         />
+        <img 
+            v-else
+            src="/src/assets/logo.svg" 
+            alt="Voice Chat Assistant Logo"
+            class="welcome-logo-ephemeral"
+        />
+
         <h2 class="welcome-title-ephemeral">{{ welcomeTitle }}</h2>
         <p class="welcome-subtitle-ephemeral">
           {{ welcomeSubtitle }}
         </p>
-        <div v-if="examplePrompts.length > 0" class="example-prompts-grid-ephemeral">
+        <div v-if="examplePromptsToDisplay.length > 0" class="example-prompts-grid-ephemeral">
           <div
-            v-for="(prompt, index) in examplePrompts.slice(0, 4)"
-            :key="`prompt-${index}`"
-            class="prompt-tag-ephemeral"
-            role="button" 
+            v-for="(prompt, index) in examplePromptsToDisplay.slice(0, 4)"
+            :key="`prompt-${currentAgent?.id || 'default'}-${index}`" class="prompt-tag-ephemeral"
+            role="button"
             tabindex="0"
-            @click="$emit('example-prompt-click', prompt)" 
-            @keydown.enter="$emit('example-prompt-click', prompt)"
+            @click="emit('example-prompt-click', prompt)"
+            @keydown.enter.space.prevent="emit('example-prompt-click', prompt)"
+            :aria-label="`Use example prompt: ${prompt}`"
           >
             {{ prompt }}
           </div>
@@ -120,10 +153,9 @@ defineExpose({
       </div>
 
       <Message
-        v-for="message in messages"
-        :key="message.id"
+        v-for="(message, index) in messages" :key="message.id || `msg-${index}`"
         :message="message"
-        class="message-item-in-log" 
+        class="message-item-in-log"
       />
 
       <div v-if="isLoading" class="loading-indicator-chat-ephemeral" aria-label="Assistant is thinking">
@@ -140,6 +172,6 @@ defineExpose({
 
 <style lang="scss">
 // Styles are in frontend/src/styles/components/_chat-window.scss
-// Ensure keyframes used (fadeIn, breathingEffect, holoGridScroll, bounceDelay)
-// are defined in your global _keyframes.scss file.
+// Ensure that SCSS file defines .welcome-logo-ephemeral, .welcome-title-ephemeral, etc.
+// and provides appropriate styling for the 'ephemeral' theme.
 </style>

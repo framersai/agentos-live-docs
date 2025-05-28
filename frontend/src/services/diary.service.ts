@@ -130,31 +130,21 @@ class DiaryService {
       return null;
     }
   }
-
-  async getAllEntries(sortBy: 'createdAt' | 'updatedAt' | 'title' = 'createdAt', sortOrder: 'asc' | 'desc' = 'desc'): Promise<DiaryEntry[]> {
+async getAllEntries(sortBy: 'createdAt' | 'updatedAt' | 'title' = 'createdAt', sortOrder: 'asc' | 'desc' = 'desc'): Promise<DiaryEntry[]> {
     try {
       const entriesMap = await this.getAllEntriesMap();
       const entriesArray = Array.from(entriesMap.values());
 
-      entriesArray.sort((a, b) => {
-        let comparison = 0;
-        if (sortBy === 'title') {
-          comparison = a.title.localeCompare(b.title);
-        } else { 
-          comparison = new Date(b[sortBy]).getTime() - new Date(a[sortBy]).getTime(); // Default desc for dates
-        }
-        return sortOrder === 'asc' ? comparison * -1 : comparison; // Adjust if default date sort is not what's needed
-      });
-      // Correct date sorting:
       entriesArray.sort((a, b) => {
         let valA = a[sortBy];
         let valB = b[sortBy];
         let comparison = 0;
         if (sortBy === 'title') {
             comparison = (valA as string).localeCompare(valB as string);
-        } else { // createdAt or updatedAt
+        } else { // createdAt or updatedAt (ISO date strings)
             comparison = new Date(valA as string).getTime() - new Date(valB as string).getTime();
         }
+        // If sortOrder is 'desc', multiply by -1 to reverse the comparison
         return sortOrder === 'desc' ? comparison * -1 : comparison;
       });
 
