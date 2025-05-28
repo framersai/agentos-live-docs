@@ -21,7 +21,8 @@
   "license": "MIT",
   "devDependencies": {
     "@types/natural": "^5.1.5",
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "postcss-nesting": "^13.0.1"
   },
   "dependencies": {
     "highlight.js": "^11.11.1",

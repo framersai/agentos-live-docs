@@ -340,22 +340,6 @@ onMounted(() => {
   font-weight: 500;
 }
 
-/* Custom Scrollbar for Nerf */
-.nerf-scrollbar {
-  &::-webkit-scrollbar { @apply w-2 h-2; } /* Slightly thicker for a more playful feel */
-  &::-webkit-scrollbar-track { background-color: hsla(var(--neutral-hue, 220), 15%, 15%, 0.3); @apply rounded-full; }
-  &::-webkit-scrollbar-thumb {
-    background-color: hsla(var(--agent-nerf-accent-hue), var(--agent-nerf-accent-saturation), var(--agent-nerf-accent-lightness), 0.6);
-    @apply rounded-full;
-    border: 2px solid hsla(var(--neutral-hue, 220), 15%, 15%, 0.3); /* Match track for inset look */
-  }
-  &::-webkit-scrollbar-thumb:hover {
-    background-color: var(--agent-nerf-accent-color);
-  }
-  scrollbar-width: auto; /* Or 'thin' */
-  scrollbar-color: hsla(var(--agent-nerf-accent-hue), var(--agent-nerf-accent-saturation), var(--agent-nerf-accent-lightness), 0.6) hsla(var(--neutral-hue, 220), 15%, 15%, 0.3);
-}
-
 /* Styling for Prose content rendered by Nerf */
 .nerf-prose-content {
   /* Basic prose styling for readability */

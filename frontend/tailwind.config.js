@@ -220,8 +220,97 @@ export default {
         '.btn-primary': {
             // Styles for primary button, could @apply the base .btn or extend it
         },
-        '.btn-secondary': {}
-        // ... more button variants if needed
+        '.btn-secondary': {},
+        // Custom Scrollbar for Futuristic theme
+        '.custom-scrollbar-futuristic': {
+          // Define webkit scrollbar styles directly
+          '&::-webkit-scrollbar': {
+            width: theme('width')['1.5'], // Use theme values
+            height: theme('height')['1.5'], // Use theme values
+          },
+          '&::-webkit-scrollbar-track': {
+            backgroundColor: 'hsla(var(--neutral-hue, 220), 20%, 20%, 0.3)',
+            borderRadius: theme('borderRadius.full'), // Use theme values
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: 'hsla(var(--agent-interviewer-accent-hue), calc(var(--agent-interviewer-accent-saturation) + 15%), calc(var(--agent-interviewer-accent-lightness) + 10%), 0.6)',
+            borderRadius: theme('borderRadius.full'), // Use theme values
+            border: '1px solid hsla(var(--neutral-hue, 220), 20%, 15%, 0.5)',
+          },
+          '&::-webkit-scrollbar-thumb:hover': {
+            backgroundColor: 'hsla(var(--agent-interviewer-accent-hue), calc(var(--agent-interviewer-accent-saturation) + 15%), calc(var(--agent-interviewer-accent-lightness) + 10%), 0.8)',
+          },
+          // Standard scrollbar properties (Firefox)
+          'scrollbarWidth': 'thin',
+          'scrollbarColor': 'hsla(var(--agent-interviewer-accent-hue), calc(var(--agent-interviewer-accent-saturation) + 15%), calc(var(--agent-interviewer-accent-lightness) + 10%), 0.6) hsla(var(--neutral-hue, 220), 20%, 20%, 0.3)',
+        },
+        // Custom Scrollbar for Nerf
+        '.nerf-scrollbar': {
+          // Define webkit scrollbar styles directly
+          '&::-webkit-scrollbar': {
+            width: theme('width')['2'], // Use theme values
+            height: theme('height')['2'], // Use theme values
+          },
+          '&::-webkit-scrollbar-track': {
+            backgroundColor: 'hsla(var(--neutral-hue, 220), 15%, 15%, 0.3)',
+            borderRadius: theme('borderRadius.full'), // Use theme values
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: 'hsla(var(--agent-nerf-accent-hue), var(--agent-nerf-accent-saturation), var(--agent-nerf-accent-lightness), 0.6)',
+            borderRadius: theme('borderRadius.full'), // Use theme values
+            border: '2px solid hsla(var(--neutral-hue, 220), 15%, 15%, 0.3)',
+          },
+          '&::-webkit-scrollbar-thumb:hover': {
+            backgroundColor: 'var(--agent-nerf-accent-color)',
+          },
+          // Standard scrollbar properties (Firefox)
+          'scrollbarWidth': 'auto', // Or 'thin'
+          'scrollbarColor': 'hsla(var(--agent-nerf-accent-hue), var(--agent-nerf-accent-saturation), var(--agent-nerf-accent-lightness), 0.6) hsla(var(--neutral-hue, 220), 15%, 15%, 0.3)',
+        },
+        // Custom Scrollbar for Thin variant
+        '.custom-scrollbar-thin': {
+          // Define webkit scrollbar styles directly
+          '&::-webkit-scrollbar': {
+            width: theme('width')['1'], // Very thin
+            height: theme('height')['1'], // Very thin
+          },
+          '&::-webkit-scrollbar-track': {
+            backgroundColor: 'hsla(var(--neutral-hue, 220), 10%, 10%, 0.2)', // Lighter track for thin look
+            borderRadius: theme('borderRadius.full'),
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: 'hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.5)', // Use a general accent color
+            borderRadius: theme('borderRadius.full'),
+            border: '0.5px solid hsla(var(--neutral-hue, 220), 10%, 15%, 0.3)', // Very subtle border
+          },
+          '&::-webkit-scrollbar-thumb:hover': {
+            backgroundColor: 'hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.7)',
+          },
+          // Standard scrollbar properties (Firefox)
+          'scrollbarWidth': 'thin',
+          'scrollbarColor': 'hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.5) hsla(var(--neutral-hue, 220), 10%, 10%, 0.2)',
+        },
+        // Custom Scrollbar for Architecton (Updated with new styles)
+        '.architecton-scrollbar': {
+          '&::-webkit-scrollbar': {
+            width: theme('width')['2'],
+            height: theme('height')['2'],
+          },
+          '&::-webkit-scrollbar-track': {
+            backgroundColor: 'hsla(var(--neutral-hue, 230), 20%, 18%, 0.4)',
+            borderRadius: theme('borderRadius.full'),
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: 'hsla(var(--agent-architecton-accent-hue), var(--agent-architecton-accent-saturation), var(--agent-architecton-accent-lightness), 0.65)',
+            borderRadius: theme('borderRadius.full'),
+            border: '2px solid hsla(var(--neutral-hue, 230), 20%, 18%, 0.4)',
+          },
+          '&::-webkit-scrollbar-thumb:hover': {
+            backgroundColor: 'var(--agent-architecton-accent-color)',
+          },
+          'scrollbarWidth': 'auto',
+          'scrollbarColor': 'hsla(var(--agent-architecton-accent-hue), var(--agent-architecton-accent-saturation), var(--agent-architecton-accent-lightness), 0.65) hsla(var(--neutral-hue, 230), 20%, 18%, 0.4)',
+        },
       });
     }),
   ],

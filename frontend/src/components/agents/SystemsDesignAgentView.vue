@@ -342,20 +342,7 @@ onMounted(() => {
 }
 
 /* Custom Scrollbar for Architecton */
-.architecton-scrollbar {
-  &::-webkit-scrollbar { @apply w-2 h-2; }
-  &::-webkit-scrollbar-track { background-color: hsla(var(--neutral-hue, 230), 20%, 18%, 0.4); @apply rounded-full; }
-  &::-webkit-scrollbar-thumb {
-    background-color: hsla(var(--agent-architecton-accent-hue), var(--agent-architecton-accent-saturation), var(--agent-architecton-accent-lightness), 0.65);
-    @apply rounded-full;
-    border: 2px solid hsla(var(--neutral-hue, 230), 20%, 18%, 0.4);
-  }
-  &::-webkit-scrollbar-thumb:hover {
-    background-color: var(--agent-architecton-accent-color);
-  }
-  scrollbar-width: auto;
-  scrollbar-color: hsla(var(--agent-architecton-accent-hue), var(--agent-architecton-accent-saturation), var(--agent-architecton-accent-lightness), 0.65) hsla(var(--neutral-hue, 230), 20%, 18%, 0.4);
-}
+
 
 /* Styling for Prose content rendered by Architecton */
 .architecton-prose-content, .architecton-compact-renderer :deep(.prose) { /* Target prose within compact renderer too */
