@@ -1,9 +1,10 @@
 // File: frontend/src/styles/components/_chat-window.scss
 /**
  * @file _chat-window.scss
- * @description Styles for the ChatWindow.vue component, displaying chat messages,
- * welcome placeholder, and loading indicators with "Ephemeral Harmony" styling.
- * @version 2.0.1 - Enhanced holographic feel, typography, and loading state.
+ * @description Styles for the ChatWindow.vue component, "Ephemeral Harmony" theme.
+ * Focuses on a visually rich and focused main chat area, with engaging welcome
+ * and loading states.
+ * @version 3.0.0 - Ephemeral Harmony visual overhaul.
  */
 
 @use '../abstracts/variables' as var;
@@ -11,180 +12,216 @@
 @use './buttons' as buttonsFile; // For prompt tag styling
 
 .chat-window-container-ephemeral {
-  flex-grow: 1;
-  overflow-y: auto;
+  flex-grow: 1; // Takes up available vertical space
+  overflow-y: auto; // Enables scrolling for the message list
   overflow-x: hidden;
-  padding: var.$spacing-lg var.$spacing-xl; // More generous padding
-  display: flex;
-  flex-direction: column; // Ensure wrapper itself can manage direct children if any outside messages-wrapper
-  position: relative;
-  background-color: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.3); // Base transparency
+  padding: var.$spacing-md var.$spacing-lg; // Consistent padding
+  display: flex; // Using flex to help center content if it's narrower than window
+  flex-direction: column;
+  position: relative; // For pseudo-elements like background grid
 
-  // Subtle animated holographic grid background for the chat window itself
+  // Subtle, theme-aware background for the chat window itself
+  // This will sit on top of any global background effects from UnifiedChatLayout
+  background-color: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.4); // Slightly transparent primary
+
+  // Optional: Very subtle border to define the chat area if not using a card-like wrapper around messages
+  // border: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.1);
+  // border-radius: var.$radius-lg; // If it's treated as a distinct panel
+
+  // Maintain the subtle holographic grid, but ensure it's very faint
   &::before {
     content: '';
     position: absolute;
     inset: 0;
-    background-image: var(--bg-holo-grid-pattern); // From theme via _global.scss or _theme-engine.scss
-    background-size: var(--bg-holo-grid-size, 60px) var(--bg-holo-grid-size, 60px); // Larger grid
-    opacity: var(--bg-holo-grid-opacity, 0.025); // Very subtle
-    animation: holoGridScroll var.$duration-pulse-long * 10 linear infinite alternate; // Extremely slow scroll
+    background-image: var(--bg-holo-grid-pattern);
+    background-size: var(--bg-holo-grid-size, 70px) var(--bg-holo-grid-size, 70px); // Larger, sparser grid
+    opacity: var(--bg-holo-grid-opacity, 0.015); // Extremely subtle
+    animation: holoGridScroll var.$duration-pulse-long * 15 linear infinite alternate; // Very, very slow
     pointer-events: none;
-    z-index: 0;
+    z-index: 0; // Behind content
   }
 
   @include mixins.custom-scrollbar(
-    '--color-accent-interactive',
-    0.35, // Base alpha
-    0.55, // Hover alpha
-    '--color-bg-primary', // Track color prefix
-    0.1,  // Track alpha
-    7px   // Width - slightly slimmer
+    '--color-accent-interactive', // CSS Var prefix for thumb HSL
+    0.4, // base alpha
+    0.6, // hover alpha
+    '--color-bg-primary', // CSS Var prefix for track HSL (use a very subtle version of primary bg)
+    0.05, // track alpha (almost invisible track)
+    6px // width (slim scrollbar)
   );
 }
 
 .chat-messages-wrapper-ephemeral {
   display: flex;
   flex-direction: column;
-  gap: var.$spacing-lg; // Increased gap for better message separation
+  gap: var.$spacing-lg; // Generous gap between messages for readability
   width: 100%;
-  padding-bottom: var.$spacing-md; // Space at the very end
-  position: relative; // For z-index context if needed
-  z-index: 1; // Above the ::before pseudo-element
+  max-width: 900px; // Max width for the message flow column
+  margin: 0 auto; // Center the message flow column within the chat window
+  padding: var.$spacing-md 0; // Vertical padding for the message list
+  position: relative;
+  z-index: 1; // Above the ::before grid
 }
 
+// --- Welcome Placeholder ---
 .welcome-placeholder-ephemeral {
   text-align: center;
-  margin: auto; // Vertically and horizontally center if wrapper is flex
-  padding: var.$spacing-2xl var.$spacing-lg; // Ample padding
-  max-width: 700px;
+  margin: auto; // Vertically and horizontally center
+  padding: var.$spacing-xl * 1.5 var.$spacing-lg; // Increased padding
+  max-width: 650px; // Constrained width for focus
   color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
   opacity: 0;
-  animation: fadeIn 0.9s var.$ease-out-expo 0.2s forwards; // Slightly delayed, smoother fade-in
-  border-radius: var.$radius-2xl;
-  @include mixins.glassmorphic-pane(
-    hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.4),
-    hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.2),
-    calc(var(--blur-glass) * 0.8), // Adjusted blur
-    var(--shadow-depth-md)
-  );
+  animation: fadeIn 0.8s var.$ease-out-expo 0.1s forwards;
+  border-radius: var.$radius-2xl; // Large radius for card feel
 
+  // Apply a distinct, premium card style
+  @include mixins.neomorphic-extrude(
+    '--color-bg-secondary', // CSS Var prefix for HSL
+    5px, 12px, // distance, blur
+    '--shadow-opacity-medium', // opacity var
+    var.$radius-2xl,
+    '--shadow-color-h', '--shadow-color-s', '--shadow-color-l', '--shadow-highlight-modifier',
+    var.$default-color-bg-secondary-h, var.$default-color-bg-secondary-s, var.$default-color-bg-secondary-l,
+    var.$default-shadow-opacity-medium,
+    var.$default-shadow-color-h, var.$default-shadow-color-s, var.$default-shadow-color-l,
+    var.$default-shadow-highlight-modifier
+  );
+  border: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.15);
 
   .welcome-logo-ephemeral {
-    width: 80px; // Larger, more impactful logo
-    height: 80px;
-    margin: 0 auto var.$spacing-xl;
-    opacity: 0.85;
-    animation: breathingEffect 4s var.$ease-in-out-sine infinite; // Use new breathing keyframe
-    --scale-breath: 1.06; // Customize breathing effect
-    --opacity-idle: 0.75;
-    --opacity-breath: 0.95;
-    filter: drop-shadow(0 0 18px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.55));
+    width: clamp(70px, 12vw, 90px); // Prominent logo
+    height: clamp(70px, 12vw, 90px);
+    margin: 0 auto var.$spacing-lg;
+    opacity: 0.9;
+    animation: breathingEffect 3.5s var.$ease-in-out-sine infinite alternate;
+    --scale-breath: 1.08;
+    --opacity-idle: 0.8;
+    --opacity-breath: 1;
+    filter: drop-shadow(0 0 20px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.6));
   }
 
   .welcome-title-ephemeral {
     font-family: var(--font-family-display, var.$font-family-display);
-    font-size: clamp(2rem, 1.5rem + 3vw, 3rem); // Even larger title
-    font-weight: 600;
+    font-size: clamp(1.8rem, 1.2rem + 2.5vw, 2.8rem); // Larger, impactful title
+    font-weight: 700; // Bolder
     color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
-    margin-bottom: var.$spacing-lg; // More space after title
-    letter-spacing: -0.015em; // Refined letter spacing
-    @include mixins.text-glow('--color-accent-primary', 10px, 0.75); // More prominent glow
+    margin-bottom: var.$spacing-md; // Good space after title
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+    @include mixins.text-glow(
+        '--color-accent-primary', 12px,
+        var.$default-color-accent-primary-h,var.$default-color-accent-primary-s,var.$default-color-accent-primary-l,0.65
+    );
   }
 
   .welcome-subtitle-ephemeral {
-    font-size: calc(var(--font-size-base) * 1.1); // Larger subtitle
-    line-height: 1.8; // More line height
+    font-size: var.$font-size-lg * 0.95; // Increased subtitle size
+    line-height: 1.75;
     margin: 0 auto var.$spacing-xl;
-    max-width: 60ch;
-    color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), calc(var(--color-text-secondary-l) + 8%));
-    opacity: 0.95;
+    max-width: 55ch; // Focused subtitle
+    color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), calc(var(--color-text-secondary-l) + 5%)); // Brighter secondary text
+    opacity: 0.9;
   }
 
   .example-prompts-grid-ephemeral {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: var.$spacing-md;
+    gap: var.$spacing-sm; // Tighter gap for tags
     margin-top: var.$spacing-lg;
   }
 
   .prompt-tag-ephemeral {
-    @include buttonsFile.btn;
-    @include mixins.neomorphic-extrude( // More tactile prompt tags
-      hsl(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l)),
-      3px, 6px, // distance, blur
-      var(--shadow-opacity-soft), // opacity CSS var
-      var.$radius-lg, // More rounded
-      var(--shadow-color-h), var(--color-shadow-s), var(--color-shadow-l), // Shadow color CSS vars
-      calc(var(--color-shadow-l) + var(--shadow-highlight-modifier)) // Highlight lightness CSS var
+    @include buttonsFile.btn; // Base button structure
+    // Apply a subtle neomorphic inset or a soft glass chip style
+    @include mixins.neomorphic-inset(
+      '--color-bg-primary', // Inset against primary bg for contrast with extruded card
+      3px, 5px, // distance, blur
+      '--shadow-opacity-soft',
+      var.$radius-md, // Smaller radius for tags
+      '--shadow-color-h', '--shadow-color-s', '--shadow-color-l', '--shadow-highlight-modifier',
+       var.$default-color-bg-primary-h, var.$default-color-bg-primary-s, var.$default-color-bg-primary-l,
+       var.$default-shadow-opacity-soft, var.$default-shadow-color-h, var.$default-shadow-color-s, var.$default-shadow-color-l, var.$default-shadow-highlight-modifier
     );
-    font-size: var.$font-size-sm !important;
-    padding: calc(var.$spacing-xs * 1.1) var.$spacing-md !important; // Adjusted padding
+    font-size: var.$font-size-xs !important; // Smaller font for tags
+    padding: calc(var.$spacing-xs * 0.9) var.$spacing-sm !important;
     color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
-    cursor: default;
-    transition: transform 0.2s var.$ease-out-quad, box-shadow 0.2s var.$ease-out-quad;
-    &:hover {
-      transform: translateY(-2px) scale(1.02);
-      box-shadow: // Enhanced hover shadow for neomorphic extrude
-        5px 5px 10px hsla(var(--shadow-color-h), var(--color-shadow-s), var(--color-shadow-l), calc(var(--shadow-opacity-soft) * 1.2)),
-        -5px -5px 10px hsla(var(--shadow-color-h), var(--color-shadow-s), calc(var(--color-shadow-l) + var(--shadow-highlight-modifier)), calc(var(--shadow-opacity-soft) * 1.2));
+    border-color: hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.2);
+    cursor: default; // Not interactive in this placeholder usually
+    transition: transform 0.15s var.$ease-out-quad, box-shadow 0.15s var.$ease-out-quad;
+
+    &:hover { // Subtle hover effect if they become clickable later
+      transform: scale(1.03);
+      filter: none;
       color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
     }
   }
 }
 
-.message-item-in-log {
-  // Message styling is handled by _message.scss
-  // Animation for message entry is also in _message.scss (ephemeralMessageIn)
-}
 
+// --- Loading Indicator ---
 .loading-indicator-chat-ephemeral {
   display: flex;
+  flex-direction: column; // Stack spinner and text
   align-items: center;
   justify-content: center;
-  margin: var.$spacing-xl auto; // More prominent margin
+  margin: var.$spacing-xl auto;
   padding: var.$spacing-lg var.$spacing-xl;
-  min-width: 240px;
-  border-radius: var.$radius-xl; // Larger radius
+  min-width: 260px;
+  border-radius: var.$radius-xl;
+  
+  // Use a subtle glass pane for the loading indicator
   @include mixins.glassmorphic-pane(
-    hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.7),
-    hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.3),
-    calc(var(--blur-glass) * 0.8),
-    var(--shadow-depth-md)
+    '--color-bg-secondary',
+    '--color-border-glass',
+    calc(var(--blur-glass) * 0.7),
+    'var(--shadow-depth-sm)', // Softer shadow for loading state
+    // Fallbacks
+    var.$default-color-bg-secondary-h, var.$default-color-bg-secondary-s, var.$default-color-bg-secondary-l, 0.6,
+    var.$default-color-border-glass-h, var.$default-color-border-glass-s, var.$default-color-border-glass-l, 0.25,
+    calc(var.$default-blur-glass * 0.7),
+    var.$scss-box-shadow-sm
   );
-  box-shadow: 0 0 20px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.15); // Subtle glow around loading indicator
+  // Add a subtle pulsing holographic glow around the loading indicator
+  animation: subtleHoloGlowPulse 2s infinite alternate;
 
   .spinner-dots-ephemeral {
     display: flex;
     align-items: center;
+    margin-bottom: var.$spacing-md; // Space between dots and text
     .dot-ephemeral {
-      width: 12px; // Larger, more visible dots
-      height: 12px;
-      margin: 0 5px;
+      width: 10px; // Standard dot size
+      height: 10px;
+      margin: 0 4px; // Tighter dot spacing
       background-color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
-      border-radius: 100%;
-      display: inline-block;
+      border-radius: 50%;
       animation: bounceDelay var.$duration-pulse-medium infinite ease-in-out both;
-      // Holographic touch for dots
-      box-shadow: 0 0 10px 2px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.6),
-                  inset 0 0 3px hsla(var(--color-accent-interactive-h), calc(var(--color-accent-interactive-s) + 10%), calc(var(--color-accent-interactive-l) + 15%), 0.7);
-      filter: brightness(1.1);
-
-      &.dot-1 { animation-delay: -0.32s; }
-      &.dot-2 { animation-delay: -0.16s; }
+      box-shadow: 0 0 8px 1px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.5);
+      
+      &.dot-1 { animation-delay: -0.30s; } // Adjusted delays for smoother 3-dot bounce
+      &.dot-2 { animation-delay: -0.15s; }
       &.dot-3 { animation-delay: 0s; }
     }
   }
 
   .loading-text-ephemeral {
-    font-size: var(--font-size-lg); // Larger, clearer loading text
-    color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), calc(var(--color-text-secondary-l) + 5%));
-    margin-left: var.$spacing-lg;
-    letter-spacing: 0.025em;
+    font-size: calc(var.$font-size-base-default); // Standard base size for clarity
+    color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), calc(var(--color-text-secondary-l) + 10%)); // Brighter secondary
     font-weight: 500;
-    @include mixins.text-glow('--color-accent-interactive', 4px, 0.5);
+    letter-spacing: 0.015em;
+    @include mixins.text-glow(
+        '--color-accent-interactive', 3px,
+        var.$default-color-accent-interactive-h,var.$default-color-accent-interactive-s,var.$default-color-accent-interactive-l, 0.4
+    );
   }
 }
 
-// Keyframes (bounceDelay, fadeIn, subtlePulse, breathingEffect, holoGridScroll) should be in _keyframes.scss
+// Keyframes (should be in _keyframes.scss)
+// @keyframes bounceDelay { ... }
+// @keyframes fadeIn { ... }
+// @keyframes breathingEffect { from { transform: scale(1); opacity: var(--opacity-idle, 0.8); } to { transform: scale(var(--scale-breath, 1.05)); opacity: var(--opacity-breath, 1); } }
+// @keyframes holoGridScroll { ... }
+// @keyframes subtleHoloGlowPulse { 
+//   0% { box-shadow: 0 0 15px 2px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.1); }
+//   100% { box-shadow: 0 0 25px 5px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.25); }
+// }
