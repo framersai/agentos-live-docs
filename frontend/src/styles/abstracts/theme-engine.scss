@@ -1,61 +1,69 @@
+// File: frontend/src/styles/abstracts/theme-engine.scss
+/**
+ * @file _theme-engine.scss
+ * @description Generates CSS custom variables for every theme palette.
+ * Corrected SASS map access from `map-get` to `map.get`.
+ * @version 2.0.1 - Corrected map.get syntax.
+ */
 @use 'sass:map';
 /* tailwindcss-disable */
 /* tailwindcss-intellisense-disable */
 
-/* ---------------------------------------------------------------------------
- * Theme Engine – generates CSS-variables for every palette
- *----------------------------------------------------------------------------*/
+// 1. bring the individual theme maps into this file
+@use './theme-definitions.scss' as themes; // $theme-warm-embrace etc.
 
-// 1 — bring the individual maps into scope
-@use './theme-definitions.scss' as themes; // $theme-warm-embrace, …
-
-// 2 — master registry (id → {is-dark, map})
+// 2. shape a master map that also stores whether each theme is dark
 $theme-registry: (
-  'warm-embrace':   ('is-dark': false, 'map': themes.$theme-warm-embrace),
-  'twilight-neo':   ('is-dark': true,  'map': themes.$theme-twilight-neo),
-  'aurora-daybreak':('is-dark': false, 'map': themes.$theme-aurora-daybreak),
+  'warm-embrace': ('is-dark': false, 'map': themes.$theme-warm-embrace),
+  'twilight-neo': ('is-dark': true, 'map': themes.$theme-twilight-neo),
+  'aurora-daybreak': ('is-dark': false, 'map': themes.$theme-aurora-daybreak),
+  // Add new themes here, e.g.:
+  // 'magenta-mystic': ('is-dark': true, 'map': themes.$theme-magenta-mystic),
 );
 
-// 3 — optional aliases for legacy IDs
+// 3. optional aliases so legacy IDs keep working
 $theme-aliases: (
   'ephemeral-holo-dark': 'twilight-neo',
-  'aurora-light':        'aurora-daybreak',
+  'aurora-light': 'aurora-daybreak',
   'legacy-warm-embrace': 'warm-embrace',
   'legacy-twilight-neo': 'twilight-neo',
 );
 
-// 4 — helper mixin
-@mixin apply-theme($map) {
-  @each $prop, $val in $map { #{$prop}: #{$val}; }
+// 4. mixin that prints all custom props for one map
+@mixin apply-theme($map-arg) { // Renamed $map to $map-arg to avoid conflict if $map is a global var elsewhere
+  @each $prop, $val in $map-arg {
+    #{$prop}: #{$val};
+  }
 }
 
-// 5 — output
+// 5. FUTURE-PROOF output ------------------------------------------------------
 $default-theme: 'aurora-daybreak'; // keep in sync with ThemeManager.ts
 
-/* Fallback root vars (JS disabled) */
+/* :root fallback (in case JS never runs) */
 :root {
   @include apply-theme(map.get(map.get($theme-registry, $default-theme), 'map'));
   color-scheme: if(
-    map.get(map.get($theme-registry, $default-theme), 'is-dark'),
-    dark, light
+    map.get(map.get($theme-registry, $default-theme), 'is-dark'), // Corrected: map.get
+    dark,
+    light
   );
 }
 
-/* one selector per real theme */
+/* one data-theme selector per real theme ------------------------------ */
 @each $id, $meta in $theme-registry {
-  html[data-theme="#{$id}"] {
-    @include apply-theme(map.get($meta, 'map'));
-    color-scheme: if(map.get($meta, 'is-dark'), dark, light);
+  html[data-theme='#{$id}'] {
+    @include apply-theme(map.get($meta, 'map')); // Corrected: map.get
+    color-scheme: if(map.get($meta, 'is-dark'), dark, light); // Corrected: map.get
   }
 }
 
 /* alias selectors (duplicate the vars, no @extend) */
 @each $alias, $target in $theme-aliases {
-  $target-meta: map.get($theme-registry, $target);
-  $target-map : map.get($target-meta, 'map');
-  $target-dark: map.get($target-meta, 'is-dark');
+  $target-meta: map.get($theme-registry, $target); // Corrected: map.get
+  $target-map: map.get($target-meta, 'map'); // Corrected: map.get
+  $target-dark: map.get($target-meta, 'is-dark'); // Corrected: map.get
 
-  html[data-theme="#{$alias}"] {
+  html[data-theme='#{$alias}'] {
     @include apply-theme($target-map);
     color-scheme: if($target-dark, dark, light);
   }

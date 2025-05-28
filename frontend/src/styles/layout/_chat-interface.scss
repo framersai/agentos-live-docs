@@ -1,119 +1,187 @@
 // File: frontend/src/styles/layout/_chat-interface.scss
 /**
  * @file _chat-interface.scss
- * @description Styles for the top-positioned, ephemeral, semi-transparent chat log area.
- * Designed for a fluid, holographic feel where recent messages are briefly visible.
- * @version 2.1.0 - Enhanced message appearance and scroll behavior.
+ * @description Styles for the EphemeralChatLog component.
+ * Refined for a highly subtle, transient feel with clear message distinction and graceful fading.
+ * @version 3.1.0 - Improved fading, message accents, and overall subtlety.
  */
 
 @use '../abstracts/variables' as var;
 @use '../abstracts/mixins' as mixins;
 
-.ephemeral-chat-log-container { // Wrapper div if needed for positioning context
-  position: fixed; // Or absolute if header is part of the scrollable viewport
-  top: calc(var(--header-height, var.$header-height-default) + var.$spacing-sm); // Position below header with some gap
+.ephemeral-chat-log-container {
+  position: fixed;
+  top: calc(var(--header-height, #{var.$header-height-default}) + #{var.$spacing-xs});
   left: 50%;
   transform: translateX(-50%);
-  width: clamp(320px, 50vw, 600px); // Responsive width, max 600px
-  max-height: var(--chat-log-height, var.$chat-log-height-default); // Defined in variables
+  width: clamp(280px, 40vw, 500px); // Even narrower for a more "glanceable" feel
+  max-height: 220px; // Adjusted max-height
   z-index: var.$z-index-ephemeral-chat;
-  pointer-events: none; // Container itself doesn't block interactions with content below
+  pointer-events: none;
+  opacity: 0;
+  animation: fadeIn var.$duration-smooth var.$ease-out-quad 0.7s forwards;
+  // --max-ephemeral-messages is set via :style in EphemeralChatLog.vue
 }
 
-.ephemeral-chat-log { // The actual scrollable list
+.ephemeral-chat-log-scroller {
   width: 100%;
-  height: 100%; // Fills the container
-  overflow-y: auto;
-  padding: var.$spacing-sm var.$spacing-md;
-  border-radius: var.$radius-lg; // Rounded corners for the glass pane
-  display: flex;
-  flex-direction: column-reverse; // New messages appear at bottom and push old ones up
-  pointer-events: auto; // Scrollable area should be interactive
+  height: 100%;
+  overflow: hidden; // Visual only, content div scrolls
+  position: relative;
+  pointer-events: auto;
 
   @include mixins.glassmorphic-pane(
-    var(--color-bg-glass),
-    var(--color-border-glass),
-    var(--blur-glass),
-    var(--shadow-depth-md)
+    '--color-bg-primary', // CSS Var prefix
+    '--color-border-primary', // CSS Var prefix
+    calc(var(--blur-glass) * 0.4), // Even more subtle blur
+    'none', // No main shadow on scroller itself
+    // Fallbacks
+    var.$default-color-bg-primary-h, var.$default-color-bg-primary-s, var.$default-color-bg-primary-l, 0.15, // VERY low alpha for bg
+    var.$default-color-border-primary-h, var.$default-color-border-primary-s, var.$default-color-border-primary-l, 0.05, // Almost invisible border
+    calc(var.$default-blur-glass * 0.4),
+    'none'
   );
-  // Override border-radius from mixin if full-width not desired
-  // border-radius: var.$radius-xl;
+  border-radius: var.$radius-md; // Slightly less pronounced radius
+  box-shadow: inset 0 0 10px hsla(var(--shadow-color-h, var.$default-shadow-color-h), var(--shadow-color-s, var.$default-shadow-color-s), var(--shadow-color-l, var.$default-shadow-color-l), 0.02); // Faintest inset shadow
+}
 
-  // Custom scrollbar for this specific element
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
-  &::-webkit-scrollbar-track {
-    background-color: transparent; // Keep glass effect
-  }
+.ephemeral-chat-log-content {
+  height: 100%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column-reverse;
+  padding: var.$spacing-xs; // Reduced padding
+
+  &::-webkit-scrollbar { width: 3px; } // Thinner scrollbar
+  &::-webkit-scrollbar-track { background-color: transparent; }
   &::-webkit-scrollbar-thumb {
-    background-color: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.3);
+    background-color: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.1);
     border-radius: var.$radius-full;
     &:hover {
-      background-color: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.5);
+      background-color: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.25);
     }
   }
   scrollbar-width: thin;
-  scrollbar-color: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.3) transparent;
+  scrollbar-color: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.1) transparent;
+}
 
+.ephemeral-chat-log-fade-overlay--top,
+.ephemeral-chat-log-fade-overlay--bottom {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  width: 100%;
+  height: 2.5rem; // Height of the fade
+  pointer-events: none;
+  z-index: 2;
+  border-radius: var.$radius-md; // Match parent scroller
+}
 
-  // Fade-out effect at the top (now effective due to flex-direction: column-reverse)
-  &::after { // Changed from ::before due to flex-reverse
-    content: '';
-    position: sticky;
-    top: 0; // Sticks to the top of the scrollport
-    display: block;
-    width: 100%;
-    height: 2.5rem; // Adjust height of fade
-    background: linear-gradient(to bottom, var(--color-bg-glass) 60%, transparent);
+.ephemeral-chat-log-fade-overlay--top {
+  top: 0;
+  background: linear-gradient(to bottom,
+    hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), calc(var(--ephemeral-bg-alpha, 0.15) * 1)) 20%, // Match scroller bg alpha
+    hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0) 100%
+  );
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.ephemeral-chat-log-fade-overlay--bottom {
+  bottom: 0;
+  background: linear-gradient(to top,
+    hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), calc(var(--ephemeral-bg-alpha, 0.15) * 1)) 20%,
+    hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0) 100%
+  );
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.ephemeral-message-item {
+  padding: calc(var.$spacing-xs * 0.8) var.$spacing-sm; // Further compressed padding
+  border-radius: var.$radius-sm; // Smaller radius for items
+  margin-top: calc(var.$spacing-xs * 0.5); // Even tighter spacing
+  max-width: 85%;
+  font-size: calc(var.$font-size-xs * 0.95); // Slightly smaller than default xs
+  line-height: 1.3;
+  word-break: break-word;
+  border: 1px solid transparent;
+  transition: opacity 0.6s var.$ease-out-quad, transform 0.4s var.$ease-out-quad;
+  position: relative; // For accent borders
+
+  // Opacity ramp using nth-last-child, assuming MAX_EPHEMERAL_MESSAGES (from Vue component) is around 7
+  // These selectors target from the "bottom" (newest message due to column-reverse)
+  &:nth-last-child(1) { opacity: 0.85; } // Newest
+  &:nth-last-child(2) { opacity: 0.8; }
+  &:nth-last-child(3) { opacity: 0.7; }
+  &:nth-last-child(4) { opacity: 0.55; }
+  &:nth-last-child(5) { opacity: 0.4; }
+  &:nth-last-child(6) { opacity: 0.25; }
+  &:nth-last-child(7) { opacity: 0.1; } // Oldest visible of 7
+  &:nth-last-child(n + 8) { // Any beyond 7 are practically invisible
+    opacity: 0.05;
     pointer-events: none;
-    z-index: 1; // Above messages
   }
 
-  .message-item-ephemeral {
-    // Common styling for messages in this log
-    padding: calc(var.$spacing-xs * 1.5) var.$spacing-sm;
-    border-radius: var.$radius-md;
-    margin-top: var.$spacing-xs; // Spacing between messages (since it's column-reverse, margin-top works)
-    max-width: 90%; // Messages don't take full width
-    font-size: var.$font-size-sm;
-    line-height: 1.5;
-    word-break: break-word;
-    animation: ephemeralMessageIn var.$duration-movement var.$ease-out-quint forwards;
-    // Older messages could have reduced opacity or be targeted by JS to be removed after a while
-    // For now, relying on max-height and scroll.
-
-    &.user {
-      background: hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.15);
-      color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
-      margin-left: auto; // Align user messages to right
-      border: 1px solid hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.2);
+  &.message-role-user {
+    background-color: hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.05); // Very subtle
+    color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), calc(var(--color-text-secondary-l) + 15%));
+    margin-left: auto;
+    text-align: right;
+    border-color: hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.08);
+    // Subtle right accent
+    &::after {
+      content: ''; position: absolute; top: 2px; bottom: 2px; right: -1px; width: 2px;
+      background-color: hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.2);
+      border-radius: 0 var.$radius-sm var.$radius-sm 0;
+      opacity: 0.7;
     }
+  }
 
-    &.assistant {
-      background: hsla(var(--color-voice-ai-h), var(--color-voice-ai-s), var(--color-voice-ai-l), 0.15);
-      color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
-      margin-right: auto; // Align AI messages to left
-      border: 1px solid hsla(var(--color-voice-ai-h), var(--color-voice-ai-s), var(--color-voice-ai-l), 0.2);
-
-      // Subtle holographic touch for AI messages
-      position: relative;
-      &::before {
-        content: '';
-        position: absolute;
-        left: -1px;
-        top: 0;
-        bottom: 0;
-        width: 3px;
-        background: linear-gradient(to bottom,
-          hsla(var(--color-voice-ai-h), var(--color-voice-ai-s), var(--color-voice-ai-l), 0.8),
-          hsla(var(--color-voice-ai-h), var(--color-voice-ai-s), calc(var(--color-voice-ai-l) + 15%), 0.5)
-        );
-        border-radius: var.$radius-sm 0 0 var.$radius-sm;
-        opacity: 0.7;
-        filter: blur(0.5px);
-      }
+  &.message-role-assistant {
+    background-color: hsla(var(--color-voice-ai-speaking-h), var(--color-voice-ai-speaking-s), var(--color-voice-ai-speaking-l), 0.04); // Very subtle
+    color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+    margin-right: auto;
+    text-align: left;
+    border-color: hsla(var(--color-voice-ai-speaking-h), var(--color-voice-ai-speaking-s), var(--color-voice-ai-speaking-l), 0.07);
+    // Subtle left accent
+    &::before {
+      content: ''; position: absolute; top: 2px; bottom: 2px; left: -1px; width: 2px;
+      background-color: hsla(var(--color-voice-ai-speaking-h), var(--color-voice-ai-speaking-s), var(--color-voice-ai-speaking-l), 0.25);
+      border-radius: var.$radius-sm 0 0 var.$radius-sm;
+      opacity: 0.7;
     }
-    // Animation defined in _keyframes.scss or Tailwind config (ephemeralAppear)
+  }
+  
+  &.message-role-system, &.message-role-error {
+     background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.05);
+     color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+     font-style: italic;
+     text-align: center;
+     max-width: 100%;
+     border-style: dotted; // Dotted for system/error in ephemeral
+     border-width: 1px;
+     border-color: hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.15);
+     padding: calc(var.$spacing-xs * 0.6) var.$spacing-sm;
+  }
+   &.message-role-error {
+     color: hsl(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.8); // Slightly less intense error text
+     background-color: hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.03);
+     border-color: hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.15);
+   }
+
+  .message-content {
+    :deep(p), :deep(ul), :deep(ol), :deep(li) {
+      font-size: inherit !important;
+      line-height: inherit !important;
+      margin-bottom: calc(var.$spacing-xs / 3) !important; // Very tight
+    }
+    :deep(code:not(pre code)) {
+      font-size: 0.9em !important;
+      padding: 0.05em 0.2em !important; // Smaller inline code padding
+      background-color: hsla(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l), 0.05) !important;
+      border-radius: var.$radius-xs;
+    }
+    :deep(pre) { display: none; }
   }
 }

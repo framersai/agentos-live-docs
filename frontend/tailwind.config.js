@@ -20,38 +20,52 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Base color definitions that will be overridden by CSS custom properties from SCSS themes
-        // These act as fallbacks or defaults if CSS vars are not loaded (should not happen in practice)
-        'primary': 'hsl(var(--color-accent-primary-h, 260) var(--color-accent-primary-s, 75%) var(--color-accent-primary-l, 60%) / <alpha-value>)',
-        'primary-focus': 'hsl(var(--color-accent-primary-h, 260) calc(var(--color-accent-primary-s, 75%) + 5%) calc(var(--color-accent-primary-l, 60%) + 8%) / <alpha-value>)',
-        'primary-content': 'hsl(var(--color-text-on-primary-h, 0) var(--color-text-on-primary-s, 0%) var(--color-text-on-primary-l, 100%) / <alpha-value>)', // For text on primary backgrounds
+        // Primary color with shades
+        primary: {
+          light: 'hsl(var(--color-accent-primary-light-h, var(--color-accent-primary-h)) var(--color-accent-primary-light-s, var(--color-accent-primary-s)) var(--color-accent-primary-light-l, calc(var(--color-accent-primary-l) + 15%)) / <alpha-value>)', // Lighter shade
+          DEFAULT: 'hsl(var(--color-accent-primary-h) var(--color-accent-primary-s) var(--color-accent-primary-l) / <alpha-value>)', // Main shade
+          dark: 'hsl(var(--color-accent-primary-dark-h, var(--color-accent-primary-h)) var(--color-accent-primary-dark-s, var(--color-accent-primary-s)) var(--color-accent-primary-dark-l, calc(var(--color-accent-primary-l) - 10%)) / <alpha-value>)', // Darker shade
+          // If you need specific numeric shades like -400, -500, -600, you define them here
+          // and ensure corresponding CSS vars exist in your themes or derive them.
+          // For example, if your theme defines --color-accent-primary-400-h/s/l:
+          // 400: 'hsl(var(--color-accent-primary-400-h) var(--color-accent-primary-400-s) var(--color-accent-primary-400-l) / <alpha-value>)',
+          // 500: 'hsl(var(--color-accent-primary-500-h) var(--color-accent-primary-500-s) var(--color-accent-primary-500-l) / <alpha-value>)', // This could be your DEFAULT
+        },
+        'primary-focus': 'hsl(var(--color-accent-primary-h) calc(var(--color-accent-primary-s) + 5%) calc(var(--color-accent-primary-l) + 8%) / <alpha-value>)', // Kept for specific focus if needed
+        'primary-content': 'hsl(var(--color-text-on-primary-h) var(--color-text-on-primary-s) var(--color-text-on-primary-l) / <alpha-value>)',
 
-        'secondary': 'hsl(var(--color-accent-secondary-h, 180) var(--color-accent-secondary-s, 80%) var(--color-accent-secondary-l, 55%) / <alpha-value>)',
-        'secondary-focus': 'hsl(var(--color-accent-secondary-h, 180) calc(var(--color-accent-secondary-s, 80%) + 5%) calc(var(--color-accent-secondary-l, 55%) + 8%) / <alpha-value>)',
-        'secondary-content': 'hsl(var(--color-text-on-secondary-h, 220) var(--color-text-on-secondary-s, 15%) var(--color-text-on-secondary-l, 10%) / <alpha-value>)',
+        // Secondary color (can also be defined with shades)
+        secondary: {
+            DEFAULT: 'hsl(var(--color-accent-secondary-h) var(--color-accent-secondary-s) var(--color-accent-secondary-l) / <alpha-value>)',
+        },
+        'secondary-focus': 'hsl(var(--color-accent-secondary-h) calc(var(--color-accent-secondary-s) + 5%) calc(var(--color-accent-secondary-l) + 8%) / <alpha-value>)',
+        'secondary-content': 'hsl(var(--color-text-on-secondary-h) var(--color-text-on-secondary-s) var(--color-text-on-secondary-l) / <alpha-value>)',
+        
+        accent: 'hsl(var(--color-accent-primary-h) var(--color-accent-primary-s) var(--color-accent-primary-l) / <alpha-value>)',
 
-        'accent': 'hsl(var(--color-accent-primary-h, 260) var(--color-accent-primary-s, 75%) var(--color-accent-primary-l, 60%) / <alpha-value>)', // Alias for primary by default
 
-        'neutral': 'hsl(var(--color-bg-secondary-h, 220) var(--color-bg-secondary-s, 15%) var(--color-bg-secondary-l, 88%) / <alpha-value>)', // A generic neutral
-        'neutral-focus': 'hsl(var(--color-bg-secondary-h, 220) var(--color-bg-secondary-s, 15%) var(--color-bg-secondary-l, 80%) / <alpha-value>)',
+        neutral: 'hsl(var(--color-bg-secondary-h) var(--color-bg-secondary-s) var(--color-bg-secondary-l) / <alpha-value>)',
+        'neutral-focus': 'hsl(var(--color-bg-secondary-h) var(--color-bg-secondary-s) calc(var(--color-bg-secondary-l) - 8%) / <alpha-value>)',
 
-        'base-100': 'hsl(var(--color-bg-primary-h, 0) var(--color-bg-primary-s, 0%) var(--color-bg-primary-l, 100%) / <alpha-value>)',       // Primary background
-        'base-200': 'hsl(var(--color-bg-secondary-h, 0) var(--color-bg-secondary-s, 0%) var(--color-bg-secondary-l, 95%) / <alpha-value>)',     // Secondary background (cards, surfaces)
-        'base-300': 'hsl(var(--color-bg-tertiary-h, 0) var(--color-bg-tertiary-s, 0%) var(--color-bg-tertiary-l, 90%) / <alpha-value>)',      // Tertiary background (elevated elements)
-        'base-content': 'hsl(var(--color-text-primary-h, 0) var(--color-text-primary-s, 0%) var(--color-text-primary-l, 10%) / <alpha-value>)', // Primary text color
+        // Using your extended base colors
+        'base-100': 'hsl(var(--color-bg-primary-h) var(--color-bg-primary-s) var(--color-bg-primary-l) / <alpha-value>)',
+        'base-200': 'hsl(var(--color-bg-secondary-h) var(--color-bg-secondary-s) var(--color-bg-secondary-l) / <alpha-value>)',
+        'base-300': 'hsl(var(--color-bg-tertiary-h) var(--color-bg-tertiary-s) var(--color-bg-tertiary-l) / <alpha-value>)',
+        'base-400': 'hsl(var(--color-bg-quaternary-h, var(--color-bg-tertiary-h)) var(--color-bg-quaternary-s, var(--color-bg-tertiary-s)) var(--color-bg-quaternary-l, calc(var(--color-bg-tertiary-l) - 5%)) / <alpha-value>)',
+        'base-500': 'hsl(var(--color-bg-quinary-h, var(--color-bg-tertiary-h)) var(--color-bg-quinary-s, var(--color-bg-tertiary-s)) var(--color-bg-quinary-l, calc(var(--color-bg-tertiary-l) - 10%)) / <alpha-value>)',
+        'base-600': 'hsl(var(--color-bg-senary-h, var(--color-bg-tertiary-h)) var(--color-bg-senary-s, var(--color-bg-tertiary-s)) var(--color-bg-senary-l, calc(var(--color-bg-tertiary-l) - 15%)) / <alpha-value>)',
+        'base-content': 'hsl(var(--color-text-primary-h) var(--color-text-primary-s) var(--color-text-primary-l) / <alpha-value>)',
 
-        'info': 'hsl(var(--color-info-h, 190) var(--color-info-s, 80%) var(--color-info-l, 55%) / <alpha-value>)',
-        'success': 'hsl(var(--color-success-h, 145) var(--color-success-s, 70%) var(--color-success-l, 45%) / <alpha-value>)',
-        'warning': 'hsl(var(--color-warning-h, 40) var(--color-warning-s, 95%) var(--color-warning-l, 55%) / <alpha-value>)',
-        'error': 'hsl(var(--color-error-h, 0) var(--color-error-s, 85%) var(--color-error-l, 58%) / <alpha-value>)',
+        info: 'hsl(var(--color-info-h) var(--color-info-s) var(--color-info-l) / <alpha-value>)',
+        success: 'hsl(var(--color-success-h) var(--color-success-s) var(--color-success-l) / <alpha-value>)',
+        warning: 'hsl(var(--color-warning-h) var(--color-warning-s) var(--color-warning-l) / <alpha-value>)',
+        error: 'hsl(var(--color-error-h) var(--color-error-s) var(--color-error-l) / <alpha-value>)',
+        
+        'glass-bg': 'var(--color-bg-glass, hsla(220, 25%, 95%, 0.5))',
+        'glass-border': 'var(--color-border-glass, hsla(220, 25%, 80%, 0.3))',
 
-        // Glassmorphism colors (to be defined by themes)
-        'glass-bg': 'var(--color-bg-glass, hsla(220, 25%, 95%, 0.5))', // Fallback
-        'glass-border': 'var(--color-border-glass, hsla(220, 25%, 80%, 0.3))', // Fallback
-
-        // Voice visualization specific colors
-        'voice-user': 'hsl(var(--color-voice-user-h, 270) var(--color-voice-user-s, 90%) var(--color-voice-user-l, 70%) / <alpha-value>)',
-        'voice-ai': 'hsl(var(--color-voice-ai-h, 180) var(--color-voice-ai-s, 90%) var(--color-voice-ai-l, 60%) / <alpha-value>)',
+        'voice-user': 'hsl(var(--color-voice-user-h) var(--color-voice-user-s) var(--color-voice-user-l) / <alpha-value>)',
+        'voice-ai': 'hsl(var(--color-voice-ai-h) var(--color-voice-ai-s) var(--color-voice-ai-l) / <alpha-value>)',
       },
       fontFamily: {
         sans: ['var(--font-sans, Inter)', 'system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Helvetica Neue"', 'Arial', '"Noto Sans"', 'sans-serif'],

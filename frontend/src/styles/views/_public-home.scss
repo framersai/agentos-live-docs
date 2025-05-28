@@ -1,0 +1,276 @@
+// File: frontend/src/styles/views/_public-home.scss
+/**
+ * @file _public-home.scss
+ * @description Styles specific to the PublicHome view for "Ephemeral Harmony" theme.
+ * Focuses on a visually engaging agent selector, informative placeholders,
+ * and a clean, modern presentation of public-facing content.
+ * @version 1.0.0
+ */
+
+@use '../abstracts/variables' as var;
+@use '../abstracts/mixins' as mixins;
+@use '../components/buttons' as buttonsFile;
+@use '../components/cards' as cardsFile;
+
+.public-home-view-ephemeral {
+  // UnifiedChatLayout handles the overall page structure and background.
+  // Styles here are for elements unique to PublicHome's slotted content.
+  display: flex;
+  flex-direction: column;
+  height: 100%; // Ensure it takes up available space within the layout
+}
+
+// Container for the public agent selector, making it more prominent
+.public-agent-selector-area-ephemeral {
+  padding: var.$spacing-md var.$spacing-lg;
+  margin-bottom: var.$spacing-lg;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var.$spacing-sm;
+  position: sticky; // Stick to top of scrollable main content area in UnifiedChatLayout
+  top: 0;
+  z-index: calc(var.$z-index-content-overlay + 1); // Above content
+  
+  // Subtle glass effect for the bar if it sticks
+  background-color: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.6);
+  backdrop-filter: blur(4px);
+  border-bottom: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.15);
+  box-shadow: var(--shadow-depth-sm);
+
+  .selector-title-ephemeral {
+    font-size: var.$font-size-sm;
+    color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+    font-weight: 500;
+  }
+}
+
+// Styles for the agent selector button itself (from PublicHome.vue template)
+.agent-selector-button-ephemeral {
+  @include buttonsFile.btn;
+  @include mixins.neomorphic-extrude( /* Or use a button-specific neo mixin from _buttons.scss if available */
+    '--color-bg-secondary',
+    4px, 8px,
+    '--shadow-opacity-soft',
+    var.$radius-lg,
+    '--shadow-color-h', '--shadow-color-s', '--shadow-color-l', '--shadow-highlight-modifier',
+    var.$default-color-bg-secondary-h, var.$default-color-bg-secondary-s, var.$default-color-bg-secondary-l,
+    var.$default-shadow-opacity-soft,
+    var.$default-shadow-color-h, var.$default-shadow-color-s, var.$default-shadow-color-l,
+    var.$default-shadow-highlight-modifier
+  );
+  padding: var.$spacing-sm var.$spacing-md !important;
+  min-width: 280px;
+  max-width: 90%;
+  color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+  font-size: var.$font-size-base-default;
+  font-weight: 500;
+
+  .selected-agent-icon {
+    width: 1.4em; height: 1.4em; // Larger icon
+    margin-right: var.$spacing-sm;
+    opacity: 0.9;
+    color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+  }
+  .chevron-icon { // Tailwind class from Heroicons
+    width: 1.1em; height: 1.1em;
+    transition: transform var.$duration-quick var.$ease-out-quad;
+    &.open { transform: rotate(180deg); }
+  }
+
+  &:hover {
+    filter: brightness(1.1); // Base button hover provides this
+    color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
+    .selected-agent-icon { 
+      opacity: 1; 
+      filter: drop-shadow(0 0 3px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.7));
+    }
+  }
+}
+
+// Styles for the dropdown panel (from PublicHome.vue template)
+.agent-selector-dropdown-panel-ephemeral {
+  @include cardsFile.card-base-styles;   // Apply base card padding, radius etc.
+  @include cardsFile.card-neo-look;      // Apply the specific neomorphic visual appearance
+
+  // Original styles for positioning and dropdown-specifics:
+  position: absolute;
+  top: calc(100% + #{var.$spacing-xs});
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: var.$z-index-dropdown;
+  width: 300px;
+  min-width: 100%;
+  max-height: 60vh;
+
+  // Overrides to padding from card-base-styles if needed for dropdown structure
+  padding: var.$spacing-xs !important; // Example: if dropdown needs tighter padding than general cards
+  
+  .dropdown-header-holographic {
+    padding: var.$spacing-sm var.$spacing-md;
+    border-bottom: 1px solid hsla(var(--color-border-secondary-h),var(--color-border-secondary-s),var(--color-border-secondary-l),0.2);
+    margin-bottom: var.$spacing-xs;
+    .dropdown-title {
+      font-size: var.$font-size-sm;
+      font-weight: 600;
+      color: hsl(var(--color-text-muted-h),var(--color-text-muted-s),var(--color-text-muted-l));
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+  }
+  .dropdown-content-holographic {
+    padding: var.$spacing-xs; // Add padding around the scrollable list of items
+    overflow-y: auto;
+    max-height: calc(60vh - #{var.$spacing-sm * 2} - 40px); // Adjust based on header height
+    @include mixins.custom-scrollbar(
+        '--color-accent-interactive', // CSS Var prefix for thumb HSL
+        0.4, 0.65, // base alpha, hover alpha
+        '--color-bg-tertiary', // CSS Var prefix for track HSL
+        0.1, // track alpha
+        6px // width
+    );
+  }
+  .dropdown-item-holographic {
+    @include buttonsFile.btn-ghost; // Use ghost button base for items
+    width: 100%;
+    justify-content: flex-start !important;
+    align-items: center;
+    padding: var.$spacing-sm var.$spacing-md !important;
+    border-radius: var.$radius-md !important;
+    font-size: var.$font-size-base-default !important; // Larger text for items
+    color: hsl(var(--color-text-secondary-h),var(--color-text-secondary-s),var(--color-text-secondary-l));
+
+    &.active {
+      background-color: hsla(var(--color-accent-interactive-h),var(--color-accent-interactive-s),var(--color-accent-interactive-l),0.15);
+      color: hsl(var(--color-accent-interactive-h),var(--color-accent-interactive-s),var(--color-accent-interactive-l));
+      font-weight: 500;
+      .mode-icon-dd-holographic {
+        background-color: hsla(var(--color-accent-interactive-h),var(--color-accent-interactive-s),var(--color-accent-interactive-l),0.1);
+        .icon-base {
+            color: hsl(var(--color-accent-interactive-h),var(--color-accent-interactive-s),var(--color-accent-interactive-l));
+        }
+      }
+    }
+     &:not(.active):hover {
+      background-color: hsla(var(--color-accent-interactive-h),var(--color-accent-interactive-s),var(--color-accent-interactive-l),0.08);
+      color: hsl(var(--color-text-primary-h),var(--color-text-primary-s),var(--color-text-primary-l));
+       .mode-icon-dd-holographic {
+         background-color: hsla(var(--color-bg-tertiary-h),var(--color-bg-tertiary-s),var(--color-bg-tertiary-l),0.9);
+       }
+    }
+
+    .mode-icon-dd-holographic {
+      width: 36px; height: 36px; padding: var.$spacing-xs; border-radius: var.$radius-md;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      margin-right: var.$spacing-md;
+      background-color: hsla(var(--color-bg-tertiary-h),var(--color-bg-tertiary-s),var(--color-bg-tertiary-l),0.7);
+      transition: background-color var.$duration-quick;
+      .icon-base { 
+        width: 1.25rem; height: 1.25rem;
+        color: hsl(var(--color-text-muted-h),var(--color-text-muted-s),var(--color-text-muted-l));
+        transition: color var.$duration-quick;
+      }
+    }
+    .dropdown-item-label { flex-grow: 1; text-align: left; }
+    .checkmark-icon-active { 
+        margin-left: auto; 
+        color: hsl(var(--color-accent-interactive-h),var(--color-accent-interactive-s),var(--color-accent-interactive-l));
+        width: 1.25rem; height: 1.25rem;
+    }
+  }
+}
+
+
+// Example for placeholders:
+.public-welcome-placeholder-ephemeral,
+.rate-limit-banner-ephemeral {
+  @include cardsFile.card-base-styles;    // Apply base card styles
+  @include cardsFile.card-glass-look;   // Apply glass look
+  // ... then add specific placeholder text/icon styles ...
+  margin: var.$spacing-xl auto; 
+  padding: var.$spacing-xl * 1.5; 
+  text-align: center;
+  max-width: 700px; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var.$spacing-md;
+
+  .hero-icon-ephemeral, .banner-icon-ephemeral {
+    width: clamp(4rem, 10vw, 5.5rem); 
+    height: clamp(4rem, 10vw, 5.5rem);
+    margin-bottom: var.$spacing-sm;
+    color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+    opacity: 0.7;
+    filter: drop-shadow(0 0 15px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.5));
+  }
+  
+  .welcome-title-ephemeral, .banner-title-ephemeral {
+    font-size: clamp(1.5rem, 1rem + 1.5vw, 2.25rem); // Larger responsive title
+    font-weight: 600;
+    color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+    @include mixins.text-glow('--color-accent-primary', 8px, 0.4);
+  }
+
+  .welcome-subtitle-ephemeral, .banner-text-ephemeral {
+    font-size: clamp(1rem, 0.9rem + 0.5vw, 1.125rem); // Responsive subtitle
+    color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+    line-height: 1.7;
+    max-width: 60ch; // Good readability
+    opacity: 0.95;
+    .link-ephemeral {
+      color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
+      font-weight: 500;
+      text-decoration: none;
+      &:hover { text-decoration: underline; }
+    }
+  }
+}
+
+.rate-limit-banner-ephemeral {
+  // Specific tweaks for rate limit banner if needed
+  border-left: 5px solid hsl(var(--color-warning-h), var(--color-warning-s), var(--color-warning-l));
+background-color: hsla(var(--color-warning-h), var(--color-warning-s), var(--color-warning-l), 0.05);
+  .banner-icon-ephemeral {
+    color: hsl(var(--color-warning-h), var(--color-warning-s), var(--color-warning-l));
+    filter: drop-shadow(0 0 10px hsla(var(--color-warning-h), var(--color-warning-s), var(--color-warning-l), 0.4));
+  }
+  .banner-title-ephemeral {
+     color: hsl(var(--color-warning-h), var(--color-warning-s), calc(var(--color-warning-l) - 10%)); // Darker warning title
+     @include mixins.text-glow('--color-warning', 6px, 0.3);
+  }
+  .login-prompt-link-ephemeral {
+    @include buttonsFile.btn-primary; // Use the primary button mixin
+    // Additional sizing or specific styles:
+    font-size: var.$font-size-base-default !important;
+    padding: var.$spacing-sm var.$spacing-lg !important;
+  }
+}
+
+// For the case where no public agents are configured
+.public-welcome-placeholder-ephemeral .hero-icon-ephemeral.no-agents-icon {
+    color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+    filter: none;
+    opacity: 0.5;
+}
+
+// Ensure main content area within UnifiedChatLayout's slot is styled well
+.main-content-view-wrapper-ephemeral {
+  flex-grow: 1; // Allow it to take available space
+  display: flex;
+  flex-direction: column;
+  // The actual content (CompactMessageRenderer or Markdown) will be styled by its own component styles
+  // Add padding here if UnifiedChatLayout doesn't provide enough for the "page" content.
+  // padding: var.$spacing-lg; // Example: if main view needs its own padding
+}
+
+.loading-placeholder-ephemeral {
+  // Styles from _loading-overlay.scss are used, ensure they fit the context.
+  // This is a placeholder for when the agent content itself is loading.
+  // Example of centering it within the available main content space:
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+  min-height: 300px; // Give it some minimum height
+}

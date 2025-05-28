@@ -1,0 +1,153 @@
+// File: frontend/src/styles/views/_private-home.scss
+/**
+ * @file _private-home.scss
+ * @description Styles specific to the PrivateHome view for "Ephemeral Harmony" theme.
+ * Focuses on a visually rich and welcoming dashboard placeholder for authenticated users.
+ * @version 1.0.1 - Corrected card style mixin name.
+ */
+
+@use '../abstracts/variables' as var;
+@use '../abstracts/mixins' as mixins;
+@use '../components/buttons' as buttonsFile;
+@use '../components/cards' as cardsFile; // Provides card-base-styles, card-glass-look etc.
+
+.private-home-view-ephemeral {
+  display: flex;
+  flex-direction: column;
+  height: 100%; // Fill available space from UnifiedChatLayout
+  width: 100%;
+}
+
+.private-dashboard-placeholder-ephemeral {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  flex-grow: 1; // Take up all available space in the main content slot
+  padding: var.$spacing-xl * 1.5 var.$spacing-lg;
+  width: 100%;
+  position: relative;
+
+  .dashboard-icon-ephemeral {
+    width: clamp(5rem, 12vw, 7rem);
+    height: clamp(5rem, 12vw, 7rem);
+    margin-bottom: var.$spacing-lg * 1.5;
+    color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+    opacity: 0.8;
+    filter: drop-shadow(0 0 20px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.6));
+    animation: subtlePulse var.$duration-pulse-long * 2 infinite alternate, spin 60s linear infinite;
+    --scale-pulse: 1.03;
+    --opacity-pulse: 0.95;
+  }
+
+  .dashboard-title-ephemeral {
+    font-family: var(--font-family-display, var.$font-family-display);
+    font-size: clamp(2rem, 1.5rem + 2.5vw, 3.25rem);
+    font-weight: 700;
+    color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+    margin-bottom: var.$spacing-md;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+    @include mixins.text-glow(
+      '--color-accent-primary',
+      10px,
+      var.$default-color-accent-primary-h, var.$default-color-accent-primary-s, var.$default-color-accent-primary-l, 0.5
+    );
+  }
+
+  .dashboard-subtitle-ephemeral {
+    font-size: clamp(1.1rem, 0.9rem + 0.8vw, 1.35rem);
+    color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+    line-height: 1.75;
+    max-width: 60ch;
+    opacity: 0.9;
+    margin-bottom: var.$spacing-xl;
+  }
+
+  .btn.btn-secondary-ephemeral {
+    @include buttonsFile.btn;
+    @include buttonsFile.btn-secondary-look;
+    @include buttonsFile.btn-lg-modifier;
+    .icon-sm {
+      width: 1.25em;
+      height: 1.25em;
+      margin-right: var.$spacing-sm;
+    }
+  }
+}
+.main-content-view-wrapper-ephemeral {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  &.has-framed-content {
+    @include cardsFile.card-base-styles;   // Apply base styles
+    @include cardsFile.card-glass-look;    // CORRECTED: Apply glass look mixin
+    margin: var.$spacing-md;
+    padding: 0; 
+    overflow: hidden;
+    
+    > :first-child {
+      height: 100%;
+      width: 100%;
+      overflow-y: auto;
+      @include mixins.custom-scrollbar(
+        '--color-accent-interactive',0.4,0.65,'--color-bg-tertiary',0.1,6px
+      );
+      padding: var.$spacing-lg;
+    }
+  }
+}
+
+.content-renderer-container-ephemeral {
+  flex-grow: 1;
+  padding: var.$spacing-lg;
+  overflow-y: auto;
+  @include mixins.custom-scrollbar(
+    '--color-accent-interactive',0.4,0.65,'--color-bg-tertiary',0.1,6px
+  );
+  display: flex;
+  flex-direction: column;
+}
+
+.prose-ephemeral.content-renderer-ephemeral {
+  margin: auto;
+  max-width: 80ch;
+  width: 100%;
+
+  h1, h2, h3, h4 {
+    color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+    @include mixins.text-glow('--color-accent-primary', 4px, 0.3);
+  }
+  p, li, blockquote {
+    color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+    font-size: calc(var.$font-size-base-default * 1.05);
+    line-height: 1.75;
+  }
+  a {
+    color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
+    &:hover {
+       color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), calc(var(--color-accent-interactive-l) + 10%));
+    }
+  }
+}
+
+.prose-ephemeral.prose-error {
+  border-left: 4px solid hsl(var(--color-error-h), var(--color-error-s), var(--color-error-l));
+  padding-left: var.$spacing-md;
+  h3, h4 {
+    color: hsl(var(--color-error-h), var(--color-error-s), calc(var(--color-error-l) - 5%));
+    @include mixins.text-glow('--color-error', 4px, 0.4);
+  }
+}
+
+.loading-placeholder-ephemeral {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+  min-height: 300px;
+}
