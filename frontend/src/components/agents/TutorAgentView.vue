@@ -745,7 +745,7 @@ onUnmounted(() => {
   @apply text-lg text-[var(--text-secondary-dark)] mb-6 max-w-lg opacity-90;
 }
 .professor-astra-welcome-prompt {
-  @apply text-md text-[var(--text-muted-dark)] italic;
+  @apply text-base text-[var(--text-muted-dark)] italic;
 }
 
 .dropdown-fade-enter-active,
