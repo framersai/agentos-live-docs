@@ -69,7 +69,7 @@
     var.$default-color-bg-secondary-h, calc(var.$default-color-bg-secondary-s) + 5%, calc(var.$default-color-bg-secondary-l) - 5%, // Example: slightly tinted secondary bg
     var.$default-shadow-opacity-soft,
     var.$default-shadow-color-h, var.$default-shadow-color-s, var.$default-shadow-color-l,
-    var.$default-shadow-highlight-modifier
+    var.$default-shadow-highlight-l-factor
   );
   // Override background if neomorphic extrude uses a generic one
   background-color: hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.12);
@@ -122,7 +122,7 @@
     '--color-bg-tertiary', 5px, 3px, '--shadow-opacity-soft', var.$radius-lg,
     '--shadow-color-h', '--shadow-color-s', '--shadow-color-l', '--shadow-highlight-modifier',
     var.$default-color-bg-tertiary-h, var.$default-color-bg-tertiary-s, var.$default-color-bg-tertiary-l,
-    var.$default-shadow-opacity-soft, var.$default-shadow-color-h, var.$default-shadow-color-s, var.$default-shadow-color-l, var.$default-shadow-highlight-modifier
+    var.$default-shadow-opacity-soft, var.$default-shadow-color-h, var.$default-shadow-color-s, var.$default-shadow-color-l, var.$default-shadow-highlight-l-factor
   );
   border: 1px solid hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.3);
   border-left: 4px solid hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l));
@@ -180,7 +180,7 @@
     var.$radius-full,
     '--shadow-color-h', '--shadow-color-s', '--shadow-color-l', '--shadow-highlight-modifier',
     var.$default-color-bg-primary-h, var.$default-color-bg-primary-s, var.$default-color-bg-primary-l,
-    var.$default-shadow-opacity-soft, var.$default-shadow-color-h, var.$default-shadow-color-s, var.$default-shadow-color-l, var.$default-shadow-highlight-modifier
+    var.$default-shadow-opacity-soft, var.$default-shadow-color-h, var.$default-shadow-color-s, var.$default-shadow-color-l, var.$default-shadow-highlight-l-factor
   );
   // Specific background tint based on role, subtle
   &.avatar-user { background-color: hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.1); }
@@ -281,7 +281,7 @@
       var.$radius-lg,
       '--shadow-color-h', '--shadow-color-s', '--shadow-color-l', '--shadow-highlight-modifier',
       var.$default-color-bg-primary-h, var.$default-color-bg-primary-s, calc(var.$default-color-bg-primary-l - 5%), // Darker inset base
-      var.$default-shadow-opacity-soft, var.$default-shadow-color-h, var.$default-shadow-color-s, var.$default-shadow-color-l, var.$default-shadow-highlight-modifier
+      var.$default-shadow-opacity-soft, var.$default-shadow-color-h, var.$default-shadow-color-s, var.$default-shadow-color-l, var.$default-shadow-highlight-l-factor
     );
     // Actual background for the code, sits on top of the inset effect's base
     // Ensure --color-bg-code-block-h/s/l are defined in your themes (e.g., a dark charcoal for light themes, very dark gray for dark themes)

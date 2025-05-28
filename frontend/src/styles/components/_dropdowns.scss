@@ -1,111 +1,145 @@
 // File: frontend/src/styles/components/_dropdowns.scss
 /**
  * @file _dropdowns.scss
- * @description Shared styles for dropdown menus (panels and items) 
- * for the "Ephemeral Harmony" theme. Aims for a premium, consistent look.
- * @version 1.0.1 - Corrected mixin namespace alias.
+ * @description Shared styles for dropdown menus for "Ephemeral Harmony".
+ * Enhanced for a premium, cohesive, and "special" neomorphic/glass look with holographic accents.
+ * @version 1.1.1 - Further refinement for prominence.
  */
 
 @use '../abstracts/variables' as var;
-@use '../abstracts/mixins' as mixins; // Correct alias for _mixins.scss
-@use './buttons' as buttonsFile;     // For item styling if based on buttons
+@use '../abstracts/mixins' as mixins;
+@use './buttons' as buttonsFile;
 
-// --- Base Dropdown Panel Style ---
 @mixin dropdown-panel-ephemeral {
-  @include mixins.neomorphic-extrude( 
-    '--color-bg-primary', 
-    5px, 
-    15px, 
-    '--shadow-opacity-medium', 
-    var.$radius-lg, 
-    '--shadow-color-h', '--shadow-color-s', '--shadow-color-l', '--shadow-highlight-modifier', 
-    var.$default-color-bg-primary-h, var.$default-color-bg-primary-s, var.$default-color-bg-primary-l,
+  // Base structure and positioning handled by component (absolute, origin, etc.)
+  // Using a more pronounced neomorphic extrusion for dropdown panels
+  @include mixins.neomorphic-extrude(
+    '--color-bg-primary', // Base background from theme
+    5px, // distance (slightly less than cards for less "heavy" feel)
+    16px, // blur (softer shadow)
+    '--shadow-opacity-medium', // shadow opacity var
+    var.$radius-xl, // Consistent large radius
+    '--shadow-color-h', '--shadow-color-s', '--shadow-color-l', '--shadow-highlight-modifier',
+    var.$default-color-bg-primary-h, var.$default-color-bg-primary-s, calc(var.$default-color-bg-primary-l - 3%), // Darker base for more depth
     var.$default-shadow-opacity-medium,
     var.$default-shadow-color-h, var.$default-shadow-color-s, var.$default-shadow-color-l,
-    var.$default-shadow-highlight-modifier
+    var.$default-shadow-highlight-l-factor
+  );
+  // Subtle holographic border accent for all dropdowns
+  @include mixins.holographic-border-glow(
+    '--color-accent-interactive', // Brighter glow
+    '--color-accent-secondary', 
+    1px, // Thin glow border
+    7s, // Slower, more ambient animation
+    var.$radius-xl // Match panel radius
   );
   
-  border: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.2);
-  padding: var.$spacing-xs; 
-  min-width: 220px; 
+  border: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.1); // Very faint border
+  padding: var.$spacing-sm; // Unified padding for the panel itself
+  min-width: 250px; // Good default minimum width for dropdowns
   z-index: var.$z-index-dropdown;
+  // Ensure a backdrop-filter if the background is semi-transparent from the neomorphic mixin (if it sets alpha)
+  // Usually neomorphic is opaque, but if glass is mixed in, this might be needed.
+  // backdrop-filter: blur(var(--blur-glass)); 
 }
 
-// --- Dropdown Header Style ---
 @mixin dropdown-header-ephemeral {
   padding: var.$spacing-sm var.$spacing-md;
-  border-bottom: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.15);
-  margin: calc(var.$spacing-xs * -1) calc(var.$spacing-xs * -1) var.$spacing-xs; 
+  border-bottom: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.1);
+  margin: calc(var.$spacing-sm * -1) calc(var.$spacing-sm * -1) var.$spacing-sm; // Fill panel padding
   
   .dropdown-title { 
     font-size: var.$font-size-xs;
     font-weight: 600;
     color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
     text-transform: uppercase;
-    letter-spacing: 0.075em;
+    letter-spacing: 0.08em; // Slightly more spacing
+    opacity: 0.85;
   }
 }
 
-// --- Dropdown Content Area Style ---
 @mixin dropdown-content-ephemeral {
   padding: var.$spacing-xs; 
-  max-height: 70vh; 
+  max-height: min(60vh, 380px); // Slightly reduced max height
   overflow-y: auto;
-  @include mixins.custom-scrollbar( // Correctly uses 'mixins'
-    '--color-accent-interactive', 0.5, 0.7, 
-    '--color-bg-tertiary', 0.2, 
-    5px 
+  @include mixins.custom-scrollbar(
+    '--color-accent-interactive', 0.55, 0.75,
+    '--color-bg-secondary', 0.2, // Slightly more visible track
+    6px
   );
 }
 
-// --- Dropdown Item Style ---
 @mixin dropdown-item-ephemeral {
-  @include buttonsFile.btn-ghost; 
+  @include buttonsFile.btn-ghost; // Base behavior
   width: 100%;
-  justify-content: flex-start !important; 
+  justify-content: flex-start !important;
   align-items: center;
-  padding: var.$spacing-sm var.$spacing-md !important;
-  border-radius: var.$radius-md !important; 
-  font-size: var.$font-size-sm !important; 
+  padding: var.$spacing-sm calc(var.$spacing-sm + 2px) !important; // Adjusted padding
+  border-radius: var.$radius-lg !important; // Consistent with panel items
+  font-size: var.$font-size-base-default * 0.95 !important; // Slightly smaller than base for dropdowns
   color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
   text-align: left;
+  transition: background-color var.$duration-quick, color var.$duration-quick, transform var.$duration-quick, box-shadow var.$duration-quick;
+  border: 1px solid transparent; // For focus ring
   
   .dropdown-item-icon { 
-    width: 1.125rem; 
-    height: 1.125rem;
-    margin-right: var.$spacing-sm;
+    width: 1.2rem; 
+    height: 1.2rem;
+    margin-right: var.$spacing-sm; // Good spacing
     color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
-    transition: color var.$duration-quick;
+    transition: color var.$duration-quick, transform var.$duration-quick;
     flex-shrink: 0;
+    opacity: 0.9;
   }
 
-  &:hover, &.router-link-active, &.active { 
-    background-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.1) !important;
+  &:hover, &.router-link-active, &.active {
+    background-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.15) !important; // More pronounced hover
     color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l)) !important;
+    transform: translateX(2px); // Slight shift
+    box-shadow: 0 2px 8px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.15);
     
     .dropdown-item-icon {
       color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
+      transform: scale(1.05);
     }
   }
-  &:focus-visible { 
-    @include mixins.focus-ring( // CORRECTED: Uses 'mixins' namespace
-      '--color-bg-primary', 
-      '--color-accent-interactive',
-      1px, 1px, 0.8
-    );
+   &:focus-visible {
+     @include mixins.focus-ring(
+       '--color-bg-primary',
+       '--color-accent-interactive',
+       0px, 2px, 0.8 // Clear focus with no offset from edge
+     );
+   }
+}
+
+@mixin dropdown-section-title-ephemeral { // Mixin for section titles within dropdowns
+  display: flex;
+  align-items: center;
+  gap: var.$spacing-xs;
+  font-size: var.$font-size-xs * 0.9; // Smaller section titles
+  font-weight: 600;
+  color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: var.$spacing-xs;
+  padding: var.$spacing-xs var.$spacing-sm; // Consistent padding
+  opacity: 0.7;
+  .section-title-icon-ephemeral {
+      width: 0.9rem; height: 0.9rem; opacity: 0.7;
   }
 }
 
-// --- Dropdown Divider ---
+
 @mixin dropdown-divider-ephemeral {
   height: 1px;
-  background-color: hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.15);
-  margin: var.$spacing-xs 0;
+  background-color: hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.12); // Slightly more visible
+  margin: var.$spacing-sm var.$spacing-xs;
 }
 
-// --- Utility Classes (Optional) ---
+// Utility Classes
 .dropdown-panel-ephemeral { @include dropdown-panel-ephemeral; }
 .dropdown-header-ephemeral { @include dropdown-header-ephemeral; }
 .dropdown-content-ephemeral { @include dropdown-content-ephemeral; }
 .dropdown-item-ephemeral { @include dropdown-item-ephemeral; }
 .dropdown-divider-ephemeral { @include dropdown-divider-ephemeral; }
+.dropdown-section-title-ephemeral { @include dropdown-section-title-ephemeral; } // Class for easy application
