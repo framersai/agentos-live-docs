@@ -326,7 +326,7 @@ onMounted(() => {
 }
 
 .loading-overlay-interviewer {
-  @apply absolute inset-0 flex flex-col items-center justify-content-center z-10;
+  @apply absolute inset-0 flex flex-col items-center justify-center z-10;
   background-color: rgba(var(--bg-base-rgb-dark, 26, 32, 44), 0.7); 
   backdrop-filter: blur(3px); 
   color: hsl(var(--agent-interviewer-accent-hue), var(--agent-interviewer-accent-saturation), calc(var(--agent-interviewer-accent-lightness) + 20%)); 
@@ -355,14 +355,7 @@ onMounted(() => {
 }
 /* Ensure .btn, .btn-primary, .btn-sm are globally defined or via Tailwind config */
 
-.custom-scrollbar-futuristic {
-  &::-webkit-scrollbar { @apply w-1.5 h-1.5; }
-  &::-webkit-scrollbar-track { background-color: hsla(var(--neutral-hue, 220), 20%, 20%, 0.3); @apply rounded-full; }
-  &::-webkit-scrollbar-thumb { background-color: hsla(var(--agent-interviewer-accent-hue), calc(var(--agent-interviewer-accent-saturation) + 15%), calc(var(--agent-interviewer-accent-lightness) + 10%), 0.6); @apply rounded-full; border: 1px solid hsla(var(--neutral-hue, 220), 20%, 15%, 0.5); }
-  &::-webkit-scrollbar-thumb:hover { background-color: hsla(var(--agent-interviewer-accent-hue), calc(var(--agent-interviewer-accent-saturation) + 15%), calc(var(--agent-interviewer-accent-lightness) + 10%), 0.8); }
-  scrollbar-width: thin;
-  scrollbar-color: hsla(var(--agent-interviewer-accent-hue), calc(var(--agent-interviewer-accent-saturation) + 15%), calc(var(--agent-interviewer-accent-lightness) + 10%), 0.6) hsla(var(--neutral-hue, 220), 20%, 20%, 0.3);
-}
+
 
 :deep(.prose) {
   h1, h2, h3 { @apply text-[var(--text-primary-dark)] border-b border-[var(--border-color-dark)] pb-1 mb-3; }
