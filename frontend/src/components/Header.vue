@@ -2,23 +2,25 @@
 /**
  * @file Header.vue
  * @description Global application header, redesigned for "Ephemeral Harmony" theme.
- * Features dynamic logo and hearing icon, a unified user/settings dropdown,
- * a new site navigation dropdown, reactive login/logout state,
- * and improved visual integration with the "alive" app feel.
- * @version 6.1.0 - Added SiteMenuDropdown and refined structure.
+ * Features dynamic logo, prominent agent title, reactive hearing icon,
+ * unified user/settings dropdown, site navigation dropdown, and reactive login/logout state.
+ * @version 6.2.0 - Added Agent Title, improved reactivity integration.
  */
 <script setup lang="ts">
 import { computed, defineAsyncComponent } from 'vue';
 import { RouterLink, useRouter } from 'vue-router';
 import { useAuth } from '../composables/useAuth';
 import { useUiStore } from '@/store/ui.store';
+import { useAgentStore } from '@/store/agent.store';
 import { useChatStore } from '@/store/chat.store';
 import { useCostStore } from '@/store/cost.store';
+import { type IAgentDefinition } from '@/services/agent.service';
+
 
 // Async Components
 const UserSettingsDropdown = defineAsyncComponent(() => import('./header/UserSettingsDropdown.vue'));
 const VoiceControlsDropdown = defineAsyncComponent(() => import('./header/VoiceControlsDropdown.vue'));
-const SiteMenuDropdown = defineAsyncComponent(() => import('./header/SiteMenuDropdown.vue')); // New
+const SiteMenuDropdown = defineAsyncComponent(() => import('./header/SiteMenuDropdown.vue'));
 
 // Props
 const props = defineProps({
@@ -32,19 +34,23 @@ const props = defineProps({
 const emit = defineEmits<{
   (e: 'clear-chat-and-session'): void;
   (e: 'show-prior-chat-log'): void;
-  (e: 'toggle-theme'): void; // For UserSettingsDropdown
-  (e: 'toggle-fullscreen'): void; // For UserSettingsDropdown
-  (e: 'logout'): void; // For SiteMenuDropdown
+  (e: 'toggle-theme'): void;
+  (e: 'toggle-fullscreen'): void;
+  (e: 'logout'): void;
 }>();
 
 // Stores & Composables
 const auth = useAuth();
 const uiStore = useUiStore();
+const agentStore = useAgentStore();
 const chatStore = useChatStore();
 const costStore = useCostStore();
 const router = useRouter();
 
 // Computed States
+const activeAgent = computed<IAgentDefinition | undefined>(() => agentStore.activeAgent);
+const agentTitle = computed<string>(() => activeAgent.value?.label || 'Assistant');
+
 const sessionCost = computed(() => costStore.totalSessionCost);
 const isFullscreenActive = computed(() => uiStore.isBrowserFullscreenActive);
 const isAiStateActive = computed(() => props.isAssistantSpeaking || chatStore.isMainContentStreaming);
@@ -55,7 +61,7 @@ const handleLogoClick = () => {
   router.push({ name: auth.isAuthenticated.value ? 'AuthenticatedHome' : 'PublicHome' });
 };
 
-// Passthrough handlers for events from child dropdowns
+// Passthrough handlers
 const onClearChatAndSession = () => emit('clear-chat-and-session');
 const onShowPriorChatLog = () => emit('show-prior-chat-log');
 const onToggleTheme = () => emit('toggle-theme');
@@ -84,8 +90,8 @@ const onLogout = () => emit('logout');
         >
           <img src="@/assets/logo.svg" alt="Voice Chat Assistant Logo" class="app-logo-ephemeral" />
           <h1 class="app-title-ephemeral">
-            <span class="hidden sm:inline font-semibold">VoiceChat</span><span class="hidden sm:inline font-light opacity-80">Assistant</span>
-            <span class="sm:hidden font-semibold">VCA</span>
+            <span class="hidden md:inline font-semibold">VoiceChat</span><span class="hidden md:inline font-light opacity-80">Assistant</span>
+            <span class="md:hidden font-semibold">VCA</span>
           </h1>
         </RouterLink>
       </div>
@@ -98,19 +104,22 @@ const onLogout = () => emit('logout');
             'speaking': isAiStateActive,
             'idle': !isUserStateActive && !isAiStateActive
           }"
-          :title="isUserStateActive ? 'Listening for your input...' : isAiStateActive ? 'Assistant is responding...' : 'Assistant is idle'"
+          :title="isUserStateActive ? 'Listening...' : isAiStateActive ? 'Assistant Responding...' : 'Assistant Idle'"
           aria-label="Voice activity status"
           role="status"
         >
           <img src="@/assets/hearing.svg" alt="Voice activity indicator" class="hearing-icon-svg" />
         </div>
+        <div class="active-agent-title-ephemeral" :title="`Current Assistant: ${agentTitle}`">
+          {{ agentTitle }}
+        </div>
       </div>
 
       <div class="header-right-section">
         <Suspense>
-          <VoiceControlsDropdown class="hidden md:flex voice-controls-header-integration" />
+          <VoiceControlsDropdown class="voice-controls-header-integration" />
           <template #fallback>
-            <div class="nav-button-placeholder w-8 h-8 bg-neutral-700/30 rounded-full animate-pulse"></div>
+            <div class="nav-button-placeholder"></div>
           </template>
         </Suspense>
 
@@ -121,7 +130,7 @@ const onLogout = () => emit('logout');
         >
           <span class="cost-value">${{ sessionCost.toFixed(3) }}</span>
         </div>
-
+        
         <Suspense>
           <UserSettingsDropdown
             @clear-chat-and-session="onClearChatAndSession"
@@ -131,7 +140,7 @@ const onLogout = () => emit('logout');
             class="user-settings-header-integration"
           />
           <template #fallback>
-            <div class="nav-button-placeholder w-8 h-8 bg-neutral-700/30 rounded-full animate-pulse"></div>
+            <div class="nav-button-placeholder"></div>
           </template>
         </Suspense>
 
@@ -141,7 +150,7 @@ const onLogout = () => emit('logout');
             class="site-menu-header-integration"
           />
           <template #fallback>
-             <div class="nav-button-placeholder w-8 h-8 bg-neutral-700/30 rounded-full animate-pulse"></div>
+             <div class="nav-button-placeholder"></div>
           </template>
         </Suspense>
       </div>
@@ -150,21 +159,5 @@ const onLogout = () => emit('logout');
 </template>
 
 <style lang="scss" scoped>
-// Styles are primarily in frontend/src/styles/layout/_header.scss
-
-// Placeholder styles for fallback content - ensure they are minimal and don't conflict
-.nav-button-placeholder {
-  // Mimic button size for layout stability during suspense
-  // background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.3);
-  // border-radius: var.$radius-full;
-  // @apply animate-pulse;
-}
-
-// Integration classes for fine-tuning placement if needed.
-.voice-controls-header-integration,
-.user-settings-header-integration,
-.site-menu-header-integration {
-  // Add specific alignment or margin tweaks if the gap from .header-right-section is not enough
-  // e.g., display: flex; align-items: center;
-}
+/* Styles are primarily in frontend/src/styles/layout/_header.scss */
 </style>

@@ -76,7 +76,6 @@
     }
   }
 }
-
 .main-content-view-wrapper-ephemeral {
   height: 100%;
   width: 100%;
@@ -86,7 +85,7 @@
 
   &.has-framed-content {
     @include cardsFile.card-base-styles;   // Apply base styles
-    @include cardsFile.card-glass-look;    // CORRECTED: Apply glass look
+    @include cardsFile.card-glass-look;    // CORRECTED: Apply glass look mixin
     margin: var.$spacing-md;
     padding: 0; 
     overflow: hidden;
