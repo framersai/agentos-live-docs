@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __projectRoot = path.resolve(path.dirname(__filename), '../../../..');
-const PROMPT_DIR = path.join(__projectRoot, 'backend/prompts');
+const PROMPT_DIR = path.join(__projectRoot, 'prompts');
 
 export async function GET(req, res) {
   try {
