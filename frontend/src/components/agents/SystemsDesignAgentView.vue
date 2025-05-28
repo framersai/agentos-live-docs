@@ -411,7 +411,7 @@ onMounted(() => {
   color: hsl(var(--agent-architecton-accent-hue), var(--agent-architecton-accent-saturation), calc(var(--agent-architecton-accent-lightness) + 25%));
 }
 .architecton-welcome-subtitle {
-  @apply text-md sm:text-lg text-[var(--text-secondary-dark)] mb-5 max-w-lg;
+  @apply text-base sm:text-lg text-[var(--text-secondary-dark)] mb-5 max-w-lg;
 }
 .architecton-welcome-prompt {
   @apply text-sm sm:text-base text-[var(--text-muted-dark)] italic;

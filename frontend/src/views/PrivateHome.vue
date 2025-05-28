@@ -96,7 +96,7 @@ const mainContentData = computed<MainContent | null>(() => {
     data: `<div class="prose dark:prose-invert max-w-none mx-auto text-center py-8">
              <h2 class="text-3xl font-bold mb-4 text-[var(--color-text-primary)]">${activeAgent.value.label} is Ready</h2>
              <p class="text-lg text-[var(--color-text-secondary)]">${activeAgent.value.description}</p>
-             <p class="mt-6 text-md text-[var(--color-text-muted)]">${activeAgent.value.inputPlaceholder || 'Use the input below to start.'}</p>
+             <p class="mt-6 text-base text-[var(--color-text-muted)]">${activeAgent.value.inputPlaceholder || 'Use the input below to start.'}</p>
            </div>`,
     title: `${activeAgent.value.label} Ready`, timestamp: Date.now()
   };
