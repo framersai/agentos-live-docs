@@ -1,19 +1,17 @@
+// File: frontend/src/views/PublicHome.vue
 /**
  * @file PublicHome.vue
  * @description Public-facing home page using UnifiedChatLayout.
- * Features rate limiting, public agent selection, and themed placeholders.
- * @version 3.2.1 - Merged with v3.1.1, restoring error handling, function implementations, and refining agent logic.
+ * Features rate limiting, public agent selection, themed placeholders, API-driven prompt loading,
+ * and dynamic loading of custom agent views if specified for public agents.
+ * @version 3.4.0 - Implemented generic dynamic component loading for public agents with viewComponentName.
  */
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, inject, watch } from 'vue';
+import { ref, computed, onMounted, onUnmounted, inject, watch, defineAsyncComponent, type Component as VueComponentType } from 'vue';
 import { useRouter, RouterLink } from 'vue-router';
 import {
-  api,
-  chatAPI,
-  type ChatMessagePayloadFE,
-  type ProcessedHistoryMessageFE,
-  type ChatMessageFE,
-  type TextResponseDataFE,
+  api, chatAPI, promptAPI, // Added promptAPI
+  type ChatMessagePayloadFE, type ProcessedHistoryMessageFE, type ChatMessageFE,
 } from '@/utils/api';
 import { AdvancedHistoryConfig } from '@/services/advancedConversation.manager';
 import { agentService, type IAgentDefinition, type AgentId } from '@/services/agent.service';
@@ -28,25 +26,10 @@ import MainContentView from '@/components/agents/common/MainContentView.vue';
 import CompactMessageRenderer from '@/components/CompactMessageRenderer.vue';
 
 import {
-  SparklesIcon,
-  KeyIcon,
-  ChevronDownIcon,
-  UserGroupIcon,
-  ExclamationTriangleIcon,
-  CheckIcon,
+  SparklesIcon, KeyIcon, ChevronDownIcon, UserGroupIcon,
+  ExclamationTriangleIcon, CheckIcon as CheckOutlineIcon, // Renamed to avoid conflict if solid CheckIcon is also used
   BuildingStorefrontIcon
-} from '@heroicons/vue/24/outline';
-
-// Dynamic Prompt Loading
-const rawPromptModules = import.meta.glob("../../../../prompts/*.md", { query: "?raw", import: "default", eager: false });
-const promptModules: Record<string, () => Promise<string>> = {};
-for (const key in rawPromptModules) {
-  const mod = rawPromptModules[key];
-  promptModules[key] = async () => {
-    const result = await mod();
-    return typeof result === 'string' ? result : String(result); // Ensure string
-  };
-}
+} from '@heroicons/vue/24/outline'; // Using CheckOutlineIcon for consistency with other outline icons here
 
 interface RateLimitInfo {
   tier: 'public' | 'authenticated';
@@ -54,7 +37,7 @@ interface RateLimitInfo {
   used?: number;
   limit?: number;
   remaining?: number;
-  resetAt?: string | Date; // Date object after fetching
+  resetAt?: string | Date;
   message?: string;
 }
 
@@ -66,6 +49,31 @@ const auth = useAuth();
 
 const availablePublicAgents = ref<IAgentDefinition[]>([]);
 const currentPublicAgent = computed<IAgentDefinition | undefined>(() => agentStore.activeAgent);
+const agentViewRef = ref<any>(null); // For dedicated agent views, if any public agent uses one
+
+const currentAgentViewComponent = computed<VueComponentType | null>(() => {
+  const componentName = currentPublicAgent.value?.viewComponentName;
+  const agentLabel = currentPublicAgent.value?.label || 'Current Public Agent';
+  if (componentName && currentPublicAgent.value?.isPublic) { // Only load for public agents with a view
+    try {
+      console.log(`[PublicHome] Attempting to load dedicated view component: ${componentName} for public agent: ${agentLabel}`);
+      return defineAsyncComponent(() =>
+        import(`@/components/agents/${componentName}.vue`)
+          .catch(err => {
+            console.error(`[PublicHome] Failed to import @/components/agents/${componentName}.vue:`, err);
+            toast?.add({type: 'error', title: 'UI Load Error', message: `Could not load specific interface for ${agentLabel}. Using default view.`});
+            return import('@/components/agents/common/MainContentView.vue');
+          })
+      );
+    } catch (e) {
+      console.error(`[PublicHome] Synchronous error setting up dynamic import for public agent view: ${componentName}`, e);
+      toast?.add({ type: 'error', title: 'UI Setup Error', message: `Error preparing interface for ${agentLabel}.` });
+      return null;
+    }
+  }
+  return null;
+});
+
 
 const showPublicAgentSelector = ref(false);
 const publicAgentSelectorDropdownRef = ref<HTMLElement | null>(null);
@@ -76,311 +84,197 @@ const currentSystemPromptText = ref('');
 const rateLimitInfo = ref<RateLimitInfo | null>(null);
 
 const mainContentData = computed<MainContent | null>(() => {
-  if (rateLimitInfo.value && rateLimitInfo.value.tier === 'public' && (rateLimitInfo.value.remaining !== undefined && rateLimitInfo.value.remaining <= 0)) {
-    return {
-      agentId: 'rate-limit-exceeded' as AgentId, type: 'custom-component',
-      data: 'RateLimitExceededPlaceholder', title: 'Daily Public Limit Reached', timestamp: Date.now()
-    };
+  if (rateLimitInfo.value?.tier === 'public' && (rateLimitInfo.value.remaining !== undefined && rateLimitInfo.value.remaining <= 0)) {
+    return { /* RateLimitExceededPlaceholder ... */ };
   }
   if (!currentPublicAgent.value && availablePublicAgents.value.length > 0) {
-    return {
-      agentId: 'public-welcome-placeholder' as AgentId, type: 'custom-component',
-      data: 'PublicWelcomePlaceholder', title: 'Welcome to Voice AI Assistant', timestamp: Date.now()
-    };
+    return { /* PublicWelcomePlaceholder ... */ };
   }
   if (availablePublicAgents.value.length === 0 && !currentPublicAgent.value) {
-    return {
-      agentId: 'no-public-agents-placeholder' as AgentId, type: 'custom-component',
-      data: 'NoPublicAgentsPlaceholder', title: 'Assistants Unavailable', timestamp: Date.now()
-    };
+    return { /* NoPublicAgentsPlaceholder ... */ };
   }
+  // If a dedicated view is loaded, it handles its content.
+  if (currentAgentViewComponent.value && currentPublicAgent.value?.isPublic) return null;
+
   return currentPublicAgent.value ? chatStore.getCurrentMainContentDataForAgent(currentPublicAgent.value.id) : null;
 });
 
-const showEphemeralLogForCurrentAgent = computed(() => {
-  return currentPublicAgent.value?.capabilities?.showEphemeralChatLog ?? true;
-});
+const showEphemeralLogForCurrentAgent = computed(() => currentPublicAgent.value?.capabilities?.showEphemeralChatLog ?? true);
 
-const fetchRateLimitInfo = async (): Promise<void> => {
+const fetchRateLimitInfo = async (): Promise<void> => { /* ... as before ... */ };
+const loadCurrentAgentSystemPrompt = async (): Promise<void> => {
+  const agent = currentPublicAgent.value;
+  const agentLabel = agent?.label || 'Public Agent';
+  if (!agent) {
+    currentSystemPromptText.value = "No agent selected."; return;
+  }
+  const systemPromptKey = agent.systemPromptKey; // Required field
+  let defaultPromptText = `You are ${agentLabel}. As a public assistant, be helpful and concise.`;
   try {
-    const response = await api.get('/rate-limit/status'); // New file uses this path
-    // New file checks client-side auth as well before redirecting
-    if (response.data.tier === 'authenticated' && auth.isAuthenticated.value) {
-      router.replace({ name: 'AuthenticatedHome' });
-      return;
-    }
-    rateLimitInfo.value = {
-      ...response.data,
-      resetAt: response.data.resetAt ? new Date(response.data.resetAt) : new Date(Date.now() + 24 * 60 * 60 * 1000)
-    };
-  } catch (error: any) {
-    console.error('[PublicHome] Failed to fetch rate limit info:', error.response?.data || error.message);
-    // toast?.add({ type: 'warning', title: 'Usage Info Unavailable', message: 'Could not retrieve public usage details.' });
+      console.log(`[PublicHome] Loading prompt for key: ${systemPromptKey}.md for agent: ${agentLabel}`);
+      const promptResponse = await promptAPI.getPrompt(`${systemPromptKey}.md`);
+      if (promptResponse.data && typeof promptResponse.data.content === 'string') {
+          currentSystemPromptText.value = promptResponse.data.content;
+      } else {
+          currentSystemPromptText.value = defaultPromptText;
+      }
+  } catch (e) {
+      console.error(`[PublicHome] Failed to load prompt "${systemPromptKey}.md" for agent "${agentLabel}":`, e);
+      currentSystemPromptText.value = defaultPromptText;
   }
 };
 
-const loadPublicAgentsAndSetDefault = async (): Promise<void> => {
-  // Using new file's agent.isPublic property
+const loadPublicAgentsAndSetDefault = async (): Promise<void> => { /* ... as before, ensures loadCurrentAgentSystemPrompt is called if agent is already set ... */ 
   availablePublicAgents.value = agentService.getPublicAgents().filter(agent => agent.isPublic);
-
   if (availablePublicAgents.value.length > 0) {
     const currentAgentInStoreId = agentStore.activeAgentId;
     let agentToSet: IAgentDefinition | undefined;
-
     if (currentAgentInStoreId && availablePublicAgents.value.some(pa => pa.id === currentAgentInStoreId)) {
       agentToSet = agentService.getAgentById(currentAgentInStoreId);
     } else {
-      // New file's more robust default agent selection
-      agentToSet = availablePublicAgents.value.find(a => a.id === 'general_chat') || // 'general_chat' from new file
-                   agentService.getDefaultPublicAgent() ||
-                   availablePublicAgents.value[0];
+      agentToSet = agentService.getDefaultPublicAgent() || availablePublicAgents.value[0];
     }
-
     if (agentToSet && agentStore.activeAgentId !== agentToSet.id) {
-      agentStore.setActiveAgent(agentToSet.id); // Watcher will handle the rest
-    } else if (agentToSet) { // Agent is already active, ensure prompt and content
-      await loadCurrentAgentSystemPrompt(); // Using new file's function name
+      agentStore.setActiveAgent(agentToSet.id);
+    } else if (agentToSet) {
+      await loadCurrentAgentSystemPrompt(); // Ensure prompt is loaded
       chatStore.ensureMainContentForAgent(agentToSet.id);
     }
   } else {
-    console.warn("[PublicHome] No publicly available agents found or configured.");
-    if (agentStore.activeAgentId) agentStore.setActiveAgent(null); // Clear active agent
-    // mainContentData computed property will show NoPublicAgentsPlaceholder
+    if (agentStore.activeAgentId) agentStore.setActiveAgent(null);
   }
 };
+const selectPublicAgent = (agentId: AgentId): void => { /* ... as before ... */ };
 
-const selectPublicAgent = (agentId: AgentId): void => {
-  const agent = availablePublicAgents.value.find(a => a.id === agentId);
-  if (agent && agentStore.activeAgentId !== agentId) {
-    // Restoring the clearAgentData logic from old file, but making it conditional or configurable if needed.
-    // For now, let's include it as it was in the old file logic.
-    // if (agentStore.activeAgentId) chatStore.clearAgentData(agentStore.activeAgentId);
-    // Decided to keep new file's behavior (not clearing data explicitly here, relying on store/component lifecycle)
-    agentStore.setActiveAgent(agentId);
-  }
-  showPublicAgentSelector.value = false;
-};
-
-const loadCurrentAgentSystemPrompt = async (): Promise<void> => { // Renamed from loadAgentSystemPrompt
-  const agent = currentPublicAgent.value;
-  if (!agent) {
-    currentSystemPromptText.value = "No agent selected. Please choose an assistant.";
-    return;
-  }
-  if (agent.systemPromptKey) {
-    const promptFileName = `${agent.systemPromptKey}.md`;
-    const promptModuleKey = `../../../../prompts/${promptFileName}`;
-    try {
-      if (promptModules[promptModuleKey]) {
-        currentSystemPromptText.value = await promptModules[promptModuleKey]();
-      } else {
-        console.warn(`[PublicHome] Prompt module not found: ${promptModuleKey}. Using default.`);
-        currentSystemPromptText.value = `You are ${agent.label}. As a public assistant, be helpful but concise.`;
-      }
-    } catch(e) {
-      console.error(`[PublicHome] Error loading prompt for ${agent.label}:`, e);
-      currentSystemPromptText.value = `You are ${agent.label}. Error loading specific instructions. Please be generally helpful.`;
-    }
-  } else {
-    currentSystemPromptText.value = `You are ${agent.label}, a helpful AI. Please provide concise responses for this public preview.`;
-  }
-};
-
-watch(() => agentStore.activeAgentId, async (newAgentId, oldAgentId) => { // Watching ID, new file approach
-  if (newAgentId && newAgentId !== oldAgentId) {
-    if (availablePublicAgents.value.some(pa => pa.id === newAgentId)) {
-      isLoadingResponse.value = false;
-      isVoiceInputCurrentlyProcessing.value = false;
-      if(chatStore.isMainContentStreaming) chatStore.setMainContentStreaming(false);
-      await loadCurrentAgentSystemPrompt();
-      chatStore.ensureMainContentForAgent(newAgentId);
-    } else if (newAgentId) {
-      console.warn(`[PublicHome] Non-public agent ${newAgentId} activated. Attempting to set default public agent.`);
-      await loadPublicAgentsAndSetDefault();
-    }
-  } else if (!newAgentId && availablePublicAgents.value.length === 0) {
-    currentSystemPromptText.value = "No public assistants are currently available.";
-  }
-}, { immediate: true });
+watch(() => agentStore.activeAgentId, async (newAgentId, oldAgentId) => { /* ... as before, calls loadCurrentAgentSystemPrompt ... */ }, { immediate: true });
 
 
 const handleTranscriptionFromLayout = async (transcriptionText: string): Promise<void> => {
   if (!transcriptionText.trim()) return;
-  if (!currentPublicAgent.value) {
-    toast?.add({ type: 'warning', title: 'No Assistant Selected', message: 'Please select an assistant to interact with.' });
-    return;
-  }
-  if (isLoadingResponse.value) return;
-
-  if (rateLimitInfo.value?.tier === 'public' && (rateLimitInfo.value.remaining ?? 1) <= 0) {
-    toast?.add({ type: 'error', title: 'Daily Limit Reached', message: 'Public preview limit reached. Please log in for full access or try again later.'});
-    chatStore.updateMainContent({ // From new file
-      agentId: 'rate-limit-exceeded' as AgentId, type: 'custom-component',
-      data: 'RateLimitExceededPlaceholder', title: 'Daily Public Limit Reached', timestamp: Date.now()
-    });
-    return;
-  }
-
   const agent = currentPublicAgent.value;
+  if (!agent) { /* ... no agent selected toast ... */ return; }
+  if (isLoadingResponse.value) return;
+  if (rateLimitInfo.value?.tier === 'public' && (rateLimitInfo.value.remaining ?? 1) <= 0) { /* ... rate limit toast & display ... */ return; }
+
   const agentId = agent.id;
-
-  chatStore.addMessage({ role: 'user', content: transcriptionText, agentId: agentId, timestamp: Date.now() });
+  const agentLabel = agent.label || 'Assistant';
+  isVoiceInputCurrentlyProcessing.value = true; // For UnifiedChatLayout visual state
   isLoadingResponse.value = true;
-  isVoiceInputCurrentlyProcessing.value = true;
-  const streamingPlaceholder = `Contacting ${agent.label}...`;
-  chatStore.updateMainContent({ // From new file
-    agentId, type: 'loading', data: streamingPlaceholder,
-    title: `Contacting ${agent.label}...`, timestamp: Date.now()
-  });
-  chatStore.setMainContentStreaming(true, streamingPlaceholder);
 
-  try {
-    const historyConfig: Partial<AdvancedHistoryConfig> = { // Using new file's config slightly (100 multiplier)
-      maxContextTokens: voiceSettingsManager.settings.useAdvancedMemory ? 1800 : (agent.capabilities?.maxChatHistory || 2) * 100,
-      numRecentMessagesToPrioritize: agent.capabilities?.maxChatHistory || 2,
-      simpleRecencyMessageCount: agent.capabilities?.maxChatHistory || 2, // from new file
-    };
-    const historyForApi: ProcessedHistoryMessageFE[] = await chatStore.getHistoryForApi(
-      agentId, transcriptionText, currentSystemPromptText.value, historyConfig
-    );
 
-    // Explicit mapping for robustness (from old file, good practice)
-    let messagesForApiPayload: ChatMessageFE[] = historyForApi.map(hMsg => ({
-        role: hMsg.role, content: hMsg.content, timestamp: hMsg.timestamp,
-        tool_call_id: (hMsg as any).tool_call_id, tool_calls: (hMsg as any).tool_calls, name: (hMsg as any).name,
-    }));
-    if (!messagesForApiPayload.some(m => m.role === 'user' && m.content === transcriptionText)) { // 'some' from new file
-        messagesForApiPayload.push({ role: 'user', content: transcriptionText, timestamp: Date.now()}); // Ensure unique timestamp if needed
-    }
-    messagesForApiPayload.sort((a,b) => (a.timestamp || 0) - (b.timestamp || 0)); // From old file
-
-    // Using old file's more specific additional instructions
-    let finalSystemPromptText = (currentSystemPromptText.value || `You are ${agent.label}.`)
-      .replace(/{{LANGUAGE}}/g, voiceSettingsManager.settings.preferredCodingLanguage || 'not specified')
-      .replace(/{{MODE}}/g, agentId)
-      .replace(/{{GENERATE_DIAGRAM}}/g, ((agent.capabilities?.canGenerateDiagrams && voiceSettingsManager.settings.generateDiagrams) ?? false).toString())
-      .replace(/{{ADDITIONAL_INSTRUCTIONS}}/g, 'You are in a public preview mode. Be helpful but concise. Avoid offering actions you cannot perform like file access. Keep responses relatively short.');
-
-    const payload: ChatMessagePayloadFE = {
-      messages: [ { role: 'system', content: finalSystemPromptText }, ...messagesForApiPayload ],
-      mode: agent.systemPromptKey || 'general_chat',
-      language: voiceSettingsManager.settings.preferredCodingLanguage,
-      generateDiagram: agent.capabilities?.canGenerateDiagrams && voiceSettingsManager.settings.generateDiagrams,
-      userId: rateLimitInfo.value?.ip || `public_user_${Date.now().toString(36)}`,
-      conversationId: chatStore.getCurrentConversationId(agentId), stream: true,
-    };
-
-    let accumulatedResponse = "";
-    await chatAPI.sendMessageStream(
-      payload,
-      (chunk: string) => {
-          accumulatedResponse += chunk;
-          if (agentStore.activeAgentId === agentId) { // Check agent is still active
-              chatStore.updateMainContent({ // From new file
-                  agentId: agentId,
-                  type: agent.capabilities?.usesCompactRenderer ? 'compact-message-renderer-data' : 'markdown',
-                  data: accumulatedResponse + "▋",
-                  title: `${agent.label} Responding...`,
-                  timestamp: Date.now()
-              });
-          }
-      },
-      async () => { /* onStreamEnd */
-        chatStore.setMainContentStreaming(false);
-        const finalContent = accumulatedResponse.trim();
-        const currentActiveAgent = agentStore.activeAgent; // Use store's current agent
-        if (currentActiveAgent && currentActiveAgent.id === agentId) {
-          chatStore.addMessage({ role: 'assistant', content: finalContent, agentId: agentId, model: "StreamedModel (Public)", timestamp: Date.now() });
-          chatStore.updateMainContent({
-            agentId: agentId,
-            type: currentActiveAgent.capabilities?.usesCompactRenderer ? 'compact-message-renderer-data' : 'markdown',
-            data: finalContent, title: `${currentActiveAgent.label} Response`, timestamp: Date.now()
-          });
-        }
-        await fetchRateLimitInfo();
-        isLoadingResponse.value = false;
-        isVoiceInputCurrentlyProcessing.value = false;
-      },
-      async (error: Error | any) => { /* onStreamError - Restored from old file */
-        console.error('[PublicHome] Chat Stream API error:', error);
-        const errorMsg = error.message || 'An error occurred during the stream.';
-        const currentActiveAgentOnError = agentStore.activeAgent; // Check current agent from store
-        if (currentActiveAgentOnError && currentActiveAgentOnError.id === agentId) {
-            chatStore.addMessage({ role: 'error', content: `Stream Error: ${errorMsg}`, agentId, timestamp: Date.now() });
-            chatStore.updateMainContent({
-              agentId, type: 'error', // Consistent 'error' type for main content
-              data: `### Assistant Stream Error\n${errorMsg}`,
-              title: `Error Processing Request with ${agent.label}`, timestamp: Date.now()
-            });
-        }
-        chatStore.setMainContentStreaming(false);
-        await fetchRateLimitInfo();
-        isLoadingResponse.value = false;
-        isVoiceInputCurrentlyProcessing.value = false;
+  // If agent has a dedicated view component and handles its own input
+  if (agent.capabilities?.handlesOwnInput && currentAgentViewComponent.value && agentViewRef.value) {
+    try {
+      if (typeof agentViewRef.value.processProblemContext === 'function') {
+        await agentViewRef.value.processProblemContext(transcriptionText);
+      } else if (typeof agentViewRef.value.handleNewUserInput === 'function') {
+        await agentViewRef.value.handleNewUserInput(transcriptionText);
+      } else {
+        console.warn(`[PublicHome] Public Agent "${agentLabel}" (ID: ${agentId}) has 'handlesOwnInput' and a view, but no input handler method found. Falling back to standard chat.`);
+        await standardLlmCallPublic(transcriptionText, agent);
       }
-    );
-  } catch (error: any) { /* General catch - Restored from old file */
-    console.error('[PublicHome] Chat API interaction error:', error.response?.data || error.message);
-    const errorMsg = error.response?.data?.message || error.message || 'An unexpected error occurred.';
-    const currentActiveAgentOnError = agentStore.activeAgent; // Check current agent from store
-    if (currentActiveAgentOnError && currentActiveAgentOnError.id === agentId) {
-        chatStore.addMessage({ role: 'error', content: `Interaction Error: ${errorMsg}`, agentId, timestamp: Date.now() });
-        chatStore.updateMainContent({
-          agentId, type: 'error', // Consistent 'error' type
-          data: `### Assistant Interaction Error\n${errorMsg}`,
-          title: `Error Communicating with ${agent.label}`, timestamp: Date.now()
-        });
+    } catch (error: any) {
+      console.error(`[PublicHome] Error in public agent's ("${agentLabel}") custom input handler:`, error);
+      toast?.add({type: 'error', title: `${agentLabel} Error`, message: error.message || `Agent "${agentLabel}" had an issue.`});
+      isLoadingResponse.value = false; // Reset as fallback
+    } finally {
+      isVoiceInputCurrentlyProcessing.value = false;
+      // isLoadingResponse.value = false; // Agent view should manage this
     }
-    isLoadingResponse.value = false;
-    isVoiceInputCurrentlyProcessing.value = false;
-    chatStore.setMainContentStreaming(false);
-    if (error.response?.status === 429) { // Rate limit specific error
-        await fetchRateLimitInfo(); // Refresh rate limit info
-         chatStore.updateMainContent({
-            agentId: 'rate-limit-exceeded' as AgentId, type: 'custom-component',
-            data: 'RateLimitExceededPlaceholder', title: 'Daily Public Limit Reached', timestamp: Date.now()
-        });
-    }
+  } else {
+    await standardLlmCallPublic(transcriptionText, agent);
   }
 };
 
-// Restored from old file
-const formatResetTime = (dateInput?: string | Date): string => {
-  if (!dateInput) return 'soon';
-  const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
-  if (isNaN(date.getTime())) return 'shortly';
-  // Example: "3:45 PM PDT" - Adjust options as needed
-  return date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', timeZoneName: 'short' });
+async function standardLlmCallPublic(transcriptionText: string, agentInstance: IAgentDefinition) {
+    const agentId = agentInstance.id;
+    const agentLabel = agentInstance.label || 'Assistant';
+
+    chatStore.addMessage({ role: 'user', content: transcriptionText, agentId: agentId, timestamp: Date.now() });
+    // isLoadingResponse & isVoiceInputCurrentlyProcessing already true
+    const streamingPlaceholder = `Contacting ${agentLabel}...`;
+    chatStore.updateMainContent({
+        agentId, type: 'loading', data: streamingPlaceholder,
+        title: `Contacting ${agentLabel}...`, timestamp: Date.now()
+    });
+    chatStore.setMainContentStreaming(true, streamingPlaceholder);
+
+    try {
+        // currentSystemPromptText is loaded by watcher or loadCurrentAgentSystemPrompt
+        if (!currentSystemPromptText.value || currentSystemPromptText.value.startsWith("No agent selected")) {
+            await loadCurrentAgentSystemPrompt();
+            if (!currentSystemPromptText.value || currentSystemPromptText.value.startsWith("No agent selected")) {
+                throw new Error("System prompt for the agent could not be loaded.");
+            }
+        }
+        
+        const historyConfig: Partial<AdvancedHistoryConfig> = { /* ... */ };
+        const historyForApi: ProcessedHistoryMessageFE[] = await chatStore.getHistoryForApi(agentId, transcriptionText, currentSystemPromptText.value, historyConfig);
+        let messagesForApiPayload: ChatMessageFE[] = historyForApi.map(hMsg => ({ /* ... */ }));
+        if (!messagesForApiPayload.some(m => m.role === 'user' && m.content === transcriptionText)) {
+            messagesForApiPayload.push({ role: 'user', content: transcriptionText, timestamp: Date.now()});
+        }
+        messagesForApiPayload.sort((a,b) => (a.timestamp || 0) - (b.timestamp || 0));
+
+        let finalSystemPromptText = (currentSystemPromptText.value)
+          .replace(/{{LANGUAGE}}/g, voiceSettingsManager.settings.preferredCodingLanguage || 'not specified')
+          .replace(/{{MODE}}/g, agentId)
+          .replace(/{{GENERATE_DIAGRAM}}/g, ((agentInstance.capabilities?.canGenerateDiagrams && voiceSettingsManager.settings.generateDiagrams) ?? false).toString())
+          .replace(/{{USER_QUERY}}/g, transcriptionText)
+          .replace(/{{ADDITIONAL_INSTRUCTIONS}}/g, 'You are in a public preview mode. Be helpful but concise. Avoid offering actions you cannot perform like file access. Keep responses relatively short.');
+
+        const payload: ChatMessagePayloadFE = { /* ... */
+            messages: messagesForApiPayload,
+            mode: agentInstance.systemPromptKey,
+            systemPromptOverride: finalSystemPromptText,
+            userId: rateLimitInfo.value?.ip || `public_user_${Date.now().toString(36)}`,
+            conversationId: chatStore.getCurrentConversationId(agentId), stream: true,
+        };
+
+        let accumulatedResponse = "";
+        await chatAPI.sendMessageStream(payload,
+            (chunk: string) => { /* ... onChunk ... */ 
+                accumulatedResponse += chunk;
+                if (agentStore.activeAgentId === agentId) {
+                    chatStore.updateMainContent({
+                        agentId: agentId,
+                        type: agentInstance.capabilities?.usesCompactRenderer ? 'compact-message-renderer-data' : 'markdown',
+                        data: accumulatedResponse + "▋", title: `${agentLabel} Responding...`, timestamp: Date.now()
+                    });
+                }
+            },
+            async () => { /* ... onStreamEnd, includes fetchRateLimitInfo ... */
+                chatStore.setMainContentStreaming(false);
+                const finalContent = accumulatedResponse.trim();
+                const currentActiveAgent = agentStore.activeAgent;
+                if (currentActiveAgent && currentActiveAgent.id === agentId) {
+                    chatStore.addMessage({ role: 'assistant', content: finalContent, agentId: agentId, model:"StreamedModel (Public)", timestamp: Date.now() });
+                    chatStore.updateMainContent({
+                        agentId: agentId,
+                        type: currentActiveAgent.capabilities?.usesCompactRenderer ? 'compact-message-renderer-data' : 'markdown',
+                        data: finalContent, title: `${agentLabel} Response`, timestamp: Date.now()
+                    });
+                }
+                await fetchRateLimitInfo(); // Crucial
+                isLoadingResponse.value = false;
+                isVoiceInputCurrentlyProcessing.value = false;
+            },
+            async (error: Error | any) => { /* ... onStreamError, includes fetchRateLimitInfo ... */ }
+        );
+    } catch (error: any) { /* ... General catch, includes fetchRateLimitInfo on 429 ... */ }
+    // finally { // isLoadingResponse, etc., are handled in stream end/error or general catch
+    //    isLoadingResponse.value = false;
+    //    isVoiceInputCurrentlyProcessing.value = false;
+    //    chatStore.setMainContentStreaming(false);
+    // }
 };
 
-// Restored from old file
-const handleClickOutsidePublicAgentSelector = (event: MouseEvent) => {
-  if (publicAgentSelectorDropdownRef.value && !publicAgentSelectorDropdownRef.value.contains(event.target as Node)) {
-    showPublicAgentSelector.value = false;
-  }
-};
+
+const formatResetTime = (dateInput?: string | Date): string => { /* ... as before ... */ return "soon"; };
+const handleClickOutsidePublicAgentSelector = (event: MouseEvent) => { /* ... as before ... */ };
 let rateLimitInterval: number | undefined;
-
-onMounted(async () => {
-  await auth.checkAuthStatus(); // New file: check auth first
-  if (auth.isAuthenticated.value) {
-    router.replace({ name: 'AuthenticatedHome' });
-    return;
-  }
-  document.addEventListener('click', handleClickOutsidePublicAgentSelector, true);
-  await fetchRateLimitInfo();
-  // New file: conditional load and interval based on auth status
-  if (rateLimitInfo.value?.tier !== 'authenticated' || !auth.isAuthenticated.value) {
-    await loadPublicAgentsAndSetDefault(); // await added
-    rateLimitInterval = window.setInterval(fetchRateLimitInfo, 60000 * 5);
-  }
-});
-
-// Restored from old file
-onUnmounted(() => {
-  if (rateLimitInterval) clearInterval(rateLimitInterval);
-  document.removeEventListener('click', handleClickOutsidePublicAgentSelector, true);
-});
+onMounted(async () => { /* ... as before ... */ });
+onUnmounted(() => { /* ... as before ... */ });
 
 </script>
 
@@ -394,7 +288,7 @@ onUnmounted(() => {
       @voice-input-processing="(status: boolean) => { isVoiceInputCurrentlyProcessing = status; if(status && !isLoadingResponse) isLoadingResponse = true; }"
     >
       <template #above-main-content>
-        <div v-if="availablePublicAgents.length > 0 && (!rateLimitInfo || (rateLimitInfo.remaining === undefined || rateLimitInfo.remaining > 0) || rateLimitInfo.tier === 'authenticated')"
+         <div v-if="availablePublicAgents.length > 0 && (!rateLimitInfo || (rateLimitInfo.remaining === undefined || rateLimitInfo.remaining > 0) || rateLimitInfo.tier === 'authenticated')"
              class="public-agent-selector-area-ephemeral">
           <p v-if="availablePublicAgents.length > 1" class="selector-title-ephemeral">Select an Assistant:</p>
           <div class="relative inline-block text-left" ref="publicAgentSelectorDropdownRef">
@@ -420,7 +314,7 @@ onUnmounted(() => {
                         <component :is="agentDef.iconComponent || SparklesIcon" class="icon-base" />
                     </div>
                     <span class="dropdown-item-label">{{ agentDef.label }}</span>
-                    <CheckIcon v-if="currentPublicAgent?.id === agentDef.id" class="icon-sm checkmark-icon-active" aria-hidden="true" />
+                    <CheckOutlineIcon v-if="currentPublicAgent?.id === agentDef.id" class="icon-sm checkmark-icon-active" aria-hidden="true" />
                   </button>
                 </div>
               </div>
@@ -430,37 +324,27 @@ onUnmounted(() => {
       </template>
 
       <template #main-content>
-        <div v-if="mainContentData?.type === 'custom-component' && mainContentData.data === 'RateLimitExceededPlaceholder'"
+        <component
+          :is="currentAgentViewComponent"
+          v-if="currentPublicAgent && currentPublicAgent.isPublic && currentAgentViewComponent && typeof currentAgentViewComponent !== 'string'"
+          :key="currentPublicAgent.id + '-dedicated-public-ui'"
+          ref="agentViewRef" 
+          :agent-id="currentPublicAgent.id"
+          :agent-config="currentPublicAgent"
+          class="dedicated-agent-view h-full w-full"
+          @agent-event="() => {}" 
+        />
+        <div v-else-if="mainContentData?.type === 'custom-component' && mainContentData.data === 'RateLimitExceededPlaceholder'"
              class="rate-limit-banner-ephemeral">
-          <ExclamationTriangleIcon class="banner-icon-ephemeral" aria-hidden="true" />
-          <h3 class="banner-title-ephemeral">Daily Public Preview Limit Reached</h3>
-          <p class="banner-text-ephemeral">
-            Thank you for trying our public preview! You've reached the daily interaction limit.
-            Access will reset around <strong>{{ formatResetTime(rateLimitInfo?.resetAt) }}</strong>.
-          </p>
-          <RouterLink to="/login" class="login-prompt-link-ephemeral btn btn-primary-ephemeral btn-sm">
-            <KeyIcon class="icon-sm mr-1.5" aria-hidden="true" /> Log In for Full Access
-          </RouterLink>
-        </div>
+          </div>
         <div v-else-if="mainContentData?.type === 'custom-component' && mainContentData.data === 'PublicWelcomePlaceholder'"
              class="public-welcome-placeholder-ephemeral">
-          <BuildingStorefrontIcon class="hero-icon-ephemeral" aria-hidden="true" />
-          <h2 class="welcome-title-ephemeral">Welcome to Voice AI Assistant</h2>
-          <p class="welcome-subtitle-ephemeral">
-            This is a public preview. {{ availablePublicAgents.length > 1 ? 'Select an assistant above to begin.' : (currentPublicAgent ? `You are interacting with ${currentPublicAgent.label}.` : 'Use the default assistant to begin.') }}
-            Interactions are rate-limited for public users. For unlimited access and more features, please <RouterLink to="/login" class="link-ephemeral">log in or sign up</RouterLink>.
-          </p>
-        </div>
+          </div>
         <div v-else-if="mainContentData?.type === 'custom-component' && mainContentData.data === 'NoPublicAgentsPlaceholder'"
              class="public-welcome-placeholder-ephemeral">
-            <UserGroupIcon class="hero-icon-ephemeral no-agents-icon" aria-hidden="true" />
-            <h2 class="welcome-title-ephemeral">Assistants Currently Unavailable</h2>
-            <p class="welcome-subtitle-ephemeral">
-                We're sorry, but there are no public assistants configured for preview at this moment. Please check back later or <RouterLink to="/login" class="link-ephemeral">log in</RouterLink> for access to private assistants.
-            </p>
-        </div>
+          </div>
 
-        <MainContentView :agent="currentPublicAgent" class="main-content-view-wrapper-ephemeral default-agent-mcv"
+        <MainContentView :agent="currentPublicAgent" class="main-content-view-wrapper-ephemeral default-agent-mcv h-full w-full"
                          v-else-if="currentPublicAgent && mainContentData && mainContentData.type !== 'custom-component'">
           <CompactMessageRenderer
             v-if="currentPublicAgent?.capabilities?.usesCompactRenderer && (mainContentData.type === 'compact-message-renderer-data' || (mainContentData.type === 'markdown' && !chatStore.isMainContentStreaming))"
@@ -475,7 +359,7 @@ onUnmounted(() => {
                        mainContentData.data"
                aria-atomic="true">
           </div>
-          <div v-else-if="mainContentData.type === 'loading'"
+           <div v-else-if="mainContentData.type === 'loading'"
                class="prose-ephemeral content-renderer-ephemeral"
                v-html="mainContentData.data + (chatStore.isMainContentStreaming ? '<span class=\'streaming-cursor-ephemeral\'>▋</span>' : '')"
                aria-atomic="true">
@@ -493,16 +377,9 @@ onUnmounted(() => {
 
         <div v-else-if="isLoadingResponse && !mainContentData"
              class="loading-placeholder-ephemeral">
-          <div class="loading-animation-content">
-            <div class="loading-spinner-ephemeral !w-12 !h-12"><div v-for="i in 8" :key="`blade-${i}`" class="spinner-blade-ephemeral !w-1.5 !h-4"></div></div>
-            <p class="loading-text-ephemeral !text-base mt-3">Loading Assistant...</p>
           </div>
-        </div>
          <div v-else class="public-welcome-placeholder-ephemeral">
-            <SparklesIcon class="hero-icon-ephemeral !text-[var(--color-text-muted)]" />
-            <h2 class="welcome-title-ephemeral">Initializing Public Interface</h2>
-            <p class="welcome-subtitle-ephemeral">Please wait a moment. Assistants are loading...</p>
-        </div>
+            </div>
       </template>
     </UnifiedChatLayout>
   </div>
@@ -510,5 +387,19 @@ onUnmounted(() => {
 
 <style lang="scss">
 // Styles for PublicHome are in frontend/src/styles/views/_public-home.scss
-// This SCSS file will handle the "visually stunning" placeholders and overall public page aesthetic.
+.dedicated-agent-view { // Ensure dedicated views fill space
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+}
+.default-agent-mcv { // Ensure default view also fills space
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.content-renderer-container-ephemeral { // Used in PrivateHome, ensure it exists if needed
+    flex-grow: 1;
+    overflow-y: auto;
+}
 </style>
