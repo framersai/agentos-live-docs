@@ -418,7 +418,7 @@ onMounted(() => {
   @apply text-lg text-[var(--text-secondary-dark)] mb-6 max-w-md;
 }
 .nerf-welcome-prompt {
-  @apply text-md text-[var(--text-muted-dark)] italic;
+  @apply text-base text-[var(--text-muted-dark)] italic;
 }
 
 </style>

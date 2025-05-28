@@ -404,7 +404,6 @@ const renderMarkdownView = (content: string | null): string => {
     </div>
   </div>
 </template>
-
 <style scoped lang="postcss">
 /* All styles from previous LCAuditAgentView.vue response */
 .lc-audit-agent-view {
@@ -450,6 +449,7 @@ const renderMarkdownView = (content: string | null): string => {
   @apply font-medium text-lg mt-4;
 }
 
+/* This class definition remains the same for direct use on elements like your div */
 .lc-audit-scrollbar {
   &::-webkit-scrollbar { @apply w-2.5 h-2.5; } 
   &::-webkit-scrollbar-track { background-color: hsla(var(--neutral-hue, 220), 20%, 12%, 0.5); @apply rounded-lg; }
@@ -494,9 +494,22 @@ const renderMarkdownView = (content: string | null): string => {
     border: 1px solid hsla(var(--agent-lcaudit-accent-hue), 20%, 35%, 0.5) !important;
   }
   pre {
-    @apply border my-6 p-5 rounded-xl shadow-xl text-[95%] lc-audit-scrollbar overflow-auto; 
+    /* MODIFIED: lc-audit-scrollbar removed from @apply */
+    @apply border my-6 p-5 rounded-xl shadow-xl text-[95%] overflow-auto; 
     background-color: #0c1015 !important; 
     border-color: hsla(var(--agent-lcaudit-accent-hue), 30%, 30%, 0.4) !important;
+
+    /* ADDED: Scrollbar styles directly applied to pre elements within this context */
+    &::-webkit-scrollbar { @apply w-2.5 h-2.5; }
+    &::-webkit-scrollbar-track { background-color: hsla(var(--neutral-hue, 220), 20%, 12%, 0.5); @apply rounded-lg; }
+    &::-webkit-scrollbar-thumb {
+      background-color: hsla(var(--agent-lcaudit-accent-hue), var(--agent-lcaudit-accent-saturation), var(--agent-lcaudit-accent-lightness), 0.55);
+      @apply rounded-lg;
+      border: 2px solid hsla(var(--neutral-hue, 220), 20%, 12%, 0.5);
+    }
+    &::-webkit-scrollbar-thumb:hover { background-color: var(--agent-lcaudit-accent-color); }
+    scrollbar-width: auto; /* For Firefox */
+    scrollbar-color: hsla(var(--agent-lcaudit-accent-hue), var(--agent-lcaudit-accent-saturation), var(--agent-lcaudit-accent-lightness), 0.55) hsla(var(--neutral-hue, 220), 20%, 12%, 0.5); /* For Firefox */
   }
   .mermaid { @apply my-6 p-2 bg-slate-800/30 rounded-lg overflow-auto; }
   .mermaid svg {
@@ -521,7 +534,7 @@ const renderMarkdownView = (content: string | null): string => {
   color: hsl(var(--agent-lcaudit-accent-hue), var(--agent-lcaudit-accent-saturation), calc(var(--agent-lcaudit-accent-lightness) + 20%));
 }
 .lc-audit-welcome-subtitle { @apply text-lg md:text-xl text-[var(--text-secondary-dark)] mb-8 max-w-xl opacity-95; }
-.lc-audit-welcome-prompt { @apply text-md md:text-lg text-[var(--text-muted-dark)] italic; }
+.lc-audit-welcome-prompt { @apply text-base md:text-lg text-[var(--text-muted-dark)] italic; }
 
 .btn.btn-secondary.btn-xs {
   border-color: var(--agent-lcaudit-accent-color-muted);

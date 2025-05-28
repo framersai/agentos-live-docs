@@ -504,7 +504,7 @@ const exportAllEntries = async () => {
                  @click="() => { viewEntry(entry); }"
                  class="entry-list-item group p-3.5 bg-slate-700/50 dark:bg-slate-800/60 hover:bg-purple-600/40 dark:hover:bg-purple-700/50 rounded-lg cursor-pointer transition-all duration-200 border border-purple-500/25 dark:border-purple-700/30 hover:border-purple-400/70 dark:hover:border-purple-500/70 hover:shadow-lg hover:shadow-purple-500/25 dark:hover:shadow-purple-600/30">
               <div class="flex justify-between items-start">
-                <h4 class="font-medium text-purple-300 dark:text-purple-400 group-hover:text-pink-300 dark:group-hover:text-pink-400 text-md mb-0.5">{{ entry.title }}</h4>
+                <h4 class="font-medium text-purple-300 dark:text-purple-400 group-hover:text-pink-300 dark:group-hover:text-pink-400 text-base mb-0.5">{{ entry.title }}</h4>
                 <span class="text-xxs text-slate-500 dark:text-slate-400 group-hover:text-slate-400 dark:group-hover:text-slate-300">{{ new Date(entry.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric', year:'2-digit'}) }}</span>
               </div>
               <p v-if="entry.tags && entry.tags.length" class="text-xs text-purple-400/80 dark:text-purple-500/80 mt-1 flex flex-wrap gap-1 items-center">

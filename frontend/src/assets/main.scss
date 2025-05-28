@@ -71,7 +71,6 @@
 // Helper classes for common styling adjustments (e.g., spacing, alignment, visibility).
 @use '../styles/utilities/helpers';
 
-@use '../styles/components/chat-window'; // Added
 // 9. Tailwind CSS Directives
 // Integration of Tailwind CSS. The order relative to custom styles can be important.
 // Placing them here allows custom base styles to be established first,

@@ -66,7 +66,7 @@ $header-height-default: 64px;
 $footer-height-default: 56px;
 $chat-log-height-default: 200px;
 
-$default-blur-glass: 10px; // <<< RENAMED FROM $blur-glass-default
+$default-blur-glass: 10px; // <<< RENAMED FROM $default-blur-glass
 
 
 // -----------------------------------------------------------------------------
@@ -127,6 +127,7 @@ $scss-box-shadow-sm: 0 #{$shadow-offset-sm} calc(#{$shadow-offset-sm} * 1.5) #{$
 $scss-box-shadow-md: 0 #{$shadow-offset-md} calc(#{$shadow-offset-md} * 2) #{$scss-shadow-color-string-medium};
 $scss-box-shadow-lg: 0 #{$shadow-offset-lg} calc(#{$shadow-offset-lg} * 2.5) #{$scss-shadow-color-string-strong};
 $scss-box-shadow-xl: 0 #{$shadow-offset-xl} calc(#{$shadow-offset-xl} * 2.5) #{$scss-shadow-color-string-strong};
+
 
 // -----------------------------------------------------------------------------
 // Z-Indexes
