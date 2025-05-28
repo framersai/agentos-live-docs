@@ -880,7 +880,7 @@ const exportAllEntries = async () => {
 
 
 .loading-overlay-diary-page {
-  @apply absolute inset-0 flex flex-col items-center justify-content-center z-20 backdrop-blur-sm;
+  @apply absolute inset-0 flex flex-col items-center justify-center z-20 backdrop-blur-sm;
   background-color: hsla(var(--agent-diary-neutral-h), 15%, 10%, 0.6); 
   .icon { 
     color: hsl(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 60%), var(--agent-diary-purple-l, 65%));
