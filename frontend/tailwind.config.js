@@ -184,7 +184,7 @@ export default {
   plugins: [
     require('@tailwindcss/typography'),
     require('@tailwindcss/forms')({ strategy: 'class' }),
-    plugin(function ({ addUtilities, theme, e }) {
+    plugin(function ({ addUtilities, theme, addComponents, e }) {
       const iconSizes = {
         '.icon-xs': { width: theme('spacing')['3.5'], height: theme('spacing')['3.5'] },
         '.icon-sm': { width: theme('spacing')['4'], height: theme('spacing')['4'] },
@@ -198,6 +198,31 @@ export default {
         '.motion-safe-transition': { '@media (prefers-reduced-motion: no-preference)': { transitionProperty: theme('transitionProperty.DEFAULT'), transitionTimingFunction: theme('transitionTimingFunction.DEFAULT'), transitionDuration: theme('transitionDuration.DEFAULT') } },
       };
       addUtilities(motionSafeUtilities);
+
+      addComponents({ // Add this block for the btn class
+        '.btn': {
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: `${theme('spacing.2')} ${theme('spacing.4')}`, // Example padding
+          borderRadius: theme('borderRadius.md'), // Example border-radius
+          fontWeight: theme('fontWeight.medium'),
+          // Add other default styles for your button here
+          // For example, background, text color, hover states, etc.
+          backgroundColor: 'hsl(var(--color-accent-primary-h) var(--color-accent-primary-s) var(--color-accent-primary-l) / <alpha-value>)',
+          color: 'hsl(var(--color-text-on-primary-h) var(--color-text-on-primary-s) var(--color-text-on-primary-l) / <alpha-value>)',
+          '&:hover': {
+            backgroundColor: 'hsl(var(--color-accent-primary-h) var(--color-accent-primary-s) calc(var(--color-accent-primary-l) - 5%) / <alpha-value>)',
+          },
+          // You can also add variants like .btn-primary, .btn-secondary
+          // based on your extended colors in tailwind.config.js
+        },
+        '.btn-primary': {
+            // Styles for primary button, could @apply the base .btn or extend it
+        },
+        '.btn-secondary': {}
+        // ... more button variants if needed
+      });
     }),
   ],
 };

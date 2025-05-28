@@ -44,14 +44,13 @@
 @use '../styles/components/voice-controls-dropdown'; // <-- ADD THIS
 @use '../styles/components/agents/agent-chat-log'; // <-- ADD THIS
 // 7. View-Specific Styles
-@use '../styles/views/public-home';
-@use '../styles/views/private-home';
-@use '../styles/views/about-page';
+// @use '../styles/views/public-home';
+// @use '../styles/views/private-home';
+// @use '../styles/views/about-page';
+
 // 8. Utility Classes
 @use '../styles/utilities/helpers';
 @use '../styles/components/chat-window'; // Added
-@use '../styles/components/dropdowns'; // <-- ADD THIS IMPORT
-@use '../styles/views/settings-page'; // <-- THIS IS THE IMPORTANT IMPORT
 // 9. Tailwind CSS Directives
 @tailwind base;
 @tailwind components;
