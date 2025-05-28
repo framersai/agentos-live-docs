@@ -1,10 +1,10 @@
 // File: backend/config/models.config.ts
 /**
- * @file Centralized model configuration for LLM preferences and pricing.
- * @description Loads model preferences from environment variables (stripping comments)
- * and defines pricing information for cost calculation.
- * @version 1.2.1 - Ensured getModelIdFromEnv is robust and applied to all model prefs.
- */
+ * @file Centralized model configuration for LLM preferences and pricing.
+ * @description Loads model preferences from environment variables (stripping comments)
+ * and defines pricing information for cost calculation.
+ * @version 1.2.3 - Hardcoded model preference for lc_audit_aide to gpt-4o.
+ */
 
 import dotenv from 'dotenv';
 import path from 'path';
@@ -19,29 +19,24 @@ dotenv.config({ path: path.join(__projectRoot, '.env') });
  * @function getModelIdFromEnv
  * @description Helper function to get an environment variable value intended for a model ID,
  * stripping any trailing comments starting with '#'.
- * @param {string | undefined} envVar - The raw value from process.env.
+ * @param {string | undefined} envVarValue - The raw value from process.env.
  * @param {string} defaultValue - A fallback value if the envVar is not set or results in an empty string after stripping.
  * @returns {string} The cleaned model ID or the default value.
- * @example
- * // If process.env.MY_MODEL = "model-name # this is a comment"
- * // getModelIdFromEnv(process.env.MY_MODEL, "default-model") will return "model-name"
  */
 function getModelIdFromEnv(envVarValue: string | undefined, defaultValue: string): string {
   if (typeof envVarValue === 'string' && envVarValue.trim() !== '') {
     const valueWithoutComment = envVarValue.split('#')[0].trim();
     if (valueWithoutComment.length > 0) {
-      // console.log(`[models.config.ts] Parsed env var: Original='${envVarValue}', Processed='${valueWithoutComment}'`);
       return valueWithoutComment;
     }
   }
-  // console.log(`[models.config.ts] Env var not suitable or empty, using default: '${defaultValue}' for original '${envVarValue}'`);
   return defaultValue;
 }
 
 /**
- * @interface ModelConfig
- * @description Defines the structure for model pricing information.
- */
+ * @interface ModelConfig
+ * @description Defines the structure for model pricing information.
+ */
 export interface ModelConfig {
   inputCostPer1K: number;
   outputCostPer1K: number;
@@ -50,9 +45,9 @@ export interface ModelConfig {
 }
 
 /**
- * @constant MODEL_PRICING
- * @description A map holding pricing information for various models.
- */
+ * @constant MODEL_PRICING
+ * @description A map holding pricing information for various models.
+ */
 export const MODEL_PRICING: Record<string, ModelConfig> = {
   // OpenAI Models
   'gpt-4o-mini': { inputCostPer1K: 0.00015, outputCostPer1K: 0.00060, displayName: 'GPT-4o Mini', provider: 'openai' },
@@ -81,11 +76,11 @@ export const MODEL_PRICING: Record<string, ModelConfig> = {
 };
 
 /**
- * Retrieves the pricing configuration for a given model ID.
- * @param {string} modelId - The model identifier.
- * @returns {ModelConfig | undefined} The pricing configuration or the default if not found.
- */
-export function getModelPrice(modelId: string): ModelConfig { // Changed return type to ModelConfig (non-undefined)
+ * Retrieves the pricing configuration for a given model ID.
+ * @param {string} modelId - The model identifier.
+ * @returns {ModelConfig} The pricing configuration or the default if not found.
+ */
+export function getModelPrice(modelId: string): ModelConfig {
   if (MODEL_PRICING[modelId]) {
     return MODEL_PRICING[modelId];
   }
@@ -97,34 +92,35 @@ export function getModelPrice(modelId: string): ModelConfig { // Changed return 
     }
   }
   console.warn(`[models.config.ts] getModelPrice: Pricing not found for model "${modelId}". Using default pricing.`);
-  return MODEL_PRICING['default']; // Ensure 'default' key exists and returns a valid ModelConfig
+  return MODEL_PRICING['default'];
 }
 
 /**
- * @constant MODEL_PREFERENCES
- * @description Preferred models for different application modes, loaded from environment variables
- * with comments stripped and sensible fallbacks.
- */
+ * @constant MODEL_PREFERENCES
+ * @description Preferred models for different application modes.
+ * For lc_audit_aide, it's now hardcoded to 'openai/gpt-4o'.
+ * Other preferences still attempt to load from environment variables with fallbacks.
+ */
 export const MODEL_PREFERENCES = {
   general: getModelIdFromEnv(process.env.MODEL_PREF_GENERAL_CHAT, 'openai/gpt-4o-mini'),
   coding: getModelIdFromEnv(process.env.MODEL_PREF_CODING, 'openai/gpt-4o'),
   system_design: getModelIdFromEnv(process.env.MODEL_PREF_SYSTEM_DESIGN, 'openai/gpt-4o'),
-  meeting_summary: getModelIdFromEnv(process.env.MODEL_PREF_SUMMARIZATION, 'openai/gpt-4o-mini'), // Alias
+  meeting_summary: getModelIdFromEnv(process.env.MODEL_PREF_SUMMARIZATION, 'openai/gpt-4o-mini'),
   rag_synthesis: getModelIdFromEnv(process.env.MODEL_PREF_RAG_SYNTHESIS, 'openai/gpt-4o-mini'),
   self_reflection: getModelIdFromEnv(process.env.MODEL_PREF_SELF_REFLECTION, 'openai/gpt-4o-mini'),
   summarization: getModelIdFromEnv(process.env.MODEL_PREF_SUMMARIZATION, 'openai/gpt-4o-mini'),
   default_embedding: getModelIdFromEnv(process.env.MODEL_PREF_DEFAULT_EMBEDDING, 'openai/text-embedding-3-small'),
-  interview_tutor: getModelIdFromEnv(process.env.MODEL_PREF_INTERVIEW_TUTOR, 'openai/gpt-4o'),
+  interview_tutor: getModelIdFromEnv(process.env.MODEL_PREF_INTERVIEW_TUTOR, 'openai/gpt-4o'), // For coding_interviewer if mapped
   coding_tutor: getModelIdFromEnv(process.env.MODEL_PREF_CODING_TUTOR, 'openai/gpt-4o-mini'),
-  // Correctly parse UTILITY_LLM_MODEL_ID
-  utility: getModelIdFromEnv(process.env.UTILITY_LLM_MODEL_ID, 'openai/gpt-4o-mini'),
-  // Correctly parse ROUTING_LLM_MODEL_ID (though ROUTING_LLM_PROVIDER_ID is separate and usually clean)
-  default: getModelIdFromEnv(process.env.ROUTING_LLM_MODEL_ID, 'openai/gpt-4o-mini'),
+  utility: getModelIdFromEnv(process.env.UTILITY_LLM_MODEL_ID, 'openai/gpt-4o-mini'), // Aggregator model
+  default: getModelIdFromEnv(process.env.ROUTING_LLM_MODEL_ID, 'openai/gpt-4o-mini'), // General fallback
+
+  // Agent-specific overrides
+  diary: getModelIdFromEnv(process.env.MODEL_PREF_DIARY, 'openai/gpt-4o-mini'),
+  lc_audit_aide: 'openai/gpt-4o', // HARDCODED as per request
+  coding_interviewer: getModelIdFromEnv(process.env.MODEL_PREF_CODING_INTERVIEWER, 'openai/gpt-4o'), // Retains env var for now
 };
 
-// Log the loaded model preferences for verification during startup
-// Use JSON.stringify for cleaner object logging
-console.log("[models.config.ts] Loaded MODEL_PREFERENCES (env vars processed):", JSON.stringify(MODEL_PREFERENCES, null, 2));
-
-// Also log the specific utility model ID being used, as this was the source of the error
-console.log(`[models.config.ts] Effective UTILITY_LLM_MODEL_ID: '${MODEL_PREFERENCES.utility}' (from env: '${process.env.UTILITY_LLM_MODEL_ID}')`);
+console.log("[models.config.ts] Loaded MODEL_PREFERENCES:", JSON.stringify(MODEL_PREFERENCES, null, 2));
+console.log(`[models.config.ts] Effective UTILITY_LLM_MODEL_ID: '${MODEL_PREFERENCES.utility}'`);
+console.log(`[models.config.ts] Effective LC_AUDIT_AIDE_MODEL_ID: '${MODEL_PREFERENCES.lc_audit_aide}' (Hardcoded)`);

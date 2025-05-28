@@ -1,20 +1,30 @@
+// File: frontend/src/components/agents/DiaryAgentView.vue
+/**
+ * @file DiaryAgentView.vue
+ * @description Dedicated view component for the Echo (Diary) agent.
+ * Provides a rich interface for interacting with the diary, managing entries,
+ * and visualizing thoughts with potential diagrams.
+ * @version 1.1.0 - Switched to promptAPI for system prompt loading and refined metadata flow.
+ */
 <script setup lang="ts">
 import { ref, computed, inject, watch, onMounted, onUnmounted, nextTick, type PropType } from 'vue';
 import { useAgentStore } from '@/store/agent.store';
-// ChatMessageFE might be used if constructing API payloads directly with that type.
-// For chat log display, StoreChatMessage is typically mapped.
-import { type ChatMessageFE, chatAPI, type ChatMessagePayloadFE, type TextResponseDataFE, type FunctionCallResponseDataFE, type ChatResponseDataFE } from '@/utils/api';
-import { useChatStore, type ChatMessage as StoreChatMessage, type MainContent } from '@/store/chat.store';
+import { useChatStore, type ChatMessage as StoreChatMessage, type MainContent } from '@/store/chat.store'; // Renamed ChatMessage to StoreChatMessage
 import type { IAgentDefinition } from '@/services/agent.service';
 import { voiceSettingsManager } from '@/services/voice.settings.service';
+import { chatAPI, promptAPI, type ChatMessagePayloadFE, type TextResponseDataFE, type FunctionCallResponseDataFE, type ChatResponseDataFE, type ChatMessageFE } from '@/utils/api'; // Added promptAPI
 import type { ToastService } from '@/services/services';
-import { BookOpenIcon, PlusCircleIcon, SparklesIcon, TrashIcon, PencilSquareIcon, ArrowPathIcon, CheckCircleIcon, XCircleIcon, TagIcon, ArrowUpTrayIcon, ArrowDownTrayIcon, ShareIcon } from '@heroicons/vue/24/outline'; // Added ShareIcon
+import { BookOpenIcon, PlusCircleIcon, SparklesIcon, TrashIcon, PencilSquareIcon, ArrowPathIcon, CheckCircleIcon as SolidCheckCircleIcon, XCircleIcon, TagIcon, ArrowUpTrayIcon, ArrowDownTrayIcon, ShareIcon } from '@heroicons/vue/24/solid'; // Using solid check
 import { marked } from 'marked';
-import { diaryService, type DiaryEntry } from '@/services/diary.service'; // Assumes this path is correct
-import type { AdvancedHistoryConfig } from '@/services/advancedConversation.manager';
+import { diaryService, type DiaryEntry } from '@/services/diary.service';
+import type { AdvancedHistoryConfig } from '@/services/advancedConversation.manager'; // Assuming this path
 
-// If using a specific component for chat messages, import it:
-// import StoreChatMessageDisplay from '@/components/common/StoreChatMessageDisplay.vue'; // Example name
+import { themeManager } from '@/theme/ThemeManager';
+// If using a specific component for chat messages:
+// import StoreChatMessageDisplay from '@/components/common/StoreChatMessageDisplay.vue'; // Example
+// For now, assuming messages are simple enough or handled by a global component/CSS if StoreChatMessageDisplay is not defined
+
+declare var mermaid: any; // If mermaid is global
 
 const props = defineProps({
   agentId: { type: String as PropType<IAgentDefinition['id']>, required: true },
@@ -30,113 +40,265 @@ const emit = defineEmits<{
 const agentStore = useAgentStore();
 const chatStore = useChatStore();
 const toast = inject<ToastService>('toast');
+const agentDisplayName = computed(() => props.agentConfig?.label || "Echo");
 
 const isLoadingResponse = ref(false);
 const currentAgentSystemPrompt = ref('');
 
 // -- Diary Specific State --
-const isComposingSession = ref(false); // True when actively drafting a new entry with Echo
-const showEntryListModal = ref(false); // To show/hide the modal for Browse past entries
-const storedEntries = ref<DiaryEntry[]>([]); // Holds all diary entries fetched from service
-const selectedEntryToView = ref<DiaryEntry | null>(null); // The currently displayed entry
+const isComposingSession = ref(false);
+const showEntryListModal = ref(false);
+const storedEntries = ref<DiaryEntry[]>([]);
+const selectedEntryToView = ref<DiaryEntry | null>(null);
 
-// For metadata confirmation flow
 const showMetadataConfirmation = ref(false);
 const suggestedMetadata = ref<{ title: string; tags: string[]; mood?: string; summary: string; toolCallId: string; toolName: string; } | null>(null);
 const userEditedTitle = ref('');
 const userEditedTags = ref('');
 const userEditedMood = ref('');
 
-// Refs for DOM elements (scrolling, file input)
 const chatLogRef = ref<HTMLElement | null>(null);
 const entryPageRef = ref<HTMLElement | null>(null);
 const fileInputRef = ref<HTMLInputElement | null>(null);
 
-// Computed property to render the main content for the diary page (right panel)
 const renderedEntryPageContentHtml = computed(() => {
-  if (selectedEntryToView.value) { // Viewing an existing entry
+  if (selectedEntryToView.value) {
     try {
-      // Construct Markdown for the selected entry display
       const header = `# ${selectedEntryToView.value.title}\n**Date:** ${new Date(selectedEntryToView.value.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}\n**Tags:** ${selectedEntryToView.value.tags.join(', ')}${selectedEntryToView.value.mood ? `  **Mood:** ${selectedEntryToView.value.mood}` : ''}\n\n---\n\n`;
       const fullMarkdown = header + selectedEntryToView.value.contentMarkdown;
-      // marked.parse will convert this to HTML.
-      // If contentMarkdown contains Mermaid blocks (```mermaid ... ```),
-      // ensure 'marked' is configured to output appropriate HTML (e.g., <div class="mermaid">...</div>)
-      // and that a global Mermaid script initializes and renders these blocks.
-      return marked.parse(fullMarkdown);
-    } catch (e) { 
-      console.error("Error parsing selected diary entry markdown:", e); 
-      return `<p class="text-red-400 dark:text-red-500">Error displaying entry.</p>`; // Themed error display
+      return marked.parse(fullMarkdown, { breaks: true, gfm: true });
+    } catch (e) {
+      console.error("Error parsing selected diary entry markdown:", e);
+      return `<p class="text-red-500 dark:text-red-400">Error displaying entry.</p>`;
     }
   }
-  if (isComposingSession.value) { // Actively composing a new entry
+  if (isComposingSession.value) {
     const baseText = `## New Diary Entry - ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}\n\n_Echo is listening... Share your thoughts, and I'll help structure them._\n\n<p class="text-xs text-purple-300/70 dark:text-purple-400/70 mt-4">**(Your entries are saved locally in your browser.)**</p>`;
     if (chatStore.isMainContentStreaming && chatStore.streamingMainContentText.startsWith("##")) {
-      // If streaming content from LLM that's intended as the entry body
-      return marked.parse(chatStore.streamingMainContentText + '▋'); // Add blinking cursor for streaming
+      return marked.parse(chatStore.streamingMainContentText + '▋', { breaks: true, gfm: true });
     }
-    return marked.parse(baseText); // Default composing placeholder
+    return marked.parse(baseText, { breaks: true, gfm: true });
   }
-  // Fallback: Display content from chatStore if relevant (e.g., initial welcome message)
   const mainContent = chatStore.getMainContentForAgent(props.agentId);
   if (mainContent && (mainContent.type === 'markdown' || mainContent.type === 'welcome' || mainContent.type === 'diary-entry-viewer')) {
-      try { return marked.parse(mainContent.data as string); }
-      catch (e) { console.error("Error parsing main content markdown:", e); return `<p class="text-red-400 dark:text-red-500">Error displaying content.</p>`;}
+      try { return marked.parse(mainContent.data as string, { breaks: true, gfm: true }); }
+      catch (e) { console.error("Error parsing main content markdown:", e); return `<p class="text-red-500 dark:text-red-400">Error displaying content.</p>`;}
   }
-  // Default placeholder if nothing else is active
   return '<div class="flex flex-col items-center justify-center h-full text-center"><svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 text-purple-400/30 dark:text-purple-500/30 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg><p class="text-slate-400 dark:text-slate-500 italic">Select an entry or start a new one with Echo.</p></div>';
 });
 
 const fetchSystemPrompt = async () => {
-  if (props.agentConfig.systemPromptKey) {
+  const key = props.agentConfig?.systemPromptKey;
+  const agentLabel = agentDisplayName.value;
+  console.log(`[${agentLabel}] fetchSystemPrompt called with systemPromptKey: "${key}"`);
+
+  if (key) {
     try {
-      // The updated 'diary.md' prompt now includes instructions for suggesting/generating diagrams.
-      const module = await import(/* @vite-ignore */ `/src/prompts/${props.agentConfig.systemPromptKey}.md?raw`);
-      currentAgentSystemPrompt.value = module.default;
-    } catch (e) {
-      console.error(`[${props.agentConfig.label}Agent] Failed to load system prompt: ${props.agentConfig.systemPromptKey}.md`, e);
+      const response = await promptAPI.getPrompt(`${key}.md`);
+      console.log(`[${agentLabel}] Prompt API response for key "${key}.md":`, response);
+      if (response && response.data && typeof response.data.content === 'string') {
+        currentAgentSystemPrompt.value = response.data.content;
+      } else {
+        console.error(`[${agentLabel}] Prompt API response for key "${key}" is invalid. Using fallback.`);
+        currentAgentSystemPrompt.value = "You are Echo, an empathetic diary. Listen and help structure entries. Use the 'suggestDiaryMetadata' tool. Consider suggesting mind maps for complex thoughts. Finalize entry in Markdown.";
+        toast?.add({type: 'warning', title: 'Prompt Load Issue', message: `Could not load custom instructions for ${agentLabel}. Using default behavior.`});
+      }
+    } catch (e: any) {
+      console.error(`[${agentLabel}] Failed to load system prompt "${key}.md" via API:`, e.response?.data || e.message || e);
       currentAgentSystemPrompt.value = "You are Echo, an empathetic diary. Listen and help structure entries. Use the 'suggestDiaryMetadata' tool. Consider suggesting mind maps for complex thoughts. Finalize entry in Markdown.";
+      toast?.add({type: 'error', title: 'Prompt Load Error', message: `Failed to load instructions for ${agentLabel}.`});
     }
   } else {
+    console.warn(`[${agentLabel}] No systemPromptKey defined for agent. Using generic fallback prompt.`);
     currentAgentSystemPrompt.value = "You are Echo, an empathetic diary. Listen and help structure entries. Use the 'suggestDiaryMetadata' tool. Consider suggesting mind maps for complex thoughts. Finalize entry in Markdown.";
   }
+  console.log(`[${agentLabel}] System prompt set (first 100 chars):`, currentAgentSystemPrompt.value.substring(0,100) + "...");
 };
-watch(() => props.agentConfig.systemPromptKey, fetchSystemPrompt, { immediate: true });
+
+watch(() => props.agentConfig?.systemPromptKey, fetchSystemPrompt, { immediate: true });
 
 async function loadStoredEntries() {
   isLoadingResponse.value = true;
   try {
     storedEntries.value = await diaryService.getAllEntries('createdAt', 'desc');
   } catch (error) {
-    toast?.add({type: 'error', title: 'Error Loading Entries', message: 'Could not retrieve diary entries from local storage.'});
+    toast?.add({type: 'error', title: 'Error Loading Entries', message: 'Could not retrieve diary entries.'});
   } finally {
     isLoadingResponse.value = false;
   }
 }
 
 const handleNewUserInput = async (text: string, isContinuationOfToolResponse: boolean = false, toolCallIdToRespondTo?: string, toolOutput?: any) => {
-  // ... (rest of the handleNewUserInput logic from the provided snippet, with one addition)
+  if (!text.trim() && !isContinuationOfToolResponse) {
+    toast?.add({type: 'warning', title: 'Empty Input', message: 'Please share some thoughts with Echo.'});
+    return;
+  }
+  isLoadingResponse.value = true;
+  isComposingSession.value = true; // Ensure composing mode is active when user sends new input
+  selectedEntryToView.value = null; // Clear any viewed entry
 
-  // In the try block, when constructing `finalSystemPrompt`:
-  // Make sure to replace {{GENERATE_DIAGRAM}} if it's used by the prompt.
-  // This value could come from a global setting or be specific to the diary agent.
-  // For now, let's assume it's enabled if the agent capability exists.
+  const userMessage: ChatMessageFE = { role: 'user', content: text, timestamp: Date.now() };
+  const messagesForLlm: ChatMessageFE[] = [];
+
+  // System Prompt
+  if (!currentAgentSystemPrompt.value) await fetchSystemPrompt(); // Ensure prompt is loaded
+  
   const generateDiagrams = props.agentConfig.capabilities?.canGenerateDiagrams && (voiceSettingsManager.settings?.generateDiagrams ?? false);
+  const recentTopics = storedEntries.value.slice(0, 3).map(e => e.title || e.summary?.substring(0,30)).filter(Boolean).join('; ') || 'your past reflections';
 
-  // ... (inside the try block of handleNewUserInput)
-  // let finalSystemPrompt = currentAgentSystemPrompt.value
-  //   .replace(/{{CURRENT_DATE}}/g, new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }))
-  //   .replace(/{{RECENT_TOPICS_SUMMARY}}/gi, recentTopics)
-  //   .replace(/{{AGENT_CONTEXT_JSON}}/g, JSON.stringify({ ...agentStore.currentAgentContext, isComposingSession: isComposingSession.value }))
-  //   .replace(/{{GENERATE_DIAGRAM}}/g, generateDiagrams.toString()) // Add this line
-  //   .replace(/{{ADDITIONAL_INSTRUCTIONS}}/g, 'Focus on empathetic follow-up questions. If the user seems to be concluding their thoughts, call `suggestDiaryMetadata`. After metadata confirmation, generate the full Markdown entry. If complex thoughts are shared, consider if a mind map diagram would be helpful to include in the entry.');
-  // ... (rest of the function)
+  const finalSystemPrompt = currentAgentSystemPrompt.value
+    .replace(/{{CURRENT_DATE}}/g, new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }))
+    .replace(/{{RECENT_TOPICS_SUMMARY}}/gi, recentTopics)
+    .replace(/{{AGENT_CONTEXT_JSON}}/g, JSON.stringify({ ...agentStore.getAgentContext(props.agentId), isComposingSession: isComposingSession.value }))
+    .replace(/{{GENERATE_DIAGRAM}}/g, (generateDiagrams ?? false).toString())
+    .replace(/{{ADDITIONAL_INSTRUCTIONS}}/g, 'Focus on empathetic follow-up questions. If the user seems to be concluding their thoughts, call `suggestDiaryMetadata`. After metadata confirmation, generate the full Markdown entry. If complex thoughts are shared, consider if a mind map diagram would be helpful to include in the entry.');
+  
+  messagesForLlm.push({ role: 'system', content: finalSystemPrompt });
 
-  // The existing logic for saving entries will include any Mermaid diagram code
-  // as part of `contentMarkdown` if the LLM provides it.
-  // `diaryService.saveEntry(...)`
+  // Add recent chat history from the store for THIS agent (Echo)
+  const recentChatMessages = chatStore.getMessagesForAgent(props.agentId)
+    .slice(-5) // Get last 5 messages for context
+    .map(m => ({ role: m.role, content: m.content, tool_calls: m.tool_calls, tool_call_id: m.tool_call_id, name: m.name } as ChatMessageFE));
+  messagesForLlm.push(...recentChatMessages);
+
+  // Add current user message or tool response
+  if (isContinuationOfToolResponse && toolCallIdToRespondTo && toolOutput) {
+    messagesForLlm.push({
+        role: 'tool',
+        tool_call_id: toolCallIdToRespondTo,
+        name: suggestedMetadata.value?.toolName || 'suggestDiaryMetadata', // Use the stored tool name
+        content: JSON.stringify(toolOutput),
+    });
+    // The user's textual confirmation (like "Okay, save it") is implicitly handled by `text` argument
+    // but the main signal is the tool result. We might also add the user's text as a separate message.
+     if (text.trim()) { // If user provided text along with confirming tool
+        chatStore.addMessage({ role: 'user', content: text, agentId: props.agentId, timestamp: Date.now() });
+        // messagesForLlm.push({role: 'user', content: text}); // Add this explicit confirmation to LLM context
+     }
+  } else {
+    chatStore.addMessage({ ...userMessage, agentId: props.agentId }); // Add user message to UI log
+    messagesForLlm.push(userMessage);
+  }
+
+  // Update UI to show "Echo is composing..." in the entry page area
+  chatStore.updateMainContent({
+    agentId: props.agentId, type: 'markdown',
+    data: `## Echo is Composing...\n\n<div class="flex justify-center my-8"><div class="diary-spinner"></div></div>\n\n_Reflecting on your thoughts to craft the perfect entry..._`,
+    title: 'Echo Composing...', timestamp: Date.now()
+  });
+
+  try {
+    const payload: ChatMessagePayloadFE = {
+      messages: messagesForLlm,
+      mode: props.agentConfig.id, // 'diary'
+      // userId: agentStore.currentUserId || 
+      userId: 'diary_user', // Ensure currentUserId is available
+      conversationId: chatStore.getCurrentConversationId(props.agentId) || `diary-${Date.now()}`,
+      stream: false, // Diary agent might benefit from full response for structured data
+    };
+
+    const response = await chatAPI.sendMessage(payload);
+    const responseData = response.data as ChatResponseDataFE;
+
+    if (responseData.type === 'function_call_data' || (responseData as TextResponseDataFE).content?.includes('"tool_calls":')) {
+        // Handle if response data is FunctionCallResponseDataFE or if content contains tool_calls (OpenAI new format)
+        let toolCalls: any[] | undefined;
+        let assistantMessageText: string | null = null;
+
+        if (responseData.type === 'function_call_data') {
+            const funcCallData = responseData as FunctionCallResponseDataFE;
+            toolCalls = [{ id: funcCallData.toolCallId, type: 'function', function: { name: funcCallData.toolName, arguments: JSON.stringify(funcCallData.toolArguments) } }];
+            assistantMessageText = funcCallData.assistantMessageText ?? null;
+        } else { // Check if text response contains tool_calls array
+            const textResponse = responseData as TextResponseDataFE;
+            assistantMessageText = textResponse.content;
+            try {
+                // Attempt to parse content if it might be a JSON string containing the actual message with tool_calls
+                // This logic might need refinement based on actual LLM output for tool calls via text
+                const parsedContent = JSON.parse(textResponse.content || '{}');
+                if (parsedContent.tool_calls) {
+                    toolCalls = parsedContent.tool_calls;
+                    assistantMessageText = parsedContent.content || assistantMessageText; // Prefer content from parsed object
+                }
+            } catch (e) { /* Not a JSON string, treat content as is */ }
+        }
+        
+        if (assistantMessageText) { // Store assistant's textual part if any
+             chatStore.addMessage({ role: 'assistant', content: assistantMessageText, agentId: props.agentId, model: responseData.model, timestamp: Date.now(), tool_calls: toolCalls });
+        } else if (toolCalls) { // If no text but tool_calls exist, store a message indicating tool use
+             chatStore.addMessage({ role: 'assistant', content: null, agentId: props.agentId, model: responseData.model, timestamp: Date.now(), tool_calls: toolCalls });
+        }
+
+
+        if (toolCalls && toolCalls[0].function.name === 'suggestDiaryMetadata') {
+            const args = JSON.parse(toolCalls[0].function.arguments);
+            suggestedMetadata.value = {
+                title: args.tentativeTitle || `Entry - ${new Date().toLocaleDateString()}`,
+                tags: args.suggestedTags || [],
+                mood: args.suggestedMood || undefined,
+                summary: args.summaryOfDiscussion || "Summary of your thoughts.",
+                toolCallId: toolCalls[0].id,
+                toolName: toolCalls[0].function.name,
+            };
+            userEditedTitle.value = suggestedMetadata.value.title;
+            userEditedTags.value = suggestedMetadata.value.tags.join(', ');
+            userEditedMood.value = suggestedMetadata.value.mood || '';
+            showMetadataConfirmation.value = true;
+            toast?.add({type:'info', title:'Entry Details Suggested', message:'Echo has suggested a title, tags, and mood. Please review.'});
+        } else if (toolCalls) {
+            // Handle other potential tools if any in the future
+            console.warn("Received unhandled tool call:", toolCalls[0].function.name);
+            // For now, just acknowledge
+            await handleNewUserInput(`Okay, I see a tool call for ${toolCalls[0].function.name}. How should I proceed?`, true, toolCalls[0].id, {status: "Tool call received, pending action."} )
+        }
+
+    } else if ((responseData as TextResponseDataFE).content) { // Standard text response
+      const assistantResponse = (responseData as TextResponseDataFE).content!;
+      chatStore.addMessage({ role: 'assistant', content: assistantResponse, agentId: props.agentId, model: responseData.model, timestamp: Date.now() });
+      
+      // If this response is the final diary entry markdown (e.g., after metadata confirmation)
+      const looksLikeFinalEntry = assistantResponse.trim().startsWith("## ") && isComposingSession.value && !showMetadataConfirmation.value;
+      if (looksLikeFinalEntry && suggestedMetadata.value === null) { // Check if it's a direct finalization without tool call, or after tool_response
+          // Heuristic: if it starts with H2 and we were composing, assume it's the final entry.
+          // This might happen if the LLM decides to finalize without the tool_call explicitly.
+          const title = agentStore.getAgentContext(props.agentId)?.finalEntryTitle || `Entry - ${new Date().toLocaleDateString()}`;
+          const tags = agentStore.getAgentContext(props.agentId)?.finalEntryTags || [];
+          const mood = agentStore.getAgentContext(props.agentId)?.finalEntryMood;
+
+          const newEntry: Omit<DiaryEntry, 'id' | 'createdAt' | 'updatedAt'> = {
+              title: title,
+              contentMarkdown: assistantResponse, // The full markdown from LLM
+              tags: Array.isArray(tags) ? tags : [],
+              mood: mood,
+              summary: agentStore.getAgentContext(props.agentId)?.finalEntrySummary || assistantResponse.substring(0,150) + "..."
+          };
+          const savedEntry = await diaryService.saveEntry(newEntry);
+          toast?.add({type:'success', title:'Diary Entry Saved!', message:`"${savedEntry.title}" has been saved.`});
+          emit('agent-event', {type:'diary_entry_saved', entryId: savedEntry.id});
+          await loadStoredEntries();
+          viewEntry(savedEntry); // Automatically view the newly saved entry
+          isComposingSession.value = false;
+          agentStore.clearAgentContext();
+      } else {
+        // Default behavior: update main content with the assistant's textual response for chat display
+        chatStore.updateMainContent({
+            agentId: props.agentId, type: 'markdown',
+            data: assistantResponse,
+            title: `Echo Responding...`, timestamp: Date.now()
+        });
+      }
+    }
+
+  } catch (error: any) {
+    console.error(`[${agentDisplayName.value}] Error in handleNewUserInput:`, error);
+    toast?.add({ type: 'error', title: 'Interaction Error', message: 'Echo encountered a problem. Please try again.' });
+    chatStore.addMessage({role:'error', content: `Error: ${error.message}`, agentId: props.agentId});
+  } finally {
+    isLoadingResponse.value = false;
+    scrollToChatBottom();
+    // Do not set isComposingSession to false here, allow user to continue conversation or finalize.
+  }
 };
-
 
 const confirmMetadataAndFinalize = async () => {
   if (!suggestedMetadata.value) return;
@@ -147,6 +309,7 @@ const confirmMetadataAndFinalize = async () => {
 
   const userConfirmationText = `Okay, let's use title: "${finalTitle}", tags: "${finalTags.join(', ')}", and mood: "${finalMood || 'not specified'}". Please write the full entry based on our discussion and your summary: "${suggestedMetadata.value.summary}".`;
   
+  // Update agent context for the LLM to use when generating the final entry
   agentStore.updateAgentContext({
       finalEntryTitle: finalTitle,
       finalEntryTags: finalTags,
@@ -155,108 +318,42 @@ const confirmMetadataAndFinalize = async () => {
   });
 
   showMetadataConfirmation.value = false;
-  // This call to handleNewUserInput will trigger the LLM to generate the final entry.
-  // The updated prompt instructs it to include diagrams if appropriate.
   await handleNewUserInput(userConfirmationText, true, suggestedMetadata.value.toolCallId, {
-      status: "Metadata confirmed by user.",
-      confirmedTitle: finalTitle,
-      confirmedTags: finalTags,
-      confirmedMood: finalMood,
-      originalSummary: suggestedMetadata.value.summary
+    status: "Metadata confirmed by user.",
+    confirmedTitle: finalTitle,
+    confirmedTags: finalTags,
+    confirmedMood: finalMood,
+    originalSummary: suggestedMetadata.value.summary
   });
-  suggestedMetadata.value = null;
-};
-
-// ... (rest of the script: cancelMetadataSuggestion, startNewEntrySession, viewEntry, deleteEntryFromList, clearAllDiaryEntries, setDefaultMainContent, scrollToChatBottom, triggerImport, handleFileUpload, exportAllEntries from provided snippet) ...
-
-defineExpose({ handleNewUserInput }); // Expose for parent components if needed (e.g. voice input)
-
-onMounted(async () => {
-  console.log(`[${props.agentConfig.label}] View Mounted. Agent Config:`, props.agentConfig);
-  emit('agent-event', { type: 'view_mounted', agentId: props.agentId, label: props.agentConfig.label });
-  await loadStoredEntries();
-  if (!selectedEntryToView.value && !isComposingSession.value) {
-    setDefaultMainContent(); // Set initial welcome/info message
-  }
-  // Potentially initialize Mermaid.js or ensure it runs after content updates if not handled globally
-  // For example, if using a watcher on renderedEntryPageContentHtml:
-  // watch(renderedEntryPageContentHtml, async (newHtml) => {
-  //   if (newHtml && typeof mermaid !== 'undefined') {
-  //     await nextTick(); // Ensure DOM is updated
-  //     try {
-  //       const mermaidElements = entryPageRef.value?.querySelectorAll('.mermaid');
-  //       if (mermaidElements && mermaidElements.length > 0) {
-  //         mermaid.run({nodes: mermaidElements}); // Or mermaid.init(); if that's preferred
-  //         console.log('[DiaryAgentView] Mermaid rendered for diagrams.');
-  //       }
-  //     } catch (e) {
-  //       console.error('[DiaryAgentView] Error rendering Mermaid diagrams:', e);
-  //     }
-  //   }
-  // }, { immediate: true });
-});
-
-onUnmounted(() => {
-  // Cleanup any event listeners if added
-});
-
-// Placeholder functions for unimplemented parts of the original script, ensure they are defined or implemented
-const setDefaultMainContent = () => {
-  const latestEntryTitles = storedEntries.value.length > 0 
-    ? storedEntries.value.slice(0,2).map(e=>`"${e.title}"`).join(' and ') 
-    : "your previous reflections";
-  const welcomeMessage = `### ${props.agentConfig.label} - Echo\n${props.agentConfig.description}\n\nYour diary entries are stored locally in your browser. You can start a new entry by talking to Echo, or browse existing entries using the "My Entries" button.\n\n${storedEntries.value.length > 0 ? `Recent entries include discussions about ${latestEntryTitles}.` : 'Ready to capture your thoughts.'}\n\nI can also help visualize complex thoughts with simple mind maps if you'd like!`;
-  chatStore.updateMainContent({
-    agentId: props.agentId, type: 'markdown',
-    data: welcomeMessage,
-    title: `${props.agentConfig.label} Ready`, timestamp: Date.now(),
-  });
-};
-
-const scrollToChatBottom = () => {
-  nextTick(() => { 
-    if (chatLogRef.value) {
-      chatLogRef.value.scrollTo({ top: chatLogRef.value.scrollHeight, behavior: 'smooth' });
-    }
-  });
+  suggestedMetadata.value = null; // Clear after sending
 };
 
 const cancelMetadataSuggestion = () => {
   if (!suggestedMetadata.value) return;
   showMetadataConfirmation.value = false;
   const cancellationText = "Actually, let's hold off on finalizing. I want to add more to my thoughts.";
-  // Add user message to chat log
-  chatStore.addMessage({ 
-      role: 'user', 
-      content: cancellationText, 
-      agentId: props.agentId, 
-      timestamp: Date.now() 
-  });
-  // Optionally, send a message to Echo to acknowledge this change in plan
-  // handleNewUserInput(cancellationText, false); // Or a more specific internal state update
+  chatStore.addMessage({ role: 'user', content: cancellationText, agentId: props.agentId, timestamp: Date.now() });
   
-  suggestedMetadata.value = null; // Clear the suggestion
+  // We don't need to send this to LLM necessarily, just clear state and allow user to continue
+  suggestedMetadata.value = null;
   toast?.add({type:'info', title:'Suggestion Cancelled', message:'You can continue adding to your current entry.'});
-  isComposingSession.value = true; // Ensure we are still in composing mode
+  isComposingSession.value = true; // Ensure still composing
   scrollToChatBottom();
 };
 
-// Functions from original context that should be present
 const startNewEntrySession = async () => {
   isComposingSession.value = true;
   selectedEntryToView.value = null;
-  agentStore.clearAgentContext(); // Clear any previous entry context
+  agentStore.clearAgentContext();
   showMetadataConfirmation.value = false;
   suggestedMetadata.value = null;
   
   const promptText = "Let's start a new diary entry. What's on your mind today? Feel free to share anything.";
-  // Update the main content view for composing
   chatStore.updateMainContent({
     agentId: props.agentId, type: 'markdown',
     data: `## New Diary Entry - ${new Date().toLocaleDateString('en-US', {day: 'numeric', month: 'long', year: 'numeric'})}\n\n_Echo is listening... Share your thoughts, and I'll help structure them._\n\n<p class="text-xs text-purple-300/70 dark:text-purple-400/70 mt-4">**(Your entries are saved locally in your browser.)**</p>`,
     title: `Drafting New Entry...`, timestamp: Date.now()
   });
-  // Add a message to the chat log from Echo to kick off the conversation
   chatStore.addMessage({ role: 'assistant', content: promptText, timestamp: Date.now(), agentId: props.agentId });
   toast?.add({type:'info', title:'New Diary Entry Session', message:'Echo is ready to listen.'});
   scrollToChatBottom();
@@ -264,34 +361,44 @@ const startNewEntrySession = async () => {
 
 const viewEntry = (entry: DiaryEntry) => {
   selectedEntryToView.value = entry;
-  isComposingSession.value = false; // Not composing when viewing an old entry
-  showEntryListModal.value = false; // Close modal if it was open
-  showMetadataConfirmation.value = false; // Ensure metadata panel is hidden
+  isComposingSession.value = false;
+  showEntryListModal.value = false;
+  showMetadataConfirmation.value = false;
   toast?.add({type:'info', title:'Viewing Entry', message: `Displaying "${entry.title}"`});
-  // Scroll the entry page to the top when a new entry is selected
   nextTick(() => { entryPageRef.value?.scrollTo({ top: 0, behavior: 'smooth' }); });
+  // Render mermaid diagrams if present in the viewed entry
+  nextTick(async () => {
+    if (entryPageRef.value && typeof mermaid !== 'undefined' && entry.contentMarkdown.includes('```mermaid')) {
+        await nextTick(); // Ensure DOM is fully updated with new content
+        try {
+            const mermaidElements = entryPageRef.value.querySelectorAll('.mermaid');
+            if (mermaidElements.length > 0) {
+                mermaid.run({nodes: mermaidElements});
+            }
+        } catch (e) { console.error('[DiaryAgentView] Error rendering Mermaid for viewed entry:', e); }
+    }
+  });
 };
 
 async function deleteEntryFromList(entryId: string, entryTitle: string) {
-  // Consider adding a custom modal for confirmation for better UX than browser confirm
   if (confirm(`Are you sure you want to delete the entry: "${entryTitle}"? This cannot be undone.`)) {
     try {
       await diaryService.deleteEntry(entryId);
       toast?.add({type:'success', title:'Entry Deleted', message:`"${entryTitle}" has been removed.`});
       if (selectedEntryToView.value?.id === entryId) {
-        selectedEntryToView.value = null; // Clear display if deleted entry was being viewed
-        setDefaultMainContent(); // Show default welcome/info
+        selectedEntryToView.value = null;
+        setDefaultMainContent();
       }
-      await loadStoredEntries(); // Refresh the list of entries
+      await loadStoredEntries();
     } catch (error) {
-      toast?.add({type:'error', title:'Deletion Failed', message:'Could not delete the entry. Please try again.'});
+      toast?.add({type:'error', title:'Deletion Failed', message:'Could not delete the entry.'});
       console.error('[DiaryAgentView] Error deleting entry:', error);
     }
   }
 }
 
 async function clearAllDiaryEntries() {
-  if (confirm("Are you absolutely sure you want to delete ALL diary entries? This action is permanent and cannot be undone.")) {
+  if (confirm("Are you absolutely sure you want to delete ALL diary entries? This action is permanent.")) {
     if (confirm("Second confirmation: Deleting all entries. This is your last chance to cancel.")) {
         try {
           await diaryService.clearAllEntries();
@@ -308,9 +415,27 @@ async function clearAllDiaryEntries() {
   }
 }
 
-const triggerImport = () => {
-  fileInputRef.value?.click(); // Programmatically click the hidden file input
+const setDefaultMainContent = () => {
+  const latestEntryTitles = storedEntries.value.length > 0 
+    ? storedEntries.value.slice(0,2).map(e=>`"${e.title}"`).join(' and ') 
+    : "your previous reflections";
+  const welcomeMessage = `### ${agentDisplayName.value} - Your Empathetic Companion\n${props.agentConfig.description}\n\nYour diary entries are stored locally in your browser. You can start a new entry by talking to Echo, or browse existing entries using the "My Entries" button.\n\n${storedEntries.value.length > 0 ? `Recent entries include discussions about ${latestEntryTitles}.` : 'Ready to capture your thoughts.'}\n\nI can also help visualize complex thoughts with simple mind maps if you'd like!`;
+  chatStore.updateMainContent({
+    agentId: props.agentId, type: 'markdown',
+    data: welcomeMessage,
+    title: `${agentDisplayName.value} Ready`, timestamp: Date.now(),
+  });
 };
+
+const scrollToChatBottom = () => {
+  nextTick(() => { 
+    if (chatLogRef.value) {
+      chatLogRef.value.scrollTo({ top: chatLogRef.value.scrollHeight, behavior: 'smooth' });
+    }
+  });
+};
+
+const triggerImport = () => { fileInputRef.value?.click(); };
 
 const handleFileUpload = async (event: Event) => {
   const input = event.target as HTMLInputElement;
@@ -318,8 +443,7 @@ const handleFileUpload = async (event: Event) => {
     const file = input.files[0];
     if (file.type !== 'application/json') {
         toast?.add({type: 'error', title: 'Invalid File Type', message: 'Please select a valid JSON file for import.'});
-        input.value = ''; // Clear the input
-        return;
+        input.value = ''; return;
     }
     const reader = new FileReader();
     reader.onload = async (e) => {
@@ -329,19 +453,17 @@ const handleFileUpload = async (event: Event) => {
         if (result.error) {
           toast?.add({type: 'error', title: 'Import Failed', message: result.error, duration: 7000});
         } else {
-          toast?.add({type: 'success', title: 'Import Successful', message: `Imported ${result.importedCount} entries. Skipped ${result.skippedCount} duplicates/invalid entries.`});
-          await loadStoredEntries(); // Refresh entries list
-          showEntryListModal.value = false; // Close modal after import
+          toast?.add({type: 'success', title: 'Import Successful', message: `Imported ${result.importedCount} entries. Skipped ${result.skippedCount} duplicates/invalid.`});
+          await loadStoredEntries();
+          showEntryListModal.value = false;
         }
       } catch (err: any) {
-        toast?.add({type: 'error', title: 'Import Error', message: `Could not read or parse the file: ${err.message}`, duration: 7000});
+        toast?.add({type: 'error', title: 'Import Error', message: `Could not parse file: ${err.message}`, duration: 7000});
       }
     };
-    reader.onerror = () => {
-        toast?.add({type: 'error', title: 'File Read Error', message: 'Could not read the selected file.'});
-    };
+    reader.onerror = () => toast?.add({type: 'error', title: 'File Read Error', message: 'Could not read the selected file.'});
     reader.readAsText(file);
-    input.value = ''; // Clear the input to allow re-selecting the same file if needed
+    input.value = '';
   }
 };
 
@@ -362,7 +484,7 @@ const exportAllEntries = async () => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    URL.revokeObjectURL(url); // Clean up
+    URL.revokeObjectURL(url);
     toast?.add({type:'success', title:'Export Successful', message:'Your diary entries have been downloaded.'});
   } catch (error) {
     toast?.add({type:'error', title:'Export Failed', message:'Could not export entries.'});
@@ -370,6 +492,50 @@ const exportAllEntries = async () => {
   }
 };
 
+// Watch for changes in displayed HTML content to re-render Mermaid diagrams
+watch(renderedEntryPageContentHtml, async (newHtml) => {
+    if (newHtml && typeof mermaid !== 'undefined' && newHtml.includes('class="mermaid"')) { // Check if mermaid content exists
+        await nextTick(); // Ensure DOM is updated
+        try {
+            const container = entryPageRef.value; // The main container for the rendered HTML
+            if (container) {
+                const mermaidElements = container.querySelectorAll('.mermaid');
+                if (mermaidElements.length > 0) {
+                    console.log(`[${agentDisplayName.value}] Found ${mermaidElements.length} Mermaid elements to render in entry page.`);
+                    mermaid.run({ nodes: mermaidElements });
+                }
+            }
+        } catch (e) {
+            console.error(`[${agentDisplayName.value}] Error rendering Mermaid diagrams in entry page:`, e);
+        }
+    }
+}, { deep: false, immediate: true }); // Immediate might be needed if initial content has diagrams
+
+
+defineExpose({ handleNewUserInput });
+
+onMounted(async () => {
+  console.log(`[${agentDisplayName.value}] View Mounted. Agent Config:`, props.agentConfig);
+  emit('agent-event', { type: 'view_mounted', agentId: props.agentId, label: props.agentConfig.label });
+  
+  if(typeof mermaid !== 'undefined' && mermaid.initialize) {
+      mermaid.initialize({ startOnLoad: false, theme: themeManager.getCurrentTheme().value?.isDark ? 'dark' : 'default' });
+  }
+
+  await loadStoredEntries();
+  if (!selectedEntryToView.value && !isComposingSession.value && storedEntries.value.length === 0) {
+    setDefaultMainContent();
+  } else if (storedEntries.value.length > 0 && !selectedEntryToView.value && !isComposingSession.value) {
+    // If entries exist but none are selected/composing, view the latest one or show welcome
+    // viewEntry(storedEntries.value[0]); // Option: view latest
+    setDefaultMainContent(); // Option: show welcome
+  }
+  scrollToChatBottom(); // Scroll chat log on mount
+});
+
+onUnmounted(() => {
+  // Cleanup if needed
+});
 
 </script>
 
@@ -378,7 +544,7 @@ const exportAllEntries = async () => {
     <div class="agent-header-controls p-3 px-4 border-b border-purple-400/20 dark:border-purple-600/30 flex items-center justify-between gap-2 shadow-lg bg-slate-900/50 dark:bg-slate-950/60 backdrop-blur-md z-10">
       <div class="flex items-center gap-3">
         <BookOpenIcon class="w-7 h-7 shrink-0 text-purple-300 dark:text-purple-400 opacity-80 filter-glow-purple" />
-        <span class="font-semibold text-xl tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-pink-400 to-rose-400 dark:from-purple-400 dark:via-pink-500 dark:to-rose-500">{{ props.agentConfig.label }}</span>
+        <span class="font-semibold text-xl tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-pink-400 to-rose-400 dark:from-purple-400 dark:via-pink-500 dark:to-rose-500">{{ agentDisplayName }}</span>
       </div>
       <div class="flex items-center gap-2">
         <button @click="showEntryListModal = true" class="btn-header-action" title="View Past Entries">
@@ -393,31 +559,35 @@ const exportAllEntries = async () => {
     <div class="flex-grow flex flex-col md:flex-row overflow-hidden diary-layout-container">
       <div ref="chatLogRef" class="w-full md:w-2/5 p-3.5 flex flex-col space-y-3 overflow-y-auto custom-scrollbar-diary-chat ephemeral-chat-panel border-r-0 md:border-r border-purple-500/10 dark:border-purple-700/20">
         <template v-for="message in chatStore.getMessagesForAgent(props.agentId)" :key="message.id">
-            <component 
-              v-if="message.role === 'user' || (message.role === 'assistant' && !message.tool_calls)"
-              :is="'StoreChatMessageDisplay'"  :message="message"
-              class="chat-message-item-diary" />
-            <div v-if="message.role === 'assistant' && message.tool_calls && message.tool_calls.length > 0 && !showMetadataConfirmation"
-                 class="p-2.5 my-1 text-xs rounded-lg bg-slate-700/60 dark:bg-slate-800/70 border border-purple-500/40 dark:border-purple-600/50 text-purple-200 dark:text-purple-300 italic shadow-md">
-              <p class="font-semibold mb-1">Echo is suggesting entry details:</p>
-              <p v-if="message.content">{{ message.content }}</p>
-              <button @click="() => {
-                                const tc = message.tool_calls![0];
-                                const args = JSON.parse(tc.function.arguments);
-                                suggestedMetadata = { 
-                                    title: args.tentativeTitle || '', 
-                                    tags: args.suggestedTags || [], 
-                                    mood: args.mood, 
-                                    summary: args.summary || '', 
-                                    toolCallId: tc.id, 
-                                    toolName: tc.function.name 
-                                };
-                                userEditedTitle = suggestedMetadata!.title; 
-                                userEditedTags = (suggestedMetadata!.tags || []).join(', '); 
-                                userEditedMood = suggestedMetadata!.mood || '';
-                                showMetadataConfirmation = true;
-                              }" 
-                      class="text-pink-400 dark:text-pink-500 hover:text-pink-300 dark:hover:text-pink-400 underline mt-1 text-xxs">Review & Confirm Details</button>
+            <div :class="[
+                'chat-message-item-diary p-2 rounded-lg text-sm max-w-[90%] break-words shadow-md',
+                message.role === 'user' ? 'ml-auto bg-pink-500/20 dark:bg-pink-700/30 border border-pink-500/40 dark:border-pink-600/50 text-pink-100 dark:text-pink-200' : '',
+                message.role === 'assistant' ? 'mr-auto bg-purple-500/20 dark:bg-purple-700/30 border border-purple-500/40 dark:border-purple-600/50 text-purple-100 dark:text-purple-200' : '',
+                message.role === 'system' || message.role === 'error' ? 'mx-auto bg-slate-600/30 dark:bg-slate-700/40 border border-slate-500/40 text-slate-300 dark:text-slate-400 text-xs italic' : ''
+            ]">
+                <div v-if="message.role === 'assistant' && message.tool_calls && message.tool_calls.length > 0 && !showMetadataConfirmation"
+                     class="p-2.5 my-1 text-xs rounded-lg bg-slate-700/60 dark:bg-slate-800/70 border border-purple-500/40 dark:border-purple-600/50 text-purple-200 dark:text-purple-300 italic shadow-md">
+                  <p class="font-semibold mb-1">Echo is suggesting entry details:</p>
+                  <p v-if="message.content">{{ message.content }}</p>
+                  <button @click="() => {
+                                  const tc = message.tool_calls![0];
+                                  const args = JSON.parse(tc.function.arguments);
+                                  suggestedMetadata = { 
+                                      title: args.tentativeTitle || '', 
+                                      tags: args.suggestedTags || [], 
+                                      mood: args.suggestedMood, 
+                                      summary: args.summaryOfDiscussion || '', 
+                                      toolCallId: tc.id, 
+                                      toolName: tc.function.name 
+                                  };
+                                  userEditedTitle = suggestedMetadata!.title; 
+                                  userEditedTags = (suggestedMetadata!.tags || []).join(', '); 
+                                  userEditedMood = suggestedMetadata!.mood || '';
+                                  showMetadataConfirmation = true;
+                                }" 
+                          class="text-pink-400 dark:text-pink-500 hover:text-pink-300 dark:hover:text-pink-400 underline mt-1 text-xxs">Review & Confirm Details</button>
+                </div>
+                <div v-else v-html="marked.parse(message.content || (message.role === 'error' ? '*Error processing message*' : '...'), { breaks: true, gfm: true })"></div>
             </div>
         </template>
         <div v-if="!chatStore.getMessagesForAgent(props.agentId).length && !isComposingSession" 
@@ -450,7 +620,7 @@ const exportAllEntries = async () => {
             </div>
             <div class="flex justify-end gap-2.5 mt-4">
               <button @click="cancelMetadataSuggestion" class="btn btn-secondary btn-xs !py-1.5 !px-2.5 !text-xs">Cancel</button>
-              <button @click="confirmMetadataAndFinalize" class="btn btn-primary-glow btn-xs !py-1.5 !px-2.5 !text-xs"><CheckCircleIcon class="w-4 h-4 mr-1"/> Confirm & Save</button>
+              <button @click="confirmMetadataAndFinalize" class="btn btn-primary-glow btn-xs !py-1.5 !px-2.5 !text-xs"><SolidCheckCircleIcon class="w-4 h-4 mr-1"/> Confirm & Save</button>
             </div>
           </div>
         </transition>
@@ -526,318 +696,253 @@ const exportAllEntries = async () => {
 </template>
 
 <style scoped lang="postcss">
-/* Define local CSS variable for the agent's specific accent hues if not globally themed */
-:host, .diary-agent-view { /* Scoping variables to the component */
-  --agent-diary-purple-h: var(--accent-hue-purple, 270);
-  --agent-diary-purple-s: var(--accent-hue-purple-s, 30%); 
-  --agent-diary-purple-l: var(--accent-hue-purple-l, 20%); 
+/* Styles from original user prompt */
+:host, .diary-agent-view {
+  --agent-diary-purple-h: 270;
+  --agent-diary-purple-s: 60%; /* Adjusted for more vibrancy based on usage */
+  --agent-diary-purple-l: 65%; /* Adjusted */
   
-  --agent-diary-pink-h: var(--accent-hue-pink, 330);
-  --agent-diary-pink-s: var(--accent-hue-pink-s, 70%);
-  --agent-diary-pink-l: var(--accent-hue-pink-l, 70%);
+  --agent-diary-pink-h: 330;
+  --agent-diary-pink-s: 75%; /* Adjusted */
+  --agent-diary-pink-l: 70%; /* Adjusted */
 
-  --agent-diary-neutral-h: var(--neutral-hue-dark, 230); 
+  --agent-diary-neutral-h: 230; /* Cool neutral for diary */
 }
-
+/* General filter for icons or elements needing a soft purple glow */
 .filter-glow-purple {
-  filter: drop-shadow(0 0 5px hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 60%), var(--agent-diary-purple-l, 70%), 0.7));
+  filter: drop-shadow(0 0 8px hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s), var(--agent-diary-purple-l), 0.6));
 }
 .dark .filter-glow-purple {
-  filter: drop-shadow(0 0 7px hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 70%), var(--agent-diary-purple-l, 80%), 0.8));
+  filter: drop-shadow(0 0 10px hsla(var(--agent-diary-purple-h), calc(var(--agent-diary-purple-s) + 10%), calc(var(--agent-diary-purple-l) + 5%), 0.7));
 }
-
+/* Stronger glow for more prominent elements like loading spinners */
 .filter-glow-purple-strong { 
-  filter: drop-shadow(0 0 10px hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 70%), var(--agent-diary-purple-l, 70%), 0.8))
-          drop-shadow(0 0 20px hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 70%), var(--agent-diary-purple-l, 70%), 0.5));
+  filter: drop-shadow(0 0 12px hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s), var(--agent-diary-purple-l), 0.75))
+          drop-shadow(0 0 22px hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s), var(--agent-diary-purple-l), 0.45));
 }
 .dark .filter-glow-purple-strong {
-  filter: drop-shadow(0 0 12px hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 80%), var(--agent-diary-purple-l, 80%), 0.9))
-          drop-shadow(0 0 25px hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 80%), var(--agent-diary-purple-l, 80%), 0.6));
+  filter: drop-shadow(0 0 15px hsla(var(--agent-diary-purple-h), calc(var(--agent-diary-purple-s) + 10%), calc(var(--agent-diary-purple-l) + 5%), 0.85))
+          drop-shadow(0 0 28px hsla(var(--agent-diary-purple-h), calc(var(--agent-diary-purple-s) + 10%), calc(var(--agent-diary-purple-l) + 5%), 0.55));
 }
 
+/* Header Buttons */
 .btn-header-action {
-  @apply btn btn-secondary py-1.5 px-3 text-xs flex items-center gap-1.5;
-  border-color: hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 50%), var(--agent-diary-purple-l, 50%), 0.3);
-  background-color: hsla(var(--agent-diary-neutral-h), 15%, 25%, 0.3); 
-  color: hsl(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 70%), var(--agent-diary-purple-l, 80%)); 
-  
+  @apply btn btn-secondary py-1.5 px-3 text-xs flex items-center gap-1.5 transition-all duration-200 ease-out;
+  border-color: hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s), var(--agent-diary-purple-l), 0.4);
+  background-color: hsla(var(--agent-diary-neutral-h), 15%, 25%, 0.4); 
+  color: hsl(var(--agent-diary-purple-h), var(--agent-diary-purple-s), calc(var(--agent-diary-purple-l) + 20%));
+  text-shadow: 0 1px 2px hsla(var(--agent-diary-neutral-h), 20%, 10%, 0.5);
   &:hover {
-    border-color: hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 50%), var(--agent-diary-purple-l, 60%), 0.7);
-    background-color: hsla(var(--agent-diary-neutral-h), 15%, 30%, 0.6);
-    color: hsl(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 80%), var(--agent-diary-purple-l, 85%));
-    box-shadow: 0 0 10px hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 50%), var(--agent-diary-purple-l, 50%), 0.2);
+    border-color: hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s), calc(var(--agent-diary-purple-l) + 10%), 0.8);
+    background-color: hsla(var(--agent-diary-neutral-h), 15%, 30%, 0.7);
+    color: hsl(var(--agent-diary-purple-h), var(--agent-diary-purple-s), calc(var(--agent-diary-purple-l) + 25%));
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s), var(--agent-diary-purple-l), 0.25);
   }
 }
-.dark .btn-header-action {
-  border-color: hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 60%), var(--agent-diary-purple-l, 60%), 0.4);
-  background-color: hsla(var(--agent-diary-neutral-h), 20%, 18%, 0.5);
-  color: hsl(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 80%), var(--agent-diary-purple-l, 85%));
+.dark .btn-header-action { /* Dark mode specific adjustments */
+  border-color: hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s), calc(var(--agent-diary-purple-l) + 5%), 0.5);
+  background-color: hsla(var(--agent-diary-neutral-h), 20%, 18%, 0.6);
+  color: hsl(var(--agent-diary-purple-h), var(--agent-diary-purple-s), calc(var(--agent-diary-purple-l) + 20%));
    &:hover {
-    border-color: hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 70%), var(--agent-diary-purple-l, 70%), 0.8);
-    background-color: hsla(var(--agent-diary-neutral-h), 20%, 22%, 0.7);
-    color: hsl(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 90%), var(--agent-diary-purple-l, 90%));
-  }
+    border-color: hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s), calc(var(--agent-diary-purple-l) + 15%), 0.9);
+    background-color: hsla(var(--agent-diary-neutral-h), 20%, 22%, 0.8);
+    color: hsl(var(--agent-diary-purple-h), var(--agent-diary-purple-s), calc(var(--agent-diary-purple-l) + 30%));
+   }
 }
-
+/* Primary Glow Button (e.g., New Entry) */
 .btn-header-action.btn-primary-glow { 
   @apply bg-gradient-to-r text-white border-transparent shadow-lg;
-  --gradient-from: hsl(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 90%), var(--agent-diary-purple-l, 65%));
-  --gradient-to: hsl(var(--agent-diary-pink-h), var(--agent-diary-pink-s, 90%), var(--agent-diary-pink-l, 70%));
+  --gradient-from: hsl(var(--agent-diary-purple-h), var(--agent-diary-purple-s), var(--agent-diary-purple-l));
+  --gradient-to: hsl(var(--agent-diary-pink-h), var(--agent-diary-pink-s), var(--agent-diary-pink-l));
   background-image: linear-gradient(to right, var(--gradient-from), var(--gradient-to));
-
   &:hover {
-    --gradient-from-hover: hsl(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 100%), var(--agent-diary-purple-l, 70%));
-    --gradient-to-hover: hsl(var(--agent-diary-pink-h), var(--agent-diary-pink-s, 100%), var(--agent-diary-pink-l, 75%));
+    --gradient-from-hover: hsl(var(--agent-diary-purple-h), var(--agent-diary-purple-s), calc(var(--agent-diary-purple-l) + 5%));
+    --gradient-to-hover: hsl(var(--agent-diary-pink-h), var(--agent-diary-pink-s), calc(var(--agent-diary-pink-l) + 5%));
     background-image: linear-gradient(to right, var(--gradient-from-hover), var(--gradient-to-hover));
-    box-shadow: 0 0 15px hsla(var(--agent-diary-pink-h), var(--agent-diary-pink-s, 80%), var(--agent-diary-pink-l, 60%), 0.5);
-  }
-}
-.dark .btn-header-action.btn-primary-glow {
-  --gradient-from: hsl(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 80%), var(--agent-diary-purple-l, 60%));
-  --gradient-to: hsl(var(--agent-diary-pink-h), var(--agent-diary-pink-s, 80%), var(--agent-diary-pink-l, 65%));
-   &:hover {
-    --gradient-from-hover: hsl(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 90%), var(--agent-diary-purple-l, 65%));
-    --gradient-to-hover: hsl(var(--agent-diary-pink-h), var(--agent-diary-pink-s, 90%), var(--agent-diary-pink-l, 70%));
-    box-shadow: 0 0 18px hsla(var(--agent-diary-pink-h), var(--agent-diary-pink-s, 70%), var(--agent-diary-pink-l, 55%), 0.6);
+    box-shadow: 0 0 18px hsla(var(--agent-diary-pink-h), var(--agent-diary-pink-s), calc(var(--agent-diary-pink-l) - 10%), 0.6);
   }
 }
 
-
+/* Chat Panel Styling */
 .ephemeral-chat-panel {
   background: linear-gradient(160deg, 
-    hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s), var(--agent-diary-purple-l), 0.6) 0%, 
-    hsla(var(--agent-diary-purple-h), calc(var(--agent-diary-purple-s) + 5%), calc(var(--agent-diary-purple-l) - 4%), 0.75) 100%
+    hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s), calc(var(--agent-diary-purple-l) - 25%), 0.6) 0%, 
+    hsla(var(--agent-diary-purple-h), calc(var(--agent-diary-purple-s) + 5%), calc(var(--agent-diary-purple-l) - 30%), 0.75) 100%
   );
-  backdrop-filter: blur(5px);
-  box-shadow: inset -12px 0px 25px -10px rgba(0,0,0,0.35); 
+  backdrop-filter: blur(5px) brightness(0.9);
+  box-shadow: inset -10px 0px 20px -8px rgba(0,0,0,0.3); 
   position: relative; 
-
   &::after { 
     content: ''; 
     @apply absolute bottom-0 left-0 right-0 h-20 pointer-events-none z-10;
     background: linear-gradient(to bottom, transparent, 
-      hsla(var(--agent-diary-purple-h), calc(var(--agent-diary-purple-s) + 5%), calc(var(--agent-diary-purple-l) - 4%), 1) 90%
+      hsla(var(--agent-diary-purple-h), calc(var(--agent-diary-purple-s) + 5%), calc(var(--agent-diary-purple-l) - 30%), 1) 90%
     );
   }
 }
 .dark .ephemeral-chat-panel {
    background: linear-gradient(160deg, 
-    hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 40%), calc(var(--agent-diary-purple-l, 15%) - 5%), 0.7) 0%, 
-    hsla(var(--agent-diary-purple-h), calc(var(--agent-diary-purple-s, 40%) + 5%), calc(var(--agent-diary-purple-l, 15%) - 8%), 0.85) 100%
+    hsla(var(--agent-diary-purple-h), calc(var(--agent-diary-purple-s) - 10%), calc(var(--agent-diary-purple-l) - 35%), 0.7) 0%, 
+    hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s), calc(var(--agent-diary-purple-l) - 40%), 0.85) 100%
   );
    &::after {
      background: linear-gradient(to bottom, transparent, 
-      hsla(var(--agent-diary-purple-h), calc(var(--agent-diary-purple-s, 40%) + 5%), calc(var(--agent-diary-purple-l, 15%) - 8%), 1) 90%
+      hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s), calc(var(--agent-diary-purple-l) - 40%), 1) 90%
     );
    }
 }
 
-.chat-message-item-diary :deep(.message-bubble-user) {
-  background-color: hsla(var(--agent-diary-pink-h), var(--agent-diary-pink-s, 60%), var(--agent-diary-pink-l, 50%), 0.3);
-  border-color: hsla(var(--agent-diary-pink-h), var(--agent-diary-pink-s, 60%), var(--agent-diary-pink-l, 50%), 0.4);
-  @apply text-sm shadow-none max-w-[90%];
+/* Textarea style for metadata form */
+.form-input-diary { 
+  @apply w-full block px-2.5 py-1.5 rounded-md text-xs border;
+  background-color: hsla(var(--agent-diary-neutral-h), 10%, 20%, 0.7); 
+  border-color: hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s), calc(var(--agent-diary-purple-l) - 15%), 0.6);
+  color: hsl(var(--agent-diary-pink-h), var(--agent-diary-pink-s), calc(var(--agent-diary-pink-l) + 15%));
+  transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+  &::placeholder { color: hsla(var(--agent-diary-pink-h), var(--agent-diary-pink-s), var(--agent-diary-pink-l), 0.6); }
+  &:focus {
+    outline: none;
+    border-color: hsl(var(--agent-diary-pink-h), var(--agent-diary-pink-s), var(--agent-diary-pink-l));
+    background-color: hsla(var(--agent-diary-neutral-h), 10%, 25%, 0.8);
+    box-shadow: 0 0 0 2px hsla(var(--agent-diary-pink-h), var(--agent-diary-pink-s), var(--agent-diary-pink-l), 0.3);
+  }
 }
-.dark .chat-message-item-diary :deep(.message-bubble-user) {
-  background-color: hsla(var(--agent-diary-pink-h), var(--agent-diary-pink-s, 50%), var(--agent-diary-pink-l, 40%), 0.4);
-  border-color: hsla(var(--agent-diary-pink-h), var(--agent-diary-pink-s, 50%), var(--agent-diary-pink-l, 40%), 0.5);
+.dark .form-input-diary {
+  background-color: hsla(var(--agent-diary-neutral-h), 12%, 15%, 0.8); 
+  border-color: hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s), calc(var(--agent-diary-purple-l) - 10%), 0.7);
+  color: hsl(var(--agent-diary-pink-h), var(--agent-diary-pink-s), calc(var(--agent-diary-pink-l) + 20%));
+   &::placeholder { color: hsla(var(--agent-diary-pink-h), var(--agent-diary-pink-s), calc(var(--agent-diary-pink-l) + 5%), 0.6); }
+   &:focus {
+    border-color: hsl(var(--agent-diary-pink-h), var(--agent-diary-pink-s), calc(var(--agent-diary-pink-l) + 5%));
+    background-color: hsla(var(--agent-diary-neutral-h), 12%, 20%, 0.9);
+   }
 }
 
-.chat-message-item-diary :deep(.message-bubble-assistant) {
-  background-color: hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 40%), var(--agent-diary-purple-l, 30%), 0.4);
-  border-color: hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 40%), var(--agent-diary-purple-l, 30%), 0.5);
-  @apply text-sm shadow-none max-w-[90%];
-}
-.dark .chat-message-item-diary :deep(.message-bubble-assistant) {
-  background-color: hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 30%), var(--agent-diary-purple-l, 20%), 0.5);
-  border-color: hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 30%), var(--agent-diary-purple-l, 20%), 0.6);
-}
-
-.text-xxs { @apply text-[0.65rem] leading-[0.9rem]; }
-
+/* Entry Page Styling */
 .diary-page-panel {
   background: 
-    radial-gradient(ellipse at 50% -30%, hsla(var(--agent-diary-pink-h), 25%, 20%, 0.3), transparent 70%),
-    radial-gradient(ellipse at 15% 95%, hsla(var(--agent-diary-purple-h), 30%, 25%, 0.25), transparent 70%),
-    hsl(var(--agent-diary-neutral-h), 15%, 9%); 
-  border-left: 1px solid hsla(var(--agent-diary-purple-h), 30%, 50%, 0.1); 
+    radial-gradient(ellipse at 50% -30%, hsla(var(--agent-diary-pink-h), 25%, 20%, 0.2), transparent 60%), /* Softer top glow */
+    radial-gradient(ellipse at 15% 95%, hsla(var(--agent-diary-purple-h), 30%, 25%, 0.15), transparent 60%), /* Softer bottom glow */
+    hsl(var(--agent-diary-neutral-h), 15%, 12%); /* Slightly lighter base for better readability */
+  border-left: 1px solid hsla(var(--agent-diary-purple-h), 30%, 50%, 0.15); 
   box-shadow: 
-    inset 10px 0px 30px -10px rgba(0,0,0,0.5), 
-    0 0 100px hsla(var(--agent-diary-purple-h), 20%, 5%, 0.3) inset; 
+    inset 8px 0px 25px -12px rgba(0,0,0,0.4), 
+    0 0 80px hsla(var(--agent-diary-purple-h), 20%, 8%, 0.25) inset; 
   position: relative; 
-
-  &::before { 
+  &::before { /* Subtle animated border */
     content: ""; 
     @apply absolute inset-[-1px] pointer-events-none z-0;
     border-radius: inherit; 
     border: 1px solid transparent;
     background: linear-gradient(120deg, 
-      hsla(var(--agent-diary-pink-h),70%,70%,0.15), 
-      hsla(var(--agent-diary-purple-h),60%,60%,0.15), 
-      hsla(var(--agent-diary-pink-h),70%,70%,0.15)
+      hsla(var(--agent-diary-pink-h),70%,70%,0.1), 
+      hsla(var(--agent-diary-purple-h),60%,60%,0.1), 
+      hsla(var(--agent-diary-pink-h),70%,70%,0.1)
     ) border-box; 
     -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: destination-out; 
     mask-composite: exclude;
-    opacity: 0.7;
-    animation: subtle-border-pulse 8s infinite alternate; 
+    opacity: 0.5;
+    animation: subtle-border-pulse 10s infinite alternate ease-in-out; 
   }
 }
-.dark .diary-page-panel {
+.dark .diary-page-panel { /* Dark mode adjustments */
   background: 
-    radial-gradient(ellipse at 50% -30%, hsla(var(--agent-diary-pink-h), 30%, 15%, 0.35), transparent 70%),
-    radial-gradient(ellipse at 15% 95%, hsla(var(--agent-diary-purple-h), 35%, 20%, 0.3), transparent 70%),
-    hsl(var(--agent-diary-neutral-h), 12%, 5%); /* Even darker base */
-  border-left-color: hsla(var(--agent-diary-purple-h), 35%, 40%, 0.15);
+    radial-gradient(ellipse at 50% -30%, hsla(var(--agent-diary-pink-h), 30%, 15%, 0.25), transparent 60%),
+    radial-gradient(ellipse at 15% 95%, hsla(var(--agent-diary-purple-h), 35%, 20%, 0.2), transparent 60%),
+    hsl(var(--agent-diary-neutral-h), 12%, 8%); 
+  border-left-color: hsla(var(--agent-diary-purple-h), 35%, 40%, 0.2);
   box-shadow: 
-    inset 10px 0px 30px -10px rgba(0,0,0,0.6), 
-    0 0 120px hsla(var(--agent-diary-purple-h), 25%, 3%, 0.35) inset;
+    inset 8px 0px 25px -12px rgba(0,0,0,0.5), 
+    0 0 100px hsla(var(--agent-diary-purple-h), 25%, 5%, 0.3) inset;
    &::before {
      background: linear-gradient(120deg, 
-      hsla(var(--agent-diary-pink-h),80%,60%,0.2), 
-      hsla(var(--agent-diary-purple-h),70%,50%,0.2), 
-      hsla(var(--agent-diary-pink-h),80%,60%,0.2)
+      hsla(var(--agent-diary-pink-h),80%,60%,0.15), 
+      hsla(var(--agent-diary-purple-h),70%,50%,0.15), 
+      hsla(var(--agent-diary-pink-h),80%,60%,0.15)
     ) border-box;
    }
 }
-
-
-.metadata-form {
-  backdrop-filter: blur(3px);
-  box-shadow: inset 0 6px 10px -3px rgba(0,0,0,0.3); 
-}
-.form-input-diary { 
-  @apply w-full block px-2.5 py-1.5 rounded-md text-xs;
-  background-color: hsla(var(--agent-diary-neutral-h), 10%, 20%, 0.5); 
-  border: 1px solid hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 40%), var(--agent-diary-purple-l, 40%), 0.5);
-  color: hsl(var(--agent-diary-pink-h), var(--agent-diary-pink-s, 80%), var(--agent-diary-pink-l, 85%)); 
-  
-  &::placeholder {
-    color: hsla(var(--agent-diary-pink-h), var(--agent-diary-pink-s, 60%), var(--agent-diary-pink-l, 70%), 0.6);
-  }
-  &:focus {
-    border-color: hsl(var(--agent-diary-pink-h), var(--agent-diary-pink-s, 70%), var(--agent-diary-pink-l, 70%));
-    background-color: hsla(var(--agent-diary-neutral-h), 10%, 25%, 0.7);
-    box-shadow: 0 0 8px hsla(var(--agent-diary-pink-h), var(--agent-diary-pink-s, 70%), var(--agent-diary-pink-l, 70%), 0.3);
-  }
-}
-.dark .form-input-diary {
-  background-color: hsla(var(--agent-diary-neutral-h), 12%, 15%, 0.6); 
-  border-color: hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 50%), var(--agent-diary-purple-l, 50%), 0.6);
-  color: hsl(var(--agent-diary-pink-h), var(--agent-diary-pink-s, 85%), var(--agent-diary-pink-l, 90%));
-   &::placeholder {
-    color: hsla(var(--agent-diary-pink-h), var(--agent-diary-pink-s, 65%), var(--agent-diary-pink-l, 75%), 0.6);
-  }
-   &:focus {
-    border-color: hsl(var(--agent-diary-pink-h), var(--agent-diary-pink-s, 75%), var(--agent-diary-pink-l, 75%));
-    background-color: hsla(var(--agent-diary-neutral-h), 12%, 20%, 0.8);
-    box-shadow: 0 0 10px hsla(var(--agent-diary-pink-h), var(--agent-diary-pink-s, 75%), var(--agent-diary-pink-l, 75%), 0.4);
-  }
+@keyframes subtle-border-pulse {
+  0% { opacity: 0.3; }
+  100% { opacity: 0.7; }
 }
 
+/* Styles for elements within v-html (prose) */
 .diary-entry-content :deep(h2) { 
   @apply text-transparent bg-clip-text bg-gradient-to-r pb-2.5 mb-6 text-2xl font-bold tracking-tight;
-  --title-gradient-from: hsl(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 80%), var(--agent-diary-purple-l, 80%));
-  --title-gradient-to: hsl(var(--agent-diary-pink-h), var(--agent-diary-pink-s, 90%), var(--agent-diary-pink-l, 85%));
+  --title-gradient-from: hsl(var(--agent-diary-purple-h), var(--agent-diary-purple-s), calc(var(--agent-diary-purple-l) + 15%));
+  --title-gradient-to: hsl(var(--agent-diary-pink-h), var(--agent-diary-pink-s), calc(var(--agent-diary-pink-l) + 15%));
   background-image: linear-gradient(to right, var(--title-gradient-from), var(--title-gradient-to));
-  border-bottom: 1px solid hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 50%), var(--agent-diary-purple-l, 50%), 0.3);
-  text-shadow: 0 0 15px hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 60%), var(--agent-diary-purple-l, 70%), 0.5);
+  border-bottom: 1px solid hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s), var(--agent-diary-purple-l), 0.3);
+  text-shadow: 0 0 12px hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s), var(--agent-diary-purple-l), 0.4);
 }
-.dark .diary-entry-content :deep(h2) {
-  --title-gradient-from: hsl(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 85%), var(--agent-diary-purple-l, 85%));
-  --title-gradient-to: hsl(var(--agent-diary-pink-h), var(--agent-diary-pink-s, 95%), var(--agent-diary-pink-l, 90%));
-  border-bottom-color: hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 60%), var(--agent-diary-purple-l, 60%), 0.4);
-  text-shadow: 0 0 18px hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 70%), var(--agent-diary-purple-l, 75%), 0.6);
-}
-
 .diary-entry-content :deep(strong) { 
-  color: hsl(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 70%), var(--agent-diary-purple-l, 75%)); font-weight: 600;
+  color: hsl(var(--agent-diary-purple-h), var(--agent-diary-purple-s), calc(var(--agent-diary-purple-l) + 10%)); font-weight: 600;
 }
-.dark .diary-entry-content :deep(strong) {
-  color: hsl(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 75%), var(--agent-diary-purple-l, 80%));
+.diary-entry-content :deep(p),
+.diary-entry-content :deep(ul), 
+.diary-entry-content :deep(ol) { 
+  color: hsl(var(--text-secondary-dark-h, var(--agent-diary-pink-h)), calc(var(--text-secondary-dark-s, var(--agent-diary-pink-s)) - 20%), calc(var(--text-secondary-dark-l, var(--agent-diary-pink-l)) - 10%));
+  @apply leading-relaxed text-base my-3;
 }
-
-.diary-entry-content :deep(p) { 
-  color: hsl(var(--text-secondary-dark-h, var(--agent-diary-pink-h)), var(--text-secondary-dark-s, calc(var(--agent-diary-pink-s, 70%) - 20%)), var(--text-secondary-dark-l, calc(var(--agent-diary-pink-l, 70%) - 10%)));
-  @apply leading-relaxed text-base;
-}
-.dark .diary-entry-content :deep(p) {
-  color: hsl(var(--text-secondary-dark-h, var(--agent-diary-pink-h)), var(--text-secondary-dark-s, calc(var(--agent-diary-pink-s, 70%) - 15%)), var(--text-secondary-dark-l, calc(var(--agent-diary-pink-l, 70%) - 5%)));
-}
-
-
-.diary-entry-content :deep(ul), .diary-entry-content :deep(ol) { 
-  color: hsl(var(--text-secondary-dark-h, var(--agent-diary-pink-h)), var(--text-secondary-dark-s, calc(var(--agent-diary-pink-s, 70%) - 20%)), var(--text-secondary-dark-l, calc(var(--agent-diary-pink-l, 70%) - 10%)));
-}
-.dark .diary-entry-content :deep(ul), .dark .diary-entry-content :deep(ol) {
-   color: hsl(var(--text-secondary-dark-h, var(--agent-diary-pink-h)), var(--text-secondary-dark-s, calc(var(--agent-diary-pink-s, 70%) - 15%)), var(--text-secondary-dark-l, calc(var(--agent-diary-pink-l, 70%) - 5%)));
-}
-
 .diary-entry-content :deep(hr) { 
-  border-color: hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 50%), var(--agent-diary-purple-l, 50%), 0.3); @apply my-8;
+  border-color: hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s), var(--agent-diary-purple-l), 0.3); @apply my-6;
 }
-.dark .diary-entry-content :deep(hr) {
-  border-color: hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 60%), var(--agent-diary-purple-l, 60%), 0.4);
-}
-
 .diary-entry-content :deep(a) { 
-  color: hsl(var(--agent-diary-pink-h), var(--agent-diary-pink-s, 80%), var(--agent-diary-pink-l, 75%));
-  &:hover { color: hsl(var(--agent-diary-pink-h), var(--agent-diary-pink-s, 90%), var(--agent-diary-pink-l, 80%)); }
+  color: hsl(var(--agent-diary-pink-h), var(--agent-diary-pink-s), calc(var(--agent-diary-pink-l) + 5%));
+  &:hover { color: hsl(var(--agent-diary-pink-h), var(--agent-diary-pink-s), calc(var(--agent-diary-pink-l) + 10%)); }
 }
-.dark .diary-entry-content :deep(a) {
-  color: hsl(var(--agent-diary-pink-h), var(--agent-diary-pink-s, 85%), var(--agent-diary-pink-l, 80%));
-  &:hover { color: hsl(var(--agent-diary-pink-h), var(--agent-diary-pink-s, 95%), var(--agent-diary-pink-l, 85%)); }
+/* Mermaid specific styles within entry content */
+.diary-entry-content :deep(.mermaid) {
+  @apply p-3 my-4 rounded-lg bg-slate-800/40 dark:bg-slate-900/50 border border-purple-500/30 dark:border-purple-600/40 shadow-md;
+  svg { @apply max-w-full h-auto block mx-auto; }
 }
 
 
+/* Small text helper */
+.text-xxs { @apply text-[0.7rem] leading-snug; }
+
+/* Action buttons in the corner of entry view */
 .btn-icon-diary {
   @apply p-2.5 rounded-lg transition-all duration-150 shadow-lg active:scale-90 backdrop-blur-sm;
-  background-color: hsla(var(--agent-diary-neutral-h), 10%, 20%, 0.4); 
-  color: hsl(var(--agent-diary-pink-h), var(--agent-diary-pink-s, 70%), var(--agent-diary-pink-l, 70%)); 
-  border: 1px solid hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 40%), var(--agent-diary-purple-l, 40%), 0.2);
-  
+  background-color: hsla(var(--agent-diary-neutral-h), 10%, 20%, 0.5); 
+  color: hsl(var(--agent-diary-pink-h), var(--agent-diary-pink-s), var(--agent-diary-pink-l)); 
+  border: 1px solid hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s), calc(var(--agent-diary-purple-l) - 15%), 0.3);
   &:hover {
-    background-color: hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 50%), var(--agent-diary-purple-l, 30%), 0.5);
-    color: hsl(var(--agent-diary-pink-h), var(--agent-diary-pink-s, 85%), var(--agent-diary-pink-l, 85%)); 
-    border-color: hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 50%), var(--agent-diary-purple-l, 50%), 0.5);
-    box-shadow: 0 0 12px hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 50%), var(--agent-diary-purple-l, 50%), 0.4);
+    background-color: hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s), calc(var(--agent-diary-purple-l) - 25%), 0.6);
+    color: hsl(var(--agent-diary-pink-h), var(--agent-diary-pink-s), calc(var(--agent-diary-pink-l) + 15%)); 
+    border-color: hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s), calc(var(--agent-diary-purple-l) - 5%), 0.6);
+    box-shadow: 0 0 12px hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s), calc(var(--agent-diary-purple-l) - 5%), 0.45);
   }
 }
-.dark .btn-icon-diary {
-  background-color: hsla(var(--agent-diary-neutral-h), 12%, 15%, 0.5);
-  color: hsl(var(--agent-diary-pink-h), var(--agent-diary-pink-s, 75%), var(--agent-diary-pink-l, 75%));
-  border-color: hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 50%), var(--agent-diary-purple-l, 50%), 0.3);
+.dark .btn-icon-diary { /* Dark mode adjustments */
+  background-color: hsla(var(--agent-diary-neutral-h), 12%, 15%, 0.6);
+  color: hsl(var(--agent-diary-pink-h), var(--agent-diary-pink-s), calc(var(--agent-diary-pink-l) + 5%));
+  border-color: hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s), calc(var(--agent-diary-purple-l) - 10%), 0.4);
    &:hover {
-    background-color: hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 60%), var(--agent-diary-purple-l, 40%), 0.6);
-    color: hsl(var(--agent-diary-pink-h), var(--agent-diary-pink-s, 90%), var(--agent-diary-pink-l, 90%));
-    border-color: hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 60%), var(--agent-diary-purple-l, 60%), 0.6);
-    box-shadow: 0 0 14px hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 60%), var(--agent-diary-purple-l, 60%), 0.5);
-  }
+    background-color: hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s), calc(var(--agent-diary-purple-l) - 20%), 0.7);
+    color: hsl(var(--agent-diary-pink-h), var(--agent-diary-pink-s), calc(var(--agent-diary-pink-l) + 20%));
+    border-color: hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s), var(--agent-diary-purple-l), 0.7);
+   }
 }
-
+/* Modal close button */
 .btn-icon-close { 
-  @apply p-1.5 rounded-full transition-colors;
-  color: hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 60%), var(--agent-diary-purple-l, 70%), 0.7);
+  @apply p-1.5 rounded-full transition-colors duration-150 ease-in-out;
+  color: hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s), var(--agent-diary-purple-l), 0.7);
   &:hover {
-    color: hsl(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 70%), var(--agent-diary-purple-l, 80%));
-    background-color: hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 50%), var(--agent-diary-purple-l, 50%), 0.3);
+    color: hsl(var(--agent-diary-purple-h), var(--agent-diary-purple-s), calc(var(--agent-diary-purple-l) + 15%));
+    background-color: hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s), var(--agent-diary-purple-l), 0.3);
   }
 }
-.dark .btn-icon-close {
-  color: hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 70%), var(--agent-diary-purple-l, 75%), 0.8);
-   &:hover {
-    color: hsl(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 80%), var(--agent-diary-purple-l, 85%));
-    background-color: hsla(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 60%), var(--agent-diary-purple-l, 60%), 0.4);
-  }
-}
-
-
+/* Entry list item hover effect */
 .entry-list-item:hover h4 { 
-  text-shadow: 0 0 8px hsla(var(--agent-diary-pink-h), 80%, 70%, 0.7);
+  text-shadow: 0 0 10px hsla(var(--agent-diary-pink-h), calc(var(--agent-diary-pink-s) + 10%), calc(var(--agent-diary-pink-l) + 5%), 0.8);
 }
-.dark .entry-list-item:hover h4 {
-  text-shadow: 0 0 10px hsla(var(--agent-diary-pink-h), 85%, 75%, 0.8);
-}
-
+/* Modal transition styles */
+.modal-fade-enter-active, .modal-fade-leave-active { transition: opacity 0.3s ease; }
+.modal-fade-enter-from, .modal-fade-leave-to { opacity: 0; }
 
 .modal-fade-enter-active .glass-pane-dark, 
 .modal-fade-leave-active .glass-pane-dark {
@@ -848,60 +953,59 @@ const exportAllEntries = async () => {
   opacity: 0;
   transform: translateY(20px) scale(0.95);
 }
-
+/* Scrollbar theming for diary view panels */
 .custom-scrollbar-diary-chat,
-.custom-scrollbar-diary-entry,
-.custom-scrollbar-futuristic { 
+.custom-scrollbar-diary-entry { 
   &::-webkit-scrollbar { width: 8px; height: 8px; }
   &::-webkit-scrollbar-track {
-    background-color: hsla(var(--agent-diary-purple-h), 20%, 15%, 0.3); 
+    background-color: hsla(var(--agent-diary-purple-h), 20%, 15%, 0.2); 
     border-radius: 10px;
   }
   &::-webkit-scrollbar-thumb {
-    background-color: hsla(var(--agent-diary-purple-h), 40%, 50%, 0.6); 
+    background-color: hsla(var(--agent-diary-purple-h), 40%, 50%, 0.5); 
     border-radius: 10px;
-    border: 2px solid transparent;
+    border: 2px solid transparent; /* Creates padding around thumb */
     background-clip: content-box;
   }
   &::-webkit-scrollbar-thumb:hover {
-    background-color: hsla(var(--agent-diary-pink-h), 50%, 60%, 0.8); 
+    background-color: hsla(var(--agent-diary-pink-h), 50%, 60%, 0.7); 
   }
-  scrollbar-width: thin;
-  scrollbar-color: hsla(var(--agent-diary-purple-h), 40%, 50%, 0.6) hsla(var(--agent-diary-purple-h), 20%, 15%, 0.3);
+  scrollbar-width: thin; /* For Firefox */
+  scrollbar-color: hsla(var(--agent-diary-purple-h), 40%, 50%, 0.5) hsla(var(--agent-diary-purple-h), 20%, 15%, 0.2); /* For Firefox */
 }
-.dark .custom-scrollbar-diary-chat,
-.dark .custom-scrollbar-diary-entry,
-.dark .custom-scrollbar-futuristic {
-   &::-webkit-scrollbar-track { background-color: hsla(var(--agent-diary-purple-h), 25%, 10%, 0.4); }
-   &::-webkit-scrollbar-thumb { background-color: hsla(var(--agent-diary-purple-h), 45%, 45%, 0.7); }
-   &::-webkit-scrollbar-thumb:hover { background-color: hsla(var(--agent-diary-pink-h), 55%, 55%, 0.9); }
-   scrollbar-color: hsla(var(--agent-diary-purple-h), 45%, 45%, 0.7) hsla(var(--agent-diary-purple-h), 25%, 10%, 0.4);
+.dark .custom-scrollbar-diary-chat, /* Dark mode scrollbar */
+.dark .custom-scrollbar-diary-entry {
+   &::-webkit-scrollbar-track { background-color: hsla(var(--agent-diary-purple-h), 25%, 10%, 0.3); }
+   &::-webkit-scrollbar-thumb { background-color: hsla(var(--agent-diary-purple-h), 45%, 45%, 0.6); }
+   &::-webkit-scrollbar-thumb:hover { background-color: hsla(var(--agent-diary-pink-h), 55%, 55%, 0.8); }
+   scrollbar-color: hsla(var(--agent-diary-purple-h), 45%, 45%, 0.6) hsla(var(--agent-diary-purple-h), 25%, 10%, 0.3);
 }
 
-
+/* Loading overlay specific to diary page for better theming */
 .loading-overlay-diary-page {
   @apply absolute inset-0 flex flex-col items-center justify-center z-20 backdrop-blur-sm;
-  background-color: hsla(var(--agent-diary-neutral-h), 15%, 10%, 0.6); 
-  .icon { 
-    color: hsl(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 60%), var(--agent-diary-purple-l, 65%));
-  }
+  background-color: hsla(var(--agent-diary-neutral-h), 15%, 10%, 0.5); 
 }
 .dark .loading-overlay-diary-page {
-  background-color: hsla(var(--agent-diary-neutral-h), 12%, 5%, 0.7);
-   .icon {
-     color: hsl(var(--agent-diary-purple-h), var(--agent-diary-purple-s, 70%), var(--agent-diary-purple-l, 70%));
-   }
+  background-color: hsla(var(--agent-diary-neutral-h), 12%, 5%, 0.6);
+}
+/* Ensure spinner and text are visible and themed */
+.diary-spinner {
+  @apply w-10 h-10 border-4 rounded-full animate-spin;
+  border-color: hsla(var(--agent-diary-purple-h), 50%, 60%, 0.25);
+  border-left-color: hsl(var(--agent-diary-purple-h), 60%, 70%);
 }
 
+/* Glass pane effect for modals - Ensure var defaults are defined in your _variables.scss or similar */
 .glass-pane-dark { 
-  background: hsla(var(--color-bg-glass-h, var.$default-color-bg-glass-h), var(--color-bg-glass-s, var.$default-color-bg-glass-s), var(--color-bg-glass-l, var.$default-color-bg-glass-l), var(--color-bg-glass-a, 0.7));
-  backdrop-filter: blur(var(--blur-glass, #{var.$default-blur-glass})) saturate(130%); 
-  border: 1px solid hsla(var(--color-border-glass-h, var.$default-color-border-glass-h), var(--color-border-glass-s, var.$default-color-border-glass-s), var(--color-border-glass-l, var.$default-color-border-glass-l), var(--color-border-glass-a, 0.3));
-  box-shadow: var(--shadow-depth-xl, #{var.$scss-box-shadow-xl}); 
+  background: hsla(var(--color-bg-glass-h, 270), var(--color-bg-glass-s, 30%), var(--color-bg-glass-l, 20%), 0.7);
+  backdrop-filter: blur(var(--blur-glass, 10px)) saturate(130%); 
+  border: 1px solid hsla(var(--color-border-glass-h, 270), var(--color-border-glass-s, 40%), var(--color-border-glass-l, 50%), 0.3);
+  box-shadow: var(--shadow-depth-xl, 0 25px 50px -12px rgba(0,0,0,0.5)); 
 }
-.dark .glass-pane-dark { /* Dark mode specific overrides for the modal's glass pane */
-  background: hsla(var(--color-bg-glass-h-dark, var.$default-color-bg-glass-h), var(--color-bg-glass-s-dark, var.$default-color-bg-glass-s), var(--color-bg-glass-l-dark, calc(var.$default-color-bg-glass-l - 70%)), var(--color-bg-glass-a-dark, 0.85)); /* Example: darker glass */
-  border-color: hsla(var(--color-border-glass-h-dark, var.$default-color-border-glass-h), var(--color-border-glass-s-dark, var.$default-color-border-glass-s), var(--color-border-glass-l-dark, calc(var.$default-color-border-glass-l - 60%)), var(--color-border-glass-a-dark, 0.5));
+.dark .glass-pane-dark {
+  background: hsla(var(--color-bg-glass-h-dark, 270), var(--color-bg-glass-s-dark, 30%), var(--color-bg-glass-l-dark, 15%), 0.85);
+  border-color: hsla(var(--color-border-glass-h-dark, 270), var(--color-border-glass-s-dark, 40%), var(--color-border-glass-l-dark, 40%), 0.5);
 }
 
 </style>

@@ -67,7 +67,7 @@ const shapeStyleProvider = (index: number): CSSProperties => ({
       </div>
     </div>
 
-    <EphemeralChatLog />
+    <!-- <EphemeralChatLog /> -->
 
     <div class="unified-main-content-area">
       <slot name="main-content">

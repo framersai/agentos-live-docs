@@ -598,7 +598,6 @@ export default defineComponent({
             if (ctx) ctx.clearRect(0, 0, vadCanvasRef.value.width, vadCanvasRef.value.height);
         }
     };
-
     const initializeWebSpeech = (): boolean => {
         const SpeechRecognitionAPI = window.SpeechRecognition || (window as any).webkitSpeechRecognition;
         if (!SpeechRecognitionAPI) {
@@ -609,7 +608,7 @@ export default defineComponent({
             }
             return false;
         }
-        if (recognition) return true;
+        if (recognition) return true; // Already initialized
 
         recognition = new SpeechRecognitionAPI() as SpeechRecognition;
         recognition.lang = settings.speechLanguage || navigator.language || 'en-US';
@@ -617,83 +616,126 @@ export default defineComponent({
         recognition.onstart = () => {
             isWebSpeechListening.value = true;
             if (isPttMode.value || (isVoiceActivationMode.value && sttPreference.value === 'browser_webspeech_api')) {
-                isRecording.value = true;
+                isRecording.value = true; // For PTT/VAD WebSpeech, isRecording mirrors listening
                 startRecordingTimer();
             }
             startAudioLevelMonitoring();
             emit('processing-audio', true);
+            console.log('VoiceInput: WebSpeech recognition started.');
         };
 
-        recognition.onresult = (event: Event) => {
-            const speechEvent = event as ISpeechRecognitionEvent;
-            let interim = '';
-            let finalPart = '';
-            for (let i = speechEvent.resultIndex; i < speechEvent.results.length; ++i) {
-                const transcript = speechEvent.results.item(i)[0].transcript;
-                if (speechEvent.results.item(i).isFinal) {
-                    finalPart += transcript + ' ';
-                } else {
-                    interim += transcript;
-                }
-            }
-            if (isPttMode.value || (isVoiceActivationMode.value && sttPreference.value === 'browser_webspeech_api')) {
-                interimTranscriptWebSpeech.value = finalTranscriptWebSpeech.value + interim;
-                if (finalPart.trim()) {
-                    finalTranscriptWebSpeech.value += finalPart.trim() + ' ';
-                    interimTranscriptWebSpeech.value = finalTranscriptWebSpeech.value;
-                }
-            } else if (isContinuousMode.value && sttPreference.value === 'browser_webspeech_api') {
-                liveTranscriptWebSpeech.value = (liveTranscriptWebSpeech.value + interim).trim();
-                if (finalPart.trim()) {
-                    liveTranscriptWebSpeech.value = (liveTranscriptWebSpeech.value.slice(0, -interim.length) + finalPart.trim()).trim();
-                    pendingTranscriptWebSpeech.value = (pendingTranscriptWebSpeech.value + ' ' + finalPart.trim()).trim();
-                    resetPauseDetectionWebSpeech();
-                }
-            }
-        };
+
+      recognition.onresult = function (event: Event) {
+        const speechEvent = event as unknown as ISpeechRecognitionEvent;
+
+        let interim = '';
+
+        let finalPart = '';
+
+        for (let i = speechEvent.resultIndex; i < speechEvent.results.length; ++i) {
+
+          const transcript = speechEvent.results[i][0].transcript;
+
+          if (speechEvent.results[i].isFinal) finalPart += transcript + ' ';
+
+          else interim += transcript;
+
+        }
+
+        if (isContinuousMode.value && sttPreference.value === 'browser_webspeech_api') {
+
+          liveTranscriptWebSpeech.value = interim;
+
+          if (finalPart.trim()) {
+
+            pendingTranscriptWebSpeech.value = (pendingTranscriptWebSpeech.value + ' ' + finalPart.trim()).trim();
+
+            liveTranscriptWebSpeech.value = '';
+
+            resetPauseDetectionWebSpeech();
+
+          }
+
+        } else {
+
+          interimTranscriptWebSpeech.value = finalTranscriptWebSpeech.value + interim;
+
+          if (finalPart.trim()) finalTranscriptWebSpeech.value += finalPart.trim() + ' ';
+
+        }
+
+      };
+
 
         recognition.onerror = (event: Event) => {
             const errorEvent = event as ISpeechRecognitionErrorEvent;
-            console.error('WebSpeech Error:', errorEvent.error, errorEvent.message);
+            const errCode = errorEvent.error;
+            console.error('VoiceInput: WebSpeech Error:', errCode, errorEvent.message);
+
+            // Store these before state changes
+            const wasContinuous = isContinuousMode.value;
+            const wasVAD = isVoiceActivationMode.value;
+            const currentAudioModeSetting = settings.audioInputMode;
+
             isWebSpeechListening.value = false;
-            isRecording.value = false;
+            isRecording.value = false; // Ensure this is also reset
             clearRecordingTimer();
             stopAudioLevelMonitoring();
-            emit('processing-audio', false);
+            // Don't emit processing-audio false yet if we are about to retry
 
-            const errCode = errorEvent.error;
             if (errCode === 'not-allowed' || errCode === 'service-not-allowed') {
                 permissionStatus.value = 'denied'; permissionMessage.value = 'Microphone access denied by browser/OS.';
+                toast?.add({ type: 'error', title: 'Mic Access Denied', message: permissionMessage.value });
+                emit('processing-audio', false); // Definitively stop processing
             } else if (errCode === 'no-speech') {
                 permissionMessage.value = 'No speech detected by browser.';
                 if (isPttMode.value) toast?.add({ type: 'info', title: 'No Speech', message: permissionMessage.value, duration: 2000 });
+                // For continuous/VAD, no-speech is common and we want to retry.
             } else if (errCode === 'network') {
                 permissionMessage.value = 'Network error for browser speech service.';
+                toast?.add({ type: 'warning', title: 'Network Issue', message: permissionMessage.value });
             } else if (errCode === 'aborted') {
                 permissionMessage.value = 'Browser speech input aborted.';
+                // Aborted might be intentional (e.g. mode switch), or an issue. We'll let retry logic decide.
             } else {
                 permissionStatus.value = 'error'; permissionMessage.value = `Browser speech error: ${errCode}.`;
-            }
-
-            if (errCode !== 'no-speech' && errCode !== 'aborted' && errCode !== 'not-allowed' && errCode !== 'service-not-allowed') {
                 toast?.add({ type: 'error', title: 'Browser Speech Error', message: permissionMessage.value });
             }
 
-            if ((isContinuousMode.value || isVoiceActivationMode.value) &&
-                (errCode !== 'not-allowed' && errCode !== 'service-not-allowed') &&
-                 permissionStatus.value === 'granted' && settings.audioInputMode !== 'push-to-talk' /* was isMicrophoneActive.value */) {
+            // Enhanced Retry Logic for Continuous and VAD modes
+            if ((wasContinuous || wasVAD) &&
+                (errCode !== 'not-allowed' && errCode !== 'service-not-allowed') && // Don't retry if permission denied
+                permissionStatus.value === 'granted' && // Only if permission is still granted
+                !props.isProcessing && // Don't retry if parent is processing
+                  (currentAudioModeSetting === 'continuous' || currentAudioModeSetting === 'voice-activation') // Check current *setting*
+                ) {
+                console.log(`VoiceInput: WebSpeech error (${errCode}) in ${currentAudioModeSetting} mode. Attempting restart in 1s.`);
                 setTimeout(() => {
-                    if ((isContinuousMode.value || isVoiceActivationMode.value) && !isWebSpeechListening.value && settings.audioInputMode !== 'push-to-talk' /* was isMicrophoneActive.value */) {
+                    // Re-check conditions before actually restarting
+                    if (!isWebSpeechListening.value && permissionStatus.value === 'granted' && !props.isProcessing &&
+                          (settings.audioInputMode === 'continuous' || settings.audioInputMode === 'voice-activation')) {
+                        console.log("VoiceInput: Retrying startWebSpeechRecognition...");
                         startWebSpeechRecognition();
+                    } else {
+                        console.log("VoiceInput: Retry conditions no longer met, not restarting WebSpeech.");
+                        emit('processing-audio', false); // Ensure state is correct if not retrying
                     }
-                }, 1000);
+                }, 1000); // 1-second delay before retry
+            } else {
+                // If not retrying, ensure processing-audio is set to false.
+                emit('processing-audio', false);
             }
         };
 
         recognition.onend = () => {
+            const wasListening = isWebSpeechListening.value;
+            const currentModeSetting = settings.audioInputMode; // Get current mode setting
+
             isWebSpeechListening.value = false;
             stopAudioLevelMonitoring();
-            emit('processing-audio', false);
+            // emit('processing-audio', false); // Moved to be more conditional
+
+            console.log(`VoiceInput: WebSpeech recognition ended. Was listening: ${wasListening}, Mode: ${currentModeSetting}`);
 
             if (isPttMode.value && sttPreference.value === 'browser_webspeech_api') {
                 if (finalTranscriptWebSpeech.value.trim()) {
@@ -702,34 +744,69 @@ export default defineComponent({
                 isRecording.value = false;
                 clearRecordingTimer();
                 cleanUpAfterWebSpeechTranscription();
+                emit('processing-audio', false);
             } else if (isVoiceActivationMode.value && sttPreference.value === 'browser_webspeech_api') {
                 if (finalTranscriptWebSpeech.value.trim()) {
                     sendTranscription(finalTranscriptWebSpeech.value.trim());
                 }
-                if (settings.audioInputMode !== 'voice-activation') { // If user switched mode while it was processing
+                cleanUpAfterWebSpeechTranscription(); // Clears finalTranscriptWebSpeech
+
+                // If it was listening, mode is still VAD, and not processing, restart to listen for next activation.
+                if (wasListening && currentModeSetting === 'voice-activation' && permissionStatus.value === 'granted' && !props.isProcessing) {
+                    console.log("VoiceInput: VAD WebSpeech ended, attempting restart.");
+                    setTimeout(() => {
+                        if (settings.audioInputMode === 'voice-activation' && !isWebSpeechListening.value && permissionStatus.value === 'granted' && !props.isProcessing) {
+                            startWebSpeechRecognition();
+                        } else {
+                            emit('processing-audio', false);
+                        }
+                    }, 250); // Short delay
+                } else {
                     isRecording.value = false;
                     clearRecordingTimer();
+                    emit('processing-audio', false);
                 }
-                cleanUpAfterWebSpeechTranscription();
             } else if (isContinuousMode.value && sttPreference.value === 'browser_webspeech_api') {
-                if (settings.audioInputMode !== 'continuous') { // User switched mode
-                    isRecording.value = false;
-                    clearRecordingTimer();
+                // If mode changed away from continuous, handle pending and stop.
+                if (currentModeSetting !== 'continuous') {
+                    isRecording.value = false; // Continuous WebSpeech doesn't use isRecording directly
+                    clearRecordingTimer(); // but clear it just in case
                     if (pendingTranscriptWebSpeech.value.trim() && continuousModeAutoSend.value) {
                         sendPendingWebSpeechTranscription();
                     }
+                    emit('processing-audio', false);
+                }
+                // If it ended, was listening, mode is still continuous, and not processing, attempt to restart.
+                // This handles browsers where 'continuous' stops after an utterance.
+                else if (wasListening && currentModeSetting === 'continuous' && permissionStatus.value === 'granted' && !props.isProcessing) {
+                    console.log("VoiceInput: Continuous Mode WebSpeech naturally ended, attempting restart.");
+                    setTimeout(() => {
+                        if (settings.audioInputMode === 'continuous' && !isWebSpeechListening.value && permissionStatus.value === 'granted' && !props.isProcessing) {
+                            startWebSpeechRecognition();
+                        } else {
+                            emit('processing-audio', false);
+                        }
+                    }, 250); // Short delay
+                } else {
+                    // If not restarting (e.g. was not listening, or props.isProcessing)
+                    emit('processing-audio', false);
                 }
             } else {
+                // Default cases (e.g., Whisper mode, or if conditions for restart weren't met)
                 isRecording.value = false;
                 clearRecordingTimer();
+                emit('processing-audio', false);
             }
         };
 
+        // Configure continuous and interimResults based on mode and preference
         if (sttPreference.value === 'whisper_api' && isVoiceActivationMode.value) {
-            recognition.continuous = true;
-            recognition.interimResults = false;
+            // For Whisper VAD, the WebSpeech part is just a simple, non-continuous listener.
+            // The actual continuous aspect is handled by the VAD logic starting/stopping MediaRecorder.
+            recognition.continuous = true; // Let it run until VAD stops it
+            recognition.interimResults = false; // We don't need interim for this VAD trigger
         } else {
-            recognition.continuous = isContinuousMode.value;
+            recognition.continuous = isContinuousMode.value; // True for continuous, false for PTT/VAD WebSpeech that sends on its own 'onend'
             recognition.interimResults = true;
         }
         return true;
