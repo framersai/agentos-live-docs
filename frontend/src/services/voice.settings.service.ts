@@ -88,7 +88,7 @@ const initialDefaultSettings: Readonly<VoiceApplicationSettings> = {
   sttPreference: 'browser_webspeech_api',
   selectedAudioInputDeviceId: null,
   speechLanguage: typeof navigator !== 'undefined' ? navigator.language : 'en-US',
-  audioInputMode: 'push-to-talk',
+  audioInputMode: 'continuous',
   vadThreshold: 0.15,
   vadSilenceTimeoutMs: 2500,
   continuousModePauseTimeoutMs: 3000,
