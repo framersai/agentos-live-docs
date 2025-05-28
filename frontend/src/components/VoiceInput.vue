@@ -1,11 +1,12 @@
 // File: frontend/src/components/VoiceInput.vue
 /**
  * @file VoiceInput.vue
- * @description Handles voice input, transcription, audio mode management,
- * and text input, featuring a new animated send button for "Ephemeral Harmony".
- * @version 3.0.0
+ * @description Handles voice input, transcription (Whisper/WebSpeech),
+ * audio mode management (PTT, Continuous, VAD), and local transcription history.
+ * Consumes global voice settings from VoiceSettingsService.
+ * Features an animated send button and improved UI/UX for "Ephemeral Harmony" theme.
+ * @version 3.0.1 - Fixed CheckIcon resolution warning.
  */
-
 <template>
   <div class="voice-input-panel-ephemeral"
        :class="{
@@ -52,11 +53,11 @@
         title="Send Text Message"
       >
         <span class="send-icon-animated-wrapper">
-            <svg class="send-icon-animated" viewBox="0 0 24 24" fill="none" xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)">
+            <svg class="send-icon-animated" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M21.6127 11.0034C21.9187 11.1574 22.1287 11.4374 22.1787 11.7584C22.2287 12.0784 22.1127 12.4054 21.8757 12.6264L4.33773 29.0944C4.04373 29.3674 3.64273 29.4754 3.26373 29.3784C2.88573 29.2804 2.59173 28.9894 2.49873 28.6144L0.102732 19.8264C-0.00826806 19.4054 -0.020268 18.9604 0.071732 18.5384L2.28573 1.96543C2.37873 1.53143 2.71373 1.19143 3.14973 1.09843C3.58573 1.00543 4.03673 1.12743 4.36473 1.43143L21.6127 11.0034Z" class="send-icon-shape"/>
                 <path d="M2.32178 19.0299L21.4338 11.9999L2.32178 1.96492" class="send-icon-trail send-icon-trail-1"/>
                 <path d="M2.32178 19.0299L16.0978 11.9999L2.32178 1.96492" class="send-icon-trail send-icon-trail-2"/>
-                 <path d="M2.32178 19.0299L10.7618 11.9999L2.32178 1.96492" class="send-icon-trail send-icon-trail-3"/>
+                <path d="M2.32178 19.0299L10.7618 11.9999L2.32178 1.96492" class="send-icon-trail send-icon-trail-3"/>
             </svg>
         </span>
       </button>
@@ -88,8 +89,8 @@
 
       <div class="status-display-ephemeral">
         <div class="mode-indicator-wrapper-ephemeral">
-          <span class="mode-dot-ephemeral" :class="getModeIndicatorClass()"></span>
-          <span class="mode-text-ephemeral" :title="`Current mode: ${settings.audioInputMode}`">{{ getIdleStatusText() }}</span>
+            <span class="mode-dot-ephemeral" :class="getModeIndicatorClass()"></span>
+            <span class="mode-text-ephemeral" :title="`Current mode: ${settings.audioInputMode}`">{{ getIdleStatusText() }}</span>
         </div>
         <div class="transcription-status-ephemeral" aria-live="assertive">
           {{ getRecordingStatusText() }}
@@ -108,12 +109,12 @@
         </button>
         <transition name="dropdown-float-neomorphic">
             <div v-if="showAudioModeDropdown" class="audio-mode-dropdown card-neo-raised">
-                 <div class="dropdown-header-holographic !py-1.5 !px-2.5"><h3 class="dropdown-title !text-xs">Audio Mode</h3></div>
+                  <div class="dropdown-header-holographic !py-1.5 !px-2.5"><h3 class="dropdown-title !text-xs">Audio Mode</h3></div>
                 <button v-for="mode in audioModeOptions" :key="mode.value" @click="selectAudioMode(mode.value)"
                         class="audio-mode-item dropdown-item-holographic" :class="{'active': settings.audioInputMode === mode.value}">
                     <component :is="mode.icon" class="icon-sm mr-2" />
                     {{ mode.label }}
-                     <CheckIcon v-if="settings.audioInputMode === mode.value" class="icon-xs ml-auto text-[var(--color-accent-interactive)]" />
+                    <CheckIcon v-if="settings.audioInputMode === mode.value" class="icon-xs ml-auto text-[var(--color-accent-interactive)]" />
                 </button>
             </div>
         </transition>
@@ -204,61 +205,55 @@
  * @description Handles voice input, transcription (Whisper/WebSpeech),
  * audio mode management (PTT, Continuous, VAD), and local transcription history.
  * Consumes global voice settings from VoiceSettingsService.
- * @version 2.1.1 - Corrected TypeScript errors related to SpeechRecognition API types.
+ * @version 2.1.2 - Fixed CheckIcon resolution by importing and registering it.
  */
 
 import {
-    ref,
-    computed,
-    onMounted,
-    onBeforeUnmount,
-    watch,
-    inject,
-    defineComponent,
-    nextTick,
-    type Component as VueComponentType,
+  ref,
+  computed,
+  onMounted,
+  onBeforeUnmount,
+  watch,
+  inject,
+  defineComponent,
+  nextTick,
+  type Component as VueComponentType,
 } from 'vue';
 import { speechAPI, type TranscriptionResponseFE } from '@/utils/api';
 import { voiceSettingsManager, type AudioInputMode } from '@/services/voice.settings.service';
-import type { ToastService } from '../services/services'; // Adjusted path if services is in parent
+import type { ToastService } from '../services/services';
 import type { AxiosResponse } from 'axios';
 
 import {
-    ClockIcon, XMarkIcon, PaperAirplaneIcon, CloudArrowUpIcon,
-    SpeakerWaveIcon as ContinuousModeIcon,
-    ChevronDownIcon,
-    HandRaisedIcon,
-    HandRaisedIcon as PTTModeIconOriginal, // Using MicrophoneIcon directly for main button
-    ArrowsRightLeftIcon as VADModeIcon, // Using a different icon for VAD to distinguish
-    PencilIcon, TrashIcon, StopCircleIcon, MicrophoneIcon,
+  ClockIcon, XMarkIcon, PaperAirplaneIcon, CloudArrowUpIcon,
+  SpeakerWaveIcon as ContinuousModeIcon,
+  ChevronDownIcon,
+  HandRaisedIcon,
+  // HandRaisedIcon as PTTModeIconOriginal, // No longer needed if MicrophoneIcon is primary
+  ArrowsRightLeftIcon as VADModeIcon,
+  PencilIcon, TrashIcon, StopCircleIcon, MicrophoneIcon,
 } from '@heroicons/vue/24/outline';
+import { CheckIcon } from '@heroicons/vue/24/solid'; // <<< IMPORTED CheckIcon (solid style)
 
 
-// More specific types for SpeechRecognition API if needed, or rely on lib.dom.d.ts
-// These help clarify the event structures if TypeScript's default is too generic.
-interface ISpeechRecognitionResult extends SpeechRecognitionResult {
-    // Standard properties are usually available, this is for clarity or extension
-}
+// ... (Keep existing ISpeechRecognition interfaces and global declarations as they are) ...
+interface ISpeechRecognitionResult extends SpeechRecognitionResult {}
 interface ISpeechRecognitionResultList extends SpeechRecognitionResultList {
-    // Standard properties
-    item(index: number): ISpeechRecognitionResult;
+  item(index: number): ISpeechRecognitionResult;
 }
 interface ISpeechRecognitionEvent extends Event {
-    readonly resultIndex: number;
-    readonly results: ISpeechRecognitionResultList;
-    //emma?: any; // For experimental features if any
+  readonly resultIndex: number;
+  readonly results: ISpeechRecognitionResultList;
 }
-interface ISpeechRecognitionErrorEvent extends Event { // Changed from ErrorEvent
-    readonly error: SpeechRecognitionErrorCode; // Standard error codes
-    readonly message: string; // Standard message
+interface ISpeechRecognitionErrorEvent extends Event {
+  readonly error: SpeechRecognitionErrorCode;
+  readonly message: string;
 }
-// Add global SpeechRecognition type for TypeScript if missing
 declare global {
     interface Window {
     SpeechRecognition: typeof SpeechRecognition;
     webkitSpeechRecognition: typeof SpeechRecognition;
     }
-    // Fallback SpeechRecognition type if not present
     var SpeechRecognition: {
     prototype: SpeechRecognition;
     new (): SpeechRecognition;
@@ -288,857 +283,832 @@ declare global {
     stop(): void;
     }
 }
-// Standard SpeechRecognitionErrorCode strings
 type SpeechRecognitionErrorCode =
-  | 'no-speech'
-  | 'aborted'
-  | 'audio-capture'
-  | 'network'
-  | 'not-allowed'
-  | 'service-not-allowed'
-  | 'bad-grammar'
-  | 'language-not-supported';
-
+  | 'no-speech' | 'aborted' | 'audio-capture' | 'network'
+  | 'not-allowed' | 'service-not-allowed' | 'bad-grammar' | 'language-not-supported';
 
 interface TranscriptionHistoryItem {
-    id: string;
-    text: string;
-    timestamp: number;
-    sent: boolean;
+  id: string;
+  text: string;
+  timestamp: number;
+  sent: boolean;
 }
 
 interface AudioModeOption {
-    label: string;
-    value: AudioInputMode;
-    icon: VueComponentType;
+  label: string;
+  value: AudioInputMode;
+  icon: VueComponentType;
 }
 
 
 export default defineComponent({
-    name: 'VoiceInputEphemeral',
-    components: {
-        ClockIcon, XMarkIcon, PaperAirplaneIcon, CloudArrowUpIcon,
-        ContinuousModeIcon, PTTModeIcon: MicrophoneIcon, VADModeIcon, ChevronDownIcon, // PTTModeIcon aliased to MicrophoneIcon for main button display
-        PencilIcon, TrashIcon, StopCircleIcon, MicrophoneIcon,
-    },
-    props: {
-        isProcessing: { type: Boolean, required: true },
-    },
-    emits: {
-        transcription: (value: string) => typeof value === 'string',
-        'permission-update': (status: 'granted' | 'denied' | 'prompt' | 'error') =>
-          ['granted', 'denied', 'prompt', 'error'].includes(status),
-        'processing-audio': (isProcessing: boolean) => typeof isProcessing === 'boolean',
-    },
-    setup(props, { emit }) {
-        const toast = inject<ToastService>('toast');
-        const textInput = ref('');
-        const textareaRef = ref<HTMLTextAreaElement | null>(null);
-        const editModalTextareaRef = ref<HTMLTextAreaElement | null>(null);
-        const isRecording = ref(false);
-        const isWebSpeechListening = ref(false);
-        const permissionStatus = ref<'prompt' | 'granted' | 'denied' | 'error' | ''>('');
-        const permissionMessage = ref('');
-        const micAccessInitiallyChecked = ref(false);
+  name: 'VoiceInputEphemeral',
+  components: {
+    ClockIcon, XMarkIcon, PaperAirplaneIcon, CloudArrowUpIcon,
+    ContinuousModeIcon, PTTModeIcon: MicrophoneIcon, VADModeIcon, ChevronDownIcon,
+    PencilIcon, TrashIcon, StopCircleIcon, MicrophoneIcon,
+    CheckIcon, // <<< REGISTERED CheckIcon
+  },
+  props: {
+    isProcessing: { type: Boolean, required: true },
+  },
+  emits: {
+    transcription: (value: string) => typeof value === 'string',
+    'permission-update': (status: 'granted' | 'denied' | 'prompt' | 'error') =>
+      ['granted', 'denied', 'prompt', 'error'].includes(status),
+    'processing-audio': (isProcessing: boolean) => typeof isProcessing === 'boolean',
+  },
+  setup(props, { emit }) {
+    const toast = inject<ToastService>('toast');
+    const textInput = ref('');
+    const textareaRef = ref<HTMLTextAreaElement | null>(null);
+    const editModalTextareaRef = ref<HTMLTextAreaElement | null>(null);
+    const isRecording = ref(false);
+    const isWebSpeechListening = ref(false);
+    const permissionStatus = ref<'prompt' | 'granted' | 'denied' | 'error' | ''>('');
+    const permissionMessage = ref('');
+    const micAccessInitiallyChecked = ref(false);
 
-        const interimTranscriptWebSpeech = ref('');
-        const finalTranscriptWebSpeech = ref(''); // Reinstated and used for PTT
-        const liveTranscriptWebSpeech = ref('');
-        const pendingTranscriptWebSpeech = ref('');
+    const interimTranscriptWebSpeech = ref('');
+    const finalTranscriptWebSpeech = ref('');
+    const liveTranscriptWebSpeech = ref('');
+    const pendingTranscriptWebSpeech = ref('');
 
-        const transcriptionHistory = ref<TranscriptionHistoryItem[]>(
-            JSON.parse(localStorage.getItem('vca-transcriptionHistory-v2') || '[]')
-        );
-        const showTranscriptionHistory = ref(false);
-        const showAudioModeDropdown = ref(false);
-        const audioModeDropdownRef = ref<HTMLElement | null>(null);
+    const transcriptionHistory = ref<TranscriptionHistoryItem[]>(
+        JSON.parse(localStorage.getItem('vca-transcriptionHistory-v2') || '[]')
+    );
+    const showTranscriptionHistory = ref(false);
+    const showAudioModeDropdown = ref(false);
+    const audioModeDropdownRef = ref<HTMLElement | null>(null);
 
-        const settings = voiceSettingsManager.settings; // Reactive settings
+    const settings = voiceSettingsManager.settings;
 
-        const audioModeOptions = computed<AudioModeOption[]>(() => [
-            { label: 'Push-to-Talk', value: 'push-to-talk', icon: HandRaisedIcon }, // Using specific icon for dropdown
-            { label: 'Continuous', value: 'continuous', icon: ContinuousModeIcon },
-            { label: 'Voice Activate', value: 'voice-activation', icon: VADModeIcon },
-        ]);
-        const currentAudioModeDetails = computed(() => audioModeOptions.value.find(m => m.value === settings.audioInputMode));
-        const currentAudioModeLabel = computed(() => currentAudioModeDetails.value?.label || 'Select Mode');
-        const currentAudioModeIcon = computed(() => currentAudioModeDetails.value?.icon || MicrophoneIcon); // Main button uses MicrophoneIcon
+    const audioModeOptions = computed<AudioModeOption[]>(() => [
+        { label: 'Push-to-Talk', value: 'push-to-talk', icon: HandRaisedIcon },
+        { label: 'Continuous', value: 'continuous', icon: ContinuousModeIcon },
+        { label: 'Voice Activate', value: 'voice-activation', icon: VADModeIcon },
+    ]);
+    const currentAudioModeDetails = computed(() => audioModeOptions.value.find(m => m.value === settings.audioInputMode));
+    const currentAudioModeLabel = computed(() => currentAudioModeDetails.value?.label || 'Select Mode');
+    const currentAudioModeIcon = computed(() => currentAudioModeDetails.value?.icon || MicrophoneIcon);
 
-        watch(
-            transcriptionHistory,
-            (newHistory) => {
-                localStorage.setItem('vca-transcriptionHistory-v2', JSON.stringify(newHistory));
-            },
-            { deep: true }
-        );
+    watch(
+        transcriptionHistory,
+        (newHistory) => {
+            localStorage.setItem('vca-transcriptionHistory-v2', JSON.stringify(newHistory));
+        },
+        { deep: true }
+    );
 
-        let mediaRecorder: MediaRecorder | null = null;
-        let audioChunks: Blob[] = [];
-        let activeStream: MediaStream | null = null;
-        let audioContext: AudioContext | null = null;
-        let analyser: AnalyserNode | null = null;
-        let microphoneSourceNode: MediaStreamAudioSourceNode | null = null;
-        const recordingSeconds = ref(0);
-        let recordingTimerId: number | null = null;
+    let mediaRecorder: MediaRecorder | null = null;
+    let audioChunks: Blob[] = [];
+    let activeStream: MediaStream | null = null;
+    let audioContext: AudioContext | null = null;
+    let analyser: AnalyserNode | null = null;
+    let microphoneSourceNode: MediaStreamAudioSourceNode | null = null;
+    const recordingSeconds = ref(0);
+    let recordingTimerId: number | null = null;
 
-        const pauseDetectedWebSpeech = ref(false);
-        const pauseCountdownWebSpeech = ref(0);
-        let pauseTimerIdWebSpeech: number | null = null;
-        let vadSilenceTimerId: number | null = null;
+    const pauseDetectedWebSpeech = ref(false);
+    const pauseCountdownWebSpeech = ref(0);
+    let pauseTimerIdWebSpeech: number | null = null;
+    let vadSilenceTimerId: number | null = null;
 
-        const vadCanvasRef = ref<HTMLCanvasElement | null>(null);
+    const vadCanvasRef = ref<HTMLCanvasElement | null>(null);
+    let audioMonitoringInterval: number | null = null;
+    let recognition: SpeechRecognition | null = null;
 
-        // Track the interval ID for audio monitoring
-        let audioMonitoringInterval: number | null = null;
- 
-        let recognition: SpeechRecognition | null = null; // Will be `window.SpeechRecognition` or `window.webkitSpeechRecognition`
+    const sttPreference = computed(() => settings.sttPreference);
+    const selectedAudioDeviceId = computed(() => settings.selectedAudioInputDeviceId);
+    const vadThreshold = computed(() => settings.vadThreshold);
+    const vadSilenceTimeoutMs = computed(() => settings.vadSilenceTimeoutMs);
+    const continuousModeAutoSend = computed(() => settings.continuousModeAutoSend);
+    const continuousModePauseTimeoutMs = computed(() => settings.continuousModePauseTimeoutMs);
 
-        const sttPreference = computed(() => settings.sttPreference);
-        const selectedAudioDeviceId = computed(() => settings.selectedAudioInputDeviceId);
-        const vadThreshold = computed(() => settings.vadThreshold);
-        const vadSilenceTimeoutMs = computed(() => settings.vadSilenceTimeoutMs);
-        const continuousModeAutoSend = computed(() => settings.continuousModeAutoSend);
-        const continuousModePauseTimeoutMs = computed(() => settings.continuousModePauseTimeoutMs);
+    const isMicrophoneActive = computed(() => isRecording.value || isWebSpeechListening.value);
+    const isPttMode = computed(() => settings.audioInputMode === 'push-to-talk');
+    const isContinuousMode = computed(() => settings.audioInputMode === 'continuous');
+    const isVoiceActivationMode = computed(() => settings.audioInputMode === 'voice-activation');
 
-        const isMicrophoneActive = computed(() => isRecording.value || isWebSpeechListening.value);
-        const isPttMode = computed(() => settings.audioInputMode === 'push-to-talk');
-        const isContinuousMode = computed(() => settings.audioInputMode === 'continuous');
-        const isVoiceActivationMode = computed(() => settings.audioInputMode === 'voice-activation');
+    const getButtonTitle = (): string => {
+        if (props.isProcessing) return 'Assistant is processing...';
+        if (!micAccessInitiallyChecked.value && permissionStatus.value === '') return 'Initializing microphone...';
+        if (permissionStatus.value === 'denied') return 'Microphone access denied. Check browser settings.';
+        if (permissionStatus.value === 'error') return `Microphone error: ${permissionMessage.value || 'Unknown'}`;
+        if (isMicrophoneActive.value) {
+            if (isContinuousMode.value) return 'Stop continuous listening';
+            if (isVoiceActivationMode.value) return 'Stop voice activation';
+            return 'Release to stop recording (PTT)';
+        }
+        const currentMode = audioModeOptions.value.find(m => m.value === settings.audioInputMode);
+        if (currentMode) return `Click or Hold for ${currentMode.label}`;
+        return 'Activate Microphone';
+    };
 
-        const getButtonTitle = (): string => {
-          if (props.isProcessing) return 'Assistant is processing...';
-          if (!micAccessInitiallyChecked.value && permissionStatus.value === '') return 'Initializing microphone...';
-          if (permissionStatus.value === 'denied') return 'Microphone access denied. Check browser settings.';
-          if (permissionStatus.value === 'error') return `Microphone error: ${permissionMessage.value || 'Unknown'}`;
-          if (isMicrophoneActive.value) {
-              if (isContinuousMode.value) return 'Stop continuous listening';
-              if (isVoiceActivationMode.value) return 'Stop voice activation';
-              return 'Release to stop recording (PTT)';
-          }
-          // Not active
-          const currentMode = audioModeOptions.value.find(m => m.value === settings.audioInputMode);
-          if (currentMode) return `Click or Hold for ${currentMode.label}`;
-          return 'Activate Microphone';
-        };
+    const getPlaceholderText = (): string => {
+        if (isMicrophoneActive.value) {
+            if (isPttMode.value) return 'Recording... release to send.';
+            if (isContinuousMode.value) return 'Listening continuously... say something.';
+            if (isVoiceActivationMode.value) return 'Listening for voice activation...';
+        }
+        const method = sttPreference.value === 'whisper_api' ? 'Whisper' : 'Browser';
+        if (isContinuousMode.value) return `Type or click mic for Continuous (${method})...`;
+        if (isVoiceActivationMode.value) return `Type or click mic for VAD (${method})...`;
+        return `Type or hold mic for PTT (${method})...`;
+    };
 
-        const getPlaceholderText = (): string => {
-            if (isMicrophoneActive.value) {
-                if (isPttMode.value) return 'Recording... release to send.';
-                if (isContinuousMode.value) return 'Listening continuously... say something.';
-                if (isVoiceActivationMode.value) return 'Listening for voice activation...';
-            }
-            const method = sttPreference.value === 'whisper_api' ? 'Whisper' : 'Browser';
-            if (isContinuousMode.value) return `Type or click mic for Continuous (${method})...`;
-            if (isVoiceActivationMode.value) return `Type or click mic for VAD (${method})...`;
-            return `Type or hold mic for PTT (${method})...`;
-        };
+    const getModeIndicatorClass = (): string => {
+        if (props.isProcessing) return 'standby';
+        if (isMicrophoneActive.value) return 'active';
+        if ((isContinuousMode.value || isVoiceActivationMode.value) && permissionStatus.value === 'granted') return 'standby';
+        return 'idle';
+    };
 
-        const getModeIndicatorClass = (): string => {
-            if (props.isProcessing) return 'standby';
-            if (isMicrophoneActive.value) return 'active';
-            if ((isContinuousMode.value || isVoiceActivationMode.value) && permissionStatus.value === 'granted') return 'standby';
-            return 'idle';
-        };
+    const getRecordingStatusText = (): string => {
+        if (props.isProcessing) return 'Assistant processing...';
+        const method = sttPreference.value === 'whisper_api' ? 'Whisper' : 'Browser';
+        if (isPttMode.value && isMicrophoneActive.value) return `Recording (${method})... ${formatDuration(recordingSeconds.value)}`;
+        if (isContinuousMode.value) {
+            if (pauseDetectedWebSpeech.value && sttPreference.value === 'browser_webspeech_api') return 'Pause detected, auto-sending soon...';
+            if (isRecording.value && sttPreference.value === 'whisper_api') return `Segmenting (Whisper)... ${formatDuration(recordingSeconds.value)}`;
+            return isWebSpeechListening.value ? `Listening continuously (${method})...` : `Continuous mode ready (${method})`;
+        }
+        if (isVoiceActivationMode.value) {
+            if (isRecording.value) return `Voice detected, recording (${method})... ${formatDuration(recordingSeconds.value)}`;
+            return isWebSpeechListening.value ? `Listening for voice (${method})...` : `Voice activation ready (${method})`;
+        }
+        return 'Ready for input.';
+    };
 
-        const getRecordingStatusText = (): string => {
-            if (props.isProcessing) return 'Assistant processing...'; // Changed for clarity
-            const method = sttPreference.value === 'whisper_api' ? 'Whisper' : 'Browser';
-            if (isPttMode.value && isMicrophoneActive.value) return `Recording (${method})... ${formatDuration(recordingSeconds.value)}`;
-            if (isContinuousMode.value) {
-                if (pauseDetectedWebSpeech.value && sttPreference.value === 'browser_webspeech_api') return 'Pause detected, auto-sending soon...';
-                if (isRecording.value && sttPreference.value === 'whisper_api') return `Segmenting (Whisper)... ${formatDuration(recordingSeconds.value)}`;
-                return isWebSpeechListening.value ? `Listening continuously (${method})...` : `Continuous mode ready (${method})`;
-            }
-            if (isVoiceActivationMode.value) {
-                if (isRecording.value) return `Voice detected, recording (${method})... ${formatDuration(recordingSeconds.value)}`;
-                return isWebSpeechListening.value ? `Listening for voice (${method})...` : `Voice activation ready (${method})`;
-            }
-            return 'Ready for input.';
-        };
+    const getIdleStatusText = (): string => {
+      if (props.isProcessing) return 'Assistant processing...';
+      if (permissionStatus.value === 'granted') {
+        const modeLabel = currentAudioModeLabel.value;
+        return `${modeLabel} Ready`;
+      }
+      return 'Mic status unavailable';
+    };
 
-        const getIdleStatusText = (): string => {
-           if (props.isProcessing) return 'Assistant processing...';
-           if (permissionStatus.value === 'granted') {
-             const modeLabel = currentAudioModeLabel.value;
-             return `${modeLabel} Ready`;
-           }
-           return 'Mic status unavailable';
-        };
-
-        const formatDuration = (seconds: number): string => {
-            const mins = Math.floor(seconds / 60);
-            const secs = Math.floor(seconds % 60);
-            return `${mins}:${secs.toString().padStart(2, '0')}`;
-        };
-        const formatTime = (timestamp: number): string =>
-            new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    const formatDuration = (seconds: number): string => {
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+    };
+    const formatTime = (timestamp: number): string =>
+        new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
 
-        const handleTextareaInput = () => {
-            if (textareaRef.value) {
-                textareaRef.value.style.height = 'auto';
-                const maxHeight = 150;
-                textareaRef.value.style.height = `${Math.min(textareaRef.value.scrollHeight, maxHeight)}px`;
-            }
-        };
+    const handleTextareaInput = () => {
+        if (textareaRef.value) {
+            textareaRef.value.style.height = 'auto';
+            const maxHeight = 150;
+            textareaRef.value.style.height = `${Math.min(textareaRef.value.scrollHeight, maxHeight)}px`;
+        }
+    };
 
-        const toggleAudioModeDropdown = () => showAudioModeDropdown.value = !showAudioModeDropdown.value;
-        const selectAudioMode = (mode: AudioInputMode) => {
-            voiceSettingsManager.updateSetting('audioInputMode', mode);
+    const toggleAudioModeDropdown = () => showAudioModeDropdown.value = !showAudioModeDropdown.value;
+    const selectAudioMode = (mode: AudioInputMode) => {
+        voiceSettingsManager.updateSetting('audioInputMode', mode);
+        showAudioModeDropdown.value = false;
+    };
+    const handleClickOutsideAudioModeDropdown = (event: MouseEvent) => {
+        if (audioModeDropdownRef.value && !audioModeDropdownRef.value.contains(event.target as Node)) {
             showAudioModeDropdown.value = false;
-        };
-        const handleClickOutsideAudioModeDropdown = (event: MouseEvent) => {
-            if (audioModeDropdownRef.value && !audioModeDropdownRef.value.contains(event.target as Node)) {
-                showAudioModeDropdown.value = false;
+        }
+    };
+
+    const requestMicrophonePermissionsAndGetStream = async (): Promise<MediaStream | null> => {
+        permissionMessage.value = 'Requesting microphone access...'; permissionStatus.value = 'prompt'; emit('permission-update', 'prompt');
+        try {
+            if (activeStream) { activeStream.getTracks().forEach(track => track.stop()); activeStream = null; }
+            if (audioContext && audioContext.state !== 'closed') { await audioContext.close().catch(console.warn); audioContext = null; }
+
+            const constraints: MediaStreamConstraints = {
+                audio: selectedAudioDeviceId.value
+                    ? { deviceId: { exact: selectedAudioDeviceId.value }, echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+                    : { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+            };
+            const stream = await navigator.mediaDevices.getUserMedia(constraints);
+            activeStream = stream;
+            audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+            analyser = audioContext.createAnalyser();
+            microphoneSourceNode = audioContext.createMediaStreamSource(stream);
+            analyser.fftSize = 256;
+            analyser.smoothingTimeConstant = 0.6;
+            microphoneSourceNode.connect(analyser);
+
+            permissionStatus.value = 'granted';
+            permissionMessage.value = 'Microphone ready.';
+            emit('permission-update', 'granted');
+            setTimeout(() => { if (permissionStatus.value === 'granted') permissionMessage.value = ''; }, 2000);
+            micAccessInitiallyChecked.value = true;
+            return stream;
+        } catch (err: any) {
+            console.error("getUserMedia error:", err.name, err.message);
+            if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+                permissionStatus.value = 'denied'; permissionMessage.value = 'Microphone access denied by user.';
+            } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+                permissionStatus.value = 'error'; permissionMessage.value = 'No microphone found.';
+            } else {
+                permissionStatus.value = 'error'; permissionMessage.value = `Mic error: ${err.name || 'Unknown'}. Check console.`;
             }
-        };
+            toast?.add({ type: 'error', title: 'Microphone Error', message: permissionMessage.value });
+            emit('permission-update', permissionStatus.value as 'denied' | 'error');
+            micAccessInitiallyChecked.value = true;
+            activeStream = null;
+            return null;
+        }
+    };
 
-        const requestMicrophonePermissionsAndGetStream = async (): Promise<MediaStream | null> => {
-            permissionMessage.value = 'Requesting microphone access...'; permissionStatus.value = 'prompt'; emit('permission-update', 'prompt');
-            try {
-                if (activeStream) { activeStream.getTracks().forEach(track => track.stop()); activeStream = null; }
-                if (audioContext && audioContext.state !== 'closed') { await audioContext.close().catch(console.warn); audioContext = null; }
+    const drawVADVisualization = () => {
+        const canvas = vadCanvasRef.value;
+        if (!canvas || !analyser || !isMicrophoneActive.value) return;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
 
-                const constraints: MediaStreamConstraints = {
-                    audio: selectedAudioDeviceId.value
-                        ? { deviceId: { exact: selectedAudioDeviceId.value }, echoCancellation: true, noiseSuppression: true, autoGainControl: true }
-                        : { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
-                };
-                const stream = await navigator.mediaDevices.getUserMedia(constraints);
-                activeStream = stream;
-                audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-                analyser = audioContext.createAnalyser();
-                microphoneSourceNode = audioContext.createMediaStreamSource(stream);
-                analyser.fftSize = 256;
-                analyser.smoothingTimeConstant = 0.6;
-                microphoneSourceNode.connect(analyser);
+        const bufferLength = analyser.frequencyBinCount;
+        const dataArray = new Uint8Array(bufferLength);
+        analyser.getByteFrequencyData(dataArray);
 
-                permissionStatus.value = 'granted';
-                permissionMessage.value = 'Microphone ready.';
-                emit('permission-update', 'granted');
-                setTimeout(() => { if (permissionStatus.value === 'granted') permissionMessage.value = ''; }, 2000);
-                micAccessInitiallyChecked.value = true;
-                return stream;
-            } catch (err: any) {
-                console.error("getUserMedia error:", err.name, err.message);
-                if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
-                    permissionStatus.value = 'denied'; permissionMessage.value = 'Microphone access denied by user.';
-                } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
-                    permissionStatus.value = 'error'; permissionMessage.value = 'No microphone found.';
-                } else {
-                    permissionStatus.value = 'error'; permissionMessage.value = `Mic error: ${err.name || 'Unknown'}. Check console.`;
-                }
-                toast?.add({ type: 'error', title: 'Microphone Error', message: permissionMessage.value });
-                emit('permission-update', permissionStatus.value as 'denied' | 'error');
-                micAccessInitiallyChecked.value = true;
-                activeStream = null;
-                return null;
+        const width = canvas.width;
+        const height = canvas.height;
+        ctx.clearRect(0, 0, width, height);
+
+        const barWidth = (width / bufferLength) * 2.0;
+        let x = 0;
+
+        const baseHue = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--color-voice-user-h') || '270');
+        const baseSat = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--color-voice-user-s') || '90%');
+
+        for (let i = 0; i < bufferLength; i++) {
+            const barHeightFraction = dataArray[i] / 255;
+            const barHeight = barHeightFraction * height;
+            const lightness = 40 + barHeightFraction * 30;
+            const alpha = 0.3 + barHeightFraction * 0.6;
+            ctx.fillStyle = `hsla(${baseHue}, ${baseSat}%, ${lightness}%, ${alpha})`;
+            ctx.fillRect(x, height - barHeight, barWidth, barHeight);
+            x += barWidth + 1;
+        }
+    };
+
+    const startAudioLevelMonitoring = () => {
+        if (!analyser || !activeStream || !activeStream.active || activeStream.getAudioTracks().length === 0 || !activeStream.getAudioTracks()[0].enabled) {
+            return;
+        }
+        if (audioMonitoringInterval !== null) clearInterval(audioMonitoringInterval);
+
+        audioMonitoringInterval = window.setInterval(() => {
+            if (!analyser || !activeStream || !activeStream.active) {
+                stopAudioLevelMonitoring(); return;
             }
-        };
 
-        const drawVADVisualization = (/* dataArray: Uint8Array */) => { // dataArray passed from monitor if needed
-            const canvas = vadCanvasRef.value;
-            if (!canvas || !analyser || !isMicrophoneActive.value) return;
-            const ctx = canvas.getContext('2d');
-            if (!ctx) return;
-
-            const bufferLength = analyser.frequencyBinCount;
-            const dataArray = new Uint8Array(bufferLength); // Get fresh data
-            analyser.getByteFrequencyData(dataArray);
+            const dataArrayVAD = new Uint8Array(analyser.frequencyBinCount);
+            analyser.getByteFrequencyData(dataArrayVAD);
+            let sum = 0; dataArrayVAD.forEach(value => sum += value);
+            const averageLevel = dataArrayVAD.length > 0 ? sum / dataArrayVAD.length / 255 : 0;
 
 
-            const width = canvas.width;
-            const height = canvas.height;
-            ctx.clearRect(0, 0, width, height);
-
-            const barWidth = (width / bufferLength) * 2.0; // Wider bars for fewer bins
-            let x = 0;
-
-            const baseHue = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--color-voice-user-h') || '270');
-            const baseSat = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--color-voice-user-s') || '90%');
-
-            for (let i = 0; i < bufferLength; i++) {
-                const barHeightFraction = dataArray[i] / 255;
-                const barHeight = barHeightFraction * height;
-
-                const lightness = 40 + barHeightFraction * 30; // Vary lightness
-                const alpha = 0.3 + barHeightFraction * 0.6;  // Vary alpha
-
-                ctx.fillStyle = `hsla(${baseHue}, ${baseSat}, ${lightness}%, ${alpha})`;
-                ctx.fillRect(x, height - barHeight, barWidth, barHeight);
-                x += barWidth + 1;
-            }
-        };
-
-        const startAudioLevelMonitoring = () => {
-            if (!analyser || !activeStream || !activeStream.active || activeStream.getAudioTracks().length === 0 || !activeStream.getAudioTracks()[0].enabled) {
-                 return;
-            }
-            if (audioMonitoringInterval !== null) clearInterval(audioMonitoringInterval);
-
-            audioMonitoringInterval = window.setInterval(() => {
-                if (!analyser || !activeStream || !activeStream.active) {
-                    stopAudioLevelMonitoring(); return;
-                }
-
-                const dataArrayVAD = new Uint8Array(analyser.frequencyBinCount); // Use frequency for VAD level check
-                analyser.getByteFrequencyData(dataArrayVAD);
-                let sum = 0; dataArrayVAD.forEach(value => sum += value);
-                const averageLevel = dataArrayVAD.length > 0 ? sum / dataArrayVAD.length / 255 : 0; // Normalized 0-1
-
-
-                if (isVoiceActivationMode.value && sttPreference.value === 'whisper_api' && isWebSpeechListening.value) {
-                    if (averageLevel > vadThreshold.value) {
-                        if (!isRecording.value) {
-                            stopWebSpeechRecognition(true);
-                            startWhisperMediaRecorder();
-                        }
-                        if (vadSilenceTimerId !== null) clearTimeout(vadSilenceTimerId);
-                        vadSilenceTimerId = window.setTimeout(() => {
-                            if (isRecording.value) {
-                                stopWhisperMediaRecorder();
-                                if (isVoiceActivationMode.value && !isWebSpeechListening.value && permissionStatus.value === 'granted' && isMicrophoneActive.value) { // Check user's intent
-                                    startWebSpeechRecognition();
-                                }
+            if (isVoiceActivationMode.value && sttPreference.value === 'whisper_api' && isWebSpeechListening.value) {
+                if (averageLevel > vadThreshold.value) {
+                    if (!isRecording.value) {
+                        stopWebSpeechRecognition(true);
+                        startWhisperMediaRecorder();
+                    }
+                    if (vadSilenceTimerId !== null) clearTimeout(vadSilenceTimerId);
+                    vadSilenceTimerId = window.setTimeout(() => {
+                        if (isRecording.value) {
+                            stopWhisperMediaRecorder();
+                            if (isVoiceActivationMode.value && !isWebSpeechListening.value && permissionStatus.value === 'granted' && settings.audioInputMode === 'voice-activation') {
+                                startWebSpeechRecognition();
                             }
-                        }, vadSilenceTimeoutMs.value);
-                    }
+                        }
+                    }, vadSilenceTimeoutMs.value);
                 }
-                 if (vadCanvasRef.value && isVoiceActivationMode.value) { // Draw VAD if VAD mode is active
-                    drawVADVisualization(/* dataArrayVAD */); // Pass data if drawVAD needs it directly
-                }
+            }
+            if (vadCanvasRef.value && isVoiceActivationMode.value) {
+                drawVADVisualization();
+            }
+        }, 100);
+    };
+    const stopAudioLevelMonitoring = () => {
+        if (audioMonitoringInterval !== null) clearInterval(audioMonitoringInterval);
+        audioMonitoringInterval = null;
+        if (vadCanvasRef.value) {
+            const ctx = vadCanvasRef.value.getContext('2d');
+            if (ctx) ctx.clearRect(0, 0, vadCanvasRef.value.width, vadCanvasRef.value.height);
+        }
+    };
 
-            }, 100); // Monitor frequency
+    const initializeWebSpeech = (): boolean => {
+        const SpeechRecognitionAPI = window.SpeechRecognition || (window as any).webkitSpeechRecognition;
+        if (!SpeechRecognitionAPI) {
+            if (sttPreference.value === 'browser_webspeech_api') {
+                permissionMessage.value = 'Web Speech API is not supported by your browser.';
+                permissionStatus.value = 'error';
+                toast?.add({ type: 'error', title: 'Not Supported', message: permissionMessage.value });
+            }
+            return false;
+        }
+        if (recognition) return true;
+
+        recognition = new SpeechRecognitionAPI() as SpeechRecognition;
+        recognition.lang = settings.speechLanguage || navigator.language || 'en-US';
+
+        recognition.onstart = () => {
+            isWebSpeechListening.value = true;
+            if (isPttMode.value || (isVoiceActivationMode.value && sttPreference.value === 'browser_webspeech_api')) {
+                isRecording.value = true;
+                startRecordingTimer();
+            }
+            startAudioLevelMonitoring();
+            emit('processing-audio', true);
         };
-        const stopAudioLevelMonitoring = () => {
-            if (audioMonitoringInterval !== null) clearInterval(audioMonitoringInterval);
-            audioMonitoringInterval = null;
-            if (vadCanvasRef.value) {
-                const ctx = vadCanvasRef.value.getContext('2d');
-                if (ctx) ctx.clearRect(0, 0, vadCanvasRef.value.width, vadCanvasRef.value.height);
+
+        recognition.onresult = (event: Event) => {
+            const speechEvent = event as ISpeechRecognitionEvent;
+            let interim = '';
+            let finalPart = '';
+            for (let i = speechEvent.resultIndex; i < speechEvent.results.length; ++i) {
+                const transcript = speechEvent.results.item(i)[0].transcript;
+                if (speechEvent.results.item(i).isFinal) {
+                    finalPart += transcript + ' ';
+                } else {
+                    interim += transcript;
+                }
+            }
+            if (isPttMode.value || (isVoiceActivationMode.value && sttPreference.value === 'browser_webspeech_api')) {
+                interimTranscriptWebSpeech.value = finalTranscriptWebSpeech.value + interim;
+                if (finalPart.trim()) {
+                    finalTranscriptWebSpeech.value += finalPart.trim() + ' ';
+                    interimTranscriptWebSpeech.value = finalTranscriptWebSpeech.value;
+                }
+            } else if (isContinuousMode.value && sttPreference.value === 'browser_webspeech_api') {
+                liveTranscriptWebSpeech.value = (liveTranscriptWebSpeech.value + interim).trim();
+                if (finalPart.trim()) {
+                    liveTranscriptWebSpeech.value = (liveTranscriptWebSpeech.value.slice(0, -interim.length) + finalPart.trim()).trim();
+                    pendingTranscriptWebSpeech.value = (pendingTranscriptWebSpeech.value + ' ' + finalPart.trim()).trim();
+                    resetPauseDetectionWebSpeech();
+                }
             }
         };
 
-        const initializeWebSpeech = (): boolean => {
-            const SpeechRecognitionAPI = window.SpeechRecognition || (window as any).webkitSpeechRecognition;
-            if (!SpeechRecognitionAPI) {
-                if (sttPreference.value === 'browser_webspeech_api') {
-                    permissionMessage.value = 'Web Speech API is not supported by your browser.';
-                    permissionStatus.value = 'error';
-                    toast?.add({ type: 'error', title: 'Not Supported', message: permissionMessage.value });
-                }
-                return false;
+        recognition.onerror = (event: Event) => {
+            const errorEvent = event as ISpeechRecognitionErrorEvent;
+            console.error('WebSpeech Error:', errorEvent.error, errorEvent.message);
+            isWebSpeechListening.value = false;
+            isRecording.value = false;
+            clearRecordingTimer();
+            stopAudioLevelMonitoring();
+            emit('processing-audio', false);
+
+            const errCode = errorEvent.error;
+            if (errCode === 'not-allowed' || errCode === 'service-not-allowed') {
+                permissionStatus.value = 'denied'; permissionMessage.value = 'Microphone access denied by browser/OS.';
+            } else if (errCode === 'no-speech') {
+                permissionMessage.value = 'No speech detected by browser.';
+                if (isPttMode.value) toast?.add({ type: 'info', title: 'No Speech', message: permissionMessage.value, duration: 2000 });
+            } else if (errCode === 'network') {
+                permissionMessage.value = 'Network error for browser speech service.';
+            } else if (errCode === 'aborted') {
+                permissionMessage.value = 'Browser speech input aborted.';
+            } else {
+                permissionStatus.value = 'error'; permissionMessage.value = `Browser speech error: ${errCode}.`;
             }
-            if (recognition) return true;
 
-            recognition = new SpeechRecognitionAPI() as SpeechRecognition; // Cast to ensure all properties are available
+            if (errCode !== 'no-speech' && errCode !== 'aborted' && errCode !== 'not-allowed' && errCode !== 'service-not-allowed') {
+                toast?.add({ type: 'error', title: 'Browser Speech Error', message: permissionMessage.value });
+            }
 
-            recognition.lang = settings.speechLanguage || navigator.language || 'en-US';
-
-            recognition.onstart = () => {
-                isWebSpeechListening.value = true;
-                if (isPttMode.value || (isVoiceActivationMode.value && sttPreference.value === 'browser_webspeech_api')) {
-                    isRecording.value = true;
-                    startRecordingTimer();
-                }
-                startAudioLevelMonitoring();
-                emit('processing-audio', true);
-            };
-
-            recognition.onresult = (event: Event) => {
-                const speechEvent = event as ISpeechRecognitionEvent; // Cast to our more specific type
-                let interim = '';
-                let finalPart = '';
-                for (let i = speechEvent.resultIndex; i < speechEvent.results.length; ++i) {
-                    const transcript = speechEvent.results.item(i)[0].transcript;
-                    if (speechEvent.results.item(i).isFinal) {
-                        finalPart += transcript + ' ';
-                    } else {
-                        interim += transcript;
+            if ((isContinuousMode.value || isVoiceActivationMode.value) &&
+                (errCode !== 'not-allowed' && errCode !== 'service-not-allowed') &&
+                 permissionStatus.value === 'granted' && settings.audioInputMode !== 'push-to-talk' /* was isMicrophoneActive.value */) {
+                setTimeout(() => {
+                    if ((isContinuousMode.value || isVoiceActivationMode.value) && !isWebSpeechListening.value && settings.audioInputMode !== 'push-to-talk' /* was isMicrophoneActive.value */) {
+                        startWebSpeechRecognition();
                     }
-                }
-                // Use finalTranscriptWebSpeech for PTT and VAD accumulation
-                if (isPttMode.value || (isVoiceActivationMode.value && sttPreference.value === 'browser_webspeech_api')) {
-                    interimTranscriptWebSpeech.value = finalTranscriptWebSpeech.value + interim;
-                    if (finalPart.trim()) {
-                        finalTranscriptWebSpeech.value += finalPart.trim() + ' ';
-                        interimTranscriptWebSpeech.value = finalTranscriptWebSpeech.value; // Sync interim display
-                    }
-                } else if (isContinuousMode.value && sttPreference.value === 'browser_webspeech_api') {
-                    liveTranscriptWebSpeech.value = (liveTranscriptWebSpeech.value + interim).trim(); // Show interim as it comes for continuous
-                    if (finalPart.trim()) {
-                        liveTranscriptWebSpeech.value = (liveTranscriptWebSpeech.value.slice(0, -interim.length) + finalPart.trim()).trim(); // Replace interim with final
-                        pendingTranscriptWebSpeech.value = (pendingTranscriptWebSpeech.value + ' ' + finalPart.trim()).trim();
-                        resetPauseDetectionWebSpeech();
-                    }
-                }
-            };
+                }, 1000);
+            }
+        };
 
-            recognition.onerror = (event: Event) => {
-                const errorEvent = event as ISpeechRecognitionErrorEvent;
-                console.error('WebSpeech Error:', errorEvent.error, errorEvent.message);
-                isWebSpeechListening.value = false;
+        recognition.onend = () => {
+            isWebSpeechListening.value = false;
+            stopAudioLevelMonitoring();
+            emit('processing-audio', false);
+
+            if (isPttMode.value && sttPreference.value === 'browser_webspeech_api') {
+                if (finalTranscriptWebSpeech.value.trim()) {
+                    sendTranscription(finalTranscriptWebSpeech.value.trim());
+                }
                 isRecording.value = false;
                 clearRecordingTimer();
-                stopAudioLevelMonitoring();
-                emit('processing-audio', false);
-
-                const errCode = errorEvent.error;
-                if (errCode === 'not-allowed' || errCode === 'service-not-allowed') {
-                    permissionStatus.value = 'denied'; permissionMessage.value = 'Microphone access denied by browser/OS.';
-                } else if (errCode === 'no-speech') {
-                    permissionMessage.value = 'No speech detected by browser.';
-                    if (isPttMode.value) toast?.add({ type: 'info', title: 'No Speech', message: permissionMessage.value, duration: 2000 });
-                } else if (errCode === 'network') {
-                    permissionMessage.value = 'Network error for browser speech service.';
-                } else if (errCode === 'aborted') {
-                    permissionMessage.value = 'Browser speech input aborted.';
-                } else {
-                    permissionStatus.value = 'error'; permissionMessage.value = `Browser speech error: ${errCode}.`;
+                cleanUpAfterWebSpeechTranscription();
+            } else if (isVoiceActivationMode.value && sttPreference.value === 'browser_webspeech_api') {
+                if (finalTranscriptWebSpeech.value.trim()) {
+                    sendTranscription(finalTranscriptWebSpeech.value.trim());
                 }
-
-                if (errCode !== 'no-speech' && errCode !== 'aborted' && errCode !== 'not-allowed' && errCode !== 'service-not-allowed') {
-                    toast?.add({ type: 'error', title: 'Browser Speech Error', message: permissionMessage.value });
-                }
-
-                if ((isContinuousMode.value || isVoiceActivationMode.value) &&
-                    (errCode !== 'not-allowed' && errCode !== 'service-not-allowed') &&
-                     permissionStatus.value === 'granted' && isMicrophoneActive.value) {
-                    setTimeout(() => {
-                        if ((isContinuousMode.value || isVoiceActivationMode.value) && !isWebSpeechListening.value && isMicrophoneActive.value) {
-                           startWebSpeechRecognition();
-                        }
-                    }, 1000);
-                }
-            };
-
-            recognition.onend = () => {
-                isWebSpeechListening.value = false;
-                stopAudioLevelMonitoring();
-                emit('processing-audio', false);
-
-                if (isPttMode.value && sttPreference.value === 'browser_webspeech_api') {
-                    if (finalTranscriptWebSpeech.value.trim()) {
-                        sendTranscription(finalTranscriptWebSpeech.value.trim());
-                    }
-                    isRecording.value = false; // Explicitly stop PTT recording state
-                    clearRecordingTimer();
-                    cleanUpAfterWebSpeechTranscription();
-                } else if (isVoiceActivationMode.value && sttPreference.value === 'browser_webspeech_api') {
-                    if (finalTranscriptWebSpeech.value.trim()) { // VAD also uses finalTranscriptWebSpeech
-                        sendTranscription(finalTranscriptWebSpeech.value.trim());
-                    }
-                    // For VAD, don't set isRecording to false here unless explicitly stopped by user
-                    // It might restart if conditions are met
-                     if (!isMicrophoneActive.value) { // If user toggled off mic button
-                        isRecording.value = false;
-                        clearRecordingTimer();
-                     }
-                     cleanUpAfterWebSpeechTranscription(); // Still cleanup transcript vars
-                } else if (isContinuousMode.value && sttPreference.value === 'browser_webspeech_api') {
-                     if (!isMicrophoneActive.value) { // User toggled off mic button
-                        isRecording.value = false; // This flag is more for PTT/VAD direct capture
-                        clearRecordingTimer();
-                        if (pendingTranscriptWebSpeech.value.trim() && continuousModeAutoSend.value) {
-                            sendPendingWebSpeechTranscription();
-                        }
-                     }
-                } else {
+                if (settings.audioInputMode !== 'voice-activation') { // If user switched mode while it was processing
                     isRecording.value = false;
                     clearRecordingTimer();
                 }
-            };
-
-            if (sttPreference.value === 'whisper_api' && isVoiceActivationMode.value) {
-                recognition.continuous = true;
-                recognition.interimResults = false;
+                cleanUpAfterWebSpeechTranscription();
+            } else if (isContinuousMode.value && sttPreference.value === 'browser_webspeech_api') {
+                if (settings.audioInputMode !== 'continuous') { // User switched mode
+                    isRecording.value = false;
+                    clearRecordingTimer();
+                    if (pendingTranscriptWebSpeech.value.trim() && continuousModeAutoSend.value) {
+                        sendPendingWebSpeechTranscription();
+                    }
+                }
             } else {
-                recognition.continuous = isContinuousMode.value;
-                recognition.interimResults = true;
+                isRecording.value = false;
+                clearRecordingTimer();
             }
-            return true;
         };
 
-        const startWebSpeechRecognition = async (): Promise<boolean> => {
-            if (!recognition && !initializeWebSpeech()) return false;
-            if (isWebSpeechListening.value) return true;
+        if (sttPreference.value === 'whisper_api' && isVoiceActivationMode.value) {
+            recognition.continuous = true;
+            recognition.interimResults = false;
+        } else {
+            recognition.continuous = isContinuousMode.value;
+            recognition.interimResults = true;
+        }
+        return true;
+    };
 
-            if (permissionStatus.value !== 'granted') {
-                const stream = await requestMicrophonePermissionsAndGetStream();
-                if (!stream) return false;
-            }
-             if (!activeStream && permissionStatus.value === 'granted') {
-                 const stream = await requestMicrophonePermissionsAndGetStream();
-                if (!stream) return false;
-            }
-            if (!recognition) return false; // Guard against null recognition
+    const startWebSpeechRecognition = async (): Promise<boolean> => {
+        if (!recognition && !initializeWebSpeech()) return false;
+        if (isWebSpeechListening.value) return true;
 
-            finalTranscriptWebSpeech.value = '';
-            interimTranscriptWebSpeech.value = '';
-            // liveTranscriptWebSpeech & pendingTranscriptWebSpeech are managed by onresult for continuous
+        if (permissionStatus.value !== 'granted') {
+            const stream = await requestMicrophonePermissionsAndGetStream();
+            if (!stream) return false;
+        }
+        if (!activeStream && permissionStatus.value === 'granted') {
+            const stream = await requestMicrophonePermissionsAndGetStream();
+            if (!stream) return false;
+        }
+        if (!recognition) return false;
 
-            recognition.lang = settings.speechLanguage || navigator.language || 'en-US';
-            if (sttPreference.value === 'whisper_api' && isVoiceActivationMode.value) {
-                recognition.continuous = true; recognition.interimResults = false;
-            } else {
-                recognition.continuous = isContinuousMode.value; recognition.interimResults = true;
-            }
+        finalTranscriptWebSpeech.value = '';
+        interimTranscriptWebSpeech.value = '';
 
-            try {
-                recognition.start();
+        recognition.lang = settings.speechLanguage || navigator.language || 'en-US';
+        if (sttPreference.value === 'whisper_api' && isVoiceActivationMode.value) {
+            recognition.continuous = true; recognition.interimResults = false;
+        } else {
+            recognition.continuous = isContinuousMode.value; recognition.interimResults = true;
+        }
+
+        try {
+            recognition.start();
+            return true;
+        } catch (e: any) {
+            console.error("Error starting WebSpeech:", e);
+            permissionMessage.value = `Could not start speech: ${e.message || e.name}`;
+            if (e.name === 'InvalidStateError' && isWebSpeechListening.value) {
                 return true;
-            } catch (e: any) {
-                console.error("Error starting WebSpeech:", e);
-                permissionMessage.value = `Could not start speech: ${e.message || e.name}`;
-                if (e.name === 'InvalidStateError' && isWebSpeechListening.value) {
-                    // It's already listening, this is fine.
-                    return true;
-                }
-                permissionStatus.value = 'error';
-                isWebSpeechListening.value = false;
-                return false;
             }
-        };
+            permissionStatus.value = 'error';
+            isWebSpeechListening.value = false;
+            return false;
+        }
+    };
 
-        const stopWebSpeechRecognition = (abort = false) => {
-            if (recognition && isWebSpeechListening.value) {
-                try {
-                    if (abort) recognition.abort(); else recognition.stop();
-                } catch (e) {
-                    console.warn("Error stopping/aborting WebSpeech:", e);
-                    isWebSpeechListening.value = false; // Force state update
-                }
-            } else {
-              isWebSpeechListening.value = false;
-            }
-        };
-
-        const startWhisperMediaRecorder = async (): Promise<boolean> => {
-            if (isRecording.value) return true; // Already recording (for Whisper)
-            if ((!activeStream || !activeStream.active) && !(await requestMicrophonePermissionsAndGetStream())) return false;
-            if (!activeStream) {
-                toast?.add({type: 'error', title: 'Stream Error', message: 'Microphone stream not available for Whisper.'});
-                return false;
-            }
-             if (!audioContext || !analyser) {
-                audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-                analyser = audioContext.createAnalyser();
-                microphoneSourceNode = audioContext.createMediaStreamSource(activeStream);
-                analyser.fftSize = 256; analyser.smoothingTimeConstant = 0.6;
-                microphoneSourceNode.connect(analyser);
-            }
-
-            audioChunks = [];
-            const options = { mimeType: 'audio/webm;codecs=opus' };
+    const stopWebSpeechRecognition = (abort = false) => {
+        if (recognition && isWebSpeechListening.value) {
             try {
-                mediaRecorder = MediaRecorder.isTypeSupported(options.mimeType)
-                    ? new MediaRecorder(activeStream, options)
-                    : new MediaRecorder(activeStream);
+                if (abort) recognition.abort(); else recognition.stop();
             } catch (e) {
-                console.error("Failed to initialize MediaRecorder:", e);
-                toast?.add({ type: 'error', title: 'Recording Error', message: 'Failed to initialize audio recorder for Whisper.' });
-                return false;
+                console.warn("Error stopping/aborting WebSpeech:", e);
+                isWebSpeechListening.value = false;
+            }
+        } else {
+           isWebSpeechListening.value = false;
+        }
+    };
+
+    const startWhisperMediaRecorder = async (): Promise<boolean> => {
+        if (isRecording.value) return true;
+        if ((!activeStream || !activeStream.active) && !(await requestMicrophonePermissionsAndGetStream())) return false;
+        if (!activeStream) {
+            toast?.add({type: 'error', title: 'Stream Error', message: 'Microphone stream not available for Whisper.'});
+            return false;
+        }
+        if (!audioContext || !analyser) { // Re-init if necessary
+            audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+            analyser = audioContext.createAnalyser();
+            microphoneSourceNode = audioContext.createMediaStreamSource(activeStream);
+            analyser.fftSize = 256; analyser.smoothingTimeConstant = 0.6;
+            microphoneSourceNode.connect(analyser);
+        }
+
+        audioChunks = [];
+        const options = { mimeType: 'audio/webm;codecs=opus' };
+        try {
+            mediaRecorder = MediaRecorder.isTypeSupported(options.mimeType)
+                ? new MediaRecorder(activeStream, options)
+                : new MediaRecorder(activeStream);
+        } catch (e) {
+            console.error("Failed to initialize MediaRecorder:", e);
+            toast?.add({ type: 'error', title: 'Recording Error', message: 'Failed to initialize audio recorder for Whisper.' });
+            return false;
+        }
+
+        mediaRecorder.ondataavailable = (event) => { if (event.data.size > 0) audioChunks.push(event.data); };
+        mediaRecorder.onstop = async () => {
+            emit('processing-audio', false);
+            const audioBlob = new Blob(audioChunks, { type: mediaRecorder?.mimeType || 'audio/webm' });
+            audioChunks = [];
+            isRecording.value = false;
+            clearRecordingTimer();
+
+            if (audioBlob.size > 1000) {
+                emit('processing-audio', true);
+                await transcribeWithWhisper(audioBlob);
+                emit('processing-audio', false);
+            } else if (settings.audioInputMode === 'push-to-talk' || (settings.audioInputMode === 'voice-activation' && !isWebSpeechListening.value)) {
+                toast?.add({ type: 'warning', title: 'No Meaningful Audio', message: 'Little audio recorded for Whisper.', duration: 2000 });
             }
 
-            mediaRecorder.ondataavailable = (event) => { if (event.data.size > 0) audioChunks.push(event.data); };
-            mediaRecorder.onstop = async () => {
-                emit('processing-audio', false);
-                const audioBlob = new Blob(audioChunks, { type: mediaRecorder?.mimeType || 'audio/webm' });
-                audioChunks = [];
-                isRecording.value = false; // This is key for Whisper's recording state
-                clearRecordingTimer();
-
-                if (audioBlob.size > 1000) {
-                    emit('processing-audio', true); // Processing the API call now
-                    await transcribeWithWhisper(audioBlob);
-                    emit('processing-audio', false); // Finished API call
-                } else if (isPttMode.value || (isVoiceActivationMode.value && !isWebSpeechListening.value)) {
-                    toast?.add({ type: 'warning', title: 'No Meaningful Audio', message: 'Little audio recorded for Whisper.', duration: 2000 });
-                }
-
-                if (isVoiceActivationMode.value && sttPreference.value === 'whisper_api' &&
-                    !isWebSpeechListening.value && permissionStatus.value === 'granted' && settings.audioInputMode === 'voice-activation' /*Check intended mode*/) {
-                    startWebSpeechRecognition(); // Restart VAD listener
-                } else if (!isMicrophoneActive.value) { // Mic button toggled off
-                     stopWebSpeechRecognition(true);
-                }
-            };
-            mediaRecorder.onerror = (event: Event) => { /* ... (same) ... */
-                console.error('MediaRecorder Error:', event);
-                toast?.add({ type: 'error', title: 'Recording Error', message: 'An error occurred with the audio recorder.' });
-                isRecording.value = false; clearRecordingTimer(); emit('processing-audio', false);
-            };
-
-            mediaRecorder.start( (isContinuousMode.value || isVoiceActivationMode.value) && sttPreference.value === 'whisper_api' ? 5000 : undefined ); // Chunk Whisper for Cont/VAD
-            isRecording.value = true; // Whisper is now recording
-            startRecordingTimer();
-            startAudioLevelMonitoring();
-            emit('processing-audio', true);
-            return true;
+            if (isVoiceActivationMode.value && sttPreference.value === 'whisper_api' &&
+                !isWebSpeechListening.value && permissionStatus.value === 'granted' && settings.audioInputMode === 'voice-activation') {
+                startWebSpeechRecognition();
+            } else if (settings.audioInputMode !== 'push-to-talk' && settings.audioInputMode !== 'voice-activation' && settings.audioInputMode !== 'continuous') { // Mic button toggled off
+                stopWebSpeechRecognition(true);
+            }
+        };
+        mediaRecorder.onerror = (event: Event) => {
+            console.error('MediaRecorder Error:', event);
+            toast?.add({ type: 'error', title: 'Recording Error', message: 'An error occurred with the audio recorder.' });
+            isRecording.value = false; clearRecordingTimer(); emit('processing-audio', false);
         };
 
-        const stopWhisperMediaRecorder = () => {
-            if (mediaRecorder && mediaRecorder.state === 'recording') {
-                mediaRecorder.stop(); // onstop will set isRecording = false
+        mediaRecorder.start( (isContinuousMode.value || isVoiceActivationMode.value) && sttPreference.value === 'whisper_api' ? 5000 : undefined );
+        isRecording.value = true;
+        startRecordingTimer();
+        startAudioLevelMonitoring();
+        emit('processing-audio', true);
+        return true;
+    };
+
+    const stopWhisperMediaRecorder = () => {
+        if (mediaRecorder && mediaRecorder.state === 'recording') {
+            mediaRecorder.stop();
+        } else {
+            isRecording.value = false;
+            clearRecordingTimer();
+            emit('processing-audio', false);
+        }
+    };
+
+    const transcribeWithWhisper = async (audioBlob: Blob) => {
+        if (props.isProcessing && !isRecording.value) {
+            toast?.add({ type: 'info', title: 'Assistant Busy', message: 'Please wait for the current response.', duration: 2000 });
+            return;
+        }
+        try {
+            const formData = new FormData();
+            formData.append('audio', audioBlob, `audio-${Date.now()}.webm`);
+            if (settings.speechLanguage) formData.append('language', settings.speechLanguage.substring(0, 2));
+
+            const response = (await speechAPI.transcribe(formData)) as AxiosResponse<TranscriptionResponseFE & { message?: string }>;
+            if (response.data.transcription) {
+                sendTranscription(response.data.transcription);
+            } else { throw new Error(response.data.message || 'Empty transcription returned from API.'); }
+        } catch (error: any) {
+            console.error("Whisper API Error:", error);
+            toast?.add({ type: 'error', title: 'Transcription Failed', message: error.response?.data?.message || error.message || 'Whisper API error.'});
+        }
+    };
+
+    const startAudioCapture = async () => {
+        if (props.isProcessing || isMicrophoneActive.value) return;
+        if (permissionStatus.value !== 'granted' && !(await requestMicrophonePermissionsAndGetStream())) return;
+
+        if (sttPreference.value === 'browser_webspeech_api') {
+            await startWebSpeechRecognition();
+        } else if (sttPreference.value === 'whisper_api') {
+            if (isContinuousMode.value || isVoiceActivationMode.value) {
+                await startWebSpeechRecognition(); // VAD listener
             } else {
-                isRecording.value = false; // Ensure state is false
-                clearRecordingTimer();
-                emit('processing-audio', false);
+                await startWhisperMediaRecorder();
             }
-        };
+        }
+    };
 
-        const transcribeWithWhisper = async (audioBlob: Blob) => {
-            // Check props.isProcessing if it's a global lock; otherwise, local lock is isRecording
-            // For now, assume props.isProcessing is the global lock
-            if (props.isProcessing && !isRecording.value) {
-                toast?.add({ type: 'info', title: 'Assistant Busy', message: 'Please wait for the current response.', duration: 2000 });
+    const stopAudioCapture = (abortWebSpeechIfContinuousOrVAD = false) => {
+        if (sttPreference.value === 'browser_webspeech_api') {
+            stopWebSpeechRecognition( (isContinuousMode.value || isVoiceActivationMode.value) ? abortWebSpeechIfContinuousOrVAD : false );
+        } else {
+            if (isRecording.value) stopWhisperMediaRecorder();
+            if (isWebSpeechListening.value) stopWebSpeechRecognition(true);
+        }
+        clearRecordingTimer();
+        clearPauseTimerWebSpeech();
+        pauseDetectedWebSpeech.value = false;
+        stopAudioLevelMonitoring();
+
+        if (isContinuousMode.value && sttPreference.value === 'browser_webspeech_api' && pendingTranscriptWebSpeech.value.trim() && continuousModeAutoSend.value) {
+            sendPendingWebSpeechTranscription();
+        }
+    };
+
+    const toggleRecording = async () => {
+        if (props.isProcessing) return;
+        if (isMicrophoneActive.value) {
+            stopAudioCapture(true);
+        } else {
+            if (permissionStatus.value !== 'granted' && !(await requestMicrophonePermissionsAndGetStream())) {
+                toast?.add({ type: 'error', title: 'Mic Access Denied', message: permissionMessage.value || 'Could not access microphone.' });
                 return;
             }
-            try {
-                const formData = new FormData();
-                formData.append('audio', audioBlob, `audio-${Date.now()}.webm`);
-                if (settings.speechLanguage) formData.append('language', settings.speechLanguage.substring(0, 2));
+            await startAudioCapture();
+        }
+    };
 
-                const response = (await speechAPI.transcribe(formData)) as AxiosResponse<TranscriptionResponseFE & { message?: string }>;
-                if (response.data.transcription) {
-                    sendTranscription(response.data.transcription);
-                } else { throw new Error(response.data.message || 'Empty transcription returned from API.'); }
-            } catch (error: any) {
-                console.error("Whisper API Error:", error);
-                toast?.add({ type: 'error', title: 'Transcription Failed', message: error.response?.data?.message || error.message || 'Whisper API error.'});
-            }
-        };
+    const handleTextSubmit = () => {
+        if (textInput.value.trim() && !isMicrophoneActive.value && !props.isProcessing) {
+            sendTranscription(textInput.value.trim());
+            textInput.value = '';
+            nextTick(() => handleTextareaInput());
+        }
+    };
 
-        const startAudioCapture = async () => {
-            if (props.isProcessing || isMicrophoneActive.value) return;
-            if (permissionStatus.value !== 'granted' && !(await requestMicrophonePermissionsAndGetStream())) return;
+    const sendTranscription = (text: string) => {
+        if (text.trim()) {
+            emit('transcription', text.trim());
+            const newHistoryItem: TranscriptionHistoryItem = { id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, text: text.trim(), timestamp: Date.now(), sent: true };
+            const updatedHistory = [newHistoryItem, ...transcriptionHistory.value];
+            transcriptionHistory.value = updatedHistory.slice(0, 15);
+        }
+    };
+    const resendTranscription = (item: TranscriptionHistoryItem) => { sendTranscription(item.text); /* Update item.sent or re-add? For now, just resend */ };
 
-            if (sttPreference.value === 'browser_webspeech_api') {
-                await startWebSpeechRecognition();
-            } else if (sttPreference.value === 'whisper_api') {
-                if (isContinuousMode.value || isVoiceActivationMode.value) {
-                    await startWebSpeechRecognition(); // For VAD monitoring via AnalyserNode
-                } else { // PTT for Whisper
-                    await startWhisperMediaRecorder();
-                }
-            }
-        };
+    const sendPendingWebSpeechTranscription = () => {
+        if (pendingTranscriptWebSpeech.value.trim()) sendTranscription(pendingTranscriptWebSpeech.value.trim());
+        clearPendingWebSpeechTranscription();
+    };
+    const clearPendingWebSpeechTranscription = () => {
+        pendingTranscriptWebSpeech.value = ''; liveTranscriptWebSpeech.value = ''; interimTranscriptWebSpeech.value = '';
+        clearPauseTimerWebSpeech(); pauseDetectedWebSpeech.value = false; pauseCountdownWebSpeech.value = 0;
+    };
+    const showEditModal = ref(false);
+    const editingTranscription = ref('');
+    const editPendingTranscription = () => { if (sttPreference.value === 'browser_webspeech_api' && isContinuousMode.value && pendingTranscriptWebSpeech.value.trim()){ editingTranscription.value = pendingTranscriptWebSpeech.value; showEditModal.value = true; nextTick(() => editModalTextareaRef.value?.focus());}};
+    const saveEdit = () => { if(editingTranscription.value.trim()){ pendingTranscriptWebSpeech.value = editingTranscription.value.trim(); sendPendingWebSpeechTranscription();} showEditModal.value = false; editingTranscription.value = '';};
+    const cancelEdit = () => { showEditModal.value = false; editingTranscription.value = '';};
 
-        const stopAudioCapture = (abortWebSpeechIfContinuousOrVAD = false) => {
-            if (sttPreference.value === 'browser_webspeech_api') {
-                stopWebSpeechRecognition( (isContinuousMode.value || isVoiceActivationMode.value) ? abortWebSpeechIfContinuousOrVAD : false );
-            } else { // Whisper API
-                if (isRecording.value) stopWhisperMediaRecorder();
-                if (isWebSpeechListening.value) stopWebSpeechRecognition(true); // Always abort VAD listener
-            }
-            clearRecordingTimer();
-            clearPauseTimerWebSpeech();
-            pauseDetectedWebSpeech.value = false;
-            stopAudioLevelMonitoring();
+    const resetPauseDetectionWebSpeech = () => {
+        clearPauseTimerWebSpeech();
+        pauseDetectedWebSpeech.value = false; pauseCountdownWebSpeech.value = 0;
 
-            if (isContinuousMode.value && sttPreference.value === 'browser_webspeech_api' && pendingTranscriptWebSpeech.value.trim() && continuousModeAutoSend.value) {
-                sendPendingWebSpeechTranscription();
-            }
-        };
-
-        const toggleRecording = async () => {
-            if (props.isProcessing) return;
-            if (isMicrophoneActive.value) {
-                stopAudioCapture(true);
-            } else {
-                if (permissionStatus.value !== 'granted' && !(await requestMicrophonePermissionsAndGetStream())) {
-                   toast?.add({ type: 'error', title: 'Mic Access Denied', message: permissionMessage.value || 'Could not access microphone.' });
-                   return;
-                }
-                await startAudioCapture();
-            }
-        };
-
-        const handleTextSubmit = () => {
-            if (textInput.value.trim() && !isMicrophoneActive.value && !props.isProcessing) {
-                sendTranscription(textInput.value.trim());
-                textInput.value = '';
-                nextTick(() => handleTextareaInput());
-            }
-        };
-
-        const sendTranscription = (text: string) => {
-            if (text.trim()) {
-                emit('transcription', text.trim());
-                const newHistoryItem: TranscriptionHistoryItem = { /* ... */ id: `${Date.now()}-${Math.random()}`, text: text.trim(), timestamp: Date.now(), sent: true };
-                const updatedHistory = [newHistoryItem, ...transcriptionHistory.value];
-                transcriptionHistory.value = updatedHistory.slice(0, 15); // Keep more history
-                // Removed toast for sent transcription, can be added back if desired
-            }
-        };
-        const resendTranscription = (item: TranscriptionHistoryItem) => { /* ... */ sendTranscription(item.text); /* ... update history ... */ };
-
-        const sendPendingWebSpeechTranscription = () => {
-            if (pendingTranscriptWebSpeech.value.trim()) sendTranscription(pendingTranscriptWebSpeech.value.trim());
-            clearPendingWebSpeechTranscription();
-        };
-        const clearPendingWebSpeechTranscription = () => {
-            pendingTranscriptWebSpeech.value = ''; liveTranscriptWebSpeech.value = ''; interimTranscriptWebSpeech.value = '';
-            clearPauseTimerWebSpeech(); pauseDetectedWebSpeech.value = false; pauseCountdownWebSpeech.value = 0;
-        };
-        const showEditModal = ref(false);
-        const editingTranscription = ref('');
-        const editPendingTranscription = () => { /* ... */ if (sttPreference.value === 'browser_webspeech_api' && isContinuousMode.value && pendingTranscriptWebSpeech.value.trim()){ editingTranscription.value = pendingTranscriptWebSpeech.value; showEditModal.value = true; nextTick(() => editModalTextareaRef.value?.focus());}};
-        const saveEdit = () => { /* ... */ if(editingTranscription.value.trim()){ pendingTranscriptWebSpeech.value = editingTranscription.value.trim(); sendPendingWebSpeechTranscription();} showEditModal.value = false; editingTranscription.value = '';};
-        const cancelEdit = () => { /* ... */ showEditModal.value = false; editingTranscription.value = '';};
-
-        const resetPauseDetectionWebSpeech = () => { /* ... (same logic, check conditions carefully) ... */
-            clearPauseTimerWebSpeech();
-            pauseDetectedWebSpeech.value = false; pauseCountdownWebSpeech.value = 0;
-
-            if (isContinuousMode.value && sttPreference.value === 'browser_webspeech_api' &&
-                pendingTranscriptWebSpeech.value.trim() &&
-                isWebSpeechListening.value && continuousModeAutoSend.value) {
-                pauseTimerIdWebSpeech = window.setTimeout(() => {
-                    if (pendingTranscriptWebSpeech.value.trim() && isWebSpeechListening.value &&
-                        continuousModeAutoSend.value && isContinuousMode.value) {
-                        pauseDetectedWebSpeech.value = true;
-                        pauseCountdownWebSpeech.value = continuousModePauseTimeoutMs.value;
-                        const countdownInterval = setInterval(() => {
-                            if (!pauseDetectedWebSpeech.value || !isContinuousMode.value || !isWebSpeechListening.value) {
-                                clearInterval(countdownInterval); pauseDetectedWebSpeech.value = false; return;
-                            }
-                            pauseCountdownWebSpeech.value -= 100;
-                            if (pauseCountdownWebSpeech.value <= 0) {
-                                clearInterval(countdownInterval);
-                                if (pauseDetectedWebSpeech.value && isContinuousMode.value && pendingTranscriptWebSpeech.value.trim()) {
-                                    sendPendingWebSpeechTranscription();
-                                }
-                                pauseDetectedWebSpeech.value = false;
-                            }
-                        }, 100);
-                    }
-                }, 1000); // Increased delay before considering it a pause
-            }
-        };
-        const startRecordingTimer = () => { /* ... */ clearRecordingTimer(); recordingSeconds.value = 0; recordingTimerId = window.setInterval(()=>{ recordingSeconds.value += 0.1; if((isPttMode.value || (isVoiceActivationMode.value && isRecording.value)) && recordingSeconds.value >= 60){ toast?.add({type:'info', title:'Recording Limit', message:'Max recording (60s) reached.'}); stopAudioCapture(sttPreference.value === 'browser_webspeech_api'); }}, 100);};
-        const clearRecordingTimer = () => { /* ... */ if(recordingTimerId !== null) clearInterval(recordingTimerId); recordingTimerId = null; recordingSeconds.value = 0;};
-        const clearPauseTimerWebSpeech = () => { /* ... */ if(pauseTimerIdWebSpeech !== null) clearTimeout(pauseTimerIdWebSpeech); pauseTimerIdWebSpeech = null;};
-        const cleanUpAfterWebSpeechTranscription = () => { /* ... */ interimTranscriptWebSpeech.value=''; finalTranscriptWebSpeech.value=''; liveTranscriptWebSpeech.value=''; clearRecordingTimer();};
-
-        const stopAllAudioProcessing = (abortWebSpeech = true) => { /* ... (more robust cleanup) ... */
-            if (recognition) { try { if (isWebSpeechListening.value) { if (abortWebSpeech) recognition.abort(); else recognition.stop(); } } catch (e) { console.warn('Err stopAll/WebSpeech:', e); } }
-            isWebSpeechListening.value = false;
-            if (mediaRecorder && mediaRecorder.state === 'recording') { try { mediaRecorder.stop(); } catch (e) { console.warn('Err stopAll/MediaRec:', e); } }
-            isRecording.value = false; // Ensure both recording flags are reset
-            if (activeStream) { activeStream.getTracks().forEach(track => track.stop()); activeStream = null; }
-            if (audioContext && audioContext.state !== 'closed') { audioContext.close().catch(e=>console.warn('Err stopAll/AudioCtx:',e)); audioContext = null; }
-            microphoneSourceNode = null; analyser = null;
-            stopAudioLevelMonitoring(); cleanUpAfterWebSpeechTranscription();
-            clearPauseTimerWebSpeech(); if (vadSilenceTimerId !== null) clearTimeout(vadSilenceTimerId); vadSilenceTimerId = null;
-            pauseDetectedWebSpeech.value = false; pauseCountdownWebSpeech.value = 0;
-            emit('processing-audio', false);
-        };
-
-        onMounted(async () => {
-            document.addEventListener('click', handleClickOutsideAudioModeDropdown, true);
-            if (typeof window !== 'undefined') initializeWebSpeech();
-
-            if (navigator.permissions) {
-                try {
-                    const perm = await navigator.permissions.query({ name: 'microphone' as PermissionName });
-                    permissionStatus.value = perm.state; emit('permission-update', perm.state);
-                    if (perm.state === 'granted') {
-                        permissionMessage.value = '';
-                        if ((settings.audioInputMode === 'continuous' || settings.audioInputMode === 'voice-activation') && !isMicrophoneActive.value) {
-                           await startAudioCapture();
+        if (isContinuousMode.value && sttPreference.value === 'browser_webspeech_api' &&
+            pendingTranscriptWebSpeech.value.trim() &&
+            isWebSpeechListening.value && continuousModeAutoSend.value) {
+            pauseTimerIdWebSpeech = window.setTimeout(() => {
+                if (pendingTranscriptWebSpeech.value.trim() && isWebSpeechListening.value &&
+                    continuousModeAutoSend.value && isContinuousMode.value) {
+                    pauseDetectedWebSpeech.value = true;
+                    pauseCountdownWebSpeech.value = continuousModePauseTimeoutMs.value;
+                    const countdownInterval = setInterval(() => {
+                        if (!pauseDetectedWebSpeech.value || !isContinuousMode.value || !isWebSpeechListening.value) {
+                            clearInterval(countdownInterval); pauseDetectedWebSpeech.value = false; return;
                         }
-                    } else if (perm.state === 'prompt') permissionMessage.value = 'Click mic icon for access.';
-                    else permissionMessage.value = 'Mic access denied by browser.';
-
-                    perm.onchange = () => { /* ... (same, ensure startAudioCapture called if now granted and mode requires it) ... */
-                        permissionStatus.value = perm.state; emit('permission-update', perm.state);
-                        if(perm.state === 'granted'){ permissionMessage.value = 'Mic ready.'; if((settings.audioInputMode === 'continuous' || settings.audioInputMode === 'voice-activation') && !isMicrophoneActive.value) startAudioCapture(); }
-                        else if (perm.state === 'denied'){ permissionMessage.value = 'Mic access denied.'; if(isMicrophoneActive.value) stopAllAudioProcessing(); }
-                        else { permissionMessage.value = 'Mic access requires action.'; if(isMicrophoneActive.value) stopAllAudioProcessing(); }
-                    };
-                } catch (e) { /* ... */ console.warn("Perm query error:", e); permissionStatus.value = 'error'; permissionMessage.value='Cannot query mic permission.'; emit('permission-update', 'error');}
-                finally { micAccessInitiallyChecked.value = true; }
-            } else { /* ... */ micAccessInitiallyChecked.value = true; permissionMessage.value = 'Perm API not supported.';}
-        });
-
-        onBeforeUnmount(() => {
-            document.removeEventListener('click', handleClickOutsideAudioModeDropdown, true);
-            stopAllAudioProcessing();
-            if (navigator.permissions) { navigator.permissions.query({ name: 'microphone' as PermissionName }).then(p => p.onchange = null).catch(console.warn); }
-            if (recognition) { recognition.onstart=null; recognition.onresult=null; recognition.onerror=null; recognition.onend=null; recognition=null; }
-            if (mediaRecorder) { mediaRecorder.ondataavailable=null; mediaRecorder.onstop=null; mediaRecorder.onerror=null; mediaRecorder=null; }
-        });
-
-        // Watchers
-        watch(() => settings.audioInputMode, (newMode, oldMode) => {
-            if (newMode === oldMode) return;
-            stopAllAudioProcessing(true);
-            liveTranscriptWebSpeech.value = ''; pendingTranscriptWebSpeech.value = ''; finalTranscriptWebSpeech.value = ''; interimTranscriptWebSpeech.value = '';
-            if ((newMode === 'continuous' || newMode === 'voice-activation') && permissionStatus.value === 'granted') {
-                nextTick(async () => {
-                    if (settings.audioInputMode === newMode && !isMicrophoneActive.value && permissionStatus.value === 'granted') {
-                       await startAudioCapture();
-                    }
-                });
-            }
-        });
-        watch(() => settings.sttPreference, (newPref, oldPref) => {
-            if (newPref === oldPref) return;
-            stopAllAudioProcessing(true);
-            if (newPref === 'browser_webspeech_api' && typeof window !== 'undefined' && !recognition) initializeWebSpeech();
-            if ((settings.audioInputMode === 'continuous' || settings.audioInputMode === 'voice-activation') && permissionStatus.value === 'granted') {
-                 nextTick(async () => {
-                    if (settings.sttPreference === newPref && !isMicrophoneActive.value && permissionStatus.value === 'granted') {
-                       await startAudioCapture();
-                    }
-                });
-            }
-        });
-        watch(selectedAudioDeviceId, (newVal, oldVal) => {
-            if (newVal !== oldVal && isMicrophoneActive.value) {
-                stopAllAudioProcessing(true);
-                nextTick(async () => {
-                    if (permissionStatus.value === 'granted') await startAudioCapture();
-                });
-            }
-        });
-        watch(() => settings.speechLanguage, (newLang) => {
-            if (recognition) {
-                recognition.lang = newLang || navigator.language || 'en-US';
-                if (isWebSpeechListening.value) {
-                    stopWebSpeechRecognition(true);
-                    nextTick(async () => {
-                        if (isMicrophoneActive.value && permissionStatus.value === 'granted') await startWebSpeechRecognition();
-                    });
+                        pauseCountdownWebSpeech.value -= 100;
+                        if (pauseCountdownWebSpeech.value <= 0) {
+                            clearInterval(countdownInterval);
+                            if (pauseDetectedWebSpeech.value && isContinuousMode.value && pendingTranscriptWebSpeech.value.trim()) {
+                                sendPendingWebSpeechTranscription();
+                            }
+                            pauseDetectedWebSpeech.value = false;
+                        }
+                    }, 100);
                 }
+            }, 1000);
+        }
+    };
+    const startRecordingTimer = () => { clearRecordingTimer(); recordingSeconds.value = 0; recordingTimerId = window.setInterval(()=>{ recordingSeconds.value += 0.1; if((isPttMode.value || (isVoiceActivationMode.value && isRecording.value)) && recordingSeconds.value >= 60){ toast?.add({type:'info', title:'Recording Limit', message:'Max recording (60s) reached.'}); stopAudioCapture(sttPreference.value === 'browser_webspeech_api'); }}, 100);};
+    const clearRecordingTimer = () => { if(recordingTimerId !== null) clearInterval(recordingTimerId); recordingTimerId = null; recordingSeconds.value = 0;};
+    const clearPauseTimerWebSpeech = () => { if(pauseTimerIdWebSpeech !== null) clearTimeout(pauseTimerIdWebSpeech); pauseTimerIdWebSpeech = null;};
+    const cleanUpAfterWebSpeechTranscription = () => { interimTranscriptWebSpeech.value=''; finalTranscriptWebSpeech.value=''; liveTranscriptWebSpeech.value=''; /* Don't clear pending here */ clearRecordingTimer();};
+
+    const stopAllAudioProcessing = (abortWebSpeech = true) => {
+        if (recognition) { try { if (isWebSpeechListening.value) { if (abortWebSpeech) recognition.abort(); else recognition.stop(); } } catch (e) { console.warn('Err stopAll/WebSpeech:', e); } }
+        isWebSpeechListening.value = false;
+        if (mediaRecorder && mediaRecorder.state === 'recording') { try { mediaRecorder.stop(); } catch (e) { console.warn('Err stopAll/MediaRec:', e); } }
+        isRecording.value = false;
+        if (activeStream) { activeStream.getTracks().forEach(track => track.stop()); activeStream = null; }
+        if (audioContext && audioContext.state !== 'closed') { audioContext.close().catch(e=>console.warn('Err stopAll/AudioCtx:',e)); audioContext = null; }
+        microphoneSourceNode = null; analyser = null;
+        stopAudioLevelMonitoring(); cleanUpAfterWebSpeechTranscription();
+        clearPauseTimerWebSpeech(); if (vadSilenceTimerId !== null) clearTimeout(vadSilenceTimerId); vadSilenceTimerId = null;
+        pauseDetectedWebSpeech.value = false; pauseCountdownWebSpeech.value = 0;
+        emit('processing-audio', false);
+    };
+
+    onMounted(async () => {
+        document.addEventListener('click', handleClickOutsideAudioModeDropdown, true);
+        if (typeof window !== 'undefined') initializeWebSpeech();
+
+        if (navigator.permissions) {
+            try {
+                const perm = await navigator.permissions.query({ name: 'microphone' as PermissionName });
+                permissionStatus.value = perm.state; emit('permission-update', perm.state);
+                if (perm.state === 'granted') {
+                    permissionMessage.value = '';
+                    if ((settings.audioInputMode === 'continuous' || settings.audioInputMode === 'voice-activation') && !isMicrophoneActive.value) {
+                       await startAudioCapture();
+                    }
+                } else if (perm.state === 'prompt') permissionMessage.value = 'Click mic icon for access.';
+                else permissionMessage.value = 'Mic access denied by browser.';
+
+                perm.onchange = () => {
+                    permissionStatus.value = perm.state; emit('permission-update', perm.state);
+                    if(perm.state === 'granted'){ permissionMessage.value = 'Mic ready.'; if((settings.audioInputMode === 'continuous' || settings.audioInputMode === 'voice-activation') && !isMicrophoneActive.value) startAudioCapture(); }
+                    else if (perm.state === 'denied'){ permissionMessage.value = 'Mic access denied.'; if(isMicrophoneActive.value) stopAllAudioProcessing(); }
+                    else { permissionMessage.value = 'Mic access requires action.'; if(isMicrophoneActive.value) stopAllAudioProcessing(); }
+                };
+            } catch (e) { console.warn("Perm query error:", e); permissionStatus.value = 'error'; permissionMessage.value='Cannot query mic permission.'; emit('permission-update', 'error');}
+            finally { micAccessInitiallyChecked.value = true; }
+        } else { micAccessInitiallyChecked.value = true; permissionMessage.value = 'Perm API not supported.';}
+    });
+
+    onBeforeUnmount(() => {
+        document.removeEventListener('click', handleClickOutsideAudioModeDropdown, true);
+        stopAllAudioProcessing();
+        if (navigator.permissions && navigator.permissions.query) { navigator.permissions.query({ name: 'microphone' as PermissionName }).then(p => p.onchange = null).catch(console.warn); }
+        if (recognition) { recognition.onstart=null; recognition.onresult=null; recognition.onerror=null; recognition.onend=null; recognition=null; }
+        if (mediaRecorder) { mediaRecorder.ondataavailable=null; mediaRecorder.onstop=null; mediaRecorder.onerror=null; mediaRecorder=null; }
+    });
+
+    watch(() => settings.audioInputMode, (newMode, oldMode) => {
+        if (newMode === oldMode) return;
+        stopAllAudioProcessing(true);
+        liveTranscriptWebSpeech.value = ''; pendingTranscriptWebSpeech.value = ''; finalTranscriptWebSpeech.value = ''; interimTranscriptWebSpeech.value = '';
+        if ((newMode === 'continuous' || newMode === 'voice-activation') && permissionStatus.value === 'granted') {
+            nextTick(async () => {
+                if (settings.audioInputMode === newMode && !isMicrophoneActive.value && permissionStatus.value === 'granted') {
+                   await startAudioCapture();
+                }
+            });
+        }
+    });
+    watch(() => settings.sttPreference, (newPref, oldPref) => {
+        if (newPref === oldPref) return;
+        stopAllAudioProcessing(true);
+        if (newPref === 'browser_webspeech_api' && typeof window !== 'undefined' && !recognition) initializeWebSpeech();
+        if ((settings.audioInputMode === 'continuous' || settings.audioInputMode === 'voice-activation') && permissionStatus.value === 'granted') {
+            nextTick(async () => {
+                if (settings.sttPreference === newPref && !isMicrophoneActive.value && permissionStatus.value === 'granted') {
+                    await startAudioCapture();
+                }
+            });
+        }
+    });
+    watch(selectedAudioDeviceId, (newVal, oldVal) => {
+        if (newVal !== oldVal && isMicrophoneActive.value) {
+            stopAllAudioProcessing(true);
+            nextTick(async () => {
+                if (permissionStatus.value === 'granted') await startAudioCapture();
+            });
+        }
+    });
+    watch(() => settings.speechLanguage, (newLang) => {
+        if (recognition) {
+            recognition.lang = newLang || navigator.language || 'en-US';
+            if (isWebSpeechListening.value) {
+                stopWebSpeechRecognition(true);
+                nextTick(async () => {
+                    if (settings.audioInputMode !== 'push-to-talk' /* was isMicrophoneActive.value */ && permissionStatus.value === 'granted') await startWebSpeechRecognition();
+                });
             }
-        });
+        }
+    });
 
 
-        return {
-            props, textInput, textareaRef, vadCanvasRef, editModalTextareaRef,
-            isRecording, isWebSpeechListening, permissionStatus, permissionMessage, micAccessInitiallyChecked,
-            interimTranscriptWebSpeech, liveTranscriptWebSpeech, pendingTranscriptWebSpeech,
-            transcriptionHistory, showTranscriptionHistory, recordingSeconds,
-            pauseDetectedWebSpeech, pauseCountdownWebSpeech,
-            showEditModal, editingTranscription, settings,
-            isMicrophoneActive, isPttMode, isContinuousMode, isVoiceActivationMode,
-            getButtonTitle, getPlaceholderText, getModeIndicatorClass, getRecordingStatusText, getIdleStatusText,
-            formatTime, formatDuration,
-            toggleRecording, handleTextareaInput, handleTextSubmit,
-            sendPendingWebSpeechTranscription, clearPendingWebSpeechTranscription,
-            editPendingTranscription, saveEdit, cancelEdit, resendTranscription,
-            startAudioCapture, stopAudioCapture,
-            sttPreference,
-            showAudioModeDropdown, audioModeDropdownRef, audioModeOptions,
-            toggleAudioModeDropdown, selectAudioMode,
-            currentAudioModeLabel, currentAudioModeIcon,
-            // Icons for template
-            PaperAirplaneIcon, ClockIcon, XMarkIcon, PencilIcon, TrashIcon, StopCircleIcon, MicrophoneIcon,
-            CloudArrowUpIcon,
-        };
-    },
+    return {
+        props, textInput, textareaRef, vadCanvasRef, editModalTextareaRef,
+        isRecording, isWebSpeechListening, permissionStatus, permissionMessage, micAccessInitiallyChecked,
+        interimTranscriptWebSpeech, liveTranscriptWebSpeech, pendingTranscriptWebSpeech,
+        transcriptionHistory, showTranscriptionHistory, recordingSeconds,
+        pauseDetectedWebSpeech, pauseCountdownWebSpeech,
+        showEditModal, editingTranscription, settings,
+        isMicrophoneActive, isPttMode, isContinuousMode, isVoiceActivationMode,
+        getButtonTitle, getPlaceholderText, getModeIndicatorClass, getRecordingStatusText, getIdleStatusText,
+        formatTime, formatDuration,
+        toggleRecording, handleTextareaInput, handleTextSubmit,
+        sendPendingWebSpeechTranscription, clearPendingWebSpeechTranscription,
+        editPendingTranscription, saveEdit, cancelEdit, resendTranscription,
+        startAudioCapture, stopAudioCapture,
+        sttPreference,
+        showAudioModeDropdown, audioModeDropdownRef, audioModeOptions,
+        toggleAudioModeDropdown, selectAudioMode,
+        currentAudioModeLabel, currentAudioModeIcon,
+        // Icons for template
+        PaperAirplaneIcon, ClockIcon, XMarkIcon, PencilIcon, TrashIcon, StopCircleIcon, MicrophoneIcon,
+        CloudArrowUpIcon, CheckIcon, /* Ensure CheckIcon is returned if used via component :is directly in template */
+    };
+  },
 });
 </script>
 
