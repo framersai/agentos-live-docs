@@ -105,7 +105,7 @@ const activeAgent = computed<IAgentDefinition | undefined>(() => agentStore.acti
  * @returns {string} The display title.
  */
 const agentTitle = computed<string>(() =>
-  activeAgent.value?.label || (auth.isAuthenticated.value ? 'VCA Dashboard' : 'Voice Assistant')
+  activeAgent.value?.label || (auth.isAuthenticated.value ? 'VCA Dashboard' : 'Voice Chat Assistant')
 );
 
 /**
@@ -204,8 +204,8 @@ onUnmounted(() => { // Cleanup body class on component unmount
       <div class="header-left-section">
         <RouterLink to="/" @click="closeMobileMenu" class="animated-logo-link" aria-label="Voice Coding Assistant Home">
           <AnimatedLogo
-            :app-name-main="uiStore.isSmallScreen ? 'VCA' : 'Voice'"
-            :app-name-subtitle="uiStore.isSmallScreen ? '' : 'Assistant'"
+            :app-name-main="uiStore.isSmallScreen ? 'VCA' : 'Voice//Chat'"
+            :app-name-subtitle="uiStore.isSmallScreen ? 'Assistant' : 'Assistant'"
             :is-user-listening="isUserStateActive"
             :is-ai-speaking-or-processing="isAiStateActive"
           />
