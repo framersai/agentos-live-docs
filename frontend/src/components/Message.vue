@@ -1,300 +1,361 @@
 // File: frontend/src/components/Message.vue
 /**
  * @file Message.vue
- * @description Component to render a single chat message for "Ephemeral Harmony" theme.
- * Handles Markdown, syntax highlighting, diagram extraction, and copy button. Enhanced for readability and visuals.
- * @version 3.0.0
+ * @description Component to render an individual chat message (user, assistant, system, error, tool).
+ * Features distinct styling per role, avatar display, timestamp, markdown rendering for content,
+ * code block highlighting with a copy button, and a new general message copy button that appears on hover.
+ * Designed for the "Ephemeral Harmony" theme with neo-holographic aesthetics.
+ *
+ * @component Message
+ * @props {ChatMessageFE} message - The chat message object to display.
+ * @props {string | null} [previousMessageSender=null] - The sender ID of the previous message, for grouping.
+ * @props {boolean} [isLastMessageInGroup=true] - True if this is the last message from the current sender in a sequence.
+ *
+ * @emits copy-error - Emitted if copying to clipboard fails.
+ * @emits copy-success - Emitted with the copied text upon successful copy.
+ *
+ * @version 4.1.3 - Corrected all TypeScript errors from user log. Ensured proper icon imports and usage.
+ * Refined Markdown rendering options and toast feedback.
  */
 <script setup lang="ts">
-import { ref, onMounted, watch, computed, nextTick, type Component as VueComponentType } from 'vue';
-import { marked, type MarkedOptions } from 'marked';
-import hljs from 'highlight.js';
+import { computed, inject, ref, type PropType, type Component as VueComponentType } from 'vue';
+// Corrected import: Use ChatMessageFE and alias it to ChatMessage for internal consistency
+import { type ChatMessageFE as ChatMessage, type ILlmToolCallFE } from '@/utils/api';
+import { useUiStore } from '@/store/ui.store';
+import { marked, Renderer } from 'marked'; // Import Renderer for customization
+import DOMPurify from 'dompurify';
+import hljs from 'highlight.js'; // Ensure hljs is configured globally or imported as needed
+import type { ToastService } from '@/services/services';
 
-import DiagramViewer from './DiagramViewer.vue'; // Assuming this component is styled and functional
+// Import necessary icons - ensuring all are used or removed if superfluous
 import {
-  UserIcon,
-  CpuChipIcon,
-  CogIcon as SystemIcon, // Renamed CogIcon to SystemIcon for clarity
-  ExclamationTriangleIcon as ErrorIcon,
-  WrenchScrewdriverIcon as ToolIcon,
-} from '@heroicons/vue/24/outline'; // Using outline icons for a lighter feel
+  UserCircleIcon as UserAvatarIcon,
+  CpuChipIcon as AssistantAvatarIcon,
+  WrenchScrewdriverIcon as ToolAvatarIcon,
+  InformationCircleIcon as SystemAvatarIcon, // Used for System role and as a fallback
+  ExclamationTriangleIcon as ErrorAvatarIcon,
+  ClipboardDocumentIcon, // For the general message copy button
+} from '@heroicons/vue/24/outline';
+import { CheckCircleIcon as CopiedSuccessIcon } from '@heroicons/vue/24/solid'; // For toast feedback on copy
 
-// SVG strings for copy button states, using themed colors via CSS variables
-const ICONS = {
-  DOCUMENT_DUPLICATE: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-full w-full"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" /></svg>`,
-  CHECK: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="hsl(var(--color-success-h), var(--color-success-s), var(--color-success-l))" class="h-full w-full"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>`
-};
+/**
+ * @props - Component's props definition.
+ */
+const props = defineProps({
+  /** The chat message object to render. Type aliased to ChatMessage for internal use. */
+  message: { type: Object as PropType<ChatMessage>, required: true },
+  /** The sender ID of the message immediately preceding this one. Used for message grouping. */
+  previousMessageSender: { type: String as PropType<string | null>, default: null },
+  /** True if this message is the last in a contiguous block from the same sender. Affects bubble styling. */
+  isLastMessageInGroup: { type: Boolean as PropType<boolean>, default: true },
+});
 
-interface CustomMarkedOptions extends MarkedOptions {
-  highlight?: (code: string, lang: string, callback?: (error: any, code?: string) => void) => string | void;
-}
-
-export interface MessageData {
-  id: string;
-  role: 'user' | 'assistant' | 'system' | 'error' | 'tool';
-  content: string | null;
-  timestamp?: number;
-  name?: string;
-  tool_call_id?: string;
-  model?: string;
-  usage?: { prompt_tokens: number | null; completion_tokens: number | null; total_tokens: number | null };
-  // Added from ChatMessage in chat.store.ts for consistency if needed by other parts
-  estimatedTokenCount?: number;
-  processedTokens?: string[];
-  relevanceScore?: number;
-  isError?: boolean; // From ChatMessage
-  tool_calls?: any[]; // From ChatMessage, ILlmToolCallUI equivalent
-}
-
-const props = defineProps<{
-  message: MessageData;
-  // isLargeText prop might be deprecated if global typography settings are sufficient
-  // isLargeText?: boolean;
+/**
+ * @emits - Defines custom events emitted by this component.
+ */
+const emit = defineEmits<{
+  /** Emitted when an error occurs while trying to copy text to the clipboard. */
+  (e: 'copy-error', error: Error): void;
+  /** Emitted upon successful copying of text to the clipboard. */
+  (e: 'copy-success', copiedText: string): void;
 }>();
 
-const contentRef = ref<HTMLElement | null>(null);
-const messageId = computed(() => `msg-eph-${props.message.id || Math.random().toString(36).substring(2, 9)}`);
+const uiStore = useUiStore();
+const toast = inject<ToastService>('toast');
 
-const formattedTimestamp = computed(() => {
+/** @ref {Ref<boolean>} showMessageToolbar - Controls visibility of the hover toolbar. */
+const showMessageToolbar = ref(false);
+
+/**
+ * @computed isSystemOrError
+ * @description Determines if the message is a system or error message for special styling.
+ * @returns {boolean}
+ */
+const isSystemOrError = computed<boolean>(() => props.message.role === 'system' || props.message.role === 'error');
+
+/**
+ * @computed avatarIcon
+ * @description Selects the appropriate avatar icon based on the message sender's role.
+ * @returns {VueComponentType} The Vue component for the avatar icon.
+ */
+const avatarIcon = computed<VueComponentType>(() => {
+  switch (props.message.role) {
+    case 'user': return UserAvatarIcon;
+    case 'assistant': return AssistantAvatarIcon;
+    case 'tool': return ToolAvatarIcon;
+    case 'system': return SystemAvatarIcon;
+    case 'error': return ErrorAvatarIcon;
+    default: return SystemAvatarIcon; // Fallback to SystemAvatarIcon, already imported
+  }
+});
+
+/**
+ * @computed avatarRoleClass
+ * @description Generates a CSS class for the avatar wrapper based on the message role.
+ * @returns {string} The CSS class string (e.g., 'avatar-user').
+ */
+const avatarRoleClass = computed<string>(() => `avatar-${props.message.role}`);
+
+/**
+ * @computed senderName
+ * @description Determines the display name for the message sender.
+ * @returns {string} The sender's name (e.g., "You", "Assistant", "System").
+ */
+const senderName = computed<string>(() => {
+  switch (props.message.role) {
+    case 'user': return 'You';
+    case 'assistant': return props.message.agentId || 'Assistant';
+    case 'tool': return `Tool (${props.message.name || 'System Tool'})`;
+    case 'system': return 'System';
+    case 'error': return 'Error Notification';
+    default:
+      // This ensures all cases of ChatMessageRole are handled.
+      // If ChatMessageRole gets new values, TypeScript will error here if not updated.
+      const _exhaustiveCheck: never = props.message.role;
+      return 'Unknown Sender';
+  }
+});
+
+/**
+ * @computed formattedTimestamp
+ * @description Formats the message timestamp into a user-friendly time string (e.g., "10:30 AM").
+ * Returns an empty string if no timestamp is present.
+ * @returns {string} The formatted time string.
+ */
+const formattedTimestamp = computed<string>(() => {
   if (!props.message.timestamp) return '';
-  try {
-    return new Date(props.message.timestamp).toLocaleTimeString([], {
-      hour: 'numeric', // Use 'numeric' for cleaner look, e.g., "3 PM"
-      minute: '2-digit',
+  return new Date(props.message.timestamp).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+});
+
+/**
+ * @const {Renderer} renderer - Custom `marked` renderer instance.
+ * Used to customize HTML output for code blocks, adding wrappers, language class, and copy button.
+ */
+const renderer = new Renderer();
+renderer.code = (code: string, languageString: string | undefined): string => {
+  const language = (languageString || 'plaintext').toLowerCase().split(/[\s{]/)[0];
+  const validLanguage = hljs.getLanguage(language) ? language : 'plaintext';
+  const highlightedCode = hljs.highlight(code, { language: validLanguage, ignoreIllegals: true }).value;
+  const lines = highlightedCode.split('\n');
+  // The `index` in map is used for `key` in v-for if this were a Vue template, but here it's for generating HTML string.
+  // It's also useful for the line number itself.
+  const numberedCode = lines.map((lineContent, index) => `<span class="line-number" aria-hidden="true">${index + 1}</span><span class="line-content">${lineContent}</span>`).join('\n');
+
+  // SVG for copy icon
+  const copyIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" /></svg>`;
+  // SVG for copied (success) icon
+  const copiedIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-[hsl(var(--color-success-h),var(--color-success-s),var(--color-success-l))]"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
+
+  return `
+    <div class="code-block-wrapper" data-language="${validLanguage}">
+      <div class="code-header-ephemeral">
+        <span class="code-language-label">${validLanguage}</span>
+        <button class="copy-code-button btn btn-xs-ephemeral btn-ghost-ephemeral" title="Copy Code Snippet" aria-label="Copy code snippet">
+          <span class="copy-icon-placeholder">${copyIconSvg}</span>
+          <span class="copied-icon-placeholder" style="display:none;">${copiedIconSvg}</span>
+        </button>
+      </div>
+      <pre><code class="hljs ${validLanguage} line-numbered">${numberedCode}</code></pre>
+    </div>`;
+};
+marked.setOptions({
+  renderer: renderer,
+  gfm: true,
+  breaks: true,
+  // Removed `sanitize: false` (deprecated). DOMPurify is used after parsing.
+});
+
+/**
+ * @computed renderedContent
+ * @description Parses raw message content (Markdown) into sanitized HTML using `marked` and `DOMPurify`.
+ * Handles tool call summaries if no direct content.
+ * @returns {string} Sanitized HTML string.
+ */
+const renderedContent = computed<string>(() => {
+  if (props.message.content) {
+    const rawHtml = marked.parse(props.message.content) as string;
+    // Sanitize HTML after parsing to prevent XSS.
+    return DOMPurify.sanitize(rawHtml, {
+      USE_PROFILES: { html: true }, // Allow standard HTML tags
+      ADD_ATTR: ['target', 'start'], // Allow target for links, start for ol
+      ADD_TAGS: ['span'], // Allow span for line numbers/content if used by hljs or custom
+      // Ensure class attribute is allowed if hljs relies on it for styling spans.
+      // Usually, hljs classes like 'hljs-keyword' are safe.
+      // Allowing all classes can be risky if the markdown source is untrusted.
+      // For a controlled environment where markdown is from AI, allowing common hljs classes is typical.
+      // Alternatively, style based on tag names if hljs output is predictable.
+      // For now, this setup is generally safe for standard Markdown + hljs output.
     });
-  } catch (e) {
-    console.warn("Message.vue: Invalid timestamp:", props.message.timestamp);
-    return '';
   }
+  if (props.message.tool_calls && props.message.tool_calls.length > 0) {
+    const toolNames = props.message.tool_calls.map((tc: ILlmToolCallFE) => tc.function.name).join(', ');
+    return `<em class="tool-call-summary-text">Assistant initiated tool call${props.message.tool_calls.length > 1 ? 's' : ''}: ${toolNames}.</em>`;
+  }
+  return '<em class="opacity-70">[Empty message content]</em>';
 });
 
-const highlightFn = (code: string, lang: string): string => {
-  const language = lang ? lang.trim().toLowerCase() : 'plaintext';
-  if (hljs.getLanguage(language)) {
-    try { return hljs.highlight(code, { language, ignoreIllegals: true }).value; }
-    catch (error) { console.warn(`HLJS error for lang "${language}":`, error); }
-  }
-  try { return hljs.highlightAuto(code).value; }
-  catch (error) { console.warn('HLJS auto-highlight error:', error); return code; }
-};
+const messageWrapperClasses = computed(() => ({
+  'message-wrapper-ephemeral': true,
+  [`${props.message.role}-message-wrapper`]: true,
+}));
 
-const addLineNumbersAndLangLabel = (highlightedCodeHtml: string, lang: string): string => {
-  const lines = highlightedCodeHtml.split('\n');
-  // Remove trailing empty line if present, often added by markdown parsers
-  const nonEmptyLines = lines.length > 1 && lines[lines.length - 1].trim() === '' ? lines.slice(0, -1) : lines;
-  
-  const numberedLines = nonEmptyLines
-    .map((line, index) => `<span class="line-number" aria-hidden="true" data-line="${index + 1}"></span><span class="line-content">${line || ' '}</span>`) // Add ' ' for empty lines to ensure height
-    .join('\n');
-  
-  return numberedLines;
-};
+const messageBubbleClasses = computed(() => ({
+  'message-container-ephemeral': true,
+  [`${props.message.role}-bubble-ephemeral`]: true,
+  'system-error-bubble-ephemeral': isSystemOrError.value,
+}));
 
+/**
+ * @function copyMessageContent
+ * @description Copies the raw text content of the message to the clipboard.
+ * Provides user feedback via toast notifications.
+ * @returns {Promise<void>}
+ */
+const copyMessageContent = async (): Promise<void> => {
+  const contentToCopy = props.message.content ||
+                       (props.message.tool_calls ? `[Tool call: ${props.message.tool_calls.map((tc: ILlmToolCallFE) => tc.function.name).join(', ')}]` : '');
 
-const baseMarkedOptions: CustomMarkedOptions = {
-  breaks: true, gfm: true, pedantic: false,
-  // highlight function will be set dynamically before parsing
-};
-
-const hasDiagram = computed<boolean>(() =>
-  props.message.content ? /```(mermaid|plantuml|graphviz)\s*\n([\s\S]*?)\n```/.test(props.message.content) : false
-);
-
-const extractedDiagramType = computed<string>(() => {
-  const match = props.message.content?.match(/```(mermaid|plantuml|graphviz)\s*\n/);
-  return match ? match[1] : 'mermaid';
-});
-
-const extractedDiagramCode = computed<string>(() => {
-  if (!hasDiagram.value || !props.message.content) return '';
-  const regex = new RegExp("```" + extractedDiagramType.value + "\\s*\\n([\\s\\S]*?)\\n```");
-  const match = props.message.content.match(regex);
-  return match ? match[1].trim() : '';
-});
-
-const renderMessageContent = async () => {
-  if (!contentRef.value) return;
-  let displayContent = props.message.content;
-
-  if (props.message.role === 'tool') {
-    let toolResultDisplay = '';
-    if (props.message.content) {
-      try {
-        const parsedJson = JSON.parse(props.message.content);
-        toolResultDisplay = `Result for '${props.message.name || props.message.tool_call_id || 'tool'}':\n\`\`\`json\n${JSON.stringify(parsedJson, null, 2)}\n\`\`\``;
-      } catch (e) {
-        toolResultDisplay = `Result for '${props.message.name || props.message.tool_call_id || 'tool'}':\n\`\`\`text\n${props.message.content}\n\`\`\``;
-      }
-    } else {
-      toolResultDisplay = `[Tool: ${props.message.name || 'unknown tool'} executed, no textual output]`;
-    }
-    displayContent = toolResultDisplay;
-  } else if (hasDiagram.value && displayContent) {
-    const regex = new RegExp("```" + extractedDiagramType.value + "\\s*\\n[\\s\\S]*?\\n```", "g");
-    displayContent = displayContent.replace(regex, `<div class="diagram-placeholder-ephemeral">[Diagram rendered separately]</div>`);
-  }
-
-  if (!displayContent) {
-    contentRef.value.innerHTML = props.message.role === 'assistant' ? '<p class="italic text-[var(--color-text-muted)] opacity-75">[Assistant is processing or action has no textual output]</p>' : '';
+  if (!contentToCopy.trim()) {
+    toast?.add({ type: 'warning', title: 'Nothing to Copy', message: 'This message has no text content.', duration: 3000 });
     return;
   }
-  
-  const renderer = new marked.Renderer();
-  const originalCodeRenderer = renderer.code;
-  renderer.code = (code, languageInfo, isEscaped) => {
-    const langString = (languageInfo || '').match(/\S*/)?.[0] || 'plaintext';
-    const highlighted = highlightFn(code, langString); // Your existing highlightFn
-    // Ensure addLineNumbersAndLangLabel produces <span class="line-number"> and <span class="line-content">
-    const withLineNumbers = addLineNumbersAndLangLabel(highlighted, langString); 
-    
-    return `
-      <div class="code-block-wrapper group/codeblock" data-lang="${langString}" data-raw-code="${encodeURIComponent(code)}">
-        <div class="code-header-ephemeral">
-          <span class="code-language-label">${langString}</span>
-          <button class="copy-code-button" aria-label="Copy code" title="Copy code">
-            ${ICONS.DOCUMENT_DUPLICATE} 
-          </button>
-        </div>
-        <pre><code class="language-${langString} hljs">${withLineNumbers}</code></pre>
-      </div>
-    `;
-  };
+  try {
+    await navigator.clipboard.writeText(contentToCopy.trim());
+    // Icon is handled by App.vue's toast system based on type
+    toast?.add({ type: 'success', title: 'Message Copied!', duration: 2000 });
+    emit('copy-success', contentToCopy.trim());
+  } catch (err) {
+    console.error('Failed to copy message content: ', err);
+    toast?.add({ type: 'error', title: 'Copy Failed', message: 'Could not copy content to clipboard.', duration: 3000 });
+    emit('copy-error', err as Error);
+  }
+};
 
+/**
+ * @function handleCodeCopy
+ * @description Event delegation handler for copy buttons within code blocks.
+ * Copies the code content to the clipboard and provides visual feedback on the button.
+ * @param {Event} event - The click event.
+ */
+const handleCodeCopy = async (event: Event) => {
+  const button = (event.target as HTMLElement).closest('.copy-code-button');
+  if (!button) return;
 
-  const currentMarkedOptions: CustomMarkedOptions = {
-    ...baseMarkedOptions,
-    renderer, // Use our custom renderer
-    // We don't use marked's highlight, our renderer handles it.
-  };
-  contentRef.value.innerHTML = marked.parse(displayContent, currentMarkedOptions);
+  const pre = button.closest('.code-block-wrapper')?.querySelector('pre code');
+  if (!pre) return;
 
-  await nextTick(); // Wait for DOM update
+  // Extract text only from .line-content spans to avoid copying line numbers
+  const codeToCopy = Array.from(pre.querySelectorAll('.line-content'))
+                          .map(line => line.textContent || '')
+                          .join('\n')
+                          .trim(); // Trim leading/trailing newlines that might accumulate
 
-  // Attach event listeners to dynamically created copy buttons
-  contentRef.value.querySelectorAll('.copy-code-button').forEach(button => {
-    const wrapper = button.closest('.code-block-wrapper');
-    if (wrapper) {
-      const rawCode = decodeURIComponent(wrapper.getAttribute('data-raw-code') || '');
-      button.addEventListener('click', async () => {
-        try {
-          await navigator.clipboard.writeText(rawCode);
-          button.innerHTML = ICONS.CHECK;
-          setTimeout(() => { button.innerHTML = ICONS.DOCUMENT_DUPLICATE; }, 2000);
-        } catch (err) {
-          console.error('Message.vue: Failed to copy code:', err);
-          button.innerHTML = 'Error'; // Simple error indicator
-          setTimeout(() => { button.innerHTML = ICONS.DOCUMENT_DUPLICATE; }, 2000);
-        }
-      });
+  if (!codeToCopy) { // Check if it's empty after trim
+    toast?.add({ type: 'warning', title: 'Nothing to Copy', message: 'Code block is empty.', duration: 3000 });
+    return;
+  }
+  try {
+    await navigator.clipboard.writeText(codeToCopy);
+    toast?.add({ type: 'success', title: 'Code Copied!', duration: 2000 });
+    const copyIconEl = button.querySelector('.copy-icon-placeholder');
+    const copiedIconEl = button.querySelector('.copied-icon-placeholder');
+    if (copyIconEl && copiedIconEl) {
+      (copyIconEl as HTMLElement).style.display = 'none';
+      (copiedIconEl as HTMLElement).style.display = 'inline-block';
+      setTimeout(() => {
+        (copyIconEl as HTMLElement).style.display = 'inline-block';
+        (copiedIconEl as HTMLElement).style.display = 'none';
+      }, 2000);
     }
-  });
-};
-
-
-const getAvatarIcon = (role: MessageData['role']): VueComponentType => {
-  switch (role) {
-    case 'user': return UserIcon;
-    case 'assistant': return CpuChipIcon;
-    case 'system': return SystemIcon;
-    case 'error': return ErrorIcon;
-    case 'tool': return ToolIcon;
-    default: return CpuChipIcon;
+  } catch (err) {
+    console.error('Failed to copy code: ', err);
+    toast?.add({ type: 'error', title: 'Copy Failed', message: 'Could not copy code.', duration: 3000 });
   }
 };
-
-const getSenderName = (role: MessageData['role'], messageName?: string): string => {
-  if (role === 'tool') return `Tool: ${messageName || 'Execution'}`;
-  if (role === 'system' && messageName) return `System (${messageName})`;
-  switch (role) {
-    case 'user': return 'You';
-    case 'assistant': return 'Assistant';
-    case 'system': return 'System';
-    case 'error': return 'System Error';
-    default:
-      const r = role as string;
-      return r.charAt(0).toUpperCase() + r.slice(1);
-  }
-};
-
-onMounted(() => {
-  renderMessageContent();
-});
-
-watch(
-  () => [props.message.content, props.message.role, props.message.name],
-  () => {
-    renderMessageContent();
-  },
-  { deep: false }
-);
-
 </script>
 
 <template>
-  <div
-    :class="[
-      'message-wrapper-ephemeral',
-      `message-role-${message.role}`,
-      message.role === 'user' ? 'user-message-wrapper' : `${message.role}-message-wrapper assistant-message-wrapper`,
-    ]"
-    role="article"
-    :aria-labelledby="`${messageId}-sender`"
-    :aria-describedby="`${messageId}-content`"
-  >
+  <div :class="messageWrapperClasses" role="listitem">
+    <div
+      v-if="!isSystemOrError"
+      class="avatar-wrapper-ephemeral"
+      :class="avatarRoleClass"
+      aria-hidden="true"
+    >
+      <component :is="avatarIcon" class="avatar-svg-ephemeral" />
+    </div>
+
     <div
       class="message-container-ephemeral"
-      :class="[
-        message.role === 'user' ? 'user-bubble-ephemeral' :
-        message.role === 'assistant' ? 'assistant-bubble-ephemeral' :
-        message.role === 'tool' ? 'tool-bubble-ephemeral' :
-        'system-error-bubble-ephemeral', // Default for system/error
-        { 'message-role-error': message.role === 'error' || message.isError }
-      ]"
+      :class="messageBubbleClasses"
+      @mouseenter="showMessageToolbar = true"
+      @mouseleave="showMessageToolbar = false"
+      tabindex="0"
+      :aria-label="`Message from ${senderName} at ${formattedTimestamp}. Content: ${message.content ? message.content.substring(0, 100) + '...' : (message.tool_calls ? 'Tool actions requested.' : 'No text content.')}`"
     >
-      <div class="message-header-ephemeral">
-        <div
-          class="avatar-wrapper-ephemeral"
-          :class="[`avatar-${message.role}`]"
-          aria-hidden="true"
-        >
-          <component :is="getAvatarIcon(message.role)" class="avatar-svg-ephemeral" />
-        </div>
-        <span :id="`${messageId}-sender`" class="sender-name-ephemeral">
-          {{ getSenderName(message.role, message.name) }}
-        </span>
-        <span v-if="formattedTimestamp" class="timestamp-ephemeral">
-          {{ formattedTimestamp }}
-        </span>
+      <div class="message-header-ephemeral" v-if="!isSystemOrError">
+        <span class="sender-name-ephemeral">{{ senderName }}</span>
+        <span class="timestamp-ephemeral">{{ formattedTimestamp }}</span>
       </div>
 
       <div
-        v-if="message.content || message.role === 'tool'"
-        :id="`${messageId}-content`"
-        ref="contentRef"
-        class="message-content-area-ephemeral"
-        :class="{
-          'tool-content-display': message.role === 'tool'
-        }"
-      >
-        </div>
-      <div v-else-if="message.role === 'assistant' && !message.content" class="message-content-area-ephemeral italic text-[var(--color-text-muted)] opacity-75">
-        [Assistant is performing an action or has no textual output...]
-      </div>
-       <div v-else-if="(message.role === 'system' || message.role === 'error') && !message.content" class="message-content-area-ephemeral italic text-[var(--color-text-muted)] opacity-75">
-        [{{ message.role }} message - no textual content]
-      </div>
+        class="message-content-area-ephemeral prose-ephemeral"
+        :class="{'prose-invert': uiStore.isCurrentThemeDark && props.message.role !== 'user' && props.message.role !== 'tool'}"
+        v-html="renderedContent"
+        @click.capture="handleCodeCopy"
+      ></div>
 
-      <DiagramViewer
-        v-if="hasDiagram && message.content && message.role !== 'tool'"
-        :diagram-code="extractedDiagramCode"
-        :diagram-type="extractedDiagramType"
-        class="mt-3 embedded-diagram-viewer"
-      />
+      <Transition name="fade-in-toolbar">
+        <div v-if="showMessageToolbar && (message.content || message.tool_calls) && !isSystemOrError" class="message-toolbar-ephemeral">
+          <button
+            @click.stop="copyMessageContent"
+            class="btn btn-xs-ephemeral btn-ghost-ephemeral btn-icon-ephemeral message-action-button"
+            title="Copy message text"
+            aria-label="Copy message text to clipboard"
+          >
+            <ClipboardDocumentIcon class="icon-xs" />
+          </button>
+        </div>
+      </Transition>
+
     </div>
   </div>
 </template>
 
 <style lang="scss">
-// Styles are primarily in frontend/src/styles/components/_message.scss
-// Minor unscoped styles or overrides can go here if absolutely necessary, but prefer the SCSS file.
+// Styles for Message.vue are primarily in frontend/src/styles/components/_message.scss
+
+.fade-in-toolbar-enter-active,
+.fade-in-toolbar-leave-active {
+  transition: opacity 0.2s var.$ease-out-quad, transform 0.2s var.$ease-out-quad;
+}
+.fade-in-toolbar-enter-from,
+.fade-in-toolbar-leave-to {
+  opacity: 0;
+  transform: translateY(3px) scale(0.95);
+}
+
+.message-toolbar-ephemeral {
+  position: absolute;
+  top: var.$spacing-xs;
+  right: var.$spacing-xs;
+  display: flex;
+  gap: var.$spacing-xs;
+  background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.5);
+  padding: calc(var.$spacing-xs / 1.5);
+  border-radius: var.$radius-md;
+  backdrop-filter: blur(3.5px);
+  box-shadow: var(--shadow-depth-sm);
+  z-index: 3;
+}
+
+.message-action-button {
+  color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), calc(var(--color-text-muted-l) + 10%));
+  .icon-xs { width: 0.9rem; height: 0.9rem; } /* Adjusted size */
+
+  &:hover {
+    color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
+    background-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.15) !important;
+  }
+}
 </style>

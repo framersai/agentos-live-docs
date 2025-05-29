@@ -1,31 +1,55 @@
-// File: frontend/src/styles/abstracts/_theme-engine.scss
+// File: frontend/src/styles/abstracts/theme-engine.scss
 /**
  * @file _theme-engine.scss
  * @description Generates CSS custom variables for every theme palette.
- * Default theme updated to Magenta Mystic.
- * @version 2.1.1 - Added Tailwind CSS IntelliSense disable comments.
+ * This engine takes theme definitions from `_theme-definitions.scss` (via the public
+ * `$VCA_THEME_DEFINITIONS` map) and creates the necessary CSS rules to apply them
+ * based on the `data-theme` attribute on the HTML element. It also sets a default theme.
+ * The primary default theme is "Sakura Sunset" (dark).
+ *
+ * @role Applies theme definitions as CSS custom properties to the DOM.
+ * @dependencies `_theme-definitions.scss` (for the `$VCA_THEME_DEFINITIONS` map).
+ * @assumptions `$VCA_THEME_DEFINITIONS` map in `_theme-definitions.scss` contains valid theme maps.
+ * `ThemeManager.ts` will set the `data-theme` attribute on `<html>`.
+ * Theme IDs used here must match those in `themes.config.ts` and `ThemeManager.ts`.
+ * @version 3.0.4 - Added comprehensive JSDoc and ensured default theme is "sakura-sunset".
  */
 @use 'sass:map';
-@use './theme-definitions.scss' as themes;
+@use './theme-definitions' as themes; // Provides $VCA_THEME_DEFINITIONS
 
+// Main registry mapping theme IDs to their SCSS map and dark/light status.
+// It sources its data from the `$VCA_THEME_DEFINITIONS` map in `theme-definitions.scss`.
+// 'is-dark' is crucial for `color-scheme` property and can be used by components.
 $theme-registry: (
-  'magenta-mystic': ('is-dark': true,  'map': themes.$theme-magenta-mystic), // New default dark
-  'twilight-neo':   ('is-dark': true,  'map': themes.$theme-twilight-neo),
-  'aurora-daybreak':('is-dark': false, 'map': themes.$theme-aurora-daybreak),
-  'warm-embrace':   ('is-dark': false, 'map': themes.$theme-warm-embrace)
+  'sakura-sunset':   ('is-dark': true,  'map': map.get(themes.$VCA_THEME_DEFINITIONS, 'sakura-sunset')),
+  'twilight-neo':    ('is-dark': true,  'map': map.get(themes.$VCA_THEME_DEFINITIONS, 'twilight-neo')),
+  'aurora-daybreak': ('is-dark': false, 'map': map.get(themes.$VCA_THEME_DEFINITIONS, 'aurora-daybreak')),
+  'warm-embrace':    ('is-dark': false, 'map': map.get(themes.$VCA_THEME_DEFINITIONS, 'warm-embrace'))
 );
 
-// Aliases to map legacy theme names or provide simpler alternatives
+// Aliases to map legacy theme names or provide simpler/descriptive alternatives.
 $theme-aliases: (
   'ephemeral-holo-dark': 'twilight-neo',
   'aurora-light':        'aurora-daybreak',
   'legacy-warm-embrace': 'warm-embrace',
   'legacy-twilight-neo': 'twilight-neo',
-  'default-dark':        'magenta-mystic', // Alias for default dark theme
-  'default-light':       'aurora-daybreak' // Alias for default light theme
+  'magenta-mystic':      'sakura-sunset',
+  'her-pink':            'sakura-sunset',
+  'midnight-dark':       'twilight-neo',
+  'default-dark':        'sakura-sunset',
+  'default-light':       'aurora-daybreak'
 );
 
-// Mixin to apply a theme map to a selector
+/**
+ * @mixin apply-theme
+ * @description Applies a map of CSS custom properties to the current selector.
+ * Iterates through a given SCSS map and outputs each key-value pair as a CSS custom property.
+ * Includes Tailwind CSS IntelliSense disable/enable comments around the property assignments
+ * to prevent potential conflicts or misinterpretations by the Language Server Protocol in editors.
+ *
+ * @param {Map} $theme-map-arg - An SCSS map where keys are CSS custom property names
+ * (e.g., '--color-bg-primary-h') and values are their corresponding CSS values (e.g., '220', '100%').
+ */
 @mixin apply-theme($theme-map-arg) {
   @each $prop, $val in $theme-map-arg {
     /* tailwindcss-intellisense-disable */
@@ -34,8 +58,8 @@ $theme-aliases: (
   }
 }
 
-// Default theme (can be overridden by user preference via data-theme on <html>)
-$default-theme-name: 'magenta-mystic'; // Updated default theme
+// Default theme applied to :root.
+$default-theme-name: 'sakura-sunset';
 
 :root {
   /* tailwindcss-intellisense-disable */
@@ -48,7 +72,7 @@ $default-theme-name: 'magenta-mystic'; // Updated default theme
   /* tailwindcss-intellisense-enable */
 }
 
-// Generate theme overrides for specific data-theme attributes
+// Generate CSS rules for each theme in the registry.
 @each $theme-id, $theme-meta in $theme-registry {
   html[data-theme='#{$theme-id}'] {
     /* tailwindcss-intellisense-disable */
@@ -58,10 +82,10 @@ $default-theme-name: 'magenta-mystic'; // Updated default theme
   }
 }
 
-// Generate styles for aliased themes
+// Generate CSS rules for aliased themes.
 @each $alias-name, $target-theme-name in $theme-aliases {
-  $target-meta-data: map.get($theme-registry, $target-theme-name);
-  @if $target-meta-data {
+  @if map.has-key($theme-registry, $target-theme-name) {
+    $target-meta-data: map.get($theme-registry, $target-theme-name);
     $target-theme-map: map.get($target-meta-data, 'map');
     $is-target-dark: map.get($target-meta-data, 'is-dark');
 
@@ -72,6 +96,6 @@ $default-theme-name: 'magenta-mystic'; // Updated default theme
       /* tailwindcss-intellisense-enable */
     }
   } @else {
-    @warn "Theme alias target '#{$target-theme-name}' not found in registry for alias '#{$alias-name}'.";
+    @warn "Theme alias target '#{$target-theme-name}' for alias '#{$alias-name}' not found in main theme registry. Ensure '#{$target-theme-name}' is defined in '$VCA_THEME_DEFINITIONS' and registered in '$theme-registry'.";
   }
 }

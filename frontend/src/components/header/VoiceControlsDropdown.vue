@@ -1,144 +1,281 @@
 // File: frontend/src/components/header/VoiceControlsDropdown.vue
 /**
  * @file VoiceControlsDropdown.vue
- * @description Dropdown for voice input/output controls. Uses shared "Ephemeral Harmony" dropdown styles.
- * @version 2.2.0 - Adopted shared dropdown styles.
+ * @description Dropdown component for managing voice input/output settings,
+ * including audio input mode, STT preference, global TTS mute, and future selection of specific TTS voices.
+ * It adheres to the "Ephemeral Harmony" design system, utilizing shared dropdown styles.
+ *
+ * @component VoiceControlsDropdown
+ * @props None. Reads and updates settings directly via `voiceSettingsManager`.
+ * @emits None.
+ *
+ * @example
+ * <VoiceControlsDropdown />
+ * @version 1.1.1 - Corrected TypeScript errors, removed unused imports based on template usage.
  */
 <script setup lang="ts">
-// ... (script content remains the same as provided in "Header Revamp Batch 1")
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
-import { voiceSettingsManager, type AudioInputMode, type VoiceApplicationSettings } from '@/services/voice.settings.service';
+import { ref, computed, onMounted, onUnmounted, watch, type Ref, type Component as VueComponentType } from 'vue';
+import {
+  voiceSettingsManager,
+  type AudioInputMode,
+  type VoiceApplicationSettings,
+  type STTPreference
+  // TTSProvider is not directly used as a type annotation here after corrections.
+} from '@/services/voice.settings.service';
+
+// Icons - Only importing icons actively used in the template.
 import {
   AdjustmentsHorizontalIcon,
   ChevronDownIcon,
   MicrophoneIcon as PTTModeIcon,
   SpeakerWaveIcon as ContinuousModeIcon,
-  SpeakerWaveIcon, // Unmuted
-  SpeakerXMarkIcon as TTSMutedIcon,
   CpuChipIcon as VADModeIcon,
-  CheckIcon,
+  SpeakerWaveIcon as TTSUnmutedIcon,
+  SpeakerXMarkIcon as TTSMutedIcon,
   CloudIcon as WhisperIcon,
   ComputerDesktopIcon as BrowserSTTIcon,
+  ChatBubbleLeftRightIcon as OpenAIVoicesIcon,
+  ServerStackIcon as BrowserVoicesIcon,
+  CheckIcon as SelectedOptionIcon, // Outline CheckIcon is used for selected options
 } from '@heroicons/vue/24/outline';
-import type { Component as VueComponentType } from 'vue';
 
-const settings = voiceSettingsManager.settings;
-const isOpen = ref(false);
-const dropdownRef = ref<HTMLElement | null>(null);
+/** @interface AudioModeOption - Defines structure for audio input mode selection options. */
+interface AudioModeOption {
+  label: string;
+  value: AudioInputMode;
+  icon: VueComponentType;
+  description: string;
+}
 
-const toggleDropdown = () => isOpen.value = !isOpen.value;
-const closeDropdown = () => isOpen.value = false;
+/** @interface STTOption - Defines structure for STT preference selection options. */
+interface STTOption {
+  label: string;
+  value: STTPreference;
+  icon: VueComponentType;
+  description: string;
+}
 
-const handleClickOutside = (event: MouseEvent) => {
+/** @type {VoiceApplicationSettings} settings - Reactive global voice settings object. */
+const settings: VoiceApplicationSettings = voiceSettingsManager.settings;
+
+/** @ref {Ref<boolean>} isOpen - Controls dropdown visibility. */
+const isOpen: Ref<boolean> = ref(false);
+/** @ref {Ref<HTMLElement | null>} dropdownRef - Template ref for click-outside detection. */
+const dropdownRef: Ref<HTMLElement | null> = ref(null);
+
+const toggleDropdown = (): void => { isOpen.value = !isOpen.value; };
+const closeDropdown = (): void => { isOpen.value = false; };
+
+const handleClickOutside = (event: MouseEvent): void => {
   if (dropdownRef.value && !dropdownRef.value.contains(event.target as Node)) {
     closeDropdown();
   }
 };
-onMounted(() => document.addEventListener('mousedown', handleClickOutside));
-onUnmounted(() => document.removeEventListener('mousedown', handleClickOutside));
 
-interface AudioModeOption { label: string; value: AudioInputMode; icon: VueComponentType; description: string; }
+onMounted(() => { document.addEventListener('mousedown', handleClickOutside, true); });
+onUnmounted(() => { document.removeEventListener('mousedown', handleClickOutside, true); });
+
 const audioModeOptions = computed<AudioModeOption[]>(() => [
-  { label: 'Push-to-Talk', value: 'push-to-talk', icon: PTTModeIcon, description: "Hold mic to speak." },
-  { label: 'Continuous', value: 'continuous', icon: ContinuousModeIcon, description: "Mic stays on." },
-  { label: 'Voice Activate', value: 'voice-activation', icon: VADModeIcon, description: "Mic activates on speech." },
+  { label: 'Push-to-Talk', value: 'push-to-talk', icon: PTTModeIcon, description: "Hold microphone button to speak." },
+  { label: 'Continuous', value: 'continuous', icon: ContinuousModeIcon, description: "Microphone stays on, actively listening." },
+  { label: 'Voice Activate ("V")', value: 'voice-activation', icon: VADModeIcon, description: "Say 'V' to activate, then speak command." },
 ]);
-const selectedAudioMode = computed({
+
+const selectedAudioMode = computed<AudioInputMode>({
   get: () => settings.audioInputMode,
-  set: (val) => voiceSettingsManager.updateSetting('audioInputMode', val),
+  set: (val: AudioInputMode) => voiceSettingsManager.updateSetting('audioInputMode', val),
 });
 
-interface STTOption { label: string; value: VoiceApplicationSettings['sttPreference']; icon: VueComponentType; description: string; }
 const sttOptions = computed<STTOption[]>(() => [
-  { label: 'Browser STT', value: 'browser_webspeech_api', icon: BrowserSTTIcon, description: "Fast, uses browser's engine." },
-  { label: 'Whisper API', value: 'whisper_api', icon: WhisperIcon, description: "High accuracy, uses OpenAI." },
+  { label: 'Browser STT', value: 'browser_webspeech_api', icon: BrowserSTTIcon, description: "Fast, uses browser's built-in engine. Quality varies." },
+  { label: 'Whisper API', value: 'whisper_api', icon: WhisperIcon, description: "High accuracy, uses OpenAI. May incur costs." },
 ]);
-const selectedSTTPreference = computed({
+
+const selectedSTTPreference = computed<STTPreference>({
   get: () => settings.sttPreference,
-  set: (val) => voiceSettingsManager.updateSetting('sttPreference', val),
+  set: (val: STTPreference) => voiceSettingsManager.updateSetting('sttPreference', val),
 });
 
-const isGlobalMuteActive = computed({
-    get: () => !settings.autoPlayTts,
-    set: (isMuted) => voiceSettingsManager.updateSetting('autoPlayTts', !isMuted)
+const isGlobalMuteActive = computed<boolean>({
+  get: () => !settings.autoPlayTts,
+  set: (isMuted: boolean) => voiceSettingsManager.updateSetting('autoPlayTts', !isMuted),
 });
-const toggleGlobalMute = () => {
-    isGlobalMuteActive.value = !isGlobalMuteActive.value;
+
+const toggleGlobalMute = (): void => { isGlobalMuteActive.value = !isGlobalMuteActive.value; };
+
+// Placeholders for voice lists - these are used in the template for UI structure
+const placeholderOpenAIVoices = ref([
+  { id: 'openai_alloy', name: 'Alloy (OpenAI)', providerVoiceId: 'alloy' },
+  { id: 'openai_echo', name: 'Echo (OpenAI)', providerVoiceId: 'echo' },
+]);
+const placeholderBrowserVoices = ref([
+  { id: 'browser_sys_eng', name: 'System English (Browser)', providerVoiceId: 'uri:default-en' },
+  { id: 'browser_sys_esp', name: 'System Spanish (Browser)', providerVoiceId: 'uri:default-es' },
+]);
+
+// These selected voice refs are for UI binding if we implement selection within this dropdown
+const selectedOpenAIVoice = ref<string | null>(
+    settings.ttsProvider === 'openai_tts' ? settings.selectedTtsVoiceId : null
+);
+const selectedBrowserVoice = ref<string | null>(
+    settings.ttsProvider === 'browser_tts' ? settings.selectedTtsVoiceId : null
+);
+
+watch(() => settings.audioInputMode, (newVal) => {
+  if (selectedAudioMode.value !== newVal) selectedAudioMode.value = newVal;
+});
+watch(() => settings.sttPreference, (newVal) => {
+  if (selectedSTTPreference.value !== newVal) selectedSTTPreference.value = newVal;
+});
+watch(() => settings.autoPlayTts, (newVal) => {
+  if (isGlobalMuteActive.value === newVal) isGlobalMuteActive.value = !newVal;
+});
+watch(() => settings.selectedTtsVoiceId, (newVal) => {
+    if (settings.ttsProvider === 'openai_tts' && selectedOpenAIVoice.value !== newVal) {
+        selectedOpenAIVoice.value = newVal;
+    } else if (settings.ttsProvider === 'browser_tts' && selectedBrowserVoice.value !== newVal) {
+        selectedBrowserVoice.value = newVal;
+    }
+});
+
+const selectVoice = (voiceId: string | null) => {
+    voiceSettingsManager.updateSetting('selectedTtsVoiceId', voiceId);
 };
 
-watch(() => settings.audioInputMode, (newVal) => { if (selectedAudioMode.value !== newVal) selectedAudioMode.value = newVal; });
-watch(() => settings.sttPreference, (newVal) => { if (selectedSTTPreference.value !== newVal) selectedSTTPreference.value = newVal; });
-watch(() => settings.autoPlayTts, (newVal) => { if (isGlobalMuteActive.value === newVal) isGlobalMuteActive.value = !newVal; });
 </script>
 
 <template>
-  <div class="relative" ref="dropdownRef"> 
+  <div class="relative header-control-item" ref="dropdownRef">
     <button
       @click="toggleDropdown"
-      class="btn btn-ghost-ephemeral btn-icon-ephemeral voice-controls-trigger-button"
-      aria-label="Open Voice Controls"
+      id="voice-controls-trigger-button"
+      class="btn btn-ghost-ephemeral btn-icon-ephemeral direct-header-button"
+      aria-label="Open Voice and Audio Controls"
       :aria-expanded="isOpen"
-      title="Voice Settings"
+      aria-controls="voice-controls-panel"
+      title="Voice & Audio Settings"
     >
       <AdjustmentsHorizontalIcon class="icon-base icon-trigger" />
-       <ChevronDownIcon class="icon-xs chevron-indicator" :class="{'open': isOpen}"/>
+      <ChevronDownIcon class="icon-xs chevron-indicator ml-0.5 transition-transform duration-200" :class="{'rotate-180': isOpen}"/>
     </button>
 
     <Transition name="dropdown-float-enhanced">
       <div
         v-if="isOpen"
-        class="dropdown-panel-ephemeral absolute right-0 mt-2 w-72 origin-top-right"
+        id="voice-controls-panel"
+        class="dropdown-panel-ephemeral absolute right-0 mt-2 w-72 md:w-80 origin-top-right"
         role="menu"
         aria-orientation="vertical"
+        aria-labelledby="voice-controls-trigger-button"
       >
         <div class="dropdown-header-ephemeral">
-          <h3 class="dropdown-title">Voice & Audio</h3>
+          <h3 class="dropdown-title">Voice & Audio Controls</h3>
         </div>
+
         <div class="dropdown-content-ephemeral custom-scrollbar-thin">
           <button
             @click="toggleGlobalMute"
             class="dropdown-item-ephemeral group w-full"
             role="menuitemcheckbox"
-            :aria-checked="isGlobalMuteActive"
+            :aria-checked="!isGlobalMuteActive"
+            title="Toggle Text-to-Speech playback"
           >
-            <component :is="isGlobalMuteActive ? TTSMutedIcon : SpeakerWaveIcon" class="dropdown-item-icon" aria-hidden="true"/>
-            <span>{{ isGlobalMuteActive ? 'Unmute Speech' : 'Mute Speech' }}</span>
-            <span class="status-dot-indicator ml-auto" :class="{'active-dot': !isGlobalMuteActive, 'inactive-dot': isGlobalMuteActive}"></span>
+            <component :is="isGlobalMuteActive ? TTSMutedIcon : TTSUnmutedIcon" class="dropdown-item-icon" aria-hidden="true"/>
+            <span>{{ isGlobalMuteActive ? 'Unmute Speech Output' : 'Mute Speech Output' }}</span>
+            <span class="status-dot-indicator ml-auto w-2.5 h-2.5 rounded-full transition-colors"
+                  :class="isGlobalMuteActive ? 'bg-[hsl(var(--color-error-h),var(--color-error-s),var(--color-error-l))]' : 'bg-[hsl(var(--color-success-h),var(--color-success-s),var(--color-success-l))]'"
+                  :title="isGlobalMuteActive ? 'Speech Output Muted' : 'Speech Output Active'">
+            </span>
           </button>
 
-          <div class="dropdown-divider-ephemeral my-1.5"></div>
+          <div class="dropdown-divider-ephemeral"></div>
 
-          <div class="setting-group-in-dropdown">
-            <label class="setting-group-label-dropdown">Input Mode</label>
-            <div class="options-grid-dropdown">
+          <div class="setting-group-in-dropdown px-1.5 py-1">
+            <label class="dropdown-section-title-ephemeral !mb-1.5 !mt-0">Audio Input Mode</label>
+            <div class="options-grid-dropdown grid grid-cols-3 gap-1.5">
               <button
                 v-for="mode in audioModeOptions" :key="mode.value"
-                @click="selectedAudioMode = mode.value; closeDropdown();"
+                @click="selectedAudioMode = mode.value"
                 class="option-button-dropdown group"
-                :class="{'active': selectedAudioMode === mode.value}" :title="mode.description"
+                :class="{'active': selectedAudioMode === mode.value}"
+                :title="mode.description"
+                role="menuitemradio"
+                :aria-checked="selectedAudioMode === mode.value"
               >
-                <component :is="mode.icon" class="option-icon-dropdown" />
+                <component :is="mode.icon" class="option-icon-dropdown" aria-hidden="true"/>
                 <span class="option-label-dropdown">{{ mode.label }}</span>
               </button>
             </div>
           </div>
 
-          <div class="dropdown-divider-ephemeral my-1.5"></div>
+          <div class="dropdown-divider-ephemeral"></div>
 
-           <div class="setting-group-in-dropdown">
-            <label class="setting-group-label-dropdown">Speech Recognition</label>
-             <div class="options-grid-dropdown">
-                <button
-                    v-for="stt in sttOptions" :key="stt.value"
-                    @click="selectedSTTPreference = stt.value; closeDropdown();"
-                    class="option-button-dropdown group"
-                    :class="{'active': selectedSTTPreference === stt.value}" :title="stt.description"
-                >
-                    <component :is="stt.icon" class="option-icon-dropdown" />
-                    <span class="option-label-dropdown">{{ stt.label }}</span>
-                </button>
+          <div class="setting-group-in-dropdown px-1.5 py-1">
+            <label class="dropdown-section-title-ephemeral !mb-1.5 !mt-0">Speech Recognition (STT)</label>
+            <div class="options-grid-dropdown grid grid-cols-2 gap-1.5">
+              <button
+                v-for="stt in sttOptions" :key="stt.value"
+                @click="selectedSTTPreference = stt.value"
+                class="option-button-dropdown group"
+                :class="{'active': selectedSTTPreference === stt.value}"
+                :title="stt.description"
+                role="menuitemradio"
+                :aria-checked="selectedSTTPreference === stt.value"
+              >
+                <component :is="stt.icon" class="option-icon-dropdown" aria-hidden="true"/>
+                <span class="option-label-dropdown">{{ stt.label }}</span>
+              </button>
             </div>
           </div>
+
+          <div v-if="settings.ttsProvider === 'openai_tts'">
+            <div class="dropdown-divider-ephemeral"></div>
+            <div class="setting-group-in-dropdown px-1.5 py-1">
+              <label class="dropdown-section-title-ephemeral !mb-1.5 !mt-0 flex items-center">
+                <OpenAIVoicesIcon class="section-title-icon-ephemeral" aria-hidden="true" /> OpenAI Voices
+              </label>
+              <div class="voice-list-placeholder">
+                <button
+                  v-for="voice in placeholderOpenAIVoices" :key="voice.id"
+                  @click="selectVoice(voice.id)"
+                  class="dropdown-item-ephemeral !text-xs !py-1.5 !px-2"
+                  :class="{'active font-semibold': selectedOpenAIVoice === voice.id}"
+                  role="menuitemradio" :aria-checked="selectedOpenAIVoice === voice.id"
+                >
+                  {{ voice.name }}
+                  <SelectedOptionIcon v-if="selectedOpenAIVoice === voice.id" class="dropdown-item-icon icon-xs !ml-auto !mr-0" />
+                </button>
+                <p v-if="!placeholderOpenAIVoices.length" class="text-xs text-center py-2 text-[hsl(var(--color-text-muted-h),var(--color-text-muted-s),var(--color-text-muted-l))] italic opacity-75">(OpenAI voices N/A)</p>
+              </div>
+            </div>
+          </div>
+
+           <div v-if="settings.ttsProvider === 'browser_tts'">
+            <div class="dropdown-divider-ephemeral"></div>
+            <div class="setting-group-in-dropdown px-1.5 py-1">
+              <label class="dropdown-section-title-ephemeral !mb-1.5 !mt-0 flex items-center">
+                <BrowserVoicesIcon class="section-title-icon-ephemeral" aria-hidden="true" /> Browser Voices
+              </label>
+              <div class="voice-list-placeholder">
+                 <button
+                  v-for="voice in placeholderBrowserVoices" :key="voice.id"
+                  @click="selectVoice(voice.id)"
+                  class="dropdown-item-ephemeral !text-xs !py-1.5 !px-2"
+                  :class="{'active font-semibold': selectedBrowserVoice === voice.id}"
+                  role="menuitemradio" :aria-checked="selectedBrowserVoice === voice.id"
+                >
+                  {{ voice.name }}
+                  <SelectedOptionIcon v-if="selectedBrowserVoice === voice.id" class="dropdown-item-icon icon-xs !ml-auto !mr-0" />
+                </button>
+                <p v-if="!placeholderBrowserVoices.length" class="text-xs text-center py-2 text-[hsl(var(--color-text-muted-h),var(--color-text-muted-s),var(--color-text-muted-l))] italic opacity-75">(Browser voices N/A or see Settings)</p>
+              </div>
+            </div>
+          </div>
+            <div class="dropdown-divider-ephemeral"></div>
+             <RouterLink :to="{ name: 'Settings', hash: '#audio-voice-settings' }" @click="closeDropdown" role="menuitem" class="dropdown-item-ephemeral group">
+                <AdjustmentsHorizontalIcon class="dropdown-item-icon" aria-hidden="true"/>
+                <span>All Voice Settings</span>
+            </RouterLink>
         </div>
       </div>
     </Transition>
@@ -147,96 +284,86 @@ watch(() => settings.autoPlayTts, (newVal) => { if (isGlobalMuteActive.value ===
 
 <style lang="scss" scoped>
 @use '@/styles/abstracts/variables' as var;
-// Shared dropdown styles are applied via classes like .dropdown-panel-ephemeral etc.
 
-.voice-controls-trigger-button {
-  // Inherits from .btn-ghost-ephemeral.btn-icon-ephemeral from _header.scss
-  display: inline-flex;
-  align-items: center;
-  gap: var.$spacing-xs * 0.3;
-  .icon-trigger { /* size from .icon-base */ }
-  .chevron-indicator {
-    transition: transform 0.2s var.$ease-out-quad;
-    opacity: 0.6;
-    width: 0.8rem; height: 0.8rem;
-    &.open { transform: rotate(180deg); }
-  }
-   &:hover .chevron-indicator, &[aria-expanded="true"] .chevron-indicator {
-    opacity: 0.9;
-  }
+.header-control-item {
+  position: relative;
 }
 
-// Styles for the unique grid layout within this specific dropdown
+.chevron-indicator {
+  opacity: 0.7;
+}
+
 .setting-group-in-dropdown {
-  padding: var.$spacing-xs var.$spacing-xs; // Inner padding for groups
-}
-.setting-group-label-dropdown {
-  display: block;
-  font-size: calc(var.$font-size-xs * 0.9); // Smaller group labels
-  font-weight: 500;
-  color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
-  margin-bottom: var.$spacing-xs;
-  padding-left: var.$spacing-xs;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  opacity: 0.8;
+  padding: var.$spacing-xs var.$spacing-xs;
 }
 
 .options-grid-dropdown {
-  display: grid;
-  // Fit 2 or 3 items per row depending on dropdown width (w-72 -> approx 288px)
-  grid-template-columns: repeat(auto-fit, minmax(85px, 1fr)); 
-  gap: var.$spacing-xs;
+  gap: calc(var.$spacing-xs * 0.75);
 }
 
 .option-button-dropdown {
-  @apply flex flex-col items-center justify-center p-2 rounded-lg text-xs; // Using Tailwind for flex utils
-  background-color: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.3);
-  border: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.2);
+  display: flex; // Ensure flex properties apply for alignment
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var.$spacing-xs;
+  border-radius: var.$radius-lg;
+  text-align: center;
+  background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.4);
+  border: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.25);
   color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
-  transition: all var.$duration-quick;
-  min-height: 56px;
+  transition: all var.$duration-quick var.$ease-out-quad;
+  min-height: 60px;
   cursor: pointer;
 
   .option-icon-dropdown {
-    width: 1.35rem; 
-    height: 1.35rem;
-    margin-bottom: calc(var.$spacing-xs * 0.4);
-    opacity: 0.65;
+    width: 1.4rem;
+    height: 1.4rem;
+    margin-bottom: calc(var.$spacing-xs * 0.3);
+    opacity: 0.75;
   }
   .option-label-dropdown {
     font-weight: 500;
-    font-size: calc(var.$font-size-xs * 0.9); // Tiny labels for these buttons
+    font-size: calc(var.$font-size-xs * 0.9);
     line-height: 1.2;
+    margin-top: auto;
   }
 
   &:hover {
-    background-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.08);
-    border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.3);
+    background-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.12);
+    border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.4);
     color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
-    transform: translateY(-1px);
-    .option-icon-dropdown { opacity: 0.9; }
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-depth-sm);
+    .option-icon-dropdown { opacity: 1; }
   }
 
   &.active {
-    background-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.15);
-    border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.5);
-    color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
+    background-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.25) !important;
+    border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.65) !important;
+    color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l)) !important;
     font-weight: 600;
-    box-shadow: inset 0 1px 2px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.15);
-    .option-icon-dropdown { opacity: 1; }
+    box-shadow: inset 0 1px 3px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), calc(var(--color-accent-interactive-l) - 10%), 0.3),
+                var(--shadow-depth-xs);
+    .option-icon-dropdown { opacity: 1; transform: scale(1.05); }
   }
 }
+.voice-list-placeholder .dropdown-item-ephemeral {
+  padding-top: calc(var.$spacing-xs / 2) !important;
+  padding-bottom: calc(var.$spacing-xs / 2) !important;
+  font-size: var.$font-size-xs !important;
+  font-weight: 400 !important;
 
-.status-dot-indicator { /* Styles from previous version for mute button */ }
-
-.dropdown-float-enhanced-enter-active, /* Using same transition as UserSettingsDropdown */
-.dropdown-float-enhanced-leave-active {
-  transition: opacity 0.25s var.$ease-out-quint, transform 0.3s var.$ease-elastic;
+  &.active {
+    font-weight: 600 !important; // Ensure active voice is distinct
+    background-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.2) !important;
+  }
 }
-.dropdown-float-enhanced-enter-from,
-.dropdown-float-enhanced-leave-to {
-  opacity: 0;
-  transform: translateY(12px) scale(0.92);
+.section-title-icon-ephemeral {
+    width: 0.9em;
+    height: 0.9em;
+    opacity: 0.7;
+    margin-right: calc(var.$spacing-xs * 0.5);
 }
+// Removed empty .status-dot-indicator rule as it's styled via Tailwind in template
 </style>

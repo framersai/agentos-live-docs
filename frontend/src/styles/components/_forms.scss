@@ -4,7 +4,7 @@
  * @description Base styling for form elements (inputs, textareas, selects, toggles)
  * for the "Ephemeral Harmony" theme, featuring neomorphic and holographic touches.
  * Ensures accessibility and consistent theming.
- * @version 2.0.2 - Ensured correct mixin calls and SVG theming.
+ * @version 2.0.3 - Corrected SASS parameter names in mixin calls to use 'fb-' prefix. Ensured calc() usage.
  */
 
 @use '../abstracts/variables' as var;
@@ -15,106 +15,83 @@
   display: block;
   width: 100%;
   padding: var.$spacing-sm var.$spacing-md;
-  font-family: var(--font-sans, #{var.$font-family-sans}); // CSS var with SCSS fallback
+  font-family: var(--font-family-sans, #{var.$font-family-sans});
   font-size: var.$font-size-base-default;
   line-height: var.$line-height-base-default;
   color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
-  // Semi-transparent background, allowing page texture to subtly show through
-  background-color: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.5);
-  border: 1px solid hsl(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l));
-  border-radius: var.$radius-lg; // Consistent, modern radius
+  background-color: hsla(var(--color-bg-secondary-h, var.$default-color-bg-secondary-h), var(--color-bg-secondary-s, var.$default-color-bg-secondary-s), var(--color-bg-secondary-l, var.$default-color-bg-secondary-l), 0.5);
+  border: 1px solid hsl(var(--color-border-primary-h, var.$default-color-border-primary-h), var(--color-border-primary-s, var.$default-color-border-primary-s), var(--color-border-primary-l, var.$default-color-border-primary-l));
+  border-radius: var.$radius-lg;
   transition: border-color var.$duration-quick var.$ease-out-quad,
               box-shadow var.$duration-quick var.$ease-out-quad,
               background-color var.$duration-quick var.$ease-out-quad;
-
-  // Subtle inset shadow for a slightly depressed, tactile look
-  box-shadow: inset 0 1px 3px hsla(var(--shadow-color-h), var(--shadow-color-s), var(--shadow-color-l), 0.1);
+  box-shadow: inset 0 1px 3px hsla(var(--shadow-color-h, var.$default-shadow-color-h), var(--shadow-color-s, var.$default-shadow-color-s), var(--shadow-color-l, var.$default-shadow-color-l), 0.1);
 
   &::placeholder {
     color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
-    opacity: 0.7; // Ensure placeholder text is not too faint
+    opacity: 0.7;
   }
 
   &:focus,
-  &:focus-visible { // Combined for consistent focus styling
-    outline: none; // Remove default browser outline
-    border-color: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.8); // Accent border on focus
-    background-color: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.8); // More opaque on focus
-
-    // Holographic/accented focus glow
-    box-shadow: inset 0 1px 3px hsla(var(--shadow-color-h), var(--shadow-color-s), var(--shadow-color-l), 0.05), // Dimmer inset shadow
-                // Layered shadows for focus ring effect:
-                0 0 0 2px hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.5), // Offset clear space
-                0 0 0 4px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.5), // Main focus ring
-                0 0 12px 2px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.3); // Outer glow
+  &:focus-visible {
+    outline: none;
+    border-color: hsla(var(--color-accent-primary-h, var.$default-color-accent-primary-h), var(--color-accent-primary-s, var.$default-color-accent-primary-s), var(--color-accent-primary-l, var.$default-color-accent-primary-l), 0.8);
+    background-color: hsla(var(--color-bg-secondary-h, var.$default-color-bg-secondary-h), var(--color-bg-secondary-s, var.$default-color-bg-secondary-s), var(--color-bg-secondary-l, var.$default-color-bg-secondary-l), 0.8);
+    box-shadow: inset 0 1px 3px hsla(var(--shadow-color-h, var.$default-shadow-color-h), var(--shadow-color-s, var.$default-shadow-color-s), var(--shadow-color-l, var.$default-shadow-color-l), 0.05),
+                0 0 0 2px hsla(var(--color-bg-primary-h, var.$default-color-bg-primary-h), var(--color-bg-primary-s, var.$default-color-bg-primary-s), var(--color-bg-primary-l, var.$default-color-bg-primary-l), 0.5),
+                0 0 0 4px hsla(var(--color-accent-primary-h, var.$default-color-accent-primary-h), var(--color-accent-primary-s, var.$default-color-accent-primary-s), var(--color-accent-primary-l, var.$default-color-accent-primary-l), 0.5),
+                0 0 12px 2px hsla(var(--color-accent-primary-h, var.$default-color-accent-primary-h), var(--color-accent-primary-s, var.$default-color-accent-primary-s), var(--color-accent-primary-l, var.$default-color-accent-primary-l), 0.3);
   }
 
   &:disabled,
-  &[disabled] { // Styling for disabled state
-    background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.3);
-    border-color: hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.2);
+  &[disabled] {
+    background-color: hsla(var(--color-bg-tertiary-h, var.$default-color-bg-tertiary-h), var(--color-bg-tertiary-s, var.$default-color-bg-tertiary-s), var(--color-bg-tertiary-l, var.$default-color-bg-tertiary-l), 0.3);
+    border-color: hsla(var(--color-border-primary-h, var.$default-color-border-primary-h), var(--color-border-primary-s, var.$default-color-border-primary-s), var(--color-border-primary-l, var.$default-color-border-primary-l), 0.2);
     color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
     cursor: not-allowed;
     opacity: 0.6;
-    box-shadow: none; // Remove shadows on disabled elements
+    box-shadow: none;
   }
 }
 
 // --- Specific Styles for Different Form Elements ---
-
-// For <input type="text">, <input type="email">, etc.
 .form-input {
   @extend .form-element-base;
-  // Any input-specific overrides can go here if needed
 }
 
-// For <textarea>
 .form-textarea {
   @extend .form-element-base;
-  min-height: 120px; // Default min-height, providing ample space
-  resize: vertical;   // Allow vertical resizing by the user
+  min-height: 120px;
+  resize: vertical;
 }
 
-// For <select>
 .form-select {
   @extend .form-element-base;
-  appearance: none; // Remove default browser appearance for select
-  // Custom select arrow using themed SVG.
-  // The fill attribute uses CSS variables directly which should work in modern browsers.
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='rgb(var(--color-text-muted-rgb))'%3E%3Cpath d='M7 10l5 5 5-5H7z'/%3E%3C/svg%3E");
-  // Note: For the SVG fill to work with HSL CSS variables, you might need to set --color-text-muted-rgb as r,g,b values.
-  // Alternatively, use `currentColor` for fill and set the color of .form-select or a wrapper.
-  // If the current approach works across target browsers, it's fine.
-  // A safer way for SVG fill with dynamic HSL: use `currentColor` and control text color.
-  // Or, ensure --color-text-muted-rgb (e.g. '100, 110, 120') is defined by themes.
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='rgb(var(--color-text-muted-rgb, #{var.$default-color-text-muted-h} #{var.$default-color-text-muted-s} #{var.$default-color-text-muted-l}))'%3E%3Cpath d='M7 10l5 5 5-5H7z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right var.$spacing-md center; // Position arrow to the right
-  background-size: 1.5em 1.5em; // Size of the arrow icon
-  padding-right: calc(var.$spacing-md * 2 + 1.5em); // Ensure space for arrow beyond text padding
+  background-position: right var.$spacing-md center;
+  background-size: 1.5em 1.5em;
+  padding-right: calc(#{var.$spacing-md} * 2 + 1.5em); // SASS calc
 
   &:disabled {
-    // SVG for disabled state (more muted arrow)
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='rgba(var(--color-text-muted-rgb), 0.5)'%3E%3Cpath d='M7 10l5 5 5-5H7z'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='rgba(var(--color-text-muted-rgb, #{var.$default-color-text-muted-h} #{var.$default-color-text-muted-s} #{var.$default-color-text-muted-l}), 0.5)'%3E%3Cpath d='M7 10l5 5 5-5H7z'/%3E%3C/svg%3E");
   }
 }
 
-// --- Analog Style Select (More tactile, neomorphic) ---
 .form-select-analog {
-  @extend .form-select; // Inherit base select styles including arrow
-  // Override for analog feel
-  background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.7);
-  border: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.4);
+  @extend .form-select;
+  background-color: hsla(var(--color-bg-tertiary-h, var.$default-color-bg-tertiary-h), var(--color-bg-tertiary-s, var.$default-color-bg-tertiary-s), var(--color-bg-tertiary-l, var.$default-color-bg-tertiary-l), 0.7);
+  border: 1px solid hsla(var(--color-border-primary-h, var.$default-color-border-primary-h), var(--color-border-primary-s, var.$default-color-border-primary-s), var(--color-border-primary-l, var.$default-color-border-primary-l), 0.4);
   
-  // Apply neomorphic inset effect
   @include mixins.neomorphic-inset(
-    $fill-color-var-prefix: '--color-bg-tertiary', // Base fill from tertiary
+    $fill-color-var-prefix: '--color-bg-tertiary',
     $blur: 2px, $distance: 4px,
     $shadow-opacity-var: '--shadow-opacity-soft',
     $radius: var.$radius-lg,
     $shadow-h-var: '--shadow-color-h', $shadow-s-var: '--shadow-color-s', $shadow-l-var: '--shadow-color-l',
     $highlight-l-modifier-css-var: '--shadow-highlight-modifier',
-    // SCSS Fallbacks
-    $fb-fill-h: var.$default-color-bg-tertiary-h, $fb-fill-s: var.$default-color-bg-tertiary-s, $fb-fill-l: var.$default-color-bg-tertiary-l,
+    $fb-fill-h: var.$default-color-bg-tertiary-h, $fb-fill-s: var.$default-color-bg-tertiary-s, $fb-fill-l: var.$default-color-bg-tertiary-l, $fb-fill-a: var.$fb-fill-a, // Use correct fallback alpha var
     $fb-shadow-op: var.$default-shadow-opacity-soft,
     $fb-shadow-h: var.$default-shadow-color-h, $fb-shadow-s: var.$default-shadow-color-s, $fb-shadow-l: var.$default-shadow-color-l,
     $fb-highlight-l-factor: var.$default-shadow-highlight-l-factor
@@ -123,20 +100,17 @@
   &:focus,
   &:focus-visible {
     border-color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
-    // Focus glow inherits from .form-element-base focus style
   }
 }
 
-// --- Toggle Switch (Analog, neomorphic style) ---
 .toggle-switch-analog {
-  display: inline-flex; // Align items correctly
+  display: inline-flex;
   align-items: center;
-  position: relative;   // For positioning knob
+  position: relative;
   cursor: pointer;
-  height: 28px;         // Define switch height
-  width: 52px;          // Define switch width
+  height: 28px;
+  width: 52px;
 
-  // Hidden actual checkbox input, used for state and accessibility
   .toggle-switch-input {
     position: absolute;
     opacity: 0;
@@ -144,32 +118,27 @@
     height: 0;
   }
 
-  // The track of the switch
   .toggle-switch-track {
     width: 100%;
     height: 100%;
-    background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.6);
-    border-radius: var.$radius-full; // Pill shape
+    background-color: hsla(var(--color-bg-tertiary-h, var.$default-color-bg-tertiary-h), var(--color-bg-tertiary-s, var.$default-color-bg-tertiary-s), var(--color-bg-tertiary-l, var.$default-color-bg-tertiary-l), 0.6);
+    border-radius: var.$radius-full;
     transition: background-color var.$duration-quick var.$ease-out-quad;
     
-    // Inset neomorphic effect for the track
     @include mixins.neomorphic-inset(
-      $fill-color-var-prefix: '--color-bg-tertiary', $fb-fill-a: 0.6, // Specify alpha for fill
+      $fill-color-var-prefix: '--color-bg-tertiary', $fb-fill-a: 0.6,
       $blur: 2px, $distance: 3px,
-      $shadow-opacity-var: '--shadow-opacity-soft', $fb-shadow-op: 0.05, // Softer opacity for track shadow
+      $shadow-opacity-var: '--shadow-opacity-soft', $fb-shadow-op: 0.05,
       $radius: var.$radius-full,
       $shadow-h-var: '--shadow-color-h', $shadow-s-var: '--shadow-color-s', $shadow-l-var: '--shadow-color-l',
       $highlight-l-modifier-css-var: '--shadow-highlight-modifier',
-      // SCSS Fallbacks
       $fb-fill-h: var.$default-color-bg-tertiary-h, $fb-fill-s: var.$default-color-bg-tertiary-s, $fb-fill-l: var.$default-color-bg-tertiary-l,
       $fb-shadow-h: var.$default-shadow-color-h, $fb-shadow-s: var.$default-shadow-color-s, $fb-shadow-l: var.$default-shadow-color-l,
       $fb-highlight-l-factor: var.$default-shadow-highlight-l-factor
     );
 
-    // Checked state styling for the track
-    .toggle-switch-input:checked + & { // Select track when input is checked
-      background-color: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.7); // Accent color when checked
-      // Re-apply inset with accent color
+    .toggle-switch-input:checked + & {
+      background-color: hsla(var(--color-accent-primary-h, var.$default-color-accent-primary-h), var(--color-accent-primary-s, var.$default-color-accent-primary-s), var(--color-accent-primary-l, var.$default-color-accent-primary-l), 0.7);
       @include mixins.neomorphic-inset(
         $fill-color-var-prefix: '--color-accent-primary', $fb-fill-a: 0.7,
         $blur: 2px, $distance: 3px,
@@ -177,7 +146,6 @@
         $radius: var.$radius-full,
         $shadow-h-var: '--shadow-color-h', $shadow-s-var: '--shadow-color-s', $shadow-l-var: '--shadow-color-l',
         $highlight-l-modifier-css-var: '--shadow-highlight-modifier',
-        // SCSS Fallbacks
         $fb-fill-h: var.$default-color-accent-primary-h, $fb-fill-s: var.$default-color-accent-primary-s, $fb-fill-l: var.$default-color-accent-primary-l,
         $fb-shadow-h: var.$default-shadow-color-h, $fb-shadow-s: var.$default-shadow-color-s, $fb-shadow-l: var.$default-shadow-color-l,
         $fb-highlight-l-factor: var.$default-shadow-highlight-l-factor
@@ -185,44 +153,38 @@
     }
   }
 
-  // The knob of the switch
   .toggle-switch-knob {
     position: absolute;
-    top: 3px;   // Offset from track edge
-    left: 3px;  // Offset from track edge
-    width: 22px;  // Knob size
-    height: 22px; // Knob size
-    background-color: hsl(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l)); // Solid knob
-    border-radius: 50%; // Circular knob
-    transition: transform var.$duration-smooth var.$ease-elastic; // Elastic transition for movement
+    top: 3px;
+    left: 3px;
+    width: 22px;
+    height: 22px;
+    background-color: hsl(var(--color-bg-primary-h, var.$default-color-bg-primary-h), var(--color-bg-primary-s, var.$default-color-bg-primary-s), var(--color-bg-primary-l, var.$default-color-bg-primary-l));
+    border-radius: 50%;
+    transition: transform var.$duration-smooth var.$ease-elastic;
     
-    // Extruded neomorphic effect for the knob
     @include mixins.neomorphic-extrude(
-      $bg-color-var-prefix: '--color-bg-primary',
+      $bg-color-var-prefix: '--color-bg-primary', $fb-bg-a: var.$fb-bg-a, // Use correct fallback alpha var
       $distance: 2px, $blur: 4px,
-      $shadow-opacity-var: '--shadow-opacity-medium', $fb-shadow-op: 0.15, // Slightly stronger shadow for knob
+      $shadow-opacity-var: '--shadow-opacity-medium', $fb-shadow-op: 0.15,
       $radius: 50%,
       $shadow-h-var: '--shadow-color-h', $shadow-s-var: '--shadow-color-s', $shadow-l-var: '--shadow-color-l',
       $highlight-l-modifier-css-var: '--shadow-highlight-modifier',
-      // SCSS Fallbacks
       $fb-bg-h: var.$default-color-bg-primary-h, $fb-bg-s: var.$default-color-bg-primary-s, $fb-bg-l: var.$default-color-bg-primary-l,
       $fb-shadow-h: var.$default-shadow-color-h, $fb-shadow-s: var.$default-shadow-color-s, $fb-shadow-l: var.$default-shadow-color-l,
       $fb-highlight-l-factor: var.$default-shadow-highlight-l-factor
     );
 
-    // Checked state styling for the knob
-    .toggle-switch-input:checked ~ & { // Sibling combinator to style knob based on input state
-      transform: translateX(24px); // Move knob to the right (track width - knob width - 2*offset)
-      background-color: hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l)); // Change knob color when active
-      // Re-apply extrusion with new background color
+    .toggle-switch-input:checked ~ & {
+      transform: translateX(24px);
+      background-color: hsl(var(--color-accent-secondary-h, var.$default-color-accent-secondary-h), var(--color-accent-secondary-s, var.$default-color-accent-secondary-s), var(--color-accent-secondary-l, var.$default-color-accent-secondary-l));
       @include mixins.neomorphic-extrude(
-        $bg-color-var-prefix: '--color-accent-secondary',
+        $bg-color-var-prefix: '--color-accent-secondary', $fb-bg-a: var.$fb-bg-a, // Use correct fallback alpha var
         $distance: 2px, $blur: 4px,
         $shadow-opacity-var: '--shadow-opacity-medium', $fb-shadow-op: 0.15,
         $radius: 50%,
         $shadow-h-var: '--shadow-color-h', $shadow-s-var: '--shadow-color-s', $shadow-l-var: '--shadow-color-l',
         $highlight-l-modifier-css-var: '--shadow-highlight-modifier',
-        // SCSS Fallbacks
         $fb-bg-h: var.$default-color-accent-secondary-h, $fb-bg-s: var.$default-color-accent-secondary-s, $fb-bg-l: var.$default-color-accent-secondary-l,
         $fb-shadow-h: var.$default-shadow-color-h, $fb-shadow-s: var.$default-shadow-color-s, $fb-shadow-l: var.$default-shadow-color-l,
         $fb-highlight-l-factor: var.$default-shadow-highlight-l-factor
@@ -230,7 +192,6 @@
     }
   }
 
-  // Focus state for accessibility on the hidden input, applied to the track
   .toggle-switch-input:focus-visible + .toggle-switch-track {
     @include mixins.focus-ring(
       $base-bg-color-var-prefix: '--color-bg-primary', 
