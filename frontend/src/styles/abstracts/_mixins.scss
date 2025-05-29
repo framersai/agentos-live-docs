@@ -1,65 +1,131 @@
+// File: frontend/src/styles/abstracts/_mixins.scss
 /**
  * @file _mixins.scss
  * @description SCSS mixins for creating reusable style patterns like neomorphism,
  * glassmorphism, holographic effects, text effects, custom scrollbars,
  * and focus states. These mixins leverage CSS Custom Properties for theming
  * and SCSS variables for configuration and fallbacks.
- * @version 3.0.4 - Added alpha support for fill/background in neomorphic mixins.
+ * They are central to implementing the "Ephemeral Harmony" design system's visual language.
+ *
+ * @role Provides reusable styling logic for various UI effects and components.
+ * @dependencies `_variables.scss` (for default SCSS fallback values, radii, durations, easing functions).
+ * @assumptions CSS Custom Properties (e.g., --color-bg-primary-h, --shadow-opacity-soft) are correctly defined by the theme engine.
+ * @version 3.0.6 - Standardized parameter names for fill/background alpha fallbacks. Enhanced JSDoc for clarity.
  */
 
 @use 'sass:math';
 @use 'sass:color';
-@use './variables' as var; // Ensure this path is correct relative to where this file is used or compiled from.
+@use './variables' as var; // Provides SCSS fallback variables
 
 // --- Utility Function for HSL(A) CSS Variable Consumption ---
-// Helper to construct hsla string from CSS variable prefixes.
-// $default-h, $default-s, $default-l, $default-a are SCSS fallbacks if CSS vars are not defined.
+/**
+ * @function get-themed-hsla
+ * @description Constructs an hsl() or hsla() CSS function string using CSS custom properties for HSL components and an optional alpha component.
+ * Provides SCSS fallbacks if the CSS variables are not defined.
+ *
+ * @param {String} $h-var-name - The CSS custom property name for Hue (e.g., '--color-bg-primary-h').
+ * @param {String} $s-var-name - The CSS custom property name for Saturation.
+ * @param {String} $l-var-name - The CSS custom property name for Lightness.
+ * @param {String | Null} $a-var-name - The CSS custom property name for Alpha (optional). If null or an empty string, hsl() might be generated based on $default-a.
+ * @param {Number} $default-h - SCSS fallback value for Hue.
+ * @param {Percentage} $default-s - SCSS fallback value for Saturation.
+ * @param {Percentage} $default-l - SCSS fallback value for Lightness.
+ * @param {Number} $default-a - SCSS fallback value for Alpha. Used if $a-var-name is provided and resolves to null, or if $a-var-name is null/empty and an hsla() is desired.
+ * @returns {String} An hsl() or hsla() CSS function string.
+ */
 @function get-themed-hsla($h-var-name, $s-var-name, $l-var-name, $a-var-name: null, $default-h: 0, $default-s: 0%, $default-l: 0%, $default-a: 1) {
   $resolved-h: var(#{$h-var-name}, $default-h);
   $resolved-s: var(#{$s-var-name}, $default-s);
   $resolved-l: var(#{$l-var-name}, $default-l);
-  @if $a-var-name {
+
+  // Check if an alpha variable name is provided and is not an empty string
+  @if $a-var-name != null and $a-var-name != '' {
     $resolved-a: var(#{$a-var-name}, $default-a);
     @return hsla(#{$resolved-h}, #{$resolved-s}, #{$resolved-l}, #{$resolved-a});
   } @else {
-    // If $a-var-name is not provided, but $default-a is not 1, it implies hsla is still desired.
-    // However, to keep distinct hsl and hsla paths, we check if $default-a indicates transparency.
-    // For robust explicit hsl vs hsla, the caller should be clear.
-    // Given the function signature, if $a-var-name is null, we produce hsl.
-    @return hsl(#{$resolved-h}, #{$resolved-s}, #{$resolved-l});
+    // If no explicit alpha variable, decide based on the default alpha value.
+    // If default alpha implies transparency, use hsla, otherwise hsl.
+    @if $default-a < 1 {
+      @return hsla(#{$resolved-h}, #{$resolved-s}, #{$resolved-l}, #{$default-a});
+    } @else {
+      @return hsl(#{$resolved-h}, #{$resolved-s}, #{$resolved-l});
+    }
   }
 }
 
 // -----------------------------------------------------------------------------
 // Glassmorphism
 // -----------------------------------------------------------------------------
+/**
+ * @mixin glassmorphic-pane
+ * @description Applies a glassmorphic effect to an element, characterized by a blurred,
+ * semi-transparent background, subtle border, and soft shadow.
+ *
+ * @param {String} $bg-color-css-var-prefix - Prefix for background color HSL and Alpha CSS variables (e.g., '--color-bg-glass'). Appends '-h', '-s', '-l', '-a'.
+ * @param {String} $border-color-css-var-prefix - Prefix for border color HSL and Alpha CSS variables.
+ * @param {String} $blur-amount-css-var - CSS variable for the backdrop-filter blur amount (e.g., '--blur-glass').
+ * @param {String} $shadow-css-var - CSS variable for the box-shadow string (e.g., '--shadow-depth-md').
+ * @param {Number} $fb-bg-h - SCSS fallback for background Hue.
+ * @param {Percentage} $fb-bg-s - SCSS fallback for background Saturation.
+ * @param {Percentage} $fb-bg-l - SCSS fallback for background Lightness.
+ * @param {Number} $fb-bg-a - SCSS fallback for background Alpha.
+ * @param {Number} $fb-border-h - SCSS fallback for border Hue.
+ * @param {Percentage} $fb-border-s - SCSS fallback for border Saturation.
+ * @param {Percentage} $fb-border-l - SCSS fallback for border Lightness.
+ * @param {Number} $fb-border-a - SCSS fallback for border Alpha.
+ * @param {String} $fb-blur - SCSS fallback for blur amount (e.g., '10px').
+ * @param {String} $fb-shadow - SCSS fallback for the full box-shadow string.
+ */
 @mixin glassmorphic-pane(
   $bg-color-css-var-prefix: '--color-bg-glass',
   $border-color-css-var-prefix: '--color-border-glass',
   $blur-amount-css-var: '--blur-glass',
   $shadow-css-var: '--shadow-depth-md',
   // SCSS Fallbacks for CSS Variables:
-  $default-bg-h: var.$default-color-bg-glass-h, $default-bg-s: var.$default-color-bg-glass-s, $default-bg-l: var.$default-color-bg-glass-l, $default-bg-a: var.$default-color-bg-glass-a,
-  $default-border-h: var.$default-color-border-glass-h, $default-border-s: var.$default-color-border-glass-s, $default-border-l: var.$default-color-border-glass-l, $default-border-a: var.$default-color-border-glass-a,
-  $default-blur: var.$default-blur-glass,
-  $default-shadow: var.$scss-box-shadow-md
+  $fb-bg-h: var.$default-color-bg-glass-h, $fb-bg-s: var.$default-color-bg-glass-s, $fb-bg-l: var.$default-color-bg-glass-l, $fb-bg-a: var.$default-color-bg-glass-a,
+  $fb-border-h: var.$default-color-border-glass-h, $fb-border-s: var.$default-color-border-glass-s, $fb-border-l: var.$default-color-border-glass-l, $fb-border-a: var.$default-color-border-glass-a,
+  $fb-blur: var.$default-blur-glass,
+  $fb-shadow: var.$scss-box-shadow-md
 ) {
   background-color: get-themed-hsla(
     #{$bg-color-css-var-prefix}-h, #{$bg-color-css-var-prefix}-s, #{$bg-color-css-var-prefix}-l, #{$bg-color-css-var-prefix}-a,
-    $default-bg-h, $default-bg-s, $default-bg-l, $default-bg-a
+    $fb-bg-h, $fb-bg-s, $fb-bg-l, $fb-bg-a
   );
-  backdrop-filter: blur(var(#{$blur-amount-css-var}, #{$default-blur}));
-  -webkit-backdrop-filter: blur(var(#{$blur-amount-css-var}, #{$default-blur}));
+  backdrop-filter: blur(var(#{$blur-amount-css-var}, #{$fb-blur}));
+  -webkit-backdrop-filter: blur(var(#{$blur-amount-css-var}, #{$fb-blur}));
   border: 1px solid get-themed-hsla(
     #{$border-color-css-var-prefix}-h, #{$border-color-css-var-prefix}-s, #{$border-color-css-var-prefix}-l, #{$border-color-css-var-prefix}-a,
-    $default-border-h, $default-border-s, $default-border-l, $default-border-a
+    $fb-border-h, $fb-border-s, $fb-border-l, $fb-border-a
   );
-  box-shadow: var(#{$shadow-css-var}, #{$default-shadow});
+  box-shadow: var(#{$shadow-css-var}, #{$fb-shadow});
 }
 
 // -----------------------------------------------------------------------------
 // Neomorphism
 // -----------------------------------------------------------------------------
+/**
+ * @mixin neomorphic-inset
+ * @description Applies an inset neomorphic effect, making the element appear pressed into the UI.
+ *
+ * @param {String} $fill-color-var-prefix - Prefix for the element's background HSL and Alpha CSS variables (e.g., '--color-bg-secondary'). Appends '-h', '-s', '-l', '-a'.
+ * @param {String} $blur - Blur radius for shadows (e.g., '8px').
+ * @param {String} $distance - Distance for shadows (e.g., '4px').
+ * @param {String} $shadow-opacity-var - CSS variable for shadow opacity (e.g., '--shadow-opacity-soft').
+ * @param {String} $radius - Border radius for the element (e.g., 'var.$radius-md').
+ * @param {String} $shadow-h-var - CSS variable for shadow Hue.
+ * @param {String} $shadow-s-var - CSS variable for shadow Saturation.
+ * @param {String} $shadow-l-var - CSS variable for shadow Lightness.
+ * @param {String} $highlight-l-modifier-css-var - CSS variable for shadow highlight lightness modifier (e.g., an increment like '+10%').
+ * @param {Number} $fb-fill-h - SCSS fallback for fill Hue.
+ * @param {Percentage} $fb-fill-s - SCSS fallback for fill Saturation.
+ * @param {Percentage} $fb-fill-l - SCSS fallback for fill Lightness.
+ * @param {Number} $fb-fill-a - SCSS fallback for fill Alpha.
+ * @param {Number} $fb-shadow-op - SCSS fallback for shadow opacity.
+ * @param {Number} $fb-shadow-h - SCSS fallback for shadow Hue.
+ * @param {Percentage} $fb-shadow-s - SCSS fallback for shadow Saturation.
+ * @param {Percentage} $fb-shadow-l - SCSS fallback for shadow Lightness.
+ * @param {Number} $fb-highlight-l-factor - SCSS fallback for highlight lightness factor (e.g., 0.25 for +25%).
+ */
 @mixin neomorphic-inset(
   $fill-color-var-prefix: '--color-bg-secondary',
   $blur: 8px,
@@ -74,7 +140,7 @@
   $fb-fill-h: var.$default-color-bg-secondary-h,
   $fb-fill-s: var.$default-color-bg-secondary-s,
   $fb-fill-l: var.$default-color-bg-secondary-l,
-  $fb-fill-a: 1, // <<< ADDED new parameter with default (1 for opaque)
+  $fb-fill-a: 1, // Default to opaque for fill
   $fb-shadow-op: var.$default-shadow-opacity-soft,
   $fb-shadow-h: var.$default-shadow-color-h,
   $fb-shadow-s: var.$default-shadow-color-s,
@@ -82,20 +148,20 @@
   $fb-highlight-l-factor: var.$default-shadow-highlight-l-factor
 ) {
   border-radius: $radius;
-  // MODIFIED to use get-themed-hsla for background color, supporting alpha
   background-color: get-themed-hsla(
-    #{$fill-color-var-prefix}-h, // CSS Var name for Hue
-    #{$fill-color-var-prefix}-s, // CSS Var name for Saturation
-    #{$fill-color-var-prefix}-l, // CSS Var name for Lightness
-    #{$fill-color-var-prefix}-a, // CSS Var name for Alpha (e.g., --color-bg-secondary-a)
-    $fb-fill-h,                  // SCSS Fallback for Hue
-    $fb-fill-s,                  // SCSS Fallback for Saturation
-    $fb-fill-l,                  // SCSS Fallback for Lightness
-    $fb-fill-a                   // SCSS Fallback for Alpha (from new parameter)
+    #{$fill-color-var-prefix}-h,
+    #{$fill-color-var-prefix}-s,
+    #{$fill-color-var-prefix}-l,
+    #{$fill-color-var-prefix}-a, // CSS Variable for Alpha
+    $fb-fill-h,
+    $fb-fill-s,
+    $fb-fill-l,
+    $fb-fill-a // SCSS Fallback for Alpha
   );
 
   $scss-shadow-base-l: $fb-shadow-l;
   $scss-highlight-l: min(100%, $scss-shadow-base-l + ($scss-shadow-base-l * $fb-highlight-l-factor));
+  $scss-highlight-l: max(0%, $scss-highlight-l);
 
   $dark-shadow-color-val: hsla(
     var(#{$shadow-h-var}, $fb-shadow-h),
@@ -104,10 +170,11 @@
     var(#{$shadow-opacity-var}, $fb-shadow-op)
   );
 
+  $highlight-l-difference-fallback: $scss-highlight-l - $scss-shadow-base-l;
   $light-shadow-color-val: hsla(
     var(#{$shadow-h-var}, $fb-shadow-h),
     var(#{$shadow-s-var}, $fb-shadow-s),
-    var(--shadow-color-highlight-l, calc(var(#{$shadow-l-var}, #{$scss-shadow-base-l}) + var(#{$highlight-l-modifier-css-var}, #{($scss-highlight-l - $scss-shadow-base-l)}))),
+    calc(var(#{$shadow-l-var}, #{$scss-shadow-base-l}) + var(#{$highlight-l-modifier-css-var}, #{$highlight-l-difference-fallback})),
     var(#{$shadow-opacity-var}, $fb-shadow-op)
   );
 
@@ -115,21 +182,44 @@
               inset #{-$distance} #{-$distance} #{$blur} #{$light-shadow-color-val};
 }
 
+/**
+ * @mixin neomorphic-extrude
+ * @description Applies an extruded neomorphic effect, making the element appear to protrude from the UI.
+ *
+ * @param {String} $bg-color-var-prefix - Prefix for background HSL and Alpha CSS variables (e.g., '--color-bg-primary').
+ * @param {String} $distance - Shadow distance.
+ * @param {String} $blur - Shadow blur.
+ * @param {String} $shadow-opacity-var - CSS variable for shadow opacity.
+ * @param {String} $radius - Border radius.
+ * @param {String} $shadow-h-var - CSS variable for shadow Hue.
+ * @param {String} $shadow-s-var - CSS variable for shadow Saturation.
+ * @param {String} $shadow-l-var - CSS variable for shadow Lightness.
+ * @param {String} $highlight-l-modifier-css-var - CSS variable for highlight lightness modifier.
+ * @param {Number} $fb-bg-h - SCSS fallback for background Hue.
+ * @param {Percentage} $fb-bg-s - SCSS fallback for background Saturation.
+ * @param {Percentage} $fb-bg-l - SCSS fallback for background Lightness.
+ * @param {Number} $fb-bg-a - SCSS fallback for background Alpha.
+ * @param {Number} $fb-shadow-op - SCSS fallback for shadow opacity.
+ * @param {Number} $fb-shadow-h - SCSS fallback for shadow Hue.
+ * @param {Percentage} $fb-shadow-s - SCSS fallback for shadow Saturation.
+ * @param {Percentage} $fb-shadow-l - SCSS fallback for shadow Lightness.
+ * @param {Number} $fb-highlight-l-factor - SCSS fallback for highlight lightness factor.
+ */
 @mixin neomorphic-extrude(
-  $bg-color-var-prefix: '--color-bg-primary', // Changed from $fill-color-var-prefix for consistency
+  $bg-color-var-prefix: '--color-bg-primary',
   $distance: 6px,
   $blur: 12px,
   $shadow-opacity-var: '--shadow-opacity-soft',
   $radius: var.$radius-lg,
   $shadow-h-var: '--shadow-color-h',
-  $shadow-s-var: '--shadow-color-s', // Corrected from '--color-shadow-s'
+  $shadow-s-var: '--shadow-color-s',
   $shadow-l-var: '--shadow-color-l',
   $highlight-l-modifier-css-var: '--shadow-highlight-modifier',
   // SCSS Fallbacks
-  $fb-bg-h: var.$default-color-bg-primary-h, // fb-bg-* for background
+  $fb-bg-h: var.$default-color-bg-primary-h,
   $fb-bg-s: var.$default-color-bg-primary-s,
   $fb-bg-l: var.$default-color-bg-primary-l,
-  $fb-bg-a: 1, // <<< ADDED new parameter with default (1 for opaque)
+  $fb-bg-a: 1, // Default to opaque for background
   $fb-shadow-op: var.$default-shadow-opacity-soft,
   $fb-shadow-h: var.$default-shadow-color-h,
   $fb-shadow-s: var.$default-shadow-color-s,
@@ -137,20 +227,20 @@
   $fb-highlight-l-factor: var.$default-shadow-highlight-l-factor
 ) {
   border-radius: $radius;
-  // MODIFIED to use get-themed-hsla for background color, supporting alpha
   background-color: get-themed-hsla(
-    #{$bg-color-var-prefix}-h,   // CSS Var name for Hue
-    #{$bg-color-var-prefix}-s,   // CSS Var name for Saturation
-    #{$bg-color-var-prefix}-l,   // CSS Var name for Lightness
-    #{$bg-color-var-prefix}-a,   // CSS Var name for Alpha (e.g., --color-bg-primary-a)
-    $fb-bg-h,                    // SCSS Fallback for Hue
-    $fb-bg-s,                    // SCSS Fallback for Saturation
-    $fb-bg-l,                    // SCSS Fallback for Lightness
-    $fb-bg-a                     // SCSS Fallback for Alpha (from new parameter)
+    #{$bg-color-var-prefix}-h,
+    #{$bg-color-var-prefix}-s,
+    #{$bg-color-var-prefix}-l,
+    #{$bg-color-var-prefix}-a, // CSS Variable for Alpha
+    $fb-bg-h,
+    $fb-bg-s,
+    $fb-bg-l,
+    $fb-bg-a // SCSS Fallback for Alpha
   );
 
   $scss-shadow-base-l: $fb-shadow-l;
   $scss-highlight-l: min(100%, $scss-shadow-base-l + ($scss-shadow-base-l * $fb-highlight-l-factor));
+  $scss-highlight-l: max(0%, $scss-highlight-l);
 
   $dark-shadow-color-val: hsla(
     var(#{$shadow-h-var}, $fb-shadow-h),
@@ -159,10 +249,11 @@
     var(#{$shadow-opacity-var}, $fb-shadow-op)
   );
 
+  $highlight-l-difference-fallback: $scss-highlight-l - $scss-shadow-base-l;
   $light-shadow-color-val: hsla(
     var(#{$shadow-h-var}, $fb-shadow-h),
     var(#{$shadow-s-var}, $fb-shadow-s),
-    var(--shadow-color-highlight-l, calc(var(#{$shadow-l-var}, #{$scss-shadow-base-l}) + var(#{$highlight-l-modifier-css-var}, #{($scss-highlight-l - $scss-shadow-base-l)}))),
+    calc(var(#{$shadow-l-var}, #{$scss-shadow-base-l}) + var(#{$highlight-l-modifier-css-var}, #{$highlight-l-difference-fallback})),
     var(#{$shadow-opacity-var}, $fb-shadow-op)
   );
 
@@ -170,10 +261,27 @@
               #{-$distance} #{-$distance} #{$blur} #{$light-shadow-color-val};
 }
 
-// ... (rest of the _mixins.scss file: Holographic, Text Effects, Focus, Scrollbar)
 // -----------------------------------------------------------------------------
 // Holographic Effects
 // -----------------------------------------------------------------------------
+/**
+ * @mixin holographic-border-glow
+ * @description Creates an animated, conic-gradient border that gives a holographic glow effect.
+ *
+ * @param {String} $accent-color-var-prefix - Prefix for the primary HSL(A) CSS variables for the glow gradient.
+ * @param {String} $secondary-accent-var-prefix - Prefix for the secondary HSL(A) CSS variables for the glow.
+ * @param {String} $border-width - Width of the glowing border (e.g., '2px').
+ * @param {String} $animation-duration - Duration for one full rotation of the conic gradient (e.g., '3s').
+ * @param {String} $radius - Border radius to match the parent element.
+ * @param {Number} $fb-glow1-h - Fallback Hue for primary glow color.
+ * @param {Percentage} $fb-glow1-s - Fallback Saturation for primary glow color.
+ * @param {Percentage} $fb-glow1-l - Fallback Lightness for primary glow color.
+ * @param {Number} $fb-glow1-a - Fallback Alpha for primary glow color.
+ * @param {Number} $fb-glow2-h - Fallback Hue for secondary glow color.
+ * @param {Percentage} $fb-glow2-s - Fallback Saturation for secondary glow color.
+ * @param {Percentage} $fb-glow2-l - Fallback Lightness for secondary glow color.
+ * @param {Number} $fb-glow2-a - Fallback Alpha for secondary glow color.
+ */
 @mixin holographic-border-glow(
   $accent-color-var-prefix: '--color-holographic-glow-1',
   $secondary-accent-var-prefix: '--color-holographic-glow-2',
@@ -204,7 +312,7 @@
     mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
-    animation: spin #{$animation-duration} linear infinite;
+    animation: spin #{$animation-duration} linear infinite; // Ensure 'spin' keyframes are defined globally
     z-index: -1;
   }
 }
@@ -212,26 +320,63 @@
 // -----------------------------------------------------------------------------
 // Text Effects
 // -----------------------------------------------------------------------------
+/**
+ * @mixin text-glow
+ * @description Applies a subtle, themeable text-shadow glow to text.
+ *
+ * @param {String} $glow-color-var-prefix - Prefix for HSL(A) CSS variables for the glow color.
+ * @param {String} $glow-radius - Blur radius for the text-shadow (e.g., '6px').
+ * @param {Number} $fb-glow-h - Fallback Hue.
+ * @param {Percentage} $fb-glow-s - Fallback Saturation.
+ * @param {Percentage} $fb-glow-l - Fallback Lightness.
+ * @param {Number} $fb-glow-a - Fallback Alpha.
+ */
 @mixin text-glow(
   $glow-color-var-prefix: '--color-accent-glow',
   $glow-radius: 6px,
   // SCSS Fallbacks for glow color HSL(A)
   $fb-glow-h: var.$default-color-accent-glow-h, $fb-glow-s: var.$default-color-accent-glow-s, $fb-glow-l: var.$default-color-accent-glow-l, $fb-glow-a: var.$default-color-accent-glow-a
 ) {
-  text-shadow: 0 0 $glow-radius get-themed-hsla(#{$glow-color-var-prefix}-h, #{$glow-color-var-prefix}-s, #{$glow-color-var-prefix}-l, #{$glow-color-var-prefix}-a, $fb-glow-h, $fb-glow-s, $fb-glow-l, $fb-glow-a);
+  text-shadow: 0 0 $glow-radius get-themed-hsla(
+    #{$glow-color-var-prefix}-h, #{$glow-color-var-prefix}-s, #{$glow-color-var-prefix}-l, #{$glow-color-var-prefix}-a,
+    $fb-glow-h, $fb-glow-s, $fb-glow-l, $fb-glow-a
+  );
 }
 
+/**
+ * @mixin gradient-text
+ * @description Applies a linear gradient as the text color.
+ *
+ * @param {String} $direction - Gradient direction (e.g., 'to right', '45deg').
+ * @param {List} $color-stops - List of color stops for the gradient. Each stop should be a valid color value.
+ */
 @mixin gradient-text($direction, $color-stops...) {
   background: linear-gradient($direction, $color-stops);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  color: transparent;
+  color: transparent; // Standard property, ensures text is invisible if background-clip fails
 }
 
 // -----------------------------------------------------------------------------
 // Focus States
 // -----------------------------------------------------------------------------
+/**
+ * @mixin focus-ring
+ * @description Creates a custom, themeable focus ring using box-shadows for accessibility.
+ *
+ * @param {String} $base-bg-color-var-prefix - Prefix for HSL CSS variables of the background color immediately around the element (creates the offset space). Appends '-h', '-s', '-l'.
+ * @param {String} $ring-accent-color-var-prefix - Prefix for HSL CSS variables of the actual focus ring color. Appends '-h', '-s', '-l'.
+ * @param {String} $offset-width - Width of the space between the element and the ring (e.g., '2px').
+ * @param {String} $ring-thickness - Thickness of the focus ring itself (e.g., '2px').
+ * @param {Number} $ring-opacity - Opacity of the focus ring (0 to 1).
+ * @param {Number} $fb-base-bg-h - Fallback Hue for offset space background.
+ * @param {Percentage} $fb-base-bg-s - Fallback Saturation for offset space background.
+ * @param {Percentage} $fb-base-bg-l - Fallback Lightness for offset space background.
+ * @param {Number} $fb-ring-h - Fallback Hue for ring color.
+ * @param {Percentage} $fb-ring-s - Fallback Saturation for ring color.
+ * @param {Percentage} $fb-ring-l - Fallback Lightness for ring color.
+ */
 @mixin focus-ring(
   $base-bg-color-var-prefix: '--color-bg-primary',
   $ring-accent-color-var-prefix: '--color-accent-interactive',
@@ -243,13 +388,32 @@
   $fb-ring-h: var.$default-color-accent-interactive-h, $fb-ring-s: var.$default-color-accent-interactive-s, $fb-ring-l: var.$default-color-accent-interactive-l
 ) {
   outline: none;
-  box-shadow: 0 0 0 #{$offset-width} hsl(var(#{$base-bg-color-var-prefix}-h, $fb-base-bg-h), var(#{$base-bg-color-var-prefix}-s, $fb-base-bg-s), var(#{$base-bg-color-var-prefix}-l, $fb-base-bg-l)),
-              0 0 0 ($offset-width + $ring-thickness) hsla(var(#{$ring-accent-color-var-prefix}-h, $fb-ring-h), var(#{$ring-accent-color-var-prefix}-s, $fb-ring-s), var(#{$ring-accent-color-var-prefix}-l, $fb-ring-l), $ring-opacity);
+  box-shadow:
+    0 0 0 #{$offset-width} hsl(var(#{$base-bg-color-var-prefix}-h, $fb-base-bg-h), var(#{$base-bg-color-var-prefix}-s, $fb-base-bg-s), var(#{$base-bg-color-var-prefix}-l, $fb-base-bg-l)),
+    0 0 0 calc(#{$offset-width} + #{$ring-thickness}) hsla(var(#{$ring-accent-color-var-prefix}-h, $fb-ring-h), var(#{$ring-accent-color-var-prefix}-s, $fb-ring-s), var(#{$ring-accent-color-var-prefix}-l, $fb-ring-l), $ring-opacity);
 }
 
 // -----------------------------------------------------------------------------
 // Custom Scrollbar
 // -----------------------------------------------------------------------------
+/**
+ * @mixin custom-scrollbar
+ * @description Applies a custom, themeable scrollbar style.
+ *
+ * @param {String} $thumb-color-var-prefix - Prefix for HSL CSS variables for the scrollbar thumb color.
+ * @param {Number} $thumb-base-alpha - Base opacity for the scrollbar thumb.
+ * @param {Number} $thumb-hover-alpha - Opacity for the scrollbar thumb on hover.
+ * @param {String} $track-color-var-prefix - Prefix for HSL CSS variables for the scrollbar track color.
+ * @param {Number} $track-alpha - Opacity for the scrollbar track.
+ * @param {String} $width - Width of the scrollbar (e.g., '8px').
+ * @param {String} $border-radius - Border radius for thumb and track.
+ * @param {Number} $fb-thumb-h - Fallback Hue for thumb.
+ * @param {Percentage} $fb-thumb-s - Fallback Saturation for thumb.
+ * @param {Percentage} $fb-thumb-l - Fallback Lightness for thumb.
+ * @param {Number} $fb-track-h - Fallback Hue for track.
+ * @param {Percentage} $fb-track-s - Fallback Saturation for track.
+ * @param {Percentage} $fb-track-l - Fallback Lightness for track.
+ */
 @mixin custom-scrollbar(
   $thumb-color-var-prefix: '--color-accent-primary',
   $thumb-base-alpha: 0.4,
@@ -277,13 +441,15 @@
   &::-webkit-scrollbar-thumb {
     background-color: $thumb-base-color-val;
     border-radius: $border-radius;
-    border: if($width > 4px, 2px solid transparent, 1px solid transparent);
+    border: if($width > 4px, calc(#{$width} / 4) solid transparent, 1px solid transparent); // Inset look
     background-clip: content-box;
     transition: background-color var.$duration-quick var.$ease-out-quad;
     &:hover {
       background-color: $thumb-hover-color-val;
     }
   }
+  // Firefox
   scrollbar-width: thin;
   scrollbar-color: $thumb-base-color-val $track-color-val;
 }
+

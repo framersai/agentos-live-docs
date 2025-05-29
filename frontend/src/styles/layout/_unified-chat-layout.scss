@@ -1,9 +1,18 @@
 // File: frontend/src/styles/layout/_unified-chat-layout.scss
 /**
  * @file _unified-chat-layout.scss
- * @description Styles for the UnifiedChatLayout component.
- * Defines the main structure for chat interaction views (PublicHome, PrivateHome).
- * @version 1.0.0
+ * @description Styles for the UnifiedChatLayout.vue component.
+ * This layout structures chat-centric views, managing the placement and appearance
+ * of the EphemeralChatLog, the main content display area (hosting ChatWindow),
+ * and the VoiceInput section. Includes dynamic background effects.
+ *
+ * @role Defines the specific layout and background styling for unified chat interaction views.
+ * @dependencies `../abstracts/variables`, `../abstracts/mixins`.
+ * @assumptions UnifiedChatLayout.vue component structure uses classes like `.unified-chat-layout-wrapper`,
+ * `.unified-chat-background-effects`, `.unified-main-content-area`, etc.
+ * CSS custom properties for theming are available.
+ * Keyframe animations for background effects are defined in `_keyframes.scss`.
+ * @version 1.1.1 - Corrected SASS calculation for animation duration using CSS calc().
  */
 
 @use '../abstracts/variables' as var;
@@ -12,101 +21,77 @@
 .unified-chat-layout-wrapper {
   display: flex;
   flex-direction: column;
-  height: 100%; // Assumes parent provides a constrained height (e.g., flex-grow in App.vue main area)
-  overflow: hidden; // Important to contain child elements
-  position: relative; // For absolute/fixed positioning of children like ephemeral chat
-}
+  height: 100%; // Crucial for taking up all space provided by its parent
+  overflow: hidden; // This wrapper itself should not scroll; its children will.
+  position: relative; // Context for absolutely positioned background effects and ephemeral log.
 
-// This container will have the subtle background effects
-.unified-chat-background-effects {
-  position: fixed; // Cover the entire viewport behind the main UI
-  inset: 0;
-  overflow: hidden;
-  z-index: var.$z-index-negative; // Ensure it's behind everything
-
-  // Example: Subtle orbiting shapes (from PrivateHome.vue original concept)
-  .orbit-container {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 1px;
-    height: 1px;
-    animation-name: orbitEffect; // Define orbitEffect in _keyframes.scss
-    animation-timing-function: linear;
-    animation-iteration-count: infinite;
-    opacity: 0; // Start hidden, fade in with JS or animation delay
-  }
-  .orbiting-shape {
-    position: absolute;
-    left: 0;
-    top: 0;
-    transform-origin: center center;
-    animation-name: shapeTransformEffect; // Define in _keyframes.scss
-    animation-timing-function: ease-in-out;
-    animation-iteration-count: infinite;
-    animation-direction: alternate;
-  }
-
-  // Example: Static Holographic Grid
-  .fixed-holo-grid {
+  // --- Background Effects Container ---
+  .unified-chat-background-effects {
     position: absolute;
     inset: 0;
-    background-image: var(--bg-holo-grid-pattern); // Defined in _variables or _themes
-    background-size: var(--bg-holo-grid-size, 40px) var(--bg-holo-grid-size, 40px);
-    opacity: var(--bg-holo-grid-opacity, 0.05); // Themeable
-    animation: holoGridScroll var.$duration-pulse-long * 5 linear infinite; // Very slow scroll
+    overflow: hidden;
+    z-index: 0; // Base layer for this layout
+
+    .fixed-holo-grid {
+      position: absolute;
+      inset: 0;
+      background-image: var(--bg-holo-grid-pattern-chat-layout, var(--bg-holo-grid-pattern));
+      background-size: var(--bg-holo-grid-size-chat-layout, 70px) var(--bg-holo-grid-size-chat-layout, 70px);
+      opacity: var(--bg-holo-grid-opacity-chat-layout, 0.015);
+      // Corrected animation duration calculation:
+      animation: holoGridScroll calc(#{var.$duration-pulse-long} * 20) linear infinite alternate; // Extremely slow animation
+      pointer-events: none;
+    }
+
+    .orbit-container {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 1px; height: 1px;
+      pointer-events: none;
+    }
+    .orbiting-shape {
+      position: absolute;
+      left: 0; top: 0;
+      transform-origin: center center;
+      pointer-events: none;
+    }
   }
-}
 
-
-.unified-main-content-area {
-  flex-grow: 1;
-  display: flex; // Use flex to manage internal layout (e.g., if main content has a sidebar concept for some agents)
-  position: relative; // For stacking context if needed
-  overflow: hidden; // Main content area itself might need to clip or scroll its children
-  // The actual content (agent UI, markdown view) will handle its own scrolling
-  // Padding is applied to the children or directly to this if it's a simple container
-  padding-top: calc(var(--chat-log-height, 200px) + var.$spacing-md + var.$spacing-sm); // Space for EphemeralChatLog and Header
-  padding-bottom: calc(var(--footer-height, 56px) + var.$spacing-md); // Space for VoiceInput area, assuming VoiceInput has its own internal padding.
-  padding-left: var.$spacing-md;
-  padding-right: var.$spacing-md;
-
-  // Glass pane styling for the main interaction area
-  @include mixins.glassmorphic-pane(
-    hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.6), // Slightly more transparent than panel
-    hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.3),
-    calc(var(--blur-glass) * 1.2), // Slightly more blur for main content area backdrop
-    var(--shadow-depth-sm) // Softer shadow, as it's a large area
-  );
-  border-radius: var.$radius-2xl;
-  margin: var.$spacing-sm; // Margin around the main content pane
-
-  // This is where the <slot> for actual agent UI or MainContentView will go
-  // Ensure the slot's direct child takes up full height/width and handles its own scrolling.
-  > :deep(*) { // Targeting the slotted content's root
+  // --- Main Content Area (for ChatWindow.vue or specific Agent Views) ---
+  .unified-main-content-area {
     flex-grow: 1;
-    overflow-y: auto; // Default for slotted content
-    @include mixins.custom-scrollbar(
-      hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.4),
-      transparent
-    );
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 1;
+    overflow: hidden; // ChatWindow will handle its own internal scrolling
+    // Padding to account for fixed/sticky Header, EphemeralChatLog (if shown), and VoiceInput footer.
+    // Using CSS variables for these heights makes it more maintainable.
+    padding-top: calc(var(--header-actual-height, #{var.$header-height-default}) + var(--ephemeral-log-total-height, 0px) + #{var.$spacing-sm});
+    padding-bottom: calc(var(--voice-input-panel-total-height, 120px) + #{var.$spacing-sm});
+    padding-left: var.$spacing-xs;
+    padding-right: var.$spacing-xs;
+
+    @media (min-width: var.$breakpoint-md) {
+      padding-left: var.$spacing-sm;
+      padding-right: var.$spacing-sm;
+    }
+  }
+
+  // --- Voice Input Section (for VoiceInput.vue) ---
+  .unified-voice-input-section {
+    flex-shrink: 0;
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: calc(var.$z-index-content-overlay + 10);
+    padding: var.$spacing-sm var.$spacing-md;
+    // Example of a subtle backdrop for this section:
+    // background: linear-gradient(to top, hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.45) 0%, transparent 100%);
+    // backdrop-filter: blur(1px);
+    // pointer-events: none; // Wrapper if it's just for backdrop
+    // > * { pointer-events: auto; } // VoiceInput component itself is interactive
   }
 }
-
-.unified-voice-input-section {
-  flex-shrink: 0; // Voice input should not shrink
-  position: sticky; // Sticky at the bottom of the layout wrapper
-  bottom: 0;
-  z-index: var.$z-index-content-overlay + 5; // Above main content, below modals
-  padding: var.$spacing-sm var.$spacing-md; // Padding around the VoiceInput component itself
-
-  // VoiceInput.vue itself will have its glassmorphic panel style
-  // This container provides spacing and ensures it's sticky.
-  // Optional: Add a subtle backdrop or separator for this section
-  // background: linear-gradient(to top, hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.3), transparent);
-}
-
-// Keyframes for background effects (should be in _keyframes.scss but placed here for context if used by this layout directly)
-@keyframes orbitEffect { /* ... define ... */ }
-@keyframes shapeTransformEffect { /* ... define ... */ }
-// holoGridScroll should also be in _keyframes.scss

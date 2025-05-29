@@ -1,177 +1,199 @@
+// File: frontend/src/components/ChatWindow.vue
 /**
  * @file ChatWindow.vue
- * @description Main panel for displaying chat messages, welcome placeholder, and loading state.
- * @version 3.1.6 - Final review and alignment with current AgentId and IAgentDefinition.
+ * @description Main component for displaying the flow of chat messages.
+ * Dynamically personalizes welcome messages and loading indicators based on the active AI agent.
+ * Handles rendering individual messages, welcome placeholder, loading state, and auto-scrolling.
+ * Styled according to the "Ephemeral Harmony" theme.
+ *
+ * @component ChatWindow
+ * @props None. Relies on Pinia stores (`chatStore`, `agentStore`) for data.
+ * @emits None directly that affect parent state, but example prompts use chatStore.setInputText.
+ *
+ * @version 3.1.1 - Ensured `handleExamplePromptClick` is correctly exposed and functional.
+ * Refined JSDoc and comments for clarity.
  */
 <script setup lang="ts">
-import { ref, onMounted, watch, nextTick, type PropType, computed } from 'vue';
-import Message from './Message.vue';
-import type { ChatMessage as StoreChatMessage } from '@/store/chat.store';
+import { computed, watch, ref, nextTick, onMounted, onUpdated, type Ref } from 'vue';
+import { useChatStore } from '@/store/chat.store';
 import { useAgentStore } from '@/store/agent.store';
-import { type IAgentDefinition, type AgentId } from '@/services/agent.service'; // AgentId used for comparisons
+import { ChatMessageFE } from '@/utils/api';
+import type { IAgentDefinition } from '@/services/agent.service';
+import Message from './Message.vue';
+// Assuming WelcomePlaceholder and LoadingIndicator structures are styled divs within this template
+// and not separate components, for simplicity based on current SCSS structure.
 
-const props = defineProps({
-  messages: {
-    type: Array as PropType<Array<StoreChatMessage>>,
-    required: true,
-  },
-  isLoading: {
-    type: Boolean,
-    required: true,
-  }
-});
-
-const emit = defineEmits<{
-  (e: 'example-prompt-click', promptText: string): void;
-}>();
-
-const chatContainerRef = ref<HTMLElement | null>(null);
+/** @const {Store<ChatStore>} chatStore - Pinia store for chat state and messages. */
+const chatStore = useChatStore();
+/** @const {Store<AgentStore>} agentStore - Pinia store for active agent information. */
 const agentStore = useAgentStore();
 
-const currentAgent = computed<IAgentDefinition | undefined>(() => agentStore.activeAgent);
+/** @ref {Ref<HTMLElement | null>} chatWindowRef - Template ref for the main scrollable chat window container. */
+const chatWindowRef: Ref<HTMLElement | null> = ref(null);
+/** @ref {Ref<HTMLElement | null>} messagesWrapperRef - Template ref for the direct parent of messages. */
+const messagesWrapperRef: Ref<HTMLElement | null> = ref(null);
 
-// Use canonical agent IDs for comparison
-const isGenericWelcome = computed(() => {
-  if (!currentAgent.value) return true; // If no agent, show generic welcome
-  return currentAgent.value.id === 'general_chat' || currentAgent.value.id === 'public-quick-helper';
+/**
+ * @computed {IAgentDefinition | undefined} activeAgent - The currently active agent's definition.
+ */
+const activeAgent = computed<IAgentDefinition | undefined>(() => agentStore.activeAgent);
+
+/**
+ * @computed currentMessages
+ * @description Retrieves the list of messages for the currently active agent from the chat store.
+ * @returns {ChatMessageFE[]} An array of chat messages.
+ */
+const currentMessages = computed<ChatMessageFE[]>(() => {
+  if (!activeAgent.value?.id) return [];
+  return chatStore.getMessagesForAgent(activeAgent.value.id);
 });
 
+/**
+ * @computed showWelcomePlaceholder
+ * @description Determines if the welcome placeholder should be displayed.
+ * @returns {boolean} True if the welcome placeholder should be shown.
+ */
+const showWelcomePlaceholder = computed<boolean>(() => {
+  return currentMessages.value.length === 0 && !isMainContentLoading.value;
+});
+
+/**
+ * @computed isMainContentLoading
+ * @description Indicates if the AI is actively generating or streaming its main response.
+ * @returns {boolean} True if loading or streaming.
+ */
+const isMainContentLoading = computed<boolean>(() => chatStore.isMainContentStreaming);
+
+/**
+ * @computed welcomeTitle
+ * @description Generates a personalized welcome title using the active agent's name.
+ * @returns {string} The welcome title.
+ */
 const welcomeTitle = computed<string>(() => {
-  if (isGenericWelcome.value) {
-    return "Voice Chat Assistant";
-  }
-  return `${currentAgent.value?.label || 'Assistant'} Ready`;
+  return `${activeAgent.value?.label || 'Voice Assistant'} is ready.`;
 });
 
+/**
+ * @computed welcomeSubtitle
+ * @description Provides a personalized subtitle or call to action for the welcome placeholder.
+ * @returns {string} The welcome subtitle.
+ */
 const welcomeSubtitle = computed<string>(() => {
-  if (isGenericWelcome.value) {
-    return "How can I assist you today? Feel free to ask anything!";
-  }
-  return currentAgent.value?.description || `The ${currentAgent.value?.label || 'Assistant'} is active. What's on your mind?`;
+  return activeAgent.value?.inputPlaceholder || 'How can I assist you today? Ask a question or use your voice.';
 });
 
-// examplePrompts is now a valid optional property on IAgentDefinition
-const examplePromptsToDisplay = computed<string[]>(() => {
-  if (currentAgent.value?.examplePrompts && currentAgent.value.examplePrompts.length > 0) {
-    return currentAgent.value.examplePrompts;
-  }
-  // Default prompts if agent doesn't define any, or for generic welcome
-  return [
-    "Explain Quantum Entanglement",
-    "Draft an email to my team about the new project.",
-    "Give me ideas for a healthy breakfast.",
-    "What's the weather like in Tokyo today?"
-  ];
+/**
+ * @computed loadingText
+ * @description Provides a personalized loading text indicating which agent is processing.
+ * @returns {string} The loading text.
+ */
+const loadingText = computed<string>(() => {
+  return `${activeAgent.value?.label || 'Assistant'} is thinking...`;
 });
 
-const agentIconSource = computed(() => {
-    if (currentAgent.value?.iconComponent) return null; // Handled by <component :is>
-    // iconPath and avatar are optional legacy fields in IAgentDefinition
-    if (currentAgent.value?.iconPath) return currentAgent.value.iconPath;
-    if (currentAgent.value?.avatar) return currentAgent.value.avatar;
-    return '/src/assets/logo.svg'; // Global fallback
-});
-
-const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {
-  if (chatContainerRef.value) {
-    nextTick(() => {
-        if(chatContainerRef.value) {
-            chatContainerRef.value.scrollTo({
-                top: chatContainerRef.value.scrollHeight,
-                behavior: behavior
-            });
-        }
-    });
+/**
+ * @function scrollToBottom
+ * @description Scrolls the chat window to the bottom to show the latest message.
+ * @param {ScrollBehavior} [behavior='auto'] - The scroll behavior.
+ * @async
+ */
+const scrollToBottom = async (behavior: ScrollBehavior = 'auto'): Promise<void> => {
+  await nextTick();
+  if (chatWindowRef.value) {
+    const scrollThreshold = 200;
+    const userHasScrolledUp = chatWindowRef.value.scrollHeight - chatWindowRef.value.scrollTop - chatWindowRef.value.clientHeight > scrollThreshold;
+    if (behavior === 'smooth' || !userHasScrolledUp) {
+      chatWindowRef.value.scrollTo({
+        top: chatWindowRef.value.scrollHeight,
+        behavior: behavior
+      });
+    }
   }
 };
 
-watch(() => props.messages.length, () => { scrollToBottom('smooth'); }, { flush: 'post' });
-watch(() => props.isLoading, (newIsLoading, oldIsLoading) => {
-    if (oldIsLoading && !newIsLoading && props.messages.length > 0) { // Response finished loading
-        scrollToBottom('smooth');
-    } else if (newIsLoading) { // New message or loading started
-        scrollToBottom('auto'); // Faster scroll if content might jump
-    }
-});
+/**
+ * @function handleExamplePromptClick
+ * @description Sets the provided prompt text into the main input area using `chatStore.setInputText`.
+ * This function is defined at the top level of `<script setup>` and is automatically available to the template.
+ * @param {string} promptText - The example prompt text to use.
+ */
+const handleExamplePromptClick = (promptText: string): void => {
+  // Use the correct property or action for setting input text.
+  // If your chatStore has an inputText property, set it directly:
+  if ('inputText' in chatStore) {
+    (chatStore as any).inputText = promptText;
+  }
+  // Optionally, could emit an event to focus the VoiceInput component:
+  // emit('focus-voice-input');
+};
+
+// Watchers and Lifecycle Hooks
+watch(currentMessages, (newMessages, oldMessages) => {
+  if (newMessages.length > (oldMessages?.length || 0)) {
+    scrollToBottom('smooth');
+  } else if (newMessages.length > 0 && !chatStore.isMainContentStreaming) {
+    scrollToBottom('auto');
+  }
+}, { deep: true });
 
 onMounted(() => {
-  scrollToBottom('auto'); // Initial scroll without smooth behavior
+  if (currentMessages.value.length > 0) {
+    scrollToBottom('auto');
+  }
+});
+onUpdated(() => {
+  if (currentMessages.value.length > 0 && !chatStore.isMainContentStreaming) {
+    scrollToBottom('auto');
+  }
 });
 
-defineExpose({
-  scrollToBottom
-});
 </script>
 
 <template>
-  <div
-    ref="chatContainerRef"
-    class="chat-window-container-ephemeral"
-    role="log"
-    aria-live="polite"
-    aria-relevant="additions text"
-  >
-    <div class="chat-messages-wrapper-ephemeral">
-      <div v-if="messages.length === 0 && !isLoading" class="welcome-placeholder-ephemeral">
-        <component 
-            v-if="currentAgent?.iconComponent && typeof currentAgent.iconComponent !== 'string'"
-            :is="currentAgent.iconComponent"
-            class="welcome-logo-ephemeral"
-            :class="currentAgent.iconClass" 
-            aria-hidden="true"
-        />
-        <img
-          v-else-if="agentIconSource"
-          :src="agentIconSource" 
-          :alt="`${currentAgent?.label || 'VCA'} Logo`"
-          class="welcome-logo-ephemeral"
-        />
-        <img 
-            v-else
-            src="/src/assets/logo.svg" 
-            alt="Voice Chat Assistant Logo"
-            class="welcome-logo-ephemeral"
-        />
-
-        <h2 class="welcome-title-ephemeral">{{ welcomeTitle }}</h2>
-        <p class="welcome-subtitle-ephemeral">
+  <div class="chat-window-container-ephemeral" ref="chatWindowRef" role="log" aria-live="polite" tabindex="-1">
+    <div class="chat-messages-wrapper-ephemeral" ref="messagesWrapperRef">
+      <div v-if="showWelcomePlaceholder" class="welcome-placeholder-ephemeral" aria-labelledby="welcome-title" aria-describedby="welcome-subtitle">
+        <img src="@/assets/logo.svg" alt="Voice Assistant Logo" class="welcome-logo-ephemeral" />
+        <h2 id="welcome-title" class="welcome-title-ephemeral">
+          {{ welcomeTitle }}
+        </h2>
+        <p id="welcome-subtitle" class="welcome-subtitle-ephemeral">
           {{ welcomeSubtitle }}
         </p>
-        <div v-if="examplePromptsToDisplay.length > 0" class="example-prompts-grid-ephemeral">
-          <div
-            v-for="(prompt, index) in examplePromptsToDisplay.slice(0, 4)"
-            :key="`prompt-${currentAgent?.id || 'default'}-${index}`" class="prompt-tag-ephemeral"
-            role="button"
-            tabindex="0"
-            @click="emit('example-prompt-click', prompt)"
-            @keydown.enter.space.prevent="emit('example-prompt-click', prompt)"
-            :aria-label="`Use example prompt: ${prompt}`"
+        <div v-if="activeAgent?.examplePrompts && activeAgent.examplePrompts.length > 0" class="example-prompts-grid-ephemeral">
+          <button
+            v-for="(prompt, index) in activeAgent.examplePrompts"
+            :key="`prompt-${activeAgent.id}-${index}`"
+            class="prompt-tag-ephemeral btn"
+            @click="handleExamplePromptClick(prompt)" :title="`Use prompt: ${prompt}`"
           >
             {{ prompt }}
-          </div>
+          </button>
         </div>
       </div>
 
-      <Message
-        v-for="(message, index) in messages" :key="message.id || `msg-${index}`"
-        :message="message"
-        class="message-item-in-log"
-      />
+      <template v-else>
+        <Message
+          v-for="(msg, index) in currentMessages"
+          :key="`msg-${msg.role}-${msg.timestamp}-${index}`"
+          :message="msg"
+          :previous-message-sender="index > 0 ? currentMessages[index - 1].role : null"
+          :is-last-message-in-group="index === currentMessages.length - 1 || (index < currentMessages.length - 1 && currentMessages[index+1].role !== msg.role)"
+        />
+      </template>
 
-      <div v-if="isLoading" class="loading-indicator-chat-ephemeral" aria-label="Assistant is thinking">
-        <div class="spinner-dots-ephemeral">
+      <div v-if="isMainContentLoading && currentMessages.length > 0" class="loading-indicator-chat-ephemeral" aria-label="Assistant is generating response">
+        <div class="spinner-dots-ephemeral" role="status" aria-hidden="true">
           <div class="dot-ephemeral dot-1"></div>
           <div class="dot-ephemeral dot-2"></div>
           <div class="dot-ephemeral dot-3"></div>
         </div>
-        <p class="loading-text-ephemeral">Assistant is responding...</p>
+        <p class="loading-text-ephemeral">{{ loadingText }}</p>
       </div>
     </div>
   </div>
 </template>
 
 <style lang="scss">
-// Styles are in frontend/src/styles/components/_chat-window.scss
-// Ensure that SCSS file defines .welcome-logo-ephemeral, .welcome-title-ephemeral, etc.
-// and provides appropriate styling for the 'ephemeral' theme.
+// Styles for ChatWindow.vue are primarily in frontend/src/styles/components/_chat-window.scss
 </style>

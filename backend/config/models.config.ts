@@ -3,7 +3,7 @@
  * @file Centralized model configuration for LLM preferences and pricing.
  * @description Loads model preferences from environment variables (stripping comments)
  * and defines pricing information for cost calculation.
- * @version 1.2.3 - Hardcoded model preference for lc_audit_aide to gpt-4o.
+ * @version 1.2.2 - Added specific model preference for lc_audit_aide.
  */
 
 import dotenv from 'dotenv';
@@ -97,9 +97,8 @@ export function getModelPrice(modelId: string): ModelConfig {
 
 /**
  * @constant MODEL_PREFERENCES
- * @description Preferred models for different application modes.
- * For lc_audit_aide, it's now hardcoded to 'openai/gpt-4o'.
- * Other preferences still attempt to load from environment variables with fallbacks.
+ * @description Preferred models for different application modes, loaded from environment variables
+ * with comments stripped and sensible fallbacks.
  */
 export const MODEL_PREFERENCES = {
   general: getModelIdFromEnv(process.env.MODEL_PREF_GENERAL_CHAT, 'openai/gpt-4o-mini'),
@@ -115,12 +114,11 @@ export const MODEL_PREFERENCES = {
   utility: getModelIdFromEnv(process.env.UTILITY_LLM_MODEL_ID, 'openai/gpt-4o-mini'), // Aggregator model
   default: getModelIdFromEnv(process.env.ROUTING_LLM_MODEL_ID, 'openai/gpt-4o-mini'), // General fallback
 
-  // Agent-specific overrides
-  diary: getModelIdFromEnv(process.env.MODEL_PREF_DIARY, 'openai/gpt-4o-mini'),
-  lc_audit_aide: 'openai/gpt-4o', // HARDCODED as per request
-  coding_interviewer: getModelIdFromEnv(process.env.MODEL_PREF_CODING_INTERVIEWER, 'openai/gpt-4o'), // Retains env var for now
+  // Agent-specific overrides (keys should match agent.systemPromptKey or agent.id)
+  diary: getModelIdFromEnv(process.env.MODEL_PREF_DIARY, 'openai/gpt-4o-mini'), // Retain -mini for diary unless specified
+  lc_audit_aide: getModelIdFromEnv(process.env.MODEL_PREF_LC_AUDIT, 'openai/gpt-4o'), // **Enforce gpt-4o**
+  coding_interviewer: getModelIdFromEnv(process.env.MODEL_PREF_CODING_INTERVIEWER, 'openai/gpt-4o'), // **Enforce gpt-4o**
 };
 
-console.log("[models.config.ts] Loaded MODEL_PREFERENCES:", JSON.stringify(MODEL_PREFERENCES, null, 2));
-console.log(`[models.config.ts] Effective UTILITY_LLM_MODEL_ID: '${MODEL_PREFERENCES.utility}'`);
-console.log(`[models.config.ts] Effective LC_AUDIT_AIDE_MODEL_ID: '${MODEL_PREFERENCES.lc_audit_aide}' (Hardcoded)`);
+console.log("[models.config.ts] Loaded MODEL_PREFERENCES (env vars processed):", JSON.stringify(MODEL_PREFERENCES, null, 2));
+console.log(`[models.config.ts] Effective UTILITY_LLM_MODEL_ID: '${MODEL_PREFERENCES.utility}' (from env: '${process.env.UTILITY_LLM_MODEL_ID}')`);

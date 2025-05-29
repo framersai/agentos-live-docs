@@ -1,97 +1,238 @@
 // File: frontend/src/components/EphemeralChatLog.vue
 /**
  * @file EphemeralChatLog.vue
- * @description Displays prior chat messages.
- * @version 1.2.1 - Corrected agent store import.
+ * @description Displays a dynamic and themeable log of recent chat messages.
+ * Features a compact "holographic ghost" state by default, which becomes more opaque on hover
+ * and can be expanded to a more detailed history view. Supports configurable message counts
+ * and remembers scroll position across state changes.
+ *
+ * @component EphemeralChatLog
+ * @props None. Relies on `agentStore`, `chatStore`, and `voiceSettingsManager`.
+ * @emits None.
+ *
+ * @version 2.1.1 - Corrected function calls for scrolling and removed unused icon imports.
  */
 <script setup lang="ts">
-import { computed, watch, ref, nextTick, onMounted } from 'vue';
+import { computed, watch, ref, nextTick, onMounted, onUnmounted, onUpdated, type Ref } from 'vue'; // Added onUnmounted
 import { useChatStore, type ChatMessage } from '@/store/chat.store';
-import { useAgentStore } from '@/store/agent.store'; // This should now resolve
+import { useAgentStore } from '@/store/agent.store';
+import { voiceSettingsManager } from '@/services/voice.settings.service';
 import { marked } from 'marked';
+import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/vue/24/outline'; // Removed EyeIcon, EyeSlashIcon
 
+/** Access the chat store for messages. */
 const chatStore = useChatStore();
-const agentStore = useAgentStore(); // This instantiation should be correct now
-// ... rest of the script setup from version 1.2.0 I provided ...
-const scrollAreaRef = ref<HTMLElement | null>(null);
-const MAX_EPHEMERAL_MESSAGES = 5; // Reduced for a more "glanceable" history, also helps with fading effects
+/** Access the agent store for agent-specific capabilities like showing the log. */
+const agentStore = useAgentStore();
 
-const messagesToDisplay = computed<ChatMessage[]>(() => {
-  const allAgentMessages = chatStore.getMessagesForAgent(agentStore.activeAgentId);
+/** @ref {Ref<HTMLElement | null>} scrollAreaRef - Template ref for the scrollable content div. */
+const scrollAreaRef: Ref<HTMLElement | null> = ref(null);
+/** @ref {Ref<HTMLElement | null>} logContainerRef - Template ref for the main container of the log. */
+const logContainerRef: Ref<HTMLElement | null> = ref(null);
 
-  if (allAgentMessages.length === 0) {
-    return [];
-  }
+/** @ref {Ref<boolean>} isExpanded - Controls the expanded (detailed history) or collapsed (compact ghost) state of the log. */
+const isExpanded: Ref<boolean> = ref(false);
+/** @ref {Ref<number | null>} scrollTopBeforeCollapse - Stores the scroll position before collapsing the log. */
+const scrollTopBeforeCollapse: Ref<number | null> = ref(null);
 
-  // If the main chat window is actively streaming an AI response,
-  // we want to show messages *before* the user prompt that triggered this response.
-  if (chatStore.isMainContentStreaming) {
-    // Find the last user message. If it exists, messages *before* it are "prior".
-    // If no user messages, or only user messages and AI is streaming (unlikely scenario),
-    // it implies the context is just being established.
-    // A more robust way might be to get all messages except the last `X` if streaming,
-    // or if the last message is an assistant message that's still being formed.
+/** @ref {Ref<boolean>} isHovering - True if the mouse is currently hovering over the log container. */
+const isHovering: Ref<boolean> = ref(false);
+/** @ref {Ref<boolean>} isSustainedHover - True if hover has been sustained for a certain duration, triggering max opacity. */
+const isSustainedHover: Ref<boolean> = ref(false);
+/** @ref {Ref<boolean>} hasBeenInteractedRecently - True if the log was recently hovered or expanded, maintaining a slightly higher base opacity. */
+const hasBeenInteractedRecently: Ref<boolean> = ref(false);
 
-    // Simpler approach: Exclude the very last message if AI is streaming,
-    // assuming it's either the prompt or the start of the response.
-    // And if there's only one message (the prompt), show nothing.
-    if (allAgentMessages.length <= 1) {
-      return []; // Don't show the single prompt that's leading to a stream
-    }
-    // Show messages up to, but not including, the last one.
-    return allAgentMessages.slice(0, -1).slice(-MAX_EPHEMERAL_MESSAGES);
-  }
+/** @type {number | null} hoverSustainTimer - Timer ID for detecting sustained hover. */
+let hoverSustainTimer: number | null = null;
+/** @type {number | null} recentInteractionTimer - Timer ID for resetting `hasBeenInteractedRecently`. */
+let recentInteractionTimer: number | null = null;
 
-  // If not streaming, and there's only one message, it's likely a completed AI response
-  // or a user message awaiting response. Showing it as "prior" context is acceptable.
-  // However, to strictly show "prior messages" meaning "not the very latest completed exchange":
-  if (allAgentMessages.length > 0) {
-    // Show the last N messages, but if there's only one, it might be the "current" one.
-    // To avoid showing the *absolute latest* message if it just completed:
-    // This logic could make the log feel one step behind, which might be desired.
-    // For instance, after AI replies, ephemeral shows the user's prompt that led to it.
-    // If we want to show up to the last AI response (but not a currently streaming one):
-    // The current `slice(-MAX_EPHEMERAL_MESSAGES)` is okay if not streaming.
+/** @const {number} SUSTAINED_HOVER_DURATION_MS - Duration (ms) to consider hover as sustained. */
+const SUSTAINED_HOVER_DURATION_MS = 1500;
+/** @const {number} RECENT_INTERACTION_TIMEOUT_MS - Duration (ms) to keep log slightly more opaque after interaction. */
+const RECENT_INTERACTION_TIMEOUT_MS = 5000;
 
-    // Let's try this: display the last N messages, but ensure it's not the *very* last message if it's an assistant one
-    // that might have just landed and is still the "focus" of the main chat.
-    // This can be tricky without more state about "focus".
+/**
+ * @computed {number} maxMessagesCompact
+ * @description Retrieves the maximum number of messages for the compact log view from settings.
+ */
+const maxMessagesCompact = computed(() => voiceSettingsManager.settings.ephemeralLogMaxCompact);
 
-    // Sticking to: if not streaming, the latest history is fair game for "prior context".
-    // The `slice(-MAX_EPHEMERAL_MESSAGES)` is the most straightforward here.
-    // The main issue was showing the *currently streaming* response.
-    return allAgentMessages.slice(-MAX_EPHEMERAL_MESSAGES);
-  }
-  
-  return [];
+/**
+ * @computed {number} maxMessagesExpanded
+ * @description Retrieves the maximum number of messages for the expanded log view from settings.
+ */
+const maxMessagesExpanded = computed(() => voiceSettingsManager.settings.ephemeralLogMaxExpanded);
+
+/**
+ * @computed showLog
+ * @description Determines if the ephemeral log should be shown based on agent capabilities.
+ * @returns {boolean}
+ */
+const showLog = computed<boolean>(() => {
+  return agentStore.activeAgent?.capabilities?.showEphemeralChatLog ?? true;
 });
-const renderMarkdown = (content: string | null): string => { /* ... */ return content ? marked.parse(content, { breaks: true, gfm: true, async: false }) : ''; };
-const scrollToTopEphemeral = () => { if (scrollAreaRef.value) scrollAreaRef.value.scrollTop = 0; };
-watch(messagesToDisplay, async () => { await nextTick(); scrollToTopEphemeral(); }, { deep: true });
-onMounted(() => { nextTick(scrollToTopEphemeral); });
+
+/**
+ * @computed messagesToDisplay
+ * @description Filters and slices messages based on current agent, AI streaming state, and log expansion state.
+ * @returns {ChatMessage[]}
+ */
+const messagesToDisplay = computed<ChatMessage[]>(() => {
+  if (!showLog.value || !agentStore.activeAgentId) return [];
+  const allAgentMessages = chatStore.getMessagesForAgent(agentStore.activeAgentId);
+  if (allAgentMessages.length === 0) return [];
+  const maxMessages = isExpanded.value ? maxMessagesExpanded.value : maxMessagesCompact.value;
+  if (chatStore.isMainContentStreaming) {
+    if (allAgentMessages.length <= 1) return [];
+    return allAgentMessages.slice(0, -1).slice(-maxMessages);
+  }
+  return allAgentMessages.slice(-maxMessages);
+});
+
+/**
+ * @function renderMarkdown
+ * @description Parses markdown content to HTML.
+ * @param {string | null} content - Markdown string.
+ * @returns {string} HTML string.
+ */
+const renderMarkdown = (content: string | null): string => {
+  return content ? marked.parse(content, { breaks: true, gfm: true, async: false }) as string : '';
+};
+
+/**
+ * @function scrollToRelevantPosition
+ * @description Scrolls the log appropriately based on its state (compact/expanded) and content changes.
+ * This function IS USED by watchers and lifecycle hooks.
+ * @async
+ */
+const scrollToRelevantPosition = async (): Promise<void> => { // This function is now correctly named and used
+  await nextTick();
+  if (scrollAreaRef.value) {
+    if (isExpanded.value) {
+      if (scrollTopBeforeCollapse.value !== null && messagesToDisplay.value.length >= maxMessagesExpanded.value) {
+        scrollAreaRef.value.scrollTop = scrollTopBeforeCollapse.value;
+      } else {
+        scrollAreaRef.value.scrollTop = scrollAreaRef.value.scrollHeight;
+      }
+    } else {
+      scrollAreaRef.value.scrollTop = 0;
+    }
+  }
+};
+
+const handleMouseEnter = () => {
+  isHovering.value = true;
+  hasBeenInteractedRecently.value = true;
+  if (hoverSustainTimer) clearTimeout(hoverSustainTimer);
+  hoverSustainTimer = window.setTimeout(() => {
+    if (isHovering.value) {
+      isSustainedHover.value = true;
+    }
+  }, SUSTAINED_HOVER_DURATION_MS);
+  if (recentInteractionTimer) clearTimeout(recentInteractionTimer);
+};
+
+const handleMouseLeave = () => {
+  isHovering.value = false;
+  isSustainedHover.value = false;
+  if (hoverSustainTimer) clearTimeout(hoverSustainTimer);
+  hoverSustainTimer = null;
+  if (recentInteractionTimer) clearTimeout(recentInteractionTimer);
+  recentInteractionTimer = window.setTimeout(() => {
+    hasBeenInteractedRecently.value = false;
+  }, RECENT_INTERACTION_TIMEOUT_MS);
+};
+
+const toggleExpandCollapse = (): void => {
+  if (scrollAreaRef.value && isExpanded.value) {
+    scrollTopBeforeCollapse.value = scrollAreaRef.value.scrollTop;
+  }
+  isExpanded.value = !isExpanded.value;
+  hasBeenInteractedRecently.value = true;
+  if (recentInteractionTimer) clearTimeout(recentInteractionTimer);
+   recentInteractionTimer = window.setTimeout(() => {
+    hasBeenInteractedRecently.value = false;
+  }, RECENT_INTERACTION_TIMEOUT_MS);
+  // Scroll adjustment will be handled by the watcher after isExpanded changes
+};
+
+const containerClasses = computed(() => ({
+  'is-expanded': isExpanded.value,
+  'is-compact': !isExpanded.value,
+  'is-hovering': isHovering.value,
+  'is-sustained-hover': isSustainedHover.value,
+  'has-been-interacted': hasBeenInteractedRecently.value,
+}));
+
+// CORRECTED: Watcher now calls the correctly named function
+watch([messagesToDisplay, isExpanded], scrollToRelevantPosition, { deep: true, flush: 'post' });
+
+onMounted(() => {
+  scrollToRelevantPosition(); // CORRECTED
+  if (logContainerRef.value) {
+    logContainerRef.value.addEventListener('mouseenter', handleMouseEnter);
+    logContainerRef.value.addEventListener('mouseleave', handleMouseLeave);
+  }
+});
+
+onUnmounted(() => { // Added onUnmounted for cleanup
+  if (logContainerRef.value) {
+    logContainerRef.value.removeEventListener('mouseenter', handleMouseEnter);
+    logContainerRef.value.removeEventListener('mouseleave', handleMouseLeave);
+  }
+  if (hoverSustainTimer) clearTimeout(hoverSustainTimer);
+  if (recentInteractionTimer) clearTimeout(recentInteractionTimer);
+});
+
+onUpdated(() => { // CORRECTED: Ensure scroll happens on update too
+    scrollToRelevantPosition();
+});
+
 </script>
 
 <template>
   <div
+    v-if="showLog && messagesToDisplay.length > 0"
+    ref="logContainerRef"
     class="ephemeral-chat-log-container"
-    v-if="messagesToDisplay.length > 0"
+    :class="containerClasses"
+    :style="{ '--max-ephemeral-messages': isExpanded ? maxMessagesExpanded : maxMessagesCompact }"
     aria-live="polite"
     aria-atomic="false"
     aria-relevant="additions"
-    :style="{ '--max-ephemeral-messages': MAX_EPHEMERAL_MESSAGES }"
+    role="log"
+    tabindex="-1"
   >
-    <div class="ephemeral-chat-log-scroller" ref="scrollAreaRef">
+    <div class="ephemeral-chat-log-header">
+      <span class="log-title" :aria-label="isExpanded ? 'Showing recent chat history' : 'Showing prior context glance'">
+        {{ isExpanded ? 'Recent History' : 'Prior Context' }}
+      </span>
+      <button
+        @click="toggleExpandCollapse"
+        class="ephemeral-log-toggle-btn btn btn-icon-ephemeral btn-ghost-ephemeral"
+        :title="isExpanded ? 'Collapse Log View' : 'Expand Log View'"
+        :aria-expanded="isExpanded"
+        aria-controls="ephemeral-log-scroller-content"
+      >
+        <component :is="isExpanded ? ChevronUpIcon : ChevronDownIcon" class="toggle-icon" />
+        <span class="sr-only">{{ isExpanded ? 'Collapse chat history log' : 'Expand chat history log' }}</span>
+      </button>
+    </div>
+
+    <div class="ephemeral-chat-log-scroller" ref="scrollAreaRef" id="ephemeral-log-scroller-content" tabindex="0">
       <div class="ephemeral-chat-log-content">
-        <TransitionGroup name="ephemeral-message-list" tag="div">
-          <div
+        <TransitionGroup name="ephemeral-message-list" tag="ul" role="list">
+          <li
             v-for="(message, index) in messagesToDisplay"
-            :key="message.id"
+            :key="message.id || `eph-msg-${index}`"
             class="ephemeral-message-item"
             :class="[`message-role-${message.role}`]"
-            role="logitem"
+            role="listitem"
             :style="{
               '--message-index-from-newest': messagesToDisplay.length - 1 - index,
-              '--message-total-in-log': messagesToDisplay.length
+              '--message-total-in-log': messagesToDisplay.length,
+              '--message-index': index
             }"
           >
             <div
@@ -99,32 +240,18 @@ onMounted(() => { nextTick(scrollToTopEphemeral); });
               v-if="message.content"
               v-html="renderMarkdown(message.content)"
             ></div>
-          </div>
+            <div v-else-if="message.tool_calls && message.tool_calls.length > 0" class="message-content tool-call-summary">
+              <span class="italic opacity-70">[Assistant initiated tool actions]</span>
+            </div>
+          </li>
         </TransitionGroup>
       </div>
     </div>
-    <div class="ephemeral-chat-log-fade-overlay--top"></div>
-    <div class="ephemeral-chat-log-fade-overlay--bottom"></div>
+    <div class="ephemeral-chat-log-fade-overlay--top" aria-hidden="true"></div>
+    <div class="ephemeral-chat-log-fade-overlay--bottom" aria-hidden="true"></div>
   </div>
 </template>
 
 <style lang="scss">
-// Styles are in frontend/src/styles/layout/_chat-interface.scss
-/* ... transition styles from version 1.2.0 ... */
-.ephemeral-message-list-enter-active,
-.ephemeral-message-list-leave-active {
-  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-}
-.ephemeral-message-list-leave-active {
-  position: absolute; 
-  left: 0; right: 0;
-}
-.ephemeral-message-list-enter-from {
-  opacity: 0;
-  transform: translateY(20px) scale(0.9);
-}
-.ephemeral-message-list-leave-to {
-  opacity: 0;
-  transform: translateY(-20px) scale(0.9);
-}
+
 </style>

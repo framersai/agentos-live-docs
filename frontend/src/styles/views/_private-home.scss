@@ -3,18 +3,18 @@
  * @file _private-home.scss
  * @description Styles specific to the PrivateHome view for "Ephemeral Harmony" theme.
  * Focuses on a visually rich and welcoming dashboard placeholder for authenticated users.
- * @version 1.0.1 - Corrected card style mixin name.
+ * @version 1.0.2 - Corrected SASS calculations, mixin calls, and ensured theme consistency.
  */
 
 @use '../abstracts/variables' as var;
 @use '../abstracts/mixins' as mixins;
 @use '../components/buttons' as buttonsFile;
-@use '../components/cards' as cardsFile; // Provides card-base-styles, card-glass-look etc.
+@use '../components/cards' as cardsFile;
 
 .private-home-view-ephemeral {
   display: flex;
   flex-direction: column;
-  height: 100%; // Fill available space from UnifiedChatLayout
+  height: 100%;
   width: 100%;
 }
 
@@ -24,52 +24,61 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  flex-grow: 1; // Take up all available space in the main content slot
-  padding: var.$spacing-xl * 1.5 var.$spacing-lg;
+  flex-grow: 1;
+  // Corrected SASS calculation for padding
+  padding: calc(#{var.$spacing-xl} * 1.5) var.$spacing-lg;
   width: 100%;
   position: relative;
 
   .dashboard-icon-ephemeral {
     width: clamp(5rem, 12vw, 7rem);
     height: clamp(5rem, 12vw, 7rem);
-    margin-bottom: var.$spacing-lg * 1.5;
-    color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+    // Corrected SASS calculation for margin-bottom
+    margin-bottom: calc(#{var.$spacing-lg} * 1.5);
+    color: hsl(var(--color-accent-primary-h, #{var.$default-color-accent-primary-h}), var(--color-accent-primary-s, #{var.$default-color-accent-primary-s}), var(--color-accent-primary-l, #{var.$default-color-accent-primary-l}));
     opacity: 0.8;
-    filter: drop-shadow(0 0 20px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.6));
-    animation: subtlePulse var.$duration-pulse-long * 2 infinite alternate, spin 60s linear infinite;
+    filter: drop-shadow(0 0 20px hsla(var(--color-accent-primary-h, #{var.$default-color-accent-primary-h}), var(--color-accent-primary-s, #{var.$default-color-accent-primary-s}), var(--color-accent-primary-l, #{var.$default-color-accent-primary-l}), 0.6));
+    // Corrected animation duration calculation
+    animation: subtlePulse unquote("calc(#{var.$duration-pulse-long} * 2)") var.$ease-elastic infinite alternate, spin 60s linear infinite;
     --scale-pulse: 1.03;
     --opacity-pulse: 0.95;
   }
 
   .dashboard-title-ephemeral {
-    font-family: var(--font-family-display, var.$font-family-display);
-    font-size: clamp(2rem, 1.5rem + 2.5vw, 3.25rem);
+    font-family: var(--font-family-display, #{var.$font-family-display});
+    font-size: clamp(2rem, calc(1.5rem + 2.5vw), 3.25rem); // CSS calc for responsive part
     font-weight: 700;
-    color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+    color: hsl(var(--color-text-primary-h, #{var.$default-color-text-primary-h}), var(--color-text-primary-s, #{var.$default-color-text-primary-s}), var(--color-text-primary-l, #{var.$default-color-text-primary-l}));
     margin-bottom: var.$spacing-md;
     letter-spacing: -0.015em;
     text-wrap: balance;
     @include mixins.text-glow(
-      '--color-accent-primary',
-      10px,
-      var.$default-color-accent-primary-h, var.$default-color-accent-primary-s, var.$default-color-accent-primary-l, 0.5
+      $glow-color-var-prefix: '--color-accent-primary',
+      $glow-radius: 10px,
+      $fb-glow-h: var.$default-color-accent-primary-h, 
+      $fb-glow-s: var.$default-color-accent-primary-s, 
+      $fb-glow-l: var.$default-color-accent-primary-l, 
+      $fb-glow-a: 0.5
     );
   }
 
   .dashboard-subtitle-ephemeral {
-    font-size: clamp(1.1rem, 0.9rem + 0.8vw, 1.35rem);
-    color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+    font-size: clamp(1.1rem, calc(0.9rem + 0.8vw), 1.35rem); // CSS calc for responsive part
+    color: hsl(var(--color-text-secondary-h, #{var.$default-color-text-secondary-h}), var(--color-text-secondary-s, #{var.$default-color-text-secondary-s}), var(--color-text-secondary-l, #{var.$default-color-text-secondary-l}));
     line-height: 1.75;
     max-width: 60ch;
     opacity: 0.9;
     margin-bottom: var.$spacing-xl;
   }
 
+  // Assuming .btn-secondary-ephemeral is a custom combination defined here or component
+  // If it should be a standard button, use .btn and .btn-secondary look from buttonsFile
   .btn.btn-secondary-ephemeral {
-    @include buttonsFile.btn;
-    @include buttonsFile.btn-secondary-look;
-    @include buttonsFile.btn-lg-modifier;
-    .icon-sm {
+    @include buttonsFile.btn; // Apply base button styles
+    @include buttonsFile.btn-secondary-look; // Apply the look
+    @include buttonsFile.btn-lg-modifier; // Apply size modifier
+    // Ensure icon styles are scoped or specific enough if they differ from base .icon in buttons
+    .icon-sm { // This specific class for icon inside this button
       width: 1.25em;
       height: 1.25em;
       margin-right: var.$spacing-sm;
@@ -81,15 +90,16 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: hidden; // Usually good for a main wrapper that contains scrollable children
 
   &.has-framed-content {
-    @include cardsFile.card-base-styles;   // Apply base styles
-    @include cardsFile.card-glass-look;    // CORRECTED: Apply glass look mixin
+    @include cardsFile.card-base-styles;
+    @include cardsFile.card-glass-look; // Ensure this mixin name is correct from _cards.scss
     margin: var.$spacing-md;
-    padding: 0; 
-    overflow: hidden;
+    padding: 0; // Override base card padding if frame content needs to be flush
+    overflow: hidden; // Ensure card clipping applies
     
+    // Style the direct child to be scrollable and have padding
     > :first-child {
       height: 100%;
       width: 100%;
@@ -97,50 +107,66 @@
       @include mixins.custom-scrollbar(
         '--color-accent-interactive',0.4,0.65,'--color-bg-tertiary',0.1,6px
       );
-      padding: var.$spacing-lg;
+      padding: var.$spacing-lg; // Internal padding for the scrollable content
     }
   }
 }
 
 .content-renderer-container-ephemeral {
   flex-grow: 1;
-  padding: var.$spacing-lg;
+  padding: var.$spacing-lg; // Default padding if not using has-framed-content
   overflow-y: auto;
   @include mixins.custom-scrollbar(
     '--color-accent-interactive',0.4,0.65,'--color-bg-tertiary',0.1,6px
   );
-  display: flex;
-  flex-direction: column;
+  display: flex; // If its direct child needs to fill height
+  flex-direction: column; // If its direct child needs to fill height
 }
 
 .prose-ephemeral.content-renderer-ephemeral {
-  margin: auto;
-  max-width: 80ch;
+  margin: auto; // Center prose content if it's narrower than container
+  max-width: 80ch; // Optimal reading width for prose
   width: 100%;
 
   h1, h2, h3, h4 {
-    color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
-    @include mixins.text-glow('--color-accent-primary', 4px, 0.3);
+    color: hsl(var(--color-text-primary-h, #{var.$default-color-text-primary-h}), var(--color-text-primary-s, #{var.$default-color-text-primary-s}), var(--color-text-primary-l, #{var.$default-color-text-primary-l}));
+    // Corrected text-glow mixin call
+    @include mixins.text-glow(
+        $glow-color-var-prefix: '--color-accent-primary', 
+        $glow-radius: 4px, 
+        $fb-glow-h: var.$default-color-accent-primary-h,
+        $fb-glow-s: var.$default-color-accent-primary-s,
+        $fb-glow-l: var.$default-color-accent-primary-l,
+        $fb-glow-a: 0.3
+    );
   }
   p, li, blockquote {
-    color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
-    font-size: calc(var.$font-size-base-default * 1.05);
+    color: hsl(var(--color-text-secondary-h, #{var.$default-color-text-secondary-h}), var(--color-text-secondary-s, #{var.$default-color-text-secondary-s}), var(--color-text-secondary-l, #{var.$default-color-text-secondary-l}));
+    font-size: calc(#{var.$font-size-base-default} * 1.05); // Use CSS calc for interpolation
     line-height: 1.75;
   }
   a {
-    color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
+    color: hsl(var(--color-accent-interactive-h, #{var.$default-color-accent-interactive-h}), var(--color-accent-interactive-s, #{var.$default-color-accent-interactive-s}), var(--color-accent-interactive-l, #{var.$default-color-accent-interactive-l}));
     &:hover {
-       color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), calc(var(--color-accent-interactive-l) + 10%));
+       color: hsl(var(--color-accent-interactive-h, #{var.$default-color-accent-interactive-h}), var(--color-accent-interactive-s, #{var.$default-color-accent-interactive-s}), calc(var(--color-accent-interactive-l, #{var.$default-color-accent-interactive-l}) + 10%));
     }
   }
 }
 
 .prose-ephemeral.prose-error {
-  border-left: 4px solid hsl(var(--color-error-h), var(--color-error-s), var(--color-error-l));
+  border-left: 4px solid hsl(var(--color-error-h, #{var.$default-color-error-h}), var(--color-error-s, #{var.$default-color-error-s}), var(--color-error-l, #{var.$default-color-error-l}));
   padding-left: var.$spacing-md;
   h3, h4 {
-    color: hsl(var(--color-error-h), var(--color-error-s), calc(var(--color-error-l) - 5%));
-    @include mixins.text-glow('--color-error', 4px, 0.4);
+    color: hsl(var(--color-error-h, #{var.$default-color-error-h}), var(--color-error-s, #{var.$default-color-error-s}), calc(var(--color-error-l, #{var.$default-color-error-l}) - 5%));
+    // Corrected text-glow mixin call
+    @include mixins.text-glow(
+        $glow-color-var-prefix: '--color-error', 
+        $glow-radius: 4px, 
+        $fb-glow-h: var.$default-color-error-h,
+        $fb-glow-s: var.$default-color-error-s,
+        $fb-glow-l: var.$default-color-error-l,
+        $fb-glow-a: 0.4
+    );
   }
 }
 

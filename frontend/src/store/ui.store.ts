@@ -1,21 +1,43 @@
 // File: frontend/src/store/ui.store.ts
 /**
  * @file ui.store.ts
- * @description Pinia store for UI state management, including theme, fullscreen, etc.
- * @version 2.1.4 - Corrected watch import and parameter typing.
+ * @description Pinia store for UI state management, including theme, fullscreen,
+ * screen size breakpoints, etc. Interacts with ThemeManager for theme changes.
+ * @version 2.2.1 - Integrated screen size breakpoints and ensured correct ThemeManager delegation.
  */
 import { defineStore } from 'pinia';
-import { ref, readonly, computed, watch, type Ref } from 'vue'; // Added watch
-import { usePreferredDark } from '@vueuse/core';
+import { ref, readonly, computed, watch, type Ref } from 'vue';
+import { usePreferredDark, useBreakpoints, type Breakpoints } from '@vueuse/core';
 import {
-  themeManager,
+  themeManager, // themeManager now exports the default IDs via re-export or direct definition
   DEFAULT_DARK_THEME_ID,
   DEFAULT_LIGHT_THEME_ID,
+  DEFAULT_OVERALL_THEME_ID, // Added for clarity if needed, though ThemeManager handles this
   type ThemeDefinition,
 } from '@/theme/ThemeManager';
 
+/**
+ * @const {Breakpoints} breakpoints - Breakpoint definitions mirroring Tailwind CSS configuration.
+ * Used by `@vueuse/core`'s `useBreakpoints` for reactive screen size checks.
+ */
+const breakpointsConfig: Breakpoints = {
+  sm: 640,
+  md: 768,
+  lg: 1024,
+  xl: 1280,
+  '2xl': 1536,
+};
+const vueUseBreakpointsState = useBreakpoints(breakpointsConfig);
+
+/**
+ * @typedef {ThemeDefinition | undefined} ThemeObjectType - Type alias for the theme object.
+ */
 type ThemeObjectType = ThemeDefinition | undefined;
 
+/**
+ * @interface UiState
+ * @description Defines the reactive state properties managed by the UI store.
+ */
 export interface UiState {
   isFullscreen: Readonly<Ref<boolean>>;
   showHeaderInFullscreenMinimal: Readonly<Ref<boolean>>;
@@ -25,8 +47,15 @@ export interface UiState {
   theme: Readonly<Ref<ThemeObjectType>>;
   isDarkMode: Readonly<Ref<boolean>>;
   isLightMode: Readonly<Ref<boolean>>;
+  isSmallScreen: Readonly<Ref<boolean>>; // e.g., < md
+  isMediumScreenOrSmaller: Readonly<Ref<boolean>>; // e.g., <= md
+  // Add more specific breakpoint refs if needed, e.g., isLargeScreen: vueUseBreakpointsState.lg
 }
 
+/**
+ * @interface UiActions
+ * @description Defines the actions (methods) available in the UI store.
+ */
 export interface UiActions {
   initializeUiState: () => void;
   toggleFullscreen: () => void;
@@ -39,6 +68,9 @@ export interface UiActions {
   setThemeFlexible: (idOrMode: string) => void;
 }
 
+/**
+ * @typedef {UiState & UiActions} FullUiStore - Complete type for the UI store.
+ */
 type FullUiStore = UiState & UiActions;
 
 export const useUiStore = defineStore('ui', (): FullUiStore => {
@@ -46,17 +78,20 @@ export const useUiStore = defineStore('ui', (): FullUiStore => {
   const _showHeaderInFullscreenMinimal = ref(false);
   const _isBrowserFullscreenActive = ref<boolean>(typeof document !== 'undefined' && !!document.fullscreenElement);
 
-  const preferredDark = usePreferredDark(); // Get the ref from usePreferredDark
-  const isSystemDark = ref(preferredDark.value); // Local ref to track system preference
+  const preferredDark = usePreferredDark();
+  const isSystemDarkLocal = ref(preferredDark.value); // Local reactive copy
 
-  const themeRefInternal = themeManager.getCurrentTheme();
-  const theme = computed(() => themeRefInternal.value);
+  // Screen size computeds
+  const isSmallScreen = vueUseBreakpointsState.smaller('md');
+  const isMediumScreenOrSmaller = vueUseBreakpointsState.smallerOrEqual('md');
 
-  const isCurrentThemeDark = computed(() => theme.value?.isDark ?? false);
-  const currentThemeId = computed(() => theme.value?.id ?? (isSystemDark.value ? DEFAULT_DARK_THEME_ID : DEFAULT_LIGHT_THEME_ID));
+  // Theme state directly from ThemeManager's reactive properties
+  const theme = computed<ThemeObjectType>(() => themeManager.getCurrentTheme().value);
+  const currentThemeId = computed<string>(() => themeManager.getCurrentThemeId().value);
+  const isCurrentThemeDark = computed<boolean>(() => theme.value?.isDark ?? isSystemDarkLocal.value);
 
-  const isDarkMode = computed(() => isCurrentThemeDark.value);
-  const isLightMode = computed(() => !isCurrentThemeDark.value);
+  const isDarkMode = computed<boolean>(() => isCurrentThemeDark.value);
+  const isLightMode = computed<boolean>(() => !isCurrentThemeDark.value);
 
   const setFullscreen = (val: boolean) => {
     if (_isFullscreen.value !== val) {
@@ -75,7 +110,11 @@ export const useUiStore = defineStore('ui', (): FullUiStore => {
 
   const toggleBrowserFullscreen = async () => {
     if (typeof document === 'undefined') return;
-    const el = document.documentElement as any;
+    const el = document.documentElement as HTMLElement & {
+      mozRequestFullScreen?: () => Promise<void>;
+      webkitRequestFullscreen?: () => Promise<void>;
+      msRequestFullscreen?: () => Promise<void>;
+    };
     try {
       if (!document.fullscreenElement) {
         if (el.requestFullscreen) await el.requestFullscreen();
@@ -86,14 +125,12 @@ export const useUiStore = defineStore('ui', (): FullUiStore => {
         await document.exitFullscreen();
       }
     } catch (err) {
-      console.error('[UiStore] Browser FS error', err);
+      console.error('[UiStore] Browser fullscreen toggle error:', err);
     }
   };
 
   const _handleFsChange = () => {
-    const active = typeof document !== 'undefined' && !!document.fullscreenElement;
-    _isBrowserFullscreenActive.value = active;
-    setFullscreen(active);
+    _isBrowserFullscreenActive.value = typeof document !== 'undefined' && !!document.fullscreenElement;
   };
 
   const initializeUiState = () => {
@@ -103,32 +140,16 @@ export const useUiStore = defineStore('ui', (): FullUiStore => {
       document.addEventListener('mozfullscreenchange', _handleFsChange);
       document.addEventListener('MSFullscreenChange', _handleFsChange);
     }
-    // Watch for changes in system dark mode preference
-    watch(preferredDark, (newVal: boolean) => { // Explicitly typed newVal
-      isSystemDark.value = newVal;
-      // ThemeManager's initialize (called in App.vue) and its own watch on isSystemDark
-      // will handle applying the theme if the user hasn't made a manual selection.
-      // This local isSystemDark ref is primarily for the initial currentThemeId computation.
-      if (!themeManager.hasUserManuallySelectedTheme.value) {
-        themeManager.setTheme(newVal ? DEFAULT_DARK_THEME_ID : DEFAULT_LIGHT_THEME_ID);
-      }
-    });
+    // ThemeManager.initialize() is called in App.vue onMounted.
+    watch(preferredDark, (newVal: boolean) => {
+      isSystemDarkLocal.value = newVal; // Update local ref
+      // ThemeManager's internal watch will handle applying system preference if no user choice.
+    }, { immediate: true });
   };
 
-  const setTheme = (id: string) => {
-    themeManager.setTheme(id);
-  };
-
-  const setDarkMode = (flag: boolean) => {
-    const targetThemeId = flag ? DEFAULT_DARK_THEME_ID : DEFAULT_LIGHT_THEME_ID;
-    themeManager.setTheme(targetThemeId);
-  };
-
-  const setThemeFlexible = (idOrMode: string) => {
-    if (idOrMode === 'dark')  themeManager.setTheme(DEFAULT_DARK_THEME_ID);
-    else if (idOrMode === 'light') themeManager.setTheme(DEFAULT_LIGHT_THEME_ID);
-    else themeManager.setTheme(idOrMode);
-  };
+  const setTheme = (id: string) => themeManager.setTheme(id);
+  const setDarkMode = (flag: boolean) => themeManager.setThemeFlexible(flag ? 'dark' : 'light');
+  const setThemeFlexible = (idOrMode: string) => themeManager.setThemeFlexible(idOrMode);
 
   return {
     isFullscreen: readonly(_isFullscreen),
@@ -136,9 +157,11 @@ export const useUiStore = defineStore('ui', (): FullUiStore => {
     isBrowserFullscreenActive: readonly(_isBrowserFullscreenActive),
     isCurrentThemeDark,
     currentThemeId,
-    theme: readonly(theme) as Readonly<Ref<ThemeObjectType>>,
+    theme, // Already readonly from computed if `themeManager.getCurrentTheme()` is readonly
     isDarkMode,
     isLightMode,
+    isSmallScreen: readonly(isSmallScreen),
+    isMediumScreenOrSmaller: readonly(isMediumScreenOrSmaller),
 
     initializeUiState,
     toggleFullscreen,

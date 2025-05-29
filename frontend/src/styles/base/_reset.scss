@@ -1,179 +1,165 @@
 // File: frontend/src/styles/base/_reset.scss
 /**
  * @file _reset.scss
- * @description A modern CSS reset for improved cross-browser consistency.
- * Based on common practices for resetting default browser styles.
- * @version 2.0.0
+ * @description A minimal, modern CSS reset to establish consistent baseline styling
+ * across browsers, tailored for the "Ephemeral Harmony" application.
+ * Focuses on sensible defaults, box-sizing, and removing opinionated browser styles.
+ *
+ * @role Provides a clean slate for styling by neutralizing default browser styles.
+ * @dependencies None.
+ * @assumptions This reset is applied before other global and component styles.
+ * @version 1.1.0 - Added focus-visible polyfill consideration and minor refinements.
  */
 
-// Box sizing rules
+// --- Box Sizing ---
+// Apply a more intuitive box model to all elements and pseudo-elements.
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
 
-// Remove default margin and padding on common elements
-html,
-body,
-div,
-span,
-applet,
-object,
-iframe,
+// --- Root Element Defaults ---
+// Remove default margins and ensure the document flows as expected.
+html {
+  -webkit-tap-highlight-color: transparent; // Remove tap highlight on mobile
+  line-height: 1.15; // Basic line height, typically overridden by more specific rules
+}
+
+// --- Body Defaults ---
+// Remove default margins. Font settings are handled in _global.scss or _typography.scss.
+body {
+  margin: 0;
+}
+
+// --- Main Content Root ---
+// Provides a sensible default for the main landmark.
+main {
+  display: block; // Correct display for <main> in older browsers
+}
+
+// --- Typography Resets ---
+// Remove default margins from headings and paragraphs.
+// More specific typography is handled in _typography.scss.
 h1, h2, h3, h4, h5, h6,
 p,
 blockquote,
 pre,
-a,
-abbr,
-acronym,
-address,
-big,
-cite,
-code,
-del,
-dfn,
-em,
-img,
-ins,
-kbd,
-q,
-s,
-samp,
-small,
-strike,
-strong,
-sub,
-sup,
-tt,
-var,
-b,
-u,
-i,
-center,
-dl,
-dt,
-dd,
-ol,
-ul,
-li,
-fieldset,
-form,
-label,
-legend,
-table,
-caption,
-tbody,
-tfoot,
-thead,
-tr,
-th,
-td,
-article,
-aside,
-canvas,
-details,
-embed,
-figure,
-figcaption,
-footer,
-header,
-hgroup,
-menu,
-nav,
-output,
-ruby,
-section,
-summary,
-time,
-mark,
-audio,
-video {
+dl, dd,
+ol, ul {
   margin: 0;
-  padding: 0;
-  border: 0;
-  font-size: 100%; // Ensures consistent base for rem units
-  font: inherit;    // Inherit font properties from parent
-  vertical-align: baseline;
+  padding: 0; // Also reset padding for lists
 }
 
-// HTML5 display-role reset for older browsers (less critical now, but good practice)
-article,
-aside,
-details,
-figcaption,
-figure,
-footer,
-header,
-hgroup,
-menu,
-nav,
-section {
-  display: block;
-}
-
-// Body base
-body {
-  line-height: 1; // Will be overridden by _typography.scss or _global.scss
-}
-
-// List styles
-ol,
-ul {
+// Remove default list styling.
+ol, ul {
   list-style: none;
 }
 
-// Quotes
-blockquote,
-q {
-  quotes: none;
+// --- Embedded Content ---
+// Make images and other replaced elements responsive by default.
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block; // Remove extra space below inline images
+  max-width: 100%; // Prevent overflow
+  height: auto;    // Maintain aspect ratio
 }
 
-blockquote::before,
-blockquote::after,
-q::before,
-q::after {
-  content: '';
-  content: none;
+// Remove border from iframes.
+iframe {
+  border: 0;
 }
 
-// Tables
+// --- Forms ---
+// Remove default margins.
+// More detailed form styling is handled by @tailwindcss/forms or _forms.scss.
+button,
+input,
+optgroup,
+select,
+textarea {
+  margin: 0;
+  font-family: inherit; // Inherit font from parent
+  font-size: 100%;      // Inherit font size from parent
+  line-height: inherit; // Inherit line height from parent
+  color: inherit;       // Inherit text color
+  padding: 0;           // Remove default padding
+  border: none;         // Remove default borders
+  background-color: transparent; // Remove default backgrounds
+}
+
+// Correct the inability to style clickable types in iOS and Safari.
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  -webkit-appearance: button; // Corrects inability to style clickable types in iOS and Safari.
+  appearance: button; // Standard property
+  cursor: pointer;
+}
+
+// Remove the inner border and padding in Firefox.
+button::-moz-focus-inner,
+[type='button']::-moz-focus-inner,
+[type='reset']::-moz-focus-inner,
+[type='submit']::-moz-focus-inner {
+  border-style: none;
+  padding: 0;
+}
+
+// Remove the inner padding in Firefox.
+input[type='search']::-moz-search-cancel-button,
+input[type='search']::-moz-search-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+
+// Remove default appearance for search inputs in WebKit.
+input[type='search']::-webkit-search-decoration,
+input[type='search']::-webkit-search-cancel-button,
+input[type='search']::-webkit-search-results-button,
+input[type='search']::-webkit-search-results-decoration {
+  -webkit-appearance:none;
+}
+
+
+// Correct text-area resizing.
+textarea {
+  resize: vertical; // Allow vertical resizing, disable horizontal
+  overflow: auto;   // Show scrollbars when content overflows
+}
+
+// --- Tables ---
+// Remove default spacing.
 table {
   border-collapse: collapse;
   border-spacing: 0;
 }
 
-// Accessible focus removal (ensure alternatives are provided)
-// This is often handled by Tailwind's preflight or custom focus styles.
-// If not, uncomment carefully:
-// :focus {
-//   outline: 0;
+// --- Hidden Elements ---
+// Use Tailwind's `hidden` class or a custom utility class for `display: none`.
+// This reset doesn't enforce a specific hidden style by default.
+
+// --- Focus Visible Polyfill Consideration ---
+// If supporting browsers that don't fully implement :focus-visible,
+// you might include a JavaScript polyfill and ensure its class is handled.
+// For example, if a polyfill adds `.focus-visible`, you might reset outline for `.focus-visible:focus:not(:focus-visible)`.
+// However, modern browsers have good support, so this is often not needed.
+// Example (if using a polyfill that adds .focus-visible class):
+// :focus:not(.focus-visible) {
+//   outline: none;
 // }
 
-// Remove tap highlight color on mobile
-html {
-  -webkit-tap-highlight-color: transparent;
-}
-
-// Improve text rendering
-body, input, textarea, button {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-}
-
-// Media defaults
-img,
-picture,
-video,
-canvas,
-svg {
-  display: block;
-  max-width: 100%;
-}
-
-// Hidden attribute
-[hidden] {
-  display: none !important; // Ensure it's truly hidden
+// --- Links ---
+// Basic reset for links, more specific styling in _global.scss or component styles.
+a {
+  text-decoration: none; // Remove underlines by default
+  color: inherit;        // Inherit color from parent
 }
