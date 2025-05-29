@@ -198,7 +198,7 @@ export const authAPI = {
  */
 export interface ChatMessageFE {
   /** The role of the entity that produced the message. */
-  role: 'user' | 'assistant' | 'system' | 'tool';
+  role: 'user' | 'assistant' | 'system' | 'tool' | 'error';
   /** The textual content of the message. Can be null if the message contains tool calls. */
   content: string | null;
   /** Optional Unix timestamp (milliseconds) of when the message was created or received. */

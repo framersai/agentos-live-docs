@@ -204,9 +204,9 @@ const missionItems = ref([
   <div class="about-page-ephemeral">
     <header class="about-header-ephemeral">
       <div class="header-content-container">
-        <div class="logo-title-group">
-          <img src="@/assets/logo.svg" alt="Voice Chat Assistant Logo" class="header-logo-img" />
-          <h1 class="main-page-title">About AgentOS & VCA</h1>
+        <div class="logo-title-group text-center">
+          <!-- <img src="@/assets/logo.svg" alt="Voice Chat Assistant Logo" class="header-logo-img" /> -->
+          <h1 class="main-page-title">About <strong>Voice Chat Assistant</strong> and <strong>AgentOS</strong></h1>
         </div>
         <button @click="goHome" class="btn btn-secondary-ephemeral btn-sm back-button-ephemeral">
           <ArrowLeftIcon class="icon-sm" />

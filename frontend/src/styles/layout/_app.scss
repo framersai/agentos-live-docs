@@ -2,85 +2,86 @@
 /**
  * @file _app.scss
  * @description Specific layout styles for the main App.vue shell.
- * @version 1.0.0
+ * Defines the overall structure and flex behavior for the primary application container,
+ * header, main content area, and footer.
+ *
+ * @role Provides structural layout styling for the root application component.
+ * @dependencies `../abstracts/variables` (for z-indexes, spacing, theme colors).
+ * @assumptions App.vue uses the class `.app-shell-ephemeral` for its root div and
+ * subsequent classes like `.app-layout-ephemeral` for internal structure.
+ * @version 1.0.1 - Reviewed for consistency with "Ephemeral Harmony" and calc() usage.
  */
 
 @use '../abstracts/variables' as var;
 
-.app-shell-ephemeral { // New root class for App.vue's main div
+.app-shell-ephemeral {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  // Background color and text color are set by body styles in _typography.scss
-  // and theme variables.
-  // Add subtle global background pattern here if not on body
-  // position: relative; // For ::before pseudo-elements if needed
-  // overflow: hidden; // If background effects should not cause scroll
+  min-height: 100vh; // Ensures the app shell takes at least the full viewport height
+  // Background color and text color are primarily set by body styles in _global.scss
+  // and theme variables applied to :root or html[data-theme].
 }
 
 .app-layout-ephemeral {
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
-  overflow: hidden; // Prevent content from causing App.vue scroll
-  position: relative; // For positioning of fixed/absolute children like EphemeralChatLog
+  flex-grow: 1; // Allows this layout to fill the .app-shell-ephemeral
+  overflow: hidden; // Prevents content within this layout from causing scroll on .app-shell-ephemeral
+  position: relative; // Establishes a stacking context for children like EphemeralChatLog
 }
 
 .app-layout-header-ephemeral { // Wrapper for <AppHeader>
-  flex-shrink: 0;
-  // z-index handled by .app-header itself
+  flex-shrink: 0; // Header should not shrink
+  // z-index and specific styling are handled by .app-header-ephemeral in _header.scss
 }
 
 .app-layout-main-content-ephemeral { // Wrapper for <router-view>
-  flex-grow: 1;
-  position: relative; // For stacking context of pages
-  overflow-y: auto; // Only main content should scroll if page is long
-  overflow-x: hidden;
-  // Apply custom scrollbar styling using the mixin if needed globally for main content areas
-  // Or individual pages/views can apply it.
-  // padding-top: calc(var(--header-height) + var(--chat-log-height) + var.$spacing-lg); // Space if EphemeralChatLog is NOT fixed
-  // Padding will now be managed by UnifiedChatLayout internally
+  flex-grow: 1; // Main content area takes up remaining space
+  position: relative; // Stacking context for pages/views
+  overflow-y: auto;   // Only main content area should scroll if its content is long
+  overflow-x: hidden; // Prevent horizontal scroll from content
+  // Base padding for this area is defined in _main-content.scss
 
-  // Page transitions (from App.vue styles)
+  // Page transitions (ensure these class names match Vue <Transition> component `name` prop)
   .page-fade-enter-active,
   .page-fade-leave-active {
-    transition: opacity var(--duration-smooth) var(--ease-in-out-sine),
-                transform var(--duration-smooth) var(--ease-in-out-sine);
+    transition: opacity var(--duration-smooth, #{var.$duration-smooth}) var(--ease-in-out-sine, #{var.$ease-in-out-sine}),
+                transform var(--duration-smooth, #{var.$duration-smooth}) var(--ease-in-out-sine, #{var.$ease-in-out-sine});
   }
   .page-fade-enter-from {
     opacity: 0;
-    transform: translateY(15px) scale(0.99); // Subtle slide and scale
+    transform: translateY(15px) scale(0.99); // Subtle slide and scale in
   }
   .page-fade-leave-to {
     opacity: 0;
-    transform: translateY(-15px) scale(0.99);
+    transform: translateY(-15px) scale(0.99); // Subtle slide and scale out
   }
 }
 
 .app-layout-footer-ephemeral { // Wrapper for <AppFooter>
-  flex-shrink: 0;
-  // z-index handled by .app-footer itself
+  flex-shrink: 0; // Footer should not shrink
+  // z-index and specific styling are handled by .app-footer-ephemeral in _footer.scss
 }
 
-// Skip Link (from App.vue styles, themed)
+// Skip Link (themed and positioned within the app layout)
 .skip-link-ephemeral {
-  position: absolute; // Changed from fixed to be within app layout if app layout is scroll container
-  left: -9999px;
+  position: absolute; // Positioned within .app-layout-ephemeral
+  left: -9999px;      // Visually hidden off-screen
   top: var.$spacing-sm; // Position from top of app-layout
-  z-index: var.$z-index-dev-tools; // Very high
+  z-index: var.$z-index-dev-tools; // Highest z-index for visibility
   padding: var.$spacing-sm var.$spacing-md;
   border-radius: var.$radius-md;
   font-weight: 600;
   text-decoration: none;
-  background-color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
-  color: hsl(var(--color-text-on-primary-h), var(--color-text-on-primary-s), var(--color-text-on-primary-l));
-  box-shadow: var(--shadow-depth-lg);
+  background-color: hsl(var(--color-accent-primary-h, var.$default-color-accent-primary-h), var(--color-accent-primary-s, var.$default-color-accent-primary-s), var(--color-accent-primary-l, var.$default-color-accent-primary-l));
+  color: hsl(var(--color-text-on-primary-h, var.$default-color-text-on-primary-h), var(--color-text-on-primary-s, var.$default-color-text-on-primary-s), var(--color-text-on-primary-l, var.$default-color-text-on-primary-l));
+  box-shadow: var(--shadow-depth-lg, #{var.$scss-box-shadow-lg}); // Prominent shadow when visible
   transition: transform 0.2s var.$ease-out-quad, opacity 0.2s var.$ease-out-quad;
-  transform: translateY(-100%);
+  transform: translateY(-100%); // Initial off-screen position for animation
   opacity: 0;
 
   &:focus,
-  &:active {
+  &:active { // Show on focus (keyboard navigation) or if somehow activated
     left: var.$spacing-md;
     transform: translateY(0);
     opacity: 1;
