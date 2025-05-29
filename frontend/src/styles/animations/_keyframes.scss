@@ -1,248 +1,232 @@
 // File: frontend/src/styles/animations/_keyframes.scss
 /**
  * @file _keyframes.scss
- * @description Defines custom @keyframes for animations used in the "Ephemeral Harmony" design system.
- * Includes effects for UI elements, transitions, voice interaction visualizations, and ambient backgrounds.
- * @version 2.1.0 - Added background effect keyframes.
+ * @description Defines custom @keyframes for animations used throughout the "Ephemeral Harmony" design system.
+ * Includes effects for core UI elements, transitions, voice interaction visualizations,
+ * ambient backgrounds, and specific component states (e.g., logo animations, input focus, loading indicators).
+ * Animations aim for an organic, futuristic, and theme-aware feel, prioritizing performance.
+ *
+ * @role Provides a central repository of reusable CSS keyframe animations.
+ * @dependencies `../abstracts/variables` (for SCSS fallback durations, easing functions, and colors if absolutely necessary,
+ * though primary theming is via CSS custom properties set by the theme engine).
+ * @assumptions CSS custom properties for colors (e.g., --color-accent-primary-h, --voice-pulse-opacity)
+ * and animation parameters (e.g. --opacity-start, --scale-pulse) are set by the theme engine or consuming components.
+ * @version 2.2.2 - Ensured all HSL(A) components for colors are correctly referenced via CSS variables.
  */
 
-@use '../abstracts/variables' as var;
+@use '../abstracts/variables' as var; // For SCSS fallback durations and easing
 
 // -----------------------------------------------------------------------------
-// Core UI Animations
+// Core UI Animations (Fade, Slide)
 // -----------------------------------------------------------------------------
 @keyframes fadeIn {
-  from { opacity: 0; }
+  from { opacity: var(--animation-fade-in-opacity-from, 0); }
   to { opacity: 1; }
 }
 
 @keyframes fadeOut {
-  from { opacity: 1; }
+  from { opacity: var(--animation-fade-out-opacity-from, 1); }
   to { opacity: 0; }
 }
 
 @keyframes slideInUp {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(var(--animation-slide-in-translate-y, 20px)); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes slideInDown {
-  from { opacity: 0; transform: translateY(-20px); }
+  from { opacity: 0; transform: translateY(var(--animation-slide-in-translate-y, -20px)); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes subtlePulse { // Generic subtle pulse
-  0%, 100% { transform: scale(1); opacity: var(--opacity-start, 1); }
-  50% { transform: scale(var(--scale-pulse, 1.02)); opacity: var(--opacity-pulse, 0.85); }
+// -----------------------------------------------------------------------------
+// Pulsing & Glowing Animations (Organic & Feedback)
+// -----------------------------------------------------------------------------
+@keyframes subtlePulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: var(--animation-subtle-pulse-opacity-start, 0.85);
+  }
+  50% {
+    transform: scale(var(--animation-subtle-pulse-scale, 1.025));
+    opacity: var(--animation-subtle-pulse-opacity-peak, 1);
+  }
 }
 
-@keyframes subtleGlow { // For text or small elements
-  from { text-shadow: 0 0 4px hsla(var(--color-accent-glow-h, 180), var(--color-accent-glow-s, 90%), var(--color-accent-glow-l, 60%), calc(var(--color-accent-glow-a, 0.4) * 0.7)); }
-  to { text-shadow: 0 0 10px hsla(var(--color-accent-glow-h, 180), var(--color-accent-glow-s, 90%), var(--color-accent-glow-l, 60%), var(--color-accent-glow-a, 0.4)),
-                   0 0 1px hsla(var(--color-accent-glow-h, 180), var(--color-accent-glow-s, 90%), var(--color-accent-glow-l, 60%), var(--color-accent-glow-a, 0.4)); }
+@keyframes inputFocusGlowPulse {
+  0%, 100% {
+    box-shadow:
+      inset 0 1px 2px hsla(var(--shadow-color-h, var.$default-shadow-color-h), var(--shadow-color-s, var.$default-shadow-color-s), var(--shadow-color-l, var.$default-shadow-color-l), 0.08),
+      0 0 6px 0px hsla(var(--color-accent-interactive-h, var.$default-color-accent-interactive-h), var(--color-accent-interactive-s, var.$default-color-accent-interactive-s), var(--color-accent-interactive-l, var.$default-color-accent-interactive-l), 0.25);
+  }
+  50% {
+    box-shadow:
+      inset 0 1px 3px hsla(var(--shadow-color-h, var.$default-shadow-color-h), var(--shadow-color-s, var.$default-shadow-color-s), var(--shadow-color-l, var.$default-shadow-color-l), 0.12),
+      0 0 10px 3px hsla(var(--color-accent-interactive-h, var.$default-color-accent-interactive-h), var(--color-accent-interactive-s, var.$default-color-accent-interactive-s), var(--color-accent-interactive-l, var.$default-color-accent-interactive-l), 0.4);
+  }
+}
+
+@keyframes subtleTextGlow {
+  0%, 100% {
+    text-shadow: 0 0 var(--animation-text-glow-radius-start, 3px) hsla(
+      var(--color-accent-glow-h, var.$default-color-accent-glow-h), 
+      var(--color-accent-glow-s, var.$default-color-accent-glow-s), 
+      var(--color-accent-glow-l, var.$default-color-accent-glow-l),
+      calc(var(--color-accent-glow-a, #{var.$default-color-accent-glow-a}) * 0.7)
+    );
+  }
+  50% {
+    text-shadow: 0 0 var(--animation-text-glow-radius-end, 7px) hsla(
+      var(--color-accent-glow-h, var.$default-color-accent-glow-h), 
+      var(--color-accent-glow-s, var.$default-color-accent-glow-s), 
+      var(--color-accent-glow-l, var.$default-color-accent-glow-l),
+      var(--color-accent-glow-a, #{var.$default-color-accent-glow-a})
+    );
+  }
 }
 
 // -----------------------------------------------------------------------------
-// Holographic & Ephemeral Animations
+// Holographic, Ephemeral & UI Feedback Animations
 // -----------------------------------------------------------------------------
-@keyframes holoShimmer { // For background gradients or borders (animates background-position)
+@keyframes holoShimmer {
   0% { background-position: 200% center; }
   100% { background-position: -200% center; }
 }
 
-@keyframes ephemeralMessageIn { // For messages in ephemeral chat log
-  from { opacity: 0; transform: translateY(10px) scale(0.98); }
-  to { opacity: 1; transform: translateY(0) scale(1); } // Target opacity handled by class
+@keyframes ephemeralMessageIn {
+  from { opacity: 0; transform: translateY(12px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-@keyframes ephemeralVanish { // For messages fading out (if implemented with JS class toggle)
-  from { opacity: var(--opacity-start, 0.9); transform: scale(1) translateY(0); }
-  to { opacity: 0; transform: scale(0.95) translateY(-10px); }
+@keyframes ephemeralVanish {
+  from { opacity: var(--animation-ephemeral-vanish-opacity-start, 0.9); transform: scale(1) translateY(0); }
+  to { opacity: 0; transform: scale(0.93) translateY(-12px); }
 }
 
-// -----------------------------------------------------------------------------
-// Voice Visualization Keyframes
-// -----------------------------------------------------------------------------
-@keyframes voiceAuraPulse { // For a soft, breathing aura effect around mic or AI indicator
-  0% { transform: scale(0.7); opacity: 0; }
-  50% { opacity: var(--voice-pulse-opacity, 0.6); }
-  100% { transform: scale(1.6); opacity: 0; }
-}
-
-@keyframes voiceLightStreak { // For the header AI status indicator's streak
-  0% { transform: translateX(-100%); opacity: 0.5; }
-  50% { opacity: 1; }
-  100% { transform: translateX(330%); opacity: 0.5; }
-}
-
-@keyframes ephemeralRipples { // For concentric ripples from a point
-  from {
-    transform: scale(0);
-    opacity: 0.7;
-    // border-color: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.7);
-  }
-  to {
-    transform: scale(3); // Adjust scale for ripple size
-    opacity: 0;
-    // border-color: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0);
-  }
-}
-
-@keyframes holographicParticleDrift { // Slow, ambient drift for background particles
-  0% { transform: translate(0, 0) rotate(0deg); opacity: 0.05; } // Start subtle
-  25% { transform: translate(var(--particle-drift-x, 5px), var(--particle-drift-y, 10px)) rotate(10deg); opacity: 0.15; }
-  50% { transform: translate(calc(var(--particle-drift-x, 5px) * -0.5), calc(var(--particle-drift-y, 10px) * 2)) rotate(-5deg); opacity: 0.1; }
-  75% { transform: translate(calc(var(--particle-drift-x, 5px) * 0.2), calc(var(--particle-drift-y, 10px) * 0.5)) rotate(5deg); opacity: 0.2; }
-  100% { transform: translate(0, 0) rotate(0deg); opacity: 0.05; }
-}
-
-@keyframes holographicParticleActive { // When voice or an event triggers more activity
-  0% { opacity: var(--particle-active-opacity-start, 0.3); transform: scale(1.05); filter: brightness(1.1); }
-  50% { opacity: var(--particle-active-opacity-peak, 0.6); transform: scale(1); filter: brightness(1.3); }
-  100% { opacity: var(--particle-active-opacity-start, 0.3); transform: scale(1.05); filter: brightness(1.1); }
-}
-
-// -----------------------------------------------------------------------------
-// Animated Border Glow (Spin for conic gradient)
-// -----------------------------------------------------------------------------
-@keyframes spin { // General purpose spin, used by holographic-border-glow mixin
+@keyframes spin {
   to { transform: rotate(360deg); }
 }
 
-// -----------------------------------------------------------------------------
-// Blinking cursor for streaming text
-// -----------------------------------------------------------------------------
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
 }
 
 // -----------------------------------------------------------------------------
-// Background Effects from UnifiedChatLayout
+// Voice & Interaction Visualization Keyframes
 // -----------------------------------------------------------------------------
-@keyframes orbitEffect { // For the orbiting shapes in the background
-  from { transform: rotate(0deg) /* translateX, translateY set by JS/style binding */ ; }
-  to { transform: rotate(360deg) /* translateX, translateY set by JS/style binding */ ; }
+@keyframes voiceAuraPulse {
+  0% { transform: scale(0.75); opacity: 0; }
+  50% { opacity: var(--voice-pulse-opacity, #{var.$default-voice-pulse-opacity}); }
+  100% { transform: scale(1.5); opacity: 0; }
 }
 
-@keyframes shapeTransformEffect { // For the individual orbiting shapes
-  from { transform: scale(0.8) rotate(-25deg); opacity: var(--shape-opacity-from, 0.5); }
-  to { transform: scale(1.2) rotate(25deg); opacity: var(--shape-opacity-to, 0.8); }
-}
-
-@keyframes holoGridScroll { // For the subtle holographic grid background
-  0% { background-position: 0 0; }
-  100% { background-position: var(--bg-holo-grid-size, 40px) var(--bg-holo-grid-size, 40px); }
-  // Or for a more "flowing" effect:
-  // 100% { background-position: 0 var(--bg-holo-grid-size, 40px); } // Scrolls only vertically
-}
-
-// -----------------------------------------------------------------------------
-// Loading Spinner (from App.vue, can be centralized here)
-// -----------------------------------------------------------------------------
-@keyframes spinnerBladeFade { // For the loading spinner blades
-  0%, 39.9% { opacity: 0; } // Start invisible
-  40% { opacity: 1; }
-  100% { opacity: 0; transform: rotate(360deg); } // Fade out as it completes a "cycle" conceptually
-}
-
-// -----------------------------------------------------------------------------
-// Specific Component Animations (e.g., from Header.vue)
-// -----------------------------------------------------------------------------
-@keyframes micListeningPulse { // From _voice-input.scss, good to centralize
-  0% { box-shadow: 0 0 0 0px hsla(var(--color-voice-user-h, 270), var(--color-voice-user-s, 90%), var(--color-voice-user-l, 70%), 0.5); opacity: 0.7; }
-  70% { box-shadow: 0 0 0 10px hsla(var(--color-voice-user-h, 270), var(--color-voice-user-s, 90%), var(--color-voice-user-l, 70%), 0); opacity: 0; }
-  100% { box-shadow: 0 0 0 0px hsla(var(--color-voice-user-h, 270), var(--color-voice-user-s, 90%), var(--color-voice-user-l, 70%), 0); opacity: 0; }
-}
-
-@keyframes pulseStatus { // From Footer.vue status dot
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.6; transform: scale(0.85); }
-}
-
-// --- Added/Updated for Header Revamp ---
-
-// For AnimatedLogo.vue (if not scoped there)
-@keyframes subtle-spin-logo {
-  from { transform: rotate(0deg) scale(1); }
-  to { transform: rotate(360deg) scale(1); }
-}
-
-@keyframes logo-pulse-ephemeral {
+@keyframes micListeningPulse {
   0% {
-    filter: drop-shadow(0 0 7px hsla(var(--color-logo-primary-h, var.$default-color-accent-primary-h), var(--color-logo-primary-s, var.$default-color-accent-primary-s), var(--color-logo-primary-l, var.$default-color-accent-primary-l), 0.6)) saturate(1);
-    transform: scale(1);
+    box-shadow: 0 0 0 0px hsla(var(--color-voice-user-h, var.$default-color-voice-user-h), var(--color-voice-user-s, var.$default-color-voice-user-s), var(--color-voice-user-l, var.$default-color-voice-user-l), 0.5);
+    opacity: 0.8;
   }
-  50% {
-    filter: drop-shadow(0 0 14px hsla(var(--color-logo-primary-h), var(--color-logo-primary-s), var(--color-logo-primary-l), 0.8)) 
-            drop-shadow(0 0 5px hsla(var(--color-logo-secondary-h, var.$default-color-accent-secondary-h), var(--color-logo-secondary-s, var.$default-color-accent-secondary-s), var(--color-logo-secondary-l, var.$default-color-accent-secondary-l), 0.5)) 
-            saturate(1.25) brightness(1.1);
-    transform: scale(1.08);
+  70% {
+    box-shadow: 0 0 0 12px hsla(var(--color-voice-user-h, var.$default-color-voice-user-h), var(--color-voice-user-s, var.$default-color-voice-user-s), var(--color-voice-user-l, var.$default-color-voice-user-l), 0);
+    opacity: 0;
   }
   100% {
-    filter: drop-shadow(0 0 7px hsla(var(--color-logo-primary-h), var(--color-logo-primary-s), var(--color-logo-primary-l), 0.6)) saturate(1);
-    transform: scale(1);
+    box-shadow: 0 0 0 0px hsla(var(--color-voice-user-h, var.$default-color-voice-user-h), var(--color-voice-user-s, var.$default-color-voice-user-s), var(--color-voice-user-l, var.$default-color-voice-user-l), 0);
+    opacity: 0;
   }
 }
 
+@keyframes headerPulse {
+  0%, 100% { transform: scaleY(1) translateY(0); opacity: 0.7; }
+  50% { transform: scaleY(1.03) translateY(-1.5px); opacity: 1; }
+}
+
+// -----------------------------------------------------------------------------
+// AnimatedLogo Specific Keyframes
+// -----------------------------------------------------------------------------
+@keyframes logo-idle-breath {
+  0% { transform: scale(1); opacity: var(--logo-idle-opacity-base, 0.9); }
+  50% { transform: scale(var(--logo-idle-scale-peak, 1.03)); opacity: var(--logo-idle-opacity-peak, 1); }
+  100% { transform: scale(1); opacity: var(--logo-idle-opacity-base, 0.9); }
+}
+@keyframes logo-listening-pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(var(--logo-listening-scale-peak, 1.08)); }
+  100% { transform: scale(1); }
+}
+@keyframes logo-ai-active-pulse {
+  0% { transform: scale(1); }
+  30% { transform: scale(var(--logo-ai-active-scale-peak1, 1.12)); }
+  60% { transform: scale(var(--logo-ai-active-scale-peak2, 1.05)); }
+  100% { transform: scale(var(--logo-ai-active-scale-peak3, 1.1)); }
+}
+@keyframes logo-waveform-thrum {
+  0%, 100% { transform: translateY(0) translateX(0) rotate(0); }
+  25% { transform: translateY(var(--logo-waveform-thrum-intensity-y, -0.7px)) translateX(var(--logo-waveform-thrum-intensity-x, 0.3px)) rotate(var(--logo-waveform-thrum-rotate, 0.8deg)); }
+  75% { transform: translateY(var(--logo-waveform-thrum-intensity-y, 0.7px)) translateX(calc(var(--logo-waveform-thrum-intensity-x, 0.3px) * -1)) rotate(calc(var(--logo-waveform-thrum-rotate, 0.8deg) * -1)); }
+}
 @keyframes letter-entrance-ephemeral {
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-@keyframes letter-wave-ephemeral {
-  0%, 100% { transform: translateY(0) scale(1) rotate(0deg); }
-  50% { transform: translateY(-1.5px) scale(1.02) rotate(0.5deg); }
-}
-@keyframes letter-wave-main-ephemeral {
-  0%, 100% { transform: translateY(0) scale(1) rotate(0deg); }
-  50% { transform: translateY(-1.5px) scale(1.03) rotate(-0.5deg); }
+@keyframes logo-particle-orbit1 {
+  0% { transform: rotate(0deg) translateX(var(--logo-particle1-orbit-radius, 45px)) scale(0.4); opacity: 0; }
+  50% { opacity: var(--logo-particle1-opacity, 0.85); transform: rotate(180deg) translateX(calc(var(--logo-particle1-orbit-radius, 45px) + 7px)) scale(1.1); }
+  100% { transform: rotate(360deg) translateX(var(--logo-particle1-orbit-radius, 45px)) scale(0.4); opacity: 0; }
 }
 
-// For Agent Title Glimmer
-@keyframes subtleGlimmer {
+// -----------------------------------------------------------------------------
+// Background & Texture Animations
+// -----------------------------------------------------------------------------
+@keyframes holoGridScroll {
+  0% { background-position: 0 0; }
+  100% { background-position: var(--bg-holo-grid-size, 50px) var(--bg-holo-grid-size, 50px); }
+}
+
+@keyframes subtle-shimmer-idle {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+// -----------------------------------------------------------------------------
+// Loading Spinner & Indicators
+// -----------------------------------------------------------------------------
+@keyframes spinnerBladeFade {
+  0%, 39.9% { opacity: 0; }
+  40% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes bounceDelay {
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1.0); }
+}
+
+@keyframes subtleHoloGlowPulse {
   0%, 100% {
-    text-shadow: 
-      0 0 2px hsla(var(--color-text-primary-h), var(--color-text-primary-s), calc(var(--color-text-primary-l) + 20%), 0.3), // Base soft glow matching text
-      0 0 5px hsla(var(--color-accent-glow-h), var(--color-accent-glow-s), var(--color-accent-glow-l), 0.15),     // Faint accent sparkle
-      0 0 10px hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.1); // Wider, very faint secondary sparkle
+    box-shadow: var(--shadow-depth-lg, var.$scss-box-shadow-lg), 0 0 10px hsla(var(--color-accent-interactive-h, var.$default-color-accent-interactive-h), var(--color-accent-interactive-s, var.$default-color-accent-interactive-s), var(--color-accent-interactive-l, var.$default-color-accent-interactive-l), 0.15);
+    opacity: 0.9;
   }
   50% {
-    text-shadow: 
-      0 0 3px hsla(var(--color-text-primary-h), var(--color-text-primary-s), calc(var(--color-text-primary-l) + 25%), 0.4),
-      0 0 8px hsla(var(--color-accent-glow-h), var(--color-accent-glow-s), var(--color-accent-glow-l), 0.25), // Slightly stronger accent sparkle
-      1px 1px 12px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.15); // Sporadic primary sparkle
+    box-shadow: var(--shadow-depth-xl, var.$scss-box-shadow-xl), 0 0 20px hsla(var(--color-accent-interactive-h, var.$default-color-accent-interactive-h), var(--color-accent-interactive-s, var.$default-color-accent-interactive-s), var(--color-accent-interactive-l, var.$default-color-accent-interactive-l), 0.3);
+    opacity: 1;
   }
 }
 
-// For Header Background Reactivity
-@keyframes headerPulse { 
-  0% { transform: scaleY(1) translateY(0); opacity: 0.7; } // Pulse from bottom up slightly
-  50% { transform: scaleY(1.05) translateY(-2px); opacity: 1; }
-  100% { transform: scaleY(1) translateY(0); opacity: 0.7; }
-}
-
-
-@keyframes inputFocusGlowPulse {
-  0% {
-    box-shadow: 0 0 7px 1px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.15),
-                inset 0 0 3px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.05);
+@keyframes breathingEffect {
+  0%, 100% {
+    transform: scale(1);
+    opacity: var(--opacity-idle, 0.85);
   }
   50% {
-    box-shadow: 0 0 12px 3px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.25),
-                inset 0 0 4px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.1);
-  }
-  100% {
-    box-shadow: 0 0 7px 1px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.15),
-                inset 0 0 3px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.05);
+    transform: scale(var(--scale-breath, 1.03));
+    opacity: var(--opacity-breath, 1);
   }
 }
 
-// --- Subtle Card Hover Shine/Glimmer (Example) ---
-// This can be applied to card backgrounds or pseudo-elements on hover
-@keyframes cardHoverShine {
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
+// Keyframe for status dot pulse (used in _footer.scss)
+@keyframes pulseStatus {
+  0%, 100% { box-shadow: 0 0 5px 1px currentColor; opacity: 0.7; }
+  50% { box-shadow: 0 0 10px 3px currentColor; opacity: 1; }
 }

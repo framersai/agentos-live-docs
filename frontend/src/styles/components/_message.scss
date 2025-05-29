@@ -1,380 +1,362 @@
 // File: frontend/src/styles/components/_message.scss
 /**
  * @file _message.scss
- * @description Styles for the Message.vue component, "Ephemeral Harmony" theme.
- * Features distinct, visually rich message bubbles with neomorphic and holographic
- * influences, enhanced typography, and clear code block styling.
- * @version 4.0.0 - Full Ephemeral Harmony redesign for message components.
+ * @description Styles for the Message.vue component, embodying the "Ephemeral Harmony" theme.
+ * Defines distinct, visually rich message bubbles for different roles (user, assistant, tool, system, error)
+ * with neomorphic and holographic influences. Features dynamic hover/focus effects that include
+ * highlighting, glows, and subtle blurs on surrounding elements (conceptually, blur implemented via parent).
+ * Enhances typography, code block presentation, and includes styling for a new subtle message copy toolbar.
+ *
+ * @role Defines the visual appearance and interactive feedback for individual chat messages.
+ * @dependencies `../abstracts/variables`, `../abstracts/mixins`, `./buttons`.
+ * @assumptions Message.vue component applies appropriate role-based classes and hover state classes.
+ * Keyframe animations (e.g., messageAppear, subtleGlowPulse) are defined in `_keyframes.scss`.
+ * CSS custom properties for theming are available.
+ * @version 4.2.4 - Corrected SASS calculation for CSS custom property and fallback blur amount.
  */
 
 @use '../abstracts/variables' as var;
 @use '../abstracts/mixins' as mixins;
-@use './buttons' as buttonsFile; // For copy button & potential interactive elements
+@use './buttons' as buttonsFile;
 
+// --- Wrapper for each message (contains avatar and message bubble) ---
 .message-wrapper-ephemeral {
   display: flex;
-  margin-bottom: var.$spacing-lg; // Increased default spacing between messages
-  opacity: 0;
-  animation: messageAppear var.$duration-movement var.$ease-out-quint 0.1s forwards; // Slight delay for entry
+  margin-bottom: calc(#{var.$spacing-lg} * 1.15); // SASS calc
+  opacity: 0; // Initial state for animation
+  animation: messageAppear var.$duration-movement var.$ease-out-quint 0.05s forwards;
+  position: relative;
 
-  // Alignment based on role
   &.user-message-wrapper {
     justify-content: flex-end;
-    .message-container-ephemeral { margin-left: auto; } // Standard alignment
-    // For a more dynamic/offset look, could use:
-    // padding-left: var.$spacing-2xl; // Push user messages further right by default
+    .message-container-ephemeral { margin-left: auto; border-top-right-radius: var.$radius-md; }
   }
-
-  &.assistant-message-wrapper,
-  &.tool-message-wrapper,
-  &.system-message-wrapper,
-  &.error-message-wrapper {
+  &.assistant-message-wrapper, &.tool-message-wrapper {
     justify-content: flex-start;
-    .message-container-ephemeral { margin-right: auto; } // Standard alignment
-    // padding-right: var.$spacing-2xl; // Push AI/system messages further left
+    .message-container-ephemeral { margin-right: auto; border-top-left-radius: var.$radius-md; }
+  }
+  &.system-message-wrapper, &.error-message-wrapper {
+    justify-content: center;
+    .message-container-ephemeral { margin-left: auto; margin-right: auto; }
   }
 }
 
+// --- Main Message Bubble Container ---
 .message-container-ephemeral {
-  padding: calc(var.$spacing-sm * 1.2) var.$spacing-md;
+  padding: calc(#{var.$spacing-sm} * 1.1) var.$spacing-md; // SASS calc
   border-radius: var.$radius-xl;
   position: relative;
-  overflow: visible; // Allow for outset glows
-  max-width: 80%;
-  transition: transform 0.25s var.$ease-out-expo, box-shadow 0.3s var.$ease-out-expo;
-  will-change: transform, box-shadow;
+  overflow: visible;
+  max-width: 82%;
+  box-shadow: 0 3px 10px hsla(var(--shadow-color-h, #{var.$default-shadow-color-h}), var(--shadow-color-s, #{var.$default-shadow-color-s}), var(--shadow-color-l, #{var.$default-shadow-color-l}), calc(var(--shadow-opacity-soft, #{var.$default-shadow-opacity-soft}) * 0.85));
+  border: 1px solid hsla(var(--color-border-primary-h, #{var.$default-color-border-primary-h}), var(--color-border-primary-s, #{var.$default-color-border-primary-s}), var(--color-border-primary-l, #{var.$default-color-border-primary-l}), 0.12);
+  transition: transform 0.28s var.$ease-elastic,
+              box-shadow 0.35s var.$ease-out-cubic,
+              background-color var.$duration-quick var.$ease-out-quad,
+              border-color var.$duration-quick var.$ease-out-quad,
+              filter 0.3s var.$ease-out-quad;
+  will-change: transform, box-shadow, filter;
+  color: hsl(var(--color-text-primary-h, #{var.$default-color-text-primary-h}), var(--color-text-primary-s, #{var.$default-color-text-primary-s}), var(--color-text-primary-l, #{var.$default-color-text-primary-l}));
 
-  @media (min-width: var.$breakpoint-sm) { max-width: 75%; }
-  @media (min-width: var.$breakpoint-lg) { max-width: 70%; }
+  @media (min-width: var.$breakpoint-sm) { max-width: 78%; }
+  @media (min-width: var.$breakpoint-lg) { max-width: 72%; }
 
-  // Subtle hover lift for all messages
-  &:hover {
-    transform: translateY(-2px);
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: inherit;
+    background: transparent;
+    opacity: 0;
+    z-index: -1;
+    transition: opacity 0.3s var.$ease-out-quad, background 0.3s var.$ease-out-quad;
+    pointer-events: none;
   }
-}
 
-// --- Role-Specific Bubble Styling ---
+  &:hover:not(.system-error-bubble-ephemeral) {
+    transform: translateY(-5px) scale(1.015);
+    z-index: 2;
 
-// User Messages: Solid, slightly tactile, personal feel
-.user-bubble-ephemeral {
-  // Use neomorphic extrude with user's voice color as a base for the background
-  // This implies your theme needs to define --color-voice-user-h/s/l
-  @include mixins.neomorphic-extrude(
-    '--color-voice-user', // CSS Variable prefix for background (e.g., --color-voice-user-h/s/l)
-    4px, 10px, // distance, blur
-    '--shadow-opacity-soft', // shadow opacity var
-    var.$radius-xl,
-    '--shadow-color-h', '--shadow-color-s', '--shadow-color-l', '--shadow-highlight-modifier',
-    // Fallbacks if CSS vars for user voice color aren't set for background purposes
-    var.$default-color-bg-secondary-h, calc(var.$default-color-bg-secondary-s) + 5%, calc(var.$default-color-bg-secondary-l) - 5%, // Example: slightly tinted secondary bg
-    var.$default-shadow-opacity-soft,
-    var.$default-shadow-color-h, var.$default-shadow-color-s, var.$default-shadow-color-l,
-    var.$default-shadow-highlight-l-factor
-  );
-  // Override background if neomorphic extrude uses a generic one
-  background-color: hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.12);
-  border: 1px solid hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.25);
-
-  .message-header-ephemeral .sender-name-ephemeral {
-    color: hsl(var(--color-voice-user-h), var(--color-voice-user-s), calc(var(--color-voice-user-l) - 20%)); // Darker, saturated user color
-  }
-  &:hover { // More pronounced shadow on hover for user message
-     box-shadow: 6px 6px 14px hsla(var(--shadow-color-h), var(--shadow-color-s), var(--shadow-color-l), calc(var(--shadow-opacity-soft) * 1.3)),
-                -6px -6px 14px hsla(var(--shadow-color-h), var(--shadow-color-s), calc(var(--shadow-color-l) + var(--shadow-highlight-modifier)), calc(var(--shadow-opacity-soft) * 1.3)),
-                0 0 10px hsla(var(--color-voice-user-h),var(--color-voice-user-s),var(--color-voice-user-l),0.2); // User color glow
-  }
-}
-
-// Assistant Messages: Sleek glass, holographic accents
-.assistant-bubble-ephemeral {
-  @include mixins.glassmorphic-pane(
-    '--color-voice-ai-speaking', // Use AI voice color with low alpha for glass background
-    '--color-voice-ai-speaking', // Use AI voice color for border
-    calc(var(--blur-glass) * 0.9), // Slightly less blur than default glass
-    '--shadow-depth-md', // Standard depth shadow
-    // Fallbacks
-    var.$default-color-voice-ai-speaking-h, var.$default-color-voice-ai-speaking-s, var.$default-color-voice-ai-speaking-l, 0.15, // Low alpha AI voice color for BG
-    var.$default-color-voice-ai-speaking-h, var.$default-color-voice-ai-speaking-s, var.$default-color-voice-ai-speaking-l, 0.3,  // Slightly more opaque border
-    calc(var.$default-blur-glass) * 0.9,
-    var.$scss-box-shadow-md
-  );
-  
-  @include mixins.holographic-border-glow(
-    '--color-voice-ai-speaking', // Primary glow: AI voice color
-    '--color-accent-interactive',  // Secondary glow: Interactive accent
-    1px, // border-width
-    3.5s, // animation-duration
-    var.$radius-xl // border-radius
-  );
-
-  .message-header-ephemeral .sender-name-ephemeral {
-    color: hsl(var(--color-voice-ai-speaking-h), var(--color-voice-ai-speaking-s), calc(var(--color-voice-ai-speaking-l) - 15%));
-  }
-   &:hover { // Enhance holographic effect on hover
-     box-shadow: var(--shadow-depth-lg), // Deeper base shadow
-                 0 0 25px 3px hsla(var(--color-voice-ai-speaking-h), var(--color-voice-ai-speaking-s), var(--color-voice-ai-speaking-l), 0.35); // Stronger glow
-   }
-}
-
-// Tool Messages: Distinct, functional, inset style
-.tool-bubble-ephemeral {
-  @include mixins.neomorphic-inset(
-    '--color-bg-tertiary', 5px, 3px, '--shadow-opacity-soft', var.$radius-lg,
-    '--shadow-color-h', '--shadow-color-s', '--shadow-color-l', '--shadow-highlight-modifier',
-    var.$default-color-bg-tertiary-h, var.$default-color-bg-tertiary-s, var.$default-color-bg-tertiary-l,
-    var.$default-shadow-opacity-soft, var.$default-shadow-color-h, var.$default-shadow-color-s, var.$default-shadow-color-l, var.$default-shadow-highlight-l-factor
-  );
-  border: 1px solid hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.3);
-  border-left: 4px solid hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l));
-  padding-left: calc(var.$spacing-md - 2px);
-
-  .message-header-ephemeral .sender-name-ephemeral {
-    color: hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), calc(var(--color-accent-secondary-l) - 20%));
-  }
-}
-
-// System & Error Messages
-.system-error-bubble-ephemeral {
-  background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.5); // More opaque than ephemeral log
-  border: 1px dashed hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.6);
-  color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
-  font-style: italic;
-  font-size: var.$font-size-sm; // Slightly larger than ephemeral
-  padding: var.$spacing-sm var.$spacing-md;
-  box-shadow: var(--shadow-depth-xs);
-
-  &.message-role-error {
-    background-color: hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.12);
-    border-color: hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.5);
-    border-style: solid;
-    color: hsl(var(--color-error-h), var(--color-error-s), calc(var(--color-error-l) + 5%));
-    font-style: normal;
-    .message-header-ephemeral .sender-name-ephemeral {
-        color: hsl(var(--color-error-h), var(--color-error-s), calc(var(--color-error-l) - 10%));
+    &::before {
+      opacity: 1;
+      background: radial-gradient(ellipse at center,
+        hsla(var(--message-accent-h, var(--color-accent-interactive-h, #{var.$default-color-accent-interactive-h})), var(--message-accent-s, var(--color-accent-interactive-s, #{var.$default-color-accent-interactive-s})), var(--message-accent-l, var(--color-accent-interactive-l, #{var.$default-color-accent-interactive-l})), 0.25) 0%,
+        hsla(var(--message-accent-h, var(--color-accent-interactive-h, #{var.$default-color-accent-interactive-h})), var(--message-accent-s, var(--color-accent-interactive-s, #{var.$default-color-accent-interactive-s})), var(--message-accent-l, var(--color-accent-interactive-l, #{var.$default-color-accent-interactive-l})), 0.0) 70%
+      );
+      animation: subtleGlowPulse 1.5s var.$ease-in-out-sine infinite alternate;
     }
   }
 }
 
+// --- Role-Specific Bubble Styling ---
+.user-bubble-ephemeral {
+  --message-accent-h: var(--color-voice-user-h, #{var.$default-color-voice-user-h});
+  --message-accent-s: var(--color-voice-user-s, #{var.$default-color-voice-user-s});
+  --message-accent-l: var(--color-voice-user-l, #{var.$default-color-voice-user-l});
+  @include mixins.neomorphic-extrude(
+    $bg-color-var-prefix: '--color-bg-secondary',
+    $fb-bg-l: calc(#{var.$default-color-bg-secondary-l} - 2%),
+    $fb-bg-a: 0.97,
+    $distance: 3.5px, 
+    $blur: 9px, 
+    $shadow-opacity-var: '--shadow-opacity-soft',
+    $radius: var.$radius-xl
+  );
+  background-color: hsla(var(--message-accent-h), var(--message-accent-s), var(--message-accent-l), 0.22);
+  border: 1px solid hsla(var(--message-accent-h), var(--message-accent-s), var(--message-accent-l), 0.38);
+  color: hsl(var(--color-text-primary-h, #{var.$default-color-text-primary-h}), var(--color-text-primary-s, #{var.$default-color-text-primary-s}), var(--color-text-primary-l, #{var.$default-color-text-primary-l}));
+
+  .message-header-ephemeral .sender-name-ephemeral {
+    color: hsl(var(--message-accent-h), var(--message-accent-s), calc(var(--message-accent-l) - 22%));
+  }
+  &:hover {
+    border-color: hsla(var(--message-accent-h), var(--message-accent-s), var(--message-accent-l), 0.55);
+    box-shadow: 
+      6px 6px 15px hsla(var(--shadow-color-h, #{var.$default-shadow-color-h}),var(--shadow-color-s, #{var.$default-shadow-color-s}),var(--shadow-color-l, #{var.$default-shadow-color-l}), calc(var(--shadow-opacity-soft, #{var.$default-shadow-opacity-soft}) * 1.6)),
+      -6px -6px 15px hsla(var(--shadow-color-h, #{var.$default-shadow-color-h}),var(--shadow-color-s, #{var.$default-shadow-color-s}),calc(var(--shadow-color-l, #{var.$default-shadow-color-l}) + var(--shadow-highlight-modifier, 10%)), calc(var(--shadow-opacity-soft, #{var.$default-shadow-opacity-soft}) * 1.6)),
+      0 0 20px 2px hsla(var(--message-accent-h),var(--message-accent-s),var(--message-accent-l),0.3);
+  }
+}
+
+.assistant-bubble-ephemeral {
+  --message-accent-h: var(--color-voice-ai-speaking-h, #{var.$default-color-voice-ai-speaking-h});
+  --message-accent-s: var(--color-voice-ai-speaking-s, #{var.$default-color-voice-ai-speaking-s});
+  --message-accent-l: var(--color-voice-ai-speaking-l, #{var.$default-color-voice-ai-speaking-l});
+  // Define the CSS custom property value using SASS calculation on known numeric part of $default-blur-glass
+  // Assuming var.$default-blur-glass is '10px'
+  --assistant-bubble-blur-amount: #{10 * 0.8}px; // This will compile to '8px'
+
+  @include mixins.glassmorphic-pane(
+    $bg-color-css-var-prefix: '--message-accent', $fb-bg-a: 0.28,
+    $border-color-css-var-prefix: '--message-accent', $fb-border-a: 0.5,
+    $blur-amount-css-var: '--assistant-bubble-blur-amount', // Use the CSS variable defined above
+    // For the SASS fallback, calculate directly assuming $default-blur-glass's numeric part is 10
+    $fb-blur: #{10 * 0.8}px, // This SASS expression evaluates to 8px
+    $shadow-css-var: '--shadow-depth-lg'
+  );
+  @include mixins.holographic-border-glow(
+    $accent-color-var-prefix: '--message-accent',
+    $secondary-accent-var-prefix: '--color-accent-interactive',
+    $border-width: 1.5px, 
+    $animation-duration: 3.5s, 
+    $radius: var.$radius-xl
+  );
+  color: hsl(var(--color-text-primary-h, #{var.$default-color-text-primary-h}), var(--color-text-primary-s, #{var.$default-color-text-primary-s}), var(--color-text-primary-l, #{var.$default-color-text-primary-l}));
+
+  .message-header-ephemeral .sender-name-ephemeral {
+    color: hsl(var(--message-accent-h), var(--message-accent-s), calc(var(--message-accent-l) - 12%));
+    @include mixins.text-glow($glow-color-var-prefix: '--message-accent', $fb-glow-a: 0.45, $glow-radius: 5px);
+  }
+  &:hover {
+    box-shadow: var(--shadow-depth-xl, #{var.$scss-box-shadow-xl}),
+                 0 0 30px 6px hsla(var(--message-accent-h), var(--message-accent-s), var(--message-accent-l), 0.45);
+  }
+}
+
+.tool-bubble-ephemeral {
+  --message-accent-h: var(--color-accent-secondary-h, #{var.$default-color-accent-secondary-h});
+  --message-accent-s: var(--color-accent-secondary-s, #{var.$default-color-accent-secondary-s});
+  --message-accent-l: var(--color-accent-secondary-l, #{var.$default-color-accent-secondary-l});
+  @include mixins.neomorphic-inset(
+    $fill-color-var-prefix: '--color-bg-tertiary',
+    $fb-fill-a: 0.94,
+    $blur: 5px, 
+    $distance: 2px,
+    $shadow-opacity-var: '--shadow-opacity-soft', 
+    $radius: var.$radius-lg
+  );
+  border: 1px solid hsla(var(--message-accent-h), var(--message-accent-s), var(--message-accent-l), 0.5);
+  border-left: 7px solid hsl(var(--message-accent-h), var(--message-accent-s), var(--message-accent-l));
+  padding-left: calc(#{var.$spacing-md} - 5px);
+  color: hsl(var(--color-text-secondary-h, #{var.$default-color-text-secondary-h}), var(--color-text-secondary-s, #{var.$default-color-text-secondary-s}), var(--color-text-secondary-l, #{var.$default-color-text-secondary-l}));
+
+  .message-header-ephemeral .sender-name-ephemeral {
+    color: hsl(var(--message-accent-h), var(--message-accent-s), calc(var(--message-accent-l) - 18%));
+  }
+  .message-content.tool-call-summary {
+    color: hsl(var(--color-text-muted-h, #{var.$default-color-text-muted-h}), var(--color-text-muted-s, #{var.$default-color-text-muted-s}), calc(var(--color-text-muted-l, #{var.$default-color-text-muted-l}) + 8%));
+  }
+  &:hover {
+    border-color: hsla(var(--message-accent-h), var(--message-accent-s), var(--message-accent-l), 0.75);
+    box-shadow: 
+      inset 2px 2px 4px hsla(var(--shadow-color-h, #{var.$default-shadow-color-h}),var(--shadow-color-s, #{var.$default-shadow-color-s}),var(--shadow-color-l, #{var.$default-shadow-color-l}), calc(var(--shadow-opacity-soft, #{var.$default-shadow-opacity-soft}) * 1.3)),
+      inset -2px -2px 4px hsla(var(--shadow-color-h, #{var.$default-shadow-color-h}),var(--shadow-color-s, #{var.$default-shadow-color-s}),calc(var(--shadow-color-l, #{var.$default-shadow-color-l}) + var(--shadow-highlight-modifier, 10%)), calc(var(--shadow-opacity-soft, #{var.$default-shadow-opacity-soft}) * 1.3)),
+      0 0 12px hsla(var(--message-accent-h),var(--message-accent-s),var(--message-accent-l), 0.18);
+  }
+}
+
+.system-error-bubble-ephemeral {
+  background-color: hsla(var(--color-bg-tertiary-h, #{var.$default-color-bg-tertiary-h}), var(--color-bg-tertiary-s, #{var.$default-color-bg-tertiary-s}), var(--color-bg-tertiary-l, #{var.$default-color-bg-tertiary-l}), 0.7);
+  border: 1px dashed hsla(var(--color-border-secondary-h, #{var.$default-color-border-secondary-h}), var(--color-border-secondary-s, #{var.$default-color-border-secondary-s}), var(--color-border-secondary-l, #{var.$default-color-border-secondary-l}), 0.7);
+  color: hsl(var(--color-text-muted-h, #{var.$default-color-text-muted-h}), var(--color-text-muted-s, #{var.$default-color-text-muted-l}));
+  font-style: italic; font-size: var.$font-size-sm;
+  padding: var.$spacing-sm var.$spacing-md;
+  box-shadow: var(--shadow-depth-xs, #{var.$scss-box-shadow-xs});
+  text-align: center; max-width: 95%;
+
+  &.message-role-error {
+    background-color: hsla(var(--color-error-h, #{var.$default-color-error-h}), var(--color-error-s, #{var.$default-color-error-s}), var(--color-error-l, #{var.$default-color-error-l}), 0.2);
+    border-color: hsla(var(--color-error-h, #{var.$default-color-error-h}), var(--color-error-s, #{var.$default-color-error-s}), var(--color-error-l, #{var.$default-color-error-l}), 0.7);
+    border-style: solid;
+    color: hsl(var(--color-error-h, #{var.$default-color-error-h}), var(--color-error-s, #{var.$default-color-error-s}), calc(var(--color-error-l, #{var.$default-color-error-l}) + 10%));
+    font-style: normal;
+    .message-header-ephemeral .sender-name-ephemeral {
+      color: hsl(var(--color-error-h, #{var.$default-color-error-h}), var(--color-error-s, #{var.$default-color-error-s}), calc(var(--color-error-l, #{var.$default-color-error-l}) - 5%));
+      font-weight: 700;
+    }
+  }
+}
 
 // --- Message Header & Avatar ---
 .message-header-ephemeral {
   display: flex;
   align-items: center;
-  margin-bottom: calc(var.$spacing-sm * 1.25); // More space below header
-  gap: var.$spacing-sm;
+  margin-bottom: var.$spacing-sm;
+  font-size: var.$font-size-xs;
+  color: hsl(var(--color-text-muted-h, #{var.$default-color-text-muted-h}), var(--color-text-muted-s, #{var.$default-color-text-muted-s}), var(--color-text-muted-l, #{var.$default-color-text-muted-l}));
 }
-
 .avatar-wrapper-ephemeral {
-  width: 38px; // Slightly larger avatar
-  height: 38px;
+  width: 28px; height: 28px;
   border-radius: var.$radius-full;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  // Neomorphic inset for the avatar pod itself
-  @include mixins.neomorphic-inset(
-    '--color-bg-primary', // Base color for inset effect
-    3px, 2px, // blur, distance
-    '--shadow-opacity-soft', // opacity var
-    var.$radius-full,
-    '--shadow-color-h', '--shadow-color-s', '--shadow-color-l', '--shadow-highlight-modifier',
-    var.$default-color-bg-primary-h, var.$default-color-bg-primary-s, var.$default-color-bg-primary-l,
-    var.$default-shadow-opacity-soft, var.$default-shadow-color-h, var.$default-shadow-color-s, var.$default-shadow-color-l, var.$default-shadow-highlight-l-factor
-  );
-  // Specific background tint based on role, subtle
-  &.avatar-user { background-color: hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.1); }
-  &.avatar-assistant { background-color: hsla(var(--color-voice-ai-speaking-h), var(--color-voice-ai-speaking-s), var(--color-voice-ai-speaking-l), 0.1); }
-  &.avatar-tool { background-color: hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.1); }
-  &.avatar-system, &.avatar-error { background-color: hsla(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l), 0.1); }
-  &.avatar-error { background-color: hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.1); }
-
-  .avatar-svg-ephemeral {
-    width: 20px;
-    height: 20px;
-    opacity: 1; // Icons should be fully opaque for readability
-    // Role-specific icon colors - ensure high contrast with their respective avatar backgrounds
-    // These selectors target the SVG if it's a direct child of the role-specific avatar wrapper
-    .message-role-user & { color: hsl(var(--color-voice-user-h), var(--color-voice-user-s), calc(var(--color-voice-user-l) - 15%)); }
-    .message-role-assistant & { color: hsl(var(--color-voice-ai-speaking-h), var(--color-voice-ai-speaking-s), calc(var(--color-voice-ai-speaking-l) - 15%)); }
-    .message-role-tool & { color: hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), calc(var(--color-accent-secondary-l) - 15%)); }
-    .message-role-system & { color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), calc(var(--color-text-muted-l) - 15%)); }
-    .message-role-error & { color: hsl(var(--color-error-h), var(--color-error-s), calc(var(--color-error-l) - 10%)); }
-  }
+  margin-right: var.$spacing-sm;
+  background-color: hsla(var(--color-bg-tertiary-h, #{var.$default-color-bg-tertiary-h}), var(--color-bg-tertiary-s, #{var.$default-color-bg-tertiary-s}), var(--color-bg-tertiary-l, #{var.$default-color-bg-tertiary-l}), 0.5);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  border: 1.5px solid hsla(var(--color-border-secondary-h, #{var.$default-color-border-secondary-h}), var(--color-border-secondary-s, #{var.$default-color-border-secondary-s}), var(--color-border-secondary-l, #{var.$default-color-border-secondary-l}), 0.3);
+  img, .icon-avatar { width: 100%; height: 100%; object-fit: cover; }
+  .icon-avatar { color: hsl(var(--color-text-muted-h, #{var.$default-color-text-muted-h}), var(--color-text-muted-s, #{var.$default-color-text-muted-s}), var(--color-text-muted-l, #{var.$default-color-text-muted-l})); opacity: 0.7; }
 }
-
 .sender-name-ephemeral {
   font-weight: 600;
-  font-size: calc(var.$font-size-base-default); // Clear sender name
-  letter-spacing: 0.01em;
-  // Specific role colors are applied by parent bubble styles
+  margin-right: var.$spacing-xs;
 }
-
 .timestamp-ephemeral {
-  font-size: var.$font-size-xs; // Kept small
-  color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+  opacity: 0.7;
   margin-left: auto;
-  padding-left: var.$spacing-sm;
-  opacity: 0.75; // Slightly more visible
 }
 
 // --- Message Content Area ---
 .message-content-area-ephemeral {
-  font-size: var.$font-size-base-default;
-  line-height: 1.75; // Generous line height for readability
-  color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
-  word-wrap: break-word;
-  overflow-wrap: break-word;
+  &.prose-ephemeral {
+    color: hsl(var(--prose-text-color-h, var(--color-text-primary-h, #{var.$default-color-text-primary-h})), var(--prose-text-color-s, var(--color-text-primary-s, #{var.$default-color-text-primary-s})), var(--prose-text-color-l, var(--color-text-primary-l, #{var.$default-color-text-primary-l})));
 
-  // Markdown content styling
-  :deep(h1), :deep(h2), :deep(h3), :deep(h4), :deep(h5), :deep(h6) {
-    color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l)) !important;
-    margin-top: var.$spacing-lg !important;
-    margin-bottom: var.$spacing-sm !important;
-    padding-bottom: var.$spacing-xs !important;
-    border-bottom: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.2) !important;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    &:first-child { margin-top: 0 !important; }
-  }
-  :deep(p) {
-    margin-bottom: var.$spacing-md !important; // Default paragraph spacing
-    color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
-  }
-  :deep(ul), :deep(ol) {
-    margin-left: 0 !important;
-    padding-left: var.$spacing-lg !important; // Standard list indent
-    margin-bottom: var.$spacing-md !important;
-    li { 
-      margin-bottom: var.$spacing-xs !important; 
-      color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
-      &::marker {
-        color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l)) !important;
-      }
-    }
-  }
-  :deep(a) { /* ... (styles from previous _message.scss are good) ... */ }
-  :deep(blockquote) { /* ... (styles from previous _message.scss are good) ... */ }
-  :deep(hr) { /* ... (styles from previous _message.scss are good) ... */ }
-  
-  :deep(code:not(pre code)) { // Inline code
-    background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.7) !important;
-    color: hsl(var(--color-text-accent-h), var(--color-text-accent-s), var(--color-text-accent-l)) !important;
-    padding: 0.2em 0.45em !important;
-    border-radius: var.$radius-sm !important;
-    font-size: 0.9em !important;
-    border: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.3) !important;
-    box-shadow: inset 0 0 3px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.05);
-  }
-
-  // --- Enhanced Code Block Styling ---
-  .code-block-wrapper {
-    position: relative;
-    margin: var.$spacing-lg 0;
-    border-radius: var.$radius-lg; // Consistent with message bubble
-    overflow: hidden; // Crucial for child elements like header and pre's rounded corners
-    
-    @include mixins.neomorphic-inset(
-      '--color-bg-primary', // Base color for inset calculation
-      8px, 4px, // blur, distance (deeper inset)
-      '--shadow-opacity-soft',
-      var.$radius-lg,
-      '--shadow-color-h', '--shadow-color-s', '--shadow-color-l', '--shadow-highlight-modifier',
-      var.$default-color-bg-primary-h, var.$default-color-bg-primary-s, calc(var.$default-color-bg-primary-l - 5%), // Darker inset base
-      var.$default-shadow-opacity-soft, var.$default-shadow-color-h, var.$default-shadow-color-s, var.$default-shadow-color-l, var.$default-shadow-highlight-l-factor
-    );
-    // Actual background for the code, sits on top of the inset effect's base
-    // Ensure --color-bg-code-block-h/s/l are defined in your themes (e.g., a dark charcoal for light themes, very dark gray for dark themes)
-    background-color: hsl(var(--color-bg-code-block-h, 220), var(--color-bg-code-block-s, 10%), var(--color-bg-code-block-l, 15%)); // Default darkish code bg
-
-    .code-header-ephemeral {
-      display: flex;
-      justify-content: flex-end; // Align items to the right (lang tag can be added to left or this adjusted)
-      align-items: center;
-      padding: var.$spacing-xs var.$spacing-sm;
-      // Subtle glass effect for code header
-      background-color: hsla(var(--color-bg-code-block-h, 220), var(--color-bg-code-block-s, 10%), calc(var(--color-bg-code-block-l, 15%) + 5%), 0.5); // Slightly lighter than code bg, with alpha
-      backdrop-filter: blur(3px);
-      border-bottom: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.15);
-      // Language tag would go here if needed, styled separately. For now, focusing on copy button.
-    }
-
-    .code-language-label { // Assuming this class is added in Message.vue if lang is present
-      font-size: var.$font-size-xs;
-      font-family: var(--font-mono);
-      color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
-      padding: 2px var.$spacing-xs;
-      background-color: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.3);
-      border-radius: var.$radius-sm;
-      text-transform: uppercase;
-      opacity: 0.7;
-      margin-right: auto; // Pushes to the left
-    }
-
-    .copy-code-button {
-      @include buttonsFile.btn-ghost;
-      @include buttonsFile.btn-xs-modifier;
-      padding: calc(var.$spacing-xs * 0.6) !important;
-      color: hsl(var(--color-text-muted-h),var(--color-text-muted-s),var(--color-text-muted-l));
-      border-radius: var.$radius-sm;
-      background-color: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.2);
+    :where(a) {
+      color: hsl(var(--prose-link-color-h, var(--color-accent-interactive-h, #{var.$default-color-accent-interactive-h})), var(--prose-link-color-s, var(--color-accent-interactive-s, #{var.$default-color-accent-interactive-s})), var(--prose-link-color-l, var(--color-accent-interactive-l, #{var.$default-color-accent-interactive-l})));
       &:hover {
-        color: hsl(var(--color-accent-interactive-h),var(--color-accent-interactive-s),var(--color-accent-interactive-l));
-        background-color: hsla(var(--color-accent-interactive-h),var(--color-accent-interactive-s),var(--color-accent-interactive-l), 0.2) !important;
-        border-color: hsla(var(--color-accent-interactive-h),var(--color-accent-interactive-s),var(--color-accent-interactive-l), 0.4);
+        color: hsl(var(--prose-link-hover-color-h, var(--color-accent-interactive-h, #{var.$default-color-accent-interactive-h})), var(--prose-link-hover-color-s, var(--color-accent-interactive-s, #{var.$default-color-accent-interactive-s})), calc(var(--prose-link-hover-color-l, var(--color-accent-interactive-l, #{var.$default-color-accent-interactive-l})) - 8%));
       }
-      svg { width: 18px; height: 18px; }
     }
+    :where(code):not(:where(pre code)) {
+      background-color: hsla(var(--color-bg-code-inline-h, #{var.$default-color-bg-code-inline-h}), var(--color-bg-code-inline-s, #{var.$default-color-bg-code-inline-s}), var(--color-bg-code-inline-l, #{var.$default-color-bg-code-inline-l}), var(--color-bg-code-inline-a, #{var.$default-color-bg-code-inline-a})) !important;
+      color: hsl(var(--color-text-code-inline-h, #{var.$default-color-text-code-inline-h}), var(--color-text-code-inline-s, #{var.$default-color-text-code-inline-s}), var(--color-text-code-inline-l, #{var.$default-color-text-code-inline-l})) !important;
+      padding: 0.18em 0.5em !important;
+      border-radius: var.$radius-sm !important;
+      font-size: 0.9em !important;
+      border: 1px solid hsla(var(--color-border-code-inline-h, #{var.$default-color-border-code-inline-h}), var(--color-border-code-inline-s, #{var.$default-color-border-code-inline-s}), var(--color-border-code-inline-l, #{var.$default-color-border-code-inline-l}), var(--color-border-code-inline-a, #{var.$default-color-border-code-inline-a})) !important;
+    }
+  }
 
+  .code-block-wrapper {
+    margin: var.$spacing-md 0;
+    border-radius: var.$radius-lg;
+    background-color: hsl(var(--color-bg-code-block-h, #{var.$default-color-bg-code-block-h}), var(--color-bg-code-block-s, #{var.$default-color-bg-code-block-s}), var(--color-bg-code-block-l, #{var.$default-color-bg-code-block-l}));
+    color: hsl(var(--color-text-code-block-h, #{var.$default-color-text-code-block-h}), var(--color-text-code-block-s, #{var.$default-color-text-code-block-s}), var(--color-text-code-block-l, #{var.$default-color-text-code-block-l}));
+    overflow: hidden;
+    border: 1px solid hsla(var(--color-border-primary-h, #{var.$default-color-border-primary-h}), var(--color-border-primary-s, #{var.$default-color-border-primary-s}), var(--color-border-primary-l, #{var.$default-color-border-primary-l}), 0.25);
+    box-shadow: var(--shadow-depth-sm, #{var.$scss-box-shadow-sm});
+
+    .code-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var.$spacing-xs var.$spacing-sm;
+      background-color: hsla(var(--color-bg-tertiary-h, #{var.$default-color-bg-tertiary-h}), var(--color-bg-tertiary-s, #{var.$default-color-bg-tertiary-s}), var(--color-bg-tertiary-l, #{var.$default-color-bg-tertiary-l}), 0.3);
+      font-size: var.$font-size-xs;
+      color: hsl(var(--color-text-muted-h, #{var.$default-color-text-muted-h}), var(--color-text-muted-s, #{var.$default-color-text-muted-s}), var(--color-text-muted-l, #{var.$default-color-text-muted-l}));
+      border-bottom: 1px solid hsla(var(--color-border-primary-h, #{var.$default-color-border-primary-h}), var(--color-border-primary-s, #{var.$default-color-border-primary-s}), var(--color-border-primary-l, #{var.$default-color-border-primary-l}), 0.2);
+
+      .language-name { font-weight: 500; }
+      .copy-code-button {
+        @include buttonsFile.btn-ghost;
+        @include buttonsFile.btn-xs-modifier;
+        padding: calc(#{var.$spacing-xs} / 2) var.$spacing-xs !important;
+        color: hsl(var(--color-text-muted-h, #{var.$default-color-text-muted-h}), var(--color-text-muted-s, #{var.$default-color-text-muted-s}), var(--color-text-muted-l, #{var.$default-color-text-muted-l}));
+        &:hover { color: hsl(var(--color-accent-primary-h, #{var.$default-color-accent-primary-h}), var(--color-accent-primary-s, #{var.$default-color-accent-primary-s}), var(--color-accent-primary-l, #{var.$default-color-accent-primary-l})); }
+      }
+    }
     pre {
       margin: 0 !important;
       padding: var.$spacing-md;
-      padding-left: 0; // Line numbers will create left padding
-      background-color: transparent !important; // Wrapper provides background
-      border: none !important;
-      box-shadow: none !important;
       overflow-x: auto;
       @include mixins.custom-scrollbar(
-        '--color-accent-secondary', 0.3, 0.5, 
-        '--color-bg-code-block', 0.1, // Use code block bg for track base
-        4px // Slimmer scrollbar for code
+        $thumb-color-var-prefix: '--color-accent-secondary', 
+        $thumb-base-alpha: 0.35, 
+        $thumb-hover-alpha: 0.55,
+        $track-color-var-prefix: '--color-bg-code-block',
+        $track-alpha: 0.4,
+        $width: 6px
       );
-
-      code.hljs { // From your global highlight.js theme
-        font-family: var(--font-family-mono, var.$font-family-mono);
-        font-size: var.$font-size-sm; // Consistent code size
-        line-height: 1.65;
-        // Ensure your hljs theme (e.g., atom-one-dark-pro.css) is imported and provides good contrast
-        // against the var(--color-bg-code-block-h/s/l)
-        // Example: Text color for general code if not set by hljs theme
-        color: hsl(var(--color-text-code-block-h, 200), var(--color-text-code-block-s, 15%), var(--color-text-code-block-l, 85%)); // Ensure these CSS vars are in theme
+      code {
+        font-size: 0.925em !important;
+        line-height: 1.6 !important;
+        background: none !important;
+        color: inherit !important;
       }
-
-      .line-number {
-        display: inline-block;
-        width: 3em; // Ample space for line numbers
-        text-align: right;
-        padding-right: var.$spacing-md;
-        margin-right: var.$spacing-sm;
-        color: hsla(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l), 0.35);
-        border-right: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.1);
-        user-select: none;
-        font-size: var.$font-size-xs * 0.9;
-        line-height: inherit; // Match code line height
-        position: sticky; left: 0; // Stick line numbers on horizontal scroll
-        background-color: hsl(var(--color-bg-code-block-h, 220), var(--color-bg-code-block-s, 10%), var(--color-bg-code-block-l, 15%)); // Match pre background for sticky
-        z-index: 1;
-      }
-      .line-content { /* Content of the line */ }
     }
   }
-
-  .diagram-placeholder-ephemeral { /* ... */ }
-  .embedded-diagram-viewer { /* ... */ }
+  .tool-call-summary-text {
+    font-style: italic;
+    opacity: 0.8;
+    font-size: var.$font-size-sm;
+    color: hsl(var(--color-text-muted-h, #{var.$default-color-text-muted-h}), var(--color-text-muted-s, #{var.$default-color-text-muted-s}), var(--color-text-muted-l, #{var.$default-color-text-muted-l}));
+    margin-top: var.$spacing-xs;
+    padding: var.$spacing-xs;
+    background-color: hsla(var(--color-bg-tertiary-h, #{var.$default-color-bg-tertiary-h}), var(--color-bg-tertiary-s, #{var.$default-color-bg-tertiary-s}), var(--color-bg-tertiary-l, #{var.$default-color-bg-tertiary-l}), 0.2);
+    border-radius: var.$radius-sm;
+  }
 }
 
-// Keyframe for message entry
-@keyframes messageAppear {
-  from { opacity: 0; transform: translateY(12px) scale(0.98); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+// --- Message Toolbar ---
+.message-toolbar-ephemeral {
+  position: absolute;
+  top: calc(#{var.$spacing-xs} / 1.5);
+  right: calc(#{var.$spacing-xs} / 1.5);
+  display: flex;
+  gap: calc(#{var.$spacing-xs} / 2);
+  background-color: hsla(var(--color-bg-tertiary-h, #{var.$default-color-bg-tertiary-h}), var(--color-bg-tertiary-s, #{var.$default-color-bg-tertiary-s}), var(--color-bg-tertiary-l, #{var.$default-color-bg-tertiary-l}), 0.6);
+  padding: calc(#{var.$spacing-xs} / 2);
+  border-radius: var.$radius-md;
+  backdrop-filter: blur(4px);
+  box-shadow: var(--shadow-depth-sm, #{var.$scss-box-shadow-sm});
+  z-index: 3;
+  opacity: 0;
+  transform: translateY(5px) scale(0.95);
+  transition: opacity 0.2s var.$ease-out-quad, transform 0.2s var.$ease-out-quad;
+  pointer-events: none;
+
+  .message-container-ephemeral:hover & {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+  }
 }
+
+.message-action-button {
+  @include buttonsFile.btn-ghost;
+  @include buttonsFile.btn-xs-modifier;
+  padding: calc(#{var.$spacing-xs} * 0.7) !important;
+  color: hsl(var(--color-text-muted-h, #{var.$default-color-text-muted-h}), var(--color-text-muted-s, #{var.$default-color-text-muted-s}), calc(var(--color-text-muted-l, #{var.$default-color-text-muted-l}) + 15%));
+
+  .icon-xs { width: 0.9rem; height: 0.9rem; }
+
+  &:hover {
+    color: hsl(var(--color-accent-interactive-h, #{var.$default-color-accent-interactive-h}), var(--color-accent-interactive-s, #{var.$default-color-accent-interactive-s}), var(--color-accent-interactive-l, #{var.$default-color-accent-interactive-l}));
+    background-color: hsla(var(--color-accent-interactive-h, #{var.$default-color-accent-interactive-h}), var(--color-accent-interactive-s, #{var.$default-color-accent-interactive-s}), var(--color-accent-interactive-l, #{var.$default-color-accent-interactive-l}), 0.2) !important;
+  }
+}
+
+// --- Keyframe Animations Used ---
+// Ensure these are defined in _keyframes.scss
+// @keyframes messageAppear { /* ... */ }
+// @keyframes subtleGlowPulse { /* ... */ }
+// @keyframes holo-border-spin { /* ... */ }

@@ -1,129 +1,210 @@
+// File: frontend/src/components/agents/AgentHub.vue
 /**
  * @file AgentHub.vue
- * @description A modal/panel for Browse, searching, and selecting AI agents.
- * Implements "Ephemeral Harmony" styling for a rich user experience.
- * @version 1.1.2 - Resolved TS errors and removed unused imports.
+ * @description A modal/panel component for Browse, searching, filtering, and selecting AI agents.
+ * Designed to be a dynamic and engaging catalog, potentially housing a large number of agents.
+ * Implements "Ephemeral Harmony" styling for a futuristic and rich user experience.
+ * Includes placeholders for future "Create Agent" and "Import Agent" functionalities.
+ *
+ * @component AgentHub
+ * @props {boolean} isOpen - Controls the visibility of the Agent Hub modal.
+ * @emits close - Emitted when a request to close the hub is made (e.g., by clicking overlay or close button).
+ * @emits agent-selected - Emitted when an agent is selected, passing the agent's ID.
+ * @emits interaction - For miscellaneous interactions like showing a toast (from AgentCard).
+ *
+ * @version 1.2.0 - Enhanced modal structure, refined controls layout, added placeholders for future actions, improved JSDoc.
  */
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, nextTick } from 'vue';
-import { agentService, type IAgentDefinition, type AgentId, type AgentCategory } from '@/services/agent.service'; // AgentCategory is exported
+import { ref, computed, watch, onMounted, nextTick, type Ref } from 'vue';
+import {
+  agentService,
+  type IAgentDefinition,
+  type AgentId,
+  type AgentCategory // Type for agent categories
+} from '@/services/agent.service';
 import { useAgentStore } from '@/store/agent.store';
 import { useAuth } from '@/composables/useAuth';
-import {
-  XMarkIcon,
-  MagnifyingGlassIcon,
-  SparklesIcon, // For header title
-  // Removed icons that are now encapsulated within AgentCard or not used directly here
-} from '@heroicons/vue/24/outline';
-import AgentCard from './AgentCard.vue'; // Import the AgentCard component
+import { useUiStore } from '@/store/ui.store'; // For toast interactions
 
+// Icons
+import {
+  XMarkIcon,                // For close button
+  MagnifyingGlassIcon,      // For search input
+  SparklesIcon,             // For header title icon
+  FunnelIcon,               // For filter section indication
+  PlusCircleIcon,           // For "Create Agent" (disabled)
+  ArrowUpTrayIcon,          // For "Import Agent" (disabled)
+  AdjustmentsHorizontalIcon // Alternative for filter/category indication
+} from '@heroicons/vue/24/outline';
+import AgentCard from './AgentCard.vue'; // The component to display each agent
+
+/**
+ * @props - Component properties.
+ */
 const props = defineProps<{
+  /** Controls the visibility of the Agent Hub modal. */
   isOpen: boolean;
 }>();
 
+/**
+ * @emits - Defines the events emitted by this component.
+ */
 const emit = defineEmits<{
+  /** Emitted when the hub requests to be closed. */
   (e: 'close'): void;
-  (e: 'agent-selected', agentId: AgentId): void; // Use specific AgentId type
+  /** Emitted when an agent card is clicked and selected. */
+  (e: 'agent-selected', agentId: AgentId): void;
+  /**
+   * Emitted for interactions originating from child components (e.g., AgentCard)
+   * that need to be handled by a higher-level component (e.g., showing a toast).
+   */
+  (e: 'interaction', payload: { type: string; data?: any }): void;
 }>();
 
 const agentStore = useAgentStore();
 const auth = useAuth();
-const allAgentsFromService = ref<IAgentDefinition[]>([]); // Store the initial list
-const searchQuery = ref('');
-const selectedCategory = ref<AgentCategory | null>(null);
+const uiStore = useUiStore(); // For potential toast interactions if not handled by App.vue
 
-const availableAndAccessibleAgents = computed(() => {
+/** @ref {Ref<IAgentDefinition[]>} allAgentsFromService - Stores the canonical list of all agents fetched from the service. */
+const allAgentsFromService: Ref<IAgentDefinition[]> = ref([]);
+/** @ref {Ref<string>} searchQuery - Reactive model for the search input field. */
+const searchQuery: Ref<string> = ref('');
+/** @ref {Ref<AgentCategory | 'all'>} selectedCategory - Reactive model for the selected agent category filter. 'all' signifies no category filter. */
+const selectedCategory: Ref<AgentCategory | 'all'> = ref('all'); // Default to 'all'
+
+/**
+ * @computed availableAndAccessibleAgents
+ * @description Filters the `allAgentsFromService` list based on user authentication status and agent access tiers.
+ * Determines which agents are even shown in the hub to the current user.
+ * @returns {IAgentDefinition[]} Filtered list of agents the user can see.
+ */
+const availableAndAccessibleAgents = computed<IAgentDefinition[]>(() => {
   return allAgentsFromService.value.filter(agent => {
-    // Access tier logic for filtering which agents are even shown in the hub
-    if (!agent.isPublic && !auth.isAuthenticated.value) return false; // Locked non-public for guests
-    if (agent.accessTier === 'member' && !auth.isAuthenticated.value) return false; // Locked member for guests
-    if (agent.accessTier === 'premium' && !auth.isAuthenticated.value) return false; // Locked premium for guests
-    // TODO: Add more granular premium check if auth.userHasPremiumAccess exists
-    return true;
+    if (agent.isPublic) return true; // Public agents are always shown
+    if (!auth.isAuthenticated.value) return false; // Non-public agents hidden for guests
+
+    // For authenticated users, further checks based on accessTier can be added here if implemented
+    // e.g., if (agent.accessTier === 'premium' && !auth.user.hasPremiumAccess) return false;
+    return true; // Default to accessible if authenticated and not explicitly restricted
   });
 });
 
-const filteredAgents = computed(() => {
+/**
+ * @computed filteredAgents
+ * @description Filters `availableAndAccessibleAgents` based on the current `searchQuery` and `selectedCategory`.
+ * Performs case-insensitive search on agent label, description, tags, and category.
+ * @returns {IAgentDefinition[]} The final list of agents to be displayed.
+ */
+const filteredAgents = computed<IAgentDefinition[]>(() => {
   return availableAndAccessibleAgents.value.filter(agent => {
-    const searchLower = searchQuery.value.toLowerCase();
-    const matchesSearch =
+    const searchLower = searchQuery.value.toLowerCase().trim();
+    const matchesSearch = !searchLower || // If no search query, all agents match
       agent.label.toLowerCase().includes(searchLower) ||
       agent.description.toLowerCase().includes(searchLower) ||
       (agent.tags && agent.tags.some((tag: string) => tag.toLowerCase().includes(searchLower))) ||
       (agent.category && agent.category.toLowerCase().includes(searchLower));
 
-    const matchesCategory = selectedCategory.value ? agent.category === selectedCategory.value : true;
-    
+    const matchesCategory = selectedCategory.value === 'all' || agent.category === selectedCategory.value;
+
     return matchesSearch && matchesCategory;
-  });
+  }).sort((a, b) => a.label.localeCompare(b.label)); // Sort alphabetically by label
 });
 
+/**
+ * @computed categories
+ * @description Extracts a unique, sorted list of all agent categories present in the service.
+ * @returns {AgentCategory[]} Array of unique agent categories.
+ */
 const categories = computed<AgentCategory[]>(() => {
   const cats = new Set(
-    agentService.getAllAgents() // Use the service method that returns canonical agents
+    agentService.getAllAgents() // Use the canonical list from the service
       .map(agent => agent.category)
-      .filter(Boolean) as AgentCategory[]
+      .filter(Boolean) as AgentCategory[] // Filter out undefined/null categories and assert type
   );
   return Array.from(cats).sort();
 });
 
+// Fetch all agents when the component is mounted.
 onMounted(() => {
-  allAgentsFromService.value = [...agentService.getAllAgents()]; // Fetch canonical agents
+  allAgentsFromService.value = [...agentService.getAllAgents()];
 });
 
+// Watch for the hub opening to reset search/filters and focus the search input.
 watch(() => props.isOpen, (newVal) => {
   if (newVal) {
     searchQuery.value = '';
-    selectedCategory.value = null;
-    allAgentsFromService.value = [...agentService.getAllAgents()]; // Refresh when opened
-    nextTick(() => {
-        const searchInputEl = document.getElementById('agent-hub-search-input');
-        searchInputEl?.focus();
+    selectedCategory.value = 'all'; // Reset to 'all' category
+    allAgentsFromService.value = [...agentService.getAllAgents()]; // Refresh agent list
+    nextTick(() => { // Ensure DOM is updated before trying to focus
+      const searchInputEl = document.getElementById('agent-hub-search-input');
+      searchInputEl?.focus();
     });
   }
 });
 
+/**
+ * @function selectAgentAndClose
+ * @description Handles agent selection from an AgentCard. Sets the selected agent as active
+ * in the store and emits events to close the hub and notify of selection.
+ * @param {IAgentDefinition} agent - The agent definition object that was selected.
+ */
 const selectAgentAndClose = (agent: IAgentDefinition) => {
-  // AgentCard now handles its own "isLocked" state before emitting "select-agent".
-  // If this is called, assume the agent is selectable.
+  // AgentCard component internally handles lock status before emitting select-agent.
+  // If this function is called, it's assumed the agent is selectable by the current user.
   agentStore.setActiveAgent(agent.id);
   emit('agent-selected', agent.id);
+  emit('close'); // Close the hub after selection
 };
 
-const closeHub = () => {
+/**
+ * @function closeHub
+ * @description Emits the 'close' event to request closing the Agent Hub modal.
+ */
+const closeHub = (): void => {
   emit('close');
 };
 
-// This handler is for events from AgentCard, e.g., if AgentCard had an info button
-// that this Hub should react to by showing a more detailed modal.
-const handleShowAgentInfoFromCard = (agent: IAgentDefinition) => {
-  // console.log("[AgentHub] Request to show detailed info for agent:", agent.label);
-  // Implement logic here to display a detailed modal/view for 'agent'
-  // For example, set a ref with 'agent' data and toggle a modal visibility flag.
-  // This is distinct from the 'show-agent-info' emit from AgentCard itself,
-  // which might be handled by an even higher-level component if this Hub is nested.
-  // If AgentHub is the one showing the detailed info, this is the place.
-  // For now, we can assume AgentCard passes enough info for the card display itself.
+/**
+ * @function handleCardInteraction
+ * @description Relays interaction events (like toast requests) from AgentCard components
+ * to the parent component.
+ * @param {object} payload - The event payload from AgentCard.
+ */
+const handleCardInteraction = (payload: { type: string; data?: any }): void => {
+  emit('interaction', payload);
 };
 
 </script>
 
 <template>
   <Transition name="agent-hub-fade-transition">
-    <div v-if="isOpen" class="agent-hub-overlay" @mousedown.self="closeHub" aria-modal="true" role="dialog" aria-labelledby="agent-hub-title">
-      <div class="agent-hub-panel card-neo-raised-ephemeral"> {/* Assumes this class is defined elsewhere, e.g. in _cards.scss or _agent-hub.scss */}
+    <div
+      v-if="isOpen"
+      class="agent-hub-overlay"
+      @mousedown.self="closeHub"
+      aria-modal="true"
+      role="dialog"
+      aria-labelledby="agent-hub-title"
+    >
+      <div class="agent-hub-panel card-neo-raised-ephemeral"> 
         <header class="agent-hub-header">
           <h2 id="agent-hub-title" class="hub-title-ephemeral">
-            <SparklesIcon class="hub-title-icon"/> Explore Assistants
+            <SparklesIcon class="hub-title-icon" aria-hidden="true"/>
+            Explore & Select Assistants
           </h2>
-          <button @click="closeHub" class="btn btn-ghost-ephemeral btn-icon-ephemeral close-hub-button-ephemeral" aria-label="Close Assistant Hub">
-            <XMarkIcon class="icon-lg" />
+          <button
+            @click="closeHub"
+            class="btn btn-ghost-ephemeral btn-icon-ephemeral close-hub-button-ephemeral"
+            aria-label="Close Assistant Hub"
+            title="Close Hub"
+          >
+            <XMarkIcon class="icon-lg" aria-hidden="true" />
           </button>
         </header>
 
         <div class="agent-hub-controls-ephemeral">
           <div class="search-bar-wrapper-ephemeral">
-            <MagnifyingGlassIcon class="search-icon-ephemeral" />
+            <MagnifyingGlassIcon class="search-icon-ephemeral" aria-hidden="true" />
             <input
               id="agent-hub-search-input"
               type="search"
@@ -133,96 +214,117 @@ const handleShowAgentInfoFromCard = (agent: IAgentDefinition) => {
               aria-label="Search for an assistant"
             />
           </div>
-          <div v-if="categories.length > 1" class="category-filters-ephemeral custom-scrollbar-xs">
-            <button @click="selectedCategory = null"
-                    :class="{'active': !selectedCategory}"
-                    class="filter-chip-ephemeral"
-                    :aria-pressed="!selectedCategory"
-                    role="tab">
-              All
+          <div v-if="categories.length > 0" class="category-filters-ephemeral custom-scrollbar-xs" role="tablist" aria-orientation="horizontal">
+            <button
+              @click="selectedCategory = 'all'"
+              :class="{'active': selectedCategory === 'all'}"
+              class="filter-chip-ephemeral"
+              role="tab"
+              :aria-selected="selectedCategory === 'all'"
+              id="agent-hub-cat-all"
+              aria-controls="agent-grid-panel"
+            >
+              All Assistants
             </button>
             <button
-              v-for="cat in categories" :key="cat"
+              v-for="cat in categories"
+              :key="cat"
               @click="selectedCategory = cat"
               :class="{'active': selectedCategory === cat}"
               class="filter-chip-ephemeral"
-              :aria-pressed="selectedCategory === cat"
               role="tab"
+              :aria-selected="selectedCategory === cat"
+              :id="`agent-hub-cat-${cat.toLowerCase().replace(/\s+/g, '-')}`"
+              aria-controls="agent-grid-panel"
             >
               {{ cat }}
             </button>
           </div>
         </div>
 
-        <div class="agent-grid-container-ephemeral custom-scrollbar-thin" role="tabpanel">
-          <p v-if="allAgentsFromService.length === 0 && !searchQuery" class="loading-agents-message">Loading available assistants...</p>
-          <p v-else-if="filteredAgents.length === 0 && searchQuery" class="no-results-message-ephemeral">
-            No assistants found for "<strong>{{ searchQuery }}</strong>". Try a different search or category.
+        <div id="agent-grid-panel" class="agent-grid-container-ephemeral custom-scrollbar-thin" role="tabpanel" tabindex="0">
+          <p v-if="allAgentsFromService.length === 0 && !searchQuery" class="loading-agents-message">
+            Loading available assistants...
           </p>
-          <p v-else-if="filteredAgents.length === 0 && selectedCategory" class="no-results-message-ephemeral">
+          <p v-else-if="filteredAgents.length === 0 && searchQuery" class="no-results-message-ephemeral">
+            No assistants found for "<strong>{{ searchQuery }}</strong>". Try adjusting your search or filters.
+          </p>
+          <p v-else-if="filteredAgents.length === 0 && selectedCategory !== 'all'" class="no-results-message-ephemeral">
             No assistants available in the "<strong>{{ selectedCategory }}</strong>" category.
           </p>
-           <p v-else-if="filteredAgents.length === 0 && allAgentsFromService.length > 0" class="no-results-message-ephemeral">
-            No assistants match your current filter and access level.
+           <p v-else-if="filteredAgents.length === 0 && availableAndAccessibleAgents.length > 0" class="no-results-message-ephemeral">
+            No assistants match your current filter.
           </p>
-
+          <p v-else-if="availableAndAccessibleAgents.length === 0" class="no-results-message-ephemeral">
+            No assistants are currently available for your access level.
+          </p>
 
           <TransitionGroup name="agent-card-list-transition" tag="div" class="agent-card-grid">
             <AgentCard
               v-for="agentDef in filteredAgents"
               :key="agentDef.id"
               :agent="agentDef"
-              @select-agent="() => selectAgentAndClose(agentDef)" 
-              @show-agent-info="handleShowAgentInfoFromCard" />
+              @select-agent="() => selectAgentAndClose(agentDef)"
+              @interaction="handleCardInteraction"
+            />
           </TransitionGroup>
         </div>
+
+        <footer class="agent-hub-footer-ephemeral">
+            <button class="btn btn-secondary-ephemeral btn-sm-ephemeral" disabled title="Feature coming soon">
+                <PlusCircleIcon class="icon-sm mr-1.5" /> Create New Agent
+            </button>
+            <button class="btn btn-secondary-ephemeral btn-sm-ephemeral" disabled title="Feature coming soon">
+                <ArrowUpTrayIcon class="icon-sm mr-1.5" /> Import Agent
+            </button>
+        </footer>
+
       </div>
     </div>
   </Transition>
 </template>
 
 <style lang="scss">
-// Styles for AgentHub are in frontend/src/styles/components/agents/_agent-hub.scss
-// Ensure that SCSS file styles:
-// .agent-hub-overlay, .agent-hub-panel, .card-neo-raised-ephemeral (if custom or from _cards.scss),
-// .agent-hub-header, .hub-title-ephemeral, .hub-title-icon, .close-hub-button-ephemeral,
-// .agent-hub-controls-ephemeral, .search-bar-wrapper-ephemeral, .search-icon-ephemeral, .search-input-ephemeral,
-// .category-filters-ephemeral, .custom-scrollbar-xs, .filter-chip-ephemeral, .filter-chip-ephemeral.active,
-// .agent-grid-container-ephemeral, .custom-scrollbar-thin, .loading-agents-message, .no-results-message-ephemeral,
-// .agent-card-grid
+// Styles for AgentHub are primarily in frontend/src/styles/components/agents/_agent-hub.scss
+// Local transitions are defined here for Vue's <Transition> and <TransitionGroup>.
 
-// Transitions are defined locally as per original file.
+// Transition for the modal overlay fade-in/out
+@use '@/styles/abstracts/variables' as var;
 .agent-hub-fade-transition-enter-active,
 .agent-hub-fade-transition-leave-active {
-  transition: opacity 0.3s var(--ease-out-quad);
+  transition: opacity 0.3s var.$ease-out-quad;
 }
 .agent-hub-fade-transition-enter-from,
 .agent-hub-fade-transition-leave-to {
   opacity: 0;
 }
+
+// Transition for the panel sliding/scaling effect
 .agent-hub-fade-transition-enter-active .agent-hub-panel,
 .agent-hub-fade-transition-leave-active .agent-hub-panel {
-  transition: transform 0.3s var(--ease-out-expo), opacity 0.25s var(--ease-out-quad);
+  transition: transform 0.35s var.$ease-elastic, opacity 0.3s var.$ease-out-quad; // Using elastic ease
 }
 .agent-hub-fade-transition-enter-from .agent-hub-panel,
 .agent-hub-fade-transition-leave-to .agent-hub-panel {
   opacity: 0.8;
-  transform: scale(0.95) translateY(20px);
+  transform: scale(0.92) translateY(25px); // Start slightly smaller and lower
 }
 
+// Transition for agent cards within the grid
 .agent-card-list-transition-enter-active,
 .agent-card-list-transition-leave-active {
-  transition: all 0.4s var(--ease-out-quint);
+  transition: all 0.45s var.$ease-out-quint; // Smoother, slightly longer transition for cards
 }
 .agent-card-list-transition-leave-active {
-  position: absolute; 
+  position: absolute; // Important for <TransitionGroup> leave animations
+  opacity: 0; // Fade out while moving
 }
 .agent-card-list-transition-enter-from {
   opacity: 0;
-  transform: translateY(15px) scale(0.97);
+  transform: translateY(20px) scale(0.96); // Cards appear from slightly below and smaller
 }
 .agent-card-list-transition-leave-to {
   opacity: 0;
-  transform: translateY(-10px) scale(0.95);
+  transform: translateY(-15px) scale(0.94); // Cards disappear upwards and smaller
 }
 </style>

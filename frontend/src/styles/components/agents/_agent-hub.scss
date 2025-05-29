@@ -56,7 +56,7 @@
   flex-shrink: 0;
 
   .hub-title-ephemeral {
-    font-size: var.$font-size-xl * 1.1;
+    font-size: calc(var.$font-size-xl * 1.1);
     font-weight: 600;
     color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
     @include mixins.text-glow('--color-accent-primary', 5px, var.$default-color-accent-primary-h,var.$default-color-accent-primary-s,var.$default-color-accent-primary-l,0.4);
@@ -228,7 +228,7 @@
   }
   .agent-card-access-tier { margin-top: auto; padding-top: var.$spacing-sm; text-align: right; }
   .access-tier-badge {
-    font-size: var.$font-size-xs * 0.8;
+    font-size: calc(var.$font-size-xs * 0.8);
     font-weight: 600;
     padding: 0.1rem 0.4rem;
     border-radius: var.$radius-sm;

@@ -1,218 +1,521 @@
 // File: frontend/src/styles/components/_voice-input.scss
 /**
  * @file _voice-input.scss
- * @description Styles for the VoiceInput component, Ephemeral Harmony theme.
- * Features holographic/glassmorphic elements, responsive microphone button,
- * animated live transcription display, and themed controls. Includes new animated send button.
- * @version 3.0.0
+ * @description Styles for the VoiceInput.vue component, fully realizing the "Ephemeral Harmony"
+ * neo-holographic design language. Includes "resonating" effects for different interaction states
+ * (idle, listening, processing, VAD), styles for dynamic text input prominence, animated send button,
+ * VAD visualization, and theming for all controls within the voice input panel.
+ *
+ * @role Defines the complete visual appearance and dynamic feedback for the VoiceInput component.
+ * @dependencies `../abstracts/variables`, `../abstracts/mixins`, `./buttons`, `../layout/modals` (if modals have shared base styles).
+ * @assumptions The VoiceInput.vue component applies dynamic classes like `user-listening`,
+ * `processing`, `vad-wake-word-listening`, and `input-prominence-*`.
+ * Keyframe animations are defined in `_keyframes.scss`.
  */
 
 @use '../abstracts/variables' as var;
 @use '../abstracts/mixins' as mixins;
-@use './buttons' as buttonsFile; // For button mixins if needed for other buttons
+@use './buttons' as buttonsFile; // For button styling consistency
 
 .voice-input-panel-ephemeral {
-  // Existing glassmorphic pane and panel styles...
-  @include mixins.glassmorphic-pane(
-    hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.6), // Slightly less transparent
-    hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.35),
-    calc(var(--blur-glass) * 0.9), // Slightly less blur
-    var(--shadow-depth-md)
+  // Base panel styling - Neo-holographic, slightly glassmorphic
+  @include mixins.neomorphic-extrude(
+    $bg-color-var-prefix: '--color-bg-secondary',
+    $distance: 4px,
+    $blur: 10px,
+    $shadow-opacity-var: '--shadow-opacity-soft',
+    $radius: var.$radius-2xl, // Large, friendly radius
+    $fb-bg-a: 0.9, // Allow some theme background to show through subtly
+    $fb-bg-l: calc(var.$default-color-bg-secondary-l - 2%) // Slightly darker than page secondary
   );
-  border-radius: var.$radius-2xl;
   padding: var.$spacing-md;
   display: flex;
   flex-direction: column;
   gap: var.$spacing-sm;
-  transition: border-color var.$duration-smooth, box-shadow var.$duration-smooth;
+  position: relative; // For pseudo-elements and absolute children
+  overflow: hidden;   // Contain glows
+  border: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.15);
+  transition: border-color var.$duration-smooth, box-shadow var.$duration-smooth, background-color var.$duration-smooth;
 
-  &.processing, &.microphone-error { /* existing styles */ }
-  &.microphone-denied { /* existing styles */ }
+  // --- Resonance & State Styling ---
+  &::before, &::after { // Pseudo-elements for animated glows/auras
+    content: '';
+    position: absolute;
+    inset: -2px; // Slightly outside the border
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0;
+    transition: opacity var.$duration-smooth var.$ease-out-quad, transform var.$duration-smooth var.$ease-elastic;
+  }
+
+  // Base ambient glow (very subtle)
+  &::before {
+    // Example: A very soft, slow breathing static glow, or a subtle patterned overlay
+    // background: radial-gradient(ellipse at center, hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.03) 0%, transparent 70%);
+    // animation: subtlePulse var.$duration-pulse-long * 2 infinite alternate;
+    // --opacity-start: 0.02; --opacity-pulse: 0.05; --scale-pulse: 1.01;
+    box-shadow: 0 0 15px hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.1);
+  }
+
+  // User Listening State Resonance
+  &.user-listening {
+    border-color: hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.5);
+    &::after { // Active aura for listening
+      opacity: 1;
+      background: radial-gradient(ellipse at center,
+        hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.25) 0%,
+        hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.05) 50%,
+        transparent 70%);
+      animation: voiceAuraPulse calc(var.$duration-pulse-medium * 1.2) infinite alternate; // Slower, broader pulse
+      --voice-pulse-opacity: 0.25; // Customize for this specific aura
+    }
+  }
+
+  // VAD Wake Word Listening State - distinct subtle cue
+  &.vad-wake-word-listening {
+    border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.4);
+    &::after {
+      opacity: 0.8;
+      background: radial-gradient(ellipse at bottom,
+        hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.15) 0%,
+        transparent 60%);
+      animation: subtlePulse var.$duration-pulse-slow infinite;
+      --opacity-start: 0.1; --opacity-pulse: 0.15; --scale-pulse: 1.02;
+    }
+  }
+
+  // Processing State (Parent processing OR STT processing)
+  &.processing {
+    border-color: hsla(var(--color-voice-ai-thinking-h), var(--color-voice-ai-thinking-s), var(--color-voice-ai-thinking-l), 0.6);
+    &::after { // "Thinking" or "computational" aura
+      opacity: 1;
+      // Example: A gradient that slowly spins or pulses with a different rhythm
+      background: conic-gradient(
+        from 0deg at 50% 50%,
+        hsla(var(--color-voice-ai-thinking-h), var(--color-voice-ai-thinking-s), var(--color-voice-ai-thinking-l), 0.05),
+        hsla(var(--color-voice-ai-thinking-h), var(--color-voice-ai-thinking-s), calc(var(--color-voice-ai-thinking-l) + 10%), 0.25),
+        hsla(var(--color-voice-ai-thinking-h), var(--color-voice-ai-thinking-s), var(--color-voice-ai-thinking-l), 0.05)
+      );
+      animation: spin 5s linear infinite, subtlePulse 1.8s infinite alternate; // Spin + Pulse
+      --opacity-start: 0.2; --opacity-pulse: 0.3;
+    }
+  }
+
+  // Microphone Error/Denied States
+  &.microphone-error, &.microphone-denied {
+    border-color: hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.6);
+    background-color: hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.05); // Faint error tint
+  }
 }
 
+// Live Transcription Display (above input area)
+.live-transcript-display-ephemeral {
+  padding: var.$spacing-xs var.$spacing-md;
+  margin: 0 calc(var.$spacing-md * -1) var.$spacing-xs; // Negative margin to bleed into panel padding
+  background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.15);
+  border-radius: var.$radius-md;
+  min-height: 2.5em; // Ensure some space even when empty
+  font-size: var.$font-size-sm;
+  color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+  line-height: 1.5;
+  max-height: 80px;
+  overflow-y: auto;
+  @include mixins.custom-scrollbar('--color-accent-secondary', 0.2, 0.4, '--color-bg-tertiary', 0.05, 4px);
+
+  p { margin-bottom: calc(var.$spacing-xs / 2); &:last-child { margin-bottom: 0; } }
+  .interim-transcript-ephemeral {
+    opacity: 0.7;
+    font-style: italic;
+  }
+  .finalized-part-ephemeral {
+    opacity: 0.9;
+  }
+  .pending-transcript-ephemeral { // For continuous mode's accumulated text
+    font-weight: 500;
+    opacity: 1;
+    // color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+  }
+  .whisper-status-ephemeral, .vad-wake-word-status {
+    color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
+    opacity: 0.9;
+  }
+}
+
+// Main Input Area (Textarea + Send Button)
 .input-area-ephemeral {
   display: flex;
-  align-items: flex-end; // Align items to the bottom (for textarea and button)
+  align-items: flex-end; // Align textarea (if multiline) and button to bottom
   gap: var.$spacing-sm;
+  position: relative; z-index: 1; // Above panel pseudo-elements
+
+  // Prominence styles for textarea wrapper
+  &.input-prominence-subtle {
+    .voice-textarea-ephemeral {
+      border-color: hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.2); // More subtle border
+      background-color: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.4); // More transparent
+      min-height: 44px; // Slightly smaller base height for subtle
+      &:focus {
+        box-shadow: inset 0 1px 2px hsla(var(--shadow-color-h), var(--shadow-color-s), var(--shadow-color-l), 0.03),
+                    0 0 0 2.5px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.2); // Softer focus glow
+      }
+    }
+  }
+  &.input-prominence-focused-wake { // When VAD is listening for "V"
+    .voice-textarea-ephemeral {
+      border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.3);
+      &::placeholder {
+        color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.7);
+        animation: subtlePulse 2s infinite; --opacity-pulse: 0.5;
+      }
+    }
+  }
+  // .input-prominence-default uses base .voice-textarea-ephemeral styles
 }
 
 .voice-textarea-ephemeral {
   flex-grow: 1;
   resize: none;
-  padding: var.$spacing-sm calc(var.$spacing-sm * 1.5);
-  font-size: var(--font-size-base, var.$font-size-base-default); // Use themed font size
-  line-height: 1.6; // Increased line height
-  letter-spacing: var(--letter-spacing-base, var.$letter-spacing-base-default); // Use themed letter spacing
-  border-radius: var.$radius-lg;
-  min-height: 48px; // Consistent height with buttons
-  max-height: 150px; // Max expansion
-  background-color: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.6); // More transparent
+  padding: var.$spacing-sm calc(var.$spacing-sm * 1.4); // Balanced padding
+  font-size: var(--font-size-base-default, var.$font-size-base-default);
+  line-height: 1.55; // Slightly adjusted for better multiline readability
+  letter-spacing: var(--letter-spacing-base, var.$letter-spacing-base-default);
+  border-radius: var.$radius-xl; // More rounded to match panel
+  min-height: 48px;
+  max-height: 150px; // Max expansion before scroll
+  background-color: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.7); // Theme based, slightly transparent
   color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
-  border: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.4); // Softer border
-  box-shadow: inset 0 1px 4px hsla(var(--shadow-color-h), var(--color-shadow-s), var(--color-shadow-l), 0.12);
-  transition: border-color var.$duration-quick, box-shadow var.$duration-quick, background-color var.$duration-quick;
-  @include mixins.custom-scrollbar('--color-accent-secondary', 0.3, 0.5, '--color-bg-primary', 0.1, 6px);
-
+  border: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.5);
+  // Subtle inset shadow for a slightly depressed, tactile feel
+  box-shadow: inset 0 1.5px 4px hsla(var(--shadow-color-h), var(--shadow-color-s), var(--shadow-color-l), 0.15),
+              0 0 0 0 hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0); // Placeholder for focus animation
+  transition: border-color var.$duration-quick var.$ease-out-quad,
+              box-shadow var.$duration-smooth var.$ease-out-quad, // Slower for shadow focus
+              background-color var.$duration-quick var.$ease-out-quad;
+  @include mixins.custom-scrollbar('--color-accent-interactive', 0.35, 0.55, '--color-bg-primary', 0.15, 5px);
 
   &::placeholder {
     color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
-    opacity: 0.7;
+    opacity: 0.75;
+    transition: color var.$duration-quick;
   }
-  &:focus {
+
+  &:focus, &:focus-visible { // Combined focus for consistency
     outline: none;
-    background-color: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.7);
-    border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.7);
-    box-shadow: inset 0 1px 2px hsla(var(--shadow-color-h), var(--color-shadow-s), var(--color-shadow-l), 0.05),
-                0 0 0 3px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.25);
-    animation: inputFocusBreath 1.5s infinite alternate var.$ease-in-out-sine; // Defined in _keyframes.scss
+    background-color: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), calc(var(--color-bg-primary-l) + 2%), 0.8); // Slightly lighter/more opaque on focus
+    border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.75);
+    // Animated focus glow using the keyframe
+    animation: inputFocusGlowPulse 2s var.$ease-in-out-sine infinite alternate; // Keyframe defined in _keyframes.scss
   }
-  &:disabled { /* existing styles */ }
+  &:disabled {
+    background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.4);
+    border-color: hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.25);
+    cursor: not-allowed;
+    opacity: 0.6;
+    box-shadow: none;
+  }
 }
 
-// New Animated Send Button Styles
+// Animated Send Button (SVG is in template)
 .send-button-ephemeral-v2 {
-  @include buttonsFile.btn; // Base button styles
-  @include buttonsFile.btn-primary-look; // Primary button appearance
-  // Override size and shape for this specific button
-  width: 48px;
-  height: 48px;
-  padding: 0 !important; // Remove padding if btn-icon-modifier not used or needs override
-  border-radius: var.$radius-lg; // Match textarea
+  // Uses .btn and .btn-primary-look from _buttons.scss for base
+  // Specific overrides for size and icon animation:
+  width: 48px; height: 48px; // Match textarea min-height
+  padding: 0 !important;
+  border-radius: var.$radius-xl; // Match textarea
   flex-shrink: 0;
-  overflow: hidden; // For icon animation effects
+  overflow: hidden; // Important for trail effects
 
-  .send-icon-animated-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-  }
-
+  .send-icon-animated-wrapper { /* ... no change needed from component file */ }
   .send-icon-animated {
-    width: 20px; // Adjust size as needed
-    height: 20px;
-    stroke-width: 1.5; // For outline paths
-    color: hsl(var(--color-text-on-primary-h), var(--color-text-on-primary-s), var(--color-text-on-primary-l)); // Icon color
-    transition: transform 0.2s var.$ease-out-quad;
+    width: 22px; height: 22px; // Adjusted icon size
+    stroke-width: 1.75; // Slightly bolder trails
+    color: hsl(var(--color-text-on-primary-h), var(--color-text-on-primary-s), var(--color-text-on-primary-l));
+    transition: transform 0.25s var.$ease-elastic; // Elastic pop
 
     .send-icon-shape {
-      fill: currentColor; // Fill with the current text color
-      transition: fill 0.2s var.$ease-out-quad;
+      fill: currentColor;
+      transition: fill 0.2s var.$ease-out-quad, transform 0.2s var.$ease-elastic;
     }
     .send-icon-trail {
       stroke: currentColor;
       stroke-opacity: 0;
-      transition: stroke-opacity 0.3s var.$ease-out-quad, transform 0.3s var.$ease-out-quad;
+      // Smoother trail animation with slight delay progression
+      transition: stroke-opacity 0.35s var.$ease-out-cubic, transform 0.35s var.$ease-out-cubic;
     }
   }
 
-  &:hover {
+  &:hover:not(:disabled) {
+    // Hover effects from btn-primary-look (glow, bg change) are good.
+    // Add specific icon animation:
     .send-icon-animated {
-      transform: scale(1.1) translateX(1px) translateY(-1px);
-      .send-icon-shape {
-         // Could change fill on hover if desired, e.g., brighter version of accent
-      }
-      .send-icon-trail-1 { stroke-opacity: 0.7; transform: translate(-3px, 3px) scaleX(0.8); transition-delay: 0s; }
-      .send-icon-trail-2 { stroke-opacity: 0.5; transform: translate(-5px, 5px) scaleX(0.6); transition-delay: 0.05s; }
-      .send-icon-trail-3 { stroke-opacity: 0.3; transform: translate(-7px, 7px) scaleX(0.4); transition-delay: 0.1s; }
+      transform: scale(1.15) translateX(1.5px) translateY(-1.5px); // More dynamic hover
+      .send-icon-shape { transform: scale(1.05); }
+      .send-icon-trail-1 { stroke-opacity: 0.75; transform: translate(-3.5px, 3.5px) scaleX(0.85); transition-delay: 0s; }
+      .send-icon-trail-2 { stroke-opacity: 0.55; transform: translate(-5.5px, 5.5px) scaleX(0.65); transition-delay: 0.04s; }
+      .send-icon-trail-3 { stroke-opacity: 0.35; transform: translate(-7.5px, 7.5px) scaleX(0.45); transition-delay: 0.08s; }
     }
   }
-  &:active {
-    .send-icon-animated {
-      transform: scale(0.9) translateX(0) translateY(0);
+  &:active:not(:disabled) {
+    // Active effects from btn-primary-look (inset shadow, bg change) are good.
+    .send-icon-animated { transform: scale(0.9) translateX(0) translateY(0); } // Quick press
+  }
+  // Disabled state opacity for icon handled by button's main disabled style
+}
+
+// Main Controls Row (Mic, Status, Mode Selector, Secondary Controls)
+.controls-main-row-ephemeral {
+  display: flex;
+  align-items: center;
+  gap: var.$spacing-sm;
+  position: relative; z-index: 1; // Above panel pseudo-elements
+}
+
+// Microphone Button
+.mic-button-ephemeral {
+  @include buttonsFile.btn; // Base button structure
+  // Custom look for mic button (neo-holographic)
+  width: 52px; height: 52px; // Prominent size
+  border-radius: var.$radius-full; // Circular
+  padding: 0 !important;
+  flex-shrink: 0;
+  position: relative; // For internal pulse/aura effects
+  overflow: visible; // Allow glows to escape
+  background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.5);
+  border: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.3);
+  box-shadow: var(--shadow-depth-sm);
+  color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+
+  .icon { width: 1.8rem; height: 1.8rem; opacity: 0.8; } // Larger icon
+
+  &::after { // For pulsing aura
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: 0 0 0 0px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.4);
+    opacity: 0;
+    transform: scale(0.8);
+    transition: opacity var.$duration-quick, box-shadow var.$duration-quick;
+  }
+
+  &:hover:not(:disabled) {
+    background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.7);
+    border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.5);
+    color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
+    .icon { opacity: 1; }
+  }
+  &:active:not(:disabled) {
+    transform: scale(0.94);
+    background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.85);
+  }
+
+  // Listening State (User actively speaking/mic on)
+  &.listening {
+    background-color: hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.2);
+    border-color: hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.6);
+    color: hsl(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l));
+    .icon { opacity: 1; filter: drop-shadow(0 0 4px currentColor); }
+    &::after { // Pulsing aura
+      animation: micListeningPulse 1.5s var.$ease-out-quint infinite; // Keyframe from _keyframes.scss
+      // Ensure --color-voice-user-h/s/l are used by micListeningPulse if it uses CSS vars
     }
   }
-  &:disabled {
-    .send-icon-animated .send-icon-shape {
-       fill: hsla(var(--color-text-on-primary-h), var(--color-text-on-primary-s), var(--color-text-on-primary-l), 0.5);
-    }
+  // Recording for Whisper (might be different visual from general listening)
+  &.recording-whisper {
+    background-color: hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.25);
+    border-color: hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.65);
+    color: hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l));
+  }
+  // Parent Processing State (mic is usually disabled or in a waiting state)
+  &.processing {
+    background-color: hsla(var(--color-voice-ai-thinking-h), var(--color-voice-ai-thinking-s), var(--color-voice-ai-thinking-l), 0.2);
+    border-color: hsla(var(--color-voice-ai-thinking-h), var(--color-voice-ai-thinking-s), var(--color-voice-ai-thinking-l), 0.4);
+    color: hsl(var(--color-voice-ai-thinking-h), var(--color-voice-ai-thinking-s), var(--color-voice-ai-thinking-l));
+    cursor: wait;
+  }
+  &.mic-error, &.mic-denied {
+    background-color: hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.15);
+    border-color: hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.5);
+    color: hsl(var(--color-error-h), var(--color-error-s), var(--color-error-l));
+  }
+  &:disabled:not(.processing):not(.mic-error):not(.mic-denied) { // General disabled that isn't a special state
+    background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.2);
+    opacity: 0.5;
   }
 }
 
+// Status Display Area
+.status-display-ephemeral {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0; // Allow text to truncate
+  font-size: var.$font-size-xs;
+  color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
 
-.live-transcript-display-ephemeral { /* existing styles... */ }
-.controls-main-row-ephemeral { /* existing styles... */ }
-.mic-button-ephemeral { /* existing styles... */ }
-.status-display-ephemeral { /* existing styles... */ }
-.secondary-controls-ephemeral {
-  /* Ensure buttons here use themed styles if not already */
-  .control-btn-ephemeral {
-    @include buttonsFile.btn-ghost;
-    @include buttonsFile.btn-icon-modifier;
-    // Any specific overrides for these small controls
-    padding: var.$spacing-xs !important;
-    border-radius: var.$radius-md;
-    color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
-    &:hover {
-      color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
-      background-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.1);
-    }
-    &.stop-btn-ephemeral {
-      color: hsl(var(--color-error-h), var(--color-error-s), var(--color-error-l));
-       &:hover {
-        background-color: hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.1);
-      }
-    }
-    .icon-base { width: 1rem; height: 1rem;}
+  .mode-indicator-wrapper-ephemeral {
+    display: flex;
+    align-items: center;
+    gap: calc(var.$spacing-xs * 0.75);
+    margin-bottom: 2px;
+  }
+  .mode-dot-ephemeral {
+    width: 8px; height: 8px;
+    border-radius: var.$radius-full;
+    background-color: currentColor; // Inherits color from parent text or state class
+    opacity: 0.5;
+    transition: background-color var.$duration-quick, opacity var.$duration-quick, transform var.$duration-smooth var.$ease-elastic;
+    &.idle { opacity: 0.3; background-color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l)); }
+    &.standby { opacity: 0.7; background-color: hsl(var(--color-info-h), var(--color-info-s), var(--color-info-l)); animation: subtlePulse 2.5s infinite; --scale-pulse: 1.2; }
+    &.active { opacity: 1; background-color: hsl(var(--color-success-h), var(--color-success-s), var(--color-success-l)); transform: scale(1.1); animation: subtlePulse 1.5s infinite; --scale-pulse: 1.3; }
+    &.processing { opacity: 1; background-color: hsl(var(--color-warning-h), var(--color-warning-s), var(--color-warning-l)); animation: subtlePulse 1s infinite; --scale-pulse: 1.4; }
+  }
+  .mode-text-ephemeral {
+    font-weight: 500;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .transcription-status-ephemeral {
+    min-height: 1.2em; // Prevent layout jump
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    opacity: 0.8;
+    .countdown-text { font-style: italic; opacity: 0.7; }
+  }
+  .permission-status-ephemeral {
+    font-weight: 500;
+    &.denied, &.error { color: hsl(var(--color-error-h), var(--color-error-s), var(--color-error-l)); }
   }
 }
-.vad-canvas-ephemeral { /* existing styles... */ }
 
-// Styles for audio mode dropdown and its items
+// Audio Mode Selector (Wrapper for the button and dropdown)
 .audio-mode-selector-wrapper {
-  position: relative;
+  position: relative; // For dropdown positioning
+  flex-shrink: 0;
 }
-.audio-mode-button { // Applied to the button that toggles the dropdown
-  @include buttonsFile.btn-ghost; // Base look and feel
-  // Specific sizing and appearance for this button in the voice input panel
-  padding: var.$spacing-xs var.$spacing-sm !important;
+.audio-mode-button { // Button that triggers the dropdown
+  @include buttonsFile.btn-ghost; // Use ghost button base
+  padding: calc(var.$spacing-xs * 0.8) var.$spacing-sm !important; // Custom padding
   font-size: var.$font-size-xs !important;
   gap: var.$spacing-xs !important;
-  border-radius: var.$radius-md !important;
-  min-width: auto; // Allow it to size to content
+  border-radius: var.$radius-lg !important; // Match other controls
+  min-width: auto; // Size to content
+  border: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.2);
+  background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.15);
 
-  .icon-sm { width: 1em; height: 1em; }
-  .chevron-icon { transition: transform var.$duration-quick; &.open { transform: rotate(180deg); } }
+  &:hover {
+    border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.4);
+    background-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.1);
+  }
+  .icon-sm { width: 1.1em; height: 1.1em; opacity: 0.8; }
+  .chevron-icon { transition: transform var.$duration-quick var.$ease-out-quad; &.open { transform: rotate(180deg); } }
+}
+.audio-mode-dropdown {
+  // Uses .dropdown-panel-ephemeral, .dropdown-item-ephemeral etc. from _dropdowns.scss
+  // Positioning is absolute, relative to .audio-mode-selector-wrapper
+  bottom: calc(100% + #{var.$spacing-xs}); // Position above the trigger button
+  right: 0;
+  width: 200px; // Fixed width for this specific dropdown
+  // Further styling specific to items inside this dropdown (option-button-dropdown like in VoiceControls)
+  // will be handled by its scoped styles if it becomes a separate component,
+  // or by generic .dropdown-item-ephemeral if items are simple.
+  // For now, assuming items use .dropdown-item-ephemeral.
 }
 
-.audio-mode-dropdown {
-  // Using the user-settings-dropdown-menu class as a base if the visual style is similar enough
-  // or applying mixins directly.
-  @include mixins.neomorphic-extrude( // Or glassmorphic, depending on desired look
-    hsl(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l)),
-    3px, 8px, var(--shadow-opacity-soft), var(--shadow-opacity-soft), var.$radius-lg,
-    var(--shadow-color-h), var(--color-shadow-s), var(--color-shadow-l),
-    calc(var(--color-shadow-l) + var(--shadow-highlight-modifier))
-  );
-  position: absolute;
-  bottom: calc(100% + #{var.$spacing-xs}); // Position above the button
-  right: 0; // Align to the right of the wrapper
-  width: max-content;
-  min-width: 180px;
-  z-index: var.$z-index-dropdown;
-  padding: var.$spacing-xs;
-  
-  .dropdown-header-holographic { /* from UserSettingsDropdown if applicable */ }
-  .dropdown-item-holographic, .audio-mode-item { // Shared style for items
-    @include buttonsFile.btn-ghost;
-    width: 100%;
-    justify-content: flex-start !important;
-    font-size: var.$font-size-sm !important;
-    padding: var.$spacing-sm !important;
-    border-radius: var.$radius-md !important;
+// Secondary Controls (History, Edit, Stop)
+.secondary-controls-ephemeral {
+  display: flex;
+  align-items: center;
+  gap: calc(var.$spacing-xs * 0.5); // Tighter gap for secondary controls
+  flex-shrink: 0;
 
-    &.active {
-      background-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.15);
+  .control-btn-ephemeral { // Each individual button
+    @include buttonsFile.btn-ghost;
+    @include buttonsFile.btn-icon-modifier;
+    padding: var.$spacing-xs !important; // Smaller padding for these compact buttons
+    border-radius: var.$radius-md;
+    color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+    .icon-base { width: 1.1rem; height: 1.1rem; opacity: 0.7; } // Slightly smaller icons
+
+    &:hover {
       color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
-      font-weight: 500;
+      background-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.12);
+      .icon-base { opacity: 1; }
     }
-    .icon-sm { margin-right: var.$spacing-sm; }
-    .icon-xs { margin-left: auto; } // For checkmark
+    &.stop-btn-ephemeral { // Specific styling for the STOP button
+      color: hsl(var(--color-error-h), var(--color-error-s), var(--color-error-l));
+      &:hover {
+        background-color: hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.15);
+        .icon-base { color: hsl(var(--color-error-h), var(--color-error-s), calc(var(--color-error-l) + 5%)); }
+      }
+    }
   }
 }
 
-// Modal styles (ensure they are robust in _modals.scss or here if specific)
-.modal-overlay-ephemeral { /* Ensure it's styled for holographic theme */ }
-.modal-content-ephemeral { /* Ensure it's styled for holographic theme */ }
-// ... other modal sub-elements ...
+// VAD Canvas (for Whisper VAD visualization)
+.vad-canvas-ephemeral {
+  width: 100%; // Take full width of its container (likely the panel)
+  height: 30px; // Fixed height
+  margin-top: var.$spacing-xs;
+  border-radius: var.$radius-sm;
+  background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.1);
+  border: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.1);
+}
+.web-speech-vad-active-indicator { // Simple text indicator for Browser VAD
+  font-size: calc(var.$font-size-xs * 0.9);
+  color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+  text-align: center;
+  padding: calc(var.$spacing-xs / 2) 0;
+  opacity: 0.7;
+}
+
+// --- Modal Styling (History & Edit Modals) ---
+// These use global modal styles (.modal-overlay-ephemeral, .modal-content-ephemeral)
+// defined in a potential _modals.scss or directly in App.vue's global scope.
+// Specific content styling for these modals:
+.history-list-ephemeral {
+  list-style: none; padding: 0; margin: 0;
+}
+.history-item-ephemeral {
+  padding: var.$spacing-sm;
+  border-bottom: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.15);
+  &:last-child { border-bottom: none; }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var.$spacing-md;
+}
+.history-item-text-ephemeral {
+  flex-grow: 1;
+  font-size: var.$font-size-sm;
+  color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+  word-break: break-word;
+}
+.history-item-meta-ephemeral {
+  display: flex;
+  align-items: center;
+  gap: var.$spacing-sm;
+  flex-shrink: 0;
+  .timestamp-ephemeral {
+    font-size: calc(var.$font-size-xs * 0.9);
+    color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+    opacity: 0.8;
+  }
+  .resend-btn-ephemeral { // Uses .btn-link-ephemeral (defined in _buttons.scss or needs definition)
+    // Assuming .btn-link-ephemeral provides base link styling
+    // If not, style as a very subtle button:
+    padding: var.$spacing-xs !important;
+    font-size: calc(var.$font-size-xs * 0.9) !important;
+    color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
+    &:hover {
+      text-decoration: underline;
+      color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), calc(var(--color-accent-interactive-l) + 10%));
+    }
+  }
+}
+// Ensure inputFocusBreath animation is defined in _keyframes.scss
+// Example:
+// @keyframes inputFocusBreath {
+//   0%, 100% { box-shadow: inset 0 1px 3px hsla(var(--shadow-color-h),var(--shadow-color-s),var(--shadow-color-l),0.1), 0 0 0 0px hsla(var(--color-accent-interactive-h),var(--color-accent-interactive-s),var(--color-accent-interactive-l),0.2); }
+//   50% { box-shadow: inset 0 1px 3px hsla(var(--shadow-color-h),var(--shadow-color-s),var(--shadow-color-l),0.1), 0 0 0 4px hsla(var(--color-accent-interactive-h),var(--color-accent-interactive-s),var(--color-accent-interactive-l),0.3); }
+// }

@@ -1,328 +1,435 @@
+// File: frontend/src/styles/layout/_header.scss
 /**
  * @file _header.scss
  * @description Styles for the Header.vue component ("Ephemeral Harmony" theme).
- * Includes responsive design, mobile navigation panel, and dropdown positioning helpers.
- * @version 6.1.1 - Refined dropdown panel max-height and mobile nav item styling.
+ * This includes the main header bar structure, responsive adaptations for desktop and mobile,
+ * styling for the mobile navigation panel, and specific styles for controls within the header.
+ * It aims to fix positioning issues, improve visual hierarchy, and integrate theme variables.
+ * The styles ensure dropdowns launched from the header are correctly positioned and that
+ * the header itself is responsive and visually dynamic based on application state.
+ *
+ * @role Defines the visual appearance and layout of the global application header.
+ * @dependencies `../abstracts/variables` (for spacing, breakpoints, z-indexes, colors),
+ * `../abstracts/mixins` (for glassmorphism, focus rings, scrollbars),
+ * `../components/buttons` (for button base styles/mixins).
+ * @assumptions Header.vue component structure matches the selectors used here.
+ * CSS custom properties for colors are correctly set by the theme engine.
+ * Keyframe animations (e.g., headerPulse) are defined in `_keyframes.scss`.
+ * Dropdown panel styles are primarily defined in `_dropdowns.scss`.
+ * @version 7.0.3 - Corrected SASS parameter names in glassmorphic-pane mixin call.
  */
 
 @use '../abstracts/variables' as var;
 @use '../abstracts/mixins' as mixins;
-@use '../components/buttons' as buttonsFile; 
-// Assuming _buttons.scss and _dropdowns.scss are imported in main.scss
-// and their mixins/classes are available if used via @extend.
-// For clarity, direct @include is preferred for complex button/dropdown structures here.
+@use '../components/buttons' as buttonsFile;
+@use '../components/dropdowns' as dropdownMixins;
 
 // --- Base Header Structure ---
 .app-header-ephemeral {
+  // CSS Custom Properties for dynamic header sizing and styling
+  --header-height-mobile: 60px;
   --header-height-desktop: 72px;
-  --header-height-mobile: 60px; // Standardized mobile header height
-  --header-padding-x-desktop: #{var.$spacing-lg};
+  --header-actual-height: var(--header-height-mobile); // Default to mobile height
   --header-padding-x-mobile: #{var.$spacing-md};
-  --header-bg-alpha: 0.8; // Slightly less transparent for better readability of content behind
-  --header-blur: #{var.$default-blur-glass}; // Standard glass blur
+  --header-padding-x-desktop: #{var.$spacing-lg};
+  --header-padding-x: var(--header-padding-x-mobile); // Default to mobile padding
+  --header-bg-alpha: 0.88; // Slightly more opaque for better readability of dropdowns over content
+  // SCSS calculation for CSS variable is fine here. It will be computed at SASS compile time.
+  --header-blur: #{calc(10px * 0.75)}; // Assuming var.$default-blur-glass is '10px'. Explicitly setting a base value if var is not found.
 
-  height: var(--header-height-mobile);
-  padding: 0 var(--header-padding-x-mobile);
-  
-  @media (min-width: var.$breakpoint-md) { // Apply desktop height starting from md
-    height: var(--header-height-desktop);
-    padding: 0 var(--header-padding-x-desktop);
-  }
+  height: var(--header-actual-height);
+  padding: 0 var(--header-padding-x);
 
   display: flex;
   align-items: center;
-  justify-content: center;
-  position: sticky; top: 0; left: 0; right: 0;
-  z-index: var.$z-index-sticky + 10;
+  justify-content: center; // Center the .header-content-wrapper-ephemeral
+  position: sticky;      // Stick to the top of the viewport
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: calc(var.$z-index-sticky + 10); // Ensure header is above most content but below critical modals
 
-  background-color: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), var(--header-bg-alpha));
-  backdrop-filter: blur(var(--header-blur));
-  -webkit-backdrop-filter: blur(var(--header-blur));
-  border-bottom: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.15);
-  box-shadow: var(--shadow-depth-md, var.$scss-box-shadow-md);
+  // Apply glassmorphic effect using the mixin and themed variables
+  @include mixins.glassmorphic-pane(
+    $bg-color-css-var-prefix: '--color-bg-primary',
+    $border-color-css-var-prefix: '--color-border-secondary',
+    $blur-amount-css-var: '--header-blur',
+    $shadow-css-var: '--shadow-depth-md',
+    // SCSS Fallbacks - Corrected parameter names to use 'fb-' prefix
+    $fb-bg-h: var.$default-color-bg-primary-h,
+    $fb-bg-s: var.$default-color-bg-primary-s,
+    $fb-bg-l: var.$default-color-bg-primary-l,
+    $fb-bg-a: 0.88, // Using the hardcoded value for --header-bg-alpha as direct fallback
+    $fb-border-h: var.$default-color-border-secondary-h,
+    $fb-border-s: var.$default-color-border-secondary-s,
+    $fb-border-l: var.$default-color-border-secondary-l,
+    $fb-border-a: 0.2,
+    $fb-blur: var.$default-blur-glass, // Fallback blur from variables
+    $fb-shadow: var.$scss-box-shadow-md // Fallback shadow from variables
+  );
+  // Overwrite border from glassmorphic-pane to be just bottom for header style
+  border: none;
+  border-bottom: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.25);
+
   transition: background-color var.$duration-smooth var.$ease-out-quad,
               border-bottom-color var.$duration-smooth var.$ease-out-quad;
-  
-  &::before { // For active state glows
-    content: ''; position: absolute; inset: -1px; 
-    border-radius: inherit; background: transparent; opacity: 0;
+
+  // Dynamic background glow effect based on application state (listening/speaking)
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -1px; // Cover border area for a seamless glow
+    border-radius: inherit;
+    background: transparent;
+    opacity: 0;
     transition: opacity var.$duration-smooth ease-in-out, background var.$duration-smooth ease-in-out;
-    z-index: -1; pointer-events: none; animation: none;
+    z-index: -1; // Position behind header content
+    pointer-events: none;
+    animation: none; // No animation by default
   }
 
   &.ai-speaking-active {
-    border-bottom-color: hsla(var(--color-voice-ai-speaking-h), var(--color-voice-ai-speaking-s), var(--color-voice-ai-speaking-l), 0.55);
+    border-bottom-color: hsla(var(--color-voice-ai-speaking-h), var(--color-voice-ai-speaking-s), var(--color-voice-ai-speaking-l), 0.65);
     &::before {
       opacity: 1;
-      background: radial-gradient(ellipse at 50% 140%, hsla(var(--color-voice-ai-speaking-h), var(--color-voice-ai-speaking-s), var(--color-voice-ai-speaking-l), 0.15) 0%, transparent 68%);
-      animation: headerPulse var.$duration-pulse-medium * 0.75 infinite alternate;
+      background: radial-gradient(ellipse at 50% 160%, hsla(var(--color-voice-ai-speaking-h), var(--color-voice-ai-speaking-s), var(--color-voice-ai-speaking-l), 0.25) 0%, transparent 75%);
+      animation: headerPulse calc(var.$duration-pulse-medium * 0.75) infinite alternate;
     }
   }
   &.user-listening-active {
-    border-bottom-color: hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.55);
+    border-bottom-color: hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.65);
     &::before {
       opacity: 1;
-      background: radial-gradient(ellipse at 50% 140%, hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.12) 0%, transparent 68%);
+      background: radial-gradient(ellipse at 50% 160%, hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.20) 0%, transparent 75%);
       animation: headerPulse var.$duration-pulse-medium infinite alternate;
     }
   }
+
+  @media (min-width: var.$breakpoint-md) {
+    --header-actual-height: var(--header-height-desktop);
+    --header-padding-x: var(--header-padding-x-desktop);
+  }
 }
 
-.header-content-wrapper-ephemeral { /* Max width container */
-  width: 100%; max-width: var.$site-max-width; margin: 0 auto;
-  display: flex; justify-content: space-between; align-items: center; height: 100%;
+.header-content-wrapper-ephemeral {
+  width: 100%;
+  max-width: var.$site-max-width;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  gap: var.$spacing-sm;
 }
 
-// --- Left Section: Logo & Current Agent ---
 .header-left-section {
-  display: flex; align-items: center; flex-shrink: 0; gap: var.$spacing-lg; // Generous gap
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: var.$spacing-md;
+
   .animated-logo-link {
-    display: inline-flex; // For better alignment of AnimatedLogo
-    padding: var.$spacing-xs; margin: calc(var.$spacing-xs * -1); // Click area increase
+    display: inline-flex;
+    padding: var.$spacing-xs;
+    margin: calc(var.$spacing-xs * -1);
     border-radius: var.$radius-md;
-    &:hover, &:focus-visible { background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.1); }
+    transition: background-color var.$duration-quick;
+    &:hover, &:focus-visible {
+      background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.2);
+    }
     &:focus-visible { @include mixins.focus-ring('--color-bg-primary', '--color-accent-interactive'); }
   }
 }
 .current-agent-display-header {
-  display: none; // Hidden on mobile by default
-  @media (min-width: var.$breakpoint-md) { // Visible from medium screens up
-    display: flex; align-items: center; gap: var.$spacing-sm;
-    padding: var.$spacing-xs var.$spacing-sm; border-radius: var.$radius-lg;
-    background-color: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.3);
-    border: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.2);
-    max-width: 180px;
-    @media (min-width: var.$breakpoint-lg) { max-width: 220px; }
-    @media (min-width: var.$breakpoint-xl) { max-width: 260px; }
-
-    .agent-icon-header { width: 24px; height: 24px; opacity: 0.9; color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l)); }
-    .agent-name-header {
-      font-size: var.$font-size-sm; font-weight: 500;
-      color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  display: none;
+  @media (min-width: var.$breakpoint-lg) {
+    display: flex;
+    align-items: center;
+    gap: var.$spacing-sm;
+    padding: calc(var.$spacing-xs * 0.8) var.$spacing-sm;
+    border-radius: var.$radius-lg;
+    background-color: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.45);
+    border: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.3);
+    max-width: 200px;
+    transition: background-color var.$duration-quick, box-shadow var.$duration-quick;
+    &:hover {
+      background-color: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.65);
+      box-shadow: var(--shadow-depth-sm, var.$scss-box-shadow-sm); // Added SCSS fallback for shadow
     }
+
+    .agent-icon-header {
+      width: 24px; height: 24px;
+      opacity: 0.95;
+      color: hsl(var(--color-accent-secondary-h, var(--color-accent-primary-h)), var(--color-accent-secondary-s, var(--color-accent-primary-s)), var(--color-accent-secondary-l, var(--color-accent-primary-l)));
+    }
+    .agent-name-header {
+      font-size: var.$font-size-sm;
+      font-weight: 500;
+      color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+  @media (min-width: var.$breakpoint-xl) { max-width: 260px; }
+}
+
+.header-center-section {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  min-width: 50px;
+  @media (max-width: calc(var.$breakpoint-lg - 1px)) {
+    display: none;
+  }
+}
+.hearing-icon-wrapper-ephemeral {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  padding: var.$spacing-xs;
+  border-radius: var.$radius-full;
+  transition: transform 0.4s var.$ease-elastic, filter 0.3s var.$ease-out-quad;
+
+  .hearing-icon-svg {
+    width: 30px; height: 30px;
+    @media (min-width: var.$breakpoint-md) { width: 36px; height: 36px; }
+    opacity: 0.55;
+    transition: opacity 0.3s, filter 0.3s var.$ease-out-quad;
+    filter: drop-shadow(0 0 3px hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.3));
+  }
+
+  &.listening, &.speaking {
+    transform: translate(-50%, -50%) scale(1.12);
+    .hearing-icon-svg { opacity: 1; }
+  }
+  &.listening .hearing-icon-svg {
+    filter: drop-shadow(0 0 12px hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.85))
+            drop-shadow(0 0 4px hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.6));
+    animation: voiceAuraPulse calc(var.$duration-pulse-medium * 1.1) infinite alternate;
+    --voice-pulse-opacity: #{var.$default-voice-pulse-opacity};
+  }
+  &.speaking .hearing-icon-svg {
+    filter: drop-shadow(0 0 14px hsla(var(--color-voice-ai-speaking-h), var(--color-voice-ai-speaking-s), var(--color-voice-ai-speaking-l), 0.9))
+            drop-shadow(0 0 5px hsla(var(--color-voice-ai-speaking-h), var(--color-voice-ai-speaking-s), var(--color-voice-ai-speaking-l), 0.7));
+    animation: voiceAuraPulse calc(var.$duration-pulse-fast * 0.9) infinite alternate;
+    --voice-pulse-opacity: #{calc(var.$default-voice-pulse-opacity + 0.1)};
   }
 }
 
-// --- Center Section: Hearing Icon ---
-.header-center-section {
-  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
-  pointer-events: none;
-  @media (max-width: calc(var.$breakpoint-lg - 1px)) { display: none; } // Hide on screens with mobile menu
-}
-.hearing-icon-wrapper-ephemeral { /* From original, ensure it has pointer-events: auto; */
-    pointer-events: auto;
-    // ... other hearing icon styles ...
-    transition: transform 0.3s var.$ease-elastic, box-shadow var.$duration-smooth;
-    .hearing-icon-svg { width: 32px; height: 32px; /* Adjust size as needed */ }
-
-    &.listening, &.speaking {
-        transform: scale(1.15);
-        img { animation: subtlePulse 1.2s infinite alternate; } // Make sure subtlePulse is defined for img
-    }
-    // Add more distinct aura/glow from _header.scss v4 if desired
-}
-
-// --- Right Section: Desktop Controls ---
 .header-right-section.desktop-controls-ephemeral {
   display: none;
-  @media (min-width: var.$breakpoint-lg) { display: flex; align-items: center; gap: var.$spacing-xs; }
-  .header-control-item { position: relative; } // For dropdown context
+  @media (min-width: var.$breakpoint-lg) {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    gap: var.$spacing-xs;
+  }
+  > *, > :deep(*) > .header-control-item {
+    position: relative;
+  }
 }
 
-// Common style for icon buttons in header (desktop & mobile trigger)
 .direct-header-button,
-.header-control-item > .btn-ghost-ephemeral, // Targets buttons used as dropdown triggers
-:deep(.agent-hub-trigger-button), // Targets button inside AgentHubTrigger.vue
+:deep(.agent-hub-trigger-button),
+.user-settings-dropdown-header,
+.voice-controls-dropdown-header,
+.site-menu-dropdown-header,
+.theme-dropdown-header,
 .mobile-menu-trigger-button,
-.mobile-agent-hub-trigger {
-  @include buttonsFile.btn; // Base structural styles from _buttons.scss
-  @include buttonsFile.btn-ghost-look; // Visuals for ghost button
-  @include buttonsFile.btn-icon-modifier; // Padding & icon sizing for icon-only
-  
-  padding: var.$spacing-sm !important; // Override for consistent header icon button size
-  border-radius: var.$radius-lg !important;
-  color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+.mobile-agent-hub-trigger .btn {
+  @include buttonsFile.btn;
+  @include buttonsFile.btn-ghost-look;
+  @include buttonsFile.btn-icon-modifier;
 
-  .icon-base, .icon-sm, .icon-xs { // Standardize icon sizes used in header buttons
-    width: 1.35rem; height: 1.35rem; opacity: 0.8; transition: opacity 0.2s, transform 0.2s;
-    @media (min-width: var.$breakpoint-xl) { width: 1.5rem; height: 1.5rem; }
+  padding: calc(var.$spacing-sm - 2px) !important;
+  border-radius: var.$radius-lg !important;
+  color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), calc(var(--color-text-secondary-l) + 5%));
+
+  .icon-base, .icon-sm, .icon-xs {
+    width: 1.3rem; height: 1.3rem;
+    opacity: 0.8;
+    transition: opacity 0.2s, transform 0.25s var.$ease-out-expo;
+    @media (min-width: var.$breakpoint-xl) { width: 1.45rem; height: 1.45rem; }
   }
+
   &:hover, &:focus-visible, &[aria-expanded="true"] {
-    background-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.12) !important;
+    background-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.18) !important;
     color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l)) !important;
-    .icon-base, .icon-sm, .icon-xs { opacity: 1; transform: scale(1.08); }
+    .icon-base, .icon-sm, .icon-xs {
+      opacity: 1;
+      transform: scale(1.12) rotate(-5deg);
+    }
   }
-   &:focus-visible { // Ensure focus ring is from _mixins.scss
+  &:active {
+    transform: scale(0.93) !important;
+    background-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.22) !important;
+  }
+  &:focus-visible {
     @include mixins.focus-ring(
-      '--color-bg-primary', // Use primary bg for the clear offset
-      '--color-accent-interactive', // Ring color
-      0px, // No visible offset from element edge for these small buttons
-      2px  // Ring thickness
+      $base-bg-color-var-prefix: '--color-bg-primary',
+      $ring-accent-color-var-prefix: '--color-accent-interactive',
+      $offset-width: 0px,
+      $ring-thickness: 2px,
+      $ring-opacity: 0.85
     );
   }
 }
-.session-cost-display-ephemeral { /* Styles as before */ }
-
-// --- Mobile Navigation Specifics ---
-.mobile-menu-trigger-wrapper-ephemeral {
-  display: flex; align-items: center; gap: var.$spacing-xs;
-  @media (min-width: var.$breakpoint-lg) { display: none; }
+.theme-dropdown-header, .voice-controls-dropdown-header, .user-settings-dropdown-header, .site-menu-dropdown-header {
+    position: relative;
 }
-.mobile-menu-trigger-button .icon-base { width: 1.75rem; height: 1.75rem; }
-.mobile-agent-hub-trigger :deep(.icon-base) { width: 1.6rem; height: 1.6rem; }
+
+.session-cost-display-ephemeral {
+  font-family: var(--font-mono, var.$font-family-mono);
+  font-size: calc(var.$font-size-sm * 0.95);
+  font-weight: 500;
+  padding: calc(var.$spacing-xs * 0.8) calc(var.$spacing-sm * 0.9);
+  background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.25);
+  border-radius: var.$radius-md;
+  color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), calc(var(--color-text-secondary-l) + 10%));
+  border: 1px solid hsla(var(--color-border-secondary-h),var(--color-border-secondary-s),var(--color-border-secondary-l), 0.15);
+  min-width: 65px; text-align: center;
+  line-height: 1.2;
+}
+
+.mobile-menu-trigger-wrapper-ephemeral {
+  display: flex;
+  align-items: center;
+  gap: var.$spacing-xs;
+  @media (min-width: var.$breakpoint-lg) { display: none; }
+  .mobile-menu-trigger-button .icon-base { width: 1.7rem; height: 1.7rem; }
+  .mobile-agent-hub-trigger :deep(.icon-base) { width: 1.55rem; height: 1.55rem; }
+}
 
 .mobile-nav-panel-ephemeral {
   position: fixed; top: 0; left: 0; right: 0; bottom: 0;
   @include mixins.glassmorphic-pane(
-    '--color-bg-primary', '--color-border-secondary', calc(var.$default-blur-glass + 6px), 'none',
-    var.$default-color-bg-primary-h, var.$default-color-bg-primary-s, var.$default-color-bg-primary-l, 0.98, // Highly opaque
-    var.$default-color-border-secondary-h, var.$default-color-border-secondary-s, var.$default-color-border-secondary-l, 0.2
+    $bg-color-css-var-prefix: '--color-bg-primary',
+    $border-color-css-var-prefix: '--color-border-secondary',
+    $blur-amount-css-var: #{calc(10px + 10px)}, // Example: var.$default-blur-glass + 10px
+    $shadow-css-var: 'none',
+    $fb-bg-h: var.$default-color-bg-primary-h,
+    $fb-bg-s: var.$default-color-bg-primary-s,
+    $fb-bg-l: var.$default-color-bg-primary-l,
+    $fb-bg-a: 0.98,
+    $fb-border-h: var.$default-color-border-secondary-h,
+    $fb-border-s: var.$default-color-border-secondary-s,
+    $fb-border-l: var.$default-color-border-secondary-l,
+    $fb-border-a: 0.3
   );
-  z-index: var.$z-index-sticky + 100; // Very high
+  z-index: var.$z-index-modal;
   display: flex; flex-direction: column;
-  box-shadow: var.$shadow-depth-xl; // Strong shadow
+  box-shadow: var(--shadow-depth-2xl, var.$scss-box-shadow-2xl); // Added SCSS fallback
 
   .mobile-nav-header {
     display: flex; justify-content: space-between; align-items: center;
-    padding: 0 var(--header-padding-x-mobile); height: var(--header-height-mobile);
-    border-bottom: 1px solid hsla(var(--color-border-primary-h),var(--color-border-primary-s),var(--color-border-primary-l), 0.1);
+    padding: 0 var(--header-padding-x-mobile); height: var(--header-actual-height);
+    border-bottom: 1px solid hsla(var(--color-border-primary-h),var(--color-border-primary-s),var(--color-border-primary-l), 0.2);
     flex-shrink: 0;
-    @media (min-width: var.$breakpoint-md) { height: var(--header-height-desktop); padding: 0 var.$spacing-lg; }
 
-    .mobile-nav-logo :deep(.animated-logo-ephemeral) {
-      .logo-img-animated { width: 28px; height: 28px;}
-      .title-text-animated { font-size: calc(var.$font-size-base-default * 1.15); }
-      .app-name-subtitle { display: none; }
+    .mobile-nav-logo :deep(.animated-logo-ephemeral) { /* Ensure styles apply */ }
+    .mobile-nav-agent-title-compact {
+        display: flex; align-items: center; gap: var.$spacing-xs; font-size: var.$font-size-sm;
+        font-weight: 500; color: hsl(var(--color-text-primary-h),var(--color-text-primary-s),var(--color-text-primary-l));
+        .agent-icon-mobile-nav { width: 1.3rem; height: 1.3rem; opacity: 0.85; }
     }
-    .mobile-nav-agent-title-compact { /* Styles as before */ }
-    .mobile-nav-close-button { /* Uses direct-header-button styling via class in template */ }
+    .mobile-nav-close-button { /* Uses .direct-header-button styling */ }
   }
 
   .mobile-nav-content-ephemeral {
-    padding: var.$spacing-sm; 
-    @media (min-width: var.$breakpoint-sm) { padding: var.$spacing-md; }
+    padding: var.$spacing-md;
+    @media (min-width: var.$breakpoint-sm) { padding: var.$spacing-lg; }
     flex-grow: 1; overflow-y: auto;
-    @include mixins.custom-scrollbar('--color-accent-interactive', 0.4, 0.6, '--color-bg-secondary', 0.05, 5px);
+    @include mixins.custom-scrollbar('--color-accent-interactive', 0.5, 0.7, '--color-bg-secondary', 0.12, 6px);
   }
 
-  .mobile-nav-item { /* Consistent styling for all nav items */
+  .mobile-nav-item {
     display: flex; align-items: center; width: 100%;
-    padding: var.$spacing-md; // Good touch target
-    font-size: var.$font-size-lg; 
-    text-align: left; border-radius: var.$radius-lg;
+    padding: var.$spacing-md calc(var.$spacing-md + 4px);
+    font-size: calc(var.$font-size-lg * 0.98);
+    text-align: left; border-radius: var.$radius-xl;
     color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
-    transition: background-color 0.15s, color 0.15s;
-    margin-bottom: var.$spacing-xs;
-    
+    transition: background-color 0.2s var.$ease-out-quad, color 0.2s var.$ease-out-quad, transform 0.18s var.$ease-elastic;
+    margin-bottom: var.$spacing-sm;
+    border: 1px solid transparent;
+
+    .nav-item-icon { width: 1.45rem; height: 1.45rem; margin-right: calc(var.$spacing-md + 2px); opacity: 0.75; transition: opacity 0.2s, transform 0.2s; }
+
     &:hover, &:focus-visible {
-      background-color: hsla(var(--color-accent-interactive-h),var(--color-accent-interactive-s),var(--color-accent-interactive-l),0.12);
+      background-color: hsla(var(--color-accent-interactive-h),var(--color-accent-interactive-s),var(--color-accent-interactive-l),0.18);
       color: hsl(var(--color-accent-interactive-h),var(--color-accent-interactive-s),var(--color-accent-interactive-l));
       outline: none;
+      .nav-item-icon { opacity: 1; transform: scale(1.08) rotate(-3deg); }
     }
+     &:active {
+        transform: scale(0.97);
+        background-color: hsla(var(--color-accent-interactive-h),var(--color-accent-interactive-s),var(--color-accent-interactive-l),0.25);
+     }
     &:focus-visible {
-        @include mixins.focus-ring('--color-bg-primary', '--color-accent-interactive', 2px, 2px, 0.7);
+      border-color: hsla(var(--color-accent-interactive-h),var(--color-accent-interactive-s),var(--color-accent-interactive-l),0.6);
+      box-shadow: 0 0 0 2.5px hsla(var(--color-accent-interactive-h),var(--color-accent-interactive-s),var(--color-accent-interactive-l),0.25);
     }
-    &.prominent-action { /* For main actions like Explore or Login */
-      @include buttonsFile.btn; /* Use base button styles */
-      @include buttonsFile.btn-secondary-look; /* Apply secondary look */
-      padding: var.$spacing-md var.$spacing-lg !important; // Override padding
-      font-size: var.$font-size-base-default * 1.1 !important;
+
+    &.prominent-action {
+      @include buttonsFile.btn;
+      @include buttonsFile.btn-primary-look;
+      padding: calc(var.$spacing-md + 2px) var.$spacing-lg !important;
+      font-size: calc(var.$font-size-base-default * 1.1) !important;
       justify-content: center !important;
-      margin-top: var.$spacing-sm; margin-bottom: var.$spacing-md;
-      color: hsl(var(--color-text-primary-h),var(--color-text-primary-s),var(--color-text-primary-l)) !important; // Ensure text color contrasts with secondary look
-      &:hover {
-        color: hsl(var(--color-accent-interactive-h),var(--color-accent-interactive-s),var(--color-accent-interactive-l)) !important;
-        // Hover effects from btn-secondary-look will apply
-      }
+      margin-top: var.$spacing-md; margin-bottom: var.$spacing-lg;
+      .nav-item-icon { color: inherit; }
     }
-    &.logout-item { // Specific for logout
-      color: hsl(var(--color-warning-h),var(--color-warning-s),var(--color-warning-l));
-      .nav-item-icon { color: hsl(var(--color-warning-h),var(--color-warning-s),var(--color-warning-l));}
+    &.logout-item {
+      color: hsl(var(--color-warning-h),var(--color-warning-s),calc(var(--color-warning-l) + 5%));
+      .nav-item-icon { color: hsl(var(--color-warning-h),var(--color-warning-s),calc(var(--color-warning-l) + 5%));}
       &:hover, &:focus-visible {
-        color: hsl(var(--color-error-h),var(--color-error-s),var(--color-error-l));
-        background-color: hsla(var(--color-error-h),var(--color-error-s),var(--color-error-l),0.1);
-        .nav-item-icon { color: hsl(var(--color-error-h),var(--color-error-s),var(--color-error-l));}
+        color: hsl(var(--color-error-h),var(--color-error-s),calc(var(--color-error-l) + 5%)) !important;
+        background-color: hsla(var(--color-error-h),var(--color-error-s),var(--color-error-l),0.12) !important;
+        .nav-item-icon { color: hsl(var(--color-error-h),var(--color-error-s),calc(var(--color-error-l) + 5%)) !important;}
       }
     }
-    .nav-item-icon { width: 1.5rem; height: 1.5rem; margin-right: var.$spacing-md; opacity: 0.65; transition: opacity 0.15s; }
-    &:hover .nav-item-icon, &:focus-visible .nav-item-icon { opacity: 1; }
+     &.theme-button-mobile {
+        font-size: var.$font-size-sm !important;
+        padding: var.$spacing-sm !important;
+        border: 1px solid hsla(var(--color-border-secondary-h),var(--color-border-secondary-s),var(--color-border-secondary-l),0.25);
+        .mini-icon { width: 1.1rem; height: 1.1rem; margin-right: var.$spacing-sm;}
+        .checkmark-icon-mobile { margin-left:auto; width:1.1rem; height:1.1rem; color: hsl(var(--color-accent-interactive-h),var(--color-accent-interactive-s),var(--color-accent-interactive-l));}
+        &.active {
+            border-color: hsl(var(--color-accent-interactive-h),var(--color-accent-interactive-s),var(--color-accent-interactive-l));
+            background-color: hsla(var(--color-accent-interactive-h),var(--color-accent-interactive-s),var(--color-accent-interactive-l),0.15);
+            font-weight: 600;
+            color: hsl(var(--color-accent-interactive-h),var(--color-accent-interactive-s),var(--color-accent-interactive-l));
+        }
+        &:not(.active):hover {
+           background-color: hsla(var(--color-bg-tertiary-h),var(--color-bg-tertiary-s),var(--color-bg-tertiary-l),0.4);
+        }
+     }
   }
-  .mobile-nav-divider { height: 1px; background-color: hsla(var(--color-border-secondary-h),var(--color-border-secondary-s),var(--color-border-secondary-l),0.12); margin: var.$spacing-lg 0; }
-  .mobile-nav-section-title { font-size: var.$font-size-xs; color: hsl(var(--color-text-muted-h),var(--color-text-muted-s),var(--color-text-muted-l)); text-transform: uppercase; letter-spacing: 0.075em; padding: 0 var.$spacing-xs var.$spacing-sm; }
-  
+
+  .mobile-nav-divider {
+    @include dropdownMixins.dropdown-divider-ephemeral;
+    margin: var.$spacing-lg 0;
+  }
+
+  .mobile-nav-section-title { @include dropdownMixins.dropdown-section-title-ephemeral; padding-left: var.$spacing-sm; }
+
   .theme-selector-grid-mobile {
-    display: grid; grid-template-columns: 1fr 1fr; gap: var.$spacing-sm; margin: var.$spacing-sm 0 var.$spacing-md;
-    .theme-button-mobile {
-      // Uses .mobile-nav-item styles, with some overrides
-      font-size: var.$font-size-xs !important; // Smaller text for theme names
-      padding: var.$spacing-sm !important;
-      border: 1px solid hsla(var(--color-border-secondary-h),var(--color-border-secondary-s),var(--color-border-secondary-l),0.15);
-      .mini-icon { width: 1rem; height: 1rem; margin-right: var.$spacing-xs;}
-      .checkmark-icon-mobile { margin-left:auto; width:1rem; height:1rem; color: hsl(var(--color-accent-interactive-h),var(--color-accent-interactive-s),var(--color-accent-interactive-l));}
-      &.active {
-        border-color: hsl(var(--color-accent-interactive-h),var(--color-accent-interactive-s),var(--color-accent-interactive-l));
-        background-color: hsla(var(--color-accent-interactive-h),var(--color-accent-interactive-s),var(--color-accent-interactive-l),0.1);
-        font-weight: 500;
-        color: hsl(var(--color-accent-interactive-h),var(--color-accent-interactive-s),var(--color-accent-interactive-l));
-      }
-      &:not(.active):hover {
-         background-color: hsla(var(--color-bg-tertiary-h),var(--color-bg-tertiary-s),var(--color-bg-tertiary-l),0.2);
-      }
-    }
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: var.$spacing-sm;
+    margin: var.$spacing-md 0 var.$spacing-lg;
+  }
+   .mobile-nav-item-static {
+    font-size: var.$font-size-sm;
+    color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+    opacity: 0.85;
+    padding: var.$spacing-xs var.$spacing-sm;
   }
 }
 
-// --- Dropdown Panel Positioning (Generic helper for header dropdowns) ---
-// Classes like .theme-dropdown-header are applied to the PARENT of the dropdown panel trigger
-// This ensures the dropdown panel (.dropdown-menu-private or .agent-selector-dropdown-panel-ephemeral)
-// is positioned relative to its trigger item within the header.
-.header-control-item { // Ensure dropdown triggers have relative positioning context
-  position: relative;
-
-  // General styling for dropdowns originating from header items
-  // This assumes dropdowns use a common class like .dropdown-panel-base or specific one.
-  // For example, if ThemeSelectionDropdown.vue renders a root div with .dropdown-menu-private
-  > .dropdown-menu-private, // From UserSettingsDropdown, VoiceControlsDropdown etc.
-  > .theme-selection-dropdown-panel, // Specific class if ThemeSelectionDropdown has one
-  > .agent-selector-dropdown-panel-ephemeral { // From AgentHubTrigger if it renders its own panel
-    position: absolute;
-    right: 0; 
-    top: calc(100% + #{var.$spacing-xs}); // Open below the trigger by default
-    z-index: var.$z-index-dropdown + 5;
-    min-width: 260px; // Decent default min-width
-    
-    // Critical for preventing "overextending past the top":
-    max-height: calc(85vh - var(--header-actual-height) - #{var.$spacing-lg}); // Max height, leaving space
-    overflow-y: auto;
-    @include mixins.custom-scrollbar('--color-accent-interactive', 0.45, 0.65, '--color-bg-tertiary', 0.15, 6px);
-
-    // Standard dropdown appearance from _dropdowns.scss (if available) or defined here
-    @include mixins.glassmorphic-pane(
-      '--color-bg-secondary', '--color-border-glass', 
-      var.$default-blur-glass, '--shadow-depth-lg',
-      var.$default-color-bg-secondary-h, var.$default-color-bg-secondary-s, var.$default-color-bg-secondary-l, 0.9, // More opaque dropdown
-      var.$default-color-border-glass-h, var.$default-color-border-glass-s, var.$default-color-border-glass-l, 0.3
-    );
-    border-radius: var.$radius-lg;
-    padding: var.$spacing-xs; // Inner padding for dropdown content
-  }
-}
-// AgentHub modal itself is handled by its own styles for positioning if it's a full modal overlay
-
-// Mobile Nav Transitions (as provided by user)
-.mobile-nav-slide-from-right-enter-active,
-.mobile-nav-slide-from-right-leave-active {
-  transition: transform 0.35s var.$ease-out-expo, opacity 0.3s var.$ease-out-quad;
-}
-.mobile-nav-slide-from-right-enter-from,
-.mobile-nav-slide-from-right-leave-to {
-  transform: translateX(100%);
-  opacity: 0.8;
-}
-
-// Keyframe for headerPulse (ensure this is defined in _keyframes.scss or here if not)
-@keyframes headerPulse { 
-  0%, 100% { transform: scaleY(1); opacity: 0.6; }
-  50% { transform: scaleY(1.02) translateY(-1px); opacity: 1; }
+@keyframes headerPulse {
+  0%, 100% { transform: scaleY(1); opacity: 0.7; }
+  50% { transform: scaleY(1.03) translateY(-1.5px); opacity: 1; }
 }

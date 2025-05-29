@@ -1,145 +1,262 @@
 // File: frontend/src/styles/components/_dropdowns.scss
 /**
  * @file _dropdowns.scss
- * @description Shared styles for dropdown menus for "Ephemeral Harmony".
- * Enhanced for a premium, cohesive, and "special" neomorphic/glass look with holographic accents.
- * @version 1.1.1 - Further refinement for prominence.
+ * @description Shared styles for dropdown menu components within the "Ephemeral Harmony" design system.
+ * This file defines the visual appearance (neo-holographic, glassmorphic touches),
+ * structure, and interactive states for dropdown panels, headers, content areas, items, and dividers.
+ * It leverages SCSS variables and mixins for themeability and consistency.
+ *
+ * @role Provides consistent styling for all dropdown components throughout the application.
+ * @dependencies `../abstracts/variables` (for spacing, radii, durations, easing functions),
+ * `../abstracts/mixins` (for neomorphism, glassmorphism, custom scrollbars, focus rings),
+ * `./buttons` (potentially for base button styles if items are button-like).
+ * @assumptions Components using these styles will apply the appropriate `.dropdown-panel-ephemeral`,
+ * `.dropdown-item-ephemeral`, etc., classes to their elements.
+ * CSS custom properties for colors are correctly set by the theme engine.
+ * Position of the dropdown panel is handled by the Vue component.
+ * @version 2.1.1 - Corrected SASS parameter names in mixin calls to use 'fb-' prefix. Ensured calc() usage.
  */
 
 @use '../abstracts/variables' as var;
 @use '../abstracts/mixins' as mixins;
 @use './buttons' as buttonsFile;
 
+/**
+ * @mixin dropdown-panel-ephemeral
+ * @description Styles for the main dropdown panel container.
+ */
 @mixin dropdown-panel-ephemeral {
-  // Base structure and positioning handled by component (absolute, origin, etc.)
-  // Using a more pronounced neomorphic extrusion for dropdown panels
   @include mixins.neomorphic-extrude(
-    '--color-bg-primary', // Base background from theme
-    5px, // distance (slightly less than cards for less "heavy" feel)
-    16px, // blur (softer shadow)
-    '--shadow-opacity-medium', // shadow opacity var
-    var.$radius-xl, // Consistent large radius
-    '--shadow-color-h', '--shadow-color-s', '--shadow-color-l', '--shadow-highlight-modifier',
-    var.$default-color-bg-primary-h, var.$default-color-bg-primary-s, calc(var.$default-color-bg-primary-l - 3%), // Darker base for more depth
-    var.$default-shadow-opacity-medium,
-    var.$default-shadow-color-h, var.$default-shadow-color-s, var.$default-shadow-color-l,
-    var.$default-shadow-highlight-l-factor
+    $bg-color-var-prefix: '--color-bg-secondary',
+    $distance: 5px,
+    $blur: 14px,
+    $shadow-opacity-var: '--shadow-opacity-medium',
+    $radius: var.$radius-xl,
+    $shadow-h-var: '--shadow-color-h',
+    $shadow-s-var: '--shadow-color-s',
+    $shadow-l-var: '--shadow-color-l',
+    $highlight-l-modifier-css-var: '--shadow-highlight-modifier',
+    $fb-bg-h: var.$default-color-bg-secondary-h,
+    $fb-bg-s: var.$default-color-bg-secondary-s,
+    $fb-bg-l: calc(#{var.$default-color-bg-secondary-l} - 3%), // SASS calc
+    $fb-bg-a: 0.97, // Pass alpha fallback explicitly
+    $fb-shadow-op: var.$default-shadow-opacity-medium,
+    $fb-shadow-h: var.$default-shadow-color-h,
+    $fb-shadow-s: var.$default-shadow-color-s,
+    $fb-shadow-l: var.$default-shadow-color-l,
+    $fb-highlight-l-factor: var.$default-shadow-highlight-l-factor
   );
-  // Subtle holographic border accent for all dropdowns
+
   @include mixins.holographic-border-glow(
-    '--color-accent-interactive', // Brighter glow
-    '--color-accent-secondary', 
-    1px, // Thin glow border
-    7s, // Slower, more ambient animation
-    var.$radius-xl // Match panel radius
+    $accent-color-var-prefix: '--color-accent-interactive',
+    $secondary-accent-var-prefix: '--color-accent-secondary',
+    $border-width: 1px,
+    $animation-duration: 5s,
+    $radius: var.$radius-xl
   );
-  
-  border: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.1); // Very faint border
-  padding: var.$spacing-sm; // Unified padding for the panel itself
-  min-width: 250px; // Good default minimum width for dropdowns
+
+  border: 1px solid hsla(var(--color-border-primary-h, var.$default-color-border-primary-h), var(--color-border-primary-s, var.$default-color-border-primary-s), var(--color-border-primary-l, var.$default-color-border-primary-l), 0.2);
+  padding: var.$spacing-sm;
+  min-width: 240px;
   z-index: var.$z-index-dropdown;
-  // Ensure a backdrop-filter if the background is semi-transparent from the neomorphic mixin (if it sets alpha)
-  // Usually neomorphic is opaque, but if glass is mixed in, this might be needed.
-  // backdrop-filter: blur(var(--blur-glass)); 
+  box-shadow: var(--shadow-depth-xl, #{var.$scss-box-shadow-xl}); // SCSS fallback for CSS var
+  overflow: hidden;
 }
 
+/**
+ * @mixin dropdown-header-ephemeral
+ * @description Styles for the header section within a dropdown panel.
+ */
 @mixin dropdown-header-ephemeral {
   padding: var.$spacing-sm var.$spacing-md;
-  border-bottom: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.1);
-  margin: calc(var.$spacing-sm * -1) calc(var.$spacing-sm * -1) var.$spacing-sm; // Fill panel padding
-  
-  .dropdown-title { 
+  border-bottom: 1px solid hsla(var(--color-border-primary-h, var.$default-color-border-primary-h), var(--color-border-primary-s, var.$default-color-border-primary-s), var(--color-border-primary-l, var.$default-color-border-primary-l), 0.15);
+  margin: calc(#{var.$spacing-sm} * -1) calc(#{var.$spacing-sm} * -1) var.$spacing-sm; // SASS calc
+  background-color: hsla(var(--color-bg-tertiary-h, var.$default-color-bg-tertiary-h), var(--color-bg-tertiary-s, var.$default-color-bg-tertiary-s), var(--color-bg-tertiary-l, var.$default-color-bg-tertiary-l), 0.05);
+  border-top-left-radius: inherit;
+  border-top-right-radius: inherit;
+
+  .dropdown-title {
     font-size: var.$font-size-xs;
     font-weight: 600;
-    color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+    color: hsl(var(--color-text-muted-h, var.$default-color-text-muted-h), var(--color-text-muted-s, var.$default-color-text-muted-s), var(--color-text-muted-l, var.$default-color-text-muted-l));
     text-transform: uppercase;
-    letter-spacing: 0.08em; // Slightly more spacing
+    letter-spacing: 0.075em;
     opacity: 0.85;
+    @include mixins.text-glow(
+      $glow-color-var-prefix: '--color-text-muted',
+      $glow-radius: 4px,
+      $fb-glow-h: var.$default-color-text-muted-h,
+      $fb-glow-s: var.$default-color-text-muted-s,
+      $fb-glow-l: var.$default-color-text-muted-l,
+      $fb-glow-a: 0.2
+    );
   }
 }
 
+/**
+ * @mixin dropdown-content-ephemeral
+ * @description Styles for the main scrollable content area of a dropdown.
+ */
 @mixin dropdown-content-ephemeral {
-  padding: var.$spacing-xs; 
-  max-height: min(60vh, 380px); // Slightly reduced max height
+  padding: var.$spacing-xs;
+  max-height: min(65vh, 400px);
   overflow-y: auto;
   @include mixins.custom-scrollbar(
-    '--color-accent-interactive', 0.55, 0.75,
-    '--color-bg-secondary', 0.2, // Slightly more visible track
-    6px
+    $thumb-color-var-prefix: '--color-accent-interactive',
+    $thumb-base-alpha: 0.55,
+    $thumb-hover-alpha: 0.75,
+    $track-color-var-prefix: '--color-bg-secondary',
+    $track-alpha: 0.2,
+    $width: 7px,
+    $border-radius: var.$radius-sm
   );
 }
 
+/**
+ * @mixin dropdown-item-ephemeral
+ * @description Styles for individual items within a dropdown menu.
+ */
 @mixin dropdown-item-ephemeral {
-  @include buttonsFile.btn-ghost; // Base behavior
+  @include buttonsFile.base-button-styles;
   width: 100%;
   justify-content: flex-start !important;
-  align-items: center;
-  padding: var.$spacing-sm calc(var.$spacing-sm + 2px) !important; // Adjusted padding
-  border-radius: var.$radius-lg !important; // Consistent with panel items
-  font-size: var.$font-size-base-default * 0.95 !important; // Slightly smaller than base for dropdowns
-  color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+  padding: var.$spacing-sm calc(#{var.$spacing-sm} + 4px) !important; // SASS calc
+  border-radius: var.$radius-lg !important;
+  font-size: calc(#{var.$font-size-base-default} * 0.94) !important; // SASS calc
+  font-weight: 500 !important;
+  color: hsl(var(--color-text-secondary-h, var.$default-color-text-secondary-h), var(--color-text-secondary-s, var.$default-color-text-secondary-s), var(--color-text-secondary-l, var.$default-color-text-secondary-l));
   text-align: left;
-  transition: background-color var.$duration-quick, color var.$duration-quick, transform var.$duration-quick, box-shadow var.$duration-quick;
-  border: 1px solid transparent; // For focus ring
-  
-  .dropdown-item-icon { 
-    width: 1.2rem; 
-    height: 1.2rem;
-    margin-right: var.$spacing-sm; // Good spacing
-    color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
-    transition: color var.$duration-quick, transform var.$duration-quick;
+  background-color: transparent;
+  border: 1px solid transparent;
+  transition: background-color var.$duration-quick var.$ease-out-quad,
+              color var.$duration-quick var.$ease-out-quad,
+              transform var.$duration-quick var.$ease-elastic,
+              box-shadow var.$duration-smooth var.$ease-out-quad;
+
+  .dropdown-item-icon {
+    width: 1.15rem;
+    height: 1.15rem;
+    margin-right: calc(#{var.$spacing-sm} + 2px); // SASS calc
+    color: hsl(var(--color-text-muted-h, var.$default-color-text-muted-h), var(--color-text-muted-s, var.$default-color-text-muted-s), var(--color-text-muted-l, var.$default-color-text-muted-l));
+    transition: color var.$duration-quick, transform var.$duration-quick var.$ease-elastic;
     flex-shrink: 0;
-    opacity: 0.9;
+    opacity: 0.85;
   }
 
-  &:hover, &.router-link-active, &.active {
-    background-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.15) !important; // More pronounced hover
-    color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l)) !important;
-    transform: translateX(2px); // Slight shift
-    box-shadow: 0 2px 8px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.15);
-    
+  &:hover,
+  &.router-link-active,
+  &.active {
+    background-color: hsla(var(--color-accent-interactive-h, var.$default-color-accent-interactive-h), var(--color-accent-interactive-s, var.$default-color-accent-interactive-s), var(--color-accent-interactive-l, var.$default-color-accent-interactive-l), 0.2) !important;
+    color: hsl(var(--color-accent-interactive-h, var.$default-color-accent-interactive-h), var(--color-accent-interactive-s, var.$default-color-accent-interactive-s), var(--color-accent-interactive-l, var.$default-color-accent-interactive-l)) !important;
+    transform: translateX(4px) scale(1.015);
+    box-shadow: 0 0 12px 2px hsla(var(--color-accent-interactive-h, var.$default-color-accent-interactive-h), var(--color-accent-interactive-s, var.$default-color-accent-interactive-s), var(--color-accent-interactive-l, var.$default-color-accent-interactive-l), 0.25);
+
     .dropdown-item-icon {
-      color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
-      transform: scale(1.05);
+      color: hsl(var(--color-accent-interactive-h, var.$default-color-accent-interactive-h), var(--color-accent-interactive-s, var.$default-color-accent-interactive-s), var(--color-accent-interactive-l, var.$default-color-accent-interactive-l));
+      transform: scale(1.1) rotate(-3deg);
+      opacity: 1;
     }
   }
-   &:focus-visible {
-     @include mixins.focus-ring(
-       '--color-bg-primary',
-       '--color-accent-interactive',
-       0px, 2px, 0.8 // Clear focus with no offset from edge
-     );
-   }
+
+  &:active {
+    transform: translateX(2px) scale(0.985) !important;
+    background-color: hsla(var(--color-accent-interactive-h, var.$default-color-accent-interactive-h), var(--color-accent-interactive-s, var.$default-color-accent-interactive-s), var(--color-accent-interactive-l, var.$default-color-accent-interactive-l), 0.28) !important;
+    box-shadow: inset 0 1px 3px hsla(var(--color-accent-interactive-h, var.$default-color-accent-interactive-h), var(--color-accent-interactive-s, var.$default-color-accent-interactive-s), calc(var(--color-accent-interactive-l, #{var.$default-color-accent-interactive-l}) - 10%), 0.3);
+    filter: brightness(0.92);
+  }
+
+  &:focus-visible {
+    outline: none;
+    border-color: hsla(var(--color-accent-interactive-h, var.$default-color-accent-interactive-h), var(--color-accent-interactive-s, var.$default-color-accent-interactive-s), var(--color-accent-interactive-l, var.$default-color-accent-interactive-l), 0.6);
+    background-color: hsla(var(--color-accent-interactive-h, var.$default-color-accent-interactive-h), var(--color-accent-interactive-s, var.$default-color-accent-interactive-s), var(--color-accent-interactive-l, var.$default-color-accent-interactive-l), 0.12);
+    @include mixins.focus-ring(
+      $base-bg-color-var-prefix: '--color-bg-secondary',
+      $ring-accent-color-var-prefix: '--color-accent-interactive',
+      $offset-width: 0px,
+      $ring-thickness: 2px,
+      $ring-opacity: 0.75
+    );
+  }
+
+  &[disabled],
+  &:disabled {
+    background-color: transparent !important;
+    color: hsl(var(--color-text-muted-h, var.$default-color-text-muted-h), var(--color-text-muted-s, var.$default-color-text-muted-s), calc(var(--color-text-muted-l, #{var.$default-color-text-muted-l}) + 15%)) !important;
+    opacity: 0.45 !important;
+    filter: grayscale(30%);
+    box-shadow: none !important;
+    transform: none !important;
+    cursor: not-allowed;
+    .dropdown-item-icon { opacity: 0.45; filter: grayscale(30%); }
+  }
 }
 
-@mixin dropdown-section-title-ephemeral { // Mixin for section titles within dropdowns
+/**
+ * @mixin dropdown-section-title-ephemeral
+ * @description Styles for titles that demarcate sections within a dropdown menu.
+ */
+@mixin dropdown-section-title-ephemeral {
   display: flex;
   align-items: center;
   gap: var.$spacing-xs;
-  font-size: var.$font-size-xs * 0.9; // Smaller section titles
+  font-size: calc(#{var.$font-size-xs} * 0.9); // SASS calc
   font-weight: 600;
-  color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+  color: hsl(var(--color-text-muted-h, var.$default-color-text-muted-h), var(--color-text-muted-s, var.$default-color-text-muted-s), calc(var(--color-text-muted-l, #{var.$default-color-text-muted-l}) - 8%));
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.065em;
+  margin-top: var.$spacing-sm;
   margin-bottom: var.$spacing-xs;
-  padding: var.$spacing-xs var.$spacing-sm; // Consistent padding
-  opacity: 0.7;
+  padding: calc(#{var.$spacing-xs} * 0.75) var.$spacing-sm; // SASS calc
+  opacity: 0.8;
+  border-bottom: 1px dashed hsla(var(--color-border-primary-h, var.$default-color-border-primary-h), var(--color-border-primary-s, var.$default-color-border-primary-s), var(--color-border-primary-l, var.$default-color-border-primary-l), 0.1);
+
   .section-title-icon-ephemeral {
-      width: 0.9rem; height: 0.9rem; opacity: 0.7;
+    width: 0.95rem;
+    height: 0.95rem;
+    opacity: 0.75;
   }
 }
 
-
+/**
+ * @mixin dropdown-divider-ephemeral
+ * @description Styles for a visual divider line within a dropdown menu.
+ */
 @mixin dropdown-divider-ephemeral {
   height: 1px;
-  background-color: hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.12); // Slightly more visible
+  background: linear-gradient(to right,
+    hsla(var(--color-border-primary-h, var.$default-color-border-primary-h), var(--color-border-primary-s, var.$default-color-border-primary-s), var(--color-border-primary-l, var.$default-color-border-primary-l), 0.05),
+    hsla(var(--color-border-primary-h, var.$default-color-border-primary-h), var(--color-border-primary-s, var.$default-color-border-primary-s), var(--color-border-primary-l, var.$default-color-border-primary-l), 0.25),
+    hsla(var(--color-border-primary-h, var.$default-color-border-primary-h), var(--color-border-primary-s, var.$default-color-border-primary-s), var(--color-border-primary-l, var.$default-color-border-primary-l), 0.05)
+  );
+  border: 0;
   margin: var.$spacing-sm var.$spacing-xs;
 }
 
-// Utility Classes
+// --- Utility Classes ---
 .dropdown-panel-ephemeral { @include dropdown-panel-ephemeral; }
 .dropdown-header-ephemeral { @include dropdown-header-ephemeral; }
 .dropdown-content-ephemeral { @include dropdown-content-ephemeral; }
 .dropdown-item-ephemeral { @include dropdown-item-ephemeral; }
 .dropdown-divider-ephemeral { @include dropdown-divider-ephemeral; }
-.dropdown-section-title-ephemeral { @include dropdown-section-title-ephemeral; } // Class for easy application
+.dropdown-section-title-ephemeral { @include dropdown-section-title-ephemeral; }
+
+// --- Dropdown Transition Animations ---
+.dropdown-float-enhanced-enter-active,
+.dropdown-float-enhanced-leave-active {
+  transition: opacity 0.28s var.$ease-out-quint, transform 0.32s var.$ease-elastic;
+}
+.dropdown-float-enhanced-enter-from,
+.dropdown-float-enhanced-leave-to {
+  opacity: 0;
+  transform: translateY(12px) scale(0.93);
+}
+
+.dropdown-float-neomorphic-enter-active,
+.dropdown-float-neomorphic-leave-active {
+  transition: opacity 0.22s var.$ease-out-quad, transform 0.28s var.$ease-out-quad;
+}
+.dropdown-float-neomorphic-enter-from,
+.dropdown-float-neomorphic-leave-to {
+  opacity: 0;
+  transform: translateY(7px) scale(0.97);
+}
