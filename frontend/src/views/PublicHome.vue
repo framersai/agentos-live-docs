@@ -3,20 +3,19 @@
  * @file PublicHome.vue
  * @description Public-facing home page using UnifiedChatLayout.
  * Features rate limiting, public agent selection, themed placeholders, API-driven prompt loading,
- * and dynamic loading of custom agent views if specified for public agents.
- * @version 3.4.1 - Ensured all original code sections are complete and fixes are integrated.
+ * dynamic loading of custom agent views, and session-specific userId.
+ * @version 3.5.0 - Integrated session-specific userId and typo fix.
  */
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, inject, watch, defineAsyncComponent, type Component as VueComponentType } from 'vue';
 import { useRouter, RouterLink } from 'vue-router';
 import {
-  api, // Base axios instance
+  api,
   chatAPI,
-  promptAPI, // For consistent prompt loading
+  promptAPI,
   type ChatMessagePayloadFE,
   type ProcessedHistoryMessageFE,
   type ChatMessageFE,
-  // type TextResponseDataFE, // Not directly used here for non-streaming TextResponseDataFE
 } from '@/utils/api';
 import { AdvancedHistoryConfig } from '@/services/advancedConversation.manager';
 import { agentService, type IAgentDefinition, type AgentId } from '@/services/agent.service';
@@ -32,7 +31,7 @@ import CompactMessageRenderer from '@/components/CompactMessageRenderer.vue';
 
 import {
   SparklesIcon, KeyIcon, ChevronDownIcon, UserGroupIcon,
-  ExclamationTriangleIcon, CheckIcon as CheckOutlineIcon, // Renamed to avoid conflict if solid CheckIcon is also used
+  ExclamationTriangleIcon, CheckIcon as CheckOutlineIcon,
   BuildingStorefrontIcon
 } from '@heroicons/vue/24/outline';
 
@@ -42,7 +41,7 @@ interface RateLimitInfo {
   used?: number;
   limit?: number;
   remaining?: number;
-  resetAt?: string | Date; // Date object after fetching
+  resetAt?: string | Date;
   message?: string;
 }
 
@@ -50,13 +49,12 @@ const router = useRouter();
 const toast = inject<ToastService>('toast');
 const agentStore = useAgentStore();
 const chatStore = useChatStore();
-const auth = useAuth();
+const auth = useAuth(); // For sessionUserId
 
 const availablePublicAgents = ref<IAgentDefinition[]>([]);
 const currentPublicAgent = computed<IAgentDefinition | undefined>(() => agentStore.activeAgent);
-const agentViewRef = ref<any>(null); // For dedicated agent views, if any public agent uses one
+const agentViewRef = ref<any>(null);
 
-// Dynamically load agent-specific view components for public agents
 const currentAgentViewComponent = computed<VueComponentType | null>(() => {
   const agent = currentPublicAgent.value;
   if (agent && agent.isPublic && agent.viewComponentName) {
@@ -69,7 +67,7 @@ const currentAgentViewComponent = computed<VueComponentType | null>(() => {
           .catch(err => {
             console.error(`[PublicHome] Failed to import @/components/agents/${componentName}.vue for public agent:`, err);
             toast?.add({type: 'error', title: 'UI Load Error', message: `Could not load specific interface for ${agentLabel}. Using default view.`});
-            return null; // Fallback, will use MainContentView
+            return import('@/components/agents/common/MainContentView.vue');
           })
       );
     } catch (e) {
@@ -78,16 +76,15 @@ const currentAgentViewComponent = computed<VueComponentType | null>(() => {
       return null;
     }
   }
-  return null; // No specific view component for this public agent, or it's not public, or no componentName
+  return null;
 });
-
 
 const showPublicAgentSelector = ref(false);
 const publicAgentSelectorDropdownRef = ref<HTMLElement | null>(null);
 
 const isLoadingResponse = ref(false);
 const isVoiceInputCurrentlyProcessing = ref(false);
-const currentSystemPromptText = ref(''); // Stores the loaded system prompt text for the current public agent
+const currentSystemPromptText = ref('');
 const rateLimitInfo = ref<RateLimitInfo | null>(null);
 
 const mainContentData = computed<MainContent | null>(() => {
@@ -109,11 +106,9 @@ const mainContentData = computed<MainContent | null>(() => {
       data: 'NoPublicAgentsPlaceholder', title: 'Assistants Unavailable', timestamp: Date.now()
     };
   }
-  // If a dedicated view component is loaded for a public agent, it handles its own content.
   if (currentPublicAgent.value?.isPublic && currentAgentViewComponent.value) {
       return null;
   }
-  // Otherwise, use chatStore for main content data.
   return currentPublicAgent.value ? chatStore.getCurrentMainContentDataForAgent(currentPublicAgent.value.id) : null;
 });
 
@@ -123,19 +118,28 @@ const showEphemeralLogForCurrentAgent = computed(() => {
 
 const fetchRateLimitInfo = async (): Promise<void> => {
   try {
-    const response = await api.get('/rate-limit/status');
+    const response = await api.get('/rate-limit/status'); // Assuming this endpoint exists and is public
+    // If user is somehow authenticated on public page, redirect them
     if (response.data.tier === 'authenticated' && auth.isAuthenticated.value) {
-      router.replace({ name: 'AuthenticatedHome' }); // Ensure 'AuthenticatedHome' is the correct route name
+      router.replace({ name: 'AuthenticatedHome' });
       return;
     }
     rateLimitInfo.value = {
       ...response.data,
-      resetAt: response.data.resetAt ? new Date(response.data.resetAt) : new Date(Date.now() + 24 * 60 * 60 * 1000) // Default to 24h if resetAt is missing
+      resetAt: response.data.resetAt ? new Date(response.data.resetAt) : new Date(Date.now() + 24 * 60 * 60 * 1000)
     };
   } catch (error: any) {
     console.error('[PublicHome] Failed to fetch rate limit info:', error.response?.data || error.message);
-    // Optionally, inform the user that usage info is unavailable, but avoid being too noisy.
-    // toast?.add({ type: 'warning', title: 'Usage Info Unavailable', message: 'Could not retrieve public usage details.' });
+    // Initialize with a default public state if API fails, to allow some interaction
+    rateLimitInfo.value = {
+        tier: 'public',
+        limit: parseInt(process.env.RATE_LIMIT_PUBLIC_DAILY || '20'), // Use env default
+        remaining: parseInt(process.env.RATE_LIMIT_PUBLIC_DAILY || '20'),
+        used: 0,
+        resetAt: new Date(Date.now() + 24*60*60*1000),
+        message: "Could not fetch usage details. Using default limits."
+    };
+    toast?.add({type: 'warning', title:'Usage Info', message: 'Could not fetch public usage details. Default limits applied.'})
   }
 };
 
@@ -147,295 +151,296 @@ const loadCurrentAgentSystemPrompt = async (): Promise<void> => {
     return;
   }
 
-  const systemPromptKey = agent.systemPromptKey; // This is a required field in IAgentDefinition
-  let defaultPromptText = `You are ${agentLabel}. As a public assistant, be helpful but concise.`;
+  const systemPromptKey = agent.systemPromptKey;
+  let defaultPromptText = `You are ${agentLabel}. As a public assistant, be helpful and concise.`;
 
-  // systemPromptKey should always exist as per IAgentDefinition, but defensive check:
   if (systemPromptKey) {
       try {
-          console.log(`[PublicHome] Attempting to load prompt for key: ${systemPromptKey}.md for agent: ${agentLabel}`);
-          const promptResponse = await promptAPI.getPrompt(`${systemPromptKey}.md`); // Keys should not include .md typically
+          console.log(`[PublicHome] Loading prompt for key: ${systemPromptKey}.md for agent: ${agentLabel}`);
+          const promptResponse = await promptAPI.getPrompt(`${systemPromptKey}.md`);
           if (promptResponse.data && typeof promptResponse.data.content === 'string') {
               currentSystemPromptText.value = promptResponse.data.content;
-              console.log(`[PublicHome] Successfully loaded prompt for ${agentLabel} using key ${systemPromptKey}.`);
           } else {
-              console.warn(`[PublicHome] Prompt content for "${systemPromptKey}.md" (agent: ${agentLabel}) was not a string or was missing. Using default description for system prompt.`);
               currentSystemPromptText.value = defaultPromptText;
           }
       } catch (e: any) {
-          console.error(`[PublicHome] Failed to load prompt "${systemPromptKey}.md" via API for agent "${agentLabel}":`, e.response?.data || e.message || e);
-          toast?.add({ type: 'warning', title: 'Prompt Load Warning', message: `Could not load specific instructions for ${agentLabel}. Using general behavior.` });
+          console.error(`[PublicHome] Failed to load prompt "${systemPromptKey}.md" for agent "${agentLabel}":`, e.response?.data || e.message || e);
           currentSystemPromptText.value = defaultPromptText;
       }
   } else {
-      // This case should ideally not happen if agent definitions are correct.
-      console.warn(`[PublicHome] Agent "${agentLabel}" has no systemPromptKey defined in its configuration. Using default prompt.`);
+      console.warn(`[PublicHome] Agent "${agentLabel}" has no systemPromptKey defined. Using default prompt.`);
       currentSystemPromptText.value = defaultPromptText;
   }
 };
 
-
 const loadPublicAgentsAndSetDefault = async (): Promise<void> => {
   availablePublicAgents.value = agentService.getPublicAgents().filter(agent => agent.isPublic);
-
   if (availablePublicAgents.value.length > 0) {
     const currentAgentInStoreId = agentStore.activeAgentId;
     let agentToSet: IAgentDefinition | undefined;
-
     if (currentAgentInStoreId && availablePublicAgents.value.some(pa => pa.id === currentAgentInStoreId)) {
       agentToSet = agentService.getAgentById(currentAgentInStoreId);
     } else {
-      agentToSet = agentService.getDefaultPublicAgent() || // Uses the improved logic in agentService
-                   availablePublicAgents.value[0]; // Fallback to the first available public agent
+      agentToSet = agentService.getDefaultPublicAgent() || availablePublicAgents.value[0];
     }
-
     if (agentToSet && agentStore.activeAgentId !== agentToSet.id) {
-      agentStore.setActiveAgent(agentToSet.id); // Watcher on activeAgentId will handle prompt loading and content
-    } else if (agentToSet) { // Agent is already active, ensure prompt and content are loaded
+      agentStore.setActiveAgent(agentToSet.id);
+    } else if (agentToSet) {
       await loadCurrentAgentSystemPrompt();
       chatStore.ensureMainContentForAgent(agentToSet.id);
     }
   } else {
     console.warn("[PublicHome] No publicly available agents found or configured.");
-    if (agentStore.activeAgentId) agentStore.setActiveAgent(null); // Clear active agent if no public ones are available
-    // mainContentData computed property will show NoPublicAgentsPlaceholder
+    if (agentStore.activeAgentId) agentStore.setActiveAgent(null);
   }
 };
 
 const selectPublicAgent = (agentId: AgentId): void => {
   const agent = availablePublicAgents.value.find(a => a.id === agentId);
   if (agent && agentStore.activeAgentId !== agentId) {
-    // Data for the previous agent is typically cleared by store logic or component lifecycle.
-    // Explicit clearing (chatStore.clearAgentData) could be done here if strict separation is needed on switch.
-    agentStore.setActiveAgent(agentId); // Watcher will handle the rest (prompt loading, content ensuring)
+    agentStore.setActiveAgent(agentId);
   }
   showPublicAgentSelector.value = false;
 };
 
-
 watch(() => agentStore.activeAgentId, async (newAgentId, oldAgentId) => {
   if (newAgentId && newAgentId !== oldAgentId) {
-    // Check if this newAgentId corresponds to a known public agent for this view
     if (availablePublicAgents.value.some(pa => pa.id === newAgentId)) {
         isLoadingResponse.value = false;
         isVoiceInputCurrentlyProcessing.value = false;
         if(chatStore.isMainContentStreaming) chatStore.setMainContentStreaming(false);
-        
-        await loadCurrentAgentSystemPrompt(); // Load/reload prompt for the newly selected agent
+        await loadCurrentAgentSystemPrompt();
         chatStore.ensureMainContentForAgent(newAgentId);
-    } else if (newAgentId && !auth.isAuthenticated.value) { 
-        // If a non-public agent ID somehow gets set while in public home (e.g. store persistence issue, or direct URL manipulation)
-        console.warn(`[PublicHome] A non-public agent (${newAgentId}) was attempted to be activated in PublicHome. Attempting to reset to a default public agent.`);
-        await loadPublicAgentsAndSetDefault(); // This will try to set a valid public agent
+    } else if (newAgentId && !auth.isAuthenticated.value) {
+        console.warn(`[PublicHome] Non-public agent (${newAgentId}) attempted activation. Resetting.`);
+        await loadPublicAgentsAndSetDefault();
     }
   } else if (!newAgentId && availablePublicAgents.value.length === 0) {
-    // This case means no agent is active AND no public agents are configured.
     currentSystemPromptText.value = "No public assistants are currently available.";
-    // mainContentData will handle showing the 'NoPublicAgentsPlaceholder'
-  } else if (newAgentId && newAgentId === oldAgentId && !currentSystemPromptText.value) {
-    // This can happen on initial mount if an agent is already set but its prompt hasn't been loaded yet.
-    // The immediate watcher will trigger this.
-    await loadCurrentAgentSystemPrompt();
+  } else if (newAgentId && newAgentId === oldAgentId ) { // Agent is same, ensure prompt and content
+    const agent = agentService.getAgentById(newAgentId);
+    if (agent && (!currentAgentViewComponent.value || !agent.capabilities?.handlesOwnInput)) {
+      await loadCurrentAgentSystemPrompt(); // Reload prompt if it's for a general agent
+    }
     chatStore.ensureMainContentForAgent(newAgentId);
   }
-}, { immediate: true }); // Immediate to run on component mount
-
+}, { immediate: true });
 
 const handleTranscriptionFromLayout = async (transcriptionText: string): Promise<void> => {
-  if (!transcriptionText.trim()) return;
-  const agent = currentPublicAgent.value; // Use local const for stability within this async function
+  console.log("[PublicHome] handleTranscriptionFromLayout called with:", transcriptionText);
+  if (!transcriptionText.trim()) {
+    console.log("[PublicHome] Transcription was empty or whitespace.");
+    return;
+  }
+  const agent = currentPublicAgent.value;
+
   if (!agent) {
     toast?.add({ type: 'warning', title: 'No Assistant Selected', message: 'Please select an assistant to interact with.' });
+    console.log("[PublicHome] No current public agent selected.");
     return;
   }
   if (isLoadingResponse.value) {
     toast?.add({ type: 'info', title: 'Processing', message: 'Please wait for the current response to complete.' });
+    console.log("[PublicHome] isLoadingResponse (PublicHome's own) is true, exiting.");
     return;
   }
 
   if (rateLimitInfo.value?.tier === 'public' && (rateLimitInfo.value.remaining ?? 1) <= 0) {
     toast?.add({ type: 'error', title: 'Daily Limit Reached', message: 'Public preview limit reached. Please log in for full access or try again later.'});
-    chatStore.updateMainContent({ // Update main view to reflect this state
+    chatStore.updateMainContent({
       agentId: 'rate-limit-exceeded' as AgentId, type: 'custom-component',
       data: 'RateLimitExceededPlaceholder', title: 'Daily Public Limit Reached', timestamp: Date.now()
     });
+    console.log("[PublicHome] Rate limit reached, exiting.");
     return;
   }
 
-  // Set loading states
-  isVoiceInputCurrentlyProcessing.value = true; // For UnifiedChatLayout visual state if it uses this
+  console.log(`[PublicHome] About to handle input for agent: ${agent.label}. Dedicated view: ${!!(agent.isPublic && agent.capabilities?.handlesOwnInput && currentAgentViewComponent.value && agentViewRef.value)}`);
+
+  isVoiceInputCurrentlyProcessing.value = true;
   isLoadingResponse.value = true;
 
-  // If agent has a dedicated view component and handles its own input
-  if (agent.isPublic && agent.capabilities?.handlesOwnInput && currentAgentViewComponent.value && agentViewRef.value) {
-    try {
-      if (typeof agentViewRef.value.processProblemContext === 'function') {
+  try {
+    if (agent.isPublic && agent.capabilities?.handlesOwnInput && currentAgentViewComponent.value && agentViewRef.value) {
+      console.log(`[PublicHome] Calling dedicated input handler on agentViewRef for ${agent.label}`);
+      if (typeof agentViewRef.value.handleNewUserInput === 'function') {
+        await agentViewRef.value.handleNewUserInput(transcriptionText); // Corrected typo
+      } else if (typeof agentViewRef.value.processProblemContext === 'function') {
         await agentViewRef.value.processProblemContext(transcriptionText);
-      } else if (typeof agentViewRef.value.handleNewUserInput === 'function') {
-        await agentViewRef.value.handleNewUserInput(transcriptionText);
       } else {
         console.warn(`[PublicHome] Public Agent "${agent.label}" (ID: ${agent.id}) has 'handlesOwnInput' and a view, but no input handler method found. Falling back to standard chat.`);
         await standardLlmCallPublic(transcriptionText, agent);
       }
-    } catch (error: any) {
-      console.error(`[PublicHome] Error in public agent's ("${agent.label}") custom input handler:`, error);
-      toast?.add({type: 'error', title: `${agent.label} Error`, message: error.message || `Agent "${agent.label}" encountered an issue processing your input.`});
-      isLoadingResponse.value = false; // Reset as fallback
-    } finally {
-      // Agent view should manage its isLoadingResponse. isVoiceInputCurrentlyProcessing can be reset here.
-      isVoiceInputCurrentlyProcessing.value = false;
+    } else {
+      console.log(`[PublicHome] Calling standardLlmCallPublic for ${agent.label}`);
+      await standardLlmCallPublic(transcriptionText, agent);
     }
-  } else {
-    // Standard LLM call for public agents without dedicated input handlers or if setup failed
-    await standardLlmCallPublic(transcriptionText, agent);
+  } catch (error: any) {
+    console.error(`[PublicHome] Error during transcription handling for agent "${agent.label}":`, error);
+    toast?.add({type: 'error', title: 'Processing Error', message: error.message || `An error occurred while processing your request for ${agent.label}.`});
+    isLoadingResponse.value = false; // Ensure reset on general error
+  } finally {
+    // If standardLlmCallPublic was called, it handles its own isLoadingResponse.
+    // For dedicated views, we reset PublicHome's isLoadingResponse here as the initial handoff is done.
+    // The dedicated view manages its own internal loading for content display.
+    if (agent.isPublic && agent.capabilities?.handlesOwnInput && currentAgentViewComponent.value && agentViewRef.value) {
+        isLoadingResponse.value = false;
+    }
+    isVoiceInputCurrentlyProcessing.value = false;
+    console.log(`[PublicHome] handleTranscriptionFromLayout finished. isLoadingResponse: ${isLoadingResponse.value}, isVoiceInputCurrentlyProcessing: ${isVoiceInputCurrentlyProcessing.value}`);
   }
 };
 
-/**
- * Handles the standard LLM call for public agents.
- * @param {string} transcriptionText - The user's input.
- * @param {IAgentDefinition} agentInstance - The current public agent's definition.
- */
 async function standardLlmCallPublic(transcriptionText: string, agentInstance: IAgentDefinition) {
-    const agentId = agentInstance.id;
-    const agentLabel = agentInstance.label || 'Assistant';
+  const agentId = agentInstance.id;
+  const agentLabel = agentInstance.label || 'Assistant';
+  const userMessageTimestamp = Date.now();
 
-    chatStore.addMessage({ role: 'user', content: transcriptionText, agentId: agentId, timestamp: Date.now() });
-    // isLoadingResponse and isVoiceInputCurrentlyProcessing are set by the caller (handleTranscriptionFromLayout)
+  chatStore.addMessage({ role: 'user', content: transcriptionText, agentId: agentId, timestamp: userMessageTimestamp });
 
-    const streamingPlaceholder = `Contacting ${agentLabel}...`;
-    chatStore.updateMainContent({ // Update main display area with loading state
-        agentId, type: 'loading', data: streamingPlaceholder,
-        title: `Contacting ${agentLabel}...`, timestamp: Date.now()
-    });
-    chatStore.setMainContentStreaming(true, streamingPlaceholder);
+  const streamingPlaceholder = `Contacting ${agentLabel}...`;
+   if (agentStore.activeAgentId === agentId) {
+      chatStore.setMainContentStreaming(true, streamingPlaceholder);
+      chatStore.updateMainContent({
+          agentId, type: 'loading', data: streamingPlaceholder,
+          title: `Contacting ${agentLabel}...`, timestamp: Date.now()
+      });
+  }
 
-    try {
-        // currentSystemPromptText should be populated by the watcher or loadCurrentAgentSystemPrompt call
-        if (!currentSystemPromptText.value || currentSystemPromptText.value.startsWith("No agent selected")) {
-            await loadCurrentAgentSystemPrompt(); // Ensure it's loaded if somehow missed
-            if (!currentSystemPromptText.value || currentSystemPromptText.value.startsWith("No agent selected")) {
-                // This is a critical failure if prompt cannot be established
-                throw new Error("System prompt for the agent could not be loaded or established.");
+  try {
+    if (!agentInstance.capabilities?.handlesOwnInput || !currentAgentViewComponent.value) {
+        if (!currentSystemPromptText.value || currentSystemPromptText.value.startsWith(`You are ${agentLabel}`)) {
+            await loadCurrentAgentSystemPrompt();
+             if (!currentSystemPromptText.value) {
+                throw new Error("System prompt could not be established for the agent.");
             }
         }
-        
-        const historyConfig: Partial<AdvancedHistoryConfig> = {
-          maxContextTokens: voiceSettingsManager.settings.useAdvancedMemory ? 1800 : (agentInstance.capabilities?.maxChatHistory || 2) * 100, // Adjusted multiplier
-          numRecentMessagesToPrioritize: agentInstance.capabilities?.maxChatHistory || 2,
-          simpleRecencyMessageCount: agentInstance.capabilities?.maxChatHistory || 2, // Keep this relatively small for public
-        };
-        const historyForApi: ProcessedHistoryMessageFE[] = await chatStore.getHistoryForApi(
-          agentId, transcriptionText, currentSystemPromptText.value, historyConfig
-        );
+    }
 
-        let messagesForApiPayload: ChatMessageFE[] = historyForApi.map(hMsg => ({
-            role: hMsg.role, content: hMsg.content, timestamp: hMsg.timestamp,
-            tool_call_id: (hMsg as any).tool_call_id, tool_calls: (hMsg as any).tool_calls, name: (hMsg as any).name,
-        }));
-        if (!messagesForApiPayload.some(m => m.role === 'user' && m.content === transcriptionText)) { // Ensure current message is included
-            messagesForApiPayload.push({ role: 'user', content: transcriptionText, timestamp: Date.now()});
+    let finalSystemPrompt = currentSystemPromptText.value;
+     if (!finalSystemPrompt.trim() && agentInstance.systemPromptKey) {
+        console.warn(`[PublicHome] System prompt text was empty for ${agentLabel} after initial load attempt. Attempting to re-load or use default.`);
+        await loadCurrentAgentSystemPrompt();
+        finalSystemPrompt = currentSystemPromptText.value;
+         if (!finalSystemPrompt.trim()) {
+            finalSystemPrompt = `You are ${agentLabel}. ${agentInstance.description || 'Provide helpful assistance.'}`;
+         }
+    } else if (!finalSystemPrompt.trim()) {
+         finalSystemPrompt = `You are ${agentLabel}. ${agentInstance.description || 'Provide helpful assistance.'}`;
+    }
+
+
+    finalSystemPrompt = finalSystemPrompt
+      .replace(/{{LANGUAGE}}/g, voiceSettingsManager.settings.preferredCodingLanguage || 'not specified')
+      .replace(/{{MODE}}/g, agentId)
+      .replace(/{{GENERATE_DIAGRAM}}/g, ((agentInstance.capabilities?.canGenerateDiagrams && voiceSettingsManager.settings.generateDiagrams) ?? false).toString())
+      .replace(/{{USER_QUERY}}/g, transcriptionText)
+      .replace(/{{ADDITIONAL_INSTRUCTIONS}}/g, 'You are in a public preview mode. Be helpful but concise. Avoid offering actions you cannot perform like file access. Keep responses relatively short.');
+
+    const historyConfig: Partial<AdvancedHistoryConfig> = {
+      maxContextTokens: voiceSettingsManager.settings.useAdvancedMemory ? 1800 : (agentInstance.capabilities?.maxChatHistory || 2) * 100,
+      numRecentMessagesToPrioritize: agentInstance.capabilities?.maxChatHistory || 2,
+      simpleRecencyMessageCount: agentInstance.capabilities?.maxChatHistory || 2,
+    };
+    const historyForApi: ProcessedHistoryMessageFE[] = await chatStore.getHistoryForApi(agentId, transcriptionText, finalSystemPrompt, historyConfig);
+    
+    let messagesForApiPayload: ChatMessageFE[] = historyForApi.map(hMsg => ({
+        role: hMsg.role, content: hMsg.content, timestamp: hMsg.timestamp, agentId: hMsg.agentId,
+        name: (hMsg as any).name, tool_calls: (hMsg as any).tool_calls, tool_call_id: (hMsg as any).tool_call_id,
+    }));
+
+    if (!messagesForApiPayload.some(m => m.role === 'user' && m.content === transcriptionText && m.timestamp === userMessageTimestamp)) {
+        messagesForApiPayload.push({ role: 'user', content: transcriptionText, timestamp: userMessageTimestamp, agentId });
+    }
+    messagesForApiPayload.sort((a,b) => (a.timestamp || 0) - (b.timestamp || 0));
+
+    const payload: ChatMessagePayloadFE = {
+      messages: messagesForApiPayload,
+      mode: agentInstance.systemPromptKey || agentId,
+      systemPromptOverride: finalSystemPrompt,
+      language: voiceSettingsManager.settings.preferredCodingLanguage,
+      generateDiagram: agentInstance.capabilities?.canGenerateDiagrams && voiceSettingsManager.settings.generateDiagrams,
+      userId: auth.sessionUserId.value || `public_session_${Date.now().toString(36)}`, // Use sessionUserId
+      conversationId: chatStore.getCurrentConversationId(agentId),
+      stream: true,
+    };
+    console.log("[PublicHome] Sending payload to chatAPI.sendMessageStream:", JSON.stringify(payload, null, 0).substring(0,300) + "...");
+
+    let accumulatedResponse = "";
+    await chatAPI.sendMessageStream(
+      payload,
+      (chunk: string) => {
+        accumulatedResponse += chunk;
+        if (agentStore.activeAgentId === agentId) {
+          chatStore.updateMainContent({
+            agentId: agentId,
+            type: agentInstance.capabilities?.usesCompactRenderer ? 'compact-message-renderer-data' : 'markdown',
+            data: accumulatedResponse + "▋",
+            title: `${agentLabel} Responding...`,
+            timestamp: Date.now()
+          });
         }
-        messagesForApiPayload.sort((a,b) => (a.timestamp || 0) - (b.timestamp || 0)); // Ensure chronological order
-
-        let finalSystemPromptText = (currentSystemPromptText.value) // Already loaded prompt
-          .replace(/{{LANGUAGE}}/g, voiceSettingsManager.settings.preferredCodingLanguage || 'not specified')
-          .replace(/{{MODE}}/g, agentId) // Contextual agent ID
-          .replace(/{{GENERATE_DIAGRAM}}/g, ((agentInstance.capabilities?.canGenerateDiagrams && voiceSettingsManager.settings.generateDiagrams) ?? false).toString())
-          .replace(/{{USER_QUERY}}/g, transcriptionText) // Some prompts might use this directly
-          .replace(/{{ADDITIONAL_INSTRUCTIONS}}/g, 'You are in a public preview mode. Be helpful but concise. Avoid offering actions you cannot perform like file access. Keep responses relatively short.');
-
-        const payload: ChatMessagePayloadFE = {
-          messages: messagesForApiPayload, // System prompt is now part of systemPromptOverride
-          mode: agentInstance.systemPromptKey, // Key for backend to select model/base prompt context
-          systemPromptOverride: finalSystemPromptText,
-          language: voiceSettingsManager.settings.preferredCodingLanguage,
-          generateDiagram: agentInstance.capabilities?.canGenerateDiagrams && voiceSettingsManager.settings.generateDiagrams,
-          userId: rateLimitInfo.value?.ip || `public_user_${Date.now().toString(36)}`, // Use IP if available, else a unique string
-          conversationId: chatStore.getCurrentConversationId(agentId), // Get or create conversation ID
-          stream: true,
-        };
-
-        let accumulatedResponse = "";
-        await chatAPI.sendMessageStream(
-          payload,
-          (chunk: string) => {
-              accumulatedResponse += chunk;
-              if (agentStore.activeAgentId === agentId) { // Check agent is still active
-                  chatStore.updateMainContent({
-                      agentId: agentId,
-                      type: agentInstance.capabilities?.usesCompactRenderer ? 'compact-message-renderer-data' : 'markdown',
-                      data: accumulatedResponse + "▋", // Add streaming cursor
-                      title: `${agentLabel} Responding...`,
-                      timestamp: Date.now()
-                  });
-              }
-          },
-          async () => { /* onStreamEnd */
-              chatStore.setMainContentStreaming(false);
-              const finalContent = accumulatedResponse.trim();
-              const currentActiveAgent = agentStore.activeAgent; // Use store's current agent
-              if (currentActiveAgent && currentActiveAgent.id === agentId) {
-                  chatStore.addMessage({ role: 'assistant', content: finalContent, agentId: agentId, model: "StreamedModel (Public)", timestamp: Date.now() });
-                  chatStore.updateMainContent({
-                      agentId: agentId,
-                      type: currentActiveAgent.capabilities?.usesCompactRenderer ? 'compact-message-renderer-data' : 'markdown',
-                      data: finalContent, title: `${agentLabel} Response`, timestamp: Date.now()
-                  });
-              }
-              await fetchRateLimitInfo(); // Update rate limit after successful interaction
-              isLoadingResponse.value = false;
-              isVoiceInputCurrentlyProcessing.value = false;
-          },
-          async (error: Error | any) => { /* onStreamError */
-              console.error(`[PublicHome] Chat Stream API error for agent "${agentLabel}":`, error);
-              const errorMsg = error.message || 'An error occurred during the stream.';
-              const currentActiveAgentOnError = agentStore.activeAgent; // Check current agent from store
-              if (currentActiveAgentOnError && currentActiveAgentOnError.id === agentId) {
-                  chatStore.addMessage({ role: 'error', content: `Stream Error: ${errorMsg}`, agentId, timestamp: Date.now() });
-                  chatStore.updateMainContent({
-                      agentId, type: 'error', // Consistent 'error' type for main content
-                      data: `### ${agentLabel} Stream Error\n${errorMsg}`,
-                      title: `Error Processing Request with ${agentLabel}`, timestamp: Date.now()
-                  });
-              }
-              chatStore.setMainContentStreaming(false);
-              await fetchRateLimitInfo(); // Fetch rate limit even on error
-              isLoadingResponse.value = false;
-              isVoiceInputCurrentlyProcessing.value = false;
-          }
-        );
-    } catch (error: any) { /* General catch for setup or non-stream API issues */
-        console.error(`[PublicHome] Chat API interaction error for agent "${agentLabel}":`, error.response?.data || error.message);
-        const errorMsg = error.response?.data?.message || error.message || 'An unexpected error occurred.';
-        const currentActiveAgentOnError = agentStore.activeAgent; // Check current agent from store
-        if (currentActiveAgentOnError && currentActiveAgentOnError.id === agentId) {
-            chatStore.addMessage({ role: 'error', content: `Interaction Error: ${errorMsg}`, agentId, timestamp: Date.now() });
-            chatStore.updateMainContent({
-                agentId, type: 'error', // Consistent 'error' type
-                data: `### ${agentLabel} Interaction Error\n${errorMsg}`,
-                title: `Error Communicating with ${agentLabel}`, timestamp: Date.now()
-            });
+      },
+      async () => { // onStreamEnd
+        chatStore.setMainContentStreaming(false);
+        const finalContent = accumulatedResponse.trim();
+        if (agentStore.activeAgentId === agentId) {
+          chatStore.addMessage({ role: 'assistant', content: finalContent, agentId: agentId, model:"StreamedModel (Public)", timestamp: Date.now() });
+          chatStore.updateMainContent({
+            agentId: agentId,
+            type: agentInstance.capabilities?.usesCompactRenderer ? 'compact-message-renderer-data' : 'markdown',
+            data: finalContent, title: `${agentLabel} Response`, timestamp: Date.now()
+          });
         }
+        await fetchRateLimitInfo();
         isLoadingResponse.value = false;
         isVoiceInputCurrentlyProcessing.value = false;
-        chatStore.setMainContentStreaming(false);
-        if (error.response?.status === 429 || error.message?.includes('429')) { // More robust check for rate limit error
-            await fetchRateLimitInfo(); // Refresh rate limit info
-            chatStore.updateMainContent({
-                agentId: 'rate-limit-exceeded' as AgentId, type: 'custom-component',
-                data: 'RateLimitExceededPlaceholder', title: 'Daily Public Limit Reached', timestamp: Date.now()
-            });
+      },
+      async (error: Error | any) => { // onStreamError
+        console.error(`[PublicHome] Chat Stream API error for agent "${agentLabel}":`, error);
+        const errorMsg = error.message || 'An error occurred during the stream.';
+        if (agentStore.activeAgentId === agentId) {
+          chatStore.addMessage({ role: 'error', content: `Stream Error: ${errorMsg}`, agentId, timestamp: Date.now() });
+          chatStore.updateMainContent({
+            agentId, type: 'error',
+            data: `### ${agentLabel} Stream Error\n${errorMsg}`,
+            title: `Error Processing Request with ${agentLabel}`, timestamp: Date.now()
+          });
         }
+        chatStore.setMainContentStreaming(false);
+        await fetchRateLimitInfo();
+        isLoadingResponse.value = false;
+        isVoiceInputCurrentlyProcessing.value = false;
+      }
+    );
+  } catch (error: any) {
+    console.error(`[PublicHome] Chat API interaction setup error for agent "${agentLabel}":`, error.response?.data || error.message || error);
+    const errorMsg = error.response?.data?.message || error.message || 'An unexpected error occurred.';
+    if (agentStore.activeAgentId === agentId) {
+        chatStore.addMessage({ role: 'error', content: `Interaction Error: ${errorMsg}`, agentId, timestamp: Date.now() });
+        chatStore.updateMainContent({
+            agentId, type: 'error',
+            data: `### ${agentLabel} Interaction Error\n${errorMsg}`,
+            title: `Error Communicating with ${agentLabel}`, timestamp: Date.now()
+        });
     }
+    isLoadingResponse.value = false;
+    isVoiceInputCurrentlyProcessing.value = false;
+    chatStore.setMainContentStreaming(false);
+    if (error.response?.status === 429 || error.message?.includes('429')) {
+        await fetchRateLimitInfo();
+        chatStore.updateMainContent({
+            agentId: 'rate-limit-exceeded' as AgentId, type: 'custom-component',
+            data: 'RateLimitExceededPlaceholder', title: 'Daily Public Limit Reached', timestamp: Date.now()
+        });
+    }
+  }
 }
-
 
 const formatResetTime = (dateInput?: string | Date): string => {
   if (!dateInput) return 'soon';
   const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
   if (isNaN(date.getTime())) return 'shortly';
-  // Example: "3:45 PM PDT" - Adjust options as needed for your locale
   return date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', timeZoneName: 'short' });
 };
 
@@ -444,27 +449,25 @@ const handleClickOutsidePublicAgentSelector = (event: MouseEvent) => {
     showPublicAgentSelector.value = false;
   }
 };
-let rateLimitInterval: number | undefined;
+let rateLimitIntervalId: number | undefined; // Corrected type
 
 onMounted(async () => {
   document.addEventListener('click', handleClickOutsidePublicAgentSelector, true);
-  await auth.checkAuthStatus(); // Check auth status first
+  await auth.checkAuthStatus();
   if (auth.isAuthenticated.value) {
-    router.replace({ name: 'AuthenticatedHome' }); // Redirect if already authenticated
+    router.replace({ name: 'AuthenticatedHome' });
     return;
   }
   
   await fetchRateLimitInfo();
-  // Only load public agents and set interval if not authenticated (already checked by redirect)
-  // and tier is not 'authenticated' (double check if rateLimitInfo is already fetched and not null)
   if (!auth.isAuthenticated.value && rateLimitInfo.value?.tier !== 'authenticated') {
-    await loadPublicAgentsAndSetDefault(); // This now calls loadCurrentAgentSystemPrompt internally if agent is set
-    rateLimitInterval = window.setInterval(fetchRateLimitInfo, 60000 * 5); // Check rate limit every 5 minutes
+    await loadPublicAgentsAndSetDefault();
+    rateLimitIntervalId = window.setInterval(fetchRateLimitInfo, 60000 * 5);
   }
 });
 
 onUnmounted(() => {
-  if (rateLimitInterval) clearInterval(rateLimitInterval);
+  if (rateLimitIntervalId) clearInterval(rateLimitIntervalId);
   document.removeEventListener('click', handleClickOutsidePublicAgentSelector, true);
 });
 
@@ -474,7 +477,7 @@ onUnmounted(() => {
   <div class="public-home-view-ephemeral">
     <UnifiedChatLayout
       :is-voice-input-processing="isVoiceInputCurrentlyProcessing"
-      :show-ephemeral-log="{ type: showEphemeralLogForCurrentAgent, default: true }"
+      :show-ephemeral-log="showEphemeralLogForCurrentAgent"
       :current-agent-input-placeholder="currentPublicAgent?.inputPlaceholder"
       @transcription="handleTranscriptionFromLayout"
       @voice-input-processing="(status: boolean) => { isVoiceInputCurrentlyProcessing = status; if(status && !isLoadingResponse) isLoadingResponse = true; }"
