@@ -113,7 +113,7 @@ onMounted(async () => {
       <div class="login-container w-full max-w-md space-y-8">
         <div class="text-center">
           <div class="logo-wrapper">
-            <img class="logo-image" src="@/assets/logo.svg" alt="Voice Coding Assistant Logo" />
+            <img class="logo-image" src="@/assets/logo.svg" alt="Voice Chat Assistant Logo" />
           </div>
           <h1 class="app-main-title text-glow-primary">
             Meet <strong>V</strong>
