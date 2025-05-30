@@ -116,9 +116,9 @@ const fetchSystemPrompt = async () => {
   if (key) {
   try {
    const response = await promptAPI.getPrompt(`${key}.md`);
-   if (response && response.data && typeof response.data.content === 'string') {
-   currentAgentSystemPrompt.value = response.data.content;
-   if (!response.data.content.trim()) {
+   if (response && response.data && typeof response.data === 'string') {
+   currentAgentSystemPrompt.value = response.data;
+   if (!(response.data as string).trim()) {
       console.warn(`[${agentLabel}] System prompt for key "${key}" loaded but is empty.`);
    }
    } else {
