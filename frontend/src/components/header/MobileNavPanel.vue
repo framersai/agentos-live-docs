@@ -1,29 +1,11 @@
 // File: frontend/src/components/header/MobileNavPanel.vue
 /**
  * @file MobileNavPanel.vue
+ * @version 1.1.0
  * @description A dedicated full-screen navigation panel for mobile views.
+ * Refined item structure for cleaner icon and text alignment.
  * Contains navigation links, theme selection, user actions, and session information.
  * Designed for the "Ephemeral Harmony" aesthetic with smooth transitions.
- *
- * @component MobileNavPanel
- * @props {boolean} isOpen - Controls the visibility of the panel.
- * @props {boolean} isUserListening - State for AnimatedLogo.
- * @props {boolean} isAiStateActive - State for AnimatedLogo.
- * @props {IAgentDefinition | undefined} activeAgent - Currently active agent.
- * @props {string} agentTitle - Display title for the current agent/view.
- * @props {VueComponentType | FunctionalComponent | DefineComponent} agentIconComponent - Icon for the current agent.
- * @props {boolean} isAuthenticated - User authentication status.
- * @props {number} sessionCost - Current session cost.
- * @props {boolean} isFullscreenActiveForUI - Browser fullscreen state.
- * @props {boolean} isGlobalMuteActive - Global TTS mute state.
- *
- * @emits close-panel - Emitted when the panel requests to be closed.
- * @emits open-agent-hub - Emitted to open the AgentHub.
- * @emits toggle-fullscreen - Emitted to toggle browser fullscreen.
- * @emits toggle-global-mute - Emitted to toggle global TTS mute.
- * @emits clear-chat-and-session - Emitted to clear session.
- * @emits show-prior-chat-log - Emitted to show chat history.
- * @emits logout - Emitted for user logout.
  */
 <script setup lang="ts">
 import { computed, type PropType, type Component as VueComponentType, type FunctionalComponent, type DefineComponent } from 'vue';
@@ -53,14 +35,14 @@ const props = defineProps({
   isAuthenticated: { type: Boolean as PropType<boolean>, required: true },
   sessionCost: { type: Number as PropType<number>, required: true },
   isFullscreenActiveForUI: { type: Boolean as PropType<boolean>, required: true },
-  isGlobalMuteActiveProp: { type: Boolean as PropType<boolean>, required: true }, // Renamed to avoid conflict
+  isGlobalMuteActiveProp: { type: Boolean as PropType<boolean>, required: true },
 });
 
 const emit = defineEmits<{
   (e: 'close-panel'): void;
   (e: 'open-agent-hub'): void;
   (e: 'toggle-fullscreen'): void;
-  (e: 'toggle-global-mute'): void; // Single event for toggling
+  (e: 'toggle-global-mute'): void;
   (e: 'clear-chat-and-session'): void;
   (e: 'show-prior-chat-log'): void;
   (e: 'logout'): void;
@@ -70,7 +52,7 @@ const uiStore = useUiStore();
 
 const localIsGlobalMuteActive = computed({
     get: () => props.isGlobalMuteActiveProp,
-    set: () => emit('toggle-global-mute') // Parent will handle logic via voiceSettingsManager
+    set: () => emit('toggle-global-mute')
 });
 
 const closeAndNavigate = () => {
@@ -100,7 +82,7 @@ const closeAndNavigate = () => {
         </RouterLink>
         <div v-if="props.activeAgent && props.isAuthenticated" class="mobile-nav-agent-title-compact">
           <component :is="props.agentIconComponent" class="agent-icon-mobile-nav" :class="props.activeAgent.iconClass" aria-hidden="true" />
-          <span>{{ props.agentTitle }}</span>
+          <span class="agent-title-text">{{ props.agentTitle }}</span>
         </div>
         <button @click="emit('close-panel')" class="mobile-nav-close-button btn btn-ghost-ephemeral btn-icon-ephemeral" aria-label="Close mobile menu">
           <XMarkIcon class="icon-base" />
@@ -109,15 +91,18 @@ const closeAndNavigate = () => {
 
       <div class="mobile-nav-content-ephemeral custom-scrollbar-thin-ephemeral">
         <button v-if="props.isAuthenticated" @click="emit('open-agent-hub'); closeAndNavigate();" class="mobile-nav-item-ephemeral group prominent-action">
-          <Squares2X2Icon class="nav-item-icon" aria-hidden="true"/> Explore Assistants
+          <Squares2X2Icon class="nav-item-icon" aria-hidden="true"/>
+          <span class="nav-item-text">Explore Assistants</span>
         </button>
         <div v-if="props.isAuthenticated" class="mobile-nav-divider-ephemeral"></div>
 
         <RouterLink to="/settings" class="mobile-nav-item-ephemeral group" @click="closeAndNavigate">
-          <Cog8ToothIcon class="nav-item-icon" aria-hidden="true"/>App Settings
+          <Cog8ToothIcon class="nav-item-icon" aria-hidden="true"/>
+          <span class="nav-item-text">App Settings</span>
         </RouterLink>
         <RouterLink to="/about" class="mobile-nav-item-ephemeral group" @click="closeAndNavigate">
-          <InformationCircleIcon class="nav-item-icon" aria-hidden="true"/>About VCA
+          <InformationCircleIcon class="nav-item-icon" aria-hidden="true"/>
+          <span class="nav-item-text">About VCA</span>
         </RouterLink>
 
         <div class="mobile-nav-divider-ephemeral"></div>
@@ -126,26 +111,28 @@ const closeAndNavigate = () => {
           <span id="mobile-theme-select-label" class="sr-only">Select a theme</span>
           <button
             v-for="theme in themeManager.getAvailableThemes()" :key="theme.id"
-            @click="uiStore.setTheme(theme.id); /* Optionally closeAndNavigate(); */"
+            @click="uiStore.setTheme(theme.id);"
             class="mobile-nav-item-ephemeral theme-button-mobile"
             :class="{ 'active': uiStore.currentThemeId === theme.id }"
             role="radio" :aria-checked="uiStore.currentThemeId === theme.id"
           >
-            <component :is="theme.isDark ? MoonIcon : SunIcon" class="nav-item-icon mini-icon" aria-hidden="true"/> {{ theme.name }}
+            <component :is="theme.isDark ? MoonIcon : SunIcon" class="nav-item-icon mini-icon" aria-hidden="true"/>
+            <span class="nav-item-text theme-name-text">{{ theme.name }}</span>
             <CheckIcon v-if="uiStore.currentThemeId === theme.id" class="checkmark-icon-mobile" aria-hidden="true"/>
           </button>
         </div>
 
         <button @click="emit('toggle-fullscreen')" class="mobile-nav-item-ephemeral group">
           <component :is="props.isFullscreenActiveForUI ? ArrowsPointingInIcon : ArrowsPointingOutIcon" class="nav-item-icon" aria-hidden="true"/>
-          {{ props.isFullscreenActiveForUI ? 'Exit Fullscreen' : 'Enter Fullscreen' }}
+          <span class="nav-item-text">{{ props.isFullscreenActiveForUI ? 'Exit Fullscreen' : 'Enter Fullscreen' }}</span>
         </button>
         <button @click="localIsGlobalMuteActive = !localIsGlobalMuteActive" class="mobile-nav-item-ephemeral group">
           <component :is="props.isGlobalMuteActiveProp ? SpeakerXMarkIcon : SpeakerWaveIcon" class="nav-item-icon" aria-hidden="true" />
-          {{ props.isGlobalMuteActiveProp ? 'Unmute Speech' : 'Mute Speech' }}
+          <span class="nav-item-text">{{ props.isGlobalMuteActiveProp ? 'Unmute Speech' : 'Mute Speech' }}</span>
         </button>
         <RouterLink :to="{ name: 'Settings', hash: '#audio-voice-settings'}" class="mobile-nav-item-ephemeral group" @click="closeAndNavigate">
-          <SpeakerWaveIcon class="nav-item-icon" aria-hidden="true"/>Full Voice Settings
+          <SpeakerWaveIcon class="nav-item-icon" aria-hidden="true"/>
+          <span class="nav-item-text">Full Voice Settings</span>
         </RouterLink>
 
         <template v-if="props.isAuthenticated">
@@ -155,23 +142,28 @@ const closeAndNavigate = () => {
             Session Cost: ${{ props.sessionCost.toFixed(3) }}
           </div>
           <button @click="emit('clear-chat-and-session'); closeAndNavigate();" class="mobile-nav-item-ephemeral group">
-            <TrashIcon class="nav-item-icon" aria-hidden="true"/>Clear Session
+            <TrashIcon class="nav-item-icon" aria-hidden="true"/>
+            <span class="nav-item-text">Clear Session</span>
           </button>
           <button @click="emit('show-prior-chat-log'); closeAndNavigate();" class="mobile-nav-item-ephemeral group">
-            <ClockIcon class="nav-item-icon" aria-hidden="true"/>View Chat History
+            <ClockIcon class="nav-item-icon" aria-hidden="true"/>
+            <span class="nav-item-text">View Chat History</span>
           </button>
           <RouterLink :to="{ name: 'Settings', hash: '#user-preferences'}" class="mobile-nav-item-ephemeral group" @click="closeAndNavigate">
-            <UserCircleIcon class="nav-item-icon" aria-hidden="true"/>User Preferences
+            <UserCircleIcon class="nav-item-icon" aria-hidden="true"/>
+            <span class="nav-item-text">User Preferences</span>
           </RouterLink>
           <div class="mobile-nav-divider-ephemeral"></div>
           <button @click="emit('logout'); closeAndNavigate();" class="mobile-nav-item-ephemeral group logout-item">
-            <ArrowRightOnRectangleIcon class="nav-item-icon" aria-hidden="true"/>Logout
+            <ArrowRightOnRectangleIcon class="nav-item-icon" aria-hidden="true"/>
+            <span class="nav-item-text">Logout</span>
           </button>
         </template>
         <template v-else>
           <div class="mobile-nav-divider-ephemeral"></div>
           <RouterLink to="/login" class="mobile-nav-item-ephemeral group login-item prominent-action" @click="closeAndNavigate">
-            <ArrowLeftOnRectangleIcon class="nav-item-icon" aria-hidden="true"/>Login / Sign Up
+            <ArrowLeftOnRectangleIcon class="nav-item-icon" aria-hidden="true"/>
+            <span class="nav-item-text">Login / Sign Up</span>
           </RouterLink>
         </template>
       </div>
@@ -180,15 +172,14 @@ const closeAndNavigate = () => {
 </template>
 
 <style lang="scss" scoped>
-// Styles for MobileNavPanel will be primarily in _header.scss under .mobile-nav-panel-ephemeral
-// or can be moved to a dedicated _mobile-nav-panel.scss if preferred.
-// For now, assume _header.scss will contain them.
-// This scoped style block can be used for highly specific, one-off adjustments if any.
+// Minimal scoped styles, primary styling in _header.scss
+.mobile-nav-panel-ephemeral {
+  // Ensure this class matches the one in _header.scss
+}
 
-// Example of ensuring the transition is defined for this component:
 .mobile-nav-slide-from-right-ephemeral-enter-active,
 .mobile-nav-slide-from-right-ephemeral-leave-active {
-  transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.35s ease-out; // Smooth, slightly elastic
+  transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.35s ease-out;
 }
 .mobile-nav-slide-from-right-ephemeral-enter-from,
 .mobile-nav-slide-from-right-ephemeral-leave-to {
