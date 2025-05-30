@@ -1,10 +1,12 @@
 // File: frontend/src/components/Header.vue
 /**
  * @file Header.vue
- * @version 9.4.2
- * @description Global application header for "Ephemeral Harmony".
- * Added a "Login" button to the desktop header for unauthenticated users.
- * UserSettingsDropdown remains for authenticated users. AgentHubTrigger and SiteMenu are always visible.
+ * @version 9.6.0
+ * @description Global application header.
+ * - Logo click navigates to home & forces reload.
+ * - Hearing icon section is always rendered for CSS visibility control.
+ * - Mobile icon sizes adjusted via SCSS.
+ * - Logout behavior refined for page refresh.
  */
 <script setup lang="ts">
 import {
@@ -19,7 +21,7 @@ import {
   type FunctionalComponent,
   type DefineComponent
 } from 'vue';
-import { RouterLink, useRouter, useRoute } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import { useAuth } from '@/composables/useAuth';
 import { useUiStore } from '@/store/ui.store';
 import { useAgentStore } from '@/store/agent.store';
@@ -44,9 +46,8 @@ import {
   Bars3Icon, XMarkIcon,
   ArrowsPointingOutIcon, ArrowsPointingInIcon,
   SpeakerWaveIcon, SpeakerXMarkIcon,
-  LightBulbIcon, // Fallback agent icon
-  ArrowLeftOnRectangleIcon, // For Login button
-  // Icons for MobileNavPanel are managed within MobileNavPanel.vue
+  LightBulbIcon,
+  ArrowLeftOnRectangleIcon,
 } from '@heroicons/vue/24/outline';
 
 const props = defineProps({
@@ -57,7 +58,7 @@ const props = defineProps({
 const emit = defineEmits<{
   (e: 'toggle-fullscreen'): void;
   (e: 'clear-chat-and-session'): void;
-  (e: 'logout'): void;
+  (e: 'logout'): void; // This will be handled by App.vue which calls useAuth.logout
   (e: 'show-prior-chat-log'): void;
 }>();
 
@@ -102,10 +103,29 @@ const openAgentHub = (): void => {
 };
 const closeAgentHub = (): void => { isAgentHubOpen.value = false; };
 
+// Event handlers for MobileNavPanel emissions
 const onLogoutFromMobile = () => { isMobileMenuOpen.value = false; emit('logout'); };
 const onClearChatFromMobile = () => { isMobileMenuOpen.value = false; emit('clear-chat-and-session'); };
 const onShowHistoryFromMobile = () => { isMobileMenuOpen.value = false; emit('show-prior-chat-log'); };
 const onToggleFullscreenFromMobile = () => { emit('toggle-fullscreen'); };
+
+/**
+ * @function handleLogoClick
+ * @description Navigates to the home page ('/') and forces a full page reload.
+ * This is used to ensure a fresh state when the main application logo is clicked.
+ * It also ensures the mobile navigation panel is closed if it was open.
+ */
+const handleLogoClick = (): void => {
+  isMobileMenuOpen.value = false; // Close mobile menu if open
+
+  // Navigate to home. If already home, reload. Otherwise, navigate then reload.
+  if (route.path === '/') {
+    window.location.reload();
+  } else {
+    // Using window.location.href for a clean navigation and reload effect
+    window.location.href = '/';
+  }
+};
 
 watch(() => route.path, () => {
   if (isMobileMenuOpen.value) isMobileMenuOpen.value = false;
@@ -137,7 +157,14 @@ onUnmounted(() => {
   >
     <div class="header-content-wrapper-ephemeral">
       <div class="header-left-section">
-        <RouterLink to="/" @click="isMobileMenuOpen = false" class="animated-logo-link" aria-label="Voice Chat Assistant Home">
+        <div
+          @click="handleLogoClick"
+          @keydown.enter="handleLogoClick"
+          tabindex="0"
+          role="button"
+          class="animated-logo-link"
+          aria-label="Voice Chat Assistant Home (Reload)"
+        >
           <AnimatedLogo
             :app-name-main="uiStore.isSmallScreen ? 'VCA' : 'Voice Chat'"
             :app-name-subtitle="uiStore.isSmallScreen ? '' : 'Assistant'"
@@ -145,7 +172,7 @@ onUnmounted(() => {
             :is-user-listening="isUserStateActive"
             :is-ai-speaking-or-processing="isAiStateActive"
           />
-        </RouterLink>
+        </div>
         <div v-if="activeAgent" class="current-agent-display-header">
           <component :is="agentIconComponent" class="agent-icon-header" :class="activeAgent.iconClass" aria-hidden="true"/>
           <span class="agent-name-header" :title="activeAgent.label">{{ activeAgent.label }}</span>
@@ -197,7 +224,6 @@ onUnmounted(() => {
                 <span class="login-button-text">Login</span>
             </RouterLink>
         </template>
-
          <Suspense><SiteMenuDropdown class="header-control-item site-menu-dropdown-header"/></Suspense>
       </nav>
 
@@ -241,23 +267,5 @@ onUnmounted(() => {
 
 <style lang="scss">
 // Styles are in frontend/src/styles/layout/_header.scss
-.login-button-desktop {
-  // Inherits .direct-header-button styles for consistency
-  // Add specific styling for the text part if needed
-  display: inline-flex;
-  align-items: center;
-  gap: var.$spacing-xs; // Space between icon and text
-  padding-left: calc(var.$spacing-sm * 0.6) !important; // Adjust padding for text
-  padding-right: calc(var.$spacing-sm * 0.9) !important;
-
-  .login-button-text {
-    font-size: var.$font-size-sm;
-    font-weight: 500;
-    // Hidden on smaller desktop sizes, shown on larger ones if desired
-    // This can be controlled by Tailwind classes or media queries in _header.scss too
-    @media (max-width: calc(var.$breakpoint-lg + 150px)) { // Example: hide text if space is very tight even on desktop
-        display: none; 
-    }
-  }
-}
+// .login-button-desktop styles are also in _header.scss
 </style>
