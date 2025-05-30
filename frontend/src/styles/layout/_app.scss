@@ -1,89 +1,115 @@
 // File: frontend/src/styles/layout/_app.scss
 /**
  * @file _app.scss
- * @description Specific layout styles for the main App.vue shell.
- * Defines the overall structure and flex behavior for the primary application container,
- * header, main content area, and footer.
- *
- * @role Provides structural layout styling for the root application component.
- * @dependencies `../abstracts/variables` (for z-indexes, spacing, theme colors).
- * @assumptions App.vue uses the class `.app-shell-ephemeral` for its root div and
- * subsequent classes like `.app-layout-ephemeral` for internal structure.
- * @version 1.0.1 - Reviewed for consistency with "Ephemeral Harmony" and calc() usage.
+ * @description Styles for the main application shell (App.vue).
+ * Ensures the app shell takes full viewport height and the internal layout
+ * (header, main, footer) positions correctly, allowing the main content to grow
+ * and the footer to remain at the bottom.
+ * @version 1.2.0 - Reinforced flex-grow for main content area to ensure footer visibility.
  */
 
 @use '../abstracts/variables' as var;
+@use '../abstracts/mixins' as mixins;
 
+// The root Vue component's wrapper in App.vue
 .app-shell-ephemeral {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; // Ensures the app shell takes at least the full viewport height
-  // Background color and text color are primarily set by body styles in _global.scss
-  // and theme variables applied to :root or html[data-theme].
+  min-height: 100vh; // Fallback
+  min-height: 100dvh; // Use dynamic viewport height if available
+  background-color: hsl(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l));
+  color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+  overflow: hidden; // The shell itself should not scroll
 }
 
+// The main layout container within the app shell (holds header, main, footer)
 .app-layout-ephemeral {
   display: flex;
   flex-direction: column;
-  flex-grow: 1; // Allows this layout to fill the .app-shell-ephemeral
-  overflow: hidden; // Prevents content within this layout from causing scroll on .app-shell-ephemeral
-  position: relative; // Establishes a stacking context for children like EphemeralChatLog
+  flex-grow: 1; // This layout takes up all available space within .app-shell-ephemeral
+  width: 100%;
+  overflow: hidden; // This container also should not scroll; its children will.
 }
 
-.app-layout-header-ephemeral { // Wrapper for <AppHeader>
+// Header and Footer within .app-layout-ephemeral
+.app-layout-header-ephemeral {
   flex-shrink: 0; // Header should not shrink
-  // z-index and specific styling are handled by .app-header-ephemeral in _header.scss
+  position: sticky; // Sticky header
+  top: 0;
+  z-index: var.$z-index-sticky;
 }
 
-.app-layout-main-content-ephemeral { // Wrapper for <router-view>
-  flex-grow: 1; // Main content area takes up remaining space
-  position: relative; // Stacking context for pages/views
-  overflow-y: auto;   // Only main content area should scroll if its content is long
-  overflow-x: hidden; // Prevent horizontal scroll from content
-  // Base padding for this area is defined in _main-content.scss
-
-  // Page transitions (ensure these class names match Vue <Transition> component `name` prop)
-  .page-fade-enter-active,
-  .page-fade-leave-active {
-    transition: opacity var(--duration-smooth, #{var.$duration-smooth}) var(--ease-in-out-sine, #{var.$ease-in-out-sine}),
-                transform var(--duration-smooth, #{var.$duration-smooth}) var(--ease-in-out-sine, #{var.$ease-in-out-sine});
-  }
-  .page-fade-enter-from {
-    opacity: 0;
-    transform: translateY(15px) scale(0.99); // Subtle slide and scale in
-  }
-  .page-fade-leave-to {
-    opacity: 0;
-    transform: translateY(-15px) scale(0.99); // Subtle slide and scale out
-  }
+.app-layout-main-content-ephemeral {
+  flex-grow: 1; // CRITICAL: This makes the main content area expand, pushing the footer down.
+  position: relative; // For potential absolutely positioned children or pseudo-elements
+  overflow-y: hidden; // IMPORTANT: This main area itself should NOT scroll typically.
+                      // The <router-view> or its direct child (like UnifiedChatLayout) inside it will handle scrolling.
+  overflow-x: hidden;
+  width: 100%;
+  display: flex; // To allow its child (router-view -> UnifiedChatLayout) to also use flex properties
+  flex-direction: column; //
 }
 
-.app-layout-footer-ephemeral { // Wrapper for <AppFooter>
+.app-layout-footer-ephemeral {
   flex-shrink: 0; // Footer should not shrink
-  // z-index and specific styling are handled by .app-footer-ephemeral in _footer.scss
+  position: relative; // Or 'sticky' if a sticky footer is desired, though less common with full-height chat.
+  z-index: calc(var.$z-index-sticky - 1); // Below header but above page background effects
+  // Add base styling for the footer if not already handled in a dedicated _footer.scss
+  background-color: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.5);
+  border-top: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.2);
+  padding: var.$spacing-sm var.$spacing-md;
+  text-align: center;
+  font-size: var.$font-size-sm;
+  color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
 }
 
-// Skip Link (themed and positioned within the app layout)
-.skip-link-ephemeral {
-  position: absolute; // Positioned within .app-layout-ephemeral
-  left: -9999px;      // Visually hidden off-screen
-  top: var.$spacing-sm; // Position from top of app-layout
-  z-index: var.$z-index-dev-tools; // Highest z-index for visibility
-  padding: var.$spacing-sm var.$spacing-md;
-  border-radius: var.$radius-md;
-  font-weight: 600;
-  text-decoration: none;
-  background-color: hsl(var(--color-accent-primary-h, var.$default-color-accent-primary-h), var(--color-accent-primary-s, var.$default-color-accent-primary-s), var(--color-accent-primary-l, var.$default-color-accent-primary-l));
-  color: hsl(var(--color-text-on-primary-h, var.$default-color-text-on-primary-h), var(--color-text-on-primary-s, var.$default-color-text-on-primary-s), var(--color-text-on-primary-l, var.$default-color-text-on-primary-l));
-  box-shadow: var(--shadow-depth-lg, #{var.$scss-box-shadow-lg}); // Prominent shadow when visible
-  transition: transform 0.2s var.$ease-out-quad, opacity 0.2s var.$ease-out-quad;
-  transform: translateY(-100%); // Initial off-screen position for animation
-  opacity: 0;
 
-  &:focus,
-  &:active { // Show on focus (keyboard navigation) or if somehow activated
-    left: var.$spacing-md;
-    transform: translateY(0);
-    opacity: 1;
+// Specific styling for the loading overlay if needed (beyond component-specific styles)
+.loading-overlay-ephemeral {
+  // Ensure it uses theme variables for its appearance
+  background-color: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.85);
+  backdrop-filter: blur(4px);
+
+  .loading-text-ephemeral {
+    color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+  }
+  // Spinner blades would inherit color or be styled by their own classes
+}
+
+// Styles for skip link accessibility
+.skip-link-ephemeral {
+  position: absolute;
+  top: -40px; // Hide off-screen
+  left: 0;
+  background: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
+  color: hsl(var(--color-text-on-primary-h), var(--color-text-on-primary-s), var(--color-text-on-primary-l));
+  padding: var.$spacing-sm;
+  z-index: var.$z-index-dev-tools; // Very high z-index
+  transition: top 0.3s ease-in-out;
+
+  &:focus {
+    top: 0;
+  }
+}
+
+// Toast notifications container
+.toast-notifications-container-ephemeral {
+  position: fixed;
+  top: calc(var(--header-actual-height, #{var.$header-height-default}) + #{var.$spacing-sm});
+  right: var.$spacing-md;
+  z-index: var.$z-index-toast; // Ensure toasts are above most content
+  width: 100%;
+  max-width: 380px; // Max width for toast container
+  pointer-events: none; // Container itself isn't interactive
+
+  > div { // The direct child that is the TransitionGroup's tag
+    pointer-events: auto; // Allow interaction with actual toasts
+  }
+
+  @media (max-width: var.$breakpoint-xs) {
+    right: var.$spacing-sm;
+    left: var.$spacing-sm;
+    max-width: none; // Full width on very small screens
+    top: var.$spacing-sm;
   }
 }

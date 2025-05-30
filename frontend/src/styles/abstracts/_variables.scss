@@ -21,6 +21,7 @@ $font-size-base-default: var(--font-size-base, 1rem);
 $letter-spacing-base-default: var(--letter-spacing-base, 0.015em);
 $line-height-base-default: var(--line-height-base, 1.65);
 
+
 $font-size-sm: var(--font-size-sm, 0.875rem);
 $font-size-xs: var(--font-size-xs, 0.75rem);
 $font-size-lg: var(--font-size-lg, 1.125rem);
@@ -124,6 +125,7 @@ $ease-linear: var(--ease-linear, linear); $ease-in-quad: var(--ease-in-quad, cub
 // -----------------------------------------------------------------------------
 // Breakpoints (Usually theme-agnostic)
 // -----------------------------------------------------------------------------
+$breakpoint-xs: 480px; $breakpoint-sm-max: 639px; // Mobile-first design, so xs is the smallest
 $breakpoint-sm: 640px; $breakpoint-md: 768px; $breakpoint-lg: 1024px; $breakpoint-xl: 1280px; $breakpoint-2xl: 1536px;
 
 // -----------------------------------------------------------------------------
@@ -195,3 +197,6 @@ $default-color-border-code-inline-h: 340; $default-color-border-code-inline-s: 2
 
 $fb-fill-a: 1; // Generic fallback alpha for fills, keep as 1 for full opacity by default
 $fb-bg-a: 1;   // Generic fallback alpha for backgrounds, keep as 1 for full opacity by default
+
+$bg-color-css-var-prefix: '--color-bg-';
+$border-color-css-var-prefix: '--color-border-';

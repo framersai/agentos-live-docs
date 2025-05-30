@@ -724,7 +724,7 @@ const handleResetSessionCost = async (): Promise<void> => {
 
 const handleLogout = (): void => {
   if (!confirm("Are you sure you want to log out?")) return;
-  auth.logout(false).then(() => {
+  auth.logout('').then(() => {
     costStore.$reset(); chatStoreInstance.$reset(); agentStore.$reset();
     toast?.add({ type: 'success', title: 'Logged Out', message: 'You have been successfully logged out.' });
     router.push({ name: 'Login' });
