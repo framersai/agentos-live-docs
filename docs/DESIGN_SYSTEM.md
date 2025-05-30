@@ -90,65 +90,6 @@ II. Motion & Microinteraction Language
             Light Streaks: For loading indicators or visualizing data flow (e.g., in the header when AI is processing).
             Branching/Connection Animations: When revealing related information or transitioning between connected states.
 
-III. Specific UI Element Dynamics
-
-    VoiceInput.vue (Chat Input Area):
-        Base State: Rounded corners, neo-holographic shadows giving subtle depth.
-        Focus: Soft, theme-colored animated glow around the textarea border (pulsing gently).
-        User Typing: Subtle inward "press" effect on keydown, immediate elastic rebound.
-        Listening (Active Mic):
-            Panel Glow: Entire panel border pulses rhythmically with a soft, theme-based bioluminescent glow.
-            Textarea Placeholder: Placeholder text could have a subtle "breathing" opacity animation.
-            hearing.svg (in Header): See Header section.
-        STT Processing (After user speaks, before transcription appears):
-            A quick, inward "energy gathering" animation on the panel border (e.g., border dashes converging), followed by a subtle outward "processing" pulse.
-            Live transcript display area might show a subtle "neural net" or "data flow" animated background pattern.
-        Transcription Appears: Text animates in word by word or smoothly, not just instantly.
-        Message Sent (to backend):
-            Send button has a clear, satisfying "launch" animation (e.g., icon animates, button briefly changes shape/glows intensely).
-            A very quick, subtle "data streak" animation could originate from the input panel and fade upwards.
-        AI Typing/Response Streaming:
-            The ChatWindow.vue or Message.vue where AI response appears will show the "typing" indicator.
-            The message bubble itself can have a subtle "construction" animation as text streams in – e.g., border glows or a shimmering effect travels along the text.
-            Text streaming speed will be tied to the selected TTS voice's natural pace and response length. Short responses might appear with a slight "reveal" per word. Longer responses will stream character by character or word by word at a comfortable reading pace, then accelerate for very long blocks if needed, before settling.
-
-    ChatWindow.vue / Message.vue (Chat Bubbles):
-        Shape: More rounded, organic shapes (using border-radius with varying values if appropriate, or clip-path for more complex organic forms if performance allows – likely stick to complex border-radius).
-        Shadows & Depth: Neo-holographic style. Drop shadows with subtle, theme-based color tints and inner glows to give a sense of light passing through or emanating from the bubble. These could subtly animate on hover or when new.
-        Message Arrival: Animate in with a gentle "unfurling" or "inflation" effect (scale + opacity with spring easing), rather than a harsh slide.
-        Hover on Message: Subtle lift, shadow deepens, perhaps a faint holographic shimmer on the border or a very light particle effect clinging to the edges.
-
-    Header.vue & Sub-components:
-        Overall: Fix layout shifts. Smooth transitions for any state changes (e.g., dropdown opening).
-        AnimatedLogo.vue / hearing.svg:
-            Idle: Existing slow breath/gradient animation.
-            User Listening: hearing.svg pulses rhythmically with color-voice-user. Lines in AnimatedLogo.vue (if applicable to the main logo too) might subtly "thrum" (oscillate stroke width or glow intensity).
-            AI Speaking: hearing.svg pulses with color-voice-ai-speaking. AnimatedLogo.vue might have a faster color cycle or a "wave" of light passing through its SVG.
-            AI Processing/Generating: hearing.svg could show a more "computational" pattern (e.g., faster, more complex pulse or a swirling particle effect if we add one around it). AnimatedLogo.vue could have brighter, faster color shifts or a more intense glow.
-        Dropdowns (VoiceControlsDropdown.vue, UserSettingsDropdown.vue, Agent Selector):
-            Open/Close Animation: Spring physics easing ($ease-elastic).
-            Panel Appearance: Neo-holographic (soft extrusion, subtle border glow). Dropdowns should not be overly translucent if they obscure content, but can have a glassmorphic base if the theme supports it, with opaque content.
-            Item Hover: Slight "lift" or "indent" effect, theme-colored accent glow on the item's edge.
-            Positioning: Ensure they always open within viewport bounds.
-            Click Away: Implement for all.
-        VoiceControlsDropdown.vue - Voice List: Categorized list (e.g., "Browser Standard," "OpenAI Natural," "OpenAI Expressive"). Each item shows voice name, perhaps a small icon indicating quality/type.
-        Iconography: SVGs with animated hover states (e.g., lines glow, parts subtly rotate or scale) using theme colors.
-
-    AgentHub.vue (Agent Catalog):
-        Modal Appearance: Full-screen or large modal with a neo-holographic backdrop (subtle animated grid or particle field).
-        Agent Cards (AgentCard.vue):
-            Appearance: Neo-holographic: rounded, soft extrusion, subtle shifting gradient shadows.
-            Hover: Card lifts, shadow intensifies, a faint theme-colored "energy aura" or border shimmer appears. Perhaps very subtle parallax effect on card content if performant.
-            Selection: Clear visual indication with an animated checkmark and a more pronounced, persistent aura/glow.
-            Grid Animation: When filtering/searching, cards animate in/out smoothly using <TransitionGroup> with physics-based staggers.
-
-    Settings.vue:
-        Sections (SettingsSection.vue): Styled as neo-holographic cards.
-        Interactive Elements (Toggles, Sliders, Selects):
-            Toggles: "Knob" animates with spring physics. Track changes color smoothly. Subtle glow when active.
-            Sliders: Thumb has a tactile feel on drag. Track fill animates smoothly.
-            Selects: Custom dropdown arrow. Menu appears with spring physics.
-
 IV. Streaming Text Output (AI Responses):
 
     Natural Pacing: Instead of a fixed character-per-second, the streaming speed will be influenced by:
