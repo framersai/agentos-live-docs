@@ -35,14 +35,6 @@ const errorMessage = ref('');
 // const showDevControls = ref(import.meta.env.DEV); // If used in template, keep
 // const showTestUI = ref(false); // If used in template, keep
 
-// --- Methods ---
-const toggleTheme = () => {
-  // Determine target theme based on current theme's darkness
-  // Ensure 'aurora-daybreak' and 'sakura-sunset' (or your actual primary light/dark IDs) are valid.
-  const targetThemeId = uiStore.isCurrentThemeDark ? 'aurora-daybreak' : 'sakura-sunset';
-  uiStore.setThemeFlexible(targetThemeId); // Use uiStore to manage theme changes
-};
-
 const handleLogin = async () => {
   if (!password.value) {
     errorMessage.value = 'Please enter the application password.';
@@ -174,15 +166,6 @@ onMounted(async () => {
                   Remember me
                 </label>
               </div>
-               <button
-                type="button"
-                @click="toggleTheme"
-                class="theme-toggle-button-login btn btn-icon btn-ghost"
-                :aria-label="isDarkMode ? 'Switch to Light Theme' : 'Switch to Dark Theme'"
-                title="Toggle Theme"
-              >
-                <component :is="isDarkMode ? SunIcon : MoonIcon" class="icon-base text-themed-secondary" />
-              </button>
             </div>
 
             <div>
@@ -319,7 +302,8 @@ onMounted(async () => {
 
 /* Assuming .form-input is styled in _forms.scss using theme variables. Placeholder: */
 .form-input {
-  @apply block w-full rounded-md shadow-sm sm:text-sm not-prose; /* Added not-prose */
+  @apply block w-full rounded-md shadow-sm sm:text-sm;
+  /* Added not-prose */
   background-color: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), calc(var(--color-bg-secondary-l) + 3%), 0.8); /* Slightly lighter than card bg, with some transparency */
   border: 1px solid hsl(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l));
   color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));

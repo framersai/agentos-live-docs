@@ -1,10 +1,10 @@
 // File: frontend/src/components/Header.vue
 /**
  * @file Header.vue
- * @version 9.4.0
+ * @version 9.4.2
  * @description Global application header for "Ephemeral Harmony".
- * Now uses a dedicated MobileNavPanel component for improved modularity.
- * Manages logo, desktop navigation, user actions, Agent Hub access. Reflects app states.
+ * Added a "Login" button to the desktop header for unauthenticated users.
+ * UserSettingsDropdown remains for authenticated users. AgentHubTrigger and SiteMenu are always visible.
  */
 <script setup lang="ts">
 import {
@@ -26,7 +26,8 @@ import { useAgentStore } from '@/store/agent.store';
 import { useChatStore } from '@/store/chat.store';
 import { useCostStore } from '@/store/cost.store';
 import { voiceSettingsManager } from '@/services/voice.settings.service';
-import { type IAgentDefinition } from '@/services/agent.service'; // agentService removed as not directly used
+import { type IAgentDefinition } from '@/services/agent.service';
+import { themeManager } from '@/theme/ThemeManager';
 
 // Core Components
 import AnimatedLogo from '@/components/ui/AnimatedLogo.vue';
@@ -36,14 +37,16 @@ const ThemeSelectionDropdown = defineAsyncComponent(() => import('./header/Theme
 const SiteMenuDropdown = defineAsyncComponent(() => import('./header/SiteMenuDropdown.vue'));
 const AgentHub = defineAsyncComponent(() => import('@/components/agents/AgentHub.vue'));
 const AgentHubTrigger = defineAsyncComponent(() => import('./header/AgentHubTrigger.vue'));
-const MobileNavPanel = defineAsyncComponent(() => import('./header/MobileNavPanel.vue')); // New mobile panel component
+const MobileNavPanel = defineAsyncComponent(() => import('./header/MobileNavPanel.vue'));
 
 // Icons
 import {
   Bars3Icon, XMarkIcon,
   ArrowsPointingOutIcon, ArrowsPointingInIcon,
   SpeakerWaveIcon, SpeakerXMarkIcon,
-  LightBulbIcon,
+  LightBulbIcon, // Fallback agent icon
+  ArrowLeftOnRectangleIcon, // For Login button
+  // Icons for MobileNavPanel are managed within MobileNavPanel.vue
 } from '@heroicons/vue/24/outline';
 
 const props = defineProps({
@@ -63,19 +66,20 @@ const uiStore = useUiStore();
 const agentStore = useAgentStore();
 const chatStore = useChatStore();
 const costStore = useCostStore();
-const router = useRouter(); // Still needed for route watch if any
+const router = useRouter();
 const route = useRoute();
 
 const activeAgent = computed<IAgentDefinition | undefined>(() => agentStore.activeAgent);
 const agentTitle = computed<string>(() =>
-  activeAgent.value?.label || (auth.isAuthenticated.value ? 'VCA Dashboard' : 'Voice Chat Assistant')
+  activeAgent.value?.label ||
+  (auth.isAuthenticated.value ? 'VCA Dashboard' : 'Voice Chat Assistant')
 );
 const agentIconComponent = computed<VueComponentType | FunctionalComponent | DefineComponent>(() => {
-    const icon = activeAgent.value?.iconComponent;
-    if (typeof icon === 'object' || typeof icon === 'function' || (typeof icon === 'string' && icon.endsWith('Icon'))) {
-        return icon as VueComponentType;
-    }
-    return LightBulbIcon as VueComponentType;
+  const icon = activeAgent.value?.iconComponent;
+  if (typeof icon === 'object' || typeof icon === 'function' || (typeof icon === 'string' && icon.endsWith('Icon'))) {
+    return icon as VueComponentType;
+  }
+  return LightBulbIcon as VueComponentType;
 });
 
 const sessionCost = computed<number>(() => costStore.totalSessionCost);
@@ -93,31 +97,25 @@ const isGlobalMuteActive = computed<boolean>({
 
 const toggleMobileMenu = (): void => { isMobileMenuOpen.value = !isMobileMenuOpen.value; };
 const openAgentHub = (): void => {
-  isMobileMenuOpen.value = false; // Close mobile menu if opening agent hub
+  isMobileMenuOpen.value = false;
   isAgentHubOpen.value = true;
 };
 const closeAgentHub = (): void => { isAgentHubOpen.value = false; };
 
-// Pass-through handlers for events from MobileNavPanel
 const onLogoutFromMobile = () => { isMobileMenuOpen.value = false; emit('logout'); };
 const onClearChatFromMobile = () => { isMobileMenuOpen.value = false; emit('clear-chat-and-session'); };
 const onShowHistoryFromMobile = () => { isMobileMenuOpen.value = false; emit('show-prior-chat-log'); };
-const onToggleFullscreenFromMobile = () => { emit('toggle-fullscreen'); }; // App.vue handles actual toggling
+const onToggleFullscreenFromMobile = () => { emit('toggle-fullscreen'); };
 
 watch(() => route.path, () => {
   if (isMobileMenuOpen.value) isMobileMenuOpen.value = false;
 });
 
-watch(isMobileMenuOpen, (isOpen) => {
+watch([isMobileMenuOpen, isAgentHubOpen], ([mobileOpen, hubOpen]) => {
   if (typeof document !== 'undefined' && document.body) {
-    document.body.classList.toggle('overflow-hidden-by-app-overlay', isOpen || isAgentHubOpen.value);
+    document.body.classList.toggle('overflow-hidden-by-app-overlay', mobileOpen || hubOpen);
   }
-});
-watch(isAgentHubOpen, (isOpen) => {
-  if (typeof document !== 'undefined' && document.body) {
-    document.body.classList.toggle('overflow-hidden-by-app-overlay', isOpen || isMobileMenuOpen.value);
-  }
-});
+}, { deep: true });
 
 onUnmounted(() => {
   if (typeof document !== 'undefined' && document.body) {
@@ -133,7 +131,6 @@ onUnmounted(() => {
       'fullscreen-active': isFullscreenActiveForUI,
       'ai-speaking-active': isAiStateActive,
       'user-listening-active': isUserStateActive,
-      // 'mobile-menu-is-open': isMobileMenuOpen, // This class might be redundant if panel handles its own visibility
       'agent-hub-is-open': isAgentHubOpen,
     }"
     role="banner"
@@ -149,9 +146,12 @@ onUnmounted(() => {
             :is-ai-speaking-or-processing="isAiStateActive"
           />
         </RouterLink>
-        <div v-if="activeAgent && auth.isAuthenticated.value" class="current-agent-display-header">
+        <div v-if="activeAgent" class="current-agent-display-header">
           <component :is="agentIconComponent" class="agent-icon-header" :class="activeAgent.iconClass" aria-hidden="true"/>
-          <span class="agent-name-header" :title="activeAgent.label">{{ agentTitle }}</span>
+          <span class="agent-name-header" :title="activeAgent.label">{{ activeAgent.label }}</span>
+        </div>
+        <div v-else-if="auth.isAuthenticated.value && !activeAgent && route.name === 'AuthenticatedHome'" class="current-agent-display-header">
+             <span class="agent-name-header">VCA Dashboard</span>
         </div>
       </div>
 
@@ -166,7 +166,7 @@ onUnmounted(() => {
       </div>
 
       <nav class="header-right-section desktop-controls-ephemeral" aria-label="Main desktop navigation">
-        <Suspense><AgentHubTrigger v-if="auth.isAuthenticated.value" @open-agent-hub="openAgentHub" class="direct-header-button" /></Suspense>
+        <Suspense><AgentHubTrigger @open-agent-hub="openAgentHub" class="direct-header-button" /></Suspense>
         <Suspense><ThemeSelectionDropdown class="header-control-item" /></Suspense>
         <button @click="emit('toggle-fullscreen')" class="direct-header-button" :title="isFullscreenActiveForUI ? 'Exit Fullscreen' : 'Enter Fullscreen'" :aria-pressed="isFullscreenActiveForUI">
           <component :is="isFullscreenActiveForUI ? ArrowsPointingInIcon : ArrowsPointingOutIcon" class="icon-base" />
@@ -177,22 +177,32 @@ onUnmounted(() => {
           <span class="sr-only">{{ isGlobalMuteActive ? 'Unmute All Speech' : 'Mute All Speech' }}</span>
         </button>
         <Suspense><VoiceControlsDropdown class="header-control-item" /></Suspense>
-        <div v-if="auth.isAuthenticated.value" class="session-cost-display-ephemeral" title="Current Session Cost">
-          ${{ sessionCost.toFixed(3) }}
-        </div>
-        <Suspense>
-          <UserSettingsDropdown
-            class="header-control-item"
-            @clear-chat-and-session="emit('clear-chat-and-session')"
-            @show-prior-chat-log="emit('show-prior-chat-log')"
-            @logout="emit('logout')"
-          />
-        </Suspense>
+        
+        <template v-if="auth.isAuthenticated.value">
+            <div class="session-cost-display-ephemeral" title="Current Session Cost">
+              ${{ sessionCost.toFixed(3) }}
+            </div>
+            <Suspense>
+              <UserSettingsDropdown
+                class="header-control-item"
+                @clear-chat-and-session="emit('clear-chat-and-session')"
+                @show-prior-chat-log="emit('show-prior-chat-log')"
+                @logout="emit('logout')"
+              />
+            </Suspense>
+        </template>
+        <template v-else>
+            <RouterLink to="/login" class="direct-header-button login-button-desktop">
+                <ArrowLeftOnRectangleIcon class="icon-base" aria-hidden="true" />
+                <span class="login-button-text">Login</span>
+            </RouterLink>
+        </template>
+
          <Suspense><SiteMenuDropdown class="header-control-item site-menu-dropdown-header"/></Suspense>
       </nav>
 
       <div class="mobile-menu-trigger-wrapper-ephemeral">
-        <Suspense><AgentHubTrigger v-if="auth.isAuthenticated.value && uiStore.isMediumScreenOrSmaller" @open-agent-hub="openAgentHub" class="mobile-agent-hub-trigger" /></Suspense>
+        <Suspense><AgentHubTrigger v-if="uiStore.isMediumScreenOrSmaller" @open-agent-hub="openAgentHub" class="mobile-agent-hub-trigger" /></Suspense>
         <button @click="toggleMobileMenu" class="mobile-menu-trigger-button" :aria-expanded="isMobileMenuOpen" aria-controls="mobile-navigation-panel">
           <XMarkIcon v-if="isMobileMenuOpen" class="icon-base" aria-hidden="true" />
           <Bars3Icon v-else class="icon-base" aria-hidden="true" />
@@ -231,4 +241,23 @@ onUnmounted(() => {
 
 <style lang="scss">
 // Styles are in frontend/src/styles/layout/_header.scss
+.login-button-desktop {
+  // Inherits .direct-header-button styles for consistency
+  // Add specific styling for the text part if needed
+  display: inline-flex;
+  align-items: center;
+  gap: var.$spacing-xs; // Space between icon and text
+  padding-left: calc(var.$spacing-sm * 0.6) !important; // Adjust padding for text
+  padding-right: calc(var.$spacing-sm * 0.9) !important;
+
+  .login-button-text {
+    font-size: var.$font-size-sm;
+    font-weight: 500;
+    // Hidden on smaller desktop sizes, shown on larger ones if desired
+    // This can be controlled by Tailwind classes or media queries in _header.scss too
+    @media (max-width: calc(var.$breakpoint-lg + 150px)) { // Example: hide text if space is very tight even on desktop
+        display: none; 
+    }
+  }
+}
 </style>
