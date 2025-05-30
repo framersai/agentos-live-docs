@@ -145,6 +145,8 @@ export async function POST(req: Request, res: Response): Promise<void> {
   let mainAgentLlmCallCost = 0;
   let contextAggregatorLlmCallCost = 0;
 
+  console.log("received request \n\n\n", req.body)
+
   try {
     const {
       mode = 'general',
