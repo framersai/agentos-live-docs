@@ -284,98 +284,115 @@ const toggleMasterAutoplay = () => {
  * The 'content' field of the parsed JSON should contain the Markdown for the slideshow.
  * @param {string} llmResponseString - The raw string from the LLM, expected to be JSON.
  */
-const handleLlmAuditResponse = (llmResponseString: string) => {
-  clearCurrentAutoplayTimer();
-  const agentLabel = agentDisplayName.value;
-  console.log(`[${agentLabel}] Received raw LLM response string (first 500 chars):`, llmResponseString.substring(0, 500));
+ const handleLlmAuditResponse = (llmResponseString: string) => {
+  clearCurrentAutoplayTimer();
+  const agentLabel = agentDisplayName.value;
+  console.log(`[${agentLabel}] Received raw LLM response string (first 500 chars):`, llmResponseString.substring(0, 500));
 
-  let llmOutput: LlmAuditResponse;
-  try {
-  llmOutput = JSON.parse(llmResponseString);
-  console.log(`[${agentLabel}] Successfully parsed LLM JSON output. Strategy: ${llmOutput.updateStrategy}`);
-  } catch (e: any) {
-  console.error(`[${agentLabel}] CRITICAL: Failed to parse LLM response as JSON. Error:`, e.message);
-  console.error(`[${agentLabel}] Raw LLM Response that failed parsing:`, llmResponseString);
-  toast?.add({type: 'error', title: `${agentLabel} Response Error`, message: `Assistant provided an invalid response format (not JSON). Analysis cannot be displayed as a slideshow. Raw content shown.`, duration: 10000});
-  // Fallback: Display the raw string as plain markdown if JSON parsing fails
-  chatStore.updateMainContent({
-   agentId: props.agentId, type: 'markdown',
-   data: `### ${agentLabel} - Invalid Response Format\n\nThe assistant's response was not in the expected slideshow format. Displaying raw content:\n\n---\n\n${llmResponseString}`,
-   title: 'Invalid Response Format', timestamp: Date.now()
-  });
-  isLoadingResponse.value = false;
-  return;
-  }
+  let llmOutput: LlmAuditResponse;
+  let cleanedResponseString = llmResponseString.trim();
 
-  let newProblemTitle = llmOutput.problemTitle || currentProblemTitleForDisplay.value || "Problem Analysis";
-  let newFullMarkdownSlideshow = ""; // This will hold the content for CompactMessageRenderer
-  let shouldStartAutoplayOnNewContent = false;
+  // Check for and remove markdown code block delimiters if present
+  if (cleanedResponseString.startsWith('```json')) {
+    cleanedResponseString = cleanedResponseString.substring('```json'.length);
+    if (cleanedResponseString.endsWith('```')) {
+      cleanedResponseString = cleanedResponseString.substring(0, cleanedResponseString.length - '```'.length);
+    }
+    cleanedResponseString = cleanedResponseString.trim(); // Trim again after removing markers
+  } else if (cleanedResponseString.startsWith('```')) { // General markdown code block
+    cleanedResponseString = cleanedResponseString.substring('```'.length);
+    if (cleanedResponseString.endsWith('```')) {
+      cleanedResponseString = cleanedResponseString.substring(0, cleanedResponseString.length - '```'.length);
+    }
+    cleanedResponseString = cleanedResponseString.trim();
+  }
 
-  if (llmOutput.updateStrategy === "new_slideshow" || llmOutput.updateStrategy === "revise_slideshow") {
-  if (!llmOutput.content || typeof llmOutput.content !== 'string') {
-   console.error(`[${agentLabel}] LLM JSON valid, but 'content' field is missing or not a string for strategy: ${llmOutput.updateStrategy}. Content:`, llmOutput.content);
-   toast?.add({type: 'error', title: 'Slideshow Content Missing', message: `Assistant did not provide slideshow content for "${llmOutput.updateStrategy}".`});
-   // Potentially display an error or do nothing
-   chatStore.updateMainContent({
-   agentId: props.agentId, type: 'markdown',
-   data: `### ${agentLabel} - Slideshow Content Error\n\nAssistant response was valid JSON, but the required slideshow content for strategy "${llmOutput.updateStrategy}" was missing or invalid.`,
-   title: 'Slideshow Content Error', timestamp: Date.now()
-   });
-   isLoadingResponse.value = false;
-   return;
-  }
-  newFullMarkdownSlideshow = llmOutput.content; // This is the multi-slide markdown
-  setupSlideDurationsAndParse(newFullMarkdownSlideshow, newProblemTitle);
-  currentAppSlideIndex.value = 0;
-  hasNewSlideshowContentLoaded.value = true;
-  shouldStartAutoplayOnNewContent = true;
-  console.log(`[${agentLabel}] Strategy: ${llmOutput.updateStrategy}. New slideshow content set (length: ${newFullMarkdownSlideshow.length}).`);
-  } else if (llmOutput.updateStrategy === "append_to_final_slide") {
-  if (currentSlideshowFullMarkdown.value && totalAppSlidesCount.value > 0 && llmOutput.newContent) {
-   const separator = currentSlideshowFullMarkdown.value.endsWith('\n') ? '\n---\n\n' : '\n\n---\n\n';
-   newFullMarkdownSlideshow = currentSlideshowFullMarkdown.value + separator + llmOutput.newContent;
-   setupSlideDurationsAndParse(newFullMarkdownSlideshow, newProblemTitle); // This updates currentSlideshowFullMarkdown
-   currentAppSlideIndex.value = totalAppSlidesCount.value -1; // Stay on (new) last slide
-   isAutoplayGloballyActive.value = false; 
-   isCurrentSlidePlaying.value = false;
-   nextTick().then(() => {
-      compactMessageRendererRef.value?.navigateToSlide(totalAppSlidesCount.value > 0 ? totalAppSlidesCount.value -1 : 0);
-   });
-   console.log(`[${agentLabel}] Strategy: append_to_final_slide. Content appended.`);
-  } else {
-   console.warn(`[${agentLabel}] Could not append for 'append_to_final_slide': current slideshow empty or no new content.`);
-   newFullMarkdownSlideshow = llmOutput.newContent || `Error: Append content missing. Current problem: ${newProblemTitle}`;
-   setupSlideDurationsAndParse(newFullMarkdownSlideshow, "Appended Note (Fallback)");
-   currentAppSlideIndex.value = 0;
-   hasNewSlideshowContentLoaded.value = true;
-   shouldStartAutoplayOnNewContent = true;
-  }
-  } else if (llmOutput.updateStrategy === "no_update_needed") {
-  toast?.add({type: 'info', title: `${agentLabel} Feedback`, message: 'No significant update required for the current analysis.', duration: 5000});
-  if (isAutoplayGloballyActive.value && !isCurrentSlidePlaying.value && currentAppSlideIndex.value < totalAppSlidesCount.value -1) {
-   scheduleNextSlide();
-  }
-  } else if (llmOutput.updateStrategy === "clarification_needed") {
-  const question = llmOutput.clarification_question || "The assistant needs more details.";
-  toast?.add({type: 'info', title: `${agentLabel} Needs Clarification`, message: question, duration: 12000});
-  chatStore.addMessage({ role: 'system', agentId: props.agentId, content: `[${agentLabel}] Clarification needed: ${question}` });
-  isAutoplayGloballyActive.value = false;
-  isCurrentSlidePlaying.value = false;
-  }
+  try {
+    llmOutput = JSON.parse(cleanedResponseString);
+    console.log(`[${agentLabel}] Successfully parsed LLM JSON output. Strategy: ${llmOutput.updateStrategy}`);
+  } catch (e: any) {
+    console.error(`[${agentLabel}] CRITICAL: Failed to parse LLM response as JSON. Error:`, e.message);
+    console.error(`[${agentLabel}] Raw LLM Response that failed parsing:`, llmResponseString);
+    toast?.add({type: 'error', title: `${agentLabel} Response Error`, message: `Assistant provided an invalid response format (not JSON). Analysis cannot be displayed as a slideshow. Raw content shown.`, duration: 10000});
+    // Fallback: Display the raw string as plain markdown if JSON parsing fails
+    chatStore.updateMainContent({
+      agentId: props.agentId, type: 'markdown',
+      data: `### ${agentLabel} - Invalid Response Format\n\nThe assistant's response was not in the expected slideshow format. Displaying raw content:\n\n---\n\n${llmResponseString}`,
+      title: 'Invalid Response Format', timestamp: Date.now()
+    });
+    isLoadingResponse.value = false;
+    return;
+  }
 
-  nextTick().then(() => {
-  if (hasNewSlideshowContentLoaded.value && compactMessageRendererRef.value) {
-   compactMessageRendererRef.value.navigateToSlide(0);
-   hasNewSlideshowContentLoaded.value = false;
-  }
-  if (shouldStartAutoplayOnNewContent && isAutoplayGloballyActive.value) {
-   isCurrentSlidePlaying.value = true;
-   scheduleNextSlide();
-  }
-  renderAllMermaidDiagramsInView(); // Ensure diagrams in new/updated content are rendered
-  });
+  let newProblemTitle = llmOutput.problemTitle || currentProblemTitleForDisplay.value || "Problem Analysis";
+  let newFullMarkdownSlideshow = ""; // This will hold the content for CompactMessageRenderer
+  let shouldStartAutoplayOnNewContent = false;
 
-  isLoadingResponse.value = false;
+  if (llmOutput.updateStrategy === "new_slideshow" || llmOutput.updateStrategy === "revise_slideshow") {
+    if (!llmOutput.content || typeof llmOutput.content !== 'string') {
+      console.error(`[${agentLabel}] LLM JSON valid, but 'content' field is missing or not a string for strategy: ${llmOutput.updateStrategy}. Content:`, llmOutput.content);
+      toast?.add({type: 'error', title: 'Slideshow Content Missing', message: `Assistant did not provide slideshow content for "${llmOutput.updateStrategy}".`});
+      // Potentially display an error or do nothing
+      chatStore.updateMainContent({
+        agentId: props.agentId, type: 'markdown',
+        data: `### ${agentLabel} - Slideshow Content Error\n\nAssistant response was valid JSON, but the required slideshow content for strategy "${llmOutput.updateStrategy}" was missing or invalid.`,
+        title: 'Slideshow Content Error', timestamp: Date.now()
+      });
+      isLoadingResponse.value = false;
+      return;
+    }
+    newFullMarkdownSlideshow = llmOutput.content; // This is the multi-slide markdown
+    setupSlideDurationsAndParse(newFullMarkdownSlideshow, newProblemTitle);
+    currentAppSlideIndex.value = 0;
+    hasNewSlideshowContentLoaded.value = true;
+    shouldStartAutoplayOnNewContent = true;
+    console.log(`[${agentLabel}] Strategy: ${llmOutput.updateStrategy}. New slideshow content set (length: ${newFullMarkdownSlideshow.length}).`);
+  } else if (llmOutput.updateStrategy === "append_to_final_slide") {
+    if (currentSlideshowFullMarkdown.value && totalAppSlidesCount.value > 0 && llmOutput.newContent) {
+      const separator = currentSlideshowFullMarkdown.value.endsWith('\n') ? '\n---\n\n' : '\n\n---\n\n';
+      newFullMarkdownSlideshow = currentSlideshowFullMarkdown.value + separator + llmOutput.newContent;
+      setupSlideDurationsAndParse(newFullMarkdownSlideshow, newProblemTitle); // This updates currentSlideshowFullMarkdown
+      currentAppSlideIndex.value = totalAppSlidesCount.value -1; // Stay on (new) last slide
+      isAutoplayGloballyActive.value = false; 
+      isCurrentSlidePlaying.value = false;
+      nextTick().then(() => {
+        compactMessageRendererRef.value?.navigateToSlide(totalAppSlidesCount.value > 0 ? totalAppSlidesCount.value -1 : 0);
+      });
+      console.log(`[${agentLabel}] Strategy: append_to_final_slide. Content appended.`);
+    } else {
+      console.warn(`[${agentLabel}] Could not append for 'append_to_final_slide': current slideshow empty or no new content.`);
+      newFullMarkdownSlideshow = llmOutput.newContent || `Error: Append content missing. Current problem: ${newProblemTitle}`;
+      setupSlideDurationsAndParse(newFullMarkdownSlideshow, "Appended Note (Fallback)");
+      currentAppSlideIndex.value = 0;
+      hasNewSlideshowContentLoaded.value = true;
+      shouldStartAutoplayOnNewContent = true;
+    }
+  } else if (llmOutput.updateStrategy === "no_update_needed") {
+    toast?.add({type: 'info', title: `${agentLabel} Feedback`, message: 'No significant update required for the current analysis.', duration: 5000});
+    if (isAutoplayGloballyActive.value && !isCurrentSlidePlaying.value && currentAppSlideIndex.value < totalAppSlidesCount.value -1) {
+      scheduleNextSlide();
+    }
+  } else if (llmOutput.updateStrategy === "clarification_needed") {
+    const question = llmOutput.clarification_question || "The assistant needs more details.";
+    toast?.add({type: 'info', title: `${agentLabel} Needs Clarification`, message: question, duration: 12000});
+    chatStore.addMessage({ role: 'system', agentId: props.agentId, content: `[${agentLabel}] Clarification needed: ${question}` });
+    isAutoplayGloballyActive.value = false;
+    isCurrentSlidePlaying.value = false;
+  }
+
+  nextTick().then(() => {
+    if (hasNewSlideshowContentLoaded.value && compactMessageRendererRef.value) {
+      compactMessageRendererRef.value.navigateToSlide(0);
+      hasNewSlideshowContentLoaded.value = false;
+    }
+    if (shouldStartAutoplayOnNewContent && isAutoplayGloballyActive.value) {
+      isCurrentSlidePlaying.value = true;
+      scheduleNextSlide();
+    }
+    renderAllMermaidDiagramsInView(); // Ensure diagrams in new/updated content are rendered
+  });
+
+  isLoadingResponse.value = false;
 };
 
 /**
