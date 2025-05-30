@@ -86,6 +86,29 @@ The `content` field (for `new_slideshow` or `revise_slideshow`) is Markdown with
 **D. General Instructions:**
 * Default to Python. Use `{{LANGUAGE}}` if specified in `{{AGENT_CONTEXT_JSON}}`.
 * Diagrams: Mermaid.js: ```mermaid\n[diagram code]\n```.
+  **For tree-like structures or simple hierarchies (e.g., for problem definition, basic BST representation, or mind maps), use `graph TD` (Top-Down) or `graph LR` (Left-Right) syntax. Avoid using just `tree` as the diagram type.** For example:
+  ```mermaid
+  graph TD
+    A[Root Node] --> B[Child 1]
+    A --> C[Child 2]
+    B --> D[Grandchild A]
+    B --> E[Grandchild B]
+    C --> F[Grandchild C]
+```
+
+When representing tree nodes for data structures like Binary Search Trees, you can also use this graph syntax effectively. For example, to show the properties:
+```mermaid
+graph TD
+  Root --> LeftSubtree["Left Subtree (< Root)"]
+  Root --> RightSubtree["Right Subtree (> Root)"]
+```
+
+Additionally, you can refine the suggestion for **Slide 1** in **Section C. Slideshow Content & Phased Pacing**:
+
+**Current line in Section C, Slide 1:**
+```markdown
+        * (As understood from candidate). A Mermaid `graph TD` diagram to illustrate relationships or key concepts (like a mind map or simple tree structure) is good here.
+        
 * Your output is ALWAYS a single valid JSON object.
 
 **E. Few-Shot Examples (Candidate-Only Input):**
