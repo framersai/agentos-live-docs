@@ -124,6 +124,7 @@ $ease-linear: var(--ease-linear, linear); $ease-in-quad: var(--ease-in-quad, cub
 // -----------------------------------------------------------------------------
 // Breakpoints (Usually theme-agnostic)
 // -----------------------------------------------------------------------------
+$breakpoint-xs: 480px; $breakpoint-sm-max: 639px; // Mobile-first design, so xs is the smallest
 $breakpoint-sm: 640px; $breakpoint-md: 768px; $breakpoint-lg: 1024px; $breakpoint-xl: 1280px; $breakpoint-2xl: 1536px;
 
 // -----------------------------------------------------------------------------

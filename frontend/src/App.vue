@@ -1,17 +1,8 @@
 // File: frontend/src/App.vue
 /**
  * @file App.vue
- * @version 5.0.6 - Removed handleToggleTheme logic, relying on ThemeSelectionDropdown.
- * Ensured default dark theme references align with 'sakura-sunset' via ThemeManager.
- * Updated JSDoc for clarity.
- * @description Main application shell. Handles global state initialization (stores, services),
- * theming initialization via ThemeManager, global toast notifications, routing with page transitions,
- * and provides a root layout structure (Header, Main Content, Footer).
- * Manages and provides global application states like loading status and user/AI activity.
- *
- * @role Root Vue component, orchestrates global application setup and layout.
- * @dependencies vue, vue-router, Pinia stores (cost, agent, chat, ui), composables (useAuth),
- * services (themeManager, voiceSettingsManager, ttsService, agentService), Heroicons.
+ * @version 5.0.7 - Implemented conditional footer rendering based on route meta.
+ * @description Main application shell...
  */
 <script setup lang="ts">
 import {
@@ -24,7 +15,7 @@ import {
   watch,
   type Ref
 } from 'vue';
-import { useRouter, type RouteLocationNormalized } from 'vue-router';
+import { useRouter, useRoute, type RouteLocationNormalized } from 'vue-router'; // Added useRoute
 import AppHeader from '@/components/Header.vue';
 import AppFooter from '@/components/Footer.vue';
 
@@ -51,6 +42,8 @@ import {
 } from '@heroicons/vue/24/solid';
 
 const router = useRouter();
+const route = useRoute(); // Get current route instance
+
 const costStore = useCostStore();
 const agentStore = useAgentStore();
 const chatStore = useChatStore();
@@ -63,6 +56,13 @@ provide('loading', readonly({
   hide: () => isLoadingApp.value = false,
   isLoading: isLoadingApp
 }));
+
+
+// Computed property to determine if the AppFooter should be shown
+const showAppFooter = computed(() => {
+  return !route.meta.hideFooter;
+});
+
 
 const templateThemeId = computed<string>(() => uiStore.currentThemeId);
 
@@ -168,12 +168,11 @@ provide('updateUserListeningState', (isListening: boolean) => {
 
 // Placeholder for APP_VERSION, typically injected by build process or defined globally
 const APP_VERSION = '5.0.6'; // Updated version string
-
 onMounted(async () => {
   isLoadingApp.value = true;
 
-  themeManager.initialize();    // Initialize theme system FIRST
-  uiStore.initializeUiState(); // Initialize UI store AFTER themeManager (so uiStore can correctly get initial theme)
+  themeManager.initialize();
+  uiStore.initializeUiState();
 
   await auth.checkAuthStatus();
   await voiceSettingsManager.initialize();
@@ -193,11 +192,14 @@ onMounted(async () => {
       addToast({type: 'error', title: 'Agent Initialization Error', message: 'Could not load a default assistant interface.'});
     }
   } else if (agentStore.activeAgentId) {
+    // Ensure main content for the already active agent is set up
+    // This was missing and could lead to blank main content on refresh if an agent was already active
     chatStore.ensureMainContentForAgent(agentStore.activeAgentId);
   }
 
   setTimeout(() => { isLoadingApp.value = false; }, 350);
 
+  const APP_VERSION = '5.0.6'; // Consider making this dynamic if possible
   const hasVisitedKey = `vcaHasVisited_EphemeralHarmony_v${APP_VERSION}`;
   if (!localStorage.getItem(hasVisitedKey)) {
     setTimeout(() => {
@@ -210,6 +212,7 @@ onMounted(async () => {
     }, 1200);
   }
 });
+
 
 watch(
   () => uiStore.currentThemeId, // Watch the theme ID from the uiStore
@@ -245,8 +248,7 @@ watch(
         <div class="loading-spinner-ephemeral">
           <div v-for="i in 8" :key="`blade-${i}`" class="spinner-blade-ephemeral"></div>
         </div>
-        <p class="loading-text-ephemeral"></p>
-      </div>
+        <p class="loading-text-ephemeral"></p> </div>
     </div>
 
     <a href="#main-app-content" class="skip-link-ephemeral">Skip to main content</a>
@@ -262,7 +264,6 @@ watch(
         @show-prior-chat-log="handleShowPriorChatLog"
         class="app-layout-header-ephemeral"
       />
-      <!-- {/* Note: @toggle-theme emit listener removed from AppHeader call */} -->
 
       <main id="main-app-content" class="app-layout-main-content-ephemeral">
         <router-view v-slot="{ Component, route }">
@@ -272,7 +273,7 @@ watch(
         </router-view>
       </main>
 
-      <AppFooter class="app-layout-footer-ephemeral" />
+      <AppFooter v-if="showAppFooter" class="app-layout-footer-ephemeral" />
     </div>
 
     <div aria-live="assertive" class="toast-notifications-container-ephemeral">

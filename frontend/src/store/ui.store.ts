@@ -2,22 +2,22 @@
 /**
  * @file ui.store.ts
  * @description Pinia store for UI state management, including theme, fullscreen,
- * screen size breakpoints, etc. Interacts with ThemeManager for theme changes.
- * @version 2.2.1 - Integrated screen size breakpoints and ensured correct ThemeManager delegation.
+ * screen size breakpoints, and reduced motion preference. Interacts with ThemeManager for theme changes.
+ * @version 2.3.0 - Added isReducedMotionPreferred.
  */
 import { defineStore } from 'pinia';
 import { ref, readonly, computed, watch, type Ref } from 'vue';
-import { usePreferredDark, useBreakpoints, type Breakpoints } from '@vueuse/core';
+import { usePreferredDark, useBreakpoints, type Breakpoints, usePreferredReducedMotion } from '@vueuse/core'; // Added usePreferredReducedMotion
 import {
-  themeManager, // themeManager now exports the default IDs via re-export or direct definition
+  themeManager,
   DEFAULT_DARK_THEME_ID,
   DEFAULT_LIGHT_THEME_ID,
-  DEFAULT_OVERALL_THEME_ID, // Added for clarity if needed, though ThemeManager handles this
+  DEFAULT_OVERALL_THEME_ID,
   type ThemeDefinition,
 } from '@/theme/ThemeManager';
 
 /**
- * @const {Breakpoints} breakpoints - Breakpoint definitions mirroring Tailwind CSS configuration.
+ * @const {Breakpoints} breakpointsConfig - Breakpoint definitions mirroring Tailwind CSS configuration.
  * Used by `@vueuse/core`'s `useBreakpoints` for reactive screen size checks.
  */
 const breakpointsConfig: Breakpoints = {
@@ -47,9 +47,9 @@ export interface UiState {
   theme: Readonly<Ref<ThemeObjectType>>;
   isDarkMode: Readonly<Ref<boolean>>;
   isLightMode: Readonly<Ref<boolean>>;
-  isSmallScreen: Readonly<Ref<boolean>>; // e.g., < md
-  isMediumScreenOrSmaller: Readonly<Ref<boolean>>; // e.g., <= md
-  // Add more specific breakpoint refs if needed, e.g., isLargeScreen: vueUseBreakpointsState.lg
+  isSmallScreen: Readonly<Ref<boolean>>;
+  isMediumScreenOrSmaller: Readonly<Ref<boolean>>;
+  isReducedMotionPreferred: Readonly<Ref<boolean>>; // Added this property
 }
 
 /**
@@ -79,7 +79,13 @@ export const useUiStore = defineStore('ui', (): FullUiStore => {
   const _isBrowserFullscreenActive = ref<boolean>(typeof document !== 'undefined' && !!document.fullscreenElement);
 
   const preferredDark = usePreferredDark();
-  const isSystemDarkLocal = ref(preferredDark.value); // Local reactive copy
+  const isSystemDarkLocal = ref(preferredDark.value);
+
+  /**
+   * @property {Ref<boolean>} preferredReducedMotion - Reactive reference to the user's preference for reduced motion.
+   * From `@vueuse/core`.
+   */
+  const preferredReducedMotion = usePreferredReducedMotion(); // Get the reactive ref for reduced motion
 
   // Screen size computeds
   const isSmallScreen = vueUseBreakpointsState.smaller('md');
@@ -92,6 +98,14 @@ export const useUiStore = defineStore('ui', (): FullUiStore => {
 
   const isDarkMode = computed<boolean>(() => isCurrentThemeDark.value);
   const isLightMode = computed<boolean>(() => !isCurrentThemeDark.value);
+
+  /**
+   * @computed isReducedMotionPreferred
+   * @description Exposes the user's preference for reduced motion.
+   * @returns {boolean} True if the user prefers reduced motion, false otherwise.
+   */
+  const isReducedMotionPreferred = computed<boolean>(() => preferredReducedMotion.value === 'reduce');
+
 
   const setFullscreen = (val: boolean) => {
     if (_isFullscreen.value !== val) {
@@ -140,15 +154,13 @@ export const useUiStore = defineStore('ui', (): FullUiStore => {
       document.addEventListener('mozfullscreenchange', _handleFsChange);
       document.addEventListener('MSFullscreenChange', _handleFsChange);
     }
-    // ThemeManager.initialize() is called in App.vue onMounted.
     watch(preferredDark, (newVal: boolean) => {
-      isSystemDarkLocal.value = newVal; // Update local ref
-      // ThemeManager's internal watch will handle applying system preference if no user choice.
+      isSystemDarkLocal.value = newVal;
     }, { immediate: true });
   };
 
   const setTheme = (id: string) => themeManager.setTheme(id);
-  const setDarkMode = (flag: boolean) => themeManager.setThemeFlexible(flag ? 'dark' : 'light');
+  const setDarkMode = (flag: boolean) => themeManager.setThemeFlexible(flag ? DEFAULT_DARK_THEME_ID : DEFAULT_LIGHT_THEME_ID); // Use default dark/light IDs
   const setThemeFlexible = (idOrMode: string) => themeManager.setThemeFlexible(idOrMode);
 
   return {
@@ -157,11 +169,12 @@ export const useUiStore = defineStore('ui', (): FullUiStore => {
     isBrowserFullscreenActive: readonly(_isBrowserFullscreenActive),
     isCurrentThemeDark,
     currentThemeId,
-    theme, // Already readonly from computed if `themeManager.getCurrentTheme()` is readonly
+    theme,
     isDarkMode,
     isLightMode,
     isSmallScreen: readonly(isSmallScreen),
     isMediumScreenOrSmaller: readonly(isMediumScreenOrSmaller),
+    isReducedMotionPreferred: readonly(isReducedMotionPreferred), // Expose as readonly computed
 
     initializeUiState,
     toggleFullscreen,
