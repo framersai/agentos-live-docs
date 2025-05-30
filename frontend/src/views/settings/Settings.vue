@@ -20,7 +20,7 @@
   <header class="settings-header-ephemeral" id="settings-top">
    <div class="header-content-container-ephemeral">
     <div class="logo-title-group-ephemeral">
-     <img src="@/assets/logo.svg" alt="VCA Logo" class="logo-img-ephemeral" />
+     <!-- <img src="@/assets/logo.svg" alt="VCA Logo" class="logo-img-ephemeral" /> -->
      <h1 class="page-title-ephemeral">Application Settings</h1>
     </div>
     <button @click="confirmAndGoBack" class="btn btn-secondary-ephemeral btn-sm back-button-ephemeral">
@@ -34,7 +34,7 @@
    <div class="intro-text-ephemeral">
     <Cog8ToothIcon class="intro-icon-ephemeral" aria-hidden="true" />
     <p>
-     Customize your Voice Assistant experience. Changes are saved automatically when you modify a setting.
+     Customize your Voice Chat Assistant experience. Changes are saved automatically.
     </p>
    </div>
 

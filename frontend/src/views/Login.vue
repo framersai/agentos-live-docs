@@ -127,10 +127,10 @@ onMounted(async () => {
             <img class="logo-image" src="@/assets/logo.svg" alt="Voice Coding Assistant Logo" />
           </div>
           <h1 class="app-main-title text-glow-primary">
-            Voice Chat Assistant
+            Meet <strong>V</strong>
           </h1>
           <p class="app-subtitle">
-            Unlock the power of AI. Sign in to continue.
+            Your Voice Chat Assistant
           </p>
         </div>
 
@@ -210,14 +210,6 @@ onMounted(async () => {
             <p class="text-xs text-neutral-text-muted">
             This application is for authorized users. <br class="sm:hidden"> Contact admin for access.
             </p>
-            <div class="inline-flex items-center gap-3">
-              <button @click="toggleTheme" class="theme-toggle-button btn btn-icon btn-ghost" aria-label="Toggle theme">
-                <component :is="isDarkMode ? SunIcon : MoonIcon" class="icon-base" />
-              </button>
-              <button v-if="showDevControls" @click="showTestUI = !showTestUI" class="theme-toggle-button btn btn-icon btn-ghost" aria-label="Toggle test UI elements">
-                  <BeakerIcon class="icon-base" />
-              </button>
-            </div>
         </div>
       </div>
     </div>
