@@ -216,23 +216,44 @@ const handleLlmAuditResponse = (llmResponseString: string) => {
   const agentLabel = agentDisplayName.value;
   console.log(`[${agentLabel}] Received raw LLM response (first 500 chars):`, llmResponseString.substring(0, 500));
 
+  let cleanedResponseString = llmResponseString.trim();
+
+  // **NEW CODE: Strip Markdown code block delimiters**
+  if (cleanedResponseString.startsWith('```json')) {
+    cleanedResponseString = cleanedResponseString.substring('```json'.length);
+    if (cleanedResponseString.endsWith('```')) {
+      cleanedResponseString = cleanedResponseString.substring(0, cleanedResponseString.length - '```'.length);
+    }
+    cleanedResponseString = cleanedResponseString.trim(); // Trim again after removing markers
+  } else if (cleanedResponseString.startsWith('```')) { // General markdown code block just in case
+    cleanedResponseString = cleanedResponseString.substring('```'.length);
+    if (cleanedResponseString.endsWith('```')) {
+      cleanedResponseString = cleanedResponseString.substring(0, cleanedResponseString.length - '```'.length);
+    }
+    cleanedResponseString = cleanedResponseString.trim();
+  }
+  // **END OF NEW CODE**
+
   let llmOutput: LlmAuditResponse;
   try {
-    // The LLM is instructed to return ONLY the JSON string.
-    llmOutput = JSON.parse(llmResponseString.trim());
+    llmOutput = JSON.parse(cleanedResponseString); // Try parsing the cleaned string
     console.log(`[${agentLabel}] Successfully parsed LLM JSON. Strategy: ${llmOutput.updateStrategy}`);
   } catch (e: any) {
     console.error(`[${agentLabel}] CRITICAL: Failed to parse LLM response as JSON. Error:`, e.message);
-    console.error(`[${agentLabel}] Raw LLM Response that failed:`, llmResponseString);
-    toast?.add({ type: 'error', title: `${agentLabel} Response Error`, message: `Assistant response was not valid JSON. Cannot display slideshow. Raw content shown.`, duration: 10000 });
+    console.error(`[${agentLabel}] Original Raw LLM Response that failed:`, llmResponseString);
+    console.error(`[${agentLabel}] Cleaned string that failed parsing:`, cleanedResponseString); // Log the cleaned string too
+    toast?.add({ type: 'error', title: `${agentLabel} Response Error`, message: `Assistant response was not valid JSON even after cleaning. Cannot display slideshow. Raw content shown.`, duration: 10000 });
     chatStore.updateMainContent({
       agentId: props.agentId, type: 'markdown',
-      data: `### ${agentLabel} - Invalid Response Format\nThe assistant's response was not in the expected JSON format. Displaying raw content:\n\n---\n\n${llmResponseString.replace(/</g, '&lt;').replace(/>/g, '&gt;')}`,
+      data: `### ${agentLabel} - Invalid Response Format\nThe assistant's response was not in the expected JSON format (even after attempting to clean it). Displaying raw content:\n\n---\n\n${llmResponseString.replace(/</g, '&lt;').replace(/>/g, '&gt;')}`,
       title: 'Invalid Response Format', timestamp: Date.now()
     });
     isLoadingResponse.value = false;
     return;
   }
+
+  // ... (rest of the handleLlmAuditResponse method remains the same as in the previous good version) ...
+  // (switch statement for updateStrategy, setupSlideshowState calls, etc.)
 
   const newProblemTitle = llmOutput.problemTitle || currentProblemTitleForDisplay.value || "Problem Analysis";
   let shouldStartAutoplay = false;
@@ -251,7 +272,7 @@ const handleLlmAuditResponse = (llmResponseString: string) => {
         break;
       }
       setupSlideshowState(llmOutput.content, newProblemTitle);
-      currentAppSlideIndex.value = 0; // Always start new/revised slideshows from the beginning
+      currentAppSlideIndex.value = 0; 
       hasNewSlideshowContentLoaded.value = true;
       shouldStartAutoplay = true;
       console.log(`[${agentLabel}] Strategy: ${llmOutput.updateStrategy}. New/Revised slideshow content set (length: ${llmOutput.content.length}). Title: ${newProblemTitle}`);
@@ -260,10 +281,10 @@ const handleLlmAuditResponse = (llmResponseString: string) => {
     case "append_to_final_slide":
       if (currentSlideshowFullMarkdown.value && totalAppSlidesCount.value > 0 && llmOutput.newContent) {
         const updatedMarkdown = currentSlideshowFullMarkdown.value + (currentSlideshowFullMarkdown.value.endsWith('\n') ? '' : '\n') + llmOutput.newContent;
-        setupSlideshowState(updatedMarkdown, newProblemTitle); // This updates currentSlideshowFullMarkdown
-        currentAppSlideIndex.value = totalAppSlidesCount.value > 0 ? totalAppSlidesCount.value - 1 : 0; // Stay on (new) last slide
-        hasNewSlideshowContentLoaded.value = true; // To trigger navigation
-        isAutoplayGloballyActive.value = false; // Pause autoplay when appending
+        setupSlideshowState(updatedMarkdown, newProblemTitle);
+        currentAppSlideIndex.value = totalAppSlidesCount.value > 0 ? totalAppSlidesCount.value - 1 : 0; 
+        hasNewSlideshowContentLoaded.value = true; 
+        isAutoplayGloballyActive.value = false; 
         isCurrentSlidePlaying.value = false;
         console.log(`[${agentLabel}] Strategy: append_to_final_slide. Content appended.`);
       } else {
@@ -277,7 +298,6 @@ const handleLlmAuditResponse = (llmResponseString: string) => {
 
     case "no_update_needed":
       toast?.add({ type: 'info', title: `${agentLabel} Status`, message: 'No significant update to the analysis was needed based on the latest input.', duration: 4000 });
-      // If autoplay was on and paused, and not on the last slide, potentially resume
       if (isAutoplayGloballyActive.value && !isCurrentSlidePlaying.value && currentAppSlideIndex.value < totalAppSlidesCount.value - 1) {
         scheduleNextSlide();
       }
@@ -287,22 +307,32 @@ const handleLlmAuditResponse = (llmResponseString: string) => {
     case "clarification_needed":
       const question = llmOutput.clarification_question || "The assistant requires more details to proceed.";
       toast?.add({ type: 'warning', title: `${agentLabel} Needs Clarification`, message: question, duration: 12000 });
-      // Optionally, add a system message to a chat log if this agent had one
-      // chatStore.addMessage({ role: 'system', agentId: props.agentId, content: `[${agentLabel}] Clarification needed: ${question}` });
       isAutoplayGloballyActive.value = false;
       isCurrentSlidePlaying.value = false;
       console.log(`[${agentLabel}] Strategy: clarification_needed. Question: ${question}`);
       break;
 
     default:
-      console.error(`[${agentLabel}] Unknown updateStrategy: ${llmOutput.updateStrategy}`);
-      toast?.add({type: 'error', title: 'Unknown Update Strategy', message: `Received an unrecognized update instruction: ${llmOutput.updateStrategy}`});
+      console.error(`[${agentLabel}] Unknown updateStrategy: ${(llmOutput as any).updateStrategy}`); // Cast to any to access potentially incorrect property
+      toast?.add({type: 'error', title: 'Unknown Update Strategy', message: `Received an unrecognized update instruction: ${(llmOutput as any).updateStrategy}`});
       chatStore.updateMainContent({
           agentId: props.agentId, type: 'markdown',
-          data: `### ${agentLabel} - Internal Error\nAssistant provided an unknown update strategy: "${llmOutput.updateStrategy}".`,
+          data: `### ${agentLabel} - Internal Error\nAssistant provided an unknown update strategy: "${(llmOutput as any).updateStrategy}".`,
           title: 'Internal Processing Error', timestamp: Date.now()
       });
   }
+
+  nextTick().then(() => {
+    if (hasNewSlideshowContentLoaded.value && compactMessageRendererRef.value) {
+      compactMessageRendererRef.value.navigateToSlide(currentAppSlideIndex.value); 
+      hasNewSlideshowContentLoaded.value = false;
+    }
+    if (shouldStartAutoplay && isAutoplayGloballyActive.value && totalAppSlidesCount.value > 0) {
+      scheduleNextSlide();
+    }
+  });
+
+isLoadingResponse.value = false;
 
   nextTick().then(() => {
     if (hasNewSlideshowContentLoaded.value && compactMessageRendererRef.value) {

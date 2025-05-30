@@ -409,15 +409,15 @@ const getRecordingStatusText = (): string => {
         }
     }
     // Whisper STT specific statuses
-    else if (sttPreference.value === 'whisper_api' && whisperSpeechHandlerRef.value) {
+       else if (sttPreference.value === 'whisper_api' && whisperSpeechHandlerRef.value) {
         if (whisperSpeechHandlerRef.value.isTranscribingCurrentSegment) return 'Whisper processing audio segment...';
         if (whisperSpeechHandlerRef.value.isMediaRecorderActive) {
             const duration = whisperSpeechHandlerRef.value.recordingSegmentSeconds;
             const durationStr = ` (${new Date(duration * 1000).toISOString().substr(14, 5)})`;
 
-            // Check for Whisper's "Sending in..." countdown
+            // UPDATED: Check for Whisper's "Sending in..." countdown
             if (isContinuousMode.value && whisperSpeechHandlerRef.value.isWhisperPauseDetected) {
-                return `Sending in ${ (whisperSpeechHandlerRef.value.whisperPauseCountdown / 1000).toFixed(1) }s...`;
+                return `Sending in ${ (whisperSpeechHandlerRef.value.whisperPauseCountdown / 1000).toFixed(1) }s... (Whisper)`;
             }
 
             if (isPttMode.value) return `Recording (PTT ${method})${durationStr}`;

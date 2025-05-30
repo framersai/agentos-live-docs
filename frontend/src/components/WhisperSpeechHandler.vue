@@ -5,7 +5,7 @@
  * @description Component to handle OpenAI Whisper API interactions for STT.
  * Supports Push-to-Talk, Continuous mode with silence detection and countdown,
  * and VAD Command Capture.
- * @version 2.2.1 (Corrects TS errors, uses new settings from VoiceApplicationSettings)
+ * @version 2.2.2 (Corrects TS errors, uses new settings from VoiceApplicationSettings, fixes timer type)
  */
 import {
   ref,
@@ -14,7 +14,7 @@ import {
   inject,
   nextTick,
   type PropType,
-  // Ref, // Removed if not explicitly used for typing
+  // type Ref, // Removed as it's not strictly needed for explicit typing here
   onBeforeUnmount,
 } from 'vue';
 import { speechAPI, type TranscriptionResponseFE } from '@/utils/api';
@@ -27,7 +27,7 @@ import type { AxiosResponse } from 'axios';
 
 // Constants
 const MIN_AUDIO_BLOB_SIZE_BYTES = 200;
-const PREFERRED_MIME_TYPE_BASE = 'audio/webm';
+const PREFERRED_MIME_TYPE_BASE = 'audio/webm'; // Base for mime type
 
 const props = defineProps({
   settings: { type: Object as PropType<VoiceApplicationSettings>, required: true },
@@ -49,7 +49,7 @@ const toast = inject<ToastService>('toast');
 const isMediaRecorderActive = ref(false);
 const isTranscribingCurrentSegment = ref(false);
 const recordingSegmentSeconds = ref(0);
-const audioChunks = ref<Blob[]>([]);
+const audioChunks = ref<Blob[]>([]); // This is Ref<Blob[]>
 const permissionStatus = ref(props.initialPermissionStatus);
 
 const speechOccurredInCurrentSegment = ref(false);
@@ -60,7 +60,7 @@ const whisperPauseCountdown = ref(0);
 let mediaRecorder: MediaRecorder | null = null;
 let recordingSegmentTimerId: ReturnType<typeof setInterval> | null = null;
 let continuousSilenceMonitorIntervalId: ReturnType<typeof setInterval> | null = null;
-let whisperPauseCountdownTimerId: ReturnType<typeof setTimeout> | null = null; // Changed NodeJS.Timeout to setTimeout's return type
+let whisperPauseCountdownTimerId: ReturnType<typeof setTimeout> | null = null; // Compatible with both browser and Node.js
 
 const isPttMode = computed(() => props.audioInputMode === 'push-to-talk');
 const isContinuousMode = computed(() => props.audioInputMode === 'continuous');
@@ -81,7 +81,7 @@ const _clearRecordingSegmentTimer = () => {
 const _stopContinuousWhisperSilenceMonitor = () => {
   if (continuousSilenceMonitorIntervalId !== null) clearInterval(continuousSilenceMonitorIntervalId);
   continuousSilenceMonitorIntervalId = null;
-  // speechOccurredInCurrentSegment is reset when monitor starts
+  // speechOccurredInCurrentSegment is reset when the monitor starts for a NEW segment.
   if (whisperPauseCountdownTimerId) clearTimeout(whisperPauseCountdownTimerId);
   whisperPauseCountdownTimerId = null;
   isWhisperPauseDetected.value = false;
@@ -108,7 +108,8 @@ const _startContinuousWhisperSilenceMonitor = () => {
     const avgByte = dataArray.length > 0 ? sum / dataArray.length : 0;
     const levelInDb = props.analyser.minDecibels + (avgByte / 255) * (props.analyser.maxDecibels - props.analyser.minDecibels);
 
-    if (levelInDb >= (props.settings.vadSensitivityDb ?? -45)) { // Use new setting
+    // Use vadSensitivityDb from settings, with a fallback
+    if (levelInDb >= (props.settings.vadSensitivityDb ?? -45)) {
       speechOccurredInCurrentSegment.value = true;
       silenceStartTime = null;
       if (isWhisperPauseDetected.value) {
@@ -121,7 +122,9 @@ const _startContinuousWhisperSilenceMonitor = () => {
     } else {
       if (speechOccurredInCurrentSegment.value && !isWhisperPauseDetected.value) {
         if (silenceStartTime === null) silenceStartTime = Date.now();
+        // Use continuousModePauseTimeoutMs for detecting end of speech utterance
         if (Date.now() - silenceStartTime >= (props.settings.continuousModePauseTimeoutMs || 3000)) {
+          // Use continuousModeSilenceSendDelayMs for the "Sending in..." UI countdown
           const sendDelay = props.settings.continuousModeSilenceSendDelayMs ?? 1000;
           console.log(`[WSH Continuous] Silence threshold met. Starting ${sendDelay}ms 'Sending in...' countdown.`);
           isWhisperPauseDetected.value = true;
@@ -166,8 +169,8 @@ const _processRecordedSegment = async () => {
   _clearRecordingSegmentTimer();
   if (wasContinuousRecording) _stopContinuousWhisperSilenceMonitor();
 
-  const currentAudioChunks = [...audioChunks.value];
-  audioChunks.value = [];
+  const currentAudioChunks = [...audioChunks.value]; // Access .value for Ref<Blob[]>
+  audioChunks.value = []; // Reset .value for Ref<Blob[]>
 
   if (currentAudioChunks.length > 0) {
     const audioBlob = new Blob(currentAudioChunks, { type: mediaRecorder?.mimeType || preferredMimeType.value });
@@ -289,7 +292,8 @@ const transcribeWithWhisper = async (audioBlob: Blob) => {
   } finally {
     const wasTranscribing = isTranscribingCurrentSegment.value;
     isTranscribingCurrentSegment.value = false;
-    if (wasTranscribing && !isMediaRecorderActive.value) { // Only change processing state if not recording a new segment
+    // Only emit processing-audio false if media recorder is not also active (e.g. already restarted)
+    if (wasTranscribing && !isMediaRecorderActive.value) {
          emit('processing-audio', false);
     }
 
@@ -318,10 +322,10 @@ const _startRecordingSegmentTimer = () => {
         if (isContinuousMode.value && currentDuration >= maxDuration) {
             console.log(`[WSH] Continuous Whisper: Max segment duration (${maxDuration}s) reached.`);
             _stopMediaRecorderAndFinalizeSegment();
-        } else if (isPttMode.value && currentDuration >= 120) {
+        } else if (isPttMode.value && currentDuration >= 120) { // PTT Max duration
             toast?.add({type:'info', title:'Recording Limit', message:'Max PTT recording (120s) reached.'});
             _stopMediaRecorderAndFinalizeSegment();
-        } else if (isVoiceActivationMode.value && /* !isVADListeningForWakeWord && */ currentDuration >= 60) {
+        } else if (isVoiceActivationMode.value && /* !isVADListeningForWakeWord && */ currentDuration >= 60) { // VAD Command Max
             toast?.add({type:'info', title:'VAD Command Limit', message:'Max VAD command recording (60s) reached.'});
             _stopMediaRecorderAndFinalizeSegment();
         }
@@ -332,6 +336,7 @@ const _startRecordingSegmentTimer = () => {
 };
 
 watch(() => props.initialPermissionStatus, (newVal) => permissionStatus.value = newVal);
+
 watch(() => props.parentIsProcessingLLM, (isProcessing) => {
     if (!isProcessing && isContinuousMode.value && permissionStatus.value === 'granted' &&
         !isMediaRecorderActive.value && !isTranscribingCurrentSegment.value) {
@@ -348,16 +353,22 @@ const reinitialize = async () => {
 const stopAll = async () => {
   console.log("[WSH] Stopping all WhisperSpeech activities.");
   if (mediaRecorder && isMediaRecorderActive.value) {
-    mediaRecorder.onstop = null; // Prevent onstop from re-triggering logic during forced stop
+    // Temporarily detach onstop to prevent it from running during a forced stopAll
+    const originalOnStop = mediaRecorder.onstop;
+    mediaRecorder.onstop = null;
     mediaRecorder.stop();
+    mediaRecorder.onstop = originalOnStop; // Reattach if necessary, or let it be re-set by new MediaRecorder
   }
   _clearRecordingSegmentTimer();
   _stopContinuousWhisperSilenceMonitor();
   isMediaRecorderActive.value = false;
   isTranscribingCurrentSegment.value = false;
   audioChunks.value = [];
-  if (document.hasFocus()) { // Only emit if relevant (e.g. not during page unload)
-    emit('processing-audio', false);
+  // Avoid emitting processing-audio false if the component is unmounting,
+  // as parent might already be unmounted or in a transitional state.
+  // Check document.hasFocus() or a similar mechanism if needed.
+  if (typeof document !== 'undefined' && document.hasFocus()) {
+      emit('processing-audio', false);
   }
 };
 
@@ -383,5 +394,5 @@ defineExpose({
   </template>
 
 <style scoped lang="scss">
-/* No styles needed if there's no direct template output intended for display within this component */
+/* No specific styles needed here if all UI is in VoiceInput.vue */
 </style>
