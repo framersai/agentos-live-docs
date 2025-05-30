@@ -1,184 +1,234 @@
+// File: backend/src/features/speech/stt.routes.ts
 /**
- * @file Text-to-Speech (TTS) API route handlers.
- * @version 1.3.1 - Corrected ITtsOptions usage and scope for outputFormat.
- * @description Handles requests to the /api/tts endpoint for synthesizing speech from text
- * using the configured TTS provider (e.g., OpenAI TTS via AudioService).
- */
+ * @file Speech-to-Text (STT) API Route Handlers
+ * @version 1.0.1 - Added file type filtering and refined error handling.
+ * @description Handles requests to the /api/stt endpoint for transcribing audio
+ * using the configured STT provider (e.g., OpenAI Whisper via AudioService).
+ * It uses multer for parsing multipart/form-data containing the audio file.
+ * @dependencies express, multer, ../../core/audio/audio.service, ../../core/audio/stt.interfaces, ../../core/cost/cost.service, dotenv, path, url
+ */
 
 import { Request, Response } from 'express';
+import multer, { MulterError } from 'multer';
 import { audioService } from '../../core/audio/audio.service';
-// ITtsOptions will be the updated version with 'speed' and 'volume'
-import { ITtsOptions, ITtsResult, IAvailableVoice } from '../../core/audio/tts.interfaces';
+import { ISttRequestOptions, ISttOptions, ITranscriptionResult, SttResponseFormat } from '../../core/audio/stt.interfaces';
 import { CostService } from '../../core/cost/cost.service';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import type { SpeechCreateParams } from 'openai/resources/audio/speech';
 
 const __filename = fileURLToPath(import.meta.url);
-const __projectRoot = path.resolve(path.dirname(__filename), '../../../..');
+const __projectRoot = path.resolve(path.dirname(__filename), '../../../../'); // Adjusted path to project root
 dotenv.config({ path: path.join(__projectRoot, '.env') });
 
-interface ITtsRequestBody {
-  text: string;
-  voice?: string;
-  model?: SpeechCreateParams['model'];
-  outputFormat?: SpeechCreateParams['response_format'];
-  speed?: number; // This aligns with the corrected ITtsOptions
-  pitch?: number;
-  volume?: number; // This aligns with the corrected ITtsOptions
-  languageCode?: string;
-  userId?: string;
-  providerId?: string;
+// Configure multer for file uploads
+// Store files in memory for processing.
+const storage = multer.memoryStorage();
+const MAX_FILE_SIZE_MB = 25; // OpenAI Whisper limit is 25MB
+const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: MAX_FILE_SIZE_BYTES },
+  fileFilter: (req, file, cb) => {
+    // Whisper supports: mp3, mp4, mpeg, mpga, m4a, wav, and webm.
+    const allowedMimeTypes = [
+      'audio/mpeg', // mp3, mpga
+      'audio/mp4',  // mp4 (typically m4a audio is in mp4 container)
+      'audio/x-m4a',// m4a
+      'audio/wav',  // wav
+      'audio/webm', // webm
+      'audio/ogg',  // ogg (Opus in ogg is common)
+      'video/mp4',  // mp4 video with audio track
+      'video/webm'  // webm video with audio track
+    ];
+    if (allowedMimeTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      console.warn(`[stt.routes] Attempted upload of unsupported file type: ${file.mimetype} from user ${req.ip}`);
+      cb(new Error(`Unsupported file type: ${file.mimetype}. Supported types include MP3, WAV, M4A, WebM.`));
+    }
+  },
+});
+
+/**
+ * Validates and maps a client-provided responseFormat string to the SttResponseFormat type.
+ * @param {string | undefined} formatString - The response format string from the client request.
+ * @returns {SttResponseFormat | undefined} The validated SttResponseFormat, or undefined if invalid or not provided.
+ */
+function validateAndMapResponseFormat(formatString: string | undefined): SttResponseFormat | undefined {
+  if (!formatString) return undefined; // Default to provider's choice if not specified
+  const validFormats: ReadonlyArray<SttResponseFormat> = ['json', 'text', 'srt', 'verbose_json', 'vtt'];
+  if (validFormats.includes(formatString as SttResponseFormat)) {
+    return formatString as SttResponseFormat;
+  }
+  console.warn(`[stt.routes] Invalid responseFormat requested: "${formatString}". Provider will use its default or 'verbose_json'.`);
+  return undefined; // Let the provider handle default if client sends invalid format
 }
 
+
+/**
+ * @route POST /api/stt
+ * @description Handles audio transcription requests.
+ * Expects an 'audio' file in a multipart/form-data request.
+ * Optional fields in the body: language, prompt, model, responseFormat, temperature.
+ * @param {Request} req - Express request object, potentially augmented by auth middleware with `req.user`.
+ * @param {Response} res - Express response object.
+ * @returns {Promise<void>}
+ * @throws Will send appropriate HTTP error responses for various failure conditions.
+ */
 export async function POST(req: Request, res: Response): Promise<void> {
-  const body: ITtsRequestBody = req.body;
-  const {
-    text,
-    voice,
-    model,
-    outputFormat,
-    speed, // Will be passed to ttsServiceOptions
-    pitch,
-    volume, // Will be passed to ttsServiceOptions
-    languageCode,
-    providerId,
-  } = body;
+  // @ts-ignore - req.user is a custom property potentially injected by authentication middleware
+  const userId = req.user?.id || req.body.userId || `unauthenticated_user_${req.ip || 'unknown_ip'}`;
 
-  // @ts-ignore
-  const userId = req.user?.id || body.userId || 'default_user_tts';
+  upload.single('audio')(req, res, async (err: any) => {
+    if (err instanceof MulterError) {
+      console.error(`[stt.routes] Multer error for user ${userId} (IP: ${req.ip}): ${err.message} (Code: ${err.code})`);
+      if (err.code === 'LIMIT_FILE_SIZE') {
+        return res.status(413).json({ message: `Audio file is too large. Maximum size is ${MAX_FILE_SIZE_MB}MB.`, error: 'FILE_TOO_LARGE' });
+      }
+      return res.status(400).json({ message: `File upload error: ${err.message}`, error: 'FILE_UPLOAD_ERROR' });
+    } else if (err) {
+      console.error(`[stt.routes] Non-multer error during upload for user ${userId} (IP: ${req.ip}): ${err.message}`);
+      // This 'err' might be from our custom fileFilter
+      return res.status(415).json({ message: err.message || 'Invalid audio file type.', error: 'INVALID_AUDIO_FILE_TYPE' });
+    }
 
-  if (!text || typeof text !== 'string' || text.trim().length === 0) {
-    res.status(400).json({ message: 'Text for speech synthesis is required.', error: 'MISSING_TEXT_INPUT' });
-    return;
-  }
+    if (!req.file) {
+      console.warn(`[stt.routes] No audio file uploaded by user ${userId} (IP: ${req.ip})`);
+      return res.status(400).json({ message: 'No audio file was provided in the request.', error: 'NO_AUDIO_FILE' });
+    }
 
-  const effectiveProviderId = providerId || process.env.DEFAULT_SPEECH_PREFERENCE_TTS_PROVIDER || 'openai_tts';
-  if (effectiveProviderId === 'openai_tts' && text.length > 4096) {
-    res.status(400).json({ message: 'Text input is too long for OpenAI TTS. Maximum 4096 characters.', error: 'TEXT_TOO_LONG' });
-    return;
-  }
+    const audioBuffer: Buffer = req.file.buffer;
+    const originalFileName: string = req.file.originalname || `audio-${Date.now()}.${req.file.mimetype.split('/')[1] || 'bin'}`;
 
-  try {
-    const costThresholdString = process.env.COST_THRESHOLD_USD_PER_SESSION || '2.00';
-    const effectiveCostThreshold = parseFloat(costThresholdString);
-    const disableCostLimits = process.env.DISABLE_COST_LIMITS === 'true';
+    // Extract options from request body (multer puts non-file fields into req.body)
+    const requestOptions: ISttRequestOptions = req.body;
 
-    if (!disableCostLimits && CostService.isSessionCostThresholdReached(userId, effectiveCostThreshold)) {
-      const currentCostDetail = CostService.getSessionCost(userId);
-      res.status(403).json({
-        message: `Session cost threshold of $${effectiveCostThreshold.toFixed(2)} reached. TTS synthesis blocked.`,
-        error: 'COST_THRESHOLD_EXCEEDED',
-        currentCost: currentCostDetail.totalCost,
-        threshold: effectiveCostThreshold,
-      });
-      return;
-    }
+    const costThresholdString = process.env.COST_THRESHOLD_USD_PER_SESSION || '2.00';
+    const effectiveCostThreshold = parseFloat(costThresholdString);
+    const disableCostLimits = process.env.DISABLE_COST_LIMITS === 'true';
 
-    const ttsServiceOptions: ITtsOptions = { // This will now correctly accept 'speed' and 'volume'
-      voice: voice,
-      model: model,
-      outputFormat: outputFormat,
-      speed: speed, // Now a known property of ITtsOptions
-      pitch: pitch,
-      volume: volume, // Now a known property of ITtsOptions
-      languageCode: languageCode,
-      providerId: effectiveProviderId,
-    };
-    
-    console.log(`TTS Routes: User [${userId}] Requesting TTS - Provider: ${effectiveProviderId}, Model: ${model || 'default'}, Voice: ${voice || 'default'}, Speed: ${speed}, Pitch: ${pitch}, Volume: ${volume}`);
+    if (!disableCostLimits) {
+        const currentCost = CostService.getSessionCost(userId); // Assuming CostService can provide this
+        if (currentCost.totalCost >= effectiveCostThreshold) {
+            console.warn(`[stt.routes] STT request blocked for user ${userId}. Session cost threshold $${effectiveCostThreshold.toFixed(2)} reached (Current: $${currentCost.totalCost.toFixed(2)}).`);
+            return res.status(403).json({
+                message: `Session cost threshold of $${effectiveCostThreshold.toFixed(2)} reached. STT transcription blocked.`,
+                error: 'COST_THRESHOLD_EXCEEDED',
+                currentCost: currentCost.totalCost,
+                threshold: effectiveCostThreshold,
+            });
+        }
+    }
 
-    const ttsResult: ITtsResult = await audioService.synthesizeSpeech(
-      text,
-      ttsServiceOptions,
-      userId
-    );
-    
-    const providerNameForResult = ttsResult.providerName || ttsServiceOptions.providerId || 'UnknownProvider';
-    console.log(`TTS Routes: User [${userId}] Synthesized audio. Cost: $${ttsResult.cost.toFixed(6)}, Format: ${ttsResult.mimeType}, Provider: ${providerNameForResult}, Voice: ${ttsResult.voiceUsed}`);
+    try {
+      const sttServiceOptions: ISttOptions = {
+        language: requestOptions.language,
+        model: requestOptions.model, // audio.service will default if not provided
+        prompt: requestOptions.prompt,
+        responseFormat: validateAndMapResponseFormat(requestOptions.responseFormat),
+        temperature: requestOptions.temperature !== undefined ? Number(requestOptions.temperature) : undefined,
+        providerSpecificOptions: {
+            mimeType: req.file.mimetype // Pass MIME type for better handling in audio.service
+        }
+      };
+      
+      console.log(`[stt.routes] User [${userId}] (IP: ${req.ip}) Requesting STT - Model: ${sttServiceOptions.model || 'default'}, Lang: ${sttServiceOptions.language || 'auto'}, Filename: ${originalFileName}, Size: ${(req.file.size / 1024).toFixed(2)}KB`);
 
-    res.setHeader('Content-Type', ttsResult.mimeType);
-    const actualOutputFormatHeader = ttsServiceOptions.outputFormat || ttsResult.mimeType.split('/')[1] || 'mp3';
-    res.setHeader('Content-Disposition', `inline; filename="speech.${actualOutputFormatHeader}"`);
-    res.setHeader('X-TTS-Cost', ttsResult.cost.toFixed(6));
-    res.setHeader('X-TTS-Voice', ttsResult.voiceUsed || 'default');
-    res.setHeader('X-TTS-Provider', providerNameForResult);
-    if (ttsResult.durationSeconds) {
-      res.setHeader('X-TTS-Duration-Seconds', ttsResult.durationSeconds.toFixed(3));
-    }
-    if (ttsResult.usage) {
-        res.setHeader('X-TTS-Model-Used', ttsResult.usage.modelUsed);
-        res.setHeader('X-TTS-Characters', ttsResult.usage.characters.toString());
-    }
-    
-    res.status(200).send(ttsResult.audioBuffer);
+      const transcriptionResult: ITranscriptionResult = await audioService.transcribeAudio(
+        audioBuffer,
+        originalFileName,
+        sttServiceOptions,
+        userId
+      );
+      
+      const providerNameForResult = transcriptionResult.usage?.modelUsed || 'UnknownProvider'; // Prefer model if available
+      console.log(`[stt.routes] User [${userId}] (IP: ${req.ip}) Audio transcribed. Cost: $${transcriptionResult.cost.toFixed(6)}, Duration: ${transcriptionResult.durationSeconds?.toFixed(2)}s, Provider/Model: ${providerNameForResult}`);
 
-  } catch (ttsError: any) {
-    console.error(`TTS Routes: TTS synthesis error for user ${userId}:`, ttsError.message, ttsError.originalError || ttsError.stack);
-    if (res.headersSent) {
-      return;
-    }
-    let errorMessage = 'Error synthesizing speech.';
-    let errorCode = 'TTS_SYNTHESIS_ERROR';
-    let statusCode = ttsError.status || 500;
+      res.status(200).json({
+        transcription: transcriptionResult.text,
+        durationSeconds: transcriptionResult.durationSeconds,
+        cost: transcriptionResult.cost,
+        language: transcriptionResult.language,
+        segments: transcriptionResult.segments, // Pass segments if available
+        message: 'Transcription successful.',
+        metadata: { // Include some useful metadata
+            modelUsed: transcriptionResult.usage?.modelUsed,
+            detectedLanguage: transcriptionResult.language, // Explicitly state detected language
+        }
+      });
 
-    if (ttsError.message?.includes('API key') || ttsError.message?.includes('authentication')) {
-      errorMessage = 'TTS service API key not configured properly, is invalid, or authentication failed.';
-      errorCode = 'TTS_API_AUTH_ERROR';
-      statusCode = 503;
-    } else if (ttsError.message?.includes('model_not_found') || ttsError.message?.includes('Invalid voice')) {
-      errorMessage = `Invalid TTS model or voice specified: ${ttsError.message}`;
-      errorCode = 'INVALID_TTS_PARAMS';
-      statusCode = 400;
-    } else if (ttsError.message?.includes('insufficient_quota') || ttsError.message?.includes('limit reached')) {
-        errorMessage = 'TTS service quota exceeded or rate limit reached.';
-        errorCode = 'TTS_QUOTA_OR_RATE_LIMIT_EXCEEDED';
-        statusCode = 429; 
-    } else if (ttsError.message?.includes('Text input is too long')) {
-        errorMessage = ttsError.message;
-        errorCode = 'TEXT_TOO_LONG';
-        statusCode = 400;
-    } else if (ttsError.message?.includes("Browser TTS cannot be directly used by the backend")) {
-        errorMessage = "The selected TTS provider (Browser TTS) cannot be used by the backend. Please choose a different provider.";
-        errorCode = "INVALID_TTS_PROVIDER_FOR_BACKEND";
-        statusCode = 400;
-    }
-    
-    res.status(statusCode).json({
-      message: errorMessage,
-      error: errorCode,
-      details: process.env.NODE_ENV === 'development' ? {
-        originalError: ttsError.message,
-      } : undefined,
-    });
-  }
+    } catch (sttError: any) {
+      console.error(`[stt.routes] STT transcription error for user ${userId} (IP: ${req.ip}), File: ${originalFileName}: ${sttError.message}`, sttError.stack);
+      if (res.headersSent) {
+        return; // Avoid sending multiple responses
+      }
+      let errorMessage = 'Error transcribing audio.';
+      let errorCode = 'STT_TRANSCRIPTION_ERROR';
+      let statusCode = sttError.status || 500; // Use error status if available
+
+      if (sttError.message?.includes('API key') || sttError.message?.includes('authentication')) {
+        errorMessage = 'STT service API key issue or authentication failure. Please check server configuration.';
+        errorCode = 'STT_API_AUTH_ERROR';
+        statusCode = 503; // Service Unavailable (misconfiguration)
+      } else if (sttError.message?.includes('insufficient_quota') || sttError.message?.includes('limit reached')) {
+          errorMessage = 'STT service quota exceeded or rate limit reached.';
+          errorCode = 'STT_QUOTA_OR_RATE_LIMIT_EXCEEDED';
+          statusCode = 429; // Too Many Requests
+      } else if (sttError.message?.includes('Unsupported file type') || sttError.message?.includes('Invalid audio file')) {
+          errorMessage = sttError.message; // Use specific error from file filter or service
+          errorCode = 'INVALID_AUDIO_FILE_FORMAT';
+          statusCode = 415; // Unsupported Media Type
+      } else if (sttError.message?.toLowerCase().includes('timeout')) {
+          errorMessage = 'Transcription request timed out.';
+          errorCode = 'STT_TIMEOUT';
+          statusCode = 504; // Gateway Timeout
+      }
+
+      res.status(statusCode).json({
+        message: errorMessage,
+        error: errorCode,
+        details: process.env.NODE_ENV === 'development' ? {
+          originalErrorName: sttError.name,
+          originalErrorMessage: sttError.message,
+        } : undefined,
+      });
+    }
+  });
 }
 
+/**
+ * @route GET /api/stt/stats
+ * @description Retrieves statistics related to STT and TTS services from the backend.
+ * This can include provider information, cost details, and default configurations.
+ * @param {Request} req - Express request object.
+ * @param {Response} res - Express response object.
+ * @returns {Promise<void>}
+ */
 export async function GET(req: Request, res: Response): Promise<void> {
-    try {
-        // @ts-ignore 
-        const userId = req.user?.id || 'public_user_tts_voices';
-        const providerFilter = req.query.providerId as string | undefined;
+  try {
+    // @ts-ignore - req.user is a custom property
+    const userId = req.user?.id || `public_user_stt_stats_${req.ip || 'unknown_ip'}`;
+    const stats = await audioService.getSpeechProcessingStats(userId);
+    const sessionCost = CostService.getSessionCost(userId);
 
-        const voices: IAvailableVoice[] = await audioService.listAvailableTtsVoices(providerFilter);
-        
-        console.log(`TTS Routes: User ${userId} requested available voices. Provider filter: ${providerFilter || 'all'}. Found: ${voices.length}`);
-        
-        res.status(200).json({
-            message: "Available TTS voices fetched successfully.",
-            voices: voices,
-            count: voices.length,
-        });
-    } catch (error: any) {
-        console.error("TTS Routes: Error fetching available voices:", error.message, error.stack);
-        if (res.headersSent) {
-          return;
-        }
-        res.status(500).json({
-            message: "Failed to fetch available TTS voices.",
-            error: "VOICE_LISTING_ERROR",
-            details: process.env.NODE_ENV === 'development' ? error.message : undefined,
-        });
-    }
+    console.log(`[stt.routes] User ${userId} (IP: ${req.ip}) requested STT/TTS stats.`);
+    
+    res.status(200).json({
+      ...stats, // Spread the stats from audioService
+      currentSessionCost: sessionCost.totalCost, // Add current session cost
+      sessionCostThreshold: parseFloat(process.env.COST_THRESHOLD_USD_PER_SESSION || '2.00'),
+    });
+  } catch (error: any) {
+    console.error(`[stt.routes] Error fetching STT/TTS stats for user at IP ${req.ip}: ${error.message}`, error.stack);
+    if (res.headersSent) {
+      return;
+    }
+    res.status(500).json({
+      message: "Failed to fetch speech processing statistics.",
+      error: "STATS_FETCH_ERROR",
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined,
+    });
+  }
 }
