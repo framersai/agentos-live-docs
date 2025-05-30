@@ -649,10 +649,21 @@ const clearPendingTranscript = () => {
     clearPauseTimerForWebSpeech(); pauseDetectedWebSpeech.value = false; pauseCountdownWebSpeech.value = 0;
 };
 
-defineExpose({ 
-  startListening, stopListening, startVADWakeWordRecognition, stopVADWakeWordRecognition,
-  reinitialize, stopAll, isBrowserWebSpeechActive, isVADListeningForWakeWord,
-  hasPendingTranscript, triggerEditPendingTranscript, clearPendingTranscript, 
+defineExpose({
+  startListening,
+  stopListening,
+  startVADWakeWordRecognition,
+  stopVADWakeWordRecognition,
+  reinitialize,
+  stopAll,
+  isBrowserWebSpeechActive, // reactive ref
+  isVADListeningForWakeWord, // reactive ref
+  hasPendingTranscript, // computed ref
+  triggerEditPendingTranscript,
+  clearPendingTranscript,
+  // Add these to expose them to the parent (VoiceInput.vue)
+  pauseDetectedWebSpeech,    // reactive ref
+  pauseCountdownWebSpeech, // reactive ref
 });
 
 watch(() => props.audioInputMode, async (newMode, oldMode) => { 
