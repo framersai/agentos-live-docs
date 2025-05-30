@@ -4,45 +4,62 @@ Core Philosophy: The UI/UX will transcend static interfaces, embodying an "evolu
 
 I. Color & Theme System (Foundation)
 
-    Sakura Sunset (Her-Inspired Pink Theme - Default Dark):
-        Concept: Digital empathy, warmth, subtle futurism, intimacy.
-        Palette:
-            Backgrounds: Deep, warm, desaturated rosewood/plum (hsl(335, 30%, 12%) as primary).
-            Text: Soft, warm off-white / creamy peach (hsl(20, 70%, 90%) as primary).
-            Accents (Primary): Warm, desaturated Coral/Salmon (hsl(0, 85%, 70%)).
-            Accents (Secondary): Soft, dusty Rose pink (hsl(340, 70%, 75%)).
-            Glows: Primarily from the Coral/Salmon accent, soft and warm.
-        Feeling: Inviting, organic, calm yet sophisticated.
+🌸 Sakura Sunset (Her-Inspired Pink Theme - Default Dark)
 
-    Twilight Neo (Overhauled Midnight Dark - Alternative Dark):
-        Concept: Sleek, futuristic, neo-holographic, computational.
-        Palette:
-            Backgrounds: Deep, dark indigo-blue (hsl(220, 30%, 8%) as primary).
-            Text: Bright, clean light blue/cyan (hsl(200, 70%, 94%) as primary) for high contrast.
-            Accents (Primary): Vivid Cyan/Teal (hsl(180, 95%, 60%)).
-            Accents (Secondary): Electric Violet/Purple (hsl(270, 85%, 65%)).
-            Glows: Primarily Cyan/Teal and Violet, sharp and energetic.
-        Feeling: High-tech, precise, energetic, intelligent.
+    Concept: Digital empathy, warmth, subtle futurism, intimacy. Inspired by the film "Her." Focus on softer, warmer, and more prominent pinks, creating a calm, readable, and inviting atmosphere.
+    Palette:
+        Backgrounds:
+            Primary (Main UI background): hsl(340, 25%, 16%) (Very dark, muted warm rose – a deep, soft pinkish base rather than plum)
+            Secondary (Cards, panels, distinct sections): hsl(340, 22%, 22%) (Slightly lighter dark muted warm rose)
+            Tertiary (Subtle hovers, UI element backgrounds): hsl(340, 20%, 28%) (A step lighter for depth)
+        Text:
+            Primary (Main content text): hsl(25, 60%, 92%) (Soft, creamy peach/warm off-white – for excellent readability and warmth)
+            Secondary (Less prominent text, captions): hsl(345, 25%, 75%) (Muted, soft pinkish-grey)
+            Muted (Placeholders, disabled text): hsl(340, 15%, 60%) (Darker, desaturated pinkish-grey)
+        Accents:
+            Primary (Key interactive elements, highlights, "bright pink"): hsl(335, 80%, 72%) (A clear, vibrant warm pink – distinct but not jarring)
+            Primary Variants (for hover, active states):
+                Light: hsl(335, 85%, 78%)
+                Dark: hsl(335, 75%, 65%)
+            Secondary (Supporting accents, icons, "light pink"): hsl(345, 75%, 80%) (A soft, lighter, warm pink – harmonious and gentle)
+        Borders:
+            Primary (Standard UI element borders): hsl(340, 15%, 35%) (Subtle, harmonizing with backgrounds)
+            Interactive/Focus (Borders for focused or active accented items): hsl(335, 70%, 60%) (A darker shade of the primary accent pink)
+        Glows: Primarily derived from the Primary Accent Pink (hsl(335, 80%, 72%) with varying alpha values like 0.3-0.5), creating a soft, diffused, and warm emission.
+    Feeling: Intimate, warm, calming, subtly futuristic, with a distinct soft pink ambiance. Designed to be highly readable and visually soothing, avoiding chaotic brightness.
 
-    Aurora Daybreak (Default Light):
-        Concept: Clean, refreshing, optimistic, airy.
-        Palette:
-            Backgrounds: Very light, cool blues/grays (hsl(210, 60%, 98%) as primary).
-            Text: Dark blue-gray (hsl(220, 30%, 25%) as primary).
-            Accents (Primary): Soft Pink (hsl(330, 85%, 72%)).
-            Accents (Secondary): Soft Lavender (hsl(260, 75%, 78%)).
-            Glows: Soft, diffused, pastel-toned.
-        Feeling: Crisp, clear, calm, approachable.
+🌌 Twilight Neo (Overhauled Midnight Dark - Alternative Dark)
 
-    Warm Embrace (Alternative Light):
-        Concept: Cozy, inviting, slightly retro-futuristic, tangible.
-        Palette:
-            Backgrounds: Creamy off-whites (hsl(35, 70%, 96%) as primary).
-            Text: Dark warm brown (hsl(30, 20%, 25%) as primary).
-            Accents (Primary): Rich Amber/Orange (hsl(25, 75%, 65%)).
-            Accents (Secondary): Softer Gold/Yellow (hsl(45, 70%, 60%)).
-            Glows: Warm, amber, and golden hues.
-        Feeling: Comfortable, friendly, reliable.
+    Concept: Sleek, futuristic, neo-holographic, computational.
+    Palette:
+        Backgrounds: Deep, dark indigo-blue (hsl(220, 30%, 8%) as primary).
+        Text: Bright, clean light blue/cyan (hsl(200, 70%, 94%) as primary) for high contrast.
+        Accents (Primary): Vivid Cyan/Teal (hsl(180, 95%, 60%)).
+        Accents (Secondary): Electric Violet/Purple (hsl(270, 85%, 65%)).
+        Glows: Primarily Cyan/Teal and Violet, sharp and energetic.
+    Feeling: High-tech, precise, energetic, intelligent.
+
+☀️ Aurora Daybreak (Default Light)
+
+    Concept: Clean, refreshing, optimistic, airy.
+    Palette:
+        Backgrounds: Very light, cool blues/grays (hsl(210, 60%, 98%) as primary).
+        Text: Dark blue-gray (hsl(220, 30%, 25%) as primary).
+        Accents (Primary): Soft Pink (hsl(330, 85%, 72%)).
+        Accents (Secondary): Soft Lavender (hsl(260, 75%, 78%)).
+        Glows: Soft, diffused, pastel-toned.
+    Feeling: Crisp, clear, calm, approachable.
+
+🤗 Warm Embrace (Alternative Light)
+
+    Concept: Cozy, inviting, slightly retro-futuristic, tangible.
+    Palette:
+        Backgrounds: Creamy off-whites (hsl(35, 70%, 96%) as primary).
+        Text: Dark warm brown (hsl(30, 20%, 25%) as primary).
+        Accents (Primary): Rich Amber/Orange (hsl(25, 75%, 65%)).
+        Accents (Secondary): Softer Gold/Yellow (hsl(45, 70%, 60%)).
+        Glows: Warm, amber, and golden hues.
+    Feeling: Comfortable, friendly, reliable.
 
 II. Motion & Microinteraction Language
 
