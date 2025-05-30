@@ -1,15 +1,16 @@
 // File: frontend/src/composables/useAuth.ts
 /**
  * @file useAuth.ts
- * @version 1.1.1
- * @description Composable for managing authentication. Logout ensures page refresh/redirect.
- * Now correctly imports Pinia stores for reset.
+ * @version 1.2.0
+ * @description Composable for managing authentication and a session-specific user identifier.
+ * Logout ensures page refresh/redirect and clears session-specific ID.
  */
-import { ref, onMounted, onUnmounted, readonly, type Ref, watch } from 'vue';
+import { ref, onMounted, onUnmounted, readonly, type Ref, watch, computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import { AUTH_TOKEN_KEY } from '@/router';
+import { AUTH_TOKEN_KEY } from '@/router'; // Assuming this is your main auth token key
 import { api, authAPI } from '@/utils/api';
 import { useStorage } from '@vueuse/core';
+import { v4 as uuidv4 } from 'uuid'; // For generating session-specific IDs
 
 // Import Pinia stores for reset on logout
 import { useChatStore } from '@/store/chat.store';
@@ -17,12 +18,20 @@ import { useCostStore } from '@/store/cost.store';
 import { useAgentStore } from '@/store/agent.store';
 import { useUiStore } from '@/store/ui.store';
 
+// Key for session-specific user ID
+const SESSION_USER_ID_KEY = 'vcaSessionUserId';
 
+// Reactive refs for global auth state
 const isAuthenticatedGlobal = ref<boolean>(false);
 const authTokenGlobal = ref<string | null>(null);
 
+// Storage for actual auth token (shared password scenario)
 const localToken = useStorage<string | null>(AUTH_TOKEN_KEY, null, localStorage);
 const sessionToken = useStorage<string | null>(AUTH_TOKEN_KEY, null, sessionStorage);
+
+// Reactive ref and storage for session-specific user ID
+const sessionUserIdGlobal = ref<string | null>(null);
+const storedSessionUserId = useStorage<string | null>(SESSION_USER_ID_KEY, null, sessionStorage);
 
 const checkAuthStatus = (): boolean => {
   if (typeof window !== 'undefined') {
@@ -31,7 +40,7 @@ const checkAuthStatus = (): boolean => {
     const currentToken = tokenFromLocal || tokenFromSession;
 
     authTokenGlobal.value = currentToken;
-    isAuthenticatedGlobal.value = !!currentToken;
+    isAuthenticatedGlobal.value = !!currentToken; // Authentication based on shared password token
 
     if (currentToken) {
       api.defaults.headers.common['Authorization'] = `Bearer ${currentToken}`;
@@ -46,34 +55,59 @@ const checkAuthStatus = (): boolean => {
   return false;
 };
 
+/**
+ * Retrieves the current session-specific user ID.
+ * If one doesn't exist in sessionStorage, it generates a new UUID, stores it, and returns it.
+ * @returns {string} The session-specific user ID.
+ */
+const getOrGenerateSessionUserId = (): string => {
+  if (storedSessionUserId.value) {
+    sessionUserIdGlobal.value = storedSessionUserId.value;
+    return storedSessionUserId.value;
+  }
+  const newId = uuidv4();
+  storedSessionUserId.value = newId;
+  sessionUserIdGlobal.value = newId;
+  console.log('[Auth/Session] Generated new session User ID:', newId);
+  return newId;
+};
 
 export function useAuth() {
   const router = useRouter();
   const route = useRoute();
 
-  if (typeof window !== 'undefined' && !isAuthenticatedGlobal.value && !authTokenGlobal.value) {
-    checkAuthStatus();
+  // Initialize auth status and session user ID on composable setup
+  if (typeof window !== 'undefined') {
+    if (!isAuthenticatedGlobal.value && !authTokenGlobal.value) {
+      checkAuthStatus();
+    }
+    if (!sessionUserIdGlobal.value) {
+      // Ensures sessionUserIdGlobal is populated from storage or generated
+      sessionUserIdGlobal.value = getOrGenerateSessionUserId();
+    }
   }
 
   const login = (token: string, rememberMe: boolean): void => {
     const storage = rememberMe ? localStorage : sessionStorage;
-    storage.setItem(AUTH_TOKEN_KEY, token);
+    storage.setItem(AUTH_TOKEN_KEY, token); // Store the shared auth token
     if (rememberMe) {
-        localToken.value = token;
-        sessionToken.value = null;
+      localToken.value = token;
+      sessionToken.value = null; // Clear session token if local is set
     } else {
-        sessionToken.value = token;
-        localToken.value = null;
+      sessionToken.value = token;
+      localToken.value = null; // Clear local token if session is set
     }
-    // checkAuthStatus() will be triggered by token watchers or manually in App.vue/Login.vue
+    // The shared auth state will update via watchers or checkAuthStatus.
+    // The session-specific ID is independent of this shared auth token,
+    // it's tied to the browser session. A new one is generated if not present.
+    getOrGenerateSessionUserId(); // Ensure session ID exists on login
   };
 
   const logout = async (redirectTo: string = '/login', forceReloadPage: boolean = true): Promise<void> => {
-    // Instantiate stores here to call $reset or specific clear actions
-    const chatStore = useChatStore();
-    const costStore = useCostStore();
-    const agentStore = useAgentStore();
-    const uiStore = useUiStore();
+    const chatStoreInstance = useChatStore();
+    const costStoreInstance = useCostStore();
+    const agentStoreInstance = useAgentStore();
+    const uiStoreInstance = useUiStore();
 
     try {
       await authAPI.logout();
@@ -81,80 +115,108 @@ export function useAuth() {
       console.warn('[useAuth] Backend logout call failed, proceeding with frontend logout:', error);
     }
 
+    // Clear shared authentication token
     localStorage.removeItem(AUTH_TOKEN_KEY);
     sessionStorage.removeItem(AUTH_TOKEN_KEY);
     localToken.value = null;
     sessionToken.value = null;
-    
     isAuthenticatedGlobal.value = false;
     authTokenGlobal.value = null;
     delete api.defaults.headers.common['Authorization'];
 
-    // Reset Pinia stores to their initial state
-    // Ensure your stores have a $reset method (Pinia default) or a custom clearAllData action.
+    // Clear session-specific user ID
+    sessionStorage.removeItem(SESSION_USER_ID_KEY);
+    storedSessionUserId.value = null;
+    sessionUserIdGlobal.value = null;
+    console.log('[Auth/Session] Cleared session User ID on logout.');
+
     try {
-      chatStore.$reset(); // Assumes $reset exists and works
-      costStore.$reset();
-      agentStore.$reset();
-      uiStore.$reset(); // This might re-initialize theme to system default.
-                       // ThemeManager's persistence logic should handle this.
+      chatStoreInstance.$reset();
+      costStoreInstance.$reset();
+      agentStoreInstance.$reset();
+      uiStoreInstance.$reset();
       console.log('[useAuth] Pinia stores reset.');
     } catch (storeResetError) {
       console.error("[useAuth] Error resetting Pinia stores during logout:", storeResetError);
     }
 
-    // Navigation and Reloading
     if (redirectTo) {
-      const currentPath = window.location.pathname; // Get current path directly from window.location
-      const currentFullPath = route.fullPath; // For checking against router's view
-
+        const currentPath = window.location.pathname;
       if (currentPath === redirectTo && forceReloadPage) {
-        // If already on the target page (e.g., /login), and a reload is forced.
-        window.location.assign(redirectTo); // assign() is like clicking a link to the page.
+        window.location.assign(redirectTo);
       } else {
-        // Navigate using Vue Router.
         router.push(redirectTo).then(() => {
-          // After router push, if we are now on the target path and a reload is still desired.
           if (window.location.pathname === redirectTo && forceReloadPage) {
-            window.location.reload(); // Standard browser reload
+            window.location.reload();
           }
         }).catch(err => {
-          console.error(`[useAuth] Router push to ${redirectTo} failed after logout. Forcing navigation via window.location.href. Error:`, err);
-          window.location.href = redirectTo; // Hard navigation as a fallback.
+          console.error(`[useAuth] Router push to ${redirectTo} failed after logout. Forcing navigation. Error:`, err);
+          window.location.href = redirectTo;
         });
       }
     } else if (forceReloadPage) {
-      // If no specific redirect path is given but forceReload is true, reload the current page.
       window.location.reload();
     }
     // If neither redirectTo nor forceReloadPage, it just logs out without navigation/reload.
   };
 
-  if (typeof window !== 'undefined') {
-      watch([localToken, sessionToken], () => {
-        checkAuthStatus();
-      }, { deep: true });
 
-      const handleStorageChange = (event: StorageEvent) => {
-        if (event.key === AUTH_TOKEN_KEY) {
-            checkAuthStatus();
+  if (typeof window !== 'undefined') {
+    // Watch for changes in stored auth tokens
+    watch([localToken, sessionToken], () => {
+      checkAuthStatus();
+    }, { deep: true });
+
+    // Watch for changes in stored session user ID (e.g., if cleared by another tab, though less likely with sessionStorage)
+    watch(storedSessionUserId, (newVal) => {
+        if (newVal) {
+            sessionUserIdGlobal.value = newVal;
+        } else {
+            // If it got cleared elsewhere, generate a new one for this context
+            sessionUserIdGlobal.value = getOrGenerateSessionUserId();
         }
-      };
-      window.addEventListener('storage', handleStorageChange);
-      onUnmounted(() => {
-          window.removeEventListener('storage', handleStorageChange);
-      });
+    });
+
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === AUTH_TOKEN_KEY) {
+        checkAuthStatus();
+      }
+      if (event.key === SESSION_USER_ID_KEY) {
+        storedSessionUserId.value = event.newValue; // Update from storage event
+        sessionUserIdGlobal.value = event.newValue ? event.newValue : getOrGenerateSessionUserId();
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+    onUnmounted(() => {
+      window.removeEventListener('storage', handleStorageChange);
+    });
   }
   
   onMounted(() => {
     checkAuthStatus();
+    // Ensure sessionUserIdGlobal is initialized from sessionStorage or generated
+    sessionUserIdGlobal.value = getOrGenerateSessionUserId();
+  });
+
+  // Expose a computed property for the session user ID
+  const currentSessionUserId = computed(() => {
+    if (!sessionUserIdGlobal.value) {
+      return getOrGenerateSessionUserId(); // Ensure it's available
+    }
+    return sessionUserIdGlobal.value;
   });
 
   return {
     isAuthenticated: readonly(isAuthenticatedGlobal),
     currentToken: readonly(authTokenGlobal),
+    /**
+     * A unique identifier for the current browser session.
+     * Persists in sessionStorage. Used for stateless user tracking.
+     */
+    sessionUserId: currentSessionUserId, // Changed to be a computed ref
     login,
     logout,
     checkAuthStatus,
+    getOrGenerateSessionUserId, // Expose this if direct call is needed elsewhere
   };
 }
