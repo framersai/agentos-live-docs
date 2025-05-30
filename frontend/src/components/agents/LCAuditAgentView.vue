@@ -71,26 +71,46 @@ const hasNewSlideshowContentLoaded = ref(false); // Flag to trigger navigation t
 
 const contentDisplayAreaId = computed(() => `${props.agentId}-main-content-area-lcaudit`);
 
+
 const fetchSystemPrompt = async () => {
   const key = props.agentConfig?.systemPromptKey;
   const agentLabel = agentDisplayName.value;
   console.log(`[${agentLabel}] fetchSystemPrompt with key: "${key}"`);
   if (key) {
     try {
+      // The backend route for prompts sends raw text/markdown.
+      // Axios places this raw text directly into response.data for 'text/*' content types.
       const response = await promptAPI.getPrompt(`${key}.md`);
-      currentAgentSystemPrompt.value = response.data.content; // Use the markdown string from the response
-      if (!currentAgentSystemPrompt.value.trim()) {
-        console.warn(`[${agentLabel}] System prompt for key "${key}" loaded but is empty.`);
+
+      // Check if response.data is a string (which it should be if the backend sent text/markdown)
+      if (response && typeof response.data === 'string') {
+        currentAgentSystemPrompt.value = response.data; // response.data IS the markdown string
+        
+        if (!currentAgentSystemPrompt.value.trim()) {
+          console.warn(`[${agentLabel}] System prompt for key "${key}" loaded, but its content is empty.`);
+          // Optionally set a default error prompt or handle as an error state
+          // currentAgentSystemPrompt.value = `ERROR: [${agentLabel}] Prompt content for key "${key}" is empty.`;
+        } else {
+          console.log(`[${agentLabel}] System prompt for "${key}" loaded successfully (length: ${currentAgentSystemPrompt.value.length}).`);
+        }
+      } else {
+        // This case should ideally not be hit if the backend sends text/markdown and Axios behaves as expected.
+        // However, it's a good fallback.
+        console.error(`[${agentLabel}] Prompt API response for key "${key}" was not a direct string. Response data:`, response?.data);
+        currentAgentSystemPrompt.value = `ERROR: [${agentLabel}] System prompt content invalid or unexpected format for key "${key}".`;
+        toast?.add({ type: 'error', title: 'Prompt Load Error', message: `Invalid prompt data format for "${key}". Expected raw text.` });
       }
     } catch (e: any) {
-      console.error(`[${agentLabel}] Error loading prompt for key "${key}":`, e.response?.data || e.message);
-      currentAgentSystemPrompt.value = `ERROR: [${agentLabel}] System prompt load failed for key "${key}".`;
-      toast?.add({ type: 'error', title: 'Prompt Load Error', message: `Failed to load critical instructions for ${agentLabel}.` });
+      const errorDetails = e.response?.data?.message || e.response?.data || e.message || 'Unknown error';
+      const errorFilename = e.response?.data?.filename || `${key}.md`; // Filename might not be in error if raw text failed.
+      console.error(`[${agentLabel}] Critical error loading prompt for key "${key}" (file: ${errorFilename}):`, errorDetails, e.response || e);
+      currentAgentSystemPrompt.value = `ERROR: [${agentLabel}] System prompt load failed for key "${key}". Details: ${errorDetails}`;
+      toast?.add({ type: 'error', title: 'Critical Prompt Error', message: `Failed to load system prompt for "${errorFilename}". Server said: ${errorDetails}` });
     }
   } else {
-    console.warn(`[${agentLabel}] No systemPromptKey defined.`);
+    console.warn(`[${agentLabel}] No systemPromptKey defined for agent.`);
     currentAgentSystemPrompt.value = `ERROR: [${agentLabel}] System prompt key missing in agent configuration.`;
-    toast?.add({ type: 'error', title: 'Agent Config Error', message: `Configuration error for ${agentLabel}.` });
+    toast?.add({ type: 'error', title: 'Agent Config Error', message: `Configuration error for ${agentLabel}: No prompt key specified.` });
   }
 };
 
