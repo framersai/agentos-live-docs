@@ -1,74 +1,54 @@
-// File: frontend/src/styles/layout/_main-content.scss
+// File: frontend/src/styles/components/agents/_main-content-view.scss
 /**
- * @file _main-content.scss
- * @description Styles for the primary main content area of the application,
- * typically the <main> element within App.vue that hosts the <router-view />.
- * It establishes base padding for views, overflow behavior, and a subtle background
- * treatment distinct from the global body, ensuring a consistent container for all page content.
- *
- * @role Defines the foundational styling for the main content viewport area within the app shell.
- * @dependencies `../abstracts/variables` (for spacing, breakpoints, z-indexes, theme color fallbacks),
- * `../abstracts/mixins` (for custom scrollbars if applied here globally).
- * @assumptions The class `.app-layout-main-content-ephemeral` is applied to the <main> HTML5 element
- * or its direct wrapper within App.vue.
- * CSS custom properties for theming are available and set by the theme engine.
- * The viewport meta tag in index.html is configured to prevent user scaling.
- * @version 3.0.2 - Reviewed for consistency with "Ephemeral Harmony", calc() usage and variable interpolation.
+ * @file _main-content-view.scss
+ * @version 1.1.0
+ * @description Styles for MainContentView.vue.
+ * Ensures it fills height and applies responsive max-width and centering for its content
+ * on larger screens, remaining compact on mobile, aligning with "Ephemeral Harmony".
  */
 
-@use '../abstracts/variables' as var;
-@use '../abstracts/mixins' as mixins;
+@use '../../abstracts/variables' as var;
+@use '../../abstracts/mixins' as mixins;
 
-// Targets the <main id="main-app-content" class="app-layout-main-content-ephemeral"> in App.vue
-.app-layout-main-content-ephemeral {
+.main-content-view-ephemeral {
+  display: flex;
+  flex-direction: column;
   flex-grow: 1;
-  position: relative;
-  overflow-y: auto;
-  overflow-x: hidden;
+  height: 100%;
   width: 100%;
+  position: relative;
+  overflow: hidden; // This container does not scroll.
 
-  // --- Responsive Padding Strategy ---
-  padding: var.$spacing-sm; // Default for extra-small screens
+  // The direct child (slotted component like ChatWindow or custom agent view)
+  // will handle its own scrolling and internal layout.
+  > :deep(*) {
+    flex-grow: 1;
+    height: 100%;
+    width: 100%; // Takes full width of .main-content-view-ephemeral
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; // The slotted component is responsible for its scroll
+    
+    // Responsive margins are now primarily handled by the parent (.unified-main-content-area > *)
+    // This component ensures its child can fill the space it's given.
+    // If specific padding is needed *inside* MainContentView for all its children, add it here.
+    // For example:
+    // padding: var.$spacing-xs; // Universal internal padding if needed
+    // @media (min-width: var.$breakpoint-md) {
+    //   padding: var.$spacing-sm;
+    // }
 
-  @media (min-width: var.$breakpoint-sm) {
-    padding: var.$spacing-md;
+    @include mixins.custom-scrollbar(
+      '--color-accent-secondary',
+      0.4,
+      0.65,
+      '--color-bg-primary',
+      0.08,
+      7px
+    );
   }
 
-  @media (min-width: var.$breakpoint-md) {
-    padding: var.$spacing-lg;
+  .main-content-fallback-ephemeral {
+    // Styles are fine from Batch 2
   }
-
-  @media (min-width: var.$breakpoint-xl) {
-    padding: var.$spacing-xl;
-  }
-
-  // --- Subtle Background Treatment ---
-  background-color: hsla(
-    var(--color-bg-primary-h, #{var.$default-color-bg-primary-h}),
-    var(--color-bg-primary-s, #{var.$default-color-bg-primary-s}),
-    // Ensure calc is used if performing arithmetic on a CSS variable that might contain a unit,
-    // or if mixing units. Here, it's a direct subtraction from a SASS variable, which is fine.
-    calc(#{var.$default-color-bg-primary-l} - 0.5%), // Using SCSS variable for default lightness
-    var(--color-bg-primary-a, #{var.$default-color-bg-primary-a}) // Using alpha from theme or fallback
-  );
-
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: var.$z-index-negative;
-    background-image: var(--bg-main-content-subtle-pattern, none);
-    background-size: var(--bg-main-content-subtle-pattern-size, 250px);
-    background-repeat: var(--bg-main-content-subtle-pattern-repeat, repeat);
-    opacity: var(--bg-main-content-subtle-opacity, 0.01);
-    pointer-events: none;
-  }
-
-  // Global scrollbar style from _global.scss will apply.
-  // If specific scrollbar needed here:
-  // @include mixins.custom-scrollbar(
-  //   $thumb-color-var-prefix: '--color-accent-secondary',
-  //   $track-color-var-prefix: '--color-bg-primary',
-  //   $width: 6px
-  // );
 }

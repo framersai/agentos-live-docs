@@ -1,16 +1,15 @@
 // File: frontend/src/components/Footer.vue
 /**
  * @file Footer.vue
- * @description Global application footer component for the "Ephemeral Harmony" theme.
- * It displays application branding, version information, API status indicator,
- * links to source code and settings, and provides a toggle for the system logs display.
+ * @description Global application footer component. Displays copyright, API status, and quick actions.
+ * Optimized for a compact view on mobile devices.
  *
  * @component Footer
  * @props None
  * @emits None
  *
- * @version 3.1.1 - Aligned template with revamped _footer.scss structure and styles.
- * Enhanced JSDoc and ensured all dynamic parts are correctly bound.
+ * @version 3.2.0 - Simplified branding and attribution for a cleaner look.
+ * Enhanced mobile compactness by adjusting text visibility and preparing for icon size changes via SCSS.
  */
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, type Ref, type Component as VueComponentType } from 'vue';
@@ -19,24 +18,24 @@ import { RouterLink } from 'vue-router'; // For navigation links
 
 // Icons from Heroicons
 import {
-  Cog6ToothIcon as ConfigIcon,   // Using Cog6ToothIcon for "Config" for variety
+  Cog6ToothIcon as ConfigIcon,
   CommandLineIcon as LogsIcon,
   CloudIcon as ApiDegradedIcon,
   WifiIcon as ApiOnlineIcon,
   NoSymbolIcon as ApiOfflineIcon,
   CodeBracketSquareIcon as SourceIcon,
-  QuestionMarkCircleIcon as ApiCheckingIcon // For default "Checking" state
+  QuestionMarkCircleIcon as ApiCheckingIcon
 } from '@heroicons/vue/24/outline';
 
 /**
- * @const {string} APP_VERSION - Placeholder for the application version, ideally injected via build process.
+ * @const {string} APP_VERSION - Placeholder for the application version.
  */
-const APP_VERSION = '5.0.6'; // Example version, sync with App.vue or global const
+const APP_VERSION = '5.0.6'; // Kept for potential future use, though not displayed directly in this simplified footer.
 
 /**
  * @const {Ref<string>} repositoryUrl - URL to the application's source code repository.
  */
-const repositoryUrl: Ref<string> = ref('https://github.com/wearetheframers/agentos'); // Your actual repo URL
+const repositoryUrl: Ref<string> = ref('https://github.com/wearetheframers/agentos');
 
 /**
  * @ref {Ref<boolean>} logsOpen - Controls the visibility of the SystemLogDisplay panel.
@@ -65,20 +64,24 @@ let apiStatusInterval: number | undefined;
 const apiStatusInfo = computed(() => {
   switch (apiStatus.value) {
     case 'Operational':
-      return { text: 'Agents Online', class: 'text-[hsl(var(--color-success-h),var(--color-success-s),var(--color-success-l))]', icon: ApiOnlineIcon, dotClass: 'bg-[hsl(var(--color-success-h),var(--color-success-s),var(--color-success-l))]' };
+      return { text: 'Agents Online', class: 'text-status-success', icon: ApiOnlineIcon, dotClass: 'bg-status-success' };
     case 'Degraded':
-      return { text: 'Agents Degraded', class: 'text-[hsl(var(--color-warning-h),var(--color-warning-s),var(--color-warning-l))]', icon: ApiDegradedIcon, dotClass: 'bg-[hsl(var(--color-warning-h),var(--color-warning-s),var(--color-warning-l))]' };
+      return { text: 'Agents Degraded', class: 'text-status-warning', icon: ApiDegradedIcon, dotClass: 'bg-status-warning' };
     case 'Down':
-      return { text: 'Agents Offline', class: 'text-[hsl(var(--color-error-h),var(--color-error-s),var(--color-error-l))]', icon: ApiOfflineIcon, dotClass: 'bg-[hsl(var(--color-error-h),var(--color-error-s),var(--color-error-l))]' };
+      return { text: 'Agents Offline', class: 'text-status-error', icon: ApiOfflineIcon, dotClass: 'bg-status-error' };
     default: // 'Checking' or unknown
-      return { text: 'Agents Status...', class: 'text-[hsl(var(--color-text-muted-h),var(--color-text-muted-s),var(--color-text-muted-l))]', icon: ApiCheckingIcon, dotClass: 'bg-[hsl(var(--color-text-muted-h),var(--color-text-muted-s),var(--color-text-muted-l))] animate-pulse' };
+      return { text: 'Agents Status...', class: 'text-status-muted', icon: ApiCheckingIcon, dotClass: 'bg-status-muted animate-pulse' };
   }
 });
+// Note: The classes like 'text-status-success' now assume you have utility classes or CSS variables
+// that map to your theme's success, warning, error, muted colors. E.g.,
+// .text-status-success { color: hsl(var(--color-success-h), var(--color-success-s), var(--color-success-l)); }
+// .bg-status-success { background-color: hsl(var(--color-success-h), var(--color-success-s), var(--color-success-l)); }
+// These would ideally be part of your global utilities or _footer.scss.
 
 /**
  * @function toggleLogsPanel
  * @description Toggles the visibility of the system logs panel.
- * @returns {void}
  */
 const toggleLogsPanel = (): void => {
   logsOpen.value = !logsOpen.value;
@@ -86,32 +89,18 @@ const toggleLogsPanel = (): void => {
 
 /**
  * @function checkApiStatus
- * @description Simulates checking the API status by randomly cycling through predefined states.
- * In a real application, this would make an actual API call to a health check endpoint.
- * @async
- * @returns {Promise<void>}
+ * @description Simulates checking the API status.
  */
 const checkApiStatus = async (): Promise<void> => {
-  // Placeholder: Simulate API status check
   const statuses: ApiStatusValue[] = ['Operational', 'Degraded', 'Down', 'Operational', 'Operational', 'Checking'];
   apiStatus.value = statuses[Math.floor(Math.random() * statuses.length)];
-  // Example: In a real app, you might do:
-  // try {
-  //   const response = await api.get('/health/status'); // Assuming an endpoint like this
-  //   if (response.data.status === 'OK') apiStatus.value = 'Operational';
-  //   // ... handle other statuses
-  // } catch (error) {
-  //   apiStatus.value = 'Down';
-  // }
 };
 
-// Set up an interval to periodically check API status on component mount.
 onMounted(() => {
-  checkApiStatus(); // Initial check
-  apiStatusInterval = window.setInterval(checkApiStatus, 30000); // Check every 30 seconds
+  checkApiStatus();
+  apiStatusInterval = window.setInterval(checkApiStatus, 30000);
 });
 
-// Clear the interval when the component is unmounted to prevent memory leaks.
 onUnmounted(() => {
   if (apiStatusInterval) clearInterval(apiStatusInterval);
 });
@@ -128,32 +117,15 @@ onUnmounted(() => {
     <div class="footer-content-wrapper-ephemeral">
       <div class="footer-main-row-ephemeral">
         <div class="footer-branding-ephemeral">
-          <img src="@/assets/logo.svg" alt="Voice Coding Assistant Logo" class="footer-logo-ephemeral" />
-          <div class="brand-text-group">
-            <!-- <span class="brand-title-ephemeral"><strong>V</strong> -->
-               <!-- <span class="opacity-60 font-light text-xs">v{{ APP_VERSION }}</span> -->
-              <!-- </span> -->
-            <span class="brand-powered-by-ephemeral">
-              Powered by <a href="https://github.com/wearetheframers/agentos" target="_blank" rel="noopener noreferrer" class="font-semibold hover:text-[hsl(var(--color-accent-secondary-h),var(--color-accent-secondary-s),var(--color-accent-secondary-l))]">AgentOS</a>
-            </span>
-          </div>
-          
-        <div class="footer-attributions-ephemeral">
-          <span>
-            &copy; {{ new Date().getFullYear() }} 
-            VCA.Chat
-            <!-- Voice Assistant Project. -->
-          </span>
-          <span>
-            by <a href="https://manic.agency" target="_blank" rel="noopener noreferrer">Manic.agency</a>.
-          </span>
-            All rights reserved.
-          </div>
+          <img src="@/assets/logo.svg" alt="VCA Logo" class="footer-logo-ephemeral" />
+          <p class="footer-copyright-ephemeral">
+            &copy; {{ new Date().getFullYear() }} VCA.Chat. All rights reserved.
+          </p>
         </div>
 
         <div class="footer-status-actions-ephemeral">
           <div class="api-status-indicator-ephemeral" :title="apiStatusInfo.text">
-            <component :is="apiStatusInfo.icon" class="icon" :class="apiStatusInfo.class" aria-hidden="true" />
+            <component :is="apiStatusInfo.icon" class="icon api-status-icon" :class="apiStatusInfo.class" aria-hidden="true" />
             <span class="status-text hidden md:inline" :class="apiStatusInfo.class">{{ apiStatusInfo.text }}</span>
             <span class="status-dot" :class="apiStatusInfo.dotClass" aria-hidden="true"></span>
           </div>
@@ -167,7 +139,7 @@ onUnmounted(() => {
             :aria-pressed="logsOpen"
           >
             <LogsIcon class="icon" aria-hidden="true" />
-            <span class="hidden sm:inline">Logs</span>
+            <span class="action-text hidden sm:inline">Logs</span>
           </button>
 
           <a
@@ -179,7 +151,7 @@ onUnmounted(() => {
             aria-label="View Source Code on GitHub"
           >
             <SourceIcon class="icon" aria-hidden="true" />
-            <span class="hidden sm:inline">Source</span>
+            <span class="action-text hidden sm:inline">Source</span>
           </a>
           <RouterLink
             to="/settings"
@@ -188,18 +160,15 @@ onUnmounted(() => {
             aria-label="Open Application Settings"
           >
             <ConfigIcon class="icon" aria-hidden="true" />
-            <span class="hidden sm:inline">Config</span>
+            <span class="action-text hidden sm:inline">Config</span>
           </RouterLink>
         </div>
       </div>
-
-
     </div>
   </footer>
 </template>
 
 <style lang="scss">
 // Styles for Footer.vue are primarily in frontend/src/styles/layout/_footer.scss
-// This global import assumes _footer.scss is part of your main.scss build.
-// No scoped styles needed here if all are handled by the global SCSS partial.
+// This assumes _footer.scss is imported into your main.scss or a similar global stylesheet.
 </style>

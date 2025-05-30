@@ -474,7 +474,7 @@ onUnmounted(() => {
   <div class="public-home-view-ephemeral">
     <UnifiedChatLayout
       :is-voice-input-processing="isVoiceInputCurrentlyProcessing"
-      :show-ephemeral-log="showEphemeralLogForCurrentAgent"
+      :show-ephemeral-log="{ type: showEphemeralLogForCurrentAgent, default: true }"
       :current-agent-input-placeholder="currentPublicAgent?.inputPlaceholder"
       @transcription="handleTranscriptionFromLayout"
       @voice-input-processing="(status: boolean) => { isVoiceInputCurrentlyProcessing = status; if(status && !isLoadingResponse) isLoadingResponse = true; }"
