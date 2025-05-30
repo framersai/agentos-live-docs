@@ -3,7 +3,7 @@
  * @file SettingsItem.vue
  * @description A reusable UI component for displaying a single setting item.
  * It includes a label, an optional description, and a slot for the input control.
- * @version 1.0.0
+ * @version 1.1.0 - Updated styles to use theme CSS custom properties for labels and descriptions, ensuring theme-wide consistency and readability.
  * @author Your Name / AI Architect
  */
 
@@ -64,6 +64,7 @@ const props = withDefaults(defineProps<SettingsItemProps>(), {
 /**
  * Styles for the SettingsItem component.
  * These styles are scoped and aim to provide a clear and consistent layout for individual settings.
+ * Colors now use CSS Custom Properties from the theme for better integration and readability across all themes.
  */
 .setting-item-wrapper {
   @apply py-3 sm:py-4;
@@ -77,7 +78,7 @@ const props = withDefaults(defineProps<SettingsItemProps>(), {
   @apply mb-2; /* Add space between label and control */
 }
 .setting-item-wrapper.full-width-desc-item .setting-description {
-   @apply pt-1.5 text-left; /* Ensure description aligns left */
+  @apply pt-1.5 text-left; /* Ensure description aligns left */
 }
 
 
@@ -86,9 +87,10 @@ const props = withDefaults(defineProps<SettingsItemProps>(), {
 }
 
 .setting-label {
-  @apply text-sm font-medium text-gray-800 dark:text-gray-200 flex-shrink-0 cursor-default;
-  /* Example: Allow label to wrap if very long on small screens, but primarily aim for single line. */
-  /* word-break: break-word; */
+  @apply text-sm font-medium flex-shrink-0 cursor-default;
+  /* Use theme's primary text color for labels for maximum clarity and boldness */
+  color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+  opacity: 0.95; /* Slightly reduced opacity if needed, but primary text should generally be fully opaque */
 }
 
 .setting-control {
@@ -102,11 +104,14 @@ const props = withDefaults(defineProps<SettingsItemProps>(), {
 }
 
 .setting-description {
-  @apply text-xs text-gray-500 dark:text-gray-400 mt-1;
+  @apply text-xs mt-1;
+  /* Use theme's secondary text color for descriptions for good readability with slightly less emphasis */
+  color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+  opacity: 0.9; /* Ensure good opacity */
 }
 
 /* Default alignment for description when not full-width */
 .setting-item-wrapper:not(.full-width-desc-item) .setting-item-label-action + .setting-description {
-   @apply pt-1 sm:text-right; /* Aligns description to the right, below the control on small screens */
+  @apply pt-1 sm:text-right; /* Aligns description to the right, below the control on small screens */
 }
 </style>
