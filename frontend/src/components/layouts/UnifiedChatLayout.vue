@@ -31,7 +31,8 @@ const props = defineProps<{
   /** Optional placeholder text to be passed to the VoiceInput component. */
   currentAgentInputPlaceholder?: string;
   /** Controls whether the EphemeralChatLog component is rendered. */
-  showEphemeralLog?: { type: boolean, default: true };
+  // Set default to true for better UX, as it provides context for users.
+  showEphemeralLog?: boolean;
 }>();
 
 /**
