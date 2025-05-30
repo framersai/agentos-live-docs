@@ -4,7 +4,7 @@
  * @description Authenticated home view using UnifiedChatLayout.
  * Features dynamic agent loading, API-driven prompt loading for general agents,
  * and a visually engaging dashboard placeholder. Uses session-specific userId.
- * @version 3.4.0 - Integrated session-specific userId and aligned with PublicHome structure.
+ * @version 3.4.1 - Refined isLoadingResponse and voice input processing logic.
  */
 <script setup lang="ts">
 import { ref, computed, onMounted, watch, type Component as VueComponentType, defineAsyncComponent, inject } from 'vue';
@@ -51,7 +51,6 @@ const currentAgentViewComponent = computed<VueComponentType | null>(() => {
           .catch(err => {
             console.error(`[PrivateHome] Failed to import @/components/agents/${componentName}.vue for agent ${agentLabel}:`, err);
             toast?.add({type: 'error', title: 'UI Load Error', message: `Could not load specific interface for ${agentLabel}. Using default view.`});
-            // Fallback to a generic MainContentView if specific agent view fails to load
             return import('@/components/agents/common/MainContentView.vue');
           })
       );
@@ -64,16 +63,33 @@ const currentAgentViewComponent = computed<VueComponentType | null>(() => {
   return null;
 });
 
+/**
+ * @ref isLoadingResponse
+ * @description Indicates if an assistant LLM response is currently being processed.
+ * This should be true ONLY when waiting for the backend LLM.
+ */
 const isLoadingResponse = ref(false);
-const isVoiceInputCurrentlyProcessing = ref(false);
+/**
+ * @ref isVoiceInputCurrentlyProcessingAudio
+ * @description Reflects if the VoiceInput component (or its STT handlers) is actively recording or processing audio for STT.
+ */
+const isVoiceInputCurrentlyProcessingAudio = ref(false);
 const agentViewRef = ref<any>(null);
+
 
 const loadCurrentAgentSystemPrompt = async (): Promise<void> => {
   const agent = activeAgent.value;
-  if (!agent || (agent.capabilities?.handlesOwnInput && currentAgentViewComponent.value)) {
-    currentSystemPromptText.value = '';
+  if (!agent) {
+    currentSystemPromptText.value = "No agent is active.";
     return;
   }
+   // Skip loading prompt if agent handles its own input via dedicated view
+  if (agent.capabilities?.handlesOwnInput && currentAgentViewComponent.value) {
+    currentSystemPromptText.value = ''; // Or a minimal placeholder if needed
+    console.log(`[PrivateHome] Agent ${agent.label} handles its own input, skipping general prompt load.`);
+    return;
+  }
+
 
   const systemPromptKey = agent.systemPromptKey;
   const agentLabel = agent.label || 'Assistant';
@@ -104,9 +120,11 @@ const mainContentData = computed<MainContent | null>(() => {
       data: 'PrivateDashboardPlaceholder', title: 'Welcome Back!', timestamp: Date.now(),
     };
   }
+  // If agent has dedicated view that handles input, don't show default main content from chatStore for it
   if (currentAgentViewComponent.value && activeAgent.value?.capabilities?.handlesOwnInput) {
-    return null;
+    return null; // Dedicated view is responsible for its display
   }
+  // Otherwise, get content from chatStore or provide default welcome/loading for general agents
   return chatStore.getCurrentMainContentDataForAgent(activeAgent.value.id) || {
     agentId: activeAgent.value.id, type: 'welcome',
     data: `<div class="prose dark:prose-invert max-w-none mx-auto text-center py-8">
@@ -119,71 +137,82 @@ const mainContentData = computed<MainContent | null>(() => {
 });
 
 const shouldUseDefaultMainContentView = computed(() => {
-  return activeAgent.value && (!currentAgentViewComponent.value || !activeAgent.value.capabilities?.handlesOwnInput) && mainContentData.value?.type !== 'custom-component';
+  // Show default MainContentView if an agent is active, AND
+  // (EITHER no dedicated component OR the dedicated component does NOT handle its own input)
+  // AND the mainContentData is NOT a custom-component (like the dashboard placeholder)
+  return activeAgent.value && 
+         (!currentAgentViewComponent.value || !activeAgent.value.capabilities?.handlesOwnInput) &&
+         mainContentData.value?.type !== 'custom-component';
 });
 
 const showEphemeralLogForCurrentAgent = computed(() => {
-  return activeAgent.value?.capabilities?.showEphemeralChatLog ?? true;
+  return activeAgent.value?.capabilities?.showEphemeralChatLog ?? true; // Default to true if not specified
 });
 
+
 const handleTranscriptionFromLayout = async (transcription: string): Promise<void> => {
-  console.log("[PrivateHome] handleTranscriptionFromLayout called with:", transcription);
+  console.log("[PrivateHome] handleTranscriptionFromLayout received:", `"${transcription}"`);
   if (!transcription.trim()) {
-    console.log("[PrivateHome] Transcription was empty.");
+    console.log("[PrivateHome] Transcription was empty or whitespace. Ignoring.");
     return;
   }
   if (!activeAgent.value) {
     toast?.add({ type: 'warning', title: 'No Agent Selected', message: 'Please select an agent to start interacting.', duration: 4000 });
-    console.log("[PrivateHome] No active agent.");
-    return;
-  }
-  if (isLoadingResponse.value) {
-    toast?.add({ type: 'info', title: 'Processing', message: 'Please wait for the current response to complete.' });
-    console.log("[PrivateHome] isLoadingResponse is true, exiting.");
+    console.log("[PrivateHome] No active agent. Cannot process transcription.");
     return;
   }
 
-  isVoiceInputCurrentlyProcessing.value = true;
-  isLoadingResponse.value = true;
+  if (isLoadingResponse.value) {
+    toast?.add({ type: 'info', title: 'Assistant Busy', message: 'Please wait for the current response to complete.' });
+    console.log("[PrivateHome] Assistant is busy (isLoadingResponse is true). Transcription dropped.");
+    return;
+  }
+
   const currentAgentInstance = activeAgent.value;
   const agentId = currentAgentInstance.id;
   const agentLabel = currentAgentInstance.label || 'Assistant';
 
   console.log(`[PrivateHome] Handling transcription for agent: ${agentLabel} (ID: ${agentId})`);
+  
+  // isVoiceInputCurrentlyProcessingAudio is managed by the @voice-input-processing event.
+  // Set isLoadingResponse to true as we are now starting the LLM processing part.
+  isLoadingResponse.value = true;
 
   if (currentAgentInstance.capabilities?.handlesOwnInput && currentAgentViewComponent.value && agentViewRef.value) {
     console.log(`[PrivateHome] Attempting to call dedicated input handler for agent: ${agentLabel}`);
     try {
       if (typeof agentViewRef.value.handleNewUserInput === 'function') {
         await agentViewRef.value.handleNewUserInput(transcription);
-      } else if (typeof agentViewRef.value.processProblemContext === 'function') {
+      } else if (typeof agentViewRef.value.processProblemContext === 'function') { // Example fallback
         await agentViewRef.value.processProblemContext(transcription);
       } else {
         console.warn(`[PrivateHome] Agent "${agentLabel}" configured to handle own input, but no suitable handler method found. Falling back to standard LLM call.`);
         await standardLlmCallPrivate(transcription, currentAgentInstance);
       }
+      // Dedicated agent view is responsible for its own isLoadingResponse state during its operations.
+      // PublicHome's isLoadingResponse is reset after the dedicated handler is awaited.
+      isLoadingResponse.value = false; // Reset after dedicated handler execution.
     } catch (error: any) {
       console.error(`[PrivateHome] Error in agent's (${agentLabel}) custom input handler:`, error);
       toast?.add({type: 'error', title: 'Agent Error', message: error.message || `The agent "${agentLabel}" encountered an issue.`});
-      // Reset loading states directly here if the dedicated handler fails globally
-      isLoadingResponse.value = false;
-      isVoiceInputCurrentlyProcessing.value = false;
+      isLoadingResponse.value = false; // Reset on error in dedicated handler.
     }
-    // The dedicated agent view is responsible for its own isLoadingResponse state during its operations.
-    // PublicHome's isLoadingResponse is reset after the dedicated handler is awaited, or in its finally block.
-    isLoadingResponse.value = false; // Reset after attempting to call dedicated handler
-    isVoiceInputCurrentlyProcessing.value = false;
-
   } else {
     console.log(`[PrivateHome] Using standard LLM call for agent: ${agentLabel}`);
     await standardLlmCallPrivate(transcription, currentAgentInstance);
+    // standardLlmCallPrivate manages its own isLoadingResponse.
   }
+  // isVoiceInputCurrentlyProcessingAudio is set by an event from VoiceInput when STT truly finishes its part.
+  console.log(`[PrivateHome] handleTranscriptionFromLayout finished for "${transcription}". isLoadingResponse: ${isLoadingResponse.value}`);
 };
 
 async function standardLlmCallPrivate(transcriptionText: string, agentInstance: IAgentDefinition) {
   const agentId = agentInstance.id;
   const agentLabel = agentInstance.label || 'Assistant';
   const userMessageTimestamp = Date.now();
+
+  // Ensure isLoadingResponse is true at the start of an LLM call cycle
+  if (!isLoadingResponse.value) isLoadingResponse.value = true;
 
   chatStore.addMessage({ role: 'user', content: transcriptionText, agentId: agentId, timestamp: userMessageTimestamp });
 
@@ -197,26 +226,28 @@ async function standardLlmCallPrivate(transcriptionText: string, agentInstance: 
   }
 
   try {
+    // Ensure system prompt is loaded for general agents
     if (!agentInstance.capabilities?.handlesOwnInput || !currentAgentViewComponent.value) {
         if (!currentSystemPromptText.value || currentSystemPromptText.value.startsWith(`You are ${agentLabel}`)) {
-            await loadCurrentAgentSystemPrompt();
-             if (!currentSystemPromptText.value) {
+            await loadCurrentAgentSystemPrompt(); // This updates currentSystemPromptText.value
+            if (!currentSystemPromptText.value) {
                 throw new Error("System prompt could not be established for the agent.");
             }
         }
     }
 
     let finalSystemPrompt = currentSystemPromptText.value;
-    if (!finalSystemPrompt.trim() && agentInstance.systemPromptKey) { // If prompt text is still empty but key exists, try loading again or default
-        console.warn(`[PrivateHome] System prompt text was empty for ${agentLabel} after initial load attempt. Attempting to re-load or use default.`);
+    if (!finalSystemPrompt.trim() && agentInstance.systemPromptKey) {
+        console.warn(`[PrivateHome] System prompt text was empty for ${agentLabel} after initial load attempt. Re-loading.`);
         await loadCurrentAgentSystemPrompt();
         finalSystemPrompt = currentSystemPromptText.value;
-         if (!finalSystemPrompt.trim()) {
+        if (!finalSystemPrompt.trim()) { // Fallback if still empty
             finalSystemPrompt = `You are ${agentLabel}. ${agentInstance.description || 'Provide helpful assistance.'}`;
-         }
+        }
     } else if (!finalSystemPrompt.trim()) { // If no key and text is empty
-         finalSystemPrompt = `You are ${agentLabel}. ${agentInstance.description || 'Provide helpful assistance.'}`;
+        finalSystemPrompt = `You are ${agentLabel}. ${agentInstance.description || 'Provide helpful assistance.'}`;
     }
+
 
     finalSystemPrompt = finalSystemPrompt
       .replace(/{{LANGUAGE}}/g, voiceSettingsManager.settings.preferredCodingLanguage || 'not specified')
@@ -224,11 +255,11 @@ async function standardLlmCallPrivate(transcriptionText: string, agentInstance: 
       .replace(/{{GENERATE_DIAGRAM}}/g, ((agentInstance.capabilities?.canGenerateDiagrams ?? false) && (voiceSettingsManager.settings.generateDiagrams ?? false)).toString())
       .replace(/{{USER_QUERY}}/g, transcriptionText)
       .replace(/{{AGENT_CONTEXT_JSON}}/g, JSON.stringify(agentStore.getAgentContext(agentId) || {}))
-      .replace(/{{ADDITIONAL_INSTRUCTIONS}}/g, '');
+      .replace(/{{ADDITIONAL_INSTRUCTIONS}}/g, ''); // Placeholder for future use
 
     const historyConfig: Partial<AdvancedHistoryConfig> = {
       numRecentMessagesToPrioritize: agentInstance.capabilities?.maxChatHistory || 10,
-      maxContextTokens: voiceSettingsManager.settings.useAdvancedMemory ? 8000 : (agentInstance.capabilities?.maxChatHistory || 10) * 200,
+      maxContextTokens: voiceSettingsManager.settings.useAdvancedMemory ? 8000 : (agentInstance.capabilities?.maxChatHistory || 10) * 200, // Example calculation
     };
 
     const historyForApi: ProcessedHistoryMessageFE[] = await chatStore.getHistoryForApi(agentId, transcriptionText, finalSystemPrompt, historyConfig);
@@ -249,22 +280,22 @@ async function standardLlmCallPrivate(transcriptionText: string, agentInstance: 
       systemPromptOverride: finalSystemPrompt,
       language: voiceSettingsManager.settings.preferredCodingLanguage,
       generateDiagram: agentInstance.capabilities?.canGenerateDiagrams && voiceSettingsManager.settings.generateDiagrams,
-      userId: auth.sessionUserId.value || `authenticated_user_session_${Date.now().toString(36)}`, // Use sessionUserId
+      userId: auth.sessionUserId.value || `authenticated_user_session_${Date.now().toString(36)}`,
       conversationId: chatStore.getCurrentConversationId(agentId),
-      stream: true,
+      stream: true, // Assuming private home always streams
     };
     console.log("[PrivateHome] Sending payload to chatAPI.sendMessageStream:", JSON.stringify(payload, null, 0).substring(0, 300) + "...");
 
     let accumulatedResponse = "";
     await chatAPI.sendMessageStream(
       payload,
-      (chunk: string) => {
+      (chunk: string) => { // onChunkReceived
         accumulatedResponse += chunk;
         if (agentStore.activeAgentId === agentId) {
           chatStore.updateMainContent({
             agentId: agentId,
             type: agentInstance.capabilities?.usesCompactRenderer ? 'compact-message-renderer-data' : 'markdown',
-            data: accumulatedResponse + "▋",
+            data: accumulatedResponse + "▋", // Streaming cursor
             title: `${agentLabel} Responding...`,
             timestamp: Date.now()
           });
@@ -283,7 +314,7 @@ async function standardLlmCallPrivate(transcriptionText: string, agentInstance: 
           });
         }
         isLoadingResponse.value = false;
-        isVoiceInputCurrentlyProcessing.value = false;
+        // isVoiceInputCurrentlyProcessingAudio is handled by VoiceInput's own events
         chatStore.setMainContentStreaming(false);
       },
       (error: Error | any) => { // onStreamError
@@ -298,7 +329,7 @@ async function standardLlmCallPrivate(transcriptionText: string, agentInstance: 
           });
         }
         isLoadingResponse.value = false;
-        isVoiceInputCurrentlyProcessing.value = false;
+        // isVoiceInputCurrentlyProcessingAudio is handled by VoiceInput's own events
         chatStore.setMainContentStreaming(false);
       }
     );
@@ -313,8 +344,8 @@ async function standardLlmCallPrivate(transcriptionText: string, agentInstance: 
             title: `Error with ${agentLabel}`, timestamp: Date.now()
         });
     }
-    isLoadingResponse.value = false;
-    isVoiceInputCurrentlyProcessing.value = false;
+    isLoadingResponse.value = false; // Critical: Reset on error
+    // isVoiceInputCurrentlyProcessingAudio is handled by VoiceInput's own events
     chatStore.setMainContentStreaming(false);
   }
 }
@@ -330,9 +361,10 @@ const handleAgentViewEventFromSlot = (eventData: any): void => {
         title: eventData.payload.title || `${activeAgent.value.label} Update`,
         timestamp: Date.now(),
       });
+      // If the agent view explicitly signals it's done processing, update isLoadingResponse
       if (eventData.payload.isProcessing === false) {
         isLoadingResponse.value = false;
-        isVoiceInputCurrentlyProcessing.value = false;
+        // isVoiceInputCurrentlyProcessingAudio should be managed by VoiceInput events
       }
       break;
     case 'addChatMessage':
@@ -344,9 +376,9 @@ const handleAgentViewEventFromSlot = (eventData: any): void => {
         ...(eventData.payload.extra || {})
       });
       break;
-    case 'setProcessingState':
+    case 'setProcessingState': // Dedicated agent views can use this to control the main isLoadingResponse
       isLoadingResponse.value = !!eventData.payload.isProcessing;
-      isVoiceInputCurrentlyProcessing.value = !!eventData.payload.isProcessing;
+      // isVoiceInputCurrentlyProcessingAudio should be managed by VoiceInput events
       if (!eventData.payload.isProcessing && chatStore.isMainContentStreaming) {
         chatStore.setMainContentStreaming(false);
       }
@@ -369,9 +401,10 @@ onMounted(async () => {
     return;
   }
   if (!agentStore.activeAgentId || !agentService.getAgentById(agentStore.activeAgentId)) {
-    const defaultPrivateAgent = agentService.getDefaultAgent();
+    const defaultPrivateAgent = agentService.getDefaultAgent(); // This should give a valid private agent
     if (defaultPrivateAgent) {
       agentStore.setActiveAgent(defaultPrivateAgent.id);
+      // Watcher will load prompt and content
     } else {
       console.error("[PrivateHome] Critical: No default private agent could be determined.");
       chatStore.updateMainContent({
@@ -380,7 +413,7 @@ onMounted(async () => {
         title: "Initialization Error", timestamp: Date.now()
       });
     }
-  } else {
+  } else { // Agent already set, ensure prompt and content are loaded
     await loadCurrentAgentSystemPrompt();
     chatStore.ensureMainContentForAgent(agentStore.activeAgentId);
   }
@@ -388,37 +421,37 @@ onMounted(async () => {
 
 watch(() => agentStore.activeAgentId, async (newAgentId, oldAgentId) => {
   if (newAgentId && newAgentId !== oldAgentId) {
-    isLoadingResponse.value = false;
-    isVoiceInputCurrentlyProcessing.value = false;
+    isLoadingResponse.value = false; // Reset on agent switch
+    isVoiceInputCurrentlyProcessingAudio.value = false;
     if(chatStore.isMainContentStreaming) chatStore.setMainContentStreaming(false);
     await loadCurrentAgentSystemPrompt();
     chatStore.ensureMainContentForAgent(newAgentId);
-  } else if (!newAgentId && oldAgentId !== null) {
+  } else if (!newAgentId && oldAgentId !== null) { // Agent deselected
+    // Show dashboard or default placeholder for private home
     chatStore.updateMainContent({
       agentId: 'private-dashboard-placeholder' as AgentId, type: 'custom-component',
       data: 'PrivateDashboardPlaceholder', title: 'Welcome Back!', timestamp: Date.now(),
     });
-    currentSystemPromptText.value = '';
+    currentSystemPromptText.value = ''; // Clear prompt
   } else if (newAgentId && newAgentId === oldAgentId) { // Agent re-selected or initial load
-    // Ensure prompt and content are loaded, especially if they weren't before
     const agent = agentService.getAgentById(newAgentId);
     if (agent && (!currentAgentViewComponent.value || !agent.capabilities?.handlesOwnInput)) {
       await loadCurrentAgentSystemPrompt();
     }
     chatStore.ensureMainContentForAgent(newAgentId);
   }
-}, { immediate: true });
+}, { immediate: true }); // Immediate to handle initial load if agentId is already set
 
 </script>
 
 <template>
   <div class="private-home-view-ephemeral">
     <UnifiedChatLayout
-      :is-voice-input-processing="isVoiceInputCurrentlyProcessing"
+      :is-voice-input-processing="isVoiceInputCurrentlyProcessingAudio"
       :show-ephemeral-log="showEphemeralLogForCurrentAgent"
       :current-agent-input-placeholder="activeAgent?.inputPlaceholder || 'Type your message or use voice...'"
       @transcription="handleTranscriptionFromLayout"
-      @voice-input-processing="(status: boolean) => { isVoiceInputCurrentlyProcessing = status; if (status && !isLoadingResponse) isLoadingResponse = true; else if (!status && !isVoiceInputCurrentlyProcessing) isLoadingResponse = false; }"
+      @voice-input-processing="(status: boolean) => { isVoiceInputCurrentlyProcessingAudio = status; }"
     >
       <template #main-content>
         <component
@@ -435,7 +468,7 @@ watch(() => agentStore.activeAgentId, async (newAgentId, oldAgentId) => {
             :agent="activeAgent"
             class="main-content-view-wrapper-ephemeral default-agent-mcv"
             :class="{'has-framed-content': shouldUseDefaultMainContentView}"
-            v-else-if="activeAgent && mainContentData"
+            v-else-if="activeAgent && mainContentData" 
         >
           <div v-if="mainContentData.type === 'custom-component' && mainContentData.data === 'PrivateDashboardPlaceholder'"
                class="private-dashboard-placeholder-ephemeral">
@@ -451,8 +484,7 @@ watch(() => agentStore.activeAgentId, async (newAgentId, oldAgentId) => {
               </button>
             </div>
           </div>
-          <div v-else class="content-renderer-container-ephemeral">
-            <CompactMessageRenderer
+          <div v-else class="content-renderer-container-ephemeral"> <CompactMessageRenderer
               v-if="activeAgent?.capabilities?.usesCompactRenderer && (mainContentData.type === 'compact-message-renderer-data' || (mainContentData.type === 'markdown' && !chatStore.isMainContentStreaming))"
               :content="mainContentData.data"
               :mode="activeAgent.id"
@@ -478,14 +510,13 @@ watch(() => agentStore.activeAgentId, async (newAgentId, oldAgentId) => {
               </div>
             </div>
             <div v-else class="content-renderer-ephemeral text-[var(--color-text-muted)] italic p-6 text-center">
-              <UserGroupIcon class="w-10 h-10 mx-auto mb-2 opacity-50" />
-              <p class="text-lg">Ready to assist with {{ activeAgent.label }}.</p>
-              <p class="text-sm mt-2">(Content type: {{ mainContentData.type }})</p>
+                <UserGroupIcon class="w-10 h-10 mx-auto mb-2 opacity-50" />
+                <p class="text-lg">Ready to assist with {{ activeAgent.label }}.</p>
+                <p class="text-sm mt-2">(Content type: {{ mainContentData.type }})</p>
             </div>
           </div>
         </MainContentView>
-        <div v-else class="loading-placeholder-ephemeral">
-           <div class="loading-animation-content">
+        <div v-else class="loading-placeholder-ephemeral"> <div class="loading-animation-content">
             <div class="loading-spinner-ephemeral !w-16 !h-16"><div v-for="i in 8" :key="`blade-${i}-init`" class="spinner-blade-ephemeral !w-2 !h-5"></div></div>
             <p class="loading-text-ephemeral !text-lg mt-4">Initializing Workspace...</p>
            </div>
