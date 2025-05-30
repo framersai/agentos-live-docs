@@ -396,9 +396,9 @@ const getRecordingStatusText = (): string => {
 
     const method = sttPreference.value === 'whisper_api' ? 'Whisper' : 'Browser STT';
 
-    // Browser STT specific statuses (relies on browserSpeechHandlerRef)
+    // Browser STT specific statuses
     if (sttPreference.value === 'browser_webspeech_api' && browserSpeechHandlerRef.value) {
-        if(browserSpeechHandlerRef.value.isBrowserWebSpeechActive) { // Main STT active
+        if(browserSpeechHandlerRef.value.isBrowserWebSpeechActive) {
             if (isPttMode.value) return `Recording (PTT ${method})...`;
             if (isContinuousMode.value) {
                  return browserSpeechHandlerRef.value.pauseDetectedWebSpeech
@@ -408,12 +408,18 @@ const getRecordingStatusText = (): string => {
             if (isVoiceActivationMode.value && !isChildListeningForWakeWord.value) return `Voice active, recording command (${method})...`;
         }
     }
-    // Whisper STT specific statuses (relies on whisperSpeechHandlerRef)
+    // Whisper STT specific statuses
     else if (sttPreference.value === 'whisper_api' && whisperSpeechHandlerRef.value) {
         if (whisperSpeechHandlerRef.value.isTranscribingCurrentSegment) return 'Whisper processing audio segment...';
         if (whisperSpeechHandlerRef.value.isMediaRecorderActive) {
             const duration = whisperSpeechHandlerRef.value.recordingSegmentSeconds;
             const durationStr = ` (${new Date(duration * 1000).toISOString().substr(14, 5)})`;
+
+            // Check for Whisper's "Sending in..." countdown
+            if (isContinuousMode.value && whisperSpeechHandlerRef.value.isWhisperPauseDetected) {
+                return `Sending in ${ (whisperSpeechHandlerRef.value.whisperPauseCountdown / 1000).toFixed(1) }s...`;
+            }
+
             if (isPttMode.value) return `Recording (PTT ${method})${durationStr}`;
             if (isContinuousMode.value) return `Listening continuously (${method})${durationStr}`;
             if (isVoiceActivationMode.value && !isChildListeningForWakeWord.value) return `Voice active, recording command (${method})${durationStr}`;
@@ -422,7 +428,7 @@ const getRecordingStatusText = (): string => {
 
     if (isVoiceActivationMode.value && isChildListeningForWakeWord.value) return `Awaiting wake word "V"...`;
 
-    return ''; // Default: no specific recording status to show
+    return '';
 };
 const getIdleStatusText = (): string => {
     if (props.isProcessing && !isSelfProcessingAudio.value) return 'Assistant Processing...';

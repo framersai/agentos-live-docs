@@ -105,6 +105,26 @@ export interface VoiceApplicationSettings {
    */
   vadThresholdWhisper?: number;
 
+  /**
+   * @property {number} vadSensitivityDb - Sensitivity threshold in dB for VAD.
+   */
+  vadSensitivityDb: number;
+
+  /**
+   * @property {number} continuousModeSilenceSendDelayMs - Delay in ms before sending silence in continuous mode.
+   */
+  continuousModeSilenceSendDelayMs: number;
+
+  /**
+   * @property {number} minWhisperSegmentDurationS - Minimum segment duration in seconds for Whisper.
+   */
+  minWhisperSegmentDurationS: number;
+
+  /**
+   * @property {number} maxSegmentDurationS - Maximum segment duration in seconds for continuous segments.
+   */
+  maxSegmentDurationS: number;
+
   // TTS (Text-to-Speech) Settings
   ttsProvider: TTSProvider;
   selectedTtsVoiceId: string | null;
@@ -146,6 +166,11 @@ const initialDefaultSettings: Readonly<VoiceApplicationSettings> = {
   continuousModeAutoSend: true,
   vadCommandRecognizedPauseMs: 2000,
   vadThresholdWhisper: 4, // Default VAD threshold for Whisper continuous mode
+  // Add defaults for new settings:
+  vadSensitivityDb: -45,
+  continuousModeSilenceSendDelayMs: 1000,
+  minWhisperSegmentDurationS: 0.75,
+  maxSegmentDurationS: 30, // Default max duration for, e.g., continuous segments
 
   ttsProvider: 'browser_tts',
   selectedTtsVoiceId: null,
@@ -213,7 +238,6 @@ class VoiceSettingsManager {
     for (const key in this.defaultSettings) {
       const K = key as keyof VoiceApplicationSettings;
       if (this.settings[K] === undefined) {
-        // Type assertion needed because this.settings might not yet have K
         (this.settings as any)[K] = this.defaultSettings[K];
         changed = true;
       }

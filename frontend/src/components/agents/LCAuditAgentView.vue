@@ -2,12 +2,11 @@
 /**
  * @file LCAuditAgentView.vue
  * @description Dedicated view component for the LC-Audit agent.
- * This component manages the interaction flow for LeetCode problem analysis,
- * including fetching system prompts, processing user input for problem context,
- * handling LLM responses (which are expected to be structured as slideshows),
- * and managing an autoplay feature for these slideshows.
- * It leverages the CompactMessageRenderer for displaying slideshow content.
- * @version 1.2.0 - Enhanced logging for LLM response parsing; robust handling of slideshow content.
+ * This component manages interaction for LeetCode problem analysis. It sends user input
+ * (problem context) to the backend, receives a JSON response dictating slideshow updates,
+ * and uses CompactMessageRenderer to display the slideshow content.
+ * It supports autoplay and manual navigation of slides.
+ * @version 2.0.0 - Reworked to handle JSON-based slideshow updates and removed Mermaid-specific logic.
  */
 <script setup lang="ts">
 import { ref, computed, inject, watch, onMounted, onUnmounted, nextTick, PropType } from 'vue';
@@ -15,14 +14,12 @@ import { useAgentStore } from '@/store/agent.store';
 import { useChatStore, type MainContent } from '@/store/chat.store';
 import type { IAgentDefinition, AgentId } from '@/services/agent.service';
 import { voiceSettingsManager } from '@/services/voice.settings.service';
-import { chatAPI, promptAPI, type ChatMessagePayloadFE, type TextResponseDataFE } from '@/utils/api';
+import { chatAPI, type ChatMessagePayloadFE, type TextResponseDataFE, type ChatResponseDataFE } from '@/utils/api';
 import type { ToastService } from '@/services/services';
 import CompactMessageRenderer from '@/components/CompactMessageRenderer.vue';
-import { DocumentMagnifyingGlassIcon, PlayIcon as PlaySolidIcon, PauseIcon as PauseSolidIcon, ArrowPathIcon } from '@heroicons/vue/24/solid';
-import { marked } from 'marked';
-
-declare var mermaid: any; // Assuming mermaid is globally available
-
+import { DocumentMagnifyingGlassIcon, PlayIcon as PlaySolidIcon, PauseIcon as PauseSolidIcon, ArrowPathIcon, InformationCircleIcon } from '@heroicons/vue/24/solid';
+import { marked } from 'marked'; // For rendering fallback markdown if needed
+import { promptAPI } from '@/utils/api';
 /**
  * @typedef {'new_slideshow' | 'append_to_final_slide' | 'revise_slideshow' | 'no_update_needed' | 'clarification_needed'} UpdateStrategy
  * @description Defines the strategy for updating the slideshow content based on the LLM response.
@@ -34,34 +31,19 @@ type UpdateStrategy = "new_slideshow" | "append_to_final_slide" | "revise_slides
  * @description Defines the expected structure of the JSON response from the LC-Audit LLM.
  */
 interface LlmAuditResponse {
-  /** The strategy for updating the content. */
   updateStrategy: UpdateStrategy;
-  /** Optional new title for the problem analysis. */
   problemTitle?: string;
-  /** Full Markdown content for a new or revised slideshow. Required if updateStrategy is 'new_slideshow' or 'revise_slideshow'. */
-  content?: string; // This is the key field for slideshow markdown
-  /** Additional Markdown content to append to the final slide. Required if updateStrategy is 'append_to_final_slide'. */
-  newContent?: string;
-  /** A question from the LLM if clarification is needed. Required if updateStrategy is 'clarification_needed'. */
-  clarification_question?: string;
+  content?: string; // Full Markdown slideshow content
+  newContent?: string; // Markdown to append for 'append_to_final_slide'
+  clarification_question?: string; // Question if 'clarification_needed'
 }
 
 const props = defineProps({
-  /** The unique identifier for this agent instance. */
   agentId: { type: String as PropType<AgentId>, required: true },
-  /** The configuration object for this agent. */
   agentConfig: { type: Object as PropType<IAgentDefinition>, required: true }
 });
 
 const emit = defineEmits<{
-  /**
-   * Emitted for agent-specific events, like view mounting.
-   * @param {string} e - The event name: 'agent-event'.
-   * @param {object} event - The event payload.
-   * @param {string} event.type - The type of event (e.g., 'view_mounted').
-   * @param {string} event.agentId - The ID of the agent emitting the event.
-   * @param {string} [event.label] - An optional label associated with the event.
-   */
   (e: 'agent-event', event: { type: 'view_mounted', agentId: string, label?: string }): void;
 }>();
 
@@ -69,481 +51,387 @@ const agentStore = useAgentStore();
 const chatStore = useChatStore();
 const toast = inject<ToastService>('toast');
 
-/** Reactive state indicating if the agent is currently waiting for a response from the LLM. */
 const isLoadingResponse = ref(false);
-/** The system prompt string for the current agent, loaded dynamically. */
 const currentAgentSystemPrompt = ref<string>("");
-/** Computed display name for the agent, derived from its configuration. */
 const agentDisplayName = computed(() => props.agentConfig?.label || "LC-Audit");
 
-/** This ref will hold the full Markdown string intended for the slideshow, including ---SLIDE_BREAK--- separators. */
 const currentSlideshowFullMarkdown = ref<string>("");
-/** The display title for the current problem being analyzed. */
 const currentProblemTitleForDisplay = ref<string>("Problem Analysis");
 
-/** Computed property to get the main content for this agent from the chat store. */
 const mainContentToDisplayFromStore = computed<MainContent | null>(() => chatStore.getMainContentForAgent(props.agentId));
-/** Reference to the CompactMessageRenderer component instance. */
 const compactMessageRendererRef = ref<InstanceType<typeof CompactMessageRenderer> | null>(null);
 
-/** Array of durations (in milliseconds) for each slide in the slideshow. */
-const slideDurationsMs = ref<number[]>([]);
-/** The current (0-indexed) slide being displayed. */
-const currentAppSlideIndex = ref(0);
-/** The total number of slides in the current slideshow. */
-const totalAppSlidesCount = ref(0);
-/** Timer ID for the autoplay functionality. */
+const slideDurationsMs = ref<number[]>([]); // Durations for autoplay
+const currentAppSlideIndex = ref(0); // Tracks the current slide index for LCAuditAgentView's logic
+const totalAppSlidesCount = ref(0);  // Tracks total slides for LCAuditAgentView's logic
 const autoplayTimerId = ref<ReturnType<typeof setTimeout> | null>(null);
-/** Global flag to control whether autoplay is active. */
 const isAutoplayGloballyActive = ref(true);
-/** Flag indicating if the current slide is in its "playing" (timed advance) state. */
-const isCurrentSlidePlaying = ref(false);
-/** Flag to indicate if new slideshow content has been loaded and requires navigation to the first slide. */
-const hasNewSlideshowContentLoaded = ref(false);
+const isCurrentSlidePlaying = ref(false); // True if autoplay is running for the current slide
+const hasNewSlideshowContentLoaded = ref(false); // Flag to trigger navigation to first slide on new content
 
-/** Computed ID for the main content display area, ensuring uniqueness. */
 const contentDisplayAreaId = computed(() => `${props.agentId}-main-content-area-lcaudit`);
 
-/**
- * Fetches and sets the system prompt for the current agent based on its configuration.
- * Logs errors and sets a fallback prompt if fetching fails.
- * @async
- */
 const fetchSystemPrompt = async () => {
   const key = props.agentConfig?.systemPromptKey;
   const agentLabel = agentDisplayName.value;
-  console.log(`[${agentLabel}] fetchSystemPrompt called with systemPromptKey: "${key}"`);
+  console.log(`[${agentLabel}] fetchSystemPrompt with key: "${key}"`);
   if (key) {
-  try {
-   const response = await promptAPI.getPrompt(`${key}.md`);
-   if (response && response.data && typeof response.data === 'string') {
-   currentAgentSystemPrompt.value = response.data;
-   if (!(response.data as string).trim()) {
-      console.warn(`[${agentLabel}] System prompt for key "${key}" loaded but is empty.`);
-   }
-   } else {
-   console.error(`[${agentLabel}] Prompt API response for key "${key}" invalid. Response data:`, response?.data);
-   currentAgentSystemPrompt.value = `ERROR: [${agentLabel}] System prompt for key "${key}" invalid structure.`;
-   toast?.add({ type: 'error', title: 'Prompt Load Error', message: `Invalid prompt data for "${key}".` });
-   }
-  } catch (e: any) {
-   console.error(`[${agentLabel}] Critical error loading prompt for key "${key}":`, e.response?.data || e.message || e);
-   currentAgentSystemPrompt.value = `ERROR: [${agentLabel}] System prompt for key "${key}" load failed. Details: ${e.message || 'Unknown error'}`;
-   toast?.add({ type: 'error', title: 'Critical Prompt Error', message: `Failed to load system prompt for "${key}".` });
-  }
+    try {
+      const response = await promptAPI.getPrompt(`${key}.md`);
+      currentAgentSystemPrompt.value = response.data.content; // Use the markdown string from the response
+      if (!currentAgentSystemPrompt.value.trim()) {
+        console.warn(`[${agentLabel}] System prompt for key "${key}" loaded but is empty.`);
+      }
+    } catch (e: any) {
+      console.error(`[${agentLabel}] Error loading prompt for key "${key}":`, e.response?.data || e.message);
+      currentAgentSystemPrompt.value = `ERROR: [${agentLabel}] System prompt load failed for key "${key}".`;
+      toast?.add({ type: 'error', title: 'Prompt Load Error', message: `Failed to load critical instructions for ${agentLabel}.` });
+    }
   } else {
-  console.warn(`[${agentLabel}] No systemPromptKey. Agent ID: "${props.agentId}"`);
-  currentAgentSystemPrompt.value = `ERROR: [${agentLabel}] System prompt key missing.`;
-  toast?.add({ type: 'error', title: 'Agent Config Error', message: `System prompt key missing for ${agentLabel}.` });
+    console.warn(`[${agentLabel}] No systemPromptKey defined.`);
+    currentAgentSystemPrompt.value = `ERROR: [${agentLabel}] System prompt key missing in agent configuration.`;
+    toast?.add({ type: 'error', title: 'Agent Config Error', message: `Configuration error for ${agentLabel}.` });
   }
 };
 
 watch(() => props.agentConfig?.systemPromptKey, fetchSystemPrompt, { immediate: true });
 
-/**
- * Clears any active autoplay timer and sets the current slide playing state to false.
- */
 const clearCurrentAutoplayTimer = () => {
   if (autoplayTimerId.value) {
-  clearTimeout(autoplayTimerId.value);
-  autoplayTimerId.value = null;
+    clearTimeout(autoplayTimerId.value);
+    autoplayTimerId.value = null;
   }
   isCurrentSlidePlaying.value = false;
 };
 
-/**
- * Determines the duration for each slide in a slideshow.
- * Applies specific durations for initial slides and a default for subsequent ones,
- * with the final slide having an infinite duration.
- * @param {number} numSlides - The total number of slides.
- * @returns {number[]} An array of slide durations in milliseconds.
- */
 const determineSlideDurations = (numSlides: number): number[] => {
-  const durations: number[] = [];
   if (numSlides <= 0) return [];
-
-  // Durations for specific initial slides
-  if (numSlides > 0) durations.push(10000); // Slide 1 (index 0)
-  if (numSlides > 1) durations.push(15000); // Slide 2 (index 1)
-  if (numSlides > 2) durations.push(20000); // Slide 3 (index 2)
-  if (numSlides > 3) durations.push(60000); // Slide 4 (index 3)
-
-  const optimalSlidesStartIdx = 4; // Index from which default duration applies
-  const finalAnalysisSlideActualIdx = numSlides - 1;
-
-  // Default duration for slides between the initial set and the final slide
-  for (let i = optimalSlidesStartIdx; i < finalAnalysisSlideActualIdx; i++) {
-  durations.push(90000);
+  const durations: number[] = [];
+  // Example durations (can be refined or made dynamic)
+  durations.push(numSlides > 0 ? 10000 : Infinity); // Slide 1
+  durations.push(numSlides > 1 ? 15000 : Infinity); // Slide 2
+  durations.push(numSlides > 2 ? 20000 : Infinity); // Slide 3
+  for (let i = 3; i < numSlides - 1; i++) {
+    durations.push(30000); // Intermediate slides
   }
-  // Fill any remaining gaps if numSlides is small but > optimalSlidesStartIdx
-  while(durations.length < numSlides -1 && numSlides > optimalSlidesStartIdx) {
-  durations.push(90000);
+  if (numSlides > 0) { // Ensure last slide has Infinity duration if not covered
+    durations[numSlides - 1] = Infinity;
   }
-
-  // Ensure the last slide always gets a duration entry, even if it's the only one or among the first few
-  if (numSlides > 0) {
-  durations[finalAnalysisSlideActualIdx] = Infinity; // Last slide
-  }
-  return durations.slice(0, numSlides); // Ensure correct length
+  return durations.slice(0, numSlides);
 };
 
-/**
- * Sets up slide durations based on new Markdown content (expected to contain ---SLIDE_BREAK---)
- * and updates the chat store. This function is called when the LLM provides slideshow content.
- * @param {string} markdownSlideshowContent - The full Markdown content for the slideshow.
- * @param {string} [problemTitle] - Optional title for the problem analysis.
- */
-const setupSlideDurationsAndParse = (markdownSlideshowContent: string, problemTitle?: string) => {
-  currentSlideshowFullMarkdown.value = markdownSlideshowContent; // This is passed to CompactMessageRenderer
+const setupSlideshowState = (markdownSlideshowContent: string, problemTitle?: string) => {
+  console.log(`[${agentDisplayName.value}] Setting up slideshow state. Title: ${problemTitle}`);
+  currentSlideshowFullMarkdown.value = markdownSlideshowContent;
   currentProblemTitleForDisplay.value = problemTitle || currentProblemTitleForDisplay.value || "Problem Analysis";
-  
-  // CompactMessageRenderer will handle splitting by '---SLIDE_BREAK---' internally.
-  // We just need to estimate total slides for our own autoplay logic if not disabled.
+
   const slidesArray = markdownSlideshowContent.split('---SLIDE_BREAK---');
   totalAppSlidesCount.value = slidesArray.length;
   slideDurationsMs.value = determineSlideDurations(totalAppSlidesCount.value);
 
-  // Update the main content in the store. CompactMessageRenderer will pick this up.
+  // Update main content in store for CompactMessageRenderer to pick up
+  // This now directly passes the Markdown string, CompactMessageRenderer handles slideshow logic
   chatStore.updateMainContent({
-  agentId: props.agentId,
-  type: 'compact-message-renderer-data', // This type tells parent to use the renderer if applicable
-  data: currentSlideshowFullMarkdown.value, // Pass the full multi-slide markdown
-  title: currentProblemTitleForDisplay.value,
-  timestamp: Date.now(),
+    agentId: props.agentId,
+    type: 'compact-message-renderer-data',
+    data: currentSlideshowFullMarkdown.value,
+    title: currentProblemTitleForDisplay.value,
+    timestamp: Date.now(),
   });
 };
 
-/**
- * Schedules the next slide to be displayed during autoplay.
- * Clears existing timers and sets a new one based on the current slide's duration.
- */
 const scheduleNextSlide = () => {
   clearCurrentAutoplayTimer();
-  if (!isAutoplayGloballyActive.value || currentAppSlideIndex.value >= totalAppSlidesCount.value - 1) {
-  isCurrentSlidePlaying.value = false; // End of slideshow or autoplay paused
-  return;
+  if (!isAutoplayGloballyActive.value || currentAppSlideIndex.value >= totalAppSlidesCount.value - 1 || totalAppSlidesCount.value === 0) {
+    isCurrentSlidePlaying.value = false;
+    return;
   }
 
   const duration = slideDurationsMs.value[currentAppSlideIndex.value];
   if (duration !== undefined && duration !== Infinity) {
-  isCurrentSlidePlaying.value = true;
-  autoplayTimerId.value = setTimeout(() => {
-   if (isAutoplayGloballyActive.value && isCurrentSlidePlaying.value) { // Double check state before advancing
-   compactMessageRendererRef.value?.next();
-   }
-  }, duration);
+    isCurrentSlidePlaying.value = true;
+    autoplayTimerId.value = setTimeout(() => {
+      if (isAutoplayGloballyActive.value && isCurrentSlidePlaying.value) {
+        compactMessageRendererRef.value?.next(); // This will trigger 'slide-changed'
+      }
+    }, duration);
   } else {
-  isCurrentSlidePlaying.value = false; // No duration or infinite duration, so stop "playing" state
+    isCurrentSlidePlaying.value = false; // Infinite duration for this slide
   }
 };
 
-/**
- * Handles the 'slide-changed' event from the CompactMessageRenderer.
- * Updates the current slide index and manages autoplay state if navigation was manual.
- * @param {object} payload - The event payload from CompactMessageRenderer.
- * @param {number} payload.newIndex - The new current slide index.
- * @param {number} payload.totalSlides - The total number of slides in the renderer.
- * @param {boolean} payload.navigatedManually - True if the slide change was due to manual user interaction.
- */
 const handleSlideChangedInRenderer = (payload: { newIndex: number; totalSlides: number; navigatedManually: boolean }) => {
+  console.log(`[${agentDisplayName.value}] Slide changed in renderer. New index: ${payload.newIndex}, Manually: ${payload.navigatedManually}`);
   currentAppSlideIndex.value = payload.newIndex;
-  // totalAppSlidesCount.value = payload.totalSlides; // Renderer might have its own count, ensure ours is aligned if necessary
+  // totalAppSlidesCount.value can be updated if renderer has a more definitive count, though setupSlideshowState should be the source of truth.
+  // totalAppSlidesCount.value = payload.totalSlides;
+
 
   if (payload.navigatedManually) {
-  isAutoplayGloballyActive.value = false; // Manual navigation pauses global autoplay
-  clearCurrentAutoplayTimer();
+    isAutoplayGloballyActive.value = false; // User interaction pauses global autoplay
+    clearCurrentAutoplayTimer();
   } else if (isAutoplayGloballyActive.value) {
-  // Slide changed automatically (likely via our scheduleNextSlide calling renderer.next())
-  scheduleNextSlide(); // Schedule the *next* one
+    scheduleNextSlide(); // Autoplay moved to next slide, schedule the one after
   }
 };
 
-/**
- * Toggles the master autoplay state for the slideshow.
- * If enabling autoplay, it starts playing from the current slide.
- * If disabling, it clears any active autoplay timers.
- */
 const toggleMasterAutoplay = () => {
   isAutoplayGloballyActive.value = !isAutoplayGloballyActive.value;
+  console.log(`[${agentDisplayName.value}] Master autoplay toggled to: ${isAutoplayGloballyActive.value}`);
   if (isAutoplayGloballyActive.value) {
-  // If slideshow ended, and user hits play, restart from beginning or current slide
-  if (currentAppSlideIndex.value >= totalAppSlidesCount.value - 1 && totalAppSlidesCount.value > 0) {
-   currentAppSlideIndex.value = 0; // Option: restart from beginning
-   compactMessageRendererRef.value?.navigateToSlide(0); // Navigate renderer too
-   // Autoplay will be triggered by slide-changed event or explicitly by scheduleNextSlide
-  }
-  isCurrentSlidePlaying.value = true; // Set intent to play
-  scheduleNextSlide();
+    if (currentAppSlideIndex.value >= totalAppSlidesCount.value - 1 && totalAppSlidesCount.value > 0) {
+      currentAppSlideIndex.value = 0; // Restart from beginning if at end
+      compactMessageRendererRef.value?.navigateToSlide(0);
+      // scheduleNextSlide will be called by handleSlideChangedInRenderer
+    } else {
+      scheduleNextSlide(); // Start playing from current slide
+    }
   } else {
-  clearCurrentAutoplayTimer(); // This also sets isCurrentSlidePlaying to false
+    clearCurrentAutoplayTimer();
   }
 };
 
-/**
- * Processes the LLM response string. Expects a JSON string which is parsed.
- * The 'content' field of the parsed JSON should contain the Markdown for the slideshow.
- * @param {string} llmResponseString - The raw string from the LLM, expected to be JSON.
- */
- const handleLlmAuditResponse = (llmResponseString: string) => {
-  clearCurrentAutoplayTimer();
-  const agentLabel = agentDisplayName.value;
-  console.log(`[${agentLabel}] Received raw LLM response string (first 500 chars):`, llmResponseString.substring(0, 500));
-
-  let llmOutput: LlmAuditResponse;
-  let cleanedResponseString = llmResponseString.trim();
-
-  // Check for and remove markdown code block delimiters if present
-  if (cleanedResponseString.startsWith('```json')) {
-    cleanedResponseString = cleanedResponseString.substring('```json'.length);
-    if (cleanedResponseString.endsWith('```')) {
-      cleanedResponseString = cleanedResponseString.substring(0, cleanedResponseString.length - '```'.length);
-    }
-    cleanedResponseString = cleanedResponseString.trim(); // Trim again after removing markers
-  } else if (cleanedResponseString.startsWith('```')) { // General markdown code block
-    cleanedResponseString = cleanedResponseString.substring('```'.length);
-    if (cleanedResponseString.endsWith('```')) {
-      cleanedResponseString = cleanedResponseString.substring(0, cleanedResponseString.length - '```'.length);
-    }
-    cleanedResponseString = cleanedResponseString.trim();
-  }
-
-  try {
-    llmOutput = JSON.parse(cleanedResponseString);
-    console.log(`[${agentLabel}] Successfully parsed LLM JSON output. Strategy: ${llmOutput.updateStrategy}`);
-  } catch (e: any) {
-    console.error(`[${agentLabel}] CRITICAL: Failed to parse LLM response as JSON. Error:`, e.message);
-    console.error(`[${agentLabel}] Raw LLM Response that failed parsing:`, llmResponseString);
-    toast?.add({type: 'error', title: `${agentLabel} Response Error`, message: `Assistant provided an invalid response format (not JSON). Analysis cannot be displayed as a slideshow. Raw content shown.`, duration: 10000});
-    // Fallback: Display the raw string as plain markdown if JSON parsing fails
-    chatStore.updateMainContent({
-      agentId: props.agentId, type: 'markdown',
-      data: `### ${agentLabel} - Invalid Response Format\n\nThe assistant's response was not in the expected slideshow format. Displaying raw content:\n\n---\n\n${llmResponseString}`,
-      title: 'Invalid Response Format', timestamp: Date.now()
-    });
-    isLoadingResponse.value = false;
-    return;
-  }
-
-  let newProblemTitle = llmOutput.problemTitle || currentProblemTitleForDisplay.value || "Problem Analysis";
-  let newFullMarkdownSlideshow = ""; // This will hold the content for CompactMessageRenderer
-  let shouldStartAutoplayOnNewContent = false;
-
-  if (llmOutput.updateStrategy === "new_slideshow" || llmOutput.updateStrategy === "revise_slideshow") {
-    if (!llmOutput.content || typeof llmOutput.content !== 'string') {
-      console.error(`[${agentLabel}] LLM JSON valid, but 'content' field is missing or not a string for strategy: ${llmOutput.updateStrategy}. Content:`, llmOutput.content);
-      toast?.add({type: 'error', title: 'Slideshow Content Missing', message: `Assistant did not provide slideshow content for "${llmOutput.updateStrategy}".`});
-      // Potentially display an error or do nothing
-      chatStore.updateMainContent({
-        agentId: props.agentId, type: 'markdown',
-        data: `### ${agentLabel} - Slideshow Content Error\n\nAssistant response was valid JSON, but the required slideshow content for strategy "${llmOutput.updateStrategy}" was missing or invalid.`,
-        title: 'Slideshow Content Error', timestamp: Date.now()
-      });
-      isLoadingResponse.value = false;
-      return;
-    }
-    newFullMarkdownSlideshow = llmOutput.content; // This is the multi-slide markdown
-    setupSlideDurationsAndParse(newFullMarkdownSlideshow, newProblemTitle);
-    currentAppSlideIndex.value = 0;
-    hasNewSlideshowContentLoaded.value = true;
-    shouldStartAutoplayOnNewContent = true;
-    console.log(`[${agentLabel}] Strategy: ${llmOutput.updateStrategy}. New slideshow content set (length: ${newFullMarkdownSlideshow.length}).`);
-  } else if (llmOutput.updateStrategy === "append_to_final_slide") {
-    if (currentSlideshowFullMarkdown.value && totalAppSlidesCount.value > 0 && llmOutput.newContent) {
-      const separator = currentSlideshowFullMarkdown.value.endsWith('\n') ? '\n---\n\n' : '\n\n---\n\n';
-      newFullMarkdownSlideshow = currentSlideshowFullMarkdown.value + separator + llmOutput.newContent;
-      setupSlideDurationsAndParse(newFullMarkdownSlideshow, newProblemTitle); // This updates currentSlideshowFullMarkdown
-      currentAppSlideIndex.value = totalAppSlidesCount.value -1; // Stay on (new) last slide
-      isAutoplayGloballyActive.value = false; 
-      isCurrentSlidePlaying.value = false;
-      nextTick().then(() => {
-        compactMessageRendererRef.value?.navigateToSlide(totalAppSlidesCount.value > 0 ? totalAppSlidesCount.value -1 : 0);
-      });
-      console.log(`[${agentLabel}] Strategy: append_to_final_slide. Content appended.`);
-    } else {
-      console.warn(`[${agentLabel}] Could not append for 'append_to_final_slide': current slideshow empty or no new content.`);
-      newFullMarkdownSlideshow = llmOutput.newContent || `Error: Append content missing. Current problem: ${newProblemTitle}`;
-      setupSlideDurationsAndParse(newFullMarkdownSlideshow, "Appended Note (Fallback)");
-      currentAppSlideIndex.value = 0;
-      hasNewSlideshowContentLoaded.value = true;
-      shouldStartAutoplayOnNewContent = true;
-    }
-  } else if (llmOutput.updateStrategy === "no_update_needed") {
-    toast?.add({type: 'info', title: `${agentLabel} Feedback`, message: 'No significant update required for the current analysis.', duration: 5000});
-    if (isAutoplayGloballyActive.value && !isCurrentSlidePlaying.value && currentAppSlideIndex.value < totalAppSlidesCount.value -1) {
-      scheduleNextSlide();
-    }
-  } else if (llmOutput.updateStrategy === "clarification_needed") {
-    const question = llmOutput.clarification_question || "The assistant needs more details.";
-    toast?.add({type: 'info', title: `${agentLabel} Needs Clarification`, message: question, duration: 12000});
-    chatStore.addMessage({ role: 'system', agentId: props.agentId, content: `[${agentLabel}] Clarification needed: ${question}` });
-    isAutoplayGloballyActive.value = false;
-    isCurrentSlidePlaying.value = false;
-  }
-
-  nextTick().then(() => {
-    if (hasNewSlideshowContentLoaded.value && compactMessageRendererRef.value) {
-      compactMessageRendererRef.value.navigateToSlide(0);
-      hasNewSlideshowContentLoaded.value = false;
-    }
-    if (shouldStartAutoplayOnNewContent && isAutoplayGloballyActive.value) {
-      isCurrentSlidePlaying.value = true;
-      scheduleNextSlide();
-    }
-    renderAllMermaidDiagramsInView(); // Ensure diagrams in new/updated content are rendered
-  });
-
-  isLoadingResponse.value = false;
-};
-
-/**
- * Processes the user-provided problem context by sending it to the LLM via `chatAPI`.
- * Handles loading states and updates the main content view with responses or errors.
- * @param {string} problemInput - The problem description or context provided by the user.
- * @async
- */
-const processProblemContext = async (problemInput: string) => {
+const handleLlmAuditResponse = (llmResponseString: string) => {
+  clearCurrentAutoplayTimer();
   const agentLabel = agentDisplayName.value;
+  console.log(`[${agentLabel}] Received raw LLM response (first 500 chars):`, llmResponseString.substring(0, 500));
 
-  if (!problemInput.trim()) {
-  toast?.add({type: 'warning', title: 'Input Required', message: `Please provide a problem description for ${agentLabel}.`});
-  isLoadingResponse.value = false;
-  return;
-  }
-  if (isLoadingResponse.value) {
-  toast?.add({type: 'info', title: 'Processing Busy', message: `${agentLabel} is already processing a request.`});
-  return;
-  }
-  const systemPrompt = currentAgentSystemPrompt.value;
-  console.log(`[${agentLabel}] processProblemContext: Attempting to use system prompt. Type: ${typeof systemPrompt}, Is empty/whitespace: ${!systemPrompt?.trim()}`);
-
-  if (typeof systemPrompt !== 'string' || !systemPrompt.trim() || systemPrompt.startsWith("ERROR:")) {
-    console.error(`[${agentLabel}] CRITICAL in processProblemContext: currentAgentSystemPrompt is invalid or indicates a prior load error. Type: "${typeof systemPrompt}", Content (start): "${systemPrompt ? systemPrompt.substring(0, 100) + "..." : "N/A"}". Cannot proceed. Agent ID: "${props.agentId}", Configured Key: "${props.agentConfig?.systemPromptKey}"`);
-    toast?.add({
-      type: 'error',
-      title: `${agentLabel} Internal Error`,
-      message: systemPrompt.startsWith("ERROR:") ? `Cannot proceed due to: ${systemPrompt.replace("ERROR: ", "")}` : 'Core system prompt is not available or invalid. Analysis cannot start.',
-      duration: 10000
+  let llmOutput: LlmAuditResponse;
+  try {
+    // The LLM is instructed to return ONLY the JSON string.
+    llmOutput = JSON.parse(llmResponseString.trim());
+    console.log(`[${agentLabel}] Successfully parsed LLM JSON. Strategy: ${llmOutput.updateStrategy}`);
+  } catch (e: any) {
+    console.error(`[${agentLabel}] CRITICAL: Failed to parse LLM response as JSON. Error:`, e.message);
+    console.error(`[${agentLabel}] Raw LLM Response that failed:`, llmResponseString);
+    toast?.add({ type: 'error', title: `${agentLabel} Response Error`, message: `Assistant response was not valid JSON. Cannot display slideshow. Raw content shown.`, duration: 10000 });
+    chatStore.updateMainContent({
+      agentId: props.agentId, type: 'markdown',
+      data: `### ${agentLabel} - Invalid Response Format\nThe assistant's response was not in the expected JSON format. Displaying raw content:\n\n---\n\n${llmResponseString.replace(/</g, '&lt;').replace(/>/g, '&gt;')}`,
+      title: 'Invalid Response Format', timestamp: Date.now()
     });
     isLoadingResponse.value = false;
+    return;
+  }
 
+  const newProblemTitle = llmOutput.problemTitle || currentProblemTitleForDisplay.value || "Problem Analysis";
+  let shouldStartAutoplay = false;
+
+  switch (llmOutput.updateStrategy) {
+    case "new_slideshow":
+    case "revise_slideshow":
+      if (!llmOutput.content || typeof llmOutput.content !== 'string') {
+        console.error(`[${agentLabel}] 'content' field missing or invalid for strategy: ${llmOutput.updateStrategy}.`);
+        toast?.add({ type: 'error', title: 'Slideshow Content Error', message: `Assistant response for "${llmOutput.updateStrategy}" was missing slideshow content.` });
+        chatStore.updateMainContent({
+          agentId: props.agentId, type: 'markdown',
+          data: `### ${agentLabel} - Slideshow Content Error\nAssistant response was valid JSON, but the required slideshow content for strategy "${llmOutput.updateStrategy}" was missing or invalid.`,
+          title: 'Slideshow Content Error', timestamp: Date.now()
+        });
+        break;
+      }
+      setupSlideshowState(llmOutput.content, newProblemTitle);
+      currentAppSlideIndex.value = 0; // Always start new/revised slideshows from the beginning
+      hasNewSlideshowContentLoaded.value = true;
+      shouldStartAutoplay = true;
+      console.log(`[${agentLabel}] Strategy: ${llmOutput.updateStrategy}. New/Revised slideshow content set (length: ${llmOutput.content.length}). Title: ${newProblemTitle}`);
+      break;
+
+    case "append_to_final_slide":
+      if (currentSlideshowFullMarkdown.value && totalAppSlidesCount.value > 0 && llmOutput.newContent) {
+        const updatedMarkdown = currentSlideshowFullMarkdown.value + (currentSlideshowFullMarkdown.value.endsWith('\n') ? '' : '\n') + llmOutput.newContent;
+        setupSlideshowState(updatedMarkdown, newProblemTitle); // This updates currentSlideshowFullMarkdown
+        currentAppSlideIndex.value = totalAppSlidesCount.value > 0 ? totalAppSlidesCount.value - 1 : 0; // Stay on (new) last slide
+        hasNewSlideshowContentLoaded.value = true; // To trigger navigation
+        isAutoplayGloballyActive.value = false; // Pause autoplay when appending
+        isCurrentSlidePlaying.value = false;
+        console.log(`[${agentLabel}] Strategy: append_to_final_slide. Content appended.`);
+      } else {
+        console.warn(`[${agentLabel}] Could not append: current slideshow empty or no new content. Reverting to new_slideshow.`);
+        setupSlideshowState(llmOutput.newContent || `Error: Append content was missing. Original title: ${newProblemTitle}`, "Appended Note (Fallback)");
+        currentAppSlideIndex.value = 0;
+        hasNewSlideshowContentLoaded.value = true;
+        shouldStartAutoplay = true;
+      }
+      break;
+
+    case "no_update_needed":
+      toast?.add({ type: 'info', title: `${agentLabel} Status`, message: 'No significant update to the analysis was needed based on the latest input.', duration: 4000 });
+      // If autoplay was on and paused, and not on the last slide, potentially resume
+      if (isAutoplayGloballyActive.value && !isCurrentSlidePlaying.value && currentAppSlideIndex.value < totalAppSlidesCount.value - 1) {
+        scheduleNextSlide();
+      }
+      console.log(`[${agentLabel}] Strategy: no_update_needed.`);
+      break;
+
+    case "clarification_needed":
+      const question = llmOutput.clarification_question || "The assistant requires more details to proceed.";
+      toast?.add({ type: 'warning', title: `${agentLabel} Needs Clarification`, message: question, duration: 12000 });
+      // Optionally, add a system message to a chat log if this agent had one
+      // chatStore.addMessage({ role: 'system', agentId: props.agentId, content: `[${agentLabel}] Clarification needed: ${question}` });
+      isAutoplayGloballyActive.value = false;
+      isCurrentSlidePlaying.value = false;
+      console.log(`[${agentLabel}] Strategy: clarification_needed. Question: ${question}`);
+      break;
+
+    default:
+      console.error(`[${agentLabel}] Unknown updateStrategy: ${llmOutput.updateStrategy}`);
+      toast?.add({type: 'error', title: 'Unknown Update Strategy', message: `Received an unrecognized update instruction: ${llmOutput.updateStrategy}`});
+      chatStore.updateMainContent({
+          agentId: props.agentId, type: 'markdown',
+          data: `### ${agentLabel} - Internal Error\nAssistant provided an unknown update strategy: "${llmOutput.updateStrategy}".`,
+          title: 'Internal Processing Error', timestamp: Date.now()
+      });
+  }
+
+  nextTick().then(() => {
+    if (hasNewSlideshowContentLoaded.value && compactMessageRendererRef.value) {
+      compactMessageRendererRef.value.navigateToSlide(currentAppSlideIndex.value); // Navigate to current (possibly new 0 or last for append)
+      hasNewSlideshowContentLoaded.value = false;
+    }
+    // Autoplay will be handled by handleSlideChangedInRenderer if navigation occurred,
+    // or if shouldStartAutoplay is true for a brand new slideshow.
+    if (shouldStartAutoplay && isAutoplayGloballyActive.value && totalAppSlidesCount.value > 0) {
+      scheduleNextSlide();
+    }
+  });
+
+  isLoadingResponse.value = false;
+};
+
+const processProblemContext = async (problemInput: string) => {
+  const agentLabel = agentDisplayName.value;
+  console.log(`[${agentLabel}] processProblemContext called with input (first 50): "${problemInput.substring(0,50)}"`);
+
+  if (!problemInput.trim()) {
+    toast?.add({ type: 'warning', title: 'Input Required', message: `Please provide problem context for ${agentLabel}.` });
+    return;
+  }
+  if (isLoadingResponse.value) {
+    toast?.add({ type: 'info', title: 'Processing Busy', message: `${agentLabel} is already analyzing.` });
+    return;
+  }
+
+  const systemPrompt = currentAgentSystemPrompt.value;
+  if (typeof systemPrompt !== 'string' || !systemPrompt.trim() || systemPrompt.startsWith("ERROR:")) {
+    const errorMsg = systemPrompt.startsWith("ERROR:") ? systemPrompt : 'Core system prompt is not available or invalid.';
+    console.error(`[${agentLabel}] CRITICAL: System prompt error. ${errorMsg}`);
+    toast?.add({ type: 'error', title: `${agentLabel} System Error`, message: `Cannot proceed: ${errorMsg.replace("ERROR: ", "")}`, duration: 10000 });
     chatStore.updateMainContent({
-      agentId: props.agentId,
-      type: 'markdown',
-      data: `### ${agentLabel} System Error\n\nThe "${agentLabel}" assistant encountered a critical problem with its internal configuration (system prompt missing, invalid, or could not be loaded for key: \`${props.agentConfig?.systemPromptKey}\`). \n\n${systemPrompt.startsWith("ERROR:") ? `Details: ${systemPrompt.replace("ERROR: ", "")}` : 'Please try selecting the agent again. If the issue persists, it may indicate a deeper system problem.'}`,
-      title: `${agentLabel} Initialization Failed`,
-      timestamp: Date.now()
+      agentId: props.agentId, type: 'markdown',
+      data: `### ${agentLabel} System Error\n${errorMsg.replace("ERROR: ", "")}`,
+      title: `${agentLabel} Initialization Failed`, timestamp: Date.now()
     });
     return;
   }
 
-  isAutoplayGloballyActive.value = false;
+  isAutoplayGloballyActive.value = true; // Default to autoplay on new problem, can be toggled
   clearCurrentAutoplayTimer();
   isLoadingResponse.value = true;
+
   chatStore.updateMainContent({
-  agentId: props.agentId, type: 'markdown',
-  data: `## ${agentLabel}: Preparing In-Depth Analysis...\n\n<div class="lc-audit-spinner-container mx-auto my-8"><div class="lc-audit-spinner"></div></div>\n\n<p class="text-center text-base text-slate-300">Processing the problem context. This detailed analysis can take a few moments.</p>`,
-  title: `${agentLabel}: Analyzing "${(problemInput ?? '').substring(0, 20)}..."`, timestamp: Date.now()
+    agentId: props.agentId, type: 'loading',
+    data: `<div class="lc-audit-spinner-container mx-auto my-8"><div class="lc-audit-spinner"></div></div><p class="text-center text-base text-slate-300">Preparing in-depth analysis for: "${problemInput.substring(0, 30)}..."</p>`,
+    title: `${agentLabel}: Analyzing "${problemInput.substring(0, 20)}..."`, timestamp: Date.now()
   });
 
   try {
-  const agentCtxFromStore = agentStore.getAgentContext(props.agentId) || {};
-  const currentSlideContent = currentSlideshowFullMarkdown.value.split('---SLIDE_BREAK---')[currentAppSlideIndex.value] || "";
-  const contextForLLM = {
-        ...agentCtxFromStore,
-        current_problem_title: currentProblemTitleForDisplay.value === "Problem Analysis" || 
-                               currentProblemTitleForDisplay.value === `${agentLabel} Ready` || 
-                               currentProblemTitleForDisplay.value === `${agentLabel} - Awaiting Problem` 
-                               ? null 
-                               : currentProblemTitleForDisplay.value,
-        current_slideshow_content_summary: currentSlideshowFullMarkdown.value 
-          ? currentSlideContent.substring(0, 250) + (currentSlideContent.length > 250 ? "..." : "")
-          : null,
-        current_slide_index: totalAppSlidesCount.value > 0 ? currentAppSlideIndex.value : null, // Send null if no slides
-        total_slides_in_current_show: totalAppSlidesCount.value,
-        is_on_final_slide: totalAppSlidesCount.value > 0 && currentAppSlideIndex.value === totalAppSlidesCount.value - 1,
+    // Prepare AGENT_CONTEXT_JSON for the prompt
+    const currentSlideContentSummary = currentSlideshowFullMarkdown.value
+        ? (currentSlideshowFullMarkdown.value.split('---SLIDE_BREAK---')[currentAppSlideIndex.value] || "").substring(0,300) + "..."
+        : null;
+
+    const agentContextForLLM = {
+      current_problem_title: (currentProblemTitleForDisplay.value === "Problem Analysis" || currentProblemTitleForDisplay.value === `${agentLabel} Ready` || currentProblemTitleForDisplay.value.includes("Awaiting Problem")) ? null : currentProblemTitleForDisplay.value,
+      current_slideshow_content_summary: currentSlideshowFullMarkdown.value ? currentSlideContentSummary : null,
+      current_slide_index: totalAppSlidesCount.value > 0 ? currentAppSlideIndex.value : null,
+      total_slides_in_current_show: totalAppSlidesCount.value,
+      is_on_final_slide: totalAppSlidesCount.value > 0 && currentAppSlideIndex.value === totalAppSlidesCount.value - 1,
     };
-  let finalSystemPrompt = systemPrompt // Guarded: systemPrompt is a valid string here
-   .replace(/{{LANGUAGE}}/g, voiceSettingsManager.settings?.preferredCodingLanguage || 'Python')
-   .replace(/{{USER_QUERY}}/g, problemInput)
-   .replace(/{{AGENT_CONTEXT_JSON}}/g, JSON.stringify(contextForLLM))
-   .replace(/{{CONVERSATION_HISTORY}}/g, JSON.stringify(
-      chatStore.getMessagesForAgent(props.agentId)
-      .filter(m => m.role === 'user')
-      .slice(-3)
-      .map(m => ({role: m.role, content: m.content?.substring(0,150)}))
-   ));
-  const payload: ChatMessagePayloadFE = {
-   messages: [{ role: 'user', content: problemInput }],
-   mode: props.agentConfig.id, systemPromptOverride: finalSystemPrompt,
-   userId: `lc_audit_session_${props.agentId}`, conversationId: chatStore.getCurrentConversationId(props.agentId) || `lcaudit-conv-${Date.now()}`,
-   stream: false, // IMPORTANT: LC-Audit expects a single JSON object, not a stream
-  };
-  
-  console.log(`[${agentLabel}] Sending payload to chatAPI for problem: "${problemInput.substring(0, 50)}..."`);
-  const response = await chatAPI.sendMessage(payload);
-  // @ts-ignore
-  console.log(`[${agentLabel}] Received response from chatAPI. Status: ${response.status}. Data (first 200 chars):`, typeof response.data === 'string' ? response.data.substring(0,200) : response.data);
 
-  // The content for LC-Audit is expected to be a JSON string within response.data.content
-  if (response.data && typeof (response.data as TextResponseDataFE).content === 'string') {
-   handleLlmAuditResponse((response.data as TextResponseDataFE).content!);
-  } else {
-   console.error(`[${agentLabel}] LLM response did not have a string in 'content' field. Response data:`, response.data);
-   throw new Error(`${agentLabel} LLM response missing 'content' string or structure is incorrect.`);
-  }
+    let finalSystemPrompt = systemPrompt
+      .replace(/{{LANGUAGE}}/g, voiceSettingsManager.settings?.preferredCodingLanguage || 'Python')
+      .replace(/{{USER_QUERY}}/g, problemInput) // Candidate's latest utterance
+      .replace(/{{AGENT_CONTEXT_JSON}}/g, JSON.stringify(agentContextForLLM))
+      .replace(/{{CONVERSATION_HISTORY}}/g, JSON.stringify(
+        chatStore.getMessagesForAgent(props.agentId)
+          .filter(m => m.role === 'user' && m.content) // Only user messages with content
+          .slice(-5) // Last 5 user messages
+          .map(m => m.content!.substring(0, 200)) // Summary of user messages
+      ));
+
+    const payload: ChatMessagePayloadFE = {
+      messages: [{ role: 'user', content: problemInput }],
+      mode: props.agentConfig.id,
+      systemPromptOverride: finalSystemPrompt,
+      userId: `lc_audit_session_${props.agentId}`,
+      conversationId: chatStore.getCurrentConversationId(props.agentId) || `lcaudit-conv-${Date.now()}`,
+      stream: false, // LC-Audit expects a single JSON object
+    };
+
+    console.log(`[${agentLabel}] Sending payload to chatAPI (first 100 chars of system prompt): ${finalSystemPrompt.substring(0,100)}...`);
+    const response = await chatAPI.sendMessage(payload);
+    
+    // The backend's response.data.content should be the JSON string from the LLM
+    if (response.data && typeof (response.data as TextResponseDataFE).content === 'string') {
+      handleLlmAuditResponse((response.data as TextResponseDataFE).content!);
+    } else {
+      console.error(`[${agentLabel}] LLM response from API did not have a 'content' string. Response data:`, response.data);
+      throw new Error(`${agentLabel} API response format error: 'content' string missing.`);
+    }
+
   } catch (error: any) {
-  console.error(`[${agentLabel}] Critical API error in processProblemContext:`, error.response?.data || error.message || error);
-  const errorMessage = error.response?.data?.message || error.message || `${agentLabel} encountered an error.`;
-  toast?.add({ type: 'error', title: `${agentLabel} Error`, message: errorMessage, duration: 10000 });
-  chatStore.updateMainContent({
-   agentId: props.agentId, type: 'markdown',
-   data: `### ${agentLabel} Analysis Failed\nError: *${String(errorMessage).replace(/</g, '&lt;').replace(/>/g, '&gt;')}*`,
-   title: 'Analysis Failed', timestamp: Date.now()
-  });
+    console.error(`[${agentLabel}] API error in processProblemContext:`, error.response?.data || error.message);
+    const errorMessage = error.response?.data?.message || error.message || `${agentLabel} encountered an error processing the request.`;
+    toast?.add({ type: 'error', title: `${agentLabel} Error`, message: errorMessage, duration: 10000 });
+    chatStore.updateMainContent({
+      agentId: props.agentId, type: 'error', // Use 'error' type
+      data: `### ${agentLabel} Analysis Failed\n**Error:** *${String(errorMessage).replace(/</g, '&lt;').replace(/>/g, '&gt;')}*`,
+      title: 'Analysis Failed', timestamp: Date.now()
+    });
   } finally {
-  isLoadingResponse.value = false;
+    isLoadingResponse.value = false;
   }
-};
-
-/**
- * Finds all Mermaid diagram code blocks in the current view and renders them.
- * Uses a timeout to ensure the DOM has updated.
- * @async
- */
-const renderAllMermaidDiagramsInView = async () => {
-  await nextTick(); // Wait for DOM updates
-  setTimeout(() => { // Additional delay for complex DOM changes
-  try {
-   if (typeof mermaid !== 'undefined' && mermaid?.initialize) {
-   const contentArea = document.getElementById(contentDisplayAreaId.value);
-   if (contentArea) {
-      const mermaidElements = contentArea.querySelectorAll('.mermaid');
-      if (mermaidElements.length > 0) {
-      // console.log(`[${agentDisplayName.value}] Found ${mermaidElements.length} Mermaid elements to render.`);
-      mermaidElements.forEach((el, index) => {
-       // Ensure IDs are unique if mermaid relies on them internally, though it usually doesn't for anonymous blocks.
-       // el.id = `mermaid-diag-${props.agentId}-${Date.now()}-${index}`;
-      });
-      mermaid.run({ nodes: mermaidElements });
-      }
-   }
-   } else {
-   // console.warn(`[${agentDisplayName.value}] Mermaid.js not available or not initialized.`);
-   }
-  } catch (e) {
-   console.error(`[${agentDisplayName.value}] Error rendering Mermaid diagrams:`, e);
-   toast?.add({type: 'warning', title: 'Diagram Error', message: 'Could not render one or more diagrams.'});
-  }
-  }, 250); // Delay might need adjustment based on rendering complexity
 };
 
 defineExpose({ processProblemContext, pauseAutoplay: toggleMasterAutoplay, startOrResumeAutoplay: toggleMasterAutoplay });
 
+const renderMarkdownForWelcomeOrError = (content: string | null): string => {
+  if (content === null || content === undefined) return '<p class="text-slate-500 dark:text-slate-400 italic p-6">No content available.</p>';
+  try {
+    return marked.parse(content, { breaks: true, gfm: true });
+  } catch (e) {
+    console.error("Markdown rendering error:", e);
+    return `<p class="text-red-500 dark:text-red-400 p-6">Content rendering error.</p>`;
+  }
+};
+
 onMounted(() => {
   emit('agent-event', { type: 'view_mounted', agentId: props.agentId, label: agentDisplayName.value });
+  
+  const existingContent = mainContentToDisplayFromStore.value;
 
-  if (!mainContentToDisplayFromStore.value?.data && !currentSlideshowFullMarkdown.value) {
-  const welcomeMarkdown = `
+  if (existingContent && existingContent.type === 'compact-message-renderer-data' && typeof existingContent.data === 'string') {
+    // Restore state from store if it's valid slideshow data
+    console.log(`[${agentDisplayName.value}] Restoring slideshow from store.`);
+    setupSlideshowState(existingContent.data, existingContent.title);
+    // Could potentially store and restore currentAppSlideIndex as well
+    currentAppSlideIndex.value = chatStore.getMessagesForAgent(props.agentId).reduce((acc, msg) => {
+        // A more sophisticated way to find the last known slide index might be needed
+        // For now, default to 0 if restoring.
+        return msg.agentId === props.agentId ? (msg.relevanceScore || 0) : acc; // Placeholder
+    },0) || 0;
+
+    nextTick().then(() => {
+      compactMessageRendererRef.value?.navigateToSlide(currentAppSlideIndex.value);
+      if (isAutoplayGloballyActive.value && totalAppSlidesCount.value > 0 && currentAppSlideIndex.value < totalAppSlidesCount.value -1) {
+        scheduleNextSlide();
+      }
+    });
+  } else if (!isLoadingResponse.value && !currentSlideshowFullMarkdown.value) {
+    // Show welcome message if no content and not loading
+    console.log(`[${agentDisplayName.value}] Displaying welcome message.`);
+    const welcomeMarkdown = `
 <div class="lc-audit-welcome-container">
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 mx-auto lc-audit-icon-glow">
   <path stroke-linecap="round" stroke-linejoin="round" d="m15.75 15.75-2.489-2.489m0 0a3.375 3.375 0 1 0-4.773-4.773 3.375 3.375 0 0 0 4.774 4.774ZM21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
@@ -551,31 +439,12 @@ onMounted(() => {
   <h2 class="lc-audit-welcome-title">${agentDisplayName.value}</h2>
   <p class="lc-audit-welcome-subtitle">${props.agentConfig?.description || 'Ready to analyze and explain coding problems.'}</p>
   <p class="lc-audit-welcome-prompt">${props.agentConfig?.inputPlaceholder || 'Provide a problem context to begin analysis.'}</p>
-  <button @click="() => processProblemContext('Example: Two Sum - Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.')"
-      class="btn btn-primary-ephemeral mt-4">Analyze Example: Two Sum</button>
 </div>`;
-  chatStore.updateMainContent({
-   agentId: props.agentId, type: 'markdown', data: welcomeMarkdown,
-   title: `${agentDisplayName.value} - Awaiting Problem`, timestamp: Date.now()
-  });
-  } else if (mainContentToDisplayFromStore.value?.data && mainContentToDisplayFromStore.value.type === 'compact-message-renderer-data') {
-  // Restore state from store
-  const storedData = mainContentToDisplayFromStore.value.data as string;
-  const storedTitle = mainContentToDisplayFromStore.value.title;
-  setupSlideDurationsAndParse(storedData, storedTitle); // This updates currentSlideshowFullMarkdown and other states
-  currentAppSlideIndex.value = 0; // Default to start, or could be stored/retrieved
-  
-  nextTick().then(() => {
-   compactMessageRendererRef.value?.navigateToSlide(currentAppSlideIndex.value);
-   if (isAutoplayGloballyActive.value && totalAppSlidesCount.value > 0) { // Check if there's content to play
-       isCurrentSlidePlaying.value = true; scheduleNextSlide();
-   }
-   renderAllMermaidDiagramsInView();
-  });
-  }
-   // Ensure mermaid diagrams are rendered if content exists on mount, regardless of source
-  if (currentSlideshowFullMarkdown.value) {
-  renderAllMermaidDiagramsInView();
+    chatStore.updateMainContent({
+      agentId: props.agentId, type: 'welcome', data: welcomeMarkdown, // 'welcome' type can be styled distinctly
+      title: `${agentDisplayName.value} - Awaiting Problem`, timestamp: Date.now()
+    });
+    currentProblemTitleForDisplay.value = `${agentDisplayName.value} - Awaiting Problem`;
   }
 });
 
@@ -583,196 +452,194 @@ onUnmounted(() => {
   clearCurrentAutoplayTimer();
 });
 
-/**
- * Renders Markdown content to HTML using the 'marked' library.
- * Includes basic GFM and breaks options.
- * @param {string | null} content - The Markdown string to parse.
- * @returns {string} HTML string, or an error message if parsing fails or content is null.
- */
-const renderMarkdownView = (content: string | null): string => {
-  if (content === null || content === undefined) return '<p class="text-slate-500 dark:text-slate-400 italic">No content available to display.</p>';
-  try {
-   return marked.parse(content, { breaks: true, gfm: true });
-  } catch (e) {
-   console.error("Markdown rendering error:", e);
-   return `<p class="text-red-500 dark:text-red-400">Content rendering error. Please check console.</p>`;
-  }
-};
-
 </script>
 
 <template>
-  <div class="lc-audit-agent-view flex flex-col h-full w-full overflow-hidden">
-  <div class="agent-header-controls lc-audit-header">
-   <div class="flex items-center gap-3">
-   <DocumentMagnifyingGlassIcon class="w-7 h-7 shrink-0 lc-audit-icon" />
-   <span class="font-semibold text-xl lc-audit-title">{{ agentDisplayName }}</span>
-   <span v-if="currentProblemTitleForDisplay && currentProblemTitleForDisplay !== 'Problem Analysis' && currentProblemTitleForDisplay !== `${agentDisplayName} Ready` && currentProblemTitleForDisplay !== `${agentDisplayName} - Awaiting Problem` && !currentProblemTitleForDisplay.toLowerCase().includes('analyzing')" class="text-sm text-slate-400 truncate ml-2 hidden md:inline">
-      | Analyzing: {{ currentProblemTitleForDisplay.replace(`${agentDisplayName}: `, '').replace('Analysis', '').trim() }}
-   </span>
-   </div>
-   <div class="flex items-center gap-2" v-if="totalAppSlidesCount > 0 && (mainContentToDisplayFromStore?.data || currentSlideshowFullMarkdown)">
-   <button @click="toggleMasterAutoplay"
-       class="btn btn-secondary btn-xs !text-xs"
-       :disabled="currentAppSlideIndex >= totalAppSlidesCount - 1 && !isAutoplayGloballyActive && totalAppSlidesCount > 0"
-       :title="isAutoplayGloballyActive && isCurrentSlidePlaying ? 'Pause Autoplay' : (currentAppSlideIndex >= totalAppSlidesCount - 1 && totalAppSlidesCount > 0 ? 'Slideshow Ended' : 'Start/Resume Autoplay')">
-      <PauseSolidIcon v-if="isAutoplayGloballyActive && isCurrentSlidePlaying" class="w-4 h-4"/>
-      <PlaySolidIcon v-else class="w-4 h-4"/>
-      <span class="ml-1.5">{{ isAutoplayGloballyActive && isCurrentSlidePlaying ? 'Pause' : (currentAppSlideIndex >= totalAppSlidesCount - 1 && totalAppSlidesCount > 0 ? 'Replay' : 'Play') }}</span>
-   </button>
-    <button @click="() => { if(compactMessageRendererRef) processProblemContext('Placeholder to trigger re-analysis or specific command') }"
-        class="btn btn-secondary btn-xs !text-xs" title="Re-analyze or new input (Dev Only)">
-       <ArrowPathIcon class="w-4 h-4" />
-    </button>
-   </div>
-  </div>
+  <div class="lc-audit-agent-view flex flex-col h-full w-full overflow-hidden bg-slate-800 text-slate-100">
+    <div class="agent-header-controls lc-audit-header">
+      <div class="flex items-center gap-3 flex-shrink min-w-0">
+        <DocumentMagnifyingGlassIcon class="w-7 h-7 shrink-0 lc-audit-icon" />
+        <span class="font-semibold text-xl lc-audit-title truncate" :title="agentDisplayName">{{ agentDisplayName }}</span>
+        <span v-if="currentProblemTitleForDisplay && !currentProblemTitleForDisplay.includes('Awaiting Problem') && !currentProblemTitleForDisplay.includes('Problem Analysis') && !currentProblemTitleForDisplay.toLowerCase().includes('analyzing')" 
+              class="text-sm text-slate-400 truncate ml-2 hidden md:inline" :title="currentProblemTitleForDisplay.replace(`${agentDisplayName}: `, '').replace('Analysis', '').trim()">
+          | {{ currentProblemTitleForDisplay.replace(`${agentDisplayName}: `, '').replace('Analysis', '').trim() }}
+        </span>
+      </div>
+      <div class="flex items-center gap-2 flex-shrink-0" v-if="totalAppSlidesCount > 0 && currentSlideshowFullMarkdown">
+        <button @click="toggleMasterAutoplay"
+          class="btn btn-secondary btn-xs !text-xs"
+          :disabled="totalAppSlidesCount === 0 || (currentAppSlideIndex >= totalAppSlidesCount - 1 && !isAutoplayGloballyActive)"
+          :title="isAutoplayGloballyActive && isCurrentSlidePlaying ? 'Pause Autoplay' : (currentAppSlideIndex >= totalAppSlidesCount - 1 && totalAppSlidesCount > 0 ? 'Slideshow Ended' : 'Start/Resume Autoplay')">
+          <PauseSolidIcon v-if="isAutoplayGloballyActive && isCurrentSlidePlaying" class="w-4 h-4"/>
+          <PlaySolidIcon v-else class="w-4 h-4"/>
+          <span class="ml-1.5">{{ isAutoplayGloballyActive && isCurrentSlidePlaying ? 'Pause' : (currentAppSlideIndex >= totalAppSlidesCount - 1 && totalAppSlidesCount > 0 ? 'Replay' : 'Play') }}</span>
+        </button>
+      </div>
+    </div>
   
-  <div :id="contentDisplayAreaId" class="flex-grow relative min-h-0 custom-scrollbar-futuristic lc-audit-scrollbar overflow-y-auto">
-   <div v-if="isLoadingResponse && !(mainContentToDisplayFromStore?.data || currentSlideshowFullMarkdown)" class="loading-overlay lc-audit-loading-overlay">
-      <div class="lc-audit-spinner-container"><div class="lc-audit-spinner"></div></div>
-      <p class="mt-3 text-sm lc-audit-loading-text">{{ agentDisplayName }} is Initializing Analysis...</p>
-   </div>
-   
-      <template v-if="currentSlideshowFullMarkdown && (mainContentToDisplayFromStore?.type === 'compact-message-renderer-data' || (mainContentToDisplayFromStore?.type === 'markdown' && props.agentConfig?.capabilities?.usesCompactRenderer))">
-   <CompactMessageRenderer
-      ref="compactMessageRendererRef"
-      :content="currentSlideshowFullMarkdown" :mode="props.agentConfig?.id || 'lc-audit'" 
-      :initial-slide-index="0"
-      :disable-internal-autoplay="true" 
-      @slide-changed="handleSlideChangedInRenderer"
-      @rendered="renderAllMermaidDiagramsInView"
-      class="p-0 md:p-1 h-full lc-audit-compact-renderer" 
-   />
-   </template>
-   <template v-else-if="mainContentToDisplayFromStore?.data">
-   <div 
-       class="prose prose-sm sm:prose-base lg:prose-lg xl:prose-xl dark:prose-invert max-w-none p-4 md:p-6 lg:p-8 xl:p-10 h-full lc-audit-prose-content"
-       v-html="renderMarkdownView(mainContentToDisplayFromStore.data as string)">
-   </div>
-   </template>
-   <div v-else-if="!isLoadingResponse" class="lc-audit-welcome-container">
-      <p class="text-slate-500 dark:text-slate-400 p-10 text-center italic">{{ agentDisplayName }} is ready. Please provide a problem context.</p>
-   </div>
+    <div :id="contentDisplayAreaId" class="flex-grow relative min-h-0 custom-scrollbar-futuristic lc-audit-scrollbar overflow-y-auto">
+      <div v-if="isLoadingResponse && !currentSlideshowFullMarkdown && mainContentToDisplayFromStore?.type === 'loading'" 
+           class="loading-overlay lc-audit-loading-overlay">
+        <div class="lc-audit-spinner-container"><div class="lc-audit-spinner"></div></div>
+        <p class="mt-3 text-sm lc-audit-loading-text">{{ agentDisplayName }} is Initializing Analysis...</p>
+      </div>
+      
+      <template v-if="currentSlideshowFullMarkdown && mainContentToDisplayFromStore?.type === 'compact-message-renderer-data'">
+        <CompactMessageRenderer
+          ref="compactMessageRendererRef"
+          :content="currentSlideshowFullMarkdown" 
+          :mode="props.agentConfig?.id || 'lc-audit'" 
+          :initial-slide-index="0" 
+          :disable-internal-autoplay="true" 
+          @slide-changed="handleSlideChangedInRenderer"
+          class="p-0 md:p-1 h-full lc-audit-compact-renderer" 
+        />
+      </template>
+      <template v-else-if="mainContentToDisplayFromStore?.data && (mainContentToDisplayFromStore.type === 'welcome' || mainContentToDisplayFromStore.type === 'error' || mainContentToDisplayFromStore.type === 'markdown')">
+        <div 
+          class="prose prose-sm sm:prose-base lg:prose-lg dark:prose-invert max-w-none p-4 md:p-6 lg:p-8 h-full lc-audit-prose-content"
+          v-html="renderMarkdownForWelcomeOrError(mainContentToDisplayFromStore.data as string)">
+        </div>
+      </template>
+      <div v-else-if="!isLoadingResponse && !currentSlideshowFullMarkdown && !mainContentToDisplayFromStore?.data" 
+           class="lc-audit-welcome-container text-slate-500 dark:text-slate-400 p-10 text-center italic">
+           <InformationCircleIcon class="w-12 h-12 mx-auto mb-3 opacity-50"/>
+        {{ agentDisplayName }} is ready. Please provide a problem context via voice or text input.
+      </div>
 
-   <div v-if="isLoadingResponse && (mainContentToDisplayFromStore?.data || currentSlideshowFullMarkdown)" class="loading-overlay lc-audit-loading-overlay is-processing-update">
-   <div class="lc-audit-spinner-container"><div class="lc-audit-spinner"></div></div>
-   <p class="mt-3 text-sm lc-audit-loading-text">{{ agentDisplayName }} is updating analysis...</p>
-   </div>
-  </div>
+      <div v-if="isLoadingResponse && currentSlideshowFullMarkdown" 
+           class="loading-overlay lc-audit-loading-overlay is-processing-update">
+        <div class="lc-audit-spinner-container"><div class="lc-audit-spinner"></div></div>
+        <p class="mt-3 text-sm lc-audit-loading-text">{{ agentDisplayName }} is updating analysis...</p>
+      </div>
+    </div>
   </div>
 </template>
 
-<style scoped lang="postcss">
-/* All styles from previous LCAuditAgentView.vue response */
+<style scoped lang="scss">
+/* Using SCSS for better organization, though PostCSS features from original are fine */
 .lc-audit-agent-view {
-  --agent-lcaudit-accent-hue: 200; /* A calm, analytical teal/blue */
+  --agent-lcaudit-accent-hue: 200;
   --agent-lcaudit-accent-saturation: 70%;
   --agent-lcaudit-accent-lightness: 55%;
   --agent-lcaudit-accent-color: hsl(var(--agent-lcaudit-accent-hue), var(--agent-lcaudit-accent-saturation), var(--agent-lcaudit-accent-lightness));
-  --agent-lcaudit-accent-color-muted: hsla(var(--agent-lcaudit-accent-hue), var(--agent-lcaudit-accent-saturation), var(--agent-lcaudit-accent-lightness), 0.7);
-  --agent-lcaudit-accent-color-darker: hsl(var(--agent-lcaudit-accent-hue), var(--agent-lcaudit-accent-saturation), calc(var(--agent-lcaudit-accent-lightness) - 10%));
   
-  font-size: 1.05rem; 
-  @screen md { font-size: 1.1rem; }
-  @screen lg { font-size: 1.15rem; }
-
-  background-color: var(--bg-agent-view-dark, theme('colors.slate.900'));
-  color: var(--text-primary-dark, theme('colors.slate.100'));
+  background-color: #1e293b; /* slate-800 */
+  color: #f1f5f9; /* slate-100 */
+  font-size: 1rem; // Adjusted base for better scaling with prose
 }
+
 .lc-audit-header {
-  @apply p-2.5 px-4 border-b flex items-center justify-between gap-3 text-base;
-  border-bottom-color: hsla(var(--agent-lcaudit-accent-hue), var(--agent-lcaudit-accent-saturation), var(--agent-lcaudit-accent-lightness), 0.35);
-  background-color: var(--bg-header-dark, theme('colors.slate.950'));
+  padding: 0.625rem 1rem; /* p-2.5 px-4 */
+  border-bottom: 1px solid hsla(var(--agent-lcaudit-accent-hue), var(--agent-lcaudit-accent-saturation), var(--agent-lcaudit-accent-lightness), 0.35);
+  background-color: #0f172a; /* slate-900/950 */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem; /* gap-3 */
 }
-.lc-audit-icon { color: var(--agent-lcaudit-accent-color); @apply w-7 h-7; }
-.lc-audit-title { color: var(--text-primary-dark, theme('colors.slate.50')); @apply text-xl font-semibold; }
 
-.loading-overlay.lc-audit-loading-overlay {
-  @apply absolute inset-0 flex flex-col items-center justify-center z-20;
-  background-color: rgba(18, 22, 30, 0.85); /* Darker, more translucent overlay */
+.lc-audit-icon {
+  color: var(--agent-lcaudit-accent-color);
+  width: 1.75rem; /* w-7 */
+  height: 1.75rem; /* h-7 */
+}
+
+.lc-audit-title {
+  color: #f8fafc; /* slate-50 */
+  font-size: 1.25rem; /* text-xl */
+  font-weight: 600; /* font-semibold */
+}
+
+.loading-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  background-color: rgba(18, 22, 30, 0.85);
   backdrop-filter: blur(4px);
+
   &.is-processing-update {
-  background-color: rgba(18, 22, 30, 0.65); /* Slightly lighter for updates */
-  backdrop-filter: blur(3px);
+    background-color: rgba(18, 22, 30, 0.65);
+    backdrop-filter: blur(3px);
   }
 }
-.lc-audit-spinner-container { @apply relative w-14 h-14; }
-.lc-audit-spinner {
-  @apply w-full h-full border-4 rounded-full animate-spin;
-  border-color: hsla(var(--agent-lcaudit-accent-hue), var(--agent-lcaudit-accent-saturation), var(--agent-lcaudit-accent-lightness), 0.25); 
-  border-left-color: var(--agent-lcaudit-accent-color); 
-}
-.lc-audit-loading-text {
-  color: var(--agent-lcaudit-accent-color); 
-  @apply font-medium text-lg mt-4;
+
+.lc-audit-spinner-container {
+  position: relative;
+  width: 3.5rem; /* w-14 */
+  height: 3.5rem; /* h-14 */
 }
 
-/* Custom scrollbar for LC-Audit main content area AND code blocks */
-.custom-scrollbar-futuristic,
-.lc-audit-prose-content :deep(pre),
-.lc-audit-compact-renderer :deep(pre) { /* Targeting pre within prose via deep selector */
-  &::-webkit-scrollbar { @apply w-2.5 h-2.5; } 
-  &::-webkit-scrollbar-track { background-color: hsla(var(--neutral-hue, 220), 20%, 12%, 0.5); @apply rounded-lg; }
+.lc-audit-spinner {
+  width: 100%;
+  height: 100%;
+  border: 4px solid hsla(var(--agent-lcaudit-accent-hue), var(--agent-lcaudit-accent-saturation), var(--agent-lcaudit-accent-lightness), 0.25);
+  border-left-color: var(--agent-lcaudit-accent-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.lc-audit-loading-text {
+  color: var(--agent-lcaudit-accent-color);
+  font-weight: 500; /* font-medium */
+  font-size: 1.125rem; /* text-lg, was sm */
+  margin-top: 1rem; /* mt-4 */
+}
+
+.custom-scrollbar-futuristic {
+  &::-webkit-scrollbar { width: 0.625rem; height: 0.625rem; } /* w-2.5 h-2.5 */
+  &::-webkit-scrollbar-track { background-color: hsla(220, 20%, 12%, 0.5); border-radius: 0.5rem; } /* rounded-lg */
   &::-webkit-scrollbar-thumb {
-  background-color: hsla(var(--agent-lcaudit-accent-hue), var(--agent-lcaudit-accent-saturation), var(--agent-lcaudit-accent-lightness), 0.55);
-  @apply rounded-lg;
-  border: 2px solid hsla(var(--neutral-hue, 220), 20%, 12%, 0.5); /* Match track for seamless look */
+    background-color: hsla(var(--agent-lcaudit-accent-hue), var(--agent-lcaudit-accent-saturation), var(--agent-lcaudit-accent-lightness), 0.55);
+    border-radius: 0.5rem; /* rounded-lg */
+    border: 2px solid hsla(220, 20%, 12%, 0.5);
   }
   &::-webkit-scrollbar-thumb:hover { background-color: var(--agent-lcaudit-accent-color); }
-  scrollbar-width: auto; /* For Firefox - 'thin' or 'auto' */
-  scrollbar-color: hsla(var(--agent-lcaudit-accent-hue), var(--agent-lcaudit-accent-saturation), var(--agent-lcaudit-accent-lightness), 0.55) hsla(var(--neutral-hue, 220), 20%, 12%, 0.5); /* For Firefox */
-}
-/* Ensure pre elements that get this scrollbar also have overflow auto */
-.lc-audit-prose-content :deep(pre),
-.lc-audit-compact-renderer :deep(pre) {
-  @apply overflow-auto;
+  scrollbar-width: auto;
+  scrollbar-color: hsla(var(--agent-lcaudit-accent-hue), var(--agent-lcaudit-accent-saturation), var(--agent-lcaudit-accent-lightness), 0.55) hsla(220, 20%, 12%, 0.5);
 }
 
-
-.lc-audit-prose-content :deep(.prose), 
-.lc-audit-compact-renderer :deep(.prose) { /* Apply to prose within compact renderer too */
-  font-size: inherit; /* Allow parent to control base font size */
-  
-  h1, h2, h3, h4 { 
-  color: hsl(var(--agent-lcaudit-accent-hue), var(--agent-lcaudit-accent-saturation), calc(var(--agent-lcaudit-accent-lightness) + 20%)) !important;
-  border-bottom-color: hsla(var(--agent-lcaudit-accent-hue), var(--agent-lcaudit-accent-saturation), var(--agent-lcaudit-accent-lightness), 0.4) !important;
-  @apply pb-2 mb-5 font-semibold;
+.lc-audit-prose-content {
+  /* Base prose styles are applied by Tailwind's prose plugin via CompactMessageRenderer or direct v-html */
+  /* This is for overrides or additional styling if needed directly on the wrapper */
+  :deep(h1), :deep(h2), :deep(h3), :deep(h4) { 
+    color: hsl(var(--agent-lcaudit-accent-hue), var(--agent-lcaudit-accent-saturation), calc(var(--agent-lcaudit-accent-lightness) + 20%));
+    border-bottom-color: hsla(var(--agent-lcaudit-accent-hue), var(--agent-lcaudit-accent-saturation), var(--agent-lcaudit-accent-lightness), 0.4);
+    padding-bottom: 0.5rem; /* pb-2 */
+    margin-bottom: 1.25rem; /* mb-5 */
+    font-weight: 600; /* font-semibold */
   }
-  h1 { @apply text-2xl md:text-3xl lg:text-4xl; } 
-  h2 { @apply text-xl md:text-2xl lg:text-3xl; }
-  h3 { @apply text-lg md:text-xl lg:text-2xl; }
-
-  p, li { 
-  @apply my-3.5 text-[var(--text-secondary-dark)] dark:text-slate-300; /* Use theme variables */
-  line-height: 1.8 !important; 
+  :deep(p), :deep(li) { 
+    margin-top: 0.875rem; /* my-3.5 */
+    margin-bottom: 0.875rem;
+    color: #cbd5e1; /* slate-300 */
+    line-height: 1.7; 
   }
-  a {
-  color: var(--agent-lcaudit-accent-color) !important;
-  &:hover { color: var(--agent-lcaudit-accent-color-darker) !important; @apply underline; }
-  }
-  strong {
-  color: hsl(var(--agent-lcaudit-accent-hue), var(--agent-lcaudit-accent-saturation), calc(var(--agent-lcaudit-accent-lightness) + 15%)) !important;
-  }
-  code:not(pre code) {
-  @apply px-2 py-1.5 rounded-lg text-[90%]; 
-  background-color: hsla(var(--agent-lcaudit-accent-hue), 20%, 25%, 0.4) !important;
-  color: hsl(var(--agent-lcaudit-accent-hue), 30%, 80%) !important;
-  border: 1px solid hsla(var(--agent-lcaudit-accent-hue), 20%, 35%, 0.5) !important;
-  }
-  pre {
-  /* Scrollbar applied via .custom-scrollbar-futuristic targeting rule above */
-  @apply border my-6 p-5 rounded-xl shadow-xl text-[95%]; 
-  background-color: #0c1015 !important; /* Very dark background for code blocks */
-  border-color: hsla(var(--agent-lcaudit-accent-hue), 30%, 30%, 0.4) !important;
-  }
-  /* Ensure mermaid diagrams are legible and fit well */
-  .mermaid { @apply my-6 p-2 bg-slate-800/30 rounded-lg overflow-auto; }
-  .mermaid svg {
-  @apply block max-w-full h-auto mx-auto; /* Center and make responsive */
+  :deep(a) {
+    color: var(--agent-lcaudit-accent-color);
+    &:hover { color: hsl(var(--agent-lcaudit-accent-hue), var(--agent-lcaudit-accent-saturation), calc(var(--agent-lcaudit-accent-lightness) - 10%)); text-decoration: underline; }
   }
 }
 
-.lc-audit-welcome-container { @apply text-center p-6 md:p-10 flex flex-col items-center justify-center h-full; }
+.lc-audit-welcome-container {
+  text-align: center;
+  padding: 1.5rem; /* p-6 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  @media (min-width: 768px) { padding: 2.5rem; /* md:p-10 */ }
+}
+
 .lc-audit-icon-glow {
   color: var(--agent-lcaudit-accent-color);
   filter: drop-shadow(0 0 20px hsla(var(--agent-lcaudit-accent-hue), var(--agent-lcaudit-accent-saturation), var(--agent-lcaudit-accent-lightness), 0.7));
@@ -785,26 +652,57 @@ const renderMarkdownView = (content: string | null): string => {
 }
 
 .lc-audit-welcome-title {
-  @apply text-3xl md:text-4xl font-bold mt-5 mb-3 tracking-tight;
+  font-size: 1.875rem; /* text-3xl */
+  font-weight: 700; /* font-bold */
+  margin-top: 1.25rem; /* mt-5 */
+  margin-bottom: 0.75rem; /* mb-3 */
+  letter-spacing: -0.025em; /* tracking-tight */
   color: hsl(var(--agent-lcaudit-accent-hue), var(--agent-lcaudit-accent-saturation), calc(var(--agent-lcaudit-accent-lightness) + 20%));
+  @media (min-width: 768px) { font-size: 2.25rem; /* md:text-4xl */ }
 }
-.lc-audit-welcome-subtitle { @apply text-lg md:text-xl text-[var(--text-secondary-dark)] dark:text-slate-300 mb-8 max-w-xl opacity-95; }
-.lc-audit-welcome-prompt { @apply text-base md:text-lg text-[var(--text-muted-dark)] dark:text-slate-400 italic; }
 
-/* Styling for control buttons if needed, e.g., Play/Pause */
-.btn.btn-secondary.btn-xs { /* Example: if using global button styles that need override or theming */
-  /* Ensure these buttons use the LC-Audit accent color system if they are secondary */
-  border-color: var(--agent-lcaudit-accent-color-muted);
-  color: hsl(var(--agent-lcaudit-accent-hue), var(--agent-lcaudit-accent-saturation, 70%), calc(var(--agent-lcaudit-accent-lightness, 70%) + 15%)); /* Lighter text */
-  background-color: hsla(var(--agent-lcaudit-accent-hue), var(--agent-lcaudit-accent-saturation, 20%), var(--agent-lcaudit-accent-lightness, 20%), 0.2); /* Subtle background */
-  &:hover {
-  border-color: var(--agent-lcaudit-accent-color);
-  background-color: hsla(var(--agent-lcaudit-accent-hue), var(--agent-lcaudit-accent-saturation), var(--agent-lcaudit-accent-lightness), 0.2);
-  }
-  &:disabled {
-  border-color: hsla(var(--neutral-hue, 220), 10%, 40%, 0.5);
-  color: hsla(var(--neutral-hue, 220), 10%, 60%, 0.7);
-  background-color: hsla(var(--neutral-hue, 220), 10%, 30%, 0.3);
+.lc-audit-welcome-subtitle {
+  font-size: 1.125rem; /* text-lg */
+  color: #cbd5e1; /* slate-300 */
+  margin-bottom: 2rem; /* mb-8 */
+  max-width: 42rem; /* max-w-xl */
+  opacity: 0.95;
+  @media (min-width: 768px) { font-size: 1.25rem; /* md:text-xl */ }
+}
+
+.lc-audit-welcome-prompt {
+  font-size: 1rem; /* text-base */
+  color: #94a3b8; /* slate-400 */
+  font-style: italic;
+  @media (min-width: 768px) { font-size: 1.125rem; /* md:text-lg */ }
+}
+
+/* Ensure CompactMessageRenderer takes full height if it's the direct child for slideshow */
+.lc-audit-compact-renderer {
+  height: 100%;
+  width: 100%;
+}
+
+/* Button styles from original if needed, assuming global .btn styles exist */
+.btn {
+  /* Base button styles */
+  &.btn-secondary {
+    /* Secondary button specific styles */
+    &.btn-xs {
+      /* Extra small secondary button styles */
+      border-color: var(--agent-lcaudit-accent-color-muted, hsla(var(--agent-lcaudit-accent-hue), var(--agent-lcaudit-accent-saturation), var(--agent-lcaudit-accent-lightness), 0.7));
+      color: hsl(var(--agent-lcaudit-accent-hue), var(--agent-lcaudit-accent-saturation, 70%), calc(var(--agent-lcaudit-accent-lightness, 70%) + 15%));
+      background-color: hsla(var(--agent-lcaudit-accent-hue), var(--agent-lcaudit-accent-saturation, 20%), calc(var(--agent-lcaudit-accent-lightness, 20%)), 0.2);
+      &:hover {
+        border-color: var(--agent-lcaudit-accent-color);
+        background-color: hsla(var(--agent-lcaudit-accent-hue), var(--agent-lcaudit-accent-saturation), var(--agent-lcaudit-accent-lightness), 0.2);
+      }
+      &:disabled {
+        border-color: hsla(220, 10%, 40%, 0.5);
+        color: hsla(220, 10%, 60%, 0.7);
+        background-color: hsla(220, 10%, 30%, 0.3);
+      }
+    }
   }
 }
 </style>
