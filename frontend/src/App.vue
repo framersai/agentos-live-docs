@@ -1,17 +1,15 @@
 // File: frontend/src/App.vue
 /**
  * @file App.vue
- * @version 5.0.6 - Removed handleToggleTheme logic, relying on ThemeSelectionDropdown.
- * Ensured default dark theme references align with 'sakura-sunset' via ThemeManager.
- * Updated JSDoc for clarity.
- * @description Main application shell. Handles global state initialization (stores, services),
- * theming initialization via ThemeManager, global toast notifications, routing with page transitions,
- * and provides a root layout structure (Header, Main Content, Footer).
- * Manages and provides global application states like loading status and user/AI activity.
+ * @version 5.0.9
+ * @description Main application shell. Integrates global components like Header and Footer,
+ * manages global UI states (loading, toasts, themes via UiStore and ThemeManager),
+ * and handles application-level logic such as authentication status checks,
+ * voice settings initialization, and a refined logout process that ensures proper
+ * page refresh/redirection.
  *
- * @role Root Vue component, orchestrates global application setup and layout.
- * @dependencies vue, vue-router, Pinia stores (cost, agent, chat, ui), composables (useAuth),
- * services (themeManager, voiceSettingsManager, ttsService, agentService), Heroicons.
+ * @component App
+ * @emits None directly from App itself, but provides context for child component emissions.
  */
 <script setup lang="ts">
 import {
@@ -20,11 +18,11 @@ import {
   onMounted,
   provide,
   readonly,
-  type Component as VueComponent,
+  type Component as VueComponentType,
   watch,
   type Ref
 } from 'vue';
-import { useRouter, type RouteLocationNormalized } from 'vue-router';
+import { useRouter, useRoute, type RouteLocationNormalized } from 'vue-router';
 import AppHeader from '@/components/Header.vue';
 import AppFooter from '@/components/Footer.vue';
 
@@ -35,7 +33,7 @@ import { useChatStore } from '@/store/chat.store';
 import { useUiStore } from '@/store/ui.store';
 
 // Services & Managers
-import { themeManager, type ThemeDefinition } from '@/theme/ThemeManager'; // ThemeManager handles defaults
+import { themeManager } from '@/theme/ThemeManager';
 import { useAuth } from '@/composables/useAuth';
 import { voiceSettingsManager } from './services/voice.settings.service';
 import { ttsService } from './services/tts.service';
@@ -51,11 +49,13 @@ import {
 } from '@heroicons/vue/24/solid';
 
 const router = useRouter();
+const route = useRoute();
+
 const costStore = useCostStore();
 const agentStore = useAgentStore();
 const chatStore = useChatStore();
 const uiStore = useUiStore();
-const auth = useAuth();
+const auth = useAuth(); // useAuth composable instance
 
 const isLoadingApp: Ref<boolean> = ref(true);
 provide('loading', readonly({
@@ -64,15 +64,24 @@ provide('loading', readonly({
   isLoading: isLoadingApp
 }));
 
+/**
+ * @computed showAppFooter
+ * @description Determines if the AppFooter component should be displayed based on route metadata.
+ * @returns {boolean} True if the footer should be shown, false otherwise.
+ */
+const showAppFooter = computed(() => !route.meta.hideFooter);
+
+/**
+ * @computed templateThemeId
+ * @description Gets the current theme ID from the UI store to apply to the root app shell.
+ * @returns {string} The current theme ID.
+ */
 const templateThemeId = computed<string>(() => uiStore.currentThemeId);
 
-// handleToggleTheme is removed. Theme changes are now primarily handled by ThemeSelectionDropdown
-// and direct calls to uiStore.setTheme() or uiStore.setThemeFlexible().
-
-const handleToggleFullscreen = (): void => {
-  uiStore.toggleBrowserFullscreen();
-};
-
+/**
+ * @interface Toast
+ * @description Defines the structure for a toast notification object.
+ */
 interface Toast {
   id: number;
   type: 'success' | 'error' | 'info' | 'warning';
@@ -83,27 +92,44 @@ interface Toast {
 const toasts: Ref<Toast[]> = ref([]);
 let toastIdCounter = 0;
 
+/**
+ * @function addToast
+ * @description Adds a new toast notification to the display queue.
+ * @param {Omit<Toast, 'id'>} toastDetails - The details of the toast to add.
+ * @returns {number} The ID of the newly added toast.
+ */
 const addToast = (toastDetails: Omit<Toast, 'id'>): number => {
   const id = toastIdCounter++;
   const newToast: Toast = {
     id,
     ...toastDetails,
-    duration: toastDetails.duration === undefined ? 7000 : toastDetails.duration,
+    duration: toastDetails.duration === undefined ? 7000 : toastDetails.duration, // Default duration 7s
   };
-  toasts.value.unshift(newToast);
-  if (newToast.duration && newToast.duration > 0) {
+  toasts.value.unshift(newToast); // Add to the beginning of the array to show newest on top
+  if (newToast.duration && newToast.duration > 0) { // Auto-dismiss if duration is set
     setTimeout(() => removeToast(id), newToast.duration);
   }
   return id;
 };
 
+/**
+ * @function removeToast
+ * @description Removes a toast notification from the display queue by its ID.
+ * @param {number} id - The ID of the toast to remove.
+ */
 const removeToast = (id: number): void => {
   toasts.value = toasts.value.filter(t => t.id !== id);
 };
-
+// Provide toast functionality to child components
 provide('toast', { add: addToast, remove: removeToast, toasts: readonly(toasts) });
 
-const getToastIcon = (type: Toast['type']): VueComponent => {
+/**
+ * @function getToastIcon
+ * @description Returns the appropriate Heroicon component based on the toast type.
+ * @param {Toast['type']} type - The type of the toast.
+ * @returns {VueComponentType} The Vue component for the icon.
+ */
+const getToastIcon = (type: Toast['type']): VueComponentType => {
   switch (type) {
     case 'success': return SuccessIcon;
     case 'error': return ErrorIcon;
@@ -114,43 +140,65 @@ const getToastIcon = (type: Toast['type']): VueComponent => {
 
 const sessionCost = computed<number>(() => costStore.totalSessionCost);
 
+/**
+ * @function handleClearChatAndSession
+ * @description Clears chat history for the active agent (or all agents if none active)
+ * and resets the session cost. Provides user feedback via toasts.
+ * @async
+ */
 const handleClearChatAndSession = async (): Promise<void> => {
   addToast({ type: 'info', title: 'Clearing Session', message: 'Wiping chat history and session costs...' });
   if (agentStore.activeAgentId) {
     await chatStore.clearAgentData(agentStore.activeAgentId);
-    chatStore.ensureMainContentForAgent(agentStore.activeAgentId);
+    chatStore.ensureMainContentForAgent(agentStore.activeAgentId); // Re-ensure welcome/default content
   } else {
+    // If no specific agent is active, this might imply clearing all data,
+    // or it might be an edge case depending on app flow.
+    // Assuming clearAllAgentData is appropriate here.
     chatStore.clearAllAgentData();
   }
   await costStore.resetSessionCost();
   addToast({ type: 'success', title: 'Session Cleared', message: 'Chat and costs for this session have been reset.' });
 };
 
+/**
+ * @function handleLogoutFromHeader
+ * @description Handles the logout process initiated from the header.
+ * Calls the `auth.logout` composable function, which manages token clearing,
+ * store resets (now handled within useAuth.ts), and page redirection/refresh.
+ * @async
+ */
 const handleLogoutFromHeader = async (): Promise<void> => {
   addToast({ type: 'info', title: 'Logging Out', message: 'Please wait...' });
-  await auth.logout(false);
-  costStore.$reset();
-  chatStore.$reset();
-  agentStore.$reset();
-  uiStore.$reset(); // This might re-initialize theme to system default if not handled carefully by themeManager's persistence
+  
+  // The useAuth().logout() composable now handles:
+  // 1. Calling backend logout API.
+  // 2. Clearing auth tokens from storage.
+  // 3. Resetting global auth state.
+  // 4. Resetting relevant Pinia stores (chat, cost, agent, ui).
+  // 5. Navigating to the specified route (e.g., '/login').
+  // 6. Forcing a page reload if necessary for a clean state.
+  await auth.logout('/login', true); // Target '/login', forceReload is true by default in useAuth
+  
   addToast({ type: 'success', title: 'Logged Out', message: 'You have been successfully logged out.' });
-  if (router.currentRoute.value.name !== 'Login') {
-    router.push({ name: 'Login' }).catch(err => console.error("[App.vue] Router push to Login failed after logout:", err));
-  }
+  // Further navigation or reload is handled by auth.logout()
 };
+
 
 const handleShowPriorChatLog = (): void => {
   addToast({ type: 'info', title: 'Feature In Development', message: 'A comprehensive chat history log viewer is planned for a future update.' });
 };
 
-const routeTransitionName: Ref<string> = ref('page-fade');
-
+// --- Router Transition & Loading State ---
+const routeTransitionName: Ref<string> = ref('page-fade'); // Default transition
 router.beforeEach((to: RouteLocationNormalized, _from: RouteLocationNormalized, next: () => void) => {
   isLoadingApp.value = true;
+  // Set transition name based on route meta, or default
   routeTransitionName.value = (typeof to.meta.transition === 'string' ? to.meta.transition : 'page-fade');
   next();
 });
 router.afterEach(() => {
+  // Add a slight delay to allow transitions to start before hiding loader
   setTimeout(() => { isLoadingApp.value = false; }, 250);
 });
 router.onError((error) => {
@@ -159,6 +207,7 @@ router.onError((error) => {
   addToast({ type: 'error', title: 'Navigation Error', message: (error as Error).message || 'Could not load the requested page.', duration: 7000 });
 });
 
+// --- Voice State Management ---
 const isUserActuallyListening: Ref<boolean> = ref(false);
 const isAiActuallySpeaking = computed<boolean>(() => ttsService.isSpeaking());
 
@@ -166,60 +215,69 @@ provide('updateUserListeningState', (isListening: boolean) => {
   isUserActuallyListening.value = isListening;
 });
 
-// Placeholder for APP_VERSION, typically injected by build process or defined globally
-const APP_VERSION = '5.0.6'; // Updated version string
+// --- Application Version (from Vite environment variables) ---
+const APP_VERSION = import.meta.env.VITE_APP_VERSION || '0.0.0'; // Ensure VITE_APP_VERSION is in your .env file
 
+// --- Lifecycle Hooks ---
 onMounted(async () => {
   isLoadingApp.value = true;
 
-  themeManager.initialize();    // Initialize theme system FIRST
-  uiStore.initializeUiState(); // Initialize UI store AFTER themeManager (so uiStore can correctly get initial theme)
+  themeManager.initialize();    // Initializes theme from storage or system preference
+  uiStore.initializeUiState();  // Initializes UI store state, including listeners for fullscreen etc.
 
-  await auth.checkAuthStatus();
-  await voiceSettingsManager.initialize();
+  await auth.checkAuthStatus(); // Check auth status first thing
+  await voiceSettingsManager.initialize(); // Initialize voice settings
 
+  // If authenticated, fetch session cost if not already loaded
   if (auth.isAuthenticated.value) {
     if (costStore.totalSessionCost === 0 && !costStore.isLoadingCost) {
       await costStore.fetchSessionCost();
     }
   }
 
+  // Set default agent if none is active or if the active one is invalid
   if (!agentStore.activeAgentId || !agentService.getAgentById(agentStore.activeAgentId)) {
-    const defaultAgent = auth.isAuthenticated.value ? agentService.getDefaultAgent() : agentService.getDefaultPublicAgent();
+    const defaultAgent = auth.isAuthenticated.value 
+      ? agentService.getDefaultAgent() 
+      : agentService.getDefaultPublicAgent();
+      
     if (defaultAgent) {
-      agentStore.setActiveAgent(defaultAgent.id);
+      agentStore.setActiveAgent(defaultAgent.id); // This will trigger watchers in views to load content
     } else {
       console.error("[App.vue] CRITICAL: No default agent could be determined on application mount.");
       addToast({type: 'error', title: 'Agent Initialization Error', message: 'Could not load a default assistant interface.'});
     }
   } else if (agentStore.activeAgentId) {
+    // If an agent is already active (e.g., from persisted store state),
+    // ensure its main content (like welcome message) is initialized.
     chatStore.ensureMainContentForAgent(agentStore.activeAgentId);
   }
 
-  setTimeout(() => { isLoadingApp.value = false; }, 350);
+  setTimeout(() => { isLoadingApp.value = false; }, 350); // Allow initial setup to complete
 
-  const hasVisitedKey = `vcaHasVisited_EphemeralHarmony_v${APP_VERSION}`;
+  // Welcome toast for new version visits
+  const currentAppVersion = APP_VERSION; // Use the fetched version
+  const hasVisitedKey = `vcaHasVisited_EphemeralHarmony_v${currentAppVersion}`;
   if (!localStorage.getItem(hasVisitedKey)) {
     setTimeout(() => {
       addToast({
-        type: 'info', title: `Welcome to VCA ${APP_VERSION}!`,
+        type: 'info', title: `Welcome to VCA ${currentAppVersion}!`,
         message: 'Enjoy the refined "Ephemeral Harmony" experience. Explore assistants and features.',
         duration: 10000
       });
       localStorage.setItem(hasVisitedKey, 'true');
-    }, 1200);
+    }, 1200); // Delay welcome toast slightly
   }
 });
 
+// Watch for theme changes from the uiStore to potentially react (e.g., logging)
 watch(
-  () => uiStore.currentThemeId, // Watch the theme ID from the uiStore
+  () => uiStore.currentThemeId,
   (newThemeId: string) => {
-    const newThemeDef = themeManager.getAvailableThemes().find(t => t.id === newThemeId);
-    if (newThemeDef) {
-      // console.log(`[App.vue] Theme changed to: ${newThemeDef.name} (ID: ${newThemeDef.id}, Dark: ${newThemeDef.isDark})`);
-    }
+    // Example: const newThemeDef = themeManager.getAvailableThemes().find(t => t.id === newThemeId);
+    // console.log(`[App.vue] Theme changed via uiStore to: ${newThemeDef?.name || newThemeId}`);
   },
-  { immediate: true }
+  { immediate: true } // Run once on component mount as well
 );
 
 </script>
@@ -253,26 +311,22 @@ watch(
 
     <div class="app-layout-ephemeral">
       <AppHeader
-        :session-cost="sessionCost"
         :is-user-listening="isUserActuallyListening"
         :is-assistant-speaking="isAiActuallySpeaking"
-        @toggle-fullscreen="handleToggleFullscreen"
-        @clear-chat-and-session="handleClearChatAndSession"
+        @toggle-fullscreen="uiStore.toggleBrowserFullscreen()" @clear-chat-and-session="handleClearChatAndSession"
         @logout="handleLogoutFromHeader"
         @show-prior-chat-log="handleShowPriorChatLog"
         class="app-layout-header-ephemeral"
       />
-      <!-- {/* Note: @toggle-theme emit listener removed from AppHeader call */} -->
 
       <main id="main-app-content" class="app-layout-main-content-ephemeral">
-        <router-view v-slot="{ Component, route }">
-          <Transition :name="routeTransitionName" mode="out-in">
-            <component :is="Component" :key="route.path" />
+        <router-view v-slot="{ Component, route: currentRoute }"> <Transition :name="routeTransitionName" mode="out-in">
+            <component :is="Component" :key="currentRoute.path" />
           </Transition>
         </router-view>
       </main>
 
-      <AppFooter class="app-layout-footer-ephemeral" />
+      <AppFooter v-if="showAppFooter" class="app-layout-footer-ephemeral" />
     </div>
 
     <div aria-live="assertive" class="toast-notifications-container-ephemeral">
@@ -307,4 +361,5 @@ watch(
 <style lang="scss">
 // Global styles are in main.scss and its imported partials.
 // Specific app-shell styles or overrides can go into frontend/src/styles/layout/_app.scss.
+// The transitions 'page-fade' and 'toast-transition' should be defined in your animation styles.
 </style>

@@ -1,28 +1,27 @@
 // File: frontend/src/views/Login.vue
 /**
  * @file Login.vue
- * @description Login page for the Voice Coding Assistant, revamped with a holographic analog theme.
- * @version 2.0.2 - Corrected theme interactions, removed unused Footer.
+ * @description Login page for the Voice Coding Assistant, themed dynamically.
+ * @version 2.0.3 - Updated logo wrapper to use standard theme glass variables.
+ * Refined theme toggle to use uiStore and more generic theme IDs.
  */
 <script setup lang="ts">
 import { ref, onMounted, computed, inject } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useStorage } from '@vueuse/core';
 import { authAPI, api } from '@/utils/api';
-import { AUTH_TOKEN_KEY } from '@/router';
-import { LockClosedIcon, EyeIcon, EyeSlashIcon, ExclamationTriangleIcon, SunIcon, MoonIcon, BeakerIcon } from '@heroicons/vue/24/outline';
+import { AUTH_TOKEN_KEY } from '@/router'; // AUTH_TOKEN_KEY should be exported from constants.ts if used elsewhere too
+import { LockClosedIcon, EyeIcon, EyeSlashIcon, ExclamationTriangleIcon, SunIcon, MoonIcon } from '@heroicons/vue/24/outline'; // BeakerIcon removed as not used
 import { useUiStore } from '@/store/ui.store';
-import { themeManager } from '@/theme/ThemeManager'; // Added: Import themeManager
+import { themeManager, type ThemeDefinition } from '@/theme/ThemeManager'; // Ensure ThemeDefinition is exported if used for type
 import type { ToastService } from '@/services/services';
-// Removed: import Footer from '@/components/Footer.vue'; // Unused variable
 
 const router = useRouter();
 const route = useRoute();
-const uiStore = useUiStore(); // This should be the v2.0.0 version of uiStore
+const uiStore = useUiStore();
 const toast = inject<ToastService>('toast');
 
 // --- Theme State ---
-// Corrected: Read from uiStore.isCurrentThemeDark which derives from ThemeManager
 const isDarkMode = computed(() => uiStore.isCurrentThemeDark);
 
 // --- Form Data ---
@@ -33,23 +32,8 @@ const isLoggingIn = ref(false);
 const errorMessage = ref('');
 
 // --- Development/Debug ---
-const showDevControls = ref(import.meta.env.DEV);
-const showTestUI = ref(false); // Was previously missing ref from template, now consistent
-
-// --- Methods ---
-const toggleTheme = () => {
-  // Corrected: Interact with themeManager directly for theme changes
-  const currentTheme = themeManager.getCurrentTheme().value;
-  if (currentTheme?.isDark) {
-    // Toggle to a default light theme
-    const lightTheme = themeManager.getAvailableThemes().find(t => !t.isDark && t.id === 'aurora-light');
-    themeManager.setTheme(lightTheme?.id || 'legacy-warm-embrace'); // Fallback
-  } else {
-    // Toggle to a default dark theme
-    const darkTheme = themeManager.getAvailableThemes().find(t => t.isDark && t.id === 'ephemeral-holo-dark');
-    themeManager.setTheme(darkTheme?.id || 'legacy-twilight-neo'); // Fallback
-  }
-};
+// const showDevControls = ref(import.meta.env.DEV); // If used in template, keep
+// const showTestUI = ref(false); // If used in template, keep
 
 const handleLogin = async () => {
   if (!password.value) {
@@ -68,8 +52,9 @@ const handleLogin = async () => {
       const storage = rememberMe.value ? localStorage : sessionStorage;
       storage.setItem(AUTH_TOKEN_KEY, token);
       api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      // Call the login function from useAuth composable if it's responsible for setting global auth state
-      // For now, assuming this direct token setting is sufficient for the auth guard.
+      // If useAuth composable has a login method that updates global state, call it:
+      // auth.login(token, rememberMe.value); // Assuming auth.login handles token storage & redirect
+
       toast?.add({ type: 'success', title: 'Login Successful', message: 'Welcome back!' });
       const redirectPath = route.query.redirect as string | undefined;
       if (redirectPath && redirectPath !== '/' && redirectPath !== '/login') {
@@ -97,13 +82,15 @@ const handleLogin = async () => {
 
 // --- Lifecycle Hooks ---
 onMounted(async () => {
-  // Removed: uiStore.initializeTheme(); Theme is initialized globally by ThemeManager in App.vue
-  // The themeManager.initialize() in App.vue will handle initial theme setup.
-
+  // Theme is initialized globally by ThemeManager in App.vue
   const token = localStorage.getItem(AUTH_TOKEN_KEY) || sessionStorage.getItem(AUTH_TOKEN_KEY);
   if (token) {
     api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    console.log("[Login.vue] User already has a token, redirecting.");
+    // Optionally, verify token validity with backend here before redirecting
+    // For now, assume token presence implies valid session for quick redirect
+    console.log("[Login.vue] User already has a token, attempting redirect.");
+    // Check if useAuth has an init method or if redirect is handled elsewhere
+    // For simplicity, direct redirect:
     await router.replace({ name: 'AuthenticatedHome' });
     return;
   }
@@ -114,12 +101,14 @@ onMounted(async () => {
       reasonMessage = "Your session was invalid or unauthorized. Please log in again.";
     }
     toast?.add({ type: 'warning', title: 'Session Expired', message: reasonMessage, duration: 7000 });
+    // Clean up query params after displaying message
     await router.replace({ query: {} });
   }
 });
 </script>
 
-<template> <div class="login-page-wrapper">
+<template>
+  <div class="login-page-wrapper">
     <div class="login-content-area">
       <div class="login-container w-full max-w-md space-y-8">
         <div class="text-center">
@@ -196,8 +185,7 @@ onMounted(async () => {
             <div v-if="errorMessage" id="password-error-message" class="error-alert" role="alert">
               <div class="flex">
                 <div class="flex-shrink-0">
-                  <ExclamationTriangleIcon class="icon-base text-error" />
-                </div>
+                  <ExclamationTriangleIcon class="icon-base text-error-icon" /> </div>
                 <div class="ml-3">
                   <p class="text-sm text-error-content">{{ errorMessage }}</p>
                 </div>
@@ -213,8 +201,9 @@ onMounted(async () => {
         </div>
       </div>
     </div>
-    </div>
+  </div>
 </template>
+
 <style scoped lang="postcss">
 /* Define Keyframes for animated gradient background */
 @keyframes gradient-animation {
@@ -224,167 +213,193 @@ onMounted(async () => {
 }
 
 .login-page-wrapper {
-  @apply min-h-screen flex flex-col justify-between;
-  /* Apply the animation */
-  background: linear-gradient(-45deg, 
-    hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.3),
-    hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.3),
-    hsl(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.4),
-    hsl(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.5)
+  @apply min-h-screen flex flex-col justify-center; /* Changed from justify-between to center content better */
+  background: linear-gradient(-45deg,
+    hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), var(--color-accent-primary-a, 0.3)), /* Added alpha var */
+    hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), var(--color-accent-secondary-a, 0.3)), /* Added alpha var */
+    hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), var(--color-bg-secondary-a, 0.4)), /* Added alpha var */
+    hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), var(--color-bg-primary-a, 0.5)) /* Added alpha var */
   );
   background-size: 400% 400%;
   animation: gradient-animation 25s ease infinite;
+  /* Ensure children can stack correctly if needed, e.g. for footer if it were present */
+  /* Forcing no scroll on login page itself */
+  @apply overflow-hidden;
 }
-/* Custom class to apply the above animation if preferred over direct styling */
-.animate-gradient-bg {
-  background: linear-gradient(-45deg, 
-    hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.3),
-    hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.3),
-    hsl(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.4),
-    hsl(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.5)
-  );
-  background-size: 400% 400%;
-  animation: gradient-animation 25s ease infinite;
-}
-
 
 .login-content-area {
-  @apply flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden;
+  @apply flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative;
+  /* overflow-hidden removed from here, as page-wrapper handles it */
 }
 
 .login-content-area::before {
   content: '';
-  /* Using the themed holographic grid pattern from Tailwind config (which uses CSS vars) */
-  @apply absolute inset-0 opacity-20 dark:opacity-10 bg-holo-grid-pattern; /* Updated opacity */
-  background-size: var(--bg-holo-grid-size, 50px) var(--bg-holo-grid-size, 50px); /* Ensure CSS vars are set */
+  @apply absolute inset-0 bg-holo-grid-pattern;
+  background-size: var(--bg-holo-grid-size, 50px) var(--bg-holo-grid-size, 50px);
+  opacity: var(--bg-holo-grid-opacity, 0.07); /* Use theme variable for opacity */
   z-index: 0;
-  animation: holoGridScroll var(--duration-pulse-long, 5000ms) linear infinite; /* Ensure holoGridScroll and duration are defined */
+  animation: holoGridScroll calc(var(--duration-pulse-long, 4000ms) * 2) linear infinite; /* Adjusted duration */
 }
 
 .login-container {
-  @apply relative z-10; /* Ensure form elements are above pseudo-elements */
+  @apply relative z-10;
 }
 
 .logo-wrapper {
-  @apply mx-auto h-20 w-20 sm:h-24 sm:w-24 p-1 mb-6 rounded-full flex items-center justify-center;
-  /* Using CSS custom properties for themeable glass effect */
-  background-color: var(--color-bg-glass-header, hsla(220, 25%, 90%, 0.3)); /* Fallback to a light glass */
-  border: 1px solid var(--color-border-glass-header, hsla(220, 25%, 80%, 0.2));
-  box-shadow: var(--shadow-depth-lg, 0 8px 25px rgba(0,0,0,0.1)); /* Use themed shadow or fallback */
-  backdrop-filter: blur(var(--blur-glass-header, 5px));
-  -webkit-backdrop-filter: blur(var(--blur-glass-header, 5px));
+  @apply mx-auto h-20 w-20 sm:h-24 sm:w-24 p-1 mb-4 sm:mb-6 rounded-full flex items-center justify-center transition-all duration-300 ease-out;
+  /* Using standard theme glass variables */
+  background-color: hsla(var(--color-bg-glass-h), var(--color-bg-glass-s), var(--color-bg-glass-l), var(--color-bg-glass-a, 0.7));
+  border: 1px solid hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), var(--color-border-glass-a, 0.4));
+  box-shadow: var(--shadow-depth-md); /* Standard themed shadow */
+  backdrop-filter: blur(var(--blur-glass));
+  -webkit-backdrop-filter: blur(var(--blur-glass));
 }
 .logo-image {
   @apply h-12 w-12 sm:h-14 sm:w-14 object-contain transition-transform duration-500 ease-in-out;
-  /* Themeable drop shadow using text primary color for a subtle effect */
-  filter: drop-shadow(0 2px 3px hsla(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l), 0.15));
+  filter: drop-shadow(0 2px 4px hsla(var(--color-shadow-h, 0), var(--color-shadow-s, 0%), var(--color-shadow-l, 0%), 0.15)); /* Softer, themed shadow */
 }
 .logo-wrapper:hover .logo-image {
-  transform: scale(1.1) rotate(5deg);
+  transform: scale(1.12) rotate(3deg);
+}
+.logo-wrapper:hover {
+    box-shadow: var(--shadow-depth-lg); /* Enhanced shadow on hover */
 }
 
 .app-main-title {
   @apply mt-0 text-3xl sm:text-4xl font-bold tracking-tight;
-  font-family: var(--font-display);
+  font-family: var(--font-family-display, 'Plus Jakarta Sans', sans-serif); /* Ensure fallback */
   color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
 }
-/* Custom text glow utility using CSS variables */
-.text-glow-primary {
-  text-shadow: 0 0 8px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.5),
-               0 0 16px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.3);
+.text-glow-primary { /* Ensure this uses the primary accent */
+  text-shadow: 0 0 10px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), var(--color-accent-glow-a, 0.6)), /* Adjusted alpha var */
+               0 0 20px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), var(--color-accent-glow-a, 0.4)); /* Adjusted alpha var */
 }
 
 .app-subtitle {
-  @apply mt-3 text-sm sm:text-base max-w-xs mx-auto;
+  @apply mt-2 sm:mt-3 text-sm sm:text-base max-w-xs mx-auto;
   color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+  opacity: 0.9;
 }
 
-/* Custom glass-pane utility using CSS variables */
-.glass-pane {
-  background-color: var(--color-bg-glass, hsla(0, 0%, 100%, 0.1)); /* Default glass from theme */
-  border: 1px solid var(--color-border-glass, hsla(0, 0%, 100%, 0.2));
-  backdrop-filter: blur(var(--blur-glass, 8px));
-  -webkit-backdrop-filter: blur(var(--blur-glass, 8px));
-  box-shadow: var(--shadow-depth-lg, 0 10px 20px rgba(0,0,0,0.15)); /* Use themed shadow */
-  border-radius: var(--radius-xl, 0.75rem); /* Use themed radius */
+.glass-pane { /* This is used for the login-card */
+  background-color: hsla(var(--color-bg-glass-h), var(--color-bg-glass-s), var(--color-bg-glass-l), var(--color-bg-glass-a, 0.75)); /* Adjusted alpha for better card definition */
+  border: 1px solid hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), var(--color-border-glass-a, 0.45));
+  backdrop-filter: blur(var(--blur-glass));
+  -webkit-backdrop-filter: blur(var(--blur-glass));
+  box-shadow: var(--shadow-depth-lg);
+  border-radius: var(--radius-xl);
 }
 
 .login-card {
-  /* card-base class from global SCSS can provide padding, base border-radius if needed */
-  /* For now, .glass-pane handles the visual appearance. */
-  @apply mt-8;
+  @apply mt-6 sm:mt-8;
 }
 
 .form-label {
-  @apply block text-sm font-medium mb-1;
+  @apply block text-sm font-medium mb-1.5; /* Increased margin */
   color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+  opacity: 0.9;
 }
 
-/* form-input is assumed to be styled globally by _forms.scss using theme variables */
-/* .form-input {} */
+/* Assuming .form-input is styled in _forms.scss using theme variables. Placeholder: */
+.form-input {
+  @apply block w-full rounded-md shadow-sm sm:text-sm;
+  /* Added not-prose */
+  background-color: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), calc(var(--color-bg-secondary-l) + 3%), 0.8); /* Slightly lighter than card bg, with some transparency */
+  border: 1px solid hsl(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l));
+  color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+  padding: var(--spacing-xs) var(--spacing-sm); /* Use theme spacing */
+
+  &::placeholder {
+    color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+    opacity: 0.7;
+  }
+  &:focus {
+    @apply ring-2;
+    border-color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
+    ring-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.5);
+    background-color: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), calc(var(--color-bg-secondary-l) + 5%), 0.9);
+  }
+}
+
 
 .password-toggle-button {
-  @apply absolute inset-y-0 right-0 pr-3 flex items-center focus:outline-none;
-  .text-neutral-text-muted { /* Tailwind class from template */
-    color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
-  }
-  .hover\:text-neutral-text:hover { /* Tailwind class from template */
-    color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
-  }
+  @apply absolute inset-y-0 right-0 pr-3 flex items-center focus:outline-none rounded-r-md; /* Ensure it fits well */
+}
+/* These classes are used on the icon inside the button */
+.text-neutral-text-muted {
+  color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+  opacity: 0.7;
+  transition: color 0.2s ease-in-out, opacity 0.2s ease-in-out;
+}
+.hover\:text-neutral-text:hover { /* Applied to the icon's class if parent button is hovered */
+  color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+  opacity: 1;
 }
 
+
 .remember-me-checkbox {
-  /* Assumed to be styled by @tailwindcss/forms and themed via its options or CSS vars */
-  /* Example of direct theming if needed: */
-  @apply h-4 w-4 rounded border transition-colors duration-150;
-  color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l)); /* Checkbox color */
-  border-color: hsl(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l));
-  background-color: hsl(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l));
+  @apply h-4 w-4 rounded border transition-colors duration-150 focus:ring-offset-0; /* Removed ring-offset-2 for cleaner look if bg is similar */
+  color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+  border-color: hsl(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l));
+  background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.5); /* Slightly transparent bg */
   &:focus {
-    @apply ring-2 ring-offset-2;
-    ring-color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
-    ring-offset-color: hsl(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l));
+    @apply ring-2;
+    ring-color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
+    /* ring-offset-color: hsl(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l)); */
+  }
+  &:checked {
+    border-color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+    background-color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
   }
 }
 .remember-me-label {
-  @apply ml-2 block text-sm cursor-pointer;
+  @apply ml-2 block text-sm cursor-pointer select-none; /* Added select-none */
   color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+  opacity: 0.9;
 }
 
 .login-button {
-  /* Uses .btn .btn-primary classes from global _buttons.scss */
-  /* Ensure those global classes are fully themed and functional */
+  /* Relies on .btn .btn-primary from _buttons.scss which should be fully themed */
+  @apply py-2.5 sm:py-3; /* Slightly larger padding */
 }
 .login-spinner {
   @apply h-5 w-5 border-2 rounded-full animate-spin mx-auto;
-  border-color: hsla(var(--color-text-on-primary-h), var(--color-text-on-primary-s), var(--color-text-on-primary-l), 0.3);
+  border-color: hsla(var(--color-text-on-primary-h), var(--color-text-on-primary-s), var(--color-text-on-primary-l), 0.35);
   border-top-color: hsl(var(--color-text-on-primary-h), var(--color-text-on-primary-s), var(--color-text-on-primary-l));
 }
 
 .error-alert {
-  @apply p-4 rounded-md shadow-md;
-  background-color: hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.1);
-  border: 1px solid hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.3);
-  /* text-error class from template uses --color-error for text */
+  @apply p-3 sm:p-4 rounded-md shadow-md mt-4; /* Consistent margin */
+  background-color: hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.15); /* Slightly more visible error bg */
+  border: 1px solid hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.4);
 }
-.text-error-content { /* New class to ensure themed error text color */
-    color: hsl(var(--color-error-h), var(--color-error-s), calc(var(--color-error-l) - 10%)); /* Darker error text for readability */
+.text-error-icon { /* New class for the icon itself */
+    color: hsl(var(--color-error-h), var(--color-error-s), calc(var(--color-error-l) - 5%)); /* Slightly darker/more saturated error icon */
 }
-
-
-.text-neutral-text-muted { /* For the paragraph at the bottom */
-   color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
-}
-
-.theme-toggle-button {
-  /* Uses .btn .btn-icon .btn-ghost classes from global _buttons.scss */
+.text-error-content {
+  color: hsl(var(--color-error-h), var(--color-error-s), calc(var(--color-error-l) - 15%)); /* Darker for high contrast on light error bg */
+  /* Fallback for themes where error color might be light: */
+  /* color: var(--color-error-text, hsl(var(--color-error-text-h), var(--color-error-text-s), var(--color-error-text-l))); */
 }
 
-/* Ensure icon sizes are consistent, .icon-base is used in template */
+/* For the paragraph at the bottom & theme toggle button icon */
+.text-themed-secondary { /* Utility class for themed secondary text color if needed */
+    color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+    opacity: 0.9;
+}
+.theme-toggle-button-login {
+    padding: 0.5rem !important; /* Ensure consistent padding for icon button */
+    &:hover .text-themed-secondary {
+        color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+    }
+}
+
 .icon-base { @apply w-5 h-5; }
 .icon-sm { @apply w-4 h-4; }
 
-/* Ensure keyframes for holoGridScroll and subtlePulse are defined in global SCSS (_keyframes.scss) */
-/* @keyframes holoGridScroll { ... } */
-/* @keyframes subtlePulse { ... } */
+/* Ensure keyframes for holoGridScroll are globally defined, e.g., in _keyframes.scss */
+@keyframes holoGridScroll {
+  0% { background-position: 0px 0px; }
+  100% { background-position: var(--bg-holo-grid-size, 50px) var(--bg-holo-grid-size, 50px); } /* Match size */
+}
 </style>

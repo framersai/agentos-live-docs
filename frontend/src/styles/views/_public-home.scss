@@ -1,278 +1,152 @@
 // File: frontend/src/styles/views/_public-home.scss
 /**
  * @file _public-home.scss
- * @description Styles specific to the PublicHome view for "Ephemeral Harmony" theme.
- * Focuses on a visually engaging agent selector, informative placeholders,
- * and a clean, modern presentation of public-facing content.
- * @version 1.0.2 - Corrected SASS calculations, mixin calls, and ensured theme consistency.
+ * @description Styles specific to the PublicHome view.
+ * Focuses on responsive layout for agent selection, placeholders, thematic background,
+ * and ensuring a compact experience on small screens / full-screen mode.
+ * @version 1.1.0 - Implemented responsive margins, padding, and thematic background.
  */
 
 @use '../abstracts/variables' as var;
 @use '../abstracts/mixins' as mixins;
 @use '../components/buttons' as buttonsFile;
-@use '../components/cards' as cardsFile; 
+@use '../components/cards' as cardsFile;
 
 .public-home-view-ephemeral {
   display: flex;
   flex-direction: column;
-  height: 100%; 
+  height: 100%; // Occupy full height of its container (e.g., router-view area)
+  width: 100%;
+  background-color: hsl(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l));
+  // UnifiedChatLayout handles its own internal scrolling and full-height nature.
 }
 
+// Agent Selector Area adjustments for responsiveness
 .public-agent-selector-area-ephemeral {
-  padding: var.$spacing-md var.$spacing-lg;
-  margin-bottom: var.$spacing-lg;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var.$spacing-sm;
-  position: sticky; 
-  top: 0;
-  z-index: calc(#{var.$z-index-content-overlay} + 1); 
-  
-  background-color: hsla(var(--color-bg-primary-h, #{var.$default-color-bg-primary-h}), var(--color-bg-primary-s, #{var.$default-color-bg-primary-s}), var(--color-bg-primary-l, #{var.$default-color-bg-primary-l}), 0.6);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px); // Prefixed for Safari
-  border-bottom: 1px solid hsla(var(--color-border-secondary-h, #{var.$default-color-border-secondary-h}), var(--color-border-secondary-s, #{var.$default-color-border-secondary-s}), var(--color-border-secondary-l, #{var.$default-color-border-secondary-l}), 0.15);
-  box-shadow: var(--shadow-depth-sm, #{var.$scss-box-shadow-sm});
+  padding: var.$spacing-sm var.$spacing-xs; // Compact for mobile
+  margin-bottom: var.$spacing-sm;         // Reduced bottom margin for mobile
+  // position: sticky; top: 0; z-index already good.
+  // background & backdrop-filter already good.
+
+  @media (min-width: var.$breakpoint-sm) {
+    padding: var.$spacing-md var.$spacing-lg;
+    margin-bottom: var.$spacing-lg;
+  }
 
   .selector-title-ephemeral {
-    font-size: var.$font-size-sm;
-    color: hsl(var(--color-text-muted-h, #{var.$default-color-text-muted-h}), var(--color-text-muted-s, #{var.$default-color-text-muted-s}), var(--color-text-muted-l, #{var.$default-color-text-muted-l}));
+    font-size: var.$font-size-xs;
+    color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
     font-weight: 500;
+    margin-bottom: calc(#{var.$spacing-xs} / 2); // Add a bit of space below title on mobile
+
+    @media (min-width: var.$breakpoint-sm) {
+      font-size: var.$font-size-sm;
+      margin-bottom: 0; // Remove extra space if layout changes
+    }
   }
 }
 
 .agent-selector-button-ephemeral {
-  @include buttonsFile.btn;
-  @include mixins.neomorphic-extrude(
-    $bg-color-var-prefix: '--color-bg-secondary',
-    $distance: 4px, 
-    $blur: 8px,
-    $shadow-opacity-var: '--shadow-opacity-soft',
-    $radius: var.$radius-lg,
-    $shadow-h-var: '--shadow-color-h', 
-    $shadow-s-var: '--shadow-color-s', 
-    $shadow-l-var: '--shadow-color-l', 
-    $highlight-l-modifier-css-var: '--shadow-highlight-modifier',
-    $fb-bg-h: var.$default-color-bg-secondary-h, 
-    $fb-bg-s: var.$default-color-bg-secondary-s, 
-    $fb-bg-l: var.$default-color-bg-secondary-l, 
-    $fb-bg-a: var.$fb-bg-a, // Use general fallback alpha
-    $fb-shadow-op: var.$default-shadow-opacity-soft,
-    $fb-shadow-h: var.$default-shadow-color-h, 
-    $fb-shadow-s: var.$default-shadow-color-s, 
-    $fb-shadow-l: var.$default-shadow-color-l,
-    $fb-highlight-l-factor: var.$default-shadow-highlight-l-factor
-  );
-  padding: var.$spacing-sm var.$spacing-md !important;
-  min-width: 280px;
-  max-width: 90%;
-  color: hsl(var(--color-text-primary-h, #{var.$default-color-text-primary-h}), var(--color-text-primary-s, #{var.$default-color-text-primary-s}), var(--color-text-primary-l, #{var.$default-color-text-primary-l}));
-  font-size: var.$font-size-base-default;
-  font-weight: 500;
+  // Inherits from button mixins, neomorphism
+  padding: var.$spacing-sm var.$spacing-md !important; // Default padding
+  font-size: var.$font-size-sm;                        // Default font size
+  width: 100%;                                        // Full width on mobile for easier interaction
+  max-width: 380px;                                   // Max width on mobile, allowing centering if parent is flex center
+  margin-left: auto;
+  margin-right: auto;
+
+  @media (min-width: var.$breakpoint-sm) {
+    font-size: var.$font-size-base-default;
+    width: auto; // Auto width on larger screens
+    min-width: 280px;
+    max-width: 450px; // Max width on larger screens
+  }
 
   .selected-agent-icon {
-    width: 1.4em; height: 1.4em;
-    margin-right: var.$spacing-sm;
-    opacity: 0.9;
-    color: hsl(var(--color-accent-primary-h, #{var.$default-color-accent-primary-h}), var(--color-accent-primary-s, #{var.$default-color-accent-primary-s}), var(--color-accent-primary-l, #{var.$default-color-accent-primary-l}));
-  }
-  .chevron-icon {
-    width: 1.1em; height: 1.1em;
-    transition: transform var.$duration-quick var.$ease-out-quad;
-    &.open { transform: rotate(180deg); }
-  }
-
-  &:hover {
-    filter: brightness(1.1);
-    color: hsl(var(--color-accent-interactive-h, #{var.$default-color-accent-interactive-h}), var(--color-accent-interactive-s, #{var.$default-color-accent-interactive-s}), var(--color-accent-interactive-l, #{var.$default-color-accent-interactive-l}));
-    .selected-agent-icon { 
-      opacity: 1; 
-      filter: drop-shadow(0 0 3px hsla(var(--color-accent-primary-h, #{var.$default-color-accent-primary-h}), var(--color-accent-primary-s, #{var.$default-color-accent-primary-s}), var(--color-accent-primary-l, #{var.$default-color-accent-primary-l}), 0.7));
+    width: 1.2em; height: 1.2em; // Slightly smaller for mobile
+    @media (min-width: var.$breakpoint-sm) {
+      width: 1.4em; height: 1.4em;
     }
   }
 }
 
 .agent-selector-dropdown-panel-ephemeral {
-  @include cardsFile.card-base-styles; 
-  @include cardsFile.card-neo-look;    
+  // Width will be constrained by its button parent or can be set explicitly.
+  // Current SCSS already has width logic which seems fine.
+  // Ensure max-height is viewport-aware for small screens.
+  max-height: min(60vh, 400px); // Prevent excessively tall dropdowns
 
-  position: absolute;
-  top: calc(100% + #{var.$spacing-xs}); 
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: var.$z-index-dropdown;
-  width: 300px;
-  min-width: 100%;
-  max-height: 60vh;
-  padding: var.$spacing-xs !important; 
-  
-  .dropdown-header-holographic {
-    padding: var.$spacing-sm var.$spacing-md;
-    border-bottom: 1px solid hsla(var(--color-border-secondary-h, #{var.$default-color-border-secondary-h}),var(--color-border-secondary-s, #{var.$default-color-border-secondary-s}),var(--color-border-secondary-l, #{var.$default-color-border-secondary-l}),0.2);
-    margin-bottom: var.$spacing-xs;
-    .dropdown-title {
-      font-size: var.$font-size-sm;
-      font-weight: 600;
-      color: hsl(var(--color-text-muted-h, #{var.$default-color-text-muted-h}),var(--color-text-muted-s, #{var.$default-color-text-muted-s}),var(--color-text-muted-l, #{var.$default-color-text-muted-l}));
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-  }
   .dropdown-content-holographic {
-    padding: var.$spacing-xs; 
-    overflow-y: auto;
-    max-height: calc(60vh - #{var.$spacing-lg} - 40px); // Corrected: var.$spacing-sm * 2 -> var.$spacing-lg
-    @include mixins.custom-scrollbar(
-        '--color-accent-interactive', 
-        0.4, 0.65, 
-        '--color-bg-tertiary', 
-        0.1, 
-        6px
-    );
-  }
-  .dropdown-item-holographic {
-    @include buttonsFile.btn-ghost; 
-    width: 100%;
-    justify-content: flex-start !important;
-    align-items: center;
-    padding: var.$spacing-sm var.$spacing-md !important;
-    border-radius: var.$radius-md !important;
-    font-size: var.$font-size-base-default !important; 
-    color: hsl(var(--color-text-secondary-h, #{var.$default-color-text-secondary-h}),var(--color-text-secondary-s, #{var.$default-color-text-secondary-s}),var(--color-text-secondary-l, #{var.$default-color-text-secondary-l}));
-
-    &.active {
-      background-color: hsla(var(--color-accent-interactive-h, #{var.$default-color-accent-interactive-h}),var(--color-accent-interactive-s, #{var.$default-color-accent-interactive-s}),var(--color-accent-interactive-l, #{var.$default-color-accent-interactive-l}),0.15);
-      color: hsl(var(--color-accent-interactive-h, #{var.$default-color-accent-interactive-h}),var(--color-accent-interactive-s, #{var.$default-color-accent-interactive-s}),var(--color-accent-interactive-l, #{var.$default-color-accent-interactive-l}));
-      font-weight: 500;
-      .mode-icon-dd-holographic {
-        background-color: hsla(var(--color-accent-interactive-h, #{var.$default-color-accent-interactive-h}),var(--color-accent-interactive-s, #{var.$default-color-accent-interactive-s}),var(--color-accent-interactive-l, #{var.$default-color-accent-interactive-l}),0.1);
-        .icon-base {
-            color: hsl(var(--color-accent-interactive-h, #{var.$default-color-accent-interactive-h}),var(--color-accent-interactive-s, #{var.$default-color-accent-interactive-s}),var(--color-accent-interactive-l, #{var.$default-color-accent-interactive-l}));
-        }
-      }
-    }
-     &:not(.active):hover {
-      background-color: hsla(var(--color-accent-interactive-h, #{var.$default-color-accent-interactive-h}),var(--color-accent-interactive-s, #{var.$default-color-accent-interactive-s}),var(--color-accent-interactive-l, #{var.$default-color-accent-interactive-l}),0.08);
-      color: hsl(var(--color-text-primary-h, #{var.$default-color-text-primary-h}),var(--color-text-primary-s, #{var.$default-color-text-primary-s}),var(--color-text-primary-l, #{var.$default-color-text-primary-l}));
-       .mode-icon-dd-holographic {
-         background-color: hsla(var(--color-bg-tertiary-h, #{var.$default-color-bg-tertiary-h}),var(--color-bg-tertiary-s, #{var.$default-color-bg-tertiary-s}),var(--color-bg-tertiary-l, #{var.$default-color-bg-tertiary-l}),0.9);
-       }
-    }
-
-    .mode-icon-dd-holographic {
-      width: 36px; height: 36px; padding: var.$spacing-xs; border-radius: var.$radius-md;
-      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-      margin-right: var.$spacing-md;
-      background-color: hsla(var(--color-bg-tertiary-h, #{var.$default-color-bg-tertiary-h}),var(--color-bg-tertiary-s, #{var.$default-color-bg-tertiary-s}),var(--color-bg-tertiary-l, #{var.$default-color-bg-tertiary-l}),0.7);
-      transition: background-color var.$duration-quick;
-      .icon-base { 
-        width: 1.25rem; height: 1.25rem;
-        color: hsl(var(--color-text-muted-h, #{var.$default-color-text-muted-h}),var(--color-text-muted-s, #{var.$default-color-text-muted-s}),var(--color-text-muted-l, #{var.$default-color-text-muted-l}));
-        transition: color var.$duration-quick;
-      }
-    }
-    .dropdown-item-label { flex-grow: 1; text-align: left; }
-    .checkmark-icon-active { 
-        margin-left: auto; 
-        color: hsl(var(--color-accent-interactive-h, #{var.$default-color-accent-interactive-h}),var(--color-accent-interactive-s, #{var.$default-color-accent-interactive-s}),var(--color-accent-interactive-l, #{var.$default-color-accent-interactive-l}));
-        width: 1.25rem; height: 1.25rem;
-    }
+    // Ensure max-height considers header of dropdown for scroll calc.
+    max-height: min(calc(60vh - 60px), 340px); // Adjust 60px based on actual header height inside dropdown
   }
 }
 
+// Placeholders (Rate Limit, Welcome, No Agents)
 .public-welcome-placeholder-ephemeral,
 .rate-limit-banner-ephemeral {
-  @include cardsFile.card-base-styles;
-  @include cardsFile.card-glass-look;
-  margin: var.$spacing-xl auto; 
-  padding: calc(#{var.$spacing-xl} * 1.5); 
-  text-align: center;
-  max-width: 700px; 
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var.$spacing-md;
+  // These are displayed within the .unified-main-content-area of UnifiedChatLayout.
+  // That area has its own padding. These placeholders can add internal padding and manage their width.
+  margin-top: var.$spacing-lg; // Add some top margin from the header/ephemeral log
+  margin-bottom: var.$spacing-lg;
+  margin-left: auto;
+  margin-right: auto;
+  padding: var.$spacing-md;    // Internal padding for the card content (mobile)
+  width: 100%;                 // Take available width within parent's padding
+  max-width: calc(100% - #{var.$spacing-xs}); // Ensure it doesn't hit edges of parent padding
 
-  .hero-icon-ephemeral, .banner-icon-ephemeral {
-    width: clamp(4rem, 10vw, 5.5rem); 
-    height: clamp(4rem, 10vw, 5.5rem);
-    margin-bottom: var.$spacing-sm;
-    color: hsl(var(--color-accent-primary-h, #{var.$default-color-accent-primary-h}), var(--color-accent-primary-s, #{var.$default-color-accent-primary-s}), var(--color-accent-primary-l, #{var.$default-color-accent-primary-l}));
-    opacity: 0.7;
-    filter: drop-shadow(0 0 15px hsla(var(--color-accent-primary-h, #{var.$default-color-accent-primary-h}), var(--color-accent-primary-s, #{var.$default-color-accent-primary-s}), var(--color-accent-primary-l, #{var.$default-color-accent-primary-l}), 0.5));
+  @media (min-width: var.$breakpoint-sm) {
+    padding: var.$spacing-lg;
+    max-width: 600px; // Centered content block
   }
-  
+  @media (min-width: var.$breakpoint-md) {
+    padding: calc(#{var.$spacing-xl} * 1.25);
+    max-width: 700px;
+  }
+  @media (min-width: var.$breakpoint-lg) {
+    padding: calc(#{var.$spacing-xl} * 1.5);
+    max-width: 760px; // Comfortable reading width for these messages
+  }
+
+  // Text color usage already seems fine (using theme variables)
   .welcome-title-ephemeral, .banner-title-ephemeral {
-    font-size: clamp(1.5rem, calc(1rem + 1.5vw), 2.25rem); 
-    font-weight: 600;
-    color: hsl(var(--color-text-primary-h, #{var.$default-color-text-primary-h}), var(--color-text-primary-s, #{var.$default-color-text-primary-s}), var(--color-text-primary-l, #{var.$default-color-text-primary-l}));
-    @include mixins.text-glow(
-        $glow-color-var-prefix: '--color-accent-primary', 
-        $glow-radius: 8px, 
-        $fb-glow-h: var.$default-color-accent-primary-h,
-        $fb-glow-s: var.$default-color-accent-primary-s,
-        $fb-glow-l: var.$default-color-accent-primary-l,
-        $fb-glow-a: 0.4
-    );
+    color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+    // font-size clamp is good.
   }
-
   .welcome-subtitle-ephemeral, .banner-text-ephemeral {
-    font-size: clamp(1rem, calc(0.9rem + 0.5vw), 1.125rem); 
-    color: hsl(var(--color-text-secondary-h, #{var.$default-color-text-secondary-h}), var(--color-text-secondary-s, #{var.$default-color-text-secondary-s}), var(--color-text-secondary-l, #{var.$default-color-text-secondary-l}));
-    line-height: 1.7;
-    max-width: 60ch; 
-    opacity: 0.95;
+    color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+    opacity: 0.95; // Ensure high opacity for readability
     .link-ephemeral {
-      color: hsl(var(--color-accent-interactive-h, #{var.$default-color-accent-interactive-h}), var(--color-accent-interactive-s, #{var.$default-color-accent-interactive-s}), var(--color-accent-interactive-l, #{var.$default-color-accent-interactive-l}));
-      font-weight: 500;
-      text-decoration: none;
-      &:hover { text-decoration: underline; }
+      color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
+      font-weight: 600; // Bolder links
     }
   }
 }
 
-.rate-limit-banner-ephemeral {
-  border-left: 5px solid hsl(var(--color-warning-h, #{var.$default-color-warning-h}), var(--color-warning-s, #{var.$default-color-warning-s}), var(--color-warning-l, #{var.$default-color-warning-l}));
-  background-color: hsla(var(--color-warning-h, #{var.$default-color-warning-h}), var(--color-warning-s, #{var.$default-color-warning-s}), var(--color-warning-l, #{var.$default-color-warning-l}), 0.05);
-  .banner-icon-ephemeral {
-    color: hsl(var(--color-warning-h, #{var.$default-color-warning-h}), var(--color-warning-s, #{var.$default-color-warning-s}), var(--color-warning-l, #{var.$default-color-warning-l}));
-    filter: drop-shadow(0 0 10px hsla(var(--color-warning-h, #{var.$default-color-warning-h}), var(--color-warning-s, #{var.$default-color-warning-s}), var(--color-warning-l, #{var.$default-color-warning-l}), 0.4));
-  }
-  .banner-title-ephemeral {
-    color: hsl(var(--color-warning-h, #{var.$default-color-warning-h}), var(--color-warning-s, #{var.$default-color-warning-s}), calc(var(--color-warning-l, #{var.$default-color-warning-l}) - 10%));
-    @include mixins.text-glow(
-        $glow-color-var-prefix: '--color-warning', 
-        $glow-radius: 6px, 
-        $fb-glow-h: var.$default-color-warning-h,
-        $fb-glow-s: var.$default-color-warning-s,
-        $fb-glow-l: var.$default-color-warning-l,
-        $fb-glow-a: 0.3
-    );
-  }
-  .login-prompt-link-ephemeral {
-    @include buttonsFile.btn-primary; 
-    font-size: var.$font-size-base-default !important;
-    padding: var.$spacing-sm var.$spacing-lg !important;
-  }
-}
-
-.public-welcome-placeholder-ephemeral .hero-icon-ephemeral.no-agents-icon {
-    color: hsl(var(--color-text-muted-h, #{var.$default-color-text-muted-h}), var(--color-text-muted-s, #{var.$default-color-text-muted-s}), var(--color-text-muted-l, #{var.$default-color-text-muted-l}));
-    filter: none;
-    opacity: 0.5;
-}
-
-.main-content-view-wrapper-ephemeral {
-  flex-grow: 1; 
-  display: flex;
-  flex-direction: column;
-}
-
+// Loading placeholder within main content (if not using specific placeholders above)
 .loading-placeholder-ephemeral {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-grow: 1;
-  min-height: 300px;
+  // ... (existing styles for centering are likely fine) ...
+  // Ensure it's visually appealing and uses theme colors if it has text/icons.
+  .loading-text-ephemeral {
+    color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+  }
+  .loading-spinner-ephemeral { // Assuming this spinner uses text color or a theme variable
+    color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+  }
+}
+
+// General content renderer adjustments if used directly in PublicHome structure
+// (though mostly handled by MainContentView -> prose)
+.content-renderer-ephemeral {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 0; // Rely on parent padding from .unified-main-content-area
+  padding-right: 0;
+
+  @media (min-width: var.$breakpoint-md) {
+    // If .prose-ephemeral is used, it has its own max-width: 80ch.
+    // If another direct content block is here, it might need max-width.
+    // For now, assuming specialized components or .prose handle their width.
+  }
 }

@@ -1,9 +1,10 @@
 // File: frontend/src/styles/views/_private-home.scss
 /**
  * @file _private-home.scss
- * @description Styles specific to the PrivateHome view for "Ephemeral Harmony" theme.
- * Focuses on a visually rich and welcoming dashboard placeholder for authenticated users.
- * @version 1.0.2 - Corrected SASS calculations, mixin calls, and ensured theme consistency.
+ * @description Styles specific to the PrivateHome view.
+ * Focuses on responsive layout, thematic background, and ensuring a compact
+ * experience on small screens / full-screen mode, with centered content on larger screens.
+ * @version 1.1.0 - Implemented responsive margins, padding, and thematic background.
  */
 
 @use '../abstracts/variables' as var;
@@ -11,169 +12,153 @@
 @use '../components/buttons' as buttonsFile;
 @use '../components/cards' as cardsFile;
 
+// Root container for the PrivateHome view
 .private-home-view-ephemeral {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 100%; // Occupy full height of its container
   width: 100%;
+  background-color: hsl(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l));
+  // Potential for overflow to be auto if not using a fixed-height layout like UnifiedChatLayout
+  // However, for "no scroll" in full screen, internal components must manage this.
+  overflow: hidden; // If the view itself should not scroll, and children manage scrolling
 }
 
+// Styles for the dashboard placeholder content
 .private-dashboard-placeholder-ephemeral {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  flex-grow: 1;
-  // Corrected SASS calculation for padding
-  padding: calc(#{var.$spacing-xl} * 1.5) var.$spacing-lg;
-  width: 100%;
-  position: relative;
+  flex-grow: 1; // Takes available space if it's the main content
+  width: 100%;   // Full width within its parent for padding control
+  padding: var.$spacing-md; // Mobile-first padding
 
-  .dashboard-icon-ephemeral {
-    width: clamp(5rem, 12vw, 7rem);
-    height: clamp(5rem, 12vw, 7rem);
-    // Corrected SASS calculation for margin-bottom
-    margin-bottom: calc(#{var.$spacing-lg} * 1.5);
-    color: hsl(var(--color-accent-primary-h, #{var.$default-color-accent-primary-h}), var(--color-accent-primary-s, #{var.$default-color-accent-primary-s}), var(--color-accent-primary-l, #{var.$default-color-accent-primary-l}));
-    opacity: 0.8;
-    filter: drop-shadow(0 0 20px hsla(var(--color-accent-primary-h, #{var.$default-color-accent-primary-h}), var(--color-accent-primary-s, #{var.$default-color-accent-primary-s}), var(--color-accent-primary-l, #{var.$default-color-accent-primary-l}), 0.6));
-    // Corrected animation duration calculation
-    animation: subtlePulse unquote("calc(#{var.$duration-pulse-long} * 2)") var.$ease-elastic infinite alternate, spin 60s linear infinite;
-    --scale-pulse: 1.03;
-    --opacity-pulse: 0.95;
-  }
-
-  .dashboard-title-ephemeral {
-    font-family: var(--font-family-display, #{var.$font-family-display});
-    font-size: clamp(2rem, calc(1.5rem + 2.5vw), 3.25rem); // CSS calc for responsive part
-    font-weight: 700;
-    color: hsl(var(--color-text-primary-h, #{var.$default-color-text-primary-h}), var(--color-text-primary-s, #{var.$default-color-text-primary-s}), var(--color-text-primary-l, #{var.$default-color-text-primary-l}));
-    margin-bottom: var.$spacing-md;
-    letter-spacing: -0.015em;
-    text-wrap: balance;
-    @include mixins.text-glow(
-      $glow-color-var-prefix: '--color-accent-primary',
-      $glow-radius: 10px,
-      $fb-glow-h: var.$default-color-accent-primary-h, 
-      $fb-glow-s: var.$default-color-accent-primary-s, 
-      $fb-glow-l: var.$default-color-accent-primary-l, 
-      $fb-glow-a: 0.5
-    );
-  }
-
-  .dashboard-subtitle-ephemeral {
-    font-size: clamp(1.1rem, calc(0.9rem + 0.8vw), 1.35rem); // CSS calc for responsive part
-    color: hsl(var(--color-text-secondary-h, #{var.$default-color-text-secondary-h}), var(--color-text-secondary-s, #{var.$default-color-text-secondary-s}), var(--color-text-secondary-l, #{var.$default-color-text-secondary-l}));
-    line-height: 1.75;
-    max-width: 60ch;
-    opacity: 0.9;
-    margin-bottom: var.$spacing-xl;
-  }
-
-  // Assuming .btn-secondary-ephemeral is a custom combination defined here or component
-  // If it should be a standard button, use .btn and .btn-secondary look from buttonsFile
-  .btn.btn-secondary-ephemeral {
-    @include buttonsFile.btn; // Apply base button styles
-    @include buttonsFile.btn-secondary-look; // Apply the look
-    @include buttonsFile.btn-lg-modifier; // Apply size modifier
-    // Ensure icon styles are scoped or specific enough if they differ from base .icon in buttons
-    .icon-sm { // This specific class for icon inside this button
-      width: 1.25em;
-      height: 1.25em;
-      margin-right: var.$spacing-sm;
+  // Container for the actual text, icon, button content for centering
+  .dashboard-content-wrapper { // You might need to add this div in your PrivateHome.vue template
+    width: 100%;
+    max-width: 550px; // Max width for the placeholder's text content block on small screens
+    @media (min-width: var.$breakpoint-sm) {
+      max-width: 650px;
+    }
+    @media (min-width: var.$breakpoint-md) {
+      max-width: 750px; // Comfortable width for the dashboard message
     }
   }
+
+  // Icons, titles, subtitles already use theme variables and responsive fonts (clamp)
+  .dashboard-icon-ephemeral {
+    // Styles seem fine
+  }
+  .dashboard-title-ephemeral {
+    color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+  }
+  .dashboard-subtitle-ephemeral {
+    color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+    opacity: 0.95; // Ensure high opacity
+  }
+  .btn.btn-secondary-ephemeral {
+    // Styles seem fine, button system should handle responsiveness.
+    margin-top: var.$spacing-lg; // Ensure enough space above button
+  }
 }
+
+// Styles for .main-content-view-wrapper-ephemeral when used in PrivateHome
+// This class is defined in _private-home.scss but also used by PublicHome.vue's MainContentView.
+// The goal is a consistent presentation of agent content.
 .main-content-view-wrapper-ephemeral {
-  height: 100%;
+  height: 100%; // Expects to fill its container within private-home-view-ephemeral
   width: 100%;
   display: flex;
   flex-direction: column;
-  overflow: hidden; // Usually good for a main wrapper that contains scrollable children
+  overflow: hidden; // Wrapper itself shouldn't scroll
 
+  // If it's not framed (default state), apply responsive padding directly
+  &:not(.has-framed-content) {
+    padding: var.$spacing-xs; // Mobile first minimal padding
+
+    @media (min-width: var.$breakpoint-sm) {
+      padding: var.$spacing-sm;
+    }
+    @media (min-width: var.$breakpoint-md) {
+      padding: var.$spacing-md; // General padding for content area
+    }
+    // On larger screens, the .prose-ephemeral inside will handle max-width and centering.
+    // If content other than prose is used, it might need its own max-width strategy here.
+  }
+
+  // Styles for when content is framed (e.g. holographic card)
   &.has-framed-content {
     @include cardsFile.card-base-styles;
-    @include cardsFile.card-glass-look; // Ensure this mixin name is correct from _cards.scss
-    margin: var.$spacing-md;
-    padding: 0; // Override base card padding if frame content needs to be flush
-    overflow: hidden; // Ensure card clipping applies
-    
-    // Style the direct child to be scrollable and have padding
-    > :first-child {
+    @include cardsFile.card-glass-look;
+    margin: var.$spacing-sm; // Small margin on mobile for framed content
+    padding: 0;
+    overflow: hidden;
+
+    @media (min-width: var.$breakpoint-md) {
+      margin: var.$spacing-md; // Larger margin for framed content on bigger screens
+      // Optional: Add max-width and centering for the frame itself on very large screens
+      // max-width: 1400px;
+      // margin-left: auto;
+      // margin-right: auto;
+    }
+
+    > :first-child { // The scrollable content within the frame
       height: 100%;
       width: 100%;
       overflow-y: auto;
       @include mixins.custom-scrollbar(
         '--color-accent-interactive',0.4,0.65,'--color-bg-tertiary',0.1,6px
       );
-      padding: var.$spacing-lg; // Internal padding for the scrollable content
+      padding: var.$spacing-md; // Internal padding for scrollable content (mobile)
+      @media (min-width: var.$breakpoint-sm) {
+        padding: var.$spacing-lg; // More internal padding on larger screens
+      }
     }
   }
 }
 
+// Container for actual rendered content (markdown, etc.) inside MainContentView
 .content-renderer-container-ephemeral {
   flex-grow: 1;
-  padding: var.$spacing-lg; // Default padding if not using has-framed-content
-  overflow-y: auto;
-  @include mixins.custom-scrollbar(
-    '--color-accent-interactive',0.4,0.65,'--color-bg-tertiary',0.1,6px
-  );
-  display: flex; // If its direct child needs to fill height
-  flex-direction: column; // If its direct child needs to fill height
+  overflow-y: auto; // This is where content scrolls
+  // Padding handled by .main-content-view-wrapper-ephemeral or its .has-framed-content > :first-child
+  padding: 0; // Remove direct padding here, let parent control it.
+
+  @include mixins.custom-scrollbar( /* Styles for this scrollbar are fine */ );
+  display: flex;
+  flex-direction: column;
 }
 
+// Prose styling within the content renderer
 .prose-ephemeral.content-renderer-ephemeral {
-  margin: auto; // Center prose content if it's narrower than container
-  max-width: 80ch; // Optimal reading width for prose
   width: 100%;
+  max-width: 80ch; // Good for readability
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: var.$spacing-sm;    // Add some vertical spacing for prose blocks
+  padding-bottom: var.$spacing-lg; // More space at the bottom
 
+  // Headings, paragraphs, links should already use theme colors well.
   h1, h2, h3, h4 {
-    color: hsl(var(--color-text-primary-h, #{var.$default-color-text-primary-h}), var(--color-text-primary-s, #{var.$default-color-text-primary-s}), var(--color-text-primary-l, #{var.$default-color-text-primary-l}));
-    // Corrected text-glow mixin call
-    @include mixins.text-glow(
-        $glow-color-var-prefix: '--color-accent-primary', 
-        $glow-radius: 4px, 
-        $fb-glow-h: var.$default-color-accent-primary-h,
-        $fb-glow-s: var.$default-color-accent-primary-s,
-        $fb-glow-l: var.$default-color-accent-primary-l,
-        $fb-glow-a: 0.3
-    );
+    color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
   }
   p, li, blockquote {
-    color: hsl(var(--color-text-secondary-h, #{var.$default-color-text-secondary-h}), var(--color-text-secondary-s, #{var.$default-color-text-secondary-s}), var(--color-text-secondary-l, #{var.$default-color-text-secondary-l}));
-    font-size: calc(#{var.$font-size-base-default} * 1.05); // Use CSS calc for interpolation
-    line-height: 1.75;
+    color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+    font-size: calc(#{var.$font-size-base-default} * 1.025); // Slightly increased base for prose
+    line-height: 1.7; // Increased line height for readability
   }
   a {
-    color: hsl(var(--color-accent-interactive-h, #{var.$default-color-accent-interactive-h}), var(--color-accent-interactive-s, #{var.$default-color-accent-interactive-s}), var(--color-accent-interactive-l, #{var.$default-color-accent-interactive-l}));
+    color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
+    font-weight: 500; // Bolder links in prose
     &:hover {
-       color: hsl(var(--color-accent-interactive-h, #{var.$default-color-accent-interactive-h}), var(--color-accent-interactive-s, #{var.$default-color-accent-interactive-s}), calc(var(--color-accent-interactive-l, #{var.$default-color-accent-interactive-l}) + 10%));
+      color: hsl(var(--color-accent-primary-light-h), var(--color-accent-primary-light-s), var(--color-accent-primary-light-l));
     }
   }
 }
 
-.prose-ephemeral.prose-error {
-  border-left: 4px solid hsl(var(--color-error-h, #{var.$default-color-error-h}), var(--color-error-s, #{var.$default-color-error-s}), var(--color-error-l, #{var.$default-color-error-l}));
-  padding-left: var.$spacing-md;
-  h3, h4 {
-    color: hsl(var(--color-error-h, #{var.$default-color-error-h}), var(--color-error-s, #{var.$default-color-error-s}), calc(var(--color-error-l, #{var.$default-color-error-l}) - 5%));
-    // Corrected text-glow mixin call
-    @include mixins.text-glow(
-        $glow-color-var-prefix: '--color-error', 
-        $glow-radius: 4px, 
-        $fb-glow-h: var.$default-color-error-h,
-        $fb-glow-s: var.$default-color-error-s,
-        $fb-glow-l: var.$default-color-error-l,
-        $fb-glow-a: 0.4
-    );
-  }
-}
-
-.loading-placeholder-ephemeral {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-grow: 1;
-  min-height: 300px;
+// Loading placeholder specific to PrivateHome if different from PublicHome's
+.loading-placeholder-ephemeral { // This is a generic class potentially
+  // ... (styles for centering, ensure themed text/icon if used) ...
 }
