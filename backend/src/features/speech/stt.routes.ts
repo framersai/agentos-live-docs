@@ -81,122 +81,134 @@ export async function POST(req: Request, res: Response): Promise<void> {
   // @ts-ignore - req.user is a custom property potentially injected by authentication middleware
   const userId = req.user?.id || req.body.userId || `unauthenticated_user_${req.ip || 'unknown_ip'}`;
 
-  upload.single('audio')(req, res, async (err: any) => {
-    if (err instanceof MulterError) {
-      console.error(`[stt.routes] Multer error for user ${userId} (IP: ${req.ip}): ${err.message} (Code: ${err.code})`);
-      if (err.code === 'LIMIT_FILE_SIZE') {
-        return res.status(413).json({ message: `Audio file is too large. Maximum size is ${MAX_FILE_SIZE_MB}MB.`, error: 'FILE_TOO_LARGE' });
+  // Wrap the multer call in a Promise to ensure the outer async function awaits its completion
+  // and can explicitly return a Promise<void>.
+  await new Promise<void>(resolve => {
+    upload.single('audio')(req, res, async (err: any) => {
+      if (err instanceof MulterError) {
+        console.error(`[stt.routes] Multer error for user ${userId} (IP: ${req.ip}): ${err.message} (Code: ${err.code})`);
+        if (err.code === 'LIMIT_FILE_SIZE') {
+          res.status(413).json({ message: `Audio file is too large. Maximum size is ${MAX_FILE_SIZE_MB}MB.`, error: 'FILE_TOO_LARGE' });
+        } else {
+          res.status(400).json({ message: `File upload error: ${err.message}`, error: 'FILE_UPLOAD_ERROR' });
+        }
+        return resolve(); // Resolve the promise after sending response
+      } else if (err) {
+        console.error(`[stt.routes] Non-multer error during upload for user ${userId} (IP: ${req.ip}): ${err.message}`);
+        // This 'err' might be from our custom fileFilter
+        res.status(415).json({ message: err.message || 'Invalid audio file type.', error: 'INVALID_AUDIO_FILE_TYPE' });
+        return resolve(); // Resolve the promise after sending response
       }
-      return res.status(400).json({ message: `File upload error: ${err.message}`, error: 'FILE_UPLOAD_ERROR' });
-    } else if (err) {
-      console.error(`[stt.routes] Non-multer error during upload for user ${userId} (IP: ${req.ip}): ${err.message}`);
-      // This 'err' might be from our custom fileFilter
-      return res.status(415).json({ message: err.message || 'Invalid audio file type.', error: 'INVALID_AUDIO_FILE_TYPE' });
-    }
 
-    if (!req.file) {
-      console.warn(`[stt.routes] No audio file uploaded by user ${userId} (IP: ${req.ip})`);
-      return res.status(400).json({ message: 'No audio file was provided in the request.', error: 'NO_AUDIO_FILE' });
-    }
+      if (!req.file) {
+        console.warn(`[stt.routes] No audio file uploaded by user ${userId} (IP: ${req.ip})`);
+        res.status(400).json({ message: 'No audio file was provided in the request.', error: 'NO_AUDIO_FILE' });
+        return resolve(); // Resolve the promise after sending response
+      }
 
-    const audioBuffer: Buffer = req.file.buffer;
-    const originalFileName: string = req.file.originalname || `audio-${Date.now()}.${req.file.mimetype.split('/')[1] || 'bin'}`;
+      const audioBuffer: Buffer = req.file.buffer;
+      const originalFileName: string = req.file.originalname || `audio-${Date.now()}.${req.file.mimetype.split('/')[1] || 'bin'}`;
 
-    // Extract options from request body (multer puts non-file fields into req.body)
-    const requestOptions: ISttRequestOptions = req.body;
+      // Extract options from request body (multer puts non-file fields into req.body)
+      const requestOptions: ISttRequestOptions = req.body;
 
-    const costThresholdString = process.env.COST_THRESHOLD_USD_PER_SESSION || '2.00';
-    const effectiveCostThreshold = parseFloat(costThresholdString);
-    const disableCostLimits = process.env.DISABLE_COST_LIMITS === 'true';
+      const costThresholdString = process.env.COST_THRESHOLD_USD_PER_SESSION || '2.00';
+      const effectiveCostThreshold = parseFloat(costThresholdString);
+      const disableCostLimits = process.env.DISABLE_COST_LIMITS === 'true';
 
-    if (!disableCostLimits) {
+      if (!disableCostLimits) {
         const currentCost = CostService.getSessionCost(userId); // Assuming CostService can provide this
         if (currentCost.totalCost >= effectiveCostThreshold) {
-            console.warn(`[stt.routes] STT request blocked for user ${userId}. Session cost threshold $${effectiveCostThreshold.toFixed(2)} reached (Current: $${currentCost.totalCost.toFixed(2)}).`);
-            return res.status(403).json({
-                message: `Session cost threshold of $${effectiveCostThreshold.toFixed(2)} reached. STT transcription blocked.`,
-                error: 'COST_THRESHOLD_EXCEEDED',
-                currentCost: currentCost.totalCost,
-                threshold: effectiveCostThreshold,
-            });
+          console.warn(`[stt.routes] STT request blocked for user ${userId}. Session cost threshold $${effectiveCostThreshold.toFixed(2)} reached (Current: $${currentCost.totalCost.toFixed(2)}).`);
+          res.status(403).json({
+            message: `Session cost threshold of $${effectiveCostThreshold.toFixed(2)} reached. STT transcription blocked.`,
+            error: 'COST_THRESHOLD_EXCEEDED',
+            currentCost: currentCost.totalCost,
+            threshold: effectiveCostThreshold,
+          });
+          return resolve(); // Resolve the promise after sending response
         }
-    }
+      }
 
-    try {
-      const sttServiceOptions: ISttOptions = {
-        language: requestOptions.language,
-        model: requestOptions.model, // audio.service will default if not provided
-        prompt: requestOptions.prompt,
-        responseFormat: validateAndMapResponseFormat(requestOptions.responseFormat),
-        temperature: requestOptions.temperature !== undefined ? Number(requestOptions.temperature) : undefined,
-        providerSpecificOptions: {
+      try {
+        const sttServiceOptions: ISttOptions = {
+          language: requestOptions.language,
+          model: requestOptions.model, // audio.service will default if not provided
+          prompt: requestOptions.prompt,
+          responseFormat: validateAndMapResponseFormat(requestOptions.responseFormat),
+          temperature: requestOptions.temperature !== undefined ? Number(requestOptions.temperature) : undefined,
+          providerSpecificOptions: {
             mimeType: req.file.mimetype // Pass MIME type for better handling in audio.service
-        }
-      };
-      
-      console.log(`[stt.routes] User [${userId}] (IP: ${req.ip}) Requesting STT - Model: ${sttServiceOptions.model || 'default'}, Lang: ${sttServiceOptions.language || 'auto'}, Filename: ${originalFileName}, Size: ${(req.file.size / 1024).toFixed(2)}KB`);
+          }
+        };
 
-      const transcriptionResult: ITranscriptionResult = await audioService.transcribeAudio(
-        audioBuffer,
-        originalFileName,
-        sttServiceOptions,
-        userId
-      );
-      
-      const providerNameForResult = transcriptionResult.usage?.modelUsed || 'UnknownProvider'; // Prefer model if available
-      console.log(`[stt.routes] User [${userId}] (IP: ${req.ip}) Audio transcribed. Cost: $${transcriptionResult.cost.toFixed(6)}, Duration: ${transcriptionResult.durationSeconds?.toFixed(2)}s, Provider/Model: ${providerNameForResult}`);
+        console.log(`[stt.routes] User [${userId}] (IP: ${req.ip}) Requesting STT - Model: ${sttServiceOptions.model || 'default'}, Lang: ${sttServiceOptions.language || 'auto'}, Filename: ${originalFileName}, Size: ${(req.file.size / 1024).toFixed(2)}KB`);
 
-      res.status(200).json({
-        transcription: transcriptionResult.text,
-        durationSeconds: transcriptionResult.durationSeconds,
-        cost: transcriptionResult.cost,
-        language: transcriptionResult.language,
-        segments: transcriptionResult.segments, // Pass segments if available
-        message: 'Transcription successful.',
-        metadata: { // Include some useful metadata
+        const transcriptionResult: ITranscriptionResult = await audioService.transcribeAudio(
+          audioBuffer,
+          originalFileName,
+          sttServiceOptions,
+          userId
+        );
+
+        const providerNameForResult = transcriptionResult.usage?.modelUsed || 'UnknownProvider'; // Prefer model if available
+        console.log(`[stt.routes] User [${userId}] (IP: ${req.ip}) Audio transcribed. Cost: $${transcriptionResult.cost.toFixed(6)}, Duration: ${transcriptionResult.durationSeconds?.toFixed(2)}s, Provider/Model: ${providerNameForResult}`);
+
+        res.status(200).json({
+          transcription: transcriptionResult.text,
+          durationSeconds: transcriptionResult.durationSeconds,
+          cost: transcriptionResult.cost,
+          language: transcriptionResult.language,
+          segments: transcriptionResult.segments, // Pass segments if available
+          message: 'Transcription successful.',
+          metadata: { // Include some useful metadata
             modelUsed: transcriptionResult.usage?.modelUsed,
             detectedLanguage: transcriptionResult.language, // Explicitly state detected language
+          }
+        });
+
+      } catch (sttError: any) {
+        console.error(`[stt.routes] STT transcription error for user ${userId} (IP: ${req.ip}), File: ${originalFileName}: ${sttError.message}`, sttError.stack);
+        if (res.headersSent) {
+          return resolve(); // Resolve and exit if headers already sent
         }
-      });
+        let errorMessage = 'Error transcribing audio.';
+        let errorCode = 'STT_TRANSCRIPTION_ERROR';
+        let statusCode = sttError.status || 500; // Use error status if available
 
-    } catch (sttError: any) {
-      console.error(`[stt.routes] STT transcription error for user ${userId} (IP: ${req.ip}), File: ${originalFileName}: ${sttError.message}`, sttError.stack);
-      if (res.headersSent) {
-        return; // Avoid sending multiple responses
-      }
-      let errorMessage = 'Error transcribing audio.';
-      let errorCode = 'STT_TRANSCRIPTION_ERROR';
-      let statusCode = sttError.status || 500; // Use error status if available
-
-      if (sttError.message?.includes('API key') || sttError.message?.includes('authentication')) {
-        errorMessage = 'STT service API key issue or authentication failure. Please check server configuration.';
-        errorCode = 'STT_API_AUTH_ERROR';
-        statusCode = 503; // Service Unavailable (misconfiguration)
-      } else if (sttError.message?.includes('insufficient_quota') || sttError.message?.includes('limit reached')) {
+        if (sttError.message?.includes('API key') || sttError.message?.includes('authentication')) {
+          errorMessage = 'STT service API key issue or authentication failure. Please check server configuration.';
+          errorCode = 'STT_API_AUTH_ERROR';
+          statusCode = 503; // Service Unavailable (misconfiguration)
+        } else if (sttError.message?.includes('insufficient_quota') || sttError.message?.includes('limit reached')) {
           errorMessage = 'STT service quota exceeded or rate limit reached.';
           errorCode = 'STT_QUOTA_OR_RATE_LIMIT_EXCEEDED';
           statusCode = 429; // Too Many Requests
-      } else if (sttError.message?.includes('Unsupported file type') || sttError.message?.includes('Invalid audio file')) {
+        } else if (sttError.message?.includes('Unsupported file type') || sttError.message?.includes('Invalid audio file')) {
           errorMessage = sttError.message; // Use specific error from file filter or service
           errorCode = 'INVALID_AUDIO_FILE_FORMAT';
           statusCode = 415; // Unsupported Media Type
-      } else if (sttError.message?.toLowerCase().includes('timeout')) {
+        } else if (sttError.message?.toLowerCase().includes('timeout')) {
           errorMessage = 'Transcription request timed out.';
           errorCode = 'STT_TIMEOUT';
           statusCode = 504; // Gateway Timeout
-      }
+        }
 
-      res.status(statusCode).json({
-        message: errorMessage,
-        error: errorCode,
-        details: process.env.NODE_ENV === 'development' ? {
-          originalErrorName: sttError.name,
-          originalErrorMessage: sttError.message,
-        } : undefined,
-      });
-    }
+        res.status(statusCode).json({
+          message: errorMessage,
+          error: errorCode,
+          details: process.env.NODE_ENV === 'development' ? {
+            originalErrorName: sttError.name,
+            originalErrorMessage: sttError.message,
+          } : undefined,
+        });
+      }
+      resolve(); // Resolve the promise after the main logic or error handling
+    });
   });
 }
+
+
 
 /**
  * @route GET /api/stt/stats
@@ -214,7 +226,7 @@ export async function GET(req: Request, res: Response): Promise<void> {
     const sessionCost = CostService.getSessionCost(userId);
 
     console.log(`[stt.routes] User ${userId} (IP: ${req.ip}) requested STT/TTS stats.`);
-    
+
     res.status(200).json({
       ...stats, // Spread the stats from audioService
       currentSessionCost: sessionCost.totalCost, // Add current session cost
