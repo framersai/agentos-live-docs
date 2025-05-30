@@ -1,305 +1,285 @@
 // File: frontend/src/components/ui/AnimatedLogo.vue
 /**
  * @file AnimatedLogo.vue
- * @version 2.3.1
- * @description Animated application logo and title for "Ephemeral Harmony".
- * Corrected "V" shape in SVG. Adjusted "Voice Chat" text spacing for better kerning.
- * Retains smooth "breathing" animations and distinct color/gradient transitions for states.
+ * @description A component that displays an animated application logo and name.
+ * The app name ("Voice Chat") animates on component mount if specified.
+ * Includes states for user listening and AI speaking/processing for visual feedback.
  *
  * @component AnimatedLogo
- * @props {string} [appNameMain="Voice Chat"] - The main part of the application name.
- * @props {string} [appNameSubtitle="Assistant"] - The subtitle part of the application name.
- * @props {boolean} [isMobileContext=false] - True if the logo is in a very compact mobile context.
- * @props {boolean} [isUserListening=false] - True if the application is actively listening to the user.
- * @props {boolean} [isAiSpeakingOrProcessing=false] - True if the AI is speaking or processing.
+ * @props {string} [appNameMain="VCA"] - The main part of the application name.
+ * @props {string} [appNameSubtitle=""] - The subtitle part of the application name (e.g., "Voice Chat").
+ * @props {boolean} [isMobileContext=false] - Adjusts styling for mobile contexts.
+ * @props {boolean} [animateTitleOnLoad=false] - If true, the appNameSubtitle will animate on load.
+ * @props {boolean} [isUserListening=false] - Indicates if the user is currently speaking or STT is active.
+ * @props {boolean} [isAiSpeakingOrProcessing=false] - Indicates if AI is speaking (TTS) or processing a request.
+ *
+ * @version 1.1.0 - Added title animation on load functionality.
  */
-<script lang="ts" setup>
-import { computed, type PropType } from 'vue';
-import { useWindowSize } from '@vueuse/core';
+<script setup lang="ts">
+import { ref, computed, onMounted, type PropType } from 'vue';
+import { useUiStore } from '@/store/ui.store';
 
 const props = defineProps({
-  appNameMain: { type: String as PropType<string>, default: 'Voice Chat' },
-  appNameSubtitle: { type: String as PropType<string>, default: 'Assistant' },
-  isMobileContext: { type: Boolean as PropType<boolean>, default: false },
-  isUserListening: { type: Boolean as PropType<boolean>, default: false },
-  isAiSpeakingOrProcessing: { type: Boolean as PropType<boolean>, default: false },
+  appNameMain: {
+    type: String as PropType<string>,
+    default: 'VCA',
+  },
+  appNameSubtitle: {
+    type: String as PropType<string>,
+    default: '',
+  },
+  isMobileContext: {
+    type: Boolean as PropType<boolean>,
+    default: false,
+  },
+  animateTitleOnLoad: {
+    type: Boolean as PropType<boolean>,
+    default: false,
+  },
+  isUserListening: {
+    type: Boolean as PropType<boolean>,
+    default: false,
+  },
+  isAiSpeakingOrProcessing: {
+    type: Boolean as PropType<boolean>,
+    default: false,
+  },
 });
 
-const { width } = useWindowSize();
-const isSmallScreen = computed<boolean>(() => width.value < 768);
+const uiStore = useUiStore();
+const titleReady = ref(!props.animateTitleOnLoad);
 
-const mainAppNameParts = computed<string[]>(() => {
-    if (props.appNameMain === "Voice Chat") {
-        return props.appNameMain.split(' '); // ["Voice", "Chat"]
-    }
-    // For single word or other multi-word names not "Voice Chat", split by letter for individual animation
-    return props.appNameMain.split('');
-});
-
-// Determine if the main name is specifically "Voice Chat" for special spacing
-const isVoiceChatName = computed(() => props.appNameMain === "Voice Chat" && mainAppNameParts.value.length === 2);
-
-const subtitleText = computed<string>(() => {
-  if (props.isMobileContext || isSmallScreen.value) return '';
-  return props.appNameSubtitle;
-});
-
-const subtitleLetters = computed<string[]>(() => subtitleText.value.split(''));
-
-const appDisplayName = computed<string>(() => {
-  if (props.isMobileContext) return props.appNameMain;
-  return isSmallScreen.value ? props.appNameMain : `${props.appNameMain} ${props.appNameSubtitle}`;
-});
-
-const logoStateClasses = computed(() => ({
-  'compact-logo': props.isMobileContext || isSmallScreen.value,
-  'user-listening-state': props.isUserListening && !props.isAiSpeakingOrProcessing,
-  'ai-active-state': props.isAiSpeakingOrProcessing,
-  'idle-state': !props.isUserListening && !props.isAiSpeakingOrProcessing,
+/**
+ * @computed logoContainerClasses
+ * @description Computes dynamic CSS classes for the logo container based on its state.
+ * @returns {object} An object of CSS classes.
+ */
+const logoContainerClasses = computed(() => ({
+  'animated-logo-container-ephemeral': true,
+  'is-mobile': props.isMobileContext,
+  'user-listening': props.isUserListening,
+  'ai-active': props.isAiSpeakingOrProcessing,
+  'reduced-motion': uiStore.isReducedMotionPreferred,
 }));
 
+/**
+ * @computed titleSpanStyles
+ * @description Computes styles for each character span in the animated title for staggered animation.
+ * @param {number} index - The index of the character.
+ * @returns {object} CSS style object.
+ */
+const titleSpanStyles = (index: number) => ({
+  animationDelay: props.animateTitleOnLoad && !uiStore.isReducedMotionPreferred ? `${index * 0.07}s` : '0s',
+});
+
+onMounted(() => {
+  if (props.animateTitleOnLoad) {
+    // Trigger animation by setting titleReady after a short delay to ensure CSS is applied.
+    setTimeout(() => {
+      titleReady.value = true;
+    }, 100);
+  }
+});
 </script>
 
 <template>
-  <div
-    class="animated-logo-ephemeral"
-    :class="logoStateClasses"
-    :aria-label="`${appDisplayName} Logo`"
-    role="img"
-  >
+  <div :class="logoContainerClasses">
     <svg
-      class="logo-svg-element"
-      viewBox="-75 -75 150 150"
+      class="logo-svg-ephemeral"
+      viewBox="0 0 100 100"
       xmlns="http://www.w3.org/2000/svg"
-      preserveAspectRatio="xMidYMid meet"
+      aria-hidden="true"
     >
       <defs>
-        <linearGradient id="animatedLogoMasterGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" class="grad-stop-1-master" />
-          <stop offset="50%" class="grad-stop-2-master" />
-          <stop offset="100%" class="grad-stop-3-master" />
-        </linearGradient>
-
-        <filter id="logoGlowFilterMaster" x="-80%" y="-80%" width="260%" height="260%">
-          <feGaussianBlur class="glow-blur-effect-master" stdDeviation="var(--logo-current-glow-std-dev, 3.5)" result="coloredBlur"/>
+        <filter id="logo-glow-ephemeral" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="3.5" result="coloredBlur" />
           <feMerge>
-            <feMergeNode in="coloredBlur"/>
-            <feMergeNode in="SourceGraphic"/>
+            <feMergeNode in="coloredBlur" />
+            <feMergeNode in="SourceGraphic" />
           </feMerge>
         </filter>
+        <radialGradient id="logo-core-gradient" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="var(--logo-gradient-start, hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), calc(var(--color-accent-primary-l) + 10%)))" />
+          <stop offset="100%" stop-color="var(--logo-gradient-end, hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l)))" />
+        </radialGradient>
       </defs>
 
-      <g class="logo-main-group" filter="url(#logoGlowFilterMaster)">
-        <circle
-          class="logo-ring-bg" 
-          cx="0" cy="0" r="60"
-          fill="none"
-        />
-        <circle
-          class="logo-ring-fg"
-          cx="0" cy="0" r="60"
-          fill="none"
-          stroke-linecap="round"
-        />
-        <path
-          class="logo-waveform"
-          d="M -30 -20 L 0 25 L 30 -20" fill="none"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-      </g>
-      
-      <g class="logo-particles">
-        <circle class="particle p1" cx="0" cy="0" r="2.2" />
-        <circle class="particle p2" cx="0" cy="0" r="1.8" />
-        <circle class="particle p3" cx="0" cy="0" r="2.5" />
-      </g>
+      <circle class="logo-orbit logo-orbit-1" cx="50" cy="50" r="45" />
+      <circle class="logo-orbit logo-orbit-2" cx="50" cy="50" r="40" />
+
+      <circle class="logo-core-ephemeral" cx="50" cy="50" r="28" fill="url(#logo-core-gradient)" />
+
+      <path class="logo-accent logo-accent-1" d="M50 25 Q65 40 60 50 Q65 60 50 75" />
+      <path class="logo-accent logo-accent-2" d="M50 25 Q35 40 40 50 Q35 60 50 75" />
+      <circle class="logo-sparkle logo-sparkle-1" cx="30" cy="35" r="3" />
+      <circle class="logo-sparkle logo-sparkle-2" cx="70" cy="65" r="2.5" />
     </svg>
 
-    <span class="sr-only">{{ appDisplayName }}</span>
-     <h1 class="title-text-animated" aria-hidden="true" :class="{'compact-text': props.isMobileContext || isSmallScreen, 'is-voice-chat-name': isVoiceChatName}">
-      <span class="app-name-main">
-        <template v-if="isVoiceChatName">
-          <span class="title-word title-word-voice" :style="{ animationDelay: '0.1s' }">{{ mainAppNameParts[0] }}</span>
-          <span class="title-word title-word-chat" :style="{ animationDelay: '0.25s' }">{{ mainAppNameParts[1] }}</span>
-        </template>
-        <template v-else>
-          <span
-            v-for="(char, idx) in mainAppNameParts"
-            :key="`main-${idx}`"
-            class="title-letter main-letter"
-            :style="{ animationDelay: `${0.1 + idx * 0.05}s` }"
-          >
-            {{ char }}
-          </span>
-        </template>
-      </span>
-      <span class="app-name-subtitle" v-if="subtitleText">
-        <span class="space-placeholder">&nbsp;</span>
+    <div class="app-name-ephemeral">
+      <span class="app-name-main">{{ props.appNameMain }}</span>
+      <div v-if="props.appNameSubtitle" class="app-name-subtitle-wrapper">
         <span
-          v-for="(char, idx) in subtitleLetters"
-          :key="`sub-${idx}`"
-          :class="['title-letter', 'subtitle-letter', char === ' ' && 'space-letter']"
-          :style="{ animationDelay: `${0.1 + (mainAppNameParts.join('').length * 0.05) + (idx * 0.035) + 0.15}s` }"
+          v-for="(char, index) in props.appNameSubtitle.split('')"
+          :key="`${char}-${index}`"
+          class="subtitle-char"
+          :class="{ 'animate-char-in': titleReady && animateTitleOnLoad && !uiStore.isReducedMotionPreferred }"
+          :style="titleSpanStyles(index)"
         >
-          {{ char === ' ' ? '\u00A0' : char }}
+          {{ char === ' ' ? '&nbsp;' : char }}
         </span>
-      </span>
-    </h1>
+      </div>
+    </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
-/**
- * @file AnimatedLogo.vue SCSS
- * @version 2.3.1 - Corrected V shape, adjusted "Voice Chat" text spacing.
- */
 @use '@/styles/abstracts/variables' as var;
+@use '@/styles/abstracts/mixins' as mixins;
 
-.animated-logo-ephemeral {
-  display: inline-flex;
-  align-items: center;
-  gap: calc(var.$spacing-sm * 0.65); // Slightly reduced base gap
-  user-select: none;
-  padding: var.$spacing-xs 0;
-  cursor: default;
-
-  // Base CSS Variables for SVG (from previous iteration, assumed fine)
-  --logo-current-stroke-width: 10;
-  --logo-current-glow-std-dev: 3.2;
-  --logo-current-waveform-opacity: 0.8;
-  --logo-current-particle-opacity: 0;
-  --logo-current-particle-scale: 0.3;
-  --logo-current-ring-bg-opacity: 0.02;
-
-  --logo-grad1-color: hsl(var(--color-logo-primary-h) var(--color-logo-primary-s) var(--color-logo-primary-l) / var(--color-logo-primary-a, 1));
-  --logo-grad2-color: hsl(var(--color-logo-secondary-h) var(--color-logo-secondary-s) var(--color-logo-secondary-l) / var(--color-logo-secondary-a, 1));
-  --logo-grad3-color: hsl(var(--color-logo-primary-light-h, var(--color-logo-primary-h)) calc(var(--color-logo-primary-light-s, var(--color-logo-primary-s)) - 8%) calc(var(--color-logo-primary-light-l, var(--color-logo-primary-l)) + 12%) / var(--color-logo-primary-light-a, 1));
-  
-  --logo-particle-fill-color: var(--logo-grad1-color);
-
-  .logo-svg-element {
-    width: 30px; height: 30px;
-    overflow: visible;
-    transition: transform 0.7s var.$ease-elastic;
-
-    .logo-main-group {
-      animation: logo-overall-gentle-breathing 9s var.$ease-in-out-sine infinite alternate;
-    }
-    .glow-blur-effect-master {
-      stdDeviation: var(--logo-current-glow-std-dev);
-      transition: stdDeviation 0.6s var.$ease-out-quad;
-    }
-    .logo-ring-bg {
-      stroke-width: calc(var(--logo-current-stroke-width) + 3px);
-      stroke: var(--logo-grad2-color);
-      opacity: var(--logo-current-ring-bg-opacity);
-      transition: stroke 0.6s var.$ease-out-quad, stroke-width 0.6s var.$ease-elastic, opacity 0.6s var.$ease-out-quad;
-    }
-    .logo-ring-fg, .logo-waveform {
-      stroke-width: var(--logo-current-stroke-width);
-      stroke: url(#animatedLogoMasterGradient);
-      transition: stroke-width 0.6s var.$ease-elastic,
-                  transform 0.8s var.$ease-elastic,
-                  stroke 0.6s var.$ease-out-quad,
-                  opacity 0.6s var.$ease-out-quad;
-    }
-    .logo-waveform {
-      transform-origin: center center;
-      opacity: var(--logo-current-waveform-opacity);
-      animation: logo-waveform-idle-drift 14s var.$ease-in-out-sine infinite alternate;
-    }
-    .grad-stop-1-master { stop-color: var(--logo-grad1-color); transition: stop-color 0.5s var.$ease-out-quad; }
-    .grad-stop-2-master { stop-color: var(--logo-grad2-color); transition: stop-color 0.5s var.$ease-out-quad; }
-    .grad-stop-3-master { stop-color: var(--logo-grad3-color); transition: stop-color 0.5s var.$ease-out-quad; }
-    .logo-particles { /* fine */ }
-  }
-
-  &.compact-logo .logo-svg-element { width: 26px; height: 26px; }
-  @media (min-width: var.$breakpoint-sm) { .logo-svg-element { width: 34px; height: 34px; } }
-  @media (min-width: var.$breakpoint-md) { .logo-svg-element { width: 38px; height: 38px; } }
-
-  // State Overrides (from previous iteration, assumed fine)
-  &.idle-state { /* fine */ }
-  &.user-listening-state { /* fine - uses specific CSS vars */ }
-  &.ai-active-state { /* fine - uses specific CSS vars */ }
-}
-
-// Title Text Styles
-.title-text-animated {
-  font-family: var(--font-family-display, #{var.$font-family-display});
-  font-size: clamp(1.05rem, 0.75rem + 0.8vw, 1.25rem);
-  line-height: 1.1;
-  color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+.animated-logo-container-ephemeral {
   display: flex;
-  align-items: baseline;
-  transition: color var.$duration-smooth;
+  align-items: center;
+  gap: var.$spacing-sm;
+  min-width: 0; // Prevent flexbox blowout
 
-  &.is-voice-chat-name .app-name-main { // Specific class for "Voice Chat"
-    gap: 0.2em; // Reduced gap between "Voice" and "Chat"
-  }
-  .app-name-main:not(.is-voice-chat-name .app-name-main) { // Default gap for letter-by-letter
-     gap: 0.05em; // Very small for letter-by-letter
+  // Base Colors from Theme
+  --logo-core-color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+  --logo-accent-color: hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l));
+  --logo-orbit-color: hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.2);
+  --logo-sparkle-color: hsl(var(--color-accent-glow-h), var(--color-accent-glow-s), var(--color-accent-glow-l));
+  --logo-gradient-start: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), calc(var(--color-accent-primary-l) + 10%));
+  --logo-gradient-end: hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l));
+
+  .logo-svg-ephemeral {
+    width: calc(var.$header-height-mobile * 0.65); // Scaled with header height
+    height: calc(var.$header-height-mobile * 0.65);
+    filter: drop-shadow(0 1px 3px hsla(var(--shadow-color-h), var(--shadow-color-s), var(--shadow-color-l), 0.1));
+    transition: transform var.$duration-smooth var.$ease-out-quad;
+    flex-shrink: 0;
+
+    @media (min-width: var.$breakpoint-md) {
+      width: calc(var.$header-height-desktop * 0.55);
+      height: calc(var.$header-height-desktop * 0.55);
+    }
   }
 
-
-  &.compact-text {
-    .app-name-subtitle { display: none; }
-    .app-name-main { font-size: clamp(1.15rem, 0.85rem + 0.7vw, 1.35rem); }
+  .logo-core-ephemeral {
+    filter: url(#logo-glow-ephemeral);
+    transition: r var.$duration-smooth var.$ease-elastic;
   }
-  @media (min-width: var.$breakpoint-sm) { font-size: clamp(1.15rem, 0.9rem + 0.7vw, 1.4rem); }
-  @media (min-width: var.$breakpoint-md) { 
-    gap: calc(var.$spacing-xs * 0.55); // Overall gap between main and subtitle
-    &.is-voice-chat-name .app-name-main {
-      gap: 0.22em; // Ensure this is consistent for desktop
+
+  .logo-orbit {
+    fill: none;
+    stroke: var(--logo-orbit-color);
+    stroke-width: 1.5;
+    transform-origin: center;
+    opacity: 0.7;
+  }
+
+  .logo-orbit-1 { animation: logo-spin 20s linear infinite; }
+  .logo-orbit-2 { animation: logo-spin 28s linear infinite reverse; }
+
+  .logo-accent {
+    fill: none;
+    stroke: var(--logo-accent-color);
+    stroke-width: 3;
+    stroke-linecap: round;
+    opacity: 0; // Initially hidden for active states
+    transition: opacity var.$duration-quick;
+  }
+
+  .logo-sparkle {
+    fill: var(--logo-sparkle-color);
+    opacity: 0;
+    animation: logo-sparkle-pulse 3s var.$ease-in-out-sine infinite alternate;
+    transition: opacity var.$duration-quick;
+  }
+  .logo-sparkle-1 { animation-delay: 0s; }
+  .logo-sparkle-2 { animation-delay: 0.5s; }
+
+
+  // Active States
+  &.user-listening {
+    .logo-core-ephemeral { r: 30; } // Core expands slightly
+    .logo-accent { opacity: 0.7; }
+    .logo-sparkle { opacity: 1; }
+  }
+
+  &.ai-active {
+    .logo-core-ephemeral { r: 32; } // Core expands more
+    .logo-orbit-1 { animation-duration: 8s; } // Orbits speed up
+    .logo-orbit-2 { animation-duration: 12s; }
+    .logo-accent { opacity: 0.85; stroke-width: 3.5; }
+    .logo-sparkle { opacity: 1; animation-duration: 1.5s; }
+  }
+
+  // Reduced motion preferences
+  &.reduced-motion {
+    .logo-orbit-1, .logo-orbit-2, .logo-sparkle { animation: none !important; }
+    .logo-accent { opacity: 0.6; } // Static accent for reduced motion
+    .logo-sparkle { opacity: 0.8; }
+  }
+
+  .app-name-ephemeral {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+    white-space: nowrap;
+    overflow: hidden;
+    color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+  }
+
+  .app-name-main {
+    font-family: var.$font-family-display;
+    font-weight: 700;
+    font-size: var.$font-size-lg; // Adjusted for better fit
+    letter-spacing: 0.01em; // Slightly tighter for display feel
+
+    @media (min-width: var.$breakpoint-md) {
+      font-size: var.$font-size-xl;
+    }
+  }
+
+  .app-name-subtitle-wrapper {
+    font-family: var.$font-family-sans;
+    font-weight: 500;
+    font-size: var.$font-size-xs;
+    color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+    letter-spacing: 0.03em;
+    opacity: 0.9;
+    display: flex; // For char animation
+  }
+
+  .subtitle-char {
+    display: inline-block; // Required for transform
+    opacity: 0;
+    transform: translateY(8px) scale(0.9); // Initial state for animation
+    will-change: opacity, transform;
+
+    &.animate-char-in {
+      animation-name: char-slide-fade-in;
+      animation-duration: 0.5s;
+      animation-timing-function: var.$ease-out-quint;
+      animation-fill-mode: forwards;
     }
   }
 }
-.app-name-main {
-  display: inline-flex;
-  align-items: baseline;
-  // Gap is now conditional based on .is-voice-chat-name
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  color: hsl(var(--color-logo-main-text-h, var(--color-text-primary-h)),
-             var(--color-logo-main-text-s, var(--color-text-primary-s)),
-             var(--color-logo-main-text-l, var(--color-text-primary-l)));
-  transition: color var.$duration-smooth;
 
-  .title-word, .title-letter {
-    display: inline-block;
-    opacity: 0;
-    transform: translateY(6px) scale(0.96);
-    animation: letter-entrance-ephemeral 0.75s forwards var.$ease-out-expo;
-  }
-  .title-word-separator { // This was for a literal space character, removing for direct gap instead
-    display: none; // Not needed if using gap on parent
+// Keyframes used by this component specifically
+@keyframes logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes logo-sparkle-pulse {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 0.9; transform: scale(1.1); }
+}
+
+@keyframes char-slide-fade-in {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }
-.app-name-subtitle {
-  display: inline-block;
-  font-weight: 400;
-  opacity: 0.75;
-  font-size: 0.8em;
-  letter-spacing: 0.01em;
-  color: hsl(var(--color-logo-subtitle-text-h, var(--color-text-secondary-h)),
-             var(--color-logo-subtitle-text-s, var(--color-text-secondary-s)),
-             var(--color-logo-subtitle-text-l, var(--color-text-secondary-l)));
-  transition: color var.$duration-smooth, opacity var.$duration-smooth;
-  padding-left: 0.2em; // Add a slight space before subtitle starts
-}
-.space-placeholder { display: none; } // Not needed if subtitle has its own padding-left
-
-// Keyframes for SVG Animations (largely from previous iteration, assumed fine for smoothness)
-@keyframes logo-overall-gentle-breathing { /* ... */ }
-@keyframes logo-waveform-idle-drift { /* ... */ }
-@keyframes logo-waveform-listening-pulse { /* ... */ }
-@keyframes particle-listening-orbit { /* ... */ }
-@keyframes logo-waveform-active-throb { /* ... */ }
-@keyframes particle-ai-flow { /* ... */ }
-@keyframes particle-ai-bright-pulse { /* ... */ }
-@keyframes letter-entrance-ephemeral {
-  to { opacity: 1; transform: translateY(0) scale(1); }
-}
-
 </style>
