@@ -17,7 +17,7 @@
  * @exports VoiceApplicationSettings - Interface for all application settings.
  * @exports STTPreference - Type for Speech-to-Text provider preference.
  * @exports TTSProvider - Type for Text-to-Speech provider preference.
- * @version 1.4.1 - Changed default audioInputMode to 'voice-activation'.
+ * @version 1.4.3 - Added vadThresholdWhisper.
  * @author Voice Coding Assistant Team
  */
 
@@ -92,11 +92,18 @@ export interface VoiceApplicationSettings {
 
   // Audio Input & VAD Settings
   audioInputMode: AudioInputMode;
-  vadThreshold: number; 
-  vadSilenceTimeoutMs: number; 
-  continuousModePauseTimeoutMs: number;
+  vadThreshold: number; // For BrowserSpeechHandler VAD (if it uses it)
+  vadSilenceTimeoutMs: number; // General silence timeout for VAD command phase
+  continuousModePauseTimeoutMs: number; // For BrowserSpeechHandler continuous mode
   continuousModeAutoSend: boolean;
-  vadCommandRecognizedPauseMs: number; // New: Pause duration after VAD command recognized before sending (for Browser STT VAD Command)
+  vadCommandRecognizedPauseMs: number;
+
+  /**
+   * @property {number} [vadThresholdWhisper] - Energy threshold for Whisper VAD in continuous mode.
+   * Represents average absolute deviation from silent midpoint (128 for 8-bit PCM).
+   * Lower values are more sensitive to speech. Recommended range: 2-10. Default: 4.
+   */
+  vadThresholdWhisper?: number;
 
   // TTS (Text-to-Speech) Settings
   ttsProvider: TTSProvider;
@@ -132,12 +139,13 @@ const initialDefaultSettings: Readonly<VoiceApplicationSettings> = {
     prompt: '',
     // temperature: 0.0 // Default temperature if/when used
   },
-  audioInputMode: 'voice-activation', // << CHANGED TO 'voice-activation' AS DEFAULT
-  vadThreshold: 0.15, 
-  vadSilenceTimeoutMs: 2500, 
+  audioInputMode: 'voice-activation',
+  vadThreshold: 0.15,
+  vadSilenceTimeoutMs: 2500,
   continuousModePauseTimeoutMs: 3000,
   continuousModeAutoSend: true,
-  vadCommandRecognizedPauseMs: 2000, // Default pause for VAD command (Browser STT) before sending
+  vadCommandRecognizedPauseMs: 2000,
+  vadThresholdWhisper: 4, // Default VAD threshold for Whisper continuous mode
 
   ttsProvider: 'browser_tts',
   selectedTtsVoiceId: null,
@@ -173,12 +181,12 @@ class VoiceSettingsManager {
   constructor() {
     const storedSettings = useStorage(
       VoiceSettingsManager.STORAGE_KEY_SETTINGS,
-      { ...this.defaultSettings },
+      { ...this.defaultSettings }, // Start with defaults
       localStorage,
-      { mergeDefaults: true }
+      { mergeDefaults: true } // Deep merge stored settings with defaults
     );
     this.settings = reactive(storedSettings.value) as VoiceApplicationSettings;
-    this.applyMissingDefaults();
+    this.applyMissingDefaults(); // Ensure all keys from defaultSettings are present
 
     watch(() => this.settings.ttsProvider, async (newProvider, oldProvider) => {
       if (!this.isInitialized || newProvider === oldProvider) return;
@@ -187,13 +195,14 @@ class VoiceSettingsManager {
 
     watch(() => this.settings.speechLanguage, async (newLang, oldLang) => {
       if (!this.isInitialized || newLang === oldLang) return;
+      // When speech language changes, re-evaluate the default TTS voice
       await this.ensureDefaultTtsVoiceSelected();
     });
   }
 
   public async initialize(): Promise<void> {
     if (this.isInitialized) return;
-    this.applyMissingDefaults();
+    this.applyMissingDefaults(); // Ensure all settings are initialized
     await this.loadAllTtsVoices();
     await this.loadAudioInputDevices();
     this.isInitialized = true;
@@ -204,26 +213,32 @@ class VoiceSettingsManager {
     for (const key in this.defaultSettings) {
       const K = key as keyof VoiceApplicationSettings;
       if (this.settings[K] === undefined) {
+        // Type assertion needed because this.settings might not yet have K
         (this.settings as any)[K] = this.defaultSettings[K];
         changed = true;
       }
+      // Ensure nested objects like sttOptions and their properties are defaulted
       if (K === 'sttOptions' && this.defaultSettings.sttOptions) {
         if (!this.settings.sttOptions) {
           this.settings.sttOptions = { ...this.defaultSettings.sttOptions };
           changed = true;
         } else {
-            if (this.settings.sttOptions.prompt === undefined) {
-                this.settings.sttOptions.prompt = this.defaultSettings.sttOptions.prompt;
-                changed = true;
-            }
-            if (this.settings.sttOptions.temperature === undefined) {
-                this.settings.sttOptions.temperature = this.defaultSettings.sttOptions.temperature;
-                changed = true;
-            }
+          if (this.settings.sttOptions.prompt === undefined) {
+            this.settings.sttOptions.prompt = this.defaultSettings.sttOptions.prompt;
+            changed = true;
+          }
+          if (this.settings.sttOptions.temperature === undefined) {
+            this.settings.sttOptions.temperature = this.defaultSettings.sttOptions.temperature;
+            changed = true;
+          }
         }
       }
-      // Ensure new settings have defaults
-      if (K === 'vadCommandRecognizedPauseMs' && this.settings.vadCommandRecognizedPauseMs === undefined) {
+      // Ensure new settings have defaults applied if missing from localStorage
+      if (K === 'vadThresholdWhisper' && this.settings.vadThresholdWhisper === undefined) {
+        this.settings.vadThresholdWhisper = this.defaultSettings.vadThresholdWhisper;
+        changed = true;
+      }
+       if (K === 'vadCommandRecognizedPauseMs' && this.settings.vadCommandRecognizedPauseMs === undefined) {
         this.settings.vadCommandRecognizedPauseMs = this.defaultSettings.vadCommandRecognizedPauseMs;
         changed = true;
       }
@@ -235,45 +250,66 @@ class VoiceSettingsManager {
     this.ttsVoicesLoaded.value = false;
     const collectedVoices: CollectedVoiceTemp[] = [];
 
+    // Load Browser Native Voices
     if (browserTtsService.isSupported()) {
       try {
-        const browserVoicesRaw = await browserTtsService.getVoices();
+        const browserVoicesRaw = await browserTtsService.getVoices(); // This now returns SpeechSynthesisVoice[]
         browserVoicesRaw.forEach((v: SpeechSynthesisVoice) => {
           collectedVoices.push({
-            rawProviderId: v.voiceURI, name: v.name, lang: v.lang,
-            provider: 'browser', isDefault: v.default,
+            rawProviderId: v.voiceURI, // voiceURI is the standard unique ID for browser voices
+            name: v.name,
+            lang: v.lang,
+            provider: 'browser',
+            isDefault: v.default,
+            // Gender is not standard in SpeechSynthesisVoice, can be inferred from name if needed or omitted
           });
         });
-      } catch (error) { console.error("[VoiceSettingsManager] Error loading browser TTS voices:", error); }
+      } catch (error) {
+        console.error("[VoiceSettingsManager] Error loading browser TTS voices:", error);
+      }
     }
 
+    // Load Backend API Voices (e.g., OpenAI)
     try {
-      const response = await ttsAPI.getAvailableVoices();
+      const response = await ttsAPI.getAvailableVoices(); // Expects AxiosResponse<TTSAvailableVoicesResponseFE>
       if (response.data && Array.isArray(response.data.voices)) {
-        const backendApiVoices = response.data.voices as TTSVoiceFE[];
+        const backendApiVoices = response.data.voices as TTSVoiceFE[]; // TTSVoiceFE from api.ts
         backendApiVoices.forEach(v_api => {
           collectedVoices.push({
-            rawProviderId: v_api.id, name: v_api.name, lang: v_api.lang || 'en',
-            provider: (v_api.provider as 'openai' | 'browser') || 'openai',
+            rawProviderId: v_api.id, // This is the providerVoiceId for backend (e.g., 'alloy')
+            name: v_api.name,
+            lang: v_api.lang || 'en', // Default to 'en' if lang not specified by API
+            provider: (v_api.provider as 'openai' | 'browser') || 'openai', // Ensure type safety
             isDefault: v_api.isDefault || false,
-            gender: v_api.gender, description: v_api.description,
+            gender: v_api.gender,
+            description: v_api.description,
           });
         });
       }
-    } catch (error) { console.error("[VoiceSettingsManager] Error loading backend TTS voices:", error); }
+    } catch (error) {
+      console.error("[VoiceSettingsManager] Error loading backend TTS voices:", error);
+    }
 
+    // Deduplicate and format
     const uniqueVoicesMap = new Map<string, VoiceOption>();
     collectedVoices.forEach(cv => {
+      // Sanitize browser voice URIs if they contain problematic characters for an ID
       const sanitizedRawId = cv.provider === 'browser'
-        ? cv.rawProviderId.replace(/[^a-zA-Z0-9_.:\/-]/g, '_')
+        ? cv.rawProviderId.replace(/[^a-zA-Z0-9_.:\/-]/g, '_') // Allow common URI chars
         : cv.rawProviderId;
+
       const uniqueId = `${cv.provider}_${sanitizedRawId}`;
 
       if (!uniqueVoicesMap.has(uniqueId)) {
         uniqueVoicesMap.set(uniqueId, {
-          id: uniqueId, providerVoiceId: cv.rawProviderId,
-          name: cv.name, lang: cv.lang, provider: cv.provider,
-          isDefault: cv.isDefault, gender: cv.gender, description: cv.description,
+          id: uniqueId, // This is the global unique ID used in settings (selectedTtsVoiceId)
+          providerVoiceId: cv.rawProviderId, // This is the ID the actual provider uses
+          name: cv.name,
+          lang: cv.lang,
+          provider: cv.provider,
+          isDefault: cv.isDefault,
+          gender: cv.gender,
+          description: cv.description,
         });
       }
     });
@@ -288,17 +324,20 @@ class VoiceSettingsManager {
     const currentProviderType = this.settings.ttsProvider === 'browser_tts' ? 'browser' : 'openai';
     const voicesForProvider = this.availableTtsVoices.value.filter(v => v.provider === currentProviderType);
     const currentSelectionIsValid = this.settings.selectedTtsVoiceId &&
-                                      voicesForProvider.some(v => v.id === this.settings.selectedTtsVoiceId);
+                                    voicesForProvider.some(v => v.id === this.settings.selectedTtsVoiceId);
 
     if (!currentSelectionIsValid && voicesForProvider.length > 0) {
       const preferredLang = this.settings.speechLanguage || (typeof navigator !== 'undefined' ? navigator.language : 'en-US');
       const langShort = preferredLang.split('-')[0].toLowerCase();
+
       let defaultVoice = voicesForProvider.find(v => v.isDefault && v.lang.toLowerCase().startsWith(langShort));
-      if (!defaultVoice) defaultVoice = voicesForProvider.find(v => v.isDefault);
-      if (!defaultVoice) defaultVoice = voicesForProvider.find(v => v.lang.toLowerCase().startsWith(langShort));
-      if (!defaultVoice) defaultVoice = voicesForProvider[0];
+      if (!defaultVoice) defaultVoice = voicesForProvider.find(v => v.isDefault); // Any default for provider
+      if (!defaultVoice) defaultVoice = voicesForProvider.find(v => v.lang.toLowerCase().startsWith(langShort)); // First matching language
+      if (!defaultVoice) defaultVoice = voicesForProvider[0]; // Absolute fallback to first available for provider
+
       this.updateSetting('selectedTtsVoiceId', defaultVoice.id);
     } else if (!currentSelectionIsValid && voicesForProvider.length === 0) {
+      // No voices for the selected provider, clear selection
       this.updateSetting('selectedTtsVoiceId', null);
     }
   }
@@ -310,23 +349,31 @@ class VoiceSettingsManager {
       this.audioInputDevicesLoaded.value = true; return;
     }
     try {
+      // Check if we previously loaded devices AND got labels (which implies permission was granted at some point)
       const devicesPreviouslyLoadedWithLabels = this.audioInputDevices.value.length > 0 &&
                                                 this.audioInputDevices.value.some(d => d.label && d.label !== '');
+
       if (forcePermissionRequest || !devicesPreviouslyLoadedWithLabels) {
+        // Temporarily request stream to get permission for device labels
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-        stream.getTracks().forEach(track => track.stop());
+        stream.getTracks().forEach(track => track.stop()); // Stop the temporary stream immediately
       }
+
       const devices = await navigator.mediaDevices.enumerateDevices();
       this.audioInputDevices.value = devices.filter(device => device.kind === 'audioinput');
       this.audioInputDevicesLoaded.value = true;
+
+      // If current selection is no longer valid, reset it
       if (this.settings.selectedAudioInputDeviceId &&
           !this.audioInputDevices.value.some(d => d.deviceId === this.settings.selectedAudioInputDeviceId)) {
-        this.updateSetting('selectedAudioInputDeviceId', null);
+        this.updateSetting('selectedAudioInputDeviceId', null); // Reset to default (null means system default)
       }
     } catch (error: any) {
       console.error('[VoiceSettingsManager] Error loading audio input devices:', error.name, error.message);
-      this.audioInputDevices.value = [];
-      this.audioInputDevicesLoaded.value = true;
+      // Don't clear devices if it was just a permission prompt issue but list was previously populated
+      // this.audioInputDevices.value = []; 
+      this.audioInputDevicesLoaded.value = true; // Still mark as loaded to unblock UI
+      // User might need to grant permission via interacting with mic button if it failed here.
     }
   }
 
@@ -348,18 +395,19 @@ class VoiceSettingsManager {
       }
     }
     if (settingsChanged && ttsSettingsImpacted) {
-        this.loadAllTtsVoices();
+        this.loadAllTtsVoices(); // This will also call ensureDefaultTtsVoiceSelected
     }
   }
 
   public resetToDefaults(): void {
     const defaultsToApply = { ...this.defaultSettings };
+    // Iterate over defaultSettings to ensure all keys are reset or initialized
     for (const key in defaultsToApply) {
         (this.settings as any)[key] = (defaultsToApply as any)[key];
     }
-    this.applyMissingDefaults(); // Ensure nested objects like sttOptions are correctly reset or initialized
-    this.loadAllTtsVoices();
-    this.loadAudioInputDevices();
+    this.applyMissingDefaults(); // Crucial to ensure nested objects like sttOptions are correctly reset
+    this.loadAllTtsVoices(); // Reload and re-evaluate default voice
+    this.loadAudioInputDevices(); // Reload devices and check current selection
   }
 
   public getCurrentTtsVoice(): VoiceOption | null {
@@ -369,7 +417,7 @@ class VoiceSettingsManager {
 
   public get ttsVoicesForCurrentProvider(): ComputedRef<VoiceOption[]> {
     return computed(() => {
-      if (!this.ttsVoicesLoaded.value) return [];
+      if (!this.ttsVoicesLoaded.value) return []; // Ensure voices are loaded
       const currentProviderType = this.settings.ttsProvider === 'browser_tts' ? 'browser' : 'openai';
       return this.availableTtsVoices.value.filter(v => v.provider === currentProviderType);
     });
@@ -377,32 +425,54 @@ class VoiceSettingsManager {
 
   public async speakText(text: string): Promise<void> {
     if (!this.isInitialized || !this.settings.autoPlayTts || !text || !text.trim()) return;
-    this.cancelSpeech();
+    this.cancelSpeech(); // Cancel any ongoing speech
+
     const currentVoice = this.getCurrentTtsVoice();
     const volume = this.settings.ttsVolume;
 
     if (this.settings.ttsProvider === 'browser_tts' && browserTtsService.isSupported()) {
       try {
         await browserTtsService.speak(text, {
-          lang: currentVoice?.lang || this.settings.speechLanguage,
-          voiceURI: currentVoice?.providerVoiceId,
-          rate: this.settings.ttsRate, pitch: this.settings.ttsPitch, volume: volume,
+          lang: currentVoice?.lang || this.settings.speechLanguage, // Use current voice lang, fallback to general speech lang
+          voiceURI: currentVoice?.providerVoiceId, // This is the actual URI/ID for the browser's engine
+          rate: this.settings.ttsRate,
+          pitch: this.settings.ttsPitch,
+          volume: volume,
         } as BrowserSpeakOptions);
-      } catch (error) { console.error("[VoiceSettingsManager] Error speaking with browser TTS:", error); }
+      } catch (error) {
+        console.error("[VoiceSettingsManager] Error speaking with browser TTS:", error);
+      }
     } else if (this.settings.ttsProvider === 'openai_tts') {
       try {
-        const payload: TTSRequestPayloadFE = { text: text, voice: currentVoice?.providerVoiceId || 'alloy', speed: this.settings.ttsRate, };
-        const response = await ttsAPI.synthesize(payload);
-        const audioBlob = response.data; const audioUrl = URL.createObjectURL(audioBlob);
-        this.activePreviewAudio = new Audio(audioUrl); this.activePreviewAudio.volume = volume;
-        const currentAudio = this.activePreviewAudio;
+        const payload: TTSRequestPayloadFE = {
+          text: text,
+          voice: currentVoice?.providerVoiceId || 'alloy', // Use the raw providerVoiceId for OpenAI
+          speed: this.settings.ttsRate,
+          // model: 'tts-1', // Can be specified if needed, backend might default
+        };
+        const response = await ttsAPI.synthesize(payload); // Expects AxiosResponse<Blob>
+        const audioBlob = response.data; // response.data is the Blob
+        const audioUrl = URL.createObjectURL(audioBlob);
+
+        this.activePreviewAudio = new Audio(audioUrl);
+        this.activePreviewAudio.volume = volume;
+        const currentAudio = this.activePreviewAudio; // Capture instance for closure
+
         const cleanup = () => {
-            if (currentAudio && currentAudio.src === audioUrl) { URL.revokeObjectURL(audioUrl); }
-            if (this.activePreviewAudio === currentAudio) { this.activePreviewAudio = null; }
+            if (currentAudio && currentAudio.src === audioUrl) { // Ensure it's the same audio object
+                URL.revokeObjectURL(audioUrl);
+            }
+            if (this.activePreviewAudio === currentAudio) { // Clear global ref only if it's the one that finished/errored
+                this.activePreviewAudio = null;
+            }
         };
         currentAudio.onended = cleanup;
-        currentAudio.onerror = () => { console.error("[VoiceSettingsManager] Error playing synthesized OpenAI audio."); cleanup(); };
+        currentAudio.onerror = () => {
+            console.error("[VoiceSettingsManager] Error playing synthesized OpenAI audio.");
+            cleanup();
+        };
         await currentAudio.play();
+
       } catch (error: any) {
         console.error("[VoiceSettingsManager] Error synthesizing or playing OpenAI TTS:", error.response?.data || error.message);
         if (this.activePreviewAudio && this.activePreviewAudio.src && this.activePreviewAudio.src.startsWith('blob:')) {
@@ -415,41 +485,77 @@ class VoiceSettingsManager {
 
   public cancelSpeech(): void {
     if (!this.isInitialized) return;
-    if (this.settings.ttsProvider === 'browser_tts' && browserTtsService.isSupported()) { browserTtsService.cancel(); }
+    if (this.settings.ttsProvider === 'browser_tts' && browserTtsService.isSupported()) {
+      browserTtsService.cancel();
+    }
     if (this.activePreviewAudio) {
-      this.activePreviewAudio.pause(); this.activePreviewAudio.currentTime = 0;
-      if (this.activePreviewAudio.src && this.activePreviewAudio.src.startsWith('blob:')) { URL.revokeObjectURL(this.activePreviewAudio.src); }
-      this.activePreviewAudio.removeAttribute('src'); this.activePreviewAudio.load(); this.activePreviewAudio = null;
+      this.activePreviewAudio.pause();
+      this.activePreviewAudio.currentTime = 0; // Reset time
+      if (this.activePreviewAudio.src && this.activePreviewAudio.src.startsWith('blob:')) {
+        URL.revokeObjectURL(this.activePreviewAudio.src); // Clean up blob URL
+      }
+      this.activePreviewAudio.removeAttribute('src'); // Remove src to ensure it stops loading
+      this.activePreviewAudio.load(); // Abort current playback/loading
+      this.activePreviewAudio = null;
     }
   }
 
   public async previewVoice(voiceId: string, text?: string): Promise<void> {
     if (!this.isInitialized) return;
     const voiceToPreview = this.availableTtsVoices.value.find(v => v.id === voiceId);
-    if (!voiceToPreview) { console.error(`[VoiceSettingsManager] Voice ID ${voiceId} not found for preview.`); return; }
+    if (!voiceToPreview) {
+      console.error(`[VoiceSettingsManager] Voice ID ${voiceId} not found for preview.`);
+      return;
+    }
+
     const previewText = text || `This is a preview of the voice ${voiceToPreview.name}.`;
-    this.cancelSpeech();
+    this.cancelSpeech(); // Cancel any current speech first
+
     const { ttsVolume: volume, ttsRate: rate, ttsPitch: pitch } = this.settings;
 
     if (voiceToPreview.provider === 'browser' && browserTtsService.isSupported()) {
-      try { await browserTtsService.speak(previewText, { voiceURI: voiceToPreview.providerVoiceId, lang: voiceToPreview.lang, volume, rate, pitch, } as BrowserSpeakOptions); }
-      catch (error) { console.error("[VoiceSettingsManager] Error previewing browser voice:", error); }
+      try {
+        await browserTtsService.speak(previewText, {
+          voiceURI: voiceToPreview.providerVoiceId, // Use the actual providerVoiceId
+          lang: voiceToPreview.lang,
+          volume, rate, pitch,
+        } as BrowserSpeakOptions);
+      } catch (error) {
+        console.error("[VoiceSettingsManager] Error previewing browser voice:", error);
+      }
     } else if (voiceToPreview.provider === 'openai') {
       try {
-        const payload: TTSRequestPayloadFE = { text: previewText, voice: voiceToPreview.providerVoiceId, speed: rate, };
-        const response = await ttsAPI.synthesize(payload); const audioUrl = URL.createObjectURL(response.data);
-        this.activePreviewAudio = new Audio(audioUrl); this.activePreviewAudio.volume = volume;
-        const currentPreview = this.activePreviewAudio;
+        const payload: TTSRequestPayloadFE = {
+          text: previewText,
+          voice: voiceToPreview.providerVoiceId, // Use the raw providerVoiceId
+          speed: rate,
+        };
+        const response = await ttsAPI.synthesize(payload); // Expects AxiosResponse<Blob>
+        const audioUrl = URL.createObjectURL(response.data); // response.data is the Blob
+
+        this.activePreviewAudio = new Audio(audioUrl);
+        this.activePreviewAudio.volume = volume;
+        const currentPreview = this.activePreviewAudio; // Capture for closure
+
         const cleanup = () => {
-            if (currentPreview && currentPreview.src === audioUrl) { URL.revokeObjectURL(audioUrl); }
-            if (this.activePreviewAudio === currentPreview) { this.activePreviewAudio = null; }
+            if (currentPreview && currentPreview.src === audioUrl) {
+                URL.revokeObjectURL(audioUrl);
+            }
+            if (this.activePreviewAudio === currentPreview) {
+                this.activePreviewAudio = null;
+            }
         };
         currentPreview.onended = cleanup;
-        currentPreview.onerror = () => { console.error("[VoiceSettingsManager] Error playing preview OpenAI audio."); cleanup(); };
+        currentPreview.onerror = () => {
+            console.error("[VoiceSettingsManager] Error playing preview OpenAI audio.");
+            cleanup();
+        };
         await currentPreview.play();
       } catch (error: any) {
         console.error("[VoiceSettingsManager] Error fetching/playing OpenAI voice preview:", error.response?.data || error.message);
-        if (this.activePreviewAudio?.src.startsWith('blob:')) { URL.revokeObjectURL(this.activePreviewAudio.src); }
+        if (this.activePreviewAudio?.src && this.activePreviewAudio.src.startsWith('blob:')) {
+            URL.revokeObjectURL(this.activePreviewAudio.src);
+        }
         this.activePreviewAudio = null;
       }
     }
