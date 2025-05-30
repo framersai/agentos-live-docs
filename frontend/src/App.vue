@@ -245,7 +245,7 @@ watch(
         <div class="loading-spinner-ephemeral">
           <div v-for="i in 8" :key="`blade-${i}`" class="spinner-blade-ephemeral"></div>
         </div>
-        <p class="loading-text-ephemeral">Initializing Interface...</p>
+        <p class="loading-text-ephemeral"></p>
       </div>
     </div>
 

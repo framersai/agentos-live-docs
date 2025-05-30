@@ -11,85 +11,91 @@
  * @assumptions SCSS map syntax. Values should be suitable for direct CSS output as custom properties.
  * Theme IDs used here (e.g., 'sakura-sunset') must match those used in `ThemeManager.ts`
  * and the `data-theme` attribute on the HTML element.
- * @version 3.0.4 - Added default alpha channel variables (e.g., --color-bg-primary-a) for more base colors. Ensured all HSL(A) components are strings.
+ * @version 3.1.0 - Revamped 'Sakura Sunset' to "Her-Inspired Pink Theme" for enhanced warmth, pink tones, boldness, and readability. Other themes unchanged.
  */
 
-// --- Sakura Sunset (Dark, Her-inspired Pink Theme - Default Dark) ---
+// --- Sakura Sunset (Her-Inspired Pink Theme - Default Dark) ---
+// Concept: Digital empathy, warmth, subtle futurism, intimacy. Inspired by the film "Her."
+// Focus on softer, warmer, and more prominent pinks, creating a calm, readable, and inviting atmosphere.
+// Bold and colorful/vibrant without being distracting. Enhanced for readability.
 $theme-sakura-sunset: (
   // Backgrounds
-  '--color-bg-primary-h': '335', '--color-bg-primary-s': '30%', '--color-bg-primary-l': '12%', '--color-bg-primary-a': '1',
-  '--color-bg-secondary-h': '335', '--color-bg-secondary-s': '25%', '--color-bg-secondary-l': '17%', '--color-bg-secondary-a': '1',
-  '--color-bg-tertiary-h': '335', '--color-bg-tertiary-s': '22%', '--color-bg-tertiary-l': '20%', '--color-bg-tertiary-a': '1',
-  '--color-bg-quaternary-h': '335', '--color-bg-quaternary-s': '20%', '--color-bg-quaternary-l': '24%', '--color-bg-quaternary-a': '1',
-  '--color-bg-quinary-h': '335', '--color-bg-quinary-s': '20%', '--color-bg-quinary-l': '27%', '--color-bg-quinary-a': '1',
-  '--color-bg-senary-h': '335', '--color-bg-senary-s': '20%', '--color-bg-senary-l': '30%', '--color-bg-senary-a': '1',
+  '--color-bg-primary-h': '340', '--color-bg-primary-s': '25%', '--color-bg-primary-l': '16%', '--color-bg-primary-a': '1',      // Very dark, muted warm rose
+  '--color-bg-secondary-h': '340', '--color-bg-secondary-s': '22%', '--color-bg-secondary-l': '22%', '--color-bg-secondary-a': '1',    // Slightly lighter for panels
+  '--color-bg-tertiary-h': '340', '--color-bg-tertiary-s': '20%', '--color-bg-tertiary-l': '28%', '--color-bg-tertiary-a': '1',     // Step lighter for depth/hovers
+  '--color-bg-quaternary-h': '340', '--color-bg-quaternary-s': '18%', '--color-bg-quaternary-l': '34%', '--color-bg-quaternary-a': '1',  // Further step
+  '--color-bg-quinary-h': '340', '--color-bg-quinary-s': '18%', '--color-bg-quinary-l': '40%', '--color-bg-quinary-a': '1',        // Lighter variant
+  '--color-bg-senary-h': '340', '--color-bg-senary-s': '18%', '--color-bg-senary-l': '46%', '--color-bg-senary-a': '1',          // Lightest bg variant
 
-  '--color-bg-glass-h': '335', '--color-bg-glass-s': '25%', '--color-bg-glass-l': '17%', '--color-bg-glass-a': '0.15',
-  '--color-border-glass-h': '10', '--color-border-glass-s': '80%', '--color-border-glass-l': '65%', '--color-border-glass-a': '0.2',
-  '--blur-glass': '10px',
-  '--color-bg-holographic-accent-h': '0', '--color-bg-holographic-accent-s': '85%', '--color-bg-holographic-accent-l': '70%', '--color-bg-holographic-accent-a': '0.1',
+  // Glassmorphism Effect Colors
+  '--color-bg-glass-h': '340', '--color-bg-glass-s': '25%', '--color-bg-glass-l': '20%', '--color-bg-glass-a': '0.8',            // Base for glass panels, more opaque
+  '--color-border-glass-h': '335', '--color-border-glass-s': '50%', '--color-border-glass-l': '55%', '--color-border-glass-a': '0.3',  // Soft pink border for glass
+  '--blur-glass': '8px', // Slightly reduced blur for potentially clearer glass
+  '--color-bg-holographic-accent-h': '335', '--color-bg-holographic-accent-s': '85%', '--color-bg-holographic-accent-l': '70%', '--color-bg-holographic-accent-a': '0.15', // Subtle pink bg shimmer
 
   // Text
-  '--color-text-primary-h': '20', '--color-text-primary-s': '70%', '--color-text-primary-l': '90%', '--color-text-primary-a': '1',
-  '--color-text-secondary-h': '20', '--color-text-secondary-s': '50%', '--color-text-secondary-l': '78%', '--color-text-secondary-a': '1',
-  '--color-text-muted-h': '20', '--color-text-muted-s': '40%', '--color-text-muted-l': '65%', '--color-text-muted-a': '1',
-  '--color-text-on-primary-h': '20', '--color-text-on-primary-s': '30%', '--color-text-on-primary-l': '95%', '--color-text-on-primary-a': '1',
-  '--color-text-on-secondary-h': '335', '--color-text-on-secondary-s': '15%', '--color-text-on-secondary-l': '10%', '--color-text-on-secondary-a': '1',
-  '--color-text-accent-h': '0', '--color-text-accent-s': '85%', '--color-text-accent-l': '78%', '--color-text-accent-a': '1',
+  '--color-text-primary-h': '25', '--color-text-primary-s': '70%', '--color-text-primary-l': '94%', '--color-text-primary-a': '1',        // Soft, creamy peach/warm off-white (for inputs, chat text)
+  '--color-text-secondary-h': '345', '--color-text-secondary-s': '35%', '--color-text-secondary-l': '80%', '--color-text-secondary-a': '1',      // Muted, soft pinkish-grey
+  '--color-text-muted-h': '340', '--color-text-muted-s': '20%', '--color-text-muted-l': '65%', '--color-text-muted-a': '1',          // Placeholders, disabled text
+  '--color-text-on-primary-h': '335', '--color-text-on-primary-s': '20%', '--color-text-on-primary-l': '95%', '--color-text-on-primary-a': '1',  // Text on primary accent (light pinkish white)
+  '--color-text-on-secondary-h': '345', '--color-text-on-secondary-s': '25%', '--color-text-on-secondary-l': '20%', '--color-text-on-secondary-a': '1', // Text on secondary accent (darker)
+  '--color-text-accent-h': '335', '--color-text-accent-s': '85%', '--color-text-accent-l': '70%', '--color-text-accent-a': '1',        // For text that is an accent itself (matches primary accent)
 
   // Accents
-  '--color-accent-primary-h': '0', '--color-accent-primary-s': '85%', '--color-accent-primary-l': '70%', '--color-accent-primary-a': '1',
-  '--color-accent-primary-light-h':'0', '--color-accent-primary-light-s':'85%', '--color-accent-primary-light-l':'80%', '--color-accent-primary-light-a':'1',
-  '--color-accent-primary-dark-h':'0', '--color-accent-primary-dark-s':'85%', '--color-accent-primary-dark-l':'62%', '--color-accent-primary-dark-a':'1',
-  '--color-accent-secondary-h': '340', '--color-accent-secondary-s': '70%', '--color-accent-secondary-l': '75%', '--color-accent-secondary-a': '1',
-  '--color-accent-interactive-h': '5', '--color-accent-interactive-s': '90%', '--color-accent-interactive-l': '72%', '--color-accent-interactive-a': '1',
-  '--color-accent-glow-h': '0', '--color-accent-glow-s': '85%', '--color-accent-glow-l': '75%', '--color-accent-glow-a': '0.45',
-  '--color-holographic-glow-1-h': '0', '--color-holographic-glow-1-s': '90%', '--color-holographic-glow-1-l': '70%', '--color-holographic-glow-1-a': '0.3',
-  '--color-holographic-glow-2-h': '340', '--color-holographic-glow-2-s': '80%', '--color-holographic-glow-2-l': '75%', '--color-holographic-glow-2-a': '0.25',
+  '--color-accent-primary-h': '335', '--color-accent-primary-s': '85%', '--color-accent-primary-l': '70%', '--color-accent-primary-a': '1',      // "Bright pink" - Clear, vibrant warm pink
+  '--color-accent-primary-light-h': '335', '--color-accent-primary-light-s': '90%', '--color-accent-primary-light-l': '75%', '--color-accent-primary-light-a': '1', // Hover/Active on primary
+  '--color-accent-primary-dark-h': '335', '--color-accent-primary-dark-s': '80%', '--color-accent-primary-dark-l': '65%', '--color-accent-primary-dark-a': '1',   // Pressed state
+  '--color-accent-secondary-h': '345', '--color-accent-secondary-s': '80%', '--color-accent-secondary-l': '78%', '--color-accent-secondary-a': '1',    // "Light pink" - Soft, lighter warm pink
+  '--color-accent-interactive-h': '330', '--color-accent-interactive-s': '90%', '--color-accent-interactive-l': '68%', '--color-accent-interactive-a': '1',  // Distinct, vibrant pink for main CTAs
+  '--color-accent-glow-h': '335', '--color-accent-glow-s': '85%', '--color-accent-glow-l': '70%', '--color-accent-glow-a': '0.5',         // From Primary Accent Pink
+  '--color-holographic-glow-1-h': '330', '--color-holographic-glow-1-s': '80%', '--color-holographic-glow-1-l': '75%', '--color-holographic-glow-1-a': '0.4',  // Pinkish holo glow
+  '--color-holographic-glow-2-h': '340', '--color-holographic-glow-2-s': '70%', '--color-holographic-glow-2-l': '80%', '--color-holographic-glow-2-a': '0.35', // Softer pinkish holo glow
 
-  // Logo Specific
-  '--color-logo-primary-h': '0', '--color-logo-primary-s': '85%', '--color-logo-primary-l': '70%', '--color-logo-primary-a': '1',
-  '--color-logo-secondary-h': '340', '--color-logo-secondary-s': '70%', '--color-logo-secondary-l': '75%', '--color-logo-secondary-a': '1',
-  '--color-logo-main-text-h': '0', '--color-logo-main-text-s': '85%', '--color-logo-main-text-l': '75%', '--color-logo-main-text-a': '1',
-  '--color-logo-subtitle-text-h': '340', '--color-logo-subtitle-text-s': '60%', '--color-logo-subtitle-text-l': '80%', '--color-logo-subtitle-text-a': '1',
+  // Logo Specific (aligned with new Her-inspired theme)
+  '--color-logo-primary-h': '335', '--color-logo-primary-s': '85%', '--color-logo-primary-l': '70%', '--color-logo-primary-a': '1',         // Uses new primary accent
+  '--color-logo-secondary-h': '345', '--color-logo-secondary-s': '80%', '--color-logo-secondary-l': '78%', '--color-logo-secondary-a': '1',       // Uses new secondary accent
+  '--color-logo-main-text-h': '335', '--color-logo-main-text-s': '85%', '--color-logo-main-text-l': '70%', '--color-logo-main-text-a': '1',      // Colorful logo text using primary accent
+  '--color-logo-subtitle-text-h': '345', '--color-logo-subtitle-text-s': '35%', '--color-logo-subtitle-text-l': '80%', '--color-logo-subtitle-text-a': '1', // Matches text-secondary
 
   // Borders
-  '--color-border-primary-h': '335', '--color-border-primary-s': '20%', '--color-border-primary-l': '30%', '--color-border-primary-a': '0.6',
-  '--color-border-secondary-h': '335', '--color-border-secondary-s': '18%', '--color-border-secondary-l': '35%', '--color-border-secondary-a': '0.4',
-  '--color-border-interactive-h': '0', '--color-border-interactive-s': '80%', '--color-border-interactive-l': '70%', '--color-border-interactive-a': '0.55',
-  '--color-border-translucent-h': '10', '--color-border-translucent-s': '70%', '--color-border-translucent-l': '60%', '--color-border-translucent-a': '0.15',
+  '--color-border-primary-h': '340', '--color-border-primary-s': '20%', '--color-border-primary-l': '30%', '--color-border-primary-a': '0.7',      // Defined, subtle borders
+  '--color-border-secondary-h': '340', '--color-border-secondary-s': '15%', '--color-border-secondary-l': '40%', '--color-border-secondary-a': '0.5',    // Dividers
+  '--color-border-interactive-h': '335', '--color-border-interactive-s': '85%', '--color-border-interactive-l': '70%', '--color-border-interactive-a': '0.85',// For focused items, matches primary accent
+  '--color-border-translucent-h': '335', '--color-border-translucent-s': '30%', '--color-border-translucent-l': '70%', '--color-border-translucent-a': '0.2',  // Light, desaturated pink
 
-  // Shadows
-  '--shadow-color-h': '335', '--shadow-color-s': '40%', '--shadow-color-l': '8%',
-  '--shadow-highlight-modifier': '+10%',
-  '--shadow-opacity-soft': '0.35',
-  '--shadow-opacity-medium': '0.45',
-  '--shadow-opacity-strong': '0.50',
-  '--shadow-opacity-deep': '0.55',
+  // Shadows (Her-Inspired Pink Theme)
+  '--shadow-color-h': '335', '--shadow-color-s': '15%', '--shadow-color-l': '10%', // Deep pink/purple shadow tint, low saturation
+  '--shadow-highlight-modifier': '+30%', // For neomorphism, slightly more pronounced highlight
+  '--shadow-opacity-soft': '0.3',
+  '--shadow-opacity-medium': '0.4',
+  '--shadow-opacity-strong': '0.5',
+  '--shadow-opacity-deep': '0.6',
 
   // Voice Visualization
-  '--color-voice-user-h': '20', '--color-voice-user-s': '90%', '--color-voice-user-l': '75%', '--color-voice-user-a': '1',
-  '--color-voice-ai-speaking-h': '340', '--color-voice-ai-speaking-s': '80%', '--color-voice-ai-speaking-l': '80%', '--color-voice-ai-speaking-a': '1',
-  '--color-voice-ai-thinking-h': '335', '--color-voice-ai-thinking-s': '40%', '--color-voice-ai-thinking-l': '55%', '--color-voice-ai-thinking-a': '1',
-  '--voice-pulse-opacity': '0.75',
+  '--color-voice-user-h': '10', '--color-voice-user-s': '70%', '--color-voice-user-l': '78%', '--color-voice-user-a': '1',           // Soft warm coral/peach for user
+  '--color-voice-ai-speaking-h': '345', '--color-voice-ai-speaking-s': '75%', '--color-voice-ai-speaking-l': '75%', '--color-voice-ai-speaking-a': '1',  // AI responses, harmonious light pink
+  '--color-voice-ai-thinking-h': '340', '--color-voice-ai-thinking-s': '30%', '--color-voice-ai-thinking-l': '55%', '--color-voice-ai-thinking-a': '1',  // Muted, darker pink for thinking
+  '--voice-pulse-opacity': '0.8', // Slightly more visible pulse
 
-  // Semantic Colors
-  '--color-info-h': '190', '--color-info-s': '80%', '--color-info-l': '75%', '--color-info-a': '1',
-  '--color-success-h': '140', '--color-success-s': '70%', '--color-success-l': '70%', '--color-success-a': '1',
-  '--color-warning-h': '30', '--color-warning-s': '90%', '--color-warning-l': '70%', '--color-warning-a': '1',
-  '--color-error-h': '0', '--color-error-s': '80%', '--color-error-l': '75%', '--color-error-a': '1',
-  '--color-error-text-h': '0', '--color-error-text-s': '100%', '--color-error-text-l': '90%', '--color-error-text-a': '1',
+  // Semantic Colors (Bold and Readable)
+  '--color-info-h': '200', '--color-info-s': '90%', '--color-info-l': '70%', '--color-info-a': '1',           // Brighter, clear Blue
+  '--color-success-h': '130', '--color-success-s': '75%', '--color-success-l': '65%', '--color-success-a': '1',        // Vibrant Green
+  '--color-warning-h': '40', '--color-warning-s': '95%', '--color-warning-l': '68%', '--color-warning-a': '1',        // Strong Yellow/Orange
+  '--color-error-h': '0', '--color-error-s': '85%', '--color-error-l': '68%', '--color-error-a': '1',            // Bold Red
+  '--color-error-text-h': '0', '--color-error-text-s': '100%', '--color-error-text-l': '92%', '--color-error-text-a': '1',     // Very light text on error backgrounds
 
   // Code Blocks
-  '--color-bg-code-block-h': '335', '--color-bg-code-block-s': '20%', '--color-bg-code-block-l': '10%', '--color-bg-code-block-a': '1',
-  '--color-text-code-block-h': '20', '--color-text-code-block-s': '50%', '--color-text-code-block-l': '85%', '--color-text-code-block-a': '1',
-  '--color-bg-code-inline-h': '335', '--color-bg-code-inline-s': '25%', '--color-bg-code-inline-l': '15%', '--color-bg-code-inline-a': '0.9',
-  '--color-text-code-inline-h': '0', '--color-text-code-inline-s': '75%', '--color-text-code-inline-l': '80%', '--color-text-code-inline-a': '1',
-  '--color-border-code-inline-h': '335', '--color-border-code-inline-s': '20%', '--color-border-code-inline-l': '25%', '--color-border-code-inline-a': '0.4',
+  '--color-bg-code-block-h': '340', '--color-bg-code-block-s': '20%', '--color-bg-code-block-l': '12%', '--color-bg-code-block-a': '1',       // Darker than primary bg, pinkish tint
+  '--color-text-code-block-h': '30', '--color-text-code-block-s': '50%', '--color-text-code-block-l': '88%', '--color-text-code-block-a': '1',    // Warm off-white for code text
+  '--color-bg-code-inline-h': '340', '--color-bg-code-inline-s': '25%', '--color-bg-code-inline-l': '25%', '--color-bg-code-inline-a': '0.9',     // Subtle pinkish bg for inline code
+  '--color-text-code-inline-h': '335', '--color-text-code-inline-s': '70%', '--color-text-code-inline-l': '78%', '--color-text-code-inline-a': '1',  // Softer pink accent for inline code text
+  '--color-border-code-inline-h': '340', '--color-border-code-inline-s': '20%', '--color-border-code-inline-l': '35%', '--color-border-code-inline-a': '0.4', // Subtle border for inline code
 );
 
 // --- Twilight Neo (Overhauled Midnight Dark - Alternative Dark) ---
+// This theme remains unchanged as per the request.
 $theme-twilight-neo: (
+  // ... (original values for Twilight Neo) ...
   '--color-bg-primary-h': '220', '--color-bg-primary-s': '30%', '--color-bg-primary-l': '8%', '--color-bg-primary-a': '1',
   '--color-bg-secondary-h': '220', '--color-bg-secondary-s': '25%', '--color-bg-secondary-l': '12%', '--color-bg-secondary-a': '1',
   '--color-bg-tertiary-h': '220', '--color-bg-tertiary-s': '22%', '--color-bg-tertiary-l': '16%', '--color-bg-tertiary-a': '1',
@@ -155,7 +161,9 @@ $theme-twilight-neo: (
 );
 
 // --- Aurora Daybreak (Default Light) ---
+// This theme remains unchanged as per the request.
 $theme-aurora-daybreak: (
+  // ... (original values for Aurora Daybreak) ...
   '--color-bg-primary-h': '210', '--color-bg-primary-s': '60%', '--color-bg-primary-l': '98%', '--color-bg-primary-a': '1',
   '--color-bg-secondary-h': '200', '--color-bg-secondary-s': '50%', '--color-bg-secondary-l': '95%', '--color-bg-secondary-a': '1',
   '--color-bg-tertiary-h': '190', '--color-bg-tertiary-s': '40%', '--color-bg-tertiary-l': '92%', '--color-bg-tertiary-a': '1',
@@ -220,7 +228,9 @@ $theme-aurora-daybreak: (
 );
 
 // --- Warm Embrace (Alternative Light) ---
+// This theme remains unchanged as per the request.
 $theme-warm-embrace: (
+  // ... (original values for Warm Embrace) ...
   '--color-bg-primary-h': '35', '--color-bg-primary-s': '70%', '--color-bg-primary-l': '96%', '--color-bg-primary-a': '1',
   '--color-bg-secondary-h': '30', '--color-bg-secondary-s': '60%', '--color-bg-secondary-l': '92%', '--color-bg-secondary-a': '1',
   '--color-bg-tertiary-h': '25', '--color-bg-tertiary-s': '50%', '--color-bg-tertiary-l': '88%', '--color-bg-tertiary-a': '1',
@@ -283,10 +293,11 @@ $theme-warm-embrace: (
 );
 
 // SCSS map used by theme-engine.scss to iterate and generate CSS rules.
+// This map links theme IDs (used in data-theme attribute and ThemeManager.ts)
+// to their corresponding SCSS map definitions.
 $VCA_THEME_DEFINITIONS: (
   'sakura-sunset': $theme-sakura-sunset,
   'twilight-neo': $theme-twilight-neo,
   'aurora-daybreak': $theme-aurora-daybreak,
   'warm-embrace': $theme-warm-embrace
 );
-

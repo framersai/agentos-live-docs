@@ -65,13 +65,13 @@ let apiStatusInterval: number | undefined;
 const apiStatusInfo = computed(() => {
   switch (apiStatus.value) {
     case 'Operational':
-      return { text: 'API Online', class: 'text-[hsl(var(--color-success-h),var(--color-success-s),var(--color-success-l))]', icon: ApiOnlineIcon, dotClass: 'bg-[hsl(var(--color-success-h),var(--color-success-s),var(--color-success-l))]' };
+      return { text: 'Agents Online', class: 'text-[hsl(var(--color-success-h),var(--color-success-s),var(--color-success-l))]', icon: ApiOnlineIcon, dotClass: 'bg-[hsl(var(--color-success-h),var(--color-success-s),var(--color-success-l))]' };
     case 'Degraded':
-      return { text: 'API Degraded', class: 'text-[hsl(var(--color-warning-h),var(--color-warning-s),var(--color-warning-l))]', icon: ApiDegradedIcon, dotClass: 'bg-[hsl(var(--color-warning-h),var(--color-warning-s),var(--color-warning-l))]' };
+      return { text: 'Agents Degraded', class: 'text-[hsl(var(--color-warning-h),var(--color-warning-s),var(--color-warning-l))]', icon: ApiDegradedIcon, dotClass: 'bg-[hsl(var(--color-warning-h),var(--color-warning-s),var(--color-warning-l))]' };
     case 'Down':
-      return { text: 'API Offline', class: 'text-[hsl(var(--color-error-h),var(--color-error-s),var(--color-error-l))]', icon: ApiOfflineIcon, dotClass: 'bg-[hsl(var(--color-error-h),var(--color-error-s),var(--color-error-l))]' };
+      return { text: 'Agents Offline', class: 'text-[hsl(var(--color-error-h),var(--color-error-s),var(--color-error-l))]', icon: ApiOfflineIcon, dotClass: 'bg-[hsl(var(--color-error-h),var(--color-error-s),var(--color-error-l))]' };
     default: // 'Checking' or unknown
-      return { text: 'API Status...', class: 'text-[hsl(var(--color-text-muted-h),var(--color-text-muted-s),var(--color-text-muted-l))]', icon: ApiCheckingIcon, dotClass: 'bg-[hsl(var(--color-text-muted-h),var(--color-text-muted-s),var(--color-text-muted-l))] animate-pulse' };
+      return { text: 'Agents Status...', class: 'text-[hsl(var(--color-text-muted-h),var(--color-text-muted-s),var(--color-text-muted-l))]', icon: ApiCheckingIcon, dotClass: 'bg-[hsl(var(--color-text-muted-h),var(--color-text-muted-s),var(--color-text-muted-l))] animate-pulse' };
   }
 });
 
@@ -130,10 +130,24 @@ onUnmounted(() => {
         <div class="footer-branding-ephemeral">
           <img src="@/assets/logo.svg" alt="Voice Coding Assistant Logo" class="footer-logo-ephemeral" />
           <div class="brand-text-group">
-            <span class="brand-title-ephemeral">Voice Assistant <span class="opacity-60 font-light text-xs">v{{ APP_VERSION }}</span></span>
+            <!-- <span class="brand-title-ephemeral"><strong>V</strong> -->
+               <!-- <span class="opacity-60 font-light text-xs">v{{ APP_VERSION }}</span> -->
+              <!-- </span> -->
             <span class="brand-powered-by-ephemeral">
-              Powered by <a href="https://github.com/AgentOSAIs/AgentOS" target="_blank" rel="noopener noreferrer" class="font-semibold hover:text-[hsl(var(--color-accent-secondary-h),var(--color-accent-secondary-s),var(--color-accent-secondary-l))]">AgentOS</a>
+              Powered by <a href="https://github.com/wearetheframers/agentos" target="_blank" rel="noopener noreferrer" class="font-semibold hover:text-[hsl(var(--color-accent-secondary-h),var(--color-accent-secondary-s),var(--color-accent-secondary-l))]">AgentOS</a>
             </span>
+          </div>
+          
+        <div class="footer-attributions-ephemeral">
+          <span>
+            &copy; {{ new Date().getFullYear() }} 
+            VCA.Chat
+            <!-- Voice Assistant Project. -->
+          </span>
+          <span>
+            by <a href="https://manic.agency" target="_blank" rel="noopener noreferrer">Manic.agency</a>.
+          </span>
+            All rights reserved.
           </div>
         </div>
 
@@ -179,11 +193,7 @@ onUnmounted(() => {
         </div>
       </div>
 
-      <div class="footer-attributions-ephemeral">
-        &copy; {{ new Date().getFullYear() }} Voice Assistant Project.
-        Built by <a href="https://manic.agency" target="_blank" rel="noopener noreferrer">Manic.agency</a>.
-        All rights reserved.
-      </div>
+
     </div>
   </footer>
 </template>

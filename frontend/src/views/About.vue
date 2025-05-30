@@ -220,12 +220,21 @@ const missionItems = ref([
         <div class="hero-logo-wrapper">
           <img src="@/assets/logo.svg" alt="AgentOS Logo" class="hero-logo-main spinning-glow-logo" />
         </div>
-        <h2 class="hero-main-title">The Future is Conversational. Seamlessly Intelligent.</h2>
+        <h2 class="hero-main-title">The Future is a Conversation.</h2>
         <p class="hero-sub-title">
-          Voice Chat Assistant, powered by the <strong class="highlight-text">AgentOS</strong> framework,
-          redefines human-AI interaction. Experience truly adaptive intelligence that understands, remembers, and evolves with you.
+          <strong>
+          Seamlessly intelligent experiences through natural language
+          </strong>
         </p>
-         <a href="#mission" class="btn btn-primary-ephemeral btn-lg hero-cta-button">Discover Our Vision</a>
+        <p class="hero-sub-title">
+          Voice Chat Assistant, powered by the open-source <strong class="highlight-text"><a href="https://github.com/wearetheframers/agentos" target="_blank">AgentOS</a></strong> framework,
+          redefines human-AI interaction. Experience truly adaptive intelligence that understands, remembers, and evolves with you.
+          <br>
+          <strong class="highlight-text">
+          For support, contact us at <a href="mailto:team@manic.agency" class="footer-link">team@manic.agency</a>.
+          </strong>
+        </p>
+         <a href="#pricing" class="btn btn-primary-ephemeral btn-lg hero-cta-button">Sign Up</a>
       </section>
 
       <section id="mission" class="mission-section-about content-section-ephemeral">
@@ -286,6 +295,33 @@ const missionItems = ref([
         </div>
       </section>
 
+      <section id="pricing" class="pricing-section-about content-section-ephemeral">
+        <h3 class="section-title-main"><CurrencyDollarIcon class="section-title-icon"/>Subscription Tiers</h3>
+        <div class="pricing-grid-about">
+          <div v-for="plan in pricingPlans" :key="plan.name"
+               class="pricing-plan-card-about"
+               :class="[plan.isFeatured ? 'card-neo-interactive featured-plan-glow' : 'card-glass-interactive']">
+            <div v-if="plan.isFeatured" class="featured-chip-about">Most Popular</div>
+            <h4 class="plan-title-about">{{ plan.name }}</h4>
+            <div class="plan-price-container-about">
+              <span class="plan-price-value">{{ plan.price }}</span>
+              <span class="plan-price-period">{{ plan.period }}</span>
+            </div>
+            <ul class="plan-features-list-about">
+              <li v-for="feature in plan.features" :key="feature.text" class="plan-feature-item">
+                <component :is="feature.available ? CheckIcon : XMarkIcon"
+                           class="feature-icon" :class="feature.available ? 'icon-success' : 'icon-error'" />
+                {{ feature.text }}
+              </li>
+            </ul>
+            <button class="btn plan-button-about" :class="[plan.isFeatured ? 'btn-primary-ephemeral' : 'btn-secondary-ephemeral']">
+              {{ plan.buttonText }}
+            </button>
+          </div>
+        </div>
+      </section>
+
+
       <section id="architecture" class="architecture-diagrams-about content-section-ephemeral">
          <button @click="toggleSection('architecture')" class="expandable-header-button-about section-title-main --expandable">
             <span class="expandable-title-text"><CodeBracketSquareIcon class="section-title-icon"/>AgentOS Technical Architecture</span>
@@ -312,31 +348,6 @@ const missionItems = ref([
         </div>
       </section>
 
-      <section id="pricing" class="pricing-section-about content-section-ephemeral">
-        <h3 class="section-title-main"><CurrencyDollarIcon class="section-title-icon"/>Subscription Tiers</h3>
-        <div class="pricing-grid-about">
-          <div v-for="plan in pricingPlans" :key="plan.name"
-               class="pricing-plan-card-about"
-               :class="[plan.isFeatured ? 'card-neo-interactive featured-plan-glow' : 'card-glass-interactive']">
-            <div v-if="plan.isFeatured" class="featured-chip-about">Most Popular</div>
-            <h4 class="plan-title-about">{{ plan.name }}</h4>
-            <div class="plan-price-container-about">
-              <span class="plan-price-value">{{ plan.price }}</span>
-              <span class="plan-price-period">{{ plan.period }}</span>
-            </div>
-            <ul class="plan-features-list-about">
-              <li v-for="feature in plan.features" :key="feature.text" class="plan-feature-item">
-                <component :is="feature.available ? CheckIcon : XMarkIcon"
-                           class="feature-icon" :class="feature.available ? 'icon-success' : 'icon-error'" />
-                {{ feature.text }}
-              </li>
-            </ul>
-            <button class="btn plan-button-about" :class="[plan.isFeatured ? 'btn-primary-ephemeral' : 'btn-secondary-ephemeral']">
-              {{ plan.buttonText }}
-            </button>
-          </div>
-        </div>
-      </section>
 
       <section id="roadmap" class="roadmap-section-about content-section-ephemeral">
         <h3 class="section-title-main"><MapIcon class="section-title-icon"/>Product Roadmap</h3>
@@ -366,14 +377,16 @@ const missionItems = ref([
       <footer class="about-page-footer-ephemeral">
         <div class="footer-content-inner-about card-glass">
           <p class="footer-credits-text">
-            Voice Chat Assistant is <strong class="highlight-text">Powered by AgentOS</strong>.
+            Voice Chat Assistant is a first-class initiative <strong class="highlight-text">powered by <a href="https://github.com/wearetheframers/agentos" target="_blank">AgentOS</a></strong>.
             <br class="hidden sm:inline">
             Developed by <a href="https://frame.dev" target="_blank" rel="noopener noreferrer" class="footer-link">The Framers</a> &amp;
             <a href="https://manic.agency" target="_blank" rel="noopener noreferrer" class="footer-link">Manic Inc</a>.
           </p>
           <div class="footer-social-links-group">
              </div>
-          <p class="copyright-text-about">&copy; {{ new Date().getFullYear() }} AgentOS Initiative. All Rights Reserved.</p>
+          <p class="copyright-text-about">
+            Manic.agency is an experimental open-source collective and development and design agency.
+          </p>
         </div>
       </footer>
     </main>

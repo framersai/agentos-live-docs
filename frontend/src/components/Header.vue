@@ -204,7 +204,7 @@ onUnmounted(() => { // Cleanup body class on component unmount
       <div class="header-left-section">
         <RouterLink to="/" @click="closeMobileMenu" class="animated-logo-link" aria-label="Voice Coding Assistant Home">
           <AnimatedLogo
-            :app-name-main="uiStore.isSmallScreen ? 'VCA' : 'Voice//Chat'"
+            :app-name-main="uiStore.isSmallScreen ? 'VCA' : 'Voice Chat'"
             :app-name-subtitle="uiStore.isSmallScreen ? 'Assistant' : 'Assistant'"
             :is-user-listening="isUserStateActive"
             :is-ai-speaking-or-processing="isAiStateActive"
