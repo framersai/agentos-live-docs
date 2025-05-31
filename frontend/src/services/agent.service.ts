@@ -21,26 +21,7 @@ import {
   PresentationChartLineIcon,
 } from '@heroicons/vue/24/outline';
 
-export type AgentId =
-  | 'general_chat'
-  | 'public-quick-helper'
-  | 'coding_assistant'
-  | 'system_designer'
-  | 'meeting_summarizer'
-  | 'diary_agent'
-  | 'coding_interviewer'
-  | 'tutor_agent'
-  | 'lc_audit_aide'
-  // Placeholder/System IDs
-  | 'private-dashboard-placeholder'
-  | 'rate-limit-exceeded'
-  | 'public-welcome-placeholder'
-  | 'no-public-agents-placeholder'
-  | 'system-error'
-  // Legacy/Alias IDs
-  | 'general'
-  | 'general-ai';
-
+export type AgentId = string
 export interface IDetailedCapabilityItem {
   id: string;
   label: string;
@@ -578,7 +559,7 @@ const agents: IAgentDefinition[] = [
   {
     id: 'general_chat',
     label: 'Nerf',
-    description: 'Your friendly general assistant for quick questions and information. Streamlined for efficiency.',
+    description: 'Your friendly and simple general AI for quick questions and information. Streamlined for efficiency, and always free for general usage for members.',
     iconComponent: ChatBubbleLeftEllipsisIcon,
     iconClass: 'text-orange-400 dark:text-orange-500',
     systemPromptKey: 'general_chat',
@@ -588,20 +569,20 @@ const agents: IAgentDefinition[] = [
     tags: ['general knowledge', 'q&a', 'information', 'quick help', 'concise'],
     inputPlaceholder: 'Ask Nerf a quick question...',
     isPublic: true,
-    accessTier: 'public',
+    accessTier: 'member',
     viewComponentName: 'GeneralAgentView',
   },
   {
-    id: 'public-quick-helper',
-    label: 'Quick Helper',
-    description: 'A streamlined public assistant for very brief answers to common questions.',
+    id: 'assistant',
+    label: 'V',
+    description: 'A generalized public assistant suitable for all sorts of tasks.',
     iconComponent: SparklesIcon,
     iconClass: 'text-sky-400 dark:text-sky-500',
     systemPromptKey: 'general_chat', // Could have its own highly constrained prompt
     category: 'Utility',
-    capabilities: { canGenerateDiagrams: false, usesCompactRenderer: false, acceptsVoiceInput: true, maxChatHistory: 2, showEphemeralChatLog: true },
+    capabilities: { canGenerateDiagrams: true, usesCompactRenderer: true, acceptsVoiceInput: true, maxChatHistory: 20, showEphemeralChatLog: true },
     examplePrompts: quickHelperPrompts,
-    inputPlaceholder: 'Ask a very short question...',
+    inputPlaceholder: 'Ask or say something',
     isPublic: true,
     accessTier: 'public',
     // No viewComponentName, will use default MainContentView
@@ -614,7 +595,7 @@ const agents: IAgentDefinition[] = [
     iconClass: 'text-rose-400 dark:text-rose-500',
     systemPromptKey: 'coding',
     category: 'Coding',
-    capabilities: { canGenerateDiagrams: true, usesCompactRenderer: true, acceptsVoiceInput: true, maxChatHistory: 15, showEphemeralChatLog: true, handlesOwnInput: true },
+    capabilities: { canGenerateDiagrams: true, usesCompactRenderer: true, acceptsVoiceInput: true, maxChatHistory: 25, showEphemeralChatLog: true, handlesOwnInput: true },
     examplePrompts: codingAssistantPrompts,
     tags: ['programming', 'dev', 'code', 'debug', 'algorithms', 'data structures'],
     inputPlaceholder: 'Ask CodePilot about code...',
@@ -624,13 +605,13 @@ const agents: IAgentDefinition[] = [
   },
   {
     id: 'system_designer',
-    label: 'Architecton',
+    label: 'Architectron',
     description: 'Collaboratively design and diagram complex software and system architectures.',
     iconComponent: CpuChipIcon,
     iconClass: 'text-indigo-400 dark:text-indigo-500',
     systemPromptKey: 'system_design',
     category: 'Coding',
-    capabilities: { canGenerateDiagrams: true, usesCompactRenderer: true, acceptsVoiceInput: true, maxChatHistory: 12, handlesOwnInput: true, showEphemeralChatLog: true },
+    capabilities: { canGenerateDiagrams: true, usesCompactRenderer: true, acceptsVoiceInput: true, maxChatHistory: 50, handlesOwnInput: true, showEphemeralChatLog: true },
     examplePrompts: systemDesignerPrompts,
     inputPlaceholder: 'Describe the system to design...',
     isPublic: true, 
@@ -645,11 +626,11 @@ const agents: IAgentDefinition[] = [
     iconClass: 'text-cyan-400 dark:text-cyan-500',
     systemPromptKey: 'meeting',
     category: 'Productivity',
-    capabilities: { canGenerateDiagrams: true, usesCompactRenderer: true, acceptsVoiceInput: true, maxChatHistory: 5, handlesOwnInput: true, showEphemeralChatLog: false },
+    capabilities: { canGenerateDiagrams: true, usesCompactRenderer: true, acceptsVoiceInput: true, maxChatHistory: 200, handlesOwnInput: true, showEphemeralChatLog: false },
     examplePrompts: meetingSummarizerPrompts,
     inputPlaceholder: 'Paste notes or dictate discussion for summary...',
-    isPublic: false,
-    accessTier: 'member',
+    isPublic: true,
+    accessTier: 'public',
     viewComponentName: 'BusinessMeetingAgentView',
   },
   {
@@ -660,11 +641,11 @@ const agents: IAgentDefinition[] = [
     iconClass: 'text-purple-400 dark:text-purple-500',
     systemPromptKey: 'diary',
     category: 'Productivity',
-    capabilities: { canGenerateDiagrams: true, usesCompactRenderer: false, acceptsVoiceInput: true, maxChatHistory: 20, handlesOwnInput: true, showEphemeralChatLog: true },
+    capabilities: { canGenerateDiagrams: true, usesCompactRenderer: false, acceptsVoiceInput: true, maxChatHistory: 200, handlesOwnInput: true, showEphemeralChatLog: true },
     examplePrompts: diaryAgentPrompts,
     inputPlaceholder: 'Share your thoughts with Echo...',
-    isPublic: false,
-    accessTier: 'member',
+    isPublic: true,
+    accessTier: 'public',
     viewComponentName: 'DiaryAgentView',
   },
   {
@@ -717,14 +698,14 @@ const agents: IAgentDefinition[] = [
         { id: 'commented-code', label: 'Exhaustive Code Comments', icon: CodeBracketSquareIcon },
     ],
     inputPlaceholder: 'Provide problem context for LC-Audit analysis...',
-    isPublic: false,
+    isPublic: true,
     accessTier: 'premium',
     isBeta: true,
     viewComponentName: 'LCAuditAgentView',
   },
   // Alias definitions (they don't need their own viewComponentName as getAgentById resolves to canonical)
-  { id: 'general', label: 'Nerf (General)', description: 'Alias for Nerf', iconComponent: ChatBubbleLeftEllipsisIcon, systemPromptKey: 'general_chat', category: 'General', capabilities: {}, isPublic: true, accessTier: 'public' },
-  { id: 'general-ai', label: 'Nerf (AI General)', description: 'Alias for Nerf', iconComponent: ChatBubbleLeftEllipsisIcon, systemPromptKey: 'general_chat', category: 'General', capabilities: {}, isPublic: true, accessTier: 'public' },
+  { id: 'general', label: 'Assistant (General)', description: 'Alias for General Assistant', iconComponent: ChatBubbleLeftEllipsisIcon, systemPromptKey: 'general_chat', category: 'General', capabilities: {}, isPublic: true, accessTier: 'public' },
+  { id: 'general-ai', label: 'Assistant (AI General)', description: 'Alias for General Assistant', iconComponent: ChatBubbleLeftEllipsisIcon, systemPromptKey: 'general_chat', category: 'General', capabilities: {}, isPublic: true, accessTier: 'public' },
   // System/Placeholder definitions
   { id: 'private-dashboard-placeholder', label: 'Dashboard', description: '', iconComponent: SparklesIcon, systemPromptKey: 'general_chat', category: 'Utility', capabilities: {}, isPublic: false },
   { id: 'rate-limit-exceeded', label: 'Rate Limited', description: '', iconComponent: SparklesIcon, systemPromptKey: 'general_chat', category: 'Utility', capabilities: {}, isPublic: true },
