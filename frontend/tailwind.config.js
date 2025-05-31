@@ -290,8 +290,8 @@ export default {
           'scrollbarWidth': 'thin',
           'scrollbarColor': 'hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.5) hsla(var(--neutral-hue, 220), 10%, 10%, 0.2)',
         },
-        // Custom Scrollbar for Architecton (Updated with new styles)
-        '.architecton-scrollbar': {
+        // Custom Scrollbar for Architectron (Updated with new styles)
+        '.architectron-scrollbar': {
           '&::-webkit-scrollbar': {
             width: theme('width')['2'],
             height: theme('height')['2'],
@@ -301,15 +301,15 @@ export default {
             borderRadius: theme('borderRadius.full'),
           },
           '&::-webkit-scrollbar-thumb': {
-            backgroundColor: 'hsla(var(--agent-architecton-accent-hue), var(--agent-architecton-accent-saturation), var(--agent-architecton-accent-lightness), 0.65)',
+            backgroundColor: 'hsla(var(--agent-architectron-accent-hue), var(--agent-architectron-accent-saturation), var(--agent-architectron-accent-lightness), 0.65)',
             borderRadius: theme('borderRadius.full'),
             border: '2px solid hsla(var(--neutral-hue, 230), 20%, 18%, 0.4)',
           },
           '&::-webkit-scrollbar-thumb:hover': {
-            backgroundColor: 'var(--agent-architecton-accent-color)',
+            backgroundColor: 'var(--agent-architectron-accent-color)',
           },
           'scrollbarWidth': 'auto',
-          'scrollbarColor': 'hsla(var(--agent-architecton-accent-hue), var(--agent-architecton-accent-saturation), var(--agent-architecton-accent-lightness), 0.65) hsla(var(--neutral-hue, 230), 20%, 18%, 0.4)',
+          'scrollbarColor': 'hsla(var(--agent-architectron-accent-hue), var(--agent-architectron-accent-saturation), var(--agent-architectron-accent-lightness), 0.65) hsla(var(--neutral-hue, 230), 20%, 18%, 0.4)',
         },
       });
     }),

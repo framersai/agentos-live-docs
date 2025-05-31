@@ -7,7 +7,7 @@ import { voiceSettingsManager } from '@/services/voice.settings.service';
 import { chatAPI, type ChatMessagePayloadFE, type ChatResponseDataFE } from '@/utils/api';
 import type { ToastService } from '@/services/services';
 import CompactMessageRenderer from '@/components/CompactMessageRenderer.vue';
-// Icon for Architecton - BuildingBlocksIcon or similar would be fitting. Using LightBulbIcon as placeholder if not available.
+// Icon for Architectron - BuildingBlocksIcon or similar would be fitting. Using LightBulbIcon as placeholder if not available.
 import { LightBulbIcon, CodeBracketSquareIcon, ShareIcon } from '@heroicons/vue/24/outline'; // ShareIcon for potential future use
 import { marked } from 'marked'; // Ensure marked is configured for Mermaid if it's not handled by CompactMessageRenderer
 import type { AdvancedHistoryConfig } from '@/services/advancedConversation.manager';
@@ -28,10 +28,10 @@ const chatStore = useChatStore();
 const toast = inject<ToastService>('toast');
 
 const isLoadingResponse = ref(false);
-const currentAgentSystemPrompt = ref(''); // Will be populated by Architecton's prompt
+const currentAgentSystemPrompt = ref(''); // Will be populated by Architectron's prompt
 
 const mainContentToDisplay = computed<MainContent | null>(() => chatStore.getMainContentForAgent(props.agentId));
-const agentDisplayName = computed(() => props.agentConfig.label || "Architecton");
+const agentDisplayName = computed(() => props.agentConfig.label || "Architectron");
 
 const fetchSystemPrompt = async () => {
   if (props.agentConfig.systemPromptKey) {
@@ -40,10 +40,10 @@ const fetchSystemPrompt = async () => {
       currentAgentSystemPrompt.value = module.default;
     } catch (e) {
       console.error(`[${agentDisplayName.value}Agent] Failed to load system prompt: ${props.agentConfig.systemPromptKey}.md`, e);
-      currentAgentSystemPrompt.value = "You are Architecton, a System Design AI. Help design complex systems with diagrams and explanations. Focus on NFRs and trade-offs.";
+      currentAgentSystemPrompt.value = "You are Architectron, a System Design AI. Help design complex systems with diagrams and explanations. Focus on NFRs and trade-offs.";
     }
   } else {
-    currentAgentSystemPrompt.value = "You are Architecton, a System Design AI. Help design complex systems with diagrams and explanations. Focus on NFRs and trade-offs.";
+    currentAgentSystemPrompt.value = "You are Architectron, a System Design AI. Help design complex systems with diagrams and explanations. Focus on NFRs and trade-offs.";
   }
 };
 watch(() => props.agentConfig.systemPromptKey, fetchSystemPrompt, { immediate: true });
@@ -65,7 +65,7 @@ const handleNewUserInput = async (text: string) => {
   isLoadingResponse.value = true;
   
   const currentTitle = mainContentToDisplay.value?.title || "System Design Discussion";
-  const loadingMessage = `## ${currentTitle.replace(/Processing...|Ready/g, "").trim()}\n\nUpdating design based on: *"${text.substring(0, 50)}..."*\n\n<div class="flex justify-center items-center p-8 architecton-spinner-container"><div class="architecton-spinner"></div><span class="ml-3 text-slate-400 dark:text-slate-500">Architecting...</span></div>`;
+  const loadingMessage = `## ${currentTitle.replace(/Processing...|Ready/g, "").trim()}\n\nUpdating design based on: *"${text.substring(0, 50)}..."*\n\n<div class="flex justify-center items-center p-8 architectron-spinner-container"><div class="architectron-spinner"></div><span class="ml-3 text-slate-400 dark:text-slate-500">Architecting...</span></div>`;
   chatStore.updateMainContent({
     agentId: props.agentId, type: 'markdown', data: loadingMessage,
     title: `Processing: ${text.substring(0, 30)}...`, timestamp: Date.now()
@@ -85,7 +85,7 @@ const handleNewUserInput = async (text: string) => {
       .replace(/{{LANGUAGE}}/g, voiceSettingsManager.settings.preferredCodingLanguage)
       .replace(/{{USER_QUERY}}/g, text)
       .replace(/{{RECENT_TOPICS_SUMMARY}}/gi, recentContextSummary)
-      .replace(/{{GENERATE_DIAGRAM}}/g, "true") // Architecton should always try to generate/update diagrams
+      .replace(/{{GENERATE_DIAGRAM}}/g, "true") // Architectron should always try to generate/update diagrams
       .replace(/{{AGENT_CONTEXT_JSON}}/g, JSON.stringify(agentContextForLLM))
       .replace(/{{ADDITIONAL_INSTRUCTIONS}}/g, 'Focus on iterative diagram updates and clear explanations for slides. Utilize Mermaid for diagrams.');
 
@@ -106,8 +106,8 @@ const handleNewUserInput = async (text: string) => {
       processedHistory: processedHistoryFromClient,
       mode: props.agentConfig.id,
       language: voiceSettingsManager.settings.preferredCodingLanguage,
-      generateDiagram: true, // Override: Architecton's main purpose
-      userId: 'frontend_user_architecton',
+      generateDiagram: true, // Override: Architectron's main purpose
+      userId: 'frontend_user_architectron',
       conversationId: chatStore.getCurrentConversationId(props.agentId),
       systemPromptOverride: finalSystemPrompt,
       stream: true, // Enable streaming for potentially long explanations
@@ -125,7 +125,7 @@ const handleNewUserInput = async (text: string) => {
                 agentId: props.agentId,
                 type: props.agentConfig.capabilities?.usesCompactRenderer ? 'compact-message-renderer-data' : 'markdown',
                 data: accumulatedContent,
-                title: `Architecton's Design: Iteration on "${text.substring(0,25)}..."`,
+                title: `Architectron's Design: Iteration on "${text.substring(0,25)}..."`,
                 timestamp: Date.now(),
             });
         },
@@ -137,7 +137,7 @@ const handleNewUserInput = async (text: string) => {
                 chatStore.updateMainContent({
                     agentId: props.agentId, type: 'markdown',
                     data: mainContentToDisplay.value?.data?.replace(/## .*Updating design based on.*Architecting.../s, "Ready for next design input.") || "How can we refine the design?",
-                    title: `Architecton Ready`, timestamp: Date.now()
+                    title: `Architectron Ready`, timestamp: Date.now()
                 });
                 return;
             }
@@ -150,7 +150,7 @@ const handleNewUserInput = async (text: string) => {
                 agentId: props.agentId,
                 type: props.agentConfig.capabilities?.usesCompactRenderer ? 'compact-message-renderer-data' : 'markdown',
                 data: finalContent, // This will contain Markdown with Mermaid code blocks
-                title: `Architecton's Design: Iteration on "${text.substring(0,25)}..."`,
+                title: `Architectron's Design: Iteration on "${text.substring(0,25)}..."`,
                 timestamp: Date.now(),
             });
             // After rendering, ensure Mermaid diagrams are processed
@@ -159,7 +159,7 @@ const handleNewUserInput = async (text: string) => {
         },
         (error) => { // onStreamError
             console.error(`[${agentDisplayName.value}Agent] Stream error:`, error);
-            const errorMessage = error.message || "Architecton had an issue updating the design.";
+            const errorMessage = error.message || "Architectron had an issue updating the design.";
             toast?.add({ type: 'error', title: `${agentDisplayName.value} Error`, message: errorMessage });
             chatStore.addMessage({ role: 'error', content: `Sorry, I encountered an issue: ${errorMessage}`, agentId: props.agentId });
             chatStore.updateMainContent({
@@ -174,7 +174,7 @@ const handleNewUserInput = async (text: string) => {
 
   } catch (error: any) { // Catch errors from setting up the stream
     console.error(`[${agentDisplayName.value}Agent] Chat API error:`, error);
-    const errorMessage = error.response?.data?.message || error.message || 'An error occurred with Architecton.';
+    const errorMessage = error.response?.data?.message || error.message || 'An error occurred with Architectron.';
     toast?.add({ type: 'error', title: `${agentDisplayName.value} Error`, message: errorMessage });
     chatStore.addMessage({ role: 'error', content: `Sorry, I encountered an issue: ${errorMessage}`, agentId: props.agentId });
     chatStore.updateMainContent({
@@ -201,13 +201,13 @@ onMounted(() => {
   emit('agent-event', { type: 'view_mounted', agentId: props.agentId, label: agentDisplayName.value });
   if (!mainContentToDisplay.value) {
     const welcomeMarkdown = `
-<div class="architecton-welcome-container">
-  <svg xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 mx-auto architecton-icon-glow">
+<div class="architectron-welcome-container">
+  <svg xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 mx-auto architectron-icon-glow">
     <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 0 0 6 16.5h12M3.75 3h-1.5m1.5 0h16.5M3.75 3V1.5M12.75 3v11.25A2.25 2.25 0 0 1 10.5 16.5H6M12.75 3h1.5m-1.5 0h7.5M12.75 3V1.5M6 16.5h12M6 16.5H4.5M20.25 16.5H18M18 16.5l.75-3.75M18 16.5l-.75 3.75M18 16.5l2.25-.75M18 16.5l-2.25.75M6 16.5l.75-3.75M6 16.5l-.75 3.75M6 16.5l2.25-.75M6 16.5l-2.25.75" />
   </svg>
-  <h2 class="architecton-welcome-title">Architecton: System Design Assistant</h2>
-  <p class="architecton-welcome-subtitle">${props.agentConfig.description || 'Ready to collaboratively design and diagram complex systems.'}</p>
-  <p class="architecton-welcome-prompt">${props.agentConfig.inputPlaceholder || 'Describe the system you want to design, or the problem to solve.'}</p>
+  <h2 class="architectron-welcome-title">Architectron: System Design Assistant</h2>
+  <p class="architectron-welcome-subtitle">${props.agentConfig.description || 'Ready to collaboratively design and diagram complex systems.'}</p>
+  <p class="architectron-welcome-prompt">${props.agentConfig.inputPlaceholder || 'Describe the system you want to design, or the problem to solve.'}</p>
 </div>`;
     chatStore.updateMainContent({
         agentId: props.agentId, type: 'markdown', data: welcomeMarkdown,
@@ -231,18 +231,18 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="system-designer-view architecton-view flex flex-col h-full w-full overflow-hidden">
-    <div class="agent-header-controls architecton-header p-2 px-3 border-b flex items-center justify-between gap-2 text-sm">
+  <div class="system-designer-view architectron-view flex flex-col h-full w-full overflow-hidden">
+    <div class="agent-header-controls architectron-header p-2 px-3 border-b flex items-center justify-between gap-2 text-sm">
       <div class="flex items-center gap-2">
-        <CodeBracketSquareIcon class="w-6 h-6 shrink-0 architecton-icon" :class="props.agentConfig.iconClass" />
-        <span class="font-semibold text-lg architecton-title">{{ agentDisplayName }}</span>
+        <CodeBracketSquareIcon class="w-6 h-6 shrink-0 architectron-icon" :class="props.agentConfig.iconClass" />
+        <span class="font-semibold text-lg architectron-title">{{ agentDisplayName }}</span>
       </div>
       </div>
 
-    <div class="flex-grow relative min-h-0 custom-scrollbar-futuristic architecton-scrollbar overflow-y-auto">
-      <div v-if="isLoadingResponse && !chatStore.isMainContentStreaming" class="loading-overlay-designer architecton-loading-overlay">
-        <div class="architecton-spinner-container"><div class="architecton-spinner"></div></div>
-        <p class="mt-2 text-sm architecton-loading-text">Architecton is crafting the design...</p>
+    <div class="flex-grow relative min-h-0 custom-scrollbar-futuristic architectron-scrollbar overflow-y-auto">
+      <div v-if="isLoadingResponse && !chatStore.isMainContentStreaming" class="loading-overlay-designer architectron-loading-overlay">
+        <div class="architectron-spinner-container"><div class="architectron-spinner"></div></div>
+        <p class="mt-2 text-sm architectron-loading-text">Architectron is crafting the design...</p>
       </div>
       
       <template v-if="mainContentToDisplay">
@@ -255,22 +255,22 @@ onMounted(() => {
                       ? chatStore.streamingMainContentText 
                       : mainContentToDisplay.data as string"
           :mode="props.agentConfig.id"
-          class="p-1 h-full architecton-compact-renderer"
+          class="p-1 h-full architectron-compact-renderer"
         />
         <div v-else-if="mainContentToDisplay.type === 'markdown' || mainContentToDisplay.type === 'welcome' || mainContentToDisplay.type === 'loading'"
-             class="prose prose-sm sm:prose-base dark:prose-invert max-w-none p-4 md:p-6 h-full architecton-prose-content"
+             class="prose prose-sm sm:prose-base dark:prose-invert max-w-none p-4 md:p-6 h-full architectron-prose-content"
              :class="{'flex flex-col items-center justify-center text-center': mainContentToDisplay.type === 'welcome' && !mainContentToDisplay.data?.includes('###')}"
              v-html="chatStore.isMainContentStreaming && agentStore.activeAgentId === props.agentId 
                       ? marked.parse(chatStore.streamingMainContentText + '▋')
                       : marked.parse(mainContentToDisplay.data as string)" 
         >
         </div>
-        <div v-else class="p-4 text-slate-400 dark:text-slate-500 italic h-full flex items-center justify-center architecton-placeholder">
+        <div v-else class="p-4 text-slate-400 dark:text-slate-500 italic h-full flex items-center justify-center architectron-placeholder">
           {{ agentDisplayName }} is ready. (Content Type: {{ mainContentToDisplay.type }})
         </div>
       </template>
-      <div v-else-if="!isLoadingResponse" class="flex-grow flex flex-col items-center justify-center h-full p-4 text-center architecton-empty-state">
-        <LightBulbIcon class="w-12 h-12 mx-auto mb-3 text-[var(--agent-architecton-accent-color-muted)] opacity-60"/>
+      <div v-else-if="!isLoadingResponse" class="flex-grow flex flex-col items-center justify-center h-full p-4 text-center architectron-empty-state">
+        <LightBulbIcon class="w-12 h-12 mx-auto mb-3 text-[var(--agent-architectron-accent-color-muted)] opacity-60"/>
         <p class="text-slate-400 dark:text-slate-500">{{ props.agentConfig.inputPlaceholder || 'Describe the system you want to design.' }}</p>
       </div>
     </div>
@@ -278,14 +278,14 @@ onMounted(() => {
 </template>
 
 <style scoped lang="postcss">
-/* Define Architecton's specific accent colors and theme properties */
-.architecton-view { /* Apply to the root of this component for variable scoping */
-  --agent-architecton-accent-hue: var(--accent-hue-indigo, 240); /* Indigo */
-  --agent-architecton-accent-saturation: 65%;
-  --agent-architecton-accent-lightness: 55%;
-  --agent-architecton-accent-color: hsl(var(--agent-architecton-accent-hue), var(--agent-architecton-accent-saturation), var(--agent-architecton-accent-lightness));
-  --agent-architecton-accent-color-muted: hsla(var(--agent-architecton-accent-hue), var(--agent-architecton-accent-saturation), var(--agent-architecton-accent-lightness), 0.7);
-  --agent-architecton-accent-color-darker: hsl(var(--agent-architecton-accent-hue), var(--agent-architecton-accent-saturation), calc(var(--agent-architecton-accent-lightness) - 10%));
+/* Define Architectron's specific accent colors and theme properties */
+.architectron-view { /* Apply to the root of this component for variable scoping */
+  --agent-architectron-accent-hue: var(--accent-hue-indigo, 240); /* Indigo */
+  --agent-architectron-accent-saturation: 65%;
+  --agent-architectron-accent-lightness: 55%;
+  --agent-architectron-accent-color: hsl(var(--agent-architectron-accent-hue), var(--agent-architectron-accent-saturation), var(--agent-architectron-accent-lightness));
+  --agent-architectron-accent-color-muted: hsla(var(--agent-architectron-accent-hue), var(--agent-architectron-accent-saturation), var(--agent-architectron-accent-lightness), 0.7);
+  --agent-architectron-accent-color-darker: hsl(var(--agent-architectron-accent-hue), var(--agent-architectron-accent-saturation), calc(var(--agent-architectron-accent-lightness) - 10%));
   
   background-color: var(--bg-agent-view-dark, theme('colors.slate.900')); /* Slightly different base */
   color: var(--text-primary-dark, theme('colors.slate.100'));
@@ -296,8 +296,8 @@ onMounted(() => {
     content: '';
     position: absolute;
     inset: 0;
-    background-image: linear-gradient(hsla(var(--agent-architecton-accent-hue), 50%, 30%, 0.07) 1px, transparent 1px),
-                      linear-gradient(90deg, hsla(var(--agent-architecton-accent-hue), 50%, 30%, 0.07) 1px, transparent 1px);
+    background-image: linear-gradient(hsla(var(--agent-architectron-accent-hue), 50%, 30%, 0.07) 1px, transparent 1px),
+                      linear-gradient(90deg, hsla(var(--agent-architectron-accent-hue), 50%, 30%, 0.07) 1px, transparent 1px);
     background-size: 20px 20px;
     opacity: 0.5;
     pointer-events: none;
@@ -306,72 +306,72 @@ onMounted(() => {
   > * { position: relative; z-index: 1; } */
 }
 
-.architecton-header {
-  border-bottom-color: hsla(var(--agent-architecton-accent-hue), var(--agent-architecton-accent-saturation), var(--agent-architecton-accent-lightness), 0.4);
+.architectron-header {
+  border-bottom-color: hsla(var(--agent-architectron-accent-hue), var(--agent-architectron-accent-saturation), var(--agent-architectron-accent-lightness), 0.4);
   background-color: var(--bg-header-dark, theme('colors.slate.950'));
   padding-top: theme('spacing.3');
   padding-bottom: theme('spacing.3');
 }
 
-.architecton-icon {
-  color: var(--agent-architecton-accent-color);
-  filter: drop-shadow(0 0 4px var(--agent-architecton-accent-color-muted));
+.architectron-icon {
+  color: var(--agent-architectron-accent-color);
+  filter: drop-shadow(0 0 4px var(--agent-architectron-accent-color-muted));
 }
-.architecton-title {
+.architectron-title {
   color: var(--text-primary-dark, theme('colors.slate.100'));
-  /* text-shadow: 0 0 6px hsla(var(--agent-architecton-accent-hue), var(--agent-architecton-accent-saturation), var(--agent-architecton-accent-lightness), 0.2); */
+  /* text-shadow: 0 0 6px hsla(var(--agent-architectron-accent-hue), var(--agent-architectron-accent-saturation), var(--agent-architectron-accent-lightness), 0.2); */
 }
 
-/* Loading Overlay & Spinner for Architecton */
-.architecton-loading-overlay {
+/* Loading Overlay & Spinner for Architectron */
+.architectron-loading-overlay {
   @apply absolute inset-0 flex flex-col items-center justify-center z-10;
   background-color: rgba(var(--bg-base-rgb-dark, 20, 25, 35), 0.7); /* Slightly bluer dark base */
   backdrop-filter: blur(2.5px);
 }
-.architecton-spinner-container { /* If using a more complex spinner, style its container */
+.architectron-spinner-container { /* If using a more complex spinner, style its container */
   @apply relative w-10 h-10;
 }
-.architecton-spinner { /* Spinner from original file */
+.architectron-spinner { /* Spinner from original file */
   @apply w-full h-full border-4 rounded-full animate-spin;
-  border-color: hsla(var(--agent-architecton-accent-hue), var(--agent-architecton-accent-saturation), var(--agent-architecton-accent-lightness), 0.25);
-  border-top-color: var(--agent-architecton-accent-color);
+  border-color: hsla(var(--agent-architectron-accent-hue), var(--agent-architectron-accent-saturation), var(--agent-architectron-accent-lightness), 0.25);
+  border-top-color: var(--agent-architectron-accent-color);
 }
-.architecton-loading-text {
-  color: var(--agent-architecton-accent-color-muted);
+.architectron-loading-text {
+  color: var(--agent-architectron-accent-color-muted);
   font-weight: 500;
 }
 
-/* Custom Scrollbar for Architecton */
+/* Custom Scrollbar for Architectron */
 
 
-/* Styling for Prose content rendered by Architecton */
-.architecton-prose-content, .architecton-compact-renderer :deep(.prose) { /* Target prose within compact renderer too */
+/* Styling for Prose content rendered by Architectron */
+.architectron-prose-content, .architectron-compact-renderer :deep(.prose) { /* Target prose within compact renderer too */
   :deep(h1), :deep(h2), :deep(h3), :deep(h4) {
     @apply text-[var(--text-primary-dark)] border-b pb-1.5 mb-3;
-    border-bottom-color: hsla(var(--agent-architecton-accent-hue), var(--agent-architecton-accent-saturation), var(--agent-architecton-accent-lightness), 0.35);
-    color: hsl(var(--agent-architecton-accent-hue), var(--agent-architecton-accent-saturation), calc(var(--agent-architecton-accent-lightness) + 15%)); /* Brighter headings for emphasis */
+    border-bottom-color: hsla(var(--agent-architectron-accent-hue), var(--agent-architectron-accent-saturation), var(--agent-architectron-accent-lightness), 0.35);
+    color: hsl(var(--agent-architectron-accent-hue), var(--agent-architectron-accent-saturation), calc(var(--agent-architectron-accent-lightness) + 15%)); /* Brighter headings for emphasis */
   }
   :deep(p), :deep(li) {
     @apply text-[var(--text-secondary-dark)] my-2.5 leading-relaxed;
   }
   :deep(a) {
-    color: var(--agent-architecton-accent-color);
-    @apply hover:underline hover:text-[var(--agent-architecton-accent-color-darker)];
+    color: var(--agent-architectron-accent-color);
+    @apply hover:underline hover:text-[var(--agent-architectron-accent-color-darker)];
   }
   :deep(strong) {
-    color: hsl(var(--agent-architecton-accent-hue), var(--agent-architecton-accent-saturation), calc(var(--agent-architecton-accent-lightness) + 10%));
+    color: hsl(var(--agent-architectron-accent-hue), var(--agent-architectron-accent-saturation), calc(var(--agent-architectron-accent-lightness) + 10%));
   }
   :deep(code:not(pre code)) { /* Inline code */
     @apply px-1.5 py-1 rounded-md text-xs;
-    background-color: hsla(var(--agent-architecton-accent-hue), var(--agent-architecton-accent-saturation, 30%), var(--agent-architecton-accent-lightness, 25%), 0.2);
-    color: hsl(var(--agent-architecton-accent-hue), var(--agent-architecton-accent-saturation, 50%), calc(var(--agent-architecton-accent-lightness, 50%) + 20%));
-    border: 1px solid hsla(var(--agent-architecton-accent-hue), var(--agent-architecton-accent-saturation, 30%), var(--agent-architecton-accent-lightness, 25%), 0.3);
+    background-color: hsla(var(--agent-architectron-accent-hue), var(--agent-architectron-accent-saturation, 30%), var(--agent-architectron-accent-lightness, 25%), 0.2);
+    color: hsl(var(--agent-architectron-accent-hue), var(--agent-architectron-accent-saturation, 50%), calc(var(--agent-architectron-accent-lightness, 50%) + 20%));
+    border: 1px solid hsla(var(--agent-architectron-accent-hue), var(--agent-architectron-accent-saturation, 30%), var(--agent-architectron-accent-lightness, 25%), 0.3);
   }
   :deep(pre) { /* Code blocks, especially for Mermaid diagrams */
-    @apply border text-sm my-4 p-0 rounded-lg architecton-scrollbar overflow-auto; /* Apply scrollbar, remove padding for mermaid */
+    @apply border text-sm my-4 p-0 rounded-lg architectron-scrollbar overflow-auto; /* Apply scrollbar, remove padding for mermaid */
     /* Background for code blocks, distinct for diagrams */
     background-color: hsla(var(--neutral-hue, 220), 25%, 12%, 0.8); /* Dark, slightly transparent for diagrams */
-    border-color: hsla(var(--agent-architecton-accent-hue), var(--agent-architecton-accent-saturation), var(--agent-architecton-accent-lightness), 0.25);
+    border-color: hsla(var(--agent-architectron-accent-hue), var(--agent-architectron-accent-saturation), var(--agent-architectron-accent-lightness), 0.25);
     box-shadow: inset 0 2px 5px rgba(0,0,0,0.25);
     /* Mermaid specific: ensure diagram takes up space and is centered */
     code.language-mermaid { /* Or just pre > .mermaid if that's how it's rendered */
@@ -383,24 +383,24 @@ onMounted(() => {
 }
 
 /* Welcome message specific styling */
-.architecton-welcome-container {
+.architectron-welcome-container {
   @apply text-center p-6 flex flex-col items-center justify-center h-full;
 }
-.architecton-icon-glow {
-  color: var(--agent-architecton-accent-color);
-  filter: drop-shadow(0 0 12px hsla(var(--agent-architecton-accent-hue), var(--agent-architecton-accent-saturation), var(--agent-architecton-accent-lightness), 0.6));
+.architectron-icon-glow {
+  color: var(--agent-architectron-accent-color);
+  filter: drop-shadow(0 0 12px hsla(var(--agent-architectron-accent-hue), var(--agent-architectron-accent-saturation), var(--agent-architectron-accent-lightness), 0.6));
   animation: subtlePulse 3.5s infinite ease-in-out;
   --scale-pulse: 1.03;
   --opacity-pulse: 0.85;
 }
-.architecton-welcome-title {
+.architectron-welcome-title {
   @apply text-2xl sm:text-3xl font-bold mt-3 mb-1.5;
-  color: hsl(var(--agent-architecton-accent-hue), var(--agent-architecton-accent-saturation), calc(var(--agent-architecton-accent-lightness) + 25%));
+  color: hsl(var(--agent-architectron-accent-hue), var(--agent-architectron-accent-saturation), calc(var(--agent-architectron-accent-lightness) + 25%));
 }
-.architecton-welcome-subtitle {
+.architectron-welcome-subtitle {
   @apply text-base sm:text-lg text-[var(--text-secondary-dark)] mb-5 max-w-lg;
 }
-.architecton-welcome-prompt {
+.architectron-welcome-prompt {
   @apply text-sm sm:text-base text-[var(--text-muted-dark)] italic;
 }
 
