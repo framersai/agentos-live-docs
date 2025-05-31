@@ -3,7 +3,7 @@
 /**
  * @file VoiceInput.vue
  * @description Core component for handling voice and text input. Orchestrates STT handlers.
- * @version 5.0.5 (Corrects template structure for BrowserSpeechHandler, addresses unused function errors)
+ * @version 5.0.7 (Disables mode switching and ensures STT handlers respect LLM processing state)
  */
 import {
   ref,
@@ -40,27 +40,20 @@ import {
 } from '@heroicons/vue/24/outline';
 import { CheckIcon as SolidCheckIcon } from '@heroicons/vue/24/solid';
 
-/** Represents an item in the transcription history. */
 interface TranscriptionHistoryItem { id: string; text: string; timestamp: number; sent: boolean; }
-/** Represents an option for audio input mode selection. */
 interface AudioModeOption { label: string; value: AudioInputMode; icon: VueComponentType; description: string; }
 
 const props = defineProps({
-  /** Indicates if the parent/LLM is processing a previous request. */
   isProcessing: { type: Boolean as PropType<boolean>, required: true },
 });
 
 const emit = defineEmits<{
-  /** Emitted when a transcription is finalized. */
   (e: 'transcription', value: string): void;
-  /** Emitted when microphone permission status changes. */
   (e: 'permission-update', status: 'granted' | 'denied' | 'prompt' | 'error'): void;
-  /** Emitted when audio processing state (recording/STT work) changes. */
   (e: 'processing-audio', isProcessingAudio: boolean): void;
 }>();
 
 const toast = inject<ToastService>('toast');
-
 const settingsFromManager: VoiceApplicationSettings = voiceSettingsManager.settings;
 const settingsRefForComposable: Ref<VoiceApplicationSettings> = ref(settingsFromManager);
 
@@ -75,9 +68,7 @@ const {
 } = useMicrophone({
   settings: readonly(settingsRefForComposable),
   toast,
-  onPermissionUpdateGlobally: (status) => {
-    emit('permission-update', status);
-  }
+  onPermissionUpdateGlobally: (status) => { emit('permission-update', status); }
 });
 
 const browserSpeechHandlerRef = ref<InstanceType<typeof BrowserSpeechHandler> | null>(null);
@@ -86,12 +77,8 @@ const whisperSpeechHandlerRef = ref<InstanceType<typeof WhisperSpeechHandler> | 
 const textInput: Ref<string> = ref('');
 const textareaRef: Ref<HTMLTextAreaElement | null> = ref(null);
 const editModalTextareaRef: Ref<HTMLTextAreaElement | null> = ref(null);
-
-/** Reflects if any child STT handler is actively processing audio (recording/recognizing main speech). */
 const isChildSttProcessingAudio: Ref<boolean> = ref(false);
-/** Reflects if BrowserSpeechHandler is listening for VAD wake word. */
 const isChildListeningForWakeWord: Ref<boolean> = ref(false);
-
 const transcriptionHistory: Ref<TranscriptionHistoryItem[]> = ref(
   JSON.parse(localStorage.getItem('vca-transcriptionHistory-v3.1') || '[]')
 );
@@ -100,15 +87,11 @@ const showAudioModeDropdown: Ref<boolean> = ref(false);
 const audioModeDropdownRef: Ref<HTMLElement | null> = ref(null);
 const showEditModal: Ref<boolean> = ref(false);
 const editingTranscription: Ref<string> = ref('');
-/** Stores the original pending transcript from Browser STT for the edit modal. */
 const pendingBrowserTranscriptForEdit: Ref<string> = ref('');
-
 
 const sttPreference = computed<STTPreference>(() => settingsFromManager.sttPreference);
 const currentAudioMode = computed<AudioInputMode>(() => settingsFromManager.audioInputMode);
-
 const isSelfProcessingAudio = computed<boolean>(() => isChildSttProcessingAudio.value || isChildListeningForWakeWord.value);
-
 const isPttMode = computed<boolean>(() => currentAudioMode.value === 'push-to-talk');
 const isContinuousMode = computed<boolean>(() => currentAudioMode.value === 'continuous');
 const isVoiceActivationMode = computed<boolean>(() => currentAudioMode.value === 'voice-activation');
@@ -136,12 +119,6 @@ const textInputProminenceClass = computed<string>(() => {
   return 'input-prominence-default';
 });
 
-// --- Function Definitions (Order Matters for <script setup>) ---
-
-/**
- * Emits transcription to parent and updates history.
- * @param {string} text - The transcribed text.
- */
 const sendTranscriptionToParent = (text: string) => {
   if (text.trim()) {
     emit('transcription', text.trim());
@@ -150,31 +127,30 @@ const sendTranscriptionToParent = (text: string) => {
   }
 };
 
-// --- Event Handlers from Child STT Components (Defined after sendTranscriptionToParent) ---
-/** Handles transcription from the active STT child component. */
 const onChildTranscription = (text: string) => { sendTranscriptionToParent(text); };
-/** Updates processing state based on STT child component. */
 const onChildProcessingAudio = (isProcessing: boolean) => { isChildSttProcessingAudio.value = isProcessing; };
-/** Updates VAD wake word listening state (from BrowserSpeechHandler). */
 const onChildListeningForWakeWord = (isListening: boolean) => { isChildListeningForWakeWord.value = isListening; };
-/** Handles errors from STT child components. */
 const onChildError = (payload: { type: string; message: string; code?: string }) => {
   console.error(`[VoiceInput] Error from child STT handler (${payload.type}): ${payload.message} ${payload.code || ''}`);
   if (payload.type === 'permission' || payload.code === 'not-allowed' || payload.code === 'service-not-allowed') {
     micPermissionStatus.value = 'denied';
     micPermissionMessage.value = payload.message;
     emit('permission-update', 'denied');
-  } else if (payload.type === 'init' || payload.type === 'recorder' || payload.type === 'api' || payload.type === 'speech') {
+  } else if (['init', 'recorder', 'api', 'speech'].includes(payload.type)) {
       toast?.add({type: 'error', title: `STT Error (${payload.type})`, message: payload.message});
   }
 };
 
-/**
- * Handles wake word detection from BrowserSpeechHandler to orchestrate command capture
- * with the currently selected STT engine (Browser or Whisper).
- */
 const onWakeWordDetectedInVoiceInput = async () => {
     console.log("[VoiceInput] Wake word detected! Determining STT for command capture.");
+    if (props.isProcessing) {
+        toast?.add({ type: 'info', title: 'Assistant Busy', message: 'LLM is processing. Command ignored.' });
+        // Optionally, restart VAD wake word listening immediately if it was stopped by detection
+        if (browserSpeechHandlerRef.value && !isChildListeningForWakeWord.value && micPermissionStatus.value === 'granted') {
+            browserSpeechHandlerRef.value.startVADWakeWordRecognition?.();
+        }
+        return;
+    }
     await nextTick();
     const forVADCommand = true;
     if (sttPreference.value === 'browser_webspeech_api') {
@@ -182,29 +158,27 @@ const onWakeWordDetectedInVoiceInput = async () => {
             console.log("[VoiceInput] Starting Browser STT for VAD command.");
             browserSpeechHandlerRef.value.startListening(forVADCommand);
         } else {
-            console.error("[VoiceInput] BrowserSpeechHandler not available for VAD command capture.");
-            toast?.add({ type: 'error', title: 'VAD Error', message: 'Browser STT handler not ready for command.'});
+            console.error("[VoiceInput] BrowserSpeechHandler not ready for VAD command.");
+            toast?.add({ type: 'error', title: 'VAD Error', message: 'Browser STT handler not ready.'});
         }
     } else if (sttPreference.value === 'whisper_api') {
         if (whisperSpeechHandlerRef.value) {
             console.log("[VoiceInput] Starting Whisper STT for VAD command.");
             if (!(await ensureMicrophoneAccessAndStream())) {
-                toast?.add({ type: 'error', title: 'Mic Required', message: micPermissionMessage.value || 'Mic needed for Whisper VAD command.' });
-                // Attempt to put Browser STT back into wake word listening if it was interrupted by failed mic access for Whisper.
-                if (browserSpeechHandlerRef.value && micPermissionStatus.value === 'granted') { // Check if mic still granted for BrowserSTT
+                toast?.add({ type: 'error', title: 'Mic Required', message: micPermissionMessage.value || 'Mic needed for Whisper VAD.' });
+                if (browserSpeechHandlerRef.value && micPermissionStatus.value === 'granted') {
                     browserSpeechHandlerRef.value.startVADWakeWordRecognition?.();
                 }
                 return;
             }
             whisperSpeechHandlerRef.value.startListening(forVADCommand);
         } else {
-            console.error("[VoiceInput] WhisperSpeechHandler not available for VAD command capture.");
-            toast?.add({ type: 'error', title: 'VAD Error', message: 'Whisper STT handler not ready for command.'});
+            console.error("[VoiceInput] WhisperSpeechHandler not ready for VAD command.");
+            toast?.add({ type: 'error', title: 'VAD Error', message: 'Whisper STT handler not ready.'});
         }
     }
 };
 
-/** Stops all audio processing across microphone and STT handlers. */
 const stopAllAudioProcessing = async (releaseMic: boolean = true) => {
   console.log(`[VoiceInput] Stopping all audio processing. Release Mic: ${releaseMic}`);
   if (browserSpeechHandlerRef.value) await browserSpeechHandlerRef.value.stopAll(true);
@@ -216,7 +190,6 @@ const stopAllAudioProcessing = async (releaseMic: boolean = true) => {
   }
 };
 
-/** Handles auto-sizing of the text input area. */
 const handleTextareaInput = () => {
     if (textareaRef.value) {
         textareaRef.value.style.height = 'auto';
@@ -225,7 +198,6 @@ const handleTextareaInput = () => {
     }
 };
 
-/** Handles text submission from the textarea. */
 const handleTextSubmit = () => {
   if (textInput.value.trim() && !isSelfProcessingAudio.value && !props.isProcessing) {
     sendTranscriptionToParent(textInput.value.trim());
@@ -234,105 +206,75 @@ const handleTextSubmit = () => {
   }
 };
 
-/** Handles click on the main microphone button (PTT-focused). */
 const handleMicButtonInteraction = async () => {
-  if (!isPttMode.value) {
-    console.warn("[VoiceInput] Main mic button interaction attempted outside of PTT mode. Button should be disabled or hidden for non-PTT modes.");
-    return;
-  }
+  if (!isPttMode.value) return; // Button is PTT only
   await nextTick();
 
   const pttSTTPreference = sttPreference.value;
   const pttHandler = pttSTTPreference === 'browser_webspeech_api'
                       ? browserSpeechHandlerRef.value
                       : whisperSpeechHandlerRef.value;
-
   if (!pttHandler) {
-      console.error(`[VoiceInput] PTT handler (${pttSTTPreference}) is not available.`);
-      toast?.add({ type: 'error', title: 'Handler Error', message: `PTT speech handler (${pttSTTPreference}) not ready.` });
+      toast?.add({ type: 'error', title: 'Handler Error', message: `PTT handler (${pttSTTPreference}) not ready.` });
       return;
   }
 
-  let isPttCurrentlyRecording = false;
-  if (pttSTTPreference === 'browser_webspeech_api' && browserSpeechHandlerRef.value) {
-      isPttCurrentlyRecording = browserSpeechHandlerRef.value.isBrowserWebSpeechActive;
-  } else if (pttSTTPreference === 'whisper_api' && whisperSpeechHandlerRef.value) {
-      isPttCurrentlyRecording = whisperSpeechHandlerRef.value.isMediaRecorderActive;
-  }
+  let isPttCurrentlyRecording = (pttSTTPreference === 'browser_webspeech_api' && browserSpeechHandlerRef.value?.isBrowserWebSpeechActive) ||
+                                (pttSTTPreference === 'whisper_api' && whisperSpeechHandlerRef.value?.isMediaRecorderActive);
 
   if (isPttCurrentlyRecording) {
-    console.log(`[VoiceInput] PTT Mic button clicked to STOP PTT recording with ${pttSTTPreference}.`);
-    pttHandler.stopListening(false); // false for graceful stop in PTT
+    pttHandler.stopListening(false);
   } else {
-    if (props.isProcessing) {
+    if (props.isProcessing) { // Prevent starting new PTT if LLM is busy
       toast?.add({ type: 'info', title: 'Assistant Busy', message: 'Please wait for the current response.' });
       return;
     }
     if (!(await ensureMicrophoneAccessAndStream())) {
-      toast?.add({ type: 'error', title: 'Mic Required', message: micPermissionMessage.value || 'Microphone access is required.' });
+      toast?.add({ type: 'error', title: 'Mic Required', message: micPermissionMessage.value || 'Mic access required.' });
       return;
     }
-    console.log(`[VoiceInput] PTT Mic button clicked to START PTT with ${pttSTTPreference}.`);
-    pttHandler.startListening(false); // false indicates not for VAD command
+    pttHandler.startListening(false);
   }
 };
 
-/** Handles click on the secondary stop button (for Continuous/VAD). */
 const handleManualStopFromSecondaryButton = async () => {
-  console.log(`[VoiceInput] Manual stop button clicked. Current Mode: ${currentAudioMode.value}, STT Pref: ${sttPreference.value}`);
+  console.log(`[VoiceInput] Manual stop: Mode: ${currentAudioMode.value}, STT: ${sttPreference.value}`);
   if (currentAudioMode.value === 'voice-activation') {
-    if (browserSpeechHandlerRef.value) {
-        console.log("[VoiceInput] Stopping VAD (BrowserSpeechHandler for wake word/command).");
-        await browserSpeechHandlerRef.value.stopAll(true); // true for abort
-    }
-    // If Whisper was active for VAD command, ensure it's also stopped.
+    if (browserSpeechHandlerRef.value) await browserSpeechHandlerRef.value.stopAll(true);
     if (sttPreference.value === 'whisper_api' && whisperSpeechHandlerRef.value?.isMediaRecorderActive) {
-        console.log("[VoiceInput] Also stopping active Whisper VAD command capture.");
-        await whisperSpeechHandlerRef.value.stopAll();
+      await whisperSpeechHandlerRef.value.stopAll();
+    }
+     // After stopping VAD, ensure VAD wake word listener restarts if appropriate
+    if (browserSpeechHandlerRef.value && micPermissionStatus.value === 'granted' && !props.isProcessing) {
+        await nextTick(); // allow stopAll to complete
+        if (!isChildListeningForWakeWord.value && !isChildSttProcessingAudio.value) {
+             browserSpeechHandlerRef.value.startVADWakeWordRecognition?.();
+        }
     }
   } else if (currentAudioMode.value === 'continuous') {
-    const continuousHandler = sttPreference.value === 'browser_webspeech_api'
-                                ? browserSpeechHandlerRef.value
-                                : whisperSpeechHandlerRef.value;
-    if (continuousHandler) {
-        console.log(`[VoiceInput] Stopping Continuous mode with ${sttPreference.value} handler.`);
-        await continuousHandler.stopAll(true); // true for abort to immediately stop
-    } else {
-        console.warn("[VoiceInput] No active handler found for continuous mode manual stop.");
-    }
-  } else {
-      console.warn(`[VoiceInput] Manual stop button clicked in unhandled mode: ${currentAudioMode.value}`);
+    const handler = sttPreference.value === 'browser_webspeech_api' ? browserSpeechHandlerRef.value : whisperSpeechHandlerRef.value;
+    if (handler) await handler.stopAll(true);
   }
 };
 
-/** Handles request to edit pending transcript from Browser STT continuous mode. */
 const handleEditBrowserPending = (pendingText: string) => {
     if (sttPreference.value === 'browser_webspeech_api' && isContinuousMode.value) {
         editingTranscription.value = pendingText;
-        pendingBrowserTranscriptForEdit.value = pendingText; // Keep original for context if needed
+        pendingBrowserTranscriptForEdit.value = pendingText;
         showEditModal.value = true;
         nextTick(() => editModalTextareaRef.value?.focus());
     }
 };
-
-/** Saves the edited transcript and sends it. */
 const saveEdit = () => {
   if(editingTranscription.value.trim()){
     sendTranscriptionToParent(editingTranscription.value.trim());
-    // Ensure the BrowserSpeechHandler clears its internal pending transcript
-    if (browserSpeechHandlerRef.value) {
-        browserSpeechHandlerRef.value.clearPendingTranscript();
-    }
+    if (browserSpeechHandlerRef.value) browserSpeechHandlerRef.value.clearPendingTranscript();
   }
   showEditModal.value = false; editingTranscription.value = ''; pendingBrowserTranscriptForEdit.value = '';
 };
-
-/** Cancels the transcript edit. */
 const cancelEdit = () => {
   showEditModal.value = false; editingTranscription.value = ''; pendingBrowserTranscriptForEdit.value = '';
 };
-
-/** Resends a transcription item from history. */
 const resendTranscription = (item: TranscriptionHistoryItem) => {
   if (props.isProcessing || isSelfProcessingAudio.value) {
       toast?.add({type: 'info', title: 'Busy', message: 'Cannot resend while processing.'});
@@ -342,105 +284,84 @@ const resendTranscription = (item: TranscriptionHistoryItem) => {
   toast?.add({ type: 'info', title: 'Resent', message: `Resent: "${item.text.substring(0,30)}..."`, duration: 2000});
 };
 
-// --- UI Helper Functions (Defined after functions they might use, or ensure all are top-level) ---
 const formatTime = (timestamp: number): string => new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-const toggleAudioModeDropdown = () => { showAudioModeDropdown.value = !showAudioModeDropdown.value; };
-const selectAudioMode = (mode: AudioInputMode) => { voiceSettingsManager.updateSetting('audioInputMode', mode); showAudioModeDropdown.value = false; };
+const toggleAudioModeDropdown = () => {
+    if (props.isProcessing) {
+        toast?.add({ type: 'info', title: 'Assistant Busy', message: 'Cannot change mode while processing.' });
+        return;
+    }
+    showAudioModeDropdown.value = !showAudioModeDropdown.value;
+};
+const selectAudioMode = (mode: AudioInputMode) => {
+    if (props.isProcessing) {
+        toast?.add({ type: 'info', title: 'Assistant Busy', message: 'Cannot change mode while processing.' });
+        showAudioModeDropdown.value = false; // Close dropdown
+        return;
+    }
+    voiceSettingsManager.updateSetting('audioInputMode', mode);
+    showAudioModeDropdown.value = false;
+};
 const handleClickOutsideAudioModeDropdown = (event: MouseEvent) => { if (audioModeDropdownRef.value && !audioModeDropdownRef.value.contains(event.target as Node)) { showAudioModeDropdown.value = false; } };
 
 const getButtonTitle = (): string => {
-  if (!isPttMode.value) return 'Microphone button is for PTT mode only.'; // Main mic is PTT only
-  let pttIsActive = false;
-  if (sttPreference.value === 'browser_webspeech_api' && browserSpeechHandlerRef.value) {
-      pttIsActive = browserSpeechHandlerRef.value.isBrowserWebSpeechActive;
-  } else if (sttPreference.value === 'whisper_api' && whisperSpeechHandlerRef.value) {
-      pttIsActive = whisperSpeechHandlerRef.value.isMediaRecorderActive;
-  }
-
+  if (!isPttMode.value) return 'Microphone button is for PTT mode only.';
+  let pttIsActive = (sttPreference.value === 'browser_webspeech_api' && browserSpeechHandlerRef.value?.isBrowserWebSpeechActive) ||
+                    (sttPreference.value === 'whisper_api' && whisperSpeechHandlerRef.value?.isMediaRecorderActive);
   if (props.isProcessing && !pttIsActive) return 'Assistant is processing... PTT start disabled.';
   if (!micAccessInitiallyChecked.value && micPermissionStatus.value === '') return 'Initializing microphone...';
   if (micPermissionStatus.value === 'denied') return 'Microphone access denied.';
   if (micPermissionStatus.value === 'error') return `Microphone error: ${micPermissionMessage.value || 'Unknown'}.`;
-
   return pttIsActive ? 'Click to stop PTT recording' : 'Click to start PTT recording';
 };
 const getPlaceholderText = (): string => {
     const method = sttPreference.value === 'whisper_api' ? 'Whisper' : 'Browser STT';
     let isChildSTTActuallyProcessing = isChildSttProcessingAudio.value && !isChildListeningForWakeWord.value;
-
     if (isChildSTTActuallyProcessing) {
         if (isPttMode.value) return `Recording (PTT ${method})... click mic to stop.`;
         if (isContinuousMode.value) return `Listening continuously (${method})... Or type here.`;
         if (isVoiceActivationMode.value) return `Voice active, listening for command (${method})... or type.`;
     }
     if (isVoiceActivationMode.value && isChildListeningForWakeWord.value) return `Say "V" to activate command input (${method}), or type here...`;
-
     const modeLabel = currentAudioModeLabel.value || currentAudioMode.value;
     if (isPttMode.value) return `Click mic for PTT (${method}), or type...`;
-    // For Continuous/VAD when idle
     return `Type message, or use ${modeLabel.toLowerCase()} (${method}). Mic button is for PTT.`;
 };
 const getModeIndicatorClass = (): string => {
     if (props.isProcessing && !isSelfProcessingAudio.value) return 'processing-llm';
-    let isActivelyProcessingSTTNoVAD = isChildSttProcessingAudio.value && !isChildListeningForWakeWord.value;
-    if (isActivelyProcessingSTTNoVAD) return 'processing-stt'; // Actively transcribing main command/text
-    if (isChildListeningForWakeWord.value) return 'vad-standby'; // VAD wake word listening specific state
-
-    // Standby for Continuous/VAD implies ready and waiting for user speech or wake word, mic on.
+    if (isChildSttProcessingAudio.value && !isChildListeningForWakeWord.value) return 'processing-stt';
+    if (isChildListeningForWakeWord.value) return 'vad-standby';
     if ((isContinuousMode.value || isVoiceActivationMode.value) && micPermissionStatus.value === 'granted') return 'standby';
     if (micPermissionStatus.value === 'denied' || micPermissionStatus.value === 'error') return 'mic-error';
-    return 'idle'; // Default idle, or PTT ready
+    return 'idle';
 };
 const getRecordingStatusText = (): string => {
     if (props.isProcessing && !isSelfProcessingAudio.value) return 'Assistant processing...';
-
     const method = sttPreference.value === 'whisper_api' ? 'Whisper' : 'Browser STT';
-
-    // Browser STT specific statuses
-    if (sttPreference.value === 'browser_webspeech_api' && browserSpeechHandlerRef.value) {
-        if(browserSpeechHandlerRef.value.isBrowserWebSpeechActive) {
-            if (isPttMode.value) return `Recording (PTT ${method})...`;
-            if (isContinuousMode.value) {
-                 return browserSpeechHandlerRef.value.pauseDetectedWebSpeech
-                    ? `Sending in ${Math.max(0, browserSpeechHandlerRef.value.pauseCountdownWebSpeech / 1000).toFixed(1)}s`
-                    : `Listening continuously (${method})...`;
-            }
-            if (isVoiceActivationMode.value && !isChildListeningForWakeWord.value) return `Voice active, recording command (${method})...`;
-        }
-    }
-    // Whisper STT specific statuses
-       else if (sttPreference.value === 'whisper_api' && whisperSpeechHandlerRef.value) {
-        if (whisperSpeechHandlerRef.value.isTranscribingCurrentSegment) return 'Whisper processing audio segment...';
+    if (sttPreference.value === 'browser_webspeech_api' && browserSpeechHandlerRef.value?.isBrowserWebSpeechActive) {
+        if (isPttMode.value) return `Recording (PTT ${method})...`;
+        if (isContinuousMode.value) return browserSpeechHandlerRef.value.pauseDetectedWebSpeech ? `Sending in ${Math.max(0, (browserSpeechHandlerRef.value.pauseCountdownWebSpeech || 0) / 1000).toFixed(1)}s` : `Listening continuously (${method})...`;
+        if (isVoiceActivationMode.value && !isChildListeningForWakeWord.value) return `Voice active, command (${method})...`;
+    } else if (sttPreference.value === 'whisper_api' && whisperSpeechHandlerRef.value) {
+        if (whisperSpeechHandlerRef.value.isTranscribingCurrentSegment) return 'Whisper processing audio...';
         if (whisperSpeechHandlerRef.value.isMediaRecorderActive) {
             const duration = whisperSpeechHandlerRef.value.recordingSegmentSeconds;
             const durationStr = ` (${new Date(duration * 1000).toISOString().substr(14, 5)})`;
-
-            // UPDATED: Check for Whisper's "Sending in..." countdown
-            if (isContinuousMode.value && whisperSpeechHandlerRef.value.isWhisperPauseDetected) {
-                return `Sending in ${ (whisperSpeechHandlerRef.value.whisperPauseCountdown / 1000).toFixed(1) }s... (Whisper)`;
-            }
-
+            if (isContinuousMode.value && whisperSpeechHandlerRef.value.isWhisperPauseDetected) return `Sending in ${ (whisperSpeechHandlerRef.value.whisperPauseCountdown / 1000).toFixed(1) }s... (Whisper)`;
             if (isPttMode.value) return `Recording (PTT ${method})${durationStr}`;
             if (isContinuousMode.value) return `Listening continuously (${method})${durationStr}`;
-            if (isVoiceActivationMode.value && !isChildListeningForWakeWord.value) return `Voice active, recording command (${method})${durationStr}`;
+            if (isVoiceActivationMode.value && !isChildListeningForWakeWord.value) return `Voice active, command (${method})${durationStr}`;
         }
     }
-
     if (isVoiceActivationMode.value && isChildListeningForWakeWord.value) return `Awaiting wake word "V"...`;
-
     return '';
 };
 const getIdleStatusText = (): string => {
     if (props.isProcessing && !isSelfProcessingAudio.value) return 'Assistant Processing...';
     if (isChildSttProcessingAudio.value && !isChildListeningForWakeWord.value) return 'Transcribing Audio...';
     if (isVoiceActivationMode.value && isChildListeningForWakeWord.value) return 'VAD Listening for "V"';
-
     if (micPermissionStatus.value === 'granted') {
         const modeOpt = audioModeOptions.value.find(m => m.value === currentAudioMode.value);
-        // If VAD mode is selected but wake word isn't active (e.g. after a command or manual stop)
-        if (isVoiceActivationMode.value && !isChildListeningForWakeWord.value && !isChildSttProcessingAudio.value) {
-            return 'Voice Activate Ready';
-        }
+        if (isVoiceActivationMode.value && !isChildListeningForWakeWord.value && !isChildSttProcessingAudio.value) return 'Voice Activate Ready';
         return `${modeOpt ? modeOpt.label : 'Audio Input'} Ready`;
     }
     if (micPermissionStatus.value === 'denied' || micPermissionStatus.value === 'error') return "Microphone Inactive/Error";
@@ -448,162 +369,84 @@ const getIdleStatusText = (): string => {
     return 'Initializing Audio...';
 };
 
-// --- Watchers and Lifecycle Hooks (Order after function definitions if they call them) ---
 watch([
-  () => settingsFromManager.audioInputMode,
-  () => settingsFromManager.sttPreference,
-  () => settingsFromManager.selectedAudioInputDeviceId,
-  () => settingsFromManager.speechLanguage
+  () => settingsFromManager.audioInputMode, () => settingsFromManager.sttPreference,
+  () => settingsFromManager.selectedAudioInputDeviceId, () => settingsFromManager.speechLanguage
 ], async ([newMode, newSTT, newDevice, newLang], [oldMode, oldSTT, oldDevice, oldLang]) => {
-  console.log(`[VoiceInput] Settings changed. Mode: ${oldMode}->${newMode}, STT: ${oldSTT}->${newSTT}, Device ID: ${newDevice !== oldDevice ? 'changed' : 'same'}, Lang: ${oldLang}->${newLang}`);
-
-  const deviceOrMajorSettingChanged = newDevice !== oldDevice || newMode !== oldMode || newSTT !== oldSTT || (newLang !== oldLang && (newSTT === 'browser_webspeech_api' || (newSTT === 'whisper_api' && newLang))); // Whisper lang change needs reinit if it affects prompts etc.
-
-  await stopAllAudioProcessing(false); // Stop current STT activity, but don't release mic yet if only lang changed for same STT
-
-  if (newDevice !== oldDevice) {
-    console.log("[VoiceInput] Audio device changed, re-acquiring stream.");
-    await releaseAllMicrophoneResources(); // Release old stream
-    const streamAvailable = await ensureMicrophoneAccessAndStream(); // Get new stream
-    if (!streamAvailable) {
-        console.error("[VoiceInput] Failed to get stream for new audio device. STT cannot start.");
-        micPermissionMessage.value = "Failed to access new microphone.";
-        micPermissionStatus.value = 'error';
-        emit('permission-update', 'error');
-        return; // Cannot proceed without mic stream
-    }
+  if (props.isProcessing) {
+      console.warn("[VoiceInput] Settings change ignored: LLM is processing.");
+      // Revert UI optimistic update if settings manager is reactive and directly bound
+      // This depends on how settingsManager.updateSetting works with the reactive `settingsFromManager`
+      voiceSettingsManager.updateSetting('audioInputMode', oldMode);
+      voiceSettingsManager.updateSetting('sttPreference', oldSTT);
+      // etc. for other settings if they were optimistically updated
+      return;
   }
 
-  await nextTick(); // Allow DOM and refs to update if child components are re-rendered due to v-if changes
+  console.log(`[VoiceInput] Settings changed. Mode: ${oldMode}->${newMode}, STT: ${oldSTT}->${newSTT}`);
+  const deviceChanged = newDevice !== oldDevice;
+  const sttOrLangChanged = newSTT !== oldSTT || newLang !== oldLang;
 
-  // Reinitialize appropriate handler if its settings (STT, lang, device impacting it) changed
-  // or if mode requires a specific handler to be primed.
-  if (browserSpeechHandlerRef.value && (newSTT === 'browser_webspeech_api' || newMode === 'voice-activation')) {
-    if (deviceOrMajorSettingChanged || (newLang !== oldLang && oldLang)) { // Reinit if lang changed and was previously set
-      console.log("[VoiceInput] Reinitializing BrowserSpeechHandler due to settings change.");
-      await browserSpeechHandlerRef.value.reinitialize();
+  await stopAllAudioProcessing(false);
+
+  if (deviceChanged) {
+    await releaseAllMicrophoneResources();
+    if (!(await ensureMicrophoneAccessAndStream())) {
+        toast?.add({ type: 'error', title: 'Mic Error', message: 'Failed to access new microphone.' });
+        return;
     }
+  }
+  await nextTick();
+
+  if (browserSpeechHandlerRef.value && (newSTT === 'browser_webspeech_api' || newMode === 'voice-activation')) {
+    if (deviceChanged || sttOrLangChanged || newMode !== oldMode) await browserSpeechHandlerRef.value.reinitialize();
   }
   if (whisperSpeechHandlerRef.value && newSTT === 'whisper_api') {
-     if (deviceOrMajorSettingChanged || (newLang !== oldLang && oldLang && settingsFromManager.sttOptions?.prompt)) { // Reinit for Whisper if device/STT/mode changed, or lang if it impacts prompt
-      console.log("[VoiceInput] Reinitializing WhisperSpeechHandler due to settings change.");
-      await whisperSpeechHandlerRef.value.reinitialize();
-    }
+     if (deviceChanged || sttOrLangChanged || newMode !== oldMode) await whisperSpeechHandlerRef.value.reinitialize();
   }
 
-  // Auto-start logic for Continuous or VAD mode
   if (micPermissionStatus.value === 'granted' && !isSelfProcessingAudio.value && !props.isProcessing) {
     if (newMode === 'continuous') {
         const handler = newSTT === 'browser_webspeech_api' ? browserSpeechHandlerRef.value : whisperSpeechHandlerRef.value;
-        if (handler) {
-            console.log(`[VoiceInput] Attempting to auto-start Continuous mode with ${newSTT} handler.`);
-            handler.startListening(false);
-        } else { console.warn(`[VoiceInput] No handler to auto-start continuous for STT: ${newSTT}`); }
+        if (handler) handler.startListening(false);
     } else if (newMode === 'voice-activation') {
-        if (browserSpeechHandlerRef.value) {
-            console.log(`[VoiceInput] Attempting to auto-start VAD wake word listening.`);
-            browserSpeechHandlerRef.value.startVADWakeWordRecognition?.();
-        } else { console.warn(`[VoiceInput] BrowserSpeechHandler not available for VAD auto-start.`); }
+        if (browserSpeechHandlerRef.value) browserSpeechHandlerRef.value.startVADWakeWordRecognition?.();
     }
   }
-}, { deep: false }); // Not deep, as individual settings are primitive or handled by refs
+}, { deep: false });
 
-watch(isSelfProcessingAudio, (newValue) => {
-  emit('processing-audio', newValue);
-});
+watch(isSelfProcessingAudio, (newValue) => { emit('processing-audio', newValue); });
+watch(micPermissionStatus, (newStatus) => { emit('permission-update', newStatus); }); // Forward mic status changes
 
 onMounted(async () => {
   document.addEventListener('click', handleClickOutsideAudioModeDropdown, true);
-  if (navigator.permissions && navigator.permissions.query) {
-    try {
-      const perm = await navigator.permissions.query({ name: 'microphone' as PermissionName });
-      micPermissionStatus.value = perm.state;
-      emit('permission-update', perm.state);
-      micAccessInitiallyChecked.value = true;
+  // Initial permission check and auto-start logic moved to useMicrophone and settings watcher
+  // This simplifies onMounted, primary role is event listeners and initial UI setup.
+  await voiceSettingsManager.initialize(); // Ensure settings service is initialized
+  await nextTick(); // Ensure child components are mounted if rendered by v-if based on initial settings
 
-      if (perm.state === 'granted') {
-        micPermissionMessage.value = '';
-        const streamReady = await ensureMicrophoneAccessAndStream();
-        if (streamReady) {
-            await nextTick(); // Ensure child component refs are available
-            if (micPermissionStatus.value === 'granted' && !isSelfProcessingAudio.value && !props.isProcessing) {
-                if (currentAudioMode.value === 'continuous') {
-                    const handler = sttPreference.value === 'browser_webspeech_api' ? browserSpeechHandlerRef.value : whisperSpeechHandlerRef.value;
-                    if (handler) handler.startListening(false); else console.warn("[VoiceInput] onMounted: Continuous handler not ready.");
-                } else if (currentAudioMode.value === 'voice-activation') {
-                    if (browserSpeechHandlerRef.value) browserSpeechHandlerRef.value.startVADWakeWordRecognition?.(); else console.warn("[VoiceInput] onMounted: VAD handler not ready.");
-                }
-            }
-        } else {
-            micPermissionStatus.value = 'error'; micPermissionMessage.value = 'Failed to access microphone on mount.'; emit('permission-update', 'error');
-        }
-      } else if (perm.state === 'prompt') {
-        micPermissionMessage.value = 'Click PTT mic button to grant access.';
-      } else { // 'denied'
-        micPermissionMessage.value = 'Microphone access denied. Check browser/OS settings.';
-      }
-
-      perm.onchange = async () => {
-        const newState = perm.state;
-        console.log("[VoiceInput] Microphone permission changed to:", newState);
-        micPermissionStatus.value = newState;
-        emit('permission-update', newState);
-        micAccessInitiallyChecked.value = true; // Re-set this flag
-
-        if(newState === 'granted'){
-          micPermissionMessage.value = 'Microphone ready.';
-          const streamReady = await ensureMicrophoneAccessAndStream(); // Attempt to get stream immediately
-           if (streamReady) {
-                await nextTick();
-                if (micPermissionStatus.value === 'granted' && !isSelfProcessingAudio.value && !props.isProcessing) {
-                    if (currentAudioMode.value === 'continuous') {
-                        const handler = sttPreference.value === 'browser_webspeech_api' ? browserSpeechHandlerRef.value : whisperSpeechHandlerRef.value;
-                        if (handler) handler.startListening(false); else console.warn("[VoiceInput] Perm change: Continuous handler not ready.");
-                    } else if (currentAudioMode.value === 'voice-activation') {
-                        if (browserSpeechHandlerRef.value) browserSpeechHandlerRef.value.startVADWakeWordRecognition?.(); else console.warn("[VoiceInput] Perm change: VAD handler not ready.");
-                    }
-                }
-           } else {
-                micPermissionStatus.value = 'error'; micPermissionMessage.value = 'Failed to access microphone after permission grant.'; emit('permission-update', 'error');
-           }
-        } else { // 'denied' or 'prompt'
-          micPermissionMessage.value = newState === 'denied' ? 'Microphone access denied.' : 'Microphone access requires user action.';
-          await stopAllAudioProcessing(true); // Stop everything and release mic if permission lost
-        }
-      };
-    } catch (e: any) {
-        console.warn("[VoiceInput] Error querying microphone permission state:", e);
-        micPermissionStatus.value = 'error'; micPermissionMessage.value = 'Could not query mic permission.';
-        emit('permission-update', 'error'); micAccessInitiallyChecked.value = true;
-      }
-  } else {
-    micAccessInitiallyChecked.value = true;
-    micPermissionMessage.value = 'Click PTT mic to attempt access (perm query API not fully supported).';
-   }
+  // Auto-start based on initial settings if permissions are already granted
+  if (micPermissionStatus.value === 'granted' && !isSelfProcessingAudio.value && !props.isProcessing) {
+    if (currentAudioMode.value === 'continuous') {
+      const handler = sttPreference.value === 'browser_webspeech_api' ? browserSpeechHandlerRef.value : whisperSpeechHandlerRef.value;
+      if (handler) handler.startListening(false);
+    } else if (currentAudioMode.value === 'voice-activation') {
+      if (browserSpeechHandlerRef.value) browserSpeechHandlerRef.value.startVADWakeWordRecognition?.();
+    }
+  }
   nextTick(() => handleTextareaInput());
 });
 onBeforeUnmount(async () => {
   document.removeEventListener('click', handleClickOutsideAudioModeDropdown, true);
   await stopAllAudioProcessing(true);
-  if (navigator.permissions && navigator.permissions.query) {
-    try {
-      const permStatusQuery = { name: 'microphone' as PermissionName };
-      const permStatus = await navigator.permissions.query(permStatusQuery);
-      if (permStatus) permStatus.onchange = null;
-    } catch (e) { console.warn("[VoiceInput] Error removing permission listener on unmount:", e); }
-  }
 });
-watch(transcriptionHistory, (newHistory) => {
-  localStorage.setItem('vca-transcriptionHistory-v3.1', JSON.stringify(newHistory));
-}, { deep: true });
+watch(transcriptionHistory, (newHistory) => { localStorage.setItem('vca-transcriptionHistory-v3.1', JSON.stringify(newHistory)); }, { deep: true });
 </script>
 
 <template>
   <div class="voice-input-panel-ephemeral" :class="currentPanelStateClasses" :aria-busy="props.isProcessing || isSelfProcessingAudio">
-
-  <!-- @ts-ignore -->
-<BrowserSpeechHandler
-  v-if="sttPreference === 'browser_webspeech_api' || currentAudioMode === 'voice-activation' || (currentAudioMode === 'push-to-talk' && sttPreference === 'browser_webspeech_api')"
+    <BrowserSpeechHandler
+      v-if="sttPreference === 'browser_webspeech_api' || currentAudioMode === 'voice-activation' || (currentAudioMode === 'push-to-talk' && sttPreference === 'browser_webspeech_api')"
       ref="browserSpeechHandlerRef"
       :settings="settingsFromManager"
       :audio-input-mode="currentAudioMode"
@@ -639,14 +482,13 @@ watch(transcriptionHistory, (newHistory) => {
         @keydown.enter.shift.exact.prevent="textInput += '\n'; nextTick(handleTextareaInput)"
         class="voice-textarea-ephemeral"
         :placeholder="getPlaceholderText()"
-        :disabled="(isSelfProcessingAudio && currentAudioMode !== 'push-to-talk') ||
+        :disabled="props.isProcessing || (isSelfProcessingAudio && currentAudioMode !== 'push-to-talk') ||
                     (isPttMode &&
                         ( (sttPreference === 'browser_webspeech_api' && browserSpeechHandlerRef?.isBrowserWebSpeechActive) ||
                           (sttPreference === 'whisper_api' && whisperSpeechHandlerRef?.isMediaRecorderActive)
                         ) &&
                         !isChildListeningForWakeWord
-                    ) ||
-                    props.isProcessing"
+                    )"
         aria-label="Text input for chat"
         rows="1"
       ></textarea>
@@ -673,25 +515,16 @@ watch(transcriptionHistory, (newHistory) => {
         @click="handleMicButtonInteraction"
         class="mic-button-ephemeral"
         :class="{
-          'listening': isPttMode && (
-              (sttPreference === 'browser_webspeech_api' && browserSpeechHandlerRef?.isBrowserWebSpeechActive) ||
-              (sttPreference === 'whisper_api' && whisperSpeechHandlerRef?.isMediaRecorderActive)
-          ),
+          'listening': isPttMode && ((sttPreference === 'browser_webspeech_api' && browserSpeechHandlerRef?.isBrowserWebSpeechActive) || (sttPreference === 'whisper_api' && whisperSpeechHandlerRef?.isMediaRecorderActive)),
           'processing-llm': props.isProcessing && !isSelfProcessingAudio,
           'mic-error': micPermissionStatus === 'error' || micPermissionStatus === 'denied',
           'vad-listening-wake': isVoiceActivationMode && isChildListeningForWakeWord
         }"
         :title="getButtonTitle()"
-        :aria-pressed="isPttMode && (
-              (sttPreference === 'browser_webspeech_api' && browserSpeechHandlerRef?.isBrowserWebSpeechActive) ||
-              (sttPreference === 'whisper_api' && whisperSpeechHandlerRef?.isMediaRecorderActive)
-          )"
+        :aria-pressed="isPttMode && ((sttPreference === 'browser_webspeech_api' && browserSpeechHandlerRef?.isBrowserWebSpeechActive) || (sttPreference === 'whisper_api' && whisperSpeechHandlerRef?.isMediaRecorderActive))"
         :disabled="
+          props.isProcessing || /* General disable if LLM is processing for PTT start */
           currentAudioMode !== 'push-to-talk' ||
-          (isPttMode && props.isProcessing && !( // Disabled if PTT, LLM processing, AND NOT currently recording
-              (sttPreference === 'browser_webspeech_api' && browserSpeechHandlerRef?.isBrowserWebSpeechActive) ||
-              (sttPreference === 'whisper_api' && whisperSpeechHandlerRef?.isMediaRecorderActive)
-          )) ||
           (!micAccessInitiallyChecked && micPermissionStatus !== 'granted' && micPermissionStatus !== 'prompt')
         "
         aria-live="polite"
@@ -706,9 +539,6 @@ watch(transcriptionHistory, (newHistory) => {
         </div>
         <div class="transcription-status-ephemeral" aria-live="assertive">
           {{ getRecordingStatusText() }}
-          <span v-if="isContinuousMode && sttPreference === 'browser_webspeech_api' && browserSpeechHandlerRef?.isBrowserWebSpeechActive && browserSpeechHandlerRef?.pauseDetectedWebSpeech" class="countdown-text">
-             ({{ Math.max(0, browserSpeechHandlerRef.pauseCountdownWebSpeech / 1000).toFixed(1) }}s)
-           </span>
         </div>
         <div v-if="micPermissionMessage && micPermissionStatus !== 'granted'" class="permission-status-ephemeral" :class="String(micPermissionStatus)" role="alert">
           {{ micPermissionMessage }}
@@ -716,8 +546,10 @@ watch(transcriptionHistory, (newHistory) => {
       </div>
 
       <div class="audio-mode-selector-wrapper" ref="audioModeDropdownRef">
-        <button @click="toggleAudioModeDropdown" class="audio-mode-button btn btn-ghost-ephemeral btn-sm-ephemeral" aria-haspopup="true" :aria-expanded="showAudioModeDropdown">
-            <component :is="currentAudioModeIcon" class="icon-sm" aria-hidden="true"/>
+        <button @click="toggleAudioModeDropdown"
+                class="audio-mode-button btn btn-ghost-ephemeral btn-sm-ephemeral"
+                aria-haspopup="true" :aria-expanded="showAudioModeDropdown"
+                :disabled="props.isProcessing"> <component :is="currentAudioModeIcon" class="icon-sm" aria-hidden="true"/>
             <span class="hidden sm:inline ml-1.5">{{ currentAudioModeLabel }}</span>
             <ChevronDownIcon class="chevron-icon icon-xs ml-auto transition-transform duration-200" :class="{'rotate-180': showAudioModeDropdown}" aria-hidden="true"/>
         </button>
@@ -736,26 +568,26 @@ watch(transcriptionHistory, (newHistory) => {
       </div>
 
       <div class="secondary-controls-ephemeral">
-        <button @click="showTranscriptionHistory = !showTranscriptionHistory" class="control-btn-ephemeral btn btn-ghost-ephemeral btn-icon-ephemeral" title="View Transcription History">
+        <button @click="showTranscriptionHistory = !showTranscriptionHistory" class="control-btn-ephemeral btn btn-ghost-ephemeral btn-icon-ephemeral" title="View Transcription History" :disabled="props.isProcessing">
           <ClockIcon class="icon-base" aria-hidden="true"/>
         </button>
         <button
           v-if="isContinuousMode && sttPreference === 'browser_webspeech_api' && browserSpeechHandlerRef?.hasPendingTranscript"
           @click="browserSpeechHandlerRef?.triggerEditPendingTranscript()"
           class="control-btn-ephemeral btn btn-ghost-ephemeral btn-icon-ephemeral"
-          title="Edit pending transcription">
+          title="Edit pending transcription"
+          :disabled="props.isProcessing">
           <PencilIcon class="icon-base" aria-hidden="true"/>
         </button>
          <button
           v-if="(isContinuousMode || isVoiceActivationMode) && (isChildSttProcessingAudio || isChildListeningForWakeWord)"
           @click="handleManualStopFromSecondaryButton"
           class="control-btn-ephemeral btn btn-ghost-ephemeral btn-icon-ephemeral stop-btn-ephemeral"
-          title="Stop Current Listening/Recording">
+          title="Stop Current Listening/Recording"> {/* This stop should generally be allowed */}
           <StopCircleIcon class="icon-base" aria-hidden="true"/>
         </button>
       </div>
     </div>
-
     <Transition name="modal-holographic-translucent">
       <div v-if="showTranscriptionHistory" class="modal-overlay-ephemeral" @mousedown.self="showTranscriptionHistory = false">
         <div class="modal-content-ephemeral card-glass-interactive max-w-lg w-full" role="dialog" aria-modal="true" aria-labelledby="history-title">
@@ -771,7 +603,7 @@ watch(transcriptionHistory, (newHistory) => {
                 <div class="history-item-text-ephemeral">{{ item.text }}</div>
                 <div class="history-item-meta-ephemeral">
                   <span class="timestamp-ephemeral text-xs">{{ formatTime(item.timestamp) }}</span>
-                  <button @click="resendTranscription(item)" class="resend-btn-ephemeral btn btn-link-ephemeral btn-xs-ephemeral" title="Resend this transcription">
+                  <button @click="resendTranscription(item)" class="resend-btn-ephemeral btn btn-link-ephemeral btn-xs-ephemeral" title="Resend this transcription" :disabled="props.isProcessing || isSelfProcessingAudio">
                     Resend <PaperAirplaneIcon class="inline h-3 w-3 ml-1" />
                   </button>
                 </div>
@@ -811,7 +643,6 @@ watch(transcriptionHistory, (newHistory) => {
 </template>
 
 <style lang="scss">
-/* Styles from previous response, ensure they are relevant and complete */
 .permission-status-ephemeral {
   font-size: 0.7rem; padding: 0.1rem 0.3rem; border-radius: var(--rounded-sm); margin-top: 0.1rem; text-align: center;
   &.denied, &.error { color: hsl(var(--color-danger-text-h), var(--color-danger-text-s), var(--color-danger-text-l)); background-color: hsla(var(--color-danger-h), var(--color-danger-s), var(--color-danger-l), 0.15); }
@@ -824,10 +655,8 @@ watch(transcriptionHistory, (newHistory) => {
 }
 .mode-dot-ephemeral.mic-error { background-color: hsl(var(--color-danger-h), var(--color-danger-s), var(--color-danger-l)) !important; }
 
-// Styles for specific handler UI elements if they show through or are part of VoiceInput's direct layout
-.browser-speech-handler-ui, .whisper-speech-handler-ui { // Assuming child components might have a root with these classes
-  // These components are now primarily for logic, but if they render status UI that VoiceInput wants to control/show:
-  .live-transcript-display-ephemeral { min-height: 20px; padding-block: 0.25rem; font-size: 0.8rem; } // Example style
+.browser-speech-handler-ui, .whisper-speech-handler-ui { /* If these have their own UI, style them here or in their own files */
+  .live-transcript-display-ephemeral { min-height: 20px; padding-block: 0.25rem; font-size: 0.8rem; }
   .vad-wake-word-status, .web-speech-vad-active-indicator { font-style: italic; }
   .streaming-cursor-ephemeral { animation: blink 1s step-end infinite; }
 }
