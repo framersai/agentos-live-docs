@@ -190,7 +190,7 @@ const handleCardInteraction = (payload: { type: string; data?: any }): void => {
         <header class="agent-hub-header">
           <h2 id="agent-hub-title" class="hub-title-ephemeral">
             <SparklesIcon class="hub-title-icon" aria-hidden="true"/>
-            Explore & Select Assistants
+            Voice Assistants Hub
           </h2>
           <button
             @click="closeHub"
@@ -289,7 +289,7 @@ const handleCardInteraction = (payload: { type: string; data?: any }): void => {
 // Local transitions are defined here for Vue's <Transition> and <TransitionGroup>.
 
 // Transition for the modal overlay fade-in/out
-@use '@/styles/abstracts/variables' as var;
+@use '../../styles/abstracts/_variables' as var;
 .agent-hub-fade-transition-enter-active,
 .agent-hub-fade-transition-leave-active {
   transition: opacity 0.3s var.$ease-out-quad;
@@ -326,5 +326,27 @@ const handleCardInteraction = (payload: { type: string; data?: any }): void => {
 .agent-card-list-transition-leave-to {
   opacity: 0;
   transform: translateY(-15px) scale(0.94); // Cards disappear upwards and smaller
+}
+
+// If on desktop (landscape or larger), apply a subtle zoom effect on hover
+.agent-card-grid {
+  @media (min-width: var.$breakpoint-md) {
+    .agent-card {
+      transition: transform 0.3s var.$ease-out-quad;
+      &:hover {
+        transform: scale(1.02); // Slight zoom on hover
+      }
+    }
+  }
+}
+
+.agent-hub-panel {
+    top: 0px;
+    // background-color: var.$
+    background-color: var.$default-color-bg-senary-h;
+    bottom: 0px;
+    position: fixed;
+    z-index: 1000; // Ensure it overlays other content
+    max-height: 90vh; // Limit height to prevent overflow
 }
 </style>
