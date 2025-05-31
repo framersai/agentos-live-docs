@@ -7,26 +7,32 @@
 import { computed, watch, nextTick, PropType, ref as vueRef, onMounted } from 'vue'; // <-- ADDED onMounted HERE
 import { useChatStore } from '@/store/chat.store';
 import Message from '@/components/Message.vue';
-import type { MessageData } from '@/components/Message.vue';
 import type { AgentId } from '@/services/agent.service';
 import type { ChatMessage as StoreChatMessage } from '@/store/chat.store';
 
-const props = defineProps({
-    agentId: {
-        type: String as PropType<AgentId>,
-        required: true,
-    }
-});
-
 const chatStore = useChatStore();
-const chatLogRef = vueRef<HTMLElement | null>(null);
 
-const displayableMessages = computed((): MessageData[] => {
+const props = defineProps<{
+    agentId: AgentId;
+}>();
+
+// Define the type for the message objects to be displayed
+interface DisplayableMessage {
+    id: string;
+    role: 'user' | 'assistant' | 'system' | 'error' | 'tool';
+    content: string;
+    timestamp: number;
+    isError?: boolean;
+    tool_calls?: any[];
+    tool_call_id?: string;
+    name?: string;
+}
+const displayableMessages = computed<DisplayableMessage[]>(() => {
     return chatStore.getMessagesForAgent(props.agentId)
         .filter(msg => msg.role === 'user' || msg.role === 'assistant' || msg.role === 'error' || msg.role === 'tool')
-        .map(msg => ({
+        .map((msg: StoreChatMessage): DisplayableMessage => ({
             id: msg.id, // ID is crucial for MessageData
-            role: msg.role as MessageData['role'],
+            role: msg.role as DisplayableMessage['role'],
             content: msg.content ?? '',
             timestamp: msg.timestamp,
             isError: msg.isError,
@@ -35,6 +41,9 @@ const displayableMessages = computed((): MessageData[] => {
             name: msg.name,
         }));
 });
+
+// Reference to the chat log container
+let chatLogRef = vueRef<HTMLElement | null>(null);
 
 const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {
     nextTick(() => {
@@ -53,6 +62,14 @@ watch(displayableMessages, () => {
 
 onMounted(() => {
   nextTick(scrollToBottom);
+    //  set chatLogRef 
+    chatLogRef = vueRef(document.querySelector('.agent-chat-log') as HTMLElement | null);
+    if (chatLogRef.value) {
+        chatLogRef.value.scrollTo({
+            top: chatLogRef.value.scrollHeight,
+            behavior: 'auto'
+        });
+    }
 });
 
 defineExpose({
