@@ -669,24 +669,7 @@
 .card-neo-interactive { // This class seems to be a general utility
   @include cardsFile.card-base-styles; 
   @include mixins.neomorphic-extrude(
-    $bg-color-var-prefix: '--color-bg-secondary', 
-    $distance: 6px, 
-    $blur: 12px, 
-    $shadow-opacity-var: '--shadow-opacity-soft', 
-    $radius: var.$radius-xl,
-    $shadow-h-var: '--shadow-color-h', 
-    $shadow-s-var: '--shadow-color-s', // Corrected from --color-shadow-s
-    $shadow-l-var: '--shadow-color-l', // Corrected from --color-shadow-l
-    $highlight-l-modifier-css-var: '--shadow-highlight-modifier',
-    $fb-bg-h: var.$default-color-bg-secondary-h, 
-    $fb-bg-s: var.$default-color-bg-secondary-s, 
-    $fb-bg-l: var.$default-color-bg-secondary-l,
-    $fb-bg-a: var.$fb-bg-a, // Added alpha fallback
-    $fb-shadow-op: var.$default-shadow-opacity-soft, 
-    $fb-shadow-h: var.$default-shadow-color-h, 
-    $fb-shadow-s: var.$default-shadow-color-s, 
-    $fb-shadow-l: var.$default-shadow-color-l, 
-    $fb-highlight-l-factor: var.$default-shadow-highlight-l-factor
+
   );
   transition: transform var.$duration-smooth var.$ease-out-expo, box-shadow var.$duration-smooth var.$ease-out-expo;
   &:hover {
