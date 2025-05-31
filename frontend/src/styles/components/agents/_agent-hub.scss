@@ -31,9 +31,9 @@
   // Uses .card-neo-raised-ephemeral (or similar) from Header.vue for base styling
   // This class is applied in AgentHub.vue template.
   // If not, apply card styles here:
-  // @include cardsFile.card-base-styles;
-  // @include cardsFile.card-neo-look; // Or card-glass-look
-  
+  @include cardsFile.card-base-styles;
+  @include cardsFile.card-neo-look; // Or card-glass-look
+  // background-color: var.$default-color-bg-secondary-h !important;
   width: 100%;
   max-width: 900px; // Max width for the hub
   height: clamp(70vh, 85vh, 900px); // Responsive height, max 900px
@@ -44,7 +44,8 @@
   @include mixins.holographic-border-glow(
     '--color-accent-primary', 
     '--color-accent-secondary', 
-    2px, 4s, var.$radius-xl); // Using card's radius
+    2px, 4s, var.$radius-xl
+    ); // Using card's radius
 }
 
 .agent-hub-header {

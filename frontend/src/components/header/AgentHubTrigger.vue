@@ -41,7 +41,7 @@ const handleClick = (): void => {
   <button
     @click="handleClick"
     class="agent-hub-trigger-button btn btn-ghost-ephemeral btn-icon-ephemeral direct-header-button"
-    title="Explore & Select Assistants"
+    title="Voice Assistants Hub"
     aria-label="Open assistant catalog"
   >
     <Squares2X2Icon class="icon-base icon-trigger" />

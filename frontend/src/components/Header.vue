@@ -167,7 +167,7 @@ onUnmounted(() => {
         >
           <AnimatedLogo
             :app-name-main="uiStore.isSmallScreen ? 'VCA' : 'Voice Chat'"
-            :app-name-subtitle="uiStore.isSmallScreen ? '' : 'Assistant'"
+            :app-name-subtitle="uiStore.isSmallScreen ? 'Assistant' : 'Assistant'"
             :is-mobile-context="uiStore.isSmallScreen"
             :is-user-listening="isUserStateActive"
             :is-ai-speaking-or-processing="isAiStateActive"

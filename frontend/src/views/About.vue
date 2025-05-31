@@ -216,7 +216,7 @@ const missionItems = ref([
     </header>
 
     <main class="about-main-content-area">
-      <section class="hero-section-about card-glass-interactive--hero">
+      <section class="hero-section-about card-glass-interactive">
         <div class="hero-logo-wrapper">
           <img src="@/assets/logo.svg" alt="AgentOS Logo" class="hero-logo-main spinning-glow-logo" />
         </div>

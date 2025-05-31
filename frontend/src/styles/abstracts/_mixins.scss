@@ -312,7 +312,7 @@
     mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
-    animation: spin #{$animation-duration} linear infinite; // Ensure 'spin' keyframes are defined globally
+    // animation: spin #{$animation-duration} linear infinite; // Ensure 'spin' keyframes are defined globally
     z-index: -1;
   }
 }
