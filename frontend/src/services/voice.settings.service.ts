@@ -123,8 +123,7 @@ VoiceApplicationSettings = {
 
   vadThresholdWhisper: 4, // Original Whisper VAD energy level (if used by a specific VAD implementation)
   // wake words
-  vadWakeWordsBrowserSTT: ['v'],
-
+  vadWakeWordsBrowserSTT: ['v', 'vca', 'V', 'VCA', 'vee'],
   // Defaults for NEWLY ADDED settings
   vadSensitivityDb: -45, // Default dBFS for silence detection with AnalyserNode
   continuousModeSilenceSendDelayMs: 1500, // e.g., 1.5 seconds "sending in" display
