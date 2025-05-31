@@ -30,6 +30,10 @@ export type TTSProvider = 'browser_tts' | 'openai_tts';
 export interface VoiceApplicationSettings {
   // Agent & Interaction Settings
   currentAppMode: AgentId;
+
+  // Default wake words to contain "V"
+  
+  vadWakeWordsBrowserSTT?: string[]; // For Browser STT VAD wake words
   preferredCodingLanguage: string;
   defaultMode: AgentId;
   defaultLanguage: string;
@@ -91,7 +95,9 @@ export interface VoiceApplicationSettings {
   defaultTutorLevel?: TutorLevel;
 }
 
-const initialDefaultSettings: Readonly<VoiceApplicationSettings> = {
+const initialDefaultSettings: 
+// Mutatable instead of READONLY
+VoiceApplicationSettings = {
   currentAppMode: 'general_chat' as AgentId,
   preferredCodingLanguage: 'python',
   defaultMode: 'general_chat' as AgentId,
@@ -116,6 +122,8 @@ const initialDefaultSettings: Readonly<VoiceApplicationSettings> = {
   vadCommandRecognizedPauseMs: 2000, // For Browser STT VAD command continuation
 
   vadThresholdWhisper: 4, // Original Whisper VAD energy level (if used by a specific VAD implementation)
+  // wake words
+  vadWakeWordsBrowserSTT: ['v'],
 
   // Defaults for NEWLY ADDED settings
   vadSensitivityDb: -45, // Default dBFS for silence detection with AnalyserNode

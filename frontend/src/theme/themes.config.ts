@@ -117,10 +117,10 @@ export interface ThemeCssVariableMap {
   '--agent-nerf-accent-saturation'?: string;
   '--agent-nerf-accent-lightness'?: string;
   '--agent-nerf-accent-color'?: string;
-  '--agent-architecton-accent-hue'?: string;
-  '--agent-architecton-accent-saturation'?: string;
-  '--agent-architecton-accent-lightness'?: string;
-  '--agent-architecton-accent-color'?: string;
+  '--agent-architectron-accent-hue'?: string;
+  '--agent-architectron-accent-saturation'?: string;
+  '--agent-architectron-accent-lightness'?: string;
+  '--agent-architectron-accent-color'?: string;
 }
 
 /**
