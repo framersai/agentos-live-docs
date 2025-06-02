@@ -1,232 +1,443 @@
 // File: frontend/src/styles/animations/_keyframes.scss
 /**
  * @file _keyframes.scss
- * @description Defines custom @keyframes for animations used throughout the "Ephemeral Harmony" design system.
- * Includes effects for core UI elements, transitions, voice interaction visualizations,
- * ambient backgrounds, and specific component states (e.g., logo animations, input focus, loading indicators).
- * Animations aim for an organic, futuristic, and theme-aware feel, prioritizing performance.
- *
- * @role Provides a central repository of reusable CSS keyframe animations.
- * @dependencies `../abstracts/variables` (for SCSS fallback durations, easing functions, and colors if absolutely necessary,
- * though primary theming is via CSS custom properties set by the theme engine).
- * @assumptions CSS custom properties for colors (e.g., --color-accent-primary-h, --voice-pulse-opacity)
- * and animation parameters (e.g. --opacity-start, --scale-pulse) are set by the theme engine or consuming components.
- * @version 2.2.2 - Ensured all HSL(A) components for colors are correctly referenced via CSS variables.
+ * @version 3.0.0
+ * @description Enhanced keyframes for "Ephemeral Harmony" with state-based animations,
+ * text reveal effects, cellular automata patterns, and terminal-specific animations.
+ * Includes organic "Her"-inspired effects and brutalist terminal aesthetics.
+ * 
+ * @role Provides comprehensive CSS keyframe animations for all UI states and effects.
  */
 
-@use '../abstracts/variables' as var; // For SCSS fallback durations and easing
+@use '../abstracts/variables' as var;
 
 // -----------------------------------------------------------------------------
-// Core UI Animations (Fade, Slide)
+// Core UI Animations (Enhanced with organic feel)
 // -----------------------------------------------------------------------------
 @keyframes fadeIn {
-  from { opacity: var(--animation-fade-in-opacity-from, 0); }
-  to { opacity: 1; }
+  from { 
+    opacity: var(--animation-fade-in-opacity-from, 0);
+    filter: blur(var(--animation-fade-in-blur, 2px));
+  }
+  to { 
+    opacity: 1;
+    filter: blur(0);
+  }
 }
 
 @keyframes fadeOut {
-  from { opacity: var(--animation-fade-out-opacity-from, 1); }
-  to { opacity: 0; }
+  from { 
+    opacity: var(--animation-fade-out-opacity-from, 1);
+    filter: blur(0);
+  }
+  to { 
+    opacity: 0;
+    filter: blur(var(--animation-fade-out-blur, 2px));
+  }
 }
 
 @keyframes slideInUp {
-  from { opacity: 0; transform: translateY(var(--animation-slide-in-translate-y, 20px)); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes slideInDown {
-  from { opacity: 0; transform: translateY(var(--animation-slide-in-translate-y, -20px)); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-// -----------------------------------------------------------------------------
-// Pulsing & Glowing Animations (Organic & Feedback)
-// -----------------------------------------------------------------------------
-@keyframes subtlePulse {
-  0%, 100% {
-    transform: scale(1);
-    opacity: var(--animation-subtle-pulse-opacity-start, 0.85);
+  from { 
+    opacity: 0;
+    transform: translateY(var(--animation-slide-in-translate-y, 20px)) scale(0.98);
   }
-  50% {
-    transform: scale(var(--animation-subtle-pulse-scale, 1.025));
-    opacity: var(--animation-subtle-pulse-opacity-peak, 1);
+  to { 
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }
 
-@keyframes inputFocusGlowPulse {
-  0%, 100% {
-    box-shadow:
-      inset 0 1px 2px hsla(var(--shadow-color-h, var.$default-shadow-color-h), var(--shadow-color-s, var.$default-shadow-color-s), var(--shadow-color-l, var.$default-shadow-color-l), 0.08),
-      0 0 6px 0px hsla(var(--color-accent-interactive-h, var.$default-color-accent-interactive-h), var(--color-accent-interactive-s, var.$default-color-accent-interactive-s), var(--color-accent-interactive-l, var.$default-color-accent-interactive-l), 0.25);
-  }
-  50% {
-    box-shadow:
-      inset 0 1px 3px hsla(var(--shadow-color-h, var.$default-shadow-color-h), var(--shadow-color-s, var.$default-shadow-color-s), var(--shadow-color-l, var.$default-shadow-color-l), 0.12),
-      0 0 10px 3px hsla(var(--color-accent-interactive-h, var.$default-color-accent-interactive-h), var(--color-accent-interactive-s, var.$default-color-accent-interactive-s), var(--color-accent-interactive-l, var.$default-color-accent-interactive-l), 0.4);
-  }
-}
 
-@keyframes subtleTextGlow {
-  0%, 100% {
-    text-shadow: 0 0 var(--animation-text-glow-radius-start, 3px) hsla(
-      var(--color-accent-glow-h, var.$default-color-accent-glow-h), 
-      var(--color-accent-glow-s, var.$default-color-accent-glow-s), 
-      var(--color-accent-glow-l, var.$default-color-accent-glow-l),
-      calc(var(--color-accent-glow-a, #{var.$default-color-accent-glow-a}) * 0.7)
-    );
-  }
-  50% {
-    text-shadow: 0 0 var(--animation-text-glow-radius-end, 7px) hsla(
-      var(--color-accent-glow-h, var.$default-color-accent-glow-h), 
-      var(--color-accent-glow-s, var.$default-color-accent-glow-s), 
-      var(--color-accent-glow-l, var.$default-color-accent-glow-l),
-      var(--color-accent-glow-a, #{var.$default-color-accent-glow-a})
-    );
-  }
-}
-
-// -----------------------------------------------------------------------------
-// Holographic, Ephemeral & UI Feedback Animations
-// -----------------------------------------------------------------------------
-@keyframes holoShimmer {
-  0% { background-position: 200% center; }
-  100% { background-position: -200% center; }
-}
-
-@keyframes ephemeralMessageIn {
-  from { opacity: 0; transform: translateY(12px) scale(0.97); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-@keyframes ephemeralVanish {
-  from { opacity: var(--animation-ephemeral-vanish-opacity-start, 0.9); transform: scale(1) translateY(0); }
-  to { opacity: 0; transform: scale(0.93) translateY(-12px); }
-}
-
+// spin animation for holographic-border-glow and other rotations
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
-}
 
 // -----------------------------------------------------------------------------
-// Voice & Interaction Visualization Keyframes
+// Text Reveal Animations (Character/Word/Line)
 // -----------------------------------------------------------------------------
-@keyframes voiceAuraPulse {
-  0% { transform: scale(0.75); opacity: 0; }
-  50% { opacity: var(--voice-pulse-opacity, #{var.$default-voice-pulse-opacity}); }
-  100% { transform: scale(1.5); opacity: 0; }
-}
 
-@keyframes micListeningPulse {
+// Organic character bloom effect (Her-inspired)
+@keyframes charBloom {
   0% {
-    box-shadow: 0 0 0 0px hsla(var(--color-voice-user-h, var.$default-color-voice-user-h), var(--color-voice-user-s, var.$default-color-voice-user-s), var(--color-voice-user-l, var.$default-color-voice-user-l), 0.5);
-    opacity: 0.8;
+    opacity: 0;
+    transform: scale(0) rotate(180deg);
+    filter: blur(10px) hue-rotate(var(--char-hue-rotate-start, 180deg));
+  }
+  40% {
+    opacity: 0.5;
+    transform: scale(1.4) rotate(90deg);
+    filter: blur(4px) hue-rotate(var(--char-hue-rotate-mid, 90deg));
   }
   70% {
-    box-shadow: 0 0 0 12px hsla(var(--color-voice-user-h, var.$default-color-voice-user-h), var(--color-voice-user-s, var.$default-color-voice-user-s), var(--color-voice-user-l, var.$default-color-voice-user-l), 0);
-    opacity: 0;
+    opacity: 0.8;
+    transform: scale(1.1) rotate(20deg);
+    filter: blur(1px) hue-rotate(var(--char-hue-rotate-end, 20deg));
   }
   100% {
-    box-shadow: 0 0 0 0px hsla(var(--color-voice-user-h, var.$default-color-voice-user-h), var(--color-voice-user-s, var.$default-color-voice-user-s), var(--color-voice-user-l, var.$default-color-voice-user-l), 0);
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+    filter: blur(0) hue-rotate(0deg);
+  }
+}
+
+// Word materialization with glow trail
+@keyframes wordMaterialize {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) translateZ(50px);
+    text-shadow: 0 0 20px hsla(var(--color-accent-glow-h), var(--color-accent-glow-s), var(--color-accent-glow-l), 0);
+  }
+  50% {
+    opacity: 0.7;
+    transform: translateY(0) translateZ(10px);
+    text-shadow: 0 0 15px hsla(var(--color-accent-glow-h), var(--color-accent-glow-s), var(--color-accent-glow-l), 0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) translateZ(0);
+    text-shadow: 0 0 3px hsla(var(--color-accent-glow-h), var(--color-accent-glow-s), var(--color-accent-glow-l), 0.3);
+  }
+}
+
+// Line cascade for code/structured content
+@keyframes lineCascade {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px) scaleX(0.9);
+    border-left: 3px solid hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0);
+  }
+  50% {
+    opacity: 0.6;
+    transform: translateX(-5px) scaleX(0.98);
+    border-left: 3px solid hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scaleX(1);
+    border-left: 3px solid transparent;
+  }
+}
+
+// Quantum probability collapse effect
+@keyframes quantumCollapse {
+  0% {
+    opacity: 0.05;
+    transform: scale(3) translateY(calc(var(--quantum-offset-y, 0px) + (random() - 0.5) * 40px));
+    filter: blur(20px) brightness(2);
+  }
+  30% {
+    opacity: 0.3;
+    transform: scale(2) translateY(calc(var(--quantum-offset-y, 0px) * 0.7));
+    filter: blur(10px) brightness(1.5);
+  }
+  60% {
+    opacity: 0.7;
+    transform: scale(1.3) translateY(calc(var(--quantum-offset-y, 0px) * 0.3));
+    filter: blur(3px) brightness(1.2);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0) brightness(1);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Living Text Micro-animations (Post-reveal)
+// -----------------------------------------------------------------------------
+@keyframes textBreathe {
+  0%, 100% { 
+    transform: translateY(0) scale(1);
+    opacity: var(--text-breathe-opacity-rest, 1);
+  }
+  50% { 
+    transform: translateY(var(--text-breathe-offset, -1px)) scale(var(--text-breathe-scale, 1.01));
+    opacity: var(--text-breathe-opacity-peak, 0.95);
+  }
+}
+
+@keyframes textShimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+@keyframes textPulseGlow {
+  0%, 100% {
+    text-shadow: 
+      0 0 2px hsla(var(--color-accent-glow-h), var(--color-accent-glow-s), var(--color-accent-glow-l), 0.3),
+      0 0 4px hsla(var(--color-accent-glow-h), var(--color-accent-glow-s), var(--color-accent-glow-l), 0.2);
+  }
+  50% {
+    text-shadow: 
+      0 0 4px hsla(var(--color-accent-glow-h), var(--color-accent-glow-s), var(--color-accent-glow-l), 0.6),
+      0 0 8px hsla(var(--color-accent-glow-h), var(--color-accent-glow-s), var(--color-accent-glow-l), 0.4),
+      0 0 12px hsla(var(--color-accent-glow-h), var(--color-accent-glow-s), var(--color-accent-glow-l), 0.2);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// State-Based UI Animations
+// -----------------------------------------------------------------------------
+
+// Idle state - gentle breathing
+@keyframes stateIdleBreathe {
+  0%, 100% {
+    opacity: var(--state-idle-opacity, 0.8);
+    transform: scale(1);
+  }
+  50% {
+    opacity: var(--state-idle-opacity-peak, 0.9);
+    transform: scale(var(--state-idle-scale, 1.02));
+  }
+}
+
+// Listening state - expanding ripples
+@keyframes stateListeningRipple {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.8;
+    box-shadow: 0 0 0 0 hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.7);
+  }
+  70% {
+    transform: scale(1);
+    opacity: 0;
+    box-shadow: 0 0 0 30px hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0);
+  }
+  100% {
+    transform: scale(0.8);
     opacity: 0;
   }
 }
 
-@keyframes headerPulse {
-  0%, 100% { transform: scaleY(1) translateY(0); opacity: 0.7; }
-  50% { transform: scaleY(1.03) translateY(-1.5px); opacity: 1; }
-}
-
-// -----------------------------------------------------------------------------
-// AnimatedLogo Specific Keyframes
-// -----------------------------------------------------------------------------
-@keyframes logo-idle-breath {
-  0% { transform: scale(1); opacity: var(--logo-idle-opacity-base, 0.9); }
-  50% { transform: scale(var(--logo-idle-scale-peak, 1.03)); opacity: var(--logo-idle-opacity-peak, 1); }
-  100% { transform: scale(1); opacity: var(--logo-idle-opacity-base, 0.9); }
-}
-@keyframes logo-listening-pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(var(--logo-listening-scale-peak, 1.08)); }
-  100% { transform: scale(1); }
-}
-@keyframes logo-ai-active-pulse {
-  0% { transform: scale(1); }
-  30% { transform: scale(var(--logo-ai-active-scale-peak1, 1.12)); }
-  60% { transform: scale(var(--logo-ai-active-scale-peak2, 1.05)); }
-  100% { transform: scale(var(--logo-ai-active-scale-peak3, 1.1)); }
-}
-@keyframes logo-waveform-thrum {
-  0%, 100% { transform: translateY(0) translateX(0) rotate(0); }
-  25% { transform: translateY(var(--logo-waveform-thrum-intensity-y, -0.7px)) translateX(var(--logo-waveform-thrum-intensity-x, 0.3px)) rotate(var(--logo-waveform-thrum-rotate, 0.8deg)); }
-  75% { transform: translateY(var(--logo-waveform-thrum-intensity-y, 0.7px)) translateX(calc(var(--logo-waveform-thrum-intensity-x, 0.3px) * -1)) rotate(calc(var(--logo-waveform-thrum-rotate, 0.8deg) * -1)); }
-}
-@keyframes letter-entrance-ephemeral {
-  to { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-@keyframes logo-particle-orbit1 {
-  0% { transform: rotate(0deg) translateX(var(--logo-particle1-orbit-radius, 45px)) scale(0.4); opacity: 0; }
-  50% { opacity: var(--logo-particle1-opacity, 0.85); transform: rotate(180deg) translateX(calc(var(--logo-particle1-orbit-radius, 45px) + 7px)) scale(1.1); }
-  100% { transform: rotate(360deg) translateX(var(--logo-particle1-orbit-radius, 45px)) scale(0.4); opacity: 0; }
-}
-
-// -----------------------------------------------------------------------------
-// Background & Texture Animations
-// -----------------------------------------------------------------------------
-@keyframes holoGridScroll {
-  0% { background-position: 0 0; }
-  100% { background-position: var(--bg-holo-grid-size, 50px) var(--bg-holo-grid-size, 50px); }
-}
-
-@keyframes subtle-shimmer-idle {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-// -----------------------------------------------------------------------------
-// Loading Spinner & Indicators
-// -----------------------------------------------------------------------------
-@keyframes spinnerBladeFade {
-  0%, 39.9% { opacity: 0; }
-  40% { opacity: 1; }
-  100% { opacity: 0; }
-}
-
-@keyframes bounceDelay {
-  0%, 80%, 100% { transform: scale(0); }
-  40% { transform: scale(1.0); }
-}
-
-@keyframes subtleHoloGlowPulse {
-  0%, 100% {
-    box-shadow: var(--shadow-depth-lg, var.$scss-box-shadow-lg), 0 0 10px hsla(var(--color-accent-interactive-h, var.$default-color-accent-interactive-h), var(--color-accent-interactive-s, var.$default-color-accent-interactive-s), var(--color-accent-interactive-l, var.$default-color-accent-interactive-l), 0.15);
-    opacity: 0.9;
+// Thinking state - neural swirl
+@keyframes stateThinkingSwirl {
+  0% {
+    transform: rotate(0deg) scale(1);
+    filter: hue-rotate(0deg);
+  }
+  25% {
+    transform: rotate(90deg) scale(1.1);
+    filter: hue-rotate(90deg);
   }
   50% {
-    box-shadow: var(--shadow-depth-xl, var.$scss-box-shadow-xl), 0 0 20px hsla(var(--color-accent-interactive-h, var.$default-color-accent-interactive-h), var(--color-accent-interactive-s, var.$default-color-accent-interactive-s), var(--color-accent-interactive-l, var.$default-color-accent-interactive-l), 0.3);
+    transform: rotate(180deg) scale(1);
+    filter: hue-rotate(180deg);
+  }
+  75% {
+    transform: rotate(270deg) scale(0.9);
+    filter: hue-rotate(270deg);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+    filter: hue-rotate(360deg);
+  }
+}
+
+// Responding state - flowing energy
+@keyframes stateRespondingFlow {
+  0% {
+    background-position: 0% 50%;
+    filter: brightness(1);
+  }
+  50% {
+    background-position: 100% 50%;
+    filter: brightness(1.2);
+  }
+  100% {
+    background-position: 200% 50%;
+    filter: brightness(1);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Particle Effects (Sakura petals, data streams, ASCII)
+// -----------------------------------------------------------------------------
+
+// Sakura petal float
+@keyframes petalFloat {
+  0% {
+    transform: translateY(-10px) translateX(0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: var(--petal-opacity, 0.8);
+  }
+  90% {
+    opacity: var(--petal-opacity, 0.8);
+  }
+  100% {
+    transform: translateY(100vh) translateX(calc(sin(var(--petal-sway-amount, 2)) * 50px)) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+// Digital data stream
+@keyframes dataStream {
+  0% {
+    transform: translateY(-100%) translateZ(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: var(--stream-opacity, 0.7);
+  }
+  90% {
+    opacity: var(--stream-opacity, 0.7);
+  }
+  100% {
+    transform: translateY(100vh) translateZ(0);
+    opacity: 0;
+  }
+}
+
+// ASCII particle drift (for Terminus theme)
+@keyframes asciiDrift {
+  0% {
+    transform: translate(0, 0) scale(0);
+    opacity: 0;
+  }
+  20% {
+    transform: translate(var(--drift-x, 10px), var(--drift-y, -20px)) scale(1);
     opacity: 1;
   }
+  80% {
+    transform: translate(calc(var(--drift-x, 10px) * 4), calc(var(--drift-y, -20px) * 4)) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(calc(var(--drift-x, 10px) * 5), calc(var(--drift-y, -20px) * 5)) scale(0);
+    opacity: 0;
+  }
 }
 
-@keyframes breathingEffect {
+// -----------------------------------------------------------------------------
+// Terminal-Specific Effects (Retro Terminus)
+// -----------------------------------------------------------------------------
+
+// CRT scanline
+@keyframes crtScanline {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100vh);
+  }
+}
+
+// Phosphor glow pulse
+@keyframes phosphorGlow {
   0%, 100% {
-    transform: scale(1);
-    opacity: var(--opacity-idle, 0.85);
+    text-shadow: 
+      0 0 2px hsla(var(--color-phosphor-h), var(--color-phosphor-s), var(--color-phosphor-l), 0.8),
+      0 0 4px hsla(var(--color-phosphor-h), var(--color-phosphor-s), var(--color-phosphor-l), 0.4);
   }
   50% {
-    transform: scale(var(--scale-breath, 1.03));
-    opacity: var(--opacity-breath, 1);
+    text-shadow: 
+      0 0 4px hsla(var(--color-phosphor-h), var(--color-phosphor-s), var(--color-phosphor-l), 1),
+      0 0 8px hsla(var(--color-phosphor-h), var(--color-phosphor-s), var(--color-phosphor-l), 0.6),
+      0 0 12px hsla(var(--color-phosphor-h), var(--color-phosphor-s), var(--color-phosphor-l), 0.3);
   }
 }
 
-// Keyframe for status dot pulse (used in _footer.scss)
-@keyframes pulseStatus {
-  0%, 100% { box-shadow: 0 0 5px 1px currentColor; opacity: 0.7; }
-  50% { box-shadow: 0 0 10px 3px currentColor; opacity: 1; }
+// Terminal cursor blink
+@keyframes terminalCursorBlink {
+  0%, 49% {
+    opacity: 1;
+    background-color: hsl(var(--color-phosphor-h), var(--color-phosphor-s), var(--color-phosphor-l));
+  }
+  50%, 100% {
+    opacity: 0;
+  }
+}
+
+// Glitch effect
+@keyframes glitchEffect {
+  0%, 100% {
+    transform: translate(0);
+    filter: hue-rotate(0deg);
+  }
+  20% {
+    transform: translate(-1px, 1px);
+    filter: hue-rotate(90deg);
+  }
+  40% {
+    transform: translate(1px, -1px);
+    filter: hue-rotate(180deg);
+  }
+  60% {
+    transform: translate(-1px, 0);
+    filter: hue-rotate(270deg);
+  }
+  80% {
+    transform: translate(1px, 0);
+    filter: hue-rotate(360deg);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Voice Visualization Animations
+// -----------------------------------------------------------------------------
+
+// Circular waveform (Her-inspired)
+@keyframes voiceWaveformCircular {
+  0% {
+    stroke-dashoffset: 0;
+    stroke-width: var(--waveform-stroke-min, 2);
+    opacity: 0.6;
+  }
+  50% {
+    stroke-dashoffset: var(--waveform-offset, -20);
+    stroke-width: var(--waveform-stroke-max, 6);
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: var(--waveform-offset-end, -40);
+    stroke-width: var(--waveform-stroke-min, 2);
+    opacity: 0.6;
+  }
+}
+
+// Organic blob morph
+@keyframes voiceBlobMorph {
+  0%, 100% {
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    transform: scale(1) rotate(0deg);
+  }
+  25% {
+    border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+    transform: scale(var(--blob-scale-1, 1.1)) rotate(90deg);
+  }
+  50% {
+    border-radius: 40% 60% 60% 40% / 70% 30% 40% 60%;
+    transform: scale(var(--blob-scale-2, 1.05)) rotate(180deg);
+  }
+  75% {
+    border-radius: 70% 30% 40% 60% / 40% 70% 60% 30%;
+    transform: scale(var(--blob-scale-3, 0.95)) rotate(270deg);
+  }
+}
+
+// Continue with remaining animations...
+
+
+// Keyframes for loading overlay from _loading-overlay.scss (ensure these are here or loaded)
+@keyframes organicPetalUnfurl { /* Define as per Ephemeral Harmony design if not already */
+  0% { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+  50% { opacity: 1; transform: scale(1) rotate(0deg); }
+  100% { opacity: 0; transform: scale(0.8) rotate(90deg) translateY(10px); }
+}
+@keyframes centerOrbPulse { /* Define as per Ephemeral Harmony design */
+  0%, 100% { transform: translate(-50%, -50%) scale(0.8); box-shadow: 0 0 10px 1px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.5); }
+  50% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 16px 4px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.8); }
+}
+@keyframes subtlePulse { /* General purpose pulse */
+  0%, 100% { opacity: var(--opacity-start, 0.75); transform: scale(1); }
+  50% { opacity: var(--opacity-pulse, 1); transform: scale(var(--scale-pulse, 1.015)); }
 }

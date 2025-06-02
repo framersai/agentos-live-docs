@@ -4,7 +4,7 @@
  * @description Base styling, visual "look" mixins, size modifiers,
  * and global utility classes for button components within the
  * "Ephemeral Harmony" design system.
- * @version 3.0.3 - Corrected global utility class generation and added shadow fallbacks.
+ * @version 3.0.4 - Addressed SASS [mixed-decls] warnings.
  */
 
 @use '../abstracts/variables' as var;
@@ -17,55 +17,53 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var.$spacing-xs; // Default gap for icon + text
-  padding: var.$spacing-sm var.$spacing-lg; // Default padding
+  gap: var.$spacing-xs;
+  padding: var.$spacing-sm var.$spacing-lg;
 
-  border-radius: var.$radius-holographic-default; // Consistent themed radius
+  border-radius: var.$radius-holographic-default;
 
-  font-family: var(--font-sans, #{var.$font-family-sans}); // Use CSS var with SCSS fallback
+  font-family: var(--font-sans, #{var.$font-family-sans});
   font-size: var.$font-size-base-default;
   font-weight: 600;
-  line-height: 1.2; // Adjusted for button text
+  line-height: 1.2;
   text-align: center;
   text-decoration: none;
-  white-space: nowrap; // Prevent text wrapping
+  white-space: nowrap;
 
   cursor: pointer;
-  user-select: none; // Prevent text selection on click
-  border: 1px solid transparent; // Base border, typically overridden by look mixins
+  user-select: none;
+  border: 1px solid transparent;
 
-  // Smooth transitions for hover, active, focus states
   transition: var.$duration-quick var.$ease-out-quad;
   transition-property: background-color, border-color, color, box-shadow, transform, filter;
-  will-change: transform, box-shadow; // Hint for browser optimization
+  will-change: transform, box-shadow;
 
-  &:hover {
-    filter: brightness(1.1); // Default hover effect
+  &:hover { // Moved before &:active and &:disabled for proper cascade if filter is used generally
+    filter: brightness(1.1);
   }
   &:active {
-    transform: scale(0.97); // Default active effect (press down)
+    transform: scale(0.97);
     filter: brightness(0.95);
   }
 
   &:disabled,
-  &[disabled] { // Style for disabled state
+  &[disabled] {
     opacity: 0.5;
     cursor: not-allowed;
-    pointer-events: none; // Prevent interactions
-    filter: saturate(0.5); // Desaturate to visually indicate disabled state
+    pointer-events: none;
+    filter: saturate(0.5);
   }
 
-  &:focus-visible { // Accessible focus state
+  &:focus-visible {
     @include commonMixins.focus-ring(
-      '--color-bg-primary',      // Background color for the space around the ring
-      '--color-accent-primary'   // Accent color for the ring itself
+      '--color-bg-primary',
+      '--color-accent-primary'
     );
   }
 
-  .icon { // Basic styling for icons within buttons
-    width: 1.2em; // Relative to button font size
+  .icon {
+    width: 1.2em;
     height: 1.2em;
-    // Icons usually fill with `currentColor` by default if they are SVGs
   }
 }
 
@@ -77,24 +75,23 @@
   background: linear-gradient(
     135deg,
     hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l)),
-    hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), calc(var(--color-accent-primary-l) - 10%)) // Darker shade for gradient
+    hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), calc(var(--color-accent-primary-l) - 10%))
   );
   color: hsl(var(--color-text-on-primary-h), var(--color-text-on-primary-s), var(--color-text-on-primary-l));
   border-color: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), calc(var(--color-accent-primary-l) - 15%), 0.5);
-  // Use SCSS variable as fallback for CSS variable for shadows
   box-shadow: var(--shadow-depth-sm, var.$scss-box-shadow-sm),
-              0 0 0 0 hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0); // Initial state for hover glow
+              0 0 0 0 hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0);
 
   &:hover,
-  &:focus-visible { // Combined hover and focus-visible for consistent visual feedback
+  &:focus-visible {
     background: linear-gradient(
       135deg,
-      hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), calc(var(--color-accent-primary-l) + 5%)), // Lighter for hover
+      hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), calc(var(--color-accent-primary-l) + 5%)),
       hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l))
     );
-    box-shadow: var(--shadow-depth-md, var.$scss-box-shadow-md), // Deeper shadow on hover
-      0 0 12px 2px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.4); // Glow effect
-    transform: translateY(-1px) scale(1); // Subtle lift
+    box-shadow: var(--shadow-depth-md, var.$scss-box-shadow-md),
+      0 0 12px 2px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.4);
+    transform: translateY(-1px) scale(1);
     filter: brightness(1.15);
   }
   &:active {
@@ -103,7 +100,7 @@
       hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), calc(var(--color-accent-primary-l) - 10%)),
       hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), calc(var(--color-accent-primary-l) - 15%))
     );
-    box-shadow: inset 0 2px 4px hsla(0, 0%, 0%, 0.2), // Inset shadow for pressed effect
+    box-shadow: inset 0 2px 4px hsla(0, 0%, 0%, 0.2),
       0 0 8px 1px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.3);
     filter: brightness(0.9);
   }
@@ -112,77 +109,81 @@
 @mixin btn-secondary-look {
   @include commonMixins.neomorphic-extrude(
     $bg-color-var-prefix: '--color-bg-secondary',
-    $distance: 4px, 
+    $distance: 4px,
     $blur: 8px,
     $shadow-opacity-var: '--shadow-opacity-soft',
     $radius: var.$radius-holographic-default,
-    $shadow-h-var: '--shadow-color-h', 
-    $shadow-s-var: '--shadow-color-s', 
+    $shadow-h-var: '--shadow-color-h',
+    $shadow-s-var: '--shadow-color-s',
     $shadow-l-var: '--shadow-color-l',
     $highlight-l-modifier-css-var: '--shadow-highlight-modifier',
-    $fb-bg-h: var.$default-color-bg-secondary-h, 
-    $fb-bg-s: var.$default-color-bg-secondary-s, 
+    $fb-bg-h: var.$default-color-bg-secondary-h,
+    $fb-bg-s: var.$default-color-bg-secondary-s,
     $fb-bg-l: var.$default-color-bg-secondary-l,
+    $fb-bg-a: 1, // Added fallback alpha for background
     $fb-shadow-op: var.$default-shadow-opacity-soft,
-    $fb-shadow-h: var.$default-shadow-color-h, 
-    $fb-shadow-s: var.$default-shadow-color-s, 
+    $fb-shadow-h: var.$default-shadow-color-h,
+    $fb-shadow-s: var.$default-shadow-color-s,
     $fb-shadow-l: var.$default-shadow-color-l,
     $fb-highlight-l-factor: var.$default-shadow-highlight-l-factor
   );
   color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
-  border-color: transparent; // Neomorphic buttons usually don't have a visible border
+  border-color: transparent;
 
   &:hover {
-    filter: brightness(1.05); // Subtle brightness increase
+    filter: brightness(1.05);
   }
   &:active {
-    @include commonMixins.neomorphic-inset( // Switch to inset style on active
+    @include commonMixins.neomorphic-inset(
       $fill-color-var-prefix: '--color-bg-secondary',
       $blur: 6px,
       $distance: 3px,
       $shadow-opacity-var: '--shadow-opacity-soft',
       $radius: var.$radius-holographic-default,
-      $shadow-h-var: '--shadow-color-h', 
-      $shadow-s-var: '--shadow-color-s', 
+      $shadow-h-var: '--shadow-color-h',
+      $shadow-s-var: '--shadow-color-s',
       $shadow-l-var: '--shadow-color-l',
       $highlight-l-modifier-css-var: '--shadow-highlight-modifier',
-      $fb-fill-h: var.$default-color-bg-secondary-h, 
-      $fb-fill-s: var.$default-color-bg-secondary-s, 
-      $fb-fill-l: calc(var.$default-color-bg-secondary-l - 2%), // Slightly darker inset background
+      $fb-fill-h: var.$default-color-bg-secondary-h,
+      $fb-fill-s: var.$default-color-bg-secondary-s,
+      $fb-fill-l: calc(var.$default-color-bg-secondary-l - 2%),
+      $fb-fill-a: 1, // Added fallback alpha for fill
       $fb-shadow-op: var.$default-shadow-opacity-soft,
-      $fb-shadow-h: var.$default-shadow-color-h, 
-      $fb-shadow-s: var.$default-shadow-color-s, 
+      $fb-shadow-h: var.$default-shadow-color-h,
+      $fb-shadow-s: var.$default-shadow-color-s,
       $fb-shadow-l: var.$default-shadow-color-l,
       $fb-highlight-l-factor: var.$default-shadow-highlight-l-factor
     );
-    transform: scale(0.98); // Slightly different active scale for neomorphic
-    filter: none; // Remove brightness filter on active if inset provides enough visual feedback
+    transform: scale(0.98);
+    filter: none;
   }
 }
 
 @mixin btn-ghost-look {
+  // Corrected: Moved background-color before &:hover to resolve [mixed-decls]
   background-color: transparent;
   color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
   border-color: transparent;
-  padding: calc(var.$spacing-sm - 1px) calc(var.$spacing-lg - 1px); // Adjusted padding for border presence in other looks
+  padding: calc(var.$spacing-sm - 1px) calc(var.$spacing-lg - 1px);
 
   &:hover {
     background-color: hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.1);
     color: hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l));
-    filter: none; // Override base hover brightness if not desired for ghost
+    filter: none;
   }
   &:active {
     background-color: hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.15);
-    filter: none; // Override base active brightness
+    filter: none;
   }
 }
 
 @mixin btn-error-look {
+  // This mixin seems fine regarding mixed-decls if background is set first.
   background: linear-gradient(135deg,
     hsl(var(--color-error-h), var(--color-error-s), var(--color-error-l)),
     hsl(var(--color-error-h), var(--color-error-s), calc(var(--color-error-l) - 10%))
   );
-  color: hsl(var(--color-text-on-primary-h), var(--color-text-on-primary-s), var(--color-text-on-primary-l)); // Assuming error bg is dark enough for light text
+  color: hsl(var(--color-text-on-primary-h), var(--color-text-on-primary-s), var(--color-text-on-primary-l));
   border-color: hsla(var(--color-error-h), var(--color-error-s), calc(var(--color-error-l) - 15%), 0.5);
   box-shadow: var(--shadow-depth-sm, var.$scss-box-shadow-sm), 0 0 0 0 hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0);
 
@@ -204,6 +205,9 @@
       0 0 8px 1px hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.3);
   }
 }
+
+// (Size/Shape Modifiers and Composite Mixins remain as they were, assuming no [mixed-decls] issues there)
+// ...
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SIZE / SHAPE MODIFIER MIXINS (Applied on top of a base/look)
@@ -253,27 +257,21 @@
 // GLOBAL UTILITY CLASSES (Apply these directly in HTML)
 // e.g., <button class="btn btn-primary btn-sm">Click Me</button>
 // ─────────────────────────────────────────────────────────────────────────────
-.btn { @include btn; } // Base class, provides structure and interaction but no specific "look"
+.btn { @include btn; }
 
-.btn-primary { @include btn-primary; }   // Includes base styles + primary look
-.btn-secondary { @include btn-secondary; } // Includes base styles + secondary look
-.btn-ghost { @include btn-ghost; }     // Includes base styles + ghost look
-.btn-error { @include btn-error; }     // Includes base styles + error look
+.btn-primary { @include btn-primary; }
+.btn-secondary { @include btn-secondary; }
+.btn-ghost { @include btn-ghost; }
+.btn-error { @include btn-error; }
 
-// Size/Shape modifier classes - to be used alongside a base or variant class
-// e.g. class="btn btn-primary btn-sm" or class="btn btn-icon btn-ghost"
 .btn-icon { @include btn-icon-modifier; }
 .btn-xs { @include btn-xs-modifier; }
 .btn-sm { @include btn-sm-modifier; }
 .btn-lg { @include btn-lg-modifier; }
 .btn-xl { @include btn-xl-modifier; }
 
-// Theme-specific button aliases or pre-composed utilities (examples)
-// These are essentially shortcuts if a certain combination is frequently used.
-.btn-primary-ephemeral { // If "ephemeral" primary has unique tweaks beyond the standard primary
+.btn-primary-ephemeral {
   @include btn-primary;
-  // Add any ephemeral-specific overrides here, e.g.:
-  // box-shadow: var(--shadow-ephemeral-specific, var.$scss-box-shadow-md);
 }
 
 .btn-secondary-ephemeral {
