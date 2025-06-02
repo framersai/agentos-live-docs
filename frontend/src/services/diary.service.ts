@@ -1,26 +1,19 @@
+// File: frontend/src/services/diary.service.ts
 /**
  * @file diary.service.ts
- * @description Service for managing diary entries using local storage (localForage).
- * Provides CRUD operations, import/export, and ensures data persistence for the Diary Agent.
- * @version 1.1.0 - Added Import/Export functionality.
+ * @description Service for managing diary entries.
+ * Uses the generic LocalStorageService for data persistence. Includes tutorial entry creation.
+ * @version 1.3.0 - Added tutorial entry creation.
  */
 
-import localforage from 'localforage';
 import { v4 as uuidv4 } from 'uuid';
+import { localStorageService, type IStorageService } from './localStorage.service';
 
-/**
- * @interface DiaryTag
- * @description Represents a tag associated with a diary entry.
- */
 export interface DiaryTag {
   id: string;
   name: string;
 }
 
-/**
- * @interface DiaryEntry
- * @description Defines the structure of a diary entry.
- */
 export interface DiaryEntry {
   id: string;
   title: string;
@@ -34,69 +27,56 @@ export interface DiaryEntry {
   schemaVersion?: number;
 }
 
-/**
- * @interface DiaryExportData
- * @description Structure for exporting and importing diary data.
- */
 export interface DiaryExportData {
     exportFormatVersion: string;
     exportedAt: string;
     entries: DiaryEntry[];
 }
 
-const DIARY_STORAGE_KEY = 'vcaUserDiaryEntries_v1.1'; // Versioned key
-const CURRENT_EXPORT_VERSION = '1.1.0';
+const DIARY_NAMESPACE = 'diaryEntries_v1.3'; // Namespace for diary data
+const CURRENT_EXPORT_VERSION = '1.3.0';
+const TUTORIAL_ENTRY_ID = 'echo-tutorial-entry-v1';
 
 class DiaryService {
-  private store: LocalForage;
+  private storage: IStorageService;
 
-  constructor() {
-    this.store = localforage.createInstance({
-      name: 'VCADiaryApp', // Changed instance name slightly for clarity
-      storeName: 'diary_entries', // More specific storeName
-      description: 'Stores user diary entries locally for Voice Coding Assistant.',
-    });
-    console.log('[DiaryService] Initialized with localForage.');
+  constructor(storageSvc: IStorageService = localStorageService) {
+    this.storage = storageSvc;
+    console.log('[DiaryService] Initialized, using LocalStorageService.');
+  }
+
+  private async getAllEntriesMap(): Promise<Map<string, DiaryEntry>> {
+    const entriesObject = await this.storage.getAllItemsInNamespace<DiaryEntry>(DIARY_NAMESPACE);
+    const map = new Map<string, DiaryEntry>();
+    for (const id in entriesObject) {
+      if (Object.prototype.hasOwnProperty.call(entriesObject, id)) {
+        map.set(id, entriesObject[id]);
+      }
+    }
+    return map;
   }
 
   async saveEntry(entryData: Omit<DiaryEntry, 'id' | 'updatedAt' | 'createdAt'> & { id?: string; createdAt?: string }): Promise<DiaryEntry> {
     const now = new Date().toISOString();
     let entryToSave: DiaryEntry;
+    const currentEntriesMap = await this.getAllEntriesMap();
 
-    if (entryData.id) {
-      const existingEntry = await this.getEntry(entryData.id);
-      if (!existingEntry) {
-        // If trying to update a non-existent ID, treat as new or throw error.
-        // For simplicity, we'll create it as new but log a warning.
-        console.warn(`[DiaryService] Update called for non-existent ID ${entryData.id}. Creating as new.`);
-         entryToSave = {
-            id: entryData.id, // Use provided ID if trying to update
-            title: entryData.title,
-            contentMarkdown: entryData.contentMarkdown,
-            createdAt: entryData.createdAt || now, // Use provided createdAt if available (e.g. during import)
-            updatedAt: now,
-            tags: entryData.tags || [],
-            mood: entryData.mood,
-            summary: entryData.summary,
-            isFavorite: entryData.isFavorite || false,
-            schemaVersion: 1,
-        };
-      } else {
-        entryToSave = {
-            ...existingEntry,
-            title: entryData.title,
-            contentMarkdown: entryData.contentMarkdown,
-            tags: entryData.tags || existingEntry.tags,
-            mood: entryData.mood !== undefined ? entryData.mood : existingEntry.mood,
-            summary: entryData.summary !== undefined ? entryData.summary : existingEntry.summary,
-            isFavorite: entryData.isFavorite !== undefined ? entryData.isFavorite : existingEntry.isFavorite,
-            updatedAt: now,
-            schemaVersion: existingEntry.schemaVersion || 1,
-        };
-      }
+    if (entryData.id && currentEntriesMap.has(entryData.id)) {
+      const existingEntry = currentEntriesMap.get(entryData.id)!;
+      entryToSave = {
+        ...existingEntry,
+        title: entryData.title,
+        contentMarkdown: entryData.contentMarkdown,
+        tags: entryData.tags || existingEntry.tags,
+        mood: entryData.mood !== undefined ? entryData.mood : existingEntry.mood,
+        summary: entryData.summary !== undefined ? entryData.summary : existingEntry.summary,
+        isFavorite: entryData.isFavorite !== undefined ? entryData.isFavorite : existingEntry.isFavorite,
+        updatedAt: now,
+        schemaVersion: existingEntry.schemaVersion || 1,
+      };
     } else {
       entryToSave = {
-        id: uuidv4(),
+        id: entryData.id || uuidv4(),
         title: entryData.title,
         contentMarkdown: entryData.contentMarkdown,
         createdAt: entryData.createdAt || now,
@@ -107,12 +87,13 @@ class DiaryService {
         isFavorite: entryData.isFavorite || false,
         schemaVersion: 1,
       };
+      if (entryData.id && !currentEntriesMap.has(entryData.id)) {
+        console.warn(`[DiaryService] saveEntry called with new ID ${entryData.id}. Creating as new.`);
+      }
     }
 
     try {
-      const entries = await this.getAllEntriesMap();
-      entries.set(entryToSave.id, entryToSave);
-      await this.store.setItem(DIARY_STORAGE_KEY, entries);
+      await this.storage.setItem(DIARY_NAMESPACE, entryToSave.id, entryToSave);
       console.log(`[DiaryService] Entry saved/updated: ${entryToSave.id} - "${entryToSave.title}"`);
       return entryToSave;
     } catch (error) {
@@ -123,17 +104,17 @@ class DiaryService {
 
   async getEntry(entryId: string): Promise<DiaryEntry | null> {
     try {
-      const entries = await this.getAllEntriesMap();
-      return entries.get(entryId) || null;
+      return await this.storage.getItem<DiaryEntry>(DIARY_NAMESPACE, entryId);
     } catch (error) {
       console.error(`[DiaryService] Error retrieving entry ${entryId}:`, error);
       return null;
     }
   }
-async getAllEntries(sortBy: 'createdAt' | 'updatedAt' | 'title' = 'createdAt', sortOrder: 'asc' | 'desc' = 'desc'): Promise<DiaryEntry[]> {
+
+  async getAllEntries(sortBy: 'createdAt' | 'updatedAt' | 'title' = 'createdAt', sortOrder: 'asc' | 'desc' = 'desc'): Promise<DiaryEntry[]> {
     try {
-      const entriesMap = await this.getAllEntriesMap();
-      const entriesArray = Array.from(entriesMap.values());
+      const entriesObject = await this.storage.getAllItemsInNamespace<DiaryEntry>(DIARY_NAMESPACE);
+      const entriesArray = Object.values(entriesObject);
 
       entriesArray.sort((a, b) => {
         let valA = a[sortBy];
@@ -141,13 +122,11 @@ async getAllEntries(sortBy: 'createdAt' | 'updatedAt' | 'title' = 'createdAt', s
         let comparison = 0;
         if (sortBy === 'title') {
             comparison = (valA as string).localeCompare(valB as string);
-        } else { // createdAt or updatedAt (ISO date strings)
+        } else {
             comparison = new Date(valA as string).getTime() - new Date(valB as string).getTime();
         }
-        // If sortOrder is 'desc', multiply by -1 to reverse the comparison
         return sortOrder === 'desc' ? comparison * -1 : comparison;
       });
-
       return entriesArray;
     } catch (error) {
       console.error('[DiaryService] Error retrieving all entries:', error);
@@ -155,34 +134,11 @@ async getAllEntries(sortBy: 'createdAt' | 'updatedAt' | 'title' = 'createdAt', s
     }
   }
 
-  private async getAllEntriesMap(): Promise<Map<string, DiaryEntry>> {
-    const storedData = await this.store.getItem<Map<string, DiaryEntry> | DiaryEntry[]>(DIARY_STORAGE_KEY);
-    if (Array.isArray(storedData)) { 
-        console.warn("[DiaryService] Migrating old array-based diary storage to Map-based.");
-        const map = new Map<string, DiaryEntry>();
-        storedData.forEach(entry => {
-            if (entry && entry.id && typeof entry.id === 'string') { // Basic validation
-                 map.set(entry.id, entry);
-            } else {
-                console.warn("[DiaryService] Found invalid entry during migration:", entry);
-            }
-        });
-        await this.store.setItem(DIARY_STORAGE_KEY, map);
-        return map;
-    }
-    return storedData instanceof Map ? storedData : new Map<string, DiaryEntry>();
-  }
-
   async deleteEntry(entryId: string): Promise<boolean> {
     try {
-      const entries = await this.getAllEntriesMap();
-      if (entries.has(entryId)) {
-        entries.delete(entryId);
-        await this.store.setItem(DIARY_STORAGE_KEY, entries);
-        console.log(`[DiaryService] Entry deleted: ${entryId}`);
-        return true;
-      }
-      return false;
+      await this.storage.removeItem(DIARY_NAMESPACE, entryId);
+      console.log(`[DiaryService] Entry deleted: ${entryId}`);
+      return true;
     } catch (error) {
       console.error(`[DiaryService] Error deleting entry ${entryId}:`, error);
       return false;
@@ -191,15 +147,133 @@ async getAllEntries(sortBy: 'createdAt' | 'updatedAt' | 'title' = 'createdAt', s
 
   async clearAllEntries(): Promise<void> {
     try {
-      await this.store.removeItem(DIARY_STORAGE_KEY); // More direct way to clear for localForage
-      // Or: await this.store.setItem(DIARY_STORAGE_KEY, new Map<string, DiaryEntry>());
-      console.log('[DiaryService] All diary entries cleared.');
+      await this.storage.clearNamespace(DIARY_NAMESPACE);
+      console.log('[DiaryService] All diary entries cleared from namespace.');
+      // After clearing, create the tutorial entry
+      await this.createTutorialEntryIfNotExists(true); // force creation
     } catch (error) {
       console.error('[DiaryService] Error clearing all entries:', error);
       throw new Error(`Failed to clear diary entries: ${(error as Error).message}`);
     }
   }
 
+  async createTutorialEntryIfNotExists(forceCreate: boolean = false): Promise<DiaryEntry | null> {
+    const existingTutorialEntry = await this.getEntry(TUTORIAL_ENTRY_ID);
+    if (existingTutorialEntry && !forceCreate) {
+      console.log('[DiaryService] Tutorial entry already exists.');
+      return existingTutorialEntry;
+    }
+
+    const allEntries = await this.getAllEntries();
+    if (allEntries.length > 0 && !existingTutorialEntry && !forceCreate) {
+        // If other entries exist but not the tutorial one (e.g., imported data), don't auto-add
+        console.log('[DiaryService] Other entries exist, tutorial entry not automatically created.');
+        return null;
+    }
+    
+    // If no entries, or tutorial specifically deleted and forceCreate is true (e.g. after clearAll)
+    if (forceCreate || allEntries.length === 0) {
+        const todayDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        const tutorialMarkdown = `
+# Welcome to Echo - Your AI Diary! ✨
+
+**Date:** ${todayDate}
+**Tags:** [tutorial, example, markdown, features, echo]
+**Mood:** Excited 🚀
+
+Hello there! I'm Echo, your personal AI companion for journaling and reflection. This entry shows you how I can help organize your thoughts.
+
+## Getting Started
+
+It's easy! Just start talking or typing. I'll listen empathetically and help structure your thoughts.
+
+* You can share your daily experiences.
+* Reflect on your feelings and emotions.
+* Brainstorm ideas or plan your goals.
+
+## Markdown Magic 📝
+
+I understand Markdown! This means your entries can be rich and well-structured.
+
+* **Bold text** and *italic text*
+* Numbered lists (like this one!)
+* Bullet points
+* \`Inline code snippets\`
+* And even full code blocks:
+
+\`\`\`javascript
+function greet(name) {
+  // Echo can even understand code!
+  console.log(\`Hello, \${name}! Welcome to your diary.\`);
+}
+greet('Explorer');
+\`\`\`
+
+## Visualizing Thoughts 🧠
+
+If you're exploring complex ideas, I might suggest a diagram!
+
+> Echo: "Your plans for world domination seem quite interconnected. Would a simple mind map help visualize the different parts?"
+
+If you agree (or ask for it), I can include a Mermaid diagram right in your entry:
+
+### Example Mind Map: Project "Aurora"
+
+\`\`\`mermaid
+mindmap
+  root((Project Aurora))
+    (Phase 1: Research)
+      (Market Analysis)
+      (Feasibility Study)
+    (Phase 2: Development)
+      (Frontend UI/UX)
+      (Backend API)
+      (Database Design)
+    (Phase 3: Testing)
+      (Alpha & Beta)
+      (User Feedback)
+    (Phase 4: Launch)
+\`\`\`
+
+## Smart Features 💡
+
+* **Metadata Suggestion**: When you seem to be finishing an entry, I'll use a "tool call" (a special function) to suggest a title, tags, and mood for you. You can then confirm or edit them. This is me trying to be helpful!
+* **Reflection Prompts**: Sometimes, I might ask gentle questions to help you delve deeper into your thoughts.
+
+## Your Space
+
+This is your private, secure space. Your entries are stored locally in **your browser**. You can **export** your entire diary as a JSON file (check the "My Entries" modal) and **import** it back if you switch browsers or devices.
+
+---
+
+Ready to begin? Just tap the "New Entry" button or start sharing your thoughts! I'm here to listen.
+`;
+        const tutorialEntryData: Omit<DiaryEntry, 'id' | 'updatedAt' | 'createdAt'> & { id: string; createdAt: string } = {
+            id: TUTORIAL_ENTRY_ID,
+            title: "Welcome to Echo! (Tutorial Entry)",
+            contentMarkdown: tutorialMarkdown.replace(/{{TODAY_DATE}}/g, todayDate),
+            createdAt: new Date(Date.now() - 10000).toISOString(), // Ensure it's slightly older so it appears first if sorted by asc.
+            tags: ["tutorial", "guide", "echo", "features"],
+            mood: "Helpful",
+            summary: "A guide on how to use Echo, your AI diary, showcasing its features like Markdown, diagrams, and smart suggestions.",
+            isFavorite: true,
+            schemaVersion: 1,
+        };
+        try {
+            const savedTutorial = await this.saveEntry(tutorialEntryData);
+            console.log('[DiaryService] Tutorial entry created.');
+            return savedTutorial;
+        } catch (error) {
+            console.error('[DiaryService] Failed to create tutorial entry:', error);
+            return null;
+        }
+    }
+    return null;
+  }
+
+
+  // Search, Tag, Import/Export methods remain the same as previous version.
+  // ... (searchEntries, getEntriesByTag, getAllTags, exportEntries, importEntries logic from previous version)
   async searchEntries(searchTerm: string): Promise<DiaryEntry[]> {
     if (!searchTerm.trim()) return this.getAllEntries();
     const lowerSearchTerm = searchTerm.toLowerCase();
@@ -228,65 +302,48 @@ async getAllEntries(sortBy: 'createdAt' | 'updatedAt' | 'title' = 'createdAt', s
     return Array.from(tagSet).sort((a, b) => a.localeCompare(b));
   }
 
-  /**
-   * Exports all diary entries to a JSON string.
-   * @returns {Promise<string>} A JSON string representing all diary entries.
-   */
   async exportEntries(): Promise<string> {
-    const entries = await this.getAllEntries('createdAt', 'asc'); // Export in chronological order
+    const entries = await this.getAllEntries('createdAt', 'asc');
     const exportData: DiaryExportData = {
         exportFormatVersion: CURRENT_EXPORT_VERSION,
         exportedAt: new Date().toISOString(),
         entries: entries,
     };
-    return JSON.stringify(exportData, null, 2); // Pretty print JSON
+    return JSON.stringify(exportData, null, 2);
   }
 
-  /**
-   * Imports diary entries from a JSON string.
-   * @param {string} jsonString - The JSON string containing diary entries.
-   * @returns {Promise<{ importedCount: number; skippedCount: number; error?: string }>} Result of the import.
-   */
   async importEntries(jsonString: string): Promise<{ importedCount: number; skippedCount: number; error?: string }> {
     let importedCount = 0;
     let skippedCount = 0;
     try {
       const exportData = JSON.parse(jsonString) as DiaryExportData;
-      if (!exportData || !exportData.entries || !Array.isArray(exportData.entries) || exportData.exportFormatVersion !== CURRENT_EXPORT_VERSION) {
+      if (!exportData || !exportData.entries || !Array.isArray(exportData.entries) || !exportData.exportFormatVersion?.startsWith("1.")) {
         return { importedCount, skippedCount, error: "Invalid or incompatible JSON file format." };
       }
 
-      const currentEntriesMap = await this.getAllEntriesMap();
       const entriesToSave: DiaryEntry[] = [];
+      const currentEntriesMap = await this.getAllEntriesMap();
 
       for (const entry of exportData.entries) {
-        // Basic validation of an imported entry
         if (entry && entry.id && entry.title && entry.contentMarkdown && entry.createdAt && entry.updatedAt) {
           if (currentEntriesMap.has(entry.id)) {
-            // Handle duplicates: for now, skip if ID exists. Could offer merge/overwrite.
             const existingEntry = currentEntriesMap.get(entry.id)!;
             if (new Date(entry.updatedAt).getTime() > new Date(existingEntry.updatedAt).getTime()) {
-                 // Imported entry is newer, let's plan to update
-                 entriesToSave.push(entry); // This will effectively be an update by saveEntry
-                 console.log(`[DiaryService] Marking entry for update (newer version imported): ${entry.id}`);
+              entriesToSave.push(entry);
             } else {
-                skippedCount++;
-                console.log(`[DiaryService] Skipped duplicate entry ID on import: ${entry.id}`);
+              skippedCount++;
             }
           } else {
             entriesToSave.push(entry);
           }
         } else {
           skippedCount++;
-          console.warn("[DiaryService] Skipped invalid entry during import:", entry);
         }
       }
       
-      // Batch save entries if possible, or save one by one
       for (const entry of entriesToSave) {
-          // saveEntry will handle if it's a new ID or an update to an existing one.
-          await this.saveEntry(entry);
-          importedCount++;
+        await this.saveEntry(entry);
+        importedCount++;
       }
 
       return { importedCount, skippedCount };

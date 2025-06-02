@@ -4,14 +4,14 @@
  * @description Global typographic styles, font imports (if self-hosted),
  * and base styling for text elements. Uses CSS custom properties
  * for theme-aware typography. Enhanced for readability and alignment with
- * "Ephemeral Harmony" design principles.
+ * "Ephemeral Harmony v2.0" design principles.
  *
  * @role Defines foundational typographic rules and styles.
  * @dependencies `../abstracts/variables` (for font families, sizes, colors),
  * `../abstracts/mixins` (for text effects, custom scrollbars).
  * @assumptions CSS custom properties for fonts and colors are set by the theme engine.
  * Font files (if self-hosted) are correctly linked.
- * @version 3.0.2 - Ensured all HSL color components use CSS variables with SCSS fallbacks. Corrected calc() usage.
+ * @version 3.1.0 - Adapted to use new font CSS variables.
  */
 
 @use '../abstracts/variables' as var;
@@ -34,7 +34,7 @@ p {
 
 // Apply base font settings to the body for general text not explicitly styled.
 body {
-  font-family: var(--font-family-sans, #{var.$font-family-sans});
+  font-family: var(--font-family-sans, #{var.$font-family-sans}); // This will be overridden by theme definitions
   font-size: var(--font-size-base, #{var.$font-size-base-default});
   color: hsl(
     var(--color-text-primary-h, #{var.$default-color-text-primary-h}),
@@ -47,34 +47,31 @@ body {
 // Headings (h1-h6)
 // ----------------------------------------------------------------------------
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-family-display, #{var.$font-family-display});
+  font-family: var(--font-family-display, #{var.$font-family-display}); // Overridden by theme
   color: hsl(
     var(--color-text-primary-h, #{var.$default-color-text-primary-h}),
     var(--color-text-primary-s, #{var.$default-color-text-primary-s}),
     var(--color-text-primary-l, #{var.$default-color-text-primary-l})
   );
   line-height: var(--line-height-heading, #{var.$line-height-heading});
-  margin-top: calc(#{var.$spacing-lg} * 1.5); // Use SCSS variable directly in calc
+  margin-top: calc(#{var.$spacing-lg} * 1.5);
   margin-bottom: var.$spacing-md;
-  font-weight: 700; // Default bold for headings
-  text-wrap: balance; // Balance heading lines for better visual appeal
-  letter-spacing: -0.01em; // Slight tightening for display fonts
+  font-weight: 700;
+  text-wrap: balance;
+  letter-spacing: -0.01em;
 
-  // Optional subtle glow (apply class .heading-glow in HTML)
   &.heading-glow {
     @include mixins.text-glow(
-      $glow-color-var-prefix: '--color-accent-primary', // CSS var prefix for glow color
+      $glow-color-var-prefix: '--color-accent-primary',
       $glow-radius: 4px,
-      // SCSS Fallbacks for glow color HSL(A)
-      $fb-glow-h: var.$default-color-accent-primary-h, 
-      $fb-glow-s: var.$default-color-accent-primary-s, 
-      $fb-glow-l: var.$default-color-accent-primary-l, 
-      $fb-glow-a: 0.3 // Default alpha for this specific glow
+      $fb-glow-h: var.$default-color-accent-primary-h,
+      $fb-glow-s: var.$default-color-accent-primary-s,
+      $fb-glow-l: var.$default-color-accent-primary-l,
+      $fb-glow-a: 0.3
     );
   }
 }
 
-// Responsive heading sizes using clamp() for fluid typography
 h1 { font-size: clamp(2.25rem, calc(1.5rem + 3vw), 4rem); letter-spacing: -0.025em; }
 h2 { font-size: clamp(1.875rem, calc(1.25rem + 2.5vw), 3rem); letter-spacing: -0.02em; }
 h3 { font-size: clamp(1.625rem, calc(1.1rem + 2vw), 2.25rem); font-weight: 600; }
@@ -86,7 +83,7 @@ h6 {
   text-transform: uppercase;
   letter-spacing: 0.075em;
   opacity: 0.9;
-  color: hsl( // Slightly different color for h6 to distinguish if needed
+  color: hsl(
     var(--color-text-secondary-h, #{var.$default-color-text-secondary-h}),
     var(--color-text-secondary-s, #{var.$default-color-text-secondary-s}),
     var(--color-text-secondary-l, #{var.$default-color-text-secondary-l})
@@ -97,79 +94,75 @@ h6 {
 // Monospace & Code Elements (code, kbd, samp, pre)
 // ----------------------------------------------------------------------------
 code, kbd, samp, pre {
-  font-family: var(--font-family-mono, #{var.$font-family-mono});
-  font-size: 0.925em; // Slightly smaller than base for better integration
-  color: hsl( // Default color for monospace text, can be overridden
-    var(--color-text-code-inline-h, var.$default-color-text-code-inline-h), // Use specific inline code text color vars
+  font-family: var(--font-family-mono, #{var.$font-family-mono}); // Overridden by theme
+  font-size: 0.925em;
+  color: hsl(
+    var(--color-text-code-inline-h, var.$default-color-text-code-inline-h),
     var(--color-text-code-inline-s, var.$default-color-text-code-inline-s),
     var(--color-text-code-inline-l, var.$default-color-text-code-inline-l)
   );
   letter-spacing: 0.01em;
 }
 
-// Inline code styling (`<code>` not within `<pre>`)
 code:not(pre > code) {
   background-color: hsla(
     var(--color-bg-code-inline-h, #{var.$default-color-bg-code-inline-h}),
     var(--color-bg-code-inline-s, #{var.$default-color-bg-code-inline-s}),
     var(--color-bg-code-inline-l, #{var.$default-color-bg-code-inline-l}),
-    var(--color-bg-code-inline-a, #{var.$default-color-bg-code-inline-a}) // Use alpha from theme
+    var(--color-bg-code-inline-a, #{var.$default-color-bg-code-inline-a})
   );
   padding: 0.2em 0.45em;
-  border-radius: var.$radius-sm;
+  border-radius: var(--radius-sm, #{var.$radius-sm}); // Use themeable radius
   border: 1px solid hsla(
     var(--color-border-code-inline-h, #{var.$default-color-border-code-inline-h}),
     var(--color-border-code-inline-s, #{var.$default-color-border-code-inline-s}),
     var(--color-border-code-inline-l, #{var.$default-color-border-code-inline-l}),
-    var(--color-border-code-inline-a, #{var.$default-color-border-code-inline-a}) // Use alpha from theme
+    var(--color-border-code-inline-a, #{var.$default-color-border-code-inline-a})
   );
-  // Color is inherited from the general `code` rule above or can be set specifically:
-  // color: hsl(var(--color-text-code-inline-h), ...);
   box-shadow: inset 0 0 3px hsla(
     var(--color-accent-primary-h, #{var.$default-color-accent-primary-h}),
     var(--color-accent-primary-s, #{var.$default-color-accent-primary-s}),
     var(--color-accent-primary-l, #{var.$default-color-accent-primary-l}),
-    0.1 // Subtle inset shadow with accent color
+    0.1
   );
 }
 
-// Code blocks (`<pre>`)
 pre {
   background-color: hsla(
     var(--color-bg-code-block-h, #{var.$default-color-bg-code-block-h}),
     var(--color-bg-code-block-s, #{var.$default-color-bg-code-block-s}),
     var(--color-bg-code-block-l, #{var.$default-color-bg-code-block-l}),
-    var(--color-bg-code-block-a, #{var.$default-color-bg-code-block-a}) // Use alpha from theme
+    var(--color-bg-code-block-a, #{var.$default-color-bg-code-block-a})
   );
   border: 1px solid hsla(
-    var(--color-border-primary-h, #{var.$default-color-border-primary-h}), // Can use a specific code block border var if defined
+    var(--color-border-primary-h, #{var.$default-color-border-primary-h}),
     var(--color-border-primary-s, #{var.$default-color-border-primary-s}),
     var(--color-border-primary-l, #{var.$default-color-border-primary-l}),
-    0.3 // Alpha for border
+    0.3
   );
   padding: var.$spacing-md;
-  border-radius: var.$radius-lg;
-  overflow-x: auto; // Enable horizontal scrolling for long code lines
-  line-height: calc(var(--line-height-base, #{var.$line-height-base-default}) * 0.95); // Tighter line height for code
-  box-shadow: var(--shadow-depth-sm, #{var.$scss-box-shadow-sm}); // Subtle shadow for depth
+  border-radius: var(--radius-lg, #{var.$radius-lg}); // Use themeable radius
+  overflow-x: auto;
+  line-height: calc(var(--line-height-base, #{var.$line-height-base-default}) * 0.95);
+  box-shadow: var(--shadow-depth-sm, #{var.$scss-box-shadow-sm});
 
   @include mixins.custom-scrollbar(
-    $thumb-color-var-prefix: '--color-accent-secondary', // CSS var prefix for thumb
-    $thumb-base-alpha: 0.3, 
+    $thumb-color-var-prefix: '--color-accent-secondary',
+    $thumb-base-alpha: 0.3,
     $thumb-hover-alpha: 0.5,
-    $track-color-var-prefix: '--color-bg-code-block', // Use code block bg for track
-    $track-alpha: 0.2, // Alpha for track
+    $track-color-var-prefix: '--color-bg-code-block',
+    $track-alpha: 0.2,
     $width: 6px
   );
 
-  code { // Styling for `<code>` specifically within `<pre>`
+  code {
     color: hsl(
       var(--color-text-code-block-h, #{var.$default-color-text-code-block-h}),
       var(--color-text-code-block-s, #{var.$default-color-text-code-block-s}),
       var(--color-text-code-block-l, #{var.$default-color-text-code-block-l})
     );
-    font-size: 1em; // Inherit size from `pre`
-    background-color: transparent; // No separate background for code inside pre
+    font-size: 1em;
+    background-color: transparent;
     padding: 0;
     border: none;
     box-shadow: none;
@@ -180,7 +173,7 @@ pre {
 // Lists (ol, ul, dl)
 // ----------------------------------------------------------------------------
 ul, ol {
-  padding-left: var.$spacing-lg; // Indentation for lists
+  padding-left: var.$spacing-lg;
   margin-bottom: var.$spacing-md;
   li {
     margin-bottom: calc(var.$spacing-xs / 2);
@@ -190,9 +183,9 @@ ul, ol {
       var(--color-text-secondary-s, #{var.$default-color-text-secondary-s}),
       var(--color-text-secondary-l, #{var.$default-color-text-secondary-l})
     );
-    &::marker { // Style list markers (bullets, numbers)
+    &::marker {
       color: hsl(var(--color-accent-primary-h, var.$default-color-accent-primary-h), var(--color-accent-primary-s, var.$default-color-accent-primary-s), var(--color-accent-primary-l, var.$default-color-accent-primary-l));
-      font-weight: 600; // Bolder markers
+      font-weight: 600;
     }
   }
 }
@@ -229,19 +222,19 @@ blockquote {
     var(--color-bg-secondary-h, #{var.$default-color-bg-secondary-h}),
     var(--color-bg-secondary-s, #{var.$default-color-bg-secondary-s}),
     var(--color-bg-secondary-l, #{var.$default-color-bg-secondary-l}),
-    0.3 // Subtle background tint
+    0.3
   );
-  border-radius: 0 var.$radius-md var.$radius-md 0;
+  border-radius: 0 var(--radius-md, #{var.$radius-md}) var(--radius-md, #{var.$radius-md}) 0; // Use themeable radius
   font-style: italic;
   color: hsl(
     var(--color-text-secondary-h, #{var.$default-color-text-secondary-h}),
     var(--color-text-secondary-s, #{var.$default-color-text-secondary-s}),
-    calc(var(--color-text-secondary-l, #{var.$default-color-text-secondary-l}) + 5%) // Slightly lighter text for blockquote
+    calc(var(--color-text-secondary-l, #{var.$default-color-text-secondary-l}) + 5%)
   );
 
   p {
-    margin-bottom: 0; // No extra margin for paragraphs inside blockquote
-    max-width: none; // Allow blockquote paragraphs to span wider if needed
+    margin-bottom: 0;
+    max-width: none;
   }
   cite {
     display: block;
@@ -260,7 +253,7 @@ hr {
   height: 1px;
   background: linear-gradient(to right,
     transparent,
-    hsla(var(--color-border-primary-h, var.$default-color-border-primary-h), var(--color-border-primary-s, var.$default-color-border-primary-s), var(--color-border-primary-l, var.$default-color-border-primary-l), 0.3), // Use primary border color with alpha
+    hsla(var(--color-border-primary-h, var.$default-color-border-primary-h), var(--color-border-primary-s, var.$default-color-border-primary-s), var(--color-border-primary-l, var.$default-color-border-primary-l), 0.3),
     transparent
   );
   margin: var.$spacing-xl 0;
@@ -269,7 +262,7 @@ hr {
 // ----------------------------------------------------------------------------
 // Utility helper classes
 // ----------------------------------------------------------------------------
-.text-prose-enhanced { // For areas needing slightly enhanced readability
+.text-prose-enhanced {
   font-size: calc(var(--font-size-base, #{var.$font-size-base-default}) * 1.05);
   letter-spacing: 0.02em;
   line-height:  calc(var(--line-height-base, #{var.$line-height-base-default}) * 1.05);
@@ -277,26 +270,26 @@ hr {
   p { max-width: 70ch; }
 }
 
-.lead-text { // For introductory paragraphs or emphasized text
+
+
+.lead-text {
   font-size: var.$font-size-lg;
   color: hsl(
     var(--color-text-primary-h, #{var.$default-color-text-primary-h}),
     var(--color-text-primary-s, #{var.$default-color-text-primary-s}),
     var(--color-text-primary-l, #{var.$default-color-text-primary-l})
   );
-  font-weight: 400; // Softer weight than headings
+  font-weight: 400;
   letter-spacing: 0.01em;
   line-height: 1.7;
   margin-bottom: var.$spacing-lg;
 }
 
-// Text alignment utilities (if not using Tailwind's text-*)
 .text-left   { text-align: left; }
 .text-center { text-align: center; }
 .text-right  { text-align: right; }
 .text-justify{ text-align: justify; }
 
-// Font weight utilities (if not using Tailwind's font-*)
 .font-light   { font-weight: 300; }
 .font-normal  { font-weight: 400; }
 .font-medium  { font-weight: 500; }

@@ -6,12 +6,13 @@
  * responsive margin strategies, theme-aware custom scrollbars, global focus states,
  * default link styling, text selection appearance, and subtle ambient background effects.
  * It aims to create a polished, immersive, and mobile-first experience.
+ * Addressed SASS `[mixed-decls]` deprecation warnings.
  *
  * @role Establishes foundational styling rules for the entire application.
  * @dependencies `../abstracts/variables` (for theme colors, spacing, fonts, z-indexes),
  * `../abstracts/mixins` (for focus rings, custom scrollbars).
  * @assumptions CSS custom properties are set by the theme engine. Viewport meta tag in HTML is correctly configured.
- * @version 3.1.1 - Ensured proper CSS variable usage for scrollbars and focus ring. Refined comments.
+ * @version 3.2.0 - Addressed [mixed-decls] warnings. Ensured proper CSS variable usage for scrollbars and focus ring. Refined comments.
  */
 
 @use '../abstracts/variables' as var;
@@ -34,8 +35,6 @@ html {
   overflow-x: hidden;
   height: 100%; // Ensure HTML takes full viewport height
 
-  // Default background and text colors are applied via :root in _theme-engine.scss
-  // This ensures the theme is applied even before Vue hydrates.
   transition: background-color var.$duration-smooth var.$ease-out-quad,
               color var.$duration-smooth var.$ease-out-quad;
 }
@@ -49,11 +48,10 @@ html {
  * - Includes a subtle, themeable, animated background noise/texture pseudo-element.
  */
 body {
-  min-height: 100vh;
-  @supports (height: 100dvh) { // Use dynamic viewport height if supported
-    min-height: 100dvh;
-  }
+  min-height: 100vh; // Fallback
 
+  // Declarations moved before @supports to resolve [mixed-decls] warning,
+  // assuming these apply to body regardless of dvh support.
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
@@ -67,17 +65,31 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
 
+  @supports (height: 100dvh) { // Use dynamic viewport height if supported
+    min-height: 100dvh;
+  }
+  // Alternatively, to keep declarations after @supports and fix [mixed-decls]:
+  // & {
+  //   display: flex;
+  //   flex-direction: column;
+  //   overflow-x: hidden;
+  //   position: relative;
+  //   font-family: var(--font-family-sans, #{var.$font-family-sans});
+  //   // ... other properties
+  // }
+
+
   // Subtle global background noise/texture for an "alive" feel
   &::before {
     content: '';
     position: fixed;
     inset: 0;
     z-index: var.$z-index-negative;
-    background-image: var(--bg-noise-texture, none); // Defined in theme or SCSS variables
+    background-image: var(--bg-noise-texture, none);
     background-size: var(--bg-noise-size, 200px);
     opacity: var(--bg-noise-opacity, 0.02);
     pointer-events: none;
-    // Optional: animation: holoGridScroll 120s linear infinite alternate;
+    // Optional: animation: holoGridScroll 120s linear infinite alternate; (ensure holoGridScroll is defined)
   }
 }
 
@@ -98,6 +110,7 @@ body.overflow-hidden-by-app-overlay {
 }
 
 // --- Custom Scrollbars (Global Themed Fallback) ---
+// These styles apply globally. The `custom-scrollbar-for-themed-panel` mixin can override for specific elements.
 ::-webkit-scrollbar {
   width: 9px;
   height: 9px;
@@ -127,7 +140,6 @@ body.overflow-hidden-by-app-overlay {
 :focus-visible {
   outline: none;
   @include mixins.focus-ring(
-    // Pass CSS variable names, not SCSS variables, to the mixin for theme awareness
     $base-bg-color-var-prefix: '--color-bg-primary',
     $ring-accent-color-var-prefix: '--color-accent-interactive',
     $offset-width: 2px,
@@ -148,7 +160,7 @@ body.overflow-hidden-by-app-overlay {
   text-decoration: none;
   background-color: hsl(var(--color-accent-interactive-h, var.$default-color-accent-interactive-h), var(--color-accent-interactive-s, var.$default-color-accent-interactive-s), var(--color-accent-interactive-l, var.$default-color-accent-interactive-l));
   color: hsl(var(--color-text-on-primary-h, var.$default-color-text-on-primary-h), var(--color-text-on-primary-s, var.$default-color-text-on-primary-s), var(--color-text-on-primary-l, var.$default-color-text-on-primary-l));
-  box-shadow: var(--shadow-depth-xl, #{var.$scss-box-shadow-xl}); // Use SCSS fallback if CSS var not set
+  box-shadow: var(--shadow-depth-xl, #{var.$scss-box-shadow-xl});
   transition: transform 0.25s var.$ease-out-expo, opacity 0.2s var.$ease-out-quad, left 0s 0.25s;
   transform: translateY(-150%);
   opacity: 0;
@@ -168,7 +180,7 @@ body.overflow-hidden-by-app-overlay {
   color: hsl(var(--color-text-on-primary-h, var.$default-color-text-on-primary-h), var(--color-text-on-primary-s, var.$default-color-text-on-primary-s), var(--color-text-on-primary-l, var.$default-color-text-on-primary-l));
   text-shadow: none;
 }
-::-moz-selection {
+::-moz-selection { // Firefox
   background-color: hsla(var(--color-accent-interactive-h, var.$default-color-accent-interactive-h), var(--color-accent-interactive-s, var.$default-color-accent-interactive-s), var(--color-accent-interactive-l, var.$default-color-accent-interactive-l), 0.85);
   color: hsl(var(--color-text-on-primary-h, var.$default-color-text-on-primary-h), var(--color-text-on-primary-s, var.$default-color-text-on-primary-s), var(--color-text-on-primary-l, var.$default-color-text-on-primary-l));
   text-shadow: none;
@@ -184,10 +196,36 @@ a {
 
   &:hover,
   &:focus-visible {
-    color: hsl(var(--color-accent-interactive-h, var.$default-color-accent-interactive-h), calc(var(--color-accent-interactive-s, #{var.$default-color-accent-interactive-s}) + 8%), calc(var(--color-accent-interactive-l, #{var.$default-color-accent-interactive-l}) - 8%));
-    border-bottom-color: hsla(var(--color-accent-interactive-h, var.$default-color-accent-interactive-h), var(--color-accent-interactive-s, var.$default-color-accent-interactive-s), var(--color-accent-interactive-l, var.$default-color-accent-interactive-l), 0.5);
+    // Ensure SCSS variables are used for fallback calculation if CSS variables aren't defined
+    color: hsl(var(--color-accent-interactive-h, #{var.$default-color-accent-interactive-h}), calc(var(--color-accent-interactive-s, #{var.$default-color-accent-interactive-s}) + 8%), calc(var(--color-accent-interactive-l, #{var.$default-color-accent-interactive-l}) - 8%));
+    border-bottom-color: hsla(var(--color-accent-interactive-h, #{var.$default-color-accent-interactive-h}), var(--color-accent-interactive-s, #{var.$default-color-accent-interactive-s}), var(--color-accent-interactive-l, #{var.$default-color-accent-interactive-l}), 0.5);
   }
   &:focus-visible {
-    outline: none;
+    outline: none; // Already handled by the global :focus-visible rule with the custom ring
   }
+}
+
+// Retro Terminus Specific Global Body Styles
+html[data-theme='retro-terminus-dark'],
+html[data-theme='retro-terminus-light'] {
+  body::after { // CRT Scanlines for Terminus themes
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: var.$z-index-content-overlay + 1; // Above content, below modals
+    background: linear-gradient(
+      to bottom,
+      hsla(0, 0%, 0%, var(--crt-scanline-opacity, 0.03)) 50%,
+      hsla(0, 0%, 100%, var(--crt-scanline-opacity, 0.03)) 50%
+    );
+    background-size: 100% 4px; // Adjust scanline thickness
+    pointer-events: none;
+    animation: crtScanline var(--crt-scanline-speed, 20s) linear infinite alternate; // Assuming crtScanline keyframe is defined
+  }
+
+  // Optional: flicker effect - use with caution as it can be distracting
+  // body::before { // Re-using ::before from noise, or use another pseudo-element
+  //   animation: crtFlicker var(--crt-flicker-speed, 0.1s) infinite; // Ensure crtFlicker is defined
+  //   opacity: var(--crt-flicker-intensity, 0.02);
+  // }
 }
