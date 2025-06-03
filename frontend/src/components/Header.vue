@@ -1,271 +1,288 @@
-// File: frontend/src/components/Header.vue
-/**
- * @file Header.vue
- * @version 9.6.0
- * @description Global application header.
- * - Logo click navigates to home & forces reload.
- * - Hearing icon section is always rendered for CSS visibility control.
- * - Mobile icon sizes adjusted via SCSS.
- * - Logout behavior refined for page refresh.
- */
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     File: frontend/src/components/Header.vue  ·  v12.1.1 (async-imports fixed)
+     ═══════════════════════════════════════════════════════════════════════════ -->
 <script setup lang="ts">
+/* ────────────────── imports ────────────────── */
 import {
-  ref,
-  computed,
-  watch,
-  onUnmounted,
-  defineAsyncComponent,
-  type Component as VueComponentType,
-  type PropType,
-  type Ref,
-  type FunctionalComponent,
-  type DefineComponent
+  ref, computed, watch, onMounted, onUnmounted,
+  defineAsyncComponent, type Ref, type PropType,
 } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import { useAuth } from '@/composables/useAuth';
-import { useUiStore } from '@/store/ui.store';
+
+import { useUiStore }    from '@/store/ui.store';
+import { useAuth }       from '@/composables/useAuth';
+import { useChatStore }  from '@/store/chat.store';
 import { useAgentStore } from '@/store/agent.store';
-import { useChatStore } from '@/store/chat.store';
-import { useCostStore } from '@/store/cost.store';
-import { voiceSettingsManager } from '@/services/voice.settings.service';
-import { type IAgentDefinition } from '@/services/agent.service';
-import { themeManager } from '@/theme/ThemeManager';
+import type { IAgentDefinition } from '@/services/agent.service';
 
-// Core Components
-import AnimatedLogo from '@/components/ui/AnimatedLogo.vue';
-const UserSettingsDropdown = defineAsyncComponent(() => import('./header/UserSettingsDropdown.vue'));
-const VoiceControlsDropdown = defineAsyncComponent(() => import('./header/VoiceControlsDropdown.vue'));
-const ThemeSelectionDropdown = defineAsyncComponent(() => import('./header/ThemeSelectionDropdown.vue'));
+import AnimatedLogoIcon  from '@/components/ui/AnimatedLogoIcon.vue';
+import AnimatedTextLogo  from '@/components/ui/AnimatedTextLogo.vue';
+
+/* 100 % ASYNC  (wrapped with defineAsyncComponent) */
+const ThemeDropdown    = defineAsyncComponent(() => import('./header/ThemeSelectionDropdown.vue'));
+const UserDropdown     = defineAsyncComponent(() => import('./header/UserSettingsDropdown.vue'));
+const VoiceDropdown    = defineAsyncComponent(() => import('./header/VoiceControlsDropdown.vue'));
 const SiteMenuDropdown = defineAsyncComponent(() => import('./header/SiteMenuDropdown.vue'));
-const AgentHub = defineAsyncComponent(() => import('@/components/agents/AgentHub.vue'));
-const AgentHubTrigger = defineAsyncComponent(() => import('./header/AgentHubTrigger.vue'));
-const MobileNavPanel = defineAsyncComponent(() => import('./header/MobileNavPanel.vue'));
+const AgentHubTrigger  = defineAsyncComponent(() => import('./header/AgentHubTrigger.vue'));
+const AgentHub         = defineAsyncComponent(() => import('@/components/agents/AgentHub.vue'));
+const MobileNavPanel   = defineAsyncComponent(() => import('./header/MobileNavPanel.vue'));
 
-// Icons
+
 import {
   Bars3Icon, XMarkIcon,
   ArrowsPointingOutIcon, ArrowsPointingInIcon,
   SpeakerWaveIcon, SpeakerXMarkIcon,
-  LightBulbIcon,
   ArrowLeftOnRectangleIcon,
 } from '@heroicons/vue/24/outline';
 
+/* ────────────────── props / emits ────────────────── */
 const props = defineProps({
-  isUserListening: { type: Boolean as PropType<boolean>, default: false },
+  /** STT: user microphone live */
+  isUserListening:     { type: Boolean as PropType<boolean>, default: false },
+  /** AI is streaming text or TTS speaking */
   isAssistantSpeaking: { type: Boolean as PropType<boolean>, default: false },
 });
 
 const emit = defineEmits<{
-  (e: 'toggle-fullscreen'): void;
-  (e: 'clear-chat-and-session'): void;
-  (e: 'logout'): void; // This will be handled by App.vue which calls useAuth.logout
-  (e: 'show-prior-chat-log'): void;
+  (e:'toggle-fullscreen'): void;
+  (e:'logout'): void;
+  (e:'clear-chat-and-session'): void;
+  (e:'show-prior-chat-log'): void;
 }>();
 
-const auth = useAuth();
-const uiStore = useUiStore();
+/* ────────────────── stores / state ────────────────── */
+const uiStore    = useUiStore();
+const auth       = useAuth();
+const chatStore  = useChatStore();
 const agentStore = useAgentStore();
-const chatStore = useChatStore();
-const costStore = useCostStore();
+
 const router = useRouter();
-const route = useRoute();
+const route  = useRoute();
 
-const activeAgent = computed<IAgentDefinition | undefined>(() => agentStore.activeAgent);
-const agentTitle = computed<string>(() =>
-  activeAgent.value?.label ||
-  (auth.isAuthenticated.value ? 'VCA Dashboard' : 'Voice Chat Assistant')
-);
-const agentIconComponent = computed<VueComponentType | FunctionalComponent | DefineComponent>(() => {
-  const icon = activeAgent.value?.iconComponent;
-  if (typeof icon === 'object' || typeof icon === 'function' || (typeof icon === 'string' && icon.endsWith('Icon'))) {
-    return icon as VueComponentType;
-  }
-  return LightBulbIcon as VueComponentType;
-});
+const activeAgent = computed<IAgentDefinition|undefined>(() => agentStore.activeAgent);
 
-const sessionCost = computed<number>(() => costStore.totalSessionCost);
-const isFullscreenActiveForUI = computed<boolean>(() => uiStore.isBrowserFullscreenActive);
-const isAiStateActive = computed<boolean>(() => props.isAssistantSpeaking || chatStore.isMainContentStreaming);
-const isUserStateActive = computed<boolean>(() => props.isUserListening && !isAiStateActive.value);
+const isAiActive   = computed(() => props.isAssistantSpeaking || chatStore.isMainContentStreaming);
+const isUserActive = computed(() => props.isUserListening && !isAiActive.value);
+const isFullscreen = computed(() => uiStore.isBrowserFullscreenActive);
 
-const isMobileMenuOpen: Ref<boolean> = ref(false);
-const isAgentHubOpen: Ref<boolean> = ref(false);
+const isMuted : Ref<boolean> = ref(false);
 
-const isGlobalMuteActive = computed<boolean>({
-  get: () => !voiceSettingsManager.settings.autoPlayTts,
-  set: (isMuted: boolean) => voiceSettingsManager.updateSetting('autoPlayTts', !isMuted)
-});
+const isMobileMenu   = ref(false);
+const isAgentHubOpen = ref(false);
 
-const toggleMobileMenu = (): void => { isMobileMenuOpen.value = !isMobileMenuOpen.value; };
-const openAgentHub = (): void => {
-  isMobileMenuOpen.value = false;
-  isAgentHubOpen.value = true;
-};
-const closeAgentHub = (): void => { isAgentHubOpen.value = false; };
+/* ─── intro animation: wait until page fully rendered ─── */
+const introFlagKey = 'vca-hdr-played';
+const playIntroNow = ref(false);
 
-// Event handlers for MobileNavPanel emissions
-const onLogoutFromMobile = () => { isMobileMenuOpen.value = false; emit('logout'); };
-const onClearChatFromMobile = () => { isMobileMenuOpen.value = false; emit('clear-chat-and-session'); };
-const onShowHistoryFromMobile = () => { isMobileMenuOpen.value = false; emit('show-prior-chat-log'); };
-const onToggleFullscreenFromMobile = () => { emit('toggle-fullscreen'); };
+function startIntroIfFirstVisit(){
+  if (sessionStorage.getItem(introFlagKey)) return;
+  sessionStorage.setItem(introFlagKey,'1');
+  requestAnimationFrame(() => requestAnimationFrame(() => { playIntroNow.value = true; }));
+}
 
-/**
- * @function handleLogoClick
- * @description Navigates to the home page ('/') and forces a full page reload.
- * This is used to ensure a fresh state when the main application logo is clicked.
- * It also ensures the mobile navigation panel is closed if it was open.
- */
-const handleLogoClick = (): void => {
-  isMobileMenuOpen.value = false; // Close mobile menu if open
-
-  // Navigate to home. If already home, reload. Otherwise, navigate then reload.
-  if (route.path === '/') {
-    window.location.reload();
+onMounted(() => {
+  if (document.readyState === 'complete') {
+    startIntroIfFirstVisit();
   } else {
-    // Using window.location.href for a clean navigation and reload effect
-    window.location.href = '/';
-  }
-};
-
-watch(() => route.path, () => {
-  if (isMobileMenuOpen.value) isMobileMenuOpen.value = false;
-});
-
-watch([isMobileMenuOpen, isAgentHubOpen], ([mobileOpen, hubOpen]) => {
-  if (typeof document !== 'undefined' && document.body) {
-    document.body.classList.toggle('overflow-hidden-by-app-overlay', mobileOpen || hubOpen);
-  }
-}, { deep: true });
-
-onUnmounted(() => {
-  if (typeof document !== 'undefined' && document.body) {
-    document.body.classList.remove('overflow-hidden-by-app-overlay');
+    window.addEventListener('load', startIntroIfFirstVisit, { once:true });
   }
 });
+
+/* ────────────────── navigation helpers ────────────────── */
+function gotoHome(){
+  isMobileMenu.value = false;
+  route.path === '/' ? window.location.reload() : router.push('/');
+}
+function keyHome(e:KeyboardEvent){ if(e.key==='Enter') gotoHome(); }
+
+function openAgentHub(){ isMobileMenu.value=false; isAgentHubOpen.value=true; }
+function closeAgentHub(){ isAgentHubOpen.value=false; }
+
+/* disable body scroll when overlay open */
+watch([isMobileMenu,isAgentHubOpen],([m,h])=>{
+  document.body.classList.toggle('overflow-hidden-by-app-overlay', m||h);
+});
+onUnmounted(()=>document.body.classList.remove('overflow-hidden-by-app-overlay'));
 </script>
 
 <template>
-  <header
-    class="app-header-ephemeral"
-    :class="{
-      'fullscreen-active': isFullscreenActiveForUI,
-      'ai-speaking-active': isAiStateActive,
-      'user-listening-active': isUserStateActive,
-      'agent-hub-is-open': isAgentHubOpen,
-    }"
-    role="banner"
-  >
-    <div class="header-content-wrapper-ephemeral">
-      <div class="header-left-section">
-        <div
-          @click="handleLogoClick"
-          @keydown.enter="handleLogoClick"
-          tabindex="0"
-          role="button"
-          class="animated-logo-link"
-          aria-label="Voice Chat Assistant Home (Reload)"
-        >
-          <AnimatedLogo
-            :app-name-main="uiStore.isSmallScreen ? 'VCA' : 'Voice Chat'"
-            :app-name-subtitle="uiStore.isSmallScreen ? 'Assistant' : 'Assistant'"
-            :is-mobile-context="uiStore.isSmallScreen"
-            :is-user-listening="isUserStateActive"
-            :is-ai-speaking-or-processing="isAiStateActive"
-          />
-        </div>
-        <div v-if="activeAgent" class="current-agent-display-header">
-          <component :is="agentIconComponent" class="agent-icon-header" :class="activeAgent.iconClass" aria-hidden="true"/>
-          <span class="agent-name-header" :title="activeAgent.label">{{ activeAgent.label }}</span>
-        </div>
-        <div v-else-if="auth.isAuthenticated.value && !activeAgent && route.name === 'AuthenticatedHome'" class="current-agent-display-header">
-             <span class="agent-name-header">VCA Dashboard</span>
-        </div>
+  <header class="vca-header"
+          :class="{
+            'intro-play' : playIntroNow,
+            'ai-active'  : isAiActive,
+            'user-active': isUserActive,
+            'fullscreen' : isFullscreen,
+            'hub-open'   : isAgentHubOpen
+          }">
+    <div class="hdr-wrap">
+      <!-- LOGO -->
+      <div class="logo-block" role="button" tabindex="0"
+           aria-label="Voice Chat Assistant — Home"
+           @click="gotoHome" @keydown="keyHome">
+
+        <AnimatedLogoIcon
+          :is-user-listening="isUserActive"
+          :is-ai-speaking-or-processing="isAiActive"
+          :is-mobile-context="uiStore.isSmallScreen"/>
+
+        <AnimatedTextLogo :play="playIntroNow"/>
       </div>
 
-      <div class="header-center-section">
-        <div
-          class="hearing-icon-wrapper-ephemeral"
-          :title="isUserStateActive ? 'Listening to you...' : isAiStateActive ? 'Assistant is responding...' : 'Assistant is idle'"
-          role="status"
-        >
-          <img src="@/assets/hearing.svg" alt="Voice activity indicator" class="hearing-icon-svg" />
-        </div>
+      <!-- CENTER: hearing icon -->
+      <div class="hear-wrap"
+           :title="isUserActive ? 'Listening…' : isAiActive ? 'Speaking…' : 'Idle'">
+        <img src="@/assets/hearing.svg" class="hear-icon" alt="">
       </div>
 
-      <nav class="header-right-section desktop-controls-ephemeral" aria-label="Main desktop navigation">
-        <Suspense><AgentHubTrigger @open-agent-hub="openAgentHub" class="direct-header-button" /></Suspense>
-        <Suspense><ThemeSelectionDropdown class="header-control-item" /></Suspense>
-        <button @click="emit('toggle-fullscreen')" class="direct-header-button" :title="isFullscreenActiveForUI ? 'Exit Fullscreen' : 'Enter Fullscreen'" :aria-pressed="isFullscreenActiveForUI">
-          <component :is="isFullscreenActiveForUI ? ArrowsPointingInIcon : ArrowsPointingOutIcon" class="icon-base" />
-          <span class="sr-only">{{ isFullscreenActiveForUI ? 'Exit Fullscreen' : 'Enter Fullscreen' }}</span>
+      <!-- DESKTOP CONTROLS -->
+      <nav class="desk-ctrls" aria-label="Desktop navigation">
+        <Suspense><AgentHubTrigger @open-agent-hub="openAgentHub" class="ctrl-btn"/></Suspense>
+        <Suspense><ThemeDropdown  class="ctrl-btn"/></Suspense>
+
+        <!-- fullscreen -->
+        <button class="ctrl-btn" @click="emit('toggle-fullscreen')"
+                :title="isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'">
+          <component :is="isFullscreen ? ArrowsPointingInIcon : ArrowsPointingOutIcon"/>
         </button>
-        <button @click="isGlobalMuteActive = !isGlobalMuteActive" class="direct-header-button" :title="isGlobalMuteActive ? 'Unmute All Speech' : 'Mute All Speech'" :aria-pressed="isGlobalMuteActive">
-          <component :is="isGlobalMuteActive ? SpeakerXMarkIcon : SpeakerWaveIcon" class="icon-base" />
-          <span class="sr-only">{{ isGlobalMuteActive ? 'Unmute All Speech' : 'Mute All Speech' }}</span>
+
+        <!-- mute -->
+        <button class="ctrl-btn" @click="isMuted = !isMuted"
+                :title="isMuted ? 'Unmute Speech' : 'Mute Speech'">
+          <component :is="isMuted ? SpeakerXMarkIcon : SpeakerWaveIcon"/>
         </button>
-        <Suspense><VoiceControlsDropdown class="header-control-item" /></Suspense>
-        
+
+        <Suspense><VoiceDropdown class="ctrl-btn"/></Suspense>
+
         <template v-if="auth.isAuthenticated.value">
-            <div class="session-cost-display-ephemeral" title="Current Session Cost">
-              ${{ sessionCost.toFixed(3) }}
-            </div>
-            <Suspense>
-              <UserSettingsDropdown
-                class="header-control-item"
-                @clear-chat-and-session="emit('clear-chat-and-session')"
-                @show-prior-chat-log="emit('show-prior-chat-log')"
-                @logout="emit('logout')"
-              />
-            </Suspense>
+          <Suspense>
+            <UserDropdown class="ctrl-btn"
+              @logout="emit('logout')"
+              @clear-chat-and-session="emit('clear-chat-and-session')"
+              @show-prior-chat-log="emit('show-prior-chat-log')"/>
+          </Suspense>
         </template>
         <template v-else>
-            <RouterLink to="/login" class="direct-header-button login-button-desktop">
-                <ArrowLeftOnRectangleIcon class="icon-base" aria-hidden="true" />
-                <span class="login-button-text">Login</span>
-            </RouterLink>
+          <RouterLink to="/login" class="ctrl-btn">
+            <ArrowLeftOnRectangleIcon/> Login
+          </RouterLink>
         </template>
-         <Suspense><SiteMenuDropdown class="header-control-item site-menu-dropdown-header"/></Suspense>
+
+        <Suspense><SiteMenuDropdown class="ctrl-btn"/></Suspense>
       </nav>
 
-      <div class="mobile-menu-trigger-wrapper-ephemeral">
-        <Suspense><AgentHubTrigger v-if="uiStore.isMediumScreenOrSmaller" @open-agent-hub="openAgentHub" class="mobile-agent-hub-trigger" /></Suspense>
-        <button @click="toggleMobileMenu" class="mobile-menu-trigger-button" :aria-expanded="isMobileMenuOpen" aria-controls="mobile-navigation-panel">
-          <XMarkIcon v-if="isMobileMenuOpen" class="icon-base" aria-hidden="true" />
-          <Bars3Icon v-else class="icon-base" aria-hidden="true" />
-          <span class="sr-only">{{ isMobileMenuOpen ? 'Close main menu' : 'Open main menu' }}</span>
+      <!-- MOBILE BURGER -->
+      <div class="m-burger">
+        <button class="burger-btn" @click="isMobileMenu = !isMobileMenu"
+                :aria-expanded="isMobileMenu">
+          <component :is="isMobileMenu ? XMarkIcon : Bars3Icon"/>
         </button>
       </div>
     </div>
 
+    <!-- MOBILE DRAWER & AGENT HUB -->
     <Suspense>
       <MobileNavPanel
-        :is-open="isMobileMenuOpen"
-        :is-user-listening="isUserStateActive"
-        :is-ai-state-active="isAiStateActive"
-        :active-agent="activeAgent"
-        :agent-title="agentTitle"
-        :agent-icon-component="agentIconComponent"
+        :is-open="isMobileMenu"
+        :is-user-listening="isUserActive"
+        :is-ai-state-active="isAiActive"
         :is-authenticated="auth.isAuthenticated.value"
-        :session-cost="sessionCost"
-        :is-fullscreen-active-for-u-i="isFullscreenActiveForUI"
-        :is-global-mute-active-prop="isGlobalMuteActive"
-        @close-panel="isMobileMenuOpen = false"
+        @close-panel="isMobileMenu=false"
         @open-agent-hub="openAgentHub"
-        @toggle-fullscreen="onToggleFullscreenFromMobile"
-        @toggle-global-mute="isGlobalMuteActive = !isGlobalMuteActive"
-        @clear-chat-and-session="onClearChatFromMobile"
-        @show-prior-chat-log="onShowHistoryFromMobile"
-        @logout="onLogoutFromMobile"
-      />
+        @logout="emit('logout'); isMobileMenu=false"/>
     </Suspense>
-
-    <Suspense>
-      <AgentHub :is-open="isAgentHubOpen" @close="closeAgentHub" @agent-selected="closeAgentHub" />
-    </Suspense>
+    <Suspense><AgentHub :is-open="isAgentHubOpen" @close="closeAgentHub"/></Suspense>
   </header>
 </template>
 
-<style lang="scss">
-// Styles are in frontend/src/styles/layout/_header.scss
-// .login-button-desktop styles are also in _header.scss
+<style lang="scss" scoped>
+@use '@/styles/abstracts/variables' as v;
+@use '@/styles/abstracts/mixins'    as m;
+
+/* keyframes */
+@keyframes intro-slide{
+  0%{opacity:0;transform:translateY(-60%) scale(.92);}
+  60%{opacity:1;transform:translateY(6%) scale(1.03);}
+  100%{opacity:1;transform:translateY(0) scale(1);}
+}
+@keyframes glow-user{
+  0%,100%{box-shadow:0 0 8px hsla(var(--color-voice-user-h),
+                                   var(--color-voice-user-s),
+                                   var(--color-voice-user-l),.55);}
+  50%{box-shadow:0 0 12px 4px hsla(var(--color-voice-user-h),
+                                   var(--color-voice-user-s),
+                                   var(--color-voice-user-l),.9);}
+}
+@keyframes glow-ai{
+  0%,100%{box-shadow:0 0 8px hsla(var(--color-voice-ai-speaking-h),
+                                   var(--color-voice-ai-speaking-s),
+                                   var(--color-voice-ai-speaking-l),.55);}
+  50%{box-shadow:0 0 12px 4px hsla(var(--color-voice-ai-speaking-h),
+                                   var(--color-voice-ai-speaking-s),
+                                   var(--color-voice-ai-speaking-l),.9);}
+}
+
+/* header shell */
+.vca-header{
+  position:sticky; top:0; inset-inline:0; z-index:calc(v.$z-index-sticky + 20);
+  height:var(--header-height-mobile,60px); padding-inline:v.$spacing-sm;
+  display:flex; align-items:center; justify-content:center;
+  backdrop-filter:blur(9px);
+  background-color:hsla(var(--color-bg-primary-h),
+                        var(--color-bg-primary-s),
+                        var(--color-bg-primary-l),.85);
+  border-bottom:1px solid hsla(var(--color-border-primary-h),
+                               var(--color-border-primary-s),
+                               var(--color-border-primary-l),.3);
+  transition:background-color .35s, border-color .35s;
+
+  @media (min-width:v.$breakpoint-md){
+    height:var(--header-height-desktop,72px); padding-inline:v.$spacing-lg;
+  }
+
+  &.intro-play{ animation:intro-slide .7s cubic-bezier(.64,-.58,.34,1.56) both; }
+  &.user-active{ animation:glow-user 3.5s ease-in-out infinite alternate; }
+  &.ai-active  { animation:glow-ai   2.6s ease-in-out infinite alternate; }
+}
+
+/* layout wrapper */
+.hdr-wrap{ display:flex; width:100%; max-width:v.$site-max-width;
+           align-items:center; justify-content:space-between; }
+
+/* logo block */
+.logo-block{
+  display:inline-flex; gap:.55rem; align-items:center; cursor:pointer;
+  height:calc(var(--header-height-mobile,60px) * .65);
+
+  @media (min-width:v.$breakpoint-md){
+    height:calc(var(--header-height-desktop,72px) * .55);
+  }
+
+  &:hover .logo-word,
+  &:focus-visible .logo-word{ text-decoration:underline; }
+  &:focus-visible{ @include m.focus-ring(); }
+}
+
+/* hearing icon */
+.hear-wrap{ flex:1; display:flex; justify-content:center; align-items:center;
+  .hear-icon{ width:26px;height:26px;
+              @media(min-width:v.$breakpoint-md){width:30px;height:30px;} }}
+
+/* desktop control cluster */
+.desk-ctrls{ display:none; gap:v.$spacing-xs; align-items:center;
+  @media(min-width:v.$breakpoint-lg){ display:flex; }
+
+  .ctrl-btn{
+    @include m.button-base; @include m.button-ghost();
+    padding:.45rem; border-radius:v.$radius-lg;
+    svg{ width:1.35rem;height:1.35rem; }
+  }
+}
+
+/* mobile burger */
+.m-burger{ display:flex; align-items:center;
+  @media(min-width:v.$breakpoint-lg){ display:none; }
+  .burger-btn{ @include m.button-base; padding:.55rem;
+    svg{ width:1.5rem;height:1.5rem; }
+  }
+}
 </style>

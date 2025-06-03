@@ -2,22 +2,18 @@
 /**
  * @file useTextAnimation.ts
  * @description Composable for managing and applying text reveal animations.
- * This version focuses on different animation modes (character, word, line)
- * and integration with CSS animations, addressing previous TypeScript errors.
- *
  * @module composables/useTextAnimation
- * @version 1.0.1 - Corrected type for style, removed unused nextTick, explicitly typed return.
+ * @version 1.0.3 - Refined isAnimating state management.
  */
 
-import { ref, computed, type Ref, type CSSProperties } from 'vue'; // Removed nextTick
+import { ref, computed, type Ref, type CSSProperties, nextTick } from 'vue';
 import { useUiStore } from '@/store/ui.store';
-import { readonly } from 'vue'; // Import readonly for exposing state
+import { readonly } from 'vue';
 
 export interface TextAnimationUnit {
   type: 'char' | 'word' | 'line';
   content: string;
   key: string;
-  /** Specific style properties for animation, e.g., animationDelay, animationDuration */
   style: Partial<Pick<CSSProperties, 'animationDelay' | 'animationDuration' | 'opacity'>>;
   classes: string[];
 }
@@ -27,8 +23,9 @@ export interface TextRevealConfig {
   durationPerUnit: number; // ms
   staggerDelay: number;    // ms
   animationStyle: 'organic' | 'digital' | 'quantum' | 'terminal' | 'none';
-  withTrail?: boolean; // Placeholder for future enhancement
-  maxTotalDuration?: number; // ms
+  withTrail?: boolean;
+  maxTotalDuration?: number;
+  totalDurationEstimateFactor?: number;
 }
 
 export interface UseTextAnimationReturn {
@@ -40,34 +37,40 @@ export interface UseTextAnimationReturn {
 
 const DEFAULT_TEXT_REVEAL_CONFIG: TextRevealConfig = {
   mode: 'word',
-  durationPerUnit: 70, // Adjusted for slightly faster word reveal
+  durationPerUnit: 70,
   staggerDelay: 25,
   animationStyle: 'organic',
   withTrail: false,
+  totalDurationEstimateFactor: 1.0,
 };
 
 export function useTextAnimation(
   initialConfig?: Partial<TextRevealConfig>
-): UseTextAnimationReturn { // Explicitly type the return
+): UseTextAnimationReturn {
   const uiStore = useUiStore();
   const animatedUnits = ref<TextAnimationUnit[]>([]);
   const isAnimating = ref(false);
   let animationIdCounter = 0;
+  let currentAnimationTimeoutId: number | null = null;
+
 
   const currentConfig = computed<TextRevealConfig>(() => ({
     ...DEFAULT_TEXT_REVEAL_CONFIG,
-    ...(initialConfig || {}), // Ensure initialConfig is applied
+    ...(initialConfig || {}),
   }));
 
   const resetAnimation = (): void => {
+    if (currentAnimationTimeoutId) {
+      clearTimeout(currentAnimationTimeoutId);
+      currentAnimationTimeoutId = null;
+    }
     animatedUnits.value = [];
-    isAnimating.value = false;
+    isAnimating.value = false; // Explicitly set isAnimating to false here
     animationIdCounter = 0;
   };
 
   const prepareUnits = (text: string, config: TextRevealConfig): TextAnimationUnit[] => {
     let rawUnits: string[] = [];
-    // Map config.mode to the correct TextAnimationUnit type
     const unitType: 'char' | 'word' | 'line' =
       config.mode === 'character'
         ? 'char'
@@ -75,7 +78,7 @@ export function useTextAnimation(
         ? 'word'
         : config.mode === 'line'
         ? 'line'
-        : 'word'; // fallback
+        : 'word';
 
     switch (config.mode) {
       case 'character':
@@ -96,43 +99,34 @@ export function useTextAnimation(
       const reducedMotion = uiStore.isReducedMotionPreferred;
 
       const animationDelay = reducedMotion || isWhitespaceWord ? '0s' : `${index * config.staggerDelay}ms`;
-      // For instant appearance on reduced motion, make duration very short but not zero to allow transition/animation to fire once
       const animationDuration = reducedMotion || isWhitespaceWord ? '0.01s' : `${config.durationPerUnit}ms`;
 
       let animationClass = '';
       if (config.animationStyle !== 'none' && !isWhitespaceWord) {
         if (reducedMotion) {
-          animationClass = 'animate-text-static-appear-reduced-motion'; // Fast fade-in
+          animationClass = 'animate-text-static-appear-reduced-motion';
         } else {
           switch (config.animationStyle) {
-            case 'organic':
-              animationClass = 'animate-text-char-bloom';
-              break;
-            case 'digital':
-              animationClass = 'animate-text-word-materialize';
-              break;
-            case 'quantum':
-              animationClass = 'animate-text-quantum-collapse';
-              break;
-            case 'terminal':
-              animationClass = 'animate-text-terminal-reveal';
-              break;
+            case 'organic': animationClass = 'animate-text-char-bloom'; break;
+            case 'digital': animationClass = 'animate-text-word-materialize'; break;
+            case 'quantum': animationClass = 'animate-text-quantum-collapse'; break;
+            case 'terminal': animationClass = 'animate-text-terminal-reveal'; break;
           }
         }
       } else if (isWhitespaceWord) {
-        // No animation for whitespace, but keep it for layout
-      } else { // 'none' style or fallback
+        // No animation
+      } else {
         animationClass = 'animate-text-static-appear';
       }
 
       return {
         type: unitType,
         content: unitContent,
-        key: `anim-unit-${unitType}-${animationIdCounter++}-${Math.random()}`, // Ensure more unique key
+        key: `anim-unit-${unitType}-${animationIdCounter++}-${index}`, // Ensure key is stable for the same text if re-processed quickly
         style: {
           animationDelay,
           animationDuration,
-          opacity: (reducedMotion || config.animationStyle === 'none' || isWhitespaceWord) ? '1' : '0', // Start transparent if animating
+          opacity: (reducedMotion || config.animationStyle === 'none' || isWhitespaceWord) ? '1' : '0',
         },
         classes: [animationClass, `text-unit-${unitType}`].filter(Boolean),
       };
@@ -143,63 +137,55 @@ export function useTextAnimation(
     text: string,
     configOverride?: Partial<TextRevealConfig>
   ): Promise<void> => {
-    if (isAnimating.value && !uiStore.isReducedMotionPreferred) { // Allow quick updates if reduced motion
-      // console.warn('[useTextAnimation] Animation already in progress. Reset or wait.');
-      // For streaming, we might want to append. For now, let new animation override.
-      // For simplicity, let's allow re-triggering to reset.
-    }
-
+    // Always reset before starting a new animation sequence for the given text.
+    // This ensures that isAnimating is false before we prepare new units.
     resetAnimation();
-    isAnimating.value = true;
+    
+    // Ensure the DOM has a chance to update after animatedUnits becomes empty.
+    await nextTick(); 
+
+    isAnimating.value = true; // Set to true now that we are starting to process new units.
 
     const effectiveConfig = { ...currentConfig.value, ...(configOverride || {}) };
     const unitsToAnimate = prepareUnits(text, effectiveConfig);
+    
+    // This assignment triggers reactivity. If errors persist, it might be due to how
+    // the consuming component's template handles this array when it's empty vs. populated.
     animatedUnits.value = unitsToAnimate;
 
-    const totalUnits = unitsToAnimate.filter(u => u.content.trim() !== '').length; // Count non-whitespace units for duration
-    const totalAnimationTime = uiStore.isReducedMotionPreferred
-      ? 50
-      : (totalUnits > 0 ? ((totalUnits - 1) * effectiveConfig.staggerDelay) + effectiveConfig.durationPerUnit : 0);
+    const nonEmptyUnitsCount = unitsToAnimate.filter(u => u.content.trim() !== '' || u.type === 'line').length;
+    
+    let totalAnimationTime = 0;
+    if (nonEmptyUnitsCount > 0) {
+        totalAnimationTime = ((nonEmptyUnitsCount - 1) * effectiveConfig.staggerDelay) + effectiveConfig.durationPerUnit;
+    }
+    totalAnimationTime = uiStore.isReducedMotionPreferred ? 10 : totalAnimationTime; // Reduced motion = very fast
     
     const finalDuration = effectiveConfig.maxTotalDuration
       ? Math.min(totalAnimationTime, effectiveConfig.maxTotalDuration)
       : totalAnimationTime;
 
     if (finalDuration > 0) {
-      setTimeout(() => {
-        if (animatedUnits.value.length === unitsToAnimate.length) { // Check if it's still the same animation
-          isAnimating.value = false;
+      currentAnimationTimeoutId = window.setTimeout(() => {
+        // Only set isAnimating to false if this specific animation sequence is what completed.
+        // This check is a heuristic. A more robust way would be to associate an ID with each animateText call.
+        if (animatedUnits.value.length === unitsToAnimate.length && 
+            animatedUnits.value[0]?.key === unitsToAnimate[0]?.key &&
+            animatedUnits.value[animatedUnits.value.length -1]?.key === unitsToAnimate[unitsToAnimate.length-1]?.key
+            ) {
+            isAnimating.value = false;
         }
-      }, finalDuration + 50); // Add a small buffer
+        currentAnimationTimeoutId = null;
+      }, finalDuration + 50); // Small buffer for visual completion
     } else {
-      isAnimating.value = false;
+      isAnimating.value = false; // No duration, animation is effectively instant
     }
   };
 
   return {
     animatedUnits,
-    isAnimating: readonly(isAnimating), // Expose as readonly
+    isAnimating: readonly(isAnimating),
     animateText,
     resetAnimation,
   };
 }
-
-
-/**
- * Corresponding CSS classes and keyframes should be in your SCSS:
- *
- * // In _animations.scss or a dedicated _text-animations.scss
- * .animate-text-char-bloom { animation-name: charBloom; animation-fill-mode: forwards; opacity: 0; }
- * .animate-text-word-materialize { animation-name: wordMaterialize; animation-fill-mode: forwards; opacity: 0; }
- * .animate-text-quantum-collapse { animation-name: quantumCollapse; animation-fill-mode: forwards; opacity: 0; }
- * .animate-text-terminal-reveal { animation-name: terminalCharReveal; animation-fill-mode: forwards; opacity: 0; }
- * .animate-text-static-appear { opacity: 1; } // Appears instantly or with a very quick fade if desired by CSS
- * .animate-text-static-appear-reduced-motion { animation: fadeIn 0.1s ease-out forwards; opacity: 0; }
- *
- * // Example keyframes (ensure these are defined in your _keyframes.scss)
- * // @keyframes charBloom { ... }
- * // @keyframes wordMaterialize { ... }
- * // @keyframes quantumCollapse { ... }
- * // @keyframes terminalCharReveal { ... } // e.g., a typewriter or scan-in effect
- * // @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
- */

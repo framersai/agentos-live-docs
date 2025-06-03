@@ -3,7 +3,7 @@
  * @file agent.service.ts
  * @description Defines available AI agents, their configurations, and capabilities.
  * Manages the registry of agents for the application, including mapping to dedicated view components.
- * @version 1.6.0 - Updated Nerf (v_agent) and V (assistant) agent definitions. Added V's prompt.
+ * @version 1.7.0 - Added textAnimationConfig to IAgentCapability and updated V & Nerf agents.
  */
 
 import type { Component as VueComponentType, DefineComponent } from 'vue';
@@ -19,26 +19,30 @@ import {
   CogIcon,
   SparklesIcon,
   PresentationChartLineIcon,
-  // Add any other icons used by agents, e.g. a specific one for V
-  BoltIcon, // Example for V if CpuChipIcon is used by Architectron
-} from '@heroicons/vue/24/outline'; // Assuming outline for most, adjust if solid is preferred for some
+  BoltIcon, // Example for V
+} from '@heroicons/vue/24/outline';
 
-export type AgentId = string; // Keep as string for flexibility
+// Import TextRevealConfig for agent-specific animation settings
+import type { TextRevealConfig } from '@/composables/useTextAnimation';
+
+export type AgentId = string;
 
 export interface IDetailedCapabilityItem {
   id: string;
   label: string;
   description?: string;
-  icon?: VueComponentType | string; // Can be a component or an SVG path string
+  icon?: VueComponentType | string;
 }
 
 export interface IAgentCapability {
   canGenerateDiagrams?: boolean;
-  usesCompactRenderer?: boolean; // If true, implies agent's output is structured for it
-  acceptsVoiceInput?: boolean; // Default true, can be overridden
-  maxChatHistory?: number; // Number of user/assistant message pairs
-  handlesOwnInput?: boolean; // If true, the agent's view component might have its own input mechanism
-  showEphemeralChatLog?: boolean; // If the standard side chat log should be shown
+  usesCompactRenderer?: boolean;
+  acceptsVoiceInput?: boolean; // Default true
+  maxChatHistory?: number;
+  handlesOwnInput?: boolean;
+  showEphemeralChatLog?: boolean;
+  // Add the new optional textAnimationConfig capability
+  textAnimationConfig?: Partial<TextRevealConfig>;
 }
 
 export type AgentCategory = 'General' | 'Coding' | 'Productivity' | 'Learning' | 'Auditing' | 'Experimental' | 'Utility';
@@ -47,28 +51,26 @@ export interface IAgentDefinition {
   id: AgentId;
   label: string;
   description: string;
-  longDescription?: string; // For a more detailed view if needed
-  // Use `component` for direct async import, remove `viewComponentName`
-  component?: () => Promise<DefineComponent<any, any, any>>; // For dynamic component loading
+  longDescription?: string;
+  component?: () => Promise<DefineComponent<any, any, any>>;
   iconComponent?: VueComponentType | string;
   iconClass?: string;
-  avatar?: string; // URL to an image
-  iconPath?: string; // Path to an SVG file (if not using heroicons component)
+  avatar?: string;
+  iconPath?: string;
   systemPromptKey: string;
   category: AgentCategory;
-  capabilities: IAgentCapability;
+  capabilities: IAgentCapability; // This will now include textAnimationConfig
   examplePrompts?: string[];
   tags?: string[];
   detailedCapabilities?: IDetailedCapabilityItem[];
   inputPlaceholder?: string;
   isPublic: boolean;
-  accessTier?: 'public' | 'member' | 'premium'; // Example tiers
-  themeColor?: string; // e.g., '--agent-nerf-accent-h' to be used in CSS
-  holographicElement?: string; // For future UI effects
+  accessTier?: 'public' | 'member' | 'premium';
+  themeColor?: string;
+  holographicElement?: string;
   defaultVoicePersona?: string | { name?: string, voiceId?: string, lang?: string };
   isBeta?: boolean;
-  isDefault?: boolean; // If this agent should be the default when no other is selected
-  // viewComponentName?: string; // Removed in favor of direct `component` import
+  isDefault?: boolean;
 }
 
 // --- Expanded Example Prompts ---
@@ -592,7 +594,7 @@ const LCAuditAgentView = () => import('@/components/agents/catalog/LCAuditAgent/
 // --- Agent Definitions ---
 const agents: IAgentDefinition[] = [
   {
-    id: 'v_agent' as AgentId, // This is "Nerf"
+    id: 'nerf_agent' as AgentId, // This is "Nerf"
     label: 'Nerf',
     description: 'Your friendly and efficient general AI for quick questions and information.',
     longDescription: 'Nerf is designed for straightforward Q&A, quick facts, definitions, and simple explanations. It aims for clarity and conciseness, making it a great go-to for everyday inquiries.',
@@ -747,8 +749,8 @@ const agents: IAgentDefinition[] = [
   // --- Placeholder & Utility Agents ---
   // Removing the 'assistant' (old V) as it's now 'v_agent'.
   // Keeping alias logic but ensuring they point to the correct canonical agent ID.
-  { id: 'general' as AgentId, label: 'Assistant (General Alias)', description: 'Alias for Nerf', iconComponent: ChatBubbleLeftEllipsisIcon, systemPromptKey: 'nerf_chat', category: 'Utility', capabilities: {}, isPublic: true, accessTier: 'member' },
-  { id: 'general-ai' as AgentId, label: 'Assistant (AI General Alias)', description: 'Alias for Nerf', iconComponent: ChatBubbleLeftEllipsisIcon, systemPromptKey: 'nerf_chat', category: 'Utility', capabilities: {}, isPublic: true, accessTier: 'member' },
+  { id: 'general' as AgentId, label: 'Assistant (General Alias)', description: 'Alias for V', iconComponent: ChatBubbleLeftEllipsisIcon, systemPromptKey: 'default_v_assistant', category: 'General', capabilities: {}, isPublic: true, accessTier: 'member' },
+  { id: 'general-ai' as AgentId, label: 'Assistant (AI General Alias)', description: 'Alias for V', iconComponent: ChatBubbleLeftEllipsisIcon, systemPromptKey: 'default_v_assistant', category: 'General', capabilities: {}, isPublic: true, accessTier: 'member' },
 
   { id: 'private-dashboard-placeholder' as AgentId, label: 'Dashboard', description: 'User dashboard area.', iconComponent: SparklesIcon, systemPromptKey: 'v_agent', category: 'Utility', capabilities: {}, isPublic: false, accessTier: 'member' },
   { id: 'rate-limit-exceeded' as AgentId, label: 'Rate Limited', description: 'Displayed when rate limits are hit.', iconComponent: SparklesIcon, systemPromptKey: 'v_agent', category: 'Utility', capabilities: {}, isPublic: true, accessTier: 'public' },
