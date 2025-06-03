@@ -354,6 +354,14 @@ const handleAgentViewEventFromSlot = (eventData: any): void => {
         console.warn(`[PrivateHome] Unhandled global action from agent: ${eventData.action}`);
       }
       break;
+    case 'view_mounted': // Added case
+      console.log(`[PrivateHome] Agent view for "${activeAgent.value.label}" has mounted.`);
+      // Perform any actions needed when a dedicated agent view is ready
+      // For example, focus an element within it, or send initial context.
+      if (agentViewRef.value && typeof agentViewRef.value.onViewMounted === 'function') {
+        agentViewRef.value.onViewMounted();
+      }
+      break;
     default:
       console.warn(`[PrivateHome] Unhandled agent event type: ${eventData.type}`);
   }

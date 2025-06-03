@@ -19,7 +19,8 @@
 <script setup lang="ts">
 import { ref, computed, type CSSProperties, onMounted, onUnmounted, type Ref, nextTick, watch } from 'vue';
 import EphemeralChatLog from '@/components/EphemeralChatLog.vue';
-import VoiceInput from '@/components/VoiceInput.vue';
+// import VoiceInput from '@/components/VoiceInput.vue';
+import VoiceInput from '@/components/voice-input/VoiceInput.vue'; // Updated import path for VoiceInput
 import { useUiStore } from '@/store/ui.store';
 
 /**
@@ -109,86 +110,109 @@ const shapeStyleProvider = (index: number): CSSProperties => {
   };
 };
 
-/**
- * Updates CSS custom properties for dynamic padding calculations based on
- * header, ephemeral log, and voice input heights.
- */
 const updateDynamicLayoutHeights = async () => {
-  await nextTick(); // Ensure DOM updates are flushed before measurements
-
+  await nextTick();
   if (!layoutWrapperRef.value) return;
-  const rootStyle = layoutWrapperRef.value.style;
+  const root = document.documentElement; // Apply to :root for global availability if needed, or layoutWrapperRef.value.style
 
   const headerEl = document.querySelector('.app-header-ephemeral') as HTMLElement;
-  const headerHeight = headerEl ? headerEl.offsetHeight : parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-actual-height')) || 60;
-  rootStyle.setProperty('--header-actual-height', `${headerHeight}px`);
+  // Use a more reliable default if querySelector fails or CSS var isn't set globally yet
+  const headerHeight = headerEl?.offsetHeight || parseFloat(root.style.getPropertyValue('--header-actual-height')) || 60;
+  root.style.setProperty('--header-actual-height', `${headerHeight}px`);
 
   let ephemeralLogHeight = 0;
-  if (props.showEphemeralLog && ephemeralLogRef.value?.$el) {
-    const el = ephemeralLogRef.value.$el as HTMLElement;
-    if (el && el.offsetHeight !== undefined) { // Check if it's a valid element
-        ephemeralLogHeight = el.offsetHeight;
-    }
+  if (props.showEphemeralLog && ephemeralLogRef.value?.$el && ephemeralLogRef.value.$el instanceof HTMLElement) {
+    ephemeralLogHeight = ephemeralLogRef.value.$el.offsetHeight;
   }
-  rootStyle.setProperty('--ephemeral-log-actual-height', `${ephemeralLogHeight}px`);
+  root.style.setProperty('--ephemeral-log-actual-height', `${ephemeralLogHeight}px`);
   
   let voiceInputHeight = 0;
-  if (voiceInputSectionRef.value) {
-    voiceInputHeight = voiceInputSectionRef.value.offsetHeight || 0;
+  if (voiceInputSectionRef.value && voiceInputSectionRef.value instanceof HTMLElement) {
+    voiceInputHeight = voiceInputSectionRef.value.offsetHeight;
+  } else {
+    // Fallback if ref not ready, use the CSS variable's own fallback or a reasonable guess
+    voiceInputHeight = parseFloat(root.style.getPropertyValue('--voice-input-actual-height')) || 100;
   }
-  rootStyle.setProperty('--voice-input-actual-height', `${voiceInputHeight}px`);
+  root.style.setProperty('--voice-input-actual-height', `${voiceInputHeight}px`);
 };
 
 let resizeObserver: ResizeObserver | null = null;
+const observedElements = new WeakMap<Element, boolean>(); // Keep track of observed elements
 
 const setupResizeObserver = async () => {
-  await nextTick(); // Wait for DOM to be ready
+  await nextTick(); 
 
-  if (typeof ResizeObserver !== 'undefined') {
-    if (resizeObserver) { // Disconnect previous observer if any
-        resizeObserver.disconnect();
-    }
-    resizeObserver = new ResizeObserver(updateDynamicLayoutHeights);
+  if (typeof ResizeObserver === 'undefined') return;
 
-    if (props.showEphemeralLog && ephemeralLogRef.value?.$el) {
-      const el = ephemeralLogRef.value.$el as HTMLElement;
-      if (el instanceof Element) { // Ensure it's an Element
-        resizeObserver.observe(el);
-      } else {
-        console.warn('[UnifiedChatLayout] ephemeralLogRef.$el is not a valid Element for ResizeObserver.');
-      }
+  if (!resizeObserver) {
+    resizeObserver = new ResizeObserver(entries => {
+      // We can be more targeted if needed, but for now, any observed resize updates all.
+      updateDynamicLayoutHeights();
+    });
+  }
+
+  // Observe VoiceInput section
+  if (voiceInputSectionRef.value && voiceInputSectionRef.value instanceof HTMLElement && !observedElements.has(voiceInputSectionRef.value)) {
+    resizeObserver.observe(voiceInputSectionRef.value);
+    observedElements.set(voiceInputSectionRef.value, true);
+  }
+
+  // Observe/Unobserve EphemeralChatLog based on props.showEphemeralLog
+  const ephemeralEl = ephemeralLogRef.value?.$el;
+  if (props.showEphemeralLog && ephemeralEl instanceof HTMLElement) {
+    if (!observedElements.has(ephemeralEl)) {
+      resizeObserver.observe(ephemeralEl);
+      observedElements.set(ephemeralEl, true);
+      console.log('[UnifiedChatLayout] Observing ephemeralLogRef.$el');
     }
-    if (voiceInputSectionRef.value && voiceInputSectionRef.value instanceof Element) {
-      resizeObserver.observe(voiceInputSectionRef.value);
-    } else if (voiceInputSectionRef.value) {
-        console.warn('[UnifiedChatLayout] voiceInputSectionRef.value is not a valid Element for ResizeObserver.');
-    }
+  } else if (ephemeralEl instanceof HTMLElement && observedElements.has(ephemeralEl)) {
+    // If it was observed but should no longer be (e.g., showEphemeralLog became false)
+    resizeObserver.unobserve(ephemeralEl);
+    observedElements.delete(ephemeralEl);
+    console.log('[UnifiedChatLayout] Unobserving ephemeralLogRef.$el');
+    // Recalculate heights as an element affecting layout was removed
+    updateDynamicLayoutHeights(); 
+  } else if (props.showEphemeralLog && !(ephemeralEl instanceof HTMLElement)) {
+      console.warn('[UnifiedChatLayout] ephemeralLogRef.$el is not a valid Element for ResizeObserver at observation time, even though props.showEphemeralLog is true.');
   }
 };
 
 onMounted(async () => {
-  await updateDynamicLayoutHeights(); // Initial calculation after DOM is ready
+  // Initial height calculation
+  await updateDynamicLayoutHeights();
   window.addEventListener('resize', updateDynamicLayoutHeights);
-  await setupResizeObserver(); // Setup observer after initial mount
+  // Initial setup of observer
+  await setupResizeObserver();
 });
 
 onUnmounted(() => {
   window.removeEventListener('resize', updateDynamicLayoutHeights);
   if (resizeObserver) {
     resizeObserver.disconnect();
+    resizeObserver = null; // Clear the instance
   }
 });
 
-watch(() => props.showEphemeralLog, async (newValue, oldValue) => {
-  if (newValue !== oldValue) {
-    // When showEphemeralLog changes, DOM structure might change.
-    // Need to wait for that change to apply, then re-setup observer.
-    await nextTick(); // Wait for DOM update due to v-if on EphemeralChatLog
-    await setupResizeObserver(); // Re-initialize observer for potentially new/removed element
-    await updateDynamicLayoutHeights(); // And recalculate heights
-  }
-}, { flush: 'post' }); // flush: 'post' ensures watch triggers after DOM updates
+watch(() => props.showEphemeralLog, async (newValue) => {
+  console.log(`[UnifiedChatLayout] showEphemeralLog changed to: ${newValue}. Re-evaluating observer.`);
+  // When showEphemeralLog changes, the ephemeral log element might be added/removed from DOM.
+  // We need to update observer and heights.
+  await nextTick(); // Allow DOM to update (v-if on EphemeralChatLog)
+  await setupResizeObserver(); // This will now correctly observe or unobserve
+  await updateDynamicLayoutHeights(); // Recalculate padding based on new state
+}, { flush: 'post' });
 
+// It's also good practice to re-run setupResizeObserver if the refs themselves change identity,
+// though with v-if, the element is added/removed which the showEphemeralLog watcher handles.
+watch(voiceInputSectionRef, async (newEl) => {
+    if (newEl instanceof HTMLElement && resizeObserver && !observedElements.has(newEl)) {
+        resizeObserver.observe(newEl);
+        observedElements.set(newEl, true);
+        await updateDynamicLayoutHeights();
+    }
+});
+
+// Template remains the same
 </script>
 
 <template>
@@ -207,14 +231,11 @@ watch(() => props.showEphemeralLog, async (newValue, oldValue) => {
       </template>
     </div>
 
-    <EphemeralChatLog v-if="props.showEphemeralLog" ref="ephemeralLogRef"/>
+    <EphemeralChatLog v-if="props.showEphemeralLog ?? true" ref="ephemeralLogRef"/>
 
     <div class="unified-main-content-area">
       <slot name="main-content">
-        <div class="flex-grow flex items-center justify-center p-6 text-center text-[hsl(var(--color-text-muted-h),var(--color-text-muted-s),var(--color-text-muted-l))] italic text-sm">
-          Your main agent content will appear here.
-        </div>
-      </slot>
+        </slot>
     </div>
 
     <div class="unified-voice-input-section" ref="voiceInputSectionRef">

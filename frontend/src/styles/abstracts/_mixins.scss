@@ -514,3 +514,99 @@
   scrollbar-width: thin;
   scrollbar-color: $thumb-base-color-val $track-color-val;
 }
+
+/**
+ * @mixin button-base
+ * @description Provides common base styles for button-like elements.
+ * Focuses on non-visual defaults like display, alignment, cursor, and base transitions.
+ * Specific visual styling (background, color, border, shadow) should be applied by
+ * component-specific styles or other utility/theme mixins.
+ *
+ * @param {String} $display - The display property (default: 'inline-flex').
+ * @param {String} $align-items - Default align-items property.
+ * @param {String} $justify-content - Default justify-content property.
+ * @param {String} $cursor - Default cursor property.
+ * @param {String} $transition-props - CSS properties to transition (default: 'all').
+ */
+@mixin button-base(
+  $display: inline-flex,
+  $align-items: center,
+  $justify-content: center,
+  $cursor: pointer,
+  $transition-props: all // Be specific if 'all' causes performance concerns (e.g., 'background-color, border-color, color, transform, box-shadow')
+) {
+  display: $display;
+  align-items: $align-items;
+  justify-content: $justify-content;
+  padding: 0; // Reset padding, specific buttons will add their own
+  border: none; // Reset border
+  background: none; // Reset background
+  color: inherit; // Inherit text color by default
+  font-family: inherit; // Inherit font
+  font-size: inherit; // Inherit font size
+  text-align: center;
+  text-decoration: none;
+  cursor: $cursor;
+  user-select: none; // Prevent text selection on buttons
+  -webkit-appearance: none; // Remove default browser styling on some elements
+  -moz-appearance: none;
+  appearance: none;
+  transition: $transition-props var.$duration-quick var.$ease-out-cubic; // Use themed transition
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: var(--opacity-disabled, 0.5); // Use a CSS var for disabled opacity if available
+    // Consider filter: grayscale(50%); for a more visual disabled state
+  }
+
+  // Basic focus visibility (can be overridden by more specific focus rings)
+  &:focus-visible {
+    outline: 2px solid hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.5);
+    outline-offset: 2px;
+  }
+}
+
+/**
+ * @mixin button-ghost
+ * @description Styles for a ghost button (transparent background, themed border/text on hover/focus).
+ * Relies on CSS custom properties for theming.
+ *
+ * @param {String} $text-color-var-prefix - CSS variable prefix for text color (e.g., '--color-text-secondary').
+ * @param {String} $accent-color-var-prefix - CSS variable prefix for accent color used on hover/focus (e.g., '--color-accent-primary').
+ * @param {Length} $padding - Button padding (default: var.$spacing-xs var.$spacing-sm).
+ * @param {Length} $border-radius - Button border-radius (default: var.$radius-md).
+ */
+@mixin button-ghost(
+  $text-color-var-prefix: '--color-text-secondary',
+  $accent-color-var-prefix: '--color-accent-primary',
+  $padding: var.$spacing-xs var.$spacing-sm,
+  $border-radius: var.$radius-md
+) {
+  @include button-base; // Include the base styles
+  padding: $padding;
+  border-radius: $border-radius;
+  background-color: transparent;
+  border: 1px solid transparent; // Start with a transparent border to maintain layout
+  color: hsl(var(#{$text-color-var-prefix}-h), var(#{$text-color-var-prefix}-s), var(#{$text-color-var-prefix}-l));
+
+  &:hover:not(:disabled),
+  &:focus-visible:not(:disabled) {
+    color: hsl(var(#{$accent-color-var-prefix}-h), var(#{$accent-color-var-prefix}-s), var(#{$accent-color-var-prefix}-l));
+    background-color: hsla(var(#{$accent-color-var-prefix}-h), var(#{$accent-color-var-prefix}-s), var(#{$accent-color-var-prefix}-l), 0.1); // Subtle background on hover
+    border-color: hsla(var(#{$accent-color-var-prefix}-h), var(#{$accent-color-var-prefix}-s), var(#{$accent-color-var-prefix}-l), 0.3); // Subtle border on hover
+  }
+
+  &:active:not(:disabled) {
+    background-color: hsla(var(#{$accent-color-var-prefix}-h), var(#{$accent-color-var-prefix}-s), var(#{$accent-color-var-prefix}-l), 0.15); // Slightly darker on active
+  }
+
+   &:focus-visible:not(:disabled) { // More specific focus ring for ghost buttons
+    @include focus-ring(
+      '--color-bg-transparent-for-focus', // This var would need to be transparent version of parent bg
+      $accent-color-var-prefix,
+      1px,
+      2px,
+      0.7
+    );
+   }
+}
