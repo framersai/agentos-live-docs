@@ -1,15 +1,11 @@
 <script setup lang="ts">
-import { computed, inject, onMounted, PropType, toRef } from 'vue';
+import { computed, inject, onMounted, onUnmounted, PropType, toRef } from 'vue';
 import { useAgentStore } from '@/store/agent.store';
 import { useChatStore } from '@/store/chat.store';
 import type { IAgentDefinition } from '@/services/agent.service';
 import type { ToastService } from '@/services/services';
-import CompactMessageRenderer from '@/components/layouts/CompactMessageRenderer/CompactMessageRenderer.vue';
 import { ChatBubbleLeftEllipsisIcon, SparklesIcon } from '@heroicons/vue/24/outline';
-
-// Assuming composable and types are in a subdirectory "Nerf"
 import { useNerfAgent } from './useNerfAgent';
-// NerfAgentTypes might not be directly needed in the view if composable handles all typed state
 
 const props = defineProps({
   agentId: { type: String as PropType<IAgentDefinition['id']>, required: true },
@@ -22,7 +18,7 @@ const emit = defineEmits<{
 
 const agentStore = useAgentStore();
 const chatStore = useChatStore();
-const toast = inject<ToastService>('toast');
+const toast = inject<ToastService>('toast'); // Assuming toast is provided globally
 
 const agentConfigAsRef = toRef(props, 'agentConfig');
 
@@ -31,17 +27,19 @@ const {
   agentDisplayName,
   mainContentToDisplay,
   initialize,
-  // cleanup, // Call in onUnmounted if defined in composable
-  handleNewUserInput, // Exposed for VoiceInput integration
-  renderMarkdown, // Provided by composable for direct markdown rendering if needed
+  cleanup,
+  handleNewUserInput,
+  renderMarkdown,
+  animatedUnits,
+  isTextAnimating,
 } = useNerfAgent(agentConfigAsRef, toast);
 
 onMounted(async () => {
-  await initialize(props.agentConfig);
+  await initialize();
   emit('agent-event', { type: 'view_mounted', agentId: props.agentId, label: agentDisplayName.value });
 
-  // Initial welcome message if no content exists
-  if (!mainContentToDisplay.value?.data || mainContentToDisplay.value?.title === `${props.agentConfig.label} Ready`) {
+  const currentContent = mainContentToDisplay.value;
+  if (!currentContent?.data || currentContent?.title === `${agentDisplayName.value} Ready`) {
     const welcomeMarkdown = `
 <div class="nerf-welcome-container">
   <div class="nerf-icon-wrapper">
@@ -53,7 +51,7 @@ onMounted(async () => {
 </div>`;
     chatStore.updateMainContent({
       agentId: props.agentId,
-      type: 'markdown', // Welcome message is simple markdown
+      type: 'markdown',
       data: welcomeMarkdown,
       title: `${agentDisplayName.value} Ready`,
       timestamp: Date.now(),
@@ -61,13 +59,46 @@ onMounted(async () => {
   }
 });
 
-// If composable has a cleanup function:
-// import { onUnmounted } from 'vue';
-// onUnmounted(() => {
-//   cleanup();
-// });
+onUnmounted(() => {
+  if (cleanup) cleanup();
+});
 
 defineExpose({ handleNewUserInput });
+
+// True if backend is processing AND no text animation has started yet, AND there's no existing data to show
+const showInitialLoadingIndicator = computed(() => {
+  return isLoadingResponse.value && !isTextAnimating.value && !(mainContentToDisplay.value?.data && mainContentToDisplay.value.type !== 'loading');
+});
+
+const showAnimatedText = computed(() => {
+  return isTextAnimating.value || (chatStore.isMainContentStreaming && agentStore.activeAgentId === props.agentId && animatedUnits.value.length > 0);
+});
+
+// For final settled markdown content (not loading, not welcome placeholder, not animated)
+const showFinalMarkdownContent = computed(() => {
+    return !isTextAnimating.value &&
+           !chatStore.isMainContentStreaming &&
+           mainContentToDisplay.value?.data &&
+           (mainContentToDisplay.value.type === 'markdown') && // Only consider 'markdown' type as final content
+           mainContentToDisplay.value.title !== `${agentDisplayName.value} Ready`; // Not the welcome message
+});
+
+// For the "Nerf is processing..." type of messages that might appear via 'loading' type in mainContentToDisplay
+const showInlineLoadingMessage = computed(() => {
+    return !isTextAnimating.value &&
+           !showFinalMarkdownContent.value && // Not ready for final markdown
+           mainContentToDisplay.value?.type === 'loading' &&
+           mainContentToDisplay.value?.data;
+});
+
+// For the initial welcome message specifically
+const showWelcomeMessage = computed(() => {
+    return !isTextAnimating.value &&
+           !isLoadingResponse.value && // Not actively loading a new response
+           mainContentToDisplay.value?.type === 'markdown' && // Welcome is set as markdown
+           mainContentToDisplay.value?.title === `${agentDisplayName.value} Ready`;
+});
+
 
 </script>
 
@@ -78,34 +109,45 @@ defineExpose({ handleNewUserInput });
         <ChatBubbleLeftEllipsisIcon class="nerf-header-icon" :class="props.agentConfig.iconClass" />
         <span class="nerf-header-title">{{ agentDisplayName }}</span>
       </div>
-      </div>
-    
-    <div v-if="isLoadingResponse && !chatStore.isMainContentStreaming && !(mainContentToDisplay && mainContentToDisplay.data)" class="nerf-loading-overlay">
-      <div class="nerf-spinner-container"><div class="nerf-spinner"></div></div>
-      <p class="nerf-loading-text">{{ agentDisplayName }} is thinking...</p>
     </div>
     
     <div class="nerf-main-content-area">
-      <template v-if="mainContentToDisplay?.data">
-        <CompactMessageRenderer
-          v-if="props.agentConfig.capabilities?.usesCompactRenderer && (mainContentToDisplay.type === 'compact-message-renderer-data' || mainContentToDisplay.type === 'loading' || (mainContentToDisplay.type === 'markdown' && !chatStore.isMainContentStreaming && mainContentToDisplay.data.includes('---SLIDE_BREAK---')))"
-          :content="chatStore.isMainContentStreaming && agentStore.activeAgentId === props.agentId 
-                        ? chatStore.streamingMainContentText 
-                        : mainContentToDisplay.data as string"
-          :mode="props.agentConfig.id"
-          class="nerf-compact-renderer" 
-        />
-        <div v-else-if="mainContentToDisplay.type === 'markdown' || mainContentToDisplay.type === 'welcome' || mainContentToDisplay.type === 'loading'"
-             class="prose-futuristic nerf-prose-content"
-             v-html="chatStore.isMainContentStreaming && agentStore.activeAgentId === props.agentId 
-                      ? renderMarkdown(chatStore.streamingMainContentText + '▋') 
-                      : renderMarkdown(mainContentToDisplay.data as string)"
-        ></div>
-        <div v-else class="nerf-placeholder">
-          {{ agentDisplayName }} received content of type: {{ mainContentToDisplay.type }}.
-        </div>
-      </template>
-      <div v-else-if="!isLoadingResponse" class="nerf-empty-state">
+      <div v-if="showInitialLoadingIndicator" class="nerf-initial-loading-inline">
+        <div class="nerf-spinner-container"><div class="nerf-spinner"></div></div>
+        <p class="nerf-loading-text">{{ agentDisplayName }} is thinking...</p>
+      </div>
+
+      <div v-else-if="showAnimatedText" class="prose-futuristic nerf-prose-content nerf-prose-content--streaming">
+        <template v-for="unit in animatedUnits" :key="unit.key">
+          <template v-if="unit.content.includes('\n')">
+            <template v-for="(line, lineIndex) in unit.content.split('\n')" :key="`${unit.key}-line-${lineIndex}`">
+              <span :class="unit.classes" :style="unit.style">{{ line }}</span>
+              <br v-if="lineIndex < unit.content.split('\n').length - 1" />
+            </template>
+          </template>
+          <span v-else :class="unit.classes" :style="unit.style">
+            {{ unit.content }}
+          </span>
+        </template>
+        <span v-if="isTextAnimating" class="streaming-cursor-ephemeral">▋</span>
+      </div>
+
+      <div v-else-if="showFinalMarkdownContent"
+           class="prose-futuristic nerf-prose-content"
+           v-html="renderMarkdown(mainContentToDisplay!.data as string)">
+      </div>
+
+      <div v-else-if="showWelcomeMessage"
+           class="prose-futuristic nerf-prose-content"
+           v-html="renderMarkdown(mainContentToDisplay!.data as string)">
+      </div>
+      
+      <div v-else-if="showInlineLoadingMessage"
+           class="prose-futuristic nerf-prose-content nerf-inline-loading-message"
+           v-html="renderMarkdown(mainContentToDisplay!.data as string + (chatStore.isMainContentStreaming ? '<span class=\'streaming-cursor-ephemeral\'>▋</span>' : ''))">
+      </div>
+      
+      <div v-else-if="!isLoadingResponse && !isTextAnimating" class="nerf-empty-state">
           <SparklesIcon class="nerf-empty-icon"/>
         <p class="nerf-empty-text">{{ props.agentConfig.inputPlaceholder || `Ask ${agentDisplayName} anything!` }}</p>
       </div>
@@ -118,23 +160,22 @@ defineExpose({ handleNewUserInput });
 @import '@/styles/abstracts/_variables.scss';
 @import '@/styles/abstracts/_mixins.scss';
 
-// Styles are identical to the original GeneralAgentView.vue's nerf-specific styles
 .nerf-agent-view {
-  --nerf-accent-h: var(--color-accent-secondary-h, #{$default-color-accent-secondary-h});
-  --nerf-accent-s: var(--color-accent-secondary-s, #{$default-color-accent-secondary-s});
-  --nerf-accent-l: var(--color-accent-secondary-l, #{$default-color-accent-secondary-l});
+  --nerf-accent-h: var(--theme-nerf-accent-h, var(--color-accent-secondary-h, #{$default-color-accent-secondary-h}));
+  --nerf-accent-s: var(--theme-nerf-accent-s, var(--color-accent-secondary-s, #{$default-color-accent-secondary-s}));
+  --nerf-accent-l: var(--theme-nerf-accent-l, var(--color-accent-secondary-l, #{$default-color-accent-secondary-l}));
   
-  --nerf-bg-h: var(--color-bg-primary-h, #{$default-color-bg-primary-h});
-  --nerf-bg-s: var(--color-bg-primary-s, #{$default-color-bg-primary-s});
-  --nerf-bg-l: calc(var(--color-bg-primary-l, #{$default-color-bg-primary-l}) - 2%);
+  --nerf-bg-h: var(--theme-nerf-bg-h, var(--color-bg-primary-h, #{$default-color-bg-primary-h}));
+  --nerf-bg-s: var(--theme-nerf-bg-s, var(--color-bg-primary-s, #{$default-color-bg-primary-s}));
+  --nerf-bg-l: var(--theme-nerf-bg-l, calc(var(--color-bg-primary-l, #{$default-color-bg-primary-l}) - 2%));
 
   @apply flex flex-col h-full w-full overflow-hidden;
   background-color: hsl(var(--nerf-bg-h), var(--nerf-bg-s), var(--nerf-bg-l));
   background-image: 
     radial-gradient(ellipse at 80% 10%, hsla(var(--nerf-accent-h), var(--nerf-accent-s), var(--nerf-accent-l), 0.12) 0%, transparent 55%),
     radial-gradient(ellipse at 20% 90%, hsla(var(--nerf-accent-h), calc(var(--nerf-accent-s) - 10%), calc(var(--nerf-accent-l) - 5%), 0.08) 0%, transparent 50%),
-    var(--bg-grid-texture-subtle, linear-gradient(hsla(0,0%,100%,0.02) 1px, transparent 1px), linear-gradient(90deg, hsla(0,0%,100%,0.02) 1px, transparent 1px)); // Added fallback for grid texture
-  background-size: cover, cover, var(--bg-grid-size, 50px) var(--bg-grid-size, 50px); // Added fallback for grid size
+    var(--bg-grid-texture-subtle, linear-gradient(hsla(0,0%,100%,0.02) 1px, transparent 1px), linear-gradient(90deg, hsla(0,0%,100%,0.02) 1px, transparent 1px));
+  background-size: cover, cover, var(--bg-grid-size, 50px) var(--bg-grid-size, 50px);
   color: var(--color-text-primary);
   border: 1px solid hsla(var(--nerf-accent-h), var(--nerf-accent-s), var(--nerf-accent-l), 0.1);
   box-shadow: inset 0 0 30px hsla(var(--nerf-bg-h), var(--nerf-bg-s), calc(var(--nerf-bg-l) - 10%), 0.5);
@@ -159,7 +200,7 @@ defineExpose({ handleNewUserInput });
 }
 
 .nerf-main-content-area {
-  @apply flex-grow relative min-h-0 overflow-y-auto;
+  @apply flex-grow relative min-h-0 overflow-y-auto flex flex-col; /* Added flex flex-col for centering inline loader */
    @include custom-scrollbar(
     $thumb-color-var-prefix: '--nerf-accent',
     $thumb-base-alpha: 0.5,
@@ -175,10 +216,10 @@ defineExpose({ handleNewUserInput });
   );
 }
 
-.nerf-loading-overlay {
-  @apply absolute inset-0 flex flex-col items-center justify-center z-10;
-  background-color: hsla(var(--nerf-bg-h), var(--nerf-bg-s), var(--nerf-bg-l), 0.7);
-  backdrop-filter: blur(3px);
+/* NEW: Inline loading indicator styles */
+.nerf-initial-loading-inline {
+  @apply flex flex-col items-center justify-center text-center p-8 flex-grow;
+  color: hsl(var(--nerf-accent-h), var(--nerf-accent-s), calc(var(--nerf-accent-l) + 10%));
 }
 .nerf-spinner-container { @apply relative w-10 h-10 mb-2.5; }
 .nerf-spinner {
@@ -192,12 +233,26 @@ defineExpose({ handleNewUserInput });
   @apply font-medium text-sm tracking-wider;
 }
 
-.nerf-compact-renderer { @apply p-2 sm:p-3 h-full; }
-
 .prose-futuristic.nerf-prose-content {
-  @apply p-4 md:p-6 h-full;
+  @apply p-4 md:p-6;
   font-size: var(--font-size-base);
   line-height: var(--line-height-base);
+
+  &.nerf-prose-content--streaming {
+    white-space: pre-wrap;
+    word-break: break-word;
+    span[class*="animate-text-"] { display: inline; }
+    span.text-unit-line { display: block; }
+    br { content: ""; display: block; margin-bottom: 1em; }
+  }
+  &.nerf-inline-loading-message {
+     @apply text-center italic;
+    color: hsl(var(--nerf-accent-h), var(--nerf-accent-s), calc(var(--nerf-accent-l) + 5%));
+    .nerf-spinner-container { // If we embed spinner in markdown for loading messages
+      @apply w-6 h-6 inline-block align-middle mr-1.5;
+      .nerf-spinner { border-width: 3px; }
+    }
+  }
 
   :deep(h1), :deep(h2), :deep(h3) {
     @apply font-semibold tracking-tight border-b pb-1.5 mb-3;
@@ -244,7 +299,8 @@ defineExpose({ handleNewUserInput });
   }
 }
 
-.nerf-placeholder, .nerf-empty-state {
+.nerf-empty-state {
+  @apply flex-grow; /* Allow empty state to fill space */
   color: var(--color-text-muted);
   @apply italic text-center p-6 flex flex-col items-center justify-center h-full opacity-75;
 }
@@ -265,7 +321,7 @@ defineExpose({ handleNewUserInput });
     @apply w-16 h-16 mx-auto;
     color: hsl(var(--nerf-accent-h), var(--nerf-accent-s), var(--nerf-accent-l));
     filter: drop-shadow(0 0 15px hsla(var(--nerf-accent-h), var(--nerf-accent-s), var(--nerf-accent-l), 0.6));
-    animation: subtlePulseNerf 3s infinite ease-in-out; // Nerf-specific animation name
+    animation: subtlePulseNerf 3s infinite ease-in-out;
   }
   .nerf-welcome-title {
     @apply text-2xl sm:text-3xl font-bold mt-2 mb-1.5 tracking-wide;
@@ -282,9 +338,18 @@ defineExpose({ handleNewUserInput });
   }
 }
 
-@keyframes subtlePulseNerf { // Renamed keyframe
+@keyframes subtlePulseNerf {
   0%, 100% { opacity: 1; transform: scale(1) rotate(1deg); }
   50% { opacity: 0.85; transform: scale(1.04) rotate(-1deg); }
 }
 
+.streaming-cursor-ephemeral {
+    display: inline-block;
+    animation: terminalCursorBlink 1s step-end infinite;
+    background-color: hsl(var(--nerf-accent-h), var(--nerf-accent-s), var(--nerf-accent-l));
+    width: 0.5em;
+    margin-left: 0.1em;
+    height: 1em; 
+    vertical-align: middle;
+}
 </style>
