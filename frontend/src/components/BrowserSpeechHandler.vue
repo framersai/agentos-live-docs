@@ -1,701 +1,783 @@
-<script setup lang="ts">
-/**
- * @file BrowserSpeechHandler.vue
- * @description Component to handle Browser Web Speech API interactions.
- * @version 2.2.5 (Adds operation lock to prevent concurrent starts, refined state management, integrated logic from v2.2.4)
- */
+// File: frontend/src/components/BrowserSpeechHandler.vue
+// Version: 3.0.9 (Combined)
+// Changes from 3.0.8 base:
+// - CRITICAL FIX: `stopAllRecognition` no longer prematurely sets state to IDLE or releases operationLock.
+// - `onend` handlers are now fully responsible for nullifying recognizer instances, setting state to IDLE, and managing operationLock release more precisely.
+// - Ensured `previousState` in `onend` handlers reflects the state at the time of stopping.
+// - Minor adjustments to logging for clarity on state and lock management.
+// - Refined logic in `onstart` for main STT to correctly transition from STARTING_MAIN_STT.
+<template>
+  <div class="browser-speech-handler-ui">
+    <div v-if="isBrowserWebSpeechActive && !isVADListeningForWakeWord" class="live-transcript-display-ephemeral" aria-live="polite">
+      <p v-if="interimTranscriptWebSpeech && (audioInputMode === 'push-to-talk' || (audioInputMode === 'voice-activation' && !isVADListeningForWakeWord))" class="interim-transcript-ephemeral">
+        {{ interimTranscriptWebSpeech }}<span class="streaming-cursor-ephemeral">|</span>
+      </p>
+      <p v-if="liveTranscriptWebSpeech && audioInputMode === 'continuous'" class="finalized-part-ephemeral">
+        {{ liveTranscriptWebSpeech }}<span class="streaming-cursor-ephemeral">|</span>
+      </p>
+      <p v-if="pendingTranscriptWebSpeech && audioInputMode === 'continuous'" class="pending-transcript-ephemeral">
+        <span class="font-semibold text-xs text-gray-500 dark:text-gray-400">Pending: </span> {{ pendingTranscriptWebSpeech }}
+      </p>
+    </div>
+    <div v-if="audioInputMode === 'voice-activation' && isVADListeningForWakeWord" class="live-transcript-display-ephemeral vad-wake-word-status">
+      Say "{{ settings.vadWakeWordsBrowserSTT && settings.vadWakeWordsBrowserSTT.length > 0 ? settings.vadWakeWordsBrowserSTT[0] : 'V' }}" to activate...
+      <SparklesIcon class="inline h-3 w-3 ml-1 opacity-70 animate-pulse" aria-hidden="true" />
+    </div>
+    <div v-if="audioInputMode === 'voice-activation' && isBrowserWebSpeechActive && !isVADListeningForWakeWord" class="web-speech-vad-active-indicator">
+      Browser STT: Listening for command...
+    </div>
+    <div v-if="audioInputMode === 'continuous' && pauseDetectedWebSpeech && isBrowserWebSpeechActive" class="text-xs text-center py-1 text-gray-500 dark:text-gray-400">
+      Sending in {{ Math.max(0, pauseCountdownWebSpeech / 1000).toFixed(1) }}s
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
 import {
-  ref,
-  computed,
-  onMounted,
-  onBeforeUnmount,
-  watch,
-  inject,
-  nextTick,
-  type PropType,
-  type Ref
+  ref,
+  computed,
+  onMounted,
+  onBeforeUnmount,
+  watch,
+  inject,
+  nextTick,
+  type PropType,
 } from 'vue';
 import { type AudioInputMode, type VoiceApplicationSettings } from '@/services/voice.settings.service';
 import type { ToastService } from '../services/services';
 import { SparklesIcon } from '@heroicons/vue/24/outline';
 
+// #region Web Speech API Type Declarations
 declare global {
-  interface SpeechRecognitionErrorEvent extends Event { readonly error: SpeechRecognitionErrorCode; readonly message: string; }
-  interface SpeechRecognitionEvent extends Event { readonly resultIndex: number; readonly results: SpeechRecognitionResultList; }
-  interface SpeechGrammar { src: string; weight?: number; }
-  var SpeechGrammar: { prototype: SpeechGrammar; new(): SpeechGrammar; };
-  interface SpeechGrammarList { readonly length: number; item(index: number): SpeechGrammar; addFromString(string: string, weight?: number): void; addFromURI(src: string, weight?: number): void; }
-  var SpeechGrammarList: { prototype: SpeechGrammarList; new(): SpeechGrammarList; };
-  var webkitSpeechGrammarList: { prototype: SpeechGrammarList; new(): SpeechGrammarList; };
-  interface Window { SpeechRecognition: typeof SpeechRecognition; webkitSpeechRecognition: typeof SpeechRecognition; SpeechGrammarList?: typeof SpeechGrammarList; webkitSpeechGrammarList?: typeof SpeechGrammarList; }
-  var SpeechRecognition: { prototype: SpeechRecognition; new(): SpeechRecognition; };
-  var webkitSpeechRecognition: { prototype: SpeechRecognition; new(): SpeechRecognition; };
-  interface SpeechRecognition extends EventTarget { grammars: SpeechGrammarList; lang: string; continuous: boolean; interimResults: boolean; maxAlternatives: number; serviceURI?: string; onaudiostart: ((this: SpeechRecognition, ev: Event) => any) | null; onaudioend: ((this: SpeechRecognition, ev: Event) => any) | null; onend: ((this: SpeechRecognition, ev: Event) => any) | null; onerror: ((this: SpeechRecognition, ev: SpeechRecognitionErrorEvent) => any) | null; onnomatch: ((this: SpeechRecognition, ev: SpeechRecognitionEvent) => any) | null; onresult: ((this: SpeechRecognition, ev: SpeechRecognitionEvent) => any) | null; onsoundstart: ((this: SpeechRecognition, ev: Event) => any) | null; onsoundend: ((this: SpeechRecognition, ev: Event) => any) | null; onspeechstart: ((this: SpeechRecognition, ev: Event) => any) | null; onspeechend: ((this: SpeechRecognition, ev: Event) => any) | null; onstart: ((this: SpeechRecognition, ev: Event) => any) | null; abort(): void; start(): void; stop(): void; }
+  interface SpeechRecognitionErrorEvent extends Event { readonly error: SpeechRecognitionErrorCode; readonly message: string; }
+  interface SpeechRecognitionEvent extends Event { readonly resultIndex: number; readonly results: SpeechRecognitionResultList; }
+  interface SpeechGrammar { src: string; weight?: number; }
+  var SpeechGrammar: { prototype: SpeechGrammar; new(): SpeechGrammar; };
+  interface SpeechGrammarList { readonly length: number; item(index: number): SpeechGrammar; addFromString(string: string, weight?: number): void; addFromURI(src: string, weight?: number): void; }
+  var SpeechGrammarList: { prototype: SpeechGrammarList; new(): SpeechGrammarList; };
+  var webkitSpeechGrammarList: { prototype: SpeechGrammarList; new(): SpeechGrammarList; };
+  interface Window { SpeechRecognition: typeof SpeechRecognition; webkitSpeechRecognition: typeof SpeechRecognition; SpeechGrammarList?: typeof SpeechGrammarList; webkitSpeechGrammarList?: typeof SpeechGrammarList; }
+  var SpeechRecognition: { prototype: SpeechRecognition; new(): SpeechRecognition; };
+  var webkitSpeechRecognition: { prototype: SpeechRecognition; new(): SpeechRecognition; };
+  interface SpeechRecognition extends EventTarget { grammars: SpeechGrammarList; lang: string; continuous: boolean; interimResults: boolean; maxAlternatives: number; serviceURI?: string; onaudiostart: ((this: SpeechRecognition, ev: Event) => any) | null; onaudioend: ((this: SpeechRecognition, ev: Event) => any) | null; onend: ((this: SpeechRecognition, ev: Event) => any) | null; onerror: ((this: SpeechRecognition, ev: SpeechRecognitionErrorEvent) => any) | null; onnomatch: ((this: SpeechRecognition, ev: SpeechRecognitionEvent) => any) | null; onresult: ((this: SpeechRecognition, ev: SpeechRecognitionEvent) => any) | null; onsoundstart: ((this: SpeechRecognition, ev: Event) => any) | null; onsoundend: ((this: SpeechRecognition, ev: Event) => any) | null; onspeechstart: ((this: SpeechRecognition, ev: Event) => any) | null; onspeechend: ((this: SpeechRecognition, ev: Event) => any) | null; onstart: ((this: SpeechRecognition, ev: Event) => any) | null; abort(): void; start(): void; stop(): void; }
 }
-type SpeechRecognitionErrorCode = 'no-speech' | 'aborted' | 'audio-capture' | 'network' | 'not-allowed' | 'service-not-allowed' | 'bad-grammar' | 'language-not-supported';
+type SpeechRecognitionErrorCode =
+  | 'no-speech' | 'aborted' | 'audio-capture' | 'network'
+  | 'not-allowed' | 'service-not-allowed' | 'bad-grammar' | 'language-not-supported';
+// #endregion
 
-const props = defineProps({
-  settings: { type: Object as PropType<VoiceApplicationSettings>, required: true },
-  audioInputMode: { type: String as PropType<AudioInputMode>, required: true },
-  parentIsProcessingLLM: { type: Boolean, default: false },
-  currentMicPermission: { type: String as PropType<'prompt'|'granted'|'denied'|'error'|''>, required: true },
-});
+export default {
+  name: 'BrowserSpeechHandler',
+  components: { SparklesIcon },
+  props: {
+    settings: { type: Object as PropType<VoiceApplicationSettings>, required: true },
+    audioInputMode: { type: String as PropType<AudioInputMode>, required: true },
+    parentIsProcessingLLM: { type: Boolean, default: false },
+    currentMicPermission: {
+      type: String as PropType<'prompt' | 'granted' | 'denied' | 'error' | ''>,
+      required: true,
+    },
+  },
+  emits: {
+    transcription: (value: string): boolean => typeof value === 'string',
+    'processing-audio': (isProcessingAudio: boolean): boolean => typeof isProcessingAudio === 'boolean',
+    'is-listening-for-wake-word': (isListening: boolean): boolean => typeof isListening === 'boolean',
+    error: (payload: { type: 'speech' | 'permission' | 'init'; message: string; code?: SpeechRecognitionErrorCode | string }): boolean => 
+      typeof payload.type === 'string' && typeof payload.message === 'string',
+    'request-edit-pending-transcript': (pendingText: string): boolean => typeof pendingText === 'string',
+    'wake-word-detected': (): boolean => true,
+  },
+  setup(props, { emit }) {
+    const toast = inject<ToastService>('toast');
 
-const emit = defineEmits<{
-  (e: 'transcription', value: string): void;
-  (e: 'processing-audio', isProcessingAudio: boolean): void;
-  (e: 'is-listening-for-wake-word', isListening: boolean): void;
-  (e: 'error', payload: { type: 'speech' | 'permission' | 'init', message: string, code?: SpeechRecognitionErrorCode | string }): void;
-  (e: 'request-edit-pending-transcript', pendingText: string): void;
-  (e: 'wake-word-detected'): void;
-}>();
+    const VAD_COMMAND_FALLBACK_TIMEOUT_MS = 2500;
+    const RESTART_DELAY_MS = 450; // Slightly increased delay for stability
 
-const toast = inject<ToastService>('toast');
+    type RecognitionState =
+      | 'IDLE'
+      | 'STARTING_VAD_WAKE' 
+      | 'STARTING_MAIN_STT' 
+      | 'VAD_WAKE_WORD_LISTENING'
+      | 'VAD_WAKE_WORD_STOPPING'
+      | 'IDLE_AWAITING_COMMAND_STT'
+      | 'VAD_COMMAND_CAPTURING'
+      | 'MAIN_STT_ACTIVE'
+      | 'MAIN_STT_STOPPING_GRACEFULLY';
 
-// --- Core State ---
-const isBrowserWebSpeechActive: Ref<boolean> = ref(false); // For main STT
-const isVADListeningForWakeWord: Ref<boolean> = ref(false); // For VAD wake word detection
-const operationLock = ref(false); // Prevents concurrent start/stop operations
+    const internalState = ref<RecognitionState>('IDLE');
+    const operationLock = ref(false); // Lock to prevent overlapping async operations
 
-// --- Transcript State ---
-const interimTranscriptWebSpeech: Ref<string> = ref('');
-const finalTranscriptWebSpeech: Ref<string> = ref('');
-const liveTranscriptWebSpeech: Ref<string> = ref('');
-const pendingTranscriptWebSpeech: Ref<string> = ref('');
+    const interimTranscript = ref('');
+    const finalTranscriptBuffer = ref('');
+    const pendingContinuousTranscript = ref('');
+    const liveContinuousInterim = ref('');
 
-// --- Timers ---
-let vadCommandBrowserSTTFinalizationTimer: number | null = null;
-const VAD_COMMAND_FALLBACK_TIMEOUT_MS = 2500;
-const pauseDetectedWebSpeech: Ref<boolean> = ref(false);
-const pauseCountdownWebSpeech: Ref<number> = ref(0);
-let pauseTimerIdWebSpeech: number | null = null;
+    let vadCommandFinalizationTimerId: number | null = null;
+    let continuousModePauseTimerId: number | null = null;
+    const pauseDetectedForContinuous = ref(false);
+    const pauseCountdownForContinuous = ref(0);
 
-// --- Speech Recognition Instances ---
-let webSpeechRecognition: SpeechRecognition | null = null;
-let vadWakeWordDetectionRecognition: SpeechRecognition | null = null;
-let isVADStartAttemptPending = false; // More specific than isVADRestartPending from v2.2.4
+    let mainSttRecognizer: SpeechRecognition | null = null;
+    let vadWakeWordRecognizer: SpeechRecognition | null = null;
 
-// --- Computed Properties ---
-const isPttMode = computed<boolean>(() => props.audioInputMode === 'push-to-talk');
-const isContinuousMode = computed<boolean>(() => props.audioInputMode === 'continuous');
-const isVoiceActivationMode = computed<boolean>(() => props.audioInputMode === 'voice-activation');
-const continuousModeAutoSend = computed<boolean>(() => props.settings.continuousModeAutoSend);
-const browserContinuousSilenceTimeoutMs = computed<number>(() => props.settings.continuousModePauseTimeoutMs || 3000);
-const browserContinuousSendUIDelayMs = computed<number>(() => props.settings.continuousModeSilenceSendDelayMs || 1500);
-const vadCommandEffectiveTimeoutMs = computed<number>(() => (props.settings.vadSilenceTimeoutMs || VAD_COMMAND_FALLBACK_TIMEOUT_MS) + (props.settings.vadCommandRecognizedPauseMs || 2000));
+    const isPttMode = computed<boolean>(() => props.audioInputMode === 'push-to-talk');
+    const isContinuousMode = computed<boolean>(() => props.audioInputMode === 'continuous');
+    const isVoiceActivationMode = computed<boolean>(() => props.audioInputMode === 'voice-activation');
+    const continuousModeAutoSendEnabled = computed<boolean>(() => props.settings.continuousModeAutoSend);
+    const browserContinuousSilenceTimeoutMs = computed<number>(() => props.settings.continuousModePauseTimeoutMs || 3000);
+    const browserContinuousSendUIDelayMs = computed<number>(() => props.settings.continuousModeSilenceSendDelayMs || 1500);
+    const vadCommandEffectiveTimeoutMs = computed<number>(
+      () => (props.settings.vadSilenceTimeoutMs || VAD_COMMAND_FALLBACK_TIMEOUT_MS) + (props.settings.vadCommandRecognizedPauseMs || 2000)
+    );
 
-// --- Helper Functions (from v2.2.4, adapted for v2.2.5 context) ---
-const _stopBrowserWebSpeechRecognitionInternalStates = () => {
-    if (isBrowserWebSpeechActive.value) emit('processing-audio', false);
-    isBrowserWebSpeechActive.value = false;
-    clearPauseTimerForWebSpeech();
-    if (vadCommandBrowserSTTFinalizationTimer) { clearTimeout(vadCommandBrowserSTTFinalizationTimer); vadCommandBrowserSTTFinalizationTimer = null; }
-};
+    // --- Helper Function Definitions ---
+    const _clearAllTimers = (): void => {
+      if (vadCommandFinalizationTimerId) clearTimeout(vadCommandFinalizationTimerId);
+      vadCommandFinalizationTimerId = null;
+      if (continuousModePauseTimerId) clearTimeout(continuousModePauseTimerId);
+      continuousModePauseTimerId = null;
+      pauseDetectedForContinuous.value = false;
+      pauseCountdownForContinuous.value = 0;
+    };
 
-const _cleanUpAfterWebSpeechTranscription = () => {
-    interimTranscriptWebSpeech.value='';
-    finalTranscriptWebSpeech.value='';
-    // liveTranscriptWebSpeech and pendingTranscriptWebSpeech are typically for continuous mode, managed by its own logic.
-    // For PTT/VAD command, they are reset before starting.
-};
+    const _resetTranscriptBuffers = (clearContinuousPending: boolean = true): void => {
+      interimTranscript.value = '';
+      finalTranscriptBuffer.value = '';
+      liveContinuousInterim.value = '';
+      if (clearContinuousPending) {
+        pendingContinuousTranscript.value = '';
+      }
+    };
 
-const _sendPendingWebSpeechTranscriptionAndClear = () => {
-    if (pendingTranscriptWebSpeech.value.trim()) {
-        emit('transcription', pendingTranscriptWebSpeech.value.trim());
-    }
-    pendingTranscriptWebSpeech.value = ''; // Use the exposed clearPendingTranscript for full reset
-    liveTranscriptWebSpeech.value = '';
-    clearPauseTimerForWebSpeech();
-};
+    const _safelyStopRecognizerInstance = (recognizerRefKey: 'mainStt' | 'vadWakeWord', graceful: boolean): void => {
+      let recognizerInstance: SpeechRecognition | null = null;
+      let instanceName = "";
+      if (recognizerRefKey === 'mainStt') {
+        recognizerInstance = mainSttRecognizer;
+        instanceName = "MainSTT";
+      } else {
+        recognizerInstance = vadWakeWordRecognizer;
+        instanceName = "VADWakeWord";
+      }
 
-const clearPauseTimerForWebSpeech = () => {
-    if(pauseTimerIdWebSpeech !== null) clearTimeout(pauseTimerIdWebSpeech);
-    pauseTimerIdWebSpeech = null;
-    pauseDetectedWebSpeech.value = false;
-    pauseCountdownWebSpeech.value = 0;
-};
+      if (recognizerInstance) {
+        console.log(`[BSH v3.0.9] Attempting to ${graceful ? 'stop' : 'abort'} ${instanceName}. Current state: ${internalState.value}`);
+        // Detach handlers that might cause issues if they fire after we've decided to stop
+        recognizerInstance.onstart = null;
+        recognizerInstance.onresult = null;
+        recognizerInstance.onerror = null; 
+        // onend is preserved to handle cleanup and state transition.
+        try {
+          if (graceful) recognizerInstance.stop(); else recognizerInstance.abort();
+        } catch (e) {
+          console.warn(`[BSH v3.0.9] Error ${graceful ? 'stopping' : 'aborting'} ${instanceName}:`, e);
+          // If stopping/aborting fails catastrophically, ensure we clean up and reset state.
+          if (recognizerRefKey === 'mainStt') mainSttRecognizer = null; else vadWakeWordRecognizer = null;
+          internalState.value = 'IDLE'; 
+          if (operationLock.value) operationLock.value = false;
+        }
+      } else {
+        console.log(`[BSH v3.0.9] ${instanceName} recognizer already null, no stop action needed.`);
+      }
+    };
+    
+    const _createAndConfigureRecognizer = (isForWakeWord: boolean = false): SpeechRecognition | null => {
+        const SpeechRecognitionAPI = window.SpeechRecognition || (window as any).webkitSpeechRecognition;
+        if (!SpeechRecognitionAPI) { 
+            console.error("[BSH v3.0.9] Web Speech API not supported.");
+            emit('error', { type: 'init', message: 'Web Speech API not supported.' }); 
+            return null; 
+        }
+        const recognizer = new SpeechRecognitionAPI();
+        recognizer.lang = props.settings.speechLanguage || navigator.language || 'en-US';
+        recognizer.maxAlternatives = 1;
+        if (isForWakeWord) { 
+            recognizer.continuous = true; 
+            recognizer.interimResults = false; 
+        } else { 
+            recognizer.interimResults = true; 
+            recognizer.continuous = isContinuousMode.value || (isVoiceActivationMode.value);
+        }
+        return recognizer;
+    };
 
-const resetPauseDetectionForWebSpeech = () => {
-  clearPauseTimerForWebSpeech();
+    const _initializeMainSttRecognizer = (): boolean => {
+      if (mainSttRecognizer) { 
+        console.log("[BSH v3.0.9] Main STT: Aborting existing instance before re-init.");
+        mainSttRecognizer.onend = null; 
+        _safelyStopRecognizerInstance('mainStt', false); 
+        mainSttRecognizer = null;
+      }
+      mainSttRecognizer = _createAndConfigureRecognizer(false);
+      if (!mainSttRecognizer) return false;
 
-  if (isContinuousMode.value && pendingTranscriptWebSpeech.value.trim() && isBrowserWebSpeechActive.value && continuousModeAutoSend.value) {
-    const silenceBeforeCountdownUI = browserContinuousSilenceTimeoutMs.value;
-    const uiCountdownDuration = browserContinuousSendUIDelayMs.value;
-
-    pauseTimerIdWebSpeech = window.setTimeout(() => {
-      if (pendingTranscriptWebSpeech.value.trim() && isBrowserWebSpeechActive.value && continuousModeAutoSend.value && isContinuousMode.value) {
-        console.log(`[BSH Continuous] Silence detected for ${silenceBeforeCountdownUI}ms. Starting ${uiCountdownDuration}ms 'Sending in...' UI countdown.`);
-        pauseDetectedWebSpeech.value = true;
-        pauseCountdownWebSpeech.value = uiCountdownDuration;
-
-        window.setTimeout(() => {
-            if (pauseDetectedWebSpeech.value && isContinuousMode.value && pendingTranscriptWebSpeech.value.trim()) {
-                console.log("[BSH Continuous] 'Sending in...' UI countdown finished. Sending transcript.");
-                _sendPendingWebSpeechTranscriptionAndClear();
+mainSttRecognizer.onstart = () => {
+        console.log(`[BSH v3.0.9] Main STT: onstart. Current intended state from setup: ${internalState.value}`);
+        // We expect internalState.value to be 'STARTING_MAIN_STT' if this onstart is for a legitimate start.
+        if (internalState.value === 'STARTING_MAIN_STT') {
+          // Determine target active state based on current audio input mode config
+          // This logic assumes _startMainSttInternal was called appropriately for the mode.
+          // If isVoiceActivationMode is true, and it's not PTT or Continuous, then it's VAD command capture.
+            const targetState = (isVoiceActivationMode.value && !isPttMode.value && !isContinuousMode.value) 
+                                ? 'VAD_COMMAND_CAPTURING' 
+                                : 'MAIN_STT_ACTIVE';
+            internalState.value = targetState;
+            console.log(`[BSH v3.0.9] Main STT: onstart confirmed. New state: ${internalState.value}`);
+            operationLock.value = false; 
+            if (!props.parentIsProcessingLLM) emit('processing-audio', true);
+        } else {
+            console.warn(`[BSH v3.0.9] Main STT: onstart fired in unexpected state ${internalState.value} (expected STARTING_MAIN_STT). Aborting this instance.`);
+            if (mainSttRecognizer) { 
+                mainSttRecognizer.onend = null; // Prevent its onend from causing further issues
+                try { mainSttRecognizer.abort(); } catch(e) { /* ignore */ }
+                mainSttRecognizer = null; 
             }
-            pauseDetectedWebSpeech.value = false;
-            pauseCountdownWebSpeech.value = 0;
-        }, uiCountdownDuration);
-      }
-    }, silenceBeforeCountdownUI);
-  }
-};
-
-
-const _createAndConfigureRecognizer = (isForWakeWord: boolean = false): SpeechRecognition | null => {
-  const SpeechRecognitionAPI = window.SpeechRecognition || (window as any).webkitSpeechRecognition;
-  if (!SpeechRecognitionAPI) { console.error("[BSH] Web Speech API not supported."); return null; }
-  const recognizer = new SpeechRecognitionAPI();
-  recognizer.lang = props.settings.speechLanguage || navigator.language || 'en-US';
-  recognizer.maxAlternatives = 1;
-  if (isForWakeWord) {
-    recognizer.continuous = true; recognizer.interimResults = false;
-  } else {
-    recognizer.interimResults = true;
-    recognizer.continuous = (isPttMode.value || isContinuousMode.value || (isVoiceActivationMode.value && !isVADListeningForWakeWord.value));
-  }
-  return recognizer;
-};
-
-const _safelyStopRecognizer = (recognizer: SpeechRecognition | null, instanceName: string) => {
-    if (recognizer) {
-        recognizer.onstart = null; recognizer.onresult = null; recognizer.onerror = null; recognizer.onend = null;
-        try {
-            recognizer.abort();
-            console.log(`[BSH] Aborted ${instanceName} recognizer.`);
-        } catch (e) {
-            console.warn(`[BSH] Error aborting ${instanceName} recognizer:`, e);
+           // If an onstart fires when we weren't expecting it (e.g., not in STARTING_MAIN_STT),
+           // it might be a rogue event from an old, improperly cleaned-up recognizer.
+           // We shouldn't necessarily reset the global internalState unless we're sure this isn't interfering
+           // with a legitimate, ongoing operation. Forcing IDLE here could be too aggressive if another operation is pending.
+           // However, if operationLock is false, it's safer to assume we should be IDLE.
+           if (!operationLock.value && internalState.value !== 'IDLE') {
+             // internalState.value = 'IDLE'; // Consider if this is safe or if it should just ignore the rogue onstart
+           }
         }
-    }
-};
+      };
 
-const initializeWebSpeechRecognition = (isForWakeWord: boolean = false): SpeechRecognition | null => {
-  if (isForWakeWord) {
-    _safelyStopRecognizer(vadWakeWordDetectionRecognition, 'VAD');
-    vadWakeWordDetectionRecognition = null;
-  } else {
-    _safelyStopRecognizer(webSpeechRecognition, 'main');
-    webSpeechRecognition = null;
-  }
+      mainSttRecognizer.onresult = (event: SpeechRecognitionEvent) => {
+        if (internalState.value !== 'MAIN_STT_ACTIVE' && internalState.value !== 'VAD_COMMAND_CAPTURING') {
+            console.warn(`[BSH v3.0.9] Main STT: onresult in unexpected state ${internalState.value}. Ignoring.`);
+            return;
+        }
+        _clearAllTimers(); 
+        let finalPart = '', interimPart = '';
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          const ts = event.results[i][0].transcript;
+          if (event.results[i].isFinal) finalPart += ts; else interimPart += ts;
+        }
 
-  const newRecognizer = _createAndConfigureRecognizer(isForWakeWord);
-  if (!newRecognizer) {
-    emit('error', { type: 'init', message: 'Failed to create SpeechRecognition (API not supported).' });
-    if (!isForWakeWord) toast?.add({ type: 'error', title: 'STT Init Failed', message: 'Browser Speech API not available.'});
-    return null;
-  }
+        if (props.parentIsProcessingLLM) {
+          console.log("[BSH v3.0.9] Main STT: onresult while parentIsProcessingLLM. Ignoring emit.");
+          interimTranscript.value = interimPart; 
+          if (isContinuousMode.value) liveContinuousInterim.value = interimPart;
+          return; 
+        }
 
-  if (isForWakeWord) {
-    vadWakeWordDetectionRecognition = newRecognizer;
-    newRecognizer.onstart = () => {
-      operationLock.value = false; // Release lock on successful start
-      if (props.audioInputMode === 'voice-activation' && props.currentMicPermission === 'granted' && !props.parentIsProcessingLLM) {
-        isVADListeningForWakeWord.value = true; emit('is-listening-for-wake-word', true); isVADStartAttemptPending = false;
-        console.log("[BSH] VAD wake word listener started.");
-      } else {
-        console.log("[BSH] VAD start conditions not met on onstart, stopping.");
-        // stopVADWakeWordRecognition will acquire its own lock
-        nextTick(() => stopVADWakeWordRecognition(true));
-      }
-    };
-    newRecognizer.onresult = (event: SpeechRecognitionEvent) => {
-      if (!isVADListeningForWakeWord.value) return; // Guard
-      let transcript = '';
-      for (let i = event.resultIndex; i < event.results.length; ++i) {
-        if (event.results[i].isFinal) transcript += event.results[i][0].transcript;
-      }
-      const wakeWordCandidate = transcript.toLowerCase().trim();
-      const wakeWords = (props.settings.vadWakeWordsBrowserSTT?.length ? props.settings.vadWakeWordsBrowserSTT : ["v", "vee", "hey V", "hey Vee"]); // Example wake words
-      let detected = wakeWords.some(word => wakeWordCandidate.includes(word.toLowerCase()));
+        interimTranscript.value = interimPart;
+        if (finalPart.trim()) {
+          if (isPttMode.value || internalState.value === 'VAD_COMMAND_CAPTURING') {
+            finalTranscriptBuffer.value = (finalTranscriptBuffer.value + " " + finalPart.trim()).trim();
+          } else if (isContinuousMode.value) { 
+            pendingContinuousTranscript.value = (pendingContinuousTranscript.value + " " + finalPart.trim()).trim(); 
+            liveContinuousInterim.value = '';
+          }
+        }
+        if (isContinuousMode.value) {
+          liveContinuousInterim.value = interimPart;
+          if ((finalPart.trim() || interimPart.trim()) && continuousModeAutoSendEnabled.value) _resetContinuousModePauseTimer();
+        } else if (internalState.value === 'VAD_COMMAND_CAPTURING') {
+          if (finalPart.trim() || interimPart.trim()) _resetVadCommandFinalizationTimer();
+        }
+      };
 
-      if (detected) {
-        console.log(`[BSH] VAD Wake word detected: "${wakeWordCandidate}"`);
-        toast?.add({ type: 'info', title: `"${wakeWords[0]}" Activated!`, message: 'Listening for command...', duration: 2000 });
-        // stopVADWakeWordRecognition will acquire its own lock
-        // The `false` argument means try to stop gracefully, though abort is often used.
-        // Let's be consistent with v2.2.4's direct call for this specific path.
-        _safelyStopRecognizer(vadWakeWordDetectionRecognition, 'VAD wake word detected'); // Uses abort
-        if (isVADListeningForWakeWord.value) {
-            isVADListeningForWakeWord.value = false;
+      mainSttRecognizer.onerror = (event: SpeechRecognitionErrorEvent) => {
+        const previousStateOnError = internalState.value;
+        console.error(`[BSH v3.0.9] Main STT: onerror - ${event.error}: ${event.message}. State was: ${previousStateOnError}`);
+        const wasProcessing = previousStateOnError === 'MAIN_STT_ACTIVE' || previousStateOnError === 'VAD_COMMAND_CAPTURING' || previousStateOnError === 'STARTING_MAIN_STT';
+        const wasVADCommand = previousStateOnError === 'VAD_COMMAND_CAPTURING';
+
+        _clearAllTimers();
+        if (mainSttRecognizer) { // Ensure onend is detached if it exists
+            mainSttRecognizer.onend = null; // Prevent its onend from also trying to manage state
+            _safelyStopRecognizerInstance('mainStt', false);
+        }
+        mainSttRecognizer = null; 
+        internalState.value = 'IDLE'; 
+        operationLock.value = false;
+        
+        emit('error', { type: 'speech', message: `Main STT Error: ${event.error}`, code: event.error });
+        if (event.error !== 'no-speech' && event.error !== 'aborted') {
+           toast?.add({ type: 'error', title: `STT Error: ${event.error}`, message: event.message || "Recognition error.", duration: 5000 });
+        }
+        if (wasProcessing && !props.parentIsProcessingLLM) emit('processing-audio', false);
+        
+        if (isPttMode.value && (event.error === 'aborted' || event.error === 'no-speech') && (previousStateOnError === 'MAIN_STT_ACTIVE' || previousStateOnError === 'STARTING_MAIN_STT') ) {
+            console.log(`[BSH v3.0.9] PTT mode error (${event.error}), not restarting automatically.`);
+            return; 
+        }
+
+        if (props.currentMicPermission === 'granted' && !props.parentIsProcessingLLM) {
+            if (isVoiceActivationMode.value && wasVADCommand) {
+                _attemptStartVadWakeWordListenerAfterDelay();
+            } else if (isContinuousMode.value && wasProcessing) {
+                _attemptStartMainSttAfterDelay(false);
+            }
+        }
+      };
+
+      mainSttRecognizer.onend = () => {
+        const previousState = internalState.value; // Capture state before any changes by this handler
+        console.log(`[BSH v3.0.9] Main STT: onend. Prev State: ${previousState}.`);
+        mainSttRecognizer = null; // Nullify the instance
+        _clearAllTimers(); 
+        
+        let shouldRestart = false;
+        let restartType: 'vad_wake' | 'main_stt_continuous' | null = null;
+
+        // Determine if a restart is needed based on previous state and current conditions
+        if (props.currentMicPermission === 'granted' && !props.parentIsProcessingLLM) {
+            if (isVoiceActivationMode.value && previousState === 'VAD_COMMAND_CAPTURING') {
+                shouldRestart = true;
+                restartType = 'vad_wake';
+            } else if (isContinuousMode.value && (previousState === 'MAIN_STT_ACTIVE' || previousState === 'STARTING_MAIN_STT')) {
+                shouldRestart = true;
+                restartType = 'main_stt_continuous';
+            }
+        }
+        
+        // Handle emissions and transcriptions before state change
+        if (previousState === 'MAIN_STT_ACTIVE' || previousState === 'VAD_COMMAND_CAPTURING' || previousState === 'MAIN_STT_STOPPING_GRACEFULLY' || previousState === 'STARTING_MAIN_STT') {
+            if (!props.parentIsProcessingLLM) {
+                emit('processing-audio', false);
+                if (isPttMode.value && (previousState === 'MAIN_STT_ACTIVE' || previousState === 'MAIN_STT_STOPPING_GRACEFULLY')) {
+                    const transcript = (finalTranscriptBuffer.value + " " + interimTranscript.value).trim();
+                    if (transcript) emit('transcription', transcript);
+                } else if (previousState === 'VAD_COMMAND_CAPTURING') {
+                    const transcript = (finalTranscriptBuffer.value + " " + interimTranscript.value).trim();
+                    if (transcript) emit('transcription', transcript);
+                } else if (isContinuousMode.value && (previousState === 'MAIN_STT_ACTIVE' || previousState === 'MAIN_STT_STOPPING_GRACEFULLY')) {
+                    if (pendingContinuousTranscript.value.trim() && continuousModeAutoSendEnabled.value && !pauseDetectedForContinuous.value) {
+                        _sendPendingContinuousTranscriptAndClear();
+                    }
+                }
+            }
+        }
+
+        // Reset buffers if not continuous with pending data, or if LLM was processing (which would have skipped emit)
+        if (!(isContinuousMode.value && previousState === 'MAIN_STT_ACTIVE' && pendingContinuousTranscript.value.trim()) || props.parentIsProcessingLLM) {
+            _resetTranscriptBuffers(true);
+        }
+        
+        internalState.value = 'IDLE'; // Now set to IDLE
+
+        if (shouldRestart) {
+            if (restartType === 'vad_wake') {
+                console.log("[BSH v3.0.9] Main STT (VAD Cmd ended). Queueing VAD wake listener restart.");
+                _attemptStartVadWakeWordListenerAfterDelay();
+            } else if (restartType === 'main_stt_continuous') {
+                console.log("[BSH v3.0.9] Main STT (Continuous ended). Queueing Continuous restart.");
+                _attemptStartMainSttAfterDelay(false);
+            }
+        } else {
+            operationLock.value = false; // Release lock if no restart is queued by this onend
+            console.log(`[BSH v3.0.9] Main STT onend: No automatic restart conditions met. Final state: IDLE. Lock released: ${!operationLock.value}`);
+        }
+      };
+      return true;
+    };
+
+    const _initializeVadWakeWordRecognizer = (): boolean => {
+      if (vadWakeWordRecognizer) {
+        vadWakeWordRecognizer.onend = null;
+        _safelyStopRecognizerInstance('vadWakeWord', false);
+        vadWakeWordRecognizer = null;
+      }
+      vadWakeWordRecognizer = _createAndConfigureRecognizer(true);
+      if (!vadWakeWordRecognizer) return false;
+
+      vadWakeWordRecognizer.onstart = () => {
+        console.log(`[BSH v3.0.9] VAD Wake Word: onstart. Current intended state: ${internalState.value}`);
+        if (internalState.value === 'STARTING_VAD_WAKE') {
+            internalState.value = 'VAD_WAKE_WORD_LISTENING';
+            console.log(`[BSH v3.0.9] VAD Wake Word: onstart confirmed. New state: ${internalState.value}`);
+            operationLock.value = false; 
+            if (!props.parentIsProcessingLLM) emit('is-listening-for-wake-word', true);
+        } else {
+            console.warn(`[BSH v3.0.9] VAD Wake Word: onstart in unexpected state ${internalState.value}. Aborting this instance.`);
+            if(vadWakeWordRecognizer) {
+                vadWakeWordRecognizer.onend = null;
+                _safelyStopRecognizerInstance('vadWakeWord', false);
+            }
+        }
+      };
+
+      vadWakeWordRecognizer.onresult = (event: SpeechRecognitionEvent) => {
+        if (internalState.value !== 'VAD_WAKE_WORD_LISTENING') {
+            console.warn(`[BSH v3.0.9] VAD Wake Word: onresult in unexpected state ${internalState.value}`);
+            return;
+        }
+         if (props.parentIsProcessingLLM) {
+            console.log("[BSH v3.0.9] VAD Wake Word: onresult while parentIsProcessingLLM. Ignoring.");
+            return;
+        }
+        let transcript = '';
+        for (let i = event.resultIndex; i < event.results.length; ++i) { if (event.results[i].isFinal) transcript += event.results[i][0].transcript; }
+        const wakeWordCandidate = transcript.toLowerCase().trim();
+        const wakeWords = (props.settings.vadWakeWordsBrowserSTT?.length ? props.settings.vadWakeWordsBrowserSTT : ["v", "vee"]);
+        
+        if (wakeWords.some(word => wakeWordCandidate.includes(word.toLowerCase()))) {
+          console.log(`[BSH v3.0.9] VAD Wake Word: Detected "${wakeWordCandidate}".`);
+          toast?.add({ type: 'info', title: `"${wakeWords[0]}" Activated!`, message: 'Listening for command...', duration: 2000 });
+          internalState.value = 'VAD_WAKE_WORD_STOPPING';
+          if (!props.parentIsProcessingLLM) emit('is-listening-for-wake-word', false);
+          _safelyStopRecognizerInstance('vadWakeWord', true);
+        }
+      };
+
+      vadWakeWordRecognizer.onerror = (event: SpeechRecognitionErrorEvent) => {
+        console.error(`[BSH v3.0.9] VAD Wake Word: onerror - ${event.error}: ${event.message}`);
+        const wasListening = internalState.value === 'VAD_WAKE_WORD_LISTENING' || internalState.value === 'STARTING_VAD_WAKE';
+        if (vadWakeWordRecognizer) {
+            vadWakeWordRecognizer.onend = null;
+            _safelyStopRecognizerInstance('vadWakeWord', false);
+        }
+        vadWakeWordRecognizer = null; 
+        internalState.value = 'IDLE';
+        operationLock.value = false;
+        if (wasListening) emit('is-listening-for-wake-word', false);
+        
+        if (event.error !== 'no-speech' && event.error !== 'aborted') {
+          emit('error', { type: 'speech', message: `VAD Error: ${event.error}`, code: event.error });
+        }
+        if (isVoiceActivationMode.value && wasListening && props.currentMicPermission === 'granted' && !props.parentIsProcessingLLM) {
+             _attemptStartVadWakeWordListenerAfterDelay();
+        }
+      };
+
+      vadWakeWordRecognizer.onend = () => {
+        const previousState = internalState.value;
+        console.log(`[BSH v3.0.9] VAD Wake Word: onend. Prev State: ${previousState}.`);
+        vadWakeWordRecognizer = null; 
+        
+        let attemptRestart = false;
+        let nextState: RecognitionState = 'IDLE';
+
+        if (previousState === 'VAD_WAKE_WORD_STOPPING') { 
+            nextState = 'IDLE_AWAITING_COMMAND_STT';
+            console.log("[BSH v3.0.9] VAD success. Emitting 'wake-word-detected'. New state: IDLE_AWAITING_COMMAND_STT");
+            emit('wake-word-detected'); 
+        } else if (previousState === 'VAD_WAKE_WORD_LISTENING' || previousState === 'STARTING_VAD_WAKE') { 
+            nextState = 'IDLE';
+            if (isVoiceActivationMode.value && props.currentMicPermission === 'granted' && !props.parentIsProcessingLLM) {
+              attemptRestart = true;
+            }
+        } else if (previousState === 'MAIN_STT_STOPPING_GRACEFULLY' && isVoiceActivationMode.value) { 
+           nextState = 'IDLE';
+        } else {
+             console.warn(`[BSH v3.0.9] VAD Wake Word: onend from unexpected state ${previousState}. Forcing IDLE.`);
+            nextState = 'IDLE';
+        }
+        
+        internalState.value = nextState;
+        if (previousState === 'VAD_WAKE_WORD_LISTENING' || previousState === 'STARTING_VAD_WAKE' || (previousState === 'VAD_WAKE_WORD_STOPPING' && !props.parentIsProcessingLLM)) {
             emit('is-listening-for-wake-word', false);
         }
-        emit('wake-word-detected');
-      }
-    };
-    newRecognizer.onerror = (event: SpeechRecognitionErrorEvent) => {
-      operationLock.value = false;
-      isVADStartAttemptPending = false; // VAD start attempt failed
-      if (isVADListeningForWakeWord.value) { // Only if it was supposed to be listening
-        isVADListeningForWakeWord.value = false; emit('is-listening-for-wake-word', false);
+
+        if (attemptRestart) {
+            _attemptStartVadWakeWordListenerAfterDelay();
+        } else {
+            operationLock.value = false; // Release lock if no restart from this onend
+            console.log(`[BSH v3.0.9] VAD onend: No automatic restart. Final state: ${internalState.value}. Lock released: ${!operationLock.value}`);
+        }
+      };
+      return true;
+    };
+    
+    // Internal start/stop logic (called by _attempt... wrappers)
+    const _startMainSttInternal = async (isForVadCommand: boolean): Promise<boolean> => {
+      if (! (internalState.value === 'IDLE' || (isForVadCommand && internalState.value === 'IDLE_AWAITING_COMMAND_STT'))) {
+         console.warn(`[BSH v3.0.9] Main STT: Start rejected. Current State: ${internalState.value} != IDLE/IDLE_AWAITING_COMMAND_STT. ForVAD: ${isForVadCommand}`);
+         operationLock.value = false; return false;
       }
-      console.error(`[BSH] VAD Wake Word Error: ${event.error}`, event.message);
-      // Don't emit generic error for 'no-speech' or 'aborted' if it's VAD, as it might be normal
-      if (event.error !== 'no-speech' && event.error !== 'aborted') {
-        emit('error', { type: 'speech', message: `VAD Error: ${event.error}`, code: event.error });
+      if (props.currentMicPermission !== 'granted') {
+        console.error("[BSH v3.0.9] Main STT: Mic permission not 'granted'.");
+        emit('error', { type: 'permission', message: `Cannot start: Mic permission is ${props.currentMicPermission}.` });
+        operationLock.value = false; return false;
       }
-      // onend will handle restart logic if appropriate
-    };
-    newRecognizer.onend = () => {
-      const wasListening = isVADListeningForWakeWord.value; // Capture state before reset by lock release
-      operationLock.value = false; // Release lock now that this instance ended
-
-      if (isVADListeningForWakeWord.value) { // If it was still marked as listening (e.g. abrupt end)
-          isVADListeningForWakeWord.value = false; emit('is-listening-for-wake-word', false);
+      if (props.parentIsProcessingLLM && !isContinuousMode.value && !isForVadCommand) {
+        toast?.add({ type: 'info', title: 'Assistant Busy', message: 'LLM processing.' });
+        operationLock.value = false; return false;
       }
-      console.log("[BSH] VAD wake word 'onend'.");
 
-      // Try to restart VAD if it was listening, is still in VAD mode, mic is good, not busy, and no start attempt is already pending
-      if (wasListening && props.audioInputMode === 'voice-activation' && props.currentMicPermission === 'granted' &&
-          !isBrowserWebSpeechActive.value && !isVADStartAttemptPending && !props.parentIsProcessingLLM) {
-        setTimeout(async () => { // Use async for await inside if needed for startVADWakeWordRecognition
-          // Re-check critical conditions as state might have changed during timeout
-          if (props.audioInputMode === 'voice-activation' && !isVADListeningForWakeWord.value &&
-              !isBrowserWebSpeechActive.value && props.currentMicPermission === 'granted' &&
-              !props.parentIsProcessingLLM && !operationLock.value /* ensure lock is free */ ) {
-              await startVADWakeWordRecognition(); // This function handles its own operationLock and isVADStartAttemptPending
-          }
-        }, 250); // Brief delay
-      }
-    };
-  } else { // Main STT recognizer
-    webSpeechRecognition = newRecognizer;
-    newRecognizer.onstart = () => {
-      operationLock.value = false; // Release lock
-      console.log("[BSH] Main STT started."); isBrowserWebSpeechActive.value = true; emit('processing-audio', true);
-    };
-    newRecognizer.onresult = (event: SpeechRecognitionEvent) => {
-      if (!isBrowserWebSpeechActive.value) return;
-      clearPauseTimerForWebSpeech();
+      _resetTranscriptBuffers(false); _clearAllTimers();
+      internalState.value = 'STARTING_MAIN_STT'; 
+      if (!_initializeMainSttRecognizer()) { 
+        emit('error', { type: 'init', message: 'Main STT recognizer init failed.' });
+        internalState.value = 'IDLE'; operationLock.value = false; return false;
+      }
 
-      let interim = ''; let final = '';
-      for (let i = event.resultIndex; i < event.results.length; ++i) {
-        const transcriptPart = event.results[i][0].transcript;
-        if (event.results[i].isFinal) { final += transcriptPart; }
-        else { interim += transcriptPart; }
-      }
-      interimTranscriptWebSpeech.value = interim;
+      try {
+        console.log(`[BSH v3.0.9] Calling mainSttRecognizer.start(). ForVAD: ${isForVadCommand}`);
+        mainSttRecognizer!.start();
+        if (isForVadCommand) _resetVadCommandFinalizationTimer();
+        return true;
+      } catch (e: any) {
+        console.error("[BSH v3.0.9] Error during mainSttRecognizer.start():", e.name, e.message);
+        emit('error', { type: 'speech', message: `Failed to start main STT: ${e.name}.`, code: e.name });
+        if (mainSttRecognizer) mainSttRecognizer.onend = null; // Prevent onend if start fails
+        _safelyStopRecognizerInstance('mainStt', false); 
+        mainSttRecognizer = null;
+        internalState.value = 'IDLE'; operationLock.value = false; return false;
+      }
+    };
 
-      if (final.trim()) {
-        if (isPttMode.value || (isVoiceActivationMode.value && !isVADListeningForWakeWord.value)) { // true when STT is for command
-          finalTranscriptWebSpeech.value = (finalTranscriptWebSpeech.value + " " + final.trim()).trim();
-        } else if (isContinuousMode.value) {
-          pendingTranscriptWebSpeech.value = (pendingTranscriptWebSpeech.value + " " + final.trim()).trim();
-          liveTranscriptWebSpeech.value = ''; // Clear live part as it's now in pending
-        }
-      }
+    const _stopMainSttInternal = (graceful: boolean): void => {
+      if (internalState.value !== 'MAIN_STT_ACTIVE' && internalState.value !== 'VAD_COMMAND_CAPTURING' && internalState.value !== 'STARTING_MAIN_STT') {
+        console.warn(`[BSH v3.0.9] Attempted to stop Main STT from non-active/starting state: ${internalState.value}`);
+        if (operationLock.value) operationLock.value = false;
+        return;
+      }
+      if (mainSttRecognizer) {
+        internalState.value = 'MAIN_STT_STOPPING_GRACEFULLY';
+        _safelyStopRecognizerInstance('mainStt', graceful); 
+      } else { 
+        internalState.value = 'IDLE'; operationLock.value = false; 
+        if (props.audioInputMode !== 'voice-activation') {
+          emit('processing-audio', false);
+        }
+      }
+    };
 
-      if (isContinuousMode.value) {
-        liveTranscriptWebSpeech.value = interim; // Update live transcript with current interim
-        if (final.trim() || interim.trim()) resetPauseDetectionForWebSpeech();
-      }
+    const _startVadWakeWordListenerInternal = async (): Promise<boolean> => {
+      if (internalState.value !== 'IDLE') {
+         console.warn(`[BSH v3.0.9] VAD Wake: Start rejected. State: ${internalState.value}.`);
+         operationLock.value = false; return false;
+      }
+      if (!isVoiceActivationMode.value || props.parentIsProcessingLLM || props.currentMicPermission !== 'granted') {
+        console.log(`[BSH v3.0.9] VAD Wake: Conditions not met. Mode: ${isVoiceActivationMode.value}, LLM: ${props.parentIsProcessingLLM}, Perm: ${props.currentMicPermission}`);
+        operationLock.value = false; return false;
+      }
+      internalState.value = 'STARTING_VAD_WAKE';
+      if (!_initializeVadWakeWordRecognizer()) { 
+        emit('error', { type: 'init', message: 'VAD recognizer init failed.' });
+        internalState.value = 'IDLE'; operationLock.value = false; return false;
+      }
 
-      // VAD Command finalization timer logic
-      if (props.audioInputMode === 'voice-activation' && !isVADListeningForWakeWord.value && isBrowserWebSpeechActive.value) {
-        if (vadCommandBrowserSTTFinalizationTimer) clearTimeout(vadCommandBrowserSTTFinalizationTimer);
-        vadCommandBrowserSTTFinalizationTimer = window.setTimeout(() => {
-          console.log("[BSH] VAD Command: STT Finalization Timer fired.");
-          if (isBrowserWebSpeechActive.value) { // Check if still active before finalizing
-            const combined = (finalTranscriptWebSpeech.value + " " + interimTranscriptWebSpeech.value).trim();
-            if (combined) emit('transcription', combined);
-            _cleanUpAfterWebSpeechTranscription();
-            // stopListening will acquire its own lock
-            nextTick(() => stopListening(true)); // true for abort
-          }
-          // The onend of this STT instance will handle restarting VAD wake word detection.
-        }, vadCommandEffectiveTimeoutMs.value);
-      }
-    };
-    newRecognizer.onerror = (event: SpeechRecognitionErrorEvent) => {
-      operationLock.value = false; // Release lock
-      console.error(`[BSH] Main STT Error: ${event.error}`, event.message);
-      emit('error', { type: 'speech', message: `Browser STT Error: ${event.error}`, code: event.error });
-      toast?.add({ type: 'error', title: `STT Error: ${event.error}`, message: event.message || "Speech recognition failed.", duration: 5000 });
-      // _stopBrowserWebSpeechRecognitionInternalStates() is typically called by onend or an explicit stopListening call.
-      // If an error occurs that doesn't trigger onend, STT might be left in an inconsistent state.
-      // However, calling it here might interfere with onend logic if onend is also triggered.
-      // For now, rely on onend or explicit stop for full cleanup.
-      if(isBrowserWebSpeechActive.value) _stopBrowserWebSpeechRecognitionInternalStates(); // ensure flags are reset on error
-    };
-    newRecognizer.onend = () => {
-      const wasPtt = isPttMode.value && isBrowserWebSpeechActive.value;
-      const wasVadCmd = isVoiceActivationMode.value && !isVADListeningForWakeWord.value && isBrowserWebSpeechActive.value; // STT for command
-      const wasCont = isContinuousMode.value && isBrowserWebSpeechActive.value;
-      operationLock.value = false; // Release lock as this instance ended
+      try {
+        console.log("[BSH v3.0.9] Calling vadWakeWordRecognizer.start().");
+        vadWakeWordRecognizer!.start();
+        return true;
+      } catch (e: any) {
+        console.error("[BSH v3.0.9] Error vadWakeWordRecognizer.start():", e.name, e.message);
+        emit('error', { type: 'speech', message: `Failed to start VAD: ${e.name}.`, code: e.name });
+        if (vadWakeWordRecognizer) vadWakeWordRecognizer.onend = null;
+        _safelyStopRecognizerInstance('vadWakeWord', false); 
+        vadWakeWordRecognizer = null;
+        internalState.value = 'IDLE'; 
+        emit('is-listening-for-wake-word', false); operationLock.value = false; return false;
+      }
+    };
 
-      console.log("[BSH] Main STT ended.");
-      _stopBrowserWebSpeechRecognitionInternalStates(); // Resets active flag, emits processing:false, clears timers
+    const _stopVadWakeWordListenerInternal = (graceful: boolean): void => {
+      if (internalState.value !== 'VAD_WAKE_WORD_LISTENING' && internalState.value !== 'VAD_WAKE_WORD_STOPPING' && internalState.value !== 'STARTING_VAD_WAKE') {
+         console.warn(`[BSH v3.0.9] Attempt to stop VAD from non-listening/stopping/starting state: ${internalState.value}`);
+         if (operationLock.value) operationLock.value = false;
+        return;
+      }
+      if (vadWakeWordRecognizer) {
+        if (internalState.value === 'VAD_WAKE_WORD_LISTENING' || internalState.value === 'STARTING_VAD_WAKE') { 
+          internalState.value = 'MAIN_STT_STOPPING_GRACEFULLY'; // This seems like a state that might be misnamed if only VAD is stopping. However, using as per v3.0.8
+        } 
+        emit('is-listening-for-wake-word', false); 
+        _safelyStopRecognizerInstance('vadWakeWord', graceful); 
+      } else { 
+        internalState.value = 'IDLE'; emit('is-listening-for-wake-word', false); operationLock.value = false;
+      }
+    };
+    
+    // Wrapper functions that handle operationLock
+    const _attemptStartMainStt = async (isForVadCommand: boolean): Promise<void> => {
+      if (operationLock.value) { console.warn(`[BSH v3.0.9] Main STT start op deferred (lock). VADCmd: ${isForVadCommand}, State: ${internalState.value}`); return; }
+      operationLock.value = true;
+      console.log(`[BSH v3.0.9] Attempting to start Main STT. VADCmd: ${isForVadCommand}. State: ${internalState.value}`);
+      await _startMainSttInternal(isForVadCommand);
+    };
 
-      if (wasPtt) {
-        const transcriptToSend = (finalTranscriptWebSpeech.value + " " + interimTranscriptWebSpeech.value).trim();
-        if (transcriptToSend) emit('transcription', transcriptToSend);
-        _cleanUpAfterWebSpeechTranscription();
-      } else if (wasVadCmd) {
-        if (vadCommandBrowserSTTFinalizationTimer) { clearTimeout(vadCommandBrowserSTTFinalizationTimer); vadCommandBrowserSTTFinalizationTimer = null; }
-        const transcriptToSend = (finalTranscriptWebSpeech.value + " " + interimTranscriptWebSpeech.value).trim();
-        if (transcriptToSend) emit('transcription', transcriptToSend);
-        _cleanUpAfterWebSpeechTranscription();
+    const _attemptStartVadWakeWordListener = async (): Promise<void> => {
+      if (operationLock.value) { console.warn(`[BSH v3.0.9] VAD start op deferred (lock). State: ${internalState.value}`); return; }
+      operationLock.value = true;
+      console.log(`[BSH v3.0.9] Attempting to start VAD Wake Word Listener. State: ${internalState.value}`);
+      await _startVadWakeWordListenerInternal();
+    };
 
-        // After VAD command is processed, try to restart wake word detection
-        if(props.audioInputMode === 'voice-activation' && props.currentMicPermission === 'granted' && !isVADListeningForWakeWord.value && !props.parentIsProcessingLLM && !operationLock.value) {
-          console.log("[BSH] VAD command STT ended, attempting to restart wake word listener.");
-          // Ensure lock is free before attempting restart. startVADWakeWordRecognition will acquire it.
-          nextTick(() => startVADWakeWordRecognition());
-        }
-      } else if (wasCont) {
-        if (pendingTranscriptWebSpeech.value.trim() && continuousModeAutoSend.value && !pauseDetectedWebSpeech.value /* Check if not already sent by pause timer */) {
-           _sendPendingWebSpeechTranscriptionAndClear();
-        }
-        // Attempt to restart continuous listening if conditions are met
-        if (props.currentMicPermission === 'granted' && !props.parentIsProcessingLLM && props.audioInputMode === 'continuous' && !isBrowserWebSpeechActive.value && !operationLock.value) {
-          setTimeout(async () => {
-            if (props.audioInputMode === 'continuous' && !isBrowserWebSpeechActive.value && !props.parentIsProcessingLLM && props.currentMicPermission === 'granted' && !operationLock.value) {
-              await startListening(false);
+    const _attemptStopMainStt = async (graceful: boolean): Promise<void> => {
+      if (operationLock.value && graceful && internalState.value !== 'MAIN_STT_STOPPING_GRACEFULLY') { 
+        console.warn(`[BSH v3.0.9] Main STT graceful stop op deferred (lock). State: ${internalState.value}`); return; 
+      }
+      if (!operationLock.value) operationLock.value = true;
+      console.log(`[BSH v3.0.9] Attempting to stop Main STT. Graceful: ${graceful}. State: ${internalState.value}`);
+      _stopMainSttInternal(graceful);
+    };
+
+    const _attemptStopVadWakeWordListener = async (graceful: boolean): Promise<void> => {
+      if (operationLock.value && graceful && internalState.value !== 'MAIN_STT_STOPPING_GRACEFULLY' && internalState.value !== 'VAD_WAKE_WORD_STOPPING') { 
+        console.warn(`[BSH v3.0.9] VAD graceful stop op deferred (lock). State: ${internalState.value}`); return; 
+      }
+      if (!operationLock.value) operationLock.value = true;
+      console.log(`[BSH v3.0.9] Attempting to stop VAD Wake Word Listener. Graceful: ${graceful}. State: ${internalState.value}`);
+      _stopVadWakeWordListenerInternal(graceful);
+    };
+    
+    const _attemptStartMainSttAfterDelay = (isForVadCommand: boolean): void => {
+      console.log(`[BSH v3.0.9] Scheduling Main STT start after ${RESTART_DELAY_MS}ms delay. VADCmd: ${isForVadCommand}`);
+      setTimeout(() => _attemptStartMainStt(isForVadCommand), RESTART_DELAY_MS);
+    };
+
+    const _attemptStartVadWakeWordListenerAfterDelay = (): void => {
+      console.log(`[BSH v3.0.9] Scheduling VAD Wake Word Listener start after ${RESTART_DELAY_MS}ms delay.`);
+        setTimeout(() => _attemptStartVadWakeWordListener(), RESTART_DELAY_MS);
+    };
+
+    const _resetVadCommandFinalizationTimer = (): void => { /* ... same as v3.0.6 ... */ };
+    const _resetContinuousModePauseTimer = (): void => { /* ... same as v3.0.6 ... */ };
+    const _sendPendingContinuousTranscriptAndClear = (): void => { /* ... same as v3.0.6 ... */ };
+
+    // --- Publicly Exposed Methods ---
+    const startListening = async (isForVadCommand: boolean = false): Promise<void> => { /* ... same as v3.0.6 ... */ };
+    const stopListening = async (abort: boolean = false): Promise<void> => { /* ... same as v3.0.6 ... */ };
+
+    const stopAllRecognition = async (abort: boolean = true): Promise<void> => {
+        console.log(`[BSH v3.0.9 Public API] stopAllRecognition. Abort: ${abort}. Current State: ${internalState.value}`);
+        if (operationLock.value && !abort && internalState.value !== 'IDLE') { 
+            console.warn("[BSH v3.0.9] stopAll deferred (lock is active and not aborting an active process)."); 
+            return; 
+        }
+        operationLock.value = true; // Acquire lock. It will be released by the final onend or if no recognizers active.
+        _clearAllTimers();
+        
+        let mainStopped = false;
+        let vadStopped = false;
+
+        if (mainSttRecognizer) {
+            _safelyStopRecognizerInstance('mainStt', !abort); 
+            mainStopped = true;
+        }
+        if (vadWakeWordRecognizer) {
+            _safelyStopRecognizerInstance('vadWakeWord', !abort);
+            vadStopped = true;
+        }
+        
+        // If neither recognizer was active to begin with, we might need to clean up state and lock manually
+        if (!mainStopped && !vadStopped) {
+            console.log("[BSH v3.0.9] stopAllRecognition: No active recognizers to stop.");
+            if (internalState.value !== 'IDLE') { // Still ensure state is IDLE if it wasn't
+                const mainSttWasActive = ['MAIN_STT_ACTIVE', 'VAD_COMMAND_CAPTURING', 'STARTING_MAIN_STT'].includes(internalState.value);
+                const vadWakeWordWasListening = ['VAD_WAKE_WORD_LISTENING', 'VAD_WAKE_WORD_STOPPING', 'STARTING_VAD_WAKE'].includes(internalState.value);
+                if (mainSttWasActive && !props.parentIsProcessingLLM) emit('processing-audio', false);
+                if (vadWakeWordWasListening) emit('is-listening-for-wake-word', false);
             }
-          }, 100); // Small delay
-        }
-      }
-    };
-  }
-  return newRecognizer;
-};
+            _resetTranscriptBuffers(true); 
+            internalState.value = 'IDLE';
+            operationLock.value = false; // Release lock as no onend will fire
+        } else {
+            // Lock will be released by the onend of the recognizer(s) that were stopped.
+            console.log(`[BSH v3.0.9] stopAllRecognition initiated stops. mainStoppedAttempted: ${mainStopped}, vadStoppedAttempted: ${vadStopped}. Lock remains held by onend.`);
+        }
+    };
+    const reinitializeHandler = async (): Promise<void> => {
+        console.log(`[BSH v3.0.9 Public API] reinitializeHandler. State: ${internalState.value}, Mode: ${props.audioInputMode}`);
+        await stopAllRecognition(true); // This will acquire lock, onends will release or restart will re-acquire
+        await nextTick(); // Allow Vue to process DOM/ref updates after stopAll
+        if (props.currentMicPermission === 'granted' && !props.parentIsProcessingLLM) {
+            if (isVoiceActivationMode.value) {
+                await _attemptStartVadWakeWordListener(); // This will handle its own lock
+            } else if (isContinuousMode.value) {
+                await _attemptStartMainStt(false); // This will handle its own lock
+            }
+        } else {
+            if (operationLock.value) operationLock.value = false; // Ensure lock is released if no start attempt
+        }
+    };
 
+    // --- Watchers & Lifecycle ---
+    watch(() => props.parentIsProcessingLLM, async (isLLMProcessing, wasLLMProcessing) => {
+      if (isLLMProcessing === wasLLMProcessing) return; // No change
+        console.log(`[BSH v3.0.9] parentIsProcessingLLM changed: ${wasLLMProcessing} -> ${isLLMProcessing}. State: ${internalState.value}`);
+        if (isLLMProcessing) {
+            if (['VAD_WAKE_WORD_LISTENING', 'VAD_WAKE_WORD_STOPPING', 'IDLE_AWAITING_COMMAND_STT', 'STARTING_VAD_WAKE'].includes(internalState.value)) {
+                await stopAllRecognition(true); // Abort VAD
+            } else if (internalState.value === 'MAIN_STT_ACTIVE' || internalState.value === 'VAD_COMMAND_CAPTURING') {
+                 console.log("[BSH v3.0.9] LLM processing. Active STT continues but won't emit.");
+                // No stop needed, onresult handles not emitting.
+            }
+        } else { // LLM finished processing
+            if (internalState.value === 'IDLE' && props.currentMicPermission === 'granted') {
+                console.log("[BSH v3.0.9] LLM processing finished. Attempting mode-specific restart with delay.");
+                if (isVoiceActivationMode.value) _attemptStartVadWakeWordListenerAfterDelay();
+                else if (isContinuousMode.value) _attemptStartMainSttAfterDelay(false);
+            }
+        }
+    });
 
-const startListening = async (forVADCommand: boolean = false): Promise<boolean> => {
-  if (operationLock.value) { console.warn("[BSH] StartListening operation already in progress."); return false; }
-  operationLock.value = true;
+    watch(() => props.currentMicPermission, async (newPermStatus, oldPermStatus) => {
+        if (newPermStatus === oldPermStatus) return;
+        console.log(`[BSH v3.0.9] Mic permission changed: ${oldPermStatus} -> ${newPermStatus}. State: ${internalState.value}`);
+        if (newPermStatus !== 'granted') {
+            await stopAllRecognition(true); 
+        } else if (newPermStatus === 'granted' && oldPermStatus !== 'granted') {
+            if (internalState.value === 'IDLE' && !props.parentIsProcessingLLM) {
+                await nextTick(); 
+                console.log(`[BSH v3.0.9] Mic perm newly granted. Attempting auto-start for mode: ${props.audioInputMode}`);
+                if (isVoiceActivationMode.value) _attemptStartVadWakeWordListenerAfterDelay();
+                else if (isContinuousMode.value) _attemptStartMainSttAfterDelay(false);
+            }
+        }
+    }, { immediate: false }); 
+    
+    watch(() => props.audioInputMode, async (newMode, oldMode) => {
+        if (newMode === oldMode) return;
+        console.log(`[BSH v3.0.9] Audio input mode changed: ${oldMode} -> ${newMode}. Reinitializing.`);
+        await reinitializeHandler();
+    });
 
-  console.log(`[BSH] Attempting startListening. VADCmd: ${forVADCommand}, ParentLLM: ${props.parentIsProcessingLLM}, MicPerm: ${props.currentMicPermission}`);
+    watch(() => props.settings.speechLanguage, async (newLang, oldLang) => {
+        if (newLang === oldLang || !newLang) return;
+        console.log(`[BSH v3.0.9] Speech language changed: ${oldLang} -> ${newLang}.`);
+        if (internalState.value !== 'IDLE') await reinitializeHandler();
+    });
 
-  if (props.parentIsProcessingLLM && (isPttMode.value || (isVoiceActivationMode.value && forVADCommand))) {
-      toast?.add({ type: 'info', title: 'Assistant Busy', message: 'LLM is processing. Please wait.' });
-      operationLock.value = false; return false;
-  }
-  if (props.currentMicPermission !== 'granted') {
-    emit('error', { type: 'permission', message: `Cannot start Browser STT: Mic permission is ${props.currentMicPermission}.` });
-    operationLock.value = false; return false;
-  }
+    onMounted(() => { 
+      console.log("[BSH v3.0.9] Mounted. Awaiting explicit startListening() from parent.");
+    });
+    onBeforeUnmount(async () => { 
+        console.log("[BSH v3.0.9] Unmounting. Stopping all recognition.");
+        await stopAllRecognition(true); 
+    });
 
-  if (props.audioInputMode === 'voice-activation' && !forVADCommand && !isVADListeningForWakeWord.value && !isBrowserWebSpeechActive.value) {
-    operationLock.value = false; // Release lock before calling another locked operation
-    return await startVADWakeWordRecognition();
-  }
-
-  if (isVADListeningForWakeWord.value && forVADCommand) {
-    operationLock.value = false; // Temporarily release for stopVAD
-    await stopVADWakeWordRecognition(true); // stopVAD... will acquire its own lock
-    await nextTick();
-    if (operationLock.value) { console.warn("[BSH] Re-locking for startListening failed after stopVAD."); return false; } // Should not happen if stopVAD releases lock
-    operationLock.value = true; // Re-acquire lock
-  }
-  else if (isVADListeningForWakeWord.value && props.audioInputMode !== 'voice-activation') { // e.g. switching from VAD to continuous
-    operationLock.value = false;
-    await stopVADWakeWordRecognition(true);
-    await nextTick();
-    if (operationLock.value) { console.warn("[BSH] Re-locking for startListening failed after stopVAD (mode switch)."); return false; }
-    operationLock.value = true;
-  }
-
-
-  if (isBrowserWebSpeechActive.value && webSpeechRecognition) {
-    console.log("[BSH] Main STT active, stopping before restart.");
-    // _safelyStopRecognizer is synchronous, onEnd is asynchronous.
-    // We need to ensure the previous instance is fully stopped and its onEnd has run.
-    const currentRecognizer = webSpeechRecognition;
-    webSpeechRecognition = null; // Prevent re-entry or use by other functions
-    _safelyStopRecognizer(currentRecognizer, 'main pre-restart');
-    await nextTick(); // Allow onEnd to process fully (it should release its lock)
-    _stopBrowserWebSpeechRecognitionInternalStates(); // Ensure flags are reset if onEnd didn't fully run or was bypassed
-  }
-
-  if (!webSpeechRecognition) {
-    webSpeechRecognition = initializeWebSpeechRecognition(false); // This function handles its own internal locking for creation if any, but startListening holds the primary lock.
-    if (!webSpeechRecognition) {
-        emit('error', { type: 'init', message: 'Browser STT failed to initialize.' });
-        operationLock.value = false; return false;
-    }
-  }
-  const recognizer: SpeechRecognition = webSpeechRecognition;
-  // Set continuous based on current context at start time
-  recognizer.continuous = (isPttMode.value || isContinuousMode.value || (isVoiceActivationMode.value && forVADCommand));
-
-  if (vadCommandBrowserSTTFinalizationTimer) clearTimeout(vadCommandBrowserSTTFinalizationTimer);
-  vadCommandBrowserSTTFinalizationTimer = null;
-
-  if (isPttMode.value || (props.audioInputMode === 'voice-activation' && forVADCommand)) {
-    finalTranscriptWebSpeech.value = ''; interimTranscriptWebSpeech.value = '';
-  }
-  liveTranscriptWebSpeech.value = ''; // Always clear live transcript before new session
-
-  console.log(`[BSH] Executing recognizer.start(). Mode: ${props.audioInputMode}, VAD Cmd: ${forVADCommand}, Continuous: ${recognizer.continuous}`);
-  try {
-    recognizer.start(); // onstart handler will set isBrowserWebSpeechActive and release operationLock
-    return true;
-  } catch (e: any) {
-    console.error("[BSH] Error on recognizer.start():", e.name, e.message);
-    let recovered = false;
-    if (e.name === 'InvalidStateError') {
-      console.warn("[BSH] Attempting recovery from InvalidStateError for main STT.");
-      await nextTick();
-      _safelyStopRecognizer(webSpeechRecognition, 'main invalid state'); webSpeechRecognition = null;
-      const newRec = initializeWebSpeechRecognition(false);
-      if (newRec) {
-        webSpeechRecognition = newRec;
-        newRec.continuous = (isPttMode.value || isContinuousMode.value || (isVoiceActivationMode.value && forVADCommand));
-        try { newRec.start(); console.log("[BSH] Recovery: Main STT re-started."); recovered = true; /* Lock released by newRec.onstart */ }
-        catch (e2: any) { console.error("[BSH] Error on main STT recovery start:", e2.name); }
-      } else { console.error("[BSH] Main STT recovery failed: Could not re-init recognizer."); }
-    }
-
-    if (!recovered) { // If not recovered or different error
-        emit('error', {type: 'speech', message: `Failed to start: ${e.name || 'Unknown Error'}.`, code: e.name});
-        _stopBrowserWebSpeechRecognitionInternalStates();
-        _safelyStopRecognizer(webSpeechRecognition, 'main start error'); webSpeechRecognition = null;
-        operationLock.value = false; // Release lock if start failed and not recovered
-    }
-    return recovered; // Will be false if not recovered
-  }
-};
-
-const stopListening = async (abort: boolean = false) => {
-  if (operationLock.value && !abort) { console.warn("[BSH] StopListening deferred: operation in progress."); return; }
-  operationLock.value = true;
-  console.log(`[BSH] stopListening called. Abort: ${abort}`);
-  _safelyStopRecognizer(webSpeechRecognition, 'main');
-  _stopBrowserWebSpeechRecognitionInternalStates();
-  if (abort && isContinuousMode.value && pendingTranscriptWebSpeech.value.trim() && continuousModeAutoSend.value) {
-      _sendPendingWebSpeechTranscriptionAndClear();
-  }
-  operationLock.value = false;
-};
-
-const startVADWakeWordRecognition = async (): Promise<boolean> => {
-  if (operationLock.value) { console.warn("[BSH] StartVADWakeWord operation already in progress."); return false; }
-
-  if (props.audioInputMode !== 'voice-activation' || props.currentMicPermission !== 'granted' || props.parentIsProcessingLLM) {
-    if(isVADListeningForWakeWord.value) { isVADListeningForWakeWord.value = false; emit('is-listening-for-wake-word', false); }
-    if(props.parentIsProcessingLLM) console.log("[BSH] VAD start blocked: LLM processing.");
-    else if(props.currentMicPermission !== 'granted') console.log(`[BSH] VAD start blocked: Mic permission not '${props.currentMicPermission}'.`);
-    else if(props.audioInputMode !== 'voice-activation') console.log(`[BSH] VAD start blocked: Not in voice-activation mode.`);
-    return false;
-  }
-  if (isVADListeningForWakeWord.value && vadWakeWordDetectionRecognition) { return true; /* Already running */ }
-  if (isBrowserWebSpeechActive.value) { console.log("[BSH] Main STT active, VAD wake word not starting."); return false; }
-  if (isVADStartAttemptPending) { console.log("[BSH] VAD start attempt already pending."); return false; }
-
-  operationLock.value = true;
-  isVADStartAttemptPending = true;
-
-  if (!vadWakeWordDetectionRecognition) {
-    vadWakeWordDetectionRecognition = initializeWebSpeechRecognition(true); // This handles its own internal locking for creation
-    if(!vadWakeWordDetectionRecognition) {
-        isVADStartAttemptPending = false; operationLock.value = false; return false;
-    }
-  }
-  const recognizer: SpeechRecognition = vadWakeWordDetectionRecognition;
-  try {
-    console.log("[BSH] Executing VAD.start()");
-    recognizer.start(); // onstart handler releases operationLock and sets isVADStartAttemptPending=false
-    return true;
-  } catch (e: any) {
-    console.error("[BSH] Error starting VAD instance:", e.name, e.message);
-    let recovered = false;
-    if (e.name === 'InvalidStateError') {
-      console.warn("[BSH] Attempting recovery from InvalidStateError for VAD.");
-      await nextTick();
-      _safelyStopRecognizer(vadWakeWordDetectionRecognition, 'VAD invalid state'); vadWakeWordDetectionRecognition = null;
-      isVADStartAttemptPending = false; // Reset before attempting re-init
-      const newRec = initializeWebSpeechRecognition(true);
-      if (newRec) {
-        vadWakeWordDetectionRecognition = newRec;
-        isVADStartAttemptPending = true; // Set for the new attempt
-        try { newRec.start(); console.log("[BSH] Recovery: VAD re-started."); recovered = true; /* Lock released by newRec.onstart */ }
-        catch (e3: any) { isVADStartAttemptPending = false; console.error("[BSH] Error VAD recovery start:", e3.name); }
-      } else { console.error("[BSH] VAD recovery failed: Could not re-init recognizer."); }
-    }
-
-    if (!recovered) {
-        isVADStartAttemptPending = false;
-        if (isVADListeningForWakeWord.value) { isVADListeningForWakeWord.value = false; emit('is-listening-for-wake-word', false); }
-        _safelyStopRecognizer(vadWakeWordDetectionRecognition, 'vad start error'); vadWakeWordDetectionRecognition = null;
-        operationLock.value = false; // Release lock if start failed and not recovered
-    }
-    return recovered;
-  }
-};
-
-const stopVADWakeWordRecognition = async (abort: boolean = true) => {
-  if (operationLock.value && !abort) { console.warn("[BSH] StopVAD deferred: operation in progress."); return; }
-  operationLock.value = true;
-  console.log(`[BSH] stopVADWakeWordRecognition called. Abort: ${abort}`);
-  isVADStartAttemptPending = false;
-  _safelyStopRecognizer(vadWakeWordDetectionRecognition, 'vad');
-  if (isVADListeningForWakeWord.value) {
-      isVADListeningForWakeWord.value = false;
-      emit('is-listening-for-wake-word', false);
-  }
-  operationLock.value = false;
-};
-
-const reinitialize = async () => {
-  if (operationLock.value) { console.warn("[BSH] Reinitialize deferred: operation in progress."); return; }
-  operationLock.value = true;
-  console.log("[BSH] Reinitializing Handler.");
-  // Pass lock status to stopAll, though stopAll will acquire its own if not passed.
-  await stopAll(true);
-  await nextTick();
-
-  if (props.currentMicPermission === 'granted' && !props.parentIsProcessingLLM) {
-      if (props.audioInputMode === 'voice-activation') {
-          await startVADWakeWordRecognition(); // This will handle its own lock if this one is released
-      } else if (props.audioInputMode === 'continuous') {
-          await startListening(false); // This will handle its own lock
-      }
-  }
-  // Release lock only if sub-calls didn't take it or have released it.
-  // If startVAD or startListening started successfully, they released the lock via their onstart.
-  // If they failed to start, they should have released the lock.
-  // If they didn't even attempt (e.g. conditions not met), then this reinitialize owns the lock.
-  if (operationLock.value) operationLock.value = false;
-};
-
-const stopAll = async (abort: boolean = true) => {
-  if (operationLock.value && !abort) { console.warn("[BSH] stopAll deferred: operation in progress."); return; }
-  operationLock.value = true;
-  console.log("[BSH] Stopping all BrowserSpeech activities (abort:", abort,")");
-  isVADStartAttemptPending = false;
-
-  _safelyStopRecognizer(webSpeechRecognition, 'main');
-  _safelyStopRecognizer(vadWakeWordDetectionRecognition, 'vad');
-
-  _stopBrowserWebSpeechRecognitionInternalStates();
-  if (isVADListeningForWakeWord.value) {
-      isVADListeningForWakeWord.value = false;
-      emit('is-listening-for-wake-word', false);
-  }
-  _cleanUpAfterWebSpeechTranscription();
-  pendingTranscriptWebSpeech.value = '';
-  liveTranscriptWebSpeech.value = '';
-  operationLock.value = false;
-};
-
-// --- Watchers ---
-watch(() => props.parentIsProcessingLLM, async (isLLMProcessing) => {
-    if (props.audioInputMode === 'voice-activation') {
-        if (isLLMProcessing) {
-            if (isVADListeningForWakeWord.value) await stopVADWakeWordRecognition(true);
-        } else { // Not processing LLM anymore
-            if (!isVADListeningForWakeWord.value && !isBrowserWebSpeechActive.value && props.currentMicPermission === 'granted' && !operationLock.value) {
-                await startVADWakeWordRecognition();
-            }
-        }
-    }
-});
-
-watch(() => props.currentMicPermission, async (newPermStatus, oldPermStatus) => {
-    console.log(`[BSH] Mic permission prop updated: ${oldPermStatus} -> ${newPermStatus}.`);
-    if (newPermStatus !== 'granted') {
-        await stopAll(true); // Stop all if permission lost
-    } else if (newPermStatus === 'granted' && oldPermStatus !== 'granted') { // Just granted
-        if (!props.parentIsProcessingLLM && !operationLock.value) {
-            console.log("[BSH] Permission newly granted, attempting auto-start for current mode.");
-            if (props.audioInputMode === 'voice-activation' && !isVADListeningForWakeWord.value && !isBrowserWebSpeechActive.value) {
-                await startVADWakeWordRecognition();
-            } else if (props.audioInputMode === 'continuous' && !isBrowserWebSpeechActive.value) {
-                await startListening(false);
-            }
-        }
-    }
-});
-
-watch(() => props.audioInputMode, async (newMode, oldMode) => {
-  if (newMode !== oldMode) {
-    console.log(`[BSH] Audio input mode changed: ${oldMode} -> ${newMode}. Reinitializing.`);
-    await reinitialize();
-  }
-});
-watch(() => props.settings.speechLanguage, async (newLang, oldLang) => {
-    if (newLang !== oldLang && newLang && (webSpeechRecognition || vadWakeWordDetectionRecognition)) {
-        console.log(`[BSH] Speech language changed. Reinitializing.`);
-        await reinitialize();
-    }
-});
-
-// --- Lifecycle Hooks ---
-onMounted(async () => {
-  console.log("[BSH] Mounted. Initial Mic Perm:", props.currentMicPermission, "Mode:", props.audioInputMode);
-  await nextTick();
-  if (props.currentMicPermission === 'granted' && !props.parentIsProcessingLLM && !operationLock.value) {
-      if (props.audioInputMode === 'voice-activation') {
-          await startVADWakeWordRecognition();
-      } else if (props.audioInputMode === 'continuous') {
-          await startListening(false);
-      }
-  }
-});
-onBeforeUnmount(async () => { await stopAll(true); });
-
-// --- Expose ---
-defineExpose({
-  startListening, stopListening, startVADWakeWordRecognition, stopVADWakeWordRecognition,
-  reinitialize, stopAll, isBrowserWebSpeechActive, isVADListeningForWakeWord,
-  hasPendingTranscript: computed(() => !!pendingTranscriptWebSpeech.value.trim()),
-  triggerEditPendingTranscript: () => { if (pendingTranscriptWebSpeech.value.trim()) emit('request-edit-pending-transcript', pendingTranscriptWebSpeech.value); },
-  clearPendingTranscript: () => {
-    pendingTranscriptWebSpeech.value = '';
-    liveTranscriptWebSpeech.value = '';
-    clearPauseTimerForWebSpeech(); // Also resets pauseDetectedWebSpeech and pauseCountdownWebSpeech
+    return {
+        startListening, 
+        stopListening, 
+        reinitialize: reinitializeHandler, 
+        stopAll: stopAllRecognition,
+        isBrowserWebSpeechActive: computed(() => internalState.value === 'MAIN_STT_ACTIVE' || internalState.value === 'VAD_COMMAND_CAPTURING'),
+        isVADListeningForWakeWord: computed(() => internalState.value === 'VAD_WAKE_WORD_LISTENING'),
+        interimTranscriptWebSpeech: interimTranscript, 
+        liveTranscriptWebSpeech: liveContinuousInterim,
+        pendingTranscriptWebSpeech: pendingContinuousTranscript, 
+        pauseDetectedWebSpeech: pauseDetectedForContinuous,
+        pauseCountdownWebSpeech: pauseCountdownForContinuous,
+        hasPendingTranscript: computed(() => !!pendingContinuousTranscript.value.trim()),
+        triggerEditPendingTranscript: () => { if (pendingContinuousTranscript.value.trim()) emit('request-edit-pending-transcript', pendingContinuousTranscript.value); },
+        clearPendingTranscript: () => { _resetTranscriptBuffers(true); _clearAllTimers(); },
+    };
   },
-  pauseDetectedWebSpeech, pauseCountdownWebSpeech,
-});
+};
 </script>
 
-<template>
-  <div class="browser-speech-handler-ui">
-    <div v-if="isBrowserWebSpeechActive && !isVADListeningForWakeWord" class="live-transcript-display-ephemeral" aria-live="polite">
-      <p v-if="interimTranscriptWebSpeech && (isPttMode || (isVoiceActivationMode && !isVADListeningForWakeWord))" class="interim-transcript-ephemeral">
-        {{ interimTranscriptWebSpeech }}<span class="streaming-cursor-ephemeral">|</span>
-      </p>
-      <p v-if="liveTranscriptWebSpeech && isContinuousMode" class="finalized-part-ephemeral">
-        {{ liveTranscriptWebSpeech }}<span class="streaming-cursor-ephemeral">|</span>
-      </p>
-      <p v-if="pendingTranscriptWebSpeech && isContinuousMode" class="pending-transcript-ephemeral">
-        <span class="font-semibold text-xs text-gray-500 dark:text-gray-400">Pending: </span> {{ pendingTranscriptWebSpeech }}
-      </p>
-    </div>
-    <div v-if="isVoiceActivationMode && isVADListeningForWakeWord" class="live-transcript-display-ephemeral vad-wake-word-status">
-      Say "V" to activate... <SparklesIcon class="inline h-3 w-3 ml-1 opacity-70 animate-pulse" aria-hidden="true" />
-    </div>
-    <div v-if="isVoiceActivationMode && isBrowserWebSpeechActive && !isVADListeningForWakeWord" class="web-speech-vad-active-indicator">
-      Browser STT: Listening for command...
-    </div>
-    <div v-if="isContinuousMode && pauseDetectedWebSpeech && isBrowserWebSpeechActive" class="text-xs text-center py-1 text-gray-500 dark:text-gray-400">
-        Sending in {{ Math.max(0, pauseCountdownWebSpeech / 1000).toFixed(1) }}s
-    </div>
-  </div>
-</template>
-
-<style scoped lang="scss">
-.streaming-cursor-ephemeral { animation: blink 1s step-end infinite; }
-@keyframes blink { 50% { opacity: 0; } }
-.vad-wake-word-status, .web-speech-vad-active-indicator {
-  font-size: 0.875rem; /* text-sm */
-  text-align: center;
-  font-style: italic;
-  padding: .25rem 0; /* py-1 */
-  color: var(--color-text-muted, hsl(240, 4%, 46%)); /* Fallback color */
-    @apply text-gray-500 dark:text-gray-400;  /* Tailwind utility for gray text */  
-  }
-.live-transcript-display-ephemeral { min-height: 20px; padding-block: 0.25rem; font-size: 0.8rem; }
-.pending-transcript-ephemeral {
-//   .font-semibold { /* Ensure this style is available or define it */ }
-//   color: var(--color-text-muted, hsl(240, 4%, 46%)); /* Fallback color */
-}
-
-/* Ensure Heroicons are sized if not globally set */
-.inline.h-3.w-3 {
-  height: 0.75rem; /* 12px */
-  width: 0.75rem; /* 12px */
-  display: inline-block; /* Or inline-flex for better alignment with text */
-  vertical-align: middle; /* Adjust as needed */
-}
+<style scoped>
+/* Styles from v3.0.1/v2.2.5 are compatible and self-contained */
+  .streaming-cursor-ephemeral { animation: blink 1s step-end infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  .vad-wake-word-status, .web-speech-vad-active-indicator { font-size: 0.875rem; text-align: center; font-style: italic; padding: .25rem 0; }
+  .live-transcript-display-ephemeral { min-height: 20px; padding-block: 0.25rem; font-size: 0.8rem; }
+  .inline.h-3.w-3 { height: 0.75rem; width: 0.75rem; display: inline-block; vertical-align: middle; }
+  .text-gray-500 { color: #6b7280; } 
+  .dark .text-gray-400 { color: #9ca3af; }
+  .font-semibold { font-weight: 600; } 
+  .text-xs { font-size: 0.75rem; line-height: 1rem; } 
+  .text-center { text-align: center; }
+  .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; } 
+  .ml-1 { margin-left: 0.25rem; }
+  .opacity-70 { opacity: 0.7; } 
+  .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
 </style>

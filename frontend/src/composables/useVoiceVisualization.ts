@@ -1,331 +1,498 @@
-// File: frontend/src/composables/useVoiceVisualization.ts
+// File: frontend/src/components/voice-input/composables/useVoiceVisualization.ts
 /**
  * @file useVoiceVisualization.ts
- * @description Composable for managing and rendering voice/audio visualizations.
- * Connects to an AnalyserNode, provides data for canvas drawing, and updates
- * CSS custom properties for reactive styling based on voice input.
+ * @description Composable for managing and rendering dynamic audio visualizations on an HTML5 Canvas.
+ * Supports frequency bars, waveform, and a "Her-inspired" organic circular visualizer.
+ * Designed to be themeable and responsive to audio input and application states.
  *
  * @module composables/useVoiceVisualization
- * @version 1.0.0
+ * @version 1.1.0 - Enhanced circular visualizer for organic feel, improved theming,
+ * JSDoc updates, and alignment with "Ephemeral Harmony" design system.
  */
-import { ref, onUnmounted, type Ref, watch } from 'vue';
-import { useUiStore, type VoiceAppState } from '@/store/ui.store'; // Assuming VoiceAppState is exported or re-exported by ui.store
+import { ref, onUnmounted, readonly, watch, type Ref, shallowRef } from 'vue';
+import { useUiStore } from '@/store/ui.store'; // For reduced motion preference
 
+/**
+ * Configuration options for the voice visualizer.
+ */
 export interface VoiceVisualizationConfig {
-  fftSize?: number; // Powers of 2, e.g., 256, 512, 1024, 2048
-  smoothingTimeConstant?: number; // 0 to 1, default 0.8
-  visualizationType?: 'frequencyBars' | 'waveform' | 'circular'; // More can be added
-  barColor?: string; // CSS color string
-  barCount?: number; // For frequencyBars
-  circleRadius?: number; // For circular
+  /** FFT size for the AnalyserNode. Higher values mean more detail but more processing. Must be a power of 2. */
+  fftSize?: number;
+  /** Smoothing time constant for the AnalyserNode (0 to 1). Higher values mean smoother changes. */
+  smoothingTimeConstant?: number;
+  /** Type of visualization to render. */
+  visualizationType?: 'frequencyBars' | 'waveform' | 'circular';
+  /** Primary color for the visualization elements (e.g., bars, lines, shapes). Expects a valid CSS color string (e.g., HSL(A)). */
+  shapeColor?: string; // Renamed from barColor for generality
+  /** For 'frequencyBars': Number of bars to display. */
+  barCount?: number;
+  /** For 'circular': Base radius factor, relative to min(canvasWidth, canvasHeight) / 2. */
+  circularBaseRadiusFactor?: number;
+  /** For 'circular': How much audio amplitude affects the radius extension. */
+  circularAmplitudeFactor?: number;
+  /** For 'circular': Maximum pixel extension for points on the circle due to amplitude. */
+  circularMaxExtensionRadius?: number;
+  /** For 'circular': Number of points used to draw the circle/blob. More points = smoother. */
+  circularPointCount?: number;
+  /** For 'circular': Speed of subtle rotation (radians per frame). 0 for no rotation. */
+  circularRotationSpeed?: number;
+  /** For 'circular': Speed of the base radius pulsing effect. */
+  circularPulseSpeed?: number;
+  /** For 'circular': Sharpness of points. 0 for smooth curve, 1 for sharp points. (New) */
+  circularPointSharpness?: number;
+  /** For 'circular': Whether to connect points with lines or curves (New: 'line' | 'curve') */
+  circularConnectionType?: 'line' | 'curve';
+  /** Line width for 'waveform' and 'circular' visualizations. */
   lineWidth?: number;
+  /** Global alpha multiplier for the visualization (0 to 1). (New) */
+  globalVizAlpha?: number;
 }
 
-const DEFAULT_VIZ_CONFIG: VoiceVisualizationConfig = {
-  fftSize: 512,
-  smoothingTimeConstant: 0.75,
-  visualizationType: 'circular', // Default to circular as per 'Her' inspiration
-  barColor: 'hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l))',
-  barCount: 64,
-  circleRadius: 70,
+/** Default configuration values for the voice visualizer. */
+const DEFAULT_VIZ_CONFIG: Readonly<VoiceVisualizationConfig> = Object.freeze({
+  fftSize: 512, // Increased for more detail in circular/waveform
+  smoothingTimeConstant: 0.75, // Smoother for organic feel
+  visualizationType: 'circular',
+  shapeColor: 'hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l))',
+  barCount: 32,
+  circularBaseRadiusFactor: 0.25, // Slightly larger base
+  circularAmplitudeFactor: 0.5,
+  circularMaxExtensionRadius: 40, // More potential extension
+  circularPointCount: 90,      // More points for smoother organic shape
+  circularRotationSpeed: 0.002, // Slower, gentler rotation
+  circularPulseSpeed: 0.015,   // Slower, gentler pulse
+  circularPointSharpness: 0.3, // Default to slightly smooth
+  circularConnectionType: 'curve', // Default to curves for organic feel
   lineWidth: 2,
-};
+  globalVizAlpha: 0.7, // Default global alpha
+});
 
+/**
+ * Composable for managing and rendering audio visualizations on a canvas.
+ *
+ * @param {Ref<MediaStream | null>} mediaStreamRef - Reactive reference to the audio MediaStream.
+ * @param {Ref<HTMLCanvasElement | null>} canvasRef - Reactive reference to the HTML canvas element.
+ * @param {Partial<VoiceVisualizationConfig>} [initialConfigOverride] - Optional initial configuration overrides.
+ * @returns Object with methods to control visualization and its status.
+ */
 export function useVoiceVisualization(
-  mediaStream: Ref<MediaStream | null>,
+  mediaStreamRef: Ref<MediaStream | null>,
   canvasRef: Ref<HTMLCanvasElement | null>,
-  appState?: Ref<VoiceAppState | undefined>, // Optional, for state-based effects
-  configOverride?: Partial<VoiceVisualizationConfig>
+  initialConfigOverride?: Partial<VoiceVisualizationConfig>
 ) {
   const uiStore = useUiStore();
-  const audioContext = ref<AudioContext | null>(null);
-  const analyserNode = ref<AnalyserNode | null>(null);
-  const sourceNode = ref<MediaStreamAudioSourceNode | null>(null);
-  const dataArray = ref<Uint8Array | null>(null);
-  const isVisualizing = ref(false);
+  const audioContext = shallowRef<AudioContext | null>(null);
+  const analyserNode = shallowRef<AnalyserNode | null>(null);
+  const sourceNode = shallowRef<MediaStreamAudioSourceNode | null>(null);
+
+  const frequencyData = shallowRef<Uint8Array | null>(null);
+  const timeDomainData = shallowRef<Uint8Array | null>(null);
+  const _isVisualizing = ref(false);
   let animationFrameId: number | null = null;
+
+  // For circular visualizer animation state
+  let currentAngle = 0;
+  let pulseOffset = Math.random() * Math.PI * 2; // Random initial phase for pulse
 
   const currentConfig = ref<VoiceVisualizationConfig>({
     ...DEFAULT_VIZ_CONFIG,
-    ...(configOverride || {}),
+    ...(initialConfigOverride || {}),
   });
 
-  const frequencyData = ref<Uint8Array | null>(null);
-  const timeDomainData = ref<Uint8Array | null>(null);
+  /**
+   * Updates the visualization configuration with new partial settings.
+   * Critical changes like `fftSize` will reinitialize the AnalyserNode.
+   * @public
+   * @param {Partial<VoiceVisualizationConfig>} newConfigOverride - New configuration values to apply.
+   */
+  const updateConfig = (newConfigOverride: Partial<VoiceVisualizationConfig>): void => {
+    const oldFftSize = currentConfig.value.fftSize;
+    currentConfig.value = { ...currentConfig.value, ...newConfigOverride };
 
-  const setupAudioProcessing = () => {
-    if (!mediaStream.value) {
-      console.warn('[VoiceViz] MediaStream is null. Cannot setup audio processing.');
-      stopVisualization(); // Ensure cleanup if stream becomes null
+    if (analyserNode.value) {
+      if (newConfigOverride.fftSize && newConfigOverride.fftSize !== oldFftSize) {
+        analyserNode.value.fftSize = currentConfig.value.fftSize!;
+        const bufferLength = analyserNode.value.frequencyBinCount;
+        frequencyData.value = new Uint8Array(bufferLength);
+        timeDomainData.value = new Uint8Array(analyserNode.value.fftSize); // Time domain uses fftSize
+      }
+      if (newConfigOverride.smoothingTimeConstant !== undefined) {
+        analyserNode.value.smoothingTimeConstant = currentConfig.value.smoothingTimeConstant!;
+      }
+    }
+    console.log('[VoiceViz] Config updated:', currentConfig.value);
+  };
+
+  /**
+   * Sets up the AudioContext, AnalyserNode, and connects the MediaStream.
+   * @private
+   * @returns {boolean} True if setup was successful, false otherwise.
+   */
+  const _setupAudioProcessing = (): boolean => {
+    if (!mediaStreamRef.value || !mediaStreamRef.value.active) {
+      console.warn('[VoiceViz] Setup failed: MediaStream is null or inactive.');
+      _stopVisualizationInternal(); // Ensure visualization stops if stream is bad
       return false;
     }
 
-    if (!audioContext.value) {
-      audioContext.value = new AudioContext();
-    }
-    if (!analyserNode.value) {
-      analyserNode.value = audioContext.value.createAnalyser();
-      analyserNode.value.fftSize = currentConfig.value.fftSize!;
+    try {
+      if (!audioContext.value || audioContext.value.state === 'closed') {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) {
+            console.error("[VoiceViz] AudioContext not supported.");
+            return false;
+        }
+        audioContext.value = new AudioCtx();
+      }
+
+      // Recreate AnalyserNode if fftSize changed or not yet created
+      if (!analyserNode.value || analyserNode.value.context !== audioContext.value ||
+          (currentConfig.value.fftSize && analyserNode.value.fftSize !== currentConfig.value.fftSize)) {
+        if(analyserNode.value) try { analyserNode.value.disconnect(); } catch(e) {/*ignore*/}
+        analyserNode.value = audioContext.value.createAnalyser();
+        analyserNode.value.fftSize = currentConfig.value.fftSize!;
+      }
       analyserNode.value.smoothingTimeConstant = currentConfig.value.smoothingTimeConstant!;
-    }
-    if (sourceNode.value) {
-        // Disconnect previous source if mediaStream changes identity
-        sourceNode.value.disconnect();
-    }
+      
+      // Recreate source node if stream changed or context changed
+      if (sourceNode.value && (sourceNode.value.context !== audioContext.value || sourceNode.value.mediaStream !== mediaStreamRef.value)) {
+        try { sourceNode.value.disconnect(); } catch(e) {/*ignore*/}
+        sourceNode.value = null;
+      }
+      if (!sourceNode.value) {
+        sourceNode.value = audioContext.value.createMediaStreamSource(mediaStreamRef.value);
+      }
 
-    sourceNode.value = audioContext.value.createMediaStreamSource(mediaStream.value);
-    sourceNode.value.connect(analyserNode.value);
+      // Ensure connection: source -> analyser (do NOT connect analyser to destination for visualization)
+      try { sourceNode.value.disconnect(); } catch(e) {/*ignore, might not be connected*/}
+      sourceNode.value.connect(analyserNode.value);
 
-    // Do not connect analyserNode to destination if we only want to analyze, not play through
-    // analyserNode.value.connect(audioContext.value.destination);
-
-    const bufferLength = analyserNode.value.frequencyBinCount;
-    dataArray.value = new Uint8Array(bufferLength); // For frequency data
-    frequencyData.value = new Uint8Array(bufferLength);
-    timeDomainData.value = new Uint8Array(analyserNode.value.fftSize); // For waveform data
-
-    return true;
-  };
-
-  const updateCssVariables = (amplitude: number, presence: number) => {
-    const root = document.documentElement;
-    root.style.setProperty('--voice-amplitude', amplitude.toFixed(3));
-    root.style.setProperty('--voice-presence', presence.toFixed(3)); // 0 if no voice, 1 if voice
-
-    if (frequencyData.value) {
-      const bufferLength = frequencyData.value.length;
-      const lowEnd = Math.floor(bufferLength * 0.1);
-      const midEnd = Math.floor(bufferLength * 0.4);
-
-      let lowSum = 0;
-      for (let i = 0; i < lowEnd; i++) lowSum += frequencyData.value[i];
-      root.style.setProperty('--voice-frequency-low', (lowSum / lowEnd / 255).toFixed(3));
-
-      let midSum = 0;
-      for (let i = lowEnd; i < midEnd; i++) midSum += frequencyData.value[i];
-      root.style.setProperty('--voice-frequency-mid', (midSum / (midEnd - lowEnd) / 255).toFixed(3));
-
-      let highSum = 0;
-      for (let i = midEnd; i < bufferLength; i++) highSum += frequencyData.value[i];
-      root.style.setProperty('--voice-frequency-high', (highSum / (bufferLength - midEnd) / 255).toFixed(3));
+      // Initialize data arrays
+      const bufferLength = analyserNode.value.frequencyBinCount;
+      if (!frequencyData.value || frequencyData.value.length !== bufferLength) {
+        frequencyData.value = new Uint8Array(bufferLength);
+      }
+      if (!timeDomainData.value || timeDomainData.value.length !== analyserNode.value.fftSize) {
+        timeDomainData.value = new Uint8Array(analyserNode.value.fftSize);
+      }
+      return true;
+    } catch (error) {
+        console.error("[VoiceViz] Error setting up audio processing:", error);
+        _stopVisualizationInternal(); // Stop if setup fails
+        return false;
     }
   };
+  
+  /**
+   * Main drawing loop for canvas animations.
+   * Fetches audio data and calls the appropriate drawing function based on `visualizationType`.
+   * @private
+   */
+  const _drawLoop = (): void => {
+    if (!_isVisualizing.value) return; // Stop loop if not visualizing
 
+    animationFrameId = requestAnimationFrame(_drawLoop); // Request next frame
 
-  const draw = () => {
-    if (!analyserNode.value || !canvasRef.value || !dataArray.value || !frequencyData.value || !timeDomainData.value) {
-      if (isVisualizing.value) animationFrameId = requestAnimationFrame(draw);
+    if (!analyserNode.value || !canvasRef.value || !frequencyData.value || !timeDomainData.value) {
+      // console.warn('[VoiceViz] Draw loop dependencies not ready.');
       return;
     }
-
     const canvas = canvasRef.value;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    // Get audio data
     analyserNode.value.getByteFrequencyData(frequencyData.value);
-    analyserNode.value.getByteTimeDomainData(timeDomainData.value); // For waveform
+    analyserNode.value.getByteTimeDomainData(timeDomainData.value);
 
-    const width = canvas.width;
-    const height = canvas.height;
-    ctx.clearRect(0, 0, width, height);
-
-    // Calculate overall amplitude / presence
+    // Calculate global amplitude (0-1) from time domain data
     let sum = 0;
     for (let i = 0; i < timeDomainData.value.length; i++) {
-        sum += Math.abs(timeDomainData.value[i] - 128); // 128 is the zero point for waveform data
+      sum += Math.abs(timeDomainData.value[i] - 128); // Values are 0-255, 128 is silence
     }
-    const averageAmplitude = sum / timeDomainData.value.length / 128; // Normalized 0-1
-    const voicePresence = averageAmplitude > 0.02 ? 1 : 0; // Simple presence detection threshold
+    const averageAmplitude = timeDomainData.value.length > 0 ? sum / timeDomainData.value.length / 128 : 0;
+    
+    // Update global CSS variables if still desired (can be removed if not used)
+    _updateCssVariables(averageAmplitude);
 
-    updateCssVariables(averageAmplitude, voicePresence);
+
+    // Clear canvas for redrawing
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.globalAlpha = currentConfig.value.globalVizAlpha ?? DEFAULT_VIZ_CONFIG.globalVizAlpha!;
 
 
     if (uiStore.isReducedMotionPreferred) {
-      // Minimal animation for reduced motion, e.g., a static or very subtle indicator
-      ctx.fillStyle = currentConfig.value.barColor!;
-      const circleRadius = Math.min(width, height) / 4 * averageAmplitude;
+      // Simple static or minimal animation for reduced motion
+      ctx.fillStyle = currentConfig.value.shapeColor || DEFAULT_VIZ_CONFIG.shapeColor!;
+      const indicatorSize = Math.min(canvas.width, canvas.height) / 10 + averageAmplitude * (Math.min(canvas.width, canvas.height) / 10);
       ctx.beginPath();
-      ctx.arc(width / 2, height / 2, Math.max(5, circleRadius), 0, 2 * Math.PI);
+      ctx.arc(canvas.width / 2, canvas.height / 2, Math.max(2, indicatorSize), 0, 2 * Math.PI);
       ctx.fill();
-      if (isVisualizing.value) animationFrameId = requestAnimationFrame(draw);
-      return;
+    } else {
+      // Full animation based on type
+      switch (currentConfig.value.visualizationType) {
+        case 'waveform':
+          _drawWaveform(ctx, timeDomainData.value, canvas.width, canvas.height, averageAmplitude);
+          break;
+        case 'circular':
+          _drawCircular(ctx, frequencyData.value, canvas.width, canvas.height, averageAmplitude);
+          break;
+        case 'frequencyBars':
+        default:
+          _drawFrequencyBars(ctx, frequencyData.value, canvas.width, canvas.height, averageAmplitude);
+          break;
+      }
     }
-
-    // --- Visualization type drawing ---
-    switch (currentConfig.value.visualizationType) {
-      case 'waveform':
-        drawWaveform(ctx, timeDomainData.value, width, height);
-        break;
-      case 'circular':
-        drawCircularWaveform(ctx, frequencyData.value, width, height);
-        break;
-      case 'frequencyBars':
-      default:
-        drawFrequencyBars(ctx, frequencyData.value, width, height);
-        break;
-    }
-
-    if (isVisualizing.value) {
-      animationFrameId = requestAnimationFrame(draw);
-    }
+    ctx.globalAlpha = 1.0; // Reset global alpha
   };
 
-  const drawFrequencyBars = (ctx: CanvasRenderingContext2D, data: Uint8Array, W: number, H: number) => {
-    const barCount = currentConfig.value.barCount!;
-    const barWidth = (W / barCount) * 0.8;
-    const barSpacing = (W / barCount) * 0.2;
-    let x = 0;
-    ctx.fillStyle = currentConfig.value.barColor!;
+  /**
+   * Updates global CSS custom properties with current audio analysis values.
+   * This can be used for ambient effects on other UI elements.
+   * @param {number} averageAmplitude - Current overall audio amplitude (0-1).
+   * @private
+   */
+  const _updateCssVariables = (averageAmplitude: number): void => {
+    if (typeof document === 'undefined') return;
+    const root = document.documentElement;
+    root.style.setProperty('--voice-amplitude', averageAmplitude.toFixed(3));
+    // You can add more specific frequency band variables here if needed,
+    // similar to previous versions, by analyzing frequencyData.value.
+    // Example: Low/Mid/High band energy for more nuanced ambient effects.
+  };
+
+  /** Draws frequency bars. @private */
+  const _drawFrequencyBars = (ctx: CanvasRenderingContext2D, data: Uint8Array, W: number, H: number, globalAmplitude: number): void => {
+    const barCount = Math.min(data.length, currentConfig.value.barCount!);
+    if (barCount <= 0) return;
+    
+    const barWidthPercentage = 0.7; // 70% of available space for the bar itself
+    const spacingPercentage = 1 - barWidthPercentage; // 30% for spacing
+
+    const totalBarPlusSpacingWidth = W / barCount;
+    const barWidth = totalBarPlusSpacingWidth * barWidthPercentage;
+    const barSpacing = totalBarPlusSpacingWidth * spacingPercentage;
+    
+    let x = barSpacing / 2; // Initial offset to center first bar
+    ctx.fillStyle = currentConfig.value.shapeColor || DEFAULT_VIZ_CONFIG.shapeColor!;
+    const maxBarHeight = H * 0.95; // Use most of the canvas height
 
     for (let i = 0; i < barCount; i++) {
-      const barHeight = (data[Math.floor(i * (data.length / barCount))] / 255) * H * 0.8;
+      // Ensure we don't read out of bounds if barCount is very high relative to data.length
+      const dataIndex = Math.min(data.length - 1, Math.floor(i * (data.length / barCount)));
+      let barHeight = (data[dataIndex] / 255) * maxBarHeight;
+      // Subtle pulse with global amplitude for a "living" feel
+      barHeight = barHeight * (0.6 + globalAmplitude * 0.7); // Apply global amplitude factor, ensure it doesn't go to 0 easily
+      barHeight = Math.min(Math.max(2, barHeight), maxBarHeight); // Min height 2px, max height
+      
+      const barOpacity = 0.4 + (data[dataIndex] / 255) * 0.6; // Vary alpha
+      ctx.globalAlpha = (currentConfig.value.globalVizAlpha ?? 1) * barOpacity;
+
       ctx.fillRect(x, H - barHeight, barWidth, barHeight);
-      x += barWidth + barSpacing;
+      x += totalBarPlusSpacingWidth;
     }
+    // ctx.globalAlpha = currentConfig.value.globalVizAlpha ?? 1; // Reset after loop if changed inside
   };
 
-  const drawWaveform = (ctx: CanvasRenderingContext2D, data: Uint8Array, W: number, H: number) => {
-    ctx.lineWidth = currentConfig.value.lineWidth!;
-    ctx.strokeStyle = currentConfig.value.barColor!;
+  /** Draws a time-domain waveform. @private */
+  const _drawWaveform = (ctx: CanvasRenderingContext2D, data: Uint8Array, W: number, H: number, globalAmplitude: number): void => {
+    // (Implementation similar to v1.0.3, ensure themeable color and pulsing line width)
+    ctx.lineWidth = (currentConfig.value.lineWidth ?? 2) * (0.8 + globalAmplitude * 0.7); // Line width pulses
+    ctx.strokeStyle = currentConfig.value.shapeColor || DEFAULT_VIZ_CONFIG.shapeColor!;
     ctx.beginPath();
+    if (data.length === 0) return;
     const sliceWidth = W * 1.0 / data.length;
     let x = 0;
     for (let i = 0; i < data.length; i++) {
-      const v = data[i] / 128.0; // Normalize to 0-2 range
-      const y = v * H / 2;
+      const v = data[i] / 128.0; // data[i] is 0-255, 128 is silence. v is 0-2.
+      const y = (v * H / 2) ; // Scale to canvas height, centered at H/2
       if (i === 0) ctx.moveTo(x, y);
       else ctx.lineTo(x, y);
       x += sliceWidth;
     }
-    ctx.lineTo(W, H / 2);
+    ctx.lineTo(W, H / 2); // Ensure line finishes at the edge
     ctx.stroke();
   };
 
-  const drawCircularWaveform = (ctx: CanvasRenderingContext2D, data: Uint8Array, W: number, H: number) => {
+  /** Draws an organic circular/blob visualization. @private */
+  const _drawCircular = (ctx: CanvasRenderingContext2D, data: Uint8Array, W: number, H: number, globalAmplitude: number): void => {
     const centerX = W / 2;
     const centerY = H / 2;
-    const baseRadius = currentConfig.value.circleRadius! * 0.5; // Base inner radius
-    const maxRadiusExtension = currentConfig.value.circleRadius! * 0.8; // Max extension from base
+    const baseRadiusReference = Math.min(W, H) / 2; // Max possible radius related to canvas size
 
-    ctx.strokeStyle = currentConfig.value.barColor!;
-    ctx.lineWidth = currentConfig.value.lineWidth!;
+    // Update animation state
+    pulseOffset += (currentConfig.value.circularPulseSpeed ?? 0.015) * (0.5 + globalAmplitude * 1.5); // Pulse faster with amplitude
+    currentAngle += (currentConfig.value.circularRotationSpeed ?? 0.002) * (0.3 + globalAmplitude * 1.0); // Rotate slightly faster with amplitude
+
+    // Base radius with pulsing effect, influenced by global amplitude
+    const dynamicBaseRadius = baseRadiusReference *
+                              (currentConfig.value.circularBaseRadiusFactor ?? 0.25) *
+                              (0.8 + Math.sin(pulseOffset) * 0.2) * // Pulse factor
+                              (0.6 + globalAmplitude * 0.8); // Global amplitude influence on base size
+
+    ctx.strokeStyle = currentConfig.value.shapeColor || DEFAULT_VIZ_CONFIG.shapeColor!;
+    ctx.lineWidth = (currentConfig.value.lineWidth ?? 2) * (0.7 + globalAmplitude * 0.8); // Line width also pulses
+    ctx.fillStyle = currentConfig.value.shapeColor || DEFAULT_VIZ_CONFIG.shapeColor!; // For potential fill
+
+    const numPoints = currentConfig.value.circularPointCount ?? 90;
+    if (numPoints <= 0 || data.length === 0) return;
+
     ctx.beginPath();
+    const angleStep = (2 * Math.PI) / numPoints;
 
-    const numPoints = data.length / 2; // Use half of frequency data for symmetry or to reduce complexity
-    for (let i = 0; i < numPoints; i++) {
-        const amplitude = data[i] / 255; // Normalized 0-1
-        const radius = baseRadius + amplitude * maxRadiusExtension;
-        const angle = (i / numPoints) * 2 * Math.PI - Math.PI / 2; // Start from top
+    for (let i = 0; i <= numPoints; i++) { // Iterate one extra point to close the shape smoothly
+      const pointAngle = (i % numPoints) * angleStep + currentAngle; // Apply rotation
+      // Map data index: distribute available frequency bins across the circle points
+      const dataIndex = Math.min(data.length -1, Math.floor((i % numPoints) * (data.length / numPoints)));
+      const amplitudeAtPoint = data[dataIndex] / 255.0; // Normalized amplitude (0-1)
 
-        const x = centerX + Math.cos(angle) * radius;
-        const y = centerY + Math.sin(angle) * radius;
+      const extension = amplitudeAtPoint *
+                        baseRadiusReference *
+                        (currentConfig.value.circularAmplitudeFactor ?? 0.5);
+      const currentRadius = dynamicBaseRadius + Math.min(extension, currentConfig.value.circularMaxExtensionRadius ?? 40);
 
-        if (i === 0) {
-            ctx.moveTo(x, y);
-        } else {
-            ctx.lineTo(x, y);
+      const x = centerX + Math.cos(pointAngle) * currentRadius;
+      const y = centerY + Math.sin(pointAngle) * currentRadius;
+
+      if (i === 0) {
+        ctx.moveTo(x, y);
+      } else {
+        if (currentConfig.value.circularConnectionType === 'curve') {
+          // For curves, need control points. This is a simplified quadratic or bezier approximation.
+          // For a true organic blob, a more complex path generation is needed,
+          // possibly averaging previous/next points for control points.
+          // Simplified: just use lineTo for now, or use a Catmull-Rom spline if complexity allows.
+          // A simple approach for "curvier":
+          const prevI = (i - 1 + numPoints) % numPoints; // Ensure positive modulo
+          const prevPointAngle = prevI * angleStep + currentAngle;
+          const prevAmp = data[Math.min(data.length - 1, Math.floor(prevI * (data.length / numPoints)))] / 255.0;
+          const prevExt = prevAmp * baseRadiusReference * (currentConfig.value.circularAmplitudeFactor ?? 0.5);
+          const prevR = dynamicBaseRadius + Math.min(prevExt, currentConfig.value.circularMaxExtensionRadius ?? 40);
+          const prevX = centerX + Math.cos(prevPointAngle) * prevR;
+          const prevY = centerY + Math.sin(prevPointAngle) * prevR;
+          
+          const cp1x = (prevX + x) / 2 + (y - prevY) * (currentConfig.value.circularPointSharpness ?? 0.3);
+          const cp1y = (prevY + y) / 2 - (x - prevX) * (currentConfig.value.circularPointSharpness ?? 0.3);
+          ctx.quadraticCurveTo(cp1x, cp1y, x, y);
+
+        } else { // 'line'
+          ctx.lineTo(x, y);
         }
+      }
     }
-    ctx.closePath();
-    ctx.stroke();
+    ctx.closePath(); // Close the path
+    // ctx.stroke(); // Stroke the path
 
-    // Optional: Add a central pulsing orb based on overall amplitude
-    const overallAmplitude = data.reduce((sum, val) => sum + val, 0) / (data.length * 255);
-    ctx.fillStyle = hsla(
-        `var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), ${0.2 + overallAmplitude * 0.5}`
-    );
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, baseRadius * 0.5 + overallAmplitude * baseRadius * 0.8, 0, 2 * Math.PI);
+    // Optional: Fill the shape with a more translucent version of the color
+    const fillAlpha = (currentConfig.value.globalVizAlpha ?? 0.7) * 0.2 * (0.5 + globalAmplitude);
+    ctx.globalAlpha = fillAlpha;
     ctx.fill();
+    ctx.globalAlpha = currentConfig.value.globalVizAlpha ?? 0.7; // Reset for stroke if needed
+    ctx.stroke(); // Stroke on top of fill
+
+
   };
 
-
-  const startVisualization = () => {
-    if (isVisualizing.value || !mediaStream.value) return;
-    if (!setupAudioProcessing()) return; // Setup failed
-
-    isVisualizing.value = true;
-    if (animationFrameId) cancelAnimationFrame(animationFrameId); // Clear any old one
-    animationFrameId = requestAnimationFrame(draw);
-    // console.log('[VoiceViz] Visualization started.');
-  };
-
-  const stopVisualization = () => {
-    if (!isVisualizing.value && !animationFrameId && !audioContext.value) return;
-
-    isVisualizing.value = false;
+  /** Stops the visualization loop and clears the canvas. @private */
+  const _stopVisualizationInternal = (): void => {
+    _isVisualizing.value = false;
     if (animationFrameId) {
       cancelAnimationFrame(animationFrameId);
       animationFrameId = null;
     }
-    // Clear canvas
     if (canvasRef.value) {
-        const ctx = canvasRef.value.getContext('2d');
-        if (ctx) ctx.clearRect(0, 0, canvasRef.value.width, canvasRef.value.height);
+      const ctx = canvasRef.value.getContext('2d');
+      if (ctx) {
+        ctx.clearRect(0, 0, canvasRef.value.width, canvasRef.value.height);
+      }
     }
-    // Disconnect nodes and close context if it's not shared
-    if (sourceNode.value) {
-      sourceNode.value.disconnect();
-      sourceNode.value = null;
-    }
-    if (analyserNode.value) {
-      // No need to disconnect if it wasn't connected to destination
-      analyserNode.value = null; // Release reference
-    }
-    if (audioContext.value && audioContext.value.state !== 'closed') {
-      // Only close if we created it and it's not potentially shared.
-      // For a composable, it's safer to assume it owns the context it creates.
-      // audioContext.value.close(); // This might be too aggressive if context is used elsewhere
-      // audioContext.value = null;
-    }
-    // console.log('[VoiceViz] Visualization stopped.');
   };
 
-  watch(mediaStream, (newStream, oldStream) => {
-    if (newStream && !oldStream) { // Stream added
-        if(isVisualizing.value) { // If was already visualizing, restart with new stream
-            stopVisualization(); // Stop with old stream
-            setupAudioProcessing(); // Setup with new stream
-            startVisualization(); // Start again
-        }
-    } else if (!newStream && oldStream) { // Stream removed
-        stopVisualization();
-    } else if (newStream && oldStream && newStream !== oldStream) { // Stream changed
-        if(isVisualizing.value) {
-            stopVisualization();
-            setupAudioProcessing();
-            startVisualization();
-        }
+  /**
+   * Starts the audio visualization.
+   * Sets up audio processing if not already done and begins the drawing loop.
+   * @public
+   */
+  const startVisualization = (): void => {
+    if (_isVisualizing.value) return;
+    if (!mediaStreamRef.value || !mediaStreamRef.value.active) {
+      console.warn('[VoiceViz] Cannot start visualization: MediaStream is not active.');
+      return;
     }
-  });
+    if (!canvasRef.value) {
+      console.warn('[VoiceViz] Cannot start visualization: Canvas element not available.');
+      return;
+    }
 
-  onUnmounted(() => {
-    stopVisualization();
-    if (audioContext.value && audioContext.value.state !== 'closed') {
-      // Ensure context is closed on component unmount if we created it
-      audioContext.value.close().catch(e => console.warn("[VoiceViz] Error closing AudioContext on unmount:", e));
-      audioContext.value = null;
+    if (!_setupAudioProcessing()) { // Setup (or re-setup if context/stream changed)
+        console.error("[VoiceViz] Audio processing setup failed. Cannot start visualization.");
+        return;
     }
+    _isVisualizing.value = true;
+    _drawLoop(); // Start the animation loop
+    console.log('[VoiceViz] Visualization started.');
+  };
+
+  /**
+   * Stops the audio visualization and clears the canvas.
+   * @public
+   */
+  const stopVisualization = (): void => {
+    if (!_isVisualizing.value) return;
+    _stopVisualizationInternal();
+    console.log('[VoiceViz] Visualization drawing stopped.');
+  };
+
+  // Watch for changes in the media stream to re-initialize processing if necessary
+  watch(mediaStreamRef, (newStream, oldStream) => {
+    if (newStream === oldStream && newStream?.active === oldStream?.active) return;
+
+    console.log('[VoiceViz] MediaStream changed or its active state changed.');
+    _stopVisualizationInternal(); // Stop current visualization and clear canvas
+
+    if (sourceNode.value) { // Disconnect old source if it exists
+        try { sourceNode.value.disconnect(); } catch(e) {/* ignore */}
+        sourceNode.value = null;
+    }
+
+    if (newStream && newStream.active) {
+      // If already visualizing, setup and restart. Otherwise, wait for explicit start.
+      // This handles cases where the mic might change mid-visualization.
+      if (_isVisualizing.value) { // This check might be redundant if _stopVisualizationInternal sets it false
+          console.warn("[VoiceViz] Stream changed while visualizing. Attempting to restart. This should ideally be handled by VoiceInput re-triggering start.");
+          // Ideally, VoiceInput would call stopVisualization then startVisualization.
+          // For now, let's try to re-setup and continue if it was already running.
+           if (_setupAudioProcessing()) {
+            //   _drawLoop(); // _isVisualizing is false, so this won't run.
+           } else {
+               _isVisualizing.value = false; // Ensure it's marked as stopped if setup fails
+           }
+      }
+    } else {
+        // Stream became null or inactive, ensure everything is stopped.
+        _isVisualizing.value = false;
+    }
+  }, { immediate: false, deep: false }); // `deep: false` because we only care about stream identity/active state
+
+  // Cleanup on unmount
+  onUnmounted(() => {
+    console.log('[VoiceViz] Unmounting. Cleaning up audio resources.');
+    _stopVisualizationInternal();
+    if (sourceNode.value) { try { sourceNode.value.disconnect(); } catch(e) {/*ignore*/} sourceNode.value = null; }
+    if (analyserNode.value) { try { analyserNode.value.disconnect(); } catch(e) {/*ignore*/} analyserNode.value = null; }
+    if (audioContext.value && audioContext.value.state !== 'closed') {
+      audioContext.value.close().catch(e => console.warn("[VoiceViz] Error closing AudioContext on unmount:", e));
+    }
+    audioContext.value = null;
   });
 
   return {
-    isVisualizing: readonly(isVisualizing),
+    /** Reactive boolean indicating if visualization is currently active. */
+    isVisualizing: readonly(_isVisualizing),
     startVisualization,
     stopVisualization,
-    // Expose config if it needs to be changed dynamically after init
-    // currentConfig: readonly(currentConfig),
-    // updateConfig: (newConfig: Partial<VoiceVisualizationConfig>) => {
-    //   currentConfig.value = { ...currentConfig.value, ...newConfig };
-    //   // Re-initialize or update analyserNode if fftSize/smoothingTimeConstant change
-    //   if (analyserNode.value && audioContext.value) {
-    //      analyserNode.value.fftSize = currentConfig.value.fftSize!;
-    //      analyserNode.value.smoothingTimeConstant = currentConfig.value.smoothingTimeConstant!;
-    //      // Update buffer lengths if fftSize changes
-    //      const bufferLength = analyserNode.value.frequencyBinCount;
-    //      dataArray.value = new Uint8Array(bufferLength);
-    //      frequencyData.value = new Uint8Array(bufferLength);
-    //      timeDomainData.value = new Uint8Array(analyserNode.value.fftSize);
-    //   }
-    // }
+    updateConfig,
+    /** Readonly ref to the current configuration. */
+    currentConfig: readonly(currentConfig),
   };
 }
