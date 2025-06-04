@@ -2,9 +2,12 @@
 /**
  * @file _helpers.scss
  * @description Utility helper classes for the "Ephemeral Harmony" design system.
- * Includes common utilities like screen-reader only text, clearfix, etc.
- * @version 1.0.0
+ * Includes common utilities like screen-reader only text, clearfix,
+ * and custom themeable text color/size utilities.
+ * @version 1.1.0 - Added .text-muted, .text-md, .text-xxs themeable utility classes.
  */
+
+@use '../abstracts/variables' as var; // For SCSS fallbacks if needed by custom utilities
 
 // Screen-reader only text
 // Use this class to hide text visually but keep it accessible to screen readers.
@@ -68,5 +71,41 @@
   display: none !important;
 }
 
+// ----------------------------------------------------------------------------
+// ADDED: Custom Text Color & Size Utilities (Themeable)
+// ----------------------------------------------------------------------------
+@layer utilities {
+  .text-muted {
+    color: hsl(
+      var(--color-text-muted-h, #{var.$default-color-text-muted-h}),
+      var(--color-text-muted-s, #{var.$default-color-text-muted-s}),
+      var(--color-text-muted-l, #{var.$default-color-text-muted-l}),
+      var(--color-text-muted-a, #{var.$default-color-text-muted-a}) // Uses alpha from your theme, defaults to 1
+    );
+    // Example: If "muted" also implies a specific opacity (distinct from the color's alpha)
+    // opacity: var(--text-muted-opacity, 1); // Default to 1 if not specified
+  }
+
+  .text-md {
+    font-size: var(--font-size-base, #{var.$font-size-base-default}); // Maps to your base font size (typically 1rem)
+                                                                    // Equivalent to Tailwind's `text-base`
+    // If text-md should be distinct from text-base, define its specific font-size here, e.g.:
+    // font-size: 0.9375rem; // 15px
+    // line-height: 1.375rem;
+  }
+
+  .text-xxs {
+    font-size: 0.625rem; // 10px
+    line-height: 0.875rem; // Adjust line height accordingly (14px)
+  }
+
+  // You can add other custom text utilities here, for example:
+  // .text-accent-primary {
+  //   color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+  // }
+  // .text-accent-secondary {
+  //   color: hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l));
+  // }
+}
+
 // Add other general-purpose utility classes as your project needs them.
-// For example, specific text truncation, aspect ratio helpers (if not using Tailwind's aspect-ratio plugin), etc.

@@ -1,165 +1,303 @@
-// File: frontend/src/styles/base/_reset.scss
+// File: frontend/src/styles/base/_typography.scss
 /**
- * @file _reset.scss
- * @description A minimal, modern CSS reset to establish consistent baseline styling
- * across browsers, tailored for the "Ephemeral Harmony" application.
- * Focuses on sensible defaults, box-sizing, and removing opinionated browser styles.
+ * @file _typography.scss
+ * @description Global typographic styles, font imports (if self-hosted),
+ * and base styling for text elements. Uses CSS custom properties
+ * for theme-aware typography. Enhanced for readability and alignment with
+ * "Ephemeral Harmony v2.0" design principles.
+ * Added definitions for custom text utilities like text-md and text-xxs.
  *
- * @role Provides a clean slate for styling by neutralizing default browser styles.
- * @dependencies None.
- * @assumptions This reset is applied before other global and component styles.
- * @version 1.1.0 - Added focus-visible polyfill consideration and minor refinements.
+ * @role Defines foundational typographic rules and styles.
+ * @dependencies `../abstracts/variables` (for font families, sizes, colors),
+ * `../abstracts/mixins` (for text effects, custom scrollbars).
+ * @assumptions CSS custom properties for fonts and colors are set by the theme engine.
+ * Font files (if self-hosted) are correctly linked.
+ * @version 3.2.0 - Added custom text utilities text-md and text-xxs.
  */
 
-// --- Box Sizing ---
-// Apply a more intuitive box model to all elements and pseudo-elements.
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
+@use '../abstracts/variables' as var;
+@use '../abstracts/mixins' as mixins;
+
+// ----------------------------------------------------------------------------
+// Base body copy (`p` tag and general text flow)
+// ----------------------------------------------------------------------------
+p {
+  margin-bottom: var.$spacing-md;
+  color: hsl(
+    var(--color-text-secondary-h, #{var.$default-color-text-secondary-h}),
+    var(--color-text-secondary-s, #{var.$default-color-text-secondary-s}),
+    var(--color-text-secondary-l, #{var.$default-color-text-secondary-l})
+  );
+  line-height: var(--line-height-base, #{var.$line-height-base-default});
+  text-wrap: pretty;
+  max-width: 75ch;
 }
 
-// --- Root Element Defaults ---
-// Remove default margins and ensure the document flows as expected.
-html {
-  -webkit-tap-highlight-color: transparent; // Remove tap highlight on mobile
-  line-height: 1.15; // Basic line height, typically overridden by more specific rules
-}
-
-// --- Body Defaults ---
-// Remove default margins. Font settings are handled in _global.scss or _typography.scss.
 body {
-  margin: 0;
+  font-family: var(--font-family-sans, #{var.$font-family-sans});
+  font-size: var(--font-size-base, #{var.$font-size-base-default});
+  color: hsl(
+    var(--color-text-primary-h, #{var.$default-color-text-primary-h}),
+    var(--color-text-primary-s, #{var.$default-color-text-primary-s}),
+    var(--color-text-primary-l, #{var.$default-color-text-primary-l})
+  );
 }
 
-// --- Main Content Root ---
-// Provides a sensible default for the main landmark.
-main {
-  display: block; // Correct display for <main> in older browsers
+// ----------------------------------------------------------------------------
+// Headings (h1-h6)
+// ----------------------------------------------------------------------------
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family-display, #{var.$font-family-display});
+  color: hsl(
+    var(--color-text-primary-h, #{var.$default-color-text-primary-h}),
+    var(--color-text-primary-s, #{var.$default-color-text-primary-s}),
+    var(--color-text-primary-l, #{var.$default-color-text-primary-l})
+  );
+  line-height: var(--line-height-heading, #{var.$line-height-heading});
+  margin-top: calc(#{var.$spacing-lg} * 1.5);
+  margin-bottom: var.$spacing-md;
+  font-weight: 700;
+  text-wrap: balance;
+  letter-spacing: -0.01em;
+
+  &.heading-glow {
+    @include mixins.text-glow(
+      $glow-color-var-prefix: '--color-accent-primary',
+      $glow-radius: 4px,
+      $fb-glow-h: var.$default-color-accent-primary-h,
+      $fb-glow-s: var.$default-color-accent-primary-s,
+      $fb-glow-l: var.$default-color-accent-primary-l,
+      $fb-glow-a: 0.3
+    );
+  }
 }
 
-// --- Typography Resets ---
-// Remove default margins from headings and paragraphs.
-// More specific typography is handled in _typography.scss.
-h1, h2, h3, h4, h5, h6,
-p,
-blockquote,
-pre,
-dl, dd,
-ol, ul {
-  margin: 0;
-  padding: 0; // Also reset padding for lists
+h1 { font-size: clamp(2.25rem, calc(1.5rem + 3vw), 4rem); letter-spacing: -0.025em; }
+h2 { font-size: clamp(1.875rem, calc(1.25rem + 2.5vw), 3rem); letter-spacing: -0.02em; }
+h3 { font-size: clamp(1.625rem, calc(1.1rem + 2vw), 2.25rem); font-weight: 600; }
+h4 { font-size: clamp(1.375rem, calc(1rem + 1.5vw), 1.875rem); font-weight: 600; }
+h5 { font-size: clamp(1.125rem, calc(0.9rem + 1vw), 1.5rem); font-weight: 600; }
+h6 {
+  font-size: var(--font-size-base, #{var.$font-size-base-default});
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.075em;
+  opacity: 0.9;
+  color: hsl(
+    var(--color-text-secondary-h, #{var.$default-color-text-secondary-h}),
+    var(--color-text-secondary-s, #{var.$default-color-text-secondary-s}),
+    var(--color-text-secondary-l, #{var.$default-color-text-secondary-l})
+  );
 }
 
-// Remove default list styling.
-ol, ul {
-  list-style: none;
+// ----------------------------------------------------------------------------
+// Monospace & Code Elements (code, kbd, samp, pre)
+// ----------------------------------------------------------------------------
+code, kbd, samp, pre {
+  font-family: var(--font-family-mono, #{var.$font-family-mono});
+  font-size: 0.925em;
+  color: hsl(
+    var(--color-text-code-inline-h, var.$default-color-text-code-inline-h),
+    var(--color-text-code-inline-s, var.$default-color-text-code-inline-s),
+    var(--color-text-code-inline-l, var.$default-color-text-code-inline-l)
+  );
+  letter-spacing: 0.01em;
 }
 
-// --- Embedded Content ---
-// Make images and other replaced elements responsive by default.
-img,
-svg,
-video,
-canvas,
-audio,
-iframe,
-embed,
-object {
-  display: block; // Remove extra space below inline images
-  max-width: 100%; // Prevent overflow
-  height: auto;    // Maintain aspect ratio
+code:not(pre > code) {
+  background-color: hsla(
+    var(--color-bg-code-inline-h, #{var.$default-color-bg-code-inline-h}),
+    var(--color-bg-code-inline-s, #{var.$default-color-bg-code-inline-s}),
+    var(--color-bg-code-inline-l, #{var.$default-color-bg-code-inline-l}),
+    var(--color-bg-code-inline-a, #{var.$default-color-bg-code-inline-a})
+  );
+  padding: 0.2em 0.45em;
+  border-radius: var(--radius-sm, #{var.$radius-sm});
+  border: 1px solid hsla(
+    var(--color-border-code-inline-h, #{var.$default-color-border-code-inline-h}),
+    var(--color-border-code-inline-s, #{var.$default-color-border-code-inline-s}),
+    var(--color-border-code-inline-l, #{var.$default-color-border-code-inline-l}),
+    var(--color-border-code-inline-a, #{var.$default-color-border-code-inline-a})
+  );
+  box-shadow: inset 0 0 3px hsla(
+    var(--color-accent-primary-h, #{var.$default-color-accent-primary-h}),
+    var(--color-accent-primary-s, #{var.$default-color-accent-primary-s}),
+    var(--color-accent-primary-l, #{var.$default-color-accent-primary-l}),
+    0.1
+  );
 }
 
-// Remove border from iframes.
-iframe {
+pre {
+  background-color: hsla(
+    var(--color-bg-code-block-h, #{var.$default-color-bg-code-block-h}),
+    var(--color-bg-code-block-s, #{var.$default-color-bg-code-block-s}),
+    var(--color-bg-code-block-l, #{var.$default-color-bg-code-block-l}),
+    var(--color-bg-code-block-a, #{var.$default-color-bg-code-block-a})
+  );
+  border: 1px solid hsla(
+    var(--color-border-primary-h, #{var.$default-color-border-primary-h}),
+    var(--color-border-primary-s, #{var.$default-color-border-primary-s}),
+    var(--color-border-primary-l, #{var.$default-color-border-primary-l}),
+    0.3
+  );
+  padding: var.$spacing-md;
+  border-radius: var(--radius-lg, #{var.$radius-lg});
+  overflow-x: auto;
+  line-height: calc(var(--line-height-base, #{var.$line-height-base-default}) * 0.95);
+  box-shadow: var(--shadow-depth-sm, #{var.$scss-box-shadow-sm});
+
+  @include mixins.custom-scrollbar(
+    $thumb-color-var-prefix: '--color-accent-secondary',
+    $thumb-base-alpha: 0.3,
+    $thumb-hover-alpha: 0.5,
+    $track-color-var-prefix: '--color-bg-code-block',
+    $track-alpha: 0.2,
+    $width: 6px
+  );
+
+  code {
+    color: hsl(
+      var(--color-text-code-block-h, #{var.$default-color-text-code-block-h}),
+      var(--color-text-code-block-s, #{var.$default-color-text-code-block-s}),
+      var(--color-text-code-block-l, #{var.$default-color-text-code-block-l})
+    );
+    font-size: 1em;
+    background-color: transparent;
+    padding: 0;
+    border: none;
+    box-shadow: none;
+  }
+}
+
+// ... (Lists, Blockquotes, HR, other utilities remain as previously provided) ...
+ul, ol {
+  padding-left: var.$spacing-lg;
+  margin-bottom: var.$spacing-md;
+  li {
+    margin-bottom: calc(var.$spacing-xs / 2);
+    line-height: var(--line-height-base, #{var.$line-height-base-default});
+    color: hsl(
+      var(--color-text-secondary-h, #{var.$default-color-text-secondary-h}),
+      var(--color-text-secondary-s, #{var.$default-color-text-secondary-s}),
+      var(--color-text-secondary-l, #{var.$default-color-text-secondary-l})
+    );
+    &::marker {
+      color: hsl(var(--color-accent-primary-h, var.$default-color-accent-primary-h), var(--color-accent-primary-s, var.$default-color-accent-primary-s), var(--color-accent-primary-l, var.$default-color-accent-primary-l));
+      font-weight: 600;
+    }
+  }
+}
+dl {
+  margin-bottom: var.$spacing-md;
+  dt {
+    font-weight: 600;
+    color: hsl(
+      var(--color-text-primary-h, #{var.$default-color-text-primary-h}),
+      var(--color-text-primary-s, #{var.$default-color-text-primary-s}),
+      var(--color-text-primary-l, #{var.$default-color-text-primary-l})
+    );
+    margin-bottom: calc(var.$spacing-xs / 2);
+  }
+  dd {
+    margin-left: var.$spacing-lg;
+    margin-bottom: var.$spacing-sm;
+    color: hsl(
+      var(--color-text-secondary-h, #{var.$default-color-text-secondary-h}),
+      var(--color-text-secondary-s, #{var.$default-color-text-secondary-s}),
+      var(--color-text-secondary-l, #{var.$default-color-text-secondary-l})
+    );
+  }
+}
+
+blockquote {
+  margin: var.$spacing-lg 0;
+  padding: var.$spacing-md var.$spacing-lg;
+  border-left: 4px solid hsl(var(--color-accent-secondary-h, var.$default-color-accent-secondary-h), var(--color-accent-secondary-s, var.$default-color-accent-secondary-s), var(--color-accent-secondary-l, var.$default-color-accent-secondary-l));
+  background-color: hsla(
+    var(--color-bg-secondary-h, #{var.$default-color-bg-secondary-h}),
+    var(--color-bg-secondary-s, #{var.$default-color-bg-secondary-s}),
+    var(--color-bg-secondary-l, #{var.$default-color-bg-secondary-l}),
+    0.3
+  );
+  border-radius: 0 var(--radius-md, #{var.$radius-md}) var(--radius-md, #{var.$radius-md}) 0;
+  font-style: italic;
+  color: hsl(
+    var(--color-text-secondary-h, #{var.$default-color-text-secondary-h}),
+    var(--color-text-secondary-s, #{var.$default-color-text-secondary-s}),
+    calc(var(--color-text-secondary-l, #{var.$default-color-text-secondary-l}) + 5%)
+  );
+
+  p {
+    margin-bottom: 0;
+    max-width: none;
+  }
+  cite {
+    display: block;
+    margin-top: var.$spacing-sm;
+    font-size: var.$font-size-sm;
+    color: hsl(var(--color-text-muted-h, var.$default-color-text-muted-h), var(--color-text-muted-s, var.$default-color-text-muted-s), var(--color-text-muted-l, var.$default-color-text-muted-l));
+    text-align: right;
+  }
+}
+
+hr {
   border: 0;
+  height: 1px;
+  background: linear-gradient(to right,
+    transparent,
+    hsla(var(--color-border-primary-h, var.$default-color-border-primary-h), var(--color-border-primary-s, var.$default-color-border-primary-s), var(--color-border-primary-l, var.$default-color-border-primary-l), 0.3),
+    transparent
+  );
+  margin: var.$spacing-xl 0;
 }
 
-// --- Forms ---
-// Remove default margins.
-// More detailed form styling is handled by @tailwindcss/forms or _forms.scss.
-button,
-input,
-optgroup,
-select,
-textarea {
-  margin: 0;
-  font-family: inherit; // Inherit font from parent
-  font-size: 100%;      // Inherit font size from parent
-  line-height: inherit; // Inherit line height from parent
-  color: inherit;       // Inherit text color
-  padding: 0;           // Remove default padding
-  border: none;         // Remove default borders
-  background-color: transparent; // Remove default backgrounds
+// ----------------------------------------------------------------------------
+// ADDED/MODIFIED: Custom Text Utility Classes for missing Tailwind sizes
+// ----------------------------------------------------------------------------
+@layer utilities {
+  .text-md {
+    font-size: var.$font-size-base-default; // Typically 1rem (16px)
+                                     // Tailwind's `text-base` is 1rem.
+                                     // If `text-md` implies a different size, adjust here.
+                                     // For example, if it's between text-sm and text-base:
+                                     // font-size: 0.9375rem; // 15px
+  }
+
+  .text-xxs {
+    font-size: 0.625rem; // 10px, a very small text size
+    line-height: 0.875rem; // Adjust line height accordingly
+  }
 }
 
-// Correct the inability to style clickable types in iOS and Safari.
-button,
-[type='button'],
-[type='reset'],
-[type='submit'] {
-  -webkit-appearance: button; // Corrects inability to style clickable types in iOS and Safari.
-  appearance: button; // Standard property
-  cursor: pointer;
+// Utility helper classes from original context
+.text-prose-enhanced {
+  font-size: calc(var(--font-size-base, #{var.$font-size-base-default}) * 1.05);
+  letter-spacing: 0.02em;
+  line-height:  calc(var(--line-height-base, #{var.$line-height-base-default}) * 1.05);
+  p { max-width: 70ch; }
 }
 
-// Remove the inner border and padding in Firefox.
-button::-moz-focus-inner,
-[type='button']::-moz-focus-inner,
-[type='reset']::-moz-focus-inner,
-[type='submit']::-moz-focus-inner {
-  border-style: none;
-  padding: 0;
+.lead-text {
+  font-size: var.$font-size-lg;
+  color: hsl(
+    var(--color-text-primary-h, #{var.$default-color-text-primary-h}),
+    var(--color-text-primary-s, #{var.$default-color-text-primary-s}),
+    var(--color-text-primary-l, #{var.$default-color-text-primary-l})
+  );
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  line-height: 1.7;
+  margin-bottom: var.$spacing-lg;
 }
 
-// Remove the inner padding in Firefox.
-input[type='search']::-moz-search-cancel-button,
-input[type='search']::-moz-search-decoration {
-  -webkit-appearance: none;
-  appearance: none;
-}
+.text-left   { text-align: left; }
+.text-center { text-align: center; }
+.text-right  { text-align: right; }
+.text-justify{ text-align: justify; }
 
-
-// Remove default appearance for search inputs in WebKit.
-input[type='search']::-webkit-search-decoration,
-input[type='search']::-webkit-search-cancel-button,
-input[type='search']::-webkit-search-results-button,
-input[type='search']::-webkit-search-results-decoration {
-  -webkit-appearance:none;
-}
-
-
-// Correct text-area resizing.
-textarea {
-  resize: vertical; // Allow vertical resizing, disable horizontal
-  overflow: auto;   // Show scrollbars when content overflows
-}
-
-// --- Tables ---
-// Remove default spacing.
-table {
-  border-collapse: collapse;
-  border-spacing: 0;
-}
-
-// --- Hidden Elements ---
-// Use Tailwind's `hidden` class or a custom utility class for `display: none`.
-// This reset doesn't enforce a specific hidden style by default.
-
-// --- Focus Visible Polyfill Consideration ---
-// If supporting browsers that don't fully implement :focus-visible,
-// you might include a JavaScript polyfill and ensure its class is handled.
-// For example, if a polyfill adds `.focus-visible`, you might reset outline for `.focus-visible:focus:not(:focus-visible)`.
-// However, modern browsers have good support, so this is often not needed.
-// Example (if using a polyfill that adds .focus-visible class):
-// :focus:not(.focus-visible) {
-//   outline: none;
-// }
-
-// --- Links ---
-// Basic reset for links, more specific styling in _global.scss or component styles.
-a {
-  text-decoration: none; // Remove underlines by default
-  color: inherit;        // Inherit color from parent
-}
+.font-light   { font-weight: 300; }
+.font-normal  { font-weight: 400; }
+.font-medium  { font-weight: 500; }
+.font-semibold{ font-weight: 600; }
+.font-bold    { font-weight: 700; }
+.font-extrabold{ font-weight: 800; }

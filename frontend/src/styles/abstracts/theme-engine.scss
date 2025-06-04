@@ -1,101 +1,83 @@
 // File: frontend/src/styles/abstracts/theme-engine.scss
 /**
- * @file _theme-engine.scss
- * @description Generates CSS custom variables for every theme palette.
- * This engine takes theme definitions from `_theme-definitions.scss` (via the public
- * `$VCA_THEME_DEFINITIONS` map) and creates the necessary CSS rules to apply them
- * based on the `data-theme` attribute on the HTML element. It also sets a default theme.
- * The primary default theme is "Sakura Sunset" (dark).
- *
- * @role Applies theme definitions as CSS custom properties to the DOM.
- * @dependencies `_theme-definitions.scss` (for the `$VCA_THEME_DEFINITIONS` map).
- * @assumptions `$VCA_THEME_DEFINITIONS` map in `_theme-definitions.scss` contains valid theme maps.
- * `ThemeManager.ts` will set the `data-theme` attribute on `<html>`.
- * Theme IDs used here must match those in `themes.config.ts` and `ThemeManager.ts`.
- * @version 3.0.4 - Added comprehensive JSDoc and ensured default theme is "sakura-sunset".
+ * @version 3.1.1 - Simplified Terminus theme IDs in registry.
  */
 @use 'sass:map';
 @use './theme-definitions' as themes; // Provides $VCA_THEME_DEFINITIONS
 
-// Main registry mapping theme IDs to their SCSS map and dark/light status.
-// It sources its data from the `$VCA_THEME_DEFINITIONS` map in `theme-definitions.scss`.
-// 'is-dark' is crucial for `color-scheme` property and can be used by components.
 $theme-registry: (
-  'sakura-sunset':   ('is-dark': true,  'map': map.get(themes.$VCA_THEME_DEFINITIONS, 'sakura-sunset')),
-  'twilight-neo':    ('is-dark': true,  'map': map.get(themes.$VCA_THEME_DEFINITIONS, 'twilight-neo')),
-  'aurora-daybreak': ('is-dark': false, 'map': map.get(themes.$VCA_THEME_DEFINITIONS, 'aurora-daybreak')),
-  'warm-embrace':    ('is-dark': false, 'map': map.get(themes.$VCA_THEME_DEFINITIONS, 'warm-embrace'))
+  'sakura-sunset':    ('is-dark': true,  'map': map.get(themes.$VCA_THEME_DEFINITIONS, 'sakura-sunset')),
+  'twilight-neo':     ('is-dark': true,  'map': map.get(themes.$VCA_THEME_DEFINITIONS, 'twilight-neo')),
+  'aurora-daybreak':  ('is-dark': false, 'map': map.get(themes.$VCA_THEME_DEFINITIONS, 'aurora-daybreak')),
+  'warm-embrace':     ('is-dark': false, 'map': map.get(themes.$VCA_THEME_DEFINITIONS, 'warm-embrace')),
+  'terminus-dark':    ('is-dark': true,  'map': map.get(themes.$VCA_THEME_DEFINITIONS, 'terminus-dark')),  // <-- UPDATED ID
+  'terminus-light':   ('is-dark': false, 'map': map.get(themes.$VCA_THEME_DEFINITIONS, 'terminus-light')) // <-- UPDATED ID
 );
 
-// Aliases to map legacy theme names or provide simpler/descriptive alternatives.
+// Aliases - update or remove Terminus aliases if the main IDs are now simple enough.
+// If you keep aliases, ensure they point to the new main IDs.
 $theme-aliases: (
-  'ephemeral-holo-dark': 'twilight-neo',
-  'aurora-light':        'aurora-daybreak',
-  'legacy-warm-embrace': 'warm-embrace',
-  'legacy-twilight-neo': 'twilight-neo',
-  'magenta-mystic':      'sakura-sunset',
-  'her-pink':            'sakura-sunset',
-  'midnight-dark':       'twilight-neo',
-  'default-dark':        'sakura-sunset',
-  'default-light':       'aurora-daybreak'
+  'ephemeral-holo-dark':    'twilight-neo',
+  'aurora-light':           'aurora-daybreak',
+  'legacy-warm-embrace':    'warm-embrace',
+  'legacy-twilight-neo':    'twilight-neo',
+  'magenta-mystic':         'sakura-sunset',
+  'her-pink':               'sakura-sunset',
+  'midnight-dark':          'twilight-neo',
+  'default-dark':           'sakura-sunset',
+  'default-light':          'aurora-daybreak'
+  // Removed 'retro-terminus-dark' and 'retro-terminus-light' from aliases as they are now primary IDs.
+  // You can add new aliases if needed, e.g., 'retro-dark': 'terminus-dark'
 );
 
-/**
- * @mixin apply-theme
- * @description Applies a map of CSS custom properties to the current selector.
- * Iterates through a given SCSS map and outputs each key-value pair as a CSS custom property.
- * Includes Tailwind CSS IntelliSense disable/enable comments around the property assignments
- * to prevent potential conflicts or misinterpretations by the Language Server Protocol in editors.
- *
- * @param {Map} $theme-map-arg - An SCSS map where keys are CSS custom property names
- * (e.g., '--color-bg-primary-h') and values are their corresponding CSS values (e.g., '220', '100%').
- */
 @mixin apply-theme($theme-map-arg) {
-  @each $prop, $val in $theme-map-arg {
-    /* tailwindcss-intellisense-disable */
-    #{$prop}: #{$val};
-    /* tailwindcss-intellisense-enable */
+  @if type-of($theme-map-arg) == 'map' {
+    @each $prop, $val in $theme-map-arg {
+      #{$prop}: #{$val};
+    }
+  } @else {
+    @warn "Invalid theme map passed to apply-theme mixin. Expected a map, got #{type-of($theme-map-arg)}.";
   }
 }
 
-// Default theme applied to :root.
-$default-theme-name: 'sakura-sunset';
+$default-theme-name: 'sakura-sunset'; // Ensure this ID exists in $theme-registry
 
 :root {
-  /* tailwindcss-intellisense-disable */
-  @include apply-theme(map.get(map.get($theme-registry, $default-theme-name), 'map'));
-  color-scheme: if(
-    map.get(map.get($theme-registry, $default-theme-name), 'is-dark'),
-    dark,
-    light
-  );
-  /* tailwindcss-intellisense-enable */
-}
-
-// Generate CSS rules for each theme in the registry.
-@each $theme-id, $theme-meta in $theme-registry {
-  html[data-theme='#{$theme-id}'] {
-    /* tailwindcss-intellisense-disable */
-    @include apply-theme(map.get($theme-meta, 'map'));
-    color-scheme: if(map.get($theme-meta, 'is-dark'), dark, light);
-    /* tailwindcss-intellisense-enable */
+  $default-theme-meta: map.get($theme-registry, $default-theme-name);
+  @if $default-theme-meta and map.get($default-theme-meta, 'map') {
+    @include apply-theme(map.get($default-theme-meta, 'map'));
+    color-scheme: if(map.get($default-theme-meta, 'is-dark'), dark, light);
+  } @else {
+    @warn "Default theme '#{$default-theme-name}' not found or map is invalid in theme registry. Check configuration.";
   }
 }
 
-// Generate CSS rules for aliased themes.
+@each $theme-id, $theme-meta in $theme-registry {
+  @if map.has-key($theme-meta, 'map') and type-of(map.get($theme-meta, 'map')) == 'map' {
+    html[data-theme='#{$theme-id}'] {
+      @include apply-theme(map.get($theme-meta, 'map'));
+      color-scheme: if(map.get($theme-meta, 'is-dark'), dark, light);
+    }
+  } @else {
+     @warn "Theme map for '#{$theme-id}' is missing or invalid in $theme-registry. CSS variables will not be generated for this theme.";
+  }
+}
+
 @each $alias-name, $target-theme-name in $theme-aliases {
   @if map.has-key($theme-registry, $target-theme-name) {
     $target-meta-data: map.get($theme-registry, $target-theme-name);
-    $target-theme-map: map.get($target-meta-data, 'map');
-    $is-target-dark: map.get($target-meta-data, 'is-dark');
+    @if $target-meta-data and map.has-key($target-meta-data, 'map') and type-of(map.get($target-meta-data, 'map')) == 'map' {
+      $target-theme-map: map.get($target-meta-data, 'map');
+      $is-target-dark: map.get($target-meta-data, 'is-dark');
 
-    html[data-theme='#{$alias-name}'] {
-      /* tailwindcss-intellisense-disable */
-      @include apply-theme($target-theme-map);
-      color-scheme: if($is-target-dark, dark, light);
-      /* tailwindcss-intellisense-enable */
+      html[data-theme='#{$alias-name}'] {
+        @include apply-theme($target-theme-map);
+        color-scheme: if($is-target-dark, dark, light);
+      }
+    } @else {
+       @warn "Target theme '#{$target-theme-name}' for alias '#{$alias-name}' has an invalid map. Alias cannot be applied.";
     }
   } @else {
-    @warn "Theme alias target '#{$target-theme-name}' for alias '#{$alias-name}' not found in main theme registry. Ensure '#{$target-theme-name}' is defined in '$VCA_THEME_DEFINITIONS' and registered in '$theme-registry'.";
+    @warn "Theme alias target '#{$target-theme-name}' for alias '#{$alias-name}' not found in main theme registry.";
   }
 }

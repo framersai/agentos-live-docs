@@ -4,7 +4,7 @@
  * @description Public-facing home page using UnifiedChatLayout.
  * Features rate limiting, public agent selection, themed placeholders, API-driven prompt loading,
  * dynamic loading of custom agent views, and session-specific userId.
- * @version 3.5.1 - Refined isLoadingResponse and voice input processing logic.
+ * @version 3.5.3 - Corrected dynamic agent view loading to use `agent.component`.
  */
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, inject, watch, defineAsyncComponent, type Component as VueComponentType } from 'vue';
@@ -27,13 +27,13 @@ import { useAuth } from '@/composables/useAuth';
 
 import UnifiedChatLayout from '@/components/layouts/UnifiedChatLayout.vue';
 import MainContentView from '@/components/agents/common/MainContentView.vue';
-import CompactMessageRenderer from '@/components/CompactMessageRenderer.vue';
+import CompactMessageRenderer from '@/components/layouts/CompactMessageRenderer/CompactMessageRenderer.vue';
 
 import {
   SparklesIcon, KeyIcon, ChevronDownIcon, UserGroupIcon,
-  ExclamationTriangleIcon, CheckIcon as CheckOutlineIcon,
+  ExclamationTriangleIcon, CheckIcon as CheckOutlineIcon, // Renamed to avoid conflict if CheckIcon from solid is also used
   BuildingStorefrontIcon
-} from '@heroicons/vue/24/outline';
+} from '@heroicons/vue/24/outline'; // Using outline as per original imports
 
 interface RateLimitInfo {
   tier: 'public' | 'authenticated';
@@ -53,27 +53,27 @@ const auth = useAuth(); // For sessionUserId
 
 const availablePublicAgents = ref<IAgentDefinition[]>([]);
 const currentPublicAgent = computed<IAgentDefinition | undefined>(() => agentStore.activeAgent);
-const agentViewRef = ref<any>(null);
+const agentViewRef = ref<any>(null); // Used to call methods on the loaded agent component
 
+/**
+ * @computed currentAgentViewComponent
+ * @description Dynamically resolves the component for the active public agent's dedicated view.
+ * Uses the `component` property from the agent definition, which is expected to be
+ * a function returning a dynamic import promise.
+ * @returns {VueComponentType | null} The asynchronously loaded agent view component or null.
+ */
 const currentAgentViewComponent = computed<VueComponentType | null>(() => {
   const agent = currentPublicAgent.value;
-  if (agent && agent.isPublic && agent.viewComponentName) {
-    const componentName = agent.viewComponentName;
+  // Check if the agent is public and has a component factory function
+  if (agent && agent.isPublic && agent.component && typeof agent.component === 'function') {
     const agentLabel = agent.label || 'Current Public Agent';
     try {
-      console.log(`[PublicHome] Attempting to load dedicated view component: ${componentName} for public agent: ${agentLabel}`);
-      return defineAsyncComponent(() =>
-        import(`@/components/agents/${componentName}.vue`)
-          .catch(err => {
-            console.error(`[PublicHome] Failed to import @/components/agents/${componentName}.vue for public agent:`, err);
-            toast?.add({type: 'error', title: 'UI Load Error', message: `Could not load specific interface for ${agentLabel}. Using default view.`});
-            return import('@/components/agents/common/MainContentView.vue');
-          })
-      );
+      // agent.component is expected to be like: () => import('@/path/to/Component.vue')
+      return defineAsyncComponent(agent.component);
     } catch (e) {
-      console.error(`[PublicHome] Synchronous error setting up dynamic import for public agent view: ${componentName}`, e);
+      console.error(`[PublicHome] Synchronous error setting up dynamic import for public agent view: ${agentLabel}`, e);
       toast?.add({ type: 'error', title: 'UI Setup Error', message: `Error preparing interface for ${agentLabel}.` });
-      return null;
+      return null; // Fallback if defineAsyncComponent itself throws (unlikely for valid function)
     }
   }
   return null;
@@ -82,16 +82,7 @@ const currentAgentViewComponent = computed<VueComponentType | null>(() => {
 const showPublicAgentSelector = ref(false);
 const publicAgentSelectorDropdownRef = ref<HTMLElement | null>(null);
 
-/**
- * @ref isLoadingResponse
- * @description Indicates if an assistant LLM response is currently being processed.
- * This should be true ONLY when waiting for the backend LLM.
- */
 const isLoadingResponse = ref(false);
-/**
- * @ref isVoiceInputCurrentlyProcessingAudio
- * @description Reflects if the VoiceInput component (or its STT handlers) is actively recording or processing audio for STT.
- */
 const isVoiceInputCurrentlyProcessingAudio = ref(false);
 
 const currentSystemPromptText = ref('');
@@ -116,10 +107,22 @@ const mainContentData = computed<MainContent | null>(() => {
       data: 'NoPublicAgentsPlaceholder', title: 'Assistants Unavailable', timestamp: Date.now()
     };
   }
-  if (currentPublicAgent.value?.isPublic && currentAgentViewComponent.value) {
-      return null; // Dedicated view handles its own content
+  // If agent has dedicated view AND handlesOwnInput, mainContentData should be null for it
+  if (currentPublicAgent.value?.isPublic && currentAgentViewComponent.value && currentPublicAgent.value?.capabilities?.handlesOwnInput) {
+    return null; // Dedicated view is responsible for its display
   }
-  return currentPublicAgent.value ? chatStore.getCurrentMainContentDataForAgent(currentPublicAgent.value.id) : null;
+  // Otherwise, get content from chatStore or provide default welcome/loading for general agents
+  return currentPublicAgent.value ? (
+    chatStore.getCurrentMainContentDataForAgent(currentPublicAgent.value.id) || {
+      agentId: currentPublicAgent.value.id, type: 'welcome',
+      data: `<div class="prose dark:prose-invert max-w-none mx-auto text-center py-8">
+               <h2 class="text-3xl font-bold mb-4 text-[var(--color-text-primary)]">${currentPublicAgent.value.label} is Ready</h2>
+               <p class="text-lg text-[var(--color-text-secondary)]">${currentPublicAgent.value.description}</p>
+               <p class="mt-6 text-base text-[var(--color-text-muted)]">${currentPublicAgent.value.inputPlaceholder || 'Use the input below to start.'}</p>
+             </div>`,
+      title: `${currentPublicAgent.value.label} Ready`, timestamp: Date.now()
+    }
+  ) : null;
 });
 
 const showEphemeralLogForCurrentAgent = computed(() => {
@@ -141,8 +144,8 @@ const fetchRateLimitInfo = async (): Promise<void> => {
     console.error('[PublicHome] Failed to fetch rate limit info:', error.response?.data || error.message);
     rateLimitInfo.value = {
         tier: 'public',
-        limit: parseInt(process.env.RATE_LIMIT_PUBLIC_DAILY || '20'),
-        remaining: parseInt(process.env.RATE_LIMIT_PUBLIC_DAILY || '20'),
+        limit: 20, // Fallback, ideally from env
+        remaining: 20, // Fallback
         used: 0,
         resetAt: new Date(Date.now() + 24*60*60*1000),
         message: "Could not fetch usage details. Using default limits."
@@ -159,9 +162,8 @@ const loadCurrentAgentSystemPrompt = async (): Promise<void> => {
     return;
   }
 
-  // Skip loading prompt if agent handles its own input via dedicated view
   if (agent.capabilities?.handlesOwnInput && currentAgentViewComponent.value) {
-    currentSystemPromptText.value = ''; // Or a minimal placeholder if needed
+    currentSystemPromptText.value = '';
     console.log(`[PublicHome] Agent ${agentLabel} handles its own input, skipping general prompt load.`);
     return;
   }
@@ -173,11 +175,7 @@ const loadCurrentAgentSystemPrompt = async (): Promise<void> => {
       try {
         console.log(`[PublicHome] Loading prompt for key: ${systemPromptKey}.md for agent: ${agentLabel}`);
         const promptResponse = await promptAPI.getPrompt(`${systemPromptKey}.md`);
-        if (promptResponse.data && typeof promptResponse.data.content === 'string') {
-            currentSystemPromptText.value = promptResponse.data.content;
-        } else {
-            currentSystemPromptText.value = defaultPromptText;
-        }
+        currentSystemPromptText.value = promptResponse.data?.content || defaultPromptText;
       } catch (e: any) {
         console.error(`[PublicHome] Failed to load prompt "${systemPromptKey}.md" for agent "${agentLabel}":`, e.response?.data || e.message || e);
         currentSystemPromptText.value = defaultPromptText;
@@ -199,14 +197,18 @@ const loadPublicAgentsAndSetDefault = async (): Promise<void> => {
       agentToSet = agentService.getDefaultPublicAgent() || availablePublicAgents.value[0];
     }
     if (agentToSet && agentStore.activeAgentId !== agentToSet.id) {
-      agentStore.setActiveAgent(agentToSet.id); // Watcher will trigger prompt load
+      agentStore.setActiveAgent(agentToSet.id); // Watcher will trigger prompt load & content ensure
     } else if (agentToSet) { // Agent is already set, ensure prompt and content are loaded
       await loadCurrentAgentSystemPrompt();
       chatStore.ensureMainContentForAgent(agentToSet.id);
     }
   } else {
     console.warn("[PublicHome] No publicly available agents found or configured.");
-    if (agentStore.activeAgentId) agentStore.setActiveAgent(null);
+    if (agentStore.activeAgentId) agentStore.setActiveAgent(null); // Clear if previously set to non-public
+     chatStore.updateMainContent({
+        agentId: 'no-public-agents-placeholder' as AgentId, type: 'custom-component',
+        data: 'NoPublicAgentsPlaceholder', title: 'Assistants Unavailable', timestamp: Date.now()
+    });
   }
 };
 
@@ -220,28 +222,30 @@ const selectPublicAgent = (agentId: AgentId): void => {
 
 watch(() => agentStore.activeAgentId, async (newAgentId, oldAgentId) => {
   if (newAgentId && newAgentId !== oldAgentId) {
-    if (availablePublicAgents.value.some(pa => pa.id === newAgentId)) {
-        isLoadingResponse.value = false; // Reset on agent switch
+    // Check if the new agent is actually public, if not, reset to a valid public one
+    const agentDef = agentService.getAgentById(newAgentId);
+    if (agentDef && agentDef.isPublic) {
+        isLoadingResponse.value = false;
         isVoiceInputCurrentlyProcessingAudio.value = false;
         if(chatStore.isMainContentStreaming) chatStore.setMainContentStreaming(false);
-        await loadCurrentAgentSystemPrompt();
-        chatStore.ensureMainContentForAgent(newAgentId);
-    } else if (newAgentId && !auth.isAuthenticated.value) { // Attempt to load a non-public agent on public page
-        console.warn(`[PublicHome] Non-public agent (${newAgentId}) attempted activation. Resetting to default public agent.`);
-        await loadPublicAgentsAndSetDefault(); // This will set a valid public agent
+        await loadCurrentAgentSystemPrompt(); // This is important to run
+        chatStore.ensureMainContentForAgent(newAgentId); // This sets up welcome message if needed
+    } else if (newAgentId && !auth.isAuthenticated.value) { // User somehow tried to activate non-public on public page
+        console.warn(`[PublicHome] Non-public agent (${newAgentId}) activation attempted. Resetting to default public agent.`);
+        await loadPublicAgentsAndSetDefault(); // This will re-evaluate and set a valid public agent
     }
-  } else if (!newAgentId && availablePublicAgents.value.length === 0) { // No agent selected and no public agents
+  } else if (!newAgentId && availablePublicAgents.value.length === 0) {
     currentSystemPromptText.value = "No public assistants are currently available.";
-    chatStore.updateMainContent({ // Update main content to reflect this state
+    chatStore.updateMainContent({
         agentId: 'no-public-agents-placeholder' as AgentId, type: 'custom-component',
         data: 'NoPublicAgentsPlaceholder', title: 'Assistants Unavailable', timestamp: Date.now()
     });
-  } else if (newAgentId && newAgentId === oldAgentId ) { // Agent is same (e.g. on initial load after default set)
+  } else if (newAgentId && newAgentId === oldAgentId ) { // Agent is same (e.g. on initial load or refresh)
     const agent = agentService.getAgentById(newAgentId);
-    if (agent && (!currentAgentViewComponent.value || !agent.capabilities?.handlesOwnInput)) {
-      await loadCurrentAgentSystemPrompt();
+    if (agent && agent.isPublic && (!currentAgentViewComponent.value || !agent.capabilities?.handlesOwnInput)) {
+      await loadCurrentAgentSystemPrompt(); // Refresh prompt if needed
     }
-    chatStore.ensureMainContentForAgent(newAgentId);
+    chatStore.ensureMainContentForAgent(newAgentId); // Ensure welcome screen is there
   }
 }, { immediate: true });
 
@@ -256,59 +260,54 @@ const handleTranscriptionFromLayout = async (transcriptionText: string): Promise
 
   if (!agent) {
     toast?.add({ type: 'warning', title: 'No Assistant Selected', message: 'Please select an assistant to interact with.' });
-    console.log("[PublicHome] No current public agent selected. Cannot process transcription.");
     return;
   }
-
   if (isLoadingResponse.value) {
-    toast?.add({ type: 'info', title: 'Assistant Busy', message: 'Please wait for the current response to complete before sending a new message.' });
-    console.log("[PublicHome] Assistant is busy (isLoadingResponse is true). Transcription dropped.");
+    toast?.add({ type: 'info', title: 'Assistant Busy', message: 'Please wait for the current response.' });
     return;
   }
-
   if (rateLimitInfo.value?.tier === 'public' && (rateLimitInfo.value.remaining ?? 1) <= 0) {
-    toast?.add({ type: 'error', title: 'Daily Limit Reached', message: 'Public preview limit reached. Please log in for full access or try again later.'});
+    toast?.add({ type: 'error', title: 'Daily Limit Reached', message: 'Public preview limit reached. Please log in or try again later.'});
     chatStore.updateMainContent({
       agentId: 'rate-limit-exceeded' as AgentId, type: 'custom-component',
       data: 'RateLimitExceededPlaceholder', title: 'Daily Public Limit Reached', timestamp: Date.now()
     });
-    console.log("[PublicHome] Rate limit reached. Transcription dropped.");
     return;
   }
 
-  // Note: isVoiceInputCurrentlyProcessingAudio is set by the @voice-input-processing handler from UnifiedChatLayout.
-  // We don't set it to true here, as this function is about *initiating* the LLM call *after* STT is done.
-  // However, we set isLoadingResponse to true to indicate the LLM part of the cycle.
-
-  isLoadingResponse.value = true; // Indicate LLM processing is starting
+  isLoadingResponse.value = true;
 
   try {
     if (agent.isPublic && agent.capabilities?.handlesOwnInput && currentAgentViewComponent.value && agentViewRef.value) {
       console.log(`[PublicHome] Agent ${agent.label} handles own input. Calling dedicated handler.`);
       if (typeof agentViewRef.value.handleNewUserInput === 'function') {
         await agentViewRef.value.handleNewUserInput(transcriptionText);
-      } else if (typeof agentViewRef.value.processProblemContext === 'function') { // Example fallback
-        await agentViewRef.value.processProblemContext(transcriptionText);
       } else {
-        console.warn(`[PublicHome] Agent "${agent.label}" (ID: ${agent.id}) has 'handlesOwnInput' and a view, but no input handler method found. Falling back to standard chat.`);
+        console.warn(`[PublicHome] Agent "${agent.label}" has no 'handleNewUserInput'. Falling back.`);
         await standardLlmCallPublic(transcriptionText, agent);
       }
-       // For dedicated handlers, they should manage their own internal loading states for content updates.
-       // PublicHome's isLoadingResponse is for the main LLM call cycle if standardLlmCallPublic is used,
-       // or it's reset after the dedicated handler promise resolves if it was a dedicated agent.
-      isLoadingResponse.value = false; // Reset after dedicated handler is done.
     } else {
-      console.log(`[PublicHome] Agent ${agent.label} uses standard LLM call.`);
       await standardLlmCallPublic(transcriptionText, agent);
-      // standardLlmCallPublic will manage isLoadingResponse internally.
     }
   } catch (error: any) {
     console.error(`[PublicHome] Error during transcription handling for agent "${agent.label}":`, error);
-    toast?.add({type: 'error', title: 'Processing Error', message: error.message || `An error occurred while processing your request for ${agent.label}.`});
-    isLoadingResponse.value = false; // Ensure reset on general error
-  } 
-  // `isVoiceInputCurrentlyProcessingAudio` will be set to false by an event from VoiceInput when STT truly finishes its part.
-  // We should not reset it here as STT might still be in a brief finalization phase.
+    toast?.add({type: 'error', title: 'Processing Error', message: error.message || `Error with ${agent.label}.`});
+  } finally {
+    // isLoadingResponse is managed within standardLlmCallPublic or should be reset if dedicated handler was used
+    // For dedicated handlers, it's reset in the block above. For standard calls, it's reset within standardLlmCallPublic.
+    // If an error occurs before standardLlmCallPublic's finally, ensure it's reset:
+    if(isLoadingResponse.value && !(agent.isPublic && agent.capabilities?.handlesOwnInput && currentAgentViewComponent.value && agentViewRef.value)) {
+        // Only reset if standardLlmCallPublic was supposed to handle it and didn't reach its own finally
+    }
+    if (!(agent.isPublic && agent.capabilities?.handlesOwnInput && currentAgentViewComponent.value && agentViewRef.value)) {
+         // if it was not a dedicated agent, ensure loading is false
+         // standardLlmCallPublic should handle this, but as a safeguard:
+         // isLoadingResponse.value = false; // This might be too aggressive here if standardLlmCallPublic is async and hasn't finished
+    } else {
+        // if it was a dedicated agent, it should have reset its own or we reset it above
+        isLoadingResponse.value = false;
+    }
+  }
   console.log(`[PublicHome] handleTranscriptionFromLayout finished for "${transcriptionText}". isLoadingResponse: ${isLoadingResponse.value}`);
 };
 
@@ -317,10 +316,7 @@ async function standardLlmCallPublic(transcriptionText: string, agentInstance: I
   const agentLabel = agentInstance.label || 'Assistant';
   const userMessageTimestamp = Date.now();
 
-  // isLoadingResponse should already be true if this function is called from handleTranscriptionFromLayout
-  // If called directly, ensure it's set:
-  if (!isLoadingResponse.value) isLoadingResponse.value = true;
-
+  if (!isLoadingResponse.value) isLoadingResponse.value = true; // Ensure it's true
 
   chatStore.addMessage({ role: 'user', content: transcriptionText, agentId: agentId, timestamp: userMessageTimestamp });
 
@@ -328,84 +324,67 @@ async function standardLlmCallPublic(transcriptionText: string, agentInstance: I
     if (agentStore.activeAgentId === agentId) {
       chatStore.setMainContentStreaming(true, streamingPlaceholder);
       chatStore.updateMainContent({
-          agentId, type: 'loading', data: streamingPlaceholder,
-          title: `Contacting ${agentLabel}...`, timestamp: Date.now()
+        agentId, type: 'loading', data: streamingPlaceholder,
+        title: `Contacting ${agentLabel}...`, timestamp: Date.now()
       });
   }
 
   try {
-    // Ensure system prompt is loaded for general agents
     if (!agentInstance.capabilities?.handlesOwnInput || !currentAgentViewComponent.value) {
-        // Conditional prompt loading: only if not already loaded or seems default
         if (!currentSystemPromptText.value || currentSystemPromptText.value.startsWith(`You are ${agentLabel}`)) {
-            await loadCurrentAgentSystemPrompt(); // This updates currentSystemPromptText.value
-            if (!currentSystemPromptText.value) { // Still no specific prompt after load
-                throw new Error("System prompt could not be established for the agent.");
-            }
+            await loadCurrentAgentSystemPrompt();
+            if (!currentSystemPromptText.value) throw new Error("System prompt could not be established.");
         }
     }
-
     let finalSystemPrompt = currentSystemPromptText.value;
-      if (!finalSystemPrompt.trim() && agentInstance.systemPromptKey) {
-        console.warn(`[PublicHome] System prompt text was empty for ${agentLabel} after initial load attempt. Attempting to re-load or use default.`);
-        await loadCurrentAgentSystemPrompt();
-        finalSystemPrompt = currentSystemPromptText.value;
-        if (!finalSystemPrompt.trim()) {
-            finalSystemPrompt = `You are ${agentLabel}. ${agentInstance.description || 'Provide helpful assistance.'}`;
-        }
-    } else if (!finalSystemPrompt.trim()) { // If no key and text is empty, use a very basic default
+    if (!finalSystemPrompt.trim()) {
         finalSystemPrompt = `You are ${agentLabel}. ${agentInstance.description || 'Provide helpful assistance.'}`;
     }
-
 
     finalSystemPrompt = finalSystemPrompt
       .replace(/{{LANGUAGE}}/g, voiceSettingsManager.settings.preferredCodingLanguage || 'not specified')
       .replace(/{{MODE}}/g, agentId)
       .replace(/{{GENERATE_DIAGRAM}}/g, ((agentInstance.capabilities?.canGenerateDiagrams && voiceSettingsManager.settings.generateDiagrams) ?? false).toString())
-      .replace(/{{USER_QUERY}}/g, transcriptionText) // This might be redundant if user query is part of messages
+      .replace(/{{USER_QUERY}}/g, transcriptionText)
       .replace(/{{ADDITIONAL_INSTRUCTIONS}}/g, 'You are in a public preview mode. Be helpful but concise. Avoid offering actions you cannot perform like file access. Keep responses relatively short.');
 
     const historyConfig: Partial<AdvancedHistoryConfig> = {
-      maxContextTokens: voiceSettingsManager.settings.useAdvancedMemory ? 1800 : (agentInstance.capabilities?.maxChatHistory || 2) * 100, // Shorter context for public
+      maxContextTokens: voiceSettingsManager.settings.useAdvancedMemory ? 1800 : (agentInstance.capabilities?.maxChatHistory || 2) * 100,
       numRecentMessagesToPrioritize: agentInstance.capabilities?.maxChatHistory || 2,
-      simpleRecencyMessageCount: agentInstance.capabilities?.maxChatHistory || 2, // Fallback for simple history
+      simpleRecencyMessageCount: agentInstance.capabilities?.maxChatHistory || 2,
     };
     const historyForApi: ProcessedHistoryMessageFE[] = await chatStore.getHistoryForApi(agentId, transcriptionText, finalSystemPrompt, historyConfig);
-    
+
     let messagesForApiPayload: ChatMessageFE[] = historyForApi.map(hMsg => ({
         role: hMsg.role, content: hMsg.content, timestamp: hMsg.timestamp, agentId: hMsg.agentId,
         name: (hMsg as any).name, tool_calls: (hMsg as any).tool_calls, tool_call_id: (hMsg as any).tool_call_id,
     }));
-
-    // Ensure the current user message is the last user message if not already perfectly captured by history processing
     if (!messagesForApiPayload.some(m => m.role === 'user' && m.content === transcriptionText && m.timestamp === userMessageTimestamp)) {
         messagesForApiPayload.push({ role: 'user', content: transcriptionText, timestamp: userMessageTimestamp, agentId });
     }
     messagesForApiPayload.sort((a,b) => (a.timestamp || 0) - (b.timestamp || 0));
 
-
     const payload: ChatMessagePayloadFE = {
       messages: messagesForApiPayload,
-      mode: agentInstance.systemPromptKey || agentId, // Use systemPromptKey if available, else agentId as mode
+      mode: agentInstance.systemPromptKey || agentId,
       systemPromptOverride: finalSystemPrompt,
       language: voiceSettingsManager.settings.preferredCodingLanguage,
       generateDiagram: agentInstance.capabilities?.canGenerateDiagrams && voiceSettingsManager.settings.generateDiagrams,
       userId: auth.sessionUserId.value || `public_session_${Date.now().toString(36)}`,
       conversationId: chatStore.getCurrentConversationId(agentId),
-      stream: true, // Always stream for public home
+      stream: true,
     };
-    console.log("[PublicHome] Sending payload to chatAPI.sendMessageStream:", JSON.stringify(payload, null, 0).substring(0,300) + "...");
 
     let accumulatedResponse = "";
     await chatAPI.sendMessageStream(
       payload,
-      (chunk: string) => { // onChunkReceived
+      (chunk: string) => {
         accumulatedResponse += chunk;
-        if (agentStore.activeAgentId === agentId) { // Check if agent is still active
+        if (agentStore.activeAgentId === agentId) {
           chatStore.updateMainContent({
             agentId: agentId,
             type: agentInstance.capabilities?.usesCompactRenderer ? 'compact-message-renderer-data' : 'markdown',
-            data: accumulatedResponse + "▋", // Add streaming cursor
+            data: accumulatedResponse + "▋",
             title: `${agentLabel} Responding...`,
             timestamp: Date.now()
           });
@@ -422,9 +401,8 @@ async function standardLlmCallPublic(transcriptionText: string, agentInstance: I
             data: finalContent, title: `${agentLabel} Response`, timestamp: Date.now()
           });
         }
-        await fetchRateLimitInfo(); // Update rate limit info after successful interaction
+        await fetchRateLimitInfo();
         isLoadingResponse.value = false;
-        // isVoiceInputCurrentlyProcessingAudio will be set by VoiceInput component
       },
       async (error: Error | any) => { // onStreamError
         console.error(`[PublicHome] Chat Stream API error for agent "${agentLabel}":`, error);
@@ -438,15 +416,14 @@ async function standardLlmCallPublic(transcriptionText: string, agentInstance: I
           });
         }
         chatStore.setMainContentStreaming(false);
-        await fetchRateLimitInfo(); // Still fetch rate limit info on error
+        await fetchRateLimitInfo();
         isLoadingResponse.value = false;
-        // isVoiceInputCurrentlyProcessingAudio will be set by VoiceInput component
       }
     );
   } catch (error: any) {
     console.error(`[PublicHome] Chat API interaction setup error for agent "${agentLabel}":`, error.response?.data || error.message || error);
     const errorMsg = error.response?.data?.message || error.message || 'An unexpected error occurred.';
-    if (agentStore.activeAgentId === agentId) { // Check if agent is still active
+    if (agentStore.activeAgentId === agentId) {
         chatStore.addMessage({ role: 'error', content: `Interaction Error: ${errorMsg}`, agentId, timestamp: Date.now() });
         chatStore.updateMainContent({
             agentId, type: 'error',
@@ -454,13 +431,11 @@ async function standardLlmCallPublic(transcriptionText: string, agentInstance: I
             title: `Error Communicating with ${agentLabel}`, timestamp: Date.now()
         });
     }
-    isLoadingResponse.value = false; // Critical: reset loading state
-    // isVoiceInputCurrentlyProcessingAudio will be set by VoiceInput component
+    isLoadingResponse.value = false;
     chatStore.setMainContentStreaming(false);
-    // Check for 429 specifically from the error object if possible
     if (error.response?.status === 429 || error.message?.includes('429')) {
-        await fetchRateLimitInfo(); // Update UI with rate limit exceeded status
-        chatStore.updateMainContent({ // Explicitly set rate limit exceeded view
+        await fetchRateLimitInfo();
+        chatStore.updateMainContent({
             agentId: 'rate-limit-exceeded' as AgentId, type: 'custom-component',
             data: 'RateLimitExceededPlaceholder', title: 'Daily Public Limit Reached', timestamp: Date.now()
         });
@@ -468,11 +443,10 @@ async function standardLlmCallPublic(transcriptionText: string, agentInstance: I
   }
 }
 
-
 const formatResetTime = (dateInput?: string | Date): string => {
   if (!dateInput) return 'soon';
   const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
-  if (isNaN(date.getTime())) return 'shortly'; // Invalid date
+  if (isNaN(date.getTime())) return 'shortly';
   return date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', timeZoneName: 'short' });
 };
 
@@ -485,18 +459,15 @@ let rateLimitIntervalId: number | undefined;
 
 onMounted(async () => {
   document.addEventListener('click', handleClickOutsidePublicAgentSelector, true);
-  await auth.checkAuthStatus(); // Check auth status first
-  if (auth.isAuthenticated.value) { // If authenticated, redirect to private home
+  await auth.checkAuthStatus();
+  if (auth.isAuthenticated.value) {
     router.replace({ name: 'AuthenticatedHome' });
-    return; // Stop further execution for public home
+    return;
   }
-  
-  // If not authenticated, proceed with public home setup
   await fetchRateLimitInfo();
-  // Only load public agents if not authenticated and not already redirected
   if (!auth.isAuthenticated.value && rateLimitInfo.value?.tier !== 'authenticated') {
     await loadPublicAgentsAndSetDefault();
-    rateLimitIntervalId = window.setInterval(fetchRateLimitInfo, 60000 * 5); // Refresh rate limit every 5 mins
+    rateLimitIntervalId = window.setInterval(fetchRateLimitInfo, 60000 * 5);
   }
 });
 
@@ -555,9 +526,9 @@ onUnmounted(() => {
       <template #main-content>
         <component
           :is="currentAgentViewComponent"
-          v-if="currentPublicAgent && currentPublicAgent.isPublic && currentAgentViewComponent && typeof currentAgentViewComponent !== 'string'"
+          v-if="currentPublicAgent && currentPublicAgent.isPublic && currentAgentViewComponent && typeof currentAgentViewComponent !== 'string' && currentPublicAgent.capabilities?.handlesOwnInput"
           :key="currentPublicAgent.id + '-dedicated-public-ui'"
-          ref="agentViewRef" 
+          ref="agentViewRef"
           :agent-id="currentPublicAgent.id"
           :agent-config="currentPublicAgent"
           class="dedicated-agent-view h-full w-full"
@@ -593,31 +564,33 @@ onUnmounted(() => {
         </div>
 
         <MainContentView :agent="currentPublicAgent" class="main-content-view-wrapper-ephemeral default-agent-mcv h-full w-full"
-                           v-else-if="currentPublicAgent && mainContentData && mainContentData.type !== 'custom-component'">
-          <CompactMessageRenderer
-            v-if="currentPublicAgent?.capabilities?.usesCompactRenderer && (mainContentData.type === 'compact-message-renderer-data' || (mainContentData.type === 'markdown' && !chatStore.isMainContentStreaming))"
-            :content="mainContentData.data"
-            :mode="currentPublicAgent.id"
-            class="content-renderer-ephemeral"
-          />
+                         v-else-if="currentPublicAgent && mainContentData && mainContentData.type !== 'custom-component'">
+          <div v-if="currentPublicAgent?.capabilities?.usesCompactRenderer && (mainContentData.type === 'compact-message-renderer-data' || (mainContentData.type === 'markdown' && !chatStore.isMainContentStreaming))"
+               class="content-renderer-container-ephemeral">
+            <CompactMessageRenderer
+              :content="mainContentData.data"
+              :mode="currentPublicAgent.id"
+              class="content-renderer-ephemeral"
+            />
+          </div>
           <div v-else-if="mainContentData.type === 'markdown' || mainContentData.type === 'welcome'"
-               class="prose-ephemeral content-renderer-ephemeral"
+               class="prose-ephemeral content-renderer-ephemeral content-renderer-container-ephemeral"
                v-html="chatStore.isMainContentStreaming && (mainContentData.type === 'markdown') && chatStore.getCurrentMainContentDataForAgent(currentPublicAgent.id)?.agentId === currentPublicAgent.id ?
                        chatStore.streamingMainContentText + '<span class=\'streaming-cursor-ephemeral\'>▋</span>' :
                        mainContentData.data"
                aria-atomic="true">
           </div>
-            <div v-else-if="mainContentData.type === 'loading'"
-               class="prose-ephemeral content-renderer-ephemeral" 
+          <div v-else-if="mainContentData.type === 'loading'"
+               class="prose-ephemeral content-renderer-ephemeral content-renderer-container-ephemeral"
                v-html="mainContentData.data + (chatStore.isMainContentStreaming ? '<span class=\'streaming-cursor-ephemeral\'>▋</span>' : '')"
                aria-atomic="true">
           </div>
           <div v-else-if="mainContentData.type === 'error'"
-               class="prose-ephemeral prose-error content-renderer-ephemeral"
+               class="prose-ephemeral prose-error content-renderer-ephemeral content-renderer-container-ephemeral"
                v-html="mainContentData.data"
                aria-atomic="true">
           </div>
-          <div v-else class="content-renderer-ephemeral text-[var(--color-text-muted)] italic p-6 text-center">
+          <div v-else class="content-renderer-ephemeral text-[var(--color-text-muted)] italic p-6 text-center content-renderer-container-ephemeral">
             <p class="text-lg">Interacting with {{ currentPublicAgent.label }}.</p>
             <p class="text-sm mt-2">(Displaying content type: {{ mainContentData.type }})</p>
           </div>
@@ -629,7 +602,8 @@ onUnmounted(() => {
             <p class="loading-text-ephemeral !text-base mt-3">Loading Assistant...</p>
           </div>
         </div>
-         <div v-else class="public-welcome-placeholder-ephemeral"> <SparklesIcon class="hero-icon-ephemeral !text-[var(--color-text-muted)]" />
+         <div v-else class="public-welcome-placeholder-ephemeral">
+            <SparklesIcon class="hero-icon-ephemeral !text-[var(--color-text-muted)]" />
             <h2 class="welcome-title-ephemeral">Initializing Public Interface</h2>
             <p class="welcome-subtitle-ephemeral">Please wait a moment. Assistants are loading...</p>
         </div>
@@ -651,8 +625,8 @@ onUnmounted(() => {
     display: flex;
     flex-direction: column;
 }
-// .content-renderer-container-ephemeral { // Ensure this exists if used by default MainContentView structure
-//     flex-grow: 1;
-//     overflow-y: auto;
-// }
+.content-renderer-container-ephemeral { // Ensure this exists if used by default MainContentView structure
+    flex-grow: 1;
+    overflow-y: auto; // Manages scroll for default content types
+}
 </style>

@@ -1,83 +1,59 @@
 // File: frontend/src/components/Message.vue
 /**
  * @file Message.vue
- * @description Component to render an individual chat message (user, assistant, system, error, tool).
- * Features distinct styling per role, avatar display, timestamp, markdown rendering for content,
- * code block highlighting with a copy button, and a new general message copy button that appears on hover.
- * Designed for the "Ephemeral Harmony" theme with neo-holographic aesthetics.
+ * @description Component to render an individual chat message.
+ * Features role-based styling, avatars, Markdown rendering, code highlighting,
+ * text animation for assistant messages, and a hover-activated copy toolbar.
+ * Adheres to the "Ephemeral Harmony" design system.
  *
  * @component Message
- * @props {ChatMessageFE} message - The chat message object to display.
- * @props {string | null} [previousMessageSender=null] - The sender ID of the previous message, for grouping.
- * @props {boolean} [isLastMessageInGroup=true] - True if this is the last message from the current sender in a sequence.
+ * @props {ChatMessageFE} message - The chat message object.
+ * @props {string | null} [previousMessageSender=null] - Role of the previous sender for grouping.
+ * @props {boolean} [isLastMessageInGroup=true] - True if last in a sender's group.
  *
- * @emits copy-error - Emitted if copying to clipboard fails.
- * @emits copy-success - Emitted with the copied text upon successful copy.
+ * @emits copy-error - On clipboard copy failure.
+ * @emits copy-success - On successful clipboard copy.
  *
- * @version 4.1.3 - Corrected all TypeScript errors from user log. Ensured proper icon imports and usage.
- * Refined Markdown rendering options and toast feedback.
+ * @version 4.2.2 - Removed invalid ALLOWED_CLASSES from DOMPurify config.
  */
 <script setup lang="ts">
-import { computed, inject, ref, type PropType, type Component as VueComponentType } from 'vue';
-// Corrected import: Use ChatMessageFE and alias it to ChatMessage for internal consistency
-import { type ChatMessageFE as ChatMessage, type ILlmToolCallFE } from '@/utils/api';
+import { computed, inject, ref, type PropType, type Component as VueComponentType, watch, nextTick, onBeforeUnmount } from 'vue';
+import { type ChatMessageFE, type ILlmToolCallFE } from '@/utils/api';
 import { useUiStore } from '@/store/ui.store';
-import { marked, Renderer } from 'marked'; // Import Renderer for customization
+import { marked, Renderer as MarkedRenderer } from 'marked';
 import DOMPurify from 'dompurify';
-import hljs from 'highlight.js'; // Ensure hljs is configured globally or imported as needed
+import hljs from 'highlight.js';
 import type { ToastService } from '@/services/services';
+import { useTextAnimation, type TextRevealConfig } from '@/composables/useTextAnimation';
 
-// Import necessary icons - ensuring all are used or removed if superfluous
 import {
   UserCircleIcon as UserAvatarIcon,
   CpuChipIcon as AssistantAvatarIcon,
   WrenchScrewdriverIcon as ToolAvatarIcon,
-  InformationCircleIcon as SystemAvatarIcon, // Used for System role and as a fallback
+  InformationCircleIcon as SystemAvatarIcon,
   ExclamationTriangleIcon as ErrorAvatarIcon,
-  ClipboardDocumentIcon, // For the general message copy button
+  ClipboardDocumentIcon,
 } from '@heroicons/vue/24/outline';
-import { CheckCircleIcon as CopiedSuccessIcon } from '@heroicons/vue/24/solid'; // For toast feedback on copy
 
-/**
- * @props - Component's props definition.
- */
 const props = defineProps({
-  /** The chat message object to render. Type aliased to ChatMessage for internal use. */
-  message: { type: Object as PropType<ChatMessage>, required: true },
-  /** The sender ID of the message immediately preceding this one. Used for message grouping. */
+  message: { type: Object as PropType<ChatMessageFE>, required: true },
   previousMessageSender: { type: String as PropType<string | null>, default: null },
-  /** True if this message is the last in a contiguous block from the same sender. Affects bubble styling. */
   isLastMessageInGroup: { type: Boolean as PropType<boolean>, default: true },
 });
 
-/**
- * @emits - Defines custom events emitted by this component.
- */
 const emit = defineEmits<{
-  /** Emitted when an error occurs while trying to copy text to the clipboard. */
   (e: 'copy-error', error: Error): void;
-  /** Emitted upon successful copying of text to the clipboard. */
   (e: 'copy-success', copiedText: string): void;
 }>();
 
 const uiStore = useUiStore();
 const toast = inject<ToastService>('toast');
-
-/** @ref {Ref<boolean>} showMessageToolbar - Controls visibility of the hover toolbar. */
 const showMessageToolbar = ref(false);
 
-/**
- * @computed isSystemOrError
- * @description Determines if the message is a system or error message for special styling.
- * @returns {boolean}
- */
+const { animatedUnits, animateText, resetAnimation, isAnimating } = useTextAnimation();
+
 const isSystemOrError = computed<boolean>(() => props.message.role === 'system' || props.message.role === 'error');
 
-/**
- * @computed avatarIcon
- * @description Selects the appropriate avatar icon based on the message sender's role.
- * @returns {VueComponentType} The Vue component for the avatar icon.
- */
 const avatarIcon = computed<VueComponentType>(() => {
   switch (props.message.role) {
     case 'user': return UserAvatarIcon;
@@ -85,22 +61,12 @@ const avatarIcon = computed<VueComponentType>(() => {
     case 'tool': return ToolAvatarIcon;
     case 'system': return SystemAvatarIcon;
     case 'error': return ErrorAvatarIcon;
-    default: return SystemAvatarIcon; // Fallback to SystemAvatarIcon, already imported
+    default: return SystemAvatarIcon;
   }
 });
 
-/**
- * @computed avatarRoleClass
- * @description Generates a CSS class for the avatar wrapper based on the message role.
- * @returns {string} The CSS class string (e.g., 'avatar-user').
- */
 const avatarRoleClass = computed<string>(() => `avatar-${props.message.role}`);
 
-/**
- * @computed senderName
- * @description Determines the display name for the message sender.
- * @returns {string} The sender's name (e.g., "You", "Assistant", "System").
- */
 const senderName = computed<string>(() => {
   switch (props.message.role) {
     case 'user': return 'You';
@@ -109,42 +75,28 @@ const senderName = computed<string>(() => {
     case 'system': return 'System';
     case 'error': return 'Error Notification';
     default:
-      // This ensures all cases of ChatMessageRole are handled.
-      // If ChatMessageRole gets new values, TypeScript will error here if not updated.
       const _exhaustiveCheck: never = props.message.role;
       return 'Unknown Sender';
   }
 });
 
-/**
- * @computed formattedTimestamp
- * @description Formats the message timestamp into a user-friendly time string (e.g., "10:30 AM").
- * Returns an empty string if no timestamp is present.
- * @returns {string} The formatted time string.
- */
 const formattedTimestamp = computed<string>(() => {
   if (!props.message.timestamp) return '';
   return new Date(props.message.timestamp).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
 });
 
-/**
- * @const {Renderer} renderer - Custom `marked` renderer instance.
- * Used to customize HTML output for code blocks, adding wrappers, language class, and copy button.
- */
-const renderer = new Renderer();
+const renderer = new MarkedRenderer();
 renderer.code = (code: string, languageString: string | undefined): string => {
   const language = (languageString || 'plaintext').toLowerCase().split(/[\s{]/)[0];
   const validLanguage = hljs.getLanguage(language) ? language : 'plaintext';
   const highlightedCode = hljs.highlight(code, { language: validLanguage, ignoreIllegals: true }).value;
   const lines = highlightedCode.split('\n');
-  // The `index` in map is used for `key` in v-for if this were a Vue template, but here it's for generating HTML string.
-  // It's also useful for the line number itself.
-  const numberedCode = lines.map((lineContent, index) => `<span class="line-number" aria-hidden="true">${index + 1}</span><span class="line-content">${lineContent}</span>`).join('\n');
+  const numberedCode = lines.map((lineContent, index) =>
+    `<span class="line-number" aria-hidden="true">${index + 1}</span><span class="line-content">${lineContent || '&nbsp;'}</span>`
+  ).join('\n');
 
-  // SVG for copy icon
   const copyIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" /></svg>`;
-  // SVG for copied (success) icon
-  const copiedIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-[hsl(var(--color-success-h),var(--color-success-s),var(--color-success-l))]"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
+  const copiedIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 text-[hsl(var(--color-success-h),var(--color-success-s),var(--color-success-l))]"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.06 0l4.002-5.5a.75.75 0 00-.326-1.075z" clip-rule="evenodd" /></svg>`;
 
   return `
     <div class="code-block-wrapper" data-language="${validLanguage}">
@@ -162,29 +114,18 @@ marked.setOptions({
   renderer: renderer,
   gfm: true,
   breaks: true,
-  // Removed `sanitize: false` (deprecated). DOMPurify is used after parsing.
 });
 
-/**
- * @computed renderedContent
- * @description Parses raw message content (Markdown) into sanitized HTML using `marked` and `DOMPurify`.
- * Handles tool call summaries if no direct content.
- * @returns {string} Sanitized HTML string.
- */
 const renderedContent = computed<string>(() => {
   if (props.message.content) {
     const rawHtml = marked.parse(props.message.content) as string;
-    // Sanitize HTML after parsing to prevent XSS.
+    // Corrected DOMPurify configuration: removed invalid ALLOWED_CLASSES
     return DOMPurify.sanitize(rawHtml, {
-      USE_PROFILES: { html: true }, // Allow standard HTML tags
+      USE_PROFILES: { html: true },
       ADD_ATTR: ['target', 'start'], // Allow target for links, start for ol
-      ADD_TAGS: ['span'], // Allow span for line numbers/content if used by hljs or custom
-      // Ensure class attribute is allowed if hljs relies on it for styling spans.
-      // Usually, hljs classes like 'hljs-keyword' are safe.
-      // Allowing all classes can be risky if the markdown source is untrusted.
-      // For a controlled environment where markdown is from AI, allowing common hljs classes is typical.
-      // Alternatively, style based on tag names if hljs output is predictable.
-      // For now, this setup is generally safe for standard Markdown + hljs output.
+      ADD_TAGS: ['span'],           // Allow span for line numbers/content used by custom renderer + hljs
+      // Class attributes on allowed tags (like <span>) are generally preserved by default.
+      // If specific filtering of classes is needed, DOMPurify hooks would be the advanced approach.
     });
   }
   if (props.message.tool_calls && props.message.tool_calls.length > 0) {
@@ -203,17 +144,14 @@ const messageBubbleClasses = computed(() => ({
   'message-container-ephemeral': true,
   [`${props.message.role}-bubble-ephemeral`]: true,
   'system-error-bubble-ephemeral': isSystemOrError.value,
+  'user-message-for-tail': props.message.role === 'user',
+  'assistant-message-for-tail': props.message.role === 'assistant',
+  'is-last-in-group': props.isLastMessageInGroup,
 }));
 
-/**
- * @function copyMessageContent
- * @description Copies the raw text content of the message to the clipboard.
- * Provides user feedback via toast notifications.
- * @returns {Promise<void>}
- */
 const copyMessageContent = async (): Promise<void> => {
   const contentToCopy = props.message.content ||
-                       (props.message.tool_calls ? `[Tool call: ${props.message.tool_calls.map((tc: ILlmToolCallFE) => tc.function.name).join(', ')}]` : '');
+                        (props.message.tool_calls ? `[Tool call: ${props.message.tool_calls.map((tc: ILlmToolCallFE) => tc.function.name).join(', ')}]` : '');
 
   if (!contentToCopy.trim()) {
     toast?.add({ type: 'warning', title: 'Nothing to Copy', message: 'This message has no text content.', duration: 3000 });
@@ -221,7 +159,6 @@ const copyMessageContent = async (): Promise<void> => {
   }
   try {
     await navigator.clipboard.writeText(contentToCopy.trim());
-    // Icon is handled by App.vue's toast system based on type
     toast?.add({ type: 'success', title: 'Message Copied!', duration: 2000 });
     emit('copy-success', contentToCopy.trim());
   } catch (err) {
@@ -231,12 +168,6 @@ const copyMessageContent = async (): Promise<void> => {
   }
 };
 
-/**
- * @function handleCodeCopy
- * @description Event delegation handler for copy buttons within code blocks.
- * Copies the code content to the clipboard and provides visual feedback on the button.
- * @param {Event} event - The click event.
- */
 const handleCodeCopy = async (event: Event) => {
   const button = (event.target as HTMLElement).closest('.copy-code-button');
   if (!button) return;
@@ -244,13 +175,12 @@ const handleCodeCopy = async (event: Event) => {
   const pre = button.closest('.code-block-wrapper')?.querySelector('pre code');
   if (!pre) return;
 
-  // Extract text only from .line-content spans to avoid copying line numbers
   const codeToCopy = Array.from(pre.querySelectorAll('.line-content'))
-                          .map(line => line.textContent || '')
-                          .join('\n')
-                          .trim(); // Trim leading/trailing newlines that might accumulate
+                      .map(line => line.textContent || '')
+                      .join('\n')
+                      .trim();
 
-  if (!codeToCopy) { // Check if it's empty after trim
+  if (!codeToCopy) {
     toast?.add({ type: 'warning', title: 'Nothing to Copy', message: 'Code block is empty.', duration: 3000 });
     return;
   }
@@ -272,6 +202,41 @@ const handleCodeCopy = async (event: Event) => {
     toast?.add({ type: 'error', title: 'Copy Failed', message: 'Could not copy code.', duration: 3000 });
   }
 };
+
+const shouldAnimateContent = computed(() => {
+  return props.message.role === 'assistant' && props.message.content && props.message.content.trim() !== '';
+});
+
+watch(() => props.message, async (newMessage, oldMessage) => {
+  const isNewMessageInstance = newMessage !== oldMessage;
+  const contentActuallyChanged = newMessage.content !== oldMessage?.content;
+  // Ensure newMessage.content is a string before passing to animateText
+  const isValidAssistantMessageForAnimation = newMessage.role === 'assistant' && typeof newMessage.content === 'string' && newMessage.content.trim() !== '';
+
+  if (isValidAssistantMessageForAnimation) {
+    if (isNewMessageInstance || contentActuallyChanged) {
+      resetAnimation();
+      await nextTick();
+      const animationConfig: Partial<TextRevealConfig> = {
+        mode: 'word',
+        durationPerUnit: uiStore.isReducedMotionPreferred ? 5 : 40,
+        staggerDelay: uiStore.isReducedMotionPreferred ? 2 : 20,
+        animationStyle: 'organic',
+      };
+      // newMessage.content is guaranteed to be a string here due to isValidAssistantMessageForAnimation check
+      animateText(newMessage.content!, animationConfig);
+    }
+  } else {
+    if (isAnimating.value || animatedUnits.value.length > 0) {
+      resetAnimation();
+    }
+  }
+}, { immediate: true, deep: true });
+
+onBeforeUnmount(() => {
+  resetAnimation();
+});
+
 </script>
 
 <template>
@@ -299,6 +264,23 @@ const handleCodeCopy = async (event: Event) => {
       </div>
 
       <div
+        v-if="shouldAnimateContent && (isAnimating || (animatedUnits.length > 0 && message.content && animatedUnits[0]?.content?.startsWith(message.content.substring(0,1))))"
+        class="message-content-area-ephemeral animated-text-container prose-ephemeral"
+        :class="{'prose-invert': uiStore.isCurrentThemeDark && props.message.role !== 'user' && props.message.role !== 'tool'}"
+        @click.capture="handleCodeCopy"
+      >
+        <span
+          v-for="unit in animatedUnits"
+          :key="unit.key"
+          :style="unit.style"
+          :class="[
+            ...unit.classes,
+            (unit.type === 'word' && unit.content.includes('\n')) || (unit.type === 'char' && unit.content === '\n') ? 'whitespace-pre-wrap' : ''
+          ]"
+        >{{ unit.content }}</span>
+      </div>
+      <div
+        v-else
         class="message-content-area-ephemeral prose-ephemeral"
         :class="{'prose-invert': uiStore.isCurrentThemeDark && props.message.role !== 'user' && props.message.role !== 'tool'}"
         v-html="renderedContent"
@@ -338,24 +320,45 @@ const handleCodeCopy = async (event: Event) => {
 .message-toolbar-ephemeral {
   position: absolute;
   top: var.$spacing-xs;
-  right: var.$spacing-xs;
+  right: var.$spacing-xs; // Default for LTR, adjust in _message.scss for user messages
   display: flex;
   gap: var.$spacing-xs;
-  background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.5);
-  padding: calc(var.$spacing-xs / 1.5);
+  background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.65);
+  padding: calc(var.$spacing-xs / 1.8);
   border-radius: var.$radius-md;
-  backdrop-filter: blur(3.5px);
+  backdrop-filter: blur(4px);
   box-shadow: var(--shadow-depth-sm);
   z-index: 3;
 }
 
 .message-action-button {
-  color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), calc(var(--color-text-muted-l) + 10%));
-  .icon-xs { width: 0.9rem; height: 0.9rem; } /* Adjusted size */
+  color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), calc(var(--color-text-muted-l) + 15%));
+  .icon-xs { width: 0.95rem; height: 0.95rem; }
 
   &:hover {
     color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
-    background-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.15) !important;
+    background-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.1) !important;
+  }
+}
+
+.whitespace-pre-wrap {
+  white-space: pre-wrap;
+}
+.animated-text-container {
+  span {
+    display: inline-block;
+    &.whitespace-pre-wrap { // More specific handling for newlines if they are single char units
+      display: block;
+      height: 0;
+      content: ''; // Ensure it doesn't add visual artifacts if it's just a newline character
+    }
+  }
+  // Apply prose styling if this replaces a prose div
+  &.prose-ephemeral {
+    // Standard prose styles from _typography.scss or global styles will apply to spans.
+    // For example, if prose sets p { margin-bottom: ... }, it won't directly apply to spans here.
+    // You might need to add specific typography styles to animated units if they need to mimic block elements.
+    // For now, word/character animations are best for flowing text.
   }
 }
 </style>
