@@ -6,12 +6,11 @@
  * selects the appropriate mode based on user settings, and delegates STT operations
  * to the currently active STT handler.
  *
- * @version 1.4.0
- * @updated 2025-06-04 - Corrected playSound assignment in createModeContext to align with SttModeContext.
- * Replaced string literal "vad" with 'voice-activation' for AudioInputMode comparisons.
- * Removed unused destructured audioMode variable; using options.audioMode directly.
- * Ensured SttHandlerErrorPayload is used for error handling.
+ * @version 1.5.0
+ * @updated 2025-06-05 - Made cleanup more robust to prevent 'cannot read properties of null' error.
+ * - Added UI feedback message on audio mode switch.
  */
+
 import { computed, watch, shallowRef, effectScope, onScopeDispose, type EffectScope } from 'vue';
 import type { ShallowRef, ComputedRef, Ref } from 'vue';
 import type { VoiceApplicationSettings, AudioInputMode } from '@/services/voice.settings.service';
@@ -21,7 +20,7 @@ import { VadMode } from './modes/useVadMode';
 import type { BaseSttMode, SttModeContext } from './modes/BaseSttMode';
 import type { VoiceInputSharedState } from './shared/useVoiceInputState';
 import type { AudioFeedbackInstance } from './shared/useAudioFeedback';
-import type { useTranscriptionDisplay } from './shared/useTranscriptionDisplay';
+import type { useTranscriptionDisplay } from './shared/useTranscriptionDisplay'; // Corrected import name
 import type { SttHandlerInstance, SttEngineType, SttHandlerErrorPayload } from '../types';
 import type { ToastService } from '@/services/services';
 
@@ -32,7 +31,7 @@ export interface UseSttModeManagerOptions {
   micPermissionStatus: Ref<string>;
   isProcessingLLM: Ref<boolean>;
   audioFeedback: AudioFeedbackInstance;
-  transcriptionDisplay: ReturnType<typeof useTranscriptionDisplay>;
+  transcriptionDisplay: ReturnType<typeof useTranscriptionDisplay>; // Correct type
   emit: (event: string, ...args: any[]) => void;
   toast?: ToastService;
 }
@@ -53,17 +52,10 @@ export interface SttModeManagerInstance {
   handleErrorFromHandler: (errorPayload: SttHandlerErrorPayload) => void;
 }
 
-/**
- * @function useSttModeManager
- * @description Factory function to create and manage STT modes and their interaction with STT handlers.
- * @param {UseSttModeManagerOptions} options - Dependencies and configuration for the manager.
- * @returns {SttModeManagerInstance} The public API of the STT Mode Manager.
- */
 export function useSttModeManager(
-  options: UseSttModeManagerOptions // audioMode is part of options
+  options: UseSttModeManagerOptions
 ): SttModeManagerInstance {
   const {
-    // audioMode is not destructured here, options.audioMode will be used directly
     settings,
     sharedState,
     micPermissionStatus,
@@ -81,7 +73,13 @@ export function useSttModeManager(
 
   const isActive = computed<boolean>(() => currentModeInstance.value?.isActive.value ?? false);
   const canStart = computed<boolean>(() => currentModeInstance.value?.canStart.value ?? false);
-  const statusText = computed<string>(() => currentModeInstance.value?.statusText.value ?? 'Initializing...');
+  const statusText = computed<string>(() => {
+    // If transcription display is showing a mode hint, prioritize that for a moment.
+    if (sharedState.currentRecordingStatusHtml.value.includes('mode-hint-feedback')) {
+        return sharedState.currentRecordingStatusHtml.value;
+    }
+    return currentModeInstance.value?.statusText.value ?? 'Initializing...';
+  });
   const placeholderText = computed<string>(() => currentModeInstance.value?.placeholderText.value ?? 'Please wait...');
 
   const createModeContext = (): SttModeContext => ({
@@ -91,11 +89,10 @@ export function useSttModeManager(
     settings,
     sharedState,
     transcriptionDisplay,
-    audioFeedback, // This is the AudioFeedbackInstance
+    audioFeedback,
     toast,
     emit,
-    audioMode: options.audioMode, // Pass the manager's audioMode ref
-    // Ensure this assignment matches the corrected signature in SttModeContext
+    audioMode: options.audioMode,
     playSound: (buffer: AudioBuffer | null, volume?: number) => audioFeedback.playSound(buffer, volume),
   });
 
@@ -103,12 +100,9 @@ export function useSttModeManager(
     const context = createModeContext();
     console.log(`[SttModeManager] Creating mode: ${modeValue}`);
     switch (modeValue) {
-      case 'push-to-talk':
-        return new PttMode(context);
-      case 'continuous':
-        return new ContinuousMode(context);
-      case 'voice-activation': // Corrected from "vad"
-        return new VadMode(context);
+      case 'push-to-talk': return new PttMode(context);
+      case 'continuous': return new ContinuousMode(context);
+      case 'voice-activation': return new VadMode(context);
       default:
         console.error(`[SttModeManager] Unknown audio mode: ${modeValue}`);
         toast?.add({ type: 'error', title: 'Mode Error', message: `Unknown audio mode: ${modeValue}`});
@@ -118,20 +112,57 @@ export function useSttModeManager(
 
   const switchMode = async (newModeValue: AudioInputMode): Promise<void> => {
     console.log(`[SttModeManager] Switching mode to: ${newModeValue}`);
-    if (currentModeInstance.value) {
-      console.log(`[SttModeManager] Cleaning up old mode: ${currentModeInstance.value.constructor.name}`);
-      await currentModeInstance.value.stop();
-      currentModeInstance.value.cleanup();
+    const oldModeInstance = currentModeInstance.value;
+    if (oldModeInstance) {
+      console.log(`[SttModeManager] Cleaning up old mode: ${oldModeInstance.constructor.name}`);
+      await oldModeInstance.stop();
+      oldModeInstance.cleanup();
     }
+
     currentModeInstance.value = createMode(newModeValue);
     console.log(`[SttModeManager] Switched to new mode: ${currentModeInstance.value?.constructor.name}`);
 
-    if (currentModeInstance.value && (newModeValue === 'continuous' || newModeValue === 'voice-activation')) { // Corrected from "vad"
-      if (micPermissionStatus.value === 'granted' && !isProcessingLLM.value && activeHandlerApi.value) {
+    if (currentModeInstance.value) {
+      let modeHint = "";
+      const currentModeIsActive = currentModeInstance.value.isActive.value; // Check if it auto-started
+
+      switch(newModeValue) {
+        case 'push-to-talk':
+          if (!currentModeIsActive) modeHint = "Push-to-Talk: Hold mic to speak.";
+          break;
+        case 'voice-activation':
+          if (!currentModeIsActive) {
+            const wakeWords = settings.value.vadWakeWordsBrowserSTT ?? [];
+            const displayWakeWord = (wakeWords.length > 0 ? wakeWords[0] : 'wake word').toUpperCase();
+            modeHint = `VAD Ready: Say "${displayWakeWord}" or press mic.`;
+          }
+          break;
+        case 'continuous':
+          if (!currentModeIsActive) modeHint = "Continuous Ready: Press mic to start listening.";
+          break;
+      }
+      if (modeHint) {
+        transcriptionDisplay.showInterimTranscript(`
+            ${modeHint}
+            `);
+            // <span class="mode-hint-feedback">
+            // </span>
+
+        setTimeout(() => {
+          // Clear only if the hint is still the current message
+          if (sharedState.currentRecordingStatusHtml.value.includes(modeHint)) {
+            transcriptionDisplay.clearTranscription();
+          }
+        }, 5000);
+      }
+    }
+
+    if (currentModeInstance.value && (newModeValue === 'continuous' || newModeValue === 'voice-activation')) {
+      if (micPermissionStatus.value === 'granted' && !isProcessingLLM.value && activeHandlerApi.value && currentModeInstance.value.canStart.value) {
         console.log(`[SttModeManager] Auto-starting ${newModeValue} mode after switch.`);
         await currentModeInstance.value.start();
       } else {
-        console.log(`[SttModeManager] Conditions not met for auto-starting ${newModeValue} after switch: mic=${micPermissionStatus.value}, llm=${isProcessingLLM.value}, handler=${!!activeHandlerApi.value}`);
+        console.log(`[SttModeManager] Conditions not met for auto-starting ${newModeValue} after switch: mic=${micPermissionStatus.value}, llm=${isProcessingLLM.value}, handler=${!!activeHandlerApi.value}, canStart=${currentModeInstance.value?.canStart.value}`);
       }
     }
   };
@@ -143,7 +174,7 @@ export function useSttModeManager(
       console.log(`[SttModeManager] Setting active handler to registered: ${type}`);
       activeHandlerApi.value = api;
       if (currentModeInstance.value && !currentModeInstance.value.isActive.value && currentModeInstance.value.canStart.value) {
-        if (options.audioMode.value === 'continuous' || options.audioMode.value === 'voice-activation') { // Corrected from "vad"
+        if (options.audioMode.value === 'continuous' || options.audioMode.value === 'voice-activation') {
           console.log(`[SttModeManager] Handler registered, auto-starting ${options.audioMode.value} mode.`);
           currentModeInstance.value.start();
         }
@@ -156,17 +187,48 @@ export function useSttModeManager(
     const handler = handlers.get(type);
     if (handler) {
       await handler.stopAll(true);
-      handlers.delete(type); // 'type' parameter is used by Map.delete
+      handlers.delete(type);
     }
     if (activeHandlerApi.value === handler) {
       console.log(`[SttModeManager] Active handler ${type} was unregistered.`);
       activeHandlerApi.value = null;
-      if (currentModeInstance.value?.isActive.value) {
-        console.warn(`[SttModeManager] Active STT handler removed while mode ${currentModeInstance.value.constructor.name} was active. Stopping mode.`);
-        await currentModeInstance.value.stop();
+      const modeToStop = currentModeInstance.value; // Capture instance
+      if (modeToStop?.isActive.value) {
+        console.warn(`[SttModeManager] Active STT handler removed while mode ${modeToStop.constructor.name} was active. Stopping mode.`);
+        await modeToStop.stop();
       }
     }
   };
+
+  const cleanup = async (): Promise<void> => {
+    console.log('[SttModeManager] Cleanup initiated.');
+    const modeToCleanup = currentModeInstance.value; // Capture the instance before any async ops
+    currentModeInstance.value = null; // Set to null early to prevent race conditions for new mode creation
+
+    if (modeToCleanup) {
+      console.log(`[SttModeManager] Cleaning up mode: ${modeToCleanup.constructor.name}`);
+      try {
+        await modeToCleanup.stop();
+        modeToCleanup.cleanup();
+      } catch (e) {
+        console.error(`[SttModeManager] Error during mode cleanup for ${modeToCleanup.constructor.name}:`, e);
+      }
+    }
+
+    // Iterate over a copy of handlers if modification during iteration is a concern, though Map.values() should be fine.
+    for (const [type, handlerApiInstance] of handlers) {
+      console.log(`[SttModeManager] Stopping handler during cleanup: ${type}`);
+      try {
+        await handlerApiInstance.stopAll(true);
+      } catch (e) {
+         console.error(`[SttModeManager] Error stopping handler ${type} during cleanup:`, e);
+      }
+    }
+    handlers.clear();
+    activeHandlerApi.value = null; // Clear active handler API
+    console.log('[SttModeManager] Cleanup complete.');
+  };
+
 
   const handleMicButtonClick = async (): Promise<void> => {
     if (!currentModeInstance.value) {
@@ -195,59 +257,47 @@ export function useSttModeManager(
   };
 
   const handleTranscriptionFromHandler = (text: string, isFinal: boolean): void => {
-    if (!currentModeInstance.value) {
+    const mode = currentModeInstance.value; // Capture instance
+    if (!mode) {
       console.warn('[SttModeManager] Received transcription but no current mode instance.');
       return;
     }
     if (isFinal) {
-      currentModeInstance.value.handleTranscription(text);
+      mode.handleTranscription(text);
     } else {
-      if (currentModeInstance.value instanceof ContinuousMode || currentModeInstance.value instanceof VadMode) {
-        (currentModeInstance.value as ContinuousMode | VadMode).handleInterimTranscript?.(text);
-      } else if (currentModeInstance.value instanceof PttMode) {
-        (currentModeInstance.value as PttMode).handleInterimTranscript?.(text);
+      if (mode instanceof ContinuousMode || mode instanceof VadMode) {
+        (mode as ContinuousMode | VadMode).handleInterimTranscript?.(text);
+      } else if (mode instanceof PttMode) {
+        (mode as PttMode).handleInterimTranscript?.(text);
       }
     }
   };
 
   const handleWakeWordDetectedFromHandler = async (): Promise<void> => {
-    if (options.audioMode.value === 'voice-activation' && currentModeInstance.value instanceof VadMode) { // Corrected from "vad"
-      await (currentModeInstance.value as VadMode).handleWakeWordDetected();
+    const mode = currentModeInstance.value; // Capture instance
+    if (options.audioMode.value === 'voice-activation' && mode instanceof VadMode) {
+      await (mode as VadMode).handleWakeWordDetected();
     } else {
-      console.warn(`[SttModeManager] Received wake word, but current mode is not VadMode or audioMode is not 'voice-activation'. Mode: ${currentModeInstance.value?.constructor.name}, AudioSetting: ${options.audioMode.value}`);
+      console.warn(
+        `[SttModeManager] Received wake word, but current mode is not VadMode or audioMode is not 'voice-activation'. Mode: ${mode?.constructor.name}, AudioSetting: ${options.audioMode.value}`
+      );
     }
   };
 
   const handleErrorFromHandler = (errorPayload: SttHandlerErrorPayload): void => {
     console.error('[SttModeManager] Error from STT handler:', errorPayload);
-    if (currentModeInstance.value) {
-      currentModeInstance.value.handleError(errorPayload); // Pass the payload directly
+    const mode = currentModeInstance.value; // Capture instance
+    if (mode) {
+      mode.handleError(errorPayload);
     } else {
       emit('error', errorPayload);
       toast?.add({type: 'error', title: `STT Error: ${errorPayload.type}`, message: errorPayload.message });
     }
   };
 
-  const cleanup = async (): Promise<void> => {
-    console.log('[SttModeManager] Cleanup initiated.');
-    if (currentModeInstance.value) {
-      await currentModeInstance.value.stop();
-      currentModeInstance.value.cleanup();
-      currentModeInstance.value = null;
-    }
-    for (const handlerApiInstance of handlers.values()) {
-      await handlerApiInstance.stopAll(true);
-    }
-    handlers.clear();
-    activeHandlerApi.value = null;
-    console.log('[SttModeManager] Cleanup complete.');
-  };
-
   scope.run(() => {
     watch(options.audioMode, (newMode, oldMode) => {
-      if (newMode !== oldMode) {
-        switchMode(newMode);
-      }
+      if (newMode !== oldMode) switchMode(newMode);
     }, { immediate: true });
 
     watch(() => settings.value.sttPreference, (newEnginePreference, oldEnginePreference) => {
@@ -257,9 +307,10 @@ export function useSttModeManager(
       if (preferredHandler) {
         if (activeHandlerApi.value !== preferredHandler) {
           activeHandlerApi.value = preferredHandler;
-           if (currentModeInstance.value && !currentModeInstance.value.isActive.value && currentModeInstance.value.canStart.value) {
-             if (options.audioMode.value === 'continuous' || options.audioMode.value === 'voice-activation') { // Corrected from "vad"
-                currentModeInstance.value.start();
+           const mode = currentModeInstance.value; // Capture instance
+           if (mode && !mode.isActive.value && mode.canStart.value) {
+             if (options.audioMode.value === 'continuous' || options.audioMode.value === 'voice-activation') {
+                mode.start();
              }
            }
         }
@@ -269,45 +320,48 @@ export function useSttModeManager(
     }, { immediate: true });
 
     watch(isProcessingLLM, async (isProcessing) => {
-      if (!currentModeInstance.value) return;
-      if (isProcessing && currentModeInstance.value.isActive.value) {
-        if (currentModeInstance.value instanceof VadMode && (currentModeInstance.value as VadMode).getCurrentPhase() === 'listening-wake') {
+      const mode = currentModeInstance.value; // Capture instance
+      if (!mode) return;
+      if (isProcessing && mode.isActive.value) {
+        if (mode instanceof VadMode && (mode as VadMode).getCurrentPhase() === 'listening-wake') {
           console.log('[SttModeManager] LLM processing started, VAD wake listening continues.');
           return;
         }
         console.log('[SttModeManager] LLM processing started, stopping active STT mode.');
-        await currentModeInstance.value.stop();
-      } else if (!isProcessing && !currentModeInstance.value.isActive.value) {
-        if ((options.audioMode.value === 'continuous' || options.audioMode.value === 'voice-activation') && // Corrected from "vad"
-            micPermissionStatus.value === 'granted' && activeHandlerApi.value && currentModeInstance.value.canStart.value) {
+        await mode.stop();
+      } else if (!isProcessing && !mode.isActive.value) {
+        if ((options.audioMode.value === 'continuous' || options.audioMode.value === 'voice-activation') &&
+            micPermissionStatus.value === 'granted' && activeHandlerApi.value && mode.canStart.value) {
           console.log('[SttModeManager] LLM processing finished, auto-starting STT mode.');
-          await currentModeInstance.value.start();
+          await mode.start();
         }
       }
     });
 
     watch(micPermissionStatus, async (newStatus, oldStatus) => {
-      if (!currentModeInstance.value || newStatus === oldStatus) return;
+      const mode = currentModeInstance.value; // Capture instance
+      if (!mode || newStatus === oldStatus) return;
       if (newStatus === 'granted') {
-        if (oldStatus !== 'granted' && (options.audioMode.value === 'continuous' || options.audioMode.value === 'voice-activation') && // Corrected from "vad"
-            !currentModeInstance.value.isActive.value && !isProcessingLLM.value && activeHandlerApi.value && currentModeInstance.value.canStart.value) {
+        if (oldStatus !== 'granted' && (options.audioMode.value === 'continuous' || options.audioMode.value === 'voice-activation') &&
+            !mode.isActive.value && !isProcessingLLM.value && activeHandlerApi.value && mode.canStart.value) {
           console.log('[SttModeManager] Mic permission granted, auto-starting STT mode.');
-          await currentModeInstance.value.start();
+          await mode.start();
         }
       } else if (newStatus === 'denied' || newStatus === 'error') {
-        if (currentModeInstance.value.isActive.value) {
+        if (mode.isActive.value) {
           console.warn('[SttModeManager] Mic permission lost/denied. Stopping active STT mode.');
-          await currentModeInstance.value.stop();
+          await mode.stop();
           toast?.add({ type: 'error', title: 'Microphone Error', message: 'Microphone access was lost or denied.' });
         }
       }
     });
-  }); // End of scope.run()
+  });
 
   onScopeDispose(async () => {
+    console.log('[SttModeManager] Effect scope disposing. Running cleanup.');
     await cleanup();
-    scope.stop();
-    console.log('[SttModeManager] Effect scope disposed.');
+    // scope.stop(); // Vue should handle stopping the scope if created in setup()
+    console.log('[SttModeManager] Effect scope cleanup processing finished for onScopeDispose.');
   });
 
   return {
