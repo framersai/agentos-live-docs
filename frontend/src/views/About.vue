@@ -11,6 +11,7 @@ import { ref, reactive, type Component as VueComponent, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import DiagramViewer from '@/components/DiagramViewer.vue';
 import { themeManager } from '@/theme/ThemeManager'; // To potentially influence diagram themes dynamically
+import logoSvg from '@/assets/logo.svg';
 
 import {
   ArrowLeftIcon,
@@ -218,7 +219,7 @@ const missionItems = ref([
     <main class="about-main-content-area">
       <section class="hero-section-about card-glass-interactive">
         <div class="hero-logo-wrapper">
-          <img src="@/assets/logo.svg" alt="AgentOS Logo" class="hero-logo-main spinning-glow-logo" />
+          <img :src="logoSvg" alt="AgentOS Logo" class="hero-logo-main spinning-glow-logo" />
         </div>
         <h2 class="hero-main-title">The Future is a Conversation.</h2>
         <p class="hero-sub-title">
