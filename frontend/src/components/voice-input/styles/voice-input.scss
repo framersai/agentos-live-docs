@@ -1,689 +1,967 @@
 // File: frontend/src/components/voice-input/styles/voice-input.scss
 /**
  * @file voice-input.scss
- * @description SCSS styles for the VoiceInput.vue component and its sub-components.
- * Implements the "Ephemeral Harmony" design language with themed, dynamic, and state-responsive visuals.
- * Focus on visibility for transcriptions, VAD visualizations, and refined "breathing" effects.
- *
- * @version 3.7.1 - Ensuring full restoration of provided styles for visibility and effects.
+ * @description Complete styles for VoiceInput component with theme integration
+ * @version 4.0.0 - Complete rewrite with all fixes
  */
 
 @use '../../../styles/abstracts/variables' as var;
 @use '../../../styles/abstracts/mixins' as mixins;
 
 // -----------------------------------------------------------------------------
-// Main Voice Input Panel - Container & Base Styling
+// Z-index hierarchy
 // -----------------------------------------------------------------------------
-.voice-input-panel-ephemeral {
+$z-base: 1;
+$z-background: 2;
+$z-content: 10;
+$z-visualization: 15;
+$z-controls: 20;
+$z-toolbar: 30;
+$z-dropdown: 35;
+$z-modal: 40;
+
+// -----------------------------------------------------------------------------
+// Theme-specific gradient mappings
+// -----------------------------------------------------------------------------
+@mixin theme-gradients($theme-name) {
+  @if $theme-name == 'sakura-sunset' {
+    // Pink/coral flowing gradients
+    --vi-gradient-idle: radial-gradient(ellipse at 50% 50%, 
+      hsla(340, 35%, 25%, 0.3) 0%, 
+      hsla(345, 30%, 20%, 0.1) 60%,
+      transparent 100%);
+    --vi-gradient-stt-active: radial-gradient(ellipse at 50% 50%, 
+      hsla(15, 75%, 80%, 0.25) 0%, 
+      hsla(10, 70%, 75%, 0.15) 40%,
+      hsla(340, 35%, 25%, 0.05) 80%,
+      transparent 100%);
+    --vi-gradient-vad-listening: radial-gradient(ellipse at 50% 100%, 
+      hsla(335, 85%, 70%, 0.2) 0%, 
+      hsla(340, 80%, 65%, 0.1) 50%,
+      transparent 100%);
+    --vi-gradient-llm-processing: radial-gradient(ellipse at 50% 50%, 
+      hsla(345, 80%, 78%, 0.15) 0%, 
+      hsla(350, 75%, 75%, 0.08) 60%,
+      transparent 100%);
+    --vi-mic-gradient-idle: linear-gradient(135deg, 
+      hsla(340, 85%, 70%, 0.9), 
+      hsla(335, 90%, 75%, 0.8));
+    --vi-mic-gradient-active: linear-gradient(135deg, 
+      hsla(15, 75%, 80%, 1), 
+      hsla(10, 70%, 78%, 0.9));
+    --vi-send-gradient: linear-gradient(140deg,
+      hsla(340, 92%, 76%, 1),
+      hsla(355, 88%, 82%, 0.95));
+  } @else if $theme-name == 'twilight-neo' {
+    // Blue/cyan sharp gradients
+    --vi-gradient-idle: radial-gradient(ellipse at 50% 50%, 
+      hsla(220, 30%, 12%, 0.3) 0%, 
+      hsla(220, 25%, 10%, 0.1) 60%,
+      transparent 100%);
+    --vi-gradient-stt-active: radial-gradient(ellipse at 50% 50%, 
+      hsla(270, 90%, 72%, 0.25) 0%, 
+      hsla(270, 85%, 68%, 0.15) 40%,
+      hsla(220, 30%, 12%, 0.05) 80%,
+      transparent 100%);
+    --vi-gradient-vad-listening: radial-gradient(ellipse at 50% 100%, 
+      hsla(185, 100%, 55%, 0.2) 0%, 
+      hsla(180, 95%, 60%, 0.1) 50%,
+      transparent 100%);
+    --vi-gradient-llm-processing: radial-gradient(ellipse at 50% 50%, 
+      hsla(180, 95%, 62%, 0.15) 0%, 
+      hsla(180, 90%, 65%, 0.08) 60%,
+      transparent 100%);
+    --vi-mic-gradient-idle: linear-gradient(135deg, 
+      hsla(180, 95%, 60%, 0.9), 
+      hsla(185, 100%, 55%, 0.8));
+    --vi-mic-gradient-active: linear-gradient(135deg, 
+      hsla(270, 90%, 72%, 1), 
+      hsla(270, 85%, 65%, 0.9));
+    --vi-send-gradient: linear-gradient(140deg,
+      hsla(180, 95%, 60%, 1),
+      hsla(270, 85%, 65%, 0.95));
+  } @else if $theme-name == 'aurora-daybreak' {
+    // Pink/violet vibrant gradients
+    --vi-gradient-idle: radial-gradient(ellipse at 50% 50%, 
+      hsla(330, 25%, 93%, 0.4) 0%, 
+      hsla(320, 20%, 90%, 0.2) 60%,
+      transparent 100%);
+    --vi-gradient-stt-active: radial-gradient(ellipse at 50% 50%, 
+      hsla(260, 75%, 75%, 0.3) 0%, 
+      hsla(260, 70%, 72%, 0.2) 40%,
+      hsla(330, 25%, 93%, 0.1) 80%,
+      transparent 100%);
+    --vi-gradient-vad-listening: radial-gradient(ellipse at 50% 100%, 
+      hsla(340, 92%, 68%, 0.25) 0%, 
+      hsla(330, 90%, 65%, 0.15) 50%,
+      transparent 100%);
+    --vi-gradient-llm-processing: radial-gradient(ellipse at 50% 50%, 
+      hsla(340, 80%, 70%, 0.2) 0%, 
+      hsla(330, 75%, 68%, 0.1) 60%,
+      transparent 100%);
+    --vi-mic-gradient-idle: linear-gradient(135deg, 
+      hsla(330, 90%, 65%, 1), 
+      hsla(340, 92%, 68%, 0.95));
+    --vi-mic-gradient-active: linear-gradient(135deg, 
+      hsla(260, 75%, 75%, 1), 
+      hsla(270, 85%, 70%, 0.95));
+    --vi-send-gradient: linear-gradient(140deg,
+      hsla(330, 90%, 65%, 1),
+      hsla(270, 85%, 70%, 0.95));
+  } @else if $theme-name == 'warm-embrace' {
+    // Orange/yellow warm gradients
+    --vi-gradient-idle: radial-gradient(ellipse at 50% 50%, 
+      hsla(35, 70%, 91%, 0.4) 0%, 
+      hsla(30, 60%, 87%, 0.2) 60%,
+      transparent 100%);
+    --vi-gradient-stt-active: radial-gradient(ellipse at 50% 50%, 
+      hsla(170, 60%, 65%, 0.3) 0%, 
+      hsla(170, 55%, 60%, 0.2) 40%,
+      hsla(35, 70%, 91%, 0.1) 80%,
+      transparent 100%);
+    --vi-gradient-vad-listening: radial-gradient(ellipse at 50% 100%, 
+      hsla(30, 80%, 60%, 0.25) 0%, 
+      hsla(25, 75%, 65%, 0.15) 50%,
+      transparent 100%);
+    --vi-gradient-llm-processing: radial-gradient(ellipse at 50% 50%, 
+      hsla(40, 80%, 70%, 0.2) 0%, 
+      hsla(45, 70%, 65%, 0.1) 60%,
+      transparent 100%);
+    --vi-mic-gradient-idle: linear-gradient(135deg, 
+      hsla(25, 75%, 65%, 1), 
+      hsla(30, 80%, 60%, 0.95));
+    --vi-mic-gradient-active: linear-gradient(135deg, 
+      hsla(170, 60%, 65%, 1), 
+      hsla(170, 55%, 60%, 0.95));
+    --vi-send-gradient: linear-gradient(140deg,
+      hsla(25, 75%, 65%, 1),
+      hsla(45, 70%, 60%, 0.95));
+  } @else if $theme-name == 'terminus-dark' {
+    // Neon cyan/green terminal gradients
+    --vi-gradient-idle: radial-gradient(ellipse at 50% 50%, 
+      hsla(0, 0%, 5%, 0.5) 0%, 
+      hsla(0, 0%, 3%, 0.3) 60%,
+      transparent 100%);
+    --vi-gradient-stt-active: radial-gradient(ellipse at 50% 50%, 
+      hsla(330, 100%, 70%, 0.2) 0%, 
+      hsla(330, 100%, 65%, 0.1) 40%,
+      hsla(0, 0%, 5%, 0.05) 80%,
+      transparent 100%);
+    --vi-gradient-vad-listening: radial-gradient(ellipse at 50% 100%, 
+      hsla(180, 100%, 65%, 0.15) 0%, 
+      hsla(180, 100%, 60%, 0.08) 50%,
+      transparent 100%);
+    --vi-gradient-llm-processing: radial-gradient(ellipse at 50% 50%, 
+      hsla(180, 100%, 65%, 0.1) 0%, 
+      hsla(270, 90%, 65%, 0.05) 60%,
+      transparent 100%);
+    --vi-mic-gradient-idle: linear-gradient(135deg, 
+      hsla(180, 100%, 65%, 0.8), 
+      hsla(180, 100%, 55%, 0.6));
+    --vi-mic-gradient-active: linear-gradient(135deg, 
+      hsla(330, 100%, 70%, 0.9), 
+      hsla(330, 100%, 65%, 0.7));
+    --vi-send-gradient: linear-gradient(140deg,
+      hsla(180, 100%, 65%, 0.9),
+      hsla(270, 90%, 65%, 0.8));
+  } @else if $theme-name == 'terminus-light' {
+    // Monochrome terminal gradients
+    --vi-gradient-idle: radial-gradient(ellipse at 50% 50%, 
+      hsla(0, 0%, 92%, 0.5) 0%, 
+      hsla(0, 0%, 89%, 0.3) 60%,
+      transparent 100%);
+    --vi-gradient-stt-active: radial-gradient(ellipse at 50% 50%, 
+      hsla(0, 0%, 30%, 0.2) 0%, 
+      hsla(0, 0%, 35%, 0.1) 40%,
+      hsla(0, 0%, 92%, 0.05) 80%,
+      transparent 100%);
+    --vi-gradient-vad-listening: radial-gradient(ellipse at 50% 100%, 
+      hsla(0, 0%, 15%, 0.15) 0%, 
+      hsla(0, 0%, 20%, 0.08) 50%,
+      transparent 100%);
+    --vi-gradient-llm-processing: radial-gradient(ellipse at 50% 50%, 
+      hsla(0, 0%, 40%, 0.1) 0%, 
+      hsla(0, 0%, 45%, 0.05) 60%,
+      transparent 100%);
+    --vi-mic-gradient-idle: linear-gradient(135deg, 
+      hsla(0, 0%, 10%, 1), 
+      hsla(0, 0%, 15%, 0.95));
+    --vi-mic-gradient-active: linear-gradient(135deg, 
+      hsla(0, 0%, 30%, 1), 
+      hsla(0, 0%, 35%, 0.95));
+    --vi-send-gradient: linear-gradient(140deg,
+      hsla(0, 0%, 10%, 1),
+      hsla(0, 0%, 25%, 0.95));
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Main Voice Input Panel
+// -----------------------------------------------------------------------------
+.voice-input-panel {
   position: relative;
-  background-color: hsla(
+  background: hsla(
     var(--color-bg-secondary-h, var.$default-color-bg-secondary-h),
     var(--color-bg-secondary-s, var.$default-color-bg-secondary-s),
     var(--color-bg-secondary-l, var.$default-color-bg-secondary-l),
     0.92
   );
-  backdrop-filter: blur(var(--blur-voice-input-wrapper, 18px));
-  border-radius: var.$radius-xl;
-  padding: var.$spacing-sm var.$spacing-md;
-  transition:
-    background-color var.$duration-smooth var.$ease-out-cubic,
-    box-shadow var.$duration-smooth var.$ease-out-cubic,
-    border-color var.$duration-smooth var.$ease-out-cubic,
-    opacity var.$duration-smooth var.$ease-out-cubic;
-  overflow: visible; // Allow popovers/toolbars like InputToolbar
+  backdrop-filter: blur(20px) saturate(1.8);
+  border-radius: 24px;
+  padding: 20px;
+  overflow: visible; // Critical for toolbar visibility
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   width: 100%;
-  box-shadow: var(--shadow-voice-input-wrapper, var.$shadow-depth-lg);
-  border: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.2);
-
-  &.layout-wide-screen {
-    width: var(--width-voice-input-panel-wide, 70%);
-    max-width: var(--width-voice-input-centered-max, 800px);
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  // State-driven animated border glow (Outer Glow)
-  &::before {
-    content: '';
-    position: absolute;
-    inset: -2px; // Creates the border effect outside the main panel
-    background: conic-gradient(
-      from var(--gradient-angle, 0deg),
-      hsla(var(--state-glow-color-h, var.$default-color-accent-primary-h), var(--state-glow-color-s, var.$default-color-accent-primary-s), var(--state-glow-color-l, var.$default-color-accent-primary-l), 0),
-      hsla(var(--state-glow-color-h, var.$default-color-accent-primary-h), var(--state-glow-color-s, var.$default-color-accent-primary-s), var(--state-glow-color-l, var.$default-color-accent-primary-l), var(--state-glow-opacity, 0)),
-      hsla(var(--state-glow-color-h2, var.$default-color-accent-secondary-h), var(--state-glow-color-s2, var.$default-color-accent-secondary-s), var(--state-glow-color-l2, var.$default-color-accent-secondary-l), calc(var(--state-glow-opacity, 0) * 0.75)),
-      hsla(var(--state-glow-color-h, var.$default-color-accent-primary-h), var(--state-glow-color-s, var.$default-color-accent-primary-s), var(--state-glow-color-l, var.$default-color-accent-primary-l), 0)
-    );
-    border-radius: calc(var.$radius-xl + 2px); // Match parent + inset
-    opacity: 0;
-    animation: rotate-gradient 8s linear infinite paused;
-    transition: opacity var.$duration-smooth var.$ease-out-cubic, background var.$duration-smooth var.$ease-out-cubic;
-    z-index: -1; // Behind the main panel content
-    pointer-events: none;
-  }
-
-  // Radial pulse overlay (Inner Effect for specific states)
-  &::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background-image: radial-gradient(
-      circle at 50% 50%,
-      hsla(var(--color-voice-user-h, var.$default-color-voice-user-h), var(--color-voice-user-s, var.$default-color-voice-user-s), var(--color-voice-user-l, var.$default-color-voice-user-l), 0) 0%,
-      hsla(var(--color-voice-user-h, var.$default-color-voice-user-h), var(--color-voice-user-s, var.$default-color-voice-user-l), var(--color-voice-user-l, var.$default-color-voice-user-l), 0.15) 40%,
-      hsla(var(--color-voice-user-h, var.$default-color-voice-user-h), var(--color-voice-user-s, var.$default-color-voice-user-s), var(--color-voice-user-l, var.$default-color-voice-user-l), 0) 80%
-    );
-    opacity: 0;
-    transform: scale(0.8);
-    animation: radialPulseEffect 3s var.$ease-in-out-sine infinite paused;
-    transition: opacity var.$duration-smooth var.$ease-out-cubic, transform var.$duration-smooth var.$ease-out-cubic;
-    z-index: 0; // Above background pattern, below main content
-    pointer-events: none;
-  }
-
-  &.state-idle {
-    --state-glow-opacity: 0.35;
-    --state-glow-color-h: var(--color-accent-primary-h, var.$default-color-accent-primary-h);
-    --state-glow-color-s: var(--color-accent-primary-s, var.$default-color-accent-primary-s);
-    --state-glow-color-l: var(--color-accent-primary-l, var.$default-color-accent-primary-l);
-    --state-glow-color-h2: var(--color-accent-secondary-h, var.$default-color-accent-secondary-h);
-    --state-glow-color-s2: var(--color-accent-secondary-s, var.$default-color-accent-secondary-s);
-    --state-glow-color-l2: var(--color-accent-secondary-l, var.$default-color-accent-secondary-l);
-    &::before { opacity: var(--state-glow-opacity); animation-play-state: running; animation-duration: 10s; }
-  }
-
-  &.state-stt-active { // Main STT (PTT, VAD command, Continuous main command capture)
-    --state-glow-opacity: 0.9;
-    --state-glow-color-h: var(--color-voice-user-h, var.$default-color-voice-user-h);
-    --state-glow-color-s: var(--color-voice-user-s, var.$default-color-voice-user-s);
-    --state-glow-color-l: var(--color-voice-user-l, var.$default-color-voice-user-l);
-    --state-glow-color-h2: hsl(calc(var(--color-voice-user-h, var.$default-color-voice-user-h) + 25), var(--color-voice-user-s, var.$default-color-voice-user-s), calc(var(--color-voice-user-l, var.$default-color-voice-user-l) + 5%));
-    background-color: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), calc(var(--color-bg-secondary-l) + 2%), 0.98);
-    box-shadow: var(--shadow-voice-input-wrapper-active, var.$shadow-depth-xl);
-    border-color: hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.3);
-    &::before { opacity: var(--state-glow-opacity); animation-play-state: running; animation-duration: 3.5s; }
-    // Activate inner pulse for active listening/recording
-    &::after { animation-play-state: running; opacity: 1; transform: scale(1); }
-  }
-
-  &.state-vad-listening-wake { // VAD listening for wake word
-    --state-glow-opacity: 0.65;
-    --state-glow-color-h: var(--color-accent-interactive-h, var.$default-color-accent-interactive-h);
-    --state-glow-color-s: var(--color-accent-interactive-s, var.$default-color-accent-interactive-s);
-    --state-glow-color-l: var(--color-accent-interactive-l, var.$default-color-accent-interactive-l);
-    --state-glow-color-h2: hsl(calc(var(--color-accent-interactive-h, var.$default-color-accent-interactive-h) - 20), var(--color-accent-interactive-s, var.$default-color-accent-interactive-s), calc(var(--color-accent-interactive-l, var.$default-color-accent-interactive-l) - 5%));
-    background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.97);
-    border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.25);
-    &::before { opacity: var(--state-glow-opacity); animation-play-state: running; animation-duration: 5s; }
-    &::after { // More subtle pulse for VAD wake
-        animation: radialPulseEffect 4s var.$ease-in-out-sine infinite .5s; // Slower, delayed start
-        animation-play-state: running;
-        opacity: 0.7; transform: scale(0.9);
-        background-image: radial-gradient( circle at 50% 50%, hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0) 0%, hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.1) 40%, hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0) 75% );
-    }
-  }
-
-  &.state-llm-processing { // Assistant responding/thinking
-    --state-glow-opacity: 0.55;
-    --state-glow-color-h: var(--color-accent-secondary-h, var.$default-color-accent-secondary-h);
-    --state-glow-color-s: var(--color-accent-secondary-s, var.$default-color-accent-secondary-s);
-    --state-glow-color-l: var(--color-accent-secondary-l, var.$default-color-accent-secondary-l);
-    --state-glow-color-h2: hsl(calc(var(--color-accent-secondary-h, var.$default-color-accent-secondary-h) + 20), var(--color-accent-secondary-s, var.$default-color-accent-secondary-s), var(--color-accent-secondary-l, var.$default-color-accent-secondary-l));
-    opacity: 0.96;
-    border-color: hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.15);
-    &::before { opacity: var(--state-glow-opacity); animation: shimmer-border 3s ease-in-out infinite alternate; }
-    &::after { animation-play-state: paused; opacity: 0; } // No inner pulse when LLM processing
-  }
-
-  &.mic-permission-denied,
-  &.mic-permission-error {
-    --state-glow-opacity: 0.8;
-    --state-glow-color-h: var(--color-error-h, var.$default-color-error-h);
-    --state-glow-color-s: var(--color-error-s, var.$default-color-error-s);
-    --state-glow-color-l: var(--color-error-l, var.$default-color-error-l);
-    --state-glow-color-h2: hsl(calc(var(--color-error-h, var.$default-color-error-h) - 15), calc(var(--color-error-s, var.$default-color-error-s) * 0.9), calc(var(--color-error-l, var.$default-color-error-l) * 0.85));
-    background-color: hsla(var(--color-error-h), var(--color-error-s), calc(var(--color-error-l) * 0.2), 0.25);
-    border-color: hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.4);
-    &::before { opacity: var(--state-glow-opacity); animation: error-pulse-border 1.5s var.$ease-in-out-quad infinite; }
-    &::after { animation-play-state: paused; opacity: 0; }
-  }
-
-  // This targets the prominent radial pulse when continuous listening is active AND text input is hidden/de-emphasized.
-  &.continuous-listening-active.input-area-continuous-active {
-    &::after {
-      animation-play-state: running;
-      opacity: 1;
-      transform: scale(1);
-      // Use a specific, more prominent gradient for this continuous "listening field"
-      background-image: radial-gradient(
-        circle at 50% 50%,
-        hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0) 10%,
-        hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.2) 50%, // Stronger mid-point
-        hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0) 85%
-      );
-    }
+  
+  // Apply theme gradients
+  &[data-theme="sakura-sunset"] { @include theme-gradients('sakura-sunset'); }
+  &[data-theme="twilight-neo"] { @include theme-gradients('twilight-neo'); }
+  &[data-theme="aurora-daybreak"] { @include theme-gradients('aurora-daybreak'); }
+  &[data-theme="warm-embrace"] { @include theme-gradients('warm-embrace'); }
+  &[data-theme="terminus-dark"] { @include theme-gradients('terminus-dark'); }
+  &[data-theme="terminus-light"] { @include theme-gradients('terminus-light'); }
+  
+  // Default theme gradients
+  @include theme-gradients('sakura-sunset');
+  
+  // Neomorphic shadows
+  box-shadow: 
+    12px 12px 24px hsla(var(--color-shadow-h), var(--color-shadow-s), var(--color-shadow-l), 0.2),
+    -12px -12px 24px hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), calc(var(--color-bg-primary-l) + 10%), 0.1),
+    inset 1px 1px 2px hsla(255, 255%, 255%, 0.1);
+  
+  &.vi-wide {
+    max-width: 800px;
+    margin: 0 auto;
   }
 }
 
-// Background Visual Effects
-.geometric-pattern-bg {
-  position: absolute;
-  inset: calc(-1 * var.$spacing-xl * 2.5);
-  width: calc(100% + (var.$spacing-xl * 5));
-  height: calc(100% + (var.$spacing-xl * 5));
-  z-index: -2; // Furthest back
-  opacity: var(--pattern-opacity, 0.02);
-  transition: opacity var.$duration-smooth ease-in-out;
-  pointer-events: none;
-  .pattern-stroke {
-    stroke: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
-    stroke-width: var(--pattern-stroke-width, 0.5px);
-    transition: stroke var.$duration-smooth ease-in-out, stroke-opacity var.$duration-smooth ease-in-out;
-  }
-  .voice-input-panel-ephemeral.state-stt-active & { --pattern-opacity: 0.07; .pattern-stroke { stroke: hsl(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l)); } }
-  .voice-input-panel-ephemeral.state-llm-processing & { --pattern-opacity: 0.015; .pattern-stroke { stroke: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l)); } }
-  .voice-input-panel-ephemeral.state-vad-listening-wake & { --pattern-opacity: 0.05; .pattern-stroke { stroke: hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l)); } }
-}
-
-.dynamic-gradient-bg {
+// -----------------------------------------------------------------------------
+// Background Layers
+// -----------------------------------------------------------------------------
+.vi-background-layers {
   position: absolute;
   inset: 0;
-  z-index: -1; // Behind panel border glow, above pattern
-  border-radius: inherit;
-  opacity: var(--gradient-opacity, 0);
-  transition: opacity var.$duration-smooth var.$ease-out-quad;
-  pointer-events: none;
-  .voice-input-panel-ephemeral.state-stt-active &,
-  .voice-input-panel-ephemeral.state-vad-listening-wake &,
-  .voice-input-panel-ephemeral.state-llm-processing & { --gradient-opacity: 0.6; }
-}
-
-// Ignored Text Animation
-.ignored-text-container-ephemeral {
-  position: absolute;
-  top: -50px; // Start above the panel
-  left: 0;
-  width: 100%;
-  height: 40px; // Area for text to float up into
   pointer-events: none;
   overflow: hidden;
-  z-index: 15; // Above most panel content, below popups
+  border-radius: inherit;
+  z-index: $z-background;
 }
 
-.ignored-text-ephemeral {
+.vi-geometric-pattern {
   position: absolute;
-  left: 50%; // Centered initially
-  bottom: 0; // Starts at the bottom of its container
-  transform: translateX(-50%);
-  color: hsla(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l), 0.7);
-  font-size: var.$font-size-xs;
-  padding: 2px 6px;
-  background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.3);
-  border-radius: var.$radius-sm;
-  white-space: nowrap;
-  transition: opacity 0.6s var.$ease-out-quad, transform 0.6s var.$ease-out-quad, filter 0.6s var.$ease-out-quad;
+  inset: -50px;
+  width: calc(100% + 100px);
+  height: calc(100% + 100px);
+  opacity: 0.03;
+  color: var(--color-accent-primary);
+  transition: opacity 0.5s ease;
+  
+  .state-stt-active & { opacity: 0.07; color: var(--color-voice-user); }
+  .state-vad-listening & { opacity: 0.05; color: var(--color-accent-interactive); }
+  .state-llm-processing & { opacity: 0.02; color: var(--color-accent-secondary); }
 }
 
-// Voice Visualization Canvas - Ensuring visibility for VAD bars
-.voice-visualization-canvas-ephemeral {
+.vi-gradient-bg {
   position: absolute;
-  bottom: calc(100% + var.$spacing-xs + 4px); // Ensure it's above the panel
+  inset: 0;
+  opacity: 1;
+  mix-blend-mode: soft-light;
+  transition: background 0.8s ease, opacity 0.5s ease;
+  background: var(--vi-gradient-idle);
+  
+  .state-stt-active & { background: var(--vi-gradient-stt-active); }
+  .state-vad-listening & { background: var(--vi-gradient-vad-listening); }
+  .state-llm-processing & { background: var(--vi-gradient-llm-processing); opacity: 0.7; }
+}
+
+// -----------------------------------------------------------------------------
+// Visualization Canvas
+// -----------------------------------------------------------------------------
+.vi-visualization-bg {
+  position: absolute;
+  bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  width: var(--width-viz-canvas-default, 200px);
-  height: var(--height-viz-canvas-default, 50px);
-  opacity: 0; // Start hidden
-  visibility: hidden; // Start hidden
+  width: 300px;
+  height: 100px;
+  opacity: 0.3;
+  filter: blur(1px);
+  mix-blend-mode: screen;
+  transition: all 0.5s ease;
+  z-index: $z-visualization;
   pointer-events: none;
-  z-index: 3;
-  filter: drop-shadow(0 2px 5px hsla(var(--color-shadow-h), var(--color-shadow-s), var(--color-shadow-l), 0.2));
-  transition: all var.$duration-smooth var.$ease-out-expo, opacity var.$duration-smooth var.$ease-out-quad, transform var.$duration-smooth var.$ease-out-expo, visibility 0s var.$duration-smooth; // Transition visibility correctly
-
-  &.prominent, &.vad-bars-active {
-    opacity: 0.9; // Make visible
-    visibility: visible;
-    transition-delay: 0s; // Ensure visibility transition is immediate when becoming visible
+  
+  &.viz-active {
+    opacity: 0.5;
+    filter: blur(0);
   }
-
-  &.prominent {
-    width: clamp(240px, 60vw, 380px);
-    height: clamp(65px, 13vh, 110px);
-    bottom: calc(100% + var.$spacing-sm);
+  
+  &.viz-prominent {
+    bottom: 30px;
+    width: 400px;
+    height: 120px;
+    opacity: 0.7;
   }
-
-  &.vad-bars-active { // Specific styling for VAD volume bars
-    width: var(--width-viz-canvas-vad, 220px);
-    height: var(--height-viz-canvas-vad, 60px);
-  }
-
-  .voice-input-panel-ephemeral.continuous-listening-active &.continuous-viz-active { // Full panel takeover
-    opacity: 1;
-    visibility: visible;
-    top: 50%;
-    left: 50%;
-    bottom: auto;
-    transform: translate(-50%, -50%);
-    width: clamp(280px, 70vw, 450px);
-    height: clamp(80px, 15vh, 120px);
-    z-index: 12;
-  }
-
-  .voice-input-panel-ephemeral.state-llm-processing &.prominent,
-  .voice-input-panel-ephemeral.state-llm-processing &.vad-bars-active {
-    opacity: 0.35; // Dim if LLM processing
+  
+  .state-llm-processing & {
+    opacity: 0.1;
   }
 }
 
-
-// Input and Controls Wrapper & Text Input Area
-.input-and-controls-wrapper-ephemeral {
+// -----------------------------------------------------------------------------
+// Controls Wrapper
+// -----------------------------------------------------------------------------
+.vi-controls-wrapper {
   display: flex;
-  flex-direction: column;
-  gap: var.$spacing-sm;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
   position: relative;
-  z-index: 10; // Ensure controls are above background effects
+  z-index: $z-controls;
 }
 
-.input-area-ephemeral {
+// -----------------------------------------------------------------------------
+// Microphone Button
+// -----------------------------------------------------------------------------
+.vi-mic-button {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  border: none;
+  background: var(--vi-mic-gradient-idle);
+  border-radius: 50%;
+  color: var(--color-text-on-primary);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.64, -0.58, 0.34, 1.56);
+  overflow: visible;
+  
+  // Neomorphic effect
+  box-shadow: 
+    6px 6px 12px hsla(var(--color-shadow-h), var(--color-shadow-s), var(--color-shadow-l), 0.15),
+    -6px -6px 12px hsla(255, 255%, 255%, 0.05),
+    inset 1px 1px 2px hsla(255, 255%, 255%, 0.1);
+  
+  &:hover:not(:disabled) {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 
+      8px 8px 16px hsla(var(--color-shadow-h), var(--color-shadow-s), var(--color-shadow-l), 0.2),
+      -8px -8px 16px hsla(255, 255%, 255%, 0.08),
+      inset 1px 1px 3px hsla(255, 255%, 255%, 0.15),
+      0 0 20px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.3);
+  }
+  
+  &:active:not(:disabled) {
+    transform: scale(0.95);
+  }
+  
+  &.vi-mic-active {
+    background: var(--vi-mic-gradient-active);
+    animation: mic-pulse 1.5s ease-in-out infinite;
+    
+    .vi-mic-rings circle {
+      animation: ring-pulse 2s ease-out infinite;
+    }
+  }
+  
+  &.vi-mic-vad {
+    background: linear-gradient(
+      135deg,
+      hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.9),
+      hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.7)
+    );
+    
+    .vi-mic-rings circle {
+      animation: ring-breathe 3s ease-in-out infinite;
+    }
+  }
+  
+  &.vi-mic-error {
+    background: linear-gradient(
+      135deg,
+      hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.9),
+      hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.7)
+    );
+    animation: error-shake 0.5s ease-in-out;
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.vi-mic-icon {
+  width: 32px;
+  height: 32px;
+  position: relative;
+  z-index: 2;
+}
+
+.vi-mic-rings {
+  position: absolute;
+  inset: -20px;
+  pointer-events: none;
+  
+  circle {
+    transform-origin: center;
+    opacity: 0;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Mode Selector Dropdown
+// -----------------------------------------------------------------------------
+.vi-mode-selector {
+  position: relative;
+  z-index: $z-dropdown;
+  
+  // Ensure dropdown menu appears above everything
+  .dropdown-menu {
+    z-index: $z-dropdown + 1;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 4px;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Hint Display
+// -----------------------------------------------------------------------------
+.vi-hint-display {
+  flex: 1;
+  padding: 8px 16px;
+  background: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.6);
+  border-radius: 12px;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  backdrop-filter: blur(10px);
+  opacity: 0;
+  animation: hint-fade-in 0.3s ease forwards;
+  
+  &.vi-hint-success {
+    color: var(--color-success);
+  }
+  
+  &.vi-hint-warning {
+    color: var(--color-warning);
+  }
+  
+  &.vi-hint-info {
+    color: var(--color-accent-primary);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Input Area
+// -----------------------------------------------------------------------------
+.vi-input-wrapper {
+  position: relative;
+  z-index: $z-content;
+  
+  &.vi-input-disabled {
+    opacity: 0.7;
+    pointer-events: none;
+  }
+}
+
+.vi-input-container {
   position: relative;
   display: flex;
   align-items: flex-end;
-  gap: var.$spacing-xs;
-  transition: opacity var.$duration-smooth ease-in-out, filter var.$duration-smooth ease-in-out;
-
-  // Dim/disable textarea when in continuous active mode and text input is hidden
-  &.input-area-continuous-active {
-    .voice-textarea-ephemeral {
-      opacity: var(--opacity-input-disabled-continuous, 0.35); // More noticeable dimming
-      filter: blur(0.8px); // Slightly more blur
-      pointer-events: none;
-    }
-    .send-button-ephemeral-v2 { // Also disable send button in this state
-        opacity: 0.35;
-        pointer-events: none;
-    }
-  }
-  &.input-area-llm-processing {
-    .voice-textarea-ephemeral {
-      opacity: 0.6; // Keep some visibility if LLM is processing but STT is idle
-    }
+  gap: 12px;
+  padding: 12px;
+  background: linear-gradient(
+    to right,
+    hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.6),
+    hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), calc(var(--color-bg-tertiary-l) + 5%), 0.4)
+  );
+  border-radius: 16px;
+  
+  // Inset neomorphic effect
+  box-shadow: 
+    inset 2px 2px 4px hsla(var(--color-shadow-h), var(--color-shadow-s), var(--color-shadow-l), 0.1),
+    inset -2px -2px 4px hsla(255, 255%, 255%, 0.05);
+  
+  &:focus-within {
+    box-shadow: 
+      inset 2px 2px 4px hsla(var(--color-shadow-h), var(--color-shadow-s), var(--color-shadow-l), 0.15),
+      inset -2px -2px 4px hsla(255, 255%, 255%, 0.08),
+      0 0 0 2px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.3);
   }
 }
 
-.voice-textarea-ephemeral {
-  flex-grow: 1;
-  min-height: var(--height-voice-textarea-min, 48px);
-  max-height: var(--height-voice-textarea-max, 150px);
-  background-color: hsla(var(--color-bg-input-h), var(--color-bg-input-s), var(--color-bg-input-l), 0.95);
-  color: hsl(var(--color-text-input-h), var(--color-text-input-s), var(--color-text-input-l));
-  border: 1px solid hsla(var(--color-border-input-h), var(--color-border-input-s), var(--color-border-input-l), 0.8);
-  border-radius: var.$radius-lg;
-  padding: var.$spacing-sm var.$spacing-md;
-  font-family: var.$font-family-sans;
-  font-size: var.$font-size-base-default;
-  line-height: 1.55;
+.vi-textarea {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--color-text-primary);
+  font-size: 16px;
+  line-height: 1.5;
   resize: none;
-  transition: all var.$duration-quick var.$ease-out-cubic;
-  overflow-y: auto;
-  @include mixins.custom-scrollbar(
-    '--color-accent-interactive', 0.45, 0.7,
-    '--color-bg-input', 0.15,
-    6px, var.$radius-sm
-  );
-  position: relative; // For ::after pseudo-element
-
+  outline: none;
+  min-height: 24px;
+  max-height: 120px;
+  padding: 0;
+  
   &::placeholder {
-    color: hsl(var(--color-text-placeholder-h), var(--color-text-placeholder-s), var(--color-text-placeholder-l));
-    opacity: 0.65;
-    transition: opacity var.$duration-quick ease-out;
-  }
-  &:focus {
-    outline: none;
-    background-color: hsla(var(--color-bg-input-focused-h), var(--color-bg-input-focused-s), var(--color-bg-input-focused-l), 1);
-    border-color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
-    @include mixins.focus-ring(
-      '--color-bg-input-focused-for-ring',
-      '--color-accent-interactive',
-      2px, 2px, 0.95
-    );
-    &::placeholder { opacity: 0.45; }
-  }
-  &:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-    background-color: hsla(var(--color-bg-input-disabled-h), var(--color-bg-input-disabled-s), var(--color-bg-input-disabled-l), 0.6);
-  }
-
-  // Breathing effect for active STT listening states (when not disabled)
-  &::after {
-    content: '';
-    position: absolute;
-    inset: -1px;
-    border-radius: inherit;
-    border: 2px solid transparent;
-    box-shadow: 0 0 0 0 transparent;
-    opacity: 0;
-    transition: all var.$duration-smooth var.$ease-out-quad;
-    pointer-events: none;
-    z-index: -1; // Behind the textarea's content
-  }
-
-  .voice-input-panel-ephemeral.state-stt-active &:not(:disabled):not(:focus),
-  .voice-input-panel-ephemeral.state-vad-listening-wake &:not(:disabled):not(:focus) {
-    border-color: hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.4);
-    &::after {
-      animation: textareaBreathingEffect 1.8s var.$ease-in-out-sine infinite;
-      border-color: hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.6);
-      opacity: 1;
-    }
-  }
-  .voice-input-panel-ephemeral.state-llm-processing & {
-     &::after { animation: none; opacity: 0; } // No breathing if LLM processing
+    color: var(--color-text-muted);
+    opacity: 0.5;
   }
 }
 
-.send-button-ephemeral-v2 {
-  @include mixins.button-base;
-  flex-shrink: 0;
-  width: var(--size-send-button, 46px);
-  height: var(--size-send-button, 46px);
-  border-radius: var.$radius-lg;
-  background: linear-gradient(var(--angle-send-button-bg, 140deg),
-    hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.95),
-    hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), calc(var(--color-accent-secondary-l) * 0.88), 1)
-  );
-  color: hsl(var(--color-text-on-primary-h), var(--color-text-on-primary-s), var(--color-text-on-primary-l));
-  box-shadow: var(--shadow-button-idle, var.$scss-box-shadow-sm);
-  transition: transform var.$duration-quick ease-out, box-shadow var.$duration-quick ease-out, background var.$duration-quick ease-out;
-
-  .icon { width: 20px; height: 20px; transition: transform var.$duration-quick var.$ease-elastic; }
-
-  &:hover:not(:disabled) {
-    transform: translateY(-1.5px) scale(1.06);
-    box-shadow: var(--shadow-button-hover, var.$scss-box-shadow-md);
-    background: linear-gradient(var(--angle-send-button-bg-hover, 140deg),
-      hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), calc(var(--color-accent-secondary-l) * 1.08), 1),
-      hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 1)
-    );
-    .icon { transform: rotate(-12deg) scale(1.18); }
-  }
-  &:active:not(:disabled) {
-    transform: translateY(0.5px) scale(0.98);
-    box-shadow: var(--shadow-button-active, var.$scss-box-shadow-xs);
-  }
-  &:disabled { opacity: 0.5; cursor: not-allowed; }
-}
-
-// Controls Row & Components
-.controls-main-row-ephemeral {
+// -----------------------------------------------------------------------------
+// Transcription Overlay
+// -----------------------------------------------------------------------------
+.vi-transcription-overlay {
+  position: absolute;
+  inset: 0;
   display: flex;
   align-items: center;
-  gap: var.$spacing-sm;
-  width: 100%;
-  position: relative;
-  z-index: 5;
-  padding: calc(var.$spacing-xs / 2) 0;
+  padding: 12px;
+  pointer-events: none;
 }
 
-// Microphone Button Styling
-.mic-button-ephemeral {
-  @include mixins.button-base;
-  flex-shrink: 0;
-  width: var(--size-mic-button, 52px);
-  height: var(--size-mic-button, 52px);
-  background: linear-gradient(var(--angle-mic-button-bg, 135deg),
-    hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.92),
-    hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), calc(var(--color-accent-primary-l) * 0.82), 0.98)
-  );
+.vi-transcription-text {
+  color: var(--color-accent-primary);
+  font-style: italic;
+  opacity: 0;
+  animation: transcription-fade 0.3s ease forwards;
+}
+
+// -----------------------------------------------------------------------------
+// Organic Send Button (THE send icon)
+// -----------------------------------------------------------------------------
+.vi-send-button {
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
   border-radius: 50%;
+  transition: all 0.3s cubic-bezier(0.64, -0.58, 0.34, 1.56);
   position: relative;
   overflow: visible;
-  color: hsl(var(--color-text-on-primary-h), var(--color-text-on-primary-s), var(--color-text-on-primary-l));
-  box-shadow: var(--shadow-button-idle, var.$scss-box-shadow-sm);
-  transition: transform var.$duration-quick ease-out, box-shadow var.$duration-quick ease-out, background var.$duration-smooth ease-out;
-
-  .icon { width: 24px; height: 24px; transition: transform var.$duration-quick var.$ease-elastic; position: relative; z-index: 2; }
-
-  .mic-state-ring {
-    content: '';
-    position: absolute;
-    inset: -4px;
-    border-radius: 50%;
-    border: 2.5px solid transparent;
-    opacity: 0;
-    transform: scale(0.85);
-    transition: all var.$duration-smooth var.$ease-out-cubic;
-    pointer-events: none;
-    z-index: 1;
-  }
-
+  
   &:hover:not(:disabled) {
-    transform: scale(1.07);
-    box-shadow: var(--shadow-button-hover, var.$scss-box-shadow-md);
+    transform: scale(1.1);
+    
+    .vi-send-icon {
+      filter: drop-shadow(0 0 8px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.5));
+    }
   }
+  
   &:active:not(:disabled) {
-    transform: scale(0.96);
-    box-shadow: var(--shadow-button-active, var.$scss-box-shadow-xs);
+    transform: scale(0.95);
   }
-
-  &.listening, &.active-command {
-    background: linear-gradient(var(--angle-mic-button-listening-bg, 135deg),
-      hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 1),
-      hsla(var(--color-voice-user-h), var(--color-voice-user-s), calc(var(--color-voice-user-l) * 0.88), 1)
-    );
-    .mic-state-ring {
-      animation: micBreathingRingActive 1.3s var.$ease-out-quad infinite;
-      border-color: hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.75);
-      opacity: 1; // Ensure ring is visible
-    }
-  }
-
-  &.vad-listening-wake {
-    background: linear-gradient(var(--angle-mic-button-vad-bg, 135deg),
-      hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.95),
-      hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), calc(var(--color-accent-interactive-l) * 0.85), 1)
-    );
-    .mic-state-ring {
-      animation: micBreathingRingStandby 2.0s var.$ease-in-out-sine infinite;
-      border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.6);
-      opacity: 1; // Ensure ring is visible
-    }
-  }
-
-  &.processing-llm:not(.listening):not(.active-command):not(.vad-listening-wake) {
-    background: linear-gradient(var(--angle-mic-button-llm-bg, 135deg),
-      hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), calc(var(--color-accent-secondary-l) + 8%), 0.85),
-      hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.9)
-    );
-    cursor: default;
-    .mic-state-ring {
-      animation: micBreathingRingSubtle 2.5s var.$ease-in-out-sine infinite;
-      border-color: hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.35);
-      opacity: 1; // Ensure ring is visible
-    }
-  }
-
-  &.mic-error {
-    background: linear-gradient(var(--angle-mic-button-error-bg, 135deg),
-      hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.95),
-      hsla(var(--color-error-h), var(--color-error-s), calc(var(--color-error-l) * 0.85), 1)
-    );
-    animation: errorShake 0.45s var.$ease-in-out-quad;
-    .mic-state-ring {
-      border-color: hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.6);
-      animation: errorPulseRing 1.2s ease-in-out infinite;
-      opacity: 1; // Ensure ring is visible
-    }
-  }
-  &:disabled:not(.mic-error):not(.processing-llm) {
-    opacity: 0.55;
+  
+  &:disabled {
+    opacity: 0.3;
     cursor: not-allowed;
-    background: hsla(var(--color-bg-disabled-h, var.$default-color-bg-tertiary-h), var(--color-bg-disabled-s, var.$default-color-bg-tertiary-s), var(--color-bg-disabled-l, var.$default-color-bg-tertiary-l), 0.75);
-    .mic-state-ring { display: none; }
   }
 }
 
-// Status Display - CRITICAL FOR TRANSCRIPTION VISIBILITY
-.status-display-ephemeral {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: calc(var.$spacing-xs / 3); // Increased gap for better separation
-  flex-grow: 1;
-  min-width: 0; // Allow shrinking
-  overflow: hidden; // Prevent content from overflowing the panel
-  color: hsl(var(--color-text-secondary-h, var.$default-color-text-secondary-h), var(--color-text-secondary-s, var.$default-color-text-secondary-l));
+.vi-send-icon {
+  width: 100%;
+  height: 100%;
+  transition: all 0.3s ease;
+  
+  path {
+    fill: url(#sendGradient);
+    transition: d 0.3s ease;
+  }
 }
 
-.mode-indicator-wrapper-ephemeral {
+// Gradient definition for send icon
+.vi-send-button svg defs {
+  linearGradient {
+    stop:first-child {
+      stop-color: var(--vi-send-gradient-start, var(--color-accent-primary));
+    }
+    stop:last-child {
+      stop-color: var(--vi-send-gradient-end, var(--color-accent-secondary));
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Toolbar
+// -----------------------------------------------------------------------------
+.vi-toolbar-wrapper {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  right: 0;
+  z-index: $z-toolbar;
+  overflow: visible;
+}
+
+.vi-toolbar-toggle {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.8);
+  border-radius: 50%;
+  color: var(--color-text-secondary);
+  cursor: pointer;
   display: flex;
   align-items: center;
-  gap: calc(var.$spacing-xs * 0.8);
+  justify-content: center;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.9);
+    color: var(--color-text-primary);
+    transform: scale(1.1);
+  }
 }
 
-.mode-dot-ephemeral {
-  width: 11px;
-  height: 11px;
-  border-radius: 50%;
-  background-color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
-  transition: background-color var.$duration-quick ease-in-out, transform var.$duration-quick ease-in-out, box-shadow var.$duration-quick ease-in-out;
-  position: relative;
-  box-shadow: 0 0 3px 0px hsla(var(--color-shadow-h), var(--color-shadow-s), var(--color-shadow-l), 0.2);
-
-  &.state-idle { background-color: hsl(var(--color-status-idle-h), var(--color-status-idle-s), var(--color-status-idle-l)); animation: pulseDotIdle 2.5s var.$ease-in-out-sine infinite; }
-  &.state-ptt-active, &.state-continuous-active, &.state-vad-active-command {
-    background-color: hsl(var(--color-status-active-h), var(--color-status-active-s), var(--color-status-active-l));
-    animation: pulseDotActiveState 1.3s var.$ease-out-quad infinite alternate;
+.vi-settings-icon {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.6s ease;
+  
+  &.vi-rotating {
+    transform: rotate(180deg);
   }
-  &.state-vad-listening-wake {
-    background-color: hsl(var(--color-status-vad-h), var(--color-status-vad-s), var(--color-status-vad-l));
-    animation: pulseDotVadState 1.8s var.$ease-in-out-sine infinite;
-  }
-  &.state-processing-llm {
-    background-color: hsl(var(--color-status-processing-h), var(--color-status-processing-s), var(--color-status-processing-l));
-    animation: pulseDotProcessingState 1s linear infinite;
-  }
-  &.state-mic-error { background-color: hsl(var(--color-error-h), var(--color-error-s), var(--color-error-l)); animation: errorFlashDot 1.2s infinite; }
 }
 
-.mode-text-ephemeral {
-  font-size: calc(var.$font-size-sm * 0.95);
-  font-weight: 500;
-  color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
-  white-space: nowrap;
-  opacity: 0.85;
+.vi-toolbar {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  right: 0;
+  z-index: $z-toolbar + 1;
+  min-width: 280px;
+  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 16px;
+  box-shadow: 
+    0 8px 32px hsla(var(--color-shadow-h), var(--color-shadow-s), var(--color-shadow-l), 0.2),
+    inset 1px 1px 2px hsla(255, 255%, 255%, 0.1);
+  overflow: visible;
 }
 
-.transcription-status-ephemeral {
-  font-size: calc(var.$font-size-sm * 0.95); // Readable size
-  color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l)); // Visible color
-  min-height: 1.4em; // Reserve space
-  line-height: 1.4;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+// -----------------------------------------------------------------------------
+// PTT Preview
+// -----------------------------------------------------------------------------
+.vi-ptt-preview {
+  position: absolute;
+  bottom: calc(100% + 16px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 16px;
+  padding: 16px;
+  min-width: 300px;
+  box-shadow: 
+    0 8px 32px hsla(var(--color-shadow-h), var(--color-shadow-s), var(--color-shadow-l), 0.2),
+    inset 1px 1px 2px hsla(255, 255%, 255%, 0.1);
+  z-index: $z-modal;
+}
+
+.vi-preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.vi-preview-duration {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.vi-preview-close {
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  
+  &:hover {
+    background: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.5);
+    color: var(--color-text-primary);
+  }
+}
+
+.vi-preview-waveform {
   width: 100%;
-  opacity: 1; // Visible by default when it has content
-  transform: translateY(0);
-  transition: opacity var.$duration-quick var.$ease-out-cubic, color var.$duration-quick ease-in-out;
-  padding: 2px 0;
+  height: 60px;
+  background: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.3);
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
 
-  &:empty {
-    min-height: 1.4em;
-    opacity: 0;
-    &::before {
-        content: '\00a0'; // Non-breaking space to maintain height
-        display: inline-block;
+.vi-preview-controls {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.vi-preview-btn {
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.5);
+  border-radius: 50%;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.7);
+    transform: scale(1.1);
+  }
+  
+  &.vi-preview-send {
+    background: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.2);
+    color: var(--color-accent-primary);
+    
+    &:hover {
+      background: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.3);
     }
   }
+}
 
-  .interim-transcript-feedback {
-    color: hsl(var(--color-text-accent-h), var(--color-text-accent-s), calc(var(--color-text-accent-l) + 10%)); // Brighter accent
-    opacity: 0.95;
-    font-weight: 500;
+// -----------------------------------------------------------------------------
+// Icon utilities
+// -----------------------------------------------------------------------------
+.icon-sm {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+// -----------------------------------------------------------------------------
+// State animations
+// -----------------------------------------------------------------------------
+.voice-input-panel {
+  &.state-idle {
+    animation: state-idle-breathe 4s ease-in-out infinite;
   }
-  .listening-feedback {
-    color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
-    opacity: 0.85;
-    font-style: italic;
+  
+  &.state-stt-active {
+    animation: state-active-pulse 2s ease-in-out infinite;
   }
-  .error-feedback {
-    color: hsl(var(--color-error-text-h), var(--color-error-text-s), var(--color-error-text-l));
-    font-weight: 600;
-    font-style: normal;
+  
+  &.state-vad-listening {
+    animation: state-vad-breathe 3s ease-in-out infinite;
+  }
+  
+  &.state-llm-processing {
+    animation: state-llm-shimmer 2.5s ease-in-out infinite;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Animations
+// -----------------------------------------------------------------------------
+@keyframes hint-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes transcription-fade {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 0.9;
+    transform: translateY(0);
+  }
+}
+
+@keyframes mic-pulse {
+  0%, 100% {
+    box-shadow: 
+      6px 6px 12px hsla(var(--color-shadow-h), var(--color-shadow-s), var(--color-shadow-l), 0.15),
+      -6px -6px 12px hsla(255, 255%, 255%, 0.05),
+      inset 1px 1px 2px hsla(255, 255%, 255%, 0.1),
+      0 0 20px hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.3);
+  }
+  50% {
+    box-shadow: 
+      6px 6px 12px hsla(var(--color-shadow-h), var(--color-shadow-s), var(--color-shadow-l), 0.15),
+      -6px -6px 12px hsla(255, 255%, 255%, 0.05),
+      inset 1px 1px 2px hsla(255, 255%, 255%, 0.1),
+      0 0 30px hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.5);
+  }
+}
+
+@keyframes ring-pulse {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+}
+
+@keyframes ring-breathe {
+  0%, 100% {
+    opacity: 0.1;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes error-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+@keyframes state-idle-breathe {
+  0%, 100% {
     opacity: 1;
   }
-  .ignored-transcript-feedback {
-    color: hsl(var(--color-text-warning-h), var(--color-text-warning-s), var(--color-text-warning-l));
-    opacity: 0.9;
-    font-style: italic;
+  50% {
+    opacity: 0.95;
   }
 }
 
-// Right Controls Group & Toolbar
-.right-controls-group-ephemeral {
-  display: flex;
-  align-items: center;
-  gap: var.$spacing-xs;
-  margin-left: auto;
-}
-
-.main-controls-stack-ephemeral {
-  position: relative;
-  display: flex;
-}
-
-.toolbar-trigger-btn-ephemeral {
-  @include mixins.button-ghost(
-    '--color-text-muted',
-    '--color-accent-interactive',
-    calc(var.$spacing-xs - 2px) var.$spacing-sm,
-    var.$radius-md
-  );
-  width: var(--size-control-button, 40px);
-  height: var(--size-control-button, 40px);
-  .icon-sm { width: 1.3rem; height: 1.3rem; }
-}
-
-.input-toolbar-instance-ephemeral {
-  position: absolute;
-  bottom: calc(100% + var.$spacing-xs);
-  right: 0;
-  z-index: var.$z-index-popover;
-
-  &.toolbar-slide-vertical-enter-active,
-  &.toolbar-slide-vertical-leave-active {
-    transition: all var.$duration-smooth var.$ease-out-expo;
+@keyframes state-active-pulse {
+  0%, 100% {
+    transform: scale(1);
   }
-  &.toolbar-slide-vertical-enter-from,
-  &.toolbar-slide-vertical-leave-to {
-    opacity: 0;
-    transform: translateY(15px) scale(0.90);
+  50% {
+    transform: scale(1.01);
   }
 }
 
-.audio-mode-dropdown-instance-ephemeral {
-  .audio-mode-button {
-    padding: calc(var.$spacing-xs - 2px) var.$spacing-sm;
-    height: var(--size-control-button, 40px);
+@keyframes state-vad-breathe {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.97;
   }
 }
 
-// Keyframes (ensure these are defined as provided previously)
-@keyframes rotate-gradient { to { --gradient-angle: 360deg; } }
-@keyframes shimmer-border { 0%, 100% { background-position: -200% center; opacity: 0.7; } 50% { background-position: 200% center; opacity: 1; } }
-.voice-input-panel-ephemeral.state-llm-processing::before { animation: shimmer-border 3s ease-in-out infinite; background: linear-gradient( 90deg, transparent 20%, hsla(var(--state-glow-color-h, var.$default-color-accent-secondary-h), var(--state-glow-color-s, var.$default-color-accent-secondary-s), var(--state-glow-color-l, var.$default-color-accent-secondary-l), calc(var(--state-glow-opacity, 0.55) * 0.7)) 50%, transparent 80% ); background-size: 200% 100%; }
-@keyframes error-pulse-border { 0%, 100% { opacity: calc(var(--state-glow-opacity) * 0.6); transform: scale(1); } 50% { opacity: var(--state-glow-opacity); transform: scale(1.015); } }
-@keyframes radialPulseEffect { 0% { transform: scale(0.8); opacity: 0; } 50% { transform: scale(1.2); opacity: 0.18; } 100% { transform: scale(0.8); opacity: 0; } }
-@keyframes micBreathingRingActive { 0%, 100% { transform: scale(0.9); opacity: 0.1; } 50% { transform: scale(1.35); opacity: 0.8; } 70% { transform: scale(1.25); opacity: 0.4;} }
-@keyframes micBreathingRingStandby { 0%, 100% { transform: scale(0.95); opacity: 0.2; } 50% { transform: scale(1.25); opacity: 0.65; } }
-@keyframes micBreathingRingSubtle { 0%, 100% { transform: scale(1); opacity: 0.15; } 50% { transform: scale(1.1); opacity: 0.4; } }
-@keyframes errorPulseRing { 0%, 100% { transform: scale(1); opacity: 0.35; } 50% { transform: scale(1.18); opacity: 0.85; } }
-@keyframes errorShake { 0%, 100% { transform: translateX(0) scale(1); } 20%, 60% { transform: translateX(-3.5px) scale(1.07); } 40%, 80% { transform: translateX(3.5px) scale(1.07); } }
-@keyframes pulseDotIdle { 0%, 100% { transform: scale(1); opacity: 0.6; box-shadow: 0 0 2px 0px hsla(var(--color-status-idle-h), var(--color-status-idle-s), var(--color-status-idle-l), 0.2); } 50% { transform: scale(1.15); opacity: 0.9; box-shadow: 0 0 4px 1px hsla(var(--color-status-idle-h), var(--color-status-idle-s), var(--color-status-idle-l), 0.35); } }
-@keyframes pulseDotActiveState { 0%, 100% { transform: scale(1); box-shadow: 0 0 4px 1px hsla(var(--color-status-active-h), var(--color-status-active-s), var(--color-status-active-l), 0.35); } 50% { transform: scale(1.35); box-shadow: 0 0 7px 2px hsla(var(--color-status-active-h), var(--color-status-active-s), var(--color-status-active-l), 0.55); } }
-@keyframes pulseDotVadState { 0%, 100% { transform: scale(0.9); opacity: 0.75; box-shadow: 0 0 3px 1px hsla(var(--color-status-vad-h), var(--color-status-vad-s), var(--color-status-vad-l), 0.25); } 50% { transform: scale(1.2); opacity: 1; box-shadow: 0 0 5px 2px hsla(var(--color-status-vad-h), var(--color-status-vad-s), var(--color-status-vad-l), 0.45); } }
-@keyframes pulseDotProcessingState { 0% { transform: scale(1) rotate(0deg); opacity: 0.6; box-shadow: 0 0 3px 1px hsla(var(--color-status-processing-h), var(--color-status-processing-s), var(--color-status-processing-l), 0.3); } 50% { transform: scale(1.25) rotate(180deg); opacity: 1; box-shadow: 0 0 6px 2px hsla(var(--color-status-processing-h), var(--color-status-processing-s), var(--color-status-processing-l), 0.5); } 100% { transform: scale(1) rotate(360deg); opacity: 0.6; box-shadow: 0 0 3px 1px hsla(var(--color-status-processing-h), var(--color-status-processing-s), var(--color-status-processing-l), 0.3); } }
-@keyframes errorFlashDot { 0%, 100% { opacity: 1; transform: scale(1.1); box-shadow: 0 0 5px 2px hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.5); } 50% { opacity: 0.4; transform: scale(0.9); box-shadow: 0 0 2px 0px hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.2); } }
-@keyframes textareaBreathingEffect { 0%, 100% { box-shadow: inset 0 0 5px 1px hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.15); transform: scale(1); } 50% { box-shadow: inset 0 0 10px 2px hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.3); transform: scale(1.005); } }
+@keyframes state-llm-shimmer {
+  0%, 100% {
+    opacity: 0.96;
+  }
+  50% {
+    opacity: 0.92;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Transitions
+// -----------------------------------------------------------------------------
+.hint-fade-enter-active,
+.hint-fade-leave-active {
+  transition: all 0.3s ease;
+}
+
+.hint-fade-enter-from {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.hint-fade-leave-to {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.transcription-fade-enter-active,
+.transcription-fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.transcription-fade-enter-from,
+.transcription-fade-leave-to {
+  opacity: 0;
+}
+
+.toolbar-slide-enter-active,
+.toolbar-slide-leave-active {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.toolbar-slide-enter-from,
+.toolbar-slide-leave-to {
+  opacity: 0;
+  transform: translateY(10px) scale(0.95);
+}
+
+.preview-slide-enter-active,
+.preview-slide-leave-active {
+  transition: all 0.3s cubic-bezier(0.64, -0.58, 0.34, 1.56);
+}
+
+.preview-slide-enter-from {
+  opacity: 0;
+  transform: translateX(-50%) translateY(20px) scale(0.8);
+}
+
+.preview-slide-leave-to {
+  opacity: 0;
+  transform: translateX(-50%) translateY(-20px) scale(0.8);
+}
+
+// -----------------------------------------------------------------------------
+// Responsive adjustments
+// -----------------------------------------------------------------------------
+@media (max-width: var.$breakpoint-sm) {
+  .voice-input-panel {
+    padding: 16px;
+  }
+  
+  .vi-mic-button {
+    width: 56px;
+    height: 56px;
+  }
+  
+  .vi-mic-icon {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .vi-toolbar {
+    min-width: 260px;
+    right: -10px;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Reduced motion
+// -----------------------------------------------------------------------------
+@media (prefers-reduced-motion: reduce) {
+  .vi-mic-button,
+  .vi-send-button,
+  .vi-toolbar-toggle,
+  .voice-input-panel {
+    animation: none !important;
+    transition: opacity 0.2s ease !important;
+  }
+  
+  .vi-mic-rings circle {
+    animation: none !important;
+  }
+}
