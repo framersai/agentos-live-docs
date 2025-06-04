@@ -63,7 +63,7 @@ watch(localCompactMessageRendererRef, (newVal) => {
 });
 
 const renderMarkdownForWelcomeOrError = (content: string | null): string => {
-  if (content === null || content === undefined) return '<p class="text-text-muted italic p-6">No content available.</p>';
+  if (content === null || content === undefined) return '<p class="text-muted italic p-6">No content available.</p>';
   try {
     return marked.parse(content, { breaks: true, gfm: true });
   } catch (e) {
@@ -275,7 +275,7 @@ defineExpose({ processProblemContext });
 }
 
 .lc-audit-empty-state, .lc-audit-welcome-container {
- @apply text-text-muted italic text-center p-6 sm:p-10 flex flex-col items-center justify-center h-full opacity-85;
+ @apply text-muted italic text-center p-6 sm:p-10 flex flex-col items-center justify-center h-full opacity-85;
 }
 .empty-state-icon, .lc-audit-main-icon {
  @apply w-12 h-12 sm:w-16 sm:h-16 mb-4 opacity-50;
