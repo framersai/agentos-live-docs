@@ -4,79 +4,25 @@
  * @description Provides a robust, framework-agnostic core class for interacting with the browser's
  * Web Speech API (SpeechRecognition).
  *
- * @version 1.2.1
- * @updated 2025-06-04 - Made Web Speech API detection more robust by checking `window` properties.
+ * @version 1.2.2
+ * @updated 2025-06-05 - Refined continuous mode restart logic with slightly increased, randomized backoff.
+ * - Ensured VAD wake word mode (`vad-wake`) is treated as continuous for restarts.
+ * - Increased default `RESULT_TIMEOUT_MS` for more leniency.
  */
 
 // --- Web Speech API Type Declarations ---
-// (These ensure TypeScript understands the API structure if global types are not perfectly available)
-interface SpeechRecognitionErrorEventInit extends EventInit {
-  error: string;
-  message?: string;
-}
-declare class SpeechRecognitionErrorEvent extends Event {
-  constructor(type: string, eventInitDict: SpeechRecognitionErrorEventInit);
-  readonly error: string;
-  readonly message?: string;
-}
-interface SpeechRecognitionAlternative {
-  readonly transcript: string;
-  readonly confidence: number;
-}
-interface SpeechRecognitionResult extends ReadonlyArray<SpeechRecognitionAlternative> {
-  readonly isFinal: boolean;
-}
-interface SpeechRecognitionResultList extends ReadonlyArray<SpeechRecognitionResult> {
-  readonly length: number;
-  item(index: number): SpeechRecognitionResult;
-}
-interface SpeechRecognitionEventInit extends EventInit {
-  resultIndex?: number;
-  results: SpeechRecognitionResultList;
-}
-declare class SpeechRecognitionEvent extends Event {
-  constructor(type: string, eventInitDict: SpeechRecognitionEventInit);
-  readonly resultIndex?: number;
-  readonly results: SpeechRecognitionResultList;
-  readonly emma?: Document | null;
-  readonly interpretation?: any;
-}
-interface SpeechGrammar {
-  src: string;
-  weight?: number;
-}
-interface SpeechGrammarList {
-  readonly length: number;
-  item(index: number): SpeechGrammar;
-  addFromURI(src: string, weight?: number): void;
-  addFromString(grammarString: string, weight?: number): void;
-}
-interface SpeechRecognitionStatic {
-  new (): SpeechRecognition;
-  prototype: SpeechRecognition;
-}
-interface SpeechRecognition extends EventTarget {
-  grammars: SpeechGrammarList;
-  lang: string;
-  continuous: boolean;
-  interimResults: boolean;
-  maxAlternatives: number;
-  serviceURI?: string;
-  start(): void;
-  stop(): void;
-  abort(): void;
-  onaudiostart: ((this: SpeechRecognition, ev: Event) => any) | null;
-  onaudioend: ((this: SpeechRecognition, ev: Event) => any) | null;
-  onend: ((this: SpeechRecognition, ev: Event) => any) | null;
-  onerror: ((this: SpeechRecognition, ev: SpeechRecognitionErrorEvent) => any) | null;
-  onnomatch: ((this: SpeechRecognition, ev: SpeechRecognitionEvent) => any) | null;
-  onresult: ((this: SpeechRecognition, ev: SpeechRecognitionEvent) => any) | null;
-  onsoundstart: ((this: SpeechRecognition, ev: Event) => any) | null;
-  onsoundend: ((this: SpeechRecognition, ev: Event) => any) | null;
-  onspeechstart: ((this: SpeechRecognition, ev: Event) => any) | null;
-  onspeechend: ((this: SpeechRecognition, ev: Event) => any) | null;
-  onstart: ((this: SpeechRecognition, ev: Event) => any) | null;
-}
+// (These remain the same as previously provided, ensuring TypeScript understands the API structure if global types are not perfectly available)
+interface SpeechRecognitionErrorEventInit extends EventInit { /* ... */ error: string; message?: string; }
+declare class SpeechRecognitionErrorEvent extends Event { /* ... */ constructor(type: string, eventInitDict: SpeechRecognitionErrorEventInit); readonly error: string; readonly message?: string; }
+interface SpeechRecognitionAlternative { /* ... */ readonly transcript: string; readonly confidence: number; }
+interface SpeechRecognitionResult extends ReadonlyArray<SpeechRecognitionAlternative> { /* ... */ readonly isFinal: boolean; }
+interface SpeechRecognitionResultList extends ReadonlyArray<SpeechRecognitionResult> { /* ... */ readonly length: number; item(index: number): SpeechRecognitionResult; }
+interface SpeechRecognitionEventInit extends EventInit { /* ... */ resultIndex?: number; results: SpeechRecognitionResultList; }
+declare class SpeechRecognitionEvent extends Event { /* ... */ constructor(type: string, eventInitDict: SpeechRecognitionEventInit); readonly resultIndex?: number; readonly results: SpeechRecognitionResultList; readonly emma?: Document | null; readonly interpretation?: any; }
+interface SpeechGrammar { /* ... */ src: string; weight?: number; }
+interface SpeechGrammarList { /* ... */ readonly length: number; item(index: number): SpeechGrammar; addFromURI(src: string, weight?: number): void; addFromString(grammarString: string, weight?: number): void; }
+interface SpeechRecognitionStatic { /* ... */ new (): SpeechRecognition; prototype: SpeechRecognition; }
+interface SpeechRecognition extends EventTarget { /* ... */ grammars: SpeechGrammarList; lang: string; continuous: boolean; interimResults: boolean; maxAlternatives: number; serviceURI?: string; start(): void; stop(): void; abort(): void; onaudiostart: ((this: SpeechRecognition, ev: Event) => any) | null; onaudioend: ((this: SpeechRecognition, ev: Event) => any) | null; onend: ((this: SpeechRecognition, ev: Event) => any) | null; onerror: ((this: SpeechRecognition, ev: SpeechRecognitionErrorEvent) => any) | null; onnomatch: ((this: SpeechRecognition, ev: SpeechRecognitionEvent) => any) | null; onresult: ((this: SpeechRecognition, ev: SpeechRecognitionEvent) => any) | null; onsoundstart: ((this: SpeechRecognition, ev: Event) => any) | null; onsoundend: ((this: SpeechRecognition, ev: Event) => any) | null; onspeechstart: ((this: SpeechRecognition, ev: Event) => any) | null; onspeechend: ((this: SpeechRecognition, ev: Event) => any) | null; onstart: ((this: SpeechRecognition, ev: Event) => any) | null; }
 // --- End of Web Speech API Type Declarations ---
 
 export type RecognitionState =
@@ -113,10 +59,13 @@ export class BrowserSpeechCore {
   private startTime: number = 0;
   private lastResultTime: number = 0;
   private restartAttempts: number = 0;
-  private readonly MAX_RESTART_ATTEMPTS: number = 3;
+  private readonly MAX_RESTART_ATTEMPTS: number = 5; // Slightly more attempts
   private readonly WARM_UP_TIME_MS: number = 150;
-  private readonly RESULT_TIMEOUT_MS: number = 10000;
+  private readonly RESULT_TIMEOUT_MS: number = 15000; // Increased for more leniency
   private resultTimeoutTimer: number | null = null;
+  private readonly MIN_RESTART_DELAY_MS = 1000;
+  private readonly MAX_RESTART_DELAY_MS = 3000;
+
 
   private readonly browserInfo: {
     name: string;
@@ -137,7 +86,6 @@ export class BrowserSpeechCore {
       ...initialConfig,
     };
     this.events = eventHandlers;
-    // CRITICAL: This call must not throw if SpeechRecognition is undefined
     this.browserInfo = this.detectBrowserAndAPI();
 
     if (!this.browserInfo.hasWebSpeech) {
@@ -145,53 +93,27 @@ export class BrowserSpeechCore {
     }
   }
 
-  /**
-   * @private
-   * @method detectBrowserAndAPI
-   * @description Detects browser information and the available SpeechRecognition API constructor.
-   * **This is the corrected method.**
-   * @returns {object} An object containing browser details and API availability.
-   */
   private detectBrowserAndAPI(): typeof BrowserSpeechCore.prototype.browserInfo {
     const info: typeof BrowserSpeechCore.prototype.browserInfo = {
       name: 'unknown', version: '', isFirefox: false, isChrome: false, isSafari: false,
       hasWebSpeech: false, SpeechRecognitionAPI: null,
     };
-
     if (typeof window === 'undefined' || typeof navigator === 'undefined') {
-      console.warn('[BrowserSpeechCore] Non-browser environment detected. Web Speech API disabled.');
-      info.hasWebSpeech = false;
-      return info;
+      info.hasWebSpeech = false; return info;
     }
-
     const ua = navigator.userAgent.toLowerCase();
     info.isFirefox = ua.includes('firefox');
     info.isChrome = ua.includes('chrome') && !ua.includes('edg');
     info.isSafari = ua.includes('safari') && !ua.includes('chrome');
-
     if (info.isFirefox) info.name = 'Firefox';
     else if (info.isChrome) info.name = 'Chrome';
     else if (info.isSafari) info.name = 'Safari';
     else if (ua.includes('edg')) info.name = 'Edge';
-    else if (ua.includes('msie') || ua.includes('trident')) info.name = 'Internet Explorer';
-
-    // Corrected: Safely check for API on the window object
-    const Api = (window as any).SpeechRecognition ||
-                (window as any).webkitSpeechRecognition ||
-                (window as any).mozSpeechRecognition ||
-                (window as any).msSpeechRecognition;
-
+    const Api = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition || (window as any).mozSpeechRecognition || (window as any).msSpeechRecognition;
     if (typeof Api !== 'undefined' && Api !== null) {
-      info.SpeechRecognitionAPI = Api as SpeechRecognitionStatic;
-      info.hasWebSpeech = true;
-    } else {
-      info.hasWebSpeech = false;
-    }
-
+      info.SpeechRecognitionAPI = Api as SpeechRecognitionStatic; info.hasWebSpeech = true;
+    } else { info.hasWebSpeech = false; }
     console.log(`[BrowserSpeechCore] Browser: ${info.name}, Web Speech API available: ${info.hasWebSpeech}`);
-    if (!info.hasWebSpeech) {
-        console.warn(`[BrowserSpeechCore] Specific check: window.SpeechRecognition is ${typeof (window as any).SpeechRecognition}, window.webkitSpeechRecognition is ${typeof (window as any).webkitSpeechRecognition}`);
-    }
     return info;
   }
 
@@ -203,12 +125,10 @@ export class BrowserSpeechCore {
     try {
       this.recognition = new this.browserInfo.SpeechRecognitionAPI();
       this.recognition.lang = this.config.language;
-      this.recognition.continuous = this.config.continuous;
-      this.recognition.interimResults = this.config.interimResults;
+      this.recognition.continuous = this.config.continuous; // This will be set based on currentMode in start()
+      this.recognition.interimResults = this.config.interimResults; // This will be set based on currentMode in start()
       this.recognition.maxAlternatives = this.config.maxAlternatives;
       this.attachEventHandlers();
-      console.log('[BrowserSpeechCore] SpeechRecognition instance created with config:',
-        { lang: this.config.language, continuous: this.config.continuous, interim: this.config.interimResults });
       return true;
     } catch (e: any) {
       this.handleErrorInternal('init-failed', `Failed to create SpeechRecognition instance: ${e.message || e}`, true);
@@ -222,20 +142,20 @@ export class BrowserSpeechCore {
     this.recognition.onresult = this.handleRecognitionResult.bind(this);
     this.recognition.onerror = this.handleRecognitionErrorEvent.bind(this);
     this.recognition.onend = this.handleRecognitionEnd.bind(this);
-    this.recognition.onaudiostart = () => { console.debug('[BrowserSpeechCore] Event: onaudiostart'); this.events.onAudioStart?.(); };
-    this.recognition.onaudioend = () => { console.debug('[BrowserSpeechCore] Event: onaudioend'); this.events.onAudioEnd?.(); };
-    this.recognition.onspeechstart = () => { console.debug('[BrowserSpeechCore] Event: onspeechstart'); this.events.onSpeechStart?.(); };
-    this.recognition.onspeechend = () => { console.debug('[BrowserSpeechCore] Event: onspeechend'); this.events.onSpeechEnd?.(); };
-    this.recognition.onnomatch = () => { console.debug('[BrowserSpeechCore] Event: onnomatch'); this.events.onNoMatch?.(); };
+    this.recognition.onaudiostart = () => { this.events.onAudioStart?.(); };
+    this.recognition.onaudioend = () => { this.events.onAudioEnd?.(); };
+    this.recognition.onspeechstart = () => { this.events.onSpeechStart?.(); };
+    this.recognition.onspeechend = () => { this.events.onSpeechEnd?.(); };
+    this.recognition.onnomatch = () => { this.events.onNoMatch?.(); };
   }
 
   private handleRecognitionStart(): void {
-    console.log('[BrowserSpeechCore] Event: onstart. Recognition has started.');
     this.currentState = 'listening';
     this.startTime = Date.now();
     this.lastResultTime = Date.now();
     this.clearResultTimeoutTimer();
-    if (this.config.continuous) {
+    // Start timeout only if actually configured for continuous operation (continuous or vad-wake)
+    if (this.recognition?.continuous) { // Check the instance's actual continuous state
       this.startResultTimeoutMonitor();
     }
     this.events.onStart?.();
@@ -243,54 +163,35 @@ export class BrowserSpeechCore {
 
   private handleRecognitionResult(event: SpeechRecognitionEvent): void {
     this.lastResultTime = Date.now();
-    if (this.config.continuous) {
+    if (this.recognition?.continuous) {
       this.resetResultTimeoutMonitor();
     }
-    let finalTranscript = '';
-    let interimTranscript = '';
+    let finalTranscript = ''; let interimTranscript = '';
     const resultIndex = event.resultIndex || 0;
     for (let i = resultIndex; i < event.results.length; ++i) {
       const result = event.results[i];
-      if (result.isFinal) {
-        finalTranscript += result[0].transcript;
-      } else {
-        interimTranscript += result[0].transcript;
-      }
+      if (result.isFinal) finalTranscript += result[0].transcript;
+      else interimTranscript += result[0].transcript;
     }
     if (Date.now() - this.startTime < this.WARM_UP_TIME_MS && !finalTranscript.trim()) {
-      if (interimTranscript.trim() && this.config.interimResults) {
-        this.events.onResult?.(interimTranscript.trim(), false);
-      }
+      if (interimTranscript.trim() && this.config.interimResults) this.events.onResult?.(interimTranscript.trim(), false);
       return;
     }
-    if (interimTranscript.trim() && this.config.interimResults) {
-      this.events.onResult?.(interimTranscript.trim(), false);
-    }
-    if (finalTranscript.trim()) {
-      this.events.onResult?.(finalTranscript.trim(), true);
-    }
+    if (interimTranscript.trim() && this.config.interimResults) this.events.onResult?.(interimTranscript.trim(), false);
+    if (finalTranscript.trim()) this.events.onResult?.(finalTranscript.trim(), true);
   }
 
   private handleRecognitionErrorEvent(event: SpeechRecognitionErrorEvent): void {
     const errorType = event.error;
     const errorMessage = event.message || this.getErrorMessageFriendly(errorType);
-    console.error(`[BrowserSpeechCore] Event: onerror - Type: '${errorType}', Message: "${errorMessage}"`);
+    console.warn(`[BrowserSpeechCore] Event: onerror - Type: '${errorType}', Message: "${errorMessage}"`);
     const previousState = this.currentState;
     this.currentState = 'error';
     this.clearResultTimeoutTimer();
     let isFatal = false;
     switch (errorType) {
-      case 'no-speech':
-        isFatal = (this.currentMode === 'single' || this.currentMode === 'vad-command');
-        this.events.onError?.(errorMessage, errorType, isFatal);
-        break;
-      case 'aborted':
-        if (previousState !== 'stopping') {
-          this.events.onError?.(errorMessage, errorType, false);
-        } else {
-           console.log('[BrowserSpeechCore] Recognition aborted by explicit stop/abort call.');
-        }
-        break;
+      case 'no-speech': isFatal = (this.currentMode === 'single' || this.currentMode === 'vad-command'); this.events.onError?.(errorMessage, errorType, isFatal); break;
+      case 'aborted': if (previousState !== 'stopping') this.events.onError?.(errorMessage, errorType, false); else console.log('[BrowserSpeechCore] Recognition aborted by explicit stop/abort call.'); break;
       case 'audio-capture': isFatal = true; this.events.onError?.('Microphone not available or disconnected.', errorType, isFatal); break;
       case 'not-allowed': case 'service-not-allowed': isFatal = true; this.events.onError?.('Microphone permission denied or speech service blocked.', errorType, isFatal); break;
       case 'network': isFatal = true; this.events.onError?.('Network error during speech recognition.', errorType, isFatal); break;
@@ -304,22 +205,32 @@ export class BrowserSpeechCore {
     let reason = 'normal_end';
     if (this.currentState === 'stopping') reason = 'stopped_by_user';
     else if (this.currentState === 'error') reason = 'error_occurred';
-    else if (this.currentState === 'listening' && this.config.continuous) {
+    else if (this.currentState === 'listening' && this.recognition?.continuous) { // Check instance's continuous state
       reason = 'unexpected_continuous_end';
       console.warn('[BrowserSpeechCore] Continuous mode ended unexpectedly.');
     }
     const previousStateBeforeEnd = this.currentState;
     this.currentState = 'idle';
     this.events.onEnd?.(reason);
-    if (this.config.continuous && previousStateBeforeEnd !== 'stopping') {
+
+    // Ensure this.recognition is not null and its continuous property is true for auto-restart logic
+    if (this.recognition?.continuous && previousStateBeforeEnd !== 'stopping') {
       if (reason === 'unexpected_continuous_end' || (reason === 'error_occurred' && this.shouldAttemptRestartAfterError(previousStateBeforeEnd))) {
         if (this.restartAttempts < this.MAX_RESTART_ATTEMPTS) {
           this.restartAttempts++;
-          console.log(`[BrowserSpeechCore] Attempting auto-restart #${this.restartAttempts} for mode '${this.currentMode}' (reason: ${reason}).`);
-          setTimeout(() => this.start(this.currentMode), 500 + Math.random() * 500);
+          const restartDelay = Math.min(this.MIN_RESTART_DELAY_MS + (this.restartAttempts * 300), this.MAX_RESTART_DELAY_MS) + Math.random() * 200;
+          console.log(`[BrowserSpeechCore] Attempting auto-restart #${this.restartAttempts} for mode '${this.currentMode}' (reason: ${reason}) with delay ${Math.round(restartDelay)}ms.`);
+          setTimeout(() => {
+            // Double check if still relevant to restart
+            if(this.currentState === 'idle' && this.recognition?.continuous) { // Check instance state again
+                 this.start(this.currentMode);
+            } else {
+                console.log(`[BrowserSpeechCore] Restart for mode '${this.currentMode}' aborted, state changed or not continuous anymore.`);
+            }
+          }, restartDelay);
         } else {
-          console.error(`[BrowserSpeechCore] Max restart attempts (${this.MAX_RESTART_ATTEMPTS}) reached for mode '${this.currentMode}'.`);
-          this.events.onError?.('Continuous recognition failed after multiple restarts.', 'max_restarts', true);
+          console.error(`[BrowserSpeechCore] Max restart attempts (${this.MAX_RESTART_ATTEMPTS}) reached for mode '${this.currentMode}'. Stopping auto-restarts.`);
+          this.events.onError?.('Continuous recognition failed after multiple restarts and will not be auto-restarted.', 'max_restarts_exceeded', true);
         }
       } else if (reason !== 'error_occurred') {
         this.restartAttempts = 0;
@@ -330,12 +241,11 @@ export class BrowserSpeechCore {
   }
 
   private shouldAttemptRestartAfterError(stateBeforeError: RecognitionState): boolean {
-    // Only restart if it was actively listening or starting, not if it was already in error or idle.
     return stateBeforeError === 'listening' || stateBeforeError === 'starting';
   }
 
   private getErrorMessageFriendly(error: string): string {
-    const messages: Record<string, string> = {
+    const messages: Record<string, string> = { /* ... as before ... */
       'no-speech': 'No speech was detected. Please try speaking again.',
       'aborted': 'Speech recognition was aborted by the system or user.',
       'audio-capture': 'Audio capture failed. Please check your microphone connection and permissions.',
@@ -347,6 +257,7 @@ export class BrowserSpeechCore {
     };
     return messages[error] || `An unknown speech error occurred: ${error}`;
   }
+
 
   private handleErrorInternal(code: string, message: string, isFatal: boolean = true): void {
     console.error(`[BrowserSpeechCore] Internal Error - Code: ${code}, Message: "${message}", Fatal: ${isFatal}`);
@@ -364,63 +275,60 @@ export class BrowserSpeechCore {
       this.handleErrorInternal('api-not-available', 'Web Speech API is not available in this browser or context.', true);
       return false;
     }
-    console.log(`[BrowserSpeechCore] Attempting to start recognition in mode: '${mode}'. Current state: ${this.currentState}`);
-    this.currentMode = mode;
-    this.config.continuous = (mode === 'continuous' || mode === 'vad-wake');
-    this.config.interimResults = (mode !== 'vad-wake');
+    this.currentMode = mode; // Set currentMode before creating/configuring instance
+
+    // Determine and set instance's continuous and interimResults based on currentMode
+    const isContinuousOperation = (this.currentMode === 'continuous' || this.currentMode === 'vad-wake');
+    const useInterimResults = (this.currentMode !== 'vad-wake');
+
     if (!this.recognition || this.currentState === 'error') {
-      if (!this.createRecognitionInstance()) return false;
-    } else {
-      // Apply config to existing instance IF POSSIBLE (some props might not be changeable once set)
-       try {
-        this.recognition.lang = this.config.language;
-        this.recognition.continuous = this.config.continuous;
-        this.recognition.interimResults = this.config.interimResults;
-        this.recognition.maxAlternatives = this.config.maxAlternatives;
-      } catch (e) {
-        console.warn('[BrowserSpeechCore] Could not reconfigure existing recognition instance, a new instance might be needed for some changes.', e);
-        // For critical changes like language, a full re-init (destroy then create) is better.
-        // This simple update here is for less critical runtime adjustments if supported by the browser.
-      }
+      if (!this.createRecognitionInstance()) return false; // createRecognitionInstance will use this.config
     }
+    // Always (re)configure the existing instance before starting
+    if (this.recognition) {
+        this.recognition.continuous = isContinuousOperation;
+        this.recognition.interimResults = useInterimResults;
+        this.recognition.lang = this.config.language; // Ensure lang is also set
+        this.recognition.maxAlternatives = this.config.maxAlternatives;
+         console.log(`[BrowserSpeechCore] Configuring recognition for mode '${mode}': continuous=${isContinuousOperation}, interim=${useInterimResults}`);
+    } else {
+        // Should not happen if createRecognitionInstance was successful
+        console.error("[BrowserSpeechCore] Recognition instance is null before start, shouldn't happen.");
+        return false;
+    }
+
     this.currentState = 'starting';
     try {
-      this.recognition!.start();
+      this.recognition.start();
       return true;
     } catch (e: any) {
-      if (e.name === 'InvalidStateError' && this.recognition) {
-        console.warn('[BrowserSpeechCore] InvalidStateError on start. Aborting current recognition attempt.');
+      if (e.name === 'InvalidStateError') {
+        console.warn('[BrowserSpeechCore] InvalidStateError on start. Aborting.');
         try { this.recognition.abort(); } catch (abortErr) { /* ignore */ }
         this.handleErrorInternal('start-failed-invalid-state', `Failed to start (InvalidStateError). Error: ${e.message}`, false);
-        return false;
+      } else {
+        this.handleErrorInternal('start-failed', `Failed to start recognition: ${e.message || e}`, true);
       }
-      this.handleErrorInternal('start-failed', `Failed to start recognition: ${e.message || e}`, true);
       return false;
     }
   }
 
   public stop(abort: boolean = false): void {
-    if (this.currentState === 'idle' || this.currentState === 'stopping' || !this.recognition) {
-      return;
-    }
+    if (this.currentState === 'idle' || this.currentState === 'stopping' || !this.recognition) return;
     this.currentState = 'stopping';
     this.clearResultTimeoutTimer();
-    try {
-      if (abort) this.recognition.abort(); else this.recognition.stop();
-    } catch (e: any) {
-      console.error('[BrowserSpeechCore] Error during stop/abort command:', e);
-      this.currentState = 'idle';
-      this.events.onEnd?.('forced_stop_error');
-    }
+    try { if (abort) this.recognition.abort(); else this.recognition.stop(); }
+    catch (e: any) { this.currentState = 'idle'; this.events.onEnd?.('forced_stop_error'); }
   }
 
   private startResultTimeoutMonitor(): void {
     this.clearResultTimeoutTimer();
-    if (!this.config.continuous) return;
+    // Only run if recognition instance is set to continuous
+    if (!this.recognition?.continuous) return;
     this.resultTimeoutTimer = window.setTimeout(() => {
       if (this.currentState === 'listening') {
         console.warn(`[BrowserSpeechCore] Continuous mode result timeout (${this.RESULT_TIMEOUT_MS}ms). Forcing stop.`);
-        this.handleErrorInternal('continuous_timeout', 'Continuous recognition timed out.', false); // Let onEnd try to restart
+        this.handleErrorInternal('continuous_timeout', `Continuous recognition timed out after ${this.RESULT_TIMEOUT_MS}ms without results.`, false);
         if (this.recognition) { try { this.recognition.abort(); } catch(e){ /*ignore*/ } }
       }
     }, this.RESULT_TIMEOUT_MS);
@@ -428,7 +336,7 @@ export class BrowserSpeechCore {
 
   private resetResultTimeoutMonitor(): void {
     this.clearResultTimeoutTimer();
-    if (this.config.continuous && this.currentState === 'listening') {
+    if (this.recognition?.continuous && this.currentState === 'listening') {
       this.startResultTimeoutMonitor();
     }
   }
@@ -439,17 +347,21 @@ export class BrowserSpeechCore {
 
   public updateConfig(newConfig: Partial<BrowserSpeechConfig>): void {
     const oldLang = this.config.language;
-    this.config = { ...this.config, ...newConfig };
+    this.config = { ...this.config, ...newConfig }; // Update internal config cache
     if (this.recognition) {
+      // If language changed and recognition is idle/error, destroy to force recreate on next start.
       if (newConfig.language && newConfig.language !== oldLang && (this.currentState === 'idle' || this.currentState === 'error')) {
-        this.destroyRecognitionInstance(); // Force recreate on next start if lang changed and idle
-      } else if (this.recognition && (this.currentState === 'idle' || this.currentState === 'error')) { // Apply if idle and no lang change
+        this.destroyRecognitionInstance();
+      } else if (this.recognition && (this.currentState === 'idle' || this.currentState === 'error')) {
+        // Apply other config changes if idle and no language change
         this.recognition.lang = this.config.language;
-        this.recognition.continuous = this.config.continuous;
-        this.recognition.interimResults = this.config.interimResults;
+        // Note: continuous and interimResults are set primarily by start() based on mode.
+        // Direct update here might conflict if not careful.
         this.recognition.maxAlternatives = this.config.maxAlternatives;
       } else if (this.currentState === 'listening' || this.currentState === 'starting'){
-         console.warn('[BrowserSpeechCore] Config update while active. Some changes may need restart.');
+         console.warn('[BrowserSpeechCore] Config update while active. Some changes (like lang) may need a full restart (stop/start).');
+         // Apply maxAlternatives if possible
+         if (newConfig.maxAlternatives !== undefined) this.recognition.maxAlternatives = newConfig.maxAlternatives;
       }
     }
   }
