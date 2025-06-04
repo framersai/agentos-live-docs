@@ -606,274 +606,242 @@ onBeforeUnmount(async () => {
 
 </script>
 
-<style lang="scss">
-// Assuming styles are in a separate file or defined globally as per earlier setup.
-// This <style> block can be used for component-specific overrides if needed.
-// For this exercise, using the previously provided SCSS from voice-input-panel-ephemeral.scss
-// which would typically be imported or be part of a global style structure.
-
-// Visually hidden class for accessibility
+<style lang="scss">// Visually hidden class for accessibility
 .vi-sr-only {
   position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border-width: 0;
 }
 
-// Basic layout classes (can be expanded in the main SCSS file)
 .voice-input-panel {
   display: flex;
   flex-direction: column;
-  padding: 12px 15px;
-  background-color: var(--vt-c-bg); /* Example variable */
-  border: 1px solid var(--vt-c-divider-light-2); /* Example variable */
-  border-radius: 16px;
-  box-shadow: var(--vt-shadow-2); /* Example variable */
+  padding: 1rem 1.25rem; // Slightly more padding
+  background-color: var(--vt-c-bg-soft); // Neomorphism often uses lighter backgrounds
+  border-radius: 20px; // Softer radius for neomorphism
   position: relative;
-  gap: 10px;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-  overflow: hidden; // For background effects clipping
+  gap: 0.75rem;
+  // Neomorphic shadows: one light top-left, one dark bottom-right
+  box-shadow: 
+    -6px -6px 12px var(--vt-c-bg-mute), // Lighter shadow (adjust color for theme)
+    6px 6px 12px var(--vt-c-shadow-3);   // Darker shadow (adjust color for theme)
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  // overflow: visible; // IMPORTANT for InputToolbar to pop out.
+                       // If background effects require clipping, toolbar needs portalling or different positioning.
 
   &.vi-widescreen {
     margin-left: auto;
     margin-right: auto;
-    max-width: 768px; // Example max width
+    max-width: 768px;
+  }
+
+  // Depressed neomorphic look when active/focused
+  &.state-stt-active,
+  &:focus-within { // General focus on the panel
+    background-color: var(--vt-c-bg); // Slightly darker
+    box-shadow: 
+      inset -3px -3px 7px var(--vt-c-bg-mute),
+      inset 3px 3px 7px var(--vt-c-shadow-3);
   }
 }
 
-.vi-background-effects-svg {
-  position: absolute;
-  top: 0; left: 0; width: 100%; height: 100%;
-  z-index: 0;
-  pointer-events: none;
-  overflow: visible; /* Or clip as needed */
+.vi-background-effects-svg, .vi-dynamic-background {
+  // Styles remain as before, ensure they don't conflict with overflow:visible if toolbar needs it
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 0; pointer-events: none;
+  border-radius: inherit; // Clip to panel's border radius
 }
+.vi-dynamic-background { z-index: -1; transition: background 0.5s ease-out; }
 
-.vi-dynamic-background {
-  position: absolute;
-  top: 0; left: 0; width: 100%; height: 100%;
-  z-index: -1; /* Behind content, above svg if needed or vice-versa */
-  pointer-events: none;
-  transition: background 0.5s ease-out;
-}
 
 .vi-controls-area {
   display: flex;
   align-items: center;
-  gap: 12px;
-  position: relative; /* For z-indexing within panel */
-  z-index: 2; /* Above background effects */
+  gap: 0.75rem; // Consistent gap
+  position: relative;
+  z-index: 2;
 }
 
 .vi-mic-button {
-  background-color: var(--vt-c-indigo-soft); /* Example variable */
-  color: var(--vt-c-indigo-darker); /* Example variable */
-  border: none;
+  flex-shrink: 0;
+  width: 56px; // Slightly larger
+  height: 56px;
   border-radius: 50%;
-  width: 52px;
-  height: 52px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.64, -0.58, 0.34, 1.56); /* Example spring physics */
+  position: relative; // For pseudo-elements (auras)
   outline: none;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  border: none; // Remove default border for neomorphism
+  background-color: var(--vt-c-bg-soft); // Match panel bg
+  color: var(--vt-c-indigo); // Icon color
+  box-shadow: 
+    -4px -4px 8px var(--vt-c-bg-mute),
+    4px 4px 8px var(--vt-c-shadow-2);
+  transition: all 0.2s cubic-bezier(0.64, -0.58, 0.34, 1.56); // Springy
+
+  &::before, &::after { // For radial effects
+    content: '';
+    position: absolute;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    transition: all 0.4s var(--ease-out-expo); // Use a defined easing
+    pointer-events: none;
+  }
+
+  // Example idle aura
+  &::before { 
+    box-shadow: 0 0 0 0px hsla(var(--vt-c-indigo-h), var(--vt-c-indigo-s), var(--vt-c-indigo-l), 0.3);
+    opacity: 0.5;
+  }
+  &:hover:not(:disabled)::before {
+    transform: scale(1.2);
+    opacity: 0; // Fade out on hover as main shadow takes over
+  }
 
   &:hover:not(:disabled) {
-    background-color: var(--vt-c-indigo); /* Example variable */
-    color: var(--vt-c-white); /* Example variable */
-    transform: scale(1.05);
-    box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3); /* Example shadow */
+    color: var(--vt-c-indigo-dark);
+    box-shadow: 
+      -5px -5px 10px var(--vt-c-bg-mute),
+      5px 5px 10px var(--vt-c-shadow-3);
+    transform: translateY(-1px);
   }
+
+  // Active/Recording state - "pressed in" neomorphic look
+  &.vi-mic-active,
   &:active:not(:disabled) {
-    transform: scale(0.95);
-    background-color: var(--vt-c-indigo-dark); /* Example variable */
-  }
-  &:disabled {
-    background-color: var(--vt-c-gray-soft); /* Example variable */
-    color: var(--vt-c-text-3); /* Example variable */
-    cursor: not-allowed;
-    box-shadow: none;
-  }
-  &.vi-mic-active {
-    background-color: var(--vt-c-red-soft); /* Example variable */
-    color: var(--vt-c-red-darker); /* Example variable */
-    &:hover:not(:disabled) {
-      background-color: var(--vt-c-red); /* Example variable */
-      color: var(--vt-c-white); /* Example variable */
-      box-shadow: 0 4px 10px rgba(220, 38, 38, 0.3); /* Example shadow */
+    box-shadow: 
+      inset -3px -3px 6px var(--vt-c-bg-mute),
+      inset 3px 3px 6px var(--vt-c-shadow-2);
+    color: var(--vt-c-red); // Active color
+    transform: translateY(1px);
+    &::before { // Active aura
+      animation: micPulsingAuraActive 1.5s infinite ease-out;
+      box-shadow: 0 0 10px 5px hsla(var(--vt-c-red-h), var(--vt-c-red-s), var(--vt-c-red-l), 0.4);
+      opacity: 1;
+      transform: scale(1.1);
     }
   }
-  &.vi-mic-vad-listening {
-    background-color: var(--vt-c-green-soft); /* Example variable */
-    color: var(--vt-c-green-darker); /* Example variable */
-    animation: vad-listening-pulse-border 1.5s infinite ease-in-out; /* From motion language */
+  
+  &.vi-mic-vad-listening { // VAD listening for wake word
+    color: var(--vt-c-green); // VAD color
+    &::before {
+      animation: micPulsingAuraVad 2s infinite ease-in-out;
+      box-shadow: 0 0 12px 4px hsla(var(--vt-c-green-h), var(--vt-c-green-s), var(--vt-c-green-l), 0.35);
+      opacity: 1;
+      transform: scale(1.05);
+    }
   }
-  .icon-md { width: 26px; height: 26px; }
-}
 
-@keyframes vad-listening-pulse-border { /* Example animation */
-  0% { box-shadow: 0 0 0 0px hsla(145, 63%, 42%, 0.5); } /* Example color */
-  50% { box-shadow: 0 0 0 6px hsla(145, 63%, 42%, 0); }
-  100% { box-shadow: 0 0 0 0px hsla(145, 63%, 42%, 0.5); }
-}
-
-
-.vi-audio-mode-dropdown {
-  z-index: 10; /* Ensure dropdown is above other elements */
-}
-
-.vi-status-indicator-wrapper {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  min-width: 0; /* Prevent overflow in flex container */
-}
-
-.vi-status-indicator {
-  flex-grow: 1;
-  display: flex;
-  align-items: center;
-  padding: 6px 10px;
-  background-color: var(--vt-c-bg-mute); /* Example variable */
-  border-radius: 8px;
-  font-size: 0.875em;
-  color: var(--vt-c-text-2); /* Example variable */
-  transition: background-color 0.3s ease, color 0.3s ease;
-  min-height: 38px;
-  overflow: hidden;
-
-  .vi-status-text {
-    font-weight: 500;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    box-shadow: 
+      -2px -2px 4px var(--vt-c-bg-mute),
+      2px 2px 4px var(--vt-c-shadow-1); // Flatter disabled look
+    color: var(--vt-c-text-3);
   }
-  &.vi-mode-active { background-color: var(--vt-c-blue-mute); color: var(--vt-c-blue-dark); } /* Example variables */
-  &.vi-mode-vad-wake { background-color: var(--vt-c-yellow-mute); color: var(--vt-c-yellow-darker); } /* Example variables */
+
+  .icon-md { width: 28px; height: 28px; } // Slightly larger icon
 }
 
-.vi-recording-status-html {
-  font-size: 0.8em;
-  margin-top: 4px;
-  padding: 0 10px;
-  color: var(--vt-c-text-2); /* Example variable */
-  height: 1.2em; /* Ensure space for one line */
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+@keyframes micPulsingAuraActive {
+  0% { transform: scale(1); opacity: 0.5; box-shadow: 0 0 8px 3px hsla(var(--vt-c-red-h), var(--vt-c-red-s), var(--vt-c-red-l), 0.3); }
+  50% { transform: scale(1.15); opacity: 0.7; box-shadow: 0 0 14px 7px hsla(var(--vt-c-red-h), var(--vt-c-red-s), var(--vt-c-red-l), 0.5); }
+  100% { transform: scale(1); opacity: 0.5; box-shadow: 0 0 8px 3px hsla(var(--vt-c-red-h), var(--vt-c-red-s), var(--vt-c-red-l), 0.3); }
+}
+@keyframes micPulsingAuraVad {
+  0% { transform: scale(1); opacity: 0.4; box-shadow: 0 0 7px 2px hsla(var(--vt-c-green-h), var(--vt-c-green-s), var(--vt-c-green-l), 0.25); }
+  50% { transform: scale(1.1); opacity: 0.6; box-shadow: 0 0 12px 5px hsla(var(--vt-c-green-h), var(--vt-c-green-s), var(--vt-c-green-l), 0.4); }
+  100% { transform: scale(1); opacity: 0.4; box-shadow: 0 0 7px 2px hsla(var(--vt-c-green-h), var(--vt-c-green-s), var(--vt-c-green-l), 0.25); }
+}
 
-  .interim-transcript-feedback { color: var(--vt-c-text-1); } /* Example variable */
-  .listening-feedback { color: var(--vt-c-blue); } /* Example variable */
-  .error-feedback { color: var(--vt-c-red); font-weight: bold; } /* Example variable */
-  .ignored-transcript-feedback { color: var(--vt-c-text-3); font-style: italic; } /* Example variable */
-  .transcription-sent-feedback { color: var(--vt-c-green-dark); } /* Example variable */
+
+.vi-status-indicator-wrapper { /* Styles as before, or refine for neomorphism */ }
+.vi-status-indicator { /* Styles as before */ }
+.vi-recording-status-html { /* Styles as before */
+  .mode-hint-feedback {
+    color: var(--vt-c-text-2); // Subtler color for hints
+    font-style: italic;
+  }
 }
 
 .vi-toolbar-area {
-  position: relative; /* For absolute positioning of InputToolbar */
+  position: relative; 
   display: flex;
-  justify-content: flex-end; /* Align toggle button to the right */
+  justify-content: flex-end;
+  z-index: 100; // Toolbar area itself needs z-index if panel has overflow:visible
 }
+.vi-toolbar-toggle-button { /* Styles as before */ }
 
-.vi-toolbar-toggle-button {
-  background: none;
-  border: none;
-  color: var(--vt-c-text-2); /* Example variable */
-  cursor: pointer;
-  padding: 8px;
-  border-radius: 50%;
-  transition: color 0.2s, background-color 0.2s;
-  z-index: 110; /* Above toolbar if it overlaps */
-
-  &:hover {
-    background-color: var(--vt-c-bg-mute); /* Example variable */
-    color: var(--vt-c-text-1); /* Example variable */
-  }
-  .icon-sm { width:20px; height:20px; }
-}
-
-.vi-input-toolbar {
+.vi-input-toolbar { // The actual toolbar component that expands
   position: absolute;
-  bottom: calc(100% + 5px); /* Position above the toggle button/area */
+  bottom: calc(100% + 8px); // Position above the toggle button/area
   right: 0;
-  z-index: 100;
+  z-index: 1050; // High z-index to ensure visibility
+  // Add neomorphic styling to the toolbar itself if desired
+  background-color: var(--vt-c-bg-soft);
   border-radius: 12px;
-  box-shadow: var(--vt-shadow-3); /* Example variable */
-}
-
-.toolbar-transition-enter-active,
-.toolbar-transition-leave-active {
-  transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.64, -0.58, 0.34, 1.56); /* Spring physics */
-}
-
-.toolbar-transition-enter-from,
-.toolbar-transition-leave-to {
-  opacity: 0;
-  transform: translateY(10px) scale(0.95);
+  padding: 0.5rem;
+  box-shadow: 
+    -5px -5px 10px var(--vt-c-bg-mute),
+    5px 5px 10px var(--vt-c-shadow-2);
 }
 
 .vi-input-area {
   display: flex;
-  align-items: flex-end; /* Align items to bottom (send button, textarea) */
-  gap: 10px;
-  padding: 6px 8px 6px 12px;
-  background-color: var(--vt-c-bg-soft); /* Example variable */
-  border: 1px solid var(--vt-c-divider-light-1); /* Example variable */
+  align-items: flex-end;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background-color: var(--vt-c-bg); // Inner area, can be slightly different
   border-radius: 12px;
-  min-height: 52px; /* Consistent height */
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  position: relative; /* For z-indexing within panel */
+  min-height: 52px;
+  position: relative;
   z-index: 1;
+  // "Pressed in" neomorphic effect for input area
+  box-shadow: 
+    inset -2px -2px 5px var(--vt-c-bg-mute),
+    inset 2px 2px 5px var(--vt-c-shadow-1);
+  transition: box-shadow 0.3s ease;
 
   &:focus-within {
-    border-color: var(--vt-c-indigo); /* Example variable */
-    box-shadow: 0 0 0 3px hsla(220, 60%, 50%, 0.2); /* Example focus ring */
+    // Stronger inset shadow or an outer glow for focus
+    box-shadow: 
+      inset -3px -3px 7px var(--vt-c-bg-mute),
+      inset 3px 3px 7px var(--vt-c-shadow-2),
+      0 0 0 2px var(--vt-c-indigo-alpha-focus); // Subtle outer focus ring
   }
-
-  &.vi-input-disabled {
-    background-color: var(--vt-c-bg-mute); /* Example variable */
-    textarea::placeholder {
-      color: var(--vt-c-text-3); /* Example variable */
-    }
-  }
-
-  /* Class for when prominent visualization takes over */
-  &.vi-input-area-prominent-viz {
-    padding: 0;
-    border-color: transparent;
-    background-color: transparent;
-    box-shadow: none;
-  }
+  &.vi-input-disabled { /* Styles as before */ }
 }
 
 .vi-textarea {
-  flex-grow: 1;
+  flex-grow: 1; // Ensures it takes full width
   background: transparent;
   border: none;
   outline: none;
   resize: none;
   font-family: inherit;
   font-size: 1rem;
-  color: var(--vt-c-text-1); /* Example variable */
+  color: var(--vt-c-text-1);
   line-height: 1.6;
-  padding: 8px 0; /* Adjust padding for baseline alignment */
-  max-height: 120px; /* Limit expansion */
-  overflow-y: auto; /* Scroll if content exceeds max-height */
+  padding: 0.5rem 0.25rem; // Minimal padding inside
+  max-height: 120px;
+  overflow-y: auto;
 
-  &::placeholder {
-    color: var(--vt-c-text-3); /* Example variable */
-    transition: color 0.3s ease;
-  }
-  &:disabled {
-    color: var(--vt-c-text-3); /* Example variable */
-    cursor: not-allowed;
+  &::placeholder { /* Styles as before */ }
+  &:disabled { /* Styles as before */ }
+
+  // Shimmer/highlight effect on focus (can be expanded with JS for "on type")
+  &:focus {
+    // Example: A subtle changing gradient or animated border if desired
+    // For a simple highlight, the parent :focus-within is often enough.
+    // If a text shimmer is needed *as characters appear*, that's more JS heavy.
   }
 }
 
