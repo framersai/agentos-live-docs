@@ -33,6 +33,7 @@ import {
   ArrowRightOnRectangleIcon as LogoutIcon,
   Cog8ToothIcon as SettingsIcon, // Renamed for clarity as it's used for 'Settings' link
   CpuChipIcon as AdvancedMemoryIcon,
+  CpuChipIcon,
   BookOpenIcon as BasicHistoryIcon,
   DocumentTextIcon,
   CheckIcon as ActiveStateIcon // Using outline for consistency, can be solid if preferred
