@@ -52,6 +52,11 @@ export interface VoiceApplicationSettings {
   currentAppMode: AgentId;
   /** For VAD mode with browser STT, array of wake words. */
   vadWakeWordsBrowserSTT?: readonly string[]; // `readonly string[]` is correct.
+
+  vadCommandTimeoutMs: number; // 
+
+  showLiveTranscription?: boolean; // Optional, if live transcription is supported
+  alwaysShowVoiceVisualization?: boolean; // Optional, if voice visualization is always shown
   /** Preferred default language for coding-related agents. */
   preferredCodingLanguage: string;
   /** ID of the default agent to load on startup. */
@@ -132,6 +137,9 @@ export interface VoiceApplicationSettings {
 const initialDefaultSettings: Readonly<VoiceApplicationSettings> = { // Mark as Readonly
   currentAppMode: 'v_agent' as AgentId, // Default to the main 'V' agent
   preferredCodingLanguage: 'python',
+  vadCommandTimeoutMs: 4000, // Default VAD command timeout
+  showLiveTranscription: true, // Default to showing live transcription
+  alwaysShowVoiceVisualization: true, // Default to always showing voice visualization
   defaultMode: 'v_agent' as AgentId,
   defaultLanguage: typeof navigator !== 'undefined' ? navigator.language : 'en-US',
   autoClearChat: false,
