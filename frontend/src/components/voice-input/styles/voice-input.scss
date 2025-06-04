@@ -3,12 +3,9 @@
  * @file voice-input.scss
  * @description SCSS styles for the VoiceInput.vue component and its sub-components.
  * Implements the "Ephemeral Harmony" design language with themed, dynamic, and state-responsive visuals.
- * Includes layout for voice input controls, text area, microphone button states,
- * status indicators, background effects, and animations.
+ * Focus on visibility for transcriptions, VAD visualizations, and refined "breathing" effects.
  *
- * @version 3.6.0 - Revamped to fully align with Ephemeral Harmony motion language,
- * added textarea breathing effect, and integrated clear transcription feedback styles.
- * (Combined with elements from v3.5.0 as requested)
+ * @version 3.7.1 - Ensuring full restoration of provided styles for visibility and effects.
  */
 
 @use '../../../styles/abstracts/variables' as var;
@@ -23,9 +20,9 @@
     var(--color-bg-secondary-h, var.$default-color-bg-secondary-h),
     var(--color-bg-secondary-s, var.$default-color-bg-secondary-s),
     var(--color-bg-secondary-l, var.$default-color-bg-secondary-l),
-    0.92 // Slightly more presence
+    0.92
   );
-  backdrop-filter: blur(var(--blur-voice-input-wrapper, 18px)); // Enhanced blur
+  backdrop-filter: blur(var(--blur-voice-input-wrapper, 18px));
   border-radius: var.$radius-xl;
   padding: var.$spacing-sm var.$spacing-md;
   transition:
@@ -33,10 +30,10 @@
     box-shadow var.$duration-smooth var.$ease-out-cubic,
     border-color var.$duration-smooth var.$ease-out-cubic,
     opacity var.$duration-smooth var.$ease-out-cubic;
-  overflow: visible;
+  overflow: visible; // Allow popovers/toolbars like InputToolbar
   width: 100%;
   box-shadow: var(--shadow-voice-input-wrapper, var.$shadow-depth-lg);
-  border: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.2); // Slightly more defined border
+  border: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.2);
 
   &.layout-wide-screen {
     width: var(--width-voice-input-panel-wide, 70%);
@@ -49,19 +46,19 @@
   &::before {
     content: '';
     position: absolute;
-    inset: -2px;
+    inset: -2px; // Creates the border effect outside the main panel
     background: conic-gradient(
       from var(--gradient-angle, 0deg),
       hsla(var(--state-glow-color-h, var.$default-color-accent-primary-h), var(--state-glow-color-s, var.$default-color-accent-primary-s), var(--state-glow-color-l, var.$default-color-accent-primary-l), 0),
       hsla(var(--state-glow-color-h, var.$default-color-accent-primary-h), var(--state-glow-color-s, var.$default-color-accent-primary-s), var(--state-glow-color-l, var.$default-color-accent-primary-l), var(--state-glow-opacity, 0)),
-      hsla(var(--state-glow-color-h2, var.$default-color-accent-secondary-h), var(--state-glow-color-s2, var.$default-color-accent-secondary-s), var(--state-glow-color-l2, var.$default-color-accent-secondary-l), calc(var(--state-glow-opacity, 0) * 0.75)), // Slightly stronger secondary
+      hsla(var(--state-glow-color-h2, var.$default-color-accent-secondary-h), var(--state-glow-color-s2, var.$default-color-accent-secondary-s), var(--state-glow-color-l2, var.$default-color-accent-secondary-l), calc(var(--state-glow-opacity, 0) * 0.75)),
       hsla(var(--state-glow-color-h, var.$default-color-accent-primary-h), var(--state-glow-color-s, var.$default-color-accent-primary-s), var(--state-glow-color-l, var.$default-color-accent-primary-l), 0)
     );
-    border-radius: calc(var.$radius-xl + 2px);
+    border-radius: calc(var.$radius-xl + 2px); // Match parent + inset
     opacity: 0;
-    animation: rotate-gradient 8s linear infinite paused; // Keyframes defined below
+    animation: rotate-gradient 8s linear infinite paused;
     transition: opacity var.$duration-smooth var.$ease-out-cubic, background var.$duration-smooth var.$ease-out-cubic;
-    z-index: 0;
+    z-index: -1; // Behind the main panel content
     pointer-events: none;
   }
 
@@ -74,20 +71,19 @@
     background-image: radial-gradient(
       circle at 50% 50%,
       hsla(var(--color-voice-user-h, var.$default-color-voice-user-h), var(--color-voice-user-s, var.$default-color-voice-user-s), var(--color-voice-user-l, var.$default-color-voice-user-l), 0) 0%,
-      hsla(var(--color-voice-user-h, var.$default-color-voice-user-h), var(--color-voice-user-s, var.$default-color-voice-user-l, var.$default-color-voice-user-l), 0.15) 40%, // Adjusted for visual impact
+      hsla(var(--color-voice-user-h, var.$default-color-voice-user-h), var(--color-voice-user-s, var.$default-color-voice-user-l), var(--color-voice-user-l, var.$default-color-voice-user-l), 0.15) 40%,
       hsla(var(--color-voice-user-h, var.$default-color-voice-user-h), var(--color-voice-user-s, var.$default-color-voice-user-s), var(--color-voice-user-l, var.$default-color-voice-user-l), 0) 80%
     );
     opacity: 0;
     transform: scale(0.8);
-    animation: radialPulseEffect 3s var.$ease-in-out-sine infinite paused; // Keyframes defined below
+    animation: radialPulseEffect 3s var.$ease-in-out-sine infinite paused;
     transition: opacity var.$duration-smooth var.$ease-out-cubic, transform var.$duration-smooth var.$ease-out-cubic;
-    z-index: 1;
+    z-index: 0; // Above background pattern, below main content
     pointer-events: none;
   }
 
-  // --- State-specific Styling for the Panel ---
   &.state-idle {
-    --state-glow-opacity: 0.35; // Slightly more noticeable idle glow
+    --state-glow-opacity: 0.35;
     --state-glow-color-h: var(--color-accent-primary-h, var.$default-color-accent-primary-h);
     --state-glow-color-s: var(--color-accent-primary-s, var.$default-color-accent-primary-s);
     --state-glow-color-l: var(--color-accent-primary-l, var.$default-color-accent-primary-l);
@@ -97,7 +93,7 @@
     &::before { opacity: var(--state-glow-opacity); animation-play-state: running; animation-duration: 10s; }
   }
 
-  &.state-stt-active { // Main command capture (PTT, VAD command, Continuous main)
+  &.state-stt-active { // Main STT (PTT, VAD command, Continuous main command capture)
     --state-glow-opacity: 0.9;
     --state-glow-color-h: var(--color-voice-user-h, var.$default-color-voice-user-h);
     --state-glow-color-s: var(--color-voice-user-s, var.$default-color-voice-user-s);
@@ -107,6 +103,8 @@
     box-shadow: var(--shadow-voice-input-wrapper-active, var.$shadow-depth-xl);
     border-color: hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.3);
     &::before { opacity: var(--state-glow-opacity); animation-play-state: running; animation-duration: 3.5s; }
+    // Activate inner pulse for active listening/recording
+    &::after { animation-play-state: running; opacity: 1; transform: scale(1); }
   }
 
   &.state-vad-listening-wake { // VAD listening for wake word
@@ -118,6 +116,12 @@
     background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.97);
     border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.25);
     &::before { opacity: var(--state-glow-opacity); animation-play-state: running; animation-duration: 5s; }
+    &::after { // More subtle pulse for VAD wake
+        animation: radialPulseEffect 4s var.$ease-in-out-sine infinite .5s; // Slower, delayed start
+        animation-play-state: running;
+        opacity: 0.7; transform: scale(0.9);
+        background-image: radial-gradient( circle at 50% 50%, hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0) 0%, hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.1) 40%, hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0) 75% );
+    }
   }
 
   &.state-llm-processing { // Assistant responding/thinking
@@ -128,7 +132,8 @@
     --state-glow-color-h2: hsl(calc(var(--color-accent-secondary-h, var.$default-color-accent-secondary-h) + 20), var(--color-accent-secondary-s, var.$default-color-accent-secondary-s), var(--color-accent-secondary-l, var.$default-color-accent-secondary-l));
     opacity: 0.96;
     border-color: hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.15);
-    &::before { opacity: var(--state-glow-opacity); animation: shimmer-border 3s ease-in-out infinite alternate; } // Alternate for smoother shimmer
+    &::before { opacity: var(--state-glow-opacity); animation: shimmer-border 3s ease-in-out infinite alternate; }
+    &::after { animation-play-state: paused; opacity: 0; } // No inner pulse when LLM processing
   }
 
   &.mic-permission-denied,
@@ -138,58 +143,36 @@
     --state-glow-color-s: var(--color-error-s, var.$default-color-error-s);
     --state-glow-color-l: var(--color-error-l, var.$default-color-error-l);
     --state-glow-color-h2: hsl(calc(var(--color-error-h, var.$default-color-error-h) - 15), calc(var(--color-error-s, var.$default-color-error-s) * 0.9), calc(var(--color-error-l, var.$default-color-error-l) * 0.85));
-    background-color: hsla(var(--color-error-h), var(--color-error-s), calc(var(--color-error-l) * 0.2), 0.25); // Darker error hint
+    background-color: hsla(var(--color-error-h), var(--color-error-s), calc(var(--color-error-l) * 0.2), 0.25);
     border-color: hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.4);
     &::before { opacity: var(--state-glow-opacity); animation: error-pulse-border 1.5s var.$ease-in-out-quad infinite; }
+    &::after { animation-play-state: paused; opacity: 0; }
   }
 
-  // Radial pulse effect for active continuous listening (when textarea is de-emphasized)
-  &.continuous-listening-active.input-area-continuous-active { // More specific selector
+  // This targets the prominent radial pulse when continuous listening is active AND text input is hidden/de-emphasized.
+  &.continuous-listening-active.input-area-continuous-active {
     &::after {
       animation-play-state: running;
-      opacity: 1; // Make it visible
-      transform: scale(1); // Full scale
-    }
-  }
-  // Fallback radial effect from v3.5.0 for .continuous-listening-active if not covered by more specific selector above
-  // This part ensures the general .continuous-listening-active from v3.5.0 is present if needed
-  // Note: v3.6.0 already has a similar ::after block, this might be redundant or need careful checking in implementation
-  // For the purpose of "combining" as requested by the user, including it.
-  &.continuous-listening-active {
-    // If not input-area-continuous-active, this provides the v3.5.0 style radial pulse
-    &:not(.input-area-continuous-active)::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        border-radius: inherit;
-        background-image: radial-gradient(
-            circle at 50% 50%,
-            hsla(var(--color-voice-user-h, var.$default-color-voice-user-h), var(--color-voice-user-s, var.$default-color-voice-user-s), var(--color-voice-user-l, var.$default-color-voice-user-l), 0) 0%,
-            hsla(var(--color-voice-user-h, var.$default-color-voice-user-h), var(--color-voice-user-s, var.$default-color-voice-user-l, var.$default-color-voice-user-l), 0.12) 35%, // Softer, wider pulse from v3.5.0
-            hsla(var(--color-voice-user-h, var.$default-color-voice-user-h), var(--color-voice-user-s, var.$default-color-voice-user-s), var(--color-voice-user-l, var.$default-color-voice-user-l), 0) 75%
-        );
-        animation: radialPulseEffect 3s var.$ease-in-out-sine infinite; // Uses v3.6.0's radialPulseEffect definition
-        z-index: 1; 
-        pointer-events: none;
-        // If .input-area-continuous-active is also present, its more specific ::after will take precedence for opacity/transform.
-        // Otherwise, this provides the base pulse animation.
-        // For this combination, ensure animation is running:
-        animation-play-state: running;
-        opacity: 0.18; // Taken from v3.6.0 radialPulseEffect keyframe midpoint for visibility
-        transform: scale(1.2); // Taken from v3.6.0 radialPulseEffect keyframe midpoint for visibility
+      opacity: 1;
+      transform: scale(1);
+      // Use a specific, more prominent gradient for this continuous "listening field"
+      background-image: radial-gradient(
+        circle at 50% 50%,
+        hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0) 10%,
+        hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.2) 50%, // Stronger mid-point
+        hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0) 85%
+      );
     }
   }
 }
 
-// -----------------------------------------------------------------------------
-// Background Visual Effects (Controlled by JS via useVoiceInputEffects)
-// -----------------------------------------------------------------------------
+// Background Visual Effects
 .geometric-pattern-bg {
   position: absolute;
   inset: calc(-1 * var.$spacing-xl * 2.5);
   width: calc(100% + (var.$spacing-xl * 5));
   height: calc(100% + (var.$spacing-xl * 5));
-  z-index: 0;
+  z-index: -2; // Furthest back
   opacity: var(--pattern-opacity, 0.02);
   transition: opacity var.$duration-smooth ease-in-out;
   pointer-events: none;
@@ -204,16 +187,19 @@
 }
 
 .dynamic-gradient-bg {
-  position: absolute; inset: 0; z-index: 1; border-radius: inherit;
+  position: absolute;
+  inset: 0;
+  z-index: -1; // Behind panel border glow, above pattern
+  border-radius: inherit;
   opacity: var(--gradient-opacity, 0);
   transition: opacity var.$duration-smooth var.$ease-out-quad;
   pointer-events: none;
   .voice-input-panel-ephemeral.state-stt-active &,
   .voice-input-panel-ephemeral.state-vad-listening-wake &,
-  .voice-input-panel-ephemeral.state-llm-processing & { --gradient-opacity: 0.6; } // Slightly increased opacity for effect
+  .voice-input-panel-ephemeral.state-llm-processing & { --gradient-opacity: 0.6; }
 }
 
-// Ignored Text Animation (from v3.5.0)
+// Ignored Text Animation
 .ignored-text-container-ephemeral {
   position: absolute;
   top: -50px; // Start above the panel
@@ -224,6 +210,7 @@
   overflow: hidden;
   z-index: 15; // Above most panel content, below popups
 }
+
 .ignored-text-ephemeral {
   position: absolute;
   left: 50%; // Centered initially
@@ -235,180 +222,178 @@
   background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.3);
   border-radius: var.$radius-sm;
   white-space: nowrap;
- // Using faster fade from v3.6.0
   transition: opacity 0.6s var.$ease-out-quad, transform 0.6s var.$ease-out-quad, filter 0.6s var.$ease-out-quad;
 }
 
-// -----------------------------------------------------------------------------
-// Voice Visualization Canvas
-// -----------------------------------------------------------------------------
+// Voice Visualization Canvas - Ensuring visibility for VAD bars
 .voice-visualization-canvas-ephemeral {
-  // Base styles from v3.5.0
   position: absolute;
-  bottom: calc(100% + var.$spacing-xs); 
+  bottom: calc(100% + var.$spacing-xs + 4px); // Ensure it's above the panel
   left: 50%;
   transform: translateX(-50%);
-  width: var(--width-viz-canvas-default, 180px);
-  height: var(--height-viz-canvas-default, 40px);
-  opacity: 0;
+  width: var(--width-viz-canvas-default, 200px);
+  height: var(--height-viz-canvas-default, 50px);
+  opacity: 0; // Start hidden
+  visibility: hidden; // Start hidden
   pointer-events: none;
-  z-index: 3; 
+  z-index: 3;
   filter: drop-shadow(0 2px 5px hsla(var(--color-shadow-h), var(--color-shadow-s), var(--color-shadow-l), 0.2));
-  // Transition from v3.6.0 (includes transform)
-  transition: all var.$duration-smooth var.$ease-out-expo, opacity var.$duration-smooth var.$ease-out-quad, transform var.$duration-smooth var.$ease-out-expo;
+  transition: all var.$duration-smooth var.$ease-out-expo, opacity var.$duration-smooth var.$ease-out-quad, transform var.$duration-smooth var.$ease-out-expo, visibility 0s var.$duration-smooth; // Transition visibility correctly
 
-  &.prominent { 
-    // Styles from v3.5.0
-    width: clamp(220px, 55vw, 360px);
-    height: clamp(60px, 12vh, 100px);
+  &.prominent, &.vad-bars-active {
+    opacity: 0.9; // Make visible
+    visibility: visible;
+    transition-delay: 0s; // Ensure visibility transition is immediate when becoming visible
+  }
+
+  &.prominent {
+    width: clamp(240px, 60vw, 380px);
+    height: clamp(65px, 13vh, 110px);
     bottom: calc(100% + var.$spacing-sm);
-    // Opacity from v3.6.0
-    opacity: 0.95; 
   }
 
-  // Specific states from v3.5.0
-  &.vad-bars-active { 
-    // e.g., might have a fixed aspect ratio or different default size
+  &.vad-bars-active { // Specific styling for VAD volume bars
+    width: var(--width-viz-canvas-vad, 220px);
+    height: var(--height-viz-canvas-vad, 60px);
   }
 
-  .voice-input-panel-ephemeral.continuous-listening-active &.continuous-viz-active {
+  .voice-input-panel-ephemeral.continuous-listening-active &.continuous-viz-active { // Full panel takeover
     opacity: 1;
+    visibility: visible;
     top: 50%;
     left: 50%;
-    bottom: auto; 
-    transform: translate(-50%, -50%); 
-    width: clamp(280px, 70vw, 450px); 
+    bottom: auto;
+    transform: translate(-50%, -50%);
+    width: clamp(280px, 70vw, 450px);
     height: clamp(80px, 15vh, 120px);
-    z-index: 12; 
+    z-index: 12;
   }
 
-  .voice-input-panel-ephemeral.state-llm-processing &.prominent { 
-    opacity: 0.35;
+  .voice-input-panel-ephemeral.state-llm-processing &.prominent,
+  .voice-input-panel-ephemeral.state-llm-processing &.vad-bars-active {
+    opacity: 0.35; // Dim if LLM processing
   }
 }
 
-// -----------------------------------------------------------------------------
+
 // Input and Controls Wrapper & Text Input Area
-// -----------------------------------------------------------------------------
 .input-and-controls-wrapper-ephemeral {
-  // Styles from v3.5.0
   display: flex;
   flex-direction: column;
   gap: var.$spacing-sm;
   position: relative;
-  z-index: 10; 
+  z-index: 10; // Ensure controls are above background effects
 }
 
 .input-area-ephemeral {
-  // Base styles from v3.5.0
   position: relative;
   display: flex;
-  align-items: flex-end; 
+  align-items: flex-end;
   gap: var.$spacing-xs;
   transition: opacity var.$duration-smooth ease-in-out, filter var.$duration-smooth ease-in-out;
 
-  // &.input-area-continuous-active from v3.6.0 (more specific)
+  // Dim/disable textarea when in continuous active mode and text input is hidden
   &.input-area-continuous-active {
     .voice-textarea-ephemeral {
-      opacity: var(--opacity-input-disabled-continuous, 0.25); 
-      filter: blur(0.5px); 
+      opacity: var(--opacity-input-disabled-continuous, 0.35); // More noticeable dimming
+      filter: blur(0.8px); // Slightly more blur
       pointer-events: none;
     }
+    .send-button-ephemeral-v2 { // Also disable send button in this state
+        opacity: 0.35;
+        pointer-events: none;
+    }
   }
-  // &.input-area-llm-processing from v3.5.0
   &.input-area-llm-processing {
     .voice-textarea-ephemeral {
-      opacity: 0.6;
+      opacity: 0.6; // Keep some visibility if LLM is processing but STT is idle
     }
   }
 }
 
 .voice-textarea-ephemeral {
-  // Styles from v3.5.0
   flex-grow: 1;
-  min-height: var(--height-voice-textarea-min, 48px); 
-  max-height: var(--height-voice-textarea-max, 150px); 
-  background-color: hsla(var(--color-bg-input-h), var(--color-bg-input-s), var(--color-bg-input-l), 0.95); 
+  min-height: var(--height-voice-textarea-min, 48px);
+  max-height: var(--height-voice-textarea-max, 150px);
+  background-color: hsla(var(--color-bg-input-h), var(--color-bg-input-s), var(--color-bg-input-l), 0.95);
   color: hsl(var(--color-text-input-h), var(--color-text-input-s), var(--color-text-input-l));
-  border: 1px solid hsla(var(--color-border-input-h), var(--color-border-input-s), var(--color-border-input-l), 0.8); 
-  border-radius: var.$radius-lg; 
+  border: 1px solid hsla(var(--color-border-input-h), var(--color-border-input-s), var(--color-border-input-l), 0.8);
+  border-radius: var.$radius-lg;
   padding: var.$spacing-sm var.$spacing-md;
   font-family: var.$font-family-sans;
   font-size: var.$font-size-base-default;
-  line-height: 1.55; 
+  line-height: 1.55;
   resize: none;
-  transition: all var.$duration-quick var.$ease-out-cubic; // from v3.5.0, v3.6.0 ::after has its own transition
-  overflow-y: auto; 
+  transition: all var.$duration-quick var.$ease-out-cubic;
+  overflow-y: auto;
   @include mixins.custom-scrollbar(
-    '--color-accent-interactive', 0.45, 0.7, 
-    '--color-bg-input', 0.15, 
-    6px, var.$radius-sm 
+    '--color-accent-interactive', 0.45, 0.7,
+    '--color-bg-input', 0.15,
+    6px, var.$radius-sm
   );
+  position: relative; // For ::after pseudo-element
 
   &::placeholder {
     color: hsl(var(--color-text-placeholder-h), var(--color-text-placeholder-s), var(--color-text-placeholder-l));
     opacity: 0.65;
     transition: opacity var.$duration-quick ease-out;
   }
-
   &:focus {
     outline: none;
     background-color: hsla(var(--color-bg-input-focused-h), var(--color-bg-input-focused-s), var(--color-bg-input-focused-l), 1);
     border-color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
     @include mixins.focus-ring(
-      '--color-bg-input-focused-for-ring', 
+      '--color-bg-input-focused-for-ring',
       '--color-accent-interactive',
-      2px, 2px, 0.95 
+      2px, 2px, 0.95
     );
     &::placeholder { opacity: 0.45; }
   }
-
-  &:disabled { 
-    opacity: 0.4; 
+  &:disabled {
+    opacity: 0.4;
     cursor: not-allowed;
     background-color: hsla(var(--color-bg-input-disabled-h), var(--color-bg-input-disabled-s), var(--color-bg-input-disabled-l), 0.6);
   }
-  // Additions from v3.6.0
-  position: relative; 
-  &::after { 
+
+  // Breathing effect for active STT listening states (when not disabled)
+  &::after {
     content: '';
     position: absolute;
-    inset: -1px; 
+    inset: -1px;
     border-radius: inherit;
     border: 2px solid transparent;
-    box-shadow: 0 0 0 0 transparent; 
+    box-shadow: 0 0 0 0 transparent;
     opacity: 0;
     transition: all var.$duration-smooth var.$ease-out-quad;
     pointer-events: none;
-    z-index: -1; 
+    z-index: -1; // Behind the textarea's content
   }
 
   .voice-input-panel-ephemeral.state-stt-active &:not(:disabled):not(:focus),
-  .voice-input-panel-ephemeral.state-vad-listening-wake &:not(:disabled):not(:focus) { 
-    border-color: hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.4); 
+  .voice-input-panel-ephemeral.state-vad-listening-wake &:not(:disabled):not(:focus) {
+    border-color: hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.4);
     &::after {
       animation: textareaBreathingEffect 1.8s var.$ease-in-out-sine infinite;
       border-color: hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.6);
       opacity: 1;
     }
   }
-  .voice-input-panel-ephemeral.state-llm-processing & { 
-     &::after { animation: none; opacity: 0; }
+  .voice-input-panel-ephemeral.state-llm-processing & {
+     &::after { animation: none; opacity: 0; } // No breathing if LLM processing
   }
 }
 
-.send-button-ephemeral-v2 { 
-  // Styles from v3.5.0
+.send-button-ephemeral-v2 {
   @include mixins.button-base;
   flex-shrink: 0;
   width: var(--size-send-button, 46px);
   height: var(--size-send-button, 46px);
-  border-radius: var.$radius-lg; 
+  border-radius: var.$radius-lg;
   background: linear-gradient(var(--angle-send-button-bg, 140deg),
     hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.95),
     hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), calc(var(--color-accent-secondary-l) * 0.88), 1)
   );
-  color: hsl(var(--color-text-on-primary-h), var(--color-text-on-primary-s), var(--color-text-on-primary-l)); 
+  color: hsl(var(--color-text-on-primary-h), var(--color-text-on-primary-s), var(--color-text-on-primary-l));
   box-shadow: var(--shadow-button-idle, var.$scss-box-shadow-sm);
   transition: transform var.$duration-quick ease-out, box-shadow var.$duration-quick ease-out, background var.$duration-quick ease-out;
 
@@ -430,33 +415,29 @@
   &:disabled { opacity: 0.5; cursor: not-allowed; }
 }
 
-// -----------------------------------------------------------------------------
-// Controls Row - Overall Structure
-// -----------------------------------------------------------------------------
-.controls-main-row-ephemeral { 
-  // Styles from v3.5.0
+// Controls Row & Components
+.controls-main-row-ephemeral {
   display: flex;
   align-items: center;
-  gap: var.$spacing-sm; 
+  gap: var.$spacing-sm;
   width: 100%;
   position: relative;
-  z-index: 5; 
+  z-index: 5;
   padding: calc(var.$spacing-xs / 2) 0;
 }
 
 // Microphone Button Styling
 .mic-button-ephemeral {
-  // Styles from v3.5.0
   @include mixins.button-base;
   flex-shrink: 0;
-  width: var(--size-mic-button, 52px); 
+  width: var(--size-mic-button, 52px);
   height: var(--size-mic-button, 52px);
   background: linear-gradient(var(--angle-mic-button-bg, 135deg),
     hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.92),
     hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), calc(var(--color-accent-primary-l) * 0.82), 0.98)
   );
   border-radius: 50%;
-  position: relative; 
+  position: relative;
   overflow: visible;
   color: hsl(var(--color-text-on-primary-h), var(--color-text-on-primary-s), var(--color-text-on-primary-l));
   box-shadow: var(--shadow-button-idle, var.$scss-box-shadow-sm);
@@ -464,24 +445,21 @@
 
   .icon { width: 24px; height: 24px; transition: transform var.$duration-quick var.$ease-elastic; position: relative; z-index: 2; }
 
-  .mic-state-ring { 
+  .mic-state-ring {
     content: '';
     position: absolute;
-    inset: -4px; 
+    inset: -4px;
     border-radius: 50%;
-    border: 2.5px solid transparent; 
+    border: 2.5px solid transparent;
     opacity: 0;
     transform: scale(0.85);
     transition: all var.$duration-smooth var.$ease-out-cubic;
     pointer-events: none;
-    z-index: 1; 
-    // v3.6.0 comment: Example refinement for 'active' to be more "energetic"
-    // animation: micBreathingRingActive 1.1s var.$ease-elastic infinite; 
-    // Using v3.5.0 animation for now as default.
+    z-index: 1;
   }
 
   &:hover:not(:disabled) {
-    transform: scale(1.07); 
+    transform: scale(1.07);
     box-shadow: var(--shadow-button-hover, var.$scss-box-shadow-md);
   }
   &:active:not(:disabled) {
@@ -495,8 +473,9 @@
       hsla(var(--color-voice-user-h), var(--color-voice-user-s), calc(var(--color-voice-user-l) * 0.88), 1)
     );
     .mic-state-ring {
-      animation: micBreathingRingActive 1.3s var.$ease-out-quad infinite; 
+      animation: micBreathingRingActive 1.3s var.$ease-out-quad infinite;
       border-color: hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.75);
+      opacity: 1; // Ensure ring is visible
     }
   }
 
@@ -506,8 +485,9 @@
       hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), calc(var(--color-accent-interactive-l) * 0.85), 1)
     );
     .mic-state-ring {
-      animation: micBreathingRingStandby 2.0s var.$ease-in-out-sine infinite; 
+      animation: micBreathingRingStandby 2.0s var.$ease-in-out-sine infinite;
       border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.6);
+      opacity: 1; // Ensure ring is visible
     }
   }
 
@@ -516,10 +496,11 @@
       hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), calc(var(--color-accent-secondary-l) + 8%), 0.85),
       hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.9)
     );
-    cursor: default; 
+    cursor: default;
     .mic-state-ring {
-      animation: micBreathingRingSubtle 2.5s var.$ease-in-out-sine infinite; 
+      animation: micBreathingRingSubtle 2.5s var.$ease-in-out-sine infinite;
       border-color: hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.35);
+      opacity: 1; // Ensure ring is visible
     }
   }
 
@@ -528,48 +509,47 @@
       hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.95),
       hsla(var(--color-error-h), var(--color-error-s), calc(var(--color-error-l) * 0.85), 1)
     );
-    animation: errorShake 0.45s var.$ease-in-out-quad; 
+    animation: errorShake 0.45s var.$ease-in-out-quad;
     .mic-state-ring {
       border-color: hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.6);
-      animation: errorPulseRing 1.2s ease-in-out infinite; 
+      animation: errorPulseRing 1.2s ease-in-out infinite;
+      opacity: 1; // Ensure ring is visible
     }
   }
-  &:disabled:not(.mic-error):not(.processing-llm) { 
+  &:disabled:not(.mic-error):not(.processing-llm) {
     opacity: 0.55;
     cursor: not-allowed;
     background: hsla(var(--color-bg-disabled-h, var.$default-color-bg-tertiary-h), var(--color-bg-disabled-s, var.$default-color-bg-tertiary-s), var(--color-bg-disabled-l, var.$default-color-bg-tertiary-l), 0.75);
-    .mic-state-ring { display: none; } 
+    .mic-state-ring { display: none; }
   }
 }
 
-// Status Display (Mode Dot, Mode Text, Transcription Status)
-.status-display-ephemeral { 
-  // Styles from v3.5.0
+// Status Display - CRITICAL FOR TRANSCRIPTION VISIBILITY
+.status-display-ephemeral {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: calc(var.$spacing-xs / 3.5); 
-  flex-grow: 1; 
-  min-width: 0; 
-  overflow: hidden; 
+  gap: calc(var.$spacing-xs / 3); // Increased gap for better separation
+  flex-grow: 1;
+  min-width: 0; // Allow shrinking
+  overflow: hidden; // Prevent content from overflowing the panel
+  color: hsl(var(--color-text-secondary-h, var.$default-color-text-secondary-h), var(--color-text-secondary-s, var.$default-color-text-secondary-l));
 }
 
-.mode-indicator-wrapper-ephemeral { 
-  // Styles from v3.5.0
+.mode-indicator-wrapper-ephemeral {
   display: flex;
   align-items: center;
-  gap: calc(var.$spacing-xs * 0.8); 
+  gap: calc(var.$spacing-xs * 0.8);
 }
 
-.mode-dot-ephemeral { 
-  // Styles from v3.5.0
-  width: 11px; 
+.mode-dot-ephemeral {
+  width: 11px;
   height: 11px;
   border-radius: 50%;
-  background-color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l)); 
+  background-color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
   transition: background-color var.$duration-quick ease-in-out, transform var.$duration-quick ease-in-out, box-shadow var.$duration-quick ease-in-out;
-  position: relative; 
-  box-shadow: 0 0 3px 0px hsla(var(--color-shadow-h), var(--color-shadow-s), var(--color-shadow-l), 0.2); 
+  position: relative;
+  box-shadow: 0 0 3px 0px hsla(var(--color-shadow-h), var(--color-shadow-s), var(--color-shadow-l), 0.2);
 
   &.state-idle { background-color: hsl(var(--color-status-idle-h), var(--color-status-idle-s), var(--color-status-idle-l)); animation: pulseDotIdle 2.5s var.$ease-in-out-sine infinite; }
   &.state-ptt-active, &.state-continuous-active, &.state-vad-active-command {
@@ -582,198 +562,128 @@
   }
   &.state-processing-llm {
     background-color: hsl(var(--color-status-processing-h), var(--color-status-processing-s), var(--color-status-processing-l));
-    animation: pulseDotProcessingState 1s linear infinite; 
+    animation: pulseDotProcessingState 1s linear infinite;
   }
   &.state-mic-error { background-color: hsl(var(--color-error-h), var(--color-error-s), var(--color-error-l)); animation: errorFlashDot 1.2s infinite; }
 }
 
-.mode-text-ephemeral { 
-  // Styles from v3.5.0
-  font-size: calc(var.$font-size-sm * 0.95); 
+.mode-text-ephemeral {
+  font-size: calc(var.$font-size-sm * 0.95);
   font-weight: 500;
   color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
   white-space: nowrap;
-  opacity: 0.85; 
+  opacity: 0.85;
 }
 
-.transcription-status-ephemeral { // Styles from v3.6.0 (more detailed)
-  font-size: calc(var.$font-size-xs * 0.92); 
-  color: hsl(var(--color-text-muted-h, var.$default-color-text-muted-h), var(--color-text-muted-s, var.$default-color-text-muted-s), var(--color-text-muted-l, var.$default-color-text-muted-l));
-  font-style: italic;
-  min-height: 1.2em;
+.transcription-status-ephemeral {
+  font-size: calc(var.$font-size-sm * 0.95); // Readable size
+  color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l)); // Visible color
+  min-height: 1.4em; // Reserve space
+  line-height: 1.4;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 250px; 
-  opacity: 0;
-  transform: translateY(4px); 
-  transition: opacity var.$duration-smooth var.$ease-out-cubic, transform var.$duration-smooth var.$ease-out-cubic; 
+  width: 100%;
+  opacity: 1; // Visible by default when it has content
+  transform: translateY(0);
+  transition: opacity var.$duration-quick var.$ease-out-cubic, color var.$duration-quick ease-in-out;
+  padding: 2px 0;
 
-  &:not(:empty) {
-    opacity: 0.85; 
-    transform: translateY(0);
+  &:empty {
+    min-height: 1.4em;
+    opacity: 0;
+    &::before {
+        content: '\00a0'; // Non-breaking space to maintain height
+        display: inline-block;
+    }
   }
 
   .interim-transcript-feedback {
-    color: hsl(var(--color-text-secondary-h, var.$default-color-text-secondary-h), var(--color-text-secondary-s, var.$default-color-text-secondary-s), var(--color-text-secondary-l, var.$default-color-text-secondary-l));
-    opacity: 0.9; 
+    color: hsl(var(--color-text-accent-h), var(--color-text-accent-s), calc(var(--color-text-accent-l) + 10%)); // Brighter accent
+    opacity: 0.95;
+    font-weight: 500;
   }
   .listening-feedback {
-    color: hsl(var(--color-text-muted-h, var.$default-color-text-muted-h), var(--color-text-muted-s, var.$default-color-text-muted-s), var(--color-text-muted-l, var.$default-color-text-muted-l));
-    opacity: 0.75;
+    color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+    opacity: 0.85;
+    font-style: italic;
   }
   .error-feedback {
-    color: hsl(var(--color-error-text-h, var.$default-color-error-text-h), var(--color-error-text-s, var.$default-color-error-text-s), var(--color-error-text-l, var.$default-color-error-text-l));
-    font-weight: 500; 
+    color: hsl(var(--color-error-text-h), var(--color-error-text-s), var(--color-error-text-l));
+    font-weight: 600;
     font-style: normal;
     opacity: 1;
   }
   .ignored-transcript-feedback {
-    color: hsl(var(--color-text-warning-h, var.$default-color-warning-h), var(--color-text-warning-s, var.$default-color-warning-s), var(--color-text-warning-l, var.$default-color-warning-l));
-    opacity: 0.8;
+    color: hsl(var(--color-text-warning-h), var(--color-text-warning-s), var(--color-text-warning-l));
+    opacity: 0.9;
+    font-style: italic;
   }
 }
 
 // Right Controls Group & Toolbar
-.right-controls-group-ephemeral { 
-  // Styles from v3.5.0
+.right-controls-group-ephemeral {
   display: flex;
   align-items: center;
-  gap: var.$spacing-xs; 
-  margin-left: auto; 
+  gap: var.$spacing-xs;
+  margin-left: auto;
 }
 
-.main-controls-stack-ephemeral { 
-  // Styles from v3.5.0
+.main-controls-stack-ephemeral {
   position: relative;
-  display: flex; 
+  display: flex;
 }
 
 .toolbar-trigger-btn-ephemeral {
-  // Styles from v3.5.0
-  @include mixins.button-ghost( 
-    '--color-text-muted', 
-    '--color-accent-interactive', 
-    calc(var.$spacing-xs - 2px) var.$spacing-sm, 
-    var.$radius-md 
+  @include mixins.button-ghost(
+    '--color-text-muted',
+    '--color-accent-interactive',
+    calc(var.$spacing-xs - 2px) var.$spacing-sm,
+    var.$radius-md
   );
-  width: var(--size-control-button, 40px); 
+  width: var(--size-control-button, 40px);
   height: var(--size-control-button, 40px);
-  .icon-sm { width: 1.3rem; height: 1.3rem; } 
+  .icon-sm { width: 1.3rem; height: 1.3rem; }
 }
 
-.input-toolbar-instance-ephemeral { // Styles from v3.6.0 (more detailed transition)
-  position: absolute; // from v3.5.0 for context
-  bottom: calc(100% + var.$spacing-xs); // from v3.5.0 for context
-  right: 0; // from v3.5.0 for context
-  z-index: var.$z-index-popover; // from v3.5.0 for context
+.input-toolbar-instance-ephemeral {
+  position: absolute;
+  bottom: calc(100% + var.$spacing-xs);
+  right: 0;
+  z-index: var.$z-index-popover;
 
   &.toolbar-slide-vertical-enter-active,
   &.toolbar-slide-vertical-leave-active {
-    transition: all var.$duration-smooth var.$ease-out-expo; 
+    transition: all var.$duration-smooth var.$ease-out-expo;
   }
   &.toolbar-slide-vertical-enter-from,
   &.toolbar-slide-vertical-leave-to {
     opacity: 0;
-    transform: translateY(15px) scale(0.90); 
-  }
-}
-.audio-mode-dropdown-instance-ephemeral { 
-  // Styles from v3.5.0
-  .audio-mode-button { 
-    padding: calc(var.$spacing-xs - 2px) var.$spacing-sm; 
-    height: var(--size-control-button, 40px); 
+    transform: translateY(15px) scale(0.90);
   }
 }
 
+.audio-mode-dropdown-instance-ephemeral {
+  .audio-mode-button {
+    padding: calc(var.$spacing-xs - 2px) var.$spacing-sm;
+    height: var(--size-control-button, 40px);
+  }
+}
 
-// -----------------------------------------------------------------------------
-// Keyframes for Animations (Ensure these align with Motion Language)
-// -----------------------------------------------------------------------------
-// Keyframes from v3.6.0
+// Keyframes (ensure these are defined as provided previously)
 @keyframes rotate-gradient { to { --gradient-angle: 360deg; } }
-
-@keyframes shimmer-border { 
-  0%, 100% { background-position: -200% center; opacity: 0.7; } 
-  50% { background-position: 200% center; opacity: 1; }
-}
-.voice-input-panel-ephemeral.state-llm-processing::before { 
-  animation: shimmer-border 3s ease-in-out infinite; 
-  background: linear-gradient(
-    90deg,
-    transparent 20%, 
-    hsla(var(--state-glow-color-h, var.$default-color-accent-secondary-h), var(--state-glow-color-s, var.$default-color-accent-secondary-s), var(--state-glow-color-l, var.$default-color-accent-secondary-l), calc(var(--state-glow-opacity, 0.55) * 0.7)) 50%,
-    transparent 80%
-  );
-  background-size: 200% 100%;
-}
-
-@keyframes error-pulse-border { 
-  0%, 100% { opacity: calc(var(--state-glow-opacity) * 0.6); transform: scale(1); }
-  50% { opacity: var(--state-glow-opacity); transform: scale(1.015); } 
-}
-
-@keyframes radialPulseEffect { 
-  0% { transform: scale(0.8); opacity: 0; }
-  50% { transform: scale(1.2); opacity: 0.18; } 
-  100% { transform: scale(0.8); opacity: 0; }
-}
-
-// Mic Button State Ring Animations (from v3.5.0)
-@keyframes micBreathingRingActive { 
-  0%, 100% { transform: scale(0.9); opacity: 0.1; }
-  50% { transform: scale(1.35); opacity: 0.8; }
-  70% { transform: scale(1.25); opacity: 0.4;}
-}
-@keyframes micBreathingRingStandby { 
-  0%, 100% { transform: scale(0.95); opacity: 0.2; }
-  50% { transform: scale(1.25); opacity: 0.65; }
-}
-@keyframes micBreathingRingSubtle { 
-  0%, 100% { transform: scale(1); opacity: 0.15; }
-  50% { transform: scale(1.1); opacity: 0.4; }
-}
-@keyframes errorPulseRing { 
-  0%, 100% { transform: scale(1); opacity: 0.35; }
-  50% { transform: scale(1.18); opacity: 0.85; }
-}
-@keyframes errorShake { 
-  0%, 100% { transform: translateX(0) scale(1); } 
-  20%, 60% { transform: translateX(-3.5px) scale(1.07); } 
-  40%, 80% { transform: translateX(3.5px) scale(1.07); }
-}
-
-// Mode Dot Animations (from v3.5.0)
-@keyframes pulseDotIdle {
-  0%, 100% { transform: scale(1); opacity: 0.6; box-shadow: 0 0 2px 0px hsla(var(--color-status-idle-h), var(--color-status-idle-s), var(--color-status-idle-l), 0.2); }
-  50% { transform: scale(1.15); opacity: 0.9; box-shadow: 0 0 4px 1px hsla(var(--color-status-idle-h), var(--color-status-idle-s), var(--color-status-idle-l), 0.35); }
-}
-@keyframes pulseDotActiveState {
-  0%, 100% { transform: scale(1); box-shadow: 0 0 4px 1px hsla(var(--color-status-active-h), var(--color-status-active-s), var(--color-status-active-l), 0.35); }
-  50% { transform: scale(1.35); box-shadow: 0 0 7px 2px hsla(var(--color-status-active-h), var(--color-status-active-s), var(--color-status-active-l), 0.55); }
-}
-@keyframes pulseDotVadState {
-  0%, 100% { transform: scale(0.9); opacity: 0.75; box-shadow: 0 0 3px 1px hsla(var(--color-status-vad-h), var(--color-status-vad-s), var(--color-status-vad-l), 0.25); }
-  50% { transform: scale(1.2); opacity: 1; box-shadow: 0 0 5px 2px hsla(var(--color-status-vad-h), var(--color-status-vad-s), var(--color-status-vad-l), 0.45); }
-}
-@keyframes pulseDotProcessingState { 
-  0% { transform: scale(1) rotate(0deg); opacity: 0.6; box-shadow: 0 0 3px 1px hsla(var(--color-status-processing-h), var(--color-status-processing-s), var(--color-status-processing-l), 0.3); }
-  50% { transform: scale(1.25) rotate(180deg); opacity: 1; box-shadow: 0 0 6px 2px hsla(var(--color-status-processing-h), var(--color-status-processing-s), var(--color-status-processing-l), 0.5); }
-  100% { transform: scale(1) rotate(360deg); opacity: 0.6; box-shadow: 0 0 3px 1px hsla(var(--color-status-processing-h), var(--color-status-processing-s), var(--color-status-processing-l), 0.3); }
-}
-@keyframes errorFlashDot { 
-  0%, 100% { opacity: 1; transform: scale(1.1); box-shadow: 0 0 5px 2px hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.5); }
-  50% { opacity: 0.4; transform: scale(0.9); box-shadow: 0 0 2px 0px hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.2); }
-}
-
-// New: Textarea Breathing Effect (from v3.6.0)
-@keyframes textareaBreathingEffect {
-  0%, 100% {
-    box-shadow: inset 0 0 5px 1px hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.15);
-    transform: scale(1); 
-  }
-  50% {
-    box-shadow: inset 0 0 10px 2px hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.3);
-    transform: scale(1.005); 
-  }
-}
+@keyframes shimmer-border { 0%, 100% { background-position: -200% center; opacity: 0.7; } 50% { background-position: 200% center; opacity: 1; } }
+.voice-input-panel-ephemeral.state-llm-processing::before { animation: shimmer-border 3s ease-in-out infinite; background: linear-gradient( 90deg, transparent 20%, hsla(var(--state-glow-color-h, var.$default-color-accent-secondary-h), var(--state-glow-color-s, var.$default-color-accent-secondary-s), var(--state-glow-color-l, var.$default-color-accent-secondary-l), calc(var(--state-glow-opacity, 0.55) * 0.7)) 50%, transparent 80% ); background-size: 200% 100%; }
+@keyframes error-pulse-border { 0%, 100% { opacity: calc(var(--state-glow-opacity) * 0.6); transform: scale(1); } 50% { opacity: var(--state-glow-opacity); transform: scale(1.015); } }
+@keyframes radialPulseEffect { 0% { transform: scale(0.8); opacity: 0; } 50% { transform: scale(1.2); opacity: 0.18; } 100% { transform: scale(0.8); opacity: 0; } }
+@keyframes micBreathingRingActive { 0%, 100% { transform: scale(0.9); opacity: 0.1; } 50% { transform: scale(1.35); opacity: 0.8; } 70% { transform: scale(1.25); opacity: 0.4;} }
+@keyframes micBreathingRingStandby { 0%, 100% { transform: scale(0.95); opacity: 0.2; } 50% { transform: scale(1.25); opacity: 0.65; } }
+@keyframes micBreathingRingSubtle { 0%, 100% { transform: scale(1); opacity: 0.15; } 50% { transform: scale(1.1); opacity: 0.4; } }
+@keyframes errorPulseRing { 0%, 100% { transform: scale(1); opacity: 0.35; } 50% { transform: scale(1.18); opacity: 0.85; } }
+@keyframes errorShake { 0%, 100% { transform: translateX(0) scale(1); } 20%, 60% { transform: translateX(-3.5px) scale(1.07); } 40%, 80% { transform: translateX(3.5px) scale(1.07); } }
+@keyframes pulseDotIdle { 0%, 100% { transform: scale(1); opacity: 0.6; box-shadow: 0 0 2px 0px hsla(var(--color-status-idle-h), var(--color-status-idle-s), var(--color-status-idle-l), 0.2); } 50% { transform: scale(1.15); opacity: 0.9; box-shadow: 0 0 4px 1px hsla(var(--color-status-idle-h), var(--color-status-idle-s), var(--color-status-idle-l), 0.35); } }
+@keyframes pulseDotActiveState { 0%, 100% { transform: scale(1); box-shadow: 0 0 4px 1px hsla(var(--color-status-active-h), var(--color-status-active-s), var(--color-status-active-l), 0.35); } 50% { transform: scale(1.35); box-shadow: 0 0 7px 2px hsla(var(--color-status-active-h), var(--color-status-active-s), var(--color-status-active-l), 0.55); } }
+@keyframes pulseDotVadState { 0%, 100% { transform: scale(0.9); opacity: 0.75; box-shadow: 0 0 3px 1px hsla(var(--color-status-vad-h), var(--color-status-vad-s), var(--color-status-vad-l), 0.25); } 50% { transform: scale(1.2); opacity: 1; box-shadow: 0 0 5px 2px hsla(var(--color-status-vad-h), var(--color-status-vad-s), var(--color-status-vad-l), 0.45); } }
+@keyframes pulseDotProcessingState { 0% { transform: scale(1) rotate(0deg); opacity: 0.6; box-shadow: 0 0 3px 1px hsla(var(--color-status-processing-h), var(--color-status-processing-s), var(--color-status-processing-l), 0.3); } 50% { transform: scale(1.25) rotate(180deg); opacity: 1; box-shadow: 0 0 6px 2px hsla(var(--color-status-processing-h), var(--color-status-processing-s), var(--color-status-processing-l), 0.5); } 100% { transform: scale(1) rotate(360deg); opacity: 0.6; box-shadow: 0 0 3px 1px hsla(var(--color-status-processing-h), var(--color-status-processing-s), var(--color-status-processing-l), 0.3); } }
+@keyframes errorFlashDot { 0%, 100% { opacity: 1; transform: scale(1.1); box-shadow: 0 0 5px 2px hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.5); } 50% { opacity: 0.4; transform: scale(0.9); box-shadow: 0 0 2px 0px hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.2); } }
+@keyframes textareaBreathingEffect { 0%, 100% { box-shadow: inset 0 0 5px 1px hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.15); transform: scale(1); } 50% { box-shadow: inset 0 0 10px 2px hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.3); transform: scale(1.005); } }
