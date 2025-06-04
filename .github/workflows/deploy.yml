@@ -36,6 +36,7 @@ jobs:
           mkdir -p deployment/frontend/dist
           mkdir -p deployment/backend/dist
           mkdir -p deployment/prompts
+          mkdir -p deployment/backend/prompts
 
           # Copy built frontend assets
           cp -r frontend/dist/* deployment/frontend/dist/
@@ -46,6 +47,7 @@ jobs:
           cp backend/package.json deployment/backend/package.json
           # Copy prompts for dynamic loading
           cp -r prompts/* deployment/prompts/
+          cp -r prompts/* deployment/backend/prompts/
 
           # Copy ecosystem.config.js for PM2
           # Ensure ecosystem.config.js is in the backend directory in the deployment package
