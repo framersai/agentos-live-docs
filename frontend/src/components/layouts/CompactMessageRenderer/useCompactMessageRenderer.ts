@@ -1,23 +1,21 @@
-// File: frontend/src/components/useCompactMessageRenderer.ts
+// File: frontend/src/components/layouts/CompactMessageRenderer/useCompactMessageRenderer.ts
 /**
  * @file useCompactMessageRenderer.ts
  * @description Composable logic for the CompactMessageRenderer component.
- * @version 1.0.2 - Reverted autoplay text to direct calculation in template, unused var cleanup.
+ * @version 1.1.1 - Exposed title animation refs, cleaned unused variables.
  */
-import { ref, computed, watch, nextTick, onBeforeUnmount, type Ref as VueRefType } from 'vue'; // Renamed Ref to VueRefType
-import { marked, type MarkedOptions } from 'marked'; // Import MarkedOptions directly
+import { ref, computed, watch, nextTick, onBeforeUnmount, type Ref } from 'vue'; // Use Ref directly
+import { marked, type MarkedOptions } from 'marked';
 import mermaid from 'mermaid';
 import hljs from 'highlight.js';
 import { themeManager } from '@/theme/ThemeManager';
+import { useTextAnimation, type TextRevealConfig, type TextAnimationUnit } from '@/composables/useTextAnimation';
 
 import {
   type Slide,
   type ContentAnalysisResult,
-  type EnhancedMarkedOptions, // This extends MarkedOptions internally
+  type EnhancedMarkedOptions,
   type NonSlideDiagram,
-  // CompactMessageRendererState, // Types used for defining Composable return type
-  // CompactMessageRendererComputeds,
-  // CompactMessageRendererActions,
   type CompactMessageRendererComposable,
   DEFAULT_SLIDE_READING_TIME_MS,
   MIN_SLIDE_DURATION_MS,
@@ -41,7 +39,7 @@ type RendererEmit = {
 };
 
 const SVG_ICON_COPY_STRING = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="icon-xs"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" /></svg>`;
-const SVG_ICON_CHECK_STRING = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="icon-xs text-green-500 dark:text-green-400"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>`;
+const SVG_ICON_CHECK_STRING = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="icon-xs text-[var(--color-success-500)]"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>`;
 
 
 export function useCompactMessageRenderer(
@@ -53,7 +51,7 @@ export function useCompactMessageRenderer(
   const analyzedContent = ref<ContentAnalysisResult | null>(null);
   const slides = ref<Slide[]>([]);
   const currentSlideIndex = ref<number>(0);
-  const nonSlideDiagrams = ref<NonSlideDiagram[]>([]);
+  const nonSlideDiagrams = ref<NonSlideDiagram[]>([]); // Used in logic, not directly in template by parent
 
   const isAutoplayActive = ref<boolean>(!props.disableInternalAutoplay);
   const isAutoplayEffectivelyPaused = ref<boolean>(true);
@@ -67,6 +65,13 @@ export function useCompactMessageRenderer(
   const currentContentFontScale = ref<number>(1);
 
   const contentDisplayRootRef = ref<HTMLElement | null>(null);
+
+  const {
+    animatedUnits: animatedSlideTitleUnits, // Exposed for template
+    animateText: animateSlideTitleText,
+    resetAnimation: resetSlideTitleAnimation,
+    isAnimating: isSlideTitleAnimating, // Exposed for template
+  } = useTextAnimation();
 
   const currentMermaidTheme = computed<'dark' | 'default'>(() => themeManager.getCurrentTheme().value?.isDark ? 'dark' : 'default');
 
@@ -82,7 +87,7 @@ export function useCompactMessageRenderer(
       }
     },
   };
-  marked.setOptions(configuredMarkedOptions as MarkedOptions); // Use base MarkedOptions for setOptions
+  marked.setOptions(configuredMarkedOptions as MarkedOptions);
 
   const _mermaidInitialize = () => {
     mermaid.initialize({
@@ -96,7 +101,6 @@ export function useCompactMessageRenderer(
   const isSlideshowMode = computed<boolean>(() => !!analyzedContent.value?.shouldCreateSlideshow && slides.value.length > 0);
   const currentSlideData = computed<Slide | null>(() => isSlideshowMode.value ? slides.value[currentSlideIndex.value] || null : null);
   const totalSlides = computed<number>(() => slides.value.length);
-  const overallProgressPercent = computed<number>(() => totalSlides.value === 0 ? 0 : Math.round(((currentSlideIndex.value + 1) / totalSlides.value) * 100));
   const canGoNext = computed<boolean>(() => isSlideshowMode.value && currentSlideIndex.value < totalSlides.value - 1);
   const canGoPrev = computed<boolean>(() => isSlideshowMode.value && currentSlideIndex.value > 0);
 
@@ -106,12 +110,12 @@ export function useCompactMessageRenderer(
   };
 
   const _analyzeProvidedContent = (content: string): ContentAnalysisResult => {
-    const analysis: ContentAnalysisResult = {
-        contentType: 'general', displayTitle: 'Content Analysis',
-        estimatedTotalReadingTimeMs: _calculateReadingTimeMs(content),
-        shouldCreateSlideshow: false, diagramCount: 0, hasCodeBlocks: false,
+    // ... (implementation remains the same)
+     const analysis: ContentAnalysisResult = {
+      contentType: 'general', displayTitle: 'Content Analysis',
+      estimatedTotalReadingTimeMs: _calculateReadingTimeMs(content),
+      shouldCreateSlideshow: false, diagramCount: 0, hasCodeBlocks: false,
     };
-    // const normalizedContent = content.toLowerCase(); // Removed as unused
     if (props.mode?.toLowerCase().includes('lc_audit')) analysis.contentType = 'leetcode';
     else if (props.mode?.toLowerCase().includes('systemdesign') || props.mode?.toLowerCase().includes('architectron')) analysis.contentType = 'systemDesign';
 
@@ -120,7 +124,9 @@ export function useCompactMessageRenderer(
     else analysis.displayTitle = props.mode || 'Formatted Content';
 
     analysis.diagramCount = (content.match(/```mermaid\n([\s\S]*?)\n```/g) || []).length;
-    analysis.hasCodeBlocks = (content.match(/```([a-zA-Z0-9\-_#+.]*)\n([\s\S]*?)```/g) || []).length > analysis.diagramCount;
+    const codeBlockMatches = content.match(/```([a-zA-Z0-9\-_#+.]*)\n([\s\S]*?)```/g) || [];
+    analysis.hasCodeBlocks = codeBlockMatches.filter(match => !match.startsWith('```mermaid')).length > 0;
+
 
     const slideChunks = content.split(/\n---\s*SLIDE_BREAK\s*---\n/i);
     analysis.shouldCreateSlideshow =
@@ -141,20 +147,17 @@ export function useCompactMessageRenderer(
   };
 
   const _formatCodeForDisplay = (rawCodeBlockMatch: string, langOverride?: string): string => {
+    // ... (implementation remains the same)
     const langMatch = rawCodeBlockMatch.match(/^```([a-zA-Z0-9\-_#+.]*)\n/);
     const lang = langOverride || (langMatch && langMatch[1] ? langMatch[1].toLowerCase() : props.language || 'plaintext');
     let code = rawCodeBlockMatch.replace(/^```[a-zA-Z0-9\-_#+.]*\n?/, '').replace(/\n```$/, '');
-    code = code.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+    code = code.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'); // Basic unescaping
 
-    const highlightedHtml = (configuredMarkedOptions.highlight as Function)(code, lang); // Cast to Function
+    const highlightedHtml = (configuredMarkedOptions.highlight as Function)(code, lang);
     const lines = highlightedHtml.split('\n');
-    interface NumberedLine {
-      line: string;
-      index: number;
-    }
 
     const numberedLinesHtml: string = lines.map((line: string, index: number): string =>
-      `<span class="cmr__line-number">${index + 1}</span><span class="cmr__line-content">${line || ' '}</span>`
+      `<span class="cmr__line-number" aria-hidden="true">${index + 1}</span><span class="cmr__line-content">${line || '&nbsp;'}</span>`
     ).join('\n');
 
     return `
@@ -170,6 +173,7 @@ export function useCompactMessageRenderer(
   };
 
   const _parseContentToSlides = (fullMarkdownContent: string): Slide[] => {
+    // ... (implementation remains the same, but ensure 'matchFull' is used or renamed if unused)
     if (!fullMarkdownContent || !fullMarkdownContent.trim()) return [];
     const slideMarkdownChunks = fullMarkdownContent.split(/\n---\s*SLIDE_BREAK\s*---\n/i);
 
@@ -185,19 +189,19 @@ export function useCompactMessageRenderer(
 
       let diagramMermaidCode: string | undefined = undefined;
       const DIAGRAM_PLACEHOLDER = `__MERMAID_DIAGRAM_PLACEHOLDER_${index}__`;
-      let tempContentForMarked = mainContentMarkdown.replace(/```mermaid\n([\s\S]*?)\n```/g, (match, p1) => { // Removed unused 'match'
-        if (!diagramMermaidCode) diagramMermaidCode = p1.trim();
+      let tempContentForMarked = mainContentMarkdown.replace(/```mermaid\n([\s\S]*?)\n```/g, (_matchFull, mermaidBody) => { // _matchFull to denote unused
+        if (!diagramMermaidCode) diagramMermaidCode = mermaidBody.trim();
         return DIAGRAM_PLACEHOLDER;
       });
 
       const CODE_BLOCK_PLACEHOLDERS: string[] = [];
-      tempContentForMarked = tempContentForMarked.replace(/```([a-zA-Z0-9\-_#+.]*)\n([\s\S]*?)```/g, (match) => {
+      tempContentForMarked = tempContentForMarked.replace(/```([a-zA-Z0-9\-_#+.]*)\n([\s\S]*?)```/g, (matchFullCodeBlock) => {
         const placeholder = `__CODE_BLOCK_PLACEHOLDER_${CODE_BLOCK_PLACEHOLDERS.length}__`;
-        CODE_BLOCK_PLACEHOLDERS.push(_formatCodeForDisplay(match));
+        CODE_BLOCK_PLACEHOLDERS.push(_formatCodeForDisplay(matchFullCodeBlock));
         return placeholder;
       });
 
-      let htmlContent = marked.parse(tempContentForMarked); // Removed configuredMarkedOptions as it's globally set
+      let htmlContent = marked.parse(tempContentForMarked);
       CODE_BLOCK_PLACEHOLDERS.forEach((codeHtml, i) => {
         htmlContent = htmlContent.replace(`__CODE_BLOCK_PLACEHOLDER_${i}__`, codeHtml);
       });
@@ -205,44 +209,46 @@ export function useCompactMessageRenderer(
         htmlContent = htmlContent.replace(DIAGRAM_PLACEHOLDER, `<div class="cmr__slide-diagram-wrapper" data-slide-diagram-id="slide-${index}-diagram"></div>`);
       }
 
-      const estimatedReadingTimeMs = _calculateReadingTimeMs(mainContentMarkdown);
+      const estimatedReadingTimeMs = _calculateReadingTimeMs(mainContentMarkdown || title);
       if (index === 0 && slideMarkdownChunks.length > 1) slideType = 'intro';
       else if (diagramMermaidCode) slideType = 'diagram';
-      else if (CODE_BLOCK_PLACEHOLDERS.length > 0) slideType = 'code';
-      else if (index === slideMarkdownChunks.length - 1 && slideMarkdownChunks.length > 1 && mainContentMarkdown.length > 150) slideType = 'summary';
+      else if (CODE_BLOCK_PLACEHOLDERS.length > 0 && mainContentMarkdown.length < 200) slideType = 'code';
+      else if (index === slideMarkdownChunks.length - 1 && slideMarkdownChunks.length > 1 && mainContentMarkdown.length > 100) slideType = 'summary';
       else slideType = 'concept';
 
       return {
         id: `slide-${index}-${Date.now()}${Math.random().toString(16).slice(2)}`,
         title, rawContent: chunk, htmlContent, diagramMermaidCode, slideType, estimatedReadingTimeMs,
       };
-    }).filter(slide => slide.htmlContent.trim() !== '' || slide.diagramMermaidCode);
+    }).filter(slide => slide.htmlContent.trim() !== '' || !!slide.diagramMermaidCode);
   };
 
   const _renderSingleMermaidDiagram = async (container: HTMLElement, diagramCode: string, diagramId: string) => {
-    if (!container || !diagramCode.trim()) {
-      container.innerHTML = '<p class="cmr__mermaid-status cmr__mermaid-status--empty">(No diagram content)</p>'; return;
+    // ... (implementation remains the same)
+     if (!container || !diagramCode.trim()) {
+      container.innerHTML = '<p class="cmr__mermaid-status cmr__mermaid-status--empty">(No diagram content to render)</p>'; return;
     }
     container.innerHTML = '<div class="cmr__mermaid-status cmr__mermaid-status--loading"></div>';
     await nextTick();
     try {
       _mermaidInitialize();
-      const validDiagramId = `mermaid-graph-${diagramId.replace(/[^a-zA-Z0-9_-]/g, '') || Date.now()}`;
-      const { svg, bindFunctions } = await mermaid.render(validDiagramId, diagramCode);
+      const uniqueDiagramDomId = `mermaid-graph-${diagramId.replace(/[^a-zA-Z0-9_-]/g, '') || Date.now() + Math.random()}`;
+      const { svg, bindFunctions } = await mermaid.render(uniqueDiagramDomId, diagramCode.trim());
       container.innerHTML = svg;
       if (bindFunctions) bindFunctions(container);
     } catch (error: any) {
       console.error(`[CMR] Error rendering Mermaid diagram (ID: ${diagramId}):`, error.str || error.message, error);
-      container.innerHTML = `<div class="cmr__mermaid-status cmr__mermaid-status--error"><p class="cmr__error-title">Diagram Error</p><p class="cmr__error-message">${error.str || error.message}</p><pre class="cmr__error-code-preview">${diagramCode.substring(0,150)}...</pre></div>`;
+      container.innerHTML = `<div class="cmr__mermaid-status cmr__mermaid-status--error"><p class="cmr__error-title">Diagram Rendering Error</p><p class="cmr__error-message">${error.str || error.message}</p><pre class="cmr__error-code-preview">${diagramCode.substring(0,200)}...</pre></div>`;
     }
   };
 
   const _renderAllDiagramsInElement = async (element: HTMLElement | null) => {
-    if (!element) return;
+    // ... (implementation remains the same)
+     if (!element) return;
     slides.value.forEach(slide => {
-        if (slide.diagramMermaidCode) {
-            const diagramContainer = element.querySelector(`.cmr__slide-diagram-wrapper[data-slide-diagram-id="slide-${slide.id.split('-')[1]}-diagram"]`);
-            if (diagramContainer) _renderSingleMermaidDiagram(diagramContainer as HTMLElement, slide.diagramMermaidCode, slide.id);
+        if (slide.diagramMermaidCode && slide.id.startsWith(`slide-${currentSlideIndex.value}-`)) {
+            const diagramContainer = element.querySelector(`.cmr__slide-diagram-wrapper[data-slide-diagram-id="slide-${currentSlideIndex.value}-diagram"]`);
+            if (diagramContainer) _renderSingleMermaidDiagram(diagramContainer as HTMLElement, slide.diagramMermaidCode, `slide-${currentSlideIndex.value}-active`);
         }
     });
     nonSlideDiagrams.value.forEach(diag => {
@@ -252,15 +258,18 @@ export function useCompactMessageRenderer(
   };
 
   const _addCopyButtonListeners = (containerElement: HTMLElement | null) => {
-    if (!containerElement) return;
+    // ... (implementation remains the same)
+     if (!containerElement) return;
     containerElement.querySelectorAll('.cmr__copy-code-btn').forEach(buttonEl => {
       const button = buttonEl as HTMLElement;
       if (button.dataset.cmrListenerAttached === 'true') return;
+
       const codeBlockWrapper = button.closest('.cmr__code-block');
       if (!codeBlockWrapper) return;
       const rawCode = decodeURIComponent(codeBlockWrapper.getAttribute('data-raw-code') || '');
       if (!rawCode) return;
-      button.addEventListener('click', async (event) => {
+
+      const clickHandler = async (event: Event) => {
         event.stopPropagation();
         try {
           await navigator.clipboard.writeText(rawCode);
@@ -271,12 +280,14 @@ export function useCompactMessageRenderer(
           console.error('[CMR] Failed to copy code:', err);
           emit('interaction', { type: 'toast', data: { type: 'error', title: 'Copy Failed', message: 'Could not copy code.' } });
         }
-      });
+      };
+      button.addEventListener('click', clickHandler);
       button.dataset.cmrListenerAttached = 'true';
     });
   };
 
   const _clearInternalAutoplayTimers = () => {
+    // ... (implementation remains the same)
     if (internalAutoplayTimeoutId) clearTimeout(internalAutoplayTimeoutId);
     if (internalProgressIntervalId) clearInterval(internalProgressIntervalId);
     internalAutoplayTimeoutId = null; internalProgressIntervalId = null;
@@ -284,12 +295,14 @@ export function useCompactMessageRenderer(
   };
 
   const _startOrResumeAutoplayLogic = (isNewSlideshowSetup: boolean = false) => {
+    // ... (implementation remains the same)
     if (props.disableInternalAutoplay || !isAutoplayActive.value) {
       isAutoplayEffectivelyPaused.value = true;
       emit('internal-autoplay-status-changed', {isPlaying: false, isPaused: true }); return;
     }
     if (slides.value.length === 0 || (currentSlideIndex.value >= slides.value.length - 1 && !isNewSlideshowSetup)) {
       isAutoplayEffectivelyPaused.value = true; _clearInternalAutoplayTimers();
+      isAutoplayActive.value = false;
       emit('internal-autoplay-status-changed', {isPlaying: false, isPaused: true }); return;
     }
 
@@ -305,37 +318,69 @@ export function useCompactMessageRenderer(
     const timeRemainingMs = currentSlideTargetDurationMs.value - currentSlideTimeElapsedMs.value;
     if (timeRemainingMs > 0) {
       internalAutoplayTimeoutId = setTimeout(() => {
-        if (isAutoplayActive.value && !isAutoplayEffectivelyPaused.value) navigateToSlide(currentSlideIndex.value + 1, 'autoplay');
+        if (isAutoplayActive.value && !isAutoplayEffectivelyPaused.value) {
+            navigateToSlide(currentSlideIndex.value + 1, 'autoplay');
+        }
       }, timeRemainingMs);
+
       internalProgressIntervalId = setInterval(() => {
-        if (!isAutoplayActive.value || isAutoplayEffectivelyPaused.value) { _clearInternalAutoplayTimers(); return; }
+        if (!isAutoplayActive.value || isAutoplayEffectivelyPaused.value) {
+            _clearInternalAutoplayTimers();
+            return;
+        }
         currentSlideTimeElapsedMs.value += 100;
         autoplayProgress.value = Math.min(100, (currentSlideTimeElapsedMs.value / currentSlideTargetDurationMs.value) * 100);
         if (currentSlideTimeElapsedMs.value >= currentSlideTargetDurationMs.value) {
           if(internalProgressIntervalId) clearInterval(internalProgressIntervalId);
         }
       }, 100);
-    } else if (currentSlideIndex.value < slides.value.length - 1) navigateToSlide(currentSlideIndex.value + 1, 'autoplay');
-    else { isAutoplayEffectivelyPaused.value = true; emit('internal-autoplay-status-changed', {isPlaying: false, isPaused: true }); }
+    } else if (currentSlideIndex.value < slides.value.length - 1) {
+        navigateToSlide(currentSlideIndex.value + 1, 'autoplay');
+    } else {
+        isAutoplayEffectivelyPaused.value = true;
+        isAutoplayActive.value = false;
+        emit('internal-autoplay-status-changed', {isPlaying: false, isPaused: true });
+    }
+  };
+
+  const _animateCurrentSlideTitle = async () => {
+    resetSlideTitleAnimation();
+    const titleToAnimate = currentSlideData.value?.title;
+    if (titleToAnimate && isSlideshowMode.value) {
+      await nextTick();
+      const animationConfig: Partial<TextRevealConfig> = {
+        mode: 'word', durationPerUnit: 60, staggerDelay: 35, animationStyle: 'organic',
+      };
+      // Ensure titleToAnimate is not undefined before passing
+      if (typeof titleToAnimate === 'string') {
+        animateSlideTitleText(titleToAnimate, animationConfig);
+      }
+    }
   };
 
   const processAndRenderContent = async (fullMarkdownContent: string, initialSlideIdxOverride?: number) => {
+    // ... (implementation remains the same)
     isLoadingContent.value = true; _clearInternalAutoplayTimers(); isAutoplayEffectivelyPaused.value = true;
+    resetSlideTitleAnimation();
 
     if (!fullMarkdownContent || !fullMarkdownContent.trim()) {
       slides.value = []; nonSlideDiagrams.value = []; analyzedContent.value = null; currentSlideIndex.value = 0;
-      if (contentDisplayRootRef.value) contentDisplayRootRef.value.innerHTML = '<p class="cmr__status-text cmr__status-text--empty">No content provided.</p>';
       isLoadingContent.value = false; emit('rendered'); return;
     }
 
     analyzedContent.value = _analyzeProvidedContent(fullMarkdownContent);
 
-    if (isSlideshowMode.value) {
-      slides.value = _parseContentToSlides(fullMarkdownContent); nonSlideDiagrams.value = [];
+    if (analyzedContent.value.shouldCreateSlideshow) {
+      slides.value = _parseContentToSlides(fullMarkdownContent);
+      nonSlideDiagrams.value = [];
       const initialIdx = initialSlideIdxOverride ?? (typeof props.initialSlideIndex === 'number' && props.initialSlideIndex < slides.value.length ? props.initialSlideIndex : 0);
-      currentSlideIndex.value = slides.value.length > 0 ? Math.min(initialIdx, slides.value.length - 1) : 0;
+      currentSlideIndex.value = slides.value.length > 0 ? Math.max(0, Math.min(initialIdx, slides.value.length - 1)) : 0;
+
       if (slides.value.length === 0 && analyzedContent.value) {
-          analyzedContent.value.shouldCreateSlideshow = false; await processAndRenderContent(fullMarkdownContent); return;
+          console.warn("[CMR] ShouldCreateSlideshow was true, but no slides were parsed. Falling back to single view.");
+          analyzedContent.value.shouldCreateSlideshow = false;
+          await processAndRenderContent(fullMarkdownContent);
+          return;
       }
     } else {
       slides.value = [];
@@ -348,42 +393,59 @@ export function useCompactMessageRenderer(
         placeholderIndex++; return `<div class="cmr__diagram-placeholder" data-diagram-id="${diagramId}"></div>`;
       });
       tempContent = tempContent.replace(/```([a-zA-Z0-9\-_#+.]*)\n([\s\S]*?)```/g, (match) => _formatCodeForDisplay(match));
-      if (contentDisplayRootRef.value) contentDisplayRootRef.value.innerHTML = marked.parse(tempContent);
+      slides.value = [{ // Create a single "slide" for non-slideshow content for template consistency
+        id: 'single-content-view', title: analyzedContent.value?.displayTitle || '',
+        rawContent: fullMarkdownContent, htmlContent: marked.parse(tempContent),
+        slideType: 'general', estimatedReadingTimeMs: analyzedContent.value?.estimatedTotalReadingTimeMs || 0
+      }];
+      currentSlideIndex.value = 0;
     }
 
     await nextTick();
-    _addCopyButtonListeners(contentDisplayRootRef.value);
-    await _renderAllDiagramsInElement(contentDisplayRootRef.value);
-    isLoadingContent.value = false; emit('rendered');
+    if (contentDisplayRootRef.value) {
+        _addCopyButtonListeners(contentDisplayRootRef.value);
+        await _renderAllDiagramsInElement(contentDisplayRootRef.value);
+    }
+    isLoadingContent.value = false;
+    emit('rendered');
 
     if (isSlideshowMode.value && slides.value.length > 0) {
       emit('slide-changed', { newIndex: currentSlideIndex.value, totalSlides: totalSlides.value, navigatedManually: false });
-      if (isAutoplayActive.value && !props.disableInternalAutoplay) _startOrResumeAutoplayLogic(true);
+      _animateCurrentSlideTitle();
+      if (isAutoplayActive.value && !props.disableInternalAutoplay) {
+        _startOrResumeAutoplayLogic(true);
+      }
     }
   };
 
   const navigateToSlide = (index: number, source: 'user' | 'autoplay' | 'init' = 'user') => {
     if (!isSlideshowMode.value || index < 0 || index >= totalSlides.value || (currentSlideIndex.value === index && source !== 'init')) return;
+    
+    // Removed unused 'oldIndex'
     currentSlideIndex.value = index;
+
     if (source === 'user') {
       isAutoplayActive.value = false; isAutoplayEffectivelyPaused.value = true; _clearInternalAutoplayTimers();
-      emit('internal-autoplay-status-changed', { isPlaying: false, isPaused: true });
+      emit('internal-autoplay-status-changed', {isPlaying: false, isPaused: true });
     }
     emit('slide-changed', { newIndex: index, totalSlides: totalSlides.value, navigatedManually: source === 'user' });
+
+    _animateCurrentSlideTitle();
+
     if (isAutoplayActive.value && !props.disableInternalAutoplay && !isAutoplayEffectivelyPaused.value) {
       _clearInternalAutoplayTimers(); currentSlideTimeElapsedMs.value = 0; autoplayProgress.value = 0;
       _startOrResumeAutoplayLogic(false);
     }
-    nextTick(() => {
+
+    nextTick(async () => {
       if (contentDisplayRootRef.value) {
-        const currentSlide = slides.value[index];
-         // The v-html in the template for currentSlideData.htmlContent should re-render.
-         // We only need to worry about mermaid diagrams within that new HTML and attaching copy listeners.
         _addCopyButtonListeners(contentDisplayRootRef.value);
+        const currentSlide = slides.value[index];
         if (currentSlide?.diagramMermaidCode) {
-          const diagramContainer = contentDisplayRootRef.value.querySelector(`.cmr__slide-diagram-wrapper[data-slide-diagram-id="slide-${index}-diagram"]`) ||
-                                   contentDisplayRootRef.value.querySelector(`.cmr__slide-diagram-wrapper`); // Fallback selector
-          if (diagramContainer) _renderSingleMermaidDiagram(diagramContainer as HTMLElement, currentSlide.diagramMermaidCode, `slide-${currentSlide.id}-diag`);
+          const diagramContainer = contentDisplayRootRef.value.querySelector(`.cmr__slide-diagram-wrapper[data-slide-diagram-id="slide-${index}-diagram"]`);
+          if (diagramContainer) { // Check if diagramContainer is found
+            await _renderSingleMermaidDiagram(diagramContainer as HTMLElement, currentSlide.diagramMermaidCode, `slide-${currentSlide.id}-active`);
+          }
         }
       }
     });
@@ -393,38 +455,60 @@ export function useCompactMessageRenderer(
   const prevSlide = () => { if (canGoPrev.value) navigateToSlide(currentSlideIndex.value - 1, 'user'); };
 
   const toggleInternalAutoplay = () => {
-    if (props.disableInternalAutoplay) return; isAutoplayActive.value = !isAutoplayActive.value;
-    if (isAutoplayActive.value) { isAutoplayEffectivelyPaused.value = false; _startOrResumeAutoplayLogic(false); }
-    else { isAutoplayEffectivelyPaused.value = true; _clearInternalAutoplayTimers(); emit('internal-autoplay-status-changed', {isPlaying: false, isPaused: true }); }
+    // ... (implementation remains the same)
+    if (props.disableInternalAutoplay) return;
+    isAutoplayActive.value = !isAutoplayActive.value;
+    if (isAutoplayActive.value) {
+      isAutoplayEffectivelyPaused.value = false; _startOrResumeAutoplayLogic(false);
+    } else {
+      isAutoplayEffectivelyPaused.value = true; _clearInternalAutoplayTimers();
+      emit('internal-autoplay-status-changed', {isPlaying: false, isPaused: true });
+    }
   };
   const pauseInternalAutoplay = () => {
-    if (props.disableInternalAutoplay) return; isAutoplayEffectivelyPaused.value = true; _clearInternalAutoplayTimers();
-    emit('internal-autoplay-status-changed', {isPlaying: false, isPaused: true });
+    // ... (implementation remains the same)
+    if (props.disableInternalAutoplay || !isAutoplayActive.value) return;
+    isAutoplayEffectivelyPaused.value = true; _clearInternalAutoplayTimers();
+    emit('internal-autoplay-status-changed', {isPlaying: isAutoplayActive.value, isPaused: true });
   };
   const resumeInternalAutoplay = () => {
-    if (props.disableInternalAutoplay || !isAutoplayActive.value) return; isAutoplayEffectivelyPaused.value = false;
+    // ... (implementation remains the same)
+    if (props.disableInternalAutoplay || !isAutoplayActive.value) return;
+    isAutoplayEffectivelyPaused.value = false;
     _startOrResumeAutoplayLogic(false);
   };
 
+  const reRenderMermaidDiagramsScoped = async () => {
+    // ... (implementation remains the same)
+    await nextTick();
+    _mermaidInitialize();
+    await _renderAllDiagramsInElement(contentDisplayRootRef.value);
+  };
+
   const toggleComponentFullscreen = () => {
-    isComponentFullscreen.value = !isComponentFullscreen.value; emit('toggle-fullscreen');
-    nextTick(() => reRenderMermaidDiagrams(contentDisplayRootRef.value));
+    // ... (implementation remains the same)
+    isComponentFullscreen.value = !isComponentFullscreen.value;
+    emit('toggle-fullscreen');
+    nextTick(() => reRenderMermaidDiagramsScoped());
   };
 
   const adjustFontSize = (delta: number) => {
+    // ... (implementation remains the same)
     const newScale = Math.max(0.5, Math.min(2.5, currentContentFontScale.value + (delta * 0.1)));
     currentContentFontScale.value = newScale;
     emit('interaction', {type: 'fontSizeAdjusted', data: { newScale }});
+    nextTick(() => reRenderMermaidDiagramsScoped());
   };
 
   const copyAllCodeBlocks = async (rootElement: HTMLElement | null) => {
+    // ... (implementation remains the same)
     if (!rootElement) { emit('interaction', { type: 'toast', data: { type: 'error', title: 'Copy Error', message: 'Content area not found.' } }); return; }
-    const codeElements = rootElement.querySelectorAll('.cmr__code-block[data-raw-code]');
+    const codeElements = rootElement.querySelectorAll<HTMLElement>('.cmr__code-block[data-raw-code]');
     if (codeElements.length === 0) { emit('interaction', { type: 'toast', data: { type: 'info', title: 'No Code', message: 'No code blocks to copy.' } }); return; }
     let allCode = '';
     codeElements.forEach(el => {
-      const rawCode = decodeURIComponent(el.getAttribute('data-raw-code') || '');
-      const lang = el.getAttribute('data-lang') || 'code';
+      const rawCode = decodeURIComponent(el.dataset.rawCode || '');
+      const lang = el.dataset.lang || 'code';
       allCode += `// ----- ${lang} -----\n${rawCode}\n// ----- END ${lang} -----\n\n`;
     });
     try {
@@ -432,36 +516,42 @@ export function useCompactMessageRenderer(
       emit('interaction', { type: 'toast', data: { type: 'success', title: 'All Code Copied!', duration: 2500 } });
     } catch (err) { console.error('[CMR] Failed to copy all code:', err); emit('interaction', { type: 'toast', data: { type: 'error', title: 'Copy Failed' } }); }
   };
+
   const exportDiagrams = (): { id: string, code?: string }[] => {
+    // ... (implementation remains the same)
     const diagramsToExport: { id: string, code?: string }[] = [];
-    if (isSlideshowMode.value) slides.value.forEach(slide => { if (slide.diagramMermaidCode) diagramsToExport.push({ id: slide.id, code: slide.diagramMermaidCode }); });
-    else nonSlideDiagrams.value.forEach(diag => diagramsToExport.push({ id: diag.id, code: diag.mermaidCode }));
-    if (diagramsToExport.length === 0) emit('interaction', { type: 'toast', data: { type: 'info', title: 'No Diagrams' } });
+    if (isSlideshowMode.value) {
+        slides.value.forEach(slide => { if (slide.diagramMermaidCode) diagramsToExport.push({ id: slide.id, code: slide.diagramMermaidCode }); });
+    } else {
+        nonSlideDiagrams.value.forEach(diag => diagramsToExport.push({ id: diag.id, code: diag.mermaidCode }));
+    }
+    if (diagramsToExport.length === 0) emit('interaction', { type: 'toast', data: { type: 'info', title: 'No Diagrams', message:'No diagrams found to export.' } });
     else emit('interaction', { type: 'exportRequested', data: { type: 'diagrams', items: diagramsToExport } });
     return diagramsToExport;
   };
+
   const exportSlidesContent = (): { title: string, rawContent: string, diagram?: string }[] => {
-    if (!isSlideshowMode.value || slides.value.length === 0) { emit('interaction', { type: 'toast', data: { type: 'info', title: 'No Slides' } }); return []; }
+    // ... (implementation remains the same)
+    if (!isSlideshowMode.value || slides.value.length === 0) { emit('interaction', { type: 'toast', data: { type: 'info', title: 'No Slides', message: 'No slides to export.' } }); return []; }
     const slideData = slides.value.map(s => ({ title: s.title, rawContent: s.rawContent, diagram: s.diagramMermaidCode }));
     emit('interaction', { type: 'exportRequested', data: { type: 'slides', items: slideData } });
     return slideData;
   };
   
-  const reRenderMermaidDiagrams = async (rootElement: HTMLElement | null) => {
-    await nextTick(); _mermaidInitialize();
-    await _renderAllDiagramsInElement(rootElement || contentDisplayRootRef.value);
-  };
-
-  watch(() => props.content, (newContent) => {
-      processAndRenderContent(newContent || '', props.initialSlideIndex);
+  watch(() => props.content, (newContent = '') => {
+      processAndRenderContent(newContent, props.initialSlideIndex);
   }, { immediate: true });
+
   watch(() => props.initialSlideIndex, (newInitialIndex) => {
     if (isSlideshowMode.value && typeof newInitialIndex === 'number' && newInitialIndex >= 0 && newInitialIndex < totalSlides.value) {
         navigateToSlide(newInitialIndex, 'init');
     }
   });
-  watch(currentMermaidTheme, () => reRenderMermaidDiagrams(contentDisplayRootRef.value));
-  watch(isComponentFullscreen, () => reRenderMermaidDiagrams(contentDisplayRootRef.value));
+
+  watch(currentMermaidTheme, () => reRenderMermaidDiagramsScoped());
+  watch(isComponentFullscreen, () => {
+    nextTick(() => reRenderMermaidDiagramsScoped());
+  });
 
   onBeforeUnmount(() => { _clearInternalAutoplayTimers(); });
 
@@ -469,14 +559,18 @@ export function useCompactMessageRenderer(
     isLoadingContent, analyzedContent, slides, currentSlideIndex, isSlideshowMode,
     isAutoplayActive, isAutoplayEffectivelyPaused, autoplayProgress,
     isComponentFullscreen, currentContentFontScale, nonSlideDiagrams, contentDisplayRootRef,
-    currentSlideData, totalSlides, overallProgressPercent, canGoNext, canGoPrev,
+    currentSlideData, totalSlides, /* overallProgressPercent removed */ canGoNext, canGoPrev,
     currentMermaidTheme,
-    // Expose these for the template's direct use in calculating the countdown text
     currentSlideTargetDurationMs, currentSlideTimeElapsedMs,
+
+    // Exposed for title animation
+    animatedSlideTitleUnits,
+    isSlideTitleAnimating,
 
     processAndRenderContent, navigateToSlide, nextSlide, prevSlide,
     toggleInternalAutoplay, pauseInternalAutoplay, resumeInternalAutoplay,
     toggleComponentFullscreen, adjustFontSize, copyAllCodeBlocks,
-    exportDiagrams, exportSlidesContent, reRenderMermaidDiagrams,
+    exportDiagrams, exportSlidesContent,
+    reRenderMermaidDiagrams: reRenderMermaidDiagramsScoped,
   };
 }

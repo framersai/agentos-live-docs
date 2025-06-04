@@ -1,4 +1,4 @@
-// File: frontend/src/components/useMicrophone.ts
+// File: frontend/src/components/voice-input/composables/useMicrophone.ts
 /**
  * @file useMicrophone.ts
  * @description Composable for managing microphone access, MediaStream, AudioContext,
@@ -6,72 +6,45 @@
  * It handles permissions, device selection, and resource cleanup.
  *
  * @module composables/useMicrophone
- * @version 1.1.0 - Improved JSDoc, error handling, and resource management.
- * Clarified analyser node purpose.
+ * @version 1.2.1 - Enhanced permission checks, stream re-acquisition logic, logging, and onUnmounted cleanup.
  */
 
-import { ref, computed, shallowRef, type Ref, type ShallowRef, readonly } from 'vue';
-import type { ToastService } from '../../../services/services'; // Adjusted path assuming services.ts is in ../services
+import { ref, computed, shallowRef, type Ref, type ShallowRef, readonly, onUnmounted } from 'vue';
+import type { ToastService } from '../../../services/services';
 import type { VoiceApplicationSettings } from '@/services/voice.settings.service';
 
-// Ambient Type Declarations for older browser compatibility (e.g., Safari)
 declare global {
   interface Window {
     webkitAudioContext: typeof AudioContext;
   }
+  // PermissionName is defined in the TypeScript DOM library; no need to redefine it here.
 }
 
-/**
- * Options for initializing the microphone manager.
- */
+
 export interface UseMicrophoneOptions {
-  /** Reactive reference to the application's voice settings. Must be Readonly<Ref<...>> or compatible. */
   settings: Readonly<Ref<VoiceApplicationSettings>>;
-  /** Optional toast service for displaying notifications. */
   toast?: ToastService;
-  /** Callback function to globally update microphone permission status. */
   onPermissionUpdateGlobally: (
     status: 'prompt' | 'granted' | 'denied' | 'error'
   ) => void;
 }
 
-/**
- * Provides a structured return type for the `useMicrophone` composable.
- */
 export interface UseMicrophoneReturn {
-  /** The active MediaStream from the microphone, or null if not active/granted. Uses shallowRef for performance. */
   activeStream: Readonly<ShallowRef<MediaStream | null>>;
-  /** The global AudioContext instance associated with the active stream. Uses shallowRef. */
   audioContext: Readonly<ShallowRef<AudioContext | null>>;
-  /** An AnalyserNode connected to the microphone source, useful for basic audio analysis (e.g., silence detection, VAD). Uses shallowRef. */
   analyser: Readonly<ShallowRef<AnalyserNode | null>>;
-  /** Current status of microphone permission ('prompt', 'granted', 'denied', 'error', or empty string if not yet determined). */
   permissionStatus: Readonly<Ref<'prompt' | 'granted' | 'denied' | 'error' | ''>>;
-  /** A user-friendly message related to the current permission status or errors. */
-  permissionMessage: Readonly<Ref<string>>; // Kept for potential direct UI use or debugging
-  /** Flag indicating if microphone access has been checked at least once during the session. */
+  permissionMessage: Readonly<Ref<string>>;
   micAccessInitiallyChecked: Readonly<Ref<boolean>>;
-  /** Function to request microphone permissions and initialize the audio stream and nodes. */
+  checkCurrentPermission: () => Promise<'prompt' | 'granted' | 'denied' | 'error'>;
   requestMicrophonePermissionsAndGetStream: (attemptCloseExisting?: boolean) => Promise<MediaStream | null>;
-  /** Function to ensure microphone access is granted and stream is active, re-acquiring if necessary. */
   ensureMicrophoneAccessAndStream: () => Promise<boolean>;
-  /** Function to release all microphone and audio context resources. */
   releaseAllMicrophoneResources: () => Promise<void>;
 }
 
+const ACTIVITY_ANALYSER_FFT_SIZE = 256;
+const ACTIVITY_ANALYSER_SMOOTHING = 0.7;
 
-// Constants for the AnalyserNode used for basic activity/silence detection.
-// These are not for detailed visualization, which would use its own analyser config.
-const ACTIVITY_ANALYSER_FFT_SIZE = 256; // Smaller FFT for quick activity checks
-const ACTIVITY_ANALYSER_SMOOTHING = 0.7; // Moderate smoothing
-
-/**
- * Composable hook for managing microphone access, the audio stream,
- * and an associated AudioContext with an AnalyserNode.
- *
- * @param {UseMicrophoneOptions} options - Configuration options for the microphone manager.
- * @returns {UseMicrophoneReturn} The microphone manager API.
- */
 export function useMicrophone(options: UseMicrophoneOptions): UseMicrophoneReturn {
   const { settings, toast, onPermissionUpdateGlobally } = options;
 
@@ -86,15 +59,21 @@ export function useMicrophone(options: UseMicrophoneOptions): UseMicrophoneRetur
 
   const selectedAudioDeviceId = computed<string | null>(() => settings.value.selectedAudioInputDeviceId);
 
-  /**
-   * Closes all existing audio resources including MediaStream tracks,
-   * AudioContext, and disconnects audio nodes.
-   * @private
-   * @async
-   * @returns {Promise<void>}
-   */
-  const _closeExistingAudioResources = async (): Promise<void> => {
-    console.log('[useMicrophone] Closing existing audio resources...');
+  const _updatePermissionState = (status: 'prompt' | 'granted' | 'denied' | 'error', message: string = '') => {
+    if (_permissionStatus.value !== status) {
+        _permissionStatus.value = status;
+        onPermissionUpdateGlobally(status); // Call the global update callback
+    }
+    _permissionMessage.value = message;
+    if (status === 'granted') {
+        console.log('[useMicrophone] Permission status updated to GRANTED.');
+    } else if (status !== 'prompt') {
+        console.warn(`[useMicrophone] Permission status updated to ${status.toUpperCase()}. Message: ${message}`);
+    }
+  };
+
+  const _closeExistingAudioResources = async (preserveContext: boolean = false): Promise<void> => {
+    console.log('[useMicrophone] Closing existing audio stream resources...');
     if (_activeStream.value) {
       _activeStream.value.getTracks().forEach(track => {
         track.stop();
@@ -103,22 +82,15 @@ export function useMicrophone(options: UseMicrophoneOptions): UseMicrophoneRetur
       _activeStream.value = null;
     }
     if (_microphoneSourceNode.value) {
-      try {
-        _microphoneSourceNode.value.disconnect();
-      } catch (e) {
-        console.warn('[useMicrophone] Error disconnecting microphone source node:', e);
-      }
+      try { _microphoneSourceNode.value.disconnect(); } catch (e) { console.warn('[useMicrophone] Error disconnecting microphone source node:', e); }
       _microphoneSourceNode.value = null;
     }
     if (_analyser.value) {
-      try {
-        _analyser.value.disconnect();
-      } catch (e) {
-        console.warn('[useMicrophone] Error disconnecting analyser node:', e);
-      }
+      try { _analyser.value.disconnect(); } catch (e) { console.warn('[useMicrophone] Error disconnecting analyser node:', e); }
       _analyser.value = null;
     }
-    if (_audioContext.value && _audioContext.value.state !== 'closed') {
+
+    if (!preserveContext && _audioContext.value && _audioContext.value.state !== 'closed') {
       try {
         await _audioContext.value.close();
         console.log('[useMicrophone] AudioContext closed.');
@@ -126,87 +98,113 @@ export function useMicrophone(options: UseMicrophoneOptions): UseMicrophoneRetur
         console.warn('[useMicrophone] Error closing previous AudioContext:', e);
       }
       _audioContext.value = null;
+    } else if (preserveContext) {
+        console.log('[useMicrophone] AudioContext preserved.');
     }
-    console.log('[useMicrophone] All audio resources closed.');
+    console.log('[useMicrophone] Audio stream resources (tracks, source, analyser) processed for closure.');
   };
 
-  /**
-   * Requests microphone permission from the user and, if granted,
-   * initializes the MediaStream, AudioContext, and AnalyserNode.
-   *
-   * @public
-   * @param {boolean} [attemptCloseExisting=true] - Whether to close existing audio resources before making a new request.
-   * @returns {Promise<MediaStream | null>} The acquired MediaStream if successful, otherwise null.
-   */
+  const checkCurrentPermission = async (): Promise<'prompt' | 'granted' | 'denied' | 'error'> => {
+    if (typeof navigator === 'undefined' || !navigator.permissions?.query) {
+        _updatePermissionState('error', 'Permissions API not supported by this browser.');
+        return 'error';
+    }
+    try {
+        // Ensure 'microphone' is cast to PermissionName if TypeScript is strict
+        const permissionQueryResult = await navigator.permissions.query({ name: 'microphone' as PermissionName });
+        _micAccessInitiallyChecked.value = true; // Mark that we have checked
+
+        switch (permissionQueryResult.state) {
+            case 'granted':
+                _updatePermissionState('granted');
+                return 'granted';
+            case 'prompt':
+                _updatePermissionState('prompt', 'Microphone access needs to be granted.');
+                return 'prompt';
+            case 'denied':
+                _updatePermissionState('denied', 'Microphone access was denied. Please enable in browser settings.');
+                return 'denied';
+            default:
+                 // This case should ideally not be reached if typings are correct.
+                _updatePermissionState('error', `Unknown microphone permission state: ${permissionQueryResult.state}`);
+                return 'error';
+        }
+    } catch (err) {
+        console.error('[useMicrophone] Error querying microphone permission:', err);
+        _updatePermissionState('error', 'Error checking microphone permission status.');
+        return 'error';
+    }
+  };
+
   const requestMicrophonePermissionsAndGetStream = async (
     attemptCloseExisting: boolean = true
   ): Promise<MediaStream | null> => {
-    _permissionMessage.value = 'Requesting microphone access...';
-    _permissionStatus.value = 'prompt';
-    onPermissionUpdateGlobally('prompt');
+    console.log('[useMicrophone] Requesting microphone permission and stream...');
+    // Don't set to 'prompt' immediately, let checkCurrentPermission do it if necessary
+    // _updatePermissionState('prompt', 'Requesting microphone access...');
 
     if (attemptCloseExisting) {
-      await _closeExistingAudioResources();
+      await _closeExistingAudioResources(true); // Close stream resources, preserve context if possible
     }
 
     if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) {
-        console.error("[useMicrophone] navigator.mediaDevices.getUserMedia is not available.");
-        _permissionMessage.value = 'Media devices API not supported by this browser.';
-        _permissionStatus.value = 'error';
-        toast?.add({ type: 'error', title: 'Browser Incompatible', message: _permissionMessage.value });
-        onPermissionUpdateGlobally('error');
-        _micAccessInitiallyChecked.value = true;
-        return null;
+      console.error("[useMicrophone] navigator.mediaDevices.getUserMedia is not available.");
+      _updatePermissionState('error', 'Media devices API not supported by this browser.');
+      toast?.add({ type: 'error', title: 'Browser Incompatible', message: _permissionMessage.value });
+      _micAccessInitiallyChecked.value = true;
+      return null;
     }
 
     try {
+      const currentPerm = await checkCurrentPermission();
+      if (currentPerm === 'denied') {
+        toast?.add({ type: 'error', title: 'Mic Access Denied', message: 'Please enable microphone permissions in your browser site settings to use voice input.', duration: 7000 });
+        return null; // Don't proceed if already denied
+      }
+      // If 'prompt', getUserMedia will trigger the prompt. If 'granted', it will proceed.
+
       const constraints: MediaStreamConstraints = {
         audio: selectedAudioDeviceId.value
-          ? {
-              deviceId: { exact: selectedAudioDeviceId.value },
-              echoCancellation: true,
-              noiseSuppression: true,
-              autoGainControl: true,
-            }
-          : { // Default device
-              echoCancellation: true,
-              noiseSuppression: true,
-              autoGainControl: true,
-            },
+          ? { deviceId: { exact: selectedAudioDeviceId.value }, echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+          : { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
       };
-      console.log('[useMicrophone] Requesting user media with constraints:', constraints.audio);
+      console.log('[useMicrophone] Attempting to get user media with constraints:', JSON.stringify(constraints.audio));
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       _activeStream.value = stream;
 
       const AudioContextConstructor = window.AudioContext || window.webkitAudioContext;
-      if (!AudioContextConstructor) {
+      if (!_audioContext.value || _audioContext.value.state === 'closed') {
+        if (!AudioContextConstructor) {
           throw new Error("AudioContext is not supported in this browser.");
+        }
+        _audioContext.value = new AudioContextConstructor();
+        console.log('[useMicrophone] New AudioContext created.');
+      } else if (_audioContext.value.state === 'suspended') {
+        // Attempt to resume existing context if it was suspended
+        try {
+            await _audioContext.value.resume();
+            console.log('[useMicrophone] AudioContext resumed.');
+        } catch (resumeError) {
+            console.warn('[useMicrophone] Failed to resume existing AudioContext, creating new one.', resumeError);
+            if (AudioContextConstructor) _audioContext.value = new AudioContextConstructor(); else throw new Error("AudioContext is not supported.");
+        }
       }
-      const newAudioContext = new AudioContextConstructor();
-      _audioContext.value = newAudioContext;
 
-      _microphoneSourceNode.value = newAudioContext.createMediaStreamSource(stream);
+
+      _microphoneSourceNode.value = _audioContext.value.createMediaStreamSource(stream);
       
-      const newAnalyser = newAudioContext.createAnalyser();
+      const newAnalyser = _audioContext.value.createAnalyser();
       newAnalyser.fftSize = ACTIVITY_ANALYSER_FFT_SIZE;
       newAnalyser.smoothingTimeConstant = ACTIVITY_ANALYSER_SMOOTHING;
-      // Standard decibel range for analysis. Max is 0 dBFS (digital full scale).
-      newAnalyser.minDecibels = -100;
-      newAnalyser.maxDecibels = 0;
+      newAnalyser.minDecibels = -100; newAnalyser.maxDecibels = 0;
       _analyser.value = newAnalyser;
 
       _microphoneSourceNode.value.connect(_analyser.value);
-      // IMPORTANT: The analyser node is NOT connected to audioContext.destination here,
-      // to prevent direct playback of microphone input (feedback loop/echo).
-      // STT handlers or visualization will consume data from this analyser or the stream directly.
 
-      _permissionStatus.value = 'granted';
-      _permissionMessage.value = 'Microphone access granted and ready.';
-      onPermissionUpdateGlobally('granted');
-      console.log('[useMicrophone] Microphone access granted. Stream and audio nodes initialized.');
+      _updatePermissionState('granted', 'Microphone access granted.');
+      console.log('[useMicrophone] Microphone access GRANTED. Stream and audio nodes initialized.');
       toast?.add({ type: 'success', title: 'Microphone Ready', message: 'Audio input connected.', duration: 3000 });
 
-      // Clear message after a short delay if permission is granted
       setTimeout(() => { if (_permissionStatus.value === 'granted') _permissionMessage.value = ''; }, 2500);
 
     } catch (err: any) {
@@ -215,96 +213,84 @@ export function useMicrophone(options: UseMicrophoneOptions): UseMicrophoneRetur
       let userMessage = `Mic error: ${err.name || 'Unknown'}.`;
 
       switch(err.name) {
-        case 'NotAllowedError':
-        case 'PermissionDeniedError':
-          userMessage = 'Microphone access was denied. Please enable it in your browser settings.';
-          specificErrorType = 'denied';
-          break;
-        case 'NotFoundError':
-        case 'DevicesNotFoundError':
-          userMessage = 'No microphone found. Please connect an audio input device.';
-          break;
-        case 'NotReadableError':
-        case 'TrackStartError':
-          userMessage = 'Microphone is busy or cannot be read. Another app might be using it, or check hardware.';
-          break;
-        case 'OverconstrainedError':
-        case 'ConstraintNotSatisfiedError':
-          userMessage = `Selected microphone doesn't support requested settings. Try default device.`;
-          // This might happen if a specific deviceId can't be used with default constraints.
-          break;
-        case 'TypeError': // e.g. if constraints are malformed, less likely with current setup
-            userMessage = 'Error with microphone configuration. Please report this issue.';
-            break;
-        default:
-            userMessage = `An unexpected microphone error occurred: ${err.name || 'Unknown error'}.`;
+        case 'NotAllowedError': case 'PermissionDeniedError':
+          userMessage = 'Microphone access was denied. Please enable it in your browser settings.'; specificErrorType = 'denied'; break;
+        case 'NotFoundError': case 'DevicesNotFoundError':
+          userMessage = 'No microphone found. Please connect an audio input device.'; break;
+        case 'NotReadableError': case 'TrackStartError':
+          userMessage = 'Microphone is busy or cannot be read. Another app might be using it, or check hardware.'; break;
+        case 'OverconstrainedError': case 'ConstraintNotSatisfiedError':
+          userMessage = `Selected microphone doesn't support requested settings. Try default device.`; break;
+        case 'SecurityError':
+            userMessage = 'Microphone access denied due to security policy (e.g. page not HTTPS, or iframe restrictions).'; specificErrorType = 'denied'; break;
+        case 'TypeError': // Often if constraints are malformed, less likely with current setup.
+            userMessage = 'Error with microphone configuration (TypeError). Please report this issue.'; break;
+        default: userMessage = `An unexpected microphone error occurred: ${err.name || 'Unknown error'}.`;
       }
-      _permissionMessage.value = userMessage;
-      _permissionStatus.value = specificErrorType;
+      _updatePermissionState(specificErrorType, userMessage);
       toast?.add({ type: 'error', title: 'Microphone Access Failed', message: userMessage, duration: 7000 });
-      onPermissionUpdateGlobally(specificErrorType);
       
-      // Ensure resources are cleaned up on error
-      await _closeExistingAudioResources();
-      return null; // Explicitly return null on failure
+      await _closeExistingAudioResources(true); // Preserve context if it was created, only stream part failed
+      return null;
     } finally {
-        _micAccessInitiallyChecked.value = true;
+      _micAccessInitiallyChecked.value = true;
     }
     return _activeStream.value;
   };
 
-  /**
-   * Ensures that microphone access is granted and the stream is active.
-   * If the selected device has changed or the stream is inactive, it will attempt
-   * to re-acquire the stream. Callers should ensure any processes using the
-   * old stream (like STT handlers) are stopped before calling this.
-   *
-   * @public
-   * @returns {Promise<boolean>} True if access is granted and stream is active, false otherwise.
-   */
   const ensureMicrophoneAccessAndStream = async (): Promise<boolean> => {
-    if (_permissionStatus.value === 'granted' && _activeStream.value?.active) {
-      const currentTrackSettings = _activeStream.value.getAudioTracks()[0]?.getSettings();
-      const currentDeviceId = currentTrackSettings?.deviceId;
-      const targetDeviceId = selectedAudioDeviceId.value;
+    console.log('[useMicrophone] Ensuring microphone access and stream...');
+    const currentPerm = await checkCurrentPermission();
 
-      // Check if the currently active track matches the selected device ID.
-      // If targetDeviceId is null/empty, it means default device is selected.
-      // If currentDeviceId is null/empty, it's likely the default device.
-      const deviceMatches = targetDeviceId 
-                            ? currentDeviceId === targetDeviceId
-                            : !currentDeviceId; // If target is default, current should also be (or be unset)
+    if (currentPerm === 'granted') {
+        // If permission is granted, ensure AudioContext is running (browsers might suspend it)
+        if (_audioContext.value && _audioContext.value.state === 'suspended') {
+            try {
+                await _audioContext.value.resume();
+                console.log('[useMicrophone] AudioContext resumed during ensure call.');
+            } catch (e) {
+                console.warn('[useMicrophone] Failed to resume AudioContext:', e);
+                // May need to re-create if resume fails persistently
+            }
+        }
 
-      if (deviceMatches) {
-        console.log('[useMicrophone] Access and stream already active and correct device selected.');
-        return true; // Already good
-      }
-      console.log(`[useMicrophone] Device mismatch or stream state issue. Current: ${currentDeviceId}, Target: ${targetDeviceId}. Re-acquiring stream.`);
-      // Fall through to re-acquire
-    } else if (_permissionStatus.value === 'denied' || _permissionStatus.value === 'error') {
-        console.warn(`[useMicrophone] Cannot ensure stream, permission is ${_permissionStatus.value}`);
+        if (_activeStream.value?.active) {
+            const currentTrackSettings = _activeStream.value.getAudioTracks()[0]?.getSettings();
+            const currentDeviceId = currentTrackSettings?.deviceId;
+            const targetDeviceId = selectedAudioDeviceId.value;
+            const deviceMatches = targetDeviceId ? currentDeviceId === targetDeviceId : !currentDeviceId;
+
+            if (deviceMatches) {
+                console.log('[useMicrophone] Access and stream already active with correct device.');
+                return true;
+            }
+            console.log(`[useMicrophone] Device mismatch or stream inactive. Current Device: ${currentDeviceId}, Target: ${targetDeviceId}. Re-acquiring stream.`);
+        }
+    } else if (currentPerm === 'denied' || currentPerm === 'error') {
+        console.warn(`[useMicrophone] Cannot ensure stream, permission is ${currentPerm}`);
+        if (currentPerm === 'denied') {
+             toast?.add({ type: 'error', title: 'Mic Access Denied', message: 'Please enable microphone permissions in your browser site settings.', duration: 7000 });
+        }
         return false;
     }
-    // If not granted or stream inactive/mismatched, attempt to request/re-acquire.
-    // requestMicrophonePermissionsAndGetStream internally calls _closeExistingAudioResources.
-    const stream = await requestMicrophonePermissionsAndGetStream(true);
+    // If 'prompt', not granted, or stream needs re-acquisition:
+    console.log(`[useMicrophone] Attempting to request/re-acquire stream. Current permission: ${currentPerm}`);
+    const stream = await requestMicrophonePermissionsAndGetStream(true); // true to close existing stream resources first
     return !!(stream && stream.active);
   };
 
-  /**
-   * Releases all microphone and audio context resources.
-   * Call this when microphone input is no longer needed (e.g., component unmount).
-   * @public
-   * @async
-   * @returns {Promise<void>}
-   */
   const releaseAllMicrophoneResources = async (): Promise<void> => {
-    await _closeExistingAudioResources();
-    // Note: permissionStatus is not reset here as it reflects the browser/OS level permission.
-    // _micAccessInitiallyChecked could be reset if the component is truly "resetting" its entire lifecycle.
-    // For now, let it persist for the session.
-    console.log('[useMicrophone] All microphone resources released on demand.');
+    await _closeExistingAudioResources(false); // false to ensure AudioContext is also closed
+    // _permissionStatus.value = ''; // Don't reset permission, it's a browser state. Re-check if needed.
+    // _micAccessInitiallyChecked.value = false; // Let this persist for the session.
+    console.log('[useMicrophone] All microphone resources (including AudioContext) released on demand.');
   };
+
+  // Cleanup on unmount if the composable instance is tied to a component lifecycle
+  onUnmounted(async () => {
+    console.log('[useMicrophone] useMicrophone composable unmounted. Releasing all resources.');
+    await releaseAllMicrophoneResources();
+  });
 
   return {
     activeStream: readonly(_activeStream),
@@ -313,6 +299,7 @@ export function useMicrophone(options: UseMicrophoneOptions): UseMicrophoneRetur
     permissionStatus: readonly(_permissionStatus),
     permissionMessage: readonly(_permissionMessage),
     micAccessInitiallyChecked: readonly(_micAccessInitiallyChecked),
+    checkCurrentPermission,
     requestMicrophonePermissionsAndGetStream,
     ensureMicrophoneAccessAndStream,
     releaseAllMicrophoneResources,

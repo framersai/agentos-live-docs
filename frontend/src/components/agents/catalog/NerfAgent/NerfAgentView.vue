@@ -1,5 +1,7 @@
+// File: frontend/src/components/agents/catalog/NerfAgent/NerfAgentView.vue
+
 <script setup lang="ts">
-import { computed, inject, onMounted, onUnmounted, PropType, toRef } from 'vue';
+import { computed, inject, onMounted, onUnmounted, PropType, toRef, watch } from 'vue'; // Added watch
 import { useAgentStore } from '@/store/agent.store';
 import { useChatStore } from '@/store/chat.store';
 import type { IAgentDefinition } from '@/services/agent.service';
@@ -12,18 +14,24 @@ const props = defineProps({
   agentConfig: { type: Object as PropType<IAgentDefinition>, required: true }
 });
 
+/**
+ * @emits agent-event - Emits events to the parent component (PrivateHome.vue).
+ * - `view_mounted`: When the agent view is mounted.
+ * - `setProcessingState`: To update the global LLM processing state.
+ */
 const emit = defineEmits<{
   (e: 'agent-event', event: { type: 'view_mounted', agentId: string, label?: string }): void;
+  (e: 'agent-event', event: { type: 'setProcessingState', payload: { isProcessing: boolean } }): void; // Added this line
 }>();
 
 const agentStore = useAgentStore();
 const chatStore = useChatStore();
-const toast = inject<ToastService>('toast'); // Assuming toast is provided globally
+const toast = inject<ToastService>('toast');
 
 const agentConfigAsRef = toRef(props, 'agentConfig');
 
 const {
-  isLoadingResponse,
+  isLoadingResponse, // This is the ref from useNerfAgent
   agentDisplayName,
   mainContentToDisplay,
   initialize,
@@ -39,6 +47,7 @@ onMounted(async () => {
   emit('agent-event', { type: 'view_mounted', agentId: props.agentId, label: agentDisplayName.value });
 
   const currentContent = mainContentToDisplay.value;
+  // Ensure initial welcome message or existing content is displayed correctly.
   if (!currentContent?.data || currentContent?.title === `${agentDisplayName.value} Ready`) {
     const welcomeMarkdown = `
 <div class="nerf-welcome-container">
@@ -61,12 +70,17 @@ onMounted(async () => {
 
 onUnmounted(() => {
   if (cleanup) cleanup();
+  // Ensure processing state is false if view is unmounted while loading
+  if (isLoadingResponse.value) {
+    emit('agent-event', { type: 'setProcessingState', payload: { isProcessing: false } });
+  }
 });
 
 defineExpose({ handleNewUserInput });
 
 // True if backend is processing AND no text animation has started yet, AND there's no existing data to show
 const showInitialLoadingIndicator = computed(() => {
+  // This uses the local isLoadingResponse from useNerfAgent
   return isLoadingResponse.value && !isTextAnimating.value && !(mainContentToDisplay.value?.data && mainContentToDisplay.value.type !== 'loading');
 });
 
@@ -77,16 +91,16 @@ const showAnimatedText = computed(() => {
 // For final settled markdown content (not loading, not welcome placeholder, not animated)
 const showFinalMarkdownContent = computed(() => {
     return !isTextAnimating.value &&
-           !chatStore.isMainContentStreaming &&
+           !chatStore.isMainContentStreaming && // Ensure streaming from store is also considered if it drives this
            mainContentToDisplay.value?.data &&
-           (mainContentToDisplay.value.type === 'markdown') && // Only consider 'markdown' type as final content
-           mainContentToDisplay.value.title !== `${agentDisplayName.value} Ready`; // Not the welcome message
+           (mainContentToDisplay.value.type === 'markdown') &&
+           mainContentToDisplay.value.title !== `${agentDisplayName.value} Ready`;
 });
 
 // For the "Nerf is processing..." type of messages that might appear via 'loading' type in mainContentToDisplay
 const showInlineLoadingMessage = computed(() => {
     return !isTextAnimating.value &&
-           !showFinalMarkdownContent.value && // Not ready for final markdown
+           !showFinalMarkdownContent.value &&
            mainContentToDisplay.value?.type === 'loading' &&
            mainContentToDisplay.value?.data;
 });
@@ -95,10 +109,21 @@ const showInlineLoadingMessage = computed(() => {
 const showWelcomeMessage = computed(() => {
     return !isTextAnimating.value &&
            !isLoadingResponse.value && // Not actively loading a new response
-           mainContentToDisplay.value?.type === 'markdown' && // Welcome is set as markdown
+           mainContentToDisplay.value?.type === 'markdown' &&
            mainContentToDisplay.value?.title === `${agentDisplayName.value} Ready`;
 });
 
+
+/**
+ * @watch isLoadingResponse
+ * @description Watches the local `isLoadingResponse` from the `useNerfAgent` composable.
+ * When it changes, emits a `setProcessingState` event to `PrivateHome.vue`
+ * to update the global processing state, which in turn controls `VoiceInput.vue`.
+ */
+watch(isLoadingResponse, (newIsProcessing) => {
+  console.log(`[NerfAgentView] isLoadingResponse changed to: ${newIsProcessing}. Emitting setProcessingState.`);
+  emit('agent-event', { type: 'setProcessingState', payload: { isProcessing: newIsProcessing } });
+});
 
 </script>
 
