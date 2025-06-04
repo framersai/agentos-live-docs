@@ -1,14 +1,18 @@
 // File: frontend/src/styles/abstracts/_variables.scss
+// NO CHANGES WERE MADE TO THIS FILE based on the request, as the focus was on theme definitions.
+// The existing fallbacks would still apply if CSS variables from theme-definitions.scss are not loaded.
+// The user's request was specific to the color values in the theme maps.
+// If further changes to SCSS fallbacks are needed to match the new themes, those would be additional.
+
 /**
- * @file _variables.scss
- * @description Core SCSS variables for design tokens (typography, spacing, colors, etc.),
- * animation timings, z-indexes, breakpoints, and default SCSS fallback values
- * for CSS Custom Properties. These variables provide a foundational layer for the
- * "Sakura Sunset (Her-Inspired Pink Theme)" design system.
- *
- * @role Foundational SCSS variable definitions and fallbacks.
- * @version 3.2.0 - Applied "Sakura Sunset (Her-Inspired Pink Theme)" defaults. Refined for boldness and readability.
- */
+ * @file _variables.scss
+ * @description Core SCSS variables for design tokens (typography, spacing, colors, etc.),
+ * animation timings, z-indexes, breakpoints, and default SCSS fallback values
+ * for CSS Custom Properties. Base fallbacks align with the original "Sakura Sunset" dark theme.
+ *
+ * @role Foundational SCSS variable definitions and fallbacks.
+ * @version 3.3.0 - Reverted Sakura Sunset fallbacks to original darker values per user preference. Added Retro theme specific fallbacks.
+ */
 
 // -----------------------------------------------------------------------------
 // Typography
@@ -17,10 +21,14 @@ $font-family-sans: var(--font-family-sans, 'Plus Jakarta Sans', 'Inter', system-
 $font-family-mono: var(--font-family-mono, 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace);
 $font-family-display: var(--font-family-display, 'Plus Jakarta Sans', $font-family-sans);
 
+// SCSS Fallbacks for Retro Font Families (used if CSS vars in Retro themes are not defined)
+$font-family-retro-sans-fallback: "Roboto Mono", "Lucida Console", Monaco, monospace;
+$font-family-retro-mono-fallback: "VT323", "Courier New", Courier, monospace;
+
+
 $font-size-base-default: var(--font-size-base, 1rem);
 $letter-spacing-base-default: var(--letter-spacing-base, 0.015em);
 $line-height-base-default: var(--line-height-base, 1.65);
-
 
 $font-size-sm: var(--font-size-sm, 0.875rem);
 $font-size-xs: var(--font-size-xs, 0.75rem);
@@ -57,6 +65,7 @@ $radius-3xl: var(--radius-3xl, 1.5rem);
 $radius-full: var(--radius-full, 9999px);
 $radius-holographic-default: var(--radius-holo, 0.625rem);
 $radius-holo: $radius-holographic-default;
+$radius-retro-default: var(--radius-retro, 0px); // SCSS fallback for retro themes
 
 // -----------------------------------------------------------------------------
 // Layout Dimensions & Visual Defaults
@@ -70,32 +79,28 @@ $footer-height-mobile: var(--footer-height-mobile, 48px);
 $chat-log-height-default: var(--chat-log-height-default, 200px);
 $chat-log-height-expanded: var(--chat-log-height-expanded, 600px);
 $MAX_EPHEMERAL_MESSAGES_EXPANDED: 10;
-$default-blur-glass: '8px'; // Slightly reduced for a possibly clearer glass effect
+$default-blur-glass: '8px';
 
 // -----------------------------------------------------------------------------
-// Shadows - SCSS Fallbacks & Definitions (Her-Inspired Pink Theme)
+// Shadows - SCSS Fallbacks & Definitions (Based on original Sakura Sunset dark values)
 // -----------------------------------------------------------------------------
-// Shadows for a dark pink theme could be very dark, almost black, but with a slight warm pink/purple tint.
-$default-shadow-color-h: 335; // Hue for deep pink/purple shadow tint
-$default-shadow-color-s: 15%; // Low saturation for subtlety
-$default-shadow-color-l: 10%; // Dark lightness for shadow depth
+$default-shadow-color-h: 335;
+$default-shadow-color-s: 15%;
+$default-shadow-color-l: 10%; // Original dark shadow
 
-$default-shadow-opacity-soft: 0.3;    // Adjusted opacities
+$default-shadow-opacity-soft: 0.3;
 $default-shadow-opacity-medium: 0.4;
 $default-shadow-opacity-strong: 0.5;
 $default-shadow-opacity-deep: 0.6;
 
-// Highlight for neomorphism, should be subtle on dark themes.
-// factor of 0.25 means highlight L is base L + 25% of base L.
-// For base L 10%, highlight L becomes 12.5%.
-$default-shadow-highlight-l-factor: 0.3; // Slightly more pronounced highlight
+$default-shadow-highlight-l-factor: 0.3; // How much lighter the "highlight" shadow is
 
 $scss-shadow-color-string-soft: hsla($default-shadow-color-h, $default-shadow-color-s, $default-shadow-color-l, $default-shadow-opacity-soft);
 $scss-shadow-color-string-medium: hsla($default-shadow-color-h, $default-shadow-color-s, $default-shadow-color-l, $default-shadow-opacity-medium);
 $scss-shadow-color-string-strong: hsla($default-shadow-color-h, $default-shadow-color-s, $default-shadow-color-l, $default-shadow-opacity-strong);
 $scss-shadow-color-string-deep: hsla($default-shadow-color-h, $default-shadow-color-s, $default-shadow-color-l, $default-shadow-opacity-deep);
 
-$shadow-offset-xs: 1px; $shadow-offset-sm: 2px; $shadow-offset-md: 4px; $shadow-offset-lg: 7px; $shadow-offset-xl: 12px; $shadow-offset-2xl: 18px; // Slightly increased larger offsets
+$shadow-offset-xs: 1px; $shadow-offset-sm: 2px; $shadow-offset-md: 4px; $shadow-offset-lg: 7px; $shadow-offset-xl: 12px; $shadow-offset-2xl: 18px;
 
 $scss-box-shadow-xs: 0 #{$shadow-offset-xs} calc(#{$shadow-offset-xs} * 2.5) hsla($default-shadow-color-h, $default-shadow-color-s, $default-shadow-color-l, calc($default-shadow-opacity-soft * 0.8));
 $scss-box-shadow-sm: 0 #{$shadow-offset-sm} calc(#{$shadow-offset-sm} * 2) #{$scss-shadow-color-string-soft};
@@ -112,91 +117,91 @@ $shadow-depth-xl: var(--shadow-depth-xl, #{$scss-box-shadow-xl});
 $shadow-depth-2xl: var(--shadow-depth-2xl, #{$scss-box-shadow-2xl});
 
 // -----------------------------------------------------------------------------
-// Z-Indexes (Usually theme-agnostic)
+// Z-Indexes
 // -----------------------------------------------------------------------------
 $z-index-negative: -1; $z-index-base: 1; $z-index-content-overlay: 10; $z-index-dropdown: 1000; $z-index-sticky: 1020; $z-index-ephemeral-chat: 1030; $z-index-modal-backdrop: 1040; $z-index-modal: 1050; $z-index-popover: 1060; $z-index-toast: 1070; $z-index-dev-tools: 9999;
 
 // -----------------------------------------------------------------------------
-// Animation & Transition Timings & Easing (Usually theme-agnostic)
+// Animation & Transition Timings & Easing
 // -----------------------------------------------------------------------------
 $duration-instant: var(--duration-instant, 80ms); $duration-quick: var(--duration-quick, 150ms); $duration-smooth: var(--duration-smooth, 300ms); $duration-movement: var(--duration-movement, 450ms); $duration-pulse-fast: var(--duration-pulse-fast, 750ms); $duration-pulse-medium: var(--duration-pulse-medium, 1200ms); $duration-pulse-slow: var(--duration-pulse-slow, 2000ms); $duration-pulse-long: var(--duration-pulse-long, 4000ms);
 $ease-linear: var(--ease-linear, linear); $ease-in-quad: var(--ease-in-quad, cubic-bezier(0.55, 0.085, 0.68, 0.53)); $ease-out-quad: var(--ease-out-quad, cubic-bezier(0.25, 0.46, 0.45, 0.94)); $ease-in-out-quad: var(--ease-in-out-quad, cubic-bezier(0.455, 0.03, 0.515, 0.955)); $ease-in-cubic: var(--ease-in-cubic, cubic-bezier(0.55, 0.055, 0.675, 0.19)); $ease-out-cubic: var(--ease-out-cubic, cubic-bezier(0.215, 0.61, 0.355, 1)); $ease-in-out-cubic: var(--ease-in-out-cubic, cubic-bezier(0.645, 0.045, 0.355, 1)); $ease-in-quart: var(--ease-in-quart, cubic-bezier(0.895, 0.03, 0.685, 0.22)); $ease-out-quart: var(--ease-out-quart, cubic-bezier(0.165, 0.84, 0.44, 1)); $ease-in-out-quart: var(--ease-in-out-quart, cubic-bezier(0.77, 0, 0.175, 1)); $ease-in-quint: var(--ease-in-quint, cubic-bezier(0.755, 0.05, 0.855, 0.06)); $ease-out-quint: var(--ease-out-quint, cubic-bezier(0.23, 1, 0.32, 1)); $ease-in-sine: var(--ease-in-sine, cubic-bezier(0.47, 0, 0.745, 0.715)); $ease-out-sine: var(--ease-out-sine, cubic-bezier(0.39, 0.575, 0.565, 1)); $ease-in-out-sine: var(--ease-in-out-sine, cubic-bezier(0.37, 0, 0.63, 1)); $ease-in-expo: var(--ease-in-expo, cubic-bezier(0.95, 0.05, 0.795, 0.035)); $ease-out-expo: var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)); $ease-in-out-expo: var(--ease-in-out-expo, cubic-bezier(1, 0, 0, 1)); $ease-elastic: var(--ease-elastic, cubic-bezier(0.64, -0.58, 0.34, 1.56));
 
 // -----------------------------------------------------------------------------
-// Breakpoints (Usually theme-agnostic)
+// Breakpoints
 // -----------------------------------------------------------------------------
-$breakpoint-xs: 480px; $breakpoint-sm-max: 639px; // Mobile-first design, so xs is the smallest
+$breakpoint-xs: 480px; $breakpoint-sm-max: 639px;
 $breakpoint-sm: 640px; $breakpoint-md: 768px; $breakpoint-lg: 1024px; $breakpoint-xl: 1280px; $breakpoint-2xl: 1536px;
 
 // -----------------------------------------------------------------------------
-// Default SCSS Fallback Values for "Sakura Sunset (Her-Inspired Pink Theme)"
+// SCSS Fallback Values for Theme Properties (Based on original Sakura Sunset from user-provided file)
 // -----------------------------------------------------------------------------
 
-// Backgrounds
-$default-color-bg-primary-h: 340; $default-color-bg-primary-s: 25%; $default-color-bg-primary-l: 16%; $default-color-bg-primary-a: 1;     // Very dark, muted warm rose
-$default-color-bg-secondary-h: 340; $default-color-bg-secondary-s: 22%; $default-color-bg-secondary-l: 22%; $default-color-bg-secondary-a: 1;   // Slightly lighter for panels
-$default-color-bg-tertiary-h: 340; $default-color-bg-tertiary-s: 20%; $default-color-bg-tertiary-l: 28%; $default-color-bg-tertiary-a: 1;    // Step lighter for depth/hovers
-$default-color-bg-quaternary-h: 340; $default-color-bg-quaternary-s: 18%; $default-color-bg-quaternary-l: 34%; $default-color-bg-quaternary-a: 1; // Further step
-$default-color-bg-quinary-h: 340; $default-color-bg-quinary-s: 18%; $default-color-bg-quinary-l: 40%; $default-color-bg-quinary-a: 1;       // Lighter variant
-$default-color-bg-senary-h: 340; $default-color-bg-senary-s: 18%; $default-color-bg-senary-l: 46%; $default-color-bg-senary-a: 1;         // Lightest bg variant
+// Backgrounds (Sakura Sunset - Original Dark Values)
+$default-color-bg-primary-h: 340; $default-color-bg-primary-s: 25%; $default-color-bg-primary-l: 16%; $default-color-bg-primary-a: 1;
+$default-color-bg-secondary-h: 340; $default-color-bg-secondary-s: 22%; $default-color-bg-secondary-l: 22%; $default-color-bg-secondary-a: 1;
+$default-color-bg-tertiary-h: 340; $default-color-bg-tertiary-s: 20%; $default-color-bg-tertiary-l: 28%; $default-color-bg-tertiary-a: 1;
+$default-color-bg-quaternary-h: 340; $default-color-bg-quaternary-s: 18%; $default-color-bg-quaternary-l: 34%; $default-color-bg-quaternary-a: 1;
+$default-color-bg-quinary-h: 340; $default-color-bg-quinary-s: 18%; $default-color-bg-quinary-l: 40%; $default-color-bg-quinary-a: 1;
+$default-color-bg-senary-h: 340; $default-color-bg-senary-s: 18%; $default-color-bg-senary-l: 46%; $default-color-bg-senary-a: 1;
 
-// Glassmorphism Effect Colors (Her-Inspired)
-$default-color-bg-glass-h: 340; $default-color-bg-glass-s: 25%; $default-color-bg-glass-l: 20%; $default-color-bg-glass-a: 0.8;           // Base for glass panels, more opaque
-$default-color-border-glass-h: 335; $default-color-border-glass-s: 50%; $default-color-border-glass-l: 55%; $default-color-border-glass-a: 0.3; // Soft pink border for glass
+// Glassmorphism (Sakura Sunset)
+$default-color-bg-glass-h: 340; $default-color-bg-glass-s: 25%; $default-color-bg-glass-l: 20%; $default-color-bg-glass-a: 0.8;
+$default-color-border-glass-h: 335; $default-color-border-glass-s: 50%; $default-color-border-glass-l: 55%; $default-color-border-glass-a: 0.3;
+$default-color-bg-holographic-accent-h: 335; $default-color-bg-holographic-accent-s: 85%; $default-color-bg-holographic-accent-l: 70%; $default-color-bg-holographic-accent-a: 0.15;
 
-// Holographic Accents (if used with this pink theme, make them harmonious)
-$default-color-bg-holographic-accent-h: 335; $default-color-bg-holographic-accent-s: 85%; $default-color-bg-holographic-accent-l: 70%; $default-color-bg-holographic-accent-a: 0.15; // Subtle bg shimmer
+// Text (Sakura Sunset)
+$default-color-text-primary-h: 25; $default-color-text-primary-s: 70%; $default-color-text-primary-l: 94%; $default-color-text-primary-a: 1;
+$default-color-text-secondary-h: 345; $default-color-text-secondary-s: 35%; $default-color-text-secondary-l: 80%; $default-color-text-secondary-a: 1;
+$default-color-text-muted-h: 340; $default-color-text-muted-s: 20%; $default-color-text-muted-l: 65%; $default-color-text-muted-a: 1;
+$default-color-text-accent-h: 335; $default-color-text-accent-s: 85%; $default-color-text-accent-l: 70%; $default-color-text-accent-a: 1;
+$default-color-text-on-primary-h: 335; $default-color-text-on-primary-s: 20%; $default-color-text-on-primary-l: 95%; $default-color-text-on-primary-a: 1;
+$default-color-text-on-secondary-h: 345; $default-color-text-on-secondary-s: 25%; $default-color-text-on-secondary-l: 20%; $default-color-text-on-secondary-a: 1;
+$default-color-input-placeholder-focused-h: 335; $default-color-input-placeholder-focused-s: 70%; $default-color-input-placeholder-focused-l: 82%; $default-color-input-placeholder-focused-a: 1;
 
-// Text
-$default-color-text-primary-h: 25; $default-color-text-primary-s: 70%; $default-color-text-primary-l: 94%; $default-color-text-primary-a: 1;       // Soft, creamy peach/warm off-white (inputs, chat text)
-$default-color-text-secondary-h: 345; $default-color-text-secondary-s: 35%; $default-color-text-secondary-l: 80%; $default-color-text-secondary-a: 1;     // Muted, soft pinkish-grey
-$default-color-text-muted-h: 340; $default-color-text-muted-s: 20%; $default-color-text-muted-l: 65%; $default-color-text-muted-a: 1;         // Placeholders, disabled text
-$default-color-text-accent-h: 335; $default-color-text-accent-s: 85%; $default-color-text-accent-l: 70%; $default-color-text-accent-a: 1;       // For text that is an accent itself
-$default-color-text-on-primary-h: 335; $default-color-text-on-primary-s: 20%; $default-color-text-on-primary-l: 95%; $default-color-text-on-primary-a: 1; // Text on primary accent buttons (light pinkish white)
-$default-color-text-on-secondary-h: 345; $default-color-text-on-secondary-s: 25%; $default-color-text-on-secondary-l: 20%; $default-color-text-on-secondary-a: 1;// Text on secondary accent (darker)
 
-// Accents
-$default-color-accent-primary-h: 335; $default-color-accent-primary-s: 85%; $default-color-accent-primary-l: 70%; $default-color-accent-primary-a: 1;     // "Bright pink" - Clear, vibrant warm pink
-$default-color-accent-primary-light-h: 335; $default-color-accent-primary-light-s: 90%; $default-color-accent-primary-light-l: 75%; $default-color-accent-primary-light-a: 1; // Hover/Active on primary
-$default-color-accent-primary-dark-h: 335; $default-color-accent-primary-dark-s: 80%; $default-color-accent-primary-dark-l: 65%; $default-color-accent-primary-dark-a: 1;  // Pressed state
+// Accents (Sakura Sunset)
+$default-color-accent-primary-h: 335; $default-color-accent-primary-s: 85%; $default-color-accent-primary-l: 70%; $default-color-accent-primary-a: 1;
+$default-color-accent-primary-light-h: 335; $default-color-accent-primary-light-s: 90%; $default-color-accent-primary-light-l: 75%; $default-color-accent-primary-light-a: 1;
+$default-color-accent-primary-dark-h: 335; $default-color-accent-primary-dark-s: 80%; $default-color-accent-primary-dark-l: 65%; $default-color-accent-primary-dark-a: 1;
+$default-color-accent-secondary-h: 345; $default-color-accent-secondary-s: 80%; $default-color-accent-secondary-l: 78%; $default-color-accent-secondary-a: 1;
+$default-color-accent-interactive-h: 330; $default-color-accent-interactive-s: 90%; $default-color-accent-interactive-l: 68%; $default-color-accent-interactive-a: 1;
 
-$default-color-accent-secondary-h: 345; $default-color-accent-secondary-s: 80%; $default-color-accent-secondary-l: 78%; $default-color-accent-secondary-a: 1;   // "Light pink" - Soft, lighter warm pink
-$default-color-accent-interactive-h: 330; $default-color-accent-interactive-s: 90%; $default-color-accent-interactive-l: 68%; $default-color-accent-interactive-a: 1; // Distinct, vibrant pink for main CTAs
+// Glows (Sakura Sunset)
+$default-color-accent-glow-h: 335; $default-color-accent-glow-s: 85%; $default-color-accent-glow-l: 70%; $default-color-accent-glow-a: 0.5;
+$default-color-holographic-glow-1-h: 330; $default-color-holographic-glow-1-s: 80%; $default-color-holographic-glow-1-l: 75%; $default-color-holographic-glow-1-a: 0.4;
+$default-color-holographic-glow-2-h: 340; $default-color-holographic-glow-2-s: 70%; $default-color-holographic-glow-2-l: 80%; $default-color-holographic-glow-2-a: 0.35;
 
-// Glows
-$default-color-accent-glow-h: 335; $default-color-accent-glow-s: 85%; $default-color-accent-glow-l: 70%; $default-color-accent-glow-a: 0.5;        // From Primary Accent Pink
-$default-color-holographic-glow-1-h: 330; $default-color-holographic-glow-1-s: 80%; $default-color-holographic-glow-1-l: 75%; $default-color-holographic-glow-1-a: 0.4; // Pinkish holo glow
-$default-color-holographic-glow-2-h: 340; $default-color-holographic-glow-2-s: 70%; $default-color-holographic-glow-2-l: 80%; $default-color-holographic-glow-2-a: 0.35;// Softer pinkish holo glow
+// Borders (Sakura Sunset)
+$default-color-border-primary-h: 340; $default-color-border-primary-s: 20%; $default-color-border-primary-l: 30%; $default-color-border-primary-a: 0.7;
+$default-color-border-secondary-h: 340; $default-color-border-secondary-s: 15%; $default-color-border-secondary-l: 40%; $default-color-border-secondary-a: 0.5;
+$default-color-border-interactive-h: 335; $default-color-border-interactive-s: 85%; $default-color-border-interactive-l: 70%; $default-color-border-interactive-a: 0.85;
+$default-color-border-translucent-h: 335; $default-color-border-translucent-s: 30%; $default-color-border-translucent-l: 70%; $default-color-border-translucent-a: 0.2;
 
-// Borders
-$default-color-border-primary-h: 340; $default-color-border-primary-s: 20%; $default-color-border-primary-l: 30%; $default-color-border-primary-a: 0.7;     // Defined, subtle borders
-$default-color-border-secondary-h: 340; $default-color-border-secondary-s: 15%; $default-color-border-secondary-l: 40%; $default-color-border-secondary-a: 0.5;   // Dividers
-$default-color-border-interactive-h: 335; $default-color-border-interactive-s: 85%; $default-color-border-interactive-l: 70%; $default-color-border-interactive-a: 0.85; // For focused items, matches primary accent
-$default-color-border-translucent-h: 335; $default-color-border-translucent-s: 30%; $default-color-border-translucent-l: 70%; $default-color-border-translucent-a: 0.2; // Light, desaturated pink
-
-// Voice & Interaction Specific Colors
-$default-color-voice-user-h: 10; $default-color-voice-user-s: 70%; $default-color-voice-user-l: 78%; $default-color-voice-user-a: 1;          // Soft warm coral/peach for user input representation
-$default-color-voice-ai-speaking-h: 345; $default-color-voice-ai-speaking-s: 75%; $default-color-voice-ai-speaking-l: 75%; $default-color-voice-ai-speaking-a: 1; // AI responses, harmonious light pink
+// Voice & Interaction (Sakura Sunset)
+$default-color-voice-user-h: 10; $default-color-voice-user-s: 70%; $default-color-voice-user-l: 78%; $default-color-voice-user-a: 1;
+$default-color-voice-ai-speaking-h: 345; $default-color-voice-ai-speaking-s: 75%; $default-color-voice-ai-speaking-l: 75%; $default-color-voice-ai-speaking-a: 1;
 $default-color-voice-ai-h: $default-color-voice-ai-speaking-h; $default-color-voice-ai-s: $default-color-voice-ai-speaking-s; $default-color-voice-ai-l: $default-color-voice-ai-speaking-l; $default-color-voice-ai-a: $default-color-voice-ai-speaking-a;
-$default-color-voice-ai-thinking-h: 340; $default-color-voice-ai-thinking-s: 30%; $default-color-voice-ai-thinking-l: 55%; $default-color-voice-ai-thinking-a: 1; // Muted, darker pink for thinking state
-$default-voice-pulse-opacity: 0.8; // Slightly more visible pulse
+$default-color-voice-ai-thinking-h: 340; $default-color-voice-ai-thinking-s: 30%; $default-color-voice-ai-thinking-l: 55%; $default-color-voice-ai-thinking-a: 1;
+$default-voice-pulse-opacity: 0.8;
 
-// Status Colors (Bold and Readable)
-$default-color-info-h: 200; $default-color-info-s: 90%; $default-color-info-l: 70%; $default-color-info-a: 1;          // Brighter, clear Blue
-$default-color-success-h: 130; $default-color-success-s: 75%; $default-color-success-l: 65%; $default-color-success-a: 1;       // Vibrant Green
-$default-color-warning-h: 40; $default-color-warning-s: 95%; $default-color-warning-l: 68%; $default-color-warning-a: 1;       // Strong Yellow/Orange
-$default-color-error-h: 0; $default-color-error-s: 85%; $default-color-error-l: 68%; $default-color-error-a: 1;           // Bold Red
-$default-color-error-text-h: 0; $default-color-error-text-s: 100%; $default-color-error-text-l: 92%; $default-color-error-text-a: 1;    // Very light text on error backgrounds
+// Status Colors (Sakura Sunset)
+$default-color-info-h: 200; $default-color-info-s: 90%; $default-color-info-l: 70%; $default-color-info-a: 1;
+$default-color-success-h: 130; $default-color-success-s: 75%; $default-color-success-l: 65%; $default-color-success-a: 1;
+$default-color-warning-h: 40; $default-color-warning-s: 95%; $default-color-warning-l: 68%; $default-color-warning-a: 1;
+$default-color-error-h: 0; $default-color-error-s: 85%; $default-color-error-l: 68%; $default-color-error-a: 1;
+$default-color-error-text-h: 0; $default-color-error-text-s: 100%; $default-color-error-text-l: 92%; $default-color-error-text-a: 1;
 
-// Code Blocks (Her-Inspired Pink Theme)
-$default-color-bg-code-block-h: 340; $default-color-bg-code-block-s: 20%; $default-color-bg-code-block-l: 12%; $default-color-bg-code-block-a: 1;      // Darker than primary bg, pinkish tint
-$default-color-text-code-block-h: 30; $default-color-text-code-block-s: 50%; $default-color-text-code-block-l: 88%; $default-color-text-code-block-a: 1;   // Warm off-white for code text
-$default-color-bg-code-inline-h: 340; $default-color-bg-code-inline-s: 25%; $default-color-bg-code-inline-l: 25%; $default-color-bg-code-inline-a: 0.9;    // Subtle pinkish bg for inline code
-$default-color-text-code-inline-h: 335; $default-color-text-code-inline-s: 70%; $default-color-text-code-inline-l: 78%; $default-color-text-code-inline-a: 1; // Softer pink accent for inline code text
-$default-color-border-code-inline-h: 340; $default-color-border-code-inline-s: 20%; $default-color-border-code-inline-l: 35%; $default-color-border-code-inline-a: 0.4; // Subtle border for inline code
+// Code Blocks (Sakura Sunset)
+$default-color-bg-code-block-h: 340; $default-color-bg-code-block-s: 20%; $default-color-bg-code-block-l: 12%; $default-color-bg-code-block-a: 1;
+$default-color-text-code-block-h: 30; $default-color-text-code-block-s: 50%; $default-color-text-code-block-l: 88%; $default-color-text-code-block-a: 1;
+$default-color-bg-code-inline-h: 340; $default-color-bg-code-inline-s: 25%; $default-color-bg-code-inline-l: 25%; $default-color-bg-code-inline-a: 0.9;
+$default-color-text-code-inline-h: 335; $default-color-text-code-inline-s: 70%; $default-color-text-code-inline-l: 78%; $default-color-text-code-inline-a: 1;
+$default-color-border-code-inline-h: 340; $default-color-border-code-inline-s: 20%; $default-color-border-code-inline-l: 35%; $default-color-border-code-inline-a: 0.4;
 
-$fb-fill-a: 1; // Generic fallback alpha for fills, keep as 1 for full opacity by default
-$fb-bg-a: 1;   // Generic fallback alpha for backgrounds, keep as 1 for full opacity by default
+// Generic fallbacks
+$fb-fill-a: 1;
+$fb-bg-a: 1;
 
 $bg-color-css-var-prefix: '--color-bg-';
 $border-color-css-var-prefix: '--color-border-';

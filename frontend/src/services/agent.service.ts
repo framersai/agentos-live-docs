@@ -3,10 +3,10 @@
  * @file agent.service.ts
  * @description Defines available AI agents, their configurations, and capabilities.
  * Manages the registry of agents for the application, including mapping to dedicated view components.
- * @version 1.5.0 - Significantly expanded examplePrompts for all functional agents.
+ * @version 1.7.0 - Added textAnimationConfig to IAgentCapability and updated V & Nerf agents.
  */
 
-import type { Component as VueComponentType } from 'vue';
+import type { Component as VueComponentType, DefineComponent } from 'vue';
 import {
   ChatBubbleLeftEllipsisIcon,
   CodeBracketSquareIcon,
@@ -19,9 +19,14 @@ import {
   CogIcon,
   SparklesIcon,
   PresentationChartLineIcon,
+  BoltIcon, // Example for V
 } from '@heroicons/vue/24/outline';
 
-export type AgentId = string
+// Import TextRevealConfig for agent-specific animation settings
+import type { TextRevealConfig } from '@/composables/useTextAnimation';
+
+export type AgentId = string;
+
 export interface IDetailedCapabilityItem {
   id: string;
   label: string;
@@ -32,10 +37,12 @@ export interface IDetailedCapabilityItem {
 export interface IAgentCapability {
   canGenerateDiagrams?: boolean;
   usesCompactRenderer?: boolean;
-  acceptsVoiceInput?: boolean;
+  acceptsVoiceInput?: boolean; // Default true
   maxChatHistory?: number;
   handlesOwnInput?: boolean;
   showEphemeralChatLog?: boolean;
+  // Add the new optional textAnimationConfig capability
+  textAnimationConfig?: Partial<TextRevealConfig>;
 }
 
 export type AgentCategory = 'General' | 'Coding' | 'Productivity' | 'Learning' | 'Auditing' | 'Experimental' | 'Utility';
@@ -45,13 +52,14 @@ export interface IAgentDefinition {
   label: string;
   description: string;
   longDescription?: string;
+  component?: () => Promise<DefineComponent<any, any, any>>;
   iconComponent?: VueComponentType | string;
   iconClass?: string;
   avatar?: string;
   iconPath?: string;
-  systemPromptKey: string; // Should always be present
+  systemPromptKey: string;
   category: AgentCategory;
-  capabilities: IAgentCapability;
+  capabilities: IAgentCapability; // This will now include textAnimationConfig
   examplePrompts?: string[];
   tags?: string[];
   detailedCapabilities?: IDetailedCapabilityItem[];
@@ -62,7 +70,7 @@ export interface IAgentDefinition {
   holographicElement?: string;
   defaultVoicePersona?: string | { name?: string, voiceId?: string, lang?: string };
   isBeta?: boolean;
-  viewComponentName?: string; // Name of the dedicated Vue component for this agent's UI
+  isDefault?: boolean;
 }
 
 // --- Expanded Example Prompts ---
@@ -553,44 +561,80 @@ const lcAuditPrompts: string[] = [
   "Analyze the constraints for LC #79: Word Search and how they affect the solution approach."
 ];
 
+// Prompts for "V" (can be more complex/nuanced)
+const vAssistantPrompts: string[] = [
+  "Elaborate on the socio-economic impacts of AI in the next decade.",
+  "Compare and contrast Kantian ethics with Utilitarianism, providing modern examples.",
+  "Draft a project proposal for developing a sustainable urban farming initiative.",
+  "Analyze the geopolitical implications of recent advancements in quantum computing.",
+  "Provide a multi-faceted strategy for addressing misinformation online.",
+  "Explain the core concepts of string theory for a non-physicist with a strong science background.",
+  "Generate a creative story outline based on the theme of 'identity in a digital age'.",
+  "Discuss the philosophical arguments for and against free will.",
+  "Outline a research methodology for studying the effects of remote work on employee well-being.",
+  "Provide a deep dive into the architecture of the internet, from physical layers to application protocols."
+];
+
+
+// --- Agent Component Async Imports ---
+// IMPORTANT: Adjust these paths based on your actual file structure.
+// Assuming 'catalog' is the parent directory for individual agent folders.
+
+const NerfAgentView = () => import('@/components/agents/catalog/NerfAgent/NerfAgentView.vue') as unknown as Promise<DefineComponent<any, any, any>>;
+const VAgentView = () => import('@/components/agents/catalog/VAgent/VAgentView.vue') as unknown as Promise<DefineComponent<any, any, any>>;
+const CodingAgentView = () => import('@/components/agents/catalog/CodingAgent/CodingAgentView.vue') as unknown as Promise<DefineComponent<any, any, any>>;
+const SystemsDesignAgentView = () => import('@/components/agents/catalog/SystemsDesignAgent/SystemsDesignAgentView.vue') as unknown as Promise<DefineComponent<any, any, any>>;
+const BusinessMeetingAgentView = () => import('@/components/agents/catalog/BusinessMeetingAgent/BusinessMeetingAgentView.vue') as unknown as Promise<DefineComponent<any, any, any>>;
+const DiaryAgentView = () => import('@/components/agents/catalog/DiaryAgent/DiaryAgentView.vue') as unknown as Promise<DefineComponent<any, any, any>>;
+const CodingInterviewerAgentView = () => import('@/components/agents/catalog/CodingInterviewerAgent/CodingInterviewerAgentView.vue') as unknown as Promise<DefineComponent<any, any, any>>;
+const TutorAgentView = () => import('@/components/agents/catalog/TutorAgent/TutorAgentView.vue') as unknown as Promise<DefineComponent<any, any, any>>;
+const LCAuditAgentView = () => import('@/components/agents/catalog/LCAuditAgent/LCAuditAgentView.vue') as unknown as Promise<DefineComponent<any, any, any>>;
+
 
 // --- Agent Definitions ---
 const agents: IAgentDefinition[] = [
   {
-    id: 'general_chat',
+    id: 'nerf_agent' as AgentId, // This is "Nerf"
     label: 'Nerf',
-    description: 'Your friendly and simple general AI for quick questions and information. Streamlined for efficiency, and always free for general usage for members.',
+    description: 'Your friendly and efficient general AI for quick questions and information.',
+    longDescription: 'Nerf is designed for straightforward Q&A, quick facts, definitions, and simple explanations. It aims for clarity and conciseness, making it a great go-to for everyday inquiries.',
+    component: NerfAgentView,
     iconComponent: ChatBubbleLeftEllipsisIcon,
-    iconClass: 'text-orange-400 dark:text-orange-500',
-    systemPromptKey: 'general_chat',
+    iconClass: 'text-orange-400 dark:text-orange-500', // Keep Nerf's orange
+    systemPromptKey: 'nerf_chat', // Use the new nerf_chat.md prompt
     category: 'General',
     capabilities: { canGenerateDiagrams: false, usesCompactRenderer: true, acceptsVoiceInput: true, maxChatHistory: 8, showEphemeralChatLog: true, handlesOwnInput: true },
     examplePrompts: generalChatPrompts,
-    tags: ['general knowledge', 'q&a', 'information', 'quick help', 'concise'],
-    inputPlaceholder: 'Ask Nerf a quick question...',
+    tags: ['general knowledge', 'q&a', 'information', 'quick help', 'concise', 'friendly'],
+    inputPlaceholder: 'Ask Nerf anything...',
     isPublic: true,
-    accessTier: 'member',
-    viewComponentName: 'GeneralAgentView',
+    accessTier: 'member', // Was member in original
+    themeColor: '--nerf-accent', // Example for CSS variable theming
   },
   {
-    id: 'assistant',
+    id: 'v_agent' as AgentId, // New ID for V
     label: 'V',
-    description: 'A generalized public assistant suitable for all sorts of tasks.',
-    iconComponent: SparklesIcon,
-    iconClass: 'text-sky-400 dark:text-sky-500',
-    systemPromptKey: 'general_chat', // Could have its own highly constrained prompt
-    category: 'Utility',
-    capabilities: { canGenerateDiagrams: true, usesCompactRenderer: true, acceptsVoiceInput: true, maxChatHistory: 20, showEphemeralChatLog: true },
-    examplePrompts: quickHelperPrompts,
-    inputPlaceholder: 'Ask or say something',
+    description: 'Advanced, dynamic, and insightful AI assistant for complex tasks and explorations.',
+    longDescription: 'V is a powerful, polymathic AI designed to engage in nuanced discussions, synthesize complex information, and provide comprehensive, well-articulated responses. Ideal for deep dives, creative brainstorming, and strategic thinking.',
+    component: VAgentView,
+    iconComponent: BoltIcon, // Using BoltIcon for "powerful"
+    iconClass: 'text-cyan-400 dark:text-cyan-500', // V's distinct color
+    systemPromptKey: 'v_default_assistant', // New prompt for V
+    category: 'General',
+    capabilities: { canGenerateDiagrams: true, usesCompactRenderer: true, acceptsVoiceInput: true, maxChatHistory: 15, showEphemeralChatLog: true, handlesOwnInput: true },
+    examplePrompts: vAssistantPrompts, // Dedicated prompts for V
+    tags: ['advanced AI', 'dynamic', 'insightful', 'complex problem solving', 'research', 'analysis'],
+    inputPlaceholder: 'Pose your complex query or exploration to V...',
     isPublic: true,
-    accessTier: 'public',
-    // No viewComponentName, will use default MainContentView
+    accessTier: 'public', // V is the new powerful default
+    isDefault: true, // V could be the new default
+    themeColor: '--v-accent', // Example for CSS variable theming
   },
   {
-    id: 'coding_assistant',
+    id: 'coding_assistant' as AgentId,
     label: 'CodePilot',
     description: 'Expert coding assistance, debugging, and explanations across multiple languages.',
+    component: CodingAgentView,
     iconComponent: CodeBracketSquareIcon,
     iconClass: 'text-rose-400 dark:text-rose-500',
     systemPromptKey: 'coding',
@@ -601,59 +645,59 @@ const agents: IAgentDefinition[] = [
     inputPlaceholder: 'Ask CodePilot about code...',
     isPublic: true,
     accessTier: 'public',
-    viewComponentName: 'CodingAgentView',
   },
   {
-    id: 'system_designer',
+    id: 'system_designer' as AgentId,
     label: 'Architectron',
     description: 'Collaboratively design and diagram complex software and system architectures.',
-    iconComponent: CpuChipIcon,
+    component: SystemsDesignAgentView,
+    iconComponent: CpuChipIcon, // Keeping CpuChipIcon for Architectron
     iconClass: 'text-indigo-400 dark:text-indigo-500',
     systemPromptKey: 'system_design',
     category: 'Coding',
-    capabilities: { canGenerateDiagrams: true, usesCompactRenderer: true, acceptsVoiceInput: true, maxChatHistory: 50, handlesOwnInput: true, showEphemeralChatLog: true },
+    capabilities: { canGenerateDiagrams: true, usesCompactRenderer: true, acceptsVoiceInput: true, maxChatHistory: 30, handlesOwnInput: true, showEphemeralChatLog: true },
     examplePrompts: systemDesignerPrompts,
     inputPlaceholder: 'Describe the system to design...',
-    isPublic: true, 
+    isPublic: true,
     accessTier: 'public',
-    viewComponentName: 'SystemsDesignAgentView',
   },
   {
-    id: 'meeting_summarizer',
+    id: 'meeting_summarizer' as AgentId,
     label: 'Meeting Scribe',
     description: 'Processes your meeting notes or transcripts into clear, structured summaries with action items.',
+    component: BusinessMeetingAgentView,
     iconComponent: BriefcaseIcon,
-    iconClass: 'text-cyan-400 dark:text-cyan-500',
+    iconClass: 'text-cyan-400 dark:text-cyan-500', // Same as V, consider differentiating
     systemPromptKey: 'meeting',
     category: 'Productivity',
-    capabilities: { canGenerateDiagrams: true, usesCompactRenderer: true, acceptsVoiceInput: true, maxChatHistory: 200, handlesOwnInput: true, showEphemeralChatLog: false },
+    capabilities: { canGenerateDiagrams: true, usesCompactRenderer: true, acceptsVoiceInput: true, maxChatHistory: 10, handlesOwnInput: true, showEphemeralChatLog: false },
     examplePrompts: meetingSummarizerPrompts,
     inputPlaceholder: 'Paste notes or dictate discussion for summary...',
     isPublic: true,
     accessTier: 'public',
-    viewComponentName: 'BusinessMeetingAgentView',
   },
   {
-    id: 'diary_agent',
+    id: 'diary_agent' as AgentId,
     label: 'Echo',
     description: 'Your personal, empathetic AI diary and notetaker for reflection and organizing thoughts.',
+    component: DiaryAgentView,
     iconComponent: BookOpenIcon,
     iconClass: 'text-purple-400 dark:text-purple-500',
     systemPromptKey: 'diary',
     category: 'Productivity',
-    capabilities: { canGenerateDiagrams: true, usesCompactRenderer: false, acceptsVoiceInput: true, maxChatHistory: 200, handlesOwnInput: true, showEphemeralChatLog: true },
+    capabilities: { canGenerateDiagrams: true, usesCompactRenderer: false, acceptsVoiceInput: true, maxChatHistory: 10, handlesOwnInput: true, showEphemeralChatLog: true },
     examplePrompts: diaryAgentPrompts,
     inputPlaceholder: 'Share your thoughts with Echo...',
     isPublic: true,
     accessTier: 'public',
-    viewComponentName: 'DiaryAgentView',
   },
   {
-    id: 'coding_interviewer',
+    id: 'coding_interviewer' as AgentId,
     label: 'AI Interviewer',
     description: 'Simulates a technical coding interview, providing problems and evaluating solutions.',
+    component: CodingInterviewerAgentView,
     iconComponent: UserCircleIcon,
-    iconClass: 'text-purple-500 dark:text-purple-600',
+    iconClass: 'text-pink-500 dark:text-pink-600', // Changed color for distinction
     systemPromptKey: 'coding_interviewer',
     category: 'Learning',
     capabilities: { canGenerateDiagrams: false, usesCompactRenderer: true, acceptsVoiceInput: true, maxChatHistory: 20, handlesOwnInput: true, showEphemeralChatLog: true },
@@ -661,12 +705,12 @@ const agents: IAgentDefinition[] = [
     inputPlaceholder: 'Ready for your mock coding interview?',
     isPublic: true,
     accessTier: 'public',
-    viewComponentName: 'CodingInterviewerAgentView',
   },
   {
-    id: 'tutor_agent',
+    id: 'tutor_agent' as AgentId,
     label: 'Professor Astra',
     description: 'Your adaptive AI tutor for exploring subjects and mastering concepts.',
+    component: TutorAgentView,
     iconComponent: AcademicCapIcon,
     iconClass: 'text-amber-500 dark:text-amber-400',
     systemPromptKey: 'tutor',
@@ -676,19 +720,19 @@ const agents: IAgentDefinition[] = [
     inputPlaceholder: 'What topic shall we learn today?',
     isPublic: true,
     accessTier: 'public',
-    viewComponentName: 'TutorAgentView',
   },
   {
-    id: 'lc_audit_aide',
+    id: 'lc_audit_aide' as AgentId,
     label: 'LC-Audit',
-    description: 'In-depth LeetCode problem analysis and interview aide. (Private)',
+    description: 'In-depth LeetCode problem analysis and interview aide.',
+    component: LCAuditAgentView,
     iconComponent: DocumentMagnifyingGlassIcon,
     iconClass: 'text-teal-500 dark:text-teal-400',
     systemPromptKey: 'lc_audit_aide',
     category: 'Auditing',
     capabilities: {
       canGenerateDiagrams: true, usesCompactRenderer: true, acceptsVoiceInput: false,
-      maxChatHistory: 25, handlesOwnInput: true, showEphemeralChatLog: false,
+      maxChatHistory: 10, handlesOwnInput: true, showEphemeralChatLog: false,
     },
     examplePrompts: lcAuditPrompts,
     tags: ['leetcode', 'audit', 'interview prep', 'algorithms', 'data structures', 'problem solving'],
@@ -698,123 +742,22 @@ const agents: IAgentDefinition[] = [
         { id: 'commented-code', label: 'Exhaustive Code Comments', icon: CodeBracketSquareIcon },
     ],
     inputPlaceholder: 'Provide problem context for LC-Audit analysis...',
-    isPublic: true,
+    isPublic: false, // Making this premium as per original
     accessTier: 'premium',
     isBeta: true,
-    viewComponentName: 'LCAuditAgentView',
   },
-  // Alias definitions (they don't need their own viewComponentName as getAgentById resolves to canonical)
-  { id: 'general', label: 'Assistant (General)', description: 'Alias for General Assistant', iconComponent: ChatBubbleLeftEllipsisIcon, systemPromptKey: 'general_chat', category: 'General', capabilities: {}, isPublic: true, accessTier: 'public' },
-  { id: 'general-ai', label: 'Assistant (AI General)', description: 'Alias for General Assistant', iconComponent: ChatBubbleLeftEllipsisIcon, systemPromptKey: 'general_chat', category: 'General', capabilities: {}, isPublic: true, accessTier: 'public' },
-  // System/Placeholder definitions
-  { id: 'private-dashboard-placeholder', label: 'Dashboard', description: '', iconComponent: SparklesIcon, systemPromptKey: 'general_chat', category: 'Utility', capabilities: {}, isPublic: false },
-  { id: 'rate-limit-exceeded', label: 'Rate Limited', description: '', iconComponent: SparklesIcon, systemPromptKey: 'general_chat', category: 'Utility', capabilities: {}, isPublic: true },
-  { id: 'public-welcome-placeholder', label: 'Welcome', description: '', iconComponent: SparklesIcon, systemPromptKey: 'general_chat', category: 'Utility', capabilities: {}, isPublic: true },
-  { id: 'no-public-agents-placeholder', label: 'No Agents', description: '', iconComponent: SparklesIcon, systemPromptKey: 'general_chat', category: 'Utility', capabilities: {}, isPublic: true },
-  { id: 'system-error', label: 'Error', description: '', iconComponent: SparklesIcon, systemPromptKey: 'general_chat', category: 'Utility', capabilities: {}, isPublic: false },
+  // --- Placeholder & Utility Agents ---
+  // Removing the 'assistant' (old V) as it's now 'v_agent'.
+  // Keeping alias logic but ensuring they point to the correct canonical agent ID.
+  { id: 'general' as AgentId, label: 'Assistant (General Alias)', description: 'Alias for V', iconComponent: ChatBubbleLeftEllipsisIcon, systemPromptKey: 'default_v_assistant', category: 'General', capabilities: {}, isPublic: true, accessTier: 'member' },
+  { id: 'general-ai' as AgentId, label: 'Assistant (AI General Alias)', description: 'Alias for V', iconComponent: ChatBubbleLeftEllipsisIcon, systemPromptKey: 'default_v_assistant', category: 'General', capabilities: {}, isPublic: true, accessTier: 'member' },
+
+  { id: 'private-dashboard-placeholder' as AgentId, label: 'Dashboard', description: 'User dashboard area.', iconComponent: SparklesIcon, systemPromptKey: 'v_agent', category: 'Utility', capabilities: {}, isPublic: false, accessTier: 'member' },
+  { id: 'rate-limit-exceeded' as AgentId, label: 'Rate Limited', description: 'Displayed when rate limits are hit.', iconComponent: SparklesIcon, systemPromptKey: 'v_agent', category: 'Utility', capabilities: {}, isPublic: true, accessTier: 'public' },
+  { id: 'public-welcome-placeholder' as AgentId, label: 'Welcome', description: 'Initial public welcome screen.', iconComponent: SparklesIcon, systemPromptKey: 'v_agent', category: 'Utility', capabilities: {}, isPublic: true, accessTier: 'public' },
+  { id: 'no-public-agents-placeholder' as AgentId, label: 'No Agents Available', description: 'Placeholder if no agents are configured.', iconComponent: SparklesIcon, systemPromptKey: 'v_agent', category: 'Utility', capabilities: {}, isPublic: true, accessTier: 'public' },
+  { id: 'system-error' as AgentId, label: 'System Error', description: 'Displayed on critical system error.', iconComponent: SparklesIcon, systemPromptKey: 'v_agent', category: 'Utility', capabilities: {}, isPublic: false, accessTier: 'member' },
 ];
-
-class AgentService {
-  private agentsMap: Map<AgentId, IAgentDefinition>;
-  private defaultPublicAgentId: AgentId = 'general_chat';
-  private defaultPrivateAgentId: AgentId = 'general_chat';
-
-  constructor() {
-    this.agentsMap = new Map();
-    const canonicalAgents = new Map<AgentId, IAgentDefinition>();
-    agents.forEach(agent => {
-      // Prioritize first definition if multiple have same ID (e.g. canonical vs alias stub)
-      if (!canonicalAgents.has(agent.id)) {
-        canonicalAgents.set(agent.id, agent);
-      }
-    });
-
-    // Ensure aliases point to the full canonical definition from `canonicalAgents`
-    const generalChatCanonical = canonicalAgents.get('general_chat');
-    if (generalChatCanonical) {
-        this.agentsMap.set('general_chat', generalChatCanonical); // Ensure canonical is in
-        if (agents.some(a => a.id === 'general')) this.agentsMap.set('general', generalChatCanonical);
-        if (agents.some(a => a.id === 'general-ai')) this.agentsMap.set('general-ai', generalChatCanonical);
-    }
-
-    // Add all other canonical definitions
-    canonicalAgents.forEach((agentDef, agentId) => {
-        if (!this.agentsMap.has(agentId)){ // Add if not an alias already handled
-            this.agentsMap.set(agentId, agentDef);
-        }
-    });
-
-
-    const firstPublic = Array.from(this.agentsMap.values()).find(a => a.isPublic && a.id === 'general_chat') || Array.from(this.agentsMap.values()).find(a => a.isPublic);
-    if (firstPublic) this.defaultPublicAgentId = firstPublic.id;
-    else if (this.agentsMap.get('general_chat')) this.defaultPublicAgentId = 'general_chat';
-
-    const privateDefault = Array.from(this.agentsMap.values()).find(a => !a.isPublic && a.viewComponentName) ||
-                                this.agentsMap.get('lc_audit_aide') || // Specific preference
-                                this.agentsMap.get(this.defaultPublicAgentId); // Fallback to public default if no other private default
-    if (privateDefault) this.defaultPrivateAgentId = privateDefault.id;
-  }
-
-  public getAgentById(id?: AgentId | null): IAgentDefinition | undefined {
-    if (!id) return undefined;
-    if (id === 'general' || id === 'general-ai') return this.agentsMap.get('general_chat');
-    return this.agentsMap.get(id);
-  }
-
-  public getAllAgents(): IAgentDefinition[] {
-    // Return only canonical versions for UI selectors, no aliases
-    const uniqueAgentDefinitions = new Map<AgentId, IAgentDefinition>();
-    this.agentsMap.forEach(agent => {
-        // Resolve alias to its canonical ID to ensure we only add canonical versions
-        const canonicalId = (agent.id === 'general' || agent.id === 'general-ai') ? 'general_chat' : agent.id;
-        const canonicalAgent = this.agentsMap.get(canonicalId);
-        if (canonicalAgent && !uniqueAgentDefinitions.has(canonicalId)) {
-            // Ensure we're adding the fully defined canonical agent
-            if (canonicalAgent.systemPromptKey && !placeholderAgentIds.includes(canonicalId)) { // Filter out placeholders
-                uniqueAgentDefinitions.set(canonicalId, canonicalAgent);
-            }
-        }
-    });
-    return Array.from(uniqueAgentDefinitions.values());
-  }
- 
-  public getPublicAgents(): IAgentDefinition[] {
-    return this.getAllAgents().filter(agent => agent.isPublic);
-  }
-
-  public getPrivateAgents(): IAgentDefinition[] {
-    return this.getAllAgents().filter(agent => !agent.isPublic || agent.accessTier !== 'public');
-  }
- 
-  public getDefaultAgent(): IAgentDefinition { // For authenticated users
-    const agent = this.getAgentById(this.defaultPrivateAgentId);
-    if (agent && !placeholderAgentIds.includes(agent.id)) return agent;
-   
-    const publicDefault = this.getDefaultPublicAgent();
-    if (publicDefault && !placeholderAgentIds.includes(publicDefault.id)) return publicDefault;
-   
-    const firstValidAgent = Array.from(this.agentsMap.values()).find(a => a.systemPromptKey && !placeholderAgentIds.includes(a.id));
-    if (firstValidAgent) return firstValidAgent;
-
-    throw new Error("CRITICAL: No valid agents defined in AgentService. Cannot determine a default agent.");
-  }
-
-  public getDefaultPublicAgent(): IAgentDefinition {
-    const agent = this.getAgentById(this.defaultPublicAgentId);
-    if (agent && agent.isPublic && !placeholderAgentIds.includes(agent.id)) return agent;
-   
-    const firstPublicInList = this.getPublicAgents().find(a => !placeholderAgentIds.includes(a.id));
-    if (firstPublicInList) return firstPublicInList;
-
-    const generalChatAgent = this.agentsMap.get('general_chat');
-    if (generalChatAgent && !placeholderAgentIds.includes(generalChatAgent.id)) return generalChatAgent; // Fallback, ensure it's not a placeholder
-       
-    const firstEverValidAgent = Array.from(this.agentsMap.values()).find(a => a.systemPromptKey && !placeholderAgentIds.includes(a.id));
-    if (firstEverValidAgent) return firstEverValidAgent;
-
-    throw new Error("CRITICAL: No public agents available in AgentService.");
-  }
-}
 
 const placeholderAgentIds: AgentId[] = [
     'private-dashboard-placeholder',
@@ -824,5 +767,96 @@ const placeholderAgentIds: AgentId[] = [
     'system-error'
 ];
 
+class AgentService {
+  private agentsMap: Map<AgentId, IAgentDefinition>;
+  private defaultPublicAgentId: AgentId = 'v_agent'; // V is the new powerful public default
+  private defaultPrivateAgentId: AgentId = 'v_agent'; // Nerf as member default
+
+  constructor() {
+    this.agentsMap = new Map();
+    const definedAgents = new Map<AgentId, IAgentDefinition>();
+
+    // Add all canonical agents first
+    agents.forEach(agent => {
+      // Check if it's an alias or a placeholder for initial population
+      const isAlias = agent.id === 'general' || agent.id === 'general-ai';
+      const isPlaceholder = placeholderAgentIds.includes(agent.id);
+
+      if (!isAlias && !isPlaceholder) { // Store all non-alias, non-placeholder agents
+        if (!definedAgents.has(agent.id)) {
+            definedAgents.set(agent.id, agent);
+        }
+      }
+    });
+    
+    // Set canonical agents to the main map
+    definedAgents.forEach((agentDef, agentId) => {
+        this.agentsMap.set(agentId, agentDef);
+    });
+
+    console.log(`[AgentService] Initialized. Default Public: ${this.defaultPublicAgentId}, Default Private: ${this.defaultPrivateAgentId}`);
+    console.log(`[AgentService] Total canonical agents loaded: ${Array.from(this.agentsMap.values()).filter(a => !placeholderAgentIds.includes(a.id) && a.id !== 'general' && a.id !== 'general-ai').length}`);
+  }
+
+  public getAgentById(id?: AgentId | null): IAgentDefinition | undefined {
+    if (!id) return undefined;
+    return this.agentsMap.get(id);
+  }
+
+  public getAllAgents(): IAgentDefinition[] {
+    // Filter out placeholders and return unique canonical agents (aliases will resolve to their canonical here)
+    const uniqueAgents = new Map<AgentId, IAgentDefinition>();
+    this.agentsMap.forEach(agent => {
+      if (!placeholderAgentIds.includes(agent.id)) {
+        const canonicalId = (agent.id === 'general' || agent.id === 'general-ai') ? 'v_agent' : agent.id;
+        const canonicalAgent = this.agentsMap.get(canonicalId); // Get the full canonical definition
+        if (canonicalAgent && !uniqueAgents.has(canonicalId)) {
+           uniqueAgents.set(canonicalId, canonicalAgent);
+        }
+      }
+    });
+    return Array.from(uniqueAgents.values()).sort((a,b) => a.label.localeCompare(b.label));
+  }
+  
+  public getPublicAgents(): IAgentDefinition[] {
+    return this.getAllAgents().filter(agent => agent.isPublic);
+  }
+
+  public getPrivateAgents(): IAgentDefinition[] {
+    // Private agents are those not public OR those with a specific non-public accessTier
+    return this.getAllAgents().filter(agent => !agent.isPublic || (agent.accessTier && agent.accessTier !== 'public'));
+  }
+  
+  public getDefaultAgent(): IAgentDefinition { // For authenticated users (members/premium)
+    let agent = this.getAgentById(this.defaultPrivateAgentId);
+    if (agent && !placeholderAgentIds.includes(agent.id)) return agent;
+    
+    agent = this.getDefaultPublicAgent(); // Fallback to public default
+    if (agent && !placeholderAgentIds.includes(agent.id)) return agent;
+    
+    // Absolute fallback to the first valid non-placeholder agent
+    const firstValidAgent = Array.from(this.agentsMap.values()).find(a => a.systemPromptKey && !placeholderAgentIds.includes(a.id) && a.id !== 'general' && a.id !== 'general-ai');
+    if (firstValidAgent) return firstValidAgent;
+
+    throw new Error("CRITICAL: No valid default agent found in AgentService.");
+  }
+
+  public getDefaultPublicAgent(): IAgentDefinition {
+    let agent = this.getAgentById(this.defaultPublicAgentId); // Should be 'v_agent' if defined correctly
+    if (agent && agent.isPublic && !placeholderAgentIds.includes(agent.id)) return agent;
+    
+    // Fallback logic if 'v_agent' isn't suitable or defined
+    const vAgent = this.agentsMap.get('v_agent');
+    if (vAgent && vAgent.isPublic && !placeholderAgentIds.includes(vAgent.id)) return vAgent;
+
+    const nerfAgent = this.agentsMap.get('v_agent'); // Next fallback: Nerf
+    if (nerfAgent && nerfAgent.isPublic && !placeholderAgentIds.includes(nerfAgent.id)) return nerfAgent;
+
+    const firstPublicInList = this.getPublicAgents().find(a => !placeholderAgentIds.includes(a.id));
+    if (firstPublicInList) return firstPublicInList;
+
+    throw new Error("CRITICAL: No public agents available in AgentService.");
+  }
+}
 
 export const agentService = new AgentService();

@@ -10,17 +10,18 @@
  * `../abstracts/mixins` (for text glow).
  * @assumptions Keyframe animations (e.g., `organicPetalUnfurl`, `centerOrbPulse`, `subtlePulse`, `fadeIn`)
  * are or will be defined in `_keyframes.scss`. CSS custom properties for theming are available.
- * @version 2.0.4 - Corrected SASS calculations for CSS custom properties and animation parameters using unquote() and math.div().
+ * @version 2.0.5 - Corrected SASS unquote() to string.unquote(). Added sass:string import.
  */
 
-@use 'sass:math'; // Import the SASS math module for math.div()
+@use 'sass:math';
+@use 'sass:string'; // ADDED: For string.unquote()
 @use '../abstracts/variables' as var;
 @use '../abstracts/mixins' as mixins;
 
 .loading-overlay-ephemeral {
   position: fixed;
   inset: 0;
-  z-index: calc(var.$z-index-dev-tools + 100); // SASS calc is fine here
+  z-index: calc(var.$z-index-dev-tools + 100);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -32,7 +33,6 @@
   --loading-backdrop-bg-s: var(--color-bg-primary-s, #{var.$default-color-bg-primary-s});
   --loading-backdrop-bg-l: var(--color-bg-primary-l, #{var.$default-color-bg-primary-l});
   --loading-backdrop-bg-a: var(--overlay-bg-alpha, 0.85);
-  // var.$default-blur-glass is '10px'. This CSS calc() will be evaluated by the browser.
   --loading-backdrop-blur: calc(var(--blur-glass, #{var.$default-blur-glass}) * 0.75);
 
 
@@ -63,7 +63,7 @@
       border-radius: var.$radius-full;
       transform: translate(-50%, -50%) scale(0.8);
       box-shadow: 0 0 12px 2px hsla(var(--color-accent-primary-h, #{var.$default-color-accent-primary-h}), var(--color-accent-primary-s, #{var.$default-color-accent-primary-s}), var(--color-accent-primary-l, #{var.$default-color-accent-primary-l}), 0.7);
-      animation: centerOrbPulse 1.8s var.$ease-in-out-sine infinite alternate;
+      animation: centerOrbPulse 1.8s var.$ease-in-out-sine infinite alternate; // Ensure centerOrbPulse is defined in _keyframes.scss
     }
   }
 
@@ -85,24 +85,22 @@
     );
     box-shadow: 0 0 8px hsla(var(--color-accent-primary-h, #{var.$default-color-accent-primary-h}), var(--color-accent-primary-s, #{var.$default-color-accent-primary-s}), var(--color-accent-primary-l, #{var.$default-color-accent-primary-l}), 0.5);
     opacity: 0;
-    // Ensure the duration is a CSS calc() expression for browser evaluation
-    // Use unquote() to ensure SASS passes the string as is to CSS.
-    animation: organicPetalUnfurl unquote("calc(#{var.$duration-pulse-long} * 1.2)") var.$ease-in-out-cubic infinite;
+    // CORRECTED: Used string.unquote()
+    animation: organicPetalUnfurl string.unquote("calc(#{var.$duration-pulse-long} * 1.2)") var.$ease-in-out-cubic infinite; // Ensure organicPetalUnfurl is defined
   }
 
   $petal-count: 6;
   @for $i from 1 through $petal-count {
     .spinner-petal-ephemeral:nth-child(#{$i}) {
-      // Use math.div for SASS division
       transform: rotate(#{($i - 1) * math.div(360, $petal-count)}deg) translateY(-12px);
-      // Use unquote() for CSS calc() to handle CSS variables correctly for animation-delay
-      animation-delay: unquote("calc(#{var.$duration-smooth} / #{$petal-count} * (#{$i - 1}))");
+      // CORRECTED: Used string.unquote()
+      animation-delay: string.unquote("calc(#{var.$duration-smooth} / #{$petal-count} * (#{$i - 1}))");
     }
   }
 
   .loading-text-ephemeral {
     font-family: var(--font-family-display, #{var.$font-family-display});
-    font-size: calc(#{var.$font-size-lg} + 0.1rem); // SASS calculation is fine here
+    font-size: calc(#{var.$font-size-lg} + 0.1rem);
     font-weight: 500;
     color: hsl(var(--color-text-primary-h, #{var.$default-color-text-primary-h}), var(--color-text-primary-s, #{var.$default-color-text-primary-s}), var(--color-text-primary-l, #{var.$default-color-text-primary-l}));
     @include mixins.text-glow(
@@ -114,15 +112,10 @@
       $fb-glow-a: 0.6
     );
     letter-spacing: 0.06em;
-    // Ensure the duration is a CSS calc() expression
-    animation: subtlePulse unquote("calc(#{var.$duration-pulse-slow} * 1.1)") var.$ease-elastic infinite alternate;
+    // CORRECTED: Used string.unquote()
+    animation: subtlePulse string.unquote("calc(#{var.$duration-pulse-slow} * 1.1)") var.$ease-elastic infinite alternate; // Ensure subtlePulse is defined
     --opacity-start: 0.75;
     --opacity-pulse: 1;
     --scale-pulse: 1.015;
   }
 }
-
-// Keyframes should be defined in _keyframes.scss
-// @keyframes organicPetalUnfurl { /* ... */ }
-// @keyframes centerOrbPulse { /* ... */ }
-// @keyframes subtleBackgroundFlow { /* ... */ }

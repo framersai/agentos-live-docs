@@ -1,169 +1,132 @@
 // File: frontend/src/styles/layout/_unified-chat-layout.scss
 /**
  * @file _unified-chat-layout.scss
- * @description Styles for the UnifiedChatLayout.vue component. This layout is central
- * to chat-centric views, providing a consistent structure for main agent content,
- * the EphemeralChatLog, and VoiceInput. It incorporates "Ephemeral Harmony"
- * background effects and ensures a full-height, responsive experience.
- *
- * @role Defines the primary layout structure for chat interactions.
- * @dependencies `../abstracts/variables`, `../abstracts/mixins`, `../animations/keyframes`.
- * @version 2.0.0 - Enhanced for full-height layout, responsive padding, and theme-aware background effects.
+ * @description Styles for the UnifiedChatLayout.vue component.
+ * Implements a flex column layout where the main content area scrolls,
+ * and the voice input section sticks to the bottom of this layout.
+ * @version 2.5.0 - Finalized sticky voice input positioning and dynamic padding.
  */
 
 @use '../abstracts/variables' as var;
 @use '../abstracts/mixins' as mixins;
-// Keyframes for background effects should be in _keyframes.scss
 
 .unified-chat-layout-wrapper {
-  display: flex;
-  flex-direction: column;
-  height: 100%; // This layout attempts to fill its parent (e.g., .app-layout-main-content-ephemeral)
-  width: 100%;
-  overflow: hidden;
-  position: relative;
-  // Background is typically inherited or set by App.vue's shell
+  @apply relative flex flex-col w-full h-full overflow-hidden;
+  // Background is typically inherited from App.vue's main content area.
+  // If a specific background is needed for this layout, set it here.
+  // example: background-color: hsl(var(--color-bg-primary-h));
+
+  // CSS variables set by the component's script:
+  // --ephemeral-log-actual-height: Dynamically calculated height of the EphemeralChatLog.
+  // --voice-input-actual-height: Dynamically calculated height of the .unified-voice-input-section.
+
+  // Top padding to account for EphemeralChatLog (if visible) and safe area.
+  // EphemeralChatLog is part of the normal flow at the top if shown.
+  padding-top: env(safe-area-inset-top, 0px);
+  // Side padding for the entire layout.
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+  // No global padding-bottom on the wrapper; managed by main content area for its sticky footer.
 }
 
 .unified-chat-background-effects {
-  position: absolute; inset: 0; overflow: hidden; z-index: 0; pointer-events: none;
-  inset: 0;
-  overflow: hidden;
-  z-index: 0; // Behind all actual UI content
-  pointer-events: none; // Background should not be interactive
-
+  @apply absolute inset-0 -z-10 overflow-hidden pointer-events-none; // Standard background effects styling
   .fixed-holo-grid {
-    position: absolute;
-    inset: 0;
-    background-image: var(--bg-holo-grid-pattern-chat-layout, var(--bg-holo-grid-pattern, none));
-    background-size: var(--bg-holo-grid-size-chat-layout, 60px) var(--bg-holo-grid-size-chat-layout, 60px); // Slightly smaller grid for subtlety
-    opacity: var(--bg-holo-grid-opacity-chat-layout, 0.02); // Very subtle
-    animation: holoGridScroll calc(var.$duration-pulse-long * 25) linear infinite alternate; // Slower scroll
+    @apply absolute inset-0 opacity-5; // Very subtle
+    background-image:
+      linear-gradient(hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.2) 1px, transparent 1px),
+      linear-gradient(90deg, hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.2) 1px, transparent 1px);
+    background-size: 30px 30px; // Grid size
+    animation: holoGridScroll 120s linear infinite;
   }
-
-  .orbit-container { // From design document; ensure keyframes `orbitEffect` and `shapeTransformEffect` are defined
-    position: absolute;
-    top: 50%; left: 50%;
-    width: 1px; height: 1px; // Animation origin
-    animation-name: orbitEffect; // Keyframe defines rotation
+  .orbit-container {
+    @apply absolute top-1/2 left-1/2 pointer-events-none;
+    animation-name: orbitPathRotation; // Defined in _animations.scss or global keyframes
     animation-timing-function: linear;
     animation-iteration-count: infinite;
-    will-change: transform;
-
-    .orbiting-shape {
-      position: absolute;
-      left: 0; top: 0; // Positioned relative to the animated orbit-container
-      transform-origin: center;
-      animation-name: shapeTransformEffect; // Keyframe defines scale/opacity changes
-      animation-timing-function: var.$ease-in-out-sine;
-      animation-iteration-count: infinite;
-      animation-direction: alternate;
-      will-change: transform, opacity;
-      mix-blend-mode: overlay; // Or 'soft-light' depending on desired effect with theme colors
-      opacity: 0; // Start transparent, animation brings it in
-    }
+  }
+  .orbiting-shape {
+    @apply absolute block;
+    animation-name: shapeTransformAndFade; // Defined in _animations.scss or global keyframes
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
   }
 }
 
-// EphemeralChatLog is absolutely positioned by its own styles, so it overlays this layout.
+// Section for EphemeralChatLog, if rendered
+.unified-ephemeral-log-section {
+  @apply flex-shrink-0 relative z-10; // Sits above main content, below header if any
+  padding-left: var.$spacing-sm; // Align with side padding of wrapper
+  padding-right: var.$spacing-sm;
+  padding-top: var.$spacing-sm; // Space from top of layout wrapper
+  // Background for ephemeral log section if needed, or it's transparent
+  // background-color: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.5);
+}
 
+// Main scrollable content area (for agent views, chat messages)
 .unified-main-content-area {
-  flex-grow: 1; // This area takes up the main vertical space between header/log and voice input
-  display: flex; // Allows its child (slot) to also use flex properties if needed
-  flex-direction: column; // Stacks content vertically
-  position: relative; // For z-indexing if needed, above background effects
-  z-index: 1;
-  overflow: hidden; // IMPORTANT: The main content area itself should NOT scroll.
-                     // The component slotted into #main-content (e.g., ChatWindow, CompactMessageRenderer)
-                     // MUST manage its own internal scrolling.
+  @apply flex-grow flex flex-col relative overflow-y-auto overflow-x-hidden min-h-0;
+  // Padding to prevent content from being overlapped by the sticky .unified-voice-input-section
+  // The --voice-input-actual-height variable is set by the UnifiedChatLayout.vue script.
+  padding-bottom: calc(var(--voice-input-actual-height, 110px) + #{var.$spacing-sm}); // Ensure space + small gap
+  padding-left: var.$spacing-sm; // Standard side padding for content within this area
+  padding-right: var.$spacing-sm;
 
-  // Dynamic padding to account for fixed/sticky Header, EphemeralChatLog, and VoiceInput
-  // These CSS variables should be updated by JavaScript if the heights of these elements change dynamically.
-  // Fallbacks provide a reasonable default.
-  // These paddings account for fixed/sticky Header, EphemeralChatLog, and VoiceInput
-  // These paddings account for fixed/sticky Header, EphemeralChatLog, and VoiceInput
-  --ephemeral-log-actual-height: var(--ephemeral-log-total-height, 0px);
-  --voice-input-actual-height: var(--voice-input-panel-total-height, 90px); // Mobile default guess
-  @media (min-width: var.$breakpoint-md) {
-    --voice-input-actual-height: var(--voice-input-panel-total-height, 110px); // Desktop default guess
-  }
+  @include mixins.custom-scrollbar(
+    '--color-accent-interactive', 0.45, 0.7,
+    '--color-bg-primary', 0.15, // Track matches primary bg for subtlety
+    6px, var.$radius-sm
+  );
 
-  padding-top: calc(var(--header-actual-height, #{var.$header-height-default}) + var(--ephemeral-log-actual-height) + #{var.$spacing-xs} + env(safe-area-inset-top, 0px));
-  padding-bottom: calc(var(--voice-input-actual-height) + #{var.$spacing-xs} + env(safe-area-inset-bottom, 0px));
-  
-  // Mobile: Minimal side padding, content within will be edge-to-edge.
-  padding-left: calc(var.$spacing-xs + env(safe-area-inset-left, 0px));
-  padding-right: calc(var.$spacing-xs + env(safe-area-inset-right, 0px));
-  
-  @media (min-width: var.$breakpoint-sm) {
-    padding-left: calc(var.$spacing-sm + env(safe-area-inset-left, 0px));
-    padding-right: calc(var.$spacing-sm + env(safe-area-inset-right, 0px));
-    padding-top: calc(var(--header-actual-height, #{var.$header-height-default}) + var(--ephemeral-log-actual-height) + #{var.$spacing-sm} + env(safe-area-inset-top, 0px));
-    padding-bottom: calc(var(--voice-input-actual-height) + #{var.$spacing-sm} + env(safe-area-inset-bottom, 0px));
-  }
-
-
- 
-  // Desktop/Widescreen: Add horizontal margins to the content *inside* this area.
-  // The direct child (slotted component like MainContentView) will have these margins applied.
-  > * { // Targets the root of the slotted component (e.g., MainContentView)
-    height: 100%;
-    width: 100%;
-    overflow-y: auto; // The slotted component handles its own scroll
-    overflow-x: hidden;
-    display: flex;
-    flex-direction: column;
-    margin-left: 0; // Default, overridden by media query
-    margin-right: 0; // Default, overridden by media query
-    max-width: 100%;   // Default, overridden by media query
-    transition: margin 0.3s var.$ease-out-quad, max-width 0.3s var.$ease-out-quad;
-
-    @include mixins.custom-scrollbar(
-      '--color-accent-secondary', 0.35, 0.6, '--color-bg-primary', 0.08, 7px
-    );
-
-    // Widescreen margins (e.g., for screens > 768px or your preferred breakpoint)
-    // User mentioned >800px, md is 768px, lg is 1024px. Let's use md as the start for margins.
-    @media (min-width: var.$breakpoint-md) {
-      margin-left: auto;
-      margin-right: auto;
-      // Example: max-width of 1280px for the main chat content area on large screens
-      // This creates the side margins. Adjust as needed.
-      max-width: var(--chat-content-max-width, 1100px); 
-      padding-left: var.$spacing-md; // Internal padding within the max-width container
-      padding-right: var.$spacing-md;
-    }
-    @media (min-width: var.$breakpoint-xl) {
-        max-width: var(--chat-content-max-width-xl, 1280px);
-        padding-left: var.$spacing-lg;
-        padding-right: var.$spacing-lg;
-    }
+  // On wider screens, content within might have its own max-width and centering.
+  // This container provides the scroll.
+  @media (min-width: var.$breakpoint-xl) {
+    padding-left: var.$spacing-lg;
+    padding-right: var.$spacing-lg;
   }
 }
 
+// Voice Input Section - now sticky to the bottom of .unified-chat-layout-wrapper
 .unified-voice-input-section {
-  flex-shrink: 0;
+  @apply flex-shrink-0 relative; // flex-shrink:0 is important
   position: sticky;
-  bottom: 0; left: 0; right: 0;
-  z-index: calc(var.$z-index-content-overlay + 10);
-  padding: var.$spacing-xs var.$spacing-sm; // Base padding for mobile
-  padding-bottom: calc(var.$spacing-xs + env(safe-area-inset-bottom, 0px)); // Account for notch on bottom
-  padding-left: calc(var.$spacing-sm + env(safe-area-inset-left, 0px));
-  padding-right: calc(var.$spacing-sm + env(safe-area-inset-right, 0px));
+  bottom: 0; // Sticks to the bottom of .unified-chat-layout-wrapper
+  z-index: 20; // Above scrolled content within .unified-main-content-area
 
-  @media (min-width: var.$breakpoint-sm) {
-    padding: var.$spacing-sm var.$spacing-md;
-    padding-bottom: calc(var.$spacing-sm + env(safe-area-inset-bottom, 0px));
-    padding-left: calc(var.$spacing-md + env(safe-area-inset-left, 0px));
-    padding-right: calc(var.$spacing-md + env(safe-area-inset-right, 0px));
+  // The VoiceInput.vue component itself should have its own background and padding.
+  // This container provides the safe area padding at the very bottom.
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+
+  // If VoiceInput panel needs to be inset from layout edges on wide screens,
+  // this is where that horizontal padding would also apply.
+  // VoiceInput.vue itself uses .layout-wide-screen for its internal centering.
+  // This container ensures the overall section respects layout padding.
+  padding-left: var.$spacing-sm;
+  padding-right: var.$spacing-sm;
+
+  @media (min-width: var.$breakpoint-xl) {
+    padding-left: var.$spacing-lg;
+    padding-right: var.$spacing-lg;
   }
-  // Subtle backdrop to distinguish from scrolling content if needed
-  // background: linear-gradient(to top, hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.9) 0%, hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0) 100%);
-  // padding-top: var.$spacing-md; // Create space for the gradient if used
+
+  // Optional: Add a subtle separator line or shadow above the voice input area
+  // border-top: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.1);
+  // box-shadow: 0 -2px 10px hsla(var(--color-shadow-h), var(--color-shadow-s), var(--color-shadow-l), 0.03);
 }
 
-// Keyframes for background effects must be globally available (e.g., in _keyframes.scss)
-// Example:
-// @keyframes orbitEffect { /* ... */ }
-// @keyframes shapeTransformEffect { /* ... */ }
-// @keyframes holoGridScroll { /* ... */ }
+// Ensure keyframes like holoGridScroll, orbitPathRotation, shapeTransformAndFade are defined globally.
+// Example keyframes (should be in a global _animations.scss or similar):
+@keyframes holoGridScroll {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 100px 100px; } // Adjust values for desired scroll speed/effect
+}
+@keyframes orbitPathRotation {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes shapeTransformAndFade {
+  0% { transform: scale(0.8) rotate(0deg); opacity: var(--shape-start-opacity, 0.5); }
+  50% { transform: scale(1.2) rotate(180deg); opacity: var(--shape-mid-opacity, 0.8); }
+  100% { transform: scale(0.8) rotate(360deg); opacity: var(--shape-end-opacity, 0.5); }
+}
