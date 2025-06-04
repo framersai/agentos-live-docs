@@ -153,7 +153,7 @@ export function useSttModeManager(
           if (sharedState.currentRecordingStatusHtml.value.includes(modeHint)) {
             transcriptionDisplay.clearTranscription();
           }
-        }, 4000);
+        }, 5000);
       }
     }
 
