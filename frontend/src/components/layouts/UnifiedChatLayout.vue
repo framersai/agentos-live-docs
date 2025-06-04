@@ -241,9 +241,10 @@ watch(ephemeralLogRef, async (newEl) => {
     <div class="unified-voice-input-section" ref="voiceInputSectionRef">
       <VoiceInput
         :is-processing="props.isVoiceInputProcessing"
+        :is-processing-l-l-m="false"
         :input-placeholder="props.currentAgentInputPlaceholder"
-        @transcription="handleTranscription"
-        @processing-audio="handleVoiceProcessing"
+        @transcription-ready="handleTranscription"
+        @stt-processing-audio="handleVoiceProcessing"
       />
     </div>
   </div>
