@@ -11,10 +11,10 @@ import { useRouter, useRoute } from 'vue-router';
 import { useStorage } from '@vueuse/core';
 import { authAPI, api } from '@/utils/api';
 import { AUTH_TOKEN_KEY } from '@/router'; // AUTH_TOKEN_KEY should be exported from constants.ts if used elsewhere too
-import { LockClosedIcon, EyeIcon, EyeSlashIcon, ExclamationTriangleIcon, SunIcon, MoonIcon } from '@heroicons/vue/24/outline'; // BeakerIcon removed as not used
+import { LockClosedIcon, EyeIcon, EyeSlashIcon, ExclamationTriangleIcon } from '@heroicons/vue/24/outline'; // BeakerIcon removed as not used
 import { useUiStore } from '@/store/ui.store';
-import { themeManager, type ThemeDefinition } from '@/theme/ThemeManager'; // Ensure ThemeDefinition is exported if used for type
 import type { ToastService } from '@/services/services';
+import logoSvg from "@/assets/logo.svg"
 
 const router = useRouter();
 const route = useRoute();
@@ -113,7 +113,7 @@ onMounted(async () => {
       <div class="login-container w-full max-w-md space-y-8">
         <div class="text-center">
           <div class="logo-wrapper">
-            <img class="logo-image" src="@/assets/logo.svg" alt="Voice Chat Assistant Logo" />
+            <img class="logo-image" :src="logoSvg" alt="Voice Chat Assistant Logo" />
           </div>
           <h1 class="app-main-title text-glow-primary">
             Meet <strong>V</strong>
