@@ -41,7 +41,7 @@ onMounted(() => {
       aiActive:     props.isAiSpeaking
     }"
   >
-    <span class="v">V</span><span class="c">C</span><span class="a">A</span>
+    <span class="v">V</span><span class="c">C</span><span class="a mr-2">A</span>
     <span class="subtitle">Voice Chat Assistant</span>
   </h1>
 </template>

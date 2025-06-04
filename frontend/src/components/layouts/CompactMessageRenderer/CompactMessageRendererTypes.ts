@@ -1,12 +1,13 @@
-// File: frontend/src/components/CompactMessageRendererTypes.ts
+// File: frontend/src/components/layouts/CompactMessageRenderer/CompactMessageRendererTypes.ts
 /**
  * @file CompactMessageRendererTypes.ts
  * @description Type definitions for the CompactMessageRenderer component and its composable.
- * @version 1.0.1 - Cleaned up, no autoplayRemainingTimeText computed prop.
+ * @version 1.1.0 - Added types for slide title animation state.
  */
 
-import type { Ref, ComputedRef } from 'vue';
-import type { MarkedOptions as OriginalMarkedOptions } from 'marked'; // Ensure this path is correct based on your setup
+import type { Ref, ComputedRef } from 'vue'; // Use Ref directly
+import type { MarkedOptions as OriginalMarkedOptions } from 'marked';
+import type { TextAnimationUnit } from '@/composables/useTextAnimation'; // Assuming path
 
 /**
  * @interface Slide
@@ -75,16 +76,20 @@ export interface CompactMessageRendererState {
   analyzedContent: Ref<ContentAnalysisResult | null>;
   slides: Ref<Slide[]>;
   currentSlideIndex: Ref<number>;
-  nonSlideDiagrams: Ref<NonSlideDiagram[]>; // For diagrams in single-view mode
-  
+  nonSlideDiagrams: Ref<NonSlideDiagram[]>;
+
   isAutoplayActive: Ref<boolean>;
   isAutoplayEffectivelyPaused: Ref<boolean>;
   autoplayProgress: Ref<number>; // 0-100
-  currentSlideTargetDurationMs: Ref<number>; // For autoplay timing
-  currentSlideTimeElapsedMs: Ref<number>;   // For autoplay timing
+  currentSlideTargetDurationMs: Ref<number>;
+  currentSlideTimeElapsedMs: Ref<number>;
 
   isComponentFullscreen: Ref<boolean>;
   currentContentFontScale: Ref<number>;
+
+  // Added for slide title animation
+  animatedSlideTitleUnits: Ref<TextAnimationUnit[]>;
+  isSlideTitleAnimating: Ref<boolean>;
 }
 
 /**
@@ -95,7 +100,7 @@ export interface CompactMessageRendererComputeds {
   isSlideshowMode: ComputedRef<boolean>;
   currentSlideData: ComputedRef<Slide | null>;
   totalSlides: ComputedRef<number>;
-  overallProgressPercent: ComputedRef<number>; // Kept, as it's a useful computed value
+  // overallProgressPercent was removed as unused in previous step. If needed, add here.
   canGoNext: ComputedRef<boolean>;
   canGoPrev: ComputedRef<boolean>;
   currentMermaidTheme: ComputedRef<'dark' | 'default'>;
@@ -122,7 +127,7 @@ export interface CompactMessageRendererActions {
 }
 
 /**
- * @interface CompactMessageRendererExposedMethods
+ * @interface CompactMessageRendererPublicMethods
  * @description Methods exposed by the CompactMessageRenderer.vue component via defineExpose.
  */
 export interface CompactMessageRendererPublicMethods {
@@ -138,12 +143,16 @@ export interface CompactMessageRendererPublicMethods {
 
 /**
  * @interface CompactMessageRendererComposable
- * @description Complete type for the composable.
+ * @description Complete type for the composable, combining state, computeds, and actions.
  */
 export interface CompactMessageRendererComposable extends CompactMessageRendererState, CompactMessageRendererComputeds, CompactMessageRendererActions {
+  /** Ref to the root HTML element where content is displayed, managed by the composable. */
   contentDisplayRootRef: Ref<HTMLElement | null>;
 }
 
+/** Default duration (ms) for a slide if reading time cannot be calculated. */
 export const DEFAULT_SLIDE_READING_TIME_MS = 10000;
+/** Minimum duration (ms) a slide will be shown during autoplay. */
 export const MIN_SLIDE_DURATION_MS = 3000;
+/** Assumed reading speed in words per minute for calculating slide durations. */
 export const WORDS_PER_MINUTE_READING_SPEED = 180;
