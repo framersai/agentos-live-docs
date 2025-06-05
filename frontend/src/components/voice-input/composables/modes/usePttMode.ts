@@ -4,28 +4,29 @@
  * @description Push-to-Talk mode implementation.
  * Handles PTT-specific logic, state, and interactions by extending BaseSttMode.
  *
- * Revision:
- * - Implemented isActive, canStart, statusText, placeholderText as public readonly ComputedRefs.
- * - Removed SttModeState import and initializeState method.
- * - Changed internal access from `this.state.prop.value` to `this.prop.value` (referring to the new public computeds).
- * - Removed unused 'watch' import.
+ * @version 1.1.1
+ * @updated 2025-06-05 - Implemented abstract member `requiresHandler`.
  */
 
 import { ref, computed } from 'vue';
 import type { ComputedRef } from 'vue';
 import { BaseSttMode, type SttModeContext, type SttModePublicState } from './BaseSttMode';
+import type { SttHandlerErrorPayload } from '../../types';
 
 /**
  * @class PttMode
  * @extends BaseSttMode
  * @implements SttModePublicState
  * @description Implements Push-to-Talk STT mode logic.
+ * This mode activates STT when the user presses and holds a button and stops when released.
  */
 export class PttMode extends BaseSttMode implements SttModePublicState {
+  /** @property {ref<string>} finalTranscript - Stores the final transcript for the current PTT session. */
   private finalTranscript = ref('');
-  private isRecordingInternally = ref(false); // Internal reactive state for recording
+  /** @property {ref<boolean>} isRecordingInternally - Internal reactive state indicating if recording is active. */
+  private isRecordingInternally = ref(false);
 
-  // Public reactive state implementation
+  // --- SttModePublicState Implementation ---
   /** @inheritdoc */
   public readonly isActive: ComputedRef<boolean>;
   /** @inheritdoc */
@@ -36,30 +37,49 @@ export class PttMode extends BaseSttMode implements SttModePublicState {
   public readonly placeholderText: ComputedRef<string>;
 
   /**
+   * @inheritdoc
+   * @description PTT mode requires an STT handler to function.
+   */
+  public readonly requiresHandler: boolean = true;
+
+  /**
    * @constructor
-   * @param {SttModeContext} context - The context object providing dependencies.
+   * @param {SttModeContext} context - The context object providing dependencies and shared state.
    */
   constructor(context: SttModeContext) {
     super(context);
 
-    // Initialize public state properties as computeds
     this.isActive = computed(() => this.isRecordingInternally.value);
-    this.canStart = computed(() => !this.isBlocked() && !this.isRecordingInternally.value);
-    this.statusText = computed(() =>
-      this.isRecordingInternally.value ? 'PTT: Recording...' : 'PTT: Ready'
+    // Accessing context.isProcessingLLM.value (Ref) and context.micPermissionGranted.value (ComputedRef) correctly
+    this.canStart = computed(() =>
+        !this.context.isProcessingLLM.value &&
+        this.context.micPermissionGranted.value &&
+        (this.requiresHandler ? !!this.context.activeHandlerApi.value : true) && // Check handler if required
+        !this.isRecordingInternally.value
     );
-    this.placeholderText = computed(() =>
-      this.isRecordingInternally.value ? 'Release to send transcript' : 'Hold mic button to record audio'
-    );
+    this.statusText = computed(() => {
+      if (this.context.isProcessingLLM.value && !this.isRecordingInternally.value) return 'PTT: Assistant busy';
+      if (!this.context.micPermissionGranted.value) return 'PTT: Mic needed';
+      return this.isRecordingInternally.value ? 'PTT: Recording...' : 'PTT: Hold to talk';
+    });
+    this.placeholderText = computed(() => {
+      if (this.context.isProcessingLLM.value && !this.isRecordingInternally.value) return 'Assistant is processing...';
+       if (!this.context.micPermissionGranted.value) return 'Microphone permission required for PTT.';
+      return this.isRecordingInternally.value ? 'Release to send transcript' : 'Hold mic button to record audio';
+    });
   }
 
   /** @inheritdoc */
   async start(): Promise<boolean> {
-    // Use the public computed 'canStart' directly
     if (!this.canStart.value) {
-      console.warn('[PttMode] Cannot start - blocked or already active.');
-      if (!this.context.activeHandlerApi.value) {
-          this.context.toast?.add({ type: 'error', title: 'STT Error', message: 'Speech handler not available.' });
+      console.warn('[PttMode] Cannot start PTT mode - conditions not met.');
+      // Specific toasts are helpful for the user
+      if (this.requiresHandler && !this.context.activeHandlerApi.value) {
+         this.context.toast?.add({ type: 'error', title: 'STT Error', message: 'Speech handler not available for PTT mode.' });
+      } else if (this.context.isProcessingLLM.value) {
+         this.context.toast?.add({ type: 'info', title: 'Assistant Busy', message: 'Cannot start PTT while assistant is processing.' });
+      } else if (!this.context.micPermissionGranted.value) {
+         this.context.toast?.add({ type: 'error', title: 'Microphone Access', message: 'PTT mode requires microphone permission.' });
       }
       return false;
     }
@@ -69,21 +89,21 @@ export class PttMode extends BaseSttMode implements SttModePublicState {
     this.context.sharedState.isProcessingAudio.value = true;
     this.context.transcriptionDisplay.showListening();
 
-
     try {
       const handlerStarted = await this.context.activeHandlerApi.value?.startListening(false);
       if (handlerStarted) {
-        this.context.playSound(this.context.audioFeedback.beepInSound.value); // Play start beep
+        this.context.playSound(this.context.audioFeedback.beepInSound.value);
+        console.log('[PttMode] PTT recording started.');
         return true;
       } else {
-        console.error('[PttMode] Failed to start STT handler.');
-        this.isRecordingInternally.value = false; // Revert state
+        console.error('[PttMode] STT handler failed to start for PTT mode.');
+        this.isRecordingInternally.value = false;
         this.context.sharedState.isProcessingAudio.value = false;
-        this.context.transcriptionDisplay.showError('Failed to start PTT.', 2000);
+        this.context.transcriptionDisplay.showError('Failed to start PTT recording.', 2000);
         return false;
       }
     } catch (error: any) {
-      this.isRecordingInternally.value = false; // Revert state on error
+      this.isRecordingInternally.value = false;
       this.context.sharedState.isProcessingAudio.value = false;
       this.handleError(error);
       return false;
@@ -92,8 +112,11 @@ export class PttMode extends BaseSttMode implements SttModePublicState {
 
   /** @inheritdoc */
   async stop(): Promise<void> {
-    if (!this.isRecordingInternally.value) return;
+    if (!this.isRecordingInternally.value) {
+      return;
+    }
 
+    console.log('[PttMode] Stopping PTT recording...');
     this.isRecordingInternally.value = false;
     this.context.sharedState.isProcessingAudio.value = false;
 
@@ -101,37 +124,33 @@ export class PttMode extends BaseSttMode implements SttModePublicState {
       await this.context.activeHandlerApi.value?.stopListening(false);
 
       if (this.finalTranscript.value.trim()) {
-        this.emitTranscription(this.finalTranscript.value);
-        this.context.playSound(this.context.audioFeedback.beepOutSound.value); // Play success beep
-        this.context.transcriptionDisplay.showSent(this.finalTranscript.value.trim());
+        this.emitTranscription(this.finalTranscript.value); // emitTranscription handles showSent
+        this.context.playSound(this.context.audioFeedback.beepOutSound.value);
       } else {
-        // Play a different sound or show different feedback if no speech was captured
-        this.context.playSound(this.context.audioFeedback.beepOutSound.value); // Or a "no-speech" specific sound
-        this.context.transcriptionDisplay.showError('No speech detected.', 1500);
+        this.context.playSound(this.context.audioFeedback.beepOutSound.value);
+        this.context.transcriptionDisplay.showError('No speech detected in PTT.', 1500);
       }
-      this.finalTranscript.value = ''; // Clear transcript after processing
+      this.finalTranscript.value = '';
       this.context.sharedState.pendingTranscript.value = '';
 
     } catch (error: any) {
       this.handleError(error);
+    } finally {
+        console.log('[PttMode] PTT recording stopped.');
     }
   }
 
   /** @inheritdoc */
   handleTranscription(text: string): void {
-    // PTT mode typically accumulates a single final transcript during one recording session.
-    // The STT handler should ideally provide one consolidated final result upon stop.
-    // If it sends multiple final chunks, this will append them.
-    if (this.isRecordingInternally.value) {
-      this.finalTranscript.value = text; // Assuming STT handler sends full final transcript for PTT
-      this.context.sharedState.pendingTranscript.value = this.finalTranscript.value;
-      this.context.transcriptionDisplay.showInterimTranscript(this.finalTranscript.value);
-    }
+    console.log(`[PttMode] Received final transcription from handler: "${text}"`);
+    this.finalTranscript.value = text;
+    this.context.sharedState.pendingTranscript.value = text.trim(); // Update for UI consistency
+    this.context.transcriptionDisplay.showInterimTranscript(text.trim()); // Show as interim until stop
   }
 
   /**
    * @method handleInterimTranscript
-   * @description Processes an interim transcription segment for display purposes.
+   * @description Processes an interim transcription segment for display purposes during PTT recording.
    * @param {string} text - The interim transcribed text.
    */
   public handleInterimTranscript(text: string): void {
@@ -141,26 +160,28 @@ export class PttMode extends BaseSttMode implements SttModePublicState {
     }
   }
 
-
   /** @inheritdoc */
-  handleError(error: any): void {
-    console.error('[PttMode] Error:', error);
+  handleError(error: Error | SttHandlerErrorPayload): void {
+    const errorPayload = ('type' in error && 'message' in error) ? error : {
+        type: 'ptt_mode_error',
+        message: error.message || 'PTT recording failed.',
+        code: (error as any).code || (error as Error).name,
+        fatal: false,
+    } as SttHandlerErrorPayload;
+
+    console.error('[PttMode] Error:', errorPayload.message, `(Code: ${errorPayload.code || 'N/A'})`);
+
     this.isRecordingInternally.value = false;
     this.context.sharedState.isProcessingAudio.value = false;
-    this.context.transcriptionDisplay.showError(error.message || 'PTT recording failed.', 3000);
-    this.context.emit('error', {
-      type: 'ptt_mode_error',
-      message: error.message || 'PTT recording failed.',
-      code: error.code,
-    });
+    this.context.transcriptionDisplay.showError(errorPayload.message, 3000);
+    this.context.emit('voice-input-error', errorPayload); // Use manager's expected event name
   }
 
   /** @inheritdoc */
   cleanup(): void {
-    console.log('[PttMode] Cleanup');
-    // Ensure STT is stopped if it was active.
+    console.log('[PttMode] Cleanup initiated.');
     if (this.isRecordingInternally.value) {
-       this.context.activeHandlerApi.value?.stopListening(true); // Force abort
+        this.context.activeHandlerApi.value?.stopAll(true);
     }
     this.finalTranscript.value = '';
     this.isRecordingInternally.value = false;
