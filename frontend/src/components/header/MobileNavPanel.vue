@@ -1,940 +1,136 @@
-// File: frontend/src/components/ui/HearingIndicator.vue
+// File: frontend/src/components/header/MobileNavPanel.vue
 /**
- * @file HearingIndicator.vue
- * @description State-aware hearing indicator with distinct visual modes for each app state
- * Features geometric patterns, wave effects, and neural-inspired animations
- * @version 1.0.0
+ * @file MobileNavPanel.vue
+ * @version 3.0.0
+ *
+ * @description
+ *  Super-clean mobile drawer: **only** links you requested
+ *   – Explore Assistants, App Settings, About VCA, Login/Logout –  
+ *
+ * @props
+ *  @prop {boolean}  isOpen
+ *  @prop {boolean}  isUserListening
+ *  @prop {boolean}  isAiStateActive
+ *  @prop {boolean}  isAuthenticated
+ *
+ * @emits
+ *  close-panel, open-agent-hub, logout
  */
-<template>
-  <div 
-    class="hearing-indicator-container"
-    :class="containerClasses"
-    :style="containerStyles"
-    @click="handleClick"
-  >
-    <svg 
-      class="hearing-svg"
-      :viewBox="viewBox"
-      xmlns="http://www.w3.org/2000/svg"
-      :aria-label="ariaLabel"
-    >
-      <defs>
-        <!-- Gradients -->
-        <linearGradient id="hearing-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" :stop-color="gradientStart" :stop-opacity="0.9" />
-          <stop offset="100%" :stop-color="gradientEnd" :stop-opacity="0.7" />
-        </linearGradient>
-        
-        <radialGradient id="hearing-glow-gradient" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" :stop-color="glowColor" :stop-opacity="glowOpacity" />
-          <stop offset="100%" :stop-color="glowColor" stop-opacity="0" />
-        </radialGradient>
-        
-        <!-- Filters -->
-        <filter id="hearing-glow" x="-100%" y="-100%" width="300%" height="300%">
-          <feGaussianBlur :stdDeviation="glowRadius" result="coloredBlur" />
-          <feFlood :flood-color="glowColor" :flood-opacity="glowOpacity * 0.5" />
-          <feComposite in2="coloredBlur" operator="in" />
-          <feMerge>
-            <feMergeNode />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
-        
-        <filter id="hearing-blur">
-          <feGaussianBlur :stdDeviation="blurAmount" />
-        </filter>
-        
-        <!-- Patterns -->
-        <pattern id="hearing-dots" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
-          <circle cx="2" cy="2" r="0.5" :fill="patternColor" :opacity="0.3" />
-        </pattern>
-      </defs>
-      
-      <!-- Background circle -->
-      <circle 
-        v-if="showBackgroundCircle"
-        class="hearing-bg-circle"
-        :cx="centerX"
-        :cy="centerY"
-        :r="bgRadius"
-        fill="url(#hearing-glow-gradient)"
-        :opacity="0.1 + reactiveStore.intensity * 0.2"
-      />
-      
-      <!-- State-specific visualizations -->
-      <g class="state-visualization">
-        <!-- Idle state: Simple ear icon -->
-        <g v-if="appState === 'idle'" class="idle-visual">
-          <path
-            class="ear-icon"
-            :d="earPath"
-            fill="url(#hearing-gradient)"
-            :opacity="0.7 + reactiveStore.intensity * 0.3"
-            filter="url(#hearing-glow)"
-          />
-        </g>
-        
-        <!-- Listening state: Expanding circles -->
-        <g v-else-if="appState === 'listening'" class="listening-visual">
-          <circle
-            v-for="i in 4"
-            :key="`listen-${i}`"
-            :cx="centerX"
-            :cy="centerY"
-            :r="10 + i * 8"
-            fill="none"
-            :stroke="gradientStart"
-            :stroke-width="2 - i * 0.3"
-            :opacity="0.8 - i * 0.2"
-            :class="`listen-ring listen-ring-${i}`"
-          />
-          <circle
-            class="listen-core"
-            :cx="centerX"
-            :cy="centerY"
-            r="8"
-            fill="url(#hearing-gradient)"
-            filter="url(#hearing-glow)"
-          />
-        </g>
-        
-        <!-- Transcribing state: Wave pattern -->
-        <g v-else-if="appState === 'transcribing'" class="transcribing-visual">
-          <path
-            v-for="(wave, i) in waveforms"
-            :key="`wave-${i}`"
-            :d="wave"
-            fill="none"
-            :stroke="i === 1 ? gradientEnd : gradientStart"
-            :stroke-width="2"
-            :opacity="0.6 + i * 0.2"
-            :class="`transcribe-wave transcribe-wave-${i}`"
-            filter="url(#hearing-blur)"
-          />
-          <circle
-            class="transcribe-dot"
-            :cx="centerX"
-            :cy="centerY"
-            r="4"
-            fill="url(#hearing-gradient)"
-          />
-        </g>
-        
-        <!-- Thinking state: Neural network -->
-        <g v-else-if="appState === 'thinking'" class="thinking-visual">
-          <g class="neural-nodes">
-            <circle
-              v-for="(node, i) in neuralNodes"
-              :key="`node-${i}`"
-              :cx="node.x"
-              :cy="node.y"
-              :r="node.r"
-              :fill="node.active ? gradientStart : patternColor"
-              :opacity="node.opacity"
-              class="neural-node"
-            />
-          </g>
-          <g class="neural-connections">
-            <line
-              v-for="(conn, i) in neuralConnections"
-              :key="`conn-${i}`"
-              :x1="conn.x1"
-              :y1="conn.y1"
-              :x2="conn.x2"
-              :y2="conn.y2"
-              :stroke="conn.active ? gradientEnd : patternColor"
-              :stroke-width="conn.width"
-              :opacity="conn.opacity"
-              class="neural-connection"
-            />
-          </g>
-        </g>
-        
-        <!-- Responding state: Radiating pattern -->
-        <g v-else-if="appState === 'responding'" class="responding-visual">
-          <g class="radiate-lines">
-            <path
-              v-for="(ray, i) in radiateRays"
-              :key="`ray-${i}`"
-              :d="ray.path"
-              fill="none"
-              :stroke="i % 2 === 0 ? gradientStart : gradientEnd"
-              :stroke-width="ray.width"
-              :opacity="ray.opacity"
-              :class="`radiate-ray radiate-ray-${i}`"
-              filter="url(#hearing-blur)"
-            />
-          </g>
-          <circle
-            class="radiate-core"
-            :cx="centerX"
-            :cy="centerY"
-            r="10"
-            fill="url(#hearing-gradient)"
-            filter="url(#hearing-glow)"
-          />
-        </g>
-        
-        <!-- Speaking state: Sound waves -->
-        <g v-else-if="appState === 'speaking'" class="speaking-visual">
-          <path
-            v-for="(arc, i) in soundArcs"
-            :key="`arc-${i}`"
-            :d="arc"
-            fill="none"
-            :stroke="gradientStart"
-            :stroke-width="2.5"
-            :opacity="0.8 - i * 0.15"
-            :class="`sound-arc sound-arc-${i}`"
-            stroke-linecap="round"
-          />
-          <circle
-            class="sound-source"
-            :cx="centerX - 15"
-            :cy="centerY"
-            r="6"
-            fill="url(#hearing-gradient)"
-            filter="url(#hearing-glow)"
-          />
-        </g>
-        
-        <!-- VAD Wake state: Gentle pulse -->
-        <g v-else-if="appState === 'vad-wake'" class="vad-wake-visual">
-          <circle
-            class="vad-outer"
-            :cx="centerX"
-            :cy="centerY"
-            :r="vadRadius"
-            fill="none"
-            :stroke="patternColor"
-            stroke-width="2"
-            stroke-dasharray="5 5"
-            :opacity="0.5"
-          />
-          <circle
-            class="vad-inner"
-            :cx="centerX"
-            :cy="centerY"
-            r="8"
-            fill="url(#hearing-gradient)"
-            :opacity="0.6"
-          />
-        </g>
-        
-        <!-- VAD Active state: Alert rings -->
-        <g v-else-if="appState === 'vad-active'" class="vad-active-visual">
-          <circle
-            v-for="i in 3"
-            :key="`vad-${i}`"
-            :cx="centerX"
-            :cy="centerY"
-            :r="12 + i * 6"
-            fill="none"
-            :stroke="gradientStart"
-            :stroke-width="2"
-            :stroke-dasharray="'10 2'"
-            :opacity="0.7 - i * 0.15"
-            :class="`vad-ring vad-ring-${i}`"
-          />
-          <circle
-            class="vad-core"
-            :cx="centerX"
-            :cy="centerY"
-            r="8"
-            fill="url(#hearing-gradient)"
-            filter="url(#hearing-glow)"
-          />
-        </g>
-        
-        <!-- Error state: Warning triangle -->
-        <g v-else-if="appState === 'error'" class="error-visual">
-          <path
-            class="error-triangle"
-            :d="errorTrianglePath"
-            fill="none"
-            :stroke="errorColor"
-            stroke-width="2"
-            stroke-linejoin="round"
-          />
-          <circle
-            class="error-dot"
-            :cx="centerX"
-            :cy="centerY + 5"
-            r="2"
-            :fill="errorColor"
-          />
-        </g>
-      </g>
-      
-      <!-- Ripple overlay -->
-      <g v-if="showRipple" class="ripple-overlay">
-        <circle
-          v-for="i in rippleCount"
-          :key="`ripple-${i}`"
-          :cx="centerX"
-          :cy="centerY"
-          :r="20 + i * 10"
-          fill="none"
-          :stroke="rippleColor"
-          :stroke-width="1"
-          :opacity="0"
-          :class="`ripple-ring ripple-ring-${i}`"
-        />
-      </g>
-      
-      <!-- Particle effects -->
-      <g v-if="showParticles" class="particle-effects">
-        <circle
-          v-for="particle in particles"
-          :key="particle.id"
-          :cx="particle.x"
-          :cy="particle.y"
-          :r="particle.r"
-          :fill="particle.color"
-          :opacity="particle.opacity"
-          class="particle"
-        />
-      </g>
-    </svg>
-    
-    <!-- State label (optional) -->
-    <div v-if="showLabel" class="state-label">
-      {{ stateLabel }}
-    </div>
-  </div>
-</template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onUnmounted, type PropType } from 'vue';
-import { useReactiveStore } from '@/store/reactive.store';
+import { computed, ref, type PropType } from 'vue';
+import { RouterLink } from 'vue-router';
 import { useUiStore } from '@/store/ui.store';
+import { themeManager } from '@/theme/ThemeManager';
+import AnimatedLogo from '@/components/ui/AnimatedLogo.vue';
 
+/* ─ Icons ─ */
+import {
+  XMarkIcon, Squares2X2Icon, Cog8ToothIcon, InformationCircleIcon,
+  ArrowLeftOnRectangleIcon, ArrowRightOnRectangleIcon,
+} from '@heroicons/vue/24/outline';
+
+/* ─ Props / emits ─ */
 const props = defineProps({
-  size: {
-    type: Number as PropType<number>,
-    default: 60,
-  },
-  showLabel: {
-    type: Boolean as PropType<boolean>,
-    default: false,
-  },
-  interactive: {
-    type: Boolean as PropType<boolean>,
-    default: true,
-  },
-  customState: {
-    type: String as PropType<string>,
-    default: null,
-  }
+  isOpen             : { type: Boolean, required: true },
+  isUserListening    : { type: Boolean, default: false },
+  isAiStateActive    : { type: Boolean, default: false },
+  isAuthenticated    : { type: Boolean, required: true },
 });
-
 const emit = defineEmits<{
-  (e: 'click'): void;
-  (e: 'state-change', state: string): void;
+  (e:'close-panel'): void;
+  (e:'open-agent-hub'): void;
+  (e:'logout'): void;
 }>();
 
-const reactiveStore = useReactiveStore();
+/* ─ store & theme selection ─ */
 const uiStore = useUiStore();
+const selectedThemeId = ref(uiStore.currentThemeId);
+const onThemeChange = () => uiStore.setTheme(selectedThemeId.value);
 
-// Animation state
-const animationPhase = ref(0);
-const vadRadius = ref(20);
-const particles = ref<Array<{
-  id: number;
-  x: number;
-  y: number;
-  r: number;
-  color: string;
-  opacity: number;
-  vx: number;
-  vy: number;
-}>>([]);
-
-// Computed properties
-const appState = computed(() => props.customState || reactiveStore.appState);
-const centerX = computed(() => props.size / 2);
-const centerY = computed(() => props.size / 2);
-const viewBox = computed(() => `0 0 ${props.size} ${props.size}`);
-const bgRadius = computed(() => props.size * 0.45);
-
-const containerClasses = computed(() => ({
-  'hearing-indicator-container': true,
-  'is-interactive': props.interactive,
-  [`state-${appState.value}`]: true,
-  'is-animating': !uiStore.isReducedMotionPreferred,
-}));
-
-const containerStyles = computed(() => ({
-  '--indicator-size': `${props.size}px`,
-  '--glow-intensity': reactiveStore.glowIntensity,
-  '--pulse-rate': reactiveStore.pulseRate,
-  '--animation-phase': animationPhase.value,
-  ...reactiveStore.cssVariables,
-}));
-
-// Colors
-const gradientStart = computed(() => 
-  `hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l))`
-);
-
-const gradientEnd = computed(() => 
-  `hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l))`
-);
-
-const glowColor = computed(() => 
-  `hsl(var(--color-accent-glow-h), var(--color-accent-glow-s), var(--color-accent-glow-l))`
-);
-
-const patternColor = computed(() => 
-  `hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l))`
-);
-
-const rippleColor = computed(() => 
-  `hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l))`
-);
-
-const errorColor = computed(() => 
-  `hsl(var(--color-error-h), var(--color-error-s), var(--color-error-l))`
-);
-
-// Visual properties
-const glowOpacity = computed(() => 0.3 + reactiveStore.glowIntensity * 0.5);
-const glowRadius = computed(() => 3 + reactiveStore.glowIntensity * 5);
-const blurAmount = computed(() => 1 + reactiveStore.intensity * 2);
-
-const showBackgroundCircle = computed(() => 
-  ['listening', 'transcribing', 'responding', 'speaking'].includes(appState.value)
-);
-
-const showRipple = computed(() => 
-  reactiveStore.rippleActive && ['listening', 'responding'].includes(appState.value)
-);
-
-const showParticles = computed(() => 
-  reactiveStore.particleActivity > 0.3 && !uiStore.isReducedMotionPreferred
-);
-
-const rippleCount = computed(() => 
-  appState.value === 'responding' ? 4 : 3
-);
-
-// State label
-const stateLabel = computed(() => {
-  const labels: Record<string, string> = {
-    idle: 'Ready',
-    listening: 'Listening',
-    transcribing: 'Transcribing',
-    thinking: 'Processing',
-    responding: 'Responding',
-    speaking: 'Speaking',
-    'vad-wake': 'Voice Activated',
-    'vad-active': 'Voice Detected',
-    error: 'Error',
-    connecting: 'Connecting',
-  };
-  return labels[appState.value] || appState.value;
-});
-
-const ariaLabel = computed(() => 
-  `Hearing indicator: ${stateLabel.value}`
-);
-
-// SVG paths
-const earPath = computed(() => {
-  const cx = centerX.value;
-  const cy = centerY.value;
-  return `
-    M ${cx - 10} ${cy - 5}
-    C ${cx - 10} ${cy - 15}, ${cx} ${cy - 20}, ${cx + 8} ${cy - 15}
-    C ${cx + 12} ${cy - 12}, ${cx + 12} ${cy + 12}, ${cx + 8} ${cy + 15}
-    C ${cx} ${cy + 20}, ${cx - 10} ${cy + 15}, ${cx - 10} ${cy + 5}
-    L ${cx - 10} ${cy - 5}
-    M ${cx - 5} ${cy - 8}
-    C ${cx - 5} ${cy - 10}, ${cx} ${cy - 12}, ${cx + 3} ${cy - 10}
-    C ${cx + 5} ${cy - 8}, ${cx + 5} ${cy + 8}, ${cx + 3} ${cy + 10}
-    C ${cx} ${cy + 12}, ${cx - 5} ${cy + 10}, ${cx - 5} ${cy + 8}
-  `;
-});
-
-const errorTrianglePath = computed(() => {
-  const cx = centerX.value;
-  const cy = centerY.value;
-  const size = 15;
-  return `
-    M ${cx} ${cy - size}
-    L ${cx - size} ${cy + size}
-    L ${cx + size} ${cy + size}
-    Z
-  `;
-});
-
-// Waveforms for transcribing state
-const waveforms = computed(() => {
-  const waves = [];
-  const amplitude = 10;
-  const frequency = 0.2;
-  
-  for (let i = 0; i < 3; i++) {
-    let path = `M ${centerX.value - 25} ${centerY.value}`;
-    
-    for (let x = -25; x <= 25; x += 2) {
-      const y = Math.sin((x * frequency) + animationPhase.value + (i * Math.PI / 3)) * amplitude;
-      path += ` L ${centerX.value + x} ${centerY.value + y}`;
-    }
-    
-    waves.push(path);
-  }
-  
-  return waves;
-});
-
-// Neural nodes for thinking state
-interface NeuralNode {
-  x: number;
-  y: number;
-  r: number;
-  active: boolean;
-  opacity: number;
-}
-
-const neuralNodes = computed<NeuralNode[]>(() => {
-  const nodes: NeuralNode[] = [];
-  const layers: number[] = [3, 4, 3];
-  const layerSpacing: number = props.size / (layers.length + 1);
-
-  layers.forEach((count: number, layerIndex: number) => {
-    const x: number = layerSpacing * (layerIndex + 1);
-    const ySpacing: number = props.size / (count + 1);
-
-    for (let i = 0; i < count; i++) {
-      const y: number = ySpacing * (i + 1);
-      const active: boolean = Math.sin(animationPhase.value + layerIndex + i) > 0;
-
-      nodes.push({
-        x,
-        y,
-        r: active ? 4 : 3,
-        active,
-        opacity: active ? 0.9 : 0.5,
-      });
-    }
-  });
-
-  return nodes;
-});
-
-// Neural connections
-const neuralConnections = computed(() => {
-  const connections = [];
-  const nodes = neuralNodes.value;
-  
-  // Connect adjacent layers
-  for (let i = 0; i < nodes.length; i++) {
-    for (let j = i + 1; j < nodes.length; j++) {
-      if (Math.abs(nodes[i].x - nodes[j].x) < props.size / 3) {
-        const active = nodes[i].active && nodes[j].active;
-        connections.push({
-          x1: nodes[i].x,
-          y1: nodes[i].y,
-          x2: nodes[j].x,
-          y2: nodes[j].y,
-          active,
-          width: active ? 1.5 : 0.5,
-          opacity: active ? 0.6 : 0.2,
-        });
-      }
-    }
-  }
-  
-  return connections;
-});
-
-// Radiating rays for responding state
-const radiateRays = computed(() => {
-  const rays = [];
-  const count = 8;
-  
-  for (let i = 0; i < count; i++) {
-    const angle = (i / count) * Math.PI * 2;
-    const innerRadius = 15;
-    const outerRadius = 30 + Math.sin(animationPhase.value + i) * 10;
-    
-    const x1 = centerX.value + Math.cos(angle) * innerRadius;
-    const y1 = centerY.value + Math.sin(angle) * innerRadius;
-    const x2 = centerX.value + Math.cos(angle) * outerRadius;
-    const y2 = centerY.value + Math.sin(angle) * outerRadius;
-    
-    rays.push({
-      path: `M ${x1} ${y1} L ${x2} ${y2}`,
-      width: 2 + Math.sin(animationPhase.value + i) * 0.5,
-      opacity: 0.6 + Math.sin(animationPhase.value + i) * 0.3,
-    });
-  }
-  
-  return rays;
-});
-
-// Sound arcs for speaking state
-const soundArcs = computed(() => {
-  const arcs = [];
-  const count = 4;
-  
-  for (let i = 0; i < count; i++) {
-    const radius = 10 + i * 8;
-    const startAngle = -Math.PI / 3;
-    const endAngle = Math.PI / 3;
-    
-    const x1 = centerX.value - 15 + Math.cos(startAngle) * radius;
-    const y1 = centerY.value + Math.sin(startAngle) * radius;
-    const x2 = centerX.value - 15 + Math.cos(endAngle) * radius;
-    const y2 = centerY.value + Math.sin(endAngle) * radius;
-    
-    arcs.push(`M ${x1} ${y1} A ${radius} ${radius} 0 0 1 ${x2} ${y2}`);
-  }
-  
-  return arcs;
-});
-
-// Handle click
-const handleClick = () => {
-  if (props.interactive) {
-    emit('click');
-    reactiveStore.triggerRipple({ duration: 800, intensity: 0.6 });
-  }
-};
-
-// Particle system
-const updateParticles = () => {
-  if (!showParticles.value) {
-    particles.value = [];
-    return;
-  }
-  
-  // Add new particles
-  if (particles.value.length < 10 && Math.random() < reactiveStore.particleActivity) {
-    particles.value.push({
-      id: Date.now() + Math.random(),
-      x: centerX.value + (Math.random() - 0.5) * props.size * 0.8,
-      y: centerY.value + (Math.random() - 0.5) * props.size * 0.8,
-      r: Math.random() * 2 + 1,
-      color: Math.random() > 0.5 ? gradientStart.value : gradientEnd.value,
-      opacity: 0.8,
-      vx: (Math.random() - 0.5) * 2,
-      vy: (Math.random() - 0.5) * 2,
-    });
-  }
-  
-  // Update existing particles
-  particles.value = particles.value
-    .map(p => ({
-      ...p,
-      x: p.x + p.vx,
-      y: p.y + p.vy,
-      opacity: p.opacity - 0.02,
-    }))
-    .filter(p => p.opacity > 0);
-};
-
-// Animation loop
-let animationFrameId: number | null = null;
-
-const animate = () => {
-  if (uiStore.isReducedMotionPreferred) return;
-  
-  animationPhase.value += 0.05 * reactiveStore.intensity;
-  
-  // VAD radius pulse
-  if (appState.value === 'vad-wake' || appState.value === 'vad-active') {
-    vadRadius.value = 20 + Math.sin(animationPhase.value * 2) * 3;
-  }
-  
-  updateParticles();
-  
-  animationFrameId = requestAnimationFrame(animate);
-};
-
-// Watch for state changes
-watch(appState, (newState, oldState) => {
-  if (newState !== oldState) {
-    emit('state-change', newState);
-  }
-});
-
-onMounted(() => {
-  if (!uiStore.isReducedMotionPreferred) {
-    animationFrameId = requestAnimationFrame(animate);
-  }
-});
-
-onUnmounted(() => {
-  if (animationFrameId) {
-    cancelAnimationFrame(animationFrameId);
-  }
-});
+/* helper */
+const closeAndNavigate = () => emit('close-panel');
 </script>
 
+<template>
+  <Transition name="mobile-nav-slide-from-right-ephemeral">
+    <nav v-if="isOpen" class="mobile-nav-panel-ephemeral" role="dialog" aria-modal="true">
+      <!-- ▸ HEADER -->
+      <div class="mobile-nav-header-ephemeral">
+        <RouterLink to="/" class="animated-logo-link" @click="closeAndNavigate">
+          <AnimatedLogo
+            app-name-main="VCA" app-name-subtitle="Assistant" :is-mobile-context="true"
+            :is-user-listening="isUserListening"
+            :is-ai-speaking-or-processing="isAiStateActive"
+          />
+        </RouterLink>
+        <button class="mobile-nav-close-button btn btn-ghost-ephemeral btn-icon-ephemeral"
+                aria-label="Close menu" @click="emit('close-panel')">
+          <XMarkIcon class="icon-base"/>
+        </button>
+      </div>
+
+      <!-- ▸ CONTENT -->
+      <div class="mobile-nav-content-ephemeral custom-scrollbar-thin-ephemeral">
+        <!-- LINKS -->
+        <button class="mobile-nav-item-ephemeral group prominent-action"
+                @click="emit('open-agent-hub'); closeAndNavigate();">
+          <Squares2X2Icon class="nav-item-icon"/><span>Explore Assistants</span>
+        </button>
+
+        <RouterLink to="/settings" class="mobile-nav-item-ephemeral group" @click="closeAndNavigate">
+          <Cog8ToothIcon class="nav-item-icon"/><span>App Settings</span>
+        </RouterLink>
+
+        <RouterLink to="/about" class="mobile-nav-item-ephemeral group" @click="closeAndNavigate">
+          <InformationCircleIcon class="nav-item-icon"/><span>About VCA</span>
+        </RouterLink>
+
+        <!-- THEME DROPDOWN -->
+        <label class="theme-dropdown-label">Theme:
+          <select class="theme-dropdown-select" v-model="selectedThemeId" @change="onThemeChange">
+            <option v-for="t in themeManager.getAvailableThemes()" :key="t.id" :value="t.id">
+              {{ t.name }}
+            </option>
+          </select>
+        </label>
+
+        <!-- AUTH-AWARE LOGIN / LOGOUT -->
+        <template v-if="isAuthenticated">
+          <button class="mobile-nav-item-ephemeral group logout-item"
+                  @click="emit('logout'); closeAndNavigate();">
+            <ArrowRightOnRectangleIcon class="nav-item-icon"/><span>Logout</span>
+          </button>
+        </template>
+        <template v-else>
+          <RouterLink to="/login" class="mobile-nav-item-ephemeral group prominent-action"
+                      @click="closeAndNavigate">
+            <ArrowLeftOnRectangleIcon class="nav-item-icon"/><span>Login / Sign Up</span>
+          </RouterLink>
+        </template>
+      </div>
+    </nav>
+  </Transition>
+</template>
+
 <style lang="scss" scoped>
-@use '@/styles/abstracts/variables' as var;
-@use '@/styles/abstracts/mixins' as mixins;
-
-.hearing-indicator-container {
-  width: var(--indicator-size);
-  height: var(--indicator-size);
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  user-select: none;
-  
-  &.is-interactive {
-    cursor: pointer;
-    
-    &:hover {
-      .hearing-svg {
-        transform: scale(1.05);
-      }
-    }
-  }
+/* slide animation (unchanged) */
+.mobile-nav-slide-from-right-ephemeral-enter-active,
+.mobile-nav-slide-from-right-ephemeral-leave-active {
+  transition: transform .4s cubic-bezier(.25,.85,.45,1), opacity .35s ease-out;
+}
+.mobile-nav-slide-from-right-ephemeral-enter-from,
+.mobile-nav-slide-from-right-ephemeral-leave-to {
+  transform: translateX(100%); opacity: 0;
 }
 
-.hearing-svg {
-  width: 100%;
-  height: 100%;
-  transition: transform var.$duration-smooth var.$ease-out-quad;
-}
-
-// State-specific animations
-.state-idle {
-  .ear-icon {
-    animation: gentle-pulse 3s ease-in-out infinite;
-  }
-}
-
-.state-listening {
-  .listen-ring {
-    animation: expand-fade 2s ease-out infinite;
-    
-    @for $i from 1 through 4 {
-      &-#{$i} {
-        animation-delay: #{$i * 0.3}s;
-      }
-    }
-  }
-  
-  .listen-core {
-    animation: core-glow 1.5s ease-in-out infinite alternate;
-  }
-}
-
-.state-transcribing {
-  .transcribe-wave {
-    animation: wave-flow 2s linear infinite;
-    
-    &-1 { animation-delay: 0s; }
-    &-2 { animation-delay: 0.3s; }
-    &-3 { animation-delay: 0.6s; }
-  }
-  
-  .transcribe-dot {
-    animation: dot-pulse 1s ease-in-out infinite;
-  }
-}
-
-.state-thinking {
-  .neural-node {
-    transition: all 0.3s ease-out;
-  }
-  
-  .neural-connection {
-    transition: all 0.3s ease-out;
-  }
-}
-
-.state-responding {
-  .radiate-ray {
-    animation: ray-pulse 1.5s ease-out infinite;
-    
-    @for $i from 0 through 7 {
-      &-#{$i} {
-        animation-delay: #{$i * 0.1}s;
-      }
-    }
-  }
-  
-  .radiate-core {
-    animation: core-brighten 1s ease-in-out infinite alternate;
-  }
-}
-
-.state-speaking {
-  .sound-arc {
-    animation: arc-expand 1.5s ease-out infinite;
-    
-    @for $i from 0 through 3 {
-      &-#{$i} {
-        animation-delay: #{$i * 0.2}s;
-      }
-    }
-  }
-  
-  .sound-source {
-    animation: source-vibrate 0.1s linear infinite;
-  }
-}
-
-.state-vad-wake {
-  .vad-outer {
-    animation: rotate-dash 4s linear infinite;
-  }
-  
-  .vad-inner {
-    animation: gentle-glow 2s ease-in-out infinite;
-  }
-}
-
-.state-vad-active {
-  .vad-ring {
-    animation: vad-pulse 1.5s ease-out infinite;
-    
-    @for $i from 1 through 3 {
-      &-#{$i} {
-        animation-delay: #{$i * 0.2}s;
-      }
-    }
-  }
-  
-  .vad-core {
-    animation: core-flash 0.5s ease-out infinite alternate;
-  }
-}
-
-.state-error {
-  .error-triangle {
-    animation: error-shake 0.5s ease-in-out infinite;
-  }
-  
-  .error-dot {
-    animation: error-blink 1s step-start infinite;
-  }
-}
-
-// Ripple animation
-.ripple-ring {
-  animation: ripple-out 1.5s ease-out forwards;
-  
-  @for $i from 1 through 4 {
-    &-#{$i} {
-      animation-delay: #{$i * 0.15}s;
-    }
-  }
-}
-
-// Particle animation
-.particle {
-  animation: particle-float 2s ease-out forwards;
-}
-
-// State label
-.state-label {
-  margin-top: var.$spacing-xs;
-  font-size: var.$font-size-xs;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
-  opacity: 0.8;
-}
-
-// Keyframes
-@keyframes gentle-pulse {
-  0%, 100% { opacity: 0.7; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.05); }
-}
-
-@keyframes expand-fade {
-  0% { transform: scale(0.5); opacity: 0.8; }
-  100% { transform: scale(1.5); opacity: 0; }
-}
-
-@keyframes core-glow {
-  from { filter: url(#hearing-glow) brightness(1); }
-  to { filter: url(#hearing-glow) brightness(1.3); }
-}
-
-@keyframes wave-flow {
-  0% { transform: translateX(-5px); }
-  100% { transform: translateX(5px); }
-}
-
-@keyframes dot-pulse {
-  0%, 100% { r: 4; }
-  50% { r: 6; }
-}
-
-@keyframes ray-pulse {
-  0% { opacity: 0.3; stroke-width: 1; }
-  50% { opacity: 0.9; stroke-width: 3; }
-  100% { opacity: 0.3; stroke-width: 1; }
-}
-
-@keyframes core-brighten {
-  from { filter: brightness(1); }
-  to { filter: brightness(1.5); }
-}
-
-@keyframes arc-expand {
-  0% { transform: scale(0.8); opacity: 0; }
-  50% { opacity: 1; }
-  100% { transform: scale(1.3); opacity: 0; }
-}
-
-@keyframes source-vibrate {
-  0% { transform: translateX(0); }
-  25% { transform: translateX(-0.5px); }
-  75% { transform: translateX(0.5px); }
-  100% { transform: translateX(0); }
-}
-
-@keyframes rotate-dash {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-@keyframes gentle-glow {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 0.9; }
-}
-
-@keyframes vad-pulse {
-  0% { transform: scale(1); opacity: 0.7; }
-  100% { transform: scale(1.3); opacity: 0; }
-}
-
-@keyframes core-flash {
-  from { filter: brightness(1); }
-  to { filter: brightness(1.4); }
-}
-
-@keyframes error-shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-2px); }
-  75% { transform: translateX(2px); }
-}
-
-@keyframes error-blink {
-  0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0; }
-}
-
-@keyframes ripple-out {
-  0% { transform: scale(0.5); opacity: 0.6; }
-  100% { transform: scale(2); opacity: 0; }
-}
-
-@keyframes particle-float {
-  0% { transform: translateY(0); opacity: 0.8; }
-  100% { transform: translateY(-20px); opacity: 0; }
+/* quick cosmetics for the new dropdown */
+.theme-dropdown-label   { display:block; margin:1rem 0 .5rem; font-weight:500; font-size:0.95rem; }
+.theme-dropdown-select  {
+  width:100%; padding:0.4rem 0.6rem; border-radius:0.375rem;
+  background:hsla(var(--color-bg-secondary-h),var(--color-bg-secondary-s),var(--color-bg-secondary-l),0.85);
+  border:1px solid hsla(var(--color-border-primary-h),var(--color-border-primary-s),var(--color-border-primary-l),0.4);
+  color:hsl(var(--color-text-primary-h),var(--color-text-primary-s),var(--color-text-primary-l));
+  font-size:0.95rem;
 }
 </style>
