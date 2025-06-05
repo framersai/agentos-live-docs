@@ -67,7 +67,7 @@ export function useNerfAgent(
     isAnimating: isTextAnimating,
   } = useTextAnimation({
     mode: agentCapabilities.value?.textAnimationConfig?.mode || 'word',
-    durationPerUnit: agentCapabilities.value?.textAnimationConfig?.durationPerUnit || 30,
+    // unitDelay: agentCapabilities.value?.textAnimationConfig?.unitDelay || 30,
     staggerDelay: agentCapabilities.value?.textAnimationConfig?.staggerDelay || 15,
     animationStyle: agentCapabilities.value?.textAnimationConfig?.animationStyle || 'terminal',
   });

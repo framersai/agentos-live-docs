@@ -8,7 +8,7 @@
       modeClass,
       { 'vi-wide': isWideScreen }
     ]"
-    :data-theme="uiStore.theme?.id || 'sakura-sunset'"
+    :data-theme="uiStore.currentTheme?.id || 'sakura-sunset'"
   >
     <div class="vi-background-layers">
       <div class="vi-orb vi-orb-1"></div>

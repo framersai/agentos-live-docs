@@ -1,7 +1,7 @@
 // File: frontend/src/App.vue
 /**
  * @file App.vue
- * @version 5.0.9
+ * @version 5.1.0
  * @description Main application shell. Integrates global components like Header and Footer,
  * manages global UI states (loading, toasts, themes via UiStore and ThemeManager),
  * and handles application-level logic such as authentication status checks,
@@ -138,7 +138,8 @@ const getToastIcon = (type: Toast['type']): VueComponentType => {
   }
 };
 
-const sessionCost = computed<number>(() => costStore.totalSessionCost);
+// Session cost is used in the template for display
+// const sessionCost = computed<number>(() => costStore.totalSessionCost);
 
 /**
  * @function handleClearChatAndSession
@@ -223,7 +224,7 @@ onMounted(async () => {
   isLoadingApp.value = true;
 
   themeManager.initialize();    // Initializes theme from storage or system preference
-  uiStore.initializeUiState();  // Initializes UI store state, including listeners for fullscreen etc.
+  await uiStore.initializeUiState();  // Initializes UI store state, including listeners for fullscreen etc.
 
   await auth.checkAuthStatus(); // Check auth status first thing
   await voiceSettingsManager.initialize(); // Initialize voice settings
@@ -274,8 +275,8 @@ onMounted(async () => {
 watch(
   () => uiStore.currentThemeId,
   (newThemeId: string) => {
-    // Example: const newThemeDef = themeManager.getAvailableThemes().find(t => t.id === newThemeId);
-    // console.log(`[App.vue] Theme changed via uiStore to: ${newThemeDef?.name || newThemeId}`);
+    // Log theme changes if needed
+    console.log(`[App.vue] Theme changed to: ${newThemeId}`);
   },
   { immediate: true } // Run once on component mount as well
 );
@@ -313,14 +314,16 @@ watch(
       <AppHeader
         :is-user-listening="isUserActuallyListening"
         :is-assistant-speaking="isAiActuallySpeaking"
-        @toggle-fullscreen="uiStore.toggleBrowserFullscreen()" @clear-chat-and-session="handleClearChatAndSession"
+        @toggle-fullscreen="uiStore.toggleBrowserFullscreen()" 
+        @clear-chat-and-session="handleClearChatAndSession"
         @logout="handleLogoutFromHeader"
         @show-prior-chat-log="handleShowPriorChatLog"
         class="app-layout-header-ephemeral"
       />
 
       <main id="main-app-content" class="app-layout-main-content-ephemeral">
-        <router-view v-slot="{ Component, route: currentRoute }"> <Transition :name="routeTransitionName" mode="out-in">
+        <router-view v-slot="{ Component, route: currentRoute }"> 
+          <Transition :name="routeTransitionName" mode="out-in">
             <component :is="Component" :key="currentRoute.path" />
           </Transition>
         </router-view>
