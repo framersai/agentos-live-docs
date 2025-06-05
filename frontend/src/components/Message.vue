@@ -219,7 +219,7 @@ watch(() => props.message, async (newMessage, oldMessage) => {
       await nextTick();
       const animationConfig: Partial<TextRevealConfig> = {
         mode: 'word',
-        durationPerUnit: uiStore.isReducedMotionPreferred ? 5 : 40,
+        // durationPerUnit: uiStore.isReducedMotionPreferred ? 5 : 40,
         staggerDelay: uiStore.isReducedMotionPreferred ? 2 : 20,
         animationStyle: 'organic',
       };

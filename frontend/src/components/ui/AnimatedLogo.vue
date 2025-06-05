@@ -1,285 +1,795 @@
 // File: frontend/src/components/ui/AnimatedLogo.vue
 /**
  * @file AnimatedLogo.vue
- * @description A component that displays an animated application logo and name.
- * The app name ("Voice Chat") animates on component mount if specified.
- * Includes states for user listening and AI speaking/processing for visual feedback.
- *
- * @component AnimatedLogo
- * @props {string} [appNameMain="VCA"] - The main part of the application name.
- * @props {string} [appNameSubtitle=""] - The subtitle part of the application name (e.g., "Voice Chat").
- * @props {boolean} [isMobileContext=false] - Adjusts styling for mobile contexts.
- * @props {boolean} [animateTitleOnLoad=false] - If true, the appNameSubtitle will animate on load.
- * @props {boolean} [isUserListening=false] - Indicates if the user is currently speaking or STT is active.
- * @props {boolean} [isAiSpeakingOrProcessing=false] - Indicates if AI is speaking (TTS) or processing a request.
- *
- * @version 1.1.0 - Added title animation on load functionality.
+ * @description Enhanced animated logo with agent name transitions and reactive state integration
+ * Features smooth morphing between agent names with gradient animations based on theme
+ * @version 3.0.1 - Applied TypeScript fixes and GSAP import.
  */
+<template>
+  <div
+    :class="logoContainerClasses"
+    :style="logoContainerStyles"
+    @click="handleLogoClick"
+  >
+    <div class="logo-neural-bg" v-if="showNeuralEffect">
+      <svg viewBox="0 0 200 200" class="neural-svg">
+        <defs>
+          <radialGradient id="neural-gradient" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" :stop-color="neuralGradientStart" stop-opacity="0.6" />
+            <stop offset="100%" :stop-color="neuralGradientEnd" stop-opacity="0" />
+          </radialGradient>
+          <filter id="neural-blur">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="2" />
+          </filter>
+        </defs>
+        <g class="neural-lines" filter="url(#neural-blur)">
+          <path
+            v-for="(path, i) in neuralPaths"
+            :key="`neural-${i}`"
+            :d="path"
+            fill="none"
+            stroke="url(#neural-gradient)"
+            :stroke-width="1 + reactiveStore.neuralActivity * 2"
+            :opacity="0.3 + reactiveStore.neuralActivity * 0.5"
+            :class="`neural-path neural-path-${i}`"
+          />
+        </g>
+      </svg>
+    </div>
+
+    <svg
+      class="logo-svg-enhanced"
+      viewBox="0 0 120 120"
+      xmlns="http://www.w3.org/2000/svg"
+      :aria-label="`${currentAgentName} assistant logo`"
+    >
+      <defs>
+        <radialGradient id="logo-core-gradient-dynamic" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" :stop-color="gradientColors.start" :stop-opacity="0.9" />
+          <stop offset="50%" :stop-color="gradientColors.mid" :stop-opacity="0.7" />
+          <stop offset="100%" :stop-color="gradientColors.end" :stop-opacity="0.5" />
+        </radialGradient>
+
+        <filter id="logo-glow-enhanced" x="-100%" y="-100%" width="300%" height="300%">
+          <feGaussianBlur :stdDeviation="3 + reactiveStore.glowIntensity * 5" result="coloredBlur" />
+          <feFlood :flood-color="glowColor" :flood-opacity="reactiveStore.glowIntensity" />
+          <feComposite in2="coloredBlur" operator="in" />
+          <feMerge>
+            <feMergeNode />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+
+        <radialGradient id="ripple-gradient" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" :stop-color="rippleColor" stop-opacity="0" />
+          <stop offset="70%" :stop-color="rippleColor" :stop-opacity="0.4" />
+          <stop offset="100%" :stop-color="rippleColor" stop-opacity="0" />
+        </radialGradient>
+      </defs>
+
+      <g v-if="reactiveStore.rippleActive" class="ripple-group">
+        <circle
+          v-for="i in 3"
+          :key="`ripple-${i}`"
+          cx="60" cy="60"
+          :r="30 + i * 15"
+          fill="none"
+          stroke="url(#ripple-gradient)"
+          :stroke-width="2 - i * 0.5"
+          :class="`ripple ripple-${i}`"
+          :style="`animation-delay: ${i * 0.2}s`"
+        />
+      </g>
+
+      <g class="orbit-group" :style="`transform: rotate(${orbitRotation}deg)`">
+        <circle
+          v-for="(orbit, i) in orbits"
+          :key="`orbit-${i}`"
+          :cx="60 + orbit.radius * Math.cos(orbit.angle)"
+          :cy="60 + orbit.radius * Math.sin(orbit.angle)"
+          :r="orbit.size"
+          :fill="orbit.color"
+          :opacity="orbit.opacity"
+          class="orbit-dot"
+        />
+      </g>
+
+      <circle
+        class="logo-core-enhanced"
+        cx="60" cy="60"
+        :r="coreRadius"
+        fill="url(#logo-core-gradient-dynamic)"
+        filter="url(#logo-glow-enhanced)"
+      />
+
+      <circle
+        v-if="showPulseRing"
+        class="pulse-ring"
+        cx="60" cy="60"
+        :r="coreRadius - 5"
+        fill="none"
+        :stroke="pulseRingColor"
+        :stroke-width="2"
+        :opacity="0.5 + reactiveStore.pulseIntensity * 0.5"
+      />
+
+      <path
+        v-if="showWaveform"
+        class="logo-waveform"
+        :d="waveformPath"
+        fill="none"
+        :stroke="waveformColor"
+        :stroke-width="1.5"
+        :opacity="0.7 + reactiveStore.intensity * 0.3"
+      />
+    </svg>
+
+    <div class="agent-name-container" ref="agentNameContainer">
+      <transition
+        name="agent-name-transition"
+        @before-enter="beforeEnterName"
+        @enter="enterName"
+        @leave="leaveName"
+      >
+        <div
+          v-if="currentAgentName"
+          :key="currentAgentName"
+          class="agent-name"
+          :style="agentNameStyles"
+        >
+          <span
+            v-for="(char, index) in currentAgentNameChars"
+            :key="`${currentAgentName}-${index}`"
+            class="agent-name-char"
+            :style="getCharStyle(index)"
+            :data-char="char"
+          >
+            {{ char }}
+          </span>
+        </div>
+      </transition>
+
+      <div v-if="showSubtitle" class="agent-subtitle">
+        <span class="subtitle-text">{{ subtitle }}</span>
+      </div>
+    </div>
+  </div>
+</template>
+
 <script setup lang="ts">
-import { ref, computed, onMounted, type PropType } from 'vue';
+import { ref, computed, watch, onMounted, onUnmounted, type PropType } from 'vue';
+import { useReactiveStore } from '@/store/reactive.store';
 import { useUiStore } from '@/store/ui.store';
+import { useAgentStore } from '@/store/agent.store';
+import gsap from 'gsap'; // Assuming GSAP is installed
 
 const props = defineProps({
   appNameMain: {
     type: String as PropType<string>,
     default: 'VCA',
   },
-  appNameSubtitle: {
+  showSubtitle: {
+    type: Boolean as PropType<boolean>,
+    default: true,
+  },
+  subtitle: {
     type: String as PropType<string>,
-    default: '',
+    default: 'Voice Assistant',
   },
   isMobileContext: {
     type: Boolean as PropType<boolean>,
     default: false,
   },
-  animateTitleOnLoad: {
+  animateOnMount: {
     type: Boolean as PropType<boolean>,
-    default: false,
+    default: true,
   },
-  isUserListening: {
+  interactive: {
     type: Boolean as PropType<boolean>,
-    default: false,
-  },
-  isAiSpeakingOrProcessing: {
-    type: Boolean as PropType<boolean>,
-    default: false,
-  },
+    default: true,
+  }
 });
 
-const uiStore = useUiStore();
-const titleReady = ref(!props.animateTitleOnLoad);
+const emit = defineEmits<{
+  (e: 'click'): void;
+  (e: 'agent-change', agentName: string): void;
+}>();
 
-/**
- * @computed logoContainerClasses
- * @description Computes dynamic CSS classes for the logo container based on its state.
- * @returns {object} An object of CSS classes.
- */
+const reactiveStore = useReactiveStore();
+const uiStore = useUiStore();
+const agentStore = useAgentStore();
+
+const agentNameContainer = ref<HTMLElement>();
+const orbitRotation = ref(0);
+const waveformPhase = ref(0);
+const coreRadius = ref(35);
+
+// Agent name management
+const currentAgentName = computed(() =>
+  agentStore.activeAgent?.label || props.appNameMain
+);
+
+const currentAgentNameChars = computed(() =>
+  currentAgentName.value.split('')
+);
+
+const previousAgentName = ref(currentAgentName.value);
+
+// Logo container classes
 const logoContainerClasses = computed(() => ({
-  'animated-logo-container-ephemeral': true,
+  'animated-logo-container-enhanced': true,
   'is-mobile': props.isMobileContext,
-  'user-listening': props.isUserListening,
-  'ai-active': props.isAiSpeakingOrProcessing,
-  'reduced-motion': uiStore.isReducedMotionPreferred,
+  'is-interactive': props.interactive,
+  // Accessing  for reactive properties from Pinia store
+  'is-transitioning': reactiveStore.isTransitioning,
+  [`state-${reactiveStore.appState}`]: true,
+  [`mood-${reactiveStore.moodState}`]: true,
 }));
 
-/**
- * @computed titleSpanStyles
- * @description Computes styles for each character span in the animated title for staggered animation.
- * @param {number} index - The index of the character.
- * @returns {object} CSS style object.
- */
-const titleSpanStyles = (index: number) => ({
-  animationDelay: props.animateTitleOnLoad && !uiStore.isReducedMotionPreferred ? `${index * 0.07}s` : '0s',
+// Dynamic styles based on reactive state
+const logoContainerStyles = computed(() => ({
+  // reactiveStore.cssVariables is a ComputedRef,  gives the object
+  ...reactiveStore.cssVariables,
+  '--logo-warmth': reactiveStore.warmth,
+}));
+
+// Gradient colors for neural effect
+const neuralGradientStart = computed(() => 
+  reactiveStore.cssVariables['--reactive-neural-color'] || 'rgba(100, 100, 255, 0.5)' // Fallback
+);
+const neuralGradientEnd = computed(() => 
+  reactiveStore.cssVariables['--reactive-neural-color'] || 'rgba(100, 100, 255, 0.5)' // Fallback, opacity is handled by stop-opacity
+);
+
+
+// Gradient colors based on theme and state
+const gradientColors = computed(() => {
+  // Corrected: Removed unused 'theme' variable. uiStore.theme would be the way to get it if needed.
+  const warmth = reactiveStore.warmth;
+  const shift = reactiveStore.gradientShift;
+
+  // CSS variables like --color-accent-primary-h are assumed to be globally available from the theme system
+  return {
+    start: `hsl(calc(var(--color-accent-primary-h) + ${shift * 30}),
+                  calc(var(--color-accent-primary-s) * ${1 + warmth * 0.2}),
+                  calc(var(--color-accent-primary-l) * ${0.9 + warmth * 0.3}))`,
+    mid: `hsl(calc(var(--color-accent-secondary-h) + ${shift * 15}),
+                 var(--color-accent-secondary-s),
+                 var(--color-accent-secondary-l))`,
+    end: `hsl(calc(var(--color-accent-glow-h) - ${shift * 20}),
+                 var(--color-accent-glow-s),
+                 calc(var(--color-accent-glow-l) * ${0.8 + warmth * 0.2}))`
+  };
 });
 
+const glowColor = computed(() =>
+  `hsl(var(--color-accent-glow-h), var(--color-accent-glow-s), var(--color-accent-glow-l))`
+);
+
+const rippleColor = computed(() =>
+  `hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l))`
+);
+
+const pulseRingColor = computed(() =>
+  gradientColors.value.mid
+);
+
+const waveformColor = computed(() =>
+  gradientColors.value.start
+);
+
+// Visual features based on state
+const showNeuralEffect = computed(() =>
+  reactiveStore.neuralActivity > 0.3 && !uiStore.isReducedMotionPreferred // Added  for isReducedMotionPreferred
+);
+
+const showPulseRing = computed(() =>
+  reactiveStore.pulseIntensity > 0.4 && !uiStore.isReducedMotionPreferred // Added .value
+);
+
+const showWaveform = computed(() =>
+  ['listening', 'transcribing', 'speaking'].includes(reactiveStore.appState) &&
+  !uiStore.isReducedMotionPreferred // Added .value
+);
+
+// Neural paths for background effect
+const neuralPaths = computed(() => {
+  const paths = [];
+  const centerX = 100;
+  const centerY = 100;
+  const nodeCount = 6;
+
+  for (let i = 0; i < nodeCount; i++) {
+    const angle = (i / nodeCount) * Math.PI * 2;
+    const radius = 40 + Math.sin(waveformPhase.value + i) * 20;
+    const x = centerX + Math.cos(angle) * radius;
+    const y = centerY + Math.sin(angle) * radius;
+
+    for (let j = i + 1; j < nodeCount; j++) {
+      const angle2 = (j / nodeCount) * Math.PI * 2;
+      const radius2 = 40 + Math.sin(waveformPhase.value + j) * 20;
+      const x2 = centerX + Math.cos(angle2) * radius2;
+      const y2 = centerY + Math.sin(angle2) * radius2;
+
+      paths.push(`M${x},${y} Q${centerX},${centerY} ${x2},${y2}`);
+    }
+  }
+  return paths;
+});
+
+// Orbiting elements
+const orbits = computed(() => {
+  const orbitData = [];
+  const count = 5;
+  const baseRadius = 45;
+
+  for (let i = 0; i < count; i++) {
+    const angle = (i / count) * Math.PI * 2 + orbitRotation.value * 0.017;
+    const radiusVariation = Math.sin(waveformPhase.value * 2 + i) * 5;
+
+    orbitData.push({
+      angle,
+      radius: baseRadius + radiusVariation,
+      size: 2 + reactiveStore.particleActivity * 3,
+      color: i % 2 === 0 ? gradientColors.value.start : gradientColors.value.end,
+      opacity: 0.3 + reactiveStore.particleActivity * 0.5
+    });
+  }
+  return orbitData;
+});
+
+// Waveform path
+const waveformPath = computed(() => {
+  const centerX = 60;
+  const centerY = 60;
+  const radius = coreRadius.value + 10; // coreRadius is a ref, so .value
+  const points = 60;
+  let path = '';
+
+  for (let i = 0; i <= points; i++) {
+    const angle = (i / points) * Math.PI * 2;
+    const waveAmp = Math.sin(waveformPhase.value + angle * 3) * 5 * reactiveStore.intensity;
+    const r = radius + waveAmp;
+    const x = centerX + Math.cos(angle) * r;
+    const y = centerY + Math.sin(angle) * r;
+
+    if (i === 0) {
+      path = `M${x},${y}`;
+    } else {
+      path += ` L${x},${y}`;
+    }
+  }
+  return path + ' Z';
+});
+
+// Agent name styles
+const agentNameStyles = computed(() => ({
+  '--name-gradient-start': gradientColors.value.start,
+  '--name-gradient-end': gradientColors.value.end,
+  '--text-glow-color': glowColor.value,
+  '--text-glow-intensity': reactiveStore.glowIntensity,
+}));
+
+// Character animation styles
+const getCharStyle = (index: number) => {
+  const stagger = index * 30; // ms
+  const duration = 600 + index * 50;
+
+  return {
+    '--char-index': index,
+    '--char-delay': `${stagger}ms`,
+    '--char-duration': `${duration}ms`,
+  };
+};
+
+// Animation lifecycle hooks
+const beforeEnterName = (el: Element) => {
+  const chars = el.querySelectorAll('.agent-name-char');
+  gsap.set(chars, {
+    opacity: 0,
+    y: 20,
+    rotationX: -90,
+    transformOrigin: '50% 50%',
+  });
+};
+
+const enterName = (el: Element, done: () => void) => {
+  const chars = el.querySelectorAll('.agent-name-char');
+
+  gsap.to(chars, {
+    opacity: 1,
+    y: 0,
+    rotationX: 0,
+    duration: 0.8,
+    stagger: 0.03,
+    ease: 'back.out(1.7)',
+    onComplete: done,
+  });
+
+  reactiveStore.triggerPulse(0.8, 800);
+};
+
+const leaveName = (el: Element, done: () => void) => {
+  const chars = el.querySelectorAll('.agent-name-char');
+
+  gsap.to(chars, {
+    opacity: 0,
+    y: -20,
+    rotationX: 90,
+    duration: 0.5,
+    stagger: 0.02,
+    ease: 'power2.in',
+    onComplete: done,
+  });
+};
+
+// Handle logo click
+const handleLogoClick = () => {
+  if (props.interactive) {
+    reactiveStore.triggerRipple({ duration: 1200, intensity: 0.8 });
+    emit('click');
+  }
+};
+
+// Animation loop
+let animationFrameId: number | null = null;
+
+const animate = () => {
+  if (uiStore.isReducedMotionPreferred) return; // Added .value
+
+  orbitRotation.value += reactiveStore.gradientSpeed * 2;
+  if (orbitRotation.value > 360) orbitRotation.value -= 360;
+
+  waveformPhase.value += 0.05 * reactiveStore.intensity;
+
+  const pulseMagnitude = 2 * reactiveStore.pulseIntensity;
+  coreRadius.value = 35 + Math.sin(waveformPhase.value * 2) * pulseMagnitude;
+
+  animationFrameId = requestAnimationFrame(animate);
+};
+
+// Watch for agent changes
+watch(currentAgentName, (newName, oldName) => {
+  if (newName !== oldName) {
+    previousAgentName.value = oldName;
+    emit('agent-change', newName);
+
+    reactiveStore.triggerGlowBurst(0.9, 600);
+    reactiveStore.setMoodState('curious');
+
+    // GSAP tweening a store's ref value.
+    // Target the reactive store, and GSAP's Vue plugin will animate the  of the ref.
+    const currentShift = reactiveStore.gradientShift;
+    gsap.to(reactiveStore, {
+      gradientShift: currentShift + 0.3, // Target value for gradientShift.value
+      duration: 1,
+      ease: 'power2.inOut',
+      onComplete: () => {
+        gsap.to(reactiveStore, {
+          gradientShift: currentShift, // Return to original or the new base value
+          duration: 0.8,
+          ease: 'power2.out',
+        });
+      }
+    });
+  }
+});
+
+// Mount animation
 onMounted(() => {
-  if (props.animateTitleOnLoad) {
-    // Trigger animation by setting titleReady after a short delay to ensure CSS is applied.
-    setTimeout(() => {
-      titleReady.value = true;
-    }, 100);
+  if (props.animateOnMount) {
+    gsap.from('.logo-core-enhanced', {
+      scale: 0,
+      duration: 1.2,
+      ease: 'elastic.out(1, 0.5)',
+      delay: 0.2,
+    });
+
+    gsap.from('.orbit-dot', {
+      scale: 0,
+      opacity: 0,
+      duration: 0.8,
+      stagger: 0.1,
+      ease: 'back.out(1.7)',
+      delay: 0.5,
+    });
+  }
+
+  if (!uiStore.isReducedMotionPreferred) { // Added .value
+    animationFrameId = requestAnimationFrame(animate);
+  }
+});
+
+onUnmounted(() => {
+  if (animationFrameId) {
+    cancelAnimationFrame(animationFrameId);
   }
 });
 </script>
-
-<template>
-  <div :class="logoContainerClasses">
-    <svg
-      class="logo-svg-ephemeral"
-      viewBox="0 0 100 100"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-    >
-      <defs>
-        <filter id="logo-glow-ephemeral" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="3.5" result="coloredBlur" />
-          <feMerge>
-            <feMergeNode in="coloredBlur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
-        <radialGradient id="logo-core-gradient" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stop-color="var(--logo-gradient-start, hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), calc(var(--color-accent-primary-l) + 10%)))" />
-          <stop offset="100%" stop-color="var(--logo-gradient-end, hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l)))" />
-        </radialGradient>
-      </defs>
-
-      <circle class="logo-orbit logo-orbit-1" cx="50" cy="50" r="45" />
-      <circle class="logo-orbit logo-orbit-2" cx="50" cy="50" r="40" />
-
-      <circle class="logo-core-ephemeral" cx="50" cy="50" r="28" fill="url(#logo-core-gradient)" />
-
-      <path class="logo-accent logo-accent-1" d="M50 25 Q65 40 60 50 Q65 60 50 75" />
-      <path class="logo-accent logo-accent-2" d="M50 25 Q35 40 40 50 Q35 60 50 75" />
-      <circle class="logo-sparkle logo-sparkle-1" cx="30" cy="35" r="3" />
-      <circle class="logo-sparkle logo-sparkle-2" cx="70" cy="65" r="2.5" />
-    </svg>
-
-    <div class="app-name-ephemeral">
-      <span class="app-name-main">{{ props.appNameMain }}</span>
-      <div v-if="props.appNameSubtitle" class="app-name-subtitle-wrapper">
-        <span
-          v-for="(char, index) in props.appNameSubtitle.split('')"
-          :key="`${char}-${index}`"
-          class="subtitle-char"
-          :class="{ 'animate-char-in': titleReady && animateTitleOnLoad && !uiStore.isReducedMotionPreferred }"
-          :style="titleSpanStyles(index)"
-        >
-          {{ char === ' ' ? '&nbsp;' : char }}
-        </span>
-      </div>
-    </div>
-  </div>
-</template>
 
 <style lang="scss" scoped>
 @use '@/styles/abstracts/variables' as var;
 @use '@/styles/abstracts/mixins' as mixins;
 
-.animated-logo-container-ephemeral {
+.animated-logo-container-enhanced {
   display: flex;
   align-items: center;
   gap: var.$spacing-sm;
-  min-width: 0; // Prevent flexbox blowout
+  position: relative;
+  min-width: 0;
+  cursor: default;
+  user-select: none;
 
-  // Base Colors from Theme
-  --logo-core-color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
-  --logo-accent-color: hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l));
-  --logo-orbit-color: hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.2);
-  --logo-sparkle-color: hsl(var(--color-accent-glow-h), var(--color-accent-glow-s), var(--color-accent-glow-l));
-  --logo-gradient-start: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), calc(var(--color-accent-primary-l) + 10%));
-  --logo-gradient-end: hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l));
+  &.is-interactive {
+    cursor: pointer;
 
-  .logo-svg-ephemeral {
-    width: calc(var.$header-height-mobile * 0.65); // Scaled with header height
-    height: calc(var.$header-height-mobile * 0.65);
-    filter: drop-shadow(0 1px 3px hsla(var(--shadow-color-h), var(--shadow-color-s), var(--shadow-color-l), 0.1));
-    transition: transform var.$duration-smooth var.$ease-out-quad;
-    flex-shrink: 0;
+    &:hover {
+      .logo-core-enhanced {
+        transform: scale(1.05);
+      }
 
-    @media (min-width: var.$breakpoint-md) {
-      width: calc(var.$header-height-desktop * 0.55);
-      height: calc(var.$header-height-desktop * 0.55);
+      .agent-name {
+        // Access CSS var from computed style
+        text-shadow: 0 0 20px var(--text-glow-color);
+      }
     }
   }
 
-  .logo-core-ephemeral {
-    filter: url(#logo-glow-ephemeral);
-    transition: r var.$duration-smooth var.$ease-elastic;
+  &.is-mobile {
+    gap: var.$spacing-xs;
+
+    .logo-svg-enhanced {
+      width: calc(var.$header-height-mobile * 0.7);
+      height: calc(var.$header-height-mobile * 0.7);
+    }
+
+    .agent-name {
+      font-size: var.$font-size-lg;
+    }
+  }
+}
+
+.logo-neural-bg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 200%;
+  height: 200%;
+  pointer-events: none;
+  opacity: 0.7;
+
+  .neural-svg {
+    width: 100%;
+    height: 100%;
   }
 
-  .logo-orbit {
-    fill: none;
-    stroke: var(--logo-orbit-color);
-    stroke-width: 1.5;
+  .neural-path {
+    @for $i from 0 through 20 {
+      &-#{$i} {
+        animation: neural-pulse-#{$i} #{3 + $i * 0.5}s ease-in-out infinite;
+        animation-delay: #{$i * 0.1}s;
+      }
+    }
+  }
+}
+
+.logo-svg-enhanced {
+  width: calc(var.$header-height-desktop * 0.65);
+  height: calc(var.$header-height-desktop * 0.65);
+  filter: drop-shadow(0 2px 8px hsla(var(--shadow-color-h), var(--shadow-color-s), var(--shadow-color-l), 0.2));
+  transition: transform var.$duration-smooth var.$ease-elastic;
+  position: relative;
+  z-index: 2;
+
+  @media (min-width: var.$breakpoint-md) {
+    width: calc(var.$header-height-desktop * 0.7);
+    height: calc(var.$header-height-desktop * 0.7);
+  }
+}
+
+.logo-core-enhanced {
+  transform-origin: center;
+  transition: r var.$duration-smooth var.$ease-elastic;
+  will-change: r, filter;
+}
+
+.orbit-group {
+  transform-origin: 60px 60px;
+  will-change: transform;
+}
+
+.orbit-dot {
+  transition: all var.$duration-smooth ease-out;
+
+  &:hover {
+    r: 4;
+  }
+}
+
+.ripple-group {
+  pointer-events: none;
+
+  .ripple {
+    animation: ripple-expand 2s ease-out forwards;
     transform-origin: center;
-    opacity: 0.7;
-  }
 
-  .logo-orbit-1 { animation: logo-spin 20s linear infinite; }
-  .logo-orbit-2 { animation: logo-spin 28s linear infinite reverse; }
-
-  .logo-accent {
-    fill: none;
-    stroke: var(--logo-accent-color);
-    stroke-width: 3;
-    stroke-linecap: round;
-    opacity: 0; // Initially hidden for active states
-    transition: opacity var.$duration-quick;
-  }
-
-  .logo-sparkle {
-    fill: var(--logo-sparkle-color);
-    opacity: 0;
-    animation: logo-sparkle-pulse 3s var.$ease-in-out-sine infinite alternate;
-    transition: opacity var.$duration-quick;
-  }
-  .logo-sparkle-1 { animation-delay: 0s; }
-  .logo-sparkle-2 { animation-delay: 0.5s; }
-
-
-  // Active States
-  &.user-listening {
-    .logo-core-ephemeral { r: 30; } // Core expands slightly
-    .logo-accent { opacity: 0.7; }
-    .logo-sparkle { opacity: 1; }
-  }
-
-  &.ai-active {
-    .logo-core-ephemeral { r: 32; } // Core expands more
-    .logo-orbit-1 { animation-duration: 8s; } // Orbits speed up
-    .logo-orbit-2 { animation-duration: 12s; }
-    .logo-accent { opacity: 0.85; stroke-width: 3.5; }
-    .logo-sparkle { opacity: 1; animation-duration: 1.5s; }
-  }
-
-  // Reduced motion preferences
-  &.reduced-motion {
-    .logo-orbit-1, .logo-orbit-2, .logo-sparkle { animation: none !important; }
-    .logo-accent { opacity: 0.6; } // Static accent for reduced motion
-    .logo-sparkle { opacity: 0.8; }
-  }
-
-  .app-name-ephemeral {
-    display: flex;
-    flex-direction: column;
-    line-height: 1.1;
-    white-space: nowrap;
-    overflow: hidden;
-    color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
-  }
-
-  .app-name-main {
-    font-family: var.$font-family-display;
-    font-weight: 700;
-    font-size: var.$font-size-lg; // Adjusted for better fit
-    letter-spacing: 0.01em; // Slightly tighter for display feel
-
-    @media (min-width: var.$breakpoint-md) {
-      font-size: var.$font-size-xl;
+    @for $i from 1 through 3 {
+      &-#{$i} {
+        animation-delay: #{$i * 0.2}s;
+      }
     }
   }
+}
 
-  .app-name-subtitle-wrapper {
+.pulse-ring {
+  animation: pulse-ring-glow 2s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.logo-waveform {
+  transform-origin: center;
+  will-change: d;
+}
+
+.agent-name-container {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  position: relative;
+  z-index: 2;
+}
+
+.agent-name {
+  font-family: var.$font-family-display;
+  font-weight: 700;
+  font-size: var.$font-size-xl;
+  letter-spacing: 0.02em;
+  background: linear-gradient(
+    135deg,
+    var(--name-gradient-start) 0%,
+    var(--name-gradient-end) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  // Access CSS var for glow intensity
+  text-shadow: 0 0 calc(10px * var(--text-glow-intensity)) var(--text-glow-color);
+  transition: text-shadow var.$duration-quick ease-out;
+
+  @media (min-width: var.$breakpoint-md) {
+    font-size: var.$font-size-2xl;
+  }
+}
+
+.agent-name-char {
+  display: inline-block;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+
+  &[data-char=" "] {
+    width: 0.3em;
+  }
+}
+
+.agent-subtitle {
+  margin-top: var.$spacing-xs;
+  opacity: 0.8;
+
+  .subtitle-text {
     font-family: var.$font-family-sans;
     font-weight: 500;
     font-size: var.$font-size-xs;
     color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
-    letter-spacing: 0.03em;
-    opacity: 0.9;
-    display: flex; // For char animation
-  }
-
-  .subtitle-char {
-    display: inline-block; // Required for transform
-    opacity: 0;
-    transform: translateY(8px) scale(0.9); // Initial state for animation
-    will-change: opacity, transform;
-
-    &.animate-char-in {
-      animation-name: char-slide-fade-in;
-      animation-duration: 0.5s;
-      animation-timing-function: var.$ease-out-quint;
-      animation-fill-mode: forwards;
-    }
+    letter-spacing: 0.05em;
   }
 }
 
-// Keyframes used by this component specifically
-@keyframes logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+.agent-name-transition-enter-active,
+.agent-name-transition-leave-active {
+  transition: none; // GSAP handles animations
 }
 
-@keyframes logo-sparkle-pulse {
-  0%, 100% { opacity: 0.3; transform: scale(0.8); }
-  50% { opacity: 0.9; transform: scale(1.1); }
+.state-listening {
+  .logo-core-enhanced {
+    animation: core-breathe 2s ease-in-out infinite;
+  }
 }
 
-@keyframes char-slide-fade-in {
+.state-thinking {
+  .orbit-group {
+    animation: orbit-accelerate 1s ease-in-out infinite;
+  }
+}
+
+.state-responding {
+  .logo-svg-enhanced {
+    animation: subtle-float 3s ease-in-out infinite;
+  }
+}
+
+.mood-excited {
+  .orbit-dot {
+    animation: orbit-dot-pulse 0.5s ease-out infinite alternate;
+  }
+}
+
+.mood-contemplative {
+  .neural-path {
+    animation-duration: 6s !important;
+  }
+}
+
+@keyframes ripple-expand {
+  from {
+    transform: scale(0.5);
+    opacity: 0.8;
+  }
   to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+@keyframes pulse-ring-glow {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+@keyframes core-breathe {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+
+@keyframes orbit-accelerate {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+}
+
+@keyframes subtle-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes orbit-dot-pulse {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.3);
+  }
+}
+
+@for $i from 0 through 20 {
+  @keyframes neural-pulse-#{$i} {
+    0%, 100% {
+      opacity: 0.1;
+      stroke-width: 1;
+    }
+    50% {
+      opacity: 0.6;
+      stroke-width: 2;
+    }
   }
 }
 </style>

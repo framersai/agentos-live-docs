@@ -1,189 +1,616 @@
 // File: frontend/src/store/ui.store.ts
 /**
  * @file ui.store.ts
- * @description Pinia store for UI state management, including theme, fullscreen,
- * screen size breakpoints, and reduced motion preference. Interacts with ThemeManager for theme changes.
- * @version 2.3.0 - Added isReducedMotionPreferred.
+ * @description Enhanced UI store with reactive state integration
+ * Manages theme, preferences, and UI state in coordination with reactive store
+ * @version 2.2.0
  */
+
 import { defineStore } from 'pinia';
-import { ref, readonly, computed, watch, type Ref } from 'vue';
-import { usePreferredDark, useBreakpoints, type Breakpoints, usePreferredReducedMotion } from '@vueuse/core'; // Added usePreferredReducedMotion
-import {
-  themeManager,
-  DEFAULT_DARK_THEME_ID,
-  DEFAULT_LIGHT_THEME_ID,
-  DEFAULT_OVERALL_THEME_ID,
-  type ThemeDefinition,
-} from '@/theme/ThemeManager';
+import { ref, computed, watch, readonly } from 'vue';
+import { themeManager } from '@/theme/ThemeManager';
+import { ThemeDefinition } from '@/theme/themes.config';
+import { useReactiveStore } from './reactive.store';
+import type { AppState, MoodState } from './reactive.store';
 
-/**
- * @const {Breakpoints} breakpointsConfig - Breakpoint definitions mirroring Tailwind CSS configuration.
- * Used by `@vueuse/core`'s `useBreakpoints` for reactive screen size checks.
- */
-const breakpointsConfig: Breakpoints = {
-  sm: 640,
-  md: 768,
-  lg: 1024,
-  xl: 1280,
-  '2xl': 1536,
+export interface UIPreferences {
+  reducedMotion: boolean;
+  highContrast: boolean;
+  fontSize: 'small' | 'medium' | 'large';
+  soundEnabled: boolean;
+  autoTheme: boolean;
+  compactMode: boolean;
+  showTranscriptions: boolean;
+  enableParticles: boolean;
+  enableNeuralEffects: boolean;
+}
+
+export interface UINotification {
+  id: string;
+  type: 'info' | 'success' | 'warning' | 'error';
+  title: string;
+  message?: string;
+  duration?: number;
+  actions?: Array<{
+    label: string;
+    action: () => void;
+  }>;
+}
+
+export interface UIModal {
+  id: string;
+  component: string;
+  props?: Record<string, any>;
+  size?: 'small' | 'medium' | 'large' | 'fullscreen';
+  closable?: boolean;
+  onClose?: () => void;
+}
+
+export type ScreenSize = 'small' | 'medium' | 'large' | 'xlarge';
+
+// Theme-specific reactive state configurations
+const THEME_REACTIVE_CONFIGS: Record<string, Partial<{
+  preferredStates: AppState[];
+  moodModifiers: Partial<Record<MoodState, number>>;
+  effectIntensity: number;
+  particleMultiplier: number;
+}>> = {
+  'sakura-sunset': {
+    preferredStates: ['idle', 'listening', 'responding'],
+    moodModifiers: { warm: 1.2, calm: 1.1 },
+    effectIntensity: 0.8,
+    particleMultiplier: 1.2,
+  },
+  'twilight-neo': {
+    preferredStates: ['thinking', 'processing', 'responding'],
+    moodModifiers: { excited: 1.3, curious: 1.2 },
+    effectIntensity: 1.0,
+    particleMultiplier: 1.5,
+  },
+  'aurora-daybreak': {
+    preferredStates: ['listening', 'speaking'],
+    moodModifiers: { engaged: 1.2, warm: 1.1 },
+    effectIntensity: 0.7,
+    particleMultiplier: 1.0,
+  },
+  'warm-embrace': {
+    preferredStates: ['idle', 'speaking'],
+    moodModifiers: { warm: 1.5, calm: 1.3 },
+    effectIntensity: 0.6,
+    particleMultiplier: 0.8,
+  },
+  'terminus-dark': {
+    preferredStates: ['thinking', 'transcribing'],
+    moodModifiers: { focused: 1.3, contemplative: 1.2 },
+    effectIntensity: 0.9,
+    particleMultiplier: 0.6,
+  },
+  'terminus-light': {
+    preferredStates: ['thinking', 'transcribing'],
+    moodModifiers: { focused: 1.2, attentive: 1.1 },
+    effectIntensity: 0.7,
+    particleMultiplier: 0.5,
+  },
 };
-const vueUseBreakpointsState = useBreakpoints(breakpointsConfig);
 
-/**
- * @typedef {ThemeDefinition | undefined} ThemeObjectType - Type alias for the theme object.
- */
-type ThemeObjectType = ThemeDefinition | undefined;
-
-/**
- * @interface UiState
- * @description Defines the reactive state properties managed by the UI store.
- */
-export interface UiState {
-  isFullscreen: Readonly<Ref<boolean>>;
-  showHeaderInFullscreenMinimal: Readonly<Ref<boolean>>;
-  isBrowserFullscreenActive: Readonly<Ref<boolean>>;
-  isCurrentThemeDark: Readonly<Ref<boolean>>;
-  currentThemeId: Readonly<Ref<string>>;
-  theme: Readonly<Ref<ThemeObjectType>>;
-  isDarkMode: Readonly<Ref<boolean>>;
-  isLightMode: Readonly<Ref<boolean>>;
-  isSmallScreen: Readonly<Ref<boolean>>;
-  isMediumScreenOrSmaller: Readonly<Ref<boolean>>;
-  isReducedMotionPreferred: Readonly<Ref<boolean>>; // Added this property
-}
-
-/**
- * @interface UiActions
- * @description Defines the actions (methods) available in the UI store.
- */
-export interface UiActions {
-  initializeUiState: () => void;
-  toggleFullscreen: () => void;
-  setFullscreen: (value: boolean) => void;
-  toggleShowHeaderInFullscreenMinimal: () => void;
-  setShowHeaderInFullscreenMinimal: (value: boolean) => void;
-  toggleBrowserFullscreen: () => Promise<void>;
-  setTheme: (id: string) => void;
-  setDarkMode: (flag: boolean) => void;
-  setThemeFlexible: (idOrMode: string) => void;
-}
-
-/**
- * @typedef {UiState & UiActions} FullUiStore - Complete type for the UI store.
- */
-type FullUiStore = UiState & UiActions;
-
-export const useUiStore = defineStore('ui', (): FullUiStore => {
-  const _isFullscreen = ref(false);
-  const _showHeaderInFullscreenMinimal = ref(false);
-  const _isBrowserFullscreenActive = ref<boolean>(typeof document !== 'undefined' && !!document.fullscreenElement);
-
-  const preferredDark = usePreferredDark();
-  const isSystemDarkLocal = ref(preferredDark.value);
-
-  /**
-   * @property {Ref<boolean>} preferredReducedMotion - Reactive reference to the user's preference for reduced motion.
-   * From `@vueuse/core`.
-   */
-  const preferredReducedMotion = usePreferredReducedMotion(); // Get the reactive ref for reduced motion
-
-  // Screen size computeds
-  const isSmallScreen = vueUseBreakpointsState.smaller('md');
-  const isMediumScreenOrSmaller = vueUseBreakpointsState.smallerOrEqual('md');
-
-  // Theme state directly from ThemeManager's reactive properties
-  const theme = computed<ThemeObjectType>(() => themeManager.getCurrentTheme().value);
-  const currentThemeId = computed<string>(() => themeManager.getCurrentThemeId().value);
-  const isCurrentThemeDark = computed<boolean>(() => theme.value?.isDark ?? isSystemDarkLocal.value);
-
-  const isDarkMode = computed<boolean>(() => isCurrentThemeDark.value);
-  const isLightMode = computed<boolean>(() => !isCurrentThemeDark.value);
-
-  /**
-   * @computed isReducedMotionPreferred
-   * @description Exposes the user's preference for reduced motion.
-   * @returns {boolean} True if the user prefers reduced motion, false otherwise.
-   */
-  const isReducedMotionPreferred = computed<boolean>(() => preferredReducedMotion.value === 'reduce');
-
-
-  const setFullscreen = (val: boolean) => {
-    if (_isFullscreen.value !== val) {
-      _isFullscreen.value = val;
-      if (!val) _showHeaderInFullscreenMinimal.value = false;
-    }
-  };
-  const toggleFullscreen = () => setFullscreen(!_isFullscreen.value);
-
-  const toggleShowHeaderInFullscreenMinimal = () => {
-    if (_isFullscreen.value) _showHeaderInFullscreenMinimal.value = !_showHeaderInFullscreenMinimal.value;
-  };
-  const setShowHeaderInFullscreenMinimal = (v: boolean) => {
-    if (_isFullscreen.value) _showHeaderInFullscreenMinimal.value = v;
-  };
-
-  const toggleBrowserFullscreen = async () => {
-    if (typeof document === 'undefined') return;
-    const el = document.documentElement as HTMLElement & {
-      mozRequestFullScreen?: () => Promise<void>;
-      webkitRequestFullscreen?: () => Promise<void>;
-      msRequestFullscreen?: () => Promise<void>;
+export const useUiStore = defineStore('ui', () => {
+  // Get reactive store instance
+  const reactiveStore = useReactiveStore();
+  
+  // Theme state
+  const _currentThemeId = ref<string>('sakura-sunset');
+  const _currentTheme = ref<ThemeDefinition | null>(null);
+  const _isThemeTransitioning = ref(false);
+  
+  // Screen size
+  const _screenSize = ref<ScreenSize>('medium');
+  const _screenWidth = ref(typeof window !== 'undefined' ? window.innerWidth : 1024);
+  const _screenHeight = ref(typeof window !== 'undefined' ? window.innerHeight : 768);
+  
+  // Browser fullscreen state
+  const _isBrowserFullscreenActive = ref(false);
+  
+  // UI preferences
+  const _preferences = ref<UIPreferences>({
+    reducedMotion: false,
+    highContrast: false,
+    fontSize: 'medium',
+    soundEnabled: true,
+    autoTheme: true,
+    compactMode: false,
+    showTranscriptions: true,
+    enableParticles: true,
+    enableNeuralEffects: true,
+  });
+  
+  // UI state
+  const _notifications = ref<UINotification[]>([]);
+  const _modals = ref<UIModal[]>([]);
+  const _globalLoading = ref(false);
+  const _sidebarCollapsed = ref(false);
+  const _mobileMenuOpen = ref(false);
+  const _commandPaletteOpen = ref(false);
+  
+  // Computed properties
+  const currentThemeId = computed(() => _currentThemeId.value);
+  const currentTheme = computed(() => _currentTheme.value);
+  const isCurrentThemeDark = computed(() => _currentTheme.value?.isDark ?? true);
+  const size = computed(() => _screenSize.value);
+  const screenWidth = computed(() => _screenWidth.value);
+  const screenHeight = computed(() => _screenHeight.value);
+  const isBrowserFullscreenActive = computed(() => _isBrowserFullscreenActive.value);
+  
+  const isReducedMotionPreferred = computed(() => 
+    _preferences.value.reducedMotion || 
+    (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+  );
+  
+  const effectiveParticleActivity = computed(() => 
+    _preferences.value.enableParticles ? reactiveStore.particleActivity : 0
+  );
+  
+  const effectiveNeuralActivity = computed(() => 
+    _preferences.value.enableNeuralEffects ? reactiveStore.neuralActivity : 0
+  );
+  
+  const fontSizeClass = computed(() => {
+    const sizeMap = {
+      small: 'text-sm',
+      medium: 'text-base',
+      large: 'text-lg',
     };
+    return sizeMap[_preferences.value.fontSize];
+  });
+  
+  const themeReactiveConfig = computed(() => 
+    THEME_REACTIVE_CONFIGS[_currentThemeId.value] || {}
+  );
+  
+  // Update screen size based on width
+  const updateScreenSize = () => {
+    if (typeof window === 'undefined') return;
+    
+    _screenWidth.value = window.innerWidth;
+    _screenHeight.value = window.innerHeight;
+    
+    if (_screenWidth.value < 640) {
+      _screenSize.value = 'small';
+    } else if (_screenWidth.value < 1024) {
+      _screenSize.value = 'medium';
+    } else if (_screenWidth.value < 1536) {
+      _screenSize.value = 'large';
+    } else {
+      _screenSize.value = 'xlarge';
+    }
+  };
+  
+  // Initialize UI state
+  const initializeUiState = async () => {
+    // Update screen size
+    updateScreenSize();
+    
+    // Setup resize listener
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', updateScreenSize);
+      
+      // Check fullscreen state
+      const checkFullscreen = () => {
+        _isBrowserFullscreenActive.value = !!(
+          document.fullscreenElement ||
+          (document as any).webkitFullscreenElement ||
+          (document as any).mozFullScreenElement ||
+          (document as any).msFullscreenElement
+        );
+      };
+      
+      document.addEventListener('fullscreenchange', checkFullscreen);
+      document.addEventListener('webkitfullscreenchange', checkFullscreen);
+      document.addEventListener('mozfullscreenchange', checkFullscreen);
+      document.addEventListener('MSFullscreenChange', checkFullscreen);
+    }
+    
+    // Initialize theme
+    await initializeTheme();
+  };
+  
+  // Initialize theme
+  const initializeTheme = async () => {
+    _isThemeTransitioning.value = true;
+    
     try {
-      if (!document.fullscreenElement) {
-        if (el.requestFullscreen) await el.requestFullscreen();
-        else if (el.webkitRequestFullscreen) await el.webkitRequestFullscreen();
-        else if (el.mozRequestFullScreen) await el.mozRequestFullScreen();
-        else if (el.msRequestFullscreen) await el.msRequestFullscreen();
-      } else if (document.exitFullscreen) {
-        await document.exitFullscreen();
+      // Check for saved theme preference
+      const savedThemeId = localStorage.getItem('vca-theme-id');
+      const savedPreferences = localStorage.getItem('vca-ui-preferences');
+      
+      if (savedPreferences) {
+        _preferences.value = { ..._preferences.value, ...JSON.parse(savedPreferences) };
       }
-    } catch (err) {
-      console.error('[UiStore] Browser fullscreen toggle error:', err);
+      
+      // Initialize theme manager
+      themeManager.initialize();
+      
+      // Determine initial theme
+      let themeId = savedThemeId || _currentThemeId.value;
+      
+      // Auto theme based on time of day
+      if (_preferences.value.autoTheme && !savedThemeId) {
+        const hour = new Date().getHours();
+        if (hour >= 6 && hour < 12) {
+          themeId = 'aurora-daybreak'; // Morning
+        } else if (hour >= 12 && hour < 17) {
+          themeId = 'warm-embrace'; // Afternoon
+        } else if (hour >= 17 && hour < 20) {
+          themeId = 'twilight-neo'; // Evening
+        } else {
+          themeId = 'sakura-sunset'; // Night
+        }
+      }
+      
+      await setTheme(themeId, false); // Don't trigger reactive state on init
+    } catch (error) {
+      console.error('[UIStore] Failed to initialize theme:', error);
+    } finally {
+      _isThemeTransitioning.value = false;
     }
   };
-
-  const _handleFsChange = () => {
-    _isBrowserFullscreenActive.value = typeof document !== 'undefined' && !!document.fullscreenElement;
-  };
-
-  const initializeUiState = () => {
-    if (typeof document !== 'undefined') {
-      document.addEventListener('fullscreenchange', _handleFsChange);
-      document.addEventListener('webkitfullscreenchange', _handleFsChange);
-      document.addEventListener('mozfullscreenchange', _handleFsChange);
-      document.addEventListener('MSFullscreenChange', _handleFsChange);
+  
+  // Theme management
+  const setTheme = async (themeId: string, triggerReactiveEffects: boolean = true) => {
+    if (_currentThemeId.value === themeId && _currentTheme.value) return;
+    
+    _isThemeTransitioning.value = true;
+    
+    try {
+      themeManager.setTheme(themeId);
+      const currentThemeDef = themeManager.getCurrentTheme().value;
+      
+      if (currentThemeDef) {
+        _currentThemeId.value = themeId;
+        _currentTheme.value = currentThemeDef;
+        
+        // Save preference
+        localStorage.setItem('vca-theme-id', themeId);
+        
+        // Apply theme-specific reactive configurations
+        if (triggerReactiveEffects) {
+          const config = themeReactiveConfig.value;
+          
+          // Adjust effect intensity
+          if (config.effectIntensity) {
+            const currentIntensity = reactiveStore.intensity;
+            const targetIntensity = config.effectIntensity;
+            reactiveStore.adjustIntensity(targetIntensity - currentIntensity);
+          }
+          
+          // Trigger theme change effects
+          reactiveStore.triggerGlowBurst(0.8, 800);
+          reactiveStore.triggerRipple({ duration: 1200, intensity: 0.6, count: 2 });
+          
+          // Set mood based on theme
+          if (themeId.includes('sakura') || themeId.includes('aurora')) {
+            reactiveStore.setMoodState('warm');
+          } else if (themeId.includes('twilight') || themeId.includes('neo')) {
+            reactiveStore.setMoodState('excited');
+          } else if (themeId.includes('terminus')) {
+            reactiveStore.setMoodState('focused');
+          } else if (themeId.includes('warm')) {
+            reactiveStore.setMoodState('calm');
+          }
+        }
+        
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('[UIStore] Failed to set theme:', error);
+      addNotification({
+        type: 'error',
+        title: 'Theme Change Failed',
+        message: 'Could not apply the selected theme.',
+      });
+      return false;
+    } finally {
+      _isThemeTransitioning.value = false;
     }
-    watch(preferredDark, (newVal: boolean) => {
-      isSystemDarkLocal.value = newVal;
-    }, { immediate: true });
   };
-
-  const setTheme = (id: string) => themeManager.setTheme(id);
-  const setDarkMode = (flag: boolean) => themeManager.setThemeFlexible(flag ? DEFAULT_DARK_THEME_ID : DEFAULT_LIGHT_THEME_ID); // Use default dark/light IDs
-  const setThemeFlexible = (idOrMode: string) => themeManager.setThemeFlexible(idOrMode);
-
+  
+  // Browser fullscreen management
+  const toggleBrowserFullscreen = async () => {
+    if (!document.fullscreenEnabled && 
+        !(document as any).webkitFullscreenEnabled && 
+        !(document as any).mozFullScreenEnabled && 
+        !(document as any).msFullscreenEnabled) {
+      addNotification({
+        type: 'warning',
+        title: 'Fullscreen Not Supported',
+        message: 'Your browser does not support fullscreen mode.',
+      });
+      return;
+    }
+    
+    try {
+      if (!_isBrowserFullscreenActive.value) {
+        // Enter fullscreen
+        const elem = document.documentElement;
+        if (elem.requestFullscreen) {
+          await elem.requestFullscreen();
+        } else if ((elem as any).webkitRequestFullscreen) {
+          await (elem as any).webkitRequestFullscreen();
+        } else if ((elem as any).mozRequestFullScreen) {
+          await (elem as any).mozRequestFullScreen();
+        } else if ((elem as any).msRequestFullscreen) {
+          await (elem as any).msRequestFullscreen();
+        }
+      } else {
+        // Exit fullscreen
+        if (document.exitFullscreen) {
+          await document.exitFullscreen();
+        } else if ((document as any).webkitExitFullscreen) {
+          await (document as any).webkitExitFullscreen();
+        } else if ((document as any).mozCancelFullScreen) {
+          await (document as any).mozCancelFullScreen();
+        } else if ((document as any).msExitFullscreen) {
+          await (document as any).msExitFullscreen();
+        }
+      }
+    } catch (error) {
+      console.error('[UIStore] Fullscreen toggle failed:', error);
+      addNotification({
+        type: 'error',
+        title: 'Fullscreen Error',
+        message: 'Could not toggle fullscreen mode.',
+      });
+    }
+  };
+  
+  // Preference management
+  const updatePreferences = (updates: Partial<UIPreferences>) => {
+    _preferences.value = { ..._preferences.value, ...updates };
+    
+    // Save to localStorage
+    localStorage.setItem('vca-ui-preferences', JSON.stringify(_preferences.value));
+    
+    // Apply preference-based effects
+    if ('reducedMotion' in updates) {
+      if (updates.reducedMotion) {
+        reactiveStore.adjustIntensity(-0.5);
+        reactiveStore.adjustPulseRate(-0.5);
+      } else {
+        reactiveStore.adjustIntensity(0.3);
+        reactiveStore.adjustPulseRate(0.3);
+      }
+    }
+    
+    if ('enableParticles' in updates && !updates.enableParticles) {
+      // Force particle activity to 0 by reducing intensity
+      const currentIntensity = reactiveStore.intensity;
+      if (currentIntensity > 0) {
+        reactiveStore.adjustIntensity(-currentIntensity);
+      }
+    }
+    
+    if ('highContrast' in updates && updates.highContrast) {
+      // Increase glow and contrast
+      reactiveStore.triggerGlowBurst(1.0, 1000);
+    }
+  };
+  
+  // Notification management
+  const addNotification = (notification: Omit<UINotification, 'id'>) => {
+    const id = `notification-${Date.now()}-${Math.random()}`;
+    const fullNotification: UINotification = {
+      id,
+      duration: 5000,
+      ...notification,
+    };
+    
+    _notifications.value.push(fullNotification);
+    
+    // Trigger reactive effect based on notification type
+    switch (notification.type) {
+      case 'success':
+        reactiveStore.triggerPulse(0.7, 600);
+        break;
+      case 'error':
+        reactiveStore.setMoodState('attentive');
+        reactiveStore.triggerRipple({ duration: 800, intensity: 0.8 });
+        break;
+      case 'warning':
+        reactiveStore.triggerGlowBurst(0.6, 500);
+        break;
+    }
+    
+    // Auto-remove after duration
+    if (fullNotification.duration && fullNotification.duration > 0) {
+      setTimeout(() => {
+        removeNotification(id);
+      }, fullNotification.duration);
+    }
+    
+    return id;
+  };
+  
+  const removeNotification = (id: string) => {
+    const index = _notifications.value.findIndex(n => n.id === id);
+    if (index > -1) {
+      _notifications.value.splice(index, 1);
+    }
+  };
+  
+  const clearNotifications = () => {
+    _notifications.value = [];
+  };
+  
+  // Modal management
+  const openModal = (modal: Omit<UIModal, 'id'>): string => {
+    const id = `modal-${Date.now()}-${Math.random()}`;
+    const fullModal: UIModal = {
+      id,
+      closable: true,
+      size: 'medium',
+      ...modal,
+    };
+    
+    _modals.value.push(fullModal);
+    
+    // Trigger modal open effect
+    reactiveStore.addEffect('shimmer');
+    reactiveStore.triggerGlowBurst(0.5, 400);
+    
+    return id;
+  };
+  
+  const closeModal = (id: string) => {
+    const index = _modals.value.findIndex(m => m.id === id);
+    if (index > -1) {
+      const modal = _modals.value[index];
+      modal.onClose?.();
+      _modals.value.splice(index, 1);
+      
+      // Remove effect when last modal closes
+      if (_modals.value.length === 0) {
+        reactiveStore.removeEffect('shimmer');
+      }
+    }
+  };
+  
+  const closeAllModals = () => {
+    _modals.value.forEach(modal => modal.onClose?.());
+    _modals.value = [];
+    reactiveStore.removeEffect('shimmer');
+  };
+  
+  // Global loading state
+  const setGlobalLoading = (loading: boolean) => {
+    _globalLoading.value = loading;
+    
+    if (loading) {
+      reactiveStore.transitionToState('connecting');
+    } else {
+      reactiveStore.transitionToState('idle');
+    }
+  };
+  
+  // Sidebar state
+  const toggleSidebar = () => {
+    _sidebarCollapsed.value = !_sidebarCollapsed.value;
+    reactiveStore.triggerRipple({ duration: 600, intensity: 0.4 });
+  };
+  
+  // Mobile menu state
+  const toggleMobileMenu = () => {
+    _mobileMenuOpen.value = !_mobileMenuOpen.value;
+    
+    if (_mobileMenuOpen.value) {
+      reactiveStore.addEffect('shimmer');
+    } else {
+      reactiveStore.removeEffect('shimmer');
+    }
+  };
+  
+  // Command palette
+  const toggleCommandPalette = () => {
+    _commandPaletteOpen.value = !_commandPaletteOpen.value;
+    
+    if (_commandPaletteOpen.value) {
+      reactiveStore.addEffect('neural');
+      reactiveStore.setMoodState('curious');
+    } else {
+      reactiveStore.removeEffect('neural');
+    }
+  };
+  
+  // Apply reactive state based on UI interactions
+  const applyInteractionState = (interaction: string) => {
+    switch (interaction) {
+      case 'input-focus':
+        reactiveStore.setMoodState('attentive');
+        reactiveStore.triggerGlowBurst(0.6, 400);
+        break;
+      case 'button-click':
+        reactiveStore.triggerPulse(0.7, 300);
+        break;
+      case 'navigation':
+        reactiveStore.triggerRipple({ duration: 800, intensity: 0.5 });
+        break;
+      case 'form-submit':
+        reactiveStore.transitionToState('responding');
+        reactiveStore.setMoodState('engaged');
+        break;
+    }
+  };
+  
+  // Watch for system preference changes
+  if (typeof window !== 'undefined') {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    mediaQuery.addEventListener('change', (e) => {
+      if (e.matches) {
+        updatePreferences({ reducedMotion: true });
+      }
+    });
+    
+    // Watch for system theme changes
+    const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    darkModeQuery.addEventListener('change', (e) => {
+      if (_preferences.value.autoTheme) {
+        setTheme(e.matches ? 'sakura-sunset' : 'aurora-daybreak');
+      }
+    });
+  }
+  
+  // Sync with reactive store state changes
+  watch(() => reactiveStore.appState, (newState) => {
+    // Apply theme-specific adjustments based on state
+    const config = themeReactiveConfig.value;
+    if (config.preferredStates?.includes(newState)) {
+      reactiveStore.adjustIntensity(0.1);
+    }
+  });
+  
   return {
-    isFullscreen: readonly(_isFullscreen),
-    showHeaderInFullscreenMinimal: readonly(_showHeaderInFullscreenMinimal),
-    isBrowserFullscreenActive: readonly(_isBrowserFullscreenActive),
-    isCurrentThemeDark,
+    // Theme
     currentThemeId,
-    theme,
-    isDarkMode,
-    isLightMode,
-    isSmallScreen: readonly(isSmallScreen),
-    isMediumScreenOrSmaller: readonly(isMediumScreenOrSmaller),
-    isReducedMotionPreferred: readonly(isReducedMotionPreferred), // Expose as readonly computed
-
+    currentTheme,
+    isCurrentThemeDark,
+    isThemeTransitioning: readonly(_isThemeTransitioning),
+    
+    // Screen
+    size,
+    screenWidth,
+    screenHeight,
+    isBrowserFullscreenActive,
+    
+    // Preferences
+    preferences: readonly(_preferences),
+    isReducedMotionPreferred,
+    effectiveParticleActivity,
+    effectiveNeuralActivity,
+    fontSizeClass,
+    
+    // UI State
+    notifications: readonly(_notifications),
+    modals: readonly(_modals),
+    globalLoading: readonly(_globalLoading),
+    sidebarCollapsed: readonly(_sidebarCollapsed),
+    mobileMenuOpen: readonly(_mobileMenuOpen),
+    commandPaletteOpen: readonly(_commandPaletteOpen),
+    
+    // Actions
     initializeUiState,
-    toggleFullscreen,
-    setFullscreen,
-    toggleShowHeaderInFullscreenMinimal,
-    setShowHeaderInFullscreenMinimal,
-    toggleBrowserFullscreen,
+    initializeTheme,
     setTheme,
-    setDarkMode,
-    setThemeFlexible,
+    toggleBrowserFullscreen,
+    updatePreferences,
+    addNotification,
+    removeNotification,
+    clearNotifications,
+    openModal,
+    closeModal,
+    closeAllModals,
+    setGlobalLoading,
+    toggleSidebar,
+    toggleMobileMenu,
+    toggleCommandPalette,
+    applyInteractionState,
   };
 });

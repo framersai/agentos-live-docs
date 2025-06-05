@@ -1,7 +1,7 @@
-# Voice Coding Assistant
+# Voice Chat Assistant
 
 <p align="center">
-  <img src="./frontend/src/assets/logo.svg" alt="Voice Coding Assistant Logo" width="120">
+  <img src="./frontend/src/assets/logo.svg" alt="Voice Chat Assistant Logo" width="120">
 </p>
 
 <p align="center">
@@ -10,7 +10,7 @@
 
 ## Overview
 
-Voice Coding Assistant is a full-stack web application that lets you use your voice to get coding help, system design advice, and meeting summaries. Leveraging AI models through OpenAI and OpenRouter APIs, it transcribes your voice input and provides detailed responses with code examples and diagrams.
+Voice Chat Assistant is a full-stack web application that lets you use your voice to get coding help, system design advice, and meeting summaries. Leveraging AI models through OpenAI and OpenRouter APIs, it transcribes your voice input and provides detailed responses with code examples and diagrams.
 
 ### Key Features
 
