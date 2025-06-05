@@ -116,6 +116,8 @@ $shadow-depth-lg: var(--shadow-depth-lg, #{$scss-box-shadow-lg});
 $shadow-depth-xl: var(--shadow-depth-xl, #{$scss-box-shadow-xl});
 $shadow-depth-2xl: var(--shadow-depth-2xl, #{$scss-box-shadow-2xl});
 
+$ease-out-back: var(--ease-out-back, cubic-bezier(0.175, 0.885, 0.32, 1.275)); // For deep shadows
+
 // -----------------------------------------------------------------------------
 // Z-Indexes
 // -----------------------------------------------------------------------------

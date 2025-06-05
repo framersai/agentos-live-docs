@@ -50,7 +50,7 @@ const handleVoiceProcessing = (status: boolean): void => {
 
 const numOrbitingShapes = computed(() => uiStore.isReducedMotionPreferred ? 2 : 6); // Reduced count for subtlety
 
-const orbitStyleProvider = (index: number): CSSProperties => ({
+const orbitStyleProvider = (_index: number): CSSProperties => ({
   animationDuration: `${50 + Math.random() * 70}s`, // Slower, more ambient
   animationDelay: `-${Math.random() * 90}s`,
   transform: `rotate(${Math.random() * 360}deg) translateX(${25 + Math.random() * 55}vmax) translateY(${Math.random() * 30 - 15}vmax) rotate(-${Math.random() * 360}deg)`,
@@ -58,7 +58,7 @@ const orbitStyleProvider = (index: number): CSSProperties => ({
   zIndex: 0,
 });
 
-const shapeStyleProvider = (index: number): CSSProperties => {
+const shapeStyleProvider = (_index: number): CSSProperties => {
   const accentVar1 = Math.random() > 0.5 ? '--color-accent-primary' : '--color-accent-secondary';
   const accentVar2 = Math.random() > 0.5 ? '--color-accent-interactive' : '--color-accent-glow'; // Use glow for softer shadows
   return {
@@ -138,7 +138,7 @@ const setupResizeObserverForElement = (
 
 const teardownResizeObserverForElement = (
   elRef: Ref<HTMLElement | InstanceType<typeof EphemeralChatLog> | null>,
-  elementName: string,
+  _elementName: string,
   isEphemeralLog: boolean = false
 ) => {
     if (typeof ResizeObserver === 'undefined' || !resizeObserverInstance) return;
@@ -157,7 +157,7 @@ onMounted(async () => {
   window.addEventListener('resize', updateDynamicLayoutHeights); // Fallback for general resizes
 
   if (typeof ResizeObserver !== 'undefined') {
-    resizeObserverInstance = new ResizeObserver(async entries => {
+    resizeObserverInstance = new ResizeObserver(async (_entries) => {
       // console.log('[UCL] ResizeObserver detected changes:', entries.map(e => observedElementsMap.get(e.target)));
       await updateDynamicLayoutHeights(); // Recalculate all relevant heights on any observed change
     });
@@ -240,9 +240,7 @@ watch(ephemeralLogRef, async (newEl) => {
 
     <div class="unified-voice-input-section" ref="voiceInputSectionRef">
       <VoiceInput
-        :is-processing="props.isVoiceInputProcessing"
-        :is-processing-l-l-m="false"
-        :input-placeholder="props.currentAgentInputPlaceholder"
+        :is-processing-l-l-m="props.isVoiceInputProcessing"
         @transcription-ready="handleTranscription"
         @stt-processing-audio="handleVoiceProcessing"
       />
