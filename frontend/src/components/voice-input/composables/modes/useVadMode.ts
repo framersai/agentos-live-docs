@@ -4,13 +4,14 @@
  * @description Voice Activation Detection (VAD) mode implementation.
  * This mode listens for a wake word, then captures a command.
  *
- * @version 1.1.1
- * @updated 2025-06-05 - Implemented abstract member `requiresHandler`.
- * - Ensured VAD command timeout triggers audio feedback via error emission.
+ * @version 1.2.0
+ * @updated 2025-06-05 - Adapted to BrowserSpeechHandler's refined command capture.
+ * - Relies more on handler for command finalization (pause/max duration).
+ * - Ensured manual stop correctly resets state.
  */
 
-import { ref, computed } from 'vue';
-import type { ComputedRef } from 'vue';
+import { ref, computed, readonly } from 'vue';
+import type { ComputedRef, Ref } from 'vue';
 import { BaseSttMode, type SttModeContext, type SttModePublicState } from './BaseSttMode';
 import type { SttHandlerErrorPayload } from '../../types';
 
@@ -18,18 +19,14 @@ type VadPhase = 'idle' | 'listening-wake' | 'capturing-command';
 
 export class VadMode extends BaseSttMode implements SttModePublicState {
   private phase = ref<VadPhase>('idle');
-  private commandTimeoutTimer: number | null = null;
-  private commandTranscriptBuffer = ref('');
+  // commandTimeoutTimer is now primarily managed within BrowserSpeechHandler for command capture phase (pause detection, max duration)
+  // VadMode's own timeout (via SttManager context) can act as a failsafe or for manager-level logic if needed.
+  private commandTranscriptBuffer = ref(''); // Still useful for accumulating if handler sends final chunks
 
   public readonly isActive: ComputedRef<boolean>;
   public readonly canStart: ComputedRef<boolean>;
   public readonly statusText: ComputedRef<string>;
   public readonly placeholderText: ComputedRef<string>;
-
-  /**
-   * @inheritdoc
-   * @description VAD mode requires an STT handler.
-   */
   public readonly requiresHandler: boolean = true;
 
   constructor(context: SttModeContext) {
@@ -45,7 +42,7 @@ export class VadMode extends BaseSttMode implements SttModePublicState {
         this.phase.value === 'idle'
     );
     this.statusText = computed(() => {
-      if (this.context.isProcessingLLM.value && this.phase.value === 'idle') return 'VAD: Assistant busy';
+      if (this.context.isProcessingLLM.value && this.phase.value === 'idle' && !this.context.isAwaitingVadCommandResult.value) return 'VAD: Assistant busy';
       if (!this.context.micPermissionGranted.value && this.phase.value === 'idle') return 'VAD: Mic needed';
       switch (this.phase.value) {
         case 'listening-wake': return `VAD: Listening for "${primaryWakeWord.value}"`;
@@ -53,8 +50,8 @@ export class VadMode extends BaseSttMode implements SttModePublicState {
         default: return `VAD: Say "${primaryWakeWord.value}"`;
       }
     });
-    this.placeholderText = computed(() => {
-      if (this.context.isProcessingLLM.value && this.phase.value === 'idle') return 'Assistant is processing...';
+    this.placeholderText = computed(() => { // This will be overridden by VoiceInput.vue's logic for VAD/PTT
+      if (this.context.isProcessingLLM.value && this.phase.value === 'idle' && !this.context.isAwaitingVadCommandResult.value) return 'Assistant is processing...';
       if (!this.context.micPermissionGranted.value && this.phase.value === 'idle') return 'Microphone permission required for VAD.';
       switch (this.phase.value) {
         case 'listening-wake': return `Say "${primaryWakeWord.value}" to activate`;
@@ -64,36 +61,36 @@ export class VadMode extends BaseSttMode implements SttModePublicState {
     });
   }
 
-  private get wakeWords(): readonly string[] {
+  private get wakeWords(): readonly string[] { // Ensure this uses the actual settings object
     return this.context.settings.value.vadWakeWordsBrowserSTT || ['hey v', 'victoria'];
-  }
-
-  private get commandTimeoutMs(): number {
-    return this.context.settings.value.vadSilenceTimeoutMs ?? 5000;
   }
 
   async start(): Promise<boolean> {
     if (!this.canStart.value) {
       console.warn('[VadMode] Cannot start VAD mode - conditions not met.');
+      // Toast messages for specific block reasons
       if (this.requiresHandler && !this.context.activeHandlerApi.value) {
-         this.context.toast?.add({ type: 'error', title: 'STT Error', message: 'Speech handler not available for VAD mode.' });
+         this.context.toast?.add({ type: 'error', title: 'STT Error', message: 'Speech handler not available for VAD.' });
+      } else if (this.context.isProcessingLLM.value && !this.context.isAwaitingVadCommandResult.value) {
+          this.context.toast?.add({ type: 'info', title: 'Assistant Busy', message: 'Cannot start VAD now.' });
+      } else if (!this.context.micPermissionGranted.value) {
+          this.context.toast?.add({ type: 'error', title: 'Microphone Access', message: 'VAD mode requires microphone permission.' });
       }
       return false;
     }
     this.phase.value = 'listening-wake';
-    this.commandTranscriptBuffer.value = '';
+    this.commandTranscriptBuffer.value = ''; // Clear any old command
     this.context.sharedState.isListeningForWakeWord.value = true;
-    this.context.sharedState.isProcessingAudio.value = true;
+    this.context.sharedState.isProcessingAudio.value = true; // General audio processing active
 
     try {
-      const handlerStarted = await this.context.activeHandlerApi.value?.startListening(false);
+      const handlerStarted = await this.context.activeHandlerApi.value?.startListening(false); // Start listening for wake word
       if (handlerStarted) {
         this.context.transcriptionDisplay.showInterimTranscript(`Listening for "${this.wakeWords[0]}"...`);
-        console.log('[VadMode] Started listening for wake word.');
+        console.log('[VadMode] Started. Phase: listening-wake.');
         return true;
       } else {
-        console.error('[VadMode] STT handler failed to start for wake word listening.');
-        await this.resetToIdleState('Failed to start VAD listener.');
+        await this.resetToIdleState('STT handler failed to start for wake word.');
         return false;
       }
     } catch (error: any) {
@@ -104,17 +101,18 @@ export class VadMode extends BaseSttMode implements SttModePublicState {
 
   async stop(): Promise<void> {
     if (this.phase.value === 'idle') return;
-    console.log(`[VadMode] Stopping VAD mode from phase: ${this.phase.value}`);
-    await this.resetToIdleState();
+    console.log(`[VadMode] Stop requested. Current phase: ${this.phase.value}`);
+    await this.resetToIdleState('VAD mode stopped by user or system.');
   }
 
   public async handleWakeWordDetected(): Promise<void> {
     if (this.phase.value !== 'listening-wake') {
-      console.warn(`[VadMode] Wake word detected but not in 'listening-wake' phase. Current phase: ${this.phase.value}`);
+      console.warn(`[VadMode] Wake word detected but not in 'listening-wake' phase. Phase: ${this.phase.value}`);
       return;
     }
-    this.context.clearVadCommandTimeout(); // Clear manager's timeout if any
-    this.clearCommandTimeout(); // Clear mode's own timeout
+    this.context.clearVadCommandTimeout(); // Clear manager's overall VAD command timeout
+    // No internal VadMode timer to clear here, handler manages its own timeouts for command capture now
+
     this.context.sharedState.isListeningForWakeWord.value = false;
     this.phase.value = 'capturing-command';
     this.commandTranscriptBuffer.value = '';
@@ -122,19 +120,21 @@ export class VadMode extends BaseSttMode implements SttModePublicState {
 
     this.context.playSound(this.context.audioFeedback.beepInSound.value);
     this.context.transcriptionDisplay.showWakeWordDetected();
-    this.context.toast?.add({ type: 'info', title: 'Wake Word Detected!', message: `Listening for your command...`, duration: 2000 });
+    // Toast is optional, status bar usually indicates this
+    // this.context.toast?.add({ type: 'info', title: 'Wake Word Detected!', message: `Listening for command...`, duration: 2000 });
 
     try {
+      // Tell handler to start listening for command (forVadCommandCapture = true)
       const handlerStarted = await this.context.activeHandlerApi.value?.startListening(true);
-      if (handlerStarted) {
-        this.startCommandTimeout();
-      } else {
+      if (!handlerStarted) {
         this.context.transcriptionDisplay.showError('Could not start command listener.', 2500);
-        await this.returnToWakeListening('STT handler failed for command capture phase.');
+        await this.returnToWakeListening('STT handler failed for command capture.');
+      } else {
+        console.log('[VadMode] Transitioned to command capture. Handler is managing capture timing.');
       }
     } catch (error: any) {
       this.context.transcriptionDisplay.showError('Error starting command listener.', 2500);
-      await this.returnToWakeListening(error.message || 'Error during command capture transition.');
+      await this.returnToWakeListening(error.message || 'Error in command capture transition.');
     }
   }
 
@@ -143,92 +143,72 @@ export class VadMode extends BaseSttMode implements SttModePublicState {
     if (!trimmedText) return;
 
     if (this.phase.value === 'capturing-command') {
-      this.commandTranscriptBuffer.value = trimmedText;
-      this.context.sharedState.pendingTranscript.value = this.commandTranscriptBuffer.value;
-      this.context.transcriptionDisplay.showInterimTranscript(this.commandTranscriptBuffer.value);
-      this.sendCommandAndReturnToWake();
+      // BrowserSpeechHandler (with continuous=true for command) should manage accumulation
+      // and send the full final command.
+      console.log(`[VadMode] Final command transcript received: "${trimmedText}"`);
+      this.commandTranscriptBuffer.value = trimmedText; // Store it
+      this.emitTranscription(this.commandTranscriptBuffer.value); // Emit immediately
+      this.context.playSound(this.context.audioFeedback.beepOutSound.value);
+      // UI state (pending transcript) should be cleared by the handler or after emission.
+      this.context.sharedState.pendingTranscript.value = '';
+      this.commandTranscriptBuffer.value = ''; // Clear buffer
+
+      // After sending command, return to listening for wake word
+      this.returnToWakeListeningAfterDelay();
     } else if (this.phase.value === 'listening-wake') {
+      // This path is less likely if BrowserSpeechHandler's wake word detection is robust.
+      // It's a fallback.
       const lowerText = trimmedText.toLowerCase();
       const detectedWakeWord = this.wakeWords.find(word => lowerText.includes(word.toLowerCase()));
       if (detectedWakeWord) {
-        console.log(`[VadMode] Wake word "${detectedWakeWord}" detected in final transcript during wake listening phase.`);
-        this.context.emit('wake-word-detected'); // Signal to SttManager
+        this.context.emit('wake-word-detected'); // Let SttManager trigger handleWakeWordDetected
       }
     }
   }
 
   public handleInterimTranscript(text: string): void {
     if (this.phase.value === 'capturing-command') {
-      this.context.sharedState.pendingTranscript.value = text.trim();
+      // BrowserSpeechHandler should be providing the full accumulated interim as `pendingTranscript`
+      this.context.sharedState.pendingTranscript.value = text.trim(); // Update shared state for UI
       this.context.transcriptionDisplay.showInterimTranscript(text.trim());
     }
   }
 
-  private sendCommandAndReturnToWake(): void {
-    this.clearCommandTimeout();
-    const commandText = this.commandTranscriptBuffer.value.trim();
-    if (!commandText) {
-      this.returnToWakeListening('No command captured after wake word.');
-      return;
-    }
-
-    this.emitTranscription(commandText);
-    this.context.playSound(this.context.audioFeedback.beepOutSound.value);
-
-    this.commandTranscriptBuffer.value = '';
-    this.context.sharedState.pendingTranscript.value = '';
-
-    setTimeout(async () => {
-      await this.returnToWakeListening();
-    }, 300);
+  private async returnToWakeListeningAfterDelay(delayMs: number = 300) {
+    setTimeout(async () => { await this.returnToWakeListening(); }, delayMs);
   }
 
-  private startCommandTimeout(): void {
-    this.clearCommandTimeout();
-    this.commandTimeoutTimer = window.setTimeout(async () => {
-      console.log('[VadMode] VAD Command capture timed out.');
-       // Emit specific error that SttManager can use to trigger beepOut via handleError
-      this.handleError({
-            type: 'recognition',
-            code: 'vad-command-timeout', // This code should be recognized by manager/error handler
-            message: 'No command speech detected after wake word (VAD timeout).',
-            fatal: false
-      });
-      // No need to call returnToWakeListening here, handleError will manage state transition.
-    }, this.commandTimeoutMs);
-  }
-
-  private clearCommandTimeout(): void {
-    if (this.commandTimeoutTimer) clearTimeout(this.commandTimeoutTimer);
-    this.commandTimeoutTimer = null;
-    this.context.clearVadCommandTimeout();
-  }
-
-  private async returnToWakeListening(reason: string = "Returning to wake listening"): Promise<void> {
+  private async returnToWakeListening(reason: string = "VAD: Returning to wake listening"): Promise<void> {
     console.log(`[VadMode] ${reason}`);
-    this.clearCommandTimeout();
+    this.context.clearVadCommandTimeout(); // Clear manager's overall VAD command timeout
+    // No internal VadMode timer to clear here related to command capture phase duration
+
     this.commandTranscriptBuffer.value = '';
     this.context.sharedState.pendingTranscript.value = '';
 
-    if (this.context.activeHandlerApi.value && (this.phase.value === 'capturing-command' || this.phase.value === 'listening-wake')) {
-        await this.context.activeHandlerApi.value.stopListening(true);
+    // Stop current handler activity (e.g., command capture) before restarting for wake word
+    if (this.context.activeHandlerApi.value && this.phase.value !== 'idle') {
+        // Ensure handler is stopped if it was in command capture or wake listening
+        await this.context.activeHandlerApi.value.stopListening(true); // Abort current
     }
 
-    this.phase.value = 'idle';
+    this.phase.value = 'idle'; // Temporarily to allow 'start' conditions
     this.context.sharedState.isListeningForWakeWord.value = false;
     this.context.sharedState.isProcessingAudio.value = false;
 
     if (this.isBlocked()) {
-      if (reason && reason !== "Returning to wake listening") this.context.transcriptionDisplay.showError(reason, 2000);
+      if (reason && reason !== "VAD: Returning to wake listening") this.context.transcriptionDisplay.showError(reason, 2000);
       else this.context.transcriptionDisplay.clearTranscription();
-      console.warn('[VadMode] Cannot return to wake listening: mode is blocked.');
+      console.warn('[VadMode] Blocked from returning to wake listening.');
       return;
     }
+    // Re-start VAD mode, which will set phase to 'listening-wake'
     await this.start();
   }
 
   private async resetToIdleState(errorMessage?: string): Promise<void> {
-    this.clearCommandTimeout();
+    this.context.clearVadCommandTimeout();
+    // No internal VadMode command timer to clear here.
     if (this.context.activeHandlerApi.value && this.phase.value !== 'idle') {
       await this.context.activeHandlerApi.value.stopAll(true);
     }
@@ -250,10 +230,11 @@ export class VadMode extends BaseSttMode implements SttModePublicState {
         fatal: false,
     } as SttHandlerErrorPayload;
 
-    console.error(`[VadMode] Error in phase ${this.phase.value}:`, errorPayload.message, `(Code: ${errorPayload.code || 'N/A'})`);
+    console.error(`[VadMode] Error received. Phase: ${this.phase.value}. Code: ${errorPayload.code}. Message: ${errorPayload.message}`);
 
+    // Play beep-out sound if it's a VAD command timeout signaled by the handler
     if (errorPayload.code === 'vad-command-timeout') {
-        this.context.playSound(this.context.audioFeedback.beepOutSound.value); // Play specific timeout sound
+        this.context.playSound(this.context.audioFeedback.beepOutSound.value);
         this.context.transcriptionDisplay.showVadTimeout();
     } else if (errorPayload.code !== 'no-speech' && errorPayload.code !== 'aborted' && !errorPayload.message.includes('aborted by the user')) {
         this.context.transcriptionDisplay.showError(errorPayload.message, 3000);
@@ -261,8 +242,10 @@ export class VadMode extends BaseSttMode implements SttModePublicState {
 
     this.context.emit('voice-input-error', errorPayload);
 
+    // If error occurred during command capture, try to return to wake listening.
+    // Otherwise, or if fatal, reset to idle.
     if (this.phase.value === 'capturing-command' && !this.isBlocked() && !errorPayload.fatal) {
-      this.returnToWakeListening(`Error during command: ${errorPayload.message}`);
+      this.returnToWakeListening(`Error during command capture: ${errorPayload.message.substring(0,50)}`);
     } else {
       this.resetToIdleState();
     }
