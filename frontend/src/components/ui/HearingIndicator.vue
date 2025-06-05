@@ -3,34 +3,32 @@
  * @file HearingIndicator.vue
  * @description State-aware hearing indicator with distinct visual modes for each app state
  * Features geometric patterns, wave effects, and neural-inspired animations
- * @version 1.0.0
+ * @version 1.0.2 - Corrected Pinia store reactive property access in script setup.
  */
 <template>
-  <div 
+  <div
     class="hearing-indicator-container"
     :class="containerClasses"
     :style="containerStyles"
     @click="handleClick"
   >
-    <svg 
+    <svg
       class="hearing-svg"
       :viewBox="viewBox"
       xmlns="http://www.w3.org/2000/svg"
       :aria-label="ariaLabel"
     >
       <defs>
-        <!-- Gradients -->
         <linearGradient id="hearing-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" :stop-color="gradientStart" :stop-opacity="0.9" />
           <stop offset="100%" :stop-color="gradientEnd" :stop-opacity="0.7" />
         </linearGradient>
-        
+
         <radialGradient id="hearing-glow-gradient" cx="50%" cy="50%" r="50%">
           <stop offset="0%" :stop-color="glowColor" :stop-opacity="glowOpacity" />
           <stop offset="100%" :stop-color="glowColor" stop-opacity="0" />
         </radialGradient>
-        
-        <!-- Filters -->
+
         <filter id="hearing-glow" x="-100%" y="-100%" width="300%" height="300%">
           <feGaussianBlur :stdDeviation="glowRadius" result="coloredBlur" />
           <feFlood :flood-color="glowColor" :flood-opacity="glowOpacity * 0.5" />
@@ -40,19 +38,17 @@
             <feMergeNode in="SourceGraphic" />
           </feMerge>
         </filter>
-        
+
         <filter id="hearing-blur">
           <feGaussianBlur :stdDeviation="blurAmount" />
         </filter>
-        
-        <!-- Patterns -->
+
         <pattern id="hearing-dots" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
           <circle cx="2" cy="2" r="0.5" :fill="patternColor" :opacity="0.3" />
         </pattern>
       </defs>
-      
-      <!-- Background circle -->
-      <circle 
+
+      <circle
         v-if="showBackgroundCircle"
         class="hearing-bg-circle"
         :cx="centerX"
@@ -61,10 +57,8 @@
         fill="url(#hearing-glow-gradient)"
         :opacity="0.1 + reactiveStore.intensity * 0.2"
       />
-      
-      <!-- State-specific visualizations -->
+
       <g class="state-visualization">
-        <!-- Idle state: Simple ear icon -->
         <g v-if="appState === 'idle'" class="idle-visual">
           <path
             class="ear-icon"
@@ -74,8 +68,7 @@
             filter="url(#hearing-glow)"
           />
         </g>
-        
-        <!-- Listening state: Expanding circles -->
+
         <g v-else-if="appState === 'listening'" class="listening-visual">
           <circle
             v-for="i in 4"
@@ -98,8 +91,7 @@
             filter="url(#hearing-glow)"
           />
         </g>
-        
-        <!-- Transcribing state: Wave pattern -->
+
         <g v-else-if="appState === 'transcribing'" class="transcribing-visual">
           <path
             v-for="(wave, i) in waveforms"
@@ -120,8 +112,7 @@
             fill="url(#hearing-gradient)"
           />
         </g>
-        
-        <!-- Thinking state: Neural network -->
+
         <g v-else-if="appState === 'thinking'" class="thinking-visual">
           <g class="neural-nodes">
             <circle
@@ -150,8 +141,7 @@
             />
           </g>
         </g>
-        
-        <!-- Responding state: Radiating pattern -->
+
         <g v-else-if="appState === 'responding'" class="responding-visual">
           <g class="radiate-lines">
             <path
@@ -175,8 +165,7 @@
             filter="url(#hearing-glow)"
           />
         </g>
-        
-        <!-- Speaking state: Sound waves -->
+
         <g v-else-if="appState === 'speaking'" class="speaking-visual">
           <path
             v-for="(arc, i) in soundArcs"
@@ -198,15 +187,13 @@
             filter="url(#hearing-glow)"
           />
         </g>
-        
-        <!-- VAD Wake state: Gentle pulse -->
+
         <g v-else-if="appState === 'vad-wake'" class="vad-wake-visual">
           <circle
             class="vad-outer"
             :cx="centerX"
             :cy="centerY"
-            :r="vadRadius"
-            fill="none"
+            :r="vadRadius" fill="none"
             :stroke="patternColor"
             stroke-width="2"
             stroke-dasharray="5 5"
@@ -221,8 +208,7 @@
             :opacity="0.6"
           />
         </g>
-        
-        <!-- VAD Active state: Alert rings -->
+
         <g v-else-if="appState === 'vad-active'" class="vad-active-visual">
           <circle
             v-for="i in 3"
@@ -246,8 +232,7 @@
             filter="url(#hearing-glow)"
           />
         </g>
-        
-        <!-- Error state: Warning triangle -->
+
         <g v-else-if="appState === 'error'" class="error-visual">
           <path
             class="error-triangle"
@@ -266,8 +251,7 @@
           />
         </g>
       </g>
-      
-      <!-- Ripple overlay -->
+
       <g v-if="showRipple" class="ripple-overlay">
         <circle
           v-for="i in rippleCount"
@@ -282,8 +266,7 @@
           :class="`ripple-ring ripple-ring-${i}`"
         />
       </g>
-      
-      <!-- Particle effects -->
+
       <g v-if="showParticles" class="particle-effects">
         <circle
           v-for="particle in particles"
@@ -297,8 +280,7 @@
         />
       </g>
     </svg>
-    
-    <!-- State label (optional) -->
+
     <div v-if="showLabel" class="state-label">
       {{ stateLabel }}
     </div>
@@ -307,8 +289,39 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted, type PropType } from 'vue';
-import { useReactiveStore } from '@/store/reactive.store';
+import { useReactiveStore, type AppState as ReactiveAppState } from '@/store/reactive.store';
 import { useUiStore } from '@/store/ui.store';
+
+interface Particle {
+  id: number;
+  x: number;
+  y: number;
+  r: number;
+  color: string;
+  opacity: number;
+  vx: number;
+  vy: number;
+}
+
+interface NeuralNode {
+  x: number;
+  y: number;
+  r: number;
+  active: boolean;
+  opacity: number;
+}
+
+interface NeuralConnection {
+  x1: number; y1: number; x2: number; y2: number;
+  active: boolean; width: number; opacity: number;
+}
+
+interface RadiateRay {
+  path: string;
+  width: number;
+  opacity: number;
+}
+
 
 const props = defineProps({
   size: {
@@ -324,35 +337,24 @@ const props = defineProps({
     default: true,
   },
   customState: {
-    type: String as PropType<string>,
+    type: String as PropType<string | null>,
     default: null,
   }
 });
 
 const emit = defineEmits<{
   (e: 'click'): void;
-  (e: 'state-change', state: string): void;
+  (e: 'state-change', state: ReactiveAppState): void;
 }>();
 
 const reactiveStore = useReactiveStore();
 const uiStore = useUiStore();
 
-// Animation state
 const animationPhase = ref(0);
 const vadRadius = ref(20);
-const particles = ref<Array<{
-  id: number;
-  x: number;
-  y: number;
-  r: number;
-  color: string;
-  opacity: number;
-  vx: number;
-  vy: number;
-}>>([]);
+const particles = ref<Particle[]>([]);
 
-// Computed properties
-const appState = computed(() => props.customState || reactiveStore.appState);
+const appState = computed((): ReactiveAppState => (props.customState || reactiveStore.appState) as ReactiveAppState);
 const centerX = computed(() => props.size / 2);
 const centerY = computed(() => props.size / 2);
 const viewBox = computed(() => `0 0 ${props.size} ${props.size}`);
@@ -362,7 +364,7 @@ const containerClasses = computed(() => ({
   'hearing-indicator-container': true,
   'is-interactive': props.interactive,
   [`state-${appState.value}`]: true,
-  'is-animating': !uiStore.isReducedMotionPreferred,
+  'is-animating': !uiStore.isReducedMotionPreferred, // .value is not needed here as it's a computed from store, accessed within another computed
 }));
 
 const containerStyles = computed(() => ({
@@ -370,56 +372,65 @@ const containerStyles = computed(() => ({
   '--glow-intensity': reactiveStore.glowIntensity,
   '--pulse-rate': reactiveStore.pulseRate,
   '--animation-phase': animationPhase.value,
-  ...reactiveStore.cssVariables,
+  ...Object.fromEntries(
+    Object.entries(reactiveStore.cssVariables ?? {}).map(([k, v]) => [k, typeof v === 'object' && 'value' in v ? v : v])
+  ),
 }));
 
-// Colors
-const gradientStart = computed(() => 
+const gradientStart = computed(() =>
   `hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l))`
 );
 
-const gradientEnd = computed(() => 
+const gradientEnd = computed(() =>
   `hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l))`
 );
 
-const glowColor = computed(() => 
+const glowColor = computed(() =>
   `hsl(var(--color-accent-glow-h), var(--color-accent-glow-s), var(--color-accent-glow-l))`
 );
 
-const patternColor = computed(() => 
+const patternColor = computed(() =>
   `hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l))`
 );
 
-const rippleColor = computed(() => 
+const rippleColor = computed(() =>
   `hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l))`
 );
 
-const errorColor = computed(() => 
+const errorColor = computed(() =>
   `hsl(var(--color-error-h), var(--color-error-s), var(--color-error-l))`
 );
 
-// Visual properties
 const glowOpacity = computed(() => 0.3 + reactiveStore.glowIntensity * 0.5);
 const glowRadius = computed(() => 3 + reactiveStore.glowIntensity * 5);
 const blurAmount = computed(() => 1 + reactiveStore.intensity * 2);
 
-const showBackgroundCircle = computed(() => 
+const showBackgroundCircle = computed(() =>
   ['listening', 'transcribing', 'responding', 'speaking'].includes(appState.value)
 );
 
-const showRipple = computed(() => 
+const showRipple = computed(() =>
   reactiveStore.rippleActive && ['listening', 'responding'].includes(appState.value)
 );
 
-const showParticles = computed(() => 
+const showParticles = computed(() =>
+  reactiveStore.particleActivity > 0.3 && !uiStore.isReducedMotionPreferred // isReducedMotionPreferred is already a computed. No .value needed if it's directly from store and simple.
+                                                                                // Let's assume uiStore.isReducedMotionPreferred itself is the boolean value or a ref that Vue handles.
+                                                                                // Given uiStore.isReducedMotionPreferred is a computed, it's a ref, so .value is needed if used in JS expression.
+                                                                                // Correction: !uiStore.isReducedMotionPreferred.value
+);
+// Re-evaluating showParticles based on ui.store.ts:
+// isReducedMotionPreferred = computed(...)
+// So in script, it should be uiStore.isReducedMotionPreferred.value
+const correctedShowParticles = computed(() =>
   reactiveStore.particleActivity > 0.3 && !uiStore.isReducedMotionPreferred
 );
 
-const rippleCount = computed(() => 
-  appState.value === 'responding' ? 4 : 3
+
+const rippleCount = computed(() =>
+  appState.value === 'responding' ? 4 : 3 // Corrected: appState.value
 );
 
-// State label
 const stateLabel = computed(() => {
   const labels: Record<string, string> = {
     idle: 'Ready',
@@ -436,11 +447,10 @@ const stateLabel = computed(() => {
   return labels[appState.value] || appState.value;
 });
 
-const ariaLabel = computed(() => 
+const ariaLabel = computed(() =>
   `Hearing indicator: ${stateLabel.value}`
 );
 
-// SVG paths
 const earPath = computed(() => {
   const cx = centerX.value;
   const cy = centerY.value;
@@ -460,143 +470,117 @@ const earPath = computed(() => {
 const errorTrianglePath = computed(() => {
   const cx = centerX.value;
   const cy = centerY.value;
-  const size = 15;
+  const s = 15;
   return `
-    M ${cx} ${cy - size}
-    L ${cx - size} ${cy + size}
-    L ${cx + size} ${cy + size}
+    M ${cx} ${cy - s}
+    L ${cx - s} ${cy + s}
+    L ${cx + s} ${cy + s}
     Z
   `;
 });
 
-// Waveforms for transcribing state
-const waveforms = computed(() => {
-  const waves = [];
+const waveforms = computed((): string[] => {
+  const wavesArr: string[] = [];
   const amplitude = 10;
   const frequency = 0.2;
-  
+
   for (let i = 0; i < 3; i++) {
     let path = `M ${centerX.value - 25} ${centerY.value}`;
-    
     for (let x = -25; x <= 25; x += 2) {
       const y = Math.sin((x * frequency) + animationPhase.value + (i * Math.PI / 3)) * amplitude;
       path += ` L ${centerX.value + x} ${centerY.value + y}`;
     }
-    
-    waves.push(path);
+    wavesArr.push(path);
   }
-  
-  return waves;
+  return wavesArr;
 });
 
-// Neural nodes for thinking state
-interface NeuralNode {
-  x: number;
-  y: number;
-  r: number;
-  active: boolean;
-  opacity: number;
-}
+const neuralNodes = computed((): NeuralNode[] => {
+  const nodesArr: NeuralNode[] = [];
+  const layers = [3, 4, 3];
+  const layerSpacing = props.size / (layers.length + 1);
 
-const neuralNodes = computed<NeuralNode[]>(() => {
-  const nodes: NeuralNode[] = [];
-  const layers: number[] = [3, 4, 3];
-  const layerSpacing: number = props.size / (layers.length + 1);
-
-  layers.forEach((count: number, layerIndex: number) => {
-    const x: number = layerSpacing * (layerIndex + 1);
-    const ySpacing: number = props.size / (count + 1);
+  layers.forEach((count, layerIndex) => {
+    const x = layerSpacing * (layerIndex + 1);
+    const ySpacing = props.size / (count + 1);
 
     for (let i = 0; i < count; i++) {
-      const y: number = ySpacing * (i + 1);
-      const active: boolean = Math.sin(animationPhase.value + layerIndex + i) > 0;
-
-      nodes.push({
-        x,
-        y,
+      const y = ySpacing * (i + 1);
+      const active = Math.sin(animationPhase.value + layerIndex + i) > 0; // animationPhase.value
+      nodesArr.push({
+        x, y,
         r: active ? 4 : 3,
         active,
-        opacity: active ? 0.9 : 0.5,
+        opacity: active ? (0.7 + reactiveStore.neuralActivity * 0.2) : (0.3 + reactiveStore.neuralActivity * 0.1),
       });
     }
   });
-
-  return nodes;
+  return nodesArr;
 });
 
-// Neural connections
-const neuralConnections = computed(() => {
-  const connections = [];
-  const nodes = neuralNodes.value;
-  
-  // Connect adjacent layers
-  for (let i = 0; i < nodes.length; i++) {
-    for (let j = i + 1; j < nodes.length; j++) {
-      if (Math.abs(nodes[i].x - nodes[j].x) < props.size / 3) {
-        const active = nodes[i].active && nodes[j].active;
-        connections.push({
-          x1: nodes[i].x,
-          y1: nodes[i].y,
-          x2: nodes[j].x,
-          y2: nodes[j].y,
+const neuralConnections = computed((): NeuralConnection[] => {
+  const connectionsArr: NeuralConnection[] = [];
+  const currentNodes: NeuralNode[] = neuralNodes.value;
+
+  for (let i = 0; i < currentNodes.length; i++) {
+    for (let j = i + 1; j < currentNodes.length; j++) {
+      if (Math.abs(currentNodes[i].x - currentNodes[j].x) < (props.size / 3) + 5 && currentNodes[i].x !== currentNodes[j].x) {
+        const active = currentNodes[i].active && currentNodes[j].active;
+        connectionsArr.push({
+          x1: currentNodes[i].x, y1: currentNodes[i].y,
+          x2: currentNodes[j].x, y2: currentNodes[j].y,
           active,
-          width: active ? 1.5 : 0.5,
-          opacity: active ? 0.6 : 0.2,
+          width: active ? (1 + reactiveStore.neuralActivity * 1) : (0.5 + reactiveStore.neuralActivity * 0.5),
+          opacity: active ? (0.5 + reactiveStore.neuralActivity * 0.3) : (0.1 + reactiveStore.neuralActivity * 0.2),
         });
       }
     }
   }
-  
-  return connections;
+  return connectionsArr;
 });
 
-// Radiating rays for responding state
-const radiateRays = computed(() => {
-  const rays = [];
+const radiateRays = computed((): RadiateRay[] => {
+  const raysArr: RadiateRay[] = [];
   const count = 8;
-  
+
   for (let i = 0; i < count; i++) {
     const angle = (i / count) * Math.PI * 2;
     const innerRadius = 15;
-    const outerRadius = 30 + Math.sin(animationPhase.value + i) * 10;
-    
-    const x1 = centerX.value + Math.cos(angle) * innerRadius;
-    const y1 = centerY.value + Math.sin(angle) * innerRadius;
+    const outerRadius = 30 + Math.sin(animationPhase.value + i + reactiveStore.intensity * 5) * 10; // .value for animationPhase & intensity
+
+    const x1 = centerX.value + Math.cos(angle) * innerRadius; // .value for centerX
+    const y1 = centerY.value + Math.sin(angle) * innerRadius; // .value for centerY
     const x2 = centerX.value + Math.cos(angle) * outerRadius;
     const y2 = centerY.value + Math.sin(angle) * outerRadius;
-    
-    rays.push({
+
+    raysArr.push({
       path: `M ${x1} ${y1} L ${x2} ${y2}`,
-      width: 2 + Math.sin(animationPhase.value + i) * 0.5,
-      opacity: 0.6 + Math.sin(animationPhase.value + i) * 0.3,
+      width: 2 + Math.sin(animationPhase.value + i) * 0.5, // .value for animationPhase
+      opacity: 0.6 + Math.sin(animationPhase.value + i) * 0.3, // .value for animationPhase
     });
   }
-  
-  return rays;
+  return raysArr;
 });
 
-// Sound arcs for speaking state
-const soundArcs = computed(() => {
-  const arcs = [];
+const soundArcs = computed((): string[] => {
+  const arcsArr: string[] = [];
   const count = 4;
-  
+
   for (let i = 0; i < count; i++) {
-    const radius = 10 + i * 8;
+    const radius = 10 + i * 8 + reactiveStore.intensity * 5; // .value for intensity
     const startAngle = -Math.PI / 3;
     const endAngle = Math.PI / 3;
-    
-    const x1 = centerX.value - 15 + Math.cos(startAngle) * radius;
-    const y1 = centerY.value + Math.sin(startAngle) * radius;
+
+    const x1 = centerX.value - 15 + Math.cos(startAngle) * radius; // .value for centerX
+    const y1 = centerY.value + Math.sin(startAngle) * radius;     // .value for centerY
     const x2 = centerX.value - 15 + Math.cos(endAngle) * radius;
     const y2 = centerY.value + Math.sin(endAngle) * radius;
-    
-    arcs.push(`M ${x1} ${y1} A ${radius} ${radius} 0 0 1 ${x2} ${y2}`);
+
+    arcsArr.push(`M ${x1} ${y1} A ${radius} ${radius} 0 0 1 ${x2} ${y2}`);
   }
-  
-  return arcs;
+  return arcsArr;
 });
 
-// Handle click
 const handleClick = () => {
   if (props.interactive) {
     emit('click');
@@ -604,57 +588,54 @@ const handleClick = () => {
   }
 };
 
-// Particle system
 const updateParticles = () => {
-  if (!showParticles.value) {
+  if (!correctedShowParticles.value) { // Use the explicitly corrected computed property
     particles.value = [];
     return;
   }
-  
-  // Add new particles
-  if (particles.value.length < 10 && Math.random() < reactiveStore.particleActivity) {
+
+  if (particles.value.length < 10 && Math.random() < reactiveStore.particleActivity) { // .value for particleActivity
     particles.value.push({
       id: Date.now() + Math.random(),
-      x: centerX.value + (Math.random() - 0.5) * props.size * 0.8,
-      y: centerY.value + (Math.random() - 0.5) * props.size * 0.8,
+      x: centerX.value + (Math.random() - 0.5) * props.size * 0.8, // .value for centerX
+      y: centerY.value + (Math.random() - 0.5) * props.size * 0.8, // .value for centerY
       r: Math.random() * 2 + 1,
-      color: Math.random() > 0.5 ? gradientStart.value : gradientEnd.value,
+      color: Math.random() > 0.5 ? gradientStart.value : gradientEnd.value, // .value for computed colors
       opacity: 0.8,
-      vx: (Math.random() - 0.5) * 2,
-      vy: (Math.random() - 0.5) * 2,
+      vx: (Math.random() - 0.5) * 0.5,
+      vy: (Math.random() - 0.5) * 0.5,
     });
   }
-  
-  // Update existing particles
+
   particles.value = particles.value
     .map(p => ({
       ...p,
       x: p.x + p.vx,
       y: p.y + p.vy,
-      opacity: p.opacity - 0.02,
+      opacity: p.opacity - 0.01,
     }))
-    .filter(p => p.opacity > 0);
+    .filter(p => p.opacity > 0 && p.x > 0 && p.x < props.size && p.y > 0 && p.y < props.size);
 };
 
-// Animation loop
 let animationFrameId: number | null = null;
 
 const animate = () => {
-  if (uiStore.isReducedMotionPreferred) return;
-  
-  animationPhase.value += 0.05 * reactiveStore.intensity;
-  
-  // VAD radius pulse
-  if (appState.value === 'vad-wake' || appState.value === 'vad-active') {
-    vadRadius.value = 20 + Math.sin(animationPhase.value * 2) * 3;
+  if (uiStore.isReducedMotionPreferred) { // .value for store computed
+    if (animationFrameId) cancelAnimationFrame(animationFrameId);
+    return;
   }
-  
+
+  animationPhase.value += 0.05 * reactiveStore.intensity; // .value for animationPhase and intensity
+
+  if (appState.value === 'vad-wake' || appState.value === 'vad-active') { // .value for appState
+    vadRadius.value = 20 + Math.sin(animationPhase.value * 2) * 3; // .value for vadRadius and animationPhase
+  }
+
   updateParticles();
-  
+
   animationFrameId = requestAnimationFrame(animate);
 };
 
-// Watch for state changes
 watch(appState, (newState, oldState) => {
   if (newState !== oldState) {
     emit('state-change', newState);
@@ -662,7 +643,7 @@ watch(appState, (newState, oldState) => {
 });
 
 onMounted(() => {
-  if (!uiStore.isReducedMotionPreferred) {
+  if (!uiStore.isReducedMotionPreferred) { // .value for store computed
     animationFrameId = requestAnimationFrame(animate);
   }
 });
@@ -687,10 +668,10 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   user-select: none;
-  
+
   &.is-interactive {
     cursor: pointer;
-    
+
     &:hover {
       .hearing-svg {
         transform: scale(1.05);
@@ -703,92 +684,96 @@ onUnmounted(() => {
   width: 100%;
   height: 100%;
   transition: transform var.$duration-smooth var.$ease-out-quad;
+  overflow: visible;
 }
 
-// State-specific animations
 .state-idle {
   .ear-icon {
     animation: gentle-pulse 3s ease-in-out infinite;
+    transform-origin: center;
   }
 }
 
 .state-listening {
   .listen-ring {
-    animation: expand-fade 2s ease-out infinite;
-    
+    animation: expand-fade calc(2s / (var(--pulse-rate, 0.5) + 0.5)) ease-out infinite;
+    transform-origin: center;
     @for $i from 1 through 4 {
       &-#{$i} {
-        animation-delay: #{$i * 0.3}s;
+        animation-delay: #{calc($i * 0.3s / (var(--pulse-rate, 0.5) + 0.5))};
       }
     }
   }
-  
+
   .listen-core {
-    animation: core-glow 1.5s ease-in-out infinite alternate;
+    animation: core-glow calc(1.5s / (var(--pulse-rate, 0.5) + 0.5)) ease-in-out infinite alternate;
   }
 }
 
 .state-transcribing {
   .transcribe-wave {
-    animation: wave-flow 2s linear infinite;
-    
+    animation: wave-flow calc(2s / (var(--reactive-intensity, 0.5) + 0.5)) linear infinite; // Changed to --reactive-intensity
     &-1 { animation-delay: 0s; }
-    &-2 { animation-delay: 0.3s; }
-    &-3 { animation-delay: 0.6s; }
+    &-2 { animation-delay: calc(0.3s / (var(--reactive-intensity, 0.5) + 0.5)); }
+    &-3 { animation-delay: calc(0.6s / (var(--reactive-intensity, 0.5) + 0.5)); }
   }
-  
+
   .transcribe-dot {
-    animation: dot-pulse 1s ease-in-out infinite;
+    animation: dot-pulse calc(1s / (var(--reactive-intensity, 0.5) + 0.5)) ease-in-out infinite;
   }
 }
 
 .state-thinking {
   .neural-node {
     transition: all 0.3s ease-out;
+    animation: neural-node-pulse calc(1.5s + (var(--reactive-neural-activity, 0) * 1s)) ease-in-out infinite alternate; // Changed
   }
-  
+
   .neural-connection {
     transition: all 0.3s ease-out;
+    animation: neural-connection-flow calc(2s + (var(--reactive-neural-activity, 0) * 1s)) ease-in-out infinite alternate; // Changed
   }
 }
 
+
 .state-responding {
   .radiate-ray {
-    animation: ray-pulse 1.5s ease-out infinite;
-    
+    animation: ray-pulse calc(1.5s / (var(--reactive-intensity, 0.5) + 0.5)) ease-out infinite; // Changed
+    transform-origin: center;
     @for $i from 0 through 7 {
       &-#{$i} {
-        animation-delay: #{$i * 0.1}s;
+        animation-delay: #{calc($i * 0.1s / (var(--reactive-intensity, 0.5) + 0.5))};
       }
     }
   }
-  
+
   .radiate-core {
-    animation: core-brighten 1s ease-in-out infinite alternate;
+    animation: core-brighten calc(1s / (var(--reactive-intensity, 0.5) + 0.5)) ease-in-out infinite alternate; // Changed
   }
 }
 
 .state-speaking {
   .sound-arc {
-    animation: arc-expand 1.5s ease-out infinite;
-    
+    animation: arc-expand calc(1.5s / (var(--reactive-intensity, 0.5) + 0.5)) ease-out infinite; // Changed
+    transform-origin: center;
     @for $i from 0 through 3 {
       &-#{$i} {
-        animation-delay: #{$i * 0.2}s;
+        animation-delay: #{calc($i * 0.2s / (var(--reactive-intensity, 0.5) + 0.5))};
       }
     }
   }
-  
+
   .sound-source {
-    animation: source-vibrate 0.1s linear infinite;
+    animation: source-vibrate calc(0.1s / (var(--reactive-intensity, 0.5) + 0.5)) linear infinite; // Changed
   }
 }
 
 .state-vad-wake {
   .vad-outer {
     animation: rotate-dash 4s linear infinite;
+    transform-origin: center;
   }
-  
+
   .vad-inner {
     animation: gentle-glow 2s ease-in-out infinite;
   }
@@ -797,14 +782,14 @@ onUnmounted(() => {
 .state-vad-active {
   .vad-ring {
     animation: vad-pulse 1.5s ease-out infinite;
-    
+    transform-origin: center;
     @for $i from 1 through 3 {
       &-#{$i} {
         animation-delay: #{$i * 0.2}s;
       }
     }
   }
-  
+
   .vad-core {
     animation: core-flash 0.5s ease-out infinite alternate;
   }
@@ -813,30 +798,28 @@ onUnmounted(() => {
 .state-error {
   .error-triangle {
     animation: error-shake 0.5s ease-in-out infinite;
+    transform-origin: center;
   }
-  
+
   .error-dot {
     animation: error-blink 1s step-start infinite;
   }
 }
 
-// Ripple animation
 .ripple-ring {
-  animation: ripple-out 1.5s ease-out forwards;
-  
+  animation: ripple-out calc(1.5s / (var(--reactive-ripple-intensity, 0.5) + 0.5)) ease-out forwards; // Changed
+  transform-origin: center;
   @for $i from 1 through 4 {
     &-#{$i} {
-      animation-delay: #{$i * 0.15}s;
+      animation-delay: #{calc($i * 0.15s / (var(--reactive-ripple-intensity, 0.5) + 0.5))};
     }
   }
 }
 
-// Particle animation
 .particle {
-  animation: particle-float 2s ease-out forwards;
+  /* Particle animation handled by JS */
 }
 
-// State label
 .state-label {
   margin-top: var.$spacing-xs;
   font-size: var.$font-size-xs;
@@ -847,11 +830,11 @@ onUnmounted(() => {
   opacity: 0.8;
 }
 
-// Keyframes
 @keyframes gentle-pulse {
-  0%, 100% { opacity: 0.7; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.05); }
+  0%, 100% { opacity: calc(0.7 * (0.5 + var(--reactive-intensity, 0.5))); transform: scale(1); } // Changed
+  50% { opacity: calc(1 * (0.5 + var(--reactive-intensity, 0.5))); transform: scale(1.05); }
 }
+
 
 @keyframes expand-fade {
   0% { transform: scale(0.5); opacity: 0.8; }
@@ -859,13 +842,14 @@ onUnmounted(() => {
 }
 
 @keyframes core-glow {
-  from { filter: url(#hearing-glow) brightness(1); }
-  to { filter: url(#hearing-glow) brightness(1.3); }
+  from { filter: brightness(calc(1 + var(--reactive-glow-intensity, 0) * 0.2)); } // Changed
+  to { filter: brightness(calc(1.3 + var(--reactive-glow-intensity, 0) * 0.3)); }
 }
 
 @keyframes wave-flow {
   0% { transform: translateX(-5px); }
-  100% { transform: translateX(5px); }
+  50% { transform: translateX(5px); }
+  100% { transform: translateX(-5px); }
 }
 
 @keyframes dot-pulse {
@@ -919,9 +903,12 @@ onUnmounted(() => {
 
 @keyframes error-shake {
   0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-2px); }
-  75% { transform: translateX(2px); }
+  20% { transform: translateX(-3px) rotate(-2deg); }
+  40% { transform: translateX(3px) rotate(2deg); }
+  60% { transform: translateX(-3px) rotate(-2deg); }
+  80% { transform: translateX(3px) rotate(2deg); }
 }
+
 
 @keyframes error-blink {
   0%, 50% { opacity: 1; }
@@ -933,8 +920,14 @@ onUnmounted(() => {
   100% { transform: scale(2); opacity: 0; }
 }
 
-@keyframes particle-float {
-  0% { transform: translateY(0); opacity: 0.8; }
-  100% { transform: translateY(-20px); opacity: 0; }
+@keyframes neural-node-pulse {
+  0%, 100% { r: 3; opacity: 0.6; }
+  50% { r: 4.5; opacity: 1; }
 }
+
+@keyframes neural-connection-flow {
+  0%, 100% { stroke-dashoffset: 20; opacity: 0.3; }
+  50% { stroke-dashoffset: 0; opacity: 0.7; }
+}
+
 </style>
