@@ -5,15 +5,15 @@
  * Defines the common contract, state structure, and shared utilities for all modes.
  * Modes should extend this class to ensure consistent behavior and API.
  *
- * @version 1.4.1
- * @updated 2025-06-05 - Added `isAwaitingVadCommandResult` and `clearVadCommandTimeout` to SttModeContext.
- * - Added `requiresHandler` abstract property to BaseSttMode.
- * - Corrected type for Readonly Refs using Vue's convention.
+ * @version 1.5.0
+ * @updated 2025-06-05
+ * - Added `isExplicitlyStoppedByUser` and `setExplicitlyStoppedByUser` to SttModeContext.
+ * - Ensured all `Readonly<Ref<T>>` types are correctly defined.
  */
-import type { Ref, ComputedRef } from 'vue'; // Vue's Readonly is a function, for types use TypeScript's Readonly<T>
+import type { Ref, ComputedRef, ShallowRef } from 'vue'; // Vue's Readonly is a function, for types use TypeScript's Readonly<T>
 import type { VoiceApplicationSettings, AudioInputMode } from '@/services/voice.settings.service';
 import type { SttHandlerInstance, SttHandlerErrorPayload } from '../../types';
-import type { VoiceInputSharedState } from '../shared/useVoiceInputState'; // Assuming this will be imported correctly
+import type { VoiceInputSharedState } from '../shared/useVoiceInputState';
 import type { AudioFeedbackInstance } from '../shared/useAudioFeedback';
 import type { useTranscriptionDisplay } from '../shared/useTranscriptionDisplay';
 import type { ToastService } from '@/services/services';
@@ -29,7 +29,7 @@ export interface SttModeContext {
   /** Indicates if microphone permission has been granted by the user. */
   micPermissionGranted: ComputedRef<boolean>;
   /** Reactive reference to the API of the currently active STT handler (e.g., Browser or Whisper). Null if no handler is active. */
-  activeHandlerApi: Readonly<Ref<SttHandlerInstance | null>>;
+  activeHandlerApi: Readonly<ShallowRef<SttHandlerInstance | null>>; // Changed from Ref to ShallowRef
   /** Vue component emit function for the mode to send events upwards (e.g., final transcription). */
   emit: (event: string, ...args: any[]) => void;
   /**
@@ -61,6 +61,18 @@ export interface SttModeContext {
    * @description Function to manually clear any active timeout waiting for a VAD command.
    */
   clearVadCommandTimeout: () => void;
+  /**
+   * @property {Readonly<Ref<boolean>>} isExplicitlyStoppedByUser
+   * @description Indicates if the current STT operation was explicitly stopped by a user action (e.g., clicking the mic button while active).
+   * This helps differentiate between manual stops and stops due to errors or LLM processing.
+   */
+  isExplicitlyStoppedByUser: Readonly<Ref<boolean>>;
+  /**
+   * @method setExplicitlyStoppedByUser
+   * @description Allows the SttManager or modes to set the `isExplicitlyStoppedByUser` flag.
+   * @param {boolean} value - The new value for the flag.
+   */
+  setExplicitlyStoppedByUser: (value: boolean) => void;
 }
 
 /**
@@ -162,20 +174,25 @@ export abstract class BaseSttMode implements SttModePublicState {
    * @protected
    * @method isBlocked
    * @description Common utility method for modes to check if they are currently blocked from starting or operating.
-   * @returns {boolean} True if the mode is currently blocked, false otherwise.
+   * This checks general blocking conditions. Modes can add their own specific conditions.
+   * @returns {boolean} True if the mode is currently blocked by common factors, false otherwise.
    */
   protected isBlocked(): boolean {
-    if (this.context.isProcessingLLM.value) {
-        // console.debug(`[BaseSttMode] Blocked: LLM is processing.`); // Use debug for frequent logs
+    if (this.context.isExplicitlyStoppedByUser.value) { // Check this first
+        // console.debug(`[BaseSttMode] Blocked: Explicitly stopped by user.`);
         return true;
+    }
+    if (this.context.isProcessingLLM.value && !this.context.isAwaitingVadCommandResult.value) { // Allow if VAD is awaiting command
+      // console.debug(`[BaseSttMode] Blocked: LLM is processing.`);
+      return true;
     }
     if (!this.context.micPermissionGranted.value) {
-        // console.debug(`[BaseSttMode] Blocked: Microphone permission not granted.`);
-        return true;
+      // console.debug(`[BaseSttMode] Blocked: Microphone permission not granted.`);
+      return true;
     }
     if (this.requiresHandler && !this.context.activeHandlerApi.value) {
-        // console.debug(`[BaseSttMode] Blocked: Active STT handler required but not available.`);
-        return true;
+      // console.debug(`[BaseSttMode] Blocked: Active STT handler required but not available.`);
+      return true;
     }
     return false;
   }

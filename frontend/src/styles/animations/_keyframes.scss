@@ -441,3 +441,131 @@
   0%, 100% { opacity: var(--opacity-start, 0.75); transform: scale(1); }
   50% { opacity: var(--opacity-pulse, 1); transform: scale(var(--scale-pulse, 1.015)); }
 }
+
+// -----------------------------------------------------------------------------
+// MicInputButton Specific Animations (NEW ADDITIONS)
+// -----------------------------------------------------------------------------
+
+// Holographic shimmer/flicker for background elements or accents
+@keyframes micHolographicShimmer {
+  0%, 100% { 
+    opacity: var(--mic-holo-opacity-base, 0.3); 
+    filter: brightness(var(--mic-holo-brightness-base, 0.8)) saturate(var(--mic-holo-saturate-base, 0.7));
+  }
+  25% { 
+    opacity: var(--mic-holo-opacity-flicker, 0.5); 
+    filter: brightness(var(--mic-holo-brightness-flicker, 1)) saturate(var(--mic-holo-saturate-flicker, 1));
+  }
+  50% { 
+    opacity: var(--mic-holo-opacity-base, 0.3); 
+    filter: brightness(var(--mic-holo-brightness-base, 0.8)) saturate(var(--mic-holo-saturate-base, 0.7));
+  }
+  75% { 
+    opacity: var(--mic-holo-opacity-flicker-alt, 0.6); 
+    filter: brightness(var(--mic-holo-brightness-flicker-alt, 1.1)) saturate(var(--mic-holo-saturate-flicker-alt, 1.2));
+  }
+}
+
+// Gentle idle pulse for the core mic icon's energy
+@keyframes micIdleCorePulse {
+  0%, 100% { 
+    transform: scale(var(--mic-idle-core-scale-min, 0.8)); 
+    opacity: var(--mic-idle-core-opacity-min, 0.6); 
+  }
+  50% { 
+    transform: scale(var(--mic-idle-core-scale-max, 1)); 
+    opacity: var(--mic-idle-core-opacity-max, 0.9); 
+  }
+}
+
+// Radiant waves for listening state
+@keyframes micListeningWave {
+  0% {
+    stroke-width: var(--mic-wave-stroke-start, 1px);
+    opacity: var(--mic-wave-opacity-start, 0.7);
+    transform: scale(var(--mic-wave-scale-start, 0.3));
+  }
+  80% {
+    stroke-width: var(--mic-wave-stroke-end, 1.5px);
+    opacity: var(--mic-wave-opacity-end, 0);
+    transform: scale(var(--mic-wave-scale-end, 1.5)); // Waves expand further
+  }
+  100% { // Ensure it fully disappears
+    opacity: 0;
+    transform: scale(var(--mic-wave-scale-end, 1.5));
+  }
+}
+
+// Active listening core energy animation (more dynamic pulse)
+@keyframes micActiveCoreThrob {
+  0%, 100% { 
+    transform: scale(var(--mic-active-core-scale-min, 0.9)); 
+    opacity: var(--mic-active-core-opacity-min, 0.7); 
+    filter: brightness(var(--mic-active-core-brightness-min, 0.9));
+  }
+  25% {
+    transform: scale(var(--mic-active-core-scale-mid, 1.1)); 
+    opacity: var(--mic-active-core-opacity-mid, 1); 
+    filter: brightness(var(--mic-active-core-brightness-mid, 1.2));
+  }
+  50% { 
+    transform: scale(var(--mic-active-core-scale-max, 1.05)); 
+    opacity: var(--mic-active-core-opacity-max, 0.9); 
+    filter: brightness(var(--mic-active-core-brightness-max, 1.1));
+  }
+  75% {
+    transform: scale(var(--mic-active-core-scale-mid2, 1.15)); 
+    opacity: var(--mic-active-core-opacity-mid2, 0.95); 
+    filter: brightness(var(--mic-active-core-brightness-mid2, 1.15));
+  }
+}
+
+// Processing LLM: swirling, contained energy
+@keyframes micProcessingSwirl {
+  0% { 
+    transform: rotate(0deg) scale(1); 
+    opacity: var(--mic-processing-opacity-start, 0.6);
+  }
+  50% { 
+    transform: rotate(180deg) scale(var(--mic-processing-scale-mid, 1.1)); 
+    opacity: var(--mic-processing-opacity-mid, 0.9);
+  }
+  100% { 
+    transform: rotate(360deg) scale(1); 
+    opacity: var(--mic-processing-opacity-end, 0.6);
+  }
+}
+
+// Error state: glitchy twitch/flicker
+@keyframes micErrorGlitch {
+  0%, 100% { transform: translate(0, 0); opacity: 1; }
+  10% { transform: translate(var(--mic-glitch-x, -2px), var(--mic-glitch-y, 2px)); opacity: 0.8; }
+  20% { transform: translate(var(--mic-glitch-x, 2px), var(--mic-glitch-y, -2px)); opacity: 1; }
+  30% { transform: translate(var(--mic-glitch-x, -1px), var(--mic-glitch-y, -1px)); opacity: 0.7; }
+  40% { transform: translate(var(--mic-glitch-x, 1px), var(--mic-glitch-y, 1px)); opacity: 1; }
+  50% { transform: translate(0,0); opacity: 0.6; } // Quick fade
+  // Repeat pattern or similar
+  60% { transform: translate(var(--mic-glitch-x-alt, 2px), var(--mic-glitch-y-alt, 1px)); opacity: 1; }
+  70% { transform: translate(var(--mic-glitch-x-alt, -1px), var(--mic-glitch-y-alt, -2px)); opacity: 0.8; }
+  80% { transform: translate(0,0); opacity: 1;}
+}
+
+// Subtle floating animation for "holographic particles"
+@keyframes micHoloParticleFloat {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px) scale(1);
+    opacity: var(--mic-particle-opacity-base, 0.5);
+  }
+  25% {
+    transform: translateY(var(--mic-particle-float-y, -2px)) translateX(var(--mic-particle-float-x, 1px)) scale(var(--mic-particle-scale-drift, 1.1));
+    opacity: var(--mic-particle-opacity-drift, 0.7);
+  }
+  50% {
+    transform: translateY(0px) translateX(var(--mic-particle-float-x-alt, -1px)) scale(1);
+    opacity: var(--mic-particle-opacity-base, 0.5);
+  }
+  75% {
+    transform: translateY(var(--mic-particle-float-y-alt, 1px)) translateX(0px) scale(var(--mic-particle-scale-drift, 1.1));
+    opacity: var(--mic-particle-opacity-drift, 0.7);
+  }
+}
