@@ -350,7 +350,7 @@ const missionItems = ref([
       </section>
 
 
-      <section id="roadmap" class="roadmap-section-about content-section-ephemeral">
+      <section id="roadmap" class="roadmap-section-about content-section-ephemeral"> 
         <h3 class="section-title-main"><MapIcon class="section-title-icon"/>Product Roadmap</h3>
         <div class="roadmap-timeline-container-about">
           <div v-for="(item, index) in roadmapItems" :key="item.id"
@@ -377,7 +377,7 @@ const missionItems = ref([
 
       <footer class="about-page-footer-ephemeral">
         <div class="footer-content-inner-about card-glass">
-          <p class="footer-credits-text">
+          <p class="footer-credits-text max-w-full w-full">
             Voice Chat Assistant is a first-class initiative <strong class="highlight-text">powered by <a href="https://github.com/wearetheframers/agentos" target="_blank">AgentOS</a></strong>.
             <br class="hidden sm:inline">
             Developed by <a href="https://frame.dev" target="_blank" rel="noopener noreferrer" class="footer-link">The Framers</a> &amp;
@@ -385,7 +385,7 @@ const missionItems = ref([
           </p>
           <div class="footer-social-links-group">
              </div>
-          <p class="copyright-text-about">
+          <p class="copyright-text-about max-w-full w-full">
             Manic.agency is an experimental open-source collective and development and design agency.
           </p>
         </div>
