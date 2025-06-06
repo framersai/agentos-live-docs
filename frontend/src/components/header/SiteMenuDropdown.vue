@@ -99,20 +99,20 @@ const iconStateClass = computed(() => ({
     >
       <svg
         class="nexus-orb-svg"
-        viewBox="-50 -50 100 100"
+        viewBox="-70 -70 140 140"
         xmlns="http://www.w3.org/2000/svg"
         aria-hidden="true"
       >
         <defs>
           <filter id="nexus-glow-filter" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+            <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
             <feMerge>
               <feMergeNode in="coloredBlur"/>
               <feMergeNode in="SourceGraphic"/>
             </feMerge>
           </filter>
            <filter id="nexus-satellite-glow-filter" x="-100%" y="-100%" width="300%" height="300%">
-            <feGaussianBlur stdDeviation="1.5" result="satelliteBlur"/>
+            <feGaussianBlur stdDeviation="2.5" result="satelliteBlur"/>
             <feMerge>
               <feMergeNode in="satelliteBlur"/>
               <feMergeNode in="SourceGraphic"/>
@@ -120,17 +120,17 @@ const iconStateClass = computed(() => ({
           </filter>
         </defs>
 
-        <circle class="nexus-orb-center" cx="0" cy="0" r="7" />
+        <circle class="nexus-orb-center" cx="0" cy="0" r="15" />
 
         <g class="nexus-orb-satellites">
-          <circle class="nexus-orb-satellite satellite-1" r="4" />
-          <circle class="nexus-orb-satellite satellite-2" r="4" />
-          <circle class="nexus-orb-satellite satellite-3" r="4" />
+          <circle class="nexus-orb-satellite satellite-1" r="8" />
+          <circle class="nexus-orb-satellite satellite-2" r="8" />
+          <circle class="nexus-orb-satellite satellite-3" r="8" />
         </g>
 
-        <path class="nexus-orb-tendril tendril-1" d="M0,0 Q10,-15 20,-25" />
-        <path class="nexus-orb-tendril tendril-2" d="M0,0 Q-5,20 -15,28" />
-        <path class="nexus-orb-tendril tendril-3" d="M0,0 Q20,10 28,5" />
+        <path class="nexus-orb-tendril tendril-1" d="M0,0 Q20,-30 40,-50" />
+        <path class="nexus-orb-tendril tendril-2" d="M0,0 Q-12,35 -30,55" />
+        <path class="nexus-orb-tendril tendril-3" d="M0,0 Q35,20 55,12" />
       </svg>
       <span class="sr-only">Open Site Menu</span>
     </button>
@@ -187,14 +187,33 @@ const iconStateClass = computed(() => ({
 }
 
 .nexus-orb-trigger {
-  // Base styling from .direct-header-button in _header.scss
-  // Ensure it has enough space for the SVG icon
-  padding: calc(var.$spacing-sm - 2px) !important; // Adjust padding if SVG is larger
-  width: calc(var.$header-height-mobile * 0.7); // Example size, adjust as needed
-  height: calc(var.$header-height-mobile * 0.7);
+  // Optimized button size to fit perfectly within nav
+  padding: 1px !important; // Minimal padding to prevent overflow
+  width: 48px; // Smaller size for guaranteed fit
+  height: 48px;
+  min-width: 48px;
+  min-height: 48px;
+  
   @media (min-width: var.$breakpoint-md) {
-    width: calc(var.$header-height-desktop * 0.55);
-    height: calc(var.$header-height-desktop * 0.55);
+    width: 56px; // Smaller desktop size
+    height: 56px;
+    min-width: 56px;
+    min-height: 56px;
+    padding: 2px !important; // Minimal padding for desktop
+  }
+  
+  // Override any default button styles that might add excessive spacing
+  border: none !important;
+  border-radius: 4px; // Smaller border radius to fit nav better
+  
+  // Ensure the button fits within nav constraints
+  max-width: 48px;
+  max-height: 48px;
+  
+  @media (min-width: var.$breakpoint-md) {
+    max-width: 56px;
+    max-height: 56px;
+    border-radius: 6px;
   }
 
   .nexus-orb-svg {
@@ -228,7 +247,7 @@ const iconStateClass = computed(() => ({
   fill: var(--orb-satellite-fill);
   filter: url(#nexus-satellite-glow-filter);
   transform-origin: center;
-  // Individual satellite animation for orbiting
+  // Individual satellite animation for orbiting with larger radius
   &.satellite-1 { animation: nexus-orbit-1 7s linear infinite; }
   &.satellite-2 { animation: nexus-orbit-2 7.5s linear infinite reverse; } // Slightly different timing/direction
   &.satellite-3 { animation: nexus-orbit-3 8s linear infinite; }
@@ -237,25 +256,19 @@ const iconStateClass = computed(() => ({
 
 .nexus-orb-tendril {
   stroke: var(--orb-tendril-stroke);
-  stroke-width: 0.75;
+  stroke-width: 1.5; // Slightly thicker for visibility at larger size
   fill: none;
   stroke-linecap: round;
   opacity: 0;
   transition: opacity var.$duration-smooth, stroke var.$duration-quick,
               stroke-dasharray var.$duration-smooth var.$ease-out-quad,
               stroke-dashoffset var.$duration-smooth var.$ease-out-quad;
-  // For dashed line animation if desired (e.g., drawing in)
-  // stroke-dasharray: 50;
-  // stroke-dashoffset: 50;
 }
 
 // --- Hover and Focus States for the Trigger Button ---
 .nexus-orb-trigger:hover,
 .nexus-orb-trigger:focus-visible {
   .nexus-orb-svg {
-    // Slightly scale the whole SVG on hover for a "breathing" feel
-    // transform: scale(1.05); // This is handled by direct-header-button hover usually
-
     // Change SVG element colors using updated CSS variable values
     --orb-center-fill: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
     --orb-satellite-fill: hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l));
@@ -265,88 +278,62 @@ const iconStateClass = computed(() => ({
   }
 
   .nexus-orb-center {
-    // Optional: slightly increase radius on hover
-    // r: 7.5;
     animation-play-state: paused; // Pause idle pulse to replace with hover glow
   }
   .nexus-orb-satellite {
-    // Optional: slightly increase radius on hover
-    // r: 4.5;
-    animation-play-state: running; // Ensure orbit continues or speeds up slightly (speed controlled by CSS var if needed)
+    animation-play-state: running; // Ensure orbit continues
   }
   .nexus-orb-tendril {
     opacity: 1;
-    // stroke-dashoffset: 0; // Animate tendrils drawing in
   }
 }
 
 // --- Active/Open State (Dropdown is visible) ---
 .nexus-orb-trigger.active { // When isOpen is true
   .nexus-orb-svg {
-    // Example: Rotate the entire icon slightly or change its scale
-    // transform: rotate(45deg) scale(0.9); // This is handled by direct-header-button active usually
     --orb-center-fill: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
     --orb-satellite-fill: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), calc(var(--color-accent-interactive-l) + 10%));
     --orb-tendril-stroke: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.9);
     --orb-center-glow: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.7);
   }
   .nexus-orb-center {
-    r: 6; // Slightly smaller or different central focus
+    r: 13; // Slightly smaller when active
     animation: none; // Stop idle pulse
   }
   .nexus-orb-satellites {
-    // Transform satellites to a new stable configuration
-    // Example: form a wider, more static triangle or align differently
-    // This would require more complex animation definitions below for specific transforms on each satellite
-    // For simplicity, we might just change their animation or appearance
-    transform: scale(1.1); // Example: satellites expand slightly
+    transform: scale(1.1); // Satellites expand slightly
   }
   .nexus-orb-satellite {
     animation-play-state: paused; // Pause orbiting
-    // Example: position them explicitly if not using complex animation for active state
-    // &.satellite-1 { transform: translate(0px, -25px) scale(1.1); }
-    // &.satellite-2 { transform: translate(21.65px, 12.5px) scale(1.1); }
-    // &.satellite-3 { transform: translate(-21.65px, 12.5px) scale(1.1); }
   }
   .nexus-orb-tendril {
     opacity: 1;
-    // stroke-dashoffset: 0;
   }
 }
-
 
 // --- Keyframe Animations for the Nexus Orb ---
 @keyframes nexus-center-pulse {
   0%, 100% {
-    r: 6.5;
-    filter: drop-shadow(0 0 2px var(--orb-center-glow));
+    r: 14;
+    filter: drop-shadow(0 0 4px var(--orb-center-glow));
   }
   50% {
-    r: 7.5;
-    filter: drop-shadow(0 0 5px var(--orb-center-glow));
+    r: 16;
+    filter: drop-shadow(0 0 10px var(--orb-center-glow));
   }
 }
 
-// Define orbital paths using transforms.
-// These are simplified circular orbits; elliptical would require separate x/y radius on a parent <g> or more complex path data.
+// Define orbital paths using transforms with larger radius for bigger orb
 @keyframes nexus-orbit-1 {
-  0% { transform: rotate(0deg) translateX(20px) rotate(0deg) translateY(0px); } /* Start at (20,0) relative to center after rotation */
-  100% { transform: rotate(360deg) translateX(20px) rotate(-360deg) translateY(0px); } /* Maintain orientation while orbiting */
+  0% { transform: rotate(0deg) translateX(40px) rotate(0deg) translateY(0px); }
+  100% { transform: rotate(360deg) translateX(40px) rotate(-360deg) translateY(0px); }
 }
 @keyframes nexus-orbit-2 {
-  0% { transform: rotate(120deg) translateX(22px) rotate(-120deg) translateY(0px); }
-  100% { transform: rotate(480deg) translateX(22px) rotate(-480deg) translateY(0px); }
+  0% { transform: rotate(120deg) translateX(43px) rotate(-120deg) translateY(0px); }
+  100% { transform: rotate(480deg) translateX(43px) rotate(-480deg) translateY(0px); }
 }
 @keyframes nexus-orbit-3 {
-  0% { transform: rotate(240deg) translateX(18px) rotate(-240deg) translateY(0px); }
-  100% { transform: rotate(600deg) translateX(18px) rotate(-600deg) translateY(0px); }
+  0% { transform: rotate(240deg) translateX(37px) rotate(-240deg) translateY(0px); }
+  100% { transform: rotate(600deg) translateX(37px) rotate(-600deg) translateY(0px); }
 }
-
-// Complex state change animation for satellites when dropdown opens (if desired)
-// This would involve animating individual cx, cy attributes or more complex transforms
-// For example, to make them form a triangle:
-// .nexus-orb-trigger.active .satellite-1 { animation: s1-active-pos 0.3s var.$ease-elastic forwards; }
-// @keyframes s1-active-pos { to { cx: 0; cy: -22; } }
-// (and similar for s2, s3 to form other points of the triangle)
-// For simplicity, current active state just pauses orbit and scales group slightly.
 </style>
