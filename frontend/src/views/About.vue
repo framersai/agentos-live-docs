@@ -235,7 +235,7 @@ const missionItems = ref([
           For support, contact us at <a href="mailto:team@manic.agency" class="footer-link">team@manic.agency</a>.
           </strong>
         </p>
-         <a href="#pricing" class="btn btn-primary-ephemeral btn-lg hero-cta-button">Sign Up</a>
+         <a href="#pricing" class="btn btn-primary-ephemeral btn-lg hero-cta-button hover:text-white">Sign Up</a>
       </section>
 
       <section id="mission" class="mission-section-about content-section-ephemeral">
