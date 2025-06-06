@@ -136,8 +136,8 @@ watch(() => props.isOpen, (newVal) => {
     selectedCategory.value = 'all'; // Reset to 'all' category
     allAgentsFromService.value = [...agentService.getAllAgents()]; // Refresh agent list
     nextTick(() => { // Ensure DOM is updated before trying to focus
-      const searchInputEl = document.getElementById('agent-hub-search-input');
-      searchInputEl?.focus();
+      // const searchInputEl = document.getElementById('agent-hub-search-input');
+      // searchInputEl?.focus();
     });
   }
 });
