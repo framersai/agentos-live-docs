@@ -209,18 +209,25 @@ export default {
           fontWeight: theme('fontWeight.medium'),
           // Add other default styles for your button here
           // For example, background, text color, hover states, etc.
-          backgroundColor: 'hsl(var(--color-accent-primary-h) var(--color-accent-primary-s) var(--color-accent-primary-l) / <alpha-value>)',
-          color: 'hsl(var(--color-text-on-primary-h) var(--color-text-on-primary-s) var(--color-text-on-primary-l) / <alpha-value>)',
-          '&:hover': {
-            backgroundColor: 'hsl(var(--color-accent-primary-h) var(--color-accent-primary-s) calc(var(--color-accent-primary-l) - 5%) / <alpha-value>)',
-          },
+          
           // You can also add variants like .btn-primary, .btn-secondary
           // based on your extended colors in tailwind.config.js
         },
         '.btn-primary': {
             // Styles for primary button, could @apply the base .btn or extend it
+            backgroundColor: 'hsl(var(--color-accent-primary-h) var(--color-accent-primary-s) var(--color-accent-primary-l) / var(--color-accent-primary-a))',
+          color: 'hsl(var(--color-text-on-primary-h) var(--color-text-on-primary-s) var(--color-text-on-primary-l) / var(--color-text-on-primary-a))',
+          '&:hover': {
+            backgroundColor: 'hsl(var(--color-accent-primary-h) var(--color-accent-primary-s) calc(var(--color-accent-primary-l) - 5%) / var(--color-accent-primary-a))',
+          },
         },
-        '.btn-secondary': {},
+        '.btn-secondary': {
+          backgroundColor: 'hsl(var(--color-accent-secondary-h) var(--color-accent-secondary-s) var(--color-accent-secondary-l) / var(--color-accent-secondary-a))',
+          color: 'hsl(var(--color-text-on-secondary-h) var(--color-text-on-secondary-s) var(--color-text-on-secondary-l) / var(--color-text-on-secondary-a))',
+          '&:hover': {
+            backgroundColor: 'hsl(var(--color-accent-secondary-h) var(--color-accent-secondary-s) calc(var(--color-accent-secondary-l) - 5%) / var(--color-accent-secondary-a))',
+          },
+        },
         // Custom Scrollbar for Futuristic theme
         '.custom-scrollbar-futuristic': {
           // Define webkit scrollbar styles directly
