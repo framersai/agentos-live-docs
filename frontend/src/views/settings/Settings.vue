@@ -49,7 +49,7 @@
       <div class="theme-buttons-group-ephemeral" role="radiogroup" aria-labelledby="themeModeSelectGridLabel">
         <span id="themeModeSelectGridLabel" class="sr-only">Interface Theme Selection</span>
        <button
-        @click="() => uiStore.setThemeFlexible('aurora-daybreak')"
+        @click="() => uiStore.setTheme('aurora-daybreak')"
         class="btn theme-btn-ephemeral" :class="{'active': uiStore.currentThemeId === 'aurora-daybreak'}"
         :aria-pressed="uiStore.currentThemeId === 'aurora-daybreak'"
         role="radio"
@@ -57,7 +57,7 @@
         <SunIcon class="icon-xs" aria-hidden="true"/> Aurora Daybreak
        </button>
         <button
-        @click="() => uiStore.setThemeFlexible('warm-embrace')"
+        @click="() => uiStore.setTheme('warm-embrace')"
         class="btn theme-btn-ephemeral" :class="{'active': uiStore.currentThemeId === 'warm-embrace'}"
         :aria-pressed="uiStore.currentThemeId === 'warm-embrace'"
         role="radio"
@@ -65,7 +65,7 @@
         <SparklesIcon class="icon-xs" aria-hidden="true"/> Warm Embrace
        </button>
        <button
-        @click="() => uiStore.setThemeFlexible('twilight-neo')"
+        @click="() => uiStore.setTheme('twilight-neo')"
         class="btn theme-btn-ephemeral" :class="{'active': uiStore.currentThemeId === 'twilight-neo'}"
         :aria-pressed="uiStore.currentThemeId === 'twilight-neo'"
         role="radio"
@@ -73,7 +73,7 @@
         <MoonIcon class="icon-xs" aria-hidden="true"/> Twilight Neo
        </button>
         <button
-        @click="() => uiStore.setThemeFlexible('sakura-sunset')"
+        @click="() => uiStore.setTheme('sakura-sunset')"
         class="btn theme-btn-ephemeral" :class="{'active': uiStore.currentThemeId === 'sakura-sunset'}"
         :aria-pressed="uiStore.currentThemeId === 'sakura-sunset'"
         role="radio"
@@ -404,7 +404,7 @@ import {
   ref, computed, watch, onMounted, onBeforeUnmount, inject, nextTick, h,
   type Ref, type Component as VueComponent
 } from 'vue';
-import { useRouter, RouterLink } from 'vue-router'; // RouterLink is used in the template
+import { useRouter } from 'vue-router'; // RouterLink is used in the template
 import { useStorage } from '@vueuse/core';
 
 // API and Services
