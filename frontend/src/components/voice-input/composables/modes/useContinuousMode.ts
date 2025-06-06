@@ -5,14 +5,22 @@
  * This mode starts listening upon activation and automatically sends transcripts
  * based on speech pauses or segment limits.
  *
- * @version 1.1.1
- * @updated 2025-06-05 - Implemented abstract member `requiresHandler`.
+ * @version 1.3.0
+ * @updated 2025-06-05
+ * - Integrated `isExplicitlyStoppedByUser` from context.
+ * - Refined start/stop logic and state management (`isStarting`, `isListeningInternally`).
+ * - Ensured interim transcripts replace content correctly.
+ * - Improved timer management and clarity.
  */
 
 import { ref, computed } from 'vue';
 import type { ComputedRef } from 'vue';
 import { BaseSttMode, type SttModeContext, type SttModePublicState } from './BaseSttMode';
 import type { SttHandlerErrorPayload } from '../../types';
+
+// Constants for timing
+const CONTINUOUS_MODE_START_DELAY_MS = 200; // Slightly reduced delay, manager provides some buffer too
+const MIN_TRANSCRIPT_LENGTH_FOR_FINAL_SEND = 2;
 
 /**
  * @class ContinuousMode
@@ -21,44 +29,45 @@ import type { SttHandlerErrorPayload } from '../../types';
  * @description Implements the continuous speech-to-text listening mode.
  */
 export class ContinuousMode extends BaseSttMode implements SttModePublicState {
-  private continuousTranscriptBuffer = ref('');
-  private isListeningInternally = ref(false);
-  private autoSendTimer: number | null = null;
-  private countdownTimer: number | null = null;
-  private countdownValue = ref(0);
+  private currentTranscriptSegment = ref(''); // Stores the current, potentially partial, segment from the handler
+  private isListeningInternally = ref(false); // True when STT handler is actively capturing audio for this mode
+  private autoSendTimerId: number | null = null; // Timer for sending after a pause
+  private countdownTimerId: number | null = null; // Timer for the countdown display
+  private countdownValueMs = ref(0); // Current countdown value in milliseconds
+  private startDelayTimerId: number | null = null; // Timer for delaying the actual start
+  private isStartingProcess = ref(false); // True during the start-up phase (including delay)
 
   public readonly isActive: ComputedRef<boolean>;
   public readonly canStart: ComputedRef<boolean>;
   public readonly statusText: ComputedRef<string>;
   public readonly placeholderText: ComputedRef<string>;
-
-  /**
-   * @inheritdoc
-   * @description Continuous mode requires an STT handler.
-   */
   public readonly requiresHandler: boolean = true;
 
   constructor(context: SttModeContext) {
     super(context);
 
-    this.isActive = computed(() => this.isListeningInternally.value || this.countdownValue.value > 0);
+    this.isActive = computed(() => this.isListeningInternally.value || this.countdownValueMs.value > 0 || this.isStartingProcess.value);
     this.canStart = computed(() =>
-        !this.context.isProcessingLLM.value &&
-        this.context.micPermissionGranted.value &&
-        (this.requiresHandler ? !!this.context.activeHandlerApi.value : true) &&
-        !this.isListeningInternally.value && this.countdownValue.value === 0
+        !this.isActive.value && // Not already active or starting
+        !this.isBlocked() // Checks base conditions like LLM busy, mic permission, explicit stop
     );
+
     this.statusText = computed(() => {
-      if (this.context.isProcessingLLM.value && !this.isListeningInternally.value) return 'Continuous: Assistant busy';
-      if (!this.context.micPermissionGranted.value) return 'Continuous: Mic needed';
-      if (this.countdownValue.value > 0) {
-        return `Continuous: Sending in ${Math.ceil(this.countdownValue.value / 1000)}s...`;
+      if (this.context.isExplicitlyStoppedByUser.value && !this.isActive.value) return 'Continuous: Off';
+      if (this.context.isProcessingLLM.value && !this.context.isAwaitingVadCommandResult.value && !this.isActive.value) return 'Continuous: Assistant busy';
+      if (!this.context.micPermissionGranted.value && !this.isActive.value) return 'Continuous: Mic needed';
+      if (this.isStartingProcess.value) return 'Continuous: Starting...';
+      if (this.countdownValueMs.value > 0) {
+        return `Continuous: Sending in ${Math.ceil(this.countdownValueMs.value / 1000)}s...`;
       }
       return this.isListeningInternally.value ? 'Continuous: Listening...' : 'Continuous: Ready';
     });
+
     this.placeholderText = computed(() => {
-      if (this.context.isProcessingLLM.value && !this.isListeningInternally.value) return 'Assistant is processing...';
-      if (!this.context.micPermissionGranted.value) return 'Microphone permission required for Continuous mode.';
+      if (this.context.isExplicitlyStoppedByUser.value && !this.isActive.value) return 'Continuous mode is off. Click mic to start.';
+      if (this.context.isProcessingLLM.value && !this.context.isAwaitingVadCommandResult.value && !this.isActive.value) return 'Assistant is processing...';
+      if (!this.context.micPermissionGranted.value && !this.isActive.value) return 'Microphone permission required for Continuous mode.';
+      if (this.isStartingProcess.value) return 'Initializing continuous listening...';
       return this.isListeningInternally.value
         ? 'Listening continuously... (text input disabled)'
         : 'Continuous mode ready. Click mic to start.';
@@ -79,152 +88,249 @@ export class ContinuousMode extends BaseSttMode implements SttModePublicState {
 
   async start(): Promise<boolean> {
     if (!this.canStart.value) {
-      console.warn('[ContinuousMode] Cannot start - conditions not met.');
-      if (this.requiresHandler && !this.context.activeHandlerApi.value) {
-         this.context.toast?.add({ type: 'error', title: 'STT Error', message: 'Speech handler not available.' });
-      }
+      console.warn('[ContinuousMode] Cannot start - conditions not met.', { canStart: this.canStart.value, isBlocked: this.isBlocked() });
+      // Toasts are handled by SttManager based on canStart conditions generally
       return false;
     }
 
-    this.clearTimers();
-    this.continuousTranscriptBuffer.value = '';
-    this.isListeningInternally.value = true;
-    this.context.sharedState.isProcessingAudio.value = true;
+    console.log('[ContinuousMode] Starting continuous mode sequence...');
+    this.clearAllTimers();
+    this.currentTranscriptSegment.value = '';
+    this.context.sharedState.pendingTranscript.value = '';
+    this.isStartingProcess.value = true;
+    this.context.setExplicitlyStoppedByUser(false); // Clear explicit stop flag on start attempt
+    this.context.sharedState.isProcessingAudio.value = true; // Indicate intent to process
 
-    try {
-      const handlerStarted = await this.context.activeHandlerApi.value?.startListening(false);
-      if (handlerStarted) {
-        console.log('[ContinuousMode] STT handler started successfully.');
-        this.context.transcriptionDisplay.showListening();
-        return true;
-      } else {
-        console.error('[ContinuousMode] Failed to start STT handler.');
-        this.isListeningInternally.value = false;
-        this.context.sharedState.isProcessingAudio.value = false;
-        this.context.transcriptionDisplay.showError('Failed to start continuous STT.', 2000);
-        return false;
-      }
-    } catch (error: any) {
-      this.handleError(error);
-      return false;
-    }
+    return new Promise<boolean>((resolve) => {
+      this.startDelayTimerId = window.setTimeout(async () => {
+        this.startDelayTimerId = null;
+        
+        if (this.isBlocked() || this.context.audioMode.value !== 'continuous') { // Re-check conditions
+          console.log('[ContinuousMode] Conditions changed during start delay, aborting start.');
+          this.isStartingProcess.value = false;
+          this.context.sharedState.isProcessingAudio.value = false;
+          resolve(false);
+          return;
+        }
+
+        try {
+          const handlerStarted = await this.context.activeHandlerApi.value?.startListening(false); // false = not for VAD command
+          if (handlerStarted) {
+            this.isListeningInternally.value = true;
+            this.isStartingProcess.value = false; // Starting process finished, now listening
+            console.log('[ContinuousMode] STT handler started successfully.');
+            this.context.transcriptionDisplay.showListening();
+            resolve(true);
+          } else {
+            console.error('[ContinuousMode] Failed to start STT handler.');
+            await this.resetStateOnError('Failed to start continuous STT.');
+            resolve(false);
+          }
+        } catch (error: any) {
+          await this.resetStateOnError(error.message || 'Error during STT handler start.');
+          this.handleError(error); // Propagate error
+          resolve(false);
+        }
+      }, CONTINUOUS_MODE_START_DELAY_MS);
+    });
   }
 
   async stop(): Promise<void> {
-    if (!this.isListeningInternally.value && !this.autoSendTimer && !this.countdownTimer) {
+    // Only proceed if there's something to stop (active listening, countdown, or starting process)
+    if (!this.isListeningInternally.value && !this.autoSendTimerId && !this.countdownTimerId && !this.isStartingProcess.value) {
+      // If explicitly stopped by user, ensure shared state is accurate even if already "idle" locally
+      if(this.context.isExplicitlyStoppedByUser.value) {
+         this.context.sharedState.isProcessingAudio.value = false;
+      }
       return;
     }
     console.log('[ContinuousMode] Stopping continuous listening...');
-    this.clearTimers();
+    // isExplicitlyStoppedByUser is set by SttManager on mic click
+
+    this.clearAllTimers(); // Clear all mode-specific timers
+    
+    const wasListening = this.isListeningInternally.value;
     this.isListeningInternally.value = false;
-    this.context.sharedState.isProcessingAudio.value = false;
+    this.isStartingProcess.value = false;
+    this.context.sharedState.isProcessingAudio.value = false; // Reflect that we are stopping
 
     try {
-      await this.context.activeHandlerApi.value?.stopListening(false);
-      if (this.autoSendEnabled && this.continuousTranscriptBuffer.value.trim()) {
-        this.sendBufferedTranscript();
+      if (this.context.activeHandlerApi.value?.isActive.value) { // Check if handler thinks it's active
+        await this.context.activeHandlerApi.value.stopListening(false); // false = not an abort, but a graceful stop
+      }
+
+      if (this.autoSendEnabled && this.currentTranscriptSegment.value.trim().length >= MIN_TRANSCRIPT_LENGTH_FOR_FINAL_SEND) {
+        console.log('[ContinuousMode] Sending buffered transcript on stop.');
+        this.sendCurrentTranscriptSegment(); // This clears the buffer
       } else {
-        this.continuousTranscriptBuffer.value = '';
+        this.currentTranscriptSegment.value = ''; // Clear buffer if not sending
         this.context.sharedState.pendingTranscript.value = '';
       }
       this.context.transcriptionDisplay.clearTranscription();
     } catch (error: any) {
-      this.handleError(error);
+      this.handleError(error); // Handle potential errors during stop
     } finally {
-        console.log('[ContinuousMode] Continuous listening stopped.');
+      console.log('[ContinuousMode] Continuous listening stopped.');
     }
   }
 
-  handleTranscription(text: string): void {
-    if (!this.isListeningInternally.value && !(this.autoSendEnabled && this.countdownValue.value > 0)) {
-        console.log('[ContinuousMode] Received final transcript while not actively listening and no pending send, ignoring:', text);
+  handleTranscription(text: string): void { // This is for FINAL transcripts from the handler
+    if (!this.isListeningInternally.value && !(this.autoSendEnabled && this.countdownValueMs.value > 0)) {
+        console.log('[ContinuousMode] Received final transcript while not actively listening or counting down, ignoring:', text);
         return;
     }
     const trimmedText = text.trim();
-    if (trimmedText) {
-      this.continuousTranscriptBuffer.value += (this.continuousTranscriptBuffer.value ? ' ' : '') + trimmedText;
-      this.context.sharedState.pendingTranscript.value = this.continuousTranscriptBuffer.value;
-      this.context.transcriptionDisplay.showInterimTranscript(this.continuousTranscriptBuffer.value);
+    console.log(`[ContinuousMode] Final segment received: "${trimmedText}"`);
+    
+    this.clearAllTimers(); // Stop any pending auto-send or countdown as we got a final segment
 
-      if (this.isListeningInternally.value) {
-        this.resetAutoSendTimer();
-      } else if (this.autoSendEnabled && this.continuousTranscriptBuffer.value.trim() && this.countdownValue.value <=0) {
-        this.startCountdown();
-      }
+    if (trimmedText.length >= MIN_TRANSCRIPT_LENGTH_FOR_FINAL_SEND) {
+      this.currentTranscriptSegment.value = trimmedText; // Handler provides complete final segments
+      this.context.sharedState.pendingTranscript.value = this.currentTranscriptSegment.value;
+      this.context.transcriptionDisplay.showInterimTranscript(this.currentTranscriptSegment.value); // Show it as "final" for this segment
+      this.sendCurrentTranscriptSegment(); // Immediately send this final segment
+    } else {
+      this.currentTranscriptSegment.value = ''; // Discard short/empty final segment
+      this.context.sharedState.pendingTranscript.value = '';
+    }
+    
+    // If still supposed to be listening (e.g., user hasn't stopped), restart auto-send timer for next utterance
+    if (this.isListeningInternally.value && this.autoSendEnabled) {
+      this.resetAutoSendTimer();
     }
   }
 
   public handleInterimTranscript(text: string): void {
-    if (!this.isListeningInternally.value) return;
-    const currentBufferEndsWithSpace = this.continuousTranscriptBuffer.value.endsWith(' ');
-    const interimStartsWithSpace = text.startsWith(' ');
-    let separator = '';
-    if (this.continuousTranscriptBuffer.value && text && !currentBufferEndsWithSpace && !interimStartsWithSpace) {
-        separator = ' ';
-    }
-    const fullInterim = this.continuousTranscriptBuffer.value + separator + text;
-
-    if (fullInterim.trim()) {
-      this.context.sharedState.pendingTranscript.value = fullInterim;
-      this.context.transcriptionDisplay.showInterimTranscript(fullInterim);
+    if (!this.isListeningInternally.value) return; // Only process interim if actively listening
+    
+    const trimmedText = text.trim();
+    // For continuous mode, interim transcripts from BrowserSpeechHandler usually represent the full current utterance.
+    this.currentTranscriptSegment.value = trimmedText; 
+    this.context.sharedState.pendingTranscript.value = this.currentTranscriptSegment.value;
+    this.context.transcriptionDisplay.showInterimTranscript(this.currentTranscriptSegment.value);
+    
+    if (this.autoSendEnabled) {
+      this.resetAutoSendTimer(); // Reset timer on any new speech activity
     }
   }
 
   private resetAutoSendTimer(): void {
-    this.clearTimers();
-    if (!this.autoSendEnabled || !this.continuousTranscriptBuffer.value.trim() || !this.isListeningInternally.value) {
-      return;
+    this.clearCountdownTimer(); // Clear countdown if it was running
+    if (this.autoSendTimerId) clearTimeout(this.autoSendTimerId);
+    this.autoSendTimerId = null;
+
+    if (!this.autoSendEnabled || !this.isListeningInternally.value) return;
+    
+    // Only start pause timer if there's actually something in the buffer
+    if (this.currentTranscriptSegment.value.trim().length > 0) {
+      this.autoSendTimerId = window.setTimeout(() => {
+        console.log('[ContinuousMode] Pause detected, starting send countdown.');
+        this.startSendCountdown();
+      }, this.pauseTimeoutMs);
     }
-    this.autoSendTimer = window.setTimeout(() => {
-      this.startCountdown();
-    }, this.pauseTimeoutMs);
   }
 
-  private startCountdown(): void {
-    this.clearTimers();
-    if (!this.continuousTranscriptBuffer.value.trim() || !this.autoSendEnabled) return;
-    this.countdownValue.value = this.sendDelayMs;
-    const countdownInterval = 100;
-    this.countdownTimer = window.setInterval(() => {
-      this.countdownValue.value -= countdownInterval;
-      if (this.countdownValue.value <= 0) {
-        this.clearTimers();
-        this.sendBufferedTranscript();
+  private startSendCountdown(): void {
+    this.clearAutoSendTimer(); // Stop the pause detection timer
+    if (this.countdownTimerId) clearInterval(this.countdownTimerId); // Clear existing countdown
+    
+    const transcriptToSend = this.currentTranscriptSegment.value.trim();
+    if (!transcriptToSend || !this.autoSendEnabled) {
+      this.countdownValueMs.value = 0;
+      return;
+    }
+
+    this.countdownValueMs.value = this.sendDelayMs;
+    const countdownInterval = 100; // Update display every 100ms
+
+    this.countdownTimerId = window.setInterval(() => {
+      this.countdownValueMs.value -= countdownInterval;
+      if (this.countdownValueMs.value <= 0) {
+        this.clearCountdownTimer();
+        if (this.currentTranscriptSegment.value.trim().length >= MIN_TRANSCRIPT_LENGTH_FOR_FINAL_SEND) {
+          this.sendCurrentTranscriptSegment();
+        } else {
+          console.log('[ContinuousMode] Countdown finished, but transcript too short. Discarding.');
+          this.currentTranscriptSegment.value = '';
+          this.context.sharedState.pendingTranscript.value = '';
+        }
+        // If still supposed to be listening, prepare for next utterance
+        if (this.isListeningInternally.value && this.autoSendEnabled) {
+          this.resetAutoSendTimer();
+        }
       }
     }, countdownInterval);
   }
 
-  private sendBufferedTranscript(): void {
-    const transcriptToSend = this.continuousTranscriptBuffer.value.trim();
-    if (!transcriptToSend) return;
-    this.emitTranscription(transcriptToSend);
-    this.continuousTranscriptBuffer.value = '';
-    this.context.sharedState.pendingTranscript.value = '';
-    this.countdownValue.value = 0;
+  private sendCurrentTranscriptSegment(): void {
+    const transcriptToSend = this.currentTranscriptSegment.value.trim();
+    if (transcriptToSend.length < MIN_TRANSCRIPT_LENGTH_FOR_FINAL_SEND) {
+        console.log(`[ContinuousMode] Transcript "${transcriptToSend}" too short to send.`);
+        return;
+    }
+    
+    console.log(`[ContinuousMode] Sending transcript segment: "${transcriptToSend}"`);
+    this.emitTranscription(transcriptToSend); // BaseSttMode handles emit and display
+    
+    this.currentTranscriptSegment.value = ''; // Clear buffer after sending
+    this.context.sharedState.pendingTranscript.value = ''; // Clear pending display
+    this.countdownValueMs.value = 0; // Reset countdown display value
+    this.clearAllTimers(); // Clear timers after send
+    
+    // If mode is still active and auto-send is on, prime for next input
+    if (this.isListeningInternally.value && this.autoSendEnabled) {
+        this.resetAutoSendTimer();
+    }
+    this.context.playSound(this.context.audioFeedback.beepOutSound.value, 0.5);
   }
 
-  private clearTimers(): void {
-    if (this.autoSendTimer) clearTimeout(this.autoSendTimer);
-    this.autoSendTimer = null;
-    if (this.countdownTimer) clearInterval(this.countdownTimer);
-    this.countdownTimer = null;
-    this.countdownValue.value = 0;
+  private clearAutoSendTimer(): void {
+    if (this.autoSendTimerId) clearTimeout(this.autoSendTimerId);
+    this.autoSendTimerId = null;
+  }
+
+  private clearCountdownTimer(): void {
+    if (this.countdownTimerId) clearInterval(this.countdownTimerId);
+    this.countdownTimerId = null;
+    this.countdownValueMs.value = 0;
+  }
+  
+  private clearStartDelayTimer(): void {
+    if (this.startDelayTimerId) clearTimeout(this.startDelayTimerId);
+    this.startDelayTimerId = null;
+  }
+
+  private clearAllTimers(): void {
+    this.clearAutoSendTimer();
+    this.clearCountdownTimer();
+    this.clearStartDelayTimer();
+  }
+  
+  private async resetStateOnError(errorMessage?: string): Promise<void> {
+    this.clearAllTimers();
+    this.isListeningInternally.value = false;
+    this.isStartingProcess.value = false;
+    this.currentTranscriptSegment.value = '';
+    this.context.sharedState.pendingTranscript.value = '';
+    this.context.sharedState.isProcessingAudio.value = false;
+    if (errorMessage) {
+        this.context.transcriptionDisplay.showError(errorMessage, 3000);
+    }
   }
 
   handleError(error: Error | SttHandlerErrorPayload): void {
     const errorPayload = ('type' in error && 'message' in error) ? error : {
-        type: 'continuous_mode_error',
-        message: error.message || 'An error in continuous mode.',
-        code: (error as any).code || (error as Error).name,
-        fatal: false,
+        type: 'continuous_mode_error', message: error.message || 'Error in continuous mode.',
+        code: (error as any).code || (error as Error).name, fatal: false,
     } as SttHandlerErrorPayload;
 
     console.error('[ContinuousMode] Error:', errorPayload.message, `(Code: ${errorPayload.code || 'N/A'})`);
-    this.clearTimers();
-    this.isListeningInternally.value = false;
-    this.context.sharedState.isProcessingAudio.value = false;
+    this.resetStateOnError(); // Reset internal state on error
 
-    if (errorPayload.code !== 'no-speech' && errorPayload.code !== 'aborted' && !errorPayload.message.includes('aborted by the user')) {
+    // Avoid showing generic "no-speech" or "aborted" errors if not fatal or part of normal flow
+    if (errorPayload.code !== 'no-speech' && 
+        !(errorPayload.code === 'aborted' && (this.context.isExplicitlyStoppedByUser.value || errorPayload.message.includes('transitioning states'))) &&
+        !errorPayload.message.includes('aborted by the user')) {
         this.context.transcriptionDisplay.showError(errorPayload.message, 3000);
     }
     this.context.emit('voice-input-error', errorPayload);
@@ -232,13 +338,15 @@ export class ContinuousMode extends BaseSttMode implements SttModePublicState {
 
   cleanup(): void {
     console.log('[ContinuousMode] Cleanup initiated.');
-    this.stop();
-    this.clearTimers();
-    this.continuousTranscriptBuffer.value = '';
+    this.clearAllTimers();
+    this.currentTranscriptSegment.value = '';
     this.context.sharedState.pendingTranscript.value = '';
     this.isListeningInternally.value = false;
+    this.isStartingProcess.value = false;
     this.context.sharedState.isProcessingAudio.value = false;
+    // No need to setExplicitlyStoppedByUser here, manager handles that context on overall cleanup
     this.context.transcriptionDisplay.clearTranscription();
+    console.log('[ContinuousMode] Cleanup complete.');
   }
 }
 
