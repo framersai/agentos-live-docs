@@ -128,6 +128,8 @@ interface ChatRequestBodyBE {
   tutorMode?: boolean;
   tutorLevel?: string;
   interviewMode?: boolean;
+  temperature?: number; // Allow frontend to specify temperature
+  max_tokens?: number; // Allow frontend to specify max tokens
   // New field for tool responses from frontend
   tool_response?: {
     tool_call_id: string;
@@ -160,6 +162,8 @@ export async function POST(req: Request, res: Response): Promise<void> {
       tutorLevel = 'intermediate',
       interviewMode: reqInterviewMode,
       tutorMode: reqTutorMode,
+      temperature, // New: allow frontend to specify temperature
+      max_tokens, // New: allow frontend to specify max_tokens
       tool_response, // New: handle tool response from client
     } = req.body as ChatRequestBodyBE;
 
@@ -327,12 +331,11 @@ export async function POST(req: Request, res: Response): Promise<void> {
     const llmConfigService = LlmConfigService.getInstance();
     const agentDefinition: AgentLLMDefinition = llmConfigService.getAgentDefinitionFromMode(mode, reqInterviewMode, reqTutorMode);
     
-    let systemPromptForAgentLLM: string;
-    if (systemPromptOverride) {
-        systemPromptForAgentLLM = systemPromptOverride;
-    } else {
-        let templateContent = loadPromptTemplate(agentDefinition.promptTemplateKey);
-        const bundleUsageInstructions = `
+    // Check if this is a transcript analysis request with system override
+    const isTranscriptAnalysis = systemPromptOverride && currentUserQuery.includes('TRANSCRIPT:');
+
+    // Only prepare bundle instructions if we're not doing direct transcript analysis
+    const bundleUsageInstructions = !isTranscriptAnalysis ? `
 ## IMPORTANT GUIDANCE - HOW TO USE THE CONTEXT BUNDLE:
 You have been provided with a "ContextBundle" JSON object that summarizes all relevant information for the current user request.
 Your response MUST be derived from this bundle. Key sections are:
@@ -343,7 +346,15 @@ Your response MUST be derived from this bundle. Key sections are:
 - \`criticalSystemContext.notesForDownstreamLLM\`: Pay close attention for specific instructions.
 - \`discernmentOutcome\`: If "CLARIFY", your goal is to ask targeted questions to resolve ambiguity.
 If tools are available to you (${agentDefinition.callableTools?.map(t=>t.function.name).join(', ') || 'none currently defined'}), and the user's request aligns with a tool's purpose, call the appropriate tool.
-Adhere to any 'requiredOutputFormat' in 'primaryTask'. Respond directly to 'primaryTask.description'. Do NOT hallucinate.`;
+Adhere to any 'requiredOutputFormat' in 'primaryTask'. Respond directly to 'primaryTask.description'. Do NOT hallucinate.` : '';
+
+    let systemPromptForAgentLLM: string;
+    if (systemPromptOverride) {
+        // For transcript analysis, use the override as-is (it has specific instructions for analyzing transcripts)
+        // For other overrides, append the bundle instructions
+        systemPromptForAgentLLM = isTranscriptAnalysis ? systemPromptOverride : (systemPromptOverride + '\n\n' + bundleUsageInstructions.trim());
+    } else {
+        let templateContent = loadPromptTemplate(agentDefinition.promptTemplateKey);
         systemPromptForAgentLLM = templateContent
         .replace(/{{LANGUAGE}}/g, contextBundle.pertinentUserProfileSnippets?.preferences?.defaultLanguage || language)
         .replace(/{{MODE}}/g, mode)
@@ -373,20 +384,30 @@ Adhere to any 'requiredOutputFormat' in 'primaryTask'. Respond directly to 'prim
         }),
     ];
 
-    // If the current turn was a user message (not a tool response), add the ContextBundle message.
-    // If it IS a tool_response turn, the tool_response message is already in fullHistoryForAgent.
+    // If the current turn was a user message (not a tool response), add the appropriate message
+    // If it IS a tool_response turn, the tool_response message is already in fullHistoryForAgent
     if (!tool_response) {
-      messagesForAgentLlm.push({ 
-        role: 'user', 
-        content: `Context Bundle for my request:\n\`\`\`json\n${JSON.stringify(contextBundle, null, 2)}\n\`\`\`\nPlease proceed based on this context and our prior conversation.` 
-      });
+      // For transcript analysis, send the raw transcript directly without context bundle wrapper
+      if (isTranscriptAnalysis) {
+        // Add the full user message with the transcript directly
+        messagesForAgentLlm.push({
+          role: 'user',
+          content: currentUserQuery // This contains the full transcript
+        });
+      } else {
+        // Regular context bundle approach for other modes
+        messagesForAgentLlm.push({
+          role: 'user',
+          content: `Context Bundle for my request:\n\`\`\`json\n${JSON.stringify(contextBundle, null, 2)}\n\`\`\`\nPlease proceed based on this context and our prior conversation.`
+        });
+      }
     }
     
     console.log(`[ChatRoutes] Calling Main Agent LLM (${agentDefinition.modelId}) for mode '${mode}'. Discernment: ${contextBundle.discernmentOutcome}. Tools available: ${agentDefinition.callableTools?.length || 0}`);
 
     const agentLlmParams: IChatCompletionParams = {
-        temperature: LLM_DEFAULT_TEMPERATURE, 
-        max_tokens: LLM_DEFAULT_MAX_TOKENS, 
+        temperature: temperature ?? LLM_DEFAULT_TEMPERATURE, // Use frontend-provided temperature if available
+        max_tokens: max_tokens ?? LLM_DEFAULT_MAX_TOKENS, // Use frontend-provided max_tokens if available
         user: effectiveUserId,
         tools: agentDefinition.callableTools, // Pass agent-specific tools
         tool_choice: agentDefinition.callableTools && agentDefinition.callableTools.length > 0 ? 'auto' : undefined, // Let LLM decide if tools are present

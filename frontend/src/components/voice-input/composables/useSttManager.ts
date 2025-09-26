@@ -40,6 +40,7 @@ export interface UseSttManagerOptions {
   transcriptionDisplay: ReturnType<typeof import('./shared/useTranscriptionDisplay').useTranscriptionDisplay>;
   emit: (event: string, ...args: any[]) => void;
   toast?: ToastService;
+  t?: (key: string, params?: any) => string; // i18n translator function
 }
 
 export interface SttManagerInstance {
@@ -54,6 +55,8 @@ export interface SttManagerInstance {
   isAwaitingVadCommandResult: Readonly<Ref<boolean>>; // Expose this
   isExplicitlyStoppedByUser: Readonly<Ref<boolean>>; // ADDED
   handleMicButtonClick: () => Promise<void>;
+  startPtt: () => Promise<void>; // Added for direct PTT control
+  stopPtt: () => Promise<void>; // Added for direct PTT control
   registerHandler: (type: SttInternalHandlerType, api: SttHandlerInstance) => void;
   unregisterHandler: (type: SttInternalHandlerType) => Promise<void>;
   cleanup: () => Promise<void>;
@@ -78,6 +81,7 @@ export function useSttManager(options: UseSttManagerOptions): SttManagerInstance
     transcriptionDisplay,
     emit,
     toast,
+    t, // i18n translator
   } = options;
 
   const scope: EffectScope = effectScope();
@@ -96,7 +100,12 @@ export function useSttManager(options: UseSttManagerOptions): SttManagerInstance
     return settings.value.sttPreference === 'browser_webspeech_api' ? 'browser' : 'whisper';
   });
 
-  const isActive = computed<boolean>(() => _currentModeInstance.value?.isActive.value ?? false);
+  const isActive = computed<boolean>(() => {
+    const active = _currentModeInstance.value?.isActive.value ?? false;
+    const modeName = _currentModeInstance.value ? _currentModeInstance.value.constructor.name : 'none';
+    console.log('[SttManager] isActive computed:', active, 'mode:', modeName);
+    return active;
+  });
   const canStart = computed<boolean>(() => _currentModeInstance.value?.canStart.value ?? false);
   const isProcessingAudio = computed<boolean>(() => _activeHandlerApi.value?.isActive?.value ?? false);
   const isListeningForWakeWord = computed<boolean>(() => _activeHandlerApi.value?.isListeningForWakeWord?.value ?? false);
@@ -105,7 +114,9 @@ export function useSttManager(options: UseSttManagerOptions): SttManagerInstance
     if (sharedState.currentRecordingStatusHtml.value.includes('mode-hint-feedback')) {
       return sharedState.currentRecordingStatusHtml.value;
     }
-    return _currentModeInstance.value?.statusText.value ?? 'Initializing STT...';
+    const status = _currentModeInstance.value?.statusText.value ?? 'Initializing STT...';
+    console.log('[SttManager] statusText computed:', status);
+    return status;
   });
 
   const placeholderText = computed<string>(() => _currentModeInstance.value?.placeholderText.value ?? 'Please wait, voice input loading...');
@@ -129,6 +140,7 @@ export function useSttManager(options: UseSttManagerOptions): SttManagerInstance
     clearVadCommandTimeout: () => _clearVadCommandTimeout(),
     isExplicitlyStoppedByUser: readonly(_isExplicitlyStoppedByUser),
     setExplicitlyStoppedByUser: (value: boolean) => { _isExplicitlyStoppedByUser.value = value; },
+    t: t || ((key: string) => key), // Pass translator or fallback
   });
 
   const _createMode = (modeValue: AudioInputMode): BaseSttMode | null => {
@@ -283,6 +295,36 @@ export function useSttManager(options: UseSttManagerOptions): SttManagerInstance
     }
   };
 
+  // PTT-specific methods
+  const startPtt = async (): Promise<void> => {
+    console.log('[SttManager] startPtt called');
+    const currentMode = _currentModeInstance.value;
+    if (!currentMode) {
+      console.error('[SttManager] startPtt: No current mode instance.');
+      return;
+    }
+
+    // For PTT mode, directly start without checking all conditions
+    if (currentMode.constructor.name === 'PttMode') {
+      _isExplicitlyStoppedByUser.value = false;
+      await currentMode.start();
+    }
+  };
+
+  const stopPtt = async (): Promise<void> => {
+    console.log('[SttManager] stopPtt called');
+    const currentMode = _currentModeInstance.value;
+    if (!currentMode) {
+      console.error('[SttManager] stopPtt: No current mode instance.');
+      return;
+    }
+
+    // For PTT mode, directly stop
+    if (currentMode.constructor.name === 'PttMode' && currentMode.isActive.value) {
+      await currentMode.stop();
+    }
+  };
+
   const handleTranscriptionFromHandler = (text: string, isFinal: boolean): void => {
     const currentMode = _currentModeInstance.value;
     if (!currentMode) return;
@@ -298,10 +340,11 @@ export function useSttManager(options: UseSttManagerOptions): SttManagerInstance
   const handleWakeWordDetectedFromHandler = async (): Promise<void> => {
     // ... (Implementation unchanged from previous version 2.4.1) ...
     if (options.audioMode.value === 'voice-activation' && _currentModeInstance.value instanceof VadMode) {
-      if (isProcessingLLM.value) {
-        console.warn('[SttManager] Wake word detected, but LLM is processing. Ignoring.');
-        return;
-      }
+      // Allow wake word detection even when LLM is processing - VAD should work independently
+      // if (isProcessingLLM.value) {
+      //   console.warn('[SttManager] Wake word detected, but LLM is processing. Ignoring.');
+      //   return;
+      // }
       _isAwaitingVadCommandResult.value = true;
       // console.log(`[SttManager] VAD wake word detected. Setting VAD command timeout (${VAD_COMMAND_RESULT_TIMEOUT_MS}ms).`); // Reduced verbosity
       if (vadCommandResultTimeoutId) clearTimeout(vadCommandResultTimeoutId);
@@ -423,6 +466,8 @@ export function useSttManager(options: UseSttManagerOptions): SttManagerInstance
     isAwaitingVadCommandResult: readonly(_isAwaitingVadCommandResult), // Expose readonly version
     isExplicitlyStoppedByUser: readonly(_isExplicitlyStoppedByUser), // Expose readonly version
     handleMicButtonClick,
+    startPtt, // Added for direct PTT control
+    stopPtt, // Added for direct PTT control
     registerHandler,
     unregisterHandler,
     cleanup,

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, inject, onMounted, onUnmounted, PropType, toRef } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useAgentStore } from '@/store/agent.store';
 import { useChatStore } from '@/store/chat.store';
 import type { IAgentDefinition } from '@/services/agent.service';
@@ -20,6 +21,7 @@ const emit = defineEmits<{
 const agentStore = useAgentStore();
 const chatStore = useChatStore();
 const toast = inject<ToastService>('toast');
+const { t } = useI18n();
 
 const agentConfigAsRef = toRef(props, 'agentConfig');
 
@@ -44,9 +46,9 @@ onMounted(async () => {
   <div class="v-icon-wrapper">
     <CpuChipIcon class="v-main-icon" />
   </div>
-  <h2 class="v-welcome-title">V Online.</h2>
-  <p class="v-welcome-subtitle">${props.agentConfig.description || 'Advanced intelligence at your service. Pose your complex query or exploration.'}</p>
-  <p class="v-welcome-prompt">${props.agentConfig.inputPlaceholder || 'What shall we delve into?'}</p>
+  <h2 class="v-welcome-title">${t('vAgent.online', { name: t('vAgent.name') })}</h2>
+  <p class="v-welcome-subtitle">${t('vAgent.description')}</p>
+  <p class="v-welcome-prompt">${t('vAgent.placeholder')}</p>
 </div>`;
     chatStore.updateMainContent({
       agentId: props.agentId,

@@ -21,6 +21,7 @@ import {
   PresentationChartLineIcon,
   BoltIcon, // Example for V
 } from '@heroicons/vue/24/outline';
+import { i18n } from '@/i18n';
 
 // Import TextRevealConfig for agent-specific animation settings
 import type { TextRevealConfig } from '@/composables/useTextAnimation';
@@ -595,9 +596,9 @@ const LCAuditAgentView = () => import('@/components/agents/catalog/LCAuditAgent/
 const agents: IAgentDefinition[] = [
   {
     id: 'nerf_agent' as AgentId, // This is "Nerf"
-    label: 'Nerf',
-    description: 'Your friendly and efficient general AI for quick questions and information.',
-    longDescription: 'Nerf is designed for straightforward Q&A, quick facts, definitions, and simple explanations. It aims for clarity and conciseness, making it a great go-to for everyday inquiries.',
+    get label() { return i18n.global.t('agents.nerf.name') || 'Nerf'; },
+    get description() { return i18n.global.t('agents.nerf.description') || 'Your friendly and efficient general AI for quick questions and information.'; },
+    get longDescription() { return i18n.global.t('agents.nerf.longDescription') || 'Nerf is designed for straightforward Q&A, quick facts, definitions, and simple explanations. It aims for clarity and conciseness, making it a great go-to for everyday inquiries.'; },
     component: NerfAgentView,
     iconComponent: ChatBubbleLeftEllipsisIcon,
     iconClass: 'text-orange-400 dark:text-orange-500', // Keep Nerf's orange
@@ -606,16 +607,16 @@ const agents: IAgentDefinition[] = [
     capabilities: { canGenerateDiagrams: false, usesCompactRenderer: true, acceptsVoiceInput: true, maxChatHistory: 8, showEphemeralChatLog: true, handlesOwnInput: true },
     examplePrompts: generalChatPrompts,
     tags: ['general knowledge', 'q&a', 'information', 'quick help', 'concise', 'friendly'],
-    inputPlaceholder: 'Ask Nerf anything...',
+    get inputPlaceholder() { return i18n.global.t('agents.nerf.placeholder') || 'Ask Nerf anything...'; },
     isPublic: true,
     accessTier: 'member', // Was member in original
     themeColor: '--nerf-accent', // Example for CSS variable theming
   },
   {
     id: 'v_agent' as AgentId, // New ID for V
-    label: 'V',
-    description: 'Advanced, dynamic, and insightful AI assistant for complex tasks and explorations.',
-    longDescription: 'V is a powerful, polymathic AI designed to engage in nuanced discussions, synthesize complex information, and provide comprehensive, well-articulated responses. Ideal for deep dives, creative brainstorming, and strategic thinking.',
+    get label() { return i18n.global.t('vAgent.name') || 'V'; },
+    get description() { return i18n.global.t('vAgent.description') || 'Advanced, dynamic, and insightful AI assistant for complex tasks and explorations.'; },
+    get longDescription() { return i18n.global.t('vAgent.longDescription') || 'V is a powerful, polymathic AI designed to engage in nuanced discussions, synthesize complex information, and provide comprehensive, well-articulated responses. Ideal for deep dives, creative brainstorming, and strategic thinking.'; },
     component: VAgentView,
     iconComponent: BoltIcon, // Using BoltIcon for "powerful"
     iconClass: 'text-cyan-400 dark:text-cyan-500', // V's distinct color
@@ -624,7 +625,7 @@ const agents: IAgentDefinition[] = [
     capabilities: { canGenerateDiagrams: true, usesCompactRenderer: true, acceptsVoiceInput: true, maxChatHistory: 15, showEphemeralChatLog: true, handlesOwnInput: true },
     examplePrompts: vAssistantPrompts, // Dedicated prompts for V
     tags: ['advanced AI', 'dynamic', 'insightful', 'complex problem solving', 'research', 'analysis'],
-    inputPlaceholder: 'Pose your complex query or exploration to V...',
+    get inputPlaceholder() { return i18n.global.t('vAgent.placeholder') || 'Pose your complex query or exploration to V...'; },
     isPublic: true,
     accessTier: 'public', // V is the new powerful default
     isDefault: true, // V could be the new default
@@ -632,8 +633,8 @@ const agents: IAgentDefinition[] = [
   },
   {
     id: 'coding_assistant' as AgentId,
-    label: 'CodePilot',
-    description: 'Expert coding assistance, debugging, and explanations across multiple languages.',
+    get label() { return i18n.global.t('agents.codePilot.name') || 'CodePilot'; },
+    get description() { return i18n.global.t('agents.codePilot.description') || 'Expert coding assistance, debugging, and explanations across multiple languages.'; },
     component: CodingAgentView,
     iconComponent: CodeBracketSquareIcon,
     iconClass: 'text-rose-400 dark:text-rose-500',
@@ -642,14 +643,14 @@ const agents: IAgentDefinition[] = [
     capabilities: { canGenerateDiagrams: true, usesCompactRenderer: true, acceptsVoiceInput: true, maxChatHistory: 25, showEphemeralChatLog: true, handlesOwnInput: true },
     examplePrompts: codingAssistantPrompts,
     tags: ['programming', 'dev', 'code', 'debug', 'algorithms', 'data structures'],
-    inputPlaceholder: 'Ask CodePilot about code...',
+    get inputPlaceholder() { return i18n.global.t('agents.codePilot.placeholder') || 'Ask CodePilot about code...'; },
     isPublic: true,
     accessTier: 'public',
   },
   {
     id: 'system_designer' as AgentId,
-    label: 'Architectron',
-    description: 'Collaboratively design and diagram complex software and system architectures.',
+    get label() { return i18n.global.t('agents.architectron.name') || 'Architectron'; },
+    get description() { return i18n.global.t('agents.architectron.description') || 'Collaboratively design and diagram complex software and system architectures.'; },
     component: SystemsDesignAgentView,
     iconComponent: CpuChipIcon, // Keeping CpuChipIcon for Architectron
     iconClass: 'text-indigo-400 dark:text-indigo-500',
@@ -657,14 +658,14 @@ const agents: IAgentDefinition[] = [
     category: 'Coding',
     capabilities: { canGenerateDiagrams: true, usesCompactRenderer: true, acceptsVoiceInput: true, maxChatHistory: 30, handlesOwnInput: true, showEphemeralChatLog: true },
     examplePrompts: systemDesignerPrompts,
-    inputPlaceholder: 'Describe the system to design...',
+    get inputPlaceholder() { return i18n.global.t('agents.architectron.placeholder') || 'Describe the system to design...'; },
     isPublic: true,
     accessTier: 'public',
   },
   {
     id: 'meeting_summarizer' as AgentId,
-    label: 'Meeting Scribe',
-    description: 'Processes your meeting notes or transcripts into clear, structured summaries with action items.',
+    get label() { return i18n.global.t('agents.meetingScribe.name') || 'Meeting Scribe'; },
+    get description() { return i18n.global.t('agents.meetingScribe.description') || 'Processes your meeting notes or transcripts into clear, structured summaries with action items.'; },
     component: BusinessMeetingAgentView,
     iconComponent: BriefcaseIcon,
     iconClass: 'text-cyan-400 dark:text-cyan-500', // Same as V, consider differentiating
@@ -672,14 +673,14 @@ const agents: IAgentDefinition[] = [
     category: 'Productivity',
     capabilities: { canGenerateDiagrams: true, usesCompactRenderer: true, acceptsVoiceInput: true, maxChatHistory: 10, handlesOwnInput: true, showEphemeralChatLog: false },
     examplePrompts: meetingSummarizerPrompts,
-    inputPlaceholder: 'Paste notes or dictate discussion for summary...',
+    get inputPlaceholder() { return i18n.global.t('agents.meetingScribe.placeholder') || 'Paste notes or dictate discussion for summary...'; },
     isPublic: true,
     accessTier: 'public',
   },
   {
     id: 'diary_agent' as AgentId,
-    label: 'Echo',
-    description: 'Your personal, empathetic AI diary and notetaker for reflection and organizing thoughts.',
+    get label() { return i18n.global.t('agents.echo.name') || 'Echo'; },
+    get description() { return i18n.global.t('agents.echo.description') || 'Your personal, empathetic AI diary and notetaker for reflection and organizing thoughts.'; },
     component: DiaryAgentView,
     iconComponent: BookOpenIcon,
     iconClass: 'text-purple-400 dark:text-purple-500',
@@ -687,14 +688,14 @@ const agents: IAgentDefinition[] = [
     category: 'Productivity',
     capabilities: { canGenerateDiagrams: true, usesCompactRenderer: false, acceptsVoiceInput: true, maxChatHistory: 10, handlesOwnInput: true, showEphemeralChatLog: true },
     examplePrompts: diaryAgentPrompts,
-    inputPlaceholder: 'Share your thoughts with Echo...',
+    get inputPlaceholder() { return i18n.global.t('agents.echo.placeholder') || 'Share your thoughts with Echo...'; },
     isPublic: true,
     accessTier: 'public',
   },
   {
     id: 'coding_interviewer' as AgentId,
-    label: 'AI Interviewer',
-    description: 'Simulates a technical coding interview, providing problems and evaluating solutions.',
+    get label() { return i18n.global.t('agents.aiInterviewer.name') || 'AI Interviewer'; },
+    get description() { return i18n.global.t('agents.aiInterviewer.description') || 'Simulates a technical coding interview, providing problems and evaluating solutions.'; },
     component: CodingInterviewerAgentView,
     iconComponent: UserCircleIcon,
     iconClass: 'text-pink-500 dark:text-pink-600', // Changed color for distinction
@@ -702,14 +703,14 @@ const agents: IAgentDefinition[] = [
     category: 'Learning',
     capabilities: { canGenerateDiagrams: false, usesCompactRenderer: true, acceptsVoiceInput: true, maxChatHistory: 20, handlesOwnInput: true, showEphemeralChatLog: true },
     examplePrompts: codingInterviewerPrompts,
-    inputPlaceholder: 'Ready for your mock coding interview?',
+    get inputPlaceholder() { return i18n.global.t('agents.aiInterviewer.placeholder') || 'Ready for your mock coding interview?'; },
     isPublic: true,
     accessTier: 'public',
   },
   {
     id: 'tutor_agent' as AgentId,
-    label: 'Professor Astra',
-    description: 'Your adaptive AI tutor for exploring subjects and mastering concepts.',
+    get label() { return i18n.global.t('agents.professorAstra.name') || 'Professor Astra'; },
+    get description() { return i18n.global.t('agents.professorAstra.description') || 'Your adaptive AI tutor for exploring subjects and mastering concepts.'; },
     component: TutorAgentView,
     iconComponent: AcademicCapIcon,
     iconClass: 'text-amber-500 dark:text-amber-400',
@@ -717,14 +718,14 @@ const agents: IAgentDefinition[] = [
     category: 'Learning',
     capabilities: { canGenerateDiagrams: true, usesCompactRenderer: true, acceptsVoiceInput: true, maxChatHistory: 15, handlesOwnInput: true, showEphemeralChatLog: true },
     examplePrompts: tutorAgentPrompts,
-    inputPlaceholder: 'What topic shall we learn today?',
+    get inputPlaceholder() { return i18n.global.t('agents.professorAstra.placeholder') || 'What topic shall we learn today?'; },
     isPublic: true,
     accessTier: 'public',
   },
   {
     id: 'lc_audit_aide' as AgentId,
-    label: 'LC-Audit',
-    description: 'In-depth LeetCode problem analysis and interview aide.',
+    get label() { return i18n.global.t('agents.lcAudit.name') || 'LC-Audit'; },
+    get description() { return i18n.global.t('agents.lcAudit.description') || 'In-depth LeetCode problem analysis and interview aide.'; },
     component: LCAuditAgentView,
     iconComponent: DocumentMagnifyingGlassIcon,
     iconClass: 'text-teal-500 dark:text-teal-400',
@@ -741,7 +742,7 @@ const agents: IAgentDefinition[] = [
         { id: 'slideshow-viz', label: 'Visual Slideshows', icon: PresentationChartLineIcon },
         { id: 'commented-code', label: 'Exhaustive Code Comments', icon: CodeBracketSquareIcon },
     ],
-    inputPlaceholder: 'Provide problem context for LC-Audit analysis...',
+    get inputPlaceholder() { return i18n.global.t('agents.lcAudit.placeholder') || 'Provide problem context for LC-Audit analysis...'; },
     isPublic: false, // Making this premium as per original
     accessTier: 'premium',
     isBeta: true,
@@ -749,8 +750,8 @@ const agents: IAgentDefinition[] = [
   // --- Placeholder & Utility Agents ---
   // Removing the 'assistant' (old V) as it's now 'v_agent'.
   // Keeping alias logic but ensuring they point to the correct canonical agent ID.
-  { id: 'general' as AgentId, label: 'Assistant (General Alias)', description: 'Alias for V', iconComponent: ChatBubbleLeftEllipsisIcon, systemPromptKey: 'default_v_assistant', category: 'General', capabilities: {}, isPublic: true, accessTier: 'member' },
-  { id: 'general-ai' as AgentId, label: 'Assistant (AI General Alias)', description: 'Alias for V', iconComponent: ChatBubbleLeftEllipsisIcon, systemPromptKey: 'default_v_assistant', category: 'General', capabilities: {}, isPublic: true, accessTier: 'member' },
+  { id: 'general' as AgentId, get label() { return i18n.global.t('agent.defaultName') || 'Assistant'; }, get description() { return i18n.global.t('vAgent.description') || 'Alias for V'; }, iconComponent: ChatBubbleLeftEllipsisIcon, systemPromptKey: 'default_v_assistant', category: 'General', capabilities: {}, isPublic: true, accessTier: 'member' },
+  { id: 'general-ai' as AgentId, get label() { return i18n.global.t('agent.defaultName') || 'Assistant'; }, get description() { return i18n.global.t('vAgent.description') || 'Alias for V'; }, iconComponent: ChatBubbleLeftEllipsisIcon, systemPromptKey: 'default_v_assistant', category: 'General', capabilities: {}, isPublic: true, accessTier: 'member' },
 
   { id: 'private-dashboard-placeholder' as AgentId, label: 'Dashboard', description: 'User dashboard area.', iconComponent: SparklesIcon, systemPromptKey: 'v_agent', category: 'Utility', capabilities: {}, isPublic: false, accessTier: 'member' },
   { id: 'rate-limit-exceeded' as AgentId, label: 'Rate Limited', description: 'Displayed when rate limits are hit.', iconComponent: SparklesIcon, systemPromptKey: 'v_agent', category: 'Utility', capabilities: {}, isPublic: true, accessTier: 'public' },

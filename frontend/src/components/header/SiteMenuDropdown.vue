@@ -14,12 +14,14 @@
  */
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed, type Ref } from 'vue';
-import { RouterLink } from 'vue-router';
+import { RouterLink, useRoute } from 'vue-router';
 // Icons for navigation items within the panel
 import {
   InformationCircleIcon, // For "About VCA"
   Cog8ToothIcon,         // For "App Settings"
 } from '@heroicons/vue/24/outline';
+
+const route = useRoute();
 
 /**
  * @ref {Ref<boolean>} isOpen - Reactive ref to control the visibility of the dropdown panel.
@@ -149,7 +151,7 @@ const iconStateClass = computed(() => ({
         </div>
         <div class="dropdown-content-ephemeral p-1" role="none">
           <RouterLink
-            to="/about"
+            :to="`/${$route.params.locale || 'en-US'}/about`"
             class="dropdown-item-ephemeral group"
             role="menuitem"
             @click="closeDropdown"
@@ -159,7 +161,7 @@ const iconStateClass = computed(() => ({
           </RouterLink>
 
           <RouterLink
-            to="/settings"
+            :to="`/${$route.params.locale || 'en-US'}/settings`"
             class="dropdown-item-ephemeral group"
             role="menuitem"
             @click="closeDropdown"

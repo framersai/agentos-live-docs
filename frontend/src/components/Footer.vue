@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, type Ref, type Component as VueComponentType } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRoute } from 'vue-router';
 import SystemLogDisplay from './ui/SystemLogDisplay.vue';
 import { RouterLink } from 'vue-router';
 // Import the COMPLEX, stateful HearingIndicator
@@ -26,6 +28,8 @@ let apiStatusInterval: number | undefined;
 
 const reactiveStore = useReactiveStore();
 const uiStore = useUiStore();
+const { t } = useI18n();
+const route = useRoute();
 
 // The HearingIndicator will use this appState to show its dynamic visuals
 const appStateForFooterIndicator = computed<AppState>(() => reactiveStore.appState);
@@ -34,13 +38,13 @@ const apiStatusInfo = computed(() => {
   // ... (same as your provided code)
   switch (apiStatus.value) {
     case 'Operational':
-      return { text: 'Agents Online', class: 'text-status-success', icon: ApiOnlineIcon, dotClass: 'bg-status-success' };
+      return { text: t('status.online'), class: 'text-status-success', icon: ApiOnlineIcon, dotClass: 'bg-status-success' };
     case 'Degraded':
-      return { text: 'Agents Degraded', class: 'text-status-warning', icon: ApiDegradedIcon, dotClass: 'bg-status-warning' };
+      return { text: t('status.degraded'), class: 'text-status-warning', icon: ApiDegradedIcon, dotClass: 'bg-status-warning' };
     case 'Down':
-      return { text: 'Agents Offline', class: 'text-status-error', icon: ApiOfflineIcon, dotClass: 'bg-status-error' };
+      return { text: t('status.offline'), class: 'text-status-error', icon: ApiOfflineIcon, dotClass: 'bg-status-error' };
     default:
-      return { text: 'Agents Status...', class: 'text-status-muted', icon: ApiCheckingIcon, dotClass: 'bg-status-muted animate-pulse' };
+      return { text: t('status.checking'), class: 'text-status-muted', icon: ApiCheckingIcon, dotClass: 'bg-status-muted animate-pulse' };
   }
 });
 
@@ -88,7 +92,7 @@ onUnmounted(() => {
         <div class="footer-branding-ephemeral">
           <img src="@/assets/logo.svg" alt="VCA Logo" class="footer-logo-ephemeral" />
           <p class="footer-copyright-ephemeral">
-            &copy; {{ new Date().getFullYear() }} VCA.Chat. All rights reserved.
+            &copy; {{ new Date().getFullYear() }} VCA.Chat. {{ t('common.allRightsReserved') }}
           </p>
         </div>
 
@@ -114,7 +118,7 @@ onUnmounted(() => {
             :aria-pressed="logsOpen"
           >
             <LogsIcon class="icon" aria-hidden="true" />
-            <span class="action-text hidden sm:inline">Logs</span>
+            <span class="action-text hidden sm:inline">{{ t('common.logs') }}</span>
           </button>
           <a
             :href="repositoryUrl"
@@ -125,16 +129,16 @@ onUnmounted(() => {
             aria-label="View Source Code on GitHub"
           >
             <SourceIcon class="icon" aria-hidden="true" />
-            <span class="action-text hidden sm:inline">Source</span>
+            <span class="action-text hidden sm:inline">{{ t('common.source') }}</span>
           </a>
           <RouterLink
-            to="/settings"
+            :to="`/${route.params.locale || 'en-US'}/settings`"
             class="footer-action-button-ephemeral"
             title="Open Application Settings"
             aria-label="Open Application Settings"
           >
             <ConfigIcon class="icon" aria-hidden="true" />
-            <span class="action-text hidden sm:inline">Config</span>
+            <span class="action-text hidden sm:inline">{{ t('common.settings') }}</span>
           </RouterLink>
         </div>
       </div>

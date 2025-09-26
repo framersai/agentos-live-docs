@@ -25,6 +25,12 @@ export class PttMode extends BaseSttMode implements SttModePublicState {
   private finalTranscript = ref('');
   /** @property {ref<boolean>} isRecordingInternally - Internal reactive state indicating if recording is active. */
   private isRecordingInternally = ref(false);
+  /** @property {number | null} silenceDetectionTimer - Timer for detecting silence */
+  private silenceDetectionTimer: number | null = null;
+  /** @property {number} lastTranscriptionTime - Timestamp of last transcription received */
+  private lastTranscriptionTime = 0;
+  /** @property {number} SILENCE_THRESHOLD_MS - Milliseconds of silence before auto-sending */
+  private readonly SILENCE_THRESHOLD_MS = 2500;
 
   // --- SttModePublicState Implementation ---
   /** @inheritdoc */
@@ -49,7 +55,11 @@ export class PttMode extends BaseSttMode implements SttModePublicState {
   constructor(context: SttModeContext) {
     super(context);
 
-    this.isActive = computed(() => this.isRecordingInternally.value);
+    this.isActive = computed(() => {
+      const active = this.isRecordingInternally.value;
+      console.log('[PttMode] isActive computed:', active, 'isRecordingInternally:', this.isRecordingInternally.value, 'sharedState.isProcessingAudio:', context.sharedState.isProcessingAudio.value);
+      return active;
+    });
     // Accessing context.isProcessingLLM.value (Ref) and context.micPermissionGranted.value (ComputedRef) correctly
     this.canStart = computed(() =>
         !this.context.isProcessingLLM.value &&
@@ -71,6 +81,7 @@ export class PttMode extends BaseSttMode implements SttModePublicState {
 
   /** @inheritdoc */
   async start(): Promise<boolean> {
+    console.log('[PttMode] start() called. canStart:', this.canStart.value, 'isRecordingInternally:', this.isRecordingInternally.value);
     if (!this.canStart.value) {
       console.warn('[PttMode] Cannot start PTT mode - conditions not met.');
       // Specific toasts are helpful for the user
@@ -86,14 +97,20 @@ export class PttMode extends BaseSttMode implements SttModePublicState {
 
     this.finalTranscript.value = '';
     this.isRecordingInternally.value = true;
+    this.lastTranscriptionTime = Date.now();
+    this.clearSilenceTimer();
+    console.log('[PttMode] Set isRecordingInternally to true');
     this.context.sharedState.isProcessingAudio.value = true;
+    console.log('[PttMode] Set isProcessingAudio to true');
     this.context.transcriptionDisplay.showListening();
+    console.log('[PttMode] Current statusText should be:', this.statusText.value);
 
     try {
       const handlerStarted = await this.context.activeHandlerApi.value?.startListening(false);
       if (handlerStarted) {
         this.context.playSound(this.context.audioFeedback.beepInSound.value);
         console.log('[PttMode] PTT recording started.');
+        this.startSilenceDetection();
         return true;
       } else {
         console.error('[PttMode] STT handler failed to start for PTT mode.');
@@ -112,13 +129,19 @@ export class PttMode extends BaseSttMode implements SttModePublicState {
 
   /** @inheritdoc */
   async stop(): Promise<void> {
+    console.log('[PttMode] stop() called. isRecordingInternally:', this.isRecordingInternally.value);
     if (!this.isRecordingInternally.value) {
+      console.log('[PttMode] Not recording internally, returning early');
       return;
     }
 
     console.log('[PttMode] Stopping PTT recording...');
+    this.clearSilenceTimer();
     this.isRecordingInternally.value = false;
+    console.log('[PttMode] Set isRecordingInternally to false');
     this.context.sharedState.isProcessingAudio.value = false;
+    console.log('[PttMode] Set isProcessingAudio to false');
+    console.log('[PttMode] Current statusText should be:', this.statusText.value);
 
     try {
       await this.context.activeHandlerApi.value?.stopListening(false);
@@ -146,6 +169,10 @@ export class PttMode extends BaseSttMode implements SttModePublicState {
     this.finalTranscript.value = text;
     this.context.sharedState.pendingTranscript.value = text.trim(); // Update for UI consistency
     this.context.transcriptionDisplay.showInterimTranscript(text.trim()); // Show as interim until stop
+
+    // Reset silence detection on new transcription
+    this.lastTranscriptionTime = Date.now();
+    this.resetSilenceTimer();
   }
 
   /**
@@ -157,7 +184,49 @@ export class PttMode extends BaseSttMode implements SttModePublicState {
     if (this.isRecordingInternally.value) {
       this.context.sharedState.pendingTranscript.value = text.trim();
       this.context.transcriptionDisplay.showInterimTranscript(text.trim());
+
+      // Reset silence detection on interim transcription
+      if (text.trim()) {
+        this.lastTranscriptionTime = Date.now();
+        this.resetSilenceTimer();
+      }
     }
+  }
+
+  /**
+   * @method clearSilenceTimer
+   * @description Clears the silence detection timer
+   */
+  private clearSilenceTimer(): void {
+    if (this.silenceDetectionTimer) {
+      clearTimeout(this.silenceDetectionTimer);
+      this.silenceDetectionTimer = null;
+    }
+  }
+
+  /**
+   * @method resetSilenceTimer
+   * @description Resets the silence detection timer
+   */
+  private resetSilenceTimer(): void {
+    this.clearSilenceTimer();
+    this.startSilenceDetection();
+  }
+
+  /**
+   * @method startSilenceDetection
+   * @description Starts monitoring for silence to auto-send the transcription
+   */
+  private startSilenceDetection(): void {
+    if (!this.isRecordingInternally.value) return;
+
+    this.clearSilenceTimer();
+    this.silenceDetectionTimer = window.setTimeout(() => {
+      if (this.isRecordingInternally.value && this.finalTranscript.value.trim()) {
+        console.log('[PttMode] Silence detected for', this.SILENCE_THRESHOLD_MS, 'ms. Auto-stopping.');
+        this.stop();
+      }
+    }, this.SILENCE_THRESHOLD_MS);
   }
 
   /** @inheritdoc */
@@ -180,6 +249,7 @@ export class PttMode extends BaseSttMode implements SttModePublicState {
   /** @inheritdoc */
   cleanup(): void {
     console.log('[PttMode] Cleanup initiated.');
+    this.clearSilenceTimer();
     if (this.isRecordingInternally.value) {
         this.context.activeHandlerApi.value?.stopAll(true);
     }

@@ -15,6 +15,7 @@
  */
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch, type Ref, type Component as VueComponentType } from 'vue';
+import { RouterLink, useRoute } from 'vue-router';
 import {
   voiceSettingsManager,
   type AudioInputMode,
@@ -22,6 +23,7 @@ import {
   type STTPreference
   // TTSProvider is not directly used as a type annotation here after corrections.
 } from '@/services/voice.settings.service';
+import { useI18n } from 'vue-i18n';
 
 // Icons - Only importing icons actively used in the template.
 import {
@@ -37,6 +39,8 @@ import {
   ChatBubbleLeftRightIcon as OpenAIVoicesIcon,
   ServerStackIcon as BrowserVoicesIcon,
   CheckIcon as SelectedOptionIcon, // Outline CheckIcon is used for selected options
+  MicrophoneIcon,
+  SpeakerWaveIcon,
 } from '@heroicons/vue/24/outline';
 
 /** @interface AudioModeOption - Defines structure for audio input mode selection options. */
@@ -57,11 +61,28 @@ interface STTOption {
 
 /** @type {VoiceApplicationSettings} settings - Reactive global voice settings object. */
 const settings: VoiceApplicationSettings = voiceSettingsManager.settings;
+const route = useRoute();
+const { t } = useI18n();
 
 /** @ref {Ref<boolean>} isOpen - Controls dropdown visibility. */
 const isOpen: Ref<boolean> = ref(false);
 /** @ref {Ref<HTMLElement | null>} dropdownRef - Template ref for click-outside detection. */
 const dropdownRef: Ref<HTMLElement | null> = ref(null);
+
+// Audio device states from voiceSettingsManager
+const audioInputDevices = computed(() => voiceSettingsManager.audioInputDevices.value);
+const audioOutputDevices = computed(() => voiceSettingsManager.audioOutputDevices.value);
+const devicesLoaded = computed(() => voiceSettingsManager.audioInputDevicesLoaded.value && voiceSettingsManager.audioOutputDevicesLoaded.value);
+
+const selectedInputDeviceId = computed<string>({
+  get: () => settings.selectedAudioInputDeviceId || 'default',
+  set: (val: string) => voiceSettingsManager.updateSetting('selectedAudioInputDeviceId', val === 'default' ? null : val),
+});
+
+const selectedOutputDeviceId = computed<string>({
+  get: () => settings.selectedAudioOutputDeviceId || 'default',
+  set: (val: string) => voiceSettingsManager.updateSetting('selectedAudioOutputDeviceId', val === 'default' ? null : val),
+});
 
 const toggleDropdown = (): void => { isOpen.value = !isOpen.value; };
 const closeDropdown = (): void => { isOpen.value = false; };
@@ -72,8 +93,17 @@ const handleClickOutside = (event: MouseEvent): void => {
   }
 };
 
-onMounted(() => { document.addEventListener('mousedown', handleClickOutside, true); });
-onUnmounted(() => { document.removeEventListener('mousedown', handleClickOutside, true); });
+onMounted(async () => {
+  document.addEventListener('mousedown', handleClickOutside, true);
+  // Load devices if not already loaded
+  if (!voiceSettingsManager.audioInputDevicesLoaded.value) {
+    await voiceSettingsManager.loadAudioInputDevices();
+  }
+});
+
+onUnmounted(() => {
+  document.removeEventListener('mousedown', handleClickOutside, true);
+});
 
 const audioModeOptions = computed<AudioModeOption[]>(() => [
   { label: 'Push-to-Talk', value: 'push-to-talk', icon: PTTModeIcon, description: "Hold microphone button to speak." },
@@ -190,8 +220,54 @@ const selectVoice = (voiceId: string | null) => {
 
           <div class="dropdown-divider-ephemeral"></div>
 
+          <!-- Microphone Selection -->
           <div class="setting-group-in-dropdown px-1.5 py-1">
-            <label class="dropdown-section-title-ephemeral !mb-1.5 !mt-0">Audio Input Mode</label>
+            <label class="dropdown-section-title-ephemeral !mb-1.5 !mt-0 flex items-center">
+              <MicrophoneIcon class="section-title-icon-ephemeral" aria-hidden="true" />
+              {{ t('voice.microphoneInput', 'Microphone Input') }}
+            </label>
+            <select
+              v-model="selectedInputDeviceId"
+              class="device-select-dropdown w-full"
+              :disabled="!devicesLoaded || audioInputDevices.length === 0"
+            >
+              <option value="default">{{ t('voice.defaultDevice', 'System Default') }}</option>
+              <option
+                v-for="device in audioInputDevices"
+                :key="device.deviceId"
+                :value="device.deviceId"
+              >
+                {{ device.label || `Microphone ${audioInputDevices.indexOf(device) + 1}` }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Speaker/Output Selection -->
+          <div class="setting-group-in-dropdown px-1.5 py-1">
+            <label class="dropdown-section-title-ephemeral !mb-1.5 !mt-0 flex items-center">
+              <SpeakerWaveIcon class="section-title-icon-ephemeral" aria-hidden="true" />
+              {{ t('voice.audioOutput', 'Audio Output') }}
+            </label>
+            <select
+              v-model="selectedOutputDeviceId"
+              class="device-select-dropdown w-full"
+              :disabled="!devicesLoaded || audioOutputDevices.length === 0"
+            >
+              <option value="default">{{ t('voice.defaultDevice', 'System Default') }}</option>
+              <option
+                v-for="device in audioOutputDevices"
+                :key="device.deviceId"
+                :value="device.deviceId"
+              >
+                {{ device.label || `Speaker ${audioOutputDevices.indexOf(device) + 1}` }}
+              </option>
+            </select>
+          </div>
+
+          <div class="dropdown-divider-ephemeral"></div>
+
+          <div class="setting-group-in-dropdown px-1.5 py-1">
+            <label class="dropdown-section-title-ephemeral !mb-1.5 !mt-0">{{ t('voice.audioInputMode', 'Audio Input Mode') }}</label>
             <div class="options-grid-dropdown grid grid-cols-3 gap-1.5">
               <button
                 v-for="mode in audioModeOptions" :key="mode.value"
@@ -211,7 +287,7 @@ const selectVoice = (voiceId: string | null) => {
           <div class="dropdown-divider-ephemeral"></div>
 
           <div class="setting-group-in-dropdown px-1.5 py-1">
-            <label class="dropdown-section-title-ephemeral !mb-1.5 !mt-0">Speech Recognition (STT)</label>
+            <label class="dropdown-section-title-ephemeral !mb-1.5 !mt-0">{{ t('voice.speechRecognition', 'Speech Recognition (STT)') }}</label>
             <div class="options-grid-dropdown grid grid-cols-2 gap-1.5">
               <button
                 v-for="stt in sttOptions" :key="stt.value"
@@ -272,7 +348,7 @@ const selectVoice = (voiceId: string | null) => {
             </div>
           </div>
             <div class="dropdown-divider-ephemeral"></div>
-             <RouterLink :to="{ name: 'Settings', hash: '#audio-voice-settings' }" @click="closeDropdown" role="menuitem" class="dropdown-item-ephemeral group">
+             <RouterLink :to="`/${$route.params.locale || 'en-US'}/settings#audio-voice-settings`" @click="closeDropdown" role="menuitem" class="dropdown-item-ephemeral group">
                 <AdjustmentsHorizontalIcon class="dropdown-item-icon" aria-hidden="true"/>
                 <span>All Voice Settings</span>
             </RouterLink>
@@ -364,6 +440,39 @@ const selectVoice = (voiceId: string | null) => {
     height: 0.9em;
     opacity: 0.7;
     margin-right: calc(var.$spacing-xs * 0.5);
+}
+
+.device-select-dropdown {
+  width: 100%;
+  padding: var.$spacing-xs;
+  border-radius: var.$radius-md;
+  background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.6);
+  border: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.3);
+  color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+  font-size: var.$font-size-xs;
+  transition: all var.$duration-quick var.$ease-out-quad;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.8);
+    border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.4);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.6);
+    box-shadow: 0 0 0 2px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.15);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  option {
+    background-color: hsl(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l));
+    color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+  }
 }
 // Removed empty .status-dot-indicator rule as it's styled via Tailwind in template
 </style>

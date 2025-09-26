@@ -15,6 +15,7 @@
  */
 <script setup lang="ts">
 import { computed, watch, ref, nextTick, onMounted, onUpdated, type Ref, type Component as VueComponentType, type FunctionalComponent, type DefineComponent } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useChatStore } from '@/store/chat.store';
 import { useAgentStore } from '@/store/agent.store';
 import { useUiStore } from '@/store/ui.store'; // Import uiStore
@@ -26,6 +27,7 @@ import { SparklesIcon, CpuChipIcon as AssistantAvatarIcon } from '@heroicons/vue
 const chatStore = useChatStore();
 const agentStore = useAgentStore();
 const uiStore = useUiStore(); // Instantiate uiStore
+const { t } = useI18n();
 
 const chatWindowContainerRef: Ref<HTMLElement | null> = ref(null);
 const messagesWrapperRef: Ref<HTMLElement | null> = ref(null);
@@ -51,11 +53,12 @@ const showWelcomePlaceholder = computed<boolean>(() => {
 });
 
 const welcomeTitle = computed<string>(() => {
-  return `${activeAgent.value?.label || 'Voice Assistant'} is ready.`;
+  const agentName = activeAgent.value?.label || t('agent.defaultName');
+  return t('agent.ready', { name: agentName });
 });
 
 const welcomeSubtitle = computed<string>(() => {
-  return activeAgent.value?.inputPlaceholder || 'How can I assist you today? Ask a question or use your voice.';
+  return activeAgent.value?.inputPlaceholder || t('agent.defaultPlaceholder');
 });
 
 const welcomeLogoComponent = computed<VueComponentType | FunctionalComponent | DefineComponent>(() => {
@@ -67,7 +70,8 @@ const welcomeLogoComponent = computed<VueComponentType | FunctionalComponent | D
 });
 
 const loadingText = computed<string>(() => {
-  return `${activeAgent.value?.label || 'Assistant'} is typing...`;
+  const agentName = activeAgent.value?.label || t('agent.defaultName');
+  return t('agent.typing', { name: agentName });
 });
 
 const scrollToBottom = async (behavior: ScrollBehavior = 'auto'): Promise<void> => {

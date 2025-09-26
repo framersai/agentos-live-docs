@@ -69,7 +69,7 @@ async function initializeI18n(): Promise<void> {
    if (i18next.isInitialized) {
       return;
    }
-   const localesBasePath = path.resolve(__dirname, '../../locales');
+   const localesBasePath = path.resolve(__dirname, '../locales');
 
    await i18next
       .use(i18nextFsBackend)
@@ -83,7 +83,7 @@ async function initializeI18n(): Promise<void> {
       // If it's not in `supportedLngs` (or more accurately, if files don't exist for it), it might warn.
       // The `load: 'currentOnly'` or `load: 'languageOnly'` might be useful.
       // For now, let's assume your `SUPPORTED_LOCALES` are the ones you have files for.
-         supportedLngs: [...SUPPORTED_LOCALES], // Only locales with actual translation files
+         supportedLngs: [...SUPPORTED_LOCALES, 'en', 'es', 'fr', 'de', 'it', 'pt', 'ja', 'ko', 'zh'], // Include base language codes
       load: 'languageOnly', // Will load 'en' if 'en-US' is requested but only 'en.json' exists
          defaultNS: 'common',
          ns: ['common', 'auth', 'errors', 'emails', 'api'], // Your namespaces

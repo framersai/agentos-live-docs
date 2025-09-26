@@ -73,6 +73,13 @@ export interface SttModeContext {
    * @param {boolean} value - The new value for the flag.
    */
   setExplicitlyStoppedByUser: (value: boolean) => void;
+  /**
+   * @property {Function} t
+   * @description i18n translation function for localized text
+   * @param {string} key - Translation key
+   * @param {any} params - Optional parameters for interpolation
+   */
+  t?: (key: string, params?: any) => string;
 }
 
 /**

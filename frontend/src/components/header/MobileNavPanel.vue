@@ -18,10 +18,12 @@
 
 <script setup lang="ts">
 import { computed, ref, type PropType } from 'vue';
-import { RouterLink } from 'vue-router';
+import { RouterLink, useRoute } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import { useUiStore } from '@/store/ui.store';
 import { themeManager } from '@/theme/ThemeManager';
 import AnimatedLogo from '@/components/ui/AnimatedLogo.vue';
+import LanguageSwitcher from '@/components/LanguageSwitcher.vue';
 
 /* ─ Icons ─ */
 import {
@@ -44,6 +46,8 @@ const emit = defineEmits<{
 
 /* ─ store & theme selection ─ */
 const uiStore = useUiStore();
+const { t } = useI18n();
+const route = useRoute();
 const selectedThemeId = ref(uiStore.currentThemeId);
 const onThemeChange = () => uiStore.setTheme(selectedThemeId.value);
 
@@ -75,21 +79,27 @@ const closeAndNavigate = () => emit('close-panel');
         <button class="mobile-nav-item-ephemeral group prominent-action"
                 @click="emit('open-agent-hub'); closeAndNavigate();">
           <Squares2X2Icon class="nav-item-icon"/>
-          <span class="nav-item-text">Explore Assistants</span>
+          <span class="nav-item-text">{{ t('navigation.exploreAssistants') }}</span>
         </button>
 
-        <RouterLink to="/settings" class="mobile-nav-item-ephemeral group" @click="closeAndNavigate">
+        <RouterLink :to="`/${$route.params.locale || 'en-US'}/settings`" class="mobile-nav-item-ephemeral group" @click="closeAndNavigate">
           <Cog8ToothIcon class="nav-item-icon"/>
-          <span class="nav-item-text">App Settings</span>
+          <span class="nav-item-text">{{ t('common.settings') }}</span>
         </RouterLink>
 
-        <RouterLink to="/about" class="mobile-nav-item-ephemeral group" @click="closeAndNavigate">
+        <RouterLink :to="`/${$route.params.locale || 'en-US'}/about`" class="mobile-nav-item-ephemeral group" @click="closeAndNavigate">
           <InformationCircleIcon class="nav-item-icon"/>
-          <span class="nav-item-text">About VCA</span>
+          <span class="nav-item-text">{{ t('common.about') }}</span>
         </RouterLink>
+
+        <!-- LANGUAGE SWITCHER -->
+        <div class="language-section">
+          <label class="section-label">{{ t('common.language') }}:</label>
+          <LanguageSwitcher class="mobile-lang-switcher" />
+        </div>
 
         <!-- THEME DROPDOWN -->
-        <label class="theme-dropdown-label">Theme:
+        <label class="theme-dropdown-label">{{ t('common.theme') }}:
           <select class="theme-dropdown-select" v-model="selectedThemeId" @change="onThemeChange">
             <option v-for="t in themeManager.getAvailableThemes()" :key="t.id" :value="t.id">
               {{ t.name }}
@@ -102,14 +112,14 @@ const closeAndNavigate = () => emit('close-panel');
           <button class="mobile-nav-item-ephemeral group logout-item"
                   @click="emit('logout'); closeAndNavigate();">
             <ArrowRightOnRectangleIcon class="nav-item-icon"/>
-            <span class="nav-item-text">Logout</span>
+            <span class="nav-item-text">{{ t('common.logout') }}</span>
           </button>
         </template>
         <template v-else>
-          <RouterLink to="/login" class="mobile-nav-item-ephemeral group prominent-action"
+          <RouterLink :to="`/${$route.params.locale || 'en-US'}/login`" class="mobile-nav-item-ephemeral group prominent-action"
                       @click="closeAndNavigate">
             <ArrowLeftOnRectangleIcon class="nav-item-icon"/>
-            <span class="nav-item-text">Login / Sign Up</span>
+            <span class="nav-item-text">{{ t('common.login') }} / {{ t('common.register') }}</span>
           </RouterLink>
         </template>
       </div>
@@ -295,6 +305,11 @@ const closeAndNavigate = () => emit('close-panel');
    THEME DROPDOWN STYLING (ENHANCED)
    ═══════════════════════════════════════════════════════════════════════════════════════════════ */
 
+.language-section {
+  margin: 1.5rem 0 0.75rem !important;
+}
+
+.section-label,
 .theme-dropdown-label {
   display: block !important;
   margin: 1.5rem 0 0.75rem !important;
@@ -303,6 +318,20 @@ const closeAndNavigate = () => emit('close-panel');
   color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l)) !important;
   text-transform: uppercase !important;
   letter-spacing: 0.05em !important;
+}
+
+.mobile-lang-switcher {
+  width: 100% !important;
+  padding: 0.75rem 1rem !important;
+  border-radius: 0.5rem !important;
+  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.9) !important;
+  border: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.3) !important;
+  transition: all 0.2s ease-in-out !important;
+
+  &:focus-within {
+    border-color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l)) !important;
+    box-shadow: 0 0 0 3px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.2) !important;
+  }
 }
 
 .theme-dropdown-select {

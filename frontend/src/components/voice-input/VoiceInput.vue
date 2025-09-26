@@ -72,10 +72,16 @@
         :currentAudioMode="currentAudioMode"
         :aria-label="micButtonAriaLabel"
         @click="handleMicButtonClick"
+        @mousedown="handleMicButtonMouseDown"
+        @mouseup="handleMicButtonMouseUp"
+        @mouseleave="handleMicButtonMouseLeave"
+        @touchstart="handleMicButtonTouchStart"
+        @touchend="handleMicButtonTouchEnd"
+        @touchcancel="handleMicButtonTouchEnd"
         class="vi-mic-button"
-        :class="{ 
-          'vi-mic-active-outer': isActive, 
-          'vi-mic-listening-outer': isListeningForWakeWord 
+        :class="{
+          'vi-mic-active-outer': isActive,
+          'vi-mic-listening-outer': isListeningForWakeWord
         }"
       />
       
@@ -235,6 +241,7 @@
  * - Ensured `isExplicitlyStoppedByModeManager` from SttManager is passed to STT handlers.
  */
 import { ref, computed, onMounted, onBeforeUnmount, inject, watch, nextTick, type Ref, getCurrentInstance } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { voiceSettingsManager, type VoiceApplicationSettings, type AudioInputMode, type STTPreference } from '@/services/voice.settings.service';
 import type { ToastService } from '@/services/services';
 import { useUiStore } from '@/store/ui.store';
@@ -303,6 +310,7 @@ const emit = defineEmits<{
 }>();
 
 const toast = inject<ToastService>('toast');
+const { t } = useI18n();
 const uiStore = useUiStore();
 const reactiveStore = useReactiveStore();
 const instanceId = ref(getCurrentInstance()?.uid || Math.random().toString(36).substring(7));
@@ -380,6 +388,7 @@ const sttManager = useSttManager({
     }
   },
   toast,
+  t, // Pass the i18n translator
 });
 
 const voiceEffects = useVoiceInputEffects({
@@ -395,7 +404,11 @@ const geometricPatterns = computed(() => {
 
 let voiceViz: ReturnType<typeof useVoiceVisualization> | null = null;
 
-const isActive = computed(() => sttManager.isActive.value);
+const isActive = computed(() => {
+  const active = sttManager.isActive.value;
+  console.log('[VoiceInput] isActive computed:', active, 'currentMode:', currentAudioMode.value);
+  return active;
+});
 const isListeningForWakeWord = computed(() => sttManager.isListeningForWakeWord.value);
 const isVisualizationActive = computed(() => isActive.value || isListeningForWakeWord.value);
 
@@ -411,10 +424,10 @@ const micButtonDisabled = computed(() =>
 );
 
 const micButtonAriaLabel = computed(() => {
-  if (hasMicError.value) return 'Microphone access denied or unavailable';
-  if (isActive.value) return 'Stop recording';
-  if (isListeningForWakeWord.value) return 'Listening for wake word (click to stop VAD)';
-  return 'Start voice input';
+  if (hasMicError.value) return t('voice.microphoneAccessDenied');
+  if (isActive.value) return t('voice.stopRecording');
+  if (isListeningForWakeWord.value) return t('voice.listeningForWakeWord');
+  return t('voice.startVoiceInput');
 });
 
 const disableTextareaSetting = computed(() => {
@@ -432,12 +445,12 @@ const isInputEffectivelyDisabled = computed(() =>
 );
 
 const inputPlaceholder = computed(() => {
-  if (props.isProcessingLLM && !isActive.value && !isListeningForWakeWord.value && !sttManager.isAwaitingVadCommandResult.value) return 'Assistant is processing...';
-  if (currentAudioMode.value === 'continuous' && isActive.value) return 'Continuous listening active... (text input disabled)';
-  if (currentAudioMode.value === 'push-to-talk') return 'PTT: Click mic to talk, or type here...';
-  if (currentAudioMode.value === 'voice-activation' && isListeningForWakeWord.value) return 'Listening for wake word...';
-  if (currentAudioMode.value === 'voice-activation' && isActive.value) return 'Listening for command...';
-  return sttManager.placeholderText.value || 'Type a message or use voice...';
+  if (props.isProcessingLLM && !isActive.value && !isListeningForWakeWord.value && !sttManager.isAwaitingVadCommandResult.value) return t('voice.assistantProcessing');
+  if (currentAudioMode.value === 'continuous' && isActive.value) return t('voice.continuousListeningActive');
+  if (currentAudioMode.value === 'push-to-talk') return t('voice.pttPrompt');
+  if (currentAudioMode.value === 'voice-activation' && isListeningForWakeWord.value) return t('voice.listeningForWakeWordShort');
+  if (currentAudioMode.value === 'voice-activation' && isActive.value) return t('voice.listeningForCommand');
+  return sttManager.placeholderText.value || t('voice.typeOrUseVoice');
 });
 
 const canSendMessage = computed(() =>
@@ -513,6 +526,12 @@ function showLiveTranscription(text: string, isFinal: boolean = true) {
 }
 
 async function handleMicButtonClick() {
+  // Skip click handling for PTT mode - it uses mousedown/mouseup instead
+  if (currentAudioMode.value === 'push-to-talk') {
+    console.log('[VoiceInput] Ignoring click in PTT mode - using mouse/touch events instead');
+    return;
+  }
+
   // console.log(`[VoiceInput] Mic button clicked. Current mode: ${currentAudioMode.value}, isActive: ${isActive.value}, isListeningForWakeWord: ${isListeningForWakeWord.value}`);
   const audioCtx = audioFeedback.audioContext.value;
   if (audioCtx?.state === 'suspended') {
@@ -528,15 +547,82 @@ async function handleMicButtonClick() {
 
   const hasPermission = await microphoneManager.ensureMicrophoneAccessAndStream();
   if (!hasPermission) {
-    showHint('🎤 Microphone access is required to use voice input.', 'error');
+    showHint(`🎤 ${t('voice.microphoneAccess')}`, 'error');
     return;
   }
-  
+
   if (!isActive.value && !isListeningForWakeWord.value) {
     audioFeedback.playSound(audioFeedback.beepInSound.value, 0.3);
   }
-  
+
   await sttManager.handleMicButtonClick();
+}
+
+// Push-to-Talk specific handlers
+async function handleMicButtonMouseDown(event: MouseEvent) {
+  if (currentAudioMode.value === 'push-to-talk' && !isActive.value && !props.isProcessingLLM) {
+    event.preventDefault();
+    console.log('[VoiceInput] PTT mouse down - starting recording');
+
+    // Ensure mic permission and audio context
+    const audioCtx = audioFeedback.audioContext.value;
+    if (audioCtx?.state === 'suspended') {
+      await audioCtx.resume();
+    }
+
+    const hasPermission = await microphoneManager.ensureMicrophoneAccessAndStream();
+    if (!hasPermission) {
+      showHint(`🎤 ${t('voice.microphoneAccess')}`, 'error');
+      return;
+    }
+
+    // Start PTT recording
+    await sttManager.startPtt();
+  }
+}
+
+async function handleMicButtonMouseUp(event: MouseEvent) {
+  if (currentAudioMode.value === 'push-to-talk' && isActive.value) {
+    event.preventDefault();
+    console.log('[VoiceInput] PTT mouse up - stopping recording');
+    await sttManager.stopPtt();
+  }
+}
+
+async function handleMicButtonMouseLeave(event: MouseEvent) {
+  // Stop recording if mouse leaves button while recording
+  if (currentAudioMode.value === 'push-to-talk' && isActive.value) {
+    console.log('[VoiceInput] PTT mouse leave - stopping recording');
+    await sttManager.stopPtt();
+  }
+}
+
+async function handleMicButtonTouchStart(event: TouchEvent) {
+  if (currentAudioMode.value === 'push-to-talk' && !isActive.value && !props.isProcessingLLM) {
+    event.preventDefault();
+    console.log('[VoiceInput] PTT touch start - starting recording');
+
+    const audioCtx = audioFeedback.audioContext.value;
+    if (audioCtx?.state === 'suspended') {
+      await audioCtx.resume();
+    }
+
+    const hasPermission = await microphoneManager.ensureMicrophoneAccessAndStream();
+    if (!hasPermission) {
+      showHint(`🎤 ${t('voice.microphoneAccess')}`, 'error');
+      return;
+    }
+
+    await sttManager.startPtt();
+  }
+}
+
+async function handleMicButtonTouchEnd(event: TouchEvent) {
+  if (currentAudioMode.value === 'push-to-talk' && isActive.value) {
+    event.preventDefault();
+    console.log('[VoiceInput] PTT touch end - stopping recording');
+    await sttManager.stopPtt();
+  }
 }
 
 function handleTextareaInput() {
@@ -579,7 +665,7 @@ async function handleAudioModeChange(mode: AudioInputMode) {
     case 'continuous': hintText = '🎤 Continuous: Press mic to start/stop.'; break;
     case 'voice-activation':
       const wakeWord = currentSettings.vadWakeWordsBrowserSTT?.[0] || 'your wake word';
-      hintText = `👂 VAD: Say "${wakeWord}" to activate.`; break;
+      hintText = t('voice.vadSayToActivate', { wakeWord }); break;
   }
   showHint(hintText, 'info', mode === 'voice-activation' ? 0 : 5000);
   
@@ -741,10 +827,10 @@ function onWakeWordDetected() {
 }
 
 function onListeningForWakeWord(isListening: boolean) {
+  const wakeWord = currentSettings.vadWakeWordsBrowserSTT?.[0] || 'your wake word';
   if (isListening && !sharedState.isListeningForWakeWord.value && !props.isProcessingLLM) {
-      const wakeWord = currentSettings.vadWakeWordsBrowserSTT?.[0] || 'your wake word';
-    showHint(`👂 Listening for "${wakeWord}"...`, 'info', 0);
-  } else if (!isListening && currentHint.value?.text.startsWith('👂 Listening for')) {
+    showHint(t('voice.listeningForQuote', { wakeWord }), 'info', 0);
+  } else if (!isListening && currentHint.value?.text.includes(wakeWord)) {
     currentHint.value = null;
   }
   sharedState.isListeningForWakeWord.value = isListening;
@@ -779,7 +865,7 @@ function onSttError(error: SttHandlerErrorPayload) {
   }
   console.error('[VoiceInput] STT Error:', error);
   if (error.type === 'permission' || error.code === 'mic-permission-denied') {
-    showHint('🎤 Microphone access required.', 'error');
+    showHint(`🎤 ${t('voice.microphoneAccess')}`, 'error');
   } else if (error.fatal) {
     showHint(error.message || 'Voice input error. Please try again.', 'error');
   } else {
