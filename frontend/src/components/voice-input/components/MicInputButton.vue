@@ -16,6 +16,12 @@
     :aria-label="props.ariaLabel"
     :style="cssThemeVariables"
     @click="$emit('click', $event)"
+    @mousedown="$emit('mousedown', $event)"
+    @mouseup="$emit('mouseup', $event)"
+    @mouseleave="$emit('mouseleave', $event)"
+    @touchstart="$emit('touchstart', $event)"
+    @touchend="$emit('touchend', $event)"
+    @touchcancel="$emit('touchcancel', $event)"
   >
     <svg class="mic-input-button__svg" viewBox="-10 -10 140 140" xmlns="http://www.w3.org/2000/svg">
       <defs>
@@ -165,7 +171,7 @@ const props = defineProps<{
   currentAudioMode?: AudioInputMode;
 }>();
 
-defineEmits(['click']);
+defineEmits(['click', 'mousedown', 'mouseup', 'mouseleave', 'touchstart', 'touchend', 'touchcancel']);
 
 const instance = getCurrentInstance();
 const uniqueId = ref(instance?.uid || Math.random().toString(36).substring(2,9));

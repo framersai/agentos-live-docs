@@ -14,6 +14,7 @@
  */
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, type Ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { themeManager, type ThemeDefinition } from '@/theme/ThemeManager';
 import { useUiStore } from '@/store/ui.store';
 import {
@@ -27,6 +28,7 @@ import {
  * @const {Store<UiStore>} uiStore - The Pinia store instance for UI state management.
  */
 const uiStore = useUiStore();
+const { t } = useI18n();
 
 /**
  * @ref {Ref<boolean>} isOpen - Controls the visibility of the dropdown panel.
@@ -126,7 +128,7 @@ onUnmounted(() => {
         aria-labelledby="theme-selection-trigger-button"
       >
         <div class="dropdown-header-ephemeral">
-          <h3 class="dropdown-title">Select Theme</h3>
+          <h3 class="dropdown-title">{{ t('settings.selectTheme') }}</h3>
         </div>
         <div class="dropdown-content-ephemeral custom-scrollbar-thin p-1">
           <div class="theme-selector-grid-ephemeral">
@@ -156,15 +158,30 @@ onUnmounted(() => {
 <style lang="scss" scoped>
 @use '@/styles/abstracts/variables' as var;
 
-.header-control-item { /* Ensures relative positioning context for the dropdown panel */
+.header-control-item {
   position: relative;
+}
+
+// Enhance the dropdown panel with glassmorphism
+.dropdown-panel-ephemeral {
+  background: hsla(var(--color-bg-primary-h),
+                   var(--color-bg-primary-s),
+                   var(--color-bg-primary-l), 0.85);
+  backdrop-filter: blur(20px) saturate(1.8);
+  border: 1px solid hsla(var(--color-border-primary-h),
+                          var(--color-border-primary-s),
+                          var(--color-border-primary-l), 0.2);
+  box-shadow:
+    0 8px 32px hsla(0, 0%, 0%, 0.1),
+    0 2px 8px hsla(0, 0%, 0%, 0.05),
+    inset 0 1px 0 hsla(255, 255%, 255%, 0.1);
 }
 
 .theme-selector-grid-ephemeral {
   display: grid;
   grid-template-columns: 1fr;
   gap: var.$spacing-xs;
-  padding: var.$spacing-xs 0;
+  padding: var.$spacing-xs;
 }
 
 .theme-button-ephemeral {
@@ -173,6 +190,36 @@ onUnmounted(() => {
   width: 100%;
   text-align: left;
   position: relative;
+  padding: var.$spacing-sm var.$spacing-md;
+  border-radius: var.$radius-lg;
+  background: transparent;
+  transition: all 0.3s ease;
+
+  // Neumorphic effect on hover
+  &:hover {
+    background: hsla(var(--color-bg-secondary-h),
+                     var(--color-bg-secondary-s),
+                     var(--color-bg-secondary-l), 0.3);
+    box-shadow:
+      inset 2px 2px 4px hsla(0, 0%, 0%, 0.05),
+      inset -2px -2px 4px hsla(255, 255%, 255%, 0.05);
+  }
+
+  &.active {
+    background: linear-gradient(135deg,
+                hsla(var(--color-accent-primary-h),
+                     var(--color-accent-primary-s),
+                     var(--color-accent-primary-l), 0.1),
+                hsla(var(--color-accent-secondary-h),
+                     var(--color-accent-secondary-s),
+                     var(--color-accent-secondary-l), 0.05));
+    box-shadow:
+      inset 3px 3px 6px hsla(0, 0%, 0%, 0.08),
+      inset -3px -3px 6px hsla(255, 255%, 255%, 0.08),
+      0 0 0 1px hsla(var(--color-accent-primary-h),
+                     var(--color-accent-primary-s),
+                     var(--color-accent-primary-l), 0.2);
+  }
 
   .theme-indicator-swatch-ephemeral {
     width: 22px;
@@ -184,7 +231,7 @@ onUnmounted(() => {
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    transition: box-shadow var.$duration-quick;
+    transition: box-shadow 0.2s;
 
     .theme-type-icon {
       width: 12px;
@@ -204,7 +251,7 @@ onUnmounted(() => {
     height: 1.2rem;
     color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
     opacity: 0;
-    transition: opacity var.$duration-quick;
+    transition: opacity 0.2s;
   }
 
   &.active {

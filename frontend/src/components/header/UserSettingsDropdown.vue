@@ -15,7 +15,7 @@
  */
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, type Ref } from 'vue'; // Removed unused 'watch'
-import { useRouter, RouterLink } from 'vue-router'; // RouterLink is used in the template
+import { useRouter, useRoute, RouterLink } from 'vue-router'; // RouterLink is used in the template
 import { useAuth } from '@/composables/useAuth';
 // import { useUiStore } from '@/store/ui.store'; // Removed as not directly used
 import {
@@ -41,6 +41,7 @@ import {
 
 const auth = useAuth();
 const router = useRouter();
+const route = useRoute();
 
 /**
  * @const {VoiceApplicationSettings} vcaSettings - Reactive access to global voice/application settings.
@@ -101,7 +102,8 @@ const handleLogout = (): void => {
 };
 
 const navigateToSettings = (sectionHash?: string): void => {
-  router.push({ name: 'Settings', hash: sectionHash });
+  const locale = route.params.locale || 'en-US';
+  router.push(`/${locale}/settings${sectionHash ? sectionHash : ''}`);
   closeDropdown();
 };
 
@@ -165,7 +167,7 @@ const navigateToSettings = (sectionHash?: string): void => {
               Basic History: {{ basicHistoryLengthDisplay }}
             </span>
           </div>
-          <RouterLink :to="{ name: 'Settings', hash: '#memory-settings' }" @click="closeDropdown" role="menuitem" class="dropdown-item-ephemeral group">
+          <RouterLink :to="`/${$route.params.locale || 'en-US'}/settings#memory-settings`" @click="closeDropdown" role="menuitem" class="dropdown-item-ephemeral group">
             <SettingsIcon class="dropdown-item-icon" aria-hidden="true" />
             <span>Full Memory Settings</span>
           </RouterLink>

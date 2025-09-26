@@ -9,6 +9,7 @@
 import { ref, onMounted, computed, inject } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useStorage } from '@vueuse/core';
+import { useI18n } from 'vue-i18n';
 import { authAPI, api } from '@/utils/api';
 import { AUTH_TOKEN_KEY } from '@/router'; // AUTH_TOKEN_KEY should be exported from constants.ts if used elsewhere too
 import { LockClosedIcon, EyeIcon, EyeSlashIcon, ExclamationTriangleIcon } from '@heroicons/vue/24/outline'; // BeakerIcon removed as not used
@@ -20,6 +21,7 @@ const router = useRouter();
 const route = useRoute();
 const uiStore = useUiStore();
 const toast = inject<ToastService>('toast');
+const { t } = useI18n();
 
 // --- Theme State ---
 const isDarkMode = computed(() => uiStore.isCurrentThemeDark);
@@ -37,7 +39,7 @@ const errorMessage = ref('');
 
 const handleLogin = async () => {
   if (!password.value) {
-    errorMessage.value = 'Please enter the application password.';
+    errorMessage.value = t('auth.password');
     return;
   }
   isLoggingIn.value = true;
@@ -55,7 +57,7 @@ const handleLogin = async () => {
       // If useAuth composable has a login method that updates global state, call it:
       // auth.login(token, rememberMe.value); // Assuming auth.login handles token storage & redirect
 
-      toast?.add({ type: 'success', title: 'Login Successful', message: 'Welcome back!' });
+      toast?.add({ type: 'success', title: t('auth.loginSuccess'), message: t('common.welcome') });
       const redirectPath = route.query.redirect as string | undefined;
       if (redirectPath && redirectPath !== '/' && redirectPath !== '/login') {
         await router.replace(redirectPath);
@@ -68,13 +70,13 @@ const handleLogin = async () => {
   } catch (error: any) {
     console.error('Login error details:', error.response || error);
     if (error.response?.status === 401) {
-      errorMessage.value = 'Invalid password. Please check and try again.';
+      errorMessage.value = t('auth.loginError');
     } else if (error.response?.data?.message) {
       errorMessage.value = error.response.data.message;
     } else {
       errorMessage.value = 'An unexpected error occurred. Please try again later.';
     }
-    toast?.add({ type: 'error', title: 'Login Failed', message: errorMessage.value });
+    toast?.add({ type: 'error', title: t('errors.general'), message: errorMessage.value });
   } finally {
     isLoggingIn.value = false;
   }
@@ -119,7 +121,7 @@ onMounted(async () => {
             Meet <strong>V</strong>
           </h1>
           <p class="app-subtitle">
-            Your Voice Chat Assistant
+            {{ $t('common.welcome') }}
           </p>
         </div>
 
@@ -127,7 +129,7 @@ onMounted(async () => {
           <form @submit.prevent="handleLogin" class="space-y-6 p-6 sm:p-8">
             <div>
               <label for="password" class="form-label">
-                Access Password
+                {{ $t('auth.password') }}
               </label>
               <div class="relative mt-1">
                 <input
@@ -136,7 +138,7 @@ onMounted(async () => {
   :type="showPassword ? 'text' : 'password'"
   required
   class="form-input !px-4 !py-4 !pr-12"
-  placeholder="Enter application password"
+  :placeholder="$t('auth.password')"
   aria-required="true"
   aria-describedby="password-error-message"
   autocomplete="current-password"
@@ -154,7 +156,7 @@ onMounted(async () => {
               <div class="flex items-center">
                 <input id="remember-me" v-model="rememberMe" type="checkbox" class="remember-me-checkbox" />
                 <label for="remember-me" class="remember-me-label">
-                  Remember me
+                  {{ $t('auth.rememberMe') }}
                 </label>
               </div>
             </div>
@@ -163,7 +165,7 @@ onMounted(async () => {
               <button type="submit" :disabled="isLoggingIn" class="login-button btn btn-primary w-full group">
                 <span v-if="!isLoggingIn" class="flex items-center justify-center">
                   <LockClosedIcon class="icon-sm mr-2" />
-                  Sign In
+                  {{ $t('auth.loginTitle') }}
                 </span>
                 <div v-if="isLoggingIn" class="login-spinner"></div>
               </button>
@@ -184,7 +186,7 @@ onMounted(async () => {
 
         <div class="text-center mt-8 space-y-4">
           <p class="text-xs text-neutral-text-muted">
-            This application is for authorized users. <br class="sm:hidden"> Contact admin for access.
+            {{ $t('auth.loginSubtitle') }}
           </p>
         </div>
       </div>

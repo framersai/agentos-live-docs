@@ -70,6 +70,7 @@ export interface VoiceApplicationSettings {
   // STT (Speech-to-Text) Settings
   sttPreference: STTPreference;
   selectedAudioInputDeviceId: string | null;
+  selectedAudioOutputDeviceId?: string | null; // Audio output device for TTS
   speechLanguage: string;
   sttOptions?: {
     prompt?: string;
@@ -124,6 +125,7 @@ const initialDefaultSettings: Readonly<VoiceApplicationSettings> = Object.freeze
   ephemeralLogMaxExpanded: 20,
   sttPreference: 'browser_webspeech_api',
   selectedAudioInputDeviceId: null,
+  selectedAudioOutputDeviceId: null,
   speechLanguage: typeof navigator !== 'undefined' ? navigator.language : 'en-US',
   sttOptions: {
     prompt: '',
@@ -172,6 +174,8 @@ class VoiceSettingsManager {
   public readonly ttsVoicesLoaded: Ref<boolean>;
   public readonly audioInputDevices: Ref<Readonly<MediaDeviceInfo[]>>;
   public readonly audioInputDevicesLoaded: Ref<boolean>;
+  public readonly audioOutputDevices: Ref<Readonly<MediaDeviceInfo[]>>;
+  public readonly audioOutputDevicesLoaded: Ref<boolean>;
 
   private _isInitialized: Ref<boolean> = ref(false);
   private activePreviewAudio: HTMLAudioElement | null = null;
@@ -190,6 +194,8 @@ class VoiceSettingsManager {
     this.ttsVoicesLoaded = ref(false);
     this.audioInputDevices = ref(Object.freeze([]));
     this.audioInputDevicesLoaded = ref(false);
+    this.audioOutputDevices = ref(Object.freeze([]));
+    this.audioOutputDevicesLoaded = ref(false);
 
     watch(() => this.settings.ttsProvider, async (newProvider, oldProvider) => {
       if (!this._isInitialized.value || newProvider === oldProvider) return;
@@ -327,9 +333,14 @@ class VoiceSettingsManager {
 
   public async loadAudioInputDevices(forcePermissionRequest: boolean = false): Promise<void> {
     this.audioInputDevicesLoaded.value = false;
+    this.audioOutputDevicesLoaded.value = false;
     if (typeof navigator?.mediaDevices?.enumerateDevices !== 'function') {
       console.warn('[VSM] enumerateDevices API not supported.');
-      this.audioInputDevices.value = Object.freeze([]); this.audioInputDevicesLoaded.value = true; return;
+      this.audioInputDevices.value = Object.freeze([]);
+      this.audioOutputDevices.value = Object.freeze([]);
+      this.audioInputDevicesLoaded.value = true;
+      this.audioOutputDevicesLoaded.value = true;
+      return;
     }
     try {
       const devicesPreviouslyLoadedWithLabels = this.audioInputDevices.value.some(d => !!d.label);
@@ -342,16 +353,34 @@ class VoiceSettingsManager {
         }
       }
       const devices = await navigator.mediaDevices.enumerateDevices();
+
+      // Load input devices
       this.audioInputDevices.value = Object.freeze(devices.filter(device => device.kind === 'audioinput'));
       this.audioInputDevicesLoaded.value = true;
       console.log(`[VSM] Audio input devices loaded: ${this.audioInputDevices.value.length}`);
+
+      // Load output devices
+      this.audioOutputDevices.value = Object.freeze(devices.filter(device => device.kind === 'audiooutput'));
+      this.audioOutputDevicesLoaded.value = true;
+      console.log(`[VSM] Audio output devices loaded: ${this.audioOutputDevices.value.length}`);
+
+      // Check if selected input device still exists
       if (this.settings.selectedAudioInputDeviceId && !this.audioInputDevices.value.some(d => d.deviceId === this.settings.selectedAudioInputDeviceId)) {
         this.updateSetting('selectedAudioInputDeviceId', null);
         console.log('[VSM] Previously selected audio input device not found; selection reset.');
       }
+
+      // Check if selected output device still exists
+      if (this.settings.selectedAudioOutputDeviceId && !this.audioOutputDevices.value.some(d => d.deviceId === this.settings.selectedAudioOutputDeviceId)) {
+        this.updateSetting('selectedAudioOutputDeviceId', null);
+        console.log('[VSM] Previously selected audio output device not found; selection reset.');
+      }
     } catch (error: any) {
-      console.error('[VSM] Error loading audio input devices:', error.name, error.message);
-      this.audioInputDevices.value = Object.freeze([]); this.audioInputDevicesLoaded.value = true;
+      console.error('[VSM] Error loading audio devices:', error.name, error.message);
+      this.audioInputDevices.value = Object.freeze([]);
+      this.audioOutputDevices.value = Object.freeze([]);
+      this.audioInputDevicesLoaded.value = true;
+      this.audioOutputDevicesLoaded.value = true;
     }
   }
 

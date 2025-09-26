@@ -322,9 +322,9 @@ watch(
       />
 
       <main id="main-app-content" class="app-layout-main-content-ephemeral">
-        <router-view v-slot="{ Component, route: currentRoute }"> 
+        <router-view v-slot="{ Component, route: currentRoute }">
           <Transition :name="routeTransitionName" mode="out-in">
-            <component :is="Component" :key="currentRoute.path" />
+            <component :is="Component" :key="`${currentRoute.path}-${$i18n.locale}`" />
           </Transition>
         </router-view>
       </main>

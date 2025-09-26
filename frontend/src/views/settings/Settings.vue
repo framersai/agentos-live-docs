@@ -109,6 +109,9 @@
         <option value="plaintext">Plain Text</option>
        </select>
       </SettingsItem>
+      <SettingsItem label="Language" description="Select your preferred language for the interface." label-for="languageSelect">
+       <LanguageSwitcher id="languageSelect" />
+      </SettingsItem>
      </div>
      <SettingsItem
       label="Generate Diagrams Automatically"
@@ -437,6 +440,7 @@ import { useChatStore } from '@/store/chat.store';
 // Child Components
 import SettingsSection from '@/components/settings/SettingsSection.vue';
 import SettingsItem from '@/components/settings/SettingsItem.vue';
+import LanguageSwitcher from '@/components/LanguageSwitcher.vue';
 
 // Icons
 import {

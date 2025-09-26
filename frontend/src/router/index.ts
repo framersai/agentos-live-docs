@@ -13,7 +13,10 @@ import {
     NavigationGuardNext,
     RouteRecordRaw
 } from 'vue-router';
-// Removed: import { defineAsyncComponent } from 'vue'; // Not needed for shorthand
+import { h } from 'vue';
+import { RouterView } from 'vue-router';
+import { AVAILABLE_LOCALES, getCurrentLocale, setLocale, type AvailableLocale } from '@/i18n';
+import i18n from '@/i18n';
 
 // Import Views using modern shorthand for lazy loading
 const Login = () => import('@/views/Login.vue');
@@ -35,39 +38,72 @@ const isAuthenticated = (): boolean => {
     return false;
 };
 
+const supportedLocales = Object.keys(AVAILABLE_LOCALES);
+
 const routes: Array<RouteRecordRaw> = [
     {
-        path: '/pro',
-        name: 'AuthenticatedHome',
-        component: PrivateHome,
-        meta: { requiresAuth: true, title: 'Pro - Voice Chat Assistant' }
+        path: '/',
+        redirect: () => {
+            const locale = getCurrentLocale();
+            return `/${locale}/`;
+        }
     },
     {
-        path: '/', 
-        name: 'PublicHome',
-        component: PublicHome,
-        meta: { guest: true, title: 'Welcome - Voice Chat Assistant' }
+        path: '/:locale',
+        component: {
+            render: () => h(RouterView)
+        },
+        beforeEnter(to, from, next) {
+            const locale = to.params.locale as string;
+            console.log('[Router] Locale route beforeEnter. Locale param:', locale);
+            console.log('[Router] Supported locales:', supportedLocales);
+
+            if (supportedLocales.includes(locale)) {
+                console.log('[Router] Valid locale detected. Setting locale:', locale);
+                setLocale(locale as AvailableLocale);
+                i18n.global.locale.value = locale as AvailableLocale;
+                console.log('[Router] i18n global locale after set:', i18n.global.locale.value);
+                next();
+            } else {
+                console.log('[Router] Invalid locale. Redirecting with default:', getCurrentLocale());
+                next(`/${getCurrentLocale()}${to.path.substring(locale.length + 1)}`);
+            }
+        },
+        children: [
+            {
+                path: '',
+                name: 'PublicHome',
+                component: PublicHome,
+                meta: { guest: true, title: 'Welcome - Voice Chat Assistant' }
+            },
+            {
+                path: 'pro',
+                name: 'AuthenticatedHome',
+                component: PrivateHome,
+                meta: { requiresAuth: true, title: 'Pro - Voice Chat Assistant' }
+            },
+            {
+                path: 'login',
+                name: 'Login',
+                component: Login,
+                meta: { guest: true, title: 'Login - Voice Chat Assistant' }
+            },
+            {
+                path: 'settings',
+                name: 'Settings',
+                component: Settings,
+                meta: { requiresAuth: true, title: 'Settings - Voice Chat Assistant' }
+            },
+            {
+                path: 'about',
+                name: 'About',
+                component: About,
+                meta: { title: 'About - Voice Chat Assistant' }
+            }
+        ]
     },
     {
-        path: '/login',
-        name: 'Login',
-        component: Login,
-        meta: { guest: true, title: 'Login - Voice Chat Assistant' }
-    },
-    {
-        path: '/settings',
-        name: 'Settings',
-        component: Settings,
-        meta: { requiresAuth: true, title: 'Settings - Voice Chat Assistant' }
-    },
-    {
-        path: '/about',
-        name: 'About',
-        component: About,
-        meta: { title: 'About - Voice Chat Assistant' }
-    },
-    {
-        path: '/:pathMatch(.*)*', 
+        path: '/:pathMatch(.*)*',
         name: 'NotFound',
         component: NotFound,
         meta: { title: 'Page Not Found' }
@@ -88,18 +124,27 @@ router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, n
     const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
     const isGuestOnlyRoute = to.matched.some(record => record.meta.guest);
 
+    // Set page title
     if (to.meta.title && typeof to.meta.title === 'string') {
         document.title = to.meta.title;
     } else {
         document.title = 'Voice Chat Assistant';
     }
 
+    // Extract locale from route and ensure it's set
+    const locale = to.params.locale as string;
+    if (locale && locale !== i18n.global.locale.value) {
+        console.log('[Router] beforeEach: Syncing locale from route:', locale);
+        setLocale(locale as AvailableLocale);
+        i18n.global.locale.value = locale as AvailableLocale;
+    }
+
     if (requiresAuth && !authenticated) {
         console.log('[Router] Guard: Authentication required. Redirecting to Login.');
-        next({ name: 'Login', query: { redirect: to.fullPath } });
+        next({ name: 'Login', params: { locale: locale || getCurrentLocale() }, query: { redirect: to.fullPath } });
     } else if (isGuestOnlyRoute && authenticated) {
         console.log('[Router] Guard: Guest route accessed by authenticated user. Redirecting to AuthenticatedHome.');
-        next({ name: 'AuthenticatedHome' });
+        next({ name: 'AuthenticatedHome', params: { locale: locale || getCurrentLocale() } });
     } else {
         next();
     }

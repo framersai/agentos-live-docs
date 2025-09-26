@@ -8,6 +8,7 @@ import {
   defineAsyncComponent, type Ref, type PropType,
 } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 
 import { useUiStore }    from '@/store/ui.store';
 import { useAuth }       from '@/composables/useAuth';
@@ -26,6 +27,7 @@ const SiteMenuDropdown = defineAsyncComponent(() => import('./header/SiteMenuDro
 const AgentHubTrigger  = defineAsyncComponent(() => import('./header/AgentHubTrigger.vue'));
 const AgentHub         = defineAsyncComponent(() => import('@/components/agents/AgentHub.vue'));
 const MobileNavPanel   = defineAsyncComponent(() => import('./header/MobileNavPanel.vue'));
+const LanguageSwitcher = defineAsyncComponent(() => import('@/components/LanguageSwitcher.vue'));
 
 
 import {
@@ -55,6 +57,7 @@ const uiStore    = useUiStore();
 const auth       = useAuth();
 const chatStore  = useChatStore();
 const agentStore = useAgentStore();
+const { t } = useI18n();
 
 const router = useRouter();
 const route  = useRoute();
@@ -130,7 +133,7 @@ onUnmounted(()=>document.body.classList.remove('overflow-hidden-by-app-overlay')
 
       <!-- CENTER: hearing icon -->
       <div class="hear-wrap"
-           :title="isUserActive ? 'Listening…' : isAiActive ? 'Speaking…' : 'Idle'">
+           :title="isUserActive ? t('voice.listening') : isAiActive ? t('voice.speaking') : t('common.idle')">
         <img src="@/assets/hearing.svg" class="hear-icon" alt="">
       </div>
 
@@ -139,15 +142,18 @@ onUnmounted(()=>document.body.classList.remove('overflow-hidden-by-app-overlay')
         <Suspense><AgentHubTrigger @open-agent-hub="openAgentHub" class="ctrl-btn"/></Suspense>
         <Suspense><ThemeDropdown  class="ctrl-btn"/></Suspense>
 
+        <!-- language switcher -->
+        <Suspense><LanguageSwitcher class="lang-switcher-header"/></Suspense>
+
         <!-- fullscreen -->
         <button class="ctrl-btn" @click="emit('toggle-fullscreen')"
-                :title="isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'">
+                :title="isFullscreen ? t('common.exitFullscreen') : t('common.enterFullscreen')">
           <component :is="isFullscreen ? ArrowsPointingInIcon : ArrowsPointingOutIcon"/>
         </button>
 
         <!-- mute -->
         <button class="ctrl-btn" @click="isMuted = !isMuted"
-                :title="isMuted ? 'Unmute Speech' : 'Mute Speech'">
+                :title="isMuted ? t('voice.unmute') : t('voice.mute')">
           <component :is="isMuted ? SpeakerXMarkIcon : SpeakerWaveIcon"/>
         </button>
 
@@ -162,8 +168,8 @@ onUnmounted(()=>document.body.classList.remove('overflow-hidden-by-app-overlay')
           </Suspense>
         </template>
         <template v-else>
-          <RouterLink to="/login" class="ctrl-btn">
-            <ArrowLeftOnRectangleIcon/> Login
+          <RouterLink :to="`/${$route.params.locale || 'en-US'}/login`" class="ctrl-btn">
+            <ArrowLeftOnRectangleIcon/> {{ t('common.login') }}
           </RouterLink>
         </template>
 
@@ -275,6 +281,21 @@ onUnmounted(()=>document.body.classList.remove('overflow-hidden-by-app-overlay')
     @include m.button-base; @include m.button-ghost();
     padding:.45rem; border-radius:v.$radius-lg;
     svg{ width:1.35rem;height:1.35rem; }
+  }
+
+  .lang-switcher-header {
+    padding: .25rem .5rem;
+    background-color: hsla(var(--color-bg-secondary-h),
+                           var(--color-bg-secondary-s),
+                           var(--color-bg-secondary-l), 0.5);
+    border-radius: v.$radius-md;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: hsla(var(--color-bg-secondary-h),
+                             var(--color-bg-secondary-s),
+                             var(--color-bg-secondary-l), 0.7);
+    }
   }
 }
 

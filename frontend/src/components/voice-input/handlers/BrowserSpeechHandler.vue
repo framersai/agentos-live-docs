@@ -113,6 +113,7 @@ interface BrowserSpeechHandlerProps {
   audioInputMode: AudioInputMode;
   parentIsProcessingLLM: boolean;
   currentMicPermission: MicPermissionStatusType;
+  isExplicitlyStoppedByModeManager: boolean;
 }
 
 const props = defineProps<BrowserSpeechHandlerProps>();
@@ -125,6 +126,7 @@ const emit = defineEmits<{
   (e: 'listening-for-wake-word', isListening: boolean): void;
   (e: 'error', payload: SttHandlerErrorPayload): void;
   (e: 'wake-word-detected'): void;
+  (e: 'ptt-audio-ready', data: { transcript: string; duration: number; blob?: Blob }): void;
 }>();
 
 const recognizer = ref<SpeechRecognition | null>(null);
