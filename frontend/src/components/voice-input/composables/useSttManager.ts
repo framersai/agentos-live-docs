@@ -288,7 +288,7 @@ export function useSttManager(options: UseSttManagerOptions): SttManagerInstance
       } else if (isProcessingLLM.value && !_isAwaitingVadCommandResult.value) {
         toast?.add({ type: 'info', title: 'Assistant Busy', message: 'Assistant is currently processing.' });
       } else if (_isExplicitlyStoppedByUser.value) {
-        toast?.add({ type: 'info', title: 'Voice Input Off', message: 'Click mic to start listening.'});
+        toast?.add({ type: 'info', title: t ? t('voice.voiceInputOff') : 'Voice Input Off', message: t ? t('voice.clickMicToStartListening') : 'Click mic to start listening.'});
       } else {
         toast?.add({ type: 'info', title: 'Voice Input Not Ready', message: 'Cannot start voice input now.' });
       }

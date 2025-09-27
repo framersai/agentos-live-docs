@@ -339,8 +339,8 @@ const handleCancelEditClick = () => {
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/abstracts/_variables.scss';
-@import '@/styles/abstracts/_mixins.scss';
+@use '@/styles/abstracts/variables' as var;
+@use '@/styles/abstracts/mixins' as mixins;
 
 .diary-workspace-v2 {
   @apply flex flex-col h-full overflow-hidden p-3 md:p-4 gap-3;
@@ -420,7 +420,7 @@ const handleCancelEditClick = () => {
     background-color: hsla(var(--diary-bg-h), var(--diary-bg-s), var(--diary-bg-l), 0.95);
     color: var(--color-text-primary);
     border-color: hsla(var(--diary-accent-h), var(--diary-accent-s), var(--diary-accent-l), 0.25);
-    @include custom-scrollbar-for-themed-panel('--diary');
+    @include mixins.custom-scrollbar-for-themed-panel('--diary');
     &:focus {
       border-color: hsl(var(--diary-accent-h), var(--diary-accent-s), var(--diary-accent-l));
       box-shadow: 0 0 0 2.5px hsla(var(--diary-accent-h), var(--diary-accent-s), var(--diary-accent-l), 0.3);
@@ -431,7 +431,7 @@ const handleCancelEditClick = () => {
 
 .markdown-display-v2 {
   @apply flex-grow overflow-y-auto p-1 pr-2;
-  @include custom-scrollbar-for-themed-panel('--diary');
+  @include mixins.custom-scrollbar-for-themed-panel('--diary');
   // Apply prose styles for rendered markdown
   &.diary-prose-theme {
     h1,h2,h3,h4,h5,h6 { color: hsl(var(--diary-accent-h), var(--diary-accent-s), calc(var(--diary-accent-l) + 10%)); @apply mt-3 mb-1 font-semibold; }

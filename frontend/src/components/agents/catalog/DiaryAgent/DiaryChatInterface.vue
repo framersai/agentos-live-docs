@@ -96,8 +96,8 @@ watch(userInput, adjustTextareaHeight);
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/abstracts/_variables.scss';
-@import '@/styles/abstracts/_mixins.scss';
+@use '@/styles/abstracts/variables' as var;
+@use '@/styles/abstracts/mixins' as mixins;
 
 .diary-chat-interface-v2 {
   @apply flex flex-col h-full overflow-hidden;
@@ -106,7 +106,7 @@ watch(userInput, adjustTextareaHeight);
 
 .chat-log-v2 {
   @apply flex-grow p-3 space-y-2.5 overflow-y-auto;
-  @include custom-scrollbar-for-themed-panel('--diary');
+  @include mixins.custom-scrollbar-for-themed-panel('--diary');
 }
 .chat-message-wrapper-v2 {
   @apply flex;
@@ -170,7 +170,7 @@ watch(userInput, adjustTextareaHeight);
   color: var(--color-text-primary);
   min-height: 40px; // Approx 1 line
   max-height: 120px; // Approx 5-6 lines
-  @include custom-scrollbar-for-themed-panel('--diary');
+  @include mixins.custom-scrollbar-for-themed-panel('--diary');
   &:focus {
     outline: none;
     border-color: hsl(var(--diary-accent-h), var(--diary-accent-s), var(--diary-accent-l));

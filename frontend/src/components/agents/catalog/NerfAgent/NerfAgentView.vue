@@ -182,17 +182,17 @@ watch(isLoadingResponse, (newIsProcessing) => {
 
 <style lang="scss" scoped>
 @use 'sass:math';
-@import '@/styles/abstracts/_variables.scss';
-@import '@/styles/abstracts/_mixins.scss';
+@use '@/styles/abstracts/variables' as var;
+@use '@/styles/abstracts/mixins' as mixins;
 
 .nerf-agent-view {
-  --nerf-accent-h: var(--theme-nerf-accent-h, var(--color-accent-secondary-h, #{$default-color-accent-secondary-h}));
-  --nerf-accent-s: var(--theme-nerf-accent-s, var(--color-accent-secondary-s, #{$default-color-accent-secondary-s}));
-  --nerf-accent-l: var(--theme-nerf-accent-l, var(--color-accent-secondary-l, #{$default-color-accent-secondary-l}));
-  
-  --nerf-bg-h: var(--theme-nerf-bg-h, var(--color-bg-primary-h, #{$default-color-bg-primary-h}));
-  --nerf-bg-s: var(--theme-nerf-bg-s, var(--color-bg-primary-s, #{$default-color-bg-primary-s}));
-  --nerf-bg-l: var(--theme-nerf-bg-l, calc(var(--color-bg-primary-l, #{$default-color-bg-primary-l}) - 2%));
+  --nerf-accent-h: var(--theme-nerf-accent-h, var(--color-accent-secondary-h, #{var.$default-color-accent-secondary-h}));
+  --nerf-accent-s: var(--theme-nerf-accent-s, var(--color-accent-secondary-s, #{var.$default-color-accent-secondary-s}));
+  --nerf-accent-l: var(--theme-nerf-accent-l, var(--color-accent-secondary-l, #{var.$default-color-accent-secondary-l}));
+
+  --nerf-bg-h: var(--theme-nerf-bg-h, var(--color-bg-primary-h, #{var.$default-color-bg-primary-h}));
+  --nerf-bg-s: var(--theme-nerf-bg-s, var(--color-bg-primary-s, #{var.$default-color-bg-primary-s}));
+  --nerf-bg-l: var(--theme-nerf-bg-l, calc(var(--color-bg-primary-l, #{var.$default-color-bg-primary-l}) - 2%));
 
   @apply flex flex-col h-full w-full overflow-hidden;
   background-color: hsl(var(--nerf-bg-h), var(--nerf-bg-s), var(--nerf-bg-l));
@@ -226,18 +226,18 @@ watch(isLoadingResponse, (newIsProcessing) => {
 
 .nerf-main-content-area {
   @apply flex-grow relative min-h-0 overflow-y-auto flex flex-col; /* Added flex flex-col for centering inline loader */
-   @include custom-scrollbar(
+   @include mixins.custom-scrollbar(
     $thumb-color-var-prefix: '--nerf-accent',
     $thumb-base-alpha: 0.5,
     $thumb-hover-alpha: 0.7,
     $track-color-var-prefix: '--nerf-bg',
     $track_alpha: 0.3,
-    $fb-thumb-h: $default-color-accent-secondary-h, 
-    $fb-thumb-s: $default-color-accent-secondary-s,
-    $fb-thumb-l: $default-color-accent-secondary-l,
-    $fb-track-h: $default-color-bg-primary-h, 
-    $fb-track-s: $default-color-bg-primary-s,
-    $fb-track-l: calc(#{$default-color-bg-primary-l} - 2%)
+    $fb-thumb-h: var.$default-color-accent-secondary-h, 
+    $fb-thumb-s: var.$default-color-accent-secondary-s,
+    $fb-thumb-l: var.$default-color-accent-secondary-l,
+    $fb-track-h: var.$default-color-bg-primary-h, 
+    $fb-track-s: var.$default-color-bg-primary-s,
+    $fb-track-l: calc(#{var.$default-color-bg-primary-l} - 2%)
   );
 }
 
@@ -306,11 +306,11 @@ watch(isLoadingResponse, (newIsProcessing) => {
     @apply border text-sm my-3 p-3.5 rounded-md shadow-inner;
     background-color: hsla(var(--nerf-bg-h), var(--nerf-bg-s), calc(var(--nerf-bg-l) - 3%), 0.95);
     border-color: hsla(var(--nerf-accent-h), var(--nerf-accent-s), var(--nerf-accent-l), 0.25);
-    @include custom-scrollbar(
+    @include mixins.custom-scrollbar(
       $thumb-color-var-prefix: '--nerf-accent', $thumb-base-alpha: 0.4, $thumb-hover-alpha: 0.6,
       $track-color-var-prefix: '--nerf-bg', $track-alpha: 0.1, $width: 6px,
-      $fb-thumb-h: $default-color-accent-secondary-h, $fb-thumb-s: $default-color-accent-secondary-s, $fb-thumb-l: $default-color-accent-secondary-l,
-      $fb-track-h: $default-color-bg-primary-h, $fb-track-s: $default-color-bg-primary-s, $fb-track-l: calc(#{$default-color-bg-primary-l} - 3%)
+      $fb-thumb-h: var.$default-color-accent-secondary-h, $fb-thumb-s: var.$default-color-accent-secondary-s, $fb-thumb-l: var.$default-color-accent-secondary-l,
+      $fb-track-h: var.$default-color-bg-primary-h, $fb-track-s: var.$default-color-bg-primary-s, $fb-track-l: calc(#{var.$default-color-bg-primary-l} - 3%)
     );
   }
    :deep(blockquote) {
@@ -318,9 +318,9 @@ watch(isLoadingResponse, (newIsProcessing) => {
     color: var(--color-text-muted);
     border-left-color: hsl(var(--nerf-accent-h), var(--nerf-accent-s), var(--nerf-accent-l));
     background-color: hsla(var(--nerf-accent-h), var(--nerf-accent-s), var(--nerf-accent-l), 0.05);
-    padding-top: $spacing-sm; 
-    padding-bottom: $spacing-sm;
-    border-radius: 0 $radius-md $radius-md 0;
+    padding-top: var.$spacing-sm; 
+    padding-bottom: var.$spacing-sm;
+    border-radius: 0 var.$radius-md var.$radius-md 0;
   }
 }
 

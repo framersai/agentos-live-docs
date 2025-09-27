@@ -56,3 +56,6 @@ bower_components/
 confluence*
 venv/
 ssl/
+
+# Claude AI
+.claude/

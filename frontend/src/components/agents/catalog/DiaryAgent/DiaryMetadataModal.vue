@@ -84,8 +84,8 @@ const handleConfirm = () => {
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/abstracts/_variables.scss';
-@import '@/styles/abstracts/_mixins.scss';
+@use '@/styles/abstracts/variables' as var;
+@use '@/styles/abstracts/mixins' as mixins;
 
 .diary-metadata-modal-v2 {
   max-width: 520px; // Slightly wider for form
@@ -104,7 +104,7 @@ const handleConfirm = () => {
     color: var(--color-text-muted);
     max-height: 80px;
     overflow-y: auto;
-    @include custom-scrollbar-for-themed-panel('--diary');
+    @include mixins.custom-scrollbar-for-themed-panel('--diary');
 }
 
 /* Assuming modal styles and form input styles are globally defined or imported */

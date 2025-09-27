@@ -482,9 +482,9 @@ const sendGradientStart = computed(() => 'var(--color-accent-primary)');
 const sendGradientEnd = computed(() => 'var(--color-accent-secondary)');
 
 const audioModeOptions = computed<UIAudioModeOption[]>(() => [
-  { label: 'Push to Talk', value: 'push-to-talk', icon: '🎙️', description: 'Click mic to start/stop recording' },
-  { label: 'Continuous', value: 'continuous', icon: '🌊', description: 'Listens continuously' },
-  { label: 'Voice Activate', value: 'voice-activation', icon: '🗣️', description: 'Activate with wake word' },
+  { label: t('voice.pushToTalk'), value: 'push-to-talk', icon: '🎙️', description: t('voice.clickMicToStop') },
+  { label: t('voice.continuous'), value: 'continuous', icon: '🌊', description: t('voice.listensContinuously') },
+  { label: t('voice.voiceActivate'), value: 'voice-activation', icon: '🗣️', description: t('voice.activateWithWakeWord') },
 ]);
 
 const sttEngineOptions = computed<SttEngineOption[]>(() => [
@@ -526,9 +526,16 @@ function showLiveTranscription(text: string, isFinal: boolean = true) {
 }
 
 async function handleMicButtonClick() {
-  // Skip click handling for PTT mode - it uses mousedown/mouseup instead
-  if (currentAudioMode.value === 'push-to-talk') {
-    console.log('[VoiceInput] Ignoring click in PTT mode - using mouse/touch events instead');
+  // For PTT mode while recording, click stops the recording
+  if (currentAudioMode.value === 'push-to-talk' && isActive.value) {
+    console.log('[VoiceInput] PTT mode - stopping recording on click');
+    await sttManager.stopPtt();
+    return;
+  }
+
+  // Skip click handling for PTT mode when not recording - it uses mousedown/mouseup to start
+  if (currentAudioMode.value === 'push-to-talk' && !isActive.value) {
+    console.log('[VoiceInput] Ignoring click in PTT mode when not recording - using mouse/touch events instead');
     return;
   }
 
@@ -661,8 +668,8 @@ async function handleAudioModeChange(mode: AudioInputMode) {
   audioFeedback.playSound(audioFeedback.beepNeutralSound.value, 0.5);
   let hintText = '';
   switch(mode) {
-    case 'push-to-talk': hintText = '🎙️ PTT: Click mic to start/stop.'; break;
-    case 'continuous': hintText = '🎤 Continuous: Press mic to start/stop.'; break;
+    case 'push-to-talk': hintText = '🎙️ ' + t('voice.pttClickMicToStartStop'); break;
+    case 'continuous': hintText = '🎤 ' + t('voice.continuousPressToStartStop'); break;
     case 'voice-activation':
       const wakeWord = currentSettings.vadWakeWordsBrowserSTT?.[0] || 'your wake word';
       hintText = t('voice.vadSayToActivate', { wakeWord }); break;

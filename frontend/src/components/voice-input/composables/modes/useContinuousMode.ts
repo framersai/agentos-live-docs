@@ -64,13 +64,14 @@ export class ContinuousMode extends BaseSttMode implements SttModePublicState {
     });
 
     this.placeholderText = computed(() => {
-      if (this.context.isExplicitlyStoppedByUser.value && !this.isActive.value) return 'Continuous mode is off. Click mic to start.';
-      if (this.context.isProcessingLLM.value && !this.context.isAwaitingVadCommandResult.value && !this.isActive.value) return 'Assistant is processing...';
-      if (!this.context.micPermissionGranted.value && !this.isActive.value) return 'Microphone permission required for Continuous mode.';
-      if (this.isStartingProcess.value) return 'Initializing continuous listening...';
+      const t = this.context.t;
+      if (this.context.isExplicitlyStoppedByUser.value && !this.isActive.value) return t('voice.continuousModeOff');
+      if (this.context.isProcessingLLM.value && !this.context.isAwaitingVadCommandResult.value && !this.isActive.value) return t('voice.assistantProcessing');
+      if (!this.context.micPermissionGranted.value && !this.isActive.value) return t('voice.microphonePermissionRequiredContinuous');
+      if (this.isStartingProcess.value) return t('voice.initializingContinuous');
       return this.isListeningInternally.value
-        ? 'Listening continuously... (text input disabled)'
-        : 'Continuous mode ready. Click mic to start.';
+        ? t('voice.continuousListeningActive')
+        : t('voice.continuousModeReady');
     });
   }
 

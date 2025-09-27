@@ -158,17 +158,17 @@ defineExpose({ processProblemContext });
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/abstracts/_variables.scss';
-@import '@/styles/abstracts/_mixins.scss';
+@use '@/styles/abstracts/variables' as var;
+@use '@/styles/abstracts/mixins' as mixins;
 
 /* Styles from previous response should be here */
 .lc-audit-agent-view {
-  --lc-accent-h: var(--color-accent-interactive-h, #{$default-color-accent-interactive-h});
-  --lc-accent-s: var(--color-accent-interactive-s, #{$default-color-accent-interactive-s});
-  --lc-accent-l: var(--color-accent-interactive-l, #{$default-color-accent-interactive-l});
-  --lc-bg-h: var(--color-bg-primary-h, #{$default-color-bg-primary-h});
-  --lc-bg-s: var(--color-bg-primary-s, #{$default-color-bg-primary-s});
-  --lc-bg-l: calc(var(--color-bg-primary-l, #{$default-color-bg-primary-l}) - 4%);
+  --lc-accent-h: var(--color-accent-interactive-h, #{var.$default-color-accent-interactive-h});
+  --lc-accent-s: var(--color-accent-interactive-s, #{var.$default-color-accent-interactive-s});
+  --lc-accent-l: var(--color-accent-interactive-l, #{var.$default-color-accent-interactive-l});
+  --lc-bg-h: var(--color-bg-primary-h, #{var.$default-color-bg-primary-h});
+  --lc-bg-s: var(--color-bg-primary-s, #{var.$default-color-bg-primary-s});
+  --lc-bg-l: calc(var(--color-bg-primary-l, #{var.$default-color-bg-primary-l}) - 4%);
 
  @apply flex flex-col h-full w-full overflow-hidden;
   background-color: hsl(var(--lc-bg-h), var(--lc-bg-s), var(--lc-bg-l));
@@ -205,18 +205,18 @@ defineExpose({ processProblemContext });
 
 .lc-audit-main-content-area {
   @apply flex-grow relative min-h-0 overflow-y-auto;
-   @include custom-scrollbar(
+   @include mixins.custom-scrollbar(
     $thumb-color-var-prefix: '--lc-accent',
     $thumb-base-alpha: 0.55,
     $thumb-hover-alpha: 0.75,
     $track-color-var-prefix: '--lc-bg',
     $track_alpha: 0.2,
-    $fb-thumb-h: $default-color-accent-interactive-h,
-    $fb-thumb-s: $default-color-accent-interactive-s,
-    $fb-thumb-l: $default-color-accent-interactive-l,
-    $fb-track-h: $default-color-bg-primary-h,
-    $fb-track-s: $default-color-bg-primary-s,
-    $fb-track-l: calc(#{$default-color-bg-primary-l} - 4%)
+    $fb-thumb-h: var.$default-color-accent-interactive-h,
+    $fb-thumb-s: var.$default-color-accent-interactive-s,
+    $fb-thumb-l: var.$default-color-accent-interactive-l,
+    $fb-track-h: var.$default-color-bg-primary-h,
+    $fb-track-s: var.$default-color-bg-primary-s,
+    $fb-track-l: calc(#{var.$default-color-bg-primary-l} - 4%)
   );
 }
 
@@ -247,8 +247,8 @@ defineExpose({ processProblemContext });
 
 .lc-audit-prose-content {
  @apply p-4 md:p-6 lg:p-8 h-full;
-  font-size: var(--font-size-base, $font-size-base-default);
-  line-height: var(--line-height-base, $line-height-base-default);
+  font-size: var(--font-size-base, var.$font-size-base-default);
+  line-height: var(--line-height-base, var.$line-height-base-default);
 
   :deep(h1), :deep(h2), :deep(h3) {
    @apply font-bold tracking-tight border-b pb-2.5 mb-5;
@@ -261,7 +261,7 @@ defineExpose({ processProblemContext });
    :deep(h3) { @apply text-base sm:text-lg; }
 
   :deep(p), :deep(li) {
-    color: var(--color-text-secondary, hsl($default-color-text-secondary-h, $default-color-text-secondary-s, $default-color-text-secondary-l));
+    color: var(--color-text-secondary, hsl(var.$default-color-text-secondary-h, var.$default-color-text-secondary-s, var.$default-color-text-secondary-l));
     @apply my-3.5 leading-relaxed text-[0.9rem] sm:text-[0.95rem];
   }
   :deep(a) {
@@ -269,7 +269,7 @@ defineExpose({ processProblemContext });
    @apply hover:underline hover:brightness-125 font-medium;
   }
   :deep(strong) {
-    color: var(--color-text-primary, hsl($default-color-text-primary-h, $default-color-text-primary-s, $default-color-text-primary-l));
+    color: var(--color-text-primary, hsl(var.$default-color-text-primary-h, var.$default-color-text-primary-s, var.$default-color-text-primary-l));
     font-weight: 600;
   }
 }
@@ -288,15 +288,15 @@ defineExpose({ processProblemContext });
 
 .lc-audit-welcome-title {
  @apply text-xl sm:text-2xl font-bold mt-2 mb-1.5 tracking-wide;
-  color: var(--color-text-primary, hsl($default-color-text-primary-h, $default-color-text-primary-s, $default-color-text-primary-l));
+  color: var(--color-text-primary, hsl(var.$default-color-text-primary-h, var.$default-color-text-primary-s, var.$default-color-text-primary-l));
 }
 .lc-audit-welcome-subtitle {
  @apply text-sm sm:text-base mb-4 max-w-md opacity-90;
- color: var(--color-text-secondary, hsl($default-color-text-secondary-h, $default-color-text-secondary-s, $default-color-text-secondary-l));
+ color: var(--color-text-secondary, hsl(var.$default-color-text-secondary-h, var.$default-color-text-secondary-s, var.$default-color-text-secondary-l));
 }
 .lc-audit-welcome-prompt {
  @apply text-xs sm:text-sm italic;
- color: var(--color-text-muted, hsl($default-color-text-muted-h, $default-color-text-muted-s, $default-color-text-muted-l));
+ color: var(--color-text-muted, hsl(var.$default-color-text-muted-h, var.$default-color-text-muted-s, var.$default-color-text-muted-l));
 }
 
 .btn-futuristic-toggle {

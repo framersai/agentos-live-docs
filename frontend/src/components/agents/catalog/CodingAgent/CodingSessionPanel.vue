@@ -803,8 +803,8 @@ watch(showFilterOptions, (newValue) => {
  * @description SCSS styles for the coding session management panel.
  * Provides comprehensive styling for session management UI components.
  */
-@import '@/styles/abstracts/_variables.scss';
-@import '@/styles/abstracts/_mixins.scss';
+@use '@/styles/abstracts/variables' as var;
+@use '@/styles/abstracts/mixins' as mixins;
 
 // ============================
 // MAIN PANEL LAYOUT
@@ -815,7 +815,7 @@ watch(showFilterOptions, (newValue) => {
   background-color: hsla(var(--coding-bg-h), var(--coding-bg-s), calc(var(--coding-bg-l) + 3%), 0.96);
   border-right: 1px solid hsla(var(--coding-accent-h), var(--coding-accent-s), var(--coding-accent-l), 0.2);
   
-  @include custom-scrollbar(
+  @include mixins.custom-scrollbar(
     $thumb-color-var-prefix: '--coding-accent', 
     $thumb-base-alpha: 0.3, 
     $thumb-hover-alpha: 0.5,
@@ -952,7 +952,7 @@ watch(showFilterOptions, (newValue) => {
 .session-list-scroll-area {
   @apply flex-grow overflow-y-auto space-y-1.5 pr-0.5;
   
-  @include custom-scrollbar(
+  @include mixins.custom-scrollbar(
     $thumb-color-var-prefix: '--coding-accent', 
     $thumb-base-alpha: 0.3, 
     $thumb-hover-alpha: 0.5,

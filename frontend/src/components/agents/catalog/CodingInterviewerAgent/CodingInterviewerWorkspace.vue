@@ -107,8 +107,8 @@ const sendClarification = () => {
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/abstracts/_variables.scss';
-@import '@/styles/abstracts/_mixins.scss';
+@use '@/styles/abstracts/variables' as var;
+@use '@/styles/abstracts/mixins' as mixins;
 
 .interview-workspace-panel {
   @apply flex-grow relative min-h-0 flex flex-col overflow-hidden;
@@ -118,7 +118,7 @@ const sendClarification = () => {
 .interview-content-area {
   @apply flex-grow p-3 md:p-5 overflow-y-auto relative; // Added relative for loading placeholder
    background-color: hsl(var(--interviewer-bg-h), var(--interviewer-bg-s), calc(var(--interviewer-bg-l) + 1%)); // Slightly different from panel bg
-  @include custom-scrollbar-for-themed-panel('--interviewer');
+  @include mixins.custom-scrollbar-for-themed-panel('--interviewer');
 }
 .loading-placeholder {
     @apply absolute inset-0 flex flex-col items-center justify-center z-10;
@@ -144,7 +144,7 @@ const sendClarification = () => {
   border-color: hsla(var(--interviewer-accent-h), var(--interviewer-accent-s), var(--interviewer-accent-l), 0.3);
   min-height: 150px;
   max-height: 50vh; // Increased max height
-  @include custom-scrollbar-for-themed-panel('--interviewer');
+  @include mixins.custom-scrollbar-for-themed-panel('--interviewer');
   &:focus {
     outline: none;
     border-color: hsl(var(--interviewer-accent-h), var(--interviewer-accent-s), var(--interviewer-accent-l));

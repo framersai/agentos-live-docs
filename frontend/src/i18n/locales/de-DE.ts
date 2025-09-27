@@ -58,14 +58,13 @@ export default {
     speaking: 'Spricht...',
     mute: 'Stumm schalten',
     unmute: 'Ton einschalten',
-    transcribing: 'Transcribing audio...',
-    listening: 'Listening...',
-    speakNow: 'Speak now',
-    clickToSpeak: 'Click to speak',
-    stopRecording: 'Stop recording',
-    microphoneAccess: 'Microphone access required',
-    noSpeechDetected: 'No speech detected',
-    transcriptionComplete: 'Transcription complete'
+    transcribing: 'Transkribiere Audio...',
+    speakNow: 'Jetzt sprechen',
+    clickToSpeak: 'Zum Sprechen klicken',
+    stopRecording: 'Aufnahme stoppen',
+    microphoneAccess: 'Mikrofonzugriff erforderlich',
+    noSpeechDetected: 'Keine Sprache erkannt',
+    transcriptionComplete: 'Transkription abgeschlossen'
   },
   chat: {
     thinking: 'Thinking...',
