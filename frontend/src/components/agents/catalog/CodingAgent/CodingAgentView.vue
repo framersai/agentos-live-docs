@@ -921,18 +921,18 @@ defineExpose({ handleCodingQuery, processNewMeetingInput: handleCodingQuery });
 
 <style lang="scss" scoped>
 @use 'sass:math';
-@import '@/styles/abstracts/_variables.scss';
-@import '@/styles/abstracts/_mixins.scss';
+@use '@/styles/abstracts/variables' as var;
+@use '@/styles/abstracts/mixins' as mixins;
 
 // Component-specific CSS variables using global theme vars as defaults
 .coding-agent-view {
-  --coding-accent-h: var(--color-accent-primary-h, #{$default-color-accent-primary-h});
-  --coding-accent-s: var(--color-accent-primary-s, #{$default-color-accent-primary-s});
-  --coding-accent-l: var(--color-accent-primary-l, #{$default-color-accent-primary-l});
+  --coding-accent-h: var(--color-accent-primary-h, #{var.$default-color-accent-primary-h});
+  --coding-accent-s: var(--color-accent-primary-s, #{var.$default-color-accent-primary-s});
+  --coding-accent-l: var(--color-accent-primary-l, #{var.$default-color-accent-primary-l});
   
-  --coding-bg-h: var(--color-bg-primary-h, #{$default-color-bg-primary-h});
-  --coding-bg-s: var(--color-bg-primary-s, #{$default-color-bg-primary-s});
-  --coding-bg-l: calc(var(--color-bg-primary-l, #{$default-color-bg-primary-l}) - 7%); // Darker IDE base
+  --coding-bg-h: var(--color-bg-primary-h, #{var.$default-color-bg-primary-h});
+  --coding-bg-s: var(--color-bg-primary-s, #{var.$default-color-bg-primary-s});
+  --coding-bg-l: calc(var(--color-bg-primary-l, #{var.$default-color-bg-primary-l}) - 7%); // Darker IDE base
 
   color: var(--color-text-primary); // Global theme text color
   // ... (Rest of the styles from v2.1.0) ...
@@ -973,11 +973,11 @@ defineExpose({ handleCodingQuery, processNewMeetingInput: handleCodingQuery });
   @apply w-full lg:w-[320px] xl:w-[380px] p-3 flex flex-col shrink-0; // Adjusted width
   background-color: hsla(var(--coding-bg-h), var(--coding-bg-s), calc(var(--coding-bg-l) + 3%), 0.96);
   border-right: 1px solid hsla(var(--coding-accent-h), var(--coding-accent-s), var(--coding-accent-l), 0.2);
-  @include custom-scrollbar(
+  @include mixins.custom-scrollbar(
     $thumb-color-var-prefix: '--coding-accent', $thumb-base-alpha: 0.3, $thumb-hover-alpha: 0.5,
     $track-color-var-prefix: '--coding-bg', $track_alpha: 0.1,
-    $fb-thumb-h: $default-color-accent-primary-h, $fb-thumb-s: $default-color-accent-primary-s, $fb-thumb-l: $default-color-accent-primary-l,
-    $fb-track-h: $default-color-bg-primary-h, $fb-track-s: $default-color-bg-primary-s, $fb-track-l: $default-color-bg-primary-l
+    $fb-thumb-h: var.$default-color-accent-primary-h, $fb-thumb-s: var.$default-color-accent-primary-s, $fb-thumb-l: var.$default-color-accent-primary-l,
+    $fb-track-h: var.$default-color-bg-primary-h, $fb-track-s: var.$default-color-bg-primary-s, $fb-track-l: var.$default-color-bg-primary-l
   );
 
   .panel-header {
@@ -1032,11 +1032,11 @@ defineExpose({ handleCodingQuery, processNewMeetingInput: handleCodingQuery });
 
 .main-display-area { 
     @apply flex-grow overflow-y-auto;
-     @include custom-scrollbar(
+     @include mixins.custom-scrollbar(
       $thumb-color-var-prefix: '--coding-accent', $thumb-base-alpha: 0.4, $thumb-hover-alpha: 0.6,
       $track-color-var-prefix: '--coding-bg', $track_alpha: 0.1,
-      $fb-thumb-h: $default-color-accent-primary-h, $fb-thumb-s: $default-color-accent-primary-s, $fb-thumb-l: $default-color-accent-primary-l,
-      $fb-track-h: $default-color-bg-primary-h, $fb-track-s: $default-color-bg-primary-s, $fb-track-l: $default-color-bg-primary-l
+      $fb-thumb-h: var.$default-color-accent-primary-h, $fb-thumb-s: var.$default-color-accent-primary-s, $fb-thumb-l: var.$default-color-accent-primary-l,
+      $fb-track-h: var.$default-color-bg-primary-h, $fb-track-s: var.$default-color-bg-primary-s, $fb-track-l: var.$default-color-bg-primary-l
     );
 }
 
@@ -1048,7 +1048,7 @@ defineExpose({ handleCodingQuery, processNewMeetingInput: handleCodingQuery });
     line-height: var(--line-height-base);
     color: var(--color-text-primary);
     padding: 1rem;
-    @media (min-width: $breakpoint-md) { padding: 1.5rem; }
+    @media (min-width: var.$breakpoint-md) { padding: 1.5rem; }
 
     :deep(h1), :deep(h2), :deep(h3), :deep(h4) {
       @apply font-semibold tracking-tight border-b pb-2 mb-4;
@@ -1083,8 +1083,8 @@ defineExpose({ handleCodingQuery, processNewMeetingInput: handleCodingQuery });
         display: block; padding: 1rem; 
         overflow-x: auto;
         background: transparent !important; 
-        color: var(--color-text-code-block, #{$default-color-text-code-block-l});
-        @include custom-scrollbar($thumb-color-var-prefix: '--coding-accent', $thumb-base-alpha: 0.3, $thumb-hover-alpha: 0.5, $track-color-var-prefix: '--coding-bg', $track_alpha: 0.05, $width: 5px, $fb-track-h: $default-color-bg-code-block-h, $fb-track-s: $default-color-bg-code-block-s, $fb-track-l: $default-color-bg-code-block-l);
+        color: var(--color-text-code-block, #{var.$default-color-text-code-block-l});
+        @include mixins.custom-scrollbar($thumb-color-var-prefix: '--coding-accent', $thumb-base-alpha: 0.3, $thumb-hover-alpha: 0.5, $track-color-var-prefix: '--coding-bg', $track_alpha: 0.05, $width: 5px, $fb-track-h: var.$default-color-bg-code-block-h, $fb-track-s: var.$default-color-bg-code-block-s, $fb-track-l: var.$default-color-bg-code-block-l);
       }
     }
     :deep(code:not(pre code)) {

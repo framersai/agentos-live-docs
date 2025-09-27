@@ -112,8 +112,8 @@ defineExpose({ handleNewUserInput });
 
 <style lang="scss" scoped>
 @use 'sass:math';
-@import '@/styles/abstracts/_variables.scss'; 
-@import '@/styles/abstracts/_mixins.scss';
+@use '@/styles/abstracts/variables' as var; 
+@use '@/styles/abstracts/mixins' as mixins;
 
 .v-agent-view {
   // Theme-aware CSS variables with sophisticated fallbacks
@@ -178,7 +178,7 @@ defineExpose({ handleNewUserInput });
 
 .v-main-content-area {
   @apply flex-grow relative min-h-0 overflow-y-auto;
-  @include custom-scrollbar(
+  @include mixins.custom-scrollbar(
     $thumb-color-var-prefix: '--v-accent',
     $thumb-base-alpha: 0.65, $thumb-hover-alpha: 0.85,
     $track-color-var-prefix: '--v-bg', $track-alpha: 0.35, $width: 8px,
@@ -233,7 +233,7 @@ defineExpose({ handleNewUserInput });
     color: hsl(var(--v-accent-h), var(--v-accent-s), var(--v-accent-l));
     @apply hover:underline font-medium;
     text-decoration-thickness: 1.5px;
-    transition: color $duration-quick ease-in-out, text-shadow $duration-quick ease-in-out;
+    transition: color var.$duration-quick ease-in-out, text-shadow var.$duration-quick ease-in-out;
     &:hover {
       color: hsl(var(--v-accent-h), var(--v-accent-s), calc(var(--v-accent-l) + 10%));
       text-shadow: 0 0 10px hsla(var(--v-accent-h), var(--v-accent-s), var(--v-glow-l-factor), var(--v-glow-opacity));
@@ -254,7 +254,7 @@ defineExpose({ handleNewUserInput });
     @apply border text-sm my-5 p-4 rounded-lg shadow-lg overflow-x-auto;
     background-color: hsla(var(--v-bg-h), var(--v-bg-s), calc(var(--v-bg-l) - 8%), 0.98);
     border-color: hsla(var(--v-accent-h), var(--v-accent-s), var(--v-accent-l), 0.4);
-    @include custom-scrollbar(
+    @include mixins.custom-scrollbar(
       $thumb-color-var-prefix: '--v-accent', $thumb-base-alpha: 0.5, $thumb-hover-alpha: 0.75,
       $track-color-var-prefix: '--v-bg', $track-alpha: 0.2, $width: 7px,
       $fb-thumb-h: 180, $fb-thumb-s: 90%, $fb-thumb-l: 60%,
@@ -269,7 +269,7 @@ defineExpose({ handleNewUserInput });
     color: hsl(var(--v-text-secondary-h), var(--v-text-secondary-s), calc(var(--v-text-secondary-l) - 5%));
     border-left-color: hsl(var(--v-accent-h), var(--v-accent-s), var(--v-accent-l));
     background-color: hsla(var(--v-accent-h), var(--v-accent-s), var(--v-accent-l), 0.05);
-    border-radius: 0 $radius-lg $radius-lg 0;
+    border-radius: 0 var.$radius-lg var.$radius-lg 0;
     box-shadow: inset 3px 0 8px hsla(var(--v-accent-h), var(--v-accent-s), var(--v-accent-l), 0.05);
   }
 }

@@ -160,8 +160,8 @@ const getMoodColor = (moodRating?: MoodRating): string => {
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/abstracts/_variables.scss';
-@import '@/styles/abstracts/_mixins.scss';
+@use '@/styles/abstracts/variables' as var;
+@use '@/styles/abstracts/mixins' as mixins;
 
 .diary-entry-list-panel-v2 {
   @apply w-full md:w-[300px] lg:w-[360px] p-2.5 flex flex-col shrink-0 overflow-hidden;
@@ -186,7 +186,7 @@ const getMoodColor = (moodRating?: MoodRating): string => {
 
 .entry-list-scroll-area-v2 {
   @apply flex-grow overflow-y-auto -mr-1 pr-1; // For custom scrollbar
-  @include custom-scrollbar-for-themed-panel('--diary');
+  @include mixins.custom-scrollbar-for-themed-panel('--diary');
 }
 .list-message-v2 { @apply text-center text-xs py-8; color: var(--color-text-muted); }
 

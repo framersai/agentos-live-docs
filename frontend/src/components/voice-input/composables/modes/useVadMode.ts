@@ -52,14 +52,15 @@ export class VadMode extends BaseSttMode implements SttModePublicState {
       }
     });
     this.placeholderText = computed(() => {
-      if (this.context.isExplicitlyStoppedByUser.value && this.phase.value === 'idle') return 'Voice input is off. Click mic to enable VAD.';
-      if (this.context.isProcessingLLM.value && !this.context.isAwaitingVadCommandResult.value && this.phase.value === 'idle') return 'Assistant is processing...';
-      if (!this.context.micPermissionGranted.value && this.phase.value === 'idle') return 'Microphone permission required for VAD.';
+      const t = this.context.t;
+      if (this.context.isExplicitlyStoppedByUser.value && this.phase.value === 'idle') return t('voice.vadOff');
+      if (this.context.isProcessingLLM.value && !this.context.isAwaitingVadCommandResult.value && this.phase.value === 'idle') return t('voice.assistantProcessing');
+      if (!this.context.micPermissionGranted.value && this.phase.value === 'idle') return t('voice.microphonePermissionRequiredVAD');
       switch (this.phase.value) {
-        case 'transitioning': return 'VAD preparing...';
-        case 'listening-wake': return `Say "${primaryWakeWord.value}" to activate`;
-        case 'capturing-command': return 'Listening for your command...';
-        default: return `Say "${primaryWakeWord.value}" or type a message...`;
+        case 'transitioning': return t('voice.vadPreparing');
+        case 'listening-wake': return t('voice.sayToActivate', { wakeWord: primaryWakeWord.value });
+        case 'capturing-command': return t('voice.listeningForCommand');
+        default: return t('voice.vadSayOrType', { wakeWord: primaryWakeWord.value });
       }
     });
   }

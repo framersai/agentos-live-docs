@@ -388,17 +388,17 @@ defineExpose({
 
 <style lang="scss" scoped>
 @use 'sass:math';
-@import '@/styles/abstracts/_variables.scss';
-@import '@/styles/abstracts/_mixins.scss';
+@use '@/styles/abstracts/variables' as var;
+@use '@/styles/abstracts/mixins' as mixins;
 
 // Define Diary-specific CSS variables, falling back to global theme variables
 .diary-agent-view-v2 {
-  --diary-accent-h: var(--color-accent-secondary-h, #{$default-color-accent-secondary-h});
-  --diary-accent-s: var(--color-accent-secondary-s, #{$default-color-accent-secondary-s});
-  --diary-accent-l: var(--color-accent-secondary-l, #{$default-color-accent-secondary-l});
-  --diary-bg-h: var(--color-bg-primary-h, #{$default-color-bg-primary-h});
-  --diary-bg-s: var(--color-bg-primary-s, #{$default-color-bg-primary-s});
-  --diary-bg-l: calc(var(--color-bg-primary-l, #{$default-color-bg-primary-l}) + 1%); // Slightly distinct background
+  --diary-accent-h: var(--color-accent-secondary-h, #{var.$default-color-accent-secondary-h});
+  --diary-accent-s: var(--color-accent-secondary-s, #{var.$default-color-accent-secondary-s});
+  --diary-accent-l: var(--color-accent-secondary-l, #{var.$default-color-accent-secondary-l});
+  --diary-bg-h: var(--color-bg-primary-h, #{var.$default-color-bg-primary-h});
+  --diary-bg-s: var(--color-bg-primary-s, #{var.$default-color-bg-primary-s});
+  --diary-bg-l: calc(var(--color-bg-primary-l, #{var.$default-color-bg-primary-l}) + 1%); // Slightly distinct background
 
   color: var(--color-text-primary);
   @apply flex flex-col h-full w-full overflow-hidden;
@@ -447,7 +447,7 @@ defineExpose({
 }
 .diary-dashboard-v2 {
   @apply p-4 sm:p-5 md:p-6 overflow-y-auto; // Adjusted padding
-  @include custom-scrollbar-for-themed-panel('--diary');
+  @include mixins.custom-scrollbar-for-themed-panel('--diary');
 
   .dashboard-title-v2 {
     @apply text-xl font-semibold mb-4 pb-2 border-b;

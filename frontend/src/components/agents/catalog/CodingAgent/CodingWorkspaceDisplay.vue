@@ -133,8 +133,8 @@ const handleRendererInteraction = (payload: { type: string; data?: any }) => {
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/abstracts/_variables.scss';
-@import '@/styles/abstracts/_mixins.scss';
+@use '@/styles/abstracts/variables' as var;
+@use '@/styles/abstracts/mixins' as mixins;
 
 .coding-workspace-panel {
   @apply flex-grow relative min-h-0 flex flex-col overflow-hidden;
@@ -143,7 +143,7 @@ const handleRendererInteraction = (payload: { type: string; data?: any }) => {
 
 .main-display-area {
   @apply flex-grow overflow-y-auto h-full; // Ensure it takes full height to allow internal scrolling
-   @include custom-scrollbar-for-themed-panel('--coding');
+   @include mixins.custom-scrollbar-for-themed-panel('--coding');
   &.streaming-content {
     // Subtle indication that content is live/updating.
     // CompactMessageRenderer might have its own internal streaming indicators.

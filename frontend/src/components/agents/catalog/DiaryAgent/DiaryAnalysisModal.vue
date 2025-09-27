@@ -62,8 +62,8 @@ defineEmits(['close']);
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/abstracts/_variables.scss';
-@import '@/styles/abstracts/_mixins.scss';
+@use '@/styles/abstracts/variables' as var;
+@use '@/styles/abstracts/mixins' as mixins;
 
 .diary-analysis-modal-v2 {
   max-width: 560px;
@@ -72,7 +72,7 @@ defineEmits(['close']);
   @apply space-y-4 text-sm;
   max-height: 70vh;
   overflow-y: auto;
-  @include custom-scrollbar-for-themed-panel('--diary');
+  @include mixins.custom-scrollbar-for-themed-panel('--diary');
 }
 .analysis-section-v2 {
   @apply p-3 rounded-md;
