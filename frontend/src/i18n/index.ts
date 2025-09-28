@@ -2,7 +2,7 @@ import { createI18n } from 'vue-i18n';
 import type { I18n, I18nOptions } from 'vue-i18n';
 
 // Import locale messages
-import enUS from './locales/en-US';
+import en from './locales/en';
 import esES from './locales/es-ES';
 import frFR from './locales/fr-FR';
 import deDE from './locales/de-DE';
@@ -14,7 +14,7 @@ import zhCN from './locales/zh-CN';
 
 // Define available locales
 export const AVAILABLE_LOCALES = {
-  'en-US': 'English',
+  'en': 'English',
   'es-ES': 'Español',
   'fr-FR': 'Français',
   'de-DE': 'Deutsch',
@@ -27,14 +27,14 @@ export const AVAILABLE_LOCALES = {
 
 export type AvailableLocale = keyof typeof AVAILABLE_LOCALES;
 
-// Get browser language or default to en-US
+// Get browser language or default to en
 function getDefaultLocale(): AvailableLocale {
   const savedLocale = localStorage.getItem('preferred-locale') as AvailableLocale;
   if (savedLocale && savedLocale in AVAILABLE_LOCALES) {
     return savedLocale;
   }
 
-  const browserLang = navigator.language || 'en-US';
+  const browserLang = navigator.language || 'en';
 
   // Try exact match first
   if (browserLang in AVAILABLE_LOCALES) {
@@ -47,11 +47,11 @@ function getDefaultLocale(): AvailableLocale {
     locale => locale.startsWith(langCode)
   ) as AvailableLocale | undefined;
 
-  return matchedLocale || 'en-US';
+  return matchedLocale || 'en';
 }
 
 const messages = {
-  'en-US': enUS,
+  'en': en,
   'es-ES': esES,
   'fr-FR': frFR,
   'de-DE': deDE,
@@ -65,7 +65,7 @@ const messages = {
 const i18nOptions: I18nOptions = {
   legacy: false, // Use Composition API
   locale: getDefaultLocale(),
-  fallbackLocale: 'en-US',
+  fallbackLocale: 'en',
   messages,
   globalInjection: true,
   missingWarn: process.env.NODE_ENV === 'development',
