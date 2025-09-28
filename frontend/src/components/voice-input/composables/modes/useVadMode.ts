@@ -108,12 +108,18 @@ export class VadMode extends BaseSttMode implements SttModePublicState {
     this.context.sharedState.isProcessingAudio.value = true; 
 
     try {
-      if (this.context.activeHandlerApi.value?.isActive.value || this.context.activeHandlerApi.value?.isListeningForWakeWord.value) {
-        await this.context.activeHandlerApi.value?.stopListening(true);
+      if (!this.context.activeHandlerApi.value) {
+        console.error('[VadMode] No active STT handler available.');
+        await this.resetToIdleState('No speech recognition handler available.', true);
+        return false;
+      }
+
+      if (this.context.activeHandlerApi.value.isActive.value || this.context.activeHandlerApi.value.isListeningForWakeWord.value) {
+        await this.context.activeHandlerApi.value.stopListening(true);
         await new Promise(r => setTimeout(r, 100));
       }
 
-      const handlerStarted = await this.context.activeHandlerApi.value?.startListening(false);
+      const handlerStarted = await this.context.activeHandlerApi.value.startListening(false);
       if (handlerStarted) {
         this.phase.value = 'listening-wake';
         this.context.transcriptionDisplay.showInterimTranscript(`Listening for "${this.wakeWords[0]}"...`);
@@ -164,12 +170,19 @@ export class VadMode extends BaseSttMode implements SttModePublicState {
     this.context.transcriptionDisplay.showWakeWordDetected();
 
     try {
-      if(this.context.activeHandlerApi.value?.isListeningForWakeWord.value) { // ensure only stopping if it was in wake word mode
-        await this.context.activeHandlerApi.value?.stopListening(true); 
+      if (!this.context.activeHandlerApi.value) {
+        console.error('[VadMode] No active STT handler in handleWakeWordDetected.');
+        this.context.transcriptionDisplay.showError('Speech recognition not available.', 2500);
+        await this.returnToWakeListening('No STT handler available.');
+        return;
+      }
+
+      if(this.context.activeHandlerApi.value.isListeningForWakeWord.value) { // ensure only stopping if it was in wake word mode
+        await this.context.activeHandlerApi.value.stopListening(true);
         await new Promise(r => setTimeout(r, 50));
       }
 
-      const handlerStarted = await this.context.activeHandlerApi.value?.startListening(true);
+      const handlerStarted = await this.context.activeHandlerApi.value.startListening(true);
       if (!handlerStarted) {
         this.context.transcriptionDisplay.showError('Could not start command listener.', 2500);
         await this.returnToWakeListening('STT handler failed for command capture.');
