@@ -602,12 +602,20 @@ async function _stopRecognizerInstance(): Promise<void> {
 }
 
 async function _stopListeningInternal(abort: boolean = false): Promise<void> {
-  if (currentListeningMode.value === 'idle' && !isTransitioningStates && !_isRecognizerActiveInternal.value) {
+  if (currentListeningMode.value === 'idle' && !isTransitioningStates && !_isRecognizerActiveInternal.value && !continuousModeStartDelayTimer) {
     return;
   }
 
   console.log(`[BSH] Stopping listening. Abort: ${abort}. Current mode: ${currentListeningMode.value}. Transitioning: ${isTransitioningStates}`);
   isTransitioningStates = true;
+
+  // Clear the continuous mode delay timer if it's running
+  if (continuousModeStartDelayTimer) {
+    clearTimeout(continuousModeStartDelayTimer);
+    continuousModeStartDelayTimer = null;
+    console.log('[BSH] Cancelled continuous mode start delay timer.');
+  }
+
   _clearAllTimers();
 
   const modeBeforeStop = currentListeningMode.value;
@@ -678,6 +686,15 @@ async function _startListeningInternal(forVadCommandCapture: boolean = false): P
     await new Promise(resolve => {
       continuousModeStartDelayTimer = window.setTimeout(resolve, CONTINUOUS_MODE_START_DELAY_MS);
     });
+
+    // Check if we should still start after the delay
+    if (currentListeningMode.value !== targetMode) {
+      console.log('[BSH] Continuous mode start cancelled during delay. Current mode:', currentListeningMode.value);
+      currentListeningMode.value = 'idle';
+      _updatePublicStates();
+      isTransitioningStates = false;
+      return false;
+    }
   }
 
   try {
