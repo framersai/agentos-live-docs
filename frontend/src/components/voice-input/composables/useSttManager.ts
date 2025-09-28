@@ -197,11 +197,13 @@ export function useSttManager(options: UseSttManagerOptions): SttManagerInstance
   };
 
   const registerHandler = (type: SttInternalHandlerType, api: SttHandlerInstance): void => {
-    // console.log(`[SttManager] Registering STT handler: ${type}`); // Reduced verbosity
+    console.log(`[SttManager] Registering STT handler: ${type}`); // Enable for debugging
     handlers.set(type, api);
     if (targetInternalHandlerType.value === type && !_activeHandlerApi.value) {
       _activeHandlerApi.value = api;
+      console.log(`[SttManager] Active handler set to: ${type}`);
       if (_currentModeInstance.value && _shouldAutoStartListening()) {
+         console.log(`[SttManager] Auto-starting after handler registration`);
          _currentModeInstance.value.start();
       }
     }

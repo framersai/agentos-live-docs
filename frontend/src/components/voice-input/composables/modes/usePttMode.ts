@@ -106,7 +106,14 @@ export class PttMode extends BaseSttMode implements SttModePublicState {
     console.log('[PttMode] Current statusText should be:', this.statusText.value);
 
     try {
-      const handlerStarted = await this.context.activeHandlerApi.value?.startListening(false);
+      if (!this.context.activeHandlerApi.value) {
+        console.error('[PttMode] No active STT handler available.');
+        this.isRecordingInternally.value = false;
+        this.context.sharedState.isProcessingAudio.value = false;
+        this.context.transcriptionDisplay.showError('No speech recognition handler available.', 2000);
+        return false;
+      }
+      const handlerStarted = await this.context.activeHandlerApi.value.startListening(false);
       if (handlerStarted) {
         this.context.playSound(this.context.audioFeedback.beepInSound.value);
         console.log('[PttMode] PTT recording started.');

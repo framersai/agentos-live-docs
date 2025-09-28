@@ -115,7 +115,13 @@ export class ContinuousMode extends BaseSttMode implements SttModePublicState {
         }
 
         try {
-          const handlerStarted = await this.context.activeHandlerApi.value?.startListening(false); // false = not for VAD command
+          if (!this.context.activeHandlerApi.value) {
+            console.error('[ContinuousMode] No active STT handler available.');
+            await this.resetStateOnError('No speech recognition handler available.');
+            resolve(false);
+            return;
+          }
+          const handlerStarted = await this.context.activeHandlerApi.value.startListening(false); // false = not for VAD command
           if (handlerStarted) {
             this.isListeningInternally.value = true;
             this.isStartingProcess.value = false; // Starting process finished, now listening
