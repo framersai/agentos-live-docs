@@ -9,7 +9,7 @@
 
 import { Router, Request, Response } from 'express';
 // Import the strict authMiddleware
-import { authMiddleware } from '../middleware/auth';
+import { authMiddleware } from '../middleware/auth.js';
 
 // Import route handlers
 import * as authApiRoutes from '../src/features/auth/auth.routes.js'; // Renamed for clarity
@@ -18,7 +18,7 @@ import * as diagramApiRoutes from '../src/features/chat/diagram.routes.js';
 import * as sttApiRoutes from '../src/features/speech/stt.routes.js';
 import * as ttsApiRoutes from '../src/features/speech/tts.routes.js';
 import * as costApiRoutes from '../src/features/cost/cost.routes.js';
-import { rateLimiter } from '../middleware/ratelimiter'; // For fetching public rate limit status
+import { rateLimiter } from '../middleware/ratelimiter.js'; // For fetching public rate limit status
 import * as promptApiRoutes from '../src/features/prompts/prompt.routes.js';
 
 /**

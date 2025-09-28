@@ -4,7 +4,7 @@
  * @version 1.0.0
  */
 
-import { ILlmTool } from '../core/llm/llm.interfaces';
+import { ILlmTool } from '../core/llm/llm.interfaces.js';
 /**
  * @const SuggestDiaryMetadataSchema
  * @description JSON Schema for the `suggestDiaryMetadata` tool.

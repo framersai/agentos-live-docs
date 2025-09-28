@@ -6,10 +6,10 @@
  */
 
 import { Request, Response } from 'express';
-import { callLlm, initializeLlmServices } from '../../core/llm/llm.factory';
-import { IChatMessage, ILlmUsage } from '../../core/llm/llm.interfaces';
-import { CostService } from '../../core/cost/cost.service';
-import { MODEL_PREFERENCES, getModelPrice, ModelConfig, MODEL_PRICING } from '../../../config/models.config';
+import { callLlm, initializeLlmServices } from '../../core/llm/llm.factory.js';
+import { IChatMessage, ILlmUsage } from '../../core/llm/llm.interfaces.js';
+import { CostService } from '../../core/cost/cost.service.js';
+import { MODEL_PREFERENCES, getModelPrice, ModelConfig, MODEL_PRICING } from '../../../config/models.config.js';
 
 initializeLlmServices(); // Ensures LLM services are ready
 

@@ -800,7 +800,7 @@ const handleImportSettingsFile = (event: Event): void => {
 onMounted(async () => {
  if (!auth.isAuthenticated.value) {
   const token = localStorage.getItem(AUTH_TOKEN_KEY) || sessionStorage.getItem(AUTH_TOKEN_KEY);
-  if (token) { await auth.checkAuthStatus(); }
+  if (token) { auth.checkAuthStatus(); } // Not async!
   if(!auth.isAuthenticated.value && !router.currentRoute.value.path.startsWith('/public')) {
    toast?.add({ type: 'warning', title: 'Auth Required', message: 'Login to access settings.' });
    router.push({name: 'Login', query: { redirect: router.currentRoute.value.fullPath }}); return;

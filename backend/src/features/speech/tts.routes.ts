@@ -7,10 +7,10 @@
  */
 
 import { Request, Response } from 'express';
-import { audioService } from '../../core/audio/audio.service';
+import { audioService } from '../../core/audio/audio.service.js';
 // Ensure ITtsOptions is imported correctly and matches the definition in tts.interfaces.ts
-import { ITtsOptions, ITtsResult, IAvailableVoice } from '../../core/audio/tts.interfaces';
-import { CostService } from '../../core/cost/cost.service';
+import { ITtsOptions, ITtsResult, IAvailableVoice } from '../../core/audio/tts.interfaces.js';
+import { CostService } from '../../core/cost/cost.service.js';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';

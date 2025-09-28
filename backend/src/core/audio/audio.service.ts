@@ -15,10 +15,10 @@ import { fileURLToPath } from 'url';
 import OpenAI from 'openai';
 import type { SpeechCreateParams } from 'openai/resources/audio/speech';
 
-import { ISttOptions, ITranscriptionResult as ISttTranscriptionResult, ISttProvider as ISttProviderDefinition, SttResponseFormat, ITranscriptionSegment } from './stt.interfaces';
-import { ITtsOptions, IAvailableVoice, ITtsResult, ITtsProvider as ITtsProviderDefinition } from './tts.interfaces';
+import { ISttOptions, ITranscriptionResult as ISttTranscriptionResult, ISttProvider as ISttProviderDefinition, SttResponseFormat, ITranscriptionSegment } from './stt.interfaces.js';
+import { ITtsOptions, IAvailableVoice, ITtsResult, ITtsProvider as ITtsProviderDefinition } from './tts.interfaces.js';
 
-import { CostService } from '../cost/cost.service';
+import { CostService } from '../cost/cost.service.js';
 import dotenv from 'dotenv';
 
 // Determine project root for .env loading

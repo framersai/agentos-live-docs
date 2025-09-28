@@ -459,7 +459,7 @@ let rateLimitIntervalId: number | undefined;
 
 onMounted(async () => {
   document.addEventListener('click', handleClickOutsidePublicAgentSelector, true);
-  await auth.checkAuthStatus();
+  auth.checkAuthStatus(); // Not async!
   if (auth.isAuthenticated.value) {
     router.replace({ name: 'AuthenticatedHome' });
     return;

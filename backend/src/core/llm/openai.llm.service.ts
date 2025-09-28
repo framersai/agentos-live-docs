@@ -17,8 +17,8 @@ import {
   ILlmUsage,
   ILlmTool,
   ILlmToolCall,
-} from './llm.interfaces';
-import { LlmProviderId } from './llm.config.service';
+} from './llm.interfaces.js';
+import { LlmProviderId } from './llm.config.service.js';
 
 /**
  * Implements the ILlmService for the OpenAI provider.

@@ -226,7 +226,7 @@ onMounted(async () => {
   themeManager.initialize();    // Initializes theme from storage or system preference
   await uiStore.initializeUiState();  // Initializes UI store state, including listeners for fullscreen etc.
 
-  await auth.checkAuthStatus(); // Check auth status first thing
+  auth.checkAuthStatus(); // Check auth status first thing (not async!)
   await voiceSettingsManager.initialize(); // Initialize voice settings
 
   // If authenticated, fetch session cost if not already loaded
