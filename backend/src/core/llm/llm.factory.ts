@@ -6,21 +6,21 @@
  * @version 1.2.0 - Propagated tool parameters to LLM services in callLlm.
  */
 
-import { LlmConfigService, LlmProviderId } from './llm.config.service';
-import { OpenAiLlmService } from './openai.llm.service';
-import { OpenRouterLlmService } from './openrouter.llm.service';
+import { LlmConfigService, LlmProviderId } from './llm.config.service.js';
+import { OpenAiLlmService } from './openai.llm.service.js';
+import { OpenRouterLlmService } from './openrouter.llm.service.js';
 // Import other LLM services (Anthropic, Ollama) as they are implemented
-// import { AnthropicLlmService } from './anthropic.llm.service';
-// import { OllamaLlmService } from './ollama.llm.service';
+// import { AnthropicLlmService } from './anthropic.llm.service.js';
+// import { OllamaLlmService } from './ollama.llm.service.js';
 import {
   IChatMessage,
   ILlmResponse,
   ILlmService,
   IChatCompletionParams,
   ILlmTool,
-} from './llm.interfaces';
-import { CostService } from '../cost/cost.service';
-import { getModelPrice } from '../../../config/models.config';
+} from './llm.interfaces.js';
+import { CostService } from '../cost/cost.service.js';
+import { getModelPrice } from '../../../config/models.config.js';
 
 let llmConfigService: LlmConfigService;
 const serviceCache: Map<LlmProviderId | string, ILlmService> = new Map();

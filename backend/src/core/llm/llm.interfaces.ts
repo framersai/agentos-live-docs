@@ -6,7 +6,7 @@
  * @version 1.1.0 - Added support for tool/function calling.
  */
 
-import { LlmProviderId } from "./llm.config.service"; // If LlmProviderId enum is to be used here
+import { LlmProviderId } from "./llm.config.service.js"; // If LlmProviderId enum is to be used here
 
 /**
  * @interface ILlmToolCallFunction

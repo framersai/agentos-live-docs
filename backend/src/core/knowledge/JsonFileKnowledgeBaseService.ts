@@ -13,7 +13,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url'; // Import for ES module path resolution
-import { IKnowledgeBaseService, IKnowledgeItem } from './IKnowledgeBaseService';
+import { IKnowledgeBaseService, IKnowledgeItem } from './IKnowledgeBaseService.js';
 
 const DEFAULT_KNOWLEDGE_BASE_FILE_PATH = 'config/knowledge_base.json';
 

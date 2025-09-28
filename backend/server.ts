@@ -15,12 +15,12 @@ import { fileURLToPath } from 'url';
 import http from 'http'; // Added for graceful shutdown
 import fs from 'fs'; // Import fs for file system operations
 
-import { configureRouter } from './config/router';
-import { optionalAuthMiddleware } from './middleware/optionalAuth';
-import { rateLimiter } from './middleware/ratelimiter'; // Import the instance
-import { setupI18nMiddleware } from './middleware/i18n';
-import { initializeLlmServices } from './src/core/llm/llm.factory';
-import { sqliteMemoryAdapter } from './src/core/memory/SqliteMemoryAdapter'; // Import for shutdown
+import { configureRouter } from './config/router.js';
+import { optionalAuthMiddleware } from './middleware/optionalAuth.js';
+import { rateLimiter } from './middleware/ratelimiter.js'; // Import the instance
+import { setupI18nMiddleware } from './middleware/i18n.js';
+import { initializeLlmServices } from './src/core/llm/llm.factory.js';
+import { sqliteMemoryAdapter } from './src/core/memory/SqliteMemoryAdapter.js'; // Import for shutdown
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

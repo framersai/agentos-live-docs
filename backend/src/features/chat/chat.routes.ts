@@ -13,21 +13,21 @@ import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 
 // --- Core LLM & Config Imports ---
-import { callLlm, initializeLlmServices } from '../../core/llm/llm.factory';
-import { LlmConfigService, AgentLLMDefinition } from '../../core/llm/llm.config.service';
-import { IChatMessage, ILlmUsage, IChatCompletionParams, ILlmResponse, ILlmToolCall } from '../../core/llm/llm.interfaces';
+import { callLlm, initializeLlmServices } from '../../core/llm/llm.factory.js';
+import { LlmConfigService, AgentLLMDefinition } from '../../core/llm/llm.config.service.js';
+import { IChatMessage, ILlmUsage, IChatCompletionParams, ILlmResponse, ILlmToolCall } from '../../core/llm/llm.interfaces.js';
 
 // --- Cost & Model Preference Imports ---
-import { CostService } from '../../core/cost/cost.service';
-import { getModelPrice, MODEL_PRICING } from '../../../config/models.config';
+import { CostService } from '../../core/cost/cost.service.js';
+import { getModelPrice, MODEL_PRICING } from '../../../config/models.config.js';
 
 // --- Core Service Imports ---
-import { llmContextAggregatorService } from '../../core/context/LLMContextAggregatorService';
-import { IContextAggregatorInputSources, IContextBundle } from '../../core/context/IContextAggregatorService';
-import { jsonFileKnowledgeBaseService } from '../../core/knowledge/JsonFileKnowledgeBaseService';
-import { sqliteMemoryAdapter } from '../../core/memory/SqliteMemoryAdapter';
-import { IStoredConversationTurn } from '../../core/memory/IMemoryAdapter';
-import { ProcessedConversationMessageBE } from '../../core/conversation/conversation.interfaces';
+import { llmContextAggregatorService } from '../../core/context/LLMContextAggregatorService.js';
+import { IContextAggregatorInputSources, IContextBundle } from '../../core/context/IContextAggregatorService.js';
+import { jsonFileKnowledgeBaseService } from '../../core/knowledge/JsonFileKnowledgeBaseService.js';
+import { sqliteMemoryAdapter } from '../../core/memory/SqliteMemoryAdapter.js';
+import { IStoredConversationTurn } from '../../core/memory/IMemoryAdapter.js';
+import { ProcessedConversationMessageBE } from '../../core/conversation/conversation.interfaces.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __projectRoot = path.resolve(path.dirname(__filename), '../../../..');

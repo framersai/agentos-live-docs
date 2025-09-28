@@ -5,16 +5,16 @@
  * @version 1.4.1 - Added DiaryAgentTools.
  */
 
-import { ILlmProviderConfig, ILlmTool } from './llm.interfaces';
+import { ILlmProviderConfig, ILlmTool } from './llm.interfaces.js';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { MODEL_PREFERENCES } from '../../../config/models.config';
+import { MODEL_PREFERENCES } from '../../../config/models.config.js';
 
 // Import other agent tool arrays as they are created
-import { TutorAgentTools } from '../../tools/tutor.tools';
-import { CodingAssistantAgentTools } from '../../tools/codingAssistant.tools';
-import { DiaryAgentTools } from '../../tools/diary.tools';
+import { TutorAgentTools } from '../../tools/tutor.tools.js';
+import { CodingAssistantAgentTools } from '../../tools/codingAssistant.tools.js';
+import { DiaryAgentTools } from '../../tools/diary.tools.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __projectRoot = path.resolve(path.dirname(__filename), '../../../..');

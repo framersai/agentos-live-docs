@@ -16,7 +16,7 @@ import type {
   IMemoryAdapter,
   IStoredConversationTurn,
   IMemoryRetrievalOptions,
-} from './IMemoryAdapter';
+} from './IMemoryAdapter.js';
 
 const DB_DIR = path.join(process.cwd(), 'db_data');
 const DB_PATH = path.join(DB_DIR, 'vca_memory.sqlite3');

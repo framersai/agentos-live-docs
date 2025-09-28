@@ -10,9 +10,9 @@
 
 import { Request, Response } from 'express';
 import multer, { MulterError } from 'multer';
-import { audioService } from '../../core/audio/audio.service';
-import { ISttRequestOptions, ISttOptions, ITranscriptionResult, SttResponseFormat } from '../../core/audio/stt.interfaces';
-import { CostService } from '../../core/cost/cost.service';
+import { audioService } from '../../core/audio/audio.service.js';
+import { ISttRequestOptions, ISttOptions, ITranscriptionResult, SttResponseFormat } from '../../core/audio/stt.interfaces.js';
+import { CostService } from '../../core/cost/cost.service.js';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';

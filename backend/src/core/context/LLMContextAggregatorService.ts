@@ -11,12 +11,12 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { callLlm, initializeLlmServices } from '../llm/llm.factory';
-import { IChatMessage, ILlmTool, ILlmToolCall, ILlmResponse } from '../llm/llm.interfaces';
-import { IContextAggregatorService, IContextAggregatorInputSources, IContextBundle } from './IContextAggregatorService';
-import { MODEL_PREFERENCES } from '../../../config/models.config';
-import { LlmConfigService, LlmProviderId } from '../llm/llm.config.service';
-import { contextBundleSchema } from './contextBundle.schema'; // Import the schema
+import { callLlm, initializeLlmServices } from '../llm/llm.factory.js';
+import { IChatMessage, ILlmTool, ILlmToolCall, ILlmResponse } from '../llm/llm.interfaces.js';
+import { IContextAggregatorService, IContextAggregatorInputSources, IContextBundle } from './IContextAggregatorService.js';
+import { MODEL_PREFERENCES } from '../../../config/models.config.js';
+import { LlmConfigService, LlmProviderId } from '../llm/llm.config.service.js';
+import { contextBundleSchema } from './contextBundle.schema.js'; // Import the schema
 
 const __filename = fileURLToPath(import.meta.url);
 const __projectRoot = path.resolve(path.dirname(__filename), '../../../../'); // Adjust if structure differs
