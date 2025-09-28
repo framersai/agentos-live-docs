@@ -156,10 +156,12 @@ export class VadMode extends BaseSttMode implements SttModePublicState {
       console.warn(`[VadMode] Wake word detected but not in 'listening-wake' phase. Phase: ${this.phase.value}. Ignoring.`);
       return;
     }
-    
+
     console.log('[VadMode] Wake word detected, transitioning to command capture.');
+    console.log('[VadMode] Current state - isProcessingLLM:', this.context.isProcessingLLM.value,
+                'isAwaitingVadCommandResult:', this.context.isAwaitingVadCommandResult.value);
     this.clearTimers();
-    this.context.clearVadCommandTimeout(); 
+    this.context.clearVadCommandTimeout();
 
     this.phase.value = 'transitioning';
     this.context.sharedState.isListeningForWakeWord.value = false;
@@ -183,12 +185,15 @@ export class VadMode extends BaseSttMode implements SttModePublicState {
       }
 
       const handlerStarted = await this.context.activeHandlerApi.value.startListening(true);
+      console.log('[VadMode] Command listener start result:', handlerStarted);
       if (!handlerStarted) {
+        console.error('[VadMode] Failed to start command listener');
         this.context.transcriptionDisplay.showError('Could not start command listener.', 2500);
         await this.returnToWakeListening('STT handler failed for command capture.');
       } else {
         this.phase.value = 'capturing-command';
-        console.log('[VadMode] Transitioned to command capture.');
+        console.log('[VadMode] Successfully transitioned to command capture phase.');
+        console.log('[VadMode] Current handler state - isActive:', this.context.activeHandlerApi.value.isActive.value);
       }
     } catch (error: any) {
       this.context.transcriptionDisplay.showError('Error starting command listener.', 2500);
