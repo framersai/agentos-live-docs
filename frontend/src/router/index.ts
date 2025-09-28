@@ -48,6 +48,23 @@ const routes: Array<RouteRecordRaw> = [
             return `/${locale}/`;
         }
     },
+    // Redirect common paths without locale to locale-prefixed versions
+    {
+        path: '/about',
+        redirect: () => `/${getCurrentLocale()}/about`
+    },
+    {
+        path: '/login',
+        redirect: () => `/${getCurrentLocale()}/login`
+    },
+    {
+        path: '/settings',
+        redirect: () => `/${getCurrentLocale()}/settings`
+    },
+    {
+        path: '/pro',
+        redirect: () => `/${getCurrentLocale()}/pro`
+    },
     {
         path: '/:locale',
         component: {
