@@ -7,14 +7,15 @@
  *
  * @component UnifiedChatLayout
  * @props {boolean} isVoiceInputProcessing - Indicates if voice input is currently being processed.
+ * @props {boolean} [isLlmProcessing=false] - Indicates if LLM is currently processing a response.
  * @props {string} [currentAgentInputPlaceholder] - Placeholder text for VoiceInput.
  * @props {boolean} [showEphemeralLog=true] - Controls visibility of EphemeralChatLog.
  *
  * @emits transcription - Emits transcribed text from VoiceInput.
  * @emits voice-input-processing - Emits processing state of VoiceInput.
  *
- * @version 2.2.0 - Refined ResizeObserver logic and local CSS variable setting for voice input height.
- * Ensured robust handling of child component refs for dimension calculations.
+ * @version 2.2.1 - Fixed prop mismatch: Added isLlmProcessing prop to properly pass LLM state to VoiceInput.
+ * Previously incorrectly passed isVoiceInputProcessing as LLM processing state.
  */
 <script setup lang="ts">
 import { ref, computed, type CSSProperties, onMounted, onUnmounted, type Ref, nextTick, watch } from 'vue';
@@ -24,10 +25,12 @@ import { useUiStore } from '@/store/ui.store';
 
 const props = withDefaults(defineProps<{
   isVoiceInputProcessing: boolean;
+  isLlmProcessing?: boolean;
   currentAgentInputPlaceholder?: string;
   showEphemeralLog?: boolean;
 }>(), {
   showEphemeralLog: true, // Default to true if not provided
+  isLlmProcessing: false, // Default to false if not provided
 });
 
 const emit = defineEmits<{
@@ -240,7 +243,7 @@ watch(ephemeralLogRef, async (newEl) => {
 
     <div class="unified-voice-input-section" ref="voiceInputSectionRef">
       <VoiceInput
-        :is-processing-l-l-m="props.isVoiceInputProcessing"
+        :is-processing-l-l-m="props.isLlmProcessing"
         @transcription-ready="handleTranscription"
         @stt-processing-audio="handleVoiceProcessing"
       />

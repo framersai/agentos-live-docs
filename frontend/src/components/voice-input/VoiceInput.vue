@@ -194,6 +194,40 @@
       </div>
     </transition>
 
+    <transition name="confirmation-fade-scale">
+      <div v-if="transcriptionConfirmation" class="vi-transcription-confirmation">
+        <div class="vi-confirmation-content">
+          <div class="vi-confirmation-header">
+            <span class="vi-confirmation-title">Confirm Message</span>
+            <span class="vi-confirmation-countdown">{{ transcriptionConfirmation.countdownSeconds }}s</span>
+          </div>
+          <div class="vi-confirmation-transcript">
+            {{ transcriptionConfirmation.transcript }}
+          </div>
+          <div class="vi-confirmation-shortcuts">
+            <span class="vi-shortcut"><kbd>Enter</kbd> to send</span>
+            <span class="vi-shortcut"><kbd>Esc</kbd> to cancel</span>
+          </div>
+          <div class="vi-confirmation-actions">
+            <button @click="editTranscription(false)" class="vi-confirmation-btn vi-confirmation-edit" title="Replace text input">
+              Edit
+            </button>
+            <button @click="editTranscription(true)" class="vi-confirmation-btn vi-confirmation-append" title="Add to existing text">
+              Append
+            </button>
+            <button @click="closeTranscriptionConfirmation" class="vi-confirmation-btn vi-confirmation-cancel">
+              <span>Cancel</span>
+              <kbd class="vi-kbd-inline">Esc</kbd>
+            </button>
+            <button @click="confirmTranscription" class="vi-confirmation-btn vi-confirmation-send">
+              <span>Send Now</span>
+              <kbd class="vi-kbd-inline">↵</kbd>
+            </button>
+          </div>
+        </div>
+      </div>
+    </transition>
+
     <BrowserSpeechHandler
       v-if="shouldShowBrowserHandler"
       :settings="currentSettings"
@@ -332,7 +366,14 @@ const currentHint = ref<Hint | null>(null);
 const pttPreview = ref<PttPreview | null>(null);
 const displayTranscriptionText = ref('');
 const transcriptionIsFinal = ref(true);
-const volumeLevels = ref([0.2, 0.3, 0.5, 0.4, 0.3]); 
+const volumeLevels = ref([0.2, 0.3, 0.5, 0.4, 0.3]);
+
+// Transcription confirmation modal state
+const transcriptionConfirmation = ref<{
+  transcript: string;
+  countdownSeconds: number;
+} | null>(null);
+let autoConfirmInterval: number | null = null; 
 
 let hintTimeout: number | null = null;
 let transcriptionTimeout: number | null = null;
@@ -382,7 +423,9 @@ const sttManager = useSttManager({
   transcriptionDisplay,
   emit: (event: string, ...args: any[]) => {
     if (event === 'transcription-ready') {
-      emit('transcription-ready', args[0] as string);
+      // Show confirmation modal for all modes
+      console.log('[VoiceInput] Intercepted transcription-ready event:', args[0]);
+      showTranscriptionConfirmation(args[0] as string);
     } else if (event === 'voice-input-error') {
       emit('voice-input-error', args[0] as SttHandlerErrorPayload);
     }
@@ -526,16 +569,33 @@ function showLiveTranscription(text: string, isFinal: boolean = true) {
 }
 
 async function handleMicButtonClick() {
-  // For PTT mode while recording, click stops the recording
-  if (currentAudioMode.value === 'push-to-talk' && isActive.value) {
-    console.log('[VoiceInput] PTT mode - stopping recording on click');
-    await sttManager.stopPtt();
-    return;
-  }
+  // PTT mode uses click for toggle behavior
+  if (currentAudioMode.value === 'push-to-talk') {
+    console.log('[VoiceInput] PTT click - toggling recording. isActive:', isActive.value);
 
-  // Skip click handling for PTT mode when not recording - it uses mousedown/mouseup to start
-  if (currentAudioMode.value === 'push-to-talk' && !isActive.value) {
-    console.log('[VoiceInput] Ignoring click in PTT mode when not recording - using mouse/touch events instead');
+    if (!isActive.value) {
+      // Start recording
+      if (props.isProcessingLLM) {
+        showHint('Cannot start recording while assistant is processing', 'warning');
+        return;
+      }
+
+      const audioCtx = audioFeedback.audioContext.value;
+      if (audioCtx?.state === 'suspended') {
+        await audioCtx.resume();
+      }
+
+      const hasPermission = await microphoneManager.ensureMicrophoneAccessAndStream();
+      if (!hasPermission) {
+        showHint(`🎤 ${t('voice.microphoneAccess')}`, 'error');
+        return;
+      }
+
+      await sttManager.startPtt();
+    } else {
+      // Stop recording
+      await sttManager.stopPtt();
+    }
     return;
   }
 
@@ -565,71 +625,30 @@ async function handleMicButtonClick() {
   await sttManager.handleMicButtonClick();
 }
 
-// Push-to-Talk specific handlers
+// Push-to-Talk specific handlers (now disabled - PTT uses click for toggle)
 async function handleMicButtonMouseDown(event: MouseEvent) {
-  if (currentAudioMode.value === 'push-to-talk' && !isActive.value && !props.isProcessingLLM) {
-    event.preventDefault();
-    console.log('[VoiceInput] PTT mouse down - starting recording');
-
-    // Ensure mic permission and audio context
-    const audioCtx = audioFeedback.audioContext.value;
-    if (audioCtx?.state === 'suspended') {
-      await audioCtx.resume();
-    }
-
-    const hasPermission = await microphoneManager.ensureMicrophoneAccessAndStream();
-    if (!hasPermission) {
-      showHint(`🎤 ${t('voice.microphoneAccess')}`, 'error');
-      return;
-    }
-
-    // Start PTT recording
-    await sttManager.startPtt();
-  }
+  // Disabled - PTT now uses click event for toggle behavior
+  return;
 }
 
 async function handleMicButtonMouseUp(event: MouseEvent) {
-  if (currentAudioMode.value === 'push-to-talk' && isActive.value) {
-    event.preventDefault();
-    console.log('[VoiceInput] PTT mouse up - stopping recording');
-    await sttManager.stopPtt();
-  }
+  // Disabled - PTT now uses click event for toggle behavior
+  return;
 }
 
 async function handleMicButtonMouseLeave(event: MouseEvent) {
-  // Stop recording if mouse leaves button while recording
-  if (currentAudioMode.value === 'push-to-talk' && isActive.value) {
-    console.log('[VoiceInput] PTT mouse leave - stopping recording');
-    await sttManager.stopPtt();
-  }
+  // Disabled - no need to stop on mouse leave in toggle mode
+  return;
 }
 
 async function handleMicButtonTouchStart(event: TouchEvent) {
-  if (currentAudioMode.value === 'push-to-talk' && !isActive.value && !props.isProcessingLLM) {
-    event.preventDefault();
-    console.log('[VoiceInput] PTT touch start - starting recording');
-
-    const audioCtx = audioFeedback.audioContext.value;
-    if (audioCtx?.state === 'suspended') {
-      await audioCtx.resume();
-    }
-
-    const hasPermission = await microphoneManager.ensureMicrophoneAccessAndStream();
-    if (!hasPermission) {
-      showHint(`🎤 ${t('voice.microphoneAccess')}`, 'error');
-      return;
-    }
-
-    await sttManager.startPtt();
-  }
+  // Disabled - PTT now uses click event for toggle behavior
+  return;
 }
 
 async function handleMicButtonTouchEnd(event: TouchEvent) {
-  if (currentAudioMode.value === 'push-to-talk' && isActive.value) {
-    event.preventDefault();
-    console.log('[VoiceInput] PTT touch end - stopping recording');
-    await sttManager.stopPtt();
-  }
+  // Disabled - PTT now uses click event for toggle behavior
+  return;
 }
 
 function handleTextareaInput() {
@@ -716,8 +735,7 @@ async function handleToggleLiveTranscription(enabled: boolean) {
 async function onPttAudioReady(data: { transcript: string; duration: number; blob?: Blob }) {
   if (!data.blob) {
     if (data.transcript) {
-        emit('transcription-ready', data.transcript);
-        audioFeedback.playSound(audioFeedback.beepOutSound.value, 0.5);
+        showTranscriptionConfirmation(data.transcript);
     } else {
         toast?.add({type: 'warning', title: 'PTT Issue', message: 'No audio recorded for preview.'});
     }
@@ -736,7 +754,7 @@ async function onPttAudioReady(data: { transcript: string; duration: number; blo
   } catch (error) {
       console.error("Error processing PTT audio for preview:", error);
       toast?.add({ type: 'error', title: 'Preview Error', message: 'Could not prepare audio preview.' });
-      if (data.transcript) emit('transcription-ready', data.transcript);
+      if (data.transcript) showTranscriptionConfirmation(data.transcript);
   }
 }
 
@@ -773,9 +791,133 @@ function rerecordPtt() {
 
 function sendPttRecording() {
   if (!pttPreview.value?.transcript) return;
-  emit('transcription-ready', pttPreview.value.transcript);
-  audioFeedback.playSound(audioFeedback.beepOutSound.value, 0.5);
+  showTranscriptionConfirmation(pttPreview.value.transcript);
   closePttPreview();
+}
+
+// Transcription confirmation modal functions
+function showTranscriptionConfirmation(transcript: string) {
+  if (!transcript.trim()) return;
+
+  console.log('[VoiceInput] Showing transcription confirmation modal for:', transcript);
+
+  // Clear any existing timer
+  if (autoConfirmInterval) {
+    clearInterval(autoConfirmInterval);
+    autoConfirmInterval = null;
+  }
+
+  transcriptionConfirmation.value = {
+    transcript: transcript.trim(),
+    countdownSeconds: 3
+  };
+
+  // Add keyboard event listener for the modal
+  const handleKeyboard = (e: KeyboardEvent) => {
+    if (!transcriptionConfirmation.value) return;
+
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      console.log('[VoiceInput] Escape pressed, cancelling transcription');
+      closeTranscriptionConfirmation();
+    } else if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      console.log('[VoiceInput] Enter pressed, confirming transcription');
+      confirmTranscription();
+    }
+  };
+
+  // Add the event listener
+  document.addEventListener('keydown', handleKeyboard);
+
+  // Store the handler to remove it later
+  (window as any).__transcriptionModalKeyHandler = handleKeyboard;
+
+  // Start countdown
+  console.log('[VoiceInput] Starting auto-confirm countdown from 3 seconds');
+  autoConfirmInterval = window.setInterval(() => {
+    if (!transcriptionConfirmation.value) {
+      console.log('[VoiceInput] Confirmation was cancelled, stopping countdown');
+      if (autoConfirmInterval) clearInterval(autoConfirmInterval);
+      autoConfirmInterval = null;
+      return;
+    }
+
+    transcriptionConfirmation.value.countdownSeconds--;
+    console.log('[VoiceInput] Countdown:', transcriptionConfirmation.value.countdownSeconds);
+
+    if (transcriptionConfirmation.value.countdownSeconds <= 0) {
+      console.log('[VoiceInput] Countdown reached 0, auto-confirming...');
+      confirmTranscription();
+    }
+  }, 1000);
+}
+
+function confirmTranscription() {
+  if (!transcriptionConfirmation.value?.transcript) return;
+
+  console.log('[VoiceInput] Confirming transcription:', transcriptionConfirmation.value.transcript);
+  const transcript = transcriptionConfirmation.value.transcript;
+  closeTranscriptionConfirmation();
+
+  emit('transcription-ready', transcript);
+  audioFeedback.playSound(audioFeedback.beepOutSound.value, 0.5);
+}
+
+function closeTranscriptionConfirmation(sendEmpty: boolean = false) {
+  console.log('[VoiceInput] Closing transcription confirmation modal, sendEmpty:', sendEmpty);
+  if (autoConfirmInterval) {
+    clearInterval(autoConfirmInterval);
+    autoConfirmInterval = null;
+    console.log('[VoiceInput] Cleared auto-confirm interval');
+  }
+
+  // Remove keyboard event listener
+  const handler = (window as any).__transcriptionModalKeyHandler;
+  if (handler) {
+    document.removeEventListener('keydown', handler);
+    delete (window as any).__transcriptionModalKeyHandler;
+    console.log('[VoiceInput] Removed keyboard event listener');
+  }
+
+  // Only send empty transcript if explicitly requested (e.g., from auto-confirm with empty text)
+  // Cancel button should NOT send empty transcript
+  if (sendEmpty && !transcriptionConfirmation.value?.transcript?.trim()) {
+    console.log('[VoiceInput] Ignoring sendEmpty request as transcript is empty');
+  }
+
+  transcriptionConfirmation.value = null;
+}
+
+function editTranscription(append: boolean = false) {
+  if (!transcriptionConfirmation.value) return;
+
+  // Put transcript in text input for editing
+  const currentText = sharedState.textInput.value.trim();
+  const newTranscript = transcriptionConfirmation.value.transcript;
+
+  if (append && currentText) {
+    // Append with a space if there's existing text
+    sharedState.textInput.value = currentText + ' ' + newTranscript;
+  } else {
+    // Replace the text
+    sharedState.textInput.value = newTranscript;
+  }
+
+  closeTranscriptionConfirmation();
+
+  // Focus the text input
+  nextTick(() => {
+    textareaRef.value?.focus();
+    // Only select all if replacing, not if appending
+    if (!append || !currentText) {
+      textareaRef.value?.select();
+    } else {
+      // Move cursor to end when appending
+      const len = sharedState.textInput.value.length;
+      textareaRef.value?.setSelectionRange(len, len);
+    }
+  });
 }
 
 function formatDuration(ms: number): string {
@@ -1037,6 +1179,12 @@ onBeforeUnmount(() => {
   if (pttAudioSourceNode) {
     pttAudioSourceNode.stop();
     pttAudioSourceNode.disconnect();
+  }
+
+  // Clean up auto-confirm interval
+  if (autoConfirmInterval) {
+    clearInterval(autoConfirmInterval);
+    autoConfirmInterval = null;
   }
 });
 </script>

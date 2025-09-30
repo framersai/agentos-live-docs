@@ -650,9 +650,9 @@ const updateRangeProgress = (target: HTMLInputElement | null): void => {
 
 const getAudioModeDescription = (mode: AudioInputMode): string => {
   const descriptions: Record<AudioInputMode, string> = {
-      'push-to-talk': 'Hold mic to speak. Release to send.',
-      'continuous': 'Microphone listens continuously until stopped.',
-      'voice-activation': 'Say "Vee" to activate mic, then speak your command.'
+      'push-to-talk': '🎤 Hold the mic button to record. Release to review and send. Best for precise control and privacy.',
+      'continuous': '🔴 Microphone stays on and transcribes continuously. Good for hands-free dictation.',
+      'voice-activation': '🗣️ Say "V" or "Hey V" to wake, then speak your command. Hands-free with wake word activation.'
   };
   return descriptions[mode] || "Select your preferred audio input method.";
 };

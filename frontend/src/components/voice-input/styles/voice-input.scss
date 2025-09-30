@@ -18,6 +18,7 @@ $z-status-bar: 5;
 $z-controls-wrapper: 10;
 $z-input-wrapper: 10;
 $z-toolbar-wrapper: 20;
+$z-transcription-confirmation: 25;
 $z-ptt-preview-modal: 30;
 
 // -----------------------------------------------------------------------------
@@ -1000,6 +1001,191 @@ $z-ptt-preview-modal: 30;
   .vi-toolbar-wrapper { min-width: 240px; /* Adjust as needed */ }
   .vi-status-bar { height: auto; min-height: 24px; margin-bottom: 8px; }
   .vi-status-content { font-size: 0.75rem; padding: 3px 8px; }
+}
+
+// -----------------------------------------------------------------------------
+// Transcription Confirmation Modal (inline, no overlay)
+// -----------------------------------------------------------------------------
+.vi-transcription-confirmation {
+  position: fixed;
+  bottom: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: $z-transcription-confirmation;
+  width: 90%;
+  max-width: 500px;
+  pointer-events: auto;
+}
+
+.vi-confirmation-content {
+  background: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.98);
+  backdrop-filter: blur(24px);
+  border-radius: var.$radius-lg;
+  padding: 16px;
+  box-shadow:
+    0 8px 32px hsla(var(--color-shadow-h), var(--color-shadow-s), var(--color-shadow-l), 0.25),
+    0 2px 8px hsla(var(--color-shadow-h), var(--color-shadow-s), var(--color-shadow-l), 0.15),
+    inset 0 1px 0 hsla(var(--color-highlight-h), var(--color-highlight-s), var(--color-highlight-l), 0.1);
+  border: 1px solid hsla(var(--color-border-h), var(--color-border-s), var(--color-border-l), 0.3);
+}
+
+.vi-confirmation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid hsla(var(--color-border-h), var(--color-border-s), var(--color-border-l), 0.15);
+}
+
+.vi-confirmation-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: hsla(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l), 0.9);
+}
+
+.vi-confirmation-countdown {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 6px;
+  background: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.15);
+  color: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 1);
+  border-radius: var.$radius-full;
+  font-size: 13px;
+  font-weight: 600;
+  animation: countdown-pulse 1s ease-in-out infinite;
+}
+
+.vi-confirmation-transcript {
+  padding: 12px;
+  margin-bottom: 12px;
+  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.5);
+  border-radius: var.$radius-md;
+  font-size: 14px;
+  line-height: 1.5;
+  color: hsla(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l), 0.95);
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.vi-confirmation-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.vi-confirmation-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: var.$radius-md;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &.vi-confirmation-edit {
+    background: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.8);
+    color: hsla(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l), 0.9);
+
+    &:hover {
+      background: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 1);
+    }
+  }
+
+  &.vi-confirmation-append {
+    background: hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.15);
+    color: hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 1);
+
+    &:hover {
+      background: hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.25);
+    }
+  }
+
+  &.vi-confirmation-cancel {
+    background: hsla(var(--color-danger-h), var(--color-danger-s), var(--color-danger-l), 0.1);
+    color: hsla(var(--color-danger-h), var(--color-danger-s), var(--color-danger-l), 0.9);
+
+    &:hover {
+      background: hsla(var(--color-danger-h), var(--color-danger-s), var(--color-danger-l), 0.15);
+    }
+  }
+
+  &.vi-confirmation-send {
+    background: linear-gradient(
+      135deg,
+      hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.9),
+      hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.9)
+    );
+    color: white;
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.3);
+    }
+  }
+}
+
+@keyframes countdown-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+// Keyboard shortcut indicators
+.vi-confirmation-shortcuts {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin: 0.75rem 0;
+  font-size: 0.85rem;
+  color: hsla(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l), 0.7);
+
+  .vi-shortcut {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+}
+
+kbd {
+  display: inline-block;
+  padding: 0.15rem 0.4rem;
+  font-size: 0.8rem;
+  font-family: inherit;
+  line-height: 1.2;
+  color: hsla(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l), 0.9);
+  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.5);
+  border: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.3);
+  border-radius: 4px;
+  box-shadow: inset 0 -1px 0 hsla(0, 0%, 0%, 0.1);
+  font-weight: 500;
+}
+
+.vi-kbd-inline {
+  margin-left: 0.5rem;
+  opacity: 0.7;
+  font-size: 0.75rem;
+}
+
+// Improved transition for confirmation modal
+.confirmation-fade-scale-enter-active {
+  transition: all 0.3s var.$ease-out-back;
+}
+
+.confirmation-fade-scale-leave-active {
+  transition: all 0.2s var.$ease-in-quad;
+}
+
+.confirmation-fade-scale-enter-from {
+  opacity: 0;
+  transform: translateX(-50%) scale(0.9) translateY(20px);
+}
+
+.confirmation-fade-scale-leave-to {
+  opacity: 0;
+  transform: translateX(-50%) scale(0.95) translateY(10px);
 }
 
 // -----------------------------------------------------------------------------
