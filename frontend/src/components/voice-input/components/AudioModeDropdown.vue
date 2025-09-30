@@ -23,6 +23,7 @@
     >
       <component :is="currentModeIcon" class="icon-sm" aria-hidden="true" />
       <span class="mode-label">{{ currentModeLabel }}</span>
+      <span class="mode-info-icon" :title="currentModeDescription">ⓘ</span>
       <ChevronDownIcon
         class="chevron-icon"
         :class="{ 'rotate-180': isOpen }"
@@ -122,6 +123,15 @@ const currentModeLabel = computed<string>(() => {
 });
 
 /**
+ * @computed currentModeDescription
+ * @description Gets the description of the currently selected audio mode.
+ */
+const currentModeDescription = computed<string>(() => {
+  const option = props.options.find(o => o.value === props.currentMode);
+  return option?.description || '';
+});
+
+/**
  * @computed currentModeIcon
  * @description Gets the icon component for the currently selected audio mode.
  */
@@ -211,6 +221,25 @@ onUnmounted(() => {
 .icon-sm { /* Ensure this class is defined if used or use direct icon components */
   width: 1.25rem; /* 20px */
   height: 1.25rem; /* 20px */
+}
+
+.mode-info-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  font-size: 0.75rem;
+  background: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.1);
+  color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+  border-radius: 50%;
+  cursor: help;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.2);
+    transform: scale(1.1);
+  }
 }
 
 .chevron-icon {

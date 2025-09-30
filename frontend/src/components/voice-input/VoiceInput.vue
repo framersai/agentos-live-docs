@@ -525,9 +525,9 @@ const sendGradientStart = computed(() => 'var(--color-accent-primary)');
 const sendGradientEnd = computed(() => 'var(--color-accent-secondary)');
 
 const audioModeOptions = computed<UIAudioModeOption[]>(() => [
-  { label: t('voice.pushToTalk'), value: 'push-to-talk', icon: '🎙️', description: t('voice.clickMicToStop') },
-  { label: t('voice.continuous'), value: 'continuous', icon: '🌊', description: t('voice.listensContinuously') },
-  { label: t('voice.voiceActivate'), value: 'voice-activation', icon: '🗣️', description: t('voice.activateWithWakeWord') },
+  { label: t('voice.pushToTalk'), value: 'push-to-talk', icon: '🎙️', description: 'Hold mic button to record. Release to review & send. Best for privacy & control.' },
+  { label: t('voice.continuous'), value: 'continuous', icon: '🌊', description: 'Mic stays on & transcribes continuously. Good for hands-free dictation.' },
+  { label: t('voice.voiceActivate'), value: 'voice-activation', icon: '🗣️', description: 'Say "V" or "Hey V" to activate, then speak. Hands-free with wake word.' },
 ]);
 
 const sttEngineOptions = computed<SttEngineOption[]>(() => [
