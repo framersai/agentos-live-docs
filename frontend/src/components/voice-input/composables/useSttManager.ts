@@ -353,10 +353,13 @@ export function useSttManager(options: UseSttManagerOptions): SttManagerInstance
       return;
     }
 
-    // For PTT mode, directly start without checking all conditions
-    if (currentMode.constructor.name === 'PttMode') {
+    // Check if current mode is PTT by checking the current mode setting
+    // Don't rely on constructor.name which gets minified in production
+    if (options.audioMode.value === 'push-to-talk') {
       _isExplicitlyStoppedByUser.value = false;
       await currentMode.start();
+    } else {
+      console.warn('[SttManager] startPtt called but current mode is not PTT:', options.audioMode.value);
     }
   };
 
@@ -368,9 +371,12 @@ export function useSttManager(options: UseSttManagerOptions): SttManagerInstance
       return;
     }
 
-    // For PTT mode, directly stop
-    if (currentMode.constructor.name === 'PttMode' && currentMode.isActive.value) {
+    // Check if current mode is PTT by checking the current mode setting
+    // Don't rely on constructor.name which gets minified in production
+    if (options.audioMode.value === 'push-to-talk' && currentMode.isActive.value) {
       await currentMode.stop();
+    } else if (options.audioMode.value !== 'push-to-talk') {
+      console.warn('[SttManager] stopPtt called but current mode is not PTT:', options.audioMode.value);
     }
   };
 
