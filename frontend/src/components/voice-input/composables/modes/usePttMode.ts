@@ -70,12 +70,12 @@ export class PttMode extends BaseSttMode implements SttModePublicState {
     this.statusText = computed(() => {
       if (this.context.isProcessingLLM.value && !this.isRecordingInternally.value) return 'PTT: Assistant busy';
       if (!this.context.micPermissionGranted.value) return 'PTT: Mic needed';
-      return this.isRecordingInternally.value ? 'PTT: Recording...' : 'PTT: Hold to talk';
+      return this.isRecordingInternally.value ? 'PTT: Recording... (click to stop)' : 'PTT: Click to start';
     });
     this.placeholderText = computed(() => {
       if (this.context.isProcessingLLM.value && !this.isRecordingInternally.value) return 'Assistant is processing...';
        if (!this.context.micPermissionGranted.value) return 'Microphone permission required for PTT.';
-      return this.isRecordingInternally.value ? 'Release to send transcript' : 'Hold mic button to record audio';
+      return this.isRecordingInternally.value ? 'Click mic button to stop and send' : 'Click mic button to start recording';
     });
   }
 
@@ -117,7 +117,8 @@ export class PttMode extends BaseSttMode implements SttModePublicState {
       if (handlerStarted) {
         this.context.playSound(this.context.audioFeedback.beepInSound.value);
         console.log('[PttMode] PTT recording started.');
-        this.startSilenceDetection();
+        // Disabled silence detection - PTT mode now uses click to stop
+        // this.startSilenceDetection();
         return true;
       } else {
         console.error('[PttMode] STT handler failed to start for PTT mode.');
@@ -151,16 +152,10 @@ export class PttMode extends BaseSttMode implements SttModePublicState {
     console.log('[PttMode] Current statusText should be:', this.statusText.value);
 
     try {
+      // Stop the handler - it will emit the final transcript via handleTranscription
       await this.context.activeHandlerApi.value?.stopListening(false);
 
-      if (this.finalTranscript.value.trim()) {
-        this.emitTranscription(this.finalTranscript.value); // emitTranscription handles showSent
-        this.context.playSound(this.context.audioFeedback.beepOutSound.value);
-      } else {
-        this.context.playSound(this.context.audioFeedback.beepOutSound.value);
-        this.context.transcriptionDisplay.showError('No speech detected in PTT.', 1500);
-      }
-      this.finalTranscript.value = '';
+      // Clear pending transcript while waiting for final
       this.context.sharedState.pendingTranscript.value = '';
 
     } catch (error: any) {
@@ -174,12 +169,18 @@ export class PttMode extends BaseSttMode implements SttModePublicState {
   handleTranscription(text: string): void {
     console.log(`[PttMode] Received final transcription from handler: "${text}"`);
     this.finalTranscript.value = text;
-    this.context.sharedState.pendingTranscript.value = text.trim(); // Update for UI consistency
-    this.context.transcriptionDisplay.showInterimTranscript(text.trim()); // Show as interim until stop
 
-    // Reset silence detection on new transcription
-    this.lastTranscriptionTime = Date.now();
-    this.resetSilenceTimer();
+    // Emit the transcription when we receive it from the handler
+    if (text.trim()) {
+      this.emitTranscription(text);
+      this.context.playSound(this.context.audioFeedback.beepOutSound.value);
+    } else {
+      this.context.transcriptionDisplay.showError('No speech detected in PTT.', 1500);
+    }
+
+    // Clear the transcripts
+    this.finalTranscript.value = '';
+    this.context.sharedState.pendingTranscript.value = '';
   }
 
   /**
@@ -192,10 +193,10 @@ export class PttMode extends BaseSttMode implements SttModePublicState {
       this.context.sharedState.pendingTranscript.value = text.trim();
       this.context.transcriptionDisplay.showInterimTranscript(text.trim());
 
-      // Reset silence detection on interim transcription
+      // Disabled silence detection - PTT mode now uses click to stop
       if (text.trim()) {
         this.lastTranscriptionTime = Date.now();
-        this.resetSilenceTimer();
+        // this.resetSilenceTimer();
       }
     }
   }

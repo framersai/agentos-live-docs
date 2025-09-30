@@ -158,13 +158,24 @@ export function useSttManager(options: UseSttManagerOptions): SttManagerInstance
   };
 
   const _shouldAutoStartListening = (): boolean => {
-    if (isReinitializing.value || !_activeHandlerApi.value || _isExplicitlyStoppedByUser.value) return false;
-    if (isProcessingLLM.value && !_isAwaitingVadCommandResult.value) return false;
-    if (micPermissionStatus.value !== 'granted') return false;
+    if (isReinitializing.value || !_activeHandlerApi.value || _isExplicitlyStoppedByUser.value) {
+      console.log('[SttManager] _shouldAutoStartListening: false - reinit/no handler/explicitly stopped');
+      return false;
+    }
+    if (isProcessingLLM.value && !_isAwaitingVadCommandResult.value) {
+      console.log('[SttManager] _shouldAutoStartListening: false - LLM processing');
+      return false;
+    }
+    if (micPermissionStatus.value !== 'granted') {
+      console.log('[SttManager] _shouldAutoStartListening: false - no mic permission');
+      return false;
+    }
 
     const autoStartModeEnabled = isContinuousModeActive.value || isVoiceActivationModeActive.value;
     const notCurrentlyActive = !isProcessingAudio.value && !isListeningForWakeWord.value && !_currentModeInstance.value?.isActive.value;
-    return autoStartModeEnabled && notCurrentlyActive;
+    const shouldStart = autoStartModeEnabled && notCurrentlyActive;
+    console.log(`[SttManager] _shouldAutoStartListening: ${shouldStart} (autoStartMode: ${autoStartModeEnabled}, notActive: ${notCurrentlyActive})`);
+    return shouldStart;
   };
 
   const _clearVadCommandTimeout = () => {
@@ -178,20 +189,22 @@ export function useSttManager(options: UseSttManagerOptions): SttManagerInstance
   };
 
   const _switchMode = async (newModeValue: AudioInputMode): Promise<void> => {
-    // console.log(`[SttManager] Attempting to switch mode to: ${newModeValue}`); // Reduced verbosity
+    console.log(`[SttManager] Attempting to switch mode to: ${newModeValue}`);
     _isExplicitlyStoppedByUser.value = false;
     const oldModeInstance = _currentModeInstance.value;
     if (oldModeInstance) {
-      // console.log(`[SttManager] Cleaning up old mode: ${oldModeInstance.constructor.name}`); // Reduced verbosity
+      console.log(`[SttManager] Cleaning up old mode: ${oldModeInstance.constructor.name}`);
       await oldModeInstance.stop();
       oldModeInstance.cleanup();
     }
     _currentModeInstance.value = _createMode(newModeValue);
     if (_currentModeInstance.value) {
-      // console.log(`[SttManager] Successfully switched to new mode: ${_currentModeInstance.value.constructor.name}`); // Reduced verbosity
+      console.log(`[SttManager] Successfully switched to new mode: ${_currentModeInstance.value.constructor.name}`);
       if (_shouldAutoStartListening()) {
-        // console.log(`[SttManager] Auto-starting STT for mode '${newModeValue}' after mode switch.`); // Reduced verbosity
+        console.log(`[SttManager] Auto-starting STT for mode '${newModeValue}' after mode switch.`);
         await _currentModeInstance.value.start();
+      } else {
+        console.log(`[SttManager] Not auto-starting. shouldAutoStart conditions not met.`);
       }
     }
   };
@@ -202,9 +215,13 @@ export function useSttManager(options: UseSttManagerOptions): SttManagerInstance
     if (targetInternalHandlerType.value === type && !_activeHandlerApi.value) {
       _activeHandlerApi.value = api;
       console.log(`[SttManager] Active handler set to: ${type}`);
-      if (_currentModeInstance.value && _shouldAutoStartListening()) {
-         console.log(`[SttManager] Auto-starting after handler registration`);
-         _currentModeInstance.value.start();
+      // Check if mode is already active or starting before auto-starting
+      const modeInstance = _currentModeInstance.value;
+      if (modeInstance && _shouldAutoStartListening() && !modeInstance.isActive.value) {
+         console.log(`[SttManager] Auto-starting after handler registration (mode not already active)`);
+         modeInstance.start();
+      } else if (modeInstance?.isActive.value) {
+         console.log(`[SttManager] Skipping auto-start - mode already active`);
       }
     }
   };
@@ -257,33 +274,57 @@ export function useSttManager(options: UseSttManagerOptions): SttManagerInstance
     await new Promise(resolve => setTimeout(resolve, 250));
     if (_shouldAutoStartListening()) {
       // console.log('[SttManager] Auto-starting STT after reinitialization.'); // Reduced verbosity
-      if (_currentModeInstance.value) {
-        await _currentModeInstance.value.start();
+      const modeInstance = _currentModeInstance.value;
+      if (modeInstance && !modeInstance.isActive.value) {
+        console.log('[SttManager] Auto-starting STT after reinitialization (mode not already active)');
+        await modeInstance.start();
+      } else if (modeInstance?.isActive.value) {
+        console.log('[SttManager] Skipping auto-start after reinit - mode already active');
       }
     }
   };
 
+  let isProcessingMicClick = false;
   const handleMicButtonClick = async (): Promise<void> => {
+    // Prevent rapid clicks
+    if (isProcessingMicClick) {
+      console.log('[SttManager] Ignoring mic button click - still processing previous click');
+      return;
+    }
+    isProcessingMicClick = true;
+
     // ... (Implementation unchanged from previous version 2.4.1) ...
     const currentMode = _currentModeInstance.value;
+    console.log(`[SttManager] Mic button clicked. Mode: ${currentMode?.constructor.name}, isActive: ${currentMode?.isActive.value}, canStart: ${currentMode?.canStart.value}`);
+
     if (!currentMode) {
       console.error('[SttManager] Microphone button clicked, but no STT mode instance is active.');
       toast?.add({ type: 'error', title: 'Mode Error', message: 'No voice input mode selected or initialized.' });
+      isProcessingMicClick = false;
       return;
     }
     if (currentMode.requiresHandler && !_activeHandlerApi.value) {
       toast?.add({ type: 'warning', title: 'STT Service Unavailable', message: 'The speech recognition service is not ready.' });
+      isProcessingMicClick = false;
       return;
     }
-    if (currentMode.isActive.value) {
-      // console.log('[SttManager] Mic button: User requested STOP.'); // Reduced verbosity
-      _isExplicitlyStoppedByUser.value = true;
-      await currentMode.stop();
-    } else if (currentMode.canStart.value) {
-      // console.log('[SttManager] Mic button: User requested START.'); // Reduced verbosity
-      _isExplicitlyStoppedByUser.value = false;
-      await currentMode.start();
-    } else {
+
+    try {
+      // Special handling for VAD mode when listening for wake word
+      if (currentMode.constructor.name === 'VadMode' && isListeningForWakeWord.value) {
+        console.log('[SttManager] VAD mode listening for wake word - toggling VAD mode off/on');
+        // User wants to turn off VAD mode while it's listening for wake word
+        _isExplicitlyStoppedByUser.value = true;
+        await currentMode.stop();
+      } else if (currentMode.isActive.value) {
+        console.log('[SttManager] Mic button: User requested STOP. Setting explicitly stopped = true');
+        _isExplicitlyStoppedByUser.value = true;
+        await currentMode.stop();
+      } else if (currentMode.canStart.value) {
+        console.log('[SttManager] Mic button: User requested START. Setting explicitly stopped = false');
+        _isExplicitlyStoppedByUser.value = false;
+        await currentMode.start();
+      } else {
       // console.warn('[SttManager] Mic button clicked, but current mode cannot start.'); // Reduced verbosity
       if (micPermissionStatus.value !== 'granted') {
         toast?.add({ type: 'error', title: 'Microphone Permission', message: 'Microphone access is required.' });
@@ -294,6 +335,12 @@ export function useSttManager(options: UseSttManagerOptions): SttManagerInstance
       } else {
         toast?.add({ type: 'info', title: 'Voice Input Not Ready', message: 'Cannot start voice input now.' });
       }
+    }
+    } finally {
+      // Reset the flag after a short delay to prevent race conditions
+      setTimeout(() => {
+        isProcessingMicClick = false;
+      }, 200);
     }
   };
 
@@ -419,11 +466,24 @@ export function useSttManager(options: UseSttManagerOptions): SttManagerInstance
     watch(isProcessingLLM, async (isLLMNowProcessing, wasLLMProcessing) => {
       // ... (Implementation unchanged from previous version 2.4.1) ...
       if (isLLMNowProcessing === wasLLMProcessing) return;
-      // console.log(`[SttManager] LLM processing state changed to: ${isLLMNowProcessing}`); // Reduced verbosity
+      console.log(`[SttManager] LLM processing state changed to: ${isLLMNowProcessing}`);
       if (llmDebounceTimer) clearTimeout(llmDebounceTimer);
       if (isLLMNowProcessing) {
-        const shouldStopStt = _currentModeInstance.value?.isActive.value && !(isVoiceActivationModeActive.value && (isListeningForWakeWord.value || _isAwaitingVadCommandResult.value));
-        if (shouldStopStt && _currentModeInstance.value) await _currentModeInstance.value.stop();
+        const shouldStopStt = _currentModeInstance.value?.isActive.value &&
+          !(isVoiceActivationModeActive.value && (isListeningForWakeWord.value || _isAwaitingVadCommandResult.value));
+
+        console.log(`[SttManager] LLM processing=true. Should stop STT check:
+          Mode: ${_currentModeInstance.value?.constructor.name}
+          isActive: ${_currentModeInstance.value?.isActive.value}
+          isVAD: ${isVoiceActivationModeActive.value}
+          isListeningWake: ${isListeningForWakeWord.value}
+          isAwaitingCmd: ${_isAwaitingVadCommandResult.value}
+          shouldStop: ${shouldStopStt}`);
+
+        if (shouldStopStt && _currentModeInstance.value) {
+          console.log('[SttManager] WARNING: Stopping STT due to LLM processing');
+          await _currentModeInstance.value.stop();
+        }
       } else {
         _clearVadCommandTimeout();
         llmDebounceTimer = window.setTimeout(async () => {

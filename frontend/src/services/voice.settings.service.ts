@@ -130,7 +130,7 @@ const initialDefaultSettings: Readonly<VoiceApplicationSettings> = Object.freeze
   sttOptions: {
     prompt: '',
   },
-  audioInputMode: 'voice-activation',
+  audioInputMode: 'push-to-talk',
   vadThreshold: 0.15,
   vadSilenceTimeoutMs: 3000,
   continuousModePauseTimeoutMs: 2500,
@@ -235,7 +235,8 @@ class VoiceSettingsManager {
     console.log('[VSM] Settings after useStorage mergeDefaults:', JSON.parse(JSON.stringify(this.settings)));
 
     await this.loadAllTtsVoices();
-    await this.loadAudioInputDevices();
+    // Don't force permission request on initial load - pass false to only enumerate devices
+    await this.loadAudioInputDevices(false);
     this._isInitialized.value = true;
     console.log('[VSM] Initialized successfully.');
   }
@@ -343,9 +344,11 @@ class VoiceSettingsManager {
       return;
     }
     try {
-      const devicesPreviouslyLoadedWithLabels = this.audioInputDevices.value.some(d => !!d.label);
-      if (forcePermissionRequest || !devicesPreviouslyLoadedWithLabels) {
+      // Only request mic permission if explicitly forced
+      // Don't auto-request on initial load just because we haven't loaded devices yet
+      if (forcePermissionRequest) {
         if (typeof navigator?.mediaDevices?.getUserMedia === 'function') {
+          console.log('[VSM] Forcing microphone permission request for device enumeration.');
           const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
           stream.getTracks().forEach(track => track.stop());
         } else {

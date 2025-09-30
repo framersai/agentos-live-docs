@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, inject, onMounted, onUnmounted, PropType, toRef } from 'vue';
+import { computed, inject, onMounted, onUnmounted, PropType, toRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useAgentStore } from '@/store/agent.store';
 import { useChatStore } from '@/store/chat.store';
@@ -15,7 +15,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits<{
-  (e: 'agent-event', event: { type: 'view_mounted', agentId: string, label?: string }): void;
+  (e: 'agent-event', event: { type: 'view_mounted' | 'setProcessingState', agentId: string, label?: string, payload?: any }): void;
 }>();
 
 const agentStore = useAgentStore();
@@ -34,6 +34,27 @@ const {
   handleNewUserInput,
   renderMarkdown,
 } = useVAgent(agentConfigAsRef, toast);
+
+// Watch isLoadingResponse and emit setProcessingState event to parent
+// This is critical for VAgent since it has handlesOwnInput: true
+let hasInitialized = false;
+watch(isLoadingResponse, (newValue, oldValue) => {
+  // Skip the initial undefined -> false transition on mount
+  if (!hasInitialized && oldValue === undefined && newValue === false) {
+    hasInitialized = true;
+    console.log(`[VAgentView] Skipping initial isLoadingResponse false on mount`);
+    return;
+  }
+  hasInitialized = true;
+
+  console.log(`[VAgentView] isLoadingResponse changed from ${oldValue} to ${newValue}. Emitting setProcessingState event.`);
+  emit('agent-event', {
+    type: 'setProcessingState',
+    agentId: props.agentId,
+    label: agentDisplayName.value,
+    payload: { isProcessing: newValue }
+  });
+});
 
 onMounted(async () => {
   await initialize();

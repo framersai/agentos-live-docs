@@ -82,6 +82,7 @@ export class VadMode extends BaseSttMode implements SttModePublicState {
 
 
   async start(): Promise<boolean> {
+    console.log(`[VadMode] start() called. Phase: ${this.phase.value}, canStart: ${this.canStart.value}, explicitlyStopped: ${this.context.isExplicitlyStoppedByUser.value}`);
     if (!this.canStart.value) {
       console.warn('[VadMode] Cannot start VAD mode - conditions not met.', {
         canStart: this.canStart.value, phase: this.phase.value, isBlocked: this.isBlocked()
@@ -123,7 +124,8 @@ export class VadMode extends BaseSttMode implements SttModePublicState {
       if (handlerStarted) {
         this.phase.value = 'listening-wake';
         this.context.transcriptionDisplay.showInterimTranscript(`Listening for "${this.wakeWords[0]}"...`);
-        console.log('[VadMode] Started. Phase: listening-wake.');
+        console.log('[VadMode] Started successfully. Phase: listening-wake.');
+        console.log(`[VadMode] After start - isActive: ${this.isActive.value}, phase: ${this.phase.value}, explicitlyStopped: ${this.context.isExplicitlyStoppedByUser.value}`);
         return true;
       } else {
         await this.resetToIdleState('STT handler failed to start for wake word.', true);
@@ -136,18 +138,29 @@ export class VadMode extends BaseSttMode implements SttModePublicState {
   }
 
   async stop(): Promise<void> {
-    if (this.phase.value === 'idle' && !this.context.isExplicitlyStoppedByUser.value) return; // Already idle and not due to explicit stop
-    
+    if (this.phase.value === 'idle' && !this.context.isExplicitlyStoppedByUser.value) {
+      console.log('[VadMode] Already idle and not explicitly stopped - ignoring stop request');
+      return;
+    }
+
     console.log(`[VadMode] Stop requested. Current phase: ${this.phase.value}. User initiated stop: ${this.context.isExplicitlyStoppedByUser.value}`);
-    this.context.setExplicitlyStoppedByUser(true); 
+    console.trace('[VadMode] Stop call stack trace'); // Add stack trace to see what's calling stop
+
+    // Don't stop if we're in the middle of transitioning between wake and command phases
+    if (this.phase.value === 'transitioning') {
+      console.log('[VadMode] Ignoring stop request during transition phase');
+      return;
+    }
+
+    this.context.setExplicitlyStoppedByUser(true);
     this.clearTimers();
     this.context.clearVadCommandTimeout();
-    
+
     if (this.phase.value === 'capturing-command' && this.commandTranscriptBuffer.value.trim()) {
       this.emitTranscription(this.commandTranscriptBuffer.value);
       this.context.playSound(this.context.audioFeedback.beepOutSound.value);
     }
-    
+
     await this.resetToIdleState(undefined, true);
   }
 
