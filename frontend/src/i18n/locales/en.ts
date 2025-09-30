@@ -109,7 +109,12 @@ export default {
     voiceInputOff: 'Voice Input Off',
     clickMicToStartListening: 'Click mic to start listening.',
     pttClickMicToStartStop: 'PTT: Click mic to start/stop.',
-    continuousPressToStartStop: 'Continuous: Press mic to start/stop.'
+    continuousPressToStartStop: 'Continuous: Press mic to start/stop.',
+    audioInputModes: 'Audio Input Modes',
+    pushToTalkDescription: 'Hold the microphone button to record your message. Recording stops when you release the button. Perfect for quick, intentional voice inputs without background noise.',
+    continuousDescription: 'Click once to start recording and click again to stop. The microphone stays active between clicks, allowing for longer recordings without holding a button.',
+    voiceActivationDescription: 'Automatically detects when you start and stop speaking. No button interaction needed - just speak naturally and the system will capture your voice when it detects sound.',
+    selectAudioModeDescription: 'Select an audio input mode for voice recording.'
   },
   chat: {
     thinking: 'Thinking...',
