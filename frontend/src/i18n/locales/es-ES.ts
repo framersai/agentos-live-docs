@@ -95,7 +95,19 @@ export default {
     audioOutput: 'Salida de Audio',
     defaultDevice: 'Predeterminado del Sistema',
     audioInputMode: 'Modo de Entrada de Audio',
-    speechRecognition: 'Reconocimiento de Voz (STT)'
+    speechRecognition: 'Reconocimiento de Voz (STT)',
+    pushToTalk: 'Pulsar para Hablar',
+    holdToTalk: 'Mantener para Hablar',
+    continuous: 'Continuo',
+    voiceActivate: 'Activación por Voz',
+    audioInputModes: 'Modos de Entrada de Audio',
+    pushToTalkShort: 'Mantén el mic para grabar, suelta para revisar',
+    continuousShort: 'El mic permanece activo y transcribe continuamente',
+    voiceActivationShort: 'Di "V" para activar, luego habla',
+    pushToTalkDescription: 'Mantén presionado el botón del micrófono para grabar tu mensaje. La grabación se detiene cuando sueltas el botón. Perfecto para entradas de voz rápidas e intencionales sin ruido de fondo.',
+    continuousDescription: 'Haz clic una vez para comenzar a grabar y haz clic nuevamente para detener. El micrófono permanece activo entre clics, permitiendo grabaciones más largas sin mantener presionado un botón.',
+    voiceActivationDescription: 'Detecta automáticamente cuando comienzas y dejas de hablar. No se necesita interacción con botones: simplemente habla naturalmente y el sistema capturará tu voz cuando detecte sonido.',
+    selectAudioModeDescription: 'Selecciona un modo de entrada de audio para la grabación de voz.'
   },
   chat: {
     thinking: 'Pensando...',

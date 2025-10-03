@@ -47,10 +47,13 @@ export class ContinuousMode extends BaseSttMode implements SttModePublicState {
     super(context);
 
     this.isActive = computed(() => this.isListeningInternally.value || this.countdownValueMs.value > 0 || this.isStartingProcess.value);
-    this.canStart = computed(() =>
-        !this.isActive.value && // Not already active or starting
-        !this.isBlocked() // Checks base conditions like LLM busy, mic permission, explicit stop
-    );
+    this.canStart = computed(() => {
+        const blocked = this.isBlocked();
+        const active = this.isActive.value;
+        const canStartResult = !active && !blocked;
+        console.log('[ContinuousMode] canStart computed:', canStartResult, 'active:', active, 'blocked:', blocked);
+        return canStartResult;
+    });
 
     this.statusText = computed(() => {
       if (this.context.isExplicitlyStoppedByUser.value && !this.isActive.value) return 'Continuous: Off';
@@ -143,12 +146,21 @@ export class ContinuousMode extends BaseSttMode implements SttModePublicState {
   }
 
   async stop(): Promise<void> {
+    console.log('[ContinuousMode] stop() called. States:', {
+      isListeningInternally: this.isListeningInternally.value,
+      autoSendTimerId: !!this.autoSendTimerId,
+      countdownTimerId: !!this.countdownTimerId,
+      isStartingProcess: this.isStartingProcess.value,
+      isExplicitlyStoppedByUser: this.context.isExplicitlyStoppedByUser.value
+    });
+
     // Only proceed if there's something to stop (active listening, countdown, or starting process)
     if (!this.isListeningInternally.value && !this.autoSendTimerId && !this.countdownTimerId && !this.isStartingProcess.value) {
       // If explicitly stopped by user, ensure shared state is accurate even if already "idle" locally
       if(this.context.isExplicitlyStoppedByUser.value) {
          this.context.sharedState.isProcessingAudio.value = false;
       }
+      console.log('[ContinuousMode] Nothing to stop, returning early');
       return;
     }
     console.log('[ContinuousMode] Stopping continuous listening...');
@@ -204,6 +216,27 @@ export class ContinuousMode extends BaseSttMode implements SttModePublicState {
     // If still supposed to be listening (e.g., user hasn't stopped), restart auto-send timer for next utterance
     if (this.isListeningInternally.value && this.autoSendEnabled) {
       this.resetAutoSendTimer();
+    }
+  }
+
+  public handleUserDismissedTranscript(): void {
+    console.log('[ContinuousMode] User dismissed transcript confirmation; resetting state.');
+    this.clearAllTimers();
+    this.currentTranscriptSegment.value = '';
+    this.context.sharedState.pendingTranscript.value = '';
+    this.context.transcriptionDisplay.clearTranscription();
+
+    if (this.isListeningInternally.value) {
+      if (this.autoSendEnabled) {
+        this.resetAutoSendTimer();
+      }
+      return;
+    }
+
+    if (!this.context.isExplicitlyStoppedByUser.value && this.canStart.value) {
+      void this.start().catch((error) => {
+        console.warn('[ContinuousMode] Failed to restart after dismissal:', error);
+      });
     }
   }
 

@@ -597,6 +597,28 @@ function _handleMainResult(transcript: string, isFinal: boolean): void {
       console.log(`[BSH] Continuous mode transcript (final): "${transcript}"`);
       emit('transcription', { text: transcript.trim(), isFinal: true, timestamp: Date.now() });
       pendingTranscript.value = '';
+
+      // Restart the recognizer to clear accumulated results in continuous mode
+      // This prevents old transcripts from being accumulated with new ones
+      if (currentListeningMode.value === 'main' && _isRecognizerActiveInternal.value) {
+        console.log('[BSH] Restarting recognizer to clear accumulated results in continuous mode');
+        try {
+          recognizer.value?.stop();
+          // Use a small delay before restarting to ensure clean state
+          setTimeout(() => {
+            if (currentListeningMode.value === 'main' && props.audioInputMode === 'continuous') {
+              try {
+                recognizer.value?.start();
+                console.log('[BSH] Recognizer restarted for continuous mode');
+              } catch (e: any) {
+                console.error('[BSH] Failed to restart recognizer:', e.message);
+              }
+            }
+          }, 100);
+        } catch (e: any) {
+          console.error('[BSH] Failed to stop recognizer for restart:', e.message);
+        }
+      }
     }
   } else if (props.audioInputMode === 'push-to-talk') {
     if (transcript) {

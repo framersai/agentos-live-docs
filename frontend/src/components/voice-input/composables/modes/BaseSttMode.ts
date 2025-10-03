@@ -218,4 +218,8 @@ export abstract class BaseSttMode implements SttModePublicState {
       this.context.transcriptionDisplay.showSent(trimmedText);
     }
   }
+
+  public handleUserDismissedTranscript(): void {
+    // Optional hook for modes to respond when the user cancels transcript confirmation.
+  }
 }
