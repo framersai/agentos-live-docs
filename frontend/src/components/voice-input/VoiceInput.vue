@@ -463,7 +463,7 @@ const hasMicError = computed(() =>
 const micButtonDisabled = computed(() =>
   hasMicError.value ||
   (props.isProcessingLLM && !isListeningForWakeWord.value && !sttManager.isAwaitingVadCommandResult.value) ||
-  (sharedState.isInputEffectivelyDisabled.value && currentAudioMode.value !== 'push-to-talk')
+  (sharedState.isInputEffectivelyDisabled.value && currentAudioMode.value !== 'push-to-talk' && currentAudioMode.value !== 'continuous')
 );
 
 const micButtonAriaLabel = computed(() => {
@@ -525,9 +525,9 @@ const sendGradientStart = computed(() => 'var(--color-accent-primary)');
 const sendGradientEnd = computed(() => 'var(--color-accent-secondary)');
 
 const audioModeOptions = computed<UIAudioModeOption[]>(() => [
-  { label: t('voice.pushToTalk'), value: 'push-to-talk', icon: '🎙️', description: 'Hold mic button to record. Release to review & send. Best for privacy & control.' },
-  { label: t('voice.continuous'), value: 'continuous', icon: '🌊', description: 'Mic stays on & transcribes continuously. Good for hands-free dictation.' },
-  { label: t('voice.voiceActivate'), value: 'voice-activation', icon: '🗣️', description: 'Say "V" or "Hey V" to activate, then speak. Hands-free with wake word.' },
+  { label: t('voice.pushToTalk'), value: 'push-to-talk', icon: '🎙️', description: t('voice.pushToTalkShort') },
+  { label: t('voice.continuous'), value: 'continuous', icon: '🌊', description: t('voice.continuousShort') },
+  { label: t('voice.voiceActivate'), value: 'voice-activation', icon: '🗣️', description: t('voice.voiceActivationShort') },
 ]);
 
 const sttEngineOptions = computed<SttEngineOption[]>(() => [
@@ -628,27 +628,27 @@ async function handleMicButtonClick() {
 // Push-to-Talk specific handlers (now disabled - PTT uses click for toggle)
 async function handleMicButtonMouseDown(event: MouseEvent) {
   // Disabled - PTT now uses click event for toggle behavior
-  return;
+  // Don't prevent event propagation
 }
 
 async function handleMicButtonMouseUp(event: MouseEvent) {
   // Disabled - PTT now uses click event for toggle behavior
-  return;
+  // Don't prevent event propagation
 }
 
 async function handleMicButtonMouseLeave(event: MouseEvent) {
   // Disabled - no need to stop on mouse leave in toggle mode
-  return;
+  // Don't prevent event propagation
 }
 
 async function handleMicButtonTouchStart(event: TouchEvent) {
   // Disabled - PTT now uses click event for toggle behavior
-  return;
+  // Don't prevent event propagation
 }
 
 async function handleMicButtonTouchEnd(event: TouchEvent) {
   // Disabled - PTT now uses click event for toggle behavior
-  return;
+  // Don't prevent event propagation
 }
 
 function handleTextareaInput() {

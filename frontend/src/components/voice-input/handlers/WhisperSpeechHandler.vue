@@ -44,11 +44,17 @@ import type {
 // Constants
 const MIN_AUDIO_BLOB_SIZE_BYTES = 200;
 const PREFERRED_MIME_TYPE_BASE = 'audio/webm';
-const DEFAULT_CONTINUOUS_PAUSE_TIMEOUT_MS = 3000;
-const DEFAULT_CONTINUOUS_SILENCE_SEND_DELAY_MS = 1000;
+const DEFAULT_CONTINUOUS_PAUSE_TIMEOUT_MS = 6500;
+const DEFAULT_CONTINUOUS_SILENCE_SEND_DELAY_MS = 2500;
 const DEFAULT_MIN_WHISPER_SEGMENT_S = 0.75;
 const DEFAULT_MAX_SEGMENT_DURATION_S = 28;
 const PTT_MAX_DURATION_S = 120;
+const MIN_CONTINUOUS_PAUSE_TIMEOUT_MS = 4500;
+const MIN_CONTINUOUS_SILENCE_SEND_DELAY_MS = 1500;
+const CONTINUOUS_SILENCE_RMS_THRESHOLD = 0.06;
+const CONTINUOUS_SILENCE_ENERGY_THRESHOLD = 14;
+const CONTINUOUS_SILENCE_CHECK_INTERVAL_MS = 250;
+const CONTINUOUS_SILENCE_STABILITY_MS = 1200;
 
 interface WhisperSpeechHandlerProps {
   settings: VoiceApplicationSettings;
@@ -152,51 +158,104 @@ const _startContinuousSilenceMonitor = (): void => {
   }
   _stopContinuousSilenceMonitor();
   _speechOccurredInSegment.value = false;
-  let silenceStartTimeMs: number | null = null;
-  // vadSensitivityDb was removed as unused. VAD logic here is simplified.
-  const continuousPauseTimeout = props.settings.continuousModePauseTimeoutMs ?? DEFAULT_CONTINUOUS_PAUSE_TIMEOUT_MS;
-  const silenceSendDelay = props.settings.continuousModeSilenceSendDelayMs ?? DEFAULT_CONTINUOUS_SILENCE_SEND_DELAY_MS;
 
-  const dataArray = new Uint8Array(props.analyser.frequencyBinCount);
+  const analyser = props.analyser;
+  const continuousPauseTimeoutSetting = props.settings.continuousModePauseTimeoutMs ?? DEFAULT_CONTINUOUS_PAUSE_TIMEOUT_MS;
+  const silenceSendDelaySetting = props.settings.continuousModeSilenceSendDelayMs ?? DEFAULT_CONTINUOUS_SILENCE_SEND_DELAY_MS;
+
+  const continuousPauseTimeout = Math.max(continuousPauseTimeoutSetting, MIN_CONTINUOUS_PAUSE_TIMEOUT_MS);
+  const silenceSendDelay = Math.max(silenceSendDelaySetting, MIN_CONTINUOUS_SILENCE_SEND_DELAY_MS);
+
+  const frequencyData = new Uint8Array(analyser.frequencyBinCount);
+  const timeDomainDataLength = Math.max(analyser.fftSize, analyser.frequencyBinCount * 2, 32);
+  const timeDomainData = new Uint8Array(timeDomainDataLength);
+
+  let lastSpeechDetectedAt = Date.now();
+  let countdownStartedAt: number | null = null;
+  let silenceBelowThresholdSince: number | null = null;
 
   continuousSilenceMonitorId = setInterval(() => {
     if (!props.analyser || !_isMediaRecorderActive.value || !isEffectiveContinuous.value) {
       _stopContinuousSilenceMonitor();
       return;
     }
-    props.analyser.getByteFrequencyData(dataArray);
-    const energy = dataArray.reduce((acc, value) => acc + value, 0) / dataArray.length;
-    const threshold = 5; // This threshold requires calibration
 
-    if (energy > threshold) {
+    analyser.getByteTimeDomainData(timeDomainData);
+    let sumSquares = 0;
+    for (let i = 0; i < timeDomainData.length; i += 1) {
+      const centered = (timeDomainData[i] - 128) / 128;
+      sumSquares += centered * centered;
+    }
+    const rms = Math.sqrt(sumSquares / timeDomainData.length);
+
+    analyser.getByteFrequencyData(frequencyData);
+    let energyTotal = 0;
+    for (let i = 0; i < frequencyData.length; i += 1) {
+      energyTotal += frequencyData[i];
+    }
+    const avgEnergy = energyTotal / (frequencyData.length || 1);
+
+    const speechDetected = rms >= CONTINUOUS_SILENCE_RMS_THRESHOLD || avgEnergy >= CONTINUOUS_SILENCE_ENERGY_THRESHOLD;
+    const now = Date.now();
+
+    if (speechDetected) {
       _speechOccurredInSegment.value = true;
-      silenceStartTimeMs = null;
+      lastSpeechDetectedAt = now;
+      silenceBelowThresholdSince = null;
       if (_isSilencePauseDetected.value) {
         if (silencePauseCountdownTimerId) clearTimeout(silencePauseCountdownTimerId);
         silencePauseCountdownTimerId = null;
         _isSilencePauseDetected.value = false;
         _silencePauseCountdownMs.value = 0;
+        countdownStartedAt = null;
         console.log('[WSH] Speech resumed during silence countdown. Countdown cancelled.');
       }
-    } else if (_speechOccurredInSegment.value && !_isSilencePauseDetected.value) {
-      if (silenceStartTimeMs === null) silenceStartTimeMs = Date.now();
-      if (Date.now() - silenceStartTimeMs >= continuousPauseTimeout) {
-        _isSilencePauseDetected.value = true;
-        _silencePauseCountdownMs.value = silenceSendDelay;
-        console.log(`[WSH] Silence detected. Sending segment in ${silenceSendDelay / 1000}s.`);
-        if (silencePauseCountdownTimerId) clearTimeout(silencePauseCountdownTimerId);
-        silencePauseCountdownTimerId = setTimeout(() => {
-          if (_isSilencePauseDetected.value) {
-            console.log('[WSH] Silence countdown finished. Finalizing segment.');
-            _stopMediaRecorderAndFinalize();
-          }
-          _isSilencePauseDetected.value = false;
-          _silencePauseCountdownMs.value = 0;
-          silencePauseCountdownTimerId = null;
-        }, silenceSendDelay);
-      }
+      return;
     }
-  }, 250);
+
+    if (!_speechOccurredInSegment.value) {
+      return;
+    }
+
+    if (silenceBelowThresholdSince === null) {
+      silenceBelowThresholdSince = now;
+    }
+
+    const silenceStableForMs = now - silenceBelowThresholdSince;
+    if (silenceStableForMs < CONTINUOUS_SILENCE_STABILITY_MS) {
+      return;
+    }
+
+    const silentForMs = now - lastSpeechDetectedAt;
+
+    if (_isSilencePauseDetected.value) {
+      if (countdownStartedAt !== null) {
+        const remaining = Math.max(0, silenceSendDelay - (now - countdownStartedAt));
+        _silencePauseCountdownMs.value = remaining;
+      }
+      return;
+    }
+
+    if (silentForMs >= continuousPauseTimeout) {
+      _isSilencePauseDetected.value = true;
+      countdownStartedAt = now;
+      _silencePauseCountdownMs.value = silenceSendDelay;
+      silenceBelowThresholdSince = now;
+      console.log(`[WSH] Silence detected. Sending segment in ${silenceSendDelay / 1000}s.`);
+      if (silencePauseCountdownTimerId) clearTimeout(silencePauseCountdownTimerId);
+      silencePauseCountdownTimerId = setTimeout(() => {
+        if (_isSilencePauseDetected.value) {
+          console.log('[WSH] Silence countdown finished. Finalizing segment.');
+          _stopMediaRecorderAndFinalize();
+        }
+        _isSilencePauseDetected.value = false;
+        _silencePauseCountdownMs.value = 0;
+        countdownStartedAt = null;
+        silencePauseCountdownTimerId = null;
+        silenceBelowThresholdSince = null;
+      }, silenceSendDelay);
+    }
+  }, CONTINUOUS_SILENCE_CHECK_INTERVAL_MS);
 };
 
 const _stopMediaRecorderAndFinalize = (): void => {

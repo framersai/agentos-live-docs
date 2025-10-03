@@ -83,6 +83,7 @@ export interface VoiceApplicationSettings {
   vadSilenceTimeoutMs: number;
   continuousModePauseTimeoutMs: number;
   continuousModeAutoSend: boolean;
+  continuousModeListenDuringResponse: boolean; // New setting to control if continuous mode keeps listening while LLM responds
   vadCommandRecognizedPauseMs: number;
   vadSensitivityDb?: number;
   continuousModeSilenceSendDelayMs?: number;
@@ -110,6 +111,13 @@ export interface VoiceApplicationSettings {
   showStartupHint?: boolean;
 }
 
+const MIN_CONTINUOUS_MODE_PAUSE_TIMEOUT_MS = 4500;
+const MAX_CONTINUOUS_MODE_PAUSE_TIMEOUT_MS = 20000;
+const MIN_CONTINUOUS_MODE_SILENCE_SEND_DELAY_MS = 1500;
+const MAX_CONTINUOUS_MODE_SILENCE_SEND_DELAY_MS = 7000;
+const DEFAULT_CONTINUOUS_MODE_PAUSE_TIMEOUT_MS = 6500;
+const DEFAULT_CONTINUOUS_MODE_SILENCE_SEND_DELAY_MS = 2500;
+
 const initialDefaultSettings: Readonly<VoiceApplicationSettings> = Object.freeze({ // Ensured Object.freeze for true readonly
   currentAppMode: 'v_agent' as AgentId,
   preferredCodingLanguage: 'python',
@@ -133,12 +141,13 @@ const initialDefaultSettings: Readonly<VoiceApplicationSettings> = Object.freeze
   audioInputMode: 'push-to-talk',
   vadThreshold: 0.15,
   vadSilenceTimeoutMs: 3000,
-  continuousModePauseTimeoutMs: 2500,
+  continuousModePauseTimeoutMs: DEFAULT_CONTINUOUS_MODE_PAUSE_TIMEOUT_MS,
   continuousModeAutoSend: true,
+  continuousModeListenDuringResponse: false, // Default to false - stop listening while assistant responds
   vadCommandRecognizedPauseMs: 1500,
   vadWakeWordsBrowserSTT: Object.freeze(['v', 'vee', 'victoria', 'hey v']),
   vadSensitivityDb: -50,
-  continuousModeSilenceSendDelayMs: 1000,
+  continuousModeSilenceSendDelayMs: DEFAULT_CONTINUOUS_MODE_SILENCE_SEND_DELAY_MS,
   minWhisperSegmentDurationS: 0.5,
   maxSegmentDurationS: 28,
   ttsProvider: 'browser_tts',
@@ -224,6 +233,26 @@ class VoiceSettingsManager {
             merged[key] = this.defaultSettings[key]!; // Use non-null assertion as we know it's in defaults
         }
     }
+    const pauseTimeout = Number(merged.continuousModePauseTimeoutMs);
+    if (!Number.isFinite(pauseTimeout)) {
+      merged.continuousModePauseTimeoutMs = DEFAULT_CONTINUOUS_MODE_PAUSE_TIMEOUT_MS;
+    } else {
+      merged.continuousModePauseTimeoutMs = Math.min(
+        MAX_CONTINUOUS_MODE_PAUSE_TIMEOUT_MS,
+        Math.max(MIN_CONTINUOUS_MODE_PAUSE_TIMEOUT_MS, pauseTimeout),
+      );
+    }
+
+    const silenceDelayRaw = Number(merged.continuousModeSilenceSendDelayMs);
+    if (!Number.isFinite(silenceDelayRaw)) {
+      merged.continuousModeSilenceSendDelayMs = DEFAULT_CONTINUOUS_MODE_SILENCE_SEND_DELAY_MS;
+    } else {
+      merged.continuousModeSilenceSendDelayMs = Math.min(
+        MAX_CONTINUOUS_MODE_SILENCE_SEND_DELAY_MS,
+        Math.max(MIN_CONTINUOUS_MODE_SILENCE_SEND_DELAY_MS, silenceDelayRaw),
+      );
+    }
+
     return merged;
   }
 
