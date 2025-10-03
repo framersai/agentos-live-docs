@@ -11,12 +11,12 @@
     :data-theme="uiStore.currentTheme?.id || 'sakura-sunset'"
   >
     <div class="vi-background-layers">
-      <div class="vi-orb vi-orb-1"></div>
-      <div class="vi-orb vi-orb-2"></div>
-      <div class="vi-orb vi-orb-3"></div>
+      <div v-if="currentAudioMode !== 'continuous'" class="vi-orb vi-orb-1"></div>
+      <div v-if="currentAudioMode !== 'continuous'" class="vi-orb vi-orb-2"></div>
+      <div v-if="currentAudioMode !== 'continuous'" class="vi-orb vi-orb-3"></div>
       <div class="vi-gradient-bg" />
       
-      <svg class="vi-geometric-patterns" v-if="geometricPatterns.length > 0">
+      <svg class="vi-geometric-patterns" v-if="geometricPatterns.length > 0 && currentAudioMode !== 'continuous'">
         <defs>
           <filter id="geometricGlow">
             <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
@@ -26,12 +26,12 @@
             </feMerge>
           </filter>
         </defs>
-        <g v-for="pattern in geometricPatterns" 
+        <g v-for="pattern in geometricPatterns"
            :key="pattern.id"
            :opacity="pattern.opacity"
            filter="url(#geometricGlow)">
-          <path :d="pattern.path" 
-                fill="none" 
+          <path :d="pattern.path"
+                fill="none"
                 :stroke="currentAudioMode === 'continuous' ? 'var(--color-voice-user)' : 'var(--color-accent-interactive)'"
                 stroke-width="1" />
         </g>
