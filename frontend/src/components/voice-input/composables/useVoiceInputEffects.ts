@@ -50,12 +50,17 @@ export function useVoiceInputEffects(options: UseVoiceInputEffectsOptions) {
     geometricPatterns.value = patterns;
   };
   
-  // SVG path for geometric circles pattern
+  // SVG path for geometric circles pattern (disabled in continuous mode)
   const geometricPatternSvg = computed(() => {
+    // Don't generate patterns for continuous mode
+    if (audioMode.value === 'continuous') {
+      return [];
+    }
+
     const paths = geometricPatterns.value.map(pattern => {
       const numCircles = 3;
       let path = '';
-      
+
       for (let i = 0; i < numCircles; i++) {
         const radiusMultiplier = 1 - (i * 0.3);
         const r = pattern.radius * radiusMultiplier;
@@ -63,14 +68,14 @@ export function useVoiceInputEffects(options: UseVoiceInputEffectsOptions) {
         path += `A ${r},${r} 0 1,0 ${pattern.x - r},${pattern.y} `;
         path += `A ${r},${r} 0 1,0 ${pattern.x + r},${pattern.y} `;
       }
-      
+
       return {
         path,
         opacity: pattern.opacity,
         id: pattern.id,
       };
     });
-    
+
     return paths;
   });
   
@@ -100,19 +105,19 @@ export function useVoiceInputEffects(options: UseVoiceInputEffectsOptions) {
     return 'none';
   });
   
-  // Animate patterns
+  // Animate patterns (disabled in continuous mode)
   const animatePatterns = () => {
-    if (uiStore.isReducedMotionPreferred) return;
-    
+    if (uiStore.isReducedMotionPreferred || audioMode.value === 'continuous') return;
+
     const time = Date.now() * 0.001; // Convert to seconds
-    
+
     geometricPatterns.value = geometricPatterns.value.map(pattern => ({
       ...pattern,
       opacity: pattern.opacity * (0.8 + Math.sin(time * pattern.pulseSpeed + pattern.pulsePhase) * 0.2),
       x: pattern.x + Math.sin(time * pattern.rotationSpeed) * 0.5,
       y: pattern.y + Math.cos(time * pattern.rotationSpeed) * 0.5,
     }));
-    
+
     // Animate ignored text fade out
     ignoredTextElements.value = ignoredTextElements.value
       .map(element => ({
@@ -121,7 +126,7 @@ export function useVoiceInputEffects(options: UseVoiceInputEffectsOptions) {
         y: element.y - 0.5,
       }))
       .filter(element => element.opacity > 0);
-    
+
     patternAnimationFrame.value = requestAnimationFrame(animatePatterns);
   };
   
@@ -189,13 +194,32 @@ export function useVoiceInputEffects(options: UseVoiceInputEffectsOptions) {
     };
   });
   
-  onMounted(() => {
-    initializePatterns();
-    if (!uiStore.isReducedMotionPreferred) {
-      animatePatterns();
+  // Watch for mode changes to stop/start animations
+  watch(audioMode, (newMode, oldMode) => {
+    if (newMode === 'continuous' && patternAnimationFrame.value) {
+      // Stop animations when switching to continuous mode
+      cancelAnimationFrame(patternAnimationFrame.value);
+      patternAnimationFrame.value = null;
+      geometricPatterns.value = []; // Clear patterns
+    } else if (oldMode === 'continuous' && newMode !== 'continuous') {
+      // Restart animations when leaving continuous mode
+      initializePatterns();
+      if (!uiStore.isReducedMotionPreferred) {
+        animatePatterns();
+      }
     }
   });
-  
+
+  onMounted(() => {
+    // Don't initialize patterns for continuous mode
+    if (audioMode.value !== 'continuous') {
+      initializePatterns();
+      if (!uiStore.isReducedMotionPreferred) {
+        animatePatterns();
+      }
+    }
+  });
+
   onUnmounted(() => {
     if (patternAnimationFrame.value) {
       cancelAnimationFrame(patternAnimationFrame.value);

@@ -74,6 +74,23 @@ $z-ptt-preview-modal: 30;
     animation: panel-llm-think 2.5s ease-in-out infinite;
     opacity: 0.95;
   }
+
+  // Clean style for continuous mode - no animations or effects
+  &.vi-mode-continuous {
+    background: hsla(
+      var(--color-bg-secondary-h, var.$default-color-bg-secondary-h),
+      var(--color-bg-secondary-s, var.$default-color-bg-secondary-s),
+      var(--color-bg-secondary-l, var.$default-color-bg-secondary-l),
+      0.95
+    );
+
+    &.state-stt-active {
+      animation: none;
+      box-shadow:
+        0 2px 8px hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.15),
+        0 4px 16px hsla(var(--color-voice-user-h), var(--color-voice-user-s), var(--color-voice-user-l), 0.1);
+    }
+  }
 }
 
 // -----------------------------------------------------------------------------

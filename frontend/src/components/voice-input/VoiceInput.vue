@@ -14,9 +14,10 @@
       <div v-if="currentAudioMode !== 'continuous'" class="vi-orb vi-orb-1"></div>
       <div v-if="currentAudioMode !== 'continuous'" class="vi-orb vi-orb-2"></div>
       <div v-if="currentAudioMode !== 'continuous'" class="vi-orb vi-orb-3"></div>
-      <div class="vi-gradient-bg" />
+      <div v-if="currentAudioMode !== 'continuous'" class="vi-gradient-bg" />
       
-      <svg class="vi-geometric-patterns" v-if="geometricPatterns.length > 0 && currentAudioMode !== 'continuous'">
+      <!-- Geometric patterns - hidden in continuous mode -->
+      <svg class="vi-geometric-patterns" v-if="currentAudioMode !== 'continuous' && geometricPatterns.length > 0">
         <defs>
           <filter id="geometricGlow">
             <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
@@ -32,14 +33,14 @@
            filter="url(#geometricGlow)">
           <path :d="pattern.path"
                 fill="none"
-                :stroke="currentAudioMode === 'continuous' ? 'var(--color-voice-user)' : 'var(--color-accent-interactive)'"
+                stroke="var(--color-accent-interactive)"
                 stroke-width="1" />
         </g>
       </svg>
     </div>
 
     <canvas
-      v-show="isVisualizationActive"
+      v-show="isVisualizationActive && currentAudioMode !== 'continuous'"
       ref="visualizationCanvasRef"
       class="vi-visualization-canvas"
       :class="{
@@ -453,7 +454,11 @@ const isActive = computed(() => {
   return active;
 });
 const isListeningForWakeWord = computed(() => sttManager.isListeningForWakeWord.value);
-const isVisualizationActive = computed(() => isActive.value || isListeningForWakeWord.value);
+const isVisualizationActive = computed(() => {
+  // Disable visualization completely in continuous mode
+  if (currentAudioMode.value === 'continuous') return false;
+  return isActive.value || isListeningForWakeWord.value;
+});
 
 const hasMicError = computed(() =>
   micPermissionStatus.value === 'denied' ||
@@ -1038,6 +1043,9 @@ function updateCanvasSize() {
 }
 
 function setupVisualization() {
+  // Skip visualization setup entirely for continuous mode
+  if (currentAudioMode.value === 'continuous') return;
+
   if (!visualizationCanvasRef.value || !microphoneManager.activeStream.value) return;
   if (voiceViz && voiceViz.isVisualizing.value) voiceViz.stopVisualization();
 
@@ -1085,7 +1093,15 @@ function setupVisualization() {
   voiceViz.startVisualization();
 }
 
-watch([isVisualizationActive, () => microphoneManager.activeStream.value, currentAudioMode], ([vizActive, stream]) => {
+watch([isVisualizationActive, () => microphoneManager.activeStream.value, currentAudioMode], ([vizActive, stream, mode]) => {
+  // Skip visualization entirely for continuous mode
+  if (mode === 'continuous') {
+    if (voiceViz?.isVisualizing.value) {
+      voiceViz.stopVisualization();
+    }
+    return;
+  }
+
   if (vizActive && stream && visualizationCanvasRef.value) {
     setupVisualization();
   } else if (voiceViz?.isVisualizing.value) {
