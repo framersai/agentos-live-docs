@@ -134,6 +134,81 @@
     </SettingsSection>
 
     <SettingsSection title="Memory & Context" :icon="CpuChipIcon" class="settings-grid-span-2" id="memory-settings">
+      <!-- Language Response Settings -->
+      <SettingsItem
+        label="Response Language Mode"
+        description="How the assistant determines which language to respond in"
+        label-for="responseLanguageMode"
+      >
+        <select id="responseLanguageMode" v-model="vcaSettings.responseLanguageMode" class="select-input-ephemeral" aria-label="Response Language Mode">
+          <option value="auto">Auto-detect from user input</option>
+          <option value="fixed">Always use fixed language</option>
+          <option value="follow-stt">Follow STT language setting</option>
+        </select>
+      </SettingsItem>
+
+      <SettingsItem
+        v-if="vcaSettings.responseLanguageMode === 'fixed'"
+        label="Fixed Response Language"
+        description="Language to always respond in"
+        label-for="fixedResponseLanguage"
+      >
+        <select id="fixedResponseLanguage" v-model="vcaSettings.fixedResponseLanguage" class="select-input-ephemeral" aria-label="Fixed Response Language">
+          <option value="en-US">English</option>
+          <option value="es">Spanish</option>
+          <option value="fr">French</option>
+          <option value="de">German</option>
+          <option value="it">Italian</option>
+          <option value="pt">Portuguese</option>
+          <option value="zh">Chinese</option>
+          <option value="ja">Japanese</option>
+          <option value="ko">Korean</option>
+          <option value="ru">Russian</option>
+          <option value="ar">Arabic</option>
+        </select>
+      </SettingsItem>
+
+      <!-- Conversation Context Settings -->
+      <SettingsItem
+        label="Prevent Repetitive Responses"
+        description="Actively prevent the assistant from repeating previous answers in the conversation"
+        label-for="preventRepetition"
+      >
+        <label class="toggle-switch-ephemeral" :aria-label="vcaSettings.preventRepetition ? 'Repetition prevention is ON' : 'Repetition prevention is OFF'">
+         <input type="checkbox" id="preventRepetition" v-model="vcaSettings.preventRepetition" />
+         <span class="track"><span class="knob"></span></span>
+        </label>
+      </SettingsItem>
+
+      <SettingsItem
+        label="Conversation Context Mode"
+        description="How much conversation history to include in context"
+        label-for="conversationContextMode"
+      >
+        <select id="conversationContextMode" v-model="vcaSettings.conversationContextMode" class="select-input-ephemeral" aria-label="Conversation Context Mode">
+          <option value="minimal">Minimal - Last 3-4 messages</option>
+          <option value="smart">Smart - Balanced context</option>
+          <option value="full">Full - Maximum context</option>
+        </select>
+      </SettingsItem>
+
+      <SettingsItem
+        label="Maximum History Messages"
+        :description="`Keep last ${vcaSettings.maxHistoryMessages || 12} messages in conversation history`"
+        label-for="maxHistoryMessages"
+      >
+        <input
+          type="range"
+          id="maxHistoryMessages"
+          v-model.number="vcaSettings.maxHistoryMessages"
+          min="6"
+          max="50"
+          step="2"
+          class="range-slider-ephemeral"
+        />
+      </SettingsItem>
+
+      <!-- Original Advanced History Toggle -->
       <SettingsItem
         label="Advanced Chat History & Context Management"
         description="Enable sophisticated context management (e.g., summarization, relevancy scoring) for richer LLM interactions. Disable for simpler, recency-based history."

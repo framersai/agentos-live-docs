@@ -63,6 +63,16 @@ export interface VoiceApplicationSettings {
   autoClearChat: boolean;
   useAdvancedMemory: boolean;
 
+  // Language Settings
+  responseLanguageMode?: 'auto' | 'fixed' | 'follow-stt'; // How to determine response language
+  fixedResponseLanguage?: string; // If mode is 'fixed', which language to use
+  sttAutoDetectLanguage?: boolean; // Enable auto language detection for STT
+
+  // Conversation Context Settings
+  conversationContextMode?: 'full' | 'smart' | 'minimal'; // How much context to include
+  maxHistoryMessages?: number; // Maximum number of messages to keep in history
+  preventRepetition?: boolean; // Actively prevent repeating previous answers
+
   // Ephemeral Chat Log specific settings
   ephemeralLogMaxCompact: number;
   ephemeralLogMaxExpanded: number;
@@ -129,6 +139,17 @@ const initialDefaultSettings: Readonly<VoiceApplicationSettings> = Object.freeze
   autoClearChat: false,
   generateDiagrams: true,
   useAdvancedMemory: true,
+
+  // Language Settings
+  responseLanguageMode: 'auto', // Auto-detect by default
+  fixedResponseLanguage: 'en-US',
+  sttAutoDetectLanguage: false, // Keep false for now to maintain stability
+
+  // Conversation Context Settings
+  conversationContextMode: 'smart',
+  maxHistoryMessages: 12, // Reduced from implicit 20
+  preventRepetition: true, // Enable by default
+
   ephemeralLogMaxCompact: 3,
   ephemeralLogMaxExpanded: 20,
   sttPreference: 'browser_webspeech_api',

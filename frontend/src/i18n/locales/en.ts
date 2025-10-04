@@ -206,7 +206,38 @@ export default {
     languageSettings: 'Language Settings',
     selectLanguage: 'Select your preferred language',
     themeSettings: 'Theme Settings',
-    selectTheme: 'Select theme'
+    selectTheme: 'Select theme',
+
+    // Memory & Context section
+    memoryContext: 'Memory & Context',
+    responseLanguageMode: 'Response Language Mode',
+    responseLanguageModeDesc: 'How the assistant determines which language to respond in',
+    responseLanguageModeAuto: 'Auto-detect from user input',
+    responseLanguageModeFixed: 'Always use fixed language',
+    responseLanguageModeFollowSTT: 'Follow STT language setting',
+    fixedResponseLanguage: 'Fixed Response Language',
+    fixedResponseLanguageDesc: 'Language to always respond in',
+    preventRepetition: 'Prevent Repetitive Responses',
+    preventRepetitionDesc: 'Actively prevent the assistant from repeating previous answers in the conversation',
+    preventRepetitionOn: 'Repetition prevention is ON',
+    preventRepetitionOff: 'Repetition prevention is OFF',
+    conversationContextMode: 'Conversation Context Mode',
+    conversationContextModeDesc: 'How much conversation history to include in context',
+    conversationContextMinimal: 'Minimal - Last 3-4 messages',
+    conversationContextSmart: 'Smart - Balanced context',
+    conversationContextFull: 'Full - Maximum context',
+    maxHistoryMessages: 'Maximum History Messages',
+    maxHistoryMessagesDesc: 'Keep last {count} messages in conversation history',
+    advancedMemory: 'Advanced Chat History & Context Management',
+    advancedMemoryDesc: 'Enable sophisticated context management (e.g., summarization, relevancy scoring) for richer LLM interactions. Disable for simpler, recency-based history.',
+    advancedMemoryOn: 'Advanced memory management is ON',
+    advancedMemoryOff: 'Advanced memory management is OFF',
+
+    // STT Language Detection
+    sttAutoDetectLanguage: 'Auto-Detect STT Language',
+    sttAutoDetectLanguageDesc: 'Let the browser automatically detect the spoken language (experimental)',
+    sttAutoDetectOn: 'STT auto-detection is ON',
+    sttAutoDetectOff: 'STT auto-detection is OFF'
   },
   errors: {
     general: 'An error occurred',
