@@ -124,20 +124,14 @@ const scrollToRelevantPosition = async (): Promise<void> => { // This function i
 const handleMouseEnter = () => {
   isHovering.value = true;
   hasBeenInteractedRecently.value = true;
-  if (hoverSustainTimer) clearTimeout(hoverSustainTimer);
-  hoverSustainTimer = window.setTimeout(() => {
-    if (isHovering.value) {
-      isSustainedHover.value = true;
-    }
-  }, SUSTAINED_HOVER_DURATION_MS);
+  // Immediately set sustained hover for instant full visibility
+  isSustainedHover.value = true;
   if (recentInteractionTimer) clearTimeout(recentInteractionTimer);
 };
 
 const handleMouseLeave = () => {
   isHovering.value = false;
   isSustainedHover.value = false;
-  if (hoverSustainTimer) clearTimeout(hoverSustainTimer);
-  hoverSustainTimer = null;
   if (recentInteractionTimer) clearTimeout(recentInteractionTimer);
   recentInteractionTimer = window.setTimeout(() => {
     hasBeenInteractedRecently.value = false;

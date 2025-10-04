@@ -427,18 +427,11 @@ export async function POST(req: Request, res: Response): Promise<void> {
 
     // Conversation context instructions to prevent repetition
     const conversationContextInstructions = `
-## CRITICAL CONVERSATION RULES - YOU MUST FOLLOW THESE:
-1. **CURRENT QUERY ONLY**: Respond ONLY to the user's LATEST message/question. NEVER re-answer previous questions.
-2. **NO REPETITION**: If you see conversation history, it's for context ONLY. DO NOT repeat any previous answers.
-3. **IGNORE OLD QUESTIONS**: If the context shows previous Q&As, IGNORE THEM. They are already answered.
-4. **FOCUS ON NOW**: The user is asking something NEW. Focus 100% on their current question.
-5. **CONVERSATION CONTINUITY**: Use history for understanding context, NOT for re-answering.
-
-⚠️ VIOLATION CHECK: Before responding, ask yourself:
-- Am I answering ONLY the current question?
-- Am I repeating something I already said?
-- Am I addressing old questions from the history?
-If yes to #2 or #3, DELETE that part of your response.`;
+## CONVERSATION GUIDELINES:
+1. **Focus on Current Request**: Respond directly to what the user is asking now.
+2. **Use Context Wisely**: Previous messages provide context but don't re-answer old questions.
+3. **Natural Flow**: Maintain conversational continuity without unnecessary repetition.
+4. **Be Direct**: Answer the user's current question clearly and concisely.`;
 
     // Language response instructions
     const languageResponseInstructions = `
@@ -451,17 +444,13 @@ If yes to #2 or #3, DELETE that part of your response.`;
 
     // Only prepare bundle instructions if we're not doing direct transcript analysis
     const bundleUsageInstructions = !isTranscriptAnalysis ? `
-## IMPORTANT GUIDANCE - HOW TO USE THE CONTEXT BUNDLE:
-You have been provided with a "ContextBundle" JSON object that summarizes all relevant information for the current user request.
-Your response MUST be derived from this bundle. Key sections are:
-- \`primaryTask\`: The user's direct goal, refined intent, key entities, and any implied output format. This is your main objective.
-- \`relevantHistorySummary\`: Pertinent past exchanges (Note: full history including tool calls will be provided separately).
-- \`pertinentUserProfileSnippets\`: User preferences/custom instructions.
-- \`keyInformationFromDocuments\` & \`keyInformationFromSharedKnowledge\`: Crucial facts from external/shared knowledge.
-- \`criticalSystemContext.notesForDownstreamLLM\`: Pay close attention for specific instructions.
-- \`discernmentOutcome\`: If "CLARIFY", your goal is to ask targeted questions to resolve ambiguity.
-If tools are available to you (${agentDefinition.callableTools?.map(t=>t.function.name).join(', ') || 'none currently defined'}), and the user's request aligns with a tool's purpose, call the appropriate tool.
-Adhere to any 'requiredOutputFormat' in 'primaryTask'. Respond directly to 'primaryTask.description'. Do NOT hallucinate.
+## CONTEXT BUNDLE GUIDANCE:
+The provided ContextBundle contains information to help you understand and respond to the user's request:
+- \`primaryTask\`: The user's current request and intent
+- \`relevantHistorySummary\`: Previous conversation for context
+- \`pertinentUserProfileSnippets\`: User preferences
+- \`keyInformationFromDocuments\`: Relevant knowledge
+- \`discernmentOutcome\`: Response type guidance
 
 ${conversationContextInstructions}
 
@@ -525,17 +514,14 @@ ${languageResponseInstructions}` : '';
 
         messagesForAgentLlm.push({
           role: 'user',
-          content: `CURRENT USER QUERY: "${currentQuery}"
+          content: `USER REQUEST: "${currentQuery}"
 
-CONTEXT INFORMATION (for reference only - DO NOT re-answer old questions):
+Context Bundle:
 \`\`\`json
-${JSON.stringify({
-  ...contextBundle,
-  relevantHistorySummary: '<<Context provided for continuity - DO NOT re-answer these>>'
-}, null, 2)}
+${JSON.stringify(contextBundle, null, 2)}
 \`\`\`
 
-IMPORTANT: Focus ONLY on answering the CURRENT USER QUERY above. The context information is provided for continuity but you must NOT repeat previous answers or re-address old questions.`
+Please respond to the USER REQUEST above. Use the context bundle for understanding but focus on answering the current request directly.`
         });
       }
     }
