@@ -113,11 +113,11 @@ export interface AdvancedHistoryConfig {
  */
 export const DEFAULT_ADVANCED_HISTORY_CONFIG: Readonly<AdvancedHistoryConfig> = {
   strategyPreset: HistoryStrategyPreset.BALANCED_HYBRID,
-  maxContextTokens: 4000,
-  relevancyThreshold: 0.25,
-  numRecentMessagesToPrioritize: 10,
-  numRelevantOlderMessagesToInclude: 5,
-  simpleRecencyMessageCount: 20,
+  maxContextTokens: 3000, // Reduced from 4000 for faster processing and less repetition
+  relevancyThreshold: 0.35, // Increased from 0.25 for better filtering
+  numRecentMessagesToPrioritize: 6, // Reduced from 10 - last 3 exchanges only
+  numRelevantOlderMessagesToInclude: 3, // Reduced from 5 - less old context
+  simpleRecencyMessageCount: 12, // Reduced from 20 to match new default
   filterHistoricalSystemMessages: true,
   charsPerTokenEstimate: 3.8,
 };

@@ -46,12 +46,12 @@ export interface ConversationMessage {
 
 // Default number of individual messages (user + assistant) to keep.
 const DEFAULT_INDIVIDUAL_MESSAGES_COUNT = parseInt(
-  useStorage('defaultIndividualMessagesCount', 20).value.toString()
+  useStorage('defaultIndividualMessagesCount', 12).value.toString() // Reduced from 20 to 12
 );
 
 // Maximum number of individual messages the user can configure.
 const MAX_INDIVIDUAL_MESSAGES_COUNT = parseInt(
-  useStorage('maxIndividualMessagesCount', 200).value.toString() // e.g., 100 pairs
+  useStorage('maxIndividualMessagesCount', 100).value.toString() // Reduced from 200 to 100
 );
 
 // Rough estimate: characters per token. This can be refined based on the tokenizer used.

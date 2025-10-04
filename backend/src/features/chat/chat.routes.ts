@@ -63,6 +63,93 @@ interface ClientChatMessage extends IChatMessage {
 }
 
 /**
+ * @function detectLanguage
+ * @description Detects the language of input text based on character patterns and common words
+ */
+function detectLanguage(text: string): { code: string; name: string; confidence: number } {
+  if (!text || text.trim().length === 0) {
+    return { code: 'en', name: 'English', confidence: 0.5 };
+  }
+
+  // Character-based detection patterns
+  const languagePatterns: Record<string, { pattern: RegExp; name: string }> = {
+    'zh': { pattern: /[\u4e00-\u9fff]{3,}/g, name: 'Chinese' },
+    'ja': { pattern: /[\u3040-\u309f\u30a0-\u30ff]{3,}/g, name: 'Japanese' },
+    'ko': { pattern: /[\uac00-\ud7af]{3,}/g, name: 'Korean' },
+    'ar': { pattern: /[\u0600-\u06ff]{3,}/g, name: 'Arabic' },
+    'he': { pattern: /[\u0590-\u05ff]{3,}/g, name: 'Hebrew' },
+    'ru': { pattern: /[\u0400-\u04ff]{3,}/g, name: 'Russian' },
+    'hi': { pattern: /[\u0900-\u097f]{3,}/g, name: 'Hindi' },
+    'th': { pattern: /[\u0e00-\u0e7f]{3,}/g, name: 'Thai' },
+  };
+
+  // Check character-based patterns first (more reliable)
+  for (const [code, { pattern, name }] of Object.entries(languagePatterns)) {
+    const matches = text.match(pattern);
+    if (matches && matches.length > 0) {
+      const coverage = matches.join('').length / text.length;
+      if (coverage > 0.3) { // If 30% of text uses these characters
+        return { code, name, confidence: Math.min(coverage + 0.3, 1) };
+      }
+    }
+  }
+
+  // Word-based detection for Latin script languages
+  const wordPatterns: Record<string, { words: string[]; name: string }> = {
+    'es': {
+      words: ['el', 'la', 'de', 'que', 'y', 'en', 'un', 'por', 'con', 'para', 'está', 'es', 'los', 'las', 'del', 'al', 'qué', 'cómo'],
+      name: 'Spanish'
+    },
+    'fr': {
+      words: ['le', 'de', 'un', 'et', 'être', 'avoir', 'que', 'pour', 'dans', 'ce', 'il', 'qui', 'ne', 'sur', 'au', 'avec', 'est', 'faire'],
+      name: 'French'
+    },
+    'de': {
+      words: ['der', 'die', 'und', 'in', 'das', 'von', 'zu', 'mit', 'sich', 'auf', 'ist', 'für', 'nicht', 'ein', 'eine', 'als', 'auch', 'werden'],
+      name: 'German'
+    },
+    'pt': {
+      words: ['o', 'a', 'de', 'para', 'e', 'do', 'da', 'em', 'um', 'por', 'com', 'não', 'uma', 'os', 'ao', 'está', 'ser'],
+      name: 'Portuguese'
+    },
+    'it': {
+      words: ['il', 'di', 'che', 'è', 'e', 'la', 'a', 'un', 'in', 'non', 'si', 'per', 'con', 'come', 'una', 'ma', 'sono'],
+      name: 'Italian'
+    },
+    'nl': {
+      words: ['de', 'het', 'een', 'van', 'en', 'in', 'is', 'op', 'aan', 'met', 'voor', 'zijn', 'dat', 'te', 'er', 'als', 'bij'],
+      name: 'Dutch'
+    },
+  };
+
+  const lowerText = text.toLowerCase();
+  const words = lowerText.split(/\s+/);
+
+  let bestMatch = { code: 'en', name: 'English', confidence: 0.5 };
+  let highestScore = 0;
+
+  for (const [code, { words: keywords, name }] of Object.entries(wordPatterns)) {
+    let matches = 0;
+    for (const keyword of keywords) {
+      if (words.includes(keyword)) matches++;
+    }
+    const score = matches / keywords.length;
+    if (score > highestScore) {
+      highestScore = score;
+      bestMatch = { code, name, confidence: Math.min(score * 2, 0.95) };
+    }
+  }
+
+  // If we found a good match, return it
+  if (highestScore > 0.2) {
+    return bestMatch;
+  }
+
+  // Default to English
+  return { code: 'en', name: 'English', confidence: 0.7 };
+}
+
+/**
  * @function loadPromptTemplate
  * @description Loads an agent's system prompt template.
  */
@@ -334,6 +421,34 @@ export async function POST(req: Request, res: Response): Promise<void> {
     // Check if this is a transcript analysis request with system override
     const isTranscriptAnalysis = systemPromptOverride && currentUserQuery.includes('TRANSCRIPT:');
 
+    // Detect user's language from their query
+    const detectedLanguage = detectLanguage(currentUserQuery);
+    console.log(`[ChatRoutes] Detected language: ${detectedLanguage.name} (${detectedLanguage.code}) with confidence: ${detectedLanguage.confidence}`);
+
+    // Conversation context instructions to prevent repetition
+    const conversationContextInstructions = `
+## CRITICAL CONVERSATION RULES - YOU MUST FOLLOW THESE:
+1. **CURRENT QUERY ONLY**: Respond ONLY to the user's LATEST message/question. NEVER re-answer previous questions.
+2. **NO REPETITION**: If you see conversation history, it's for context ONLY. DO NOT repeat any previous answers.
+3. **IGNORE OLD QUESTIONS**: If the context shows previous Q&As, IGNORE THEM. They are already answered.
+4. **FOCUS ON NOW**: The user is asking something NEW. Focus 100% on their current question.
+5. **CONVERSATION CONTINUITY**: Use history for understanding context, NOT for re-answering.
+
+⚠️ VIOLATION CHECK: Before responding, ask yourself:
+- Am I answering ONLY the current question?
+- Am I repeating something I already said?
+- Am I addressing old questions from the history?
+If yes to #2 or #3, DELETE that part of your response.`;
+
+    // Language response instructions
+    const languageResponseInstructions = `
+## LANGUAGE RESPONSE REQUIREMENT:
+**YOU MUST RESPOND IN ${detectedLanguage.name.toUpperCase()} (${detectedLanguage.code})**
+- The user's message was detected as ${detectedLanguage.name}
+- ALL your responses must be in this same language
+- If you cannot respond in ${detectedLanguage.name}, use the most appropriate language based on the user's input
+- For code examples, comments should also be in ${detectedLanguage.name} when appropriate`;
+
     // Only prepare bundle instructions if we're not doing direct transcript analysis
     const bundleUsageInstructions = !isTranscriptAnalysis ? `
 ## IMPORTANT GUIDANCE - HOW TO USE THE CONTEXT BUNDLE:
@@ -346,17 +461,26 @@ Your response MUST be derived from this bundle. Key sections are:
 - \`criticalSystemContext.notesForDownstreamLLM\`: Pay close attention for specific instructions.
 - \`discernmentOutcome\`: If "CLARIFY", your goal is to ask targeted questions to resolve ambiguity.
 If tools are available to you (${agentDefinition.callableTools?.map(t=>t.function.name).join(', ') || 'none currently defined'}), and the user's request aligns with a tool's purpose, call the appropriate tool.
-Adhere to any 'requiredOutputFormat' in 'primaryTask'. Respond directly to 'primaryTask.description'. Do NOT hallucinate.` : '';
+Adhere to any 'requiredOutputFormat' in 'primaryTask'. Respond directly to 'primaryTask.description'. Do NOT hallucinate.
+
+${conversationContextInstructions}
+
+${languageResponseInstructions}` : '';
 
     let systemPromptForAgentLLM: string;
     if (systemPromptOverride) {
         // For transcript analysis, use the override as-is (it has specific instructions for analyzing transcripts)
         // For other overrides, append the bundle instructions
-        systemPromptForAgentLLM = isTranscriptAnalysis ? systemPromptOverride : (systemPromptOverride + '\n\n' + bundleUsageInstructions.trim());
+        if (isTranscriptAnalysis) {
+            systemPromptForAgentLLM = systemPromptOverride + '\n\n' + languageResponseInstructions;
+        } else {
+            systemPromptForAgentLLM = systemPromptOverride + '\n\n' + bundleUsageInstructions.trim();
+        }
     } else {
         let templateContent = loadPromptTemplate(agentDefinition.promptTemplateKey);
+        // Use detected language instead of default language
         systemPromptForAgentLLM = templateContent
-        .replace(/{{LANGUAGE}}/g, contextBundle.pertinentUserProfileSnippets?.preferences?.defaultLanguage || language)
+        .replace(/{{LANGUAGE}}/g, detectedLanguage.code)
         .replace(/{{MODE}}/g, mode)
         .replace(/{{GENERATE_DIAGRAM}}/g, (contextBundle.primaryTask.requiredOutputFormat?.includes('diagram') || generateDiagram).toString())
         .replace(/{{TUTOR_LEVEL}}/g, (contextBundle.pertinentUserProfileSnippets?.preferences as any)?.expertiseLevel || tutorLevel)
@@ -396,9 +520,22 @@ Adhere to any 'requiredOutputFormat' in 'primaryTask'. Respond directly to 'prim
         });
       } else {
         // Regular context bundle approach for other modes
+        // Extract the current query from the context bundle
+        const currentQuery = contextBundle.primaryTask?.description || currentUserQuery;
+
         messagesForAgentLlm.push({
           role: 'user',
-          content: `Context Bundle for my request:\n\`\`\`json\n${JSON.stringify(contextBundle, null, 2)}\n\`\`\`\nPlease proceed based on this context and our prior conversation.`
+          content: `CURRENT USER QUERY: "${currentQuery}"
+
+CONTEXT INFORMATION (for reference only - DO NOT re-answer old questions):
+\`\`\`json
+${JSON.stringify({
+  ...contextBundle,
+  relevantHistorySummary: '<<Context provided for continuity - DO NOT re-answer these>>'
+}, null, 2)}
+\`\`\`
+
+IMPORTANT: Focus ONLY on answering the CURRENT USER QUERY above. The context information is provided for continuity but you must NOT repeat previous answers or re-address old questions.`
         });
       }
     }

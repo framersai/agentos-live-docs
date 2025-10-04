@@ -184,7 +184,10 @@ export const useChatStore = defineStore('chat', () => {
           content: m.content || '',
           timestamp: m.timestamp,
       }));
-      const historyCountToUse = configOverride?.simpleRecencyMessageCount ?? simpleConversationManager.getHistoryMessageCount();
+      // Use voice settings for history count if available
+      const historyCountToUse = configOverride?.simpleRecencyMessageCount ??
+        voiceSettingsManager.settings.maxHistoryMessages ??
+        simpleConversationManager.getHistoryMessageCount();
       const simpleSelected = simpleConversationManager.prepareHistoryForApi(messagesForSimpleManager, historyCountToUse);
       selectedHistoryForManager = simpleSelected.map(m => ({
         role: m.role, content: m.content, timestamp: m.timestamp,

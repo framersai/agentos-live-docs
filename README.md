@@ -15,12 +15,16 @@ Voice Chat Assistant is a full-stack web application that lets you use your voic
 ### Key Features
 
 - **Voice Recognition**: Uses both browser's Web Speech API and OpenAI Whisper for accurate transcription
+- **Multilingual Support**: Automatic language detection and response in 15+ languages including Chinese, Spanish, French, German, Japanese, Korean, Arabic, and more
+- **Smart Conversation Context**: Prevents repetitive responses and maintains natural conversation flow
 - **Multiple Modes**: Specialized prompts for coding questions, system design, and meeting summaries
 - **Code Highlighting**: Automatic syntax highlighting for various programming languages
 - **Diagrams**: Generates and renders Mermaid diagrams for system design and architecture
 - **Cost Tracking**: Monitors and displays API usage costs in real-time
+- **Advanced Memory Management**: Configurable conversation history with relevance scoring
 - **Responsive Design**: Works on desktop and mobile in both portrait and landscape orientations
 - **Dark/Light Theme**: Toggle between light and dark mode based on preference
+- **Continuous Listening Mode**: Hands-free conversation with smart silence detection (2+ second pause before sending)
 
 ## Table of Contents
 
