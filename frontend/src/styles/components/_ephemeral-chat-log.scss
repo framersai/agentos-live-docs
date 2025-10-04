@@ -27,16 +27,17 @@
   display: flex;
   flex-direction: column;
   border-radius: var.$radius-lg;
-  transition: max-height var.$duration-movement var.$ease-elastic,
-              opacity 150ms var.$ease-out-cubic,  // Much faster opacity transition
-              background-color 100ms var.$ease-out-cubic,  // Instant background response
-              backdrop-filter 150ms var.$ease-out-cubic,  // Quick blur effect
-              box-shadow 150ms var.$ease-out-cubic;  // Fast shadow response
+  transition: max-height 300ms var.$ease-elastic,
+              opacity 50ms ease-out,  // Near instant opacity
+              background-color 50ms ease-out,  // Instant background
+              backdrop-filter 80ms ease-out,  // Very quick blur
+              box-shadow 80ms ease-out,  // Fast shadow
+              width 300ms var.$ease-out-cubic;  // Smooth width transition
 
   &.is-compact {
     max-height: 100px;
-    opacity: 0.35;  // Slightly more transparent at rest
-    background-color: hsla(var(--color-bg-primary-h, #{var.$default-color-bg-primary-h}), var(--color-bg-primary-s, #{var.$default-color-bg-primary-s}), var(--color-bg-primary-l, #{var.$default-color-bg-primary-l}), 0.08);
+    opacity: 0.25;  // Very subtle at rest
+    background-color: hsla(var(--color-bg-primary-h, #{var.$default-color-bg-primary-h}), var(--color-bg-primary-s, #{var.$default-color-bg-primary-s}), var(--color-bg-primary-l, #{var.$default-color-bg-primary-l}), 0.05);
     backdrop-filter: blur(1.5px);
     box-shadow: inset 0 0 10px hsla(var(--shadow-color-h, #{var.$default-shadow-color-h}), var(--shadow-color-s, #{var.$default-shadow-color-s}), var(--shadow-color-l, #{var.$default-shadow-color-l}), 0.03),
                   0 2px 10px hsla(var(--shadow-color-h, #{var.$default-shadow-color-h}), var(--shadow-color-s, #{var.$default-shadow-color-s}), var(--shadow-color-l, #{var.$default-shadow-color-l}), 0.05);
@@ -78,16 +79,16 @@
   }
 
   &.is-sustained-hover {
-    opacity: 0.95;  // Full visibility after sustained hover
-    background-color: hsla(var(--color-bg-secondary-h, #{var.$default-color-bg-secondary-h}), var(--color-bg-secondary-s, #{var.$default-color-bg-secondary-s}), var(--color-bg-secondary-l, #{var.$default-color-bg-secondary-l}), 0.75);
-    backdrop-filter: blur(5px);
-    border-color: hsla(var(--color-border-secondary-h, #{var.$default-color-border-secondary-h}), var(--color-border-secondary-s, #{var.$default-color-border-secondary-s}), var(--color-border-secondary-l, #{var.$default-color-border-secondary-l}), 0.25);
-    box-shadow: var(--shadow-depth-md, #{var.$scss-box-shadow-md});
+    opacity: 0.98;  // Nearly fully opaque on hover
+    background-color: hsla(var(--color-bg-secondary-h, #{var.$default-color-bg-secondary-h}), var(--color-bg-secondary-s, #{var.$default-color-bg-secondary-s}), var(--color-bg-secondary-l, #{var.$default-color-bg-secondary-l}), 0.85);
+    backdrop-filter: blur(8px);
+    border-color: hsla(var(--color-border-secondary-h, #{var.$default-color-border-secondary-h}), var(--color-border-secondary-s, #{var.$default-color-border-secondary-s}), var(--color-border-secondary-l, #{var.$default-color-border-secondary-l}), 0.3);
+    box-shadow: 0 4px 16px hsla(var(--shadow-color-h, #{var.$default-shadow-color-h}), var(--shadow-color-s, #{var.$default-shadow-color-s}), var(--shadow-color-l, #{var.$default-shadow-color-l}), 0.15);
   }
 
   &.is-expanded {
-    max-height: 60vh;
-    width: clamp(320px, 55vw, 750px);
+    max-height: 70vh;
+    width: clamp(600px, 85vw, 1200px);  // Much wider - matches main chat content
     opacity: 1;
     pointer-events: auto;
     // Define a CSS custom property for the calculated blur amount.
@@ -137,7 +138,12 @@
   border-bottom: 1px solid hsla(var(--color-border-primary-h, #{var.$default-color-border-primary-h}), var(--color-border-primary-s, #{var.$default-color-border-primary-s}), var(--color-border-primary-l, #{var.$default-color-border-primary-l}), 0.1);
   flex-shrink: 0;
   pointer-events: auto;
-  cursor: default;
+  cursor: pointer;  // Show pointer cursor to indicate clickability
+  user-select: none;  // Prevent text selection on click
+
+  &:hover {
+    background-color: hsla(var(--color-bg-secondary-h, #{var.$default-color-bg-secondary-h}), var(--color-bg-secondary-s, #{var.$default-color-bg-secondary-s}), var(--color-bg-secondary-l, #{var.$default-color-bg-secondary-l}), 0.05);
+  }
 
   .log-title {
     font-size: calc(#{var.$font-size-xs} * 0.95);
@@ -149,8 +155,12 @@
   .ephemeral-log-toggle-btn {
     padding: calc(#{var.$spacing-xs} * 0.5) !important;
     color: hsl(var(--color-text-muted-h, #{var.$default-color-text-muted-h}), var(--color-text-muted-s, #{var.$default-color-text-muted-s}), var(--color-text-muted-l, #{var.$default-color-text-muted-l}));
-    opacity: 0.6;
-    &:hover { opacity: 1; }
+    opacity: 0.7;
+    transition: opacity 50ms ease-out, transform 100ms ease-out;
+    &:hover {
+      opacity: 1;
+      transform: scale(1.1);
+    }
     .toggle-icon { width: 1rem; height: 1rem; }
   }
 }
