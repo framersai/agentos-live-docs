@@ -48,9 +48,9 @@ let hoverSustainTimer: number | null = null;
 let recentInteractionTimer: number | null = null;
 
 /** @const {number} SUSTAINED_HOVER_DURATION_MS - Duration (ms) to consider hover as sustained. */
-const SUSTAINED_HOVER_DURATION_MS = 1500;
+const SUSTAINED_HOVER_DURATION_MS = 300; // Reduced from 1500ms for quicker response
 /** @const {number} RECENT_INTERACTION_TIMEOUT_MS - Duration (ms) to keep log slightly more opaque after interaction. */
-const RECENT_INTERACTION_TIMEOUT_MS = 5000;
+const RECENT_INTERACTION_TIMEOUT_MS = 2000; // Reduced from 5000ms for snappier feel
 
 /**
  * @computed {number} maxMessagesCompact
