@@ -40,13 +40,14 @@
     </div>
 
     <canvas
-      v-show="isVisualizationActive && currentAudioMode !== 'continuous'"
+      v-show="isVisualizationActive"
       ref="visualizationCanvasRef"
       class="vi-visualization-canvas"
       :class="{
         'viz-active': isVisualizationActive,
         'viz-listening': isListeningForWakeWord,
-        'viz-recording': isActive && !isListeningForWakeWord
+        'viz-recording': isModeEngaged && !isListeningForWakeWord,
+        'viz-continuous': currentAudioMode === 'continuous'
       }"
     />
 
@@ -65,13 +66,14 @@
     <div class="vi-controls-wrapper">
       <MicInputButton
         ref="micButtonRefInternal"
-        :isActive="isActive"
+        :isActive="isModeEngaged"
         :isListeningForWakeWord="isListeningForWakeWord"
         :isProcessingLLM="props.isProcessingLLM"
         :hasMicError="hasMicError"
         :disabled="micButtonDisabled"
         :currentAudioMode="currentAudioMode"
         :aria-label="micButtonAriaLabel"
+        :aria-busy="isModeInitializing ? 'true' : 'false'"
         @click="handleMicButtonClick"
         @mousedown="handleMicButtonMouseDown"
         @mouseup="handleMicButtonMouseUp"
@@ -81,17 +83,22 @@
         @touchcancel="handleMicButtonTouchEnd"
         class="vi-mic-button"
         :class="{
-          'vi-mic-active-outer': isActive,
+          'vi-mic-active-outer': isModeEngaged,
           'vi-mic-listening-outer': isListeningForWakeWord
         }"
       />
+      <transition name="fade">
+        <div v-if="isModeInitializing" class="vi-mode-spinner" aria-hidden="true">
+          <div class="vi-mode-spinner__ring"></div>
+        </div>
+      </transition>
       
       <transition name="fade">
         <AudioModeDropdown
           v-if="!props.isProcessingLLM || currentAudioMode === 'push-to-talk'"
           :current-mode="currentAudioMode"
           :options="audioModeOptions"
-          :disabled="isActive || isListeningForWakeWord"
+          :disabled="isModeEngaged || isListeningForWakeWord"
           @select-mode="handleAudioModeChange"
           class="vi-mode-selector"
         />
@@ -108,7 +115,7 @@
     </div>
 
     <div class="vi-input-wrapper" :class="{ 'vi-input-disabled': isInputEffectivelyDisabled }">
-      <div class="vi-input-container" :class="{ 'vi-input-breathing': currentAudioMode === 'continuous' && isActive }">
+      <div class="vi-input-container" :class="{ 'vi-input-breathing': currentAudioMode === 'continuous' && isModeEngaged }">
         <textarea
           ref="textareaRef"
           v-model="sharedState.textInput.value"
@@ -142,7 +149,7 @@
         class="vi-settings-button"
         :class="{ 'vi-settings-active': sharedState.showInputToolbar.value }"
         aria-label="Voice settings"
-        :disabled="props.isProcessingLLM && !isActive && !isListeningForWakeWord"
+        :disabled="props.isProcessingLLM && !isModeEngaged && !isListeningForWakeWord"
       >
         <svg viewBox="0 0 24 24" class="vi-settings-icon">
           <path fill="currentColor" d="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97L21.54,14.63C21.73,14.78 21.78,15.05 21.66,15.27L19.66,18.73C19.55,18.95 19.28,19.04 19.05,18.95L16.56,17.95C16.04,18.34 15.48,18.68 14.87,18.93L14.49,21.58C14.46,21.82 14.25,22 14,22H10C9.75,22 9.54,21.82 9.51,21.58L9.13,18.93C8.52,18.68 7.96,18.34 7.44,17.95L4.95,18.95C4.72,19.04 4.45,18.95 4.34,18.73L2.34,15.27C2.22,15.05 2.27,14.78 2.46,14.63L4.57,12.97L4.5,12L4.57,11.03L2.46,9.37C2.27,9.22 2.22,8.95 2.34,8.73L4.34,5.27C4.45,5.05 4.72,4.96 4.95,5.05L7.44,6.05C7.96,5.66 8.52,5.32 9.13,5.07L9.51,2.42C9.54,2.18 9.75,2 10,2H14C14.25,2 14.46,2.18 14.49,2.42L14.87,5.07C15.48,5.32 16.04,5.66 16.56,6.05L19.05,5.05C19.28,4.96 19.55,5.05 19.66,5.27L21.66,8.73C21.78,8.95 21.73,9.22 21.54,9.37L19.43,11.03L19.5,12L19.43,12.97Z" />
@@ -216,7 +223,7 @@
             <button @click="editTranscription(true)" class="vi-confirmation-btn vi-confirmation-append" title="Add to existing text">
               Append
             </button>
-            <button @click="closeTranscriptionConfirmation" class="vi-confirmation-btn vi-confirmation-cancel">
+            <button @click="() => closeTranscriptionConfirmation()" class="vi-confirmation-btn vi-confirmation-cancel">
               <span>Cancel</span>
               <kbd class="vi-kbd-inline">Esc</kbd>
             </button>
@@ -290,6 +297,7 @@ import { useMicrophone } from './composables/useMicrophone';
 import { useSttManager } from './composables/useSttManager';
 import { useVoiceVisualization, type VoiceVisualizationConfig } from '@/composables/useVoiceVisualization';
 import { useVoiceInputEffects } from './composables/useVoiceInputEffects';
+import { sttDebugLog } from '@/utils/debug';
 
 // Components
 import BrowserSpeechHandler from './handlers/BrowserSpeechHandler.vue';
@@ -425,7 +433,7 @@ const sttManager = useSttManager({
   emit: (event: string, ...args: any[]) => {
     if (event === 'transcription-ready') {
       // Show confirmation modal for all modes
-      console.log('[VoiceInput] Intercepted transcription-ready event:', args[0]);
+      sttDebugLog('[VoiceInput] Intercepted transcription-ready event:', args[0]);
       showTranscriptionConfirmation(args[0] as string);
     } else if (event === 'voice-input-error') {
       emit('voice-input-error', args[0] as SttHandlerErrorPayload);
@@ -436,7 +444,7 @@ const sttManager = useSttManager({
 });
 
 const voiceEffects = useVoiceInputEffects({
-  isProcessingAudio: computed(() => sttManager.isActive.value),
+  isProcessingAudio: computed(() => sttManager.isProcessingAudio.value || sharedState.isProcessingAudio.value),
   isListeningForWakeWord: computed(() => sttManager.isListeningForWakeWord.value),
   isProcessingLLM: computed(() => props.isProcessingLLM),
   audioMode: currentAudioMode
@@ -450,14 +458,25 @@ let voiceViz: ReturnType<typeof useVoiceVisualization> | null = null;
 
 const isActive = computed(() => {
   const active = sttManager.isActive.value;
-  console.log('[VoiceInput] isActive computed:', active, 'currentMode:', currentAudioMode.value);
+  sttDebugLog('[VoiceInput] isActive computed:', active, 'currentMode:', currentAudioMode.value);
   return active;
 });
 const isListeningForWakeWord = computed(() => sttManager.isListeningForWakeWord.value);
+const isModeEngaged = computed(() =>
+  currentAudioMode.value === 'continuous'
+    ? sttManager.isProcessingAudio.value
+    : isActive.value
+);
+const isModeInitializing = computed(() =>
+  currentAudioMode.value === 'continuous' &&
+  sharedState.isProcessingAudio.value &&
+  !sttManager.isProcessingAudio.value
+);
 const isVisualizationActive = computed(() => {
-  // Disable visualization completely in continuous mode
-  if (currentAudioMode.value === 'continuous') return false;
-  return isActive.value || isListeningForWakeWord.value;
+  if (currentAudioMode.value === 'continuous') {
+    return isModeEngaged.value; // show subtle visualization only while actively capturing audio
+  }
+  return isModeEngaged.value || isListeningForWakeWord.value;
 });
 
 const hasMicError = computed(() =>
@@ -468,12 +487,13 @@ const hasMicError = computed(() =>
 const micButtonDisabled = computed(() =>
   hasMicError.value ||
   (props.isProcessingLLM && !isListeningForWakeWord.value && !sttManager.isAwaitingVadCommandResult.value) ||
-  (sharedState.isInputEffectivelyDisabled.value && currentAudioMode.value !== 'push-to-talk' && currentAudioMode.value !== 'continuous')
+  (sharedState.isInputEffectivelyDisabled.value && currentAudioMode.value !== 'push-to-talk' && currentAudioMode.value !== 'continuous') ||
+  isModeInitializing.value
 );
 
 const micButtonAriaLabel = computed(() => {
   if (hasMicError.value) return t('voice.microphoneAccessDenied');
-  if (isActive.value) return t('voice.stopRecording');
+  if (isModeEngaged.value) return t('voice.stopRecording');
   if (isListeningForWakeWord.value) return t('voice.listeningForWakeWord');
   return t('voice.startVoiceInput');
 });
@@ -488,16 +508,16 @@ const disableTextareaSetting = computed(() => {
 
 const isInputEffectivelyDisabled = computed(() => 
   (disableTextareaSetting.value && 
-   currentAudioMode.value === 'continuous' && isActive.value) ||
-  (props.isProcessingLLM && !isActive.value && !isListeningForWakeWord.value && !sttManager.isAwaitingVadCommandResult.value)
+   currentAudioMode.value === 'continuous' && isModeEngaged.value) ||
+  (props.isProcessingLLM && !isModeEngaged.value && !isListeningForWakeWord.value && !sttManager.isAwaitingVadCommandResult.value)
 );
 
 const inputPlaceholder = computed(() => {
-  if (props.isProcessingLLM && !isActive.value && !isListeningForWakeWord.value && !sttManager.isAwaitingVadCommandResult.value) return t('voice.assistantProcessing');
-  if (currentAudioMode.value === 'continuous' && isActive.value) return t('voice.continuousListeningActive');
+  if (props.isProcessingLLM && !isModeEngaged.value && !isListeningForWakeWord.value && !sttManager.isAwaitingVadCommandResult.value) return t('voice.assistantProcessing');
+  if (currentAudioMode.value === 'continuous' && isModeEngaged.value) return t('voice.continuousListeningActive');
   if (currentAudioMode.value === 'push-to-talk') return t('voice.pttPrompt');
   if (currentAudioMode.value === 'voice-activation' && isListeningForWakeWord.value) return t('voice.listeningForWakeWordShort');
-  if (currentAudioMode.value === 'voice-activation' && isActive.value) return t('voice.listeningForCommand');
+  if (currentAudioMode.value === 'voice-activation' && isModeEngaged.value) return t('voice.listeningForCommand');
   return sttManager.placeholderText.value || t('voice.typeOrUseVoice');
 });
 
@@ -510,8 +530,8 @@ const canSendMessage = computed(() =>
 const statusText = computed(() => sttManager.statusText.value);
 
 const stateClass = computed(() => {
-  if (props.isProcessingLLM && !isListeningForWakeWord.value && !isActive.value && !sttManager.isAwaitingVadCommandResult.value) return 'state-llm-processing';
-  if (isActive.value) return 'state-stt-active';
+  if (props.isProcessingLLM && !isListeningForWakeWord.value && !isModeEngaged.value && !sttManager.isAwaitingVadCommandResult.value) return 'state-llm-processing';
+  if (isModeEngaged.value) return 'state-stt-active';
   if (isListeningForWakeWord.value) return 'state-vad-listening';
   return 'state-idle';
 });
@@ -576,9 +596,9 @@ function showLiveTranscription(text: string, isFinal: boolean = true) {
 async function handleMicButtonClick() {
   // PTT mode uses click for toggle behavior
   if (currentAudioMode.value === 'push-to-talk') {
-    console.log('[VoiceInput] PTT click - toggling recording. isActive:', isActive.value);
+    sttDebugLog('[VoiceInput] PTT click - toggling recording. isEngaged:', isModeEngaged.value);
 
-    if (!isActive.value) {
+    if (!isModeEngaged.value) {
       // Start recording
       if (props.isProcessingLLM) {
         showHint('Cannot start recording while assistant is processing', 'warning');
@@ -609,7 +629,7 @@ async function handleMicButtonClick() {
   if (audioCtx?.state === 'suspended') {
     try {
       await audioCtx.resume();
-      // console.log('[VoiceInput] AudioContext resumed.');
+      // sttDebugLog('[VoiceInput] AudioContext resumed.');
     } catch (err) {
       console.error('[VoiceInput] Failed to resume AudioContext:', err);
       showHint('Could not activate audio. Please interact with the page.', 'error');
@@ -623,7 +643,7 @@ async function handleMicButtonClick() {
     return;
   }
 
-  if (!isActive.value && !isListeningForWakeWord.value) {
+  if (!isModeEngaged.value && !isListeningForWakeWord.value) {
     audioFeedback.playSound(audioFeedback.beepInSound.value, 0.3);
   }
 
@@ -631,27 +651,27 @@ async function handleMicButtonClick() {
 }
 
 // Push-to-Talk specific handlers (now disabled - PTT uses click for toggle)
-async function handleMicButtonMouseDown(event: MouseEvent) {
+async function handleMicButtonMouseDown(_event: MouseEvent) {
   // Disabled - PTT now uses click event for toggle behavior
   // Don't prevent event propagation
 }
 
-async function handleMicButtonMouseUp(event: MouseEvent) {
+async function handleMicButtonMouseUp(_event: MouseEvent) {
   // Disabled - PTT now uses click event for toggle behavior
   // Don't prevent event propagation
 }
 
-async function handleMicButtonMouseLeave(event: MouseEvent) {
+async function handleMicButtonMouseLeave(_event: MouseEvent) {
   // Disabled - no need to stop on mouse leave in toggle mode
   // Don't prevent event propagation
 }
 
-async function handleMicButtonTouchStart(event: TouchEvent) {
+async function handleMicButtonTouchStart(_event: TouchEvent) {
   // Disabled - PTT now uses click event for toggle behavior
   // Don't prevent event propagation
 }
 
-async function handleMicButtonTouchEnd(event: TouchEvent) {
+async function handleMicButtonTouchEnd(_event: TouchEvent) {
   // Disabled - PTT now uses click event for toggle behavior
   // Don't prevent event propagation
 }
@@ -804,7 +824,7 @@ function sendPttRecording() {
 function showTranscriptionConfirmation(transcript: string) {
   if (!transcript.trim()) return;
 
-  console.log('[VoiceInput] Showing transcription confirmation modal for:', transcript);
+  sttDebugLog('[VoiceInput] Showing transcription confirmation modal for:', transcript);
 
   // Clear any existing timer
   if (autoConfirmInterval) {
@@ -823,11 +843,11 @@ function showTranscriptionConfirmation(transcript: string) {
 
     if (e.key === 'Escape') {
       e.preventDefault();
-      console.log('[VoiceInput] Escape pressed, cancelling transcription');
+      sttDebugLog('[VoiceInput] Escape pressed, cancelling transcription');
       closeTranscriptionConfirmation();
     } else if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      console.log('[VoiceInput] Enter pressed, confirming transcription');
+      sttDebugLog('[VoiceInput] Enter pressed, confirming transcription');
       confirmTranscription();
     }
   };
@@ -839,20 +859,20 @@ function showTranscriptionConfirmation(transcript: string) {
   (window as any).__transcriptionModalKeyHandler = handleKeyboard;
 
   // Start countdown
-  console.log('[VoiceInput] Starting auto-confirm countdown from 3 seconds');
+  sttDebugLog('[VoiceInput] Starting auto-confirm countdown from 3 seconds');
   autoConfirmInterval = window.setInterval(() => {
     if (!transcriptionConfirmation.value) {
-      console.log('[VoiceInput] Confirmation was cancelled, stopping countdown');
+      sttDebugLog('[VoiceInput] Confirmation was cancelled, stopping countdown');
       if (autoConfirmInterval) clearInterval(autoConfirmInterval);
       autoConfirmInterval = null;
       return;
     }
 
     transcriptionConfirmation.value.countdownSeconds--;
-    console.log('[VoiceInput] Countdown:', transcriptionConfirmation.value.countdownSeconds);
+    sttDebugLog('[VoiceInput] Countdown:', transcriptionConfirmation.value.countdownSeconds);
 
     if (transcriptionConfirmation.value.countdownSeconds <= 0) {
-      console.log('[VoiceInput] Countdown reached 0, auto-confirming...');
+      sttDebugLog('[VoiceInput] Countdown reached 0, auto-confirming...');
       confirmTranscription();
     }
   }, 1000);
@@ -861,7 +881,7 @@ function showTranscriptionConfirmation(transcript: string) {
 function confirmTranscription() {
   if (!transcriptionConfirmation.value?.transcript) return;
 
-  console.log('[VoiceInput] Confirming transcription:', transcriptionConfirmation.value.transcript);
+  sttDebugLog('[VoiceInput] Confirming transcription:', transcriptionConfirmation.value.transcript);
   const transcript = transcriptionConfirmation.value.transcript;
   closeTranscriptionConfirmation();
 
@@ -870,11 +890,11 @@ function confirmTranscription() {
 }
 
 function closeTranscriptionConfirmation(sendEmpty: boolean = false) {
-  console.log('[VoiceInput] Closing transcription confirmation modal, sendEmpty:', sendEmpty);
+  sttDebugLog('[VoiceInput] Closing transcription confirmation modal, sendEmpty:', sendEmpty);
   if (autoConfirmInterval) {
     clearInterval(autoConfirmInterval);
     autoConfirmInterval = null;
-    console.log('[VoiceInput] Cleared auto-confirm interval');
+    sttDebugLog('[VoiceInput] Cleared auto-confirm interval');
   }
 
   // Remove keyboard event listener
@@ -882,13 +902,13 @@ function closeTranscriptionConfirmation(sendEmpty: boolean = false) {
   if (handler) {
     document.removeEventListener('keydown', handler);
     delete (window as any).__transcriptionModalKeyHandler;
-    console.log('[VoiceInput] Removed keyboard event listener');
+    sttDebugLog('[VoiceInput] Removed keyboard event listener');
   }
 
   // Only send empty transcript if explicitly requested (e.g., from auto-confirm with empty text)
   // Cancel button should NOT send empty transcript
   if (sendEmpty && !transcriptionConfirmation.value?.transcript?.trim()) {
-    console.log('[VoiceInput] Ignoring sendEmpty request as transcript is empty');
+    sttDebugLog('[VoiceInput] Ignoring sendEmpty request as transcript is empty');
   }
 
   transcriptionConfirmation.value = null;
@@ -1043,30 +1063,32 @@ function updateCanvasSize() {
 }
 
 function setupVisualization() {
-  // Skip visualization setup entirely for continuous mode
-  if (currentAudioMode.value === 'continuous') return;
-
+  const mode = currentAudioMode.value;
   if (!visualizationCanvasRef.value || !microphoneManager.activeStream.value) return;
   if (voiceViz && voiceViz.isVisualizing.value) voiceViz.stopVisualization();
 
   const vizTypeConfig: Partial<VoiceVisualizationConfig> = {};
   let vizType: VoiceVisualizationConfig['visualizationType'] = 'frequencyBars';
 
-  const baseShapeColor = isActive.value ? 'var(--color-voice-user)' : 'var(--color-accent-interactive)';
-  const baseGlowColor = isActive.value ? 'var(--color-voice-user-secondary)' : 'var(--color-accent-interactive-secondary)';
+  const baseShapeColor = isModeEngaged.value ? 'var(--color-voice-user)' : 'var(--color-accent-interactive)';
+  const baseGlowColor = isModeEngaged.value ? 'var(--color-voice-user-secondary)' : 'var(--color-accent-interactive-secondary)';
 
-  if (currentAudioMode.value === 'voice-activation') {
+  if (mode === 'voice-activation') {
     vizType = 'circularPulse';
     Object.assign(vizTypeConfig, {
       shapeColor: isListeningForWakeWord.value ? 'var(--color-accent-interactive)' : 'var(--color-voice-user)',
       glowColor: isListeningForWakeWord.value ? 'var(--color-accent-interactive-secondary)' : 'var(--color-voice-user-secondary)',
       lineWidth: 3, pulseFactor: 0.4, circularBaseRadiusFactor: 0.2,
     });
-  } else if (currentAudioMode.value === 'continuous') {
+  } else if (mode === 'continuous') {
     vizType = 'radiantWave';
-     Object.assign(vizTypeConfig, {
-      waveColor: baseShapeColor, glowColor: baseGlowColor, lineWidth: 2,
-      amplitude: 60, frequency: 0.035, lineCount: 6,
+    Object.assign(vizTypeConfig, {
+      waveColor: baseShapeColor,
+      glowColor: baseGlowColor,
+      lineWidth: 1.5,
+      amplitude: 28,
+      frequency: 0.022,
+      lineCount: 4,
     });
   } else { // PTT
     vizType = 'frequencyBars'; // Changed from frequencyBars for PTT for a more classic recording look
@@ -1093,15 +1115,7 @@ function setupVisualization() {
   voiceViz.startVisualization();
 }
 
-watch([isVisualizationActive, () => microphoneManager.activeStream.value, currentAudioMode], ([vizActive, stream, mode]) => {
-  // Skip visualization entirely for continuous mode
-  if (mode === 'continuous') {
-    if (voiceViz?.isVisualizing.value) {
-      voiceViz.stopVisualization();
-    }
-    return;
-  }
-
+watch([isVisualizationActive, () => microphoneManager.activeStream.value, currentAudioMode], ([vizActive, stream]) => {
   if (vizActive && stream && visualizationCanvasRef.value) {
     setupVisualization();
   } else if (voiceViz?.isVisualizing.value) {
@@ -1118,7 +1132,7 @@ watch(isListeningForWakeWord, (isListening) => {
   }
 });
 
-watch(isActive, (newIsActive, oldIsActive) => {
+watch(isModeEngaged, (newIsActive, oldIsActive) => {
   if (newIsActive !== oldIsActive && voiceViz && voiceViz.isVisualizing.value && voiceViz.currentConfig.value) {
     const newShapeColor = newIsActive ? 'var(--color-voice-user)' : 
                          (isListeningForWakeWord.value ? 'var(--color-accent-interactive)' : 'var(--color-accent-primary)');
@@ -1135,9 +1149,9 @@ watch(isActive, (newIsActive, oldIsActive) => {
 });
 
 watch(() => props.isProcessingLLM, (isProcessing) => {
-  if (isProcessing && !isActive.value && !isListeningForWakeWord.value && !sttManager.isAwaitingVadCommandResult.value) {
+  if (isProcessing && !isModeEngaged.value && !isListeningForWakeWord.value && !sttManager.isAwaitingVadCommandResult.value) {
     reactiveStore.transitionToState('thinking');
-  } else if (!isProcessing && !isActive.value && !isListeningForWakeWord.value && !sttManager.isAwaitingVadCommandResult.value) {
+  } else if (!isProcessing && !isModeEngaged.value && !isListeningForWakeWord.value && !sttManager.isAwaitingVadCommandResult.value) {
     // Only transition to idle if not VAD wake, which should maintain its own state
      if(currentAudioMode.value !== 'voice-activation' || !isListeningForWakeWord.value){
         reactiveStore.transitionToState('idle');

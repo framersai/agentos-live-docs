@@ -254,6 +254,15 @@ export async function POST(req: Request, res: Response): Promise<void> {
       tool_response, // New: handle tool response from client
     } = req.body as ChatRequestBodyBE;
 
+    if (Array.isArray(currentTurnClientMessages)) {
+      console.log('[ChatRoutes][Debug] Incoming turn messages summary:', currentTurnClientMessages.map((msg, idx) => ({
+        idx,
+        role: msg.role,
+        agentId: msg.agentId,
+        snippet: typeof msg.content === 'string' ? `${msg.content.slice(0, 80)}${msg.content.length > 80 ? '…' : ''}` : null,
+      })));
+    }
+
     // @ts-ignore
     const authenticatedUserId = req.user?.id;
     const effectiveUserId = userIdFromRequest || authenticatedUserId || GLOBAL_USER_ID_FOR_MEMORY;
@@ -291,8 +300,11 @@ export async function POST(req: Request, res: Response): Promise<void> {
     // --- 2. Prepare Inputs for Context Aggregator (if not a tool response continuation) ---
     // The Context Aggregator is typically run for a new user query, not when just returning a tool's result.
     let contextBundle: IContextBundle;
-    const latestUserQueryObject = currentTurnClientMessages?.find(m => m.role === 'user');
+    const latestUserQueryObject = currentTurnClientMessages
+      ? [...currentTurnClientMessages].reverse().find(m => m.role === 'user')
+      : undefined;
     const currentUserQuery = latestUserQueryObject?.content || (tool_response ? `Result for tool: ${tool_response.tool_name}` : "Processing continuation.");
+    console.log(`[ChatRoutes][Debug] Derived currentUserQuery snippet: "${typeof currentUserQuery === 'string' ? currentUserQuery.slice(0, 120) : ''}${typeof currentUserQuery === 'string' && currentUserQuery.length > 120 ? '…' : ''}"`);
 
 
     // If it's a tool_response, we usually skip context aggregation and go straight to the main agent LLM
@@ -361,6 +373,10 @@ export async function POST(req: Request, res: Response): Promise<void> {
             { conversationId, mode, querySnippet: currentUserQuery.substring(0,50) }
             );
             console.log(`[ChatRoutes] Context Bundle generated. Discernment: ${contextBundle.discernmentOutcome}`);
+            console.log('[ChatRoutes][Debug] ContextBundle primaryTask:', {
+              description: contextBundle.primaryTask?.description,
+              derivedIntent: contextBundle.primaryTask?.derivedIntent,
+            });
         } catch (aggregatorError: any) {
             console.error("[ChatRoutes] Context Aggregator Service failed:", aggregatorError.message, aggregatorError.stack);
             res.status(503).json({ 
@@ -480,6 +496,12 @@ ${languageResponseInstructions}` : '';
     const fullHistoryForAgent: IStoredConversationTurn[] = await sqliteMemoryAdapter.retrieveConversationTurns(
         effectiveUserId, conversationId, { limit: 50 } // Retrieve a good amount of history
     );
+    const lastStoredTurn = fullHistoryForAgent[fullHistoryForAgent.length - 1];
+    console.log('[ChatRoutes][Debug] Retrieved stored history turns:', {
+      count: fullHistoryForAgent.length,
+      lastRole: lastStoredTurn?.role,
+      lastSnippet: typeof lastStoredTurn?.content === 'string' ? `${lastStoredTurn.content.slice(0, 120)}${lastStoredTurn.content && lastStoredTurn.content.length > 120 ? '…' : ''}` : null,
+    });
 
     // Map IStoredConversationTurn to IChatMessage for the LLM
     const messagesForAgentLlm: IChatMessage[] = [
@@ -527,6 +549,11 @@ Please respond to the USER REQUEST above. Use the context bundle for understandi
     }
     
     console.log(`[ChatRoutes] Calling Main Agent LLM (${agentDefinition.modelId}) for mode '${mode}'. Discernment: ${contextBundle.discernmentOutcome}. Tools available: ${agentDefinition.callableTools?.length || 0}`);
+    const latestPayloadUser = [...messagesForAgentLlm].reverse().find(msg => msg.role === 'user');
+    console.log('[ChatRoutes][Debug] Final LLM payload snapshot:', {
+      totalMessages: messagesForAgentLlm.length,
+      latestUserSnippet: typeof latestPayloadUser?.content === 'string' ? `${latestPayloadUser.content.slice(0, 160)}${latestPayloadUser.content && latestPayloadUser.content.length > 160 ? '…' : ''}` : null,
+    });
 
     const agentLlmParams: IChatCompletionParams = {
         temperature: temperature ?? LLM_DEFAULT_TEMPERATURE, // Use frontend-provided temperature if available

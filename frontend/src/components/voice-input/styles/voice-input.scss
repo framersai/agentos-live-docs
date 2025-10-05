@@ -222,6 +222,34 @@ $z-ptt-preview-modal: 30;
   &.viz-active { opacity: 0.7; }
   &.viz-listening { opacity: 0.5; }
   &.viz-recording { opacity: 0.8; }
+  &.viz-continuous { opacity: 0.35; filter: blur(0.5px); }
+}
+
+.vi-mode-spinner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: $z-visualization-canvas + 2;
+
+  &__ring {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    border-top-color: hsla(var(--color-accent-interactive-h, 190), var(--color-accent-interactive-s, 90%), var(--color-accent-interactive-l, 65%), 0.75);
+    border-left-color: hsla(var(--color-accent-interactive-h, 190), var(--color-accent-interactive-s, 90%), var(--color-accent-interactive-l, 65%), 0.35);
+    border-right-color: hsla(var(--color-accent-interactive-h, 190), var(--color-accent-interactive-s, 90%), var(--color-accent-interactive-l, 65%), 0.15);
+    box-shadow: 0 0 16px hsla(var(--color-accent-interactive-h, 190), var(--color-accent-interactive-s, 90%), var(--color-accent-interactive-l, 65%), 0.25);
+    animation: vi-spinner-rotate 1.4s linear infinite;
+  }
+}
+
+@keyframes vi-spinner-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 // -----------------------------------------------------------------------------

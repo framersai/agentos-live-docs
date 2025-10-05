@@ -29,6 +29,7 @@ import {
   type ChatMessageFE,
 } from '@/utils/api';
 import type { AdvancedHistoryConfig } from '@/services/advancedConversation.manager';
+import { createScopedSttLogger } from '@/utils/debug';
 
 import UnifiedChatLayout from '@/components/layouts/UnifiedChatLayout.vue';
 import MainContentView from '@/components/agents/common/MainContentView.vue';
@@ -42,6 +43,7 @@ const router = useRouter();
 const agentStore = useAgentStore();
 const chatStore = useChatStore();
 const auth = useAuth();
+const debugLog = createScopedSttLogger('PrivateHome');
 
 const activeAgent = computed<IAgentDefinition | undefined>(() => agentStore.activeAgent);
 const currentSystemPromptText = ref('');
@@ -150,10 +152,10 @@ async function handleTranscriptionFromLayout(transcription: string): Promise<voi
   const agentLabel = currentAgentInstance.label || 'Assistant';
 
   // Log entry point for transcription handling
-  console.log(`[PrivateHome] handleTranscriptionFromLayout for agent: ${agentLabel}. Current isLoadingResponse: ${isLoadingResponse.value}`);
+  debugLog(`[PrivateHome] handleTranscriptionFromLayout for agent: ${agentLabel}. Current isLoadingResponse: ${isLoadingResponse.value}`);
 
   if (currentAgentInstance.capabilities?.handlesOwnInput && currentAgentViewComponent.value && agentViewRef.value) {
-    console.log(`[PrivateHome] Delegating input to dedicated handler for agent: ${agentLabel}`);
+    debugLog(`[PrivateHome] Delegating input to dedicated handler for agent: ${agentLabel}`);
     try {
       if (typeof agentViewRef.value.handleNewUserInput === 'function') {
         // The agent view's handleNewUserInput is responsible for its own isLoadingResponse management
@@ -172,10 +174,10 @@ async function handleTranscriptionFromLayout(transcription: string): Promise<voi
       // If PrivateHome's isLoadingResponse was true because of this agent, the agent *must* signal it's done.
     }
   } else {
-    console.log(`[PrivateHome] Using standard LLM call for agent: ${agentLabel}`);
+    debugLog(`[PrivateHome] Using standard LLM call for agent: ${agentLabel}`);
     await standardLlmCallPrivate(transcription, currentAgentInstance);
   }
-  console.log(`[PrivateHome] handleTranscriptionFromLayout finished for agent ${agentLabel}. Final isLoadingResponse: ${isLoadingResponse.value}`);
+  debugLog(`[PrivateHome] handleTranscriptionFromLayout finished for agent ${agentLabel}. Final isLoadingResponse: ${isLoadingResponse.value}`);
 }
 
 async function standardLlmCallPrivate(transcriptionText: string, agentInstance: IAgentDefinition) {
@@ -189,7 +191,7 @@ async function standardLlmCallPrivate(transcriptionText: string, agentInstance: 
       // Potentially block or queue, but for now, proceed and rely on finally block.
       // This path should ideally not be hit if an agent is already processing.
   }
-  console.log(`[PrivateHome - standardLlmCallPrivate] Initiating LLM call for ${agentLabel}. Setting isLoadingResponse = true.`);
+  debugLog(`[PrivateHome - standardLlmCallPrivate] Initiating LLM call for ${agentLabel}. Setting isLoadingResponse = true.`);
   isLoadingResponse.value = true;
 
   chatStore.addMessage({ role: 'user', content: transcriptionText, agentId: agentId, timestamp: userMessageTimestamp });
@@ -226,7 +228,7 @@ async function standardLlmCallPrivate(transcriptionText: string, agentInstance: 
     chatStore.setMainContentStreaming(false);
   } finally {
     // **CRITICAL: Reset isLoadingResponse = false here for this specific LLM call path**
-    console.log(`[PrivateHome - standardLlmCallPrivate] LLM call finished for ${agentLabel}. Setting isLoadingResponse = false.`);
+    debugLog(`[PrivateHome - standardLlmCallPrivate] LLM call finished for ${agentLabel}. Setting isLoadingResponse = false.`);
     isLoadingResponse.value = false;
     if (chatStore.isMainContentStreaming && agentStore.activeAgentId === agentId) {
         chatStore.setMainContentStreaming(false);
@@ -236,7 +238,7 @@ async function standardLlmCallPrivate(transcriptionText: string, agentInstance: 
 
 const handleAgentViewEventFromSlot = (eventData: any): void => {
   if (!activeAgent.value) return;
-  // console.log(`[PrivateHome] AgentEvent: type='${eventData.type}', agentId='${eventData.agentId}' (active: ${activeAgent.value.id})`);
+  // debugLog(`[PrivateHome] AgentEvent: type='${eventData.type}', agentId='${eventData.agentId}' (active: ${activeAgent.value.id})`);
 
   if (eventData.agentId && eventData.agentId !== activeAgent.value.id) {
     // console.warn(`[PrivateHome] Ignored stale agent-event from '${eventData.agentId}'.`);
@@ -256,10 +258,10 @@ const handleAgentViewEventFromSlot = (eventData: any): void => {
       // This is the SOLE event from agent views that should control PrivateHome's isLoadingResponse.
       const newProcessingState = !!eventData.payload.isProcessing;
       if (isLoadingResponse.value !== newProcessingState) {
-        console.log(`[PrivateHome] Event 'setProcessingState' from agent view ${activeAgent.value.label}: payload.isProcessing = ${newProcessingState}. Updating PrivateHome.isLoadingResponse from ${isLoadingResponse.value} to ${newProcessingState}.`);
+        debugLog(`[PrivateHome] Event 'setProcessingState' from agent view ${activeAgent.value.label}: payload.isProcessing = ${newProcessingState}. Updating PrivateHome.isLoadingResponse from ${isLoadingResponse.value} to ${newProcessingState}.`);
         isLoadingResponse.value = newProcessingState;
       } else {
-        // console.log(`[PrivateHome] Event 'setProcessingState' from agent view ${activeAgent.value.label}: payload.isProcessing = ${newProcessingState}. PrivateHome.isLoadingResponse already ${isLoadingResponse.value}. No change.`);
+        // debugLog(`[PrivateHome] Event 'setProcessingState' from agent view ${activeAgent.value.label}: payload.isProcessing = ${newProcessingState}. PrivateHome.isLoadingResponse already ${isLoadingResponse.value}. No change.`);
       }
       if (!newProcessingState && chatStore.isMainContentStreaming) {
         chatStore.setMainContentStreaming(false);
@@ -277,7 +279,7 @@ const handleAgentViewEventFromSlot = (eventData: any): void => {
 };
 
 onMounted(async () => {
-  console.log("[PrivateHome] Mounted. Initial isLoadingResponse:", isLoadingResponse.value);
+  debugLog("[PrivateHome] Mounted. Initial isLoadingResponse:", isLoadingResponse.value);
   if (!auth.isAuthenticated.value) {
     router.replace({ name: 'Login', query: { sessionExpired: 'true', reason: 'unauthenticated_access_pro_mount' }});
     return;
@@ -299,24 +301,24 @@ onMounted(async () => {
   // Explicitly ensure isLoadingResponse is false after initial setup, unless an agent immediately signals processing.
   // This handles cases where it might have been true from a previous state if the component was kept-alive.
   if (isLoadingResponse.value && !activeAgent.value?.capabilities?.handlesOwnInput) {
-      console.log("[PrivateHome] onMounted: isLoadingResponse was true, but current agent does not handle own input. Resetting to false.");
+      debugLog("[PrivateHome] onMounted: isLoadingResponse was true, but current agent does not handle own input. Resetting to false.");
       isLoadingResponse.value = false;
   } else if (isLoadingResponse.value && activeAgent.value?.capabilities?.handlesOwnInput) {
-      console.log("[PrivateHome] onMounted: isLoadingResponse is true, and agent handles own input. Agent view is responsible for this state.");
+      debugLog("[PrivateHome] onMounted: isLoadingResponse is true, and agent handles own input. Agent view is responsible for this state.");
   } else {
       isLoadingResponse.value = false; // Default ensure it's false.
   }
-  console.log("[PrivateHome] onMounted finished. Final isLoadingResponse:", isLoadingResponse.value);
+  debugLog("[PrivateHome] onMounted finished. Final isLoadingResponse:", isLoadingResponse.value);
 });
 
 watch(() => agentStore.activeAgentId, async (newAgentId, oldAgentId) => {
-  console.log(`[PrivateHome] activeAgentId changed from ${oldAgentId || 'N/A'} to ${newAgentId || 'N/A'}. Current isLoadingResponse: ${isLoadingResponse.value}`);
+  debugLog(`[PrivateHome] activeAgentId changed from ${oldAgentId || 'N/A'} to ${newAgentId || 'N/A'}. Current isLoadingResponse: ${isLoadingResponse.value}`);
   if (newAgentId && newAgentId !== oldAgentId) {
     // Reset LLM loading state when agent changes, unless the new agent immediately sets it via event.
     // Standard agents won't emit 'setProcessingState' immediately, so this reset is safe for them.
     // Agents handling own input might emit quickly, and handleAgentViewEventFromSlot will update.
     if (isLoadingResponse.value) {
-        console.log(`[PrivateHome] Agent changed. Resetting isLoadingResponse from true to false.`);
+        debugLog(`[PrivateHome] Agent changed. Resetting isLoadingResponse from true to false.`);
         isLoadingResponse.value = false;
     }
     isVoiceInputCurrentlyProcessingAudio.value = false;
@@ -327,7 +329,7 @@ watch(() => agentStore.activeAgentId, async (newAgentId, oldAgentId) => {
     chatStore.updateMainContent({ agentId: 'private-dashboard-placeholder' as AgentId, type: 'custom-component', data: 'PrivateDashboardPlaceholder', title: 'Welcome Back!', timestamp: Date.now(), });
     currentSystemPromptText.value = '';
     if (isLoadingResponse.value) {
-        console.log(`[PrivateHome] Agent cleared. Resetting isLoadingResponse from true to false.`);
+        debugLog(`[PrivateHome] Agent cleared. Resetting isLoadingResponse from true to false.`);
         isLoadingResponse.value = false;
     }
   } else if (newAgentId && newAgentId === oldAgentId) { // Agent re-selected or initial load
@@ -338,13 +340,13 @@ watch(() => agentStore.activeAgentId, async (newAgentId, oldAgentId) => {
     chatStore.ensureMainContentForAgent(newAgentId);
     // Do not change isLoadingResponse here; it should persist if already true for this agent.
   }
-  console.log(`[PrivateHome] Watch activeAgentId finished for ${newAgentId}. Final isLoadingResponse: ${isLoadingResponse.value}`);
+  debugLog(`[PrivateHome] Watch activeAgentId finished for ${newAgentId}. Final isLoadingResponse: ${isLoadingResponse.value}`);
 }, { immediate: true });
 
 // Watch for STT activity changes. THIS IS FOR LOGGING/DEBUGGING ONLY.
 // IT MUST NOT CHANGE isLoadingResponse.
 watch(isVoiceInputCurrentlyProcessingAudio, (isSttActive) => {
-    console.log(`[PrivateHome - DEBUG] isVoiceInputCurrentlyProcessingAudio (STT active) changed to: ${isSttActive}. Current isLoadingResponse (LLM active): ${isLoadingResponse.value}`);
+    debugLog(`[PrivateHome - DEBUG] isVoiceInputCurrentlyProcessingAudio (STT active) changed to: ${isSttActive}. Current isLoadingResponse (LLM active): ${isLoadingResponse.value}`);
     // NO CHANGE TO isLoadingResponse.value HERE
 });
 
