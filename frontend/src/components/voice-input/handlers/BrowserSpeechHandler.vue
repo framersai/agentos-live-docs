@@ -25,6 +25,7 @@ import type {
   TranscriptionData,
   SttHandlerErrorPayload
 } from '../types';
+import { createScopedSttLogger } from '@/utils/debug';
 
 // TypeScript: declare SpeechRecognition types if not present (for browser compatibility)
 declare global {
@@ -117,6 +118,8 @@ interface BrowserSpeechHandlerProps {
 }
 
 const props = defineProps<BrowserSpeechHandlerProps>();
+
+const debugLog = createScopedSttLogger('BSH');
 
 const emit = defineEmits<{
   (e: 'handler-ready', handlerId: 'browser', api: SttHandlerInstance): void;
@@ -239,13 +242,13 @@ function _updatePublicStates(): void {
 
   if (isActive.value !== newIsActiveState) {
     isActive.value = newIsActiveState;
-    console.log(`[BSH] Public isActive state changed to: ${newIsActiveState} (Mode: ${currentListeningMode.value})`);
+    debugLog(`[BSH] Public isActive state changed to: ${newIsActiveState} (Mode: ${currentListeningMode.value})`);
     emit('processing-audio', newIsActiveState);
   }
 
   if (isListeningForWakeWord.value !== newIsListeningForWakeWordState) {
     isListeningForWakeWord.value = newIsListeningForWakeWordState;
-    console.log(`[BSH] Public isListeningForWakeWord state changed to: ${newIsListeningForWakeWordState}`);
+    debugLog(`[BSH] Public isListeningForWakeWord state changed to: ${newIsListeningForWakeWordState}`);
     emit('listening-for-wake-word', newIsListeningForWakeWordState);
   }
 }
@@ -279,7 +282,7 @@ function _checkForWakeWord(transcriptPart: string): string | null {
   for (const wakeWord of wakeWords) {
     const wakeWordRegex = new RegExp(`\\b${wakeWord}\\b`, 'i');
     if (wakeWordRegex.test(combinedRecentText)) {
-      console.log(`[BSH] Wake word "${wakeWord}" detected in buffered text: "${combinedRecentText}"`);
+      debugLog(`[BSH] Wake word "${wakeWord}" detected in buffered text: "${combinedRecentText}"`);
       wakeWordDetectionBuffer.length = 0;
       return wakeWord;
     }
@@ -321,7 +324,7 @@ function _createAndConfigureRecognizer(modeToConfigureFor: ListeningMode): boole
   if (props.settings.sttAutoDetectLanguage) {
     // Leave empty for browser to auto-detect (not all browsers support this)
     recognizer.value.lang = '';
-    console.log('[BSH] STT auto-detection enabled, language left unspecified for browser to detect');
+    debugLog('[BSH] STT auto-detection enabled, language left unspecified for browser to detect');
   } else {
     recognizer.value.lang = props.settings.speechLanguage || navigator.language || 'en-US';
   }
@@ -345,7 +348,7 @@ function _createAndConfigureRecognizer(modeToConfigureFor: ListeningMode): boole
       recognizer.value.continuous = false;
       recognizer.value.interimResults = false;
   }
-  console.log(`[BSH] Recognizer configured for mode '${modeToConfigureFor}': continuous=${recognizer.value.continuous}, interimResults=${recognizer.value.interimResults}, lang=${recognizer.value.lang}`);
+  debugLog(`[BSH] Recognizer configured for mode '${modeToConfigureFor}': continuous=${recognizer.value.continuous}, interimResults=${recognizer.value.interimResults}, lang=${recognizer.value.lang}`);
 
   _setupRecognizerEventHandlers();
   return true;
@@ -355,14 +358,14 @@ function _setupRecognizerEventHandlers(): void {
   if (!recognizer.value) return;
 
   recognizer.value.onstart = () => {
-    console.log(`[BSH] SpeechRecognition started. Current mode: ${currentListeningMode.value}`);
+    debugLog(`[BSH] SpeechRecognition started. Current mode: ${currentListeningMode.value}`);
     _isRecognizerActiveInternal.value = true;
     recognizerStartTimeMs = Date.now();
     if (currentListeningMode.value !== 'vad-command') {
         _resetTranscriptStates();
     }
     if (consecutiveErrorCount > 0) {
-        console.log('[BSH] Recognizer started successfully, resetting consecutive error count.');
+        debugLog('[BSH] Recognizer started successfully, resetting consecutive error count.');
         consecutiveErrorCount = 0;
     }
     // Track PTT recording start time and reset accumulated transcript
@@ -377,7 +380,7 @@ function _setupRecognizerEventHandlers(): void {
           clearTimeout(pttSilenceTimer);
           pttSilenceTimer = null;
         }
-        console.log('[BSH] PTT recording tracking started, accumulated transcript cleared');
+        debugLog('[BSH] PTT recording tracking started, accumulated transcript cleared');
     }
     isTransitioningStates = false;
   };
@@ -387,7 +390,7 @@ function _setupRecognizerEventHandlers(): void {
 
     // Ignore results after we've stopped PTT mode
     if (currentListeningMode.value === 'idle' && props.audioInputMode === 'push-to-talk') {
-        console.log('[BSH] Ignoring result after PTT stop');
+        debugLog('[BSH] Ignoring result after PTT stop');
         return;
     }
 
@@ -399,7 +402,7 @@ function _setupRecognizerEventHandlers(): void {
     // Track that PTT has received audio
     if (currentListeningMode.value === 'main' && props.audioInputMode === 'push-to-talk') {
         pttHasReceivedAudio = true;
-        console.log('[BSH] PTT has received audio result');
+        debugLog('[BSH] PTT has received audio result');
     }
 
     let fullTranscriptThisEvent = '';
@@ -445,15 +448,15 @@ function _setupRecognizerEventHandlers(): void {
     lastErrorTimestamp = now;
 
     if (event.error === 'aborted' && isTransitioningStates) {
-      console.log('[BSH] Expected "aborted" error during state transition. Ignoring.');
+      debugLog('[BSH] Expected "aborted" error during state transition. Ignoring.');
       return;
     }
     if (event.error === 'no-speech') {
       if (currentListeningMode.value === 'vad-wake') {
-        console.log('[BSH] "no-speech" error in VAD wake mode. Usually auto-restarts.');
+        debugLog('[BSH] "no-speech" error in VAD wake mode. Usually auto-restarts.');
         return;
       } else if (currentListeningMode.value === 'vad-command') {
-         console.log('[BSH] "no-speech" error in VAD command mode. This signifies command timeout or no input.');
+         debugLog('[BSH] "no-speech" error in VAD command mode. This signifies command timeout or no input.');
          emit('error', {
             type: 'recognition',
             message: 'No command speech detected after wake word (no-speech error).',
@@ -468,33 +471,33 @@ function _setupRecognizerEventHandlers(): void {
 
   // Add speech detection handlers for better debugging
   recognizer.value.onspeechstart = () => {
-    console.log('[BSH] Speech detected (onspeechstart)');
+    debugLog('[BSH] Speech detected (onspeechstart)');
     // Mark that PTT has detected speech
     if (currentListeningMode.value === 'main' && props.audioInputMode === 'push-to-talk') {
       pttHasReceivedAudio = true;
-      console.log('[BSH] PTT has detected speech start');
+      debugLog('[BSH] PTT has detected speech start');
     }
   };
 
   recognizer.value.onspeechend = () => {
-    console.log('[BSH] Speech ended (onspeechend)');
+    debugLog('[BSH] Speech ended (onspeechend)');
   };
 
   recognizer.value.onaudiostart = () => {
-    console.log('[BSH] Audio capture started (onaudiostart)');
+    debugLog('[BSH] Audio capture started (onaudiostart)');
   };
 
   recognizer.value.onaudioend = () => {
-    console.log('[BSH] Audio capture ended (onaudioend)');
+    debugLog('[BSH] Audio capture ended (onaudioend)');
   };
 
   recognizer.value.onend = () => {
-    console.log(`[BSH] SpeechRecognition ended. Mode was: ${currentListeningMode.value}, Internally Active: ${_isRecognizerActiveInternal.value}, Transitioning: ${isTransitioningStates}`);
-    console.log(`[BSH] Audio input mode: ${props.audioInputMode}`);
+    debugLog(`[BSH] SpeechRecognition ended. Mode was: ${currentListeningMode.value}, Internally Active: ${_isRecognizerActiveInternal.value}, Transitioning: ${isTransitioningStates}`);
+    debugLog(`[BSH] Audio input mode: ${props.audioInputMode}`);
 
     // Check if this is PTT mode that needs finalization
     const isPttFinalization = currentListeningMode.value === 'main' && props.audioInputMode === 'push-to-talk';
-    console.log(`[BSH] isPttFinalization: ${isPttFinalization}, mode: ${currentListeningMode.value}, audioInputMode: ${props.audioInputMode}`);
+    debugLog(`[BSH] isPttFinalization: ${isPttFinalization}, mode: ${currentListeningMode.value}, audioInputMode: ${props.audioInputMode}`);
 
     _isRecognizerActiveInternal.value = false;
 
@@ -508,13 +511,13 @@ function _setupRecognizerEventHandlers(): void {
 
       // Use the saved transcript from before stop was called (to avoid late-arriving results)
       const finalPttTranscript = (pttFinalTranscriptForEmit || accumulatedTranscriptForPtt).trim();
-      console.log(`[BSH] PTT finalization - Final transcript: "${finalPttTranscript}"`);
+      debugLog(`[BSH] PTT finalization - Final transcript: "${finalPttTranscript}"`);
 
       if (finalPttTranscript && _isValidTranscript(finalPttTranscript)) {
-        console.log(`[BSH] Emitting final PTT transcript from onend: "${finalPttTranscript}"`);
+        debugLog(`[BSH] Emitting final PTT transcript from onend: "${finalPttTranscript}"`);
         emit('transcription', { text: finalPttTranscript, isFinal: true, timestamp: Date.now() });
       } else {
-        console.log(`[BSH] No valid PTT transcript to emit on end.`);
+        debugLog(`[BSH] No valid PTT transcript to emit on end.`);
       }
       _resetTranscriptStates();
       currentListeningMode.value = 'idle';
@@ -523,13 +526,13 @@ function _setupRecognizerEventHandlers(): void {
 
     // Handle continuous mode restart specially
     if (continuousModeIsRestarting) {
-      console.log('[BSH] OnEnd during continuous mode restart, will be handled by restart logic');
+      debugLog('[BSH] OnEnd during continuous mode restart, will be handled by restart logic');
       // The restart logic in _handleMainResult will handle restarting
       return;
     }
 
     if (isTransitioningStates) {
-      console.log('[BSH] OnEnd during transition, assuming new state will be handled by control flow.');
+      debugLog('[BSH] OnEnd during transition, assuming new state will be handled by control flow.');
     } else if (props.currentMicPermission === 'granted' && !props.parentIsProcessingLLM) {
       const shouldAutoRestart =
         (currentListeningMode.value === 'vad-wake' && props.audioInputMode === 'voice-activation') ||
@@ -538,7 +541,7 @@ function _setupRecognizerEventHandlers(): void {
 
       if (shouldAutoRestart) {
         if (consecutiveErrorCount < MAX_CONSECUTIVE_ERRORS_ALLOWED) {
-          console.log(`[BSH] Scheduling auto-restart for mode: ${currentListeningMode.value}, PTT still active: ${props.audioInputMode === 'push-to-talk' && isListeningRef.value}`);
+          debugLog(`[BSH] Scheduling auto-restart for mode: ${currentListeningMode.value}, PTT still active: ${props.audioInputMode === 'push-to-talk' && isListeningRef.value}`);
           _scheduleAutoRestart();
         } else {
           console.error(`[BSH] Max consecutive errors (${consecutiveErrorCount}) reached. Halting auto-restart for ${currentListeningMode.value}.`);
@@ -560,7 +563,7 @@ function _setupRecognizerEventHandlers(): void {
 function _handleVadWakeResult(transcript: string): void {
   const detectedWakeWord = _checkForWakeWord(transcript);
   if (detectedWakeWord) {
-    console.log(`[BSH] Wake word "${detectedWakeWord}" confirmed by _handleVadWakeResult! Emitting event.`);
+    debugLog(`[BSH] Wake word "${detectedWakeWord}" confirmed by _handleVadWakeResult! Emitting event.`);
     emit('wake-word-detected');
   }
 }
@@ -576,23 +579,23 @@ function _handleVadCommandResult(transcriptChunk: string, isChunkFinalByRecogniz
     pendingTranscript.value = lastKnownVadCommandTranscript;
 
     // Emit interim results for VAD command to show live transcription
-    console.log(`[BSH-VADCmd] Updated transcript: "${lastKnownVadCommandTranscript}" (FinalByRec: ${isChunkFinalByRecognizer})`);
+    debugLog(`[BSH-VADCmd] Updated transcript: "${lastKnownVadCommandTranscript}" (FinalByRec: ${isChunkFinalByRecognizer})`);
     emit('transcription', { text: lastKnownVadCommandTranscript, isFinal: false, timestamp: Date.now() });
   }
 
   if (speechDetectedInVadCommandPhase) {
     _clearAllTimers();
     vadCommandPauseTimerId = window.setTimeout(() => {
-      console.log('[BSH-VADCmd] Pause detected after speech. Finalizing VAD command from pause timer.');
+      debugLog('[BSH-VADCmd] Pause detected after speech. Finalizing VAD command from pause timer.');
       _finalizeVadCommand('pause_detected');
     }, props.settings.vadCommandRecognizedPauseMs ?? 1500);
   }
 
   if (isChunkFinalByRecognizer && _isValidTranscript(lastKnownVadCommandTranscript)) {
-    console.log('[BSH-VADCmd] Recognizer marked chunk as final and transcript is valid. Finalizing.');
+    debugLog('[BSH-VADCmd] Recognizer marked chunk as final and transcript is valid. Finalizing.');
     _finalizeVadCommand('chunk_final_and_valid');
   } else if (isChunkFinalByRecognizer && !lastKnownVadCommandTranscript.trim()) {
-    console.log('[BSH-VADCmd] Recognizer marked chunk as final but no valid command accumulated.');
+    debugLog('[BSH-VADCmd] Recognizer marked chunk as final but no valid command accumulated.');
   }
 }
 
@@ -603,7 +606,7 @@ function _finalizeVadCommand(reason: string): void {
   _clearAllTimers();
 
   const finalCommand = lastKnownVadCommandTranscript.trim();
-  console.log(`[BSH-VADCmd] Finalizing command: "${finalCommand}". Reason: ${reason}`);
+  debugLog(`[BSH-VADCmd] Finalizing command: "${finalCommand}". Reason: ${reason}`);
 
   if (_isValidTranscript(finalCommand)) {
     emit('transcription', { text: finalCommand, isFinal: true, timestamp: Date.now() });
@@ -631,7 +634,7 @@ function _handleMainResult(transcript: string, isFinal: boolean): void {
 
     // Emit interim results for live transcription display
     if (transcript && !isFinal) {
-      console.log(`[BSH] Continuous mode interim transcript: "${transcript}"`);
+      debugLog(`[BSH] Continuous mode interim transcript: "${transcript}"`);
       emit('transcription', { text: transcript.trim(), isFinal: false, timestamp: Date.now() });
       continuousModeLastInterimTranscript = transcript.trim();
       continuousModeLastTranscriptTime = now;
@@ -645,7 +648,7 @@ function _handleMainResult(transcript: string, isFinal: boolean): void {
 
     // When we get a final result, start the silence timer
     if (isFinal && _isValidTranscript(transcript)) {
-      console.log(`[BSH] Continuous mode got final transcript: "${transcript}", starting silence timer`);
+      debugLog(`[BSH] Continuous mode got final transcript: "${transcript}", starting silence timer`);
       continuousModeLastTranscriptTime = now;
 
       // Clear existing timer if any
@@ -658,7 +661,7 @@ function _handleMainResult(transcript: string, isFinal: boolean): void {
         // Only send if we have meaningful content
         if (continuousModeAccumulatedTranscript &&
             continuousModeAccumulatedTranscript.length >= CONTINUOUS_MODE_MIN_TRANSCRIPT_LENGTH) {
-          console.log(`[BSH] Continuous mode silence timeout reached. Sending: "${continuousModeAccumulatedTranscript}"`);
+          debugLog(`[BSH] Continuous mode silence timeout reached. Sending: "${continuousModeAccumulatedTranscript}"`);
           emit('transcription', { text: continuousModeAccumulatedTranscript, isFinal: true, timestamp: Date.now() });
 
           // Reset state after sending
@@ -668,7 +671,7 @@ function _handleMainResult(transcript: string, isFinal: boolean): void {
 
           // Restart recognizer to clear accumulated results
           if (currentListeningMode.value === 'main' && props.audioInputMode === 'continuous') {
-            console.log('[BSH] Restarting recognizer to clear accumulated results in continuous mode');
+            debugLog('[BSH] Restarting recognizer to clear accumulated results in continuous mode');
             continuousModeIsRestarting = true; // Set flag to prevent auto-restart conflicts
 
             // Stop and destroy the current recognizer completely
@@ -686,7 +689,7 @@ function _handleMainResult(transcript: string, isFinal: boolean): void {
 
                 if (_isRecognizerActiveInternal.value) {
                   recognizer.value.abort();
-                  console.log('[BSH] Recognizer aborted for restart');
+                  debugLog('[BSH] Recognizer aborted for restart');
                 }
                 recognizer.value = null; // Clear the reference completely
               } catch (e: any) {
@@ -700,7 +703,7 @@ function _handleMainResult(transcript: string, isFinal: boolean): void {
             // Schedule restart with a delay to ensure clean state
             setTimeout(async () => {
               if (currentListeningMode.value === 'main' && props.audioInputMode === 'continuous') {
-                console.log('[BSH] Creating fresh recognizer for continuous mode');
+                debugLog('[BSH] Creating fresh recognizer for continuous mode');
 
                 // Clear any pending auto-restart timer
                 if (autoRestartTimerId) {
@@ -717,7 +720,7 @@ function _handleMainResult(transcript: string, isFinal: boolean): void {
                 if (_createAndConfigureRecognizer('main')) {
                   try {
                     recognizer.value?.start();
-                    console.log('[BSH] Fresh recognizer started successfully for continuous mode');
+                    debugLog('[BSH] Fresh recognizer started successfully for continuous mode');
                   } catch (e: any) {
                     console.error('[BSH] Failed to start fresh recognizer:', e.message);
                     // Try to recover by starting listening again
@@ -734,12 +737,12 @@ function _handleMainResult(transcript: string, isFinal: boolean): void {
               } else {
                 // Mode changed, clear flag
                 continuousModeIsRestarting = false;
-                console.log('[BSH] Mode changed during restart, cancelling');
+                debugLog('[BSH] Mode changed during restart, cancelling');
               }
             }, 500); // Slightly longer delay for complete cleanup
           }
         } else {
-          console.log(`[BSH] Continuous mode silence timeout but transcript too short (${continuousModeAccumulatedTranscript?.length || 0} chars), discarding`);
+          debugLog(`[BSH] Continuous mode silence timeout but transcript too short (${continuousModeAccumulatedTranscript?.length || 0} chars), discarding`);
           continuousModeAccumulatedTranscript = '';
           pendingTranscript.value = '';
         }
@@ -756,7 +759,7 @@ function _handleMainResult(transcript: string, isFinal: boolean): void {
 
         if (isFinal && _isValidTranscript(transcript)) {
             // Final result from recognizer
-            console.log(`[BSH] PTT final transcript (cumulative): "${accumulatedTranscriptForPtt}"`);
+            debugLog(`[BSH] PTT final transcript (cumulative): "${accumulatedTranscriptForPtt}"`);
             pttLastInterimTranscript = '';
 
             // Emit immediately for final results
@@ -768,7 +771,7 @@ function _handleMainResult(transcript: string, isFinal: boolean): void {
 
             // Only log every 5th interim to reduce console spam
             if (Math.random() < 0.2) {
-                console.log(`[BSH] PTT interim transcript: "${accumulatedTranscriptForPtt}"`);
+                debugLog(`[BSH] PTT interim transcript: "${accumulatedTranscriptForPtt}"`);
             }
 
             // Debounce the emission of interim results to reduce UI updates
@@ -786,11 +789,11 @@ function _handleMainResult(transcript: string, isFinal: boolean): void {
   } else if (props.audioInputMode === 'voice-activation') {
     // Emit interim results for VAD mode to show live transcription
     if (transcript && !isFinal) {
-      console.log(`[BSH] VAD mode interim transcript: "${transcript}"`);
+      debugLog(`[BSH] VAD mode interim transcript: "${transcript}"`);
       emit('transcription', { text: transcript.trim(), isFinal: false, timestamp: Date.now() });
     }
     if (isFinal && _isValidTranscript(transcript)) {
-      console.log(`[BSH] VAD mode transcript (final): "${transcript}"`);
+      debugLog(`[BSH] VAD mode transcript (final): "${transcript}"`);
       emit('transcription', { text: transcript.trim(), isFinal: true, timestamp: Date.now() });
       pendingTranscript.value = '';
     }
@@ -853,22 +856,22 @@ function _handleGenericRecognitionError(errorName: string, errorMessage: string)
 
 function _scheduleAutoRestart(): void {
   _clearAllTimers();
-  console.log(`[BSH] Scheduling auto-restart of recognizer in ${RESTART_DELAY_MS}ms for mode ${currentListeningMode.value}.`);
+  debugLog(`[BSH] Scheduling auto-restart of recognizer in ${RESTART_DELAY_MS}ms for mode ${currentListeningMode.value}.`);
   isTransitioningStates = true;
   autoRestartTimerId = window.setTimeout(() => {
     if (props.currentMicPermission === 'granted' && !props.parentIsProcessingLLM) {
-      console.log('[BSH] Auto-restarting listener now.');
+      debugLog('[BSH] Auto-restarting listener now.');
       // Restart in the appropriate mode
       if (currentListeningMode.value === 'vad-wake' || props.audioInputMode === 'voice-activation') {
         _startListeningInternal(false); // VAD wake mode
       } else if (props.audioInputMode === 'continuous') {
         _startListeningInternal(false); // Continuous mode
       } else if (props.audioInputMode === 'push-to-talk' && isListeningRef.value) {
-        console.log('[BSH] Auto-restarting PTT mode as button is still held.');
+        debugLog('[BSH] Auto-restarting PTT mode as button is still held.');
         _startListeningInternal(true); // PTT mode - main listening
       }
     } else {
-      console.log('[BSH] Auto-restart conditions no longer met. Staying idle.');
+      debugLog('[BSH] Auto-restart conditions no longer met. Staying idle.');
       currentListeningMode.value = 'idle';
       _updatePublicStates();
       isTransitioningStates = false;
@@ -878,16 +881,16 @@ function _scheduleAutoRestart(): void {
 
 async function _stopRecognizerInstance(forceAbort: boolean = false): Promise<void> {
   if (recognizer.value && _isRecognizerActiveInternal.value) {
-    console.log('[BSH] Attempting to stop/abort active SpeechRecognition instance...');
+    debugLog('[BSH] Attempting to stop/abort active SpeechRecognition instance...');
     try {
       // For PTT mode, use stop() to get the final transcript
       // For other modes or when forceAbort is true, use abort()
       if (props.audioInputMode === 'push-to-talk' && !forceAbort) {
         recognizer.value.stop();
-        console.log('[BSH] SpeechRecognition instance stop() called (PTT mode).');
+        debugLog('[BSH] SpeechRecognition instance stop() called (PTT mode).');
       } else {
         recognizer.value.abort();
-        console.log('[BSH] SpeechRecognition instance abort() called.');
+        debugLog('[BSH] SpeechRecognition instance abort() called.');
       }
     } catch (e: any) {
       console.warn('[BSH] Error while trying to stop/abort recognizer:', e.message);
@@ -901,7 +904,7 @@ async function _stopListeningInternal(abort: boolean = false): Promise<void> {
     return;
   }
 
-  console.log(`[BSH] Stopping listening. Abort: ${abort}. Current mode: ${currentListeningMode.value}. Transitioning: ${isTransitioningStates}`);
+  debugLog(`[BSH] Stopping listening. Abort: ${abort}. Current mode: ${currentListeningMode.value}. Transitioning: ${isTransitioningStates}`);
 
   isTransitioningStates = true;
 
@@ -909,13 +912,13 @@ async function _stopListeningInternal(abort: boolean = false): Promise<void> {
   if (continuousModeStartDelayTimer) {
     clearTimeout(continuousModeStartDelayTimer);
     continuousModeStartDelayTimer = null;
-    console.log('[BSH] Cancelled continuous mode start delay timer.');
+    debugLog('[BSH] Cancelled continuous mode start delay timer.');
   }
 
   // If stopping continuous mode, send any accumulated transcript first
   if (props.audioInputMode === 'continuous' && continuousModeAccumulatedTranscript &&
       continuousModeAccumulatedTranscript.length >= CONTINUOUS_MODE_MIN_TRANSCRIPT_LENGTH) {
-    console.log(`[BSH] Sending accumulated continuous transcript before stop: "${continuousModeAccumulatedTranscript}"`);
+    debugLog(`[BSH] Sending accumulated continuous transcript before stop: "${continuousModeAccumulatedTranscript}"`);
     emit('transcription', { text: continuousModeAccumulatedTranscript, isFinal: true, timestamp: Date.now() });
 
     // Clear the accumulated transcript after sending
@@ -933,7 +936,7 @@ async function _stopListeningInternal(abort: boolean = false): Promise<void> {
   // Save the current accumulated transcript before stopping for PTT
   if (isPttMode && !abort) {
     pttFinalTranscriptForEmit = accumulatedTranscriptForPtt;
-    console.log(`[BSH] Saved PTT transcript before stop: "${pttFinalTranscriptForEmit}"`);
+    debugLog(`[BSH] Saved PTT transcript before stop: "${pttFinalTranscriptForEmit}"`);
   }
 
   await _stopRecognizerInstance(abort);
@@ -948,7 +951,7 @@ async function _stopListeningInternal(abort: boolean = false): Promise<void> {
   if (!autoRestartTimerId) {
       isTransitioningStates = false;
   }
-  console.log('[BSH] Listening explicitly stopped, transitioned to idle (or awaiting restart).');
+  debugLog('[BSH] Listening explicitly stopped, transitioned to idle (or awaiting restart).');
 }
 
 async function _startListeningInternal(forVadCommandCapture: boolean = false): Promise<boolean> {
@@ -960,13 +963,13 @@ async function _startListeningInternal(forVadCommandCapture: boolean = false): P
 
   // Clear continuous mode restart flag if it's stuck
   if (continuousModeIsRestarting && props.audioInputMode === 'continuous') {
-    console.log('[BSH] Clearing stuck continuous mode restart flag');
+    debugLog('[BSH] Clearing stuck continuous mode restart flag');
     continuousModeIsRestarting = false;
   }
 
   // For continuous mode, ensure we have a clean recognizer
   if (props.audioInputMode === 'continuous' && recognizer.value) {
-    console.log('[BSH] Continuous mode: Destroying old recognizer for fresh start');
+    debugLog('[BSH] Continuous mode: Destroying old recognizer for fresh start');
     try {
       // Remove all event handlers
       recognizer.value.onstart = null;
@@ -992,7 +995,7 @@ async function _startListeningInternal(forVadCommandCapture: boolean = false): P
     }
   }
 
-  console.log(`[BSH] Attempting to start listening. For VAD command: ${forVadCommandCapture}, Current Audio Mode: ${props.audioInputMode}`);
+  debugLog(`[BSH] Attempting to start listening. For VAD command: ${forVadCommandCapture}, Current Audio Mode: ${props.audioInputMode}`);
 
   if (props.currentMicPermission !== 'granted') {
     emit('error', { type: 'permission', message: 'Microphone permission not granted.', code: 'mic-permission-denied', fatal: true });
@@ -1008,7 +1011,7 @@ async function _startListeningInternal(forVadCommandCapture: boolean = false): P
   }
 
   if (recognizer.value && _isRecognizerActiveInternal.value) {
-      console.log('[BSH] Active recognizer found before start. Stopping it first.');
+      debugLog('[BSH] Active recognizer found before start. Stopping it first.');
       await _stopRecognizerInstance(true); // Force abort when cleaning up before start
       await new Promise(resolve => setTimeout(resolve, 100));
   }
@@ -1018,7 +1021,7 @@ async function _startListeningInternal(forVadCommandCapture: boolean = false): P
   if (targetMode === 'vad-command') {
     lastKnownVadCommandTranscript = ''; // FIXED: Reset for new command
     speechDetectedInVadCommandPhase = false;
-    console.log('[BSH] Preparing for VAD command capture.');
+    debugLog('[BSH] Preparing for VAD command capture.');
   } else {
     _resetTranscriptStates();
   }
@@ -1036,14 +1039,14 @@ async function _startListeningInternal(forVadCommandCapture: boolean = false): P
 
   // For continuous mode ONLY (not PTT), add a delay to prevent immediate stop
   if (targetMode === 'main' && props.audioInputMode === 'continuous') {
-    console.log('[BSH] Delaying continuous mode start to avoid immediate stop...');
+    debugLog('[BSH] Delaying continuous mode start to avoid immediate stop...');
     await new Promise(resolve => {
       continuousModeStartDelayTimer = window.setTimeout(resolve, CONTINUOUS_MODE_START_DELAY_MS);
     });
 
     // Check if we should still start after the delay
     if (currentListeningMode.value !== targetMode) {
-      console.log('[BSH] Continuous mode start cancelled during delay. Current mode:', currentListeningMode.value);
+      debugLog('[BSH] Continuous mode start cancelled during delay. Current mode:', currentListeningMode.value);
       currentListeningMode.value = 'idle';
       _updatePublicStates();
       isTransitioningStates = false;
@@ -1052,7 +1055,7 @@ async function _startListeningInternal(forVadCommandCapture: boolean = false): P
   }
 
   try {
-    console.log(`[BSH] Calling recognizer.start() for mode: ${targetMode}`);
+    debugLog(`[BSH] Calling recognizer.start() for mode: ${targetMode}`);
     recognizer.value!.start();
 
     if (targetMode === 'vad-command') {
@@ -1088,7 +1091,7 @@ const api: SttHandlerInstance = {
     return _stopListeningInternal(abort);
   },
   reinitialize: async () => {
-    console.log('[BSH] Reinitializing handler...');
+    debugLog('[BSH] Reinitializing handler...');
     isTransitioningStates = true;
     await _stopListeningInternal(true);
 
@@ -1105,7 +1108,7 @@ const api: SttHandlerInstance = {
         recognizer.value.onaudiostart = null;
         recognizer.value.onaudioend = null;
         recognizer.value = null;
-        console.log('[BSH] Recognizer destroyed during reinitialize');
+        debugLog('[BSH] Recognizer destroyed during reinitialize');
       } catch (e) {
         console.error('[BSH] Error destroying recognizer during reinitialize:', e);
       }
@@ -1118,10 +1121,10 @@ const api: SttHandlerInstance = {
     continuousModeIsRestarting = false; // Clear any stuck restart flag
 
     isTransitioningStates = false;
-    console.log('[BSH] Reinitialization complete. Ready to (re)start if needed.');
+    debugLog('[BSH] Reinitialization complete. Ready to (re)start if needed.');
   },
   stopAll: async (abort: boolean = true) => {
-    console.log(`[BSH] stopAll called. Abort: ${abort}`);
+    debugLog(`[BSH] stopAll called. Abort: ${abort}`);
     await _stopListeningInternal(abort);
   },
   isActive: readonly(isActive),
@@ -1148,11 +1151,11 @@ onMounted(() => {
     isRecognizerAPISupported.value = true;
   }
   emit('handler-ready', 'browser', api);
-  console.log('[BSH] BrowserSpeechHandler mounted and API emitted.');
+  debugLog('[BSH] BrowserSpeechHandler mounted and API emitted.');
 });
 
 onBeforeUnmount(async () => {
-  console.log('[BSH] BrowserSpeechHandler unmounting. Stopping all activity.');
+  debugLog('[BSH] BrowserSpeechHandler unmounting. Stopping all activity.');
   _clearAllTimers();
   await api.stopAll(true);
   recognizer.value = null;
@@ -1161,14 +1164,16 @@ onBeforeUnmount(async () => {
 
 watch(() => props.settings.speechLanguage, async (newLang, oldLang) => {
   if (newLang && oldLang && newLang !== oldLang) {
-    console.log(`[BSH] Speech language changed from ${oldLang} to ${newLang}. Triggering reinitialization.`);
+    debugLog(`[BSH] Speech language changed from ${oldLang} to ${newLang}. Triggering reinitialization.`);
     await api.reinitialize();
   }
 });
 
 watch(() => props.settings.vadWakeWordsBrowserSTT, () => {
-    console.log('[BSH] VAD wake words changed. Clearing detection buffer.');
+    debugLog('[BSH] VAD wake words changed. Clearing detection buffer.');
     wakeWordDetectionBuffer.length = 0;
 }, { deep: true });
 
 </script>
+
+

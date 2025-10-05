@@ -26,14 +26,14 @@
     <svg class="mic-input-button__svg" viewBox="-10 -10 140 140" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <filter :id="`micGlowSoft_${uniqueId}`" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="var(--mic-glow-soft-std-deviation, 3)" result="coloredBlurSoft"/>
+          <feGaussianBlur :stdDeviation="micGlowSoftStdDeviation" result="coloredBlurSoft"/>
           <feMerge>
             <feMergeNode in="coloredBlurSoft"/>
             <feMergeNode in="SourceGraphic"/>
           </feMerge>
         </filter>
         <filter :id="`micGlowIntense_${uniqueId}`" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="var(--mic-glow-intense-std-deviation, 5)" result="coloredBlurIntense"/>
+          <feGaussianBlur :stdDeviation="micGlowIntenseStdDeviation" result="coloredBlurIntense"/>
           <feMerge>
             <feMergeNode in="coloredBlurIntense"/>
             <feMergeNode in="SourceGraphic"/>
@@ -70,23 +70,23 @@
         <circle
           v-for="i in (props.currentAudioMode === 'continuous' ? 4 : 3)" :key="`wave-${i}`"
           class="mic-radiant-wave"
-          cx="60" cy="60" r="var(--mic-wave-radius-start, 22)"
+          cx="60" cy="60" :r="micWaveRadiusStart"
           fill="none"
           stroke="var(--mic-wave-color)"
-          stroke-width="var(--mic-wave-stroke-initial, 1.5px)"
-          opacity="var(--mic-wave-opacity-initial, 0)"
+          :stroke-width="micWaveStrokeInitial"
+          :opacity="micWaveOpacityInitial"
         >
-          <animate attributeName="r" 
-            :values="`var(--mic-wave-radius-start, 22); var(--mic-wave-radius-end, 58)`" 
-            :dur="`var(--mic-wave-duration-base, 2s)`" 
+          <animate attributeName="r"
+            :values="micWaveRadiusAnimateValues"
+            :dur="micWaveDuration"
             :begin="`${i * 0.4}s`" fill="freeze" repeatCount="indefinite" />
-          <animate attributeName="opacity" 
-            :values="`var(--mic-wave-opacity-initial, 0); var(--mic-wave-opacity-peak, 0.6); 0`" 
-            :dur="`var(--mic-wave-duration-base, 2s)`" 
+          <animate attributeName="opacity"
+            :values="micWaveOpacityAnimateValues"
+            :dur="micWaveDuration"
             :begin="`${i * 0.4}s`" fill="freeze" repeatCount="indefinite" />
-          <animate attributeName="stroke-width" 
-            :values="`var(--mic-wave-stroke-initial, 1.5px); var(--mic-wave-stroke-peak, 2.5px); var(--mic-wave-stroke-end, 0.5px)`" 
-            :dur="`var(--mic-wave-duration-base, 2s)`" 
+          <animate attributeName="stroke-width"
+            :values="micWaveStrokeAnimateValues"
+            :dur="micWaveDuration"
             :begin="`${i * 0.4}s`" fill="freeze" repeatCount="indefinite" />
         </circle>
       </g>
@@ -175,6 +175,22 @@ defineEmits(['click', 'mousedown', 'mouseup', 'mouseleave', 'touchstart', 'touch
 
 const instance = getCurrentInstance();
 const uniqueId = ref(instance?.uid || Math.random().toString(36).substring(2,9));
+
+const micGlowSoftStdDeviation = 3;
+const micGlowIntenseStdDeviation = 5;
+const micWaveRadiusStart = 22;
+const micWaveRadiusEnd = computed(() => props.currentAudioMode === 'continuous' ? 60 : 58);
+const micWaveStrokeInitial = 1.5;
+const micWaveStrokePeak = 2.5;
+const micWaveStrokeEnd = 0.5;
+const micWaveOpacityInitial = 0;
+const micWaveOpacityPeak = 0.6;
+const micWaveDurationSeconds = 2;
+
+const micWaveRadiusAnimateValues = computed(() => `${micWaveRadiusStart}; ${micWaveRadiusEnd.value}`);
+const micWaveOpacityAnimateValues = `${micWaveOpacityInitial}; ${micWaveOpacityPeak}; 0`;
+const micWaveStrokeAnimateValues = `${micWaveStrokeInitial}; ${micWaveStrokePeak}; ${micWaveStrokeEnd}`;
+const micWaveDuration = `${micWaveDurationSeconds}s`;
 
 const isProcessingLLMFiltered = computed(() => props.isProcessingLLM && !props.isActive && !props.isListeningForWakeWord);
 const isEffectivelyListening = computed(() => (props.isActive || props.isListeningForWakeWord) && !isProcessingLLMFiltered.value && !props.hasMicError && !props.disabled);
