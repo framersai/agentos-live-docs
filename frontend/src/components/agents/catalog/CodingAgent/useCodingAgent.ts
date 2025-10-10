@@ -417,7 +417,7 @@ export function useCodingAgent(
       }
 
 
-      const payload: ChatMessagePayloadFE = {
+      const basePayload: ChatMessagePayloadFE = {
         messages: messagesForLlm,
         mode: agentConfigRef.value.id, // Use the actual agent ID for the API mode
         language: preferredLang,
@@ -427,12 +427,13 @@ export function useCodingAgent(
         // Assuming tools are defined in the agentConfig or backend knows them by mode
         // tools: agentConfigRef.value.capabilities?.tools || []
       };
+      const payload = chatStore.attachPersonaToPayload(agentConfigRef.value.id, basePayload);
 
       let accumulatedContent = '';
       let inCodeBlock = false;
       let currentBlockLanguage = '';
 
-      await chatAPI.sendMessageStream(
+      const finalResponse = await chatAPI.sendMessageStream(
         payload,
         (chunk) => { // onChunk
           accumulatedContent += chunk;
@@ -477,6 +478,7 @@ export function useCodingAgent(
           _handleQueryError(error, "streaming");
         }
       );
+      chatStore.syncPersonaFromResponse(agentConfigRef.value.id, finalResponse);
 
     } catch (error: any) {
       _handleQueryError(error, "setup");
@@ -733,7 +735,7 @@ export function useCodingAgent(
       }
 
 
-      const payload: ChatMessagePayloadFE = {
+      const basePayload: ChatMessagePayloadFE = {
         messages: messagesForLlm,
         mode: agentConfigRef.value.id,
         language: preferredLang,
@@ -741,12 +743,13 @@ export function useCodingAgent(
         conversationId: chatStore.getCurrentConversationId(agentConfigRef.value.id),
         stream: true,
       };
+      const payload = chatStore.attachPersonaToPayload(agentConfigRef.value.id, basePayload);
 
       let accumulatedContent = '';
       // currentCodeSnippet.value = ""; // Reset before streaming new response
       // currentExplanationMarkdown.value = "";
 
-      await chatAPI.sendMessageStream(
+      const finalResponse = await chatAPI.sendMessageStream(
         payload,
         (chunk) => {
           accumulatedContent += chunk;
@@ -775,6 +778,7 @@ export function useCodingAgent(
         },
         (error) => _handleQueryError(error, "tool_response_streaming")
       );
+      chatStore.syncPersonaFromResponse(agentConfigRef.value.id, finalResponse);
 
     } catch (error: any) {
       _handleQueryError(error, "tool_response_setup");
@@ -862,19 +866,27 @@ export function useCodingAgent(
 
   function _buildSystemPrompt(queryText: string, lang: string): string {
     // Simple replacement, can be more sophisticated
+    const personaOverride = chatStore.getPersonaForAgent(agentConfigRef.value.id);
+    const baseInstructions = "Focus on providing runnable code and clear explanations. Use markdown code blocks for all code. If a diagram would clarify an algorithm or data structure, consider generating a Mermaid diagram if {{GENERATE_DIAGRAM}} is true.";
+    const combinedInstructions = [baseInstructions, personaOverride?.trim()].filter(Boolean).join('\n\n');
+
     return (currentAgentSystemPrompt.value || _getDefaultSystemPrompt())
       .replace(/{{LANGUAGE}}/g, lang)
       .replace(/{{USER_QUERY}}/g, queryText.substring(0, 200)) // Limit query length in prompt
       .replace(/{{AGENT_CONTEXT_JSON}}/g, JSON.stringify({ currentQuery: queryText.substring(0,100), preferredLanguage: lang }))
-      .replace(/{{ADDITIONAL_INSTRUCTIONS}}/g, "Focus on providing runnable code and clear explanations. Use markdown code blocks for all code. If a diagram would clarify an algorithm or data structure, consider generating a Mermaid diagram if {{GENERATE_DIAGRAM}} is true.");
+      .replace(/{{ADDITIONAL_INSTRUCTIONS}}/g, combinedInstructions);
   }
 
  function _buildSystemPromptForToolResponse(toolNameUsed: string, lang: string): string {
+    const personaOverride = chatStore.getPersonaForAgent(agentConfigRef.value.id);
+    const baseInstructions = `The tool '${toolNameUsed}' has just been executed. Its output is provided in the next message. Based on this output and the original query ("${currentQuery.value.substring(0,100)}..."), provide a comprehensive response to the user. Ensure code is runnable and explanations are clear.`;
+    const combinedInstructions = [baseInstructions, personaOverride?.trim()].filter(Boolean).join('\n\n');
+
     return (currentAgentSystemPrompt.value || _getDefaultSystemPrompt())
       .replace(/{{LANGUAGE}}/g, lang)
       .replace(/{{USER_QUERY}}/g, currentQuery.value.substring(0, 200))
       .replace(/{{AGENT_CONTEXT_JSON}}/g, JSON.stringify({ currentQuery: currentQuery.value.substring(0,100), preferredLanguage: lang, lastToolCall: toolNameUsed }))
-      .replace(/{{ADDITIONAL_INSTRUCTIONS}}/g, `The tool '${toolNameUsed}' has just been executed. Its output is provided in the next message. Based on this output and the original query ("${currentQuery.value.substring(0,100)}..."), provide a comprehensive response to the user. Ensure code is runnable and explanations are clear.`);
+      .replace(/{{ADDITIONAL_INSTRUCTIONS}}/g, combinedInstructions);
   }
 
   // --- Content Generation for mainContentForRenderer ---

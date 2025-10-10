@@ -28,6 +28,24 @@ export class SqliteMemoryAdapter implements IMemoryAdapter {
   private db: DB | null = null;
   private isEnabled: boolean = SQLITE_MEMORY_ENABLED;
 
+  private ensureConversationPersonaColumn(): void {
+    if (!this.db) {
+      return;
+    }
+
+    try {
+      const columns = this.db.prepare('PRAGMA table_info(conversations);').all() as Array<{ name: string }>;
+      const hasPersonaColumn = columns.some(column => column.name === 'persona');
+      if (!hasPersonaColumn) {
+        console.log('[SqliteMemoryAdapter] Adding missing persona column to conversations table.');
+        this.db.exec('ALTER TABLE conversations ADD COLUMN persona TEXT;');
+      }
+    } catch (error) {
+      console.error('[SqliteMemoryAdapter] Failed to ensure persona column exists:', error);
+      throw error;
+    }
+  }
+
   public async initialize(): Promise<void> {
     if (!this.isEnabled) {
       console.log('[SqliteMemoryAdapter] SQLite memory is DISABLED via ENABLE_SQLITE_MEMORY environment variable.');
@@ -44,19 +62,22 @@ export class SqliteMemoryAdapter implements IMemoryAdapter {
       console.log(`[SqliteMemoryAdapter] Connected to SQLite database: ${DB_PATH}`);
       
       // Optional: Conversations table for meta-info about each conversation session
-      this.db.exec(`
-        CREATE TABLE IF NOT EXISTS conversations (
-          conversationId TEXT PRIMARY KEY,
-          userId TEXT NOT NULL,
-          agentId TEXT, 
-          createdAt INTEGER NOT NULL,
-          lastActivity INTEGER NOT NULL,
-          summary TEXT,
-          title TEXT 
-        );
-      `);
+            this.db.exec(`
+        CREATE TABLE IF NOT EXISTS conversations (
+          conversationId TEXT PRIMARY KEY,
+          userId TEXT NOT NULL,
+          agentId TEXT, 
+          createdAt INTEGER NOT NULL,
+          lastActivity INTEGER NOT NULL,
+          summary TEXT,
+          title TEXT,
+          persona TEXT
+        );
+      `);
       this.db.exec('CREATE INDEX IF NOT EXISTS idx_conversations_user_activity ON conversations (userId, lastActivity);');
       this.db.exec('CREATE INDEX IF NOT EXISTS idx_conversations_user_id ON conversations (userId);');
+
+      this.ensureConversationPersonaColumn();
 
 
       this.db.exec(`
@@ -225,7 +246,7 @@ export class SqliteMemoryAdapter implements IMemoryAdapter {
     userId: string,
     limit: number = 20,
     offset: number = 0
-  ): Promise<Array<{ conversationId: string; lastActivity: number; agentId?: string; summary?: string; title?: string; turnCount?: number }>> {
+  ): Promise<Array<{ conversationId: string; lastActivity: number; agentId?: string; summary?: string; title?: string; turnCount?: number; persona?: string | null }>> {
     if (!this.isEnabled || !this.db) {
       // console.log('[SqliteMemoryAdapter] Listing conversations is skipped (SQLite disabled or DB not initialized).');
       return [];
@@ -238,6 +259,7 @@ export class SqliteMemoryAdapter implements IMemoryAdapter {
         c.agentId, 
         c.summary, 
         c.title,
+      c.persona,
         (SELECT COUNT(*) FROM conversation_turns ct WHERE ct.conversationId = c.conversationId) as turnCount
       FROM conversations c
       WHERE c.userId = ?
@@ -247,19 +269,78 @@ export class SqliteMemoryAdapter implements IMemoryAdapter {
     try {
       const stmt = this.db.prepare(query);
       const rows = stmt.all(userId, limit, offset) as any[];
-      return rows.map(row => ({
-        conversationId: row.conversationId,
-        lastActivity: row.lastActivity,
-        agentId: row.agentId,
-        summary: row.summary,
-        title: row.title,
-        turnCount: row.turnCount,
-      }));
+    return rows.map(row => ({
+      conversationId: row.conversationId,
+      lastActivity: row.lastActivity,
+      agentId: row.agentId,
+      summary: row.summary,
+      title: row.title,
+      turnCount: row.turnCount,
+      persona: row.persona ?? null,
+    }));
     } catch (error) {
       console.error(`[SqliteMemoryAdapter] Error listing conversations for user ${userId}:`, error);
       throw error;
     }
   }
+
+  public async setConversationPersona(
+    userId: string,
+    conversationId: string,
+    agentId: string,
+    persona: string | null,
+    timestamp: number = Date.now(),
+  ): Promise<void> {
+    if (!this.isEnabled || !this.db) {
+      return;
+    }
+
+    const effectiveTimestamp = Number.isFinite(timestamp) ? timestamp : Date.now();
+
+    try {
+      const upsertPersonaStmt = this.db.prepare(`
+        INSERT INTO conversations (conversationId, userId, agentId, createdAt, lastActivity, persona)
+        VALUES (@conversationId, @userId, @agentId, @createdAt, @lastActivity, @persona)
+        ON CONFLICT(conversationId) DO UPDATE SET
+          lastActivity = CASE
+            WHEN excluded.lastActivity > COALESCE(conversations.lastActivity, 0) THEN excluded.lastActivity
+            ELSE conversations.lastActivity
+          END,
+          agentId = CASE
+            WHEN excluded.agentId IS NOT NULL AND (conversations.agentId IS NULL OR conversations.agentId != excluded.agentId) THEN excluded.agentId
+            ELSE conversations.agentId
+          END,
+          persona = excluded.persona;
+      `);
+
+      upsertPersonaStmt.run({
+        conversationId,
+        userId,
+        agentId,
+        createdAt: effectiveTimestamp,
+        lastActivity: effectiveTimestamp,
+        persona,
+      });
+    } catch (error) {
+      console.error(`[SqliteMemoryAdapter] Error setting persona for conversation ${conversationId}:`, error);
+      throw error;
+    }
+  }
+
+  public async getConversationPersona(userId: string, conversationId: string): Promise<string | null> {
+    if (!this.isEnabled || !this.db) {
+      return null;
+    }
+
+    try {
+      const stmt = this.db.prepare('SELECT persona FROM conversations WHERE userId = ? AND conversationId = ? LIMIT 1;');
+      const row = stmt.get(userId, conversationId) as { persona: string | null } | undefined;
+      return row?.persona ?? null;
+    } catch (error) {
+      console.error(`[SqliteMemoryAdapter] Error retrieving persona for conversation ${conversationId}:`, error);
+      throw error;
+    }
+  }
 
   public async pruneHistory(
     userId: string,

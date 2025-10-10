@@ -46,8 +46,7 @@
       :class="{
         'viz-active': isVisualizationActive,
         'viz-listening': isListeningForWakeWord,
-        'viz-recording': isModeEngaged && !isListeningForWakeWord,
-        'viz-continuous': currentAudioMode === 'continuous'
+        'viz-recording': isModeEngaged && !isListeningForWakeWord
       }"
     />
 
@@ -64,41 +63,52 @@
     </transition>
 
     <div class="vi-controls-wrapper">
-      <MicInputButton
-        ref="micButtonRefInternal"
-        :isActive="isModeEngaged"
-        :isListeningForWakeWord="isListeningForWakeWord"
-        :isProcessingLLM="props.isProcessingLLM"
-        :hasMicError="hasMicError"
-        :disabled="micButtonDisabled"
-        :currentAudioMode="currentAudioMode"
-        :aria-label="micButtonAriaLabel"
-        :aria-busy="isModeInitializing ? 'true' : 'false'"
-        @click="handleMicButtonClick"
-        @mousedown="handleMicButtonMouseDown"
-        @mouseup="handleMicButtonMouseUp"
-        @mouseleave="handleMicButtonMouseLeave"
-        @touchstart="handleMicButtonTouchStart"
-        @touchend="handleMicButtonTouchEnd"
-        @touchcancel="handleMicButtonTouchEnd"
-        class="vi-mic-button"
-        :class="{
-          'vi-mic-active-outer': isModeEngaged,
-          'vi-mic-listening-outer': isListeningForWakeWord
-        }"
-      />
-      <transition name="fade">
-        <div v-if="isModeInitializing" class="vi-mode-spinner" aria-hidden="true">
-          <div class="vi-mode-spinner__ring"></div>
-        </div>
-      </transition>
+      <div class="vi-mic-wrapper">
+        <MicInputButton
+          ref="micButtonRefInternal"
+          :isActive="isModeEngaged"
+          :isListeningForWakeWord="isListeningForWakeWord"
+          :isProcessingLLM="props.isProcessingLLM"
+          :hasMicError="hasMicError"
+          :disabled="micButtonDisabled"
+          :currentAudioMode="currentAudioMode"
+          :aria-label="micButtonAriaLabel"
+          :aria-busy="showModeSpinner ? 'true' : 'false'"
+          @click="handleMicButtonClick"
+          @mousedown="handleMicButtonMouseDown"
+          @mouseup="handleMicButtonMouseUp"
+          @mouseleave="handleMicButtonMouseLeave"
+          @touchstart="handleMicButtonTouchStart"
+          @touchend="handleMicButtonTouchEnd"
+          @touchcancel="handleMicButtonTouchEnd"
+          class="vi-mic-button"
+          :class="{
+            'vi-mic-active-outer': isModeEngaged,
+            'vi-mic-listening-outer': isListeningForWakeWord
+          }"
+        />
+
+        <transition name="fade">
+          <div v-if="showModeSpinner" class="vi-mode-spinner" aria-hidden="true">
+            <div class="vi-mode-spinner__ring"></div>
+          </div>
+        </transition>
+
+        <transition name="fade">
+          <div v-if="showContinuousPulse" class="vi-continuous-pulse" aria-hidden="true">
+            <span class="vi-continuous-pulse__ring"></span>
+            <span class="vi-continuous-pulse__ring vi-continuous-pulse__ring--delay-medium"></span>
+            <span class="vi-continuous-pulse__ring vi-continuous-pulse__ring--delay-long"></span>
+          </div>
+        </transition>
+      </div>
       
       <transition name="fade">
         <AudioModeDropdown
           v-if="!props.isProcessingLLM || currentAudioMode === 'push-to-talk'"
           :current-mode="currentAudioMode"
           :options="audioModeOptions"
-          :disabled="isModeEngaged || isListeningForWakeWord"
+          :disabled="isModeEngaged || isListeningForWakeWord || showModeSpinner"
           @select-mode="handleAudioModeChange"
           class="vi-mode-selector"
         />
@@ -149,7 +159,7 @@
         class="vi-settings-button"
         :class="{ 'vi-settings-active': sharedState.showInputToolbar.value }"
         aria-label="Voice settings"
-        :disabled="props.isProcessingLLM && !isModeEngaged && !isListeningForWakeWord"
+        :disabled="(props.isProcessingLLM && !isModeEngaged && !isListeningForWakeWord) || showModeSpinner"
       >
         <svg viewBox="0 0 24 24" class="vi-settings-icon">
           <path fill="currentColor" d="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97L21.54,14.63C21.73,14.78 21.78,15.05 21.66,15.27L19.66,18.73C19.55,18.95 19.28,19.04 19.05,18.95L16.56,17.95C16.04,18.34 15.48,18.68 14.87,18.93L14.49,21.58C14.46,21.82 14.25,22 14,22H10C9.75,22 9.54,21.82 9.51,21.58L9.13,18.93C8.52,18.68 7.96,18.34 7.44,17.95L4.95,18.95C4.72,19.04 4.45,18.95 4.34,18.73L2.34,15.27C2.22,15.05 2.27,14.78 2.46,14.63L4.57,12.97L4.5,12L4.57,11.03L2.46,9.37C2.27,9.22 2.22,8.95 2.34,8.73L4.34,5.27C4.45,5.05 4.72,4.96 4.95,5.05L7.44,6.05C7.96,5.66 8.52,5.32 9.13,5.07L9.51,2.42C9.54,2.18 9.75,2 10,2H14C14.25,2 14.46,2.18 14.49,2.42L14.87,5.07C15.48,5.32 16.04,5.66 16.56,6.05L19.05,5.05C19.28,4.96 19.55,5.05 19.66,5.27L21.66,8.73C21.78,8.95 21.73,9.22 21.54,9.37L19.43,11.03L19.5,12L19.43,12.97Z" />
@@ -472,9 +482,13 @@ const isModeInitializing = computed(() =>
   sharedState.isProcessingAudio.value &&
   !sttManager.isProcessingAudio.value
 );
+const isModeSwitching = ref(false);
+let modeSwitchTimeout: number | null = null;
+const showModeSpinner = computed(() => isModeSwitching.value || isModeInitializing.value);
+const showContinuousPulse = computed(() => currentAudioMode.value === 'continuous' && isModeEngaged.value && !showModeSpinner.value);
 const isVisualizationActive = computed(() => {
   if (currentAudioMode.value === 'continuous') {
-    return isModeEngaged.value; // show subtle visualization only while actively capturing audio
+    return false;
   }
   return isModeEngaged.value || isListeningForWakeWord.value;
 });
@@ -488,7 +502,7 @@ const micButtonDisabled = computed(() =>
   hasMicError.value ||
   (props.isProcessingLLM && !isListeningForWakeWord.value && !sttManager.isAwaitingVadCommandResult.value) ||
   (sharedState.isInputEffectivelyDisabled.value && currentAudioMode.value !== 'push-to-talk' && currentAudioMode.value !== 'continuous') ||
-  isModeInitializing.value
+  showModeSpinner.value
 );
 
 const micButtonAriaLabel = computed(() => {
@@ -624,7 +638,7 @@ async function handleMicButtonClick() {
     return;
   }
 
-  // console.log(`[VoiceInput] Mic button clicked. Current mode: ${currentAudioMode.value}, isActive: ${isActive.value}, isListeningForWakeWord: ${isListeningForWakeWord.value}`);
+  // console.log(`[VoiceInput] Mic button clicked. Current mode: ${currentAudioMode.value}, isEngaged: ${isModeEngaged.value}, isListeningForWakeWord: ${isListeningForWakeWord.value}`);
   const audioCtx = audioFeedback.audioContext.value;
   if (audioCtx?.state === 'suspended') {
     try {
@@ -1148,6 +1162,40 @@ watch(isModeEngaged, (newIsActive, oldIsActive) => {
   }
 });
 
+watch(currentAudioMode, () => {
+  isModeSwitching.value = true;
+  if (modeSwitchTimeout !== null) {
+    window.clearTimeout(modeSwitchTimeout);
+    modeSwitchTimeout = null;
+  }
+  modeSwitchTimeout = window.setTimeout(() => {
+    isModeSwitching.value = false;
+    modeSwitchTimeout = null;
+  }, 600);
+});
+
+watch(() => sttManager.isProcessingAudio.value, (processing) => {
+  if (processing) {
+    isModeSwitching.value = false;
+    if (modeSwitchTimeout !== null) {
+      window.clearTimeout(modeSwitchTimeout);
+      modeSwitchTimeout = null;
+    }
+  }
+});
+
+watch(() => sharedState.isProcessingAudio.value, (sharedProcessing) => {
+  if (!sharedProcessing) {
+    if (modeSwitchTimeout !== null) {
+      window.clearTimeout(modeSwitchTimeout);
+    }
+    modeSwitchTimeout = window.setTimeout(() => {
+      isModeSwitching.value = false;
+      modeSwitchTimeout = null;
+    }, 450);
+  }
+});
+
 watch(() => props.isProcessingLLM, (isProcessing) => {
   if (isProcessing && !isModeEngaged.value && !isListeningForWakeWord.value && !sttManager.isAwaitingVadCommandResult.value) {
     reactiveStore.transitionToState('thinking');
@@ -1176,7 +1224,7 @@ onMounted(async () => {
   const initialReactiveState = () => {
     if (props.isProcessingLLM && !sttManager.isAwaitingVadCommandResult.value) {
       reactiveStore.transitionToState('thinking');
-    } else if (isActive.value) {
+    } else if (isModeEngaged.value) {
       if (currentAudioMode.value === 'voice-activation') reactiveStore.transitionToState('vad-active');
       else reactiveStore.transitionToState('listening');
     } else if (isListeningForWakeWord.value) {
@@ -1215,6 +1263,10 @@ onBeforeUnmount(() => {
   if (autoConfirmInterval) {
     clearInterval(autoConfirmInterval);
     autoConfirmInterval = null;
+  }
+  if (modeSwitchTimeout !== null) {
+    window.clearTimeout(modeSwitchTimeout);
+    modeSwitchTimeout = null;
   }
 });
 </script>

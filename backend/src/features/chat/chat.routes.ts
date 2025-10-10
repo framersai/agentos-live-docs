@@ -217,6 +217,7 @@ interface ChatRequestBodyBE {
   interviewMode?: boolean;
   temperature?: number; // Allow frontend to specify temperature
   max_tokens?: number; // Allow frontend to specify max tokens
+  personaOverride?: string | null; // Allow frontend to set or clear custom persona
   // New field for tool responses from frontend
   tool_response?: {
     tool_call_id: string;
@@ -251,6 +252,7 @@ export async function POST(req: Request, res: Response): Promise<void> {
       tutorMode: reqTutorMode,
       temperature, // New: allow frontend to specify temperature
       max_tokens, // New: allow frontend to specify max_tokens
+      personaOverride,
       tool_response, // New: handle tool response from client
     } = req.body as ChatRequestBodyBE;
 
@@ -268,7 +270,7 @@ export async function POST(req: Request, res: Response): Promise<void> {
     const effectiveUserId = userIdFromRequest || authenticatedUserId || GLOBAL_USER_ID_FOR_MEMORY;
     const conversationId = reqConversationId || `conv_${mode}_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
 
-    // --- 0. Cost Check ---
+    // --- 0. Cost Check & Persona Persistence ---
     if (!DISABLE_COST_LIMITS_CONFIG && CostService.isSessionCostThresholdReached(effectiveUserId, SESSION_COST_THRESHOLD_USD)) {
       const currentCostDetail = CostService.getSessionCost(effectiveUserId);
       res.status(403).json({
@@ -277,6 +279,18 @@ export async function POST(req: Request, res: Response): Promise<void> {
       });
       return;
     }
+
+    if (typeof personaOverride !== 'undefined') {
+      await sqliteMemoryAdapter.setConversationPersona(
+        effectiveUserId,
+        conversationId,
+        mode,
+        personaOverride,
+        requestTimestamp,
+      );
+    }
+
+    const storedPersona = await sqliteMemoryAdapter.getConversationPersona(effectiveUserId, conversationId);
     
     // --- 1. Store Current Message(s) from Client ---
     // This could be a user's text message OR a tool_response message.
@@ -349,15 +363,15 @@ export async function POST(req: Request, res: Response): Promise<void> {
             query: currentUserQuery,
             intent: mode, // Initial intent can be refined by aggregator
             mode: mode,
-            metadata: { language, generateDiagramPreference: generateDiagram, tutorLevel, reqInterviewMode, reqTutorMode },
+            metadata: { language, generateDiagramPreference: generateDiagram, tutorLevel, reqInterviewMode, reqTutorMode, persona: storedPersona || undefined },
             },
             conversationHistory: historyForAggregator.map(h => ({ ...h, content: h.content ?? '' })),
             userProfile: {
-            preferences: { defaultLanguage: language, currentAgentMode: mode, tutorLevel },
+            preferences: { defaultLanguage: language, currentAgentMode: mode, tutorLevel, customPersona: storedPersona || undefined },
             // customInstructions: "User prefers concise answers." // Example, load from user settings
             },
             systemState: {
-            currentTaskContext: `User is interacting with the '${mode}' AI agent.`,
+            currentTaskContext: `User is interacting with the '${mode}' AI agent.${storedPersona ? ' The conversation has a custom persona override set by the user.' : ''}`,
             responseConstraints: contextBundleOutputFormatHints(mode),
             sharedKnowledgeSnippets: knowledgeSnippets,
             },
@@ -372,6 +386,12 @@ export async function POST(req: Request, res: Response): Promise<void> {
             500, 'tokens', 150, 'tokens', 
             { conversationId, mode, querySnippet: currentUserQuery.substring(0,50) }
             );
+            if (storedPersona) {
+              contextBundle.criticalSystemContext = {
+                ...(contextBundle.criticalSystemContext || {}),
+                customPersona: storedPersona,
+              };
+            }
             console.log(`[ChatRoutes] Context Bundle generated. Discernment: ${contextBundle.discernmentOutcome}`);
             console.log('[ChatRoutes][Debug] ContextBundle primaryTask:', {
               description: contextBundle.primaryTask?.description,
@@ -391,6 +411,7 @@ export async function POST(req: Request, res: Response): Promise<void> {
             res.status(200).json({
             content: null, model: 'context_aggregator_filter', discernment: 'IGNORE',
             message: "Input determined as irrelevant or noise.", conversationId,
+            persona: storedPersona || null,
             });
             return;
         }
@@ -403,6 +424,7 @@ export async function POST(req: Request, res: Response): Promise<void> {
             });
             res.status(200).json({
             content: actionAckContent, model: 'system_action', discernment: 'ACTION_ONLY', conversationId,
+            persona: storedPersona || null,
             });
             return;
         }
@@ -422,7 +444,10 @@ export async function POST(req: Request, res: Response): Promise<void> {
             relevantHistorySummary: [], // History will be fetched fresh below
             pertinentUserProfileSnippets: { preferences: {}, customInstructionsSnippet: ""},
             keyInformationFromDocuments: [],
-            criticalSystemContext: { notesForDownstreamLLM: "Continuing after tool execution." },
+            criticalSystemContext: {
+                notesForDownstreamLLM: "Continuing after tool execution.",
+                ...(storedPersona ? { customPersona: storedPersona } : {}),
+            },
             confidenceFactors: { clarityOfUserQuery: "High", sufficiencyOfContext: "High" }, // Assuming tool call was clear
             discernmentOutcome: "RESPOND" // Always respond after a tool call
         };
@@ -458,6 +483,10 @@ export async function POST(req: Request, res: Response): Promise<void> {
 - If you cannot respond in ${detectedLanguage.name}, use the most appropriate language based on the user's input
 - For code examples, comments should also be in ${detectedLanguage.name} when appropriate`;
 
+    const personaInstructionBlock = storedPersona ? `
+## CUSTOM PERSONA CONTEXT:
+${storedPersona.trim()}` : '';
+
     // Only prepare bundle instructions if we're not doing direct transcript analysis
     const bundleUsageInstructions = !isTranscriptAnalysis ? `
 ## CONTEXT BUNDLE GUIDANCE:
@@ -472,14 +501,19 @@ ${conversationContextInstructions}
 
 ${languageResponseInstructions}` : '';
 
+    const combinedAdditionalInstructions = [bundleUsageInstructions.trim(), personaInstructionBlock.trim()]
+      .filter(Boolean)
+      .join('\n\n');
+
     let systemPromptForAgentLLM: string;
     if (systemPromptOverride) {
         // For transcript analysis, use the override as-is (it has specific instructions for analyzing transcripts)
         // For other overrides, append the bundle instructions
         if (isTranscriptAnalysis) {
-            systemPromptForAgentLLM = systemPromptOverride + '\n\n' + languageResponseInstructions;
+            const transcriptExtras = [languageResponseInstructions, personaInstructionBlock.trim()].filter(Boolean).join('\n\n');
+            systemPromptForAgentLLM = systemPromptOverride + (transcriptExtras ? '\n\n' + transcriptExtras : '');
         } else {
-            systemPromptForAgentLLM = systemPromptOverride + '\n\n' + bundleUsageInstructions.trim();
+            systemPromptForAgentLLM = systemPromptOverride + (combinedAdditionalInstructions ? '\n\n' + combinedAdditionalInstructions : '');
         }
     } else {
         let templateContent = loadPromptTemplate(agentDefinition.promptTemplateKey);
@@ -489,7 +523,7 @@ ${languageResponseInstructions}` : '';
         .replace(/{{MODE}}/g, mode)
         .replace(/{{GENERATE_DIAGRAM}}/g, (contextBundle.primaryTask.requiredOutputFormat?.includes('diagram') || generateDiagram).toString())
         .replace(/{{TUTOR_LEVEL}}/g, (contextBundle.pertinentUserProfileSnippets?.preferences as any)?.expertiseLevel || tutorLevel)
-        .replace(/{{ADDITIONAL_INSTRUCTIONS}}/g, bundleUsageInstructions.trim());
+        .replace(/{{ADDITIONAL_INSTRUCTIONS}}/g, combinedAdditionalInstructions);
     }
 
     // Fetch full conversation history for the main agent, including prior tool calls and responses
@@ -610,6 +644,7 @@ Please respond to the USER REQUEST above. Use the context bundle for understandi
             conversationId,
             discernment: 'TOOL_CALL_PENDING', // Special discernment state
             assistantMessageText: agentLlmResponse.text, // Send any preliminary text from assistant
+            persona: storedPersona || null,
         });
 
     } else {
@@ -628,6 +663,7 @@ Please respond to the USER REQUEST above. Use the context bundle for understandi
             content: assistantResponseContent, model: agentLlmResponse.model, usage: agentLlmResponse.usage,
             sessionCost: sessionCostDetail, costOfThisCall: mainAgentLlmCallCost + contextAggregatorLlmCallCost,
             conversationId, discernment: contextBundle.discernmentOutcome,
+            persona: storedPersona || null,
         });
     }
 
@@ -682,4 +718,47 @@ function contextBundleOutputFormatHints(mode: string): string {
         default:
             return 'Clear, concise, well-formatted Markdown. Use lists/bullets if appropriate.';
     }
+}
+
+export async function POST_PERSONA(req: Request, res: Response): Promise<void> {
+  try {
+    const { agentId, conversationId, persona, userId } = req.body as {
+      agentId?: string;
+      conversationId?: string;
+      persona?: string | null;
+      userId?: string;
+    };
+
+    if (!agentId || !conversationId) {
+      res.status(400).json({ message: 'agentId and conversationId are required.' });
+      return;
+    }
+
+    // @ts-ignore
+    const authenticatedUserId = req.user?.id;
+    const effectiveUserId = userId || authenticatedUserId || GLOBAL_USER_ID_FOR_MEMORY;
+    const timestamp = Date.now();
+
+    await sqliteMemoryAdapter.setConversationPersona(
+      effectiveUserId,
+      conversationId,
+      agentId,
+      typeof persona === 'string' ? persona : null,
+      timestamp,
+    );
+
+    const storedPersona = await sqliteMemoryAdapter.getConversationPersona(effectiveUserId, conversationId);
+
+    res.status(200).json({
+      persona: storedPersona || null,
+      agentId,
+      conversationId,
+    });
+  } catch (error: any) {
+    console.error('[ChatRoutes] Error updating persona:', error.message, error.stack || '');
+    res.status(500).json({
+      message: 'Failed to update persona.',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined,
+    });
+  }
 }

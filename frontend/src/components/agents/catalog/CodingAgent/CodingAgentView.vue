@@ -103,6 +103,10 @@ const pendingToolCall = ref<{ toolCallId: string; toolName: string; toolArgument
 const showToolInteractionModal = ref<boolean>(false);
 const toolResponseInput = ref<string>('');
 
+const notifyParentProcessingState = (isProcessing: boolean): void => {
+  emit('agent-event', { type: 'setProcessingState', agentId: props.agentId, payload: { isProcessing } });
+};
+
 // --- Computed Properties ---
 const activeSession = computed<CodingSession | null>(() => {
   return codingSessions.value.find(s => s.id === activeSessionId.value) || null;
@@ -196,6 +200,10 @@ const loadCodingSessions = async () => {
     toast?.add({ type: 'error', title: 'Session Load Error', message: 'Could not load saved coding work.' });
   } finally { isProcessingLocal.value = false; }
 };
+
+watch(isLoadingResponse, (newVal) => {
+  notifyParentProcessingState(newVal);
+});
 
 const saveCurrentWorkAsSession = async (titlePromptText?: string) => {
   if (!currentExplanationMarkdown.value && !currentCodeSnippet.value && !currentQuery.value) {
@@ -440,10 +448,14 @@ const sendToolResultToLLM = async (toolCallId: string, toolName: string, output:
   try {
     if (!currentAgentSystemPrompt.value) await fetchSystemPrompt();
     const preferredLang = currentLanguage.value;
+    const personaOverrideForTool = chatStore.getPersonaForAgent(props.agentId);
+    const baseToolInstructions = `The tool '${toolName}' has been executed. Its output is provided. Continue assisting the user with their original query: "${currentQuery.value}". Structure your response with clear code blocks and explanations.`;
+    const combinedToolInstructions = [baseToolInstructions, personaOverrideForTool?.trim()].filter(Boolean).join('\n\n');
+
     let finalSystemPrompt = currentAgentSystemPrompt.value
       .replace(/{{LANGUAGE}}/g, preferredLang)
       .replace(/{{AGENT_CONTEXT_JSON}}/g, JSON.stringify({ currentQuery: currentQuery.value, preferredLanguage: preferredLang, lastToolCall: toolName }))
-      .replace(/{{ADDITIONAL_INSTRUCTIONS}}/g, `The tool '${toolName}' has been executed. Its output is provided. Continue assisting the user with their original query: "${currentQuery.value}". Structure your response with clear code blocks and explanations.`);
+      .replace(/{{ADDITIONAL_INSTRUCTIONS}}/g, combinedToolInstructions);
 
     const historyConfig: Partial<AdvancedHistoryConfig> = { numRecentMessagesToPrioritize: 15 };
     const processedHistory = await chatStore.getHistoryForApi(props.agentId, `Result for ${toolName}`, finalSystemPrompt, historyConfig);
@@ -467,7 +479,7 @@ const sendToolResultToLLM = async (toolCallId: string, toolName: string, output:
         content: JSON.stringify(output),
     });
     
-    const payload: ChatMessagePayloadFE = {
+    const basePayload: ChatMessagePayloadFE = {
       messages: messagesForLlm,
       mode: props.agentConfig.id,
       language: preferredLang,
@@ -475,11 +487,12 @@ const sendToolResultToLLM = async (toolCallId: string, toolName: string, output:
       conversationId: chatStore.getCurrentConversationId(props.agentId),
       stream: true,
     };
+    const payload = chatStore.attachPersonaToPayload(props.agentId, basePayload);
 
     let accumulatedContent = "";
     chatStore.clearStreamingMainContent();
 
-    await chatAPI.sendMessageStream(
+    const finalResponse = await chatAPI.sendMessageStream(
       payload,
       (chunk) => { 
         accumulatedContent += chunk;
@@ -506,6 +519,7 @@ const sendToolResultToLLM = async (toolCallId: string, toolName: string, output:
         toast?.add({type: 'error', title: 'Stream Error After Tool', message: error.message});
       }
     );
+    chatStore.syncPersonaFromResponse(props.agentId, finalResponse);
   } catch (error: any) {
     isLoadingResponse.value = false; chatStore.setMainContentStreaming(false);
     const errorMessage = error.response?.data?.message || error.message || 'An error occurred sending tool result.';
@@ -531,11 +545,15 @@ const handleCodingQuery = async (text: string): Promise<void> => {
     const preferredLang = voiceSettingsManager.settings.preferredCodingLanguage || 'python';
     currentLanguage.value = preferredLang;
 
+    const personaOverride = chatStore.getPersonaForAgent(props.agentId);
+    const baseInstructions = 'Provide comprehensive coding assistance. Structure explanations clearly. Use code blocks for all code. If the user\'s query implies a need for external data or complex analysis not possible through text alone (like checking a live git repo status or deep static code analysis), use a function call to `getGitRepoStatus` or `analyzeCodeComplexity`. Otherwise, respond directly.';
+    const combinedAdditionalInstructions = [baseInstructions, personaOverride?.trim()].filter(Boolean).join('\n\n');
+
     let finalSystemPrompt = currentAgentSystemPrompt.value
       .replace(/{{LANGUAGE}}/g, preferredLang)
       .replace(/{{USER_QUERY}}/g, text)
       .replace(/{{AGENT_CONTEXT_JSON}}/g, JSON.stringify({ currentQuery: text, preferredLanguage: preferredLang }))
-      .replace(/{{ADDITIONAL_INSTRUCTIONS}}/g, 'Provide comprehensive coding assistance. Structure explanations clearly. Use code blocks for all code. If the user\'s query implies a need for external data or complex analysis not possible through text alone (like checking a live git repo status or deep static code analysis), use a function call to `getGitRepoStatus` or `analyzeCodeComplexity`. Otherwise, respond directly.');
+      .replace(/{{ADDITIONAL_INSTRUCTIONS}}/g, combinedAdditionalInstructions);
     
     const historyConfig: Partial<AdvancedHistoryConfig> = { numRecentMessagesToPrioritize: 10 };
     const processedHistory = await chatStore.getHistoryForApi(props.agentId, text, finalSystemPrompt, historyConfig);
@@ -546,7 +564,7 @@ const handleCodingQuery = async (text: string): Promise<void> => {
         {role: 'user', content: text, timestamp: Date.now()}
     ];
     
-    const payload: ChatMessagePayloadFE = {
+    const basePayload: ChatMessagePayloadFE = {
       messages: messagesForLlm,
       mode: props.agentConfig.id,
       language: preferredLang,
@@ -555,7 +573,9 @@ const handleCodingQuery = async (text: string): Promise<void> => {
       stream: false, // Changed to false to robustly handle initial tool call from LLM
     };
     
+    const payload = chatStore.attachPersonaToPayload(props.agentId, basePayload);
     const response = await chatAPI.sendMessage(payload);
+    chatStore.syncPersonaFromResponse(props.agentId, response.data);
     const responseData = response.data as FunctionCallResponseDataFE | TextResponseDataFE;
 
     if (responseData.type === 'function_call_data') {
@@ -752,10 +772,11 @@ onMounted(async () => {
 });
 
 onUnmounted(() => {
+    notifyParentProcessingState(false);
     // Clean up global event listeners if any were added for dynamic buttons, though the current one is delegated.
 });
 
-defineExpose({ handleCodingQuery, processNewMeetingInput: handleCodingQuery });
+defineExpose({ handleCodingQuery, handleNewUserInput: handleCodingQuery, processProblemContext: handleCodingQuery, processNewMeetingInput: handleCodingQuery });
 
 </script>
 

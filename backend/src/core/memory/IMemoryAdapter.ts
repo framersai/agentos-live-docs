@@ -120,7 +120,32 @@ export interface IMemoryAdapter {
    * @param {number} [offset=0] - Offset for pagination.
    * @returns {Promise<Array<{ conversationId: string; lastActivity: number; agentId?: string; summary?: string; turnCount?: number }>>}
    */
-  listUserConversations(userId: string, limit?: number, offset?: number): Promise<Array<{ conversationId: string; lastActivity: number; agentId?: string; summary?: string; turnCount?: number }>>;
+  listUserConversations(userId: string, limit?: number, offset?: number): Promise<Array<{ conversationId: string; lastActivity: number; agentId?: string; summary?: string; turnCount?: number; persona?: string | null }>>;
+
+  /**
+   * Stores or clears a custom persona override for a conversation.
+   * @param userId The ID of the user owning the conversation.
+   * @param conversationId The unique ID of the conversation session.
+   * @param agentId The agent associated with the conversation.
+   * @param persona The persona text to persist, or null to clear it.
+   * @param timestamp Optional timestamp used when creating the conversation record.
+   */
+  setConversationPersona(
+    userId: string,
+    conversationId: string,
+    agentId: string,
+    persona: string | null,
+    timestamp?: number,
+  ): Promise<void>;
+
+  /**
+   * Retrieves the stored persona override for a conversation, if present.
+   * @param userId The ID of the user owning the conversation.
+   * @param conversationId The conversation whose persona should be loaded.
+   * @returns The persona text or null when none is stored.
+   */
+  getConversationPersona(userId: string, conversationId: string): Promise<string | null>;
+
   
   /**
    * (Optional / Future) Generates or updates a summary for a given conversation or a segment of it.

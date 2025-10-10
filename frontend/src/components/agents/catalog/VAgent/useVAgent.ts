@@ -105,13 +105,16 @@ export function useVAgent(
         }
       }
 
+      const personaOverride = chatStore.getPersonaForAgent(currentAgentIdStr);
+      const personaInstructions = personaOverride ? `## CUSTOM PERSONA CONTEXT:\n${personaOverride.trim()}` : '';
+
       let finalSystemPrompt = currentSystemPrompt.value
         .replace(/{{LANGUAGE}}/g, voiceSettingsManager.settings.preferredCodingLanguage || 'english')
         .replace(/{{USER_QUERY}}/g, text)
         .replace(/{{MODE}}/g, agentConfigRef.value.id)
         .replace(/{{GENERATE_DIAGRAM}}/g, ((agentConfigRef.value.capabilities?.canGenerateDiagrams && voiceSettingsManager.settings.generateDiagrams) ?? false).toString())
         .replace(/{{AGENT_CONTEXT_JSON}}/g, JSON.stringify(agentStore.getAgentContext(currentAgentIdStr) || {}))
-        .replace(/{{ADDITIONAL_INSTRUCTIONS}}/g, '');
+        .replace(/{{ADDITIONAL_INSTRUCTIONS}}/g, personaInstructions);
 
       const historyConfig: AdvancedHistoryConfig = {
           ...DEFAULT_V_HISTORY_CONFIG,
@@ -127,7 +130,7 @@ export function useVAgent(
           messagesForLlm.push({ role: 'user', content: text, timestamp: Date.now() });
       }
       
-      const payload: ChatMessagePayloadFE = {
+      const basePayload: ChatMessagePayloadFE = {
         messages: messagesForLlm,
         mode: agentConfigRef.value.systemPromptKey || agentConfigRef.value.id,
         language: voiceSettingsManager.settings.preferredCodingLanguage,
@@ -136,13 +139,14 @@ export function useVAgent(
         conversationId: chatStore.getCurrentConversationId(currentAgentIdStr),
         stream: true,
       };
+      const payload = chatStore.attachPersonaToPayload(currentAgentIdStr, basePayload);
       console.log(`[${agentDisplayName.value} useVAgent}] Sending payload with mode: ${payload.mode}.`);
 
       let accumulatedContent = "";
       chatStore.updateMainContent({ agentId: currentAgentIdStr, type: 'markdown', data: '', title: `${agentDisplayName.value}'s insight on: "${text.substring(0, 30)}..."`, timestamp: Date.now() });
       chatStore.setMainContentStreaming(true, ''); // V also uses streaming text
 
-      await chatAPI.sendMessageStream(
+      const finalResponse = await chatAPI.sendMessageStream(
         payload,
         async (chunk: string) => { // onChunkReceived
           if (chunk) {
@@ -168,6 +172,7 @@ export function useVAgent(
           // isLoadingResponse will be set to false in the finally block.
         }
       );
+      chatStore.syncPersonaFromResponse(currentAgentIdStr, finalResponse);
     } catch (error: any) {
       console.error(`[${agentDisplayName.value} useVAgent}] Chat API setup error:`, error);
       // ... (handle error) ...

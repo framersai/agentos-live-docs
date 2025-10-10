@@ -557,12 +557,16 @@ export function useDiaryAgent(
         agentContextForLLM.candidateEntries = context.relatedEntryData;
     }
 
+    const personaOverride = chatStore.getPersonaForAgent(agentConfigRef.value.id);
+    const baseAdditionalInstructions = _getLLMInstructionsForAction(actionHint, userInputOrContent, context);
+    const combinedInstructions = [baseAdditionalInstructions, personaOverride?.trim()].filter(Boolean).join('\n\n');
+
     const finalSystemPrompt = currentSystemPrompt.value
         .replace(/{{CURRENT_DATE}}/g, new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }))
         .replace(/{{RECENT_TOPICS_SUMMARY}}/gi, allEntries.value.slice(0, 3).map(e => e.title || e.summary?.substring(0,30)).filter(Boolean).join('; ') || 'your past reflections')
         .replace(/{{AGENT_CONTEXT_JSON}}/g, JSON.stringify(agentContextForLLM))
         .replace(/{{GENERATE_DIAGRAM}}/g, String(config.value.enableMermaid))
-        .replace(/{{ADDITIONAL_INSTRUCTIONS}}/g, _getLLMInstructionsForAction(actionHint, userInputOrContent, context));
+        .replace(/{{ADDITIONAL_INSTRUCTIONS}}/g, combinedInstructions);
 
     const messagesForLlm: ChatMessageFE[] = [{ role: 'system', content: finalSystemPrompt }];
     if (['chat_response', 'elaborate_on_initial_thought', 'continue_reflection'].includes(actionHint)) {
@@ -572,7 +576,7 @@ export function useDiaryAgent(
         }
     } else { messagesForLlm.push({ role: 'user', content: userInputOrContent, timestamp: Date.now() }); }
 
-    const payload: ChatMessagePayloadFE = {
+    const basePayload: ChatMessagePayloadFE = {
         messages: messagesForLlm, mode: `${agentConfigRef.value.id}-${actionHint}`,
         conversationId: currentDraft.value?.id || activeEntry.value?.id || chatStore.getCurrentConversationId(agentConfigRef.value.id) || `diary-${Date.now()}`,
         stream: false, // Most Diary actions are single, structured responses or tool calls
@@ -589,7 +593,9 @@ export function useDiaryAgent(
     };
 
     try {
+        const payload = chatStore.attachPersonaToPayload(agentConfigRef.value.id, basePayload);
         const response = await chatAPI.sendMessage(payload); // chatAPI is now used
+        chatStore.syncPersonaFromResponse(agentConfigRef.value.id, response.data);
         _processLLMResponse(response.data, actionHint, context?.entryId);
         return response.data;
     } catch (error: any) { _handleLLMError(error, actionHint); return null; }
