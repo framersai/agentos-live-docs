@@ -1,4 +1,4 @@
-// File: frontend/src/components/layouts/UnifiedChatLayout.vue
+﻿// File: frontend/src/components/layouts/UnifiedChatLayout.vue
 /**
  * @file UnifiedChatLayout.vue
  * @description A unified layout component for chat-centric views.
@@ -41,7 +41,7 @@ const emit = defineEmits<{
 const uiStore = useUiStore();
 const layoutWrapperRef: Ref<HTMLElement | null> = ref(null);
 const ephemeralLogRef: Ref<InstanceType<typeof EphemeralChatLog> | null> = ref(null);
-const voiceInputSectionRef: Ref<HTMLElement | null> = ref(null); // This is the <div> wrapping <VoiceInput>
+const voiceInputSectionRef: Ref<HTMLElement | null> = ref(null); // This wraps the toolbar (if any) and VoiceInput
 
 const handleTranscription = (transcription: string): void => {
   emit('transcription', transcription);
@@ -242,6 +242,9 @@ watch(ephemeralLogRef, async (newEl) => {
     </div>
 
     <div class="unified-voice-input-section" ref="voiceInputSectionRef">
+      <div v-if="$slots['voice-toolbar']" class="unified-voice-toolbar">
+        <slot name="voice-toolbar" />
+      </div>
       <VoiceInput
         :is-processing-l-l-m="props.isLlmProcessing"
         @transcription-ready="handleTranscription"

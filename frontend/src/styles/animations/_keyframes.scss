@@ -10,6 +10,8 @@
  */
 
 @use '../abstracts/variables' as var;
+@use 'sass:math';
+
 
 // -----------------------------------------------------------------------------
 // Core UI Animations (Enhanced with organic feel)
@@ -126,7 +128,7 @@
 @keyframes quantumCollapse {
   0% {
     opacity: 0.05;
-    transform: scale(3) translateY(calc(var(--quantum-offset-y, 0px) + (random() - 0.5) * 40px));
+    transform: scale(3) translateY(calc(var(--quantum-offset-y, 0px) + (math.random() - 0.5) * 40px));
     filter: blur(20px) brightness(2);
   }
   30% {

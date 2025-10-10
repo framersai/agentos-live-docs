@@ -239,15 +239,18 @@ export function useTutorAgent(
     const recentTopicsSummary = _getRecentTopicsSummaryForPrompt();
     const generateDiagrams = agentConfigRef.value.capabilities?.canGenerateDiagrams && (voiceSettingsManager.settings?.generateDiagrams ?? false);
 
-    const finalSystemPrompt = currentSystemPrompt.value
+      const personaOverride = chatStore.getPersonaForAgent(currentAgentIdStr);
+      const baseInstructions = `Key Directives: Use Socratic method for chat replies. Structure main content for clarity (like slides). Adapt to ${currentTutorLevel.value}. Use tools like \`createQuizItem\` or \`createFlashcard\` when pedagogically appropriate. Explain concepts clearly with Markdown. If helpful, provide Mermaid diagrams in \`\`\`mermaid blocks.`;
+      const combinedInstructions = [baseInstructions, personaOverride?.trim()].filter(Boolean).join('\n\n');
+
+      const finalSystemPrompt = currentSystemPrompt.value
         .replace(/{{LANGUAGE}}/g, voiceSettingsManager.settings?.preferredCodingLanguage || 'general')
         .replace(/{{MODE}}/g, currentAgentIdStr)
         .replace(/{{TUTOR_LEVEL}}/g, currentTutorLevel.value)
         .replace(/{{RECENT_TOPICS_SUMMARY}}/gi, recentTopicsSummary)
         .replace(/{{GENERATE_DIAGRAM}}/g, String(generateDiagrams))
         .replace(/{{AGENT_CONTEXT_JSON}}/g, JSON.stringify(agentStore.getAgentContext(currentAgentIdStr) || { tutorLevel: currentTutorLevel.value }))
-        .replace(/{{ADDITIONAL_INSTRUCTIONS}}/g,
-            `Key Directives: Use Socratic method for chat replies. Structure main content for clarity (like slides). Adapt to ${currentTutorLevel.value}. Use tools like \`createQuizItem\` or \`createFlashcard\` when pedagogically appropriate. Explain concepts clearly with Markdown. If helpful, provide Mermaid diagrams in \`\`\`mermaid blocks.`);
+        .replace(/{{ADDITIONAL_INSTRUCTIONS}}/g, combinedInstructions);
 
     const messagesToSend: ChatMessageFE[] = [...messagesForLlm];
     if (messagesToSend.length > 0 && messagesToSend[0].role === 'system') {
@@ -256,7 +259,7 @@ export function useTutorAgent(
         messagesToSend.unshift({ role: 'system', content: finalSystemPrompt });
     }
 
-    const payload: ChatMessagePayloadFE = {
+    const basePayload: ChatMessagePayloadFE = {
         messages: messagesToSend,
         mode: `${currentAgentIdStr}-${actionHint}`,
         language: voiceSettingsManager.settings?.preferredCodingLanguage,
@@ -268,9 +271,11 @@ export function useTutorAgent(
         stream: false,
         tool_choice: toolChoiceOverride || "auto",
     };
+    const payload = chatStore.attachPersonaToPayload(currentAgentIdStr, basePayload);
 
     try {
       const response = await chatAPI.sendMessage(payload);
+      chatStore.syncPersonaFromResponse(currentAgentIdStr, response.data);
       return response.data;
     } catch (error: any) {
       _handleLLMError(error, actionHint);

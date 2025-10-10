@@ -195,26 +195,21 @@ const iconStateClass = computed(() => ({
   height: 48px;
   min-width: 48px;
   min-height: 48px;
-  
+  // Ensure the button fits within nav constraints
+  max-width: 48px;
+  max-height: 48px;
+  // Override any default button styles that might add excessive spacing
+  border: none !important;
+  border-radius: 4px; // Smaller border radius to fit nav better
+
   @media (min-width: var.$breakpoint-md) {
     width: 56px; // Smaller desktop size
     height: 56px;
     min-width: 56px;
     min-height: 56px;
-    padding: 2px !important; // Minimal padding for desktop
-  }
-  
-  // Override any default button styles that might add excessive spacing
-  border: none !important;
-  border-radius: 4px; // Smaller border radius to fit nav better
-  
-  // Ensure the button fits within nav constraints
-  max-width: 48px;
-  max-height: 48px;
-  
-  @media (min-width: var.$breakpoint-md) {
     max-width: 56px;
     max-height: 56px;
+    padding: 2px !important; // Minimal padding for desktop
     border-radius: 6px;
   }
 
@@ -232,6 +227,7 @@ const iconStateClass = computed(() => ({
     --orb-satellite-glow: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.2);
   }
 }
+
 
 .nexus-orb-center {
   fill: var(--orb-center-fill);

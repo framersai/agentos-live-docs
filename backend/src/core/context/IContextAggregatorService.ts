@@ -87,6 +87,8 @@ export interface IContextBundle {
   keyInformationFromDocuments: Array<{ source: string; snippet: string }>;
   criticalSystemContext: {
     notesForDownstreamLLM: string;
+    customPersona?: string;
+    [key: string]: any;
   };
   confidenceFactors: {
     clarityOfUserQuery: 'High' | 'Medium' | 'Low';

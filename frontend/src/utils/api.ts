@@ -161,11 +161,13 @@ export interface ChatMessagePayloadFE {
   generateDiagram?: boolean;
   userId?: string;
   conversationId?: string;
+  agentId?: string;
   systemPromptOverride?: string;
   tutorMode?: boolean;
   tutorLevel?: string;
   interviewMode?: boolean;
   stream?: boolean;
+  personaOverride?: string | null;
   tool_response?: {
     tool_call_id: string;
     tool_name: string;
@@ -173,6 +175,13 @@ export interface ChatMessagePayloadFE {
   };
   tools?: LlmToolFE[];
   tool_choice?: "none" | "auto" | { type: "function"; function: { name: string; } };
+}
+
+export interface PersonaUpdatePayloadFE {
+  agentId: string;
+  conversationId: string;
+  persona: string | null;
+  userId?: string;
 }
 
 export interface SessionCostDetailsFE {
@@ -196,6 +205,7 @@ interface BaseChatResponseDataFE {
   sessionCost: SessionCostDetailsFE;
   costOfThisCall: number;
   conversationId: string;
+  persona?: string | null;
 }
 
 export interface TextResponseDataFE extends BaseChatResponseDataFE {
@@ -221,12 +231,15 @@ export const chatAPI = {
   sendMessage: (data: ChatMessagePayloadFE): Promise<AxiosResponse<ChatResponseDataFE>> =>
     api.post('/chat', data),
 
+  updatePersona: (payload: PersonaUpdatePayloadFE): Promise<AxiosResponse<{ persona: string | null; agentId: string; conversationId: string }>> =>
+    api.post('/chat/persona', payload),
+
   sendMessageStream: async (
     payloadData: ChatMessagePayloadFE, // Renamed 'data' to 'payloadData' to avoid conflict
     onChunkReceived: (chunk: string) => void,
     onStreamEnd: () => void,
     onStreamError: (error: Error) => void
-  ): Promise<void> => {
+  ): Promise<ChatResponseDataFE | undefined> => {
     const payload = { ...payloadData, stream: true };
     try {
       const response = await fetch(`${API_BASE_URL}/chat`, {
@@ -251,6 +264,7 @@ export const chatAPI = {
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let buffer = '';
+      let finalResponseData: ChatResponseDataFE | undefined;
       // eslint-disable-next-line no-constant-condition
       while (true) {
         const { done, value } = await reader.read();
@@ -258,6 +272,7 @@ export const chatAPI = {
           if (buffer.trim()) {
             try {
               const finalDataObject = JSON.parse(buffer);
+              finalResponseData = finalDataObject;
               if (finalDataObject && typeof finalDataObject === 'object' && finalDataObject.content) {
                 onChunkReceived(finalDataObject.content); // CORRECTED: Use parameter name
               } else if (finalDataObject && typeof finalDataObject === 'object' && !finalDataObject.content) {
@@ -304,10 +319,12 @@ export const chatAPI = {
         }
       }
       if (onStreamEnd) onStreamEnd(); // CORRECTED: Use parameter name
+      return finalResponseData;
     } catch (error: any) {
       console.error('[API Service] sendMessageStream encountered an error:', error);
       if (onStreamError) onStreamError(error); // CORRECTED: Use parameter name
       else throw error;
+      return undefined;
     }
   },
 };

@@ -168,12 +168,18 @@ export function useSystemsDesignAgent(
         current_design_focus: (agentStore.getAgentContext(currentAgentIdStr) as ArchitectronAgentContext)?.current_design_focus || "Overall System",
       };
 
+      const personaOverride = chatStore.getPersonaForAgent(currentAgentIdStr);
+      const baseInstructions = agentConfigRef.value.id === 'explain_diagram'
+        ? 'Focus on explaining the provided diagram from the AGENT_CONTEXT_JSON.'
+        : 'Focus on iterative design, diagram updates, and structured explanations.';
+      const combinedInstructions = [baseInstructions, personaOverride?.trim()].filter(Boolean).join('\n\n');
+
       const finalSystemPrompt = currentSystemPrompt.value
         .replace(/{{LANGUAGE}}/g, voiceSettingsManager.settings.preferredCodingLanguage || 'any')
         .replace(/{{RECENT_TOPICS_SUMMARY}}/gi, (agentStore.getAgentContext(currentAgentIdStr) as ArchitectronAgentContext)?.current_design_focus || "the previous state of the design")
         .replace(/{{GENERATE_DIAGRAM}}/g, "true")
         .replace(/{{AGENT_CONTEXT_JSON}}/g, JSON.stringify(agentContextForLLM))
-        .replace(/{{ADDITIONAL_INSTRUCTIONS}}/g, agentConfigRef.value.id === 'explain_diagram' ? 'Focus on explaining the provided diagram from the AGENT_CONTEXT_JSON.' : 'Focus on iterative design, diagram updates, and structured explanations.');
+        .replace(/{{ADDITIONAL_INSTRUCTIONS}}/g, combinedInstructions);
         // Note: agentConfigRef.value.id is used for mode, not promptMode
 
       const historyForAPI = await chatStore.getHistoryForApi(
@@ -190,7 +196,7 @@ export function useSystemsDesignAgent(
          messagesToSend.push({role: 'user', content: text, timestamp: Date.now(), agentId: currentAgentIdStr});
       }
 
-      const payload: ChatMessagePayloadFE = {
+      const basePayload: ChatMessagePayloadFE = {
         messages: messagesToSend,
         mode: agentConfigRef.value.id, // Use agent's ID as the mode
         language: voiceSettingsManager.settings.preferredCodingLanguage,
@@ -199,11 +205,12 @@ export function useSystemsDesignAgent(
         conversationId: chatStore.getCurrentConversationId(currentAgentIdStr),
         stream: true,
       };
+      const payload = chatStore.attachPersonaToPayload(currentAgentIdStr, basePayload);
 
       let accumulatedContent = "";
       chatStore.clearStreamingMainContent();
 
-      await chatAPI.sendMessageStream(
+      const finalResponse = await chatAPI.sendMessageStream(
           payload,
           (chunk) => {
               accumulatedContent += chunk;
@@ -262,6 +269,7 @@ export function useSystemsDesignAgent(
               chatStore.setMainContentStreaming(false);
           }
       );
+      chatStore.syncPersonaFromResponse(currentAgentIdStr, finalResponse);
 
     } catch (error: any) {
       console.error(`[${agentDisplayName.value}] Chat API setup error:`, error);

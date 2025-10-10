@@ -120,6 +120,18 @@
   // box-shadow: 0 -2px 10px hsla(var(--color-shadow-h), var(--color-shadow-s), var(--color-shadow-l), 0.03);
 }
 
+.unified-voice-toolbar {
+  @apply flex w-full justify-end;
+  gap: var.$spacing-xs;
+  padding-bottom: var.$spacing-xs;
+}
+
+@media (min-width: var.$breakpoint-xl) {
+  .unified-voice-toolbar {
+    padding-bottom: var.$spacing-sm;
+  }
+}
+
 // Ensure keyframes like holoGridScroll, orbitPathRotation, shapeTransformAndFade are defined globally.
 // Example keyframes (should be in a global _animations.scss or similar):
 @keyframes holoGridScroll {

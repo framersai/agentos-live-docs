@@ -544,6 +544,10 @@ export function useCodingInterviewerAgent(
       if (!currentSystemPrompt.value) await _fetchSystemPrompt();
       const preferredLang = activeInterviewSession.value?.settings.targetLanguages[0] || voiceSettingsManager.settings.preferredCodingLanguage || config.value.defaultLanguage;
 
+      const personaOverride = chatStore.getPersonaForAgent(agentConfigRef.value.id);
+      const baseInstructions = _getAdditionalInstructionsForLLM(actionHint, userInput);
+      const combinedInstructions = [baseInstructions, personaOverride?.trim()].filter(Boolean).join('\n\n');
+
       let finalSystemPrompt = currentSystemPrompt.value
         .replace(/{{LANGUAGE}}/g, preferredLang)
         .replace(/{{AGENT_CONTEXT_JSON}}/g, JSON.stringify({
@@ -553,7 +557,7 @@ export function useCodingInterviewerAgent(
           actionHint: actionHint,
           sessionSettings: activeInterviewSession.value?.settings,
         }))
-        .replace(/{{ADDITIONAL_INSTRUCTIONS}}/g, _getAdditionalInstructionsForLLM(actionHint, userInput));
+        .replace(/{{ADDITIONAL_INSTRUCTIONS}}/g, combinedInstructions);
 
       const historyConfig: Partial<AdvancedHistoryConfig> = { numRecentMessagesToPrioritize: 5 };
       const processedHistory = await chatStore.getHistoryForApi(agentConfigRef.value.id, userInput, finalSystemPrompt, historyConfig);
@@ -566,7 +570,7 @@ export function useCodingInterviewerAgent(
         messagesForLlm.push({ role: 'user', content: userInput, timestamp: Date.now() });
       }
 
-      const payload: ChatMessagePayloadFE = {
+      const basePayload: ChatMessagePayloadFE = {
         messages: messagesForLlm,
         mode: agentConfigRef.value.id,
         language: preferredLang,
@@ -575,7 +579,9 @@ export function useCodingInterviewerAgent(
         stream: false,
       };
 
+      const payload = chatStore.attachPersonaToPayload(agentConfigRef.value.id, basePayload);
       const response = await chatAPI.sendMessage(payload);
+      chatStore.syncPersonaFromResponse(agentConfigRef.value.id, response.data);
       const responseData = response.data as TextResponseDataFE | FunctionCallResponseDataFE; // Can be either
 
       if (responseData.type === 'function_call_data') {

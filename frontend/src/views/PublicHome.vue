@@ -364,7 +364,7 @@ async function standardLlmCallPublic(transcriptionText: string, agentInstance: I
     }
     messagesForApiPayload.sort((a,b) => (a.timestamp || 0) - (b.timestamp || 0));
 
-    const payload: ChatMessagePayloadFE = {
+    const basePayload: ChatMessagePayloadFE = {
       messages: messagesForApiPayload,
       mode: agentInstance.systemPromptKey || agentId,
       systemPromptOverride: finalSystemPrompt,
@@ -374,9 +374,10 @@ async function standardLlmCallPublic(transcriptionText: string, agentInstance: I
       conversationId: chatStore.getCurrentConversationId(agentId),
       stream: true,
     };
+    const payload = chatStore.attachPersonaToPayload(agentId, basePayload);
 
     let accumulatedResponse = "";
-    await chatAPI.sendMessageStream(
+    const finalResponse = await chatAPI.sendMessageStream(
       payload,
       (chunk: string) => {
         accumulatedResponse += chunk;
@@ -420,6 +421,7 @@ async function standardLlmCallPublic(transcriptionText: string, agentInstance: I
         isLoadingResponse.value = false;
       }
     );
+    chatStore.syncPersonaFromResponse(agentId, finalResponse);
   } catch (error: any) {
     console.error(`[PublicHome] Chat API interaction setup error for agent "${agentLabel}":`, error.response?.data || error.message || error);
     const errorMsg = error.response?.data?.message || error.message || 'An unexpected error occurred.';

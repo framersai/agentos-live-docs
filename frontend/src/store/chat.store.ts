@@ -18,7 +18,7 @@ import {
   type ConversationMessage as SimpleManagerMessage
 } from '@/services/conversation.manager';
 import { voiceSettingsManager } from '@/services/voice.settings.service';
-import type { ChatMessageFE, ProcessedHistoryMessageFE, ILlmToolCallFE as ApiLlmToolCall } from '@/utils/api';
+import type { ChatMessageFE, ProcessedHistoryMessageFE, ILlmToolCallFE as ApiLlmToolCall, ChatMessagePayloadFE } from '@/utils/api';
 
 export interface ILlmToolCallUI extends ApiLlmToolCall {}
 
@@ -54,6 +54,7 @@ export const useChatStore = defineStore('chat', () => {
   const messageHistory = ref<ChatMessage[]>([]);
   const mainAgentContents = ref<Record<string, MainContent | null>>({});
   const conversationIds = ref<Record<string, string>>({});
+  const agentPersonas = ref<Record<string, string>>({});
   const isMainContentStreaming = ref(false);
   const streamingMainContentText = ref('');
 
@@ -130,10 +131,16 @@ export const useChatStore = defineStore('chat', () => {
       messageHistory.value = messageHistory.value.filter(msg => msg.agentId !== agentId);
       clearMainContentForAgent(agentId);
       delete conversationIds.value[agentId];
+      if (agentPersonas.value[agentId]) {
+        const updated = { ...agentPersonas.value };
+        delete updated[agentId];
+        agentPersonas.value = updated;
+      }
     } else {
       messageHistory.value = [];
       mainAgentContents.value = {};
       conversationIds.value = {};
+      agentPersonas.value = {};
     }
   }
   function clearAllAgentData(): void { clearAgentData(); }
@@ -223,11 +230,43 @@ export const useChatStore = defineStore('chat', () => {
     streamingMainContentText.value = '';
   }
 
+  function getPersonaForAgent(agentId: AgentId): string | null {
+    return agentPersonas.value[agentId] ?? null;
+  }
+
+  function setPersonaForAgent(agentId: AgentId, persona: string | null): void {
+    const normalized = persona?.trim() || '';
+    if (normalized) {
+      if (agentPersonas.value[agentId] !== normalized) {
+        agentPersonas.value = { ...agentPersonas.value, [agentId]: normalized };
+      }
+    } else if (agentPersonas.value[agentId]) {
+      const updated = { ...agentPersonas.value };
+      delete updated[agentId];
+      agentPersonas.value = updated;
+    }
+  }
+
+  function attachPersonaToPayload(agentId: AgentId, payload: ChatMessagePayloadFE): ChatMessagePayloadFE {
+    const persona = getPersonaForAgent(agentId);
+    return {
+      ...payload,
+      agentId,
+      personaOverride: persona ?? null,
+    };
+  }
+
+  function syncPersonaFromResponse(agentId: AgentId, response?: { persona?: string | null }): void {
+    if (!response || !Object.prototype.hasOwnProperty.call(response, 'persona')) return;
+    setPersonaForAgent(agentId, response.persona ?? null);
+  }
+
   return {
     messageHistory: history,
     mainAgentContents: readonly(mainAgentContents),
     isMainContentStreaming: readonly(isMainContentStreaming),
     streamingMainContentText: readonly(streamingMainContentText),
+    agentPersonas: readonly(agentPersonas),
     getCurrentMainContentDataForAgent,
     getMainContentForAgent,
     getMessagesForAgent,
@@ -243,5 +282,9 @@ export const useChatStore = defineStore('chat', () => {
     clearMainContentForAgent,
     ensureMainContentForAgent,
     clearAgentChatLogIfChanging,
+    getPersonaForAgent,
+    setPersonaForAgent,
+    attachPersonaToPayload,
+    syncPersonaFromResponse,
   };
 });

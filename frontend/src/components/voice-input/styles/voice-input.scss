@@ -222,7 +222,6 @@ $z-ptt-preview-modal: 30;
   &.viz-active { opacity: 0.7; }
   &.viz-listening { opacity: 0.5; }
   &.viz-recording { opacity: 0.8; }
-  &.viz-continuous { opacity: 0.35; filter: blur(0.5px); }
 }
 
 .vi-mode-spinner {
@@ -235,14 +234,15 @@ $z-ptt-preview-modal: 30;
   z-index: $z-visualization-canvas + 2;
 
   &__ring {
-    width: 54px;
-    height: 54px;
+    width: 56px;
+    height: 56px;
     border-radius: 50%;
     border: 2px solid transparent;
+    z-index: 4;
     border-top-color: hsla(var(--color-accent-interactive-h, 190), var(--color-accent-interactive-s, 90%), var(--color-accent-interactive-l, 65%), 0.75);
     border-left-color: hsla(var(--color-accent-interactive-h, 190), var(--color-accent-interactive-s, 90%), var(--color-accent-interactive-l, 65%), 0.35);
     border-right-color: hsla(var(--color-accent-interactive-h, 190), var(--color-accent-interactive-s, 90%), var(--color-accent-interactive-l, 65%), 0.15);
-    box-shadow: 0 0 16px hsla(var(--color-accent-interactive-h, 190), var(--color-accent-interactive-s, 90%), var(--color-accent-interactive-l, 65%), 0.25);
+    box-shadow: 0 0 16px hsla(var(--color-accent-interactive-h, 190), var(--color-accent-interactive-s, 90%), var(--color-accent-interactive-l, 65%), 0.28);
     animation: vi-spinner-rotate 1.4s linear infinite;
   }
 }
@@ -303,23 +303,23 @@ $z-ptt-preview-modal: 30;
   flex-shrink: 0;
   box-shadow: 
     0 4px 16px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.3),
-    inset 0 1px 0 hsla(255, 255, 255, 0.2),
-    inset 0 -2px 4px hsla(0, 0, 0, 0.1);
+    inset 0 1px 0 hsla(255, 100%, 100%, 0.2),
+    inset 0 -2px 4px hsla(0, 0%, 0%, 0.1);
 
   &:hover:not(:disabled) {
     transform: scale(1.05) translateY(-2px);
     box-shadow: 
       0 6px 24px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.4),
-      inset 0 1px 0 hsla(255, 255, 255, 0.3),
-      inset 0 -2px 4px hsla(0, 0, 0, 0.15);
+      inset 0 1px 0 hsla(255, 100%, 100%, 0.3),
+      inset 0 -2px 4px hsla(0, 0%, 0%, 0.15);
   }
   
   &:active:not(:disabled) {
     transform: scale(0.98) translateY(0);
     box-shadow: 
       0 2px 8px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.3),
-      inset 0 1px 0 hsla(255, 255, 255, 0.1),
-      inset 0 -1px 2px hsla(0, 0, 0, 0.1);
+      inset 0 1px 0 hsla(255, 100%, 100%, 0.1),
+      inset 0 -1px 2px hsla(0, 0%, 0%, 0.1);
   }
 
   // Breathing animation when active
@@ -426,6 +426,61 @@ $z-ptt-preview-modal: 30;
   margin-bottom: 16px;
   position: relative;
   z-index: $z-controls-wrapper;
+}
+
+.vi-mic-wrapper {
+  position: relative;
+  width: 88px;
+  height: 88px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  .mic-input-button {
+    position: relative;
+    z-index: 3;
+  }
+}
+
+.vi-continuous-pulse {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 118px;
+  height: 118px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 1;
+
+  &__ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid hsla(var(--color-accent-interactive-h, 190), var(--color-accent-interactive-s, 88%), var(--color-accent-interactive-l, 65%), 0.32);
+    opacity: 0;
+    transform: scale(0.55);
+    animation: vi-continuous-wave 3.4s ease-out infinite;
+    mix-blend-mode: screen;
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 6px;
+      border-radius: 50%;
+      box-shadow: 0 0 18px hsla(var(--color-accent-interactive-h, 190), var(--color-accent-interactive-s, 88%), var(--color-accent-interactive-l, 65%), 0.18);
+    }
+
+    &--delay-medium { animation-delay: 1.1s; }
+    &--delay-long { animation-delay: 2.2s; }
+  }
+}
+
+@keyframes vi-continuous-wave {
+  0% { transform: scale(0.55); opacity: 0; }
+  20% { opacity: 0.35; }
+  55% { opacity: 0.18; }
+  100% { transform: scale(1.35); opacity: 0; }
 }
 
 .vi-mode-selector {
@@ -745,13 +800,13 @@ $z-ptt-preview-modal: 30;
     transform: scale(1);
     box-shadow: 
       0 4px 16px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.3),
-      inset 0 1px 0 hsla(255, 255, 255, 0.2);
+      inset 0 1px 0 hsla(255, 100%, 100%, 0.2);
   }
   50% { 
     transform: scale(1.05);
     box-shadow: 
       0 6px 24px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.4),
-      inset 0 1px 0 hsla(255, 255, 255, 0.25);
+      inset 0 1px 0 hsla(255, 100%, 100%, 0.25);
   }
 }
 

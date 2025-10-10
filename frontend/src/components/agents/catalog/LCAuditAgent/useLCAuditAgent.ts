@@ -291,14 +291,20 @@ export function useLCAuditAgent(
             .filter(m => m.role === 'user' && m.content).slice(-5).map(m => m.content!.substring(0, 200))
         ));
 
-      const payload: ChatMessagePayloadFE = {
+      const personaOverride = chatStore.getPersonaForAgent(agentId.value);
+      const personaInstructions = personaOverride ? `## CUSTOM PERSONA CONTEXT:\n${personaOverride.trim()}` : '';
+      finalSystemPrompt = finalSystemPrompt.replace(/{{ADDITIONAL_INSTRUCTIONS}}/g, personaInstructions);
+
+      const basePayload: ChatMessagePayloadFE = {
         messages: [{ role: 'user', content: problemInput, timestamp: Date.now() }],
         mode: agentConfigRef.value.id, systemPromptOverride: finalSystemPrompt,
         userId: `lc_audit_session_${agentId.value}`,
         conversationId: chatStore.getCurrentConversationId(agentId.value) || `lcaudit-conv-${Date.now()}`,
         stream: false,
       };
+      const payload = chatStore.attachPersonaToPayload(agentId.value, basePayload);
       const response = await chatAPI.sendMessage(payload);
+      chatStore.syncPersonaFromResponse(agentId.value, response.data);
       if (response.data && typeof (response.data as TextResponseDataFE).content === 'string') {
         handleLlmAuditResponse((response.data as TextResponseDataFE).content!);
       } else {

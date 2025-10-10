@@ -78,6 +78,7 @@ export async function configureRouter(): Promise<Router> {
     // No strict authMiddleware is applied here, allowing public access.
     // The route handlers themselves can check req.user if behavior needs to differ for logged-in users.
     router.post('/chat', chatApiRoutes.POST);
+    router.post('/chat/persona', chatApiRoutes.POST_PERSONA);
     console.log('✅ Registered chat routes (public/private access)');
 
     router.post('/diagram', chatApiRoutes.POST); // Typically diagrams are generated in context of chat.
