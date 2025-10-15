@@ -209,3 +209,4 @@ export function useVAgent(
     isTextAnimating: readonly(isTextAnimating), // Provide if VAgentComposable expects it
   };
 }
+

@@ -130,10 +130,24 @@ export interface LogoutResponseFE {
 }
 
 export const authAPI = {
-  login: (credentials: { password: string; rememberMe?: boolean }): Promise<AxiosResponse<AuthResponseFE>> =>
-    api.post('/auth', credentials),
+  loginGlobal: (payload: { password: string; rememberMe?: boolean }): Promise<AxiosResponse<AuthResponseFE>> =>
+    api.post('/auth/global', payload),
+  loginStandard: (payload: { email: string; password: string; rememberMe?: boolean }): Promise<AxiosResponse<AuthResponseFE>> =>
+    api.post('/auth/login', payload),
   checkStatus: (): Promise<AxiosResponse<AuthResponseFE>> => api.get('/auth'),
   logout: (): Promise<AxiosResponse<LogoutResponseFE>> => api.delete('/auth'),
+};
+
+export interface BillingCheckoutResponseFE { checkoutUrl: string; }
+
+export const billingAPI = {
+  createCheckoutSession: (payload: { variantId: string; productId: string; successUrl?: string; cancelUrl?: string }): Promise<AxiosResponse<BillingCheckoutResponseFE>> =>
+    api.post('/billing/checkout', payload),
+};
+
+export const rateLimitAPI = {
+  getStatus: (): Promise<AxiosResponse<{ tier: string; used: number; remaining: number; limit: number; resetAt: string | Date | null }>> =>
+    api.get('/rate-limit/status'),
 };
 
 export interface ChatMessageFE {
@@ -350,6 +364,7 @@ export interface SttStatsResponseFE {
   openaiTtsDefaultSpeed: number;
   currentSessionCost: number;
   sessionCostThreshold: number;
+  costsByService: SessionCostDetailsFE['costsByService'];
 }
 
 export const speechAPI = {
@@ -408,7 +423,7 @@ export interface ResetCostResponseFE {
 }
 
 export const costAPI = {
-  getSessionCost: (): Promise<AxiosResponse<SessionCostDetailsFE>> => api.get('/cost'),
+  getSessionCost: (): Promise<AxiosResponse<SessionCostDetailsFE>> => api.get('/cost/session'),
   resetSessionCost: (data: ResetCostPayloadFE = { action: 'reset' }): Promise<AxiosResponse<ResetCostResponseFE>> =>
     api.post('/cost', data),
 };
@@ -444,4 +459,93 @@ export const promptAPI = {
     api.get(`/prompts/${filename}`),
 };
 
+export interface OrganizationMemberFE {
+  id: string;
+  userId: string;
+  email: string | null;
+  role: 'admin' | 'builder' | 'viewer';
+  status: 'active' | 'invited' | 'suspended';
+  seatUnits: number;
+  dailyUsageCapUsd: number | null;
+  createdAt: number;
+  updatedAt: number;
+  isSelf: boolean;
+}
+
+export interface OrganizationInviteFE {
+  id: string;
+  email: string;
+  role: 'admin' | 'builder' | 'viewer';
+  status: 'pending' | 'accepted' | 'revoked' | 'expired';
+  createdAt: number;
+  expiresAt: number | null;
+  inviterUserId: string | null;
+  acceptedAt: number | null;
+  revokedAt: number | null;
+  token?: string;
+}
+
+export interface OrganizationSummaryFE {
+  id: string;
+  name: string;
+  slug: string | null;
+  planId: string;
+  ownerUserId: string;
+  seatLimit: number;
+  createdAt: number;
+  updatedAt: number;
+  stats: {
+    activeSeats: number;
+    pendingInvites: number;
+    availableSeats: number;
+  };
+  membership: OrganizationMemberFE | null;
+  permissions: {
+    canInvite: boolean;
+    canManageSeats: boolean;
+    canModifyMembers: boolean;
+    canLeave: boolean;
+  };
+  members: OrganizationMemberFE[];
+  invites: OrganizationInviteFE[];
+}
+
+export const organizationAPI = {
+  list: (): Promise<AxiosResponse<{ organizations: OrganizationSummaryFE[] }>> => api.get('/organizations'),
+  create: (data: { name: string; seatLimit?: number; planId?: string; slug?: string | null }): Promise<AxiosResponse<{ organization: OrganizationSummaryFE }>> =>
+    api.post('/organizations', data),
+  update: (
+    organizationId: string,
+    data: { name?: string; seatLimit?: number },
+  ): Promise<AxiosResponse<{ organization: OrganizationSummaryFE }>> =>
+    api.patch(`/organizations/${organizationId}`, data),
+  createInvite: (
+    organizationId: string,
+    data: { email: string; role?: 'admin' | 'builder' | 'viewer'; expiresAt?: number | null },
+  ): Promise<AxiosResponse<{ organization: OrganizationSummaryFE; invite: OrganizationInviteFE }>> =>
+    api.post(`/organizations/${organizationId}/invites`, data),
+  revokeInvite: (
+    organizationId: string,
+    inviteId: string,
+  ): Promise<AxiosResponse<{ organization: OrganizationSummaryFE }>> =>
+    api.delete(`/organizations/${organizationId}/invites/${inviteId}`),
+  updateMember: (
+    organizationId: string,
+    memberId: string,
+    data: { role?: 'admin' | 'builder' | 'viewer'; dailyUsageCapUsd?: number | null; seatUnits?: number },
+  ): Promise<AxiosResponse<{ organization: OrganizationSummaryFE }>> =>
+    api.patch(`/organizations/${organizationId}/members/${memberId}`, data),
+  removeMember: (
+    organizationId: string,
+    memberId: string,
+  ): Promise<AxiosResponse<{ organization: OrganizationSummaryFE | null }>> =>
+    api.delete(`/organizations/${organizationId}/members/${memberId}`),
+  acceptInvite: (
+    token: string,
+  ): Promise<AxiosResponse<{ organization: OrganizationSummaryFE; invite: OrganizationInviteFE }>> =>
+    api.post(`/organizations/invites/${token}/accept`, {}),
+};
+
 export default api;
+
+

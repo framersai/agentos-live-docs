@@ -1,134 +1,188 @@
 # Voice Chat Assistant
 
 <p align="center">
-  <img src="./frontend/src/assets/logo.svg" alt="Voice Chat Assistant Logo" width="120">
+  <img src="./frontend/src/assets/logo.svg" alt="Voice Chat Assistant Logo" width="120" />
 </p>
 
 <p align="center">
-  A real-time voice-driven coding assistant web app built with Vue.js and Node.js.
+  A voice-first coding assistant that blends realtime transcription, rich context, and optional subscriptions.
 </p>
 
 ## Overview
 
-Voice Chat Assistant is a full-stack web application that lets you use your voice to get coding help, system design advice, and meeting summaries. Leveraging AI models through OpenAI and OpenRouter APIs, it transcribes your voice input and provides detailed responses with code examples and diagrams.
+Voice Chat Assistant is a full-stack application that helps you explore ideas, ship code, and stay organised. Speak naturally, mix in text, and let the assistant manage diagrams, code snippets, and follow-up context. The stack pairs a Vue 3 frontend with an Express + TypeScript backend, plus optional integrations for Supabase OAuth and Lemon Squeezy billing.
 
 ### Key Features
 
-- **Voice Recognition**: Uses both browser's Web Speech API and OpenAI Whisper for accurate transcription
-- **Multilingual Support**: Automatic language detection and response in 15+ languages including Chinese, Spanish, French, German, Japanese, Korean, Arabic, and more
-- **Smart Conversation Context**: Prevents repetitive responses and maintains natural conversation flow
-- **Multiple Modes**: Specialized prompts for coding questions, system design, and meeting summaries
-- **Code Highlighting**: Automatic syntax highlighting for various programming languages
-- **Diagrams**: Generates and renders Mermaid diagrams for system design and architecture
-- **Cost Tracking**: Monitors and displays API usage costs in real-time
-- **Advanced Memory Management**: Configurable conversation history with relevance scoring
-- **Responsive Design**: Works on desktop and mobile in both portrait and landscape orientations
-- **Dark/Light Theme**: Toggle between light and dark mode based on preference
-- **Continuous Listening Mode**: Hands-free conversation with smart silence detection (2+ second pause before sending)
+- Realtime speech recognition via Web Speech API or OpenAI Whisper
+- Multilingual responses (15+ languages) with adaptive context memory
+- Dedicated conversation modes for coding, system design, and meeting notes
+- Mermaid diagram generation for architecture discussions
+- Cost tracking, configurable model routing, and granular rate limits
+- Two authentication paths: shared global passphrase or personal Supabase accounts
+- Optional Lemon Squeezy billing with subscription-aware access control
+- Public demo mode with automatic rate-limit banners
 
 ## Table of Contents
 
-- [Installation](#installation)
+- [Quick Start](#quick-start)
 - [Usage](#usage)
-- [Architecture](#architecture)
 - [Configuration](#configuration)
-- [API Documentation](#api-documentation)
+- [Supabase (Optional)](#supabase-optional)
+- [Architecture](#architecture)
+- [API Reference](#api-reference)
 - [Contributing](#contributing)
 - [License](#license)
 
-## Installation
+## Quick Start
 
-### Prerequisites
-
-- Node.js 18+ and npm
-- OpenAI API key
-- (Optional) OpenRouter API key
-
-### Quick Start
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/manicinc/voice-coding-assistant.git
-   cd voice-coding-assistant
-   ```
-
-2. Install dependencies:
-   ```bash
-   npm run install-all
-   ```
-
-3. Create a `.env` file in the root directory:
-   ```
-   OPENAI_API_KEY=your_openai_key_here
-   OPENROUTER_API_KEY=your_openrouter_key_here
-   PASSWORD=your_password_here
-   PORT=3001
-   FRONTEND_URL=http://localhost:3000
-   SPEECH_PREFERENCE=whisper
-   MODEL_PREF_CODING=gpt-4o
-   MODEL_PREF_SYSTEM_DESIGN=gpt-4o
-   MODEL_PREF_SUMMARY=gpt-4o-mini
-   COST_THRESHOLD=5.00
-   DEFAULT_LANGUAGE=python
-   ```
-
-4. Start the development server:
-   ```bash
-   npm run dev
-   ```
-
-5. Access the application at http://localhost:3000
-
-### Docker Installation
-
-To run using Docker:
+### 1. Install Dependencies
 
 ```bash
-docker-compose up -d
+# Backend
+cd backend
+npm install
+
+# Frontend
+cd ../frontend
+npm install
 ```
 
-This will build and start both the frontend and backend containers.
+Alternatively, run `npm run install-all` from the repository root to install both workspaces.
+
+### 2. Configure Environment Variables
+
+Copy `.env.sample` to `.env` in the repository root. At minimum set:
+
+```bash
+PORT=3001
+NODE_ENV=development
+FRONTEND_URL=http://localhost:3000
+
+# Authentication
+AUTH_JWT_SECRET=replace_with_a_long_random_string
+GLOBAL_ACCESS_PASSWORD=choose-a-shared-passphrase
+
+# Optional Supabase (see below)
+SUPABASE_URL=
+SUPABASE_SERVICE_ROLE_KEY=
+VITE_SUPABASE_URL=
+VITE_SUPABASE_ANON_KEY=
+
+# LLM providers
+OPENAI_API_KEY=your_openai_key
+OPENROUTER_API_KEY=
+ANTHROPIC_API_KEY=
+
+# Optional billing (personal subscriptions)
+LEMONSQUEEZY_API_KEY=
+LEMONSQUEEZY_STORE_ID=
+LEMONSQUEEZY_WEBHOOK_SECRET=
+```
+
+Frontend-specific values live in `frontend/.env` or `frontend/.env.local`:
+
+```bash
+VITE_LEMONSQUEEZY_PRODUCT_ID=
+VITE_LEMONSQUEEZY_VARIANT_ID=
+VITE_SUPABASE_URL=
+VITE_SUPABASE_ANON_KEY=
+```
+
+> `GLOBAL_ACCESS_PASSWORD` enables the shared login path immediately. Individual logins require either Supabase (email/password or OAuth) or manual seeding plus an active Lemon Squeezy subscription.
+
+### 3. Run the Development Servers
+
+```bash
+# From the repository root
+npm run dev
+```
+
+The backend boots on `http://localhost:3001` and the frontend on `http://localhost:3000`. Restart the dev servers whenever you change environment variables.
 
 ## Usage
 
-1. **Login**: Enter the password you configured in the `.env` file.
-2. **Select Mode**: Choose from:
-   * **Coding Q&A**: For programming questions and code examples
-   * **System Design**: For architectural design questions and diagrams
-   * **Meeting Summary**: For summarizing meeting notes or transcripts
-3. **Voice Input**: Click the microphone button and speak your question. The application will transcribe your speech and send it to the AI.
-4. **View Results**: The AI will respond with formatted text, code examples, and diagrams when appropriate.
-5. **Settings**: Configure preferences like speech recognition method, dark/light mode, and cost thresholds in the settings page.
+1. **Choose a sign-in path**
+   - **Global Access**: Enter the shared passphrase for rate-limited unlimited usage.
+   - **Supabase Account**: Log in with email/password or OAuth (Google, GitHub, etc.) when Supabase is configured. The backend mirrors Supabase users into the local SQLite auth store.
+
+2. **Watch the demo banner**
+   - Anonymous visitors see a rate-limit banner driven by `/api/rate-limit/status` so they know when usage is nearly exhausted.
+
+3. **Pick a mode**
+   - Coding Q&A, System Design, Meeting Summary, plus persona-specific agents.
+
+4. **Talk or type**
+   - Combine voice transcription, text input, and diagram requests. The assistant keeps track of context and costs.
+
+5. **Manage billing**
+   - The Settings > Billing card shows Lemon Squeezy status for authenticated users.
 
 ## Configuration
 
-See `CONFIGURATION.md` for detailed configuration options.
+For the full list of environment variables, feature flags, and tuning options, read [`CONFIGURATION.md`](CONFIGURATION.md). The file includes notes on rate limiting, memory limits, model routing, and billing flags.
+
+`.env.sample` is kept in sync with new integrations, including Supabase and Lemon Squeezy reminders.
+
+## Plans & Billing
+
+The shared plan catalog lives in `shared/planCatalog.ts` and drives the About page, login hints, and Settings billing card. See [`docs/PLANS_AND_BILLING.md`](docs/PLANS_AND_BILLING.md) for the calculation breakdown.
+
+- Free � GPT-4o mini, ~1.8K GPT-4o tokens/day.
+- Basic ($9/mo) � ~9.5K GPT-4o tokens/day, premium models, no BYO keys.
+- Creator ($18/mo) � ~21.8K GPT-4o tokens/day, premium models, optional BYO rollover.
+- Organization ($99/mo) � ~135K GPT-4o tokens/day shared pool, seat management, BYO rollover.
+- Global Lifetime Access � passphrase login, per-IP allowance for internal cohorts.
+
+Organization admins can manage seat limits, invites, and pending memberships directly from **Settings > Team Management** inside the app.
+
+Stripe support is optional: leave Stripe env vars empty to operate with Lemon Squeezy only.
+
+## Supabase (Optional)
+
+1. Create a Supabase project and enable the providers you want (Google recommended for quick testing).
+2. Add `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `VITE_SUPABASE_URL`, and `VITE_SUPABASE_ANON_KEY` to your environment files.
+3. Set the auth redirect URL to `http://localhost:3000` in the Supabase dashboard.
+4. Restart `npm run dev`. The login screen now shows OAuth buttons and email/password forms that talk to Supabase.
+5. The backend validates Supabase JWTs using the service-role key and associates them with local `app_users` rows (stored in SQLite or PostgreSQL depending on your configuration).
+
+If Supabase variables are omitted the app falls back to the global passphrase-only flow. Both paths can coexist.
 
 ## Architecture
 
-The application follows a modern client-server architecture:
-* **Frontend**: Vue 3, Vite, TailwindCSS
-* **Backend**: Node.js, Express, TypeScript
-* **External APIs**: OpenAI API, OpenRouter API
+Voice Chat Assistant follows a modular client/server design:
 
-For detailed architecture documentation, see `ARCHITECTURE.md`.
+- **Frontend**: Vue 3 (Composition API), Vite, TailwindCSS, VueUse, and Supabase JS (optional).
+- **Backend**: Express, TypeScript, multi-tenant auth middleware, and feature-focused modules under `backend/src/features/*`.
+- **External Services**: OpenAI / OpenRouter / Anthropic for LLMs, Supabase for authentication, Lemon Squeezy for billing.
 
-## API Documentation
+See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for diagrams, module breakdowns, and data flow details.
 
-### Backend API Endpoints
+## API Reference
 
-* `POST /api/auth`: Authentication endpoint
-* `POST /api/chat`: Send messages to AI models
-* `POST /api/speech`: Transcribe audio with Whisper
-* `POST /api/diagram`: Generate diagrams from descriptions
-* `GET/POST /api/cost`: Retrieve or reset session cost
+Authenticated routes are served from `/api`. Key endpoints:
 
-For complete API documentation, see `API.md`.
+- `POST /api/auth/global` - Global passphrase login (returns JWT + `tokenProvider: "global"`).
+- `POST /api/auth/login` - Email/password login for seeded or subscribed users (returns JWT + `tokenProvider: "standard"`).
+- `GET /api/auth` - Returns the current session profile. Accepts global JWTs or Supabase tokens in the `Authorization` header.
+- `DELETE /api/auth` - Clears the auth cookie and ends the session.
+- `GET /api/rate-limit/status` - Public endpoint used by the demo banner to display remaining anonymous quota.
+- `POST /api/chat` / `POST /api/chat/persona` - Conversational endpoints for standard and persona-specific prompts.
+- `POST /api/speech` - Whisper transcription.
+- `POST /api/diagram` - Mermaid diagram generation.
+- `GET /api/tts/voices`, `POST /api/tts` - Text-to-speech helpers.
+- `GET /api/cost`, `POST /api/cost` - Authenticated cost tracking (reset + history).
+- `POST /api/billing/checkout` - Creates Lemon Squeezy checkout sessions (requires auth).
+- `POST /api/billing/webhook` - Webhook receiver that syncs subscription status.
 
 ## Contributing
 
-Contributions are welcome! Please read our `CONTRIBUTING.md` for details on the process for submitting pull requests.
+Pull requests are welcome. Please review [`CONTRIBUTING.md`](CONTRIBUTING.md) and open an issue if you plan large changes so we can coordinate direction.
 
 ## License
 
-This project is licensed under the MIT License - see the `LICENSE` file for details.# Auto-deploy trigger Sun, Sep 28, 2025  9:31:21 AM
+Voice Chat Assistant is released under the MIT License. See [`LICENSE`](LICENSE).
+
+
+
+

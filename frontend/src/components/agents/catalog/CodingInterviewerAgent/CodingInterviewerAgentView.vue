@@ -247,7 +247,7 @@ defineExpose({
     @apply w-6 h-6 shrink-0;
     color: hsl(var(--interviewer-accent-h), var(--interviewer-accent-s), var(--interviewer-accent-l));
   }
-  .header-title { @apply font-semibold text-md tracking-wide truncate; color: var(--color-text-primary); }
+  .header-title { @apply font-semibold text-base tracking-wide truncate; color: var(--color-text-primary); }
   .stage-chip {
     @apply text-xs px-2.5 py-1 rounded-full ml-2 font-medium capitalize shadow-sm;
     background-color: hsla(var(--interviewer-accent-h), var(--interviewer-accent-s), var(--interviewer-accent-l), 0.15);
@@ -310,3 +310,4 @@ defineExpose({
 }
 
 </style>
+

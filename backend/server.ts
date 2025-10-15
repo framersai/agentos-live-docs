@@ -10,6 +10,7 @@ import express, { Express, Request, Response, NextFunction } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import morgan from 'morgan';
+import cookieParser from 'cookie-parser';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import http from 'http'; // Added for graceful shutdown
@@ -21,6 +22,7 @@ import { rateLimiter } from './middleware/ratelimiter.js'; // Import the instanc
 import { setupI18nMiddleware } from './middleware/i18n.js';
 import { initializeLlmServices } from './src/core/llm/llm.factory.js';
 import { sqliteMemoryAdapter } from './src/core/memory/SqliteMemoryAdapter.js'; // Import for shutdown
+import { closeAppDatabase } from './src/core/database/appDatabase.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -48,6 +50,7 @@ app.use(cors({
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(express.json({ limit: '50mb' })); // For parsing application/json
 app.use(express.urlencoded({ extended: true, limit: '50mb' })); // For parsing application/x-www-form-urlencoded
+app.use(cookieParser());
 
 // --- Server Initialization and Middleware Application ---
 async function startServer() {
@@ -179,12 +182,18 @@ async function gracefulShutdown(signal: string) {
       } catch (e) {
         console.error('Error disconnecting rate limiter:', e);
       }
-      
+
       try {
         await sqliteMemoryAdapter.disconnect(); // Assuming it has a disconnect method
         console.log('💾 SQLite Memory Adapter disconnected.');
       } catch (e) {
         console.error('Error disconnecting SQLite adapter:', e);
+      }
+
+      try {
+        await closeAppDatabase();
+      } catch (e) {
+        console.error('Error closing application database:', e);
       }
       
       // Add any other service disconnections here

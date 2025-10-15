@@ -83,31 +83,44 @@
 // Dedicated styles for print media, if needed.
 // @use '../styles/base/print';
 
-
 .custom-scrollbar-futuristic {
-    &::-webkit-scrollbar { @apply w-1.5 h-1.5; }
-    &::-webkit-scrollbar-track { background-color: hsla(var(--neutral-hue, 220), 20%, 20%, 0.3); @apply rounded-full; }
-    &::-webkit-scrollbar-thumb { background-color: hsla(var(--agent-interviewer-accent-hue), calc(var(--agent-interviewer-accent-saturation) + 15%), calc(var(--agent-interviewer-accent-lightness) + 10%), 0.6); @apply rounded-full; border: 1px solid hsla(var(--neutral-hue, 220), 20%, 15%, 0.5); }
-    &::-webkit-scrollbar-thumb:hover { background-color: hsla(var(--agent-interviewer-accent-hue), calc(var(--agent-interviewer-accent-saturation) + 15%), calc(var(--agent-interviewer-accent-lightness) + 10%), 0.8); }
-    scrollbar-width: thin;
-    scrollbar-color: hsla(var(--agent-interviewer-accent-hue), calc(var(--agent-interviewer-accent-saturation) + 15%), calc(var(--agent-interviewer-accent-lightness) + 10%), 0.6) hsla(var(--neutral-hue, 220), 20%, 20%, 0.3);
+  &::-webkit-scrollbar {
+    width: 0.375rem;
+    height: 0.375rem;
   }
-
-
-
+  &::-webkit-scrollbar-track {
+    background-color: hsla(var(--neutral-hue, 220), 20%, 20%, 0.3);
+    border-radius: 9999px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: hsla(var(--agent-interviewer-accent-hue), calc(var(--agent-interviewer-accent-saturation) + 15%), calc(var(--agent-interviewer-accent-lightness) + 10%), 0.6);
+    border-radius: 9999px;
+    border: 1px solid hsla(var(--neutral-hue, 220), 20%, 15%, 0.5);
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: hsla(var(--agent-interviewer-accent-hue), calc(var(--agent-interviewer-accent-saturation) + 15%), calc(var(--agent-interviewer-accent-lightness) + 10%), 0.8);
+  }
+  scrollbar-width: thin;
+  scrollbar-color: hsla(var(--agent-interviewer-accent-hue), calc(var(--agent-interviewer-accent-saturation) + 15%), calc(var(--agent-interviewer-accent-lightness) + 10%), 0.6) hsla(var(--neutral-hue, 220), 20%, 20%, 0.3);
+}
 /* Custom Scrollbar for Nerf */
 .nerf-scrollbar {
-    &::-webkit-scrollbar { @apply w-2 h-2; } /* Slightly thicker for a more playful feel */
-    &::-webkit-scrollbar-track { background-color: hsla(var(--neutral-hue, 220), 15%, 15%, 0.3); @apply rounded-full; }
-    &::-webkit-scrollbar-thumb {
-      background-color: hsla(var(--agent-nerf-accent-hue), var(--agent-nerf-accent-saturation), var(--agent-nerf-accent-lightness), 0.6);
-      @apply rounded-full;
-      border: 2px solid hsla(var(--neutral-hue, 220), 15%, 15%, 0.3); /* Match track for inset look */
-    }
-    &::-webkit-scrollbar-thumb:hover {
-      background-color: var(--agent-nerf-accent-color);
-    }
-    scrollbar-width: auto; /* Or 'thin' */
-    scrollbar-color: hsla(var(--agent-nerf-accent-hue), var(--agent-nerf-accent-saturation), var(--agent-nerf-accent-lightness), 0.6) hsla(var(--neutral-hue, 220), 15%, 15%, 0.3);
+  &::-webkit-scrollbar {
+    width: 0.5rem;
+    height: 0.5rem;
   }
-  
+  &::-webkit-scrollbar-track {
+    background-color: hsla(var(--neutral-hue, 220), 15%, 15%, 0.3);
+    border-radius: 9999px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: hsla(var(--agent-nerf-accent-hue), var(--agent-nerf-accent-saturation), var(--agent-nerf-accent-lightness), 0.6);
+    border-radius: 9999px;
+    border: 2px solid hsla(var(--neutral-hue, 220), 15%, 15%, 0.3);
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: var(--agent-nerf-accent-color);
+  }
+  scrollbar-width: auto;
+  scrollbar-color: hsla(var(--agent-nerf-accent-hue), var(--agent-nerf-accent-saturation), var(--agent-nerf-accent-lightness), 0.6) hsla(var(--neutral-hue, 220), 15%, 15%, 0.3);
+}

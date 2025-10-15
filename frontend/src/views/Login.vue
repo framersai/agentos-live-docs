@@ -1,462 +1,810 @@
-// File: frontend/src/views/Login.vue
+﻿// File: frontend/src/views/Login.vue
 /**
 * @file Login.vue
-* @description Login page for the Voice Coding Assistant, themed dynamically.
-* @version 2.0.3 - Updated logo wrapper to use standard theme glass variables.
-* Refined theme toggle to use uiStore and more generic theme IDs.
+* @description Refined login page for the Voice Chat Assistant with a single-column layout and Supabase-aware auth tabs.
 */
 <script setup lang="ts">
-import { ref, onMounted, computed, inject } from 'vue';
+import { ref, onMounted, computed, inject, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useStorage } from '@vueuse/core';
 import { useI18n } from 'vue-i18n';
-import { authAPI, api } from '@/utils/api';
-import { AUTH_TOKEN_KEY } from '@/router'; // AUTH_TOKEN_KEY should be exported from constants.ts if used elsewhere too
-import { LockClosedIcon, EyeIcon, EyeSlashIcon, ExclamationTriangleIcon } from '@heroicons/vue/24/outline'; // BeakerIcon removed as not used
-import { useUiStore } from '@/store/ui.store';
+import { authAPI } from '@/utils/api';
+import { LockClosedIcon, EyeIcon, EyeSlashIcon, ExclamationTriangleIcon } from '@heroicons/vue/24/outline';
 import type { ToastService } from '@/services/services';
-import logoSvg from "@/assets/logo.svg"
+import logoSvg from '@/assets/logo.svg';
+import { useAuth } from '@/composables/useAuth';
+import type { Provider } from '@supabase/supabase-js';
+import PlanComparisonModal from '@/components/plan/PlanComparisonModal.vue';
+import { usePlans } from '@/composables/usePlans';
+
+type LoginTab = 'global' | 'supabase';
 
 const router = useRouter();
 const route = useRoute();
-const uiStore = useUiStore();
 const toast = inject<ToastService>('toast');
 const { t } = useI18n();
+const { findPlan } = usePlans();
+const auth = useAuth();
+const basicPlan = computed(() => findPlan('basic'));
+const creatorPlan = computed(() => findPlan('creator'));
+const organizationPlan = computed(() => findPlan('organization'));
+const startingPrice = computed(() => {
+  const price = basicPlan.value?.monthlyPriceUsd;
+  if (typeof price === 'number' && !Number.isNaN(price)) {
+    return `$${price.toFixed(0)}`;
+  }
+  return '$9';
+});
+const showPlanModal = ref(false);
 
-// --- Theme State ---
-const isDarkMode = computed(() => uiStore.isCurrentThemeDark);
+const openPlanModal = () => { showPlanModal.value = true; };
+const closePlanModal = () => { showPlanModal.value = false; };
 
-// --- Form Data ---
-const password = ref('');
-const rememberMe = useStorage('vca-rememberLoginPreference_v2', true);
-const showPassword = ref(false);
-const isLoggingIn = ref(false);
-const errorMessage = ref('');
+const supabaseEnabled = computed(() => auth.supabaseEnabled);
+const activeTab = ref<LoginTab>(supabaseEnabled.value ? 'supabase' : 'global');
 
-// --- Development/Debug ---
-// const showDevControls = ref(import.meta.env.DEV); // If used in template, keep
-// const showTestUI = ref(false); // If used in template, keep
+const globalPassword = ref('');
+const globalRememberMe = useStorage('vca-rememberGlobalLogin', false);
+const showGlobalPassword = ref(false);
+const globalIsLoggingIn = ref(false);
+const globalErrorMessage = ref('');
 
-const handleLogin = async () => {
-  if (!password.value) {
-    errorMessage.value = t('auth.password');
+const standardEmail = ref('');
+const standardPassword = ref('');
+const standardRememberMe = useStorage('vca-rememberStandardLogin', true);
+const showStandardPassword = ref(false);
+const standardIsLoggingIn = ref(false);
+const standardErrorMessage = ref('');
+
+const oauthInFlight = ref(false);
+const oauthProviders: Array<{ id: Provider; label: string }> = [
+  { id: 'google', label: 'Continue with Google' },
+  { id: 'github', label: 'Continue with GitHub' },
+];
+
+const selectTab = (tab: LoginTab) => {
+  if (tab === 'supabase' && !supabaseEnabled.value) {
     return;
   }
-  isLoggingIn.value = true;
-  errorMessage.value = '';
-  try {
-    const response = await authAPI.login({
-      password: password.value,
-      rememberMe: rememberMe.value
-    });
-    const token = response.data.token;
-    if (token) {
-      const storage = rememberMe.value ? localStorage : sessionStorage;
-      storage.setItem(AUTH_TOKEN_KEY, token);
-      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      // If useAuth composable has a login method that updates global state, call it:
-      // auth.login(token, rememberMe.value); // Assuming auth.login handles token storage & redirect
+  activeTab.value = tab;
+  globalErrorMessage.value = '';
+  standardErrorMessage.value = '';
+};
 
-      toast?.add({ type: 'success', title: t('auth.loginSuccess'), message: t('common.welcome') });
-      const redirectPath = route.query.redirect as string | undefined;
-      if (redirectPath && redirectPath !== '/' && redirectPath !== '/login') {
-        await router.replace(redirectPath);
-      } else {
-        await router.replace({ name: 'AuthenticatedHome' });
-      }
-    } else {
-      throw new Error('Login successful, but no token received.');
-    }
+watch(supabaseEnabled, (enabled) => {
+  if (!enabled && activeTab.value !== 'global') {
+    activeTab.value = 'global';
+  }
+});
+
+const handleSupabaseOAuth = async (provider: Provider) => {
+  if (!supabaseEnabled.value) {
+    toast?.add({ type: 'error', title: t('errors.general'), message: 'Supabase authentication is not configured.' });
+    return;
+  }
+  try {
+    oauthInFlight.value = true;
+    await auth.loginWithOAuth(provider, window.location.origin + window.location.pathname);
+    toast?.add({ type: 'info', title: 'Redirecting', message: 'Complete the sign-in flow in the opened tab.' });
   } catch (error: any) {
-    console.error('Login error details:', error.response || error);
-    if (error.response?.status === 401) {
-      errorMessage.value = t('auth.loginError');
-    } else if (error.response?.data?.message) {
-      errorMessage.value = error.response.data.message;
-    } else {
-      errorMessage.value = 'An unexpected error occurred. Please try again later.';
-    }
-    toast?.add({ type: 'error', title: t('errors.general'), message: errorMessage.value });
+    console.error('[Login.vue] Supabase OAuth error:', error);
+    const message = error?.message || 'Unable to start Supabase authentication.';
+    toast?.add({ type: 'error', title: t('errors.general'), message });
   } finally {
-    isLoggingIn.value = false;
+    oauthInFlight.value = false;
   }
 };
 
-// --- Lifecycle Hooks ---
+const redirectAfterLogin = async (): Promise<void> => {
+  toast?.add({ type: 'success', title: t('auth.loginSuccess'), message: t('common.welcome') });
+  const redirectPath = route.query.redirect as string | undefined;
+  if (redirectPath && redirectPath !== '/' && redirectPath !== '/login') {
+    await router.replace(redirectPath);
+  } else {
+    await router.replace({ name: 'AuthenticatedHome' });
+  }
+};
+
+const handleGlobalLogin = async () => {
+  if (!globalPassword.value) {
+    globalErrorMessage.value = t('auth.globalPasswordRequired', 'Global password is required');
+    return;
+  }
+  globalIsLoggingIn.value = true;
+  globalErrorMessage.value = '';
+  try {
+    const { data } = await authAPI.loginGlobal({
+      password: globalPassword.value,
+      rememberMe: globalRememberMe.value,
+    });
+    if (data?.token) {
+      auth.login(data.token, globalRememberMe.value, data.user);
+      if (!data?.user) {
+        await auth.refreshUser();
+      }
+      await redirectAfterLogin();
+    } else {
+      throw new Error('NO_TOKEN');
+    }
+  } catch (error: any) {
+    console.error('[Login.vue] Global login failed', error?.response || error);
+    const message = error?.response?.data?.message || error?.message || 'Global access denied.';
+    globalErrorMessage.value = message;
+    toast?.add({ type: 'error', title: t('errors.general'), message });
+  } finally {
+    globalIsLoggingIn.value = false;
+  }
+};
+
+const handleStandardLogin = async () => {
+  if (!standardEmail.value || !standardPassword.value) {
+    standardErrorMessage.value = t('auth.missingCredentials', 'Email and password are required');
+    return;
+  }
+  standardIsLoggingIn.value = true;
+  standardErrorMessage.value = '';
+  try {
+    if (supabaseEnabled.value && auth.supabaseClient) {
+      await auth.loginWithSupabasePassword(standardEmail.value, standardPassword.value);
+      await redirectAfterLogin();
+    } else {
+      const { data } = await authAPI.loginStandard({
+        email: standardEmail.value,
+        password: standardPassword.value,
+        rememberMe: standardRememberMe.value,
+      });
+      if (data?.token) {
+        auth.login(data.token, standardRememberMe.value, data.user);
+        if (!data?.user) {
+          await auth.refreshUser();
+        }
+        await redirectAfterLogin();
+      } else {
+        throw new Error('NO_TOKEN');
+      }
+    }
+  } catch (error: any) {
+    console.error('[Login.vue] Standard login failed', error?.response || error);
+    const message = error?.response?.data?.message || error?.message || t('auth.loginError');
+    standardErrorMessage.value = message;
+    toast?.add({ type: 'error', title: t('errors.general'), message });
+  } finally {
+    standardIsLoggingIn.value = false;
+  }
+};
+
 onMounted(async () => {
-  // Theme is initialized globally by ThemeManager in App.vue
-  const token = localStorage.getItem(AUTH_TOKEN_KEY) || sessionStorage.getItem(AUTH_TOKEN_KEY);
-  if (token) {
-    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    // Optionally, verify token validity with backend here before redirecting
-    // For now, assume token presence implies valid session for quick redirect
-    console.log("[Login.vue] User already has a token, attempting redirect.");
-    // Check if useAuth has an init method or if redirect is handled elsewhere
-    // For simplicity, direct redirect:
+  const authed = auth.checkAuthStatus();
+  if (authed) {
+    console.log('[Login.vue] User already has a token, attempting redirect.');
+    await auth.refreshUser();
     await router.replace({ name: 'AuthenticatedHome' });
     return;
   }
 
   if (route.query.sessionExpired === 'true') {
-    let reasonMessage = "Your session has expired. Please log in again.";
+    let reasonMessage = 'Your session has expired. Please log in again.';
     if (route.query.reason === 'unauthorized') {
-      reasonMessage = "Your session was invalid or unauthorized. Please log in again.";
+      reasonMessage = 'Your session was invalid or unauthorized. Please log in again.';
     }
     toast?.add({ type: 'warning', title: 'Session Expired', message: reasonMessage, duration: 7000 });
-    // Clean up query params after displaying message
     await router.replace({ query: {} });
   }
 });
 </script>
 
 <template>
-  <div class="login-page-wrapper">
-    <div class="login-content-area">
-      <div class="login-container w-full max-w-md space-y-8">
-        <div class="text-center">
-          <div class="logo-wrapper">
-            <img class="logo-image" :src="logoSvg" alt="Voice Chat Assistant Logo" />
-          </div>
-          <h1 class="app-main-title text-glow-primary">
-            Meet <strong>V</strong>
-          </h1>
-          <p class="app-subtitle">
-            {{ $t('common.welcome') }}
+  <div class="login-page">
+    <div class="login-shell">
+      <section class="login-hero">
+        <div class="hero-logo">
+          <img :src="logoSvg" alt="Voice Chat Assistant logo" />
+        </div>
+        <h1 class="hero-title">
+          {{ $t('common.welcome') }} — Voice-first workflows for builders
+        </h1>
+        <p class="hero-subtitle">
+          Speak, iterate, and ship faster with contextual personas, live code snippets, and diagram-aware responses.
+        </p>
+        <ul class="hero-highlights">
+          <li>Realtime transcription with adaptive memory</li>
+          <li>Persona toolkits for coding, systems, and meetings</li>
+          <li>Choose a shared passphrase or personal Supabase account</li>
+        </ul>
+        <div class="hero-actions">
+          <button type="button" class="hero-plan-button" @click="openPlanModal">
+            {{ $t('auth.comparePlans', 'Compare plans & pricing') }}
+          </button>
+          <p class="hero-note">
+            {{ $t('auth.planStartingPrice', 'Plans start at') }}
+            <strong>{{ startingPrice }}</strong>
+            / {{ $t('auth.perMonth', 'month') }}
           </p>
         </div>
+      </section>
 
-        <div class="login-card glass-pane">
-          <form @submit.prevent="handleLogin" class="space-y-6 p-6 sm:p-8">
-            <div>
-              <label for="password" class="form-label">
-                {{ $t('auth.password') }}
+      <section class="login-panel glass-pane">
+        <header class="panel-header">
+          <div class="panel-icon">
+            <LockClosedIcon aria-hidden="true" />
+          </div>
+          <div>
+            <h2 class="panel-title">{{ $t('auth.signInTitle', 'Access your workspace') }}</h2>
+            <p class="panel-subtitle">
+              {{ $t('auth.signInSubtitle', 'Pick the passphrase or personal account that matches your team setup.') }}
+            </p>
+          </div>
+        </header>
+
+        <div v-if="supabaseEnabled" class="panel-tabs" role="tablist">
+          <button
+            type="button"
+            role="tab"
+            :aria-selected="activeTab === 'global'"
+            :class="['panel-tab', { active: activeTab === 'global' }]"
+            @click="selectTab('global')"
+          >
+            {{ $t('auth.globalAccessTitle', 'Global Passphrase') }}
+          </button>
+          <button
+            type="button"
+            role="tab"
+            :aria-selected="activeTab === 'supabase'"
+            :class="['panel-tab', { active: activeTab === 'supabase' }]"
+            @click="selectTab('supabase')"
+          >
+            {{ $t('auth.supabaseAccessTitle', 'Supabase Account') }}
+          </button>
+        </div>
+
+        <Transition name="login-fade" mode="out-in">
+          <form
+            v-if="activeTab === 'global'"
+            key="global"
+            class="panel-form"
+            @submit.prevent="handleGlobalLogin"
+          >
+            <div class="input-group">
+              <label for="global-password">
+                {{ $t('auth.globalPasswordLabel', 'Operations passphrase') }}
               </label>
-              <div class="relative mt-1">
+              <div class="input-with-toggle">
                 <input
-  id="password"
-  v-model="password"
-  :type="showPassword ? 'text' : 'password'"
-  required
-  class="form-input !px-4 !py-4 !pr-12"
-  :placeholder="$t('auth.password')"
-  aria-required="true"
-  aria-describedby="password-error-message"
-  autocomplete="current-password"
-  @keyup.enter="handleLogin"
-/>
-                <button type="button" @click="showPassword = !showPassword" class="password-toggle-button" tabindex="-1"
-                  :aria-label="showPassword ? 'Hide password' : 'Show password'">
-                  <component :is="showPassword ? EyeSlashIcon : EyeIcon"
-                    class="icon-base text-neutral-text-muted hover:text-neutral-text" />
+                  id="global-password"
+                  v-model="globalPassword"
+                  :type="showGlobalPassword ? 'text' : 'password'"
+                  :placeholder="$t('auth.globalPasswordPlaceholder', 'Enter the shared passphrase')"
+                  autocomplete="off"
+                  required
+                />
+                <button
+                  type="button"
+                  class="toggle-visibility"
+                  :aria-label="showGlobalPassword ? 'Hide passphrase' : 'Show passphrase'"
+                  @click="showGlobalPassword = !showGlobalPassword"
+                >
+                  <component :is="showGlobalPassword ? EyeSlashIcon : EyeIcon" aria-hidden="true" />
                 </button>
               </div>
             </div>
 
-            <div class="flex items-center justify-between">
-              <div class="flex items-center">
-                <input id="remember-me" v-model="rememberMe" type="checkbox" class="remember-me-checkbox" />
-                <label for="remember-me" class="remember-me-label">
-                  {{ $t('auth.rememberMe') }}
-                </label>
-              </div>
-            </div>
+            <label class="remember-toggle">
+              <input type="checkbox" v-model="globalRememberMe" />
+              <span>{{ $t('auth.rememberGlobal', 'Remember this device') }}</span>
+            </label>
 
-            <div>
-              <button type="submit" :disabled="isLoggingIn" class="login-button btn btn-primary w-full group">
-                <span v-if="!isLoggingIn" class="flex items-center justify-center">
-                  <LockClosedIcon class="icon-sm mr-2" />
-                  {{ $t('auth.loginTitle') }}
-                </span>
-                <div v-if="isLoggingIn" class="login-spinner"></div>
-              </button>
-            </div>
+            <button type="submit" class="primary-button" :disabled="globalIsLoggingIn">
+              <span v-if="globalIsLoggingIn" class="button-spinner" aria-hidden="true"></span>
+              <span v-else>{{ $t('auth.globalLoginButton', 'Unlock operations access') }}</span>
+            </button>
 
-            <div v-if="errorMessage" id="password-error-message" class="error-alert" role="alert">
-              <div class="flex">
-                <div class="flex-shrink-0">
-                  <ExclamationTriangleIcon class="icon-base text-error-icon" />
-                </div>
-                <div class="ml-3">
-                  <p class="text-sm text-error-content">{{ errorMessage }}</p>
-                </div>
-              </div>
+            <div v-if="globalErrorMessage" class="error-card" role="alert">
+              <ExclamationTriangleIcon class="error-icon" aria-hidden="true" />
+              <p>{{ globalErrorMessage }}</p>
             </div>
           </form>
-        </div>
 
-        <div class="text-center mt-8 space-y-4">
-          <p class="text-xs text-neutral-text-muted">
-            {{ $t('auth.loginSubtitle') }}
+          <div v-else key="supabase" class="panel-form">
+            <form class="stacked-form" @submit.prevent="handleStandardLogin">
+              <div class="input-group">
+                <label for="standard-email">
+                  {{ $t('auth.emailLabel', 'Email address') }}
+                </label>
+                <input
+                  id="standard-email"
+                  v-model="standardEmail"
+                  type="email"
+                  autocomplete="email"
+                  required
+                  :placeholder="$t('auth.emailPlaceholder', 'you@example.com')"
+                />
+              </div>
+
+              <div class="input-group">
+                <label for="standard-password">
+                  {{ $t('auth.passwordLabel', 'Password') }}
+                </label>
+                <div class="input-with-toggle">
+                  <input
+                    id="standard-password"
+                    v-model="standardPassword"
+                    :type="showStandardPassword ? 'text' : 'password'"
+                    autocomplete="current-password"
+                    required
+                    :placeholder="$t('auth.passwordPlaceholder', 'Enter your password')"
+                  />
+                  <button
+                    type="button"
+                    class="toggle-visibility"
+                    :aria-label="showStandardPassword ? 'Hide password' : 'Show password'"
+                    @click="showStandardPassword = !showStandardPassword"
+                  >
+                    <component :is="showStandardPassword ? EyeSlashIcon : EyeIcon" aria-hidden="true" />
+                  </button>
+                </div>
+              </div>
+
+              <div class="form-footer">
+                <label class="remember-toggle">
+                  <input type="checkbox" v-model="standardRememberMe" />
+                  <span>{{ $t('auth.rememberStandard', 'Stay signed in on this device') }}</span>
+                </label>
+                <button type="submit" class="primary-button" :disabled="standardIsLoggingIn">
+                  <span v-if="standardIsLoggingIn" class="button-spinner" aria-hidden="true"></span>
+                  <span v-else>{{ $t('auth.standardLoginButton', 'Continue with email') }}</span>
+                </button>
+              </div>
+
+              <div v-if="standardErrorMessage" class="error-card" role="alert">
+                <ExclamationTriangleIcon class="error-icon" aria-hidden="true" />
+                <p>{{ standardErrorMessage }}</p>
+              </div>
+            </form>
+
+            <div v-if="supabaseEnabled" class="oauth-section">
+              <span class="oauth-label">{{ $t('auth.orContinueWith', 'Or continue with') }}</span>
+              <div class="oauth-buttons">
+                <button
+                  v-for="provider in oauthProviders"
+                  :key="provider.id"
+                  type="button"
+                  class="oauth-button"
+                  :disabled="oauthInFlight"
+                  @click="handleSupabaseOAuth(provider.id)"
+                >
+                  <span v-if="oauthInFlight" class="button-spinner" aria-hidden="true"></span>
+                  <span v-else>{{ provider.label }}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </Transition>
+
+        <footer class="panel-footer">
+          <p>
+            {{ $t('auth.wantTour', 'Want a quick tour instead?') }}
+            <RouterLink
+              :to="`/${$route.params.locale || 'en-US'}/about`"
+              class="panel-link"
+            >
+              {{ $t('auth.visitAbout', 'Visit the About page') }}
+            </RouterLink>
           </p>
-        </div>
-      </div>
+        </footer>
+      </section>
     </div>
+
+    <PlanComparisonModal
+      v-if="showPlanModal"
+      :is-open="showPlanModal"
+      :basic-plan="basicPlan"
+      :creator-plan="creatorPlan"
+      :organization-plan="organizationPlan"
+      @close="closePlanModal"
+    />
   </div>
 </template>
 
-<style scoped lang="postcss">
-/* Define Keyframes for animated gradient background */
-@keyframes gradient-animation {
-  0% {
-    background-position: 0% 50%;
-  }
+<style lang="scss" scoped>
+@use '@/styles/abstracts/variables' as v;
+@use '@/styles/abstracts/mixins' as m;
 
-  50% {
-    background-position: 100% 50%;
-  }
-
-  100% {
-    background-position: 0% 50%;
-  }
+.login-page {
+  min-height: 100vh;
+  padding: clamp(2.5rem, 6vw, 5rem) clamp(1.5rem, 5vw, 4rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(ellipse at top left,
+      hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.22),
+      transparent 55%),
+    radial-gradient(ellipse at bottom right,
+      hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.2),
+      transparent 60%),
+    hsl(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l));
 }
 
-.login-page-wrapper {
-  @apply min-h-screen flex flex-col justify-center;
-  /* Changed from justify-between to center content better */
-  background: linear-gradient(-45deg,
-      hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), var(--color-accent-primary-a, 0.3)),
-      /* Added alpha var */
-      hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), var(--color-accent-secondary-a, 0.3)),
-      /* Added alpha var */
-      hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), var(--color-bg-secondary-a, 0.4)),
-      /* Added alpha var */
-      hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), var(--color-bg-primary-a, 0.5))
-      /* Added alpha var */
-    );
-  background-size: 400% 400%;
-  animation: gradient-animation 25s ease infinite;
-  /* Ensure children can stack correctly if needed, e.g. for footer if it were present */
-  /* Forcing no scroll on login page itself */
-  @apply overflow-hidden;
+.login-shell {
+  width: min(1150px, 100%);
+  display: grid;
+  gap: clamp(2rem, 4vw, 4rem);
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  align-items: stretch;
 }
 
-.login-content-area {
-  @apply flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative;
-  /* overflow-hidden removed from here, as page-wrapper handles it */
-}
-
-.login-content-area::before {
-  content: '';
-  @apply absolute inset-0 bg-holo-grid-pattern;
-  background-size: var(--bg-holo-grid-size, 50px) var(--bg-holo-grid-size, 50px);
-  opacity: var(--bg-holo-grid-opacity, 0.07);
-  /* Use theme variable for opacity */
-  z-index: 0;
-  animation: holoGridScroll calc(var(--duration-pulse-long, 4000ms) * 2) linear infinite;
-  /* Adjusted duration */
-}
-
-.login-container {
-  @apply relative z-10;
-}
-
-.logo-wrapper {
-  @apply mx-auto h-20 w-20 sm:h-24 sm:w-24 p-1 mb-4 sm:mb-6 rounded-full flex items-center justify-center transition-all duration-300 ease-out;
-  /* Using standard theme glass variables */
-  background-color: hsla(var(--color-bg-glass-h), var(--color-bg-glass-s), var(--color-bg-glass-l), var(--color-bg-glass-a, 0.7));
-  border: 1px solid hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), var(--color-border-glass-a, 0.4));
-  box-shadow: var(--shadow-depth-md);
-  /* Standard themed shadow */
-  backdrop-filter: blur(var(--blur-glass));
-  -webkit-backdrop-filter: blur(var(--blur-glass));
-}
-
-.logo-image {
-  @apply h-12 w-12 sm:h-14 sm:w-14 object-contain transition-transform duration-500 ease-in-out;
-  filter: drop-shadow(0 2px 4px hsla(var(--color-shadow-h, 0), var(--color-shadow-s, 0%), var(--color-shadow-l, 0%), 0.15));
-  /* Softer, themed shadow */
-}
-
-.logo-wrapper:hover .logo-image {
-  transform: scale(1.12) rotate(3deg);
-}
-
-.logo-wrapper:hover {
-  box-shadow: var(--shadow-depth-lg);
-  /* Enhanced shadow on hover */
-}
-
-.app-main-title {
-  @apply mt-0 text-3xl sm:text-4xl font-bold tracking-tight;
-  font-family: var(--font-family-display, 'Plus Jakarta Sans', sans-serif);
-  /* Ensure fallback */
+.login-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
   color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
 }
 
-.text-glow-primary {
-  /* Ensure this uses the primary accent */
-  text-shadow: 0 0 10px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), var(--color-accent-glow-a, 0.6)),
-    /* Adjusted alpha var */
-    0 0 20px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), var(--color-accent-glow-a, 0.4));
-  /* Adjusted alpha var */
-}
+.hero-logo {
+  width: clamp(72px, 9vw, 110px);
+  height: clamp(72px, 9vw, 110px);
+  border-radius: 32px;
+  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.5);
+  display: grid;
+  place-items: center;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 20px 45px -20px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.45);
 
-.app-subtitle {
-  @apply mt-2 sm:mt-3 text-sm sm:text-base max-w-xs mx-auto;
-  color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
-  opacity: 0.9;
-}
-
-.glass-pane {
-  /* This is used for the login-card */
-  background-color: hsla(var(--color-bg-glass-h), var(--color-bg-glass-s), var(--color-bg-glass-l), var(--color-bg-glass-a, 0.75));
-  /* Adjusted alpha for better card definition */
-  border: 1px solid hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), var(--color-border-glass-a, 0.45));
-  backdrop-filter: blur(var(--blur-glass));
-  -webkit-backdrop-filter: blur(var(--blur-glass));
-  box-shadow: var(--shadow-depth-lg);
-  border-radius: var(--radius-xl);
-}
-
-.login-card {
-  @apply mt-6 sm:mt-8;
-}
-
-.form-label {
-  @apply block text-sm font-medium mb-1.5;
-  /* Increased margin */
-  color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
-  opacity: 0.9;
-}
-
-/* Assuming .form-input is styled in _forms.scss using theme variables. Placeholder: */
-.form-input {
-  @apply block w-full rounded-md shadow-sm sm:text-sm;
-  /* Added not-prose */
-  background-color: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), calc(var(--color-bg-secondary-l) + 3%), 0.8);
-  /* Slightly lighter than card bg, with some transparency */
-  border: 1px solid hsl(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l));
-  color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
-  padding: var(--spacing-xs) var(--spacing-sm);
-  /* Use theme spacing */
-
-  &::placeholder {
-    color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
-    opacity: 0.7;
-  }
-
-  &:focus {
-    @apply ring-2;
-    border-color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
-    ring-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.5);
-    background-color: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), calc(var(--color-bg-secondary-l) + 5%), 0.9);
+  img {
+    width: 60%;
+    height: auto;
   }
 }
 
-
-.password-toggle-button {
-  @apply absolute inset-y-0 right-0 pr-3 flex items-center focus:outline-none rounded-r-md;
-  /* Ensure it fits well */
+.hero-title {
+  font-size: clamp(1.75rem, 2.4vw, 2.5rem);
+  line-height: 1.2;
+  font-weight: 700;
 }
 
-/* These classes are used on the icon inside the button */
-.text-neutral-text-muted {
-  color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
-  opacity: 0.7;
-  transition: color 0.2s ease-in-out, opacity 0.2s ease-in-out;
-}
-
-.hover\:text-neutral-text:hover {
-  /* Applied to the icon's class if parent button is hovered */
+.hero-subtitle {
+  font-size: clamp(1rem, 1.2vw, 1.125rem);
   color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
-  opacity: 1;
+  max-width: 38ch;
 }
 
+.hero-highlights {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
 
-.remember-me-checkbox {
-  @apply h-4 w-4 rounded border transition-colors duration-150 focus:ring-offset-0;
-  /* Removed ring-offset-2 for cleaner look if bg is similar */
+  li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+    color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+
+    &::before {
+      content: '';
+      width: 0.65rem;
+      height: 0.65rem;
+      border-radius: 999px;
+      background: linear-gradient(135deg,
+        hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l)),
+        hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l)));
+      box-shadow: 0 0 0 4px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.15);
+    }
+  }
+}
+
+.hero-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.hero-plan-button {
+  align-self: flex-start;
+  padding: 0.8rem 1.6rem;
+  border-radius: 999px;
+  font-weight: 600;
+  color: hsl(var(--color-text-on-primary-h), var(--color-text-on-primary-s), var(--color-text-on-primary-l));
+  background: linear-gradient(135deg,
+    hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l)),
+    hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l)));
+  border: none;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -12px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.5);
+  }
+}
+
+.hero-note {
+  font-size: 0.95rem;
+  color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+}
+
+.login-panel {
+  padding: clamp(2rem, 3vw, 2.5rem);
+  border-radius: 28px;
+  background: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.78);
+  box-shadow: 0 30px 70px -40px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.3);
+  backdrop-filter: blur(24px);
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.panel-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.panel-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  background: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.18);
   color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
-  border-color: hsl(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l));
-  background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.5);
-
-  /* Slightly transparent bg */
-  &:focus {
-    @apply ring-2;
-    ring-color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
-    /* ring-offset-color: hsl(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l)); */
-  }
-
-  &:checked {
-    border-color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
-    background-color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
-  }
 }
 
-.remember-me-label {
-  @apply ml-2 block text-sm cursor-pointer select-none;
-  /* Added select-none */
+.panel-title {
+  font-size: 1.35rem;
+  font-weight: 600;
+}
+
+.panel-subtitle {
+  margin-top: 0.25rem;
   color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
-  opacity: 0.9;
+  font-size: 0.95rem;
 }
 
-.login-button {
-  /* Relies on .btn .btn-primary from _buttons.scss which should be fully themed */
-  @apply py-2.5 sm:py-3;
-  /* Slightly larger padding */
+.panel-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.45);
+  padding: 0.4rem;
+  border-radius: 999px;
 }
 
-.login-spinner {
-  @apply h-5 w-5 border-2 rounded-full animate-spin mx-auto;
-  border-color: hsla(var(--color-text-on-primary-h), var(--color-text-on-primary-s), var(--color-text-on-primary-l), 0.35);
-  border-top-color: hsl(var(--color-text-on-primary-h), var(--color-text-on-primary-s), var(--color-text-on-primary-l));
-}
-
-.error-alert {
-  @apply p-3 sm:p-4 rounded-md shadow-md mt-4;
-  /* Consistent margin */
-  background-color: hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.15);
-  /* Slightly more visible error bg */
-  border: 1px solid hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.4);
-}
-
-.text-error-icon {
-  /* New class for the icon itself */
-  color: hsl(var(--color-error-h), var(--color-error-s), calc(var(--color-error-l) - 5%));
-  /* Slightly darker/more saturated error icon */
-}
-
-.text-error-content {
-  color: hsl(var(--color-error-h), var(--color-error-s), calc(var(--color-error-l) - 15%));
-  /* Darker for high contrast on light error bg */
-  /* Fallback for themes where error color might be light: */
-  /* color: var(--color-error-text, hsl(var(--color-error-text-h), var(--color-error-text-s), var(--color-error-text-l))); */
-}
-
-/* For the paragraph at the bottom & theme toggle button icon */
-.text-themed-secondary {
-  /* Utility class for themed secondary text color if needed */
+.panel-tab {
+  border: none;
+  background: transparent;
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 0.6rem 1rem;
+  border-radius: 999px;
   color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
-  opacity: 0.9;
-}
+  transition: background 0.2s ease, color 0.2s ease;
+  cursor: pointer;
 
-.theme-toggle-button-login {
-  padding: 0.5rem !important;
-
-  /* Ensure consistent padding for icon button */
-  &:hover .text-themed-secondary {
+  &.active {
+    background: hsl(var(--color-bg-primary-h), var(--color-bg-primary-s), calc(var(--color-bg-primary-l) - 3%));
     color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+    box-shadow: 0 8px 18px -12px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.35);
   }
 }
 
-.icon-base {
-  @apply w-5 h-5;
+.panel-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.35rem;
 }
 
-.icon-sm {
-  @apply w-4 h-4;
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+
+  label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+  }
+
+  input {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border-radius: 14px;
+    border: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.4);
+    background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.35);
+    color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+    transition: border 0.2s ease, box-shadow 0.2s ease;
+
+    &:focus {
+      border-color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+      box-shadow: 0 0 0 3px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.25);
+      outline: none;
+    }
+  }
 }
 
-/* Ensure keyframes for holoGridScroll are globally defined, e.g., in _keyframes.scss */
-@keyframes holoGridScroll {
-  0% {
-    background-position: 0px 0px;
+.input-with-toggle {
+  position: relative;
+
+  input {
+    padding-right: 3rem;
+  }
+}
+
+.toggle-visibility {
+  position: absolute;
+  top: 50%;
+  right: 0.75rem;
+  transform: translateY(-50%);
+  border: none;
+  background: none;
+  color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+
+  &:hover {
+    color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
   }
 
-  100% {
-    background-position: var(--bg-holo-grid-size, 50px) var(--bg-holo-grid-size, 50px);
+  svg {
+    width: 1.15rem;
+    height: 1.15rem;
+  }
+}
+
+.remember-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+
+  input {
+    width: 1rem;
+    height: 1rem;
+  }
+}
+
+.primary-button {
+  border: none;
+  border-radius: 14px;
+  padding: 0.9rem 1rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: hsl(var(--color-text-on-primary-h), var(--color-text-on-primary-s), var(--color-text-on-primary-l));
+  background: linear-gradient(135deg,
+    hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l)),
+    hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l)));
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 15px 35px -20px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.5);
   }
 
-  /* Match size */
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.button-spinner {
+  width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 999px;
+  border: 2px solid hsla(var(--color-text-on-primary-h), var(--color-text-on-primary-s), var(--color-text-on-primary-l), 0.4);
+  border-top-color: hsl(var(--color-text-on-primary-h), var(--color-text-on-primary-s), var(--color-text-on-primary-l));
+  animation: spin 0.75s linear infinite;
+}
+
+.form-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.error-card {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border-radius: 14px;
+  background: hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.18);
+  color: hsl(var(--color-error-h), var(--color-error-s), calc(var(--color-error-l) - 18%));
+  border: 1px solid hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.45);
+  font-size: 0.9rem;
+}
+
+.error-icon {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.oauth-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.oauth-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+}
+
+.oauth-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.oauth-button {
+  flex: 1 1 140px;
+  border-radius: 12px;
+  border: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.4);
+  padding: 0.75rem 1rem;
+  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.25);
+  color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, border 0.2s ease;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    border-color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.panel-footer {
+  font-size: 0.9rem;
+  color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+
+  .panel-link {
+    margin-left: 0.35rem;
+    color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.login-fade-enter-active,
+.login-fade-leave-active {
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.login-fade-enter-from,
+.login-fade-leave-to {
+  opacity: 0;
+  transform: translateY(6px);
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 960px) {
+  .login-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .login-panel {
+    order: -1;
+  }
 }
 </style>

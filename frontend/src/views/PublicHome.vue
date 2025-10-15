@@ -8,9 +8,9 @@
  */
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, inject, watch, defineAsyncComponent, type Component as VueComponentType } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useRouter, RouterLink } from 'vue-router';
 import {
-  api,
   chatAPI,
   promptAPI,
   type ChatMessagePayloadFE,
@@ -26,6 +26,7 @@ import type { ToastService } from '@/services/services';
 import { useAuth } from '@/composables/useAuth';
 
 import UnifiedChatLayout from '@/components/layouts/UnifiedChatLayout.vue';
+import PersonaToolbar from '@/components/common/PersonaToolbar.vue';
 import MainContentView from '@/components/agents/common/MainContentView.vue';
 import CompactMessageRenderer from '@/components/layouts/CompactMessageRenderer/CompactMessageRenderer.vue';
 
@@ -46,6 +47,7 @@ interface RateLimitInfo {
 }
 
 const router = useRouter();
+const { t } = useI18n();
 const toast = inject<ToastService>('toast');
 const agentStore = useAgentStore();
 const chatStore = useChatStore();
@@ -87,6 +89,7 @@ const isVoiceInputCurrentlyProcessingAudio = ref(false);
 
 const currentSystemPromptText = ref('');
 const rateLimitInfo = ref<RateLimitInfo | null>(null);
+const demoUsageInfo = computed(() => auth.demoUsage.value);
 
 const mainContentData = computed<MainContent | null>(() => {
   if (rateLimitInfo.value && rateLimitInfo.value.tier === 'public' && (rateLimitInfo.value.remaining !== undefined && rateLimitInfo.value.remaining <= 0)) {
@@ -130,27 +133,23 @@ const showEphemeralLogForCurrentAgent = computed(() => {
 });
 
 const fetchRateLimitInfo = async (): Promise<void> => {
-  try {
-    const response = await api.get('/rate-limit/status');
-    if (response.data.tier === 'authenticated' && auth.isAuthenticated.value) {
-      router.replace({ name: 'AuthenticatedHome' });
-      return;
-    }
+  if (auth.isAuthenticated.value) {
+    rateLimitInfo.value = { tier: 'authenticated' };
+    return;
+  }
+  await auth.refreshDemoUsage();
+  const usage = auth.demoUsage.value;
+  if (usage) {
+    rateLimitInfo.value = { tier: 'public', ...usage };
+  } else {
     rateLimitInfo.value = {
-      ...response.data,
-      resetAt: response.data.resetAt ? new Date(response.data.resetAt) : new Date(Date.now() + 24 * 60 * 60 * 1000)
+      tier: 'public',
+      limit: 20,
+      remaining: 20,
+      used: 0,
+      resetAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+      message: 'Demo limits unavailable. Using defaults.',
     };
-  } catch (error: any) {
-    console.error('[PublicHome] Failed to fetch rate limit info:', error.response?.data || error.message);
-    rateLimitInfo.value = {
-        tier: 'public',
-        limit: 20, // Fallback, ideally from env
-        remaining: 20, // Fallback
-        used: 0,
-        resetAt: new Date(Date.now() + 24*60*60*1000),
-        message: "Could not fetch usage details. Using default limits."
-    };
-    toast?.add({type: 'warning', title:'Usage Info', message: 'Could not fetch public usage details. Default limits applied.'})
   }
 };
 
@@ -211,6 +210,21 @@ const loadPublicAgentsAndSetDefault = async (): Promise<void> => {
     });
   }
 };
+
+watch(() => auth.isAuthenticated.value, (authed) => {
+  if (authed) {
+    rateLimitInfo.value = { tier: 'authenticated' };
+  } else {
+    void fetchRateLimitInfo();
+  }
+});
+
+watch(demoUsageInfo, (value) => {
+  if (!auth.isAuthenticated.value && value) {
+    rateLimitInfo.value = { tier: 'public', ...value };
+  }
+});
+
 
 const selectPublicAgent = (agentId: AgentId): void => {
   const agent = availablePublicAgents.value.find(a => a.id === agentId);
@@ -490,6 +504,11 @@ onUnmounted(() => {
       @voice-input-processing="(status: boolean) => { isVoiceInputCurrentlyProcessingAudio = status; }"
     >
       <template #above-main-content>
+        <div v-if="showDemoUsageBanner" class="demo-usage-banner" :class="`demo-usage-banner--${demoUsageBannerSeverity}`">
+          <ExclamationTriangleIcon class="demo-usage-icon" aria-hidden="true" />
+          <span class="demo-usage-text">{{ demoUsageBannerMessage }}</span>
+          <RouterLink to="/login" class="demo-usage-link">Log in for unlimited access</RouterLink>
+        </div>
         <div v-if="availablePublicAgents.length > 0 && (!rateLimitInfo || (rateLimitInfo.remaining === undefined || rateLimitInfo.remaining > 0) || rateLimitInfo.tier === 'authenticated')"
              class="public-agent-selector-area-ephemeral">
           <p v-if="availablePublicAgents.length > 1" class="selector-title-ephemeral">Select an Assistant:</p>
@@ -523,6 +542,13 @@ onUnmounted(() => {
             </Transition>
           </div>
         </div>
+      </template>
+
+      <template #voice-toolbar>
+        <PersonaToolbar
+          :agent="currentPublicAgent"
+          :persist-persona="false"
+        />
       </template>
 
       <template #main-content>
@@ -632,3 +658,7 @@ onUnmounted(() => {
     overflow-y: auto; // Manages scroll for default content types
 }
 </style>
+
+
+
+

@@ -21,6 +21,7 @@ import i18n from '@/i18n';
 // Import Views using modern shorthand for lazy loading
 const Login = () => import('@/views/Login.vue');
 const Settings = () => import('@/views/settings/Settings.vue');
+const AcceptInvite = () => import('@/views/AcceptInvite.vue');
 const About = () => import('@/views/About.vue');
 const PublicHome = () => import('@/views/PublicHome.vue');
 const PrivateHome = () => import('@/views/PrivateHome.vue');
@@ -110,6 +111,12 @@ const routes: Array<RouteRecordRaw> = [
                 name: 'Settings',
                 component: Settings,
                 meta: { requiresAuth: true, title: 'Settings - Voice Chat Assistant' }
+            },
+            {
+                path: 'invite/:token',
+                name: 'AcceptInvite',
+                component: AcceptInvite,
+                meta: { requiresAuth: true, title: 'Team Invite - Voice Chat Assistant' }
             },
             {
                 path: 'about',

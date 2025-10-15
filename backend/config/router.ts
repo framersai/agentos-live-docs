@@ -12,7 +12,12 @@ import { Router, Request, Response } from 'express';
 import { authMiddleware } from '../middleware/auth.js';
 
 // Import route handlers
-import * as authApiRoutes from '../src/features/auth/auth.routes.js'; // Renamed for clarity
+import {
+  postGlobalLogin,
+  postStandardLogin,
+  getStatus as getAuthStatus,
+  deleteSession as deleteAuthSession,
+} from '../src/features/auth/auth.routes.js';
 import * as chatApiRoutes from '../src/features/chat/chat.routes.js';
 import * as diagramApiRoutes from '../src/features/chat/diagram.routes.js';
 import * as sttApiRoutes from '../src/features/speech/stt.routes.js';
@@ -20,6 +25,8 @@ import * as ttsApiRoutes from '../src/features/speech/tts.routes.js';
 import * as costApiRoutes from '../src/features/cost/cost.routes.js';
 import { rateLimiter } from '../middleware/ratelimiter.js'; // For fetching public rate limit status
 import * as promptApiRoutes from '../src/features/prompts/prompt.routes.js';
+import { postCheckoutSession, postLemonWebhook } from '../src/features/billing/billing.routes.js';
+import * as organizationRoutes from '../src/features/organization/organization.routes.js';
 
 /**
  * Configures and returns the main API router with all routes registered.
@@ -32,11 +39,10 @@ export async function configureRouter(): Promise<Router> {
 
   try {
     // --- Authentication Routes (These are handled by authMiddleware's internal logic for /api/auth paths) ---
-    router.post('/auth', authApiRoutes.POST); // Login - authMiddleware will allow this path
-    // The following auth routes require a valid token to identify the user/session to act upon.
-    // The strict authMiddleware will ensure a valid token is present.
-    router.get('/auth', authMiddleware, authApiRoutes.GET);    // Check status
-    router.delete('/auth', authMiddleware, authApiRoutes.DELETE); // Logout
+    router.post('/auth/global', postGlobalLogin);
+    router.post('/auth/login', postStandardLogin);
+    router.get('/auth', authMiddleware, getAuthStatus);
+    router.delete('/auth', authMiddleware, deleteAuthSession);
     console.log('✅ Registered auth routes');
 
     router.get('/prompts/:filename', promptApiRoutes.GET);
@@ -93,6 +99,21 @@ export async function configureRouter(): Promise<Router> {
     router.get('/tts/voices', ttsApiRoutes.GET); // Publicly listable voices is fine.
     console.log('✅ Registered TTS routes (public/private access)');
 
+    router.post('/billing/checkout', authMiddleware, postCheckoutSession);
+    router.post('/billing/webhook', postLemonWebhook);
+    console.log('✅ Registered billing routes');
+
+
+    router.get('/organizations', authMiddleware, organizationRoutes.getOrganizations);
+    router.post('/organizations', authMiddleware, organizationRoutes.postOrganization);
+    router.patch('/organizations/:organizationId', authMiddleware, organizationRoutes.patchOrganization);
+    router.post('/organizations/:organizationId/invites', authMiddleware, organizationRoutes.postInvite);
+    router.delete('/organizations/:organizationId/invites/:inviteId', authMiddleware, organizationRoutes.deleteInvite);
+    router.patch('/organizations/:organizationId/members/:memberId', authMiddleware, organizationRoutes.patchMember);
+    router.delete('/organizations/:organizationId/members/:memberId', authMiddleware, organizationRoutes.deleteMember);
+    router.post('/organizations/invites/:token/accept', authMiddleware, organizationRoutes.postAcceptInvite);
+    console.log('�o. Registered organization routes');
+
 
     // --- Strictly Authenticated Routes ---
     // These routes REQUIRE a valid token, enforced by the strict authMiddleware.
@@ -122,3 +143,4 @@ export async function configureRouter(): Promise<Router> {
 
   return router;
 }
+

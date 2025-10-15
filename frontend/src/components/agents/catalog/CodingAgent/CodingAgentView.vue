@@ -978,7 +978,7 @@ defineExpose({ handleCodingQuery, handleNewUserInput: handleCodingQuery, process
     color: hsl(var(--coding-accent-h), var(--coding-accent-s), var(--coding-accent-l));
     filter: drop-shadow(0 0 6px hsla(var(--coding-accent-h), var(--coding-accent-s), var(--coding-accent-l), 0.6));
   }
-  .header-title { @apply font-semibold text-md lg:text-lg tracking-wide truncate; color: var(--color-text-primary); }
+  .header-title { @apply font-semibold text-base lg:text-lg tracking-wide truncate; color: var(--color-text-primary); }
   .header-subtitle { @apply text-xs lg:text-sm ml-1.5 hidden md:inline truncate opacity-70; color: var(--color-text-muted); }
   .header-actions { @apply flex items-center gap-2; }
 }
@@ -1157,3 +1157,4 @@ defineExpose({ handleCodingQuery, handleNewUserInput: handleCodingQuery, process
   50% { opacity: var(--opacity-pulse, 0.9); transform: scale(var(--scale-pulse, 1.03)); }
 }
 </style>
+
