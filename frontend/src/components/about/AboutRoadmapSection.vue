@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { MapIcon } from '@heroicons/vue/24/outline';
+import AnimatedGlyph from '@/components/about/AnimatedGlyph.vue';
 
 type RoadmapStatus = 'Idea' | 'Planned' | 'In Progress' | 'Beta' | 'Completed';
 
@@ -20,13 +20,23 @@ interface RoadmapQuarter {
 
 const roadmapItems = ref<RoadmapQuarter[]>([
   {
+    id: 'q2-2025',
+    quarter: 'Q2',
+    year: 2025,
+    themeTitle: 'Shared Memory & Collaboration',
+    features: [
+      { name: 'Workspace Memory Handoff', status: 'In Progress', description: 'Carry context between teammates with opt-in persistence.' },
+      { name: 'Live Session Co-Pilot', status: 'Beta', description: 'Invite collaborators to hear, comment, and steer a shared conversation.' },
+    ],
+  },
+  {
     id: 'q3-2025',
     quarter: 'Q3',
     year: 2025,
-    themeTitle: 'Enhanced Context & Personalization',
+    themeTitle: 'Enhanced Context & Personalisation',
     features: [
-      { name: 'Proactive Suggestion Engine (v1)', status: 'In Progress', description: 'AI anticipates user needs.' },
-      { name: 'User Document Integration', status: 'Planned', description: 'Connect personal knowledge repositories.' },
+      { name: 'Proactive Suggestion Engine v1', status: 'Planned', description: 'Surface follow-up prompts and actions before you ask.' },
+      { name: 'User Document Integration', status: 'Planned', description: 'Connect private knowledge bases, notes, and repos.' },
     ],
   },
   {
@@ -35,8 +45,8 @@ const roadmapItems = ref<RoadmapQuarter[]>([
     year: 2025,
     themeTitle: 'Richer Interactions & Outputs',
     features: [
-      { name: 'Basic Image Comprehension', status: 'Planned', description: 'Allow image inputs for context.' },
-      { name: 'Structured Data Generation', status: 'Idea', description: 'AI formats responses like tables/lists.' },
+      { name: 'Image & Media Comprehension', status: 'Idea', description: 'Reference screenshots and whiteboards during conversations.' },
+      { name: 'Structured Canvas Export', status: 'Planned', description: 'Generate briefs, tickets, and docs with live syncing.' },
     ],
   },
 ]);
@@ -44,7 +54,10 @@ const roadmapItems = ref<RoadmapQuarter[]>([
 
 <template>
   <section id="roadmap" class="roadmap-section-about content-section-ephemeral">
-    <h3 class="section-title-main"><MapIcon class="section-title-icon" />Product Roadmap</h3>
+    <h3 class="section-title-main">
+      <AnimatedGlyph name="map" class="section-title-icon" :size="38" />
+      Product Roadmap
+    </h3>
     <div class="roadmap-timeline-container-about">
       <div
         v-for="(item, index) in roadmapItems"
@@ -60,7 +73,7 @@ const roadmapItems = ref<RoadmapQuarter[]>([
           <ul class="roadmap-features-list">
             <li v-for="feature in item.features" :key="feature.name" class="roadmap-feature-item">
               <strong class="feature-name-roadmap">{{ feature.name }}</strong>
-              <span class="status-badge-roadmap" :class="`status-${feature.status.toLowerCase().replace(/\s+/g, '-')}`">
+              <span class="status-badge-roadmap" :class="`status-${feature.status.toLowerCase().replace(/\\s+/g, '-')}`">
                 {{ feature.status }}
               </span>
               <p v-if="feature.description" class="feature-description-roadmap">{{ feature.description }}</p>

@@ -278,11 +278,15 @@ export class RateLimiter {
     return req.ip || req.socket?.remoteAddress || 'unknown';
   }
 
-  private generateBaseKeyForIp(ip: string, tier: string): string {
-    return `rate_limit:${tier}:${ip}`;
-  }
+  private generateBaseKeyForIp(ip: string, tier: string): string {
+    return `rate_limit:${tier}:${ip}`;
+  }
 
-  public middleware() {
+  public resolveClientIp(req: Request): string {
+    return this.getClientIp(req);
+  }
+
+  public middleware() {
     return async (req: Request, res: Response, next: NextFunction) => {
       if (!this.store) {
         console.error("[RateLimiter] CRITICAL: Store not initialized. Rate limiting disabled. Call initialize().");

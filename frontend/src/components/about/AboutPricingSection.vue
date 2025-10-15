@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { CurrencyDollarIcon, CheckIcon } from '@heroicons/vue/24/outline';
+import AnimatedGlyph from '@/components/about/AnimatedGlyph.vue';
 import { usePlans } from '@/composables/usePlans';
 import PlanComparisonModal from '@/components/plan/PlanComparisonModal.vue';
 
 const { t } = useI18n();
-const { plans, featuredPlan, standardPlans } = usePlans();
+const { featuredPlan, standardPlans } = usePlans();
 
 const showComparison = ref(false);
 
@@ -71,7 +71,10 @@ const onCloseComparison = () => {
 <template>
   <section id="pricing" class="pricing-section-about content-section-ephemeral">
     <header class="pricing-header">
-      <h3 class="section-title-main"><CurrencyDollarIcon class="section-title-icon" />{{ t('plans.sectionTitle') }}</h3>
+      <h3 class="section-title-main">
+        <AnimatedGlyph name="currency" class="section-title-icon" :size="38" />
+        {{ t('plans.sectionTitle') }}
+      </h3>
       <button type="button" class="btn btn-ghost-ephemeral plan-compare-button" @click="onOpenComparison">
         {{ t('plans.viewComparison') }}
       </button>
@@ -90,8 +93,8 @@ const onCloseComparison = () => {
         <p v-if="featuredCard.allowanceNote" class="plan-allowance-note">{{ featuredCard.allowanceNote }}</p>
         <ul class="plan-features-list-about">
           <li v-for="bullet in featuredCard.bullets" :key="bullet" class="plan-feature-item">
-            <CheckIcon class="feature-icon icon-success" />
-            {{ bullet }}
+            <AnimatedGlyph name="check" class="feature-icon icon-success" :size="18" aria-hidden="true" />
+            <span>{{ bullet }}</span>
           </li>
         </ul>
         <button class="btn plan-button-about btn-primary-ephemeral">
@@ -112,8 +115,8 @@ const onCloseComparison = () => {
         <p v-if="plan.allowanceNote" class="plan-allowance-note">{{ plan.allowanceNote }}</p>
         <ul class="plan-features-list-about">
           <li v-for="bullet in plan.bullets" :key="bullet" class="plan-feature-item">
-            <CheckIcon class="feature-icon icon-success" />
-            {{ bullet }}
+            <AnimatedGlyph name="check" class="feature-icon icon-success" :size="18" aria-hidden="true" />
+            <span>{{ bullet }}</span>
           </li>
         </ul>
         <button class="btn plan-button-about btn-secondary-ephemeral">

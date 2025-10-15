@@ -1,91 +1,98 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { ChevronDownIcon, CodeBracketSquareIcon } from '@heroicons/vue/24/outline';
+import AnimatedGlyph from '@/components/about/AnimatedGlyph.vue';
 import DiagramViewer from '@/components/DiagramViewer.vue';
 import { themeManager } from '@/theme/ThemeManager';
 
 const diagrams = {
   systemOverview: `
     graph TD
-      subgraph User Interaction Layer [dY"? User Interaction Layer]
-        UI[dYO? User Interface (Ephemeral Harmony)]
+      subgraph UserLayer["User Experience"]
+        UI["Voice Chat UI"]
       end
-      subgraph Orchestration & Intelligence Core [?sT?,? Orchestration & Intelligence Core]
-        Orchestrator[?s? AgentOS Orchestrator]
-        GMI{"dY? Generalized Mind Instance (GMI)"}
+      subgraph Intelligence["Orchestration & Intelligence Core"]
+        Orchestrator["AgentOS Orchestrator"]
+        GMI["Generalized Mind Instance"]
       end
-      subgraph Core Services [dY>??,? Core Services]
-        Persona[dYZ- Persona Engine]
-        Memory[dY'_ Memory Core]
-        Knowledge[dY"s Knowledge Interface (RAG)]
-        Tools[dY" Tool & Function Executor]
+      subgraph CoreServices["Core Services"]
+        Persona["Persona Engine"]
+        Memory["Memory Core"]
+        Knowledge["Knowledge Interface (RAG)"]
+        Tools["Tool & Function Executor"]
       end
-      subgraph External Systems [?~??,? External Systems]
-        LLMs[dY- LLM Providers]
-        APIs[dY"O External APIs & Services]
-        DataSources[dY"S User Data Sources]
+      subgraph External["External Systems"]
+        LLMs["LLM Providers"]
+        APIs["External APIs & Services"]
+        DataSources["User Data Sources"]
       end
 
-      UI --> Orchestrator;
-      Orchestrator --> GMI;
-      GMI --> Persona; GMI --> Memory; GMI --> Knowledge; GMI --> Tools;
-      GMI --> LLMs;
-      Knowledge --> DataSources; Tools --> APIs;
+      UI --> Orchestrator
+      Orchestrator --> GMI
+      GMI --> Persona
+      GMI --> Memory
+      GMI --> Knowledge
+      GMI --> Tools
+      GMI --> LLMs
+      Knowledge --> DataSources
+      Tools --> APIs
 
-      classDef default fill:var(--color-bg-tertiary),stroke:var(--color-border-primary),color:var(--color-text-primary),rx:var(--radius-md),ry:var(--radius-md);
-      classDef userInteraction fill:var(--color-accent-primary-light-hsl, var(--color-accent-primary)),stroke:var(--color-accent-primary),color:var(--color-text-on-primary),fontWeight:bold;
-      classDef orchestration fill:var(--color-accent-secondary-light-hsl, var(--color-accent-secondary)),stroke:var(--color-accent-secondary),color:var(--color-text-on-secondary),fontWeight:bold;
-      classDef coreSvc fill:hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), calc(var(--color-bg-tertiary-l) + 8%)),stroke:var(--color-border-primary),color:var(--color-text-primary);
+      classDef default fill:var(--color-bg-tertiary),stroke:var(--color-border-primary),color:var(--color-text-primary),rx:12,ry:12;
+      classDef userLayer fill:var(--color-accent-primary),stroke:var(--color-accent-primary),color:#ffffff;
+      classDef intelligence fill:var(--color-accent-secondary),stroke:var(--color-accent-secondary),color:#ffffff;
+      classDef core fill:var(--color-bg-secondary),stroke:var(--color-border-primary),color:var(--color-text-primary);
       classDef external fill:var(--color-bg-secondary),stroke:var(--color-border-primary),color:var(--color-text-primary);
 
-      class UI userInteraction;
-      class Orchestrator,GMI orchestration;
-      class Persona,Memory,Knowledge,Tools coreSvc;
+      class UI userLayer;
+      class Orchestrator,GMI intelligence;
+      class Persona,Memory,Knowledge,Tools core;
       class LLMs,APIs,DataSources external;
   `,
   dataFlow: `
     sequenceDiagram
       participant User
-      participant F as Frontend (UI)
-      participant O as AgentOS Orchestrator
-      participant KB as Knowledge Base (RAG)
-      participant LLM as Large Language Model
+      participant Frontend as Frontend UI
+      participant Orchestrator as AgentOS Orchestrator
+      participant Knowledge as Knowledge Base (RAG)
+      participant Model as LLM
 
-      User->>+F: Input (Voice/Text)
-      F->>+O: API Request (Input, Context)
-      O->>O: 1. Analyze Intent
-      O->>+KB: 2. Query Knowledge
-      KB-->>-O: 3. Retrieved Info
-      O->>O: 4. Build Adaptive Prompt
-      O->>+LLM: 5. Send Prompt to LLM
-      LLM-->>-O: 6. LLM Response
-      O->>O: 7. Process & Format Response
-      O-->>-F: 8. Structured Output
-      F->>-User: Display / Speak
+      User->>+Frontend: Voice or text input
+      Frontend->>+Orchestrator: Context-rich API call
+      Orchestrator->>Orchestrator: Analyse intent & gather memory
+      Orchestrator->>+Knowledge: Fetch supporting facts
+      Knowledge-->>-Orchestrator: Ranked snippets
+      Orchestrator->>Orchestrator: Compose adaptive prompt
+      Orchestrator->>+Model: Submit prompt
+      Model-->>-Orchestrator: Candidate response
+      Orchestrator->>Orchestrator: Post-process & apply guardrails
+      Orchestrator-->>-Frontend: Structured response payload
+      Frontend-->>-User: Render text / play audio
   `,
   promptEngine: `
     graph LR
-      UserInput[dY-??,? User Input] --> QueryAnalyzer;
-      SessionCtx[dY"? Session Context] --> QueryAnalyzer;
-      QueryAnalyzer -- Intent & Entities --> PromptStrategist;
-      subgraph PersonaContext [dYZ- Active Persona]
-        PersonaDef[Core Directives]
-        PersonaMem[Memories]
-        PersonaStyle[Style]
+      subgraph Inputs["Signals"]
+        UserInput["User Input"]
+        SessionCtx["Session Context"]
       end
-      subgraph KnowledgeContext [dY"s Knowledge]
-        Docs[Retrieved Docs (RAG)]
-        DBRes[DB Results]
+      subgraph Persona["Active Persona"]
+        PersonaDef["Core Directives"]
+        PersonaMem["Persona Memory"]
+        PersonaStyle["Style Guide"]
       end
-      subgraph ToolContext [dY>??,? Tools]
-        ToolDefs[Tool Signatures]
+      subgraph Knowledge["Knowledge Context"]
+        Docs["Retrieved Docs"]
+        DBResults["Database Results"]
       end
-      PromptStrategist --> PromptAssembler;
-      PersonaContext --> PromptStrategist;
-      KnowledgeContext --> PromptStrategist;
-      ToolContext --> PromptStrategist;
-      PromptAssembler --> FinalFormatter;
-      FinalFormatter --> OptimizedLLMPrompt[dYs? Optimized Prompt];
+      subgraph Tools["Tool Context"]
+        ToolDefs["Registered Tools"]
+      end
+      Inputs --> QueryAnalyzer["Query Analyzer"]
+      QueryAnalyzer --> PromptStrategist["Prompt Strategist"]
+      Persona --> PromptStrategist
+      Knowledge --> PromptStrategist
+      Tools --> PromptStrategist
+      PromptStrategist --> PromptAssembler["Prompt Assembler"]
+      PromptAssembler --> FinalFormatter["Response Formatter"]
+      FinalFormatter --> OptimizedPrompt["Optimized LLM Prompt"]
   `,
 };
 
@@ -99,25 +106,28 @@ const toggle = () => {
 
 <template>
   <section id="architecture" class="architecture-diagrams-about content-section-ephemeral">
-    <button @click="toggle" class="expandable-header-button-about section-title-main --expandable">
-      <span class="expandable-title-text"><CodeBracketSquareIcon class="section-title-icon" />AgentOS Technical Architecture</span>
-      <ChevronDownIcon class="chevron-indicator-about --section-title" :class="{ rotated: isOpen }" />
+    <button @click="toggle" class="expandable-header-button-about section-title-main --expandable" type="button">
+      <span class="expandable-title-text">
+        <AnimatedGlyph name="code" class="section-title-icon" :size="40" />
+        AgentOS Technical Architecture
+      </span>
+      <AnimatedGlyph name="chevron" class="chevron-indicator-about --section-title" :class="{ rotated: isOpen }" :size="24" />
     </button>
     <div class="expandable-content-wrapper-about" :class="{ open: isOpen }">
       <div class="diagrams-grid-about">
         <div class="diagram-card-about card-glass-interactive">
           <h4 class="diagram-card-title">System Overview</h4>
-          <p class="diagram-card-description">High-level view of AgentOS, from UI to LLMs, highlighting the Orchestrator and GMI.</p>
+          <p class="diagram-card-description">From the interface through the AgentOS core, see how every service links together.</p>
           <DiagramViewer :diagramCode="diagrams.systemOverview" diagramType="mermaid" :is-dark-mode="isDarkMode" class="diagram-viewer-about" />
         </div>
         <div class="diagram-card-about card-glass-interactive">
           <h4 class="diagram-card-title">Data Flow Architecture</h4>
-          <p class="diagram-card-description">Illustrates data processing from user input to AI response, including RAG and prompt generation.</p>
+          <p class="diagram-card-description">Track the journey for each request, including memory lookups and guardrail steps.</p>
           <DiagramViewer :diagramCode="diagrams.dataFlow" diagramType="mermaid" :is-dark-mode="isDarkMode" class="diagram-viewer-about" />
         </div>
         <div class="diagram-card-about card-glass-interactive">
           <h4 class="diagram-card-title">Adaptive Prompt Engine</h4>
-          <p class="diagram-card-description">Details the dynamic construction of optimized LLM prompts.</p>
+          <p class="diagram-card-description">Understand how inputs, personas, tools, and knowledge merge into a single prompt.</p>
           <DiagramViewer :diagramCode="diagrams.promptEngine" diagramType="mermaid" :is-dark-mode="isDarkMode" class="diagram-viewer-about" />
         </div>
       </div>

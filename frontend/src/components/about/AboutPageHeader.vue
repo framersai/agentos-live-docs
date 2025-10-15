@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ArrowLeftIcon } from '@heroicons/vue/24/outline';
+import AnimatedGlyph from '@/components/about/AnimatedGlyph.vue';
 
 const emit = defineEmits<{
   (event: 'back'): void;
@@ -17,7 +17,7 @@ const emit = defineEmits<{
         class="btn btn-secondary-ephemeral btn-sm back-button-ephemeral"
         @click="emit('back')"
       >
-        <ArrowLeftIcon class="icon-sm" />
+        <AnimatedGlyph name="arrow-left" class="icon-sm" :size="20" />
         Back to App
       </button>
     </div>

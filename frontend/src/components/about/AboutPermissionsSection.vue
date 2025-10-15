@@ -1,25 +1,37 @@
+<script setup lang="ts">
+import AnimatedGlyph from '@/components/about/AnimatedGlyph.vue';
+
+const featureLines = [
+  'Realtime transcription with browser-native STT or Whisper.',
+  'Continuous listening for hands-free flow, with instant mute controls.',
+  'Push-to-talk capture for precise, short-form dictation.',
+  'Wake word activation ("Hey V") so you can stay focused on your work.',
+  'Low-latency audio feedback that keeps the conversation natural.',
+];
+</script>
+
 <template>
   <section id="permissions" class="permissions-section-about content-section-ephemeral">
-    <h3 class="section-title-main">dYZ Microphone Permissions</h3>
+    <h3 class="section-title-main">
+      <AnimatedGlyph name="mic" class="section-title-icon" :size="36" />
+      Microphone Permissions
+    </h3>
     <div class="permissions-card card-glass-interactive">
-      <h4>Why Voice Chat Assistant Needs Microphone Access</h4>
+      <h4>Why Voice Chat Assistant needs your mic</h4>
       <p class="mb-4">
-        Voice Chat Assistant provides a hands-free, natural language interface powered by advanced speech recognition.
-        Microphone access enables:
+        Voice Chat Assistant is designed for voice-first collaboration. Granting access unlocks the realtime features that make conversations effortless:
       </p>
       <ul class="permissions-features-list">
-        <li>?o" Real-time voice transcription using browser-native or Whisper API</li>
-        <li>?o" Continuous listening mode for seamless conversation</li>
-        <li>?o" Push-to-talk for controlled recording</li>
-        <li>?o" Wake word detection ("Hey V") for hands-free activation</li>
-        <li>?o" Low-latency voice interactions with AI assistants</li>
+        <li v-for="line in featureLines" :key="line">
+          <AnimatedGlyph name="wave" class="permissions-item-icon" :size="20" />
+          <span>{{ line }}</span>
+        </li>
       </ul>
       <p class="mt-4">
-        <strong>Privacy First:</strong> Audio is processed locally in your browser or sent directly to transcription services.
-        We never store or share your voice recordings. Microphone access is only requested when you interact with voice features.
+        <strong>Privacy first.</strong> Audio is processed either locally in your browser or securely streamed to the transcription provider you select. Nothing is stored or shared without your consent.
       </p>
       <p class="mt-4 text-sm opacity-80">
-        Note: You can revoke microphone permissions at any time through your browser settings.
+        You can revoke microphone permissions anytime in your browser settings, and the assistant immediately falls back to text input.
       </p>
     </div>
   </section>

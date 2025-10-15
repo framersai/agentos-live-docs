@@ -468,7 +468,7 @@ export default {
     dailyAllowanceSecondary: '(~{tokens} GPT-4o mini)',
     dailyAllowancePrimaryShort: '~{tokens} GPT-4o tokens / day',
     dailyAllowanceSecondaryShort: '(~{tokens} GPT-4o mini)',
-    pricePerMonth: '${price}/month',
+    pricePerMonth: '{price}/month',
     free: 'Free',
     mostPopular: 'Most Popular',
     contactUsCta: 'Contact us',

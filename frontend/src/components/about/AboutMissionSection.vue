@@ -1,31 +1,31 @@
 <script setup lang="ts">
-import { ref, type Component as VueComponent } from 'vue';
-import { LightBulbIcon, RocketLaunchIcon, UsersIcon, SparklesIcon } from '@heroicons/vue/24/outline';
+import { ref } from 'vue';
+import AnimatedGlyph from '@/components/about/AnimatedGlyph.vue';
 
 interface MissionItem {
   title: string;
   description: string;
-  icon: VueComponent;
+  iconName: 'rocket' | 'people' | 'prism';
   accentVar: string;
 }
 
 const missionItems = ref<MissionItem[]>([
   {
     title: 'Innovate',
-    description: 'Push the boundaries of AI interaction with cutting-edge voice technology and adaptive intelligence.',
-    icon: RocketLaunchIcon,
+    description: 'Push the boundaries of multi-modal AI with realtime speech, diagrams, and adaptive prompts.',
+    iconName: 'rocket',
     accentVar: '--color-accent-primary',
   },
   {
     title: 'Empower',
-    description: 'Enable developers, creators, and users to achieve more through intuitive and personalized AI assistance.',
-    icon: UsersIcon,
+    description: 'Give builders, teams, and creators an assistant that understands their context and keeps pace with ambition.',
+    iconName: 'people',
     accentVar: '--color-accent-secondary',
   },
   {
     title: 'Transform',
-    description: 'Reshape how humans and AI collaborate, making technology a natural extension of thought.',
-    icon: SparklesIcon,
+    description: 'Blend memory, tooling, and tone into a single canvas so human intent becomes executable output.',
+    iconName: 'prism',
     accentVar: '--color-info',
   },
 ]);
@@ -33,7 +33,10 @@ const missionItems = ref<MissionItem[]>([
 
 <template>
   <section id="mission" class="mission-section-about content-section-ephemeral">
-    <h3 class="section-title-main"><LightBulbIcon class="section-title-icon" />Our Mission</h3>
+    <h3 class="section-title-main">
+      <AnimatedGlyph name="lightbulb" class="section-title-icon" :size="40" />
+      Our Mission
+    </h3>
     <div class="mission-grid-about">
       <div
         v-for="item in missionItems"
@@ -42,7 +45,7 @@ const missionItems = ref<MissionItem[]>([
         :style="{ '--card-accent-color': `hsl(var(${item.accentVar}-h), var(${item.accentVar}-s), var(${item.accentVar}-l))` }"
       >
         <div class="mission-card-icon-wrapper">
-          <component :is="item.icon" class="mission-card-icon" />
+          <AnimatedGlyph :name="item.iconName" class="mission-card-icon" :size="44" />
         </div>
         <h4 class="mission-card-title">{{ item.title }}</h4>
         <p class="mission-card-description">{{ item.description }}</p>
