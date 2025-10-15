@@ -519,6 +519,58 @@
   }
 }
 
+// Permissions section
+.permissions-section-about {
+  .permissions-card {
+    padding: var.$spacing-xl;
+    border-radius: var.$radius-2xl;
+    display: flex;
+    flex-direction: column;
+    gap: var.$spacing-md;
+    background: hsla(var(--color-bg-secondary-h, #{var.$default-color-bg-secondary-h}), var(--color-bg-secondary-s, #{var.$default-color-bg-secondary-s}), var(--color-bg-secondary-l, #{var.$default-color-bg-secondary-l}), 0.55);
+    border: 1px solid hsla(var(--color-border-primary-h, #{var.$default-color-border-primary-h}), var(--color-border-primary-s, #{var.$default-color-border-primary-s}), var(--color-border-primary-l, #{var.$default-color-border-primary-l}), 0.25);
+    box-shadow: var(--shadow-depth-md, #{var.$scss-box-shadow-md});
+
+    @media (max-width: var.$breakpoint-md) {
+      padding: var.$spacing-lg;
+    }
+    @media (max-width: var.$breakpoint-sm) {
+      padding: var.$spacing-md;
+    }
+  }
+
+  .permissions-features-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var.$spacing-sm;
+
+    li {
+      display: flex;
+      align-items: flex-start;
+      gap: var.$spacing-sm;
+      font-size: var.$font-size-base-default;
+      color: hsl(var(--color-text-secondary-h, #{var.$default-color-text-secondary-h}), var(--color-text-secondary-s, #{var.$default-color-text-secondary-s}), var(--color-text-secondary-l, #{var.$default-color-text-secondary-l}));
+
+      .permissions-item-icon {
+        flex-shrink: 0;
+        margin-top: 0.2rem;
+        color: hsl(var(--color-accent-secondary-h, #{var.$default-color-accent-secondary-h}), var(--color-accent-secondary-s, #{var.$default-color-accent-secondary-s}), var(--color-accent-secondary-l, #{var.$default-color-accent-secondary-l}));
+      }
+
+      span {
+        flex: 1;
+      }
+
+      @media (max-width: var.$breakpoint-sm) {
+        font-size: var.$font-size-sm;
+      }
+    }
+  }
+}
+
 // Roadmap Section
 // Mobile-Responsive Roadmap Section
 .roadmap-timeline-container-about {

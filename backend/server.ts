@@ -35,6 +35,8 @@ const PORT = process.env.PORT || 3001;
 const app: Express = express();
 let server: http.Server; // To store the server instance for graceful shutdown
 
+app.set('trust proxy', 1);
+
 // --- Middleware Configuration ---
 const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
 app.use(cors({

@@ -51,29 +51,40 @@ export async function configureRouter(): Promise<Router> {
     // This endpoint allows frontend to get info about public rate limits.
     // It does not require auth. The global optionalAuthMiddleware would have run.
     router.get('/rate-limit/status', async (req: Request, res: Response) => {
-        // @ts-ignore - req.user is custom property
+        // @ts-ignore - req.user is custom property added by optional auth middleware
         if (req.user && req.user.authenticated) {
-            // If optionalAuth identified a user, indicate they are not on public tier for limits
             return res.json({
                 tier: 'authenticated',
-                message: 'Authenticated users have higher or unlimited API access.',
-                // Optionally, you could add specific authenticated user limits here if they exist
+                message: 'Authenticated users have elevated or unlimited request capacity.',
             });
         }
-        // For truly public users (no valid token recognized by optionalAuth)
-        const ip = req.ip || req.socket?.remoteAddress || 'unknown';
-        if (ip === 'unknown' && process.env.NODE_ENV !== 'development') {
-            return res.status(400).json({ error: 'Could not determine IP address.' });
+
+        const ip = rateLimiter.resolveClientIp(req);
+
+        if (!ip || ip === 'unknown') {
+            return res.json({
+                tier: 'public',
+                ip: null,
+                message: 'Unable to determine client IP from proxy headers. Public rate limits are skipped for this request.',
+                storeType: 'unresolved-ip',
+            });
         }
-         if (ip === 'unknown' && process.env.NODE_ENV === 'development') {
-            return res.json({ tier: 'public', ip, message: 'Unknown IP in dev, actual limits may vary.'});
-        }
+
         try {
-            const usage = await rateLimiter.getPublicUsage(ip); // Get public tier usage
+            const usage = await rateLimiter.getPublicUsage(ip);
             return res.json({ tier: 'public', ip, ...usage });
         } catch (error: any) {
-            console.error("Error fetching rate limit status:", error.message);
-            return res.status(500).json({ error: "Could not retrieve rate limit status."});
+            console.error('Error fetching rate limit status:', error.message);
+            return res.json({
+                tier: 'public',
+                ip,
+                used: 0,
+                limit: 0,
+                remaining: 0,
+                resetAt: null,
+                storeType: 'error',
+                message: 'Rate limit status currently unavailable. Requests continue without enforcement.',
+            });
         }
     });
     console.log('✅ Registered GET /rate-limit/status route');
