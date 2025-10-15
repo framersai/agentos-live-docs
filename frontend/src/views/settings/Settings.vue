@@ -133,6 +133,62 @@
      </SettingsItem>
     </SettingsSection>
 
+    <SettingsSection title="Billing & Subscription" :icon="CreditCardIcon" class="settings-grid-span-2" id="billing-settings">
+      <SettingsItem
+        label="Plan Overview"
+        description="Current tier and subscription status for this account."
+      >
+        <div class="billing-overview">
+          <span class="billing-plan">{{ planLabel }}</span>
+          <span class="billing-status-text">{{ subscriptionStatusLabel }}</span>
+        </div>
+      </SettingsItem>
+
+      <SettingsItem
+        label="Subscription Management"
+        description="Start or manage your Lemon Squeezy subscription."
+      >
+        <div class="billing-actions">
+          <div class="billing-plan-hints">
+            <p v-if="basicPlan.value">Basic - ${{ basicPlan.value.monthlyPriceUsd }}/mo - ~ {{ basicPlan.value.usage.approxGpt4oTokensPerDay.toLocaleString() }} GPT-4o tokens/day</p>
+            <p v-if="creatorPlan.value">Creator - ${{ creatorPlan.value.monthlyPriceUsd }}/mo - BYO keys after {{ creatorPlan.value.usage.approxGpt4oTokensPerDay.toLocaleString() }} GPT-4o tokens/day</p>
+            <p v-if="organizationPlan.value">Organization - ${{ organizationPlan.value.monthlyPriceUsd }}/mo - shared pool ~ {{ organizationPlan.value.usage.approxGpt4oTokensPerDay.toLocaleString() }} GPT-4o tokens/day</p>
+            <button type="button" class="billing-plan-hints__link" @click="openPlanModal">Compare plans</button>
+          </div>
+          <template v-if="!isAuthenticated">
+            <p class="billing-helper">{{ billingHelperText }}</p>
+          </template>
+          <template v-else-if="isGlobalUser">
+            <p class="billing-helper">{{ billingHelperText }}</p>
+          </template>
+          <template v-else>
+            <button
+              type="button"
+              class="btn btn-primary-ephemeral billing-button"
+              :disabled="checkoutInFlight || !canManageSubscription"
+              @click="startSubscriptionCheckout"
+            >
+              <component :is="checkoutInFlight ? SpinnerIcon : CreditCardIcon" class="icon-sm mr-2" />
+              <span>{{ billingButtonLabel }}</span>
+            </button>
+            <p class="billing-helper" :class="{ 'billing-helper--error': checkoutError }">
+              {{ checkoutError || billingHelperText }}
+            </p>
+          </template>
+        </div>
+      </SettingsItem>
+    </SettingsSection>
+
+    <SettingsSection
+      v-if="isAuthenticated"
+      title="Team Management"
+      :icon="UsersIcon"
+      class="settings-grid-span-2"
+      id="team-settings"
+    >
+      <OrganizationManager />
+    </SettingsSection>
+
     <SettingsSection title="Memory & Context" :icon="CpuChipIcon" class="settings-grid-span-2" id="memory-settings">
       <!-- Language Response Settings -->
       <SettingsItem
@@ -486,7 +542,7 @@ import { useRouter } from 'vue-router'; // RouterLink is used in the template
 import { useStorage } from '@vueuse/core';
 
 // API and Services
-import { api as mainApi } from '@/utils/api'; // Removed unused costAPI
+import { api as mainApi, billingAPI } from '@/utils/api'; // Removed unused costAPI
 import {
   voiceSettingsManager,
   type VoiceApplicationSettings,
@@ -516,13 +572,14 @@ import { useChatStore } from '@/store/chat.store';
 import SettingsSection from '@/components/settings/SettingsSection.vue';
 import SettingsItem from '@/components/settings/SettingsItem.vue';
 import LanguageSwitcher from '@/components/LanguageSwitcher.vue';
+import OrganizationManager from '@/components/organization/OrganizationManager.vue';
 
 // Icons
 import {
   Cog8ToothIcon, PaintBrushIcon, WrenchScrewdriverIcon, SpeakerWaveIcon,
   CreditCardIcon, ShieldCheckIcon, ArrowDownTrayIcon, ArrowUpTrayIcon,
   ArrowLeftIcon, CheckCircleIcon, ArrowPathIcon, ArrowLeftOnRectangleIcon,
-  AcademicCapIcon, SunIcon, MoonIcon, SparklesIcon, CpuChipIcon
+  AcademicCapIcon, SunIcon, MoonIcon, SparklesIcon, CpuChipIcon, UsersIcon
 } from '@heroicons/vue/24/outline';
 
 const SpinnerIcon: VueComponent = {
@@ -541,7 +598,112 @@ const uiStore = useUiStore();
 const auth = useAuth();
 const costStore = useCostStore();
 const agentStore = useAgentStore();
+
+  const { findPlan } = usePlans();
+  const basicPlan = computed(() => findPlan('basic'));
+  const creatorPlan = computed(() => findPlan('creator'));
+  const organizationPlan = computed(() => findPlan('organization'));
+  const showPlanModal = ref(false);
+  const openPlanModal = () => { showPlanModal.value = true; };
+  const closePlanModal = () => { showPlanModal.value = false; };
 const chatStoreInstance = useChatStore();
+
+const defaultProductId = import.meta.env.VITE_LEMONSQUEEZY_PRODUCT_ID || '';
+const defaultVariantId = import.meta.env.VITE_LEMONSQUEEZY_VARIANT_ID || '';
+
+const currentUser = computed(() => auth.user.value);
+const isAuthenticated = computed(() => auth.isAuthenticated.value);
+const isGlobalUser = computed(() => currentUser.value?.mode === 'global');
+const hasBillingConfig = computed(() => Boolean(defaultProductId && defaultVariantId));
+
+const checkoutInFlight = ref(false);
+const checkoutError = ref('');
+
+const planLabel = computed(() => {
+  if (!isAuthenticated.value) return 'Not signed in';
+  const user = currentUser.value;
+  if (!user) return 'Loading…';
+  if (user.mode === 'global') return 'Global Unlimited Access';
+  const tier = (user.tier || 'metered').toString();
+  const pretty = tier.replace(/_/g, ' ');
+  return pretty.charAt(0).toUpperCase() + pretty.slice(1);
+});
+
+const subscriptionStatusLabel = computed(() => {
+  if (!isAuthenticated.value) return 'Sign in with your personal account to view subscription details.';
+  const user = currentUser.value;
+  if (!user) return 'Loading subscription status…';
+  if (user.mode === 'global') return 'Shared global access is active. Billing is not required for this session.';
+  const status = (user.subscriptionStatus || 'none').toString();
+  switch (status) {
+    case 'active':
+      return 'Subscription active and in good standing.';
+    case 'trialing':
+      return 'Trial period is active.';
+    case 'past_due':
+      return 'Payment is past due. Update billing to avoid interruption.';
+    case 'canceled':
+      return 'Subscription canceled. Start a new checkout to resume access.';
+    default:
+      return 'No active subscription on file.';
+  }
+});
+
+const canManageSubscription = computed(() => isAuthenticated.value && !isGlobalUser.value && hasBillingConfig.value);
+
+const billingButtonLabel = computed(() => {
+  if (!isAuthenticated.value) return 'Sign in to manage';
+  if (isGlobalUser.value) return 'Global access enabled';
+  const status = currentUser.value?.subscriptionStatus;
+  if (status === 'active' || status === 'trialing') return 'Manage Subscription';
+  return 'Start Subscription';
+});
+
+const billingHelperText = computed(() => {
+  if (!isAuthenticated.value) return 'Use your personal login to manage billing and subscription.';
+  if (isGlobalUser.value) return 'This session uses the shared global passphrase. Personal billing is not required.';
+  if (!hasBillingConfig.value) return 'Billing integration is not configured. Set VITE_LEMONSQUEEZY_PRODUCT_ID and VITE_LEMONSQUEEZY_VARIANT_ID in your environment.';
+  const status = currentUser.value?.subscriptionStatus;
+  if (status === 'active') return 'Your subscription renews automatically until canceled.';
+  if (status === 'trialing') return 'Trial active — finish checkout to keep access after the trial ends.';
+  if (status === 'past_due') return 'Your billing payment is past due. Complete checkout to restore service.';
+  return 'Start a subscription to unlock personal usage and billing controls.';
+});
+
+const startSubscriptionCheckout = async (): Promise<void> => {
+  if (!canManageSubscription.value) {
+    checkoutError.value = !hasBillingConfig.value
+      ? 'Billing integration is not configured.'
+      : isGlobalUser.value
+        ? 'Global access sessions do not require subscriptions.'
+        : 'Sign in to manage billing.';
+    return;
+  }
+
+  checkoutError.value = '';
+  checkoutInFlight.value = true;
+  try {
+    const payload = {
+      productId: defaultProductId,
+      variantId: defaultVariantId,
+      successUrl: `${window.location.origin}/billing/success`,
+      cancelUrl: `${window.location.origin}${window.location.pathname}#billing-settings`,
+    };
+    const { data } = await billingAPI.createCheckoutSession(payload);
+    const checkoutUrl = data?.checkoutUrl;
+    if (!checkoutUrl) {
+      throw new Error('Checkout URL missing from server response.');
+    }
+    window.open(checkoutUrl, '_blank', 'noopener');
+    toast?.add({ type: 'info', title: 'Redirecting to Billing', message: 'Checkout opened in a new tab.' });
+  } catch (error: any) {
+    const message = error?.response?.data?.message || error?.message || 'Unable to start subscription checkout.';
+    checkoutError.value = message;
+    toast?.add({ type: 'error', title: 'Checkout Failed', message });
+  } finally {
+    checkoutInFlight.value = false;
+  }
+};
 
 /** @type {VoiceApplicationSettings} vcaSettings - Reactive settings from the service. */
 const vcaSettings: VoiceApplicationSettings = voiceSettingsManager.settings;
@@ -727,7 +889,7 @@ const getAudioModeDescription = (mode: AudioInputMode): string => {
   const descriptions: Record<AudioInputMode, string> = {
       'push-to-talk': '🎤 Hold the mic button to record. Release to review and send. Best for precise control and privacy.',
       'continuous': '🔴 Microphone stays on and transcribes continuously. Good for hands-free dictation.',
-      'voice-activation': '🗣️ Say "V" or "Hey V" to wake, then speak your command. Hands-free with wake word activation.'
+      'voice-activation': '🗣�~ Say "V" or "Hey V" to wake, then speak your command. Hands-free with wake word activation.'
   };
   return descriptions[mode] || "Select your preferred audio input method.";
 };
@@ -910,3 +1072,9 @@ watch([
 <style lang="scss">
 // Styles for Settings.vue are in frontend/src/styles/views/settings/_settings-page.scss
 </style>
+
+
+
+
+
+

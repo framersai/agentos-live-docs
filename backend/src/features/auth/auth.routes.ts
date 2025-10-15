@@ -1,166 +1,149 @@
 // File: backend/src/features/auth/auth.routes.ts
-// Note: Moved from backend/routes/auth.ts
-
 /**
  * @file Authentication API route handlers.
- * @description Handles user authentication, login, and status checks.
- * @version 1.0.3 - Corrected userId declaration order.
+ * @description Handles global access login, standard login, status checks, and logout.
  */
 
-import { Request, Response } from 'express';
-import dotenv from 'dotenv';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import type { Request, Response } from 'express';
+import { appConfig } from '../../config/appConfig.js';
+import { globalPasswordLogin, standardLogin } from './auth.service.js';
 
-// Resolve .env path from the project root
-const __filename = fileURLToPath(import.meta.url); // backend/src/features/auth/auth.routes.ts
-const __projectRoot = path.resolve(path.dirname(__filename), '../../../..'); // up to project root
-dotenv.config({ path: path.join(__projectRoot, '.env') });
+const getClientIp = (req: Request): string | null => {
+  const forwarded = req.headers['x-forwarded-for'];
+  if (typeof forwarded === 'string') {
+    return forwarded.split(',')[0].trim();
+  }
+  if (Array.isArray(forwarded) && forwarded.length > 0) {
+    return forwarded[0].split(',')[0].trim();
+  }
+  const realIp = req.headers['x-real-ip'];
+  if (typeof realIp === 'string') return realIp;
+  if (Array.isArray(realIp) && realIp.length > 0) return realIp[0];
+  return req.ip || req.socket.remoteAddress || null;
+};
 
-/**
- * Handle POST /api/auth - User authentication (login)
- * @param {Request} req - Express request object
- * @param {Response} res - Express response object
- * @returns {Promise<void>}
- */
-export async function POST(req: Request, res: Response): Promise<void> {
+const setRememberMeCookie = (res: Response, token: string, rememberMe: boolean): void => {
+  if (!rememberMe) return;
+  res.cookie('authToken', token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+    sameSite: 'lax',
+  });
+};
+
+const mapAuthErrorToStatus = (error: Error): number => {
+  switch (error.message) {
+    case 'GLOBAL_LOGIN_DISABLED':
+      return 503;
+    case 'INVALID_GLOBAL_PASSWORD':
+    case 'INVALID_CREDENTIALS':
+      return 401;
+    case 'USER_NOT_FOUND':
+      return 404;
+    case 'USER_INACTIVE':
+    case 'SUBSCRIPTION_INACTIVE':
+      return 403;
+    case 'GLOBAL_LOGIN_RATE_LIMIT':
+      return 429;
+    default:
+      return 500;
+  }
+};
+
+export const postGlobalLogin = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { password, rememberMe = false } = req.body;
-    const correctPassword = process.env.PASSWORD;
-
-    if (!correctPassword) {
-      console.error('AuthRoutes: Server configuration error - PASSWORD not set in environment.');
-      res.status(500).json({
-        message: 'Server configuration error. Authentication is not properly configured.',
-        error: 'AUTH_NOT_CONFIGURED'
-      });
-      return;
-    }
+    const { password, rememberMe = false } = req.body as { password?: string; rememberMe?: boolean };
 
     if (!password) {
-      res.status(400).json({
-        message: 'Password is required for authentication.',
-        error: 'MISSING_PASSWORD'
-      });
+      res.status(400).json({ message: 'Global password is required.', error: 'MISSING_PASSWORD' });
       return;
     }
 
-    if (password !== correctPassword) {
-      console.warn(`AuthRoutes: Failed login attempt. IP: ${req.ip}`);
-      res.status(401).json({
-        message: 'Invalid password provided.',
-        error: 'INVALID_CREDENTIALS'
-      });
+    if (!appConfig.auth.globalPassword) {
+      res.status(503).json({ message: 'Global access password not configured.', error: 'GLOBAL_LOGIN_DISABLED' });
       return;
     }
 
-    // Successful authentication
-    // In a real app, this would come from a user database or be generated
-    const userId = 'default_user'; // Declare userId BEFORE using it.
-    // For a real application, generate a secure JWT token here.
-    // Using the password itself as a token is highly insecure and only for basic demonstration.
-    // Example of a more appropriate (but still simple) token:
-    const token = Buffer.from(`${userId}:${correctPassword}`).toString('base64'); 
+    const ip = getClientIp(req);
+    const userAgent = req.headers['user-agent'] ?? null;
+    const result = await globalPasswordLogin(password, { ip, userAgent: typeof userAgent === 'string' ? userAgent : null });
 
-    if (rememberMe) {
-      res.cookie('authToken', token, { // Changed cookie name to 'authToken' for clarity
-        httpOnly: true, // Helps prevent XSS
-        secure: process.env.NODE_ENV === 'production', // Send only over HTTPS in production
-        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-        sameSite: 'lax', // Or 'strict' depending on needs
-        // path: '/api', // Optional: scope cookie to API paths
-      });
+    setRememberMeCookie(res, result.token, rememberMe);
+
+    res.status(200).json({
+      message: 'Global access granted.',
+      token: result.token,
+      user: result.user,
+      rememberMe,
+      tokenProvider: 'global',
+    });
+  } catch (error: any) {
+    const status = mapAuthErrorToStatus(error);
+    const message = error.message === 'GLOBAL_LOGIN_RATE_LIMIT'
+      ? 'Too many global access attempts. Try again later.'
+      : 'Global access denied.';
+    res.status(status).json({
+      message,
+      error: error.message,
+    });
+  }
+};
+
+export const postStandardLogin = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { email, password, rememberMe = false } = req.body as { email?: string; password?: string; rememberMe?: boolean };
+
+    if (!email || !password) {
+      res.status(400).json({ message: 'Email and password are required.', error: 'MISSING_CREDENTIALS' });
+      return;
     }
 
-    console.log(`AuthRoutes: Authentication successful for user: ${userId}`);
+    const ip = getClientIp(req);
+    const userAgent = req.headers['user-agent'] ?? null;
+    const result = await standardLogin(email, password, { ip, userAgent: typeof userAgent === 'string' ? userAgent : null });
+
+    setRememberMeCookie(res, result.token, rememberMe);
+
     res.status(200).json({
       message: 'Authentication successful.',
-      token: token, // Send token in response body as well for API clients
-      rememberMe: rememberMe,
-      user: {
-        id: userId,
-        // Add other relevant non-sensitive user details here
-      }
+      token: result.token,
+      user: result.user,
+      rememberMe,
+      tokenProvider: 'standard',
     });
-
   } catch (error: any) {
-    console.error('AuthRoutes: Error in POST /api/auth endpoint:', error);
-    if (res.headersSent) return; // Avoid sending multiple responses
-    res.status(500).json({
-      message: 'Internal server error during authentication.',
-      error: process.env.NODE_ENV === 'production' ? 'INTERNAL_AUTH_ERROR' : error.message
+    const status = mapAuthErrorToStatus(error);
+    const message = error.message === 'SUBSCRIPTION_INACTIVE'
+      ? 'Subscription inactive or expired.'
+      : error.message === 'USER_NOT_FOUND'
+        ? 'Account not found.'
+        : 'Authentication failed.';
+    res.status(status).json({
+      message,
+      error: error.message,
     });
   }
-}
+};
 
-/**
- * Handle GET /api/auth - Check authentication status
- * This route relies on the authMiddleware to have run first.
- * @param {Request} req - Express request object
- * @param {Response} res - Express response object
- * @returns {Promise<void>}
- */
-export async function GET(req: Request, res: Response): Promise<void> {
-  try {
-    // If authMiddleware passed, (req as any).user should be set.
-    const user = (req as any).user;
-
-    if (user && user.id) {
-      console.log(`AuthRoutes: Authentication status check for user: ${user.id} - Authenticated.`);
-      res.status(200).json({
-        authenticated: true,
-        message: 'User is currently authenticated.',
-        user: {
-          id: user.id,
-          // other user details if available from middleware/session
-        }
-      });
-    } else {
-      // This case should ideally not be reached if authMiddleware is effective for protected routes.
-      // If /api/auth (this route itself) is not protected by authMiddleware, this path is possible.
-      console.log(`AuthRoutes: Authentication status check - Not authenticated.`);
-      res.status(401).json({
-        authenticated: false,
-        message: 'User is not authenticated.',
-        error: 'NOT_AUTHENTICATED'
-      });
-    }
-  } catch (error: any) {
-    console.error('AuthRoutes: Error in GET /api/auth (status check):', error);
-    if (res.headersSent) return;
-    res.status(500).json({
-      message: 'Error checking authentication status.',
-      error: process.env.NODE_ENV === 'production' ? 'INTERNAL_STATUS_CHECK_ERROR' : error.message
-    });
+export const getStatus = async (req: Request, res: Response): Promise<void> => {
+  const user = (req as any).user;
+  if (!user) {
+    res.status(401).json({ authenticated: false, message: 'User is not authenticated.' });
+    return;
   }
-}
+  res.status(200).json({
+    authenticated: true,
+    user,
+    tokenProvider: user.tokenProvider || 'global',
+  });
+};
 
-/**
- * Handle DELETE /api/auth - User logout
- * @param {Request} req - Express request object
- * @param {Response} res - Express response object
- * @returns {Promise<void>}
- */
-export async function DELETE(req: Request, res: Response): Promise<void> {
-    try {
-        // Clear the authentication cookie
-        res.clearCookie('authToken', {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
-            // path: '/api', // Ensure path matches if set during login
-        });
-
-        // Optionally, invalidate server-side session if one exists
-
-        console.log(`AuthRoutes: User logged out. IP: ${req.ip}`);
-        res.status(200).json({ message: 'Logout successful.' });
-    } catch (error: any) {
-        console.error('AuthRoutes: Error in DELETE /api/auth (logout):', error);
-        if (res.headersSent) return;
-        res.status(500).json({
-            message: 'Internal server error during logout.',
-            error: process.env.NODE_ENV === 'production' ? 'INTERNAL_LOGOUT_ERROR' : error.message,
-        });
-    }
-}
+export const deleteSession = async (_req: Request, res: Response): Promise<void> => {
+  res.clearCookie('authToken', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+  });
+  res.status(200).json({ message: 'Logout successful.' });
+};

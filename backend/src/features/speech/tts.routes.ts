@@ -11,6 +11,7 @@ import { audioService } from '../../core/audio/audio.service.js';
 // Ensure ITtsOptions is imported correctly and matches the definition in tts.interfaces.ts
 import { ITtsOptions, ITtsResult, IAvailableVoice } from '../../core/audio/tts.interfaces.js';
 import { CostService } from '../../core/cost/cost.service.js';
+import { resolveSessionUserId } from '../../utils/session.utils.js';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -39,7 +40,7 @@ export async function POST(req: Request, res: Response): Promise<void> {
     text,
     voice,
     model,
-    outputFormat, // This is from req.body
+    outputFormat,
     speed,
     pitch,
     volume,
@@ -47,8 +48,7 @@ export async function POST(req: Request, res: Response): Promise<void> {
     providerId,
   } = body;
 
-  // @ts-ignore
-  const userId = req.user?.id || body.userId || 'default_user_tts';
+  const effectiveUserId = resolveSessionUserId(req, body.userId);
 
   if (!text || typeof text !== 'string' || text.trim().length === 0) {
     res.status(400).json({ message: 'Text for speech synthesis is required.', error: 'MISSING_TEXT_INPUT' });
@@ -66,8 +66,8 @@ export async function POST(req: Request, res: Response): Promise<void> {
     const effectiveCostThreshold = parseFloat(costThresholdString);
     const disableCostLimits = process.env.DISABLE_COST_LIMITS === 'true';
 
-    if (!disableCostLimits && CostService.isSessionCostThresholdReached(userId, effectiveCostThreshold)) {
-      const currentCostDetail = CostService.getSessionCost(userId);
+    if (!disableCostLimits && CostService.isSessionCostThresholdReached(effectiveUserId, effectiveCostThreshold)) {
+      const currentCostDetail = CostService.getSessionCost(effectiveUserId);
       res.status(403).json({
         message: `Session cost threshold of $${effectiveCostThreshold.toFixed(2)} reached. TTS synthesis blocked.`,
         error: 'COST_THRESHOLD_EXCEEDED',
@@ -77,37 +77,35 @@ export async function POST(req: Request, res: Response): Promise<void> {
       return;
     }
 
-    // Construct ttsServiceOptions ensuring it matches ITtsOptions
     const ttsServiceOptions: ITtsOptions = {
       voice: voice,
       model: model,
-      outputFormat: outputFormat, // from req.body
+      outputFormat: outputFormat,
       speed: speed,
       pitch: pitch,
       volume: volume,
       languageCode: languageCode,
       providerId: effectiveProviderId,
-      // providerSpecificOptions can be added if needed
     };
     
-    console.log(`TTS Routes: User [${userId}] Requesting TTS - Provider: ${effectiveProviderId}, Model: ${model || 'default'}, Voice: ${voice || 'default'}, Speed: ${speed}, Pitch: ${pitch}, Volume: ${volume}`);
+    console.log(`TTS Routes: User [${effectiveUserId}] Requesting TTS - Provider: ${effectiveProviderId}, Model: ${model || 'default'}, Voice: ${voice || 'default'}, Speed: ${speed}, Pitch: ${pitch}, Volume: ${volume}`);
 
     const ttsResult: ITtsResult = await audioService.synthesizeSpeech(
       text,
       ttsServiceOptions,
-      userId
+      effectiveUserId
     );
     
     const providerNameForResult = ttsResult.providerName || ttsServiceOptions.providerId || 'UnknownProvider';
-    console.log(`TTS Routes: User [${userId}] Synthesized audio. Cost: $${ttsResult.cost.toFixed(6)}, Format: ${ttsResult.mimeType}, Provider: ${providerNameForResult}, Voice: ${ttsResult.voiceUsed}`);
+    console.log(`TTS Routes: User [${effectiveUserId}] Synthesized audio. Cost: $${ttsResult.cost.toFixed(6)}, Format: ${ttsResult.mimeType}, Provider: ${providerNameForResult}, Voice: ${ttsResult.voiceUsed}`);
 
     res.setHeader('Content-Type', ttsResult.mimeType);
-    // Use ttsServiceOptions.outputFormat for consistency if mimeType parsing is tricky
     const actualOutputFormatHeader = ttsServiceOptions.outputFormat || ttsResult.mimeType.split('/')[1] || 'mp3';
     res.setHeader('Content-Disposition', `inline; filename="speech.${actualOutputFormatHeader}"`);
     res.setHeader('X-TTS-Cost', ttsResult.cost.toFixed(6));
     res.setHeader('X-TTS-Voice', ttsResult.voiceUsed || 'default');
     res.setHeader('X-TTS-Provider', providerNameForResult);
+    res.setHeader('X-Session-Cost', CostService.getSessionCost(effectiveUserId).totalCost.toFixed(6));
     if (ttsResult.durationSeconds) {
       res.setHeader('X-TTS-Duration-Seconds', ttsResult.durationSeconds.toFixed(3));
     }
@@ -119,7 +117,7 @@ export async function POST(req: Request, res: Response): Promise<void> {
     res.status(200).send(ttsResult.audioBuffer);
 
   } catch (ttsError: any) {
-    console.error(`TTS Routes: TTS synthesis error for user ${userId}:`, ttsError.message, ttsError.originalError || ttsError.stack);
+    console.error(`TTS Routes: TTS synthesis error for user ${effectiveUserId}:`, ttsError.message, ttsError.originalError || ttsError.stack);
     if (res.headersSent) {
       return;
     }
@@ -127,7 +125,6 @@ export async function POST(req: Request, res: Response): Promise<void> {
     let errorCode = 'TTS_SYNTHESIS_ERROR';
     let statusCode = ttsError.status || 500;
 
-    // Error handling logic from your original file...
     if (ttsError.message?.includes('API key') || ttsError.message?.includes('authentication')) {
       errorMessage = 'TTS service API key not configured properly, is invalid, or authentication failed.';
       errorCode = 'TTS_API_AUTH_ERROR';
@@ -162,13 +159,12 @@ export async function POST(req: Request, res: Response): Promise<void> {
 
 export async function GET(req: Request, res: Response): Promise<void> {
     try {
-        // @ts-ignore 
-        const userId = req.user?.id || 'public_user_tts_voices';
+        const effectiveUserId = resolveSessionUserId(req);
         const providerFilter = req.query.providerId as string | undefined;
 
         const voices: IAvailableVoice[] = await audioService.listAvailableTtsVoices(providerFilter);
         
-        console.log(`TTS Routes: User ${userId} requested available voices. Provider filter: ${providerFilter || 'all'}. Found: ${voices.length}`);
+        console.log(`TTS Routes: User ${effectiveUserId} requested available voices. Provider filter: ${providerFilter || 'all'}. Found: ${voices.length}`);
         
         res.status(200).json({
             message: "Available TTS voices fetched successfully.",

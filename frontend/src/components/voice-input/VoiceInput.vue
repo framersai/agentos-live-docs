@@ -50,17 +50,34 @@
       }"
     />
 
-    <transition name="status-slide">
-      <div v-if="currentHint || statusText" class="vi-status-bar">
-        <div class="vi-status-content">
-          <span v-if="currentHint" class="vi-hint" :class="`vi-hint-${currentHint.type}`">
-            <span class="vi-hint-icon">{{ getHintIcon(currentHint.type) }}</span>
-            <span class="vi-hint-text">{{ currentHint.text }}</span>
+    <div class="vi-floating-status" aria-live="polite">
+      <transition name="pill-fade">
+        <div
+          v-if="statusPill"
+          class="vi-status-pill"
+          :class="`vi-status-pill--${statusPill.intent}`"
+        >
+          <span v-if="statusPill.icon" class="vi-status-pill__icon-wrapper" aria-hidden="true">
+            <component :is="statusPill.icon" class="vi-status-pill__icon" />
           </span>
-          <span v-else class="vi-status-text" v-html="statusText"></span>
+          <span
+            v-if="statusPill.isHtml"
+            class="vi-status-pill__text"
+            v-html="statusPill.message"
+          />
+          <span v-else class="vi-status-pill__text">{{ statusPill.message }}</span>
         </div>
-      </div>
-    </transition>
+      </transition>
+      <transition name="pill-fade">
+        <div
+          v-if="showTtsPreparingPill"
+          class="vi-status-pill vi-status-pill--pending"
+        >
+          <ArrowPathIcon class="vi-status-pill__icon vi-status-pill__icon--spinner" aria-hidden="true" />
+          <span class="vi-status-pill__text">{{ ttsPreparingLabel }}</span>
+        </div>
+      </transition>
+    </div>
 
     <div class="vi-controls-wrapper">
       <div class="vi-mic-wrapper">
@@ -112,6 +129,35 @@
           @select-mode="handleAudioModeChange"
           class="vi-mode-selector"
         />
+      </transition>
+
+      <transition name="fade">
+        <div class="vi-engine-badges" role="status" aria-live="polite">
+          <div class="vi-engine-chip" :class="`vi-engine-chip--${sttEngineMeta.theme}`">
+            <component :is="sttEngineMeta.icon" class="vi-engine-chip__icon" aria-hidden="true" />
+            <div class="vi-engine-chip__text">
+              <span class="vi-engine-chip__label">{{ sttEngineMeta.label }}</span>
+              <span v-if="sttEngineMeta.subLabel" class="vi-engine-chip__sub">{{ sttEngineMeta.subLabel }}</span>
+            </div>
+          </div>
+        <div class="vi-engine-chip" :class="`vi-engine-chip--${ttsProviderMeta.theme}`">
+          <component :is="ttsProviderMeta.icon" class="vi-engine-chip__icon" aria-hidden="true" />
+          <div class="vi-engine-chip__text">
+            <span class="vi-engine-chip__label">{{ ttsProviderMeta.label }}</span>
+            <span v-if="ttsProviderMeta.subLabel" class="vi-engine-chip__sub">{{ ttsProviderMeta.subLabel }}</span>
+          </div>
+        </div>
+          <button
+            type="button"
+            class="vi-tts-toggle"
+            :class="{ 'vi-tts-toggle--active': isTtsAutoPlayEnabled }"
+            :aria-pressed="isTtsAutoPlayEnabled"
+            @click="toggleTtsAutoPlay"
+          >
+            <component :is="isTtsAutoPlayEnabled ? SpeakerWaveIcon : SpeakerXMarkIcon" class="vi-tts-toggle__icon" aria-hidden="true" />
+            <span class="vi-tts-toggle__label">{{ isTtsAutoPlayEnabled ? 'Speech On' : 'Speech Off' }}</span>
+          </button>
+        </div>
       </transition>
 
       <transition name="fade">
@@ -298,6 +344,8 @@ import { voiceSettingsManager, type VoiceApplicationSettings, type AudioInputMod
 import type { ToastService } from '@/services/services';
 import { useUiStore } from '@/store/ui.store';
 import { useReactiveStore } from '@/store/reactive.store';
+import { useAgentStore } from '@/store/agent.store';
+import { useChatStore } from '@/store/chat.store';
 
 // Composables
 import { useVoiceInputState, resetVoiceInputState } from './composables/shared/useVoiceInputState';
@@ -319,7 +367,16 @@ import MicInputButton from './components/MicInputButton.vue';
 
 // Icons
 import {
-  XMarkIcon, PaperAirplaneIcon, PlayIcon, PauseIcon, ArrowPathIcon
+  XMarkIcon,
+  PaperAirplaneIcon,
+  PlayIcon,
+  PauseIcon,
+  ArrowPathIcon,
+  CloudIcon,
+  GlobeAltIcon,
+  SparklesIcon,
+  SpeakerWaveIcon,
+  SpeakerXMarkIcon
 } from '@heroicons/vue/24/outline';
 
 // Import styles
@@ -366,6 +423,16 @@ const toast = inject<ToastService>('toast');
 const { t } = useI18n();
 const uiStore = useUiStore();
 const reactiveStore = useReactiveStore();
+const agentStore = useAgentStore();
+const chatStore = useChatStore();
+const activeAgentId = computed(() => agentStore.activeAgent?.id ?? null);
+const isActiveAgentAwaitingTts = computed(() => {
+  const id = activeAgentId.value;
+  return id ? chatStore.isAgentAwaitingTts(id) : false;
+});
+const showTtsPreparingPill = ref(false);
+const ttsPreparingLabel = computed(() => t('voice.preparingAudioResponse', 'Preparing audio response…'));
+let ttsPillTimeout: number | null = null;
 const instanceId = ref(getCurrentInstance()?.uid || Math.random().toString(36).substring(7));
 
 const voiceInputPanelRef = ref<HTMLElement>();
@@ -573,6 +640,51 @@ const sttEngineOptions = computed<SttEngineOption[]>(() => [
   { label: 'Browser STT', value: 'browser_webspeech_api', description: 'Uses built-in browser speech recognition.' },
   { label: 'Whisper API', value: 'whisper_api', description: 'Uses OpenAI Whisper API for higher accuracy.' },
 ]);
+
+const sttEngineMeta = computed(() => {
+  if (currentSettings.sttPreference === 'whisper_api') {
+    return {
+      label: 'Whisper STT',
+      subLabel: 'OpenAI Whisper',
+      icon: CloudIcon,
+      theme: 'whisper',
+    };
+  }
+  return {
+    label: 'Browser STT',
+    subLabel: 'Web Speech',
+    icon: GlobeAltIcon,
+    theme: 'browser',
+  };
+});
+
+const currentTtsVoiceName = computed(() => {
+  const currentVoice = voiceSettingsManager.getCurrentTtsVoice();
+  if (currentVoice?.name && currentVoice.name.trim().length > 0) {
+    return currentVoice.name.trim();
+  }
+  return null;
+});
+
+const ttsProviderMeta = computed(() => {
+  const voiceLabel = currentTtsVoiceName.value;
+  if (currentSettings.ttsProvider === 'openai_tts') {
+    return {
+      label: 'OpenAI Voice',
+      subLabel: voiceLabel ?? 'Auto voice',
+      icon: SparklesIcon,
+      theme: 'openai',
+    };
+  }
+  return {
+    label: 'Browser Voice',
+    subLabel: voiceLabel ?? 'System default',
+    icon: SpeakerWaveIcon,
+    theme: 'browser',
+  };
+});
+
+const isTtsAutoPlayEnabled = computed(() => currentSettings.autoPlayTts);
 
 function getHintIcon(type: Hint['type']): string {
   switch (type) {
@@ -1196,6 +1308,34 @@ watch(() => sharedState.isProcessingAudio.value, (sharedProcessing) => {
   }
 });
 
+watch(() => currentSettings.sttPreference, (newPreference, previousPreference) => {
+  if (previousPreference && newPreference !== previousPreference) {
+    const message = newPreference === 'whisper_api'
+      ? 'Whisper STT active (OpenAI Whisper)'
+      : 'Browser STT active (Web Speech API)';
+    showHint(message, 'success', 2600);
+  }
+});
+
+watch(() => currentSettings.ttsProvider, (newProvider, previousProvider) => {
+  if (previousProvider && newProvider !== previousProvider) {
+    const voiceSuffix = currentTtsVoiceName.value ? ` • ${currentTtsVoiceName.value}` : '';
+    const message = newProvider === 'openai_tts'
+      ? `OpenAI voice playback ready${voiceSuffix}`
+      : `Browser voice playback ready${voiceSuffix || ' • System default'}`;
+    showHint(message, 'info', 2600);
+  }
+});
+
+watch(() => currentSettings.selectedTtsVoiceId, (newVoiceId, previousVoiceId) => {
+  if (newVoiceId !== previousVoiceId && (previousVoiceId !== undefined)) {
+    const voiceName = currentTtsVoiceName.value;
+    if (voiceName) {
+      showHint(`Voice set to ${voiceName}`, 'info', 2400);
+    }
+  }
+});
+
 watch(() => props.isProcessingLLM, (isProcessing) => {
   if (isProcessing && !isModeEngaged.value && !isListeningForWakeWord.value && !sttManager.isAwaitingVadCommandResult.value) {
     reactiveStore.transitionToState('thinking');
@@ -1270,3 +1410,5 @@ onBeforeUnmount(() => {
   }
 });
 </script>
+
+

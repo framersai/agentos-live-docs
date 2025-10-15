@@ -48,6 +48,7 @@ export interface MainContent {
   data: any;
   title?: string;
   timestamp: number;
+  isAwaitingTts?: boolean;
 }
 
 export const useChatStore = defineStore('chat', () => {
@@ -57,6 +58,7 @@ export const useChatStore = defineStore('chat', () => {
   const agentPersonas = ref<Record<string, string>>({});
   const isMainContentStreaming = ref(false);
   const streamingMainContentText = ref('');
+  const ttsPendingMap = ref<Record<string, boolean>>({});
 
   const history = computed(() => readonly(messageHistory.value));
   
@@ -74,6 +76,32 @@ export const useChatStore = defineStore('chat', () => {
     }
     return conversationIds.value[agentId];
   };
+
+  function setTtsPending(agentId: AgentId, pending: boolean): void {
+    const current = !!ttsPendingMap.value[agentId];
+    if (pending === current) {
+      if (pending) {
+        return;
+      }
+      if (!pending && !current) {
+        return;
+      }
+    }
+
+    if (pending) {
+      ttsPendingMap.value = { ...ttsPendingMap.value, [agentId]: true };
+    } else if (ttsPendingMap.value[agentId]) {
+      const { [agentId]: _removed, ...rest } = ttsPendingMap.value;
+      ttsPendingMap.value = rest;
+    }
+
+    if (mainAgentContents.value[agentId]) {
+      mainAgentContents.value[agentId] = {
+        ...mainAgentContents.value[agentId]!,
+        isAwaitingTts: pending,
+      };
+    }
+  }
 
   function addMessage(messageData: Omit<ChatMessage, 'id' | 'timestamp'> & { timestamp?: number, id?: string }): ChatMessage {
     const fullMessage: ChatMessage = {
@@ -93,16 +121,44 @@ export const useChatStore = defineStore('chat', () => {
       name: messageData.name,
     };
     messageHistory.value.push(fullMessage);
+    if (
+      fullMessage.role === 'assistant' &&
+      typeof fullMessage.content === 'string' &&
+      fullMessage.content.trim().length > 0 &&
+      voiceSettingsManager.settings.autoPlayTts
+    ) {
+      setTtsPending(fullMessage.agentId, true);
+      void (async () => {
+        try {
+          await voiceSettingsManager.speakText(fullMessage.content as string);
+        } catch (error) {
+          console.error('[ChatStore] Error during TTS playback:', error);
+        } finally {
+          setTtsPending(fullMessage.agentId, false);
+        }
+      })();
+    }
     return fullMessage;
   }
 
+  function applyTtsState(content: MainContent): MainContent {
+    return {
+      ...content,
+      isAwaitingTts: !!ttsPendingMap.value[content.agentId],
+    };
+  }
+
   function updateMainContent(content: MainContent): void {
-    mainAgentContents.value[content.agentId] = content;
+    mainAgentContents.value[content.agentId] = applyTtsState(content);
   }
 
   function clearMainContentForAgent(agentId: AgentId): void {
     if (mainAgentContents.value[agentId]) {
       mainAgentContents.value[agentId] = null;
+    }
+    if (ttsPendingMap.value[agentId]) {
+      const { [agentId]: _removed, ...rest } = ttsPendingMap.value;
+      ttsPendingMap.value = rest;
     }
   }
 
@@ -136,11 +192,13 @@ export const useChatStore = defineStore('chat', () => {
         delete updated[agentId];
         agentPersonas.value = updated;
       }
+      setTtsPending(agentId, false);
     } else {
       messageHistory.value = [];
       mainAgentContents.value = {};
       conversationIds.value = {};
       agentPersonas.value = {};
+      ttsPendingMap.value = {};
     }
   }
   function clearAllAgentData(): void { clearAgentData(); }
@@ -286,5 +344,6 @@ export const useChatStore = defineStore('chat', () => {
     setPersonaForAgent,
     attachPersonaToPayload,
     syncPersonaFromResponse,
+    isAgentAwaitingTts: (agentId: AgentId) => !!ttsPendingMap.value[agentId],
   };
 });

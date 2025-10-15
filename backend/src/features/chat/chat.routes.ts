@@ -19,6 +19,7 @@ import { IChatMessage, ILlmUsage, IChatCompletionParams, ILlmResponse, ILlmToolC
 
 // --- Cost & Model Preference Imports ---
 import { CostService } from '../../core/cost/cost.service.js';
+import { resolveSessionUserId } from '../../utils/session.utils.js';
 import { getModelPrice, MODEL_PRICING } from '../../../config/models.config.js';
 
 // --- Core Service Imports ---
@@ -51,8 +52,6 @@ const SESSION_COST_THRESHOLD_USD = parseFloat(process.env.COST_THRESHOLD_USD_PER
 const DISABLE_COST_LIMITS_CONFIG = process.env.DISABLE_COST_LIMITS === 'true';
 const LLM_DEFAULT_TEMPERATURE = parseFloat(process.env.LLM_DEFAULT_TEMPERATURE || '0.7');
 const LLM_DEFAULT_MAX_TOKENS = parseInt(process.env.LLM_DEFAULT_MAX_TOKENS || '2048');
-const GLOBAL_USER_ID_FOR_MEMORY = 'default_user';
-
 /**
  * @interface ClientChatMessage
  * @description Represents the structure of a message as potentially sent by the client.
@@ -265,9 +264,7 @@ export async function POST(req: Request, res: Response): Promise<void> {
       })));
     }
 
-    // @ts-ignore
-    const authenticatedUserId = req.user?.id;
-    const effectiveUserId = userIdFromRequest || authenticatedUserId || GLOBAL_USER_ID_FOR_MEMORY;
+    const effectiveUserId = resolveSessionUserId(req, userIdFromRequest);
     const conversationId = reqConversationId || `conv_${mode}_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
 
     // --- 0. Cost Check & Persona Persistence ---
@@ -734,9 +731,7 @@ export async function POST_PERSONA(req: Request, res: Response): Promise<void> {
       return;
     }
 
-    // @ts-ignore
-    const authenticatedUserId = req.user?.id;
-    const effectiveUserId = userId || authenticatedUserId || GLOBAL_USER_ID_FOR_MEMORY;
+    const effectiveUserId = resolveSessionUserId(req, userId);
     const timestamp = Date.now();
 
     await sqliteMemoryAdapter.setConversationPersona(

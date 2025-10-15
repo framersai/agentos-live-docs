@@ -1,65 +1,81 @@
-// File: frontend/src/composables/useAuth.ts
+﻿// File: frontend/src/composables/useAuth.ts
 /**
  * @file useAuth.ts
- * @version 1.2.0
- * @description Composable for managing authentication and a session-specific user identifier.
- * Logout ensures page refresh/redirect and clears session-specific ID.
+ * @version 1.3.0
+ * @description Auth composable supporting global passphrase JWTs, Supabase sessions, and demo usage tracking.
  */
-import { ref, onMounted, onUnmounted, readonly, type Ref, watch, computed } from 'vue';
+import { ref, onMounted, readonly, watch, computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import { AUTH_TOKEN_KEY } from '@/router'; // Assuming this is your main auth token key
-import { api, authAPI } from '@/utils/api';
+import { AUTH_TOKEN_KEY } from '@/router';
+import { api, authAPI, rateLimitAPI } from '@/utils/api';
 import { useStorage } from '@vueuse/core';
-import { v4 as uuidv4 } from 'uuid'; // For generating session-specific IDs
+import { v4 as uuidv4 } from 'uuid';
+import { createClient, type Session, type SupabaseClient } from '@supabase/supabase-js';
 
-// Import Pinia stores for reset on logout
 import { useChatStore } from '@/store/chat.store';
 import { useCostStore } from '@/store/cost.store';
 import { useAgentStore } from '@/store/agent.store';
 import { useUiStore } from '@/store/ui.store';
 
-// Key for session-specific user ID
+type Provider = 'google' | 'github' | 'apple' | string;
+
 const SESSION_USER_ID_KEY = 'vcaSessionUserId';
+const SUPABASE_URL = (import.meta.env.VITE_SUPABASE_URL ?? '').trim();
+const SUPABASE_ANON_KEY = (import.meta.env.VITE_SUPABASE_ANON_KEY ?? '').trim();
+const supabaseEnabled = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
+const supabaseClient: SupabaseClient | null = supabaseEnabled
+  ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      auth: {
+        autoRefreshToken: true,
+        persistSession: true,
+        detectSessionInUrl: true,
+      },
+    })
+  : null;
 
-// Reactive refs for global auth state
-const isAuthenticatedGlobal = ref<boolean>(false);
+const isAuthenticatedGlobal = ref(false);
 const authTokenGlobal = ref<string | null>(null);
+const userGlobal = ref<any | null>(null);
+const supabaseSessionGlobal = ref<Session | null>(null);
+const demoUsage = ref<{ tier: string; used: number; remaining: number; limit: number; resetAt: string | Date | null } | null>(null);
 
-// Storage for actual auth token (shared password scenario)
 const localToken = useStorage<string | null>(AUTH_TOKEN_KEY, null, localStorage);
 const sessionToken = useStorage<string | null>(AUTH_TOKEN_KEY, null, sessionStorage);
-
-// Reactive ref and storage for session-specific user ID
 const sessionUserIdGlobal = ref<string | null>(null);
 const storedSessionUserId = useStorage<string | null>(SESSION_USER_ID_KEY, null, sessionStorage);
 
-const checkAuthStatus = (): boolean => {
-  if (typeof window !== 'undefined') {
-    const tokenFromLocal = localStorage.getItem(AUTH_TOKEN_KEY);
-    const tokenFromSession = sessionStorage.getItem(AUTH_TOKEN_KEY);
-    const currentToken = tokenFromLocal || tokenFromSession;
-
-    authTokenGlobal.value = currentToken;
-    isAuthenticatedGlobal.value = !!currentToken; // Authentication based on shared password token
-
-    if (currentToken) {
-      api.defaults.headers.common['Authorization'] = `Bearer ${currentToken}`;
-    } else {
-      delete api.defaults.headers.common['Authorization'];
-    }
-    return isAuthenticatedGlobal.value;
+const setAuthHeader = (token: string | null): void => {
+  if (token) {
+    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  } else {
+    delete api.defaults.headers.common['Authorization'];
   }
-  delete api.defaults.headers.common['Authorization'];
-  authTokenGlobal.value = null;
-  isAuthenticatedGlobal.value = false;
-  return false;
 };
 
-/**
- * Retrieves the current session-specific user ID.
- * If one doesn't exist in sessionStorage, it generates a new UUID, stores it, and returns it.
- * @returns {string} The session-specific user ID.
- */
+const setUser = (user: any | null): void => {
+  userGlobal.value = user ? { ...user } : null;
+};
+
+const checkAuthStatus = (): boolean => {
+  let token: string | null = null;
+  const supabaseToken = supabaseSessionGlobal.value?.access_token ?? null;
+  if (supabaseToken) {
+    token = supabaseToken;
+  } else if (typeof window !== 'undefined') {
+    const tokenFromLocal = localStorage.getItem(AUTH_TOKEN_KEY);
+    const tokenFromSession = sessionStorage.getItem(AUTH_TOKEN_KEY);
+    token = tokenFromLocal || tokenFromSession;
+  }
+
+  setAuthHeader(token);
+  authTokenGlobal.value = token;
+  isAuthenticatedGlobal.value = Boolean(token);
+  if (!token) {
+    setUser(null);
+  }
+  return isAuthenticatedGlobal.value;
+};
+
 const getOrGenerateSessionUserId = (): string => {
   if (storedSessionUserId.value) {
     sessionUserIdGlobal.value = storedSessionUserId.value;
@@ -72,35 +88,170 @@ const getOrGenerateSessionUserId = (): string => {
   return newId;
 };
 
+const refreshUser = async (): Promise<any | null> => {
+  try {
+    const { data } = await authAPI.checkStatus();
+    if (data?.user) {
+      setUser({ ...data.user, authenticated: true });
+      return userGlobal.value;
+    }
+    setUser(null);
+    return null;
+  } catch (error: any) {
+    if (error?.response?.status === 401) {
+      setUser(null);
+    }
+    return null;
+  }
+};
+
+const refreshDemoUsage = async (): Promise<void> => {
+  if (isAuthenticatedGlobal.value) {
+    demoUsage.value = null;
+    return;
+  }
+  try {
+    const { data } = await rateLimitAPI.getStatus();
+    demoUsage.value = data;
+  } catch (error) {
+    demoUsage.value = null;
+  }
+};
+
+let supabaseListenerRegistered = false;
+
+const applySupabaseSession = (session: Session | null): void => {
+  supabaseSessionGlobal.value = session;
+
+  if (session?.access_token) {
+    const token = session.access_token;
+    sessionToken.value = token;
+    authTokenGlobal.value = token;
+    isAuthenticatedGlobal.value = true;
+    setAuthHeader(token);
+    demoUsage.value = null;
+  } else {
+    sessionToken.value = null;
+    sessionStorage.removeItem(AUTH_TOKEN_KEY);
+    if (!localToken.value) {
+      authTokenGlobal.value = null;
+      isAuthenticatedGlobal.value = false;
+      setAuthHeader(null);
+      void refreshDemoUsage();
+    } else {
+      const fallbackToken = localToken.value;
+      if (fallbackToken) {
+        authTokenGlobal.value = fallbackToken;
+        isAuthenticatedGlobal.value = true;
+        setAuthHeader(fallbackToken);
+      }
+    }
+  }
+};
+
+const registerSupabaseListener = (): void => {
+  if (!supabaseClient || supabaseListenerRegistered || typeof window === 'undefined') {
+    return;
+  }
+
+  supabaseListenerRegistered = true;
+
+  supabaseClient.auth
+    .getSession()
+    .then(({ data, error }) => {
+      if (error) {
+        console.error('[useAuth] Failed to load Supabase session:', error);
+        return;
+      }
+      applySupabaseSession(data.session);
+      if (data.session?.access_token) {
+        void refreshUser();
+      }
+    })
+    .catch((err) => {
+      console.error('[useAuth] Unexpected Supabase session error:', err);
+    });
+
+  const { data } = supabaseClient.auth.onAuthStateChange((_event, session) => {
+    applySupabaseSession(session);
+    if (session?.access_token) {
+      void refreshUser();
+    } else {
+      setUser(null);
+    }
+  });
+
+  // Ensure we clean up if the page is reloaded to avoid duplicate listeners.
+  if (data?.subscription) {
+    window.addEventListener(
+      'beforeunload',
+      () => {
+        data.subscription.unsubscribe();
+        supabaseListenerRegistered = false;
+      },
+      { once: true }
+    );
+  }
+};
+
 export function useAuth() {
   const router = useRouter();
   const route = useRoute();
 
-  // Initialize auth status and session user ID on composable setup
   if (typeof window !== 'undefined') {
     if (!isAuthenticatedGlobal.value && !authTokenGlobal.value) {
       checkAuthStatus();
     }
     if (!sessionUserIdGlobal.value) {
-      // Ensures sessionUserIdGlobal is populated from storage or generated
       sessionUserIdGlobal.value = getOrGenerateSessionUserId();
     }
   }
 
-  const login = (token: string, rememberMe: boolean): void => {
+  if (supabaseEnabled) {
+    registerSupabaseListener();
+  }
+
+  const login = (token: string, rememberMe: boolean, user?: any): void => {
     const storage = rememberMe ? localStorage : sessionStorage;
-    storage.setItem(AUTH_TOKEN_KEY, token); // Store the shared auth token
+    storage.setItem(AUTH_TOKEN_KEY, token);
     if (rememberMe) {
       localToken.value = token;
-      sessionToken.value = null; // Clear session token if local is set
+      sessionToken.value = null;
     } else {
       sessionToken.value = token;
-      localToken.value = null; // Clear local token if session is set
+      localToken.value = null;
     }
-    // The shared auth state will update via watchers or checkAuthStatus.
-    // The session-specific ID is independent of this shared auth token,
-    // it's tied to the browser session. A new one is generated if not present.
-    getOrGenerateSessionUserId(); // Ensure session ID exists on login
+    checkAuthStatus();
+    getOrGenerateSessionUserId();
+    if (user) {
+      setUser({ ...user, authenticated: true, tokenProvider: 'global' });
+    }
+  };
+
+  const loginWithOAuth = async (provider: Provider, redirectTo?: string): Promise<void> => {
+    if (!supabaseClient) {
+      throw new Error('Supabase authentication is not configured.');
+    }
+    await supabaseClient.auth.signInWithOAuth({
+      provider,
+      options: {
+        redirectTo: redirectTo || window.location.href,
+      },
+    });
+  };
+
+  const loginWithSupabasePassword = async (email: string, password: string): Promise<void> => {
+    if (!supabaseClient) {
+      throw new Error('Supabase authentication is not configured.');
+    }
+    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+    if (error) {
+      throw error;
+    }
+    if (data?.session) {
+      applySupabaseSession(data.session);
+      await refreshUser();
+    }
   };
 
   const logout = async (redirectTo: string = '/login', forceReloadPage: boolean = true): Promise<void> => {
@@ -115,33 +266,39 @@ export function useAuth() {
       console.warn('[useAuth] Backend logout call failed, proceeding with frontend logout:', error);
     }
 
-    // Clear shared authentication token
+    if (supabaseClient) {
+      try {
+        await supabaseClient.auth.signOut();
+      } catch (error) {
+        console.warn('[useAuth] Supabase signOut failed:', error);
+      }
+    }
+
     localStorage.removeItem(AUTH_TOKEN_KEY);
     sessionStorage.removeItem(AUTH_TOKEN_KEY);
     localToken.value = null;
     sessionToken.value = null;
-    isAuthenticatedGlobal.value = false;
     authTokenGlobal.value = null;
-    delete api.defaults.headers.common['Authorization'];
+    isAuthenticatedGlobal.value = false;
+    supabaseSessionGlobal.value = null;
+    setAuthHeader(null);
 
-    // Clear session-specific user ID
     sessionStorage.removeItem(SESSION_USER_ID_KEY);
     storedSessionUserId.value = null;
     sessionUserIdGlobal.value = null;
-    console.log('[Auth/Session] Cleared session User ID on logout.');
+    setUser(null);
 
     try {
       chatStoreInstance.$reset();
       costStoreInstance.$reset();
       agentStoreInstance.$reset();
       uiStoreInstance.$reset();
-      console.log('[useAuth] Pinia stores reset.');
     } catch (storeResetError) {
-      console.error("[useAuth] Error resetting Pinia stores during logout:", storeResetError);
+      console.error('[useAuth] Error resetting stores during logout:', storeResetError);
     }
 
     if (redirectTo) {
-        const currentPath = window.location.pathname;
+      const currentPath = window.location.pathname;
       if (currentPath === redirectTo && forceReloadPage) {
         window.location.assign(redirectTo);
       } else {
@@ -157,51 +314,50 @@ export function useAuth() {
     } else if (forceReloadPage) {
       window.location.reload();
     }
-    // If neither redirectTo nor forceReloadPage, it just logs out without navigation/reload.
+    demoUsage.value = null;
+    if (!isAuthenticatedGlobal.value) {
+      await refreshDemoUsage();
+    }
   };
 
+  watch([localToken, sessionToken], () => {
+    const authed = checkAuthStatus();
+    if (authed) {
+      void refreshUser();
+    } else {
+      void refreshDemoUsage();
+    }
+  }, { deep: true });
 
-  if (typeof window !== 'undefined') {
-    // Watch for changes in stored auth tokens
-    watch([localToken, sessionToken], () => {
-      checkAuthStatus();
-    }, { deep: true });
-
-    // Watch for changes in stored session user ID (e.g., if cleared by another tab, though less likely with sessionStorage)
-    watch(storedSessionUserId, (newVal) => {
-        if (newVal) {
-            sessionUserIdGlobal.value = newVal;
-        } else {
-            // If it got cleared elsewhere, generate a new one for this context
-            sessionUserIdGlobal.value = getOrGenerateSessionUserId();
-        }
-    });
-
-    const handleStorageChange = (event: StorageEvent) => {
-      if (event.key === AUTH_TOKEN_KEY) {
-        checkAuthStatus();
-      }
-      if (event.key === SESSION_USER_ID_KEY) {
-        storedSessionUserId.value = event.newValue; // Update from storage event
-        sessionUserIdGlobal.value = event.newValue ? event.newValue : getOrGenerateSessionUserId();
-      }
-    };
-    window.addEventListener('storage', handleStorageChange);
-    onUnmounted(() => {
-      window.removeEventListener('storage', handleStorageChange);
-    });
-  }
-  
-  onMounted(() => {
-    checkAuthStatus();
-    // Ensure sessionUserIdGlobal is initialized from sessionStorage or generated
-    sessionUserIdGlobal.value = getOrGenerateSessionUserId();
+  watch(isAuthenticatedGlobal, (authed) => {
+    if (!authed) {
+      void refreshDemoUsage();
+    } else {
+      demoUsage.value = null;
+    }
   });
 
-  // Expose a computed property for the session user ID
+  watch(storedSessionUserId, (newVal) => {
+    if (newVal) {
+      sessionUserIdGlobal.value = newVal;
+    } else {
+      sessionUserIdGlobal.value = getOrGenerateSessionUserId();
+    }
+  });
+
+  onMounted(() => {
+    const authed = checkAuthStatus();
+    sessionUserIdGlobal.value = getOrGenerateSessionUserId();
+    if (authed) {
+      void refreshUser();
+    } else {
+      void refreshDemoUsage();
+    }
+  });
+
   const currentSessionUserId = computed(() => {
     if (!sessionUserIdGlobal.value) {
-      return getOrGenerateSessionUserId(); // Ensure it's available
+      return getOrGenerateSessionUserId();
     }
     return sessionUserIdGlobal.value;
   });
@@ -209,14 +365,19 @@ export function useAuth() {
   return {
     isAuthenticated: readonly(isAuthenticatedGlobal),
     currentToken: readonly(authTokenGlobal),
-    /**
-     * A unique identifier for the current browser session.
-     * Persists in sessionStorage. Used for stateless user tracking.
-     */
-    sessionUserId: currentSessionUserId, // Changed to be a computed ref
+    user: readonly(userGlobal),
+    sessionUserId: currentSessionUserId,
+    demoUsage: readonly(demoUsage),
+    supabaseEnabled,
+    supabaseClient,
     login,
+    loginWithOAuth,
+    loginWithSupabasePassword,
     logout,
     checkAuthStatus,
-    getOrGenerateSessionUserId, // Expose this if direct call is needed elsewhere
+    refreshUser,
+    refreshDemoUsage,
+    getOrGenerateSessionUserId,
   };
 }
+

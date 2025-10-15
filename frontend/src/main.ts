@@ -28,3 +28,4 @@ console.log('[main.ts] i18n messages loaded:', Object.keys(i18n.global.messages.
 console.log('[main.ts] Test translation for common.welcome in current locale:', i18n.global.t('common.welcome'));
 
 app.mount('#app');
+

@@ -11,6 +11,7 @@ import ptBR from './locales/pt-BR';
 import jaJP from './locales/ja-JP';
 import koKR from './locales/ko-KR';
 import zhCN from './locales/zh-CN';
+import enNG from './locales/en-NG';
 
 // Define available locales
 export const AVAILABLE_LOCALES = {
@@ -59,7 +60,8 @@ const messages = {
   'pt-BR': ptBR,
   'ja-JP': jaJP,
   'ko-KR': koKR,
-  'zh-CN': zhCN
+  'zh-CN': zhCN,
+  'en-NG': enNG
 };
 
 const i18nOptions: I18nOptions = {

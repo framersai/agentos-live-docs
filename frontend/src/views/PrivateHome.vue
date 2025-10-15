@@ -1,4 +1,4 @@
-﻿// File: frontend/src/views/PrivateHome.vue
+// File: frontend/src/views/PrivateHome.vue
 /**
  * @file PrivateHome.vue
  * @description Main private view for authenticated users. Orchestrates agent views,
@@ -35,7 +35,11 @@ import UnifiedChatLayout from '@/components/layouts/UnifiedChatLayout.vue';
 import MainContentView from '@/components/agents/common/MainContentView.vue';
 import CompactMessageRenderer from '@/components/layouts/CompactMessageRenderer/CompactMessageRenderer.vue';
 
-import { ShieldCheckIcon, CogIcon, UserGroupIcon, XMarkIcon } from '@heroicons/vue/24/solid';
+import { ShieldCheckIcon, CogIcon, UserGroupIcon } from '@heroicons/vue/24/solid';
+import PersonaToolbar from '@/components/common/PersonaToolbar.vue';
+import { usePlans } from '@/composables/usePlans';
+import { useCostStore } from '@/store/cost.store';
+import { GPT4O_COST_PER_KTOKENS } from '../../../shared/planCatalog';
 
 
 const toast = inject<ToastService>('toast');
@@ -48,177 +52,17 @@ const debugLog = createScopedSttLogger('PrivateHome');
 const activeAgent = computed<IAgentDefinition | undefined>(() => agentStore.activeAgent);
 const currentSystemPromptText = ref('');
 
-const isPersonaModalOpen = ref(false);
-const personaDraft = ref('');
-const activePersona = computed(() => activeAgent.value ? chatStore.getPersonaForAgent(activeAgent.value.id) : null);
-const personaHasCustom = computed(() => !!activePersona.value?.trim());
-const personaButtonLabel = computed(() => personaHasCustom.value ? 'Persona: Custom' : 'Persona: Default');
-const personaTooltipText = computed(() => {
-  const agentName = activeAgent.value?.label || 'this assistant';
-  return personaHasCustom.value
-    ? `${agentName} is using your custom persona settings. Click to adjust or clear them.`
-    : `Add a persona overlay to tune tone or personality. ${agentName}'s core role stays the same.`;
+const costStore = useCostStore();
+const { findPlan } = usePlans();
+
+const isGlobalUnlimited = computed(() => auth.user.value?.mode === 'global' && auth.user.value?.tier === 'unlimited');
+const unlimitedPlan = computed(() => (isGlobalUnlimited.value ? findPlan('global-pass') : null));
+const tokensTotal = computed(() => unlimitedPlan.value?.usage.approxGpt4oTokensPerDay ?? null);
+const tokensUsed = computed(() => {
+  if (!isGlobalUnlimited.value) return null;
+  const usd = costStore.totalSessionCost.value;
+  return Math.round((usd / GPT4O_COST_PER_KTOKENS) * 1000);
 });
-const personaSummaryText = computed(() => {
-  const personaValue = activePersona.value?.trim();
-  if (personaValue && personaValue.length > 0) {
-    if (personaValue.length <= 160) return personaValue;
-    return personaValue.slice(0, 160) + '...';
-  }
-  return '';
-});
-const personaDraftHasContent = computed(() => personaDraft.value.trim().length > 0);
-
-type PersonaModalView = 'editor' | 'library';
-
-interface PersonaPreset {
-  id: string;
-  label: string;
-  summary: string;
-  persona: string;
-}
-
-const personaModalView = ref<PersonaModalView>('editor');
-const personaPresetPage = ref(1);
-const PERSONA_PRESETS_PER_PAGE = 3;
-
-const personaPresets: PersonaPreset[] = [
-  {
-    id: 'mentor_clarity',
-    label: 'Clarity Mentor',
-    summary: 'Persona overlay: warm, structured explanations with numbered steps and short recaps.',
-    persona: `You are a calm senior mentor. Speak warmly, break solutions into numbered steps, explain trade-offs, and end with a concise recap plus the next step the user should take.`,
-  },
-  {
-    id: 'pair_partner',
-    label: 'Pair Partner',
-    summary: 'Persona overlay: collaborative pairing that thinks out loud and checks for understanding.',
-    persona: `You act as an enthusiastic pair-programming partner. Think out loud, ask brief confirmation questions, highlight alternative approaches, and keep the conversation collaborative.`,
-  },
-  {
-    id: 'system_architect',
-    label: 'System Architect',
-    summary: 'Persona overlay: high-level architecture focus with diagrams and scalability notes.',
-    persona: `You are a pragmatic system architect. Start with assumptions, outline architecture layers, mention scaling considerations, and suggest diagrams or models when helpful.`,
-  },
-  {
-    id: 'debug_detective',
-    label: 'Debug Detective',
-    summary: 'Persona overlay: diagnostic voice that forms hypotheses and proposes targeted experiments.',
-    persona: `You are a methodical debugging partner. Form hypotheses, list likely root causes, suggest focused experiments, and interpret possible outcomes to converge on a fix.`,
-  },
-  {
-    id: 'product_storyteller',
-    label: 'Product Storyteller',
-    summary: 'Persona overlay: user-centered voice translating tech choices into product impact.',
-    persona: `You translate technical decisions into product impact. Use plain language, emphasize user outcomes, note risks, and propose lightweight validation ideas.`,
-  },
-  {
-    id: 'exam_coach',
-    label: 'Exam Coach',
-    summary: 'Persona overlay: encouraging coach with study tips and spaced-repetition prompts.',
-    persona: `You are an encouraging exam coach. Provide concise explanations, suggest memory aids, recommend spaced-repetition prompts, and motivate the user with positive reinforcement.`,
-  },
-];
-
-const personaPresetTotalPages = computed(() => Math.max(1, Math.ceil(personaPresets.length / PERSONA_PRESETS_PER_PAGE)));
-const personaPresetsForCurrentPage = computed(() => {
-  const startIndex = (personaPresetPage.value - 1) * PERSONA_PRESETS_PER_PAGE;
-  return personaPresets.slice(startIndex, startIndex + PERSONA_PRESETS_PER_PAGE);
-});
-
-const isPersonaPresetActive = (preset: PersonaPreset): boolean => personaDraft.value.trim() === preset.persona.trim();
-
-function goToPersonaPresetPage(direction: 'next' | 'prev'): void {
-  if (personaPresetTotalPages.value <= 1) return;
-  if (direction === 'next') {
-    personaPresetPage.value = personaPresetPage.value >= personaPresetTotalPages.value ? 1 : personaPresetPage.value + 1;
-  } else {
-    personaPresetPage.value = personaPresetPage.value <= 1 ? personaPresetTotalPages.value : personaPresetPage.value - 1;
-  }
-}
-
-function applyPersonaPreset(preset: PersonaPreset): void {
-  personaDraft.value = preset.persona;
-  personaModalView.value = 'editor';
-}
-
-watch(isPersonaModalOpen, (isOpen) => {
-  if (isOpen) {
-    personaModalView.value = 'editor';
-    personaPresetPage.value = 1;
-    personaDraft.value = activePersona.value ?? '';
-  }
-});
-
-watch(activePersona, (newPersona) => {
-  if (isPersonaModalOpen.value) return;
-  personaDraft.value = newPersona ?? '';
-});
-
-watch(() => activeAgent.value?.id, (newAgentId, oldAgentId) => {
-  if (newAgentId === oldAgentId) return;
-  personaModalView.value = 'editor';
-  personaPresetPage.value = 1;
-  personaDraft.value = newAgentId ? chatStore.getPersonaForAgent(newAgentId) ?? '' : '';
-});
-
-function openPersonaModal(): void {
-  if (!activeAgent.value) {
-    toast?.add({ type: 'warning', title: 'No Agent Selected', message: 'Pick an assistant before adjusting personas.' });
-    return;
-  }
-  personaDraft.value = activePersona.value ?? '';
-  personaModalView.value = 'editor';
-  personaPresetPage.value = 1;
-  isPersonaModalOpen.value = true;
-}
-
-function closePersonaModal(): void {
-  isPersonaModalOpen.value = false;
-}
-
-async function savePersonaFromModal(): Promise<void> {
-  if (!activeAgent.value) {
-    toast?.add({ type: 'warning', title: 'No Agent Selected', message: 'Pick an assistant before adjusting personas.' });
-    return;
-  }
-
-  const agentId = activeAgent.value.id;
-  const conversationId = chatStore.getCurrentConversationId(agentId);
-  const trimmedDraft = personaDraft.value.trim();
-  const personaToSave = trimmedDraft.length > 0 ? trimmedDraft : null;
-  const previousPersona = chatStore.getPersonaForAgent(agentId);
-
-  chatStore.setPersonaForAgent(agentId, personaToSave);
-  try {
-    const response = await chatAPI.updatePersona({
-      agentId,
-      conversationId,
-      persona: personaToSave,
-    });
-    chatStore.setPersonaForAgent(agentId, response.data?.persona ?? null);
-    isPersonaModalOpen.value = false;
-    toast?.add({
-      type: 'success',
-      title: personaToSave ? 'Persona overlay saved' : 'Persona overlay cleared',
-      message: personaToSave
-        ? `${activeAgent.value.label} will respond with your custom persona style.`
-        : `${activeAgent.value.label} is back to the default persona.`,
-    });
-  } catch (error: any) {
-    chatStore.setPersonaForAgent(agentId, previousPersona ?? null);
-    const message = error?.response?.data?.message || 'Could not update the persona overlay. Please try again.';
-    toast?.add({ type: 'error', title: 'Persona update failed', message });
-  }
-}
-
-async function resetPersonaToDefault(): Promise<void> {
-  personaDraft.value = '';
-  await savePersonaFromModal();
-}
-
-
 const currentAgentViewComponent = computed<VueComponentType | null>(() => {
   const agent = activeAgent.value;
   if (agent && agent.component && typeof agent.component === 'function') {
@@ -389,7 +233,7 @@ async function standardLlmCallPrivate(transcriptionText: string, agentInstance: 
 
     let accumulatedResponse = "";
     await chatAPI.sendMessageStream( payload,
-      (chunk: string) => { accumulatedResponse += chunk; if (agentStore.activeAgentId === agentId) { chatStore.updateMainContent({ agentId: agentId, type: agentInstance.capabilities?.usesCompactRenderer ? 'compact-message-renderer-data' : 'markdown', data: accumulatedResponse + "â–‹", title: `${agentLabel} Responding...`, timestamp: Date.now() }); } },
+      (chunk: string) => { accumulatedResponse += chunk; if (agentStore.activeAgentId === agentId) { chatStore.updateMainContent({ agentId: agentId, type: agentInstance.capabilities?.usesCompactRenderer ? 'compact-message-renderer-data' : 'markdown', data: accumulatedResponse + "▋", title: `${agentLabel} Responding...`, timestamp: Date.now() }); } },
       () => { chatStore.setMainContentStreaming(false); if (agentStore.activeAgentId === agentId) { const finalContent = accumulatedResponse.trim(); chatStore.addMessage({ role: 'assistant', content: finalContent, agentId: agentId, model: "StreamedModel (PrivateHome)", timestamp: Date.now() }); chatStore.updateMainContent({ agentId: agentId, type: agentInstance.capabilities?.usesCompactRenderer ? 'compact-message-renderer-data' : 'markdown', data: finalContent, title: `${agentLabel} Response`, timestamp: Date.now() }); } },
       (error: Error | any) => { const errorMsg = error.message || "A streaming error occurred."; if (agentStore.activeAgentId === agentId) { chatStore.addMessage({ role: 'error', content: `Stream Error: ${errorMsg}`, agentId, timestamp: Date.now() }); chatStore.updateMainContent({ agentId, type: 'error', data: `### ${agentLabel} Stream Error\n${errorMsg}`, title: `Error with ${agentLabel}`, timestamp: Date.now() }); } chatStore.setMainContentStreaming(false); }
     );
@@ -574,7 +418,7 @@ watch(isVoiceInputCurrentlyProcessingAudio, (isSttActive) => {
             <div v-else-if="mainContentData.type === 'markdown' || mainContentData.type === 'welcome'"
                  class="prose-ephemeral content-renderer-ephemeral"
                  v-html="chatStore.isMainContentStreaming && chatStore.getCurrentMainContentDataForAgent(activeAgent.id)?.agentId === activeAgent.id && chatStore.getCurrentMainContentDataForAgent(activeAgent.id)?.type === 'markdown' ?
-                           chatStore.streamingMainContentText + '<span class=\'streaming-cursor-ephemeral\'>â–‹</span>' :
+                           chatStore.streamingMainContentText + '<span class=\'streaming-cursor-ephemeral\'>▋</span>' :
                            mainContentData.data"
                  aria-atomic="true">
             </div>
@@ -587,7 +431,7 @@ watch(isVoiceInputCurrentlyProcessingAudio, (isSttActive) => {
                  class="loading-placeholder-ephemeral content-renderer-ephemeral">
               <div class="loading-animation-content">
                   <div class="loading-spinner-ephemeral !w-10 !h-10"><div v-for="i in 8" :key="`blade-${i}-loading`" class="spinner-blade-ephemeral !w-1 !h-3.5"></div></div>
-                  <p class="loading-text-ephemeral !text-base mt-2.5" v-html="mainContentData.data + (chatStore.isMainContentStreaming ? '<span class=\'streaming-cursor-ephemeral\'>â–‹</span>' : '')"></p>
+                  <p class="loading-text-ephemeral !text-base mt-2.5" v-html="mainContentData.data + (chatStore.isMainContentStreaming ? '<span class=\'streaming-cursor-ephemeral\'>▋</span>' : '')"></p>
               </div>
             </div>
             <div v-else class="content-renderer-ephemeral text-[var(--color-text-muted)] italic p-6 text-center">
@@ -605,130 +449,19 @@ watch(isVoiceInputCurrentlyProcessingAudio, (isSttActive) => {
         </div>
       </template>
       <template #voice-toolbar>
-        <div v-if="activeAgent" class="persona-voice-toolbar">
-          <button
-            type="button"
-            class="persona-voice-toolbar__button"
-            :title="personaTooltipText"
-            @click="openPersonaModal"
-          >
-            {{ personaButtonLabel }}
-          </button>
-          <span
-            v-if="personaHasCustom && personaSummaryText"
-            class="persona-voice-toolbar__summary"
-            :title="personaSummaryText"
-          >
-            {{ personaSummaryText }}
-          </span>
-          <button
-            v-if="personaHasCustom"
-            type="button"
-            class="persona-voice-toolbar__clear"
-            @click="resetPersonaToDefault"
-          >
-            Clear
-          </button>
-        </div>
+        <PersonaToolbar
+          :agent="activeAgent"
+          :show-usage-badge="isGlobalUnlimited"
+          :tokens-total="tokensTotal"
+          :tokens-used="tokensUsed"
+        />
       </template>
     </UnifiedChatLayout>
-
-    <transition name="fade">
-      <div v-if="isPersonaModalOpen" class="persona-modal" role="dialog" aria-modal="true">
-        <div class="persona-modal__backdrop" @click="closePersonaModal"></div>
-        <div class="persona-modal__content">
-          <div class="persona-modal__header">
-            <h3>Adjust Persona Overlay</h3>
-            <button class="persona-modal__close" type="button" @click="closePersonaModal">
-              <XMarkIcon class="persona-modal__close-icon" />
-            </button>
-          </div>
-
-          <p class="persona-modal__note">Persona overlays tweak tone and personality only; the agent's role and capabilities never change.</p>
-
-          <div class="persona-modal__switcher" role="tablist" aria-label="Tone editor mode">
-            <button
-              type="button"
-              class="persona-modal__tab"
-              :class="{ 'persona-modal__tab--active': personaModalView === 'editor' }"
-              @click="personaModalView = 'editor'"
-            >
-              Persona Editor
-            </button>
-            <button
-              type="button"
-              class="persona-modal__tab"
-              :class="{ 'persona-modal__tab--active': personaModalView === 'library' }"
-              @click="personaModalView = 'library'"
-            >
-              Persona Presets
-            </button>
-          </div>
-
-          <div v-if="personaModalView === 'editor'" class="persona-modal__editor">
-            <p class="persona-modal__hint">Describe the persona tone or emphasis you want layered on top of this agent's role.</p>
-            <textarea
-              v-model="personaDraft"
-              class="persona-modal__textarea"
-              rows="6"
-              placeholder="e.g. Calm, concise explanations with short follow-up questions."
-            ></textarea>
-          </div>
-          <div v-else class="persona-library">
-            <p class="persona-library__intro">Pick a persona preset to populate the editor instantly.</p>
-            <div class="persona-library__grid">
-              <article
-                v-for="preset in personaPresetsForCurrentPage"
-                :key="preset.id"
-                class="persona-preset-card"
-                :class="{ 'persona-preset-card--active': isPersonaPresetActive(preset) }"
-              >
-                <header class="persona-preset-card__header">
-                  <span class="persona-preset-card__title">{{ preset.label }}</span>
-                  <span v-if="isPersonaPresetActive(preset)" class="persona-preset-card__status">In draft</span>
-                </header>
-                <p class="persona-preset-card__summary">{{ preset.summary }}</p>
-                <button type="button" class="persona-preset-card__apply" @click="applyPersonaPreset(preset)">
-                  {{ isPersonaPresetActive(preset) ? 'Edit this persona' : 'Apply persona' }}
-                </button>
-              </article>
-            </div>
-            <div v-if="personaPresetTotalPages > 1" class="persona-library__pagination">
-              <button type="button" class="persona-library__page-btn" @click="goToPersonaPresetPage('prev')">Previous</button>
-              <span class="persona-library__page-indicator">{{ personaPresetPage }} / {{ personaPresetTotalPages }}</span>
-              <button type="button" class="persona-library__page-btn" @click="goToPersonaPresetPage('next')">Next</button>
-            </div>
-          </div>
-
-          <div class="persona-modal__actions">
-            <button
-              type="button"
-              class="persona-modal__button persona-modal__button--ghost"
-              :disabled="!personaHasCustom"
-              @click="resetPersonaToDefault"
-            >
-              Use default persona
-            </button>
-            <div class="persona-modal__actions-right">
-              <button type="button" class="persona-modal__button" @click="closePersonaModal">Cancel</button>
-              <button
-                type="button"
-                class="persona-modal__button persona-modal__button--primary"
-                :disabled="personaModalView === 'editor' && !personaDraftHasContent"
-                @click="savePersonaFromModal"
-              >
-                Save Persona
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </transition>
   </div>
 </template>
 
 <style lang="scss">
-/* Persona overlay controls */
+/* PrivateHome layout helpers */
 .dedicated-agent-view { height: 100%; width: 100%; overflow: auto; }
 .default-agent-mcv { height: 100%; width: 100%; display: flex; flex-direction: column; }
 .content-renderer-container-ephemeral { flex-grow: 1; overflow-y: auto; padding: 1rem; }
@@ -741,383 +474,8 @@ watch(isVoiceInputCurrentlyProcessingAudio, (isSttActive) => {
 
 
 
-.persona-voice-toolbar {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  justify-content: flex-end;
-  padding: 0 0 12px;
-}
-
-.persona-voice-toolbar__button {
-  border: 1px solid hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.35);
-  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.65);
-  color: var(--color-text-secondary);
-  font-size: 0.78rem;
-  font-weight: 600;
-  padding: 6px 14px;
-  border-radius: 999px;
-  cursor: pointer;
-  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
-}
-
-.persona-voice-toolbar__button:hover {
-  background: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.25);
-  border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.45);
-  color: var(--color-text-primary);
-}
-
-.persona-voice-toolbar__summary {
-  color: var(--color-text-muted);
-  font-size: 0.76rem;
-  max-width: 240px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.persona-voice-toolbar__clear {
-  border: none;
-  background: transparent;
-  color: var(--color-text-muted);
-  font-size: 0.75rem;
-  cursor: pointer;
-  transition: color 0.2s ease;
-}
-
-.persona-voice-toolbar__clear:hover {
-  color: var(--color-text-primary);
-}
-
-.persona-modal {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2.5rem 1rem;
-  z-index: 70;
-}
-
-.persona-modal__backdrop {
-  position: absolute;
-  inset: 0;
-  background: hsla(var(--color-bg-backdrop-h, 220), var(--color-bg-backdrop-s, 26%), var(--color-bg-backdrop-l, 5%), 0.55);
-  backdrop-filter: blur(6px);
-}
-
-.persona-modal__content {
-  position: relative;
-  width: min(560px, 100%);
-  max-height: min(85vh, 640px);
-  background: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.96);
-  border: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.25);
-  border-radius: 18px;
-  box-shadow: 0 20px 45px hsla(var(--color-shadow-h), var(--color-shadow-s), var(--color-shadow-l), 0.28);
-  padding: 1.75rem 1.75rem 1.5rem;
-  overflow: hidden auto;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
-
-.persona-modal__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.persona-modal__header h3 {
-  margin: 0;
-  font-size: 1.15rem;
-  font-weight: 600;
-  color: var(--color-text-primary);
-}
-
-.persona-modal__close {
-  border: none;
-  background: transparent;
-  color: var(--color-text-muted);
-  padding: 0.4rem;
-  border-radius: 999px;
-  cursor: pointer;
-  transition: color 0.2s ease, background 0.2s ease;
-}
-
-.persona-modal__close:hover {
-  color: var(--color-text-primary);
-  background: hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.25);
-}
-
-.persona-modal__close-icon {
-  width: 1.15rem;
-  height: 1.15rem;
-}
-
-.persona-modal__switcher {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.25rem;
-  border-radius: 999px;
-  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.6);
-}
-
-.persona-modal__tab {
-  flex: 1;
-  border: none;
-  background: transparent;
-  color: var(--color-text-muted);
-  font-size: 0.82rem;
-  font-weight: 600;
-  padding: 0.45rem 0.75rem;
-  border-radius: 999px;
-  cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease;
-}
-
-.persona-modal__tab--active {
-  background: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.22);
-  color: var(--color-text-primary);
-}
-
-.persona-modal__editor {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.persona-modal__hint {
-  margin: 0;
-  font-size: 0.82rem;
-  color: var(--color-text-muted);
-}
-
-.persona-modal__textarea {
-  width: 100%;
-  resize: vertical;
-  min-height: 130px;
-  border-radius: 12px;
-  border: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.35);
-  padding: 0.85rem 1rem;
-  font-size: 0.88rem;
-  color: var(--color-text-primary);
-  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.55);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.persona-modal__textarea:focus {
-  outline: none;
-  border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.6);
-  box-shadow: 0 0 0 3px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.25);
-}
-
-.persona-library {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.persona-library__intro {
-  margin: 0;
-  font-size: 0.85rem;
-  color: var(--color-text-muted);
-}
-
-.persona-library__grid {
-  display: grid;
-  gap: 0.9rem;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-}
-
-.persona-preset-card {
-  border: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.3);
-  border-radius: 16px;
-  padding: 1rem;
-  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.6);
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-  transition: border-color 0.2s ease, transform 0.2s ease;
-}
-
-.persona-preset-card:hover {
-  transform: translateY(-2px);
-  border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.45);
-}
-
-.persona-preset-card--active {
-  border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.65);
-  box-shadow: 0 0 0 2px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.22);
-}
-
-.persona-preset-card__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 0.5rem;
-}
-
-.persona-preset-card__title {
-  font-size: 0.92rem;
-  font-weight: 600;
-  color: var(--color-text-primary);
-}
-
-.persona-preset-card__status {
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: var(--color-accent-interactive);
-}
-
-.persona-preset-card__summary {
-  margin: 0;
-  font-size: 0.8rem;
-  color: var(--color-text-muted);
-}
-
-.persona-preset-card__apply {
-  align-self: flex-start;
-  border: none;
-  background: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.2);
-  color: var(--color-text-primary);
-  font-size: 0.78rem;
-  font-weight: 600;
-  padding: 0.4rem 0.75rem;
-  border-radius: 999px;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-.persona-preset-card__apply:hover {
-  background: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.32);
-}
-
-.persona-library__pagination {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.65rem;
-  font-size: 0.78rem;
-  color: var(--color-text-muted);
-}
-
-.persona-library__page-btn {
-  border: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.35);
-  background: transparent;
-  color: var(--color-text-secondary);
-  font-size: 0.75rem;
-  padding: 0.35rem 0.65rem;
-  border-radius: 999px;
-  cursor: pointer;
-  transition: border-color 0.2s ease, color 0.2s ease;
-}
-
-.persona-library__page-btn:hover {
-  border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.45);
-  color: var(--color-text-primary);
-}
-
-.persona-library__page-indicator {
-  min-width: 3.5rem;
-  text-align: center;
-}
-
-.persona-modal__actions {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.persona-modal__button {
-  border: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.35);
-  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.55);
-  color: var(--color-text-secondary);
-  font-size: 0.8rem;
-  font-weight: 600;
-  padding: 0.55rem 1.15rem;
-  border-radius: 999px;
-  cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
-}
-
-.persona-modal__button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.persona-modal__button--ghost {
-  background: transparent;
-}
-
-.persona-modal__button--ghost:hover:not(:disabled) {
-  color: var(--color-text-primary);
-  border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.4);
-}
-
-.persona-modal__button--primary {
-  background: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.8);
-  color: var(--color-text-on-accent, #0c1116);
-  border: none;
-}
-
-.persona-modal__button--primary:hover:not(:disabled) {
-  background: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 1);
-  color: var(--color-text-primary);
-}
-
-.persona-modal__actions-right {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-}
-
-.persona-modal__note {
-  margin: 0 0 8px;
-  font-size: 0.78rem;
-  color: var(--color-text-muted);
-}
-
-.persona-modal__content::-webkit-scrollbar {
-  width: 6px;
-}
-
-.persona-modal__content::-webkit-scrollbar-thumb {
-  background: hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.4);
-  border-radius: 999px;
-}
-
-.persona-modal__content::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-@media (max-width: 600px) {
-  .persona-modal {
-    padding: 1.5rem 0.75rem;
-    align-items: flex-end;
-  }
-
-  .persona-modal__content {
-    width: 100%;
-    border-radius: 16px 16px 0 0;
-    max-height: 90vh;
-  }
-
-  .persona-modal__actions {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .persona-modal__actions-right {
-    width: 100%;
-    justify-content: space-between;
-  }
-}
-
 </style>
+
 
 
 

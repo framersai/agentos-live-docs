@@ -217,3 +217,70 @@ font-size: clamp(calc( (#{var.$font-size-xl}) * 1.2), 4vw, calc( (#{var.$font-si
     color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
   }
 }
+.guest-pill-ephemeral {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding: 0.5rem 0.9rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), calc(var(--color-accent-primary-l) + 5%), 0.25), hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), calc(var(--color-accent-secondary-l) + 10%), 0.35));
+  border: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.35);
+  color: var(--color-text-primary);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.25);
+  backdrop-filter: blur(6px);
+  width: max-content;
+}
+
+.guest-pill-icon {
+  width: 1rem;
+  height: 1rem;
+  color: var(--color-accent-primary);
+}
+
+.guest-pill-text {
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.demo-usage-banner {
+  display: flex;
+  align-items: center;
+  gap: var.$spacing-sm;
+  margin-bottom: var.$spacing-md;
+  padding: var.$spacing-sm var.$spacing-md;
+  border-radius: var.$radius-lg;
+  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.85);
+  border: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.4);
+  color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+}
+
+.demo-usage-banner--warning {
+  color: hsl(var(--color-warning-h), var(--color-warning-s), var(--color-warning-l));
+  border-color: hsla(var(--color-warning-h), var(--color-warning-s), var(--color-warning-l), 0.5);
+}
+
+.demo-usage-banner--error {
+  color: hsl(var(--color-error-h), var(--color-error-s), var(--color-error-l));
+  background: hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.12);
+  border-color: hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.55);
+}
+
+.demo-usage-icon {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.demo-usage-text {
+  flex: 1;
+  font-size: var.$font-size-sm;
+}
+
+.demo-usage-link {
+  @apply underline font-semibold;
+  color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
+}
+
+

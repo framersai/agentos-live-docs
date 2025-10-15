@@ -491,6 +491,32 @@ class VoiceSettingsManager {
     });
   }
 
+  private async playWithBrowserFallback(text: string, overrides: Partial<BrowserSpeakOptions> = {}): Promise<void> {
+    if (typeof window === 'undefined' || !browserTtsService.isSupported()) {
+      console.warn('[VSM] Browser TTS fallback unavailable on this platform.');
+      return;
+    }
+
+    const fallbackVoice =
+      this.availableTtsVoices.value.find(
+        (voice) =>
+          voice.provider === 'browser' &&
+          (voice.id === this.settings.selectedTtsVoiceId || voice.isDefault)
+      ) ?? null;
+
+    try {
+      await browserTtsService.speak(text, {
+        lang: overrides.lang ?? this.settings.speechLanguage,
+        rate: overrides.rate ?? this.settings.ttsRate,
+        pitch: overrides.pitch ?? this.settings.ttsPitch,
+        volume: overrides.volume ?? this.settings.ttsVolume,
+        voiceURI: overrides.voiceURI ?? fallbackVoice?.providerVoiceId ?? undefined,
+      } as BrowserSpeakOptions);
+    } catch (fallbackError) {
+      console.error('[VSM] Browser TTS fallback failed:', fallbackError);
+    }
+  }
+
   public async speakText(text: string): Promise<void> {
     if (!this._isInitialized.value || !this.settings.autoPlayTts || !text?.trim()) {
       if (this._isInitialized.value && !this.settings.autoPlayTts) console.log("[VSM] TTS auto-play disabled.");
@@ -510,7 +536,9 @@ class VoiceSettingsManager {
       } catch (error) { console.error("[VSM] Error speaking with browser TTS:", error); }
     } else if (ttsProvider === 'openai_tts') {
       if (!currentVoice || currentVoice.provider !== 'openai') {
-        console.error("[VSM] OpenAI TTS selected but no valid OpenAI voice configured."); return;
+        console.error("[VSM] OpenAI TTS selected but no valid OpenAI voice configured. Falling back to browser speech.");
+        await this.playWithBrowserFallback(text, { lang: speechLanguage });
+        return;
       }
       try {
         const payload: TTSRequestPayloadFE = { text, voice: currentVoice.providerVoiceId, speed: rate };
@@ -526,9 +554,11 @@ class VoiceSettingsManager {
         console.error("[VSM] Error with OpenAI TTS:", error.response?.data || error.message);
         if (this.activePreviewAudio?.src?.startsWith('blob:')) URL.revokeObjectURL(this.activePreviewAudio.src);
         this.activePreviewAudio = null;
+        await this.playWithBrowserFallback(text, { lang: currentVoice.lang || speechLanguage, rate, volume });
       }
     } else {
-      console.warn(`[VSM] TTS provider "${ttsProvider}" not supported or no voice available.`);
+      console.warn(`[VSM] TTS provider "${ttsProvider}" not supported or no voice available. Falling back to browser speech.`);
+      await this.playWithBrowserFallback(text, { lang: speechLanguage });
     }
   }
 
@@ -580,6 +610,7 @@ class VoiceSettingsManager {
         console.error("[VSM] Error previewing OpenAI voice:", error.response?.data || error.message);
         if (this.activePreviewAudio?.src?.startsWith('blob:')) URL.revokeObjectURL(this.activePreviewAudio.src);
         this.activePreviewAudio = null;
+        await this.playWithBrowserFallback(previewText, { lang: voiceToPreview.lang, rate, pitch, volume });
       }
     } else {
       console.warn(`[VSM] Provider for voice ${voiceId} not supported for preview.`);

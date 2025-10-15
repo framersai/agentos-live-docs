@@ -425,6 +425,9 @@
   $thumb-hover-color-val: hsla(var(#{$thumb-color-var-prefix}-h, $fb-thumb-h), var(#{$thumb-color-var-prefix}-s, $fb-thumb-s), var(#{$thumb-color-var-prefix}-l, $fb-thumb-l), $thumb-hover-alpha);
   $track-color-val: hsla(var(#{$track-color-var-prefix}-h, $fb-track-h), var(#{$track-color-var-prefix}-s, $fb-track-s), var(#{$track-color-var-prefix}-l, $fb-track-l), $track-alpha);
 
+  scrollbar-width: thin;
+  scrollbar-color: $thumb-base-color-val $track-color-val;
+
   &::-webkit-scrollbar {
     width: $width;
     height: $width;
@@ -447,9 +450,6 @@
       background-color: $thumb-hover-color-val;
     }
   }
-  // Firefox
-  scrollbar-width: thin;
-  scrollbar-color: $thumb-base-color-val $track-color-val;
 }
 
 // --- NEW: Custom Scrollbar for Themed Panels ---
@@ -488,6 +488,9 @@
   $thumb-hover-color-val: hsla(#{$thumb-h}, #{$thumb-s}, #{$thumb-l}, $thumb-hover-alpha);
   $track-color-val: hsla(#{$track-h}, #{$track-s}, #{$track-l}, $track-alpha);
 
+  scrollbar-width: thin;
+  scrollbar-color: $thumb-base-color-val $track-color-val;
+
   &::-webkit-scrollbar {
     width: $width;
     height: $width;
@@ -510,9 +513,6 @@
       background-color: $thumb-hover-color-val;
     }
   }
-  // Firefox
-  scrollbar-width: thin;
-  scrollbar-color: $thumb-base-color-val $track-color-val;
 }
 
 /**

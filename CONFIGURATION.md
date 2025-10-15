@@ -1,241 +1,149 @@
 # Configuration Guide
 
-## Overview
-This guide covers all configuration options for Voice Chat Assistant, including environment variables, application settings, and feature toggles.
+This guide summarises all environment variables and runtime options available in Voice Chat Assistant. Use it alongside `.env.sample`, which lists every variable with defaults and inline comments.
 
-## Environment Variables
+## 1. Core Settings
 
-### Core Settings
-Copy `.env.sample` to `.env` and configure the following:
+| Variable | Description |
+| --- | --- |
+| `PORT` | Backend server port (default `3001`). |
+| `NODE_ENV` | Environment mode (`development` or `production`). |
+| `FRONTEND_URL` | Base URL for the frontend, used in CORS and cookies. |
+| `APP_URL` | Public URL for backend if different from origin (used in emails/webhooks). |
+| `LOG_LEVEL` | `debug`, `info`, `warn`, or `error`. |
+
+## 2. Authentication
+
+| Variable | Description |
+| --- | --- |
+| `AUTH_JWT_SECRET` | 64+ byte secret for issuing global JWTs. |
+| `GLOBAL_ACCESS_PASSWORD` | Shared passphrase for unlimited global access. Optional but recommended even when Supabase is enabled. |
+| `GLOBAL_LOGIN_RATE_WINDOW_MINUTES` | Sliding window for rate limiting global passphrase attempts. |
+| `GLOBAL_LOGIN_RATE_MAX_ATTEMPTS` | Maximum attempts per window for the shared passphrase. |
+| `PASSWORD` | Legacy fallback for `GLOBAL_ACCESS_PASSWORD`. |
+
+### Supabase (Optional)
+
+| Variable | Description |
+| --- | --- |
+| `SUPABASE_URL` | Supabase project URL used by the backend. |
+| `SUPABASE_SERVICE_ROLE_KEY` | Service-role key for verifying Supabase JWTs. **Never expose to the frontend.** |
+| `SUPABASE_ANON_KEY` | Optional. Only required when you need the backend to perform Supabase client operations. |
+| `VITE_SUPABASE_URL` | Supabase project URL for the frontend. |
+| `VITE_SUPABASE_ANON_KEY` | Public anon key for the frontend Supabase client. |
+
+When Supabase values are supplied, the backend will:
+
+1. Validate Supabase JWTs in `Authorization: Bearer <token>` headers.
+2. Mirror Supabase profiles into the `app_users` table (`supabase_user_id` column).
+3. Return `tokenProvider: "supabase"` in `/api/auth` responses.
+
+If Supabase values are omitted, the system falls back to the global passphrase and standard email/password logins.
+
+## 3. Billing (Optional)
 
 ```bash
-# Server Configuration
-PORT=3001
-NODE_ENV=development
-FRONTEND_URL=http://localhost:3000
+LEMONSQUEEZY_API_KEY=
+LEMONSQUEEZY_STORE_ID=
+LEMONSQUEEZY_WEBHOOK_SECRET=
+LEMONSQUEEZY_SUCCESS_URL=
+LEMONSQUEEZY_CANCEL_URL=
 
-# Authentication
-JWT_SECRET=your_secure_jwt_secret_min_64_chars
-PASSWORD=yourpassword
+# Plan identifiers
+LEMONSQUEEZY_BASIC_PRODUCT_ID=
+LEMONSQUEEZY_BASIC_VARIANT_ID=
+LEMONSQUEEZY_CREATOR_PRODUCT_ID=
+LEMONSQUEEZY_CREATOR_VARIANT_ID=
+LEMONSQUEEZY_ORG_PRODUCT_ID=
+LEMONSQUEEZY_ORG_VARIANT_ID=
+
+# Stripe (optional)
+STRIPE_SECRET_KEY=
+STRIPE_WEBHOOK_SECRET=
+STRIPE_BASIC_PRODUCT_ID=
+STRIPE_BASIC_PRICE_ID=
+STRIPE_CREATOR_PRODUCT_ID=
+STRIPE_CREATOR_PRICE_ID=
+STRIPE_ORG_PRODUCT_ID=
+STRIPE_ORG_PRICE_ID=
 ```
 
-### Language & Conversation Settings (NEW)
+Frontend builds need the matching IDs (prefixed with `VITE_...`) in `frontend/.env` or `frontend/.env.local` so buttons render accurate CTAs. See [.env.sample](.env.sample) for the full list.
 
-#### Language Detection
+When billing is configured, webhooks update `app_users` with subscription state. Creator and Organization plans roll into BYO keys once the daily platform allowance is consumed; the rollover rules live in `shared/planCatalog.ts`. Full rationale lives in [`docs/PLANS_AND_BILLING.md`](docs/PLANS_AND_BILLING.md).
+## 4. Language & Context Controls
+
+| Variable | Description |
+| --- | --- |
+| `DEFAULT_RESPONSE_LANGUAGE_MODE` | `auto`, `fixed`, or `follow-stt`. |
+| `ENABLE_LANGUAGE_DETECTION` | Enable automatic language detection for responses. |
+| `DEFAULT_FIXED_RESPONSE_LANGUAGE` | Language code when using `fixed` mode. |
+| `MAX_CONTEXT_MESSAGES` | Maximum chat turns kept in context. |
+| `CONVERSATION_CONTEXT_STRATEGY` | `minimal`, `smart`, or `full`. |
+| `PREVENT_REPETITIVE_RESPONSES` | Toggle repetition avoidance. |
+| `DISABLE_COST_LIMITS` | Set to `true` to bypass cost thresholds during development. |
+
+## 5. LLM Providers
+
+| Variable | Description |
+| --- | --- |
+| `OPENAI_API_KEY` | Required for GPT and Whisper features. |
+| `OPENROUTER_API_KEY` | Optional additional model access. |
+| `ANTHROPIC_API_KEY` | Optional Claude support. |
+| `MODEL_PREF_*` | Default model routing per feature (see `.env.sample`). |
+
+## 6. Storage & Database
+
+| Variable | Description |
+| --- | --- |
+| `DATABASE_URL` | PostgreSQL connection string (production). |
+| `DB_CLIENT` | `postgresql` or `sqlite`. |
+| `ENABLE_SQLITE_MEMORY` | Set to `true` to run SQLite in memory for ephemeral sessions. |
+
+`app_users` now includes a `supabase_user_id` column. Run the provided migration or ensure the column exists before enabling Supabase in production.
+
+## 7. Frontend Environment
+
+Create `frontend/.env` or `frontend/.env.local` for Vite-specific settings:
+
 ```bash
-# Response language mode: auto, fixed, or follow-stt
-DEFAULT_RESPONSE_LANGUAGE_MODE=auto
-
-# Enable automatic language detection
-ENABLE_LANGUAGE_DETECTION=true
-
-# Fixed language for 'fixed' mode
-DEFAULT_FIXED_RESPONSE_LANGUAGE=en-US
+VITE_API_BASE_URL=http://localhost:3001/api
+VITE_SUPABASE_URL=
+VITE_SUPABASE_ANON_KEY=
+VITE_LEMONSQUEEZY_BASIC_PRODUCT_ID=
+VITE_LEMONSQUEEZY_BASIC_VARIANT_ID=
+VITE_LEMONSQUEEZY_CREATOR_PRODUCT_ID=
+VITE_LEMONSQUEEZY_CREATOR_VARIANT_ID=
+VITE_LEMONSQUEEZY_ORG_PRODUCT_ID=
+VITE_LEMONSQUEEZY_ORG_VARIANT_ID=
+VITE_STRIPE_BASIC_PRICE_ID=
+VITE_STRIPE_CREATOR_PRICE_ID=
+VITE_STRIPE_ORG_PRICE_ID=
 ```
 
-#### Conversation Context Management
-```bash
-# Maximum messages in context (6-50)
-MAX_CONTEXT_MESSAGES=12
+Restart `npm run dev` after editing Vite environment files.
 
-# Context strategy: minimal, smart, or full
-CONVERSATION_CONTEXT_STRATEGY=smart
+## 8. Rate Limiting & Demo Mode
 
-# Prevent repetitive responses
-PREVENT_REPETITIVE_RESPONSES=true
+- Anonymous users hit `/api/rate-limit/status` to display remaining credits.
+- Authenticated users bypass the demo limits and may receive per-plan limits from Lemon Squeezy metadata.
 
-# Default history messages for simple mode
-DEFAULT_HISTORY_MESSAGES_FOR_FALLBACK_CONTEXT=12
-```
+The backend honours:
 
-### API Keys
-```bash
-# OpenAI (Required for Whisper and GPT models)
-OPENAI_API_KEY=your_openai_api_key
+| Variable | Description |
+| --- | --- |
+| `RATE_LIMIT_PUBLIC_DAILY` | Daily requests per IP for the public demo. |
+| `GLOBAL_COST_THRESHOLD_USD_PER_MONTH` | Safety valve for total spend. |
 
-# OpenRouter (Optional, for additional models)
-OPENROUTER_API_KEY=your_openrouter_api_key
+## 9. Voice, Audio & Speech
 
-# Anthropic (Optional, for Claude models)
-ANTHROPIC_API_KEY=your_anthropic_api_key
-```
+See `.env.sample` for toggles such as `DEFAULT_SPEECH_PREFERENCE_STT`, `DEFAULT_SPEECH_PREFERENCE_TTS_PROVIDER`, and advanced audio processing flags. All defaults are tuned for local development.
 
-### Model Preferences
-```bash
-# Default models for different tasks
-MODEL_PREF_GENERAL_CHAT=openai/gpt-4o-mini
-MODEL_PREF_CODING=openai/gpt-4o
-MODEL_PREF_INTERVIEW_TUTOR=openai/gpt-4o
+## 10. Troubleshooting Checklist
 
-# Routing configuration
-ROUTING_LLM_PROVIDER_ID=openrouter
-ROUTING_LLM_MODEL_ID=openai/gpt-4o-mini
-FALLBACK_LLM_PROVIDER_ID=openai
-```
+- **Auth errors**: Confirm `GLOBAL_ACCESS_PASSWORD` or Supabase credentials and ensure clocks are in sync when using Supabase JWTs.
+- **Billing webhooks**: Use the Lemon Squeezy dashboard to resend events if subscriptions are not updating. Verify the webhook secret and public URL.
+- **Demo banner missing**: The frontend requires the backend `/api/rate-limit/status` endpoint and `optionalAuth` middleware to be running.
+- **Supabase OAuth redirect loops**: Confirm the redirect URL matches your frontend origin including protocol and port.
 
-### Cost Management
-```bash
-# Cost thresholds in USD
-COST_THRESHOLD_USD_PER_SESSION=2.00
-GLOBAL_COST_THRESHOLD_USD_PER_MONTH=100.00
-
-# Disable all cost limits (for development)
-DISABLE_COST_LIMITS=true
-```
-
-## Application Settings
-
-Access these in the UI under Settings > Memory & Context:
-
-### Response Language Settings
-- **Response Language Mode**:
-  - `Auto-detect`: Detects user's language and responds in same language
-  - `Fixed`: Always responds in a predetermined language
-  - `Follow STT`: Uses the Speech-to-Text language setting
-
-### Conversation Context Settings
-- **Prevent Repetitive Responses**: Toggle to prevent repeating previous answers
-- **Context Mode**:
-  - `Minimal`: Last 3-4 messages only
-  - `Smart`: Balanced context with relevance scoring (default)
-  - `Full`: Maximum available context
-- **Maximum History Messages**: Slider (6-50 messages)
-
-### Advanced Memory Management
-- **Advanced Chat History**: Enable NLP-based relevance scoring
-- **Strategy Presets**:
-  - Balanced Hybrid
-  - Relevance Focused
-  - Recent Conversation
-  - Max Context
-  - Concise Recent
-
-## Supported Languages
-
-The system automatically detects and responds in:
-
-### High Accuracy (Character-based)
-- Chinese (zh)
-- Japanese (ja)
-- Korean (ko)
-- Arabic (ar)
-- Hebrew (he)
-- Russian (ru)
-- Hindi (hi)
-- Thai (th)
-
-### Good Accuracy (Word-based)
-- English (en) - Default
-- Spanish (es)
-- French (fr)
-- German (de)
-- Portuguese (pt)
-- Italian (it)
-- Dutch (nl)
-
-## Voice Input Modes
-
-### Push-to-Talk (Default)
-- Click and hold microphone button
-- Release to send transcript
-
-### Continuous Mode
-- Hands-free conversation
-- 2-second silence detection before sending
-- Configurable silence timeout (1.5-7 seconds)
-
-### Voice Activation Detection (VAD)
-- Wake word activation ("Hey V", "Victoria")
-- Customizable wake words
-- Command timeout configurable
-
-## Performance Tuning
-
-### For Faster Responses
-```bash
-MAX_CONTEXT_MESSAGES=6
-CONVERSATION_CONTEXT_STRATEGY=minimal
-DEFAULT_MAX_PROMPT_TOKENS=2000
-```
-
-### For Better Context
-```bash
-MAX_CONTEXT_MESSAGES=20
-CONVERSATION_CONTEXT_STRATEGY=full
-DEFAULT_MAX_PROMPT_TOKENS=8000
-```
-
-### For Multilingual Use
-```bash
-DEFAULT_RESPONSE_LANGUAGE_MODE=auto
-ENABLE_LANGUAGE_DETECTION=true
-```
-
-## Troubleshooting
-
-### Language Detection Issues
-1. Ensure `ENABLE_LANGUAGE_DETECTION=true`
-2. Provide at least 3-4 words for detection
-3. Try `DEFAULT_RESPONSE_LANGUAGE_MODE=fixed` for consistent language
-
-### Repetitive Responses
-1. Set `PREVENT_REPETITIVE_RESPONSES=true`
-2. Reduce `MAX_CONTEXT_MESSAGES` to 12 or less
-3. Use `CONVERSATION_CONTEXT_STRATEGY=smart`
-
-### High API Costs
-1. Reduce `MAX_CONTEXT_MESSAGES`
-2. Use cheaper models in `MODEL_PREF_*` settings
-3. Enable `DISABLE_COST_LIMITS=false` for production
-
-### Voice Recognition Problems
-1. Check microphone permissions
-2. Try different `DEFAULT_SPEECH_PREFERENCE_STT`
-3. For non-English, set appropriate `speechLanguage` in settings
-
-## Migration from Previous Versions
-
-If upgrading from an earlier version:
-
-1. Add new environment variables to your `.env`:
-   ```bash
-   DEFAULT_RESPONSE_LANGUAGE_MODE=auto
-   ENABLE_LANGUAGE_DETECTION=true
-   MAX_CONTEXT_MESSAGES=12
-   CONVERSATION_CONTEXT_STRATEGY=smart
-   PREVENT_REPETITIVE_RESPONSES=true
-   ```
-
-2. Clear browser localStorage to reset settings:
-   ```javascript
-   localStorage.clear();
-   ```
-
-3. Restart both frontend and backend servers
-
-## Security Considerations
-
-- Never commit `.env` files to version control
-- Use strong JWT secrets (64+ characters)
-- Rotate API keys regularly
-- Set appropriate CORS origins in production
-- Enable rate limiting for public deployments
-
-## Production Deployment
-
-For production environments:
-
-1. Set `NODE_ENV=production`
-2. Use secure JWT secret
-3. Configure proper CORS origins
-4. Enable SSL/TLS
-5. Set `DISABLE_COST_LIMITS=false`
-6. Configure proper logging levels
-7. Use environment-specific API keys
-
-## Additional Resources
-
-- [Language and Context Documentation](./LANGUAGE_AND_CONTEXT_DOCUMENTATION.md)
-- [Implementation Plan](./CONVERSATION_IMPROVEMENTS_PLAN.md)
-- [API Documentation](./API.md)
-- [Contributing Guide](./CONTRIBUTING.md)
+For more operational notes and deployment tips, review [`PRODUCTION_SETUP.md`](PRODUCTION_SETUP.md) and the architecture document.
