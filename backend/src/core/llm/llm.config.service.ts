@@ -31,6 +31,25 @@ export enum LlmProviderId {
   OLLAMA = 'ollama',
 }
 
+export interface ProviderAvailability {
+  available: boolean;
+  reason?: string;
+  hint?: string;
+  envVar?: string;
+}
+
+export type ProviderAvailabilityMap = Record<LlmProviderId, ProviderAvailability>;
+
+export class NoLlmProviderConfiguredError extends Error {
+  public readonly availability: ProviderAvailabilityMap;
+
+  constructor(message: string, availability: ProviderAvailabilityMap) {
+    super(message);
+    this.name = 'NoLlmProviderConfiguredError';
+    this.availability = availability;
+  }
+}
+
 /**
  * @interface AgentLLMDefinition
  * @description Defines the LLM model, prompt template, provider, and callable tools for a specific agent mode.
@@ -50,10 +69,19 @@ export class LlmConfigService {
   private static instance: LlmConfigService;
   private readonly providerConfigs: Map<LlmProviderId, ILlmProviderConfig>;
   private readonly agentToolDefinitions: Map<string, ILlmTool[]>;
+  private readonly providerAvailability: Map<LlmProviderId, ProviderAvailability>;
 
   private constructor() {
     this.providerConfigs = new Map<LlmProviderId, ILlmProviderConfig>();
     this.agentToolDefinitions = new Map<string, ILlmTool[]>();
+    this.providerAvailability = new Map<LlmProviderId, ProviderAvailability>();
+    for (const provider of Object.values(LlmProviderId)) {
+      this.providerAvailability.set(provider, {
+        available: false,
+        reason: 'Provider not configured.',
+        envVar: this.resolveProviderEnvVar(provider),
+      });
+    }
     this.loadConfigurations();
     this.loadAgentToolDefinitions();
   }
@@ -77,8 +105,23 @@ export class LlmConfigService {
         baseUrl: process.env.OPENAI_API_BASE_URL || 'https://api.openai.com/v1',
         defaultModel: process.env.MODEL_PREF_OPENAI_DEFAULT || 'gpt-4o-mini',
       });
+      this.providerAvailability.set(LlmProviderId.OPENAI, {
+        available: true,
+        reason: `Configured (default model: ${process.env.MODEL_PREF_OPENAI_DEFAULT || 'gpt-4o-mini'}).`,
+        hint: 'OpenAI routes ready.',
+        envVar: 'OPENAI_API_KEY',
+      });
       console.log('[LlmConfigService] OpenAI configuration LOADED.');
     } else {
+      const openAiReason = !openAIApiKey || openAIApiKey.trim() === ''
+        ? 'OPENAI_API_KEY is not set.'
+        : 'OPENAI_API_KEY uses a placeholder value.';
+      this.providerAvailability.set(LlmProviderId.OPENAI, {
+        available: false,
+        reason: openAiReason,
+        hint: 'Set OPENAI_API_KEY to a valid OpenAI key to enable direct OpenAI routing.',
+        envVar: 'OPENAI_API_KEY',
+      });
       console.warn('[LlmConfigService] OpenAI API key (OPENAI_API_KEY) missing or invalid. OpenAI provider UNAVAILABLE for direct calls.');
     }
 
@@ -94,8 +137,23 @@ export class LlmConfigService {
           "X-Title": process.env.APP_NAME || "Voice Coding Assistant",
         },
       });
+      this.providerAvailability.set(LlmProviderId.OPENROUTER, {
+        available: true,
+        reason: `Configured (default model: ${process.env.MODEL_PREF_OPENROUTER_DEFAULT || 'openai/gpt-4o-mini'}).`,
+        hint: 'OpenRouter routing enabled.',
+        envVar: 'OPENROUTER_API_KEY',
+      });
       console.log('[LlmConfigService] OpenRouter configuration LOADED.');
     } else {
+      const openRouterReason = !openRouterApiKey || openRouterApiKey.trim() === ''
+        ? 'OPENROUTER_API_KEY is not set.'
+        : 'OPENROUTER_API_KEY uses a placeholder value.';
+      this.providerAvailability.set(LlmProviderId.OPENROUTER, {
+        available: false,
+        reason: openRouterReason,
+        hint: 'Set OPENROUTER_API_KEY to enable provider fallback and multi-model routing.',
+        envVar: 'OPENROUTER_API_KEY',
+      });
       console.warn('[LlmConfigService] OpenRouter API key (OPENROUTER_API_KEY) missing or invalid. OpenRouter provider UNAVAILABLE.');
     }
 
@@ -108,8 +166,23 @@ export class LlmConfigService {
         defaultModel: process.env.MODEL_PREF_ANTHROPIC_DEFAULT || 'claude-3-haiku-20240307',
         additionalHeaders: { "anthropic-version": "2023-06-01" }
       });
+      this.providerAvailability.set(LlmProviderId.ANTHROPIC, {
+        available: true,
+        reason: `Configured (default model: ${process.env.MODEL_PREF_ANTHROPIC_DEFAULT || 'claude-3-haiku-20240307'}).`,
+        hint: 'Claude models available.',
+        envVar: 'ANTHROPIC_API_KEY',
+      });
       console.log('[LlmConfigService] Anthropic configuration LOADED.');
     } else {
+      const anthropicReason = !anthropicApiKey || anthropicApiKey.trim() === ''
+        ? 'ANTHROPIC_API_KEY is not set.'
+        : 'ANTHROPIC_API_KEY uses a placeholder value.';
+      this.providerAvailability.set(LlmProviderId.ANTHROPIC, {
+        available: false,
+        reason: anthropicReason,
+        hint: 'Provide ANTHROPIC_API_KEY to enable Claude models.',
+        envVar: 'ANTHROPIC_API_KEY',
+      });
       console.info('[LlmConfigService] Anthropic API key (ANTHROPIC_API_KEY) not provided. Anthropic provider UNAVAILABLE.');
     }
 
@@ -122,7 +195,19 @@ export class LlmConfigService {
             defaultModel: process.env.MODEL_PREF_OLLAMA_DEFAULT || 'llama3:latest',
         });
         console.log(`[LlmConfigService] Ollama configuration LOADED. Base URL: ${ollamaBaseUrl}`);
+        this.providerAvailability.set(LlmProviderId.OLLAMA, {
+          available: true,
+          reason: `Configured (base URL: ${ollamaBaseUrl}).`,
+          hint: 'Ensure the Ollama host is reachable from the server.',
+          envVar: 'OLLAMA_BASE_URL',
+        });
     } else {
+        this.providerAvailability.set(LlmProviderId.OLLAMA, {
+          available: false,
+          reason: 'OLLAMA_BASE_URL is not set. Local Ollama inference disabled.',
+          hint: 'Set OLLAMA_BASE_URL if you want to route requests to a local Ollama instance.',
+          envVar: 'OLLAMA_BASE_URL',
+        });
         console.info('[LlmConfigService] OLLAMA_BASE_URL not provided. Ollama provider UNAVAILABLE.');
     }
     console.log(`[LlmConfigService] Provider configuration loading complete. Configured: ${Array.from(this.providerConfigs.keys()).join(', ') || 'None'}`);
@@ -177,7 +262,10 @@ export class LlmConfigService {
         }
       }
     }
-    throw new Error("LlmConfigService: No usable LLM provider configuration found.");
+    throw new NoLlmProviderConfiguredError(
+      'LlmConfigService: No usable LLM provider configuration found.',
+      this.getProviderAvailabilitySnapshot(),
+    );
   }
 
   public getFallbackProviderId(): LlmProviderId | undefined {
@@ -198,6 +286,34 @@ export class LlmConfigService {
   }
   public getDefaultOllamaModel(): string {
     return this.providerConfigs.get(LlmProviderId.OLLAMA)?.defaultModel || process.env.MODEL_PREF_OLLAMA_DEFAULT || 'llama3:latest';
+  }
+
+  public getProviderAvailabilitySnapshot(): ProviderAvailabilityMap {
+    const snapshot: ProviderAvailabilityMap = {} as ProviderAvailabilityMap;
+    for (const provider of Object.values(LlmProviderId)) {
+      const availability = this.providerAvailability.get(provider);
+      snapshot[provider] = availability ? { ...availability } : {
+        available: false,
+        reason: 'Provider not configured.',
+        envVar: this.resolveProviderEnvVar(provider),
+      };
+    }
+    return snapshot;
+  }
+
+  private resolveProviderEnvVar(provider: LlmProviderId): string | undefined {
+    switch (provider) {
+      case LlmProviderId.OPENAI:
+        return 'OPENAI_API_KEY';
+      case LlmProviderId.OPENROUTER:
+        return 'OPENROUTER_API_KEY';
+      case LlmProviderId.ANTHROPIC:
+        return 'ANTHROPIC_API_KEY';
+      case LlmProviderId.OLLAMA:
+        return 'OLLAMA_BASE_URL';
+      default:
+        return undefined;
+    }
   }
 
   public getAgentDefinitionFromMode(

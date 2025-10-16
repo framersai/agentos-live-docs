@@ -27,6 +27,7 @@ import { rateLimiter } from '../middleware/ratelimiter.js'; // For fetching publ
 import * as promptApiRoutes from '../src/features/prompts/prompt.routes.js';
 import { postCheckoutSession, postLemonWebhook } from '../src/features/billing/billing.routes.js';
 import * as organizationRoutes from '../src/features/organization/organization.routes.js';
+import { getLlmStatus as getSystemLlmStatus } from '../src/features/system/system.routes.js';
 
 /**
  * Configures and returns the main API router with all routes registered.
@@ -46,6 +47,8 @@ export async function configureRouter(): Promise<Router> {
     console.log('✅ Registered auth routes');
 
     router.get('/prompts/:filename', promptApiRoutes.GET);
+    router.get('/system/llm-status', getSystemLlmStatus);
+    console.log('�o. Registered system diagnostics routes');
 
     // --- Publicly Accessible Informational Routes ---
     // This endpoint allows frontend to get info about public rate limits.
