@@ -546,6 +546,26 @@ export const organizationAPI = {
     api.post(`/organizations/invites/${token}/accept`, {}),
 };
 
+export interface ProviderStatusSummaryFE {
+  available: boolean;
+  reason?: string;
+  hint?: string;
+  envVar?: string;
+}
+
+export interface LlmStatusResponseFE {
+  status: 'ready' | 'unavailable';
+  ready: boolean;
+  code?: string;
+  message?: string;
+  timestamp: string;
+  providers: Record<string, ProviderStatusSummaryFE>;
+}
+
+export const systemAPI = {
+  getLlmStatus: (): Promise<AxiosResponse<LlmStatusResponseFE>> => api.get('/system/llm-status'),
+};
+
 export default api;
 
 

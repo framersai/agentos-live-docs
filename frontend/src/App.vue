@@ -38,6 +38,8 @@ import { useAuth } from '@/composables/useAuth';
 import { voiceSettingsManager } from './services/voice.settings.service';
 import { ttsService } from './services/tts.service';
 import { agentService } from '@/services/agent.service';
+import { systemAPI, type LlmStatusResponseFE } from '@/utils/api';
+import { isAxiosError } from 'axios';
 
 // Icons for Toasts
 import {
@@ -138,6 +140,59 @@ const getToastIcon = (type: Toast['type']): VueComponentType => {
   }
 };
 
+const summarizeProviderIssues = (providers?: LlmStatusResponseFE['providers']): string => {
+  if (!providers) {
+    return 'No provider diagnostics available.';
+  }
+  const unavailable = Object.entries(providers)
+    .filter(([, details]) => !details.available);
+  if (unavailable.length === 0) {
+    return 'All configured providers report ready states.';
+  }
+  return unavailable.map(([key, details]) => {
+    const name = key.toUpperCase();
+    const reason = details.reason || 'Unavailable.';
+    const hint = details.hint ? ` ${details.hint}` : '';
+    const envVar = details.envVar ? ` (env: ${details.envVar})` : '';
+    return `<strong>${name}</strong>: ${reason}${envVar}${hint}`;
+  }).join('<br />');
+};
+
+const checkLlmBootstrapStatus = async (): Promise<void> => {
+  try {
+    const { data } = await systemAPI.getLlmStatus();
+    if (!data.ready) {
+      const summary = summarizeProviderIssues(data.providers);
+      addToast({
+        type: 'error',
+        title: 'Assistant Offline',
+        message: `${data.message ?? 'LLM services are unavailable.'}<br />${summary}`,
+        duration: 12000,
+      });
+      console.warn('[App.vue] LLM bootstrap status reported unavailable:', data);
+    }
+  } catch (error) {
+    if (isAxiosError<LlmStatusResponseFE>(error) && error.response?.data) {
+      const data = error.response.data;
+      const summary = summarizeProviderIssues(data.providers);
+      addToast({
+        type: 'error',
+        title: 'Assistant Offline',
+        message: `${data.message ?? 'LLM services failed to initialize.'}<br />${summary}`,
+        duration: 12000,
+      });
+      console.error('[App.vue] LLM bootstrap request failed:', error.response.status, data);
+    } else {
+      console.error('[App.vue] Unexpected error while checking LLM status:', error);
+      addToast({
+        type: 'warning',
+        title: 'Assistant Status Unknown',
+        message: 'Could not verify assistant availability. Some features may be offline.',
+      });
+    }
+  }
+};
+
 // Session cost is used in the template for display
 // const sessionCost = computed<number>(() => costStore.totalSessionCost);
 
@@ -228,6 +283,8 @@ onMounted(async () => {
 
   auth.checkAuthStatus(); // Check auth status first thing (not async!)
   await voiceSettingsManager.initialize(); // Initialize voice settings
+
+  await checkLlmBootstrapStatus();
 
   // If authenticated, fetch session cost if not already loaded
   if (auth.isAuthenticated.value) {

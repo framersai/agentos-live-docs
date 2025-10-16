@@ -21,6 +21,8 @@ import { optionalAuthMiddleware } from './middleware/optionalAuth.js';
 import { rateLimiter } from './middleware/ratelimiter.js'; // Import the instance
 import { setupI18nMiddleware } from './middleware/i18n.js';
 import { initializeLlmServices } from './src/core/llm/llm.factory.js';
+import { NoLlmProviderConfiguredError, LlmConfigService } from './src/core/llm/llm.config.service.js';
+import { setLlmBootstrapStatus, getLlmBootstrapStatus, mapAvailabilityToStatus } from './src/core/llm/llm.status.js';
 import { sqliteMemoryAdapter } from './src/core/memory/SqliteMemoryAdapter.js'; // Import for shutdown
 import { closeAppDatabase } from './src/core/database/appDatabase.js';
 
@@ -30,6 +32,14 @@ const projectRoot = path.resolve(__dirname, '..');
 
 const envPath = path.join(projectRoot, '.env');
 dotenv.config({ path: envPath }); // Load .env variables first
+
+setLlmBootstrapStatus({
+  ready: false,
+  code: 'BOOTSTRAP_PENDING',
+  message: 'LLM services are initializing.',
+  timestamp: new Date().toISOString(),
+  providers: {},
+});
 
 const PORT = process.env.PORT || 3001;
 const app: Express = express();
@@ -56,119 +66,142 @@ app.use(cookieParser());
 
 // --- Server Initialization and Middleware Application ---
 async function startServer() {
-  console.log('🔄 Initializing application services...');
-  // Initialize services that need async setup BEFORE routes or request-dependent middleware
-  await initializeLlmServices();
-  await sqliteMemoryAdapter.initialize(); // Initialize SQLite Adapter
-  await rateLimiter.initialize();     // Initialize Rate Limiter (Redis connection etc.)
-  console.log('✅ Core services initialized.');
+  console.log('[Bootstrap] Initializing application services...');
+  try {
+    await initializeLlmServices();
+    const availabilitySnapshot = LlmConfigService.getInstance().getProviderAvailabilitySnapshot();
+    setLlmBootstrapStatus({
+      ready: true,
+      code: 'LLM_READY',
+      message: 'LLM services initialized successfully.',
+      timestamp: new Date().toISOString(),
+      providers: mapAvailabilityToStatus(availabilitySnapshot),
+    });
+  } catch (error) {
+    if (error instanceof NoLlmProviderConfiguredError) {
+      console.error('[LLM Startup] No configured providers detected. Running in degraded mode.', error.availability);
+      setLlmBootstrapStatus({
+        ready: false,
+        code: 'NO_LLM_PROVIDER',
+        message: error.message,
+        timestamp: new Date().toISOString(),
+        providers: mapAvailabilityToStatus(error.availability),
+      });
+    } else {
+      setLlmBootstrapStatus({
+        ready: false,
+        code: 'LLM_INIT_FAILURE',
+        message: (error as Error)?.message || 'Failed to initialize LLM services.',
+        timestamp: new Date().toISOString(),
+        providers: {},
+      });
+      throw error;
+    }
+  }
 
-  // Setup i18n middleware
-  const i18nHandlers = await setupI18nMiddleware();
-  app.use(i18nHandlers);
-  console.log('🌍 i18n middleware configured.');
+  await sqliteMemoryAdapter.initialize();
+  await rateLimiter.initialize();
+  console.log('[Bootstrap] Core services initialized.');
 
-  // Optional Authentication Middleware (for /api routes)
-  app.use('/api', optionalAuthMiddleware);
+  const i18nHandlers = await setupI18nMiddleware();
+  app.use(i18nHandlers);
+  console.log('[i18n] Middleware configured.');
 
-  // Rate Limiter (for /api routes) - Should come after auth if auth affects rate limits
-  app.use('/api', rateLimiter.middleware());
-  console.log('🛡️ Authentication and Rate Limiting middleware configured for /api.');
+  app.use('/api', optionalAuthMiddleware);
+  app.use('/api', rateLimiter.middleware());
+  console.log('[Security] Authentication and rate limiting configured for /api.');
 
-  // Setup API routes
-  const apiRouter = await configureRouter();
-  app.use('/api', apiRouter);
-  console.log('🚀 API Routes configured under /api');
+  const apiRouter = await configureRouter();
+  app.use('/api', apiRouter);
+  console.log('[Router] API routes configured under /api');
 
-  // Health check endpoint
-  app.get('/health', (req: Request, res: Response) => {
-    res.status(200).json({ status: 'UP', timestamp: new Date().toISOString() });
-  });
+  app.get('/health', (req: Request, res: Response) => {
+    res.status(200).json({
+      status: 'UP',
+      timestamp: new Date().toISOString(),
+      llm: getLlmBootstrapStatus(),
+    });
+  });
 
-  // Optional: Serve static files from frontend build
-  if (process.env.SERVE_FRONTEND === 'true') {
-    const frontendBuildPath = path.join(projectRoot, 'frontend', 'dist');
+  if (process.env.SERVE_FRONTEND === 'true') {
+    const frontendBuildPath = path.join(projectRoot, 'frontend', 'dist');
     const indexPath = path.join(frontendBuildPath, 'index.html');
-    if (fs.existsSync(indexPath)) { // Check for index.html specifically
-      app.use(express.static(frontendBuildPath));
-      app.get('*', (req, res, next) => { // Catch-all for SPA routing
-        if (req.path.startsWith('/api/')) { // Avoid conflicts with API routes
-          return next(); // Pass to API 404 handler if not caught by apiRouter
+    if (fs.existsSync(indexPath)) {
+      app.use(express.static(frontendBuildPath));
+      app.get('*', (req, res, next) => {
+        if (req.path.startsWith('/api/')) {
+          return next();
         }
         if (req.headers.accept && req.headers.accept.includes('text/html')) {
           res.sendFile(indexPath);
         } else {
-          // For non-HTML requests that are not API calls and not static files,
-          // let them fall through to the 404 handler.
           next();
         }
-      });
-      console.log(`🌐 Serving frontend from ${frontendBuildPath}`);
-    } else {
-      console.warn(`🔔 SERVE_FRONTEND is true, but frontend 'index.html' not found at ${indexPath}`);
-    }
-  }
-
-  // Not Found Handler (must be after all route definitions and static serving)
-  app.use((req: Request, res: Response, next: NextFunction) => {
-    if (!res.headersSent) {
-      // Check if it was likely an API call
-      if (req.path.startsWith('/api/')) {
-        res.status(404).json({ message: `API endpoint not found: ${req.method} ${req.originalUrl}` });
-      } else {
-        // For non-API routes, if SPA serving didn't catch it, then it's a true 404 for a file perhaps
-        res.status(404).type('text/plain').send('Resource not found on this server.');
-      }
-    } else {
-      next();
-    }
-  });
-
-  // Global Error Handler (must be the last piece of middleware)
-  app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    console.error('💥 Unhandled application error:', err.stack || err);
-    if (!res.headersSent) {
-      res.status(500).json({
-        message: 'Internal Server Error',
-        error: process.env.NODE_ENV === 'development' ? { name: err.name, message: err.message, stack: err.stack } : { message: 'An unexpected error occurred.'}
-      });
-    } else {
-      next(err);
-    }
-  });
-
-  server = app.listen(PORT, () => {
-    console.log(`\n✅ Server is listening on port ${PORT}`);
-    console.log(`🔗 Frontend URL (configured): ${frontendUrl}`);
-    console.log(`🔧 Node ENV: ${process.env.NODE_ENV || 'development'}`);
-    if (process.env.ENABLE_SQLITE_MEMORY === 'true') {
-      console.log('💾 SQLite Memory Persistence: ENABLED');
+      });
+      console.log(`[Frontend] Serving static assets from ${frontendBuildPath}`);
     } else {
-      console.warn('💾 SQLite Memory Persistence: DISABLED (server is stateless regarding conversation history)');
+      console.warn(`[Frontend] SERVE_FRONTEND is true, but index.html not found at ${indexPath}`);
+    }
+  }
+
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    if (!res.headersSent) {
+      if (req.path.startsWith('/api/')) {
+        res.status(404).json({ message: `API endpoint not found: ${req.method} ${req.originalUrl}` });
+      } else {
+        res.status(404).type('text/plain').send('Resource not found on this server.');
+      }
+    } else {
+      next();
+    }
+  });
+
+  app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+    console.error("[Server] Unhandled application error:", err.stack || err);
+    if (!res.headersSent) {
+      res.status(500).json({
+        message: 'Internal Server Error',
+        error: process.env.NODE_ENV === 'development' ? { name: err.name, message: err.message, stack: err.stack } : { message: 'An unexpected error occurred.' }
+      });
+    } else {
+      next(err);
+    }
+  });
+
+  server = app.listen(PORT, () => {
+    console.log(`[Server] Listening on port ${PORT}`);
+    console.log(`[Server] Frontend URL (configured): ${frontendUrl}`);
+    console.log(`[Server] Node ENV: ${process.env.NODE_ENV || 'development'}`);
+    if (process.env.ENABLE_SQLITE_MEMORY === 'true') {
+      console.log('[Storage] SQLite memory persistence: ENABLED');
+    } else {
+      console.warn('[Storage] SQLite memory persistence: DISABLED (server is stateless regarding conversation history)');
     }
     if (process.env.DISABLE_COST_LIMITS === 'true') {
-      console.warn('💰 Cost limits: DISABLED.');
-    }
-    if (process.env.REDIS_URL) {
-      console.log(`📦 Rate limiter: Configured to attempt Redis connection at ${process.env.REDIS_URL}.`);
-    } else {
-      console.warn('📦 Rate limiter: REDIS_URL not found, using in-memory store.');
-    }
-    console.log(`👉 App running at http://localhost:${PORT}\n`);
-  }).on('error', (error: NodeJS.ErrnoException) => {
-    console.error('❌ Server failed to start:', error);
-    if (error.code === 'EADDRINUSE') {
-      console.error(`Port ${PORT} is already in use.`);
-    }
-    process.exit(1);
-  });
+      console.warn('[Costs] Cost limits: DISABLED.');
+    }
+    if (process.env.REDIS_URL) {
+      console.log(`[RateLimiter] Redis configured at ${process.env.REDIS_URL}.`);
+    } else {
+      console.warn('[RateLimiter] REDIS_URL not provided. Using in-memory store.');
+    }
+    const llmStatusAtStart = getLlmBootstrapStatus();
+    if (!llmStatusAtStart.ready) {
+      console.warn('[LLM Startup] Server running without an active LLM provider. Configure provider credentials to enable chat endpoints.');
+    }
+    console.log(`[Server] Ready at http://localhost:${PORT}`);
+  }).on('error', (error: NodeJS.ErrnoException) => {
+    console.error('[Server] Failed to start:', error);
+    if (error.code === 'EADDRINUSE') {
+      console.error(`Port ${PORT} is already in use.`);
+    }
+    process.exit(1);
+  });
+
+
+
 }
 
-/**
- * @function gracefulShutdown
- * @description Handles graceful shutdown of the server and related services.
- * @param {string} signal - The signal received (e.g., 'SIGINT', 'SIGTERM').
- */
 async function gracefulShutdown(signal: string) {
   console.log(`\n🚦 Received ${signal}. Starting graceful shutdown...`);
   

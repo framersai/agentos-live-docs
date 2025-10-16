@@ -6,7 +6,7 @@
  * @version 1.2.0 - Propagated tool parameters to LLM services in callLlm.
  */
 
-import { LlmConfigService, LlmProviderId } from './llm.config.service.js';
+import { LlmConfigService, LlmProviderId, NoLlmProviderConfiguredError } from './llm.config.service.js';
 import { OpenAiLlmService } from './openai.llm.service.js';
 import { OpenRouterLlmService } from './openrouter.llm.service.js';
 // Import other LLM services (Anthropic, Ollama) as they are implemented
@@ -49,7 +49,13 @@ export async function initializeLlmServices(): Promise<void> {
 
   } catch (error) {
     console.error('[LLM Factory] CRITICAL: Failed to initialize LlmConfigService:', error);
-    throw new Error(`Failed to initialize LLM services: ${(error as Error).message}`);
+    if (error instanceof NoLlmProviderConfiguredError) {
+      throw error;
+    }
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error(`Failed to initialize LLM services: ${String(error)}`);
   }
 }
 
