@@ -64,6 +64,32 @@ npm run start
 ### 5. Access Application
 Open browser to: **http://localhost:3001**
 
+## CI/CD via GitHub Actions
+
+The repository ships with a deploy workflow located at `.github/workflows/deploy.yml`. It packages the built frontend, backend, and prompt files, then uploads them to the Linode box and restarts the PM2 process. To use it:
+
+1. In GitHub, go to **Settings > Secrets and variables > Actions** and create/update the secret named `ENV`.  
+   Paste your production `.env` content (multi-line) into that secret. At minimum include:
+   ```
+   PORT=3333
+   NODE_ENV=production
+   FRONTEND_URL=https://app.vca.chat
+   APP_URL=https://app.vca.chat
+   SERVE_FRONTEND=true
+   OPENAI_API_KEY=...
+   ROUTING_LLM_PROVIDER_ID=openai
+   ROUTING_LLM_MODEL_ID=gpt-4o-mini
+   AUTH_JWT_SECRET=...
+   GLOBAL_ACCESS_PASSWORD=...
+   ```
+   Add any additional keys you rely on in production (database, Pinecone, Lemon Squeezy, etc.). The workflow writes this secret verbatim to `~/voice-coding-assistant/.env` on the server.
+
+2. Commit and push to `master` (the workflow trigger), or manually run **Deploy Voice Coding Assistant to Linode (Nginx only)** from the Actions tab.
+
+3. Watch the run. It will stop/start PM2 and verify `/health` on port `3333`. If the job succeeds, the app is live at `https://app.vca.chat`.
+
+If the workflow fails, SSH into the server and check `pm2 logs voice-backend` plus `sudo systemctl status nginx` for details.
+
 ## Troubleshooting
 
 ### "localhost:3000 refused to connect"
