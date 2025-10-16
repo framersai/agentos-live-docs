@@ -106,6 +106,8 @@ If the workflow fails, SSH into the server and check `pm2 logs voice-backend` pl
 - Ensure backend is running (check console output)
 - Verify PORT=3001 in .env
 
+- Hit `curl http://localhost:3001/api/system/llm-status` (or the deployed URL) to confirm an LLM provider is configured. A 200 response means the assistant can start; a 503 response includes details about missing API keys.
+
 ## Docker Deployment
 
 For containerized deployment:
