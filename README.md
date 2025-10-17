@@ -175,6 +175,8 @@ Authenticated routes are served from `/api`. Key endpoints:
 - `POST /api/billing/checkout` - Creates Lemon Squeezy checkout sessions (requires auth).
 - `POST /api/billing/webhook` - Webhook receiver that syncs subscription status.
 
+> **Deploy tip:** If CI reports `Missing required environment variable: AUTH_JWT_SECRET`, double-check the secret or `.env` you push to production. The backend expects a line such as `AUTH_JWT_SECRET=super_long_value` with no surrounding quotes—without it the process exits before `/health` is available.
+
 ## Contributing
 
 Pull requests are welcome. Please review [`CONTRIBUTING.md`](CONTRIBUTING.md) and open an issue if you plan large changes so we can coordinate direction.
