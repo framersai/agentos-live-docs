@@ -18,8 +18,21 @@ import { closeAppDatabase } from './src/core/database/appDatabase.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, '..');
-const envPath = path.join(projectRoot, '.env');
-dotenv.config({ path: envPath });
+const envCandidatePaths = [
+    path.join(projectRoot, '.env'),
+    path.resolve(projectRoot, '..', '.env'),
+];
+for (const candidate of envCandidatePaths) {
+    try {
+        if (fs.existsSync(candidate)) {
+            dotenv.config({ path: candidate });
+            console.log(`[Bootstrap] Loaded environment variables from ${candidate}`);
+        }
+    }
+    catch (error) {
+        console.warn(`[Bootstrap] Failed to load env file at ${candidate}:`, error);
+    }
+}
 setLlmBootstrapStatus({
     ready: false,
     code: 'BOOTSTRAP_PENDING',
