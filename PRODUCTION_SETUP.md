@@ -103,10 +103,11 @@ If the workflow fails, SSH into the server and check `pm2 logs voice-backend` pl
 
 ### API not working
 - Check your API keys in .env
-- Ensure backend is running (check console output)
-- Verify PORT=3001 in .env
-
-- Hit `curl http://localhost:3001/api/system/llm-status` (or the deployed URL) to confirm an LLM provider is configured. A 200 response means the assistant can start; a 503 response includes details about missing API keys.
+  - Ensure backend is running (check console output)
+  - Verify PORT=3001 in .env
+  
+  - Hit `curl http://localhost:3001/api/system/llm-status` (or the deployed URL) to confirm an LLM provider is configured. A 200 response means the assistant can start; a 503 response includes details about missing API keys.
+  - When deploying via GitHub Actions, make sure the `ENV` secret includes an `AUTH_JWT_SECRET=` line with a real value and no surrounding quotes; the backend will crash on boot if it’s missing.
 
 ## Docker Deployment
 
