@@ -12,8 +12,20 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, '../../..');
+const envCandidatePaths = [
+  path.join(projectRoot, '.env'),
+  path.resolve(projectRoot, '..', '.env'),
+];
 
-dotenv.config({ path: path.join(projectRoot, '.env') });
+for (const candidate of envCandidatePaths) {
+  try {
+    if (dotenv.config({ path: candidate }).parsed) {
+      console.log(`[Config] Loaded environment variables from ${candidate}`);
+    }
+  } catch (error) {
+    console.warn(`[Config] Failed to load env file at ${candidate}:`, error);
+  }
+}
 
 type AuthMode = 'global' | 'standard';
 
