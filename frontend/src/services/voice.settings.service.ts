@@ -174,7 +174,7 @@ const initialDefaultSettings: Readonly<VoiceApplicationSettings> = Object.freeze
   ttsProvider: 'browser_tts',
   selectedTtsVoiceId: null,
   ttsVolume: 0.9,
-  ttsRate: 1.05,
+  ttsRate: 1.2,
   ttsPitch: 1.0,
   autoPlayTts: true,
   costLimit: 20.00,

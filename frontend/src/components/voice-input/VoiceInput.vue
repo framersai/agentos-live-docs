@@ -152,6 +152,7 @@
             class="vi-tts-toggle"
             :class="{ 'vi-tts-toggle--active': isTtsAutoPlayEnabled }"
             :aria-pressed="isTtsAutoPlayEnabled"
+            :aria-label="ttsToggleAriaLabel"
             @click="toggleTtsAutoPlay"
           >
             <component :is="isTtsAutoPlayEnabled ? SpeakerWaveIcon : SpeakerXMarkIcon" class="vi-tts-toggle__icon" aria-hidden="true" />
@@ -685,6 +686,9 @@ const ttsProviderMeta = computed(() => {
 });
 
 const isTtsAutoPlayEnabled = computed(() => currentSettings.autoPlayTts);
+const ttsToggleAriaLabel = computed(() =>
+  isTtsAutoPlayEnabled.value ? 'Disable speech playback' : 'Enable speech playback'
+);
 
 function getHintIcon(type: Hint['type']): string {
   switch (type) {
@@ -856,6 +860,18 @@ async function handleAudioModeChange(mode: AudioInputMode) {
 function toggleToolbar() {
   sharedState.showInputToolbar.value = !sharedState.showInputToolbar.value;
   audioFeedback.playSound(audioFeedback.beepNeutralSound.value, 0.3);
+}
+
+async function toggleTtsAutoPlay() {
+  const nextValue = !currentSettings.autoPlayTts;
+  await voiceSettingsManager.updateSetting('autoPlayTts', nextValue);
+  audioFeedback.playSound(audioFeedback.beepNeutralSound.value, 0.3);
+  if (!nextValue) {
+    voiceSettingsManager.cancelSpeech();
+    showHint('Speech playback muted', 'info', 2500);
+  } else {
+    showHint('Speech playback enabled', 'success', 2500);
+  }
 }
 
 async function handleFileUpload(payload: { type: string; file: File }) {
