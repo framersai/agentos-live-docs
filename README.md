@@ -128,6 +128,8 @@ For the full list of environment variables, feature flags, and tuning options, r
 
 The shared plan catalog lives in `shared/planCatalog.ts` and drives the About page, login hints, and Settings billing card. See [`docs/PLANS_AND_BILLING.md`](docs/PLANS_AND_BILLING.md) for the calculation breakdown.
 
+For a detailed implementation brief covering the multi-step registration experience, Supabase integration, and Lemon Squeezy checkout, read [`docs/SIGNUP_BILLING_IMPLEMENTATION_PLAN.md`](docs/SIGNUP_BILLING_IMPLEMENTATION_PLAN.md).
+
 - Free � GPT-4o mini, ~1.8K GPT-4o tokens/day.
 - Basic ($9/mo) � ~9.5K GPT-4o tokens/day, premium models, no BYO keys.
 - Creator ($18/mo) � ~21.8K GPT-4o tokens/day, premium models, optional BYO rollover.
