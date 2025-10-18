@@ -1,13 +1,13 @@
 import { Router } from 'express';
 import { authMiddleware } from '../middleware/auth.js';
-import { postGlobalLogin, postStandardLogin, getStatus as getAuthStatus, deleteSession as deleteAuthSession, } from '../src/features/auth/auth.routes.js';
+import { postGlobalLogin, postStandardLogin, getStatus as getAuthStatus, deleteSession as deleteAuthSession, postRegister, } from '../src/features/auth/auth.routes.js';
 import * as chatApiRoutes from '../src/features/chat/chat.routes.js';
 import * as sttApiRoutes from '../src/features/speech/stt.routes.js';
 import * as ttsApiRoutes from '../src/features/speech/tts.routes.js';
 import * as costApiRoutes from '../src/features/cost/cost.routes.js';
 import { rateLimiter } from '../middleware/ratelimiter.js';
 import * as promptApiRoutes from '../src/features/prompts/prompt.routes.js';
-import { postCheckoutSession, postLemonWebhook } from '../src/features/billing/billing.routes.js';
+import { postCheckoutSession, postLemonWebhook, getCheckoutStatus } from '../src/features/billing/billing.routes.js';
 import * as organizationRoutes from '../src/features/organization/organization.routes.js';
 import { getLlmStatus as getSystemLlmStatus } from '../src/features/system/system.routes.js';
 export async function configureRouter() {
@@ -16,6 +16,7 @@ export async function configureRouter() {
     try {
         router.post('/auth/global', postGlobalLogin);
         router.post('/auth/login', postStandardLogin);
+        router.post('/auth/register', postRegister);
         router.get('/auth', authMiddleware, getAuthStatus);
         router.delete('/auth', authMiddleware, deleteAuthSession);
         console.log('✅ Registered auth routes');
@@ -69,6 +70,7 @@ export async function configureRouter() {
         router.get('/tts/voices', ttsApiRoutes.GET);
         console.log('✅ Registered TTS routes (public/private access)');
         router.post('/billing/checkout', authMiddleware, postCheckoutSession);
+        router.get('/billing/status/:checkoutId', authMiddleware, getCheckoutStatus);
         router.post('/billing/webhook', postLemonWebhook);
         console.log('✅ Registered billing routes');
         router.get('/organizations', authMiddleware, organizationRoutes.getOrganizations);

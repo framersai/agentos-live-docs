@@ -10,8 +10,7 @@ const envCandidatePaths = [
 ];
 for (const candidate of envCandidatePaths) {
     try {
-        const result = dotenv.config({ path: candidate });
-        if (result.parsed) {
+        if (dotenv.config({ path: candidate }).parsed) {
             console.log(`[Config] Loaded environment variables from ${candidate}`);
         }
     }
