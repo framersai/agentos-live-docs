@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useRegistrationStore } from '@/store/registration.store';
@@ -9,7 +9,13 @@ const route = useRoute();
 const { t } = useI18n();
 const registrationStore = useRegistrationStore();
 
-const customerEmail = computed(() => registrationStore.account.email);
+const emailCache = ref(registrationStore.account.email);
+
+onMounted(() => {
+  registrationStore.reset();
+});
+
+const customerEmail = computed(() => emailCache.value);
 
 const goToApp = () => {
   router.push({ name: 'Login', params: { locale: route.params.locale } });

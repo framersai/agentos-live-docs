@@ -109,6 +109,23 @@ const runInitialSchema = (db: BetterSqliteDatabase): void => {
   db.exec('CREATE INDEX IF NOT EXISTS idx_organizations_owner ON organizations(owner_user_id);');
 
   db.exec(`
+    CREATE TABLE IF NOT EXISTS checkout_sessions (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL,
+      plan_id TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'created',
+      lemon_checkout_id TEXT,
+      lemon_subscription_id TEXT,
+      lemon_customer_id TEXT,
+      created_at INTEGER NOT NULL,
+      updated_at INTEGER NOT NULL,
+      FOREIGN KEY (user_id) REFERENCES app_users(id) ON DELETE CASCADE
+    );
+  `);
+  db.exec('CREATE INDEX IF NOT EXISTS idx_checkout_sessions_user ON checkout_sessions(user_id);');
+  db.exec('CREATE INDEX IF NOT EXISTS idx_checkout_sessions_status ON checkout_sessions(status);');
+
+  db.exec(`
     CREATE TABLE IF NOT EXISTS organization_members (
       id TEXT PRIMARY KEY,
       organization_id TEXT NOT NULL,

@@ -211,7 +211,12 @@ export function useAuth() {
     registerSupabaseListener();
   }
 
-  const login = (token: string, rememberMe: boolean, user?: any): void => {
+  const login = (token: string, rememberMe: boolean, userOrOptions?: any): void => {
+    const options: { user?: any; tokenProvider?: string } =
+      userOrOptions && typeof userOrOptions === 'object' && !Array.isArray(userOrOptions) && ('user' in userOrOptions || 'tokenProvider' in userOrOptions)
+        ? userOrOptions
+        : { user: userOrOptions };
+
     const storage = rememberMe ? localStorage : sessionStorage;
     storage.setItem(AUTH_TOKEN_KEY, token);
     if (rememberMe) {
@@ -223,8 +228,9 @@ export function useAuth() {
     }
     checkAuthStatus();
     getOrGenerateSessionUserId();
-    if (user) {
-      setUser({ ...user, authenticated: true, tokenProvider: 'global' });
+    if (options.user) {
+      const derivedProvider = options.tokenProvider ?? options.user.tokenProvider ?? 'global';
+      setUser({ ...options.user, authenticated: true, tokenProvider: derivedProvider });
     }
   };
 

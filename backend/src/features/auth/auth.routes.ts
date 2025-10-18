@@ -6,7 +6,7 @@
 
 import type { Request, Response } from 'express';
 import { appConfig } from '../../config/appConfig.js';
-import { globalPasswordLogin, standardLogin } from './auth.service.js';
+import { globalPasswordLogin, standardLogin, registerAccount } from './auth.service.js';
 
 const getClientIp = (req: Request): string | null => {
   const forwarded = req.headers['x-forwarded-for'];
@@ -46,6 +46,10 @@ const mapAuthErrorToStatus = (error: Error): number => {
       return 403;
     case 'GLOBAL_LOGIN_RATE_LIMIT':
       return 429;
+    case 'USER_ALREADY_EXISTS':
+      return 409;
+    case 'MISSING_CREDENTIALS':
+      return 400;
     default:
       return 500;
   }
@@ -83,6 +87,38 @@ export const postGlobalLogin = async (req: Request, res: Response): Promise<void
     const message = error.message === 'GLOBAL_LOGIN_RATE_LIMIT'
       ? 'Too many global access attempts. Try again later.'
       : 'Global access denied.';
+    res.status(status).json({
+      message,
+      error: error.message,
+    });
+  }
+};
+
+export const postRegister = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { email, password } = req.body as { email?: string; password?: string };
+
+    if (!email || !password) {
+      res.status(400).json({ message: 'Email and password are required.', error: 'MISSING_CREDENTIALS' });
+      return;
+    }
+
+    const result = await registerAccount({ email, password });
+
+    res.status(201).json({
+      message: 'Registration successful. Complete checkout to activate your workspace.',
+      token: result.token,
+      user: {
+        ...result.user,
+      },
+      tokenProvider: 'registration',
+    });
+  } catch (error: any) {
+    const status = mapAuthErrorToStatus(error);
+    const message =
+      error.message === 'USER_ALREADY_EXISTS'
+        ? 'Account already exists. Try logging in instead.'
+        : 'Unable to register account.';
     res.status(status).json({
       message,
       error: error.message,

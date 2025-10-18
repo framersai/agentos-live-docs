@@ -27,7 +27,7 @@ for (const candidate of envCandidatePaths) {
   }
 }
 
-type AuthMode = 'global' | 'standard';
+type AuthMode = 'global' | 'standard' | 'registration';
 
 export interface AuthTokenPayload {
   sub: string;

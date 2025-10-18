@@ -6,7 +6,13 @@
  * All functions are designed to be type-safe and adhere to modern TypeScript practices.
  * @version 1.4.1 - Corrected sendMessageStream callback references and ensured full file content.
  */
-import axios, { type AxiosInstance, type InternalAxiosRequestConfig, type AxiosResponse } from 'axios';
+import axios, {
+  type AxiosInstance,
+  type InternalAxiosRequestConfig,
+  type AxiosRequestConfig,
+  type AxiosResponse,
+} from 'axios';
+import type { PlanId } from '../../../shared/planCatalog';
 
 // Environment variables for API configuration.
 const API_BASE_URL: string = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api';
@@ -134,15 +140,50 @@ export const authAPI = {
     api.post('/auth/global', payload),
   loginStandard: (payload: { email: string; password: string; rememberMe?: boolean }): Promise<AxiosResponse<AuthResponseFE>> =>
     api.post('/auth/login', payload),
+  register: (payload: { email: string; password: string }): Promise<AxiosResponse<AuthResponseFE>> =>
+    api.post('/auth/register', payload),
   checkStatus: (): Promise<AxiosResponse<AuthResponseFE>> => api.get('/auth'),
   logout: (): Promise<AxiosResponse<LogoutResponseFE>> => api.delete('/auth'),
 };
 
-export interface BillingCheckoutResponseFE { checkoutUrl: string; }
+export interface BillingCheckoutResponseFE {
+  checkoutUrl: string;
+  checkoutSessionId: string;
+}
+
+export interface BillingCheckoutRequest {
+  planId: PlanId;
+  successUrl?: string;
+  cancelUrl?: string;
+  clientSessionId?: string;
+}
+
+export interface BillingCheckoutStatusResponseFE {
+  status: 'created' | 'pending' | 'paid' | 'complete' | 'failed' | 'expired';
+  planId: string;
+  token?: string;
+  user?: Record<string, any>;
+}
 
 export const billingAPI = {
-  createCheckoutSession: (payload: { variantId: string; productId: string; successUrl?: string; cancelUrl?: string }): Promise<AxiosResponse<BillingCheckoutResponseFE>> =>
-    api.post('/billing/checkout', payload),
+  createCheckoutSession: (
+    payload: BillingCheckoutRequest,
+    options?: { token?: string },
+  ): Promise<AxiosResponse<BillingCheckoutResponseFE>> => {
+    const config: AxiosRequestConfig | undefined = options?.token
+      ? { headers: { Authorization: `Bearer ${options.token}` } }
+      : undefined;
+    return api.post('/billing/checkout', payload, config);
+  },
+  getCheckoutStatus: (
+    checkoutId: string,
+    options?: { token?: string },
+  ): Promise<AxiosResponse<BillingCheckoutStatusResponseFE>> => {
+    const config: AxiosRequestConfig | undefined = options?.token
+      ? { headers: { Authorization: `Bearer ${options.token}` } }
+      : undefined;
+    return api.get(`/billing/status/${checkoutId}`, config);
+  },
 };
 
 export const rateLimitAPI = {

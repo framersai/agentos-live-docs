@@ -6,6 +6,7 @@ import { verifySupabaseToken, supabaseAuthEnabled } from '../src/features/auth/s
 const PUBLIC_AUTH_ROUTES: Array<{ method: string; path: string }> = [
   { method: 'POST', path: '/api/auth/global' },
   { method: 'POST', path: '/api/auth/login' },
+  { method: 'POST', path: '/api/auth/register' },
   { method: 'DELETE', path: '/api/auth' },
 ];
 
@@ -43,7 +44,8 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
 
   const payload = verifyToken(token);
   if (payload) {
-    (req as any).user = { ...payload, authenticated: true, token, tokenProvider: 'global' };
+    const tokenProvider = payload.mode === 'registration' ? 'registration' : 'internal';
+    (req as any).user = { ...payload, authenticated: true, token, tokenProvider };
     return next();
   }
 

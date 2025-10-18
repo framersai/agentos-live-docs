@@ -567,6 +567,8 @@ import { useCostStore } from '@/store/cost.store';
 import { useAgentStore } from '@/store/agent.store';
 import { useUiStore } from '@/store/ui.store';
 import { useChatStore } from '@/store/chat.store';
+import { usePlans } from '@/composables/usePlans';
+import type { PlanId } from '../../../shared/planCatalog';
 
 // Child Components
 import SettingsSection from '@/components/settings/SettingsSection.vue';
@@ -599,22 +601,25 @@ const auth = useAuth();
 const costStore = useCostStore();
 const agentStore = useAgentStore();
 
-  const { findPlan } = usePlans();
-  const basicPlan = computed(() => findPlan('basic'));
-  const creatorPlan = computed(() => findPlan('creator'));
-  const organizationPlan = computed(() => findPlan('organization'));
-  const showPlanModal = ref(false);
-  const openPlanModal = () => { showPlanModal.value = true; };
-  const closePlanModal = () => { showPlanModal.value = false; };
+const { findPlan } = usePlans();
+const basicPlan = computed(() => findPlan('basic'));
+const creatorPlan = computed(() => findPlan('creator'));
+const organizationPlan = computed(() => findPlan('organization'));
+const checkoutPlan = computed(() => creatorPlan.value ?? basicPlan.value ?? null);
+const showPlanModal = ref(false);
+const openPlanModal = () => { showPlanModal.value = true; };
+const closePlanModal = () => { showPlanModal.value = false; };
 const chatStoreInstance = useChatStore();
-
-const defaultProductId = import.meta.env.VITE_LEMONSQUEEZY_PRODUCT_ID || '';
-const defaultVariantId = import.meta.env.VITE_LEMONSQUEEZY_VARIANT_ID || '';
 
 const currentUser = computed(() => auth.user.value);
 const isAuthenticated = computed(() => auth.isAuthenticated.value);
 const isGlobalUser = computed(() => currentUser.value?.mode === 'global');
-const hasBillingConfig = computed(() => Boolean(defaultProductId && defaultVariantId));
+const checkoutPlanId = computed<PlanId>(() => checkoutPlan.value?.id ?? 'creator');
+const hasBillingConfig = computed(() =>
+  Boolean(
+    checkoutPlan.value?.checkout?.some((descriptor) => descriptor.provider === 'lemonsqueezy'),
+  ),
+);
 
 const checkoutInFlight = ref(false);
 const checkoutError = ref('');
@@ -662,7 +667,7 @@ const billingButtonLabel = computed(() => {
 const billingHelperText = computed(() => {
   if (!isAuthenticated.value) return 'Use your personal login to manage billing and subscription.';
   if (isGlobalUser.value) return 'This session uses the shared global passphrase. Personal billing is not required.';
-  if (!hasBillingConfig.value) return 'Billing integration is not configured. Set VITE_LEMONSQUEEZY_PRODUCT_ID and VITE_LEMONSQUEEZY_VARIANT_ID in your environment.';
+  if (!hasBillingConfig.value) return 'Billing integration is not configured. Confirm Lemon Squeezy product and variant environment variables for the selected plan.';
   const status = currentUser.value?.subscriptionStatus;
   if (status === 'active') return 'Your subscription renews automatically until canceled.';
   if (status === 'trialing') return 'Trial active — finish checkout to keep access after the trial ends.';
@@ -683,13 +688,13 @@ const startSubscriptionCheckout = async (): Promise<void> => {
   checkoutError.value = '';
   checkoutInFlight.value = true;
   try {
-    const payload = {
-      productId: defaultProductId,
-      variantId: defaultVariantId,
-      successUrl: `${window.location.origin}/billing/success`,
-      cancelUrl: `${window.location.origin}${window.location.pathname}#billing-settings`,
-    };
-    const { data } = await billingAPI.createCheckoutSession(payload);
+    const successUrl = `${window.location.origin}/billing/success`;
+    const cancelUrl = `${window.location.origin}${window.location.pathname}#billing-settings`;
+    const { data } = await billingAPI.createCheckoutSession({
+      planId: checkoutPlanId.value,
+      successUrl,
+      cancelUrl,
+    });
     const checkoutUrl = data?.checkoutUrl;
     if (!checkoutUrl) {
       throw new Error('Checkout URL missing from server response.');
@@ -1072,6 +1077,7 @@ watch([
 <style lang="scss">
 // Styles for Settings.vue are in frontend/src/styles/views/settings/_settings-page.scss
 </style>
+
 
 
 

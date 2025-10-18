@@ -4,15 +4,29 @@ import { useRouter, useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useRegistrationStore } from '@/store/registration.store';
 import { usePlans } from '@/composables/usePlans';
-import type { PlanId } from '../../../shared/planCatalog';
+import type { PlanCatalogEntry, PlanId } from '../../../shared/planCatalog';
 
 const router = useRouter();
 const route = useRoute();
 const { t } = useI18n();
 const registrationStore = useRegistrationStore();
 const { plans } = usePlans();
+const availablePlans = computed<PlanCatalogEntry[]>(() => plans.value);
+
+const priceFormatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  maximumFractionDigits: 0,
+});
 
 const selectedPlanId = computed<PlanId | null>(() => registrationStore.plan?.planId ?? null);
+
+const displayPrice = (plan: PlanCatalogEntry): string => {
+  if (plan.monthlyPriceUsd === 0) {
+    return t('plans.free');
+  }
+  return t('plans.pricePerMonth', { price: priceFormatter.format(plan.monthlyPriceUsd) });
+};
 
 const handlePlanSelect = async (planId: PlanId) => {
   await registrationStore.setPlan({ planId });
@@ -29,19 +43,19 @@ const handlePlanSelect = async (planId: PlanId) => {
 
     <div class="plan-grid">
       <article
-        v-for="plan in plans"
+        v-for="plan in availablePlans"
         :key="plan.id"
         class="plan-card card-glass-interactive card-glass-interactive--hoverable"
         :class="{ 'plan-card--selected': selectedPlanId === plan.id }"
         @click="handlePlanSelect(plan.id)"
       >
         <header class="plan-card__header">
-          <h3>{{ plan.name }}</h3>
-          <p class="plan-card__price">{{ plan.metadata?.displayPrice ?? plan.price }}</p>
+          <h3>{{ plan.displayName }}</h3>
+          <p class="plan-card__price">{{ displayPrice(plan) }}</p>
           <span v-if="plan.metadata?.featured" class="plan-card__badge">{{ t('register.plan.featuredBadge') }}</span>
         </header>
         <ul class="plan-card__highlights">
-          <li v-for="highlight in plan.highlights" :key="highlight">{{ highlight }}</li>
+          <li v-for="bullet in plan.bullets" :key="bullet">{{ bullet }}</li>
         </ul>
         <button type="button" class="btn btn-secondary-ephemeral">{{ t('register.plan.choose') }}</button>
       </article>

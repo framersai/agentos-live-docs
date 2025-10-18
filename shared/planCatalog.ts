@@ -9,6 +9,7 @@
  * infrastructure, human ops, and profit. Daily allowance = (monthly price * allocation %) / 30.
  */
 export type PlanId = 'global-pass' | 'free' | 'basic' | 'creator' | 'organization';
+export type PlanTier = 'metered' | 'unlimited';
 
 export type ByoApiKeyPolicy = 'disallowed' | 'optional' | 'required';
 
@@ -58,6 +59,7 @@ export interface PlanCatalogEntry {
     featured?: boolean;
     requiresContact?: boolean;
     hiddenOnMarketing?: boolean;
+    tier?: PlanTier;
   };
 }
 
@@ -101,6 +103,7 @@ export const PLAN_CATALOG: Record<PlanId, PlanCatalogEntry> = {
     public: false,
     metadata: {
       hiddenOnMarketing: true,
+      tier: 'unlimited',
     },
   },
   free: {
@@ -120,6 +123,9 @@ export const PLAN_CATALOG: Record<PlanId, PlanCatalogEntry> = {
     targetAudience: 'Curious visitors evaluating the assistant without payment details.',
     checkout: [],
     public: true,
+    metadata: {
+      tier: 'metered',
+    },
   },
   basic: {
     id: 'basic',
@@ -149,6 +155,9 @@ export const PLAN_CATALOG: Record<PlanId, PlanCatalogEntry> = {
       },
     ],
     public: true,
+    metadata: {
+      tier: 'metered',
+    },
   },
   creator: {
     id: 'creator',
@@ -184,6 +193,7 @@ export const PLAN_CATALOG: Record<PlanId, PlanCatalogEntry> = {
     public: true,
     metadata: {
       featured: true,
+      tier: 'metered',
     },
   },
   organization: {
@@ -220,6 +230,7 @@ export const PLAN_CATALOG: Record<PlanId, PlanCatalogEntry> = {
     public: true,
     metadata: {
       requiresContact: true,
+      tier: 'metered',
     },
   },
 };
@@ -254,9 +265,3 @@ export const PLAN_ROLLOVER_RULES: PlanRolloverExplanation[] = [
     description: 'Allowance is enforced per IP. Admins rotate passphrases manually when required.',
   },
 ];
-
-
-
-
-
-

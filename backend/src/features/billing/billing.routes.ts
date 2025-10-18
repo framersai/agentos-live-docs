@@ -11,6 +11,19 @@ import {
   verifyWebhookSignature,
   handleSubscriptionWebhook,
 } from './lemonsqueezy.service.js';
+import {
+  createCheckoutSessionRecord,
+  updateCheckoutSessionRecord,
+  findCheckoutSessionById,
+} from './checkout.repository.js';
+import { PLAN_CATALOG, type PlanId, type PlanCatalogEntry } from '../../../shared/planCatalog.js';
+import { findUserById } from '../auth/user.repository.js';
+import { createSessionForUser } from '../auth/auth.service.js';
+
+const resolvePlan = (planId: string | undefined): PlanCatalogEntry | null => {
+  if (!planId) return null;
+  return (PLAN_CATALOG as Record<string, PlanCatalogEntry | undefined>)[planId] ?? null;
+};
 
 export const postCheckoutSession = async (req: Request, res: Response): Promise<void> => {
   const user = (req as any).user;
@@ -26,34 +39,97 @@ export const postCheckoutSession = async (req: Request, res: Response): Promise<
     res.status(400).json({ message: 'User email is required to start checkout.' });
     return;
   }
-  const { variantId, productId, successUrl, cancelUrl } = req.body as {
-    variantId?: string;
-    productId?: string;
+
+  const { planId, successUrl, cancelUrl, clientSessionId } = req.body as {
+    planId?: PlanId;
     successUrl?: string;
     cancelUrl?: string;
+    clientSessionId?: string;
   };
-  if (!variantId || !productId) {
-    res.status(400).json({ message: 'variantId and productId are required.' });
+
+  const plan = resolvePlan(planId);
+  if (!plan) {
+    res.status(400).json({ message: 'Unknown plan.' });
+    return;
+  }
+  const lemonDescriptor = plan.checkout.find((entry) => entry.provider === 'lemonsqueezy');
+  if (!lemonDescriptor) {
+    res.status(503).json({ message: 'Plan is not configured for billing.' });
+    return;
+  }
+  const productId = process.env[lemonDescriptor.productEnvVar];
+  const variantId = lemonDescriptor.variantEnvVar ? process.env[lemonDescriptor.variantEnvVar] : undefined;
+  if (!productId || !variantId) {
+    res.status(503).json({ message: 'Plan is missing Lemon Squeezy product or variant IDs.' });
     return;
   }
   if (!appConfig.lemonsqueezy.enabled) {
     res.status(503).json({ message: 'Billing is not configured.' });
     return;
   }
+
+  const userId = user.sub ?? user.id;
   try {
-    const checkoutUrl = await createCheckoutSession({
+    const record = createCheckoutSessionRecord({ userId, planId: plan.id, sessionId: clientSessionId });
+    const { checkoutUrl, checkoutId } = await createCheckoutSession({
       variantId,
       productId,
+      planId: plan.id,
+      checkoutSessionId: record.id,
       email: user.email,
       successUrl,
       cancelUrl,
-      userId: user.sub ?? user.id,
+      userId,
     });
-    res.status(200).json({ checkoutUrl });
+
+    updateCheckoutSessionRecord(record.id, {
+      status: 'pending',
+      lemonCheckoutId: checkoutId,
+    });
+
+    res.status(200).json({ checkoutUrl, checkoutSessionId: record.id });
   } catch (error: any) {
     console.error('[Billing] Failed to create checkout session:', error);
-    res.status(500).json({ message: 'Failed to create checkout session.', error: error.message });
+    res.status(500).json({ message: 'Failed to create checkout session.', error: error?.message ?? 'UNKNOWN_ERROR' });
   }
+};
+
+export const getCheckoutStatus = async (req: Request, res: Response): Promise<void> => {
+  const user = (req as any).user;
+  if (!user) {
+    res.status(401).json({ message: 'Authentication required.' });
+    return;
+  }
+
+  const { checkoutId } = req.params as { checkoutId: string };
+  const record = findCheckoutSessionById(checkoutId);
+  if (!record) {
+    res.status(404).json({ message: 'Checkout session not found.' });
+    return;
+  }
+
+  const userId = user.sub ?? user.id;
+  if (!userId || record.user_id !== userId) {
+    res.status(403).json({ message: 'Not allowed to access this checkout session.' });
+    return;
+  }
+
+  const responsePayload: any = {
+    status: record.status,
+    planId: record.plan_id,
+  };
+
+  if (record.status === 'paid') {
+    const dbUser = findUserById(record.user_id);
+    if (dbUser) {
+      const session = createSessionForUser(dbUser, { mode: 'standard' });
+      responsePayload.token = session.token;
+      responsePayload.user = session.user;
+      updateCheckoutSessionRecord(record.id, { status: 'complete' });
+    }
+  }
+
+  res.status(200).json(responsePayload);
 };
 
 export const postLemonWebhook = async (req: Request, res: Response): Promise<void> => {
