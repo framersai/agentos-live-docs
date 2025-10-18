@@ -1,0 +1,11 @@
+{
+  "extends": "../backend/tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../backend/dist/shared",
+    "rootDir": "./",
+    "declaration": true,
+    "declarationMap": true,
+    "emitDeclarationOnly": false
+  },
+  "include": ["./planCatalog.ts"]
+}
