@@ -35,11 +35,17 @@ export const optionalAuthMiddleware = async (req: Request, _res: Response, next:
       return next();
     }
 
-    const globalPayload = verifyToken(token);
-    if (globalPayload) {
-      (req as any).user = { ...globalPayload, authenticated: true, token, tokenProvider: 'global' };
-      return next();
-    }
+  const globalPayload = verifyToken(token);
+  if (globalPayload) {
+    const tokenProvider =
+      globalPayload.mode === 'global'
+        ? 'global'
+        : globalPayload.mode === 'registration'
+          ? 'registration'
+          : 'internal';
+    (req as any).user = { ...globalPayload, authenticated: true, token, tokenProvider };
+    return next();
+  }
 
     if (supabaseAuthEnabled) {
       const supabaseResult = await verifySupabaseToken(token);

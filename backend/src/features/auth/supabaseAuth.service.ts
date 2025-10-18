@@ -87,3 +87,21 @@ export const verifySupabaseToken = async (token: string): Promise<SupabaseAuthRe
     return null;
   }
 };
+
+export const createSupabaseUserAccount = async (email: string, password: string): Promise<{ id: string } | null> => {
+  if (!supabaseAdmin) return null;
+  try {
+    const { data, error } = await supabaseAdmin.auth.admin.createUser({
+      email,
+      password,
+      email_confirm: true,
+    });
+    if (error || !data?.user) {
+      throw error ?? new Error('Failed to create Supabase user');
+    }
+    return { id: data.user.id };
+  } catch (error) {
+    console.error('[SupabaseAuth] Failed to create Supabase user account:', error);
+    throw error;
+  }
+};

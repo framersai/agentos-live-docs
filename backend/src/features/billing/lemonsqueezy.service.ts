@@ -10,6 +10,13 @@ import type { AxiosInstance } from 'axios';
 import { appConfig } from '../../config/appConfig.js';
 import { upsertUserFromSubscription } from '../auth/auth.service.js';
 import { storeLemonSqueezyEvent } from '../auth/user.repository.js';
+import {
+  updateCheckoutSessionRecord,
+  findCheckoutSessionById,
+  findCheckoutSessionByLemonId,
+  type CheckoutSessionRecord,
+} from './checkout.repository.js';
+import { PLAN_CATALOG } from '../../../shared/planCatalog.js';
 
 const LEMON_API_BASE = 'https://api.lemonsqueezy.com/v1';
 
@@ -30,6 +37,8 @@ const buildClient = (): AxiosInstance => {
 export interface CreateCheckoutPayload {
   productId: string;
   variantId: string;
+  planId: string;
+  checkoutSessionId: string;
   email: string;
   successUrl?: string;
   cancelUrl?: string;
@@ -46,6 +55,8 @@ export const createCheckoutSession = async (payload: CreateCheckoutPayload) => {
           email: payload.email,
           custom: {
             user_id: payload.userId,
+            plan_id: payload.planId,
+            checkout_session_id: payload.checkoutSessionId,
           },
         },
         checkout_options: {
@@ -80,10 +91,11 @@ export const createCheckoutSession = async (payload: CreateCheckoutPayload) => {
   });
 
   const checkoutUrl = response.data?.data?.attributes?.url;
-  if (!checkoutUrl) {
+  const checkoutId = response.data?.data?.id;
+  if (!checkoutUrl || !checkoutId) {
     throw new Error('LEMONSQUEEZY_CHECKOUT_URL_MISSING');
   }
-  return checkoutUrl;
+  return { checkoutUrl, checkoutId };
 };
 
 export const verifyWebhookSignature = (payload: string, signature: string | undefined): boolean => {
@@ -115,22 +127,58 @@ interface LemonSqueezyWebhookData {
 
 export const handleSubscriptionWebhook = (eventId: string, payload: string, parsed: LemonSqueezyWebhookData): void => {
   const eventName = parsed.meta?.event_name || 'unknown';
-  storeLemonSqueezyEvent({ id: eventId, eventName, payload, processed: false });
+  const attributes = parsed.data?.attributes ?? {};
+  const relationships = parsed.data?.relationships ?? {};
+  const customData = (attributes as any)?.checkout_data?.custom ?? {};
 
-  const email = parsed.data?.attributes?.user_email;
+  const checkoutSessionId: string | undefined = customData?.checkout_session_id;
+  const planId: string | undefined = customData?.plan_id;
+  const userId: string | undefined = customData?.user_id;
+  const lemonCheckoutId: string | undefined = (parsed as any)?.data?.id || (relationships as any)?.checkout?.data?.id;
+  const lemonSubscriptionId: string | undefined = relationships.order?.data?.id;
+  const lemonCustomerId: string | undefined = (relationships as any)?.customer?.data?.id;
+
+  let checkoutStatus: CheckoutSessionRecord['status'] = 'pending';
+  const normalizedStatus = (attributes.status || '').toLowerCase();
+  if (normalizedStatus === 'active' || normalizedStatus === 'trialing') {
+    checkoutStatus = 'paid';
+  } else if (normalizedStatus === 'cancelled') {
+    checkoutStatus = 'failed';
+  } else if (normalizedStatus === 'expired') {
+    checkoutStatus = 'expired';
+  }
+
+  let checkoutRecord = checkoutSessionId ? findCheckoutSessionById(checkoutSessionId) : null;
+  if (!checkoutRecord && lemonCheckoutId) {
+    checkoutRecord = findCheckoutSessionByLemonId(lemonCheckoutId);
+  }
+
+  if (checkoutRecord) {
+    updateCheckoutSessionRecord(checkoutRecord.id, {
+      status: checkoutStatus,
+      lemonCheckoutId: lemonCheckoutId ?? checkoutRecord.lemon_checkout_id ?? null,
+      lemonSubscriptionId: lemonSubscriptionId ?? checkoutRecord.lemon_subscription_id ?? null,
+      lemonCustomerId: lemonCustomerId ?? checkoutRecord.lemon_customer_id ?? null,
+    });
+  }
+
+  storeLemonSqueezyEvent({ id: eventId, eventName, payload, processed: checkoutStatus === 'paid' });
+
+  const email = (attributes as any)?.user_email || (attributes as any)?.user_email_address || null;
   if (!email) {
     return;
   }
 
-  const status = parsed.data?.attributes?.status || 'active';
-  const renewsAt = parsed.data?.attributes?.renews_at ? Date.parse(parsed.data.attributes.renews_at) : null;
-  const expiresAt = parsed.data?.attributes?.expires_at ? Date.parse(parsed.data.attributes.expires_at) : null;
+  const renewsAt = attributes?.renews_at ? Date.parse(attributes.renews_at) : null;
+  const expiresAt = attributes?.expires_at ? Date.parse(attributes.expires_at) : null;
+  const plan = planId ? (PLAN_CATALOG as Record<string, any>)[planId] : null;
 
   upsertUserFromSubscription({
     email,
-    subscriptionStatus: status,
-    subscriptionTier: status === 'active' ? 'unlimited' : 'metered',
-    lemonSubscriptionId: parsed.data?.relationships?.order?.data?.id,
+    subscriptionStatus: normalizedStatus || 'active',
+    subscriptionTier: plan?.metadata?.tier ?? (normalizedStatus === 'active' ? 'unlimited' : 'metered'),
+    lemonSubscriptionId,
+    lemonCustomerId,
     renewsAt,
     expiresAt,
   });

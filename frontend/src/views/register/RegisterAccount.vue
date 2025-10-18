@@ -3,6 +3,7 @@ import { reactive, ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useRegistrationStore } from '@/store/registration.store';
+import { authAPI } from '@/utils/api';
 
 const router = useRouter();
 const route = useRoute();
@@ -18,6 +19,10 @@ const form = reactive({
 const isSubmitting = ref(false);
 const errorMessage = ref<string | null>(null);
 
+/**
+ * Submit the account form, creating a temporary registration session on the API.
+ * The backend returns a short-lived JWT that authorises the subsequent checkout calls.
+ */
 const handleSubmit = async () => {
   errorMessage.value = null;
 
@@ -32,12 +37,22 @@ const handleSubmit = async () => {
 
   try {
     isSubmitting.value = true;
-    // TODO: replace with /api/auth/register call.
-    await registrationStore.setAccount({
+
+    const payload = {
       email: form.email.trim(),
+      password: form.password,
+    };
+    const { data } = await authAPI.register(payload);
+    if (!data?.token) {
+      throw new Error('REGISTRATION_TOKEN_MISSING');
+    }
+
+    await registrationStore.setAccount({
+      email: payload.email,
       password: form.password,
       acceptTerms: form.acceptTerms,
     });
+    await registrationStore.setAuthToken(data.token);
 
     await router.push({
       name: 'RegisterPlan',
@@ -45,7 +60,12 @@ const handleSubmit = async () => {
     });
   } catch (error: unknown) {
     console.error('[RegisterAccount] submit failed', error);
-    errorMessage.value = t('register.account.errors.generic');
+    if (typeof error === 'object' && error !== null && 'response' in error) {
+      const response = (error as any).response;
+      errorMessage.value = response?.data?.message ?? t('register.account.errors.generic');
+    } else {
+      errorMessage.value = t('register.account.errors.generic');
+    }
   } finally {
     isSubmitting.value = false;
   }

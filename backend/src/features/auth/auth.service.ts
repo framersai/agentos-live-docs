@@ -6,7 +6,7 @@
 
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { appConfig, type AuthTokenPayload, type AuthTier, type AuthRole } from '../../config/appConfig.js';
+import { appConfig, type AuthTokenPayload, type AuthTier, type AuthRole, type AuthModeType } from '../../config/appConfig.js';
 import {
   findUserByEmail,
   updateLastLogin,
@@ -18,6 +18,7 @@ import {
   findUserById,
   type AppUser,
 } from './user.repository.js';
+import { createSupabaseUserAccount, supabaseAuthEnabled } from './supabaseAuth.service.js';
 
 const SALT_ROUNDS = 10;
 
@@ -28,7 +29,7 @@ type LoginResult = {
     email?: string;
     role: AuthTokenPayload['role'];
     tier: AuthTokenPayload['tier'];
-    mode: AuthTokenPayload['mode'];
+    mode: AuthModeType;
     subscriptionStatus?: string;
   };
 };
@@ -143,26 +144,55 @@ export const standardLogin = async (email: string, password: string, context: { 
   const role: AuthTokenPayload['role'] = 'subscriber';
   const tier = (user.subscription_tier as AuthTokenPayload['tier']) || 'metered';
 
+  return createSessionForUser(user, { mode: 'standard', tierOverride: tier, roleOverride: role });
+};
+
+export const createSessionForUser = (user: AppUser, options?: { mode?: AuthModeType; tierOverride?: AuthTier; roleOverride?: AuthRole }) => {
+  const sessionUser = toSessionUserPayload(user, options);
   const token = issueToken({
     sub: user.id,
-    role,
-    tier,
-    mode: 'standard',
+    role: sessionUser.role,
+    tier: sessionUser.tier,
+    mode: sessionUser.mode,
     type: 'session',
     email: user.email,
   });
+  return { token, user: sessionUser };
+};
 
-  return {
-    token,
-    user: {
-      id: user.id,
-      email: user.email,
-      role,
-      tier,
-      mode: 'standard',
-      subscriptionStatus: user.subscription_status,
-    },
-  };
+export const registerAccount = async (data: { email: string; password: string }): Promise<LoginResult> => {
+  const email = data.email.trim().toLowerCase();
+  if (!email || !data.password) {
+    throw new Error('MISSING_CREDENTIALS');
+  }
+  const existing = findUserByEmail(email);
+  if (existing) {
+    throw new Error('USER_ALREADY_EXISTS');
+  }
+
+  let supabaseUserId: string | null = null;
+  if (supabaseAuthEnabled) {
+    const supabaseUser = await createSupabaseUserAccount(email, data.password);
+    supabaseUserId = supabaseUser?.id ?? null;
+  }
+
+  const passwordHash = await hashPassword(data.password);
+  const newUser = createUser({
+    email,
+    passwordHash,
+    subscriptionStatus: 'pending',
+    subscriptionTier: 'metered',
+    supabaseUserId,
+    metadata: { registrationStage: 'pending-checkout' },
+  });
+
+  recordLoginEvent({ userId: newUser.id, mode: 'registration' });
+
+  return createSessionForUser(newUser, {
+    mode: 'registration',
+    tierOverride: 'metered',
+    roleOverride: 'subscriber',
+  });
 };
 
 export const upsertUserFromSubscription = (data: {

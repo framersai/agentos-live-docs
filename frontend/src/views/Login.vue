@@ -118,7 +118,7 @@ const handleGlobalLogin = async () => {
       rememberMe: globalRememberMe.value,
     });
     if (data?.token) {
-      auth.login(data.token, globalRememberMe.value, data.user);
+      auth.login(data.token, globalRememberMe.value, { user: data.user, tokenProvider: data.tokenProvider ?? 'global' });
       if (!data?.user) {
         await auth.refreshUser();
       }
@@ -154,7 +154,7 @@ const handleStandardLogin = async () => {
         rememberMe: standardRememberMe.value,
       });
       if (data?.token) {
-        auth.login(data.token, standardRememberMe.value, data.user);
+        auth.login(data.token, standardRememberMe.value, { user: data.user, tokenProvider: data.tokenProvider ?? 'standard' });
         if (!data?.user) {
           await auth.refreshUser();
         }
