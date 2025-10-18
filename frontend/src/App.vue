@@ -16,6 +16,7 @@ import {
   ref,
   computed,
   onMounted,
+  onBeforeUnmount,
   provide,
   readonly,
   type Component as VueComponentType,
@@ -40,6 +41,7 @@ import { ttsService } from './services/tts.service';
 import { agentService } from '@/services/agent.service';
 import { systemAPI, type LlmStatusResponseFE } from '@/utils/api';
 import { isAxiosError } from 'axios';
+import { i18n } from '@/i18n';
 
 // Icons for Toasts
 import {
@@ -65,6 +67,8 @@ provide('loading', readonly({
   hide: () => isLoadingApp.value = false,
   isLoading: isLoadingApp
 }));
+const isLocaleTransitioning = ref(false);
+const localeTransitionTimer = ref<number | null>(null);
 
 /**
  * @computed showAppFooter
@@ -139,6 +143,10 @@ const getToastIcon = (type: Toast['type']): VueComponentType => {
     default: return InfoIcon;
   }
 };
+
+const loadingOverlayMessage = computed(() =>
+  isLocaleTransitioning.value ? 'Switching language…' : ''
+);
 
 const summarizeProviderIssues = (providers?: LlmStatusResponseFE['providers']): string => {
   if (!providers) {
@@ -255,7 +263,11 @@ router.beforeEach((to: RouteLocationNormalized, _from: RouteLocationNormalized, 
 });
 router.afterEach(() => {
   // Add a slight delay to allow transitions to start before hiding loader
-  setTimeout(() => { isLoadingApp.value = false; }, 250);
+  setTimeout(() => {
+    if (!isLocaleTransitioning.value) {
+      isLoadingApp.value = false;
+    }
+  }, 250);
 });
 router.onError((error) => {
   console.error('[App.vue] Vue Router Navigation Error:', error);
@@ -338,6 +350,32 @@ watch(
   { immediate: true } // Run once on component mount as well
 );
 
+watch(
+  () => i18n.global.locale.value,
+  (newLocale, oldLocale) => {
+    if (!oldLocale || newLocale === oldLocale) {
+      return;
+    }
+    if (localeTransitionTimer.value !== null) {
+      window.clearTimeout(localeTransitionTimer.value);
+    }
+    isLocaleTransitioning.value = true;
+    isLoadingApp.value = true;
+    localeTransitionTimer.value = window.setTimeout(() => {
+      isLocaleTransitioning.value = false;
+      isLoadingApp.value = false;
+      localeTransitionTimer.value = null;
+    }, 480);
+  }
+);
+
+onBeforeUnmount(() => {
+  if (localeTransitionTimer.value !== null) {
+    window.clearTimeout(localeTransitionTimer.value);
+    localeTransitionTimer.value = null;
+  }
+});
+
 </script>
 
 <template>
@@ -349,6 +387,7 @@ watch(
       'is-light-mode': !uiStore.isCurrentThemeDark,
       'ai-is-speaking': isAiActuallySpeaking,
       'user-is-listening': isUserActuallyListening && !isAiActuallySpeaking,
+      'locale-transitioning': isLocaleTransitioning,
     }"
     aria-live="polite"
     aria-atomic="true"
@@ -361,7 +400,7 @@ watch(
         <div class="loading-spinner-ephemeral">
           <div v-for="i in 8" :key="`blade-${i}`" class="spinner-blade-ephemeral"></div>
         </div>
-        <p class="loading-text-ephemeral"></p>
+        <p class="loading-text-ephemeral">{{ loadingOverlayMessage }}</p>
       </div>
     </div>
 
@@ -422,4 +461,20 @@ watch(
 // Global styles are in main.scss and its imported partials.
 // Specific app-shell styles or overrides can go into frontend/src/styles/layout/_app.scss.
 // The transitions 'page-fade' and 'toast-transition' should be defined in your animation styles.
+.app-shell-ephemeral .app-layout-ephemeral,
+.app-shell-ephemeral .toast-notifications-container-ephemeral {
+  transition: opacity 0.35s ease, transform 0.35s ease, filter 0.35s ease;
+}
+
+.app-shell-ephemeral.locale-transitioning .app-layout-ephemeral,
+.app-shell-ephemeral.locale-transitioning .toast-notifications-container-ephemeral {
+  opacity: 0;
+  transform: translateY(10px);
+  filter: blur(2px);
+  pointer-events: none;
+}
+
+.loading-text-ephemeral {
+  transition: opacity 0.3s ease;
+}
 </style>
