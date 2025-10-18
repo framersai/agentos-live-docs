@@ -26,6 +26,11 @@ const About = () => import('@/views/About.vue');
 const PublicHome = () => import('@/views/PublicHome.vue');
 const PrivateHome = () => import('@/views/PrivateHome.vue');
 const NotFound = () => import('@/views/NotFound.vue');
+const RegisterLayout = () => import('@/views/register/RegisterLayout.vue');
+const RegisterAccount = () => import('@/views/register/RegisterAccount.vue');
+const RegisterPlan = () => import('@/views/register/RegisterPlan.vue');
+const RegisterPayment = () => import('@/views/register/RegisterPayment.vue');
+const RegisterSuccess = () => import('@/views/register/RegisterSuccess.vue');
 
 // AUTH_TOKEN_KEY, isAuthenticated, routes, router creation, and beforeEach guard remain the same.
 // No changes needed for the logic, only the import style was for defineAsyncComponent.
@@ -61,6 +66,10 @@ const routes: Array<RouteRecordRaw> = [
     {
         path: '/settings',
         redirect: () => `/${getCurrentLocale()}/settings`
+    },
+    {
+        path: '/register',
+        redirect: () => `/${getCurrentLocale()}/register`
     },
     {
         path: '/pro',
@@ -111,6 +120,37 @@ const routes: Array<RouteRecordRaw> = [
                 name: 'Settings',
                 component: Settings,
                 meta: { requiresAuth: true, title: 'Settings - Voice Chat Assistant' }
+            },
+            {
+                path: 'register',
+                component: RegisterLayout,
+                meta: { guest: true, title: 'Create Account - Voice Chat Assistant' },
+                children: [
+                    {
+                        path: '',
+                        name: 'RegisterAccount',
+                        component: RegisterAccount,
+                        meta: { guest: true, title: 'Create Account - Voice Chat Assistant', transition: 'page-fade' }
+                    },
+                    {
+                        path: 'plan',
+                        name: 'RegisterPlan',
+                        component: RegisterPlan,
+                        meta: { guest: true, title: 'Choose a Plan - Voice Chat Assistant', transition: 'page-fade' }
+                    },
+                    {
+                        path: 'payment',
+                        name: 'RegisterPayment',
+                        component: RegisterPayment,
+                        meta: { guest: true, title: 'Checkout - Voice Chat Assistant', transition: 'page-fade' }
+                    },
+                    {
+                        path: 'success',
+                        name: 'RegisterSuccess',
+                        component: RegisterSuccess,
+                        meta: { guest: true, title: 'Welcome aboard - Voice Chat Assistant', transition: 'page-fade' }
+                    }
+                ]
             },
             {
                 path: 'invite/:token',

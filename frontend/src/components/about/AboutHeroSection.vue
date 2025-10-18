@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, ref } from 'vue';
+import { onMounted, onBeforeUnmount, ref, computed } from 'vue';
+import { useRoute, RouterLink } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import AnimatedGlyph from '@/components/about/AnimatedGlyph.vue';
 
@@ -8,7 +9,9 @@ const props = defineProps<{
   showGuestBadge?: boolean;
 }>();
 
+const route = useRoute();
 const { t } = useI18n();
+const localeSegment = computed(() => (route.params.locale as string) || 'en');
 
 const sectionRef = ref<HTMLElement | null>(null);
 const isInView = ref(false);
@@ -85,13 +88,13 @@ onBeforeUnmount(() => {
       </strong>
     </p>
 
-    <a
-      href="#pricing"
+    <RouterLink
+      :to="{ name: 'RegisterAccount', params: { locale: localeSegment } }"
       class="btn btn-primary-ephemeral btn-lg hero-cta-button hover:text-white hero-animated"
       style="--stagger: 520ms"
     >
-      Explore Memberships
-    </a>
+      {{ t('register.actions.continue') }}
+    </RouterLink>
   </section>
 </template>
 

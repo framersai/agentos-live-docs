@@ -456,6 +456,67 @@ export default {
       toastMessage: 'Welcome to the team. Open settings to see the workspace.',
     },
   },
+  register: {
+    eyebrow: 'Build faster with a tailored workspace',
+    headline: 'Set up your account in minutes.',
+    subheadline: 'Choose a plan that fits, complete secure checkout, and start collaborating with Voice Chat Assistant immediately.',
+    steps: {
+      account: 'Account',
+      plan: 'Plan',
+      payment: 'Payment',
+      success: 'Success',
+    },
+    actions: {
+      continue: 'Continue',
+      back: 'Back',
+      processing: 'Working...',
+    },
+    account: {
+      title: 'Create your account',
+      subtitle: 'Use a work email so we can route invoices and account recovery notices.',
+      emailLabel: 'Email address',
+      emailPlaceholder: 'you@example.com',
+      passwordLabel: 'Create a password',
+      passwordPlaceholder: 'At least 8 characters',
+      passwordHint: 'Use 8+ characters with at least one number or symbol.',
+      termsLabel: 'I agree to the <a href="https://voice-chat-assistant.com/terms" target="_blank" rel="noopener">Terms of Service</a> and <a href="https://voice-chat-assistant.com/privacy" target="_blank" rel="noopener">Privacy Policy</a>.',
+      errors: {
+        missingFields: 'Enter an email and password to continue.',
+        mustAcceptTerms: 'You need to accept the terms to create an account.',
+        generic: 'We couldn’t save your details just yet. Try again in a moment.',
+      },
+    },
+    plan: {
+      title: 'Pick the workspace that fits you best',
+      subtitle: 'Every plan includes intelligent voice-first tooling, adaptive memory, and streaming responses. Upgrade when you need more seats or tokens.',
+      choose: 'Select this plan',
+      featuredBadge: 'Recommended',
+    },
+    payment: {
+      title: 'Review & secure checkout',
+      subtitle: 'You’ll be taken to our Lemon Squeezy payment portal. Billing information is encrypted and handled securely.',
+      cta: 'Continue to secure checkout',
+      summary: {
+        email: 'Account email',
+        billing: 'Billing cadence',
+        billingNote: 'Charged monthly. Cancel anytime from Settings → Billing.',
+      },
+      placeholders: {
+        checkoutLink: 'Checkout session created (demo placeholder). Implement Lemon Squeezy redirect next.',
+      },
+      errors: {
+        missingPlan: 'Choose a plan before continuing.',
+        generic: 'We couldn’t create a checkout session. Try again or contact support.',
+      },
+    },
+    success: {
+      title: 'You’re all set!',
+      subtitle: 'A confirmation email is on the way to {email}. You can now sign in with your new account.',
+      placeholderEmail: 'your inbox',
+      cta: 'Go to login',
+      support: 'Need help?',
+    },
+  },
   plans: {
     sectionTitle: 'Subscription Tiers',
     viewComparison: 'View full comparison',
