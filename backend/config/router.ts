@@ -20,6 +20,7 @@ import {
   postRegister,
 } from '../src/features/auth/auth.routes.js';
 import * as chatApiRoutes from '../src/features/chat/chat.routes.js';
+import { postDetectLanguage } from '../src/features/chat/language.routes.js';
 import * as diagramApiRoutes from '../src/features/chat/diagram.routes.js';
 import * as sttApiRoutes from '../src/features/speech/stt.routes.js';
 import * as ttsApiRoutes from '../src/features/speech/tts.routes.js';
@@ -101,6 +102,7 @@ export async function configureRouter(): Promise<Router> {
     // The route handlers themselves can check req.user if behavior needs to differ for logged-in users.
     router.post('/chat', chatApiRoutes.POST);
     router.post('/chat/persona', chatApiRoutes.POST_PERSONA);
+    router.post('/chat/detect-language', postDetectLanguage);
     console.log('✅ Registered chat routes (public/private access)');
 
     router.post('/diagram', chatApiRoutes.POST); // Typically diagrams are generated in context of chat.

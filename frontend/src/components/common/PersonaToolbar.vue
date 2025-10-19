@@ -1,11 +1,14 @@
 // File: frontend/src/components/common/PersonaToolbar.vue
 <script setup lang="ts">
-import { computed, inject, ref, watch } from 'vue';
+import { computed, inject, ref, watch, onMounted, onUnmounted } from 'vue';
 import type { ToastService } from '@/services/services';
 import type { AgentId, IAgentDefinition } from '@/services/agent.service';
 import { useChatStore } from '@/store/chat.store';
 import UsageStatusBadge from '@/components/common/UsageStatusBadge.vue';
+import { voiceSettingsManager } from '@/services/voice.settings.service';
+import { useI18n } from 'vue-i18n';
 import { XMarkIcon } from '@heroicons/vue/24/solid';
+import { GlobeAltIcon, ChevronDownIcon, SparklesIcon } from '@heroicons/vue/24/outline';
 import { chatAPI } from '@/utils/api';
 
 type PersonaModalView = 'editor' | 'library';
@@ -34,10 +37,82 @@ const props = withDefaults(defineProps<{
 
 const chatStore = useChatStore();
 const toast = inject<ToastService>('toast');
+const { locale } = useI18n();
+
+const languageMenuOpen = ref(false);
+const languageMenuRef = ref<HTMLElement | null>(null);
+const languageTriggerRef = ref<HTMLElement | null>(null);
+const manualLanguageSelection = ref('');
 
 const currentAgent = computed(() => props.agent ?? undefined);
 const currentAgentId = computed<AgentId | null>(() => currentAgent.value?.id ?? null);
 const activePersona = computed(() => currentAgentId.value ? chatStore.getPersonaForAgent(currentAgentId.value) : null);
+
+const speechLanguage = computed(() => voiceSettingsManager.settings.speechLanguage);
+const responseLanguageMode = computed(() => voiceSettingsManager.settings.responseLanguageMode ?? 'auto');
+const detectedSpeechLanguage = voiceSettingsManager.detectedSpeechLanguage;
+const detectedResponseLanguage = voiceSettingsManager.detectedResponseLanguage;
+const languagePreferenceLocked = voiceSettingsManager.languagePreferenceLocked;
+const sttAutoDetectEnabled = computed(() => Boolean(voiceSettingsManager.settings.sttAutoDetectLanguage));
+const interfaceLanguage = computed(() => locale.value);
+
+const formatLanguageName = (code?: string | null): string => {
+  if (!code) return 'Unknown';
+  try {
+    return new Intl.DisplayNames([code.split('-')[0]], { type: 'language' }).of(code) || code;
+  } catch {
+    return code;
+  }
+};
+
+const availableLanguageOptions = computed(() => {
+  const set = new Set<string>();
+  voiceSettingsManager.availableTtsVoices.value.forEach((voice) => {
+    if (voice.lang) set.add(voice.lang);
+  });
+  [speechLanguage.value, interfaceLanguage.value, detectedSpeechLanguage.value ?? undefined, detectedResponseLanguage.value ?? undefined]
+    .filter(Boolean)
+    .forEach((code) => set.add(code as string));
+  return Array.from(set)
+    .sort((a, b) => formatLanguageName(a).localeCompare(formatLanguageName(b)))
+    .map((code) => ({ code, label: formatLanguageName(code) }));
+});
+
+const languageSummaryLabel = computed(() => {
+  if (languagePreferenceLocked.value) {
+    return `Language: ${formatLanguageName(speechLanguage.value)} (locked)`;
+  }
+  if (sttAutoDetectEnabled.value) {
+    const detected = detectedSpeechLanguage.value || detectedResponseLanguage.value;
+    return detected
+      ? `Language: Auto (${formatLanguageName(detected)})`
+      : 'Language: Auto';
+  }
+  if (responseLanguageMode.value === 'fixed') {
+    return `Language: ${formatLanguageName(voiceSettingsManager.settings.fixedResponseLanguage || speechLanguage.value)}`;
+  }
+  if (responseLanguageMode.value === 'follow-stt') {
+    return `Language: Follow STT (${formatLanguageName(speechLanguage.value)})`;
+  }
+  return `Language: ${formatLanguageName(speechLanguage.value)}`;
+});
+
+const isAutoModeActive = computed(() => sttAutoDetectEnabled.value && !languagePreferenceLocked.value);
+const isInterfaceModeActive = computed(() => !languagePreferenceLocked.value && !sttAutoDetectEnabled.value && formatLanguageName(speechLanguage.value) === formatLanguageName(interfaceLanguage.value));
+const manualModeActive = computed(() => languagePreferenceLocked.value && !sttAutoDetectEnabled.value);
+const hasDetectedLanguage = computed(() => Boolean(detectedSpeechLanguage.value || detectedResponseLanguage.value));
+
+watch(speechLanguage, (newLang) => {
+  if (!languageMenuOpen.value) {
+    manualLanguageSelection.value = newLang;
+  }
+});
+
+watch(languageMenuOpen, (isOpen) => {
+  if (isOpen) {
+    manualLanguageSelection.value = speechLanguage.value;
+  }
+});
 
 const isPersonaModalOpen = ref(false);
 const personaDraft = ref('');
@@ -107,6 +182,59 @@ const personaPresetsForCurrentPage = computed(() => {
   const startIndex = (personaPresetPage.value - 1) * PERSONA_PRESETS_PER_PAGE;
   return personaPresets.slice(startIndex, startIndex + PERSONA_PRESETS_PER_PAGE);
 });
+
+const toggleLanguageMenu = (): void => {
+  languageMenuOpen.value = !languageMenuOpen.value;
+  if (languageMenuOpen.value) {
+    manualLanguageSelection.value = speechLanguage.value;
+  }
+};
+
+const closeLanguageMenu = (): void => {
+  languageMenuOpen.value = false;
+};
+
+const applyAutoLanguage = (): void => {
+  voiceSettingsManager.clearManualLanguagePreference();
+  voiceSettingsManager.settings.sttAutoDetectLanguage = true;
+  voiceSettingsManager.settings.responseLanguageMode = 'follow-stt';
+  closeLanguageMenu();
+};
+
+const applyInterfaceLanguage = (): void => {
+  voiceSettingsManager.clearManualLanguagePreference();
+  voiceSettingsManager.applyInterfaceLocale(interfaceLanguage.value);
+  voiceSettingsManager.settings.sttAutoDetectLanguage = false;
+  closeLanguageMenu();
+};
+
+const applyDetectedLanguage = (): void => {
+  const candidate = detectedSpeechLanguage.value || detectedResponseLanguage.value;
+  if (!candidate) return;
+  voiceSettingsManager.setManualLanguagePreference(candidate, { mode: 'follow-stt' });
+  voiceSettingsManager.settings.sttAutoDetectLanguage = true;
+  closeLanguageMenu();
+};
+
+const applyManualLanguage = (): void => {
+  if (!manualLanguageSelection.value) return;
+  voiceSettingsManager.setManualLanguagePreference(manualLanguageSelection.value, { mode: 'fixed' });
+  voiceSettingsManager.settings.sttAutoDetectLanguage = false;
+  closeLanguageMenu();
+};
+
+const handleLanguageMenuClickOutside = (event: MouseEvent): void => {
+  if (!languageMenuOpen.value) return;
+  const target = event.target as Node;
+  if (
+    languageMenuRef.value &&
+    !languageMenuRef.value.contains(target) &&
+    languageTriggerRef.value &&
+    !languageTriggerRef.value.contains(target)
+  ) {
+    closeLanguageMenu();
+  }
+};
 
 const persistPersonaSetting = computed(() => Boolean(props.persistPersona));
 const usageBadgeVisible = computed(() =>
@@ -240,40 +368,138 @@ watch(currentAgentId, () => {
     personaDraft.value = activePersona.value ?? '';
   }
 });
+
+onMounted(() => {
+  document.addEventListener('mousedown', handleLanguageMenuClickOutside, true);
+});
+
+onUnmounted(() => {
+  document.removeEventListener('mousedown', handleLanguageMenuClickOutside, true);
+});
 </script>
 
 <template>
   <div class="persona-voice-toolbar" :class="{ 'persona-voice-toolbar--disabled': personaButtonDisabled }">
-    <UsageStatusBadge
-      v-if="usageBadgeVisible"
-      class="persona-voice-toolbar__badge"
-      :tokens-total="tokensTotal ?? undefined"
-      :tokens-used="tokensUsed ?? undefined"
-    />
-    <button
-      type="button"
-      class="persona-voice-toolbar__button"
-      :title="personaTooltipText"
-      :disabled="personaButtonDisabled"
-      @click="openPersonaModal"
-    >
-      {{ personaButtonLabel }}
-    </button>
-    <span
-      v-if="!personaButtonDisabled && personaHasCustom && personaSummaryText"
-      class="persona-voice-toolbar__summary"
-      :title="personaSummaryText"
-    >
-      {{ personaSummaryText }}
-    </span>
-    <button
-      v-if="!personaButtonDisabled && personaHasCustom"
-      type="button"
-      class="persona-voice-toolbar__clear"
-      @click="resetPersonaToDefault"
-    >
-      Clear
-    </button>
+    <div class="persona-voice-toolbar__left">
+      <UsageStatusBadge
+        v-if="usageBadgeVisible"
+        class="persona-voice-toolbar__badge"
+        :tokens-total="tokensTotal ?? undefined"
+        :tokens-used="tokensUsed ?? undefined"
+      />
+      <button
+        type="button"
+        class="persona-voice-toolbar__button"
+        :title="personaTooltipText"
+        :disabled="personaButtonDisabled"
+        @click="openPersonaModal"
+      >
+        {{ personaButtonLabel }}
+      </button>
+      <span
+        v-if="!personaButtonDisabled && personaHasCustom && personaSummaryText"
+        class="persona-voice-toolbar__summary"
+        :title="personaSummaryText"
+      >
+        {{ personaSummaryText }}
+      </span>
+      <button
+        v-if="!personaButtonDisabled && personaHasCustom"
+        type="button"
+        class="persona-voice-toolbar__clear"
+        @click="resetPersonaToDefault"
+      >
+        Clear
+      </button>
+    </div>
+
+    <div class="persona-voice-toolbar__right">
+      <button
+        ref="languageTriggerRef"
+        type="button"
+        class="persona-language-button"
+        :class="{ 'is-open': languageMenuOpen }"
+        @click="toggleLanguageMenu"
+      >
+        <GlobeAltIcon class="persona-language-button__icon" aria-hidden="true" />
+        <span class="persona-language-button__label">{{ languageSummaryLabel }}</span>
+        <ChevronDownIcon class="persona-language-button__chevron" aria-hidden="true" />
+      </button>
+
+      <transition name="fade">
+        <div
+          v-if="languageMenuOpen"
+          ref="languageMenuRef"
+          class="persona-language-menu"
+          role="menu"
+          aria-label="Language preferences"
+        >
+          <div class="persona-language-menu__section persona-language-menu__section--options">
+            <h4>Quick Options</h4>
+            <button
+              type="button"
+              class="persona-language-menu__option"
+              :class="{ 'is-active': isAutoModeActive }"
+              @click="applyAutoLanguage"
+            >
+              <SparklesIcon class="persona-language-menu__option-icon" aria-hidden="true" />
+              <span>
+                Auto detect (recommended)
+                <small v-if="hasDetectedLanguage">Latest: {{ formatLanguageName(detectedSpeechLanguage || detectedResponseLanguage) }}</small>
+              </span>
+            </button>
+            <button
+              type="button"
+              class="persona-language-menu__option"
+              :class="{ 'is-active': isInterfaceModeActive }"
+              @click="applyInterfaceLanguage"
+            >
+              <GlobeAltIcon class="persona-language-menu__option-icon" aria-hidden="true" />
+              <span>Follow interface language ({{ formatLanguageName(interfaceLanguage) }})</span>
+            </button>
+            <button
+              v-if="hasDetectedLanguage"
+              type="button"
+              class="persona-language-menu__option"
+              @click="applyDetectedLanguage"
+            >
+              <SparklesIcon class="persona-language-menu__option-icon" aria-hidden="true" />
+              <span>Use detected language ({{ formatLanguageName(detectedSpeechLanguage || detectedResponseLanguage) }})</span>
+            </button>
+          </div>
+
+          <div class="persona-language-menu__section persona-language-menu__section--manual">
+            <h4>Manual selection</h4>
+            <label class="persona-language-menu__label" for="manual-language-select">Choose language</label>
+            <select
+              id="manual-language-select"
+              class="persona-language-menu__select"
+              v-model="manualLanguageSelection"
+            >
+              <option
+                v-for="option in availableLanguageOptions"
+                :key="option.code"
+                :value="option.code"
+              >
+                {{ option.label }}
+              </option>
+            </select>
+            <div class="persona-language-menu__manual-actions">
+              <button type="button" class="persona-language-menu__apply" @click="applyManualLanguage">Apply</button>
+              <button type="button" class="persona-language-menu__reset" @click="applyAutoLanguage">Reset to auto</button>
+            </div>
+            <p class="persona-language-menu__note" v-if="languagePreferenceLocked">
+              Manual selection keeps this language until you switch back to auto.
+            </p>
+          </div>
+
+          <div class="persona-language-menu__footer">
+            <span>Speech detection: {{ formatLanguageName(detectedSpeechLanguage) }}</span>
+            <span>Response detection: {{ formatLanguageName(detectedResponseLanguage) }}</span>
+          </div>
+        </div>
+      </transition>
+    </div>
   </div>
 
   <transition name="fade">
@@ -386,22 +612,36 @@ watch(currentAgentId, () => {
 .persona-voice-toolbar {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 0 10px;
+  flex-wrap: wrap;
+}
+
+.persona-voice-toolbar__left {
+  display: inline-flex;
+  align-items: center;
   gap: 10px;
-  justify-content: flex-end;
-  padding: 0 0 12px;
+  flex-wrap: wrap;
+}
+
+.persona-voice-toolbar__right {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
 }
 
 .persona-voice-toolbar__badge {
-  margin-right: auto;
+  margin-right: 4px;
 }
 
 .persona-voice-toolbar__button {
   border: 1px solid hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.35);
   background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.65);
   color: var(--color-text-secondary);
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   font-weight: 600;
-  padding: 6px 14px;
+  padding: 5px 12px;
   border-radius: 999px;
   cursor: pointer;
   transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
@@ -420,7 +660,7 @@ watch(currentAgentId, () => {
 
 .persona-voice-toolbar__summary {
   color: var(--color-text-muted);
-  font-size: 0.76rem;
+  font-size: 0.7rem;
   max-width: 240px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -438,6 +678,182 @@ watch(currentAgentId, () => {
 
 .persona-voice-toolbar__clear:hover {
   color: var(--color-text-primary);
+}
+
+.persona-language-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  border: 1px solid hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.35);
+  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.65);
+  padding: 5px 12px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.persona-language-button:hover,
+.persona-language-button.is-open {
+  background: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.22);
+  border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.4);
+  color: var(--color-text-primary);
+}
+
+.persona-language-button__icon {
+  width: 0.9rem;
+  height: 0.9rem;
+}
+
+.persona-language-button__label {
+  white-space: nowrap;
+}
+
+.persona-language-button__chevron {
+  width: 0.85rem;
+  height: 0.85rem;
+  transition: transform 0.2s ease;
+}
+
+.persona-language-button.is-open .persona-language-button__chevron {
+  transform: rotate(180deg);
+}
+
+.persona-language-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  width: min(280px, 80vw);
+  background: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.98);
+  border-radius: 14px;
+  box-shadow: 0 18px 40px hsla(var(--color-shadow-h), var(--color-shadow-s), var(--color-shadow-l), 0.35);
+  border: 1px solid hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.25);
+  padding: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  z-index: 75;
+}
+
+.persona-language-menu__section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.persona-language-menu__section h4 {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.persona-language-menu__option {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  padding: 0.45rem 0.55rem;
+  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.4);
+  color: var(--color-text-secondary);
+  font-size: 0.72rem;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.persona-language-menu__option small {
+  display: block;
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
+.persona-language-menu__option:hover,
+.persona-language-menu__option.is-active {
+  border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.45);
+  background: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.18);
+  color: var(--color-text-primary);
+}
+
+.persona-language-menu__option-icon {
+  width: 0.85rem;
+  height: 0.85rem;
+  margin-top: 0.1rem;
+}
+
+.persona-language-menu__label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.persona-language-menu__select {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.4);
+  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.55);
+  color: var(--color-text-primary);
+  padding: 0.35rem 0.5rem;
+  font-size: 0.72rem;
+}
+
+.persona-language-menu__manual-actions {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.persona-language-menu__apply,
+.persona-language-menu__reset {
+  flex: 1;
+  border: none;
+  border-radius: 10px;
+  padding: 0.35rem 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.persona-language-menu__apply {
+  background: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.24);
+  color: var(--color-text-primary);
+}
+
+.persona-language-menu__apply:hover {
+  background: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.34);
+}
+
+.persona-language-menu__reset {
+  background: transparent;
+  color: var(--color-text-secondary);
+  border: 1px solid hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.35);
+}
+
+.persona-language-menu__reset:hover {
+  color: var(--color-text-primary);
+  border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.45);
+}
+
+.persona-language-menu__note {
+  font-size: 0.68rem;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.persona-language-menu__footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.65rem;
+  color: var(--color-text-muted);
+}
+
+.persona-language-menu__footer span {
+  display: block;
 }
 
 .persona-modal {

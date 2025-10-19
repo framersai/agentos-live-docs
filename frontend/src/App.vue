@@ -148,6 +148,13 @@ const loadingOverlayMessage = computed(() =>
   isLocaleTransitioning.value ? 'Switching language…' : ''
 );
 
+const localeRef = i18n.global.locale;
+
+watch(localeRef, (newLocale, oldLocale) => {
+  if (!newLocale || newLocale === oldLocale) return;
+  voiceSettingsManager.applyInterfaceLocale(newLocale as string);
+});
+
 const summarizeProviderIssues = (providers?: LlmStatusResponseFE['providers']): string => {
   if (!providers) {
     return 'No provider diagnostics available.';

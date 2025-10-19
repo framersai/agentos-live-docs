@@ -433,6 +433,7 @@ const _transcribeSegmentWithWhisper = async (audioBlob: Blob, durationS: number)
 
     if (responseData && typeof responseData.transcription === 'string') {
       const detectedLanguage = responseData.language || props.settings.speechLanguage;
+      voiceSettingsManager.handleDetectedSpeechLanguage(detectedLanguage);
       if (responseData.transcription.trim()) {
         emit('transcription', {
           text: responseData.transcription.trim(),

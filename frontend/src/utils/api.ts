@@ -289,6 +289,9 @@ export const chatAPI = {
   updatePersona: (payload: PersonaUpdatePayloadFE): Promise<AxiosResponse<{ persona: string | null; agentId: string; conversationId: string }>> =>
     api.post('/chat/persona', payload),
 
+  detectLanguage: (messages: Array<{ role: 'user' | 'assistant'; content: string }>): Promise<AxiosResponse<{ language: string | null; confidence: number | null }>> =>
+    api.post('/chat/detect-language', { messages }),
+
   sendMessageStream: async (
     payloadData: ChatMessagePayloadFE, // Renamed 'data' to 'payloadData' to avoid conflict
     onChunkReceived: (chunk: string) => void,
