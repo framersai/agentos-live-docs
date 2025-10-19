@@ -6,6 +6,7 @@
  *              remaining allowances for UI and routing logic.
  */
 
+// @ts-ignore - shared catalog lives outside backend root but bundled via postbuild
 import { GPT4O_COST_PER_KTOKENS, GPT4O_MINI_COST_PER_KTOKENS } from '../../../shared/planCatalog.js';
 
 export type CreditServiceCategory = 'llm' | 'speech';

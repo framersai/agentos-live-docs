@@ -201,6 +201,14 @@ export interface ISttOptions {
    * @example { "mimeType": "audio/webm" } // Can be used to pass MIME type if not in filename
    */
   providerSpecificOptions?: { [key: string]: any };
+  /**
+   * @property {string} [providerId] - Identifier for the target STT provider (e.g., 'whisper_api').
+   */
+  providerId?: string;
+  /**
+   * @property {boolean} [stream] - Whether streaming transcription is requested (if supported).
+   */
+  stream?: boolean;
 }
 
 /**
@@ -235,6 +243,14 @@ export interface ISttRequestOptions {
    * Client might send as string, needs conversion to number.
    */
   temperature?: number | string;
+  /**
+   * @property {string} [providerId] - Preferred STT provider identifier supplied by the client.
+   */
+  providerId?: string;
+  /**
+   * @property {boolean | string} [stream] - Whether streaming transcription is requested (string to allow form inputs).
+   */
+  stream?: boolean | string;
 }
 
 /**

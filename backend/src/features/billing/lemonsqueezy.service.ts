@@ -16,6 +16,7 @@ import {
   findCheckoutSessionByLemonId,
   type CheckoutSessionRecord,
 } from './checkout.repository.js';
+// @ts-ignore - shared catalog compiled separately for runtime usage
 import { PLAN_CATALOG } from '../../../shared/planCatalog.js';
 
 const LEMON_API_BASE = 'https://api.lemonsqueezy.com/v1';
