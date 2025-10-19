@@ -376,13 +376,30 @@
         <select id="sttPreferenceSelect" v-model="vcaSettings.sttPreference" class="select-input-ephemeral" aria-label="Speech Recognition Preference">
          <option value="whisper_api">OpenAI Whisper (High Accuracy)</option>
          <option value="browser_webspeech_api">Browser Web Speech (Fast, Free)</option>
-        </select>
-       </SettingsItem>
-       <SettingsItem label="Auto-Play Responses (TTS)" description="Automatically speak the assistant's responses aloud using Text-to-Speech." label-for="autoPlayTtsToggle">
-         <label class="toggle-switch-ephemeral" :aria-label="vcaSettings.autoPlayTts ? 'TTS auto-play is ON' : 'TTS auto-play is OFF'">
-          <input type="checkbox" id="autoPlayTtsToggle" v-model="vcaSettings.autoPlayTts" />
-          <span class="track"><span class="knob"></span></span>
-         </label>
+       </select>
+      </SettingsItem>
+      <SettingsItem label="Speech Usage Credits" description="OpenAI Whisper/TTS allowance with automatic browser fallback.">
+        <div class="speech-credits-summary">
+          <span
+            class="speech-credits-summary__text"
+            :class="{ 'speech-credits-summary__text--warning': isSpeechCreditsExhausted }"
+          >
+            {{ speechCreditsSummary }}
+          </span>
+          <button
+            type="button"
+            class="btn btn-secondary-outline-ephemeral btn-sm speech-credits-summary__button"
+            @click="openSpeechCreditsModal"
+          >
+            View credit details
+          </button>
+        </div>
+      </SettingsItem>
+      <SettingsItem label="Auto-Play Responses (TTS)" description="Automatically speak the assistant's responses aloud using Text-to-Speech." label-for="autoPlayTtsToggle">
+        <label class="toggle-switch-ephemeral" :aria-label="vcaSettings.autoPlayTts ? 'TTS auto-play is ON' : 'TTS auto-play is OFF'">
+         <input type="checkbox" id="autoPlayTtsToggle" v-model="vcaSettings.autoPlayTts" />
+         <span class="track"><span class="knob"></span></span>
+        </label>
        </SettingsItem>
      </div>
      <div v-if="vcaSettings.autoPlayTts" class="setting-subsection-ephemeral">
@@ -521,7 +538,9 @@
     </button>
    </div>
   </main>
- </div>
+
+  <SpeechCreditsModal :open="showSpeechCreditsModal" @close="closeSpeechCreditsModal" />
+</div>
 </template>
 
 <script setup lang="ts">
@@ -575,6 +594,7 @@ import SettingsSection from '@/components/settings/SettingsSection.vue';
 import SettingsItem from '@/components/settings/SettingsItem.vue';
 import LanguageSwitcher from '@/components/LanguageSwitcher.vue';
 import OrganizationManager from '@/components/organization/OrganizationManager.vue';
+import SpeechCreditsModal from '@/components/voice-settings/SpeechCreditsModal.vue';
 
 // Icons
 import {
@@ -610,6 +630,36 @@ const showPlanModal = ref(false);
 const openPlanModal = () => { showPlanModal.value = true; };
 const closePlanModal = () => { showPlanModal.value = false; };
 const chatStoreInstance = useChatStore();
+
+const showSpeechCreditsModal = ref(false);
+const isSpeechCreditsExhausted = computed(() => voiceSettingsManager.speechCreditsExhausted.value);
+
+const speechCreditsSummary = computed(() => {
+  const snapshot = voiceSettingsManager.creditsSnapshot.value;
+  if (!snapshot) return 'Fetching speech usage credits…';
+  const speech = snapshot.speech;
+  if (speech.isUnlimited) return 'OpenAI Whisper & Voice available (unlimited)';
+  const remainingUsd = speech.remainingUsd ?? 0;
+  if (remainingUsd <= 0) return 'Speech credits exhausted — browser fallback active';
+  const minutes = speech.approxWhisperMinutesRemaining ?? 0;
+  const chars = speech.approxTtsCharactersRemaining ?? 0;
+  const minutesLabel = Number.isFinite(minutes)
+    ? (minutes >= 1 ? `${Math.floor(minutes)} Whisper minutes` : `${minutes.toFixed(1)} Whisper minutes`)
+    : '∞ Whisper minutes';
+  const charsLabel = Number.isFinite(chars)
+    ? (chars >= 1000 ? `${(chars / 1000).toFixed(1)}k TTS characters` : `${Math.floor(chars)} TTS characters`)
+    : '∞ TTS characters';
+  return `${minutesLabel} • ${charsLabel} remaining today`;
+});
+
+const openSpeechCreditsModal = async (): Promise<void> => {
+  showSpeechCreditsModal.value = true;
+  await voiceSettingsManager.refreshCreditsSnapshot();
+};
+
+const closeSpeechCreditsModal = (): void => {
+  showSpeechCreditsModal.value = false;
+};
 
 const currentUser = computed(() => auth.user.value);
 const isAuthenticated = computed(() => auth.isAuthenticated.value);
@@ -1057,6 +1107,7 @@ onMounted(async () => {
  await fetchCurrentSessionCost();
  if (!voiceSettingsManager.audioInputDevicesLoaded.value) await voiceSettingsManager.loadAudioInputDevices();
  if (!voiceSettingsManager.ttsVoicesLoaded.value && vcaSettings.autoPlayTts) await voiceSettingsManager.loadAllTtsVoices();
+ void voiceSettingsManager.refreshCreditsSnapshot();
  nextTick(() => { document.querySelectorAll<HTMLInputElement>('input[type="range"].range-slider-ephemeral').forEach(el => updateRangeProgress(el)); });
 });
 
@@ -1076,6 +1127,29 @@ watch([
 
 <style lang="scss">
 // Styles for Settings.vue are in frontend/src/styles/views/settings/_settings-page.scss
+.speech-credits-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.speech-credits-summary__text {
+  font-size: 0.9rem;
+  color: hsla(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l), 0.85);
+  flex: 1 1 auto;
+}
+
+.speech-credits-summary__text--warning {
+  color: rgba(234, 179, 8, 0.95);
+  font-weight: 600;
+}
+
+.speech-credits-summary__button {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
 </style>
 
 

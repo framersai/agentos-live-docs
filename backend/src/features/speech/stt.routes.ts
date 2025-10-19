@@ -13,6 +13,7 @@ import multer, { MulterError } from 'multer';
 import { audioService } from '../../core/audio/audio.service.js';
 import { ISttRequestOptions, ISttOptions, ITranscriptionResult, SttResponseFormat } from '../../core/audio/stt.interfaces.js';
 import { CostService } from '../../core/cost/cost.service.js';
+import { creditAllocationService, type CreditContext } from '../../core/cost/creditAllocation.service.js';
 import { resolveSessionUserId } from '../../utils/session.utils.js';
 import dotenv from 'dotenv';
 import path from 'path';
@@ -107,6 +108,25 @@ export async function POST(req: Request, res: Response): Promise<void> {
       const originalFileName: string = req.file.originalname || `audio-${Date.now()}.${req.file.mimetype.split('/')[1] || 'bin'}`;
       const requestOptions: ISttRequestOptions = req.body;
 
+      const userContext = (req as any)?.user;
+      const creditContext: CreditContext = {
+        isAuthenticated: Boolean(userContext),
+        tier: userContext?.tier,
+        mode: userContext?.mode,
+      };
+      creditAllocationService.syncProfile(effectiveUserId, creditContext);
+
+      if (!creditAllocationService.hasSpeechCredits(effectiveUserId, creditContext)) {
+        const credits = creditAllocationService.getSnapshot(effectiveUserId, creditContext);
+        res.status(429).json({
+          message: 'Speech recognition credits have been exhausted for today. Falling back to browser speech recognition.',
+          error: 'SPEECH_CREDITS_EXHAUSTED',
+          fallbackProvider: 'browser_webspeech_api',
+          credits,
+        });
+        return resolve();
+      }
+
       const costThresholdString = process.env.COST_THRESHOLD_USD_PER_SESSION || '2.00';
       const effectiveCostThreshold = parseFloat(costThresholdString);
       const disableCostLimits = process.env.DISABLE_COST_LIMITS === 'true';
@@ -161,6 +181,7 @@ export async function POST(req: Request, res: Response): Promise<void> {
         const providerNameForResult = transcriptionResult.usage?.modelUsed || 'UnknownProvider';
         console.log(`[stt.routes] User [${effectiveUserId}] (IP: ${req.ip}) Audio transcribed. Cost: $${transcriptionResult.cost.toFixed(6)}, Duration: ${transcriptionResult.durationSeconds?.toFixed(2)}s, Provider/Model: ${providerNameForResult}`);
 
+        const credits = creditAllocationService.getSnapshot(effectiveUserId, creditContext);
         res.status(200).json({
           transcription: transcriptionResult.text,
           durationSeconds: transcriptionResult.durationSeconds,
@@ -171,7 +192,8 @@ export async function POST(req: Request, res: Response): Promise<void> {
           metadata: {
             modelUsed: transcriptionResult.usage?.modelUsed,
             detectedLanguage: transcriptionResult.language,
-          }
+          },
+          credits,
         });
 
       } catch (sttError: any) {
@@ -208,6 +230,7 @@ export async function POST(req: Request, res: Response): Promise<void> {
             originalErrorName: sttError.name,
             originalErrorMessage: sttError.message,
           } : undefined,
+          credits: creditAllocationService.getSnapshot(effectiveUserId, creditContext),
         });
       }
       resolve();
@@ -225,8 +248,16 @@ export async function POST(req: Request, res: Response): Promise<void> {
 export async function GET(req: Request, res: Response): Promise<void> {
   try {
     const effectiveUserId = resolveSessionUserId(req);
+    const userContext = (req as any)?.user;
+    const creditContext: CreditContext = {
+      isAuthenticated: Boolean(userContext),
+      tier: userContext?.tier,
+      mode: userContext?.mode,
+    };
+    creditAllocationService.syncProfile(effectiveUserId, creditContext);
     const stats = await audioService.getSpeechProcessingStats(effectiveUserId);
     const sessionCost = CostService.getSessionCost(effectiveUserId);
+    const credits = creditAllocationService.getSnapshot(effectiveUserId, creditContext);
 
     console.log(`[stt.routes] User ${effectiveUserId} (IP: ${req.ip}) requested STT/TTS stats.`);
 
@@ -235,6 +266,7 @@ export async function GET(req: Request, res: Response): Promise<void> {
       currentSessionCost: sessionCost.totalCost,
       costsByService: sessionCost.costsByService,
       sessionCostThreshold: parseFloat(process.env.COST_THRESHOLD_USD_PER_SESSION || '2.00'),
+      credits,
     });
   } catch (error: any) {
     console.error(`[stt.routes] Error fetching STT/TTS stats for user at IP ${req.ip}: ${error.message}`, error.stack);

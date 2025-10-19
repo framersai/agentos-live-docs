@@ -10,7 +10,7 @@
 import { reactive, watch, computed, ref, type Ref, type ComputedRef, readonly } from 'vue';
 import { useStorage } from '@vueuse/core';
 import { ttsService as browserTtsService, type SpeakOptions as BrowserSpeakOptions } from './tts.service';
-import { ttsAPI, type TTSVoiceFE, type TTSRequestPayloadFE } from '../utils/api'; // Ensure utils/api path is correct
+import { ttsAPI, speechAPI, type TTSVoiceFE, type TTSRequestPayloadFE, type CreditSnapshotFE } from '../utils/api'; // Ensure utils/api path is correct
 import type { AgentId } from './agent.service'; // Ensure agent.service path is correct
 
 /**
@@ -152,7 +152,7 @@ const initialDefaultSettings: Readonly<VoiceApplicationSettings> = Object.freeze
 
   ephemeralLogMaxCompact: 3,
   ephemeralLogMaxExpanded: 20,
-  sttPreference: 'browser_webspeech_api',
+  sttPreference: 'whisper_api',
   selectedAudioInputDeviceId: null,
   selectedAudioOutputDeviceId: null,
   speechLanguage: typeof navigator !== 'undefined' ? navigator.language : 'en-US',
@@ -171,7 +171,7 @@ const initialDefaultSettings: Readonly<VoiceApplicationSettings> = Object.freeze
   continuousModeSilenceSendDelayMs: DEFAULT_CONTINUOUS_MODE_SILENCE_SEND_DELAY_MS,
   minWhisperSegmentDurationS: 0.5,
   maxSegmentDurationS: 28,
-  ttsProvider: 'browser_tts',
+  ttsProvider: 'openai_tts',
   selectedTtsVoiceId: null,
   ttsVolume: 0.9,
   ttsRate: 1.2,
@@ -206,6 +206,9 @@ class VoiceSettingsManager {
   public readonly audioInputDevicesLoaded: Ref<boolean>;
   public readonly audioOutputDevices: Ref<Readonly<MediaDeviceInfo[]>>;
   public readonly audioOutputDevicesLoaded: Ref<boolean>;
+  private readonly _creditsSnapshot: Ref<CreditSnapshotFE | null>;
+  public readonly creditsSnapshot: Readonly<Ref<CreditSnapshotFE | null>>;
+  public readonly speechCreditsExhausted: ComputedRef<boolean>;
 
   private _isInitialized: Ref<boolean> = ref(false);
   private activePreviewAudio: HTMLAudioElement | null = null;
@@ -226,6 +229,14 @@ class VoiceSettingsManager {
     this.audioInputDevicesLoaded = ref(false);
     this.audioOutputDevices = ref(Object.freeze([]));
     this.audioOutputDevicesLoaded = ref(false);
+    this._creditsSnapshot = ref<CreditSnapshotFE | null>(null);
+    this.creditsSnapshot = readonly(this._creditsSnapshot);
+    this.speechCreditsExhausted = computed(() => {
+      const snapshot = this._creditsSnapshot.value;
+      if (!snapshot || snapshot.speech.isUnlimited) return false;
+      const remaining = snapshot.speech.remainingUsd ?? 0;
+      return remaining <= 0;
+    });
 
     watch(() => this.settings.ttsProvider, async (newProvider, oldProvider) => {
       if (!this._isInitialized.value || newProvider === oldProvider) return;
@@ -289,10 +300,34 @@ class VoiceSettingsManager {
     await this.loadAudioInputDevices(false);
     this._isInitialized.value = true;
     console.log('[VSM] Initialized successfully.');
+    void this.refreshCreditsSnapshot();
   }
 
   public get isInitialized(): Readonly<Ref<boolean>> {
     return readonly(this._isInitialized);
+  }
+
+  public updateCreditsSnapshot(snapshot: CreditSnapshotFE | null): void {
+    if (snapshot) {
+      this._creditsSnapshot.value = {
+        allocationKey: snapshot.allocationKey,
+        llm: { ...snapshot.llm },
+        speech: { ...snapshot.speech },
+      };
+    } else {
+      this._creditsSnapshot.value = null;
+    }
+  }
+
+  public async refreshCreditsSnapshot(): Promise<void> {
+    try {
+      const response = await speechAPI.getStats();
+      if (response.data?.credits) {
+        this.updateCreditsSnapshot(response.data.credits);
+      }
+    } catch (error: any) {
+      console.warn('[VSM] Failed to refresh speech credits snapshot:', error?.message ?? error);
+    }
   }
 
   public async loadAllTtsVoices(): Promise<void> {
@@ -527,6 +562,16 @@ class VoiceSettingsManager {
     const currentVoice = this.getCurrentTtsVoice();
     const { ttsVolume: volume, ttsRate: rate, ttsPitch: pitch, speechLanguage, ttsProvider } = this.settings;
 
+    if (ttsProvider === 'openai_tts' && this.speechCreditsExhausted.value) {
+      console.info('[VSM] Speech credits exhausted. Using browser fallback for TTS.');
+      await this.playWithBrowserFallback(text, {
+        lang: currentVoice?.lang || speechLanguage,
+        rate,
+        volume,
+      });
+      return;
+    }
+
     if (ttsProvider === 'browser_tts' && typeof window !== 'undefined' && browserTtsService.isSupported()) {
       try {
         await browserTtsService.speak(text, {
@@ -543,6 +588,7 @@ class VoiceSettingsManager {
       try {
         const payload: TTSRequestPayloadFE = { text, voice: currentVoice.providerVoiceId, speed: rate };
         const response = await ttsAPI.synthesize(payload);
+        void this.refreshCreditsSnapshot();
         const audioUrl = URL.createObjectURL(response.data);
         this.activePreviewAudio = new Audio(audioUrl);
         this.activePreviewAudio.volume = volume;
@@ -552,9 +598,17 @@ class VoiceSettingsManager {
         await audioToPlay.play();
       } catch (error: any) {
         console.error("[VSM] Error with OpenAI TTS:", error.response?.data || error.message);
+        if (error?.response?.data?.credits) {
+          this.updateCreditsSnapshot(error.response.data.credits as CreditSnapshotFE);
+        }
+        if (error?.response?.data?.error === 'SPEECH_CREDITS_EXHAUSTED') {
+          console.warn('[VSM] Speech credits exhausted during OpenAI TTS request. Switching to browser provider.');
+          this.updateSetting('ttsProvider', 'browser_tts');
+        }
         if (this.activePreviewAudio?.src?.startsWith('blob:')) URL.revokeObjectURL(this.activePreviewAudio.src);
         this.activePreviewAudio = null;
         await this.playWithBrowserFallback(text, { lang: currentVoice.lang || speechLanguage, rate, volume });
+        return;
       }
     } else {
       console.warn(`[VSM] TTS provider "${ttsProvider}" not supported or no voice available. Falling back to browser speech.`);

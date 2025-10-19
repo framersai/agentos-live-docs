@@ -11,6 +11,7 @@ import { audioService } from '../../core/audio/audio.service.js';
 // Ensure ITtsOptions is imported correctly and matches the definition in tts.interfaces.ts
 import { ITtsOptions, ITtsResult, IAvailableVoice } from '../../core/audio/tts.interfaces.js';
 import { CostService } from '../../core/cost/cost.service.js';
+import { creditAllocationService, type CreditContext } from '../../core/cost/creditAllocation.service.js';
 import { resolveSessionUserId } from '../../utils/session.utils.js';
 import dotenv from 'dotenv';
 import path from 'path';
@@ -61,6 +62,24 @@ export async function POST(req: Request, res: Response): Promise<void> {
     return;
   }
 
+  const userContext = (req as any)?.user;
+  const creditContext: CreditContext = {
+    isAuthenticated: Boolean(userContext),
+    tier: userContext?.tier,
+    mode: userContext?.mode,
+  };
+  creditAllocationService.syncProfile(effectiveUserId, creditContext);
+
+  if (effectiveProviderId === 'openai_tts' && !creditAllocationService.hasSpeechCredits(effectiveUserId, creditContext)) {
+    const credits = creditAllocationService.getSnapshot(effectiveUserId, creditContext);
+    res.status(429).json({
+      message: 'Speech synthesis credits have been exhausted for today. Audio playback will use the browser engine instead.',
+      error: 'SPEECH_CREDITS_EXHAUSTED',
+      fallbackProvider: 'browser_tts',
+      credits,
+    });
+    return;
+  }
   try {
     const costThresholdString = process.env.COST_THRESHOLD_USD_PER_SESSION || '2.00';
     const effectiveCostThreshold = parseFloat(costThresholdString);
@@ -68,11 +87,13 @@ export async function POST(req: Request, res: Response): Promise<void> {
 
     if (!disableCostLimits && CostService.isSessionCostThresholdReached(effectiveUserId, effectiveCostThreshold)) {
       const currentCostDetail = CostService.getSessionCost(effectiveUserId);
+      const credits = creditAllocationService.getSnapshot(effectiveUserId, creditContext);
       res.status(403).json({
         message: `Session cost threshold of $${effectiveCostThreshold.toFixed(2)} reached. TTS synthesis blocked.`,
         error: 'COST_THRESHOLD_EXCEEDED',
         currentCost: currentCostDetail.totalCost,
         threshold: effectiveCostThreshold,
+        credits,
       });
       return;
     }
@@ -113,6 +134,17 @@ export async function POST(req: Request, res: Response): Promise<void> {
         res.setHeader('X-TTS-Model-Used', ttsResult.usage.modelUsed);
         res.setHeader('X-TTS-Characters', ttsResult.usage.characters.toString());
     }
+    const credits = creditAllocationService.getSnapshot(effectiveUserId, creditContext);
+    if (credits.speech.remainingUsd != null) {
+      res.setHeader('X-Speech-Credits-Remaining-Usd', credits.speech.remainingUsd.toFixed(6));
+    } else {
+      res.setHeader('X-Speech-Credits-Remaining-Usd', 'unlimited');
+    }
+    if (credits.speech.totalUsd != null) {
+      res.setHeader('X-Speech-Credits-Total-Usd', credits.speech.totalUsd.toFixed(6));
+    } else {
+      res.setHeader('X-Speech-Credits-Total-Usd', 'unlimited');
+    }
     
     res.status(200).send(ttsResult.audioBuffer);
 
@@ -147,12 +179,14 @@ export async function POST(req: Request, res: Response): Promise<void> {
         statusCode = 400;
     }
     
+    const credits = creditAllocationService.getSnapshot(effectiveUserId, creditContext);
     res.status(statusCode).json({
       message: errorMessage,
       error: errorCode,
       details: process.env.NODE_ENV === 'development' ? {
         originalError: ttsError.message,
       } : undefined,
+      credits,
     });
   }
 }

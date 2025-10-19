@@ -384,6 +384,34 @@ export const chatAPI = {
   },
 };
 
+export interface CreditBucketLlmFE {
+  totalUsd: number | null;
+  usedUsd: number;
+  remainingUsd: number | null;
+  isUnlimited: boolean;
+  approxGpt4oTokensTotal: number | null;
+  approxGpt4oTokensRemaining: number | null;
+  approxGpt4oMiniTokensTotal: number | null;
+  approxGpt4oMiniTokensRemaining: number | null;
+}
+
+export interface CreditBucketSpeechFE {
+  totalUsd: number | null;
+  usedUsd: number;
+  remainingUsd: number | null;
+  isUnlimited: boolean;
+  approxWhisperMinutesTotal: number | null;
+  approxWhisperMinutesRemaining: number | null;
+  approxTtsCharactersTotal: number | null;
+  approxTtsCharactersRemaining: number | null;
+}
+
+export interface CreditSnapshotFE {
+  allocationKey: string;
+  llm: CreditBucketLlmFE;
+  speech: CreditBucketSpeechFE;
+}
+
 export interface TranscriptionResponseFE {
   transcription: string;
   durationSeconds?: number;
@@ -392,6 +420,7 @@ export interface TranscriptionResponseFE {
   message?: string;
   analysis?: any;
   metadata?: any;
+  credits?: CreditSnapshotFE;
 }
 
 export interface SttStatsResponseFE {
@@ -406,6 +435,7 @@ export interface SttStatsResponseFE {
   currentSessionCost: number;
   sessionCostThreshold: number;
   costsByService: SessionCostDetailsFE['costsByService'];
+  credits: CreditSnapshotFE;
 }
 
 export const speechAPI = {

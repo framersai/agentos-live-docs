@@ -28,10 +28,11 @@ import {
   type Ref,
   readonly,
 } from 'vue';
-import { speechAPI, type TranscriptionResponseFE } from '@/utils/api';
-import type {
-  AudioInputMode,
-  VoiceApplicationSettings,
+import { speechAPI, type TranscriptionResponseFE, type CreditSnapshotFE } from '@/utils/api';
+import {
+  voiceSettingsManager,
+  type AudioInputMode,
+  type VoiceApplicationSettings,
 } from '@/services/voice.settings.service';
 import type { ToastService } from '@/services/services';
 import type {
@@ -425,6 +426,10 @@ const _transcribeSegmentWithWhisper = async (audioBlob: Blob, durationS: number)
      */
     const responseData = response.data as Partial<TranscriptionResponseFE & { message?: string; language?: string }>;
 
+    if (responseData?.credits) {
+      voiceSettingsManager.updateCreditsSnapshot(responseData.credits);
+    }
+
 
     if (responseData && typeof responseData.transcription === 'string') {
       const detectedLanguage = responseData.language || props.settings.speechLanguage;
@@ -444,22 +449,36 @@ const _transcribeSegmentWithWhisper = async (audioBlob: Blob, durationS: number)
       throw new Error(responseData?.message || 'Whisper API returned invalid or empty data.');
     }
   } catch (error: any) {
-    let errorMessage = 'Transcription API error.';
-    let errorCode = 'API_ERROR';
-    if (error.response) {
-      errorMessage = error.response.data?.error?.message || error.response.data?.message || error.message;
-      errorCode = error.response.status?.toString() || 'API_RESPONSE_ERROR';
-    } else if (error.message) {
-      errorMessage = error.message;
-      errorCode = error.code || 'NETWORK_ERROR';
+    if (error?.response?.data?.credits) {
+      voiceSettingsManager.updateCreditsSnapshot(error.response.data.credits as CreditSnapshotFE);
     }
-    console.error(`[WSH] Whisper API error: ${errorCode} - ${errorMessage}`);
-    emit('error', {
-      type: 'api',
-      message: errorMessage,
-      code: errorCode,
-      fatal: false,
-    });
+    if (error?.response?.data?.error === 'SPEECH_CREDITS_EXHAUSTED') {
+      console.warn('[WSH] Speech credits exhausted. Switching to browser STT.');
+      voiceSettingsManager.updateSetting('sttPreference', 'browser_webspeech_api');
+      emit('error', {
+        type: 'api',
+        message: error.response.data?.message || 'Speech recognition credits exhausted. Using browser STT.',
+        code: 'SPEECH_CREDITS_EXHAUSTED',
+        fatal: false,
+      });
+    } else {
+      let errorMessage = 'Transcription API error.';
+      let errorCode = 'API_ERROR';
+      if (error.response) {
+        errorMessage = error.response.data?.error?.message || error.response.data?.message || error.message;
+        errorCode = error.response.status?.toString() || 'API_RESPONSE_ERROR';
+      } else if (error.message) {
+        errorMessage = error.message;
+        errorCode = error.code || 'NETWORK_ERROR';
+      }
+      console.error(`[WSH] Whisper API error: ${errorCode} - ${errorMessage}`);
+      emit('error', {
+        type: 'api',
+        message: errorMessage,
+        code: errorCode,
+        fatal: false,
+      });
+    }
   } finally {
     _isTranscribingSegment.value = false;
   }
