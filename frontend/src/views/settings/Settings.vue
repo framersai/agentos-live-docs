@@ -411,17 +411,23 @@
            <option value="openai_tts">OpenAI TTS (High Quality, incurs API costs)</option>
           </select>
         </SettingsItem>
-        <SettingsItem v-if="isTTSSupportedBySelectedProvider" label="TTS Voice Selection" description="Selected voice depends on the chosen TTS provider and language." label-for="ttsVoiceSelect">
-          <select id="ttsVoiceSelect" v-model="vcaSettings.selectedTtsVoiceId" class="select-input-ephemeral" :disabled="!ttsVoicesAreLoaded || currentTTSVoiceOptions.length === 0" aria-label="Text-to-Speech Voice">
-           <option :value="null">Provider Default Voice</option>
-           <optgroup v-if="ttsVoicesAreLoaded && groupedCurrentTTSVoices.length > 0" v-for="group in groupedCurrentTTSVoices" :key="group.lang" :label="group.lang">
-            <option v-for="voice in group.voices" :key="voice.id" :value="voice.id">
-             {{ voice.name }} {{ voice.isDefault ? `(Default)` : ''}}
-            </option>
-           </optgroup>
-           <option v-if="!ttsVoicesAreLoaded" disabled>Loading available voices...</option>
-           <option v-if="ttsVoicesAreLoaded && currentTTSVoiceOptions.length === 0" disabled>No voices for current provider/language.</option>
-          </select>
+        <SettingsItem
+          v-if="isTtsPanelVisible"
+          label="TTS Voice Selection"
+          description="Browse voices for the current provider. Filter by language or search to find the perfect sound."
+          label-for="voiceSelectionPanel"
+        >
+          <div id="voiceSelectionPanel">
+            <VoiceSelectionPanel
+              :voices="voiceSelectionOptions"
+              :selected-voice-id="vcaSettings.selectedTtsVoiceId"
+              :current-provider="vcaSettings.ttsProvider"
+              :loading="voicesLoading"
+              @update:selectedVoiceId="handleVoiceSelection"
+              @preview="handleVoicePreview"
+              @refresh="refreshVoiceCatalog"
+            />
+          </div>
         </SettingsItem>
        </div>
        <div class="settings-items-grid-ephemeral settings-item-spaced-ephemeral" v-if="isTTSSupportedBySelectedProvider">
@@ -565,7 +571,6 @@ import { api as mainApi, billingAPI } from '@/utils/api'; // Removed unused cost
 import {
   voiceSettingsManager,
   type VoiceApplicationSettings,
-  type VoiceOption,
   type AudioInputMode,
   type STTPreference, // These types are implicitly used by VoiceApplicationSettings
   type TTSProvider,   // and are good to have for clarity if extending logic.
@@ -595,6 +600,7 @@ import SettingsItem from '@/components/settings/SettingsItem.vue';
 import LanguageSwitcher from '@/components/LanguageSwitcher.vue';
 import OrganizationManager from '@/components/organization/OrganizationManager.vue';
 import SpeechCreditsModal from '@/components/voice-settings/SpeechCreditsModal.vue';
+import VoiceSelectionPanel from '@/components/voice-settings/VoiceSelectionPanel.vue';
 
 // Icons
 import {
@@ -659,6 +665,52 @@ const openSpeechCreditsModal = async (): Promise<void> => {
 
 const closeSpeechCreditsModal = (): void => {
   showSpeechCreditsModal.value = false;
+};
+
+const availableTtsVoices = computed(() => voiceSettingsManager.availableTtsVoices.value);
+const ttsVoicesLoaded = voiceSettingsManager.ttsVoicesLoaded;
+const voiceSelectionOptions = computed(() => availableTtsVoices.value);
+const voicesLoading = computed(() => !ttsVoicesLoaded.value);
+const isTtsPanelVisible = computed(() =>
+  vcaSettings.ttsProvider === 'browser_tts' || vcaSettings.ttsProvider === 'openai_tts',
+);
+
+const handleVoiceSelection = (voiceId: string | null) => {
+  voiceSettingsManager.updateSetting('selectedTtsVoiceId', voiceId ?? null);
+};
+
+const handleVoicePreview = async (voiceId: string) => {
+  try {
+    await voiceSettingsManager.previewVoice(voiceId);
+  } catch (error: any) {
+    console.error('[Settings] Voice preview failed:', error);
+    toast?.add?.({
+      type: 'error',
+      title: 'Voice preview failed',
+      message: 'Could not play the preview audio. Please try again in a moment.',
+      duration: 3500,
+    });
+  }
+};
+
+const refreshVoiceCatalog = async (): Promise<void> => {
+  try {
+    await voiceSettingsManager.loadAllTtsVoices();
+    toast?.add?.({
+      type: 'success',
+      title: 'Voices refreshed',
+      message: 'Latest voices loaded for the selected provider.',
+      duration: 2800,
+    });
+  } catch (error: any) {
+    console.error('[Settings] Voice refresh failed:', error);
+    toast?.add?.({
+      type: 'error',
+      title: 'Refresh failed',
+      message: 'Unable to refresh voice catalog. Please try again.',
+      duration: 3200,
+    });
+  }
 };
 
 const currentUser = computed(() => auth.user.value);
@@ -854,8 +906,6 @@ const resetAllAdvancedSettingsToGlobalDefaults = () => {
 const rememberLoginLocal: Ref<boolean> = useStorage('vcaRememberLoginSettings_v2', true);
 
 const audioInputDevices = computed(() => voiceSettingsManager.audioInputDevices.value);
-const ttsVoicesAreLoaded = computed(() => voiceSettingsManager.ttsVoicesLoaded.value);
-const currentTTSVoiceOptions = voiceSettingsManager.ttsVoicesForCurrentProvider;
 const currentSessionCost = ref(0.00);
 const importSettingsInputRef = ref<HTMLInputElement | null>(null);
 
@@ -871,21 +921,6 @@ let micTestStreamLocal: MediaStream | null = null;
 let micTestAnimationRequest: number | null = null;
 
 
-const isTTSSupportedBySelectedProvider = computed<boolean>(() => {
-  if (vcaSettings.ttsProvider === 'browser_tts') { return true; }
-  return vcaSettings.ttsProvider === 'openai_tts';
-});
-const groupedCurrentTTSVoices = computed(() => {
-  const groups: Record<string, { lang: string, voices: VoiceOption[] }> = {};
-  currentTTSVoiceOptions.value.forEach(voiceOpt => {
-    const langDisplay = getLanguageDisplayName(voiceOpt.lang) || voiceOpt.lang || 'Unknown Language';
-    if (!groups[langDisplay]) { groups[langDisplay] = { lang: langDisplay, voices: [] }; }
-    groups[langDisplay].voices.push(voiceOpt);
-  });
-  return Object.values(groups).sort((a,b) => a.lang.localeCompare(b.lang)).map(group => {
-    group.voices.sort((a,b) => a.name.localeCompare(b.name)); return group;
-  });
-});
 const currentAudioDeviceName = computed<string>(() => {
   if (!vcaSettings.selectedAudioInputDeviceId) return 'Default System Microphone';
   const device = audioInputDevices.value.find(d => d.deviceId === vcaSettings.selectedAudioInputDeviceId);

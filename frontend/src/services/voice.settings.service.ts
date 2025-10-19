@@ -67,6 +67,8 @@ export interface VoiceApplicationSettings {
   responseLanguageMode?: 'auto' | 'fixed' | 'follow-stt'; // How to determine response language
   fixedResponseLanguage?: string; // If mode is 'fixed', which language to use
   sttAutoDetectLanguage?: boolean; // Enable auto language detection for STT
+  /** Tracks whether the user manually locked language preferences (prevents auto overrides). */
+  languagePreferenceLocked?: boolean;
 
   // Conversation Context Settings
   conversationContextMode?: 'full' | 'smart' | 'minimal'; // How much context to include
@@ -144,6 +146,7 @@ const initialDefaultSettings: Readonly<VoiceApplicationSettings> = Object.freeze
   responseLanguageMode: 'auto', // Auto-detect by default
   fixedResponseLanguage: 'en-US',
   sttAutoDetectLanguage: false, // Keep false for now to maintain stability
+  languagePreferenceLocked: false,
 
   // Conversation Context Settings
   conversationContextMode: 'smart',
@@ -209,6 +212,11 @@ class VoiceSettingsManager {
   private readonly _creditsSnapshot: Ref<CreditSnapshotFE | null>;
   public readonly creditsSnapshot: Readonly<Ref<CreditSnapshotFE | null>>;
   public readonly speechCreditsExhausted: ComputedRef<boolean>;
+  public readonly languagePreferenceLocked: ComputedRef<boolean>;
+  private readonly _detectedSpeechLanguage: Ref<string | null> = ref(null);
+  private readonly _detectedResponseLanguage: Ref<string | null> = ref(null);
+  public readonly detectedSpeechLanguage = readonly(this._detectedSpeechLanguage);
+  public readonly detectedResponseLanguage = readonly(this._detectedResponseLanguage);
 
   private _isInitialized: Ref<boolean> = ref(false);
   private activePreviewAudio: HTMLAudioElement | null = null;
@@ -237,6 +245,7 @@ class VoiceSettingsManager {
       const remaining = snapshot.speech.remainingUsd ?? 0;
       return remaining <= 0;
     });
+    this.languagePreferenceLocked = computed(() => Boolean(this.settings.languagePreferenceLocked));
 
     watch(() => this.settings.ttsProvider, async (newProvider, oldProvider) => {
       if (!this._isInitialized.value || newProvider === oldProvider) return;
@@ -327,6 +336,70 @@ class VoiceSettingsManager {
       }
     } catch (error: any) {
       console.warn('[VSM] Failed to refresh speech credits snapshot:', error?.message ?? error);
+    }
+  }
+
+  private _canonicalizeLanguage(lang: string): string {
+    const trimmed = lang.trim();
+    if (!trimmed) return 'en-US';
+    const segments = trimmed.split(/[-_]/)
+      .map((segment, index) => (index === 0 ? segment.toLowerCase() : segment.toUpperCase()));
+    if (segments.length === 1) {
+      const primary = segments[0];
+      return primary.length === 2 ? `${primary}-${primary.toUpperCase()}` : primary;
+    }
+    return segments.join('-');
+  }
+
+  public setManualLanguagePreference(lang: string | null, options?: { mode?: 'fixed' | 'follow-stt' }): void {
+    if (!lang) {
+      this.settings.languagePreferenceLocked = false;
+      return;
+    }
+    const normalized = this._canonicalizeLanguage(lang);
+    this.settings.languagePreferenceLocked = true;
+    this.settings.speechLanguage = normalized;
+    const targetMode = options?.mode ?? 'fixed';
+    this.settings.responseLanguageMode = targetMode;
+    if (targetMode === 'fixed') {
+      this.settings.fixedResponseLanguage = normalized;
+    }
+  }
+
+  public clearManualLanguagePreference(): void {
+    this.settings.languagePreferenceLocked = false;
+  }
+
+  public applyInterfaceLocale(locale: string): void {
+    if (this.settings.languagePreferenceLocked) return;
+    const normalized = this._canonicalizeLanguage(locale);
+    this.settings.speechLanguage = normalized;
+    this.settings.responseLanguageMode = 'follow-stt';
+    this.settings.fixedResponseLanguage = normalized;
+  }
+
+  public handleDetectedSpeechLanguage(lang: string | undefined | null): void {
+    if (!lang) return;
+    const normalized = this._canonicalizeLanguage(lang);
+    this._detectedSpeechLanguage.value = normalized;
+    if (this.settings.languagePreferenceLocked) return;
+    if (this.settings.speechLanguage !== normalized) {
+      this.settings.speechLanguage = normalized;
+    }
+    if (this.settings.responseLanguageMode === 'auto' || this.settings.responseLanguageMode === 'follow-stt') {
+      this.settings.responseLanguageMode = 'follow-stt';
+      this.settings.fixedResponseLanguage = normalized;
+    }
+  }
+
+  public handleDetectedResponseLanguage(lang: string | undefined | null): void {
+    if (!lang) return;
+    const normalized = this._canonicalizeLanguage(lang);
+    this._detectedResponseLanguage.value = normalized;
+    if (this.settings.languagePreferenceLocked) return;
+    if (this.settings.responseLanguageMode === 'auto') {
+      this.settings.responseLanguageMode = 'fixed';
+      this.settings.fixedResponseLanguage = normalized;
     }
   }
 

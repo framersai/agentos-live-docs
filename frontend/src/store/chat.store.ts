@@ -18,7 +18,7 @@ import {
   type ConversationMessage as SimpleManagerMessage
 } from '@/services/conversation.manager';
 import { voiceSettingsManager } from '@/services/voice.settings.service';
-import type { ChatMessageFE, ProcessedHistoryMessageFE, ILlmToolCallFE as ApiLlmToolCall, ChatMessagePayloadFE } from '@/utils/api';
+import { chatAPI, type ChatMessageFE, type ProcessedHistoryMessageFE, type ILlmToolCallFE as ApiLlmToolCall, type ChatMessagePayloadFE } from '@/utils/api';
 
 export interface ILlmToolCallUI extends ApiLlmToolCall {}
 
@@ -59,6 +59,8 @@ export const useChatStore = defineStore('chat', () => {
   const isMainContentStreaming = ref(false);
   const streamingMainContentText = ref('');
   const ttsPendingMap = ref<Record<string, boolean>>({});
+  const languageDetectionSessionKey = 'vca_language_detection_complete_v1';
+  const languageDetectionInFlight = ref(false);
 
   const history = computed(() => readonly(messageHistory.value));
   
@@ -75,6 +77,50 @@ export const useChatStore = defineStore('chat', () => {
       conversationIds.value[agentId] = `conv-${agentId}-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
     }
     return conversationIds.value[agentId];
+  };
+
+  const hasCompletedLanguageDetection = (): boolean => {
+    if (typeof window === 'undefined') return true;
+    return sessionStorage.getItem(languageDetectionSessionKey) === 'true';
+  };
+
+  const markLanguageDetectionComplete = (): void => {
+    if (typeof window === 'undefined') return;
+    sessionStorage.setItem(languageDetectionSessionKey, 'true');
+  };
+
+  const maybeDetectConversationLanguage = async (agentId: AgentId): Promise<void> => {
+    if (typeof window === 'undefined') return;
+    if (languageDetectionInFlight.value) return;
+    if (hasCompletedLanguageDetection()) return;
+
+    const recentMessages = messageHistory.value
+      .filter((msg) => msg.agentId === agentId && (msg.role === 'user' || msg.role === 'assistant'))
+      .slice(-6)
+      .map((msg) => ({
+        role: msg.role === 'assistant' ? 'assistant' : 'user',
+        content: msg.content || '',
+      }))
+      .filter((entry) => entry.content.trim().length > 0);
+
+    if (recentMessages.length === 0) {
+      return;
+    }
+
+    languageDetectionInFlight.value = true;
+    try {
+      const { data } = await chatAPI.detectLanguage(recentMessages);
+      if (data?.language) {
+        voiceSettingsManager.handleDetectedSpeechLanguage(data.language);
+        voiceSettingsManager.handleDetectedResponseLanguage(data.language);
+      }
+      markLanguageDetectionComplete();
+    } catch (error) {
+      console.warn('[ChatStore] Language detection failed:', error);
+      markLanguageDetectionComplete();
+    } finally {
+      languageDetectionInFlight.value = false;
+    }
   };
 
   function setTtsPending(agentId: AgentId, pending: boolean): void {
@@ -137,6 +183,9 @@ export const useChatStore = defineStore('chat', () => {
           setTtsPending(fullMessage.agentId, false);
         }
       })();
+    }
+    if (fullMessage.role === 'user') {
+      void maybeDetectConversationLanguage(fullMessage.agentId);
     }
     return fullMessage;
   }
