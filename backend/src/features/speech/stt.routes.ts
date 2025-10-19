@@ -148,7 +148,9 @@ export async function POST(req: Request, res: Response): Promise<void> {
         prompt: requestOptions.prompt,
         model: requestOptions.model,
         temperature: requestOptions.temperature !== undefined
-          ? Number.parseFloat(requestOptions.temperature)
+          ? (typeof requestOptions.temperature === 'string'
+              ? Number.parseFloat(requestOptions.temperature)
+              : Number(requestOptions.temperature))
           : undefined,
         responseFormat: validateAndMapResponseFormat(requestOptions.responseFormat),
         providerId: requestOptions.providerId || process.env.DEFAULT_SPEECH_PREFERENCE_STT_PROVIDER || 'whisper_api',

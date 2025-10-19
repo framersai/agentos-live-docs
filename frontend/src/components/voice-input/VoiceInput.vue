@@ -430,6 +430,7 @@ const activeAgentId = computed(() => agentStore.activeAgent?.id ?? null);
 const isActiveAgentAwaitingTts = computed(() => {
   const id = activeAgentId.value;
   return id ? chatStore.isAgentAwaitingTts(id) : false;
+});
 const showTtsPreparingPill = ref(false);
 const ttsPreparingLabel = computed(() => t('voice.preparingAudioResponse', 'Preparing audio response…'));
 let ttsPillTimeout: number | null = null;
