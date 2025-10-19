@@ -139,6 +139,12 @@ The backend honours:
 
 See `.env.sample` for toggles such as `DEFAULT_SPEECH_PREFERENCE_STT`, `DEFAULT_SPEECH_PREFERENCE_TTS_PROVIDER`, and advanced audio processing flags. All defaults are tuned for local development.
 
+### Speech credits & automatic fallbacks
+
+- `CREDITS_PUBLIC_SPEECH_DAILY_USD`, `CREDITS_METERED_SPEECH_DAILY_USD`, `CREDITS_GLOBAL_SPEECH_DAILY_USD` &mdash; Daily OpenAI Whisper/TTS budgets (USD) for demo, subscriber, and global cohorts.
+- `CREDITS_PUBLIC_LLM_DAILY_USD`, `CREDITS_METERED_LLM_DAILY_USD`, `CREDITS_GLOBAL_LLM_DAILY_USD` &mdash; Companion daily budgets for LLM completions. Unlimited plans ignore these caps.
+- When the speech allowance hits zero the backend returns `SPEECH_CREDITS_EXHAUSTED`; the client switches to browser STT/TTS, shows a toast, and keeps interaction uninterrupted until credits reset.
+
 ## 10. Troubleshooting Checklist
 
 - **Auth errors**: Confirm `GLOBAL_ACCESS_PASSWORD` or Supabase credentials and ensure clocks are in sync when using Supabase JWTs.

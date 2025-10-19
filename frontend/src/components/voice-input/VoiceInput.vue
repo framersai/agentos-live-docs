@@ -430,7 +430,6 @@ const activeAgentId = computed(() => agentStore.activeAgent?.id ?? null);
 const isActiveAgentAwaitingTts = computed(() => {
   const id = activeAgentId.value;
   return id ? chatStore.isAgentAwaitingTts(id) : false;
-});
 const showTtsPreparingPill = ref(false);
 const ttsPreparingLabel = computed(() => t('voice.preparingAudioResponse', 'Preparing audio response…'));
 let ttsPillTimeout: number | null = null;
@@ -526,7 +525,7 @@ const voiceEffects = useVoiceInputEffects({
   isListeningForWakeWord: computed(() => sttManager.isListeningForWakeWord.value),
   isProcessingLLM: computed(() => props.isProcessingLLM),
   audioMode: currentAudioMode
-});
+}, { immediate: true });
 
 const geometricPatterns = computed(() => {
   return voiceEffects?.geometricPatternSvg.value || [];
@@ -665,6 +664,30 @@ const currentTtsVoiceName = computed(() => {
     return currentVoice.name.trim();
   }
   return null;
+});
+
+const speechCreditsToastShown = ref(false);
+
+watch(() => voiceSettingsManager.speechCreditsExhausted.value, (isExhausted) => {
+  if (isExhausted) {
+    if (!speechCreditsToastShown.value) {
+      speechCreditsToastShown.value = true;
+      if (voiceSettingsManager.settings.sttPreference === 'whisper_api') {
+        voiceSettingsManager.updateSetting('sttPreference', 'browser_webspeech_api');
+      }
+      if (voiceSettingsManager.settings.ttsProvider === 'openai_tts') {
+        voiceSettingsManager.updateSetting('ttsProvider', 'browser_tts');
+      }
+      toast?.add({
+        type: 'warning',
+        title: 'Speech Credits Exhausted',
+        message: 'Falling back to browser speech recognition and playback until your speech credits reset.',
+        duration: 5200,
+      });
+    }
+  } else if (speechCreditsToastShown.value) {
+    speechCreditsToastShown.value = false;
+  }
 });
 
 const ttsProviderMeta = computed(() => {
@@ -1368,6 +1391,7 @@ onMounted(async () => {
   await voiceSettingsManager.initialize();
   await audioFeedback.loadSounds();
   await microphoneManager.checkCurrentPermission();
+  void voiceSettingsManager.refreshCreditsSnapshot();
 
   if (voiceInputPanelRef.value && typeof window !== 'undefined') {
     resizeObserver = new ResizeObserver(() => {

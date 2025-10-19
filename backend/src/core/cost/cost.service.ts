@@ -11,6 +11,7 @@
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { creditAllocationService } from './creditAllocation.service.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __projectRoot = path.resolve(path.dirname(__filename), '../../../../');
@@ -151,6 +152,11 @@ export class CostService {
     }
 
     globalMonthlyCostUSD += costUSD;
+    try {
+      creditAllocationService.recordCost(userId, serviceType, costUSD);
+    } catch (allocationError) {
+      console.warn(`CostService: Failed to record credit usage for user ${userId}:`, allocationError);
+    }
 
     // Construct a detailed log message
     let logMessage = `CostService: User [${userId}] Service [${serviceType}]`;

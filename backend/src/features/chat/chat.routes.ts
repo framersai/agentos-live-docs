@@ -19,6 +19,7 @@ import { IChatMessage, ILlmUsage, IChatCompletionParams, ILlmResponse, ILlmToolC
 
 // --- Cost & Model Preference Imports ---
 import { CostService } from '../../core/cost/cost.service.js';
+import { creditAllocationService, type CreditContext } from '../../core/cost/creditAllocation.service.js';
 import { resolveSessionUserId } from '../../utils/session.utils.js';
 import { getModelPrice, MODEL_PRICING } from '../../../config/models.config.js';
 
@@ -265,6 +266,13 @@ export async function POST(req: Request, res: Response): Promise<void> {
     }
 
     const effectiveUserId = resolveSessionUserId(req, userIdFromRequest);
+    const userContext = (req as any)?.user;
+    const creditContext: CreditContext = {
+      isAuthenticated: Boolean(userContext),
+      tier: userContext?.tier,
+      mode: userContext?.mode,
+    };
+    creditAllocationService.syncProfile(effectiveUserId, creditContext);
     const conversationId = reqConversationId || `conv_${mode}_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
 
     // --- 0. Cost Check & Persona Persistence ---
@@ -732,6 +740,13 @@ export async function POST_PERSONA(req: Request, res: Response): Promise<void> {
     }
 
     const effectiveUserId = resolveSessionUserId(req, userId);
+    const userContext = (req as any)?.user;
+    const creditContext: CreditContext = {
+      isAuthenticated: Boolean(userContext),
+      tier: userContext?.tier,
+      mode: userContext?.mode,
+    };
+    creditAllocationService.syncProfile(effectiveUserId, creditContext);
     const timestamp = Date.now();
 
     await sqliteMemoryAdapter.setConversationPersona(
