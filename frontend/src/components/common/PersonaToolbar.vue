@@ -1,6 +1,6 @@
 ﻿// File: frontend/src/components/common/PersonaToolbar.vue
 <script setup lang="ts">
-import { computed, inject, ref, watch, onMounted, onUnmounted } from 'vue';
+import { computed, inject, ref, watch, onMounted, onUnmounted, type Component } from 'vue';
 import type { ToastService } from '@/services/services';
 import type { AgentId, IAgentDefinition } from '@/services/agent.service';
 import { useChatStore } from '@/store/chat.store';
@@ -8,7 +8,17 @@ import UsageStatusBadge from '@/components/common/UsageStatusBadge.vue';
 import { voiceSettingsManager } from '@/services/voice.settings.service';
 import { useI18n } from 'vue-i18n';
 import { XMarkIcon } from '@heroicons/vue/24/solid';
-import { GlobeAltIcon, ChevronDownIcon, SparklesIcon } from '@heroicons/vue/24/outline';
+import {
+  GlobeAltIcon,
+  ChevronDownIcon,
+  SparklesIcon,
+  MicrophoneIcon,
+  SpeakerWaveIcon,
+  SpeakerXMarkIcon,
+  AdjustmentsHorizontalIcon,
+  LanguageIcon,
+  CloudIcon,
+} from '@heroicons/vue/24/outline';
 import { chatAPI } from '@/utils/api';
 import { useCostStore } from '@/store/cost.store';
 
@@ -19,6 +29,23 @@ interface PersonaPreset {
   label: string;
   summary: string;
   persona: string;
+}
+
+type CompactSectionId = 'persona' | 'speech' | 'session';
+
+interface CompactStatusItem {
+  id: 'mode' | 'stt' | 'tts' | 'speech';
+  label: string;
+  subLabel?: string;
+  badge?: string;
+  icon: Component;
+  theme?: 'neutral' | 'accent' | 'info' | 'primary' | 'warning' | 'muted';
+}
+
+interface CompactSectionButton {
+  id: CompactSectionId;
+  label: string;
+  icon: Component;
 }
 
 const PERSONA_PRESETS_PER_PAGE = 4;
@@ -32,11 +59,13 @@ const props = withDefaults(defineProps<{
   tokensTotal?: number | null;
   tokensUsed?: number | null;
   persistPersona?: boolean;
+  variant?: 'default' | 'compact';
 }>(), {
   showUsageBadge: false,
   tokensTotal: null,
   tokensUsed: null,
   persistPersona: true,
+  variant: 'default',
 });
 
 const chatStore = useChatStore();
@@ -83,6 +112,55 @@ const availableLanguageOptions = computed(() => {
     .map((code) => ({ code, label: formatLanguageName(code) }));
 });
 
+const isCompactVariant = computed(() => props.variant === 'compact');
+const compactToolbarExpanded = ref(false);
+const compactActiveSection = ref<CompactSectionId>('persona');
+
+const compactSectionButtons: CompactSectionButton[] = [
+  { id: 'persona', label: 'Persona', icon: SparklesIcon },
+  { id: 'speech', label: 'Audio', icon: SpeakerWaveIcon },
+  { id: 'session', label: 'Session', icon: LanguageIcon },
+];
+
+const toggleCompactPanel = (): void => {
+  compactToolbarExpanded.value = !compactToolbarExpanded.value;
+  if (!compactToolbarExpanded.value) {
+    languageMenuOpen.value = false;
+  }
+};
+
+const openCompactSection = (section: CompactSectionId): void => {
+  if (compactActiveSection.value === section && compactToolbarExpanded.value) {
+    compactToolbarExpanded.value = false;
+    if (section !== 'session') {
+      languageMenuOpen.value = false;
+    }
+    return;
+  }
+  compactActiveSection.value = section;
+  compactToolbarExpanded.value = true;
+  if (section !== 'session') {
+    languageMenuOpen.value = false;
+  }
+};
+
+const isSectionActive = (section: CompactSectionId): boolean =>
+  compactToolbarExpanded.value && compactActiveSection.value === section;
+
+watch(() => props.variant, (variant) => {
+  if (variant !== 'compact') {
+    compactToolbarExpanded.value = false;
+    compactActiveSection.value = 'persona';
+    languageMenuOpen.value = false;
+  }
+});
+
+watch(compactToolbarExpanded, (expanded) => {
+  if (!expanded) {
+    languageMenuOpen.value = false;
+  }
+});
+
 const languageSummaryLabel = computed(() => {
   if (languagePreferenceLocked.value) {
     return `Language: ${formatLanguageName(speechLanguage.value)} (locked)`;
@@ -101,6 +179,113 @@ const languageSummaryLabel = computed(() => {
   }
   return `Language: ${formatLanguageName(speechLanguage.value)}`;
 });
+
+const audioInputModeSetting = computed(() => voiceSettingsManager.settings.audioInputMode);
+const sttPreferenceSetting = computed(() => voiceSettingsManager.settings.sttPreference);
+const ttsProviderSetting = computed(() => voiceSettingsManager.settings.ttsProvider);
+const autoPlaySpeechSetting = computed(() => voiceSettingsManager.settings.autoPlayTts);
+
+const currentVoiceOption = computed(() => voiceSettingsManager.getCurrentTtsVoice());
+const currentVoiceDescriptor = computed(() => {
+  const voice = currentVoiceOption.value;
+  if (!voice) {
+    return ttsProviderSetting.value === 'openai_tts' ? 'OpenAI default' : 'System default';
+  }
+  const voiceName = voice.name?.trim() || 'Custom voice';
+  const languageName = voice.lang ? formatLanguageName(voice.lang) : null;
+  if (languageName) {
+    return `${voiceName} · ${languageName}`;
+  }
+  return voiceName;
+});
+
+const compactStatusItems = computed<CompactStatusItem[]>(() => {
+  const items: CompactStatusItem[] = [];
+  const audioMode = audioInputModeSetting.value;
+  if (audioMode === 'continuous') {
+    items.push({
+      id: 'mode',
+      label: 'Continuous',
+      badge: 'Mode',
+      subLabel: 'Always listening',
+      icon: MicrophoneIcon,
+      theme: 'accent',
+    });
+  } else if (audioMode === 'voice-activation') {
+    items.push({
+      id: 'mode',
+      label: 'Wake Mode',
+      badge: 'Mode',
+      subLabel: 'Voice activation',
+      icon: MicrophoneIcon,
+      theme: 'accent',
+    });
+  } else {
+    items.push({
+      id: 'mode',
+      label: 'Push to Talk',
+      badge: 'Mode',
+      subLabel: 'Press & speak',
+      icon: MicrophoneIcon,
+      theme: 'accent',
+    });
+  }
+
+  if (sttPreferenceSetting.value === 'whisper_api') {
+    items.push({
+      id: 'stt',
+      label: 'Whisper STT',
+      badge: 'STT',
+      subLabel: 'OpenAI Whisper',
+      icon: CloudIcon,
+      theme: 'primary',
+    });
+  } else {
+    items.push({
+      id: 'stt',
+      label: 'Browser STT',
+      badge: 'STT',
+      subLabel: 'Web Speech',
+      icon: GlobeAltIcon,
+      theme: 'info',
+    });
+  }
+
+  if (ttsProviderSetting.value === 'openai_tts') {
+    items.push({
+      id: 'tts',
+      label: 'OpenAI Voice',
+      badge: 'TTS',
+      subLabel: currentVoiceDescriptor.value,
+      icon: SparklesIcon,
+      theme: 'primary',
+    });
+  } else {
+    items.push({
+      id: 'tts',
+      label: 'Browser Voice',
+      badge: 'TTS',
+      subLabel: currentVoiceDescriptor.value,
+      icon: SpeakerWaveIcon,
+      theme: 'neutral',
+    });
+  }
+
+  items.push({
+    id: 'speech',
+    label: autoPlaySpeechSetting.value ? 'Speech On' : 'Speech Off',
+    badge: 'Playback',
+    subLabel: autoPlaySpeechSetting.value ? 'Autoplay ready' : 'Manual playback',
+    icon: autoPlaySpeechSetting.value ? SpeakerWaveIcon : SpeakerXMarkIcon,
+    theme: autoPlaySpeechSetting.value ? 'accent' : 'muted',
+  });
+
+  return items;
+});
+
+const toggleSpeechAutoPlay = (): void => {
+  voiceSettingsManager.updateSetting('autoPlayTts', !autoPlaySpeechSetting.value);
+};
 
 const isAutoModeActive = computed(() => sttAutoDetectEnabled.value && !languagePreferenceLocked.value);
 const isInterfaceModeActive = computed(() => !languagePreferenceLocked.value && !sttAutoDetectEnabled.value && formatLanguageName(speechLanguage.value) === formatLanguageName(interfaceLanguage.value));
@@ -497,153 +682,406 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="persona-voice-toolbar" :class="{ 'persona-voice-toolbar--disabled': personaButtonDisabled }">
-    <div class="persona-voice-toolbar__left">
-      <UsageStatusBadge
-        v-if="usageBadgeVisible"
-        class="persona-voice-toolbar__badge"
-        :tokens-total="tokensTotal ?? undefined"
-        :tokens-used="tokensUsed ?? undefined"
-      />
-      <button
-        type="button"
-        class="persona-voice-toolbar__button"
-        :title="personaTooltipText"
-        :disabled="personaButtonDisabled"
-        @click="openPersonaModal"
-      >
-        {{ personaButtonLabel }}
-      </button>
-      <span
-        v-if="!personaButtonDisabled && personaHasCustom && personaSummaryText"
-        class="persona-voice-toolbar__summary"
-        :title="personaSummaryText"
-      >
-        {{ personaSummaryText }}
-      </span>
-      <button
-        v-if="!personaButtonDisabled && personaHasCustom"
-        type="button"
-        class="persona-voice-toolbar__clear"
-        @click="resetPersonaToDefault"
-      >
-        Clear
-      </button>
-    </div>
-
-    <div class="persona-voice-toolbar__right">
-      <div class="persona-voice-toolbar__stats">
-        <div
-          class="persona-voice-toolbar__stat"
-          :class="speechCreditsStateClass"
-          role="status"
-          aria-live="polite"
-        >
-          <span class="persona-voice-toolbar__stat-label">Speech</span>
-          <span class="persona-voice-toolbar__stat-value">{{ speechCreditsSummary }}</span>
-          <span v-if="speechCreditsMeterWidth" class="persona-voice-toolbar__stat-meter" aria-hidden="true">
-            <span class="persona-voice-toolbar__stat-meter-bar" :style="{ width: speechCreditsMeterWidth }"></span>
-          </span>
-        </div>
-        <div
-          class="persona-voice-toolbar__stat"
-          :class="sessionCostStateClass"
-          role="status"
-          aria-live="polite"
-        >
-          <span class="persona-voice-toolbar__stat-label">Session</span>
-          <span class="persona-voice-toolbar__stat-value">{{ sessionCostSummary }}</span>
-          <span v-if="sessionMeterWidth" class="persona-voice-toolbar__stat-meter" aria-hidden="true">
-            <span class="persona-voice-toolbar__stat-meter-bar" :style="{ width: sessionMeterWidth }"></span>
-          </span>
-        </div>
-      </div>
-      <button
-        ref="languageTriggerRef"
-        type="button"
-        class="persona-language-button"
-        :class="{ 'is-open': languageMenuOpen }"
-        @click="toggleLanguageMenu"
-      >
-        <GlobeAltIcon class="persona-language-button__icon" aria-hidden="true" />
-        <span class="persona-language-button__label">{{ languageSummaryLabel }}</span>
-        <ChevronDownIcon class="persona-language-button__chevron" aria-hidden="true" />
-      </button>
-
-      <transition name="fade">
-        <div
-          v-if="languageMenuOpen"
-          ref="languageMenuRef"
-          class="persona-language-menu"
-          role="menu"
-          aria-label="Language preferences"
-        >
-          <div class="persona-language-menu__section persona-language-menu__section--options">
-            <h4>Quick Options</h4>
-            <button
-              type="button"
-              class="persona-language-menu__option"
-              :class="{ 'is-active': isAutoModeActive }"
-              @click="applyAutoLanguage"
+  <div
+    class="persona-voice-toolbar"
+    :class="[
+      `persona-voice-toolbar--${props.variant ?? 'default'}`,
+      { 'persona-voice-toolbar--disabled': personaButtonDisabled }
+    ]"
+  >
+    <template v-if="isCompactVariant">
+      <div class="persona-compact">
+        <div class="persona-compact__header">
+          <button
+            type="button"
+            class="persona-compact__toggle"
+            :aria-expanded="compactToolbarExpanded"
+            @click="toggleCompactPanel"
+          >
+            <ChevronDownIcon
+              class="persona-compact__toggle-icon"
+              :class="{ 'is-open': compactToolbarExpanded }"
+              aria-hidden="true"
+            />
+            <span class="sr-only">Toggle voice controls</span>
+          </button>
+          <div class="persona-compact__status-row" role="list">
+            <div
+              v-for="item in compactStatusItems"
+              :key="item.id"
+              class="persona-compact-status"
+              :data-theme="item.theme || 'neutral'"
+              role="listitem"
             >
-              <SparklesIcon class="persona-language-menu__option-icon" aria-hidden="true" />
-              <span>
-                Auto detect (recommended)
-                <small v-if="hasDetectedLanguage">Latest: {{ formatLanguageName(detectedSpeechLanguage || detectedResponseLanguage) }}</small>
+              <span class="persona-compact-status__icon-wrap" aria-hidden="true">
+                <component :is="item.icon" class="persona-compact-status__icon" />
               </span>
-            </button>
-            <button
-              type="button"
-              class="persona-language-menu__option"
-              :class="{ 'is-active': isInterfaceModeActive }"
-              @click="applyInterfaceLanguage"
-            >
-              <GlobeAltIcon class="persona-language-menu__option-icon" aria-hidden="true" />
-              <span>Follow interface language ({{ formatLanguageName(interfaceLanguage) }})</span>
-            </button>
-            <button
-              v-if="hasDetectedLanguage"
-              type="button"
-              class="persona-language-menu__option"
-              @click="applyDetectedLanguage"
-            >
-              <SparklesIcon class="persona-language-menu__option-icon" aria-hidden="true" />
-              <span>Use detected language ({{ formatLanguageName(detectedSpeechLanguage || detectedResponseLanguage) }})</span>
-            </button>
-          </div>
-
-          <div class="persona-language-menu__section persona-language-menu__section--manual">
-            <h4>Manual selection</h4>
-            <label class="persona-language-menu__label" for="manual-language-select">Choose language</label>
-            <select
-              id="manual-language-select"
-              class="persona-language-menu__select"
-              v-model="manualLanguageSelection"
-            >
-              <option
-                v-for="option in availableLanguageOptions"
-                :key="option.code"
-                :value="option.code"
-              >
-                {{ option.label }}
-              </option>
-            </select>
-            <div class="persona-language-menu__manual-actions">
-              <button type="button" class="persona-language-menu__apply" @click="applyManualLanguage">Apply</button>
-              <button type="button" class="persona-language-menu__reset" @click="applyAutoLanguage">Reset to auto</button>
+              <div class="persona-compact-status__labels">
+                <span class="persona-compact-status__label">
+                  <span v-if="item.badge" class="persona-compact-status__badge">{{ item.badge }}</span>
+                  {{ item.label }}
+                </span>
+                <span v-if="item.subLabel" class="persona-compact-status__sublabel">{{ item.subLabel }}</span>
+              </div>
             </div>
-            <p class="persona-language-menu__note" v-if="languagePreferenceLocked">
-              Manual selection keeps this language until you switch back to auto.
-            </p>
-          </div>
-
-          <div class="persona-language-menu__footer">
-            <span>Speech detection: {{ formatLanguageName(detectedSpeechLanguage) }}</span>
-            <span>Response detection: {{ formatLanguageName(detectedResponseLanguage) }}</span>
           </div>
         </div>
-      </transition>
-    </div>
+
+        <transition name="persona-compact-expand">
+          <div v-if="compactToolbarExpanded" class="persona-compact__body">
+            <div class="persona-compact__actions">
+              <button
+                v-for="button in compactSectionButtons"
+                :key="button.id"
+                type="button"
+                class="persona-compact-action"
+                :class="{ 'is-active': isSectionActive(button.id) }"
+                @click="openCompactSection(button.id)"
+              >
+                <component :is="button.icon" class="persona-compact-action__icon" aria-hidden="true" />
+                <span class="persona-compact-action__label">{{ button.label }}</span>
+              </button>
+            </div>
+
+            <div class="persona-compact__panel">
+              <section
+                v-if="compactActiveSection === 'persona'"
+                class="persona-compact-panel"
+                aria-label="Tone and persona controls"
+              >
+                <UsageStatusBadge
+                  v-if="usageBadgeVisible"
+                  class="persona-compact-panel__badge"
+                  :tokens-total="tokensTotal ?? undefined"
+                  :tokens-used="tokensUsed ?? undefined"
+                />
+                <div class="persona-compact-panel__summary">
+                  <h4 class="persona-compact-panel__summary-label">{{ personaButtonLabel }}</h4>
+                  <p
+                    v-if="!personaButtonDisabled && personaHasCustom && personaSummaryText"
+                    class="persona-compact-panel__summary-text"
+                  >
+                    {{ personaSummaryText }}
+                  </p>
+                  <p v-else class="persona-compact-panel__summary-text persona-compact-panel__summary-text--muted">
+                    Personalise how this assistant responds by layering tone guidance.
+                  </p>
+                </div>
+                <div class="persona-compact-panel__actions">
+                  <button
+                    type="button"
+                    class="persona-compact-panel__primary"
+                    :disabled="personaButtonDisabled"
+                    @click="openPersonaModal"
+                  >
+                    <SparklesIcon class="persona-compact-panel__button-icon" aria-hidden="true" />
+                    <span>Adjust persona</span>
+                  </button>
+                  <button
+                    v-if="!personaButtonDisabled && personaHasCustom"
+                    type="button"
+                    class="persona-compact-panel__ghost"
+                    @click="resetPersonaToDefault"
+                  >
+                    <XMarkIcon class="persona-compact-panel__button-icon" aria-hidden="true" />
+                    <span>Clear persona</span>
+                  </button>
+                </div>
+              </section>
+
+              <section
+                v-else-if="compactActiveSection === 'speech'"
+                class="persona-compact-panel"
+                aria-label="Speech status"
+              >
+                <div
+                  class="persona-voice-toolbar__stat persona-compact-panel__stat"
+                  :class="speechCreditsStateClass"
+                  role="status"
+                  aria-live="polite"
+                >
+                  <span class="persona-voice-toolbar__stat-label">Speech Credits</span>
+                  <span class="persona-voice-toolbar__stat-value">{{ speechCreditsSummary }}</span>
+                  <span v-if="speechCreditsMeterWidth" class="persona-voice-toolbar__stat-meter" aria-hidden="true">
+                    <span class="persona-voice-toolbar__stat-meter-bar" :style="{ width: speechCreditsMeterWidth }"></span>
+                  </span>
+                </div>
+                <div class="persona-compact-panel__controls">
+                  <span class="persona-compact-panel__hint">
+                    {{ autoPlaySpeechSetting ? 'Auto-play responses when ready.' : 'Manual playback until you press play.' }}
+                  </span>
+                  <button type="button" class="persona-compact-panel__primary" @click="toggleSpeechAutoPlay">
+                    <component
+                      :is="autoPlaySpeechSetting ? SpeakerWaveIcon : SpeakerXMarkIcon"
+                      class="persona-compact-panel__button-icon"
+                      aria-hidden="true"
+                    />
+                    <span>{{ autoPlaySpeechSetting ? 'Disable autoplay' : 'Enable autoplay' }}</span>
+                  </button>
+                </div>
+              </section>
+
+              <section
+                v-else
+                class="persona-compact-panel persona-compact-panel--session"
+                aria-label="Session usage and language"
+              >
+                <div
+                  class="persona-voice-toolbar__stat persona-compact-panel__stat"
+                  :class="sessionCostStateClass"
+                  role="status"
+                  aria-live="polite"
+                >
+                  <span class="persona-voice-toolbar__stat-label">Session Usage</span>
+                  <span class="persona-voice-toolbar__stat-value">{{ sessionCostSummary }}</span>
+                  <span v-if="sessionMeterWidth" class="persona-voice-toolbar__stat-meter" aria-hidden="true">
+                    <span class="persona-voice-toolbar__stat-meter-bar" :style="{ width: sessionMeterWidth }"></span>
+                  </span>
+                </div>
+                <div class="persona-compact-panel__language">
+                  <button
+                    ref="languageTriggerRef"
+                    type="button"
+                    class="persona-language-button"
+                    :class="{ 'is-open': languageMenuOpen }"
+                    @click="toggleLanguageMenu"
+                  >
+                    <GlobeAltIcon class="persona-language-button__icon" aria-hidden="true" />
+                    <span class="persona-language-button__label">{{ languageSummaryLabel }}</span>
+                    <ChevronDownIcon class="persona-language-button__chevron" aria-hidden="true" />
+                  </button>
+
+                  <transition name="fade">
+                    <div
+                      v-if="languageMenuOpen"
+                      ref="languageMenuRef"
+                      class="persona-language-menu"
+                      role="menu"
+                      aria-label="Language preferences"
+                    >
+                      <div class="persona-language-menu__section persona-language-menu__section--options">
+                        <h4>Quick Options</h4>
+                        <button
+                          type="button"
+                          class="persona-language-menu__option"
+                          :class="{ 'is-active': isAutoModeActive }"
+                          @click="applyAutoLanguage"
+                        >
+                          <SparklesIcon class="persona-language-menu__option-icon" aria-hidden="true" />
+                          <span>
+                            Auto detect (recommended)
+                            <small v-if="hasDetectedLanguage">
+                              Latest: {{ formatLanguageName(detectedSpeechLanguage || detectedResponseLanguage) }}
+                            </small>
+                          </span>
+                        </button>
+                        <button
+                          type="button"
+                          class="persona-language-menu__option"
+                          :class="{ 'is-active': isInterfaceModeActive }"
+                          @click="applyInterfaceLanguage"
+                        >
+                          <GlobeAltIcon class="persona-language-menu__option-icon" aria-hidden="true" />
+                          <span>Follow interface language ({{ formatLanguageName(interfaceLanguage) }})</span>
+                        </button>
+                        <button
+                          v-if="hasDetectedLanguage"
+                          type="button"
+                          class="persona-language-menu__option"
+                          @click="applyDetectedLanguage"
+                        >
+                          <SparklesIcon class="persona-language-menu__option-icon" aria-hidden="true" />
+                          <span>Use detected language ({{ formatLanguageName(detectedSpeechLanguage || detectedResponseLanguage) }})</span>
+                        </button>
+                      </div>
+
+                      <div class="persona-language-menu__section persona-language-menu__section--manual">
+                        <h4>Manual selection</h4>
+                        <label class="persona-language-menu__label" for="persona-compact-manual-language">Choose language</label>
+                        <select
+                          id="persona-compact-manual-language"
+                          class="persona-language-menu__select"
+                          v-model="manualLanguageSelection"
+                        >
+                          <option
+                            v-for="option in availableLanguageOptions"
+                            :key="option.code"
+                            :value="option.code"
+                          >
+                            {{ option.label }}
+                          </option>
+                        </select>
+                        <div class="persona-language-menu__manual-actions">
+                          <button type="button" class="persona-language-menu__apply" @click="applyManualLanguage">Apply</button>
+                          <button type="button" class="persona-language-menu__reset" @click="applyAutoLanguage">Reset to auto</button>
+                        </div>
+                        <p class="persona-language-menu__note" v-if="languagePreferenceLocked">
+                          Manual selection keeps this language until you switch back to auto.
+                        </p>
+                      </div>
+
+                      <div class="persona-language-menu__footer">
+                        <span>Speech detection: {{ formatLanguageName(detectedSpeechLanguage) }}</span>
+                        <span>Response detection: {{ formatLanguageName(detectedResponseLanguage) }}</span>
+                      </div>
+                    </div>
+                  </transition>
+                </div>
+              </section>
+            </div>
+          </div>
+        </transition>
+      </div>
+    </template>
+
+    <template v-else>
+      <div class="persona-voice-toolbar__left">
+        <UsageStatusBadge
+          v-if="usageBadgeVisible"
+          class="persona-voice-toolbar__badge"
+          :tokens-total="tokensTotal ?? undefined"
+          :tokens-used="tokensUsed ?? undefined"
+        />
+        <button
+          type="button"
+          class="persona-voice-toolbar__button"
+          :title="personaTooltipText"
+          :disabled="personaButtonDisabled"
+          @click="openPersonaModal"
+        >
+          {{ personaButtonLabel }}
+        </button>
+        <span
+          v-if="!personaButtonDisabled && personaHasCustom && personaSummaryText"
+          class="persona-voice-toolbar__summary"
+          :title="personaSummaryText"
+        >
+          {{ personaSummaryText }}
+        </span>
+        <button
+          v-if="!personaButtonDisabled && personaHasCustom"
+          type="button"
+          class="persona-voice-toolbar__clear"
+          @click="resetPersonaToDefault"
+        >
+          Clear
+        </button>
+      </div>
+
+      <div class="persona-voice-toolbar__right">
+        <div class="persona-voice-toolbar__stats">
+          <div
+            class="persona-voice-toolbar__stat"
+            :class="speechCreditsStateClass"
+            role="status"
+            aria-live="polite"
+          >
+            <span class="persona-voice-toolbar__stat-label">Speech</span>
+            <span class="persona-voice-toolbar__stat-value">{{ speechCreditsSummary }}</span>
+            <span v-if="speechCreditsMeterWidth" class="persona-voice-toolbar__stat-meter" aria-hidden="true">
+              <span class="persona-voice-toolbar__stat-meter-bar" :style="{ width: speechCreditsMeterWidth }"></span>
+            </span>
+          </div>
+          <div
+            class="persona-voice-toolbar__stat"
+            :class="sessionCostStateClass"
+            role="status"
+            aria-live="polite"
+          >
+            <span class="persona-voice-toolbar__stat-label">Session</span>
+            <span class="persona-voice-toolbar__stat-value">{{ sessionCostSummary }}</span>
+            <span v-if="sessionMeterWidth" class="persona-voice-toolbar__stat-meter" aria-hidden="true">
+              <span class="persona-voice-toolbar__stat-meter-bar" :style="{ width: sessionMeterWidth }"></span>
+            </span>
+          </div>
+        </div>
+        <button
+          ref="languageTriggerRef"
+          type="button"
+          class="persona-language-button"
+          :class="{ 'is-open': languageMenuOpen }"
+          @click="toggleLanguageMenu"
+        >
+          <GlobeAltIcon class="persona-language-button__icon" aria-hidden="true" />
+          <span class="persona-language-button__label">{{ languageSummaryLabel }}</span>
+          <ChevronDownIcon class="persona-language-button__chevron" aria-hidden="true" />
+        </button>
+
+        <transition name="fade">
+          <div
+            v-if="languageMenuOpen"
+            ref="languageMenuRef"
+            class="persona-language-menu"
+            role="menu"
+            aria-label="Language preferences"
+          >
+            <div class="persona-language-menu__section persona-language-menu__section--options">
+              <h4>Quick Options</h4>
+              <button
+                type="button"
+                class="persona-language-menu__option"
+                :class="{ 'is-active': isAutoModeActive }"
+                @click="applyAutoLanguage"
+              >
+                <SparklesIcon class="persona-language-menu__option-icon" aria-hidden="true" />
+                <span>
+                  Auto detect (recommended)
+                  <small v-if="hasDetectedLanguage">Latest: {{ formatLanguageName(detectedSpeechLanguage || detectedResponseLanguage) }}</small>
+                </span>
+              </button>
+              <button
+                type="button"
+                class="persona-language-menu__option"
+                :class="{ 'is-active': isInterfaceModeActive }"
+                @click="applyInterfaceLanguage"
+              >
+                <GlobeAltIcon class="persona-language-menu__option-icon" aria-hidden="true" />
+                <span>Follow interface language ({{ formatLanguageName(interfaceLanguage) }})</span>
+              </button>
+              <button
+                v-if="hasDetectedLanguage"
+                type="button"
+                class="persona-language-menu__option"
+                @click="applyDetectedLanguage"
+              >
+                <SparklesIcon class="persona-language-menu__option-icon" aria-hidden="true" />
+                <span>Use detected language ({{ formatLanguageName(detectedSpeechLanguage || detectedResponseLanguage) }})</span>
+              </button>
+            </div>
+
+            <div class="persona-language-menu__section persona-language-menu__section--manual">
+              <h4>Manual selection</h4>
+              <label class="persona-language-menu__label" for="manual-language-select">Choose language</label>
+              <select
+                id="manual-language-select"
+                class="persona-language-menu__select"
+                v-model="manualLanguageSelection"
+              >
+                <option
+                  v-for="option in availableLanguageOptions"
+                  :key="option.code"
+                  :value="option.code"
+                >
+                  {{ option.label }}
+                </option>
+              </select>
+              <div class="persona-language-menu__manual-actions">
+                <button type="button" class="persona-language-menu__apply" @click="applyManualLanguage">Apply</button>
+                <button type="button" class="persona-language-menu__reset" @click="applyAutoLanguage">Reset to auto</button>
+              </div>
+              <p class="persona-language-menu__note" v-if="languagePreferenceLocked">
+                Manual selection keeps this language until you switch back to auto.
+              </p>
+            </div>
+
+            <div class="persona-language-menu__footer">
+              <span>Speech detection: {{ formatLanguageName(detectedSpeechLanguage) }}</span>
+              <span>Response detection: {{ formatLanguageName(detectedResponseLanguage) }}</span>
+            </div>
+          </div>
+        </transition>
+      </div>
+    </template>
   </div>
 
   <transition name="fade">
@@ -753,6 +1191,413 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.persona-voice-toolbar--compact {
+  width: 100%;
+}
+
+.persona-compact {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  width: 100%;
+  padding: 0.85rem 1rem 1.05rem;
+  border-radius: 18px;
+  border: 1px solid hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.38);
+  background: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.76);
+  box-shadow: 0 18px 45px hsla(var(--color-shadow-h), var(--color-shadow-s), var(--color-shadow-l), 0.32);
+  backdrop-filter: blur(18px) saturate(120%);
+  overflow: hidden;
+}
+
+.persona-compact::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 18px;
+  background: radial-gradient(circle at top left, hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), calc(var(--color-accent-interactive-l) + 12%), 0.25) 0%, transparent 55%),
+    radial-gradient(circle at bottom right, hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), calc(var(--color-accent-interactive-l) - 6%), 0.22) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.65;
+}
+
+.persona-compact::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 18px;
+  border: 1px solid hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.28);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.persona-compact > * {
+  position: relative;
+  z-index: 1;
+}
+
+.persona-compact__header {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.persona-compact__toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 999px;
+  border: 1px solid hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.35);
+  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.55);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.persona-compact__toggle:hover {
+  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.7);
+  border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.45);
+  color: var(--color-text-primary);
+}
+
+.persona-compact__toggle-icon {
+  width: 1.1rem;
+  height: 1.1rem;
+  transition: transform 0.25s ease;
+}
+
+.persona-compact__toggle-icon.is-open {
+  transform: rotate(180deg);
+}
+
+.persona-compact__status-row {
+  display: flex;
+  align-items: stretch;
+  gap: 0.55rem;
+  flex: 1;
+  overflow-x: auto;
+  padding-bottom: 0.2rem;
+}
+
+.persona-compact__status-row::-webkit-scrollbar {
+  height: 6px;
+}
+
+.persona-compact__status-row::-webkit-scrollbar-thumb {
+  background: hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.35);
+  border-radius: 999px;
+}
+
+.persona-compact-status {
+  --status-bg: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.55);
+  --status-border: hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.32);
+  --status-icon-color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
+  --status-text-color: var(--color-text-primary);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.4rem 0.7rem;
+  border-radius: 12px;
+  background: var(--status-bg);
+  border: 1px solid var(--status-border);
+  color: var(--status-text-color);
+  min-width: 0;
+  box-shadow: inset 0 0 0 1px hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.1),
+    0 10px 25px hsla(var(--color-shadow-h), var(--color-shadow-s), var(--color-shadow-l), 0.18);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  z-index: 1;
+}
+
+.persona-compact-status:hover {
+  border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.45);
+  box-shadow: inset 0 0 0 1px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.25),
+    0 14px 28px hsla(var(--color-shadow-h), var(--color-shadow-s), var(--color-shadow-l), 0.22);
+}
+
+.persona-compact-status[data-theme='accent'] {
+  --status-bg: linear-gradient(
+    135deg,
+    hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), calc(var(--color-accent-interactive-l) + 8%), 0.22) 0%,
+    hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), calc(var(--color-accent-interactive-l) - 6%), 0.14) 100%
+  );
+  --status-border: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.45);
+  --status-icon-color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), calc(var(--color-accent-interactive-l) + 14%));
+}
+
+.persona-compact-status[data-theme='primary'] {
+  --status-bg: linear-gradient(
+    135deg,
+    hsla(var(--color-accent-primary-h, var(--color-accent-interactive-h)), var(--color-accent-primary-s, var(--color-accent-interactive-s)), calc(var(--color-accent-primary-l, var(--color-accent-interactive-l)) + 6%), 0.22) 0%,
+    hsla(var(--color-accent-primary-h, var(--color-accent-interactive-h)), var(--color-accent-primary-s, var(--color-accent-interactive-s)), calc(var(--color-accent-primary-l, var(--color-accent-interactive-l)) - 6%), 0.15) 100%
+  );
+  --status-border: hsla(var(--color-accent-primary-h, var(--color-accent-interactive-h)), var(--color-accent-primary-s, var(--color-accent-interactive-s)), var(--color-accent-primary-l, var(--color-accent-interactive-l)), 0.45);
+  --status-icon-color: hsl(var(--color-accent-primary-h, var(--color-accent-interactive-h)), var(--color-accent-primary-s, var(--color-accent-interactive-s)), calc(var(--color-accent-primary-l, var(--color-accent-interactive-l)) + 10%));
+}
+
+.persona-compact-status[data-theme='info'] {
+  --status-bg: linear-gradient(
+    135deg,
+    hsla(var(--color-accent-secondary-h, var(--color-accent-interactive-h)), var(--color-accent-secondary-s, var(--color-accent-interactive-s)), calc(var(--color-accent-secondary-l, var(--color-accent-interactive-l)) + 10%), 0.18) 0%,
+    hsla(var(--color-accent-secondary-h, var(--color-accent-interactive-h)), var(--color-accent-secondary-s, var(--color-accent-interactive-s)), calc(var(--color-accent-secondary-l, var(--color-accent-interactive-l)) - 4%), 0.12) 100%
+  );
+  --status-border: hsla(var(--color-accent-secondary-h, var(--color-accent-interactive-h)), var(--color-accent-secondary-s, var(--color-accent-interactive-s)), var(--color-accent-secondary-l, var(--color-accent-interactive-l)), 0.42);
+  --status-icon-color: hsl(var(--color-accent-secondary-h, var(--color-accent-interactive-h)), var(--color-accent-secondary-s, var(--color-accent-interactive-s)), calc(var(--color-accent-secondary-l, var(--color-accent-interactive-l)) + 12%));
+}
+
+.persona-compact-status[data-theme='muted'] {
+  --status-bg: hsla(var(--color-bg-tertiary-h, var(--color-bg-secondary-h)), var(--color-bg-tertiary-s, var(--color-bg-secondary-s)), var(--color-bg-tertiary-l, var(--color-bg-secondary-l)), 0.6);
+  --status-border: hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.28);
+  --status-icon-color: hsl(var(--color-text-muted-h, 210), var(--color-text-muted-s, 6%), calc(var(--color-text-muted-l, 56%) + 6%));
+  --status-text-color: var(--color-text-secondary);
+}
+
+.persona-compact-status__icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.65rem;
+  height: 1.65rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), calc(var(--color-accent-interactive-l) + 10%), 0.28) 0%, hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), calc(var(--color-accent-interactive-l) - 4%), 0.16) 100%);
+  box-shadow: 0 4px 12px hsla(var(--color-shadow-h), var(--color-shadow-s), var(--color-shadow-l), 0.18), inset 0 0 0 1px hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.32);
+}
+
+.persona-compact-status[data-theme='muted'] .persona-compact-status__icon-wrap {
+  background: linear-gradient(135deg, hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), calc(var(--color-bg-secondary-l) + 6%), 0.32) 0%, hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), calc(var(--color-bg-secondary-l) - 4%), 0.18) 100%);
+}
+
+.persona-compact-status__icon {
+  width: 1.05rem;
+  height: 1.05rem;
+  color: var(--status-icon-color);
+}
+
+.persona-compact-status__labels {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.persona-compact-status__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--status-text-color);
+  white-space: nowrap;
+}
+
+.persona-compact-status__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.05rem 0.35rem;
+  border-radius: 999px;
+  font-size: 0.56rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.3);
+  color: var(--status-text-color);
+}
+
+.persona-compact-status__sublabel {
+  font-size: 0.65rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.persona-compact__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.persona-compact__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.persona-compact-action {
+  flex: 1 1 0;
+  min-width: 140px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 12px;
+  border: 1px solid hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.28);
+  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.45);
+  color: var(--color-text-secondary);
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.persona-compact-action:hover {
+  transform: translateY(-1px);
+  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.65);
+  color: var(--color-text-primary);
+  border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.35);
+}
+
+.persona-compact-action.is-active {
+  background: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.22);
+  border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.45);
+  color: var(--color-text-primary);
+  box-shadow: inset 0 0 0 1px hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.35);
+}
+
+.persona-compact-action__icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.persona-compact__panel {
+  border-radius: 16px;
+  border: 1px solid hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.28);
+  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.45);
+  padding: 0.85rem 1rem;
+  box-shadow: inset 0 0 0 1px hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.12);
+}
+
+.persona-compact-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.persona-compact-panel__badge {
+  align-self: flex-start;
+}
+
+.persona-compact-panel__summary-label {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.persona-compact-panel__summary-text {
+  margin: 0;
+  font-size: 0.7rem;
+  line-height: 1.45;
+  color: var(--color-text-secondary);
+}
+
+.persona-compact-panel__summary-text--muted {
+  color: var(--color-text-muted);
+}
+
+.persona-compact-panel__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.persona-compact-panel__primary,
+.persona-compact-panel__ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  border-radius: 999px;
+  padding: 0.45rem 0.95rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.persona-compact-panel__primary {
+  border: none;
+  background: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.85);
+  color: var(--color-text-on-accent, #0c1116);
+  cursor: pointer;
+}
+
+.persona-compact-panel__primary:hover:not(:disabled) {
+  background: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 1);
+}
+
+.persona-compact-panel__primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.persona-compact-panel__ghost {
+  border: 1px solid hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.4);
+  background: transparent;
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+
+.persona-compact-panel__ghost:hover {
+  border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.45);
+  color: var(--color-text-primary);
+}
+
+.persona-compact-panel__button-icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.persona-compact-panel__controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.persona-compact-panel__hint {
+  font-size: 0.68rem;
+  color: var(--color-text-muted);
+}
+
+.persona-compact-panel__language {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.persona-compact-panel__stat {
+  width: 100%;
+}
+
+.persona-compact-expand-enter-active,
+.persona-compact-expand-leave-active {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.persona-compact-expand-enter-from,
+.persona-compact-expand-leave-to {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
 .persona-voice-toolbar {
   display: flex;
   align-items: center;
@@ -1386,6 +2231,19 @@ onUnmounted(() => {
 }
 
 @media (max-width: 720px) {
+  .persona-voice-toolbar--compact .persona-compact {
+    padding: 0.7rem 0.75rem 0.85rem;
+    gap: 0.75rem;
+  }
+
+  .persona-voice-toolbar--compact .persona-compact__actions {
+    flex-direction: column;
+  }
+
+  .persona-voice-toolbar--compact .persona-compact-action {
+    width: 100%;
+  }
+
   .persona-voice-toolbar {
     flex-direction: column;
     align-items: stretch;

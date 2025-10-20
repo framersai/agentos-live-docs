@@ -26,7 +26,6 @@ import type { ToastService } from '@/services/services';
 import { useAuth } from '@/composables/useAuth';
 
 import UnifiedChatLayout from '@/components/layouts/UnifiedChatLayout.vue';
-import PersonaToolbar from '@/components/common/PersonaToolbar.vue';
 import MainContentView from '@/components/agents/common/MainContentView.vue';
 import CompactMessageRenderer from '@/components/layouts/CompactMessageRenderer/CompactMessageRenderer.vue';
 
@@ -544,12 +543,6 @@ onUnmounted(() => {
         </div>
       </template>
 
-      <template #voice-toolbar>
-        <PersonaToolbar
-          :agent="currentPublicAgent"
-          :persist-persona="false"
-        />
-      </template>
 
       <template #main-content>
         <component
