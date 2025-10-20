@@ -211,6 +211,8 @@ class VoiceSettingsManager {
   public readonly audioOutputDevicesLoaded: Ref<boolean>;
   private readonly _creditsSnapshot: Ref<CreditSnapshotFE | null>;
   public readonly creditsSnapshot: Readonly<Ref<CreditSnapshotFE | null>>;
+  private readonly _isSpeaking: Ref<boolean>;
+  public readonly isSpeaking: Readonly<Ref<boolean>>;
   public readonly speechCreditsExhausted: ComputedRef<boolean>;
   public readonly languagePreferenceLocked: ComputedRef<boolean>;
   private readonly _detectedSpeechLanguage: Ref<string | null> = ref(null);
@@ -239,6 +241,8 @@ class VoiceSettingsManager {
     this.audioOutputDevicesLoaded = ref(false);
     this._creditsSnapshot = ref<CreditSnapshotFE | null>(null);
     this.creditsSnapshot = readonly(this._creditsSnapshot);
+    this._isSpeaking = ref(false);
+    this.isSpeaking = readonly(this._isSpeaking);
     this.speechCreditsExhausted = computed(() => {
       const snapshot = this._creditsSnapshot.value;
       if (!snapshot || snapshot.speech.isUnlimited) return false;
@@ -599,7 +603,11 @@ class VoiceSettingsManager {
     });
   }
 
-  private async playWithBrowserFallback(text: string, overrides: Partial<BrowserSpeakOptions> = {}): Promise<void> {
+  private async playWithBrowserFallback(
+    text: string,
+    overrides: Partial<BrowserSpeakOptions> = {},
+    trackSpeaking: boolean = true
+  ): Promise<void> {
     if (typeof window === 'undefined' || !browserTtsService.isSupported()) {
       console.warn('[VSM] Browser TTS fallback unavailable on this platform.');
       return;
@@ -612,25 +620,50 @@ class VoiceSettingsManager {
           (voice.id === this.settings.selectedTtsVoiceId || voice.isDefault)
       ) ?? null;
 
+    const {
+      onStart: overrideOnStart,
+      onEnd: overrideOnEnd,
+      onError: overrideOnError,
+      ...voiceOverrides
+    } = overrides;
+
+    const speakOptions: BrowserSpeakOptions = {
+      lang: voiceOverrides.lang ?? this.settings.speechLanguage,
+      rate: voiceOverrides.rate ?? this.settings.ttsRate,
+      pitch: voiceOverrides.pitch ?? this.settings.ttsPitch,
+      volume: voiceOverrides.volume ?? this.settings.ttsVolume,
+      voiceURI: voiceOverrides.voiceURI ?? fallbackVoice?.providerVoiceId ?? undefined,
+      onStart: () => {
+        if (trackSpeaking) this._isSpeaking.value = true;
+        overrideOnStart?.();
+      },
+      onEnd: () => {
+        if (trackSpeaking) this._isSpeaking.value = false;
+        overrideOnEnd?.();
+      },
+      onError: (event: SpeechSynthesisErrorEvent) => {
+        if (trackSpeaking) this._isSpeaking.value = false;
+        overrideOnError?.(event);
+      },
+    };
+
     try {
-      await browserTtsService.speak(text, {
-        lang: overrides.lang ?? this.settings.speechLanguage,
-        rate: overrides.rate ?? this.settings.ttsRate,
-        pitch: overrides.pitch ?? this.settings.ttsPitch,
-        volume: overrides.volume ?? this.settings.ttsVolume,
-        voiceURI: overrides.voiceURI ?? fallbackVoice?.providerVoiceId ?? undefined,
-      } as BrowserSpeakOptions);
+      await browserTtsService.speak(text, speakOptions);
     } catch (fallbackError) {
+      if (trackSpeaking) this._isSpeaking.value = false;
       console.error('[VSM] Browser TTS fallback failed:', fallbackError);
     }
   }
 
   public async speakText(text: string): Promise<void> {
     if (!this._isInitialized.value || !this.settings.autoPlayTts || !text?.trim()) {
-      if (this._isInitialized.value && !this.settings.autoPlayTts) console.log("[VSM] TTS auto-play disabled.");
+      if (this._isInitialized.value && !this.settings.autoPlayTts) {
+        console.log("[VSM] TTS auto-play disabled.");
+      }
       return;
     }
     this.cancelSpeech();
+    this._isSpeaking.value = false;
 
     const currentVoice = this.getCurrentTtsVoice();
     const { ttsVolume: volume, ttsRate: rate, ttsPitch: pitch, speechLanguage, ttsProvider } = this.settings;
@@ -640,22 +673,37 @@ class VoiceSettingsManager {
       await this.playWithBrowserFallback(text, {
         lang: currentVoice?.lang || speechLanguage,
         rate,
+        pitch,
         volume,
-      });
+      }, true);
       return;
     }
 
     if (ttsProvider === 'browser_tts' && typeof window !== 'undefined' && browserTtsService.isSupported()) {
       try {
-        await browserTtsService.speak(text, {
-          lang: currentVoice?.lang || speechLanguage, voiceURI: currentVoice?.providerVoiceId,
-          rate, pitch, volume,
-        } as BrowserSpeakOptions);
-      } catch (error) { console.error("[VSM] Error speaking with browser TTS:", error); }
-    } else if (ttsProvider === 'openai_tts') {
+        await this.playWithBrowserFallback(text, {
+          lang: currentVoice?.lang || speechLanguage,
+          voiceURI: currentVoice?.providerVoiceId ?? undefined,
+          rate,
+          pitch,
+          volume,
+        }, true);
+      } catch (error) {
+        this._isSpeaking.value = false;
+        console.error("[VSM] Error speaking with browser TTS:", error);
+      }
+      return;
+    }
+
+    if (ttsProvider === 'openai_tts') {
       if (!currentVoice || currentVoice.provider !== 'openai') {
         console.error("[VSM] OpenAI TTS selected but no valid OpenAI voice configured. Falling back to browser speech.");
-        await this.playWithBrowserFallback(text, { lang: speechLanguage });
+        await this.playWithBrowserFallback(text, {
+          lang: speechLanguage,
+          rate,
+          pitch,
+          volume,
+        }, true);
         return;
       }
       try {
@@ -666,10 +714,21 @@ class VoiceSettingsManager {
         this.activePreviewAudio = new Audio(audioUrl);
         this.activePreviewAudio.volume = volume;
         const audioToPlay = this.activePreviewAudio;
-        audioToPlay.onended = () => { URL.revokeObjectURL(audioUrl); if (this.activePreviewAudio === audioToPlay) this.activePreviewAudio = null; };
-        audioToPlay.onerror = (e) => { console.error("[VSM] Error playing OpenAI audio.", e); URL.revokeObjectURL(audioUrl); if (this.activePreviewAudio === audioToPlay) this.activePreviewAudio = null; };
+        this._isSpeaking.value = true;
+        audioToPlay.onended = () => {
+          URL.revokeObjectURL(audioUrl);
+          if (this.activePreviewAudio === audioToPlay) this.activePreviewAudio = null;
+          this._isSpeaking.value = false;
+        };
+        audioToPlay.onerror = (e) => {
+          console.error("[VSM] Error playing OpenAI audio.", e);
+          URL.revokeObjectURL(audioUrl);
+          if (this.activePreviewAudio === audioToPlay) this.activePreviewAudio = null;
+          this._isSpeaking.value = false;
+        };
         await audioToPlay.play();
       } catch (error: any) {
+        this._isSpeaking.value = false;
         console.error("[VSM] Error with OpenAI TTS:", error.response?.data || error.message);
         if (error?.response?.data?.credits) {
           this.updateCreditsSnapshot(error.response.data.credits as CreditSnapshotFE);
@@ -678,18 +737,31 @@ class VoiceSettingsManager {
           console.warn('[VSM] Speech credits exhausted during OpenAI TTS request. Switching to browser provider.');
           this.updateSetting('ttsProvider', 'browser_tts');
         }
-        if (this.activePreviewAudio?.src?.startsWith('blob:')) URL.revokeObjectURL(this.activePreviewAudio.src);
+        if (this.activePreviewAudio?.src?.startsWith('blob:')) {
+          URL.revokeObjectURL(this.activePreviewAudio.src);
+        }
         this.activePreviewAudio = null;
-        await this.playWithBrowserFallback(text, { lang: currentVoice.lang || speechLanguage, rate, volume });
-        return;
+        await this.playWithBrowserFallback(text, {
+          lang: currentVoice?.lang || speechLanguage,
+          rate,
+          pitch,
+          volume,
+        }, true);
       }
-    } else {
-      console.warn(`[VSM] TTS provider "${ttsProvider}" not supported or no voice available. Falling back to browser speech.`);
-      await this.playWithBrowserFallback(text, { lang: speechLanguage });
+      return;
     }
+
+    console.warn(`[VSM] TTS provider "${ttsProvider}" not supported or no voice available. Falling back to browser speech.`);
+    await this.playWithBrowserFallback(text, {
+      lang: speechLanguage,
+      rate,
+      pitch,
+      volume,
+    }, true);
   }
 
   public cancelSpeech(): void {
+    this._isSpeaking.value = false;
     if (typeof window !== 'undefined' && browserTtsService.isSupported() && browserTtsService.isSpeaking()) {
       browserTtsService.cancel();
     }
@@ -737,7 +809,7 @@ class VoiceSettingsManager {
         console.error("[VSM] Error previewing OpenAI voice:", error.response?.data || error.message);
         if (this.activePreviewAudio?.src?.startsWith('blob:')) URL.revokeObjectURL(this.activePreviewAudio.src);
         this.activePreviewAudio = null;
-        await this.playWithBrowserFallback(previewText, { lang: voiceToPreview.lang, rate, pitch, volume });
+        await this.playWithBrowserFallback(previewText, { lang: voiceToPreview.lang, rate, pitch, volume }, false);
       }
     } else {
       console.warn(`[VSM] Provider for voice ${voiceId} not supported for preview.`);

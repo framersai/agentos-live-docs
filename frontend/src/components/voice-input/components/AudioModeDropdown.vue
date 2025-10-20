@@ -287,15 +287,15 @@ onUnmounted(() => {
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 0.75rem;
-  background: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.6);
-  border: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.5);
+  background: var(--vi-control-bg);
+  border: 1px solid var(--vi-panel-border);
   border-radius: 0.5rem;
-  color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+  color: var(--vi-label-strong-color);
   font-size: 0.875rem;
   transition: all 0.2s ease;
 
   &:hover:not(:disabled) {
-    background: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), calc(var(--color-bg-tertiary-l) * 1.1), 0.8);
+    background: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.18);
     border-color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
   }
 
@@ -326,8 +326,8 @@ onUnmounted(() => {
   bottom: calc(100% + 0.5rem);
   right: 0;
   min-width: 250px;
-  background: hsl(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l));
-  border: 1px solid hsl(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l));
+  background: var(--vi-control-bg);
+  border: 1px solid var(--vi-panel-border);
   border-radius: 0.75rem;
   box-shadow: 0 10px 50px hsla(var(--color-shadow-h), var(--color-shadow-s), var(--color-shadow-l), 0.2);
   overflow: hidden;
@@ -340,8 +340,8 @@ onUnmounted(() => {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
-  border-bottom: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.5);
+  color: var(--vi-muted-color);
+  border-bottom: 1px solid var(--vi-panel-border);
 }
 
 .dropdown-item {
@@ -352,7 +352,7 @@ onUnmounted(() => {
   padding: 0.75rem 1rem;
   background: transparent;
   border: none;
-  color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+  color: var(--vi-label-strong-color);
   text-align: left;
   transition: all 0.15s ease;
   cursor: pointer;
@@ -363,7 +363,7 @@ onUnmounted(() => {
 
   &.active {
     background: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.15);
-    color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+    color: var(--vi-label-strong-color);
   }
 }
 
@@ -381,7 +381,7 @@ onUnmounted(() => {
 
 .option-description {
   font-size: 0.75rem;
-  color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+  color: var(--vi-muted-color);
 }
 
 .check-icon {
@@ -409,8 +409,8 @@ onUnmounted(() => {
   right: 0;
   width: 320px;
   max-width: 90vw;
-  background: hsl(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l));
-  border: 1px solid hsl(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l));
+  background: var(--vi-control-bg);
+  border: 1px solid var(--vi-panel-border);
   border-radius: 0.75rem;
   box-shadow: 0 20px 60px hsla(var(--color-shadow-h), var(--color-shadow-s), var(--color-shadow-l), 0.3);
   z-index: 101;
@@ -422,14 +422,14 @@ onUnmounted(() => {
   align-items: center;
   justify-content: space-between;
   padding: 1rem;
-  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.5);
-  border-bottom: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.5);
+  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.45);
+  border-bottom: 1px solid var(--vi-panel-border);
 }
 
 .popover-title {
   font-size: 1rem;
   font-weight: 600;
-  color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+  color: var(--vi-label-strong-color);
 }
 
 .popover-close {
@@ -442,13 +442,13 @@ onUnmounted(() => {
   background: transparent;
   border: none;
   border-radius: 0.375rem;
-  color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+  color: var(--vi-muted-color);
   transition: all 0.15s ease;
   cursor: pointer;
 
   &:hover {
-    background: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.8);
-    color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+    background: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.7);
+    color: var(--vi-label-strong-color);
   }
 }
 
@@ -465,8 +465,8 @@ onUnmounted(() => {
 
 .mode-info-item {
   padding: 1rem;
-  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.3);
-  border: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.3);
+  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.32);
+  border: 1px solid var(--vi-panel-border);
   border-radius: 0.5rem;
 
   & + .mode-info-item {
@@ -488,14 +488,14 @@ onUnmounted(() => {
 .mode-info-label {
   font-weight: 600;
   font-size: 0.925rem;
-  color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+  color: var(--vi-label-strong-color);
 }
 
 .mode-info-description {
   margin: 0;
   font-size: 0.825rem;
   line-height: 1.5;
-  color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+  color: var(--vi-muted-color);
 }
 
 /* Popover transition */
