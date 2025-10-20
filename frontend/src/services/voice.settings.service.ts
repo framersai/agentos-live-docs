@@ -44,6 +44,13 @@ export type STTPreference = 'browser_webspeech_api' | 'whisper_api';
 /** Defines available Text-to-Speech (TTS) provider preferences. */
 export type TTSProvider = 'browser_tts' | 'openai_tts';
 
+interface TtsLanguageFallbackInfo {
+  requestedLang: string;
+  resolvedLang: string;
+  resolvedVoiceName: string;
+  provider: TTSProvider;
+}
+
 /**
  * Defines the structure for all application voice and operational settings.
  */
@@ -205,6 +212,7 @@ class VoiceSettingsManager {
 
   public readonly availableTtsVoices: Ref<Readonly<VoiceOption[]>>;
   public readonly ttsVoicesLoaded: Ref<boolean>;
+  public readonly ttsLanguageFallback: Ref<TtsLanguageFallbackInfo | null>;
   public readonly audioInputDevices: Ref<Readonly<MediaDeviceInfo[]>>;
   public readonly audioInputDevicesLoaded: Ref<boolean>;
   public readonly audioOutputDevices: Ref<Readonly<MediaDeviceInfo[]>>;
@@ -235,6 +243,7 @@ class VoiceSettingsManager {
 
     this.availableTtsVoices = ref(Object.freeze([]));
     this.ttsVoicesLoaded = ref(false);
+    this.ttsLanguageFallback = ref(null);
     this.audioInputDevices = ref(Object.freeze([]));
     this.audioInputDevicesLoaded = ref(false);
     this.audioOutputDevices = ref(Object.freeze([]));
@@ -467,11 +476,40 @@ class VoiceSettingsManager {
     await this._ensureDefaultTtsVoiceSelected();
   }
 
+  private _updateTtsLanguageFallback(): void {
+    const requestedLang = this.settings.speechLanguage || 'en-US';
+    const requestedShort = requestedLang.split('-')[0].toLowerCase();
+    const currentVoice = this.getCurrentTtsVoice();
+
+    if (!currentVoice) {
+      this.ttsLanguageFallback.value = {
+        requestedLang,
+        resolvedLang: 'en-US',
+        resolvedVoiceName: 'American English',
+        provider: this.settings.ttsProvider,
+      };
+      return;
+    }
+
+    const voiceLang = (currentVoice.lang || 'en-US').toLowerCase();
+    if (!voiceLang.startsWith(requestedShort)) {
+      this.ttsLanguageFallback.value = {
+        requestedLang,
+        resolvedLang: currentVoice.lang || 'en-US',
+        resolvedVoiceName: currentVoice.name,
+        provider: this.settings.ttsProvider,
+      };
+    } else {
+      this.ttsLanguageFallback.value = null;
+    }
+  }
+
   private async _ensureDefaultTtsVoiceSelected(): Promise<void> {
     if (!this.ttsVoicesLoaded.value || this.availableTtsVoices.value.length === 0) {
       if (this.settings.selectedTtsVoiceId && !this.availableTtsVoices.value.some(v => v.id === this.settings.selectedTtsVoiceId)) {
         this.updateSetting('selectedTtsVoiceId', null);
       }
+      this._updateTtsLanguageFallback();
       return;
     }
     const currentProviderType = this.settings.ttsProvider === 'browser_tts' ? 'browser' : 'openai';
@@ -485,6 +523,8 @@ class VoiceSettingsManager {
       let defaultVoice = voicesForProvider.find(v => v.isDefault && v.lang.toLowerCase().startsWith(langShort));
       if (!defaultVoice) defaultVoice = voicesForProvider.find(v => v.isDefault);
       if (!defaultVoice) defaultVoice = voicesForProvider.find(v => v.lang.toLowerCase().startsWith(langShort));
+      if (!defaultVoice) defaultVoice = voicesForProvider.find(v => v.lang.toLowerCase().startsWith('en-us'));
+      if (!defaultVoice) defaultVoice = voicesForProvider.find(v => v.lang.toLowerCase().startsWith('en'));
       if (!defaultVoice) defaultVoice = voicesForProvider[0];
       this.updateSetting('selectedTtsVoiceId', defaultVoice.id);
       console.log(`[VSM] Default TTS voice auto-selected for ${currentProviderType}: ${defaultVoice.name}`);
@@ -492,6 +532,8 @@ class VoiceSettingsManager {
       console.warn(`[VSM] No voices for provider ${currentProviderType}. Clearing selected TTS voice.`);
       this.updateSetting('selectedTtsVoiceId', null);
     }
+
+    this._updateTtsLanguageFallback();
   }
 
   public async loadAudioInputDevices(forcePermissionRequest: boolean = false): Promise<void> {
@@ -556,6 +598,12 @@ class VoiceSettingsManager {
       const oldSetting = this.settings[key];
       (this.settings as any)[key] = value;
       console.log(`[VSM] Setting updated - ${key}: ${JSON.stringify(oldSetting)} -> ${JSON.stringify(value)}`);
+      if (key === 'selectedTtsVoiceId' || key === 'speechLanguage' || key === 'ttsProvider') {
+        this._updateTtsLanguageFallback();
+        if (key === 'speechLanguage' || key === 'ttsProvider') {
+          void this._ensureDefaultTtsVoiceSelected();
+        }
+      }
     }
   }
 
@@ -818,3 +866,4 @@ class VoiceSettingsManager {
 }
 
 export const voiceSettingsManager = new VoiceSettingsManager();
+
