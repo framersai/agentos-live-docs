@@ -33,6 +33,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      'functions-js': path.resolve(__dirname, './node_modules/@supabase/functions-js'),
       // Optional: Alias for prompts if deep relative paths become cumbersome
       // '#prompts': path.resolve(__dirname, '../prompts') // Assumes prompts is sibling to frontend
     },
