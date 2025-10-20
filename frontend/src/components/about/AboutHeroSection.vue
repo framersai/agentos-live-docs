@@ -3,6 +3,8 @@ import { onMounted, onBeforeUnmount, ref, computed } from 'vue';
 import { useRoute, RouterLink } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import AnimatedGlyph from '@/components/about/AnimatedGlyph.vue';
+import SocialIcons from '@/components/common/SocialIcons.vue';
+import { getPrimarySocialLinks } from '@/utils/socialLinks';
 
 const props = defineProps<{
   logoSrc: string;
@@ -12,6 +14,7 @@ const props = defineProps<{
 const route = useRoute();
 const { t } = useI18n();
 const localeSegment = computed(() => (route.params.locale as string) || 'en');
+const primaryLinks = getPrimarySocialLinks();
 
 const sectionRef = ref<HTMLElement | null>(null);
 const isInView = ref(false);
@@ -84,7 +87,7 @@ onBeforeUnmount(() => {
       <br />
       <strong class="highlight-text">
         Questions? Reach us at
-        <a href="mailto:team@manic.agency" class="footer-link">team@manic.agency</a>.
+        <a href="mailto:team@vca.chat" class="footer-link">team@vca.chat</a>.
       </strong>
     </p>
 
@@ -95,6 +98,10 @@ onBeforeUnmount(() => {
     >
       {{ t('register.actions.continue') }}
     </RouterLink>
+
+    <div class="hero-social-section hero-animated" style="--stagger: 620ms">
+      <SocialIcons :links="primaryLinks" variant="hero" />
+    </div>
   </section>
 </template>
 

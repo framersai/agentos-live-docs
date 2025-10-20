@@ -1,19 +1,22 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import AnimatedGlyph from '@/components/about/AnimatedGlyph.vue';
 import { usePlans } from '@/composables/usePlans';
 import PlanComparisonModal from '@/components/plan/PlanComparisonModal.vue';
 
 const { t } = useI18n();
-const { featuredPlan, standardPlans } = usePlans();
+const { featuredPlan, standardPlans, allPlans } = usePlans();
 
 const showComparison = ref(false);
+const sectionRef = ref<HTMLElement | null>(null);
+const cardsVisible = ref(false);
 
 interface PlanCardViewModel {
   id: string;
   title: string;
   priceText: string;
+  priceValue: number;
   allowance: string;
   allowanceNote?: string;
   bullets: string[];
@@ -32,17 +35,18 @@ const priceFormatter = new Intl.NumberFormat('en-US', {
 const formatNumber = (value?: number | null): string => (value == null ? '-' : value.toLocaleString());
 
 const priceLabel = (monthlyPrice: number): string => (
-  monthlyPrice === 0 ? t('plans.free') : t('plans.pricePerMonth', { price: priceFormatter.format(monthlyPrice) })
+  monthlyPrice === 0 ? t('plans.free') : priceFormatter.format(monthlyPrice)
 );
 
 const allowanceLabel = (tokens: number): string => t('plans.dailyAllowancePrimaryShort', { tokens: formatNumber(tokens) });
 
-const buildCardModel = (plan = featuredPlan.value): PlanCardViewModel | null => {
+const buildCardModel = (plan: any): PlanCardViewModel | null => {
   if (!plan) return null;
   return {
     id: plan.id,
     title: plan.displayName,
     priceText: priceLabel(plan.monthlyPriceUsd),
+    priceValue: plan.monthlyPriceUsd,
     allowance: allowanceLabel(plan.usage.approxGpt4oTokensPerDay),
     allowanceNote: plan.usage.notes,
     bullets: plan.bullets,
@@ -56,8 +60,14 @@ const buildCardModel = (plan = featuredPlan.value): PlanCardViewModel | null => 
   };
 };
 
-const featuredCard = computed(() => buildCardModel(featuredPlan.value));
-const standardCards = computed(() => standardPlans.value.map((plan) => buildCardModel(plan)).filter(Boolean) as PlanCardViewModel[]);
+// Sort all plans by price and filter out hidden ones
+const visiblePlans = computed(() => {
+  return allPlans.value
+    .filter(plan => plan.public && !plan.metadata?.hiddenOnMarketing)
+    .sort((a, b) => a.monthlyPriceUsd - b.monthlyPriceUsd)
+    .map(plan => buildCardModel(plan))
+    .filter(Boolean) as PlanCardViewModel[];
+});
 
 const onOpenComparison = () => {
   showComparison.value = true;
@@ -66,90 +76,487 @@ const onOpenComparison = () => {
 const onCloseComparison = () => {
   showComparison.value = false;
 };
+
+onMounted(() => {
+  if (typeof window === 'undefined' || !sectionRef.value) {
+    cardsVisible.value = true;
+    return;
+  }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      const entry = entries[0];
+      if (entry?.isIntersecting) {
+        cardsVisible.value = true;
+        observer.disconnect();
+      }
+    },
+    { threshold: 0.15 }
+  );
+
+  observer.observe(sectionRef.value);
+});
 </script>
 
 <template>
-  <section id="pricing" class="pricing-section-about content-section-ephemeral">
+  <section ref="sectionRef" id="pricing" class="pricing-section-enhanced content-section-ephemeral">
     <header class="pricing-header">
-      <h3 class="section-title-main">
-        <AnimatedGlyph name="currency" class="section-title-icon" :size="38" />
-        {{ t('plans.sectionTitle') }}
-      </h3>
+      <div class="pricing-title-group">
+        <h3 class="section-title-main">
+          <AnimatedGlyph name="currency" class="section-title-icon pricing-icon-glow" :size="42" />
+          {{ t('plans.sectionTitle') }}
+        </h3>
+        <p class="pricing-subtitle">
+          Flexible plans designed for individuals, creators, and organizations.
+          Start free and scale as you grow.
+        </p>
+      </div>
       <button type="button" class="btn btn-ghost-ephemeral plan-compare-button" @click="onOpenComparison">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="compare-icon">
+          <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
         {{ t('plans.viewComparison') }}
       </button>
     </header>
-    <div class="pricing-grid-about">
-      <div
-        v-if="featuredCard"
-        class="pricing-plan-card-about card-neo-interactive featured-plan-glow"
-      >
-        <div class="featured-chip-about">{{ t('plans.mostPopular') }}</div>
-        <h4 class="plan-title-about">{{ featuredCard.title }}</h4>
-        <div class="plan-price-container-about">
-          <span class="plan-price-value">{{ featuredCard.priceText }}</span>
-        </div>
-        <p class="plan-allowance">{{ featuredCard.allowance }}</p>
-        <p v-if="featuredCard.allowanceNote" class="plan-allowance-note">{{ featuredCard.allowanceNote }}</p>
-        <ul class="plan-features-list-about">
-          <li v-for="bullet in featuredCard.bullets" :key="bullet" class="plan-feature-item">
-            <AnimatedGlyph name="check" class="feature-icon icon-success" :size="18" aria-hidden="true" />
-            <span>{{ bullet }}</span>
-          </li>
-        </ul>
-        <button class="btn plan-button-about btn-primary-ephemeral">
-          {{ featuredCard.ctaLabel }}
-        </button>
-      </div>
 
-      <div
-        v-for="plan in standardCards"
+    <div class="pricing-grid-enhanced" :class="{ 'cards-visible': cardsVisible }">
+      <article
+        v-for="(plan, index) in visiblePlans"
         :key="plan.id"
-        class="pricing-plan-card-about card-glass-interactive"
+        class="pricing-card-enhanced"
+        :class="{
+          'pricing-card--featured': plan.isFeatured,
+          'pricing-card--free': plan.priceValue === 0
+        }"
+        :style="{ '--stagger-delay': `${index * 100}ms` }"
       >
-        <h4 class="plan-title-about">{{ plan.title }}</h4>
-        <div class="plan-price-container-about">
-          <span class="plan-price-value">{{ plan.priceText }}</span>
+        <!-- Featured badge -->
+        <div v-if="plan.isFeatured" class="featured-badge">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+              fill="currentColor"/>
+          </svg>
+          <span>{{ t('plans.mostPopular') }}</span>
         </div>
-        <p class="plan-allowance">{{ plan.allowance }}</p>
-        <p v-if="plan.allowanceNote" class="plan-allowance-note">{{ plan.allowanceNote }}</p>
-        <ul class="plan-features-list-about">
-          <li v-for="bullet in plan.bullets" :key="bullet" class="plan-feature-item">
-            <AnimatedGlyph name="check" class="feature-icon icon-success" :size="18" aria-hidden="true" />
+
+        <!-- Plan header -->
+        <div class="plan-header">
+          <h4 class="plan-name">{{ plan.title }}</h4>
+          <div class="plan-price-section">
+            <div class="plan-price-amount">
+              <span v-if="plan.priceValue > 0" class="price-symbol">$</span>
+              <span class="price-number">{{ plan.priceValue === 0 ? 'Free' : plan.priceValue }}</span>
+              <span v-if="plan.priceValue > 0" class="price-period">/month</span>
+            </div>
+            <p class="plan-allowance">{{ plan.allowance }}</p>
+            <p v-if="plan.allowanceNote" class="plan-allowance-note">{{ plan.allowanceNote }}</p>
+          </div>
+        </div>
+
+        <!-- Features list -->
+        <ul class="plan-features">
+          <li v-for="(bullet, bulletIndex) in plan.bullets" :key="bulletIndex" class="plan-feature">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="feature-icon">
+              <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5" opacity="0.3"/>
+              <path d="M8 12l3 3 5-6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
             <span>{{ bullet }}</span>
           </li>
         </ul>
-        <button class="btn plan-button-about btn-secondary-ephemeral">
+
+        <!-- CTA button -->
+        <button
+          class="btn plan-cta-button"
+          :class="{
+            'btn-primary-ephemeral': plan.isFeatured,
+            'btn-secondary-ephemeral': !plan.isFeatured && plan.priceValue > 0,
+            'btn-ghost-ephemeral': plan.priceValue === 0
+          }"
+        >
           {{ plan.ctaLabel }}
         </button>
-      </div>
+
+        <!-- Background decoration -->
+        <div class="plan-bg-decoration"></div>
+      </article>
     </div>
+
+    <!-- Decorative elements -->
+    <div class="pricing-bg-pattern">
+      <svg class="pricing-bg-svg" viewBox="0 0 1200 400" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="pricing-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:hsla(260, 75%, 78%, 0.05)" />
+            <stop offset="50%" style="stop-color:hsla(335, 80%, 72%, 0.08)" />
+            <stop offset="100%" style="stop-color:hsla(180, 95%, 60%, 0.05)" />
+          </linearGradient>
+        </defs>
+        <circle cx="200" cy="200" r="150" fill="url(#pricing-gradient)" opacity="0.5"/>
+        <circle cx="1000" cy="100" r="200" fill="url(#pricing-gradient)" opacity="0.3"/>
+        <circle cx="600" cy="350" r="100" fill="url(#pricing-gradient)" opacity="0.4"/>
+      </svg>
+    </div>
+
     <PlanComparisonModal :open="showComparison" @close="onCloseComparison" />
   </section>
 </template>
 
 <style scoped lang="scss">
+.pricing-section-enhanced {
+  position: relative;
+  padding: 4rem 1rem;
+  overflow: hidden;
+
+  @media (min-width: 768px) {
+    padding: 6rem 2rem;
+  }
+}
+
 .pricing-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 2rem;
+  align-items: flex-start;
+  gap: 2rem;
+  margin-bottom: 4rem;
+  flex-wrap: wrap;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.pricing-title-group {
+  flex: 1;
+}
+
+.pricing-subtitle {
+  margin-top: 1rem;
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: hsla(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l), 0.85);
+  max-width: 600px;
+}
+
+.pricing-icon-glow {
+  animation: iconPulse 4s ease-in-out infinite;
+}
+
+@keyframes iconPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 8px hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.4));
+  }
+  50% {
+    filter: drop-shadow(0 0 16px hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.7));
+  }
 }
 
 .plan-compare-button {
-  font-size: 0.85rem;
-  padding-inline: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.75rem;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+
+    .compare-icon {
+      transform: scaleX(1.1);
+    }
+  }
+}
+
+.compare-icon {
+  transition: transform 0.3s ease;
+}
+
+.pricing-grid-enhanced {
+  display: grid;
+  gap: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+
+  // Responsive grid layout
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5rem;
+  }
+
+  @media (min-width: 1280px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.pricing-card-enhanced {
+  position: relative;
+  background: linear-gradient(
+    180deg,
+    hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.7),
+    hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), calc(var(--color-bg-secondary-l) - 5%), 0.5)
+  );
+  backdrop-filter: blur(20px);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  border: 1px solid hsla(var(--color-border-h), var(--color-border-s), var(--color-border-l), 0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(40px) scale(0.95);
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transition-delay: var(--stagger-delay);
+
+  .cards-visible & {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px hsla(0, 0%, 0%, 0.15);
+    border-color: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.4);
+
+    .plan-bg-decoration {
+      opacity: 0.8;
+      transform: scale(1.5) rotate(45deg);
+    }
+
+    .plan-cta-button {
+      transform: scale(1.05);
+    }
+  }
+
+  &--featured {
+    background: linear-gradient(
+      180deg,
+      hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.1),
+      hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.8)
+    );
+    border-color: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.3);
+    transform: translateY(40px) scale(1);
+
+    &:hover {
+      border-color: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.6);
+      box-shadow: 0 25px 50px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.2);
+    }
+  }
+}
+
+.featured-badge {
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  background: linear-gradient(135deg,
+    hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l)),
+    hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l))
+  );
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0 1.5rem 0 1.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  animation: badgeGlow 3s ease-in-out infinite;
+}
+
+@keyframes badgeGlow {
+  0%, 100% {
+    box-shadow: 0 0 10px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.8);
+  }
+}
+
+.plan-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid hsla(var(--color-border-h), var(--color-border-s), var(--color-border-l), 0.15);
+}
+
+.plan-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  background: linear-gradient(
+    135deg,
+    hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l)),
+    hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l))
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.plan-price-section {
+  margin-top: 1rem;
+}
+
+.plan-price-amount {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.price-symbol {
+  font-size: 1.25rem;
+  opacity: 0.7;
+  font-weight: 500;
+}
+
+.price-number {
+  font-size: 2.5rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.price-period {
+  font-size: 1rem;
+  opacity: 0.7;
+  margin-left: 0.25rem;
 }
 
 .plan-allowance {
   font-weight: 600;
-  margin-top: 0.75rem;
+  font-size: 0.95rem;
+  color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+  margin-bottom: 0.5rem;
 }
 
 .plan-allowance-note {
-  margin-top: 0.35rem;
   font-size: 0.8rem;
   color: hsla(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l), 0.9);
+  line-height: 1.4;
+}
+
+.plan-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 2rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.plan-feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: hsla(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l), 0.9);
+}
+
+.feature-icon {
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+  color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+  opacity: 0.8;
+}
+
+.plan-cta-button {
+  width: 100%;
+  padding: 0.875rem 1.5rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border-radius: 0.75rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+  }
+
+  &:hover::before {
+    transform: translateX(100%);
+  }
+}
+
+.plan-bg-decoration {
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.1),
+    transparent 60%
+  );
+  opacity: 0;
+  transform: scale(1) rotate(0deg);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+.pricing-bg-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0.3;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.pricing-bg-svg {
+  width: 100%;
+  height: 100%;
+  animation: floatingPattern 20s ease-in-out infinite;
+}
+
+@keyframes floatingPattern {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(2deg);
+  }
+}
+
+// Mobile optimizations
+@media (max-width: 768px) {
+  .pricing-card-enhanced {
+    padding: 1.5rem;
+  }
+
+  .plan-name {
+    font-size: 1.25rem;
+  }
+
+  .price-number {
+    font-size: 2rem;
+  }
+}
+
+// Dark theme enhancements
+@media (prefers-color-scheme: dark) {
+  .pricing-card-enhanced {
+    background: linear-gradient(
+      180deg,
+      hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), calc(var(--color-bg-secondary-l) + 3%), 0.8),
+      hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.6)
+    );
+  }
 }
 </style>

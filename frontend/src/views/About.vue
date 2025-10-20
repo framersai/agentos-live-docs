@@ -11,7 +11,6 @@ import { useAuth } from '@/composables/useAuth';
 
 import AboutPageHeader from '@/components/about/AboutPageHeader.vue';
 import AboutHeroSection from '@/components/about/AboutHeroSection.vue';
-import AboutPermissionsSection from '@/components/about/AboutPermissionsSection.vue';
 import AboutMissionSection from '@/components/about/AboutMissionSection.vue';
 import AboutAgentosSection from '@/components/about/AboutAgentosSection.vue';
 import AboutPricingSection from '@/components/about/AboutPricingSection.vue';
@@ -42,7 +41,6 @@ const goHome = (): void => {
 
     <main class="about-main-content-area">
       <AboutHeroSection :logo-src="logoSvg" :show-guest-badge="isGuestSession" />
-      <AboutPermissionsSection />
       <AboutMissionSection />
       <AboutAgentosSection />
       <AboutPricingSection />

@@ -34,7 +34,7 @@ const goToApp = () => {
     </button>
     <p class="success-support">
       {{ t('register.success.support') }}
-      <a href="mailto:team@manic.agency" class="footer-link">team@manic.agency</a>
+      <a href="mailto:team@vca.chat" class="footer-link">team@vca.chat</a>
     </p>
   </div>
 </template>

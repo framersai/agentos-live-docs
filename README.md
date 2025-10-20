@@ -179,6 +179,31 @@ Authenticated routes are served from `/api`. Key endpoints:
 
 > **Deploy tip:** If CI reports `Missing required environment variable: AUTH_JWT_SECRET`, double-check the secret or `.env` you push to production. The backend expects a line such as `AUTH_JWT_SECRET=super_long_value` with no surrounding quotes—without it the process exits before `/health` is available.
 
+## Social Media & Contact
+
+Connect with us on social media:
+- GitHub: [https://github.com/wearetheframers/agentos](https://github.com/wearetheframers/agentos)
+- Twitter: [@vca_chat](https://twitter.com/vca_chat)
+- LinkedIn: [VCA Chat](https://linkedin.com/company/vca-chat)
+- Discord: [Join our community](https://discord.gg/vca-chat)
+- Email: [team@vca.chat](mailto:team@vca.chat)
+
+Social links are configured in `frontend/src/utils/socialLinks.ts` for easy management across the application.
+
+## Recent UI/UX Improvements
+
+### Landing Page Enhancements (October 2024)
+- **Enhanced Mission Section**: Redesigned with three pillars - Research & Innovation, Open Source First, and Accessible AI for All
+- **Improved Pricing Display**: Responsive grid layout (2-4 columns) with animated entrance effects and price-based sorting
+- **Social Media Integration**: Added social icons component with elegant handcrafted SVGs
+- **Streamlined Content**: Removed microphone permissions section from landing page for cleaner presentation
+- **Visual Enhancements**: Added gradient backgrounds, glowing effects, and smooth animations throughout
+
+### Component Architecture
+- `SocialIcons.vue`: Reusable social media icons component with variants (default, footer, hero)
+- `AboutMissionSection.vue`: Enhanced mission cards with feature lists and animated entrance
+- `AboutPricingSection.vue`: Responsive pricing grid with featured plan highlighting
+
 ## Contributing
 
 Pull requests are welcome. Please review [`CONTRIBUTING.md`](CONTRIBUTING.md) and open an issue if you plan large changes so we can coordinate direction.

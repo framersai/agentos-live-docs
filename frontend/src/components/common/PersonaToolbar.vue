@@ -7,6 +7,7 @@ import { useChatStore } from '@/store/chat.store';
 import UsageStatusBadge from '@/components/common/UsageStatusBadge.vue';
 import { voiceSettingsManager } from '@/services/voice.settings.service';
 import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 import { XMarkIcon } from '@heroicons/vue/24/solid';
 import {
   GlobeAltIcon,
@@ -18,6 +19,8 @@ import {
   AdjustmentsHorizontalIcon,
   LanguageIcon,
   CloudIcon,
+  CheckIcon,
+  PlayIcon,
 } from '@heroicons/vue/24/outline';
 import { chatAPI } from '@/utils/api';
 import { useCostStore } from '@/store/cost.store';
@@ -34,7 +37,7 @@ interface PersonaPreset {
 type CompactSectionId = 'persona' | 'speech' | 'session';
 
 interface CompactStatusItem {
-  id: 'mode' | 'stt' | 'tts' | 'speech';
+  id: 'mode' | 'stt' | 'tts' | 'speech' | 'credits' | 'session';
   label: string;
   subLabel?: string;
   badge?: string;
@@ -72,11 +75,16 @@ const chatStore = useChatStore();
 const costStore = useCostStore();
 const toast = inject<ToastService>('toast');
 const { locale } = useI18n();
+const router = useRouter();
 
 const languageMenuOpen = ref(false);
 const languageMenuRef = ref<HTMLElement | null>(null);
 const languageTriggerRef = ref<HTMLElement | null>(null);
 const manualLanguageSelection = ref('');
+const voiceMenuOpen = ref(false);
+const voiceMenuLoading = ref(false);
+const voiceMenuRef = ref<HTMLElement | null>(null);
+const voiceMenuTriggerRef = ref<HTMLElement | null>(null);
 
 const currentAgent = computed(() => props.agent ?? undefined);
 const currentAgentId = computed<AgentId | null>(() => currentAgent.value?.id ?? null);
@@ -152,15 +160,36 @@ watch(() => props.variant, (variant) => {
     compactToolbarExpanded.value = false;
     compactActiveSection.value = 'persona';
     languageMenuOpen.value = false;
+    voiceMenuOpen.value = false;
   }
 });
 
 watch(compactToolbarExpanded, (expanded) => {
   if (!expanded) {
     languageMenuOpen.value = false;
+    voiceMenuOpen.value = false;
   }
 });
 
+watch(ttsProviderSetting, () => {
+  voiceMenuOpen.value = false;
+  voiceMenuLoading.value = false;
+  voiceMenuError.value = null;
+});
+
+watch(compactActiveSection, (section) => {
+  if (section !== 'speech') {
+    voiceMenuOpen.value = false;
+  }
+});
+
+watch(voiceMenuOpen, (isOpen) => {
+  if (!isOpen) {
+    voiceMenuLoading.value = false;
+    voiceMenuError.value = null;
+    voicePreviewing.value = null;
+  }
+});
 const languageSummaryLabel = computed(() => {
   if (languagePreferenceLocked.value) {
     return `Language: ${formatLanguageName(speechLanguage.value)} (locked)`;
@@ -186,18 +215,24 @@ const ttsProviderSetting = computed(() => voiceSettingsManager.settings.ttsProvi
 const autoPlaySpeechSetting = computed(() => voiceSettingsManager.settings.autoPlayTts);
 
 const currentVoiceOption = computed(() => voiceSettingsManager.getCurrentTtsVoice());
-const currentVoiceDescriptor = computed(() => {
+const currentVoiceShort = computed(() => {
   const voice = currentVoiceOption.value;
   if (!voice) {
-    return ttsProviderSetting.value === 'openai_tts' ? 'OpenAI default' : 'System default';
+    return ttsProviderSetting.value === 'openai_tts' ? 'OpenAI Default' : 'System Voice';
   }
-  const voiceName = voice.name?.trim() || 'Custom voice';
-  const languageName = voice.lang ? formatLanguageName(voice.lang) : null;
-  if (languageName) {
-    return `${voiceName} · ${languageName}`;
-  }
-  return voiceName;
+  const voiceName = voice.name?.split('(')[0]?.trim() || voice.name || 'Custom Voice';
+  const languageCode = voice.lang ? voice.lang.replace('_', '-').toUpperCase() : null;
+  const languageShort = languageCode ? languageCode.split('-').slice(0, 2).join('-') : null;
+  return languageShort ? `${voiceName} · ${languageShort}` : voiceName;
 });
+const currentVoiceProviderLabel = computed(() =>
+  ttsProviderSetting.value === 'openai_tts' ? 'OpenAI voice' : 'Browser voice',
+);
+const currentVoiceId = computed(() => voiceSettingsManager.settings.selectedTtsVoiceId ?? null);
+const ttsVoicesLoaded = computed(() => voiceSettingsManager.ttsVoicesLoaded.value);
+const voiceOptions = voiceSettingsManager.ttsVoicesForCurrentProvider;
+const voicePreviewing = ref<string | null>(null);
+const voiceMenuError = ref<string | null>(null);
 
 const compactStatusItems = computed<CompactStatusItem[]>(() => {
   const items: CompactStatusItem[] = [];
@@ -207,23 +242,23 @@ const compactStatusItems = computed<CompactStatusItem[]>(() => {
       id: 'mode',
       label: 'Continuous',
       badge: 'Mode',
-      subLabel: 'Always listening',
+      subLabel: 'Always on',
       icon: MicrophoneIcon,
       theme: 'accent',
     });
   } else if (audioMode === 'voice-activation') {
     items.push({
       id: 'mode',
-      label: 'Wake Mode',
+      label: 'Wake',
       badge: 'Mode',
-      subLabel: 'Voice activation',
+      subLabel: 'Voice trigger',
       icon: MicrophoneIcon,
       theme: 'accent',
     });
   } else {
     items.push({
       id: 'mode',
-      label: 'Push to Talk',
+      label: 'Push-to-talk',
       badge: 'Mode',
       subLabel: 'Press & speak',
       icon: MicrophoneIcon,
@@ -234,50 +269,57 @@ const compactStatusItems = computed<CompactStatusItem[]>(() => {
   if (sttPreferenceSetting.value === 'whisper_api') {
     items.push({
       id: 'stt',
-      label: 'Whisper STT',
+      label: 'Whisper',
       badge: 'STT',
-      subLabel: 'OpenAI Whisper',
+      subLabel: 'OpenAI',
       icon: CloudIcon,
       theme: 'primary',
     });
   } else {
     items.push({
       id: 'stt',
-      label: 'Browser STT',
+      label: 'Web Speech',
       badge: 'STT',
-      subLabel: 'Web Speech',
+      subLabel: 'Browser',
       icon: GlobeAltIcon,
       theme: 'info',
     });
   }
 
-  if (ttsProviderSetting.value === 'openai_tts') {
-    items.push({
-      id: 'tts',
-      label: 'OpenAI Voice',
-      badge: 'TTS',
-      subLabel: currentVoiceDescriptor.value,
-      icon: SparklesIcon,
-      theme: 'primary',
-    });
-  } else {
-    items.push({
-      id: 'tts',
-      label: 'Browser Voice',
-      badge: 'TTS',
-      subLabel: currentVoiceDescriptor.value,
-      icon: SpeakerWaveIcon,
-      theme: 'neutral',
-    });
-  }
+  items.push({
+    id: 'tts',
+    label: currentVoiceShort.value,
+    badge: 'TTS',
+    subLabel: currentVoiceProviderLabel.value,
+    icon: ttsProviderSetting.value === 'openai_tts' ? SparklesIcon : SpeakerWaveIcon,
+    theme: ttsProviderSetting.value === 'openai_tts' ? 'primary' : 'neutral',
+  });
 
   items.push({
     id: 'speech',
-    label: autoPlaySpeechSetting.value ? 'Speech On' : 'Speech Off',
+    label: autoPlaySpeechSetting.value ? 'Auto' : 'Manual',
     badge: 'Playback',
-    subLabel: autoPlaySpeechSetting.value ? 'Autoplay ready' : 'Manual playback',
+    subLabel: 'Speech',
     icon: autoPlaySpeechSetting.value ? SpeakerWaveIcon : SpeakerXMarkIcon,
     theme: autoPlaySpeechSetting.value ? 'accent' : 'muted',
+  });
+
+  items.push({
+    id: 'credits',
+    label: speechCreditsShort.value,
+    badge: 'Credits',
+    subLabel: 'Speech',
+    icon: SparklesIcon,
+    theme: 'info',
+  });
+
+  items.push({
+    id: 'session',
+    label: sessionCostShort.value,
+    badge: 'Usage',
+    subLabel: 'Session',
+    icon: AdjustmentsHorizontalIcon,
+    theme: 'neutral',
   });
 
   return items;
@@ -285,6 +327,111 @@ const compactStatusItems = computed<CompactStatusItem[]>(() => {
 
 const toggleSpeechAutoPlay = (): void => {
   voiceSettingsManager.updateSetting('autoPlayTts', !autoPlaySpeechSetting.value);
+};
+
+const ensureVoicesLoaded = async (): Promise<void> => {
+  if (ttsVoicesLoaded.value) return;
+  await voiceSettingsManager.loadAllTtsVoices();
+};
+
+const toggleVoiceMenu = async (): Promise<void> => {
+  if (voiceMenuOpen.value) {
+    voiceMenuOpen.value = false;
+    return;
+  }
+  voiceMenuError.value = null;
+  voiceMenuLoading.value = true;
+  try {
+    await ensureVoicesLoaded();
+  } catch (error: any) {
+    const message =
+      error?.message ??
+      (typeof error === 'string' ? error : 'Failed to load available voices. Please try again.');
+    voiceMenuError.value = message;
+    console.error('[PersonaToolbar] Unable to load voices for quick switcher:', error);
+    toast?.add?.({
+      type: 'error',
+      title: 'Voice list unavailable',
+      message,
+      duration: 4200,
+    });
+  } finally {
+    voiceMenuLoading.value = false;
+    voiceMenuOpen.value = true;
+  }
+};
+
+const reloadVoiceOptions = async (): Promise<void> => {
+  voiceMenuError.value = null;
+  voiceMenuLoading.value = true;
+  try {
+    await voiceSettingsManager.loadAllTtsVoices();
+    toast?.add?.({
+      type: 'success',
+      title: 'Voices refreshed',
+      message: 'Fetched the latest voice catalog.',
+      duration: 3200,
+    });
+  } catch (error: any) {
+    const message =
+      error?.message ??
+      (typeof error === 'string' ? error : 'Could not refresh voice catalog.');
+    voiceMenuError.value = message;
+    console.error('[PersonaToolbar] Voice catalog refresh failed:', error);
+    toast?.add?.({
+      type: 'error',
+      title: 'Refresh failed',
+      message,
+      duration: 3600,
+    });
+  } finally {
+    voiceMenuLoading.value = false;
+  }
+};
+
+const selectVoice = (voiceId: string): void => {
+  if (currentVoiceId.value === voiceId) {
+    voiceMenuOpen.value = false;
+    return;
+  }
+  voiceSettingsManager.updateSetting('selectedTtsVoiceId', voiceId);
+  voiceMenuOpen.value = false;
+  const selectedVoice = voiceOptions.value.find((voice) => voice.id === voiceId);
+  if (selectedVoice) {
+    toast?.add?.({
+      type: 'success',
+      title: 'Voice updated',
+      message: `Responses will play with ${selectedVoice.name}.`,
+      duration: 3400,
+    });
+  }
+};
+
+const previewVoice = async (voiceId: string): Promise<void> => {
+  voicePreviewing.value = voiceId;
+  try {
+    await voiceSettingsManager.previewVoice(voiceId);
+  } catch (error: any) {
+    console.error('[PersonaToolbar] Voice preview failed:', error);
+    toast?.add?.({
+      type: 'error',
+      title: 'Preview failed',
+      message: 'Could not play the preview audio. Please try again shortly.',
+      duration: 3600,
+    });
+  } finally {
+    if (voicePreviewing.value === voiceId) {
+      voicePreviewing.value = null;
+    }
+  }
+};
+
+const openVoiceSettings = (): void => {
+  try {
+    void router.push({ name: 'Settings', hash: '#voice' });
+  } catch (error) {
+    console.warn('[PersonaToolbar] Failed to open voice settings route:', error);
+  }
 };
 
 const isAutoModeActive = computed(() => sttAutoDetectEnabled.value && !languagePreferenceLocked.value);
@@ -413,6 +560,19 @@ const applyManualLanguage = (): void => {
   closeLanguageMenu();
 };
 
+const handleVoiceMenuClickOutside = (event: MouseEvent): void => {
+  if (!voiceMenuOpen.value) return;
+  const target = event.target as Node;
+  if (
+    voiceMenuRef.value &&
+    !voiceMenuRef.value.contains(target) &&
+    voiceMenuTriggerRef.value &&
+    !voiceMenuTriggerRef.value.contains(target)
+  ) {
+    voiceMenuOpen.value = false;
+  }
+};
+
 const handleLanguageMenuClickOutside = (event: MouseEvent): void => {
   if (!languageMenuOpen.value) return;
   const target = event.target as Node;
@@ -489,6 +649,21 @@ const speechCreditsMeterWidth = computed<string | null>(() => {
   return `${Math.max(6, percent)}%`;
 });
 
+const speechCreditsShort = computed(() => {
+  const speech = speechCredits.value;
+  if (!speech) return 'Syncing';
+  if (speech.isUnlimited) return '8';
+  const percent = speechCreditsPercent.value;
+  if (percent !== null) {
+    return `${Math.max(0, Math.round(percent))}% left`;
+  }
+  const remainingUsd = speech.remainingUsd ?? null;
+  if (remainingUsd !== null) {
+    return `$${remainingUsd.toFixed(2)} left`;
+  }
+  return 'Active';
+});
+
 const sessionCostValue = computed(() => costStore.totalSessionCost.value ?? 0);
 const sessionEntries = computed(() => costStore.sessionEntryCount.value ?? 0);
 const sessionThreshold = computed(() => costStore.sessionCostThreshold.value ?? null);
@@ -532,6 +707,16 @@ const sessionMeterWidth = computed<string | null>(() => {
   const percent = sessionPercent.value;
   if (percent === null) return null;
   return `${Math.max(6, percent)}%`;
+});
+
+const sessionCostShort = computed(() => {
+  if (costStore.isLoadingCost.value) return 'Syncing';
+  const cost = sessionCostValue.value;
+  const threshold = sessionThreshold.value;
+  if (threshold && threshold > 0) {
+    return `${usdFormatter.format(cost)} / ${usdFormatter.format(threshold)}`;
+  }
+  return usdFormatter.format(cost);
 });
 
 const openPersonaModal = (): void => {
@@ -662,6 +847,11 @@ watch(currentAgentId, () => {
 
 onMounted(() => {
   document.addEventListener('mousedown', handleLanguageMenuClickOutside, true);
+  document.addEventListener('mousedown', handleVoiceMenuClickOutside, true);
+
+  void ensureVoicesLoaded().catch((error) => {
+    console.warn('[PersonaToolbar] Unable to pre-load voice catalog:', error);
+  });
 
   if (!voiceSettingsManager.creditsSnapshot.value) {
     void voiceSettingsManager.refreshCreditsSnapshot().catch((error) => {
@@ -678,6 +868,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   document.removeEventListener('mousedown', handleLanguageMenuClickOutside, true);
+  document.removeEventListener('mousedown', handleVoiceMenuClickOutside, true);
 });
 </script>
 
@@ -807,17 +998,99 @@ onUnmounted(() => {
                   </span>
                 </div>
                 <div class="persona-compact-panel__controls">
-                  <span class="persona-compact-panel__hint">
-                    {{ autoPlaySpeechSetting ? 'Auto-play responses when ready.' : 'Manual playback until you press play.' }}
-                  </span>
-                  <button type="button" class="persona-compact-panel__primary" @click="toggleSpeechAutoPlay">
-                    <component
-                      :is="autoPlaySpeechSetting ? SpeakerWaveIcon : SpeakerXMarkIcon"
-                      class="persona-compact-panel__button-icon"
-                      aria-hidden="true"
-                    />
-                    <span>{{ autoPlaySpeechSetting ? 'Disable autoplay' : 'Enable autoplay' }}</span>
-                  </button>
+                  <div class="persona-voice-picker">
+                    <button
+                      ref="voiceMenuTriggerRef"
+                      type="button"
+                      class="persona-voice-picker__trigger"
+                      :aria-expanded="voiceMenuOpen"
+                      @click="toggleVoiceMenu"
+                    >
+                      <SparklesIcon class="persona-voice-picker__trigger-icon" aria-hidden="true" />
+                      <span class="persona-voice-picker__trigger-label">{{ currentVoiceShort }}</span>
+                      <ChevronDownIcon
+                        class="persona-voice-picker__trigger-chevron"
+                        :class="{ 'is-open': voiceMenuOpen }"
+                        aria-hidden="true"
+                      />
+                    </button>
+                    <transition name="fade">
+                      <div
+                        v-if="voiceMenuOpen"
+                        ref="voiceMenuRef"
+                        class="persona-voice-picker__menu"
+                        role="menu"
+                        aria-label="Select voice"
+                      >
+                        <div v-if="voiceMenuLoading" class="persona-voice-picker__empty">Loading voices...</div>
+                        <div v-else-if="voiceMenuError" class="persona-voice-picker__empty persona-voice-picker__empty--error">
+                          {{ voiceMenuError }}
+                          <button type="button" class="persona-voice-picker__refresh" @click="reloadVoiceOptions">
+                            Retry
+                          </button>
+                        </div>
+                        <div v-else-if="voiceOptions.length === 0" class="persona-voice-picker__empty">
+                          No voices available for this provider.
+                          <button type="button" class="persona-voice-picker__refresh" @click="reloadVoiceOptions">
+                            Refresh catalog
+                          </button>
+                        </div>
+                        <ul v-else class="persona-voice-picker__list">
+                          <li
+                            v-for="voice in voiceOptions"
+                            :key="voice.id"
+                            class="persona-voice-picker__item"
+                          >
+                            <button
+                              type="button"
+                              class="persona-voice-picker__option"
+                              :class="{ 'is-active': currentVoiceId === voice.id }"
+                              @click="selectVoice(voice.id)"
+                            >
+                              <div class="persona-voice-picker__option-text">
+                                <span class="persona-voice-picker__option-label">{{ voice.name }}</span>
+                                <span class="persona-voice-picker__option-meta">
+                                  {{ voice.lang || (voice.provider === 'openai' ? 'OpenAI' : 'Browser') }}
+                                </span>
+                              </div>
+                              <CheckIcon v-if="currentVoiceId === voice.id" class="persona-voice-picker__check" aria-hidden="true" />
+                            </button>
+                            <button
+                              type="button"
+                              class="persona-voice-picker__preview"
+                              :disabled="voicePreviewing === voice.id"
+                              @click.stop="previewVoice(voice.id)"
+                              aria-label="Preview voice"
+                            >
+                              <span v-if="voicePreviewing === voice.id" class="persona-voice-picker__preview-spinner" aria-hidden="true"></span>
+                              <PlayIcon v-else class="persona-voice-picker__preview-icon" aria-hidden="true" />
+                            </button>
+                          </li>
+                        </ul>
+                      </div>
+                    </transition>
+                  </div>
+                  <p class="persona-compact-panel__hint">
+                    {{ autoPlaySpeechSetting ? 'Auto-play responses when ready.' : 'Keep speech manual until you tap play.' }}
+                  </p>
+                  <div class="persona-compact-panel__buttons">
+                    <button type="button" class="persona-compact-panel__primary" @click="toggleSpeechAutoPlay">
+                      <component
+                        :is="autoPlaySpeechSetting ? SpeakerWaveIcon : SpeakerXMarkIcon"
+                        class="persona-compact-panel__button-icon"
+                        aria-hidden="true"
+                      />
+                      <span>{{ autoPlaySpeechSetting ? 'Disable autoplay' : 'Enable autoplay' }}</span>
+                    </button>
+                    <button
+                      type="button"
+                      class="persona-compact-panel__ghost persona-compact-panel__ghost--link"
+                      @click="openVoiceSettings"
+                    >
+                      <AdjustmentsHorizontalIcon class="persona-compact-panel__button-icon" aria-hidden="true" />
+                      <span>Manage voices</span>
+                    </button>
+                  </div>
                 </div>
               </section>
 
@@ -1560,6 +1833,16 @@ onUnmounted(() => {
   color: var(--color-text-primary);
 }
 
+.persona-compact-panel__ghost--link {
+  color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
+  border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.35);
+}
+
+.persona-compact-panel__ghost--link:hover {
+  border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.55);
+  color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), calc(var(--color-accent-interactive-l) + 10%));
+}
+
 .persona-compact-panel__button-icon {
   width: 1rem;
   height: 1rem;
@@ -1570,7 +1853,227 @@ onUnmounted(() => {
   flex-direction: column;
   gap: 0.45rem;
 }
+.persona-compact-panel__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
 
+.persona-voice-picker {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  width: 100%;
+}
+
+.persona-voice-picker__trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.45rem;
+  width: 100%;
+  padding: 0.45rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.35);
+  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.6);
+  color: var(--color-text-primary);
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.persona-voice-picker__trigger:hover {
+  border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.45);
+  color: var(--color-text-primary);
+}
+
+.persona-voice-picker__trigger-icon {
+  width: 1rem;
+  height: 1rem;
+  color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), calc(var(--color-accent-interactive-l) + 12%));
+}
+
+.persona-voice-picker__trigger-label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.persona-voice-picker__trigger-chevron {
+  width: 0.9rem;
+  height: 0.9rem;
+  transition: transform 0.2s ease;
+}
+
+.persona-voice-picker__trigger-chevron.is-open {
+  transform: rotate(180deg);
+}
+
+.persona-voice-picker__menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: min(320px, 100%);
+  background: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.92);
+  border-radius: 14px;
+  border: 1px solid hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.28);
+  box-shadow: 0 18px 35px hsla(var(--color-shadow-h), var(--color-shadow-s), var(--color-shadow-l), 0.35);
+  backdrop-filter: blur(14px) saturate(120%);
+  padding: 0.65rem;
+  z-index: 85;
+}
+
+.persona-voice-picker__empty {
+  font-size: 0.7rem;
+  color: var(--color-text-secondary);
+  text-align: center;
+  padding: 0.4rem 0.25rem;
+}
+
+.persona-voice-picker__empty--error {
+  color: hsl(var(--color-danger-h), var(--color-danger-s), var(--color-danger-l));
+}
+
+.persona-voice-picker__refresh {
+  margin-top: 0.6rem;
+  border: none;
+  background: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.16);
+  color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), calc(var(--color-accent-interactive-l) + 12%));
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.persona-voice-picker__refresh:hover {
+  background: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.26);
+}
+
+.persona-voice-picker__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.persona-voice-picker__item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.persona-voice-picker__option {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.45rem 0.6rem;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.4);
+  color: var(--color-text-primary);
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.persona-voice-picker__option:hover {
+  transform: translateY(-1px);
+  border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.45);
+}
+
+.persona-voice-picker__option.is-active {
+  border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.55);
+  background: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.2);
+}
+
+.persona-voice-picker__option-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.persona-voice-picker__option-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.persona-voice-picker__option-meta {
+  font-size: 0.62rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.persona-voice-picker__check {
+  width: 1rem;
+  height: 1rem;
+  color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), calc(var(--color-accent-interactive-l) + 14%));
+}
+
+.persona-voice-picker__preview {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 10px;
+  border: 1px solid hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.35);
+  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.45);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.persona-voice-picker__preview:hover:not(:disabled) {
+  border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.4);
+  color: var(--color-text-primary);
+}
+
+.persona-voice-picker__preview:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.persona-voice-picker__preview-icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.persona-voice-picker__preview-spinner {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 999px;
+  border: 2px solid hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.4);
+  border-top-color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), calc(var(--color-accent-interactive-l) + 10%));
+  animation: persona-spin 0.8s linear infinite;
+}
+
+@keyframes persona-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
 .persona-compact-panel__hint {
   font-size: 0.68rem;
   color: var(--color-text-muted);
@@ -2244,6 +2747,15 @@ onUnmounted(() => {
     width: 100%;
   }
 
+  .persona-voice-picker__menu {
+    width: 100%;
+  }
+
+  .persona-compact-panel__buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
   .persona-voice-toolbar {
     flex-direction: column;
     align-items: stretch;
@@ -2270,3 +2782,9 @@ onUnmounted(() => {
   }
 }
 </style>
+
+
+
+
+
+
