@@ -37,6 +37,22 @@
                 stroke-width="1" />
         </g>
       </svg>
+      <div v-if="showTranscribingOverlay" class="vi-transcribing-overlay">
+        <span
+          v-for="lineIndex in 4"
+          :key="`transcribing-line-${lineIndex}`"
+          class="vi-transcribing-overlay__line"
+          :style="{ '--line-index': lineIndex }"
+        />
+      </div>
+      <div v-if="showSpeakingOverlay" class="vi-speaking-overlay">
+        <span
+          v-for="ringIndex in 3"
+          :key="`speaking-ring-${ringIndex}`"
+          class="vi-speaking-overlay__ring"
+          :style="{ '--ring-index': ringIndex }"
+        />
+      </div>
     </div>
 
     <canvas
@@ -339,12 +355,13 @@
  * - Integrated MicInputButton component into the template.
  * - Ensured `isExplicitlyStoppedByModeManager` from SttManager is passed to STT handlers.
  */
-import { ref, computed, onMounted, onBeforeUnmount, inject, watch, nextTick, type Ref, getCurrentInstance } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, inject, watch, watchEffect, nextTick, type Ref, getCurrentInstance } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { voiceSettingsManager, type VoiceApplicationSettings, type AudioInputMode, type STTPreference } from '@/services/voice.settings.service';
 import type { ToastService } from '@/services/services';
 import { useUiStore } from '@/store/ui.store';
 import { useReactiveStore } from '@/store/reactive.store';
+import type { AppState } from '@/store/reactive.store';
 import { useAgentStore } from '@/store/agent.store';
 import { useChatStore } from '@/store/chat.store';
 
@@ -399,6 +416,15 @@ interface Hint {
   text: string;
   type: 'info' | 'success' | 'warning' | 'error';
 }
+
+type PanelState =
+  | 'idle'
+  | 'listening'
+  | 'vad-listening'
+  | 'llm-processing'
+  | 'transcribing'
+  | 'tts-speaking'
+  | 'error';
 
 interface PttPreview {
   transcript: string;
@@ -464,6 +490,7 @@ let autoConfirmInterval: number | null = null;
 
 let hintTimeout: number | null = null;
 let transcriptionTimeout: number | null = null;
+let transcribingStateTimeout: number | null = null;
 let resizeObserver: ResizeObserver | null = null;
 let pttAudioSourceNode: AudioBufferSourceNode | null = null;
 let volumeAnimationFrame: number | null = null;
@@ -611,11 +638,60 @@ const canSendMessage = computed(() =>
 
 const statusText = computed(() => sttManager.statusText.value);
 
-const stateClass = computed(() => {
-  if (props.isProcessingLLM && !isListeningForWakeWord.value && !isModeEngaged.value && !sttManager.isAwaitingVadCommandResult.value) return 'state-llm-processing';
-  if (isModeEngaged.value) return 'state-stt-active';
-  if (isListeningForWakeWord.value) return 'state-vad-listening';
-  return 'state-idle';
+const isTranscribingActive = ref(false);
+const hasFatalVoiceError = ref(false);
+const panelState = ref<PanelState>('idle');
+
+const PANEL_STATE_CLASS_MAP: Record<PanelState, string> = {
+  idle: 'idle',
+  listening: 'stt-active',
+  'vad-listening': 'vad-listening',
+  'llm-processing': 'llm-processing',
+  transcribing: 'transcribing',
+  'tts-speaking': 'tts-speaking',
+  error: 'error',
+};
+
+const PANEL_TO_REACTIVE_STATE: Record<PanelState, AppState> = {
+  idle: 'idle',
+  listening: 'listening',
+  'vad-listening': 'vad-wake',
+  'llm-processing': 'thinking',
+  transcribing: 'transcribing',
+  'tts-speaking': 'speaking',
+  error: 'error',
+};
+
+const stateClass = computed(() => `state-${PANEL_STATE_CLASS_MAP[panelState.value] ?? 'idle'}`);
+const showTranscribingOverlay = computed(() => panelState.value === 'transcribing');
+const showSpeakingOverlay = computed(() => panelState.value === 'tts-speaking');
+
+watchEffect(() => {
+  const speakingNow = voiceSettingsManager.isSpeaking.value;
+  const transcribingNow = isTranscribingActive.value;
+  const fatalError = hasFatalVoiceError.value;
+  const awaitingVadResult = sttManager.isAwaitingVadCommandResult.value;
+  const llmProcessing = props.isProcessingLLM && !isModeEngaged.value && !isListeningForWakeWord.value && !awaitingVadResult;
+
+  let nextState: PanelState = 'idle';
+  if (fatalError) {
+    nextState = 'error';
+  } else if (speakingNow) {
+    nextState = 'tts-speaking';
+  } else if (transcribingNow) {
+    nextState = 'transcribing';
+  } else if (llmProcessing) {
+    nextState = 'llm-processing';
+  } else if (isModeEngaged.value) {
+    nextState = 'listening';
+  } else if (isListeningForWakeWord.value) {
+    nextState = 'vad-listening';
+  }
+
+  if (panelState.value !== nextState) {
+    panelState.value = nextState;
+    reactiveStore.transitionToState(PANEL_TO_REACTIVE_STATE[nextState]);
+  }
 });
 
 const modeClass = computed(() => `vi-mode-${currentAudioMode.value.replace(/_/g, '-')}`);
@@ -747,6 +823,17 @@ function showLiveTranscription(text: string, isFinal: boolean = true) {
   }
 }
 
+function triggerTranscribingAnimation(durationMs: number): void {
+  isTranscribingActive.value = true;
+  if (transcribingStateTimeout) {
+    clearTimeout(transcribingStateTimeout);
+  }
+  transcribingStateTimeout = window.setTimeout(() => {
+    isTranscribingActive.value = false;
+    transcribingStateTimeout = null;
+  }, durationMs);
+}
+
 async function handleMicButtonClick() {
   // PTT mode uses click for toggle behavior
   if (currentAudioMode.value === 'push-to-talk') {
@@ -873,12 +960,6 @@ async function handleAudioModeChange(mode: AudioInputMode) {
       hintText = t('voice.vadSayToActivate', { wakeWord }); break;
   }
   showHint(hintText, 'info', mode === 'voice-activation' ? 0 : 5000);
-  
-  if (mode === 'voice-activation') {
-    reactiveStore.transitionToState('vad-wake');
-  } else {
-    reactiveStore.transitionToState('idle');
-  }
 }
 
 function toggleToolbar() {
@@ -1154,6 +1235,11 @@ function onTranscription(data: TranscriptionData) {
     showLiveTranscription(data.text, data.isFinal);
   }
   sttManager.handleTranscriptionFromHandler(data.text, data.isFinal);
+  const normalized = data.text?.trim() ?? '';
+  if (normalized) {
+    triggerTranscribingAnimation(data.isFinal ? 900 : 600);
+    hasFatalVoiceError.value = false;
+  }
   if (data.isFinal && currentAudioMode.value !== 'push-to-talk' && data.text.trim()) {
     audioFeedback.playSound(audioFeedback.beepOutSound.value, 0.5);
   }
@@ -1163,7 +1249,7 @@ function onWakeWordDetected() {
   audioFeedback.playSound(audioFeedback.beepInSound.value);
   showHint('Wake word detected!', 'success', 1500);
   sttManager.handleWakeWordDetectedFromHandler();
-  reactiveStore.transitionToState('vad-active');
+  hasFatalVoiceError.value = false;
 }
 
 function onListeningForWakeWord(isListening: boolean) {
@@ -1175,24 +1261,17 @@ function onListeningForWakeWord(isListening: boolean) {
   }
   sharedState.isListeningForWakeWord.value = isListening;
   emit('stt-processing-audio', isListening); 
-  
   if (isListening) {
-    reactiveStore.transitionToState('vad-wake');
+    hasFatalVoiceError.value = false;
   }
 }
 
 function onProcessingAudio(isProcessing: boolean) {
   sharedState.isProcessingAudio.value = isProcessing;
   emit('stt-processing-audio', isProcessing);
-  
+
   if (isProcessing) {
-    if (currentAudioMode.value === 'voice-activation' && !isListeningForWakeWord.value) {
-      reactiveStore.transitionToState('vad-active');
-    } else if (currentAudioMode.value !== 'voice-activation') {
-      reactiveStore.transitionToState('listening');
-    }
-  } else if (!props.isProcessingLLM && !isListeningForWakeWord.value) {
-    reactiveStore.transitionToState('idle');
+    hasFatalVoiceError.value = false;
   }
 }
 
@@ -1211,11 +1290,11 @@ function onSttError(error: SttHandlerErrorPayload) {
   } else {
     showHint(error.message || 'Voice input issue.', 'warning');
   }
-  emit('voice-input-error', error);
-  
   if (error.fatal) {
-    reactiveStore.transitionToState('error');
+    isTranscribingActive.value = false;
   }
+  hasFatalVoiceError.value = Boolean(error.fatal);
+  emit('voice-input-error', error);
 }
 
 function updateCanvasSize() {
@@ -1376,17 +1455,6 @@ watch(() => currentSettings.selectedTtsVoiceId, (newVoiceId, previousVoiceId) =>
   }
 });
 
-watch(() => props.isProcessingLLM, (isProcessing) => {
-  if (isProcessing && !isModeEngaged.value && !isListeningForWakeWord.value && !sttManager.isAwaitingVadCommandResult.value) {
-    reactiveStore.transitionToState('thinking');
-  } else if (!isProcessing && !isModeEngaged.value && !isListeningForWakeWord.value && !sttManager.isAwaitingVadCommandResult.value) {
-    // Only transition to idle if not VAD wake, which should maintain its own state
-     if(currentAudioMode.value !== 'voice-activation' || !isListeningForWakeWord.value){
-        reactiveStore.transitionToState('idle');
-     }
-  }
-});
-
 onMounted(async () => {
   sharedState.isComponentMounted.value = true;
   await voiceSettingsManager.initialize();
@@ -1401,21 +1469,6 @@ onMounted(async () => {
     });
     resizeObserver.observe(voiceInputPanelRef.value);
   }
-  
-  const initialReactiveState = () => {
-    if (props.isProcessingLLM && !sttManager.isAwaitingVadCommandResult.value) {
-      reactiveStore.transitionToState('thinking');
-    } else if (isModeEngaged.value) {
-      if (currentAudioMode.value === 'voice-activation') reactiveStore.transitionToState('vad-active');
-      else reactiveStore.transitionToState('listening');
-    } else if (isListeningForWakeWord.value) {
-      reactiveStore.transitionToState('vad-wake');
-    } else {
-      reactiveStore.transitionToState('idle');
-    }
-  };
-  initialReactiveState();
-  
   setTimeout(() => {
       if(currentAudioMode.value && currentSettings.showStartupHint) {
         handleAudioModeChange(currentAudioMode.value);
@@ -1435,6 +1488,10 @@ onBeforeUnmount(() => {
 
   if (hintTimeout) clearTimeout(hintTimeout);
   if (transcriptionTimeout) clearTimeout(transcriptionTimeout);
+  if (transcribingStateTimeout) {
+    clearTimeout(transcribingStateTimeout);
+    transcribingStateTimeout = null;
+  }
   if (pttAudioSourceNode) {
     pttAudioSourceNode.stop();
     pttAudioSourceNode.disconnect();

@@ -1,4 +1,4 @@
-// File: frontend/src/components/common/PersonaToolbar.vue
+﻿// File: frontend/src/components/common/PersonaToolbar.vue
 <script setup lang="ts">
 import { computed, inject, ref, watch, onMounted, onUnmounted } from 'vue';
 import type { ToastService } from '@/services/services';
@@ -10,6 +10,7 @@ import { useI18n } from 'vue-i18n';
 import { XMarkIcon } from '@heroicons/vue/24/solid';
 import { GlobeAltIcon, ChevronDownIcon, SparklesIcon } from '@heroicons/vue/24/outline';
 import { chatAPI } from '@/utils/api';
+import { useCostStore } from '@/store/cost.store';
 
 type PersonaModalView = 'editor' | 'library';
 
@@ -21,6 +22,9 @@ interface PersonaPreset {
 }
 
 const PERSONA_PRESETS_PER_PAGE = 4;
+const usdFormatter = new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 2 });
+const compactNumberFormatter = new Intl.NumberFormat(undefined, { notation: 'compact', maximumFractionDigits: 1 });
+const minuteFormatter = new Intl.NumberFormat(undefined, { maximumFractionDigits: 0 });
 
 const props = withDefaults(defineProps<{
   agent: Readonly<IAgentDefinition> | undefined | null;
@@ -36,6 +40,7 @@ const props = withDefaults(defineProps<{
 });
 
 const chatStore = useChatStore();
+const costStore = useCostStore();
 const toast = inject<ToastService>('toast');
 const { locale } = useI18n();
 
@@ -243,6 +248,107 @@ const usageBadgeVisible = computed(() =>
   typeof props.tokensUsed === 'number',
 );
 
+const speechCredits = computed(() => voiceSettingsManager.creditsSnapshot.value?.speech ?? null);
+const speechCreditsPercent = computed<number | null>(() => {
+  const speech = speechCredits.value;
+  if (!speech || speech.isUnlimited) return null;
+  const total = speech.totalUsd ?? null;
+  const remaining = speech.remainingUsd ?? null;
+  if (total === null || remaining === null || total <= 0) return null;
+  const percent = (remaining / total) * 100;
+  return Math.round(Math.min(100, Math.max(0, percent)));
+});
+
+const speechCreditsSummary = computed(() => {
+  const speech = speechCredits.value;
+  if (!speech) return 'Speech credits syncing…';
+  if (speech.isUnlimited) return 'Unlimited speech coverage';
+  const minutes = speech.approxWhisperMinutesRemaining ?? null;
+  const characters = speech.approxTtsCharactersRemaining ?? null;
+  const remainingUsd = speech.remainingUsd ?? null;
+
+  const segments: string[] = [];
+  if (typeof minutes === 'number' && minutes >= 0) {
+    segments.push(`${minuteFormatter.format(Math.max(0, Math.floor(minutes)))} min`);
+  }
+  if (typeof characters === 'number' && characters > 0) {
+    segments.push(`${compactNumberFormatter.format(characters)} chars`);
+  }
+  if (segments.length > 0) {
+    return `${segments.join(' • ')} left`;
+  }
+  if (typeof remainingUsd === 'number') {
+    return `${usdFormatter.format(Math.max(0, remainingUsd))} remaining`;
+  }
+  return 'Speech credits active';
+});
+const speechCreditsState = computed<'loading' | 'ok' | 'warning' | 'critical'>(() => {
+  const speech = speechCredits.value;
+  if (!speech) return 'loading';
+  if (speech.isUnlimited) return 'ok';
+  const percent = speechCreditsPercent.value;
+  if (percent === null) {
+    const remaining = speech.remainingUsd ?? null;
+    if (remaining !== null && remaining <= 0) return 'critical';
+    return 'ok';
+  }
+  if (percent <= 5) return 'critical';
+  if (percent <= 20) return 'warning';
+  return 'ok';
+});
+
+const speechCreditsStateClass = computed(() => `persona-voice-toolbar__stat--${speechCreditsState.value}`);
+const speechCreditsMeterWidth = computed<string | null>(() => {
+  const percent = speechCreditsPercent.value;
+  if (percent === null) return null;
+  return `${Math.max(6, percent)}%`;
+});
+
+const sessionCostValue = computed(() => costStore.totalSessionCost.value ?? 0);
+const sessionEntries = computed(() => costStore.sessionEntryCount.value ?? 0);
+const sessionThreshold = computed(() => costStore.sessionCostThreshold.value ?? null);
+const sessionPercent = computed<number | null>(() => {
+  const threshold = sessionThreshold.value;
+  if (!threshold || threshold <= 0) return null;
+  const percent = (sessionCostValue.value / threshold) * 100;
+  return Math.min(100, Math.max(0, percent));
+});
+
+const sessionCostSummary = computed(() => {
+  if (costStore.isLoadingCost.value) return 'Loading usage…';
+  const costPart = usdFormatter.format(sessionCostValue.value);
+  const thresholdPart = sessionThreshold.value && sessionThreshold.value > 0
+    ? ` / ${usdFormatter.format(sessionThreshold.value)}`
+    : '';
+  const turnCount = sessionEntries.value;
+  const entriesPart = `${turnCount} ${turnCount === 1 ? 'turn' : 'turns'}`;
+  return `${costPart}${thresholdPart} • ${entriesPart}`;
+});
+const sessionCostState = computed<'loading' | 'ok' | 'info' | 'warning' | 'critical'>(() => {
+  if (costStore.isLoadingCost.value) return 'loading';
+  const threshold = sessionThreshold.value;
+  if (threshold && threshold > 0) {
+    if (costStore.isThresholdReached.value || sessionCostValue.value >= threshold) {
+      return 'critical';
+    }
+    const percent = sessionPercent.value ?? 0;
+    if (percent >= 75) {
+      return 'warning';
+    }
+  }
+  if (sessionCostValue.value >= 25) {
+    return 'info';
+  }
+  return 'ok';
+});
+
+const sessionCostStateClass = computed(() => `persona-voice-toolbar__stat--${sessionCostState.value}`);
+const sessionMeterWidth = computed<string | null>(() => {
+  const percent = sessionPercent.value;
+  if (percent === null) return null;
+  return `${Math.max(6, percent)}%`;
+});
+
 const openPersonaModal = (): void => {
   if (personaButtonDisabled.value) {
     toast?.add?.({
@@ -371,6 +477,18 @@ watch(currentAgentId, () => {
 
 onMounted(() => {
   document.addEventListener('mousedown', handleLanguageMenuClickOutside, true);
+
+  if (!voiceSettingsManager.creditsSnapshot.value) {
+    void voiceSettingsManager.refreshCreditsSnapshot().catch((error) => {
+      console.warn('[PersonaToolbar] Failed to refresh speech credits snapshot:', error);
+    });
+  }
+
+  if (!costStore.isLoadingCost.value && !costStore.sessionEntryCount.value && costStore.totalSessionCost.value === 0) {
+    void costStore.fetchSessionCost().catch((error) => {
+      console.warn('[PersonaToolbar] Failed to refresh session cost:', error);
+    });
+  }
 });
 
 onUnmounted(() => {
@@ -414,6 +532,32 @@ onUnmounted(() => {
     </div>
 
     <div class="persona-voice-toolbar__right">
+      <div class="persona-voice-toolbar__stats">
+        <div
+          class="persona-voice-toolbar__stat"
+          :class="speechCreditsStateClass"
+          role="status"
+          aria-live="polite"
+        >
+          <span class="persona-voice-toolbar__stat-label">Speech</span>
+          <span class="persona-voice-toolbar__stat-value">{{ speechCreditsSummary }}</span>
+          <span v-if="speechCreditsMeterWidth" class="persona-voice-toolbar__stat-meter" aria-hidden="true">
+            <span class="persona-voice-toolbar__stat-meter-bar" :style="{ width: speechCreditsMeterWidth }"></span>
+          </span>
+        </div>
+        <div
+          class="persona-voice-toolbar__stat"
+          :class="sessionCostStateClass"
+          role="status"
+          aria-live="polite"
+        >
+          <span class="persona-voice-toolbar__stat-label">Session</span>
+          <span class="persona-voice-toolbar__stat-value">{{ sessionCostSummary }}</span>
+          <span v-if="sessionMeterWidth" class="persona-voice-toolbar__stat-meter" aria-hidden="true">
+            <span class="persona-voice-toolbar__stat-meter-bar" :style="{ width: sessionMeterWidth }"></span>
+          </span>
+        </div>
+      </div>
       <button
         ref="languageTriggerRef"
         type="button"
@@ -569,13 +713,13 @@ onUnmounted(() => {
           </div>
           <div class="persona-library__pagination">
             <button type="button" @click="goToPreviousPersonaPresetPage" class="persona-library__page-button">
-              ‹ Prev
+              â€¹ Prev
             </button>
             <span class="persona-library__page-indicator">
               Page {{ personaPresetPage }} / {{ personaPresetTotalPages }}
             </span>
             <button type="button" @click="goToNextPersonaPresetPage" class="persona-library__page-button">
-              Next ›
+              Next â€º
             </button>
           </div>
         </div>
@@ -629,10 +773,119 @@ onUnmounted(() => {
   position: relative;
   display: inline-flex;
   align-items: center;
+  gap: 10px;
 }
 
 .persona-voice-toolbar__badge {
   margin-right: 4px;
+}
+
+.persona-voice-toolbar__stats {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.persona-voice-toolbar__stat {
+  min-width: 140px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  border: 1px solid hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.35);
+  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.55);
+  color: var(--color-text-secondary);
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.persona-voice-toolbar__stat-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: hsla(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l), 0.85);
+}
+
+.persona-voice-toolbar__stat-value {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+}
+
+.persona-voice-toolbar__stat-meter {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 3px;
+  border-radius: 999px;
+  background: hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.25);
+  overflow: hidden;
+}
+
+.persona-voice-toolbar__stat-meter-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg,
+    hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.85),
+    hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.9)
+  );
+}
+
+.persona-voice-toolbar__stat--loading {
+  opacity: 0.7;
+}
+
+.persona-voice-toolbar__stat--ok {
+  border-color: hsla(var(--color-success-h), var(--color-success-s), var(--color-success-l), 0.3);
+  background: hsla(var(--color-success-h), var(--color-success-s), var(--color-success-l), 0.12);
+}
+
+.persona-voice-toolbar__stat--info {
+  border-color: hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.35);
+  background: hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.18);
+}
+
+.persona-voice-toolbar__stat--warning {
+  border-color: hsla(var(--color-warning-h), var(--color-warning-s), var(--color-warning-l), 0.45);
+  background: hsla(var(--color-warning-h), var(--color-warning-s), var(--color-warning-l), 0.2);
+  color: hsl(var(--color-warning-text-h, var(--color-warning-h)), var(--color-warning-text-s, 85%), var(--color-warning-text-l, 25%));
+}
+
+.persona-voice-toolbar__stat--critical {
+  border-color: hsla(var(--color-danger-h), var(--color-danger-s), var(--color-danger-l), 0.5);
+  background: hsla(var(--color-danger-h), var(--color-danger-s), var(--color-danger-l), 0.22);
+  color: hsl(var(--color-danger-h), var(--color-danger-s), calc(var(--color-danger-l) + 25%));
+}
+
+.persona-voice-toolbar__stat--loading .persona-voice-toolbar__stat-meter-bar,
+.persona-voice-toolbar__stat--loading .persona-voice-toolbar__stat-value {
+  opacity: 0.75;
+}
+
+.persona-voice-toolbar__stat--info .persona-voice-toolbar__stat-meter-bar {
+  background: linear-gradient(90deg,
+    hsla(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l), 0.85),
+    hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.9)
+  );
+}
+
+.persona-voice-toolbar__stat--warning .persona-voice-toolbar__stat-meter-bar {
+  background: linear-gradient(90deg,
+    hsla(var(--color-warning-h), var(--color-warning-s), var(--color-warning-l), 0.85),
+    hsla(var(--color-warning-h), var(--color-warning-s), calc(var(--color-warning-l) - 10%), 0.9)
+  );
+}
+
+.persona-voice-toolbar__stat--critical .persona-voice-toolbar__stat-meter-bar {
+  background: linear-gradient(90deg,
+    hsla(var(--color-danger-h), var(--color-danger-s), var(--color-danger-l), 0.95),
+    hsla(var(--color-danger-h), var(--color-danger-s), calc(var(--color-danger-l) - 10%), 0.95)
+  );
 }
 
 .persona-voice-toolbar__button {
@@ -1129,6 +1382,33 @@ onUnmounted(() => {
   .persona-modal__actions-right {
     width: 100%;
     justify-content: space-between;
+  }
+}
+
+@media (max-width: 720px) {
+  .persona-voice-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+
+  .persona-voice-toolbar__left {
+    justify-content: space-between;
+  }
+
+  .persona-voice-toolbar__right {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .persona-voice-toolbar__stats {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .persona-voice-toolbar__stat {
+    width: 100%;
   }
 }
 </style>
