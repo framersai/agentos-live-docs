@@ -107,6 +107,14 @@ const formatLanguageName = (code?: string | null): string => {
   }
 };
 
+const describeLanguage = (code?: string | null): string => {
+  if (!code) return 'Unknown';
+  const normalized = code.toLowerCase();
+  if (normalized.startsWith('en-us')) return 'American English';
+  if (normalized.startsWith('en')) return 'English';
+  return formatLanguageName(code);
+};
+
 const availableLanguageOptions = computed(() => {
   const set = new Set<string>();
   voiceSettingsManager.availableTtsVoices.value.forEach((voice) => {
@@ -191,22 +199,25 @@ watch(voiceMenuOpen, (isOpen) => {
   }
 });
 const languageSummaryLabel = computed(() => {
+  let label: string;
   if (languagePreferenceLocked.value) {
-    return `Language: ${formatLanguageName(speechLanguage.value)} (locked)`;
-  }
-  if (sttAutoDetectEnabled.value) {
+    label = `Language: ${formatLanguageName(speechLanguage.value)} (locked)`;
+  } else if (sttAutoDetectEnabled.value) {
     const detected = detectedSpeechLanguage.value || detectedResponseLanguage.value;
-    return detected
-      ? `Language: Auto (${formatLanguageName(detected)})`
-      : 'Language: Auto';
+    label = detected ? `Language: Auto (${formatLanguageName(detected)})` : 'Language: Auto';
+  } else if (responseLanguageMode.value === 'fixed') {
+    label = `Language: ${formatLanguageName(voiceSettingsManager.settings.fixedResponseLanguage || speechLanguage.value)}`;
+  } else if (responseLanguageMode.value === 'follow-stt') {
+    label = `Language: Follow STT (${formatLanguageName(speechLanguage.value)})`;
+  } else {
+    label = `Language: ${formatLanguageName(speechLanguage.value)}`;
   }
-  if (responseLanguageMode.value === 'fixed') {
-    return `Language: ${formatLanguageName(voiceSettingsManager.settings.fixedResponseLanguage || speechLanguage.value)}`;
+
+  if (voiceFallbackInfo.value) {
+    label += ` · Speaking: ${describeLanguage(voiceFallbackInfo.value.resolvedLang)}`;
   }
-  if (responseLanguageMode.value === 'follow-stt') {
-    return `Language: Follow STT (${formatLanguageName(speechLanguage.value)})`;
-  }
-  return `Language: ${formatLanguageName(speechLanguage.value)}`;
+
+  return label;
 });
 
 const audioInputModeSetting = computed(() => voiceSettingsManager.settings.audioInputMode);
@@ -230,6 +241,21 @@ const currentVoiceProviderLabel = computed(() =>
 );
 const currentVoiceId = computed(() => voiceSettingsManager.settings.selectedTtsVoiceId ?? null);
 const ttsVoicesLoaded = computed(() => voiceSettingsManager.ttsVoicesLoaded.value);
+const voiceFallbackInfo = computed(() => voiceSettingsManager.ttsLanguageFallback.value);
+const voiceFallbackMessage = computed(() => {
+  const info = voiceFallbackInfo.value;
+  if (!info) return null;
+  const requested = describeLanguage(info.requestedLang);
+  const resolved = describeLanguage(info.resolvedLang);
+  const providerLabel = info.provider === 'openai_tts' ? 'OpenAI voice' : 'browser voice';
+  return `${providerLabel} does not support ${requested}. Speaking in ${resolved} (${info.resolvedVoiceName}). The * marker denotes a fallback voice.`;
+});
+const currentVoiceDisplay = computed(() =>
+  voiceFallbackInfo.value ? `${currentVoiceShort.value}*` : currentVoiceShort.value,
+);
+const currentVoiceProviderDisplay = computed(() =>
+  voiceFallbackInfo.value ? `Fallback · ${currentVoiceProviderLabel.value}` : currentVoiceProviderLabel.value,
+);
 const voiceOptions = voiceSettingsManager.ttsVoicesForCurrentProvider;
 const voicePreviewing = ref<string | null>(null);
 const voiceMenuError = ref<string | null>(null);
@@ -286,13 +312,18 @@ const compactStatusItems = computed<CompactStatusItem[]>(() => {
     });
   }
 
+  const ttsTheme = voiceFallbackInfo.value
+    ? 'warning'
+    : ttsProviderSetting.value === 'openai_tts'
+      ? 'primary'
+      : 'neutral';
   items.push({
     id: 'tts',
-    label: currentVoiceShort.value,
+    label: currentVoiceDisplay.value,
     badge: 'TTS',
-    subLabel: currentVoiceProviderLabel.value,
+    subLabel: currentVoiceProviderDisplay.value,
     icon: ttsProviderSetting.value === 'openai_tts' ? SparklesIcon : SpeakerWaveIcon,
-    theme: ttsProviderSetting.value === 'openai_tts' ? 'primary' : 'neutral',
+    theme: ttsTheme,
   });
 
   items.push({
@@ -1005,9 +1036,10 @@ onUnmounted(() => {
                       class="persona-voice-picker__trigger"
                       :aria-expanded="voiceMenuOpen"
                       @click="toggleVoiceMenu"
+                      :title="voiceFallbackMessage || currentVoiceDisplay"
                     >
                       <SparklesIcon class="persona-voice-picker__trigger-icon" aria-hidden="true" />
-                      <span class="persona-voice-picker__trigger-label">{{ currentVoiceShort }}</span>
+                      <span class="persona-voice-picker__trigger-label">{{ currentVoiceDisplay }}</span>
                       <ChevronDownIcon
                         class="persona-voice-picker__trigger-chevron"
                         :class="{ 'is-open': voiceMenuOpen }"
@@ -1050,7 +1082,7 @@ onUnmounted(() => {
                               <div class="persona-voice-picker__option-text">
                                 <span class="persona-voice-picker__option-label">{{ voice.name }}</span>
                                 <span class="persona-voice-picker__option-meta">
-                                  {{ voice.lang || (voice.provider === 'openai' ? 'OpenAI' : 'Browser') }}
+                                  {{ voice.lang ? describeLanguage(voice.lang) : (voice.provider === 'openai' ? 'OpenAI' : 'Browser') }}
                                 </span>
                               </div>
                               <CheckIcon v-if="currentVoiceId === voice.id" class="persona-voice-picker__check" aria-hidden="true" />
@@ -1072,6 +1104,9 @@ onUnmounted(() => {
                   </div>
                   <p class="persona-compact-panel__hint">
                     {{ autoPlaySpeechSetting ? 'Auto-play responses when ready.' : 'Keep speech manual until you tap play.' }}
+                  </p>
+                  <p v-if="voiceFallbackMessage" class="persona-voice-picker__fallback">
+                    {{ voiceFallbackMessage }}
                   </p>
                   <div class="persona-compact-panel__buttons">
                     <button type="button" class="persona-compact-panel__primary" @click="toggleSpeechAutoPlay">
@@ -1938,6 +1973,13 @@ onUnmounted(() => {
   color: hsl(var(--color-danger-h), var(--color-danger-s), var(--color-danger-l));
 }
 
+.persona-voice-picker__fallback {
+  font-size: 0.66rem;
+  color: hsla(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l), 0.85);
+  margin: 0;
+  line-height: 1.4;
+}
+
 .persona-voice-picker__refresh {
   margin-top: 0.6rem;
   border: none;
@@ -2782,6 +2824,8 @@ onUnmounted(() => {
   }
 }
 </style>
+
+
 
 
 
