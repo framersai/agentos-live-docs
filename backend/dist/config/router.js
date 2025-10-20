@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { authMiddleware } from '../middleware/auth.js';
 import { postGlobalLogin, postStandardLogin, getStatus as getAuthStatus, deleteSession as deleteAuthSession, postRegister, } from '../src/features/auth/auth.routes.js';
 import * as chatApiRoutes from '../src/features/chat/chat.routes.js';
+import { postDetectLanguage } from '../src/features/chat/language.routes.js';
 import * as sttApiRoutes from '../src/features/speech/stt.routes.js';
 import * as ttsApiRoutes from '../src/features/speech/tts.routes.js';
 import * as costApiRoutes from '../src/features/cost/cost.routes.js';
@@ -60,6 +61,7 @@ export async function configureRouter() {
         console.log('✅ Registered GET /rate-limit/status route');
         router.post('/chat', chatApiRoutes.POST);
         router.post('/chat/persona', chatApiRoutes.POST_PERSONA);
+        router.post('/chat/detect-language', postDetectLanguage);
         console.log('✅ Registered chat routes (public/private access)');
         router.post('/diagram', chatApiRoutes.POST);
         console.log('✅ Registered diagram routes (public/private access)');
