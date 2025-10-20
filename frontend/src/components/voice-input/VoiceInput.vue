@@ -95,6 +95,13 @@
       </transition>
     </div>
 
+    <div class="vi-toolbar-shell">
+      <PersonaToolbar
+        :agent="activeAgent"
+        variant="compact"
+      />
+    </div>
+
     <div class="vi-controls-wrapper">
       <div class="vi-mic-wrapper">
         <MicInputButton
@@ -381,6 +388,7 @@ import WhisperSpeechHandler from './handlers/WhisperSpeechHandler.vue';
 import AudioModeDropdown from './components/AudioModeDropdown.vue';
 import InputToolbar from './components/InputToolbar.vue';
 import MicInputButton from './components/MicInputButton.vue';
+import PersonaToolbar from '@/components/common/PersonaToolbar.vue';
 
 
 // Icons
@@ -453,6 +461,7 @@ const reactiveStore = useReactiveStore();
 const agentStore = useAgentStore();
 const chatStore = useChatStore();
 const activeAgentId = computed(() => agentStore.activeAgent?.id ?? null);
+const activeAgent = computed(() => agentStore.activeAgent ?? null);
 const isActiveAgentAwaitingTts = computed(() => {
   const id = activeAgentId.value;
   return id ? chatStore.isAgentAwaitingTts(id) : false;

@@ -588,6 +588,20 @@ $z-ptt-preview-modal: 30;
 }
 
 // -----------------------------------------------------------------------------
+// Toolbar Shell (persona, speech, session controls)
+// -----------------------------------------------------------------------------
+.vi-toolbar-shell {
+  width: 100%;
+  margin-bottom: 18px;
+  position: relative;
+  z-index: 6;
+
+  .persona-voice-toolbar--compact {
+    width: 100%;
+  }
+}
+
+// -----------------------------------------------------------------------------
 // Controls Wrapper
 // -----------------------------------------------------------------------------
 .vi-controls-wrapper {

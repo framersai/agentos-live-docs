@@ -36,12 +36,6 @@ import MainContentView from '@/components/agents/common/MainContentView.vue';
 import CompactMessageRenderer from '@/components/layouts/CompactMessageRenderer/CompactMessageRenderer.vue';
 
 import { ShieldCheckIcon, CogIcon, UserGroupIcon } from '@heroicons/vue/24/solid';
-import PersonaToolbar from '@/components/common/PersonaToolbar.vue';
-import { usePlans } from '@/composables/usePlans';
-import { useCostStore } from '@/store/cost.store';
-import { GPT4O_COST_PER_KTOKENS } from '../../../shared/planCatalog';
-
-
 const toast = inject<ToastService>('toast');
 const router = useRouter();
 const agentStore = useAgentStore();
@@ -52,17 +46,6 @@ const debugLog = createScopedSttLogger('PrivateHome');
 const activeAgent = computed<IAgentDefinition | undefined>(() => agentStore.activeAgent);
 const currentSystemPromptText = ref('');
 
-const costStore = useCostStore();
-const { findPlan } = usePlans();
-
-const isGlobalUnlimited = computed(() => auth.user.value?.mode === 'global' && auth.user.value?.tier === 'unlimited');
-const unlimitedPlan = computed(() => (isGlobalUnlimited.value ? findPlan('global-pass') : null));
-const tokensTotal = computed(() => unlimitedPlan.value?.usage.approxGpt4oTokensPerDay ?? null);
-const tokensUsed = computed(() => {
-  if (!isGlobalUnlimited.value) return null;
-  const usd = costStore.totalSessionCost.value;
-  return Math.round((usd / GPT4O_COST_PER_KTOKENS) * 1000);
-});
 const currentAgentViewComponent = computed<VueComponentType | null>(() => {
   const agent = activeAgent.value;
   if (agent && agent.component && typeof agent.component === 'function') {
@@ -447,14 +430,6 @@ watch(isVoiceInputCurrentlyProcessingAudio, (isSttActive) => {
                 <p class="loading-text-ephemeral !text-lg mt-4">Initializing Workspace...</p>
             </div>
         </div>
-      </template>
-      <template #voice-toolbar>
-        <PersonaToolbar
-          :agent="activeAgent"
-          :show-usage-badge="isGlobalUnlimited"
-          :tokens-total="tokensTotal"
-          :tokens-used="tokensUsed"
-        />
       </template>
     </UnifiedChatLayout>
   </div>
