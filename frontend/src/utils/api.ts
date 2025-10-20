@@ -71,10 +71,47 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response: AxiosResponse): AxiosResponse => response,
   (error: any): Promise<any> => {
-    const status = error.response?.status;
-    const url = error.config?.url;
+    const status: number | undefined = error.response?.status;
+    const url: string | undefined = error.config?.url;
+    const method: string = (error.config?.method || 'GET').toUpperCase();
+    const baseURL: string | undefined = error.config?.baseURL || api.defaults.baseURL;
     const responseData = error.response?.data; // Renamed to avoid conflict in other scopes
-    console.error(`[API Service] Response Error: Status ${status} from ${url}`, responseData || error.message);
+
+    if (typeof status === 'undefined') {
+      console.error(`[API Service] Network error for ${method} ${url ?? '(unknown URL)'}`, {
+        baseURL,
+        message: error.message,
+        stack: error.stack,
+      });
+    } else {
+      console.error(
+        `[API Service] Response Error: Status ${status} from ${method} ${url}`,
+        responseData || error.message,
+        {
+          baseURL,
+          headers: error.response?.headers,
+        },
+      );
+
+      if (status >= 500) {
+        console.warn('[API Service] Upstream server responded with an error status.', {
+          status,
+          method,
+          url,
+          baseURL,
+          data: responseData,
+        });
+        if (status === 502) {
+          const resolvedUrl = baseURL
+            ? `${baseURL.replace(/\/$/, '')}/${(url || '').replace(/^\//, '')}`
+            : url;
+          console.warn(
+            '[API Service] 502 Bad Gateway detected. Verify the backend/API host is reachable and VITE_API_BASE_URL is correct.',
+            { baseURL, resolvedUrl },
+          );
+        }
+      }
+    }
 
     if (status === 401 && typeof window !== 'undefined') {
       const currentToken = getAuthToken();
@@ -82,7 +119,7 @@ api.interceptors.response.use(
         localStorage.removeItem(AUTH_TOKEN_KEY);
         sessionStorage.removeItem(AUTH_TOKEN_KEY);
         if (api.defaults.headers.common['Authorization']) {
-            delete api.defaults.headers.common['Authorization'];
+          delete api.defaults.headers.common['Authorization'];
         }
         console.warn('[API Service] Unauthorized (401) with existing token. Cleared token. Redirecting to login.');
         if (window.location.pathname !== '/login' && !window.location.pathname.startsWith('/welcome')) {

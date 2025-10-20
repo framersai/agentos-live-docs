@@ -1,3 +1,10 @@
+<script setup lang="ts">
+import SocialIcons from '@/components/common/SocialIcons.vue';
+import { getFooterSocialLinks } from '@/utils/socialLinks';
+
+const footerLinks = getFooterSocialLinks();
+</script>
+
 <template>
   <footer class="about-page-footer-ephemeral">
     <div class="footer-content-inner-about card-glass">
@@ -10,11 +17,13 @@
         Developed by
         <a href="https://frame.dev" target="_blank" rel="noopener noreferrer" class="footer-link">The Framers</a>
         &amp;
-        <a href="https://manic.agency" target="_blank" rel="noopener noreferrer" class="footer-link">Manic Inc</a>.
+        <a href="https://vca.chat" target="_blank" rel="noopener noreferrer" class="footer-link">VCA Team</a>.
       </p>
-      <div class="footer-social-links-group"></div>
+      <div class="footer-social-links-group">
+        <SocialIcons :links="footerLinks" variant="footer" />
+      </div>
       <p class="copyright-text-about max-w-full w-full">
-        Manic.agency is an experimental open-source collective and development and design agency.
+        VCA.chat is an experimental open-source initiative focused on making AI accessible to everyone.
       </p>
     </div>
   </footer>
