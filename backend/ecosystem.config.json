@@ -2,7 +2,7 @@
     {
       "name": "voice-backend",
       "script": "dist/server.js",
-      "node_args": "--import tsx/esm",
+      "node_args": "--import tsx",
       "exec_mode": "fork",
       "instances": 1,
       "watch": false,
