@@ -684,8 +684,8 @@ $z-ptt-preview-modal: 30;
 .vi-engine-chip {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 14px;
+  gap: 8px;
+  padding: 8px 12px;
   border-radius: var.$radius-lg;
   border: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.35);
   background: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.35);
@@ -712,12 +712,12 @@ $z-ptt-preview-modal: 30;
   }
 
   &__label {
-    font-size: 0.8rem;
+    font-size: 0.72rem;
     font-weight: 600;
   }
 
   &__sub {
-    font-size: 0.7rem;
+    font-size: 0.62rem;
     color: var(--vi-muted-color);
   }
 
@@ -757,7 +757,7 @@ $z-ptt-preview-modal: 30;
   border: 1px solid var(--vi-panel-border);
   background: var(--vi-control-bg);
   color: var(--vi-label-strong-color);
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.22s ease;

@@ -15,6 +15,7 @@ import { NoLlmProviderConfiguredError, LlmConfigService } from './src/core/llm/l
 import { setLlmBootstrapStatus, getLlmBootstrapStatus, mapAvailabilityToStatus } from './src/core/llm/llm.status.js';
 import { sqliteMemoryAdapter } from './src/core/memory/SqliteMemoryAdapter.js';
 import { closeAppDatabase } from './src/core/database/appDatabase.js';
+import { schedulePredictiveTtsPrewarm } from './src/core/audio/ttsPrewarm.service.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, '..');
@@ -182,6 +183,7 @@ async function startServer() {
         if (!llmStatusAtStart.ready) {
             console.warn('[LLM Startup] Server running without an active LLM provider. Configure provider credentials to enable chat endpoints.');
         }
+        schedulePredictiveTtsPrewarm();
         console.log(`[Server] Ready at http://localhost:${PORT}`);
     }).on('error', (error) => {
         console.error('[Server] Failed to start:', error);
