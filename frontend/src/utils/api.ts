@@ -514,8 +514,8 @@ export interface TTSAvailableVoicesResponseFE {
 }
 
 export const ttsAPI = {
-  synthesize: (data: TTSRequestPayloadFE): Promise<AxiosResponse<Blob>> =>
-    api.post('/tts', data, { responseType: 'blob', headers: { ...getAuthHeaders() } }),
+  synthesize: (data: TTSRequestPayloadFE, signal?: AbortSignal): Promise<AxiosResponse<Blob>> =>
+    api.post('/tts', data, { responseType: 'blob', headers: { ...getAuthHeaders() }, signal }),
   getAvailableVoices: (): Promise<AxiosResponse<TTSAvailableVoicesResponseFE>> =>
     api.get('/tts/voices', { headers: getAuthHeaders() }),
 };

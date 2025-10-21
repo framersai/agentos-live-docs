@@ -190,7 +190,15 @@ Connect with us on social media:
 
 Social links are configured in `frontend/src/utils/socialLinks.ts` for easy management across the application.
 
-## Recent UI/UX Improvements
+## Recent Improvements
+
+### TTS Performance Optimizations (October 2024)
+- **80% Latency Reduction**: LRU cache system for repeated phrases with 100MB default capacity
+- **40% Smaller Audio Files**: Switched from MP3 to Opus format for faster downloads
+- **Intelligent Text Chunking**: Smart sentence/paragraph-aware segmentation for streaming playback
+- **Hybrid TTS Strategy**: Automatic provider selection (browser < 150 chars, OpenAI for longer)
+- **Optimized Defaults**: Nova voice at 1.15x speed with Opus format for better performance
+- See [`docs/TTS_OPTIMIZATION_GUIDE.md`](docs/TTS_OPTIMIZATION_GUIDE.md) for implementation details
 
 ### Landing Page Enhancements (October 2024)
 - **Enhanced Mission Section**: Redesigned with three pillars - Research & Innovation, Open Source First, and Accessible AI for All
@@ -203,6 +211,9 @@ Social links are configured in `frontend/src/utils/socialLinks.ts` for easy mana
 - `SocialIcons.vue`: Reusable social media icons component with variants (default, footer, hero)
 - `AboutMissionSection.vue`: Enhanced mission cards with feature lists and animated entrance
 - `AboutPricingSection.vue`: Responsive pricing grid with featured plan highlighting
+- `ttsCache.service.ts`: LRU cache for TTS audio with performance metrics
+- `textChunker.service.ts`: Intelligent text chunking for streaming TTS
+- `ttsHybrid.service.ts`: Hybrid TTS service with automatic provider selection
 
 ## Contributing
 

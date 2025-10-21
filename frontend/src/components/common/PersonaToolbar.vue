@@ -1676,6 +1676,13 @@ onUnmounted(() => {
   --status-text-color: var(--color-text-secondary);
 }
 
+.persona-compact-status[data-theme='warning'] {
+  --status-bg: hsla(var(--color-warning-h), var(--color-warning-s), var(--color-warning-l), 0.18);
+  --status-border: hsla(var(--color-warning-h), var(--color-warning-s), var(--color-warning-l), 0.45);
+  --status-icon-color: hsl(var(--color-warning-h), var(--color-warning-s), calc(var(--color-warning-l) + 10%));
+  --status-text-color: hsl(var(--color-warning-text-h, var(--color-warning-h)), var(--color-warning-text-s, 85%), var(--color-warning-text-l, 20%));
+}
+
 .persona-compact-status__icon-wrap {
   display: inline-flex;
   align-items: center;
