@@ -925,7 +925,9 @@ onUnmounted(() => {
               :class="{ 'is-open': compactToolbarExpanded }"
               aria-hidden="true"
             />
-            <span class="sr-only">Toggle voice controls</span>
+            <span class="persona-compact__toggle-label">
+              {{ compactToolbarExpanded ? 'Hide Controls' : 'Voice Controls' }}
+            </span>
           </button>
           <div class="persona-compact__status-row" role="list">
             <div
@@ -1567,9 +1569,8 @@ onUnmounted(() => {
 .persona-compact__toggle {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  width: 2.1rem;
-  height: 2.1rem;
+  gap: 0.4rem;
+  padding: 0.4rem 0.85rem;
   border-radius: 999px;
   border: 1px solid hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.35);
   background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.55);
@@ -1585,13 +1586,20 @@ onUnmounted(() => {
 }
 
 .persona-compact__toggle-icon {
-  width: 1.1rem;
-  height: 1.1rem;
+  width: 0.95rem;
+  height: 0.95rem;
   transition: transform 0.25s ease;
 }
 
 .persona-compact__toggle-icon.is-open {
   transform: rotate(180deg);
+}
+
+.persona-compact__toggle-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 .persona-compact__status-row {
