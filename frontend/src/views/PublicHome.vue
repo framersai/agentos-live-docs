@@ -702,13 +702,6 @@ onUnmounted(() => {
         </section>
       </template>
 
-      <template #voice-toolbar>
-        <PersonaToolbar
-          :agent="currentPublicAgent"
-          variant="compact"
-        />
-      </template>
-
       <template #main-content>
         <component
           :is="currentAgentViewComponent"
