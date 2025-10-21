@@ -19,6 +19,8 @@ import { ISttOptions, ITranscriptionResult as ISttTranscriptionResult, ISttProvi
 import { ITtsOptions, IAvailableVoice, ITtsResult, ITtsProvider as ITtsProviderDefinition } from './tts.interfaces.js';
 
 import { CostService } from '../cost/cost.service.js';
+import { ttsCacheService } from './ttsCache.service.js';
+import { textChunkerService } from './textChunker.service.js';
 import dotenv from 'dotenv';
 
 // Determine project root for .env loading
@@ -29,8 +31,9 @@ dotenv.config({ path: path.join(__projectRoot, '.env') });
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const WHISPER_MODEL_DEFAULT = process.env.WHISPER_MODEL_DEFAULT || 'whisper-1';
 const OPENAI_TTS_MODEL_DEFAULT : SpeechCreateParams['model'] = (process.env.OPENAI_TTS_DEFAULT_MODEL as SpeechCreateParams['model']) || 'tts-1';
-const OPENAI_TTS_VOICE_DEFAULT : SpeechCreateParams['voice'] = (process.env.OPENAI_TTS_DEFAULT_VOICE as SpeechCreateParams['voice']) || 'alloy';
-const OPENAI_TTS_DEFAULT_SPEED = parseFloat(process.env.OPENAI_TTS_DEFAULT_SPEED || "1.0");
+const OPENAI_TTS_VOICE_DEFAULT : SpeechCreateParams['voice'] = (process.env.OPENAI_TTS_DEFAULT_VOICE as SpeechCreateParams['voice']) || 'nova'; // Changed to 'nova' for better clarity
+const OPENAI_TTS_DEFAULT_SPEED = parseFloat(process.env.OPENAI_TTS_DEFAULT_SPEED || "1.15"); // Slightly faster default
+const OPENAI_TTS_DEFAULT_FORMAT = (process.env.OPENAI_TTS_DEFAULT_FORMAT || 'opus') as SpeechCreateParams['response_format']; // Opus for smaller files
 
 /**
  * @constant {string} TMP_DIR - Path to the temporary directory for storing transient audio files.
@@ -255,10 +258,35 @@ class OpenAiTtsProvider implements ITtsProviderDefinition {
     try {
       const ttsModel: SpeechCreateParams['model'] = options.model || OPENAI_TTS_MODEL_DEFAULT;
       const ttsVoice: SpeechCreateParams['voice'] = (options.voice as SpeechCreateParams['voice']) || OPENAI_TTS_VOICE_DEFAULT;
-      const ttsSpeed: number = typeof options.speed === 'number' && options.speed >= 0.25 && options.speed <= 4.0 
-                                ? options.speed 
+      const ttsSpeed: number = typeof options.speed === 'number' && options.speed >= 0.25 && options.speed <= 4.0
+                                ? options.speed
                                 : OPENAI_TTS_DEFAULT_SPEED;
-      const ttsFormat: SpeechCreateParams['response_format'] = options.outputFormat || 'mp3';
+      const ttsFormat: SpeechCreateParams['response_format'] = options.outputFormat || OPENAI_TTS_DEFAULT_FORMAT;
+
+      // Check cache first
+      const cachedAudio = ttsCacheService.getCachedAudio(
+        text,
+        String(ttsVoice),
+        String(ttsModel),
+        ttsSpeed,
+        'openai_tts'
+      );
+
+      if (cachedAudio) {
+        console.log(`[AudioService/OpenAI_TTS] Cache HIT - Returning cached audio for ${text.length} chars`);
+        return {
+          audioBuffer: cachedAudio.audioBuffer,
+          mimeType: cachedAudio.mimeType,
+          cost: 0, // No API cost for cached audio
+          voiceUsed: cachedAudio.voice,
+          providerName: this.providerName,
+          durationSeconds: cachedAudio.audioBuffer.length / 16384, // Estimate
+          usage: {
+            characters: text.length,
+            modelUsed: String(ttsModel),
+          }
+        };
+      }
 
       // Log if unsupported options are passed, as OpenAI TTS has a limited set
       if (options.pitch !== undefined && options.pitch !== 1.0) {
@@ -273,24 +301,37 @@ class OpenAiTtsProvider implements ITtsProviderDefinition {
         voice: ttsVoice,
         input: text,
         response_format: ttsFormat,
-        speed: ttsSpeed, 
+        speed: ttsSpeed,
       };
-      
+
       console.log(`[AudioService/OpenAI_TTS] TTS Request - Model: ${ttsModel}, Voice: ${ttsVoice}, Speed: ${ttsSpeed}, Format: ${ttsFormat}, Chars: ${text.length}`);
       const speechResponse = await openai.audio.speech.create(ttsPayload);
-      
+
       const audioBuffer = Buffer.from(await speechResponse.arrayBuffer());
       const charactersBilled = text.length; // OpenAI bills per input character
       const cost = (charactersBilled / 1000) * this.costPer1KChars;
-      
+
       let mimeType = 'audio/mpeg'; // Default for mp3
       if (ttsFormat === 'opus') mimeType = 'audio/opus';
       else if (ttsFormat === 'aac') mimeType = 'audio/aac';
       else if (ttsFormat === 'flac') mimeType = 'audio/flac';
       else if (ttsFormat === 'pcm') mimeType = 'audio/L24; rate=24000'; // Example for pcm, check exact from OpenAI
 
-      // Duration estimation is very rough for compressed audio without parsing.
-      const estimatedBytesPerSecond = (ttsFormat === 'pcm') ? (24000 * (24/8)) : (16 * 1024); // 16KB/s for ~128kbps compressed
+      // Cache the generated audio for future use
+      ttsCacheService.cacheAudio(
+        text,
+        audioBuffer,
+        mimeType,
+        String(ttsVoice),
+        String(ttsModel),
+        ttsSpeed,
+        'openai_tts'
+      );
+
+      // Better duration estimation based on format
+      const estimatedBytesPerSecond = (ttsFormat === 'pcm') ? (24000 * (24/8)) :
+                                      (ttsFormat === 'opus') ? (8 * 1024) : // Opus is more efficient
+                                      (16 * 1024); // 16KB/s for ~128kbps compressed
       const estimatedDurationSeconds = audioBuffer.length / estimatedBytesPerSecond;
 
       const result: ITtsResult = {
@@ -300,7 +341,7 @@ class OpenAiTtsProvider implements ITtsProviderDefinition {
         voiceUsed: String(ttsPayload.voice),
         providerName: this.providerName,
         durationSeconds: estimatedDurationSeconds,
-        usage: { 
+        usage: {
             characters: text.length,
             modelUsed: String(ttsPayload.model),
         }

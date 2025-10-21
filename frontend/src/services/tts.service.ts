@@ -120,6 +120,13 @@ class TtsService {
   }
 
   /**
+   * Returns a snapshot of currently loaded voices.
+   */
+  public getAvailableVoices(): ReadonlyArray<SpeechSynthesisVoice> {
+    return this.availableVoices.slice();
+  }
+
+  /**
    * Checks if TTS is supported by the browser.
    * @public
    * @returns {boolean} True if SpeechSynthesis is supported, false otherwise.
