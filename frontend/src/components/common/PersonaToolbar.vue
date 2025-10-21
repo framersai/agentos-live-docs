@@ -129,7 +129,6 @@ const availableLanguageOptions = computed(() => {
 });
 
 const isCompactVariant = computed(() => props.variant === 'compact');
-const compactToolbarExpanded = ref(true);
 const compactActiveSection = ref<CompactSectionId>('persona');
 
 const compactSectionButtons: CompactSectionButton[] = [
@@ -138,32 +137,19 @@ const compactSectionButtons: CompactSectionButton[] = [
   { id: 'session', label: 'Session', icon: LanguageIcon },
 ];
 
-const toggleCompactPanel = (): void => {
-  compactToolbarExpanded.value = true;
-};
-
 const openCompactSection = (section: CompactSectionId): void => {
   compactActiveSection.value = section;
-  compactToolbarExpanded.value = true;
   if (section !== 'session') {
     languageMenuOpen.value = false;
   }
 };
 
 const isSectionActive = (section: CompactSectionId): boolean =>
-  compactToolbarExpanded.value && compactActiveSection.value === section;
+  compactActiveSection.value === section;
 
 watch(() => props.variant, (variant) => {
   if (variant !== 'compact') {
-    compactToolbarExpanded.value = false;
     compactActiveSection.value = 'persona';
-    languageMenuOpen.value = false;
-    voiceMenuOpen.value = false;
-  }
-});
-
-watch(compactToolbarExpanded, (expanded) => {
-  if (!expanded) {
     languageMenuOpen.value = false;
     voiceMenuOpen.value = false;
   }
@@ -931,7 +917,7 @@ onUnmounted(() => {
         </div>
 
         <transition name="persona-compact-expand">
-          <div v-if="compactToolbarExpanded" class="persona-compact__body">
+          <div class="persona-compact__body">
             <div class="persona-compact__actions">
               <button
                 v-for="button in compactSectionButtons"

@@ -14,8 +14,9 @@ import type { ToastService } from '@/services/services';
 import logoSvg from '@/assets/logo.svg';
 import { useAuth } from '@/composables/useAuth';
 import type { Provider } from '@supabase/supabase-js';
-import PlanComparisonModal from '@/components/plan/PlanComparisonModal.vue';
 import { usePlans } from '@/composables/usePlans';
+import { useRegistrationStore } from '@/store/registration.store';
+import type { PlanCatalogEntry, PlanId } from '../../../shared/planCatalog';
 
 type LoginTab = 'global' | 'supabase';
 
@@ -23,22 +24,105 @@ const router = useRouter();
 const route = useRoute();
 const toast = inject<ToastService>('toast');
 const { t } = useI18n();
-const { findPlan } = usePlans();
+const { plans } = usePlans();
+const registrationStore = useRegistrationStore();
 const auth = useAuth();
-const basicPlan = computed(() => findPlan('basic'));
-const creatorPlan = computed(() => findPlan('creator'));
-const organizationPlan = computed(() => findPlan('organization'));
-const startingPrice = computed(() => {
-  const price = basicPlan.value?.monthlyPriceUsd;
-  if (typeof price === 'number' && !Number.isNaN(price)) {
-    return `$${price.toFixed(0)}`;
-  }
-  return '$9';
-});
-const showPlanModal = ref(false);
+const contactEmail = import.meta.env.VITE_SALES_EMAIL || 'team@voicechatassistant.com';
 
-const openPlanModal = () => { showPlanModal.value = true; };
-const closePlanModal = () => { showPlanModal.value = false; };
+const priceFormatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  maximumFractionDigits: 0,
+  minimumFractionDigits: 0,
+});
+
+const formatNumber = (value?: number | null): string => (
+  value == null ? '-' : value.toLocaleString()
+);
+
+interface HeroPlanCard {
+  id: PlanId;
+  title: string;
+  priceLabel: string;
+  priceValue: number;
+  allowance: string;
+  allowanceNote?: string;
+  bullets: string[];
+  ctaLabel: string;
+  isFeatured: boolean;
+  requiresContact: boolean;
+  planEntry: PlanCatalogEntry;
+}
+
+const heroPlanCards = computed<HeroPlanCard[]>(() => {
+  return plans.value
+    .filter((plan) => plan.public && !plan.metadata?.hiddenOnMarketing)
+    .sort((a, b) => a.monthlyPriceUsd - b.monthlyPriceUsd)
+    .map((plan) => {
+      const priceLabel = plan.monthlyPriceUsd === 0
+        ? t('plans.free', 'Free')
+        : priceFormatter.format(plan.monthlyPriceUsd);
+
+      return {
+        id: plan.id,
+        title: plan.displayName,
+        priceLabel,
+        priceValue: plan.monthlyPriceUsd,
+        allowance: t('plans.dailyAllowancePrimaryShort', {
+          tokens: formatNumber(plan.usage.approxGpt4oTokensPerDay),
+        }),
+        allowanceNote: plan.usage.notes,
+        bullets: plan.bullets.slice(0, 3),
+        ctaLabel: plan.metadata?.requiresContact
+          ? t('plans.contactUsCta', 'Contact sales')
+          : plan.monthlyPriceUsd === 0
+            ? t('plans.startFreeCta', 'Get started')
+            : t('plans.choosePlanCta', 'Choose plan'),
+        isFeatured: Boolean(plan.metadata?.featured),
+        requiresContact: Boolean(plan.metadata?.requiresContact),
+        planEntry: plan,
+      };
+    })
+    .slice(0, 3);
+});
+
+const startingPrice = computed(() => {
+  const paidPlan = heroPlanCards.value.find((plan) => plan.priceValue > 0);
+  if (paidPlan) return paidPlan.priceLabel;
+  const firstPlan = heroPlanCards.value[0];
+  return firstPlan ? firstPlan.priceLabel : '$9';
+});
+
+const currentLocale = computed<string>(() => (route.params.locale as string) || 'en-US');
+
+const handlePlanCardAction = async (plan: HeroPlanCard): Promise<void> => {
+  if (plan.requiresContact) {
+    const subject = encodeURIComponent(`Voice Chat Assistant ${plan.title} Plan Inquiry`);
+    window.location.href = `mailto:${contactEmail}?subject=${subject}`;
+    return;
+  }
+
+  try {
+    await registrationStore.setPlan({ planId: plan.id });
+  } catch (error) {
+    console.warn('[Login.vue] Failed to preset registration plan:', error);
+  }
+
+  if (auth.isAuthenticated.value) {
+    router.push({
+      name: 'Settings',
+      params: { locale: currentLocale.value },
+      query: { tab: 'billing', plan: plan.id },
+    });
+    return;
+  }
+
+  router.push({
+    name: 'RegisterAccount',
+    params: { locale: currentLocale.value },
+    query: { plan: plan.id },
+  });
+};
 
 const supabaseEnabled = computed(() => auth.supabaseEnabled);
 const activeTab = ref<LoginTab>(supabaseEnabled.value ? 'supabase' : 'global');
@@ -211,15 +295,49 @@ onMounted(async () => {
           <li>Persona toolkits for coding, systems, and meetings</li>
           <li>Choose a shared passphrase or personal Supabase account</li>
         </ul>
-        <div class="hero-actions">
-          <button type="button" class="hero-plan-button" @click="openPlanModal">
-            {{ $t('auth.comparePlans', 'Compare plans & pricing') }}
-          </button>
+        <div v-if="heroPlanCards.length" class="hero-plans">
           <p class="hero-note">
             {{ $t('auth.planStartingPrice', 'Plans start at') }}
             <strong>{{ startingPrice }}</strong>
             / {{ $t('auth.perMonth', 'month') }}
           </p>
+          <div class="hero-plan-grid">
+            <article
+              v-for="plan in heroPlanCards"
+              :key="plan.id"
+              class="hero-plan-card"
+              :class="{
+                'hero-plan-card--featured': plan.isFeatured,
+                'hero-plan-card--free': plan.priceValue === 0
+              }"
+            >
+              <header class="hero-plan-card__header">
+                <span class="hero-plan-card__name">{{ plan.title }}</span>
+                <span class="hero-plan-card__price">
+                  <span class="hero-plan-card__price-value">{{ plan.priceLabel }}</span>
+                  <span v-if="plan.priceValue > 0" class="hero-plan-card__price-period">/ {{ $t('auth.perMonth', 'month') }}</span>
+                </span>
+                <span class="hero-plan-card__allowance">{{ plan.allowance }}</span>
+                <span v-if="plan.allowanceNote" class="hero-plan-card__note">{{ plan.allowanceNote }}</span>
+                <span v-if="plan.isFeatured" class="hero-plan-card__badge">{{ $t('plans.mostPopular', 'Most popular') }}</span>
+              </header>
+              <ul class="hero-plan-card__features">
+                <li v-for="(bullet, index) in plan.bullets" :key="index">{{ bullet }}</li>
+              </ul>
+              <button
+                type="button"
+                class="hero-plan-card__cta"
+                :class="{
+                  'hero-plan-card__cta--primary': plan.priceValue > 0,
+                  'hero-plan-card__cta--featured': plan.isFeatured,
+                  'hero-plan-card__cta--ghost': plan.priceValue === 0 && !plan.isFeatured
+                }"
+                @click="handlePlanCardAction(plan)"
+              >
+                {{ plan.ctaLabel }}
+              </button>
+            </article>
+          </div>
         </div>
       </section>
 
@@ -394,14 +512,6 @@ onMounted(async () => {
       </section>
     </div>
 
-    <PlanComparisonModal
-      v-if="showPlanModal"
-      :is-open="showPlanModal"
-      :basic-plan="basicPlan"
-      :creator-plan="creatorPlan"
-      :organization-plan="organizationPlan"
-      @close="closePlanModal"
-    />
   </div>
 </template>
 
@@ -495,34 +605,175 @@ onMounted(async () => {
   }
 }
 
-.hero-actions {
+.hero-plans {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-}
-
-.hero-plan-button {
-  align-self: flex-start;
-  padding: 0.8rem 1.6rem;
-  border-radius: 999px;
-  font-weight: 600;
-  color: hsl(var(--color-text-on-primary-h), var(--color-text-on-primary-s), var(--color-text-on-primary-l));
-  background: linear-gradient(135deg,
-    hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l)),
-    hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l)));
-  border: none;
-  cursor: pointer;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 25px -12px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.5);
-  }
+  gap: 1rem;
+  padding: 1.1rem 1.25rem;
+  border-radius: 1.25rem;
+  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.35);
+  border: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.35);
+  box-shadow: 0 18px 40px -28px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.35);
+  backdrop-filter: blur(12px);
 }
 
 .hero-note {
   font-size: 0.95rem;
   color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+}
+
+.hero-plan-grid {
+  display: grid;
+  gap: 1.15rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.hero-plan-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 1.4rem 1.35rem;
+  border-radius: 1.15rem;
+  border: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.25);
+  background: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), calc(var(--color-bg-primary-l) + 4%), 0.55);
+  box-shadow: 0 12px 32px -22px hsla(var(--color-shadow-h), var(--color-shadow-s), var(--color-shadow-l), 0.35);
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    border-color: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.55);
+    box-shadow: 0 20px 40px -28px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.55);
+  }
+}
+
+.hero-plan-card--featured {
+  border-color: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.6);
+  background: linear-gradient(
+    180deg,
+    hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.16),
+    hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), calc(var(--color-bg-primary-l) + 8%), 0.6)
+  );
+}
+
+.hero-plan-card__badge {
+  position: absolute;
+  top: 1.1rem;
+  right: 1.1rem;
+  padding: 0.25rem 0.65rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  border-radius: 999px;
+  color: hsl(var(--color-text-on-primary-h), var(--color-text-on-primary-s), var(--color-text-on-primary-l));
+  background: linear-gradient(135deg,
+    hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l)),
+    hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l)));
+  box-shadow: 0 10px 20px -14px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.6);
+}
+
+.hero-plan-card__header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.hero-plan-card__name {
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.hero-plan-card__price {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+}
+
+.hero-plan-card__price-value {
+  font-size: 1.55rem;
+  font-weight: 700;
+}
+
+.hero-plan-card__price-period {
+  font-size: 0.85rem;
+  color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+}
+
+.hero-plan-card__allowance {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: hsl(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l));
+}
+
+.hero-plan-card__note {
+  font-size: 0.75rem;
+  color: hsla(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l), 0.9);
+}
+
+.hero-plan-card__features {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.65rem;
+  font-size: 0.85rem;
+  color: hsla(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l), 0.9);
+
+  li {
+    position: relative;
+    padding-left: 1.25rem;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.45rem;
+      width: 0.55rem;
+      height: 0.55rem;
+      border-radius: 50%;
+      background: linear-gradient(135deg,
+        hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l)),
+        hsl(var(--color-accent-secondary-h), var(--color-accent-secondary-s), var(--color-accent-secondary-l)));
+      opacity: 0.75;
+    }
+  }
+}
+
+.hero-plan-card__cta {
+  align-self: flex-start;
+  padding: 0.75rem 1.4rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease;
+  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.4);
+  color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 28px -20px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.5);
+  }
+}
+
+.hero-plan-card__cta--primary {
+  background: linear-gradient(135deg,
+    hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l)),
+    hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l)));
+  color: hsl(var(--color-text-on-primary-h), var(--color-text-on-primary-s), var(--color-text-on-primary-l));
+}
+
+.hero-plan-card__cta--featured {
+  box-shadow: 0 16px 38px -24px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.55);
+}
+
+.hero-plan-card__cta--ghost {
+  background: transparent;
+  border: 1px solid hsla(var(--color-border-primary-h), var(--color-border-primary-s), var(--color-border-primary-l), 0.4);
+
+  &:hover {
+    border-color: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.6);
+  }
 }
 
 .login-panel {

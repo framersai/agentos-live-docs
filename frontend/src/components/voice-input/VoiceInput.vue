@@ -95,7 +95,7 @@
       </transition>
     </div>
 
-    <div class="vi-toolbar-shell">
+    <div v-if="props.showEmbeddedToolbar" class="vi-toolbar-shell">
       <PersonaToolbar
         :agent="activeAgent"
         variant="compact"
@@ -362,7 +362,7 @@
  * - Integrated MicInputButton component into the template.
  * - Ensured `isExplicitlyStoppedByModeManager` from SttManager is passed to STT handlers.
  */
-import { ref, computed, onMounted, onBeforeUnmount, inject, watch, watchEffect, nextTick, type Ref, getCurrentInstance } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, inject, watch, watchEffect, nextTick, type Ref, getCurrentInstance, withDefaults } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { voiceSettingsManager, type VoiceApplicationSettings, type AudioInputMode, type STTPreference } from '@/services/voice.settings.service';
 import type { ToastService } from '@/services/services';
@@ -442,9 +442,12 @@ interface PttPreview {
   isPlaying: boolean;
 }
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   isProcessingLLM: boolean;
-}>();
+  showEmbeddedToolbar?: boolean;
+}>(), {
+  showEmbeddedToolbar: true,
+});
 
 const emit = defineEmits<{
   (e: 'transcription-ready', value: string): void;

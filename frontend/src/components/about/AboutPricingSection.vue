@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import { computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import AnimatedGlyph from '@/components/about/AnimatedGlyph.vue';
 import { usePlans } from '@/composables/usePlans';
-import PlanComparisonModal from '@/components/plan/PlanComparisonModal.vue';
 import { useAuth } from '@/composables/useAuth';
 import { useRegistrationStore } from '@/store/registration.store';
 import type { PlanCatalogEntry, PlanId } from '../../../shared/planCatalog';
@@ -15,10 +14,6 @@ const router = useRouter();
 const route = useRoute();
 const auth = useAuth();
 const registrationStore = useRegistrationStore();
-
-const showComparison = ref(false);
-const sectionRef = ref<HTMLElement | null>(null);
-const cardsVisible = ref(false);
 
 const contactEmail = import.meta.env.VITE_SALES_EMAIL || 'team@voicechatassistant.com';
 const currentLocale = computed<string>(() => (route.params.locale as string) || 'en-US');
@@ -82,14 +77,6 @@ const visiblePlans = computed(() => {
     .filter(Boolean) as PlanCardViewModel[];
 });
 
-const onOpenComparison = () => {
-  showComparison.value = true;
-};
-
-const onCloseComparison = () => {
-  showComparison.value = false;
-};
-
 const handlePlanAction = async (plan: PlanCardViewModel): Promise<void> => {
   if (plan.requiresContact) {
     const subject = encodeURIComponent(`Voice Chat Assistant ${plan.title} Plan Inquiry`);
@@ -117,30 +104,10 @@ const handlePlanAction = async (plan: PlanCardViewModel): Promise<void> => {
     });
   }
 };
-
-onMounted(() => {
-  if (typeof window === 'undefined' || !sectionRef.value) {
-    cardsVisible.value = true;
-    return;
-  }
-
-  const observer = new IntersectionObserver(
-    (entries) => {
-      const entry = entries[0];
-      if (entry?.isIntersecting) {
-        cardsVisible.value = true;
-        observer.disconnect();
-      }
-    },
-    { threshold: 0.15 }
-  );
-
-  observer.observe(sectionRef.value);
-});
 </script>
 
 <template>
-  <section ref="sectionRef" id="pricing" class="pricing-section-enhanced content-section-ephemeral">
+  <section id="pricing" class="pricing-section-enhanced content-section-ephemeral">
     <header class="pricing-header">
       <div class="pricing-title-group">
         <h3 class="section-title-main">
@@ -152,15 +119,12 @@ onMounted(() => {
           Start free and scale as you grow.
         </p>
       </div>
-      <button type="button" class="btn btn-ghost-ephemeral plan-compare-button" @click="onOpenComparison">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="compare-icon">
-          <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-        {{ t('plans.viewComparison') }}
-      </button>
+      <p class="pricing-context-copy">
+        Compare plans side-by-side below and choose the option that fits your workflow.
+      </p>
     </header>
 
-    <div class="pricing-grid-enhanced" :class="{ 'cards-visible': cardsVisible }">
+    <div class="pricing-grid-enhanced">
       <article
         v-for="(plan, index) in visiblePlans"
         :key="plan.id"
@@ -239,8 +203,6 @@ onMounted(() => {
         <circle cx="600" cy="350" r="100" fill="url(#pricing-gradient)" opacity="0.4"/>
       </svg>
     </div>
-
-    <PlanComparisonModal :open="showComparison" @close="onCloseComparison" />
   </section>
 </template>
 
@@ -294,26 +256,12 @@ onMounted(() => {
   }
 }
 
-.plan-compare-button {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.9rem;
-  padding: 0.75rem 1.25rem;
-  border-radius: 0.75rem;
-  transition: all 0.3s ease;
-
-  &:hover {
-    transform: translateY(-2px);
-
-    .compare-icon {
-      transform: scaleX(1.1);
-    }
-  }
-}
-
-.compare-icon {
-  transition: transform 0.3s ease;
+.pricing-context-copy {
+  max-width: 360px;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: hsla(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l), 0.75);
+  margin-top: 0.75rem;
 }
 
 .pricing-grid-enhanced {
@@ -323,19 +271,11 @@ onMounted(() => {
   margin: 0 auto;
   position: relative;
   z-index: 2;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
 
-  // Responsive grid layout
-  @media (min-width: 640px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  @media (min-width: 1024px) {
-    grid-template-columns: repeat(3, 1fr);
+  @media (min-width: 768px) {
     gap: 2.5rem;
-  }
-
-  @media (min-width: 1280px) {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   }
 }
 
@@ -354,14 +294,9 @@ onMounted(() => {
   flex-direction: column;
   overflow: hidden;
   opacity: 0;
-  transform: translateY(40px) scale(0.95);
-  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  transition-delay: var(--stagger-delay);
-
-  .cards-visible & {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+  transform: translateY(28px) scale(0.97);
+  animation: pricingCardIn 0.8s cubic-bezier(0.26, 0.75, 0.36, 1) forwards;
+  animation-delay: calc(var(--stagger-delay, 0ms) + 120ms);
 
   &:hover {
     transform: translateY(-8px);
@@ -385,7 +320,7 @@ onMounted(() => {
       hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.8)
     );
     border-color: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.3);
-    transform: translateY(40px) scale(1);
+    animation-duration: 0.9s;
 
     &:hover {
       border-color: hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.6);
@@ -574,6 +509,21 @@ onMounted(() => {
   }
   50% {
     transform: translateY(-20px) rotate(2deg);
+  }
+}
+
+@keyframes pricingCardIn {
+  0% {
+    opacity: 0;
+    transform: translateY(28px) scale(0.95);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-4px) scale(1.01);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }
 

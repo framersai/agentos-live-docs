@@ -247,6 +247,7 @@ watch(ephemeralLogRef, async (newEl) => {
       </div>
       <VoiceInput
         :is-processing-l-l-m="props.isLlmProcessing"
+        :show-embedded-toolbar="!$slots['voice-toolbar']"
         @transcription-ready="handleTranscription"
         @stt-processing-audio="handleVoiceProcessing"
       />
