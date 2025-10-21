@@ -29,6 +29,9 @@ import UnifiedChatLayout from '@/components/layouts/UnifiedChatLayout.vue';
 import MainContentView from '@/components/agents/common/MainContentView.vue';
 import CompactMessageRenderer from '@/components/layouts/CompactMessageRenderer/CompactMessageRenderer.vue';
 import PersonaToolbar from '@/components/common/PersonaToolbar.vue';
+import { usePlans } from '@/composables/usePlans';
+import { useRegistrationStore } from '@/store/registration.store';
+import type { PlanId } from '../../../shared/planCatalog';
 
 import {
   SparklesIcon, KeyIcon, ChevronDownIcon, UserGroupIcon,
@@ -52,6 +55,98 @@ const toast = inject<ToastService>('toast');
 const agentStore = useAgentStore();
 const chatStore = useChatStore();
 const auth = useAuth(); // For sessionUserId
+const { plans: publicPlans } = usePlans();
+const registrationStore = useRegistrationStore();
+
+const landingLocale = computed<string>(() => (router.currentRoute.value.params.locale as string) || 'en-US');
+
+const landingPriceFormatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  maximumFractionDigits: 0,
+  minimumFractionDigits: 0,
+});
+
+const formatCount = (value?: number | null): string => (
+  value == null ? '-' : value.toLocaleString()
+);
+
+interface LandingPlanCard {
+  id: PlanId;
+  title: string;
+  priceText: string;
+  priceValue: number;
+  allowance: string;
+  allowanceNote?: string;
+  bullets: string[];
+  ctaLabel: string;
+  isFeatured: boolean;
+  requiresContact: boolean;
+}
+
+const landingPlanCards = computed<LandingPlanCard[]>(() => {
+  return publicPlans.value
+    .filter((plan) => plan.public && !plan.metadata?.hiddenOnMarketing)
+    .sort((a, b) => a.monthlyPriceUsd - b.monthlyPriceUsd)
+    .map((plan) => ({
+      id: plan.id,
+      title: plan.displayName,
+      priceText: plan.monthlyPriceUsd === 0
+        ? t('plans.free', 'Free')
+        : landingPriceFormatter.format(plan.monthlyPriceUsd),
+      priceValue: plan.monthlyPriceUsd,
+      allowance: t('plans.dailyAllowancePrimaryShort', {
+        tokens: formatCount(plan.usage.approxGpt4oTokensPerDay),
+      }),
+      allowanceNote: plan.usage.notes,
+      bullets: plan.bullets.slice(0, 3),
+      ctaLabel: plan.metadata?.requiresContact
+        ? t('plans.contactUsCta', 'Contact sales')
+        : plan.monthlyPriceUsd === 0
+          ? t('plans.startFreeCta', 'Get started')
+          : t('plans.choosePlanCta', 'Choose plan'),
+      isFeatured: Boolean(plan.metadata?.featured),
+      requiresContact: Boolean(plan.metadata?.requiresContact),
+    }))
+    .slice(0, 3);
+});
+
+const landingStartingPrice = computed(() => {
+  const paidPlan = landingPlanCards.value.find((plan) => plan.priceValue > 0);
+  if (paidPlan) return paidPlan.priceText;
+  const firstPlan = landingPlanCards.value[0];
+  return firstPlan ? firstPlan.priceText : '$9';
+});
+
+const handleLandingPlanAction = async (plan: LandingPlanCard): Promise<void> => {
+  if (plan.requiresContact) {
+    const subject = encodeURIComponent(`Voice Chat Assistant ${plan.title} Plan Inquiry`);
+    const email = import.meta.env.VITE_SALES_EMAIL || 'team@voicechatassistant.com';
+    window.location.href = `mailto:${email}?subject=${subject}`;
+    return;
+  }
+
+  try {
+    await registrationStore.setPlan({ planId: plan.id });
+  } catch (error) {
+    console.warn('[PublicHome] Failed to preset registration plan:', error);
+  }
+
+  if (auth.isAuthenticated.value) {
+    router.push({
+      name: 'Settings',
+      params: { locale: landingLocale.value },
+      query: { tab: 'billing', plan: plan.id },
+    });
+    return;
+  }
+
+  router.push({
+    name: 'RegisterAccount',
+    params: { locale: landingLocale.value },
+    query: { plan: plan.id },
+  });
+};
 
 const availablePublicAgents = ref<IAgentDefinition[]>([]);
 const currentPublicAgent = computed<IAgentDefinition | undefined>(() => agentStore.activeAgent);
@@ -503,6 +598,13 @@ onUnmounted(() => {
       @transcription="handleTranscriptionFromLayout"
       @voice-input-processing="(status: boolean) => { isVoiceInputCurrentlyProcessingAudio = status; }"
     >
+      <template #voice-toolbar>
+        <PersonaToolbar
+          :agent="currentPublicAgent"
+          variant="compact"
+        />
+      </template>
+
       <template #above-main-content>
         <div v-if="showDemoUsageBanner" class="demo-usage-banner" :class="`demo-usage-banner--${demoUsageBannerSeverity}`">
           <ExclamationTriangleIcon class="demo-usage-icon" aria-hidden="true" />
@@ -542,6 +644,62 @@ onUnmounted(() => {
             </Transition>
           </div>
         </div>
+
+        <section v-if="landingPlanCards.length" class="public-pricing-showcase-ephemeral">
+          <header class="public-pricing-header">
+            <div class="public-pricing-heading">
+              <h3>{{ t('plans.sectionTitle', 'Subscription Tiers') }}</h3>
+              <p>
+                {{ t('plans.landingPitch', 'Start for free, scale when you need more conversations and automation. Public preview resets daily; teams unlock billing, seat controls, and custom agents.') }}
+              </p>
+            </div>
+            <span class="public-pricing-starting">
+              <span class="public-pricing-label">{{ t('auth.planStartingPrice', 'Plans start at') }}</span>
+              <strong>{{ landingStartingPrice }}</strong>
+              <span class="public-pricing-period">/ {{ t('auth.perMonth', 'month') }}</span>
+            </span>
+          </header>
+
+          <div class="public-pricing-grid-ephemeral">
+            <article
+              v-for="(plan, index) in landingPlanCards"
+              :key="plan.id"
+              class="public-pricing-card"
+              :class="{
+                'public-pricing-card--featured': plan.isFeatured,
+                'public-pricing-card--free': plan.priceValue === 0
+              }"
+              :style="{ '--plan-stagger': `${index * 80}ms` }"
+            >
+              <header class="public-pricing-card__header">
+                <span class="public-pricing-card__name">{{ plan.title }}</span>
+                <div class="public-pricing-card__price">
+                  <span class="public-pricing-card__price-value">{{ plan.priceText }}</span>
+                  <span v-if="plan.priceValue > 0" class="public-pricing-card__price-period">/ {{ t('auth.perMonth', 'month') }}</span>
+                </div>
+                <span class="public-pricing-card__allowance">{{ plan.allowance }}</span>
+                <span v-if="plan.allowanceNote" class="public-pricing-card__note">{{ plan.allowanceNote }}</span>
+                <span v-if="plan.isFeatured" class="public-pricing-card__badge">{{ t('plans.mostPopular', 'Most popular') }}</span>
+              </header>
+
+              <ul class="public-pricing-card__features">
+                <li v-for="(bullet, bulletIndex) in plan.bullets" :key="bulletIndex">{{ bullet }}</li>
+              </ul>
+
+              <button
+                type="button"
+                class="public-pricing-card__cta"
+                :class="{
+                  'public-pricing-card__cta--primary': plan.priceValue > 0,
+                  'public-pricing-card__cta--ghost': plan.priceValue === 0
+                }"
+                @click="handleLandingPlanAction(plan)"
+              >
+                {{ plan.ctaLabel }}
+              </button>
+            </article>
+          </div>
+        </section>
       </template>
 
       <template #voice-toolbar>
