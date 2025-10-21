@@ -230,6 +230,14 @@ class VoiceSettingsManager {
 
   private _isInitialized: Ref<boolean> = ref(false);
   private activePreviewAudio: HTMLAudioElement | null = null;
+  private speakDebounceTimer: number | null = null;
+  private speakPendingText: string | null = null;
+  private speakPendingResolvers: Array<(value: void) => void> = [];
+  private speakPendingRejectors: Array<(reason?: any) => void> = [];
+  private lastSpokenText: string | null = null;
+  private lastSpokenAt = 0;
+  private readonly SPEAK_DEBOUNCE_WINDOW_MS = 350;
+  private activeTtsAbortController: AbortController | null = null;
 
   constructor() {
     this.defaultSettings = initialDefaultSettings;
@@ -704,12 +712,68 @@ class VoiceSettingsManager {
   }
 
   public async speakText(text: string): Promise<void> {
-    if (!this._isInitialized.value || !this.settings.autoPlayTts || !text?.trim()) {
+    const sanitized = text?.trim();
+    if (!this._isInitialized.value || !this.settings.autoPlayTts || !sanitized) {
       if (this._isInitialized.value && !this.settings.autoPlayTts) {
         console.log("[VSM] TTS auto-play disabled.");
       }
       return;
     }
+
+    if (typeof window === 'undefined') {
+      await this.executeSpeak(sanitized);
+      return;
+    }
+
+    await this.enqueueSpeak(sanitized);
+  }
+
+  private enqueueSpeak(text: string): Promise<void> {
+    if (this.lastSpokenText === text && Date.now() - this.lastSpokenAt < this.SPEAK_DEBOUNCE_WINDOW_MS) {
+      return Promise.resolve();
+    }
+
+    return new Promise((resolve, reject) => {
+      this.speakPendingText = text;
+      this.speakPendingResolvers.push(resolve);
+      this.speakPendingRejectors.push(reject);
+
+      if (this.speakDebounceTimer !== null) {
+        window.clearTimeout(this.speakDebounceTimer);
+      }
+
+      this.speakDebounceTimer = window.setTimeout(async () => {
+        const textToSpeak = this.speakPendingText ?? text;
+        this.speakPendingText = null;
+        this.speakDebounceTimer = null;
+
+        const resolvers = this.speakPendingResolvers.slice();
+        const rejectors = this.speakPendingRejectors.slice();
+        this.speakPendingResolvers = [];
+        this.speakPendingRejectors = [];
+
+        if (!this._isInitialized.value || !this.settings.autoPlayTts) {
+          resolvers.forEach((fn) => fn());
+          return;
+        }
+
+        if (this.lastSpokenText === textToSpeak && Date.now() - this.lastSpokenAt < this.SPEAK_DEBOUNCE_WINDOW_MS) {
+          resolvers.forEach((fn) => fn());
+          return;
+        }
+
+        try {
+          await this.executeSpeak(textToSpeak);
+          this.markLastSpoken(textToSpeak);
+          resolvers.forEach((fn) => fn());
+        } catch (error) {
+          rejectors.forEach((fn) => fn(error));
+        }
+      }, this.SPEAK_DEBOUNCE_WINDOW_MS);
+    });
+  }
+
+  private async executeSpeak(text: string): Promise<void> {
     this.cancelSpeech();
     this._isSpeaking.value = false;
 
@@ -724,6 +788,7 @@ class VoiceSettingsManager {
         pitch,
         volume,
       }, true);
+      this.markLastSpoken(text);
       return;
     }
 
@@ -736,6 +801,7 @@ class VoiceSettingsManager {
           pitch,
           volume,
         }, true);
+        this.markLastSpoken(text);
       } catch (error) {
         this._isSpeaking.value = false;
         console.error("[VSM] Error speaking with browser TTS:", error);
@@ -752,11 +818,17 @@ class VoiceSettingsManager {
           pitch,
           volume,
         }, true);
+        this.markLastSpoken(text);
         return;
       }
       try {
         const payload: TTSRequestPayloadFE = { text, voice: currentVoice.providerVoiceId, speed: rate };
-        const response = await ttsAPI.synthesize(payload);
+        const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+        if (controller) {
+          this.activeTtsAbortController = controller;
+        }
+        const response = await ttsAPI.synthesize(payload, controller?.signal);
+        this.activeTtsAbortController = null;
         void this.refreshCreditsSnapshot();
         const audioUrl = URL.createObjectURL(response.data);
         this.activePreviewAudio = new Audio(audioUrl);
@@ -775,7 +847,13 @@ class VoiceSettingsManager {
           this._isSpeaking.value = false;
         };
         await audioToPlay.play();
+        this.markLastSpoken(text);
       } catch (error: any) {
+        this.activeTtsAbortController = null;
+        if (error?.name === 'AbortError') {
+          console.info('[VSM] OpenAI TTS request aborted.');
+          return;
+        }
         this._isSpeaking.value = false;
         console.error("[VSM] Error with OpenAI TTS:", error.response?.data || error.message);
         if (error?.response?.data?.credits) {
@@ -795,6 +873,7 @@ class VoiceSettingsManager {
           pitch,
           volume,
         }, true);
+        this.markLastSpoken(text);
       }
       return;
     }
@@ -806,10 +885,20 @@ class VoiceSettingsManager {
       pitch,
       volume,
     }, true);
+    this.markLastSpoken(text);
+  }
+
+  private markLastSpoken(text: string): void {
+    this.lastSpokenText = text;
+    this.lastSpokenAt = Date.now();
   }
 
   public cancelSpeech(): void {
     this._isSpeaking.value = false;
+    if (this.activeTtsAbortController) {
+      this.activeTtsAbortController.abort();
+      this.activeTtsAbortController = null;
+    }
     if (typeof window !== 'undefined' && browserTtsService.isSupported() && browserTtsService.isSpeaking()) {
       browserTtsService.cancel();
     }
