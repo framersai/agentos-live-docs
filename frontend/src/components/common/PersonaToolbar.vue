@@ -129,7 +129,7 @@ const availableLanguageOptions = computed(() => {
 });
 
 const isCompactVariant = computed(() => props.variant === 'compact');
-const compactToolbarExpanded = ref(false);
+const compactToolbarExpanded = ref(true);
 const compactActiveSection = ref<CompactSectionId>('persona');
 
 const compactSectionButtons: CompactSectionButton[] = [
