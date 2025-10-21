@@ -283,6 +283,14 @@ font-size: clamp(calc( (#{var.$font-size-xl}) * 1.2), 4vw, calc( (#{var.$font-si
   color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
 }
 
+.public-home-main-stack {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(var.$spacing-lg, 4vw, var.$spacing-2xl);
+  width: 100%;
+  height: 100%;
+}
+
 .public-pricing-showcase-ephemeral {
   margin-top: var.$spacing-2xl;
   padding: clamp(var.$spacing-lg, 4vw, calc(var.$spacing-xl * 1.1)) var.$spacing-lg;

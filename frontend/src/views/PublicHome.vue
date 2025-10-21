@@ -645,65 +645,67 @@ onUnmounted(() => {
           </div>
         </div>
 
-        <section v-if="landingPlanCards.length" class="public-pricing-showcase-ephemeral">
-          <header class="public-pricing-header">
-            <div class="public-pricing-heading">
-              <h3>{{ t('plans.sectionTitle', 'Subscription Tiers') }}</h3>
-              <p>
-                {{ t('plans.landingPitch', 'Start for free, scale when you need more conversations and automation. Public preview resets daily; teams unlock billing, seat controls, and custom agents.') }}
-              </p>
-            </div>
-            <span class="public-pricing-starting">
-              <span class="public-pricing-label">{{ t('auth.planStartingPrice', 'Plans start at') }}</span>
-              <strong>{{ landingStartingPrice }}</strong>
-              <span class="public-pricing-period">/ {{ t('auth.perMonth', 'month') }}</span>
-            </span>
-          </header>
-
-          <div class="public-pricing-grid-ephemeral">
-            <article
-              v-for="(plan, index) in landingPlanCards"
-              :key="plan.id"
-              class="public-pricing-card"
-              :class="{
-                'public-pricing-card--featured': plan.isFeatured,
-                'public-pricing-card--free': plan.priceValue === 0
-              }"
-              :style="{ '--plan-stagger': `${index * 80}ms` }"
-            >
-              <header class="public-pricing-card__header">
-                <span class="public-pricing-card__name">{{ plan.title }}</span>
-                <div class="public-pricing-card__price">
-                  <span class="public-pricing-card__price-value">{{ plan.priceText }}</span>
-                  <span v-if="plan.priceValue > 0" class="public-pricing-card__price-period">/ {{ t('auth.perMonth', 'month') }}</span>
-                </div>
-                <span class="public-pricing-card__allowance">{{ plan.allowance }}</span>
-                <span v-if="plan.allowanceNote" class="public-pricing-card__note">{{ plan.allowanceNote }}</span>
-                <span v-if="plan.isFeatured" class="public-pricing-card__badge">{{ t('plans.mostPopular', 'Most popular') }}</span>
-              </header>
-
-              <ul class="public-pricing-card__features">
-                <li v-for="(bullet, bulletIndex) in plan.bullets" :key="bulletIndex">{{ bullet }}</li>
-              </ul>
-
-              <button
-                type="button"
-                class="public-pricing-card__cta"
-                :class="{
-                  'public-pricing-card__cta--primary': plan.priceValue > 0,
-                  'public-pricing-card__cta--ghost': plan.priceValue === 0
-                }"
-                @click="handleLandingPlanAction(plan)"
-              >
-                {{ plan.ctaLabel }}
-              </button>
-            </article>
-          </div>
-        </section>
       </template>
 
       <template #main-content>
-        <component
+        <div class="public-home-main-stack">
+          <section v-if="landingPlanCards.length" class="public-pricing-showcase-ephemeral">
+            <header class="public-pricing-header">
+              <div class="public-pricing-heading">
+                <h3>{{ t('plans.sectionTitle', 'Subscription Tiers') }}</h3>
+                <p>
+                  {{ t('plans.landingPitch', 'Start for free, scale when you need more conversations and automation. Public preview resets daily; teams unlock billing, seat controls, and custom agents.') }}
+                </p>
+              </div>
+              <span class="public-pricing-starting">
+                <span class="public-pricing-label">{{ t('auth.planStartingPrice', 'Plans start at') }}</span>
+                <strong>{{ landingStartingPrice }}</strong>
+                <span class="public-pricing-period">/ {{ t('auth.perMonth', 'month') }}</span>
+              </span>
+            </header>
+
+            <div class="public-pricing-grid-ephemeral">
+              <article
+                v-for="(plan, index) in landingPlanCards"
+                :key="plan.id"
+                class="public-pricing-card"
+                :class="{
+                  'public-pricing-card--featured': plan.isFeatured,
+                  'public-pricing-card--free': plan.priceValue === 0
+                }"
+                :style="{ '--plan-stagger': `${index * 80}ms` }"
+              >
+                <header class="public-pricing-card__header">
+                  <span class="public-pricing-card__name">{{ plan.title }}</span>
+                  <div class="public-pricing-card__price">
+                    <span class="public-pricing-card__price-value">{{ plan.priceText }}</span>
+                    <span v-if="plan.priceValue > 0" class="public-pricing-card__price-period">/ {{ t('auth.perMonth', 'month') }}</span>
+                  </div>
+                  <span class="public-pricing-card__allowance">{{ plan.allowance }}</span>
+                  <span v-if="plan.allowanceNote" class="public-pricing-card__note">{{ plan.allowanceNote }}</span>
+                  <span v-if="plan.isFeatured" class="public-pricing-card__badge">{{ t('plans.mostPopular', 'Most popular') }}</span>
+                </header>
+
+                <ul class="public-pricing-card__features">
+                  <li v-for="(bullet, bulletIndex) in plan.bullets" :key="bulletIndex">{{ bullet }}</li>
+                </ul>
+
+                <button
+                  type="button"
+                  class="public-pricing-card__cta"
+                  :class="{
+                    'public-pricing-card__cta--primary': plan.priceValue > 0,
+                    'public-pricing-card__cta--ghost': plan.priceValue === 0
+                  }"
+                  @click="handleLandingPlanAction(plan)"
+                >
+                  {{ plan.ctaLabel }}
+                </button>
+              </article>
+            </div>
+          </section>
+
+          <component
           :is="currentAgentViewComponent"
           v-if="currentPublicAgent && currentPublicAgent.isPublic && currentAgentViewComponent && typeof currentAgentViewComponent !== 'string' && currentPublicAgent.capabilities?.handlesOwnInput"
           :key="currentPublicAgent.id + '-dedicated-public-ui'"
@@ -712,7 +714,7 @@ onUnmounted(() => {
           :agent-config="currentPublicAgent"
           class="dedicated-agent-view h-full w-full"
           @agent-event="() => {}" />
-        <div v-else-if="mainContentData?.type === 'custom-component' && mainContentData.data === 'RateLimitExceededPlaceholder'"
+          <div v-else-if="mainContentData?.type === 'custom-component' && mainContentData.data === 'RateLimitExceededPlaceholder'"
              class="rate-limit-banner-ephemeral">
           <ExclamationTriangleIcon class="banner-icon-ephemeral" aria-hidden="true" />
           <h3 class="banner-title-ephemeral">Daily Public Preview Limit Reached</h3>
@@ -724,7 +726,7 @@ onUnmounted(() => {
             <KeyIcon class="icon-sm mr-1.5" aria-hidden="true" /> Log In for Full Access
           </RouterLink>
         </div>
-        <div v-else-if="mainContentData?.type === 'custom-component' && mainContentData.data === 'PublicWelcomePlaceholder'"
+          <div v-else-if="mainContentData?.type === 'custom-component' && mainContentData.data === 'PublicWelcomePlaceholder'"
              class="public-welcome-placeholder-ephemeral">
           <BuildingStorefrontIcon class="hero-icon-ephemeral" aria-hidden="true" />
           <h2 class="welcome-title-ephemeral">Welcome to Voice AI Assistant</h2>
@@ -733,7 +735,7 @@ onUnmounted(() => {
             Interactions are rate-limited for public users. For unlimited access and more features, please <RouterLink to="/login" class="link-ephemeral">log in or sign up</RouterLink>.
           </p>
         </div>
-        <div v-else-if="mainContentData?.type === 'custom-component' && mainContentData.data === 'NoPublicAgentsPlaceholder'"
+          <div v-else-if="mainContentData?.type === 'custom-component' && mainContentData.data === 'NoPublicAgentsPlaceholder'"
              class="public-welcome-placeholder-ephemeral">
             <UserGroupIcon class="hero-icon-ephemeral no-agents-icon" aria-hidden="true" />
             <h2 class="welcome-title-ephemeral">Assistants Currently Unavailable</h2>
@@ -742,7 +744,7 @@ onUnmounted(() => {
             </p>
         </div>
 
-        <MainContentView :agent="currentPublicAgent" class="main-content-view-wrapper-ephemeral default-agent-mcv h-full w-full"
+          <MainContentView :agent="currentPublicAgent" class="main-content-view-wrapper-ephemeral default-agent-mcv h-full w-full"
                          v-else-if="currentPublicAgent && mainContentData && mainContentData.type !== 'custom-component'">
           <div v-if="currentPublicAgent?.capabilities?.usesCompactRenderer && (mainContentData.type === 'compact-message-renderer-data' || (mainContentData.type === 'markdown' && !chatStore.isMainContentStreaming))"
                class="content-renderer-container-ephemeral">
@@ -775,16 +777,17 @@ onUnmounted(() => {
           </div>
         </MainContentView>
 
-        <div v-else-if="isLoadingResponse && !mainContentData" class="loading-placeholder-ephemeral">
+          <div v-else-if="isLoadingResponse && !mainContentData" class="loading-placeholder-ephemeral">
           <div class="loading-animation-content">
             <div class="loading-spinner-ephemeral !w-12 !h-12"><div v-for="i in 8" :key="`blade-${i}`" class="spinner-blade-ephemeral !w-1.5 !h-4"></div></div>
             <p class="loading-text-ephemeral !text-base mt-3">Loading Assistant...</p>
           </div>
         </div>
-         <div v-else class="public-welcome-placeholder-ephemeral">
+          <div v-else class="public-welcome-placeholder-ephemeral">
             <SparklesIcon class="hero-icon-ephemeral !text-[var(--color-text-muted)]" />
             <h2 class="welcome-title-ephemeral">Initializing Public Interface</h2>
             <p class="welcome-subtitle-ephemeral">Please wait a moment. Assistants are loading...</p>
+        </div>
         </div>
       </template>
     </UnifiedChatLayout>
