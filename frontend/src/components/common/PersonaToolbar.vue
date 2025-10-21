@@ -139,20 +139,10 @@ const compactSectionButtons: CompactSectionButton[] = [
 ];
 
 const toggleCompactPanel = (): void => {
-  compactToolbarExpanded.value = !compactToolbarExpanded.value;
-  if (!compactToolbarExpanded.value) {
-    languageMenuOpen.value = false;
-  }
+  compactToolbarExpanded.value = true;
 };
 
 const openCompactSection = (section: CompactSectionId): void => {
-  if (compactActiveSection.value === section && compactToolbarExpanded.value) {
-    compactToolbarExpanded.value = false;
-    if (section !== 'session') {
-      languageMenuOpen.value = false;
-    }
-    return;
-  }
   compactActiveSection.value = section;
   compactToolbarExpanded.value = true;
   if (section !== 'session') {
@@ -914,21 +904,10 @@ onUnmounted(() => {
     <template v-if="isCompactVariant">
       <div class="persona-compact">
         <div class="persona-compact__header">
-          <button
-            type="button"
-            class="persona-compact__toggle"
-            :aria-expanded="compactToolbarExpanded"
-            @click="toggleCompactPanel"
-          >
-            <ChevronDownIcon
-              class="persona-compact__toggle-icon"
-              :class="{ 'is-open': compactToolbarExpanded }"
-              aria-hidden="true"
-            />
-            <span class="persona-compact__toggle-label">
-              {{ compactToolbarExpanded ? 'Hide Controls' : 'Voice Controls' }}
-            </span>
-          </button>
+          <div class="persona-compact__legend">
+            <span class="persona-compact__legend-label">Voice Controls</span>
+            <span class="persona-compact__legend-sub">Persona · Speech · Language</span>
+          </div>
           <div class="persona-compact__status-row" role="list">
             <div
               v-for="item in compactStatusItems"
@@ -1563,43 +1542,27 @@ onUnmounted(() => {
 .persona-compact__header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 0.85rem;
 }
 
-.persona-compact__toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.4rem 0.85rem;
-  border-radius: 999px;
-  border: 1px solid hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.35);
-  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.55);
-  color: var(--color-text-secondary);
-  cursor: pointer;
-  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+.persona-compact__legend {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
 }
 
-.persona-compact__toggle:hover {
-  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.7);
-  border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.45);
-  color: var(--color-text-primary);
-}
-
-.persona-compact__toggle-icon {
-  width: 0.95rem;
-  height: 0.95rem;
-  transition: transform 0.25s ease;
-}
-
-.persona-compact__toggle-icon.is-open {
-  transform: rotate(180deg);
-}
-
-.persona-compact__toggle-label {
-  font-size: 0.65rem;
+.persona-compact__legend-label {
+  font-size: 0.68rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.persona-compact__legend-sub {
+  font-size: 0.62rem;
+  color: var(--color-text-muted);
 }
 
 .persona-compact__status-row {
