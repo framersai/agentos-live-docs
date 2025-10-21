@@ -1,19 +1,30 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import AnimatedGlyph from '@/components/about/AnimatedGlyph.vue';
 import { usePlans } from '@/composables/usePlans';
 import PlanComparisonModal from '@/components/plan/PlanComparisonModal.vue';
+import { useAuth } from '@/composables/useAuth';
+import { useRegistrationStore } from '@/store/registration.store';
+import type { PlanCatalogEntry, PlanId } from '../../../shared/planCatalog';
 
 const { t } = useI18n();
 const { featuredPlan, standardPlans, allPlans } = usePlans();
+const router = useRouter();
+const route = useRoute();
+const auth = useAuth();
+const registrationStore = useRegistrationStore();
 
 const showComparison = ref(false);
 const sectionRef = ref<HTMLElement | null>(null);
 const cardsVisible = ref(false);
 
+const contactEmail = import.meta.env.VITE_SALES_EMAIL || 'team@voicechatassistant.com';
+const currentLocale = computed<string>(() => (route.params.locale as string) || 'en-US');
+
 interface PlanCardViewModel {
-  id: string;
+  id: PlanId;
   title: string;
   priceText: string;
   priceValue: number;
@@ -23,6 +34,7 @@ interface PlanCardViewModel {
   ctaLabel: string;
   isFeatured: boolean;
   requiresContact: boolean;
+  planEntry: PlanCatalogEntry;
 }
 
 const priceFormatter = new Intl.NumberFormat('en-US', {
@@ -40,7 +52,7 @@ const priceLabel = (monthlyPrice: number): string => (
 
 const allowanceLabel = (tokens: number): string => t('plans.dailyAllowancePrimaryShort', { tokens: formatNumber(tokens) });
 
-const buildCardModel = (plan: any): PlanCardViewModel | null => {
+const buildCardModel = (plan: PlanCatalogEntry | null | undefined): PlanCardViewModel | null => {
   if (!plan) return null;
   return {
     id: plan.id,
@@ -57,6 +69,7 @@ const buildCardModel = (plan: any): PlanCardViewModel | null => {
         : t('plans.choosePlanCta'),
     isFeatured: Boolean(plan.metadata?.featured),
     requiresContact: Boolean(plan.metadata?.requiresContact),
+    planEntry: plan,
   };
 };
 
@@ -75,6 +88,34 @@ const onOpenComparison = () => {
 
 const onCloseComparison = () => {
   showComparison.value = false;
+};
+
+const handlePlanAction = async (plan: PlanCardViewModel): Promise<void> => {
+  if (plan.requiresContact) {
+    const subject = encodeURIComponent(`Voice Chat Assistant ${plan.title} Plan Inquiry`);
+    window.location.href = `mailto:${contactEmail}?subject=${subject}`;
+    return;
+  }
+
+  try {
+    await registrationStore.setPlan({ planId: plan.id });
+  } catch (error) {
+    console.warn('[Pricing] Failed to preset registration plan:', error);
+  }
+
+  if (auth.isAuthenticated.value) {
+    router.push({
+      name: 'Settings',
+      params: { locale: currentLocale.value },
+      query: { tab: 'billing', plan: plan.id },
+    });
+  } else {
+    router.push({
+      name: 'RegisterAccount',
+      params: { locale: currentLocale.value },
+      query: { plan: plan.id },
+    });
+  }
 };
 
 onMounted(() => {
@@ -172,6 +213,8 @@ onMounted(() => {
             'btn-secondary-ephemeral': !plan.isFeatured && plan.priceValue > 0,
             'btn-ghost-ephemeral': plan.priceValue === 0
           }"
+          type="button"
+          @click="handlePlanAction(plan)"
         >
           {{ plan.ctaLabel }}
         </button>
