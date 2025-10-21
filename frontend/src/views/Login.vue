@@ -16,7 +16,7 @@ import { useAuth } from '@/composables/useAuth';
 import type { Provider } from '@supabase/supabase-js';
 import { usePlans } from '@/composables/usePlans';
 import { useRegistrationStore } from '@/store/registration.store';
-import type { PlanCatalogEntry, PlanId } from '../../../shared/planCatalog';
+import type { PlanId } from '../../../shared/planCatalog';
 
 type LoginTab = 'global' | 'supabase';
 
@@ -51,7 +51,6 @@ interface HeroPlanCard {
   ctaLabel: string;
   isFeatured: boolean;
   requiresContact: boolean;
-  planEntry: PlanCatalogEntry;
 }
 
 const heroPlanCards = computed<HeroPlanCard[]>(() => {
@@ -80,7 +79,6 @@ const heroPlanCards = computed<HeroPlanCard[]>(() => {
             : t('plans.choosePlanCta', 'Choose plan'),
         isFeatured: Boolean(plan.metadata?.featured),
         requiresContact: Boolean(plan.metadata?.requiresContact),
-        planEntry: plan,
       };
     })
     .slice(0, 3);
