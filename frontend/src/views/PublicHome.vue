@@ -28,6 +28,7 @@ import { useAuth } from '@/composables/useAuth';
 import UnifiedChatLayout from '@/components/layouts/UnifiedChatLayout.vue';
 import MainContentView from '@/components/agents/common/MainContentView.vue';
 import CompactMessageRenderer from '@/components/layouts/CompactMessageRenderer/CompactMessageRenderer.vue';
+import PersonaToolbar from '@/components/common/PersonaToolbar.vue';
 
 import {
   SparklesIcon, KeyIcon, ChevronDownIcon, UserGroupIcon,
@@ -543,6 +544,12 @@ onUnmounted(() => {
         </div>
       </template>
 
+      <template #voice-toolbar>
+        <PersonaToolbar
+          :agent="currentPublicAgent"
+          variant="compact"
+        />
+      </template>
 
       <template #main-content>
         <component
