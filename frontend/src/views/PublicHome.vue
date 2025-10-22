@@ -763,7 +763,7 @@ onUnmounted(() => {
             v-else-if="mainContentData.type === 'markdown' || mainContentData.type === 'welcome'"
             class="prose-ephemeral content-renderer-ephemeral content-renderer-container-ephemeral"
             v-html="chatStore.isMainContentStreaming && (mainContentData.type === 'markdown') && chatStore.getCurrentMainContentDataForAgent(currentPublicAgent.id)?.agentId === currentPublicAgent.id ?
-                     chatStore.streamingMainContentText + '<span class="streaming-cursor-ephemeral">|</span>' :
+                     chatStore.streamingMainContentText + '<span class=&quot;streaming-cursor-ephemeral&quot;>|</span>' :
                      mainContentData.data"
             aria-atomic="true"
           >
@@ -771,7 +771,7 @@ onUnmounted(() => {
           <div
             v-else-if="mainContentData.type === 'loading'"
             class="prose-ephemeral content-renderer-ephemeral content-renderer-container-ephemeral"
-            v-html="mainContentData.data + (chatStore.isMainContentStreaming ? '<span class="streaming-cursor-ephemeral">|</span>' : '')"
+            v-html="mainContentData.data + (chatStore.isMainContentStreaming ? '<span class=&quot;streaming-cursor-ephemeral&quot;>|</span>' : '')"
             aria-atomic="true"
           >
           </div>
