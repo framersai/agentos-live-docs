@@ -561,9 +561,12 @@ onUnmounted(() => {
           :agent-id="currentPublicAgent.id"
           :agent-config="currentPublicAgent"
           class="dedicated-agent-view h-full w-full"
-          @agent-event="() => {}" />
-        <div v-else-if="mainContentData?.type === 'custom-component' && mainContentData.data === 'RateLimitExceededPlaceholder'"
-             class="rate-limit-banner-ephemeral">
+          @agent-event="() => {}"
+        />
+        <div
+          v-else-if="mainContentData?.type === 'custom-component' && mainContentData.data === 'RateLimitExceededPlaceholder'"
+          class="rate-limit-banner-ephemeral"
+        >
           <ExclamationTriangleIcon class="banner-icon-ephemeral" aria-hidden="true" />
           <h3 class="banner-title-ephemeral">Daily Public Preview Limit Reached</h3>
           <p class="banner-text-ephemeral">
@@ -574,8 +577,10 @@ onUnmounted(() => {
             <KeyIcon class="icon-sm mr-1.5" aria-hidden="true" /> Log In for Full Access
           </RouterLink>
         </div>
-          <div v-else-if="mainContentData?.type === 'custom-component' && mainContentData.data === 'PublicWelcomePlaceholder'"
-             class="public-welcome-placeholder-ephemeral">
+        <div
+          v-else-if="mainContentData?.type === 'custom-component' && mainContentData.data === 'PublicWelcomePlaceholder'"
+          class="public-welcome-placeholder-ephemeral"
+        >
           <BuildingStorefrontIcon class="hero-icon-ephemeral" aria-hidden="true" />
           <h2 class="welcome-title-ephemeral">Welcome to Voice AI Assistant</h2>
           <p class="welcome-subtitle-ephemeral">
@@ -583,59 +588,78 @@ onUnmounted(() => {
             Interactions are rate-limited for public users. For unlimited access and more features, please <RouterLink to="/login" class="link-ephemeral">log in or sign up</RouterLink>.
           </p>
         </div>
-          <div v-else-if="mainContentData?.type === 'custom-component' && mainContentData.data === 'NoPublicAgentsPlaceholder'"
-             class="public-welcome-placeholder-ephemeral">
-            <UserGroupIcon class="hero-icon-ephemeral no-agents-icon" aria-hidden="true" />
-            <h2 class="welcome-title-ephemeral">Assistants Currently Unavailable</h2>
-            <p class="welcome-subtitle-ephemeral">
-                We're sorry, but there are no public assistants configured for preview at this moment. Please check back later or <RouterLink to="/login" class="link-ephemeral">log in</RouterLink> for access to private assistants.
-            </p>
+        <div
+          v-else-if="mainContentData?.type === 'custom-component' && mainContentData.data === 'NoPublicAgentsPlaceholder'"
+          class="public-welcome-placeholder-ephemeral"
+        >
+          <UserGroupIcon class="hero-icon-ephemeral no-agents-icon" aria-hidden="true" />
+          <h2 class="welcome-title-ephemeral">Assistants Currently Unavailable</h2>
+          <p class="welcome-subtitle-ephemeral">
+            We're sorry, but there are no public assistants configured for preview at this moment. Please check back later or <RouterLink to="/login" class="link-ephemeral">log in</RouterLink> for access to private assistants.
+          </p>
         </div>
-
-          <MainContentView :agent="currentPublicAgent" class="main-content-view-wrapper-ephemeral default-agent-mcv h-full w-full"
-                         v-else-if="currentPublicAgent && mainContentData && mainContentData.type !== 'custom-component'">
-          <div v-if="currentPublicAgent?.capabilities?.usesCompactRenderer && (mainContentData.type === 'compact-message-renderer-data' || (mainContentData.type === 'markdown' && !chatStore.isMainContentStreaming))"
-               class="content-renderer-container-ephemeral">
+        <MainContentView
+          v-else-if="currentPublicAgent && mainContentData && mainContentData.type !== 'custom-component'"
+          :agent="currentPublicAgent"
+          class="main-content-view-wrapper-ephemeral default-agent-mcv h-full w-full"
+        >
+          <div
+            v-if="currentPublicAgent?.capabilities?.usesCompactRenderer && (mainContentData.type === 'compact-message-renderer-data' || (mainContentData.type === 'markdown' && !chatStore.isMainContentStreaming))"
+            class="content-renderer-container-ephemeral"
+          >
             <CompactMessageRenderer
               :content="mainContentData.data"
               :mode="currentPublicAgent.id"
               class="content-renderer-ephemeral"
             />
           </div>
-          <div v-else-if="mainContentData.type === 'markdown' || mainContentData.type === 'welcome'"
-               class="prose-ephemeral content-renderer-ephemeral content-renderer-container-ephemeral"
-               v-html="chatStore.isMainContentStreaming && (mainContentData.type === 'markdown') && chatStore.getCurrentMainContentDataForAgent(currentPublicAgent.id)?.agentId === currentPublicAgent.id ?
-                       chatStore.streamingMainContentText + '<span class=\'streaming-cursor-ephemeral\'>▋</span>' :
-                       mainContentData.data"
-               aria-atomic="true">
+          <div
+            v-else-if="mainContentData.type === 'markdown' || mainContentData.type === 'welcome'"
+            class="prose-ephemeral content-renderer-ephemeral content-renderer-container-ephemeral"
+            v-html="chatStore.isMainContentStreaming && (mainContentData.type === 'markdown') && chatStore.getCurrentMainContentDataForAgent(currentPublicAgent.id)?.agentId === currentPublicAgent.id ?
+                     chatStore.streamingMainContentText + '<span class=\'streaming-cursor-ephemeral\'>?</span>' :
+                     mainContentData.data"
+            aria-atomic="true"
+          >
           </div>
-          <div v-else-if="mainContentData.type === 'loading'"
-               class="prose-ephemeral content-renderer-ephemeral content-renderer-container-ephemeral"
-               v-html="mainContentData.data + (chatStore.isMainContentStreaming ? '<span class=\'streaming-cursor-ephemeral\'>▋</span>' : '')"
-               aria-atomic="true">
+          <div
+            v-else-if="mainContentData.type === 'loading'"
+            class="prose-ephemeral content-renderer-ephemeral content-renderer-container-ephemeral"
+            v-html="mainContentData.data + (chatStore.isMainContentStreaming ? '<span class=\'streaming-cursor-ephemeral\'>?</span>' : '')"
+            aria-atomic="true"
+          >
           </div>
-          <div v-else-if="mainContentData.type === 'error'"
-               class="prose-ephemeral prose-error content-renderer-ephemeral content-renderer-container-ephemeral"
-               v-html="mainContentData.data"
-               aria-atomic="true">
+          <div
+            v-else-if="mainContentData.type === 'error'"
+            class="prose-ephemeral prose-error content-renderer-ephemeral content-renderer-container-ephemeral"
+            v-html="mainContentData.data"
+            aria-atomic="true"
+          >
           </div>
-          <div v-else class="content-renderer-ephemeral text-[var(--color-text-muted)] italic p-6 text-center content-renderer-container-ephemeral">
+          <div
+            v-else
+            class="content-renderer-ephemeral text-[var(--color-text-muted)] italic p-6 text-center content-renderer-container-ephemeral"
+          >
             <p class="text-lg">Interacting with {{ currentPublicAgent.label }}.</p>
             <p class="text-sm mt-2">(Displaying content type: {{ mainContentData.type }})</p>
           </div>
         </MainContentView>
-
-          <div v-else-if="isLoadingResponse && !mainContentData" class="loading-placeholder-ephemeral">
+        <div
+          v-else-if="isLoadingResponse && !mainContentData"
+          class="loading-placeholder-ephemeral"
+        >
           <div class="loading-animation-content">
             <div class="loading-spinner-ephemeral !w-12 !h-12"><div v-for="i in 8" :key="`blade-${i}`" class="spinner-blade-ephemeral !w-1.5 !h-4"></div></div>
             <p class="loading-text-ephemeral !text-base mt-3">Loading Assistant...</p>
           </div>
         </div>
-          <div v-else class="public-welcome-placeholder-ephemeral">
-            <SparklesIcon class="hero-icon-ephemeral !text-[var(--color-text-muted)]" />
-            <h2 class="welcome-title-ephemeral">Initializing Public Interface</h2>
-            <p class="welcome-subtitle-ephemeral">Please wait a moment. Assistants are loading...</p>
-        </div>
+        <div
+          v-else
+          class="public-welcome-placeholder-ephemeral"
+        >
+          <SparklesIcon class="hero-icon-ephemeral !text-[var(--color-text-muted)]" />
+          <h2 class="welcome-title-ephemeral">Initializing Public Interface</h2>
+          <p class="welcome-subtitle-ephemeral">Please wait a moment. Assistants are loading...</p>
         </div>
       </template>
     </UnifiedChatLayout>
@@ -660,6 +684,7 @@ onUnmounted(() => {
     overflow-y: auto; // Manages scroll for default content types
 }
 </style>
+
 
 
 
