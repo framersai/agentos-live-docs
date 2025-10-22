@@ -144,19 +144,12 @@ onBeforeUnmount(() => {
 .future-emphasis {
   position: relative;
   display: inline-block;
-  padding-inline: 0.15em;
-}
-
-.future-emphasis::before {
-  content: '';
-  position: absolute;
-  inset: 0.15em -0.25em;
-  background: linear-gradient(120deg, rgba(255, 255, 255, 0.15), transparent 60%);
-  border-radius: 0.4em;
-  opacity: 0.85;
-  filter: blur(0.5px);
-  z-index: -1;
-  animation: shimmer 6s ease-in-out infinite;
+  padding-inline: 0.1em;
+  color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), calc(var(--color-accent-primary-l) + 6%));
+  text-shadow: 0 0.08em 0.45em rgba(255, 94, 247, 0.25);
+  border-bottom: 0.18em solid hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.35);
+  border-radius: 0;
+  background-image: linear-gradient(to top, hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.12), transparent 55%);
 }
 
 .hero-sub-title {

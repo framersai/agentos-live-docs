@@ -34,6 +34,7 @@ import { createScopedSttLogger } from '@/utils/debug';
 import UnifiedChatLayout from '@/components/layouts/UnifiedChatLayout.vue';
 import MainContentView from '@/components/agents/common/MainContentView.vue';
 import CompactMessageRenderer from '@/components/layouts/CompactMessageRenderer/CompactMessageRenderer.vue';
+import PersonaToolbar from '@/components/common/PersonaToolbar.vue';
 
 import { ShieldCheckIcon, CogIcon, UserGroupIcon } from '@heroicons/vue/24/solid';
 const toast = inject<ToastService>('toast');
@@ -359,6 +360,13 @@ watch(isVoiceInputCurrentlyProcessingAudio, (isSttActive) => {
       @transcription="handleTranscriptionFromLayout"
       @voice-input-processing="(status: boolean) => { isVoiceInputCurrentlyProcessingAudio = status; }"
     >
+      <template #voice-toolbar>
+        <PersonaToolbar
+          :agent="activeAgent"
+          variant="compact"
+        />
+      </template>
+
       <template #main-content>
         <component
             :is="currentAgentViewComponent"

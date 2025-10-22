@@ -42,8 +42,8 @@ const goHome = (): void => {
     <main class="about-main-content-area">
       <AboutHeroSection :logo-src="logoSvg" :show-guest-badge="isGuestSession" />
       <AboutMissionSection />
-      <AboutAgentosSection />
       <AboutPricingSection />
+      <AboutAgentosSection />
       <AboutArchitectureSection />
       <AboutRoadmapSection />
       <AboutFooterSection />
@@ -54,4 +54,3 @@ const goHome = (): void => {
 <style lang="scss">
 // Styles remain defined in frontend/src/styles/views/_about-page.scss
 </style>
-
