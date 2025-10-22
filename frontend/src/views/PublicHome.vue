@@ -29,6 +29,9 @@ import UnifiedChatLayout from '@/components/layouts/UnifiedChatLayout.vue';
 import MainContentView from '@/components/agents/common/MainContentView.vue';
 import CompactMessageRenderer from '@/components/layouts/CompactMessageRenderer/CompactMessageRenderer.vue';
 import PersonaToolbar from '@/components/common/PersonaToolbar.vue';
+import { usePlans } from '@/composables/usePlans';
+import { useRegistrationStore } from '@/store/registration.store';
+import type { PlanId } from '../../../shared/planCatalog';
 
 import {
   SparklesIcon, KeyIcon, ChevronDownIcon, UserGroupIcon,
@@ -52,6 +55,8 @@ const toast = inject<ToastService>('toast');
 const agentStore = useAgentStore();
 const chatStore = useChatStore();
 const auth = useAuth(); // For sessionUserId
+const { plans: publicPlans } = usePlans();
+const registrationStore = useRegistrationStore();
 
 const availablePublicAgents = ref<IAgentDefinition[]>([]);
 const currentPublicAgent = computed<IAgentDefinition | undefined>(() => agentStore.activeAgent);
@@ -90,6 +95,92 @@ const isVoiceInputCurrentlyProcessingAudio = ref(false);
 const currentSystemPromptText = ref('');
 const rateLimitInfo = ref<RateLimitInfo | null>(null);
 const demoUsageInfo = computed(() => auth.demoUsage.value);
+const landingLocale = computed<string>(() => (router.currentRoute.value.params.locale as string) || 'en-US');
+
+const landingPriceFormatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  maximumFractionDigits: 0,
+  minimumFractionDigits: 0,
+});
+
+const formatLandingCount = (value?: number | null): string => (value == null ? '-' : value.toLocaleString());
+
+interface LandingPlanCard {
+  id: PlanId;
+  title: string;
+  priceText: string;
+  priceValue: number;
+  allowance: string;
+  allowanceNote?: string;
+  bullets: string[];
+  ctaLabel: string;
+  isFeatured: boolean;
+  requiresContact: boolean;
+}
+
+const landingPlanCards = computed<LandingPlanCard[]>(() => {
+  return publicPlans.value
+    .filter((plan) => plan.public && !plan.metadata?.hiddenOnMarketing)
+    .sort((a, b) => a.monthlyPriceUsd - b.monthlyPriceUsd)
+    .map((plan) => ({
+      id: plan.id,
+      title: plan.displayName,
+      priceText: plan.monthlyPriceUsd === 0
+        ? t('plans.free', 'Free')
+        : landingPriceFormatter.format(plan.monthlyPriceUsd),
+      priceValue: plan.monthlyPriceUsd,
+      allowance: t('plans.dailyAllowancePrimaryShort', {
+        tokens: formatLandingCount(plan.usage.approxGpt4oTokensPerDay),
+      }),
+      allowanceNote: plan.usage.notes,
+      bullets: plan.bullets.slice(0, 3),
+      ctaLabel: plan.metadata?.requiresContact
+        ? t('plans.contactUsCta', 'Contact sales')
+        : plan.monthlyPriceUsd === 0
+          ? t('plans.startFreeCta', 'Get started')
+          : t('plans.choosePlanCta', 'Choose plan'),
+      isFeatured: Boolean(plan.metadata?.featured),
+      requiresContact: Boolean(plan.metadata?.requiresContact),
+    }));
+});
+
+const landingStartingPrice = computed(() => {
+  const paidPlan = landingPlanCards.value.find((plan) => plan.priceValue > 0);
+  if (paidPlan) return paidPlan.priceText;
+  const firstPlan = landingPlanCards.value[0];
+  return firstPlan ? firstPlan.priceText : '$9';
+});
+
+const handleLandingPlanAction = async (plan: LandingPlanCard): Promise<void> => {
+  if (plan.requiresContact) {
+    const email = import.meta.env.VITE_SALES_EMAIL || 'team@voicechatassistant.com';
+    const subject = encodeURIComponent(`Voice Chat Assistant ${plan.title} Plan Inquiry`);
+    window.location.href = `mailto:${email}?subject=${subject}`;
+    return;
+  }
+
+  try {
+    await registrationStore.setPlan({ planId: plan.id });
+  } catch (error) {
+    console.warn('[PublicHome] Failed to preset registration plan:', error);
+  }
+
+  if (auth.isAuthenticated.value) {
+    router.push({
+      name: 'Settings',
+      params: { locale: landingLocale.value },
+      query: { tab: 'billing', plan: plan.id },
+    });
+    return;
+  }
+
+  router.push({
+    name: 'RegisterAccount',
+    params: { locale: landingLocale.value },
+    query: { plan: plan.id },
+  });
+};
 
 const mainContentData = computed<MainContent | null>(() => {
   if (rateLimitInfo.value && rateLimitInfo.value.tier === 'public' && (rateLimitInfo.value.remaining !== undefined && rateLimitInfo.value.remaining <= 0)) {
@@ -550,6 +641,61 @@ onUnmounted(() => {
           </div>
         </div>
 
+        <section v-if="landingPlanCards.length" class="public-pricing-showcase-ephemeral">
+          <header class="public-pricing-header">
+            <div class="public-pricing-heading">
+              <h3>{{ t('plans.sectionTitle', 'Subscription Tiers') }}</h3>
+              <p>
+                {{ t('plans.landingPitch', 'Start free with GPT-4o mini, then unlock premium usage and team features when you need them.') }}
+              </p>
+            </div>
+            <span class="public-pricing-starting">
+              <span class="public-pricing-label">{{ t('auth.planStartingPrice', 'Plans start at') }}</span>
+              <strong>{{ landingStartingPrice }}</strong>
+              <span class="public-pricing-period">/ {{ t('auth.perMonth', 'month') }}</span>
+            </span>
+          </header>
+
+          <div class="public-pricing-grid-ephemeral">
+            <article
+              v-for="(plan, index) in landingPlanCards"
+              :key="plan.id"
+              class="public-pricing-card"
+              :class="{
+                'public-pricing-card--featured': plan.isFeatured,
+                'public-pricing-card--free': plan.priceValue === 0
+              }"
+              :style="{ '--plan-stagger': `${index * 80}ms` }"
+            >
+              <header class="public-pricing-card__header">
+                <span class="public-pricing-card__name">{{ plan.title }}</span>
+                <div class="public-pricing-card__price">
+                  <span class="public-pricing-card__price-value">{{ plan.priceText }}</span>
+                  <span v-if="plan.priceValue > 0" class="public-pricing-card__price-period">/ {{ t('auth.perMonth', 'month') }}</span>
+                </div>
+                <span class="public-pricing-card__allowance">{{ plan.allowance }}</span>
+                <span v-if="plan.allowanceNote" class="public-pricing-card__note">{{ plan.allowanceNote }}</span>
+                <span v-if="plan.isFeatured" class="public-pricing-card__badge">{{ t('plans.mostPopular', 'Most popular') }}</span>
+              </header>
+
+              <ul class="public-pricing-card__features">
+                <li v-for="(bullet, bulletIndex) in plan.bullets" :key="bulletIndex">{{ bullet }}</li>
+              </ul>
+
+              <button
+                type="button"
+                class="public-pricing-card__cta"
+                :class="{
+                  'public-pricing-card__cta--primary': plan.priceValue > 0,
+                  'public-pricing-card__cta--ghost': plan.priceValue === 0
+                }"
+                @click="handleLandingPlanAction(plan)"
+              >
+                {{ plan.ctaLabel }}
+              </button>
+            </article>
+          </div>
+        </section>
       </template>
 
       <template #main-content>
@@ -617,7 +763,7 @@ onUnmounted(() => {
             v-else-if="mainContentData.type === 'markdown' || mainContentData.type === 'welcome'"
             class="prose-ephemeral content-renderer-ephemeral content-renderer-container-ephemeral"
             v-html="chatStore.isMainContentStreaming && (mainContentData.type === 'markdown') && chatStore.getCurrentMainContentDataForAgent(currentPublicAgent.id)?.agentId === currentPublicAgent.id ?
-                     chatStore.streamingMainContentText + '<span class=\"streaming-cursor-ephemeral\">▌</span>' :
+                     chatStore.streamingMainContentText + '<span class="streaming-cursor-ephemeral">|</span>' :
                      mainContentData.data"
             aria-atomic="true"
           >
@@ -625,7 +771,7 @@ onUnmounted(() => {
           <div
             v-else-if="mainContentData.type === 'loading'"
             class="prose-ephemeral content-renderer-ephemeral content-renderer-container-ephemeral"
-            v-html="mainContentData.data + (chatStore.isMainContentStreaming ? '<span class=\"streaming-cursor-ephemeral\">▌</span>' : '')"
+            v-html="mainContentData.data + (chatStore.isMainContentStreaming ? '<span class="streaming-cursor-ephemeral">|</span>' : '')"
             aria-atomic="true"
           >
           </div>
@@ -684,6 +830,10 @@ onUnmounted(() => {
     overflow-y: auto; // Manages scroll for default content types
 }
 </style>
+
+
+
+
 
 
 
