@@ -8,6 +8,7 @@ import UsageStatusBadge from '@/components/common/UsageStatusBadge.vue';
 import { voiceSettingsManager } from '@/services/voice.settings.service';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
+import { storeToRefs } from 'pinia';
 import { XMarkIcon } from '@heroicons/vue/24/solid';
 import {
   GlobeAltIcon,
@@ -73,6 +74,13 @@ const props = withDefaults(defineProps<{
 
 const chatStore = useChatStore();
 const costStore = useCostStore();
+const {
+  totalSessionCost,
+  sessionEntryCount,
+  sessionCostThreshold,
+  isThresholdReached,
+  isLoadingCost,
+} = storeToRefs(costStore);
 const toast = inject<ToastService>('toast');
 const { locale } = useI18n();
 const router = useRouter();
@@ -137,7 +145,20 @@ const compactSectionButtons: CompactSectionButton[] = [
   { id: 'session', label: 'Session', icon: LanguageIcon },
 ];
 
+const compactExpanded = ref(false);
+
+const toggleCompactExpansion = (): void => {
+  compactExpanded.value = !compactExpanded.value;
+  if (!compactExpanded.value) {
+    voiceMenuOpen.value = false;
+    languageMenuOpen.value = false;
+  }
+};
+
 const openCompactSection = (section: CompactSectionId): void => {
+  if (!compactExpanded.value) {
+    compactExpanded.value = true;
+  }
   compactActiveSection.value = section;
   if (section !== 'session') {
     languageMenuOpen.value = false;
@@ -147,33 +168,32 @@ const openCompactSection = (section: CompactSectionId): void => {
 const isSectionActive = (section: CompactSectionId): boolean =>
   compactActiveSection.value === section;
 
-watch(() => props.variant, (variant) => {
-  if (variant !== 'compact') {
-    compactActiveSection.value = 'persona';
-    languageMenuOpen.value = false;
-    voiceMenuOpen.value = false;
+const handlePersonaChipClick = (): void => {
+  if (personaButtonDisabled.value) {
+    openPersonaModal();
+    return;
   }
-});
+  openCompactSection('persona');
+};
 
-watch(ttsProviderSetting, () => {
-  voiceMenuOpen.value = false;
-  voiceMenuLoading.value = false;
-  voiceMenuError.value = null;
-});
+const handleSpeechChipClick = (): void => {
+  openCompactSection('speech');
+};
 
-watch(compactActiveSection, (section) => {
-  if (section !== 'speech') {
-    voiceMenuOpen.value = false;
-  }
-});
+const handleSessionChipClick = (): void => {
+  openCompactSection('session');
+};
 
-watch(voiceMenuOpen, (isOpen) => {
-  if (!isOpen) {
-    voiceMenuLoading.value = false;
-    voiceMenuError.value = null;
-    voicePreviewing.value = null;
-  }
-});
+const handleVoiceActionClick = async (): Promise<void> => {
+  openCompactSection('speech');
+  await toggleVoiceMenu();
+};
+
+const handleLanguageActionClick = (): void => {
+  openCompactSection('session');
+  toggleLanguageMenu();
+};
+
 const languageSummaryLabel = computed(() => {
   let label: string;
   if (languagePreferenceLocked.value) {
@@ -200,6 +220,42 @@ const audioInputModeSetting = computed(() => voiceSettingsManager.settings.audio
 const sttPreferenceSetting = computed(() => voiceSettingsManager.settings.sttPreference);
 const ttsProviderSetting = computed(() => voiceSettingsManager.settings.ttsProvider);
 const autoPlaySpeechSetting = computed(() => voiceSettingsManager.settings.autoPlayTts);
+
+watch(() => props.variant, (variant) => {
+  if (variant !== 'compact') {
+    compactActiveSection.value = 'persona';
+    languageMenuOpen.value = false;
+    voiceMenuOpen.value = false;
+    compactExpanded.value = false;
+  }
+});
+
+watch(ttsProviderSetting, () => {
+  voiceMenuOpen.value = false;
+  voiceMenuLoading.value = false;
+  voiceMenuError.value = null;
+});
+
+watch(compactActiveSection, (section) => {
+  if (section !== 'speech') {
+    voiceMenuOpen.value = false;
+  }
+});
+
+watch(voiceMenuOpen, (isOpen) => {
+  if (!isOpen) {
+    voiceMenuLoading.value = false;
+    voiceMenuError.value = null;
+    voicePreviewing.value = null;
+  }
+});
+
+watch(compactExpanded, (expanded) => {
+  if (!expanded) {
+    voiceMenuOpen.value = false;
+    languageMenuOpen.value = false;
+  }
+});
 
 const currentVoiceOption = computed(() => voiceSettingsManager.getCurrentTtsVoice());
 const currentVoiceShort = computed(() => {
@@ -480,6 +536,15 @@ const personaSummaryText = computed(() => {
   return value.length <= 160 ? value : `${value.slice(0, 160)}...`;
 });
 
+const personaChipTitle = computed(() => (personaHasCustom.value ? 'Custom persona' : 'Default persona'));
+const personaChipSubtitle = computed(() => {
+  if (personaHasCustom.value && personaSummaryText.value) {
+    return personaSummaryText.value;
+  }
+  const agentName = currentAgent.value?.label || 'Assistant';
+  return `Natural responses from ${agentName}`;
+});
+
 const personaDraftHasContent = computed(() => personaDraft.value.trim().length > 0);
 
 const personaPresets: PersonaPreset[] = [
@@ -671,9 +736,12 @@ const speechCreditsShort = computed(() => {
   return 'Active';
 });
 
-const sessionCostValue = computed(() => costStore.totalSessionCost.value ?? 0);
-const sessionEntries = computed(() => costStore.sessionEntryCount.value ?? 0);
-const sessionThreshold = computed(() => costStore.sessionCostThreshold.value ?? null);
+const speechChipTitle = computed(() => speechCreditsShort.value || 'Speech credits');
+const speechChipSubtitle = computed(() => speechCreditsSummary.value);
+
+const sessionCostValue = computed(() => totalSessionCost.value ?? 0);
+const sessionEntries = computed(() => sessionEntryCount.value ?? 0);
+const sessionThreshold = computed(() => sessionCostThreshold.value ?? null);
 const sessionPercent = computed<number | null>(() => {
   const threshold = sessionThreshold.value;
   if (!threshold || threshold <= 0) return null;
@@ -682,7 +750,7 @@ const sessionPercent = computed<number | null>(() => {
 });
 
 const sessionCostSummary = computed(() => {
-  if (costStore.isLoadingCost.value) return 'Loading usage…';
+  if (isLoadingCost.value) return 'Loading usage…';
   const costPart = usdFormatter.format(sessionCostValue.value);
   const thresholdPart = sessionThreshold.value && sessionThreshold.value > 0
     ? ` / ${usdFormatter.format(sessionThreshold.value)}`
@@ -692,10 +760,10 @@ const sessionCostSummary = computed(() => {
   return `${costPart}${thresholdPart} • ${entriesPart}`;
 });
 const sessionCostState = computed<'loading' | 'ok' | 'info' | 'warning' | 'critical'>(() => {
-  if (costStore.isLoadingCost.value) return 'loading';
+  if (isLoadingCost.value) return 'loading';
   const threshold = sessionThreshold.value;
   if (threshold && threshold > 0) {
-    if (costStore.isThresholdReached.value || sessionCostValue.value >= threshold) {
+    if (isThresholdReached.value || sessionCostValue.value >= threshold) {
       return 'critical';
     }
     const percent = sessionPercent.value ?? 0;
@@ -717,13 +785,24 @@ const sessionMeterWidth = computed<string | null>(() => {
 });
 
 const sessionCostShort = computed(() => {
-  if (costStore.isLoadingCost.value) return 'Syncing';
+  if (isLoadingCost.value) return 'Syncing';
   const cost = sessionCostValue.value;
   const threshold = sessionThreshold.value;
   if (threshold && threshold > 0) {
     return `${usdFormatter.format(cost)} / ${usdFormatter.format(threshold)}`;
   }
   return usdFormatter.format(cost);
+});
+
+const sessionChipTitle = computed(() => usdFormatter.format(sessionCostValue.value));
+const sessionChipSubtitle = computed(() => {
+  const parts: string[] = [];
+  const turns = sessionEntries.value;
+  parts.push(`${turns} ${turns === 1 ? 'turn' : 'turns'}`);
+  if (sessionThreshold.value && sessionThreshold.value > 0) {
+    parts.push(`limit ${usdFormatter.format(sessionThreshold.value)}`);
+  }
+  return parts.join(' · ');
 });
 
 const openPersonaModal = (): void => {
@@ -866,7 +945,7 @@ onMounted(() => {
     });
   }
 
-  if (!costStore.isLoadingCost.value && !costStore.sessionEntryCount.value && costStore.totalSessionCost.value === 0) {
+  if (!isLoadingCost.value && !sessionEntryCount.value && totalSessionCost.value === 0) {
     void costStore.fetchSessionCost().catch((error) => {
       console.warn('[PersonaToolbar] Failed to refresh session cost:', error);
     });
@@ -888,51 +967,100 @@ onUnmounted(() => {
     ]"
   >
     <template v-if="isCompactVariant">
-      <div class="persona-compact">
-        <div class="persona-compact__header">
-          <div class="persona-compact__legend">
-            <span class="persona-compact__legend-label">Voice Controls</span>
-            <span class="persona-compact__legend-sub">Persona · Speech · Language</span>
-          </div>
-          <div class="persona-compact__status-row" role="list">
-            <div
-              v-for="item in compactStatusItems"
-              :key="item.id"
-              class="persona-compact-status"
-              :data-theme="item.theme || 'neutral'"
-              role="listitem"
-            >
-              <span class="persona-compact-status__icon-wrap" aria-hidden="true">
-                <component :is="item.icon" class="persona-compact-status__icon" />
-              </span>
-              <div class="persona-compact-status__labels">
-                <span class="persona-compact-status__label">
-                  <span v-if="item.badge" class="persona-compact-status__badge">{{ item.badge }}</span>
-                  {{ item.label }}
-                </span>
-                <span v-if="item.subLabel" class="persona-compact-status__sublabel">{{ item.subLabel }}</span>
+      <div class="voice-dock" :class="{ 'is-expanded': compactExpanded }">
+        <div class="voice-dock__bar">
+          <button
+            type="button"
+            class="voice-dock__toggle"
+            :aria-expanded="compactExpanded"
+            @click="toggleCompactExpansion"
+          >
+            <ChevronDownIcon class="voice-dock__toggle-icon" :class="{ 'is-open': compactExpanded }" aria-hidden="true" />
+            <span class="voice-dock__toggle-label">Voice controls</span>
+          </button>
+          <div class="voice-dock__chips">
+            <button type="button" class="voice-chip" :aria-label="personaChipTitle" @click="handlePersonaChipClick">
+              <SparklesIcon class="voice-chip__icon" aria-hidden="true" />
+              <div class="voice-chip__text">
+                <span class="voice-chip__title">{{ personaChipTitle }}</span>
+                <span class="voice-chip__subtitle">{{ personaChipSubtitle }}</span>
               </div>
-            </div>
+            </button>
+            <button type="button" class="voice-chip" aria-label="Speech credits" @click="handleSpeechChipClick">
+              <SpeakerWaveIcon class="voice-chip__icon" aria-hidden="true" />
+              <div class="voice-chip__text">
+                <span class="voice-chip__title">{{ speechChipTitle }}</span>
+                <span class="voice-chip__subtitle">{{ speechChipSubtitle }}</span>
+              </div>
+            </button>
+            <button type="button" class="voice-chip" aria-label="Session usage" @click="handleSessionChipClick">
+              <AdjustmentsHorizontalIcon class="voice-chip__icon" aria-hidden="true" />
+              <div class="voice-chip__text">
+                <span class="voice-chip__title">{{ sessionChipTitle }}</span>
+                <span class="voice-chip__subtitle">{{ sessionChipSubtitle }}</span>
+              </div>
+            </button>
+          </div>
+          <div class="voice-dock__actions">
+            <button
+              type="button"
+              class="voice-dock__action"
+              :aria-expanded="voiceMenuOpen"
+              @click="handleVoiceActionClick"
+              title="Select voice"
+            >
+              <SpeakerWaveIcon aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+              class="voice-dock__action"
+              :aria-expanded="languageMenuOpen"
+              @click="handleLanguageActionClick"
+              title="Language options"
+            >
+              <GlobeAltIcon aria-hidden="true" />
+            </button>
           </div>
         </div>
 
-        <transition name="persona-compact-expand">
-          <div class="persona-compact__body">
-            <div class="persona-compact__actions">
+        <transition name="voice-dock-slide">
+          <div v-if="compactExpanded" class="voice-dock__drawer">
+            <div class="voice-dock__status" role="list">
+              <div
+                v-for="item in compactStatusItems"
+                :key="item.id"
+                class="voice-dock-status"
+                :data-theme="item.theme || 'neutral'"
+                role="listitem"
+              >
+                <span class="voice-dock-status__icon" aria-hidden="true">
+                  <component :is="item.icon" />
+                </span>
+                <div class="voice-dock-status__text">
+                  <span class="voice-dock-status__label">
+                    <span v-if="item.badge" class="voice-dock-status__badge">{{ item.badge }}</span>
+                    {{ item.label }}
+                  </span>
+                  <span v-if="item.subLabel" class="voice-dock-status__sublabel">{{ item.subLabel }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="voice-dock__tabs">
               <button
                 v-for="button in compactSectionButtons"
                 :key="button.id"
                 type="button"
-                class="persona-compact-action"
+                class="voice-dock-tab"
                 :class="{ 'is-active': isSectionActive(button.id) }"
                 @click="openCompactSection(button.id)"
               >
-                <component :is="button.icon" class="persona-compact-action__icon" aria-hidden="true" />
-                <span class="persona-compact-action__label">{{ button.label }}</span>
+                <component :is="button.icon" class="voice-dock-tab__icon" aria-hidden="true" />
+                <span class="voice-dock-tab__label">{{ button.label }}</span>
               </button>
             </div>
 
-            <div class="persona-compact__panel">
+            <div class="voice-dock__panel">
               <section
                 v-if="compactActiveSection === 'persona'"
                 class="persona-compact-panel"
@@ -1480,6 +1608,282 @@ onUnmounted(() => {
 
 .persona-voice-toolbar--compact {
   width: 100%;
+}
+
+.voice-dock {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: 16px;
+  border: 1px solid hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.35);
+  background: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.72);
+  box-shadow: 0 14px 35px hsla(var(--color-shadow-h), var(--color-shadow-s), var(--color-shadow-l), 0.28);
+  backdrop-filter: blur(14px) saturate(120%);
+}
+
+.voice-dock__bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.voice-dock__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border: none;
+  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.6);
+  color: var(--color-text-primary);
+  border-radius: 999px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.voice-dock__toggle:hover {
+  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.75);
+}
+
+.voice-dock__toggle-icon {
+  width: 1rem;
+  height: 1rem;
+  transition: transform 0.2s ease;
+}
+
+.voice-dock__toggle-icon.is-open {
+  transform: rotate(180deg);
+}
+
+.voice-dock__toggle-label {
+  white-space: nowrap;
+}
+
+.voice-dock__chips {
+  display: flex;
+  gap: 0.5rem;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.voice-chip {
+  flex: 1 1 0;
+  min-width: 140px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.65rem;
+  border-radius: 12px;
+  border: 1px solid hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.28);
+  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.55);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+  text-align: left;
+}
+
+.voice-chip:hover {
+  transform: translateY(-1px);
+  border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.45);
+  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.75);
+}
+
+.voice-chip__icon {
+  width: 1rem;
+  height: 1rem;
+  color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), calc(var(--color-accent-interactive-l) + 10%));
+  flex-shrink: 0;
+}
+
+.voice-chip__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.voice-chip__title {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.voice-chip__subtitle {
+  font-size: 0.65rem;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.voice-dock__actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.voice-dock__action {
+  width: 2.25rem;
+  height: 2.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.35);
+  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.6);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.voice-dock__action:hover {
+  transform: translateY(-1px);
+  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.75);
+  border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.4);
+}
+
+.voice-dock__action svg {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.voice-dock__drawer {
+  border-radius: 14px;
+  border: 1px solid hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.28);
+  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.58);
+  padding: 0.9rem 1rem;
+  box-shadow: inset 0 0 0 1px hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.voice-dock__status {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.voice-dock-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 0.6rem;
+  border-radius: 10px;
+  background: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.55);
+  border: 1px solid hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.25);
+}
+
+.voice-dock-status__icon {
+  width: 0.85rem;
+  height: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), calc(var(--color-accent-interactive-l) + 10%));
+}
+
+.voice-dock-status__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.voice-dock-status__label {
+  font-size: 0.65rem;
+  color: var(--color-text-primary);
+}
+
+.voice-dock-status__badge {
+  font-size: 0.55rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-right: 0.25rem;
+  color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
+}
+
+.voice-dock-status__sublabel {
+  font-size: 0.6rem;
+  color: var(--color-text-secondary);
+}
+
+.voice-dock__tabs {
+  display: flex;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.voice-dock-tab {
+  flex: 1 1 0;
+  min-width: 120px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.7rem;
+  border-radius: 10px;
+  border: 1px solid hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.25);
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: 0.68rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.voice-dock-tab.is-active {
+  background: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.18);
+  border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.35);
+  color: var(--color-text-primary);
+}
+
+.voice-dock-tab__icon {
+  width: 0.9rem;
+  height: 0.9rem;
+}
+
+.voice-dock__panel {
+  border-radius: 12px;
+  border: 1px solid hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.22);
+  background: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.55);
+  padding: 0.85rem 0.95rem;
+}
+
+.voice-dock-slide-enter-active,
+.voice-dock-slide-leave-active {
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.voice-dock-slide-enter-from,
+.voice-dock-slide-leave-to {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+@media (max-width: 768px) {
+  .voice-dock__bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.6rem;
+  }
+
+  .voice-dock__chips {
+    flex-direction: column;
+  }
+
+  .voice-chip {
+    min-width: 100%;
+  }
+
+  .voice-dock__actions {
+    justify-content: flex-end;
+  }
 }
 
 .persona-compact {
