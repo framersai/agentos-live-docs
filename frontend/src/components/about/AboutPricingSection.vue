@@ -9,7 +9,7 @@ import { useRegistrationStore } from '@/store/registration.store';
 import type { PlanCatalogEntry, PlanId } from '../../../shared/planCatalog';
 
 const { t } = useI18n();
-const { featuredPlan, standardPlans, allPlans } = usePlans();
+const { featuredPlan, standardPlans, plans } = usePlans();
 const router = useRouter();
 const route = useRoute();
 const auth = useAuth();
@@ -70,7 +70,7 @@ const buildCardModel = (plan: PlanCatalogEntry | null | undefined): PlanCardView
 
 // Sort all plans by price and filter out hidden ones
 const visiblePlans = computed(() => {
-  return allPlans.value
+  return plans.value
     .filter(plan => plan.public && !plan.metadata?.hiddenOnMarketing)
     .sort((a, b) => a.monthlyPriceUsd - b.monthlyPriceUsd)
     .map(plan => buildCardModel(plan))

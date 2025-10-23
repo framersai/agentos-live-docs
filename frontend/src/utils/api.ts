@@ -534,7 +534,7 @@ export interface ResetCostResponseFE {
 }
 
 export const costAPI = {
-  getSessionCost: (): Promise<AxiosResponse<SessionCostDetailsFE>> => api.get('/cost/session'),
+  getSessionCost: (): Promise<AxiosResponse<SessionCostDetailsFE>> => api.get('/cost'),
   resetSessionCost: (data: ResetCostPayloadFE = { action: 'reset' }): Promise<AxiosResponse<ResetCostResponseFE>> =>
     api.post('/cost', data),
 };
