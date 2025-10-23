@@ -9,7 +9,7 @@
     "build": "npm run build:frontend && npm run build:backend",
     "build:frontend": "cd frontend && npm run build",
     "build:backend": "cd backend && npm run build",
-    "start": "cd backend && npm start",
+    "start": "concurrently \"cd backend && npm start\" \"cd frontend && npm run preview -- --host 0.0.0.0\"",
     "start:dev": "npm run dev",
     "start:prod": "npm run build && npm run start",
     "test": "echo \"Error: no test specified\" && exit 1"

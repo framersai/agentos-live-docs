@@ -23,7 +23,7 @@ import {
 import type { ToastService } from '@/services/services';
 import { localStorageService, type IStorageService } from '@/services/localStorage.service';
 // CompactMessageRenderer is used as the primary display mechanism for structured markdown.
-import CompactMessageRenderer from '@/components/CompactMessageRenderer.vue';
+import CompactMessageRenderer from '@/components/layouts/CompactMessageRenderer/CompactMessageRenderer.vue';
 import {
   CodeBracketSquareIcon,   // Main agent icon
   PlusCircleIcon,        // New session/query
