@@ -1521,4 +1521,33 @@ onBeforeUnmount(() => {
 });
 </script>
 
+<style scoped lang="scss">
+.vi-toolbar-shell {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 0 1rem;
+  margin: 0.75rem 0 1rem;
+}
+
+.vi-toolbar-shell > * {
+  width: min(760px, 100%);
+}
+
+.vi-toolbar-shell :deep(.voice-dock) {
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .vi-toolbar-shell {
+    padding: 0 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .vi-toolbar-shell > * {
+    width: 100%;
+  }
+}
+</style>
+
 
