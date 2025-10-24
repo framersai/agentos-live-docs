@@ -220,7 +220,7 @@ const maxHistoryMessagesSummary = computed<string>(() => {
 });
 
 const useAdvancedHistoryManager = ref<boolean>(vcaSettings.useAdvancedMemory);
-const showMemoryAdvanced = ref<boolean>(useAdvancedHistoryManager.value);
+const showMemoryAdvanced = ref<boolean>(true);
 const showVoiceAdvanced = ref<boolean>(false);
 const chatHistoryCount = ref<number>(clampHistoryCount(conversationManager.getHistoryMessageCount()));
 

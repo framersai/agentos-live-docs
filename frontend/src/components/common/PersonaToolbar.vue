@@ -1593,6 +1593,8 @@ onUnmounted(() => {
   backdrop-filter: blur(14px) saturate(120%);
   width: 100%;
   box-sizing: border-box;
+  overflow: visible;
+  z-index: 5;
 }
 
 .voice-dock__bar {
@@ -1695,14 +1697,26 @@ onUnmounted(() => {
 }
 
 .voice-dock__drawer {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 0.85rem);
+  width: 100%;
   border-radius: 14px;
   border: 1px solid hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.28);
-  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.58);
+  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.72);
   padding: 0.9rem 1rem;
-  box-shadow: inset 0 0 0 1px hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.12);
+  box-shadow:
+    0 18px 38px hsla(var(--color-shadow-h), var(--color-shadow-s), var(--color-shadow-l), 0.28),
+    0 4px 14px hsla(var(--color-shadow-h), var(--color-shadow-s), var(--color-shadow-l), 0.18);
+  backdrop-filter: blur(16px) saturate(130%);
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  max-height: min(70vh, 520px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  z-index: 12;
+  will-change: transform, opacity;
 }
 
 .voice-dock__status {
@@ -1816,6 +1830,12 @@ onUnmounted(() => {
 
   .voice-dock__chips {
     flex-direction: column;
+  }
+
+  .voice-dock__drawer {
+    bottom: auto;
+    top: calc(100% + 0.75rem);
+    max-height: min(60vh, 460px);
   }
 
   .voice-chip {
