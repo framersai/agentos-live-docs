@@ -14,16 +14,17 @@
  * @version 1.1.1 - Corrected TypeScript errors, removed unused imports based on template usage.
  */
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, watch, type Ref, type Component as VueComponentType } from 'vue';
+import { ref, computed, onMounted, onUnmounted, watch, inject, type Ref, type Component as VueComponentType } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
 import {
   voiceSettingsManager,
   type AudioInputMode,
   type VoiceApplicationSettings,
-  type STTPreference
-  // TTSProvider is not directly used as a type annotation here after corrections.
+  type STTPreference,
+  type VoiceOption,
 } from '@/services/voice.settings.service';
 import { useI18n } from 'vue-i18n';
+import type { ToastService } from '@/services/services';
 
 // Icons - Only importing icons actively used in the template.
 import {
@@ -63,6 +64,7 @@ interface STTOption {
 const settings: VoiceApplicationSettings = voiceSettingsManager.settings;
 const route = useRoute();
 const { t } = useI18n();
+const toast = inject<ToastService>('toast');
 
 /** @ref {Ref<boolean>} isOpen - Controls dropdown visibility. */
 const isOpen: Ref<boolean> = ref(false);
@@ -84,7 +86,12 @@ const selectedOutputDeviceId = computed<string>({
   set: (val: string) => voiceSettingsManager.updateSetting('selectedAudioOutputDeviceId', val === 'default' ? null : val),
 });
 
-const toggleDropdown = (): void => { isOpen.value = !isOpen.value; };
+const toggleDropdown = async (): Promise<void> => {
+  isOpen.value = !isOpen.value;
+  if (isOpen.value) {
+    await ensureVoicesLoaded();
+  }
+};
 const closeDropdown = (): void => { isOpen.value = false; };
 
 const handleClickOutside = (event: MouseEvent): void => {
@@ -133,23 +140,35 @@ const isGlobalMuteActive = computed<boolean>({
 
 const toggleGlobalMute = (): void => { isGlobalMuteActive.value = !isGlobalMuteActive.value; };
 
-// Placeholders for voice lists - these are used in the template for UI structure
-const placeholderOpenAIVoices = ref([
-  { id: 'openai_alloy', name: 'Alloy (OpenAI)', providerVoiceId: 'alloy' },
-  { id: 'openai_echo', name: 'Echo (OpenAI)', providerVoiceId: 'echo' },
-]);
-const placeholderBrowserVoices = ref([
-  { id: 'browser_sys_eng', name: 'System English (Browser)', providerVoiceId: 'uri:default-en' },
-  { id: 'browser_sys_esp', name: 'System Spanish (Browser)', providerVoiceId: 'uri:default-es' },
-]);
+const selectedTtsVoiceId = computed<string | null>(() => settings.selectedTtsVoiceId ?? null);
+const voicesLoading = computed<boolean>(() => !voiceSettingsManager.ttsVoicesLoaded.value);
+const availableVoices = computed<ReadonlyArray<VoiceOption>>(
+  () => voiceSettingsManager.availableTtsVoices.value,
+);
+const openaiVoices = computed(() =>
+  availableVoices.value.filter((voice) => voice.provider === 'openai'),
+);
+const browserVoices = computed(() =>
+  availableVoices.value.filter((voice) => voice.provider === 'browser'),
+);
 
-// These selected voice refs are for UI binding if we implement selection within this dropdown
-const selectedOpenAIVoice = ref<string | null>(
-    settings.ttsProvider === 'openai_tts' ? settings.selectedTtsVoiceId : null
-);
-const selectedBrowserVoice = ref<string | null>(
-    settings.ttsProvider === 'browser_tts' ? settings.selectedTtsVoiceId : null
-);
+const ensureVoicesLoaded = async (): Promise<void> => {
+  if (voiceSettingsManager.ttsVoicesLoaded.value) return;
+  try {
+    await voiceSettingsManager.loadAllTtsVoices();
+  } catch (error: any) {
+    console.error('[VoiceControlsDropdown] Failed to load voices:', error);
+    const message =
+      error?.message ??
+      (typeof error === 'string' ? error : 'Unable to load the voice catalog right now.');
+    toast?.add?.({
+      type: 'error',
+      title: 'Voice catalog unavailable',
+      message,
+      duration: 3200,
+    });
+  }
+};
 
 watch(() => settings.audioInputMode, (newVal) => {
   if (selectedAudioMode.value !== newVal) selectedAudioMode.value = newVal;
@@ -160,16 +179,18 @@ watch(() => settings.sttPreference, (newVal) => {
 watch(() => settings.autoPlayTts, (newVal) => {
   if (isGlobalMuteActive.value === newVal) isGlobalMuteActive.value = !newVal;
 });
-watch(() => settings.selectedTtsVoiceId, (newVal) => {
-    if (settings.ttsProvider === 'openai_tts' && selectedOpenAIVoice.value !== newVal) {
-        selectedOpenAIVoice.value = newVal;
-    } else if (settings.ttsProvider === 'browser_tts' && selectedBrowserVoice.value !== newVal) {
-        selectedBrowserVoice.value = newVal;
-    }
+watch(() => settings.ttsProvider, () => {
+  if (isOpen.value) {
+    void ensureVoicesLoaded();
+  }
 });
-
+watch(isOpen, (open) => {
+  if (open) {
+    void ensureVoicesLoaded();
+  }
+});
 const selectVoice = (voiceId: string | null) => {
-    voiceSettingsManager.updateSetting('selectedTtsVoiceId', voiceId);
+  voiceSettingsManager.updateSetting('selectedTtsVoiceId', voiceId);
 };
 
 </script>
@@ -304,46 +325,78 @@ const selectVoice = (voiceId: string | null) => {
             </div>
           </div>
 
-          <div v-if="settings.ttsProvider === 'openai_tts'">
+          <div v-if="settings.ttsProvider === 'openai_tts' || openaiVoices.length">
             <div class="dropdown-divider-ephemeral"></div>
             <div class="setting-group-in-dropdown px-1.5 py-1">
               <label class="dropdown-section-title-ephemeral !mb-1.5 !mt-0 flex items-center">
                 <OpenAIVoicesIcon class="section-title-icon-ephemeral" aria-hidden="true" /> OpenAI Voices
               </label>
               <div class="voice-list-placeholder">
-                <button
-                  v-for="voice in placeholderOpenAIVoices" :key="voice.id"
-                  @click="selectVoice(voice.id)"
-                  class="dropdown-item-ephemeral !text-xs !py-1.5 !px-2"
-                  :class="{'active font-semibold': selectedOpenAIVoice === voice.id}"
-                  role="menuitemradio" :aria-checked="selectedOpenAIVoice === voice.id"
-                >
-                  {{ voice.name }}
-                  <SelectedOptionIcon v-if="selectedOpenAIVoice === voice.id" class="dropdown-item-icon icon-xs !ml-auto !mr-0" />
-                </button>
-                <p v-if="!placeholderOpenAIVoices.length" class="text-xs text-center py-2 text-[hsl(var(--color-text-muted-h),var(--color-text-muted-s),var(--color-text-muted-l))] italic opacity-75">(OpenAI voices N/A)</p>
+                <template v-if="voicesLoading">
+                  <p class="voice-list-placeholder__empty">Loading OpenAI voices…</p>
+                </template>
+                <template v-else-if="openaiVoices.length === 0">
+                  <p class="voice-list-placeholder__empty">No OpenAI voices available. Refresh from Settings.</p>
+                </template>
+                <template v-else>
+                  <button
+                    v-for="voice in openaiVoices"
+                    :key="voice.id"
+                    @click="selectVoice(voice.id)"
+                    class="dropdown-item-ephemeral !text-xs !py-1.5 !px-2 voice-list-placeholder__option"
+                    :class="{'active font-semibold': selectedTtsVoiceId === voice.id}"
+                    role="menuitemradio"
+                    :aria-checked="selectedTtsVoiceId === voice.id"
+                  >
+                    <span class="voice-list-placeholder__label">{{ voice.name }}</span>
+                    <span class="voice-list-placeholder__meta">
+                      {{ voice.lang ? voice.lang.toUpperCase() : '—' }}
+                      <span v-if="voice.isDefault" class="voice-list-placeholder__badge">Default</span>
+                    </span>
+                    <SelectedOptionIcon
+                      v-if="selectedTtsVoiceId === voice.id"
+                      class="dropdown-item-icon icon-xs !ml-auto !mr-0"
+                    />
+                  </button>
+                </template>
               </div>
             </div>
           </div>
 
-           <div v-if="settings.ttsProvider === 'browser_tts'">
+           <div v-if="settings.ttsProvider === 'browser_tts' || browserVoices.length">
             <div class="dropdown-divider-ephemeral"></div>
             <div class="setting-group-in-dropdown px-1.5 py-1">
               <label class="dropdown-section-title-ephemeral !mb-1.5 !mt-0 flex items-center">
                 <BrowserVoicesIcon class="section-title-icon-ephemeral" aria-hidden="true" /> Browser Voices
               </label>
               <div class="voice-list-placeholder">
-                 <button
-                  v-for="voice in placeholderBrowserVoices" :key="voice.id"
-                  @click="selectVoice(voice.id)"
-                  class="dropdown-item-ephemeral !text-xs !py-1.5 !px-2"
-                  :class="{'active font-semibold': selectedBrowserVoice === voice.id}"
-                  role="menuitemradio" :aria-checked="selectedBrowserVoice === voice.id"
-                >
-                  {{ voice.name }}
-                  <SelectedOptionIcon v-if="selectedBrowserVoice === voice.id" class="dropdown-item-icon icon-xs !ml-auto !mr-0" />
-                </button>
-                <p v-if="!placeholderBrowserVoices.length" class="text-xs text-center py-2 text-[hsl(var(--color-text-muted-h),var(--color-text-muted-s),var(--color-text-muted-l))] italic opacity-75">(Browser voices N/A or see Settings)</p>
+                <template v-if="voicesLoading">
+                  <p class="voice-list-placeholder__empty">Loading browser voices…</p>
+                </template>
+                <template v-else-if="browserVoices.length === 0">
+                  <p class="voice-list-placeholder__empty">No browser voices detected. Check system voice settings.</p>
+                </template>
+                <template v-else>
+                  <button
+                    v-for="voice in browserVoices"
+                    :key="voice.id"
+                    @click="selectVoice(voice.id)"
+                    class="dropdown-item-ephemeral !text-xs !py-1.5 !px-2 voice-list-placeholder__option"
+                    :class="{'active font-semibold': selectedTtsVoiceId === voice.id}"
+                    role="menuitemradio"
+                    :aria-checked="selectedTtsVoiceId === voice.id"
+                  >
+                    <span class="voice-list-placeholder__label">{{ voice.name }}</span>
+                    <span class="voice-list-placeholder__meta">
+                      {{ voice.lang ? voice.lang.toUpperCase() : '—' }}
+                      <span v-if="voice.isDefault" class="voice-list-placeholder__badge">Default</span>
+                    </span>
+                    <SelectedOptionIcon
+                      v-if="selectedTtsVoiceId === voice.id"
+                      class="dropdown-item-icon icon-xs !ml-auto !mr-0"
+                    />
+                  </button>
+                </template>
               </div>
             </div>
           </div>
@@ -424,16 +477,63 @@ const selectVoice = (voiceId: string | null) => {
     .option-icon-dropdown { opacity: 1; transform: scale(1.05); }
   }
 }
-.voice-list-placeholder .dropdown-item-ephemeral {
+.voice-list-placeholder {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var.$spacing-xs * 0.35);
+}
+
+.voice-list-placeholder__empty {
+  font-size: var.$font-size-xs;
+  text-align: center;
+  color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+  padding: calc(var.$spacing-xs * 0.75) calc(var.$spacing-xs * 0.5);
+  border-radius: var.$radius-md;
+  background-color: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.35);
+  border: 1px dashed hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.3);
+}
+
+.voice-list-placeholder__option {
+  display: flex !important;
+  align-items: center;
+  gap: calc(var.$spacing-xs * 0.5);
   padding-top: calc(var.$spacing-xs / 2) !important;
   padding-bottom: calc(var.$spacing-xs / 2) !important;
   font-size: var.$font-size-xs !important;
   font-weight: 400 !important;
 
   &.active {
-    font-weight: 600 !important; // Ensure active voice is distinct
+    font-weight: 600 !important;
     background-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.2) !important;
+    border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.45) !important;
   }
+}
+
+.voice-list-placeholder__label {
+  flex: 1 1 auto;
+  text-align: left;
+}
+
+.voice-list-placeholder__meta {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var.$spacing-xs * 0.25);
+  font-size: calc(var.$font-size-xs * 0.95);
+  color: hsl(var(--color-text-muted-h), var(--color-text-muted-s), var(--color-text-muted-l));
+}
+
+.voice-list-placeholder__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 calc(var.$spacing-xs * 0.35);
+  border-radius: 999px;
+  background-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.18);
+  color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
+  font-size: calc(var.$font-size-xs * 0.85);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 .section-title-icon-ephemeral {
     width: 0.9em;
