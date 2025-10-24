@@ -10,7 +10,7 @@
 
 ## Overview
 
-Voice Chat Assistant is a full-stack application that helps you explore ideas, ship code, and stay organised. Speak naturally, mix in text, and let the assistant manage diagrams, code snippets, and follow-up context. The stack pairs a Vue 3 frontend with an Express + TypeScript backend, plus optional integrations for Supabase OAuth and Lemon Squeezy billing.
+Voice Chat Assistant is a full-stack application that helps you explore ideas, ship code, and stay organised. Speak naturally, mix in text, and let the assistant manage diagrams, code snippets, and follow-up context. The stack pairs a Vue 3 frontend with an Express + TypeScript backend, plus optional integrations for Supabase OAuth and Stripe billing.
 
 ### Key Features
 
@@ -20,7 +20,7 @@ Voice Chat Assistant is a full-stack application that helps you explore ideas, s
 - Mermaid diagram generation for architecture discussions
 - Cost tracking, configurable model routing, and granular rate limits
 - Two authentication paths: shared global passphrase or personal Supabase accounts
-- Optional Lemon Squeezy billing with subscription-aware access control
+- Optional Stripe billing with subscription-aware access control
 - Public demo mode with automatic rate-limit banners
 
 ## Table of Contents
@@ -78,7 +78,19 @@ ANTHROPIC_API_KEY=
 LEMONSQUEEZY_API_KEY=
 LEMONSQUEEZY_STORE_ID=
 LEMONSQUEEZY_WEBHOOK_SECRET=
+
+# Stripe (preferred)
+STRIPE_SECRET_KEY=
+STRIPE_WEBHOOK_SECRET=
+STRIPE_BASIC_PRODUCT_ID=
+STRIPE_BASIC_PRICE_ID=
+STRIPE_CREATOR_PRODUCT_ID=
+STRIPE_CREATOR_PRICE_ID=
+STRIPE_ORG_PRODUCT_ID=
+STRIPE_ORG_PRICE_ID=
 ```
+
+> Need a ready-to-fill template? Use `.env.supabase-stripe.example` for the backend and `frontend/.env.supabase-stripe.example` for the frontend. Copy them to `.env` and `frontend/.env.local`, then replace the placeholder values with your Supabase project keys and Stripe price IDs.
 
 Frontend-specific values live in `frontend/.env` or `frontend/.env.local`:
 
@@ -89,7 +101,7 @@ VITE_SUPABASE_URL=
 VITE_SUPABASE_ANON_KEY=
 ```
 
-> `GLOBAL_ACCESS_PASSWORD` enables the shared login path immediately. Individual logins require either Supabase (email/password or OAuth) or manual seeding plus an active Lemon Squeezy subscription.
+> `GLOBAL_ACCESS_PASSWORD` enables the shared login path immediately. Individual logins require either Supabase (email/password or OAuth) or manual seeding plus an active Stripe subscription.
 
 ### 3. Run the Development Servers
 
@@ -128,7 +140,7 @@ For the full list of environment variables, feature flags, and tuning options, r
 
 The shared plan catalog lives in `shared/planCatalog.ts` and drives the About page, login hints, and Settings billing card. See [`docs/PLANS_AND_BILLING.md`](docs/PLANS_AND_BILLING.md) for the calculation breakdown.
 
-For a detailed implementation brief covering the multi-step registration experience, Supabase integration, and Lemon Squeezy checkout, read [`docs/SIGNUP_BILLING_IMPLEMENTATION_PLAN.md`](docs/SIGNUP_BILLING_IMPLEMENTATION_PLAN.md).
+For step-by-step environment details (Supabase keys, Stripe product IDs, webhook wiring, and the Vue registration flow), read [`docs/SUPABASE_STRIPE_SETUP.md`](docs/SUPABASE_STRIPE_SETUP.md). The legacy Lemon Squeezy plan remains in [`docs/SIGNUP_BILLING_IMPLEMENTATION_PLAN.md`](docs/SIGNUP_BILLING_IMPLEMENTATION_PLAN.md) for historical context.
 
 - Free � GPT-4o mini, ~1.8K GPT-4o tokens/day.
 - Basic ($9/mo) � ~9.5K GPT-4o tokens/day, premium models, no BYO keys.
@@ -156,7 +168,7 @@ Voice Chat Assistant follows a modular client/server design:
 
 - **Frontend**: Vue 3 (Composition API), Vite, TailwindCSS, VueUse, and Supabase JS (optional).
 - **Backend**: Express, TypeScript, multi-tenant auth middleware, and feature-focused modules under `backend/src/features/*`.
-- **External Services**: OpenAI / OpenRouter / Anthropic for LLMs, Supabase for authentication, Lemon Squeezy for billing.
+- **External Services**: OpenAI / OpenRouter / Anthropic for LLMs, Supabase for authentication, Stripe for billing.
 
 See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for diagrams, module breakdowns, and data flow details.
 
@@ -174,7 +186,7 @@ Authenticated routes are served from `/api`. Key endpoints:
 - `POST /api/diagram` - Mermaid diagram generation.
 - `GET /api/tts/voices`, `POST /api/tts` - Text-to-speech helpers.
 - `GET /api/cost`, `POST /api/cost` - Authenticated cost tracking (reset + history).
-- `POST /api/billing/checkout` - Creates Lemon Squeezy checkout sessions (requires auth).
+- `POST /api/billing/checkout` - Creates Stripe checkout sessions (requires auth).
 - `POST /api/billing/webhook` - Webhook receiver that syncs subscription status.
 
 > **Deploy tip:** If CI reports `Missing required environment variable: AUTH_JWT_SECRET`, double-check the secret or `.env` you push to production. The backend expects a line such as `AUTH_JWT_SECRET=super_long_value` with no surrounding quotes—without it the process exits before `/health` is available.
