@@ -184,16 +184,6 @@ const handleSessionChipClick = (): void => {
   openCompactSection('session');
 };
 
-const handleVoiceActionClick = async (): Promise<void> => {
-  openCompactSection('speech');
-  await toggleVoiceMenu();
-};
-
-const handleLanguageActionClick = (): void => {
-  openCompactSection('session');
-  toggleLanguageMenu();
-};
-
 const languageSummaryLabel = computed(() => {
   let label: string;
   if (languagePreferenceLocked.value) {
@@ -1001,26 +991,6 @@ onUnmounted(() => {
               </div>
             </button>
           </div>
-          <div class="voice-dock__actions">
-            <button
-              type="button"
-              class="voice-dock__action"
-              :aria-expanded="voiceMenuOpen"
-              @click="handleVoiceActionClick"
-              title="Select voice"
-            >
-              <SpeakerWaveIcon aria-hidden="true" />
-            </button>
-            <button
-              type="button"
-              class="voice-dock__action"
-              :aria-expanded="languageMenuOpen"
-              @click="handleLanguageActionClick"
-              title="Language options"
-            >
-              <GlobeAltIcon aria-hidden="true" />
-            </button>
-          </div>
         </div>
 
         <transition name="voice-dock-slide">
@@ -1621,6 +1591,8 @@ onUnmounted(() => {
   background: hsla(var(--color-bg-primary-h), var(--color-bg-primary-s), var(--color-bg-primary-l), 0.72);
   box-shadow: 0 14px 35px hsla(var(--color-shadow-h), var(--color-shadow-s), var(--color-shadow-l), 0.28);
   backdrop-filter: blur(14px) saturate(120%);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .voice-dock__bar {
@@ -1720,37 +1692,6 @@ onUnmounted(() => {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.voice-dock__actions {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-}
-
-.voice-dock__action {
-  width: 2.25rem;
-  height: 2.25rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 999px;
-  border: 1px solid hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.35);
-  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.6);
-  color: var(--color-text-primary);
-  cursor: pointer;
-  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
-}
-
-.voice-dock__action:hover {
-  transform: translateY(-1px);
-  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.75);
-  border-color: hsla(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l), 0.4);
-}
-
-.voice-dock__action svg {
-  width: 1.1rem;
-  height: 1.1rem;
 }
 
 .voice-dock__drawer {
@@ -1879,10 +1820,6 @@ onUnmounted(() => {
 
   .voice-chip {
     min-width: 100%;
-  }
-
-  .voice-dock__actions {
-    justify-content: flex-end;
   }
 }
 

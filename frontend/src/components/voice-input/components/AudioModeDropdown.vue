@@ -12,17 +12,22 @@
  * - Imported VoiceInputMode from types.ts for prop typing.
  */
 <template>
-  <div class="audio-mode-dropdown-wrapper" ref="dropdownRef">
+  <div
+    class="audio-mode-dropdown-wrapper"
+    :class="{ 'is-compact': isCompact }"
+    ref="dropdownRef"
+  >
     <button
       @click="toggleDropdown"
-      class="audio-mode-button"
+      :class="['audio-mode-button', { 'audio-mode-button--compact': isCompact }]"
       :disabled="disabled"
       aria-haspopup="true"
       :aria-expanded="isOpen"
       :title="`Current mode: ${currentModeLabel}. Click to change.`"
     >
       <component :is="currentModeIcon" class="icon-sm" aria-hidden="true" />
-      <span class="mode-label">{{ currentModeLabel }}</span>
+      <span :class="['mode-label', { 'sr-only': isCompact }]">{{ currentModeLabel }}</span>
+      <span v-if="isCompact" class="mode-chip" aria-hidden="true">{{ currentModeBadge }}</span>
       <span
         class="mode-info-icon"
         @click.stop="toggleInfoPopover"
@@ -87,7 +92,7 @@
  * @script AudioModeDropdown
  * @description Logic for the AudioModeDropdown component.
  */
-import { ref, computed, onMounted, onUnmounted, type Component } from 'vue';
+import { ref, computed, onMounted, onUnmounted, withDefaults, type Component } from 'vue';
 import { useI18n } from 'vue-i18n';
 import {
   ChevronDownIcon,
@@ -118,14 +123,18 @@ interface AudioModeOptionLocal {
  * @interface Props
  * @description Props for the AudioModeDropdown component.
  */
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   /** The currently selected audio input mode value. */
   currentMode: VoiceInputMode;
   /** Array of available audio mode options. */
   options: AudioModeOptionLocal[]; // Uses the local (now aligned) interface
   /** Whether the dropdown is disabled. */
   disabled?: boolean;
-}>();
+  /** Whether to render in compact (icon-first) mode. */
+  compact?: boolean;
+}>(), {
+  compact: false,
+});
 
 /**
  * @emits Emits
@@ -141,6 +150,14 @@ const emit = defineEmits<{
 
 const { t } = useI18n();
 
+const MODE_BADGES: Record<VoiceInputMode, string> = {
+  'push-to-talk': 'PTT',
+  'voice-activation': 'VOX',
+  'continuous': 'LIVE',
+};
+
+const isCompact = computed(() => Boolean(props.compact));
+
 const dropdownRef = ref<HTMLElement | null>(null);
 const popoverRef = ref<HTMLElement | null>(null);
 const isOpen = ref(false);
@@ -154,6 +171,8 @@ const currentModeLabel = computed<string>(() => {
   const option = props.options.find(o => o.value === props.currentMode);
   return option?.label || 'Mode';
 });
+
+const currentModeBadge = computed(() => MODE_BADGES[props.currentMode] ?? 'MODE');
 
 /**
  * @computed currentModeDescription
@@ -280,6 +299,17 @@ onUnmounted(() => {
 /* Styles are from your provided file. Transition name changed for consistency if needed. */
 .audio-mode-dropdown-wrapper {
   position: relative;
+
+  &.is-compact {
+    .mode-info-icon {
+      font-size: 0.75rem;
+    }
+
+    .chevron-icon {
+      width: 0.85rem;
+      height: 0.85rem;
+    }
+  }
 }
 
 .audio-mode-button {
@@ -305,6 +335,11 @@ onUnmounted(() => {
   }
 }
 
+.audio-mode-button--compact {
+  padding: 0.45rem 0.6rem;
+  gap: 0.4rem;
+}
+
 .icon-sm { /* Ensure this class is defined if used or use direct icon components */
   width: 1.25rem; /* 20px */
   height: 1.25rem; /* 20px */
@@ -319,6 +354,24 @@ onUnmounted(() => {
   &.rotate-180 {
     transform: rotate(180deg);
   }
+}
+
+.mode-chip {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 0.18rem 0.45rem;
+  border-radius: 999px;
+  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.65);
+  color: var(--vi-label-strong-color);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.audio-mode-dropdown-wrapper.is-compact .mode-chip {
+  display: inline-flex;
 }
 
 .dropdown-menu {
