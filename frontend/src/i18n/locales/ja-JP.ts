@@ -66,7 +66,7 @@ export default {
         summary: {
           email: 'アカウントメール',
           billing: '課金サイクル',
-          billingNote: '月額課金。設定 → 請求 からいつでも解約できます。',
+          billingNote: '月額課金。設定 -> 請求 からいつでも解約できます。',
         },
         placeholders: {
           checkoutLink: 'チェックアウトセッションを作成しました（デモメッセージ）。この後 Lemon Squeezy にリダイレクトします。',

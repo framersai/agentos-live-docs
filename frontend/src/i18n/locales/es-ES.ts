@@ -66,7 +66,7 @@ export default {
         summary: {
           email: 'Correo de la cuenta',
           billing: 'Frecuencia de facturación',
-          billingNote: 'Cobro mensual. Cancela cuando quieras desde Ajustes → Facturación.',
+          billingNote: 'Cobro mensual. Cancela cuando quieras desde Ajustes -> Facturación.',
         },
         placeholders: {
           checkoutLink: 'Sesión de pago creada (mensaje de demostración). Implementa la redirección a Lemon Squeezy a continuación.',
