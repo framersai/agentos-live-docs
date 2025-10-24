@@ -21,6 +21,7 @@ import {
   type AudioInputMode,
   type VoiceApplicationSettings,
   type STTPreference,
+  type TTSProvider,
   type VoiceOption,
 } from '@/services/voice.settings.service';
 import { useI18n } from 'vue-i18n';
@@ -56,6 +57,14 @@ interface AudioModeOption {
 interface STTOption {
   label: string;
   value: STTPreference;
+  icon: VueComponentType;
+  description: string;
+}
+
+/** @interface TTSOption - Defines structure for TTS provider selection options. */
+interface TTSOption {
+  label: string;
+  value: TTSProvider;
   icon: VueComponentType;
   description: string;
 }
@@ -133,6 +142,26 @@ const selectedSTTPreference = computed<STTPreference>({
   set: (val: STTPreference) => voiceSettingsManager.updateSetting('sttPreference', val),
 });
 
+const ttsOptions = computed<TTSOption[]>(() => [
+  {
+    label: 'Browser Playback',
+    value: 'browser_tts',
+    icon: BrowserVoicesIcon,
+    description: 'Uses built-in OS voices. No credits required.',
+  },
+  {
+    label: 'OpenAI Playback',
+    value: 'openai_tts',
+    icon: OpenAIVoicesIcon,
+    description: 'Neural cloud voices with higher fidelity.',
+  },
+]);
+
+const selectedTtsProvider = computed<TTSProvider>({
+  get: () => settings.ttsProvider ?? 'browser_tts',
+  set: (val: TTSProvider) => voiceSettingsManager.updateSetting('ttsProvider', val),
+});
+
 const isGlobalMuteActive = computed<boolean>({
   get: () => !settings.autoPlayTts,
   set: (isMuted: boolean) => voiceSettingsManager.updateSetting('autoPlayTts', !isMuted),
@@ -175,6 +204,12 @@ watch(() => settings.audioInputMode, (newVal) => {
 });
 watch(() => settings.sttPreference, (newVal) => {
   if (selectedSTTPreference.value !== newVal) selectedSTTPreference.value = newVal;
+});
+
+watch(() => settings.ttsProvider, () => {
+  if (isOpen.value) {
+    void ensureVoicesLoaded();
+  }
 });
 watch(() => settings.autoPlayTts, (newVal) => {
   if (isGlobalMuteActive.value === newVal) isGlobalMuteActive.value = !newVal;
@@ -323,6 +358,32 @@ const selectVoice = (voiceId: string | null) => {
                 <span class="option-label-dropdown">{{ stt.label }}</span>
               </button>
             </div>
+          </div>
+
+          <div class="setting-group-in-dropdown px-1.5 py-1">
+            <label class="dropdown-section-title-ephemeral !mb-1.5 !mt-0">{{ t('voice.speechPlayback', 'Speech Playback (TTS)') }}</label>
+            <div class="options-grid-dropdown grid grid-cols-2 gap-1.5">
+              <button
+                v-for="tts in ttsOptions" :key="tts.value"
+                @click="selectedTtsProvider = tts.value"
+                class="option-button-dropdown group"
+                :class="{ 'active': selectedTtsProvider === tts.value }"
+                :title="tts.description"
+                role="menuitemradio"
+                :aria-checked="selectedTtsProvider === tts.value"
+              >
+                <component :is="tts.icon" class="option-icon-dropdown" aria-hidden="true"/>
+                <span class="option-label-dropdown">{{ tts.label }}</span>
+              </button>
+            </div>
+            <p class="dropdown-hint">
+              <span v-if="selectedTtsProvider === 'openai_tts'">
+                {{ t('voice.ttsHintOpenai', 'Cloud voices auto-play and use your speech credits.') }}
+              </span>
+              <span v-else>
+                {{ t('voice.ttsHintBrowser', 'Browser voices run locally—no credits and no network required.') }}
+              </span>
+            </p>
           </div>
 
           <div v-if="settings.ttsProvider === 'openai_tts' || openaiVoices.length">

@@ -28,6 +28,7 @@ import AppHeader from '@/components/Header.vue';
 import AppFooter from '@/components/Footer.vue';
 
 // Pinia Stores
+import { storeToRefs } from 'pinia';
 import { useCostStore } from './store/cost.store';
 import { useAgentStore } from '@/store/agent.store';
 import { useChatStore } from '@/store/chat.store';
@@ -56,6 +57,7 @@ const router = useRouter();
 const route = useRoute();
 
 const costStore = useCostStore();
+const { totalSessionCost, isLoadingCost } = storeToRefs(costStore);
 const agentStore = useAgentStore();
 const chatStore = useChatStore();
 const uiStore = useUiStore();
@@ -307,7 +309,7 @@ onMounted(async () => {
 
   // If authenticated, fetch session cost if not already loaded
   if (auth.isAuthenticated.value) {
-    if (costStore.totalSessionCost === 0 && !costStore.isLoadingCost) {
+    if (totalSessionCost.value === 0 && !isLoadingCost.value) {
       await costStore.fetchSessionCost();
     }
   }
@@ -485,3 +487,8 @@ onBeforeUnmount(() => {
   transition: opacity 0.3s ease;
 }
 </style>
+watch(() => auth.isAuthenticated.value, (authed) => {
+  if (authed && totalSessionCost.value === 0 && !isLoadingCost.value) {
+    void costStore.fetchSessionCost();
+  }
+});
