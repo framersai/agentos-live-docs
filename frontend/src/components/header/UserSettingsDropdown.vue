@@ -1,5 +1,22 @@
 // File: frontend/src/components/header/UserSettingsDropdown.vue
 /**
+
+const audioModeOptions: Array<{ value: AudioInputMode; label: string }> = [
+  { value: "push-to-talk", label: "Push to Talk" },
+  { value: "voice-activation", label: "Voice Activation (\"V\")" },
+  { value: "continuous", label: "Continuous Listening" },
+];
+
+const sttPreferenceOptions: Array<{ value: STTPreference; label: string }> = [
+  { value: "whisper_api", label: "OpenAI Whisper (High Accuracy)" },
+  { value: "browser_webspeech_api", label: "Browser Web Speech (Fast, Free)" },
+];
+
+const ttsProviderOptions: Array<{ value: TTSProvider; label: string }> = [
+  { value: "browser_tts", label: "Browser Built-in (Free)" },
+  { value: "openai_tts", label: "OpenAI TTS (High Quality)" },
+];
+
  * @file UserSettingsDropdown.vue
  * @description Dropdown menu for user-specific settings and actions, including session management,
  * quick access to memory/context preferences (like toggling advanced history and viewing basic history length),
@@ -104,6 +121,22 @@ const preventRepetition = computed<boolean>({
   },
 });
 
+const audioModeOptions: Array<{ value: AudioInputMode; label: string }> = [
+  { value: 'push-to-talk', label: 'Push to Talk' },
+  { value: 'voice-activation', label: 'Voice Activation ("V")' },
+  { value: 'continuous', label: 'Continuous Listening' },
+];
+
+const sttPreferenceOptions: Array<{ value: STTPreference; label: string }> = [
+  { value: 'whisper_api', label: 'OpenAI Whisper (High Accuracy)' },
+  { value: 'browser_webspeech_api', label: 'Browser Web Speech (Fast, Free)' },
+];
+
+const ttsProviderOptions: Array<{ value: TTSProvider; label: string }> = [
+  { value: 'browser_tts', label: 'Browser Built-in (Free)' },
+  { value: 'openai_tts', label: 'OpenAI TTS (High Quality)' },
+];
+
 const conversationContextOptions: Array<{
   value: NonNullable<VoiceApplicationSettings['conversationContextMode']>;
   label: string;
@@ -120,6 +153,59 @@ const conversationContextMode = computed<NonNullable<VoiceApplicationSettings['c
   },
 });
 
+const audioInputModeSetting = computed<AudioInputMode>({
+  get: () => vcaSettings.audioInputMode ?? 'push-to-talk',
+  set: (value) => {
+    voiceSettingsManager.updateSetting('audioInputMode', value);
+  },
+});
+
+const sttPreferenceSetting = computed<STTPreference>({
+  get: () => vcaSettings.sttPreference ?? 'whisper_api',
+  set: (value) => {
+    voiceSettingsManager.updateSetting('sttPreference', value);
+  },
+});
+
+const ttsProviderSetting = computed<TTSProvider>({
+  get: () => vcaSettings.ttsProvider ?? 'browser_tts',
+  set: (value) => {
+    voiceSettingsManager.updateSetting('ttsProvider', value);
+  },
+});
+
+const autoPlayTtsSetting = computed<boolean>({
+  get: () => Boolean(vcaSettings.autoPlayTts),
+  set: (value) => {
+    voiceSettingsManager.updateSetting('autoPlayTts', value);
+  },
+});
+
+const audioModeSummaryMap: Record<AudioInputMode, string> = {
+  'push-to-talk': 'Hold the mic button to capture speech, release to review.',
+  'voice-activation': 'Say "V" or "Hey V" to wake the mic hands-free.',
+  continuous: 'Microphone stays on until you pause or stop.',
+};
+const audioModeSummary = computed(() => audioModeSummaryMap[audioInputModeSetting.value] || '');
+
+const sttPreferenceSummaryMap: Record<STTPreference, string> = {
+  whisper_api: 'High accuracy using OpenAI Whisper (metered).',
+  browser_webspeech_api: 'Fast on-device transcription using browser APIs.',
+};
+const sttPreferenceSummary = computed(() => sttPreferenceSummaryMap[sttPreferenceSetting.value] || '');
+
+const ttsProviderSummaryMap: Record<TTSProvider, string> = {
+  browser_tts: 'Uses system voices locally with no additional cost.',
+  openai_tts: 'Neural voices from OpenAI with speech credits.',
+};
+const ttsProviderSummary = computed(() => ttsProviderSummaryMap[ttsProviderSetting.value] || '');
+
+const autoPlaySummary = computed(() =>
+  autoPlayTtsSetting.value
+    ? 'Responses play automatically when ready.'
+    : 'Tap play to hear responses on demand.'
+);
+
 const maxHistoryMessages = computed<number>({
   get: () => vcaSettings.maxHistoryMessages ?? 12,
   set: (value) => {
@@ -134,6 +220,8 @@ const maxHistoryMessagesSummary = computed<string>(() => {
 });
 
 const useAdvancedHistoryManager = ref<boolean>(vcaSettings.useAdvancedMemory);
+const showMemoryAdvanced = ref<boolean>(useAdvancedHistoryManager.value);
+const showVoiceAdvanced = ref<boolean>(false);
 const chatHistoryCount = ref<number>(clampHistoryCount(conversationManager.getHistoryMessageCount()));
 
 const basicHistorySummary = computed<string>(() => {
@@ -254,6 +342,7 @@ watch(useAdvancedHistoryManager, (newVal) => {
     voiceSettingsManager.updateSetting('useAdvancedMemory', newVal);
   }
   if (newVal) {
+    showMemoryAdvanced.value = true;
     advancedHistoryConfigLocal.value = { ...advancedConversationManager.getHistoryConfig() };
   } else {
     chatHistoryCount.value = clampHistoryCount(conversationManager.getHistoryMessageCount());
@@ -370,6 +459,7 @@ const navigateToSettings = (sectionHash?: string): void => {
             <CpuChipIcon class="section-title-icon-ephemeral" aria-hidden="true" />
             Memory & Context
           </div>
+          <div class="dropdown-section-card">
           <div class="dropdown-form-group">
             <label class="dropdown-label" for="nav-response-language">Response language</label>
             <select
@@ -445,7 +535,7 @@ const navigateToSettings = (sectionHash?: string): void => {
             </label>
           </div>
 
-          <div v-if="!useAdvancedHistoryManager" class="dropdown-subsection">
+          <div v-if="!useAdvancedHistoryManager" class="dropdown-subsection dropdown-subsection--inline">
             <label class="dropdown-label" for="nav-basic-history">Basic history length</label>
             <input
               id="nav-basic-history"
@@ -459,144 +549,245 @@ const navigateToSettings = (sectionHash?: string): void => {
             <span class="dropdown-hint">{{ basicHistorySummary }}</span>
           </div>
 
-          <div v-else class="dropdown-subsection">
-            <label class="dropdown-label" for="nav-advanced-preset">Context strategy preset</label>
-            <select
-              id="nav-advanced-preset"
-              class="dropdown-select"
-              v-model="advancedHistoryConfigLocal.strategyPreset"
-              @change="onAdvancedPresetSelect"
+          <div class="dropdown-accordion">
+            <button
+              type="button"
+              class="dropdown-accordion__toggle"
+              @click="showMemoryAdvanced = !showMemoryAdvanced"
+              :aria-expanded="showMemoryAdvanced ? 'true' : 'false'"
             >
-              <option
-                v-for="preset in availablePresetDisplayNames"
-                :key="preset.key"
-                :value="preset.key"
-              >
-                {{ preset.name }}
-              </option>
-            </select>
-
-            <div class="dropdown-form-grid">
-              <div class="dropdown-form-group">
-                <label class="dropdown-label" for="nav-advanced-max-context">Max context tokens</label>
-                <input
-                  id="nav-advanced-max-context"
-                  type="number"
-                  min="500"
-                  max="128000"
-                  step="100"
-                  class="dropdown-input"
-                  v-model.number="advancedHistoryConfigLocal.maxContextTokens"
-                />
-              </div>
-              <div class="dropdown-form-group">
-                <label class="dropdown-label" for="nav-advanced-recent">Recent messages priority</label>
-                <input
-                  id="nav-advanced-recent"
-                  type="number"
-                  min="0"
-                  :max="MAX_CHAT_HISTORY_MESSAGES_CONFIGURABLE"
-                  class="dropdown-input"
-                  v-model.number="advancedHistoryConfigLocal.numRecentMessagesToPrioritize"
-                />
-              </div>
-              <div
-                class="dropdown-form-group"
-                v-if="isRelevancyStrategyActive"
-              >
-                <label class="dropdown-label" for="nav-advanced-older">Relevant older messages</label>
-                <input
-                  id="nav-advanced-older"
-                  type="number"
-                  min="0"
-                  :max="MAX_CHAT_HISTORY_MESSAGES_CONFIGURABLE"
-                  class="dropdown-input"
-                  v-model.number="advancedHistoryConfigLocal.numRelevantOlderMessagesToInclude"
-                />
-              </div>
-            </div>
-
-            <div
-              class="dropdown-form-group"
-              v-if="isRelevancyStrategyActive"
-            >
-              <label class="dropdown-label" for="nav-advanced-relevancy">
-                Relevancy threshold: {{ advancedRelevancyLabel }}
-              </label>
-              <input
-                id="nav-advanced-relevancy"
-                type="range"
-                min="0.05"
-                max="0.95"
-                step="0.01"
-                class="dropdown-range"
-                v-model.number="advancedHistoryConfigLocal.relevancyThreshold"
+              <span>Advanced memory controls</span>
+              <ChevronDownIcon
+                class="dropdown-accordion__chevron"
+                :class="{ 'rotate-180': showMemoryAdvanced }"
+                aria-hidden="true"
               />
-            </div>
+            </button>
+            <Transition name="accordion">
+              <div v-if="showMemoryAdvanced" class="dropdown-accordion__content">
+                <div v-if="useAdvancedHistoryManager" class="dropdown-subsection">
+                  <label class="dropdown-label" for="nav-advanced-preset">Context strategy preset</label>
+                  <select
+                    id="nav-advanced-preset"
+                    class="dropdown-select"
+                    v-model="advancedHistoryConfigLocal.strategyPreset"
+                    @change="onAdvancedPresetSelect"
+                  >
+                    <option
+                      v-for="preset in availablePresetDisplayNames"
+                      :key="preset.key"
+                      :value="preset.key"
+                    >
+                      {{ preset.name }}
+                    </option>
+                  </select>
 
-            <div
-              class="dropdown-form-group"
-              v-if="isSimpleRecencyStrategy"
-            >
-              <label class="dropdown-label" for="nav-simple-recency">Simple recency message count</label>
-              <input
-                id="nav-simple-recency"
-                type="number"
-                min="1"
-                :max="MAX_CHAT_HISTORY_MESSAGES_CONFIGURABLE"
-                class="dropdown-input"
-                v-model.number="advancedHistoryConfigLocal.simpleRecencyMessageCount"
-              />
-            </div>
+                  <div class="dropdown-form-grid">
+                    <div class="dropdown-form-group">
+                      <label class="dropdown-label" for="nav-advanced-max-context">Max context tokens</label>
+                      <input
+                        id="nav-advanced-max-context"
+                        type="number"
+                        min="500"
+                        max="128000"
+                        step="100"
+                        class="dropdown-input"
+                        v-model.number="advancedHistoryConfigLocal.maxContextTokens"
+                      />
+                    </div>
+                    <div class="dropdown-form-group">
+                      <label class="dropdown-label" for="nav-advanced-recent">Recent messages priority</label>
+                      <input
+                        id="nav-advanced-recent"
+                        type="number"
+                        min="0"
+                        :max="MAX_CHAT_HISTORY_MESSAGES_CONFIGURABLE"
+                        class="dropdown-input"
+                        v-model.number="advancedHistoryConfigLocal.numRecentMessagesToPrioritize"
+                      />
+                    </div>
+                    <div
+                      class="dropdown-form-group"
+                      v-if="isRelevancyStrategyActive"
+                    >
+                      <label class="dropdown-label" for="nav-advanced-older">Relevant older messages</label>
+                      <input
+                        id="nav-advanced-older"
+                        type="number"
+                        min="0"
+                        :max="MAX_CHAT_HISTORY_MESSAGES_CONFIGURABLE"
+                        class="dropdown-input"
+                        v-model.number="advancedHistoryConfigLocal.numRelevantOlderMessagesToInclude"
+                      />
+                    </div>
+                  </div>
 
-            <div class="dropdown-form-group dropdown-form-group--inline">
-              <div class="dropdown-label-group">
-                <span class="dropdown-label">Filter system messages</span>
-                <span class="dropdown-hint">Skip older system prompts where possible</span>
+                  <div
+                    class="dropdown-form-group"
+                    v-if="isRelevancyStrategyActive"
+                  >
+                    <label class="dropdown-label" for="nav-advanced-relevancy">
+                      Relevancy threshold: {{ advancedRelevancyLabel }}
+                    </label>
+                    <input
+                      id="nav-advanced-relevancy"
+                      type="range"
+                      min="0.05"
+                      max="0.95"
+                      step="0.01"
+                      class="dropdown-range"
+                      v-model.number="advancedHistoryConfigLocal.relevancyThreshold"
+                    />
+                  </div>
+
+                  <div
+                    class="dropdown-form-group"
+                    v-if="isSimpleRecencyStrategy"
+                  >
+                    <label class="dropdown-label" for="nav-simple-recency">Simple recency message count</label>
+                    <input
+                      id="nav-simple-recency"
+                      type="number"
+                      min="1"
+                      :max="MAX_CHAT_HISTORY_MESSAGES_CONFIGURABLE"
+                      class="dropdown-input"
+                      v-model.number="advancedHistoryConfigLocal.simpleRecencyMessageCount"
+                    />
+                  </div>
+
+                  <div class="dropdown-form-group dropdown-form-group--inline">
+                    <div class="dropdown-label-group">
+                      <span class="dropdown-label">Filter system messages</span>
+                      <span class="dropdown-hint">Skip older system prompts where possible</span>
+                    </div>
+                    <label class="toggle-switch-ephemeral">
+                      <input type="checkbox" v-model="advancedHistoryConfigLocal.filterHistoricalSystemMessages" />
+                      <span class="track"><span class="knob"></span></span>
+                    </label>
+                  </div>
+
+                  <div class="dropdown-form-group">
+                    <label class="dropdown-label" for="nav-chars-per-token">Characters per token estimate</label>
+                    <input
+                      id="nav-chars-per-token"
+                      type="number"
+                      min="1"
+                      max="10"
+                      step="0.1"
+                      class="dropdown-input"
+                      v-model.number="advancedHistoryConfigLocal.charsPerTokenEstimate"
+                    />
+                  </div>
+
+                  <div class="dropdown-actions">
+                    <button type="button" class="dropdown-action-button" @click="resetCurrentAdvancedStrategyToDefaults">
+                      Reset preset
+                    </button>
+                    <button type="button" class="dropdown-action-button" @click="resetAllAdvancedSettingsToGlobalDefaults">
+                      Reset all
+                    </button>
+                  </div>
+                </div>
+
+                <RouterLink
+                  :to="`/${$route.params.locale || 'en-US'}/settings#memory-settings`"
+                  @click="closeDropdown"
+                  role="menuitem"
+                  class="dropdown-link-ephemeral dropdown-link-ephemeral--accent"
+                >
+                  <SettingsIcon class="dropdown-link-icon" aria-hidden="true" />
+                  <span>Open full memory settings</span>
+                </RouterLink>
               </div>
-              <label class="toggle-switch-ephemeral">
-                <input type="checkbox" v-model="advancedHistoryConfigLocal.filterHistoricalSystemMessages" />
-                <span class="track"><span class="knob"></span></span>
-              </label>
-            </div>
-
-            <div class="dropdown-form-group">
-              <label class="dropdown-label" for="nav-chars-per-token">Characters per token estimate</label>
-              <input
-                id="nav-chars-per-token"
-                type="number"
-                min="1"
-                max="10"
-                step="0.1"
-                class="dropdown-input"
-                v-model.number="advancedHistoryConfigLocal.charsPerTokenEstimate"
-              />
-            </div>
-
-            <div class="dropdown-actions">
-              <button type="button" class="dropdown-action-button" @click="resetCurrentAdvancedStrategyToDefaults">
-                Reset preset
-              </button>
-              <button type="button" class="dropdown-action-button" @click="resetAllAdvancedSettingsToGlobalDefaults">
-                Reset all
-              </button>
-            </div>
+            </Transition>
           </div>
 
-          <RouterLink
-            :to="`/${$route.params.locale || 'en-US'}/settings#memory-settings`"
-            @click="closeDropdown"
-            role="menuitem"
-            class="dropdown-link-ephemeral"
+          </div>
+
+        <div class="dropdown-divider-ephemeral"></div>
+
+        <div class="dropdown-section-title-ephemeral">
+          <SpeakerWaveIcon class="section-title-icon-ephemeral" aria-hidden="true" />
+          Voice & Audio
+        </div>
+        <div class="dropdown-section-card">
+
+        <div class="dropdown-form-grid dropdown-form-grid--paired">
+        <div class="dropdown-form-group">
+          <label class="dropdown-label" for="nav-audio-mode">Microphone mode</label>
+          <select id="nav-audio-mode" class="dropdown-select" v-model="audioInputModeSetting">
+            <option v-for="option in audioModeOptions" :key="option.value" :value="option.value">
+              {{ option.label }}
+            </option>
+          </select>
+          <span class="dropdown-hint">{{ audioModeSummary }}</span>
+        </div>
+
+        <div class="dropdown-form-group">
+          <label class="dropdown-label" for="nav-stt-preference">Speech recognition (STT)</label>
+          <select id="nav-stt-preference" class="dropdown-select" v-model="sttPreferenceSetting">
+            <option v-for="option in sttPreferenceOptions" :key="option.value" :value="option.value">
+              {{ option.label }}
+            </option>
+          </select>
+          <span class="dropdown-hint">{{ sttPreferenceSummary }}</span>
+        </div>
+
+        <div class="dropdown-form-group">
+          <label class="dropdown-label" for="nav-tts-provider">TTS provider</label>
+          <select id="nav-tts-provider" class="dropdown-select" v-model="ttsProviderSetting">
+            <option v-for="option in ttsProviderOptions" :key="option.value" :value="option.value">
+              {{ option.label }}
+            </option>
+          </select>
+          <span class="dropdown-hint">{{ ttsProviderSummary }}</span>
+        </div>
+
+        <div class="dropdown-form-group dropdown-form-group--inline">
+          <div class="dropdown-label-group">
+            <span class="dropdown-label">Auto-play responses</span>
+            <span class="dropdown-hint">{{ autoPlaySummary }}</span>
+          </div>
+          <label class="toggle-switch-ephemeral">
+            <input type="checkbox" v-model="autoPlayTtsSetting" />
+            <span class="track"><span class="knob"></span></span>
+          </label>
+        </div>
+        </div>
+
+        <div class="dropdown-accordion">
+          <button
+            type="button"
+            class="dropdown-accordion__toggle"
+            @click="showVoiceAdvanced = !showVoiceAdvanced"
+            :aria-expanded="showVoiceAdvanced ? 'true' : 'false'"
           >
-            <SettingsIcon class="dropdown-link-icon" aria-hidden="true" />
-            <span>Open full memory settings</span>
-          </RouterLink>
+            <span>Voice options</span>
+            <ChevronDownIcon
+              class="dropdown-accordion__chevron"
+              :class="{ 'rotate-180': showVoiceAdvanced }"
+              aria-hidden="true"
+            />
+          </button>
+          <Transition name="accordion">
+            <div v-if="showVoiceAdvanced" class="dropdown-accordion__content">
+              <button
+                type="button"
+                class="dropdown-action-button dropdown-action-button--full"
+                @click="navigateToSettings('#audio-voice-settings')"
+              >
+                Manage full voice &amp; audio settings
+              </button>
+            </div>
+          </Transition>
+        </div>
 
-          <div class="dropdown-divider-ephemeral"></div>
+        </div>
 
-          <div class="dropdown-section-title-ephemeral">
-             <HistoryIcon class="section-title-icon-ephemeral" aria-hidden="true" />
+        <div class="dropdown-divider-ephemeral"></div>
+
+        <div class="dropdown-section-title-ephemeral">
+           <HistoryIcon class="section-title-icon-ephemeral" aria-hidden="true" />
             Session Management
           </div>
           <button @click="handleShowHistory" role="menuitem" class="dropdown-item-ephemeral group">
@@ -794,6 +985,108 @@ const navigateToSettings = (sectionHash?: string): void => {
 .dropdown-link-icon {
   width: 0.85rem;
   height: 0.85rem;
+}
+
+.dropdown-section-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.85rem;
+  border-radius: var.$radius-md;
+  background-color: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.45);
+  border: 1px solid hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.25);
+  margin-bottom: 1rem;
+}
+
+.dropdown-section-card:last-of-type {
+  margin-bottom: 0;
+}
+
+.dropdown-form-grid--paired {
+  gap: 0.7rem;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.dropdown-subsection--inline {
+  margin-bottom: 0;
+}
+
+.dropdown-accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid hsla(var(--color-border-glass-h), var(--color-border-glass-s), var(--color-border-glass-l), 0.2);
+}
+
+.dropdown-accordion__toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.4rem 0;
+  background: transparent;
+  border: none;
+  color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.dropdown-accordion__toggle:hover,
+.dropdown-accordion__toggle:focus-visible {
+  color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
+  outline: none;
+}
+
+.dropdown-accordion__chevron {
+  width: 0.85rem;
+  height: 0.85rem;
+  transition: transform 0.2s ease;
+}
+
+.dropdown-accordion__content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.accordion-enter-active,
+.accordion-leave-active {
+  transition: all 0.22s ease;
+}
+
+.accordion-enter-from,
+.accordion-leave-to {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+.dropdown-action-button--full {
+  width: 100%;
+  justify-content: center;
+}
+
+.dropdown-link-ephemeral--accent {
+  color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
+}
+
+.dropdown-link-ephemeral--accent:hover {
+  color: hsl(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l));
+}
+
+@media (max-width: 640px) {
+  .dropdown-section-card {
+    padding: 0.75rem;
+    gap: 0.65rem;
+  }
+
+  .dropdown-form-grid--paired {
+    grid-template-columns: 1fr;
+  }
 }
 // Removed empty .user-settings-dropdown-wrapper rule as it's not needed.
 // The .header-control-item class on the root div provides the necessary context.

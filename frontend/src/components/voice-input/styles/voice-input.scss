@@ -592,9 +592,12 @@ $z-ptt-preview-modal: 30;
 // -----------------------------------------------------------------------------
 .vi-toolbar-shell {
   width: 100%;
-  margin-bottom: 18px;
+  max-width: 720px;
+  margin: 0 auto 18px;
   position: relative;
   z-index: 6;
+  display: flex;
+  justify-content: center;
 
   .persona-voice-toolbar--compact {
     width: 100%;
@@ -606,12 +609,32 @@ $z-ptt-preview-modal: 30;
 // -----------------------------------------------------------------------------
 .vi-controls-wrapper {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 16px;
+  gap: 18px;
+  margin: 0 auto 16px;
   color: var(--vi-label-color);
   position: relative;
   z-index: $z-controls-wrapper;
+  width: 100%;
+}
+
+.vi-controls-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.vi-inline-controls {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: auto auto auto minmax(0, 1fr);
+  align-items: center;
+  gap: 14px;
 }
 
 .vi-mic-wrapper {
@@ -676,49 +699,51 @@ $z-ptt-preview-modal: 30;
 
 .vi-engine-badges {
   display: flex;
-  align-items: stretch;
-  gap: 12px;
-  min-height: 44px;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
 }
 
 .vi-engine-chip {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  border-radius: var.$radius-lg;
+  justify-content: center;
+  gap: 6px;
+  padding: 0.55rem 0.75rem;
+  border-radius: 999px;
   border: 1px solid hsla(var(--color-border-secondary-h), var(--color-border-secondary-s), var(--color-border-secondary-l), 0.35);
   background: hsla(var(--color-bg-tertiary-h), var(--color-bg-tertiary-s), var(--color-bg-tertiary-l), 0.35);
-  box-shadow: 0 8px 20px -16px hsla(var(--color-shadow-h), var(--color-shadow-s), var(--color-shadow-l), 0.5);
+  box-shadow: 0 6px 16px -12px hsla(var(--color-shadow-h), var(--color-shadow-s), var(--color-shadow-l), 0.45);
   color: var(--vi-label-strong-color);
   backdrop-filter: blur(12px);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  min-height: 40px;
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 
   &:hover {
     transform: translateY(-1px);
-    box-shadow: 0 12px 28px -18px hsla(var(--color-shadow-h), var(--color-shadow-s), var(--color-shadow-l), 0.55);
+    box-shadow: 0 10px 24px -18px hsla(var(--color-shadow-h), var(--color-shadow-s), var(--color-shadow-l), 0.55);
   }
 
   &__icon {
-    width: 1.1rem;
-    height: 1.1rem;
-    opacity: 0.8;
+    width: 1.05rem;
+    height: 1.05rem;
+    opacity: 0.85;
   }
 
-  &__text {
-    display: flex;
-    flex-direction: column;
-    line-height: 1.1;
-  }
-
-  &__label {
-    font-size: 0.72rem;
-    font-weight: 600;
-  }
-
-  &__sub {
-    font-size: 0.62rem;
-    color: var(--vi-muted-color);
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.15rem 0.45rem;
+    border-radius: 999px;
+    background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.65);
+    color: var(--vi-label-strong-color);
+    font-weight: 700;
+    font-size: 0.58rem;
+    letter-spacing: 0.12em;
   }
 
   &--browser {
@@ -751,17 +776,16 @@ $z-ptt-preview-modal: 30;
 .vi-tts-toggle {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.65rem 1rem;
-  border-radius: var.$radius-lg;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  padding: 0;
+  border-radius: 50%;
   border: 1px solid var(--vi-panel-border);
   background: var(--vi-control-bg);
   color: var(--vi-label-strong-color);
-  font-size: 0.72rem;
-  font-weight: 600;
   cursor: pointer;
   transition: all 0.22s ease;
-  min-height: 44px;
 
   &:hover {
     transform: translateY(-1px);
@@ -774,12 +798,8 @@ $z-ptt-preview-modal: 30;
   }
 
   &__icon {
-    width: 1.1rem;
-    height: 1.1rem;
-  }
-
-  &__label {
-    letter-spacing: 0.01em;
+    width: 1.15rem;
+    height: 1.15rem;
   }
 
   &--active {
@@ -1308,20 +1328,38 @@ $z-ptt-preview-modal: 30;
     height: 28px;
   }
   
-  .vi-controls-wrapper { 
+  .vi-controls-wrapper { gap: 12px; }
+  .vi-controls-row {
+    flex-direction: column;
+    align-items: stretch;
     gap: 12px;
-    flex-wrap: wrap;
-    justify-content: center;
   }
-  
-  .vi-live-transcription { 
+
+  .vi-inline-controls {
+    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .vi-engine-badges {
+    justify-content: flex-start;
+    gap: 8px;
+  }
+
+  .vi-engine-chip {
+    justify-content: space-between;
+    min-height: 36px;
+  }
+
+  .vi-tts-toggle {
+    justify-self: center;
+  }
+
+  .vi-inline-controls > .vi-live-transcription {
+    grid-column: 1 / -1;
     text-align: center;
-    flex-basis: 100%;
-    order: 3;
-    margin-top: 8px;
+    margin-top: 4px;
   }
-  
-  .vi-mode-selector { order: 2; }
   
   .vi-input-container { padding: 10px 12px; }
   .vi-textarea { font-size: 0.95rem; }
@@ -1458,7 +1496,8 @@ $z-ptt-preview-modal: 30;
   .voice-input-panel { padding: 12px; border-radius: var.$radius-lg; }
   .vi-mic-button { width: 56px; height: 56px; }
   .vi-mic-icon { width: 26px; height: 26px; }
-  .vi-controls-wrapper { gap: 8px; flex-wrap: wrap; justify-content: center; }
+  .vi-controls-wrapper { gap: 8px; }
+  .vi-controls-row { grid-template-columns: minmax(0, 1fr); gap: 8px; }
   .vi-engine-badges { flex-direction: column; gap: 8px; width: 100%; }
   .vi-engine-chip { justify-content: center; }
   .vi-tts-toggle { width: 100%; justify-content: center; }

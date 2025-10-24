@@ -95,81 +95,91 @@
       </transition>
     </div>
 
-    <div v-if="props.showEmbeddedToolbar" class="vi-toolbar-shell">
-      <PersonaToolbar
-        :agent="activeAgent"
-        variant="compact"
-      />
-    </div>
-
     <div class="vi-controls-wrapper">
-      <div class="vi-mic-wrapper">
-        <MicInputButton
-          ref="micButtonRefInternal"
-          :isActive="isModeEngaged"
-          :isListeningForWakeWord="isListeningForWakeWord"
-          :isProcessingLLM="props.isProcessingLLM"
-          :hasMicError="hasMicError"
-          :disabled="micButtonDisabled"
-          :currentAudioMode="currentAudioMode"
-          :aria-label="micButtonAriaLabel"
-          :aria-busy="showModeSpinner ? 'true' : 'false'"
-          @click="handleMicButtonClick"
-          @mousedown="handleMicButtonMouseDown"
-          @mouseup="handleMicButtonMouseUp"
-          @mouseleave="handleMicButtonMouseLeave"
-          @touchstart="handleMicButtonTouchStart"
-          @touchend="handleMicButtonTouchEnd"
-          @touchcancel="handleMicButtonTouchEnd"
-          class="vi-mic-button"
-          :class="{
-            'vi-mic-active-outer': isModeEngaged,
-            'vi-mic-listening-outer': isListeningForWakeWord
-          }"
+      <div v-if="props.showEmbeddedToolbar" class="vi-toolbar-shell">
+        <PersonaToolbar
+          :agent="activeAgent"
+          variant="compact"
         />
+      </div>
 
-        <transition name="fade">
-          <div v-if="showModeSpinner" class="vi-mode-spinner" aria-hidden="true">
-            <div class="vi-mode-spinner__ring"></div>
-          </div>
-        </transition>
+      <div class="vi-controls-row">
+        <div class="vi-mic-wrapper">
+          <MicInputButton
+            ref="micButtonRefInternal"
+            :isActive="isModeEngaged"
+            :isListeningForWakeWord="isListeningForWakeWord"
+            :isProcessingLLM="props.isProcessingLLM"
+            :hasMicError="hasMicError"
+            :disabled="micButtonDisabled"
+            :currentAudioMode="currentAudioMode"
+            :aria-label="micButtonAriaLabel"
+            :aria-busy="showModeSpinner ? 'true' : 'false'"
+            @click="handleMicButtonClick"
+            @mousedown="handleMicButtonMouseDown"
+            @mouseup="handleMicButtonMouseUp"
+            @mouseleave="handleMicButtonMouseLeave"
+            @touchstart="handleMicButtonTouchStart"
+            @touchend="handleMicButtonTouchEnd"
+            @touchcancel="handleMicButtonTouchEnd"
+            class="vi-mic-button"
+            :class="{
+              'vi-mic-active-outer': isModeEngaged,
+              'vi-mic-listening-outer': isListeningForWakeWord
+            }"
+          />
 
-        <transition name="fade">
-          <div v-if="showContinuousPulse" class="vi-continuous-pulse" aria-hidden="true">
-            <span class="vi-continuous-pulse__ring"></span>
-            <span class="vi-continuous-pulse__ring vi-continuous-pulse__ring--delay-medium"></span>
+          <transition name="fade">
+            <div v-if="showModeSpinner" class="vi-mode-spinner" aria-hidden="true">
+              <div class="vi-mode-spinner__ring"></div>
+            </div>
+          </transition>
+
+          <transition name="fade">
+            <div v-if="showContinuousPulse" class="vi-continuous-pulse" aria-hidden="true">
+              <span class="vi-continuous-pulse__ring"></span>
+              <span class="vi-continuous-pulse__ring vi-continuous-pulse__ring--delay-medium"></span>
             <span class="vi-continuous-pulse__ring vi-continuous-pulse__ring--delay-long"></span>
           </div>
-        </transition>
+          </transition>
       </div>
-      
-      <transition name="fade">
-        <AudioModeDropdown
-          v-if="!props.isProcessingLLM || currentAudioMode === 'push-to-talk'"
-          :current-mode="currentAudioMode"
-          :options="audioModeOptions"
-          :disabled="isModeEngaged || isListeningForWakeWord || showModeSpinner"
-          @select-mode="handleAudioModeChange"
-          class="vi-mode-selector"
-        />
-      </transition>
 
-      <transition name="fade">
-        <div class="vi-engine-badges" role="status" aria-live="polite">
-          <div class="vi-engine-chip" :class="`vi-engine-chip--${sttEngineMeta.theme}`">
-            <component :is="sttEngineMeta.icon" class="vi-engine-chip__icon" aria-hidden="true" />
-            <div class="vi-engine-chip__text">
-              <span class="vi-engine-chip__label">{{ sttEngineMeta.label }}</span>
-              <span v-if="sttEngineMeta.subLabel" class="vi-engine-chip__sub">{{ sttEngineMeta.subLabel }}</span>
+        <div class="vi-inline-controls">
+          <transition name="fade">
+            <AudioModeDropdown
+              v-if="!props.isProcessingLLM || currentAudioMode === 'push-to-talk'"
+              :current-mode="currentAudioMode"
+              :options="audioModeOptions"
+              :disabled="isModeEngaged || isListeningForWakeWord || showModeSpinner"
+              @select-mode="handleAudioModeChange"
+              class="vi-mode-selector"
+              compact
+            />
+          </transition>
+
+          <div class="vi-engine-badges" role="group" aria-label="Speech engine status">
+            <div
+              class="vi-engine-chip"
+              :class="`vi-engine-chip--${sttEngineMeta.theme}`"
+              role="img"
+              :aria-label="sttEngineMeta.tooltip"
+              :title="sttEngineMeta.tooltip"
+            >
+              <component :is="sttEngineMeta.icon" class="vi-engine-chip__icon" aria-hidden="true" />
+              <span v-if="sttEngineMeta.badge" class="vi-engine-chip__badge" aria-hidden="true">{{ sttEngineMeta.badge }}</span>
+            </div>
+            <div
+              class="vi-engine-chip"
+              :class="`vi-engine-chip--${ttsProviderMeta.theme}`"
+              role="img"
+              :aria-label="ttsProviderMeta.tooltip"
+              :title="ttsProviderMeta.tooltip"
+            >
+              <component :is="ttsProviderMeta.icon" class="vi-engine-chip__icon" aria-hidden="true" />
+              <span v-if="ttsProviderMeta.badge" class="vi-engine-chip__badge" aria-hidden="true">{{ ttsProviderMeta.badge }}</span>
             </div>
           </div>
-        <div class="vi-engine-chip" :class="`vi-engine-chip--${ttsProviderMeta.theme}`">
-          <component :is="ttsProviderMeta.icon" class="vi-engine-chip__icon" aria-hidden="true" />
-          <div class="vi-engine-chip__text">
-            <span class="vi-engine-chip__label">{{ ttsProviderMeta.label }}</span>
-            <span v-if="ttsProviderMeta.subLabel" class="vi-engine-chip__sub">{{ ttsProviderMeta.subLabel }}</span>
-          </div>
-        </div>
+
           <button
             type="button"
             class="vi-tts-toggle"
@@ -179,19 +189,21 @@
             @click="toggleTtsAutoPlay"
           >
             <component :is="isTtsAutoPlayEnabled ? SpeakerWaveIcon : SpeakerXMarkIcon" class="vi-tts-toggle__icon" aria-hidden="true" />
-            <span class="vi-tts-toggle__label">{{ isTtsAutoPlayEnabled ? 'Speech On' : 'Speech Off' }}</span>
+            <span class="sr-only">{{ isTtsAutoPlayEnabled ? 'Speech playback enabled' : 'Speech playback disabled' }}</span>
           </button>
-        </div>
-      </transition>
 
-      <transition name="fade">
-        <div v-if="displayTranscriptionText && currentSettings.showLiveTranscription" 
-             class="vi-live-transcription"
-             :class="{ 'vi-transcription-ephemeral': !transcriptionIsFinal }">
-          <span class="vi-transcription-text">{{ displayTranscriptionText }}</span>
-          <span v-if="!transcriptionIsFinal" class="vi-transcription-cursor"></span>
+          <transition name="fade">
+            <div
+              v-if="displayTranscriptionText && currentSettings.showLiveTranscription"
+              class="vi-live-transcription"
+              :class="{ 'vi-transcription-ephemeral': !transcriptionIsFinal }"
+            >
+              <span class="vi-transcription-text">{{ displayTranscriptionText }}</span>
+              <span v-if="!transcriptionIsFinal" class="vi-transcription-cursor"></span>
+            </div>
+          </transition>
         </div>
-      </transition>
+      </div>
     </div>
 
     <div class="vi-input-wrapper" :class="{ 'vi-input-disabled': isInputEffectivelyDisabled }">
@@ -733,26 +745,32 @@ const sttEngineOptions = computed<SttEngineOption[]>(() => [
 const sttEngineMeta = computed(() => {
   if (currentSettings.sttPreference === 'whisper_api') {
     return {
-      label: 'Whisper STT',
-      subLabel: 'OpenAI Whisper',
+      badge: 'AI',
       icon: CloudIcon,
       theme: 'whisper',
+      tooltip: 'Speech-to-text: OpenAI Whisper',
     };
   }
   return {
-    label: 'Browser STT',
-    subLabel: 'Web Speech',
+    badge: 'WEB',
     icon: GlobeAltIcon,
     theme: 'browser',
+    tooltip: 'Speech-to-text: Browser Web Speech',
   };
 });
 
+const currentTtsVoice = computed(() => voiceSettingsManager.getCurrentTtsVoice());
+
 const currentTtsVoiceName = computed(() => {
-  const currentVoice = voiceSettingsManager.getCurrentTtsVoice();
-  if (currentVoice?.name && currentVoice.name.trim().length > 0) {
-    return currentVoice.name.trim();
-  }
-  return null;
+  const voiceName = currentTtsVoice.value?.name?.trim();
+  return voiceName && voiceName.length > 0 ? voiceName : null;
+});
+
+const currentTtsLocaleBadge = computed(() => {
+  const lang = currentTtsVoice.value?.lang ?? '';
+  if (!lang) return 'AUTO';
+  const primary = lang.split('-')[0] ?? lang;
+  return primary.toUpperCase();
 });
 
 const speechCreditsToastShown = ref(false);
@@ -781,19 +799,24 @@ watch(() => voiceSettingsManager.speechCreditsExhausted.value, (isExhausted) => 
 
 const ttsProviderMeta = computed(() => {
   const voiceLabel = currentTtsVoiceName.value;
+  const localeBadge = currentTtsLocaleBadge.value;
   if (currentSettings.ttsProvider === 'openai_tts') {
     return {
-      label: 'OpenAI Voice',
-      subLabel: voiceLabel ?? 'Auto voice',
+      badge: localeBadge,
       icon: SparklesIcon,
       theme: 'openai',
+      tooltip: voiceLabel
+        ? `Speech playback: OpenAI voice ${voiceLabel}`
+        : 'Speech playback: OpenAI TTS',
     };
   }
   return {
-    label: 'Browser Voice',
-    subLabel: voiceLabel ?? 'System default',
+    badge: localeBadge,
     icon: SpeakerWaveIcon,
     theme: 'browser',
+    tooltip: voiceLabel
+      ? `Speech playback: Browser voice ${voiceLabel}`
+      : 'Speech playback: Browser voice',
   };
 });
 
@@ -1524,28 +1547,25 @@ onBeforeUnmount(() => {
 <style scoped lang="scss">
 .vi-toolbar-shell {
   width: 100%;
+  max-width: 720px;
+  margin: 0 auto 1rem;
   display: flex;
   justify-content: center;
-  padding: 0 1rem;
-  margin: 0.75rem 0 1rem;
 }
 
 .vi-toolbar-shell > * {
-  width: min(760px, 100%);
+  width: 100%;
 }
 
 .vi-toolbar-shell :deep(.voice-dock) {
-  margin: 0 auto;
+  width: 100%;
+  margin: 0;
 }
 
 @media (max-width: 768px) {
   .vi-toolbar-shell {
-    padding: 0 0.5rem;
     margin-bottom: 0.75rem;
-  }
-
-  .vi-toolbar-shell > * {
-    width: 100%;
+    padding: 0 0.25rem;
   }
 }
 </style>
