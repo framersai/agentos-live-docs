@@ -9,7 +9,7 @@ owner: manicinc/product
 
 1. Deliver a production-ready registration flow that:
    - Collects user credentials (email + password) and creates a Supabase user.
-   - Allows visitors to select a pricing tier and complete payment via Lemon Squeezy.
+   - Allows visitors to select a pricing tier and complete payment via Stripe.
    - Activates the purchased plan automatically after checkout (via webhook + backend sync).
 2. Replace demo placeholders on the landing page with live plan cards that deep-link into the registration flow.
 3. Improve i18n polish on marketing pages (strings in locale files, fade transitions already in place).
@@ -20,7 +20,7 @@ owner: manicinc/product
 Landing ➜ “Explore Memberships” ➜ /register (Step 1: Account)
                                           ➜ /register/plan (Step 2: Plan + billing summary)
                                           ➜ /register/payment (Step 3: “Complete purchase”)
-                                          ➜ Lemon Squeezy checkout (hosted)
+                                          ➜ Stripe checkout (hosted)
                                           ➜ Webhook notifies backend ➜ subscription activated
                                           ➜ /register/success (confirmation, next steps)
 ```
@@ -30,7 +30,7 @@ Landing ➜ “Explore Memberships” ➜ /register (Step 1: Account)
 | State | Description | Owner |
 |-------|-------------|-------|
 | `pending_registration` | Email/password captured, Supabase user created, no plan chosen yet. | Frontend + Supabase |
-| `checkout_created` | Lemon Squeezy checkout link issued, awaiting webhook. | Backend |
+| `checkout_created` | Stripe checkout link issued, awaiting webhook. | Backend |
 | `active` | Webhook confirms payment, app user record updated with `subscription_status = active`. | Backend |
 | `failed` | Checkout cancelled/expired. Offer retry from account settings. | Backend |
 
@@ -42,19 +42,19 @@ Landing ➜ “Explore Memberships” ➜ /register (Step 1: Account)
 | Route | Method | Auth | Purpose |
 |-------|--------|------|---------|
 | `/api/auth/register` | POST | Public | Creates Supabase user + local `app_users` row. Returns temp JWT for verification/resume. |
-| `/api/billing/checkout` | POST | Auth (temp JWT acceptable) | Accepts `planId`, creates Lemon Squeezy checkout session, stores checkout ref tied to user. |
+| `/api/billing/checkout` | POST | Auth (temp JWT acceptable) | Accepts `planId`, creates Stripe checkout session, stores checkout ref tied to user. |
 | `/api/billing/status/:checkoutId` | GET | Auth | Polling endpoint to see if checkout has been confirmed. |
-| `/api/billing/webhook` | POST | Public (verified signature) | Existing hook – ensure it updates user plan, subscription status, `lemon_customer_id`. |
+| `/api/billing/webhook` | POST | Public (verified signature) | Existing hook – ensure it updates user plan, subscription status, `stripe_customer_id`. |
 
 ## 3.2 Database / Models
 
 - extend `app_users`:
   - `subscription_plan_id` (string)
   - `subscription_status` (enum: `none`, `pending`, `active`, `cancelled`, `past_due`)
-  - `lemon_customer_id`
-  - `lemon_subscription_id`
+  - `stripe_customer_id`
+  - `stripe_subscription_id`
 - new table `checkout_sessions`:
-  - `id` (LS checkout id)
+  - `id` (Stripe checkout id)
   - `user_id`
   - `plan_id`
   - `status` (`created`, `paid`, `failed`, `expired`)
@@ -63,7 +63,7 @@ Landing ➜ “Explore Memberships” ➜ /register (Step 1: Account)
 ## 3.3 Services
 
 - Supabase service helper for user creation (existing functions).
-- Lemon Squeezy client wrapper:
+- Stripe client wrapper:
   - create checkout
   - verify webhook signature (already partially implemented).
 - Notification queue (optional) to email `team@manic.agency` for new signup (future).
@@ -71,9 +71,9 @@ Landing ➜ “Explore Memberships” ➜ /register (Step 1: Account)
 ## 3.4 Docs
 
 - Update `CONFIGURATION.md` with required env vars:
-  - `LEMONSQUEEZY_...`
+  - `STRIPESQUEEZY_...`
   - `SUPABASE_...`
-- Update `PRODUCTION_SETUP.md` with steps for LS webhooks.
+- Update `PRODUCTION_SETUP.md` with steps for Stripe webhooks.
 
 
 # 4. Frontend Deliverables
