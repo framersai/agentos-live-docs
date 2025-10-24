@@ -1551,6 +1551,8 @@ onBeforeUnmount(() => {
   margin: 0 auto 1rem;
   display: flex;
   justify-content: center;
+  position: relative;
+  overflow: visible;
 }
 
 .vi-toolbar-shell > * {
