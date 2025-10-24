@@ -74,11 +74,11 @@
     clickToSpeak: 'ç‚¹å‡»è¯´è¯',
     stopRecording: 'åœæ­¢å½•éŸ³',
     microphoneAccess: 'éœ€è¦éº¦å...‹é£Žè®¿é-®æƒé™',
-    microphoneAccessDenied: 'éº¦å...‹é£Žè®¿é-®è¢«æ‹’ç»æˆ–ä¸å¯ç"¨',
+    microphoneAccessDenied: 'éº¦å...‹é£Žè®¿é-®è¢«æ‹'ç»æˆ–ä¸å¯ç"¨',
     noSpeechDetected: 'æœªæ£€æµ‹åˆ°è¯­éŸ³',
     transcriptionComplete: 'è½¬å½•å®Œæˆ',
-    listeningForWakeWord: 'æ­£åœ¨ç›‘å¬å"¤é†’è¯ï¼ˆç‚¹å‡»åœæ­¢VADï¼‰',
-    listeningForWakeWordShort: 'æ­£åœ¨ç›‘å¬å"¤é†’è¯...',
+    listeningForWakeWord: 'æ­£åœ¨ç›‘å¬å"¤é†'è¯ï¼ˆç‚¹å‡»åœæ­¢VADï¼‰',
+    listeningForWakeWordShort: 'æ­£åœ¨ç›‘å¬å"¤é†'è¯...',
     listeningForCommand: 'æ­£åœ¨ç›‘å¬å‘½ä»¤...',
     startVoiceInput: 'å¼€å§‹è¯­éŸ³è¾"å...¥',
     assistantProcessing: 'åŠ©æ‰‹æ­£åœ¨å¤„ç†...',
@@ -90,7 +90,7 @@
     microphonePermissionRequiredVAD: 'è¯­éŸ³æ¿€æ´»æ£€æµ‹éœ€è¦éº¦å...‹é£Žæƒé™',
     microphonePermissionRequiredPTT: 'æŒ‰é"®è¯´è¯éœ€è¦éº¦å...‹é£Žæƒé™',
     microphonePermissionRequiredContinuous: 'è¿žç»­æ¨¡å¼éœ€è¦éº¦å...‹é£Žæƒé™',
-    holdMicToRecord: 'æŒ‰ä½éº¦å...‹é£ŽæŒ‰é’®å½•éŸ³',
+    holdMicToRecord: 'æŒ‰ä½éº¦å...‹é£ŽæŒ‰é'®å½•éŸ³',
     releaseToSend: 'æ¾å¼€å‘é€è½¬å½•',
     continuousModeOff: 'è¿žç»­æ¨¡å¼å/²å...³é-­ã€‚ç‚¹å‡»éº¦å...‹é£Žå¼€å§‹ã€‚',
     vadOff: 'è¯­éŸ³è¾"å...¥å/²å...³é-­ã€‚ç‚¹å‡»éº¦å...‹é£Žå¯ç"¨VADã€‚',
@@ -123,16 +123,16 @@
   },
   modes: {
     coding: 'ç¼–ç¨‹é-®ç­"',
-    codingDesc: 'èŽ/å¾-ç¼–ç¨‹é-®é¢˜å’Œä»£ç ç¤ºä¾‹çš„å¸®åŠ©',
+    codingDesc: 'èŽ/å¾-ç¼–ç¨‹é-®é¢˜å'Œä»£ç ç¤ºä¾‹çš„å¸®åŠ©',
     systemDesign: 'ç³»ç»Ÿè®¾è®¡',
     systemDesignDesc: 'è®¾è®¡æž¶æž„å¹¶åˆ›å»ºå›¾è¡¨',
     meetingSummary: 'ä¼šè®®æ‘˜è¦',
     meetingSummaryDesc: 'æ€»ç»"ä¼šè®®å¹¶æå–å...³é"®è¦ç‚¹',
     general: 'é€šç"¨',
-    generalDesc: 'ä¸€èˆ¬å¯¹è¯å’Œé-®é¢˜'
+    generalDesc: 'ä¸€èˆ¬å¯¹è¯å'Œé-®é¢˜'
   },
   meeting: {
-    title: 'ä¼šè®®å½•éŸ³å’Œæ‘˜è¦',
+    title: 'ä¼šè®®å½•éŸ³å'Œæ‘˜è¦',
     newRecording: 'æ–°å½•éŸ³',
     recording: 'å½•éŸ³ä¸­...',
     startRecording: 'å¼€å§‹å½•éŸ³',
@@ -146,11 +146,11 @@
     transcribing: 'è½¬å½•éŸ³é¢‘...',
     generatingSummary: 'ç"Ÿæˆæ‘˜è¦...',
     noRecordings: 'è¿˜æ²¡æœ‰ä¼šè®®å½•éŸ³',
-    noRecordingsDesc: 'å¼€å§‹æ‚¨çš„ç¬¬ä¸€æ¬¡å½•éŸ³ä»¥èŽ/å–è‡ªåŠ¨è½¬å½•å’Œæ‘˜è¦',
+    noRecordingsDesc: 'å¼€å§‹æ‚¨çš„ç¬¬ä¸€æ¬¡å½•éŸ³ä»¥èŽ/å–è‡ªåŠ¨è½¬å½•å'Œæ‘˜è¦',
     searchMeetings: 'æœç´¢ä¼šè®®...',
     dateRange: 'æ-¥æœŸèŒƒå›´',
     filterByParticipant: 'æŒ‰å‚ä¸Žè€...ç­›é€‰',
-    sortBy: 'æŽ’åº',
+    sortBy: 'æŽ'åº',
     clearFilters: 'æ¸...é™¤ç­›é€‰',
     transcript: 'è½¬å½•',
     summary: 'æ‘˜è¦',
@@ -161,7 +161,7 @@
     copyToClipboard: 'å¤åˆ¶åˆ°å‰ªè´´æ¿',
     download: 'ä¸‹è½½',
     delete: 'åˆ é™¤',
-    playRecording: 'æ’­æ"¾å½•éŸ³',
+    playRecording: 'æ'­æ"¾å½•éŸ³',
     exportAll: 'å¯¼å‡ºå...¨éƒ¨',
     importMeetings: 'å¯¼å...¥ä¼šè®®',
     clearAll: 'æ¸...é™¤æ‰€æœ‰ä¼šè®®',
@@ -184,9 +184,9 @@
     textToSpeech: 'æ–‡æœ¬è½¬è¯­éŸ³',
     openAITTS: 'OpenAI TTS',
     browserTTS: 'æµè§ˆå™¨TTS',
-    apiKeys: 'APIå¯†é’¥',
-    openAIKey: 'OpenAI APIå¯†é’¥',
-    anthropicKey: 'Anthropic APIå¯†é’¥',
+    apiKeys: 'APIå¯†é'¥',
+    openAIKey: 'OpenAI APIå¯†é'¥',
+    anthropicKey: 'Anthropic APIå¯†é'¥',
     modelPreferences: 'æ¨¡åž‹åå¥½',
     costLimits: 'è´¹ç"¨é™åˆ¶',
     sessionLimit: 'ä¼šè¯é™åˆ¶',
@@ -241,7 +241,7 @@
     tags: 'æ ‡ç­¾ (é€‰æ‹©ä»»æ„):',
     actionItemAssignee: 'è¡ŒåŠ¨é¡¹è´Ÿè´£äºº:',
     anyAssignee: 'ä»»ä½•è´Ÿè´£äºº',
-    sortBy: 'æŽ’åºæ–¹å¼:',
+    sortBy: 'æŽ'åºæ–¹å¼:',
     lastUpdated: 'æœ€åŽæ›´æ–°',
     meetingDate: 'ä¼šè®®æ-¥æœŸ',
     dateCreated: 'åˆ›å»ºæ-¥æœŸ',
@@ -251,30 +251,30 @@
     descending: 'é™åº',
     ascending: 'å‡åº',
     hasOpenActions: 'æœ‰æœªå®Œæˆè¡ŒåŠ¨',
-    showArchivedOnly: 'ä»...æ˜¾ç¤ºå/²å½’æ¡£',
+    showArchivedOnly: 'ä»...æ˜¾ç¤ºå/²å½'æ¡£',
     clearAllFilters: 'æ¸...é™¤æ‰€æœ‰ç­›é€‰å™¨',
     openItems: 'æœªå®Œæˆ',
-    archived: 'å/²å½’æ¡£',
-    archiveSummary: 'å½’æ¡£æ‘˜è¦',
-    unarchiveSummary: 'å–æ¶ˆå½’æ¡£',
+    archived: 'å/²å½'æ¡£',
+    archiveSummary: 'å½'æ¡£æ‘˜è¦',
+    unarchiveSummary: 'å–æ¶ˆå½'æ¡£',
     deleteSummary: 'åˆ é™¤æ‘˜è¦',
     clearAllHistory: 'æ¸...é™¤æ‰€æœ‰åŽ†å²è®°å½•'
   },
   agents: {
     nerf: {
       name: 'Nerf',
-      description: 'æ‚¨å‹å¥½é«˜æ•ˆçš„é€šç"¨AIï¼Œç"¨äºŽå¿«é€Ÿé-®é¢˜å’Œä¿¡æ¯æŸ¥è¯¢ã€‚',
-      longDescription: 'Nerfä¸"ä¸ºç›´æŽ¥é-®ç­"ã€å¿«é€Ÿäº‹å®žæŸ¥è¯¢ã€å®šä¹‰å’Œç®€å•è§£é‡Šè€Œè®¾è®¡ã€‚è¿½æ±‚æ¸...æ™°ç®€æ´ï¼Œæ˜¯æ-¥å¸¸æŸ¥è¯¢çš„ç†æƒ³é€‰æ‹©ã€‚',
+      description: 'æ‚¨å‹å¥½é«˜æ•ˆçš„é€šç"¨AIï¼Œç"¨äºŽå¿«é€Ÿé-®é¢˜å'Œä¿¡æ¯æŸ¥è¯¢ã€‚',
+      longDescription: 'Nerfä¸"ä¸ºç›´æŽ¥é-®ç­"ã€å¿«é€Ÿäº‹å®žæŸ¥è¯¢ã€å®šä¹‰å'Œç®€å•è§£é‡Šè€Œè®¾è®¡ã€‚è¿½æ±‚æ¸...æ™°ç®€æ´ï¼Œæ˜¯æ-¥å¸¸æŸ¥è¯¢çš„ç†æƒ³é€‰æ‹©ã€‚',
       placeholder: 'å‘Nerfè¯¢é-®ä»»ä½•é-®é¢˜...'
     },
     codePilot: {
       name: 'CodePilot',
-      description: 'å¤šè¯­è¨€ç¼–ç¨‹ã€è°ƒè¯•å’Œè§£é‡Šçš„ä¸"ä¸šååŠ©ã€‚',
+      description: 'å¤šè¯­è¨€ç¼–ç¨‹ã€è°ƒè¯•å'Œè§£é‡Šçš„ä¸"ä¸šååŠ©ã€‚',
       placeholder: 'å‘CodePilotè¯¢é-®ä»£ç é-®é¢˜...'
     },
     architectron: {
       name: 'Architectron',
-      description: 'åä½œè®¾è®¡å’Œç»˜åˆ¶å¤æ‚è½¯ä»¶å’Œç³»ç»Ÿæž¶æž„å›¾ã€‚',
+      description: 'åä½œè®¾è®¡å'Œç»˜åˆ¶å¤æ‚è½¯ä»¶å'Œç³»ç»Ÿæž¶æž„å›¾ã€‚',
       placeholder: 'æè¿°è¦è®¾è®¡çš„ç³»ç»Ÿ...'
     },
     meetingScribe: {
@@ -284,7 +284,7 @@
     },
     echo: {
       name: 'Echo',
-      description: 'æ‚¨ä¸ªäººçš„ã€å......æ»¡åŒç†å¿ƒçš„AIæ-¥è®°å’Œç¬"è®°åŠ©æ‰‹ï¼Œç"¨äºŽåæ€å’Œæ•´ç†æ€è/¯ã€‚',
+      description: 'æ‚¨ä¸ªäººçš„ã€å......æ»¡åŒç†å¿ƒçš„AIæ-¥è®°å'Œç¬"è®°åŠ©æ‰‹ï¼Œç"¨äºŽåæ€å'Œæ•´ç†æ€è/¯ã€‚',
       placeholder: 'ä¸ŽEchoåˆ†äº«æ‚¨çš„æƒ³æ³•...'
     },
     aiInterviewer: {
@@ -294,20 +294,20 @@
     },
     professorAstra: {
       name: 'Astraæ•™æŽˆ',
-      description: 'æ‚¨çš„è‡ªé€‚åº"AIå¯¼å¸ˆï¼Œç"¨äºŽæŽ¢ç´¢ä¸»é¢˜å’ŒæŽŒæ¡æ¦‚å¿µã€‚',
+      description: 'æ‚¨çš„è‡ªé€‚åº"AIå¯¼å¸ˆï¼Œç"¨äºŽæŽ¢ç´¢ä¸»é¢˜å'ŒæŽŒæ¡æ¦‚å¿µã€‚',
       placeholder: 'ä»Šå¤©æˆ‘ä»¬è¦å­¦ä¹ ä»€ä¹ˆä¸»é¢˜ï¼Ÿ'
     },
     lcAudit: {
       name: 'LC-Audit',
-      description: 'æ/±åº¦LeetCodeé-®é¢˜åˆ†æžå’Œé¢è¯•è¾...åŠ©ã€‚',
+      description: 'æ/±åº¦LeetCodeé-®é¢˜åˆ†æžå'Œé¢è¯•è¾...åŠ©ã€‚',
       placeholder: 'æä¾›LC-Auditåˆ†æžçš„é-®é¢˜èƒŒæ™¯...'
     }
   },
   vAgent: {
     name: 'V',
     online: '{name} åœ¨çº¿',
-    description: 'ç"¨äºŽå¤æ‚ä»»åŠ¡å’ŒæŽ¢ç´¢çš„å...ˆè¿›ã€åŠ¨æ€ã€å¯Œæœ‰æ´žå¯ŸåŠ›çš„AIåŠ©æ‰‹ã€‚',
-    longDescription: 'Væ˜¯ä¸€ä¸ªå¼ºå¤§çš„åšå­¦AIï¼Œæ-¨åœ¨è¿›è¡Œç»†è‡´å...¥å¾®çš„è®¨è®ºï¼Œç»¼åˆå¤æ‚ä¿¡æ¯ï¼Œå¹¶æä¾›å...¨é¢ã€è¡¨è¾¾æ¸...æ™°çš„å›žç­"ã€‚éžå¸¸é€‚åˆæ/±å...¥æŽ¢è®¨ã€åˆ›æ„å¤´è„‘é£Žæš´å’Œæˆ˜ç•¥æ€è€ƒã€‚',
+    description: 'ç"¨äºŽå¤æ‚ä»»åŠ¡å'ŒæŽ¢ç´¢çš„å...ˆè¿›ã€åŠ¨æ€ã€å¯Œæœ‰æ´žå¯ŸåŠ›çš„AIåŠ©æ‰‹ã€‚',
+    longDescription: 'Væ˜¯ä¸€ä¸ªå¼ºå¤§çš„åšå­¦AIï¼Œæ-¨åœ¨è¿›è¡Œç»†è‡´å...¥å¾®çš„è®¨è®ºï¼Œç»¼åˆå¤æ‚ä¿¡æ¯ï¼Œå¹¶æä¾›å...¨é¢ã€è¡¨è¾¾æ¸...æ™°çš„å›žç­"ã€‚éžå¸¸é€‚åˆæ/±å...¥æŽ¢è®¨ã€åˆ›æ„å¤´è„‘é£Žæš´å'Œæˆ˜ç•¥æ€è€ƒã€‚',
     placeholder: 'å‘Væå‡ºæ‚¨çš„å¤æ‚æŸ¥è¯¢æˆ–æŽ¢ç´¢...'
   },
   usage: {

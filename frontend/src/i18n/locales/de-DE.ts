@@ -66,7 +66,7 @@ export default {
         summary: {
           email: 'Konto-E-Mail',
           billing: 'Abrechnungsrhythmus',
-          billingNote: 'Monatliche Abrechnung. Kündigung jederzeit über Einstellungen → Abrechnung.',
+          billingNote: 'Monatliche Abrechnung. Kündigung jederzeit über Einstellungen -> Abrechnung.',
         },
         placeholders: {
           checkoutLink: 'Checkout-Sitzung erstellt (Demo-Hinweis). Weiterleitung zu Lemon Squeezy folgt.',

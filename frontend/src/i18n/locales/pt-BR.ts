@@ -66,7 +66,7 @@
         summary: {
           email: 'E-mail da conta',
           billing: 'Ciclo de cobrança',
-          billingNote: 'Cobrança mensal. Cancele a qualquer momento em Configurações → Faturamento.',
+          billingNote: 'Cobrança mensal. Cancele a qualquer momento em Configurações -> Faturamento.',
         },
         placeholders: {
           checkoutLink: 'Sessão de checkout criada (mensagem de demonstração). Implemente a redireção para a Lemon Squeezy em seguida.',

@@ -66,7 +66,7 @@ export default {
         summary: {
           email: '계정 이메일',
           billing: '청구 주기',
-          billingNote: '월 단위 청구. 설정 → 결제에서 언제든지 해지할 수 있습니다.',
+          billingNote: '월 단위 청구. 설정 -> 결제에서 언제든지 해지할 수 있습니다.',
         },
         placeholders: {
           checkoutLink: '체크아웃 세션이 생성되었습니다(데모 메시지). 곧 Lemon Squeezy로 리디렉션됩니다.',
