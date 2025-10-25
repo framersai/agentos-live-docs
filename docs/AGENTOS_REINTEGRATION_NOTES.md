@@ -141,3 +141,4 @@ Each milestone builds on the previous one; we’ll mark them complete here as wo
 - **Persona Registry Snapshot** (Step 2): `backend/src/integrations/agentos/agentos.persona-registry.ts` now mirrors the Vue agent catalog, reads the existing prompt Markdown files, and links each agent to its toolsets (`coding_core`, `tutor_learning`, `diary_reflection`, etc.). The adapter uses this metadata to stamp every AgentOS request with the correct persona + tool hints so future orchestrators can execute the right functions without re-discovering agent state.
 - ?? AgentOS now uses the real Supabase/global auth adapters and plan catalog, so persona/tool access honors the same tiers enforced in creditAllocationService.
 
+- ?? AgentOS router now exposes /api/agentos/chat and /api/agentos/stream (SSE stub) under the same optionalAuth + rate limiter stack, ready for full streaming once the orchestrator is re-enabled.

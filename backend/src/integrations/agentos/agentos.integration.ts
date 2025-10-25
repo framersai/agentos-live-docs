@@ -13,12 +13,11 @@ import type { ToolPermissionManagerConfig } from '../../../agentos/core/tools/pe
 import type { ConversationManagerConfig } from '../../../agentos/core/conversation/ConversationManager';
 import type { StreamingManagerConfig } from '../../../agentos/core/streaming/StreamingManager';
 import type { AIModelProviderManagerConfig } from '../../../agentos/core/llm/providers/AIModelProviderManager';
-import { verifyToken as verifyLegacyToken } from '../../features/auth/auth.service.js';
-import type { AuthTokenPayload } from '../../features/auth/auth.service.js';
 import { PrismaClient } from '@prisma/client';
 import { createAgentOSAuthAdapter } from './agentos.auth-service.js';
 import { createAgentOSSubscriptionAdapter } from './agentos.subscription-service.js';
 import { createAgentOSRouter } from './agentos.routes.js';
+import { createAgentOSStreamRouter } from './agentos.stream-router.ts';
 
 /**
  * AgentOS is still incubating inside the Voice Chat Assistant monorepo.
@@ -42,12 +41,10 @@ class AgentOSIntegration {
       return this.router;
     }
 
-    const agentosInstance = await this.getAgentOS();
-    const routerAuthBridge = new AgentOSRouterAuthBridge();
-    this.router = createAgentOSRoutes(
-      agentosInstance,
-      routerAuthBridge as unknown as AgentOSAuthServiceInterface,
-    );
+    await this.getAgentOS();
+    this.router = Router();
+    this.router.use(createAgentOSRouter());
+    this.router.use(createAgentOSStreamRouter());
     return this.router;
   }
 
@@ -215,19 +212,5 @@ function ensureAgentOSEnvDefaults(): void {
  */
 function createPrismaStub() {
   return new PrismaClient();
-}
-
-/**
- * Router authentication bridge that plugs into the existing token issuance logic.
- * This keeps the `/api/agentos/*` endpoints aligned with the rest of the app.
- */
-class AgentOSRouterAuthBridge {
-  async validateToken(token: string): Promise<AuthTokenPayload | null> {
-    return verifyLegacyToken(token);
-  }
-
-  async verifyToken(token: string): Promise<AuthTokenPayload | null> {
-    return verifyLegacyToken(token);
-  }
 }
 
