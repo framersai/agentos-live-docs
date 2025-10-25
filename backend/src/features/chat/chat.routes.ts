@@ -279,41 +279,7 @@ export async function POST(req: Request, res: Response): Promise<void> {
     creditAllocationService.syncProfile(effectiveUserId, creditContext);
     const conversationId = reqConversationId || `conv_${mode}_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
 
-    if (agentosChatAdapterEnabled()) {
-      try {
-        const agentosResult = await processAgentOSChatRequest({
-          userId: effectiveUserId,
-          conversationId,
-          mode,
-          messages: currentTurnClientMessages ?? [],
-        });
-
-        res.status(200).json({
-          content: agentosResult.content,
-          model: agentosResult.model,
-          usage: agentosResult.usage,
-          conversationId: agentosResult.conversationId,
-          sessionCost: null,
-          costOfThisCall: null,
-          persona: agentosResult.persona || null,
-          discernment: { provider: 'agentos', mode },
-        });
-        return;
-      } catch (agentosError: any) {
-        console.error('[ChatRoutes][AgentOS] Error while processing /api/chat via AgentOS:', agentosError);
-        res.status(500).json({
-          message: 'Failed to process the chat request via AgentOS.',
-          error: 'AGENTOS_PROCESSING_FAILED',
-          details:
-            process.env.NODE_ENV === 'development'
-              ? { error: agentosError?.message ?? 'Unknown AgentOS error' }
-              : undefined,
-        });
-        return;
-      }
-    }
-
-    // --- 0. Cost Check & Persona Persistence ---
+    // --- 0. Cost Check & Persona Persistence (always run before AgentOS short-circuit) ---
     if (!DISABLE_COST_LIMITS_CONFIG && CostService.isSessionCostThresholdReached(effectiveUserId, SESSION_COST_THRESHOLD_USD)) {
       const currentCostDetail = CostService.getSessionCost(effectiveUserId);
       res.status(403).json({
@@ -334,23 +300,55 @@ export async function POST(req: Request, res: Response): Promise<void> {
     }
 
     const storedPersona = await sqliteMemoryAdapter.getConversationPersona(effectiveUserId, conversationId);
-    
-    // --- 1. Store Current Message(s) from Client ---
-    // This could be a user's text message OR a tool_response message.
+
+    // --- Persist the client's current-turn messages so the UI stays in sync even when AgentOS responds ---
     if (currentTurnClientMessages && Array.isArray(currentTurnClientMessages) && currentTurnClientMessages.length > 0) {
         for (const clientMsg of currentTurnClientMessages) {
             await sqliteMemoryAdapter.storeConversationTurn(effectiveUserId, conversationId, {
-                role: clientMsg.role as 'user' | 'tool', // Expecting 'user' or 'tool' role from client's current turn messages
+                role: clientMsg.role as 'user' | 'tool',
                 content: clientMsg.content,
                 timestamp: clientMsg.timestamp || requestTimestamp,
-                agentId: mode, // The agent context this message belongs to
-                tool_call_id: clientMsg.tool_call_id, // This will be present if role is 'tool'
+                agentId: mode,
+                tool_call_id: clientMsg.tool_call_id,
             });
         }
     } else if (!tool_response && (!currentTurnClientMessages || currentTurnClientMessages.length === 0)) {
-      // If not a tool_response, then messages array is required.
       res.status(400).json({ message: '`messages` array is required and cannot be empty if not a tool response.', error: 'INVALID_REQUEST_PAYLOAD'});
       return;
+    }
+
+    if (agentosChatAdapterEnabled()) {
+      try {
+        const agentosResult = await processAgentOSChatRequest({
+          userId: effectiveUserId,
+          conversationId,
+          mode,
+          messages: currentTurnClientMessages ?? [],
+        });
+
+        res.status(200).json({
+          content: agentosResult.content,
+          model: agentosResult.model,
+          usage: agentosResult.usage,
+          conversationId: agentosResult.conversationId,
+          sessionCost: null,
+          costOfThisCall: null,
+          persona: agentosResult.persona || storedPersona || null,
+          discernment: { provider: 'agentos', mode },
+        });
+        return;
+      } catch (agentosError: any) {
+        console.error('[ChatRoutes][AgentOS] Error while processing /api/chat via AgentOS:', agentosError);
+        res.status(500).json({
+          message: 'Failed to process the chat request via AgentOS.',
+          error: 'AGENTOS_PROCESSING_FAILED',
+          details:
+            process.env.NODE_ENV === 'development'
+              ? { error: agentosError?.message ?? 'Unknown AgentOS error' }
+              : undefined,
+        });
+        return;
+      }
     }
 
 
