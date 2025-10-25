@@ -153,3 +153,19 @@ See `.env.sample` for toggles such as `DEFAULT_SPEECH_PREFERENCE_STT`, `DEFAULT_
 - **Supabase OAuth redirect loops**: Confirm the redirect URL matches your frontend origin including protocol and port.
 
 For more operational notes and deployment tips, review [`PRODUCTION_SETUP.md`](PRODUCTION_SETUP.md) and the architecture document.
+## 11. AgentOS Experimental Integration
+
+| Variable | Description |
+| --- | --- |
+| `AGENTOS_ENABLED` | Enable the embedded AgentOS router (`/api/agentos/*`). Defaults to `false`. |
+| `AGENTOS_DEFAULT_PERSONA_ID` | Fallback persona ID when the client does not specify one. |
+| `AGENTOS_DEFAULT_MODEL_ID` | Preferred model ID for AgentOS orchestrations (e.g., `gpt-4o-mini`). |
+| `AGENTOS_API_KEY_ENCRYPTION_KEY_HEX` | 64-character hex string used by the internal API-key vault stub. |
+| `AGENTOS_DATABASE_URL` | SQLite connection string used by the AgentOS persistence stub. |
+| `AGENTOS_MAX_TOOL_CALL_ITERATIONS` | Safeguard for chained tool invocations per turn. |
+| `AGENTOS_MAX_CONCURRENT_STREAMS` | Streaming fan-out limit for SSE responses. |
+| `AGENTOS_TURN_TIMEOUT_MS` | Timeout applied to a single AgentOS turn before failover. |
+| `AGENTOS_STREAM_INACTIVITY_TIMEOUT_MS` | Idle timeout for SSE clients. |
+| `AGENTOS_PERSONA_PATH` | Optional override to load persona definitions from a custom directory. |
+
+> AgentOS defaults to in-memory persistence so you can experiment locally without running Prisma migrations. When you are ready to back it with a proper database, point `AGENTOS_DATABASE_URL` at your Prisma datasource and swap the stub for a real client.

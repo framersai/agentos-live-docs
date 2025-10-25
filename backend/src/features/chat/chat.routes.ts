@@ -30,6 +30,10 @@ import { jsonFileKnowledgeBaseService } from '../../core/knowledge/JsonFileKnowl
 import { sqliteMemoryAdapter } from '../../core/memory/SqliteMemoryAdapter.js';
 import { IStoredConversationTurn } from '../../core/memory/IMemoryAdapter.js';
 import { ProcessedConversationMessageBE } from '../../core/conversation/conversation.interfaces.js';
+import {
+  agentosChatAdapterEnabled,
+  processAgentOSChatRequest,
+} from '../../integrations/agentos/agentos.chat-adapter.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __projectRoot = path.resolve(path.dirname(__filename), '../../../..');
@@ -274,6 +278,40 @@ export async function POST(req: Request, res: Response): Promise<void> {
     };
     creditAllocationService.syncProfile(effectiveUserId, creditContext);
     const conversationId = reqConversationId || `conv_${mode}_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+
+    if (agentosChatAdapterEnabled()) {
+      try {
+        const agentosResult = await processAgentOSChatRequest({
+          userId: effectiveUserId,
+          conversationId,
+          mode,
+          messages: currentTurnClientMessages ?? [],
+        });
+
+        res.status(200).json({
+          content: agentosResult.content,
+          model: agentosResult.model,
+          usage: agentosResult.usage,
+          conversationId: agentosResult.conversationId,
+          sessionCost: null,
+          costOfThisCall: null,
+          persona: agentosResult.persona || null,
+          discernment: { provider: 'agentos', mode },
+        });
+        return;
+      } catch (agentosError: any) {
+        console.error('[ChatRoutes][AgentOS] Error while processing /api/chat via AgentOS:', agentosError);
+        res.status(500).json({
+          message: 'Failed to process the chat request via AgentOS.',
+          error: 'AGENTOS_PROCESSING_FAILED',
+          details:
+            process.env.NODE_ENV === 'development'
+              ? { error: agentosError?.message ?? 'Unknown AgentOS error' }
+              : undefined,
+        });
+        return;
+      }
+    }
 
     // --- 0. Cost Check & Persona Persistence ---
     if (!DISABLE_COST_LIMITS_CONFIG && CostService.isSessionCostThresholdReached(effectiveUserId, SESSION_COST_THRESHOLD_USD)) {
