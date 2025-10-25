@@ -7,6 +7,7 @@ import {
   listAgentOSToolsets,
   type AgentOSPersonaDefinition,
   type AgentOSToolset,
+  type AgentOSAccessLevel,
 } from './agentos.persona-registry.js';
 import {
   resolveUserAccessLevel,
@@ -236,7 +237,7 @@ function normalizeRole(role: string): IChatMessage['role'] | null {
   }
 }
 
-function flattenToolsets(toolsetIds: string[], userLevel: ReturnType<typeof resolveUserAccessLevel>): ILlmTool[] {
+function flattenToolsets(toolsetIds: string[], userLevel: AgentOSAccessLevel): ILlmTool[] {
   const tools: ILlmTool[] = [];
   const selectedToolsets = toolsetIds
     .map((id) => TOOLSET_MAP.get(id))

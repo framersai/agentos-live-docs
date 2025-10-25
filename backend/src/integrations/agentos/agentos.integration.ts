@@ -6,7 +6,7 @@ import type { AgentOSInput } from '../../../agentos/api/types/AgentOSInput';
 import type { AgentOSOrchestratorConfig } from '../../../agentos/api/AgentOSOrchestrator';
 import type { GMIManagerConfig } from '../../../agentos/cognitive_substrate/GMIManager';
 import type { IAuthService as AgentOSAuthServiceInterface } from '../../../services/user_auth/IAuthService';
-import type { ISubscriptionService, ISubscriptionTier } from '../../../services/user_auth/SubscriptionService';
+import type { ISubscriptionService } from '../../../services/user_auth/SubscriptionService';
 import type { PromptEngineConfig } from '../../../agentos/core/llm/IPromptEngine';
 import type { ToolOrchestratorConfig } from '../../../agentos/config/ToolOrchestratorConfig';
 import type { ToolPermissionManagerConfig } from '../../../agentos/core/tools/permissions/IToolPermissionManager';
@@ -17,6 +17,8 @@ import { createAgentOSRoutes } from '../../../api/agentosRoutes.js';
 import { verifyToken as verifyLegacyToken } from '../../features/auth/auth.service.js';
 import type { AuthTokenPayload } from '../../features/auth/auth.service.js';
 import { PrismaClient } from '@prisma/client';
+import { createAgentOSAuthAdapter } from './agentos.auth-service.js';
+import { createAgentOSSubscriptionAdapter } from './agentos.subscription-service.js';
 
 /**
  * AgentOS is still incubating inside the Voice Chat Assistant monorepo.
@@ -192,8 +194,8 @@ function buildEmbeddedAgentOSConfig(): AgentOSConfig {
     modelProviderManagerConfig,
     defaultPersonaId: process.env.AGENTOS_DEFAULT_PERSONA_ID || 'default_assistant_persona',
     prisma: createPrismaStub(),
-    authService: createStubbedAgentOSAuthService(),
-    subscriptionService: createStubbedSubscriptionService(),
+    authService: createAgentOSAuthAdapter(),
+    subscriptionService: createAgentOSSubscriptionAdapter(),
     utilityAIService: undefined,
   };
 }
@@ -229,53 +231,3 @@ class AgentOSRouterAuthBridge {
   }
 }
 
-/**
- * AgentOS core currently requires an auth service reference, even though the embedded
- * runtime delegates authentication to the existing middleware. We satisfy the dependency
- * with a proxy that returns benign defaults and logs any unexpected usage.
- */
-function createStubbedAgentOSAuthService(): AgentOSAuthServiceInterface {
-  const handler: ProxyHandler<any> = {
-    get: (_target, prop) => {
-      if (prop === 'validateToken' || prop === 'verifyToken') {
-        return async () => null;
-      }
-      return async (...args: any[]) => {
-        console.warn(`[AgentOS][AuthStub] Method ${String(prop)} invoked`, { args });
-        return null;
-      };
-    },
-  };
-  return new Proxy({}, handler) as AgentOSAuthServiceInterface;
-}
-
-function createStubbedSubscriptionService(): ISubscriptionService {
-  const defaultTier: ISubscriptionTier = {
-    id: 'agentos-default-tier',
-    name: 'AgentOS Embedded Default',
-    priority: 0,
-    features: [],
-  } as ISubscriptionTier;
-
-  const handler: ProxyHandler<any> = {
-    get: (_target, prop) => {
-      switch (prop) {
-        case 'initialize':
-          return async () => undefined;
-        case 'getUserSubscriptionTier':
-          return async () => defaultTier;
-        case 'getAllTiers':
-          return async () => [defaultTier];
-        case 'getTierByName':
-          return async () => defaultTier;
-        default:
-          return async (...args: any[]) => {
-            console.warn(`[AgentOS][SubscriptionStub] Method ${String(prop)} invoked`, { args });
-            if (prop === 'userCanAccessPersona') return true;
-            return defaultTier;
-          };
-      }
-    },
-  };
-  return new Proxy({}, handler) as ISubscriptionService;
-}
