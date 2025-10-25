@@ -3,7 +3,7 @@ import type { AgentOSAccessLevel, AgentOSToolset, AgentOSPersonaDefinition } fro
 
 const ACCESS_ORDER: AgentOSAccessLevel[] = ['public', 'metered', 'global', 'unlimited'];
 
-const compareAccess = (userLevel: AgentOSAccessLevel, required: AgentOSAccessLevel): boolean => {
+export const compareAccessLevels = (userLevel: AgentOSAccessLevel, required: AgentOSAccessLevel): boolean => {
   return ACCESS_ORDER.indexOf(userLevel) >= ACCESS_ORDER.indexOf(required);
 };
 
@@ -27,7 +27,7 @@ export const resolveUserAccessLevel = (userId: string): AgentOSAccessLevel => {
 
 export const assertPersonaAccess = (persona: AgentOSPersonaDefinition, userLevel: AgentOSAccessLevel): void => {
   if (!persona.minAccessLevel) return;
-  if (!compareAccess(userLevel, persona.minAccessLevel)) {
+  if (!compareAccessLevels(userLevel, persona.minAccessLevel)) {
     throw Object.assign(
       new Error(`Persona ${persona.personaId} requires ${persona.minAccessLevel} access or higher.`),
       { statusCode: 403, code: 'PERSONA_ACCESS_DENIED' },
@@ -39,5 +39,5 @@ export const filterToolsetsByAccess = (
   toolsets: AgentOSToolset[],
   userLevel: AgentOSAccessLevel,
 ): AgentOSToolset[] => {
-  return toolsets.filter((toolset) => !toolset.minAccessLevel || compareAccess(userLevel, toolset.minAccessLevel));
+  return toolsets.filter((toolset) => !toolset.minAccessLevel || compareAccessLevels(userLevel, toolset.minAccessLevel));
 };
