@@ -122,6 +122,7 @@ These steps keep AgentOS encapsulated but wired through the modern backend, prep
 - ✅ Embedded AgentOS service (`backend/src/integrations/agentos/agentos.integration.ts`) spins up the orchestrator with safe defaults (no Prisma migrations required) and exposes a route factory.
 - ✅ `/api/agentos/*` routes are mounted automatically when `AGENTOS_ENABLED=true`, reusing the existing JWT middleware so the frontend can begin experimenting without leaving the main Express app.
 - 🔜 Next milestones: swap `/api/chat` over to AgentOS streaming, bridge Supabase plan metadata into the stubbed subscription service, and map existing Vue agents to the new persona loader.
+- ♻️ Legacy AgentOS source (GMI, persona loaders, tooling, docs) restored under `backend/agentos/**` so future work can plug into the original architecture without hunting through history.
 
 ## End-to-End Readiness Checklist (WIP)
 
