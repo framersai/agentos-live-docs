@@ -9,6 +9,11 @@ import {
   type AgentOSToolset,
 } from './agentos.persona-registry.js';
 import {
+  resolveUserAccessLevel,
+  assertPersonaAccess,
+  filterToolsetsByAccess,
+} from './agentos.access-control.js';
+import {
   AgentOSResponse,
   AgentOSResponseChunkType,
   AgentOSFinalResponseChunk,
@@ -50,10 +55,12 @@ export async function processAgentOSChatRequest(
   payload: AgentOSChatAdapterRequest,
 ): Promise<AgentOSChatAdapterResult> {
   const persona = resolveAgentOSPersona(payload.mode);
+  const userAccessLevel = resolveUserAccessLevel(payload.userId);
+  assertPersonaAccess(persona, userAccessLevel);
   const { userMessage, memoryTurns, contextBundle } = await buildContextForAgentOS(payload, persona);
   const systemPrompt = renderPersonaPrompt(persona, contextBundle);
   const history = buildMessageHistory(systemPrompt, memoryTurns, userMessage);
-  const tools = flattenToolsets(persona.toolsetIds);
+  const tools = flattenToolsets(persona.toolsetIds, userAccessLevel);
 
   const llmResponse = await callLlm(
     history,
@@ -229,13 +236,14 @@ function normalizeRole(role: string): IChatMessage['role'] | null {
   }
 }
 
-function flattenToolsets(toolsetIds: string[]): ILlmTool[] {
+function flattenToolsets(toolsetIds: string[], userLevel: ReturnType<typeof resolveUserAccessLevel>): ILlmTool[] {
   const tools: ILlmTool[] = [];
-  for (const id of toolsetIds) {
-    const toolset = TOOLSET_MAP.get(id);
-    if (toolset) {
-      tools.push(...toolset.tools);
-    }
+  const selectedToolsets = toolsetIds
+    .map((id) => TOOLSET_MAP.get(id))
+    .filter((toolset): toolset is AgentOSToolset => Boolean(toolset));
+  const permittedToolsets = filterToolsetsByAccess(selectedToolsets, userLevel);
+  for (const toolset of permittedToolsets) {
+    tools.push(...toolset.tools);
   }
   return tools;
 }
