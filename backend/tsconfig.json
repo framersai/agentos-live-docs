@@ -23,7 +23,11 @@
     "noImplicitOverride": true,
     "resolveJsonModule": true,
     "importHelpers": true,
-    "types": ["node"]
+    "types": ["node"],
+    "baseUrl": "./",
+    "paths": {
+      "@prisma/client": ["agentos/stubs/prismaClient.ts"]
+    }
   },
   "include": [
     "**/*.ts",

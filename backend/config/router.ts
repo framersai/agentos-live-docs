@@ -10,6 +10,7 @@
 import { Router, Request, Response } from 'express';
 // Import the strict authMiddleware
 import { authMiddleware } from '../middleware/auth.js';
+import { isAgentOSEnabled, getAgentOSRouter } from '../src/integrations/agentos/agentos.integration.js';
 
 // Import route handlers
 import {
@@ -154,6 +155,16 @@ export async function configureRouter(): Promise<Router> {
       });
     });
     console.log('✅ Added test route: GET /api/test');
+
+    if (isAgentOSEnabled()) {
+      try {
+        const agentosRouter = await getAgentOSRouter();
+        router.use('/agentos', agentosRouter);
+        console.log('[AgentOS] Registered AgentOS routes at /api/agentos');
+      } catch (agentosError) {
+        console.error('[AgentOS] Failed to initialize AgentOS router. Continuing without AgentOS endpoints.', agentosError);
+      }
+    }
 
   } catch (error) {
     console.error('❌ Error setting up API routes:', error);
