@@ -15,6 +15,11 @@ import {
   AgentOSTextDeltaChunk,
   AgentOSMetadataUpdateChunk,
 } from '../../../agentos/api/types/AgentOSResponse';
+import { sqliteMemoryAdapter } from '../../core/memory/SqliteMemoryAdapter.js';
+import { jsonFileKnowledgeBaseService } from '../../core/knowledge/JsonFileKnowledgeBaseService.js';
+import { llmContextAggregatorService } from '../../core/context/LLMContextAggregatorService.js';
+import type { IStoredConversationTurn } from '../../core/memory/IMemoryAdapter.js';
+import type { IContextBundle } from '../../core/context/IContextAggregatorService.js';
 
 export interface AgentOSChatAdapterRequest {
   userId: string;
@@ -39,13 +44,15 @@ const TOOLSET_MAP: Map<string, AgentOSToolset> = new Map(
 );
 
 const PROMPT_CACHE: Map<string, string> = new Map();
+const CONTEXT_SNIPPET_LIMIT = parseInt(process.env.DEFAULT_HISTORY_MESSAGES_FOR_FALLBACK_CONTEXT || '12', 10);
 
 export async function processAgentOSChatRequest(
   payload: AgentOSChatAdapterRequest,
 ): Promise<AgentOSChatAdapterResult> {
   const persona = resolveAgentOSPersona(payload.mode);
-  const systemPrompt = loadPersonaPrompt(persona);
-  const history = buildMessageHistory(systemPrompt, payload.messages);
+  const { userMessage, memoryTurns, contextBundle } = await buildContextForAgentOS(payload, persona);
+  const systemPrompt = renderPersonaPrompt(persona, contextBundle);
+  const history = buildMessageHistory(systemPrompt, memoryTurns, userMessage);
   const tools = flattenToolsets(persona.toolsetIds);
 
   const llmResponse = await callLlm(
@@ -201,14 +208,12 @@ function applyPromptTemplate(template: string, persona: AgentOSPersonaDefinition
 
 function buildMessageHistory(
   systemPrompt: string,
-  messages: Array<{ role: string; content: string }>,
+  memoryTurns: Array<{ role: 'user' | 'assistant' | 'system' | 'tool'; content: string }>,
+  latestUserMessage: string,
 ): IChatMessage[] {
   const history: IChatMessage[] = [{ role: 'system', content: systemPrompt }];
-  for (const message of messages) {
-    const normalizedRole = normalizeRole(message.role);
-    if (!normalizedRole || message.content == null) continue;
-    history.push({ role: normalizedRole, content: message.content });
-  }
+  history.push(...memoryTurns);
+  history.push({ role: 'user', content: latestUserMessage });
   return history;
 }
 
@@ -233,4 +238,136 @@ function flattenToolsets(toolsetIds: string[]): ILlmTool[] {
     }
   }
   return tools;
+}
+
+async function buildContextForAgentOS(
+  payload: AgentOSChatAdapterRequest,
+  persona: AgentOSPersonaDefinition,
+): Promise<{
+  userMessage: string;
+  memoryTurns: Array<{ role: 'user' | 'assistant' | 'system' | 'tool'; content: string }>;
+  contextBundle?: IContextBundle;
+}> {
+  const conversationId = payload.conversationId;
+  const currentUserMessage =
+    [...payload.messages]
+      .reverse()
+      .find((msg) => msg.role === 'user')?.content ?? '';
+
+  let storedTurns: IStoredConversationTurn[] = [];
+  try {
+    storedTurns = await sqliteMemoryAdapter.retrieveConversationTurns(
+      payload.userId,
+      conversationId,
+      { limit: CONTEXT_SNIPPET_LIMIT },
+    );
+  } catch (error) {
+    console.error('[AgentOS][MemoryBridge] Failed to retrieve conversation history:', error);
+  }
+
+  const memoryMessages = storedTurns.map((turn) => ({
+    role: normalizeRole(turn.role) ?? 'system',
+    content:
+      turn.summary ||
+      turn.content ||
+      `[${turn.role.toUpperCase()} context omitted due to empty content]`,
+  }));
+
+  let contextBundle: IContextBundle | undefined;
+  try {
+    const knowledgeSnippets = await jsonFileKnowledgeBaseService
+      .searchKnowledgeBase(currentUserMessage, 3)
+      .then((items) =>
+        items.map((it) => ({
+          id: it.id,
+          type: it.type,
+          content: it.content.substring(0, 300) + (it.content.length > 300 ? '...' : ''),
+        })),
+      );
+
+    contextBundle = await llmContextAggregatorService.generateContextBundle({
+      currentUserFocus: {
+        query: currentUserMessage,
+        intent: persona.category,
+        mode: persona.category,
+        metadata: { personaId: persona.personaId },
+      },
+      conversationHistory: memoryMessages.map((msg) => ({
+        role: msg.role,
+        content: msg.content,
+      })),
+      userProfile: {
+        preferences: {
+          currentAgentMode: persona.category,
+        },
+      },
+      systemState: {
+        currentTaskContext: `User interacting with ${persona.label}`,
+        responseConstraints: contextBundleOutputFormatHints(persona.category),
+        sharedKnowledgeSnippets: knowledgeSnippets,
+      },
+    });
+  } catch (error) {
+    console.error('[AgentOS][ContextAggregator] Failed to build context bundle:', error);
+  }
+
+  return {
+    userMessage: currentUserMessage,
+    memoryTurns: memoryMessages,
+    contextBundle,
+  };
+}
+
+function renderPersonaPrompt(
+  persona: AgentOSPersonaDefinition,
+  contextBundle?: IContextBundle,
+): string {
+  const basePrompt = loadPersonaPrompt(persona);
+  if (!contextBundle) {
+    return basePrompt;
+  }
+
+  const bundleSummary = [
+    `Context Bundle (v${contextBundle.version})`,
+    `Primary Task: ${contextBundle.primaryTask.description} (intent: ${contextBundle.primaryTask.derivedIntent})`,
+    `Required Output: ${contextBundle.primaryTask.requiredOutputFormat}`,
+    contextBundle.relevantHistorySummary.length
+      ? `Recent History:\n${contextBundle.relevantHistorySummary
+          .map((item) => `- ${item.speaker}: ${item.summary}`)
+          .join('\n')}`
+      : 'Recent History: (none)',
+    contextBundle.keyInformationFromDocuments.length
+      ? `Knowledge Snippets:\n${contextBundle.keyInformationFromDocuments
+          .map((doc) => `- ${doc.source}: ${doc.snippet}`)
+          .join('\n')}`
+      : 'Knowledge Snippets: (none)',
+    contextBundle.criticalSystemContext?.customPersona
+      ? `Custom Persona: ${contextBundle.criticalSystemContext.customPersona}`
+      : '',
+    `Discernment Outcome: ${contextBundle.discernmentOutcome}`,
+  ]
+    .filter(Boolean)
+    .join('\n\n');
+
+  return `${basePrompt}\n\n${bundleSummary}`;
+}
+
+function contextBundleOutputFormatHints(mode: string): string {
+  switch (mode.toLowerCase()) {
+    case 'coding':
+    case 'codingassistant':
+      return 'Markdown with code blocks and explanations.';
+    case 'systemdesigner':
+    case 'system_design':
+      return 'Architecture Markdown with Mermaid diagrams.';
+    case 'meeting':
+    case 'businessmeeting':
+      return 'Meeting summary with action items.';
+    case 'diary':
+      return 'Empathetic tone, structured diary entry.';
+    case 'tutor':
+      return 'Slide-style Markdown with optional quizzes.';
+    default:
+      return 'Clear Markdown response with bullet points when helpful.';
+  }
 }
