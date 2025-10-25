@@ -13,12 +13,12 @@ import type { ToolPermissionManagerConfig } from '../../../agentos/core/tools/pe
 import type { ConversationManagerConfig } from '../../../agentos/core/conversation/ConversationManager';
 import type { StreamingManagerConfig } from '../../../agentos/core/streaming/StreamingManager';
 import type { AIModelProviderManagerConfig } from '../../../agentos/core/llm/providers/AIModelProviderManager';
-import { createAgentOSRoutes } from '../../../api/agentosRoutes.js';
 import { verifyToken as verifyLegacyToken } from '../../features/auth/auth.service.js';
 import type { AuthTokenPayload } from '../../features/auth/auth.service.js';
 import { PrismaClient } from '@prisma/client';
 import { createAgentOSAuthAdapter } from './agentos.auth-service.js';
 import { createAgentOSSubscriptionAdapter } from './agentos.subscription-service.js';
+import { createAgentOSRouter } from './agentos.routes.js';
 
 /**
  * AgentOS is still incubating inside the Voice Chat Assistant monorepo.
