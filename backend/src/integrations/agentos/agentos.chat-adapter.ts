@@ -7,6 +7,7 @@ import {
   AgentOSTextDeltaChunk,
   AgentOSMetadataUpdateChunk,
 } from '../../../agentos/api/types/AgentOSResponse';
+import { resolveAgentOSPersona } from './agentos.persona-registry.js';
 
 export interface AgentOSChatAdapterRequest {
   userId: string;
@@ -21,6 +22,7 @@ export interface AgentOSChatAdapterResult {
   usage?: Record<string, number>;
   conversationId: string;
   persona?: string | null;
+  personaLabel?: string | null;
 }
 
 export const agentosChatAdapterEnabled = (): boolean => isAgentOSEnabled();
@@ -34,12 +36,21 @@ export async function processAgentOSChatRequest(
       .find((msg) => msg.role === 'user')?.content ?? '';
 
   const sessionId = payload.conversationId || `agentos-session-${Date.now()}`;
+  const persona = resolveAgentOSPersona(payload.mode);
 
   const input: AgentOSInput = {
     userId: payload.userId || 'anonymous_user',
     sessionId,
     textInput: lastUserMessage,
-    selectedPersonaId: payload.mode || 'default_assistant_persona',
+    selectedPersonaId: persona.personaId,
+    personaMetadata: {
+      personaId: persona.personaId,
+      label: persona.label,
+      category: persona.category,
+      promptKey: persona.promptKey,
+      promptPath: persona.promptPath,
+      toolsetIds: persona.toolsetIds,
+    },
     conversationId: payload.conversationId,
     options: {
       streamUICommands: false,
@@ -47,17 +58,20 @@ export async function processAgentOSChatRequest(
   };
 
   const chunks = await agentosService.processThroughAgentOS(input);
-  return summarizeAgentOSChunks(chunks, payload.conversationId);
+  return summarizeAgentOSChunks(chunks, payload.conversationId, persona.personaId, persona.label);
 }
 
 function summarizeAgentOSChunks(
   chunks: AgentOSResponse[],
   conversationId: string,
+  fallbackPersonaId?: string,
+  fallbackPersonaLabel?: string,
 ): AgentOSChatAdapterResult {
   let responseText = '';
   let modelName = 'agentos';
   let usage: Record<string, number> | undefined;
   let persona: string | null = null;
+  let personaLabel: string | null = null;
 
   for (const chunk of chunks) {
     switch (chunk.type) {
@@ -80,6 +94,7 @@ function summarizeAgentOSChunks(
           };
         }
         persona = finalChunk.activePersonaDetails?.id ?? persona;
+        personaLabel = finalChunk.activePersonaDetails?.label ?? personaLabel;
         break;
       }
       case AgentOSResponseChunkType.METADATA_UPDATE: {
@@ -107,6 +122,7 @@ function summarizeAgentOSChunks(
     model: modelName,
     usage,
     conversationId,
-    persona,
+    persona: persona ?? fallbackPersonaId ?? null,
+    personaLabel: personaLabel ?? fallbackPersonaLabel ?? null,
   };
 }
