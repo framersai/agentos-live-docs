@@ -123,6 +123,7 @@ These steps keep AgentOS encapsulated but wired through the modern backend, prep
 - ✅ `/api/agentos/*` routes are mounted automatically when `AGENTOS_ENABLED=true`, reusing the existing JWT middleware so the frontend can begin experimenting without leaving the main Express app.
 - 🔜 Next milestones: swap `/api/chat` over to AgentOS streaming, bridge Supabase plan metadata into the stubbed subscription service, and map existing Vue agents to the new persona loader.
 - ♻️ Legacy AgentOS source (GMI, persona loaders, tooling, docs) restored under `backend/agentos/**` so future work can plug into the original architecture without hunting through history.
+- 🧠 AgentOS chat adapter now pulls SQLite conversation history plus knowledge-base snippets via the existing context aggregator so the persona prompt sees the same memory the legacy `/api/chat` route used.
 
 ## End-to-End Readiness Checklist (WIP)
 
@@ -130,7 +131,7 @@ These steps keep AgentOS encapsulated but wired through the modern backend, prep
 |---|-----------|-------------|--------|
 | 1 | **Voice Input Pipeline → AgentOS** | Make sure mic capture/transcription flows still store transcripts/persona metadata before AgentOS handles the turn so the UI log stays in sync. | ✅ (this change) |
 | 2 | **Tool + Persona Registry** | Map existing frontend agents + prompts onto AgentOS personas, register diagram/quiz/diary tools with ToolOrchestrator. | ✅ (persona + tool metadata registry added in `backend/src/integrations/agentos/agentos.persona-registry.ts`) |
-| 3 | **Memory + RAG Bridge** | Back AgentOS `ConversationManager` + vector store with the same SQLite/Pinecone adapters used today so global + per-user memory work identically. | ⏳ |
+| 3 | **Memory + RAG Bridge** | Back AgentOS `ConversationManager` + vector store with the same SQLite/Pinecone adapters used today so global + per-user memory work identically. | ✅ (chat adapter now loads SQLite history + knowledge-base snippets before each turn) |
 | 4 | **Auth & Plan Enforcement** | Replace the stubbed auth/subscription services with adapters that read Supabase/global JWTs and `shared/planCatalog` to respect tiers, BYO limits, etc. | ⏳ |
 | 5 | **Streaming & Observability** | Surface AgentOS SSE endpoints in the frontend, wire structured logs/metrics into the existing `/api/system` health checks. | ⏳ |
 
