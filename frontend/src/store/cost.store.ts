@@ -70,6 +70,16 @@ export const useCostStore = defineStore('cost', (): FullCostStore => {
   const isLoadingCost = ref<boolean>(false);
   const costError = ref<string | null>(null);
 
+  const applySessionCostDetail = (detail: SessionCostDetailsFE): void => {
+    totalSessionCost.value = detail.sessionCost ?? 0;
+    costsByService.value = detail.costsByService || {};
+    sessionStartTime.value = detail.sessionStartTime ?? null;
+    sessionEntryCount.value = detail.entryCount ?? sessionEntryCount.value;
+    globalMonthlyCostEstimate.value = detail.globalMonthlyCost ?? globalMonthlyCostEstimate.value;
+    sessionCostThreshold.value = detail.threshold ?? sessionCostThreshold.value;
+    isThresholdReached.value = detail.isThresholdReached ?? false;
+  };
+
   // --- Actions ---
 
   /** @inheritdoc */
@@ -77,18 +87,9 @@ export const useCostStore = defineStore('cost', (): FullCostStore => {
     isLoadingCost.value = true;
     costError.value = null;
     try {
-      const response = await costAPI.getSessionCost(); // Corrected method name
-      const data: SessionCostDetailsFE = response.data;
-
-      totalSessionCost.value = data.sessionCost;
-      costsByService.value = data.costsByService || {};
-      sessionStartTime.value = data.sessionStartTime;
-      sessionEntryCount.value = data.entryCount;
-      globalMonthlyCostEstimate.value = data.globalMonthlyCost || 0;
-      sessionCostThreshold.value = data.threshold;
-      isThresholdReached.value = data.isThresholdReached;
-
-      console.log('[CostStore] Session cost details fetched.', data);
+      const response = await costAPI.getSessionCost();
+      applySessionCostDetail(response.data);
+      console.log('[CostStore] Session cost details fetched.', response.data);
     } catch (error: any) {
       console.error('[CostStore] Error fetching session cost:', error);
       costError.value = error.response?.data?.message || error.message || 'Failed to fetch session costs.';

@@ -39,6 +39,11 @@ export const api: AxiosInstance = axios.create({
 
 console.log(`[API Service] Initialized. Base URL: ${api.defaults.baseURL}`);
 
+const emitSessionCostUpdate = (detail?: SessionCostDetailsFE): void => {
+  if (!detail || typeof window === 'undefined') return;
+  window.dispatchEvent(new CustomEvent<SessionCostDetailsFE>('vca:session-cost', { detail }));
+};
+
 const getAuthToken = (): string | null => {
   if (typeof window === 'undefined') return null;
   return localStorage.getItem(AUTH_TOKEN_KEY) || sessionStorage.getItem(AUTH_TOKEN_KEY);
@@ -320,8 +325,11 @@ export interface FunctionCallResponseDataFE extends BaseChatResponseDataFE {
 export type ChatResponseDataFE = TextResponseDataFE | FunctionCallResponseDataFE;
 
 export const chatAPI = {
-  sendMessage: (data: ChatMessagePayloadFE): Promise<AxiosResponse<ChatResponseDataFE>> =>
-    api.post('/chat', data),
+  sendMessage: async (data: ChatMessagePayloadFE): Promise<AxiosResponse<ChatResponseDataFE>> => {
+    const response = await api.post('/chat', data);
+    emitSessionCostUpdate(response.data?.sessionCost);
+    return response;
+  },
 
   updatePersona: (payload: PersonaUpdatePayloadFE): Promise<AxiosResponse<{ persona: string | null; agentId: string; conversationId: string }>> =>
     api.post('/chat/persona', payload),
@@ -414,6 +422,7 @@ export const chatAPI = {
         }
       }
       if (onStreamEnd) onStreamEnd(); // CORRECTED: Use parameter name
+      emitSessionCostUpdate(finalResponseData?.sessionCost);
       return finalResponseData;
     } catch (error: any) {
       console.error('[API Service] sendMessageStream encountered an error:', error);
@@ -479,11 +488,14 @@ export interface SttStatsResponseFE {
 }
 
 export const speechAPI = {
-  transcribe: (audioData: FormData): Promise<AxiosResponse<TranscriptionResponseFE>> =>
-    api.post('/stt', audioData, {
+  transcribe: async (audioData: FormData): Promise<AxiosResponse<TranscriptionResponseFE>> => {
+    const response = await api.post('/stt', audioData, {
       headers: { 'Content-Type': 'multipart/form-data', ...getAuthHeaders() },
       timeout: 90000,
-    }),
+    });
+    emitSessionCostUpdate(response.data?.sessionCost);
+    return response;
+  },
   getStats: (): Promise<AxiosResponse<SttStatsResponseFE>> => api.get('/stt/stats'),
 };
 
@@ -555,8 +567,11 @@ export interface DiagramResponseFE {
 }
 
 export const diagramAPI = {
-  generate: (data: DiagramRequestPayloadFE): Promise<AxiosResponse<DiagramResponseFE>> =>
-    api.post('/diagram', data),
+  generate: async (data: DiagramRequestPayloadFE): Promise<AxiosResponse<DiagramResponseFE>> => {
+    const response = await api.post('/diagram', data);
+    emitSessionCostUpdate(response.data?.sessionCost);
+    return response;
+  },
 };
 
 export interface PromptResponseFE {
@@ -678,5 +693,7 @@ export const systemAPI = {
 };
 
 export default api;
+
+
 
 

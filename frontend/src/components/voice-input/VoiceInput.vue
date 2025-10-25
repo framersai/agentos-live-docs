@@ -44,6 +44,10 @@
           class="vi-transcribing-overlay__line"
           :style="{ '--line-index': lineIndex }"
         />
+        <div class="vi-transcribing-overlay__label">
+          <ArrowPathIcon class="vi-transcribing-overlay__spinner" aria-hidden="true" />
+          <span>{{ transcribingLabel }}</span>
+        </div>
       </div>
       <div v-if="showSpeakingOverlay" class="vi-speaking-overlay">
         <span
@@ -91,6 +95,14 @@
         >
           <ArrowPathIcon class="vi-status-pill__icon vi-status-pill__icon--spinner" aria-hidden="true" />
           <span class="vi-status-pill__text">{{ ttsPreparingLabel }}</span>
+        </div>
+      </transition>
+      <transition name="pill-fade">
+        <div
+          v-if="!statusPill && !showTtsPreparingPill && statusText"
+          class="vi-status-pill vi-status-pill--info"
+        >
+          <span class="vi-status-pill__text">{{ statusText }}</span>
         </div>
       </transition>
     </div>
@@ -663,6 +675,7 @@ const canSendMessage = computed(() =>
 const statusText = computed(() => sttManager.statusText.value);
 
 const isTranscribingActive = ref(false);
+const isNetworkTranscribing = ref(false);
 const hasFatalVoiceError = ref(false);
 const panelState = ref<PanelState>('idle');
 
@@ -687,8 +700,12 @@ const PANEL_TO_REACTIVE_STATE: Record<PanelState, AppState> = {
 };
 
 const stateClass = computed(() => `state-${PANEL_STATE_CLASS_MAP[panelState.value] ?? 'idle'}`);
-const showTranscribingOverlay = computed(() => panelState.value === 'transcribing');
+const showTranscribingOverlay = computed(() => panelState.value === 'transcribing' || isNetworkTranscribing.value);
 const showSpeakingOverlay = computed(() => panelState.value === 'tts-speaking');
+const transcribingLabel = computed(() => {
+  if (isNetworkTranscribing.value) return t('voice.transcribing');
+  return statusText.value || t('voice.transcribing');
+});
 
 watchEffect(() => {
   const speakingNow = voiceSettingsManager.isSpeaking.value;
@@ -860,6 +877,7 @@ function showLiveTranscription(text: string, isFinal: boolean = true) {
 
 function triggerTranscribingAnimation(durationMs: number): void {
   isTranscribingActive.value = true;
+  isNetworkTranscribing.value = false;
   if (transcribingStateTimeout) {
     clearTimeout(transcribingStateTimeout);
   }
@@ -1307,6 +1325,9 @@ function onProcessingAudio(isProcessing: boolean) {
 
   if (isProcessing) {
     hasFatalVoiceError.value = false;
+    isNetworkTranscribing.value = true;
+  } else if (!isTranscribingActive.value) {
+    isNetworkTranscribing.value = false;
   }
 }
 
