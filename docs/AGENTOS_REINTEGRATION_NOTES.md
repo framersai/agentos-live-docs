@@ -124,6 +124,7 @@ These steps keep AgentOS encapsulated but wired through the modern backend, prep
 - 🔜 Next milestones: swap `/api/chat` over to AgentOS streaming, bridge Supabase plan metadata into the stubbed subscription service, and map existing Vue agents to the new persona loader.
 - ♻️ Legacy AgentOS source (GMI, persona loaders, tooling, docs) restored under `backend/agentos/**` so future work can plug into the original architecture without hunting through history.
 - 🧠 AgentOS chat adapter now pulls SQLite conversation history plus knowledge-base snippets via the existing context aggregator so the persona prompt sees the same memory the legacy `/api/chat` route used.
+- 🔐 Access tiers now flow through AgentOS: each persona/toolset declares a minimum plan level, and the adapter enforces that using `creditAllocationService` + `shared/planCatalog` so premium personas/tools stay gated by billing entitlements.
 
 ## End-to-End Readiness Checklist (WIP)
 

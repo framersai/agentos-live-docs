@@ -7,11 +7,14 @@ import { TutorAgentTools } from '../../tools/tutor.tools.js';
 
 const PROMPTS_DIR = path.resolve(process.cwd(), 'prompts');
 
+export type AgentOSAccessLevel = 'public' | 'metered' | 'global' | 'unlimited';
+
 export interface AgentOSToolset {
   id: string;
   label: string;
   description: string;
   tools: ILlmTool[];
+  minAccessLevel?: AgentOSAccessLevel;
 }
 
 export interface AgentOSPersonaDefinition {
@@ -24,6 +27,7 @@ export interface AgentOSPersonaDefinition {
   promptPath: string;
   tags: string[];
   toolsetIds: string[];
+  minAccessLevel?: AgentOSAccessLevel;
 }
 
 const TOOLSETS: Record<string, AgentOSToolset> = {
@@ -32,18 +36,21 @@ const TOOLSETS: Record<string, AgentOSToolset> = {
     label: 'CodePilot Core Tools',
     description: 'Generate code snippets, explain code, and debug stack traces.',
     tools: CodingAssistantAgentTools,
+    minAccessLevel: 'metered',
   },
   tutor_learning: {
     id: 'tutor_learning',
     label: 'Professor Astra Study Tools',
     description: 'Create flashcards and Socratic quizzes.',
     tools: TutorAgentTools,
+    minAccessLevel: 'public',
   },
   diary_reflection: {
     id: 'diary_reflection',
     label: 'Echo Diary Reflection Helpers',
     description: 'Suggest diary metadata prior to full entry generation.',
     tools: DiaryAgentTools,
+    minAccessLevel: 'public',
   },
 };
 
@@ -80,6 +87,7 @@ const PERSONAS: AgentOSPersonaDefinition[] = [
     promptPath: resolvePromptPath('coding'),
     tags: ['code', 'debugging', 'snippets'],
     toolsetIds: ['coding_core'],
+    minAccessLevel: 'metered',
   },
   {
     personaId: 'systems_architect',
@@ -91,6 +99,7 @@ const PERSONAS: AgentOSPersonaDefinition[] = [
     promptPath: resolvePromptPath('system_design'),
     tags: ['architecture', 'diagrams', 'tradeoffs'],
     toolsetIds: [],
+    minAccessLevel: 'metered',
   },
   {
     personaId: 'meeting_maestro',
@@ -146,6 +155,7 @@ const PERSONAS: AgentOSPersonaDefinition[] = [
     promptPath: resolvePromptPath('lc_audit_aide'),
     tags: ['leetcode', 'audit', 'algorithms'],
     toolsetIds: [],
+    minAccessLevel: 'metered',
   },
 ];
 
