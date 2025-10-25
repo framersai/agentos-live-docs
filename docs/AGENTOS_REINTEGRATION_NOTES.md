@@ -128,9 +128,11 @@ These steps keep AgentOS encapsulated but wired through the modern backend, prep
 | # | Milestone | Description | Status |
 |---|-----------|-------------|--------|
 | 1 | **Voice Input Pipeline → AgentOS** | Make sure mic capture/transcription flows still store transcripts/persona metadata before AgentOS handles the turn so the UI log stays in sync. | ✅ (this change) |
-| 2 | **Tool + Persona Registry** | Map existing frontend agents + prompts onto AgentOS personas, register diagram/quiz/diary tools with ToolOrchestrator. | ⏳ |
+| 2 | **Tool + Persona Registry** | Map existing frontend agents + prompts onto AgentOS personas, register diagram/quiz/diary tools with ToolOrchestrator. | ✅ (persona + tool metadata registry added in `backend/src/integrations/agentos/agentos.persona-registry.ts`) |
 | 3 | **Memory + RAG Bridge** | Back AgentOS `ConversationManager` + vector store with the same SQLite/Pinecone adapters used today so global + per-user memory work identically. | ⏳ |
 | 4 | **Auth & Plan Enforcement** | Replace the stubbed auth/subscription services with adapters that read Supabase/global JWTs and `shared/planCatalog` to respect tiers, BYO limits, etc. | ⏳ |
 | 5 | **Streaming & Observability** | Surface AgentOS SSE endpoints in the frontend, wire structured logs/metrics into the existing `/api/system` health checks. | ⏳ |
 
 Each milestone builds on the previous one; we’ll mark them complete here as work lands.
+
+- **Persona Registry Snapshot** (Step 2): `backend/src/integrations/agentos/agentos.persona-registry.ts` now mirrors the Vue agent catalog, reads the existing prompt Markdown files, and links each agent to its toolsets (`coding_core`, `tutor_learning`, `diary_reflection`, etc.). The adapter uses this metadata to stamp every AgentOS request with the correct persona + tool hints so future orchestrators can execute the right functions without re-discovering agent state.

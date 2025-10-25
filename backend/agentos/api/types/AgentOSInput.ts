@@ -1,8 +1,27 @@
 // agentos/api/types/AgentOSInput.ts
+
+export interface AgentOSPersonaMetadata {
+  personaId: string;
+  label: string;
+  category: string;
+  promptKey: string;
+  promptPath: string;
+  toolsetIds: string[];
+}
+
+export interface AgentOSProcessingOptions {
+  streamUICommands?: boolean;
+  preferredModelId?: string;
+  temperature?: number;
+}
+
 export interface AgentOSInput {
-  message?: string;
-  context?: any;
-  userId?: string;
-  sessionId?: string;
-  metadata?: Record<string, any>;
+  userId: string;
+  sessionId: string;
+  textInput: string | null;
+  conversationId?: string;
+  selectedPersonaId?: string;
+  personaMetadata?: AgentOSPersonaMetadata;
+  userApiKeys?: Record<string, string>;
+  options?: AgentOSProcessingOptions;
 }
