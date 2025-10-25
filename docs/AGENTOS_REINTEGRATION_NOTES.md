@@ -122,3 +122,15 @@ These steps keep AgentOS encapsulated but wired through the modern backend, prep
 - ✅ Embedded AgentOS service (`backend/src/integrations/agentos/agentos.integration.ts`) spins up the orchestrator with safe defaults (no Prisma migrations required) and exposes a route factory.
 - ✅ `/api/agentos/*` routes are mounted automatically when `AGENTOS_ENABLED=true`, reusing the existing JWT middleware so the frontend can begin experimenting without leaving the main Express app.
 - 🔜 Next milestones: swap `/api/chat` over to AgentOS streaming, bridge Supabase plan metadata into the stubbed subscription service, and map existing Vue agents to the new persona loader.
+
+## End-to-End Readiness Checklist (WIP)
+
+| # | Milestone | Description | Status |
+|---|-----------|-------------|--------|
+| 1 | **Voice Input Pipeline → AgentOS** | Make sure mic capture/transcription flows still store transcripts/persona metadata before AgentOS handles the turn so the UI log stays in sync. | ✅ (this change) |
+| 2 | **Tool + Persona Registry** | Map existing frontend agents + prompts onto AgentOS personas, register diagram/quiz/diary tools with ToolOrchestrator. | ⏳ |
+| 3 | **Memory + RAG Bridge** | Back AgentOS `ConversationManager` + vector store with the same SQLite/Pinecone adapters used today so global + per-user memory work identically. | ⏳ |
+| 4 | **Auth & Plan Enforcement** | Replace the stubbed auth/subscription services with adapters that read Supabase/global JWTs and `shared/planCatalog` to respect tiers, BYO limits, etc. | ⏳ |
+| 5 | **Streaming & Observability** | Surface AgentOS SSE endpoints in the frontend, wire structured logs/metrics into the existing `/api/system` health checks. | ⏳ |
+
+Each milestone builds on the previous one; we’ll mark them complete here as work lands.
