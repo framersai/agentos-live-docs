@@ -1,5 +1,13 @@
-import { agentosService, isAgentOSEnabled } from './agentos.integration.js';
-import type { AgentOSInput } from '../../../agentos/api/types/AgentOSInput';
+import fs from 'fs';
+import { isAgentOSEnabled } from './agentos.integration.js';
+import { callLlm } from '../../core/llm/llm.factory.js';
+import type { IChatMessage, ILlmTool } from '../../core/llm/llm.interfaces.js';
+import {
+  resolveAgentOSPersona,
+  listAgentOSToolsets,
+  type AgentOSPersonaDefinition,
+  type AgentOSToolset,
+} from './agentos.persona-registry.js';
 import {
   AgentOSResponse,
   AgentOSResponseChunkType,
@@ -7,7 +15,6 @@ import {
   AgentOSTextDeltaChunk,
   AgentOSMetadataUpdateChunk,
 } from '../../../agentos/api/types/AgentOSResponse';
-import { resolveAgentOSPersona } from './agentos.persona-registry.js';
 
 export interface AgentOSChatAdapterRequest {
   userId: string;
@@ -27,38 +34,60 @@ export interface AgentOSChatAdapterResult {
 
 export const agentosChatAdapterEnabled = (): boolean => isAgentOSEnabled();
 
+const TOOLSET_MAP: Map<string, AgentOSToolset> = new Map(
+  listAgentOSToolsets().map((toolset) => [toolset.id, toolset]),
+);
+
+const PROMPT_CACHE: Map<string, string> = new Map();
+
 export async function processAgentOSChatRequest(
   payload: AgentOSChatAdapterRequest,
 ): Promise<AgentOSChatAdapterResult> {
-  const lastUserMessage =
-    [...payload.messages]
-      .reverse()
-      .find((msg) => msg.role === 'user')?.content ?? '';
-
-  const sessionId = payload.conversationId || `agentos-session-${Date.now()}`;
   const persona = resolveAgentOSPersona(payload.mode);
+  const systemPrompt = loadPersonaPrompt(persona);
+  const history = buildMessageHistory(systemPrompt, payload.messages);
+  const tools = flattenToolsets(persona.toolsetIds);
 
-  const input: AgentOSInput = {
-    userId: payload.userId || 'anonymous_user',
-    sessionId,
-    textInput: lastUserMessage,
-    selectedPersonaId: persona.personaId,
-    personaMetadata: {
-      personaId: persona.personaId,
+  const llmResponse = await callLlm(
+    history,
+    undefined,
+    tools.length
+      ? {
+          tools,
+        }
+      : undefined,
+    undefined,
+    payload.userId,
+  );
+
+  const syntheticChunk: AgentOSResponse = {
+    type: AgentOSResponseChunkType.FINAL_RESPONSE,
+    streamId: payload.conversationId,
+    gmiInstanceId: persona.personaId,
+    personaId: persona.personaId,
+    isFinal: true,
+    timestamp: new Date().toISOString(),
+    metadata: { modelId: llmResponse.model },
+    finalResponseText: llmResponse.text,
+    usage: llmResponse.usage
+      ? {
+          promptTokens: llmResponse.usage.prompt_tokens ?? undefined,
+          completionTokens: llmResponse.usage.completion_tokens ?? undefined,
+          totalTokens: llmResponse.usage.total_tokens ?? undefined,
+        }
+      : undefined,
+    activePersonaDetails: {
+      id: persona.personaId,
       label: persona.label,
-      category: persona.category,
-      promptKey: persona.promptKey,
-      promptPath: persona.promptPath,
-      toolsetIds: persona.toolsetIds,
-    },
-    conversationId: payload.conversationId,
-    options: {
-      streamUICommands: false,
     },
   };
 
-  const chunks = await agentosService.processThroughAgentOS(input);
-  return summarizeAgentOSChunks(chunks, payload.conversationId, persona.personaId, persona.label);
+  return summarizeAgentOSChunks(
+    [syntheticChunk],
+    payload.conversationId,
+    persona.personaId,
+    persona.label,
+  );
 }
 
 function summarizeAgentOSChunks(
@@ -112,7 +141,6 @@ function summarizeAgentOSChunks(
         );
       }
       default:
-        // Ignore progress/tool chunks for the synchronous adapter
         break;
     }
   }
@@ -125,4 +153,84 @@ function summarizeAgentOSChunks(
     persona: persona ?? fallbackPersonaId ?? null,
     personaLabel: personaLabel ?? fallbackPersonaLabel ?? null,
   };
+}
+
+function loadPersonaPrompt(persona: AgentOSPersonaDefinition): string {
+  if (PROMPT_CACHE.has(persona.promptPath)) {
+    return PROMPT_CACHE.get(persona.promptPath)!;
+  }
+
+  let rawPrompt = '';
+  try {
+    rawPrompt = fs.readFileSync(persona.promptPath, 'utf-8');
+  } catch (error) {
+    console.error('[AgentOS][PersonaPrompt] Unable to read prompt file:', persona.promptPath, error);
+    rawPrompt = `You are ${persona.label}, an AI assistant focused on ${persona.category}. Respond in Markdown.`;
+  }
+
+  const rendered = applyPromptTemplate(rawPrompt, persona);
+  PROMPT_CACHE.set(persona.promptPath, rendered);
+  return rendered;
+}
+
+function applyPromptTemplate(template: string, persona: AgentOSPersonaDefinition): string {
+  const replacements: Record<string, string> = {
+    '{{AGENT_NAME}}': persona.label,
+    '{{AGENT_LABEL}}': persona.label,
+    '{{MODE}}': persona.category,
+    '{{LANGUAGE}}': 'English',
+    '{{GENERATE_DIAGRAM}}': persona.tags.some((tag) => tag.includes('diagram')) ? 'true' : 'false',
+    '{{AGENT_CONTEXT_JSON}}': JSON.stringify({
+      personaId: persona.personaId,
+      label: persona.label,
+      category: persona.category,
+      tags: persona.tags,
+    }),
+    '{{ADDITIONAL_INSTRUCTIONS}}': '',
+    '{{RECENT_TOPICS_SUMMARY}}': '',
+    '{{USER_QUERY}}': '',
+    '{{TUTOR_LEVEL}}': 'intermediate',
+  };
+
+  let rendered = template;
+  for (const [token, value] of Object.entries(replacements)) {
+    rendered = rendered.replace(new RegExp(token, 'g'), value);
+  }
+  return rendered;
+}
+
+function buildMessageHistory(
+  systemPrompt: string,
+  messages: Array<{ role: string; content: string }>,
+): IChatMessage[] {
+  const history: IChatMessage[] = [{ role: 'system', content: systemPrompt }];
+  for (const message of messages) {
+    const normalizedRole = normalizeRole(message.role);
+    if (!normalizedRole || message.content == null) continue;
+    history.push({ role: normalizedRole, content: message.content });
+  }
+  return history;
+}
+
+function normalizeRole(role: string): IChatMessage['role'] | null {
+  switch (role) {
+    case 'system':
+    case 'assistant':
+    case 'user':
+    case 'tool':
+      return role;
+    default:
+      return null;
+  }
+}
+
+function flattenToolsets(toolsetIds: string[]): ILlmTool[] {
+  const tools: ILlmTool[] = [];
+  for (const id of toolsetIds) {
+    const toolset = TOOLSET_MAP.get(id);
+    if (toolset) {
+      tools.push(...toolset.tools);
+    }
+  }
+  return tools;
 }
