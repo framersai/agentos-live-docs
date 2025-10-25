@@ -133,9 +133,11 @@ These steps keep AgentOS encapsulated but wired through the modern backend, prep
 | 1 | **Voice Input Pipeline → AgentOS** | Make sure mic capture/transcription flows still store transcripts/persona metadata before AgentOS handles the turn so the UI log stays in sync. | ✅ (this change) |
 | 2 | **Tool + Persona Registry** | Map existing frontend agents + prompts onto AgentOS personas, register diagram/quiz/diary tools with ToolOrchestrator. | ✅ (persona + tool metadata registry added in `backend/src/integrations/agentos/agentos.persona-registry.ts`) |
 | 3 | **Memory + RAG Bridge** | Back AgentOS `ConversationManager` + vector store with the same SQLite/Pinecone adapters used today so global + per-user memory work identically. | ✅ (chat adapter now loads SQLite history + knowledge-base snippets before each turn) |
-| 4 | **Auth & Plan Enforcement** | Replace the stubbed auth/subscription services with adapters that read Supabase/global JWTs and `shared/planCatalog` to respect tiers, BYO limits, etc. | ⏳ |
+| 4 | **Auth & Plan Enforcement** | Replace the stubbed auth/subscription services with adapters that read Supabase/global JWTs and `shared/planCatalog` to respect tiers, BYO limits, etc. | ✅ (Supabase/global auth adapter + plan catalog enforcement wired via creditAllocationService) |
 | 5 | **Streaming & Observability** | Surface AgentOS SSE endpoints in the frontend, wire structured logs/metrics into the existing `/api/system` health checks. | ⏳ |
 
 Each milestone builds on the previous one; we’ll mark them complete here as work lands.
 
 - **Persona Registry Snapshot** (Step 2): `backend/src/integrations/agentos/agentos.persona-registry.ts` now mirrors the Vue agent catalog, reads the existing prompt Markdown files, and links each agent to its toolsets (`coding_core`, `tutor_learning`, `diary_reflection`, etc.). The adapter uses this metadata to stamp every AgentOS request with the correct persona + tool hints so future orchestrators can execute the right functions without re-discovering agent state.
+- ?? AgentOS now uses the real Supabase/global auth adapters and plan catalog, so persona/tool access honors the same tiers enforced in creditAllocationService.
+
