@@ -29,11 +29,11 @@ export interface AppUser {
 const db: BetterSqliteDatabase = getAppDatabase();
 
 export const findUserByEmail = (email: string): AppUser | null => {
-  return db.prepare<AppUser>('SELECT * FROM app_users WHERE email = ? LIMIT 1').get(email) ?? null;
+  return db.prepare<[string], AppUser>('SELECT * FROM app_users WHERE email = ? LIMIT 1').get(email) ?? null;
 };
 
 export const findUserById = (id: string): AppUser | null => {
-  return db.prepare<AppUser>('SELECT * FROM app_users WHERE id = ? LIMIT 1').get(id) ?? null;
+  return db.prepare<[string], AppUser>('SELECT * FROM app_users WHERE id = ? LIMIT 1').get(id) ?? null;
 };
 
 export const createUser = (data: {
@@ -73,7 +73,7 @@ export const createUser = (data: {
 
 export const findUserBySupabaseId = (supabaseUserId: string): AppUser | null => {
   if (!supabaseUserId) return null;
-  return db.prepare<AppUser>('SELECT * FROM app_users WHERE supabase_user_id = ? LIMIT 1').get(supabaseUserId) ?? null;
+  return db.prepare<[string], AppUser>('SELECT * FROM app_users WHERE supabase_user_id = ? LIMIT 1').get(supabaseUserId) ?? null;
 };
 
 export const updateUserSupabaseLink = (userId: string, supabaseUserId: string | null): void => {
@@ -194,9 +194,11 @@ export const logGlobalAccess = (data: { ip?: string | null; userAgent?: string |
 export const countGlobalAccessAttempts = (ip: string, sinceEpochMs: number): number => {
   if (!ip) return 0;
   return (
-    db.prepare<{ count: number }>(
-      "SELECT COUNT(1) as count FROM login_events WHERE ip_address = ? AND created_at >= ? AND mode LIKE 'global%'"
-    ).get(ip, sinceEpochMs)?.count ?? 0
+    db
+      .prepare<[string, number], { count: number }>(
+        "SELECT COUNT(1) as count FROM login_events WHERE ip_address = ? AND created_at >= ? AND mode LIKE 'global%'"
+      )
+      .get(ip, sinceEpochMs)?.count ?? 0
   );
 };
 

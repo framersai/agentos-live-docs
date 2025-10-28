@@ -22,6 +22,14 @@ interface ImportMetaEnv {
   readonly VITE_DEFAULT_LANGUAGE: string;
   /** Flag to enable or disable debug mode features, as a string (parsed to boolean). */
   readonly VITE_DEBUG_MODE: string;
+  /** Toggles the frontend AgentOS routing helpers. */
+  readonly VITE_AGENTOS_ENABLED?: string;
+  /** Determines whether the client should keep proxying through /api/chat or talk to /api/agentos directly. */
+  readonly VITE_AGENTOS_CLIENT_MODE?: 'proxy' | 'direct';
+  /** Optional override for the AgentOS REST endpoint path. */
+  readonly VITE_AGENTOS_CHAT_PATH?: string;
+  /** Optional override for the AgentOS SSE endpoint path. */
+  readonly VITE_AGENTOS_STREAM_PATH?: string;
   // Add any other VITE_ prefixed env variables you use
 }
 

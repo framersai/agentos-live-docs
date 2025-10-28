@@ -26,7 +26,7 @@ export default {
     register: {
       eyebrow: 'Accélérez votre travail avec un espace adapté à vos besoins',
       headline: 'Configurez votre compte en quelques minutes.',
-      subheadline: 'Choisissez l'offre qui vous convient, finalisez le paiement sécurisé et commencez immédiatement avec Voice Chat Assistant.',
+      subheadline: 'Choisissez l’offre qui vous convient, finalisez le paiement sécurisé et commencez immédiatement avec Voice Chat Assistant.',
       steps: {
         account: 'Compte',
         plan: 'Offre',
@@ -46,16 +46,16 @@ export default {
         passwordLabel: 'Créer un mot de passe',
         passwordPlaceholder: 'Au moins 8 caractères',
         passwordHint: 'Utilisez au moins 8 caractères avec un chiffre ou un symbole.',
-        termsLabel: 'J'accepte les <a href="https://voice-chat-assistant.com/terms" target="_blank" rel="noopener">Conditions d'utilisation</a> et la <a href="https://voice-chat-assistant.com/privacy" target="_blank" rel="noopener">Politique de confidentialité</a>.',
+        termsLabel: 'J’accepte les <a href="https://voice-chat-assistant.com/terms" target="_blank" rel="noopener">Conditions d’utilisation</a> et la <a href="https://voice-chat-assistant.com/privacy" target="_blank" rel="noopener">Politique de confidentialité</a>.',
         errors: {
           missingFields: 'Saisissez une adresse e-mail et un mot de passe pour continuer.',
           mustAcceptTerms: 'Vous devez accepter les conditions pour créer un compte.',
-          generic: 'Nous n'avons pas pu enregistrer vos informations. Réessayez d'ici quelques instants.',
+          generic: 'Nous n’avons pas pu enregistrer vos informations. Réessayez d’ici quelques instants.',
         },
       },
       plan: {
-        title: 'Choisissez l'espace de travail qui vous convient',
-        subtitle: 'Chaque formule inclut des outils vocaux, une mémoire adaptative et des réponses en flux continu. Passez à l'offre supérieure quand vous avez besoin de plus de sièges ou de jetons.',
+        title: 'Choisissez l’espace de travail qui vous convient',
+        subtitle: 'Chaque formule inclut des outils vocaux, une mémoire adaptative et des réponses en flux continu. Passez à l’offre supérieure quand vous avez besoin de plus de sièges ou de jetons.',
         choose: 'Choisir cette offre',
         featuredBadge: 'Recommandée',
       },
@@ -73,7 +73,7 @@ export default {
         },
         errors: {
           missingPlan: 'Sélectionnez une offre avant de continuer.',
-          generic: 'Nous n'avons pas pu créer la session de paiement. Réessayez ou contactez le support.',
+          generic: 'Nous n’avons pas pu créer la session de paiement. Réessayez ou contactez le support.',
         },
       },
       success: {
@@ -81,7 +81,7 @@ export default {
         subtitle: 'Un e-mail de confirmation a été envoyé à {email}. Vous pouvez désormais vous connecter avec votre nouveau compte.',
         placeholderEmail: 'votre boîte de réception',
         cta: 'Aller à la connexion',
-        support: 'Besoin d'aide ?',
+        support: 'Besoin d’aide ?',
       },
     },
     profile: 'Profil',
@@ -397,7 +397,7 @@ export default {
     },
   },
   plans: {
-    sectionTitle: 'Formules d'abonnement',
+    sectionTitle: 'Formules d’abonnement',
     viewComparison: 'Voir la comparaison complète',
     compareTitle: 'Comparer les offres',
     columnPlan: 'Offre',

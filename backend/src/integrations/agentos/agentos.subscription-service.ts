@@ -1,5 +1,5 @@
-import type { ISubscriptionService } from '../../../services/user_auth/SubscriptionService';
-import { PLAN_CATALOG, type PlanId } from '../../../shared/planCatalog.js';
+import type { ISubscriptionService, ISubscriptionTier } from '@agentos/core/services/user_auth/types';
+import { PLAN_CATALOG, type PlanId } from '../../../shared/planCatalog';
 import { resolveUserAccessLevel, compareAccessLevels } from './agentos.access-control.js';
 import type { AgentOSAccessLevel } from './agentos.persona-registry.js';
 
@@ -10,30 +10,35 @@ const ACCESS_LEVEL_TO_PLAN: Record<AgentOSAccessLevel, PlanId> = {
   unlimited: 'organization',
 };
 
-export interface AgentOSSubscription {
-  userId: string;
-  planId: PlanId;
-  tier: AgentOSAccessLevel;
-  isActive: boolean;
-  features: string[];
-}
+const ACCESS_LEVEL_WEIGHT: Record<AgentOSAccessLevel, number> = {
+  public: 0,
+  metered: 1,
+  global: 2,
+  unlimited: 3,
+};
 
 export class AgentOSSubscriptionAdapter implements ISubscriptionService {
   async initialize(): Promise<void> {
     // No-op for now; plan catalog is already loaded.
   }
 
-  async getUserSubscription(userId: string): Promise<AgentOSSubscription> {
+  async getUserSubscription(userId: string): Promise<ISubscriptionTier | null> {
     const level = resolveUserAccessLevel(userId);
     const planId = ACCESS_LEVEL_TO_PLAN[level] ?? 'free';
     const plan = PLAN_CATALOG[planId];
+    if (!plan) {
+      return null;
+    }
     return {
-      userId,
-      planId,
-      tier: level,
+      name: plan.displayName,
+      level: ACCESS_LEVEL_WEIGHT[level],
+      features: plan.bullets,
       isActive: level !== 'public',
-      features: plan?.bullets ?? [],
     };
+  }
+
+  async getUserSubscriptionTier(userId: string): Promise<ISubscriptionTier | null> {
+    return this.getUserSubscription(userId);
   }
 
   async validateAccess(userId: string, feature: string): Promise<boolean> {
@@ -55,3 +60,4 @@ const parseFeatureRequirement = (feature: string): AgentOSAccessLevel | null => 
 };
 
 export const createAgentOSSubscriptionAdapter = (): ISubscriptionService => new AgentOSSubscriptionAdapter();
+

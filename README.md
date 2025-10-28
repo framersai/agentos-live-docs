@@ -1,240 +1,99 @@
-# Voice Chat Assistant
+﻿# Voice Chat Assistant
 
-<p align="center">
-  <img src="./frontend/src/assets/logo.svg" alt="Voice Chat Assistant Logo" width="120" />
-</p>
+Voice-first coding assistant built by [Frame.dev / wearetheframers](https://github.com/wearetheframers).
 
-<p align="center">
-  A voice-first coding assistant that blends realtime transcription, rich context, and optional subscriptions.
-</p>
+> **Internal / Proprietary**
+> This workspace is for Frame.dev only. Do not redistribute snippets, assets, or binaries outside the organisation without approval.
 
-## Overview
+The repository is organised as a pnpm workspace so the production apps, the AgentOS runtime, and the new AgentOS-facing experiences can evolve together or ship independently.
 
-Voice Chat Assistant is a full-stack application that helps you explore ideas, ship code, and stay organised. Speak naturally, mix in text, and let the assistant manage diagrams, code snippets, and follow-up context. The stack pairs a Vue 3 frontend with an Express + TypeScript backend, plus optional integrations for Supabase OAuth and Stripe billing.
+## Monorepo at a Glance
 
-### Key Features
+| Path | Purpose |
+|------|---------|
+| `frontend/` | Vue 3 + Vite SPA that handles voice capture, chat UI, localisation, and Supabase auth. |
+| `backend/` | Express + TypeScript API (auth, billing, orchestration endpoints). |
+| `packages/agentos/` | Publishable TypeScript runtime (`@agentos/core`) powering orchestration, streaming, memory, and tool routing. |
+| `apps/agentos-landing/` | Next.js + Tailwind marketing site for agentos.sh (light/dark, motion, roadmap, launch CTAs). |
+| `apps/agentos-client/` | React + Vite workbench to inspect AgentOS sessions, tool calls, and transcripts. |
+| `docs/` | Architecture notes, configuration, API reference, migration plans. |
+| `shared/` | Cross-cutting helpers/constants shared by backend + frontend. |
 
-- Realtime speech recognition via Web Speech API or OpenAI Whisper
-- Multilingual responses (15+ languages) with adaptive context memory
-- Dedicated conversation modes for coding, system design, and meeting notes
-- Mermaid diagram generation for architecture discussions
-- Cost tracking, configurable model routing, and granular rate limits
-- Two authentication paths: shared global passphrase or personal Supabase accounts
-- Optional Stripe billing with subscription-aware access control
-- Public demo mode with automatic rate-limit banners
+## Architecture Highlights
 
-## Table of Contents
+- **Frontend** - Vue 3 + Vite + Tailwind with composition-based state and Supabase-friendly auth (see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)).
+- **Backend** - Modular Express feature folders, optional Supabase + Lemon Squeezy integration, rate-limited public demo routes.
+- **AgentOS runtime** - Session-aware personas, tool permissioning, retrieval/memory lifecycle policies, async streaming bridges.
+- **AgentOS surfaces** - `apps/agentos-landing` (marketing) and `apps/agentos-client` (developer cockpit) consume the runtime without touching the proprietary voice UI.
+- **Data flow** - Voice/Text -> `/api/chat` -> AgentOS -> LLM providers with knowledge retrieval and billing-tier enforcement.
 
-- [Quick Start](#quick-start)
-- [Usage](#usage)
-- [Configuration](#configuration)
-- [Supabase (Optional)](#supabase-optional)
-- [Architecture](#architecture)
-- [API Reference](#api-reference)
-- [Contributing](#contributing)
-- [License](#license)
+## Getting Started
 
-## Quick Start
+1. **Install dependencies**
+   ```bash
+   pnpm install            # installs the full workspace (preferred)
+   # or npm run install-all  # convenience script that shells into each package
+   ```
+2. **Configure environment variables**
+   - Copy `.env.sample` -> `.env` (backend).
+   - Copy `frontend/.env.supabase-stripe.example` -> `frontend/.env.local`.
+   - Populate values listed in [`CONFIGURATION.md`](CONFIGURATION.md) (ports, JWT secrets, LLM keys, Supabase, Lemon Squeezy, AgentOS flags, etc.).
+3. **Run development servers**
+   ```bash
+   npm run dev
+   ```
+   - Backend API: <http://localhost:3001>
+   - Frontend UI: <http://localhost:3000>
+   - Optional: `pnpm run dev:landing` and `pnpm run dev:agentos-client` launch the new AgentOS surfaces.
+4. **Build for production**
+   ```bash
+   npm run build   # builds frontend, backend, and @agentos/core
+   npm run start   # starts the compiled backend + preview frontend
+   # Optional: pnpm run build:landing && pnpm run build:agentos-client
+   ```
+5. **Scoped workflows**
+   ```bash
+   pnpm --filter @agentos/core test       # run AgentOS test suite
+   pnpm --filter @agentos/core build      # emit dist/ bundles for publishing
+   pnpm --filter @agentos/core run docs   # generate TypeDoc output
+   pnpm --filter @wearetheframers/agentos-landing dev    # work on agentos.sh
+   pnpm --filter @wearetheframers/agentos-client dev     # iterate on the cockpit
+   ```
 
-### 1. Install Dependencies
+## AgentOS Package Readiness
 
-```bash
-# Backend
-cd backend
-npm install
+- `packages/agentos` builds to pure ESM output with declaration maps so it can be published directly.
+- The runtime ships with default `LLMUtilityAI` wiring, explicit tool permission/execution plumbing, and async streaming bridges.
+- Conversation/persona safeguards are aligned with subscription tiers and metadata hooks exposed by the backend.
+- **Documentation** - `pnpm --filter @agentos/core run docs` generates TypeDoc output under `packages/agentos/docs/api` (configuration lives in `packages/agentos/typedoc.json`).
+- See `packages/agentos/README.md` for package scripts, exports, and the release checklist.
 
-# Frontend
-cd ../frontend
-npm install
-```
+## AgentOS Surfaces
 
-Alternatively, run `npm run install-all` from the repository root to install both workspaces.
+- **agentos.sh landing** - Next.js marketing site with dual-mode theming, motion, roadmap cards, and launch CTAs.
+- **AgentOS client workbench** - React cockpit for replaying sessions, inspecting streaming telemetry, and iterating on personas/tools without running the full voice UI.
+- Both apps consume the workspace version of `@agentos/core` and can be hosted independently when we cut the repositories under `wearetheframers`.
 
-### 2. Configure Environment Variables
+## Automation & Releases
 
-Copy `.env.sample` to `.env` in the repository root. At minimum set:
+- Release workflow details live in [docs/RELEASE_AUTOMATION.md](docs/RELEASE_AUTOMATION.md).
+- Tags named `vX.Y.Z` on `master` trigger publishes, mirrors, and deploys unless the release PR carries the `skip-release` label.
 
-```bash
-PORT=3001
-NODE_ENV=development
-FRONTEND_URL=http://localhost:3000
+## Documentation & References
 
-# Authentication
-AUTH_JWT_SECRET=replace_with_a_long_random_string
-GLOBAL_ACCESS_PASSWORD=choose-a-shared-passphrase
-
-# Optional Supabase (see below)
-SUPABASE_URL=
-SUPABASE_SERVICE_ROLE_KEY=
-VITE_SUPABASE_URL=
-VITE_SUPABASE_ANON_KEY=
-
-# LLM providers
-OPENAI_API_KEY=your_openai_key
-OPENROUTER_API_KEY=
-ANTHROPIC_API_KEY=
-
-# Optional billing (personal subscriptions)
-LEMONSQUEEZY_API_KEY=
-LEMONSQUEEZY_STORE_ID=
-LEMONSQUEEZY_WEBHOOK_SECRET=
-
-# Stripe (preferred)
-STRIPE_SECRET_KEY=
-STRIPE_WEBHOOK_SECRET=
-STRIPE_BASIC_PRODUCT_ID=
-STRIPE_BASIC_PRICE_ID=
-STRIPE_CREATOR_PRODUCT_ID=
-STRIPE_CREATOR_PRICE_ID=
-STRIPE_ORG_PRODUCT_ID=
-STRIPE_ORG_PRICE_ID=
-```
-
-> Need a ready-to-fill template? Use `.env.supabase-stripe.example` for the backend and `frontend/.env.supabase-stripe.example` for the frontend. Copy them to `.env` and `frontend/.env.local`, then replace the placeholder values with your Supabase project keys and Stripe price IDs.
-
-Frontend-specific values live in `frontend/.env` or `frontend/.env.local`:
-
-```bash
-VITE_LEMONSQUEEZY_PRODUCT_ID=
-VITE_LEMONSQUEEZY_VARIANT_ID=
-VITE_SUPABASE_URL=
-VITE_SUPABASE_ANON_KEY=
-```
-
-> `GLOBAL_ACCESS_PASSWORD` enables the shared login path immediately. Individual logins require either Supabase (email/password or OAuth) or manual seeding plus an active Stripe subscription.
-
-### 3. Run the Development Servers
-
-```bash
-# From the repository root
-npm run dev
-```
-
-The backend boots on `http://localhost:3001` and the frontend on `http://localhost:3000`. Restart the dev servers whenever you change environment variables.
-
-## Usage
-
-1. **Choose a sign-in path**
-   - **Global Access**: Enter the shared passphrase for rate-limited unlimited usage.
-   - **Supabase Account**: Log in with email/password or OAuth (Google, GitHub, etc.) when Supabase is configured. The backend mirrors Supabase users into the local SQLite auth store.
-
-2. **Watch the demo banner**
-   - Anonymous visitors see a rate-limit banner driven by `/api/rate-limit/status` so they know when usage is nearly exhausted.
-
-3. **Pick a mode**
-   - Coding Q&A, System Design, Meeting Summary, plus persona-specific agents.
-
-4. **Talk or type**
-   - Combine voice transcription, text input, and diagram requests. The assistant keeps track of context and costs.
-
-5. **Manage billing**
-   - The Settings > Billing card shows Lemon Squeezy status for authenticated users.
-
-## Configuration
-
-For the full list of environment variables, feature flags, and tuning options, read [`CONFIGURATION.md`](CONFIGURATION.md). The file includes notes on rate limiting, memory limits, model routing, and billing flags.
-
-`.env.sample` is kept in sync with new integrations, including Supabase and Lemon Squeezy reminders.
-
-## Plans & Billing
-
-The shared plan catalog lives in `shared/planCatalog.ts` and drives the About page, login hints, and Settings billing card. See [`docs/PLANS_AND_BILLING.md`](docs/PLANS_AND_BILLING.md) for the calculation breakdown.
-
-For step-by-step environment details (Supabase keys, Stripe product IDs, webhook wiring, and the Vue registration flow), read [`docs/SUPABASE_STRIPE_SETUP.md`](docs/SUPABASE_STRIPE_SETUP.md). The legacy Lemon Squeezy plan remains in [`docs/SIGNUP_BILLING_IMPLEMENTATION_PLAN.md`](docs/SIGNUP_BILLING_IMPLEMENTATION_PLAN.md) for historical context.
-
-- Free � GPT-4o mini, ~1.8K GPT-4o tokens/day.
-- Basic ($9/mo) � ~9.5K GPT-4o tokens/day, premium models, no BYO keys.
-- Creator ($18/mo) � ~21.8K GPT-4o tokens/day, premium models, optional BYO rollover.
-- Organization ($99/mo) � ~135K GPT-4o tokens/day shared pool, seat management, BYO rollover.
-- Global Lifetime Access � passphrase login, per-IP allowance for internal cohorts.
-
-Organization admins can manage seat limits, invites, and pending memberships directly from **Settings > Team Management** inside the app.
-
-Stripe support is optional: leave Stripe env vars empty to operate with Lemon Squeezy only.
-
-## Supabase (Optional)
-
-1. Create a Supabase project and enable the providers you want (Google recommended for quick testing).
-2. Add `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `VITE_SUPABASE_URL`, and `VITE_SUPABASE_ANON_KEY` to your environment files.
-3. Set the auth redirect URL to `http://localhost:3000` in the Supabase dashboard.
-4. Restart `npm run dev`. The login screen now shows OAuth buttons and email/password forms that talk to Supabase.
-5. The backend validates Supabase JWTs using the service-role key and associates them with local `app_users` rows (stored in SQLite or PostgreSQL depending on your configuration).
-
-If Supabase variables are omitted the app falls back to the global passphrase-only flow. Both paths can coexist.
-
-## Architecture
-
-Voice Chat Assistant follows a modular client/server design:
-
-- **Frontend**: Vue 3 (Composition API), Vite, TailwindCSS, VueUse, and Supabase JS (optional).
-- **Backend**: Express, TypeScript, multi-tenant auth middleware, and feature-focused modules under `backend/src/features/*`.
-- **External Services**: OpenAI / OpenRouter / Anthropic for LLMs, Supabase for authentication, Stripe for billing.
-
-See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for diagrams, module breakdowns, and data flow details.
-
-## API Reference
-
-Authenticated routes are served from `/api`. Key endpoints:
-
-- `POST /api/auth/global` - Global passphrase login (returns JWT + `tokenProvider: "global"`).
-- `POST /api/auth/login` - Email/password login for seeded or subscribed users (returns JWT + `tokenProvider: "standard"`).
-- `GET /api/auth` - Returns the current session profile. Accepts global JWTs or Supabase tokens in the `Authorization` header.
-- `DELETE /api/auth` - Clears the auth cookie and ends the session.
-- `GET /api/rate-limit/status` - Public endpoint used by the demo banner to display remaining anonymous quota.
-- `POST /api/chat` / `POST /api/chat/persona` - Conversational endpoints for standard and persona-specific prompts.
-- `POST /api/speech` - Whisper transcription.
-- `POST /api/diagram` - Mermaid diagram generation.
-- `GET /api/tts/voices`, `POST /api/tts` - Text-to-speech helpers.
-- `GET /api/cost`, `POST /api/cost` - Authenticated cost tracking (reset + history).
-- `POST /api/billing/checkout` - Creates Stripe checkout sessions (requires auth).
-- `POST /api/billing/webhook` - Webhook receiver that syncs subscription status.
-
-> **Deploy tip:** If CI reports `Missing required environment variable: AUTH_JWT_SECRET`, double-check the secret or `.env` you push to production. The backend expects a line such as `AUTH_JWT_SECRET=super_long_value` with no surrounding quotes—without it the process exits before `/health` is available.
-
-## Social Media & Contact
-
-Connect with us on social media:
-- GitHub: [https://github.com/wearetheframers/agentos](https://github.com/wearetheframers/agentos)
-- Twitter: [@vca_chat](https://twitter.com/vca_chat)
-- LinkedIn: [VCA Chat](https://linkedin.com/company/vca-chat)
-- Discord: [Join our community](https://discord.gg/vca-chat)
-- Email: [team@vca.chat](mailto:team@vca.chat)
-
-Social links are configured in `frontend/src/utils/socialLinks.ts` for easy management across the application.
-
-## Recent Improvements
-
-### TTS Performance Optimizations (October 2024)
-- **80% Latency Reduction**: LRU cache system for repeated phrases with 100MB default capacity
-- **40% Smaller Audio Files**: Switched from MP3 to Opus format for faster downloads
-- **Intelligent Text Chunking**: Smart sentence/paragraph-aware segmentation for streaming playback
-- **Hybrid TTS Strategy**: Automatic provider selection (browser < 150 chars, OpenAI for longer)
-- **Optimized Defaults**: Nova voice at 1.15x speed with Opus format for better performance
-- See [`docs/TTS_OPTIMIZATION_GUIDE.md`](docs/TTS_OPTIMIZATION_GUIDE.md) for implementation details
-
-### Landing Page Enhancements (October 2024)
-- **Enhanced Mission Section**: Redesigned with three pillars - Research & Innovation, Open Source First, and Accessible AI for All
-- **Improved Pricing Display**: Responsive grid layout (2-4 columns) with animated entrance effects and price-based sorting
-- **Social Media Integration**: Added social icons component with elegant handcrafted SVGs
-- **Streamlined Content**: Removed microphone permissions section from landing page for cleaner presentation
-- **Visual Enhancements**: Added gradient backgrounds, glowing effects, and smooth animations throughout
-
-### Component Architecture
-- `SocialIcons.vue`: Reusable social media icons component with variants (default, footer, hero)
-- `AboutMissionSection.vue`: Enhanced mission cards with feature lists and animated entrance
-- `AboutPricingSection.vue`: Responsive pricing grid with featured plan highlighting
-- `ttsCache.service.ts`: LRU cache for TTS audio with performance metrics
-- `textChunker.service.ts`: Intelligent text chunking for streaming TTS
-- `ttsHybrid.service.ts`: Hybrid TTS service with automatic provider selection
+- Architecture deep-dive - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
+- Configuration catalogue - [`CONFIGURATION.md`](CONFIGURATION.md)
+- Backend API reference - [`docs/BACKEND_API.md`](docs/BACKEND_API.md)
+- AgentOS migration notes - [`docs/AGENTOS_*`](docs)
+- Generated API docs - `pnpm --filter @agentos/core run docs` -> `packages/agentos/docs/api`
 
 ## Contributing
 
-Pull requests are welcome. Please review [`CONTRIBUTING.md`](CONTRIBUTING.md) and open an issue if you plan large changes so we can coordinate direction.
+1. Create a branch (`git checkout -b feature/amazing`).
+2. Update the relevant package README/docs alongside code changes.
+3. Run the scoped lint/test commands (`npm run lint`, `pnpm --filter @agentos/core test`, etc.).
+4. Submit a PR with context. Include screenshots/recordings for UI updates.
 
 ## License
 
-Voice Chat Assistant is released under the MIT License. See [`LICENSE`](LICENSE).
-
-
-
-
+The repository remains private. Individual packages may be published under MIT when we cut public releases—refer to [LICENSE](LICENSE) for the current terms.

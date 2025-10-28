@@ -1,0 +1,57 @@
+name: Publish @wearetheframers/agentos
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: release
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for skip-release marker
+        id: control
+        shell: bash
+        run: |
+          if git log -1 --pretty=%B | grep -qi '\[skip-release\]'; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "Skipping publish because [skip-release] was found in the commit history."
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+        if: steps.control.outputs.skip != 'true'
+
+      - name: Install PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+        if: steps.control.outputs.skip != 'true'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        if: steps.control.outputs.skip != 'true'
+
+      - name: Build @agentos/core
+        run: pnpm --filter @agentos/core build
+        if: steps.control.outputs.skip != 'true'
+
+      - name: Test @agentos/core
+        run: pnpm --filter @agentos/core test
+        if: steps.control.outputs.skip != 'true'
+
+      - name: Publish package
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: pnpm --filter @agentos/core publish --access public
+        if: steps.control.outputs.skip != 'true'

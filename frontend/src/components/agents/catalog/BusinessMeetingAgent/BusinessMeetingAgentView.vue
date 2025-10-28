@@ -291,8 +291,14 @@ import {
   XMarkIcon,
   ClipboardIcon
 } from '@heroicons/vue/24/solid';
+import { useChatStore } from '@/store/chat.store';
+import { chatAPI, type ChatMessagePayloadFE, type ChatMessageFE } from '@/utils/api';
+import type { AgentId } from '@/services/agent.service';
 
 const { t } = useI18n();
+const chatStore = useChatStore();
+const MEETING_AGENT_ID = 'meeting_summarizer' as AgentId;
+const MEETING_AGENT_MODE = 'meeting';
 
 interface Meeting {
   id: string;
@@ -760,34 +766,26 @@ Remember: Analyze the ACTUAL content above. If someone said "And food's here!" t
       transcriptPreview: meeting.transcript.substring(0, 100)
     });
 
-    const response = await fetch('/api/chat', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify({
-        messages: [
-          {
-            role: 'user',
-            content: userPrompt,
-            timestamp: Date.now()
-          }
-        ],
-        systemPromptOverride: systemPrompt, // Pass system prompt properly
-        mode: 'general',
-        temperature: 0.7, // Higher temperature for better comprehension and less rigid responses
-        max_tokens: 2000 // More tokens for complete summaries
-      })
-    });
+    const messages: ChatMessageFE[] = [
+      { role: 'system', content: systemPrompt },
+      { role: 'user', content: userPrompt, timestamp: Date.now(), agentId: MEETING_AGENT_ID },
+    ];
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('[BusinessMeetingAgent] API error response:', errorText);
-      throw new Error(`Failed to generate summary: ${response.status} ${response.statusText}`);
-    }
+    const basePayload: ChatMessagePayloadFE = {
+      messages,
+      mode: MEETING_AGENT_MODE,
+      userId: `meeting_agent_user_${meeting.id}`,
+      conversationId: chatStore.getCurrentConversationId(MEETING_AGENT_ID),
+      agentId: MEETING_AGENT_ID,
+    };
 
-    const result = await response.json();
+    const payload = chatStore.attachPersonaToPayload
+      ? chatStore.attachPersonaToPayload(MEETING_AGENT_ID, basePayload)
+      : basePayload;
+
+    const response = await chatAPI.sendMessage(payload);
+    chatStore.syncPersonaFromResponse(MEETING_AGENT_ID, response.data);
+    const result = response.data;
     console.log('[BusinessMeetingAgent] AI response received:', result);
 
     // Parse the AI response - backend returns {content: string, ...}

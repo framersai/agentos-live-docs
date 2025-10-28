@@ -1,0 +1,52 @@
+name: Mirror AgentOS Client
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    environment: release
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for skip-release marker
+        id: control
+        shell: bash
+        run: |
+          if git log -1 --pretty=%B | grep -qi '\[skip-release\]'; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "Skipping mirror because [skip-release] was found in the commit history."
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Remove private artefacts
+        run: |
+          rm -f apps/agentos-client/.env
+          rm -rf apps/agentos-client/.data || true
+          # TODO: confirm whether any additional sample data should be stripped before mirroring
+        if: steps.control.outputs.skip != 'true'
+
+      - name: Split subtree
+        run: git subtree split --prefix apps/agentos-client --branch mirror-client-temp
+        if: steps.control.outputs.skip != 'true'
+
+      - name: Configure SSH key
+        # TODO: store the deploy key as AGENTOS_CLIENT_MIRROR_SSH_KEY in repo secrets
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.AGENTOS_CLIENT_MIRROR_SSH_KEY }}
+        if: steps.control.outputs.skip != 'true'
+
+      - name: Push to public repository
+        env:
+          DESTINATION_REPO: git@github.com:wearetheframers/agentos-client.git
+        run: |
+          git push --force "$DESTINATION_REPO" mirror-client-temp:main
+          git branch -D mirror-client-temp
+        if: steps.control.outputs.skip != 'true'

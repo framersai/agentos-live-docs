@@ -1,0 +1,54 @@
+name: Mirror AgentOS Core
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  mirror:
+    name: Push packages/agentos to public repo
+    runs-on: ubuntu-latest
+    environment: release
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for skip-release marker
+        id: control
+        shell: bash
+        run: |
+          if git log -1 --pretty=%B | grep -qi '\[skip-release\]'; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "Skipping mirror because [skip-release] was found in the commit history."
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Remove private artefacts
+        run: |
+          rm -f packages/agentos/.env
+          rm -rf packages/agentos/docs/internal || true
+          # TODO: list any other files that must never leave the private repo
+        if: steps.control.outputs.skip != 'true'
+
+      - name: Split subtree
+        run: git subtree split --prefix packages/agentos --branch mirror-agentos-temp
+        if: steps.control.outputs.skip != 'true'
+
+      - name: Configure SSH key
+        # TODO: add a deploy key for github.com/wearetheframers/agentos and expose it as AGENTOS_MIRROR_SSH_KEY
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.AGENTOS_MIRROR_SSH_KEY }}
+        if: steps.control.outputs.skip != 'true'
+
+      - name: Push to public repository
+        env:
+          DESTINATION_REPO: git@github.com:wearetheframers/agentos.git
+        run: |
+          git push --force "$DESTINATION_REPO" mirror-agentos-temp:main
+          git branch -D mirror-agentos-temp
+        if: steps.control.outputs.skip != 'true'

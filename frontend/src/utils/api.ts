@@ -17,6 +17,22 @@ import type { PlanId } from '../../../shared/planCatalog';
 // Environment variables for API configuration.
 const API_BASE_URL: string = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api';
 
+type AgentOSClientMode = 'proxy' | 'direct';
+
+const AGENTOS_FRONTEND_ENABLED: boolean =
+  String(import.meta.env.VITE_AGENTOS_ENABLED ?? 'false').toLowerCase() === 'true';
+const AGENTOS_CLIENT_MODE: AgentOSClientMode =
+  (import.meta.env.VITE_AGENTOS_CLIENT_MODE ?? 'proxy').toLowerCase() as AgentOSClientMode;
+
+const normalizeAgentOSPath = (value: string): string => {
+  if (!value) return '/agentos/chat';
+  return value.startsWith('/') ? value : `/${value}`;
+};
+
+const AGENTOS_CHAT_PATH = normalizeAgentOSPath(import.meta.env.VITE_AGENTOS_CHAT_PATH ?? '/agentos/chat');
+const AGENTOS_STREAM_PATH = normalizeAgentOSPath(import.meta.env.VITE_AGENTOS_STREAM_PATH ?? '/agentos/stream');
+const SHOULD_USE_AGENTOS_ROUTES = AGENTOS_FRONTEND_ENABLED && AGENTOS_CLIENT_MODE === 'direct';
+
 /**
  * Key used for storing the authentication token in localStorage or sessionStorage.
  * @constant {string}
@@ -38,6 +54,11 @@ export const api: AxiosInstance = axios.create({
 });
 
 console.log(`[API Service] Initialized. Base URL: ${api.defaults.baseURL}`);
+
+const joinWithApiBase = (path: string): string => {
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  return `${API_BASE_URL.replace(/\/$/, '')}${normalizedPath}`;
+};
 
 const emitSessionCostUpdate = (detail?: SessionCostDetailsFE): void => {
   if (!detail || typeof window === 'undefined') return;
@@ -299,8 +320,8 @@ export interface SessionCostDetailsFE {
 interface BaseChatResponseDataFE {
   model: string;
   usage?: ILlmUsageFE;
-  sessionCost: SessionCostDetailsFE;
-  costOfThisCall: number;
+  sessionCost: SessionCostDetailsFE | null;
+  costOfThisCall: number | null;
   conversationId: string;
   persona?: string | null;
 }
@@ -308,7 +329,7 @@ interface BaseChatResponseDataFE {
 export interface TextResponseDataFE extends BaseChatResponseDataFE {
   type?: 'text_response' | undefined;
   content: string | null;
-  discernment?: 'RESPOND' | 'ACTION_ONLY' | 'IGNORE' | 'CLARIFY';
+  discernment?: 'RESPOND' | 'ACTION_ONLY' | 'IGNORE' | 'CLARIFY' | Record<string, any>;
   message?: string;
   tool_calls?: ILlmToolCallFE[];
 }
@@ -318,14 +339,122 @@ export interface FunctionCallResponseDataFE extends BaseChatResponseDataFE {
   toolName: string;
   toolArguments: Record<string, any>;
   toolCallId: string;
-  discernment?: 'TOOL_CALL_PENDING';
+  discernment?: 'TOOL_CALL_PENDING' | Record<string, any>;
   assistantMessageText?: string | null;
 }
 
 export type ChatResponseDataFE = TextResponseDataFE | FunctionCallResponseDataFE;
 
+interface AgentOSChatAdapterResult {
+  content: string;
+  model: string;
+  usage?: {
+    promptTokens?: number;
+    completionTokens?: number;
+    totalTokens?: number;
+  };
+  conversationId: string;
+  persona?: string | null;
+  personaLabel?: string | null;
+}
+
+interface AgentOSChatPayload {
+  userId: string;
+  conversationId: string;
+  mode: string;
+  messages: Array<Pick<ChatMessageFE, 'role' | 'content' | 'name' | 'tool_call_id'>>;
+}
+
+const isAgentOSAdapterResult = (value: any): value is AgentOSChatAdapterResult => {
+  return (
+    value &&
+    typeof value === 'object' &&
+    typeof value.content === 'string' &&
+    typeof value.model === 'string' &&
+    typeof value.conversationId === 'string'
+  );
+};
+
+const adaptAgentOSResponse = (result: AgentOSChatAdapterResult, mode?: string): ChatResponseDataFE => {
+  const usage = result.usage
+    ? {
+        prompt_tokens: result.usage.promptTokens ?? null,
+        completion_tokens: result.usage.completionTokens ?? null,
+        total_tokens: result.usage.totalTokens ?? null,
+      }
+    : undefined;
+  return {
+    type: 'text_response',
+    content: result.content,
+    message: result.content,
+    model: result.model,
+    usage,
+    conversationId: result.conversationId,
+    sessionCost: null,
+    costOfThisCall: null,
+    persona: result.persona ?? null,
+    discernment: { provider: 'agentos', mode },
+  };
+};
+
+const ensureAgentOSPayload = (payload: ChatMessagePayloadFE): AgentOSChatPayload => {
+  const fallbackMode = payload.mode || 'default';
+  const userId = (payload.userId && payload.userId.trim()) || `agentos-user-${fallbackMode}`;
+  const conversationId =
+    (payload.conversationId && payload.conversationId.trim()) || `agentos-conv-${fallbackMode}-${Date.now()}`;
+
+  const simplifiedMessages = (payload.messages || [])
+    .filter((msg): msg is ChatMessageFE => Boolean(msg && msg.role))
+    .map((msg) => ({
+      role: msg.role,
+      content: msg.content ?? '',
+      name: msg.name,
+      tool_call_id: msg.tool_call_id,
+    }));
+
+  return {
+    userId,
+    conversationId,
+    mode: fallbackMode,
+    messages: simplifiedMessages,
+  };
+};
+
+const shouldRouteThroughAgentOS = (payload: ChatMessagePayloadFE): boolean => {
+  return (
+    SHOULD_USE_AGENTOS_ROUTES &&
+    Boolean(payload?.mode) &&
+    Array.isArray(payload?.messages) &&
+    payload.messages.length > 0
+  );
+};
+
+const buildAgentOSStreamQuery = (payload: AgentOSChatPayload): string => {
+  const params = new URLSearchParams();
+  params.set('userId', payload.userId);
+  params.set('conversationId', payload.conversationId);
+  params.set('mode', payload.mode);
+  params.set('messages', JSON.stringify(payload.messages));
+  return params.toString();
+};
+
+const postAgentOSChat = async (payload: ChatMessagePayloadFE): Promise<AxiosResponse<ChatResponseDataFE>> => {
+  const agentosPayload = ensureAgentOSPayload(payload);
+  const response = await api.post<AgentOSChatAdapterResult>(AGENTOS_CHAT_PATH, agentosPayload);
+  const normalized = adaptAgentOSResponse(response.data, agentosPayload.mode);
+  const normalizedResponse: AxiosResponse<ChatResponseDataFE> = {
+    ...response,
+    data: normalized,
+  };
+  emitSessionCostUpdate(normalized.sessionCost ?? undefined);
+  return normalizedResponse;
+};
+
 export const chatAPI = {
   sendMessage: async (data: ChatMessagePayloadFE): Promise<AxiosResponse<ChatResponseDataFE>> => {
+    if (shouldRouteThroughAgentOS(data)) {
+      return postAgentOSChat(data);
+    }
     const response = await api.post('/chat', data);
     emitSessionCostUpdate(response.data?.sessionCost);
     return response;
@@ -338,36 +467,56 @@ export const chatAPI = {
     api.post('/chat/detect-language', { messages }),
 
   sendMessageStream: async (
-    payloadData: ChatMessagePayloadFE, // Renamed 'data' to 'payloadData' to avoid conflict
+    payloadData: ChatMessagePayloadFE,
     onChunkReceived: (chunk: string) => void,
     onStreamEnd: () => void,
     onStreamError: (error: Error) => void
   ): Promise<ChatResponseDataFE | undefined> => {
     const payload = { ...payloadData, stream: true };
+    const directAgentOS = shouldRouteThroughAgentOS(payload);
+    const agentosPayload = directAgentOS ? ensureAgentOSPayload(payload) : null;
+    const streamUrl = directAgentOS
+      ? `${joinWithApiBase(AGENTOS_STREAM_PATH)}?${buildAgentOSStreamQuery(agentosPayload!)}`
+      : `${API_BASE_URL}/chat`;
+
+    const fetchOptions: RequestInit = directAgentOS
+      ? {
+          method: 'GET',
+          headers: {
+            ...getAuthHeaders(),
+            'X-Client-Version': '1.4.1',
+            Accept: 'text/event-stream',
+          },
+        }
+      : {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...getAuthHeaders(),
+            'X-Client-Version': '1.4.1',
+            Accept: 'text/event-stream',
+          },
+          body: JSON.stringify(payload),
+        };
+
     try {
-      const response = await fetch(`${API_BASE_URL}/chat`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...getAuthHeaders(),
-          'X-Client-Version': '1.4.1', // Match current file version
-          'Accept': 'text/event-stream',
-        },
-        body: JSON.stringify(payload),
-      });
+      const response = await fetch(streamUrl, fetchOptions);
 
       if (!response.ok) {
-        const errorBody = await response.json().catch(() => ({ message: `Request failed with status ${response.status}`, error: response.statusText }));
+        const errorBody = await response.json().catch(() => ({
+          message: `Request failed with status ${response.status}`,
+          error: response.statusText,
+        }));
         throw new Error(`API Error: ${response.status} ${errorBody.message || errorBody.error || response.statusText}`);
       }
       if (!response.body) {
-        throw new Error("Stream body is null, which is unexpected for a successful stream response.");
+        throw new Error('Stream body is null, which is unexpected for a successful stream response.');
       }
 
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let buffer = '';
-      let finalResponseData: ChatResponseDataFE | undefined;
+      let finalResponseData: any;
       // eslint-disable-next-line no-constant-condition
       while (true) {
         const { done, value } = await reader.read();
@@ -377,13 +526,15 @@ export const chatAPI = {
               const finalDataObject = JSON.parse(buffer);
               finalResponseData = finalDataObject;
               if (finalDataObject && typeof finalDataObject === 'object' && finalDataObject.content) {
-                onChunkReceived(finalDataObject.content); // CORRECTED: Use parameter name
+                onChunkReceived(finalDataObject.content);
               } else if (finalDataObject && typeof finalDataObject === 'object' && !finalDataObject.content) {
-                console.info("[API Service] Stream ended with metadata (from buffer):", finalDataObject);
+                console.info('[API Service] Stream ended with metadata (from buffer):', finalDataObject);
               } else {
-                onChunkReceived(buffer); // CORRECTED: Use parameter name
+                onChunkReceived(buffer);
               }
-            } catch(e) { onChunkReceived(buffer); } // CORRECTED: Use parameter name
+            } catch (e) {
+              onChunkReceived(buffer);
+            }
           }
           break;
         }
@@ -398,35 +549,45 @@ export const chatAPI = {
             try {
               const parsedChunk = JSON.parse(jsonData);
               if (parsedChunk.type === 'chunk' && typeof parsedChunk.content === 'string') {
-                onChunkReceived(parsedChunk.content); // CORRECTED: Use parameter name
+                onChunkReceived(parsedChunk.content);
               } else if (parsedChunk.type === 'tool_call_delta') {
-                console.log("[API Service] Stream: Tool call delta received:", parsedChunk);
-                // Future: Logic to accumulate tool_call_delta if required
+                console.log('[API Service] Stream: Tool call delta received:', parsedChunk);
               } else if (parsedChunk.type === 'final_response_metadata') {
-                console.info("[API Service] Stream: Final response metadata:", parsedChunk);
+                console.info('[API Service] Stream: Final response metadata:', parsedChunk);
               } else if (parsedChunk.content && typeof parsedChunk.content === 'string') {
-                onChunkReceived(parsedChunk.content); // CORRECTED: Use parameter name
+                onChunkReceived(parsedChunk.content);
+              } else if (directAgentOS && isAgentOSAdapterResult(parsedChunk)) {
+                finalResponseData = parsedChunk;
+                if (parsedChunk.content) {
+                  onChunkReceived(parsedChunk.content);
+                }
               } else {
-                console.warn("[API Service] Stream: Received unknown JSON structure:", parsedChunk);
+                console.warn('[API Service] Stream: Received unknown JSON structure:', parsedChunk);
               }
             } catch (e) {
               console.warn('[API Service] Stream: Failed to parse JSON data event:', jsonData, e);
-              if(jsonData && !line.startsWith("event:") && !line.startsWith("id:") && !line.startsWith(":")) {
-                onChunkReceived(jsonData); // CORRECTED: Use parameter name
+              if (jsonData && !line.startsWith('event:') && !line.startsWith('id:') && !line.startsWith(':')) {
+                onChunkReceived(jsonData);
               }
             }
-          } else if (line && !line.startsWith("event:") && !line.startsWith("id:") && !line.startsWith(":")) {
-            console.warn("[API Service] Stream: Received non-SSE formatted line:", line);
-            onChunkReceived(line); // CORRECTED: Use parameter name
+          } else if (line && !line.startsWith('event:') && !line.startsWith('id:') && !line.startsWith(':')) {
+            console.warn('[API Service] Stream: Received non-SSE formatted line:', line);
+            onChunkReceived(line);
           }
         }
       }
-      if (onStreamEnd) onStreamEnd(); // CORRECTED: Use parameter name
-      emitSessionCostUpdate(finalResponseData?.sessionCost);
-      return finalResponseData;
+      if (onStreamEnd) onStreamEnd();
+
+      let normalizedFinalResponse: ChatResponseDataFE | undefined = finalResponseData;
+      if (directAgentOS && finalResponseData && isAgentOSAdapterResult(finalResponseData)) {
+        normalizedFinalResponse = adaptAgentOSResponse(finalResponseData, agentosPayload?.mode);
+      }
+
+      emitSessionCostUpdate(normalizedFinalResponse?.sessionCost ?? undefined);
+      return normalizedFinalResponse;
     } catch (error: any) {
       console.error('[API Service] sendMessageStream encountered an error:', error);
-      if (onStreamError) onStreamError(error); // CORRECTED: Use parameter name
+      if (onStreamError) onStreamError(error);
       else throw error;
       return undefined;
     }

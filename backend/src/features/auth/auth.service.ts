@@ -5,7 +5,8 @@
  */
 
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import jwt, { type Secret, type SignOptions } from 'jsonwebtoken';
+import type { StringValue } from 'ms';
 import { appConfig, type AuthTokenPayload, type AuthTier, type AuthRole, type AuthModeType } from '../../config/appConfig.js';
 import {
   findUserByEmail,
@@ -43,7 +44,8 @@ export const verifyPassword = async (password: string, hash: string): Promise<bo
 };
 
 const issueToken = (payload: AuthTokenPayload): string => {
-  return jwt.sign(payload, appConfig.auth.jwtSecret, { expiresIn: appConfig.auth.jwtExpiresIn });
+  const options: SignOptions = { expiresIn: appConfig.auth.jwtExpiresIn as StringValue };
+  return jwt.sign(payload, appConfig.auth.jwtSecret as Secret, options);
 };
 
 export const verifyToken = (token: string): AuthTokenPayload | null => {
@@ -106,7 +108,7 @@ const ensureUserIsActive = (user: AppUser): void => {
 };
 
 export const toSessionUserPayload = (user: AppUser, options?: {
-  mode?: 'standard' | 'global';
+  mode?: AuthModeType;
   tierOverride?: AuthTier;
   roleOverride?: AuthRole;
 }) => {

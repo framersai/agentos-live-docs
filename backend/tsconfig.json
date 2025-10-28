@@ -1,48 +1,57 @@
 {
-  "compilerOptions": {
-    "target": "ES2020",
-    "module": "ESNext",
-    "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "allowJs": true,
-    "strict": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "outDir": "./dist",
-    "rootDir": "./",
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "removeComments": true,
-    "noImplicitAny": true,
-    "strictNullChecks": true,
-    "strictFunctionTypes": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitOverride": true,
-    "resolveJsonModule": true,
-    "importHelpers": true,
-    "types": ["node"],
-    "baseUrl": "./",
-    "paths": {
-      "@prisma/client": ["agentos/stubs/prismaClient.ts"]
-    }
-  },
-  "include": [
-    "**/*.ts",
-    "**/*.js",
-    "**/*.d.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "../frontend/**/*",
-    "../frontend",
-    "*.vue",
-    "**/*.vue"
-  ],
-  "ts-node": {
-    "esm": true
-  }
+    "compilerOptions":  {
+                            "target":  "ES2020",
+                            "module":  "ESNext",
+                            "moduleResolution":  "node",
+                            "allowSyntheticDefaultImports":  true,
+                            "esModuleInterop":  true,
+                            "allowJs":  false,
+                            "strict":  true,
+                            "skipLibCheck":  true,
+                            "forceConsistentCasingInFileNames":  true,
+                            "outDir":  "./dist",
+                            "rootDir":  "./",
+                            "declaration":  true,
+                            "declarationMap":  true,
+                            "sourceMap":  true,
+                            "removeComments":  true,
+                            "noImplicitAny":  true,
+                            "strictNullChecks":  true,
+                            "strictFunctionTypes":  true,
+                            "noImplicitReturns":  true,
+                            "noFallthroughCasesInSwitch":  true,
+                            "noImplicitOverride":  true,
+                            "resolveJsonModule":  true,
+                            "importHelpers":  true,
+                            "types":  [
+                                          "node"
+                                      ],
+                            "baseUrl":  "./",
+                            "paths":  {
+                                          "@prisma/client":  [
+                                                                 "../packages/agentos/dist/stubs/prismaClient.d.ts"
+                                                             ],
+                                          "@agentos/core/*":  [
+                                                                  "../packages/agentos/dist/*"
+                                                              ],
+                                          "@agentos/core":  [
+                                                                "../packages/agentos/dist/index.d.ts"
+                                                            ]
+                                      }
+                        },
+    "include":  [
+                    "**/*.ts",
+                    "**/*.d.ts"
+                ],
+    "exclude":  [
+                    "node_modules",
+                    "dist",
+                    "../frontend/**/*",
+                    "../frontend",
+                    "*.vue",
+                    "**/*.vue"
+                ],
+    "ts-node":  {
+                    "esm":  true
+                }
 }
