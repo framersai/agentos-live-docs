@@ -1,23 +1,28 @@
 import path from 'path';
 import { Router } from 'express';
-import { AgentOS, type AgentOSConfig } from '../../../agentos/api/AgentOS';
-import type { AgentOSResponse } from '../../../agentos/api/types/AgentOSResponse';
-import type { AgentOSInput } from '../../../agentos/api/types/AgentOSInput';
-import type { AgentOSOrchestratorConfig } from '../../../agentos/api/AgentOSOrchestrator';
-import type { GMIManagerConfig } from '../../../agentos/cognitive_substrate/GMIManager';
-import type { IAuthService as AgentOSAuthServiceInterface } from '../../../services/user_auth/IAuthService';
-import type { ISubscriptionService } from '../../../services/user_auth/SubscriptionService';
-import type { PromptEngineConfig } from '../../../agentos/core/llm/IPromptEngine';
-import type { ToolOrchestratorConfig } from '../../../agentos/config/ToolOrchestratorConfig';
-import type { ToolPermissionManagerConfig } from '../../../agentos/core/tools/permissions/IToolPermissionManager';
-import type { ConversationManagerConfig } from '../../../agentos/core/conversation/ConversationManager';
-import type { StreamingManagerConfig } from '../../../agentos/core/streaming/StreamingManager';
-import type { AIModelProviderManagerConfig } from '../../../agentos/core/llm/providers/AIModelProviderManager';
-import { PrismaClient } from '@prisma/client';
+import {
+  AgentOS,
+  type AgentOSConfig,
+  type AgentOSResponse,
+  type AgentOSInput,
+  type AgentOSOrchestratorConfig,
+  type GMIManagerConfig,
+  type PromptEngineConfig,
+  type ToolOrchestratorConfig,
+  type ToolPermissionManagerConfig,
+  type ConversationManagerConfig,
+  type StreamingManagerConfig,
+  type AIModelProviderManagerConfig,
+} from '@agentos/core';
+import type {
+  IAuthService as AgentOSAuthServiceInterface,
+  ISubscriptionService,
+} from '@agentos/core/services/user_auth/types';
+import { PrismaClient } from '@agentos/core/stubs/prismaClient';
 import { createAgentOSAuthAdapter } from './agentos.auth-service.js';
 import { createAgentOSSubscriptionAdapter } from './agentos.subscription-service.js';
 import { createAgentOSRouter } from './agentos.routes.js';
-import { createAgentOSStreamRouter } from './agentos.stream-router.ts';
+import { createAgentOSStreamRouter } from './agentos.stream-router.js';
 
 /**
  * AgentOS is still incubating inside the Voice Chat Assistant monorepo.
@@ -122,11 +127,34 @@ function buildEmbeddedAgentOSConfig(): AgentOSConfig {
   };
 
   const promptEngineConfig: PromptEngineConfig = {
-    defaultMaxContextTokens: Number(process.env.AGENTOS_MAX_CONTEXT_TOKENS ?? 8192),
-    enablePromptCaching: true,
-    maxCachedPrompts: 100,
-    defaultTemperature: Number(process.env.LLM_DEFAULT_TEMPERATURE ?? 0.7),
-    enableTokenCounting: true,
+    defaultTemplateName: 'openai_chat',
+    availableTemplates: {},
+    tokenCounting: {
+      strategy: 'estimated',
+      estimationModel: 'gpt-3.5-turbo',
+    },
+    historyManagement: {
+      defaultMaxMessages: Number(process.env.AGENTOS_MAX_MESSAGES ?? 40),
+      maxTokensForHistory: Number(process.env.AGENTOS_MAX_CONTEXT_TOKENS ?? 8192),
+      summarizationTriggerRatio: 0.8,
+      preserveImportantMessages: true,
+    },
+    contextManagement: {
+      maxRAGContextTokens: Number(process.env.AGENTOS_RAG_CONTEXT_TOKENS ?? 1500),
+      summarizationQualityTier: 'balanced',
+      preserveSourceAttributionInSummary: true,
+    },
+    contextualElementSelection: {
+      maxElementsPerType: {},
+      defaultMaxElementsPerType: 3,
+      priorityResolutionStrategy: 'highest_first',
+      conflictResolutionStrategy: 'skip_conflicting',
+    },
+    performance: {
+      enableCaching: true,
+      cacheTimeoutSeconds: 120,
+    },
+    debugging: process.env.NODE_ENV === 'development' ? { logConstructionSteps: false } : undefined,
   };
 
   const toolOrchestratorConfig: ToolOrchestratorConfig = {
@@ -149,9 +177,12 @@ function buildEmbeddedAgentOSConfig(): AgentOSConfig {
 
   const conversationManagerConfig: ConversationManagerConfig = {
     defaultConversationContextConfig: {
-      maxMessages: Number(process.env.AGENTOS_MAX_MESSAGES ?? 100),
-      enableAutoSummarization: true,
-      summarizationThreshold: 60,
+      maxHistoryLengthMessages: Number(process.env.AGENTOS_MAX_MESSAGES ?? 100),
+      enableAutomaticSummarization: true,
+      summarizationOptions: {
+        desiredLength: 'medium',
+        method: 'abstractive_llm',
+      },
     },
     maxActiveConversationsInMemory: Number(process.env.AGENTOS_MAX_ACTIVE_CONVERSATIONS ?? 100),
     inactivityTimeoutMs: Number(process.env.AGENTOS_INACTIVITY_TIMEOUT_MS ?? 3_600_000),

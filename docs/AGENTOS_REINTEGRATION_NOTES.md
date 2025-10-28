@@ -1,21 +1,23 @@
 # AgentOS Reintegration Notes
 
+> **Directory note:** AgentOS now lives under `packages/agentos/src/**` (migrated from `backend/agentos`). Older path references in this document refer to the original layout but the modules themselves are accessible through the new package.
+
 > Living document for understanding the current Voice Chat Assistant architecture, the legacy AgentOS implementation, and the path to reintegrate the richer backend that lives on the `dev` branch.
 
 ## Source Material Reviewed
 
-- `README.md` – product overview, stack, and API surface.
-- `docs/ARCHITECTURE.md` – client/server breakdown, middleware, data flow.
-- `docs/CREATING_NEW_AGENT.md` – frontend agent mini-app architecture, tool-calling expectations.
-- `docs/DESIGN_SYSTEM.md` & `docs/REACTIVE-SYSTEM.md` – UI/UX, theme, and reactive state cues that AgentOS integrations must respect.
-- `docs/PLANS_AND_BILLING.md`, `docs/SAAS_STARTER_SETUP.md`, `docs/SIGNUP_BILLING_IMPLEMENTATION_PLAN.md`, `docs/SUPABASE_STRIPE_SETUP.md` – auth + billing flows that AgentOS services must interoperate with.
-- `docs/TTS_OPTIMIZATION_GUIDE.md` – audio/voice services that can trigger AgentOS tool calls.
-- `CONFIGURATION.md`, `LANGUAGE_AND_CONTEXT_DOCUMENTATION.md`, `PRODUCTION_SETUP.md`, `deploy-vercel.md` – operational requirements, env vars, and deployment flows.
+- `README.md`     product overview, stack, and API surface.
+- `docs/ARCHITECTURE.md`     client/server breakdown, middleware, data flow.
+- `docs/CREATING_NEW_AGENT.md`     frontend agent mini-app architecture, tool-calling expectations.
+- `docs/DESIGN_SYSTEM.md` & `docs/REACTIVE-SYSTEM.md`     UI/UX, theme, and reactive state cues that AgentOS integrations must respect.
+- `docs/PLANS_AND_BILLING.md`, `docs/SAAS_STARTER_SETUP.md`, `docs/SIGNUP_BILLING_IMPLEMENTATION_PLAN.md`, `docs/SUPABASE_STRIPE_SETUP.md`     auth + billing flows that AgentOS services must interoperate with.
+- `docs/TTS_OPTIMIZATION_GUIDE.md`     audio/voice services that can trigger AgentOS tool calls.
+- `CONFIGURATION.md`, `LANGUAGE_AND_CONTEXT_DOCUMENTATION.md`, `PRODUCTION_SETUP.md`, `deploy-vercel.md`     operational requirements, env vars, and deployment flows.
 
 ## Current Architecture Snapshot (master branch)
 
-- **Frontend**: Vue 3 + Vite + Tailwind with composition state, Pinia stores, Supabase client optionality, and agent “miniapps” orchestrated via `agent.service.ts`.
-- **Backend**: Express + TypeScript modularized under `backend/src/features/*`, with `optionalAuth` → `auth` middleware stack, Supabase mirroring, rate limiting, billing, chat, speech, diagram, and TTS services.
+- **Frontend**: Vue 3 + Vite + Tailwind with composition state, Pinia stores, Supabase client optionality, and agent    miniapps    orchestrated via `agent.service.ts`.
+- **Backend**: Express + TypeScript modularized under `backend/src/features/*`, with `optionalAuth`     `auth` middleware stack, Supabase mirroring, rate limiting, billing, chat, speech, diagram, and TTS services.
 - **Memory Strategy**: Dual-layer (global demo memory + per-user memory) governed by configurable context strategies (`LANGUAGE_AND_CONTEXT_DOCUMENTATION.md`) plus plan-based allowances (`shared/planCatalog.ts`).
 - **Billing & Auth**: Supabase + Stripe/Lemon Squeezy flows, `app_users` table augmented with `supabase_user_id`, subscription metadata, and checkout session tracking.
 - **Realtime Voice**: Browser + Whisper STT, hybrid TTS pipeline (cache, chunker, Opus output) with ambient reactive UI feedback loops.
@@ -40,20 +42,20 @@
   - Turn handling is persona-aware, multimodal-ready (text/audio/vision), and integrates tool call routing with safeguards (`maxToolCallIterations`, permission manager).
   - RAG + memory configuration is decoupled: `VectorStoreManager`, `MemoryLifecycleManager`, and persona definitions specify what data to hydrate into working memory vs long-term stores.
 - Missing links relative to master:
-  - Environment/config wiring assumes standalone server; no hooks yet for current backend’s auth middleware, Supabase tokens, billing entitlements, or shared `planCatalog`.
+  - Environment/config wiring assumes standalone server; no hooks yet for current backend   s auth middleware, Supabase tokens, billing entitlements, or shared `planCatalog`.
   - REST/WebSocket routes live in `backend/agentos/server/*` but target an older stack (custom Express instance, Prisma schema) rather than `backend/src`.
-  - No direct bridge to master’s chat endpoints, rate-limit middleware, or the new agent miniapp contract on the frontend.
+  - No direct bridge to master   s chat endpoints, rate-limit middleware, or the new agent miniapp contract on the frontend.
 
 ## Integration Goals (high-level)
 
-1. **Bring over the richer AgentOS backend from `dev`** (routes, tool orchestration, websocket handling) while aligning it with today’s backend conventions (Express config, middleware, error handling).
+1. **Bring over the richer AgentOS backend from `dev`** (routes, tool orchestration, websocket handling) while aligning it with today   s backend conventions (Express config, middleware, error handling).
 2. **Wire AgentOS into existing services** so `/api/chat`, personas, RAG/vector store access, and memory management run through AgentOS orchestration without regressing the working frontend.
 3. **Support both global + user-specific memory** (persisted via the current databases) and ensure rate limits, billing entitlements, and Supabase-linked auth remain intact.
 4. **Document the reintegration path** so AgentOS can be carved out into an open-source package later (clear configs, env vars, and module boundaries).
 
 ## Open Questions / Considerations
 
-- Exact scope of the “real AgentOS” code on `dev` (APIs, data models, websocket protocols) and how much drift exists relative to master.
+- Exact scope of the    real AgentOS    code on `dev` (APIs, data models, websocket protocols) and how much drift exists relative to master.
 - Required adapters for Supabase JWTs, plan enforcement, and cost tracking when AgentOS becomes the orchestrator.
 - Where to host reusable AgentOS modules (e.g., `backend/agentos` as a package vs integrated feature directories) to simplify future OSS packaging.
 - Sequence for migrating `/api/chat` consumers (frontend agents, prompts, memory services) without breaking current master functionality during the dev-branch work.
@@ -62,7 +64,7 @@
 
 ### 1. Baseline Alignment
 - Merge `master` into `dev` to bring the current backend/frontend tree (features, middleware, docs) while preserving `backend/agentos`.
-- Resolve conflicts by preferring `master` for existing services and keeping `dev`’s `backend/agentos` additions.
+- Resolve conflicts by preferring `master` for existing services and keeping `dev`   s `backend/agentos` additions.
 - Ensure `docs/` + shared configs exist on `dev` so knowledge from master is accessible.
 
 ### 2. AgentOS Platform Adapter (backend/src/integrations/agentos)
@@ -77,7 +79,7 @@
 - Replace `backend/src/features/chat/chat.routes.ts` request handling with AgentOS orchestrator calls:
   - Build `AgentOSInput` from current request (messages, persona, metadata, speech settings, BYO keys).
   - Stream responses via HTTP chunked encoding or buffer final response (to keep parity while streaming is finished).
-  - Map `AgentOSResponseChunkType` → existing frontend expectations (text, tool call metadata, cost updates).
+  - Map `AgentOSResponseChunkType`     existing frontend expectations (text, tool call metadata, cost updates).
 - Add supporting endpoints under `/api/agentos/*` (or extend chat routes) for:
   - Tool result callbacks (if the frontend must send tool outputs).
   - Persona listings/resolution (wrapping `IPersonaDefinition`).
@@ -93,7 +95,7 @@
 
 ### 5. Tooling & Personas
 - Map existing agent personas/prompts (stored in `/prompts` + `frontend/src/services/agent.service.ts`) to AgentOS persona definitions:
-  - Provide conversion utilities so `IAgentDefinition` → `IPersonaDefinition`.
+  - Provide conversion utilities so `IAgentDefinition`     `IPersonaDefinition`.
   - Preserve tool availability (e.g., diagram, quiz, diary) by registering them with the new ToolOrchestrator and reusing existing backend tool handlers (`backend/src/tools/*.ts`).
 - Ensure `frontend` agents keep the same IDs; chat responses should include the persona/agent info for compatibility.
 
@@ -108,7 +110,7 @@
 - Add high-level `docs/agentos-integration.md` describing runtime toggles so AgentOS can later ship as an open-source package.
 
 ### Delivery Strategy
-1. Merge codebases (master → dev) and ensure dev builds.
+1. Merge codebases (master     dev) and ensure dev builds.
 2. Land the AgentOS integration module + config scaffolding (feature-flagged).
 3. Flip chat routes to use AgentOS, keeping a fallback path for debugging.
 4. Flesh out supporting endpoints + memory bridges.
@@ -118,27 +120,30 @@ These steps keep AgentOS encapsulated but wired through the modern backend, prep
 
 ## Current Integration Status
 
-- ✅ Dev branch now mirrors the latest production architecture (docs, frontend, backend features) while preserving the rich `backend/agentos` tree.
-- ✅ Embedded AgentOS service (`backend/src/integrations/agentos/agentos.integration.ts`) spins up the orchestrator with safe defaults (no Prisma migrations required) and exposes a route factory.
-- ✅ `/api/agentos/*` routes are mounted automatically when `AGENTOS_ENABLED=true`, reusing the existing JWT middleware so the frontend can begin experimenting without leaving the main Express app.
-- 🔜 Next milestones: swap `/api/chat` over to AgentOS streaming, bridge Supabase plan metadata into the stubbed subscription service, and map existing Vue agents to the new persona loader.
-- ♻️ Legacy AgentOS source (GMI, persona loaders, tooling, docs) restored under `backend/agentos/**` so future work can plug into the original architecture without hunting through history.
-- 🧠 AgentOS chat adapter now pulls SQLite conversation history plus knowledge-base snippets via the existing context aggregator so the persona prompt sees the same memory the legacy `/api/chat` route used.
-- 🔐 Access tiers now flow through AgentOS: each persona/toolset declares a minimum plan level, and the adapter enforces that using `creditAllocationService` + `shared/planCatalog` so premium personas/tools stay gated by billing entitlements.
+-     Dev branch now mirrors the latest production architecture (docs, frontend, backend features) while preserving the rich `backend/agentos` tree.
+-     Embedded AgentOS service (`backend/src/integrations/agentos/agentos.integration.ts`) spins up the orchestrator with safe defaults (no Prisma migrations required) and exposes a route factory.
+-     `/api/agentos/*` routes are mounted automatically when `AGENTOS_ENABLED=true`, reusing the existing JWT middleware so the frontend can begin experimenting without leaving the main Express app.
+-      Next milestones: swap `/api/chat` over to AgentOS streaming, bridge Supabase plan metadata into the stubbed subscription service, and map existing Vue agents to the new persona loader.
+-        Legacy AgentOS source (GMI, persona loaders, tooling, docs) restored under `backend/agentos/**` so future work can plug into the original architecture without hunting through history.
+-      AgentOS chat adapter now pulls SQLite conversation history plus knowledge-base snippets via the existing context aggregator so the persona prompt sees the same memory the legacy `/api/chat` route used.
+-      Access tiers now flow through AgentOS: each persona/toolset declares a minimum plan level, and the adapter enforces that using `creditAllocationService` + `shared/planCatalog` so premium personas/tools stay gated by billing entitlements.
 
 ## End-to-End Readiness Checklist (WIP)
 
 | # | Milestone | Description | Status |
 |---|-----------|-------------|--------|
-| 1 | **Voice Input Pipeline → AgentOS** | Make sure mic capture/transcription flows still store transcripts/persona metadata before AgentOS handles the turn so the UI log stays in sync. | ✅ (this change) |
-| 2 | **Tool + Persona Registry** | Map existing frontend agents + prompts onto AgentOS personas, register diagram/quiz/diary tools with ToolOrchestrator. | ✅ (persona + tool metadata registry added in `backend/src/integrations/agentos/agentos.persona-registry.ts`) |
-| 3 | **Memory + RAG Bridge** | Back AgentOS `ConversationManager` + vector store with the same SQLite/Pinecone adapters used today so global + per-user memory work identically. | ✅ (chat adapter now loads SQLite history + knowledge-base snippets before each turn) |
-| 4 | **Auth & Plan Enforcement** | Replace the stubbed auth/subscription services with adapters that read Supabase/global JWTs and `shared/planCatalog` to respect tiers, BYO limits, etc. | ✅ (Supabase/global auth adapter + plan catalog enforcement wired via creditAllocationService) |
-| 5 | **Streaming & Observability** | Surface AgentOS SSE endpoints in the frontend, wire structured logs/metrics into the existing `/api/system` health checks. | ⏳ |
+| 1 | **Voice Input Pipeline     AgentOS** | Make sure mic capture/transcription flows still store transcripts/persona metadata before AgentOS handles the turn so the UI log stays in sync. |     (this change) |
+| 2 | **Tool + Persona Registry** | Map existing frontend agents + prompts onto AgentOS personas, register diagram/quiz/diary tools with ToolOrchestrator. |     (persona + tool metadata registry added in `backend/src/integrations/agentos/agentos.persona-registry.ts`) |
+| 3 | **Memory + RAG Bridge** | Back AgentOS `ConversationManager` + vector store with the same SQLite/Pinecone adapters used today so global + per-user memory work identically. |     (chat adapter now loads SQLite history + knowledge-base snippets before each turn) |
+| 4 | **Auth & Plan Enforcement** | Replace the stubbed auth/subscription services with adapters that read Supabase/global JWTs and `shared/planCatalog` to respect tiers, BYO limits, etc. |     (Supabase/global auth adapter + plan catalog enforcement wired via creditAllocationService) |
+| 5 | **Streaming & Observability** | Surface AgentOS SSE endpoints in the frontend, wire structured logs/metrics into the existing `/api/system` health checks. |     (frontend flag + SSE stub wired; metrics pending) |
 
-Each milestone builds on the previous one; we’ll mark them complete here as work lands.
+Each milestone builds on the previous one; we   ll mark them complete here as work lands.
 
 - **Persona Registry Snapshot** (Step 2): `backend/src/integrations/agentos/agentos.persona-registry.ts` now mirrors the Vue agent catalog, reads the existing prompt Markdown files, and links each agent to its toolsets (`coding_core`, `tutor_learning`, `diary_reflection`, etc.). The adapter uses this metadata to stamp every AgentOS request with the correct persona + tool hints so future orchestrators can execute the right functions without re-discovering agent state.
 - ?? AgentOS now uses the real Supabase/global auth adapters and plan catalog, so persona/tool access honors the same tiers enforced in creditAllocationService.
 
 - ?? AgentOS router now exposes /api/agentos/chat and /api/agentos/stream (SSE stub) under the same optionalAuth + rate limiter stack, ready for full streaming once the orchestrator is re-enabled.
+-     Frontend builds can now set `VITE_AGENTOS_ENABLED=true` and `VITE_AGENTOS_CLIENT_MODE=direct` (plus optional `VITE_AGENTOS_*_PATH` overrides) so the shared `chatAPI`/Pinia store automatically hit `/api/agentos/chat` and the SSE stub without touching individual agents. The default `proxy` mode keeps the existing `/api/chat` path until streaming models land.
+-     The Meeting Scribe UI was still calling `fetch('/api/chat')` directly; it now runs through the shared `chatAPI`, which means persona metadata, AgentOS toggles, and future streaming upgrades reach every agent component consistently.
+

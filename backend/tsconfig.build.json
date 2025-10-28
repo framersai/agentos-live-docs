@@ -11,8 +11,9 @@
     "dist",
     "../frontend/**/*",
     "../frontend",
+    "../packages/agentos/dist",
+    "../packages/agentos/dist/**/*",
     "*.vue",
-    "**/*.vue",
-    "agentos/**/*"
+    "**/*.vue"
   ]
 }

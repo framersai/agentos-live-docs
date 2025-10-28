@@ -323,7 +323,10 @@ export async function POST(req: Request, res: Response): Promise<void> {
           userId: effectiveUserId,
           conversationId,
           mode,
-          messages: currentTurnClientMessages ?? [],
+          messages: (currentTurnClientMessages ?? []).map((clientMsg) => ({
+            role: clientMsg.role,
+            content: clientMsg.content ?? '',
+          })),
         });
 
         res.status(200).json({

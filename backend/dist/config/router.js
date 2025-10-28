@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { authMiddleware } from '../middleware/auth.js';
+import { isAgentOSEnabled, getAgentOSRouter } from '../src/integrations/agentos/agentos.integration.js';
 import { postGlobalLogin, postStandardLogin, getStatus as getAuthStatus, deleteSession as deleteAuthSession, postRegister, } from '../src/features/auth/auth.routes.js';
 import * as chatApiRoutes from '../src/features/chat/chat.routes.js';
 import { postDetectLanguage } from '../src/features/chat/language.routes.js';
@@ -97,6 +98,16 @@ export async function configureRouter() {
             });
         });
         console.log('✅ Added test route: GET /api/test');
+        if (isAgentOSEnabled()) {
+            try {
+                const agentosRouter = await getAgentOSRouter();
+                router.use('/agentos', agentosRouter);
+                console.log('[AgentOS] Registered AgentOS routes at /api/agentos');
+            }
+            catch (agentosError) {
+                console.error('[AgentOS] Failed to initialize AgentOS router. Continuing without AgentOS endpoints.', agentosError);
+            }
+        }
     }
     catch (error) {
         console.error('❌ Error setting up API routes:', error);

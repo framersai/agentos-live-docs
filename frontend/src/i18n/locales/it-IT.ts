@@ -46,7 +46,7 @@ export default {
         passwordLabel: 'Crea una password',
         passwordPlaceholder: 'Almeno 8 caratteri',
         passwordHint: 'Utilizza almeno 8 caratteri con un numero o un simbolo.',
-        termsLabel: 'Accetto i <a href="https://voice-chat-assistant.com/terms" target="_blank" rel="noopener">Termini di servizio</a> e l'<a href="https://voice-chat-assistant.com/privacy" target="_blank" rel="noopener">Informativa sulla privacy</a>.',
+        termsLabel: 'Accetto i <a href="https://voice-chat-assistant.com/terms" target="_blank" rel="noopener">Termini di servizio</a> e l’<a href="https://voice-chat-assistant.com/privacy" target="_blank" rel="noopener">Informativa sulla privacy</a>.',
         errors: {
           missingFields: 'Inserisci e-mail e password per continuare.',
           mustAcceptTerms: 'Devi accettare i termini per creare un account.',
@@ -55,7 +55,7 @@ export default {
       },
       plan: {
         title: 'Scegli il workspace giusto per te',
-        subtitle: 'Ogni piano include strumenti vocali, memoria adattiva e risposte in streaming. Puoi effettuare l'upgrade quando hai bisogno di più posti o token.',
+        subtitle: 'Ogni piano include strumenti vocali, memoria adattiva e risposte in streaming. Puoi effettuare l’upgrade quando hai bisogno di più posti o token.',
         choose: 'Seleziona questo piano',
         featuredBadge: 'Consigliato',
       },
@@ -64,7 +64,7 @@ export default {
         subtitle: 'Verrai reindirizzato al portale di pagamento Lemon Squeezy. I tuoi dati di fatturazione sono criptati e gestiti in sicurezza.',
         cta: 'Procedi al pagamento sicuro',
         summary: {
-          email: 'E-mail dell'account',
+          email: 'E-mail dell’account',
           billing: 'Cadenza di fatturazione',
           billingNote: 'Addebito mensile. Puoi annullare in qualsiasi momento da Impostazioni -> Fatturazione.',
         },
@@ -78,7 +78,7 @@ export default {
       },
       success: {
         title: 'Tutto pronto!',
-        subtitle: 'È stata inviata un'e-mail di conferma a {email}. Ora puoi accedere con il tuo nuovo account.',
+        subtitle: 'È stata inviata un’e-mail di conferma a {email}. Ora puoi accedere con il tuo nuovo account.',
         placeholderEmail: 'la tua casella di posta',
         cta: 'Vai al login',
         support: 'Hai bisogno di aiuto?',

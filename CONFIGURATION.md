@@ -119,6 +119,10 @@ VITE_LEMONSQUEEZY_ORG_VARIANT_ID=
 VITE_STRIPE_BASIC_PRICE_ID=
 VITE_STRIPE_CREATOR_PRICE_ID=
 VITE_STRIPE_ORG_PRICE_ID=
+VITE_AGENTOS_ENABLED=false
+VITE_AGENTOS_CLIENT_MODE=proxy # proxy keeps /api/chat, direct hits /api/agentos/*
+VITE_AGENTOS_CHAT_PATH=/agentos/chat
+VITE_AGENTOS_STREAM_PATH=/agentos/stream
 ```
 
 Restart `npm run dev` after editing Vite environment files.

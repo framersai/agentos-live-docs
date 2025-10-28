@@ -20,7 +20,7 @@ import {
   AgentOSFinalResponseChunk,
   AgentOSTextDeltaChunk,
   AgentOSMetadataUpdateChunk,
-} from '../../../agentos/api/types/AgentOSResponse';
+} from '@agentos/core';
 import { sqliteMemoryAdapter } from '../../core/memory/SqliteMemoryAdapter.js';
 import { jsonFileKnowledgeBaseService } from '../../core/knowledge/JsonFileKnowledgeBaseService.js';
 import { llmContextAggregatorService } from '../../core/context/LLMContextAggregatorService.js';
@@ -75,6 +75,10 @@ export async function processAgentOSChatRequest(
     payload.userId,
   );
 
+  const promptTokens = llmResponse.usage?.prompt_tokens ?? 0;
+  const completionTokens = llmResponse.usage?.completion_tokens ?? 0;
+  const totalTokens = llmResponse.usage?.total_tokens ?? promptTokens + completionTokens;
+
   const syntheticChunk: AgentOSResponse = {
     type: AgentOSResponseChunkType.FINAL_RESPONSE,
     streamId: payload.conversationId,
@@ -84,13 +88,12 @@ export async function processAgentOSChatRequest(
     timestamp: new Date().toISOString(),
     metadata: { modelId: llmResponse.model },
     finalResponseText: llmResponse.text,
-    usage: llmResponse.usage
-      ? {
-          promptTokens: llmResponse.usage.prompt_tokens ?? undefined,
-          completionTokens: llmResponse.usage.completion_tokens ?? undefined,
-          totalTokens: llmResponse.usage.total_tokens ?? undefined,
-        }
-      : undefined,
+    usage: {
+      promptTokens,
+      completionTokens,
+      totalTokens,
+      totalCostUSD: (llmResponse as any).usage?.total_cost_usd,
+    },
     activePersonaDetails: {
       id: persona.personaId,
       label: persona.label,
@@ -138,7 +141,7 @@ function summarizeAgentOSChunks(
           };
         }
         persona = finalChunk.activePersonaDetails?.id ?? persona;
-        personaLabel = finalChunk.activePersonaDetails?.label ?? personaLabel;
+        personaLabel = finalChunk.activePersonaDetails?.label ?? finalChunk.activePersonaDetails?.name ?? personaLabel;
         break;
       }
       case AgentOSResponseChunkType.METADATA_UPDATE: {
@@ -380,3 +383,4 @@ function contextBundleOutputFormatHints(mode: string): string {
       return 'Clear Markdown response with bullet points when helpful.';
   }
 }
+
