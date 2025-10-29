@@ -49,7 +49,7 @@ class AgentOSIntegration {
     await this.getAgentOS();
     this.router = Router();
     this.router.use(createAgentOSRouter());
-    this.router.use(createAgentOSStreamRouter());
+    this.router.use(createAgentOSStreamRouter(this));
     return this.router;
   }
 
@@ -60,6 +60,16 @@ class AgentOSIntegration {
       chunks.push(chunk);
     }
     return chunks;
+  }
+
+  public async processThroughAgentOSStream(
+    input: AgentOSInput,
+    onChunk: (chunk: AgentOSResponse) => Promise<void> | void,
+  ): Promise<void> {
+    const agentosInstance = await this.getAgentOS();
+    for await (const chunk of agentosInstance.processRequest(input)) {
+      await onChunk(chunk);
+    }
   }
 
   private async getAgentOS(): Promise<AgentOS> {

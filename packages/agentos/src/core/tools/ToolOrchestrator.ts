@@ -78,15 +78,6 @@ export class ToolOrchestrator implements IToolOrchestrator {
   private toolExecutor!: ToolExecutor;
 
   /**
-   * An in-memory registry mapping tool functional names (`ITool.name`) to their respective `ITool` instances.
-   * This allows for quick lookup and retrieval of tools.
-   * @private
-   * @readonly
-   * @type {Map<string, ITool>}
-   */
-  private readonly toolRegistry: Map<string, ITool>;
-
-  /**
    * A flag indicating whether the orchestrator has been successfully initialized and is ready for operation.
    * @private
    * @type {boolean}
@@ -121,7 +112,6 @@ export class ToolOrchestrator implements IToolOrchestrator {
    */
   constructor() {
     this.orchestratorId = `tool-orch-${uuidv4()}`;
-    this.toolRegistry = new Map<string, ITool>();
     this.config = { ...ToolOrchestrator.DEFAULT_CONFIG, orchestratorId: this.orchestratorId };
   }
 
@@ -134,11 +124,12 @@ export class ToolOrchestrator implements IToolOrchestrator {
     toolExecutor: ToolExecutor,
     initialTools?: ITool[],
   ): Promise<void> {
-    if (this.isInitialized) {
-      console.warn(`ToolOrchestrator (ID: ${this.orchestratorId}): Attempting to re-initialize an already initialized instance. Existing tools will be cleared and re-registered if provided.`);
-      await this.shutdownRegisteredTools(); 
-      this.toolRegistry.clear();
-    }
+    if (this.isInitialized) {
+      console.warn(
+        `ToolOrchestrator (ID: ${this.orchestratorId}): Attempting to re-initialize an already initialized instance. Existing tools will be cleared and re-registered if provided.`,
+      );
+      await this.shutdownRegisteredTools();
+    }
 
     const baseConfig = { ...ToolOrchestrator.DEFAULT_CONFIG, orchestratorId: this.orchestratorId };
     this.config = Object.freeze({
@@ -173,7 +164,9 @@ export class ToolOrchestrator implements IToolOrchestrator {
     }
 
     this.isInitialized = true;
-    console.log(`ToolOrchestrator (ID: ${this.orchestratorId}) initialized. Registered tools: ${this.toolRegistry.size}. Logging tool calls: ${this.config.logToolCalls}.`);
+    console.log(
+      `ToolOrchestrator (ID: ${this.orchestratorId}) initialized. Registered tools: ${this.toolExecutor.listAvailableTools().length}. Logging tool calls: ${this.config.logToolCalls}.`,
+    );
   }
 
   /**
@@ -194,106 +187,133 @@ export class ToolOrchestrator implements IToolOrchestrator {
   /**
    * @inheritdoc
    */
-  public async registerTool(tool: ITool): Promise<void> {
-    this.ensureInitialized();
-    if (!this.config.toolRegistrySettings.allowDynamicRegistration) {
-      throw new GMIError("Dynamic tool registration is disabled by the current ToolOrchestrator configuration.", GMIErrorCode.PERMISSION_DENIED, { toolName: tool?.name, orchestratorId: this.orchestratorId });
-    }
-    if (!tool || typeof tool.name !== 'string' || !tool.name.trim() || typeof tool.id !== 'string' || !tool.id.trim()) {
-      throw new GMIError("Tool registration failed: The provided tool object is invalid or missing required 'id' or 'name' properties.", GMIErrorCode.INVALID_ARGUMENT, { receivedToolDetails: { id: tool?.id, name: tool?.name } });
-    }
-    if (this.toolRegistry.has(tool.name)) {
-      throw new GMIError(`Tool registration failed: A tool with the name '${tool.name}' (attempting to register ID: '${tool.id}') is already present in the registry. The existing tool has ID: '${this.toolRegistry.get(tool.name)?.id}'. Tool names must be unique to avoid ambiguity.`, GMIErrorCode.ALREADY_EXISTS, { toolName: tool.name, existingToolId: this.toolRegistry.get(tool.name)?.id });
-    }
-    if (this.config.globalDisabledTools?.includes(tool.name) || this.config.globalDisabledTools?.includes(tool.id)) {
-      console.warn(`ToolOrchestrator (ID: ${this.orchestratorId}): Registering tool '${tool.name}' (ID: '${tool.id}'), but it is listed as globally disabled. It may not be executable.`);
-    }
-    this.toolRegistry.set(tool.name, tool);
-    console.log(`ToolOrchestrator (ID: ${this.orchestratorId}): Tool '${tool.name}' (ID: '${tool.id}', Version: ${tool.version || 'N/A'}) successfully registered.`);
-  }
+  public async registerTool(tool: ITool): Promise<void> {
+    this.ensureInitialized();
+    if (!this.config.toolRegistrySettings.allowDynamicRegistration) {
+      throw new GMIError(
+        "Dynamic tool registration is disabled by the current ToolOrchestrator configuration.",
+        GMIErrorCode.PERMISSION_DENIED,
+        { toolName: tool?.name, orchestratorId: this.orchestratorId },
+      );
+    }
+    if (!tool || typeof tool.name !== 'string' || !tool.name.trim() || typeof tool.id !== 'string' || !tool.id.trim()) {
+      throw new GMIError(
+        "Tool registration failed: The provided tool object is invalid or missing required 'id' or 'name' properties.",
+        GMIErrorCode.INVALID_ARGUMENT,
+        { receivedToolDetails: { id: tool?.id, name: tool?.name } },
+      );
+    }
+    if (this.config.globalDisabledTools?.includes(tool.name) || this.config.globalDisabledTools?.includes(tool.id)) {
+      console.warn(
+        `ToolOrchestrator (ID: ${this.orchestratorId}): Registering tool '${tool.name}' (ID: '${tool.id}'), but it is listed as globally disabled. It may not be executable.`,
+      );
+    }
+    await this.toolExecutor.registerTool(tool);
+    console.log(
+      `ToolOrchestrator (ID: ${this.orchestratorId}): Tool '${tool.name}' (ID: '${tool.id}', Version: ${tool.version || 'N/A'}) successfully registered.`,
+    );
+  }
 
   /**
    * @inheritdoc
    */
-  public async unregisterTool(toolName: string): Promise<boolean> {
-    this.ensureInitialized();
-    if (!this.config.toolRegistrySettings.allowDynamicRegistration) {
-      throw new GMIError("Dynamic tool unregistration is disabled by the current ToolOrchestrator configuration.", GMIErrorCode.PERMISSION_DENIED, { toolName, orchestratorId: this.orchestratorId });
-    }
-    const tool = this.toolRegistry.get(toolName);
-    if (tool && typeof tool.shutdown === 'function') {
-      try {
-        console.log(`ToolOrchestrator (ID: ${this.orchestratorId}): Calling shutdown method for tool '${toolName}' (ID: '${tool.id}') during unregistration...`);
-        await tool.shutdown();
-      } catch(e: any) {
-        console.error(`ToolOrchestrator (ID: ${this.orchestratorId}): An error occurred during the shutdown of tool '${toolName}' (ID: '${tool.id}') while unregistering: ${e.message}`, e);
-      }
-    }
-    const success = this.toolRegistry.delete(toolName);
-    if (success) {
-      console.log(`ToolOrchestrator (ID: ${this.orchestratorId}): Tool '${toolName}' successfully unregistered.`);
-    } else {
-      console.warn(`ToolOrchestrator (ID: ${this.orchestratorId}): Attempted to unregister tool '${toolName}', but it was not found in the registry.`);
-    }
-    return success;
-  }
+  public async unregisterTool(toolName: string): Promise<boolean> {
+    this.ensureInitialized();
+    if (!this.config.toolRegistrySettings.allowDynamicRegistration) {
+      throw new GMIError(
+        "Dynamic tool unregistration is disabled by the current ToolOrchestrator configuration.",
+        GMIErrorCode.PERMISSION_DENIED,
+        { toolName, orchestratorId: this.orchestratorId },
+      );
+    }
+    const success = await this.toolExecutor.unregisterTool(toolName);
+    if (success) {
+      console.log(
+        `ToolOrchestrator (ID: ${this.orchestratorId}): Tool '${toolName}' successfully unregistered.`,
+      );
+    } else {
+      console.warn(
+        `ToolOrchestrator (ID: ${this.orchestratorId}): Attempted to unregister tool '${toolName}', but it was not found in the registry.`,
+      );
+    }
+    return success;
+  }
 
   /**
    * @inheritdoc
    */
-  public async getTool(toolName: string): Promise<ITool | undefined> {
-    this.ensureInitialized();
-    return this.toolRegistry.get(toolName);
-  }
+  public async getTool(toolName: string): Promise<ITool | undefined> {
+    this.ensureInitialized();
+    return this.toolExecutor.getTool(toolName);
+  }
 
   /**
    * @inheritdoc
    */
   public async listAvailableTools(context?: {
-    personaId?: string;
-    personaCapabilities?: string[];
-    userContext?: UserContext;
-  }): Promise<ToolDefinitionForLLM[]> {
-    this.ensureInitialized();
-    const availableToolsLLM: ToolDefinitionForLLM[] = [];
+    personaId?: string;
+    personaCapabilities?: string[];
+    userContext?: UserContext;
+  }): Promise<ToolDefinitionForLLM[]> {
+    this.ensureInitialized();
+    const availableToolsLLM: ToolDefinitionForLLM[] = [];
+    const activeTools = this.toolExecutor.listAvailableTools();
 
-    for (const tool of this.toolRegistry.values()) {
-      if (this.config.globalDisabledTools?.includes(tool.name) || this.config.globalDisabledTools?.includes(tool.id)) {
-        if (this.config.logToolCalls) console.log(`ToolOrchestrator (ID: ${this.orchestratorId}): Tool '${tool.name}' (ID: '${tool.id}') skipped from listing as it is globally disabled.`);
-        continue;
-      }
+    for (const toolSummary of activeTools) {
+      const tool = await this.getTool(toolSummary.name);
+      if (!tool) {
+        continue;
+      }
 
-      if (context && context.personaId && context.userContext && context.personaCapabilities) {
-        const permissionContext: PermissionCheckContext = {
-          tool,
-          personaId: context.personaId,
-          personaCapabilities: context.personaCapabilities,
-          userContext: context.userContext,
-        };
-        try {
-          const permissionResult: PermissionCheckResult = await this.permissionManager.isExecutionAllowed(permissionContext);
-          if (!permissionResult.isAllowed) {
-            if (this.config.logToolCalls) {
-              console.log(`ToolOrchestrator (ID: ${this.orchestratorId}): Tool '${tool.name}' (ID: '${tool.id}') not listed for Persona '${context.personaId}'. Reason: ${permissionResult.reason || 'Permission denied.'}`, permissionResult.details);
-            }
-            continue; 
-          }
-        } catch(permError: any) {
-          console.error(`ToolOrchestrator (ID: ${this.orchestratorId}): Error during permission check for tool '${tool.name}' (ID: '${tool.id}'). Tool will be excluded from list. Error: ${permError.message}`, permError);
-          continue;
-        }
-      }
-      availableToolsLLM.push({
-        name: tool.name,
-        description: tool.description,
-        inputSchema: tool.inputSchema, 
-        outputSchema: tool.outputSchema,
-      });
-    }
-    return availableToolsLLM;
-  }
+      if (
+        this.config.globalDisabledTools?.includes(tool.name) ||
+        this.config.globalDisabledTools?.includes(tool.id)
+      ) {
+        if (this.config.logToolCalls) {
+          console.log(
+            `ToolOrchestrator (ID: ${this.orchestratorId}): Tool '${tool.name}' (ID: '${tool.id}') skipped from listing as it is globally disabled.`,
+          );
+        }
+        continue;
+      }
 
-  /**
+      if (context && context.personaId && context.userContext && context.personaCapabilities) {
+        const permissionContext: PermissionCheckContext = {
+          tool,
+          personaId: context.personaId,
+          personaCapabilities: context.personaCapabilities,
+          userContext: context.userContext,
+        };
+        try {
+          const permissionResult = await this.permissionManager.isExecutionAllowed(permissionContext);
+          if (!permissionResult.isAllowed) {
+            if (this.config.logToolCalls) {
+              console.log(
+                `ToolOrchestrator (ID: ${this.orchestratorId}): Tool '${tool.name}' filtered out for persona '${context.personaId}' due to permission policy. Reason: ${permissionResult.reason || 'N/A'}.`,
+              );
+            }
+            continue;
+          }
+        } catch (permissionError: any) {
+          console.error(
+            `ToolOrchestrator (ID: ${this.orchestratorId}): Error while evaluating permissions for tool '${tool.name}'.`,
+            permissionError,
+          );
+          continue;
+        }
+      }
+
+      availableToolsLLM.push({
+        name: tool.name,
+        description: tool.description,
+        inputSchema: tool.inputSchema as JSONSchemaObject,
+        outputSchema: tool.outputSchema as JSONSchemaObject | undefined,
+      });
+    }
+
+    return availableToolsLLM;
+  }
+/**
    * @inheritdoc
    */
   public async processToolCall(requestDetails: ToolExecutionRequestDetails): Promise<ToolCallResult> {
@@ -316,7 +336,7 @@ export class ToolOrchestrator implements IToolOrchestrator {
       console.log(`${logPrefix} Received tool call request. Arguments preview: ${argsPreview}`);
     }
 
-    const tool = this.toolRegistry.get(toolName);
+    const tool = await this.getTool(toolName);
     if (!tool) {
       const errorMsg = `Tool '${toolName}' not found in orchestrator's tool registry.`;
       console.error(`${logPrefix} ${errorMsg}`);
@@ -400,7 +420,7 @@ export class ToolOrchestrator implements IToolOrchestrator {
       details: {
         orchestratorId: this.orchestratorId,
         status: this.isInitialized ? 'INITIALIZED' : 'NOT_INITIALIZED',
-        registeredToolCount: this.toolRegistry.size,
+        registeredToolCount: this.toolExecutor.listAvailableTools().length,
         configSnapshot: {
           logToolCalls: this.config.logToolCalls,
           allowDynamicRegistration: this.config.toolRegistrySettings.allowDynamicRegistration,
@@ -418,30 +438,24 @@ export class ToolOrchestrator implements IToolOrchestrator {
    * @private
    * @async
    */
-  private async shutdownRegisteredTools(): Promise<void> {
-     console.log(`ToolOrchestrator (ID: ${this.orchestratorId}): Initiating shutdown for registered tools via ToolExecutor or manually.`);
-     if (this.toolExecutor && typeof this.toolExecutor.shutdownAllTools === 'function') {
-      try {
-        await this.toolExecutor.shutdownAllTools();
-        console.log(`ToolOrchestrator (ID: ${this.orchestratorId}): ToolExecutor successfully completed shutdownAllTools.`);
-      } catch (e: any) {
-        console.error(`ToolOrchestrator (ID: ${this.orchestratorId}): Error during ToolExecutor.shutdownAllTools: ${e.message}`, e);
-      }
-     } else {
-        console.log(`ToolOrchestrator (ID: ${this.orchestratorId}): ToolExecutor.shutdownAllTools not available. Attempting manual shutdown of registered tools.`);
-        const shutdownPromises: Promise<void>[] = [];
-        for (const tool of this.toolRegistry.values()) {
-          if (typeof tool.shutdown === 'function') {
-            shutdownPromises.push(
-              tool.shutdown().catch(err => 
-                console.error(`ToolOrchestrator (ID: ${this.orchestratorId}): Error shutting down tool '${tool.name}' (ID: '${tool.id}'): ${(err as Error).message}`))
-            );
-          }
-        }
-        await Promise.allSettled(shutdownPromises);
-        console.log(`ToolOrchestrator (ID: ${this.orchestratorId}): Manual shutdown attempt for registered tools completed.`);
-     }
-  }
+  private async shutdownRegisteredTools(): Promise<void> {
+    console.log(
+      `ToolOrchestrator (ID: ${this.orchestratorId}): Initiating shutdown for registered tools via ToolExecutor.`,
+    );
+    if (this.toolExecutor && typeof this.toolExecutor.shutdownAllTools === 'function') {
+      try {
+        await this.toolExecutor.shutdownAllTools();
+        console.log(
+          `ToolOrchestrator (ID: ${this.orchestratorId}): ToolExecutor successfully completed shutdownAllTools.`,
+        );
+      } catch (e: any) {
+        console.error(
+          `ToolOrchestrator (ID: ${this.orchestratorId}): Error during ToolExecutor.shutdownAllTools: ${e.message}`,
+          e,
+        );
+      }
+    }
+  }
 
   /**
    * @inheritdoc
@@ -454,7 +468,6 @@ export class ToolOrchestrator implements IToolOrchestrator {
     console.log(`ToolOrchestrator (ID: ${this.orchestratorId}): Initiating shutdown sequence...`);
     
     await this.shutdownRegisteredTools();
-    this.toolRegistry.clear();
     
     this.isInitialized = false; 
     console.log(`ToolOrchestrator (ID: ${this.orchestratorId}) shut down complete. All tools processed for shutdown and registry cleared.`);

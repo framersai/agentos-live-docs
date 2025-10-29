@@ -15,15 +15,11 @@ import Ajv from 'ajv';
 import addFormats from 'ajv-formats';
 import { v4 as uuidv4 } from 'uuid';
 
-import {
-  ITool,
-  JSONSchemaObject,
-  ToolExecutionResult,
-  ToolExecutionContext,
-} from './ITool';
+import { ITool, JSONSchemaObject, ToolExecutionResult, ToolExecutionContext } from './ITool';
 import { ToolCallRequest, UserContext } from '../../cognitive_substrate/IGMI';
 import type { IAuthService, ISubscriptionService } from '../../services/user_auth/types';
 import { GMIError, GMIErrorCode, createGMIErrorFromError } from '@agentos/core/utils/errors';
+import { ExtensionRegistry, EXTENSION_KIND_TOOL, ToolDescriptor } from '../../extensions';
 
 type AjvValidationError = {
   instancePath?: string;
@@ -65,7 +61,8 @@ export interface ToolExecutionRequestDetails {
  * It ensures that tools are called correctly and their outputs (or errors) are processed consistently.
  */
 export class ToolExecutor {
-  private readonly registeredTools: Map<string, ITool>;
+  private readonly toolRegistry: ExtensionRegistry<ITool>;
+  private readonly directRegistrations: Set<string>;
   private readonly authService?: IAuthService;
   private readonly subscriptionService?: ISubscriptionService;
   /**
@@ -91,8 +88,13 @@ export class ToolExecutor {
   * @param {ISubscriptionService} [subscriptionService] - Optional. An instance of a subscription service.
   * Similarly used for potential future feature-based tool access control at the executor level.
   */
-  constructor(authService?: IAuthService, subscriptionService?: ISubscriptionService) {
-    this.registeredTools = new Map<string, ITool>();
+  constructor(
+    authService?: IAuthService,
+    subscriptionService?: ISubscriptionService,
+    toolRegistry?: ExtensionRegistry<ITool>,
+  ) {
+    this.toolRegistry = toolRegistry ?? new ExtensionRegistry<ITool>(EXTENSION_KIND_TOOL);
+    this.directRegistrations = new Set<string>();
     this.authService = authService;
     this.subscriptionService = subscriptionService;
 
@@ -100,7 +102,9 @@ export class ToolExecutor {
     addFormats(this.ajv); // Adds support for standard formats like "date-time", "email", "uri", etc.
 
     this.registerDefaultTools();
-    console.log(`ToolExecutor initialized. Registered tools: ${this.registeredTools.size}.`);
+    console.log(
+      `ToolExecutor initialized. Registered tools: ${this.toolRegistry.listActive().length}.`,
+    );
   }
 
   /**
@@ -113,15 +117,32 @@ export class ToolExecutor {
   * @throws {GMIError} If the tool is invalid (e.g., missing `id` or `name` - `GMIErrorCode.INVALID_ARGUMENT`),
   * or if a tool with the same functional `name` is already registered (`GMIErrorCode.ALREADY_EXISTS`).
   */
-  public registerTool(tool: ITool): void {
-    if (!tool || typeof tool.name !== 'string' || !tool.name.trim() || typeof tool.id !== 'string' || !tool.id.trim()) {
-        throw new GMIError("Invalid tool object provided for registration: 'id' and 'name' are required and must be non-empty strings.", GMIErrorCode.INVALID_ARGUMENT, { toolDetails: {id: tool?.id, name: tool?.name} });
+  public async registerTool(tool: ITool): Promise<void> {
+    if (
+      !tool ||
+      typeof tool.name !== 'string' ||
+      !tool.name.trim() ||
+      typeof tool.id !== 'string' ||
+      !tool.id.trim()
+    ) {
+      throw new GMIError(
+        "Invalid tool object provided for registration: 'id' and 'name' are required and must be non-empty strings.",
+        GMIErrorCode.INVALID_ARGUMENT,
+        { toolDetails: { id: tool?.id, name: tool?.name } },
+      );
     }
-    if (this.registeredTools.has(tool.name)) {
-      throw new GMIError(`Tool registration failed: A tool with the name '${tool.name}' (ID: '${tool.id}') is already present in the registry. Existing tool has ID: '${this.registeredTools.get(tool.name)?.id}'. Tool names must be unique.`, GMIErrorCode.ALREADY_EXISTS, { conflictingToolName: tool.name, existingToolId: this.registeredTools.get(tool.name)?.id });
+
+    if (this.directRegistrations.has(tool.name)) {
+      await this.toolRegistry.unregister(tool.name);
+      this.directRegistrations.delete(tool.name);
     }
-    this.registeredTools.set(tool.name, tool);
-    console.log(`ToolExecutor: Tool '${tool.name}' (ID: '${tool.id}', Version: ${tool.version || 'N/A'}) successfully registered.`);
+
+    const descriptor = this.createDescriptorFromTool(tool);
+    await this.toolRegistry.register(descriptor);
+    this.directRegistrations.add(tool.name);
+    console.log(
+      `ToolExecutor: Tool '${tool.name}' (ID: '${tool.id}', Version: ${tool.version || 'N/A'}) successfully registered.`,
+    );
   }
 
   /**
@@ -132,7 +153,7 @@ export class ToolExecutor {
   * @returns {ITool | undefined} The `ITool` instance if found in the registry; otherwise, `undefined`.
   */
   public getTool(toolName: string): ITool | undefined {
-    return this.registeredTools.get(toolName);
+    return this.toolRegistry.getActive(toolName)?.payload;
   }
 
   /**
@@ -145,25 +166,23 @@ export class ToolExecutor {
   * @returns {Promise<boolean>} A promise resolving to `true` if the tool was found and successfully unregistered (including its shutdown, if applicable), `false` otherwise.
   */
   public async unregisterTool(toolName: string): Promise<boolean> {
-    const tool = this.registeredTools.get(toolName);
-    if (tool) {
-      if (typeof tool.shutdown === 'function') {
-        try {
-          console.log(`ToolExecutor: Calling shutdown for tool '${toolName}' (ID: '${tool.id}') during unregistration...`);
-          await tool.shutdown();
-        } catch (shutdownError: any) {
-          console.error(`ToolExecutor: Error during shutdown of tool '${toolName}' (ID: '${tool.id}') while unregistering: ${shutdownError.message}`, shutdownError);
-        }
-      }
-      const deleted = this.registeredTools.delete(toolName);
-      if (deleted) {
-        console.log(`ToolExecutor: Tool '${toolName}' successfully unregistered.`);
-      }
-      return deleted;
-    } else {
-      console.warn(`ToolExecutor: Attempted to unregister tool '${toolName}', but it was not found in the registry.`);
+    if (!this.directRegistrations.has(toolName)) {
+      console.warn(
+        `ToolExecutor: Attempted to unregister tool '${toolName}', but no direct registration was found.`,
+      );
       return false;
     }
+
+    const removed = await this.toolRegistry.unregister(toolName);
+    if (removed) {
+      this.directRegistrations.delete(toolName);
+      console.log(`ToolExecutor: Tool '${toolName}' successfully unregistered.`);
+    } else {
+      console.warn(
+        `ToolExecutor: Failed to unregister tool '${toolName}'. Descriptor stack may be managed externally.`,
+      );
+    }
+    return removed;
   }
 
   /**
@@ -176,15 +195,17 @@ export class ToolExecutor {
   * @returns {Array<Pick<ITool, 'name' | 'description' | 'inputSchema' | 'outputSchema' | 'displayName' | 'category' | 'requiredCapabilities'>>}
   * An array of partial tool information objects.
   */
-  public listAvailableTools(): Array<Pick<ITool, 'name' | 'description' | 'inputSchema' | 'outputSchema' | 'displayName' | 'category' | 'requiredCapabilities'>> {
-    return Array.from(this.registeredTools.values()).map(tool => ({
-      name: tool.name,
-      displayName: tool.displayName,
-      description: tool.description,
-      inputSchema: tool.inputSchema,
-      outputSchema: tool.outputSchema,
-      category: tool.category,
-      requiredCapabilities: tool.requiredCapabilities,
+  public listAvailableTools(): Array<
+    Pick<ITool, 'name' | 'description' | 'inputSchema' | 'outputSchema' | 'displayName' | 'category' | 'requiredCapabilities'>
+  > {
+    return this.toolRegistry.listActive().map(({ payload }) => ({
+      name: payload.name,
+      displayName: payload.displayName,
+      description: payload.description,
+      inputSchema: payload.inputSchema,
+      outputSchema: payload.outputSchema,
+      category: payload.category,
+      requiredCapabilities: payload.requiredCapabilities,
     }));
   }
 
@@ -209,7 +230,8 @@ export class ToolExecutor {
         return { success: false, error: errorMsg, details: { receivedRequest: toolCallRequest, code: GMIErrorCode.VALIDATION_ERROR } };
     }
     const toolName = toolCallRequest.name;
-    const tool = this.registeredTools.get(toolName);
+    const toolDescriptor = this.toolRegistry.getActive(toolName);
+    const tool = toolDescriptor?.payload;
 
     const logContext = `ToolExecutor (GMI: ${gmiId}, Persona: ${personaId}, Tool: ${toolName}, LLMCallID: ${toolCallRequest.id || 'N/A'})`;
 
@@ -331,6 +353,30 @@ export class ToolExecutor {
   /** @private 
   * Registers example tools. In a production system, tools would be loaded dynamically or via configuration.
   */
+  private createDescriptorFromTool(tool: ITool): ToolDescriptor {
+    return {
+      id: tool.name,
+      kind: EXTENSION_KIND_TOOL,
+      payload: tool,
+      metadata: {
+        toolId: tool.id,
+        origin: 'direct-registration',
+      },
+      onDeactivate: async () => {
+        if (typeof tool.shutdown === 'function') {
+          try {
+            await tool.shutdown();
+          } catch (error) {
+            console.error(
+              `ToolExecutor: Error during shutdown of tool '${tool.name}' (ID: '${tool.id}')`,
+              error,
+            );
+          }
+        }
+      },
+    };
+  }
+
   private registerDefaultTools(): void {
     const currentTimeTool: ITool<{ timezone?: string }, { currentTime: string; timezoneUsed: string; isoTimestamp: string }> = {
       id: "system-current-time-tool-v1.1",
@@ -379,7 +425,9 @@ export class ToolExecutor {
         }
       }
     };
-    try { this.registerTool(currentTimeTool); } catch (e: any) { console.error("Error registering default current time tool:", e); }
+    this.registerTool(currentTimeTool).catch((e: any) => {
+      console.error('Error registering default current time tool:', e);
+    });
   }
 
   /**
@@ -393,17 +441,10 @@ export class ToolExecutor {
   * Individual tool shutdown errors are logged but do not prevent other tools from attempting shutdown.
   */
   public async shutdownAllTools(): Promise<void[]> {
-    console.log(`ToolExecutor: Initiating shutdown for ${this.registeredTools.size} registered tool(s)...`);
-    const shutdownPromises: Promise<void>[] = [];
-    for (const tool of this.registeredTools.values()) {
-      if (typeof tool.shutdown === 'function') {
-        shutdownPromises.push(
-          tool.shutdown().catch((err: any) => {
-            console.error(`ToolExecutor: Error during shutdown of tool '${tool.name}' (ID: '${tool.id}'):`, err);
-          })
-        );
-      }
-    }
-    return Promise.all(shutdownPromises);
+    const activeCount = this.toolRegistry.listActive().length;
+    console.log(`ToolExecutor: Initiating shutdown for ${activeCount} registered tool(s)...`);
+    await this.toolRegistry.clear();
+    this.directRegistrations.clear();
+    return [];
   }
 }

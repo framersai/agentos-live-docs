@@ -16,6 +16,7 @@ import {
 } from '../../cognitive_substrate/IGMI';
 import { ConversationContext } from '../../core/conversation/ConversationContext';
 import { IPersonaDefinition } from '../../cognitive_substrate/personas/IPersonaDefinition';
+import type { WorkflowProgressUpdate } from '../../core/workflows/WorkflowTypes';
 
 /**
  * @enum {string} AgentOSResponseChunkType
@@ -30,6 +31,7 @@ export enum AgentOSResponseChunkType {
   FINAL_RESPONSE = 'final_response',
   ERROR = 'error',
   METADATA_UPDATE = 'metadata_update',
+  WORKFLOW_UPDATE = 'workflow_update',
 }
 
 /**
@@ -146,6 +148,16 @@ export interface AgentOSMetadataUpdateChunk extends AgentOSResponseChunk {
 }
 
 /**
+ * @typedef {Object} AgentOSWorkflowUpdateChunk
+ * Broadcasts workflow progress updates to streaming clients.
+ * @augments {AgentOSResponseChunk}
+ */
+export interface AgentOSWorkflowUpdateChunk extends AgentOSResponseChunk {
+  type: AgentOSResponseChunkType.WORKFLOW_UPDATE;
+  workflow: WorkflowProgressUpdate;
+}
+
+/**
  * @typedef {AgentOSTextDeltaChunk | AgentOSSystemProgressChunk | AgentOSToolCallRequestChunk | AgentOSToolResultEmissionChunk | AgentOSUICommandChunk | AgentOSFinalResponseChunk | AgentOSErrorChunk | AgentOSMetadataUpdateChunk} AgentOSResponse
  * Union type representing any possible chunk that can be streamed from AgentOS.
  */
@@ -157,4 +169,5 @@ export type AgentOSResponse =
   | AgentOSUICommandChunk
   | AgentOSFinalResponseChunk
   | AgentOSErrorChunk
-  | AgentOSMetadataUpdateChunk;
+  | AgentOSMetadataUpdateChunk
+  | AgentOSWorkflowUpdateChunk;

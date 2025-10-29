@@ -1,60 +1,58 @@
-# AgentOS System Guide
+﻿# AgentOS System Guide
 
-This directory contains the TypeScript source for `@agentos/core`. The goal is to keep a single, implementation-focused reference that explains how the major subsystems fit together without the 4k-line wall of text that previously lived here.
+This directory contains the TypeScript source for @agentos/core. Use it as the developer-friendly companion to [docs/ARCHITECTURE.md](../../docs/ARCHITECTURE.md), which documents the runtime at a higher level.
 
-## Top-Level Layout
+## Directory layout
 
-```
+`
 src/
-+-- api/                  # Public facade (`AgentOS`, orchestrator, streaming bridge)
-+-- cognitive_substrate/  # Generalised Mind Instances (personas, memory, reasoning)
-+-- core/                 # Shared services (conversation, tools, LLM providers, streaming)
-+-- rag/                  # Retrieval augmentation + embedding helpers
-+-- services/             # Adapter interfaces for auth, subscriptions, etc.
-+-- stubs/                # Lightweight shims for prisma + other heavy deps during local dev
-+-- utils/                # Error helpers and shared constants
-```
+├─ api/                   # Public facade (AgentOS, orchestrator, streaming bridge)
+├─ cognitive_substrate/   # Personas, working memory, GMI manager
+├─ core/                  # Conversation, tools, LLM providers, streaming, audio utilities
+├─ rag/                   # Retrieval augmentation + embedding helpers
+├─ memory_lifecycle/      # Policies and manager for long-term memory actions
+├─ services/              # Adapter interfaces (auth, subscription, user storage)
+├─ stubs/                 # Lightweight replacements for heavy deps (e.g. Prisma)
+├─ utils/                 # Error helpers and shared constants
+└─ server/                # Minimal sample HTTP server exposing AgentOS endpoints
+`
 
-## Lifecycle Overview
+## Runtime lifecycle
 
-1. **Initialisation** (`AgentOS.initialize`)
-   - Loads config (`AgentOSConfig`).
-   - Builds the model provider manager.
-   - Creates a default `LLMUtilityAI` when a custom utility service is not provided.
-   - Bootstraps the prompt engine, tool permission manager, tool executor, tool orchestrator, conversation manager, streaming manager, and GMI manager.
-   - Wires the `AgentOSOrchestrator` with the managers above.
+1. **Initialise** (AgentOS.initialize)
+   - Accepts AgentOSConfig and wires the model provider manager, prompt engine, tool orchestrator, conversation manager, streaming manager, and GMI manager.
+   - Creates a default LLMUtilityAI when none is provided.
 
-2. **Processing a turn** (`AgentOS.processRequest`)
-   - Normalises persona IDs and registers a temporary `AsyncStreamClientBridge` with the streaming manager.
-   - Delegates turn orchestration to `AgentOSOrchestrator`, which streams `AgentOSResponseChunk` objects (text deltas, tool calls/results, UI commands, errors, final summary) via the streaming manager.
-   - Converts the push-based stream back into an async generator so HTTP handlers can `for await` chunks.
+2. **Handle a turn** (AgentOS.processRequest)
+   - Registers an AsyncStreamClientBridge with the streaming manager.
+   - Delegates orchestration to AgentOSOrchestrator, which yields AgentOSResponse chunks (progress, deltas, tool calls/results, UI commands, final summary, errors).
+   - Host code consumes the async generator and forwards chunks over HTTP/WebSocket.
 
-3. **Tool orchestration**
-   - `ToolOrchestrator` manages the in-memory registry, permission checks, and execution routing.
-   - `ToolExecutor` validates arguments with Ajv, executes tool implementations, and reports structured results/errors back to the orchestrator.
+3. **Tool execution**
+   - ToolOrchestrator stores tool definitions and enforces capability rules.
+   - ToolExecutor validates arguments via Ajv and returns structured results or errors.
 
-4. **GMI management**
-   - `GMIManager` loads persona definitions, enforces subscription tiers, hydrates conversation contexts, and lazily creates/reuses GMI instances per session.
-   - Conversation metadata (model overrides, API keys, persona IDs) is tracked inside `ConversationContext` objects via `ConversationManager`.
+4. **Personas & GMIs**
+   - GMIManager loads persona definitions, enforces subscription tiers, and hydrates conversation contexts.
+   - ConversationManager tracks metadata such as model overrides, API keys, and persona IDs per session.
 
-## Notable Patterns
+## Patterns to know
 
-- **Streaming-first**: Every orchestration path is expressed as an async generator so the same code path powers HTTP streaming routes and direct library consumption.
-- **Interface-driven**: Adapters (`IAuthService`, `ISubscriptionService`, `IToolPermissionManager`, etc.) keep the runtime decoupled from the Voice Chat Assistant backend. Stubs are provided under `src/services/**` for local development.
-- **Type-safe errors**: All modules throw `GMIError` subclasses with machine-readable codes, making it easier to surface structured errors in UI clients.
+- **Streaming first** – every orchestration path is expressed as an async generator so the same code powers HTTP streaming and direct library use.
+- **Interface driven** – adapters (IAuthService, ISubscriptionService, IToolPermissionManager, etc.) keep the runtime decoupled from any specific backend.
+- **Structured errors** – modules throw GMIError/AgentOSServiceError derivatives with machine-readable codes.
 
-## Runtime Contracts`n`n- **Sample server:** packages/agentos/src/server/AgentOSServer.ts shows a dependency-free HTTP server with /health, /api/agentos/personas, and /api/agentos/chat endpoints. See docs/AGENTOS_SERVER_API.md for details.`n`n
+## Sample server
 
-- **Subscription enforcement**: `GMIManager` now relies on `ISubscriptionService.getUserSubscription(userId)` plus `listTiers()` to resolve persona/tool access. Implementations must return the user's tier (or `null`) and enumerate tier metadata so the manager can compare `level` thresholds.
-- **Memory lifecycle**: `MemoryLifecycleManagerConfiguration` supports optional `action.llmModelForSummary` overrides and a global `defaultSummarizationModelId`. The manager records every action/negotiation in its enforcement report to make downstream auditing easier.
-- **RAG ingestion**: `IRetrievalAugmentor` implementations should populate `effectiveDataSourceIds` in their ingestion results so downstream tooling knows which stores were touched. The default augmentor already does this; custom drivers should follow the same shape.
+packages/agentos/src/server/AgentOSServer.ts demonstrates a dependency-light HTTP server that exposes /health, /api/agentos/personas, and /api/agentos/chat. See [docs/AGENTOS_SERVER_API.md](../../docs/AGENTOS_SERVER_API.md) for endpoint details.
 
-## Working on the Source
+## Working on the source
 
-1. Install dependencies inside the package directory (`npm install`).
-2. Run `npm run build` (or `npm --prefix packages/agentos run build` from the workspace root) before consuming the package elsewhere.
-3. When touching public APIs, update `packages/agentos/README.md` and the relevant docs under `docs/`.
-4. Keep new modules ASCII-only unless there is a strong reason to do otherwise.
+1. Install dependencies (
+pm install or leverage the workspace root with pnpm install).
+2. Run 
+pm run build (or pnpm --filter @agentos/core build) before consuming the package elsewhere.
+3. Update public docs when changing exported types (packages/agentos/README.md, docs/ARCHITECTURE.md).
+4. Stick to ASCII in source files unless there is a strong reason not to.
 
-For a more detailed migration roadmap, see `docs/AGENTOS_EXTRACTION_PLAN.md` and `docs/AGENTOS_REINTEGRATION_NOTES.md`.
-
+For deeper context, read docs/ARCHITECTURE.md (package internals) and docs/AGENTOS_REINTEGRATION_NOTES.md (integration with the Voice Chat Assistant backend).

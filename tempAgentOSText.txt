@@ -47,7 +47,6 @@ import { GMIManager, GMIManagerConfig } from '../cognitive_substrate/GMIManager'
 import { AIModelProviderManager, AIModelProviderManagerConfig } from '../core/llm/providers/AIModelProviderManager';
 import { PromptEngine } from '../core/llm/PromptEngine';
 import { PromptEngineConfig, IPromptEngineUtilityAI } from '../core/llm/IPromptEngine';
-import type { ITool } from '../core/tools/ITool';
 import { IToolOrchestrator } from '../core/tools/IToolOrchestrator';
 import { ToolOrchestratorConfig } from '../config/ToolOrchestratorConfig';
 import { ToolOrchestrator } from '../core/tools/ToolOrchestrator';
@@ -74,37 +73,6 @@ import {
   createGuardrailBlockedStream,
   wrapOutputGuardrails,
 } from '../core/guardrails/guardrailDispatcher';
-import {
-  ExtensionManager,
-  EXTENSION_KIND_GUARDRAIL,
-  EXTENSION_KIND_TOOL,
-  EXTENSION_KIND_WORKFLOW,
-  type ExtensionLifecycleContext,
-  type ExtensionManifest,
-  type ExtensionOverrides,
-  type ExtensionEvent,
-  type ExtensionEventListener,
-} from '../extensions';
-import type { WorkflowDescriptor } from '../extensions/types';
-import { WorkflowEngine } from '../core/workflows/WorkflowEngine';
-import type {
-  WorkflowEngineConfig,
-  WorkflowEngineEventListener,
-} from '../core/workflows/IWorkflowEngine';
-import type {
-  WorkflowDefinition,
-  WorkflowDescriptorPayload,
-  WorkflowEvent,
-  WorkflowInstance,
-  WorkflowProgressUpdate,
-  WorkflowStatus,
-} from '../core/workflows/WorkflowTypes';
-import type {
-  IWorkflowStore,
-  WorkflowQueryOptions,
-  WorkflowTaskUpdate,
-} from '../core/workflows/storage/IWorkflowStore';
-import { InMemoryWorkflowStore } from '../core/workflows/storage/InMemoryWorkflowStore';
 
 /**
  * @class AgentOSServiceError
@@ -218,16 +186,7 @@ export interface AgentOSConfig {
    * It's recommended that the concrete class for this service implements both interfaces if needed.
    */
   utilityAIService?: IUtilityAI & IPromptEngineUtilityAI;
-  /** Optional extension manifest describing packs to load. */
-  extensionManifest?: ExtensionManifest;
-  /** Declarative overrides applied after packs are loaded. */
-  extensionOverrides?: ExtensionOverrides;
-  /** Optional workflow engine configuration. */
-  workflowEngineConfig?: WorkflowEngineConfig;
-  /** Optional workflow store implementation. Defaults to the in-memory store if omitted. */
-  workflowStore?: IWorkflowStore;
 }
-
 
 /**
  * @class AgentOS
@@ -249,19 +208,12 @@ export class AgentOS implements IAgentOS {
   private toolPermissionManager!: IToolPermissionManager;
   private toolExecutor!: ToolExecutor;
   private toolOrchestrator!: IToolOrchestrator;
-  private extensionManager!: ExtensionManager;
   private conversationManager!: ConversationManager;
   private streamingManager!: StreamingManager;
   private gmiManager!: GMIManager;
   private agentOSOrchestrator!: AgentOSOrchestrator;
-  private guardrailService?: IGuardrailService;
-  private workflowEngine!: WorkflowEngine;
-  private workflowStore!: IWorkflowStore;
-  private workflowEngineListener?: WorkflowEngineEventListener;
-  private workflowExtensionListener?: ExtensionEventListener;
 
   private authService!: IAuthService;
-
   private subscriptionService!: ISubscriptionService;
   private prisma!: PrismaClient;
 
@@ -298,17 +250,10 @@ export class AgentOS implements IAgentOS {
     this.authService = this.config.authService;
     this.subscriptionService = this.config.subscriptionService;
     this.prisma = this.config.prisma;
-    this.guardrailService = this.config.guardrailService;
 
     this.logger.info('AgentOS initialization sequence started');
 
-    this.extensionManager = new ExtensionManager({ manifest: this.config.extensionManifest });
-    const extensionLifecycleContext: ExtensionLifecycleContext = { logger: this.logger };
-    await this.extensionManager.loadManifest(extensionLifecycleContext);
-    await this.registerConfigGuardrailService(extensionLifecycleContext);
-
     try {
-      await this.initializeWorkflowRuntime(extensionLifecycleContext);
       // Initialize AI Model Provider Manager
       this.modelProviderManager = new AIModelProviderManager();
       await this.modelProviderManager.initialize(this.config.modelProviderManagerConfig);
@@ -339,8 +284,7 @@ export class AgentOS implements IAgentOS {
       console.log('AgentOS: ToolPermissionManager initialized.');
       
       // Initialize Tool Orchestrator
-      const toolRegistry = this.extensionManager.getRegistry<ITool>(EXTENSION_KIND_TOOL);
-      this.toolExecutor = new ToolExecutor(this.authService, this.subscriptionService, toolRegistry);
+      this.toolExecutor = new ToolExecutor(this.authService, this.subscriptionService);
       this.toolOrchestrator = new ToolOrchestrator();
       await this.toolOrchestrator.initialize(
         this.config.toolOrchestratorConfig,
@@ -442,162 +386,6 @@ export class AgentOS implements IAgentOS {
     }
   }
 
-  private async registerConfigGuardrailService(context: ExtensionLifecycleContext): Promise<void> {
-    if (!this.config.guardrailService) {
-      return;
-    }
-    const registry = this.extensionManager.getRegistry<IGuardrailService>(EXTENSION_KIND_GUARDRAIL);
-    await registry.register(
-      {
-        id: 'config-guardrail-service',
-        kind: EXTENSION_KIND_GUARDRAIL,
-        payload: this.config.guardrailService,
-        priority: Number.MAX_SAFE_INTEGER,
-        metadata: { origin: 'config' },
-      },
-      context,
-    );
-  }
-
-  private async initializeWorkflowRuntime(context: ExtensionLifecycleContext): Promise<void> {
-    this.workflowStore = this.config.workflowStore ?? new InMemoryWorkflowStore();
-    this.workflowEngine = new WorkflowEngine();
-
-    const workflowLogger = this.logger.child?.({ component: 'WorkflowEngine' }) ?? this.logger;
-    await this.workflowEngine.initialize(this.config.workflowEngineConfig ?? {}, {
-      store: this.workflowStore,
-      logger: workflowLogger,
-    });
-
-    await this.registerWorkflowDescriptorsFromRegistry();
-
-    this.workflowExtensionListener = async (event: ExtensionEvent) => {
-      if (!this.workflowEngine) {
-        return;
-      }
-      if (event.type === 'descriptor:activated' && event.kind === EXTENSION_KIND_WORKFLOW) {
-        const descriptor = event.descriptor as WorkflowDescriptor;
-        await this.handleWorkflowDescriptorActivated({
-          id: descriptor.id,
-          payload: descriptor.payload,
-        });
-      } else if (event.type === 'descriptor:deactivated' && event.kind === EXTENSION_KIND_WORKFLOW) {
-        const descriptor = event.descriptor as WorkflowDescriptor;
-        await this.handleWorkflowDescriptorDeactivated({
-          id: descriptor.id,
-          payload: descriptor.payload,
-        });
-      }
-    };
-    this.extensionManager.on(this.workflowExtensionListener);
-
-    this.workflowEngineListener = async (event: WorkflowEvent) => {
-      await this.handleWorkflowEngineEvent(event);
-    };
-    this.workflowEngine.onEvent(this.workflowEngineListener);
-  }
-
-  private async registerWorkflowDescriptorsFromRegistry(): Promise<void> {
-    const registry =
-      this.extensionManager.getRegistry<WorkflowDescriptorPayload>(EXTENSION_KIND_WORKFLOW);
-    const activeDescriptors = registry.listActive();
-    for (const descriptor of activeDescriptors) {
-      await this.handleWorkflowDescriptorActivated({
-        id: descriptor.id,
-        payload: descriptor.payload,
-      });
-    }
-  }
-
-  private async handleWorkflowDescriptorActivated(descriptor: {
-    id: string;
-    payload: WorkflowDescriptorPayload;
-  }): Promise<void> {
-    try {
-      await this.workflowEngine.registerWorkflowDescriptor(descriptor.payload);
-      this.logger.debug?.('Workflow descriptor registered', {
-        descriptorId: descriptor.id,
-        workflowDefinitionId: descriptor.payload.definition.id,
-      });
-    } catch (error) {
-      this.logger.error('Failed to register workflow descriptor', {
-        descriptorId: descriptor.id,
-        workflowDefinitionId: descriptor.payload.definition.id,
-        error,
-      });
-    }
-  }
-
-  private async handleWorkflowDescriptorDeactivated(descriptor: {
-    id: string;
-    payload: WorkflowDescriptorPayload;
-  }): Promise<void> {
-    try {
-      await this.workflowEngine.unregisterWorkflowDescriptor(descriptor.payload.definition.id);
-      this.logger.debug?.('Workflow descriptor unregistered', {
-        descriptorId: descriptor.id,
-        workflowDefinitionId: descriptor.payload.definition.id,
-      });
-    } catch (error) {
-      this.logger.error('Failed to unregister workflow descriptor', {
-        descriptorId: descriptor.id,
-        workflowDefinitionId: descriptor.payload.definition.id,
-        error,
-      });
-    }
-  }
-
-  private async handleWorkflowEngineEvent(event: WorkflowEvent): Promise<void> {
-    try {
-      await this.emitWorkflowUpdate(event.workflowId);
-    } catch (error) {
-      this.logger.error('Failed to handle workflow engine event', {
-        workflowId: event.workflowId,
-        eventType: event.type,
-        error,
-      });
-    }
-  }
-
-  private async emitWorkflowUpdate(workflowId: string): Promise<void> {
-    if (!this.workflowEngine) {
-      return;
-    }
-    try {
-      const update = await this.workflowEngine.getWorkflowProgress(workflowId);
-      if (!update) {
-        return;
-      }
-      this.logger.debug?.('Workflow progress update ready', {
-        workflowId,
-        status: update.workflow.status,
-      });
-      if (typeof this.agentOSOrchestrator?.broadcastWorkflowUpdate === 'function') {
-        await this.agentOSOrchestrator.broadcastWorkflowUpdate(update);
-      } else {
-        this.logger.warn('Workflow update could not be broadcast - orchestrator unavailable', {
-          workflowId,
-        });
-      }
-    } catch (error) {
-      this.logger.error('Failed to generate workflow progress update', { workflowId, error });
-    }
-  }
-  private getActiveGuardrailServices(): IGuardrailService[] {
-    const services: IGuardrailService[] = [];
-
-    if (this.extensionManager) {
-      const registry = this.extensionManager.getRegistry<IGuardrailService>(EXTENSION_KIND_GUARDRAIL);
-      services.push(...registry.listActive().map((descriptor) => descriptor.payload));
-    }
-
-    if (this.guardrailService && !services.includes(this.guardrailService)) {
-      services.push(this.guardrailService);
-    }
-
-    return services;
-  }
-
   private async ensureUtilityAIService(): Promise<void> {
     if (this.utilityAIService) {
       return;
@@ -680,49 +468,11 @@ export class AgentOS implements IAgentOS {
     // }
 
     const effectivePersonaId = input.selectedPersonaId || this.config.defaultPersonaId;
-
-    const guardrailContext: GuardrailContext = {
-      userId: input.userId,
-      sessionId: input.sessionId,
-      personaId: effectivePersonaId,
-      conversationId: input.conversationId,
-      metadata: input.options?.customFlags,
-    };
-
-    const guardrailServices = this.getActiveGuardrailServices();
-
-    const guardrailReadyInput: AgentOSInput = {
+    const orchestratorInput: AgentOSInput = {
       ...input,
       selectedPersonaId: effectivePersonaId,
     };
-
-    const guardrailInputOutcome = await evaluateInputGuardrails(
-      guardrailServices,
-      guardrailReadyInput,
-      guardrailContext,
-    );
-
-    const blockingEvaluation =
-      guardrailInputOutcome.evaluation ?? guardrailInputOutcome.evaluations?.at(-1) ?? null;
-
-    if (blockingEvaluation?.action === GuardrailAction.BLOCK) {
-      const streamId =
-        guardrailReadyInput.sessionId || (`agentos-guardrail-${Date.now()}` as StreamId);
-      const blockedStream = createGuardrailBlockedStream(guardrailContext, blockingEvaluation, {
-        streamId,
-        personaId: effectivePersonaId,
-      });
-      for await (const chunk of blockedStream) {
-        yield chunk;
-      }
-      return;
-    }
-
-    const orchestratorInput: AgentOSInput = {
-      ...guardrailInputOutcome.sanitizedInput,
-      selectedPersonaId: effectivePersonaId,
-    };
-    const baseStreamDebugId = orchestratorInput.sessionId || `agentos-req-${Date.now()}`;
+    const baseStreamDebugId = input.sessionId || `agentos-req-${Date.now()}`;
     this.logger.debug?.('processRequest invoked', {
       userId: orchestratorInput.userId,
       sessionId: orchestratorInput.sessionId,
@@ -745,39 +495,8 @@ export class AgentOS implements IAgentOS {
       await this.streamingManager.registerClient(streamIdToListen, bridge);
       this.logger.debug?.('Bridge registered', { bridgeId: bridge.id, streamId: streamIdToListen });
 
-      const guardrailWrappedStream = wrapOutputGuardrails(
-        guardrailServices,
-        guardrailContext,
-        bridge.consume(),
-        {
-          streamId: streamIdToListen!,
-          personaId: effectivePersonaId,
-          inputEvaluations: guardrailInputOutcome.evaluations ?? [],
-        },
-      );
-      if (orchestratorInput.workflowRequest) {
-        const wfRequest = orchestratorInput.workflowRequest;
-        try {
-          await this.startWorkflow(wfRequest.definitionId, orchestratorInput, {
-            workflowId: wfRequest.workflowId,
-            conversationId:
-              wfRequest.conversationId ?? orchestratorInput.conversationId ?? orchestratorInput.sessionId,
-            createdByUserId: orchestratorInput.userId,
-            context: wfRequest.context,
-            roleAssignments: wfRequest.roleAssignments,
-            metadata: wfRequest.metadata,
-          });
-        } catch (error) {
-          this.logger.error('Failed to start workflow from request payload', {
-            workflowDefinitionId: wfRequest.definitionId,
-            conversationId: wfRequest.conversationId ?? orchestratorInput.conversationId,
-            error,
-          });
-        }
-      }
-
-      // Yield chunks from the guardrail-wrapped stream
-      for await (const chunk of guardrailWrappedStream) {
+      // Yield chunks from the bridge
+      for await (const chunk of bridge.consume()) {
         yield chunk;
         if (chunk.isFinal && chunk.type !== AgentOSResponseChunkType.ERROR) {
           // If a non-error chunk is final, the primary interaction part might be done.
@@ -909,80 +628,6 @@ export class AgentOS implements IAgentOS {
     }
   }
 
-  public listWorkflowDefinitions(): WorkflowDefinition[] {
-    this.ensureInitialized();
-    return this.workflowEngine.listWorkflowDefinitions();
-  }
-
-  public async startWorkflow(
-    definitionId: string,
-    input: AgentOSInput,
-    options: {
-      workflowId?: string;
-      conversationId?: string;
-      createdByUserId?: string;
-      context?: Record<string, unknown>;
-      roleAssignments?: Record<string, string>;
-      metadata?: Record<string, unknown>;
-    } = {},
-  ): Promise<WorkflowInstance> {
-    this.ensureInitialized();
-    const definition = this.workflowEngine
-      .listWorkflowDefinitions()
-      .find((item) => item.id === definitionId);
-    if (!definition) {
-      throw new AgentOSServiceError(
-        `Workflow definition '${definitionId}' not found.`,
-        GMIErrorCode.CONFIGURATION_ERROR,
-        { definitionId },
-      );
-    }
-    return this.workflowEngine.startWorkflow({
-      input,
-      definition,
-      workflowId: options.workflowId,
-      conversationId: options.conversationId,
-      createdByUserId: options.createdByUserId,
-      context: options.context,
-      roleAssignments: options.roleAssignments,
-      metadata: options.metadata,
-    });
-  }
-
-  public async getWorkflow(workflowId: string): Promise<WorkflowInstance | null> {
-    this.ensureInitialized();
-    return this.workflowEngine.getWorkflow(workflowId);
-  }
-
-  public async listWorkflows(options?: WorkflowQueryOptions): Promise<WorkflowInstance[]> {
-    this.ensureInitialized();
-    return this.workflowEngine.listWorkflows(options);
-  }
-
-  public async getWorkflowProgress(
-    workflowId: string,
-    sinceTimestamp?: string,
-  ): Promise<WorkflowProgressUpdate | null> {
-    this.ensureInitialized();
-    return this.workflowEngine.getWorkflowProgress(workflowId, sinceTimestamp);
-  }
-
-  public async updateWorkflowStatus(
-    workflowId: string,
-    status: WorkflowStatus,
-  ): Promise<WorkflowInstance | null> {
-    this.ensureInitialized();
-    return this.workflowEngine.updateWorkflowStatus(workflowId, status);
-  }
-
-  public async applyWorkflowTaskUpdates(
-    workflowId: string,
-    updates: WorkflowTaskUpdate[],
-  ): Promise<WorkflowInstance | null> {
-    this.ensureInitialized();
-    return this.workflowEngine.applyTaskUpdates(workflowId, updates);
-  }
-
   /**
    * Lists all available personas that the requesting user (if specified) has access to.
    *
@@ -1102,14 +747,6 @@ export class AgentOS implements IAgentOS {
     // 3. Streaming Manager (closes active client connections)
     // 4. Other services (ConversationManager, ToolOrchestrator, PromptEngine, ModelProviderManager)
     try {
-      if (this.workflowEngineListener && this.workflowEngine) {
-        this.workflowEngine.offEvent(this.workflowEngineListener);
-        this.workflowEngineListener = undefined;
-      }
-      if (this.workflowExtensionListener && this.extensionManager) {
-        this.extensionManager.off(this.workflowExtensionListener);
-        this.workflowExtensionListener = undefined;
-      }
       if (this.agentOSOrchestrator?.shutdown) {
         await this.agentOSOrchestrator.shutdown();
         console.log('AgentOS: AgentOSOrchestrator shut down.');
@@ -1355,4 +992,3 @@ class AsyncStreamClientBridge implements IStreamClient {
     }
   }
 }
-

@@ -18,6 +18,13 @@ import { AgentOSResponse } from '../types/AgentOSResponse';
 import { IPersonaDefinition } from '../../cognitive_substrate/personas/IPersonaDefinition';
 import { ConversationContext } from '../../core/conversation/ConversationContext';
 import { AgentOSConfig } from '../AgentOS'; // AgentOSConfig is defined in AgentOS.ts
+import type {
+  WorkflowDefinition,
+  WorkflowInstance,
+  WorkflowProgressUpdate,
+  WorkflowStatus,
+} from '../../core/workflows/WorkflowTypes';
+import type { WorkflowQueryOptions, WorkflowTaskUpdate } from '../../core/workflows/storage/IWorkflowStore';
 
 /**
  * @interface IAgentOS
@@ -111,6 +118,51 @@ export interface IAgentOS {
   ): AsyncGenerator<AgentOSResponse, void, undefined>;
 
   /**
+  /**
+   * Lists registered workflow definitions available via the extension manager.
+   */
+  listWorkflowDefinitions(): WorkflowDefinition[];
+
+  /**
+   * Starts a workflow instance using the specified definition and input payload.
+   */
+  startWorkflow(
+    definitionId: string,
+    input: AgentOSInput,
+    options?: {
+      workflowId?: string;
+      conversationId?: string;
+      createdByUserId?: string;
+      context?: Record<string, unknown>;
+      roleAssignments?: Record<string, string>;
+      metadata?: Record<string, unknown>;
+    },
+  ): Promise<WorkflowInstance>;
+
+  /**
+   * Retrieves a workflow instance by its identifier.
+   */
+  getWorkflow(workflowId: string): Promise<WorkflowInstance | null>;
+
+  /**
+   * Lists workflow instances matching the provided filters.
+   */
+  listWorkflows(options?: WorkflowQueryOptions): Promise<WorkflowInstance[]>;
+
+  /**
+   * Retrieves workflow progress details, including recent events, since an optional timestamp.
+   */
+  getWorkflowProgress(workflowId: string, sinceTimestamp?: string): Promise<WorkflowProgressUpdate | null>;
+
+  /**
+   * Updates the high-level workflow status (e.g., cancel, complete).
+   */
+  updateWorkflowStatus(workflowId: string, status: WorkflowStatus): Promise<WorkflowInstance | null>;
+
+  /**
+   * Applies task-level updates to a workflow instance.
+   */
+  applyWorkflowTaskUpdates(workflowId: string, updates: WorkflowTaskUpdate[]): Promise<WorkflowInstance | null>;
    * Retrieves a list of all available persona definitions (agents) configured in the system.
    * This is useful for clients (e.g., frontend UIs) to display available agent options to users.
    * The returned persona definitions are partial, omitting sensitive internal details like

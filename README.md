@@ -1,4 +1,4 @@
-﻿# Voice Chat Assistant
+# Voice Chat Assistant
 
 Voice-first coding assistant built by [Frame.dev / wearetheframers](https://github.com/wearetheframers).
 
@@ -23,7 +23,7 @@ The repository is organised as a pnpm workspace so the production apps, the Agen
 
 - **Frontend** - Vue 3 + Vite + Tailwind with composition-based state and Supabase-friendly auth (see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)).
 - **Backend** - Modular Express feature folders, optional Supabase + Lemon Squeezy integration, rate-limited public demo routes.
-- **AgentOS runtime** - Session-aware personas, tool permissioning, retrieval/memory lifecycle policies, async streaming bridges.
+- **AgentOS runtime** - Session-aware personas, tool permissioning, guardrail policy hooks, retrieval/memory lifecycle policies, async streaming bridges.
 - **AgentOS surfaces** - `apps/agentos-landing` (marketing) and `apps/agentos-client` (developer cockpit) consume the runtime without touching the proprietary voice UI.
 - **Data flow** - Voice/Text -> `/api/chat` -> AgentOS -> LLM providers with knowledge retrieval and billing-tier enforcement.
 
@@ -64,6 +64,7 @@ The repository is organised as a pnpm workspace so the production apps, the Agen
 
 - `packages/agentos` builds to pure ESM output with declaration maps so it can be published directly.
 - The runtime ships with default `LLMUtilityAI` wiring, explicit tool permission/execution plumbing, and async streaming bridges.
+- Guardrail subsystem now ships end-to-end: `IGuardrailService` contract, dispatcher helpers, `AgentOS.processRequest` integration, and a Vitest harness so hosts can allow/flag/sanitize/block requests via `AgentOSConfig.guardrailService`.
 - Conversation/persona safeguards are aligned with subscription tiers and metadata hooks exposed by the backend.
 - **Documentation** - `pnpm --filter @agentos/core run docs` generates TypeDoc output under `packages/agentos/docs/api` (configuration lives in `packages/agentos/typedoc.json`).
 - See `packages/agentos/README.md` for package scripts, exports, and the release checklist.
@@ -85,6 +86,7 @@ The repository is organised as a pnpm workspace so the production apps, the Agen
 - Configuration catalogue - [`CONFIGURATION.md`](CONFIGURATION.md)
 - Backend API reference - [`docs/BACKEND_API.md`](docs/BACKEND_API.md)
 - AgentOS migration notes - [`docs/AGENTOS_*`](docs)
+- Workflow & automation guide - [`docs/WORKFLOWS.md`](docs/WORKFLOWS.md)
 - Generated API docs - `pnpm --filter @agentos/core run docs` -> `packages/agentos/docs/api`
 
 ## Contributing
@@ -96,4 +98,5 @@ The repository is organised as a pnpm workspace so the production apps, the Agen
 
 ## License
 
-The repository remains private. Individual packages may be published under MIT when we cut public releases—refer to [LICENSE](LICENSE) for the current terms.
+The repository remains private. Individual packages may be published under MIT when we cut public releases�refer to [LICENSE](LICENSE) for the current terms.
+

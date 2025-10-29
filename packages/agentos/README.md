@@ -1,4 +1,4 @@
-# @agentos/core
+﻿# @agentos/core
 
 > Modular AgentOS runtime used by Voice Chat Assistant. Official home: [github.com/wearetheframers/agentos](https://github.com/wearetheframers/agentos).
 
@@ -66,7 +66,7 @@ Real deployments should supply their own auth/subscription services by implement
 
 - Vitest is configured (`pnpm --filter @agentos/core test`). Today's coverage is minimal; expect more unit + integration tests as the extraction work completes.
 - API docs can be generated locally via `pnpm run docs`; artefacts land in `docs/api`.
-- Documentation, CI, and publishing flows will migrate to the dedicated OSS repo ([wearetheframers/agentos](https://github.com/wearetheframers/agentos)). This README serves as the single source of truth until the repo split is finalized (see [docs/AGENTOS_EXTRACTION_PLAN.md](../../docs/AGENTOS_EXTRACTION_PLAN.md)).
+- Documentation, CI, and publishing flows will migrate to the dedicated OSS repo ([wearetheframers/agentos](https://github.com/wearetheframers/agentos)). This README serves as the single source of truth until the repo split is finalized (see [docs/AGENTOS_REINTEGRATION_NOTES.md](../../docs/AGENTOS_REINTEGRATION_NOTES.md)).
 
 ---
 

@@ -1,4 +1,4 @@
-# Frontend (Voice Chat Assistant UI)
+﻿# Frontend (Voice Chat Assistant UI)
 
 This package contains the Vue 3 + Vite front-end for Voice Chat Assistant. It serves as the multi-agent cockpit for voice conversations, diagramming, transcription and, when enabled, the embedded AgentOS orchestration path.
 
@@ -37,8 +37,8 @@ This package contains the Vue 3 + Vite front-end for Voice Chat Assistant. It se
 
 ### Prerequisites
 
-- Node.js ≥ 20
-- pnpm or npm (root workspace uses pnpm internally, but `npm run …` is available via the root scripts)
+- Node.js â‰¥ 20
+- pnpm or npm (root workspace uses pnpm internally, but `npm run â€¦` is available via the root scripts)
 - Backend running (`npm run dev` or `npm run start`) because this UI proxies `/api/*`
 
 ### Install Dependencies
@@ -75,23 +75,23 @@ When running via the root `npm run start`, the backend serves `/api/*` while `fr
 
 ```
 frontend/
-├─ public/                # static assets copied verbatim
-├─ src/
-│  ├─ assets/             # logos, imagery, CSS-in-JS tokens
-│  ├─ components/         # UI components, agents, layout pieces
-│  │   ├─ agents/         # agent mini-apps (CodingAgent, VAgent, Diary, etc.)
-│  │   └─ about/          # marketing/about page sections
-│  ├─ composables/        # shared hooks (voice settings, animations)
-│  ├─ router/             # vue-router config
-│  ├─ services/           # prompt loading, conversation managers, local storage helpers
-│  ├─ store/              # Pinia stores (chat, agent, UI, cost, reactive cues)
-│  ├─ styles/             # Sass mixins, global styles, view-specific overrides
-│  ├─ theme/              # CSS variables + theme switching
-│  ├─ utils/              # Axios API helper, STT/TTS adapters, social links
-│  └─ views/              # page-level views (Home, About, Agents)
-├─ package.json
-├─ vite.config.ts
-└─ README.md (this file)
+â”œâ”€ public/                # static assets copied verbatim
+â”œâ”€ src/
+â”‚  â”œâ”€ assets/             # logos, imagery, CSS-in-JS tokens
+â”‚  â”œâ”€ components/         # UI components, agents, layout pieces
+â”‚  â”‚   â”œâ”€ agents/         # agent mini-apps (CodingAgent, VAgent, Diary, etc.)
+â”‚  â”‚   â””â”€ about/          # marketing/about page sections
+â”‚  â”œâ”€ composables/        # shared hooks (voice settings, animations)
+â”‚  â”œâ”€ router/             # vue-router config
+â”‚  â”œâ”€ services/           # prompt loading, conversation managers, local storage helpers
+â”‚  â”œâ”€ store/              # Pinia stores (chat, agent, UI, cost, reactive cues)
+â”‚  â”œâ”€ styles/             # Sass mixins, global styles, view-specific overrides
+â”‚  â”œâ”€ theme/              # CSS variables + theme switching
+â”‚  â”œâ”€ utils/              # Axios API helper, STT/TTS adapters, social links
+â”‚  â””â”€ views/              # page-level views (Home, About, Agents)
+â”œâ”€ package.json
+â”œâ”€ vite.config.ts
+â””â”€ README.md (this file)
 ```
 
 Key service layers:
@@ -124,7 +124,7 @@ The repo root exposes helpful wrappers:
 
 ## Environment Variables
 
-Frontend uses Vite’s `import.meta.env`. Define variables in `frontend/.env`, `.env.local`, or use `.env.supabase-stripe.example` as a template.
+Frontend uses Viteâ€™s `import.meta.env`. Define variables in `frontend/.env`, `.env.local`, or use `.env.supabase-stripe.example` as a template.
 
 | Variable | Purpose |
 |----------|---------|
@@ -222,9 +222,9 @@ For AgentOS (backend package), Vitest is configured in `packages/agentos/vitest.
 
 | Issue | Fix |
 |-------|-----|
-| 500 from `/api/rate-limit/status`, `/api/tts/voices`, `/prompts/*.md` | Backend isn’t running or the route is gated by `AGENTOS_ENABLED`. Start backend (`npm run dev`) or guard zero/500 states in UI. |
+| 500 from `/api/rate-limit/status`, `/api/tts/voices`, `/prompts/*.md` | Backend isnâ€™t running or the route is gated by `AGENTOS_ENABLED`. Start backend (`npm run dev`) or guard zero/500 states in UI. |
 | SSE fetch errors (`ECONNREFUSED`) | Vite proxies `/api/*` to backend on `localhost:3001`. Ensure backend dev server is up. |
-| Chunk size warning | Large diagram bundles (Mermaid, flowchart) exceed Vite’s `chunkSizeWarningLimit`. Consider dynamic imports or Rollup `manualChunks`. |
+| Chunk size warning | Large diagram bundles (Mermaid, flowchart) exceed Viteâ€™s `chunkSizeWarningLimit`. Consider dynamic imports or Rollup `manualChunks`. |
 | AgentOS import errors | Run `npm run build:backend` from root to build the AgentOS package first. The backend referencing `@agentos/core` requires `packages/agentos/dist`. |
 | Locale path mismatch | Ensure routes use `/:locale?` and `Router.beforeEach` sets `i18n.global.locale`. See `router/index.ts`. |
 
@@ -236,4 +236,4 @@ For AgentOS (backend package), Vitest is configured in `packages/agentos/vitest.
 - When adding new API calls, update `src/utils/api.ts` to centralize authentication headers and SSE logic.
 - For feature flags, prefer the `VITE_FEATURE_FLAG_*` naming convention to keep front-end toggles consistent with documentation.
 
-For the broader integration plan (AgentOS packaging, workspace structure, backend wiring), see `docs/AGENTOS_EXTRACTION_PLAN.md`.
+For the broader integration plan (AgentOS packaging, workspace structure, backend wiring), see `docs/AGENTOS_REINTEGRATION_NOTES.md`.
