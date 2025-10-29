@@ -19,6 +19,7 @@ import {
   AgentOSToolCallRequestChunk,
   AgentOSToolResultEmissionChunk,
   AgentOSUICommandChunk,
+  AgentOSWorkflowUpdateChunk,
 } from './types/AgentOSResponse';
 import { GMIManager } from '../cognitive_substrate/GMIManager';
 import {
@@ -44,6 +45,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { GMIError, GMIErrorCode } from '@agentos/core/utils/errors';
 import { StreamingManager, StreamId } from '../core/streaming/StreamingManager';
 import { normalizeUsage, snapshotPersonaDetails } from '../core/orchestration/helpers';
+import type { WorkflowProgressUpdate } from '../core/workflows/WorkflowTypes';
 
 /**
  * @typedef {Object} AgentOSOrchestratorConfig
@@ -180,7 +182,7 @@ export class AgentOSOrchestrator {
     isFinal: boolean,
     data: any
   ): Promise<void> {
-    const baseChunk = {
+    const baseChunk: Record<string, any> = {
       type,
       streamId,
       gmiInstanceId,
@@ -189,6 +191,10 @@ export class AgentOSOrchestrator {
       timestamp: new Date().toISOString(),
     };
 
+    if (data && typeof data === 'object' && 'metadata' in data && data.metadata) {
+      baseChunk.metadata = data.metadata;
+    }
+
     let chunk: AgentOSResponse;
 
     switch (type) {
@@ -196,23 +202,44 @@ export class AgentOSOrchestrator {
         chunk = { ...baseChunk, textDelta: data.textDelta } as AgentOSTextDeltaChunk;
         break;
       case AgentOSResponseChunkType.SYSTEM_PROGRESS:
-        chunk = { ...baseChunk, message: data.message, progressPercentage: data.progressPercentage, statusCode: data.statusCode } as AgentOSSystemProgressChunk;
+        chunk = {
+          ...baseChunk,
+          message: data.message,
+          progressPercentage: data.progressPercentage,
+          statusCode: data.statusCode,
+        } as AgentOSSystemProgressChunk;
         break;
       case AgentOSResponseChunkType.TOOL_CALL_REQUEST:
-        chunk = { ...baseChunk, toolCalls: data.toolCalls, rationale: data.rationale } as AgentOSToolCallRequestChunk;
+        chunk = {
+          ...baseChunk,
+          toolCalls: data.toolCalls,
+          rationale: data.rationale,
+        } as AgentOSToolCallRequestChunk;
         break;
       case AgentOSResponseChunkType.TOOL_RESULT_EMISSION:
-        chunk = { ...baseChunk, toolCallId: data.toolCallId, toolName: data.toolName, toolResult: data.toolResult, isSuccess: data.isSuccess, errorMessage: data.errorMessage } as AgentOSToolResultEmissionChunk;
+        chunk = {
+          ...baseChunk,
+          toolCallId: data.toolCallId,
+          toolName: data.toolName,
+          toolResult: data.toolResult,
+          isSuccess: data.isSuccess,
+          errorMessage: data.errorMessage,
+        } as AgentOSToolResultEmissionChunk;
         break;
       case AgentOSResponseChunkType.UI_COMMAND:
         chunk = { ...baseChunk, uiCommands: data.uiCommands } as AgentOSUICommandChunk;
         break;
       case AgentOSResponseChunkType.ERROR:
-        chunk = { ...baseChunk, code: data.code, message: data.message, details: data.details } as AgentOSErrorChunk;
+        chunk = {
+          ...baseChunk,
+          code: data.code,
+          message: data.message,
+          details: data.details,
+        } as AgentOSErrorChunk;
         break;
       case AgentOSResponseChunkType.FINAL_RESPONSE:
-        chunk = { 
-          ...baseChunk, 
+        chunk = {
+          ...baseChunk,
           finalResponseText: data.finalResponseText,
           finalToolCalls: data.finalToolCalls,
           finalUiCommands: data.finalUiCommands,
@@ -222,15 +249,74 @@ export class AgentOSOrchestrator {
           reasoningTrace: data.reasoningTrace,
           error: data.error,
           updatedConversationContext: data.updatedConversationContext,
-          activePersonaDetails: data.activePersonaDetails
+          activePersonaDetails: data.activePersonaDetails,
         } as AgentOSFinalResponseChunk;
         break;
+      case AgentOSResponseChunkType.WORKFLOW_UPDATE:
+        chunk = {
+          ...baseChunk,
+          workflow: data.workflow,
+        } as AgentOSWorkflowUpdateChunk;
+        break;
       default:
-        // This should ideally not be reached if type checking is correct
-        console.error(`AgentOSOrchestrator: Unknown chunk type encountered in pushChunkToStream: ${type}`);
-        chunk = { ...baseChunk, type: AgentOSResponseChunkType.ERROR, code: GMIErrorCode.INTERNAL_SERVER_ERROR, message: `Unknown chunk type: ${type}`, details: data } as AgentOSErrorChunk;
+        console.error(
+          `AgentOSOrchestrator: Unknown chunk type encountered in pushChunkToStream: ${type}`,
+        );
+        chunk = {
+          ...baseChunk,
+          type: AgentOSResponseChunkType.ERROR,
+          code: GMIErrorCode.INTERNAL_SERVER_ERROR,
+          message: `Unknown chunk type: ${type}`,
+          details: data,
+        } as AgentOSErrorChunk;
     }
     await this.dependencies.streamingManager.pushChunk(streamId, chunk);
+  }
+
+  public async broadcastWorkflowUpdate(update: WorkflowProgressUpdate): Promise<void> {
+    this.ensureInitialized();
+    const targets: Array<{ streamId: StreamId; context: ActiveStreamContext }> = [];
+
+    for (const [streamId, context] of this.activeStreamContexts.entries()) {
+      if (
+        update.workflow.conversationId &&
+        context.conversationId !== update.workflow.conversationId
+      ) {
+        continue;
+      }
+      targets.push({ streamId, context });
+    }
+
+    if (targets.length === 0) {
+      console.debug('AgentOSOrchestrator: No active streams for workflow update', {
+        workflowId: update.workflow.workflowId,
+        conversationId: update.workflow.conversationId,
+      });
+      return;
+    }
+
+    await Promise.allSettled(
+      targets.map(async ({ streamId, context }) => {
+        const gmiId = context.gmi.getGMIId();
+        const metadata = {
+          workflowId: update.workflow.workflowId,
+          definitionId: update.workflow.definitionId,
+          conversationId: update.workflow.conversationId,
+          status: update.workflow.status,
+        };
+        await this.pushChunkToStream(
+          streamId,
+          AgentOSResponseChunkType.WORKFLOW_UPDATE,
+          gmiId,
+          context.personaId,
+          false,
+          {
+            workflow: update,
+            metadata,
+          },
+        );
+      }),
+    );
   }
 
   /**

@@ -1,9 +1,13 @@
 {
-  "version": "0.2",
-  "language": "en",
-  "words": [
-    "AgentOS",
-    "IGMI",
-    "Augmentor"
-  ]
+    "version":  "0.2",
+    "language":  "en",
+    "words":  [
+                  "AgentOS",
+                  "Augmentor",
+                  "dereg",
+                  "Deregistering",
+                  "IGMI",
+                  "SOTA",
+                  "uuidv"
+              ]
 }

@@ -19,6 +19,7 @@ import {
 } from '@/services/conversation.manager';
 import { voiceSettingsManager } from '@/services/voice.settings.service';
 import { chatAPI, type ChatMessageFE, type ProcessedHistoryMessageFE, type ILlmToolCallFE as ApiLlmToolCall, type ChatMessagePayloadFE } from '@/utils/api';
+import type { WorkflowInstanceFE, WorkflowEventFE, WorkflowProgressUpdateFE, WorkflowUpdateEventDetail } from '@/types/workflow';
 
 export interface ILlmToolCallUI extends ApiLlmToolCall {}
 
@@ -59,6 +60,9 @@ export const useChatStore = defineStore('chat', () => {
   const isMainContentStreaming = ref(false);
   const streamingMainContentText = ref('');
   const ttsPendingMap = ref<Record<string, boolean>>({});
+  const workflowInstances = ref<Record<string, WorkflowInstanceFE>>({});
+  const workflowEvents = ref<Record<string, WorkflowEventFE[]>>({});
+  const workflowByConversation = ref<Record<string, string>>({});
   const languageDetectionSessionKey = 'vca_language_detection_complete_v1';
   const languageDetectionInFlight = ref(false);
 
@@ -78,6 +82,8 @@ export const useChatStore = defineStore('chat', () => {
     }
     return conversationIds.value[agentId];
   };
+
+  const getExistingConversationId = (agentId: AgentId): string | null => conversationIds.value[agentId] ?? null;
 
   const hasCompletedLanguageDetection = (): boolean => {
     if (typeof window === 'undefined') return true;
@@ -368,6 +374,45 @@ export const useChatStore = defineStore('chat', () => {
     setPersonaForAgent(agentId, response.persona ?? null);
   }
 
+  const applyWorkflowUpdate = (update: WorkflowProgressUpdateFE): void => {
+    const instance = update.workflow;
+    workflowInstances.value = { ...workflowInstances.value, [instance.workflowId]: instance };
+    if (instance.conversationId) {
+      workflowByConversation.value = {
+        ...workflowByConversation.value,
+        [instance.conversationId]: instance.workflowId,
+      };
+    }
+    if (update.recentEvents?.length) {
+      const existing = workflowEvents.value[instance.workflowId] ?? [];
+      const merged = [...existing, ...update.recentEvents];
+      workflowEvents.value = {
+        ...workflowEvents.value,
+        [instance.workflowId]: merged.slice(-50),
+      };
+    }
+  };
+
+  const getWorkflowForConversation = (conversationId: string | null | undefined): WorkflowInstanceFE | null => {
+    if (!conversationId) return null;
+    const workflowId = workflowByConversation.value[conversationId];
+    return workflowId ? workflowInstances.value[workflowId] ?? null : null;
+  };
+
+  const getWorkflowEventsForWorkflow = (workflowId: string | null | undefined): WorkflowEventFE[] => {
+    if (!workflowId) return [];
+    return workflowEvents.value[workflowId] ?? [];
+  };
+
+  if (typeof window !== 'undefined') {
+    window.addEventListener('vca:workflow-update', (event: Event) => {
+      const detail = (event as CustomEvent<WorkflowUpdateEventDetail>).detail;
+      if (detail?.workflow) {
+        applyWorkflowUpdate(detail.workflow);
+      }
+    });
+  }
+
   return {
     messageHistory: history,
     mainAgentContents: readonly(mainAgentContents),
@@ -393,6 +438,9 @@ export const useChatStore = defineStore('chat', () => {
     setPersonaForAgent,
     attachPersonaToPayload,
     syncPersonaFromResponse,
+    getExistingConversationId,
+    getWorkflowForConversation,
+    getWorkflowEventsForWorkflow,
     isAgentAwaitingTts: (agentId: AgentId) => !!ttsPendingMap.value[agentId],
   };
 });

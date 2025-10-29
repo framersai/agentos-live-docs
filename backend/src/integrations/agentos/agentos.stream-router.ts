@@ -1,13 +1,15 @@
 import { Router } from 'express';
 import type { Request, Response } from 'express';
-import { agentosChatAdapterEnabled, processAgentOSChatRequest } from './agentos.chat-adapter.js';
+import type { AgentOSInput, AgentOSResponse } from '@agentos/core';
+import { agentosChatAdapterEnabled } from './agentos.chat-adapter.js';
 
-/**
- * SSE router that mirrors the legacy /api/chat streaming behavior but backed by AgentOS.
- * Currently streams the final chunk only (since agentos chat adapter is call/response),
- * with a placeholder for incremental streaming once the agent orchestrator is wired up.
- */
-export const createAgentOSStreamRouter = (): Router => {
+type StreamHandler = (input: AgentOSInput, onChunk: (chunk: AgentOSResponse) => Promise<void> | void) => Promise<void>;
+
+interface AgentOSStreamIntegration {
+  processThroughAgentOSStream: StreamHandler;
+}
+
+export const createAgentOSStreamRouter = (integration: AgentOSStreamIntegration): Router => {
   const router = Router();
 
   router.get('/stream', async (req: Request, res: Response) => {
@@ -27,28 +29,56 @@ export const createAgentOSStreamRouter = (): Router => {
       }
     }
 
+    let workflowRequest: unknown;
+    if (typeof req.query.workflowRequest === 'string') {
+      try {
+        workflowRequest = JSON.parse(req.query.workflowRequest);
+      } catch {
+        res.status(400).json({ message: 'Invalid workflowRequest payload.' });
+        return;
+      }
+    }
+
     if (!userId || !conversationId || !mode || !Array.isArray(messages)) {
       res.status(400).json({ message: 'Missing agentOS streaming payload fields.' });
       return;
     }
 
+    const lastUserMessage = [...messages].reverse().find((msg) => msg.role === 'user')?.content ?? null;
+
+    const agentosInput: AgentOSInput = {
+      userId,
+      sessionId: conversationId,
+      conversationId,
+      selectedPersonaId: mode,
+      textInput: lastUserMessage ?? null,
+      options: {
+        streamUICommands: true,
+      },
+    };
+
+    if (workflowRequest && typeof workflowRequest === 'object') {
+      (agentosInput as any).workflowRequest = workflowRequest;
+    }
+
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
-    res.flushHeaders();
+    if (typeof res.flushHeaders === 'function') {
+      res.flushHeaders();
+    }
 
     try {
-      const result = await processAgentOSChatRequest({
-        userId,
-        conversationId,
-        mode,
-        messages,
+      await integration.processThroughAgentOSStream(agentosInput, async (chunk) => {
+        res.write('data: ' + JSON.stringify(chunk) + '\n\n');
+        const flush = (res as any).flush;
+        if (typeof flush === 'function') {
+          flush.call(res);
+        }
       });
-
-      res.write(`event: message\ndata: ${JSON.stringify(result)}\n\n`);
       res.write('event: done\ndata: {}\n\n');
       res.end();
     } catch (error: any) {
-      res.write(`event: error\ndata: ${JSON.stringify({ message: error?.message ?? 'AgentOS error' })}\n\n`);
+      res.write('event: error\ndata: ' + JSON.stringify({ message: error?.message ?? 'AgentOS error' }) + '\n\n');
       res.end();
     }
   });

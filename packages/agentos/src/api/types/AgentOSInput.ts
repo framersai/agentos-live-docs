@@ -36,6 +36,15 @@ export interface UserFeedbackPayload {
  *
  * @interface AgentOSInput
  */
+export interface WorkflowInvocationRequest {
+  definitionId: string;
+  workflowId?: string;
+  conversationId?: string;
+  context?: Record<string, unknown>;
+  roleAssignments?: Record<string, string>;
+  metadata?: Record<string, unknown>;
+}
+
 export interface AgentOSInput {
   userId: string;
   sessionId: string;
@@ -46,6 +55,7 @@ export interface AgentOSInput {
   userApiKeys?: Record<string, string>;
   userFeedback?: UserFeedbackPayload;
   conversationId?: string;
+  workflowRequest?: WorkflowInvocationRequest;
   options?: ProcessingOptions;
 }
 

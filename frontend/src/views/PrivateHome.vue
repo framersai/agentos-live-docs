@@ -35,6 +35,7 @@ import UnifiedChatLayout from '@/components/layouts/UnifiedChatLayout.vue';
 import MainContentView from '@/components/agents/common/MainContentView.vue';
 import CompactMessageRenderer from '@/components/layouts/CompactMessageRenderer/CompactMessageRenderer.vue';
 import PersonaToolbar from '@/components/common/PersonaToolbar.vue';
+import WorkflowStatusPanel from '@/components/workflows/WorkflowStatusPanel.vue';
 
 import { ShieldCheckIcon, CogIcon, UserGroupIcon } from '@heroicons/vue/24/solid';
 const toast = inject<ToastService>('toast');
@@ -79,6 +80,22 @@ const isLoadingResponse = ref(false);
  */
 const isVoiceInputCurrentlyProcessingAudio = ref(false);
 const agentViewRef = ref<any>(null);
+
+const activeConversationId = computed(() => {
+  const agent = activeAgent.value;
+  if (!agent) return null;
+  return chatStore.getExistingConversationId(agent.id);
+});
+
+const activeWorkflowSummary = computed(() => {
+  if (!activeConversationId.value) return null;
+  return chatStore.getWorkflowForConversation(activeConversationId.value);
+});
+
+const activeWorkflowEvents = computed(() => {
+  if (!activeWorkflowSummary.value) return [];
+  return chatStore.getWorkflowEventsForWorkflow(activeWorkflowSummary.value.workflowId);
+});
 
 async function loadCurrentAgentSystemPrompt(): Promise<void> {
   const agent = activeAgent.value;
@@ -439,6 +456,13 @@ watch(isVoiceInputCurrentlyProcessingAudio, (isSttActive) => {
             </div>
         </div>
       </template>
+    <template #voice-toolbar>
+      <WorkflowStatusPanel
+        v-if="activeWorkflowSummary"
+        :workflow="activeWorkflowSummary"
+        :events="activeWorkflowEvents"
+      />
+    </template>
     </UnifiedChatLayout>
   </div>
 </template>

@@ -13,6 +13,7 @@ import axios, {
   type AxiosResponse,
 } from 'axios';
 import type { PlanId } from '../../../shared/planCatalog';
+import type { WorkflowProgressUpdateFE, WorkflowUpdateEventDetail, WorkflowInvocationRequestFE } from '@/types/workflow';
 
 // Environment variables for API configuration.
 const API_BASE_URL: string = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api';
@@ -64,6 +65,14 @@ const emitSessionCostUpdate = (detail?: SessionCostDetailsFE): void => {
   if (!detail || typeof window === 'undefined') return;
   window.dispatchEvent(new CustomEvent<SessionCostDetailsFE>('vca:session-cost', { detail }));
 };
+
+const emitWorkflowUpdate = (detail: WorkflowUpdateEventDetail): void => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+  window.dispatchEvent(new CustomEvent<WorkflowUpdateEventDetail>('vca:workflow-update', { detail }));
+};
+
 
 const getAuthToken = (): string | null => {
   if (typeof window === 'undefined') return null;
@@ -291,6 +300,7 @@ export interface ChatMessagePayloadFE {
     tool_name: string;
     output: string;
   };
+  workflowRequest?: WorkflowInvocationRequestFE | null;
   tools?: LlmToolFE[];
   tool_choice?: "none" | "auto" | { type: "function"; function: { name: string; } };
 }
@@ -363,6 +373,7 @@ interface AgentOSChatPayload {
   conversationId: string;
   mode: string;
   messages: Array<Pick<ChatMessageFE, 'role' | 'content' | 'name' | 'tool_call_id'>>;
+  workflowRequest?: WorkflowInvocationRequestFE | null;
 }
 
 const isAgentOSAdapterResult = (value: any): value is AgentOSChatAdapterResult => {
@@ -417,6 +428,7 @@ const ensureAgentOSPayload = (payload: ChatMessagePayloadFE): AgentOSChatPayload
     conversationId,
     mode: fallbackMode,
     messages: simplifiedMessages,
+    workflowRequest: payload.workflowRequest ?? null,
   };
 };
 
@@ -435,6 +447,9 @@ const buildAgentOSStreamQuery = (payload: AgentOSChatPayload): string => {
   params.set('conversationId', payload.conversationId);
   params.set('mode', payload.mode);
   params.set('messages', JSON.stringify(payload.messages));
+  if (payload.workflowRequest) {
+    params.set('workflowRequest', JSON.stringify(payload.workflowRequest));
+  }
   return params.toString();
 };
 
@@ -548,7 +563,14 @@ export const chatAPI = {
             const jsonData = line.substring('data: '.length);
             try {
               const parsedChunk = JSON.parse(jsonData);
-              if (parsedChunk.type === 'chunk' && typeof parsedChunk.content === 'string') {
+              if (parsedChunk.type === 'workflow_update') {
+                if (parsedChunk.workflow) {
+                  emitWorkflowUpdate({
+                    workflow: parsedChunk.workflow as WorkflowProgressUpdateFE,
+                    metadata: parsedChunk.metadata,
+                  });
+                }
+              } else if (parsedChunk.type === 'chunk' && typeof parsedChunk.content === 'string') {
                 onChunkReceived(parsedChunk.content);
               } else if (parsedChunk.type === 'tool_call_delta') {
                 console.log('[API Service] Stream: Tool call delta received:', parsedChunk);
