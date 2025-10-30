@@ -1,7 +1,12 @@
 import type { ILogger } from '../logging/ILogger';
 import type { IGuardrailService } from '../core/guardrails/IGuardrailService';
 import type { ITool } from '../core/tools/ITool';
-import type { WorkflowDescriptorPayload } from '../core/workflows/WorkflowTypes';
+import type {
+  WorkflowDescriptorPayload,
+  WorkflowInstance,
+  WorkflowTaskDefinition,
+  WorkflowTaskStatus,
+} from '../core/workflows/WorkflowTypes';
 
 /**
  * Represents the broad category an extension descriptor belongs to.
@@ -106,10 +111,30 @@ export const EXTENSION_KIND_TOOL = 'tool';
 export const EXTENSION_KIND_GUARDRAIL = 'guardrail';
 export const EXTENSION_KIND_RESPONSE_PROCESSOR = 'response-processor';
 export const EXTENSION_KIND_WORKFLOW = 'workflow';
+export const EXTENSION_KIND_WORKFLOW_EXECUTOR = 'workflow-executor';
 
 export type ToolDescriptor = ExtensionDescriptor<ITool> & { kind: typeof EXTENSION_KIND_TOOL };
 export type GuardrailDescriptor = ExtensionDescriptor<IGuardrailService> & { kind: typeof EXTENSION_KIND_GUARDRAIL };
 export type WorkflowDescriptor = ExtensionDescriptor<WorkflowDescriptorPayload> & {
   kind: typeof EXTENSION_KIND_WORKFLOW;
+};
+
+export interface WorkflowExtensionExecutionContext {
+  workflow: WorkflowInstance;
+  task: WorkflowTaskDefinition;
+}
+
+export interface WorkflowExtensionExecutionResult {
+  output?: unknown;
+  status?: WorkflowTaskStatus;
+  metadata?: Record<string, unknown>;
+}
+
+export type WorkflowExtensionExecutor = (
+  context: WorkflowExtensionExecutionContext,
+) => Promise<WorkflowExtensionExecutionResult> | WorkflowExtensionExecutionResult;
+
+export type WorkflowExecutorDescriptor = ExtensionDescriptor<WorkflowExtensionExecutor> & {
+  kind: typeof EXTENSION_KIND_WORKFLOW_EXECUTOR;
 };
 

@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { clsx } from "clsx";
-import { Radio, Plus, CheckCircle2 } from "lucide-react";
+import { Radio, Plus, CheckCircle2, Users } from "lucide-react";
 import { useSessionStore } from "@/state/sessionStore";
 
 interface SidebarProps {
@@ -18,15 +18,13 @@ export function Sidebar({ onCreateSession }: SidebarProps) {
   const activeSessionId = useSessionStore((state) => state.activeSessionId);
   const setActiveSession = useSessionStore((state) => state.setActiveSession);
 
-  const sortedSessions = useMemo(
-    () =>
-      [...sessions].sort((a, b) => {
-        const latestA = a.events[0]?.timestamp ?? 0;
-        const latestB = b.events[0]?.timestamp ?? 0;
-        return latestB - latestA;
-      }),
-    [sessions]
-  );
+  const sortedSessions = useMemo(() => {
+    return [...sessions].sort((a, b) => {
+      const latestA = a.events[0]?.timestamp ?? 0;
+      const latestB = b.events[0]?.timestamp ?? 0;
+      return latestB - latestA;
+    });
+  }, [sessions]);
 
   return (
     <aside className="flex h-full flex-col border-r border-white/5 bg-slate-950/60">
@@ -51,6 +49,14 @@ export function Sidebar({ onCreateSession }: SidebarProps) {
         ) : (
           sortedSessions.map((session) => {
             const status = session.status;
+            const targetBadge =
+              session.targetType === "agency" ? (
+                <span className="inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.4em] text-sky-300">
+                  <Users className="h-3 w-3" /> Agency
+                </span>
+              ) : (
+                <span className="text-[10px] font-semibold uppercase tracking-[0.4em] text-slate-400">Persona</span>
+              );
             return (
               <button
                 key={session.id}
@@ -69,7 +75,10 @@ export function Sidebar({ onCreateSession }: SidebarProps) {
                   </span>
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-slate-100">{session.persona}</p>
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm font-semibold text-slate-100">{session.displayName}</p>
+                    {targetBadge}
+                  </div>
                   <p className="text-xs text-slate-400">
                     {session.events.length === 0
                       ? "No activity yet"

@@ -11,7 +11,8 @@ import axios, {
   type InternalAxiosRequestConfig,
   type AxiosRequestConfig,
   type AxiosResponse,
-} from 'axios';
+import type { PlanId } from '../../../shared/planCatalog';
+import type { WorkflowDefinitionFE, WorkflowInstanceFE, WorkflowProgressUpdateFE, WorkflowUpdateEventDetail, WorkflowInvocationRequestFE, StartWorkflowPayloadFE } from '@/types/workflow';
 import type { PlanId } from '../../../shared/planCatalog';
 import type { WorkflowProgressUpdateFE, WorkflowUpdateEventDetail, WorkflowInvocationRequestFE } from '@/types/workflow';
 
@@ -870,6 +871,13 @@ export interface LlmStatusResponseFE {
   timestamp: string;
   providers: Record<string, ProviderStatusSummaryFE>;
 }
+
+export const workflowAPI = {
+  listDefinitions: (): Promise<AxiosResponse<{ definitions: WorkflowDefinitionFE[] }>> =>
+    api.get("/agentos/workflows/definitions"),
+  start: (data: StartWorkflowPayloadFE): Promise<AxiosResponse<{ workflow: WorkflowInstanceFE }>> =>
+    api.post("/agentos/workflows/start", data),
+};
 
 export const systemAPI = {
   getLlmStatus: (): Promise<AxiosResponse<LlmStatusResponseFE>> => api.get('/system/llm-status'),

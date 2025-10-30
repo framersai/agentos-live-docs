@@ -6,11 +6,11 @@ AgentOS now exposes a workflow engine so hosts can define automations, task grap
 
 ## 1. Concepts
 
-- **Workflow Definition** – Declarative description of goals, roles, tasks, guardrail tags, and optional schemas.
-- **Workflow Instance** – Runtime state of a definition (status, assignments, task progress, linked conversation, metadata).
-- **Task Graph** – Directed acyclic graph of tasks with dependency edges, executors, retry policies, and output schemas.
-- **Workflow Store** – Pluggable persistence layer responsible for saving instances, tasks, and audit events.
-- **Workflow Engine** – Runtime that loads workflow descriptors from the extension registry, creates instances, coordinates progression, and emits streaming updates.
+- **Workflow Definition** â€“ Declarative description of goals, roles, tasks, guardrail tags, and optional schemas.
+- **Workflow Instance** â€“ Runtime state of a definition (status, assignments, task progress, linked conversation, metadata).
+- **Task Graph** â€“ Directed acyclic graph of tasks with dependency edges, executors, retry policies, and output schemas.
+- **Workflow Store** â€“ Pluggable persistence layer responsible for saving instances, tasks, and audit events.
+- **Workflow Engine** â€“ Runtime that loads workflow descriptors from the extension registry, creates instances, coordinates progression, and emits streaming updates.
 
 ---
 
@@ -32,7 +32,13 @@ export const codeReviewWorkflow: WorkflowDescriptor = {
       displayName: 'Code Review',
       goalSchema: {/* JSON schema */},
       roles: [
-        { roleId: 'reviewer', displayName: 'Reviewer', personaCapabilityRequirements: ['code.review'] },
+        {
+          roleId: 'reviewer',
+          displayName: 'Reviewer',
+          personaId: 'code_pilot',
+          evolutionRules: [{ id: 'stay-focused', trigger: 'always', patch: { mood: 'focused' } }],
+          personaCapabilityRequirements: ['code.review'],
+        },
       ],
       tasks: [
         {
@@ -43,6 +49,7 @@ export const codeReviewWorkflow: WorkflowDescriptor = {
           inputSchema: {/* JSON schema */},
           outputSchema: {/* JSON schema */},
           policyTags: ['guardrail.secure_outputs'],
+          handoff: { summary: true },
         },
         // ...
       ],
@@ -62,6 +69,7 @@ Descriptors may specify:
 - `roles` with persona/tool capability requirements.
 - Task-level `policyTags` to reuse guardrail stacks or permission policies.
 - `requiresConversationContext` to indicate whether a conversation must exist before instantiation.
+- `roles[*].personaId` / `personaTraits` and `roles[*].evolutionRules` so Agencies can adapt persona behaviour over time.
 
 ---
 
@@ -90,9 +98,9 @@ const config: AgentOSConfig = {
 
 Key pieces:
 
-- **`workflowEngineConfig`** – runtime knobs (concurrency, timeouts).
-- **`workflowStore`** – optional injected persistence adapter. Defaults to the in-memory implementation if omitted.
-- **Extension registries** – workflows share the extension manager and manifest alongside tools/guardrails, so `extensionOverrides` apply uniformly.
+- **`workflowEngineConfig`** â€“ runtime knobs (concurrency, timeouts).
+- **`workflowStore`** â€“ optional injected persistence adapter. Defaults to the in-memory implementation if omitted.
+- **Extension registries** â€“ workflows share the extension manager and manifest alongside tools/guardrails, so `extensionOverrides` apply uniformly.
 
 ---
 
@@ -159,6 +167,9 @@ Use `applyWorkflowTaskUpdates` to mark progress or surface task outputs; the eng
 
 ### Trigger from chat input
 
+> **Tip:** Attach `agencyRequest` alongside `workflowRequest` when you want AgentOS to spin up or join a multi-seat Agency. Each participant entry can supply `roleId` + optional `personaId`.
+
+
 Include `workflowRequest` in the `AgentOSInput` payload to launch workflows as part of a turn:
 
 ```ts
@@ -183,6 +194,33 @@ await agentos.processRequest({
   const openWorkflows = await agentos.listWorkflows({ conversationId: 'session-123' });
   ```
 
+### REST endpoints
+
+AgentOS exposes helper endpoints so hosts can drive workflows without touching the runtime directly:
+
+```http
+GET /agentos/workflows/definitions
+```
+
+Returns `{ definitions: WorkflowDefinition[] }` describing every descriptor loaded by the extension manager.
+
+```http
+POST /agentos/workflows/start
+Content-Type: application/json
+
+{
+  "definitionId": "code_review",
+  "userId": "frontend_user_123",
+  "conversationId": "session-123",   // optional
+  "workflowId": "workflow-123",      // optional
+  "context": { "repoUrl": "https://example.com" }
+}
+```
+
+Returns `{ workflow }` representing the new instance. The streaming API (`/agentos/stream`) then emits `WORKFLOW_UPDATE` chunks as the automation progresses.
+
+The private console in the Voice Chat Assistant now includes a workflow launcher so authenticated users can choose a definition, start it, and monitor progress inline.
+
 ---
 
 ## 7. Guardrails & Policy
@@ -195,7 +233,7 @@ await agentos.processRequest({
 
 ## 8. Authoring Guidelines
 
-1. Keep task graphs acyclic and granular—prefer smaller tasks with explicit dependencies.
+1. Keep task graphs acyclic and granularâ€”prefer smaller tasks with explicit dependencies.
 2. Document assets: include instructions, metadata links, and guardrail expectations in the descriptor.
 3. Provide Vitest coverage for pack descriptors (registration, schema validation, basic execution path).
 4. Use the extension manifest to ship versioned packs (`@framers/agentos-pack-automation`) rather than embedding workflows directly in host code.
@@ -210,5 +248,5 @@ await agentos.processRequest({
 - Telemetry exports (OpenTelemetry spans, metrics).
 - Additional storage adapters (DynamoDB, Firestore, Redis streams).
 
-Use this guide alongside `docs/ARCHITECTURE.md` and the API reference to integrate workflows safely. Contributions are welcome—see `packages/agentos/docs/CONTRIBUTING.md` for standards.
+Use this guide alongside `docs/ARCHITECTURE.md` and the API reference to integrate workflows safely. Contributions are welcomeâ€”see `packages/agentos/docs/CONTRIBUTING.md` for standards.
 

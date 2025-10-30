@@ -26,6 +26,9 @@ import { IUtilityAI } from '../core/ai_utilities/IUtilityAI';
 
 import { IToolOrchestrator } from '../core/tools/IToolOrchestrator';
 import { IRetrievalAugmentor } from '../rag/IRetrievalAugmentor';
+import { PersonaOverlayManager } from './persona_overlays/PersonaOverlayManager';
+import type { PersonaStateOverlay, PersonaEvolutionContext } from './persona_overlays/PersonaOverlayTypes';
+import type { PersonaEvolutionRule } from '../core/workflows/WorkflowTypes';
 
 /**
  * Custom error class for GMIManager-specific operational errors.
@@ -67,6 +70,8 @@ export class GMIManager {
   private allPersonaDefinitions: Map<string, IPersonaDefinition>;
   public activeGMIs: Map<string, IGMI>; // Keep public if gmiRoutes needs direct check, otherwise make private with getter
   public gmiSessionMap: Map<string, string>; // Same as above
+  private readonly personaOverlayManager: PersonaOverlayManager;
+  private readonly agencySeatOverlays: Map<string, PersonaStateOverlay>;
 
   private authService: IAuthService;
   private subscriptionService: ISubscriptionService;
@@ -120,6 +125,8 @@ export class GMIManager {
     this.allPersonaDefinitions = new Map();
     this.activeGMIs = new Map();
     this.gmiSessionMap = new Map();
+    this.personaOverlayManager = new PersonaOverlayManager();
+    this.agencySeatOverlays = new Map();
 
     this.validateGMIDependencies();
   }
@@ -137,6 +144,81 @@ export class GMIManager {
     check(this.utilityAI, 'IUtilityAI');
     check(this.toolOrchestrator, 'IToolOrchestrator');
   }
+
+  private getAgencySeatKey(agencyId: string, roleId: string): string {
+    return `${agencyId}::${roleId}`;
+  }
+
+  /**
+   * Clears overlay information for a given Agency seat.
+   * @param agencyId - Agency identifier.
+   * @param roleId - Role identifier within the agency.
+   */
+  public clearAgencyPersonaOverlay(agencyId: string, roleId: string): void {
+    const key = this.getAgencySeatKey(agencyId, roleId);
+    this.agencySeatOverlays.delete(key);
+  }
+
+  /**
+   * Retrieves the overlay associated with an Agency seat if present.
+   * @param agencyId - Agency identifier.
+   * @param roleId - Agency role identifier.
+   */
+  public getAgencyPersonaOverlay(agencyId: string, roleId: string): PersonaStateOverlay | undefined {
+    return this.agencySeatOverlays.get(this.getAgencySeatKey(agencyId, roleId));
+  }
+
+  private resolvePersonaWithAgencyOverlay(
+    persona: IPersonaDefinition,
+    agencyOptions?: GMIAgencyContextOptions,
+  ): { persona: IPersonaDefinition; overlay?: PersonaStateOverlay; overlayChanged: boolean } {
+    if (!agencyOptions?.agencyId || !agencyOptions.roleId) {
+      return { persona, overlay: undefined, overlayChanged: false };
+    }
+
+    const key = this.getAgencySeatKey(agencyOptions.agencyId, agencyOptions.roleId);
+    const existingOverlay = this.agencySeatOverlays.get(key);
+    let overlayToApply = existingOverlay;
+    let overlayChanged = false;
+
+    if (agencyOptions.evolutionRules && agencyOptions.evolutionRules.length > 0) {
+      const context: PersonaEvolutionContext = agencyOptions.evolutionContext ?? {
+        workflowId: agencyOptions.workflowId ?? 'unknown_workflow',
+        agencyId: agencyOptions.agencyId,
+        roleId: agencyOptions.roleId,
+      };
+      const overlay = this.personaOverlayManager.applyRules({
+        persona,
+        rules: agencyOptions.evolutionRules,
+        context,
+        previousOverlay: existingOverlay,
+      });
+      this.agencySeatOverlays.set(key, overlay);
+      overlayToApply = overlay;
+      overlayChanged =
+        !existingOverlay ||
+        existingOverlay.appliedRules.join(',') !== overlay.appliedRules.join(',') ||
+        JSON.stringify(existingOverlay.patchedDefinition) !== JSON.stringify(overlay.patchedDefinition);
+    }
+
+    if (!overlayToApply) {
+      return { persona, overlay: undefined, overlayChanged: false };
+    }
+
+    const resolved = this.personaOverlayManager.resolvePersona(persona, overlayToApply);
+    return { persona: resolved, overlay: overlayToApply, overlayChanged };
+  }
+
+/**
+ * Options supplied when instantiating a GMI for an Agency seat.
+ */
+export interface GMIAgencyContextOptions {
+  agencyId: string;
+  roleId: string;
+  workflowId?: string;
+  evolutionRules?: PersonaEvolutionRule[];
+  evolutionContext?: PersonaEvolutionContext;
+}
 
   private async resolveUserTier(userId: string): Promise<ISubscriptionTier | null> {
     if (!userId || userId === 'anonymous_user') {
@@ -290,7 +372,8 @@ export class GMIManager {
     conversationIdInput?: string,
     preferredModelId?: string,
     preferredProviderId?: string,
-    userApiKeys?: Record<string, string>
+    userApiKeys?: Record<string, string>,
+    agencyOptions?: GMIAgencyContextOptions
   ): Promise<{ gmi: IGMI; conversationContext: ConversationContext }> {
     this.ensureInitialized();
 
@@ -308,11 +391,18 @@ export class GMIManager {
       );
     }
 
+    const { persona: effectivePersona, overlay, overlayChanged } = this.resolvePersonaWithAgencyOverlay(
+      personaDefinition,
+      agencyOptions,
+    );
+
     let gmiInstanceId = this.gmiSessionMap.get(sessionId);
     let gmi: IGMI | undefined = gmiInstanceId ? this.activeGMIs.get(gmiInstanceId) : undefined;
 
-    if (gmi && gmi.getPersona().id !== requestedPersonaId) {
-      console.log(`GMIManager (ID: ${this.managerId}): Persona switch requested for session ${sessionId} from '${gmi.getPersona().id}' to '${requestedPersonaId}'. Recreating GMI.`);
+    if (gmi && (gmi.getPersona().id !== requestedPersonaId || overlayChanged)) {
+      console.log(
+        `GMIManager (ID: ${this.managerId}): Persona refresh requested for session ${sessionId} (base '${requestedPersonaId}', overlayChanged=${overlayChanged}). Recreating GMI.`,
+      );
       await this.deactivateGMIForSession(sessionId);
       gmi = undefined;
       gmiInstanceId = undefined;
@@ -332,11 +422,11 @@ export class GMIManager {
       const newGmiInstanceId = `gmi-instance-${uuidv4()}`;
       console.log(`GMIManager (ID: ${this.managerId}): Creating new GMI instance ${newGmiInstanceId} for session ${sessionId} with persona ${requestedPersonaId}.`);
 
-      const completeGMIBaseConfig = this.assembleGMIBaseConfig(personaDefinition);
+      const completeGMIBaseConfig = this.assembleGMIBaseConfig(effectivePersona);
       const newGMI = new GMI(newGmiInstanceId); // This is of type GMI
 
       try {
-        await newGMI.initialize(personaDefinition, completeGMIBaseConfig);
+        await newGMI.initialize(effectivePersona, completeGMIBaseConfig);
       } catch (error: any) {
 
         throw createGMIErrorFromError(error, GMIErrorCode.GMI_INITIALIZATION_ERROR, { newGmiInstanceId },`Failed to initialize new GMI instance ${newGmiInstanceId}.`);
@@ -369,6 +459,13 @@ export class GMIManager {
     if (currentConversationContext.getMetadata('userId') !== userId) currentConversationContext.setMetadata('userId', userId);
     if (currentConversationContext.getMetadata('gmiInstanceId') !== gmi.gmiId) currentConversationContext.setMetadata('gmiInstanceId', gmi.gmiId);
     if (currentConversationContext.getMetadata('activePersonaId') !== gmi.getPersona().id) currentConversationContext.setMetadata('activePersonaId', gmi.getPersona().id);
+    if (agencyOptions?.agencyId) {
+      currentConversationContext.setMetadata('agencyId', agencyOptions.agencyId);
+      currentConversationContext.setMetadata('agencyRoleId', agencyOptions.roleId);
+    }
+    if (overlay) {
+      currentConversationContext.setMetadata('agencyPersonaOverlay', overlay);
+    }
 
     // Optionally save context if ConversationManager requires explicit saves after metadata changes
     // await this.conversationManager.saveConversation(currentConversationContext);

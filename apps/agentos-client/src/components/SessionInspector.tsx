@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 import { clsx } from "clsx";
-import { AgentOSResponseChunkType } from "@agentos/core";
-import { AlertTriangle, Activity, Terminal } from "lucide-react";
+import { AgentOSResponseChunkType, type AgentOSAgencyUpdateChunk } from "@agentos/core";
+import { AlertTriangle, Activity, Terminal, Users } from "lucide-react";
 import { useSessionStore } from "@/state/sessionStore";
 
 const chunkAccent: Record<string, string> = {
@@ -9,7 +9,8 @@ const chunkAccent: Record<string, string> = {
   [AgentOSResponseChunkType.FINAL_RESPONSE]: "border-emerald-400/40 bg-emerald-400/10 text-emerald-100",
   [AgentOSResponseChunkType.TOOL_CALL_REQUEST]: "border-amber-400/40 bg-amber-400/10 text-amber-100",
   [AgentOSResponseChunkType.TOOL_RESULT_EMISSION]: "border-purple-400/40 bg-purple-400/10 text-purple-100",
-  [AgentOSResponseChunkType.ERROR]: "border-rose-500/40 bg-rose-500/10 text-rose-100"
+  [AgentOSResponseChunkType.ERROR]: "border-rose-500/40 bg-rose-500/10 text-rose-100",
+  [AgentOSResponseChunkType.AGENCY_UPDATE]: "border-sky-400/40 bg-sky-400/10 text-sky-100"
 };
 
 export function SessionInspector() {
@@ -32,7 +33,7 @@ export function SessionInspector() {
       <header className="flex items-center justify-between border-b border-white/5 px-6 py-4">
         <div>
           <p className="text-xs uppercase tracking-[0.25em] text-slate-400">Session timeline</p>
-          <h2 className="text-lg font-semibold text-slate-100">{session.persona}</h2>
+          <h2 className="text-lg font-semibold text-slate-100">{session.displayName}</h2>
         </div>
         <span className="text-xs text-slate-500">{session.events.length} entries</span>
       </header>
@@ -59,6 +60,46 @@ export function SessionInspector() {
                         <Terminal className="mt-0.5 h-4 w-4" />
                         <p>{payloadAny.message}</p>
                       </div>
+                    ) : event.type === AgentOSResponseChunkType.AGENCY_UPDATE ? (
+                      (() => {
+                        const chunk = payloadAny as AgentOSAgencyUpdateChunk;
+                        const seats = chunk.agency.seats ?? [];
+                        const goal = chunk.agency.metadata && typeof chunk.agency.metadata.goal === "string" ? chunk.agency.metadata.goal : null;
+                        return (
+                          <div className="space-y-3 text-sm leading-relaxed">
+                            <div className="flex items-center gap-2 font-semibold text-slate-100">
+                              <Users className="h-4 w-4 text-sky-200" />
+                              Agency {chunk.agency.agencyId}
+                            </div>
+                            {goal && <p className="text-slate-200">{goal}</p>}
+                            <dl className="grid gap-2 text-xs text-slate-200 sm:grid-cols-2">
+                              <div>
+                                <dt className="uppercase tracking-[0.35em] text-slate-400">Workflow</dt>
+                                <dd className="truncate text-slate-100">{chunk.agency.workflowId}</dd>
+                              </div>
+                              {chunk.agency.conversationId && (
+                                <div>
+                                  <dt className="uppercase tracking-[0.35em] text-slate-400">Conversation</dt>
+                                  <dd className="truncate text-slate-100">{chunk.agency.conversationId}</dd>
+                                </div>
+                              )}
+                            </dl>
+                            <div className="space-y-2">
+                              {seats.length === 0 ? (
+                                <p className="text-xs text-slate-300">No registered seats yet.</p>
+                              ) : (
+                                seats.map((seat) => (
+                                  <div key={seat.roleId} className="rounded-lg border border-white/10 bg-slate-950/40 p-3">
+                                    <p className="text-xs font-semibold uppercase tracking-[0.35em] text-slate-300">{seat.roleId}</p>
+                                    <p className="text-sm text-slate-100">{seat.personaId}</p>
+                                    <p className="text-xs text-slate-400">GMI: {seat.gmiInstanceId}</p>
+                                  </div>
+                                ))
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })()
                     ) : event.type === AgentOSResponseChunkType.ERROR ? (
                       <div className="flex items-start gap-3 text-sm">
                         <AlertTriangle className="mt-0.5 h-4 w-4" />

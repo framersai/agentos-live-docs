@@ -53,6 +53,7 @@ export interface IWorkflowEngine {
   applyTaskUpdates(workflowId: string, updates: WorkflowTaskUpdate[]): Promise<WorkflowInstance | null>;
 
   recordEvents(events: WorkflowEvent[]): Promise<void>;
+  updateWorkflowAgencyState(workflowId: string, agencyState: WorkflowInstance['agencyState']): Promise<WorkflowInstance | null>;
 
   listWorkflows(options?: WorkflowQueryOptions): Promise<WorkflowInstance[]>;
 

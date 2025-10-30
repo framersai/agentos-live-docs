@@ -17,11 +17,13 @@ import type {
   ExtensionPackContext,
   ExtensionPackManifestEntry,
 } from './manifest';
+import { EXTENSION_KIND_WORKFLOW_EXECUTOR } from './types';
 
 const DEFAULT_EXTENSIONS_KIND_TOOL = 'tool';
 const DEFAULT_EXTENSIONS_KIND_GUARDRAIL = 'guardrail';
 const DEFAULT_EXTENSIONS_KIND_RESPONSE = 'response-processor';
 const DEFAULT_EXTENSIONS_KIND_WORKFLOW = 'workflow';
+const DEFAULT_EXTENSIONS_KIND_WORKFLOW_EXECUTOR = EXTENSION_KIND_WORKFLOW_EXECUTOR;
 
 interface ExtensionManagerOptions {
   manifest?: ExtensionManifest;
@@ -115,6 +117,7 @@ export class ExtensionManager {
     this.getRegistry(DEFAULT_EXTENSIONS_KIND_GUARDRAIL);
     this.getRegistry(DEFAULT_EXTENSIONS_KIND_RESPONSE);
     this.getRegistry(DEFAULT_EXTENSIONS_KIND_WORKFLOW);
+    this.getRegistry(DEFAULT_EXTENSIONS_KIND_WORKFLOW_EXECUTOR);
   }
 
   private async resolvePack(entry: ExtensionPackManifestEntry): Promise<ExtensionPack | null> {

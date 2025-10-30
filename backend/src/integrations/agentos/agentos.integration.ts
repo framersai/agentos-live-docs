@@ -13,6 +13,9 @@ import {
   type ConversationManagerConfig,
   type StreamingManagerConfig,
   type AIModelProviderManagerConfig,
+  type WorkflowDefinition,
+  type WorkflowInstance,
+  WorkflowStatus,
 } from '@agentos/core';
 import type {
   IAuthService as AgentOSAuthServiceInterface,
@@ -70,6 +73,72 @@ class AgentOSIntegration {
     for await (const chunk of agentosInstance.processRequest(input)) {
       await onChunk(chunk);
     }
+  }
+
+  public async listWorkflowDefinitions(): Promise<WorkflowDefinition[]> {
+    const agentosInstance = await this.getAgentOS();
+    return agentosInstance.listWorkflowDefinitions();
+  }
+
+  public async listWorkflows(options?: { conversationId?: string; status?: string }): Promise<WorkflowInstance[]> {
+    const agentosInstance = await this.getAgentOS();
+    const statuses =
+      options?.status && typeof options.status === 'string' ? [options.status as WorkflowStatus] : undefined;
+    return agentosInstance.listWorkflows({
+      conversationId: options?.conversationId,
+      statuses,
+    });
+  }
+
+  public async startWorkflow(options: {
+    definitionId: string;
+    userId: string;
+    conversationId?: string;
+    workflowId?: string;
+    context?: Record<string, unknown>;
+    roleAssignments?: Record<string, string>;
+    metadata?: Record<string, unknown>;
+  }): Promise<WorkflowInstance> {
+    const agentosInstance = await this.getAgentOS();
+
+    const conversationId =
+      options.conversationId && options.conversationId.trim().length > 0
+        ? options.conversationId
+        : `workflow-session-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+
+    const agentosInput: AgentOSInput = {
+      userId: options.userId,
+      sessionId: conversationId,
+      conversationId,
+      textInput: null,
+      selectedPersonaId: options.definitionId,
+      options: {
+        streamUICommands: true,
+      },
+    };
+
+    return agentosInstance.startWorkflow(options.definitionId, agentosInput, {
+      workflowId: options.workflowId,
+      conversationId,
+      createdByUserId: options.userId,
+      context: options.context,
+      roleAssignments: options.roleAssignments,
+      metadata: options.metadata,
+    });
+  }
+
+  public async getWorkflow(workflowId: string): Promise<WorkflowInstance | null> {
+    const agentosInstance = await this.getAgentOS();
+    return agentosInstance.getWorkflow(workflowId);
+  }
+
+  public async cancelWorkflow(workflowId: string, reason?: string): Promise<WorkflowInstance | null> {
+    const agentosInstance = await this.getAgentOS();
+    const updated = await agentosInstance.updateWorkflowStatus(workflowId, WorkflowStatus.CANCELLED);
+    if (updated && reason) {
+      console.info('[AgentOS][Workflow] Cancelled workflow', { workflowId, reason });
+    }
+    return updated;
   }
 
   private async getAgentOS(): Promise<AgentOS> {

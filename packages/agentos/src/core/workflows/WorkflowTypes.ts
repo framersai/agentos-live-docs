@@ -37,6 +37,9 @@ export interface WorkflowRoleDefinition {
   roleId: string;
   displayName: string;
   description?: string;
+  personaId?: string;
+  personaTraits?: Record<string, unknown>;
+  evolutionRules?: PersonaEvolutionRule[];
   personaCapabilityRequirements?: string[];
   toolCapabilityRequirements?: string[];
   guardrailPolicyTags?: string[];
@@ -69,6 +72,7 @@ export interface WorkflowTaskDefinition {
   };
   skippable?: boolean;
   metadata?: Record<string, unknown>;
+  handoff?: Record<string, unknown>;
 }
 
 /**
@@ -122,6 +126,11 @@ export interface WorkflowInstance {
   context?: Record<string, unknown>;
   roleAssignments?: Record<string, string>;
   tasks: Record<string, WorkflowTaskInstance>;
+  agencyState?: {
+    agencyId: string;
+    seats: Record<string, string>;
+    metadata?: Record<string, unknown>;
+  };
   metadata?: Record<string, unknown>;
 }
 
@@ -162,3 +171,16 @@ export interface WorkflowDescriptorPayload {
   metadata?: Record<string, unknown>;
 }
 
+export interface PersonaPatch {
+  personaTraits?: Record<string, unknown>;
+  mood?: string;
+  metadata?: Record<string, unknown>;
+}
+
+export interface PersonaEvolutionRule {
+  id: string;
+  description?: string;
+  trigger: string | Record<string, unknown>;
+  patch: PersonaPatch;
+  metadata?: Record<string, unknown>;
+}

@@ -1,11 +1,11 @@
-# =ï¿½ï¿½ï¿½ AgentOS Complete System Guide
+# =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ AgentOS Complete System Guide
 
 
 ### Extension-aware guardrails
 - The new `ExtensionManager` lets packs stack guardrail stages. Input evaluators run before orchestration, output evaluators wrap final chunks, and metadata is stored as arrays so hosts can audit every decision.
 - Config-provided `guardrailService` remains supported alongside packs via `extensionManifest` / `extensionOverrides`.
 
-# =ï¿½ï¿½ï¿½ AgentOS Complete System Guide
+# =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ AgentOS Complete System Guide
 ## Deep Dive Technical Documentation & Implementation Reference
 
 [![Version](https://img.shields.io/badge/version-2.2-blue.svg)](#) [![Status](https://img.shields.io/badge/status-Production%20Ready-green.svg)](#) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](#) [![Documentation](https://img.shields.io/badge/docs-comprehensive-brightgreen.svg)](#)
@@ -14,95 +14,95 @@
 
 ---
 
-## =ï¿½ï¿½ What is AgentOS?
+## =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ What is AgentOS?
 
 AgentOS is a **revolutionary AI agent framework** that transforms how we build and deploy intelligent systems. Unlike traditional chatbots or static AI assistants, AgentOS creates **Generalized Mind Instances (GMIs)** - adaptive AI entities that understand context, evolve through interaction, and provide personalized experiences at scale.
 
-### =ï¿½Ä» The Vision: Intelligent Agents That Actually Understand
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» The Vision: Intelligent Agents That Actually Understand
 
 ```mermaid
 mindmap
-  root((=ï¿½ï¿½ï¿½ AgentOS Vision))
-    =ï¿½Ä» Context-Aware Intelligence
+  root((=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ AgentOS Vision))
+    =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Context-Aware Intelligence
       Real-time adaptation
       Situational understanding
       Personalized responses
-    =ï¿½Ä¡ Dynamic Personalities
+    =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â¡ Dynamic Personalities
       Consistent character
       Adaptive behavior
       Professional expertise
-    =ï¿½ï¿½ï¿½ Continuous Learning
+    =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Continuous Learning
       Memory persistence
       Experience integration
       Performance optimization
-    =ï¿½ï¿½ Natural Collaboration
+    =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Natural Collaboration
       Multi-agent coordination
       Seamless handoffs
       Collective intelligence
-    =ï¿½ï¿½ï¿½n+ï¿½ Built-in Safety
+    =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Built-in Safety
       Constitutional AI
       Risk assessment
       Self-correction
 ```
 
-## =ï¿½ï¿½ï¿½ Complete Table of Contents
+## =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Complete Table of Contents
 
-### =ï¿½ï¿½ **Foundation & Philosophy**
-- [=ï¿½ï¿½ï¿½ The AgentOS Philosophy](#-the-agentos-philosophy)
-- [=ï¿½Ä» Core Principles & Benefits](#-core-principles--benefits) 
-- [=ï¿½ï¿½ï¿½n+ï¿½ System Architecture Overview](#n+ï¿½-system-architecture-overview)
-- [=ï¿½ï¿½ï¿½ The GMI Lifecycle](#-the-gmi-lifecycle)
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ **Foundation & Philosophy**
+- [=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ The AgentOS Philosophy](#-the-agentos-philosophy)
+- [=ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Core Principles & Benefits](#-core-principles--benefits) 
+- [=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ System Architecture Overview](#n+ÃƒÂ¯Ã‚Â¿Ã‚Â½-system-architecture-overview)
+- [=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ The GMI Lifecycle](#-the-gmi-lifecycle)
 
-### =ï¿½ï¿½ï¿½n+ï¿½ **Core System Components**
-- [=ï¿½Ä¡ Persona Definition System](#-persona-definition-system)
-- [Gï¿½ï¿½n+ï¿½ Prompt Engine Architecture](#n+ï¿½-prompt-engine-architecture)
-- [=ï¿½ï¿½ï¿½ Working Memory & Context](#-working-memory--context)
-- [=ï¿½ï¿½+ RAG & Knowledge Integration](#-rag--knowledge-integration)
-- [=ï¿½ï¿½ï¿½n+ï¿½ Tool System & Orchestration](#n+ï¿½-tool-system--orchestration)
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ **Core System Components**
+- [=ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â¡ Persona Definition System](#-persona-definition-system)
+- [GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Prompt Engine Architecture](#n+ÃƒÂ¯Ã‚Â¿Ã‚Â½-prompt-engine-architecture)
+- [=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Working Memory & Context](#-working-memory--context)
+- [=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½+ RAG & Knowledge Integration](#-rag--knowledge-integration)
+- [=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Tool System & Orchestration](#n+ÃƒÂ¯Ã‚Â¿Ã‚Â½-tool-system--orchestration)
 - [Guardrail Service & Policy Enforcement](#guardrail-service--policy-enforcement)
-- [=ï¿½ï¿½ï¿½ Authentication & Security](#-authentication--security)
+- [=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Authentication & Security](#-authentication--security)
 
-### =ï¿½ï¿½ï¿½ **Building with AgentOS**
-- [Gï¿½ï¿½ Quick Start Guide](#-quick-start-guide)
-- [=ï¿½Ä¡ Creating Your First Persona](#-creating-your-first-persona)
-- [=ï¿½ï¿½ï¿½ Advanced Persona Design](#-advanced-persona-design)
-- [=ï¿½ï¿½ï¿½ Tool Integration](#-tool-integration)
-- [=ï¿½ï¿½+ Memory & Context Management](#-memory--context-management)
-- [=ï¿½ï¿½ï¿½ Streaming & Real-time Features](#-streaming--real-time-features)
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ **Building with AgentOS**
+- [GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Quick Start Guide](#-quick-start-guide)
+- [=ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â¡ Creating Your First Persona](#-creating-your-first-persona)
+- [=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Advanced Persona Design](#-advanced-persona-design)
+- [=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Tool Integration](#-tool-integration)
+- [=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½+ Memory & Context Management](#-memory--context-management)
+- [=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Streaming & Real-time Features](#-streaming--real-time-features)
 
-### =ï¿½Å¢n+ï¿½ **Advanced Architecture**
-- [=ï¿½ï¿½ï¿½ Adaptive Prompting Deep Dive](#-adaptive-prompting-deep-dive)
-- [=ï¿½ï¿½ Multi-Agent Coordination](#-multi-agent-coordination)
-- [=ï¿½ï¿½ï¿½ Natural Language Parsing](#-natural-language-parsing)
-- [=ï¿½ï¿½ï¿½n+ï¿½ Constitutional AI & Safety](#n+ï¿½-constitutional-ai--safety)
-- [=ï¿½ï¿½ï¿½ Performance & Optimization](#-performance--optimization)
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€¦Ã‚Â¢n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ **Advanced Architecture**
+- [=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Adaptive Prompting Deep Dive](#-adaptive-prompting-deep-dive)
+- [=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Multi-Agent Coordination](#-multi-agent-coordination)
+- [=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Natural Language Parsing](#-natural-language-parsing)
+- [=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Constitutional AI & Safety](#n+ÃƒÂ¯Ã‚Â¿Ã‚Â½-constitutional-ai--safety)
+- [=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Performance & Optimization](#-performance--optimization)
 
-### =ï¿½ï¿½ï¿½ **Production Deployment**
-- [=ï¿½ï¿½ï¿½ Scaling Strategies](#-scaling-strategies)
-- [=ï¿½ï¿½ï¿½ Testing & Quality Assurance](#-testing--quality-assurance)
-- [=ï¿½ï¿½ï¿½ Monitoring & Analytics](#-monitoring--analytics)
-- [=ï¿½ï¿½ï¿½ DevOps & Infrastructure](#-devops--infrastructure)
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ **Production Deployment**
+- [=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Scaling Strategies](#-scaling-strategies)
+- [=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Testing & Quality Assurance](#-testing--quality-assurance)
+- [=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Monitoring & Analytics](#-monitoring--analytics)
+- [=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ DevOps & Infrastructure](#-devops--infrastructure)
 
-### =ï¿½ï¿½ï¿½ **Future & Extensibility**
-- [=ï¿½ï¿½ Roadmap & Vision](#-roadmap--vision)
-- [=ï¿½ï¿½ Contributing Guide](#-contributing-guide)
-- [=ï¿½ï¿½ï¿½ Research & Inspirations](#-research--inspirations)
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ **Future & Extensibility**
+- [=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Roadmap & Vision](#-roadmap--vision)
+- [=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Contributing Guide](#-contributing-guide)
+- [=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Research & Inspirations](#-research--inspirations)
 
 ---
 
-## =ï¿½ï¿½ï¿½ The AgentOS Philosophy
+## =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ The AgentOS Philosophy
 
-### =ï¿½Ä» Beyond Static AI: The Adaptive Intelligence Paradigm
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Beyond Static AI: The Adaptive Intelligence Paradigm
 
-Traditional AI systems follow a simple pattern: **Input Gï¿½ï¿½ Processing Gï¿½ï¿½ Output**. AgentOS introduces a fundamentally different approach: **Context Gï¿½ï¿½ Adaptation Gï¿½ï¿½ Personalized Intelligence**.
+Traditional AI systems follow a simple pattern: **Input GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Processing GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Output**. AgentOS introduces a fundamentally different approach: **Context GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Adaptation GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Personalized Intelligence**.
 
 ```mermaid
 graph LR
-    subgraph "=ï¿½ï¿½ï¿½n+ï¿½ Traditional AI"
+    subgraph "=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Traditional AI"
         A1[User Input] --> B1[Fixed Processing] --> C1[Generic Output]
     end
     
-    subgraph "=ï¿½ï¿½ï¿½ AgentOS Approach"
+    subgraph "=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ AgentOS Approach"
         A2[Rich Context] --> B2[Adaptive Processing] --> C2[Personalized Intelligence]
         B2 --> D2[Learning & Evolution]
         D2 --> B2
@@ -114,15 +114,15 @@ graph LR
     style D2 fill:#fff3e0
 ```
 
-### =ï¿½ï¿½ Core Philosophical Principles
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Core Philosophical Principles
 
-#### 1n+ï¿½Gï¿½ï¿½ **Context is the Foundation of Intelligence**
+#### 1n+ÃƒÂ¯Ã‚Â¿Ã‚Â½GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ **Context is the Foundation of Intelligence**
 
-Real intelligence isn't about having all the answersGï¿½ï¿½it's about understanding the **situation, the person, and the moment** to provide exactly what's needed.
+Real intelligence isn't about having all the answersGÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½it's about understanding the **situation, the person, and the moment** to provide exactly what's needed.
 
 ```typescript
 // Traditional approach: One-size-fits-all
-const response = "Here's how to solve quadratic equations: ax-ï¿½ + bx + c = 0..."
+const response = "Here's how to solve quadratic equations: ax-ÃƒÂ¯Ã‚Â¿Ã‚Â½ + bx + c = 0..."
 
 // AgentOS approach: Context-aware adaptation
 const adaptiveResponse = context.userSkillLevel === 'beginner' 
@@ -130,29 +130,29 @@ const adaptiveResponse = context.userSkillLevel === 'beginner'
   : "For quadratic optimization, we'll use the discriminant method. Given the general form..."
 ```
 
-#### 2n+ï¿½Gï¿½ï¿½ **Personas Enable Consistent Intelligence**
+#### 2n+ÃƒÂ¯Ã‚Â¿Ã‚Â½GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ **Personas Enable Consistent Intelligence**
 
-A persona isn't just a characterGï¿½ï¿½it's a **cognitive framework** that defines how an AI thinks, adapts, and evolves while maintaining consistent identity.
+A persona isn't just a characterGÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½it's a **cognitive framework** that defines how an AI thinks, adapts, and evolves while maintaining consistent identity.
 
-#### 3n+ï¿½Gï¿½ï¿½ **Memory Creates Continuity**
+#### 3n+ÃƒÂ¯Ã‚Â¿Ã‚Â½GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ **Memory Creates Continuity**
 
 True intelligence builds on experience. AgentOS GMIs remember interactions, learn from outcomes, and evolve their responses over time.
 
-#### 4n+ï¿½Gï¿½ï¿½ **Safety Through Understanding**
+#### 4n+ÃƒÂ¯Ã‚Â¿Ã‚Â½GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ **Safety Through Understanding**
 
 Rather than rigid rules, AgentOS implements **constitutional AI** that understands context and makes ethical decisions in real-time.
 
-### =ï¿½Ä¡ The GMI: More Than a Chatbot
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â¡ The GMI: More Than a Chatbot
 
 A **Generalized Mind Instance (GMI)** is an adaptive AI entity with:
 
 ```mermaid
 graph TD
-    A[=ï¿½Ä¡ Consistent Personality] --> B[=ï¿½ï¿½ï¿½ Adaptive Intelligence]
-    B --> C[=ï¿½ï¿½+ Persistent Memory]
-    C --> D[=ï¿½ï¿½ï¿½n+ï¿½ Tool Capabilities]
-    D --> E[=ï¿½ï¿½ Collaborative Skills]
-    E --> F[=ï¿½ï¿½ï¿½n+ï¿½ Ethical Reasoning]
+    A[=ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â¡ Consistent Personality] --> B[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Adaptive Intelligence]
+    B --> C[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½+ Persistent Memory]
+    C --> D[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Tool Capabilities]
+    D --> E[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Collaborative Skills]
+    E --> F[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Ethical Reasoning]
     F --> A
     
     style A fill:#f8bbd9
@@ -165,20 +165,20 @@ graph TD
 
 ---
 
-## =ï¿½Ä» Core Principles & Benefits
+## =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Core Principles & Benefits
 
-### =ï¿½ï¿½ Why AgentOS Changes Everything
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Why AgentOS Changes Everything
 
-#### **=ï¿½Ä» Intelligent Adaptation vs. Static Responses**
+#### **=ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Intelligent Adaptation vs. Static Responses**
 
 ```typescript
-// Gï¿½ï¿½ Traditional AI: Static, one-size-fits-all
+// GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Traditional AI: Static, one-size-fits-all
 const traditionalAI = {
   prompt: "You are a helpful assistant. Answer the user's question.",
   response: "Here's a generic answer that treats everyone the same..."
 };
 
-// Gï¿½ï¿½ AgentOS: Dynamic, context-aware adaptation
+// GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ AgentOS: Dynamic, context-aware adaptation
 const agentOS = {
   adaptivePrompt: await promptEngine.constructPrompt(persona, {
     userSkillLevel: 'expert',
@@ -194,88 +194,88 @@ const agentOS = {
 };
 ```
 
-#### **=ï¿½ï¿½ï¿½ Memory-Enabled Continuity**
+#### **=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Memory-Enabled Continuity**
 
 Traditional AI forgets every conversation. AgentOS GMIs build on their experiences:
 
 ```mermaid
 sequenceDiagram
-    participant User as =ï¿½ï¿½ï¿½ User
-    participant GMI as =ï¿½ï¿½ï¿½ AgentOS GMI
-    participant Memory as =ï¿½ï¿½+ Memory System
+    participant User as =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ User
+    participant GMI as =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ AgentOS GMI
+    participant Memory as =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½+ Memory System
     
     Note over User,Memory: Session 1: Learning User Preferences
     User->>GMI: "I prefer step-by-step explanations"
-    GMI->>Memory: =ï¿½ï¿½+ Store preference: step_by_step = true
+    GMI->>Memory: =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½+ Store preference: step_by_step = true
     GMI-->>User: "I'll remember that for future explanations"
     
     Note over User,Memory: Session 2: Applying Learned Preferences  
     User->>GMI: "Explain neural networks"
-    GMI->>Memory: =ï¿½ï¿½ï¿½ Retrieve: step_by_step = true
+    GMI->>Memory: =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Retrieve: step_by_step = true
     GMI-->>User: "I'll break this down step-by-step as you prefer..."
     
     Note over User,Memory: Session 3: Evolution Through Experience
     User->>GMI: "That was perfect!"
-    GMI->>Memory: =ï¿½ï¿½ï¿½ Reinforce: step_by_step approach successful
+    GMI->>Memory: =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Reinforce: step_by_step approach successful
     GMI-->>User: "Great! I'm learning your preferred style"
 ```
 
-### =ï¿½ï¿½ï¿½ Measurable Benefits
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Measurable Benefits
 
 | Metric | Traditional AI | AgentOS | Improvement |
 |--------|---------------|---------|-------------|
-| **=ï¿½Ä» Response Relevance** | 65% | 89% | +37% |
-| **=ï¿½ï¿½ï¿½ User Satisfaction** | 72% | 94% | +31% |
-| **=ï¿½ï¿½ï¿½ Task Completion** | 58% | 83% | +43% |
-| **=ï¿½Æ¦ Cost Efficiency** | Baseline | 40% less tokens | -40% |
-| **Gï¿½ï¿½ Response Speed** | 2.3s | 1.1s (cached) | +109% |
+| **=ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Response Relevance** | 65% | 89% | +37% |
+| **=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ User Satisfaction** | 72% | 94% | +31% |
+| **=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Task Completion** | 58% | 83% | +43% |
+| **=ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€ Ã‚Â¦ Cost Efficiency** | Baseline | 40% less tokens | -40% |
+| **GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Response Speed** | 2.3s | 1.1s (cached) | +109% |
 
 ---
 
-## =ï¿½ï¿½ï¿½n+ï¿½ System Architecture Overview
+## =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ System Architecture Overview
 
-### =ï¿½ï¿½ The Complete AgentOS Ecosystem
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ The Complete AgentOS Ecosystem
 
 ```mermaid
 graph TB
-    subgraph "=ï¿½ï¿½ï¿½ User Interface Layer"
-        WEB[=ï¿½ï¿½ï¿½ Web Client]
-        MOB[=ï¿½ï¿½ Mobile App]
-        API[=ï¿½ï¿½ï¿½ API Gateway]
+    subgraph "=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ User Interface Layer"
+        WEB[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Web Client]
+        MOB[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Mobile App]
+        API[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ API Gateway]
     end
     
-    subgraph "=ï¿½ï¿½ï¿½ GMI Layer"
-        GMI1[=ï¿½Ä¡ GMI Instance]
-        GMI2[=ï¿½ï¿½ï¿½ Working Memory]
-        GMI3[=ï¿½ï¿½ï¿½ Context Manager]
+    subgraph "=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ GMI Layer"
+        GMI1[=ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â¡ GMI Instance]
+        GMI2[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Working Memory]
+        GMI3[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Context Manager]
     end
     
-    subgraph "=ï¿½ï¿½ï¿½ Cognitive Layer"
-        PE[Gï¿½ï¿½n+ï¿½ Prompt Engine]
-        PD[=ï¿½ï¿½ï¿½ Persona Definitions]
-        CE[=ï¿½Ä» Contextual Elements]
-        NLP[=ï¿½ï¿½ï¿½ NL Parser]
+    subgraph "=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Cognitive Layer"
+        PE[GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Prompt Engine]
+        PD[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Persona Definitions]
+        CE[=ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Contextual Elements]
+        NLP[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ NL Parser]
     end
     
-    subgraph "=ï¿½ï¿½ï¿½n+ï¿½ Service Layer"
-        LLM[=ï¿½ï¿½ï¿½ LLM Providers]
-        TOOLS[=ï¿½ï¿½ï¿½n+ï¿½ Tool Registry]
-        RAG[=ï¿½ï¿½+ RAG System]
-        AUTH[=ï¿½ï¿½ï¿½ Auth Service]
+    subgraph "=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Service Layer"
+        LLM[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ LLM Providers]
+        TOOLS[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Tool Registry]
+        RAG[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½+ RAG System]
+        AUTH[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Auth Service]
     end
     
-    subgraph "=ï¿½ï¿½+ Data Layer"
-        PGDB[(=ï¿½ï¿½ï¿½n+ï¿½ PostgreSQL)]
-        REDIS[(Gï¿½ï¿½ Redis Cache)]
-        VECTOR[(=ï¿½ï¿½ï¿½ Vector Store)]
-        FILES[(=ï¿½ï¿½ï¿½ File Storage)]
+    subgraph "=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½+ Data Layer"
+        PGDB[(=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ PostgreSQL)]
+        REDIS[(GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Redis Cache)]
+        VECTOR[(=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Vector Store)]
+        FILES[(=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ File Storage)]
     end
     
-    subgraph "=ï¿½ï¿½ï¿½ Infrastructure Layer"
-        DOCKER[=ï¿½É¦ Docker]
-        K8S[Gï¿½+n+ï¿½ Kubernetes]
-        MONITOR[=ï¿½ï¿½ï¿½ Monitoring]
-        LOGGING[=ï¿½ï¿½ Logging]
+    subgraph "=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Infrastructure Layer"
+        DOCKER[=ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€°Ã‚Â¦ Docker]
+        K8S[GÃƒÂ¯Ã‚Â¿Ã‚Â½+n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Kubernetes]
+        MONITOR[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Monitoring]
+        LOGGING[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Logging]
     end
     
     WEB --> API
@@ -311,34 +311,34 @@ graph TB
     style PGDB fill:#fff3e0
 ```
 
-### =ï¿½ï¿½ï¿½ Data Flow Architecture
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Data Flow Architecture
 
 ```mermaid
 flowchart TD
-    A[=ï¿½ï¿½ï¿½ User Request] --> B{=ï¿½ï¿½ï¿½ Authentication}
-    B -->|Gï¿½ï¿½ Verified| C[=ï¿½ï¿½ï¿½ GMI Router]
-    B -->|Gï¿½ï¿½ Failed| D[=ï¿½Ü½ Access Denied]
+    A[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ User Request] --> B{=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Authentication}
+    B -->|GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Verified| C[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ GMI Router]
+    B -->|GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Failed| D[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÅ“Ã‚Â½ Access Denied]
     
-    C --> E[=ï¿½ï¿½ï¿½ Context Assembly]
-    E --> F[=ï¿½ï¿½+ Memory Retrieval]
-    F --> G[Gï¿½ï¿½n+ï¿½ Prompt Construction]
+    C --> E[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Context Assembly]
+    E --> F[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½+ Memory Retrieval]
+    F --> G[GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Prompt Construction]
     
-    G --> H{=ï¿½Ä» Element Selection}
-    H --> I[=ï¿½ï¿½ï¿½ Dynamic Assembly]
-    I --> J[=ï¿½Æ¦ Token Optimization]
+    G --> H{=ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Element Selection}
+    H --> I[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Dynamic Assembly]
+    I --> J[=ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€ Ã‚Â¦ Token Optimization]
     
-    J --> K[=ï¿½ï¿½ï¿½ LLM Execution]
-    K --> L[=ï¿½ï¿½ï¿½n+ï¿½ Tool Orchestration]
-    L --> M[=ï¿½ï¿½ Response Generation]
+    J --> K[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ LLM Execution]
+    K --> L[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Tool Orchestration]
+    L --> M[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Response Generation]
     
-    M --> N[=ï¿½ï¿½+ Memory Update]
-    N --> O[=ï¿½ï¿½ï¿½ Learning Integration]
-    O --> P[=ï¿½ï¿½ï¿½ Response Delivery]
+    M --> N[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½+ Memory Update]
+    N --> O[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Learning Integration]
+    O --> P[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Response Delivery]
     
-    subgraph "=ï¿½Ä» Parallel Processing"
-        Q[=ï¿½ï¿½ï¿½ RAG Retrieval]
-        R[=ï¿½ï¿½ï¿½n+ï¿½ Safety Checks]
-        S[=ï¿½ï¿½ï¿½ Analytics Capture]
+    subgraph "=ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Parallel Processing"
+        Q[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ RAG Retrieval]
+        R[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Safety Checks]
+        S[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Analytics Capture]
     end
     
     E --> Q
@@ -354,34 +354,34 @@ flowchart TD
 ---
 
 
-## Gï¿½ï¿½ Quick Start Guide
+## GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Quick Start Guide
 
-### =ï¿½ï¿½ï¿½ Get Up and Running in 10 Minutes
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Get Up and Running in 10 Minutes
 
 Let's build your first adaptive AI agent step by step.
 
-#### =ï¿½ï¿½ Installation & Setup
+#### =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Installation & Setup
 
 ```bash
-# 1n+ï¿½Gï¿½ï¿½ Clone the repository
+# 1n+ÃƒÂ¯Ã‚Â¿Ã‚Â½GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Clone the repository
 git clone https://github.com/agentos/agentos.git
 cd agentos
 
-# 2n+ï¿½Gï¿½ï¿½ Install dependencies
+# 2n+ÃƒÂ¯Ã‚Â¿Ã‚Â½GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Install dependencies
 npm install
 
-# 3n+ï¿½Gï¿½ï¿½ Set up environment
+# 3n+ÃƒÂ¯Ã‚Â¿Ã‚Â½GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Set up environment
 cp .env.example .env
 # Edit .env with your configuration
 
-# 4n+ï¿½Gï¿½ï¿½ Initialize database
+# 4n+ÃƒÂ¯Ã‚Â¿Ã‚Â½GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Initialize database
 npm run db:setup
 
-# 5n+ï¿½Gï¿½ï¿½ Start the development server
+# 5n+ÃƒÂ¯Ã‚Â¿Ã‚Â½GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Start the development server
 npm run dev
 ```
 
-#### =ï¿½Ä¡ Create Your First Persona
+#### =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â¡ Create Your First Persona
 
 ```typescript
 // personas/my-first-agent.ts
@@ -428,7 +428,7 @@ export const myFirstAgent: IPersonaDefinition = {
 };
 ```
 
-#### =ï¿½ï¿½ï¿½ Basic Usage Example
+#### =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Basic Usage Example
 
 ```typescript
 // app.ts - Your first AgentOS application
@@ -436,16 +436,16 @@ import { AgentOS, GMI } from '@agentos/core';
 import { myFirstAgent } from './personas/my-first-agent';
 
 async function main() {
-  // 1n+ï¿½Gï¿½ï¿½ Initialize AgentOS
+  // 1n+ÃƒÂ¯Ã‚Â¿Ã‚Â½GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Initialize AgentOS
   const agentOS = new AgentOS({
     llmProvider: 'openai',
     apiKey: process.env.OPENAI_API_KEY
   });
   
-  // 2n+ï¿½Gï¿½ï¿½ Create a GMI instance
+  // 2n+ÃƒÂ¯Ã‚Â¿Ã‚Â½GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Create a GMI instance
   const alex = await agentOS.createGMI(myFirstAgent);
   
-  // 3n+ï¿½Gï¿½ï¿½ Have a conversation
+  // 3n+ÃƒÂ¯Ã‚Â¿Ã‚Â½GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Have a conversation
   const response1 = await alex.processMessage(
     "I'm new to programming. Can you help me understand variables?",
     {
@@ -457,7 +457,7 @@ async function main() {
   console.log("Alex (to beginner):", response1.content);
   // Output: Friendly, simple explanation with analogies
   
-  // 4n+ï¿½Gï¿½ï¿½ Same question, different skill level
+  // 4n+ÃƒÂ¯Ã‚Â¿Ã‚Â½GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Same question, different skill level
   const response2 = await alex.processMessage(
     "I'm new to programming. Can you help me understand variables?",
     {
@@ -473,14 +473,14 @@ async function main() {
 main().catch(console.error);
 ```
 
-#### =ï¿½ï¿½ï¿½ Streaming Responses
+#### =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Streaming Responses
 
 ```typescript
 // streaming-example.ts
 async function streamingConversation() {
   const alex = await agentOS.createGMI(myFirstAgent);
   
-  // =ï¿½ï¿½ï¿½ Stream a response
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Stream a response
   const stream = alex.streamMessage(
     "Explain machine learning in detail",
     { userSkillLevel: 'intermediate' }
@@ -500,13 +500,13 @@ async function streamingConversation() {
 
 ---
 
-## =ï¿½Ä¡ Creating Your First Persona
+## =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â¡ Creating Your First Persona
 
-### =ï¿½Ä¿ The Art of Persona Design
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â¿ The Art of Persona Design
 
 Creating effective personas is both an art and a science. Let's build a sophisticated persona step by step.
 
-#### =ï¿½Ä» Step 1: Define Core Identity
+#### =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Step 1: Define Core Identity
 
 ```typescript
 const expertDataScientist: IPersonaDefinition = {
@@ -515,7 +515,7 @@ const expertDataScientist: IPersonaDefinition = {
     role: "senior_data_scientist",
     title: "Principal Data Scientist & AI Researcher",
     
-    // =ï¿½Ä¡ Rich personality definition
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â¡ Rich personality definition
     personality: {
       traits: [
         {
@@ -548,7 +548,7 @@ const expertDataScientist: IPersonaDefinition = {
       }
     },
     
-    // =ï¿½ï¿½ï¿½ Expertise areas
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Expertise areas
     expertise: {
       primary_domains: ["machine_learning", "statistics", "data_visualization"],
       secondary_domains: ["business_intelligence", "research_methodology"],
@@ -560,7 +560,7 @@ const expertDataScientist: IPersonaDefinition = {
 };
 ```
 
-#### =ï¿½ï¿½ï¿½ Step 2: Create Adaptive Prompting Logic
+#### =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Step 2: Create Adaptive Prompting Logic
 
 ```typescript
 // Add sophisticated contextual elements
@@ -569,14 +569,14 @@ expertDataScientist.promptConfig = {
   You combine deep technical expertise with exceptional ability to communicate complex concepts clearly.
   
   Your approach:
-  =ï¿½Ä» Always ground discussions in business value and practical impact
-  =ï¿½ï¿½ï¿½ Use rigorous methodology while remaining accessible
-  =ï¿½ï¿½ï¿½ Adapt explanations to audience technical level
-  =ï¿½ï¿½ï¿½ Ask thoughtful questions to understand context
-  Gï¿½ï¿½ Provide actionable recommendations with confidence levels`,
+  =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Always ground discussions in business value and practical impact
+  =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Use rigorous methodology while remaining accessible
+  =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Adapt explanations to audience technical level
+  =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Ask thoughtful questions to understand context
+  GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Provide actionable recommendations with confidence levels`,
   
   contextualElements: [
-    // =ï¿½ï¿½ï¿½ Executive communication mode
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Executive communication mode
     {
       id: "executive_briefing",
       type: "system_instruction_addon",
@@ -593,7 +593,7 @@ expertDataScientist.promptConfig = {
       priority: 20
     },
     
-    // =ï¿½ï¿½ï¿½ Technical expert mode
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Technical expert mode
     {
       id: "technical_deep_dive",
       type: "system_instruction_addon",
@@ -610,7 +610,7 @@ expertDataScientist.promptConfig = {
       priority: 18
     },
     
-    // =ï¿½Ä» Problem-solving protocol
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Problem-solving protocol
     {
       id: "systematic_problem_solving",
       type: "reasoning_protocol",
@@ -648,7 +648,7 @@ expertDataScientist.promptConfig = {
     }
   ],
   
-  // =ï¿½ï¿½ï¿½ Domain-specific examples
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Domain-specific examples
   exampleSets: [
     {
       id: "business_analytics_examples",
@@ -658,17 +658,17 @@ expertDataScientist.promptConfig = {
           input: "Our customer acquisition cost is increasing. What should we analyze?",
           output: `I'd recommend a comprehensive CAC analysis focusing on three key areas:
 
-**=ï¿½Ä» Immediate Diagnostic (Week 1)**
+**=ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Immediate Diagnostic (Week 1)**
 - CAC trend analysis by channel and time period
 - Customer lifetime value (CLV) comparison to identify most profitable segments
 - Attribution analysis to understand which touchpoints drive highest-value customers
 
-**=ï¿½ï¿½ï¿½ Root Cause Analysis (Week 2-3)**
+**=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Root Cause Analysis (Week 2-3)**
 - Funnel analysis to identify conversion rate drops
 - Cohort analysis to understand retention changes
 - Competitive landscape assessment for market saturation effects
 
-**=ï¿½ï¿½ï¿½ Optimization Strategy (Week 4)**
+**=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Optimization Strategy (Week 4)**
 - Channel reallocation recommendations based on efficiency metrics
 - Audience refinement strategies for underperforming channels
 - A/B testing framework for acquisition optimization
@@ -683,7 +683,7 @@ Would you like me to dive deeper into any of these areas, or do you have specifi
 };
 ```
 
-#### =ï¿½ï¿½ï¿½ Step 3: Add Learning and Adaptation
+#### =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Step 3: Add Learning and Adaptation
 
 ```typescript
 // Configure learning and adaptation capabilities
@@ -693,7 +693,7 @@ expertDataScientist.adaptationConfig = {
   user_preference_weight: 0.9,    // Strongly weight user preferences
   performance_feedback_sensitivity: 0.7,
   
-  // =ï¿½Ä» Adaptation triggers
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Adaptation triggers
   adaptation_triggers: [
     {
       trigger: 'user_feedback_positive',
@@ -741,7 +741,7 @@ expertDataScientist.memoryConfig = {
 
 ---
 
-### =ï¿½ï¿½ï¿½ Real-time Adaptation Engine
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Real-time Adaptation Engine
 
 ```typescript
 class RealTimeAdaptationEngine {
@@ -755,13 +755,13 @@ class RealTimeAdaptationEngine {
     context: PromptExecutionContext
   ): Promise<AdaptationResult> {
     
-    // =ï¿½ï¿½ï¿½ Analyze response progression
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Analyze response progression
     const progressionAnalysis = await this.analyzeResponseProgression(
       streamingResponse.partialContent,
       context
     );
     
-    // =ï¿½ï¿½ï¿½ Detect adaptation triggers
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Detect adaptation triggers
     const adaptationTriggers = this.detectAdaptationTriggers(
       progressionAnalysis,
       context
@@ -771,21 +771,21 @@ class RealTimeAdaptationEngine {
       return { adaptationNeeded: false, currentPrompt };
     }
     
-    // =ï¿½ï¿½ï¿½ Generate adaptation strategy
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Generate adaptation strategy
     const adaptationStrategy = await this.generateAdaptationStrategy(
       adaptationTriggers,
       currentPrompt,
       context
     );
     
-    // Gï¿½ï¿½ Apply adaptations
+    // GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Apply adaptations
     const adaptedPrompt = await this.applyAdaptations(
       currentPrompt,
       adaptationStrategy,
       context
     );
     
-    // =ï¿½ï¿½ Record adaptation event
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Record adaptation event
     this.recordAdaptationEvent({
       timestamp: new Date(),
       triggers: adaptationTriggers,
@@ -810,7 +810,7 @@ class RealTimeAdaptationEngine {
   ): Promise<ResponseProgressionAnalysis> {
     
     return {
-      // =ï¿½ï¿½ï¿½ Content analysis
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Content analysis
       contentAnalysis: {
         complexity_level: this.analyzeContentComplexity(partialContent),
         technical_depth: this.analyzeTechnicalDepth(partialContent),
@@ -819,7 +819,7 @@ class RealTimeAdaptationEngine {
         completeness_progress: this.analyzeCompleteness(partialContent, context)
       },
       
-      // =ï¿½Ä» User alignment
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» User alignment
       userAlignment: {
         skill_level_match: this.assessSkillLevelMatch(partialContent, context.userSkillLevel),
         communication_style_match: this.assessCommunicationStyleMatch(partialContent, context),
@@ -827,7 +827,7 @@ class RealTimeAdaptationEngine {
         emotional_tone_appropriateness: this.assessEmotionalTone(partialContent, context)
       },
       
-      // =ï¿½ï¿½ï¿½ Performance indicators
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Performance indicators
       performanceIndicators: {
         likely_user_satisfaction: this.predictUserSatisfaction(partialContent, context),
         comprehension_likelihood: this.predictComprehension(partialContent, context),
@@ -835,7 +835,7 @@ class RealTimeAdaptationEngine {
         task_completion_probability: this.predictTaskCompletion(partialContent, context)
       },
       
-      // =ï¿½Ü¿ Warning signals
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÅ“Ã‚Â¿ Warning signals
       warningSignals: this.detectWarningSignals(partialContent, context)
     };
   }
@@ -847,7 +847,7 @@ class RealTimeAdaptationEngine {
     
     const triggers: AdaptationTrigger[] = [];
     
-    // =ï¿½ï¿½ï¿½ Complexity mismatch trigger
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Complexity mismatch trigger
     if (Math.abs(analysis.contentAnalysis.complexity_level - this.getExpectedComplexity(context)) > 0.3) {
       triggers.push({
         type: 'complexity_mismatch',
@@ -863,7 +863,7 @@ class RealTimeAdaptationEngine {
       });
     }
     
-    // =ï¿½ï¿½ï¿½ Engagement decline trigger
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Engagement decline trigger
     if (analysis.performanceIndicators.engagement_maintenance < 0.6) {
       triggers.push({
         type: 'engagement_decline',
@@ -876,7 +876,7 @@ class RealTimeAdaptationEngine {
       });
     }
     
-    // =ï¿½Ä» User satisfaction risk trigger
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» User satisfaction risk trigger
     if (analysis.performanceIndicators.likely_user_satisfaction < 0.7) {
       triggers.push({
         type: 'satisfaction_risk',
@@ -889,7 +889,7 @@ class RealTimeAdaptationEngine {
       });
     }
     
-    // Gï¿½ï¿½n+ï¿½ Comprehension concern trigger
+    // GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Comprehension concern trigger
     if (analysis.performanceIndicators.comprehension_likelihood < 0.65) {
       triggers.push({
         type: 'comprehension_concern',
@@ -911,7 +911,7 @@ class RealTimeAdaptationEngine {
     context: PromptExecutionContext
   ): Promise<AdaptationStrategy> {
     
-    // =ï¿½Ä» Prioritize triggers by severity and impact
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Prioritize triggers by severity and impact
     const prioritizedTriggers = triggers.sort((a, b) => {
       const severityWeight = { 'low': 1, 'medium': 2, 'high': 3 };
       return severityWeight[b.severity] - severityWeight[a.severity];
@@ -993,37 +993,37 @@ class RealTimeAdaptationEngine {
 
 ---
 
-## =ï¿½ï¿½ Multi-Agent Coordination
+## =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Multi-Agent Coordination
 
-### =ï¿½Ä» Collaborative Intelligence Architecture
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Collaborative Intelligence Architecture
 
 Multi-agent coordination in AgentOS enables sophisticated collaboration between specialized GMIs, creating emergent intelligence through coordinated problem-solving.
 
 ```mermaid
 graph TB
-    subgraph "=ï¿½Ä» Orchestration Layer"
-        COORD[=ï¿½ï¿½+ Coordination Engine]
-        PLAN[=ï¿½ï¿½ï¿½ Task Planner]
-        ROUTE[=ï¿½ï¿½ï¿½ Message Router]
+    subgraph "=ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Orchestration Layer"
+        COORD[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½+ Coordination Engine]
+        PLAN[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Task Planner]
+        ROUTE[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Message Router]
     end
     
-    subgraph "=ï¿½ï¿½ï¿½ Agent Layer"
-        GMI1[=ï¿½ï¿½ï¿½ Research Analyst]
-        GMI2[=ï¿½ï¿½ï¿½ Data Scientist]
-        GMI3[=ï¿½ï¿½+ Business Strategist]
-        GMI4[=ï¿½Ä¿ Creative Director]
+    subgraph "=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Agent Layer"
+        GMI1[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Research Analyst]
+        GMI2[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Data Scientist]
+        GMI3[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½+ Business Strategist]
+        GMI4[=ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â¿ Creative Director]
     end
     
-    subgraph "=ï¿½ï¿½ï¿½ Intelligence Layer"
-        CONTEXT[=ï¿½ï¿½ï¿½ Shared Context]
-        MEMORY[=ï¿½ï¿½+ Collective Memory]
-        LEARN[=ï¿½ï¿½ï¿½ Multi-Agent Learning]
+    subgraph "=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Intelligence Layer"
+        CONTEXT[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Shared Context]
+        MEMORY[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½+ Collective Memory]
+        LEARN[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Multi-Agent Learning]
     end
     
-    subgraph "=ï¿½ï¿½ï¿½ Service Layer"
-        COMM[=ï¿½Æ¼ Communication Protocol]
-        SYNC[Gï¿½ï¿½ Synchronization]
-        CONFLICT[Gï¿½ï¿½n+ï¿½ Conflict Resolution]
+    subgraph "=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Service Layer"
+        COMM[=ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€ Ã‚Â¼ Communication Protocol]
+        SYNC[GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Synchronization]
+        CONFLICT[GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Conflict Resolution]
     end
     
     COORD --> PLAN
@@ -1051,9 +1051,9 @@ graph TB
 
 ---
 
-## =ï¿½ï¿½ï¿½ The GMI Lifecycle
+## =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ The GMI Lifecycle
 
-### =ï¿½ï¿½ From Creation to Evolution
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ From Creation to Evolution
 
 ```mermaid
 stateDiagram-v2
@@ -1085,7 +1085,7 @@ stateDiagram-v2
     end note
 ```
 
-### =ï¿½Ä¡ GMI States and Transitions
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â¡ GMI States and Transitions
 
 ```typescript
 interface GMILifecycleState {
@@ -1129,7 +1129,7 @@ class GMILifecycleManager {
     newState.interaction_count++;
     newState.experience_level = Math.min(100, state.experience_level + 0.1);
     
-    // =ï¿½Ä» Check for phase transitions
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Check for phase transitions
     if (newState.interaction_count > 50 && state.phase === 'learning') {
       newState.phase = 'adaptation';
       await this.enableAdaptationFeatures(newState);
@@ -1147,49 +1147,49 @@ class GMILifecycleManager {
 
 ---
 
-## =ï¿½Ä¡ Persona Definition System
+## =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â¡ Persona Definition System
 
-### =ï¿½ï¿½ï¿½ The Heart of AgentOS Intelligence
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ The Heart of AgentOS Intelligence
 
 Personas are sophisticated **cognitive blueprints** that define not just what an AI says, but how it thinks, adapts, and evolves.
 
-### =ï¿½ï¿½ï¿½ Complete Persona Structure
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Complete Persona Structure
 
 ```typescript
 interface IPersonaDefinition {
-  // =ï¿½Ä» Core Identity
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Core Identity
   identity: PersonaIdentity;
   traits: PersonaTraits;
   expertise: ExpertiseDomain[];
   
-  // =ï¿½ï¿½ï¿½ Cognitive Configuration
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Cognitive Configuration
   cognitiveConfig: CognitiveConfiguration;
   promptConfig: PromptConfiguration;
   
-  // =ï¿½ï¿½ï¿½ Adaptation Settings
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Adaptation Settings
   adaptationConfig: AdaptationConfiguration;
   
-  // =ï¿½ï¿½+ Memory & Learning
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½+ Memory & Learning
   memoryConfig: MemoryConfiguration;
   learningConfig: LearningConfiguration;
   
-  // =ï¿½ï¿½ï¿½n+ï¿½ Capabilities
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Capabilities
   toolConfig: ToolConfiguration;
   ragConfig: RAGConfiguration;
   
-  // =ï¿½ï¿½ï¿½n+ï¿½ Safety & Ethics
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Safety & Ethics
   safetyConfig: SafetyConfiguration;
   ethicsConfig: EthicsConfiguration;
   
-  // =ï¿½ï¿½ï¿½ Performance
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Performance
   performanceConfig: PerformanceConfiguration;
   
-  // =ï¿½ï¿½ï¿½ Technical Settings
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Technical Settings
   technicalConfig: TechnicalConfiguration;
 }
 ```
 
-### =ï¿½Ä» Identity & Personality System
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Identity & Personality System
 
 ```typescript
 interface PersonaIdentity {
@@ -1198,7 +1198,7 @@ interface PersonaIdentity {
   title?: string;
   organization?: string;
   
-  // =ï¿½Ä¡ Personality Core
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â¡ Personality Core
   personality: {
     traits: PersonalityTrait[];
     communication_style: CommunicationStyle;
@@ -1206,7 +1206,7 @@ interface PersonaIdentity {
     interaction_preferences: InteractionPreferences;
   };
   
-  // =ï¿½ï¿½ï¿½ Expertise Definition
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Expertise Definition
   expertise: {
     primary_domains: ExpertiseDomain[];
     secondary_domains: ExpertiseDomain[];
@@ -1215,7 +1215,7 @@ interface PersonaIdentity {
     certifications?: string[];
   };
   
-  // =ï¿½Ä» Purpose & Objectives
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Purpose & Objectives
   purpose: {
     primary_objective: string;
     secondary_objectives: string[];
@@ -1224,7 +1224,7 @@ interface PersonaIdentity {
   };
 }
 
-// =ï¿½Ä¡ Rich personality modeling
+// =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â¡ Rich personality modeling
 interface PersonalityTrait {
   name: string;
   intensity: number; // 0-100
@@ -1272,28 +1272,28 @@ const analyticalPersona: PersonaIdentity = {
 };
 ```
 
-### Gï¿½ï¿½ Dynamic Prompt Configuration
+### GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Dynamic Prompt Configuration
 
 The revolutionary aspect of AgentOS personas is their **adaptive prompting system**:
 
 ```typescript
 interface PromptConfiguration {
-  // =ï¿½ï¿½ï¿½n+ï¿½ Foundation Layer
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Foundation Layer
   baseSystemPrompt: SystemPromptDefinition;
   
-  // =ï¿½Ä» Adaptive Elements
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Adaptive Elements
   contextualElements: ContextualPromptElement[];
   
-  // =ï¿½ï¿½ï¿½ Learning Examples
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Learning Examples
   exampleSets: ExampleSet[];
   
-  // =ï¿½ï¿½ï¿½ Meta-Cognitive Prompts
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Meta-Cognitive Prompts
   metaPrompts: MetaPrompts;
   
-  // =ï¿½ï¿½ï¿½ Trigger Systems
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Trigger Systems
   triggerModules: TriggerModule[];
   
-  // =ï¿½ï¿½ï¿½ Optimization Rules
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Optimization Rules
   optimizationRules: OptimizationRule[];
 }
 
@@ -1302,54 +1302,54 @@ interface ContextualPromptElement {
   type: 'system_instruction_addon' | 'few_shot_example' | 'reasoning_protocol' | 'safety_guideline';
   content: string | TemplatedContent;
   
-  // =ï¿½Ä» Activation Criteria
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Activation Criteria
   criteria: ContextualPromptElementCriteria;
   
-  // =ï¿½ï¿½ï¿½ Selection Metadata
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Selection Metadata
   priority: number;
   weight: number;
   confidence_threshold?: number;
   
-  // =ï¿½ï¿½ï¿½ Dynamic Properties
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Dynamic Properties
   adaptation_rules?: AdaptationRule[];
   performance_tracking?: boolean;
   A_B_test_variant?: string;
 }
 
-// =ï¿½Ä» Rich contextual criteria system
+// =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Rich contextual criteria system
 interface ContextualPromptElementCriteria {
-  // =ï¿½ï¿½ï¿½ User Context
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ User Context
   userSkillLevel?: SkillLevel | SkillLevel[];
   userMood?: string | string[];
   userPreferences?: Record<string, any>;
   language?: string | string[];
   
-  // =ï¿½Ä» Task Context  
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Task Context  
   taskType?: string | string[];
   taskComplexity?: 'simple' | 'moderate' | 'complex' | 'expert';
   domain?: string | string[];
   urgency?: 'low' | 'medium' | 'high' | 'critical';
   
-  // =ï¿½ï¿½ï¿½ GMI Context
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ GMI Context
   gmiMood?: string | string[];
   confidenceLevel?: 'low' | 'medium' | 'high';
   experienceLevel?: number; // 0-100
   
-  // =ï¿½Æ¼ Conversation Context
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€ Ã‚Â¼ Conversation Context
   conversationSignals?: string[];
   historyLength?: number;
   lastInteractionSuccess?: boolean;
   conversationGoal?: string;
   
-  // =ï¿½ï¿½ï¿½ Temporal Context
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Temporal Context
   timeOfDay?: 'morning' | 'afternoon' | 'evening' | 'night';
   dayOfWeek?: string[];
   seasonality?: string;
   
-  // =ï¿½ï¿½ï¿½ Custom Context
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Custom Context
   customContext?: Record<string, any>;
   
-  // =ï¿½ï¿½ï¿½ Advanced Criteria
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Advanced Criteria
   logicalOperators?: {
     AND?: ContextualPromptElementCriteria[];
     OR?: ContextualPromptElementCriteria[];
@@ -1358,7 +1358,7 @@ interface ContextualPromptElementCriteria {
 }
 ```
 
-### =ï¿½ï¿½ Real-World Persona Example
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Real-World Persona Example
 
 ```typescript
 const expertDataScientist: IPersonaDefinition = {
@@ -1379,11 +1379,11 @@ const expertDataScientist: IPersonaDefinition = {
     baseSystemPrompt: `You are Dr. Alex Rodriguez, a senior data science consultant with 12+ years of experience. You combine deep technical expertise with exceptional communication skills to help organizations harness the power of data.
 
 Your approach:
-=ï¿½Ä» Always start with business context and objectives
-=ï¿½ï¿½ï¿½ Apply rigorous statistical methods and validation
-=ï¿½Æ¼ Communicate insights clearly to diverse audiences  
-=ï¿½ï¿½ï¿½n+ï¿½ Emphasize data quality, ethics, and limitations
-=ï¿½ï¿½ï¿½ Adapt explanations to audience technical level`,
+=ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Always start with business context and objectives
+=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Apply rigorous statistical methods and validation
+=ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€ Ã‚Â¼ Communicate insights clearly to diverse audiences  
+=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Emphasize data quality, ethics, and limitations
+=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Adapt explanations to audience technical level`,
 
     contextualElements: [
       {
@@ -1461,17 +1461,17 @@ Your approach:
             input: "Our customer churn rate is increasing. What should we do?",
             output: `I understand your concern about increasing churn. Let's approach this systematically:
 
-**=ï¿½Ä» Immediate Business Impact**
+**=ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Immediate Business Impact**
 - Quantify the revenue impact of current churn trend
 - Identify your highest-value customer segments at risk
 - Calculate customer lifetime value to prioritize retention efforts
 
-**=ï¿½ï¿½ï¿½ Root Cause Analysis**
+**=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Root Cause Analysis**
 - Analyze churn patterns by customer segment, tenure, and usage
 - Survey recent churners to understand primary reasons
 - Compare your churn rates to industry benchmarks
 
-**=ï¿½ï¿½ï¿½ Actionable Recommendations**
+**=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Actionable Recommendations**
 1. **Quick Wins** (next 30 days): Target at-risk high-value customers with personalized retention offers
 2. **Medium-term** (3-6 months): Address top churn drivers identified in analysis
 3. **Long-term** (6+ months): Implement predictive churn model for proactive intervention
@@ -1504,7 +1504,7 @@ Would you like me to dive deeper into any of these areas, or do you have specifi
     }
   },
   
-  // =ï¿½ï¿½ï¿½ Cognitive configuration
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Cognitive configuration
   cognitiveConfig: {
     reasoning_style: "analytical_systematic",
     decision_making_process: "evidence_based_with_risk_assessment",
@@ -1512,7 +1512,7 @@ Would you like me to dive deeper into any of these areas, or do you have specifi
     error_handling: "acknowledge_learn_adapt"
   },
   
-  // =ï¿½ï¿½ï¿½ Adaptation settings
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Adaptation settings
   adaptationConfig: {
     adaptation_rate: 0.7, // How quickly to adapt (0-1)
     context_memory_depth: 10, // Remember last 10 interactions
@@ -1524,36 +1524,36 @@ Would you like me to dive deeper into any of these areas, or do you have specifi
 
 ---
 
-## Gï¿½ï¿½n+ï¿½ Prompt Engine Architecture
+## GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Prompt Engine Architecture
 
-### =ï¿½ï¿½ï¿½ The Intelligence Behind Adaptive Prompting
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ The Intelligence Behind Adaptive Prompting
 
 The PromptEngine is AgentOS's **cognitive orchestrator** - the system that transforms static persona definitions into dynamic, context-aware prompts that adapt in real-time.
 
 ```mermaid
 graph TB
-    subgraph "=ï¿½ï¿½ï¿½ Input Layer"
-        PC[=ï¿½ï¿½ï¿½ Persona Config]
-        CTX[=ï¿½Ä» Execution Context]
-        MODEL[=ï¿½ï¿½ï¿½ Model Info]
+    subgraph "=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Input Layer"
+        PC[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Persona Config]
+        CTX[=ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Execution Context]
+        MODEL[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Model Info]
     end
     
-    subgraph "=ï¿½ï¿½ï¿½ Analysis Layer"
-        CA[=ï¿½ï¿½ï¿½ Context Analyzer]
-        ES[=ï¿½Ä» Element Selector]
-        PR[=ï¿½ï¿½ï¿½ Priority Resolver]
+    subgraph "=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Analysis Layer"
+        CA[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Context Analyzer]
+        ES[=ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Element Selector]
+        PR[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Priority Resolver]
     end
     
-    subgraph "Gï¿½ï¿½n+ï¿½ Processing Layer"
-        TB[=ï¿½Æ¦ Token Budgeter]
-        OPT[=ï¿½ï¿½ï¿½ Optimizer]
-        ASSEM[=ï¿½ï¿½ï¿½ Assembler]
+    subgraph "GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Processing Layer"
+        TB[=ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€ Ã‚Â¦ Token Budgeter]
+        OPT[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Optimizer]
+        ASSEM[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Assembler]
     end
     
-    subgraph "=ï¿½ï¿½ï¿½ Output Layer"
-        FP[=ï¿½ï¿½ Formatted Prompt]
-        META[=ï¿½ï¿½ï¿½ Metadata]
-        PERF[=ï¿½ï¿½ï¿½ Performance Data]
+    subgraph "=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Output Layer"
+        FP[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Formatted Prompt]
+        META[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Metadata]
+        PERF[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Performance Data]
     end
     
     PC --> CA
@@ -1577,7 +1577,7 @@ graph TB
     style FP fill:#d4edda
 ```
 
-### =ï¿½ï¿½ï¿½ Context Analysis Engine
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Context Analysis Engine
 
 ```typescript
 interface IContextAnalyzer {
@@ -1589,7 +1589,7 @@ interface IContextAnalyzer {
 
 class AdvancedContextAnalyzer implements IContextAnalyzer {
   async analyzeContext(context: PromptExecutionContext): Promise<ContextAnalysis> {
-    // =ï¿½ï¿½ï¿½ Multi-dimensional context analysis
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Multi-dimensional context analysis
     const userAnalysis = await this.analyzeUserContext(context);
     const taskAnalysis = await this.analyzeTaskContext(context);
     const conversationAnalysis = await this.analyzeConversationContext(context);
@@ -1601,13 +1601,13 @@ class AdvancedContextAnalyzer implements IContextAnalyzer {
       conversation: conversationAnalysis,
       environmental: environmentalAnalysis,
       
-      // =ï¿½Ä» Derived insights
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Derived insights
       primaryIntent: this.detectPrimaryIntent(context),
       emotionalTone: this.detectEmotionalTone(context),
       urgencyLevel: this.assessUrgency(context),
       complexityLevel: this.assessComplexity(context),
       
-      // =ï¿½ï¿½ï¿½ Confidence metrics
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Confidence metrics
       analysisConfidence: this.calculateAnalysisConfidence(context),
       recommendations: this.generateRecommendations(context)
     };
@@ -1615,28 +1615,28 @@ class AdvancedContextAnalyzer implements IContextAnalyzer {
   
   private async analyzeUserContext(context: PromptExecutionContext): Promise<UserContextAnalysis> {
     return {
-      // =ï¿½Ä» Skill Assessment
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Skill Assessment
       skillLevel: {
         declared: context.userSkillLevel,
         inferred: await this.inferSkillLevel(context),
         confidence: this.calculateSkillConfidence(context)
       },
       
-      // =ï¿½Æ¡ Preference Analysis
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€ Ã‚Â¡ Preference Analysis
       preferences: {
         communication_style: this.inferCommunicationPreference(context),
         detail_level: this.inferDetailPreference(context),
         learning_style: this.inferLearningStyle(context)
       },
       
-      // =ï¿½ï¿½ï¿½ Learning Progression
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Learning Progression
       progression: {
         current_level: context.workingMemory.user_skill_level,
         growth_trajectory: this.analyzeSkillGrowth(context),
         knowledge_gaps: this.identifyKnowledgeGaps(context)
       },
       
-      // =ï¿½Ä¡ Emotional State
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â¡ Emotional State
       emotional_state: {
         mood: this.detectUserMood(context),
         frustration_level: this.assessFrustration(context),
@@ -1649,7 +1649,7 @@ class AdvancedContextAnalyzer implements IContextAnalyzer {
     const patterns: ConversationPattern[] = [];
     const history = context.conversationHistory;
     
-    // =ï¿½ï¿½ï¿½ Question-asking patterns
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Question-asking patterns
     if (this.detectQuestionAsking(history)) {
       patterns.push({
         type: 'inquisitive_learning',
@@ -1658,7 +1658,7 @@ class AdvancedContextAnalyzer implements IContextAnalyzer {
       });
     }
     
-    // =ï¿½ï¿½ï¿½ Technical depth progression
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Technical depth progression
     if (this.detectTechnicalProgression(history)) {
       patterns.push({
         type: 'skill_development',
@@ -1667,7 +1667,7 @@ class AdvancedContextAnalyzer implements IContextAnalyzer {
       });
     }
     
-    // =ï¿½Ä» Problem-solving approach
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Problem-solving approach
     if (this.detectProblemSolving(history)) {
       patterns.push({
         type: 'systematic_problem_solving',
@@ -1681,7 +1681,7 @@ class AdvancedContextAnalyzer implements IContextAnalyzer {
 }
 ```
 
-### =ï¿½Ä» Element Selection Algorithm
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Element Selection Algorithm
 
 The heart of adaptive prompting - intelligent selection of contextual elements:
 
@@ -1704,13 +1704,13 @@ class SmartElementSelector implements IElementSelector {
     budget: TokenBudget
   ): Promise<SelectedElement[]> {
     
-    // 1n+ï¿½Gï¿½ï¿½ Filter by criteria matching
+    // 1n+ÃƒÂ¯Ã‚Â¿Ã‚Â½GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Filter by criteria matching
     const candidates = await this.filterByCriteria(elements, context);
     
-    // 2n+ï¿½Gï¿½ï¿½ Score by relevance and value
+    // 2n+ÃƒÂ¯Ã‚Â¿Ã‚Â½GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Score by relevance and value
     const scoredElements = await this.scoreElements(candidates, context);
     
-    // 3n+ï¿½Gï¿½ï¿½ Resolve conflicts and optimize
+    // 3n+ÃƒÂ¯Ã‚Â¿Ã‚Â½GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Resolve conflicts and optimize
     const optimizedSelection = this.optimizeSelection(scoredElements, {
       tokenBudget: budget,
       priorityWeight: 0.4,
@@ -1759,7 +1759,7 @@ class SmartElementSelector implements IElementSelector {
   ): Promise<number> {
     let score = 1.0;
     
-    // =ï¿½Ä» Exact criteria matches
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Exact criteria matches
     if (element.criteria.userSkillLevel === context.userSkillLevel) {
       score *= 2.0;
     }
@@ -1769,7 +1769,7 @@ class SmartElementSelector implements IElementSelector {
       score *= 1.8;
     }
     
-    // =ï¿½Æ¼ Conversation signal alignment
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€ Ã‚Â¼ Conversation signal alignment
     if (element.criteria.conversationSignals) {
       const signalMatches = element.criteria.conversationSignals.filter(signal =>
         context.conversationSignals.includes(signal)
@@ -1780,17 +1780,17 @@ class SmartElementSelector implements IElementSelector {
       }
     }
     
-    // =ï¿½Ä¡ GMI state alignment
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â¡ GMI state alignment
     if (element.criteria.gmiMood === context.workingMemory.current_mood) {
       score *= 1.4;
     }
     
-    // =ï¿½ï¿½ï¿½ Temporal relevance
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Temporal relevance
     if (element.criteria.urgency === context.urgencyLevel) {
       score *= 1.3;
     }
     
-    // =ï¿½ï¿½ï¿½ Advanced criteria evaluation
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Advanced criteria evaluation
     if (element.criteria.logicalOperators) {
       const logicalScore = await this.evaluateLogicalCriteria(
         element.criteria.logicalOperators,
@@ -1807,7 +1807,7 @@ class SmartElementSelector implements IElementSelector {
     constraints: SelectionConstraints
   ): SelectedElement[] {
     
-    // =ï¿½ï¿½ï¿½ Dynamic programming approach for optimal selection
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Dynamic programming approach for optimal selection
     const sortedElements = scoredElements.sort((a, b) => 
       b.scores.composite - a.scores.composite
     );
@@ -1816,7 +1816,7 @@ class SmartElementSelector implements IElementSelector {
     let usedTokens = 0;
     let totalValue = 0;
     
-    // =ï¿½Ä» Greedy selection with diversity consideration
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Greedy selection with diversity consideration
     const categoryTracker = new Map<string, number>();
     
     for (const scored of sortedElements) {
@@ -1843,23 +1843,23 @@ class SmartElementSelector implements IElementSelector {
 }
 ```
 
-### =ï¿½Æ¦ Token Budget Management
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€ Ã‚Â¦ Token Budget Management
 
 Intelligent resource allocation for optimal performance:
 
 ```mermaid
 graph TD
-    A[=ï¿½ï¿½ï¿½ Model Limits] --> B[=ï¿½Æ¦ Budget Calculator]
-    C[=ï¿½Ä» Context Requirements] --> B
-    D[=ï¿½ï¿½ï¿½ Performance Goals] --> B
+    A[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Model Limits] --> B[=ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€ Ã‚Â¦ Budget Calculator]
+    C[=ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Context Requirements] --> B
+    D[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Performance Goals] --> B
     
-    B --> E[=ï¿½ï¿½ï¿½n+ï¿½ Base Allocation 40%]
-    B --> F[=ï¿½Ä» Contextual 25%]
-    B --> G[=ï¿½ï¿½ï¿½ Examples 20%]
-    B --> H[=ï¿½Æ¼ History 10%]
-    B --> I[=ï¿½ï¿½+ RAG 5%]
+    B --> E[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Base Allocation 40%]
+    B --> F[=ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Contextual 25%]
+    B --> G[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Examples 20%]
+    B --> H[=ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€ Ã‚Â¼ History 10%]
+    B --> I[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½+ RAG 5%]
     
-    E --> J[Gï¿½ï¿½ Optimized Prompt]
+    E --> J[GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Optimized Prompt]
     F --> J
     G --> J
     H --> J
@@ -1885,7 +1885,7 @@ class IntelligentTokenBudgeter {
     
     const availableForPrompt = totalAvailable - responseReserve;
     
-    // =ï¿½Ä» Dynamic allocation based on context
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Dynamic allocation based on context
     const allocation = this.calculateDynamicAllocation(context, availableForPrompt);
     
     return {
@@ -1909,7 +1909,7 @@ class IntelligentTokenBudgeter {
     totalBudget: number
   ): AllocationRatios {
     
-    // =ï¿½ï¿½ï¿½ Base allocation ratios
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Base allocation ratios
     let ratios = {
       base: 0.35,        // Base system prompt
       contextual: 0.25,  // Contextual elements
@@ -1920,7 +1920,7 @@ class IntelligentTokenBudgeter {
       safety: 0.02       // Safety guidelines
     };
     
-    // =ï¿½Ä» Adjust based on user skill level
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Adjust based on user skill level
     if (context.userSkillLevel === 'beginner') {
       ratios.examples += 0.05; // More examples for beginners
       ratios.contextual += 0.03; // More guidance
@@ -1931,7 +1931,7 @@ class IntelligentTokenBudgeter {
       ratios.rag += 0.02; // More context from knowledge base
     }
     
-    // =ï¿½Æ¼ Adjust based on conversation length
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€ Ã‚Â¼ Adjust based on conversation length
     const historyLength = context.conversationHistory.length;
     if (historyLength > 20) {
       ratios.history += 0.05; // More history for long conversations
@@ -1939,7 +1939,7 @@ class IntelligentTokenBudgeter {
       ratios.examples -= 0.02;
     }
     
-    // =ï¿½Ä» Adjust based on task complexity
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Adjust based on task complexity
     if (context.taskComplexity === 'complex') {
       ratios.contextual += 0.05; // More adaptive elements
       ratios.rag += 0.03; // More knowledge retrieval
@@ -1954,36 +1954,36 @@ class IntelligentTokenBudgeter {
 
 ---
 
-## =ï¿½ï¿½ï¿½ Working Memory & Context
+## =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Working Memory & Context
 
-### =ï¿½ï¿½+ The GMI's Cognitive State
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½+ The GMI's Cognitive State
 
 Working Memory is where GMIs maintain their **real-time cognitive state** - the dynamic information that drives adaptive behavior and learning.
 
 ```mermaid
 graph TB
-    subgraph "=ï¿½ï¿½ï¿½ Working Memory Structure"
-        CS[=ï¿½Ä¡ Current State]
-        UCP[=ï¿½ï¿½ï¿½ User Context Profile]
-        IP[=ï¿½ï¿½ï¿½ Interaction Patterns]
-        PM[=ï¿½ï¿½ï¿½ Performance Metrics]
+    subgraph "=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Working Memory Structure"
+        CS[=ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â¡ Current State]
+        UCP[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ User Context Profile]
+        IP[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Interaction Patterns]
+        PM[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Performance Metrics]
     end
     
-    subgraph "=ï¿½Ä¡ Current State"
+    subgraph "=ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â¡ Current State"
         MOOD[Current Mood]
         CONF[Confidence Level]
         FOCUS[Active Focus Areas]
         ENERGY[Energy Level]
     end
     
-    subgraph "=ï¿½ï¿½ï¿½ User Context Profile"
+    subgraph "=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ User Context Profile"
         SKILL[Skill Assessment]
         PREFS[Preferences]
         HISTORY[Interaction History]
         GOALS[User Goals]
     end
     
-    subgraph "=ï¿½ï¿½ï¿½ Interaction Patterns"
+    subgraph "=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Interaction Patterns"
         SIGNALS[Conversation Signals]
         TRENDS[Behavioral Trends]
         SUCCESS[Success Patterns]
@@ -2010,42 +2010,42 @@ graph TB
     style IP fill:#e8f5e8
 ```
 
-### =ï¿½ï¿½ï¿½n+ï¿½ Working Memory Implementation
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Working Memory Implementation
 
 ```typescript
 interface IWorkingMemory {
-  // =ï¿½Ä¡ GMI State
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â¡ GMI State
   current_mood: string;
   confidence_level: 'low' | 'medium' | 'high';
   energy_level: number; // 0-100
   active_focus_areas: string[];
   cognitive_load: number; // 0-100
   
-  // =ï¿½ï¿½ï¿½ User Assessment
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ User Assessment
   user_skill_level: SkillLevel;
   user_preferences: UserPreferences;
   user_goals: string[];
   user_satisfaction_trend: number[]; // Recent satisfaction scores
   
-  // =ï¿½ï¿½ï¿½ Conversation Intelligence
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Conversation Intelligence
   detected_conversation_signals: string[];
   conversation_momentum: 'building' | 'maintaining' | 'declining';
   topic_progression: TopicNode[];
   interaction_success_rate: number;
   
-  // =ï¿½ï¿½ï¿½ Performance Tracking
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Performance Tracking
   response_quality_scores: number[];
   adaptation_effectiveness: number;
   user_engagement_level: number;
   learning_progress_indicators: string[];
   
-  // =ï¿½Ä» Context State
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Context State
   active_domain: string;
   current_task_hint: string;
   session_objectives: string[];
   environmental_context: EnvironmentalContext;
   
-  // =ï¿½ï¿½ï¿½ Temporal Awareness
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Temporal Awareness
   session_start_time: Date;
   last_interaction_time: Date;
   session_duration: number;
@@ -2059,38 +2059,38 @@ class AdvancedWorkingMemory implements IWorkingMemory {
   
   constructor(initialState?: Partial<WorkingMemoryState>) {
     this.memoryState = {
-      // =ï¿½Ä¡ Default GMI state
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â¡ Default GMI state
       current_mood: 'neutral',
       confidence_level: 'medium',
       energy_level: 80,
       active_focus_areas: [],
       cognitive_load: 30,
       
-      // =ï¿½ï¿½ï¿½ User defaults
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ User defaults
       user_skill_level: 'intermediate',
       user_preferences: {},
       user_goals: [],
       user_satisfaction_trend: [],
       
-      // =ï¿½ï¿½ï¿½ Conversation state
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Conversation state
       detected_conversation_signals: [],
       conversation_momentum: 'building',
       topic_progression: [],
       interaction_success_rate: 0.8,
       
-      // =ï¿½ï¿½ï¿½ Performance tracking
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Performance tracking
       response_quality_scores: [7.5], // Start with baseline
       adaptation_effectiveness: 0.7,
       user_engagement_level: 0.6,
       learning_progress_indicators: [],
       
-      // =ï¿½Ä» Context
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Context
       active_domain: 'general',
       current_task_hint: '',
       session_objectives: [],
       environmental_context: {},
       
-      // =ï¿½ï¿½ï¿½ Temporal
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Temporal
       session_start_time: new Date(),
       last_interaction_time: new Date(),
       session_duration: 0,
@@ -2109,7 +2109,7 @@ class AdvancedWorkingMemory implements IWorkingMemory {
     
     const updates: MemoryUpdate[] = [];
     
-    // =ï¿½ï¿½ï¿½ Analyze user message for signals
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Analyze user message for signals
     const detectedSignals = await this.analyzeUserMessage(userMessage);
     updates.push({
       type: 'conversation_signals',
@@ -2117,7 +2117,7 @@ class AdvancedWorkingMemory implements IWorkingMemory {
       confidence: 0.8
     });
     
-    // =ï¿½ï¿½ï¿½ Update skill level assessment
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Update skill level assessment
     const skillUpdate = await this.assessSkillLevel(userMessage, context);
     if (skillUpdate.changed) {
       updates.push({
@@ -2127,7 +2127,7 @@ class AdvancedWorkingMemory implements IWorkingMemory {
       });
     }
     
-    // =ï¿½Ä¡ Update GMI mood based on interaction
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â¡ Update GMI mood based on interaction
     const moodUpdate = this.updateMoodFromInteraction(aiResponse, feedback);
     if (moodUpdate.changed) {
       updates.push({
@@ -2137,7 +2137,7 @@ class AdvancedWorkingMemory implements IWorkingMemory {
       });
     }
     
-    // =ï¿½ï¿½ï¿½ Update performance metrics
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Update performance metrics
     if (feedback) {
       updates.push({
         type: 'response_quality_scores',
@@ -2152,13 +2152,13 @@ class AdvancedWorkingMemory implements IWorkingMemory {
   private async analyzeUserMessage(message: string): Promise<string[]> {
     const signals: string[] = [];
     
-    // =ï¿½ï¿½ï¿½ Confusion detection
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Confusion detection
     const confusionIndicators = ['confused', 'unclear', 'dont understand', 'what do you mean'];
     if (confusionIndicators.some(indicator => message.toLowerCase().includes(indicator))) {
       signals.push('confusion', 'needs_clarification');
     }
     
-    // =ï¿½Ä» Technical language detection
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Technical language detection
     const technicalTerms = ['algorithm', 'optimization', 'framework', 'implementation', 'architecture'];
     const technicalCount = technicalTerms.filter(term => 
       message.toLowerCase().includes(term)
@@ -2168,13 +2168,13 @@ class AdvancedWorkingMemory implements IWorkingMemory {
       signals.push('technical_discussion', 'expert_level');
     }
     
-    // =ï¿½ï¿½ï¿½ Learning intent detection
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Learning intent detection
     const learningIndicators = ['how to', 'teach me', 'explain', 'learn', 'understand'];
     if (learningIndicators.some(indicator => message.toLowerCase().includes(indicator))) {
       signals.push('learning_intent', 'educational_mode');
     }
     
-    // =ï¿½Ü¿ Urgency detection
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÅ“Ã‚Â¿ Urgency detection
     const urgencyIndicators = ['urgent', 'asap', 'quickly', 'immediately', 'deadline'];
     if (urgencyIndicators.some(indicator => message.toLowerCase().includes(indicator))) {
       signals.push('urgency', 'time_sensitive');
@@ -2191,7 +2191,7 @@ class AdvancedWorkingMemory implements IWorkingMemory {
     let newMood = this.memoryState.current_mood;
     let confidence = 0.6;
     
-    // =ï¿½ï¿½ï¿½ Positive feedback improves mood
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Positive feedback improves mood
     if (feedback?.rating >= 8) {
       newMood = this.adjustMood(newMood, 'positive');
       confidence = 0.9;
@@ -2200,7 +2200,7 @@ class AdvancedWorkingMemory implements IWorkingMemory {
       confidence = 0.8;
     }
     
-    // =ï¿½ï¿½ï¿½ Analyze response complexity for confidence
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Analyze response complexity for confidence
     const responseComplexity = this.analyzeResponseComplexity(response);
     if (responseComplexity > 0.8) {
       // High complexity might indicate high confidence
@@ -2216,7 +2216,7 @@ class AdvancedWorkingMemory implements IWorkingMemory {
     };
   }
   
-  // =ï¿½Ä» Smart context querying
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Smart context querying
   getRelevantContext(query: ContextQuery): RelevantContext {
     const context: RelevantContext = {};
     
@@ -2249,77 +2249,77 @@ class AdvancedWorkingMemory implements IWorkingMemory {
 }
 ```
 
-### =ï¿½ï¿½ï¿½ Context Evolution Tracking
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Context Evolution Tracking
 
 ```mermaid
 sequenceDiagram
-    participant User as =ï¿½ï¿½ï¿½ User
-    participant GMI as =ï¿½ï¿½ï¿½ GMI
-    participant Memory as =ï¿½ï¿½ï¿½ Working Memory
-    participant Learning as =ï¿½ï¿½ï¿½ Learning Engine
+    participant User as =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ User
+    participant GMI as =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ GMI
+    participant Memory as =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Working Memory
+    participant Learning as =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Learning Engine
     
     Note over User,Learning: Session Start
     User->>GMI: "I'm new to machine learning"
-    GMI->>Memory: =ï¿½ï¿½+ Update: skill_level = 'beginner'
-    Memory->>Learning: =ï¿½ï¿½ï¿½ Pattern: new_learner
+    GMI->>Memory: =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½+ Update: skill_level = 'beginner'
+    Memory->>Learning: =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Pattern: new_learner
     
     Note over User,Learning: Skill Assessment
     User->>GMI: "What's gradient descent?"
-    GMI->>Memory: =ï¿½ï¿½ï¿½ Query: skill_level, learning_signals
+    GMI->>Memory: =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Query: skill_level, learning_signals
     Memory-->>GMI: beginner + learning_intent
     GMI-->>User: [Beginner-friendly explanation]
     
     Note over User,Learning: Progress Tracking
     User->>GMI: "That makes sense! What about backpropagation?"
-    GMI->>Memory: =ï¿½ï¿½ï¿½ Update: positive_feedback, concept_progression
-    Memory->>Learning: =ï¿½Ä» Pattern: skill_development
-    Learning-->>Memory: =ï¿½ï¿½ï¿½ Prediction: ready_for_intermediate
+    GMI->>Memory: =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Update: positive_feedback, concept_progression
+    Memory->>Learning: =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Pattern: skill_development
+    Learning-->>Memory: =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Prediction: ready_for_intermediate
     
     Note over User,Learning: Adaptive Response
-    GMI->>Memory: =ï¿½ï¿½ï¿½ Query: updated_skill_assessment
+    GMI->>Memory: =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Query: updated_skill_assessment
     Memory-->>GMI: transitioning_to_intermediate
     GMI-->>User: [Slightly more technical explanation]
     User->>GMI: "Perfect level of detail!"
-    GMI->>Memory: Gï¿½ï¿½ Confirm: adaptation_successful
+    GMI->>Memory: GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Confirm: adaptation_successful
 ```
 
 ---
 
-## =ï¿½ï¿½+ RAG & Knowledge Integration
+## =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½+ RAG & Knowledge Integration
 
-### =ï¿½ï¿½ï¿½ Intelligent Knowledge Retrieval
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Intelligent Knowledge Retrieval
 
 AgentOS's RAG system goes beyond simple similarity search - it provides **contextually intelligent knowledge retrieval** that adapts to user needs and conversation flow.
 
 ```mermaid
 graph TB
-    subgraph "=ï¿½ï¿½ï¿½ Input Layer"
-        QUERY[=ï¿½ï¿½ï¿½ User Query]
-        CONTEXT[=ï¿½Ä» Conversation Context]
-        PERSONA[=ï¿½Ä¡ Persona Profile]
+    subgraph "=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Input Layer"
+        QUERY[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ User Query]
+        CONTEXT[=ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Conversation Context]
+        PERSONA[=ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â¡ Persona Profile]
     end
     
-    subgraph "=ï¿½ï¿½ï¿½ Intelligence Layer"
-        QE[=ï¿½ï¿½ Query Enhancement]
-        CI[=ï¿½Ä» Context Integration]
-        PE[=ï¿½Ä¡ Persona Enhancement]
+    subgraph "=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Intelligence Layer"
+        QE[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Query Enhancement]
+        CI[=ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Context Integration]
+        PE[=ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â¡ Persona Enhancement]
     end
     
-    subgraph "=ï¿½ï¿½ï¿½ Retrieval Layer"
-        VS[=ï¿½ï¿½ï¿½n+ï¿½ Vector Search]
-        KG[=ï¿½ï¿½+n+ï¿½ Knowledge Graph]
-        HYBRID[=ï¿½ï¿½ï¿½ Hybrid Retrieval]
+    subgraph "=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Retrieval Layer"
+        VS[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Vector Search]
+        KG[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½+n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Knowledge Graph]
+        HYBRID[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Hybrid Retrieval]
     end
     
-    subgraph "Gï¿½ï¿½ Processing Layer"
-        RANK[=ï¿½ï¿½ï¿½ Relevance Ranking]
-        FILTER[=ï¿½Ä» Context Filtering]
-        SUMM[=ï¿½ï¿½ Summarization]
+    subgraph "GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Processing Layer"
+        RANK[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Relevance Ranking]
+        FILTER[=ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Context Filtering]
+        SUMM[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Summarization]
     end
     
-    subgraph "=ï¿½ï¿½ï¿½ Output Layer"
-        CONTEXT_OUT[=ï¿½ï¿½ï¿½ Augmented Context]
-        METADATA[=ï¿½ï¿½ï¿½ Retrieval Metadata]
+    subgraph "=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Output Layer"
+        CONTEXT_OUT[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Augmented Context]
+        METADATA[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Retrieval Metadata]
     end
     
     QUERY --> QE
@@ -2344,31 +2344,31 @@ graph TB
     style CONTEXT_OUT fill:#e8f5e8
 ```
 
-### =ï¿½ï¿½ï¿½n+ï¿½ Advanced RAG Architecture
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Advanced RAG Architecture
 
 ```typescript
 interface IAgentOSRAG {
-  // =ï¿½ï¿½ï¿½ Core retrieval methods
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Core retrieval methods
   retrieveRelevantContext(
     query: string,
     context: PromptExecutionContext,
     persona: IPersonaDefinition
   ): Promise<RAGResult>;
   
-  // =ï¿½ï¿½ï¿½ Intelligent enhancement
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Intelligent enhancement
   enhanceQuery(
     originalQuery: string,
     conversationContext: ConversationContext,
     userProfile: UserProfile
   ): Promise<EnhancedQuery>;
   
-  // =ï¿½ï¿½ï¿½ Multi-source integration
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Multi-source integration
   hybridRetrieval(
     enhancedQuery: EnhancedQuery,
     retrievalConfig: RetrievalConfiguration
   ): Promise<HybridRetrievalResult>;
   
-  // =ï¿½Ä» Context-aware ranking
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Context-aware ranking
   rankAndFilter(
     retrievalResults: RetrievalResult[],
     context: PromptExecutionContext,
@@ -2388,7 +2388,7 @@ class AgentOSIntelligentRAG implements IAgentOSRAG {
     persona: IPersonaDefinition
   ): Promise<RAGResult> {
     
-    // 1n+ï¿½Gï¿½ï¿½ Enhance query with context and persona
+    // 1n+ÃƒÂ¯Ã‚Â¿Ã‚Â½GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Enhance query with context and persona
     const enhancedQuery = await this.enhanceQuery(query, {
       conversationHistory: context.conversationHistory,
       userSkillLevel: context.userSkillLevel,
@@ -2396,7 +2396,7 @@ class AgentOSIntelligentRAG implements IAgentOSRAG {
       personaExpertise: persona.identity.expertise
     });
     
-    // 2n+ï¿½Gï¿½ï¿½ Multi-source retrieval
+    // 2n+ÃƒÂ¯Ã‚Â¿Ã‚Â½GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Multi-source retrieval
     const hybridResults = await this.hybridRetrieval(enhancedQuery, {
       vectorSearchWeight: 0.6,
       knowledgeGraphWeight: 0.3,
@@ -2404,14 +2404,14 @@ class AgentOSIntelligentRAG implements IAgentOSRAG {
       maxResults: 20
     });
     
-    // 3n+ï¿½Gï¿½ï¿½ Intelligent ranking and filtering
+    // 3n+ÃƒÂ¯Ã‚Â¿Ã‚Â½GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Intelligent ranking and filtering
     const rankedResults = await this.rankAndFilter(
       hybridResults.results,
       context,
       0.7 // Relevance threshold
     );
     
-    // 4n+ï¿½Gï¿½ï¿½ Context-aware summarization
+    // 4n+ÃƒÂ¯Ã‚Â¿Ã‚Â½GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Context-aware summarization
     const summarizedContext = await this.generateContextualSummary(
       rankedResults,
       context,
@@ -2437,20 +2437,20 @@ class AgentOSIntelligentRAG implements IAgentOSRAG {
     conversationContext: ConversationContext
   ): Promise<EnhancedQuery> {
     
-    // =ï¿½ï¿½ï¿½ Extract key concepts and entities
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Extract key concepts and entities
     const concepts = await this.extractConcepts(originalQuery);
     const entities = await this.extractEntities(originalQuery);
     
-    // =ï¿½Ä» Add conversational context
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Add conversational context
     const contextualTerms = this.extractContextualTerms(conversationContext);
     
-    // =ï¿½Ä¡ Add persona-specific terminology
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â¡ Add persona-specific terminology
     const domainTerms = this.getDomainSpecificTerms(
       conversationContext.personaExpertise,
       conversationContext.domain
     );
     
-    // =ï¿½ï¿½ï¿½ Generate semantic variations
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Generate semantic variations
     const semanticVariations = await this.generateSemanticVariations(originalQuery);
     
     return {
@@ -2476,19 +2476,19 @@ class AgentOSIntelligentRAG implements IAgentOSRAG {
     persona: IPersonaDefinition
   ): Promise<ContextualSummary> {
     
-    // =ï¿½Ä» Adapt summarization to user skill level
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Adapt summarization to user skill level
     const summarizationStrategy = this.selectSummarizationStrategy(
       context.userSkillLevel,
       persona.identity.expertise
     );
     
-    // =ï¿½ï¿½ï¿½ Determine optimal summary length
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Determine optimal summary length
     const targetLength = this.calculateOptimalSummaryLength(
       rankedResults,
       context.tokenBudget?.ragContext || 500
     );
     
-    // =ï¿½ï¿½ï¿½ Generate persona-aware summary
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Generate persona-aware summary
     const summary = await this.summarizationEngine.generateSummary({
       documents: rankedResults.map(r => r.document),
       strategy: summarizationStrategy,
@@ -2555,25 +2555,25 @@ class AgentOSIntelligentRAG implements IAgentOSRAG {
 }
 ```
 
-### =ï¿½ï¿½+n+ï¿½ Knowledge Graph Integration
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½+n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Knowledge Graph Integration
 
 ```typescript
 interface IKnowledgeGraph {
-  // =ï¿½ï¿½ï¿½ Concept exploration
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Concept exploration
   exploreRelatedConcepts(
     concept: string,
     depth: number,
     relationshipTypes: string[]
   ): Promise<ConceptGraph>;
   
-  // =ï¿½Ä» Contextual pathfinding
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Contextual pathfinding
   findConceptualPaths(
     fromConcept: string,
     toConcept: string,
     maxHops: number
   ): Promise<ConceptualPath[]>;
   
-  // =ï¿½ï¿½ï¿½ Relevance scoring
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Relevance scoring
   scoreConceptRelevance(
     concept: string,
     context: ConversationContext
@@ -2598,7 +2598,7 @@ class AgentOSKnowledgeGraph implements IKnowledgeGraph {
       
       explored.add(currentConcept);
       
-      // =ï¿½ï¿½ï¿½ Get related concepts
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Get related concepts
       const related = await this.getDirectlyRelatedConcepts(currentConcept, relationshipTypes);
       
       const conceptNode: ConceptNode = {
@@ -2610,7 +2610,7 @@ class AgentOSKnowledgeGraph implements IKnowledgeGraph {
       
       graph.push(conceptNode);
       
-      // =ï¿½ï¿½ï¿½ Add high-relevance concepts to exploration queue
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Add high-relevance concepts to exploration queue
       for (const relatedConcept of related) {
         if (relatedConcept.relevanceScore > 0.6) {
           queue.push({
@@ -2639,7 +2639,7 @@ class AgentOSKnowledgeGraph implements IKnowledgeGraph {
     const paths: ConceptualPath[] = [];
     const visited = new Set<string>();
     
-    // =ï¿½Ä» Breadth-first search for shortest paths
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Breadth-first search for shortest paths
     const queue: Array<{
       currentConcept: string,
       path: ConceptPathStep[],
@@ -2669,7 +2669,7 @@ class AgentOSKnowledgeGraph implements IKnowledgeGraph {
         continue;
       }
       
-      // =ï¿½ï¿½ï¿½ Explore next level
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Explore next level
       const related = await this.getDirectlyRelatedConcepts(currentConcept);
       for (const relatedConcept of related) {
         queue.push({
@@ -2690,36 +2690,36 @@ class AgentOSKnowledgeGraph implements IKnowledgeGraph {
 
 ---
 
-## =ï¿½ï¿½ï¿½n+ï¿½ Tool System & Orchestration
+## =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Tool System & Orchestration
 
-### =ï¿½Ä» Dynamic Tool Integration
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Dynamic Tool Integration
 
 AgentOS's tool system enables GMIs to **dynamically discover, select, and execute tools** based on conversation needs and persona capabilities.
 
 ```mermaid
 graph TB
-    subgraph "=ï¿½ï¿½ï¿½ Tool Discovery"
-        TD[=ï¿½ï¿½ï¿½n+ï¿½ Tool Directory]
-        TR[=ï¿½ï¿½ï¿½ Tool Registry]
-        TC[=ï¿½Ä» Capability Matching]
+    subgraph "=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Tool Discovery"
+        TD[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Tool Directory]
+        TR[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Tool Registry]
+        TC[=ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Capability Matching]
     end
     
-    subgraph "Gï¿½ï¿½n+ï¿½ Tool Orchestration"
-        TS[=ï¿½Ä» Tool Selection]
-        TE[=ï¿½ï¿½ï¿½ Tool Execution]
-        TR_RESULT[=ï¿½ï¿½ï¿½ Result Processing]
+    subgraph "GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Tool Orchestration"
+        TS[=ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Tool Selection]
+        TE[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Tool Execution]
+        TR_RESULT[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Result Processing]
     end
     
-    subgraph "=ï¿½ï¿½ï¿½ Intelligence Layer"
-        PA[=ï¿½ï¿½ï¿½ Parameter Analysis]
-        EC[Gï¿½ï¿½n+ï¿½ Error Handling]
-        LO[=ï¿½ï¿½ï¿½ Learning & Optimization]
+    subgraph "=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Intelligence Layer"
+        PA[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Parameter Analysis]
+        EC[GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Error Handling]
+        LO[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Learning & Optimization]
     end
     
-    subgraph "=ï¿½ï¿½ï¿½n+ï¿½ Safety Layer"
-        SC[=ï¿½ï¿½ï¿½ Security Checks]
-        AC[=ï¿½Ä» Access Control]
-        RL[Gï¿½ï¿½ Rate Limiting]
+    subgraph "=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Safety Layer"
+        SC[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Security Checks]
+        AC[=ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Access Control]
+        RL[GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Rate Limiting]
     end
     
     TD --> TS
@@ -2742,31 +2742,31 @@ graph TB
     style SC fill:#ffebee
 ```
 
-### =ï¿½ï¿½ï¿½n+ï¿½ Tool System Architecture
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Tool System Architecture
 
 ```typescript
 interface IToolOrchestrator {
-  // =ï¿½ï¿½ï¿½ Tool discovery and selection
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Tool discovery and selection
   discoverTools(
     intent: string,
     context: PromptExecutionContext,
     persona: IPersonaDefinition
   ): Promise<DiscoveredTool[]>;
   
-  // Gï¿½ï¿½n+ï¿½ Tool execution
+  // GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Tool execution
   executeToolChain(
     toolChain: ToolExecutionPlan,
     context: ToolExecutionContext
   ): Promise<ToolExecutionResult>;
   
-  // =ï¿½ï¿½ï¿½ Intelligent tool recommendation
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Intelligent tool recommendation
   recommendTools(
     userQuery: string,
     availableTools: ToolDefinition[],
     executionHistory: ToolExecutionHistory
   ): Promise<ToolRecommendation[]>;
   
-  // =ï¿½ï¿½ï¿½ Performance optimization
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Performance optimization
   optimizeToolUsage(
     persona: IPersonaDefinition,
     usageStatistics: ToolUsageStatistics
@@ -2785,20 +2785,20 @@ class AgentOSToolOrchestrator implements IToolOrchestrator {
     persona: IPersonaDefinition
   ): Promise<DiscoveredTool[]> {
     
-    // 1n+ï¿½Gï¿½ï¿½ Parse intent to identify required capabilities
+    // 1n+ÃƒÂ¯Ã‚Â¿Ã‚Â½GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Parse intent to identify required capabilities
     const requiredCapabilities = await this.parseIntentForCapabilities(intent);
     
-    // 2n+ï¿½Gï¿½ï¿½ Get available tools for this persona
+    // 2n+ÃƒÂ¯Ã‚Â¿Ã‚Â½GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Get available tools for this persona
     const availableTools = await this.toolRegistry.getToolsForPersona(persona.identity.name);
     
-    // 3n+ï¿½Gï¿½ï¿½ Match tools to capabilities
+    // 3n+ÃƒÂ¯Ã‚Â¿Ã‚Â½GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Match tools to capabilities
     const matchedTools = await this.matchToolsToCapabilities(
       availableTools,
       requiredCapabilities,
       context
     );
     
-    // 4n+ï¿½Gï¿½ï¿½ Score and rank tools
+    // 4n+ÃƒÂ¯Ã‚Â¿Ã‚Â½GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Score and rank tools
     const scoredTools = await this.scoreToolRelevance(matchedTools, intent, context);
     
     return scoredTools.sort((a, b) => b.relevanceScore - a.relevanceScore);
@@ -2807,7 +2807,7 @@ class AgentOSToolOrchestrator implements IToolOrchestrator {
   private async parseIntentForCapabilities(intent: string): Promise<RequiredCapability[]> {
     const capabilities: RequiredCapability[] = [];
     
-    // =ï¿½ï¿½ï¿½ Data retrieval intent
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Data retrieval intent
     if (this.detectDataRetrievalIntent(intent)) {
       capabilities.push({
         type: 'data_retrieval',
@@ -2817,7 +2817,7 @@ class AgentOSToolOrchestrator implements IToolOrchestrator {
       });
     }
     
-    // =ï¿½ï¿½ï¿½ Calculation intent
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Calculation intent
     if (this.detectCalculationIntent(intent)) {
       capabilities.push({
         type: 'calculation',
@@ -2827,7 +2827,7 @@ class AgentOSToolOrchestrator implements IToolOrchestrator {
       });
     }
     
-    // =ï¿½Ä¿ Content creation intent
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â¿ Content creation intent
     if (this.detectContentCreationIntent(intent)) {
       capabilities.push({
         type: 'content_creation',
@@ -2837,7 +2837,7 @@ class AgentOSToolOrchestrator implements IToolOrchestrator {
       });
     }
     
-    // =ï¿½ï¿½ï¿½ Research intent
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Research intent
     if (this.detectResearchIntent(intent)) {
       capabilities.push({
         type: 'research',
@@ -2860,10 +2860,10 @@ class AgentOSToolOrchestrator implements IToolOrchestrator {
     
     for (const step of toolChain.steps) {
       try {
-        // =ï¿½ï¿½ï¿½ Security check
+        // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Security check
         await this.securityManager.validateToolExecution(step.tool, chainContext);
         
-        // Gï¿½ï¿½n+ï¿½ Execute tool
+        // GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Execute tool
         const stepResult = await this.executionEngine.executeTool(
           step.tool,
           step.parameters,
@@ -2878,10 +2878,10 @@ class AgentOSToolOrchestrator implements IToolOrchestrator {
           success: stepResult.success
         });
         
-        // =ï¿½ï¿½ï¿½ Update context for next step
+        // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Update context for next step
         chainContext = this.updateContextWithResult(chainContext, stepResult);
         
-        // Gï¿½ï¿½n+ï¿½ Handle failures
+        // GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Handle failures
         if (!stepResult.success && step.required) {
           return {
             success: false,
@@ -2911,10 +2911,10 @@ class AgentOSToolOrchestrator implements IToolOrchestrator {
 }
 ```
 
-### =ï¿½ï¿½ï¿½n+ï¿½ Built-in Tool Ecosystem
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Built-in Tool Ecosystem
 
 ```typescript
-// =ï¿½ï¿½ï¿½ Calculation Tools
+// =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Calculation Tools
 const calculatorTool: ToolDefinition = {
   id: 'advanced_calculator',
   name: 'Advanced Calculator',
@@ -2949,7 +2949,7 @@ const calculatorTool: ToolDefinition = {
   }
 };
 
-// =ï¿½ï¿½ï¿½ Web Search Tool
+// =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Web Search Tool
 const webSearchTool: ToolDefinition = {
   id: 'intelligent_web_search',
   name: 'Intelligent Web Search',
@@ -2976,7 +2976,7 @@ const webSearchTool: ToolDefinition = {
   }
 };
 
-// =ï¿½ï¿½ï¿½ Data Analysis Tool
+// =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Data Analysis Tool
 const dataAnalysisTool: ToolDefinition = {
   id: 'data_analyzer',
   name: 'Data Analysis Engine',
@@ -3007,7 +3007,7 @@ const dataAnalysisTool: ToolDefinition = {
 };
 ```
 
-### =ï¿½Ä» Dynamic Tool Selection
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Dynamic Tool Selection
 
 ```typescript
 class IntelligentToolSelector {
@@ -3018,20 +3018,20 @@ class IntelligentToolSelector {
     constraints: ToolSelectionConstraints
   ): Promise<ToolSelectionResult> {
     
-    // 1n+ï¿½Gï¿½ï¿½ Analyze user intent
+    // 1n+ÃƒÂ¯Ã‚Â¿Ã‚Â½GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Analyze user intent
     const intentAnalysis = await this.analyzeUserIntent(userIntent);
     
-    // 2n+ï¿½Gï¿½ï¿½ Score tools for relevance
+    // 2n+ÃƒÂ¯Ã‚Â¿Ã‚Â½GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Score tools for relevance
     const toolScores = await this.scoreToolRelevance(
       availableTools,
       intentAnalysis,
       context
     );
     
-    // 3n+ï¿½Gï¿½ï¿½ Consider execution constraints
+    // 3n+ÃƒÂ¯Ã‚Â¿Ã‚Â½GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Consider execution constraints
     const feasibleTools = this.filterByConstraints(toolScores, constraints);
     
-    // 4n+ï¿½Gï¿½ï¿½ Optimize tool combination
+    // 4n+ÃƒÂ¯Ã‚Â¿Ã‚Â½GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Optimize tool combination
     const optimalCombination = await this.optimizeToolCombination(
       feasibleTools,
       intentAnalysis.complexity
@@ -3055,14 +3055,14 @@ class IntelligentToolSelector {
     return Promise.all(tools.map(async tool => {
       let score = 0.0;
       
-      // =ï¿½Ä» Capability matching
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Capability matching
       const capabilityMatch = this.calculateCapabilityMatch(
         tool.capabilities,
         intent.requiredCapabilities
       );
       score += capabilityMatch * 0.4;
       
-      // =ï¿½ï¿½ï¿½ Historical performance
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Historical performance
       const historicalPerformance = await this.getHistoricalPerformance(
         tool.id,
         context.userSkillLevel,
@@ -3070,7 +3070,7 @@ class IntelligentToolSelector {
       );
       score += historicalPerformance * 0.3;
       
-      // Gï¿½ï¿½ Execution efficiency
+      // GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Execution efficiency
       const efficiency = this.calculateExecutionEfficiency(
         tool,
         intent.complexity,
@@ -3078,7 +3078,7 @@ class IntelligentToolSelector {
       );
       score += efficiency * 0.2;
       
-      // =ï¿½Ä¡ Persona compatibility
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â¡ Persona compatibility
       const personaMatch = this.calculatePersonaCompatibility(
         tool,
         context.activePersona
@@ -3102,10 +3102,10 @@ class IntelligentToolSelector {
   ): Promise<OptimalToolCombination> {
     
     if (taskComplexity.requiresMultipleTools) {
-      // =ï¿½ï¿½ï¿½ Multi-tool optimization
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Multi-tool optimization
       return this.optimizeMultiToolChain(scoredTools, taskComplexity);
     } else {
-      // =ï¿½Ä» Single tool optimization
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Single tool optimization
       const bestTool = scoredTools.sort((a, b) => b.relevanceScore - a.relevanceScore)[0];
       
       return {
@@ -3142,13 +3142,13 @@ AgentOS now exposes a dedicated guardrail subsystem so hosts can plug in policy 
 
 - `evaluateInput(payload: GuardrailInputPayload)` runs before orchestration executes. Return `null` to continue, or a `GuardrailEvaluationResult` describing one of four actions:
 
-  - `ALLOW` ï¿½ pass the request through untouched.
+  - `ALLOW` ÃƒÂ¯Ã‚Â¿Ã‚Â½ pass the request through untouched.
 
-  - `FLAG` ï¿½ allow but capture metadata for audit/analytics.
+  - `FLAG` ÃƒÂ¯Ã‚Â¿Ã‚Â½ allow but capture metadata for audit/analytics.
 
-  - `SANITIZE` ï¿½ replace `payload.input.textInput` with `modifiedText` before streaming continues.
+  - `SANITIZE` ÃƒÂ¯Ã‚Â¿Ã‚Â½ replace `payload.input.textInput` with `modifiedText` before streaming continues.
 
-  - `BLOCK` ï¿½ stop execution and emit an error chunk back to the host.
+  - `BLOCK` ÃƒÂ¯Ã‚Â¿Ã‚Â½ stop execution and emit an error chunk back to the host.
 
 - `evaluateOutput(payload: GuardrailOutputPayload)` runs against the final streamed chunk. The same actions apply; sanitize replaces `finalResponseText`, and block converts the stream into a guardrail error.
 
@@ -3177,40 +3177,40 @@ AgentOS now exposes a dedicated guardrail subsystem so hosts can plug in policy 
 
 
 
-## =ï¿½ï¿½ï¿½ Authentication & Security
+## =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Authentication & Security
 
-### =ï¿½ï¿½ï¿½n+ï¿½ Multi-Layered Security Architecture
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Multi-Layered Security Architecture
 
 AgentOS implements comprehensive security through multiple layers of protection, from user authentication to AI safety measures.
 
 ```mermaid
 graph TB
-    subgraph "=ï¿½ï¿½ï¿½ Authentication Layer"
-        UA[=ï¿½ï¿½ï¿½ User Authentication]
-        JWT[=ï¿½Ä½ JWT Management]
-        OAUTH[=ï¿½ï¿½ï¿½ OAuth Integration]
-        MFA[=ï¿½ï¿½ï¿½ Multi-Factor Auth]
+    subgraph "=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Authentication Layer"
+        UA[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ User Authentication]
+        JWT[=ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â½ JWT Management]
+        OAUTH[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ OAuth Integration]
+        MFA[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Multi-Factor Auth]
     end
     
-    subgraph "=ï¿½Ä» Authorization Layer"
-        RBAC[=ï¿½ï¿½ï¿½ Role-Based Access]
-        PERM[=ï¿½ï¿½ï¿½ Permission System]
-        QUOTA[=ï¿½ï¿½ï¿½ Usage Quotas]
-        RATE[GÅ¦n+ï¿½ Rate Limiting]
+    subgraph "=ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Authorization Layer"
+        RBAC[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Role-Based Access]
+        PERM[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Permission System]
+        QUOTA[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Usage Quotas]
+        RATE[GÃƒâ€¦Ã‚Â¦n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Rate Limiting]
     end
     
-    subgraph "=ï¿½ï¿½ï¿½n+ï¿½ Data Security Layer"
-        ENCRYPT[=ï¿½ï¿½ï¿½ Encryption]
-        HASH[#n+ï¿½Gï¿½ï¿½ Secure Hashing]
-        KEYS[=ï¿½ï¿½ï¿½n+ï¿½ Key Management]
-        AUDIT[=ï¿½ï¿½ï¿½ Audit Logging]
+    subgraph "=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Data Security Layer"
+        ENCRYPT[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Encryption]
+        HASH[#n+ÃƒÂ¯Ã‚Â¿Ã‚Â½GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Secure Hashing]
+        KEYS[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Key Management]
+        AUDIT[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Audit Logging]
     end
     
-    subgraph "=ï¿½ï¿½ï¿½ AI Safety Layer"
-        CONST[=ï¿½ï¿½ Constitutional AI]
-        FILTER[=ï¿½ï¿½ï¿½ Content Filtering]
-        MONITOR[=ï¿½ï¿½ï¿½n+ï¿½ Behavior Monitoring]
-        SANDBOX[=ï¿½ï¿½ Execution Sandboxing]
+    subgraph "=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ AI Safety Layer"
+        CONST[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Constitutional AI]
+        FILTER[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Content Filtering]
+        MONITOR[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Behavior Monitoring]
+        SANDBOX[=ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Execution Sandboxing]
     end
     
     UA --> RBAC
@@ -3234,24 +3234,24 @@ graph TB
     style CONST fill:#fff3e0
 ```
 
-### =ï¿½ï¿½ï¿½ Advanced Authentication System
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Advanced Authentication System
 
 ```typescript
 interface IAuthenticationService {
-  // =ï¿½ï¿½ï¿½ User authentication
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ User authentication
   authenticateUser(credentials: AuthCredentials): Promise<AuthResult>;
   refreshToken(refreshToken: string): Promise<TokenRefreshResult>;
   validateSession(sessionToken: string): Promise<SessionValidationResult>;
   
-  // =ï¿½ï¿½ï¿½ Multi-factor authentication
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Multi-factor authentication
   initiateMFA(userId: string, method: MFAMethod): Promise<MFAInitiationResult>;
   verifyMFA(userId: string, code: string): Promise<MFAVerificationResult>;
   
-  // =ï¿½Ä½ Token management
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â½ Token management
   generateTokens(user: User): Promise<AuthTokens>;
   revokeTokens(userId: string): Promise<void>;
   
-  // =ï¿½ï¿½ï¿½ Security monitoring
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Security monitoring
   detectSuspiciousActivity(userId: string, activity: UserActivity): Promise<SecurityAssessment>;
   enforceSecurityPolicies(user: User, action: string): Promise<PolicyEnforcementResult>;
 }
@@ -3263,34 +3263,34 @@ class AgentOSAuthService implements IAuthenticationService {
   private securityMonitor: ISecurityMonitor;
   
   async authenticateUser(credentials: AuthCredentials): Promise<AuthResult> {
-    // =ï¿½ï¿½ï¿½ Rate limiting check
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Rate limiting check
     await this.checkRateLimit(credentials.identifier);
     
-    // =ï¿½Ä» Validate credentials
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Validate credentials
     const user = await this.validateCredentials(credentials);
     if (!user) {
       await this.auditLogger.logFailedAuth(credentials.identifier, 'invalid_credentials');
       throw new AuthenticationError('Invalid credentials');
     }
     
-    // =ï¿½ï¿½ï¿½ Check account security status
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Check account security status
     const securityCheck = await this.performSecurityCheck(user);
     if (!securityCheck.passed) {
       await this.auditLogger.logSecurityBlock(user.id, securityCheck.reason);
       throw new SecurityError(securityCheck.reason);
     }
     
-    // =ï¿½Ä½ Generate tokens
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â½ Generate tokens
     const tokens = await this.generateTokens(user);
     
-    // =ï¿½ï¿½ï¿½ Update user session
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Update user session
     await this.updateUserSession(user.id, {
       lastLogin: new Date(),
       loginIP: credentials.ipAddress,
       userAgent: credentials.userAgent
     });
     
-    // =ï¿½ï¿½ï¿½ Audit log successful authentication
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Audit log successful authentication
     await this.auditLogger.logSuccessfulAuth(user.id, credentials.ipAddress);
     
     return {
@@ -3322,7 +3322,7 @@ class AgentOSAuthService implements IAuthenticationService {
     const user = await this.userRepository.findByEmail(credentials.email);
     if (!user) return null;
     
-    // =ï¿½ï¿½ï¿½ Verify password hash
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Verify password hash
     const passwordValid = await this.encryptionService.verifyPassword(
       credentials.password,
       user.passwordHash
@@ -3330,7 +3330,7 @@ class AgentOSAuthService implements IAuthenticationService {
     
     if (!passwordValid) return null;
     
-    // GÅ¦ Check if password needs rotation
+    // GÃƒâ€¦Ã‚Â¦ Check if password needs rotation
     if (this.shouldRotatePassword(user.passwordUpdatedAt)) {
       user.requiresPasswordRotation = true;
     }
@@ -3342,7 +3342,7 @@ class AgentOSAuthService implements IAuthenticationService {
     const now = new Date();
     const tokenId = this.generateTokenId();
     
-    // =ï¿½Ä½ Access token (short-lived)
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â½ Access token (short-lived)
     const accessToken = await this.jwtService.sign({
       sub: user.id,
       email: user.email,
@@ -3354,7 +3354,7 @@ class AgentOSAuthService implements IAuthenticationService {
       exp: Math.floor((now.getTime() + 15 * 60 * 1000) / 1000) // 15 minutes
     });
     
-    // =ï¿½ï¿½ï¿½ Refresh token (long-lived)
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Refresh token (long-lived)
     const refreshToken = await this.jwtService.sign({
       sub: user.id,
       tokenId,
@@ -3363,7 +3363,7 @@ class AgentOSAuthService implements IAuthenticationService {
       exp: Math.floor((now.getTime() + 7 * 24 * 60 * 60 * 1000) / 1000) // 7 days
     });
     
-    // =ï¿½ï¿½+ Store token metadata
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½+ Store token metadata
     await this.tokenRepository.storeTokenMetadata({
       tokenId,
       userId: user.id,
@@ -3388,24 +3388,24 @@ class AgentOSAuthService implements IAuthenticationService {
 }
 ```
 
-### =ï¿½ï¿½ï¿½n+ï¿½ AI Safety & Content Filtering
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ AI Safety & Content Filtering
 
 ```typescript
 interface IAISafetyService {
-  // =ï¿½ï¿½ï¿½ Content analysis
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Content analysis
   analyzeContent(content: string, context: SafetyContext): Promise<ContentAnalysis>;
   
-  // =ï¿½Ü¿ Risk assessment
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÅ“Ã‚Â¿ Risk assessment
   assessRisk(query: string, user: User, context: RequestContext): Promise<RiskAssessment>;
   
-  // =ï¿½ï¿½ï¿½n+ï¿½ Content filtering
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Content filtering
   filterResponse(response: string, safetyLevel: SafetyLevel): Promise<FilteredResponse>;
 
   risk_tolerance: this.assessRiskTolerance(context),
         exploration_vs_exploitation: this.assessExplorationTendency(context)
       },
       
-      // =ï¿½Ä» Contextual state
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Contextual state
       current_state: {
         emotional_tone: this.detectEmotionalTone(context),
         engagement_level: this.assessEngagement(context),
@@ -3414,7 +3414,7 @@ interface IAISafetyService {
         time_pressure: this.assessTimePressure(context)
       },
       
-      // =ï¿½ï¿½ï¿½ Performance indicators
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Performance indicators
       interaction_quality: {
         response_satisfaction_trend: this.analyzeResponseSatisfaction(context),
         task_completion_rate: this.calculateTaskCompletionRate(context),
@@ -3426,7 +3426,7 @@ interface IAISafetyService {
   
   analyzeTaskDimension(userQuery: string, context: PromptExecutionContext): TaskDimensionAnalysis {
     return {
-      // =ï¿½Ä» Task characteristics
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Task characteristics
       task_classification: {
         primary_type: this.classifyTaskType(userQuery),
         secondary_types: this.identifySecondaryTasks(userQuery),
@@ -3435,7 +3435,7 @@ interface IAISafetyService {
         domain_expertise_needed: this.assessExpertiseRequirements(userQuery)
       },
       
-      // =ï¿½ï¿½ï¿½ Execution requirements
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Execution requirements
       execution_profile: {
         estimated_duration: this.estimateTaskDuration(userQuery, context),
         required_tools: this.identifyRequiredTools(userQuery),
@@ -3444,7 +3444,7 @@ interface IAISafetyService {
         output_format_preferences: this.inferOutputPreferences(userQuery, context)
       },
       
-      // =ï¿½ï¿½ï¿½ Process characteristics
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Process characteristics
       process_requirements: {
         iterative_refinement_needed: this.assessIterativeNeeds(userQuery),
         validation_requirements: this.identifyValidationNeeds(userQuery),
@@ -3452,7 +3452,7 @@ interface IAISafetyService {
         intermediate_feedback_importance: this.assessFeedbackNeeds(userQuery)
       },
       
-      // =ï¿½Ä» Success criteria
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Success criteria
       success_metrics: {
         completion_criteria: this.defineCompletionCriteria(userQuery),
         quality_thresholds: this.defineQualityThresholds(userQuery, context),
@@ -3466,22 +3466,22 @@ interface IAISafetyService {
     let complexityScore = 0;
     const factors: ComplexityFactor[] = [];
     
-    // =ï¿½ï¿½ï¿½ Linguistic complexity analysis
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Linguistic complexity analysis
     const linguisticComplexity = this.analyzeLinguisticComplexity(userQuery);
     complexityScore += linguisticComplexity.score * 0.2;
     factors.push({ type: 'linguistic', score: linguisticComplexity.score, details: linguisticComplexity.details });
     
-    // =ï¿½ï¿½ï¿½ Conceptual complexity analysis
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Conceptual complexity analysis
     const conceptualComplexity = this.analyzeConceptualComplexity(userQuery);
     complexityScore += conceptualComplexity.score * 0.3;
     factors.push({ type: 'conceptual', score: conceptualComplexity.score, details: conceptualComplexity.details });
     
-    // =ï¿½ï¿½ï¿½ Technical complexity analysis
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Technical complexity analysis
     const technicalComplexity = this.analyzeTechnicalComplexity(userQuery);
     complexityScore += technicalComplexity.score * 0.25;
     factors.push({ type: 'technical', score: technicalComplexity.score, details: technicalComplexity.details });
     
-    // =ï¿½Ä» Domain complexity analysis
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Domain complexity analysis
     const domainComplexity = this.analyzeDomainComplexity(userQuery, context);
     complexityScore += domainComplexity.score * 0.25;
     factors.push({ type: 'domain', score: domainComplexity.score, details: domainComplexity.details });
@@ -3497,7 +3497,7 @@ interface IAISafetyService {
 }
 ```
 
-### =ï¿½Ä» Advanced Element Selection Algorithms
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Advanced Element Selection Algorithms
 
 ```typescript
 class OptimalElementSelector {
@@ -3507,7 +3507,7 @@ class OptimalElementSelector {
     constraints: SelectionConstraints
   ): Promise<OptimalSelection> {
     
-    // 1n+ï¿½Gï¿½ï¿½ Multi-criteria scoring
+    // 1n+ÃƒÂ¯Ã‚Â¿Ã‚Â½GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Multi-criteria scoring
     const scoredElements = await this.performMultiCriteriaScoring(
       availableElements,
       context,
@@ -3520,10 +3520,10 @@ class OptimalElementSelector {
       }
     );
     
-    // 2n+ï¿½Gï¿½ï¿½ Constraint satisfaction
+    // 2n+ÃƒÂ¯Ã‚Â¿Ã‚Â½GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Constraint satisfaction
     const feasibleElements = this.applyConstraints(scoredElements, constraints);
     
-    // 3n+ï¿½Gï¿½ï¿½ Optimal combination search
+    // 3n+ÃƒÂ¯Ã‚Â¿Ã‚Â½GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Optimal combination search
     const optimalCombination = await this.findOptimalCombination(
       feasibleElements,
       constraints,
@@ -3546,22 +3546,22 @@ class OptimalElementSelector {
   ): Promise<MultiCriteriaScoredElement[]> {
     
     return Promise.all(elements.map(async element => {
-      // =ï¿½Ä» Relevance scoring (0-1)
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Relevance scoring (0-1)
       const relevanceScore = await this.calculateRelevanceScore(element, context);
       
-      // =ï¿½ï¿½ï¿½ Priority scoring (normalized 0-1)
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Priority scoring (normalized 0-1)
       const priorityScore = (element.priority || 5) / 20; // Normalize assuming max priority of 20
       
-      // Gï¿½ï¿½ Efficiency scoring (value per token)
+      // GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Efficiency scoring (value per token)
       const efficiencyScore = await this.calculateEfficiencyScore(element, context);
       
-      // =ï¿½ï¿½ï¿½ Novelty scoring (how different from recently used elements)
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Novelty scoring (how different from recently used elements)
       const noveltyScore = this.calculateNoveltyScore(element, context);
       
-      // =ï¿½ï¿½ Synergy scoring (how well it works with other elements)
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Synergy scoring (how well it works with other elements)
       const synergyScore = await this.calculateSynergyScore(element, context);
       
-      // =ï¿½ï¿½ï¿½ Weighted composite score
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Weighted composite score
       const compositeScore = 
         (relevanceScore * weights.relevance_weight) +
         (priorityScore * weights.priority_weight) +
@@ -3665,31 +3665,31 @@ class OptimalElementSelector {
 ```
 
 
-### =ï¿½ï¿½ï¿½n+ï¿½ Multi-Agent Coordination Framework
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Multi-Agent Coordination Framework
 
 ```typescript
 interface IMultiAgentCoordinator {
-  // =ï¿½Ä» Task orchestration
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Task orchestration
   orchestrateCollaboration(
     task: ComplexTask,
     availableAgents: GMI[],
     coordinationStrategy: CoordinationStrategy
   ): Promise<CollaborationPlan>;
   
-  // =ï¿½ï¿½ï¿½ Real-time coordination
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Real-time coordination
   coordinateRealTimeInteraction(
     agents: GMI[],
     sharedObjective: string,
     coordinationContext: CoordinationContext
   ): Promise<CoordinationSession>;
   
-  // =ï¿½ï¿½ï¿½ Collective intelligence
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Collective intelligence
   synthesizeAgentInsights(
     agentOutputs: AgentOutput[],
     synthesisStrategy: SynthesisStrategy
   ): Promise<SynthesizedResult>;
   
-  // =ï¿½ï¿½ï¿½ Performance optimization
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Performance optimization
   optimizeAgentCombination(
     task: ComplexTask,
     agentCapabilities: AgentCapability[],
@@ -3709,24 +3709,24 @@ class AgentOSMultiAgentCoordinator implements IMultiAgentCoordinator {
     coordinationStrategy: CoordinationStrategy
   ): Promise<CollaborationPlan> {
     
-    // 1n+ï¿½Gï¿½ï¿½ Analyze task complexity and requirements
+    // 1n+ÃƒÂ¯Ã‚Â¿Ã‚Â½GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Analyze task complexity and requirements
     const taskAnalysis = await this.analyzeTaskForCollaboration(task);
     
-    // 2n+ï¿½Gï¿½ï¿½ Select optimal agent combination
+    // 2n+ÃƒÂ¯Ã‚Â¿Ã‚Â½GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Select optimal agent combination
     const agentSelection = await this.selectOptimalAgentCombination(
       taskAnalysis,
       availableAgents,
       coordinationStrategy
     );
     
-    // 3n+ï¿½Gï¿½ï¿½ Design collaboration workflow
+    // 3n+ÃƒÂ¯Ã‚Â¿Ã‚Â½GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Design collaboration workflow
     const workflow = await this.designCollaborationWorkflow(
       taskAnalysis,
       agentSelection,
       coordinationStrategy
     );
     
-    // 4n+ï¿½Gï¿½ï¿½ Set up coordination infrastructure
+    // 4n+ÃƒÂ¯Ã‚Â¿Ã‚Â½GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Set up coordination infrastructure
     const coordinationInfrastructure = await this.setupCoordinationInfrastructure(
       workflow,
       agentSelection
@@ -3747,25 +3747,25 @@ class AgentOSMultiAgentCoordinator implements IMultiAgentCoordinator {
   
   private async analyzeTaskForCollaboration(task: ComplexTask): Promise<CollaborationTaskAnalysis> {
     return {
-      // =ï¿½Ä» Task decomposition
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Task decomposition
       subtasks: await this.decomposeTask(task),
       
-      // =ï¿½ï¿½ï¿½ Dependency analysis
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Dependency analysis
       dependencies: await this.analyzeDependencies(task),
       
-      // =ï¿½ï¿½ï¿½ Required expertise
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Required expertise
       expertiseRequirements: this.identifyExpertiseRequirements(task),
       
-      // =ï¿½ï¿½ï¿½ Collaboration patterns
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Collaboration patterns
       collaborationPatterns: this.identifyCollaborationPatterns(task),
       
-      // =ï¿½ï¿½ï¿½ Complexity assessment
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Complexity assessment
       complexityMetrics: this.assessCollaborationComplexity(task),
       
-      // GÅ¦ Temporal constraints
+      // GÃƒâ€¦Ã‚Â¦ Temporal constraints
       temporalConstraints: this.analyzeTemporalConstraints(task),
       
-      // =ï¿½Ä» Success criteria
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Success criteria
       successCriteria: this.defineTaskSuccessCriteria(task)
     };
   }
@@ -3776,22 +3776,22 @@ class AgentOSMultiAgentCoordinator implements IMultiAgentCoordinator {
     strategy: CoordinationStrategy
   ): Promise<OptimalAgentSelection> {
     
-    // =ï¿½ï¿½ï¿½ Analyze agent capabilities
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Analyze agent capabilities
     const agentCapabilities = await this.analyzeAgentCapabilities(availableAgents);
     
-    // =ï¿½Ä» Match capabilities to requirements
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Match capabilities to requirements
     const capabilityMatching = this.matchCapabilitiesToRequirements(
       agentCapabilities,
       taskAnalysis.expertiseRequirements
     );
     
-    // =ï¿½ï¿½ Assess collaboration potential
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Assess collaboration potential
     const collaborationCompatibility = await this.assessCollaborationCompatibility(
       availableAgents,
       taskAnalysis.collaborationPatterns
     );
     
-    // =ï¿½ï¿½ï¿½ Optimize selection
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Optimize selection
     const optimization = this.optimizeAgentSelection(
       capabilityMatching,
       collaborationCompatibility,
@@ -3814,17 +3814,17 @@ class AgentOSMultiAgentCoordinator implements IMultiAgentCoordinator {
     coordinationContext: CoordinationContext
   ): Promise<CoordinationSession> {
     
-    // =ï¿½ï¿½ï¿½ Initialize shared context
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Initialize shared context
     const sharedContext = await this.initializeSharedContext(
       agents,
       sharedObjective,
       coordinationContext
     );
     
-    // =ï¿½ï¿½ï¿½ Set up communication channels
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Set up communication channels
     const communicationChannels = this.setupCommunicationChannels(agents, sharedContext);
     
-    // =ï¿½Ä» Create coordination session
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Create coordination session
     const session = new CoordinationSession({
       agents,
       sharedContext,
@@ -3833,7 +3833,7 @@ class AgentOSMultiAgentCoordinator implements IMultiAgentCoordinator {
       coordinator: this
     });
     
-    // =ï¿½ï¿½ï¿½ Start coordination loop
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Start coordination loop
     await session.initialize();
     
     return session;
@@ -3841,10 +3841,10 @@ class AgentOSMultiAgentCoordinator implements IMultiAgentCoordinator {
 }
 ```
 
-### =ï¿½ï¿½ï¿½ Advanced Coordination Patterns
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Advanced Coordination Patterns
 
 ```typescript
-// =ï¿½Ä» Sequential Coordination Pattern
+// =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Sequential Coordination Pattern
 class SequentialCoordinationPattern implements ICoordinationPattern {
   async coordinate(
     agents: GMI[],
@@ -3856,17 +3856,17 @@ class SequentialCoordinationPattern implements ICoordinationPattern {
     let currentContext = context;
     
     for (const agent of agents) {
-      // =ï¿½ï¿½ï¿½ Update agent with cumulative context
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Update agent with cumulative context
       const agentContext = this.buildAgentContext(currentContext, results);
       
-      // Gï¿½ï¿½n+ï¿½ Execute agent task
+      // GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Execute agent task
       const agentResult = await agent.processTask(task, agentContext);
       results.push(agentResult);
       
-      // =ï¿½ï¿½ï¿½ Update shared context
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Update shared context
       currentContext = await this.updateContextWithResult(currentContext, agentResult);
       
-      // =ï¿½ï¿½ï¿½ Check for early termination conditions
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Check for early termination conditions
       if (this.shouldTerminateEarly(agentResult, task)) {
         break;
       }
@@ -3882,7 +3882,7 @@ class SequentialCoordinationPattern implements ICoordinationPattern {
   }
 }
 
-// Gï¿½ï¿½ Hub Coordination Pattern (Orchestrator-based)
+// GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Hub Coordination Pattern (Orchestrator-based)
 class HubCoordinationPattern implements ICoordinationPattern {
   private orchestrator: GMI;
   
@@ -3896,7 +3896,7 @@ class HubCoordinationPattern implements ICoordinationPattern {
     context: CoordinationContext
   ): Promise<CoordinationResult> {
     
-    // =ï¿½Ä» Orchestrator plans the collaboration
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Orchestrator plans the collaboration
     const collaborationPlan = await this.orchestrator.processTask({
       type: 'collaboration_planning',
       description: `Plan collaboration for: ${task.description}`,
@@ -3910,10 +3910,10 @@ class HubCoordinationPattern implements ICoordinationPattern {
     
     const results: AgentResult[] = [];
     
-    // =ï¿½ï¿½ï¿½ Execute planned collaboration
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Execute planned collaboration
     for (const step of collaborationPlan.steps) {
       if (step.type === 'parallel_execution') {
-        // Gï¿½ï¿½ Parallel execution
+        // GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Parallel execution
         const parallelResults = await Promise.all(
           step.agents.map(agentId => {
             const agent = agents.find(a => a.id === agentId);
@@ -3926,7 +3926,7 @@ class HubCoordinationPattern implements ICoordinationPattern {
         results.push(...parallelResults);
         
       } else if (step.type === 'sequential_execution') {
-        // =ï¿½ï¿½ï¿½ Sequential execution
+        // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Sequential execution
         for (const agentId of step.agents) {
           const agent = agents.find(a => a.id === agentId);
           const result = await agent!.processTask(step.task, {
@@ -3937,7 +3937,7 @@ class HubCoordinationPattern implements ICoordinationPattern {
         }
       }
       
-      // =ï¿½Ä» Orchestrator reviews and guides
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Orchestrator reviews and guides
       const review = await this.orchestrator.processTask({
         type: 'collaboration_review',
         stepResults: results.slice(-step.agents.length),
@@ -3945,12 +3945,12 @@ class HubCoordinationPattern implements ICoordinationPattern {
       }, context);
       
       if (review.needsAdjustment) {
-        // =ï¿½ï¿½ï¿½ Adjust collaboration strategy
+        // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Adjust collaboration strategy
         await this.adjustCollaborationStrategy(review.adjustments, agents);
       }
     }
     
-    // =ï¿½Ä» Final synthesis by orchestrator
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Final synthesis by orchestrator
     const synthesis = await this.orchestrator.processTask({
       type: 'result_synthesis',
       allResults: results,
@@ -3968,7 +3968,7 @@ class HubCoordinationPattern implements ICoordinationPattern {
   }
 }
 
-// =ï¿½ï¿½+n+ï¿½ Networked Coordination Pattern
+// =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½+n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Networked Coordination Pattern
 class NetworkedCoordinationPattern implements ICoordinationPattern {
   async coordinate(
     agents: GMI[],
@@ -3976,15 +3976,15 @@ class NetworkedCoordinationPattern implements ICoordinationPattern {
     context: CoordinationContext
   ): Promise<CoordinationResult> {
     
-    // =ï¿½ï¿½ï¿½ Create agent network
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Create agent network
     const agentNetwork = this.createAgentNetwork(agents, task);
     
-    // =ï¿½ï¿½ï¿½ Initialize parallel processing
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Initialize parallel processing
     const processingTasks = agents.map(agent => 
       this.processAgentInNetwork(agent, agentNetwork, task, context)
     );
     
-    // Gï¿½ï¿½ Execute with coordination
+    // GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Execute with coordination
     const results = await this.executeWithCoordination(processingTasks, agentNetwork);
     
     return {
@@ -4000,13 +4000,13 @@ class NetworkedCoordinationPattern implements ICoordinationPattern {
     agent: GMI,
     network: AgentNetwork,
       
-  // =ï¿½ï¿½ï¿½ Behavior monitoring
+  // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Behavior monitoring
   monitorAIBehavior(
     gmiId: string,
     interaction: AIInteraction
   ): Promise<BehaviorAssessment>;
   
-  // Gï¿½ï¿½n+ï¿½ Incident response
+  // GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Incident response
   handleSafetyIncident(incident: SafetyIncident): Promise<IncidentResponse>;
 }
 
@@ -4021,7 +4021,7 @@ class AgentOSAISafetyService implements IAISafetyService {
     context: SafetyContext
   ): Promise<ContentAnalysis> {
     
-    // =ï¿½ï¿½ï¿½ Multi-dimensional content analysis
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Multi-dimensional content analysis
     const analyses = await Promise.all([
       this.analyzeToxicity(content),
       this.analyzePrivacy(content),
@@ -4054,7 +4054,7 @@ class AgentOSAISafetyService implements IAISafetyService {
     
     const boundaryViolations: BoundaryViolation[] = [];
     
-    // =ï¿½ï¿½ï¿½ Medical advice detection
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Medical advice detection
     if (this.detectsMedicalAdvice(content)) {
       const severity = this.assessMedicalAdviceSeverity(content);
       boundaryViolations.push({
@@ -4067,7 +4067,7 @@ class AgentOSAISafetyService implements IAISafetyService {
       });
     }
     
-    // Gï¿½ï¿½n+ï¿½ Legal advice detection
+    // GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Legal advice detection
     if (this.detectsLegalAdvice(content)) {
       boundaryViolations.push({
         type: 'legal_advice',
@@ -4077,7 +4077,7 @@ class AgentOSAISafetyService implements IAISafetyService {
       });
     }
     
-    // =ï¿½Æ¦ Financial advice detection
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€ Ã‚Â¦ Financial advice detection
     if (this.detectsFinancialAdvice(content)) {
       boundaryViolations.push({
         type: 'financial_advice',
@@ -4099,7 +4099,7 @@ class AgentOSAISafetyService implements IAISafetyService {
     safetyLevel: SafetyLevel
   ): Promise<FilteredResponse> {
     
-    // =ï¿½ï¿½ï¿½ Analyze response for safety issues
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Analyze response for safety issues
     const analysis = await this.analyzeContent(response, { safetyLevel });
     
     if (analysis.riskLevel === 'low') {
@@ -4111,7 +4111,7 @@ class AgentOSAISafetyService implements IAISafetyService {
       };
     }
     
-    // =ï¿½ï¿½ï¿½n+ï¿½ Apply appropriate filters
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ Apply appropriate filters
     let filteredContent = response;
     const appliedFilters: AppliedFilter[] = [];
     
@@ -4127,7 +4127,7 @@ class AgentOSAISafetyService implements IAISafetyService {
       }
     }
     
-    // =ï¿½ï¿½ï¿½ Add safety disclaimers if needed
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Add safety disclaimers if needed
     if (analysis.recommendations.includes('add_disclaimer')) {
       const disclaimer = this.generateAppropriateDisclaimer(analysis);
       filteredContent = `${disclaimer}\n\n${filteredContent}`;
@@ -4153,19 +4153,19 @@ class AgentOSAISafetyService implements IAISafetyService {
     
     if (issues.some(i => i.type === 'medical_advice')) {
       disclaimers.push(
-        "Gï¿½ï¿½n+ï¿½ **Medical Disclaimer**: This information is for educational purposes only and should not replace professional medical advice. Please consult with a qualified healthcare provider for medical concerns."
+        "GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ **Medical Disclaimer**: This information is for educational purposes only and should not replace professional medical advice. Please consult with a qualified healthcare provider for medical concerns."
       );
     }
     
     if (issues.some(i => i.type === 'legal_advice')) {
       disclaimers.push(
-        "Gï¿½ï¿½n+ï¿½ **Legal Disclaimer**: This information is general in nature and should not be considered legal advice. Laws vary by jurisdiction. Please consult with a qualified attorney for legal matters."
+        "GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½n+ÃƒÂ¯Ã‚Â¿Ã‚Â½ **Legal Disclaimer**: This information is general in nature and should not be considered legal advice. Laws vary by jurisdiction. Please consult with a qualified attorney for legal matters."
       );
     }
     
     if (issues.some(i => i.type === 'financial_advice')) {
       disclaimers.push(
-        "=ï¿½Æ¦ **Financial Disclaimer**: This information is for educational purposes only and should not be considered personalized financial advice. Please consult with a qualified financial advisor for investment decisions."
+        "=ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€ Ã‚Â¦ **Financial Disclaimer**: This information is for educational purposes only and should not be considered personalized financial advice. Please consult with a qualified financial advisor for investment decisions."
       );
     }
     
@@ -4174,7 +4174,7 @@ class AgentOSAISafetyService implements IAISafetyService {
 }
 ```
 
-### =ï¿½ï¿½ï¿½ Shared Context Management
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Shared Context Management
 ```
 class SharedContextManager {
   private contextStore: Map<string, SharedContextEntry> = new Map();
@@ -4193,7 +4193,7 @@ class SharedContextManager {
       createdAt: new Date(),
       lastUpdated: new Date(),
       
-      // =ï¿½ï¿½ï¿½ Cognitive shared state
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Cognitive shared state
       cognitiveState: {
         sharedUnderstanding: initialContext.sharedUnderstanding || {},
         agreementPoints: [],
@@ -4202,7 +4202,7 @@ class SharedContextManager {
         consensusLevel: 0.0
       },
       
-      // =ï¿½ï¿½ï¿½ Task-specific context
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Task-specific context
       taskContext: {
         currentObjective: initialContext.objective,
         progress: {},
@@ -4210,7 +4210,7 @@ class SharedContextManager {
         requirements: initialContext.requirements || {}
       },
       
-      // =ï¿½ï¿½ï¿½ Communication state
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Communication state
       communicationState: {
         activeDiscussions: [],
         pendingQuestions: [],
@@ -4218,7 +4218,7 @@ class SharedContextManager {
         clarificationNeeds: []
       },
       
-      // =ï¿½ï¿½ï¿½ Performance tracking
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Performance tracking
       performanceMetrics: {
         collaborationEffectiveness: 0.0,
         consensusBuilding: 0.0,
@@ -4227,10 +4227,10 @@ class SharedContextManager {
       }
     };
     
-    // =ï¿½ï¿½ï¿½ Set up access controls
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Set up access controls
     await this.accessControl.setupSharedAccess(sessionId, participants);
     
-    // =ï¿½ï¿½ Initialize version control
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Initialize version control
     await this.versionControl.initializeContext(sessionId, sharedContext);
     
     this.contextStore.set(sessionId, {
@@ -4253,7 +4253,7 @@ class SharedContextManager {
       throw new Error(`Shared context not found: ${sessionId}`);
     }
     
-    // =ï¿½ï¿½ï¿½ Verify access permissions
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Verify access permissions
     await this.accessControl.verifyUpdatePermission(sessionId, updatingAgentId, updates);
     
     const updateResults: IndividualUpdateResult[] = [];
@@ -4261,7 +4261,7 @@ class SharedContextManager {
     
     for (const update of updates) {
       try {
-        // =ï¿½ï¿½ï¿½ Detect conflicts
+        // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Detect conflicts
         const conflictAnalysis = await this.analyzeUpdateConflicts(
           contextEntry.context,
           update,
@@ -4277,7 +4277,7 @@ class SharedContextManager {
             resolution: await this.proposeConflictResolution(conflictAnalysis)
           });
         } else {
-          // Gï¿½ï¿½ Apply update
+          // GÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Apply update
           const updatedContext = await this.applyContextUpdate(
             contextEntry.context,
             update,
@@ -4302,12 +4302,12 @@ class SharedContextManager {
       }
     }
     
-    // =ï¿½ï¿½ Create version snapshot if significant changes
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Create version snapshot if significant changes
     if (this.isSignificantUpdate(updates)) {
       await this.versionControl.createSnapshot(sessionId, contextEntry.context);
     }
     
-    // =ï¿½ï¿½ï¿½ Notify other participants of updates
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Notify other participants of updates
     await this.notifyParticipants(sessionId, updatingAgentId, updateResults);
     
     return {
@@ -4326,7 +4326,7 @@ class SharedContextManager {
     
     const conflicts: Conflict[] = [];
     
-    // =ï¿½ï¿½ï¿½ Check for concurrent modifications
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Check for concurrent modifications
     const concurrentUpdates = await this.getConcurrentUpdates(
       currentContext.sessionId,
       update.targetPath,
@@ -4343,11 +4343,11 @@ class SharedContextManager {
       });
     }
     
-    // =ï¿½Ä» Check for logical inconsistencies
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Check for logical inconsistencies
     const logicalConflicts = this.detectLogicalConflicts(currentContext, update);
     conflicts.push(...logicalConflicts);
     
-    // =ï¿½ï¿½ï¿½ Check for consensus violations
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Check for consensus violations
     const consensusConflicts = this.detectConsensusViolations(currentContext, update);
     conflicts.push(...consensusConflicts);
     
@@ -4419,7 +4419,7 @@ class SharedContextManager {
 }
 ```
 
-### =ï¿½ï¿½ï¿½ Advanced Conflict Resolution
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Advanced Conflict Resolution
 
 ```
 class IntelligentConflictResolver {
@@ -4453,7 +4453,7 @@ class IntelligentConflictResolver {
     participants: GMI[]
   ): Promise<ConflictResolutionResult> {
     
-    // =ï¿½Ä» Identify the most qualified experts
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Identify the most qualified experts
     const expertiseScores = participants.map(agent => ({
       agent,
       expertiseScore: this.calculateExpertiseScore(
@@ -4467,7 +4467,7 @@ class IntelligentConflictResolver {
       .sort((a, b) => (b.expertiseScore + b.credibilityScore) - (a.expertiseScore + a.credibilityScore))
       .slice(0, 3);
     
-    // =ï¿½ï¿½ï¿½ Structured expert discussion
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Structured expert discussion
     const expertDiscussion = await this.facilitateExpertDiscussion({
       conflict,
       experts: topExperts.map(e => e.agent),
@@ -4485,7 +4485,7 @@ class IntelligentConflictResolver {
         dissenting_opinions: expertDiscussion.dissentingViews
       };
     } else {
-      // =ï¿½ï¿½ï¿½ Escalate to hybrid approach
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Escalate to hybrid approach
       return this.resolveWithHybridApproach(conflict, expertDiscussion, context);
     }
   }
@@ -4499,7 +4499,7 @@ class IntelligentConflictResolver {
     let round = 0;
     const maxRounds = 5;
     
-    // =ï¿½Ä» Initial position statements
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Initial position statements
     const initialPositions = await this.collectInitialPositions(discussionParams.experts, discussionParams.conflict);
     discussion.push({
       round: 0,
@@ -4510,22 +4510,22 @@ class IntelligentConflictResolver {
     while (consensusLevel < discussionParams.consensusThreshold && round < maxRounds) {
       round++;
       
-      // =ï¿½ï¿½ï¿½ Evidence presentation round
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Evidence presentation round
       const evidenceRound = await this.conductEvidenceRound(discussionParams.experts, discussionParams.conflict);
       discussion.push(evidenceRound);
       
-      // =ï¿½ï¿½ï¿½ Synthesis and convergence round
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Synthesis and convergence round
       const synthesisRound = await this.conductSynthesisRound(discussionParams.experts, discussion);
       discussion.push(synthesisRound);
       
-      // =ï¿½ï¿½ï¿½ Measure consensus
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Measure consensus
       consensusLevel = this.measureConsensusLevel(synthesisRound.contributions);
       
       if (consensusLevel >= discussionParams.consensusThreshold) {
         break;
       }
       
-      // =ï¿½ï¿½ï¿½ Refinement round if needed
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Refinement round if needed
       if (round < maxRounds) {
         const refinementRound = await this.conductRefinementRound(discussionParams.experts, discussion);
         discussion.push(refinementRound);
@@ -4587,7 +4587,7 @@ class IntelligentConflictResolver {
 }
 ```
 
-### =ï¿½ï¿½ Emergent Intelligence Patterns
+### =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Emergent Intelligence Patterns
 
 ```
 class EmergentIntelligenceDetector {
@@ -4599,19 +4599,19 @@ class EmergentIntelligenceDetector {
     const interactions = await this.getSessionInteractions(multiAgentSession.id, timeWindow);
     
     return {
-      // =ï¿½ï¿½ï¿½ Cognitive emergence
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Cognitive emergence
       cognitivePatterns: await this.detectCognitiveEmergence(interactions),
       
-      // =ï¿½ï¿½ Collaborative emergence  
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Collaborative emergence  
       collaborativePatterns: await this.detectCollaborativeEmergence(interactions),
       
-      // =ï¿½ï¿½ï¿½ Creative emergence
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Creative emergence
       creativePatterns: await this.detectCreativeEmergence(interactions),
       
-      // =ï¿½ï¿½ï¿½ Performance emergence
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Performance emergence
       performancePatterns: await this.detectPerformanceEmergence(interactions),
       
-      // =ï¿½ï¿½ï¿½ Adaptive emergence
+      // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Adaptive emergence
       adaptivePatterns: await this.detectAdaptiveEmergence(interactions)
     };
   }
@@ -4622,7 +4622,7 @@ class EmergentIntelligenceDetector {
     
     const patterns: CognitiveEmergencePattern[] = [];
     
-    // =ï¿½ï¿½ï¿½ Collective reasoning emergence
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Collective reasoning emergence
     const reasoningChains = this.identifyReasoningChains(interactions);
     for (const chain of reasoningChains) {
       if (this.isEmergentReasoning(chain)) {
@@ -4638,7 +4638,7 @@ class EmergentIntelligenceDetector {
       }
     }
     
-    // =ï¿½Ä» Consensus building emergence
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â» Consensus building emergence
     const consensusEvolution = this.trackConsensusEvolution(interactions);
     if (this.isEmergentConsensus(consensusEvolution)) {
       patterns.push({
@@ -4660,7 +4660,7 @@ class EmergentIntelligenceDetector {
     
     const patterns: CreativeEmergencePattern[] = [];
     
-    // =ï¿½ï¿½ï¿½ Creative synthesis detection
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ÃƒÂ¯Ã‚Â¿Ã‚Â½ Creative synthesis detection
     const creativeMoments = this.identifyCreativeMoments(interactions);
     
     for (const moment of creativeMoments) {
@@ -4679,7 +4679,7 @@ class EmergentIntelligenceDetector {
       }
     }
     
-    // =ï¿½Ä¿ Cross-domain innovation
+    // =ÃƒÂ¯Ã‚Â¿Ã‚Â½Ãƒâ€žÃ‚Â¿ Cross-domain innovation
     const crossDomainConnections = this.identifyCrossDomainConnections(interactions);
     for (const connection of crossDomainConnections) {
       if (this.isInnovativeConnection(connection)) {
@@ -4711,5 +4711,10 @@ This completes the comprehensive deep dive into AgentOS's multi-agent coordinati
 - **Input triggers**: `AgentOSInput.workflowRequest` allows turns to launch workflows; the orchestrator broadcasts progress on the active stream via `WORKFLOW_UPDATE` chunks.
 - **Runtime layers**: The `WorkflowEngine` consumes descriptors from the extension registry, coordinates task progression, and persists state via the injected `IWorkflowStore`. Default adapters include an in-memory store plus an optional Prisma-backed adapter with migrations.
 - **Task graph semantics**: Tasks declare executors (`gmi`, `human`, `tool`, `extension`), dependency edges, retry policies, guardrail/policy tags, and JSON-schema validated inputs/outputs. The engine enforces DAG integrity and ensures policy tags cascade to guardrail stacks during execution.
-- **Streaming + telemetry**: Progress updates flow through `AgentOSResponseChunkType.WORKFLOW_UPDATE`, mirroring guardrail metadata and enabling dashboards to render multi-stage automations. Event hooks emit structured `WorkflowEvent` records for audit/compliance pipelines.
-- **Conversation linkage**: Workflow instances may link to `conversationId`, but the schema treats conversations as optionalï¿½automations can be launched from CLI/schedulers while still inheriting context when present. See `docs/WORKFLOWS.md` for authoring and configuration details.
+- **Streaming + telemetry**: Progress updates flow through `AgentOSResponseChunkType.WORKFLOW_UPDATE`, mirroring guardrail metadata and enabling dashboards to render multi-stage automations. Event hooks emit structured `WorkflowEvent` records for audit/compliance pipelines.\n- **REST surface**: The embedded integration exposes `GET /agentos/workflows/definitions`, `POST /agentos/workflows/start`, and `POST /agentos/workflows/cancel` so hosts can enumerate, launch, and stop workflows without touching runtime internals.
+- **Conversation linkage**: Workflow instances may link to `conversationId`, but the schema treats conversations as optionalÃƒÂ¯Ã‚Â¿Ã‚Â½automations can be launched from CLI/schedulers while still inheriting context when present. See `docs/WORKFLOWS.md` for authoring and configuration details.
+\n### Agency runtime overview
+- WorkflowRuntime listens for workflow events and schedules Agency-backed tasks using a bounded queue so multi-seat assistants remain responsive.
+- AgencyRegistry tracks the seats (role ? GMI instance) attached to each Agency, allowing several GMIs to collaborate behind a single fa�ade.
+- PersonaOverlayManager evaluates \\WorkflowDefinition.roles[*].evolutionRules\\ and produces overlays that adjust persona traits, moods, or metadata without mutating the base persona definitions.
+- Streaming clients now receive AGENCY_UPDATE chunks in addition to WORKFLOW_UPDATE, enabling the UI to render Agency rosters and seat state changes in real time.
