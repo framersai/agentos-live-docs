@@ -85,6 +85,8 @@ import {
   type ExtensionEvent,
   type ExtensionEventListener,
 } from '../extensions';
+import { WorkflowRuntime } from '../core/workflows/runtime/WorkflowRuntime';
+import { AgencyRegistry } from '../core/agency/AgencyRegistry';
 import type { WorkflowDescriptor } from '../extensions/types';
 import { WorkflowEngine } from '../core/workflows/WorkflowEngine';
 import type {
@@ -259,6 +261,8 @@ export class AgentOS implements IAgentOS {
   private workflowStore!: IWorkflowStore;
   private workflowEngineListener?: WorkflowEngineEventListener;
   private workflowExtensionListener?: ExtensionEventListener;
+  private workflowRuntime?: WorkflowRuntime;
+  private agencyRegistry?: AgencyRegistry;
 
   private authService!: IAuthService;
 
@@ -379,6 +383,8 @@ export class AgentOS implements IAgentOS {
       await this.gmiManager.initialize();
       console.log('AgentOS: GMIManager initialized.');
 
+      await this.startWorkflowRuntime();
+
       // Initialize AgentOS Orchestrator
       const orchestratorDependencies: AgentOSOrchestratorDependencies = {
         gmiManager: this.gmiManager,
@@ -465,9 +471,12 @@ export class AgentOS implements IAgentOS {
 
     const workflowLogger = this.logger.child?.({ component: 'WorkflowEngine' }) ?? this.logger;
     await this.workflowEngine.initialize(this.config.workflowEngineConfig ?? {}, {
-      store: this.workflowStore,
-      logger: workflowLogger,
-    });
+    store: this.workflowStore,
+    logger: workflowLogger,
+  });
+
+    const agencyLogger = this.logger.child?.({ component: 'AgencyRegistry' }) ?? this.logger;
+    this.agencyRegistry = new AgencyRegistry(agencyLogger);
 
     await this.registerWorkflowDescriptorsFromRegistry();
 
@@ -495,6 +504,36 @@ export class AgentOS implements IAgentOS {
       await this.handleWorkflowEngineEvent(event);
     };
     this.workflowEngine.onEvent(this.workflowEngineListener);
+  }
+
+  private async startWorkflowRuntime(): Promise<void> {
+    if (!this.workflowEngine) {
+      return;
+    }
+    if (this.workflowRuntime) {
+      return;
+    }
+    if (!this.gmiManager || !this.streamingManager || !this.toolOrchestrator) {
+      this.logger.warn('Workflow runtime start skipped because core dependencies are not ready.');
+      return;
+    }
+
+    if (!this.agencyRegistry) {
+      const agencyLogger = this.logger.child?.({ component: 'AgencyRegistry' }) ?? this.logger;
+      this.agencyRegistry = new AgencyRegistry(agencyLogger);
+    }
+
+    const runtimeLogger = this.logger.child?.({ component: 'WorkflowRuntime' }) ?? this.logger;
+    this.workflowRuntime = new WorkflowRuntime({
+      workflowEngine: this.workflowEngine,
+      gmiManager: this.gmiManager,
+      streamingManager: this.streamingManager,
+      toolOrchestrator: this.toolOrchestrator,
+      extensionManager: this.extensionManager,
+      agencyRegistry: this.agencyRegistry,
+      logger: runtimeLogger,
+    });
+    await this.workflowRuntime.start();
   }
 
   private async registerWorkflowDescriptorsFromRegistry(): Promise<void> {
@@ -1106,10 +1145,16 @@ export class AgentOS implements IAgentOS {
         this.workflowEngine.offEvent(this.workflowEngineListener);
         this.workflowEngineListener = undefined;
       }
-      if (this.workflowExtensionListener && this.extensionManager) {
-        this.extensionManager.off(this.workflowExtensionListener);
-        this.workflowExtensionListener = undefined;
-      }
+    if (this.workflowExtensionListener && this.extensionManager) {
+      this.extensionManager.off(this.workflowExtensionListener);
+      this.workflowExtensionListener = undefined;
+    }
+
+    if (this.workflowRuntime) {
+      await this.workflowRuntime.stop();
+      this.workflowRuntime = undefined;
+    }
+    this.agencyRegistry = undefined;
       if (this.agentOSOrchestrator?.shutdown) {
         await this.agentOSOrchestrator.shutdown();
         console.log('AgentOS: AgentOSOrchestrator shut down.');

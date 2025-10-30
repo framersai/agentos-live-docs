@@ -1,4 +1,5 @@
 // File: frontend/src/views/PrivateHome.vue
+import type { WorkflowDefinitionFE } from '@/types/workflow';
 /**
  * @file PrivateHome.vue
  * @description Main private view for authenticated users. Orchestrates agent views,
@@ -24,6 +25,7 @@ import { useAuth } from '@/composables/useAuth';
 import {
   chatAPI,
   promptAPI,
+  workflowAPI,
   type ChatMessagePayloadFE,
   type ProcessedHistoryMessageFE,
   type ChatMessageFE,
@@ -80,6 +82,73 @@ const isLoadingResponse = ref(false);
  */
 const isVoiceInputCurrentlyProcessingAudio = ref(false);
 const agentViewRef = ref<any>(null);
+const workflowDefinitions = ref<WorkflowDefinitionFE[]>([]);
+const workflowDefinitionsLoading = ref(false);
+const selectedWorkflowDefinitionId = ref<string | null>(null);
+const workflowLaunchPending = ref(false);
+const workflowLoadError = ref<string | null>(null);
+
+const loadWorkflowDefinitions = async (): Promise<void> => {
+  workflowDefinitionsLoading.value = true;
+  workflowLoadError.value = null;
+  try {
+    const { data } = await workflowAPI.listDefinitions();
+    workflowDefinitions.value = data?.definitions ?? [];
+  } catch (error: any) {
+    console.error('[PrivateHome] Failed to load workflow definitions.', error);
+    workflowLoadError.value = error?.response?.data?.message ?? 'Unable to load workflows';
+    toast?.add?.({
+      type: 'warning',
+      title: 'Workflow definitions unavailable',
+      message: workflowLoadError.value,
+    });
+  } finally {
+    workflowDefinitionsLoading.value = false;
+  }
+};
+
+const launchSelectedWorkflow = async (): Promise<void> => {
+  if (!selectedWorkflowDefinitionId.value) {
+    toast?.add?.({ type: 'info', title: 'Select workflow', message: 'Choose a workflow to start.' });
+    return;
+  }
+  const agent = activeAgent.value;
+  const agentIdValue = agent?.id ?? 'general';
+  const conversationId = chatStore.getCurrentConversationId(agentIdValue);
+  const userId = auth.sessionUserId.value || `frontend_user_${agentIdValue}`;
+  workflowLaunchPending.value = true;
+  try {
+    await workflowAPI.start({
+      definitionId: selectedWorkflowDefinitionId.value,
+      userId,
+      conversationId,
+      context: { agentId: agentIdValue },
+    });
+    toast?.add?.({ type: 'success', title: 'Workflow started', message: 'Workflow launched successfully.' });
+  } catch (error: any) {
+    console.error('[PrivateHome] Failed to start workflow.', error);
+    const message = error?.response?.data?.message ?? 'Unable to start workflow';
+    toast?.add?.({ type: 'error', title: 'Workflow start failed', message });
+  } finally {
+    workflowLaunchPending.value = false;
+  }
+};
+
+onMounted(async () => {
+  try {
+    await loadWorkflowDefinitions();
+  } catch {
+    // errors handled in loader
+  }
+});
+
+watch(workflowDefinitions, (defs) => {
+  if (defs.length > 0 && !selectedWorkflowDefinitionId.value) {
+    selectedWorkflowDefinitionId.value = defs[0].id;
+  } else if (defs.length === 0) {
+    selectedWorkflowDefinitionId.value = null;
+  }
+});
 
 const activeConversationId = computed(() => {
   const agent = activeAgent.value;
@@ -457,11 +526,46 @@ watch(isVoiceInputCurrentlyProcessingAudio, (isSttActive) => {
         </div>
       </template>
     <template #voice-toolbar>
-      <WorkflowStatusPanel
-        v-if="activeWorkflowSummary"
-        :workflow="activeWorkflowSummary"
-        :events="activeWorkflowEvents"
-      />
+      <div class="workflow-toolbar">
+        <WorkflowStatusPanel
+          :workflow="activeWorkflowSummary"
+          :events="activeWorkflowEvents"
+        />
+        <div class="workflow-launcher" v-if="workflowDefinitionsLoading">
+          <span class="workflow-launcher__message">Loading workflows…</span>
+        </div>
+        <div class="workflow-launcher" v-else-if="workflowDefinitions.length">
+          <label class="workflow-launcher__label" for="workflow-select">Launch workflow</label>
+          <div class="workflow-launcher__controls">
+            <select
+              id="workflow-select"
+              class="workflow-launcher__select"
+              v-model="selectedWorkflowDefinitionId"
+            >
+              <option disabled value="">Select workflow</option>
+              <option
+                v-for="definition in workflowDefinitions"
+                :key="definition.id"
+                :value="definition.id"
+              >
+                {{ definition.displayName || definition.id }}
+              </option>
+            </select>
+            <button
+              class="btn btn-secondary-ephemeral btn-sm-ephemeral"
+              type="button"
+              :disabled="workflowLaunchPending || !selectedWorkflowDefinitionId"
+              @click="launchSelectedWorkflow"
+            >
+              {{ workflowLaunchPending ? 'Starting…' : 'Start' }}
+            </button>
+          </div>
+          <p v-if="workflowLoadError" class="workflow-launcher__error">{{ workflowLoadError }}</p>
+        </div>
+        <div class="workflow-launcher" v-else>
+          <span class="workflow-launcher__message">No workflows available.</span>
+        </div>
+      </div>
     </template>
     </UnifiedChatLayout>
   </div>
@@ -482,6 +586,7 @@ watch(isVoiceInputCurrentlyProcessingAudio, (isSttActive) => {
 
 
 </style>
+
 
 
 

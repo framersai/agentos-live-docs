@@ -15,6 +15,32 @@ export type WorkflowTaskStatus =
   | 'skipped'
   | 'failed';
 
+export interface WorkflowRoleDefinitionFE {
+  roleId: string;
+  displayName: string;
+  description?: string;
+  personaCapabilityRequirements?: string[];
+  toolCapabilityRequirements?: string[];
+  guardrailPolicyTags?: string[];
+  defaultAssigneeStrategy?: string;
+  metadata?: Record<string, unknown>;
+}
+
+export interface WorkflowDefinitionFE {
+  id: string;
+  version?: string;
+  displayName: string;
+  description?: string;
+  goalSchema?: Record<string, unknown>;
+  finalOutputSchema?: Record<string, unknown>;
+  roles?: WorkflowRoleDefinitionFE[];
+  tasks: Array<{ id: string; name?: string; description?: string }>;
+  policyTags?: string[];
+  requiresConversationContext?: boolean;
+  metadata?: Record<string, unknown>;
+}
+
+
 export interface WorkflowTaskInstanceFE {
   definitionId: string;
   status: WorkflowTaskStatus;
@@ -83,3 +109,13 @@ export interface WorkflowInvocationRequestFE {
   metadata?: Record<string, unknown>;
 }
 
+
+export interface StartWorkflowPayloadFE {
+  definitionId: string;
+  userId: string;
+  conversationId?: string;
+  workflowId?: string;
+  context?: Record<string, unknown>;
+  roleAssignments?: Record<string, string>;
+  metadata?: Record<string, unknown>;
+}

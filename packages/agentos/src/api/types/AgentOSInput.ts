@@ -45,6 +45,32 @@ export interface WorkflowInvocationRequest {
   metadata?: Record<string, unknown>;
 }
 
+/**
+ * Describes a request to create or join an Agency (multi-GMI collective).
+ */
+export interface AgencyInvocationRequest {
+  /**
+   * Existing agency identifier to join. If omitted, a new agency is instantiated.
+   */
+  agencyId?: string;
+  /**
+   * Optional workflow identifier to bind the agency to.
+   */
+  workflowId?: string;
+  /**
+   * High-level description of the shared objective.
+   */
+  goal?: string;
+  /**
+   * Desired seats within the agency along with their preferred personas.
+   */
+  participants?: Array<{ roleId: string; personaId?: string }>;
+  /**
+   * Arbitrary metadata for agency initialization.
+   */
+  metadata?: Record<string, unknown>;
+}
+
 export interface AgentOSInput {
   userId: string;
   sessionId: string;
@@ -56,6 +82,7 @@ export interface AgentOSInput {
   userFeedback?: UserFeedbackPayload;
   conversationId?: string;
   workflowRequest?: WorkflowInvocationRequest;
+  agencyRequest?: AgencyInvocationRequest;
   options?: ProcessingOptions;
 }
 

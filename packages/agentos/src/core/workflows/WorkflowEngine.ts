@@ -344,6 +344,25 @@ export class WorkflowEngine implements IWorkflowEngine {
     return cloneInstance(updated);
   }
 
+  public async updateWorkflowAgencyState(
+    workflowId: string,
+    agencyState: WorkflowInstance['agencyState'],
+  ): Promise<WorkflowInstance | null> {
+    this.ensureInitialized();
+    const nowIso = new Date().toISOString();
+    const updated = await this.store.updateInstance(workflowId, {
+      agencyState,
+      updatedAt: nowIso,
+    });
+    if (updated) {
+      this.logger.debug?.('Workflow agency state updated', {
+        workflowId,
+        agencyId: agencyState?.agencyId,
+      });
+    }
+    return updated ? cloneInstance(updated) : null;
+  }
+
   public async recordEvents(events: WorkflowEvent[]): Promise<void> {
     if (!events.length) {
       return;

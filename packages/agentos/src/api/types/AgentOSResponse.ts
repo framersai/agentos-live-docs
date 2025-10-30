@@ -32,6 +32,7 @@ export enum AgentOSResponseChunkType {
   ERROR = 'error',
   METADATA_UPDATE = 'metadata_update',
   WORKFLOW_UPDATE = 'workflow_update',
+  AGENCY_UPDATE = 'agency_update',
 }
 
 /**
@@ -158,6 +159,27 @@ export interface AgentOSWorkflowUpdateChunk extends AgentOSResponseChunk {
 }
 
 /**
+ * @typedef {Object} AgentOSAgencyUpdateChunk
+ * Communicates the state of the active Agency coordinating the workflow.
+ * @augments {AgentOSResponseChunk}
+ */
+export interface AgentOSAgencyUpdateChunk extends AgentOSResponseChunk {
+  type: AgentOSResponseChunkType.AGENCY_UPDATE;
+  agency: {
+    agencyId: string;
+    workflowId: string;
+    conversationId?: string;
+    seats: Array<{
+      roleId: string;
+      gmiInstanceId: string;
+      personaId: string;
+      metadata?: Record<string, unknown>;
+    }>;
+    metadata?: Record<string, unknown>;
+  };
+}
+
+/**
  * @typedef {AgentOSTextDeltaChunk | AgentOSSystemProgressChunk | AgentOSToolCallRequestChunk | AgentOSToolResultEmissionChunk | AgentOSUICommandChunk | AgentOSFinalResponseChunk | AgentOSErrorChunk | AgentOSMetadataUpdateChunk} AgentOSResponse
  * Union type representing any possible chunk that can be streamed from AgentOS.
  */
@@ -170,4 +192,5 @@ export type AgentOSResponse =
   | AgentOSFinalResponseChunk
   | AgentOSErrorChunk
   | AgentOSMetadataUpdateChunk
-  | AgentOSWorkflowUpdateChunk;
+  | AgentOSWorkflowUpdateChunk
+  | AgentOSAgencyUpdateChunk;

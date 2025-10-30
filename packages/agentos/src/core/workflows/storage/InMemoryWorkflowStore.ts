@@ -56,7 +56,7 @@ export class InMemoryWorkflowStore implements IWorkflowStore {
   public async updateInstance(
     workflowId: string,
     patch: Partial<
-      Pick<WorkflowInstance, 'status' | 'updatedAt' | 'metadata' | 'context' | 'roleAssignments'>
+      Pick<WorkflowInstance, 'status' | 'updatedAt' | 'metadata' | 'context' | 'roleAssignments' | 'agencyState'>
     >,
   ): Promise<WorkflowInstance | null> {
     const existing = this.instances.get(workflowId);
