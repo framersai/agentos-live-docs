@@ -570,7 +570,7 @@ function generateAPIDocs() {
   // Write OpenAPI spec
   const openApiPath = path.join(OUTPUT_DIR, 'openapi.json');
   fs.writeFileSync(openApiPath, JSON.stringify(apiDocs, null, 2));
-  console.log(`[docs] HTML index written to ${indexPath}`);
+  console.log(`[docs] OpenAPI spec written to ${openApiPath}`);
 
   console.log('[docs] API documentation generation complete!');
 }
@@ -611,7 +611,7 @@ function generateMarkdownDocs(spec) {
         markdown += `${details.description}\n\n`;
       }
       if (details.security) {
-        markdown += **Requires authentication**${[Environment]::NewLine};
+        markdown += `**Requires authentication**\n\n`;
       }
       markdown += `---\n\n`;
     });
