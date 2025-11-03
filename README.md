@@ -1,4 +1,16 @@
+<div align="center">
+
 # Voice Chat Assistant
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="logos/agentos-primary-no-tagline-dark-2x.png">
+  <source media="(prefers-color-scheme: light)" srcset="logos/agentos-primary-no-tagline-light-2x.png">
+  <img src="logos/agentos-primary-no-tagline-transparent-2x.png" alt="AgentOS" width="300">
+</picture>
+
+### Powered by [AgentOS](https://agentos.sh)
+
+</div>
 
 Voice-first coding assistant built by [Frame.dev / wearetheframers](https://github.com/wearetheframers).
 
@@ -37,14 +49,17 @@ The repository is organised as a pnpm workspace so the production apps, the Agen
 2. **Configure environment variables**
    - Copy `.env.sample` -> `.env` (backend).
    - Copy `frontend/.env.supabase-stripe.example` -> `frontend/.env.local`.
+   - Optional: copy `apps/agentos-client/.env.example` -> `apps/agentos-client/.env.local` if you need to override the AgentOS proxy paths.
    - Populate values listed in [`CONFIGURATION.md`](CONFIGURATION.md) (ports, JWT secrets, LLM keys, Supabase, Lemon Squeezy, AgentOS flags, etc.).
 3. **Run development servers**
    ```bash
-   npm run dev
+   pnpm run dev:workbench    # backend + AgentOS workbench
    ```
    - Backend API: <http://localhost:3001>
-   - Frontend UI: <http://localhost:3000>
-   - Optional: `pnpm run dev:landing` and `pnpm run dev:agentos-client` launch the new AgentOS surfaces.
+   - AgentOS workbench: <http://localhost:5175>
+   - Voice UI + backend: `pnpm run dev:vca`
+   - Marketing site + backend: `pnpm run dev:landing`
+   - Solo marketing site preview: `pnpm run dev:landing:solo`
 4. **Build for production**
    ```bash
    npm run build   # builds frontend, backend, and @agentos/core
@@ -74,6 +89,13 @@ The repository is organised as a pnpm workspace so the production apps, the Agen
 - **agentos.sh landing** - Next.js marketing site with dual-mode theming, motion, roadmap cards, and launch CTAs.
 - **AgentOS client workbench** - React cockpit for replaying sessions, inspecting streaming telemetry, and iterating on personas/tools without running the full voice UI.
 - Both apps consume the workspace version of `@agentos/core` and can be hosted independently when we cut the repositories under `wearetheframers`.
+- Workbench persona catalog now hydrates from `/api/agentos/personas` (filters: `capability`, `tier`, `search`) and caches responses via React Query for faster iteration.
+
+### Workflow artifacts & media outputs
+
+- Tool responses and workflow steps can emit rich artifacts (JSON, CSV, PDF, audio, images, etc.) by returning `{ data, mimeType, filename }` payloads in tool results.
+- Streaming clients receive these inside `AgentOSResponse` chunks; the workbench renders them via `ArtifactViewer` with copy/download affordances.
+- For non-binary outputs, include direct URLs or structured content—the viewer auto-detects HTTP links, multiline text, and nested arrays/objects.
 
 ## Automation & Releases
 
@@ -85,9 +107,53 @@ The repository is organised as a pnpm workspace so the production apps, the Agen
 - Architecture deep-dive - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
 - Configuration catalogue - [`CONFIGURATION.md`](CONFIGURATION.md)
 - Backend API reference - [`docs/BACKEND_API.md`](docs/BACKEND_API.md)
+- Marketplace integration guide - [`docs/marketplace.md`](docs/marketplace.md)
 - AgentOS migration notes - [`docs/AGENTOS_*`](docs)
 - Workflow & automation guide - [`docs/WORKFLOWS.md`](docs/WORKFLOWS.md)
 - Generated API docs - `pnpm --filter @agentos/core run docs` -> `packages/agentos/docs/api`
+
+### Provider API Migration (generateCompletion*)
+
+The AgentOS core provider contract was modernized to unify legacy `generate` / `generateStream` calls under
+`generateCompletion` and `generateCompletionStream` with a richer, streaming-friendly response shape.
+
+Key Changes:
+1. Unified Response Type: `ModelCompletionResponse` now represents both full non-streaming replies and individual streaming chunks.
+2. Delta Semantics: Streaming chunks carry incremental `responseTextDelta` values (append-only) and `toolCallsDeltas[]` for gradual function argument assembly. Concatenate all deltas per choice to reconstruct final content.
+3. Terminal Chunk: Exactly one streamed chunk sets `isFinal: true` (success or error). Token usage (`usage.totalTokens`) and any error envelope appear here.
+4. Error Handling: Errors during streaming emit a final chunk with `error` populated rather than throwing mid-generator, ensuring predictable teardown.
+5. Tool Calls: OpenAI-style tool/function calls surface as incremental JSON argument fragments via `arguments_delta`. Accumulate, then parse into a full JSON object upon finalization.
+6. Embeddings: Embedding generation unaffected aside from optional cost metadata field (`costUSD`).
+
+Refactor Checklist for Host Code:
+- Replace old `provider.generate(...)` with `provider.generateCompletion(modelId, messages, options)`.
+- Replace old streaming usage with `for await (const chunk of provider.generateCompletionStream(...)) { ... }`.
+- Maintain a per-request accumulator: `fullText += chunk.responseTextDelta ?? ''`.
+- Reconstruct tool calls: group deltas by `index` (and later stable `id`) accumulating `arguments_delta` strings.
+- Use `chunk.isFinal` gate to perform commit operations (persist transcript, bill usage, update UI status indicators).
+- Prefer `chunk.usage?.totalTokens` only after `isFinal` to avoid partial token confusion.
+
+Example Streaming Loop:
+```ts
+let fullText = '';
+const toolBuffers: Record<number, string> = {};
+for await (const chunk of provider.generateCompletionStream(modelId, messages, opts)) {
+   if (chunk.responseTextDelta) fullText += chunk.responseTextDelta;
+   if (chunk.toolCallsDeltas) {
+      for (const d of chunk.toolCallsDeltas) {
+         toolBuffers[d.index] = (toolBuffers[d.index] || '') + (d.function?.arguments_delta || '');
+      }
+   }
+   if (chunk.isFinal) {
+      const parsedTools = Object.entries(toolBuffers).map(([idx, acc]) => ({ index: Number(idx), arguments: safeJson(acc) }));
+      console.log('Final text:', fullText);
+      console.log('Parsed tools:', parsedTools);
+   }
+}
+function safeJson(raw: string) { try { return JSON.parse(raw); } catch { return raw; } }
+```
+
+See enhanced TSDoc in `packages/agentos/src/core/llm/providers/IProvider.ts` for invariants and error semantics.
 
 ## Contributing
 

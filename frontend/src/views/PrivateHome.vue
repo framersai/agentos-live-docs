@@ -1,5 +1,4 @@
-// File: frontend/src/views/PrivateHome.vue
-import type { WorkflowDefinitionFE } from '@/types/workflow';
+<!-- File: frontend/src/views/PrivateHome.vue -->
 /**
  * @file PrivateHome.vue
  * @description Main private view for authenticated users. Orchestrates agent views,
@@ -32,6 +31,15 @@ import {
 } from '@/utils/api';
 import type { AdvancedHistoryConfig } from '@/services/advancedConversation.manager';
 import { createScopedSttLogger } from '@/utils/debug';
+
+// Local workflow definition interface (placed after imports for Volar tooling consistency)
+interface WorkflowDefinitionFE {
+  id: string;
+  name?: string;
+  displayName?: string;
+  description?: string;
+  status?: string;
+}
 
 import UnifiedChatLayout from '@/components/layouts/UnifiedChatLayout.vue';
 import MainContentView from '@/components/agents/common/MainContentView.vue';
@@ -97,11 +105,13 @@ const loadWorkflowDefinitions = async (): Promise<void> => {
   } catch (error: any) {
     console.error('[PrivateHome] Failed to load workflow definitions.', error);
     workflowLoadError.value = error?.response?.data?.message ?? 'Unable to load workflows';
-    toast?.add?.({
-      type: 'warning',
-      title: 'Workflow definitions unavailable',
-      message: workflowLoadError.value,
-    });
+    if (workflowLoadError.value) {
+      toast?.add?.({
+        type: 'warning',
+        title: 'Workflow definitions unavailable',
+        message: workflowLoadError.value || 'Unable to load workflows',
+      });
+    }
   } finally {
     workflowDefinitionsLoading.value = false;
   }
@@ -124,11 +134,11 @@ const launchSelectedWorkflow = async (): Promise<void> => {
       conversationId,
       context: { agentId: agentIdValue },
     });
-    toast?.add?.({ type: 'success', title: 'Workflow started', message: 'Workflow launched successfully.' });
+  toast?.add?.({ type: 'success', title: 'Workflow started', message: 'Workflow launched successfully.' });
   } catch (error: any) {
     console.error('[PrivateHome] Failed to start workflow.', error);
-    const message = error?.response?.data?.message ?? 'Unable to start workflow';
-    toast?.add?.({ type: 'error', title: 'Workflow start failed', message });
+  const message: string = error?.response?.data?.message ?? 'Unable to start workflow';
+  toast?.add?.({ type: 'error', title: 'Workflow start failed', message });
   } finally {
     workflowLaunchPending.value = false;
   }
@@ -451,6 +461,46 @@ watch(isVoiceInputCurrentlyProcessingAudio, (isSttActive) => {
           :agent="activeAgent"
           variant="compact"
         />
+        <div class="workflow-toolbar">
+          <WorkflowStatusPanel
+            :workflow="activeWorkflowSummary"
+            :events="activeWorkflowEvents"
+          />
+          <div class="workflow-launcher" v-if="workflowDefinitionsLoading">
+            <span class="workflow-launcher__message">Loading workflows…</span>
+          </div>
+          <div class="workflow-launcher" v-else-if="workflowDefinitions.length">
+            <label class="workflow-launcher__label" for="workflow-select">Launch workflow</label>
+            <div class="workflow-launcher__controls">
+              <select
+                id="workflow-select"
+                class="workflow-launcher__select"
+                v-model="selectedWorkflowDefinitionId"
+              >
+                <option disabled value="">Select workflow</option>
+                <option
+                  v-for="definition in workflowDefinitions"
+                  :key="definition.id"
+                  :value="definition.id"
+                >
+                  {{ definition.displayName || definition.id }}
+                </option>
+              </select>
+              <button
+                class="btn btn-secondary-ephemeral btn-sm-ephemeral"
+                type="button"
+                :disabled="workflowLaunchPending || !selectedWorkflowDefinitionId"
+                @click="launchSelectedWorkflow"
+              >
+                {{ workflowLaunchPending ? 'Starting…' : 'Start' }}
+              </button>
+            </div>
+            <p v-if="workflowLoadError" class="workflow-launcher__error">{{ workflowLoadError }}</p>
+          </div>
+          <div class="workflow-launcher" v-else>
+            <span class="workflow-launcher__message">No workflows available.</span>
+          </div>
+        </div>
       </template>
 
       <template #main-content>
@@ -525,48 +575,6 @@ watch(isVoiceInputCurrentlyProcessingAudio, (isSttActive) => {
             </div>
         </div>
       </template>
-    <template #voice-toolbar>
-      <div class="workflow-toolbar">
-        <WorkflowStatusPanel
-          :workflow="activeWorkflowSummary"
-          :events="activeWorkflowEvents"
-        />
-        <div class="workflow-launcher" v-if="workflowDefinitionsLoading">
-          <span class="workflow-launcher__message">Loading workflows…</span>
-        </div>
-        <div class="workflow-launcher" v-else-if="workflowDefinitions.length">
-          <label class="workflow-launcher__label" for="workflow-select">Launch workflow</label>
-          <div class="workflow-launcher__controls">
-            <select
-              id="workflow-select"
-              class="workflow-launcher__select"
-              v-model="selectedWorkflowDefinitionId"
-            >
-              <option disabled value="">Select workflow</option>
-              <option
-                v-for="definition in workflowDefinitions"
-                :key="definition.id"
-                :value="definition.id"
-              >
-                {{ definition.displayName || definition.id }}
-              </option>
-            </select>
-            <button
-              class="btn btn-secondary-ephemeral btn-sm-ephemeral"
-              type="button"
-              :disabled="workflowLaunchPending || !selectedWorkflowDefinitionId"
-              @click="launchSelectedWorkflow"
-            >
-              {{ workflowLaunchPending ? 'Starting…' : 'Start' }}
-            </button>
-          </div>
-          <p v-if="workflowLoadError" class="workflow-launcher__error">{{ workflowLoadError }}</p>
-        </div>
-        <div class="workflow-launcher" v-else>
-          <span class="workflow-launcher__message">No workflows available.</span>
-        </div>
-      </div>
-    </template>
     </UnifiedChatLayout>
   </div>
 </template>
@@ -576,10 +584,13 @@ watch(isVoiceInputCurrentlyProcessingAudio, (isSttActive) => {
 .dedicated-agent-view { height: 100%; width: 100%; overflow: auto; }
 .default-agent-mcv { height: 100%; width: 100%; display: flex; flex-direction: column; }
 .content-renderer-container-ephemeral { flex-grow: 1; overflow-y: auto; padding: 1rem; }
-.has-framed-content .content-renderer-container-ephemeral{}
-.private-dashboard-placeholder-ephemeral { @apply flex flex-col items-center justify-center h-full text-center p-8; .dashboard-icon-ephemeral { @apply w-20 h-20 mb-6 text-[var(--color-accent-primary)]; filter: drop-shadow(0 4px 10px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.3)); } .dashboard-title-ephemeral { @apply text-4xl font-bold text-[var(--color-text-primary)] mb-3; } .dashboard-subtitle-ephemeral { @apply text-lg text-[var(--color-text-secondary)] max-w-lg; } }
-.loading-placeholder-ephemeral { @apply flex-grow flex items-center justify-center h-full p-4 text-center; .loading-animation-content { @apply flex flex-col items-center; } }
-.prose-ephemeral {}
+.has-framed-content .content-renderer-container-ephemeral { border:1px solid rgba(255,255,255,0.08); border-radius:12px; }
+.private-dashboard-placeholder-ephemeral { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; text-align:center; padding:2rem; }
+.private-dashboard-placeholder-ephemeral .dashboard-icon-ephemeral { width:5rem; height:5rem; margin-bottom:1.5rem; color:var(--color-accent-primary); filter: drop-shadow(0 4px 10px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.3)); }
+.private-dashboard-placeholder-ephemeral .dashboard-title-ephemeral { font-size:2.25rem; font-weight:700; color:var(--color-text-primary); margin-bottom:0.75rem; }
+.private-dashboard-placeholder-ephemeral .dashboard-subtitle-ephemeral { font-size:1.125rem; color:var(--color-text-secondary); max-width:48ch; }
+.loading-placeholder-ephemeral { flex-grow:1; display:flex; align-items:center; justify-content:center; height:100%; padding:1rem; text-align:center; }
+.loading-placeholder-ephemeral .loading-animation-content { display:flex; flex-direction:column; align-items:center; }
 .streaming-cursor-ephemeral { animation: blink 1s step-end infinite; font-weight: bold; color: hsl(var(--color-text-accent-h), var(--color-text-accent-s), var(--color-text-accent-l)); }
 @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 

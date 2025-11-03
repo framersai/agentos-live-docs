@@ -119,13 +119,21 @@ VITE_LEMONSQUEEZY_ORG_VARIANT_ID=
 VITE_STRIPE_BASIC_PRICE_ID=
 VITE_STRIPE_CREATOR_PRICE_ID=
 VITE_STRIPE_ORG_PRICE_ID=
+VITE_AGENTOS_BASE_URL=/api/agentos        # leave empty to reuse the proxy base
 VITE_AGENTOS_ENABLED=false
 VITE_AGENTOS_CLIENT_MODE=proxy # proxy keeps /api/chat, direct hits /api/agentos/*
 VITE_AGENTOS_CHAT_PATH=/agentos/chat
 VITE_AGENTOS_STREAM_PATH=/agentos/stream
+VITE_AGENTOS_WORKFLOW_DEFINITIONS_PATH=/workflows/definitions
+VITE_AGENTOS_PERSONAS_PATH=/personas
+VITE_AGENTOS_WITH_CREDENTIALS=true
+VITE_AGENTOS_WORKBENCH_USER_ID=agentos-workbench-user
 ```
 
 Restart `npm run dev` after editing Vite environment files.
+
+- The AgentOS workbench (`apps/agentos-client`) inherits these `VITE_AGENTOS_*` keys. Leave `VITE_AGENTOS_BASE_URL` blank to use the backend proxy (`/api/agentos`) or point it directly at a remote AgentOS deployment.
+- `VITE_AGENTOS_WITH_CREDENTIALS` controls whether the EventSource includes cookies—set it to `false` when proxying across origins without session auth.
 
 ## 8. Rate Limiting & Demo Mode
 
@@ -171,5 +179,6 @@ For more operational notes and deployment tips, review [`PRODUCTION_SETUP.md`](P
 | `AGENTOS_TURN_TIMEOUT_MS` | Timeout applied to a single AgentOS turn before failover. |
 | `AGENTOS_STREAM_INACTIVITY_TIMEOUT_MS` | Idle timeout for SSE clients. |
 | `AGENTOS_PERSONA_PATH` | Optional override to load persona definitions from a custom directory. |
+| `PERSONA_DEFINITIONS_PATH` | Path used by the voice UI stack to discover persona JSON files (defaults to `./backend/agentos/...`). |
 
 > AgentOS defaults to in-memory persistence so you can experiment locally without running Prisma migrations. When you are ready to back it with a proper database, point `AGENTOS_DATABASE_URL` at your Prisma datasource and swap the stub for a real client.

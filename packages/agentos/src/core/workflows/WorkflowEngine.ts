@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import type { ILogger } from '../../logging/ILogger';
 import { createLogger } from '../../logging/loggerFactory';
-import type {
+import {
   WorkflowDefinition,
   WorkflowDescriptorPayload,
   WorkflowEvent,

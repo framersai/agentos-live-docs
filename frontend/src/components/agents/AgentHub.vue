@@ -25,6 +25,8 @@ import {
 import { useAgentStore } from '@/store/agent.store';
 import { useAuth } from '@/composables/useAuth';
 import { useUiStore } from '@/store/ui.store'; // For toast interactions
+import { useMarketplaceStore } from '@/store/marketplace.store';
+import type { MarketplaceAgentSummaryFE } from '@/utils/api';
 
 // Icons
 import {
@@ -64,9 +66,10 @@ const emit = defineEmits<{
 const agentStore = useAgentStore();
 const auth = useAuth();
 const uiStore = useUiStore(); // For potential toast interactions if not handled by App.vue
+const marketplaceStore = useMarketplaceStore();
 
 /** @ref {Ref<IAgentDefinition[]>} allAgentsFromService - Stores the canonical list of all agents fetched from the service. */
-const allAgentsFromService: Ref<IAgentDefinition[]> = ref([]);
+const allAgentsFromService: Ref<IAgentDefinition[]> = ref([...agentService.getAllAgents()]);
 /** @ref {Ref<string>} searchQuery - Reactive model for the search input field. */
 const searchQuery: Ref<string> = ref('');
 /** @ref {Ref<AgentCategory | 'all'>} selectedCategory - Reactive model for the selected agent category filter. 'all' signifies no category filter. */
@@ -124,9 +127,23 @@ const categories = computed<AgentCategory[]>(() => {
   return Array.from(cats).sort();
 });
 
+const SKELETON_CARD_COUNT = 6;
+const skeletonCards = computed(() => Array.from({ length: SKELETON_CARD_COUNT }, (_, index) => index));
+const showSkeleton = computed(() => marketplaceStore.isLoading && marketplaceStore.agents.length === 0);
+
+const marketplaceByPersona = computed<Map<string, MarketplaceAgentSummaryFE>>(() => {
+  const map = new Map<string, MarketplaceAgentSummaryFE>();
+  marketplaceStore.agents.forEach((agent) => {
+    map.set(agent.personaId, agent);
+    map.set(agent.id, agent);
+  });
+  return map;
+});
+
 // Fetch all agents when the component is mounted.
 onMounted(() => {
   allAgentsFromService.value = [...agentService.getAllAgents()];
+  void marketplaceStore.ensureLoaded();
 });
 
 // Watch for the hub opening to reset search/filters and focus the search input.
@@ -135,6 +152,7 @@ watch(() => props.isOpen, (newVal) => {
     searchQuery.value = '';
     selectedCategory.value = 'all'; // Reset to 'all' category
     allAgentsFromService.value = [...agentService.getAllAgents()]; // Refresh agent list
+    void marketplaceStore.ensureLoaded();
     nextTick(() => { // Ensure DOM is updated before trying to focus
       // const searchInputEl = document.getElementById('agent-hub-search-input');
       // searchInputEl?.focus();
@@ -243,31 +261,55 @@ const handleCardInteraction = (payload: { type: string; data?: any }): void => {
         </div>
 
         <div id="agent-grid-panel" class="agent-grid-container-ephemeral custom-scrollbar-thin" role="tabpanel" tabindex="0">
-          <p v-if="allAgentsFromService.length === 0 && !searchQuery" class="loading-agents-message">
-            Loading available assistants...
-          </p>
-          <p v-else-if="filteredAgents.length === 0 && searchQuery" class="no-results-message-ephemeral">
-            No assistants found for "<strong>{{ searchQuery }}</strong>". Try adjusting your search or filters.
-          </p>
-          <p v-else-if="filteredAgents.length === 0 && selectedCategory !== 'all'" class="no-results-message-ephemeral">
-            No assistants available in the "<strong>{{ selectedCategory }}</strong>" category.
-          </p>
-           <p v-else-if="filteredAgents.length === 0 && availableAndAccessibleAgents.length > 0" class="no-results-message-ephemeral">
-            No assistants match your current filter.
-          </p>
-          <p v-else-if="availableAndAccessibleAgents.length === 0" class="no-results-message-ephemeral">
-            No assistants are currently available for your access level.
-          </p>
+          <template v-if="showSkeleton">
+            <div class="agent-card-grid agent-card-grid--skeleton">
+              <div
+                v-for="index in skeletonCards"
+                :key="`agent-skeleton-${index}`"
+                class="agent-card-skeleton"
+              >
+                <div class="agent-card-skeleton__header">
+                  <div class="agent-card-skeleton__avatar shimmer"></div>
+                  <div class="agent-card-skeleton__title">
+                    <div class="agent-card-skeleton__line agent-card-skeleton__line--short shimmer"></div>
+                    <div class="agent-card-skeleton__line agent-card-skeleton__line--xs shimmer"></div>
+                  </div>
+                </div>
+                <div class="agent-card-skeleton__line agent-card-skeleton__line--full shimmer"></div>
+                <div class="agent-card-skeleton__line agent-card-skeleton__line--medium shimmer"></div>
+                <div class="agent-card-skeleton__chips">
+                  <span class="agent-card-skeleton__chip shimmer"></span>
+                  <span class="agent-card-skeleton__chip shimmer"></span>
+                  <span class="agent-card-skeleton__chip shimmer"></span>
+                </div>
+              </div>
+            </div>
+          </template>
+          <template v-else>
+            <p v-if="filteredAgents.length === 0 && searchQuery" class="no-results-message-ephemeral">
+              No assistants found for "<strong>{{ searchQuery }}</strong>". Try adjusting your search or filters.
+            </p>
+            <p v-else-if="filteredAgents.length === 0 && selectedCategory !== 'all'" class="no-results-message-ephemeral">
+              No assistants available in the "<strong>{{ selectedCategory }}</strong>" category.
+            </p>
+            <p v-else-if="filteredAgents.length === 0 && availableAndAccessibleAgents.length > 0" class="no-results-message-ephemeral">
+              No assistants match your current filter.
+            </p>
+            <p v-else-if="availableAndAccessibleAgents.length === 0" class="no-results-message-ephemeral">
+              No assistants are currently available for your access level.
+            </p>
 
-          <TransitionGroup name="agent-card-list-transition" tag="div" class="agent-card-grid">
-            <AgentCard
-              v-for="agentDef in filteredAgents"
-              :key="agentDef.id"
-              :agent="agentDef"
-              @select-agent="() => selectAgentAndClose(agentDef)"
-              @interaction="handleCardInteraction"
-            />
-          </TransitionGroup>
+            <TransitionGroup name="agent-card-list-transition" tag="div" class="agent-card-grid">
+              <AgentCard
+                v-for="agentDef in filteredAgents"
+                :key="agentDef.id"
+                :agent="agentDef"
+                :marketplace="marketplaceByPersona.get(agentDef.id)"
+                @select-agent="() => selectAgentAndClose(agentDef)"
+                @interaction="handleCardInteraction"
+              />
+            </TransitionGroup>
+          </template>
         </div>
 
         <footer class="agent-hub-footer-ephemeral">

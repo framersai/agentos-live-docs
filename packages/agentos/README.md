@@ -1,4 +1,21 @@
-﻿# @agentos/core
+﻿<div align="center">
+
+![AgentOS](assets/agentos-primary-transparent-2x.png)
+
+[![NPM Version](https://img.shields.io/npm/v/@agentos/core?logo=npm)](https://www.npmjs.com/package/@agentos/core)
+[![GitHub](https://img.shields.io/badge/GitHub-wearetheframers%2Fagentos-blue?logo=github)](https://github.com/wearetheframers/agentos)
+[![Website](https://img.shields.io/badge/Website-agentos.sh-00d4ff)](https://agentos.sh)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+### Modular orchestration runtime for adaptive AI systems
+
+[Documentation](https://agentos.sh/docs) • [GitHub](https://github.com/wearetheframers/agentos) • [NPM](https://www.npmjs.com/package/@agentos/core)
+
+</div>
+
+---
+
+# @agentos/core
 
 > Modular AgentOS runtime used by Voice Chat Assistant. Official home: [github.com/wearetheframers/agentos](https://github.com/wearetheframers/agentos).
 

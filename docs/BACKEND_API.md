@@ -1,4 +1,4 @@
-# Backend API Reference
+﻿# Backend API Reference
 
 All backend routes are prefixed with `/api`. Optional authentication (JWT or Supabase) is provided by `optionalAuthMiddleware`; strict routes use `authMiddleware`.
 
@@ -28,6 +28,12 @@ All backend routes are prefixed with `/api`. Optional authentication (JWT or Sup
 |--------|------|-------------|
 | `POST` | `/agentos/chat` | AgentOS-direct chat endpoint (expects `{ userId, conversationId, mode, messages }`). Enabled when `AGENTOS_ENABLED=true`. |
 | `GET`  | `/agentos/stream` | SSE stream mirroring `/agentos/chat`. Currently sends final chunk only; streaming milestones will expand incremental updates. |
+| `GET`  | `/agentos/personas` | Lists available personas. Supports `capability`, `tier`, and `search` query filters. |
+
+- `/agentos/personas` supports optional query parameters:
+  - `capability`: repeatable (or comma-separated) capability requirements; the persona must include all requested capabilities.
+  - `tier`: repeatable subscription tier hints (matches metadata tiers such as `pro`, `enterprise`).
+  - `search`: case-insensitive substring match across persona name, description, tags, traits, and activation keywords.
 
 ## Speech & Audio
 

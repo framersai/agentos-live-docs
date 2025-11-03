@@ -1,5 +1,5 @@
 {
-  "name": "voice-coding-assistant-backend",
+  "name": "voice-chat-assistant-backend",
   "version": "1.0.0",
   "description": "Backend for voice coding assistant",
   "main": "dist/server.js",
@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@agentos/core": "workspace:*",
+    "@framers/sql-storage-adapter": "workspace:*",
     "@supabase/supabase-js": "^2.45.1",
     "@types/jsonwebtoken": "^9.0.10",
     "axios": "^1.6.2",

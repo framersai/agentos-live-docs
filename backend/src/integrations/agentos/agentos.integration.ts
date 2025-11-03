@@ -1,4 +1,5 @@
-import path from 'path';
+﻿import path from 'path';
+import fs from 'fs';
 import { Router } from 'express';
 import {
   AgentOS,
@@ -17,15 +18,19 @@ import {
   type WorkflowInstance,
   WorkflowStatus,
 } from '@agentos/core';
+import type { FileSystemPersonaLoaderConfig } from '@agentos/core/cognitive_substrate/personas/PersonaLoader';
 import type {
   IAuthService as AgentOSAuthServiceInterface,
   ISubscriptionService,
 } from '@agentos/core/services/user_auth/types';
-import { PrismaClient } from '@agentos/core/stubs/prismaClient';
 import { createAgentOSAuthAdapter } from './agentos.auth-service.js';
 import { createAgentOSSubscriptionAdapter } from './agentos.subscription-service.js';
 import { createAgentOSRouter } from './agentos.routes.js';
 import { createAgentOSStreamRouter } from './agentos.stream-router.js';
+import { createAgentOSSqlClient } from './agentos.sql-client.js';
+
+const isWorkflowStatus = (value: string): value is WorkflowStatus =>
+  (Object.values(WorkflowStatus) as string[]).includes(value);
 
 /**
  * AgentOS is still incubating inside the Voice Chat Assistant monorepo.
@@ -80,10 +85,14 @@ class AgentOSIntegration {
     return agentosInstance.listWorkflowDefinitions();
   }
 
+  public async listAvailablePersonas(userId?: string) {
+    const agentosInstance = await this.getAgentOS();
+    return agentosInstance.listAvailablePersonas(userId);
+  }
+
   public async listWorkflows(options?: { conversationId?: string; status?: string }): Promise<WorkflowInstance[]> {
     const agentosInstance = await this.getAgentOS();
-    const statuses =
-      options?.status && typeof options.status === 'string' ? [options.status as WorkflowStatus] : undefined;
+    const statuses = options?.status && isWorkflowStatus(options.status) ? [options.status] : undefined;
     return agentosInstance.listWorkflows({
       conversationId: options?.conversationId,
       statuses,
@@ -157,21 +166,40 @@ class AgentOSIntegration {
 
   private async initializeAgentOS(): Promise<void> {
     ensureAgentOSEnvDefaults();
-    const config = buildEmbeddedAgentOSConfig();
+    const config = await buildEmbeddedAgentOSConfig();
     const agentos = new AgentOS();
     await agentos.initialize(config);
     this.agentos = agentos;
   }
 }
 
-const DEFAULT_PERSONA_DIR = path.resolve(
-  process.cwd(),
-  'backend',
-  'agentos',
-  'cognitive_substrate',
-  'personas',
-  'definitions',
-);
+const resolveDefaultPersonaDir = (): string => {
+  const overridePath = process.env.AGENTOS_PERSONA_PATH;
+  if (overridePath) {
+    const resolved = path.resolve(process.cwd(), overridePath);
+    if (fs.existsSync(resolved)) {
+      return resolved;
+    }
+    console.warn(`[AgentOS] Configured AGENTOS_PERSONA_PATH '${resolved}' does not exist.`);
+  }
+
+  const candidates = [
+    path.resolve(process.cwd(), 'agentos', 'cognitive_substrate', 'personas', 'definitions'),
+    path.resolve(process.cwd(), 'packages', 'agentos', 'src', 'cognitive_substrate', 'personas', 'definitions'),
+    path.resolve(process.cwd(), '..', 'packages', 'agentos', 'src', 'cognitive_substrate', 'personas', 'definitions'),
+    path.resolve(process.cwd(), '..', 'agentos', 'cognitive_substrate', 'personas', 'definitions'),
+    path.resolve(process.cwd(), '..', 'backend', 'agentos', 'cognitive_substrate', 'personas', 'definitions'),
+  ];
+
+  for (const candidate of candidates) {
+    if (fs.existsSync(candidate)) {
+      return candidate;
+    }
+  }
+
+  console.warn('[AgentOS] Persona definitions directory not found. Using default path with expectation that it will be created.');
+  return candidates[0];
+};
 
 const agentOSIntegration = new AgentOSIntegration();
 
@@ -182,15 +210,16 @@ export const getAgentOSRouter = async (): Promise<Router> => agentOSIntegration.
 export const agentosService = agentOSIntegration;
 
 /**
- * Builds a lightweight AgentOSConfig that relies on in-memory data stores and
- * the standard Voice Chat Assistant environment variables.
+ * Builds an AgentOS configuration that stores conversation state via the shared
+ * SQL storage adapter (through the AgentOS Prisma shim) and honours existing
+ * environment variable configuration.
  */
-function buildEmbeddedAgentOSConfig(): AgentOSConfig {
+async function buildEmbeddedAgentOSConfig(): Promise<AgentOSConfig> {
   const gmiManagerConfig: GMIManagerConfig = {
     personaLoaderConfig: {
-      personaSource: process.env.AGENTOS_PERSONA_PATH || DEFAULT_PERSONA_DIR,
       loaderType: 'file_system',
-    },
+      personaDefinitionPath: resolveDefaultPersonaDir(),
+    } as FileSystemPersonaLoaderConfig,
     defaultGMIInactivityCleanupMinutes: Number(process.env.AGENTOS_GMI_INACTIVITY_MINUTES ?? 60),
     defaultWorkingMemoryType: 'in_memory',
     defaultGMIBaseConfigDefaults: {
@@ -265,7 +294,7 @@ function buildEmbeddedAgentOSConfig(): AgentOSConfig {
     },
     maxActiveConversationsInMemory: Number(process.env.AGENTOS_MAX_ACTIVE_CONVERSATIONS ?? 100),
     inactivityTimeoutMs: Number(process.env.AGENTOS_INACTIVITY_TIMEOUT_MS ?? 3_600_000),
-    persistenceEnabled: false,
+    persistenceEnabled: true,
   };
 
   const streamingManagerConfig: StreamingManagerConfig = {
@@ -275,6 +304,8 @@ function buildEmbeddedAgentOSConfig(): AgentOSConfig {
     onClientSendErrorBehavior: 'log_and_continue',
   };
 
+  const openAiBaseUrl = process.env.AGENTOS_OPENAI_BASE_URL || 'https://api.openai.com/v1';
+
   const modelProviderManagerConfig: AIModelProviderManagerConfig = {
     providers: [
       {
@@ -283,12 +314,14 @@ function buildEmbeddedAgentOSConfig(): AgentOSConfig {
         isDefault: true,
         config: {
           apiKey: process.env.OPENAI_API_KEY || 'missing-openai-key',
-          baseURL: process.env.AGENTOS_OPENAI_BASE_URL,
+          baseURL: openAiBaseUrl,
           defaultModelId: process.env.AGENTOS_DEFAULT_MODEL_ID || 'gpt-4o-mini',
         },
       },
     ],
   };
+
+  const prismaClient = await createAgentOSSqlClient();
 
   return {
     gmiManagerConfig,
@@ -300,7 +333,7 @@ function buildEmbeddedAgentOSConfig(): AgentOSConfig {
     streamingManagerConfig,
     modelProviderManagerConfig,
     defaultPersonaId: process.env.AGENTOS_DEFAULT_PERSONA_ID || 'default_assistant_persona',
-    prisma: createPrismaStub(),
+    prisma: prismaClient,
     authService: createAgentOSAuthAdapter(),
     subscriptionService: createAgentOSSubscriptionAdapter(),
     utilityAIService: undefined,
@@ -315,12 +348,8 @@ function ensureAgentOSEnvDefaults(): void {
   process.env.AGENTOS_DATABASE_URL ??= 'file:./agentos-dev.db';
 }
 
-/**
- * The real AgentOS runtime relies on Prisma for persistence, but the embedded
- * runtime uses SQLite via better-sqlite. We provide a very small stub that
- * satisfies the PrismaClient contract while logging accidental usages.
- */
-function createPrismaStub() {
-  return new PrismaClient();
-}
+
+
+
+
 

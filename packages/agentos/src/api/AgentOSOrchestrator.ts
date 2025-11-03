@@ -94,6 +94,7 @@ interface ActiveStreamContext {
   conversationContext: ConversationContext;
   userApiKeys?: Record<string, string>;
   processingOptions?: ProcessingOptions;
+  languageNegotiation?: any; // multilingual negotiation metadata
   // Iterator is managed within the orchestrateTurn method directly
 }
 
@@ -193,6 +194,11 @@ export class AgentOSOrchestrator {
 
     if (data && typeof data === 'object' && 'metadata' in data && data.metadata) {
       baseChunk.metadata = data.metadata;
+    }
+    const ctx = this.activeStreamContexts.get(streamId);
+    if (ctx?.languageNegotiation) {
+      baseChunk.metadata = baseChunk.metadata || {};
+      if (!baseChunk.metadata.language) baseChunk.metadata.language = ctx.languageNegotiation;
     }
 
     let chunk: AgentOSResponse;

@@ -30,8 +30,14 @@ export class PersonaOverlayManager {
           };
         }
         if (rule.patch?.mood) {
+          const currentMood =
+            patches.moodAdaptation ?? args.persona.moodAdaptation ?? {
+              enabled: true,
+              defaultMood: rule.patch.mood,
+            };
           patches.moodAdaptation = {
-            ...(args.persona.moodAdaptation ?? {}),
+            ...currentMood,
+            enabled: currentMood.enabled ?? true,
             defaultMood: rule.patch.mood,
           };
         }

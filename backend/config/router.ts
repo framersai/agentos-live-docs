@@ -8,9 +8,10 @@
  */
 
 import { Router, Request, Response } from 'express';
+import path from 'path';
 // Import the strict authMiddleware
-import { authMiddleware } from '../middleware/auth.js';
-import { isAgentOSEnabled, getAgentOSRouter } from '../src/integrations/agentos/agentos.integration.js';
+import { authMiddleware } from '../middleware/auth';
+import { isAgentOSEnabled, getAgentOSRouter } from '../src/integrations/agentos/agentos.integration';
 
 // Import route handlers
 import {
@@ -19,18 +20,21 @@ import {
   getStatus as getAuthStatus,
   deleteSession as deleteAuthSession,
   postRegister,
-} from '../src/features/auth/auth.routes.js';
-import * as chatApiRoutes from '../src/features/chat/chat.routes.js';
-import { postDetectLanguage } from '../src/features/chat/language.routes.js';
-import * as diagramApiRoutes from '../src/features/chat/diagram.routes.js';
-import * as sttApiRoutes from '../src/features/speech/stt.routes.js';
-import * as ttsApiRoutes from '../src/features/speech/tts.routes.js';
-import * as costApiRoutes from '../src/features/cost/cost.routes.js';
-import { rateLimiter } from '../middleware/ratelimiter.js'; // For fetching public rate limit status
+} from '../src/features/auth/auth.routes';
+import * as chatApiRoutes from '../src/features/chat/chat.routes';
+import { postDetectLanguage } from '../src/features/chat/language.routes';
+import * as diagramApiRoutes from '../src/features/chat/diagram.routes';
+import * as sttApiRoutes from '../src/features/speech/stt.routes';
+import * as ttsApiRoutes from '../src/features/speech/tts.routes';
+import * as costApiRoutes from '../src/features/cost/cost.routes';
+import { rateLimiter } from '../middleware/ratelimiter'; // For fetching public rate limit status
+// @ts-ignore - prompt.routes.js is a legacy JS file without type declarations
 import * as promptApiRoutes from '../src/features/prompts/prompt.routes.js';
-import { postCheckoutSession, postLemonWebhook, getCheckoutStatus } from '../src/features/billing/billing.routes.js';
-import * as organizationRoutes from '../src/features/organization/organization.routes.js';
-import { getLlmStatus as getSystemLlmStatus } from '../src/features/system/system.routes.js';
+import type { RateLimitInfo, RateLimitInfoAuthenticated, RateLimitInfoPublic } from '@shared/rateLimitTypes';
+import { postCheckoutSession, postLemonWebhook, getCheckoutStatus } from '../src/features/billing/billing.routes';
+import * as organizationRoutes from '../src/features/organization/organization.routes';
+import { getLlmStatus as getSystemLlmStatus } from '../src/features/system/system.routes';
+import { marketplaceRouter } from '../src/features/marketplace/marketplace.routes.js';
 
 /**
  * Configures and returns the main API router with all routes registered.
@@ -39,7 +43,7 @@ import { getLlmStatus as getSystemLlmStatus } from '../src/features/system/syste
 export async function configureRouter(): Promise<Router> {
   const router = Router();
 
-  console.log('🔧 Configuring API routes...');
+  console.log('[router] Configuring API routes...');
 
   try {
     // --- Authentication Routes (These are handled by authMiddleware's internal logic for /api/auth paths) ---
@@ -48,11 +52,12 @@ export async function configureRouter(): Promise<Router> {
     router.post('/auth/register', postRegister);
     router.get('/auth', authMiddleware, getAuthStatus);
     router.delete('/auth', authMiddleware, deleteAuthSession);
-    console.log('✅ Registered auth routes');
+    console.log('[router] Registered auth routes');
 
     router.get('/prompts/:filename', promptApiRoutes.GET);
     router.get('/system/llm-status', getSystemLlmStatus);
-    console.log('�o. Registered system diagnostics routes');
+    router.use('/marketplace', marketplaceRouter);
+    console.log('[router] Registered system diagnostics routes');
 
     // --- Publicly Accessible Informational Routes ---
     // This endpoint allows frontend to get info about public rate limits.
@@ -60,29 +65,40 @@ export async function configureRouter(): Promise<Router> {
     router.get('/rate-limit/status', async (req: Request, res: Response) => {
         // @ts-ignore - req.user is custom property added by optional auth middleware
         if (req.user && req.user.authenticated) {
-            return res.json({
+            const response: RateLimitInfoAuthenticated = {
                 tier: 'authenticated',
                 message: 'Authenticated users have elevated or unlimited request capacity.',
-            });
+            };
+            return res.json(response);
         }
 
         const ip = rateLimiter.resolveClientIp(req);
 
         if (!ip || ip === 'unknown') {
-            return res.json({
+            const response: RateLimitInfoPublic = {
                 tier: 'public',
                 ip: null,
-                message: 'Unable to determine client IP from proxy headers. Public rate limits are skipped for this request.',
+                used: 0,
+                limit: 0,
+                remaining: 0,
+                resetAt: null,
                 storeType: 'unresolved-ip',
-            });
+                message: 'Unable to determine client IP from proxy headers. Public rate limits are skipped for this request.',
+            };
+            return res.json(response);
         }
 
         try {
             const usage = await rateLimiter.getPublicUsage(ip);
-            return res.json({ tier: 'public', ip, ...usage });
+            const response: RateLimitInfoPublic = { 
+                tier: 'public', 
+                ip, 
+                ...usage 
+            };
+            return res.json(response);
         } catch (error: any) {
             console.error('Error fetching rate limit status:', error.message);
-            return res.json({
+            const response: RateLimitInfoPublic = {
                 tier: 'public',
                 ip,
                 used: 0,
@@ -91,10 +107,22 @@ export async function configureRouter(): Promise<Router> {
                 resetAt: null,
                 storeType: 'error',
                 message: 'Rate limit status currently unavailable. Requests continue without enforcement.',
-            });
+            };
+            return res.json(response);
         }
     });
-    console.log('✅ Registered GET /rate-limit/status route');
+    console.log('[router] Registered GET /rate-limit/status route');
+
+    // --- Documentation Routes ---
+    // Serve auto-generated documentation
+    const docsPath = path.join(__dirname, '..', '..', 'docs-generated');
+    router.use('/docs', (req: Request, res: Response, next) => {
+      // Serve static files from docs-generated directory
+      const express = require('express');
+      const staticHandler = express.static(docsPath);
+      staticHandler(req, res, next);
+    });
+    console.log('[router] Registered documentation routes at /api/docs');
 
     // --- Core Application Routes ---
     // These routes can be accessed by public (IP rate-limited) or authenticated (unlimited) users.
@@ -104,24 +132,24 @@ export async function configureRouter(): Promise<Router> {
     router.post('/chat', chatApiRoutes.POST);
     router.post('/chat/persona', chatApiRoutes.POST_PERSONA);
     router.post('/chat/detect-language', postDetectLanguage);
-    console.log('✅ Registered chat routes (public/private access)');
+    console.log('[router] Registered chat routes (public/private access)');
 
     router.post('/diagram', chatApiRoutes.POST); // Typically diagrams are generated in context of chat.
                                                    // If it needs to be strictly private, add authMiddleware.
-    console.log('✅ Registered diagram routes (public/private access)');
+    console.log('[router] Registered diagram routes (public/private access)');
 
     router.post('/stt', sttApiRoutes.POST);
     router.get('/stt/stats', sttApiRoutes.GET); // This might be better as a private route.
-    console.log('✅ Registered STT routes (public/private access)');
+    console.log('[router] Registered STT routes (public/private access)');
 
     router.post('/tts', ttsApiRoutes.POST);
     router.get('/tts/voices', ttsApiRoutes.GET); // Publicly listable voices is fine.
-    console.log('✅ Registered TTS routes (public/private access)');
+    console.log('[router] Registered TTS routes (public/private access)');
 
     router.post('/billing/checkout', authMiddleware, postCheckoutSession);
     router.get('/billing/status/:checkoutId', authMiddleware, getCheckoutStatus);
     router.post('/billing/webhook', postLemonWebhook);
-    console.log('✅ Registered billing routes');
+    console.log('[router] Registered billing routes');
 
 
     router.get('/organizations', authMiddleware, organizationRoutes.getOrganizations);
@@ -132,7 +160,7 @@ export async function configureRouter(): Promise<Router> {
     router.patch('/organizations/:organizationId/members/:memberId', authMiddleware, organizationRoutes.patchMember);
     router.delete('/organizations/:organizationId/members/:memberId', authMiddleware, organizationRoutes.deleteMember);
     router.post('/organizations/invites/:token/accept', authMiddleware, organizationRoutes.postAcceptInvite);
-    console.log('�o. Registered organization routes');
+    console.log('[router] Registered organization routes');
 
 
     // --- Strictly Authenticated Routes ---
@@ -140,7 +168,7 @@ export async function configureRouter(): Promise<Router> {
     // Example: if there were user-specific settings to save, or private data.
     router.get('/cost', authMiddleware, costApiRoutes.GET); // Cost info is user-specific
     router.post('/cost', authMiddleware, costApiRoutes.POST); // Resetting cost is user-specific
-    console.log('✅ Registered strictly authenticated cost routes');
+    console.log('[router] Registered strictly authenticated cost routes');
     // Add other strictly private routes here using authMiddleware
 
     // Test endpoint
@@ -154,23 +182,28 @@ export async function configureRouter(): Promise<Router> {
         note: "Access to this endpoint is first processed by optionalAuth, then rateLimiter.",
       });
     });
-    console.log('✅ Added test route: GET /api/test');
+    console.log('[router] Added test route: GET /api/test');
 
     if (isAgentOSEnabled()) {
       try {
         const agentosRouter = await getAgentOSRouter();
         router.use('/agentos', agentosRouter);
-        console.log('[AgentOS] Registered AgentOS routes at /api/agentos');
+        console.log('[router] Registered AgentOS routes at /api/agentos');
       } catch (agentosError) {
         console.error('[AgentOS] Failed to initialize AgentOS router. Continuing without AgentOS endpoints.', agentosError);
       }
+    } else {
+      console.warn('[AgentOS] AGENTOS_ENABLED is false. AgentOS API routes will not be available.');
     }
 
   } catch (error) {
-    console.error('❌ Error setting up API routes:', error);
+    console.error('[router] Error setting up API routes:', error);
     throw error;
   }
 
   return router;
 }
+
+
+
 

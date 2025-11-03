@@ -236,7 +236,7 @@ export class MemoryLifecycleManager implements IMemoryLifecycleManager {
             report.itemsAffected++; // Count as affected if an action *would* be taken
 
             if (!this.config.dryRunMode) { // Only execute if not dry run
-              await this.executeLifecycleAction(candidate, policy.action, actionToTake, report);
+              await this.executeLifecycleAction(candidate, policy.action, actionToTake, policy.policyId, report);
             } else {
                 this.addTraceToReport(report, candidate.id, policy.policyId, actionToTake, `[DRY RUN] Would execute action.`);
             }
@@ -396,16 +396,37 @@ export class MemoryLifecycleManager implements IMemoryLifecycleManager {
     candidate: LifecycleCandidateItem,
     configuredActionDetails: ConfigPolicyActionDetails,
     determinedAction: LifecycleAction, // This is the action post-negotiation
+    policyId: string,
     report?: LifecycleEnforcementReport // For adding detailed traces
   ): Promise<void> {
+    /**
+     * Core action executor invoked after (optional) GMI negotiation resolves a final lifecycle decision.
+     * Responsibilities:
+     *  1. Honor dryRun mode (log intent only, no side-effects).
+     *  2. Resolve effective action (may differ from configuredActionDetails.type if GMI overrode).
+     *  3. Execute summarization variants (summarize_and_delete / summarize_and_archive) via UtilityAI.
+     *  4. Perform storage mutation (delete/archive) through vectorStoreManager.
+     *  5. Emit detailed trace lines into enforcement report for auditing & analytics.
+     *
+     * Error Semantics:
+     *  - Missing dependencies (UtilityAI for summarization) -> throws GMIError(MISSING_DEPENDENCY) early.
+     *  - Missing required candidate.textContent for summarization -> throws GMIError(MISSING_DATA).
+     *  - Underlying vector store failures wrapped into GMIError(PROCESSING_ERROR) and logged; processing continues
+     *    for remaining items (best-effort policy execution).
+     *  - All thrown errors are caught by caller loops which append to report.errors.
+     *
+     * Idempotency Considerations:
+     *  - Delete/archive operations SHOULD be idempotent at vector store layer; repeated attempts should no-op.
+     *  - Summarization re-runs will regenerate summary text; ingest step currently conceptual (logged only).
+     */
     const dryRunPrefix = this.config.dryRunMode ? "[DRY RUN] " : "";
-    const logPreamble = `${dryRunPrefix}MLM (${this.managerId}): Item '${candidate.id}' from '${candidate.dataSourceId}/${candidate.collectionName}'. Action: '${determinedAction}'. Policy: '${configuredActionDetails.policyId}'.`;
+  const logPreamble = `${dryRunPrefix}MLM (${this.managerId}): Item '${candidate.id}' from '${candidate.dataSourceId}/${candidate.collectionName}'. Action: '${determinedAction}'. Policy: '${policyId}'.`;
     console.log(logPreamble);
-    this.addTraceToReport(report, candidate.id, configuredActionDetails.policyId, determinedAction, "Preparing to execute action.");
+  this.addTraceToReport(report, candidate.id, policyId, determinedAction, "Preparing to execute action.");
 
 
     if (this.config.dryRunMode) {
-        this.addTraceToReport(report, candidate.id, configuredActionDetails.policyId, determinedAction, "Dry run: No actual change made.");
+    this.addTraceToReport(report, candidate.id, policyId, determinedAction, "Dry run: No actual change made.");
         return;
     }
 
@@ -413,7 +434,7 @@ export class MemoryLifecycleManager implements IMemoryLifecycleManager {
     if (determinedAction === 'ALLOW_ACTION') {
         effectiveConfigActionType = configuredActionDetails.type; // Proceed with original policy action
     } else if (['PREVENT_ACTION', 'NO_ACTION_TAKEN', 'ACKNOWLEDGE_NOTIFICATION'].includes(determinedAction)) {
-        this.addTraceToReport(report, candidate.id, configuredActionDetails.policyId, determinedAction, "Action prevented or no change required.");
+    this.addTraceToReport(report, candidate.id, policyId, determinedAction, "Action prevented or no change required.");
         return;
     } else {
         // GMI specified a concrete action (DELETE, ARCHIVE, etc.)
@@ -429,7 +450,7 @@ export class MemoryLifecycleManager implements IMemoryLifecycleManager {
         if (!candidate.textContent) {
           // TODO: Attempt to fetch textContent for candidate.id from candidate.vectorStoreRef
           // This would require IVectorStore to have a method like `getDocumentById(collectionName, id): Promise<VectorDocument | undefined>`
-          this.addTraceToReport(report, candidate.id, configuredActionDetails.policyId, determinedAction, `Error: Full textContent missing for summarization.`);
+          this.addTraceToReport(report, candidate.id, policyId, determinedAction, `Error: Full textContent missing for summarization.`);
           throw new GMIError(`Full textContent for item '${candidate.id}' required for summarization was not available. Candidate must be populated with textContent by findPolicyCandidates.`, GMIErrorCode.MISSING_DATA);
         }
         const summarizationOpts: SummarizationOptions = {
@@ -437,16 +458,16 @@ export class MemoryLifecycleManager implements IMemoryLifecycleManager {
             method: 'abstractive_llm', // Make this configurable
             modelId: configuredActionDetails.llmModelForSummary || this.config.defaultSummarizationModelId,
         };
-        this.addTraceToReport(report, candidate.id, configuredActionDetails.policyId, determinedAction, `Starting summarization with options: ${JSON.stringify(summarizationOpts)}`);
+  this.addTraceToReport(report, candidate.id, policyId, determinedAction, `Starting summarization with options: ${JSON.stringify(summarizationOpts)}`);
         summaryText = await this.utilityAI.summarize(candidate.textContent!, summarizationOpts);
-        this.addTraceToReport(report, candidate.id, configuredActionDetails.policyId, determinedAction, `Summarization complete. Summary length: ${summaryText.length}.`);
+  this.addTraceToReport(report, candidate.id, policyId, determinedAction, `Summarization complete. Summary length: ${summaryText.length}.`);
 
         if (configuredActionDetails.summaryDataSourceId && summaryText) {
           // Ingesting summary is a RAG operation, ideally not done directly by MLM.
           // MLM could emit an event "SummaryCreatedEvent { originalItemId, summaryText, targetDataSource }"
           // For now, we log the intent.
           const summaryDocId = `summary_of_${candidate.id.replace(/[^a-zA-Z0-9-_]/g, '_')}`; // Sanitize ID
-          this.addTraceToReport(report, candidate.id, configuredActionDetails.policyId, determinedAction, `Summary (New ID: ${summaryDocId}) for item '${candidate.id}' to be ingested to DS '${configuredActionDetails.summaryDataSourceId}'. (This step is conceptual, requiring RAG interaction).`);
+          this.addTraceToReport(report, candidate.id, policyId, determinedAction, `Summary (New ID: ${summaryDocId}) for item '${candidate.id}' to be ingested to DS '${configuredActionDetails.summaryDataSourceId}'. (This step is conceptual, requiring RAG interaction).`);
           console.log(`MLM (${this.managerId}): Summary for item '${candidate.id}' (ID: ${summaryDocId}) intended for DS '${configuredActionDetails.summaryDataSourceId}'.`);
         }
       }
@@ -454,24 +475,24 @@ export class MemoryLifecycleManager implements IMemoryLifecycleManager {
       // Perform Delete or Archive based on the effective action type
       if (effectiveConfigActionType === 'delete' || (effectiveConfigActionType === 'summarize_and_delete' && (configuredActionDetails.deleteOriginalAfterSummary !== false || summaryText !== undefined))) {
         await candidate.vectorStoreRef.delete(candidate.collectionName, [candidate.id]);
-        this.addTraceToReport(report, candidate.id, configuredActionDetails.policyId, determinedAction, `Item deleted successfully.`);
+  this.addTraceToReport(report, candidate.id, policyId, determinedAction, `Item deleted successfully.`);
       } else if (effectiveConfigActionType === 'archive' || (effectiveConfigActionType === 'summarize_and_archive' && (configuredActionDetails.deleteOriginalAfterSummary !== false || summaryText !== undefined))) {
         const archiveTarget = configuredActionDetails.archiveTargetId || this.config.defaultArchiveStoreId;
-        this.addTraceToReport(report, candidate.id, configuredActionDetails.policyId, determinedAction, `Archival to '${archiveTarget}' is conceptual. Original item (if configured) deleted.`);
+  this.addTraceToReport(report, candidate.id, policyId, determinedAction, `Archival to '${archiveTarget}' is conceptual. Original item (if configured) deleted.`);
         // TODO: Implement actual archival logic (e.g., move to different storage).
         // For now, we simulate by deleting if configured to do so after conceptual archive.
         if (configuredActionDetails.deleteOriginalAfterSummary !== false || effectiveConfigActionType === 'archive') {
              await candidate.vectorStoreRef.delete(candidate.collectionName, [candidate.id]);
         }
       } else if (effectiveConfigActionType === 'notify_gmi_owner') {
-         this.addTraceToReport(report, candidate.id, configuredActionDetails.policyId, determinedAction, `GMI owner notification action type; no direct data modification by MLM here.`);
+         this.addTraceToReport(report, candidate.id, policyId, determinedAction, `GMI owner notification action type; no direct data modification by MLM here.`);
       }
       // Other actions like RETAIN_FOR_DURATION, MARK_AS_CRITICAL would involve updating item metadata.
       // This requires IVectorStore to support metadata updates, e.g., `updateMetadata(collectionName, itemId, metadataPatch)`.
 
     } catch (error: any) {
       const gmiErr = GMIError.wrap(error, GMIErrorCode.PROCESSING_ERROR, `Failed to execute lifecycle action '${effectiveConfigActionType}' on item '${candidate.id}'.`);
-      this.addTraceToReport(report, candidate.id, configuredActionDetails.policyId, determinedAction, `Error: ${gmiErr.message}`);
+  this.addTraceToReport(report, candidate.id, policyId, determinedAction, `Error: ${gmiErr.message}`);
       console.error(`MLM (${this.managerId}): Error during executeLifecycleAction for item '${candidate.id}', action '${effectiveConfigActionType}': ${gmiErr.message}`, gmiErr.details?.underlyingError);
       throw gmiErr;
     }
@@ -544,7 +565,7 @@ export class MemoryLifecycleManager implements IMemoryLifecycleManager {
     let reportForSingleItem: LifecycleEnforcementReport | undefined; // Create a mini-report for tracing this one action
 
     if (action && action !== 'NO_ACTION_TAKEN') {
-      await this.executeLifecycleAction(candidate, policyToApply.action, action, reportForSingleItem);
+  await this.executeLifecycleAction(candidate, policyToApply.action, action, policyToApply.policyId, reportForSingleItem);
       const detailsMsg = `Action '${action}' executed based on policy '${policyToApply.policyId}'.`;
       this.addTraceToReport(reportForSingleItem, candidate.id, policyToApply.policyId, action, detailsMsg);
       return { actionTaken: action, details: detailsMsg };

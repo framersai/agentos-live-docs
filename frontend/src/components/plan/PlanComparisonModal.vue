@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import type { PlanCatalogEntry } from '../../../shared/planCatalog';
+import type { PlanCatalogEntry } from '@shared/planCatalog';
 import { usePlans } from '@/composables/usePlans';
 
 const props = defineProps<{
@@ -49,7 +49,7 @@ const allowanceSecondary = (plan: PlanCatalogEntry): string => (
           <header class="plan-modal__header">
             <h2>{{ t('plans.compareTitle') }}</h2>
             <button type="button" class="close-button" @click="close" :aria-label="t('common.close')">
-              ×
+              ï¿½
             </button>
           </header>
           <div class="plan-modal__body">

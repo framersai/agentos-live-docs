@@ -11,6 +11,13 @@ export default defineConfig({
   },
   server: {
     port: 5175,
-    open: true
+    open: true,
+    proxy: {
+      "/api/agentos": {
+        target: "http://localhost:3001",
+        changeOrigin: true,
+        secure: false
+      }
+    }
   }
 });

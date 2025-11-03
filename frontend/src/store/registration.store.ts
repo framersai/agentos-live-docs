@@ -16,7 +16,7 @@ interface CheckoutDraftPayload {
   checkoutUrl?: string;
 }
 
-type CheckoutStatus = 'idle' | 'pending' | 'paid' | 'complete' | 'failed' | 'expired';
+type CheckoutStatus = 'idle' | 'created' | 'pending' | 'paid' | 'complete' | 'failed' | 'expired';
 
 interface RegistrationState {
   account: {

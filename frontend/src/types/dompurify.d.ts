@@ -2,15 +2,17 @@ declare module 'dompurify' {
   interface SanitizeConfig {
     ALLOWED_TAGS?: string[];
     ALLOWED_ATTR?: string[];
+    FORBID_TAGS?: string[];
+    FORBID_ATTR?: string[];
     [key: string]: unknown;
   }
 
-  type SanitizeInput = string | Node;
+  export function sanitize(input: string, config?: SanitizeConfig): string;
 
-  interface DOMPurifyInstance {
-    sanitize(input: SanitizeInput, config?: SanitizeConfig): string;
+  export interface DOMPurify {
+    sanitize(input: string, config?: SanitizeConfig): string;
   }
 
-  const DOMPurify: DOMPurifyInstance;
-  export default DOMPurify;
+  const DomPurify: DOMPurify;
+  export default DomPurify;
 }

@@ -13,7 +13,7 @@ echo "Restarting Nginx..."
 sudo systemctl restart nginx
 
 echo "Starting backend with PM2..."
-cd ~/voice-coding-assistant/backend
+cd ~/voice-chat-assistant/backend
 pm2 start ecosystem.config.json
 pm2 save
 

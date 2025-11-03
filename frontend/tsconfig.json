@@ -23,15 +23,18 @@
     /* Paths */
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
-    }
+      "@/*": ["./src/*"],
+      "@shared/*": ["../shared/*"],
+      "dompurify": ["./src/types/dompurify"]
+    },
+    "types": ["node"]
   },
   "include": [
     "src/**/*.ts",
     "src/**/*.d.ts",
     "src/**/*.tsx",
     "src/**/*.vue",
-    "vite-env.d.ts" // <-- ADD THIS LINE
+    "vite-env.d.ts"
   ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

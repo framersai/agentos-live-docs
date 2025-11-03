@@ -15,8 +15,7 @@ import {
 } from 'vue-router';
 import { h } from 'vue';
 import { RouterView } from 'vue-router';
-import { AVAILABLE_LOCALES, getCurrentLocale, setLocale, type AvailableLocale } from '@/i18n';
-import i18n from '@/i18n';
+import { AVAILABLE_LOCALES, getCurrentLocale, setLocale, type AvailableLocale, composer } from '@/i18n';
 
 // Import Views using modern shorthand for lazy loading
 const Login = () => import('@/views/Login.vue');
@@ -80,7 +79,7 @@ const routes: Array<RouteRecordRaw> = [
         component: {
             render: () => h(RouterView)
         },
-        beforeEnter(to, from, next) {
+    beforeEnter(to, _from, next) {
             const locale = to.params.locale as string;
             console.log('[Router] Locale route beforeEnter. Locale param:', locale);
             console.log('[Router] Supported locales:', supportedLocales);
@@ -88,8 +87,7 @@ const routes: Array<RouteRecordRaw> = [
             if (supportedLocales.includes(locale)) {
                 console.log('[Router] Valid locale detected. Setting locale:', locale);
                 setLocale(locale as AvailableLocale);
-                i18n.global.locale.value = locale as AvailableLocale;
-                console.log('[Router] i18n global locale after set:', i18n.global.locale.value);
+                console.log('[Router] Composer locale after set:', composer.locale);
                 next();
             } else {
                 console.log('[Router] Invalid locale. Redirecting with default:', getCurrentLocale());
@@ -183,7 +181,7 @@ const router = createRouter({
     }
 });
 
-router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
+router.beforeEach((to: RouteLocationNormalized, _from: RouteLocationNormalized, next: NavigationGuardNext) => {
     const authenticated = isAuthenticated();
     const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
     const isGuestOnlyRoute = to.matched.some(record => record.meta.guest);
@@ -197,10 +195,9 @@ router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, n
 
     // Extract locale from route and ensure it's set
     const locale = to.params.locale as string;
-    if (locale && locale !== i18n.global.locale.value) {
+    if (locale && locale !== composer.locale.value) {
         console.log('[Router] beforeEach: Syncing locale from route:', locale);
         setLocale(locale as AvailableLocale);
-        i18n.global.locale.value = locale as AvailableLocale;
     }
 
     if (requiresAuth && !authenticated) {

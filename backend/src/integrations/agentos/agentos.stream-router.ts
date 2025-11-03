@@ -39,6 +39,16 @@ export const createAgentOSStreamRouter = (integration: AgentOSStreamIntegration)
       }
     }
 
+    let agencyRequest: unknown;
+    if (typeof req.query.agencyRequest === 'string') {
+      try {
+        agencyRequest = JSON.parse(req.query.agencyRequest);
+      } catch {
+        res.status(400).json({ message: 'Invalid agencyRequest payload.' });
+        return;
+      }
+    }
+
     if (!userId || !conversationId || !mode || !Array.isArray(messages)) {
       res.status(400).json({ message: 'Missing agentOS streaming payload fields.' });
       return;
@@ -59,6 +69,10 @@ export const createAgentOSStreamRouter = (integration: AgentOSStreamIntegration)
 
     if (workflowRequest && typeof workflowRequest === 'object') {
       (agentosInput as any).workflowRequest = workflowRequest;
+    }
+
+    if (agencyRequest && typeof agencyRequest === 'object') {
+      (agentosInput as any).agencyRequest = agencyRequest;
     }
 
     res.setHeader('Content-Type', 'text/event-stream');

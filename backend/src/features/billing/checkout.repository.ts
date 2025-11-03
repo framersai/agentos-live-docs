@@ -4,7 +4,6 @@
  * @description Persistence helpers for Lemon Squeezy checkout sessions.
  */
 
-import type { Database as BetterSqliteDatabase } from 'better-sqlite3';
 import { getAppDatabase, generateId } from '../../core/database/appDatabase.js';
 
 export interface CheckoutSessionRecord {
@@ -18,8 +17,6 @@ export interface CheckoutSessionRecord {
   created_at: number;
   updated_at: number;
 }
-
-const db: BetterSqliteDatabase = getAppDatabase();
 
 const mapRow = (row: any): CheckoutSessionRecord | null => {
   if (!row) return null;
@@ -36,30 +33,49 @@ const mapRow = (row: any): CheckoutSessionRecord | null => {
   };
 };
 
-export const createCheckoutSessionRecord = (data: { userId: string; planId: string; sessionId?: string }): CheckoutSessionRecord => {
+/**
+ * Creates a new checkout session record for the given user and plan.
+ */
+export const createCheckoutSessionRecord = async (data: {
+  userId: string;
+  planId: string;
+  sessionId?: string;
+}): Promise<CheckoutSessionRecord> => {
+  const db = getAppDatabase();
   const id = data.sessionId ?? generateId();
   const now = Date.now();
-  db.prepare(`
+  await db.run(
+    `
     INSERT INTO checkout_sessions (id, user_id, plan_id, status, lemon_checkout_id, lemon_subscription_id, lemon_customer_id, created_at, updated_at)
     VALUES (@id, @user_id, @plan_id, 'created', NULL, NULL, NULL, @created_at, @updated_at)
-  `).run({
-    id,
-    user_id: data.userId,
-    plan_id: data.planId,
-    created_at: now,
-    updated_at: now,
-  });
-  return findCheckoutSessionById(id) as CheckoutSessionRecord;
+  `,
+    {
+      id,
+      user_id: data.userId,
+      plan_id: data.planId,
+      created_at: now,
+      updated_at: now
+    }
+  );
+  return (await findCheckoutSessionById(id)) as CheckoutSessionRecord;
 };
 
-export const updateCheckoutSessionRecord = (id: string, updates: {
+/**
+ * Updates a checkout session with new status or LemonSqueezy identifiers.
+ */
+export const updateCheckoutSessionRecord = async (
+  id: string,
+  updates: {
   status?: CheckoutSessionRecord['status'];
   lemonCheckoutId?: string | null;
   lemonSubscriptionId?: string | null;
   lemonCustomerId?: string | null;
-}): CheckoutSessionRecord | null => {
+}
+): Promise<CheckoutSessionRecord | null> => {
+  const db = getAppDatabase();
   const now = Date.now();
-  db.prepare(`
+  await db.run(
+    `
     UPDATE checkout_sessions
        SET status = COALESCE(@status, status),
            lemon_checkout_id = COALESCE(@lemon_checkout_id, lemon_checkout_id),
@@ -67,23 +83,33 @@ export const updateCheckoutSessionRecord = (id: string, updates: {
            lemon_customer_id = COALESCE(@lemon_customer_id, lemon_customer_id),
            updated_at = @updated_at
      WHERE id = @id
-  `).run({
-    id,
-    status: updates.status ?? null,
-    lemon_checkout_id: updates.lemonCheckoutId ?? null,
-    lemon_subscription_id: updates.lemonSubscriptionId ?? null,
-    lemon_customer_id: updates.lemonCustomerId ?? null,
-    updated_at: now,
-  });
-  return findCheckoutSessionById(id);
+  `,
+    {
+      id,
+      status: updates.status ?? null,
+      lemon_checkout_id: updates.lemonCheckoutId ?? null,
+      lemon_subscription_id: updates.lemonSubscriptionId ?? null,
+      lemon_customer_id: updates.lemonCustomerId ?? null,
+      updated_at: now
+    }
+  );
+  return await findCheckoutSessionById(id);
 };
 
-export const findCheckoutSessionById = (id: string): CheckoutSessionRecord | null => {
-  const row = db.prepare('SELECT * FROM checkout_sessions WHERE id = ? LIMIT 1').get(id);
+/**
+ * Finds a checkout session by internal identifier.
+ */
+export const findCheckoutSessionById = async (id: string): Promise<CheckoutSessionRecord | null> => {
+  const db = getAppDatabase();
+  const row = await db.get('SELECT * FROM checkout_sessions WHERE id = ? LIMIT 1', [id]);
   return mapRow(row);
 };
 
-export const findCheckoutSessionByLemonId = (lemonCheckoutId: string): CheckoutSessionRecord | null => {
-  const row = db.prepare('SELECT * FROM checkout_sessions WHERE lemon_checkout_id = ? LIMIT 1').get(lemonCheckoutId);
+/**
+ * Retrieves a checkout session using the external LemonSqueezy checkout identifier.
+ */
+export const findCheckoutSessionByLemonId = async (lemonCheckoutId: string): Promise<CheckoutSessionRecord | null> => {
+  const db = getAppDatabase();
+  const row = await db.get('SELECT * FROM checkout_sessions WHERE lemon_checkout_id = ? LIMIT 1', [lemonCheckoutId]);
   return mapRow(row);
 };

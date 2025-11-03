@@ -16,6 +16,7 @@
 <script setup lang="ts">
 import { computed, type Component as VueComponentType, type PropType, type FunctionalComponent, type DefineComponent } from 'vue';
 import { type IAgentDefinition, type IDetailedCapabilityItem, type AgentId } from '@/services/agent.service';
+import type { MarketplaceAgentSummaryFE } from '@/utils/api';
 import { useAgentStore } from '@/store/agent.store';
 import { useAuth } from '@/composables/useAuth';
 import {
@@ -37,6 +38,7 @@ const props = defineProps({
    * @required 
    */
   agent: { type: Object as PropType<IAgentDefinition>, required: true },
+  marketplace: { type: Object as PropType<MarketplaceAgentSummaryFE | null>, required: false, default: null },
 });
 
 /**
@@ -101,6 +103,53 @@ const isLocked = computed<boolean>(() => {
   return false;
 });
 
+const marketplaceMeta = computed<MarketplaceAgentSummaryFE | null>(() => props.marketplace ?? null);
+
+const displayTagline = computed<string>(() => {
+  return (
+    marketplaceMeta.value?.tagline?.trim() ||
+    props.agent.longDescription ||
+    props.agent.description
+  );
+});
+
+const pricingBadge = computed<{ label: string; variant: 'free' | 'paid' | 'freemium' | 'unknown'; price?: string }>(() => {
+  const meta = marketplaceMeta.value;
+  if (!meta?.pricing) {
+    return { label: props.agent.isPublic ? 'Included' : 'Restricted', variant: props.agent.isPublic ? 'free' : 'unknown' };
+  }
+  const { model, priceCents, currency } = meta.pricing;
+  switch (model) {
+    case 'free':
+      return { label: 'Free', variant: 'free' };
+    case 'freemium':
+      return { label: 'Free tier', variant: 'freemium' };
+    case 'paid': {
+      const price =
+        typeof priceCents === 'number'
+          ? `${((priceCents ?? 0) / 100).toLocaleString(undefined, {
+              style: 'currency',
+              currency: currency ?? 'USD',
+              minimumFractionDigits: 0,
+            })}/mo`
+          : 'Paid';
+      return { label: price, variant: 'paid', price };
+    }
+    default:
+      return { label: 'Marketplace', variant: 'unknown' };
+  }
+});
+
+const ratingSummary = computed<string | null>(() => {
+  const rating = marketplaceMeta.value?.metrics?.rating;
+  const downloads = marketplaceMeta.value?.metrics?.downloads;
+  if (!rating && !downloads) return null;
+  const ratingText = rating ? `${rating.toFixed(1)}★` : '';
+  const downloadText =
+    typeof downloads === 'number' ? `${downloads.toLocaleString()} installs` : '';
+  return [ratingText, downloadText].filter(Boolean).join(' · ') || null;
+});
+
 /**
  * @computed cardClasses
  * @description Computes a dynamic list of CSS classes for the root `div` of the agent card.
@@ -108,12 +157,15 @@ const isLocked = computed<boolean>(() => {
  * specific styling via SCSS.
  * @returns {string[]} An array of CSS class names.
  */
-const cardClasses = computed<string[]>(() => [
-  'agent-card-ephemeral', // Base class for all agent cards
-  isActiveAgent.value && !isLocked.value ? 'is-active-agent' : '',
-  isLocked.value ? 'is-locked-agent' : 'card-interactive-ephemeral', // Hook for interactive styling if not locked
-  `tier--${props.agent.accessTier || (props.agent.isPublic ? 'public' : 'member')}` // Tier-specific class
-]);
+const cardClasses = computed<string[]>(() => {
+  const base: Array<string | false> = [
+    'agent-card-ephemeral',
+    isActiveAgent.value && !isLocked.value && 'is-active-agent',
+    isLocked.value ? 'is-locked-agent' : 'card-interactive-ephemeral',
+    `tier--${props.agent.accessTier || (props.agent.isPublic ? 'public' : 'member')}`,
+  ];
+  return base.filter(Boolean) as string[];
+});
 
 /**
  * @function handleSelectAgent
@@ -189,7 +241,7 @@ const getCapabilityIcon = (capability: IDetailedCapabilityItem): VueComponentTyp
     :tabindex="isLocked ? -1 : 0"
     role="button"
     :aria-pressed="isActiveAgent && !isLocked"
-    :aria-label="`Select assistant: ${agent.label}. ${agent.description}. ${isLocked ? (agent.accessTier === 'premium' ? 'Premium access required.' : (agent.accessTier === 'member' ? 'Member access required.' : 'Login required.')) : 'Selectable.'}`"
+    :aria-label="`Select assistant: ${agent.label}. ${displayTagline}. ${isLocked ? (agent.accessTier === 'premium' ? 'Premium access required.' : (agent.accessTier === 'member' ? 'Member access required.' : 'Login required.')) : 'Selectable.'}`"
     :aria-disabled="isLocked"
   >
     <div v-if="isLocked" class="locked-overlay-ephemeral" aria-hidden="true">
@@ -209,6 +261,14 @@ const getCapabilityIcon = (capability: IDetailedCapabilityItem): VueComponentTyp
           <p v-if="agent.category" class="agent-category-ephemeral">
             {{ agent.category }}
           </p>
+          <div class="agent-metadata-ephemeral">
+            <span class="filter-chip-ephemeral agent-pricing-chip" :data-variant="pricingBadge.variant">
+              {{ pricingBadge.label }}
+            </span>
+            <span v-if="ratingSummary" class="agent-rating-ephemeral">
+              {{ ratingSummary }}
+            </span>
+          </div>
         </div>
         <CheckCircleIcon v-if="isActiveAgent && !isLocked" class="selected-checkmark-ephemeral" aria-label="Currently selected assistant"/>
         <button
@@ -223,7 +283,7 @@ const getCapabilityIcon = (capability: IDetailedCapabilityItem): VueComponentTyp
       </header>
 
       <p class="agent-description-ephemeral">
-        {{ agent.description }}
+        {{ displayTagline }}
       </p>
 
       <div class="agent-details-section-ephemeral" v-if="(agent.tags && agent.tags.length > 0) || (agent.detailedCapabilities && agent.detailedCapabilities.length > 0)">

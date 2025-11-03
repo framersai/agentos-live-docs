@@ -1,4 +1,4 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
@@ -6,10 +6,10 @@ import AnimatedGlyph from '@/components/about/AnimatedGlyph.vue';
 import { usePlans } from '@/composables/usePlans';
 import { useAuth } from '@/composables/useAuth';
 import { useRegistrationStore } from '@/store/registration.store';
-import type { PlanCatalogEntry, PlanId } from '../../../shared/planCatalog';
+import type { PlanCatalogEntry, PlanId } from '@shared/planCatalog';
 
 const { t } = useI18n();
-const { featuredPlan, standardPlans, plans } = usePlans();
+const { plans } = usePlans();
 const router = useRouter();
 const route = useRoute();
 const auth = useAuth();

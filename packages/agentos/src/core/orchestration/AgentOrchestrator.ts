@@ -28,16 +28,18 @@
 
 import { AgentOSInput, ProcessingOptions, UserFeedbackPayload } from '../../api/types/AgentOSInput';
 import {
-  AgentOSResponse,
-  AgentOSResponseChunkType,
-  AgentOSTextDeltaChunk,
-  AgentOSFinalResponseChunk,
-  AgentOSErrorChunk,
-  AgentOSSystemProgressChunk,
-  AgentOSToolCallRequestChunk,
-  AgentOSToolResultEmissionChunk,
-  AgentOSUICommandChunk,
-  AgentOSMetadataUpdateChunk,
+  AgentOSResponse,
+  AgentOSResponseChunkType,
+  AgentOSTextDeltaChunk,
+  AgentOSFinalResponseChunk,
+  AgentOSErrorChunk,
+  AgentOSSystemProgressChunk,
+  AgentOSToolCallRequestChunk,
+  AgentOSToolResultEmissionChunk,
+  AgentOSUICommandChunk,
+  AgentOSMetadataUpdateChunk,
+  AgentOSWorkflowUpdateChunk,
+  AgentOSAgencyUpdateChunk,
 } from '../../api/types/AgentOSResponse';
 import { GMIManager } from '../../cognitive_substrate/GMIManager';
 import {
@@ -279,11 +281,11 @@ export class AgentOSOrchestrator {
       case AgentOSResponseChunkType.ERROR:
         chunk = { ...baseChunk, code: data.code, message: data.message, details: data.details } as AgentOSErrorChunk;
         break;
-      case AgentOSResponseChunkType.FINAL_RESPONSE:
-        chunk = { 
-          ...baseChunk, 
-          finalResponseText: data.finalResponseText,
-          finalToolCalls: data.finalToolCalls,
+      case AgentOSResponseChunkType.FINAL_RESPONSE:
+        chunk = { 
+          ...baseChunk, 
+          finalResponseText: data.finalResponseText,
+          finalToolCalls: data.finalToolCalls,
           finalUiCommands: data.finalUiCommands,
           audioOutput: data.audioOutput,
           imageOutput: data.imageOutput,
@@ -293,15 +295,21 @@ export class AgentOSOrchestrator {
           updatedConversationContext: data.updatedConversationContext,
           activePersonaDetails: data.activePersonaDetails
         } as AgentOSFinalResponseChunk;
-        break;
-      case AgentOSResponseChunkType.METADATA_UPDATE:
-        chunk = { ...baseChunk, updates: data.updates } as AgentOSMetadataUpdateChunk;
-        break;
-      default:
-        const exhaustiveCheck: never = type;
-        const errorMsg = `Internal Error: Unknown stream chunk type '${exhaustiveCheck as string}' encountered by orchestrator.`;
-        console.error(`AgentOSOrchestrator: ${errorMsg}`);
-        chunk = { 
+        break;
+      case AgentOSResponseChunkType.METADATA_UPDATE:
+        chunk = { ...baseChunk, updates: data.updates } as AgentOSMetadataUpdateChunk;
+        break;
+      case AgentOSResponseChunkType.WORKFLOW_UPDATE:
+        chunk = { ...baseChunk, workflow: data.workflow } as AgentOSWorkflowUpdateChunk;
+        break;
+      case AgentOSResponseChunkType.AGENCY_UPDATE:
+        chunk = { ...baseChunk, agency: data.agency } as AgentOSAgencyUpdateChunk;
+        break;
+      default:
+        const exhaustiveCheck: never = type;
+        const errorMsg = `Internal Error: Unknown stream chunk type '${exhaustiveCheck as string}' encountered by orchestrator.`;
+        console.error(`AgentOSOrchestrator: ${errorMsg}`);
+        chunk = { 
           ...baseChunk, 
           type: AgentOSResponseChunkType.ERROR, 
           code: GMIErrorCode.INTERNAL_SERVER_ERROR.toString(), 

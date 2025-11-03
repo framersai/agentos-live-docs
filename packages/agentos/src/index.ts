@@ -27,5 +27,12 @@ export { AgencyRegistry } from './core/agency/AgencyRegistry';
 export * from './cognitive_substrate/persona_overlays/PersonaOverlayTypes';
 export { PersonaOverlayManager } from './cognitive_substrate/persona_overlays/PersonaOverlayManager';
 export * from './extensions';
+// Multilingual exports
+export * from './core/language/interfaces';
+export * from './core/language/LanguageService';
 export type { ILogger } from './logging/ILogger';
 export { createLogger, setLoggerFactory, resetLoggerFactory } from './logging/loggerFactory';
+// Rate limit types
+export * from './types/rateLimitTypes';
+// Storage adapters
+export * from './core/storage';

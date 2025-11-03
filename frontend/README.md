@@ -2,6 +2,8 @@
 
 This package contains the Vue 3 + Vite front-end for Voice Chat Assistant. It serves as the multi-agent cockpit for voice conversations, diagramming, transcription and, when enabled, the embedded AgentOS orchestration path.
 
+**Built with [`@agentos/core`](https://github.com/wearetheframers/agentos)** — Adaptive agent runtime with streaming, tooling, and observability.
+
 ---
 
 ## Table of Contents

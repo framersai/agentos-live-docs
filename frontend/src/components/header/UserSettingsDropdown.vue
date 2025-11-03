@@ -37,7 +37,10 @@ import { useAuth } from '@/composables/useAuth';
 // import { useUiStore } from '@/store/ui.store'; // Removed as not directly used
 import {
   voiceSettingsManager,
-  type VoiceApplicationSettings
+  type VoiceApplicationSettings,
+  type AudioInputMode,
+  type STTPreference,
+  type TTSProvider
 } from '@/services/voice.settings.service';
 import { conversationManager } from '@/services/conversation.manager';
 import {
@@ -58,7 +61,8 @@ import {
   ArrowRightOnRectangleIcon as LogoutIcon,
   Cog8ToothIcon as SettingsIcon, // Renamed for clarity as it's used for 'Settings' link
   CpuChipIcon,
-  DocumentTextIcon
+  DocumentTextIcon,
+  SpeakerWaveIcon
 } from '@heroicons/vue/24/outline';
 
 const auth = useAuth();

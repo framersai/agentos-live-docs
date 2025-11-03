@@ -84,6 +84,12 @@ export class PromptEngine implements IPromptEngine {
   private config!: Readonly<PromptEngineConfig>;
   private utilityAI?: IPromptEngineUtilityAI;
   private isInitialized: boolean = false;
+  /**
+   * Current execution context used implicitly for operations (e.g., tool manifest filtering) when
+   * a context is not passed directly. This is set via `setCurrentExecutionContext` by orchestration layers.
+   * Avoids leaking context through multiple method signatures while still enabling persona-scoped behavior.
+   */
+  private currentExecutionContext?: Readonly<PromptExecutionContext>;
 
   private cache: Map<string, CacheEntry> = new Map();
   private statistics: EngineStatisticsInternal = this.getInitialStatistics();
@@ -128,6 +134,14 @@ export class PromptEngine implements IPromptEngine {
     this.isInitialized = true;
     console.log(`PromptEngine initialized successfully. Default template: '${this.config.defaultTemplateName}'. Available templates: ${Object.keys(this.config.availableTemplates).length}.`);
   }
+
+  /**
+   * Sets the current execution context for implicit persona-aware operations (e.g., tool filtering).
+   * Passing undefined clears the context.
+   */
+  public setCurrentExecutionContext(ctx?: Readonly<PromptExecutionContext>): void {
+    this.currentExecutionContext = ctx;
+  }
 
   private ensureInitialized(): void {
     if (!this.isInitialized) {
@@ -495,6 +509,19 @@ export class PromptEngine implements IPromptEngine {
     executionContext?: Readonly<PromptExecutionContext>,
     templateName?: string
   ): string {
+    /**
+     * Generates a stable cache key for a prospective prompt construction result.
+     * Key Composition Strategy (intentional truncation for privacy & size):
+     *  - First 50 chars of each system prompt concatenated (order sensitive)
+     *  - First 100 chars of user input
+     *  - Last turn content excerpt (first 50 chars) for light history sensitivity
+     *  - Tool id list (joined)
+     *  - Model id, template name, persona id, mood, task hint
+     *
+     * Hashing: Simple 32‑bit additive hash -> base36 to keep key short; collision risk acceptable for cache.
+     *
+     * NOTE: Omits retrievedContext & full history intentionally to avoid large keys and leaking RAG content into logs.
+     */
     const relevantData = {
       system: components.systemPrompts?.map(p => p.content.substring(0,50)).join(';'),
       userInput: components.userInput?.substring(0,100),
@@ -517,6 +544,12 @@ export class PromptEngine implements IPromptEngine {
   }
 
   private setupCacheEviction(): void {
+    /**
+     * Periodic passive cache eviction loop. Strategy:
+     *  - Run every half of timeout window (min 60s)
+     *  - Drop entries whose age > configured timeout.
+     * No size‑based LRU yet; maxCacheSizeBytes reserved for future implementation.
+     */
     const interval = (this.config.performance.cacheTimeoutSeconds / 2) * 1000;
     setInterval(() => {
       const now = Date.now();
@@ -551,6 +584,15 @@ export class PromptEngine implements IPromptEngine {
     base: Readonly<PromptComponents>,
     selectedElements: ReadonlyArray<ContextualPromptElement>
   ): PromptComponents {
+    /**
+     * Applies selected contextual elements onto the immutable base components producing a mutable augmented copy.
+     * Merging Rules:
+     *  - System prompt augmenters append as new system prompts with synthetic source tag.
+     *  - Few‑shot examples accumulate under customComponents.fewShotExamples.
+     *  - User prompt augmentation concatenates onto existing userInput (newline separated).
+     *  - All other element types fall back to a dynamic bucket keyed by normalized type.
+     * Sorting: Final systemPrompts sorted ascending by priority to preserve intended ordering.
+     */
     const augmented = JSON.parse(JSON.stringify(base)) as PromptComponents;
 
     if (!augmented.systemPrompts) augmented.systemPrompts = [];
@@ -590,6 +632,14 @@ export class PromptEngine implements IPromptEngine {
     modelInfo: Readonly<ModelTargetInfo>,
     issues: PromptEngineResult['issues']
   ): Promise<{ optimizedComponents: PromptComponents; modifications: { wasModified: boolean; details: PromptEngineResult['modificationDetails'] } }> {
+    /**
+     * Enforces token budget across prompt sections (system, userInput, history, RAG context, tools).
+     * Allocation Heuristics (percentages of overall budget):
+     *  - system: 20%, user: 15%, history: 35%, rag: 20%, tools: 10%
+     * Summarization: Uses UtilityAI if available & trigger ratio exceeded; else truncation fallback.
+     * Failure Handling: On summarization errors pushes warning issue & falls back to truncation.
+     * Returns cloned optimized components plus modification descriptors for telemetry.
+     */
     const optimized = JSON.parse(JSON.stringify(components)) as PromptComponents;
     const modifications: { wasModified: boolean; details: PromptEngineResult['modificationDetails'] } = {
       wasModified: false,
@@ -741,18 +791,66 @@ export class PromptEngine implements IPromptEngine {
   }
 
   private formatToolSchemasForModel(tools: ITool[], modelInfo: Readonly<ModelTargetInfo>): any[] {
-    if (!modelInfo.toolSupport.supported || !tools || tools.length === 0) {
-      return [];
-    }
+    /**
+     * Normalizes internal ITool definitions to provider‑specific function/tool schema payloads.
+     * Currently supports:
+     *  - openai_functions: Emits array of { type: 'function', function: { name, description, parameters } }
+     * Fallback path returns simplified definitions for unsupported formats with a console warning.
+     *
+     * Tool Schema Manifest Filtering:
+     * If `config.toolSchemaManifest` specifies rules for the active persona, apply them BEFORE formatting:
+     *   - model override list (exact allowed IDs) takes highest precedence.
+     *   - enabledToolIds whitelist applied if present (intersection).
+     *   - disabledToolIds removed at end.
+     * Unknown IDs in manifest are ignored. If filtering results in empty set, returns [].
+     */
+    if (!modelInfo.toolSupport.supported || !tools || tools.length === 0) {
+      return [];
+    }
+    // Manifest filtering
+    let filtered = tools;
+    const filteringReasons: Record<string, string> = {};
+    const personaId = this.currentExecutionContext?.activePersona?.id || undefined;
+    const manifestEntry = personaId ? this.config.toolSchemaManifest?.[personaId] : undefined;
+    if (manifestEntry) {
+      const { modelOverrides, enabledToolIds, disabledToolIds } = manifestEntry;
+      if (modelOverrides && modelOverrides[modelInfo.modelId]) {
+        const allowedList = new Set(modelOverrides[modelInfo.modelId]);
+        filtered = filtered.filter(t => {
+          const keep = allowedList.has(t.id);
+          if (!keep) filteringReasons[t.id] = 'excluded:not_in_model_override_list';
+          else filteringReasons[t.id] = 'included:model_override';
+          return keep;
+        });
+      } else if (enabledToolIds && enabledToolIds.length > 0) {
+        const allowed = new Set(enabledToolIds);
+        filtered = filtered.filter(t => {
+          const keep = allowed.has(t.id);
+          if (!keep) filteringReasons[t.id] = 'excluded:not_in_enabled_tool_ids';
+          else filteringReasons[t.id] = 'included:enabled_tool_ids';
+          return keep;
+        });
+      }
+      if (disabledToolIds && disabledToolIds.length > 0) {
+        const blocked = new Set(disabledToolIds);
+        filtered = filtered.filter(t => {
+          const blockedOut = blocked.has(t.id);
+          if (blockedOut) filteringReasons[t.id] = 'excluded:disabled_tool_ids';
+          return !blockedOut;
+        });
+      }
+    }
+    if (filtered.length === 0) return [];
     switch (modelInfo.toolSupport.format) {
       case 'openai_functions':
-        return tools.map(tool => ({
+        return filtered.map(tool => ({
           type: 'function',
           function: this.buildToolDefinition(tool),
+          _filteringReason: filteringReasons[tool.id],
         }));
       default:
         console.warn(`PromptEngine: Tool format '${modelInfo.toolSupport.format}' not fully supported for schema generation. Returning normalized definitions.`);
-        return tools.map(tool => this.buildToolDefinition(tool));
+        return filtered.map(tool => ({ ...this.buildToolDefinition(tool), _filteringReason: filteringReasons[tool.id] }));
     }
   }
 

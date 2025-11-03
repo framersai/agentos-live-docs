@@ -1,5 +1,5 @@
 import { createI18n } from 'vue-i18n';
-import type { I18n, I18nOptions } from 'vue-i18n';
+import type { I18n, I18nOptions, Composer } from 'vue-i18n';
 
 // Import locale messages
 import en from './locales/en';
@@ -75,40 +75,41 @@ const i18nOptions: I18nOptions = {
 };
 
 const i18n: I18n = createI18n(i18nOptions);
+// Narrow the global composer type to eliminate union call issues when using legacy: false
+const composer: Composer = i18n.global as unknown as Composer;
 
 // Helper function to change locale
 export function setLocale(locale: AvailableLocale): void {
-  console.log('[i18n] setLocale called with:', locale);
-  if (locale in AVAILABLE_LOCALES) {
-    const previousLocale = i18n.global.locale.value;
-    console.log('[i18n] Changing locale from', previousLocale, 'to', locale);
-
-    i18n.global.locale.value = locale;
-    localStorage.setItem('preferred-locale', locale);
-    document.documentElement.setAttribute('lang', locale);
-
-    console.log('[i18n] Locale changed successfully. Current locale:', i18n.global.locale.value);
-    console.log('[i18n] Available messages for locale:', Object.keys(messages[locale] || {}).slice(0, 5), '...');
-
-    // Special logging for CJK languages
-    if (locale === 'ja-JP' || locale === 'zh-CN' || locale === 'ko-KR') {
-      console.log('[i18n] CJK locale detected. Testing translations:');
-      console.log('[i18n] Welcome message:', i18n.global.t('common.welcome'));
-      console.log('[i18n] Login text:', i18n.global.t('common.login'));
-      console.log('[i18n] Settings text:', i18n.global.t('common.settings'));
-      console.log('[i18n] Messages object exists?', !!messages[locale]);
-      console.log('[i18n] Sample message keys:', Object.keys(messages[locale].common || {}).slice(0, 10));
-    }
-  } else {
-    console.warn('[i18n] Invalid locale:', locale, 'Available locales:', Object.keys(AVAILABLE_LOCALES));
+  if (!(locale in AVAILABLE_LOCALES)) {
+    if (process.env.NODE_ENV === 'development') console.warn('[i18n] Invalid locale:', locale);
+    return;
+  }
+  const previousLocale = composer.locale.value;
+  composer.locale.value = locale;
+  localStorage.setItem('preferred-locale', locale);
+  document.documentElement.setAttribute('lang', locale);
+  if (process.env.NODE_ENV === 'development') {
+    console.log(`[i18n] Locale changed: ${previousLocale} -> ${locale}`);
   }
 }
 
 // Helper function to get current locale
 export function getCurrentLocale(): AvailableLocale {
-  return i18n.global.locale.value as AvailableLocale;
+  return composer.locale.value as AvailableLocale;
+}
+
+// Safe global translate wrapper (eliminate union type callable ambiguity)
+export function tGlobal(key: string, params?: Record<string, any>): string {
+  try {
+    return composer.t(key, params as any);
+  } catch (e) {
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('[i18n] Translation error for key', key, e);
+    }
+    return key;
+  }
 }
 
 // Export both as named export and default
-export { i18n };
+export { i18n, composer };
 export default i18n;

@@ -353,7 +353,7 @@ export class RetrievalAugmentor implements IRetrievalAugmentor {
                         docChunksAllUpserted = false;
                     }
                 }
-            } else if (!successfullyProcessedDocIdsInBatch.has(doc.id) && !overallResults.errors?.find(e => e.documentId === doc.id)) {
+            } else if (!successfullyProcessedDocIdsInBatch.has(doc.id) && !overallResults.errors?.find((e: any) => e.documentId === doc.id)) {
                 // No chunks, wasn't marked successful, no prior error: means it failed pre-chunking or was empty.
                 docChunksAllUpserted = false;
                  overallResults.errors?.push({ documentId: doc.id, message: "Document yielded no processable chunks or failed prior to chunking."});
@@ -364,7 +364,7 @@ export class RetrievalAugmentor implements IRetrievalAugmentor {
               ingestedDocIds.add(doc.id);
             } else {
               // If not already counted as failed due to pre-chunking error
-              const alreadyFailed = overallResults.errors?.some(e => e.documentId === doc.id && e.chunkId === undefined);
+              const alreadyFailed = overallResults.errors?.some((e: any) => e.documentId === doc.id && e.chunkId === undefined);
               if (!alreadyFailed) {
                 overallResults.failedCount++;
               }
@@ -374,9 +374,9 @@ export class RetrievalAugmentor implements IRetrievalAugmentor {
 
         if (upsertResult.errors && upsertResult.errors.length > 0) {
             // These are errors from the vector store for specific chunk IDs
-            upsertResult.errors.forEach(storeErr => {
+            upsertResult.errors.forEach((storeErr: any) => {
                 const originalDocId = vectorDocumentsToUpsert.find(vd => vd.id === storeErr.id)?.metadata?.originalDocumentId as string;
-                if (!overallResults.errors?.find(e => e.chunkId === storeErr.id)) { // Avoid duplicate error messages
+                if (!overallResults.errors?.find((e: any) => e.chunkId === storeErr.id)) { // Avoid duplicate error messages
                     overallResults.errors?.push({
                         documentId: originalDocId || 'Unknown Original Document',
                         chunkId: storeErr.id,
@@ -390,7 +390,7 @@ export class RetrievalAugmentor implements IRetrievalAugmentor {
         console.error(`RetrievalAugmentor (ID: ${this.augmenterId}): Failed to upsert batch to data source '${firstDocTargetDataSourceId}'. Error: ${storeError.message}`, storeError);
         // All docs in this sub-batch for this store are considered failed at this point
         docBatch.forEach(doc => {
-          const alreadyFailed = overallResults.errors?.some(e => e.documentId === doc.id && e.chunkId === undefined);
+          const alreadyFailed = overallResults.errors?.some((e: any) => e.documentId === doc.id && e.chunkId === undefined);
           if (!alreadyFailed) {
             overallResults.failedCount++;
           }
@@ -493,12 +493,12 @@ export class RetrievalAugmentor implements IRetrievalAugmentor {
     // 3. Determine Target Data Sources
     const effectiveDataSourceIds = new Set<string>();
     if (options?.targetDataSourceIds && options.targetDataSourceIds.length > 0) {
-      options.targetDataSourceIds.forEach(id => effectiveDataSourceIds.add(id));
+      options.targetDataSourceIds.forEach((id: string) => effectiveDataSourceIds.add(id));
     }
     if (options?.targetMemoryCategories && options.targetMemoryCategories.length > 0) {
-      options.targetMemoryCategories.forEach(category => {
-        const behavior = this.config.categoryBehaviors.find(b => b.category === category);
-        behavior?.targetDataSourceIds.forEach(id => effectiveDataSourceIds.add(id));
+      options.targetMemoryCategories.forEach((category: string) => {
+        const behavior = this.config.categoryBehaviors.find((b: any) => b.category === category);
+        behavior?.targetDataSourceIds.forEach((id: string) => effectiveDataSourceIds.add(id));
       });
     }
     if (effectiveDataSourceIds.size === 0) {
@@ -507,7 +507,7 @@ export class RetrievalAugmentor implements IRetrievalAugmentor {
         effectiveDataSourceIds.add(this.config.defaultDataSourceId);
       } else {
         // Or query all known data sources if no targets and no default
-         this.vectorStoreManager.listDataSourceIds().forEach(id => effectiveDataSourceIds.add(id));
+         this.vectorStoreManager.listDataSourceIds().forEach((id: string) => effectiveDataSourceIds.add(id));
          if(effectiveDataSourceIds.size > 0) {
             diagnostics.messages?.push("No specific data sources or categories targeted; querying all available sources.");
          }
@@ -534,7 +534,7 @@ export class RetrievalAugmentor implements IRetrievalAugmentor {
             continue;
         }
 
-        const categoryBehavior = this.config.categoryBehaviors.find(b => b.targetDataSourceIds.includes(dsId));
+        const categoryBehavior = this.config.categoryBehaviors.find((b: any) => b.targetDataSourceIds.includes(dsId));
         const retrievalOptsFromCat = categoryBehavior?.defaultRetrievalOptions || {};
         const globalRetrievalOpts = this.config.globalDefaultRetrievalOptions || {};
 
@@ -554,7 +554,7 @@ export class RetrievalAugmentor implements IRetrievalAugmentor {
 
         if(diagnostics.dataSourceHits) diagnostics.dataSourceHits[dsId] = queryResult.documents.length;
 
-        queryResult.documents.forEach(doc => {
+        queryResult.documents.forEach((doc: any) => {
           allRetrievedChunks.push({
             id: doc.id,
             content: doc.textContent || "",
@@ -657,7 +657,7 @@ export class RetrievalAugmentor implements IRetrievalAugmentor {
         // A better approach would be to require dataSourceId or have a mapping.
         // For now, let's assume if no dataSourceId, we iterate through all known sources. This is a placeholder.
         console.warn(`RetrievalAugmentor (ID: ${this.augmenterId}): deleteDocuments called without dataSourceId. This behavior might be inefficient or refined in future versions. Attempting delete across all known data sources.`);
-        this.vectorStoreManager.listDataSourceIds().forEach(id => targetDsIds.add(id));
+        this.vectorStoreManager.listDataSourceIds().forEach((id: string) => targetDsIds.add(id));
         if (targetDsIds.size === 0) {
             documentIds.forEach(docId => {
                 errors.push({ documentId: docId, message: "No data sources available to delete from."});
@@ -678,7 +678,7 @@ export class RetrievalAugmentor implements IRetrievalAugmentor {
             const deleteResult = await store.delete(collectionName, documentIds);
             successCount += deleteResult.deletedCount;
             if (deleteResult.errors) {
-                deleteResult.errors.forEach(err => {
+                deleteResult.errors.forEach((err: any) => {
                     errors.push({ documentId: err.id || 'unknown', message: `Failed to delete from ${dsId}: ${err.message}`, details: err.details});
                     failureCount++;
                 });

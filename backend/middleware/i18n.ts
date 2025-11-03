@@ -16,6 +16,8 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const enableI18nDebug = process.env.I18N_DEBUG === 'true';
+
 /**
  * @const {readonly string[]} SUPPORTED_LOCALES
  * @description Specific locales supported by the application with translation files.
@@ -115,7 +117,7 @@ async function initializeI18n(): Promise<void> {
         // Let's keep `supportedLngs` to actual locales with files.
          },
          saveMissing: process.env.NODE_ENV === 'development',
-         debug: process.env.NODE_ENV === 'development' && (process.env.LOG_LEVEL === 'debug' || process.env.LOG_LEVEL === 'trace'),
+         debug: enableI18nDebug,
          interpolation: {
             escapeValue: false,
          },
@@ -193,7 +195,7 @@ export const customLanguageHandlerMiddleware = (req: Request, res: Response, nex
          if (err) {
             console.error(`[i18n] Error changing language on req.i18n to '${normalizedLang}':`, err);
          } else {
-        if (process.env.NODE_ENV === 'development' && process.env.LOG_LEVEL === 'debug') {
+        if (enableI18nDebug) {
             console.log(`[i18n] Language for request ${req.method} ${req.originalUrl} explicitly set to ${normalizedLang} (was ${req.lng}, i18n instance was ${i18nInstanceForRequest.language})`);
         }
       }
@@ -326,7 +328,8 @@ export async function setupI18nMiddleware(): Promise<Array<(req: Request, res: R
    }
 
    return [
-      i18nextHttpMiddleware.handle(i18next, { /* ignoreRoutes: ["/foo"] */ }), // Standard handler from library
+      // Cast required due to upstream type mismatch between i18next@25 and middleware peer dependency.
+      i18nextHttpMiddleware.handle(i18next as any, { /* ignoreRoutes: ["/foo"] */ }), // Standard handler from library
       customLanguageHandlerMiddleware, // Our custom normalizer and setter
       customTranslationHelpersMiddleware, // Helpers like req.translate
    ];

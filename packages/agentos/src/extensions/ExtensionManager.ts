@@ -76,11 +76,17 @@ export class ExtensionManager {
           },
         });
       } catch (error) {
+        const sourceName =
+          'package' in entry
+            ? entry.package
+            : 'module' in entry
+            ? entry.module
+            : entry.identifier ?? 'inline-pack';
         this.emitPackEvent({
           type: 'pack:failed',
           timestamp: new Date().toISOString(),
           source: {
-            sourceName: entry.package ?? entry.module ?? 'inline-pack',
+            sourceName,
             identifier: entry.identifier,
           },
           error: error instanceof Error ? error : new Error(String(error)),

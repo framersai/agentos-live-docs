@@ -1,11 +1,11 @@
-import type { ExtensionSourceMetadata } from './types';
+import type { ExtensionDescriptor, ExtensionSourceMetadata } from './types';
 
 export type ExtensionPackResolver =
   | { package: string; version?: string }
   | { module: string }
   | { factory: () => Promise<ExtensionPack> | ExtensionPack };
 
-export interface ExtensionPackManifestEntry extends ExtensionPackResolver {
+export type ExtensionPackManifestEntry = ExtensionPackResolver & {
   /**
    * Priority applied to descriptors emitted by this pack unless they override it individually.
    */
@@ -22,7 +22,7 @@ export interface ExtensionPackManifestEntry extends ExtensionPackResolver {
    * Identifier for diagnostics (e.g. file path within manifest).
    */
   identifier?: string;
-}
+};
 
 export interface ExtensionManifest {
   packs: ExtensionPackManifestEntry[];

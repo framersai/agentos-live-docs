@@ -126,7 +126,11 @@ interface LemonSqueezyWebhookData {
   };
 }
 
-export const handleSubscriptionWebhook = (eventId: string, payload: string, parsed: LemonSqueezyWebhookData): void => {
+export const handleSubscriptionWebhook = async (
+  eventId: string,
+  payload: string,
+  parsed: LemonSqueezyWebhookData
+): Promise<void> => {
   const eventName = parsed.meta?.event_name || 'unknown';
   const attributes = parsed.data?.attributes ?? {};
   const relationships = parsed.data?.relationships ?? {};
@@ -149,13 +153,13 @@ export const handleSubscriptionWebhook = (eventId: string, payload: string, pars
     checkoutStatus = 'expired';
   }
 
-  let checkoutRecord = checkoutSessionId ? findCheckoutSessionById(checkoutSessionId) : null;
+  let checkoutRecord = checkoutSessionId ? await findCheckoutSessionById(checkoutSessionId) : null;
   if (!checkoutRecord && lemonCheckoutId) {
-    checkoutRecord = findCheckoutSessionByLemonId(lemonCheckoutId);
+    checkoutRecord = await findCheckoutSessionByLemonId(lemonCheckoutId);
   }
 
   if (checkoutRecord) {
-    updateCheckoutSessionRecord(checkoutRecord.id, {
+    await updateCheckoutSessionRecord(checkoutRecord.id, {
       status: checkoutStatus,
       lemonCheckoutId: lemonCheckoutId ?? checkoutRecord.lemon_checkout_id ?? null,
       lemonSubscriptionId: lemonSubscriptionId ?? checkoutRecord.lemon_subscription_id ?? null,
@@ -163,7 +167,7 @@ export const handleSubscriptionWebhook = (eventId: string, payload: string, pars
     });
   }
 
-  storeLemonSqueezyEvent({ id: eventId, eventName, payload, processed: checkoutStatus === 'paid' });
+  await storeLemonSqueezyEvent({ id: eventId, eventName, payload, processed: checkoutStatus === 'paid' });
 
   const email = (attributes as any)?.user_email || (attributes as any)?.user_email_address || null;
   if (!email) {
@@ -174,7 +178,7 @@ export const handleSubscriptionWebhook = (eventId: string, payload: string, pars
   const expiresAt = attributes?.expires_at ? Date.parse(attributes.expires_at) : null;
   const plan = planId ? (PLAN_CATALOG as Record<string, any>)[planId] : null;
 
-  upsertUserFromSubscription({
+  await upsertUserFromSubscription({
     email,
     subscriptionStatus: normalizedStatus || 'active',
     subscriptionTier: plan?.metadata?.tier ?? (normalizedStatus === 'active' ? 'unlimited' : 'metered'),

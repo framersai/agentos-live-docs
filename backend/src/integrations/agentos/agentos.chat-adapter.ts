@@ -22,7 +22,9 @@ import {
   AgentOSMetadataUpdateChunk,
 } from '@agentos/core';
 import { sqliteMemoryAdapter } from '../../core/memory/SqliteMemoryAdapter.js';
+import { sqlKnowledgeBaseService } from '../../core/knowledge/SqlKnowledgeBaseService.js';
 import { jsonFileKnowledgeBaseService } from '../../core/knowledge/JsonFileKnowledgeBaseService.js';
+import type { IKnowledgeBaseService } from '../../core/knowledge/IKnowledgeBaseService.js';
 import { llmContextAggregatorService } from '../../core/context/LLMContextAggregatorService.js';
 import type { IStoredConversationTurn } from '../../core/memory/IMemoryAdapter.js';
 import type { IContextBundle } from '../../core/context/IContextAggregatorService.js';
@@ -51,6 +53,32 @@ const TOOLSET_MAP: Map<string, AgentOSToolset> = new Map(
 
 const PROMPT_CACHE: Map<string, string> = new Map();
 const CONTEXT_SNIPPET_LIMIT = parseInt(process.env.DEFAULT_HISTORY_MESSAGES_FOR_FALLBACK_CONTEXT || '12', 10);
+
+let cachedKnowledgeService: IKnowledgeBaseService | null = null;
+
+async function resolveKnowledgeService(): Promise<IKnowledgeBaseService> {
+  if (cachedKnowledgeService) {
+    return cachedKnowledgeService;
+  }
+
+  try {
+    await sqlKnowledgeBaseService.initialize();
+    cachedKnowledgeService = sqlKnowledgeBaseService;
+    return cachedKnowledgeService;
+  } catch (error) {
+    console.warn('[AgentOS][Knowledge] SQL knowledge base unavailable, falling back to JSON file store.', error);
+  }
+
+  try {
+    await jsonFileKnowledgeBaseService.initialize();
+  } catch (error) {
+    console.error('[AgentOS][Knowledge] Failed to initialise fallback JSON knowledge base.', error);
+    throw error;
+  }
+
+  cachedKnowledgeService = jsonFileKnowledgeBaseService;
+  return cachedKnowledgeService;
+}
 
 export async function processAgentOSChatRequest(
   payload: AgentOSChatAdapterRequest,
@@ -287,15 +315,13 @@ async function buildContextForAgentOS(
 
   let contextBundle: IContextBundle | undefined;
   try {
-    const knowledgeSnippets = await jsonFileKnowledgeBaseService
-      .searchKnowledgeBase(currentUserMessage, 3)
-      .then((items) =>
-        items.map((it) => ({
-          id: it.id,
-          type: it.type,
-          content: it.content.substring(0, 300) + (it.content.length > 300 ? '...' : ''),
-        })),
-      );
+    const knowledgeService = await resolveKnowledgeService();
+    const knowledgeItems = await knowledgeService.searchKnowledgeBase(currentUserMessage, 3);
+    const knowledgeSnippets = knowledgeItems.map((it) => ({
+      id: it.id,
+      type: it.type,
+      content: it.content.substring(0, 300) + (it.content.length > 300 ? '...' : ''),
+    }));
 
     contextBundle = await llmContextAggregatorService.generateContextBundle({
       currentUserFocus: {

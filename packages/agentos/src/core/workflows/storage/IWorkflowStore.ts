@@ -71,7 +71,12 @@ export interface IWorkflowStore {
    */
   updateInstance(
     workflowId: string,
-    patch: Partial<Pick<WorkflowInstance, 'status' | 'updatedAt' | 'metadata' | 'context' | 'roleAssignments'>>,
+    patch: Partial<
+      Pick<
+        WorkflowInstance,
+        'status' | 'updatedAt' | 'metadata' | 'context' | 'roleAssignments' | 'agencyState'
+      >
+    >,
   ): Promise<WorkflowInstance | null>;
 
   /**

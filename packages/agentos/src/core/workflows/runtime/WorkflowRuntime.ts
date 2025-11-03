@@ -1,4 +1,3 @@
-import PQueue from 'p-queue';
 import { v4 as uuidv4 } from 'uuid';
 
 import type { WorkflowEngine } from '../WorkflowEngine';
@@ -54,8 +53,76 @@ export interface WorkflowRuntimeDependencies {
  * The current implementation sets up scaffolding for future multi-GMI orchestration. Execution handlers
  * will be fleshed out as persona overlays, tool dispatchers, and guardrail hooks are implemented.
  */
+class ConcurrencyQueue {
+  private running = 0;
+  private readonly queue: Array<() => void> = [];
+  private readonly idleResolvers: Array<() => void> = [];
+
+  constructor(private readonly concurrency: number) {}
+
+  public add<T>(task: () => Promise<T> | T): Promise<T> {
+    return new Promise<T>((resolve, reject) => {
+      const execute = async (): Promise<void> => {
+        this.running += 1;
+        try {
+          const result = await task();
+          resolve(result);
+        } catch (error) {
+          reject(error);
+        } finally {
+          this.running -= 1;
+          this.dequeue();
+        }
+      };
+
+      if (this.running < this.concurrency) {
+        void execute();
+      } else {
+        this.queue.push(execute);
+      }
+    });
+  }
+
+  public async onIdle(): Promise<void> {
+    if (this.running === 0 && this.queue.length === 0) {
+      return;
+    }
+    return new Promise<void>((resolve) => {
+      this.idleResolvers.push(resolve);
+    });
+  }
+
+  public clear(): void {
+    this.queue.length = 0;
+  }
+
+  private dequeue(): void {
+    if (this.queue.length > 0 && this.running < this.concurrency) {
+      const next = this.queue.shift();
+      if (next) {
+        next();
+      }
+      return;
+    }
+
+    if (this.running === 0 && this.queue.length === 0) {
+      this.resolveIdle();
+    }
+  }
+
+  private resolveIdle(): void {
+    if (!this.idleResolvers.length) {
+      return;
+    }
+    const resolvers = this.idleResolvers.splice(0, this.idleResolvers.length);
+    for (const resolve of resolvers) {
+      resolve();
+    }
+  }
+}
+
 export class WorkflowRuntime {
-  private readonly queue = new PQueue({ concurrency: 4 });
+  private readonly queue = new ConcurrencyQueue(4);
   private readonly agencyRegistry: AgencyRegistry;
   private readonly extensionManager: ExtensionManager;
   private workflowListener?: (event: WorkflowEvent) => void | Promise<void>;
@@ -156,13 +223,13 @@ export class WorkflowRuntime {
     try {
       switch (taskDefinition.executor.type) {
         case 'gmi':
+          await this.executeGmiTask(definition, taskDefinition, instance);
+          break;
         case 'tool':
           await this.executeToolTask(definition, taskDefinition, instance);
           break;
         case 'extension':
           await this.executeExtensionTask(definition, taskDefinition, instance);
-          break;
-          await this.executeGmiTask(definition, taskDefinition, instance);
           break;
         default:
           this.deps.logger?.warn?.('WorkflowRuntime: executor type not yet supported', {
@@ -499,7 +566,7 @@ export class WorkflowRuntime {
             aggregated += chunk.content;
           }
           break;
-        case GMIOutputChunkType.FINAL_RESPONSE:
+        case GMIOutputChunkType.FINAL_RESPONSE_MARKER:
           if (typeof chunk.content === 'string') {
             aggregated += chunk.content;
           } else if (chunk.content && (chunk.content as any).finalResponseText) {

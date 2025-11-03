@@ -60,6 +60,8 @@ All public exports are defined in `src/index.ts` and surfaced via `dist/` after 
 - **ConversationManager**: maintains conversation contexts, persists messages, and supports summarisation triggers. Works with the streaming manager to deliver incremental updates.
 - **Memory lifecycle manager** (`memory_lifecycle/`): policy engine for pruning or summarising long-term memory. Supports trigger conditions (age, size, schedule) and actions (`archive`, `delete`, `summarize_and_retain`, etc.).
 - **RAG stack** (`rag/`): embedding manager, vector store abstractions, and retrieval augmentor used to plug in host-provided knowledge bases.
+- **Storage adapter bridge** *(workspace integration)*: the voice-chat backend supplies a Prisma-compatible facade (`backend/src/integrations/agentos/agentos.sql-client.ts`) that maps conversation persistence to the shared SQL storage adapter. The bridge auto-creates `agentos_conversations` / `agentos_conversation_messages` tables so transcripts survive process restarts alongside other app data.
+- **Knowledge base providers**: the workspace now prefers the SQL-backed knowledge service (`SqlKnowledgeBaseService`) and gracefully falls back to the legacy JSON file loader when the database is unavailable.
 
 ### 3.4 Tool orchestration
 - **ToolOrchestrator** (`core/tools`): registers tools, evaluates permission policies, and executes tool calls. Works with `ToolPermissionManager` to enforce plan- or persona-based restrictions.
@@ -108,6 +110,18 @@ All public exports are defined in `src/index.ts` and surfaced via `dist/` after 
 
 6. **Shutdown**  
    Optional `agentos.shutdown()` releases resources (stream clients, timers, working memory caches).
+
+---
+
+## 4. Marketplace integration
+
+The monorepo bundles a first-party marketplace that curates AgentOS personas across the landing site and authenticated clients:
+
+- **Data store** – Marketplace metadata lives in the shared SQL adapter (`agentos_marketplace_agents`) and links directly to persona IDs.
+- **Service layer** – `backend/src/features/marketplace/marketplace.service.ts` exposes read-only endpoints (`GET /marketplace/agents`, `GET /marketplace/agents/:id`) and seeds default entries on startup.
+- **Consumers** – The Vue Agent Hub, the marketing marketplace preview, and future partners fetch marketplace data and merge it with local persona definitions, falling back to static seeds if the API is unreachable.
+
+See [`docs/MARKETPLACE.md`](./MARKETPLACE.md) for schema details and integration guidance.
 
 ---
 
