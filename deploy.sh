@@ -3,13 +3,13 @@
 echo "Deploying to Linode..."
 
 ssh root@172.236.30.83 << 'EOF'
-cd /root/voice-coding-assistant
+cd /root/voice-chat-assistant
 git pull origin master
 cp .env backend/.env
 cd frontend
 npm install
 npm run build
-cp -r dist/* /var/www/voice-coding-assistant/
+cp -r dist/* /var/www/voice-chat-assistant/
 cd ../backend
 npm install
 npm run build

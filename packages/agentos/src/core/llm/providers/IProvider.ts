@@ -1,11 +1,40 @@
 // File: backend/agentos/core/llm/providers/IProvider.ts
 /**
- * @fileoverview Defines the core interface for an AI Model Provider,
- * abstracting interactions with various LLM services (OpenAI, Ollama, OpenRouter, etc.).
- * It includes dedicated methods for text/chat completions, text embeddings, model introspection,
- * health checks, and lifecycle management.
- * @module backend/agentos/core/llm/providers/IProvider
- */
+ * @fileoverview Core provider contract and shared types for integrating Large Language / Multimodal Model services
+ * into AgentOS. Implementations wrap concrete vendor SDKs or HTTP APIs (OpenAI, Anthropic, Ollama, OpenRouter, etc.)
+ * and normalize their capabilities into a consistent surface area used by higher‑level orchestration layers
+ * (PromptEngine, GMIManager, Utility AI components).
+ *
+ * Design Goals:
+ * 1. Capability Normalization – Chat vs legacy completion, tool/function calling, streaming deltas, embeddings.
+ * 2. Deterministic Streaming Semantics – Every streamed chunk is a full `ModelCompletionResponse` fragment with:
+ *    - optional `responseTextDelta` (string diff)
+ *    - optional `toolCallsDeltas[]` capturing incremental tool argument assembly
+ *    - `isFinal` flag to indicate terminal chunk and stable usage metrics.
+ * 3. Introspection – Lightweight model catalog (`listAvailableModels`, `getModelInfo`) enabling routing & cost decisions.
+ * 4. Resilience & Diagnostics – Uniform error envelope attached to `ModelCompletionResponse.error` for both
+ *    streaming and non‑streaming calls so upstream layers can surface actionable messages.
+ * 5. Strict Initialization Lifecycle – `initialize()` must succeed before any other mutating call.
+ *
+ * Error Handling Philosophy:
+ * - Provider implementations SHOULD translate vendor‑specific errors into a stable structure:
+ *   { message, type?, code?, details? }.
+ * - Transient failures (network timeouts, rate limit backoffs) MAY be surfaced inline; upstream retry policies live above.
+ * - Streaming calls MUST emit a terminal chunk with `isFinal: true` even on error (with `error` populated) so consumers
+ *   can perform consistent teardown.
+ *
+ * Concurrency & Cancellation:
+ * - Implementations MAY support externally triggered abort via custom option (e.g. `customModelParams.abortSignal`).
+ * - If supported, aborted streams MUST still resolve the generator cleanly (no thrown error) after emitting a final
+ *   chunk with `isFinal: true` and an `error` describing the cancellation reason.
+ *
+ * Token Usage & Cost:
+ * - `usage.totalTokens` MUST be present on final responses (streaming or non‑streaming).
+ * - Interim streaming chunks SHOULD omit usage or provide partials; callers should treat usage as unstable until final.
+ * - `costUSD` is optional; if provided should reflect estimated or actual vendor pricing for the call.
+ *
+ * @module backend/agentos/core/llm/providers/IProvider
+ */
 
 /**
  * Represents a part of a multimodal message content.
@@ -92,6 +121,12 @@ export interface ModelCompletionOptions {
   apiKeyOverride?: string;
   /** For provider-specific parameters not covered by the common options. */
   customModelParams?: Record<string, unknown>;
+  /**
+   * Optional AbortSignal for caller-driven cancellation. If aborted:
+   *  - Streaming providers MUST emit a terminal chunk with `isFinal: true` and `error.type='abort'`.
+   *  - Non-streaming calls SHOULD throw a cancellation error (or return error response if already partially processed).
+   */
+  abortSignal?: AbortSignal;
   /** Indicates if a streaming response is expected. */
   stream?: boolean;
   /** Schemas of tools the model can call. */
@@ -127,29 +162,49 @@ export interface ModelCompletionChoice {
  * Represents the full response from a model completion call (non-streaming or a single chunk of a stream).
  */
 export interface ModelCompletionResponse {
-  id: string;
-  object: string;
-  created: number;
-  modelId: string;
-  choices: ModelCompletionChoice[];
-  usage?: ModelUsage;
-  error?: {
-    message: string;
-    type?: string;
-    code?: string | number;
-    details?: unknown;
-  };
-  responseTextDelta?: string;
-  toolCallsDeltas?: Array<{
-    index: number;
-    id?: string;
-    type?: 'function';
-    function?: {
-      name?: string;
-      arguments_delta?: string;
-    };
-  }>;
-  isFinal?: boolean;
+  /** Provider‑assigned unique identifier for the request or chunk series. */
+  id: string;
+  /** Stable object/type discriminator (e.g. 'chat.completion.chunk', 'chat.completion'). */
+  object: string;
+  /** Unix epoch seconds when the provider created this response/chunk. */
+  created: number;
+  /** Resolved model identifier actually used (may differ from requested if routing / aliasing applied). */
+  modelId: string;
+  /** One or more choices; for multi‑choice inference some providers return >1. */
+  choices: ModelCompletionChoice[];
+  /** Token usage & optional cost metrics (present on final chunk; may be partial/omitted on deltas). */
+  usage?: ModelUsage;
+  /** Unified error envelope; present ONLY if an error occurred for this request/chunk. */
+  error?: {
+    /** Human readable message suitable for UI display or logging. */
+    message: string;
+    /** Optional provider/classification type (e.g. 'rate_limit', 'invalid_request'). */
+    type?: string;
+    /** Numeric or string code for programmatic handling. */
+    code?: string | number;
+    /** Raw provider payload or structured diagnostic details. */
+    details?: unknown;
+  };
+  /** Incremental append‑only text delta for streaming; NOT cumulative. Undefined on non‑streaming final response. */
+  responseTextDelta?: string;
+  /** Array of incremental tool/function call argument deltas building up tool invocation payloads. */
+  toolCallsDeltas?: Array<{
+    /** Choice index if multiple parallel choices produce tool calls. */
+    index: number;
+    /** Stable tool call id once assigned by provider (may appear after initial delta). */
+    id?: string;
+    /** Type discriminator; currently 'function' for OpenAI‑style tools. */
+    type?: 'function';
+    /** Function metadata with incremental argument assembly. */
+    function?: {
+      /** Function name (first provided delta should include). */
+      name?: string;
+      /** Partial argument JSON fragment (streamed). Concatenate & then parse when final. */
+      arguments_delta?: string;
+    };
+  }>;
+  /** Indicates terminal chunk in a stream. MUST be true on last emission (success or error). */
+  isFinal?: boolean;
 }
 
 /**
@@ -223,35 +278,69 @@ export interface ModelInfo {
  * @description Defines the contract for an AI Model Provider.
  */
 export interface IProvider {
-  readonly providerId: string;
-  readonly isInitialized: boolean;
-  readonly defaultModelId?: string;
+  /** Unique provider identifier (e.g. 'openai', 'ollama', 'openrouter'). */
+  readonly providerId: string;
+  /** Indicates successful initialization; all operational methods MUST guard against !isInitialized. */
+  readonly isInitialized: boolean;
+  /** Optional default model to fall back to when caller does not specify one. */
+  readonly defaultModelId?: string;
 
-  initialize(config: Record<string, any>): Promise<void>;
+  /**
+   * Perform one‑time (or idempotent) initialization: validate credentials, prime model catalog, set defaults.
+   * SHOULD throw on unrecoverable misconfiguration (e.g., missing API key) rather than silently degrade.
+   * Multiple calls MAY reset internal caches (implementation specific).
+   */
+  initialize(config: Record<string, any>): Promise<void>;
 
-  generateCompletion(
-    modelId: string,
-    messages: ChatMessage[],
-    options: ModelCompletionOptions
-  ): Promise<ModelCompletionResponse>;
+  /**
+   * Single shot (non‑streaming) completion. Provider MUST return a fully assembled
+   * `ModelCompletionResponse` with `isFinal` either omitted or true, containing full text in `choices[].message.content`.
+   * @param modelId Target model identifier (may be validated or routed).
+   * @param messages Prior conversation messages (system+user+assistant+tool) shaped per unified ChatMessage.
+   * @param options Completion tuning & feature flags (temperature, tools, json mode, etc.).
+   * @throws Error if provider not initialized or request irrecoverably invalid.
+   */
+  generateCompletion(
+    modelId: string,
+    messages: ChatMessage[],
+    options: ModelCompletionOptions
+  ): Promise<ModelCompletionResponse>;
 
-  generateCompletionStream(
-    modelId: string,
-    messages: ChatMessage[],
-    options: ModelCompletionOptions
-  ): AsyncGenerator<ModelCompletionResponse, void, undefined>;
+  /**
+   * Streaming completion. Returns an async generator yielding incremental deltas.
+   * REQUIRED invariants:
+   *  - First chunk SHOULD include `id`, `modelId`, `object`, and MAY start text/tool deltas.
+   *  - `responseTextDelta` values MUST be append‑only segments (caller concatenates in order).
+   *  - Tool call reconstruction: concatenate `arguments_delta` per (index,id) then JSON parse when final.
+   *  - Exactly one chunk MUST set `isFinal: true` (last). Final chunk SHOULD include usage & any error.
+   *  - If an error occurs mid‑stream, emit a final chunk with `error` populated then end generator.
+   * @returns AsyncGenerator<ModelCompletionResponse>
+   */
+  generateCompletionStream(
+    modelId: string,
+    messages: ChatMessage[],
+    options: ModelCompletionOptions
+  ): AsyncGenerator<ModelCompletionResponse, void, undefined>;
 
-  generateEmbeddings(
-    modelId: string,
-    texts: string[],
-    options?: ProviderEmbeddingOptions
-  ): Promise<ProviderEmbeddingResponse>;
+  /**
+   * Generate embeddings for a batch of input texts. Provider MAY chunk internally but MUST return consolidated
+   * response with ordering preserved (indices map to input position).
+   */
+  generateEmbeddings(
+    modelId: string,
+    texts: string[],
+    options?: ProviderEmbeddingOptions
+  ): Promise<ProviderEmbeddingResponse>;
 
-  listAvailableModels(filter?: { capability?: 'completion' | 'chat' | 'embeddings' | string }): Promise<ModelInfo[]>;
+  /** List available models, optionally filtered by required capability (e.g. 'embeddings'). */
+  listAvailableModels(filter?: { capability?: 'completion' | 'chat' | 'embeddings' | string }): Promise<ModelInfo[]>;
 
-  getModelInfo(modelId: string): Promise<ModelInfo | undefined>;
+  /** Retrieve detailed metadata about a specific model; undefined if unknown or catalog not loaded. */
+  getModelInfo(modelId: string): Promise<ModelInfo | undefined>;
 
-  checkHealth(): Promise<{isHealthy: boolean, details?: unknown}>;
+  /** Lightweight health signal; SHOULD avoid heavy network calls. */
+  checkHealth(): Promise<{isHealthy: boolean, details?: unknown}>;
 
-  shutdown(): Promise<void>;
+  /** Graceful teardown: release sockets, abort inflight requests, flush caches. Idempotent. */
+  shutdown(): Promise<void>;
 }

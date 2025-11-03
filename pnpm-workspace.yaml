@@ -1,5 +1,13 @@
 packages:
-  - 'backend'
-  - 'frontend'
-  - 'packages/*'
-  - 'apps/*'
+  - backend
+  - frontend
+  - packages/*
+  - apps/*
+
+ignoredBuiltDependencies:
+  - '@parcel/watcher'
+  - '@swc/core'
+  - better-sqlite3
+  - esbuild
+  - unrs-resolver
+  - vue-demi

@@ -316,6 +316,30 @@ export interface PromptEngineConfig {
     includeDebugMetadataInResult?: boolean; // If true, adds more verbose debug info to PromptEngineResult.metadata
     logSelectedContextualElements?: boolean;
   };
+  /**
+   * Optional tool schema registration manifest enabling per-persona and per-model enable/disable semantics.
+   * Structure:
+   *  - key: personaId (string)
+   *  - value: {
+   *       enabledToolIds: string[];            // Tools explicitly allowed for this persona (intersection with runtime tool list)
+   *       disabledToolIds?: string[];          // Tools explicitly disallowed (takes precedence over enabledToolIds)
+   *       modelOverrides?: {                   // Per model ID fine-grained overrides
+   *         [modelId: string]: string[];       // Exact list of tool IDs allowed for that model when persona active
+   *       };
+   *    }
+   * Resolution Order when filtering tools for prompt construction:
+   *   1. If personaId present in manifest:
+   *      a. If modelOverrides[modelId] exists => allowed set = that array (disabledToolIds still removes).
+   *      b. Else allowed base = enabledToolIds (if defined) else all runtime tools.
+   *      c. Remove any disabledToolIds from allowed set.
+   *   2. If personaId absent => all runtime tools (no filtering).
+   * Note: Unknown tool IDs in manifest are ignored gracefully.
+   */
+  toolSchemaManifest?: Record<string, {
+    enabledToolIds?: string[];
+    disabledToolIds?: string[];
+    modelOverrides?: Record<string, string[]>;
+  }>;
 }
 
 /**

@@ -16,7 +16,6 @@ const mockEmbeddingManager: IEmbeddingManager = {
   getEmbeddingDimension: vi.fn().mockResolvedValue(3),
   checkHealth: vi.fn().mockResolvedValue({ isHealthy: true }),
   shutdown: vi.fn().mockResolvedValue(undefined),
-  augmenterId: 'em-mock' // Add if IEmbeddingManager requires it; IRetrievalAugmentor has augmenterId
 };
 
 const mockVectorStore: IVectorStore = {
@@ -31,7 +30,6 @@ const mockVectorStore: IVectorStore = {
 };
 
 const mockVectorStoreManager: IVectorStoreManager = {
-  managerId: 'vsm-mock',
   initialize: vi.fn().mockResolvedValue(undefined),
   getProvider: vi.fn().mockReturnValue(mockVectorStore),
   getDefaultProvider: vi.fn().mockReturnValue(mockVectorStore),

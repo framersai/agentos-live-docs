@@ -108,6 +108,9 @@ export async function configureRouter() {
                 console.error('[AgentOS] Failed to initialize AgentOS router. Continuing without AgentOS endpoints.', agentosError);
             }
         }
+        else {
+            console.warn('[AgentOS] AGENTOS_ENABLED is false. AgentOS API routes will not be available.');
+        }
     }
     catch (error) {
         console.error('❌ Error setting up API routes:', error);

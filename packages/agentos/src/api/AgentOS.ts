@@ -211,6 +211,8 @@ export interface AgentOSConfig {
   authService: IAuthService;
   /** An instance of the subscription service, conforming to {@link ISubscriptionService}. */
   subscriptionService: ISubscriptionService;
+  /** Optional guardrail service implementation used for policy enforcement. */
+  guardrailService?: IGuardrailService;
   /**
    * Optional. An instance of a utility AI service.
    * This service should conform to {@link IUtilityAI} for general utility tasks.
@@ -228,6 +230,8 @@ export interface AgentOSConfig {
   workflowEngineConfig?: WorkflowEngineConfig;
   /** Optional workflow store implementation. Defaults to the in-memory store if omitted. */
   workflowStore?: IWorkflowStore;
+  /** Optional multilingual configuration enabling detection, negotiation, translation. */
+  languageConfig?: import('../core/language').AgentOSLanguageConfig;
 }
 
 
@@ -256,6 +260,7 @@ export class AgentOS implements IAgentOS {
   private streamingManager!: StreamingManager;
   private gmiManager!: GMIManager;
   private agentOSOrchestrator!: AgentOSOrchestrator;
+  private languageService?: import('../core/language').LanguageService;
   private guardrailService?: IGuardrailService;
   private workflowEngine!: WorkflowEngine;
   private workflowStore!: IWorkflowStore;
@@ -297,6 +302,19 @@ export class AgentOS implements IAgentOS {
     this.validateConfiguration(config);
     // Make the configuration immutable after validation to prevent runtime changes.
     this.config = Object.freeze({ ...config });
+
+    // Initialize LanguageService early if configured so downstream orchestration can use it.
+    if (config.languageConfig) {
+      try {
+  // Dynamic import may fail under certain bundler path resolutions; using explicit relative path.
+  const { LanguageService } = await import('../core/language');
+        this.languageService = new LanguageService(config.languageConfig);
+        await this.languageService.initialize();
+        this.logger.info('AgentOS LanguageService initialized');
+      } catch (langErr: any) {
+        this.logger.error('Failed initializing LanguageService; continuing without multilingual features', { error: langErr?.message || langErr });
+      }
+    }
 
     // Assign core services from configuration
     this.authService = this.config.authService;
@@ -761,6 +779,25 @@ export class AgentOS implements IAgentOS {
       ...guardrailInputOutcome.sanitizedInput,
       selectedPersonaId: effectivePersonaId,
     };
+    // Language negotiation (non-blocking)
+    let languageNegotiation: any = null;
+    if (this.languageService && this.config.languageConfig) {
+      try {
+        languageNegotiation = this.languageService.negotiate({
+          explicitUserLanguage: orchestratorInput.languageHint,
+          detectedLanguages: orchestratorInput.detectedLanguages,
+          conversationPreferred: undefined,
+          personaDefault: undefined,
+          configDefault: this.config.languageConfig.defaultLanguage,
+          supported: this.config.languageConfig.supportedLanguages,
+          fallbackChain: this.config.languageConfig.fallbackLanguages || [this.config.languageConfig.defaultLanguage],
+          preferSourceLanguageResponses: this.config.languageConfig.preferSourceLanguageResponses,
+          targetLanguage: orchestratorInput.targetLanguage,
+        } as any);
+      } catch (negErr: any) {
+        this.logger.warn('Language negotiation failed', { error: negErr?.message || negErr });
+      }
+    }
     const baseStreamDebugId = orchestratorInput.sessionId || `agentos-req-${Date.now()}`;
     this.logger.debug?.('processRequest invoked', {
       userId: orchestratorInput.userId,
@@ -780,7 +817,7 @@ export class AgentOS implements IAgentOS {
       
       // The orchestrator creates/manages the actual stream and starts pushing chunks to StreamingManager.
       // We get the streamId it uses so our bridge can listen to it.
-      streamIdToListen = await this.agentOSOrchestrator.orchestrateTurn(orchestratorInput);
+  streamIdToListen = await this.agentOSOrchestrator.orchestrateTurn({ ...orchestratorInput, languageNegotiation } as any);
       await this.streamingManager.registerClient(streamIdToListen, bridge);
       this.logger.debug?.('Bridge registered', { bridgeId: bridge.id, streamId: streamIdToListen });
 
@@ -817,6 +854,10 @@ export class AgentOS implements IAgentOS {
 
       // Yield chunks from the guardrail-wrapped stream
       for await (const chunk of guardrailWrappedStream) {
+        if (languageNegotiation) {
+          if (!chunk.metadata) chunk.metadata = {};
+          chunk.metadata.language = languageNegotiation;
+        }
         yield chunk;
         if (chunk.isFinal && chunk.type !== AgentOSResponseChunkType.ERROR) {
           // If a non-error chunk is final, the primary interaction part might be done.

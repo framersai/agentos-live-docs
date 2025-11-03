@@ -411,7 +411,41 @@ export class OpenAIProvider implements IProvider {
     // Accumulators for streaming tool calls
     const accumulatedToolCalls: Map<number, { id?: string; type?: 'function'; function?: { name?: string; arguments?: string; } }> = new Map();
 
+    const abortSignal = options.abortSignal;
+    if (abortSignal?.aborted) {
+      yield {
+        id: `openai-abort-${Date.now()}`,
+        object: 'chat.completion.chunk',
+        created: Math.floor(Date.now()/1000),
+        modelId,
+        choices: [],
+        error: { message: 'Stream aborted prior to first chunk', type: 'abort' },
+        isFinal: true,
+      };
+      return;
+    }
+
+    const abortHandler = () => {
+      // Emit final abort chunk and ensure generator completes.
+      // We cannot directly cancel the underlying ReadableStream cleanly cross-platform here; consumer side will stop.
+      // Provide a terminal chunk for consistent teardown.
+      // Note: We don't attempt to read further chunks after abort.
+    };
+    abortSignal?.addEventListener('abort', abortHandler, { once: true });
+
     for await (const chunk of this.parseSseStream(stream)) {
+      if (abortSignal?.aborted) {
+        yield {
+          id: `openai-abort-${Date.now()}`,
+          object: 'chat.completion.chunk',
+          created: Math.floor(Date.now()/1000),
+          modelId,
+          choices: [],
+          error: { message: 'Stream aborted by caller', type: 'abort' },
+          isFinal: true,
+        };
+        break;
+      }
       if (chunk === '[DONE]') {
         // The [DONE] message is a signal for the end of the stream from OpenAI.
         // A final response chunk with isFinal=true and potential usage should be yielded by the parser if data exists.
@@ -426,6 +460,8 @@ export class OpenAIProvider implements IProvider {
         // Decide if to yield an error chunk or continue if minor parsing issue
       }
     }
+
+    abortSignal?.removeEventListener('abort', abortHandler);
   }
 
   /** @inheritdoc */

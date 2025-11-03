@@ -78,6 +78,12 @@ export interface AgentOSInput {
   visionInputs?: VisionInputData[];
   audioInput?: AudioInputData;
   selectedPersonaId?: string;
+  /** Optional explicit language hint from UI (BCP-47 or ISO 639-1). */
+  languageHint?: string;
+  /** Optional detected languages supplied externally (highest confidence first). */
+  detectedLanguages?: Array<{ code: string; confidence: number }>;
+  /** Optional target language override (skips negotiation if supported). */
+  targetLanguage?: string;
   userApiKeys?: Record<string, string>;
   userFeedback?: UserFeedbackPayload;
   conversationId?: string;

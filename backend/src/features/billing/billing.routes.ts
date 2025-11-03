@@ -71,7 +71,7 @@ export const postCheckoutSession = async (req: Request, res: Response): Promise<
 
   const userId = user.sub ?? user.id;
   try {
-    const record = createCheckoutSessionRecord({ userId, planId: plan.id, sessionId: clientSessionId });
+    const record = await createCheckoutSessionRecord({ userId, planId: plan.id, sessionId: clientSessionId });
     const { checkoutUrl, checkoutId } = await createCheckoutSession({
       variantId,
       productId,
@@ -83,7 +83,7 @@ export const postCheckoutSession = async (req: Request, res: Response): Promise<
       userId,
     });
 
-    updateCheckoutSessionRecord(record.id, {
+    await updateCheckoutSessionRecord(record.id, {
       status: 'pending',
       lemonCheckoutId: checkoutId,
     });
@@ -103,7 +103,7 @@ export const getCheckoutStatus = async (req: Request, res: Response): Promise<vo
   }
 
   const { checkoutId } = req.params as { checkoutId: string };
-  const record = findCheckoutSessionById(checkoutId);
+  const record = await findCheckoutSessionById(checkoutId);
   if (!record) {
     res.status(404).json({ message: 'Checkout session not found.' });
     return;
@@ -121,12 +121,12 @@ export const getCheckoutStatus = async (req: Request, res: Response): Promise<vo
   };
 
   if (record.status === 'paid') {
-    const dbUser = findUserById(record.user_id);
+    const dbUser = await findUserById(record.user_id);
     if (dbUser) {
       const session = createSessionForUser(dbUser, { mode: 'standard' });
       responsePayload.token = session.token;
       responsePayload.user = session.user;
-      updateCheckoutSessionRecord(record.id, { status: 'complete' });
+      await updateCheckoutSessionRecord(record.id, { status: 'complete' });
     }
   }
 
@@ -148,7 +148,7 @@ export const postLemonWebhook = async (req: Request, res: Response): Promise<voi
   }
 
   try {
-    handleSubscriptionWebhook(eventId, payloadString, typeof req.body === 'string' ? JSON.parse(req.body) : (req.body as any));
+    await handleSubscriptionWebhook(eventId, payloadString, typeof req.body === 'string' ? JSON.parse(req.body) : (req.body as any));
     res.status(200).json({ received: true });
   } catch (error: any) {
     console.error('[Billing] Failed to process Lemon Squeezy webhook:', error);

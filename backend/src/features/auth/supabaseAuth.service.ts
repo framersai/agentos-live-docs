@@ -39,14 +39,14 @@ const ensureLocalUserForSupabase = async (supabaseUser: SupabaseUser): Promise<A
   const supabaseId = supabaseUser.id;
   const email = normalizeEmail(supabaseUser.email) || `user_${supabaseId}@supabase.local`;
 
-  let existing = findUserBySupabaseId(supabaseId);
+  let existing = await findUserBySupabaseId(supabaseId);
   if (!existing) {
-    existing = findUserByEmail(email) ?? null;
+    existing = (await findUserByEmail(email)) ?? null;
   }
 
   if (!existing) {
     const passwordHash = await generatePlaceholderPasswordHash();
-    existing = createUser({
+    existing = await createUser({
       email,
       passwordHash,
       subscriptionStatus: 'none',
@@ -58,12 +58,12 @@ const ensureLocalUserForSupabase = async (supabaseUser: SupabaseUser): Promise<A
   }
 
   if (!existing.supabase_user_id || existing.supabase_user_id !== supabaseId) {
-    updateUserSupabaseLink(existing.id, supabaseId);
-    existing.supabase_user_id = supabaseId;
+    await updateUserSupabaseLink(existing.id, supabaseId);
+    existing = { ...existing, supabase_user_id: supabaseId };
   }
   if (email && existing.email !== email) {
-    updateUserProfile(existing.id, { email });
-    existing.email = email;
+    await updateUserProfile(existing.id, { email });
+    existing = { ...existing, email };
   }
   return existing;
 };

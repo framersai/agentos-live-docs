@@ -318,7 +318,19 @@ export class OpenRouterProvider implements IProvider {
 
     const accumulatedToolCalls: Map<number, { id?: string; type?: 'function'; function?: { name?: string; arguments?: string; } }> = new Map();
 
-    for await (const rawChunk of this.parseSseStream(stream)) {
+    const abortSignal = options.abortSignal;
+    if (abortSignal?.aborted) {
+      yield { id: `openrouter-abort-${Date.now()}`, object: 'chat.completion.chunk', created: Math.floor(Date.now()/1000), modelId, choices: [], error: { message: 'Stream aborted prior to first chunk', type: 'abort' }, isFinal: true };
+      return;
+    }
+    const abortHandler = () => { /* passive; loop logic handles emission */ };
+    abortSignal?.addEventListener('abort', abortHandler, { once: true });
+
+    for await (const rawChunk of this.parseSseStream(stream)) {
+      if (abortSignal?.aborted) {
+        yield { id: `openrouter-abort-${Date.now()}`, object: 'chat.completion.chunk', created: Math.floor(Date.now()/1000), modelId, choices: [], error: { message: 'Stream aborted by caller', type: 'abort' }, isFinal: true };
+        break;
+      }
       if (rawChunk.startsWith('data: ') && rawChunk.includes('[DONE]')) {
         const doneData = rawChunk.substring('data: '.length).trim();
         if (doneData === '[DONE]') break;
@@ -340,6 +352,7 @@ export class OpenRouterProvider implements IProvider {
         }
       }
     }
+    abortSignal?.removeEventListener('abort', abortHandler);
   }
 
   public async generateEmbeddings(

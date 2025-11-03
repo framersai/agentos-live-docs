@@ -64,19 +64,19 @@ export const globalPasswordLogin = async (password: string, context: { ip?: stri
   const ip = context.ip ?? undefined;
   if (ip) {
     const windowMs = appConfig.rateLimits.globalLoginWindowMinutes * 60 * 1000;
-    const attempts = countGlobalAccessAttempts(ip, Date.now() - windowMs);
+    const attempts = await countGlobalAccessAttempts(ip, Date.now() - windowMs);
     if (attempts >= appConfig.rateLimits.globalLoginMaxAttempts) {
       throw new Error('GLOBAL_LOGIN_RATE_LIMIT');
     }
   }
 
   if (password !== appConfig.auth.globalPassword) {
-    recordLoginEvent({ mode: 'global-denied', ip: context.ip, userAgent: context.userAgent });
+    await recordLoginEvent({ mode: 'global-denied', ip: context.ip, userAgent: context.userAgent });
     throw new Error('INVALID_GLOBAL_PASSWORD');
   }
 
-  logGlobalAccess({ ip: context.ip, userAgent: context.userAgent });
-  recordLoginEvent({ mode: 'global', ip: context.ip, userAgent: context.userAgent });
+  await logGlobalAccess({ ip: context.ip, userAgent: context.userAgent });
+  await recordLoginEvent({ mode: 'global', ip: context.ip, userAgent: context.userAgent });
 
   const token = issueToken({
     sub: 'global-access',
@@ -126,22 +126,22 @@ export const toSessionUserPayload = (user: AppUser, options?: {
 
 export const standardLogin = async (email: string, password: string, context: { ip?: string | null; userAgent?: string | null }): Promise<LoginResult> => {
   const normalizedEmail = email.trim().toLowerCase();
-  const user = findUserByEmail(normalizedEmail);
+  const user = await findUserByEmail(normalizedEmail);
   if (!user) {
-    recordLoginEvent({ mode: 'standard-denied', ip: context.ip, userAgent: context.userAgent });
+    await recordLoginEvent({ mode: 'standard-denied', ip: context.ip, userAgent: context.userAgent });
     throw new Error('USER_NOT_FOUND');
   }
 
   const passwordMatches = await verifyPassword(password, user.password_hash);
   if (!passwordMatches) {
-    recordLoginEvent({ userId: user.id, mode: 'standard-denied', ip: context.ip, userAgent: context.userAgent });
+    await recordLoginEvent({ userId: user.id, mode: 'standard-denied', ip: context.ip, userAgent: context.userAgent });
     throw new Error('INVALID_CREDENTIALS');
   }
 
   ensureUserIsActive(user);
 
-  updateLastLogin(user.id, context.ip);
-  recordLoginEvent({ userId: user.id, mode: 'standard', ip: context.ip, userAgent: context.userAgent });
+  await updateLastLogin(user.id, context.ip);
+  await recordLoginEvent({ userId: user.id, mode: 'standard', ip: context.ip, userAgent: context.userAgent });
 
   const role: AuthTokenPayload['role'] = 'subscriber';
   const tier = (user.subscription_tier as AuthTokenPayload['tier']) || 'metered';
@@ -167,7 +167,7 @@ export const registerAccount = async (data: { email: string; password: string })
   if (!email || !data.password) {
     throw new Error('MISSING_CREDENTIALS');
   }
-  const existing = findUserByEmail(email);
+  const existing = await findUserByEmail(email);
   if (existing) {
     throw new Error('USER_ALREADY_EXISTS');
   }
@@ -179,7 +179,7 @@ export const registerAccount = async (data: { email: string; password: string })
   }
 
   const passwordHash = await hashPassword(data.password);
-  const newUser = createUser({
+  const newUser = await createUser({
     email,
     passwordHash,
     subscriptionStatus: 'pending',
@@ -188,7 +188,7 @@ export const registerAccount = async (data: { email: string; password: string })
     metadata: { registrationStage: 'pending-checkout' },
   });
 
-  recordLoginEvent({ userId: newUser.id, mode: 'registration' });
+  await recordLoginEvent({ userId: newUser.id, mode: 'registration' });
 
   return createSessionForUser(newUser, {
     mode: 'registration',
@@ -197,7 +197,7 @@ export const registerAccount = async (data: { email: string; password: string })
   });
 };
 
-export const upsertUserFromSubscription = (data: {
+export const upsertUserFromSubscription = async (data: {
   email: string;
   passwordHash?: string;
   subscriptionStatus: string;
@@ -206,12 +206,12 @@ export const upsertUserFromSubscription = (data: {
   lemonSubscriptionId?: string;
   renewsAt?: number | null;
   expiresAt?: number | null;
-}): AppUser => {
+}): Promise<AppUser> => {
   const normalizedEmail = data.email.trim().toLowerCase();
-  const existing = findUserByEmail(normalizedEmail);
+  const existing = await findUserByEmail(normalizedEmail);
   if (!existing) {
     const passwordHash = data.passwordHash ?? bcrypt.hashSync(Math.random().toString(36), SALT_ROUNDS);
-    const newUser = createUser({
+    const newUser = await createUser({
       email: normalizedEmail,
       passwordHash,
       subscriptionStatus: data.subscriptionStatus,
@@ -220,7 +220,7 @@ export const upsertUserFromSubscription = (data: {
       lemonSubscriptionId: data.lemonSubscriptionId,
       metadata: {},
     });
-    updateUserSubscription(newUser.id, {
+    await updateUserSubscription(newUser.id, {
       status: data.subscriptionStatus,
       tier: data.subscriptionTier ?? 'unlimited',
       lemonCustomerId: data.lemonCustomerId ?? null,
@@ -228,10 +228,10 @@ export const upsertUserFromSubscription = (data: {
       renewsAt: data.renewsAt ?? null,
       expiresAt: data.expiresAt ?? null,
     });
-    return findUserById(newUser.id) as AppUser;
+    return (await findUserById(newUser.id)) as AppUser;
   }
 
-  updateUserSubscription(existing.id, {
+  await updateUserSubscription(existing.id, {
     status: data.subscriptionStatus,
     tier: data.subscriptionTier ?? existing.subscription_tier,
     lemonCustomerId: data.lemonCustomerId ?? existing.lemon_customer_id ?? null,
@@ -239,7 +239,7 @@ export const upsertUserFromSubscription = (data: {
     renewsAt: data.renewsAt ?? existing.subscription_renews_at ?? null,
     expiresAt: data.expiresAt ?? existing.subscription_expires_at ?? null,
   });
-  return findUserById(existing.id) as AppUser;
+  return (await findUserById(existing.id)) as AppUser;
 };
 
 

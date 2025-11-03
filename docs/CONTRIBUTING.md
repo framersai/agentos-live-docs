@@ -33,8 +33,8 @@ By participating in this project, you agree to maintain a respectful and inclusi
 1. Fork the repository on GitHub
 2. Clone your fork locally:
    ```bash
-   git clone https://github.com/YOUR-USERNAME/voice-coding-assistant.git
-   cd voice-coding-assistant
+   git clone https://github.com/YOUR-USERNAME/voice-chat-assistant.git
+   cd voice-chat-assistant
    ```
 
 3. Install dependencies:
@@ -129,6 +129,32 @@ Good documentation is crucial for maintainability:
 * Document all API endpoints
 * Add JSDoc comments to functions and classes
 * Update ARCHITECTURE.md for significant changes
+* For core packages (`@agentos/core`) follow enhanced TSDoc standards below.
+
+### AgentOS TSDoc Standards
+
+Public (exported) interfaces, types, and classes MUST include:
+1. Purpose summary (one sentence) + high-level role in the system.
+2. Parameter docs for all method arguments (especially generics & callbacks).
+3. Error Semantics: Enumerate error codes or conditions thrown (link to custom error types where relevant).
+4. Streaming Invariants (for any async generators): Define delta structure, terminal chunk rules (`isFinal`), and reconstruction steps.
+5. Lifecycle requirements (e.g., initialize() must succeed before use; shutdown() idempotent).
+6. Concurrency / cancellation notes if AbortSignals or external interrupts are supported.
+7. Examples for complex orchestration flows (PromptEngine.constructPrompt, provider streaming loop).
+
+Minimum Examples:
+* A streaming completion loop reconstructing `responseTextDelta` and tool call JSON arguments.
+* PromptEngine usage showing contextual elements + token budgeting summary.
+
+Prohibited:
+* Placeholder comments like `// TODO: doc` left in exported surfaces.
+* Cryptic abbreviations without expansion (expand first occurrence: e.g., GMI = Generalized Mind Instance).
+
+Review Checklist for PRs touching public API:
+- [ ] Added/updated TSDoc on new or changed interfaces/classes.
+- [ ] Included streaming invariants if async generator added/modified.
+- [ ] Updated README migration notes if provider surface altered.
+- [ ] Added or updated tests covering new error modes or edge cases.
 
 ## Issue Reporting
 When reporting issues:

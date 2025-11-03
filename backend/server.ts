@@ -24,7 +24,7 @@ import { initializeLlmServices } from './src/core/llm/llm.factory.js';
 import { NoLlmProviderConfiguredError, LlmConfigService } from './src/core/llm/llm.config.service.js';
 import { setLlmBootstrapStatus, getLlmBootstrapStatus, mapAvailabilityToStatus } from './src/core/llm/llm.status.js';
 import { sqliteMemoryAdapter } from './src/core/memory/SqliteMemoryAdapter.js'; // Import for shutdown
-import { closeAppDatabase } from './src/core/database/appDatabase.js';
+import { initializeAppDatabase, closeAppDatabase } from './src/core/database/appDatabase.js';
 import { schedulePredictiveTtsPrewarm } from './src/core/audio/ttsPrewarm.service.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -82,6 +82,7 @@ app.use(cookieParser());
 async function startServer() {
   console.log('[Bootstrap] Initializing application services...');
   try {
+    await initializeAppDatabase();
     await initializeLlmServices();
     const availabilitySnapshot = LlmConfigService.getInstance().getProviderAvailabilitySnapshot();
     setLlmBootstrapStatus({

@@ -17,12 +17,7 @@ import { ref, computed, onMounted, onUnmounted, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { themeManager, type ThemeDefinition } from '@/theme/ThemeManager';
 import { useUiStore } from '@/store/ui.store';
-import {
-  PaintBrushIcon,
-  CheckIcon,
-  SunIcon,
-  MoonIcon
-} from '@heroicons/vue/24/outline';
+import { CheckIcon, SunIcon, MoonIcon } from '@heroicons/vue/24/outline';
 
 /**
  * @const {Store<UiStore>} uiStore - The Pinia store instance for UI state management.
@@ -49,6 +44,27 @@ const availableThemes = computed<readonly ThemeDefinition[]>(() => themeManager.
  * @computed {string} currentThemeId - Retrieves the current theme ID from `uiStore`.
  */
 const currentThemeId = computed<string>(() => uiStore.currentThemeId);
+
+/**
+ * @computed {ThemeDefinition | undefined} activeTheme - Currently selected theme details.
+ */
+const activeTheme = computed(() => availableThemes.value.find((theme) => theme.id === currentThemeId.value));
+
+/**
+ * @computed {string} currentThemeLabel - Human readable descriptor for the active theme.
+ */
+const currentThemeLabel = computed<string>(() => {
+  if (!activeTheme.value) return currentThemeId.value;
+  return activeTheme.value.descriptor || activeTheme.value.label || currentThemeId.value;
+});
+
+/**
+ * @computed {VueComponent | null} activeThemeIcon - Icon representing tone of the active theme.
+ */
+const activeThemeIcon = computed(() => {
+  if (!activeTheme.value) return null;
+  return activeTheme.value.isDark ? MoonIcon : SunIcon;
+});
 
 /**
  * @function toggleDropdown - Toggles the dropdown's visibility.
@@ -114,7 +130,17 @@ onUnmounted(() => {
       aria-controls="theme-selection-panel"
       title="Change Application Theme"
     >
-      <PaintBrushIcon class="icon-base" />
+      <span class="theme-trigger-pill">
+        <component
+          v-if="activeThemeIcon"
+          :is="activeThemeIcon"
+          class="theme-trigger-icon"
+          aria-hidden="true"
+        />
+        <span class="theme-trigger-label">
+          {{ currentThemeLabel }}
+        </span>
+      </span>
     </button>
 
     <Transition name="dropdown-float-enhanced">
@@ -160,6 +186,34 @@ onUnmounted(() => {
 
 .header-control-item {
   position: relative;
+}
+
+.theme-trigger-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0 0.8rem;
+  border-radius: var.$radius-full;
+  background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.35);
+  transition: background 0.2s ease;
+
+  .direct-header-button:hover & {
+    background: hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.5);
+  }
+}
+
+.theme-trigger-icon {
+  width: 1rem;
+  height: 1rem;
+  color: hsl(var(--color-accent-interactive-h), var(--color-accent-interactive-s), var(--color-accent-interactive-l));
+}
+
+.theme-trigger-label {
+  font-size: var.$font-size-xs;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: hsla(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l), 0.85);
 }
 
 // Enhance the dropdown panel with glassmorphism

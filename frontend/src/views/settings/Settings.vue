@@ -150,9 +150,9 @@
       >
         <div class="billing-actions">
           <div class="billing-plan-hints">
-            <p v-if="basicPlan.value">Basic - ${{ basicPlan.value.monthlyPriceUsd }}/mo - ~ {{ basicPlan.value.usage.approxGpt4oTokensPerDay.toLocaleString() }} GPT-4o tokens/day</p>
-            <p v-if="creatorPlan.value">Creator - ${{ creatorPlan.value.monthlyPriceUsd }}/mo - BYO keys after {{ creatorPlan.value.usage.approxGpt4oTokensPerDay.toLocaleString() }} GPT-4o tokens/day</p>
-            <p v-if="organizationPlan.value">Organization - ${{ organizationPlan.value.monthlyPriceUsd }}/mo - shared pool ~ {{ organizationPlan.value.usage.approxGpt4oTokensPerDay.toLocaleString() }} GPT-4o tokens/day</p>
+            <p v-if="basicPlan">Basic - ${{ basicPlan.monthlyPriceUsd }}/mo - ~ {{ basicPlan.usage.approxGpt4oTokensPerDay.toLocaleString() }} GPT-4o tokens/day</p>
+            <p v-if="creatorPlan">Creator - ${{ creatorPlan.monthlyPriceUsd }}/mo - BYO keys after {{ creatorPlan.usage.approxGpt4oTokensPerDay.toLocaleString() }} GPT-4o tokens/day</p>
+            <p v-if="organizationPlan">Organization - ${{ organizationPlan.monthlyPriceUsd }}/mo - shared pool ~ {{ organizationPlan.usage.approxGpt4oTokensPerDay.toLocaleString() }} GPT-4o tokens/day</p>
             <button type="button" class="billing-plan-hints__link" @click="openPlanModal">Compare plans</button>
           </div>
           <template v-if="!isAuthenticated">
@@ -592,7 +592,7 @@ import { useAgentStore } from '@/store/agent.store';
 import { useUiStore } from '@/store/ui.store';
 import { useChatStore } from '@/store/chat.store';
 import { usePlans } from '@/composables/usePlans';
-import type { PlanId } from '../../../shared/planCatalog';
+import type { PlanId } from '@shared/planCatalog';
 
 // Child Components
 import SettingsSection from '@/components/settings/SettingsSection.vue';
@@ -628,10 +628,11 @@ const costStore = useCostStore();
 const agentStore = useAgentStore();
 
 const { findPlan } = usePlans();
-const basicPlan = computed(() => findPlan('basic'));
-const creatorPlan = computed(() => findPlan('creator'));
-const organizationPlan = computed(() => findPlan('organization'));
-const checkoutPlan = computed(() => creatorPlan.value ?? basicPlan.value ?? null);
+// Plan catalog entries are plain objects; no .value needed in template after moving away from ref usage
+const basicPlan = findPlan('basic');
+const creatorPlan = findPlan('creator');
+const organizationPlan = findPlan('organization');
+const checkoutPlan = computed(() => creatorPlan ?? basicPlan ?? null);
 const showPlanModal = ref(false);
 const openPlanModal = () => { showPlanModal.value = true; };
 const closePlanModal = () => { showPlanModal.value = false; };
@@ -639,6 +640,12 @@ const chatStoreInstance = useChatStore();
 
 const showSpeechCreditsModal = ref(false);
 const isSpeechCreditsExhausted = computed(() => voiceSettingsManager.speechCreditsExhausted.value);
+
+// Placeholder until provider capability detection is implemented
+const isTTSSupportedBySelectedProvider = computed(() => {
+  const provider = voiceSettingsManager.settings.ttsProvider;
+  return !!provider;
+});
 
 const speechCreditsSummary = computed(() => {
   const snapshot = voiceSettingsManager.creditsSnapshot.value;

@@ -47,6 +47,22 @@
   will-change: transform, box-shadow;
   position: relative; 
   overflow: hidden;   
+  background:
+    radial-gradient(140% 140% at 20% -10%, hsla(var(--color-accent-primary-h, #{var.$default-color-accent-primary-h}), var(--color-accent-primary-s, #{var.$default-color-accent-primary-s}), var(--color-accent-primary-l, #{var.$default-color-accent-primary-l}), 0.22), transparent 55%),
+    radial-gradient(160% 160% at 90% 0%, hsla(var(--color-accent-secondary-h, #{var.$default-color-accent-secondary-h}), var(--color-accent-secondary-s, #{var.$default-color-accent-secondary-s}), var(--color-accent-secondary-l, #{var.$default-color-accent-secondary-l}), 0.18), transparent 60%),
+    hsla(var(--color-bg-secondary-h, #{var.$default-color-bg-secondary-h}), var(--color-bg-secondary-s, #{var.$default-color-bg-secondary-s}), calc(var(--color-bg-secondary-l, #{var.$default-color-bg-secondary-l}) - 4%), 0.92);
+  backdrop-filter: blur(14px) saturate(140%);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, hsla(var(--color-text-primary-h, #{var.$default-color-text-primary-h}), var(--color-text-primary-s, #{var.$default-color-text-primary-s}), var(--color-text-primary-l, #{var.$default-color-text-primary-l}), 0.05), transparent 35%, hsla(var(--color-bg-secondary-h, #{var.$default-color-bg-secondary-h}), var(--color-bg-secondary-s, #{var.$default-color-bg-secondary-s}), calc(var(--color-bg-secondary-l, #{var.$default-color-bg-secondary-l}) + 3%), 0.25));
+    pointer-events: none;
+    opacity: 0.75;
+    mix-blend-mode: screen;
+    transition: opacity var.$duration-smooth;
+  }
 
   &.card-interactive-ephemeral::after {
     content: '';
@@ -83,6 +99,9 @@
       opacity: 0.8;
       animation-duration: 4s; 
     }
+    &::before {
+      opacity: 1;
+    }
     .agent-name-ephemeral { 
       @include mixins.text-glow(
         $glow-color-var-prefix: '--color-accent-interactive',
@@ -114,6 +133,9 @@
     &::after { 
       opacity: 1;
       animation-duration: 5s;
+    }
+    &::before {
+      opacity: 1;
     }
     .agent-name-ephemeral {
       color: hsl(var(--color-accent-interactive-h, #{var.$default-color-accent-interactive-h}), var(--color-accent-interactive-s, #{var.$default-color-accent-interactive-s}), var(--color-accent-interactive-l, #{var.$default-color-accent-interactive-l}));
@@ -350,4 +372,134 @@
 // Keyframe for holo-border-spin
 @keyframes holo-border-spin {
   to { transform: rotate(360deg); }
+}
+
+@keyframes shimmer-sweep {
+  0% {
+    background-position: -150% 0;
+  }
+  100% {
+    background-position: 150% 0;
+  }
+}
+
+.shimmer {
+  background-image: linear-gradient(
+    100deg,
+    hsla(var(--color-border-primary-h, #{var.$default-color-border-primary-h}), var(--color-border-primary-s, #{var.$default-color-border-primary-s}), var(--color-border-primary-l, #{var.$default-color-border-primary-l}), 0.15) 0%,
+    hsla(var(--color-border-primary-h, #{var.$default-color-border-primary-h}), var(--color-border-primary-s, #{var.$default-color-border-primary-s}), var(--color-border-primary-l, #{var.$default-color-border-primary-l}), 0.25) 40%,
+    hsla(var(--color-border-primary-h, #{var.$default-color-border-primary-h}), var(--color-border-primary-s, #{var.$default-color-border-primary-s}), var(--color-border-primary-l, #{var.$default-color-border-primary-l}), 0.1) 70%
+  );
+  background-size: 200% 100%;
+  animation: shimmer-sweep 1.2s infinite linear;
+}
+
+.agent-card-grid--skeleton {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var.$spacing-lg;
+}
+
+.agent-card-skeleton {
+  position: relative;
+  overflow: hidden;
+  padding: var.$spacing-lg;
+  border-radius: var.$radius-xl;
+  border: 1px solid hsla(var(--color-border-primary-h, #{var.$default-color-border-primary-h}), var(--color-border-primary-s, #{var.$default-color-border-primary-s}), var(--color-border-primary-l, #{var.$default-color-border-primary-l}), 0.25);
+  background: hsla(var(--color-bg-secondary-h, #{var.$default-color-bg-secondary-h}), var(--color-bg-secondary-s, #{var.$default-color-bg-secondary-s}), var(--color-bg-secondary-l, #{var.$default-color-bg-secondary-l}), 0.55);
+  box-shadow: inset 0 0 0 1px hsla(var(--color-border-primary-h, #{var.$default-color-border-primary-h}), var(--color-border-primary-s, #{var.$default-color-border-primary-s}), var(--color-border-primary-l, #{var.$default-color-border-primary-l}), 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: var.$spacing-md;
+  min-height: 220px;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(120% 120% at 50% 0%, hsla(var(--color-accent-primary-h, #{var.$default-color-accent-primary-h}), var(--color-accent-primary-s, #{var.$default-color-accent-primary-s}), var(--color-accent-primary-l, #{var.$default-color-accent-primary-l}), 0.12), transparent 60%);
+    opacity: 0.6;
+    pointer-events: none;
+  }
+}
+
+.agent-card-skeleton__header {
+  display: flex;
+  align-items: center;
+  gap: var.$spacing-md;
+}
+
+.agent-card-skeleton__avatar {
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: var.$radius-lg;
+}
+
+.agent-card-skeleton__title {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.agent-card-skeleton__line {
+  height: 0.75rem;
+  border-radius: var.$radius-sm;
+  background-color: hsla(var(--color-border-primary-h, #{var.$default-color-border-primary-h}), var(--color-border-primary-s, #{var.$default-color-border-primary-s}), var(--color-border-primary-l, #{var.$default-color-border-primary-l}), 0.2);
+
+  &--full { width: 100%; }
+  &--medium { width: 80%; }
+  &--short { width: 70%; height: 0.9rem; }
+  &--xs { width: 45%; height: 0.6rem; }
+}
+
+.agent-card-skeleton__chips {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: auto;
+}
+
+.agent-card-skeleton__chip {
+  width: 4.5rem;
+  height: 0.9rem;
+  border-radius: 999px;
+  background-color: hsla(var(--color-border-primary-h, #{var.$default-color-border-primary-h}), var(--color-border-primary-s, #{var.$default-color-border-primary-s}), var(--color-border-primary-l, #{var.$default-color-border-primary-l}), 0.18);
+}
+
+.agent-metadata-ephemeral {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: calc(#{var.$spacing-xs} * 0.75);
+}
+
+.agent-pricing-chip {
+  font-size: calc(#{var.$font-size-xs} * 0.85);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.agent-pricing-chip[data-variant='paid'] {
+  background: hsla(var(--color-accent-secondary-h, #{var.$default-color-accent-secondary-h}), var(--color-accent-secondary-s, #{var.$default-color-accent-secondary-s}), var(--color-accent-secondary-l, #{var.$default-color-accent-secondary-l}), 0.18);
+  color: hsl(var(--color-accent-secondary-h, #{var.$default-color-accent-secondary-h}), var(--color-accent-secondary-s, #{var.$default-color-accent-secondary-s}), calc(var(--color-accent-secondary-l, #{var.$default-color-accent-secondary-l}) - 12%));
+}
+
+.agent-pricing-chip[data-variant='free'],
+.agent-pricing-chip[data-variant='freemium'] {
+  background: hsla(var(--color-success-h, #{var.$default-color-success-h}), var(--color-success-s, #{var.$default-color-success-s}), var(--color-success-l, #{var.$default-color-success-l}), 0.16);
+  color: hsl(var(--color-success-h, #{var.$default-color-success-h}), var(--color-success-s, #{var.$default-color-success-s}), calc(var(--color-success-l, #{var.$default-color-success-l}) - 8%));
+}
+
+.agent-pricing-chip[data-variant='unknown'] {
+  background: hsla(var(--color-border-primary-h, #{var.$default-color-border-primary-h}), var(--color-border-primary-s, #{var.$default-color-border-primary-s}), var(--color-border-primary-l, #{var.$default-color-border-primary-l}), 0.12);
+  color: hsl(var(--color-text-secondary-h, #{var.$default-color-text-secondary-h}), var(--color-text-secondary-s, #{var.$default-color-text-secondary-s}), calc(var(--color-text-secondary-l, #{var.$default-color-text-secondary-l}) - 12%));
+}
+
+.agent-rating-ephemeral {
+  font-size: calc(#{var.$font-size-xs} * 0.9);
+  font-weight: 500;
+  color: hsla(var(--color-text-secondary-h, #{var.$default-color-text-secondary-h}), var(--color-text-secondary-s, #{var.$default-color-text-secondary-s}), var(--color-text-secondary-l, #{var.$default-color-text-secondary-l}), 0.85);
 }

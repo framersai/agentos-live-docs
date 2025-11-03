@@ -388,8 +388,22 @@ export class OllamaProvider implements IProvider {
     let finalUsage: ModelUsage | undefined;
     let responseId = `ollama-stream-${modelId}-${Date.now()}`; // Initial ID
 
+    const abortSignal = options.abortSignal;
+    if (abortSignal?.aborted) {
+      yield { id: `ollama-abort-${Date.now()}`, object: 'chat.completion.chunk', created: Math.floor(Date.now()/1000), modelId, choices: [], error: { message: 'Stream aborted prior to first chunk', type: 'abort' }, isFinal: true };
+      return;
+    }
+    const abortHandler = () => {
+      // We rely on loop check to emit final chunk; no direct stream destroy to keep portability.
+    };
+    abortSignal?.addEventListener('abort', abortHandler, { once: true });
+
     try {
       for await (const chunk of stream) {
+        if (abortSignal?.aborted) {
+          yield { id: `ollama-abort-${Date.now()}`, object: 'chat.completion.chunk', created: Math.floor(Date.now()/1000), modelId, choices: [], error: { message: 'Stream aborted by caller', type: 'abort' }, isFinal: true };
+          break;
+        }
         const chunkString = chunk.toString();
         // Ollama stream sends multiple JSON objects, newline-separated.
         const jsonObjects = chunkString.split('\n').filter(Boolean);
@@ -460,6 +474,7 @@ export class OllamaProvider implements IProvider {
     } finally {
         stream?.destroy?.();
     }
+  abortSignal?.removeEventListener('abort', abortHandler);
   }
 
   /** @inheritdoc */

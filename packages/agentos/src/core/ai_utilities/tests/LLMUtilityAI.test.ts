@@ -2,21 +2,29 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { LLMUtilityAI, LLMUtilityAIConfig } from '../LLMUtilityAI';
 import { IUtilityAI, SummarizationOptions } from '../IUtilityAI';
 import { AIModelProviderManager } from '../../llm/providers/AIModelProviderManager';
-import { IProvider } from '../../llm/providers/IProvider';
+import { IProvider, ChatMessage, ModelCompletionResponse } from '../../llm/providers/IProvider';
 import { GMIError, GMIErrorCode } from '@agentos/core/utils/errors';
 
-// Basic Mock for AIModelProviderManager and IProvider
+// Updated mock provider aligned with new IProvider interface
 const mockProvider: IProvider = {
   providerId: 'mock-llm-provider',
+  isInitialized: true,
   initialize: vi.fn().mockResolvedValue(undefined),
-  generate: vi.fn().mockResolvedValue({ choices: [{ text: 'Mocked LLM summary' }], usage: { totalTokens: 10 } }),
-  generateStream: vi.fn().mockImplementation(async function* () {
-    yield { textDelta: 'Mocked stream ', isFinal: false };
-    yield { textDelta: 'response.', isFinal: true, finishReason: 'stop', usage: { totalTokens: 5 } };
+  generateCompletion: vi.fn().mockResolvedValue(<ModelCompletionResponse>{
+    id: 'cmp-1', object: 'chat.completion', created: Date.now(), modelId: 'default-llm-model',
+    choices: [{ index: 0, message: { role: 'assistant', content: 'Mocked LLM summary' }, text: 'Mocked LLM summary', finishReason: 'stop' }],
+    usage: { totalTokens: 10 }
   }),
-  generateEmbeddings: vi.fn().mockResolvedValue({ data: [], usage: {totalTokens: 0 }}), // Not used by LLMUtilityAI directly
+  generateCompletionStream: vi.fn().mockImplementation(async function* () {
+    const base: Partial<ModelCompletionResponse> = { id: 'cmp-stream', object: 'chat.completion.chunk', created: Date.now(), modelId: 'default-llm-model' };
+    yield { ...base, responseTextDelta: 'Mocked stream ', isFinal: false } as ModelCompletionResponse;
+    yield { ...base, responseTextDelta: 'response.', isFinal: true, choices: [{ index: 0, message: { role: 'assistant', content: 'Done' }, finishReason: 'stop' }], usage: { totalTokens: 5 } } as ModelCompletionResponse;
+  }),
+  generateEmbeddings: vi.fn().mockResolvedValue({ object: 'list', data: [], model: 'embed-model', usage: { prompt_tokens: 0, total_tokens: 0 } }),
+  listAvailableModels: vi.fn().mockResolvedValue([{ modelId: 'default-llm-model', providerId: 'mock-llm-provider', capabilities: ['chat'], supportsStreaming: true }]),
+  getModelInfo: vi.fn().mockResolvedValue({ modelId: 'default-llm-model', providerId: 'mock-llm-provider', capabilities: ['chat'], supportsStreaming: true }),
   checkHealth: vi.fn().mockResolvedValue({ isHealthy: true }),
-  listModels: vi.fn().mockResolvedValue([{id: 'default-llm-model', providerId: 'mock-llm-provider'}]),
+  shutdown: vi.fn().mockResolvedValue(undefined)
 };
 
 const mockLlmProviderManager: AIModelProviderManager = {
@@ -25,7 +33,7 @@ const mockLlmProviderManager: AIModelProviderManager = {
   listProviderIds: vi.fn().mockReturnValue(['mock-llm-provider']),
   checkHealth: vi.fn().mockResolvedValue({ isOverallHealthy: true, providerStatus: { 'mock-llm-provider': { isHealthy: true}}}),
   shutdownAll: vi.fn().mockResolvedValue(undefined),
-} as any; // Cast as any for simplicity if not all methods of AIModelProviderManager are stubbed
+} as any;
 
 const defaultConfig: LLMUtilityAIConfig = {
   utilityId: 'test-llm-utility',
@@ -55,12 +63,12 @@ describe('LLMUtilityAI', () => {
     const summary = await llmUtility.summarize(textToSummarize, options);
 
     expect(summary).toBe('Mocked LLM summary');
-    expect(mockProvider.generate).toHaveBeenCalled();
-    expect(mockProvider.generate).toHaveBeenCalledWith(
-      defaultConfig.defaultModelId, // Or summarizationModelId if set in config/options
-      expect.stringContaining(textToSummarize), // Check if prompt contains original text
-      expect.any(Object) // Check for completion options
-    );
+    expect(mockProvider.generateCompletion).toHaveBeenCalled();
+    const callArgs = (mockProvider.generateCompletion as any).mock.calls[0];
+    expect(callArgs[0]).toBe(defaultConfig.defaultModelId);
+    const messages: ChatMessage[] = callArgs[1];
+    const aggregated = messages.map(m => typeof m.content === 'string' ? m.content : '').join(' ');
+    expect(aggregated).toContain(textToSummarize);
   });
 
   it('parseJsonSafe should parse valid JSON', async () => {
@@ -74,7 +82,11 @@ describe('LLMUtilityAI', () => {
     const fixedJsonString = '{ "key": "value", "number": 123 }';
     
     // Mock the LLM call for fixing JSON
-    (mockProvider.generate as any).mockResolvedValueOnce({ choices: [{ text: fixedJsonString }], usage: { totalTokens: 5 } });
+    (mockProvider.generateCompletion as any).mockResolvedValueOnce(<ModelCompletionResponse>{
+      id: 'cmp-fix', object: 'chat.completion', created: Date.now(), modelId: 'json-fixer-model',
+      choices: [{ index: 0, message: { role: 'assistant', content: fixedJsonString }, text: fixedJsonString, finishReason: 'stop' }],
+      usage: { totalTokens: 5 }
+    });
 
     const result = await llmUtility.parseJsonSafe(invalidJsonString, { 
       attemptFixWithLLM: true, 
@@ -82,9 +94,9 @@ describe('LLMUtilityAI', () => {
     });
     
     expect(result).toEqual({ key: 'value', number: 123 });
-    expect(mockProvider.generate).toHaveBeenCalledWith(
+    expect(mockProvider.generateCompletion).toHaveBeenCalledWith(
       'json-fixer-model',
-      expect.stringContaining(invalidJsonString),
+      expect.any(Array),
       expect.any(Object)
     );
   });

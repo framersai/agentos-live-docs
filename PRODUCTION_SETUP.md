@@ -82,7 +82,7 @@ The repository ships with a deploy workflow located at `.github/workflows/deploy
    AUTH_JWT_SECRET=...
    GLOBAL_ACCESS_PASSWORD=...
    ```
-   Add any additional keys you rely on in production (database, Pinecone, Lemon Squeezy, etc.). The workflow writes this secret verbatim to `~/voice-coding-assistant/.env` on the server.
+   Add any additional keys you rely on in production (database, Pinecone, Lemon Squeezy, etc.). The workflow writes this secret verbatim to `~/voice-chat-assistant/.env` on the server.
 
 2. Commit and push to `master` (the workflow trigger), or manually run **Deploy Voice Coding Assistant to Linode (Nginx only)** from the Actions tab.
 

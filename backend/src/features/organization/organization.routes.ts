@@ -31,28 +31,28 @@ const handleServiceError = (res: Response, error: unknown): void => {
   }
 };
 
-export const getOrganizations = (req: Request, res: Response): void => {
+export const getOrganizations = async (req: Request, res: Response): Promise<void> => {
   const userId = getSessionUserId(req);
   if (!userId) {
     res.status(401).json({ message: 'Authentication required.', code: 'NOT_AUTHENTICATED' });
     return;
   }
   try {
-    const organizations = getOrganizationsForUser(userId);
+    const organizations = await getOrganizationsForUser(userId);
     res.status(200).json({ organizations });
   } catch (error) {
     handleServiceError(res, error);
   }
 };
 
-export const postOrganization = (req: Request, res: Response): void => {
+export const postOrganization = async (req: Request, res: Response): Promise<void> => {
   const userId = getSessionUserId(req);
   if (!userId) {
     res.status(401).json({ message: 'Authentication required.', code: 'NOT_AUTHENTICATED' });
     return;
   }
   try {
-    const summary = createOrganizationForUser(userId, {
+    const summary = await createOrganizationForUser(userId, {
       name: (req.body?.name as string | undefined) ?? '',
       seatLimit: req.body?.seatLimit,
       planId: req.body?.planId,
@@ -64,14 +64,14 @@ export const postOrganization = (req: Request, res: Response): void => {
   }
 };
 
-export const patchOrganization = (req: Request, res: Response): void => {
+export const patchOrganization = async (req: Request, res: Response): Promise<void> => {
   const userId = getSessionUserId(req);
   if (!userId) {
     res.status(401).json({ message: 'Authentication required.', code: 'NOT_AUTHENTICATED' });
     return;
   }
   try {
-    const summary = updateOrganizationDetails(req.params.organizationId, userId, {
+    const summary = await updateOrganizationDetails(req.params.organizationId, userId, {
       name: req.body?.name,
       seatLimit: req.body?.seatLimit,
     });
@@ -81,14 +81,14 @@ export const patchOrganization = (req: Request, res: Response): void => {
   }
 };
 
-export const postInvite = (req: Request, res: Response): void => {
+export const postInvite = async (req: Request, res: Response): Promise<void> => {
   const userId = getSessionUserId(req);
   if (!userId) {
     res.status(401).json({ message: 'Authentication required.', code: 'NOT_AUTHENTICATED' });
     return;
   }
   try {
-    const result = inviteUserToOrganization(req.params.organizationId, userId, {
+    const result = await inviteUserToOrganization(req.params.organizationId, userId, {
       email: req.body?.email,
       role: req.body?.role,
       expiresAt: req.body?.expiresAt,
@@ -99,28 +99,28 @@ export const postInvite = (req: Request, res: Response): void => {
   }
 };
 
-export const deleteInvite = (req: Request, res: Response): void => {
+export const deleteInvite = async (req: Request, res: Response): Promise<void> => {
   const userId = getSessionUserId(req);
   if (!userId) {
     res.status(401).json({ message: 'Authentication required.', code: 'NOT_AUTHENTICATED' });
     return;
   }
   try {
-    const summary = revokeOrganizationInvite(req.params.organizationId, req.params.inviteId, userId);
+    const summary = await revokeOrganizationInvite(req.params.organizationId, req.params.inviteId, userId);
     res.status(200).json({ organization: summary });
   } catch (error) {
     handleServiceError(res, error);
   }
 };
 
-export const patchMember = (req: Request, res: Response): void => {
+export const patchMember = async (req: Request, res: Response): Promise<void> => {
   const userId = getSessionUserId(req);
   if (!userId) {
     res.status(401).json({ message: 'Authentication required.', code: 'NOT_AUTHENTICATED' });
     return;
   }
   try {
-    const summary = updateOrganizationMember(req.params.organizationId, req.params.memberId, userId, {
+    const summary = await updateOrganizationMember(req.params.organizationId, req.params.memberId, userId, {
       role: req.body?.role,
       dailyUsageCapUsd: req.body?.dailyUsageCapUsd,
       seatUnits: req.body?.seatUnits,
@@ -131,28 +131,28 @@ export const patchMember = (req: Request, res: Response): void => {
   }
 };
 
-export const deleteMember = (req: Request, res: Response): void => {
+export const deleteMember = async (req: Request, res: Response): Promise<void> => {
   const userId = getSessionUserId(req);
   if (!userId) {
     res.status(401).json({ message: 'Authentication required.', code: 'NOT_AUTHENTICATED' });
     return;
   }
   try {
-    const result = removeOrganizationMember(req.params.organizationId, req.params.memberId, userId);
+    const result = await removeOrganizationMember(req.params.organizationId, req.params.memberId, userId);
     res.status(200).json(result);
   } catch (error) {
     handleServiceError(res, error);
   }
 };
 
-export const postAcceptInvite = (req: Request, res: Response): void => {
+export const postAcceptInvite = async (req: Request, res: Response): Promise<void> => {
   const userId = getSessionUserId(req);
   if (!userId) {
     res.status(401).json({ message: 'Authentication required.', code: 'NOT_AUTHENTICATED' });
     return;
   }
   try {
-    const result = acceptOrganizationInvite(req.params.token, userId);
+    const result = await acceptOrganizationInvite(req.params.token, userId);
     res.status(200).json(result);
   } catch (error) {
     handleServiceError(res, error);

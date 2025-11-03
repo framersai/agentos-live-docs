@@ -266,63 +266,95 @@ export interface ContextualPromptElementCriteria {
  * @interface IPersonaDefinition
  */
 export interface IPersonaDefinition {
+  /** Stable unique identifier for the persona (used for activation & persistence). */
   id: string;
+  /** Human-readable name surfaced in UI selection lists. */
   name: string;
+  /** Optional short label (e.g., abbreviation) for compact UI contexts. */
   label?: string;
+  /** Rich description of goals, domain focus, and behavioral nuance. */
   description: string;
+  /** Semantic version of persona definition; bump on behavioral / config changes (e.g., '1.2.0'). */
   version: string;
 
-  // Core Prompting Configuration
+  /**
+   * Base system prompt (or structured template) establishing foundational directives.
+   * Supports:
+   *  - Raw string
+   *  - Templated object { template, variables[] }
+   *  - Ordered array of prompt fragments with priority for deterministic merging.
+   */
   baseSystemPrompt: string | { template: string; variables?: string[] } | Array<{ content: string; priority?: number }>;
 
-  // LLM Selection and Options
-  defaultModelId?: string; // ADDED: Default model ID for this persona
-  defaultProviderId?: string; // ADDED: Default provider ID (optional if modelId is globally unique or prefixed)
-  defaultModelCompletionOptions?: Partial<ModelCompletionOptions>; // Options like temperature, maxTokens
+  /** Default model id to target for this persona's typical tasks (can be routed or overridden). */
+  defaultModelId?: string;
+  /** Preferred provider if same model family exists across vendors (helps routing heuristics). */
+  defaultProviderId?: string;
+  /** Baseline completion option overrides (temperature, maxTokens, presence penalties, etc.). */
+  defaultModelCompletionOptions?: Partial<ModelCompletionOptions>;
+  /** Ordered preferences describing desired model traits (cost/perf/latency) for dynamic selection. */
   modelTargetPreferences?: ModelTargetPreference[];
+  /** High-level cost strategy guiding router decisions. */
   costSavingStrategy?: 'always_cheapest' | 'balance_quality_cost' | 'prioritize_quality' | 'user_preference';
 
-  // Prompt Engine Overrides
+  /** Partial overrides merged onto global PromptEngine configuration for persona specialization. */
   promptEngineConfigOverrides?: Partial<PromptEngineConfig>;
 
-  // Tools and Capabilities
-  toolIds?: string[]; // IDs of tools this persona is allowed to use
-  allowedCapabilities?: string[]; // General capabilities like 'web_search', 'code_execution'
-  embeddedTools?: ITool[]; // Actual tool instances embedded within the persona (less common for dynamic tools)
+  /** Referenced tool identifiers persona is permitted to invoke. */
+  toolIds?: string[];
+  /** Abstract capability flags enabling conditional UI / workflow features (e.g., 'web_search'). */
+  allowedCapabilities?: string[];
+  /** Inline tool instances embedded directly (rare; typically tools live in registry). */
+  embeddedTools?: ITool[];
 
-  // Modalities
+  /** Whitelisted input modalities persona accepts (driver for validation in interaction layer). */
   allowedInputModalities?: Array<'text' | 'audio_transcription' | 'vision_image_url' | 'vision_image_base64'>;
+  /** Output modalities persona can produce (text, TTS synthesized, image generation results). */
   allowedOutputModalities?: Array<'text' | 'audio_tts' | 'image_generation_tool_result'>;
+  /** Voice synthesis configuration (preferred voice id, style, speed). */
   voiceConfig?: PersonaVoiceConfig;
+  /** Visual avatar / representation metadata (image URL, animation style). */
   avatarConfig?: PersonaAvatarConfig;
 
-  // Personality & Behavior
-  personalityTraits?: Record<string, any>; // Key-value store for traits (e.g., "humor_level": 0.7)
+  /** Arbitrary personality trait map (e.g., { humor_level: 0.7, pedagogical_style: 'socratic' }). */
+  personalityTraits?: Record<string, any>;
+  /** Rules controlling adaptive mood shifts & modulation of tone. */
   moodAdaptation?: PersonaMoodAdaptationConfig;
-  defaultLanguage?: string; // BCP-47 language code
-  uiInteractionStyle?: 'suggestive' | 'directive' | 'collaborative' | 'silent'; // How persona prefers to interact with UI
+  /** Default output language (BCP‑47) used when user preference unspecified. */
+  defaultLanguage?: string;
+  /** High-level interaction posture for UI behaviors (suggestive hints vs directive instructions). */
+  uiInteractionStyle?: 'suggestive' | 'directive' | 'collaborative' | 'silent';
 
-  // Memory and Context
+  /** Memory subsystem tuning (retention horizons, summarization cadence, pinning rules). */
   memoryConfig?: PersonaMemoryConfig;
-  conversationContextConfig?: PersonaConversationContextConfig; // Kept for redundancy or specific overrides on top of memoryConfig.conversationContext
+  /** Conversation context override strategy (message importance heuristics, summarization triggers). */
+  conversationContextConfig?: PersonaConversationContextConfig;
 
-  // Meta-Processing & Self-Regulation
+  /** System or self-reflective prompts guiding meta-cognition, self-correction, or planning loops. */
   metaPrompts?: MetaPromptDefinition[];
-  contextualPromptElements?: ContextualPromptElement[]; // ADDED: For dynamic prompt adaptation
+  /** Dynamic contextual prompt elements evaluated per turn for fine-grained adaptation. */
+  contextualPromptElements?: ContextualPromptElement[];
 
+  /** Allows persona to perform privileged creation/update of other personas. */
+  isCreatorPersona?: boolean;
+  /** If true persona is globally discoverable subject to subscription tier gating. */
+  isPublic?: boolean;
+  /** Natural language keywords enabling auto-activation in multi-persona environments. */
+  activationKeywords?: string[];
+  /** Strength tag list aiding search & recommendation (e.g., ['typescript', 'design_reviews']). */
+  strengths?: string[];
+  /** Minimum subscription tier required to access persona (e.g., 'pro', 'enterprise'). */
+  minSubscriptionTier?: string;
 
-  // Access & Discovery
-  isCreatorPersona?: boolean; // Special flag for personas that can create/modify others
-  isPublic?: boolean; // Whether this persona is discoverable/usable by all users (respecting tiers)
-  activationKeywords?: string[]; // Keywords that might trigger this persona in a multi-persona GMI
-  strengths?: string[]; // Areas where this persona excels (tags for discovery)
-  minSubscriptionTier?: string; // Name of the minimum subscription tier required
-
-  // Initialization & State
-  initialMemoryImprints?: Array<{ key: string; value: any; description?: string }>; // Initial data for working memory
+  /** Seed working memory imprints establishing initial context (preferences, calibration data). */
+  initialMemoryImprints?: Array<{ key: string; value: any; description?: string }>;
+  /** Arbitrary extension fields and structured defaults for user/task contexts. */
   customFields?: Record<string, any> & {
-    defaultWorkingMemoryConfig?: any; // Default config for this persona's GMI working memory
+    /** Working memory default config attached at GMI instantiation time. */
+    defaultWorkingMemoryConfig?: any;
+    /** Initial inferred or declared user context values. */
     initialUserContext?: Partial<PersonaUserContextDefaults>;
+    /** Initial task framing values (e.g., domain, complexity baseline). */
     initialTaskContext?: Partial<PersonaTaskContextDefaults>;
   };
 }

@@ -1,39 +1,53 @@
-// File: backend/src/core/database/appDatabase.ts
+﻿// File: backend/src/core/database/appDatabase.ts
 /**
  * @file appDatabase.ts
- * @description Provides a singleton access point to the general application SQLite database.
- * Used for authentication, billing, and audit trails that are not conversation specific.
+ * @description Provides an asynchronous storage abstraction for authentication and billing data.
+ * The module resolves the best available adapter (Postgres -> better-sqlite3 -> Capacitor -> sql.js) and exposes
+ * helper utilities for the rest of the backend.
  */
 
-import Database, { type Database as BetterSqliteDatabase } from 'better-sqlite3';
-import path from 'path';
 import fs from 'fs';
+import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
+import {
+  resolveStorageAdapter,
+  type StorageAdapter
+} from '@framers/sql-storage-adapter';
 
 const DB_DIR = path.join(process.cwd(), 'db_data');
 const DB_PATH = path.join(DB_DIR, 'app.sqlite3');
 
-let dbInstance: BetterSqliteDatabase | null = null;
+let adapter: StorageAdapter | null = null;
+let initPromise: Promise<void> | null = null;
+let usingInMemory = false;
 
-const ensureDirectory = () => {
+const SQLITE_KINDS = ['better-sqlite3', 'sqljs', 'capacitor-sqlite'];
+
+const ensureDirectory = (): void => {
   if (!fs.existsSync(DB_DIR)) {
     fs.mkdirSync(DB_DIR, { recursive: true });
     console.log(`[AppDatabase] Created directory ${DB_DIR}`);
   }
 };
 
-const runInitialSchema = (db: BetterSqliteDatabase): void => {
-  db.exec('PRAGMA foreign_keys = ON;');
-  db.exec('PRAGMA journal_mode = WAL;');
+const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
+  const isSQLite = SQLITE_KINDS.includes(db.kind);
 
-  db.exec(`
+  if (isSQLite) {
+    await db.exec('PRAGMA foreign_keys = ON;');
+    if (db.capabilities.has('wal')) {
+      await db.exec('PRAGMA journal_mode = WAL;');
+    }
+  }
+
+  await db.exec(`
     CREATE TABLE IF NOT EXISTS app_meta (
       key TEXT PRIMARY KEY,
       value TEXT NOT NULL
     );
   `);
 
-  db.exec(`
+  await db.exec(`
     CREATE TABLE IF NOT EXISTS app_users (
       id TEXT PRIMARY KEY,
       email TEXT UNIQUE NOT NULL,
@@ -54,11 +68,11 @@ const runInitialSchema = (db: BetterSqliteDatabase): void => {
     );
   `);
 
-  db.exec('CREATE INDEX IF NOT EXISTS idx_app_users_email ON app_users(email);');
-  db.exec('CREATE INDEX IF NOT EXISTS idx_app_users_subscription ON app_users(subscription_status);');
-  db.exec('CREATE INDEX IF NOT EXISTS idx_app_users_supabase ON app_users(supabase_user_id);');
+  await db.exec('CREATE INDEX IF NOT EXISTS idx_app_users_email ON app_users(email);');
+  await db.exec('CREATE INDEX IF NOT EXISTS idx_app_users_subscription ON app_users(subscription_status);');
+  await db.exec('CREATE INDEX IF NOT EXISTS idx_app_users_supabase ON app_users(supabase_user_id);');
 
-  db.exec(`
+  await db.exec(`
     CREATE TABLE IF NOT EXISTS login_events (
       id TEXT PRIMARY KEY,
       user_id TEXT,
@@ -69,10 +83,9 @@ const runInitialSchema = (db: BetterSqliteDatabase): void => {
       FOREIGN KEY (user_id) REFERENCES app_users(id) ON DELETE SET NULL
     );
   `);
+  await db.exec('CREATE INDEX IF NOT EXISTS idx_login_events_user ON login_events(user_id, created_at DESC);');
 
-  db.exec('CREATE INDEX IF NOT EXISTS idx_login_events_user ON login_events(user_id, created_at DESC);');
-
-  db.exec(`
+  await db.exec(`
     CREATE TABLE IF NOT EXISTS global_access_logs (
       id TEXT PRIMARY KEY,
       ip_address TEXT,
@@ -80,10 +93,9 @@ const runInitialSchema = (db: BetterSqliteDatabase): void => {
       created_at INTEGER NOT NULL
     );
   `);
+  await db.exec('CREATE INDEX IF NOT EXISTS idx_global_access_logs_ip ON global_access_logs(ip_address, created_at DESC);');
 
-  db.exec('CREATE INDEX IF NOT EXISTS idx_global_access_logs_ip ON global_access_logs(ip_address, created_at DESC);');
-
-  db.exec(`
+  await db.exec(`
     CREATE TABLE IF NOT EXISTS lemonsqueezy_events (
       id TEXT PRIMARY KEY,
       event_name TEXT NOT NULL,
@@ -93,7 +105,7 @@ const runInitialSchema = (db: BetterSqliteDatabase): void => {
     );
   `);
 
-  db.exec(`
+  await db.exec(`
     CREATE TABLE IF NOT EXISTS organizations (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
@@ -106,9 +118,9 @@ const runInitialSchema = (db: BetterSqliteDatabase): void => {
       FOREIGN KEY (owner_user_id) REFERENCES app_users(id) ON DELETE CASCADE
     );
   `);
-  db.exec('CREATE INDEX IF NOT EXISTS idx_organizations_owner ON organizations(owner_user_id);');
+  await db.exec('CREATE INDEX IF NOT EXISTS idx_organizations_owner ON organizations(owner_user_id);');
 
-  db.exec(`
+  await db.exec(`
     CREATE TABLE IF NOT EXISTS checkout_sessions (
       id TEXT PRIMARY KEY,
       user_id TEXT NOT NULL,
@@ -122,10 +134,10 @@ const runInitialSchema = (db: BetterSqliteDatabase): void => {
       FOREIGN KEY (user_id) REFERENCES app_users(id) ON DELETE CASCADE
     );
   `);
-  db.exec('CREATE INDEX IF NOT EXISTS idx_checkout_sessions_user ON checkout_sessions(user_id);');
-  db.exec('CREATE INDEX IF NOT EXISTS idx_checkout_sessions_status ON checkout_sessions(status);');
+  await db.exec('CREATE INDEX IF NOT EXISTS idx_checkout_sessions_user ON checkout_sessions(user_id);');
+  await db.exec('CREATE INDEX IF NOT EXISTS idx_checkout_sessions_status ON checkout_sessions(status);');
 
-  db.exec(`
+  await db.exec(`
     CREATE TABLE IF NOT EXISTS organization_members (
       id TEXT PRIMARY KEY,
       organization_id TEXT NOT NULL,
@@ -141,10 +153,10 @@ const runInitialSchema = (db: BetterSqliteDatabase): void => {
       UNIQUE (organization_id, user_id)
     );
   `);
-  db.exec('CREATE INDEX IF NOT EXISTS idx_org_members_org ON organization_members(organization_id);');
-  db.exec('CREATE INDEX IF NOT EXISTS idx_org_members_user ON organization_members(user_id);');
+  await db.exec('CREATE INDEX IF NOT EXISTS idx_org_members_org ON organization_members(organization_id);');
+  await db.exec('CREATE INDEX IF NOT EXISTS idx_org_members_user ON organization_members(user_id);');
 
-  db.exec(`
+  await db.exec(`
     CREATE TABLE IF NOT EXISTS organization_invites (
       id TEXT PRIMARY KEY,
       organization_id TEXT NOT NULL,
@@ -161,37 +173,90 @@ const runInitialSchema = (db: BetterSqliteDatabase): void => {
       FOREIGN KEY (inviter_user_id) REFERENCES app_users(id) ON DELETE SET NULL
     );
   `);
-  db.exec('CREATE INDEX IF NOT EXISTS idx_org_invites_org ON organization_invites(organization_id);');
-  db.exec('CREATE INDEX IF NOT EXISTS idx_org_invites_email ON organization_invites(email);');
+  await db.exec('CREATE INDEX IF NOT EXISTS idx_org_invites_org ON organization_invites(organization_id);');
+  await db.exec('CREATE INDEX IF NOT EXISTS idx_org_invites_email ON organization_invites(email);');
 };
 
-const ensureColumnExists = (db: BetterSqliteDatabase, table: string, column: string, alterStatement: string): void => {
-  const info = db.prepare(`PRAGMA table_info(${table});`).all() as Array<{ name: string }>;
-  if (!info.some(col => col.name === column)) {
-    db.exec(alterStatement);
-    console.log(`[AppDatabase] Added missing column \\"${column}\\" to ${table}.`);
+const ensureColumnExists = async (
+  db: StorageAdapter,
+  table: string,
+  column: string,
+  alterStatement: string
+): Promise<void> => {
+  let columns: Array<{ name: string }> = [];
+
+  if (db.kind === 'postgres') {
+    columns = await db.all<{ name: string }>(
+      'SELECT column_name AS name FROM information_schema.columns WHERE table_name = $1',
+      [table.toLowerCase()]
+    );
+  } else {
+    columns = await db.all<{ name: string }>(`PRAGMA table_info(${table});`);
+  }
+
+  if (!columns.some((col) => col.name === column)) {
+    await db.exec(alterStatement);
+    console.log(`[AppDatabase] Added missing column "${column}" to ${table}.`);
   }
 };
 
-export const getAppDatabase = (): BetterSqliteDatabase => {
-  if (dbInstance) {
-    return dbInstance;
+export const initializeAppDatabase = async (): Promise<void> => {
+  if (initPromise) {
+    return initPromise;
   }
-  ensureDirectory();
-  dbInstance = new Database(DB_PATH);
-  runInitialSchema(dbInstance);
-  ensureColumnExists(dbInstance, 'app_users', 'supabase_user_id', 'ALTER TABLE app_users ADD COLUMN supabase_user_id TEXT;');
-  dbInstance.exec('CREATE INDEX IF NOT EXISTS idx_app_users_supabase ON app_users(supabase_user_id);');
-  console.log(`[AppDatabase] Connected to ${DB_PATH}`);
-  return dbInstance;
+
+  initPromise = (async () => {
+    ensureDirectory();
+
+    const connectionString = process.env.DATABASE_URL ?? process.env.POSTGRES_URL ?? undefined;
+
+    try {
+      adapter = await resolveStorageAdapter({
+        filePath: DB_PATH,
+        postgres: { connectionString },
+        openOptions: { filePath: DB_PATH, connectionString }
+      });
+      usingInMemory = !adapter.capabilities.has('persistence');
+      console.log(`[AppDatabase] Connected using adapter "${adapter.kind}". Persistence=${!usingInMemory}.`);
+      await runInitialSchema(adapter);
+      await ensureColumnExists(
+        adapter,
+        'app_users',
+        'supabase_user_id',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE app_users ADD COLUMN supabase_user_id TEXT'
+          : 'ALTER TABLE app_users ADD COLUMN supabase_user_id TEXT;'
+      );
+    } catch (error) {
+      usingInMemory = true;
+      console.warn('[AppDatabase] Failed to initialise persistent storage. Falling back to in-memory sql.js.', error);
+      adapter = await resolveStorageAdapter({
+        filePath: DB_PATH,
+        priority: ['sqljs']
+      });
+      await runInitialSchema(adapter);
+    }
+  })();
+
+  await initPromise;
 };
 
-export const closeAppDatabase = async (): Promise<void> => {
-  if (dbInstance) {
-    dbInstance.close();
-    dbInstance = null;
-    console.log('[AppDatabase] Connection closed.');
+export const getAppDatabase = (): StorageAdapter => {
+  if (!adapter) {
+    throw new Error('App database has not been initialised. Call initializeAppDatabase() during startup.');
   }
+  return adapter;
 };
+
+export const isInMemoryAppDatabase = (): boolean => usingInMemory;
 
 export const generateId = (): string => uuidv4();
+
+export const closeAppDatabase = async (): Promise<void> => {
+  if (adapter) {
+    await adapter.close();
+    adapter = null;
+  }
+  initPromise = null;
+  usingInMemory = false;
+};

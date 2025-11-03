@@ -4,7 +4,7 @@ import { useRouter, useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useRegistrationStore } from '@/store/registration.store';
 import { usePlans } from '@/composables/usePlans';
-import type { PlanCatalogEntry, PlanId } from '../../../shared/planCatalog';
+import type { PlanCatalogEntry, PlanId } from '@shared/planCatalog';
 
 const router = useRouter();
 const route = useRoute();
@@ -19,7 +19,10 @@ const priceFormatter = new Intl.NumberFormat('en-US', {
   maximumFractionDigits: 0,
 });
 
-const selectedPlanId = computed<PlanId | null>(() => registrationStore.plan?.planId ?? null);
+const selectedPlanId = computed<PlanId | null>(() => {
+  const id = registrationStore.plan?.planId;
+  return id ? (id as PlanId) : null;
+});
 
 const displayPrice = (plan: PlanCatalogEntry): string => {
   if (plan.monthlyPriceUsd === 0) {

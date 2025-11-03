@@ -1,6 +1,8 @@
-﻿# Backend â€“ Voice Chat Assistant API
+﻿# Backend — Voice Chat Assistant API
 
 Node.js + Express + TypeScript server powering chat, STT/TTS, diagrams, rate limiting, billing, and the embedded AgentOS adapter.
+
+**Powered by [`@agentos/core`](https://github.com/wearetheframers/agentos)** — The orchestration runtime for adaptive AI systems.
 
 ---
 

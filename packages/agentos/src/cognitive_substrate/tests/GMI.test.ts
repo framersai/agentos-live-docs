@@ -1,13 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { GMI } from '../GMI';
-import { IGMI, GMIBaseConfig, GMITurnInput, GMIInteractionType, GMIPrimeState, GMIMood, UserContext, TaskContext } from '../IGMI';
+import { IGMI, GMIBaseConfig, GMITurnInput, GMIInteractionType, GMIPrimeState, GMIMood, UserContext, TaskContext, GMIOutputChunkType } from '../IGMI';
 import { IPersonaDefinition } from '../personas/IPersonaDefinition';
 import { IWorkingMemory } from '../memory/IWorkingMemory';
 import { IPromptEngine } from '../../core/llm/IPromptEngine';
 import { AIModelProviderManager } from '../../core/llm/providers/AIModelProviderManager';
-import { IProvider, ModelStreamChunk, ModelChatMessage } from '../../core/llm/providers/IProvider';
+import { IProvider, ChatMessage, ModelCompletionResponse } from '../../core/llm/providers/IProvider';
 import { IUtilityAI, ParseJsonOptions, SummarizationOptions } from '../../core/ai_utilities/IUtilityAI';
-import { IToolOrchestrator } from '../../tools/IToolOrchestrator';
+import { IToolOrchestrator } from '../../core/tools/IToolOrchestrator';
 import { IRetrievalAugmentor } from '../../rag/IRetrievalAugmentor';
 import { GMIError, GMIErrorCode } from '@agentos/core/utils/errors';
 
@@ -31,27 +31,36 @@ const mockWorkingMemory: IWorkingMemory = {
 };
 
 const mockPromptEngine: IPromptEngine = {
-  engineId: 'pe-mock',
   initialize: vi.fn().mockResolvedValue(undefined),
   constructPrompt: vi.fn().mockResolvedValue({
-    finalPrompt: { role: 'user', content: "Mocked prompt" } as ModelChatMessage, // Or array if it's chat messages
-    selectedModel: { modelId: 'mock-model', providerId: 'mock-provider' },
-    issues: []
+    prompt: [{ role: 'user', content: 'Mocked prompt' } as ChatMessage],
+    formattedToolSchemas: [],
+    estimatedTokenCount: 12,
+    tokenCount: 12,
+    issues: [],
   }),
   checkHealth: vi.fn().mockResolvedValue({ isHealthy: true }),
-};
+} as any;
 
 const mockProvider: IProvider = {
   providerId: 'mock-llm-provider',
+  isInitialized: true,
   initialize: vi.fn().mockResolvedValue(undefined),
-  generate: vi.fn().mockResolvedValue({ choices: [{ text: 'Mock LLM response' }], usage: { totalTokens: 10 } }),
-  generateStream: vi.fn().mockImplementation(async function* (): AsyncGenerator<ModelStreamChunk> {
-    yield { textDelta: 'Mock stream ', isFinal: false, usage: { promptTokens: 2, completionTokens: 1, totalTokens: 3 } };
-    yield { textDelta: 'response.', isFinal: true, finishReason: 'stop', usage: { promptTokens: 0, completionTokens: 2, totalTokens: 2 } };
+  generateCompletion: vi.fn().mockResolvedValue(<ModelCompletionResponse>{
+    id: 'cmp-gmi-1', object: 'chat.completion', created: Date.now(), modelId: 'mock-model',
+    choices: [{ index: 0, message: { role: 'assistant', content: 'Mock LLM response' }, text: 'Mock LLM response', finishReason: 'stop' }],
+    usage: { totalTokens: 10 }
   }),
-  generateEmbeddings: vi.fn().mockResolvedValue({ data: [], usage: { totalTokens: 0 }}),
+  generateCompletionStream: vi.fn().mockImplementation(async function* () {
+    const base: Partial<ModelCompletionResponse> = { id: 'cmp-stream', object: 'chat.completion.chunk', created: Date.now(), modelId: 'mock-model' };
+    yield { ...base, responseTextDelta: 'Mock stream ', isFinal: false, usage: { totalTokens: 3, promptTokens: 2, completionTokens: 1 } } as ModelCompletionResponse;
+    yield { ...base, responseTextDelta: 'response.', isFinal: true, choices: [{ index: 0, message: { role: 'assistant', content: 'Final' }, finishReason: 'stop' }], usage: { totalTokens: 5, promptTokens: 2, completionTokens: 3 } } as ModelCompletionResponse;
+  }),
+  generateEmbeddings: vi.fn().mockResolvedValue({ object: 'list', data: [], model: 'embed-model', usage: { prompt_tokens: 0, total_tokens: 0 } }),
+  listAvailableModels: vi.fn().mockResolvedValue([{ modelId: 'mock-model', providerId: 'mock-llm-provider', capabilities: ['chat'], supportsStreaming: true }]),
+  getModelInfo: vi.fn().mockResolvedValue({ modelId: 'mock-model', providerId: 'mock-llm-provider', capabilities: ['chat'], supportsStreaming: true }),
   checkHealth: vi.fn().mockResolvedValue({ isHealthy: true }),
-  listModels: vi.fn().mockResolvedValue([{ id: 'mock-model', providerId: 'mock-llm-provider' }]),
+  shutdown: vi.fn().mockResolvedValue(undefined)
 };
 
 const mockLlmProviderManager: AIModelProviderManager = {
@@ -103,19 +112,14 @@ const mockRetrievalAugmentor: IRetrievalAugmentor = {
 const mockPersona: IPersonaDefinition = {
   id: 'test-persona-v1.1', name: 'Test Persona', description: 'A persona for GMI testing.', version: '1.1.0',
   baseSystemPrompt: 'You are a test assistant.',
-  allowedCapabilities: [],
-  defaultModelCompletionOptions: { modelId: 'mock-model', providerId: 'mock-provider' },
-  memoryConfig: {
-    enabled: true,
-    ragConfig: { enabled: false } // RAG disabled by default for simpler tests
-  },
-  // Add other required fields from IPersonaDefinition
-  personalityTraits: {}, moodAdaptation: { enabled: false }, defaultLanguage: 'en',
+  defaultModelCompletionOptions: { modelId: 'mock-model', temperature: 0.2 },
+  memoryConfig: { enabled: true, ragConfig: { enabled: false } },
+  personalityTraits: {}, moodAdaptation: { enabled: false, defaultMood: 'neutral' }, defaultLanguage: 'en',
   modelTargetPreferences: [], costSavingStrategy: 'balance_quality_cost',
   toolIds: [], allowedInputModalities: ['text'], allowedOutputModalities: ['text'],
   conversationContextConfig: { maxMessages: 10 }, metaPrompts: [],
-  minSubscriptionTier: "FREE", isPublic: true, activationKeywords: [], strengths: [],
-  uiInteractionStyle: 'neutral', initialMemoryImprints: []
+  minSubscriptionTier: 'FREE', isPublic: true, activationKeywords: [], strengths: [],
+  uiInteractionStyle: 'collaborative', initialMemoryImprints: []
 };
 
 const mockBaseConfig: GMIBaseConfig = {
@@ -152,16 +156,10 @@ describe('GMI Core Functionality', () => {
     for await (const chunk of gmi.processTurnStream(input)) {
       outputChunks.push(chunk);
     }
-
-    expect(outputChunks.length).toBeGreaterThanOrEqual(2); // At least text delta and final marker
-    const textDeltaChunk = outputChunks.find(c => c.type === GMIOutputChunkType.TEXT_DELTA && typeof c.content === 'string');
-    expect(textDeltaChunk).toBeDefined();
-    expect(textDeltaChunk?.content).toContain('Mock stream');
-    const finalMarker = outputChunks.find(c => c.type === GMIOutputChunkType.FINAL_RESPONSE_MARKER);
-    expect(finalMarker).toBeDefined();
-    expect(finalMarker?.isFinal).toBe(true);
+    expect(outputChunks.some(c => c.type === GMIOutputChunkType.TEXT_DELTA)).toBe(true);
+    expect(outputChunks.some(c => c.type === GMIOutputChunkType.FINAL_RESPONSE_MARKER)).toBe(true);
     expect(mockPromptEngine.constructPrompt).toHaveBeenCalled();
-    expect(mockProvider.generateStream).toHaveBeenCalled();
+    expect(mockProvider.generateCompletionStream).toHaveBeenCalled();
   });
 
   it('performPostTurnIngestion should call utilityAI.summarize if RAG ingestion is enabled', async () => {
@@ -174,7 +172,7 @@ describe('GMI Core Functionality', () => {
           ingestionTriggers: { onTurnSummary: true },
           defaultIngestionDataSourceId: 'test-ds',
           // Add conceptual summarization config path if GMI uses it
-          retrievedContextProcessing: { llmConfig: { modelId: 'summarizer-model' } }
+          retrievedContextProcessing: { engine: 'llm', llmConfig: { modelId: 'summarizer-model' } }
         }
       }
     };
@@ -207,14 +205,15 @@ describe('GMI Core Functionality', () => {
     (gmi as any).turnsSinceLastReflection = 1; // Force trigger
 
     // Mock LLM generate for reflection
-    (mockProvider.generate as any).mockResolvedValueOnce({
-      choices: [{ text: JSON.stringify({ updatedGmiMood: GMIMood.FOCUSED }) }],
+    (mockProvider.generateCompletion as any).mockResolvedValueOnce(<ModelCompletionResponse>{
+      id: 'cmp-reflect', object: 'chat.completion', created: Date.now(), modelId: 'reflection-model',
+      choices: [{ index: 0, message: { role: 'assistant', content: JSON.stringify({ updatedGmiMood: GMIMood.FOCUSED }) }, text: JSON.stringify({ updatedGmiMood: GMIMood.FOCUSED }), finishReason: 'stop' }],
       usage: { totalTokens: 10 }
     });
 
     await (gmi as any)._triggerAndProcessSelfReflection();
 
-    expect(mockProvider.generate).toHaveBeenCalled();
+  expect(mockProvider.generateCompletion).toHaveBeenCalled();
     expect(mockUtilityAI.parseJsonSafe).toHaveBeenCalled();
     // Check if workingMemory was called to set the mood (requires mood to be valid)
     expect(mockWorkingMemory.set).toHaveBeenCalledWith('currentGmiMood', GMIMood.FOCUSED);

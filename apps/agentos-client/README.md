@@ -21,14 +21,19 @@ pnpm typecheck
 
 ## Local persistence
 
-- Session state and persona definitions are synchronised to a local SQLite database under `.data/agentos-client.db` (gitignored).
-- When you bundle the app with Electron or another host, start the lightweight Node/AgentOS backend alongside the UI so both share the same database file.
-- For the web demo (`pnpm dev`), persistence stubs currently fall back to in-memory data; swap in the desktop runtime before you ship to customers.
+- Personas/agencies are cached to `localStorage` so you can restart the dev server without losing your catalog.
+- Session timelines remain in-memory to avoid leaking production transcripts on shared machines.
 
 ## Wiring it up
 
-1. Start your backend (or mock) that speaks to AgentOS (or embed the backend locally for desktop builds).
-2. Replace the synthetic events in `src/App.tsx` with real streaming responses.
-3. Populate `useSessionStore` with data from your orchestrator or captured logs.
+1. Copy `.env.example` → `.env.local` (or set env vars in your shell) and point the workbench at your backend:
+   ```ini
+   VITE_AGENTOS_BASE_URL=http://localhost:3001/agentos
+   VITE_AGENTOS_STREAM_PATH=/stream
+   ```
+   Leave them unset if you proxy through `/api/agentos`.
+2. In the backend, ensure `AGENTOS_ENABLED=true` (and any provider keys) so `/agentos/*` routes are exposed.
+3. Start the backend (`pnpm --filter backend dev`) and then run the workbench (`pnpm --filter @wearetheframers/agentos-client dev`).
+4. Use the request composer to fire a turn—live `AGENCY_UPDATE` / `WORKFLOW_UPDATE` chunks will populate the timeline automatically.
 
-The client intentionally mirrors the data contracts emitted by @agentos/core, so you can stream chunks directly over websockets or server-sent events without reshaping payloads.
+The client mirrors the streaming contracts from `@agentos/core`, so backend responses flow straight into the UI with no reshaping.

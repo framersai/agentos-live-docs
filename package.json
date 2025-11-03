@@ -1,42 +1,87 @@
 {
-    "name":  "voice-coding-assistant",
-    "version":  "1.0.0",
-    "description":  "A real-time voice-driven coding assistant web app",
-    "main":  "index.js",
-    "scripts":  {
-                    "install-all":  "npm install \u0026\u0026 cd frontend \u0026\u0026 npm install \u0026\u0026 cd ../backend \u0026\u0026 npm install \u0026\u0026 cd ../packages/agentos \u0026\u0026 npm install",
-                    "dev":  "concurrently \"cd backend \u0026\u0026 npm run dev\" \"cd frontend \u0026\u0026 npm run dev\"",
-                    "start:dev":  "npm run dev",
-                    "start":  "concurrently \"cd backend \u0026\u0026 npm start\" \"cd frontend \u0026\u0026 npm run preview -- --host 0.0.0.0\"",
-                    "start:prod":  "npm run build \u0026\u0026 npm run start",
-                    "build":  "npm run build:frontend \u0026\u0026 npm run build:backend",
-                    "build:frontend":  "npm --prefix frontend run build",
-                    "build:backend":  "npm --prefix packages/agentos run build \u0026\u0026 npm --prefix backend run build",
-                    "build:landing":  "pnpm --filter @wearetheframers/agentos-landing build",
-                    "build:agentos-client":  "pnpm --filter @wearetheframers/agentos-client build",
-                    "dev:landing":  "pnpm --filter @wearetheframers/agentos-landing dev",
-                    "dev:agentos-client":  "pnpm --filter @wearetheframers/agentos-client dev",
-                    "test":  "echo \"Error: no test specified\" \u0026\u0026 exit 1"
-                },
-    "keywords":  [
-                     "voice",
-                     "coding",
-                     "assistant",
-                     "speech-to-text",
-                     "AI"
-                 ],
-    "author":  "",
-    "license":  "MIT",
-    "devDependencies":  {
-                            "@types/natural":  "^5.1.5",
-                            "concurrently":  "^8.2.2",
-                            "postcss-nesting":  "^13.0.1"
-                        },
-    "dependencies":  {
-                         "highlight.js":  "^11.11.1",
-                         "jszip":  "^3.10.1",
-                         "stemmer":  "^2.0.1",
-                         "pino":  "^9.3.0"
-                     },
-    "packageManager":  "pnpm@10.15.1+sha512.34e538c329b5553014ca8e8f4535997f96180a1d0f614339357449935350d924e22f8614682191264ec33d1462ac21561aff97f6bb18065351c162c7e8f6de67"
+    "name": "voice-chat-assistant",
+    "version": "1.0.0",
+    "private": true,
+    "description": "Voice-first assistant monorepo (backend, VCA frontend, landing app, AgentOS core library)",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/manicinc/voice-chat-assistant.git"
+    },
+    "bugs": {
+        "url": "https://github.com/manicinc/voice-chat-assistant/issues"
+    },
+    "homepage": "https://github.com/manicinc/voice-chat-assistant#readme",
+    "license": "MIT",
+    "packageManager": "pnpm@10.15.1",
+    "engines": {
+        "node": ">=18.18.0",
+        "pnpm": ">=8"
+    },
+    "workspaces": [
+        "backend",
+        "frontend",
+        "packages/*",
+        "apps/*"
+    ],
+    "scripts": {
+        "prepare": "husky install",
+        "install-all": "pnpm install",
+        "dev": "pnpm run dev:workbench",
+        "dev:vca": "concurrently \"pnpm --filter ./backend run dev\" \"pnpm --filter ./frontend run dev\"",
+        "dev:workbench": "concurrently \"pnpm --filter ./backend run dev\" \"pnpm --filter @wearetheframers/agentos-client dev\"",
+        "dev:landing": "concurrently \"pnpm --filter ./backend run dev\" \"pnpm --filter @wearetheframers/agentos-landing dev\"",
+        "dev:landing:solo": "pnpm --filter @wearetheframers/agentos-landing dev",
+        "build": "pnpm run build:agentos && pnpm run build:frontend && pnpm run build:backend",
+        "build:agentos": "pnpm --filter @agentos/core run build",
+        "build:frontend": "pnpm --filter ./frontend run build",
+        "build:backend": "pnpm --filter ./backend run build",
+        "build:landing": "pnpm --filter @wearetheframers/agentos-landing build",
+        "start:prod": "pnpm run build && concurrently \"pnpm --filter ./backend start\" \"pnpm --filter ./frontend run preview -- --host 0.0.0.0\"",
+        "typecheck": "pnpm -r run typecheck",
+        "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
+        "lint:fix": "eslint . --ext .ts,.tsx,.js,.jsx --fix",
+        "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+        "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
+        "test": "pnpm -r --filter @agentos/core run test",
+        "test:watch": "pnpm --filter @agentos/core run dev:test",
+        "coverage": "pnpm --filter @agentos/core run test -- --coverage",
+        "docs": "pnpm run docs:library && pnpm run docs:api",
+        "docs:library": "typedoc --options typedoc.json",
+        "docs:api": "node scripts/generate-api-docs.js",
+        "docs:serve": "npx http-server docs-generated -p 8080 -o",
+        "clean": "pnpm -r exec rimraf dist"
+    },
+    "devDependencies": {
+        "@types/natural": "^5.1.5",
+        "@typescript-eslint/eslint-plugin": "^6.0.0",
+        "@typescript-eslint/parser": "^6.0.0",
+        "concurrently": "^8.2.2",
+        "eslint": "^8.57.0",
+        "eslint-config-prettier": "^9.1.0",
+        "eslint-plugin-prettier": "^5.1.3",
+        "husky": "^9.0.11",
+        "postcss-nesting": "^13.0.1",
+        "prettier": "^3.3.2",
+        "typedoc": "^0.28.14",
+        "typedoc-plugin-markdown": "^4.9.0"
+    },
+    "dependencies": {
+        "highlight.js": "^11.11.1",
+        "jszip": "^3.10.1",
+        "pino": "^9.3.0",
+        "stemmer": "^2.0.1"
+    },
+    "keywords": [
+        "voice",
+        "assistant",
+        "speech",
+        "agentos",
+        "multilingual",
+        "ai"
+    ],
+    "lint-staged": {
+        "**/*.{ts,js,json,md}": [
+            "prettier --write"
+        ]
+    }
 }

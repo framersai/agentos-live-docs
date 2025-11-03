@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import type { ILogger } from '../../logging/ILogger';
 import type {
   AgencySeatRegistrationArgs,
+  AgencySeatState,
   AgencySession,
   AgencyUpsertArgs,
 } from './AgencyTypes';

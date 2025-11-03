@@ -11,10 +11,17 @@ import axios, {
   type InternalAxiosRequestConfig,
   type AxiosRequestConfig,
   type AxiosResponse,
-import type { PlanId } from '../../../shared/planCatalog';
-import type { WorkflowDefinitionFE, WorkflowInstanceFE, WorkflowProgressUpdateFE, WorkflowUpdateEventDetail, WorkflowInvocationRequestFE, StartWorkflowPayloadFE } from '@/types/workflow';
-import type { PlanId } from '../../../shared/planCatalog';
-import type { WorkflowProgressUpdateFE, WorkflowUpdateEventDetail, WorkflowInvocationRequestFE } from '@/types/workflow';
+} from 'axios';
+import type { PlanId } from '@shared/planCatalog';
+import type { RateLimitInfo } from '@shared/rateLimitTypes';
+import type {
+  WorkflowDefinitionFE,
+  WorkflowInstanceFE,
+  WorkflowProgressUpdateFE,
+  WorkflowUpdateEventDetail,
+  WorkflowInvocationRequestFE,
+  StartWorkflowPayloadFE,
+} from '@/types/workflow';
 
 // Environment variables for API configuration.
 const API_BASE_URL: string = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api';
@@ -202,6 +209,11 @@ export interface AuthResponseFE {
   user: { id: string; [key: string]: any };
   message: string;
   authenticated?: boolean;
+  /**
+   * Indicates the origin/provider of the issued auth token (e.g. 'global', 'standard', 'supabase').
+   * Frontend uses this to branch UX flows and feature gating. Optional for backward compatibility.
+   */
+  tokenProvider?: string;
 }
 
 export interface LogoutResponseFE {
@@ -260,7 +272,7 @@ export const billingAPI = {
 };
 
 export const rateLimitAPI = {
-  getStatus: (): Promise<AxiosResponse<{ tier: string; used: number; remaining: number; limit: number; resetAt: string | Date | null }>> =>
+  getStatus: (): Promise<AxiosResponse<RateLimitInfo>> =>
     api.get('/rate-limit/status'),
 };
 
@@ -854,6 +866,37 @@ export const organizationAPI = {
     token: string,
   ): Promise<AxiosResponse<{ organization: OrganizationSummaryFE; invite: OrganizationInviteFE }>> =>
     api.post(`/organizations/invites/${token}/accept`, {}),
+};
+
+export interface MarketplaceAgentSummaryFE {
+  id: string;
+  personaId: string;
+  label: string;
+  tagline: string | null;
+  description: string | null;
+  category: string | null;
+  accessLevel: string | null;
+  pricing: {
+    model: string | null;
+    priceCents: number | null;
+    currency: string | null;
+  };
+  featured: boolean;
+  heroImage: string | null;
+  metrics: {
+    downloads?: number;
+    rating?: number;
+    revenueMonthlyUsd?: number;
+    customers?: number;
+  };
+  metadata: Record<string, unknown> | null;
+}
+
+export const marketplaceAPI = {
+  list: (): Promise<AxiosResponse<{ agents: MarketplaceAgentSummaryFE[] }>> =>
+    api.get('/marketplace/agents'),
+  get: (id: string): Promise<AxiosResponse<{ agent: MarketplaceAgentSummaryFE }>> =>
+    api.get(`/marketplace/agents/${id}`),
 };
 
 export interface ProviderStatusSummaryFE {

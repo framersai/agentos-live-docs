@@ -52,7 +52,7 @@ const availableLocales = computed(() => AVAILABLE_LOCALES);
 /**
  * @computed {string} currentLocaleName - Display name of current locale
  */
-const currentLocaleName = computed(() => AVAILABLE_LOCALES[currentLocale.value]);
+// Display name lookup can directly reference AVAILABLE_LOCALES when needed
 
 // Watch for route changes to update the currentLocale
 watch(() => route.params.locale, (newLocale) => {
@@ -166,7 +166,7 @@ const syncLanguageWithBackend = async (locale: string): Promise<void> => {
  */
 const getLanguageIndicator = (localeCode: AvailableLocale): string => {
   const indicators: Record<AvailableLocale, string> = {
-    'en-US': '🇺🇸',
+    'en': '🇺🇸',
     'es-ES': '🇪🇸',
     'fr-FR': '🇫🇷',
     'de-DE': '🇩🇪',
