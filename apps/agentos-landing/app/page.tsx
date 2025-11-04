@@ -189,7 +189,7 @@ export default function LandingPage() {
                 Install via npm
               </a>
               <a
-                href="https://github.com/wearetheframers/agentos"
+                href="https://github.com/framersai/agentos"
                 className="inline-flex items-center justify-center rounded-full border border-slate-200/70 px-6 py-3 text-sm font-semibold text-slate-700 transition hover:border-brand hover:text-brand dark:border-slate-700 dark:text-slate-100 dark:hover:border-brand"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -368,7 +368,7 @@ export default function LandingPage() {
             <nav className="flex flex-wrap gap-3 text-sm" aria-label="Licensing links">
               <a
                 className="inline-flex items-center gap-2 rounded-full border border-slate-200/70 px-4 py-2 text-slate-700 transition hover:border-brand hover:text-brand dark:border-slate-700 dark:text-slate-200 dark:hover:border-brand"
-                href="https://github.com/wearetheframers/voice-chat-assistant/blob/main/docs/RELEASE_AUTOMATION.md"
+                href="https://github.com/framersai/voice-chat-assistant/blob/main/docs/RELEASE_AUTOMATION.md"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -440,7 +440,7 @@ export default function LandingPage() {
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </a>
               <a
-                href="https://github.com/wearetheframers/agentos-client"
+                href="https://github.com/framersai/agentos-client"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded-full border border-slate-200/70 px-6 py-3 text-sm font-semibold text-slate-700 transition hover:border-brand hover:text-brand dark:border-slate-700 dark:text-slate-100 dark:hover:border-brand"
@@ -629,7 +629,7 @@ for await (const chunk of agentos.processRequest(input)) {
               </a>
               <a
                 className="inline-flex items-center gap-2 rounded-full border border-slate-200/70 px-4 py-2 text-slate-700 transition hover:border-brand hover:text-brand dark:border-slate-700 dark:text-slate-200 dark:hover:border-brand"
-                href="https://github.com/wearetheframers/agentos"
+                href="https://github.com/framersai/agentos"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -719,7 +719,7 @@ for await (const chunk of agentos.processRequest(input)) {
               Browse Marketplace
             </a>
             <a
-              href="https://github.com/wearetheframers/agentos"
+              href="https://github.com/framersai/agentos"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-full border-2 border-white/60 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
@@ -741,6 +741,7 @@ for await (const chunk of agentos.processRequest(input)) {
     </>
   );
 }
+
 
 
 

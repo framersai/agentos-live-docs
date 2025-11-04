@@ -1,123 +1,51 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 
-const lastUpdated = "November 6, 2025";
+const updated = "November 6, 2025";
 
-export const metadata = {
-  title: "Privacy Policy · AgentOS",
-  description:
-    "How AgentOS, the Voice Chat Assistant, and the marketplace handle personal data, launch telemetry, and partner submissions."
-};
+export const metadata = {\n  title: "AgentOS Privacy Guidance",\n  description: "How the open-source AgentOS runtime approaches privacy and where self-hosted operators should focus."\n};
 
-const sections: Array<{ title: string; body: React.ReactNode }> = [
+const Sections = [
   {
-    title: "What we collect",
-    body: (
-      <ul className="list-disc space-y-2 pl-5 text-slate-700 dark:text-slate-200">
-        <li>
-          <strong>Account identifiers.</strong> Email address, organisation membership, and plan metadata
-          (plan id, seat assignments).
-        </li>
-        <li>
-          <strong>Operational telemetry.</strong> Agent launches (workflow definition id, agency id, seat
-          count, timestamps) stored in <code>agency_usage_log</code> for quota enforcement and billing
-          reconciliation.
-        </li>
-        <li>
-          <strong>Marketplace submissions.</strong> Persona bundles, prompts, and listing metadata saved in{" "}
-          <code>agentos_persona_submissions</code> until they are approved or rejected.
-        </li>
-        <li>
-          <strong>Optional media.</strong> Voice recordings or files that you explicitly upload for model
-          processing. We do not retain audio after the task completes unless you opt into storage.
-        </li>
-      </ul>
-    )
-  },
-  {
-    title: "How we use your data",
-    body: (
-      <ul className="list-disc space-y-2 pl-5 text-slate-700 dark:text-slate-200">
-        <li>Delivering AgentOS functionality, including streaming responses and tool execution.</li>
-        <li>
-          Enforcing quota and billing decisions (e.g., weekly agency launch allowances, marketplace payout
-          calculations).
-        </li>
-        <li>Reviewing persona bundles for security, IP compliance, and safe marketplace distribution.</li>
-        <li>
-          Communicating with you about service updates, incident notices, and product improvements. You may
-          opt out of non-essential communication.
-        </li>
-      </ul>
-    )
-  },
-  {
-    title: "Retention & deletion",
-    body: (
-      <ul className="list-disc space-y-2 pl-5 text-slate-700 dark:text-slate-200">
-        <li>
-          <strong>Agency usage.</strong> Launch entries are pruned after ~18 months, the minimum period needed
-          to resolve billing disputes and quota audits.
-        </li>
-        <li>
-          <strong>Persona submissions.</strong> Pending and rejected bundles remain in{" "}
-          <code>agentos_persona_submissions</code> as an audit trail. Approved bundles copy the prompt to{" "}
-          <code>prompts/_dynamic</code> and retain reviewer metadata for compliance.
-        </li>
-        <li>
-          <strong>Marketplace listings.</strong> Visibility (`public`, `unlisted`, `org`, `invite`) and status
-          (`draft`, `pending`, `published`, `retired`) determine who can access a listing. Owners or
-          organisation managers may archive or delete entries at any time.
-        </li>
-        <li>
-          <strong>Audio & attachments.</strong> Transient media is discarded once transcription or tool
-          processing finishes unless you explicitly store it in your own knowledge base.
-        </li>
-      </ul>
-    )
-  },
-  {
-    title: "Sharing & third parties",
-    body: (
-      <ul className="list-disc space-y-2 pl-5 text-slate-700 dark:text-slate-200">
-        <li>
-          AgentOS runs on infrastructure managed by Frame.dev contractors and sub-processors (hosting,
-          observability, payment providers). We only share the minimum metadata required for those vendors to
-          perform their function.
-        </li>
-        <li>No marketplace bundle is published without human review and explicit approval.</li>
-        <li>
-          We do not sell or rent personal data. Aggregated analytics may be used to improve quotas, guardrails,
-          and runtime performance.
-        </li>
-      </ul>
-    )
-  },
-  {
-    title: "Your choices",
-    body: (
-      <ul className="list-disc space-y-2 pl-5 text-slate-700 dark:text-slate-200">
-        <li>Download or delete your agents via the Voice Chat Assistant dashboard.</li>
-        <li>Export marketplace bundles for self-hosting or archival.</li>
-        <li>Open a ticket at <a href="mailto:privacy@frame.dev">privacy@frame.dev</a> to request data access or deletion.</li>
-        <li>Revoke access tokens and organisation seats at any time through the Team settings UI.</li>
-      </ul>
-    )
-  },
-  {
-    title: "Contact",
+    title: "Open-source, self-hosted runtime",
     body: (
       <p className="text-slate-700 dark:text-slate-200">
-        Questions about privacy, retention, or compliance? Email{" "}
-        <a href="mailto:privacy@frame.dev" className="font-semibold text-brand hover:underline">
-          privacy@frame.dev
-        </a>{" "}
-        or reach the founders directly at{" "}
-        <a href="mailto:founders@frame.dev" className="font-semibold text-brand hover:underline">
-          founders@frame.dev
-        </a>
-        .
+        AgentOS is released under the MIT license and ships as a TypeScript package you run on your own
+        infrastructure. The core project does not phone home, collect analytics, or transmit end-user data to
+        Frame.dev. Any information processed by AgentOS stays wherever you deploy it.
+      </p>
+    )
+  },
+  {
+    title: "You control data collection",
+    body: (
+      <p className="text-slate-700 dark:text-slate-200">
+        Because the runtime is self-hosted, privacy obligations sit with the operator. When you build a product
+        on top of AgentOS you must define how conversation history, workflow telemetry, or marketplace records
+        are stored, how long they are retained, and which third parties (if any) have access.
+      </p>
+    )
+  },
+  {
+    title: "Recommended practices",
+    body: (
+      <ul className="list-disc space-y-2 pl-5 text-slate-700 dark:text-slate-200">
+        <li>Document what you log (e.g., agency launches, persona submissions) and why.</li>
+        <li>Implement opt-in analytics and give end users a way to delete or export their data.</li>
+        <li>Review marketplace submissions before publishing to avoid unlicensed content or personal data.</li>
+        <li>Mirror the guidance in <Link href="/docs/MARKETPLACE" className="text-brand font-semibold hover:underline">docs/MARKETPLACE.md</Link>
+            if you enable the optional marketplace module.</li>
+      </ul>
+    )
+  },
+  {
+    title: "Using the hosted Voice Chat Assistant",
+    body: (
+      <p className="text-slate-700 dark:text-slate-200">
+        If you are using the managed Voice Chat Assistant service operated by Frame.dev, the hosted product has
+        its own privacy policy and terms. Refer to the latest documents published in-app or at
+        <a href="https://vca.chat/legal/privacy" className="ml-1 font-semibold text-brand hover:underline" target="_blank" rel="noopener noreferrer">vca.chat/legal/privacy</a>.
       </p>
     )
   }
@@ -127,17 +55,16 @@ export default function PrivacyPage() {
   return (
     <article className="space-y-12">
       <header className="space-y-6 text-center">
-        <p className="text-xs uppercase tracking-[0.4em] text-slate-500 dark:text-slate-400">Legal</p>
-        <h1 className="text-4xl font-bold tracking-tight text-slate-900 dark:text-white">Privacy Policy</h1>
+        <p className="text-xs uppercase tracking-[0.4em] text-slate-500 dark:text-slate-400">Open-source guidance</p>
+        <h1 className="text-4xl font-bold tracking-tight text-slate-900 dark:text-white">Privacy notes for AgentOS</h1>
         <p className="mx-auto max-w-2xl text-lg text-slate-600 dark:text-slate-300">
-          We built AgentOS and the Voice Chat Assistant with data minimisation in mind. This policy explains
-          what we collect, how long we keep it, and the controls you have over marketplace submissions,
-          agency launches, and bundled personas.
+          AgentOS itself does not collect personal data. When you deploy the runtime, you become the controller
+          responsible for meeting local privacy regulations.
         </p>
-        <p className="text-sm text-slate-500 dark:text-slate-400">Last updated: {lastUpdated}</p>
+        <p className="text-sm text-slate-500 dark:text-slate-400">Last updated: {updated}</p>
       </header>
 
-      {sections.map((section) => (
+      {Sections.map((section) => (
         <section key={section.title} className="glass-panel space-y-4">
           <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">{section.title}</h2>
           {section.body}
@@ -146,11 +73,9 @@ export default function PrivacyPage() {
 
       <footer className="space-y-4 text-sm text-slate-500 dark:text-slate-300">
         <p>
-          Need contractual terms instead? Read our{" "}
-          <Link href="/legal/terms" className="font-semibold text-brand hover:underline">
-            Terms of Service
-          </Link>
-          . Compliance reports and regional addenda are available on request.
+          Need additional compliance language for your deployment? Fork this site, update the copy for your
+          jurisdiction, or reach out at
+          <a href="mailto:founders@frame.dev" className="ml-1 font-semibold text-brand hover:underline">founders@frame.dev</a>.
         </p>
       </footer>
     </article>

@@ -135,7 +135,7 @@ import {
   AgentOS,
   type AgentOSConfig,
   InMemoryWorkflowStore,
-} from '@wearetheframers/agentos';
+} from '@framersai/agentos';
 
 const config: AgentOSConfig = {
   orchestratorConfig: { maxToolCallIterations: 4, enableConversationalPersistence: true },
@@ -217,4 +217,5 @@ AgentOS is designed to be embedded in multiple surfaces—server-side APIs, desk
 - **Workflow engine & store**: the upcoming runtime module (`core/workflows`) loads definitions, manages instances, and persists progress through the pluggable `IWorkflowStore` contract. An in-memory store ships by default, with optional adapters (e.g., Prisma) for durable persistence.
 - **Streaming updates**: workflow progress emits `WORKFLOW_UPDATE` chunks carrying `WorkflowProgressUpdate` payloads, preserving guardrail metadata so hosts can audit multi-stage decisions.
 - **Conversation optionality**: workflows may reference conversation IDs but remain independent. Workflows can be triggered by chat turns, scheduled jobs, or other services. See `docs/WORKFLOWS.md` for authoring guidelines, configuration examples, and storage notes.
-\n## Agency telemetry & marketplace pipeline\n\n- packages/agentos/src/core/workflows/runtime/WorkflowRuntime.ts now emits both WORKFLOW_UPDATE and AGENCY_UPDATE chunks so clients can stream per-seat progress.\n- ackend/src/features/agents/agencyUsage.service.ts records launches in gency_usage_log, enforces weekly plan limits, and keeps entries for approximately 18 months for billing/audit purposes.\n- ackend/src/features/agents/agentBundles.service.ts + gentBundles.routes.ts handle bundle import/export, queue persona submissions in gentos_persona_submissions, and refresh the runtime once approved.\n\n
+\n## Agency telemetry & marketplace pipeline (optional)\n\n- packages/agentos/src/core/workflows/runtime/WorkflowRuntime.ts now emits both WORKFLOW_UPDATE and AGENCY_UPDATE chunks so clients can stream per-seat progress.\n- ackend/src/features/agents/agencyUsage.service.ts records launches in gency_usage_log, enforces weekly plan limits, and keeps entries for approximately 18 months in the hosted reference app; you can shorten or disable this if you self-host.\n- ackend/src/features/agents/agentBundles.service.ts + gentBundles.routes.ts handle bundle import/export, queue persona submissions in gentos_persona_submissions, and refresh the runtime once approved.\n\n
+

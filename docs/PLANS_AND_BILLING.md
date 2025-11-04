@@ -1,4 +1,4 @@
-# Plans, Pricing, and Billing
+﻿# Plans, Pricing, and Billing
 
 This note defines the commercial plans, daily token budgets, and billing integrations for Voice Chat Assistant. All plan metadata lives in `shared/planCatalog.ts` so both backend and frontend read the same source of truth.
 
@@ -23,7 +23,7 @@ User-managed agents are now a first-class feature. Each plan ships explicit limi
 | Creator (VCA Premium) | 8 | 8 | 100 | 3 | `custom-agents`, `agency-lite`, `advanced-models`, 3 agency seats |
 | Organization | 50 | 50 | 500 | 7 | `custom-agents`, `agency-pro`, `team-management`, `advanced-models`, 10 agency seats |
 
-Agency launches are quotaed per 7-day rolling window. Quotas are enforced by `agency_usage_log`; once the limit is reached, `POST /api/agentos/workflows/start` returns `AGENCY_WEEKLY_LIMIT_REACHED` until entries age out.
+Agency launches are an example quota you can use for hosted plans. The reference implementation enforces a 7-day rolling window via `agency_usage_log`, but self-hosted deployments can change or remove the check.
 
 
 - Free users manage a single lightweight agent that is bound to their session and IP. The dashboard guides them toward upgrading once they hit the creation limit or request premium models/RAG scopes.
@@ -138,3 +138,4 @@ The IDs are short numeric strings (for example `123456`) and are visible without
 - Build team management UI (invitations, seat caps, role assignment).
 - Add an admin tool for global passphrase rotation.
 - Expand telemetry dashboards to show platform vs BYO spend per plan.
+
