@@ -12,6 +12,24 @@ This note defines the commercial plans, daily token budgets, and billing integra
 | Creator | $18 | 40% -> USD 0.24/day | ~21,800 GPT-4o tokens | Optional after allowance | Freelancers and builders |
 | Organization | $99 | 45% -> USD 1.485/day | ~135,000 GPT-4o tokens (shared) | Optional after allowance | Teams (>= five seats) |
 
+## Custom Agent Limits & Feature Flags
+
+User-managed agents are now a first-class feature. Each plan ships explicit limits that are exported from `shared/planCatalog.ts`, persisted through `backend/src/features/agents/**`, and surfaced in the client dashboard (`frontend/src/views/agents/AgentDashboard.vue`).
+
+| Plan | Max Active Custom Agents | Monthly Agent Creations | Knowledge Docs / Agent | Agency Launches / Week | Feature Flags & Seats |
+| --- | --- | --- | --- | --- |
+| Free | 1 (session/IP scoped) | 1 | 5 | 0 | `custom-agent-lite` - GPT-4o mini only, limited RAG bundle, no tool chaining |
+| Basic (VCA Basic) | 3 | 3 | 25 | 1 | `custom-agents`, 1 agency seat for sharing |
+| Creator (VCA Premium) | 8 | 8 | 100 | 3 | `custom-agents`, `agency-lite`, `advanced-models`, 3 agency seats |
+| Organization | 50 | 50 | 500 | 7 | `custom-agents`, `agency-pro`, `team-management`, `advanced-models`, 10 agency seats |
+
+Agency launches are quotaed per 7-day rolling window. Quotas are enforced by `agency_usage_log`; once the limit is reached, `POST /api/agentos/workflows/start` returns `AGENCY_WEEKLY_LIMIT_REACHED` until entries age out.
+
+
+- Free users manage a single lightweight agent that is bound to their session and IP. The dashboard guides them toward upgrading once they hit the creation limit or request premium models/RAG scopes.
+- Monthly creation tracking is persisted in `user_agent_creation_log`; active agent slots live in `user_agents`. Both tables are initialised by `AppDatabase.ensureSchema()` and gated by the new quota helpers in `UserAgentService`.
+- The frontend plan snapshot endpoint (`GET /api/plan/snapshot`) feeds the quota HUD used in `AgentHub` and settings pages so users always see available slots before creating a new agent.
+
 ### Why these numbers?
 
 1. **Model cost assumptions**
@@ -107,6 +125,12 @@ The IDs are short numeric strings (for example `123456`) and are visible without
 2. Update `.env.sample`, `CONFIGURATION.md`, and this doc with any new env vars.
 3. Re-run marketing copy (About page, Login hints, Settings billing card) which now pull directly from the shared plan catalog.
 4. Copy the same files into any derivative app so pricing stays DRY.
+
+## Retention & privacy
+
+- `agency_usage_log` retains launch metadata for approximately 18 months (launch timestamp, plan id, seats). Records older than that window are automatically expired during insertions.
+- `agentos_persona_submissions` stores pending bundle metadata until approval. Approved bundles have their prompts materialised under `prompts/_dynamic`; rejected bundles retain audit trails but no runtime access.
+- Marketplace listings honour visibility and ownership metadata; only owners or organisation members can mutate non-public listings.
 
 ## Roadmap
 

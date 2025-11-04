@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import {
@@ -58,7 +58,7 @@ const gmiHighlights = [
     icon: Shield,
     title: "Policy-aware by design",
     description:
-      "Every GMI carries guardrail hooks, subscription entitlements, and rate budgets—enforcing what the mind is allowed to say or do."
+      "Every GMI carries guardrail hooks, subscription entitlements, and rate budgetsâ€”enforcing what the mind is allowed to say or do."
   },
   {
     icon: Workflow,
@@ -70,7 +70,7 @@ const gmiHighlights = [
     icon: Layers,
     title: "Multilingual out of the box",
     description:
-      "Auto-detect the active language from conversation context, pivot content when needed, and respond in the persona’s preferred voice—all before the request ever reaches the model."
+      "Auto-detect the active language from conversation context, pivot content when needed, and respond in the personaâ€™s preferred voiceâ€”all before the request ever reaches the model."
   },
   {
     icon: GitBranch,
@@ -84,7 +84,7 @@ const timeline = [
   {
     title: "Workflow runtime",
     description:
-      "Async generators stream AgentOSResponse chunks with rich metadata for text, tool calls, artifacts, and guardrail outcomes—ready for SSE, WebSocket, or in-memory bridges.",
+      "Async generators stream AgentOSResponse chunks with rich metadata for text, tool calls, artifacts, and guardrail outcomesâ€”ready for SSE, WebSocket, or in-memory bridges.",
     status: "Available today",
     progress: 100
   },
@@ -168,7 +168,7 @@ export default function LandingPage() {
                 Orchestrate personas, tools, and guardrails with AgentOS.
               </h1>
               <p className="text-lg text-slate-600 dark:text-slate-300">
-                AgentOS powers Frame.dev&apos;s voice-first assistants. Now the modular runtime—complete with GMIs, workflow engine, guardrail APIs, and streaming orchestration—is available for teams who want to ship adaptive agents under Apache-friendly terms.
+                AgentOS powers Frame.dev&apos;s voice-first assistants. Now the modular runtimeâ€”complete with GMIs, workflow engine, guardrail APIs, and streaming orchestrationâ€”is available for teams who want to ship adaptive agents under Apache-friendly terms.
               </p>
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                 <a
@@ -356,12 +356,13 @@ export default function LandingPage() {
             <h3 className="text-2xl font-semibold text-slate-900 dark:text-white">Apache-friendly, builder-owned</h3>
             <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-300">
               AgentOS is moving from MIT to Apache&nbsp;2.0 so you get explicit patent grants and clear attribution requirements. You
-              control your personas, tool packs, and marketplace listings—export them as JSON or load them into your own deployments at
+              control your personas, tool packs, and marketplace listingsâ€”export them as JSON or load them into your own deployments at
               any time.
             </p>
             <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
               <li>Export personas, workflows, and artifacts without leaving the platform</li>
-              <li>Reference private assets like vca.chat marketplaces while keeping compliance guardrails intact</li>
+            <li>Approve or reject bundle submissions before they hit production</li>
+              <li>Ship private, unlisted, org-only, or invite-only listings while keeping compliance guardrails intact</li>
               <li>Release automation mirrors `@agentos/core`, landing sites, and docs to public repos</li>
             </ul>
             <nav className="flex flex-wrap gap-3 text-sm" aria-label="Licensing links">
@@ -390,8 +391,8 @@ export default function LandingPage() {
                 Do I keep control of my agents?
               </summary>
               <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
-                Yes. Export personas, prompt packs, and tool registries as versioned JSON. Import them into another AgentOS deployment—or
-                any Apache-compatible fork—without losing history.
+                Yes. Export personas, prompt packs, and tool registries as versioned JSON. Import them into another AgentOS deploymentâ€”or
+                any Apache-compatible forkâ€”without losing history.
               </p>
             </details>
             <details className="group rounded-xl border border-slate-200/50 p-4 dark:border-slate-700/60">
@@ -567,7 +568,7 @@ export default function LandingPage() {
               >
                 <div className="flex gap-1 mb-4">
                   {[...Array(testimonial.rating)].map((_, i) => (
-                    <span key={i} className="text-yellow-500">★</span>
+                    <span key={i} className="text-yellow-500">â˜…</span>
                   ))}
                 </div>
                 <p className="text-sm text-slate-600 dark:text-slate-300 mb-4">
@@ -740,5 +741,6 @@ for await (const chunk of agentos.processRequest(input)) {
     </>
   );
 }
+
 
 

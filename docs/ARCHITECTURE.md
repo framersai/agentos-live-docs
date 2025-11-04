@@ -1,4 +1,4 @@
-# AgentOS Architecture
+﻿# AgentOS Architecture
 
 `@agentos/core` is the modular runtime that powers the orchestration stack inside Frame.dev products. It encapsulates persona management, tool routing, streaming, conversation memory, retrieval augmentation, and error handling behind a single TypeScript package that can be embedded in any host application (web, desktop, mobile, or server-side).
 
@@ -60,7 +60,8 @@ All public exports are defined in `src/index.ts` and surfaced via `dist/` after 
 - **ConversationManager**: maintains conversation contexts, persists messages, and supports summarisation triggers. Works with the streaming manager to deliver incremental updates.
 - **Memory lifecycle manager** (`memory_lifecycle/`): policy engine for pruning or summarising long-term memory. Supports trigger conditions (age, size, schedule) and actions (`archive`, `delete`, `summarize_and_retain`, etc.).
 - **RAG stack** (`rag/`): embedding manager, vector store abstractions, and retrieval augmentor used to plug in host-provided knowledge bases.
-- **Storage adapter bridge** *(workspace integration)*: the voice-chat backend supplies a Prisma-compatible facade (`backend/src/integrations/agentos/agentos.sql-client.ts`) that maps conversation persistence to the shared SQL storage adapter. The bridge auto-creates `agentos_conversations` / `agentos_conversation_messages` tables so transcripts survive process restarts alongside other app data.
+- **MemoryStoreAdapter (generic SQL-backed persistence)**: the backend now uses a unified `MemoryStoreAdapter` (`backend/src/core/memory/MemoryStoreAdapter.ts`) powered by `@framers/sql-storage-adapter`. It auto-detects the best available driver (`better-sqlite3` first for Node performance, then `sql.js` as a pure JS fallback) and conditionally enables persistence via the `ENABLE_SQLITE_MEMORY` env flag. This replaces the old `SqliteMemoryAdapter` naming—logs and exports now use a backend-agnostic label, and future drivers (Capacitor, Supabase/Postgres) can slot in without further refactors.
+- **Storage adapter bridge** *(workspace integration)*: the voice-chat backend still supplies a Prisma-compatible facade (`backend/src/integrations/agentos/agentos.sql-client.ts`) for other AgentOS modules needing relational access. Conversation persistence for chat flows prefers the MemoryStoreAdapter; the bridge remains for schema-managed tables and external integrations.
 - **Knowledge base providers**: the workspace now prefers the SQL-backed knowledge service (`SqlKnowledgeBaseService`) and gracefully falls back to the legacy JSON file loader when the database is unavailable.
 
 ### 3.4 Tool orchestration
@@ -180,6 +181,7 @@ Hosts can override any subset; missing services fall back to sensible defaults (
 - **Backend adapters in the workspace**: see `backend/src/integrations/agentos/*` for Supabase/global auth adapters, subscription enforcement, persona registry, and streaming/chat controllers.
 - **Frontend surfaces**: `apps/agentos-landing` provides the marketing/docs site, and `apps/agentos-client` demonstrates a local developer cockpit consuming the streaming API.
 - **Plan/billing context**: `shared/planCatalog.ts` and `docs/PLANS_AND_BILLING.md` describe how subscription tiers map to persona/tool availability.
+- **User-managed agents service**: `backend/src/features/agents/**` exposes CRUD + quota enforcement for `user_agents` and `user_agent_creation_log`. The Vue client uses `frontend/src/views/agents/AgentDashboard.vue`, `AgentHub.vue`, and the plan snapshot store to show remaining slots (`GET /api/plan/snapshot`) before allowing creation. Quotas, knowledge-upload caps, and premium capabilities are all sourced from the shared plan catalog feature flags (`custom-agents`, `agency-lite`, `advanced-models`).
 
 ---
 
@@ -215,3 +217,4 @@ AgentOS is designed to be embedded in multiple surfaces—server-side APIs, desk
 - **Workflow engine & store**: the upcoming runtime module (`core/workflows`) loads definitions, manages instances, and persists progress through the pluggable `IWorkflowStore` contract. An in-memory store ships by default, with optional adapters (e.g., Prisma) for durable persistence.
 - **Streaming updates**: workflow progress emits `WORKFLOW_UPDATE` chunks carrying `WorkflowProgressUpdate` payloads, preserving guardrail metadata so hosts can audit multi-stage decisions.
 - **Conversation optionality**: workflows may reference conversation IDs but remain independent. Workflows can be triggered by chat turns, scheduled jobs, or other services. See `docs/WORKFLOWS.md` for authoring guidelines, configuration examples, and storage notes.
+\n## Agency telemetry & marketplace pipeline\n\n- packages/agentos/src/core/workflows/runtime/WorkflowRuntime.ts now emits both WORKFLOW_UPDATE and AGENCY_UPDATE chunks so clients can stream per-seat progress.\n- ackend/src/features/agents/agencyUsage.service.ts records launches in gency_usage_log, enforces weekly plan limits, and keeps entries for approximately 18 months for billing/audit purposes.\n- ackend/src/features/agents/agentBundles.service.ts + gentBundles.routes.ts handle bundle import/export, queue persona submissions in gentos_persona_submissions, and refresh the runtime once approved.\n\n

@@ -61,6 +61,7 @@
   }
   ```
 - Provide APIs to upsert agencies, register seats, and tear down agencies once workflows finish.
+- **Usage quota integration** - Agency launches are gated by `backend/src/features/agents/agencyUsage.service.ts`. The helper logs entries to `agency_usage_log` and enforces weekly plan limits before `AgentOS.startWorkflow` executes.
 
 ### 1.3 `AgentOS.initialize`
 - Instantiate `WorkflowEngine` + `AgencyRegistry` inside `initializeWorkflowRuntime`.
@@ -126,7 +127,7 @@
 ---
 
 ## 5. Streaming & Telemetry
-- Update `StreamingManager` to handle new chunk types.
+- Update `StreamingManager` to handle new chunk types (`AGENCY_UPDATE`, `WORKFLOW_UPDATE`).
 - Surface Agency updates through backend stream route (`backend/src/integrations/agentos/agentos.stream-router.ts`).
 - Instrument:
   - Workflow start/completion

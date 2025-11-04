@@ -14,6 +14,14 @@ import {
   type StorageAdapter
 } from '@framers/sql-storage-adapter';
 
+type StorageAdapterResolver = (options?: Parameters<typeof resolveStorageAdapter>[0]) => Promise<StorageAdapter>;
+
+let storageAdapterResolver: StorageAdapterResolver = resolveStorageAdapter;
+
+export const __setAppDatabaseAdapterResolverForTests = (resolver?: StorageAdapterResolver): void => {
+  storageAdapterResolver = resolver ?? resolveStorageAdapter;
+};
+
 const DB_DIR = path.join(process.cwd(), 'db_data');
 const DB_PATH = path.join(DB_DIR, 'app.sqlite3');
 
@@ -55,6 +63,7 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
       supabase_user_id TEXT,
       subscription_status TEXT DEFAULT 'none',
       subscription_tier TEXT DEFAULT 'metered',
+      subscription_plan_id TEXT,
       lemon_customer_id TEXT,
       lemon_subscription_id TEXT,
       subscription_renews_at INTEGER,
@@ -121,6 +130,37 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
   await db.exec('CREATE INDEX IF NOT EXISTS idx_organizations_owner ON organizations(owner_user_id);');
 
   await db.exec(`
+    CREATE TABLE IF NOT EXISTS user_agents (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL,
+      label TEXT NOT NULL,
+      slug TEXT,
+      plan_id TEXT,
+      status TEXT NOT NULL DEFAULT 'active',
+      config TEXT NOT NULL,
+      created_at INTEGER NOT NULL,
+      updated_at INTEGER NOT NULL,
+      archived_at INTEGER,
+      FOREIGN KEY (user_id) REFERENCES app_users(id) ON DELETE CASCADE
+    );
+  `);
+  await db.exec('CREATE INDEX IF NOT EXISTS idx_user_agents_user ON user_agents(user_id);');
+  await db.exec('CREATE INDEX IF NOT EXISTS idx_user_agents_status ON user_agents(status);');
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS user_agent_creation_log (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL,
+      agent_id TEXT,
+      created_at INTEGER NOT NULL,
+      FOREIGN KEY (user_id) REFERENCES app_users(id) ON DELETE CASCADE,
+      FOREIGN KEY (agent_id) REFERENCES user_agents(id) ON DELETE SET NULL
+    );
+  `);
+  await db.exec('CREATE INDEX IF NOT EXISTS idx_agent_creation_user ON user_agent_creation_log(user_id, created_at DESC);');
+
+
+  await db.exec(`
     CREATE TABLE IF NOT EXISTS checkout_sessions (
       id TEXT PRIMARY KEY,
       user_id TEXT NOT NULL,
@@ -175,6 +215,51 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
   `);
   await db.exec('CREATE INDEX IF NOT EXISTS idx_org_invites_org ON organization_invites(organization_id);');
   await db.exec('CREATE INDEX IF NOT EXISTS idx_org_invites_email ON organization_invites(email);');
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS agency_usage_log (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL,
+      plan_id TEXT NOT NULL,
+      workflow_definition_id TEXT NOT NULL,
+      agency_id TEXT,
+      seats INTEGER NOT NULL,
+      launched_at INTEGER NOT NULL,
+      expires_at INTEGER,
+      metadata TEXT,
+      FOREIGN KEY (user_id) REFERENCES app_users(id) ON DELETE CASCADE
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_agency_usage_user ON agency_usage_log(user_id, launched_at DESC);',
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_agency_usage_definition ON agency_usage_log(workflow_definition_id);',
+  );
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS agentos_persona_submissions (
+      id TEXT PRIMARY KEY,
+      persona_id TEXT NOT NULL,
+      label TEXT NOT NULL,
+      prompt TEXT NOT NULL,
+      description TEXT,
+      metadata TEXT,
+      bundle_path TEXT,
+      status TEXT NOT NULL DEFAULT 'pending',
+      submitted_by TEXT,
+      approved_by TEXT,
+      submitted_at INTEGER NOT NULL,
+      approved_at INTEGER,
+      rejection_reason TEXT
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_agentos_persona_submissions_status ON agentos_persona_submissions(status);',
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_agentos_persona_submissions_persona ON agentos_persona_submissions(persona_id);',
+  );
 };
 
 const ensureColumnExists = async (
@@ -211,7 +296,7 @@ export const initializeAppDatabase = async (): Promise<void> => {
     const connectionString = process.env.DATABASE_URL ?? process.env.POSTGRES_URL ?? undefined;
 
     try {
-      adapter = await resolveStorageAdapter({
+      adapter = await storageAdapterResolver({
         filePath: DB_PATH,
         postgres: { connectionString },
         openOptions: { filePath: DB_PATH, connectionString }
@@ -227,10 +312,18 @@ export const initializeAppDatabase = async (): Promise<void> => {
           ? 'ALTER TABLE app_users ADD COLUMN supabase_user_id TEXT'
           : 'ALTER TABLE app_users ADD COLUMN supabase_user_id TEXT;'
       );
+      await ensureColumnExists(
+        adapter,
+        'app_users',
+        'subscription_plan_id',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE app_users ADD COLUMN subscription_plan_id TEXT'
+          : 'ALTER TABLE app_users ADD COLUMN subscription_plan_id TEXT;'
+      );
     } catch (error) {
       usingInMemory = true;
       console.warn('[AppDatabase] Failed to initialise persistent storage. Falling back to in-memory sql.js.', error);
-      adapter = await resolveStorageAdapter({
+      adapter = await storageAdapterResolver({
         filePath: DB_PATH,
         priority: ['sqljs']
       });

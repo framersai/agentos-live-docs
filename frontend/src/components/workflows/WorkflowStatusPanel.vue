@@ -9,6 +9,17 @@
       <p v-if="workflow.conversationId"><strong>Conversation:</strong> {{ workflow.conversationId }}</p>
       <p><strong>Updated:</strong> {{ updatedAtLabel }}</p>
     </section>
+    <section class="agency-roster" v-if="agencySnapshot">
+      <h4 class="agency-heading">Agency Seats</h4>
+      <p class="agency-count">{{ agencySeatCount }} seat{{ agencySeatCount === 1 ? '' : 's' }}</p>
+      <ul class="agency-seat-list">
+        <li v-for="seat in agencySnapshot.seats" :key="seat.roleId">
+          <span class="seat-role">{{ seat.roleId }}</span>
+          <span class="seat-persona">{{ seat.personaId }}</span>
+          <span class="seat-gmi" v-if="seat.gmiInstanceId">({{ seat.gmiInstanceId }})</span>
+        </li>
+      </ul>
+    </section>
     <section class="workflow-tasks" v-if="taskSummary.total > 0">
       <p class="task-summary">
         {{ taskSummary.completed }} / {{ taskSummary.total }} tasks complete
@@ -42,10 +53,12 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import type { WorkflowInstanceFE, WorkflowEventFE } from '@/types/workflow';
+import type { AgencySnapshotFE } from '@/types/agency';
 
 const props = defineProps<{
   workflow: WorkflowInstanceFE | null;
   events: WorkflowEventFE[];
+  agency?: AgencySnapshotFE | null;
 }>();
 
 const statusLabelMap: Record<string, string> = {
@@ -109,6 +122,9 @@ const taskPreview = computed(() => {
   if (!props.workflow) return [] as WorkflowInstanceFE['tasks'][string][];
   return Object.values(props.workflow.tasks ?? {}).slice(0, 5);
 });
+
+const agencySnapshot = computed(() => props.agency ?? null);
+const agencySeatCount = computed(() => agencySnapshot.value?.seats.length ?? 0);
 
 const mapTaskStatus = (status: string): string => {
   switch (status) {
@@ -289,6 +305,55 @@ const formatTimestamp = (value: string): string => {
   gap: 0.25rem;
   max-height: 120px;
   overflow-y: auto;
+}
+
+.agency-roster {
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.agency-heading {
+  margin: 0 0 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.agency-count {
+  margin: 0 0 0.5rem;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.agency-seat-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.agency-seat-list li {
+  display: flex;
+  gap: 0.4rem;
+  align-items: baseline;
+  font-size: 0.8rem;
+}
+
+.seat-role {
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.seat-persona {
+  color: var(--color-text-secondary);
+}
+
+.seat-gmi {
+  color: var(--color-text-muted);
+  font-size: 0.7rem;
 }
 
 .workflow-events li {
