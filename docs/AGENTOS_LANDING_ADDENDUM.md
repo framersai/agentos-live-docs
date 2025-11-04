@@ -1,4 +1,4 @@
-# AgentOS Landing Page - Additional Implementation Details
+# AgentOS Site Page - Additional Implementation Details
 
 ## 📚 TypeDoc Generation & Search Integration
 
@@ -20,7 +20,7 @@ export async function generateDocs() {
     excludeInternal: true,
     categorizeByGroup: true,
     navigationLinks: {
-      'GitHub': 'https://github.com/wearetheframers/agentos',
+      'GitHub': 'https://github.com/framersai/agentos',
       'AgentOS': 'https://agentos.sh'
     }
   });
@@ -391,7 +391,7 @@ for await (const chunk of agentOS.streamRequest(request)) {
 
 Ready to build something amazing? Join thousands of developers creating the next generation of AI applications:
 
-- Star us on [GitHub](https://github.com/wearetheframers/agentos)
+- Star us on [GitHub](https://github.com/framersai/agentos)
 - Join our [Discord](https://discord.gg/agentos)
 - Follow [@frame_dev](https://twitter.com/frame_dev) for updates
 
@@ -403,16 +403,16 @@ Ready to build something amazing? Join thousands of developers creating the next
 ### Separate Public Repository Setup
 ```bash
 # Create new public repository
-mkdir agentos-landing
-cd agentos-landing
+mkdir agentos.sh
+cd agentos.sh
 git init
 
 # Add as submodule to main repo
 cd ../voice-chat-assistant
-git submodule add https://github.com/wearetheframers/agentos-landing apps/agentos-landing
+git submodule add https://github.com/framersai/agentos.sh apps/agentos.sh
 
 # Structure
-agentos-landing/
+agentos.sh/
 ├── app/
 │   ├── layout.tsx
 │   ├── page.tsx

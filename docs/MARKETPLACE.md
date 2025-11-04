@@ -6,7 +6,10 @@ This document explains how marketplace listings flow from AgentOS personas throu
 
 ## 1. Data sources
 
-- **Marketplace records** - Seeded and persisted in the shared SQLite/Postgres store via the marketplace service (ackend/src/features/marketplace/marketplace.service.ts). Each record includes persona linkage, pricing metadata, visibility (public, unlisted, org, invite), lifecycle status (draft, pending, published, etired), ownership metadata, and optional metrics (downloads, rating, revenue).
+> The marketplace module is optional. Self-hosted operators can disable the tables and routes below if they do not expose a public catalogue.
+
+- **Marketplace records** - Seeded and persisted in the shared SQLite/Postgres store via the marketplace service (ackend/src/features/marketplace/marketplace.service.ts). Each record includes persona linkage, pricing metadata, visibility (public, unlisted, org, invite), lifecycle status (draft, pending, published, 
+etired), ownership metadata, and optional metrics (downloads, rating, revenue).
 - **AgentOS personas** - Declared under packages/agentos/src/cognitive_substrate/personas/** and exposed via the persona registry helper (ackend/src/integrations/agentos/agentos.persona-registry.ts). Approved dynamic submissions from gentos_persona_submissions are merged at runtime so every marketplace listing references a valid persona.
 - **Agent runtime** – The AgentOS SQL client (`backend/src/integrations/agentos/agentos.sql-client.ts`) ensures conversation state and persona overlays share the same database. Marketplace write operations should reuse this adapter so tenant data stays in one datastore.
 
@@ -39,7 +42,7 @@ Only `published` listings appear on the public grid. `pending` entries surface i
 
 ## 3. Frontend consumers
 
-### 3.1 Marketing site (`apps/agentos-landing`)
+### 3.1 Marketing site (`apps/agentos.sh`)
 
 - `components/marketplace/marketplace-preview.tsx` fetches API summaries and renders hero CTA, stat chips, and agent tiles. It falls back to `FALLBACK_AGENTS` when the API is offline so the grid never renders empty.
 - CSS tokens for chips, CTA buttons, avatars, and skeleton cards live in `app/globals.css`. When introducing new class names, update both the component JSX and the stylesheet to keep hover/focus states aligned.

@@ -50,9 +50,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <main>{children}</main>
           <footer className="border-t border-slate-200/60 bg-white/80 py-10 text-sm text-slate-500 dark:border-slate-900 dark:bg-slate-950/70 dark:text-slate-400">
             <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-6 md:flex-row md:items-center md:justify-between">
-              <p>&copy; {new Date().getFullYear()} Frame.dev / wearetheframers. All rights reserved.</p>
+              <p>&copy; {new Date().getFullYear()} Frame.dev / framersai. All rights reserved.</p>
               <nav className="flex flex-wrap gap-6" aria-label="Footer navigation">
-                <a href="https://github.com/wearetheframers" className="hover:text-brand" target="_blank" rel="noopener noreferrer">
+                <a href="https://github.com/framersai" className="hover:text-brand" target="_blank" rel="noopener noreferrer">
                   GitHub
                 </a>
                 <a href="mailto:founders@frame.dev" className="hover:text-brand">

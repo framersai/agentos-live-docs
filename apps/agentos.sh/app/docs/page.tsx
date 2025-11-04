@@ -77,7 +77,7 @@ export default function DocsPage() {
             </p>
             <div className="mt-6 flex flex-col gap-3">
               <a
-                href="https://github.com/wearetheframers/agentos"
+                href="https://github.com/framersai/agentos"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded-full border border-slate-200/70 px-6 py-3 text-sm font-semibold text-slate-700 transition hover:border-brand hover:text-brand dark:border-slate-700 dark:text-slate-200 dark:hover:border-brand"
@@ -99,9 +99,9 @@ export default function DocsPage() {
             </p>
             <div className="mt-6">
               <pre className="overflow-x-auto rounded-lg bg-slate-900/90 p-4 text-xs text-slate-100">
-                <code>{`pnpm add @wearetheframers/agentos
+                <code>{`pnpm add @framersai/agentos
 
-import { AgentOS } from "@wearetheframers/agentos";
+import { AgentOS } from "@framersai/agentos";
 
 const agentos = new AgentOS();
 await agentos.initialize(config);`}</code>
