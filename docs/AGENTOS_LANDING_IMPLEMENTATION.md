@@ -1,4 +1,4 @@
-# 🚀 AgentOS Landing Page - Complete Implementation Guide
+# 🚀 AgentOS Site Page - Complete Implementation Guide
 
 ## Project Overview
 **Product**: AgentOS - The orchestration substrate powering Frame.dev
@@ -6,8 +6,8 @@
 **Docs URL**: https://docs.agentos.sh (auto-generated TypeScript docs)
 **Live Demo**: https://app.vca.chat/en (Voice Chat Assistant)
 **Marketplace**: https://vca.chat (Buy, sell, and share AI agents - FREE & PAID)
-**Organization**: Frame.dev / wearetheframers
-**Repository**: Separate public repo/submodule at github.com/wearetheframers/agentos-landing
+**Organization**: Frame.dev / framersai
+**Repository**: Separate public repo/submodule at github.com/framersai/agentos.sh
 **License**: MIT Open Source
 **Status**: Public immediately upon push
 
@@ -533,7 +533,7 @@ const primaryCTAs = [
   { text: 'Try Voice Chat Assistant', link: 'https://app.vca.chat/en' },
   { text: 'Browse Agent Marketplace', link: 'https://vca.chat' },
   { text: 'View Documentation', link: 'https://docs.agentos.sh' },
-  { text: 'Star on GitHub', link: 'https://github.com/wearetheframers/agentos' },
+  { text: 'Star on GitHub', link: 'https://github.com/framersai/agentos' },
 ]
 ```
 
@@ -641,7 +641,7 @@ export const metricsConfig: Record<string, MetricSource> = {
   },
   githubStars: {
     type: 'github',
-    repo: 'wearetheframers/agentos',
+    repo: 'framersai/agentos',
     updateInterval: 3600000, // 1 hour
   },
   npmDownloads: {
@@ -687,7 +687,7 @@ NEXT_PUBLIC_NEWSLETTER_ENDPOINT=/api/newsletter
 NEWSLETTER_API_KEY=your_api_key_here
 
 # Social Links
-NEXT_PUBLIC_GITHUB_ORG=https://github.com/wearetheframers
+NEXT_PUBLIC_GITHUB_ORG=https://github.com/framersai
 NEXT_PUBLIC_NPM_ORG=https://npmjs.com/org/framers
 NEXT_PUBLIC_TWITTER=https://twitter.com/frame_dev
 
@@ -789,12 +789,12 @@ content/
 1. **Live Demo**: app.vca.chat/en - "Try Voice Chat Assistant"
 2. **Marketplace**: vca.chat - "Browse & Share Agents"
 3. **Documentation**: docs.agentos.sh - "Read the Docs"
-4. **GitHub**: github.com/wearetheframers/agentos - "Star on GitHub"
+4. **GitHub**: github.com/framersai/agentos - "Star on GitHub"
 
 ### Footer Links
 - Company: manic.agency
 - Email: team@frame.dev
-- GitHub: github.com/wearetheframers
+- GitHub: github.com/framersai
 - npm: npmjs.com/org/framers
 - Twitter: @frame_dev
 

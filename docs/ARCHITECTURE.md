@@ -179,7 +179,7 @@ Hosts can override any subset; missing services fall back to sensible defaults (
 ## 7. Integration reference
 
 - **Backend adapters in the workspace**: see `backend/src/integrations/agentos/*` for Supabase/global auth adapters, subscription enforcement, persona registry, and streaming/chat controllers.
-- **Frontend surfaces**: `apps/agentos-landing` provides the marketing/docs site, and `apps/agentos-client` demonstrates a local developer cockpit consuming the streaming API.
+- **Frontend surfaces**: `apps/agentos.sh` provides the marketing/docs site, and `apps/agentos-client` demonstrates a local developer cockpit consuming the streaming API.
 - **Plan/billing context**: `shared/planCatalog.ts` and `docs/PLANS_AND_BILLING.md` describe how subscription tiers map to persona/tool availability.
 - **User-managed agents service**: `backend/src/features/agents/**` exposes CRUD + quota enforcement for `user_agents` and `user_agent_creation_log`. The Vue client uses `frontend/src/views/agents/AgentDashboard.vue`, `AgentHub.vue`, and the plan snapshot store to show remaining slots (`GET /api/plan/snapshot`) before allowing creation. Quotas, knowledge-upload caps, and premium capabilities are all sourced from the shared plan catalog feature flags (`custom-agents`, `agency-lite`, `advanced-models`).
 

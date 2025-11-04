@@ -12,7 +12,7 @@
 
 </div>
 
-Voice-first coding assistant built by [Frame.dev / wearetheframers](https://github.com/wearetheframers).
+Voice-first coding assistant built by [Frame.dev / framersai](https://github.com/framersai).
 
 > **Internal / Proprietary**
 > This workspace is for Frame.dev only. Do not redistribute snippets, assets, or binaries outside the organisation without approval.
@@ -26,7 +26,7 @@ The repository is organised as a pnpm workspace so the production apps, the Agen
 | `frontend/` | Vue 3 + Vite SPA that handles voice capture, chat UI, localisation, and Supabase auth. |
 | `backend/` | Express + TypeScript API (auth, billing, orchestration endpoints). |
 | `packages/agentos/` | Publishable TypeScript runtime (`@agentos/core`) powering orchestration, streaming, memory, and tool routing. |
-| `apps/agentos-landing/` | Next.js + Tailwind marketing site for agentos.sh (light/dark, motion, roadmap, launch CTAs). |
+| `apps/agentos.sh/` | Next.js + Tailwind marketing site for agentos.sh (light/dark, motion, roadmap, launch CTAs). |
 | `apps/agentos-client/` | React + Vite workbench to inspect AgentOS sessions, tool calls, and transcripts. |
 | `docs/` | Architecture notes, configuration, API reference, migration plans. |
 | `shared/` | Cross-cutting helpers/constants shared by backend + frontend. |
@@ -36,7 +36,7 @@ The repository is organised as a pnpm workspace so the production apps, the Agen
 - **Frontend** - Vue 3 + Vite + Tailwind with composition-based state and Supabase-friendly auth (see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)).
 - **Backend** - Modular Express feature folders, optional Supabase + Lemon Squeezy integration, rate-limited public demo routes.
 - **AgentOS runtime** - Session-aware personas, tool permissioning, guardrail policy hooks, retrieval/memory lifecycle policies, async streaming bridges.
-- **AgentOS surfaces** - `apps/agentos-landing` (marketing) and `apps/agentos-client` (developer cockpit) consume the runtime without touching the proprietary voice UI.
+- **AgentOS surfaces** - `apps/agentos.sh` (marketing) and `apps/agentos-client` (developer cockpit) consume the runtime without touching the proprietary voice UI.
 - **Data flow** - Voice/Text -> `/api/chat` -> AgentOS -> LLM providers with knowledge retrieval and billing-tier enforcement.
 
 ## Getting Started
@@ -71,8 +71,8 @@ The repository is organised as a pnpm workspace so the production apps, the Agen
    pnpm --filter @agentos/core test       # run AgentOS test suite
    pnpm --filter @agentos/core build      # emit dist/ bundles for publishing
    pnpm --filter @agentos/core run docs   # generate TypeDoc output
-   pnpm --filter @wearetheframers/agentos-landing dev    # work on agentos.sh
-   pnpm --filter @wearetheframers/agentos-client dev     # iterate on the cockpit
+   pnpm --filter @framersai/agentos.sh dev    # work on agentos.sh
+   pnpm --filter @framersai/agentos-client dev     # iterate on the cockpit
    ```
 
 ## AgentOS Package Readiness
@@ -88,7 +88,7 @@ The repository is organised as a pnpm workspace so the production apps, the Agen
 
 - **agentos.sh landing** - Next.js marketing site with dual-mode theming, motion, roadmap cards, and launch CTAs.
 - **AgentOS client workbench** - React cockpit for replaying sessions, inspecting streaming telemetry, and iterating on personas/tools without running the full voice UI.
-- Both apps consume the workspace version of `@agentos/core` and can be hosted independently when we cut the repositories under `wearetheframers`.
+- Both apps consume the workspace version of `@agentos/core` and can be hosted independently when we cut the repositories under `framersai`.
 - Workbench persona catalog now hydrates from `/api/agentos/personas` (filters: `capability`, `tier`, `search`) and caches responses via React Query for faster iteration.
 
 ### Workflow artifacts & media outputs
