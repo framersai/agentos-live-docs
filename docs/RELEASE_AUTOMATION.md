@@ -17,15 +17,15 @@ Stick to `<type>: <message>` (e.g. `fix: normalise persona metadata`). Only use 
 
 | Path                   | Public repo                               |
 | ---------------------- | ----------------------------------------- |
-| `packages/agentos`     | `github.com/wearetheframers/agentos`      |
-| `apps/agentos-landing` | `github.com/wearetheframers/agentos.sh`   |
-| `apps/agentos-client`  | `github.com/wearetheframers/agentos-client` |
+| `packages/agentos`     | `github.com/framersai/agentos`      |
+| `apps/agentos.sh` | `github.com/framersai/agentos.sh`   |
+| `apps/agentos-client`  | `github.com/framersai/agentos-client` |
 
 Create these repos ahead of time (empty, default branch `main`). Grant a deploy key or use a GitHub App token so Actions can push.
 
 ## GitHub Actions Outline
 
-### 1. Mirror directories
+### 1. Mirror directories\n\n*(Fresh history commit option:)* For initial publication you can create an orphan commit with `git commit-tree` (see `docs/REPO_MIRRORING.md`). Once those repos have a baseline, the subtree workflow below keeps them in sync.\n\n
 
 Trigger: push of a `v*` tag on `master`.
 
@@ -54,7 +54,7 @@ Version bumps for the package still happen through PRs before tagging.
 
 We will publish the mirror in `agentos.sh` and deploy from there. For now:
 
-- Build with `pnpm --filter @wearetheframers/agentos-landing build`.
+- Build with `pnpm --filter @framersai/agentos.sh build`.
 - Export static assets with `next export -o out`.
 - Push `out/` to the public repo `gh-pages` branch or sync to the final hosting provider (to be confirmed).
 
@@ -64,7 +64,7 @@ Document the chosen hosting provider once selected (Vercel/S3/etc.).
 
 Flow mirrors the landing app:
 
-- Build with `pnpm --filter @wearetheframers/agentos-client build`.
+- Build with `pnpm --filter @framersai/agentos-client build`.
 - Artifact ends up in `dist/`.
 - TODO: decide deployment target (Linode object storage, container, etc.). Add the deployment command once we have the destination.
 
@@ -93,9 +93,9 @@ Flow mirrors the landing app:
 Complete these steps before the first release so the workflows can publish and mirror automatically.
 
 1. **Create public repositories**
-   - `github.com/wearetheframers/agentos`
-   - `github.com/wearetheframers/agentos.sh`
-   - `github.com/wearetheframers/agentos-client`
+   - `github.com/framersai/agentos`
+   - `github.com/framersai/agentos.sh`
+   - `github.com/framersai/agentos-client`
    - Leave them empty (default branch `main`).
 
 2. **Generate deploy keys**
@@ -105,9 +105,9 @@ Complete these steps before the first release so the workflows can publish and m
      ```
    - Add the *public* key (`~/.ssh/agentos-mirror.pub`) to the target repo under **Settings → Deploy keys** and enable “Allow write access”.
    - Add the *private* key as a secret in this private repo (**Settings → Secrets and variables → Actions**):
-     - `AGENTOS_MIRROR_SSH_KEY` → private key for `wearetheframers/agentos`
-     - `AGENTOS_LANDING_MIRROR_SSH_KEY` → private key for `wearetheframers/agentos.sh`
-     - `AGENTOS_CLIENT_MIRROR_SSH_KEY` → private key for `wearetheframers/agentos-client`
+     - `AGENTOS_MIRROR_SSH_KEY` → private key for `framersai/agentos`
+     - `AGENTOS_LANDING_MIRROR_SSH_KEY` → private key for `framersai/agentos.sh`
+     - `AGENTOS_CLIENT_MIRROR_SSH_KEY` → private key for `framersai/agentos-client`
 
 3. **Add the npm token**
    - Store a publish-capable npm token as `NPM_TOKEN` in the same secrets panel.
@@ -124,3 +124,4 @@ Once these are in place, pushing a `v*` tag on `master` (without `[skip-release]
 - [ ] Pick hosting for `agentos.sh` and document the deploy command.
 - [ ] Decide how the client workbench is hosted (Linode plan, Docker image, etc.).
 - [ ] Add final `rm` patterns for directories that hold secrets once the team audits them.
+

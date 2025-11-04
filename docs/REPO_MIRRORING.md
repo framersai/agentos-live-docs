@@ -1,4 +1,4 @@
-# Mirroring subdirectories to public repos
+﻿# Mirroring subdirectories to public repos
 
 The private monorepo remains the source of truth. When we want to publish
 individual packages/apps we split the history of the relevant subdirectory and
@@ -44,3 +44,15 @@ history centrally.
 
 The rest of the release automation lives in `docs/RELEASE_AUTOMATION.md`.
 
+
+## Fresh repository bootstrap
+
+For the first public release we can create history-free commits directly from this workspace. Example for the AgentOS core package:
+
+```bash
+TREE=$(git rev-parse HEAD:packages/agentos)
+COMMIT=$(echo "Initial release: v0.1.0" | git commit-tree "$TREE")
+git push git@github.com:framersai/agentos.git "$COMMIT":main
+```
+
+Repeat for `apps/agentos.sh` and `apps/agentos-client` by swapping the prefix/path. This seeds the public repository with a clean `main` branch containing only the desired snapshot.
