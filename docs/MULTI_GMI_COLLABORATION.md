@@ -15,7 +15,9 @@
 - **Single active GMI per session** - `GMIManager.getOrCreateGMIForSession` (packages/agentos/src/cognitive_substrate/GMIManager.ts:286) ties a session to one persona; switching personas destroys the existing instance.
 - **Workflows exist but do not run** - `WorkflowDefinition` lives in `packages/agentos/src/core/workflows/WorkflowTypes.ts:77` and `AgentOS.startWorkflow` (packages/agentos/src/api/AgentOS.ts:917) persists instances, yet there is no executor loop (`WorkflowEngine.startWorkflow`, packages/agentos/src/core/workflows/WorkflowEngine.ts:182`).
 - **Streaming already exposes workflow updates** - chunk type is present (`AgentOSResponseChunkType.WORKFLOW_UPDATE`, packages/agentos/src/api/types/AgentOSResponse.ts:156).
+- **Agency snapshots stream alongside workflows** - `AgentOSResponseChunkType.AGENCY_UPDATE` surfaces roster changes so dashboards can show seat state in real time.
 - **Personas are rich** - `IPersonaDefinition` includes mood, traits, and `metaPrompts`, but nothing mutates them during a session.
+- **Launch quotas** - Weekly agency launches are enforced via `agency_usage_log`; exceeding quotas returns `AGENCY_WEEKLY_LIMIT_REACHED` and keeps the roster untouched.
 
 Conclusion: we mostly need orchestration glue plus a place to store Agency state.
 
@@ -63,7 +65,7 @@ All additions are optional, so existing definitions continue to work.
 2. Runtime creates an Agency, instantiates three GMIs, and schedules parallel tasks for Researcher and Architect.
 3. As each task resolves, the runtime streams `WORKFLOW_UPDATE` chunks with status and outputs. The Scribe starts when both inputs are ready and composes the final document.
 4. A role evolution rule notices the Architect repeatedly asking for clarity, adjusts its mood to "focused", and an `AGENCY_UPDATE` chunk reports the change.
-5. The workflow completes, returning the document while leaving the Agency active for follow-up questions or tearing it down automatically.
+5. The workflow completes, returning the document while leaving the Agency active for follow-up questions or tearing it down automatically. `AGENCY_UPDATE` chunks keep the UI in sync with seat status the whole time.
 
 **Definition sketch**
 ```ts

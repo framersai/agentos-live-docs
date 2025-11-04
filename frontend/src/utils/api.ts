@@ -22,6 +22,7 @@ import type {
   WorkflowInvocationRequestFE,
   StartWorkflowPayloadFE,
 } from '@/types/workflow';
+import type { AgencyUpdateEventDetail } from '@/types/agency';
 
 // Environment variables for API configuration.
 const API_BASE_URL: string = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api';
@@ -79,6 +80,13 @@ const emitWorkflowUpdate = (detail: WorkflowUpdateEventDetail): void => {
     return;
   }
   window.dispatchEvent(new CustomEvent<WorkflowUpdateEventDetail>('vca:workflow-update', { detail }));
+};
+
+const emitAgencyUpdate = (detail: AgencyUpdateEventDetail): void => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+  window.dispatchEvent(new CustomEvent<AgencyUpdateEventDetail>('vca:agency-update', { detail }));
 };
 
 
@@ -269,6 +277,69 @@ export const billingAPI = {
       : undefined;
     return api.get(`/billing/status/${checkoutId}`, config);
   },
+};
+
+export interface UserAgentDto {
+  id: string;
+  userId?: string;
+  label: string;
+  slug: string | null;
+  planId: string | null;
+  status: string;
+  config: Record<string, unknown>;
+  createdAt: number;
+  updatedAt: number;
+  archivedAt: number | null;
+}
+
+export interface AgentPlanSnapshotDto {
+  planId: PlanId;
+  limits: {
+    maxActiveAgents: number;
+    monthlyCreationAllowance: number;
+    knowledgeDocumentsPerAgent: number;
+    agencySeats: number;
+  };
+  usage: {
+    activeAgents: number;
+    monthlyCreations: number;
+  };
+}
+
+export const userAgentsAPI = {
+  list: (): Promise<AxiosResponse<{ agents: UserAgentDto[] }>> =>
+    api.get('/agents'),
+  get: (agentId: string): Promise<AxiosResponse<UserAgentDto>> =>
+    api.get('/agents/' + agentId),
+  snapshot: (): Promise<AxiosResponse<AgentPlanSnapshotDto>> =>
+    api.get('/agents/plan/snapshot'),
+  create: (payload: { label: string; slug?: string | null; config: Record<string, unknown> }): Promise<AxiosResponse<UserAgentDto>> =>
+    api.post('/agents', payload),
+  update: (agentId: string, payload: Partial<{ label: string; slug: string | null; status: string; config: Record<string, unknown>; archived: boolean }>): Promise<AxiosResponse<UserAgentDto>> =>
+    api.patch('/agents/' + agentId, payload),
+  remove: (agentId: string): Promise<AxiosResponse<void>> =>
+    api.delete('/agents/' + agentId),
+};
+
+export interface UserAgentKnowledgeDto {
+  id: string;
+  type: string;
+  tags: string[];
+  content: string;
+  metadata?: Record<string, unknown> | null;
+  agentId?: string | null;
+  ownerUserId?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export const userAgentKnowledgeAPI = {
+  list: (agentId: string): Promise<AxiosResponse<{ knowledge: UserAgentKnowledgeDto[] }>> =>
+    api.get(/agents//knowledge),
+  create: (agentId: string, payload: { type: string; content: string; tags?: string[]; metadata?: Record<string, unknown> }): Promise<AxiosResponse<UserAgentKnowledgeDto>> =>
+    api.post(/agents//knowledge, payload),
+  remove: (agentId: string, knowledgeId: string): Promise<AxiosResponse<void>> =>
+    api.delete(/agents//knowledge/),
 };
 
 export const rateLimitAPI = {
@@ -583,6 +654,15 @@ export const chatAPI = {
                     metadata: parsedChunk.metadata,
                   });
                 }
+              } else if (parsedChunk.type === 'agency_update') {
+                if (parsedChunk.agency) {
+                  emitAgencyUpdate({
+                    agency: {
+                      ...parsedChunk.agency,
+                      updatedAt: Date.now(),
+                    },
+                  });
+                }
               } else if (parsedChunk.type === 'chunk' && typeof parsedChunk.content === 'string') {
                 onChunkReceived(parsedChunk.content);
               } else if (parsedChunk.type === 'tool_call_delta') {
@@ -890,6 +970,18 @@ export interface MarketplaceAgentSummaryFE {
     customers?: number;
   };
   metadata: Record<string, unknown> | null;
+  visibility: 'public' | 'unlisted' | 'org' | 'invite';
+  status: 'draft' | 'pending' | 'published' | 'retired';
+  ownerUserId?: string | null;
+  organizationId?: string | null;
+  inviteToken?: string | null;
+  artifactPath?: string | null;
+  approval: {
+    approvedAt: number | null;
+    reviewNotes?: string | null;
+  };
+  createdAt: number;
+  updatedAt: number;
 }
 
 export const marketplaceAPI = {

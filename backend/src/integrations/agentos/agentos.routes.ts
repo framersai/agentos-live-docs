@@ -2,11 +2,12 @@ import { Router } from 'express';
 import { agentosChatAdapterEnabled, processAgentOSChatRequest } from './agentos.chat-adapter.js';
 import type { Request, Response, NextFunction } from 'express';
 import { agentosService } from './agentos.integration.js';
+import { agencyUsageService } from '../../features/agents/agencyUsage.service.js';
 
 export const createAgentOSRouter = (): Router => {
   const router = Router();
 
-  router.post('/chat', async (req: Request, res: Response, next: NextFunction) => {
+  router.post('/chat', async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
       if (!agentosChatAdapterEnabled()) {
         return res.status(503).json({ message: 'AgentOS integration disabled', error: 'AGENTOS_DISABLED' });
@@ -24,13 +25,13 @@ export const createAgentOSRouter = (): Router => {
         messages,
       });
 
-      res.status(200).json(result);
+  return res.status(200).json(result);
     } catch (error) {
       next(error);
     }
   });
 
-  router.get('/personas', async (req: Request, res: Response, next: NextFunction) => {
+  router.get('/personas', async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
       if (!agentosChatAdapterEnabled()) {
         return res.status(503).json({ message: 'AgentOS integration disabled', error: 'AGENTOS_DISABLED' });
@@ -106,35 +107,51 @@ export const createAgentOSRouter = (): Router => {
         return true;
       });
 
-      res.status(200).json({ personas: filtered });
+  return res.status(200).json({ personas: filtered });
     } catch (error) {
       next(error);
     }
   });
 
-  router.get('/workflows/definitions', async (_req: Request, res: Response, next: NextFunction) => {
+  router.get('/workflows/definitions', async (_req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
       if (!agentosChatAdapterEnabled()) {
         return res.status(503).json({ message: 'AgentOS integration disabled', error: 'AGENTOS_DISABLED' });
       }
 
       const definitions = await agentosService.listWorkflowDefinitions();
-      res.status(200).json({ definitions });
+  return res.status(200).json({ definitions });
     } catch (error) {
       next(error);
     }
   });
 
-  router.post('/workflows/start', async (req: Request, res: Response, next: NextFunction) => {
+  router.post('/workflows/start', async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
       if (!agentosChatAdapterEnabled()) {
         return res.status(503).json({ message: 'AgentOS integration disabled', error: 'AGENTOS_DISABLED' });
       }
 
-      const { definitionId, userId, conversationId, workflowId, context, roleAssignments, metadata } = req.body ?? {};
+      const {
+        definitionId,
+        userId,
+        conversationId,
+        workflowId,
+        context,
+        roleAssignments,
+        metadata,
+      } = req.body ?? {};
       if (!definitionId || !userId) {
         return res.status(400).json({ message: 'definitionId and userId are required.' });
       }
+
+      const normalizedAssignments =
+        roleAssignments && typeof roleAssignments === 'object' ? roleAssignments : undefined;
+      const seatCount =
+        normalizedAssignments && Object.keys(normalizedAssignments).length > 0
+          ? Object.keys(normalizedAssignments).length
+          : 1;
+      const reservation = await agencyUsageService.assertLaunchCapacity(userId, seatCount);
 
       const instance = await agentosService.startWorkflow({
         definitionId,
@@ -144,14 +161,27 @@ export const createAgentOSRouter = (): Router => {
         context,
         roleAssignments,
         metadata,
+        agencyRequest: req.body?.agencyRequest,
       });
-      res.status(201).json({ workflow: instance });
+      await agencyUsageService.recordLaunch({
+        userId,
+        planId: reservation.planId,
+        workflowDefinitionId: definitionId,
+        agencyId: instance.agencyState?.agencyId ?? null,
+        seats: seatCount,
+        metadata: {
+          workflowId: instance.workflowId,
+          requestedConversationId: conversationId ?? null,
+          agencyRequest: req.body?.agencyRequest ?? null,
+        },
+      });
+  return res.status(201).json({ workflow: instance });
     } catch (error) {
       next(error);
     }
   });
 
-  router.post('/workflows/cancel', async (req: Request, res: Response, next: NextFunction) => {
+  router.post('/workflows/cancel', async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
       if (!agentosChatAdapterEnabled()) {
         return res.status(503).json({ message: 'AgentOS integration disabled', error: 'AGENTOS_DISABLED' });
@@ -164,7 +194,7 @@ export const createAgentOSRouter = (): Router => {
       if (!updated) {
         return res.status(404).json({ message: 'Workflow not found.' });
       }
-      res.status(200).json({ workflow: updated });
+  return res.status(200).json({ workflow: updated });
     } catch (error) {
       next(error);
     }

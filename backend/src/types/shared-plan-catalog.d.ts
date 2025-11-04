@@ -1,4 +1,4 @@
-declare module '../../../shared/planCatalog.js' {
+﻿declare module '@shared/planCatalog.js' {
   export type PlanId = 'global-pass' | 'free' | 'basic' | 'creator' | 'organization';
   export type PlanTier = 'metered' | 'unlimited';
 
@@ -36,6 +36,14 @@ declare module '../../../shared/planCatalog.js' {
       requiresContact?: boolean;
       hiddenOnMarketing?: boolean;
       tier?: PlanTier;
+      agentLimits?: {
+        maxActiveAgents: number;
+        monthlyCreationAllowance: number;
+        knowledgeDocumentsPerAgent: number;
+  agencySeats?: number;
+  agencyLaunchesPerWeek?: number;
+      };
+      featureFlags?: string[];
     };
   }
 
@@ -54,3 +62,8 @@ declare module '../../../shared/planCatalog.js' {
 
   export const PLAN_ROLLOVER_RULES: PlanRolloverExplanation[];
 }
+
+declare module '../../../shared/planCatalog.js' {
+  export * from '@shared/planCatalog.js';
+}
+

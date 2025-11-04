@@ -1,4 +1,4 @@
-import { getAppDatabase } from '../../core/database/appDatabase.js';
+import { getAppDatabase, generateId } from '../../core/database/appDatabase.js';
 import type { StorageAdapter } from '@framers/sql-storage-adapter';
 import { listAgentOSPersonas } from '../../integrations/agentos/agentos.persona-registry.js';
 
@@ -17,6 +17,14 @@ type MarketplaceAgentRecord = {
   hero_image: string | null;
   stats: string | null;
   metadata: string | null;
+  visibility: string | null;
+  owner_user_id: string | null;
+  organization_id: string | null;
+  invite_token: string | null;
+  artifact_path: string | null;
+  status: string | null;
+  approved_at: number | null;
+  review_notes: string | null;
   created_at: number;
   updated_at: number;
 };
@@ -43,9 +51,83 @@ export interface MarketplaceAgent {
     customers?: number;
   };
   metadata: Record<string, unknown> | null;
+  visibility: 'public' | 'unlisted' | 'org' | 'invite';
+  status: 'draft' | 'pending' | 'published' | 'retired';
+  ownerUserId?: string | null;
+  organizationId?: string | null;
+  inviteToken?: string | null;
+  artifactPath?: string | null;
+  approval: {
+    approvedAt: number | null;
+    reviewNotes?: string | null;
+  };
+  createdAt: number;
+  updatedAt: number;
+}
+
+export type MarketplaceVisibility = MarketplaceAgent['visibility'];
+export type MarketplaceStatus = MarketplaceAgent['status'];
+
+export interface MarketplaceAgentCreateInput {
+  id?: string;
+  personaId: string;
+  label: string;
+  tagline: string | null;
+  description: string | null;
+  category: string;
+  accessLevel: string;
+  pricingModel: 'free' | 'freemium' | 'paid';
+  priceCents?: number | null;
+  currency?: string | null;
+  featured?: boolean;
+  visibility?: MarketplaceVisibility;
+  status?: MarketplaceStatus;
+  ownerUserId?: string | null;
+  organizationId?: string | null;
+  inviteToken?: string | null;
+  artifactPath?: string | null;
+  stats?: Record<string, unknown> | null;
+  metadata?: Record<string, unknown> | null;
+}
+
+export interface MarketplaceAgentUpdateInput
+  extends Partial<Omit<MarketplaceAgentCreateInput, 'personaId' | 'pricingModel'>> {
+  personaId?: string;
+  pricingModel?: 'free' | 'freemium' | 'paid';
+  reviewNotes?: string | null;
+}
+
+export interface MarketplaceListOptions {
+  visibility?: MarketplaceVisibility | MarketplaceVisibility[];
+  ownerUserId?: string;
+  organizationId?: string;
+  includeDrafts?: boolean;
+  status?: MarketplaceStatus | MarketplaceStatus[];
 }
 
 const INITIALISED_ADAPTERS = new WeakSet<StorageAdapter>();
+
+async function ensureColumn(
+  adapter: StorageAdapter,
+  table: string,
+  column: string,
+  definition: string,
+): Promise<void> {
+  let exists = false;
+  if (adapter.kind === 'postgres') {
+    const row = await adapter.get<{ column_name: string }>(
+      'SELECT column_name FROM information_schema.columns WHERE table_name = $1 AND column_name = $2 LIMIT 1',
+      [table.toLowerCase(), column.toLowerCase()],
+    );
+    exists = Boolean(row?.column_name);
+  } else {
+    const info = await adapter.all<{ name: string }>(`PRAGMA table_info(${table});`);
+    exists = info.some((entry) => entry.name?.toLowerCase() === column.toLowerCase());
+  }
+  if (!exists) {
+    await adapter.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition};`);
+  }
+}
 
 async function ensureSchema(adapter: StorageAdapter): Promise<void> {
   if (INITIALISED_ADAPTERS.has(adapter)) {
@@ -68,13 +150,39 @@ async function ensureSchema(adapter: StorageAdapter): Promise<void> {
       hero_image TEXT,
       stats TEXT,
       metadata TEXT,
+      visibility TEXT NOT NULL DEFAULT 'public',
+      owner_user_id TEXT,
+      organization_id TEXT,
+      invite_token TEXT,
+      artifact_path TEXT,
+      status TEXT NOT NULL DEFAULT 'published',
+      approved_at INTEGER,
+      review_notes TEXT,
       created_at INTEGER NOT NULL,
       updated_at INTEGER NOT NULL
     );
 
     CREATE INDEX IF NOT EXISTS idx_agentos_marketplace_persona ON agentos_marketplace_agents(persona_id);
     CREATE INDEX IF NOT EXISTS idx_agentos_marketplace_featured ON agentos_marketplace_agents(featured);
+    CREATE INDEX IF NOT EXISTS idx_agentos_marketplace_visibility ON agentos_marketplace_agents(visibility);
+    CREATE INDEX IF NOT EXISTS idx_agentos_marketplace_status ON agentos_marketplace_agents(status);
   `);
+
+  await ensureColumn(adapter, 'agentos_marketplace_agents', 'visibility', "TEXT DEFAULT 'public'");
+  await ensureColumn(adapter, 'agentos_marketplace_agents', 'owner_user_id', 'TEXT');
+  await ensureColumn(adapter, 'agentos_marketplace_agents', 'organization_id', 'TEXT');
+  await ensureColumn(adapter, 'agentos_marketplace_agents', 'invite_token', 'TEXT');
+  await ensureColumn(adapter, 'agentos_marketplace_agents', 'artifact_path', 'TEXT');
+  await ensureColumn(adapter, 'agentos_marketplace_agents', 'status', "TEXT DEFAULT 'published'");
+  await ensureColumn(adapter, 'agentos_marketplace_agents', 'approved_at', 'INTEGER');
+  await ensureColumn(adapter, 'agentos_marketplace_agents', 'review_notes', 'TEXT');
+
+  await adapter.exec(
+    "UPDATE agentos_marketplace_agents SET visibility = 'public' WHERE visibility IS NULL OR visibility = '';",
+  );
+  await adapter.exec(
+    "UPDATE agentos_marketplace_agents SET status = 'published' WHERE status IS NULL OR status = '';",
+  );
 
   INITIALISED_ADAPTERS.add(adapter);
 }
@@ -114,6 +222,18 @@ function hydrateRecord(record: MarketplaceAgentRecord): MarketplaceAgent {
       customers: typeof stats.customers === 'number' ? stats.customers : undefined,
     },
     metadata: parseJson<Record<string, unknown> | null>(record.metadata, null),
+    visibility: (record.visibility ?? 'public') as MarketplaceAgent['visibility'],
+    status: (record.status ?? 'published') as MarketplaceAgent['status'],
+    ownerUserId: record.owner_user_id ?? undefined,
+    organizationId: record.organization_id ?? undefined,
+    inviteToken: record.invite_token ?? undefined,
+    artifactPath: record.artifact_path ?? undefined,
+    approval: {
+      approvedAt: record.approved_at,
+      reviewNotes: record.review_notes ?? undefined,
+    },
+    createdAt: record.created_at,
+    updatedAt: record.updated_at,
   };
 }
 
@@ -128,6 +248,12 @@ const SEED_AGENTS: Array<{
   priceCents?: number;
   currency?: string;
   featured?: boolean;
+  visibility?: 'public' | 'unlisted' | 'org' | 'invite';
+  status?: 'draft' | 'pending' | 'published' | 'retired';
+  ownerUserId?: string | null;
+  organizationId?: string | null;
+  inviteToken?: string | null;
+  artifactPath?: string | null;
   stats?: {
     downloads?: number;
     rating?: number;
@@ -267,19 +393,27 @@ class MarketplaceService {
             persona_id,
             label,
             tagline,
-            description,
-            category,
-            access_level,
-            pricing_model,
-            price_cents,
-            currency,
-            featured,
-            hero_image,
-            stats,
-            metadata,
-            created_at,
-            updated_at
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          description,
+          category,
+          access_level,
+          pricing_model,
+          price_cents,
+          currency,
+          featured,
+          hero_image,
+          stats,
+          metadata,
+          visibility,
+          owner_user_id,
+          organization_id,
+          invite_token,
+          artifact_path,
+          status,
+          approved_at,
+          review_notes,
+          created_at,
+          updated_at
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `,
         [
           agent.id,
@@ -296,6 +430,14 @@ class MarketplaceService {
           null,
           JSON.stringify(agent.stats ?? {}),
           null,
+          agent.visibility ?? 'public',
+          agent.ownerUserId ?? null,
+          agent.organizationId ?? null,
+          agent.inviteToken ?? null,
+          agent.artifactPath ?? null,
+          agent.status ?? 'published',
+          agent.status === 'published' ? now : null,
+          null,
           now,
           now,
         ],
@@ -303,10 +445,44 @@ class MarketplaceService {
     }
   }
 
-  public async listAgents(): Promise<MarketplaceAgent[]> {
+  public async listAgents(options: MarketplaceListOptions = {}): Promise<MarketplaceAgent[]> {
     const adapter = await this.getAdapter();
     const rows = await adapter.all<MarketplaceAgentRecord>('SELECT * FROM agentos_marketplace_agents ORDER BY featured DESC, label ASC');
-    return rows.map(hydrateRecord);
+    const requestedVisibility = Array.isArray(options.visibility)
+      ? options.visibility
+      : options.visibility
+        ? [options.visibility]
+        : ['public'];
+    const requestedStatus = Array.isArray(options.status)
+      ? options.status
+      : options.status
+        ? [options.status]
+        : options.includeDrafts
+          ? []
+          : ['published'];
+
+    return rows
+      .map(hydrateRecord)
+      .filter((agent) => {
+        if (requestedStatus.length > 0 && !requestedStatus.includes(agent.status)) {
+          return false;
+        }
+        if (!requestedVisibility.includes(agent.visibility)) {
+          return false;
+        }
+        if (options.ownerUserId && agent.ownerUserId !== options.ownerUserId) {
+          return false;
+        }
+        if (options.organizationId) {
+          if (agent.visibility === 'org' && agent.organizationId !== options.organizationId) {
+            return false;
+          }
+          if (agent.visibility === 'invite' && agent.organizationId && agent.organizationId !== options.organizationId) {
+            return false;
+          }
+        }
+        return true;
+      });
   }
 
   public async getAgentById(id: string): Promise<MarketplaceAgent | null> {
@@ -316,6 +492,164 @@ class MarketplaceService {
       [id, id],
     );
     return row ? hydrateRecord(row) : null;
+  }
+
+  public async createAgent(input: MarketplaceAgentCreateInput): Promise<MarketplaceAgent> {
+    const adapter = await this.getAdapter();
+    const now = Date.now();
+    const id = input.id ?? generateId();
+    await adapter.run(
+      `
+        INSERT INTO agentos_marketplace_agents (
+          id,
+          persona_id,
+          label,
+          tagline,
+          description,
+          category,
+          access_level,
+          pricing_model,
+          price_cents,
+          currency,
+          featured,
+          hero_image,
+          stats,
+          metadata,
+          visibility,
+          owner_user_id,
+          organization_id,
+          invite_token,
+          artifact_path,
+          status,
+          approved_at,
+          review_notes,
+          created_at,
+          updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `,
+      [
+        id,
+        input.personaId,
+        input.label,
+        input.tagline,
+        input.description,
+        input.category,
+        input.accessLevel,
+        input.pricingModel,
+        input.priceCents ?? null,
+        input.currency ?? 'USD',
+        input.featured ? 1 : 0,
+        null,
+        input.stats ? JSON.stringify(input.stats) : null,
+        input.metadata ? JSON.stringify(input.metadata) : null,
+        input.visibility ?? 'public',
+        input.ownerUserId ?? null,
+        input.organizationId ?? null,
+        input.inviteToken ?? null,
+        input.artifactPath ?? null,
+        input.status ?? 'pending',
+        input.status === 'published' ? now : null,
+        null,
+        now,
+        now,
+      ],
+    );
+
+    const created = await this.getAgentById(id);
+    if (!created) {
+      throw new Error('Failed to load created marketplace agent.');
+    }
+    return created;
+  }
+
+  public async updateAgent(id: string, updates: MarketplaceAgentUpdateInput): Promise<MarketplaceAgent | null> {
+    const adapter = await this.getAdapter();
+    const fields: string[] = [];
+    const params: Array<string | number | null> = [];
+
+    const assign = (clause: string, value: string | number | null): void => {
+      fields.push(clause);
+      params.push(value);
+    };
+
+    if (typeof updates.label !== 'undefined') {
+      assign('label = ?', updates.label ?? null);
+    }
+    if (typeof updates.tagline !== 'undefined') {
+      assign('tagline = ?', updates.tagline ?? null);
+    }
+    if (typeof updates.description !== 'undefined') {
+      assign('description = ?', updates.description ?? null);
+    }
+    if (typeof updates.category !== 'undefined') {
+      assign('category = ?', updates.category ?? null);
+    }
+    if (typeof updates.personaId !== 'undefined') {
+      assign('persona_id = ?', updates.personaId ?? null);
+    }
+    if (typeof updates.accessLevel !== 'undefined') {
+      assign('access_level = ?', updates.accessLevel ?? null);
+    }
+    if (typeof updates.pricingModel !== 'undefined') {
+      assign('pricing_model = ?', updates.pricingModel ?? null);
+    }
+    if (typeof updates.priceCents !== 'undefined') {
+      assign('price_cents = ?', updates.priceCents ?? null);
+    }
+    if (typeof updates.currency !== 'undefined') {
+      assign('currency = ?', updates.currency ?? null);
+    }
+    if (typeof updates.featured !== 'undefined') {
+      assign('featured = ?', updates.featured ? 1 : 0);
+    }
+    if (typeof updates.visibility !== 'undefined') {
+      assign('visibility = ?', updates.visibility);
+    }
+    if (typeof updates.ownerUserId !== 'undefined') {
+      assign('owner_user_id = ?', updates.ownerUserId ?? null);
+    }
+    if (typeof updates.organizationId !== 'undefined') {
+      assign('organization_id = ?', updates.organizationId ?? null);
+    }
+    if (typeof updates.inviteToken !== 'undefined') {
+      assign('invite_token = ?', updates.inviteToken ?? null);
+    }
+    if (typeof updates.artifactPath !== 'undefined') {
+      assign('artifact_path = ?', updates.artifactPath ?? null);
+    }
+    if (typeof updates.stats !== 'undefined') {
+      assign('stats = ?', updates.stats ? JSON.stringify(updates.stats) : null);
+    }
+    if (typeof updates.metadata !== 'undefined') {
+      assign('metadata = ?', updates.metadata ? JSON.stringify(updates.metadata) : null);
+    }
+    if (typeof updates.reviewNotes !== 'undefined') {
+      assign('review_notes = ?', updates.reviewNotes ?? null);
+    }
+    if (typeof updates.status !== 'undefined') {
+      assign('status = ?', updates.status);
+      if (updates.status === 'published') {
+        assign('approved_at = ?', Date.now());
+      } else if (updates.status === 'pending' || updates.status === 'draft') {
+        assign('approved_at = ?', null);
+      }
+    }
+
+    if (!fields.length) {
+      return this.getAgentById(id);
+    }
+
+    const now = Date.now();
+    fields.push('updated_at = ?');
+    params.push(now);
+    params.push(id);
+
+    await adapter.run(
+      `UPDATE agentos_marketplace_agents SET ${fields.join(', ')} WHERE id = ?`,
+      params,
+    );
+
+    return this.getAgentById(id);
   }
 }
 

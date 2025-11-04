@@ -28,6 +28,7 @@ import { createAgentOSSubscriptionAdapter } from './agentos.subscription-service
 import { createAgentOSRouter } from './agentos.routes.js';
 import { createAgentOSStreamRouter } from './agentos.stream-router.js';
 import { createAgentOSSqlClient } from './agentos.sql-client.js';
+import { reloadDynamicPersonas } from './agentos.persona-registry.js';
 
 const isWorkflowStatus = (value: string): value is WorkflowStatus =>
   (Object.values(WorkflowStatus) as string[]).includes(value);
@@ -107,6 +108,7 @@ class AgentOSIntegration {
     context?: Record<string, unknown>;
     roleAssignments?: Record<string, string>;
     metadata?: Record<string, unknown>;
+    agencyRequest?: Record<string, unknown>;
   }): Promise<WorkflowInstance> {
     const agentosInstance = await this.getAgentOS();
 
@@ -125,6 +127,10 @@ class AgentOSIntegration {
         streamUICommands: true,
       },
     };
+
+    if (options.agencyRequest && typeof options.agencyRequest === 'object') {
+      (agentosInput as any).agencyRequest = options.agencyRequest;
+    }
 
     return agentosInstance.startWorkflow(options.definitionId, agentosInput, {
       workflowId: options.workflowId,
@@ -166,6 +172,7 @@ class AgentOSIntegration {
 
   private async initializeAgentOS(): Promise<void> {
     ensureAgentOSEnvDefaults();
+    await reloadDynamicPersonas();
     const config = await buildEmbeddedAgentOSConfig();
     const agentos = new AgentOS();
     await agentos.initialize(config);

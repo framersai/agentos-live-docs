@@ -171,6 +171,11 @@ const activeWorkflowSummary = computed(() => {
   return chatStore.getWorkflowForConversation(activeConversationId.value);
 });
 
+const activeAgency = computed(() => {
+  if (!activeConversationId.value) return null;
+  return chatStore.getAgencyForConversation(activeConversationId.value);
+});
+
 const activeWorkflowEvents = computed(() => {
   if (!activeWorkflowSummary.value) return [];
   return chatStore.getWorkflowEventsForWorkflow(activeWorkflowSummary.value.workflowId);
@@ -465,6 +470,7 @@ watch(isVoiceInputCurrentlyProcessingAudio, (isSttActive) => {
           <WorkflowStatusPanel
             :workflow="activeWorkflowSummary"
             :events="activeWorkflowEvents"
+            :agency="activeAgency"
           />
           <div class="workflow-launcher" v-if="workflowDefinitionsLoading">
             <span class="workflow-launcher__message">Loading workflows…</span>

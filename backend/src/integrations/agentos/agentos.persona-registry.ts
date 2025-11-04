@@ -4,6 +4,7 @@ import type { ILlmTool } from '../../core/llm/llm.interfaces.js';
 import { CodingAssistantAgentTools } from '../../tools/codingAssistant.tools.js';
 import { DiaryAgentTools } from '../../tools/diary.tools.js';
 import { TutorAgentTools } from '../../tools/tutor.tools.js';
+import { listApprovedDynamicPersonas } from './agentos.dynamic-personas.js';
 
 const PROMPTS_DIR = path.resolve(process.cwd(), 'prompts');
 
@@ -52,6 +53,12 @@ const TOOLSETS: Record<string, AgentOSToolset> = {
     tools: DiaryAgentTools,
     minAccessLevel: 'public',
   },
+};
+
+let dynamicPersonas: AgentOSPersonaDefinition[] = [];
+
+export const reloadDynamicPersonas = async (): Promise<void> => {
+  dynamicPersonas = await listApprovedDynamicPersonas();
 };
 
 const PERSONAS: AgentOSPersonaDefinition[] = [
@@ -164,11 +171,20 @@ export function resolveAgentOSPersona(agentId?: string): AgentOSPersonaDefinitio
     return PERSONAS[0];
   }
   const normalized = agentId.toLowerCase();
-  return PERSONAS.find((persona) => persona.agentIds.map((id) => id.toLowerCase()).includes(normalized)) ?? PERSONAS[0];
+  const fromStatic =
+    PERSONAS.find((persona) => persona.agentIds.map((id) => id.toLowerCase()).includes(normalized)) ??
+    PERSONAS.find((persona) => persona.personaId.toLowerCase() === normalized);
+  if (fromStatic) {
+    return fromStatic;
+  }
+  const fromDynamic =
+    dynamicPersonas.find((persona) => persona.agentIds.map((id) => id.toLowerCase()).includes(normalized)) ??
+    dynamicPersonas.find((persona) => persona.personaId.toLowerCase() === normalized);
+  return fromDynamic ?? PERSONAS[0];
 }
 
 export function listAgentOSPersonas(): AgentOSPersonaDefinition[] {
-  return PERSONAS;
+  return [...PERSONAS, ...dynamicPersonas];
 }
 
 export function listAgentOSToolsets(): AgentOSToolset[] {

@@ -20,6 +20,7 @@ import {
 import { voiceSettingsManager } from '@/services/voice.settings.service';
 import { chatAPI, type ChatMessageFE, type ProcessedHistoryMessageFE, type ILlmToolCallFE as ApiLlmToolCall, type ChatMessagePayloadFE } from '@/utils/api';
 import type { WorkflowInstanceFE, WorkflowEventFE, WorkflowProgressUpdateFE, WorkflowUpdateEventDetail } from '@/types/workflow';
+import type { AgencySnapshotFE, AgencyUpdateEventDetail } from '@/types/agency';
 
 export interface ILlmToolCallUI extends ApiLlmToolCall {}
 
@@ -63,6 +64,8 @@ export const useChatStore = defineStore('chat', () => {
   const workflowInstances = ref<Record<string, WorkflowInstanceFE>>({});
   const workflowEvents = ref<Record<string, WorkflowEventFE[]>>({});
   const workflowByConversation = ref<Record<string, string>>({});
+  const agencySessions = ref<Record<string, AgencySnapshotFE>>({});
+  const agencyByConversation = ref<Record<string, string>>({});
   const languageDetectionSessionKey = 'vca_language_detection_complete_v1';
   const languageDetectionInFlight = ref(false);
 
@@ -239,8 +242,34 @@ export const useChatStore = defineStore('chat', () => {
 
   function clearAgentData(agentId?: AgentId | null): void {
     if (agentId) {
+      const conversationId = conversationIds.value[agentId];
       messageHistory.value = messageHistory.value.filter(msg => msg.agentId !== agentId);
       clearMainContentForAgent(agentId);
+      if (conversationId) {
+        const workflowsByConversation = { ...workflowByConversation.value };
+        const workflowId = workflowsByConversation[conversationId];
+        delete workflowsByConversation[conversationId];
+        workflowByConversation.value = workflowsByConversation;
+        if (workflowId) {
+          const workflowSnapshot = { ...workflowInstances.value };
+          delete workflowSnapshot[workflowId];
+          workflowInstances.value = workflowSnapshot;
+          const workflowEventHistory = { ...workflowEvents.value };
+          delete workflowEventHistory[workflowId];
+          workflowEvents.value = workflowEventHistory;
+        }
+        if (agencyByConversation.value[conversationId]) {
+          const updatedAgencyMap = { ...agencyByConversation.value };
+          const agencyId = updatedAgencyMap[conversationId];
+          delete updatedAgencyMap[conversationId];
+          agencyByConversation.value = updatedAgencyMap;
+          if (agencyId) {
+            const updatedAgencies = { ...agencySessions.value };
+            delete updatedAgencies[agencyId];
+            agencySessions.value = updatedAgencies;
+          }
+        }
+      }
       delete conversationIds.value[agentId];
       if (agentPersonas.value[agentId]) {
         const updated = { ...agentPersonas.value };
@@ -254,6 +283,11 @@ export const useChatStore = defineStore('chat', () => {
       conversationIds.value = {};
       agentPersonas.value = {};
       ttsPendingMap.value = {};
+      workflowInstances.value = {};
+      workflowEvents.value = {};
+      workflowByConversation.value = {};
+      agencySessions.value = {};
+      agencyByConversation.value = {};
     }
   }
   function clearAllAgentData(): void { clearAgentData(); }
@@ -393,10 +427,26 @@ export const useChatStore = defineStore('chat', () => {
     }
   };
 
+  const applyAgencyUpdate = (snapshot: AgencySnapshotFE): void => {
+    agencySessions.value = { ...agencySessions.value, [snapshot.agencyId]: snapshot };
+    if (snapshot.conversationId) {
+      agencyByConversation.value = {
+        ...agencyByConversation.value,
+        [snapshot.conversationId]: snapshot.agencyId,
+      };
+    }
+  };
+
   const getWorkflowForConversation = (conversationId: string | null | undefined): WorkflowInstanceFE | null => {
     if (!conversationId) return null;
     const workflowId = workflowByConversation.value[conversationId];
     return workflowId ? workflowInstances.value[workflowId] ?? null : null;
+  };
+
+  const getAgencyForConversation = (conversationId: string | null | undefined): AgencySnapshotFE | null => {
+    if (!conversationId) return null;
+    const agencyId = agencyByConversation.value[conversationId];
+    return agencyId ? agencySessions.value[agencyId] ?? null : null;
   };
 
   const getWorkflowEventsForWorkflow = (workflowId: string | null | undefined): WorkflowEventFE[] => {
@@ -409,6 +459,12 @@ export const useChatStore = defineStore('chat', () => {
       const detail = (event as CustomEvent<WorkflowUpdateEventDetail>).detail;
       if (detail?.workflow) {
         applyWorkflowUpdate(detail.workflow);
+      }
+    });
+    window.addEventListener('vca:agency-update', (event: Event) => {
+      const detail = (event as CustomEvent<AgencyUpdateEventDetail>).detail;
+      if (detail?.agency) {
+        applyAgencyUpdate(detail.agency);
       }
     });
   }
@@ -441,6 +497,7 @@ export const useChatStore = defineStore('chat', () => {
     getExistingConversationId,
     getWorkflowForConversation,
     getWorkflowEventsForWorkflow,
+    getAgencyForConversation,
     isAgentAwaitingTts: (agentId: AgentId) => !!ttsPendingMap.value[agentId],
   };
 });

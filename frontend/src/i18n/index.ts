@@ -1,4 +1,4 @@
-import { createI18n } from 'vue-i18n';
+﻿import { createI18n } from 'vue-i18n';
 import type { I18n, I18nOptions, Composer } from 'vue-i18n';
 
 // Import locale messages
@@ -16,14 +16,14 @@ import enNG from './locales/en-NG';
 // Define available locales
 export const AVAILABLE_LOCALES = {
   'en': 'English',
-  'es-ES': 'Español',
-  'fr-FR': 'Français',
+  'es-ES': 'EspaÃ±ol',
+  'fr-FR': 'FranÃ§ais',
   'de-DE': 'Deutsch',
   'it-IT': 'Italiano',
-  'pt-BR': 'Português',
-  'ja-JP': '日本語',
-  'ko-KR': '한국어',
-  'zh-CN': '中文'
+  'pt-BR': 'PortuguÃªs',
+  'ja-JP': 'æ—¥æœ¬èªž',
+  'ko-KR': 'í•œêµ­ì–´',
+  'zh-CN': 'ä¸­æ–‡'
 } as const;
 
 export type AvailableLocale = keyof typeof AVAILABLE_LOCALES;
@@ -113,3 +113,4 @@ export function tGlobal(key: string, params?: Record<string, any>): string {
 // Export both as named export and default
 export { i18n, composer };
 export default i18n;
+
