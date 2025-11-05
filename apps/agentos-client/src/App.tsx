@@ -11,6 +11,7 @@ import { openAgentOSStream } from "@/lib/agentosClient";
 import { GuidedTour } from "@/components/GuidedTour";
 import { ThemePanel } from "@/components/ThemePanel";
 import { AboutPanel } from "@/components/AboutPanel";
+import { SettingsPanel } from "@/components/SettingsPanel";
 import { usePersonas } from "@/hooks/usePersonas";
 import { useSystemTheme } from "@/hooks/useSystemTheme";
 import { useSessionStore } from "@/state/sessionStore";
@@ -28,6 +29,7 @@ export default function App() {
     { key: "agency", label: "Agency" },
     { key: "personas", label: "Personas" },
     { key: "workflows", label: "Workflows" },
+    { key: "settings", label: "Settings" },
     { key: "about", label: "About" },
   ] as const;
   type LeftTabKey = typeof LEFT_TABS[number]["key"];
@@ -330,6 +332,7 @@ export default function App() {
               {leftTab === "agency" && <AgencyManager />}
               {leftTab === "personas" && <PersonaCatalog />}
               {leftTab === "workflows" && <WorkflowOverview />}
+              {leftTab === "settings" && <SettingsPanel />}
               {leftTab === "about" && <AboutPanel />}
             </section>
 
