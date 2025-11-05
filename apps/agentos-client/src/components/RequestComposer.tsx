@@ -180,13 +180,13 @@ export function RequestComposer({ onSubmit }: RequestComposerProps) {
   };
 
   return (
-    <div className="flex h-full flex-col gap-4 rounded-3xl border border-white/5 bg-slate-900/60 p-6">
+    <div className="flex h-full flex-col gap-4 rounded-3xl border border-slate-200 bg-white p-6 dark:border-white/10 dark:bg-slate-900/60">
       <header>
-        <p className="text-xs uppercase tracking-[0.25em] text-slate-400">{t("requestComposer.header.title")}</p>
-        <h2 className="text-lg font-semibold text-slate-100">{t("requestComposer.header.subtitle")}</h2>
+        <p className="text-xs uppercase tracking-[0.25em] text-slate-500 dark:text-slate-400">{t("requestComposer.header.title")}</p>
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{t("requestComposer.header.subtitle")}</h2>
       </header>
       <form onSubmit={handleSubmit} className="flex flex-1 flex-col gap-4">
-        <fieldset className="flex flex-wrap items-center gap-4 text-xs text-slate-400">
+        <fieldset className="flex flex-wrap items-center gap-4 text-xs text-slate-600 dark:text-slate-400">
           <legend className="sr-only">{t("requestComposer.form.targetLegend")}</legend>
           {targetOptions.map((option) => (
             <label key={option.value} className="inline-flex items-center gap-2">
@@ -195,24 +195,24 @@ export function RequestComposer({ onSubmit }: RequestComposerProps) {
                 value={option.value}
                 {...form.register("targetType")}
                 disabled={option.value === "agency" && agencies.length === 0}
-                className="h-3 w-3 border-white/20 bg-slate-950 text-sky-500 focus:ring-sky-500 disabled:opacity-30"
+                className="h-3 w-3 border-slate-300 bg-white text-sky-600 focus:ring-sky-500 disabled:opacity-30 dark:border-white/20 dark:bg-slate-950 dark:text-sky-500"
               />
               <span className="uppercase">{option.label}</span>
             </label>
           ))}
           {agencies.length === 0 && (
-            <span className="text-[10px] uppercase tracking-[0.4em] text-slate-500">
+            <span className="text-[10px] uppercase tracking-[0.4em] text-slate-500 dark:text-slate-500">
               {t("requestComposer.guidance.createAgency")}
             </span>
           )}
         </fieldset>
 
         {targetType === "persona" ? (
-          <label className="space-y-2 text-sm text-slate-300">
+          <label className="space-y-2 text-sm text-slate-700 dark:text-slate-300">
             {t("requestComposer.form.persona.label")}
             <select
               {...form.register("personaId")}
-              className="w-full rounded-xl border border-white/10 bg-slate-950/60 px-3 py-2 text-sm text-slate-100 focus:border-sky-500 focus:outline-none"
+              className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-sky-500 focus:outline-none dark:border-white/10 dark:bg-slate-950/60 dark:text-slate-100"
             >
               <option value="" disabled>
                 {t("requestComposer.form.persona.placeholder")}
@@ -227,13 +227,13 @@ export function RequestComposer({ onSubmit }: RequestComposerProps) {
           </label>
         ) : (
           <div className="space-y-4">
-            <label className="space-y-2 text-sm text-slate-300">
+            <label className="space-y-2 text-sm text-slate-700 dark:text-slate-300">
               {t("requestComposer.form.agency.label")}
               <select
                 {...form.register("agencyId", {
                   onChange: (event) => setActiveAgency(event.target.value || null)
                 })}
-                className="w-full rounded-xl border border-white/10 bg-slate-950/60 px-3 py-2 text-sm text-slate-100 focus:border-sky-500 focus:outline-none"
+                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-sky-500 focus:outline-none dark:border-white/10 dark:bg-slate-950/60 dark:text-slate-100"
               >
                 <option value="" disabled>
                   {t("requestComposer.form.agency.placeholder")}
@@ -246,11 +246,11 @@ export function RequestComposer({ onSubmit }: RequestComposerProps) {
               </select>
               {errors.agencyId && <p className="text-xs text-rose-300">{errors.agencyId.message}</p>}
             </label>
-            <label className="space-y-2 text-sm text-slate-300">
+            <label className="space-y-2 text-sm text-slate-700 dark:text-slate-300">
               {t("requestComposer.form.workflow.label")}
               <select
                 {...form.register("workflowId")}
-                className="w-full rounded-xl border border-white/10 bg-slate-950/60 px-3 py-2 text-sm text-slate-100 focus:border-sky-500 focus:outline-none"
+                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-sky-500 focus:outline-none dark:border-white/10 dark:bg-slate-950/60 dark:text-slate-100"
               >
                 <option value="">
                   {workflowsLoading ? t("requestComposer.form.workflow.loading") : t("requestComposer.form.workflow.none")}
@@ -261,21 +261,21 @@ export function RequestComposer({ onSubmit }: RequestComposerProps) {
                   </option>
                 ))}
               </select>
-              <p className="text-xs text-slate-500">{t("requestComposer.form.workflow.hint")}</p>
+              <p className="text-xs text-slate-500 dark:text-slate-500">{t("requestComposer.form.workflow.hint")}</p>
             </label>
           </div>
         )}
 
-        <label className="flex flex-1 flex-col space-y-2 text-sm text-slate-300">
+        <label className="flex flex-1 flex-col space-y-2 text-sm text-slate-700 dark:text-slate-300">
           {t("requestComposer.form.userInput.label")}
           <textarea
             rows={6}
             {...form.register("input")}
-            className="flex-1 rounded-xl border border-white/10 bg-slate-950/60 px-3 py-3 text-sm text-slate-100 placeholder:text-slate-500 focus:border-sky-500 focus:outline-none"
+            className="flex-1 rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-sky-500 focus:outline-none dark:border-white/10 dark:bg-slate-950/60 dark:text-slate-100 dark:placeholder:text-slate-500"
           />
         </label>
 
-        <fieldset className="flex items-center gap-4 text-xs text-slate-400">
+        <fieldset className="flex items-center gap-4 text-xs text-slate-600 dark:text-slate-400">
           <legend className="sr-only">{t("requestComposer.form.modeLegend")}</legend>
           {modeOptions.map((option) => (
             <label key={option.value} className="inline-flex items-center gap-2">
@@ -283,7 +283,7 @@ export function RequestComposer({ onSubmit }: RequestComposerProps) {
                 type="radio"
                 value={option.value}
                 {...form.register("mode")}
-                className="h-3 w-3 border-white/20 bg-slate-950 text-sky-500 focus:ring-sky-500"
+                className="h-3 w-3 border-slate-300 bg-white text-sky-600 focus:ring-sky-500 dark:border-white/20 dark:bg-slate-950 dark:text-sky-500"
               />
               <span className="uppercase">{option.label}</span>
             </label>
@@ -291,13 +291,13 @@ export function RequestComposer({ onSubmit }: RequestComposerProps) {
         </fieldset>
 
         {targetType === "agency" && (
-          <p className="inline-flex items-center gap-2 rounded-xl border border-sky-500/30 bg-sky-500/10 px-4 py-2 text-xs text-sky-100">
-            <Users className="h-3 w-3 text-sky-300" />
+          <p className="inline-flex items-center gap-2 rounded-xl border border-sky-200 bg-sky-50 px-4 py-2 text-xs text-sky-700 dark:border-sky-500/30 dark:bg-sky-500/10 dark:text-sky-100">
+            <Users className="h-3 w-3 text-sky-600 dark:text-sky-300" />
             {t("requestComposer.form.workflow.agencyNotice")}
           </p>
         )}
 
-        <div className="mt-auto flex flex-col gap-3 text-xs text-slate-400">
+        <div className="mt-auto flex flex-col gap-3 text-xs text-slate-600 dark:text-slate-400">
           <button
             type="submit"
             className="inline-flex items-center justify-center gap-2 rounded-full bg-sky-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-sky-500/30 transition hover:-translate-y-0.5"
@@ -309,13 +309,13 @@ export function RequestComposer({ onSubmit }: RequestComposerProps) {
           <button
             type="button"
             onClick={handleReplay}
-            className="inline-flex items-center justify-center gap-2 rounded-full border border-white/10 px-6 py-3 text-sm font-semibold text-slate-200 transition hover:border-slate-400/40"
+            className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 px-6 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-white/10 dark:text-slate-200 dark:hover:border-slate-400/40"
             disabled={!activeSessionId}
           >
             <Paperclip className="h-4 w-4" /> {t("requestComposer.actions.attachTranscript")}
           </button>
-          <div className="flex items-start gap-2 text-xs text-slate-500">
-            <Sparkle className="mt-0.5 h-3 w-3 text-sky-400" />
+          <div className="flex items-start gap-2 text-xs text-slate-500 dark:text-slate-500">
+            <Sparkle className="mt-0.5 h-3 w-3 text-sky-600 dark:text-sky-400" />
             {t("requestComposer.footer.localNotice")}
           </div>
         </div>

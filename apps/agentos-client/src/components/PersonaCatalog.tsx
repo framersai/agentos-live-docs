@@ -93,7 +93,7 @@ export function PersonaCatalog() {
   };
 
   return (
-    <section className="rounded-3xl border border-slate-200/60 bg-white/80 p-5 transition-colors duration-300 dark:border-white/10 dark:bg-slate-900/60">
+    <section className="rounded-3xl border border-slate-200 bg-white p-5 transition-colors duration-300 dark:border-white/10 dark:bg-slate-900/60">
       <header className="mb-4 flex items-center justify-between">
         <div>
           <p className="text-[10px] uppercase tracking-[0.4em] text-slate-500 dark:text-slate-400">Persona catalog</p>
@@ -148,20 +148,20 @@ export function PersonaCatalog() {
       </div>
 
       <div className="space-y-4">
-        <ul className="space-y-2 text-sm text-slate-200">
+        <ul className="space-y-2 text-sm text-slate-700 dark:text-slate-200">
           {visiblePersonas.map((persona) => (
-            <li key={persona.id} className="flex items-start justify-between rounded-2xl border border-white/5 bg-slate-950/50 px-4 py-3">
+            <li key={persona.id} className="flex items-start justify-between rounded-2xl border border-slate-200 bg-white px-4 py-3 dark:border-white/5 dark:bg-slate-950/50">
               <div>
-                <p className="text-sm font-semibold text-slate-100">{persona.displayName}</p>
-                {persona.description && <p className="text-xs text-slate-400">{persona.description}</p>}
+                <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">{persona.displayName}</p>
+                {persona.description && <p className="text-xs text-slate-600 dark:text-slate-400">{persona.description}</p>}
                 {persona.tags && persona.tags.length > 0 && (
-                  <p className="mt-1 text-[10px] uppercase tracking-[0.35em] text-slate-500">{persona.tags.join(", ")}</p>
+                  <p className="mt-1 text-[10px] uppercase tracking-[0.35em] text-slate-500 dark:text-slate-500">{persona.tags.join(", ")}</p>
                 )}
               </div>
               <button
                 type="button"
                 onClick={() => persona.id !== primaryPersona && removePersona(persona.id)}
-                className="ml-3 inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/10 text-slate-400 transition hover:text-rose-300 disabled:opacity-30"
+                className="ml-3 inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 text-slate-600 transition hover:bg-slate-50 disabled:opacity-30 dark:border-white/10 dark:text-slate-400 dark:hover:text-rose-300"
                 title="Remove persona"
                 disabled={persona.id === primaryPersona}
               >
@@ -170,52 +170,52 @@ export function PersonaCatalog() {
             </li>
           ))}
           {personas.length > visiblePersonas.length && (
-            <li className="rounded-2xl border border-dashed border-white/10 px-4 py-3 text-xs text-slate-500">
+            <li className="rounded-2xl border border-dashed border-slate-300 px-4 py-3 text-xs text-slate-500 dark:border-white/10">
               {personas.length - visiblePersonas.length} more personas in store
             </li>
           )}
         </ul>
 
-        <form onSubmit={handleSubmit} className="space-y-3 rounded-2xl border border-white/10 bg-slate-950/50 p-4 text-sm text-slate-200">
+        <form onSubmit={handleSubmit} className="space-y-3 rounded-2xl border border-slate-200 bg-white p-4 text-sm text-slate-700 dark:border-white/10 dark:bg-slate-950/50 dark:text-slate-200">
           <div className="flex items-center justify-between">
-            <p className="text-xs uppercase tracking-[0.35em] text-slate-500">Create persona</p>
+            <p className="text-xs uppercase tracking-[0.35em] text-slate-500 dark:text-slate-500">Create persona</p>
             <Sparkles className="h-3 w-3 text-sky-400" />
           </div>
           <label className="space-y-1">
-            <span className="text-xs text-slate-400">Display name</span>
+            <span className="text-xs text-slate-500 dark:text-slate-400">Display name</span>
             <input
               value={draft.displayName}
               onChange={(event) => setDraft((prev) => ({ ...prev, displayName: event.target.value }))}
-              className="w-full rounded-lg border border-white/10 bg-slate-950/80 px-3 py-2 text-sm text-slate-100 focus:border-sky-500 focus:outline-none"
+              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-sky-500 focus:outline-none dark:border-white/10 dark:bg-slate-950/80 dark:text-slate-100"
               placeholder="Aurora QA Specialist"
             />
           </label>
           <label className="space-y-1">
-            <span className="text-xs text-slate-400">Purpose / description</span>
+            <span className="text-xs text-slate-500 dark:text-slate-400">Purpose / description</span>
             <textarea
               value={draft.description}
               onChange={(event) => setDraft((prev) => ({ ...prev, description: event.target.value }))}
               rows={2}
-              className="w-full rounded-lg border border-white/10 bg-slate-950/80 px-3 py-2 text-sm text-slate-100 focus:border-sky-500 focus:outline-none"
+              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-sky-500 focus:outline-none dark:border-white/10 dark:bg-slate-950/80 dark:text-slate-100"
               placeholder="Monitors telemetry and flags regressions before launches."
             />
           </label>
           <div className="grid gap-3 sm:grid-cols-2">
             <label className="space-y-1">
-              <span className="text-xs text-slate-400">Tags</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400">Tags</span>
               <input
                 value={draft.tags}
                 onChange={(event) => setDraft((prev) => ({ ...prev, tags: event.target.value }))}
-                className="w-full rounded-lg border border-white/10 bg-slate-950/80 px-3 py-2 text-sm text-slate-100 focus:border-sky-500 focus:outline-none"
+                className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-sky-500 focus:outline-none dark:border-white/10 dark:bg-slate-950/80 dark:text-slate-100"
                 placeholder="ops, qa"
               />
             </label>
             <label className="space-y-1">
-              <span className="text-xs text-slate-400">Traits</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400">Traits</span>
               <input
                 value={draft.traits}
                 onChange={(event) => setDraft((prev) => ({ ...prev, traits: event.target.value }))}
-                className="w-full rounded-lg border border-white/10 bg-slate-950/80 px-3 py-2 text-sm text-slate-100 focus:border-sky-500 focus:outline-none"
+                className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-sky-500 focus:outline-none dark:border-white/10 dark:bg-slate-950/80 dark:text-slate-100"
                 placeholder="meticulous, proactive"
               />
             </label>
