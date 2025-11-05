@@ -84,6 +84,30 @@
      </SettingsItem>
     </SettingsSection>
 
+    <SettingsSection v-if="isAuthenticated" title="My Agents" :icon="UsersIcon" class="settings-grid-span-2" id="my-agents">
+      <div class="settings-items-grid-ephemeral">
+        <div class="info-card-ephemeral">
+          <h4 class="info-card-title-ephemeral">Manage your agents</h4>
+          <p class="text-sm text-slate-600 dark:text-slate-300">Rename or delete your custom agents.</p>
+        </div>
+        <div class="rounded-2xl border border-slate-200/40 p-3 dark:border-slate-800/60">
+          <div v-if="myAgentsError" class="text-rose-400 text-sm">{{ myAgentsError }}</div>
+          <div v-else>
+            <div v-if="myAgents.length === 0" class="text-sm text-slate-500">No custom agents yet.</div>
+            <ul v-else class="space-y-2">
+              <li v-for="agent in myAgents" :key="agent.id" class="flex items-center gap-2">
+                <input v-model="agent.editLabel" class="flex-1 rounded-lg border border-white/10 bg-slate-950/80 px-3 py-2 text-sm text-slate-100 focus:border-sky-500 focus:outline-none" />
+                <button class="btn btn-secondary-ephemeral btn-sm" @click="saveAgentLabel(agent)">Save</button>
+                <button class="btn btn-danger-ephemeral btn-sm" @click="removeAgent(agent)">Delete</button>
+              </li>
+            </ul>
+          </div>
+          <div class="mt-3">
+            <button class="btn btn-secondary-outline-ephemeral btn-sm" @click="loadMyAgents">Refresh</button>
+          </div>
+        </div>
+      </div>
+    </SettingsSection>
     <SettingsSection title="General Preferences" :icon="WrenchScrewdriverIcon" class="settings-grid-span-2" id="general-preferences">
      <div class="settings-items-grid-ephemeral">
       <SettingsItem label="Default Assistant Mode" description="Initial assistant mode when the app starts." label-for="defaultModeSelect">
@@ -603,6 +627,7 @@ import { usePlans } from '@/composables/usePlans';
 import type { PlanId } from '@shared/planCatalog';
 import { usePlatformStore } from '@/store/platform.store';
 import { useAgentosEventsStore } from '@/store/agentosEvents.store';
+import { userAgentsAPI, type UserAgentDto } from '@/utils/api';
 
 // Child Components
 import SettingsSection from '@/components/settings/SettingsSection.vue';
@@ -779,6 +804,40 @@ const exportAgencyUpdates = (): void => {
   a.click();
   a.remove();
 };
+
+// My Agents management
+const myAgents = ref<Array<UserAgentDto & { editLabel: string }>>([]);
+const myAgentsError = ref('');
+const loadMyAgents = async (): Promise<void> => {
+  myAgentsError.value = '';
+  try {
+    const { data } = await userAgentsAPI.list();
+    const list = Array.isArray(data?.agents) ? data.agents : [];
+    myAgents.value = list.map((a) => ({ ...a, editLabel: a.label }));
+  } catch (e: any) {
+    myAgentsError.value = e?.message || 'Failed to load your agents.';
+  }
+};
+const saveAgentLabel = async (agent: UserAgentDto & { editLabel: string }): Promise<void> => {
+  try {
+    const updated = await userAgentsAPI.update(agent.id, { label: agent.editLabel });
+    const res = updated?.data;
+    if (res && res.label) agent.label = res.label as any;
+  } catch (e: any) {
+    myAgentsError.value = e?.message || 'Failed to save agent.';
+  }
+};
+const removeAgent = async (agent: UserAgentDto & { editLabel: string }): Promise<void> => {
+  if (!confirm(`Delete agent "${agent.label}"?`)) return;
+  try {
+    await userAgentsAPI.remove(agent.id);
+    myAgents.value = myAgents.value.filter((a) => a.id !== agent.id);
+  } catch (e: any) {
+    myAgentsError.value = e?.message || 'Failed to delete agent.';
+  }
+};
+
+onMounted(() => { if (isAuthenticated.value) void loadMyAgents(); });
 
 const subscriptionStatusLabel = computed(() => {
   if (!isAuthenticated.value) return 'Sign in with your personal account to view subscription details.';

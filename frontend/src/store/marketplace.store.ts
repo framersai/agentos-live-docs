@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import { marketplaceAPI, type MarketplaceAgentSummaryFE } from '@/utils/api';
+import { track } from '@/utils/analytics';
 
 export const useMarketplaceStore = defineStore('marketplace', () => {
   const agents = ref<MarketplaceAgentSummaryFE[]>([]);
@@ -22,6 +23,7 @@ export const useMarketplaceStore = defineStore('marketplace', () => {
       const { data } = await marketplaceAPI.list();
       agents.value = Array.isArray(data?.agents) ? data.agents : [];
       loadedAt.value = Date.now();
+      track({ action: 'marketplace_list', category: 'marketplace', value: agents.value.length });
     } catch (error: any) {
       console.error('[MarketplaceStore] Failed to load marketplace agents.', error);
       loadError.value = error?.message ?? 'Failed to load marketplace data.';

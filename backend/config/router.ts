@@ -35,6 +35,7 @@ import { postCheckoutSession, postLemonWebhook, getCheckoutStatus } from '../src
 import * as organizationRoutes from '../src/features/organization/organization.routes';
 import { getLlmStatus as getSystemLlmStatus, getStorageStatus as getSystemStorageStatus } from '../src/features/system/system.routes';
 import { marketplaceRouter } from '../src/features/marketplace/marketplace.routes.js';
+import { userAgentsRouter } from '../src/features/agents/userAgents.routes.js';
 
 /**
  * Configures and returns the main API router with all routes registered.
@@ -58,6 +59,7 @@ export async function configureRouter(): Promise<Router> {
     router.get('/system/llm-status', getSystemLlmStatus);
     router.get('/system/storage-status', getSystemStorageStatus);
     router.use('/marketplace', marketplaceRouter);
+    router.use('/agents', authMiddleware, userAgentsRouter);
     console.log('[router] Registered system diagnostics routes');
 
     // --- Publicly Accessible Informational Routes ---
