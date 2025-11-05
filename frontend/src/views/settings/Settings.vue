@@ -534,6 +534,14 @@
         </button>
        </div>
      </div>
+     <div class="settings-actions-group-ephemeral mt-3">
+       <button @click="exportWorkflowUpdates" class="btn btn-secondary-outline-ephemeral w-full">
+        Export AgentOS Workflow Updates (JSON)
+       </button>
+       <button @click="exportAgencyUpdates" class="btn btn-secondary-outline-ephemeral w-full">
+        Export AgentOS Agency Updates (JSON)
+       </button>
+     </div>
      <p class="setting-description text-center mt-3">Backup your current application settings to a JSON file, or restore settings from a previously exported file. This includes UI preferences, voice settings, and other configurations.</p>
     </SettingsSection>
    </div>
@@ -594,6 +602,7 @@ import { useChatStore } from '@/store/chat.store';
 import { usePlans } from '@/composables/usePlans';
 import type { PlanId } from '@shared/planCatalog';
 import { usePlatformStore } from '@/store/platform.store';
+import { useAgentosEventsStore } from '@/store/agentosEvents.store';
 
 // Child Components
 import SettingsSection from '@/components/settings/SettingsSection.vue';
@@ -747,6 +756,29 @@ const planLabel = computed(() => {
 // Feature gating: Organizations & invites only on Postgres (cloud)
 const platformStore = usePlatformStore();
 const canShowTeamManagement = computed(() => platformStore.canUseOrganizations);
+
+// AgentOS export parity (workflow/agency updates)
+const agentosEvents = useAgentosEventsStore();
+const exportWorkflowUpdates = (): void => {
+  const payload = { exportedAt: new Date().toISOString(), workflowUpdates: agentosEvents.workflowUpdates };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `agentos-workflow-updates-${Date.now()}.json`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+};
+const exportAgencyUpdates = (): void => {
+  const payload = { exportedAt: new Date().toISOString(), agencyUpdates: agentosEvents.agencyUpdates };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `agentos-agency-updates-${Date.now()}.json`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+};
 
 const subscriptionStatusLabel = computed(() => {
   if (!isAuthenticated.value) return 'Sign in with your personal account to view subscription details.';

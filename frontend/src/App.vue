@@ -310,6 +310,22 @@ onMounted(async () => {
     console.warn('[App.vue] Platform store init failed; proceeding in degraded mode.', e);
   }
 
+  // Capture AgentOS workflow/agency updates for export parity
+  try {
+    const { useAgentosEventsStore } = await import('./store/agentosEvents.store');
+    const eventsStore = useAgentosEventsStore();
+    const onWorkflow = (ev: CustomEvent) => {
+      eventsStore.addWorkflowUpdate({ timestamp: Date.now(), workflow: ev.detail?.workflow, metadata: ev.detail?.metadata });
+    };
+    const onAgency = (ev: CustomEvent) => {
+      eventsStore.addAgencyUpdate({ timestamp: Date.now(), agency: ev.detail?.agency, metadata: ev.detail?.metadata });
+    };
+    window.addEventListener('vca:workflow-update', onWorkflow as EventListener);
+    window.addEventListener('vca:agency-update', onAgency as EventListener);
+  } catch (e) {
+    console.warn('[App.vue] AgentOS events store init failed.', e);
+  }
+
   auth.checkAuthStatus(); // Check auth status first thing (not async!)
   await voiceSettingsManager.initialize(); // Initialize voice settings
 
