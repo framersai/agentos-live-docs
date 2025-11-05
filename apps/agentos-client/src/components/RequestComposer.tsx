@@ -47,7 +47,8 @@ export function RequestComposer({ onSubmit }: RequestComposerProps) {
 
   const activeSession = sessions.find((item) => item.id === activeSessionId) ?? null;
 
-  const defaultPersonaId = personas[0]?.id ?? "";
+  const remotePersonas = useMemo(() => personas.filter((p) => p.source === "remote"), [personas]);
+  const defaultPersonaId = remotePersonas[0]?.id ?? personas[0]?.id ?? "";
   const fallbackAgencyId = agencies[0]?.id ?? "";
   const defaultAgencyId = activeAgencyId ?? fallbackAgencyId;
   const initialTarget: SessionTargetType = agencies.length > 0 ? "agency" : "persona";
@@ -88,8 +89,8 @@ export function RequestComposer({ onSubmit }: RequestComposerProps) {
   const { errors } = form.formState;
 
   useEffect(() => {
-    if (targetType === "persona" && !personaId && personas[0]) {
-      form.setValue("personaId", personas[0].id, { shouldValidate: true });
+    if (targetType === "persona" && !personaId && (remotePersonas[0] || personas[0])) {
+      form.setValue("personaId", (remotePersonas[0] ?? personas[0])!.id, { shouldValidate: true });
     }
     if (targetType === "agency" && (!agencyId || !agencies.some((item) => item.id === agencyId))) {
       const fallback = activeAgencyId ?? agencies[0]?.id;
