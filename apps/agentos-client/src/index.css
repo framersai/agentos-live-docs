@@ -117,3 +117,21 @@ a:hover {
     border-color: var(--color-border-primary);
   }
 }
+
+/* Appearance variants applied on <html> */
+.appearance-compact .card-panel,
+.appearance-compact .card-panel--strong {
+  padding: 0.75rem !important;
+}
+.appearance-compact .rounded-3xl { border-radius: 0.75rem !important; }
+.appearance-compact .rounded-2xl { border-radius: 0.5rem !important; }
+.appearance-compact .rounded-xl { border-radius: 0.5rem !important; }
+
+.appearance-contrast .card-panel,
+.appearance-contrast .card-panel--strong {
+  border-color: color-mix(in oklab, var(--color-text-secondary) 28%, transparent) !important;
+}
+.appearance-contrast .theme-border {
+  border-color: color-mix(in oklab, var(--color-text-secondary) 35%, transparent) !important;
+}
+.appearance-contrast .theme-text-secondary { color: color-mix(in oklab, var(--color-text-secondary) 120%, black) !important; }

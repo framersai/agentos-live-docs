@@ -2,11 +2,14 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 export type Theme = 'light' | 'dark' | 'system';
+export type Appearance = 'default' | 'compact' | 'contrast';
 
 interface ThemeState {
   theme: Theme;
   setTheme: (theme: Theme) => void;
   actualTheme: 'light' | 'dark';
+  appearance: Appearance;
+  setAppearance: (appearance: Appearance) => void;
 }
 
 const getSystemTheme = (): 'light' | 'dark' => {
@@ -26,16 +29,27 @@ const applyTheme = (theme: 'light' | 'dark') => {
   }
 };
 
+const applyAppearance = (appearance: Appearance) => {
+  const root = document.documentElement;
+  root.classList.remove('appearance-default', 'appearance-compact', 'appearance-contrast');
+  root.classList.add(`appearance-${appearance}`);
+};
+
 export const useThemeStore = create<ThemeState>()(
   persist(
     (set, get) => ({
       theme: 'system',
       actualTheme: getSystemTheme(),
+      appearance: 'default',
       
       setTheme: (theme: Theme) => {
         const actualTheme = theme === 'system' ? getSystemTheme() : theme;
         applyTheme(actualTheme);
         set({ theme, actualTheme });
+      },
+      setAppearance: (appearance: Appearance) => {
+        applyAppearance(appearance);
+        set({ appearance });
       },
     }),
     {
@@ -45,6 +59,7 @@ export const useThemeStore = create<ThemeState>()(
           const actualTheme = state.theme === 'system' ? getSystemTheme() : state.theme;
           applyTheme(actualTheme);
           state.actualTheme = actualTheme;
+          applyAppearance(state.appearance ?? 'default');
         }
       },
     }

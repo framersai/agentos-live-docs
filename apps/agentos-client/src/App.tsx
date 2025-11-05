@@ -8,6 +8,9 @@ import { AgencyManager } from "@/components/AgencyManager";
 import { PersonaCatalog } from "@/components/PersonaCatalog";
 import { WorkflowOverview } from "@/components/WorkflowOverview";
 import { openAgentOSStream } from "@/lib/agentosClient";
+import { GuidedTour } from "@/components/GuidedTour";
+import { ThemePanel } from "@/components/ThemePanel";
+import { AboutPanel } from "@/components/AboutPanel";
 import { usePersonas } from "@/hooks/usePersonas";
 import { useSystemTheme } from "@/hooks/useSystemTheme";
 import { useSessionStore } from "@/state/sessionStore";
@@ -24,10 +27,13 @@ export default function App() {
     { key: "compose", label: "Compose" },
     { key: "agency", label: "Agency" },
     { key: "personas", label: "Personas" },
-    { key: "workflows", label: "Workflows" }
+    { key: "workflows", label: "Workflows" },
+    { key: "about", label: "About" },
   ] as const;
   type LeftTabKey = typeof LEFT_TABS[number]["key"];
   const [leftTab, setLeftTab] = useState<LeftTabKey>("compose");
+  const [showTour, setShowTour] = useState(false);
+  const [showThemePanel, setShowThemePanel] = useState(false);
   const { t } = useTranslation();
   useSystemTheme();
   const personas = useSessionStore((state) => state.personas);
@@ -279,7 +285,7 @@ export default function App() {
                 aria-label="Left panel tabs"
                 className="rounded-3xl border border-slate-200 bg-white p-2 text-sm dark:border-white/10 dark:bg-slate-900/60"
               >
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   {LEFT_TABS.map((tab) => {
                     const active = leftTab === tab.key;
                     return (
@@ -298,13 +304,33 @@ export default function App() {
                       </button>
                     );
                   })}
+                  <div className="ml-auto flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowTour(true)}
+                      className="rounded-full border border-slate-200 px-3 py-1 text-xs text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300"
+                      title="Launch guided tour"
+                    >
+                      Tour
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowThemePanel((v) => !v)}
+                      className="rounded-full border border-slate-200 px-3 py-1 text-xs text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300"
+                      title="Theme & appearance"
+                    >
+                      Theme
+                    </button>
+                  </div>
                 </div>
               </div>
 
+              {showThemePanel && <ThemePanel />}
               {leftTab === "compose" && <RequestComposer onSubmit={handleSubmit} />}
               {leftTab === "agency" && <AgencyManager />}
               {leftTab === "personas" && <PersonaCatalog />}
               {leftTab === "workflows" && <WorkflowOverview />}
+              {leftTab === "about" && <AboutPanel />}
             </section>
 
             {/* Right Column: Outputs only with placeholders */}
@@ -332,6 +358,7 @@ export default function App() {
           </div>
         </main>
       </div>
+      <GuidedTour open={showTour} onClose={() => setShowTour(false)} />
     </>
   );
 }
