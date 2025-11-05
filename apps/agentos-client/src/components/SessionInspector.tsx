@@ -215,6 +215,40 @@ export function SessionInspector() {
     URL.revokeObjectURL(url);
   };
 
+  const handleExportAgency = () => {
+    if (!session) return;
+    const items = [...session.events]
+      .reverse()
+      .filter((e) => e.type === AgentOSChunkType.AGENCY_UPDATE)
+      .map((e) => ({ timestamp: e.timestamp, ...(e.payload as any) }));
+    const data = new Blob([JSON.stringify({ sessionId: session.id, agencyUpdates: items }, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(data);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `agentos-agency-updates-${session.id}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleExportWorkflow = () => {
+    if (!session) return;
+    const items = [...session.events]
+      .reverse()
+      .filter((e) => e.type === AgentOSChunkType.WORKFLOW_UPDATE)
+      .map((e) => ({ timestamp: e.timestamp, ...(e.payload as any) }));
+    const data = new Blob([JSON.stringify({ sessionId: session.id, workflowUpdates: items }, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(data);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `agentos-workflow-updates-${session.id}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  };
+
   if (!activeSessionId || !session) {
     return (
       <div className="flex h-full flex-1 items-center justify-center rounded-3xl border border-white/5 bg-slate-900/60">
@@ -235,14 +269,32 @@ export function SessionInspector() {
         </div>
         <div className="flex items-center gap-3 text-xs text-slate-500">
           <span>{session.events.length} entries</span>
-          <button
-            type="button"
-            onClick={handleExport}
-            className="rounded-full border border-white/10 px-3 py-1 text-[10px] uppercase tracking-[0.35em] text-slate-300 hover:border-white/30"
-            title="Export session JSON"
-          >
-            Export
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={handleExport}
+              className="rounded-full border border-white/10 px-3 py-1 text-[10px] uppercase tracking-[0.35em] text-slate-300 hover:border-white/30"
+              title="Export session JSON"
+            >
+              Export session
+            </button>
+            <button
+              type="button"
+              onClick={handleExportAgency}
+              className="rounded-full border border-white/10 px-3 py-1 text-[10px] uppercase tracking-[0.35em] text-slate-300 hover:border-white/30"
+              title="Export agency seat updates"
+            >
+              Export agency
+            </button>
+            <button
+              type="button"
+              onClick={handleExportWorkflow}
+              className="rounded-full border border-white/10 px-3 py-1 text-[10px] uppercase tracking-[0.35em] text-slate-300 hover:border-white/30"
+              title="Export workflow trace"
+            >
+              Export workflow
+            </button>
+          </div>
         </div>
       </header>
       <div className="flex-1 overflow-y-auto px-6 py-6">
