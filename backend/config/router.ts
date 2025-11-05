@@ -9,6 +9,7 @@
 
 import { Router, Request, Response } from 'express';
 import path from 'path';
+import { fileURLToPath } from 'url';
 // Import the strict authMiddleware
 import { authMiddleware } from '../middleware/auth';
 import { isAgentOSEnabled, getAgentOSRouter } from '../src/integrations/agentos/agentos.integration';
@@ -118,7 +119,9 @@ export async function configureRouter(): Promise<Router> {
 
     // --- Documentation Routes ---
     // Serve auto-generated documentation
-    const docsPath = path.join(__dirname, '..', '..', 'docs-generated');
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirnameResolved = path.dirname(__filename);
+    const docsPath = path.join(__dirnameResolved, '..', '..', 'docs-generated');
     router.use('/docs', (req: Request, res: Response, next) => {
       // Serve static files from docs-generated directory
       const express = require('express');
