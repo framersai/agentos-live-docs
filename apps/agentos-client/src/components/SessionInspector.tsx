@@ -261,19 +261,19 @@ export function SessionInspector() {
   }
 
   return (
-    <div className="flex h-full flex-col overflow-hidden rounded-3xl border border-white/5 bg-slate-900/60">
-      <header className="flex items-center justify-between border-b border-white/5 px-6 py-4">
+    <div className="flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white dark:border-white/10 dark:bg-slate-900/50">
+      <header className="flex items-center justify-between border-b border-slate-200 px-6 py-4 dark:border-white/5">
         <div>
-          <p className="text-xs uppercase tracking-[0.25em] text-slate-400">Session timeline</p>
-          <h2 className="text-lg font-semibold text-slate-100">{session.displayName}</h2>
+          <p className="text-xs uppercase tracking-[0.25em] text-slate-500 dark:text-slate-400">Session timeline</p>
+          <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{session.displayName}</h2>
         </div>
-        <div className="flex items-center gap-3 text-xs text-slate-500">
+        <div className="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
           <span>{session.events.length} entries</span>
           <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={handleExport}
-              className="rounded-full border border-white/10 px-3 py-1 text-[10px] uppercase tracking-[0.35em] text-slate-300 hover:border-white/30"
+              className="rounded-full border border-slate-200 px-3 py-1 text-[10px] uppercase tracking-[0.35em] text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300 dark:hover:border-white/30"
               title="Export session JSON"
             >
               Export session
@@ -281,7 +281,7 @@ export function SessionInspector() {
             <button
               type="button"
               onClick={handleExportAgency}
-              className="rounded-full border border-white/10 px-3 py-1 text-[10px] uppercase tracking-[0.35em] text-slate-300 hover:border-white/30"
+              className="rounded-full border border-slate-200 px-3 py-1 text-[10px] uppercase tracking-[0.35em] text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300 dark:hover:border-white/30"
               title="Export agency seat updates"
             >
               Export agency
@@ -289,7 +289,7 @@ export function SessionInspector() {
             <button
               type="button"
               onClick={handleExportWorkflow}
-              className="rounded-full border border-white/10 px-3 py-1 text-[10px] uppercase tracking-[0.35em] text-slate-300 hover:border-white/30"
+              className="rounded-full border border-slate-200 px-3 py-1 text-[10px] uppercase tracking-[0.35em] text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300 dark:hover:border-white/30"
               title="Export workflow trace"
             >
               Export workflow
@@ -300,17 +300,17 @@ export function SessionInspector() {
       <div className="flex-1 overflow-y-auto px-6 py-6">
         <div className="space-y-4">
           {session.events.length === 0 ? (
-            <div className="rounded-2xl border border-white/5 bg-slate-950/40 p-6 text-sm text-slate-400">
-              Waiting for the first event from your AgentOS runtime. Trigger a turn or replay a transcript to populate the timeline.
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 text-sm text-slate-600 dark:border-white/10 dark:bg-slate-900/40 dark:text-slate-400">
+              Waiting for the first event. Use the composer to send a message or replay a transcript to populate the timeline.
             </div>
           ) : (
             session.events.map((event) => {
-              const chunkClass = chunkAccent[event.type] ?? "border-white/5 bg-white/5 text-slate-200";
+              const chunkClass = chunkAccent[event.type] ?? "border-slate-200 bg-slate-50 text-slate-700 dark:border-white/5 dark:bg-white/5 dark:text-slate-200";
               return (
                 <Fragment key={event.id}>
-                  <div className={clsx("rounded-2xl border px-5 py-4 shadow-panel", chunkClass)}>
-                    <header className="mb-3 flex items-center justify-between text-xs text-slate-400">
-                      <span className="font-semibold uppercase tracking-[0.35em] text-current">{event.type}</span>
+                  <div className={clsx("rounded-2xl border px-5 py-4", chunkClass)}>
+                    <header className="mb-3 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                      <span className="font-semibold uppercase tracking-[0.35em]">{event.type}</span>
                       <time>{new Date(event.timestamp).toLocaleTimeString()}</time>
                     </header>
                     {renderEventBody(event.type, event.payload)}
