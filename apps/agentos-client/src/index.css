@@ -7,7 +7,7 @@
 
   /* Light mode colors */
   --color-background-primary: hsl(210, 20%, 98%);
-  --color-background-secondary: hsl(210, 20%, 97%);
+  --color-background-secondary: #ffffff;
   --color-text-primary: hsl(220, 13%, 13%);
   --color-text-secondary: hsl(220, 9%, 38%);
   --color-text-muted: hsl(220, 9%, 65%);
