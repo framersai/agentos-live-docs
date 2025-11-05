@@ -1,4 +1,4 @@
-﻿import { useCallback, useEffect, useRef } from "react";
+﻿import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { SkipLink } from "@/components/SkipLink";
 import { Sidebar } from "@/components/Sidebar";
@@ -20,6 +20,14 @@ import {
 const DEFAULT_PERSONA_ID = "voice_assistant_persona";
 
 export default function App() {
+  const LEFT_TABS = [
+    { key: "compose", label: "Compose" },
+    { key: "agency", label: "Agency" },
+    { key: "personas", label: "Personas" },
+    { key: "workflows", label: "Workflows" }
+  ] as const;
+  type LeftTabKey = typeof LEFT_TABS[number]["key"];
+  const [leftTab, setLeftTab] = useState<LeftTabKey>("compose");
   const { t } = useTranslation();
   useSystemTheme();
   const personas = useSessionStore((state) => state.personas);
@@ -266,20 +274,62 @@ export default function App() {
           aria-label={t("app.labels.mainContent", { defaultValue: "Main content area" })}
         >
           <div className="grid flex-1 grid-cols-1 gap-6 lg:grid-cols-[1fr_2fr]">
-            {/* Left Column: Composer + Coordination */}
-            <section className="flex h-full flex-col gap-6" aria-label={t("app.labels.leftPanel", { defaultValue: "Composer and coordination" })}>
-              <RequestComposer onSubmit={handleSubmit} />
-              <AgencyManager />
-              <PersonaCatalog />
-              <WorkflowOverview />
+            {/* Left Column: Tabbed coordination */}
+            <section className="flex h-full flex-col gap-4" aria-label={t("app.labels.leftPanel", { defaultValue: "Composer and coordination" })}>
+              <div
+                role="tablist"
+                aria-label="Left panel tabs"
+                className="rounded-3xl border border-slate-200 bg-white p-2 text-sm dark:border-white/10 dark:bg-slate-900/60"
+              >
+                <div className="flex flex-wrap gap-2">
+                  {LEFT_TABS.map((tab) => {
+                    const active = leftTab === tab.key;
+                    return (
+                      <button
+                        key={tab.key}
+                        role="tab"
+                        aria-selected={active}
+                        onClick={() => setLeftTab(tab.key)}
+                        className={`${
+                          active
+                            ? "bg-sky-500 text-white"
+                            : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-white/10 dark:bg-slate-900 dark:text-slate-300"
+                        } rounded-full border px-3 py-1.5 transition focus:outline-none focus:ring-2 focus:ring-sky-500`}
+                      >
+                        {tab.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {leftTab === "compose" && <RequestComposer onSubmit={handleSubmit} />}
+              {leftTab === "agency" && <AgencyManager />}
+              {leftTab === "personas" && <PersonaCatalog />}
+              {leftTab === "workflows" && <WorkflowOverview />}
             </section>
 
-            {/* Right Column: Outputs only */}
+            {/* Right Column: Outputs only with placeholders */}
             <aside
               className="flex h-full flex-col gap-6"
               aria-label={t("app.labels.outputsPanel", { defaultValue: "Outputs and results" })}
             >
               <SessionInspector />
+              <div className="border-t border-slate-200 dark:border-white/10" />
+              <section className="rounded-3xl border border-slate-200 bg-white p-5 dark:border-white/10 dark:bg-slate-900/60">
+                <header className="mb-2">
+                  <p className="text-xs uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">Stream status</p>
+                  <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Live telemetry</h3>
+                </header>
+                <p className="text-xs text-slate-600 dark:text-slate-400">Metrics and heartbeat placeholders.</p>
+              </section>
+              <section className="rounded-3xl border border-slate-200 bg-white p-5 dark:border-white/10 dark:bg-slate-900/60">
+                <header className="mb-2">
+                  <p className="text-xs uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">Analytics</p>
+                  <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Usage insights</h3>
+                </header>
+                <p className="text-xs text-slate-600 dark:text-slate-400">Charts and summaries will appear here.</p>
+              </section>
             </aside>
           </div>
         </main>
