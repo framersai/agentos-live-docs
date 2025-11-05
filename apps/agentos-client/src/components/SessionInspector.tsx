@@ -250,14 +250,7 @@ export function SessionInspector() {
   };
 
   if (!activeSessionId || !session) {
-    return (
-      <div className="flex h-full flex-1 items-center justify-center rounded-3xl border border-white/5 bg-slate-900/60">
-        <div className="text-center">
-          <Activity className="mx-auto h-8 w-8 text-slate-500" />
-          <p className="mt-3 text-sm text-slate-400">Select or create a session to inspect streaming events.</p>
-        </div>
-      </div>
-    );
+    return <div className="flex h-full flex-1 rounded-3xl border border-slate-200 bg-white dark:border-white/5 dark:bg-slate-900/60" />;
   }
 
   return (

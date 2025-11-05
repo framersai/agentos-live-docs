@@ -265,21 +265,21 @@ export default function App() {
           role="main"
           aria-label={t("app.labels.mainContent", { defaultValue: "Main content area" })}
         >
-          <div className="grid flex-1 grid-cols-1 gap-6 lg:grid-cols-[2fr_1fr]">
-            {/* Primary Panel: Session Inspector */}
-            <section aria-labelledby="session-inspector-title">
-              <SessionInspector />
-            </section>
-            
-            {/* Secondary Panel: Controls and Information */}
-            <aside 
-              className="flex h-full flex-col gap-6"
-              aria-label={t("app.labels.controlPanel", { defaultValue: "Control panel and information" })}
-            >
+          <div className="grid flex-1 grid-cols-1 gap-6 lg:grid-cols-[1fr_2fr]">
+            {/* Left Column: Composer + Coordination */}
+            <section className="flex h-full flex-col gap-6" aria-label={t("app.labels.leftPanel", { defaultValue: "Composer and coordination" })}>
               <RequestComposer onSubmit={handleSubmit} />
               <AgencyManager />
-              <WorkflowOverview />
               <PersonaCatalog />
+              <WorkflowOverview />
+            </section>
+
+            {/* Right Column: Outputs only */}
+            <aside
+              className="flex h-full flex-col gap-6"
+              aria-label={t("app.labels.outputsPanel", { defaultValue: "Outputs and results" })}
+            >
+              <SessionInspector />
             </aside>
           </div>
         </main>
