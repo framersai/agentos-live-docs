@@ -24,6 +24,7 @@ export default function App() {
   useSystemTheme();
   const personas = useSessionStore((state) => state.personas);
   const agencies = useSessionStore((state) => state.agencies);
+  const addAgency = useSessionStore((state) => state.addAgency);
   const applyAgencySnapshot = useSessionStore((state) => state.applyAgencySnapshot);
   const applyWorkflowSnapshot = useSessionStore((state) => state.applyWorkflowSnapshot);
   const setPersonas = useSessionStore((state) => state.setPersonas);
@@ -47,6 +48,26 @@ export default function App() {
     }
     setPersonas(personasQuery.data);
   }, [personasQuery.data, setPersonas]);
+
+  // Seed a demo agency if none exists, to make the dashboard usable immediately
+  useEffect(() => {
+    if (agencies.length === 0 && personas.length > 0) {
+      const id = "demo-agency";
+      const timestamp = new Date().toISOString();
+      addAgency({
+        id,
+        name: "Demo Agency",
+        goal: "Demonstrate multi-seat coordination",
+        workflowId: undefined,
+        participants: [
+          { roleId: "lead", personaId: personas[0]?.id },
+        ],
+        metadata: { seeded: true },
+        createdAt: timestamp,
+        updatedAt: timestamp,
+      });
+    }
+  }, [agencies.length, personas, addAgency]);
 
   useEffect(() => {
     if (personasQuery.error) {
@@ -243,7 +264,7 @@ export default function App() {
           role="main"
           aria-label={t("app.labels.mainContent", { defaultValue: "Main content area" })}
         >
-          <div className="grid flex-1 grid-cols-1 gap-6 xl:grid-cols-[2fr_1fr]">
+          <div className="grid flex-1 grid-cols-1 gap-6 lg:grid-cols-[2fr_1fr]">
             {/* Primary Panel: Session Inspector */}
             <section aria-labelledby="session-inspector-title">
               <SessionInspector />
