@@ -1,3 +1,19 @@
+/**
+ * @file marketplace.routes.ts
+ * @description Public and authenticated routes for marketplace listings with org-aware RBAC.
+ *
+ * RBAC rules:
+ * - Listing creation under an organization requires active membership.
+ * - Publishing (status = 'published') or visibility = 'public' requires org 'admin'.
+ * - User-owned listings can be managed by the owner user.
+ *
+ * Query params for GET /marketplace/agents:
+ * - visibility: 'public' | 'invite' | 'unlisted' | 'org' (single or comma-separated)
+ * - status: 'pending' | 'draft' | 'published' | 'retired' (single or comma-separated)
+ * - ownerId: filter by owner user id
+ * - organizationId: filter by owning organization id
+ * - includeDrafts: boolean (default: false)
+ */
 import { Router } from 'express';
 import type { Request, Response, NextFunction } from 'express';
 import { marketplaceService } from './marketplace.service.js';
