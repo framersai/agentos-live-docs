@@ -11,6 +11,7 @@ export interface AppUser {
   email: string;
   password_hash: string;
   supabase_user_id?: string | null;
+  subscription_plan_id?: string | null;
   subscription_status: string;
   subscription_tier: string;
   lemon_customer_id?: string | null;

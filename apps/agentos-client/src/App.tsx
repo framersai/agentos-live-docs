@@ -21,6 +21,7 @@ const DEFAULT_PERSONA_ID = "voice_assistant_persona";
 
 export default function App() {
   const { t } = useTranslation();
+  useSystemTheme();
   const personas = useSessionStore((state) => state.personas);
   const agencies = useSessionStore((state) => state.agencies);
   const applyAgencySnapshot = useSessionStore((state) => state.applyAgencySnapshot);
