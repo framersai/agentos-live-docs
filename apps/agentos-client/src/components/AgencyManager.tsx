@@ -212,7 +212,8 @@ export function AgencyManager() {
                       type="button"
                       onClick={(event) => {
                         event.stopPropagation();
-                        removeAgency(agency.id);
+                        const ok = window.confirm(`Remove agency "${agency.name}"?`);
+                        if (ok) removeAgency(agency.id);
                       }}
                       className="inline-flex items-center gap-1 text-rose-700 transition hover:text-rose-500 dark:text-rose-300 dark:hover:text-rose-200"
                     >
