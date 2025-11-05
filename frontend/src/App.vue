@@ -43,6 +43,8 @@ import { agentService } from '@/services/agent.service';
 import { systemAPI, type LlmStatusResponseFE } from '@/utils/api';
 import { isAxiosError } from 'axios';
 import { i18n } from '@/i18n';
+import CapabilityBanner from '@/components/system/CapabilityBanner.vue';
+import { useConnectivityStore } from '@/store/connectivity.store';
 
 // Icons for Toasts
 import {
@@ -71,6 +73,7 @@ provide('loading', readonly({
 }));
 const isLocaleTransitioning = ref(false);
 const localeTransitionTimer = ref<number | null>(null);
+const connectivityStore = useConnectivityStore();
 
 /**
  * @computed showAppFooter
@@ -373,6 +376,19 @@ onMounted(async () => {
   }
 });
 
+// Initialize connectivity listeners and show availability toasts on changes
+try {
+  connectivityStore.initialize();
+} catch {}
+
+watch(() => connectivityStore.isOnline, (online) => {
+  if (online) {
+    addToast({ type: 'success', title: 'Online', message: 'Cloud features and syncing are available where supported.' });
+  } else {
+    addToast({ type: 'warning', title: 'Offline mode', message: 'Local features available; cloud/team features paused until connection is restored.' });
+  }
+});
+
 // Watch for theme changes from the uiStore to potentially react (e.g., logging)
 watch(
   () => uiStore.currentThemeId,
@@ -449,6 +465,9 @@ onBeforeUnmount(() => {
         @show-prior-chat-log="handleShowPriorChatLog"
         class="app-layout-header-ephemeral"
       />
+
+      <!-- Capability banner summarizing available/unavailable features per platform & connectivity -->
+      <CapabilityBanner />
 
       <main id="main-app-content" class="app-layout-main-content-ephemeral">
         <router-view v-slot="{ Component, route: currentRoute }">
