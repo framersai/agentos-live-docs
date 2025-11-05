@@ -4,21 +4,33 @@
  * @description Auto-generates API endpoint documentation from Express routes and TypeScript types
  */
 
-const fs = require('fs');
-const path = require('path');
+let logger;
 
-const OUTPUT_DIR = path.join(__dirname, '..', 'docs-generated', 'api');
-const BACKEND_DIR = path.join(__dirname, '..', 'backend');
+const createLogger = (scope) => {
+  const formatLine = (level, message, context) => {
+    const timestamp = new Date().toISOString();
+    const normalizedContext = context ? ` ${JSON.stringify(context)}` : '';
+    return `[${timestamp}] [${scope}] ${level} ${message}${normalizedContext}`;
+  };
+
+  return {
+    info(message, context) {
+      process.stdout.write(`${formatLine('INFO', message, context)}\n`);
+    },
+    error(message, context) {
+      process.stderr.write(`${formatLine('ERROR', message, context)}\n`);
+    },
+  };
+};
 
 /**
  * Extract API route information from router configuration
  */
-function generateAPIDocs() {
-  console.log('[docs] Generating API documentation...');
+function generateAPIDocs(fs, path, outputDir, log) {
+  log.info('Generating API documentation...');
 
-  // Create output directory
-  if (!fs.existsSync(OUTPUT_DIR)) {
-    fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+  if (!fs.existsSync(outputDir)) {
+    fs.mkdirSync(outputDir, { recursive: true });
   }
 
   // API documentation structure
@@ -568,11 +580,21 @@ function generateAPIDocs() {
   };
 
   // Write OpenAPI spec
-  const openApiPath = path.join(OUTPUT_DIR, 'openapi.json');
+  const openApiPath = path.join(outputDir, 'openapi.json');
   fs.writeFileSync(openApiPath, JSON.stringify(apiDocs, null, 2));
-  console.log(`[docs] OpenAPI spec written to ${openApiPath}`);
+  log.info('OpenAPI spec written', { path: openApiPath });
 
-  console.log('[docs] API documentation generation complete!');
+  const markdownPath = path.join(outputDir, 'API_REFERENCE.md');
+  fs.writeFileSync(markdownPath, generateMarkdownDocs(apiDocs));
+  log.info('Markdown reference written', { path: markdownPath });
+
+  const indexPath = path.join(outputDir, 'index.html');
+  fs.writeFileSync(indexPath, generateIndexHTML());
+  log.info('HTML index written', { path: indexPath });
+
+  log.info('API documentation generation complete!');
+
+  return apiDocs;
 }
 
 /**
@@ -633,6 +655,7 @@ function generateIndexHTML() {
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
+      /* cspell:disable-next-line */
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       line-height: 1.6;
       color: #333;
@@ -733,8 +756,28 @@ function generateIndexHTML() {
 </html>`;
 }
 
-// Run generation
-generateAPIDocs();
+async function main() {
+  const fsModule = await import('node:fs');
+  const pathModule = await import('node:path');
+
+  const fs = fsModule.default ?? fsModule;
+  const path = pathModule.default ?? pathModule;
+  logger = createLogger('DocsGenerator');
+
+  const outputDir = path.join(__dirname, '..', 'docs-generated', 'api');
+
+  generateAPIDocs(fs, path, outputDir, logger);
+}
+
+main().catch((error) => {
+  const message = error instanceof Error ? error.message : String(error);
+  if (logger) {
+    logger.error('API documentation generation failed', { error: message });
+  } else {
+    process.stderr.write(`API documentation generation failed: ${message}\n`);
+  }
+  process.exit(1);
+});
 
 
 

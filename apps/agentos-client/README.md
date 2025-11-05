@@ -5,7 +5,7 @@ React + Vite dashboard for inspecting AgentOS sessions locally. The goal is to g
 ## Highlights
 
 - Sidebar session switcher backed by a lightweight zustand store
-- Timeline inspector that renders streaming @agentos/core chunks with colour-coded context
+- Timeline inspector that renders streaming @agentos/core chunks with color-coded context
 - Request composer for prototyping turns or replaying transcripts (wire it to your backend when ready)
 - Dark, neon-drenched UI that matches the Frame.dev production command centre
 
@@ -27,13 +27,15 @@ pnpm typecheck
 ## Wiring it up
 
 1. Copy `.env.example` → `.env.local` (or set env vars in your shell) and point the workbench at your backend:
+
    ```ini
    VITE_AGENTOS_BASE_URL=http://localhost:3001/agentos
    VITE_AGENTOS_STREAM_PATH=/stream
    ```
+
    Leave them unset if you proxy through `/api/agentos`.
 2. In the backend, ensure `AGENTOS_ENABLED=true` (and any provider keys) so `/agentos/*` routes are exposed.
-3. Start the backend (`pnpm --filter backend dev`) and then run the workbench (`pnpm --filter @wearetheframers/agentos-client dev`).
+3. Start the backend (`pnpm --filter backend dev`) and then run the workbench (`pnpm --filter @framersai/agentos-client dev`).
 4. Use the request composer to fire a turn—live `AGENCY_UPDATE` / `WORKFLOW_UPDATE` chunks will populate the timeline automatically.
 
 The client mirrors the streaming contracts from `@agentos/core`, so backend responses flow straight into the UI with no reshaping.
