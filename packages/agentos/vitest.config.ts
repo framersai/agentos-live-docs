@@ -17,7 +17,9 @@ export default defineConfig({
     environment: 'node',
     include: ['tests/**/*.spec.ts', 'src/**/*.spec.ts'],
     coverage: {
-      reporter: ['text', 'html'],
+      reporter: ['text', 'html', 'lcov'],
+      reportsDirectory: 'coverage',
+      all: true,
     },
   },
 });

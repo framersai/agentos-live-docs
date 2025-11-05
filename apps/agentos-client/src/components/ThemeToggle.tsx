@@ -12,8 +12,8 @@ export function ThemeToggle() {
   ];
 
   return (
-    <div 
-      className="inline-flex items-center rounded-lg border border-slate-300 bg-white p-1 shadow-sm dark:border-gray-600 dark:bg-gray-800"
+    <div
+      className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/70 p-0.5 backdrop-blur dark:bg-slate-900/50"
       role="radiogroup"
       aria-label="Theme preference"
     >
@@ -24,19 +24,13 @@ export function ThemeToggle() {
           role="radio"
           aria-checked={theme === value}
           className={`
-            inline-flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium
-            transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800
-            ${
-              theme === value
-                ? 'bg-indigo-600 text-white shadow-sm'
-                : 'text-slate-700 hover:bg-slate-100 dark:text-gray-300 dark:hover:bg-gray-700'
-            }
+            inline-flex items-center justify-center rounded-full p-1.5 transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900
+            ${theme === value ? 'bg-sky-600 text-white shadow-sm' : 'text-slate-700 hover:bg-slate-200/70 dark:text-slate-300 dark:hover:bg-white/10'}
           `}
-          title={`Switch to ${label.toLowerCase()} theme`}
+          title={`${label} theme`}
           aria-label={`${label} theme`}
         >
           <span aria-hidden="true">{icon}</span>
-          <span className="hidden sm:inline">{label}</span>
         </button>
       ))}
     </div>
