@@ -301,6 +301,14 @@ onMounted(async () => {
 
   themeManager.initialize();    // Initializes theme from storage or system preference
   await uiStore.initializeUiState();  // Initializes UI store state, including listeners for fullscreen etc.
+  // Initialize platform detection (storage adapter kind & capabilities) for feature gating
+  try {
+    const { usePlatformStore } = await import('./store/platform.store');
+    const platform = usePlatformStore();
+    await platform.initialize();
+  } catch (e) {
+    console.warn('[App.vue] Platform store init failed; proceeding in degraded mode.', e);
+  }
 
   auth.checkAuthStatus(); // Check auth status first thing (not async!)
   await voiceSettingsManager.initialize(); // Initialize voice settings

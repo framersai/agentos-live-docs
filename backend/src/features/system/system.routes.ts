@@ -6,6 +6,7 @@
 
 import type { Request, Response } from 'express';
 import { getLlmBootstrapStatus } from '../../core/llm/llm.status.js';
+import { getAppDatabase } from '../../core/database/appDatabase.js';
 
 export function getLlmStatus(req: Request, res: Response): void {
   try {
@@ -33,6 +34,29 @@ export function getLlmStatus(req: Request, res: Response): void {
       code: 'STATUS_READ_FAILED',
       message: 'Unable to read LLM bootstrap status.',
       error: error?.message ?? 'UNKNOWN_ERROR',
+    });
+  }
+}
+
+export function getStorageStatus(req: Request, res: Response): void {
+  try {
+    const adapter = getAppDatabase();
+    const capabilities = Array.from(adapter.capabilities.values());
+    const persistence = adapter.capabilities.has('persistence');
+
+    res.status(200).json({
+      status: 'ok',
+      kind: adapter.kind,
+      capabilities,
+      persistence,
+    });
+  } catch (error: any) {
+    res.status(200).json({
+      status: 'degraded',
+      kind: 'unknown',
+      capabilities: [],
+      persistence: false,
+      message: 'Storage adapter not initialised yet. Backend will fall back to in-memory if needed.',
     });
   }
 }

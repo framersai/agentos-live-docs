@@ -180,7 +180,7 @@
     </SettingsSection>
 
     <SettingsSection
-      v-if="isAuthenticated"
+      v-if="isAuthenticated && canShowTeamManagement"
       title="Team Management"
       :icon="UsersIcon"
       class="settings-grid-span-2"
@@ -593,6 +593,7 @@ import { useUiStore } from '@/store/ui.store';
 import { useChatStore } from '@/store/chat.store';
 import { usePlans } from '@/composables/usePlans';
 import type { PlanId } from '@shared/planCatalog';
+import { usePlatformStore } from '@/store/platform.store';
 
 // Child Components
 import SettingsSection from '@/components/settings/SettingsSection.vue';
@@ -742,6 +743,10 @@ const planLabel = computed(() => {
   const pretty = tier.replace(/_/g, ' ');
   return pretty.charAt(0).toUpperCase() + pretty.slice(1);
 });
+
+// Feature gating: Organizations & invites only on Postgres (cloud)
+const platformStore = usePlatformStore();
+const canShowTeamManagement = computed(() => platformStore.canUseOrganizations);
 
 const subscriptionStatusLabel = computed(() => {
   if (!isAuthenticated.value) return 'Sign in with your personal account to view subscription details.';

@@ -33,7 +33,7 @@ import * as promptApiRoutes from '../src/features/prompts/prompt.routes.js';
 import type { RateLimitInfo, RateLimitInfoAuthenticated, RateLimitInfoPublic } from '@shared/rateLimitTypes';
 import { postCheckoutSession, postLemonWebhook, getCheckoutStatus } from '../src/features/billing/billing.routes';
 import * as organizationRoutes from '../src/features/organization/organization.routes';
-import { getLlmStatus as getSystemLlmStatus } from '../src/features/system/system.routes';
+import { getLlmStatus as getSystemLlmStatus, getStorageStatus as getSystemStorageStatus } from '../src/features/system/system.routes';
 import { marketplaceRouter } from '../src/features/marketplace/marketplace.routes.js';
 
 /**
@@ -56,6 +56,7 @@ export async function configureRouter(): Promise<Router> {
 
     router.get('/prompts/:filename', promptApiRoutes.GET);
     router.get('/system/llm-status', getSystemLlmStatus);
+    router.get('/system/storage-status', getSystemStorageStatus);
     router.use('/marketplace', marketplaceRouter);
     console.log('[router] Registered system diagnostics routes');
 
