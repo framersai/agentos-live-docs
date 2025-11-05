@@ -104,6 +104,10 @@ export function PersonaCatalog() {
         </div>
       </header>
 
+      <div className="mb-4 rounded-2xl border border-slate-200 bg-slate-50 p-3 text-xs text-slate-600 dark:border-white/10 dark:bg-slate-900/40 dark:text-slate-400">
+        This catalog merges server-provided personas (remote, read-only) with ones you create locally (saved in your browser). Deleting removes only local personas. Remote personas refresh from the server.
+      </div>
+
       <div className="mb-4 space-y-3">
         <label className="flex flex-col gap-2 text-xs uppercase tracking-[0.35em] text-slate-500 dark:text-slate-400">
           Search personas
@@ -157,13 +161,23 @@ export function PersonaCatalog() {
                 {persona.tags && persona.tags.length > 0 && (
                   <p className="mt-1 text-[10px] uppercase tracking-[0.35em] text-slate-500 dark:text-slate-500">{persona.tags.join(", ")}</p>
                 )}
+                <div className="mt-2 flex items-center gap-2">
+                  <span className={`chip border ${persona.source === "remote" ? "border-sky-200 bg-sky-50 text-sky-700 dark:border-sky-500/30 dark:bg-sky-500/10 dark:text-sky-200" : "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-200"}`}>
+                    {persona.source === "remote" ? "Remote" : "Local"}
+                  </span>
+                </div>
               </div>
               <button
                 type="button"
-                onClick={() => persona.id !== primaryPersona && removePersona(persona.id)}
+                onClick={() => {
+                  if (persona.id === primaryPersona || persona.source === "remote") return;
+                  const ok = window.confirm(`Delete persona "${persona.displayName}"? This only removes your local copy.`);
+                  if (ok) removePersona(persona.id);
+                }}
                 className="ml-3 inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 text-slate-600 transition hover:bg-slate-50 disabled:opacity-30 dark:border-white/10 dark:text-slate-400 dark:hover:text-rose-300"
-                title="Remove persona"
-                disabled={persona.id === primaryPersona}
+                title={persona.source === "remote" ? "Remote personas are server-managed" : "Remove persona"}
+                aria-label={persona.source === "remote" ? "Remote personas are server-managed" : "Remove persona"}
+                disabled={persona.id === primaryPersona || persona.source === "remote"}
               >
                 <Trash2 className="h-3 w-3" />
               </button>
