@@ -250,7 +250,24 @@ export function SessionInspector() {
   };
 
   if (!activeSessionId || !session) {
-    return <div className="flex h-full flex-1 rounded-3xl border border-slate-200 bg-white dark:border-white/5 dark:bg-slate-900/60" />;
+    return (
+      <div className="flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white dark:border-white/10 dark:bg-slate-900/50">
+        <header className="flex items-center justify-between border-b border-slate-200 px-6 py-4 dark:border-white/5">
+          <div>
+            <p className="text-xs uppercase tracking-[0.25em] text-slate-500 dark:text-slate-400">Session timeline</p>
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Output</h2>
+          </div>
+          <div className="text-xs text-slate-500 dark:text-slate-400">0 entries</div>
+        </header>
+        <div className="flex-1 overflow-y-auto px-6 py-6">
+          <div className="space-y-4">
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 text-sm text-slate-600 dark:border-white/10 dark:bg-slate-900/40 dark:text-slate-400">
+              Waiting for the first event. Use the left panel to compose a request.
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
