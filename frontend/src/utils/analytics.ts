@@ -1,3 +1,7 @@
+/**
+ * Describes a Google Analytics event payload.
+ * Aligns with gtag.js parameters used by the reference frontend.
+ */
 type AnalyticsEvent = {
   action: string;
   category?: string;
@@ -5,6 +9,10 @@ type AnalyticsEvent = {
   value?: number;
 };
 
+/**
+ * Sends a structured event to Google Analytics if `gtag` is available.
+ * Safe no-op when analytics is not initialized or window is unavailable.
+ */
 export function track(event: AnalyticsEvent): void {
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -38,6 +38,16 @@ export function getLlmStatus(req: Request, res: Response): void {
   }
 }
 
+/**
+ * Returns the active storage adapter and its capability flags.
+ *
+ * Response shape:
+ * - status: 'ok' | 'degraded'
+ * - kind: adapter identifier (e.g., 'postgres', 'better-sqlite3', 'sqljs', 'capacitor')
+ * - capabilities: string[] of supported features (e.g., 'persistence')
+ * - persistence: boolean convenience flag
+ * - message?: diagnostics when in degraded mode
+ */
 export function getStorageStatus(req: Request, res: Response): void {
   try {
     const adapter = getAppDatabase();
