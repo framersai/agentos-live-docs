@@ -194,6 +194,26 @@ function renderEventBody(type: AgentOSChunkType | "log", payload: unknown): Reac
 export function SessionInspector() {
   const activeSessionId = useSessionStore((state) => state.activeSessionId);
   const session = useSessionStore((state) => state.sessions.find((item) => item.id === state.activeSessionId));
+  const handleExport = () => {
+    if (!session) return;
+    const payload = {
+      id: session.id,
+      targetType: session.targetType,
+      displayName: session.displayName,
+      personaId: session.personaId,
+      agencyId: session.agencyId,
+      events: [...session.events].reverse() // chronological
+    };
+    const data = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(data);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `agentos-session-${session.id}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  };
 
   if (!activeSessionId || !session) {
     return (
@@ -213,7 +233,17 @@ export function SessionInspector() {
           <p className="text-xs uppercase tracking-[0.25em] text-slate-400">Session timeline</p>
           <h2 className="text-lg font-semibold text-slate-100">{session.displayName}</h2>
         </div>
-        <span className="text-xs text-slate-500">{session.events.length} entries</span>
+        <div className="flex items-center gap-3 text-xs text-slate-500">
+          <span>{session.events.length} entries</span>
+          <button
+            type="button"
+            onClick={handleExport}
+            className="rounded-full border border-white/10 px-3 py-1 text-[10px] uppercase tracking-[0.35em] text-slate-300 hover:border-white/30"
+            title="Export session JSON"
+          >
+            Export
+          </button>
+        </div>
       </header>
       <div className="flex-1 overflow-y-auto px-6 py-6">
         <div className="space-y-4">
