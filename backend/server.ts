@@ -217,8 +217,27 @@ async function startServer() {
     if (!llmStatusAtStart.ready) {
       llmLogger.warn('Server running without an active LLM provider. Configure provider credentials to enable chat endpoints.');
     }
-    schedulePredictiveTtsPrewarm();
+    // Optional: TTS prewarm can be noisy; enable via PREWARM_TTS=true
+    if (process.env.PREWARM_TTS === 'true') {
+      schedulePredictiveTtsPrewarm();
+    } else {
+      httpLogger.info('TTS prewarm: disabled (set PREWARM_TTS=true to enable)');
+    }
     httpLogger.info('Ready at http://localhost:%s', PORT);
+
+    // Quick links (clickable)
+    const base = `http://localhost:${PORT}`;
+    const links = [
+      `${base}/health`,
+      `${base}/api/test`,
+      `${base}/api/system/llm-status`,
+      `${base}/api/system/storage-status`,
+      `${base}/api/docs`,
+      `${base}/api/agentos/personas`,
+      `${base}/api/agentos/workflows/definitions`
+    ];
+    console.log('\n\x1b[36m› Quick links:\x1b[0m');
+    for (const url of links) console.log('  -', url);
   }).on('error', (error: NodeJS.ErrnoException) => {
     httpLogger.error('Failed to start:', error);
     if (error.code === 'EADDRINUSE') {

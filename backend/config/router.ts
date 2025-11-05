@@ -7,7 +7,7 @@
  * @version 1.2.1 - Renamed jwtMiddleware to authMiddleware.
  */
 
-import { Router, Request, Response } from 'express';
+import express, { Router, Request, Response } from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 // Import the strict authMiddleware
@@ -122,12 +122,7 @@ export async function configureRouter(): Promise<Router> {
     const __filename = fileURLToPath(import.meta.url);
     const __dirnameResolved = path.dirname(__filename);
     const docsPath = path.join(__dirnameResolved, '..', '..', 'docs-generated');
-    router.use('/docs', (req: Request, res: Response, next) => {
-      // Serve static files from docs-generated directory
-      const express = require('express');
-      const staticHandler = express.static(docsPath);
-      staticHandler(req, res, next);
-    });
+    router.use('/docs', express.static(docsPath));
     console.log('[router] Registered documentation routes at /api/docs');
 
     // --- Core Application Routes ---

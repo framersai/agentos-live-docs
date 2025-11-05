@@ -232,14 +232,14 @@ export default function App() {
   return (
     <>
       <SkipLink />
-      <div className="grid h-screen w-full grid-cols-panel bg-slate-50 text-slate-900 transition-colors duration-300 ease-out dark:bg-slate-950 dark:text-slate-100">
+      <div className="grid min-h-screen w-full grid-cols-panel bg-slate-50 text-slate-900 transition-colors duration-300 ease-out dark:bg-slate-950 dark:text-slate-100">
         {/* Navigation Sidebar */}
         <Sidebar onCreateSession={handleCreateSession} />
         
         {/* Main Content Area */}
         <main 
           id="main-content"
-          className="flex flex-col gap-6 overflow-hidden bg-white p-6 transition-colors duration-300 dark:bg-slate-950"
+          className="flex flex-col gap-6 overflow-y-auto bg-white p-6 transition-colors duration-300 dark:bg-slate-950"
           role="main"
           aria-label={t("app.labels.mainContent", { defaultValue: "Main content area" })}
         >
