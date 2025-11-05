@@ -35,6 +35,7 @@ import type { RateLimitInfo, RateLimitInfoAuthenticated, RateLimitInfoPublic } f
 import { postCheckoutSession, postLemonWebhook, getCheckoutStatus } from '../src/features/billing/billing.routes';
 import * as organizationRoutes from '../src/features/organization/organization.routes';
 import { getLlmStatus as getSystemLlmStatus, getStorageStatus as getSystemStorageStatus } from '../src/features/system/system.routes';
+import { getUserSettings, putUserSettings } from '../src/features/settings/userSettings.routes';
 import { marketplaceRouter } from '../src/features/marketplace/marketplace.routes.js';
 import { userAgentsRouter } from '../src/features/agents/userAgents.routes.js';
 
@@ -62,6 +63,11 @@ export async function configureRouter(): Promise<Router> {
     router.use('/marketplace', marketplaceRouter);
     router.use('/agents', authMiddleware, userAgentsRouter);
     console.log('[router] Registered system diagnostics routes');
+
+    // --- User Settings (BYOK) ---
+    router.get('/user/settings', getUserSettings);
+    router.put('/user/settings', putUserSettings);
+    console.log('[router] Registered user settings routes');
 
     // --- Publicly Accessible Informational Routes ---
     // This endpoint allows frontend to get info about public rate limits.
