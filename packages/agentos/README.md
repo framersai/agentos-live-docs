@@ -3,21 +3,32 @@
 ![AgentOS](assets/agentos-primary-transparent-2x.png)
 
 [![NPM Version](https://img.shields.io/npm/v/@agentos/core?logo=npm)](https://www.npmjs.com/package/@agentos/core)
-[![GitHub](https://img.shields.io/badge/GitHub-wearetheframers%2Fagentos-blue?logo=github)](https://github.com/wearetheframers/agentos)
+[![CI](https://github.com/framersai/agentos/actions/workflows/ci.yml/badge.svg)](https://github.com/framersai/agentos/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/framersai/agentos/branch/main/graph/badge.svg)](https://codecov.io/gh/framersai/agentos)
 [![Website](https://img.shields.io/badge/Website-agentos.sh-00d4ff)](https://agentos.sh)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
 ### Modular orchestration runtime for adaptive AI systems
 
-[Documentation](https://agentos.sh/docs) • [GitHub](https://github.com/wearetheframers/agentos) • [NPM](https://www.npmjs.com/package/@agentos/core)
+[Documentation](https://agentos.sh/docs) • [GitHub](https://github.com/framersai/agentos) • [NPM](https://www.npmjs.com/package/@agentos/core)
 
 </div>
+
+<p align="center">
+  <a href="https://frame.dev" target="_blank" rel="noopener noreferrer">
+    <img src="../../logos/frame-wordmark.svg" alt="Frame.dev" height="28" />
+  </a>
+  <br />
+  <em>We are the Framers.</em>
+  · <a href="https://frame.dev" target="_blank" rel="noopener noreferrer">Visit Frame.dev →</a>
+  · <a href="https://vca.chat" target="_blank" rel="noopener noreferrer">Explore vca.chat →</a>
+</p>
 
 ---
 
 # @agentos/core
 
-> Modular AgentOS runtime used by Voice Chat Assistant. Official home: [github.com/wearetheframers/agentos](https://github.com/wearetheframers/agentos).
+> Modular AgentOS runtime used by Voice Chat Assistant. Official home: [github.com/framersai/agentos](https://github.com/framersai/agentos).
 
 This package contains the Typescript implementation of the AgentOS orchestration stack (GMI manager, conversation/memory services, tool orchestrator, streaming manager, RAG helpers). It is developed inside the Voice Chat Assistant workspace and will be published as a standalone open-source package.
 
@@ -83,7 +94,7 @@ Real deployments should supply their own auth/subscription services by implement
 
 - Vitest is configured (`pnpm --filter @agentos/core test`). Today's coverage is minimal; expect more unit + integration tests as the extraction work completes.
 - API docs can be generated locally via `pnpm run docs`; artefacts land in `docs/api`.
-- Documentation, CI, and publishing flows will migrate to the dedicated OSS repo ([wearetheframers/agentos](https://github.com/wearetheframers/agentos)). This README serves as the single source of truth until the repo split is finalized (see [docs/AGENTOS_REINTEGRATION_NOTES.md](../../docs/AGENTOS_REINTEGRATION_NOTES.md)).
+- Documentation, CI, and publishing flows will migrate to the dedicated OSS repo ([framersai/agentos](https://github.com/framersai/agentos)). This README serves as the single source of truth until the repo split is finalized (see [docs/AGENTOS_REINTEGRATION_NOTES.md](../../docs/AGENTOS_REINTEGRATION_NOTES.md)).
 
 ---
 
@@ -95,4 +106,4 @@ While the package lives in this workspace:
 2. Run `pnpm --filter @agentos/core test` and `npm run build:backend` to ensure consumers still compile.
 3. Document API changes in this README and, once the standalone repo is live, in its CHANGELOG.
 
-When the repo split is complete, contributions should go directly to [https://github.com/wearetheframers/agentos](https://github.com/wearetheframers/agentos).
+When the repo split is complete, contributions should go directly to [https://github.com/framersai/agentos](https://github.com/framersai/agentos).

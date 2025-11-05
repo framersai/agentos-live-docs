@@ -7,9 +7,9 @@
 
   /* Light mode colors */
   --color-background-primary: hsl(210, 20%, 98%);
-  --color-background-secondary: hsl(210, 17%, 95%);
+  --color-background-secondary: hsl(210, 20%, 97%);
   --color-text-primary: hsl(220, 13%, 13%);
-  --color-text-secondary: hsl(220, 9%, 46%);
+  --color-text-secondary: hsl(220, 9%, 38%);
   --color-text-muted: hsl(220, 9%, 65%);
   --color-accent-primary: hsl(221, 83%, 53%);
   --color-border-primary: hsl(220, 13%, 91%);
@@ -20,9 +20,9 @@
 
   /* Dark mode colors */
   --color-background-primary: hsl(222, 47%, 11%);
-  --color-background-secondary: hsl(217, 33%, 17%);
+  --color-background-secondary: hsl(217, 33%, 14%);
   --color-text-primary: hsl(210, 40%, 98%);
-  --color-text-secondary: hsl(215, 20%, 65%);
+  --color-text-secondary: hsl(215, 18%, 72%);
   --color-text-muted: hsl(217, 10%, 50%);
   --color-accent-primary: hsl(217, 91%, 60%);
   --color-border-primary: hsl(217, 33%, 20%);
@@ -72,6 +72,23 @@ a:hover {
 
 /* Utility classes for theme-aware components */
 @layer utilities {
+  .card-panel {
+    @apply rounded-2xl border shadow-panel;
+    background-color: color-mix(in oklab, var(--color-background-secondary) 85%, transparent);
+    border-color: color-mix(in oklab, var(--color-text-muted) 12%, transparent);
+  }
+
+  .card-panel--strong {
+    @apply rounded-3xl border shadow-panel;
+    background-color: color-mix(in oklab, var(--color-background-secondary) 92%, transparent);
+    border-color: color-mix(in oklab, var(--color-text-muted) 18%, transparent);
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1 rounded-full border px-2 py-1 text-[10px] uppercase tracking-[0.25em];
+    border-color: color-mix(in oklab, var(--color-text-muted) 22%, transparent);
+    color: color-mix(in oklab, var(--color-text-secondary) 92%, transparent);
+  }
   .theme-bg-primary {
     background-color: var(--color-background-primary);
   }
