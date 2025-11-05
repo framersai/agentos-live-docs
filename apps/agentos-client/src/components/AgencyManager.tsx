@@ -31,8 +31,9 @@ export function AgencyManager() {
   const [name, setName] = useState("");
   const [goal, setGoal] = useState("");
   const [workflowId, setWorkflowId] = useState("");
+  const remotePersonas = useMemo(() => personas.filter((p) => p.source === "remote"), [personas]);
   const [participants, setParticipants] = useState<ParticipantDraft[]>([
-    { roleId: "lead", personaId: personas[0]?.id ?? "" }
+    { roleId: "lead", personaId: remotePersonas[0]?.id ?? "" }
   ]);
 
   const {
@@ -58,7 +59,7 @@ export function AgencyManager() {
       return;
     }
 
-    const basePersonaId = personas[0]?.id ?? "";
+    const basePersonaId = remotePersonas[0]?.id ?? "";
     const shouldSeedParticipants =
       participants.length <= 1 &&
       participants[0]?.roleId === "lead" &&
@@ -91,7 +92,7 @@ export function AgencyManager() {
   };
 
   const handleAddParticipant = () => {
-    setParticipants((prev) => [...prev, { roleId: "", personaId: personas[0]?.id ?? "" }]);
+    setParticipants((prev) => [...prev, { roleId: "", personaId: remotePersonas[0]?.id ?? "" }]);
   };
 
   const seedWorkflowMetadata = (existing?: Record<string, unknown>) => {
@@ -170,11 +171,18 @@ export function AgencyManager() {
                   metadata: participant.personaId ? { requestedPersonaId: participant.personaId } : undefined
                 }));
               return (
-                <button
+                <div
                   key={agency.id}
-                  type="button"
+                  role="button"
+                  tabIndex={0}
                   onClick={() => setActiveAgency(agency.id)}
-                  className={`w-full rounded-2xl border px-4 py-4 text-left transition ${
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setActiveAgency(agency.id);
+                    }
+                  }}
+                  className={`w-full rounded-2xl border px-4 py-4 text-left transition focus:outline-none focus:ring-2 focus:ring-sky-500 ${
                     activeAgencyId === agency.id ? "border-sky-500 bg-sky-50" : "border-slate-200 bg-white hover:bg-slate-50 dark:border-white/10 dark:bg-slate-950/50 dark:hover:border-white/20"
                   }`}
                 >
@@ -211,7 +219,7 @@ export function AgencyManager() {
                       <Trash2 className="h-3 w-3" /> Remove
                     </button>
                   </div>
-                </button>
+                </div>
               );
             })
           )}

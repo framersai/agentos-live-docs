@@ -51,7 +51,8 @@ export default function App() {
 
   // Seed a demo agency if none exists, to make the dashboard usable immediately
   useEffect(() => {
-    if (agencies.length === 0 && personas.length > 0) {
+    const remotePersonas = personas.filter((p) => p.source === "remote");
+    if (agencies.length === 0) {
       const id = "demo-agency";
       const timestamp = new Date().toISOString();
       addAgency({
@@ -60,7 +61,7 @@ export default function App() {
         goal: "Demonstrate multi-seat coordination",
         workflowId: undefined,
         participants: [
-          { roleId: "lead", personaId: personas[0]?.id },
+          { roleId: "lead", personaId: remotePersonas[0]?.id },
         ],
         metadata: { seeded: true },
         createdAt: timestamp,
