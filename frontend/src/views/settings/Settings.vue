@@ -212,6 +212,23 @@
     >
       <OrganizationManager />
     </SettingsSection>
+    <SettingsSection
+      v-else-if="isAuthenticated && !canShowTeamManagement"
+      title="Team Management"
+      :icon="UsersIcon"
+      class="settings-grid-span-2"
+      id="team-settings-hint"
+    >
+      <div class="rounded-2xl border border-slate-200/40 p-4 dark:border-slate-800/60">
+        <p class="text-sm text-slate-600 dark:text-slate-300 mb-2">Team features are currently unavailable on this device.</p>
+        <ul class="list-disc pl-5 text-sm text-slate-600 dark:text-slate-300 space-y-1">
+          <li v-if="!platformStore.isCloudPostgres">Cloud deployment (PostgreSQL) required.</li>
+          <li v-if="!connectivity.isOnline">Online connectivity required.</li>
+          <li v-if="!isSubscribed">Active subscription required.</li>
+        </ul>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">Sign in on cloud and ensure connectivity and an active plan to enable organizations, invites, and billing.</p>
+      </div>
+    </SettingsSection>
 
     <SettingsSection title="Memory & Context" :icon="CpuChipIcon" class="settings-grid-span-2" id="memory-settings">
       <!-- Language Response Settings -->
@@ -628,6 +645,7 @@ import type { PlanId } from '@shared/planCatalog';
 import { usePlatformStore } from '@/store/platform.store';
 import { useAgentosEventsStore } from '@/store/agentosEvents.store';
 import { userAgentsAPI, type UserAgentDto } from '@/utils/api';
+import { useConnectivityStore } from '@/store/connectivity.store';
 
 // Child Components
 import SettingsSection from '@/components/settings/SettingsSection.vue';
@@ -781,6 +799,11 @@ const planLabel = computed(() => {
 // Feature gating: Organizations & invites only on Postgres (cloud)
 const platformStore = usePlatformStore();
 const canShowTeamManagement = computed(() => platformStore.canUseOrganizations);
+const connectivity = useConnectivityStore();
+const isSubscribed = computed(() => {
+  const status = currentUser.value?.subscriptionStatus as string | undefined;
+  return status === 'active' || status === 'trialing';
+});
 
 // AgentOS export parity (workflow/agency updates)
 const agentosEvents = useAgentosEventsStore();
