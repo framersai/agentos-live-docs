@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware';
 
 export type Theme = 'light' | 'dark' | 'system';
 export type Appearance = 'default' | 'compact' | 'contrast';
+export type Palette = 'default' | 'sakura' | 'sunset';
 
 interface ThemeState {
   theme: Theme;
@@ -10,6 +11,8 @@ interface ThemeState {
   actualTheme: 'light' | 'dark';
   appearance: Appearance;
   setAppearance: (appearance: Appearance) => void;
+  palette: Palette;
+  setPalette: (palette: Palette) => void;
 }
 
 const getSystemTheme = (): 'light' | 'dark' => {
@@ -35,12 +38,19 @@ const applyAppearance = (appearance: Appearance) => {
   root.classList.add(`appearance-${appearance}`);
 };
 
+const applyPalette = (palette: Palette) => {
+  const root = document.documentElement;
+  root.classList.remove('palette-default', 'palette-sakura', 'palette-sunset');
+  root.classList.add(`palette-${palette}`);
+};
+
 export const useThemeStore = create<ThemeState>()(
   persist(
     (set, get) => ({
       theme: 'system',
       actualTheme: getSystemTheme(),
       appearance: 'default',
+      palette: 'default',
       
       setTheme: (theme: Theme) => {
         const actualTheme = theme === 'system' ? getSystemTheme() : theme;
@@ -51,6 +61,10 @@ export const useThemeStore = create<ThemeState>()(
         applyAppearance(appearance);
         set({ appearance });
       },
+      setPalette: (palette: Palette) => {
+        applyPalette(palette);
+        set({ palette });
+      },
     }),
     {
       name: 'agentos-theme-preference',
@@ -60,6 +74,7 @@ export const useThemeStore = create<ThemeState>()(
           applyTheme(actualTheme);
           state.actualTheme = actualTheme;
           applyAppearance(state.appearance ?? 'default');
+          applyPalette((state as any).palette ?? 'default');
         }
       },
     }
