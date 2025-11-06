@@ -30,10 +30,16 @@ pnpm lint      # eslint
 pnpm typecheck
 ```
 
-## Local persistence
+## Storage, export, and import
 
-- Personas/agencies are cached to `localStorage` so you can restart the dev server without losing your catalog.
-- Session timelines remain in-memory to avoid leaking production transcripts on shared machines.
+- Data is stored locally in your browser using IndexedDB (no server writes).
+- Stored: personas (remote + local), agencies, and sessions (timeline events).
+- Export per-session from the timeline header: "Export session", "Export agency", "Export workflow".
+- Export everything from Settings → Data → "Export all" (also available in the timeline).
+- Import from Settings → Data → "Import…" (schema: `agentos-client-export-v1`).
+- Clear local data from Settings → Data → "Clear storage" (export first if needed).
+
+See [`docs/CLIENT_STORAGE_AND_EXPORTS.md`](../../docs/CLIENT_STORAGE_AND_EXPORTS.md) for details.
 
 ## Wiring it up
 
@@ -51,6 +57,10 @@ pnpm typecheck
 
 The client mirrors the streaming contracts from `@agentos/core`, so backend responses flow straight into the UI with no reshaping.
 
+### Onboarding
+
+- A first-run guided tour highlights tabs and controls. You can "Remind me later" or "Don't show again" (saved locally).
+
 ## AgentOS HTTP endpoints (quick list)
 
 - `POST /api/agentos/chat` — send a turn (messages, mode, optional workflow)
@@ -65,3 +75,11 @@ See `docs/BACKEND_API.md` for complete request/response shapes and examples.
 
 - AgentOS core (`@agentos/core`) — Apache 2.0
 - Marketplace and site components — MIT (vca.chat is the public marketplace we operate)
+
+## Links
+
+- Website: https://agentos.sh
+- Frame: https://frame.dev
+- Marketplace: https://vca.chat
+- GitHub: https://github.com/framersai/agentos
+- NPM: https://www.npmjs.com/package/@framers/agentos, https://www.npmjs.com/package/@framers/sql-storage-adapter
