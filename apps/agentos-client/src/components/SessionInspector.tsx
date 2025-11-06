@@ -1,10 +1,15 @@
-﻿import { Fragment, type ReactNode, useState } from "react";
+﻿import { Fragment, type ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { clsx } from "clsx";
 import {
   AgentOSChunkType,
   type AgentOSAgencyUpdateChunk,
   type AgentOSWorkflowUpdateChunk,
-  type AgentOSToolResultEmissionChunk
+  type AgentOSToolResultEmissionChunk,
+  type AgentOSTextDeltaChunk,
+  type AgentOSFinalResponseChunk,
+  type AgentOSSystemProgressChunk,
+  type AgentOSToolCallRequestChunk,
+  type AgentOSResponse
 } from "@/types/agentos";
 import { AlertTriangle, Activity, Terminal, Users, GitBranch } from "lucide-react";
 import { useSessionStore } from "@/state/sessionStore";
@@ -200,6 +205,169 @@ function renderEventBody(type: AgentOSChunkType | "log", payload: unknown): Reac
   );
 }
 
+/**
+ * Animated streaming text renderer. It animates towards the provided `text` string.
+ */
+function StreamingText({ text, isActive }: { text: string; isActive: boolean }) {
+  const [displayed, setDisplayed] = useState("");
+  const rafRef = useRef<number | null>(null);
+  const targetRef = useRef(text);
+
+  useEffect(() => {
+    targetRef.current = text;
+    if (!isActive) {
+      // Snap to final on completion
+      setDisplayed(text);
+      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+      return;
+    }
+
+    let lastTs = 0;
+    const step = (ts: number) => {
+      const deltaMs = ts - lastTs;
+      lastTs = ts;
+      const current = displayed;
+      const target = targetRef.current;
+      if (current === target) {
+        rafRef.current = requestAnimationFrame(step);
+        return;
+      }
+      const remaining = target.length - current.length;
+      // Speed: ~60 cps, scaled with frame time
+      const charsThisFrame = Math.max(1, Math.floor((deltaMs / 1000) * 60));
+      const nextLen = current.length + Math.min(charsThisFrame, remaining);
+      setDisplayed(target.slice(0, nextLen));
+      rafRef.current = requestAnimationFrame(step);
+    };
+    rafRef.current = requestAnimationFrame(step);
+    return () => {
+      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [text, isActive]);
+
+  return (
+    <pre className="whitespace-pre-wrap break-words rounded-lg bg-slate-950/60 p-3 text-sm text-slate-100">
+      {displayed}
+      {isActive && <span className="ml-0.5 inline-block h-4 w-2 animate-pulse rounded-sm bg-sky-400/70 align-baseline" aria-hidden="true" />}
+    </pre>
+  );
+}
+
+type AggregatedAssistantRow = {
+  kind: "assistant";
+  streamId: string;
+  personaId: string;
+  createdAt: number;
+  updatedAt: number;
+  text: string;
+  isFinal: boolean;
+  debugLines: string[];
+};
+
+type SimpleRow = {
+  kind: "event";
+  id: string;
+  timestamp: number;
+  type: AgentOSChunkType | "log";
+  payload: AgentOSResponse | { message: string; level?: string };
+};
+
+function buildAggregatedRows(events: ReturnType<typeof useSessionStore>["sessions"][number]["events"]): Array<AggregatedAssistantRow | SimpleRow> {
+  // Work chronologically to aggregate, then we'll render newest-first as before
+  const chronological = [...events].reverse();
+  const rows: Array<AggregatedAssistantRow | SimpleRow> = [];
+  const byStream: Record<string, AggregatedAssistantRow> = {};
+
+  for (const e of chronological) {
+    if (e.type === AgentOSChunkType.TEXT_DELTA) {
+      const chunk = e.payload as AgentOSTextDeltaChunk;
+      const row = byStream[chunk.streamId] || {
+        kind: "assistant",
+        streamId: chunk.streamId,
+        personaId: chunk.personaId,
+        createdAt: e.timestamp,
+        updatedAt: e.timestamp,
+        text: "",
+        isFinal: false,
+        debugLines: [],
+      };
+      row.text += chunk.textDelta || "";
+      row.updatedAt = e.timestamp;
+      byStream[chunk.streamId] = row;
+      continue;
+    }
+
+    if (e.type === AgentOSChunkType.FINAL_RESPONSE) {
+      const chunk = e.payload as AgentOSFinalResponseChunk;
+      // Ensure row exists; the assistant might only send FINAL_RESPONSE text
+      const row = byStream[chunk.streamId] || {
+        kind: "assistant",
+        streamId: chunk.streamId,
+        personaId: chunk.personaId,
+        createdAt: e.timestamp,
+        updatedAt: e.timestamp,
+        text: "",
+        isFinal: false,
+        debugLines: [],
+      };
+      if (chunk.finalResponseText) row.text += chunk.finalResponseText;
+      row.updatedAt = e.timestamp;
+      row.isFinal = true;
+      byStream[chunk.streamId] = row;
+      // Flush immediately as a row (and keep it in map in case more arrives — guard below)
+      continue;
+    }
+
+    // Append debug lines for interesting chunks onto the most recent row for that stream if any
+    if (
+      e.type === AgentOSChunkType.SYSTEM_PROGRESS ||
+      e.type === AgentOSChunkType.TOOL_CALL_REQUEST ||
+      e.type === AgentOSChunkType.TOOL_RESULT_EMISSION ||
+      e.type === AgentOSChunkType.ERROR
+    ) {
+      const chunk = e.payload as AgentOSResponse;
+      const streamId = (chunk as any).streamId as string | undefined;
+      if (streamId && byStream[streamId]) {
+        const row = byStream[streamId];
+        const stamp = new Date(e.timestamp).toLocaleTimeString();
+        if (e.type === AgentOSChunkType.SYSTEM_PROGRESS) {
+          const sp = chunk as AgentOSSystemProgressChunk;
+          row.debugLines.push(`[${stamp}] progress: ${sp.message}${sp.progressPercentage != null ? ` (${sp.progressPercentage}%)` : ''}`);
+        } else if (e.type === AgentOSChunkType.TOOL_CALL_REQUEST) {
+          const tcr = chunk as AgentOSToolCallRequestChunk;
+          row.debugLines.push(`[${stamp}] tool_call: ${tcr.toolCalls.map(tc => tc.name).join(', ')}`);
+        } else if (e.type === AgentOSChunkType.TOOL_RESULT_EMISSION) {
+          const tre = chunk as AgentOSToolResultEmissionChunk;
+          row.debugLines.push(`[${stamp}] tool_result: ${tre.toolName} ${tre.isSuccess ? '✓' : '✕'}`);
+        } else if (e.type === AgentOSChunkType.ERROR) {
+          const err = chunk as any;
+          row.debugLines.push(`[${stamp}] error: ${err.message || 'Unknown error'}`);
+        }
+        continue;
+      }
+    }
+
+    // Fallback: push as a simple row
+    rows.push({ kind: "event", id: e.id, timestamp: e.timestamp, type: e.type, payload: e.payload as any });
+  }
+
+  // Push all aggregated assistant rows into rows list
+  for (const row of Object.values(byStream)) {
+    rows.push(row);
+  }
+
+  // Render newest first (descending by timestamp/updatedAt)
+  rows.sort((a, b) => {
+    const ta = a.kind === "assistant" ? a.updatedAt : a.timestamp;
+    const tb = b.kind === "assistant" ? b.updatedAt : b.timestamp;
+    return tb - ta;
+  });
+
+  return rows;
+}
+
 export function SessionInspector() {
   const activeSessionId = useSessionStore((state) => state.activeSessionId);
   const session = useSessionStore((state) => state.sessions.find((item) => item.id === state.activeSessionId));
@@ -349,16 +517,37 @@ export function SessionInspector() {
               Waiting for the first event. Use the composer to send a message or replay a transcript to populate the timeline.
             </div>
           ) : (
-            session.events.map((event) => {
-              const chunkClass = chunkAccent[event.type] ?? "border-slate-200 bg-slate-50 text-slate-700 dark:border-white/5 dark:bg-white/5 dark:text-slate-200";
+            buildAggregatedRows(session.events).map((row) => {
+              if (row.kind === "assistant") {
+                const isActive = !row.isFinal;
+                return (
+                  <div key={`assistant-${row.streamId}`} className={clsx("rounded-2xl border px-5 py-4", "border-sky-500/40 bg-sky-500/5 text-slate-100 dark:text-slate-100")}> 
+                    <header className="mb-3 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                      <span className="font-semibold uppercase tracking-[0.35em]">Assistant</span>
+                      <time>{new Date(row.updatedAt).toLocaleTimeString()}</time>
+                    </header>
+                    <StreamingText text={row.text} isActive={isActive} />
+                    {row.debugLines.length > 0 && (
+                      <details className="mt-3 rounded-lg border border-white/10 bg-slate-950/40 p-3 text-xs text-slate-300">
+                        <summary className="cursor-pointer select-none text-slate-200">Debug logs</summary>
+                        <pre className="mt-2 max-h-64 overflow-auto whitespace-pre-wrap break-words text-slate-300">
+{row.debugLines.join("\n")}
+                        </pre>
+                      </details>
+                    )}
+                  </div>
+                );
+              }
+
+              const chunkClass = chunkAccent[row.type] ?? "border-slate-200 bg-slate-50 text-slate-700 dark:border-white/5 dark:bg-white/5 dark:text-slate-200";
               return (
-                <Fragment key={event.id}>
+                <Fragment key={row.id}>
                   <div className={clsx("rounded-2xl border px-5 py-4", chunkClass)}>
                     <header className="mb-3 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-                      <span className="font-semibold uppercase tracking-[0.35em]">{event.type}</span>
-                      <time>{new Date(event.timestamp).toLocaleTimeString()}</time>
+                      <span className="font-semibold uppercase tracking-[0.35em]">{row.type}</span>
+                      <time>{new Date(row.timestamp).toLocaleTimeString()}</time>
                     </header>
-                    {renderEventBody(event.type, event.payload)}
+                    {renderEventBody(row.type, row.payload)}
                   </div>
                 </Fragment>
               );

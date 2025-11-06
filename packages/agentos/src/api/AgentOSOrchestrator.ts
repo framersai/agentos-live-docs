@@ -276,7 +276,15 @@ export class AgentOSOrchestrator {
           details: data,
         } as AgentOSErrorChunk;
     }
-    await this.dependencies.streamingManager.pushChunk(streamId, chunk);
+    try {
+      await this.dependencies.streamingManager.pushChunk(streamId, chunk);
+    } catch (pushError: any) {
+      // Gracefully handle attempts to push after a stream is closed or missing
+      console.error(
+        `AgentOSOrchestrator: Failed to push chunk to stream ${streamId}. Type: ${type}. Error: ${pushError?.message}`,
+        pushError
+      );
+    }
   }
 
   public async broadcastWorkflowUpdate(update: WorkflowProgressUpdate): Promise<void> {
