@@ -34,7 +34,8 @@ export const openAgentOSStream = (params: AgentOSStreamParams, handlers: AgentOS
   const search = new URLSearchParams();
   search.set("userId", params.userId ?? agentOSConfig.defaultUserId);
   search.set("conversationId", params.sessionId);
-  search.set("mode", params.personaId ?? "voice_assistant_persona");
+  // Default to V (v_researcher) when no personaId provided
+  search.set("mode", params.personaId ?? "v_researcher");
   const messagesJson = safeStringify(params.messages);
   if (messagesJson) {
     search.set("messages", messagesJson);
