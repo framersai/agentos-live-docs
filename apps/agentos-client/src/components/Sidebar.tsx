@@ -44,9 +44,8 @@ export function Sidebar({ onCreateSession, onToggleCollapse, currentTab }: Sideb
     >
       {/* Header with branding and controls */}
       <header className="flex flex-col gap-3 border-b border-slate-200 px-5 py-4 dark:border-white/5">
-        <a href="https://agentos.sh" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2">
-          <img src="/logos/agentos-primary-no-tagline.svg" alt="AgentOS" className="h-6 w-auto" onError={(e) => ((e.currentTarget as HTMLImageElement).style.display='none')} />
-          <span className="text-sm font-semibold text-slate-900 dark:text-slate-100">AgentOS</span>
+        <a href="https://agentos.sh" target="_blank" rel="noreferrer" className="inline-flex items-center">
+          <img src="/logos/agentos-primary-no-tagline.svg" alt="AgentOS" className="h-8 w-auto" onError={(e) => ((e.currentTarget as HTMLImageElement).style.display='none')} />
         </a>
         <div className="flex items-center justify-between">
           <div>
