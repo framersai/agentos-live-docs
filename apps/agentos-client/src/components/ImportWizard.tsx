@@ -1,14 +1,20 @@
 import { useState, useRef } from 'react';
-import { useSessionStore, type PersonaDefinition, type AgencyDefinition } from '@/state/sessionStore';
+import { useSessionStore, type PersonaDefinition, type AgencyDefinition, type AgentSession } from '@/state/sessionStore';
 
 interface ImportWizardProps {
   open: boolean;
   onClose: () => void;
 }
 
+/**
+ * Allows importing personas, agencies, and sessions from a JSON export
+ * produced by `exportAllData()` or compatible schema. Data is merged into
+ * the local IndexedDB-backed store without server writes.
+ */
 export function ImportWizard({ open, onClose }: ImportWizardProps) {
   const addPersona = useSessionStore((s) => s.addPersona);
   const addAgency = useSessionStore((s) => s.addAgency);
+  const upsertSession = useSessionStore((s) => s.upsertSession);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [message, setMessage] = useState<string>('');
 
@@ -22,6 +28,7 @@ export function ImportWizard({ open, onClose }: ImportWizardProps) {
       const json = JSON.parse(text);
       let personasImported = 0;
       let agenciesImported = 0;
+      let sessionsImported = 0;
 
       const tryArray = (value: unknown): any[] => (Array.isArray(value) ? value : []);
 
@@ -53,7 +60,21 @@ export function ImportWizard({ open, onClose }: ImportWizardProps) {
         agenciesImported += 1;
       }
 
-      setMessage(`Imported ${personasImported} persona(s) and ${agenciesImported} agency(ies).`);
+      for (const s of tryArray(json.sessions)) {
+        const session: AgentSession = {
+          id: String(s.id || crypto.randomUUID()),
+          targetType: s.targetType === 'agency' ? 'agency' : 'persona',
+          displayName: String(s.displayName || 'Imported session'),
+          personaId: s.personaId,
+          agencyId: s.agencyId,
+          status: 'idle',
+          events: Array.isArray(s.events) ? s.events : [],
+        };
+        upsertSession(session);
+        sessionsImported += 1;
+      }
+
+      setMessage(`Imported ${personasImported} persona(s), ${agenciesImported} agency(ies), ${sessionsImported} session(s).`);
     } catch (err: any) {
       setMessage(`Import failed: ${err?.message || String(err)}`);
     }

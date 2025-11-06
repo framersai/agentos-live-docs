@@ -181,7 +181,7 @@ export function RequestComposer({ onSubmit }: RequestComposerProps) {
   };
 
   return (
-    <div className="flex h-full flex-col gap-4 rounded-3xl border border-slate-200 bg-white p-6 dark:border-white/10 dark:bg-slate-900/60">
+    <div className="flex h-full flex-col gap-4 rounded-3xl border border-slate-200 bg-white p-6 dark:border-white/10 dark:bg-slate-900/60" data-tour="composer">
       <header>
         <p className="text-xs uppercase tracking-[0.25em] text-slate-500 dark:text-slate-400">{t("requestComposer.header.title")}</p>
         <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{t("requestComposer.header.subtitle")}</h2>
@@ -270,9 +270,9 @@ export function RequestComposer({ onSubmit }: RequestComposerProps) {
         <label className="flex flex-1 flex-col space-y-2 text-sm text-slate-700 dark:text-slate-300">
           {t("requestComposer.form.userInput.label")}
           <textarea
-            rows={4}
+            rows={8}
             {...form.register("input")}
-            className="flex-1 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-sky-500 focus:outline-none dark:border-white/10 dark:bg-slate-950/60 dark:text-slate-100 dark:placeholder:text-slate-500"
+            className="flex-1 min-h-40 rounded-xl border border-slate-200 bg-white px-3 py-3 text-base text-slate-900 placeholder:text-slate-400 focus:border-sky-500 focus:outline-none dark:border-white/10 dark:bg-slate-950/60 dark:text-slate-100 dark:placeholder:text-slate-500"
           />
         </label>
 

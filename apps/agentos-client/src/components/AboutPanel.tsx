@@ -12,6 +12,11 @@ export function AboutPanel() {
           developer workbench for composing requests, managing agencies, and inspecting real-time outputs.
         </p>
 
+        <div className="rounded-xl border border-slate-200 bg-white p-3 dark:border-white/10 dark:bg-slate-900/40">
+          <p className="text-xs uppercase tracking-[0.35em] text-slate-500 dark:text-slate-400">Data & Privacy</p>
+          <p className="mt-2 text-sm">Your data is stored locally in your browser using IndexedDB. Use Export/Import to move data between machines. Clear storage from Settings → Data.</p>
+        </div>
+
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="rounded-xl border border-slate-200 bg-white p-3 dark:border-white/10 dark:bg-slate-900/40">
             <p className="text-xs uppercase tracking-[0.35em] text-slate-500 dark:text-slate-400">Project</p>
@@ -21,6 +26,9 @@ export function AboutPanel() {
               </li>
               <li>
                 <a href="https://frame.dev" target="_blank" rel="noreferrer" className="text-sky-600 hover:underline dark:text-sky-300">frame.dev</a>
+              </li>
+              <li>
+                <a href="https://vca.chat" target="_blank" rel="noreferrer" className="text-sky-600 hover:underline dark:text-sky-300">vca.chat · AgentOS Marketplace</a>
               </li>
               <li>
                 <a href="https://github.com/framersai/agentos" target="_blank" rel="noreferrer" className="text-sky-600 hover:underline dark:text-sky-300">github.com/framersai/agentos</a>
