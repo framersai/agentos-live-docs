@@ -12,6 +12,7 @@ import { GuidedTour } from "@/components/GuidedTour";
 import { ThemePanel } from "@/components/ThemePanel";
 import { AboutPanel } from "@/components/AboutPanel";
 import { SettingsPanel } from "@/components/SettingsPanel";
+import { ImportWizard } from "@/components/ImportWizard";
 import { usePersonas } from "@/hooks/usePersonas";
 import { useSystemTheme } from "@/hooks/useSystemTheme";
 import { useSessionStore } from "@/state/sessionStore";
@@ -36,6 +37,7 @@ export default function App() {
   const [leftTab, setLeftTab] = useState<LeftTabKey>("compose");
   const [showTour, setShowTour] = useState(false);
   const [showThemePanel, setShowThemePanel] = useState(false);
+  const [showImport, setShowImport] = useState(false);
   const { t } = useTranslation();
   useSystemTheme();
   const personas = useSessionStore((state) => state.personas);
@@ -265,6 +267,36 @@ export default function App() {
     [agencies, personas, appendEvent, applyAgencySnapshot, applyWorkflowSnapshot, ensureSession, resolveAgencyName, resolvePersonaName, setActiveSession, upsertSession]
   );
 
+  // Create a new session when switching between Compose and Agency tabs
+  useEffect(() => {
+    if (leftTab === 'compose') {
+      const sessionId = crypto.randomUUID();
+      const personaId = personas[0]?.id ?? DEFAULT_PERSONA_ID;
+      upsertSession({
+        id: sessionId,
+        targetType: 'persona',
+        displayName: resolvePersonaName(personaId),
+        personaId,
+        status: 'idle',
+        events: [],
+      });
+      setActiveSession(sessionId);
+    } else if (leftTab === 'agency') {
+      const sessionId = crypto.randomUUID();
+      const agencyId = agencies[0]?.id;
+      upsertSession({
+        id: sessionId,
+        targetType: 'agency',
+        displayName: resolveAgencyName(agencyId),
+        agencyId: agencyId ?? undefined,
+        status: 'idle',
+        events: [],
+      });
+      setActiveSession(sessionId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [leftTab]);
+
   return (
     <>
       <SkipLink />
@@ -323,12 +355,23 @@ export default function App() {
                     >
                       Theme
                     </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowImport(true)}
+                      className="rounded-full border border-slate-200 px-3 py-1 text-xs text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300"
+                      title="Import JSON"
+                    >
+                      Import
+                    </button>
                   </div>
                 </div>
               </div>
+              <div className="rounded-xl border border-dashed border-slate-300 bg-white p-3 text-xs text-slate-600 dark:border-white/10 dark:bg-slate-900/50 dark:text-slate-400">
+                Local-only: Changes here live in your browser until you export/import.
+              </div>
 
               {showThemePanel && <ThemePanel />}
-              {leftTab === "compose" && <RequestComposer onSubmit={handleSubmit} />}
+              {leftTab === "compose" && <RequestComposer key={activeSessionId || 'compose'} onSubmit={handleSubmit} />}
               {leftTab === "agency" && <AgencyManager />}
               {leftTab === "personas" && <PersonaCatalog />}
               {leftTab === "workflows" && <WorkflowOverview />}
