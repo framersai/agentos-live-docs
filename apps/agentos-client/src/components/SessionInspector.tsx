@@ -1,4 +1,4 @@
-﻿import { Fragment, type ReactNode } from "react";
+﻿import { Fragment, type ReactNode, useState } from "react";
 import { clsx } from "clsx";
 import {
   AgentOSChunkType,
@@ -156,12 +156,20 @@ function renderEventBody(type: AgentOSChunkType | "log", payload: unknown): Reac
 
   if (type === AgentOSChunkType.ERROR) {
     const errorPayload = payload as { message: string; code?: string };
+    const msg = errorPayload.message || '';
+    let help: string | null = null;
+    if (/persona .* not found/i.test(msg)) {
+      help = 'Persona not found. Pick a listed persona or switch session to a valid persona.';
+    } else if (/access denied|requires tier/i.test(msg)) {
+      help = 'Access denied. In development, enable AGENTOS_DEV_ALLOW_ALL=true and restart, or choose a free persona.';
+    }
     return (
       <div className="flex items-start gap-3 text-sm">
         <AlertTriangle className="mt-0.5 h-4 w-4" />
         <div>
           <p className="font-semibold">{errorPayload.message}</p>
           {errorPayload.code && <p className="text-xs text-slate-300">Code: {errorPayload.code}</p>}
+          {help && <p className="text-xs text-amber-300">{help}</p>}
         </div>
       </div>
     );
@@ -196,6 +204,9 @@ export function SessionInspector() {
   const activeSessionId = useSessionStore((state) => state.activeSessionId);
   const session = useSessionStore((state) => state.sessions.find((item) => item.id === state.activeSessionId));
   const removeSession = useSessionStore((s) => s.removeSession);
+  const upsertSession = useSessionStore((s) => s.upsertSession);
+  const [renaming, setRenaming] = useState(false);
+  const [nameDraft, setNameDraft] = useState('');
   const handleExport = () => {
     if (!session) return;
     const payload = {
@@ -277,11 +288,29 @@ export function SessionInspector() {
       <header className="flex items-center justify-between border-b border-slate-200 px-6 py-4 dark:border-white/5">
         <div>
           <p className="text-xs uppercase tracking-[0.25em] text-slate-500 dark:text-slate-400">Session timeline</p>
-          <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{session.displayName}</h2>
+          {!renaming ? (
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{session.displayName}</h2>
+          ) : (
+            <div className="flex items-center gap-2">
+              <input value={nameDraft} onChange={(e) => setNameDraft(e.target.value)} className="rounded border border-slate-200 bg-white px-2 py-1 text-sm dark:border-white/10 dark:bg-slate-900" />
+              <button type="button" onClick={() => { upsertSession({ id: session.id, displayName: nameDraft || 'Untitled' }); setRenaming(false); }} className="rounded-full border border-slate-200 px-2 py-0.5 text-xs text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300">Save</button>
+              <button type="button" onClick={() => setRenaming(false)} className="rounded-full border border-slate-200 px-2 py-0.5 text-xs text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300">Cancel</button>
+            </div>
+          )}
         </div>
         <div className="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
           <span>{session.events.length} entries</span>
           <div className="flex items-center gap-2">
+            {!renaming && (
+              <button
+                type="button"
+                onClick={() => { setNameDraft(session.displayName); setRenaming(true); }}
+                className="rounded-full border border-slate-200 px-3 py-1 text-[10px] uppercase tracking-[0.35em] text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300 dark:hover:border-white/30"
+                title="Rename session"
+              >
+                Rename
+              </button>
+            )}
             <button
               type="button"
               onClick={handleExport}
