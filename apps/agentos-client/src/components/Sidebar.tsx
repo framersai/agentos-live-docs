@@ -44,18 +44,10 @@ export function Sidebar({ onCreateSession, onToggleCollapse, currentTab }: Sideb
     >
       {/* Header with branding and controls */}
       <header className="flex flex-col gap-3 border-b border-slate-200 px-5 py-4 dark:border-white/5">
-        <div className="flex items-center justify-between">
-          <a href="https://agentos.sh" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2">
-            <img src="/logos/agentos-primary-no-tagline.svg" alt="AgentOS" className="h-6 w-auto" onError={(e) => ((e.currentTarget as HTMLImageElement).style.display='none')} />
-            <span className="text-sm font-semibold text-slate-900 dark:text-slate-100">AgentOS</span>
-          </a>
-          <div className="flex items-center gap-2">
-            <a href="https://frame.dev" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2">
-              <img src="/logos/frame-wordmark.svg" alt="Frame" className="h-5 w-auto" onError={(e) => ((e.currentTarget as HTMLImageElement).style.display='none')} />
-              <span className="text-xs text-slate-600 dark:text-slate-300">by Frame</span>
-            </a>
-          </div>
-        </div>
+        <a href="https://agentos.sh" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2">
+          <img src="/logos/agentos-primary-no-tagline.svg" alt="AgentOS" className="h-6 w-auto" onError={(e) => ((e.currentTarget as HTMLImageElement).style.display='none')} />
+          <span className="text-sm font-semibold text-slate-900 dark:text-slate-100">AgentOS</span>
+        </a>
         <div className="flex items-center justify-between">
           <div>
             <p className="text-xs uppercase tracking-[0.3em] text-sky-600 dark:text-sky-400">

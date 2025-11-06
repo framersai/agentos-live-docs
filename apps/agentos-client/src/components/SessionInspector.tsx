@@ -311,38 +311,26 @@ export function SessionInspector() {
                 Rename
               </button>
             )}
-            <button
-              type="button"
-              onClick={handleExport}
-              className="rounded-full border border-slate-200 px-3 py-1 text-[10px] uppercase tracking-[0.35em] text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300 dark:hover:border-white/30"
-              title="Export session JSON"
-            >
-              Export session
-            </button>
-            <button
-              type="button"
-              onClick={handleExportAgency}
-              className="rounded-full border border-slate-200 px-3 py-1 text-[10px] uppercase tracking-[0.35em] text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300 dark:hover:border-white/30"
-              title="Export agency seat updates"
-            >
-              Export agency
-            </button>
-            <button
-              type="button"
-              onClick={handleExportWorkflow}
-              className="rounded-full border border-slate-200 px-3 py-1 text-[10px] uppercase tracking-[0.35em] text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300 dark:hover:border-white/30"
-              title="Export workflow trace"
-            >
-              Export workflow
-            </button>
-            <button
-              type="button"
-              onClick={() => exportAllData()}
-              className="rounded-full border border-slate-200 px-3 py-1 text-[10px] uppercase tracking-[0.35em] text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300"
-              title="Export all data"
-            >
-              Export all
-            </button>
+            <div className="relative">
+              <select
+                aria-label="Export"
+                title="Export options"
+                className="rounded-full border border-slate-200 bg-white px-3 py-1 text-[10px] uppercase tracking-[0.35em] text-slate-600 dark:border-white/10 dark:bg-slate-900 dark:text-slate-300"
+                onChange={(e) => {
+                  const v = e.target.value; e.currentTarget.selectedIndex = 0; // reset
+                  if (v === 'session') handleExport();
+                  if (v === 'agency') handleExportAgency();
+                  if (v === 'workflow') handleExportWorkflow();
+                  if (v === 'all') exportAllData();
+                }}
+              >
+                <option value="">Export…</option>
+                <option value="session">Session</option>
+                <option value="agency">Agency updates</option>
+                <option value="workflow">Workflow trace</option>
+                <option value="all">All data</option>
+              </select>
+            </div>
             <button
               type="button"
               onClick={() => removeSession(session.id)}
