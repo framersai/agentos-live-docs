@@ -21,7 +21,7 @@ import {
   type AgentOSWorkflowUpdateChunk
 } from "@/types/agentos";
 
-const DEFAULT_PERSONA_ID = "voice_assistant_persona";
+const DEFAULT_PERSONA_ID = "nerf_generalist";
 
 export default function App() {
   const LEFT_TABS = [
@@ -77,7 +77,7 @@ export default function App() {
         goal: "Demonstrate multi-seat coordination",
         workflowId: undefined,
         participants: [
-          { roleId: "lead", personaId: remotePersonas[0]?.id },
+          { roleId: "lead", personaId: remotePersonas[0]?.id || DEFAULT_PERSONA_ID },
         ],
         metadata: { seeded: true },
         createdAt: timestamp,
