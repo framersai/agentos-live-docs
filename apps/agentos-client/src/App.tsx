@@ -23,7 +23,7 @@ import {
   type AgentOSWorkflowUpdateChunk
 } from "@/types/agentos";
 
-const DEFAULT_PERSONA_ID = "nerf_generalist";
+const DEFAULT_PERSONA_ID = "voice_assistant_persona";
 
 export default function App() {
   const LEFT_TABS = [
@@ -75,7 +75,17 @@ export default function App() {
   });
 
   useEffect(() => {
-    if (!personasQuery.data || personasQuery.data.length === 0) {
+    if (!personasQuery.data) return;
+    if (personasQuery.data.length === 0) {
+      // Seed a minimal fallback remote persona so the UI can stream immediately
+      setPersonas([
+        {
+          id: DEFAULT_PERSONA_ID,
+          displayName: 'Voice Assistant',
+          description: 'Default assistant persona',
+          source: 'remote',
+        } as any,
+      ]);
       return;
     }
     setPersonas(personasQuery.data);
