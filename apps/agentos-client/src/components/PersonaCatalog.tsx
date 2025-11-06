@@ -165,6 +165,16 @@ export function PersonaCatalog() {
                   <span className={`chip border ${persona.source === "remote" ? "border-sky-200 bg-sky-50 text-sky-700 dark:border-sky-500/30 dark:bg-sky-500/10 dark:text-sky-200" : "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-200"}`}>
                     {persona.source === "remote" ? "Remote" : "Local"}
                   </span>
+                  {persona.id === 'nerf_generalist' && (
+                    <span className="chip border border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200" title="Offline-first; smallest models; no internet/tools">
+                      Nerf
+                    </span>
+                  )}
+                  {persona.id === 'v_researcher' && (
+                    <span className="chip border border-fuchsia-200 bg-fuchsia-50 text-fuchsia-700 dark:border-fuchsia-500/30 dark:bg-fuchsia-500/10 dark:text-fuchsia-200" title="Full-powered researcher; tools allowed; any model">
+                      V
+                    </span>
+                  )}
                 </div>
               </div>
               <button

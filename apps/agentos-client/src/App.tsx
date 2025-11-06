@@ -23,7 +23,7 @@ import {
   type AgentOSWorkflowUpdateChunk
 } from "@/types/agentos";
 
-const DEFAULT_PERSONA_ID = "voice_assistant_persona";
+const DEFAULT_PERSONA_ID = "nerf_generalist";
 
 export default function App() {
   const LEFT_TABS = [
