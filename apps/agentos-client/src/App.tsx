@@ -55,6 +55,7 @@ export default function App() {
   useSystemTheme();
   const personas = useSessionStore((state) => state.personas);
   const agencies = useSessionStore((state) => state.agencies);
+  const sessions = useSessionStore((state) => state.sessions);
   const addAgency = useSessionStore((state) => state.addAgency);
   const applyAgencySnapshot = useSessionStore((state) => state.applyAgencySnapshot);
   const applyWorkflowSnapshot = useSessionStore((state) => state.applyWorkflowSnapshot);
@@ -79,6 +80,23 @@ export default function App() {
     }
     setPersonas(personasQuery.data);
   }, [personasQuery.data, setPersonas]);
+
+  // Ensure there is at least one default session on first load
+  useEffect(() => {
+    if (sessions.length === 0) {
+      const sessionId = crypto.randomUUID();
+      const personaId = (personas.find((p) => p.source === 'remote')?.id) ?? personas[0]?.id ?? DEFAULT_PERSONA_ID;
+      upsertSession({
+        id: sessionId,
+        targetType: 'persona',
+        displayName: 'Untitled',
+        personaId,
+        status: 'idle',
+        events: [],
+      });
+      setActiveSession(sessionId);
+    }
+  }, [sessions.length]);
 
   // Seed a demo agency if none exists, to make the dashboard usable immediately
   useEffect(() => {
@@ -173,19 +191,22 @@ export default function App() {
   const handleCreateSession = useCallback(() => {
     const sessionId = crypto.randomUUID();
     const hasAgencies = agencies.length > 0;
-    const personaId = personas[0]?.id;
+    const personaId = (personas.find((p) => p.source === 'remote')?.id) ?? personas[0]?.id ?? DEFAULT_PERSONA_ID;
     const agencyId = agencies[0]?.id;
+    const base = 'Untitled';
+    const existing = sessions.filter((s) => s.displayName.startsWith(base)).length;
+    const name = existing === 0 ? base : `${base} (${existing})`;
     upsertSession({
       id: sessionId,
       targetType: hasAgencies ? "agency" : "persona",
-      displayName: hasAgencies ? resolveAgencyName(agencyId) : resolvePersonaName(personaId),
+      displayName: hasAgencies ? resolveAgencyName(agencyId) : name,
       personaId: hasAgencies ? undefined : personaId,
       agencyId: hasAgencies ? agencyId : undefined,
       status: "idle",
       events: []
     });
     setActiveSession(sessionId);
-  }, [agencies, personas, resolveAgencyName, resolvePersonaName, setActiveSession, upsertSession]);
+  }, [agencies, personas, sessions, resolveAgencyName, setActiveSession, upsertSession]);
 
   const handleSubmit = useCallback(
     (payload: RequestComposerPayload) => {
@@ -202,10 +223,10 @@ export default function App() {
       const agencyDefinition =
         payload.targetType === "agency" ? agencies.find((item) => item.id === payload.agencyId) ?? null : null;
 
-      const fallbackPersonaId = personas[0]?.id ?? DEFAULT_PERSONA_ID;
-
-      // Always pass a persona id to avoid backend defaulting to restricted personas
-      const personaForStream = payload.personaId ?? fallbackPersonaId;
+      const remoteIds = personas.filter((p) => p.source === 'remote').map((p) => p.id);
+      const firstRemote = remoteIds[0] ?? DEFAULT_PERSONA_ID;
+      const chosenPersona = payload.personaId && remoteIds.includes(payload.personaId) ? payload.personaId : firstRemote;
+      const personaForStream = chosenPersona;
 
       const workflowDefinitionId = payload.workflowId ?? agencyDefinition?.workflowId;
       const workflowInstanceId = workflowDefinitionId ? `${workflowDefinitionId}-${sessionId}` : undefined;
@@ -217,7 +238,7 @@ export default function App() {
             goal: agencyDefinition?.goal,
             participants: (agencyDefinition?.participants ?? []).map((participant) => ({
               roleId: participant.roleId,
-              personaId: participant.personaId || fallbackPersonaId,
+              personaId: participant.personaId && remoteIds.includes(participant.personaId) ? participant.personaId : firstRemote,
             })),
             metadata: agencyDefinition?.metadata
           }
