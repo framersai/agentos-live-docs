@@ -11,6 +11,13 @@ export function AboutPanel() {
           AgentOS orchestrates personas, tools, memory, and workflows for AI agencies. This client is a
           developer workbench for composing requests, managing agencies, and inspecting real-time outputs.
         </p>
+        <div className="rounded-xl border border-slate-200 bg-white p-3 dark:border-white/10 dark:bg-slate-900/40">
+          <p className="text-xs uppercase tracking-[0.35em] text-slate-500 dark:text-slate-400">Default assistants</p>
+          <ul className="mt-2 list-disc pl-5">
+            <li><span className="font-semibold">Nerf</span>: offline-first, smallest models, no internet/tools.</li>
+            <li><span className="font-semibold">V</span>: full-powered researcher, tools enabled, any model family.</li>
+          </ul>
+        </div>
 
         <div className="rounded-xl border border-slate-200 bg-white p-3 dark:border-white/10 dark:bg-slate-900/40">
           <p className="text-xs uppercase tracking-[0.35em] text-slate-500 dark:text-slate-400">Data & Privacy</p>
