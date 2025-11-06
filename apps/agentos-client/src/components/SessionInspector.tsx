@@ -159,6 +159,19 @@ function renderEventBody(type: AgentOSChunkType | "log", payload: unknown): Reac
     );
   }
 
+  if (type === AgentOSChunkType.SYSTEM_PROGRESS) {
+    const prog = payload as AgentOSSystemProgressChunk;
+    const title = prog.progressPercentage != null ? `${prog.message} (${prog.progressPercentage}%)` : prog.message;
+    return (
+      <details className="rounded-lg border border-white/10 bg-slate-950/40 p-3 text-xs text-slate-300">
+        <summary className="cursor-pointer select-none text-slate-200">{title}</summary>
+        <pre className="mt-2 max-h-64 overflow-auto whitespace-pre-wrap break-words text-slate-300">
+{JSON.stringify(prog, null, 2)}
+        </pre>
+      </details>
+    );
+  }
+
   if (type === AgentOSChunkType.ERROR) {
     const errorPayload = payload as { message: string; code?: string };
     const msg = errorPayload.message || '';
@@ -314,7 +327,6 @@ function buildAggregatedRows(events: ReturnType<typeof useSessionStore>["session
 
     if (e.type === AgentOSChunkType.FINAL_RESPONSE) {
       const chunk = e.payload as AgentOSFinalResponseChunk;
-      // Ensure row exists; the assistant might only send FINAL_RESPONSE text
       const row = byStream[chunk.streamId] || {
         kind: "assistant",
         streamId: chunk.streamId,
@@ -329,13 +341,11 @@ function buildAggregatedRows(events: ReturnType<typeof useSessionStore>["session
       row.updatedAt = e.timestamp;
       row.isFinal = true;
       byStream[chunk.streamId] = row;
-      // Flush immediately as a row (and keep it in map in case more arrives — guard below)
       continue;
     }
 
-    // Append debug lines for interesting chunks onto the most recent row for that stream if any
+    // For TOOL_* and ERROR, keep brief lines under the assistant's debug section if present
     if (
-      e.type === AgentOSChunkType.SYSTEM_PROGRESS ||
       e.type === AgentOSChunkType.TOOL_CALL_REQUEST ||
       e.type === AgentOSChunkType.TOOL_RESULT_EMISSION ||
       e.type === AgentOSChunkType.ERROR
@@ -345,10 +355,7 @@ function buildAggregatedRows(events: ReturnType<typeof useSessionStore>["session
       if (streamId && byStream[streamId]) {
         const row = byStream[streamId];
         const stamp = new Date(e.timestamp).toLocaleTimeString();
-        if (e.type === AgentOSChunkType.SYSTEM_PROGRESS) {
-          const sp = chunk as AgentOSSystemProgressChunk;
-          row.debugLines.push(`[${stamp}] progress: ${sp.message}${sp.progressPercentage != null ? ` (${sp.progressPercentage}%)` : ''}`);
-        } else if (e.type === AgentOSChunkType.TOOL_CALL_REQUEST) {
+        if (e.type === AgentOSChunkType.TOOL_CALL_REQUEST) {
           const tcr = chunk as AgentOSToolCallRequestChunk;
           row.debugLines.push(`[${stamp}] tool_call: ${tcr.toolCalls.map(tc => tc.name).join(', ')}`);
         } else if (e.type === AgentOSChunkType.TOOL_RESULT_EMISSION) {
@@ -360,6 +367,12 @@ function buildAggregatedRows(events: ReturnType<typeof useSessionStore>["session
         }
         continue;
       }
+    }
+
+    // SYSTEM_PROGRESS should be shown as its own expandable log row
+    if (e.type === AgentOSChunkType.SYSTEM_PROGRESS) {
+      rows.push({ kind: "event", id: e.id, timestamp: e.timestamp, type: e.type, payload: e.payload as any });
+      continue;
     }
 
     // Fallback: push as a simple row

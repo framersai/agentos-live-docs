@@ -284,6 +284,13 @@ export function RequestComposer({ onSubmit, disabled = false }: RequestComposerP
           <textarea
             rows={8}
             {...form.register("input")}
+            onKeyDown={(e) => {
+              if (disabled || isStreaming) return;
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                void form.handleSubmit(processSubmission)();
+              }
+            }}
             className="flex-1 min-h-40 rounded-xl border border-slate-200 bg-white px-3 py-3 text-base text-slate-900 placeholder:text-slate-400 focus:border-sky-500 focus:outline-none dark:border-white/10 dark:bg-slate-950/60 dark:text-slate-100 dark:placeholder:text-slate-500"
           />
         </label>
