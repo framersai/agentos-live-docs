@@ -32,9 +32,10 @@ export type RequestComposerPayload = z.infer<ReturnType<typeof createRequestSche
 
 interface RequestComposerProps {
   onSubmit: (payload: RequestComposerPayload) => void;
+  disabled?: boolean;
 }
 
-export function RequestComposer({ onSubmit }: RequestComposerProps) {
+export function RequestComposer({ onSubmit, disabled = false }: RequestComposerProps) {
   const { t } = useTranslation();
   const [isStreaming, setStreaming] = useState(false);
   const personas = useSessionStore((state) => state.personas);
@@ -47,7 +48,12 @@ export function RequestComposer({ onSubmit }: RequestComposerProps) {
 
   const activeSession = sessions.find((item) => item.id === activeSessionId) ?? null;
 
-  const remotePersonas = useMemo(() => personas.filter((p) => p.source === "remote"), [personas]);
+  const remotePersonas = useMemo(() => {
+    const items = personas.filter((p) => p.source === "remote");
+    // Prefer V then Nerf in ordering
+    const score = (id: string) => (id === "v_researcher" ? 0 : id === "nerf_generalist" ? 1 : 2);
+    return items.sort((a, b) => score(a.id) - score(b.id));
+  }, [personas]);
   const defaultPersonaId = remotePersonas[0]?.id ?? personas[0]?.id ?? "";
   const fallbackAgencyId = agencies[0]?.id ?? "";
   const defaultAgencyId = activeAgencyId ?? fallbackAgencyId;
@@ -186,7 +192,13 @@ export function RequestComposer({ onSubmit }: RequestComposerProps) {
         <p className="text-xs uppercase tracking-[0.25em] text-slate-500 dark:text-slate-400">{t("requestComposer.header.title")}</p>
         <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{t("requestComposer.header.subtitle")}</h2>
       </header>
-      <form onSubmit={handleSubmit} className="flex flex-1 flex-col gap-4">
+      <form onSubmit={handleSubmit} className="flex flex-1 flex-col gap-4" aria-busy={disabled} aria-live="polite">
+        {disabled && (
+          <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-2 text-xs text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">
+            Connecting to backend… Please wait.
+          </div>
+        )}
+        <fieldset disabled={disabled || isStreaming} className={disabled ? "pointer-events-none opacity-60" : undefined}>
         <fieldset className="flex flex-wrap items-center gap-4 text-xs text-slate-600 dark:text-slate-400">
           <legend className="sr-only">{t("requestComposer.form.targetLegend")}</legend>
           {targetOptions.map((option) => (
@@ -195,7 +207,7 @@ export function RequestComposer({ onSubmit }: RequestComposerProps) {
                 type="radio"
                 value={option.value}
                 {...form.register("targetType")}
-                disabled={option.value === "agency" && agencies.length === 0}
+                disabled={disabled || (option.value === "agency" && agencies.length === 0)}
                 className="h-3 w-3 border-slate-300 bg-white text-sky-600 focus:ring-sky-500 disabled:opacity-30 dark:border-white/20 dark:bg-slate-950 dark:text-sky-500"
               />
               <span className="uppercase">{option.label}</span>
@@ -302,7 +314,7 @@ export function RequestComposer({ onSubmit }: RequestComposerProps) {
           <button
             type="submit"
             className="inline-flex items-center justify-center gap-2 rounded-full bg-sky-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-sky-500/30 transition hover:-translate-y-0.5"
-            disabled={isStreaming}
+            disabled={disabled || isStreaming}
           >
             <Play className="h-4 w-4" />
             {isStreaming ? t("requestComposer.actions.streaming") : t("requestComposer.actions.submit")}
@@ -311,7 +323,7 @@ export function RequestComposer({ onSubmit }: RequestComposerProps) {
             type="button"
             onClick={handleReplay}
             className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 px-6 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-white/10 dark:text-slate-200 dark:hover:border-slate-400/40"
-            disabled={!activeSessionId}
+            disabled={disabled || !activeSessionId}
           >
             <Paperclip className="h-4 w-4" /> {t("requestComposer.actions.attachTranscript")}
           </button>
@@ -320,6 +332,7 @@ export function RequestComposer({ onSubmit }: RequestComposerProps) {
             {t("requestComposer.footer.localNotice")}
           </div>
         </div>
+        </fieldset>
       </form>
     </div>
   );

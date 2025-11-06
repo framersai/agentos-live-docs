@@ -74,6 +74,8 @@ export default function App() {
     }
   });
 
+  const backendReady = Boolean(personasQuery.data && personasQuery.data.length > 0);
+
   useEffect(() => {
     if (!personasQuery.data) return;
     setPersonas(personasQuery.data);
@@ -186,10 +188,17 @@ export default function App() {
     [activeSessionId, resolveAgencyName, resolvePersonaName, setActiveSession, upsertSession]
   );
 
+  const preferDefaultPersona = useCallback((ids: string[]): string | undefined => {
+    if (ids.includes('v_researcher')) return 'v_researcher';
+    if (ids.includes('nerf_generalist')) return 'nerf_generalist';
+    return ids[0];
+  }, []);
+
   const handleCreateSession = useCallback(() => {
     const sessionId = crypto.randomUUID();
     const hasAgencies = agencies.length > 0;
-    const personaId = (personas.find((p) => p.source === 'remote')?.id) ?? personas[0]?.id ?? DEFAULT_PERSONA_ID;
+    const remoteIds = personas.filter((p) => p.source === 'remote').map((p) => p.id);
+    const personaId = preferDefaultPersona(remoteIds) ?? personas[0]?.id ?? DEFAULT_PERSONA_ID;
     const agencyId = agencies[0]?.id;
     const base = 'Untitled';
     const existing = sessions.filter((s) => s.displayName.startsWith(base)).length;
@@ -204,7 +213,7 @@ export default function App() {
       events: []
     });
     setActiveSession(sessionId);
-  }, [agencies, personas, sessions, resolveAgencyName, setActiveSession, upsertSession]);
+  }, [agencies, personas, sessions, resolveAgencyName, setActiveSession, upsertSession, preferDefaultPersona]);
 
   const handleSubmit = useCallback(
     (payload: RequestComposerPayload) => {
@@ -222,8 +231,8 @@ export default function App() {
         payload.targetType === "agency" ? agencies.find((item) => item.id === payload.agencyId) ?? null : null;
 
       const remoteIds = personas.filter((p) => p.source === 'remote').map((p) => p.id);
-      const firstRemote = remoteIds[0];
-      const chosenPersona = payload.personaId && remoteIds.includes(payload.personaId) ? payload.personaId : firstRemote;
+      const preferred = preferDefaultPersona(remoteIds);
+      const chosenPersona = payload.personaId && remoteIds.includes(payload.personaId) ? payload.personaId : preferred;
       if (!chosenPersona) {
         appendEvent(sessionId, {
           id: crypto.randomUUID(),
@@ -246,7 +255,7 @@ export default function App() {
             goal: agencyDefinition?.goal,
             participants: (agencyDefinition?.participants ?? []).map((participant) => ({
               roleId: participant.roleId,
-              personaId: participant.personaId && remoteIds.includes(participant.personaId) ? participant.personaId : (firstRemote ?? chosenPersona),
+              personaId: participant.personaId && remoteIds.includes(participant.personaId) ? participant.personaId : (preferred ?? chosenPersona),
             })),
             metadata: agencyDefinition?.metadata
           }
@@ -417,7 +426,7 @@ export default function App() {
               </div>
 
               {showThemePanel && <ThemePanel />}
-              {leftTab === "compose" && <RequestComposer key={activeSessionId || 'compose'} onSubmit={handleSubmit} />}
+              {leftTab === "compose" && <RequestComposer key={activeSessionId || 'compose'} onSubmit={handleSubmit} disabled={!backendReady} />}
               {leftTab === "agency" && <AgencyManager />}
               {leftTab === "personas" && <PersonaCatalog />}
               {leftTab === "workflows" && <WorkflowOverview />}

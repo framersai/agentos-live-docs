@@ -210,41 +210,54 @@ function renderEventBody(type: AgentOSChunkType | "log", payload: unknown): Reac
  */
 function StreamingText({ text, isActive }: { text: string; isActive: boolean }) {
   const [displayed, setDisplayed] = useState("");
-  const rafRef = useRef<number | null>(null);
-  const targetRef = useRef(text);
+  const displayedRef = useRef("");
+  const timerRef = useRef<number | null>(null);
 
   useEffect(() => {
-    targetRef.current = text;
-    if (!isActive) {
-      // Snap to final on completion
-      setDisplayed(text);
-      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+    const current = displayedRef.current;
+    const target = text;
+
+    // If target shrank (shouldn't happen), snap
+    if (!target.startsWith(current)) {
+      displayedRef.current = target;
+      setDisplayed(target);
       return;
     }
 
-    let lastTs = 0;
-    const step = (ts: number) => {
-      const deltaMs = ts - lastTs;
-      lastTs = ts;
-      const current = displayed;
-      const target = targetRef.current;
-      if (current === target) {
-        rafRef.current = requestAnimationFrame(step);
-        return;
+    // If already up-to-date
+    if (current === target) {
+      if (!isActive && timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
       }
-      const remaining = target.length - current.length;
-      // Speed: ~60 cps, scaled with frame time
-      const charsThisFrame = Math.max(1, Math.floor((deltaMs / 1000) * 60));
-      const nextLen = current.length + Math.min(charsThisFrame, remaining);
-      setDisplayed(target.slice(0, nextLen));
-      rafRef.current = requestAnimationFrame(step);
-    };
-    rafRef.current = requestAnimationFrame(step);
+      return;
+    }
+
+    // Animate only the delta
+    const delta = target.slice(current.length);
+    const chunkSize = Math.max(1, Math.min(3, Math.floor(delta.length / 24))); // smooth chunks
+    let index = 0;
+
+    if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = window.setInterval(() => {
+      index += chunkSize;
+      const next = current + delta.slice(0, Math.min(index, delta.length));
+      displayedRef.current = next;
+      setDisplayed(next);
+      if (index >= delta.length) {
+        if (timerRef.current) {
+          clearInterval(timerRef.current);
+          timerRef.current = null;
+        }
+      }
+    }, 16); // ~60fps
+
     return () => {
-      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
-      rafRef.current = null;
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [text, isActive]);
 
   return (
