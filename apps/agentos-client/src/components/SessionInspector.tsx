@@ -9,6 +9,7 @@ import {
 import { AlertTriangle, Activity, Terminal, Users, GitBranch } from "lucide-react";
 import { useSessionStore } from "@/state/sessionStore";
 import { ArtifactViewer } from "@/components/ArtifactViewer";
+import { exportAllData } from "@/lib/dataExport";
 
 const chunkAccent: Record<string, string> = {
   [AgentOSChunkType.TEXT_DELTA]: "border-sky-500/40 bg-sky-500/5 text-sky-200",
@@ -194,6 +195,7 @@ function renderEventBody(type: AgentOSChunkType | "log", payload: unknown): Reac
 export function SessionInspector() {
   const activeSessionId = useSessionStore((state) => state.activeSessionId);
   const session = useSessionStore((state) => state.sessions.find((item) => item.id === state.activeSessionId));
+  const removeSession = useSessionStore((s) => s.removeSession);
   const handleExport = () => {
     if (!session) return;
     const payload = {
@@ -303,6 +305,22 @@ export function SessionInspector() {
               title="Export workflow trace"
             >
               Export workflow
+            </button>
+            <button
+              type="button"
+              onClick={() => exportAllData()}
+              className="rounded-full border border-slate-200 px-3 py-1 text-[10px] uppercase tracking-[0.35em] text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300"
+              title="Export all data"
+            >
+              Export all
+            </button>
+            <button
+              type="button"
+              onClick={() => removeSession(session.id)}
+              className="rounded-full border border-rose-300 px-3 py-1 text-[10px] uppercase tracking-[0.35em] text-rose-700 hover:bg-rose-50 dark:border-rose-500/40 dark:text-rose-300"
+              title="Delete session"
+            >
+              Delete
             </button>
           </div>
         </div>

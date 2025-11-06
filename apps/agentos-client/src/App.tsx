@@ -9,10 +9,12 @@ import { PersonaCatalog } from "@/components/PersonaCatalog";
 import { WorkflowOverview } from "@/components/WorkflowOverview";
 import { openAgentOSStream } from "@/lib/agentosClient";
 import { GuidedTour } from "@/components/GuidedTour";
+import { TourOverlay } from "@/components/TourOverlay";
 import { ThemePanel } from "@/components/ThemePanel";
 import { AboutPanel } from "@/components/AboutPanel";
 import { SettingsPanel } from "@/components/SettingsPanel";
 import { ImportWizard } from "@/components/ImportWizard";
+import { useUiStore } from "@/state/uiStore";
 import { usePersonas } from "@/hooks/usePersonas";
 import { useSystemTheme } from "@/hooks/useSystemTheme";
 import { useSessionStore } from "@/state/sessionStore";
@@ -38,6 +40,18 @@ export default function App() {
   const [showTour, setShowTour] = useState(false);
   const [showThemePanel, setShowThemePanel] = useState(false);
   const [showImport, setShowImport] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const welcomeTourDismissed = useUiStore((s) => s.welcomeTourDismissed);
+  const welcomeTourSnoozeUntil = useUiStore((s) => s.welcomeTourSnoozeUntil);
+  const dismissWelcomeTour = useUiStore((s) => s.dismissWelcomeTour);
+  const snoozeWelcomeTour = useUiStore((s) => s.snoozeWelcomeTour);
+  const tourSteps = [
+    { selector: '[data-tour="tabs"]', title: 'Panels', body: 'Switch between Compose, Agency, Personas, Workflows, Settings, and About.' },
+    { selector: '[data-tour="composer"]', title: 'Compose', body: 'Write prompts, select persona/agency, and submit to start a session.' },
+    { selector: '[data-tour="agency-manager"]', title: 'Agency', body: 'Define multi-seat collectives and attach workflows.' },
+    { selector: '[data-tour="theme-button"]', title: 'Theme', body: 'Switch theme mode, appearance, and palette (Sakura, Twilight, etc.)' },
+    { selector: '[data-tour="import-button"]', title: 'Import', body: 'Import exported personas, agencies, and sessions from JSON.' },
+  ];
   const { t } = useTranslation();
   useSystemTheme();
   const personas = useSessionStore((state) => state.personas);
@@ -93,6 +107,23 @@ export default function App() {
       console.error("[AgentOS Client] Failed to load personas", personasQuery.error);
     }
   }, [personasQuery.error]);
+
+  // Wire up a global event to open the import wizard from SettingsPanel
+  useEffect(() => {
+    const open = () => setShowImport(true);
+    window.addEventListener('agentos:open-import', open as EventListener);
+    return () => window.removeEventListener('agentos:open-import', open as EventListener);
+  }, []);
+
+  // Show welcome tour on first load unless dismissed or snoozed
+  useEffect(() => {
+    if (!welcomeTourDismissed) {
+      const now = Date.now();
+      if (!welcomeTourSnoozeUntil || now >= welcomeTourSnoozeUntil) {
+        setShowTour(true);
+      }
+    }
+  }, [welcomeTourDismissed, welcomeTourSnoozeUntil]);
 
 
   const resolvePersonaName = useCallback(
@@ -300,9 +331,9 @@ export default function App() {
   return (
     <>
       <SkipLink />
-      <div className="grid min-h-screen w-full grid-cols-panel bg-slate-50 text-slate-900 transition-colors duration-300 ease-out dark:bg-slate-950 dark:text-slate-100">
+      <div className={`${sidebarCollapsed ? 'grid-cols-1' : 'grid-cols-panel'} grid min-h-screen w-full bg-slate-50 text-slate-900 transition-colors duration-300 ease-out dark:bg-slate-950 dark:text-slate-100`}>
         {/* Navigation Sidebar */}
-        <Sidebar onCreateSession={handleCreateSession} />
+        {!sidebarCollapsed && <Sidebar onCreateSession={handleCreateSession} onToggleCollapse={() => setSidebarCollapsed(true)} />}
         
         {/* Main Content Area */}
         <main 
@@ -311,6 +342,18 @@ export default function App() {
           role="main"
           aria-label={t("app.labels.mainContent", { defaultValue: "Main content area" })}
         >
+          {sidebarCollapsed && (
+            <div className="flex justify-end">
+              <button
+                type="button"
+                onClick={() => setSidebarCollapsed(false)}
+                className="rounded-full border border-slate-200 px-3 py-1 text-xs text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300"
+                title="Show sidebar"
+              >
+                Show sidebar
+              </button>
+            </div>
+          )}
           <div className="grid flex-1 grid-cols-1 gap-6 lg:grid-cols-[1fr_2fr]">
             {/* Left Column: Tabbed coordination */}
             <section className="flex h-full flex-col gap-4" aria-label={t("app.labels.leftPanel", { defaultValue: "Composer and coordination" })}>
@@ -318,6 +361,7 @@ export default function App() {
                 role="tablist"
                 aria-label="Left panel tabs"
                 className="rounded-3xl border border-slate-200 bg-white p-2 text-sm dark:border-white/10 dark:bg-slate-900/60"
+                data-tour="tabs"
               >
                 <div className="flex flex-wrap items-center gap-2">
                   {LEFT_TABS.map((tab) => {
@@ -352,6 +396,7 @@ export default function App() {
                       onClick={() => setShowThemePanel((v) => !v)}
                       className="rounded-full border border-slate-200 px-3 py-1 text-xs text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300"
                       title="Theme & appearance"
+                      data-tour="theme-button"
                     >
                       Theme
                     </button>
@@ -360,6 +405,7 @@ export default function App() {
                       onClick={() => setShowImport(true)}
                       className="rounded-full border border-slate-200 px-3 py-1 text-xs text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300"
                       title="Import JSON"
+                      data-tour="import-button"
                     >
                       Import
                     </button>
@@ -404,7 +450,20 @@ export default function App() {
           </div>
         </main>
       </div>
-      <GuidedTour open={showTour} onClose={() => setShowTour(false)} />
+      <GuidedTour
+        open={showTour}
+        onClose={() => setShowTour(false)}
+        onDontShowAgain={() => dismissWelcomeTour()}
+        onRemindLater={() => snoozeWelcomeTour(24)}
+      />
+      <TourOverlay
+        open={showTour}
+        steps={tourSteps}
+        onClose={() => setShowTour(false)}
+        onDontShowAgain={() => dismissWelcomeTour()}
+        onRemindLater={() => snoozeWelcomeTour(24)}
+      />
+      <ImportWizard open={showImport} onClose={() => setShowImport(false)} />
     </>
   );
 }

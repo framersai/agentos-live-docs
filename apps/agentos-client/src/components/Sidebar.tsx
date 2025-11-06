@@ -9,6 +9,7 @@ import { ThemeToggle } from "./ThemeToggle";
 
 interface SidebarProps {
   onCreateSession: () => void;
+  onToggleCollapse?: () => void;
 }
 
 const statusBadgeStyles: Record<string, string> = {
@@ -17,7 +18,7 @@ const statusBadgeStyles: Record<string, string> = {
   error: "bg-rose-100 text-rose-700 border border-rose-300 dark:bg-rose-500/10 dark:text-rose-300 dark:border-rose-500/30"
 };
 
-export function Sidebar({ onCreateSession }: SidebarProps) {
+export function Sidebar({ onCreateSession, onToggleCollapse }: SidebarProps) {
   const { t } = useTranslation();
   const sessions = useSessionStore((state) => state.sessions);
   const activeSessionId = useSessionStore((state) => state.activeSessionId);
@@ -38,6 +39,28 @@ export function Sidebar({ onCreateSession }: SidebarProps) {
     >
       {/* Header with branding and controls */}
       <header className="flex flex-col gap-3 border-b border-slate-200 px-5 py-4 dark:border-white/5">
+        <div className="flex items-center justify-between">
+          <a href="https://agentos.sh" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2">
+            <img src="/logos/agentos.svg" alt="AgentOS" className="h-6 w-6" onError={(e) => ((e.currentTarget as HTMLImageElement).style.display='none')} />
+            <span className="text-sm font-semibold text-slate-900 dark:text-slate-100">AgentOS</span>
+          </a>
+          <div className="flex items-center gap-2">
+            <a href="https://frame.dev" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2">
+              <img src="/logos/frame.svg" alt="Frame" className="h-5 w-5" onError={(e) => ((e.currentTarget as HTMLImageElement).style.display='none')} />
+              <span className="text-xs text-slate-600 dark:text-slate-300">by Frame</span>
+            </a>
+            {onToggleCollapse && (
+              <button
+                type="button"
+                onClick={onToggleCollapse}
+                className="rounded-full border border-slate-200 px-2 py-0.5 text-xs text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300"
+                title="Hide sidebar"
+              >
+                Hide
+              </button>
+            )}
+          </div>
+        </div>
         <div className="flex items-center justify-between">
           <div>
             <p className="text-xs uppercase tracking-[0.3em] text-sky-600 dark:text-sky-400">
@@ -158,6 +181,18 @@ export function Sidebar({ onCreateSession }: SidebarProps) {
           })
         )}
       </div>
+      {/* Footer links */}
+      <footer className="mt-auto border-t border-slate-200 px-5 py-3 text-xs text-slate-600 dark:border-white/5 dark:text-slate-400">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <a href="https://vca.chat" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-sky-600 hover:underline dark:text-sky-300">
+            <span>Marketplace</span>
+          </a>
+          <div className="flex items-center gap-3">
+            <a href="https://agentos.sh" target="_blank" rel="noreferrer" className="hover:underline">agentos.sh</a>
+            <a href="https://frame.dev" target="_blank" rel="noreferrer" className="hover:underline">frame.dev</a>
+          </div>
+        </div>
+      </footer>
     </nav>
   );
 }

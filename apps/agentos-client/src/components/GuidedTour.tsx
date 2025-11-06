@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 interface GuidedTourProps {
   open: boolean;
   onClose: () => void;
+  onDontShowAgain?: () => void;
+  onRemindLater?: () => void;
 }
 
 const steps: Array<{ title: string; body: string }> = [
@@ -32,7 +34,7 @@ const steps: Array<{ title: string; body: string }> = [
   },
 ];
 
-export function GuidedTour({ open, onClose }: GuidedTourProps) {
+export function GuidedTour({ open, onClose, onDontShowAgain, onRemindLater }: GuidedTourProps) {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
@@ -63,7 +65,7 @@ export function GuidedTour({ open, onClose }: GuidedTourProps) {
         </div>
         <footer className="flex items-center justify-between text-xs">
           <span className="text-slate-500 dark:text-slate-400">Step {index + 1} / {steps.length}</span>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <button
               type="button"
               onClick={() => setIndex(Math.max(0, index - 1))}
@@ -72,6 +74,24 @@ export function GuidedTour({ open, onClose }: GuidedTourProps) {
             >
               Back
             </button>
+            {onRemindLater && (
+              <button
+                type="button"
+                onClick={() => { onRemindLater?.(); onClose(); }}
+                className="rounded-full border border-slate-200 px-3 py-1 text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300"
+              >
+                Remind me later
+              </button>
+            )}
+            {onDontShowAgain && (
+              <button
+                type="button"
+                onClick={() => { onDontShowAgain?.(); onClose(); }}
+                className="rounded-full border border-rose-300 px-3 py-1 text-rose-700 hover:bg-rose-50 dark:border-rose-500/40 dark:text-rose-300"
+              >
+                Don’t show again
+              </button>
+            )}
             {!atEnd ? (
               <button
                 type="button"
