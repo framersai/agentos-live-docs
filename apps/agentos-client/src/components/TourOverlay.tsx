@@ -30,7 +30,17 @@ export function TourOverlay({ open, steps, onClose, onDontShowAgain, onRemindLat
       return;
     }
     const r = el.getBoundingClientRect();
-    setRect(r);
+    const fullyVisible = r.top >= 0 && r.bottom <= window.innerHeight && r.left >= 0 && r.right <= window.innerWidth;
+    if (!fullyVisible) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+      // Re-measure after scroll completes
+      setTimeout(() => {
+        const nr = el.getBoundingClientRect();
+        setRect(nr);
+      }, 250);
+    } else {
+      setRect(r);
+    }
   };
 
   useEffect(() => {
