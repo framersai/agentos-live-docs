@@ -17,6 +17,37 @@ import { useUiStore } from "@/state/uiStore";
 import { usePersonas } from "@/hooks/usePersonas";
 import { useSystemTheme } from "@/hooks/useSystemTheme";
 import { useSessionStore } from "@/state/sessionStore";
+import { useTelemetryStore } from "@/state/telemetryStore";
+import React from "react";
+
+function TelemetryView() {
+  const perSession = useTelemetryStore((s) => s.perSession);
+  const activeSessionId = useSessionStore((s) => s.activeSessionId);
+  const m = activeSessionId ? perSession[activeSessionId] : undefined;
+  if (!m) return <p className="text-xs text-slate-600 dark:text-slate-400">No telemetry yet.</p>;
+  return (
+    <dl className="grid grid-cols-2 gap-3 text-xs text-slate-600 dark:text-slate-300">
+      <div><dt className="uppercase tracking-widest text-slate-500">Chunks</dt><dd className="font-semibold text-slate-900 dark:text-slate-100">{m.chunks ?? 0}</dd></div>
+      <div><dt className="uppercase tracking-widest text-slate-500">Chars</dt><dd className="font-semibold text-slate-900 dark:text-slate-100">{m.textDeltaChars ?? 0}</dd></div>
+      <div><dt className="uppercase tracking-widest text-slate-500">Tool calls</dt><dd className="font-semibold text-slate-900 dark:text-slate-100">{m.toolCalls ?? 0}</dd></div>
+      <div><dt className="uppercase tracking-widest text-slate-500">Errors</dt><dd className="font-semibold text-slate-900 dark:text-slate-100">{m.errors ?? 0}</dd></div>
+      <div><dt className="uppercase tracking-widest text-slate-500">Duration</dt><dd className="font-semibold text-slate-900 dark:text-slate-100">{m.durationMs ? `${Math.round(m.durationMs)}ms` : '-'}</dd></div>
+      <div><dt className="uppercase tracking-widest text-slate-500">Tokens</dt><dd className="font-semibold text-slate-900 dark:text-slate-100">{m.finalTokensTotal ?? '-'}</dd></div>
+    </dl>
+  );
+}
+
+function AnalyticsView() {
+  const perSession = useTelemetryStore((s) => s.perSession);
+  const activeSessionId = useSessionStore((s) => s.activeSessionId);
+  const m = activeSessionId ? perSession[activeSessionId] : undefined;
+  return (
+    <div className="text-xs text-slate-600 dark:text-slate-400">
+      <p>Last session tokens: {m?.finalTokensTotal ?? '-'}</p>
+      <p>Tool calls: {m?.toolCalls ?? 0}</p>
+    </div>
+  );
+}
 import {
   AgentOSChunkType,
   type AgentOSAgencyUpdateChunk,
@@ -67,6 +98,7 @@ export default function App() {
   const setActiveSession = useSessionStore((state) => state.setActiveSession);
 
   const streamHandles = useRef<Record<string, () => void>>({});
+  const telemetry = useTelemetryStore();
   const personasQuery = usePersonas({
     filters: {
       search: personaFilters.search.trim() ? personaFilters.search.trim() : undefined,
@@ -288,6 +320,8 @@ export default function App() {
         }
       });
 
+      telemetry.startStream(sessionId);
+
       const cleanup = openAgentOSStream(
         {
           sessionId,
@@ -305,6 +339,8 @@ export default function App() {
               payload: chunk
             });
 
+            telemetry.noteChunk(sessionId, chunk);
+
             if (chunk.type === AgentOSChunkType.AGENCY_UPDATE) {
               applyAgencySnapshot((chunk as AgentOSAgencyUpdateChunk).agency);
             }
@@ -315,6 +351,7 @@ export default function App() {
           },
           onDone: () => {
             upsertSession({ id: sessionId, status: "idle" });
+            telemetry.endStream(sessionId);
             delete streamHandles.current[sessionId];
           },
           onError: (error) => {
@@ -325,6 +362,7 @@ export default function App() {
               payload: { message: t("app.logs.streamError", { message: error.message }), level: "error" }
             });
             upsertSession({ id: sessionId, status: "error" });
+            telemetry.endStream(sessionId);
             delete streamHandles.current[sessionId];
           }
         }
@@ -446,14 +484,14 @@ export default function App() {
                   <p className="text-xs uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">Stream status</p>
                   <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Live telemetry</h3>
                 </header>
-                <p className="text-xs text-slate-600 dark:text-slate-400">Metrics and heartbeat placeholders.</p>
+                <TelemetryView />
               </section>
               <section className="rounded-3xl border border-slate-200 bg-white p-5 dark:border-white/10 dark:bg-slate-900/60">
                 <header className="mb-2">
                   <p className="text-xs uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">Analytics</p>
                   <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Usage insights</h3>
                 </header>
-                <p className="text-xs text-slate-600 dark:text-slate-400">Charts and summaries will appear here.</p>
+                <AnalyticsView />
               </section>
             </aside>
           </div>
