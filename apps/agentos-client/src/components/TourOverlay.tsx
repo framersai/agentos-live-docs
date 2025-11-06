@@ -19,6 +19,8 @@ export function TourOverlay({ open, steps, onClose, onDontShowAgain, onRemindLat
   const [index, setIndex] = useState(0);
   const [rect, setRect] = useState<DOMRect | null>(null);
   const overlayRef = useRef<HTMLDivElement | null>(null);
+  const tooltipRef = useRef<HTMLDivElement | null>(null);
+  const [tooltipHeight, setTooltipHeight] = useState<number>(240);
 
   const step = steps[index];
 
@@ -56,6 +58,15 @@ export function TourOverlay({ open, steps, onClose, onDontShowAgain, onRemindLat
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, index, step?.selector]);
 
+  // Track tooltip element height for better placement
+  useEffect(() => {
+    if (!open) return;
+    if (tooltipRef.current) {
+      const h = tooltipRef.current.getBoundingClientRect().height;
+      setTooltipHeight(Math.max(180, Math.min(320, h)));
+    }
+  }, [open, rect, index]);
+
   useEffect(() => {
     if (!open) setIndex(0);
   }, [open]);
@@ -83,16 +94,19 @@ export function TourOverlay({ open, steps, onClose, onDontShowAgain, onRemindLat
 
   // Tooltip position
   const tooltipStyle: React.CSSProperties = rect
-    ? {
-        position: 'fixed',
-        top: Math.min(rect.y + rect.height + 12, window.innerHeight - 140),
-        left: Math.min(rect.x, window.innerWidth - 320),
-        width: 300,
-      }
-    : { position: 'fixed', top: 24, right: 24, width: 320 };
+    ? (() => {
+        const margin = 12;
+        const width = 320;
+        const belowTop = rect.y + rect.height + margin;
+        const belowFits = belowTop + tooltipHeight <= window.innerHeight - 16;
+        const top = belowFits ? belowTop : Math.max(16, rect.y - tooltipHeight - margin);
+        const left = Math.min(Math.max(16, rect.x), window.innerWidth - width - 16);
+        return { position: 'fixed', top, left, width, maxHeight: tooltipHeight, overflowY: 'auto' as const };
+      })()
+    : { position: 'fixed', top: 24, right: 24, width: 320, maxHeight: 320, overflowY: 'auto' };
 
   return (
-    <div ref={overlayRef} className="fixed inset-0 z-[60]">
+    <div ref={overlayRef} className="pointer-events-none fixed inset-0 z-[60]">
       <svg className="pointer-events-none absolute inset-0 h-full w-full">
         <defs>
           <mask id="tour-mask">
@@ -105,7 +119,8 @@ export function TourOverlay({ open, steps, onClose, onDontShowAgain, onRemindLat
 
       <div
         style={tooltipStyle}
-        className="rounded-3xl border border-slate-200 bg-white p-6 shadow-xl transition dark:border-white/10 dark:bg-slate-900"
+        ref={tooltipRef}
+        className="pointer-events-auto rounded-3xl border border-slate-200 bg-white p-6 shadow-xl transition dark:border-white/10 dark:bg-slate-900"
       >
         <header className="mb-3 flex items-center justify-between">
           <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">{step.title}</h3>
