@@ -83,20 +83,20 @@ export default function App() {
 
   // Ensure there is at least one default session on first load
   useEffect(() => {
-    if (sessions.length === 0) {
-      const sessionId = crypto.randomUUID();
-      const personaId = (personas.find((p) => p.source === 'remote')?.id) ?? personas[0]?.id ?? DEFAULT_PERSONA_ID;
-      upsertSession({
-        id: sessionId,
-        targetType: 'persona',
-        displayName: 'Untitled',
-        personaId,
-        status: 'idle',
-        events: [],
-      });
-      setActiveSession(sessionId);
-    }
-  }, [sessions.length]);
+    if (sessions.length > 0) return;
+    const firstRemote = personas.find((p) => p.source === 'remote');
+    if (!firstRemote) return; // wait until remote personas are loaded
+    const sessionId = crypto.randomUUID();
+    upsertSession({
+      id: sessionId,
+      targetType: 'persona',
+      displayName: 'Untitled',
+      personaId: firstRemote.id,
+      status: 'idle',
+      events: [],
+    });
+    setActiveSession(sessionId);
+  }, [sessions.length, personas]);
 
   // Seed a demo agency if none exists, to make the dashboard usable immediately
   useEffect(() => {
@@ -224,8 +224,18 @@ export default function App() {
         payload.targetType === "agency" ? agencies.find((item) => item.id === payload.agencyId) ?? null : null;
 
       const remoteIds = personas.filter((p) => p.source === 'remote').map((p) => p.id);
-      const firstRemote = remoteIds[0] ?? DEFAULT_PERSONA_ID;
+      const firstRemote = remoteIds[0];
       const chosenPersona = payload.personaId && remoteIds.includes(payload.personaId) ? payload.personaId : firstRemote;
+      if (!chosenPersona) {
+        appendEvent(sessionId, {
+          id: crypto.randomUUID(),
+          timestamp: Date.now(),
+          type: 'log',
+          payload: { message: 'No personas available. Load remote personas before streaming.', level: 'error' }
+        });
+        upsertSession({ id: sessionId, status: 'error' });
+        return;
+      }
       const personaForStream = chosenPersona;
 
       const workflowDefinitionId = payload.workflowId ?? agencyDefinition?.workflowId;
@@ -238,7 +248,7 @@ export default function App() {
             goal: agencyDefinition?.goal,
             participants: (agencyDefinition?.participants ?? []).map((participant) => ({
               roleId: participant.roleId,
-              personaId: participant.personaId && remoteIds.includes(participant.personaId) ? participant.personaId : firstRemote,
+              personaId: participant.personaId && remoteIds.includes(participant.personaId) ? participant.personaId : (firstRemote ?? chosenPersona),
             })),
             metadata: agencyDefinition?.metadata
           }
