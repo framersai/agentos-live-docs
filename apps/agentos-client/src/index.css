@@ -28,6 +28,25 @@
   --color-border-primary: hsl(217, 33%, 20%);
 }
 
+/* Palette variants override accents and subtle surfaces */
+.palette-default {
+  /* No overrides; use base variables */
+}
+
+.palette-sakura {
+  --color-accent-primary: #ec4899; /* pink-500 */
+}
+.dark.palette-sakura {
+  --color-accent-primary: #f472b6; /* pink-400 in dark */
+}
+
+.palette-sunset {
+  --color-accent-primary: #f97316; /* orange-500 */
+}
+.dark.palette-sunset {
+  --color-accent-primary: #fb923c; /* orange-400 in dark */
+}
+
 body {
   background-color: var(--color-background-primary);
   color: var(--color-text-primary);
