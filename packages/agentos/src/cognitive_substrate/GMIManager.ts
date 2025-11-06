@@ -228,6 +228,9 @@ export class GMIManager {
   }
 
   private async userMeetsPersonaTier(userId: string, persona: IPersonaDefinition): Promise<boolean> {
+    if (process.env.AGENTOS_DEV_ALLOW_ALL === 'true' || process.env.NODE_ENV === 'development') {
+      return true;
+    }
     if (!persona.minSubscriptionTier) {
       return true;
     }
