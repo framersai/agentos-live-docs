@@ -37,7 +37,14 @@
   --color-accent-primary: #ec4899; /* pink-500 */
 }
 .dark.palette-sakura {
-  --color-accent-primary: #f472b6; /* pink-400 in dark */
+  /* Sakura Sunset (dark) */
+  --color-background-primary: hsl(340, 25%, 16%);
+  --color-background-secondary: hsl(340, 22%, 22%);
+  --color-text-primary: hsl(25, 60%, 92%);
+  --color-text-secondary: hsl(345, 25%, 75%);
+  --color-text-muted: hsl(340, 15%, 60%);
+  --color-accent-primary: hsl(335, 80%, 72%);
+  --color-border-primary: hsl(340, 15%, 35%);
 }
 
 .palette-sunset {
@@ -45,6 +52,68 @@
 }
 .dark.palette-sunset {
   --color-accent-primary: #fb923c; /* orange-400 in dark */
+}
+
+/* Twilight Neo (dark) */
+.dark.palette-twilight {
+  --color-background-primary: hsl(220, 30%, 8%);
+  --color-background-secondary: hsl(220, 28%, 12%);
+  --color-text-primary: hsl(200, 70%, 94%);
+  --color-text-secondary: hsl(200, 50%, 80%);
+  --color-text-muted: hsl(200, 30%, 60%);
+  --color-accent-primary: hsl(180, 95%, 60%);
+  --color-border-primary: hsl(220, 20%, 25%);
+}
+
+/* Aurora Daybreak (light) */
+.palette-aurora {
+  --color-background-primary: hsl(210, 60%, 98%);
+  --color-background-secondary: hsl(210, 40%, 95%);
+  --color-text-primary: hsl(220, 30%, 25%);
+  --color-text-secondary: hsl(220, 25%, 45%);
+  --color-text-muted: hsl(220, 20%, 65%);
+  --color-accent-primary: hsl(330, 85%, 72%);
+  --color-border-primary: hsl(210, 25%, 85%);
+}
+
+/* Warm Embrace (light) */
+.palette-warm {
+  --color-background-primary: hsl(35, 70%, 96%);
+  --color-background-secondary: hsl(35, 50%, 92%);
+  --color-text-primary: hsl(30, 20%, 25%);
+  --color-text-secondary: hsl(30, 18%, 40%);
+  --color-text-muted: hsl(30, 15%, 55%);
+  --color-accent-primary: hsl(25, 75%, 65%);
+  --color-border-primary: hsl(30, 20%, 80%);
+}
+
+/* Retro Terminus (dark variants) */
+.dark.palette-terminus-amber {
+  --color-background-primary: hsl(0, 0%, 5%);
+  --color-background-secondary: hsl(0, 0%, 8%);
+  --color-text-primary: hsl(35, 80%, 70%);
+  --color-text-secondary: hsl(35, 60%, 50%);
+  --color-text-muted: hsl(35, 45%, 40%);
+  --color-accent-primary: hsl(35, 85%, 75%);
+  --color-border-primary: hsl(0, 0%, 20%);
+}
+.dark.palette-terminus-green {
+  --color-background-primary: hsl(0, 0%, 5%);
+  --color-background-secondary: hsl(0, 0%, 8%);
+  --color-text-primary: hsl(120, 70%, 75%);
+  --color-text-secondary: hsl(120, 55%, 55%);
+  --color-text-muted: hsl(120, 45%, 40%);
+  --color-accent-primary: hsl(120, 75%, 80%);
+  --color-border-primary: hsl(0, 0%, 20%);
+}
+.dark.palette-terminus-white {
+  --color-background-primary: hsl(0, 0%, 5%);
+  --color-background-secondary: hsl(0, 0%, 8%);
+  --color-text-primary: hsl(0, 0%, 90%);
+  --color-text-secondary: hsl(0, 0%, 70%);
+  --color-text-muted: hsl(0, 0%, 55%);
+  --color-accent-primary: hsl(0, 0%, 95%);
+  --color-border-primary: hsl(0, 0%, 20%);
 }
 
 body {

@@ -19,8 +19,14 @@ export function ThemePanel() {
 
   const palettes: Array<{ key: Palette; label: string }> = [
     { key: "default", label: "Default" },
-    { key: "sakura", label: "Sakura" },
-    { key: "sunset", label: "Sunset" },
+    { key: "sakura", label: "Sakura Sunset" },
+    { key: "twilight", label: "Twilight Neo" },
+    { key: "aurora", label: "Aurora Daybreak" },
+    { key: "warm", label: "Warm Embrace" },
+    { key: "terminus-amber", label: "Terminus (Amber)" },
+    { key: "terminus-green", label: "Terminus (Green)" },
+    { key: "terminus-white", label: "Terminus (White)" },
+    { key: "sunset", label: "Sunset (legacy)" },
   ];
 
   return (
