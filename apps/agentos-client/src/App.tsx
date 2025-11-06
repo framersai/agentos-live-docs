@@ -205,8 +205,8 @@ export default function App() {
 
       const fallbackPersonaId = personas[0]?.id ?? DEFAULT_PERSONA_ID;
 
-      // For agency runs, rely on agency participants; do not force a personaId param
-      const personaForStream = payload.targetType === "agency" ? undefined : payload.personaId ?? fallbackPersonaId;
+      // Always pass a persona id to avoid backend defaulting to restricted personas
+      const personaForStream = payload.personaId ?? fallbackPersonaId;
 
       const workflowDefinitionId = payload.workflowId ?? agencyDefinition?.workflowId;
       const workflowInstanceId = workflowDefinitionId ? `${workflowDefinitionId}-${sessionId}` : undefined;
