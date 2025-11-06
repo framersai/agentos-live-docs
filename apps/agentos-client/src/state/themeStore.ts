@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware';
 
 export type Theme = 'light' | 'dark' | 'system';
 export type Appearance = 'default' | 'compact' | 'contrast';
-export type Palette = 'default' | 'sakura' | 'sunset';
+export type Palette = 'default' | 'sakura' | 'sunset' | 'twilight' | 'aurora' | 'warm' | 'terminus-amber' | 'terminus-green' | 'terminus-white';
 
 interface ThemeState {
   theme: Theme;

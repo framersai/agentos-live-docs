@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface GuidedTourProps {
   open: boolean;
@@ -33,11 +33,7 @@ const steps: Array<{ title: string; body: string }> = [
 ];
 
 export function GuidedTour({ open, onClose }: GuidedTourProps) {
-  const [index, setIndex] = ((): [number, (n: number) => void] => {
-    // Inline lightweight state without importing React useState in this isolated component
-    // We'll rely on a global variable if needed; but better useEffect + dataset. Use real state by re-importing React useState.
-    return (require("react") as typeof import("react")).useState(0);
-  })();
+  const [index, setIndex] = useState(0);
 
   useEffect(() => {
     if (!open) setIndex(0);
