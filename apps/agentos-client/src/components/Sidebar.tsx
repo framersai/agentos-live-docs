@@ -31,8 +31,7 @@ export function Sidebar({ onCreateSession, onToggleCollapse, currentTab }: Sideb
   const [showNew, setShowNew] = useState(false);
   const [newType, setNewType] = useState<'persona' | 'agency'>(agencies.length > 0 ? 'agency' : 'persona');
   const [newPersonaId, setNewPersonaId] = useState<string>("");
-  const [newAgencyId, setNewAgencyId] = useState<string>("
-");
+  const [newAgencyId, setNewAgencyId] = useState<string>("");
   const [newName, setNewName] = useState<string>("");
 
   const preferDefaultPersona = (ids: string[]): string | undefined => {
