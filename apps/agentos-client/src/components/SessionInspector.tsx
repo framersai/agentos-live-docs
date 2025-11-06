@@ -451,7 +451,7 @@ export function SessionInspector() {
             <p className="text-xs uppercase tracking-[0.25em] text-slate-500 dark:text-slate-400">Session timeline</p>
             <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Output</h2>
           </div>
-          <div className="text-xs text-slate-500 dark:text-slate-400">0 entries</div>
+          <div className="text-xs text-slate-500 dark:text-slate-400"></div>
         </header>
         <div className="flex-1 overflow-y-auto px-6 py-6">
           <div className="space-y-4">
@@ -480,7 +480,6 @@ export function SessionInspector() {
           )}
         </div>
         <div className="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
-          <span>{session.events.length} entries</span>
           <div className="flex items-center gap-2">
             {!renaming && (
               <button

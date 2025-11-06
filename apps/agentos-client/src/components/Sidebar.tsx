@@ -8,7 +8,7 @@ import { LanguageSwitcher } from "./LanguageSwitcher";
 import { ThemeToggle } from "./ThemeToggle";
 
 interface SidebarProps {
-  onCreateSession: () => void;
+  onCreateSession: (opts?: { targetType?: 'persona' | 'agency'; personaId?: string; agencyId?: string; displayName?: string }) => void;
   onToggleCollapse?: () => void;
   currentTab?: 'compose' | 'agency' | 'personas' | 'workflows' | 'settings' | 'about';
 }
@@ -24,8 +24,42 @@ export function Sidebar({ onCreateSession, onToggleCollapse, currentTab }: Sideb
   const sessions = useSessionStore((state) => state.sessions);
   const activeSessionId = useSessionStore((state) => state.activeSessionId);
   const setActiveSession = useSessionStore((state) => state.setActiveSession);
+  const personas = useSessionStore((state) => state.personas);
+  const agencies = useSessionStore((state) => state.agencies);
   const initialFilter = currentTab === 'agency' ? 'agency' : currentTab === 'compose' ? 'persona' : 'all';
   const [filter, setFilter] = useState<'all' | 'persona' | 'agency'>(initialFilter as any);
+  const [showNew, setShowNew] = useState(false);
+  const [newType, setNewType] = useState<'persona' | 'agency'>(agencies.length > 0 ? 'agency' : 'persona');
+  const [newPersonaId, setNewPersonaId] = useState<string>("");
+  const [newAgencyId, setNewAgencyId] = useState<string>("
+");
+  const [newName, setNewName] = useState<string>("");
+
+  const preferDefaultPersona = (ids: string[]): string | undefined => {
+    if (ids.includes('v_researcher')) return 'v_researcher';
+    if (ids.includes('nerf_generalist')) return 'nerf_generalist';
+    return ids[0];
+  };
+
+  const remotePersonaIds = useMemo(() => personas.filter(p => p.source === 'remote').map(p => p.id), [personas]);
+  const defaultPersonaId = preferDefaultPersona(remotePersonaIds) ?? personas[0]?.id;
+
+  const openNew = () => {
+    setNewType(agencies.length > 0 ? 'agency' : 'persona');
+    setNewPersonaId(defaultPersonaId || "");
+    setNewAgencyId(agencies[0]?.id || "");
+    setNewName('');
+    setShowNew(true);
+  };
+
+  const createNew = () => {
+    const opts = newType === 'agency'
+      ? { targetType: 'agency' as const, agencyId: newAgencyId, displayName: newName || undefined }
+      : { targetType: 'persona' as const, personaId: newPersonaId || defaultPersonaId, displayName: newName || undefined };
+    onCreateSession(opts);
+    setFilter(newType);
+    setShowNew(false);
+  };
 
   const sortedSessions = useMemo(() => {
     const base = [...sessions];
@@ -57,7 +91,7 @@ export function Sidebar({ onCreateSession, onToggleCollapse, currentTab }: Sideb
             </h1>
           </div>
           <button
-            onClick={onCreateSession}
+            onClick={openNew}
             className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-sky-500 text-white shadow-lg shadow-sky-500/30 transition hover:-translate-y-0.5 hover:bg-sky-600 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 dark:focus:ring-offset-slate-950"
             title={t("sidebar.actions.newSession")}
             aria-label={t("sidebar.actions.newSession")}
@@ -172,6 +206,54 @@ export function Sidebar({ onCreateSession, onToggleCollapse, currentTab }: Sideb
           })
         )}
       </div>
+      {showNew && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4">
+          <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-5 shadow-xl dark:border-white/10 dark:bg-slate-900">
+            <header className="mb-3">
+              <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">New session</h3>
+            </header>
+            <div className="space-y-3 text-sm">
+              <div className="flex items-center gap-3">
+                <label className="inline-flex items-center gap-2">
+                  <input type="radio" checked={newType==='persona'} onChange={() => setNewType('persona')} />
+                  <span>Persona</span>
+                </label>
+                <label className="inline-flex items-center gap-2">
+                  <input type="radio" checked={newType==='agency'} onChange={() => setNewType('agency')} />
+                  <span>Agency</span>
+                </label>
+              </div>
+              {newType === 'persona' ? (
+                <label className="block">
+                  <span className="mb-1 block text-xs text-slate-500 dark:text-slate-400">Persona</span>
+                  <select value={newPersonaId} onChange={(e)=>setNewPersonaId(e.target.value)} className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-white/10 dark:bg-slate-900">
+                    {[...personas].map(p => (
+                      <option key={p.id} value={p.id}>{p.displayName}</option>
+                    ))}
+                  </select>
+                </label>
+              ) : (
+                <label className="block">
+                  <span className="mb-1 block text-xs text-slate-500 dark:text-slate-400">Agency</span>
+                  <select value={newAgencyId} onChange={(e)=>setNewAgencyId(e.target.value)} className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-white/10 dark:bg-slate-900">
+                    {[...agencies].map(a => (
+                      <option key={a.id} value={a.id}>{a.name}</option>
+                    ))}
+                  </select>
+                </label>
+              )}
+              <label className="block">
+                <span className="mb-1 block text-xs text-slate-500 dark:text-slate-400">Name (optional)</span>
+                <input value={newName} onChange={(e)=>setNewName(e.target.value)} className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-white/10 dark:bg-slate-900" />
+              </label>
+            </div>
+            <div className="mt-4 flex justify-end gap-2">
+              <button onClick={()=>setShowNew(false)} className="rounded-full border border-slate-200 px-3 py-1 text-xs text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300">Cancel</button>
+              <button onClick={createNew} className="rounded-full bg-sky-500 px-3 py-1 text-xs font-semibold text-white">Create</button>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Footer links */}
       <footer className="mt-auto border-t border-slate-200 px-5 py-3 text-xs text-slate-600 dark:border-white/5 dark:text-slate-400">
         <div className="flex flex-wrap items-center justify-between gap-2">

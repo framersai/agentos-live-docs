@@ -194,21 +194,21 @@ export default function App() {
     return ids[0];
   }, []);
 
-  const handleCreateSession = useCallback(() => {
+  const handleCreateSession = useCallback((opts?: { targetType?: 'persona' | 'agency'; personaId?: string; agencyId?: string; displayName?: string }) => {
     const sessionId = crypto.randomUUID();
     const hasAgencies = agencies.length > 0;
     const remoteIds = personas.filter((p) => p.source === 'remote').map((p) => p.id);
-    const personaId = preferDefaultPersona(remoteIds) ?? personas[0]?.id ?? DEFAULT_PERSONA_ID;
-    const agencyId = agencies[0]?.id;
+    const personaId = opts?.personaId ?? (preferDefaultPersona(remoteIds) ?? personas[0]?.id ?? DEFAULT_PERSONA_ID);
+    const agencyId = opts?.agencyId ?? agencies[0]?.id;
     const base = 'Untitled';
     const existing = sessions.filter((s) => s.displayName.startsWith(base)).length;
     const name = existing === 0 ? base : `${base} (${existing})`;
     upsertSession({
       id: sessionId,
-      targetType: hasAgencies ? "agency" : "persona",
-      displayName: hasAgencies ? resolveAgencyName(agencyId) : name,
-      personaId: hasAgencies ? undefined : personaId,
-      agencyId: hasAgencies ? agencyId : undefined,
+      targetType: opts?.targetType ?? (hasAgencies ? "agency" : "persona"),
+      displayName: opts?.displayName ?? (opts?.targetType === 'agency' ? resolveAgencyName(agencyId) : name),
+      personaId: (opts?.targetType ?? (hasAgencies ? 'agency' : 'persona')) === "persona" ? personaId : undefined,
+      agencyId: (opts?.targetType ?? (hasAgencies ? 'agency' : 'persona')) === "agency" ? agencyId : undefined,
       status: "idle",
       events: []
     });
