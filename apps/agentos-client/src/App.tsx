@@ -8,7 +8,6 @@ import { AgencyManager } from "@/components/AgencyManager";
 import { PersonaCatalog } from "@/components/PersonaCatalog";
 import { WorkflowOverview } from "@/components/WorkflowOverview";
 import { openAgentOSStream } from "@/lib/agentosClient";
-import { GuidedTour } from "@/components/GuidedTour";
 import { TourOverlay } from "@/components/TourOverlay";
 import { ThemePanel } from "@/components/ThemePanel";
 import { AboutPanel } from "@/components/AboutPanel";
@@ -422,12 +421,6 @@ export default function App() {
           </div>
         </main>
       </div>
-      <GuidedTour
-        open={showTour}
-        onClose={() => setShowTour(false)}
-        onDontShowAgain={() => dismissWelcomeTour()}
-        onRemindLater={() => snoozeWelcomeTour(24)}
-      />
       <TourOverlay
         open={showTour}
         steps={tourSteps}

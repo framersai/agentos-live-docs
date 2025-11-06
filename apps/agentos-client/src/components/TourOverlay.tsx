@@ -105,10 +105,10 @@ export function TourOverlay({ open, steps, onClose, onDontShowAgain, onRemindLat
 
       <div
         style={tooltipStyle}
-        className="rounded-2xl border border-slate-200 bg-white p-4 shadow-xl transition dark:border-white/10 dark:bg-slate-900"
+        className="rounded-3xl border border-slate-200 bg-white p-6 shadow-xl transition dark:border-white/10 dark:bg-slate-900"
       >
-        <header className="mb-2 flex items-center justify-between">
-          <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">{step.title}</h3>
+        <header className="mb-3 flex items-center justify-between">
+          <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">{step.title}</h3>
           <button
             type="button"
             onClick={onClose}
@@ -117,7 +117,7 @@ export function TourOverlay({ open, steps, onClose, onDontShowAgain, onRemindLat
             Close
           </button>
         </header>
-        <p className="text-xs text-slate-600 dark:text-slate-300">{step.body}</p>
+        <p className="text-sm text-slate-600 dark:text-slate-300">{step.body}</p>
         <footer className="mt-3 flex items-center justify-between text-xs">
           <span className="text-slate-500 dark:text-slate-400">Step {index + 1} / {steps.length}</span>
           <div className="flex flex-wrap items-center gap-2">
