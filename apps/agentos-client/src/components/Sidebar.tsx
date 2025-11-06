@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { clsx } from "clsx";
 import { Radio, Plus, CheckCircle2, Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useState, useMemo } from "react";
 import { useSessionStore } from "@/state/sessionStore";
 import { AgentOSChunkType } from "@/types/agentos";
 import { LanguageSwitcher } from "./LanguageSwitcher";
@@ -10,6 +11,7 @@ import { ThemeToggle } from "./ThemeToggle";
 interface SidebarProps {
   onCreateSession: () => void;
   onToggleCollapse?: () => void;
+  currentTab?: 'compose' | 'agency' | 'personas' | 'workflows' | 'settings' | 'about';
 }
 
 const statusBadgeStyles: Record<string, string> = {
@@ -18,19 +20,23 @@ const statusBadgeStyles: Record<string, string> = {
   error: "bg-rose-100 text-rose-700 border border-rose-300 dark:bg-rose-500/10 dark:text-rose-300 dark:border-rose-500/30"
 };
 
-export function Sidebar({ onCreateSession, onToggleCollapse }: SidebarProps) {
+export function Sidebar({ onCreateSession, onToggleCollapse, currentTab }: SidebarProps) {
   const { t } = useTranslation();
   const sessions = useSessionStore((state) => state.sessions);
   const activeSessionId = useSessionStore((state) => state.activeSessionId);
   const setActiveSession = useSessionStore((state) => state.setActiveSession);
+  const initialFilter = currentTab === 'agency' ? 'agency' : currentTab === 'compose' ? 'persona' : 'all';
+  const [filter, setFilter] = useState<'all' | 'persona' | 'agency'>(initialFilter as any);
 
   const sortedSessions = useMemo(() => {
-    return [...sessions].sort((a, b) => {
+    const base = [...sessions];
+    const filtered = filter === 'all' ? base : base.filter((s) => s.targetType === filter);
+    return filtered.sort((a, b) => {
       const latestA = a.events[0]?.timestamp ?? 0;
       const latestB = b.events[0]?.timestamp ?? 0;
       return latestB - latestA;
     });
-  }, [sessions]);
+  }, [sessions, filter]);
 
   return (
     <nav 
@@ -41,24 +47,14 @@ export function Sidebar({ onCreateSession, onToggleCollapse }: SidebarProps) {
       <header className="flex flex-col gap-3 border-b border-slate-200 px-5 py-4 dark:border-white/5">
         <div className="flex items-center justify-between">
           <a href="https://agentos.sh" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2">
-            <img src="/logos/agentos.svg" alt="AgentOS" className="h-6 w-6" onError={(e) => ((e.currentTarget as HTMLImageElement).style.display='none')} />
+            <img src="/logos/agentos-primary-no-tagline.svg" alt="AgentOS" className="h-6 w-auto" onError={(e) => ((e.currentTarget as HTMLImageElement).style.display='none')} />
             <span className="text-sm font-semibold text-slate-900 dark:text-slate-100">AgentOS</span>
           </a>
           <div className="flex items-center gap-2">
             <a href="https://frame.dev" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2">
-              <img src="/logos/frame.svg" alt="Frame" className="h-5 w-5" onError={(e) => ((e.currentTarget as HTMLImageElement).style.display='none')} />
+              <img src="/logos/frame-wordmark.svg" alt="Frame" className="h-5 w-auto" onError={(e) => ((e.currentTarget as HTMLImageElement).style.display='none')} />
               <span className="text-xs text-slate-600 dark:text-slate-300">by Frame</span>
             </a>
-            {onToggleCollapse && (
-              <button
-                type="button"
-                onClick={onToggleCollapse}
-                className="rounded-full border border-slate-200 px-2 py-0.5 text-xs text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300"
-                title="Hide sidebar"
-              >
-                Hide
-              </button>
-            )}
           </div>
         </div>
         <div className="flex items-center justify-between">
@@ -87,12 +83,17 @@ export function Sidebar({ onCreateSession, onToggleCollapse }: SidebarProps) {
         </div>
       </header>
       
-      {/* Session List */}
+      {/* Filter + Session List */}
       <div 
         className="flex-1 space-y-2 overflow-y-auto px-4 pb-8 pt-4"
         role="list"
         aria-label={t("sidebar.labels.sessionList", { defaultValue: "Active sessions" })}
       >
+        <div className="mb-2 flex items-center gap-2 text-xs">
+          <button onClick={() => setFilter('all')} className={clsx('rounded-full border px-2 py-0.5', filter === 'all' ? 'border-sky-500 bg-sky-50 text-sky-700' : 'border-slate-200 text-slate-600 dark:border-white/10 dark:text-slate-300')}>All</button>
+          <button onClick={() => setFilter('persona')} className={clsx('rounded-full border px-2 py-0.5', filter === 'persona' ? 'border-sky-500 bg-sky-50 text-sky-700' : 'border-slate-200 text-slate-600 dark:border-white/10 dark:text-slate-300')}>Persona</button>
+          <button onClick={() => setFilter('agency')} className={clsx('rounded-full border px-2 py-0.5', filter === 'agency' ? 'border-sky-500 bg-sky-50 text-sky-700' : 'border-slate-200 text-slate-600 dark:border-white/10 dark:text-slate-300')}>Agency</button>
+        </div>
         {sortedSessions.length === 0 ? (
           <div 
             className="rounded-xl border border-slate-200 bg-slate-100 p-4 text-sm text-slate-600 dark:border-white/5 dark:bg-slate-900/60 dark:text-slate-400"
@@ -190,7 +191,20 @@ export function Sidebar({ onCreateSession, onToggleCollapse }: SidebarProps) {
           <div className="flex items-center gap-3">
             <a href="https://agentos.sh" target="_blank" rel="noreferrer" className="hover:underline">agentos.sh</a>
             <a href="https://frame.dev" target="_blank" rel="noreferrer" className="hover:underline">frame.dev</a>
+            <a href="https://github.com/framersai/agentos" target="_blank" rel="noreferrer" className="hover:underline">GitHub</a>
+            <a href="https://github.com/framersai/agentos/stargazers" target="_blank" rel="noreferrer" aria-label="Star AgentOS on GitHub">★</a>
+            <a href="https://github.com/framersai/agentos/fork" target="_blank" rel="noreferrer" aria-label="Fork AgentOS on GitHub">⎇</a>
           </div>
+          {onToggleCollapse && (
+            <button
+              type="button"
+              onClick={onToggleCollapse}
+              className="ml-auto rounded-full border border-slate-200 px-2 py-0.5 text-xs text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300"
+              title="Hide sidebar"
+            >
+              Hide
+            </button>
+          )}
         </div>
       </footer>
     </nav>

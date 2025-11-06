@@ -218,7 +218,7 @@ export default function App() {
             goal: agencyDefinition?.goal,
             participants: (agencyDefinition?.participants ?? []).map((participant) => ({
               roleId: participant.roleId,
-              personaId: participant.personaId
+              personaId: participant.personaId || fallbackPersonaId,
             })),
             metadata: agencyDefinition?.metadata
           }
@@ -298,42 +298,14 @@ export default function App() {
     [agencies, personas, appendEvent, applyAgencySnapshot, applyWorkflowSnapshot, ensureSession, resolveAgencyName, resolvePersonaName, setActiveSession, upsertSession]
   );
 
-  // Create a new session when switching between Compose and Agency tabs
-  useEffect(() => {
-    if (leftTab === 'compose') {
-      const sessionId = crypto.randomUUID();
-      const personaId = personas[0]?.id ?? DEFAULT_PERSONA_ID;
-      upsertSession({
-        id: sessionId,
-        targetType: 'persona',
-        displayName: resolvePersonaName(personaId),
-        personaId,
-        status: 'idle',
-        events: [],
-      });
-      setActiveSession(sessionId);
-    } else if (leftTab === 'agency') {
-      const sessionId = crypto.randomUUID();
-      const agencyId = agencies[0]?.id;
-      upsertSession({
-        id: sessionId,
-        targetType: 'agency',
-        displayName: resolveAgencyName(agencyId),
-        agencyId: agencyId ?? undefined,
-        status: 'idle',
-        events: [],
-      });
-      setActiveSession(sessionId);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [leftTab]);
+  // Removed auto-new-session on tab switch; tabs now only change view and filter.
 
   return (
     <>
       <SkipLink />
       <div className={`${sidebarCollapsed ? 'grid-cols-1' : 'grid-cols-panel'} grid min-h-screen w-full bg-slate-50 text-slate-900 transition-colors duration-300 ease-out dark:bg-slate-950 dark:text-slate-100`}>
         {/* Navigation Sidebar */}
-        {!sidebarCollapsed && <Sidebar onCreateSession={handleCreateSession} onToggleCollapse={() => setSidebarCollapsed(true)} />}
+        {!sidebarCollapsed && <Sidebar onCreateSession={handleCreateSession} onToggleCollapse={() => setSidebarCollapsed(true)} currentTab={leftTab} />}
         
         {/* Main Content Area */}
         <main 

@@ -55,6 +55,11 @@ export function AboutPanel() {
               </li>
             </ul>
           </div>
+
+        <div className="rounded-xl border border-slate-200 bg-white p-3 dark:border-white/10 dark:bg-slate-900/40">
+          <p className="text-xs uppercase tracking-[0.35em] text-slate-500 dark:text-slate-400">Team</p>
+          <p className="mt-2 text-sm">Contact: <a href="mailto:team@frame.dev" className="text-sky-600 hover:underline dark:text-sky-300">team@frame.dev</a></p>
+        </div>
         </div>
 
         <p className="text-xs text-slate-500 dark:text-slate-400">
