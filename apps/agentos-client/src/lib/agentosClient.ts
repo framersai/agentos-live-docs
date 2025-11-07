@@ -362,6 +362,9 @@ export const listPersonas = agentosClient.listPersonas.bind(agentosClient);
 export const listWorkflows = agentosClient.listWorkflows.bind(agentosClient);
 export const listWorkflowDefinitions = agentosClient.listWorkflowDefinitions.bind(agentosClient);
 export const executeAgency = agentosClient.executeAgency.bind(agentosClient);
+
+// Export agency-specific utilities
+export { streamAgencyWorkflow, type AgentRoleConfig, type AgencyStreamInput } from './agencyClient';
 export const getExtensions = agentosClient.getExtensions.bind(agentosClient);
 export const getAvailableTools = agentosClient.getAvailableTools.bind(agentosClient);
 export const installExtension = agentosClient.installExtension.bind(agentosClient);
