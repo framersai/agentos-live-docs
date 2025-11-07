@@ -1,9 +1,10 @@
 ﻿import { ChangeEvent, FormEvent, useMemo, useState, useEffect } from "react";
 import { clsx } from "clsx";
-import { PlusCircle, Sparkles, Trash2, Wand2 } from "lucide-react";
+import { PlusCircle, Sparkles, Trash2, Wand2, Edit3 } from "lucide-react";
 import { useSessionStore, type PersonaDefinition } from "@/state/sessionStore";
 import { usePersonas } from "@/hooks/usePersonas";
 import { PersonaWizard } from "./PersonaWizard";
+import { PersonaEditor } from "./PersonaEditor";
 
 function slugify(value: string) {
   return value
@@ -45,6 +46,7 @@ export function PersonaCatalog() {
   const [draft, setDraft] = useState<PersonaDraft>(defaultDraft);
   const [showWizard, setShowWizard] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState<string | null>(null);
+  const [editingPersona, setEditingPersona] = useState<PersonaDefinition | null>(null);
 
   // Listen for wizard open event from sidebar
   useEffect(() => {
@@ -125,6 +127,7 @@ export function PersonaCatalog() {
       </header>
       
       <PersonaWizard open={showWizard} onClose={() => setShowWizard(false)} />
+      {editingPersona && <PersonaEditor persona={editingPersona} onClose={() => setEditingPersona(null)} />}
       
       {showDeleteModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" role="dialog" aria-modal="true">
@@ -205,12 +208,43 @@ export function PersonaCatalog() {
         <ul className="space-y-2 text-sm text-slate-700 dark:text-slate-200">
           {visiblePersonas.map((persona) => (
             <li key={persona.id} className="flex items-start justify-between rounded-2xl border border-slate-200 bg-white px-4 py-3 dark:border-white/5 dark:bg-slate-950/50">
-              <div>
-                <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">{persona.displayName}</p>
-                {persona.description && <p className="text-xs text-slate-600 dark:text-slate-400">{persona.description}</p>}
-                {persona.tags && persona.tags.length > 0 && (
-                  <p className="mt-1 text-[10px] uppercase tracking-[0.35em] text-slate-500 dark:text-slate-500">{persona.tags.join(", ")}</p>
-                )}
+              <div className="flex-1">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">{persona.displayName}</p>
+                    {persona.description && <p className="text-xs text-slate-600 dark:text-slate-400">{persona.description}</p>}
+                  </div>
+                  {persona.source === 'local' && (
+                    <button
+                      onClick={() => setEditingPersona(persona)}
+                      className="ml-2 rounded-md p-1 text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
+                      title="Edit persona"
+                    >
+                      <Edit3 className="h-3 w-3" />
+                    </button>
+                  )}
+                </div>
+                
+                {/* Metadata display */}
+                <div className="mt-2 space-y-1">
+                  {persona.tags && persona.tags.length > 0 && (
+                    <p className="text-[10px] uppercase tracking-[0.35em] text-slate-500 dark:text-slate-500">{persona.tags.join(", ")}</p>
+                  )}
+                  {persona.metadata?.modelPreference && (
+                    <p className="text-xs text-slate-600 dark:text-slate-400">Model: {persona.metadata.modelPreference}</p>
+                  )}
+                  {persona.metadata?.guardrails && (persona.metadata.guardrails as any[]).length > 0 && (
+                    <p className="text-xs text-slate-600 dark:text-slate-400">
+                      🛡️ {(persona.metadata.guardrails as any[]).length} guardrail(s)
+                    </p>
+                  )}
+                  {persona.metadata?.extensions && (persona.metadata.extensions as string[]).length > 0 && (
+                    <p className="text-xs text-slate-600 dark:text-slate-400">
+                      🔌 {(persona.metadata.extensions as string[]).length} extension(s)
+                    </p>
+                  )}
+                </div>
+                
                 <div className="mt-2 flex items-center gap-2">
                   <span className={`chip border ${persona.source === "remote" ? "border-sky-200 bg-sky-50 text-sky-700 dark:border-sky-500/30 dark:bg-sky-500/10 dark:text-sky-200" : "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-200"}`}>
                     {persona.source === "remote" ? "Remote" : "Local"}
