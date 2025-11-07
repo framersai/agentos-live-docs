@@ -216,10 +216,10 @@ export default function App() {
   useEffect(() => {
     const remotePersonas = personas.filter((p) => p.source === "remote");
     if (agencies.length === 0 && remotePersonas.length >= 2) {
-      const id = "demo-agency";
+      const agencyId = "demo-agency";
       const timestamp = new Date().toISOString();
       addAgency({
-        id,
+        id: agencyId,
         name: "Demo Agency",
         goal: "Multi-GMI coordination (currently limited: only first seat GMI responds until workflow start endpoint is wired)",
         workflowId: undefined,
@@ -232,8 +232,19 @@ export default function App() {
         createdAt: timestamp,
         updatedAt: timestamp,
       });
+      
+      // Create a session for this demo agency
+      const sessionId = crypto.randomUUID();
+      upsertSession({
+        id: sessionId,
+        targetType: 'agency',
+        displayName: 'Demo Agency Session',
+        agencyId: agencyId,
+        status: 'idle',
+        events: [],
+      });
     }
-  }, [agencies.length, personas, addAgency]);
+  }, [agencies.length, personas, addAgency, upsertSession]);
 
   useEffect(() => {
     if (personasQuery.error) {

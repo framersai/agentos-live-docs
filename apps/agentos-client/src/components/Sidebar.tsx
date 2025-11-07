@@ -43,14 +43,23 @@ export function Sidebar({ onCreateSession, onToggleCollapse, currentTab, onNavig
   const defaultPersonaId = preferDefaultPersona(remotePersonaIds) ?? personas[0]?.id;
 
   const openNew = () => {
-    // Open the persona wizard instead of basic form
-    if (onNavigate) {
-      onNavigate('personas'); // Switch to personas tab
-      setTimeout(() => {
-        // Trigger the wizard after tab switch
-        const event = new CustomEvent('agentos:open-persona-wizard');
-        window.dispatchEvent(event);
-      }, 100);
+    // Open wizard based on current filter/tab
+    if (filter === 'agency') {
+      // Open agency wizard
+      if (onNavigate) {
+        onNavigate('agency');
+      }
+      setShowNew(true);
+      setNewType('agency');
+    } else {
+      // Open persona wizard
+      if (onNavigate) {
+        onNavigate('personas');
+        setTimeout(() => {
+          const event = new CustomEvent('agentos:open-persona-wizard');
+          window.dispatchEvent(event);
+        }, 100);
+      }
     }
   };
 
