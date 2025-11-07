@@ -30,8 +30,14 @@ export interface GenericLLMGuardrailConfig {
   policyDescription: string;
   /** Action to take when policy is violated: 'allow' | 'flag' | 'sanitize' | 'block' */
   violationAction: 'allow' | 'flag' | 'sanitize' | 'block';
-  /** Optional replacement text for sanitize action (if empty, LLM generates it) */
+  /** Optional replacement text for sanitize action (if empty, LLM generates it dynamically) */
   replacementText?: string;
+  /**
+   * Dynamic replacement mode: if true, LLM generates context-aware replacement text
+   * based on the policy description and original content. If false or replacementText
+   * is provided, uses static replacement.
+   */
+  useDynamicReplacement?: boolean;
   /** Whether to evaluate user input */
   evaluateInput: boolean;
   /** Whether to evaluate agent output */
@@ -40,6 +46,10 @@ export interface GenericLLMGuardrailConfig {
   evaluatorModel?: string;
   /** User ID for LLM calls (cost tracking) */
   evaluatorUserId?: string;
+  /** Enable logging via GuardrailLogger */
+  enableLogging?: boolean;
+  /** Enable human escalation for high-severity violations */
+  enableEscalation?: boolean;
 }
 
 interface GuardrailLLMResponse {
@@ -181,9 +191,20 @@ export class GenericLLMGuardrail implements IGuardrailService {
 
   /**
    * Builds the evaluation prompt for the LLM.
+   * If useDynamicReplacement is enabled, instructs LLM to generate context-aware replacement text.
    */
   private buildEvaluationPrompt(text: string, context: 'user_input' | 'agent_output'): string {
     const contextLabel = context === 'user_input' ? 'user request' : 'AI agent response';
+    const dynamicMode = this.config.useDynamicReplacement && !this.config.replacementText;
+    
+    const dynamicInstructions = dynamicMode
+      ? `   - "sanitizedText": (REQUIRED if violates=true) Generate a context-aware, helpful replacement that:
+     * Explains why the original content was filtered (reference the policy)
+     * Suggests a safe alternative or next step
+     * Maintains a respectful, professional tone
+     * Is concise (2-3 sentences max)`
+      : `   - "sanitizedText": (optional) a safe replacement if you recommend sanitization`;
+
     return `You are a content policy evaluator. Your job is to determine if the following ${contextLabel} violates this policy:
 
 **Policy**: ${this.config.policyDescription}
@@ -193,7 +214,7 @@ export class GenericLLMGuardrail implements IGuardrailService {
 2. Return a JSON object with these fields:
    - "violates": true if the policy is violated, false otherwise
    - "reason": brief explanation (1-2 sentences)
-   - "sanitizedText": (optional) a safe replacement if you recommend sanitization
+${dynamicInstructions}
 
 **Example responses**:
 \`\`\`json
@@ -204,7 +225,7 @@ export class GenericLLMGuardrail implements IGuardrailService {
 {
   "violates": true,
   "reason": "The ${contextLabel} requests medical diagnosis, which violates the policy.",
-  "sanitizedText": "I'm not qualified to provide medical advice. Please consult a licensed professional."
+  "sanitizedText": "I'm not qualified to provide medical advice. Our policy prevents me from offering diagnosis or treatment recommendations. Please consult a licensed healthcare professional for personalized guidance."
 }
 \`\`\`
 
