@@ -201,7 +201,8 @@ class AgentOSSqlPrismaClient {
   }
 
   public async $transaction<T>(callback: (tx: AgentOSSqlPrismaClient) => Promise<T>): Promise<T> {
-    if (typeof this.adapter.transaction === 'function') {
+    // Prefer adapter.transaction when the implementation supports async callbacks safely
+    if (typeof this.adapter.transaction === 'function' && this.adapter.kind !== 'better-sqlite3') {
       return this.adapter.transaction(async (trx) => {
         await ensureSchema(trx);
         const scopedClient = new AgentOSSqlPrismaClient(trx);
@@ -209,9 +210,17 @@ class AgentOSSqlPrismaClient {
       });
     }
 
-    // Fallback: execute callback without transactional guarantees.
-    console.warn('[AgentOS SQL] Underlying adapter does not support transactions; executing callback without transactional guarantees.');
-    return callback(this);
+    // Manual transaction for better-sqlite3 or when adapter doesn't expose a safe async transaction wrapper
+    try {
+      await this.adapter.exec('BEGIN');
+      await ensureSchema(this.adapter);
+      const result = await callback(this);
+      await this.adapter.exec('COMMIT');
+      return result;
+    } catch (error) {
+      try { await this.adapter.exec('ROLLBACK'); } catch { /* ignore rollback failure */ }
+      throw error;
+    }
   }
 
   private async upsertConversation(args: UpsertConversationArgs): Promise<void> {

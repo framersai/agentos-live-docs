@@ -289,7 +289,8 @@ type AggregatedAssistantRow = {
   updatedAt: number;
   text: string;
   isFinal: boolean;
-  debugLines: string[];
+  logLines: string[];
+  progressItems: Array<{ stamp: string; payload: AgentOSSystemProgressChunk }>;
 };
 
 type SimpleRow = {
@@ -317,7 +318,8 @@ function buildAggregatedRows(events: ReturnType<typeof useSessionStore>["session
         updatedAt: e.timestamp,
         text: "",
         isFinal: false,
-        debugLines: [],
+        logLines: [],
+        progressItems: [],
       };
       row.text += chunk.textDelta || "";
       row.updatedAt = e.timestamp;
@@ -335,7 +337,8 @@ function buildAggregatedRows(events: ReturnType<typeof useSessionStore>["session
         updatedAt: e.timestamp,
         text: "",
         isFinal: false,
-        debugLines: [],
+        logLines: [],
+        progressItems: [],
       };
       if (chunk.finalResponseText) row.text += chunk.finalResponseText;
       row.updatedAt = e.timestamp;
@@ -357,22 +360,39 @@ function buildAggregatedRows(events: ReturnType<typeof useSessionStore>["session
         const stamp = new Date(e.timestamp).toLocaleTimeString();
         if (e.type === AgentOSChunkType.TOOL_CALL_REQUEST) {
           const tcr = chunk as AgentOSToolCallRequestChunk;
-          row.debugLines.push(`[${stamp}] tool_call: ${tcr.toolCalls.map(tc => tc.name).join(', ')}`);
+          row.logLines.push(`[${stamp}] tool_call: ${tcr.toolCalls.map(tc => tc.name).join(', ')}`);
         } else if (e.type === AgentOSChunkType.TOOL_RESULT_EMISSION) {
           const tre = chunk as AgentOSToolResultEmissionChunk;
-          row.debugLines.push(`[${stamp}] tool_result: ${tre.toolName} ${tre.isSuccess ? '✓' : '✕'}`);
+          row.logLines.push(`[${stamp}] tool_result: ${tre.toolName} ${tre.isSuccess ? '✓' : '✕'}`);
         } else if (e.type === AgentOSChunkType.ERROR) {
           const err = chunk as any;
-          row.debugLines.push(`[${stamp}] error: ${err.message || 'Unknown error'}`);
+          row.logLines.push(`[${stamp}] error: ${err.message || 'Unknown error'}`);
         }
         continue;
       }
     }
 
-    // SYSTEM_PROGRESS should be shown as its own expandable log row
+    // SYSTEM_PROGRESS goes under assistant logs, consolidated
     if (e.type === AgentOSChunkType.SYSTEM_PROGRESS) {
-      rows.push({ kind: "event", id: e.id, timestamp: e.timestamp, type: e.type, payload: e.payload as any });
-      continue;
+      const prog = e.payload as AgentOSSystemProgressChunk;
+      const streamId = (prog as any).streamId as string | undefined;
+      if (streamId) {
+        const row = byStream[streamId] || {
+          kind: "assistant",
+          streamId,
+          personaId: prog.personaId,
+          createdAt: e.timestamp,
+          updatedAt: e.timestamp,
+          text: "",
+          isFinal: false,
+          logLines: [],
+          progressItems: [],
+        };
+        row.updatedAt = e.timestamp;
+        row.progressItems.push({ stamp: new Date(e.timestamp).toLocaleTimeString(), payload: prog });
+        byStream[streamId] = row;
+        continue;
+      }
     }
 
     // Fallback: push as a simple row
@@ -546,20 +566,40 @@ export function SessionInspector() {
               if (row.kind === "assistant") {
                 const isActive = !row.isFinal;
                 return (
-                  <div key={`assistant-${row.streamId}`} className={clsx("rounded-2xl border px-5 py-4", "border-sky-500/40 bg-sky-500/5 text-slate-100 dark:text-slate-100")}> 
+              <div key={`assistant-${row.streamId}`} className={clsx("rounded-2xl border px-5 py-4", "border-sky-500/40 bg-sky-500/5 text-slate-100 dark:text-slate-100")}> 
                     <header className="mb-3 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
                       <span className="font-semibold uppercase tracking-[0.35em]">Assistant</span>
                       <time>{new Date(row.updatedAt).toLocaleTimeString()}</time>
                     </header>
                     <StreamingText text={row.text} isActive={isActive} />
-                    {row.debugLines.length > 0 && (
-                      <details className="mt-3 rounded-lg border border-white/10 bg-slate-950/40 p-3 text-xs text-slate-300">
-                        <summary className="cursor-pointer select-none text-slate-200">Debug logs</summary>
-                        <pre className="mt-2 max-h-64 overflow-auto whitespace-pre-wrap break-words text-slate-300">
-{row.debugLines.join("\n")}
-                        </pre>
-                      </details>
+                {(row.logLines.length > 0 || row.progressItems.length > 0) && (
+                  <details className="mt-3 rounded-lg border border-white/10 bg-slate-950/40 p-3 text-xs text-slate-300">
+                    <summary className="cursor-pointer select-none text-slate-200">Logs</summary>
+                    {row.logLines.length > 0 && (
+                      <pre className="mt-2 max-h-64 overflow-auto whitespace-pre-wrap break-words text-slate-300">
+{row.logLines.join("\n")}
+                      </pre>
                     )}
+                    {row.progressItems.length > 0 && (
+                      <div className="mt-3 space-y-2">
+                        <p className="text-[10px] uppercase tracking-[0.35em] text-slate-400">System progress</p>
+                        {row.progressItems.map((item, idx) => {
+                          const title = item.payload.progressPercentage != null
+                            ? `${item.stamp} — ${item.payload.message} (${item.payload.progressPercentage}%)`
+                            : `${item.stamp} — ${item.payload.message}`;
+                          return (
+                            <details key={`${row.streamId}-prog-${idx}`} className="rounded-md border border-white/10 bg-slate-950/30 p-2">
+                              <summary className="cursor-pointer select-none text-slate-200">{title}</summary>
+                              <pre className="mt-2 max-h-48 overflow-auto whitespace-pre-wrap break-words text-slate-300">
+{JSON.stringify(item.payload, null, 2)}
+                              </pre>
+                            </details>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </details>
+                )}
                   </div>
                 );
               }
