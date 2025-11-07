@@ -581,7 +581,7 @@ export default function App() {
               </button>
             </div>
           )}
-          <div className="grid flex-1 grid-cols-1 gap-6 lg:grid-cols-[1fr_2fr]">
+          <div className="flex flex-1 flex-col gap-6 xl:grid xl:grid-cols-[1fr_2fr]">
             {/* Left Column: Tabbed coordination */}
             <section className="flex h-full flex-col gap-4" aria-label={t("app.labels.leftPanel", { defaultValue: "Composer and coordination" })}>
               <div
@@ -590,7 +590,7 @@ export default function App() {
                 className="rounded-3xl border border-slate-200 bg-white p-2 text-sm dark:border-white/10 dark:bg-slate-900/60"
                 data-tour="tabs"
               >
-                <div className="flex flex-wrap items-center gap-2">
+                <div className="flex flex-wrap items-center gap-1 sm:gap-2">
                   {LEFT_TABS.map((tab) => {
                     const active = leftTab === tab.key;
                     return (
@@ -603,7 +603,7 @@ export default function App() {
                           active
                             ? "bg-sky-500 text-white"
                             : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-white/10 dark:bg-slate-900 dark:text-slate-300"
-                        } rounded-full border px-3 py-1.5 transition focus:outline-none focus:ring-2 focus:ring-sky-500`}
+                        } rounded-full border px-2 py-1 text-xs sm:px-3 sm:py-1.5 sm:text-sm transition focus:outline-none focus:ring-2 focus:ring-sky-500`}
                       >
                         {tab.label}
                       </button>
@@ -618,27 +618,29 @@ export default function App() {
               {leftTab === 'workflows' && <WorkflowOverview />}
             </section>
 
-            {/* Right Column: Outputs only with placeholders */}
+            {/* Right Column: Outputs - Stack on mobile, side-by-side on desktop */}
             <aside
-              className="flex h-full flex-col gap-6"
+              className="flex h-full flex-col gap-4 xl:gap-6"
               aria-label={t("app.labels.outputsPanel", { defaultValue: "Outputs and results" })}
             >
               <SessionInspector />
-              <div className="border-t border-slate-200 dark:border-white/10" />
-              <section className="rounded-3xl border border-slate-200 bg-white p-5 dark:border-white/10 dark:bg-slate-900/60">
-                <header className="mb-2">
-                  <p className="text-xs uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">Stream status</p>
-                  <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Live telemetry</h3>
-                </header>
-                <TelemetryView />
-              </section>
-              <section className="rounded-3xl border border-slate-200 bg-white p-5 dark:border-white/10 dark:bg-slate-900/60">
-                <header className="mb-2">
-                  <p className="text-xs uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">Analytics</p>
-                  <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Usage insights</h3>
-                </header>
-                <AnalyticsView selectedModel={selectedModel} onChangeModel={setSelectedModel} modelOptions={modelOptions} />
-              </section>
+              <div className="border-t border-slate-200 dark:border-white/10 xl:hidden" />
+              <div className="grid gap-4 sm:grid-cols-2 xl:block xl:space-y-6">
+                <section className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-5 dark:border-white/10 dark:bg-slate-900/60">
+                  <header className="mb-2">
+                    <p className="text-xs uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">Stream status</p>
+                    <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Live telemetry</h3>
+                  </header>
+                  <TelemetryView />
+                </section>
+                <section className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-5 dark:border-white/10 dark:bg-slate-900/60">
+                  <header className="mb-2">
+                    <p className="text-xs uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">Analytics</p>
+                    <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Usage insights</h3>
+                  </header>
+                  <AnalyticsView selectedModel={selectedModel} onChangeModel={setSelectedModel} modelOptions={modelOptions} />
+                </section>
+              </div>
             </aside>
           </div>
         </main>
