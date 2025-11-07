@@ -1,4 +1,4 @@
-﻿import { ChangeEvent, FormEvent, useMemo, useState } from "react";
+﻿import { ChangeEvent, FormEvent, useMemo, useState, useEffect } from "react";
 import { clsx } from "clsx";
 import { PlusCircle, Sparkles, Trash2, Wand2 } from "lucide-react";
 import { useSessionStore, type PersonaDefinition } from "@/state/sessionStore";
@@ -44,6 +44,14 @@ export function PersonaCatalog() {
   const personasQuery = usePersonas({ filters: personaFilters });
   const [draft, setDraft] = useState<PersonaDraft>(defaultDraft);
   const [showWizard, setShowWizard] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState<string | null>(null);
+
+  // Listen for wizard open event from sidebar
+  useEffect(() => {
+    const handleOpenWizard = () => setShowWizard(true);
+    window.addEventListener('agentos:open-persona-wizard', handleOpenWizard);
+    return () => window.removeEventListener('agentos:open-persona-wizard', handleOpenWizard);
+  }, []);
 
   const capabilityOptions = useMemo(() => {
     const set = new Set<string>();
@@ -117,6 +125,34 @@ export function PersonaCatalog() {
       </header>
       
       <PersonaWizard open={showWizard} onClose={() => setShowWizard(false)} />
+      
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" role="dialog" aria-modal="true">
+          <div className="w-full max-w-md rounded-2xl border border-rose-200 bg-white p-4 shadow-xl dark:border-rose-900/40 dark:bg-slate-900">
+            <h3 className="mb-2 text-sm font-semibold text-rose-700 dark:text-rose-300">Delete persona?</h3>
+            <p className="text-sm text-slate-700 dark:text-slate-300">
+              This will permanently delete "{personas.find(p => p.id === showDeleteModal)?.displayName}" from your local storage. This action cannot be undone.
+            </p>
+            <div className="mt-4 flex justify-end gap-2">
+              <button 
+                onClick={() => setShowDeleteModal(null)} 
+                className="rounded-full border border-slate-200 px-3 py-1 text-xs text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={() => { 
+                  if (showDeleteModal) removePersona(showDeleteModal); 
+                  setShowDeleteModal(null); 
+                }} 
+                className="rounded-full bg-rose-600 px-3 py-1 text-xs font-semibold text-white hover:bg-rose-700"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="mb-4 rounded-2xl border border-slate-200 bg-slate-50 p-3 text-xs text-slate-600 dark:border-white/10 dark:bg-slate-900/40 dark:text-slate-400">
         This catalog merges server-provided personas (remote, read-only) with ones you create locally (saved in your browser). Deleting removes only local personas. Remote personas refresh from the server.
@@ -195,8 +231,7 @@ export function PersonaCatalog() {
                 type="button"
                 onClick={() => {
                   if (persona.id === primaryPersona || persona.source === "remote") return;
-                  const ok = window.confirm(`Delete persona "${persona.displayName}"? This only removes your local copy.`);
-                  if (ok) removePersona(persona.id);
+                  setShowDeleteModal(persona.id);
                 }}
                 className="ml-3 inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 text-slate-600 transition hover:bg-slate-50 disabled:opacity-30 dark:border-white/10 dark:text-slate-400 dark:hover:text-rose-300"
                 title={persona.source === "remote" ? "Remote personas are server-managed" : "Remove persona"}
