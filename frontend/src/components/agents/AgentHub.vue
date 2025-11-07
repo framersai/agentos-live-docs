@@ -41,6 +41,8 @@ import {
   AdjustmentsHorizontalIcon // Alternative for filter/category indication
 } from '@heroicons/vue/24/outline';
 import AgentCard from './AgentCard.vue'; // The component to display each agent
+import PersonaWizard from './PersonaWizard.vue';
+import GuardrailManager from './GuardrailManager.vue';
 
 /**
  * @props - Component properties.
@@ -71,6 +73,7 @@ const uiStore = useUiStore(); // For potential toast interactions if not handled
 const marketplaceStore = useMarketplaceStore();
 const isCreateOpen = ref(false);
 const isImportOpen = ref(false);
+const showPersonaWizard = ref(false);
 const createLabel = ref('');
 const createSlug = ref('');
 const createInFlight = ref(false);
@@ -90,6 +93,12 @@ async function handleCreateAgent(): Promise<void> {
   } finally {
     createInFlight.value = false;
   }
+}
+
+function handlePersonaCreated(persona: any): void {
+  // Add to local store or send to backend
+  console.log('Persona created:', persona);
+  uiStore.addNotification?.({ type: 'success', title: 'Persona created', message: `${persona.displayName} was created with ${persona.metadata?.guardrails?.length || 0} guardrails and ${persona.metadata?.extensions?.length || 0} extensions.` });
 }
 
 function handleImportFile(ev: Event): void {
@@ -359,13 +368,20 @@ const handleCardInteraction = (payload: { type: string; data?: any }): void => {
         </div>
 
         <footer class="agent-hub-footer-ephemeral">
-            <button class="btn btn-secondary-ephemeral btn-sm-ephemeral" @click="isCreateOpen = true">
-                <PlusCircleIcon class="icon-sm mr-1.5" /> Create agent
+            <button class="btn btn-secondary-ephemeral btn-sm-ephemeral" @click="showPersonaWizard = true">
+                <PlusCircleIcon class="icon-sm mr-1.5" /> Create Persona
             </button>
             <button class="btn btn-secondary-ephemeral btn-sm-ephemeral" @click="isImportOpen = true">
                 <ArrowUpTrayIcon class="icon-sm mr-1.5" /> Import agent
             </button>
         </footer>
+
+        <!-- Persona Wizard -->
+        <PersonaWizard 
+          :open="showPersonaWizard" 
+          @close="showPersonaWizard = false"
+          @created="handlePersonaCreated"
+        />
 
         <!-- Create modal -->
         <div v-if="isCreateOpen" class="agent-hub-overlay" @mousedown.self="isCreateOpen=false" role="dialog" aria-modal="true">
