@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import type { Request, Response } from 'express';
 import type { AgentOSInput, AgentOSResponse } from '@agentos/core';
-import { agentosChatAdapterEnabled } from './agentos.chat-adapter.js';
+import { agentosChatAdapterEnabled, processAgentOSChatRequest } from './agentos.chat-adapter.js';
 
 type StreamHandler = (input: AgentOSInput, onChunk: (chunk: AgentOSResponse) => Promise<void> | void) => Promise<void>;
 
@@ -18,7 +18,7 @@ export const createAgentOSStreamRouter = (integration: AgentOSStreamIntegration)
       return;
     }
 
-    const { userId, conversationId, mode } = req.query as Record<string, string>;
+    const { userId, conversationId, mode, model } = req.query as Record<string, string>;
     let messages: Array<{ role: string; content: string }> = [];
     if (typeof req.query.messages === 'string') {
       try {
@@ -75,20 +75,76 @@ export const createAgentOSStreamRouter = (integration: AgentOSStreamIntegration)
       (agentosInput as any).agencyRequest = agencyRequest;
     }
 
+    if (typeof model === 'string' && model.trim().length > 0) {
+      (agentosInput as any).options = { ...((agentosInput as any).options || {}), overrideModelId: model };
+    }
+
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
     if (typeof res.flushHeaders === 'function') {
       res.flushHeaders();
     }
 
+    let emittedText = false;
+
     try {
-      await integration.processThroughAgentOSStream(agentosInput, async (chunk) => {
+      await integration.processThroughAgentOSStream(agentosInput, async (chunk: any) => {
+        if (chunk?.type === 'text_delta' && typeof chunk.textDelta === 'string' && chunk.textDelta.trim().length > 0) {
+          emittedText = true;
+        } else if (chunk?.type === 'final_response') {
+          const text = (typeof chunk.finalResponseText === 'string' ? chunk.finalResponseText : '')
+            || (typeof chunk.content === 'string' ? chunk.content : '');
+          if (text.trim().length > 0) emittedText = true;
+        }
         res.write('data: ' + JSON.stringify(chunk) + '\n\n');
         const flush = (res as any).flush;
         if (typeof flush === 'function') {
           flush.call(res);
         }
       });
+
+      if (!emittedText) {
+        // Fallback to a single-shot chat response (real LLM if configured)
+        try {
+          const result = await processAgentOSChatRequest({
+            userId,
+            conversationId,
+            mode,
+            messages,
+          });
+          const fallbackChunk: any = {
+            type: 'final_response',
+            streamId: conversationId,
+            gmiInstanceId: mode,
+            personaId: mode,
+            isFinal: true,
+            timestamp: new Date().toISOString(),
+            finalResponseText: result.content || '',
+            usage: result.usage
+              ? {
+                  promptTokens: (result.usage as any).prompt_tokens ?? 0,
+                  completionTokens: (result.usage as any).completion_tokens ?? 0,
+                  totalTokens: (result.usage as any).total_tokens ?? 0,
+                }
+              : undefined,
+            metadata: { modelId: result.model },
+          };
+          res.write('data: ' + JSON.stringify(fallbackChunk) + '\n\n');
+        } catch {
+          // No fallback available; emit an empty final marker so UI completes
+          const finalMarker = {
+            type: 'final_response',
+            streamId: conversationId,
+            gmiInstanceId: mode,
+            personaId: mode,
+            isFinal: true,
+            timestamp: new Date().toISOString(),
+            finalResponseText: '',
+          } as any;
+          res.write('data: ' + JSON.stringify(finalMarker) + '\n\n');
+        }
+      }
+
       res.write('event: done\ndata: {}\n\n');
       res.end();
     } catch (error: any) {

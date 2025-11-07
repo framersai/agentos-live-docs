@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { fetchUserSettings, updateUserSettings, type ProviderKey } from '../lib/settingsClient';
-import { exportAllData } from '../lib/dataExport';
+import { dataExport, exportAllData } from '../lib/dataExport';
 import { idbStorage } from '../utils/idbStorage';
 import { useSessionStore } from '@/state/sessionStore';
+import { GuardrailManager, type SerializableGuardrail } from './GuardrailManager';
 
 type FormState = {
   provider: ProviderKey;
@@ -18,6 +19,18 @@ export function SettingsPanel() {
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState<FormState>({ provider: 'openai', openaiKey: '', openaiModel: '', anthropicKey: '', anthropicModel: '', rpm: '' });
   const [mask, setMask] = useState<{ openai?: string; anthropic?: string }>({});
+  const [guardrails, setGuardrails] = useState<SerializableGuardrail[]>([
+    {
+      id: 'guardrail-pii',
+      type: '@framersai/guardrail-keyword',
+      displayName: 'PII Protection',
+      description: 'Redacts SSN, email, phone from output',
+      enabled: true,
+      config: {},
+      priority: 10,
+      uiMetadata: { category: 'privacy', icon: 'shield-check', color: '#10b981' }
+    }
+  ]);
 
   useEffect(() => {
     (async () => {
@@ -173,6 +186,21 @@ export function SettingsPanel() {
           </div>
         </div>
       )}
+      
+      <div className="mt-6">
+        <GuardrailManager
+          guardrails={guardrails}
+          onToggle={(id, enabled) => {
+            setGuardrails((prev) => prev.map((g) => (g.id === id ? { ...g, enabled } : g)));
+          }}
+          onAdd={(g) => setGuardrails((prev) => [...prev, g])}
+          onRemove={(id) => setGuardrails((prev) => prev.filter((g) => g.id !== id))}
+          onConfigure={(id) => {
+            console.log('Configure guardrail:', id);
+            // TODO: Open config modal
+          }}
+        />
+      </div>
     </section>
   );
 }

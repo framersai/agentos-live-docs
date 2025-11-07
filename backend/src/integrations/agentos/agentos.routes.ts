@@ -3,9 +3,34 @@ import { agentosChatAdapterEnabled, processAgentOSChatRequest } from './agentos.
 import type { Request, Response, NextFunction } from 'express';
 import { agentosService } from './agentos.integration.js';
 import { agencyUsageService } from '../../features/agents/agencyUsage.service.js';
+import extensionRoutes from './agentos.extensions.routes.js';
 
 export const createAgentOSRouter = (): Router => {
   const router = Router();
+
+  // CORS for all AgentOS endpoints (dev convenience)
+  router.use((req: Request, res: Response, next: NextFunction) => {
+    const origin = (req.headers.origin as string) || '*';
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Vary', 'Origin');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept');
+    if (req.method === 'OPTIONS') {
+      res.status(204).end();
+      return;
+    }
+    next();
+  });
+
+  // Preflight for SSE endpoint (dev convenience)
+  router.options('/stream', (req: Request, res: Response) => {
+    res.setHeader('Access-Control-Allow-Origin', req.headers.origin || '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept');
+    res.status(204).end();
+  });
+
+  // Streaming is handled by the dedicated AgentOS stream router. No mock endpoints here.
 
   router.post('/chat', async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
@@ -25,7 +50,7 @@ export const createAgentOSRouter = (): Router => {
         messages,
       });
 
-  return res.status(200).json(result);
+      return res.status(200).json(result);
     } catch (error) {
       next(error);
     }
@@ -107,7 +132,7 @@ export const createAgentOSRouter = (): Router => {
         return true;
       });
 
-  return res.status(200).json({ personas: filtered });
+      return res.status(200).json({ personas: filtered });
     } catch (error) {
       next(error);
     }
@@ -120,7 +145,7 @@ export const createAgentOSRouter = (): Router => {
       }
 
       const definitions = await agentosService.listWorkflowDefinitions();
-  return res.status(200).json({ definitions });
+      return res.status(200).json({ definitions });
     } catch (error) {
       next(error);
     }
@@ -175,7 +200,7 @@ export const createAgentOSRouter = (): Router => {
           agencyRequest: req.body?.agencyRequest ?? null,
         },
       });
-  return res.status(201).json({ workflow: instance });
+      return res.status(201).json({ workflow: instance });
     } catch (error) {
       next(error);
     }
@@ -194,11 +219,14 @@ export const createAgentOSRouter = (): Router => {
       if (!updated) {
         return res.status(404).json({ message: 'Workflow not found.' });
       }
-  return res.status(200).json({ workflow: updated });
+      return res.status(200).json({ workflow: updated });
     } catch (error) {
       next(error);
     }
   });
 
+  // Add extension routes
+  router.use(extensionRoutes);
+  
   return router;
 };

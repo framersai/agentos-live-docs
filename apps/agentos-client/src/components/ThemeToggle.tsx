@@ -1,9 +1,8 @@
-import React from 'react';
 import { Sun, Moon } from 'lucide-react';
 import { useThemeStore, Theme } from '../state/themeStore';
 
 export function ThemeToggle() {
-  const { theme, actualTheme, setTheme } = useThemeStore();
+  const { actualTheme, setTheme } = useThemeStore();
 
   const isDark = actualTheme === 'dark';
   const nextTheme: Theme = isDark ? 'light' : 'dark';
