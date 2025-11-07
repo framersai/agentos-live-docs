@@ -17,8 +17,8 @@ import {
   type GuardrailInputPayload,
   type GuardrailOutputPayload,
   type IGuardrailService,
-} from '@agentos/core/guardrails/IGuardrailService';
-import { AgentOSResponseChunkType } from '@agentos/core';
+} from '@agentos/core/core/guardrails/IGuardrailService';
+import { AgentOSResponseChunkType } from '@agentos/core/api/types/AgentOSResponse';
 import { callLlm } from '../../../core/llm/llm.factory.js';
 import type { IChatMessage } from '../../../core/llm/llm.interfaces.js';
 
