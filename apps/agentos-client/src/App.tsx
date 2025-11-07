@@ -366,20 +366,24 @@ export default function App() {
     const personaId = opts?.personaId ?? (preferDefaultPersona(remoteIds) ?? personas[0]?.id ?? DEFAULT_PERSONA_ID);
     const agencyId = opts?.agencyId ?? agencies[0]?.id;
     const targetType = opts?.targetType ?? "persona"; // Default to persona
-    const base = 'Untitled';
+    
+    // Generate unique numbered name
+    const personaName = personas.find(p => p.id === personaId)?.displayName || 'Session';
+    const base = targetType === 'agency' ? (agencies.find(a => a.id === agencyId)?.name || 'Agency') : personaName;
     const existing = sessions.filter((s) => s.displayName.startsWith(base)).length;
-    const name = existing === 0 ? base : `${base} (${existing})`;
+    const name = existing === 0 ? base : `${base} ${existing + 1}`;
+    
     upsertSession({
       id: sessionId,
       targetType,
-      displayName: opts?.displayName ?? (targetType === 'agency' ? resolveAgencyName(agencyId) : name),
+      displayName: opts?.displayName ?? name,
       personaId: targetType === "persona" ? personaId : undefined,
       agencyId: targetType === "agency" ? agencyId : undefined,
       status: "idle",
       events: []
     });
     setActiveSession(sessionId);
-  }, [agencies, personas, sessions, resolveAgencyName, setActiveSession, upsertSession, preferDefaultPersona]);
+  }, [agencies, personas, sessions, setActiveSession, upsertSession, preferDefaultPersona]);
 
   const handleSubmit = useCallback(
     (payload: RequestComposerPayload) => {

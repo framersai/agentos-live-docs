@@ -28,9 +28,18 @@ type StepKey = typeof STEPS[number]['key'];
 
 export function PersonaWizard({ open, onClose }: PersonaWizardProps) {
   const addPersona = useSessionStore((s) => s.addPersona);
+  const personas = useSessionStore((s) => s.personas);
   const [step, setStep] = useState<StepKey>('basics');
+  
+  // Generate unique default name
+  const generateDefaultName = () => {
+    const base = 'New Persona';
+    const existing = personas.filter(p => p.displayName.startsWith(base));
+    return existing.length === 0 ? base : `${base} ${existing.length + 1}`;
+  };
+  
   const [draft, setDraft] = useState<Partial<PersonaDraft>>({
-    displayName: '',
+    displayName: generateDefaultName(),
     description: '',
     tags: [],
     traits: [],
@@ -85,7 +94,17 @@ export function PersonaWizard({ open, onClose }: PersonaWizardProps) {
 
     addPersona(persona);
     onClose();
-    setDraft({});
+    // Reset with new unique name
+    setDraft({
+      displayName: generateDefaultName(),
+      description: '',
+      tags: [],
+      traits: [],
+      capabilities: [],
+      guardrails: [],
+      extensions: [],
+      metadata: {},
+    });
     setStep('basics');
   };
 
