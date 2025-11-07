@@ -94,7 +94,8 @@
       "replayPlaceholder": "? Replay transcript"
     },
     "footer": {
-      "localNotice": "Workbench requests stay local. Wire this UI to your dev API to drive real @agentos/core sessions."
+      "localNotice": "Backend connection required",
+      "localNoticeDetails": "This workbench sends requests to your backend API at /api/agentos/stream. Ensure your backend is running with AGENTOS_ENABLED=true. UI state (sessions, personas) is stored locally in your browser (IndexedDB) for fast access."
     }
   },
   "artifactViewer": {
