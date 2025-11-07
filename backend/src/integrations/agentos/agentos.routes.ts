@@ -4,6 +4,8 @@ import type { Request, Response, NextFunction } from 'express';
 import { agentosService } from './agentos.integration.js';
 import { agencyUsageService } from '../../features/agents/agencyUsage.service.js';
 import extensionRoutes from './agentos.extensions.routes.js';
+import { LlmConfigService } from '../../core/llm/llm.config.service.js';
+import { MODEL_PRICING } from '../../../config/models.config.js';
 
 export const createAgentOSRouter = (): Router => {
   const router = Router();
@@ -28,6 +30,83 @@ export const createAgentOSRouter = (): Router => {
     res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept');
     res.status(204).end();
+  });
+
+  // Get available models from all providers
+  router.get('/models', async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+    try {
+      if (!agentosChatAdapterEnabled()) {
+        return res.status(503).json({ message: 'AgentOS integration disabled', error: 'AGENTOS_DISABLED' });
+      }
+
+      const llmConfig = LlmConfigService.getInstance();
+      const availableProviders = llmConfig.getAvailableProviders();
+      const models: Array<{
+        id: string;
+        displayName: string;
+        provider: string;
+        pricing?: {
+          inputCostPer1K: number;
+          outputCostPer1K: number;
+        };
+      }> = [];
+
+      // Add models from MODEL_PRICING that match available providers
+      for (const [modelId, config] of Object.entries(MODEL_PRICING)) {
+        if (modelId === 'default') continue;
+        
+        // Check if this model's provider is available
+        const modelProvider = config.provider;
+        const isProviderAvailable = modelProvider === 'openai' && availableProviders.includes('openai') ||
+                                   modelProvider === 'openrouter' && availableProviders.includes('openrouter') ||
+                                   modelProvider === 'anthropic' && availableProviders.includes('anthropic') ||
+                                   modelProvider === 'ollama' && availableProviders.includes('ollama');
+
+        if (isProviderAvailable) {
+          models.push({
+            id: modelId,
+            displayName: config.displayName || modelId,
+            provider: modelProvider || 'unknown',
+            pricing: {
+              inputCostPer1K: config.inputCostPer1K,
+              outputCostPer1K: config.outputCostPer1K,
+            },
+          });
+        }
+      }
+
+      // Add common OpenRouter models if available
+      if (availableProviders.includes('openrouter')) {
+        const openRouterModels = [
+          'meta-llama/llama-3.1-8b-instruct:free',
+          'microsoft/wizardlm-2-8x22b',
+          'google/gemini-flash-1.5',
+          'mistralai/mixtral-8x7b-instruct',
+          'anthropic/claude-3.5-sonnet',
+          'openai/gpt-4o-2024-08-06',
+          'openai/o1-preview',
+          'openai/o1-mini',
+        ];
+
+        for (const modelId of openRouterModels) {
+          if (!models.some(m => m.id === modelId)) {
+            models.push({
+              id: modelId,
+              displayName: modelId.split('/').pop()?.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || modelId,
+              provider: 'openrouter',
+              pricing: MODEL_PRICING[modelId] ? {
+                inputCostPer1K: MODEL_PRICING[modelId].inputCostPer1K,
+                outputCostPer1K: MODEL_PRICING[modelId].outputCostPer1K,
+              } : undefined,
+            });
+          }
+        }
+      }
+
+      return res.status(200).json({ models });
+    } catch (error) {
+      next(error);
+    }
   });
 
   // Streaming is handled by the dedicated AgentOS stream router. No mock endpoints here.
