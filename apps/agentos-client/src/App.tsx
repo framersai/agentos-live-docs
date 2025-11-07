@@ -158,22 +158,24 @@ export default function App() {
     })();
   }, []);
 
-  // Ensure there is at least one default session on first load
+  // Ensure there is at least one default V persona session on first load
   useEffect(() => {
     if (sessions.length > 0) return;
+    const vResearcher = personas.find((p) => p.id === 'v_researcher');
     const firstRemote = personas.find((p) => p.source === 'remote');
-    if (!firstRemote) return; // wait until remote personas are loaded
+    const defaultPersona = vResearcher || firstRemote;
+    if (!defaultPersona) return; // wait until remote personas are loaded
     const sessionId = crypto.randomUUID();
     upsertSession({
       id: sessionId,
       targetType: 'persona',
-      displayName: 'Untitled',
-      personaId: firstRemote.id,
+      displayName: defaultPersona.displayName || 'V Session',
+      personaId: defaultPersona.id,
       status: 'idle',
       events: [],
     });
     setActiveSession(sessionId);
-  }, [sessions.length, personas]);
+  }, [sessions.length, personas, upsertSession, setActiveSession]);
 
   // Seed a demo agency if none exists, to make the dashboard usable immediately
   useEffect(() => {
@@ -316,19 +318,19 @@ export default function App() {
 
   const handleCreateSession = useCallback((opts?: { targetType?: 'persona' | 'agency'; personaId?: string; agencyId?: string; displayName?: string }) => {
     const sessionId = crypto.randomUUID();
-    const hasAgencies = agencies.length > 0;
     const remoteIds = personas.filter((p) => p.source === 'remote').map((p) => p.id);
     const personaId = opts?.personaId ?? (preferDefaultPersona(remoteIds) ?? personas[0]?.id ?? DEFAULT_PERSONA_ID);
     const agencyId = opts?.agencyId ?? agencies[0]?.id;
+    const targetType = opts?.targetType ?? "persona"; // Default to persona
     const base = 'Untitled';
     const existing = sessions.filter((s) => s.displayName.startsWith(base)).length;
     const name = existing === 0 ? base : `${base} (${existing})`;
     upsertSession({
       id: sessionId,
-      targetType: opts?.targetType ?? (hasAgencies ? "agency" : "persona"),
-      displayName: opts?.displayName ?? (opts?.targetType === 'agency' ? resolveAgencyName(agencyId) : name),
-      personaId: (opts?.targetType ?? (hasAgencies ? 'agency' : 'persona')) === "persona" ? personaId : undefined,
-      agencyId: (opts?.targetType ?? (hasAgencies ? 'agency' : 'persona')) === "agency" ? agencyId : undefined,
+      targetType,
+      displayName: opts?.displayName ?? (targetType === 'agency' ? resolveAgencyName(agencyId) : name),
+      personaId: targetType === "persona" ? personaId : undefined,
+      agencyId: targetType === "agency" ? agencyId : undefined,
       status: "idle",
       events: []
     });
