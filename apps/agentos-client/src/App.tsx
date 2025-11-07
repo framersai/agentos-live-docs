@@ -324,7 +324,16 @@ export default function App() {
 
   const ensureSession = useCallback(
     (payload: RequestComposerPayload) => {
-      // Always create a new session for each request to keep conversations separate
+      // Use existing active session if it matches target type, otherwise create new
+      if (activeSessionId) {
+        const existing = sessions.find(s => s.id === activeSessionId);
+        if (existing && existing.targetType === payload.targetType) {
+          // Reuse existing session
+          return activeSessionId;
+        }
+      }
+      
+      // Create new session for different type or if none active
       const sessionId = crypto.randomUUID();
       const displayName = payload.targetType === "agency"
         ? resolveAgencyName(payload.agencyId)
@@ -342,7 +351,7 @@ export default function App() {
       setActiveSession(sessionId);
       return sessionId;
     },
-    [resolveAgencyName, resolvePersonaName, setActiveSession, upsertSession]
+    [activeSessionId, sessions, resolveAgencyName, resolvePersonaName, setActiveSession, upsertSession]
   );
 
   const preferDefaultPersona = useCallback((ids: string[]): string | undefined => {
