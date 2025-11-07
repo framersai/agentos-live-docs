@@ -39,7 +39,12 @@ function TelemetryView() {
   );
 }
 
-function AnalyticsView({ selectedModel, onChangeModel, modelOptions }: { selectedModel?: string; onChangeModel: (model?: string) => void; modelOptions: string[] }) {
+function AnalyticsView({ selectedModel, onChangeModel, modelOptions, modelData }: { 
+  selectedModel?: string; 
+  onChangeModel: (model?: string) => void; 
+  modelOptions: string[]; 
+  modelData: any[];
+}) {
   const perSession = useTelemetryStore((s) => s.perSession);
   const activeSessionId = useSessionStore((s) => s.activeSessionId);
   const m = activeSessionId ? perSession[activeSessionId] : undefined;
@@ -47,20 +52,14 @@ function AnalyticsView({ selectedModel, onChangeModel, modelOptions }: { selecte
   const promptTokens = m?.finalTokensPrompt ?? 0;
   const completionTokens = m?.finalTokensCompletion ?? 0;
   
+  const currentModelData = modelData.find(model => model.id === selectedModel);
+  const systemDefaultModel = modelData.find(model => model.id === 'gpt-4o-mini') || modelData[0];
+  
   const estimateUsd = (promptTokens: number, completionTokens: number, model?: string) => {
-    // Use model-specific pricing or fallback
-    const modelPricing: Record<string, { input: number; output: number }> = {
-      'gpt-4o-mini': { input: 0.00015, output: 0.0006 },
-      'gpt-4o': { input: 0.005, output: 0.015 },
-      'openai/gpt-4o-mini': { input: 0.00015, output: 0.0006 },
-      'openai/gpt-4o': { input: 0.005, output: 0.015 },
-      'claude-3-haiku-20240307': { input: 0.00025, output: 0.00125 },
-      'anthropic/claude-3-haiku-20240307': { input: 0.00025, output: 0.00125 },
-    };
-    
-    const pricing = modelPricing[model || ''] || { input: 0.0005, output: 0.0015 }; // Default
-    const inputCost = (promptTokens / 1000) * pricing.input;
-    const outputCost = (completionTokens / 1000) * pricing.output;
+    const modelInfo = modelData.find(m => m.id === model);
+    const pricing = modelInfo?.pricing || { inputCostPer1K: 0.0005, outputCostPer1K: 0.0015 };
+    const inputCost = (promptTokens / 1000) * pricing.inputCostPer1K;
+    const outputCost = (completionTokens / 1000) * pricing.outputCostPer1K;
     return inputCost + outputCost;
   };
   
@@ -68,22 +67,40 @@ function AnalyticsView({ selectedModel, onChangeModel, modelOptions }: { selecte
   
   return (
     <div className="text-xs text-slate-600 dark:text-slate-400">
-      <div className="mb-2 flex items-center gap-2">
-        <label className="text-[11px] uppercase tracking-widest text-slate-500">Model</label>
-        <select
-          value={selectedModel || ''}
-          onChange={(e) => onChangeModel(e.target.value || undefined)}
-          className="rounded-md border border-slate-200 bg-white px-2 py-1 text-xs dark:border-white/10 dark:bg-slate-900"
-        >
-          <option value="">System default</option>
-          {modelOptions.map((m) => (
-            <option key={m} value={m}>{m}</option>
-          ))}
-        </select>
+      <div className="mb-3 space-y-2">
+        <label className="block">
+          <span className="text-[11px] uppercase tracking-widest text-slate-500">Model Override</span>
+          <select
+            value={selectedModel || ''}
+            onChange={(e) => onChangeModel(e.target.value || undefined)}
+            className="w-full rounded-md border border-slate-200 bg-white px-2 py-1 text-xs dark:border-white/10 dark:bg-slate-900"
+          >
+            <option value="">
+              System default ({systemDefaultModel?.displayName || systemDefaultModel?.id || 'gpt-4o-mini'})
+            </option>
+            {modelOptions.map((m) => {
+              const modelInfo = modelData.find(model => model.id === m);
+              return (
+                <option key={m} value={m}>
+                  {modelInfo?.displayName || m} {selectedModel === m ? '(current)' : ''}
+                </option>
+              );
+            })}
+          </select>
+        </label>
+        {currentModelData && (
+          <div className="text-[10px] text-slate-500">
+            Provider: {currentModelData.provider} | 
+            Input: ${(currentModelData.pricing?.inputCostPer1K || 0).toFixed(4)}/1K | 
+            Output: ${(currentModelData.pricing?.outputCostPer1K || 0).toFixed(4)}/1K
+          </div>
+        )}
       </div>
-      <p>Last session tokens: {tokens || '-'}</p>
-      <p>Prompt: {promptTokens || '-'} | Completion: {completionTokens || '-'}</p>
-      <p>Estimated cost: {tokens ? `$${cost.toFixed(4)}` : '-'}</p>
+      <div className="space-y-1">
+        <p>Last session tokens: {tokens || '-'}</p>
+        <p>Prompt: {promptTokens || '-'} | Completion: {completionTokens || '-'}</p>
+        <p>Estimated cost: {tokens ? `$${cost.toFixed(4)}` : '-'}</p>
+      </div>
     </div>
   );
 }
@@ -111,6 +128,7 @@ export default function App() {
   const [showMobileSidebar, setShowMobileSidebar] = useState(false);
   const [isDesktop, setIsDesktop] = useState(true);
   const [modelOptions, setModelOptions] = useState<string[]>([]);
+  const [modelData, setModelData] = useState<any[]>([]);
   const [selectedModel, setSelectedModel] = useState<string | undefined>(undefined);
   const welcomeTourDismissed = useUiStore((s) => s.welcomeTourDismissed);
   const welcomeTourSnoozeUntil = useUiStore((s) => s.welcomeTourSnoozeUntil);
@@ -160,12 +178,16 @@ export default function App() {
     let mounted = true;
     (async () => {
       try {
-        const modelData = await getAvailableModels();
+        const models = await getAvailableModels();
         if (!mounted) return;
-        const modelIds = modelData.map((m: any) => m.id);
+        setModelData(models);
+        const modelIds = models.map((m: any) => m.id);
         setModelOptions(modelIds);
       } catch {
-        if (mounted) setModelOptions([]);
+        if (mounted) {
+          setModelOptions([]);
+          setModelData([]);
+        }
       }
     })();
     return () => { mounted = false; };
@@ -638,7 +660,7 @@ export default function App() {
                     <p className="text-xs uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">Analytics</p>
                     <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Usage insights</h3>
                   </header>
-                  <AnalyticsView selectedModel={selectedModel} onChangeModel={setSelectedModel} modelOptions={modelOptions} />
+                  <AnalyticsView selectedModel={selectedModel} onChangeModel={setSelectedModel} modelOptions={modelOptions} modelData={modelData} />
                 </section>
               </div>
             </aside>
