@@ -41,7 +41,7 @@ export function PersonaCatalog() {
   const setPersonaFilters = useSessionStore((state) => state.setPersonaFilters);
   const addPersona = useSessionStore((state) => state.addPersona);
   const removePersona = useSessionStore((state) => state.removePersona);
-  const personasQuery = usePersonas({ filters: personaFilters });
+  // Don't duplicate the personas query - use from store instead
   const [draft, setDraft] = useState<PersonaDraft>(defaultDraft);
   const [showWizard, setShowWizard] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState<string | null>(null);
@@ -77,7 +77,7 @@ export function PersonaCatalog() {
     setPersonaFilters({ search: "", capabilities: [] });
   };
 
-  const isLoading = personasQuery.isLoading || personasQuery.isFetching;
+  const isLoading = false; // Use store data, no loading state needed
   const filterActive =
     personaFilters.search.trim().length > 0 || personaFilters.capabilities.length > 0;
 

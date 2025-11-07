@@ -127,7 +127,8 @@ export default function App() {
     filters: {
       search: personaFilters.search.trim() ? personaFilters.search.trim() : undefined,
       capability: personaFilters.capabilities
-    }
+    },
+    staleTimeMs: 10 * 60 * 1000, // 10 minutes cache
   });
 
   const backendReady = !personasQuery.isLoading && !personasQuery.isError;
@@ -139,9 +140,11 @@ export default function App() {
 
   // Fetch LLM status to populate model options (parse defaults from provider reasons)
   useEffect(() => {
+    let mounted = true;
     (async () => {
       try {
         const status = await getLlmStatus();
+        if (!mounted) return;
         const providers = status?.providers || {};
         const models: string[] = [];
         for (const key of Object.keys(providers)) {
@@ -153,9 +156,10 @@ export default function App() {
         }
         setModelOptions(models);
       } catch {
-        setModelOptions([]);
+        if (mounted) setModelOptions([]);
       }
     })();
+    return () => { mounted = false; };
   }, []);
 
   // Ensure there is at least one default V persona session on first load
