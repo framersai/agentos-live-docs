@@ -1,7 +1,7 @@
 {
-  "name": "@framersai/agentos-guardrails",
+  "name": "@framersai/agentos-extensions",
   "version": "1.0.0",
-  "description": "Community registry of safety and policy guardrails for AgentOS",
+  "description": "Community registry of tools, workflows, and integrations for AgentOS",
   "type": "module",
   "sideEffects": false,
   "exports": {
@@ -18,15 +18,15 @@
     "build": "pnpm -r --filter './registry/**' build",
     "lint": "pnpm -r --filter './registry/**' lint",
     "clean": "pnpm -r --filter './registry/**' clean",
-    "create-guardrail": "node scripts/create-guardrail.js",
+    "create-extension": "node scripts/create-extension.js",
     "update-registry": "node scripts/update-registry.js",
     "docs": "pnpm -r --filter './registry/**' docs"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/framersai/agentos-guardrails.git"
+    "url": "https://github.com/framersai/agentos-extensions.git"
   },
-  "keywords": ["agentos", "guardrails", "safety", "policy", "compliance"],
+  "keywords": ["agentos", "extensions", "tools", "plugins"],
   "author": "Framers AI",
   "license": "MIT",
   "devDependencies": {

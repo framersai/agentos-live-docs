@@ -7,6 +7,8 @@ export { SensitiveTopicGuardrail, type SensitiveTopicConfig } from './SensitiveT
 export { CostCeilingGuardrail, type CostCeilingConfig } from './CostCeilingGuardrail';
 export { GenericLLMGuardrail, type GenericLLMGuardrailConfig } from './GenericLLMGuardrail';
 export { KeywordGuardrail, type KeywordGuardrailConfig, type KeywordPattern } from './KeywordGuardrail';
+export { GuardrailLogger, GuardrailSeverity, type GuardrailLogEntry, type GuardrailLoggerConfig, type EscalationAction } from './GuardrailLogger';
+export { EscalationManager, InterventionStatus, type InterventionRequest, type EscalationManagerConfig } from './EscalationManager';
 
 import type { IGuardrailService } from '@agentos/core/guardrails/IGuardrailService';
 import { GuardrailAction } from '@agentos/core/guardrails/IGuardrailService';
