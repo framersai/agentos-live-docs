@@ -34,10 +34,9 @@ export type RequestComposerPayload = z.infer<ReturnType<typeof createRequestSche
 interface RequestComposerProps {
   onSubmit: (payload: RequestComposerPayload) => void;
   disabled?: boolean;
-  contextTab?: 'compose' | 'agency' | 'personas' | 'workflows' | 'settings' | 'about';
 }
 
-export function RequestComposer({ onSubmit, disabled = false, contextTab = 'compose' }: RequestComposerProps) {
+export function RequestComposer({ onSubmit, disabled = false }: RequestComposerProps) {
   const { t } = useTranslation();
   const [isStreaming, setStreaming] = useState(false);
   const personas = useSessionStore((state) => state.personas);
@@ -59,9 +58,7 @@ export function RequestComposer({ onSubmit, disabled = false, contextTab = 'comp
   const defaultPersonaId = remotePersonas[0]?.id ?? personas[0]?.id ?? "";
   const fallbackAgencyId = agencies[0]?.id ?? "";
   const defaultAgencyId = activeAgencyId ?? fallbackAgencyId;
-  const tabPreferredTarget: SessionTargetType | undefined =
-    contextTab === 'agency' ? 'agency' : contextTab === 'personas' ? 'persona' : undefined;
-  const initialTarget: SessionTargetType = tabPreferredTarget ?? (agencies.length > 0 ? "agency" : "persona");
+  const initialTarget: SessionTargetType = agencies.length > 0 ? "agency" : "persona";
 
   const samplePrompt = t("requestComposer.defaults.samplePrompt");
   const examplePrompts = useMemo(() => {
@@ -101,24 +98,7 @@ export function RequestComposer({ onSubmit, disabled = false, contextTab = 'comp
       mode: "chat"
     }
   });
-  // React to contextTab changes (switch target emphasis)
-  useEffect(() => {
-    if (contextTab === 'agency') {
-      form.setValue('targetType', 'agency', { shouldValidate: true });
-      if (!form.getValues('agencyId')) form.setValue('agencyId', defaultAgencyId, { shouldValidate: false });
-    } else if (contextTab === 'personas') {
-      form.setValue('targetType', 'persona', { shouldValidate: true });
-      if (!form.getValues('personaId')) form.setValue('personaId', defaultPersonaId, { shouldValidate: false });
-    } else if (contextTab === 'workflows') {
-      // Nudge towards persona mode and highlight workflow selection (no validation change here)
-      form.setValue('targetType', 'persona', { shouldValidate: false });
-      if (!form.getValues('personaId')) form.setValue('personaId', defaultPersonaId, { shouldValidate: false });
-      if (!form.getValues('workflowId') && workflowDefinitions[0]?.id) {
-        form.setValue('workflowId', workflowDefinitions[0].id, { shouldValidate: false });
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [contextTab, defaultPersonaId, defaultAgencyId, workflowDefinitions]);
+  // Remove contextTab dependency - let user choose persona/agency directly
 
   const targetType = form.watch("targetType");
   const personaId = form.watch("personaId");

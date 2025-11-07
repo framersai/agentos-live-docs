@@ -81,8 +81,8 @@ const DEFAULT_PERSONA_ID = "nerf_generalist";
 export default function App() {
   const LEFT_TABS = [
     { key: "compose", label: "Compose" },
-    { key: "agency", label: "Agency" },
     { key: "personas", label: "Personas" },
+    { key: "agency", label: "Agency" },
     { key: "workflows", label: "Workflows" }
   ] as const;
   type LeftTabKey = typeof LEFT_TABS[number]["key"];
@@ -597,9 +597,9 @@ export default function App() {
               <div className="ml-auto" />
                 </div>
               </div>
-              {leftTab === 'compose' && <RequestComposer key={activeSessionId || 'compose'} onSubmit={handleSubmit} contextTab={leftTab as any} />}
-              {leftTab === 'agency' && <AgencyManager />}
+              {leftTab === 'compose' && <RequestComposer key={activeSessionId || 'compose'} onSubmit={handleSubmit} />}
               {leftTab === 'personas' && <PersonaCatalog />}
+              {leftTab === 'agency' && <AgencyManager />}
               {leftTab === 'workflows' && <WorkflowOverview />}
             </section>
 
