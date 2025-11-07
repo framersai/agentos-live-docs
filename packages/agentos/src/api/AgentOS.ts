@@ -60,6 +60,7 @@ import { LLMUtilityAI } from '../core/ai_utilities/LLMUtilityAI';
 import { ConversationManager, ConversationManagerConfig } from '../core/conversation/ConversationManager';
 import { ConversationContext } from '../core/conversation/ConversationContext';
 import type { PrismaClient } from '@prisma/client';
+import type { StorageAdapter } from '@framers/sql-storage-adapter';
 import { IPersonaDefinition } from '../cognitive_substrate/personas/IPersonaDefinition';
 import { StreamingManager, StreamingManagerConfig, StreamId } from '../core/streaming/StreamingManager';
 import { IStreamClient, StreamClientId } from '../core/streaming/IStreamClient';
@@ -269,10 +270,12 @@ export interface AgentOSConfig {
    * });
    * ```
    * 
-   * If omitted, AgentOS uses Prisma client (server-side only).
-   * Provide this for client-side, offline-capable AgentOS.
+   * **Graceful Degradation:**
+   * - If omitted, AgentOS falls back to Prisma (server-side only).
+   * - If provided, AgentOS uses storageAdapter for conversations, Prisma only for auth/subscriptions.
+   * - Recommended: Always provide storageAdapter for cross-platform compatibility.
    */
-  storageAdapter?: any; // TODO: Type this properly once we define StorageAdapter interface in AgentOS
+  storageAdapter?: StorageAdapter;
 }
 
 
@@ -360,8 +363,17 @@ export class AgentOS implements IAgentOS {
     // Assign core services from configuration
     this.authService = this.config.authService;
     this.subscriptionService = this.config.subscriptionService;
-    this.prisma = this.config.prisma;
+    this.prisma = this.config.prisma; // Optional - only needed for auth/subscriptions
     this.guardrailService = this.config.guardrailService;
+
+    // Validate that either storageAdapter or prisma is provided
+    if (!this.config.storageAdapter && !this.config.prisma) {
+      throw new AgentOSServiceError(
+        'Either storageAdapter or prisma must be provided. Use storageAdapter for client-side (IndexedDB/SQLite) or prisma for server-side (PostgreSQL).',
+        GMIErrorCode.CONFIGURATION_ERROR,
+        'AgentOS.initialize'
+      );
+    }
 
     this.logger.info('AgentOS initialization sequence started');
 
@@ -417,7 +429,7 @@ export class AgentOS implements IAgentOS {
       await this.conversationManager.initialize(
         this.config.conversationManagerConfig,
         this.utilityAIService, // General IUtilityAI for conversation tasks
-        this.prisma
+        this.config.storageAdapter // Use storageAdapter instead of Prisma
       );
       console.log('AgentOS: ConversationManager initialized.');
 
@@ -431,8 +443,7 @@ export class AgentOS implements IAgentOS {
         this.config.gmiManagerConfig,
         this.subscriptionService,
         this.authService,
-        this.prisma,
-        this.conversationManager,
+        this.conversationManager, // Removed Prisma parameter
         this.promptEngine,
         this.modelProviderManager,
         this.utilityAIService, // Pass the potentially dual-role utility service
@@ -491,12 +502,16 @@ export class AgentOS implements IAgentOS {
             'gmiManagerConfig', 'orchestratorConfig', 'promptEngineConfig',
             'toolOrchestratorConfig', 'toolPermissionManagerConfig', 'conversationManagerConfig',
             'streamingManagerConfig', 'modelProviderManagerConfig', 'defaultPersonaId',
-            'prisma', 'authService', 'subscriptionService'
+            'authService', 'subscriptionService'
         ];
         for (const key of requiredConfigs) {
             if (!config[key]) {
                 missingParams.push(String(key));
             }
+        }
+        // Either storageAdapter or prisma must be provided
+        if (!config.storageAdapter && !config.prisma) {
+            missingParams.push('storageAdapter or prisma (at least one required)');
         }
     }
 
