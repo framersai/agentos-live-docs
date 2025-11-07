@@ -27,6 +27,7 @@ import { createAgentOSAuthAdapter } from './agentos.auth-service.js';
 import { createAgentOSSubscriptionAdapter } from './agentos.subscription-service.js';
 import { createAgentOSRouter } from './agentos.routes.js';
 import { createAgentOSStreamRouter } from './agentos.stream-router.js';
+import { createAgencyStreamRouter } from './agentos.agency-stream-router.js';
 import { createAgentOSSqlClient } from './agentos.sql-client.js';
 import { reloadDynamicPersonas } from './agentos.persona-registry.js';
 import { createDefaultGuardrailStack } from './guardrails/index.js';
