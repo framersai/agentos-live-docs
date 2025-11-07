@@ -28,7 +28,14 @@ export function AgencyManager() {
   const removeAgency = useSessionStore((state) => state.removeAgency);
   const setActiveAgency = useSessionStore((state) => state.setActiveAgency);
 
-  const [name, setName] = useState("");
+  // Generate unique default agency name
+  const agencies = useSessionStore((s) => s.agencies);
+  const generateDefaultName = () => {
+    const base = 'New Agency';
+    const existing = agencies.filter(a => a.name.startsWith(base));
+    return existing.length === 0 ? base : `${base} ${existing.length + 1}`;
+  };
+  const [name, setName] = useState(generateDefaultName());
   const [goal, setGoal] = useState("");
   const [workflowId, setWorkflowId] = useState("");
   const remotePersonas = useMemo(() => personas.filter((p) => p.source === "remote"), [personas]);
