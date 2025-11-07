@@ -130,18 +130,20 @@ export const createAgentOSStreamRouter = (integration: AgentOSStreamIntegration)
             metadata: { modelId: result.model },
           };
           res.write('data: ' + JSON.stringify(fallbackChunk) + '\n\n');
-        } catch {
-          // No fallback available; emit an empty final marker so UI completes
-          const finalMarker = {
+        } catch (fallbackError: any) {
+          // Log the actual error
+          console.warn('[AgentOS Stream] Fallback chat request failed:', fallbackError.message || fallbackError);
+          // Send error response with helpful message
+          const errorChunk = {
             type: 'final_response',
             streamId: conversationId,
             gmiInstanceId: mode,
             personaId: mode,
             isFinal: true,
             timestamp: new Date().toISOString(),
-            finalResponseText: '',
+            finalResponseText: `⚠️ AgentOS processing completed but no response was generated.\n\n**Possible causes:**\n- No LLM provider configured (check OPENAI_API_KEY or ANTHROPIC_API_KEY in backend .env)\n- Agency requests require workflow start endpoint (not yet wired - only first seat GMI responds)\n- Backend error: ${fallbackError.message || 'Unknown error'}\n\n**Next steps:**\n1. Check backend logs for errors\n2. Verify LLM provider keys are set\n3. For agency mode: use /workflows/start endpoint (not yet wired to this UI)`,
           } as any;
-          res.write('data: ' + JSON.stringify(finalMarker) + '\n\n');
+          res.write('data: ' + JSON.stringify(errorChunk) + '\n\n');
         }
       }
 
