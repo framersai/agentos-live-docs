@@ -17,7 +17,8 @@ const agentOsComponents = ref<AgentOsComponentItem[]>([
   { name: 'Realtime Voice I/O Pipeline', iconName: 'wave', description: 'Streams speech recognition and TTS with minimal lag, working online or with local fallbacks.' },
   { name: 'Extensible Tool Integration Bus', iconName: 'code', description: 'Connects custom functions, APIs, and automations using a consistent capability schema.' },
   { name: 'Proactive Goal & Task Planner', iconName: 'map', description: 'Tracks state, suggests next steps, and orchestrates tool calls to keep momentum.' },
-  { name: 'Ethical AI & Safety Governor', iconName: 'shield', description: 'Applies policy checks and guardrails before responses ship to users.' },
+  { name: 'Guardrail & Safety System', iconName: 'shield', description: 'Agents "change their mind" mid-stream via policy checks. Supports keyword filters, LLM reasoning, cost ceilings, and human escalation.' },
+  { name: 'Extension & Guardrail Marketplace', iconName: 'plug', description: 'Community registry with free CI/CD. Install curated tools (search, Telegram) and safety policies via npm.' },
   { name: 'User Preference & Learning Module', iconName: 'lightbulb', description: 'Learns stylistic cues and preferences to deliver more personal, on-brand deliverables.' },
 ]);
 
