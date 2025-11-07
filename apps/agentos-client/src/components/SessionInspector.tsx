@@ -280,7 +280,7 @@ function StreamingText({ text, isActive }: { text: string; isActive: boolean }) 
   }
   
   return (
-    <div className="prose prose-sm prose-slate prose-invert max-w-none text-slate-800 dark:text-slate-100">
+    <div className="prose prose-sm max-w-none dark:prose-invert prose-headings:text-slate-900 dark:prose-headings:text-slate-100 prose-p:text-slate-800 dark:prose-p:text-slate-200 prose-li:text-slate-800 dark:prose-li:text-slate-200 prose-strong:text-slate-900 dark:prose-strong:text-slate-100 prose-code:text-slate-800 dark:prose-code:text-slate-200 prose-pre:bg-slate-900 dark:prose-pre:bg-slate-950 prose-pre:text-slate-100">
       <ReactMarkdown>{displayed}</ReactMarkdown>
       {isActive && <span className="ml-0.5 inline-block h-4 w-1 animate-pulse bg-sky-500" aria-hidden="true" />}
     </div>
