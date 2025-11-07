@@ -216,9 +216,10 @@ export function PersonaCatalog() {
 
         <form onSubmit={handleSubmit} className="space-y-3 rounded-2xl border border-slate-200 bg-white p-4 text-sm text-slate-700 dark:border-white/10 dark:bg-slate-950/50 dark:text-slate-200">
           <div className="flex items-center justify-between">
-            <p className="text-xs uppercase tracking-[0.35em] text-slate-500 dark:text-slate-500">Create persona</p>
-            <Sparkles className="h-3 w-3 text-sky-400" />
+            <p className="text-xs uppercase tracking-[0.35em] text-slate-500 dark:text-slate-500">Quick add (basic)</p>
+            <Sparkles className="h-3 w-3 text-slate-400" />
           </div>
+          <p className="text-xs text-slate-500">For full config (system prompt, guardrails, extensions), use the Wizard above.</p>
           <label className="space-y-1">
             <span className="text-xs text-slate-500 dark:text-slate-400">Display name</span>
             <input
