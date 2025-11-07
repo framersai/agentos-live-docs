@@ -1,9 +1,10 @@
+/** Standard prompts for single persona conversations */
 export const EXAMPLE_PROMPTS: string[] = [
   "Hi",
   "Summarize the latest AI news.",
   "Find key points about LLM context windows.",
   "Draft a friendly announcement about our new feature.",
-  "What’s trending in open-source AI this week?",
+  "What's trending in open-source AI this week?",
   "Explain RAG in simple terms with an analogy.",
   "Outline a plan to evaluate model quality on our dataset.",
   "Generate a concise release note for version 1.2.3.",
@@ -37,6 +38,21 @@ export const EXAMPLE_PROMPTS: string[] = [
   "Turn this long message into an executive summary.",
   "Suggest 5 user research questions for agents.",
   "Estimate costs for 10k daily requests with this model."
+];
+
+/** 
+ * Agency-specific prompts that demonstrate multi-GMI coordination needs.
+ * Note: True parallel execution requires workflow start endpoint (not yet wired).
+ */
+export const AGENCY_EXAMPLE_PROMPTS: string[] = [
+  "Research quantum computing breakthroughs and draft a summary",
+  "Analyze competitor features and create a comparison matrix",
+  "Review codebase security, document findings, and propose fixes",
+  "Research market trends, synthesize insights, and draft strategy doc",
+  "Gather user feedback, identify patterns, and create feature roadmap",
+  "Monitor social media for mentions and prepare weekly report",
+  "Audit infrastructure costs and recommend optimizations",
+  "Coordinate release: test coverage, docs update, changelog",
 ];
 
 

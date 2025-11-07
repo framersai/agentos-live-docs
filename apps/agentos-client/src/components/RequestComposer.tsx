@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Paperclip, Play, Sparkle, Users, ChevronDown, ChevronUp, AlertCircle } from "lucide-react";
-import { EXAMPLE_PROMPTS } from "@/constants/examplePrompts";
+import { EXAMPLE_PROMPTS, AGENCY_EXAMPLE_PROMPTS } from "@/constants/examplePrompts";
 import { useTranslation } from "react-i18next";
 import { useWorkflowDefinitions } from "@/hooks/useWorkflowDefinitions";
 import { useSessionStore, type SessionTargetType } from "@/state/sessionStore";
@@ -51,7 +51,9 @@ export function RequestComposer({ onSubmit, disabled = false }: RequestComposerP
 
   const samplePrompt = t("requestComposer.defaults.samplePrompt");
   const examplePrompts = useMemo(() => {
-    const arr = [...EXAMPLE_PROMPTS];
+    // Use agency-specific prompts if agency session is active
+    const source = activeSession?.targetType === 'agency' ? AGENCY_EXAMPLE_PROMPTS : EXAMPLE_PROMPTS;
+    const arr = [...source];
     // Fisher-Yates shuffle (partial is fine)
     for (let i = arr.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -59,7 +61,7 @@ export function RequestComposer({ onSubmit, disabled = false }: RequestComposerP
     }
     const count = Math.random() < 0.5 ? 3 : 4;
     return arr.slice(0, count);
-  }, []);
+  }, [activeSession?.targetType]);
   const replayPrompt = t("requestComposer.actions.replayPlaceholder");
   const requestSchema = useMemo(() => createRequestSchema(t), [t]);
 
@@ -100,8 +102,9 @@ export function RequestComposer({ onSubmit, disabled = false }: RequestComposerP
     onSubmit(payload);
     // Clear the input after submit (both Enter and button)
     form.setValue("input", "");
-    // Reset to a new example prompt for next request
-    const nextPrompt = EXAMPLE_PROMPTS[Math.floor(Math.random() * EXAMPLE_PROMPTS.length)];
+    // Reset to a new example prompt for next request (use appropriate prompt list)
+    const promptSource = activeSession.targetType === 'agency' ? AGENCY_EXAMPLE_PROMPTS : EXAMPLE_PROMPTS;
+    const nextPrompt = promptSource[Math.floor(Math.random() * promptSource.length)];
     setTimeout(() => form.setValue("input", nextPrompt), 100);
   };
 
