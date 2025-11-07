@@ -26,10 +26,9 @@ export function Sidebar({ onCreateSession, onToggleCollapse, currentTab, onNavig
   const setActiveSession = useSessionStore((state) => state.setActiveSession);
   const personas = useSessionStore((state) => state.personas);
   const agencies = useSessionStore((state) => state.agencies);
-  const initialFilter = currentTab === 'agency' ? 'agency' : currentTab === 'compose' ? 'persona' : 'all';
-  const [filter, setFilter] = useState<'all' | 'persona' | 'agency'>(initialFilter as any);
+  const [filter, setFilter] = useState<'all' | 'persona' | 'agency'>('persona'); // Default to persona filter
   const [showNew, setShowNew] = useState(false);
-  const [newType, setNewType] = useState<'persona' | 'agency'>(agencies.length > 0 ? 'agency' : 'persona');
+  const [newType, setNewType] = useState<'persona' | 'agency'>('persona'); // Default to persona
   const [newPersonaId, setNewPersonaId] = useState<string>("");
   const [newAgencyId, setNewAgencyId] = useState<string>("");
   const [newName, setNewName] = useState<string>("");
@@ -44,7 +43,7 @@ export function Sidebar({ onCreateSession, onToggleCollapse, currentTab, onNavig
   const defaultPersonaId = preferDefaultPersona(remotePersonaIds) ?? personas[0]?.id;
 
   const openNew = () => {
-    setNewType(agencies.length > 0 ? 'agency' : 'persona');
+    setNewType('persona'); // Default to persona
     setNewPersonaId(defaultPersonaId || "");
     setNewAgencyId(agencies[0]?.id || "");
     setNewName('');
@@ -69,6 +68,16 @@ export function Sidebar({ onCreateSession, onToggleCollapse, currentTab, onNavig
       return latestB - latestA;
     });
   }, [sessions, filter]);
+
+  // Switch session timeline when filter changes
+  const handleFilterChange = (newFilter: 'all' | 'persona' | 'agency') => {
+    setFilter(newFilter);
+    // Auto-switch to first session of the new type
+    const filtered = newFilter === 'all' ? sessions : sessions.filter((s) => s.targetType === newFilter);
+    if (filtered.length > 0 && filtered[0].id !== activeSessionId) {
+      setActiveSession(filtered[0].id);
+    }
+  };
 
   return (
     <nav 
@@ -129,9 +138,9 @@ export function Sidebar({ onCreateSession, onToggleCollapse, currentTab, onNavig
         aria-label={t("sidebar.labels.sessionList", { defaultValue: "Active sessions" })}
       >
         <div className="mb-2 flex items-center gap-2 text-xs">
-          <button onClick={() => setFilter('all')} className={clsx('rounded-full border px-2 py-0.5', filter === 'all' ? 'border-sky-500 bg-sky-50 text-sky-700' : 'border-slate-200 text-slate-600 dark:border-white/10 dark:text-slate-300')}>All</button>
-          <button onClick={() => setFilter('persona')} className={clsx('rounded-full border px-2 py-0.5', filter === 'persona' ? 'border-sky-500 bg-sky-50 text-sky-700' : 'border-slate-200 text-slate-600 dark:border-white/10 dark:text-slate-300')}>Persona</button>
-          <button onClick={() => setFilter('agency')} className={clsx('rounded-full border px-2 py-0.5', filter === 'agency' ? 'border-sky-500 bg-sky-50 text-sky-700' : 'border-slate-200 text-slate-600 dark:border-white/10 dark:text-slate-300')}>Agency</button>
+          <button onClick={() => handleFilterChange('all')} className={clsx('rounded-full border px-2 py-0.5', filter === 'all' ? 'border-sky-500 bg-sky-50 text-sky-700' : 'border-slate-200 text-slate-600 dark:border-white/10 dark:text-slate-300')}>All</button>
+          <button onClick={() => handleFilterChange('persona')} className={clsx('rounded-full border px-2 py-0.5', filter === 'persona' ? 'border-sky-500 bg-sky-50 text-sky-700' : 'border-slate-200 text-slate-600 dark:border-white/10 dark:text-slate-300')}>Persona</button>
+          <button onClick={() => handleFilterChange('agency')} className={clsx('rounded-full border px-2 py-0.5', filter === 'agency' ? 'border-sky-500 bg-sky-50 text-sky-700' : 'border-slate-200 text-slate-600 dark:border-white/10 dark:text-slate-300')}>Agency</button>
         </div>
         {sortedSessions.length === 0 ? (
           <div 
