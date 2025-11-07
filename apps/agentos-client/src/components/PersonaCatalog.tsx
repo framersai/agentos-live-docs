@@ -1,8 +1,9 @@
 ﻿import { ChangeEvent, FormEvent, useMemo, useState } from "react";
 import { clsx } from "clsx";
-import { PlusCircle, Sparkles, Trash2 } from "lucide-react";
+import { PlusCircle, Sparkles, Trash2, Wand2 } from "lucide-react";
 import { useSessionStore, type PersonaDefinition } from "@/state/sessionStore";
 import { usePersonas } from "@/hooks/usePersonas";
+import { PersonaWizard } from "./PersonaWizard";
 
 function slugify(value: string) {
   return value
@@ -42,6 +43,7 @@ export function PersonaCatalog() {
   const removePersona = useSessionStore((state) => state.removePersona);
   const personasQuery = usePersonas({ filters: personaFilters });
   const [draft, setDraft] = useState<PersonaDraft>(defaultDraft);
+  const [showWizard, setShowWizard] = useState(false);
 
   const capabilityOptions = useMemo(() => {
     const set = new Set<string>();
@@ -99,10 +101,22 @@ export function PersonaCatalog() {
           <p className="text-[10px] uppercase tracking-[0.4em] text-slate-500 dark:text-slate-400">Persona catalog</p>
           <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Define new AI characters</h3>
         </div>
-        <div className="rounded-full border border-slate-300 bg-white/70 px-3 py-1 text-xs text-slate-600 dark:border-slate-700/40 dark:bg-slate-900/80 dark:text-slate-300">
-          {isLoading ? "Loading…" : `${totalPersonas} personas`}
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setShowWizard(true)}
+            className="inline-flex items-center gap-1 rounded-full border border-sky-500 bg-sky-50 px-3 py-1 text-xs font-semibold text-sky-600 hover:bg-sky-100 dark:border-sky-400 dark:bg-sky-950 dark:text-sky-300"
+          >
+            <Wand2 className="h-3 w-3" />
+            Wizard
+          </button>
+          <div className="rounded-full border border-slate-300 bg-white/70 px-3 py-1 text-xs text-slate-600 dark:border-slate-700/40 dark:bg-slate-900/80 dark:text-slate-300">
+            {isLoading ? "Loading…" : `${totalPersonas} personas`}
+          </div>
         </div>
       </header>
+      
+      <PersonaWizard open={showWizard} onClose={() => setShowWizard(false)} />
 
       <div className="mb-4 rounded-2xl border border-slate-200 bg-slate-50 p-3 text-xs text-slate-600 dark:border-white/10 dark:bg-slate-900/40 dark:text-slate-400">
         This catalog merges server-provided personas (remote, read-only) with ones you create locally (saved in your browser). Deleting removes only local personas. Remote personas refresh from the server.
