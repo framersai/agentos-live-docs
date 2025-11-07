@@ -172,30 +172,34 @@ export function PersonaCatalog() {
           />
         </label>
         {capabilityOptions.length > 0 && (
-          <div className="flex flex-wrap items-center gap-2 text-xs">
-            {capabilityOptions.map((capability) => {
+          <div className="flex flex-wrap items-center gap-1 text-xs">
+            {capabilityOptions.slice(0, 8).map((capability) => {
               const active = personaFilters.capabilities.includes(capability);
+              const label = capability.replace('capability:', '').replace(/_/g, ' ');
               return (
                 <button
                   key={capability}
                   type="button"
                   onClick={() => toggleCapability(capability)}
                   className={clsx(
-                    "rounded-full border px-3 py-1 font-semibold uppercase tracking-[0.3em] transition",
+                    "rounded px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider transition",
                     active
-                      ? "border-sky-400 bg-sky-500/10 text-sky-600 dark:border-sky-500 dark:text-sky-200"
-                      : "border-slate-200 bg-white text-slate-500 hover:border-slate-400 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-slate-500"
+                      ? "bg-sky-500 text-white"
+                      : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
                   )}
                 >
-                  {capability}
+                  {label}
                 </button>
               );
             })}
+            {capabilityOptions.length > 8 && (
+              <span className="text-[9px] text-slate-500">+{capabilityOptions.length - 8}</span>
+            )}
             {filterActive && (
               <button
                 type="button"
                 onClick={clearFilters}
-                className="rounded-full border border-transparent px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-slate-500 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-100"
+                className="rounded bg-rose-100 px-2 py-0.5 text-[9px] font-semibold uppercase text-rose-700 hover:bg-rose-200 dark:bg-rose-900/40 dark:text-rose-300"
               >
                 Clear
               </button>
@@ -205,83 +209,90 @@ export function PersonaCatalog() {
       </div>
 
       <div className="space-y-4">
-        <ul className="space-y-2 text-sm text-slate-700 dark:text-slate-200">
+        <ul className="grid grid-cols-1 gap-3 text-sm text-slate-700 lg:grid-cols-2 dark:text-slate-200">
           {visiblePersonas.map((persona) => (
-            <li key={persona.id} className="flex items-start justify-between rounded-2xl border border-slate-200 bg-white px-4 py-3 dark:border-white/5 dark:bg-slate-950/50">
-              <div className="flex-1">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">{persona.displayName}</p>
-                    {persona.description && <p className="text-xs text-slate-600 dark:text-slate-400">{persona.description}</p>}
-                  </div>
+            <li key={persona.id} className="flex flex-col rounded-2xl border border-slate-200 bg-white p-3 dark:border-white/5 dark:bg-slate-950/50">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">{persona.displayName}</p>
+                  {persona.description && <p className="mt-1 text-xs text-slate-600 dark:text-slate-400">{persona.description}</p>}
+                </div>
+                <div className="flex items-center gap-1">
                   {persona.source === 'local' && (
                     <button
                       onClick={() => setEditingPersona(persona)}
-                      className="ml-2 rounded-md p-1 text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
+                      className="rounded-md p-1 text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
                       title="Edit persona"
                     >
                       <Edit3 className="h-3 w-3" />
                     </button>
                   )}
-                </div>
-                
-                {/* Metadata display */}
-                <div className="mt-2 space-y-1">
-                  {persona.tags && persona.tags.length > 0 && (
-                    <p className="text-[10px] uppercase tracking-[0.35em] text-slate-500 dark:text-slate-500">{persona.tags.join(", ")}</p>
-                  )}
-                  {persona.metadata?.modelPreference && (
-                    <p className="text-xs text-slate-600 dark:text-slate-400">Model: {persona.metadata.modelPreference}</p>
-                  )}
-                  {persona.metadata?.guardrails && (persona.metadata.guardrails as any[]).length > 0 && (
-                    <p className="text-xs text-slate-600 dark:text-slate-400">
-                      🛡️ {(persona.metadata.guardrails as any[]).length} guardrail(s)
-                    </p>
-                  )}
-                  {persona.metadata?.extensions && (persona.metadata.extensions as string[]).length > 0 && (
-                    <p className="text-xs text-slate-600 dark:text-slate-400">
-                      🔌 {(persona.metadata.extensions as string[]).length} extension(s)
-                    </p>
-                  )}
-                </div>
-                
-                <div className="mt-2 flex items-center gap-2">
-                  <span className={`chip border ${persona.source === "remote" ? "border-sky-200 bg-sky-50 text-sky-700 dark:border-sky-500/30 dark:bg-sky-500/10 dark:text-sky-200" : "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-200"}`}>
-                    {persona.source === "remote" ? "Remote" : "Local"}
-                  </span>
-                  {persona.id === 'nerf_generalist' && (
-                    <span className="chip border border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200" title="Offline-first; smallest models; no internet/tools">
-                      Nerf
-                    </span>
-                  )}
-                  {persona.id === 'v_researcher' && (
-                    <span className="chip border border-fuchsia-200 bg-fuchsia-50 text-fuchsia-700 dark:border-fuchsia-500/30 dark:bg-fuchsia-500/10 dark:text-fuchsia-200" title="Full-powered researcher; tools allowed; any model">
-                      V
-                    </span>
-                  )}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (persona.id === primaryPersona || persona.source === "remote") return;
+                      setShowDeleteModal(persona.id);
+                    }}
+                    className="inline-flex h-6 w-6 items-center justify-center rounded-full border border-slate-200 text-slate-600 transition hover:bg-slate-50 disabled:opacity-30 dark:border-white/10 dark:text-slate-400 dark:hover:text-rose-300"
+                    title={persona.source === "remote" ? "Remote personas are server-managed" : "Remove persona"}
+                    disabled={persona.id === primaryPersona || persona.source === "remote"}
+                  >
+                    <Trash2 className="h-3 w-3" />
+                  </button>
                 </div>
               </div>
-              <button
-                type="button"
-                onClick={() => {
-                  if (persona.id === primaryPersona || persona.source === "remote") return;
-                  setShowDeleteModal(persona.id);
-                }}
-                className="ml-3 inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 text-slate-600 transition hover:bg-slate-50 disabled:opacity-30 dark:border-white/10 dark:text-slate-400 dark:hover:text-rose-300"
-                title={persona.source === "remote" ? "Remote personas are server-managed" : "Remove persona"}
-                aria-label={persona.source === "remote" ? "Remote personas are server-managed" : "Remove persona"}
-                disabled={persona.id === primaryPersona || persona.source === "remote"}
-              >
-                <Trash2 className="h-3 w-3" />
-              </button>
+              
+              {/* Tags as compact grid */}
+              {persona.tags && persona.tags.length > 0 && (
+                <div className="mt-2 flex flex-wrap gap-1">
+                  {persona.tags.slice(0, 5).map((tag) => (
+                    <span key={tag} className="rounded bg-slate-100 px-1.5 py-0.5 text-[9px] font-medium uppercase tracking-wider text-slate-600 dark:bg-slate-800 dark:text-slate-400">
+                      {tag}
+                    </span>
+                  ))}
+                  {persona.tags.length > 5 && (
+                    <span className="text-[9px] text-slate-500">+{persona.tags.length - 5}</span>
+                  )}
+                </div>
+              )}
+              
+              {/* Capabilities as compact grid */}
+              {persona.capabilities && persona.capabilities.length > 0 && (
+                <div className="mt-1 flex flex-wrap gap-1">
+                  {persona.capabilities.slice(0, 4).map((cap) => (
+                    <span key={cap} className="rounded bg-sky-100 px-1.5 py-0.5 text-[9px] font-medium uppercase tracking-wider text-sky-700 dark:bg-sky-900/40 dark:text-sky-300">
+                      {cap.replace('capability:', '')}
+                    </span>
+                  ))}
+                  {persona.capabilities.length > 4 && (
+                    <span className="text-[9px] text-slate-500">+{persona.capabilities.length - 4}</span>
+                  )}
+                </div>
+              )}
+              
+              <div className="mt-2 flex items-center gap-1">
+                <span className={`rounded px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider ${persona.source === "remote" ? "bg-sky-50 text-sky-700 dark:bg-sky-500/10 dark:text-sky-200" : "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-200"}`}>
+                  {persona.source === "remote" ? "Remote" : "Local"}
+                </span>
+                {persona.id === 'nerf_generalist' && (
+                  <span className="rounded bg-amber-50 px-1.5 py-0.5 text-[9px] font-semibold uppercase text-amber-700 dark:bg-amber-500/10 dark:text-amber-200" title="Offline-first">
+                    Nerf
+                  </span>
+                )}
+                {persona.id === 'v_researcher' && (
+                  <span className="rounded bg-fuchsia-50 px-1.5 py-0.5 text-[9px] font-semibold uppercase text-fuchsia-700 dark:bg-fuchsia-500/10 dark:text-fuchsia-200" title="Full-powered">
+                    V
+                  </span>
+                )}
+              </div>
             </li>
           ))}
-          {personas.length > visiblePersonas.length && (
-            <li className="rounded-2xl border border-dashed border-slate-300 px-4 py-3 text-xs text-slate-500 dark:border-white/10">
-              {personas.length - visiblePersonas.length} more personas in store
-            </li>
-          )}
         </ul>
+        {personas.length > visiblePersonas.length && (
+          <div className="rounded-2xl border border-dashed border-slate-300 px-4 py-3 text-center text-xs text-slate-500 dark:border-white/10">
+            {personas.length - visiblePersonas.length} more personas in store
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-3 rounded-2xl border border-slate-200 bg-white p-4 text-sm text-slate-700 dark:border-white/10 dark:bg-slate-950/50 dark:text-slate-200">
           <div className="flex items-center justify-between">
