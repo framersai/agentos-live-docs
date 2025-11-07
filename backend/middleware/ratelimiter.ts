@@ -198,7 +198,7 @@ export class RateLimiter {
   private redisClient?: Redis; // Store the client if using Redis
 
  constructor() {
-  this.publicIpRateLimitPerDay = parseInt(process.env.RATE_LIMIT_PUBLIC_DAILY || '100', 10); // Default to 100 if not set
+  this.publicIpRateLimitPerDay = parseInt(process.env.RATE_LIMIT_PUBLIC_DAILY || '10000', 10); // Increased for dev
   this.configs = {
    public: { maxRequests: this.publicIpRateLimitPerDay, windowSeconds: 86400, tier: 'public' },
    unlimited: { maxRequests: Number.MAX_SAFE_INTEGER, windowSeconds: 86400, tier: 'unlimited' }

@@ -232,6 +232,32 @@ export interface AgentOSConfig {
   workflowStore?: IWorkflowStore;
   /** Optional multilingual configuration enabling detection, negotiation, translation. */
   languageConfig?: import('../core/language').AgentOSLanguageConfig;
+  /**
+   * Optional cross-platform storage adapter for client-side persistence.
+   * Enables fully offline AgentOS in browsers (IndexedDB), desktop (SQLite), mobile (Capacitor).
+   * 
+   * **Platform Support:**
+   * - Web: IndexedDB (recommended) or sql.js
+   * - Electron: better-sqlite3 (native) or sql.js (fallback)
+   * - Capacitor: @capacitor-community/sqlite (native) or IndexedDB
+   * - Node: better-sqlite3 or PostgreSQL
+   * 
+   * **Usage:**
+   * ```typescript
+   * import { createAgentOSStorage } from '@framers/sql-storage-adapter/agentos';
+   * 
+   * const storage = await createAgentOSStorage({ platform: 'auto' });
+   * 
+   * await agentos.initialize({
+   *   storageAdapter: storage.getAdapter(),
+   *   // ... other config
+   * });
+   * ```
+   * 
+   * If omitted, AgentOS uses Prisma client (server-side only).
+   * Provide this for client-side, offline-capable AgentOS.
+   */
+  storageAdapter?: any; // TODO: Type this properly once we define StorageAdapter interface in AgentOS
 }
 
 
