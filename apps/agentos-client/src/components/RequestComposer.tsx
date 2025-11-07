@@ -192,6 +192,9 @@ export function RequestComposer({ onSubmit, disabled = false }: RequestComposerP
     onSubmit(values);
     // Clear the input after submit (both Enter and button)
     form.setValue("input", "");
+    // Reset to a new example prompt for next request
+    const nextPrompt = EXAMPLE_PROMPTS[Math.floor(Math.random() * EXAMPLE_PROMPTS.length)];
+    setTimeout(() => form.setValue("input", nextPrompt), 100);
   };
 
   const handleSubmit = form.handleSubmit(processSubmission);

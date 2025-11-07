@@ -289,25 +289,25 @@ export default function App() {
 
   const ensureSession = useCallback(
     (payload: RequestComposerPayload) => {
-      const sessionId = activeSessionId ?? crypto.randomUUID();
-      if (!activeSessionId) {
-        upsertSession({
-          id: sessionId,
-          targetType: payload.targetType,
-          displayName:
-            payload.targetType === "agency"
-              ? resolveAgencyName(payload.agencyId)
-              : resolvePersonaName(payload.personaId),
-          personaId: payload.targetType === "persona" ? payload.personaId : undefined,
-          agencyId: payload.targetType === "agency" ? payload.agencyId : undefined,
-          status: "idle",
-          events: []
-        });
-        setActiveSession(sessionId);
-      }
+      // Always create a new session for each request to keep conversations separate
+      const sessionId = crypto.randomUUID();
+      const displayName = payload.targetType === "agency"
+        ? resolveAgencyName(payload.agencyId)
+        : resolvePersonaName(payload.personaId);
+      
+      upsertSession({
+        id: sessionId,
+        targetType: payload.targetType,
+        displayName: displayName + ` (${new Date().toLocaleTimeString()})`,
+        personaId: payload.targetType === "persona" ? payload.personaId : undefined,
+        agencyId: payload.targetType === "agency" ? payload.agencyId : undefined,
+        status: "idle",
+        events: []
+      });
+      setActiveSession(sessionId);
       return sessionId;
     },
-    [activeSessionId, resolveAgencyName, resolvePersonaName, setActiveSession, upsertSession]
+    [resolveAgencyName, resolvePersonaName, setActiveSession, upsertSession]
   );
 
   const preferDefaultPersona = useCallback((ids: string[]): string | undefined => {
