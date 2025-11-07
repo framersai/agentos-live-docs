@@ -16,6 +16,7 @@ import { AlertTriangle, Users, GitBranch } from "lucide-react";
 import { useSessionStore } from "@/state/sessionStore";
 import { ArtifactViewer } from "@/components/ArtifactViewer";
 import { exportAllData } from "@/lib/dataExport";
+import { SessionConcurrencyInfo } from "./SessionConcurrencyInfo";
 
 const chunkAccent: Record<string, string> = {
   [AgentOSChunkType.TEXT_DELTA]: "border-slate-300 bg-slate-100 text-slate-800 dark:border-white/10 dark:bg-slate-900 dark:text-slate-100",
@@ -704,7 +705,10 @@ export function SessionInspector() {
       </header>
       <div className="flex-1 overflow-y-auto px-6 py-6">
         <div className="space-y-4">
-            {/* Raw stream debug (last 10 events) */}
+          {/* Session Concurrency Info */}
+          <SessionConcurrencyInfo sessionStatus={session.status} />
+          
+          {/* Raw stream debug (last 10 events) */}
             <details className="rounded-xl border border-slate-200 bg-white p-3 text-xs text-slate-600 dark:border-white/10 dark:bg-slate-900/60 dark:text-slate-300">
               <summary className="cursor-pointer select-none">Stream debug</summary>
               <div className="mt-2 grid grid-cols-1 gap-1">
