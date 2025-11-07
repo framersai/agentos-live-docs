@@ -11,22 +11,10 @@ import { useSessionStore, type SessionTargetType } from "@/state/sessionStore";
 type Translate = (key: string, options?: Record<string, unknown>) => string;
 
 const createRequestSchema = (t: Translate) =>
-  z
-    .object({
-      targetType: z.enum(["persona", "agency"]),
-      personaId: z.string().optional(),
-      agencyId: z.string().optional(),
-      input: z.string().min(1, t("requestComposer.validation.inputRequired")),
-      workflowId: z.string().optional()
-    })
-    .superRefine((data, ctx) => {
-      if (data.targetType === "persona" && !data.personaId) {
-        ctx.addIssue({ code: z.ZodIssueCode.custom, message: t("requestComposer.validation.selectPersona"), path: ["personaId"] });
-      }
-      if (data.targetType === "agency" && !data.agencyId) {
-        ctx.addIssue({ code: z.ZodIssueCode.custom, message: t("requestComposer.validation.selectAgency"), path: ["agencyId"] });
-      }
-    });
+  z.object({
+    input: z.string().min(1, t("requestComposer.validation.inputRequired")),
+    workflowId: z.string().optional()
+  });
 
 export type RequestComposerPayload = z.infer<ReturnType<typeof createRequestSchema>>;
 
@@ -72,75 +60,18 @@ export function RequestComposer({ onSubmit, disabled = false }: RequestComposerP
   }, []);
   const replayPrompt = t("requestComposer.actions.replayPlaceholder");
   const requestSchema = useMemo(() => createRequestSchema(t), [t]);
-  const targetOptions = useMemo(
-    () => [
-      { value: "persona" as const, label: t("requestComposer.targetOptions.persona") },
-      { value: "agency" as const, label: t("requestComposer.targetOptions.agency") }
-    ],
-    [t]
-  );
 
   const form = useForm<RequestComposerPayload>({
     resolver: zodResolver(requestSchema),
     defaultValues: {
-      targetType: initialTarget,
-      personaId: initialTarget === "persona" ? defaultPersonaId : undefined,
-      agencyId: initialTarget === "agency" ? defaultAgencyId : undefined,
       input: examplePrompts[0] || samplePrompt || "Hi"
     }
   });
-  // Remove contextTab dependency - let user choose persona/agency directly
 
-  const targetType = form.watch("targetType");
-  const personaId = form.watch("personaId");
-  const agencyId = form.watch("agencyId");
   const workflowId = form.watch("workflowId");
   const { errors } = form.formState;
 
-  useEffect(() => {
-    if (targetType === "persona" && !personaId && (remotePersonas[0] || personas[0])) {
-      form.setValue("personaId", (remotePersonas[0] ?? personas[0])!.id, { shouldValidate: true });
-    }
-    if (targetType === "agency" && (!agencyId || !agencies.some((item) => item.id === agencyId))) {
-      const fallback = activeAgencyId ?? agencies[0]?.id;
-      if (fallback) {
-        form.setValue("agencyId", fallback, { shouldValidate: true });
-      }
-    }
-  }, [targetType, personaId, agencyId, personas, agencies, activeAgencyId, form]);
-
-  useEffect(() => {
-    if (targetType === "agency" && agencyId) {
-      setActiveAgency(agencyId);
-    }
-  }, [targetType, agencyId, setActiveAgency]);
-
-  useEffect(() => {
-    if (personas.length === 0 && targetType === "persona") {
-      form.setValue("targetType", "agency");
-    }
-  }, [personas, targetType, form]);
-
-  useEffect(() => {
-    if (agencies.length === 0 && targetType === "agency") {
-      form.setValue("targetType", "persona");
-    }
-  }, [agencies, targetType, form]);
-
-  useEffect(() => {
-    if (targetType === "agency" && !workflowId && workflowDefinitions.length > 0) {
-      form.setValue("workflowId", workflowDefinitions[0].id, { shouldValidate: false });
-    }
-  }, [targetType, workflowId, workflowDefinitions, form]);
-
-  useEffect(() => {
-    if (targetType === "agency" && agencyId) {
-      const matchingAgency = agencies.find((agency) => agency.id === agencyId);
-      if (matchingAgency?.workflowId && matchingAgency.workflowId !== form.getValues("workflowId")) {
-        form.setValue("workflowId", matchingAgency.workflowId, { shouldValidate: false });
-      }
-    }
-  }, [agencies, agencyId, form, targetType]);
+  // Remove all the complex form logic - session determines the target
 
   useEffect(() => {
     if (isStreaming && activeSession && activeSession.status !== "streaming") {
@@ -148,39 +79,23 @@ export function RequestComposer({ onSubmit, disabled = false }: RequestComposerP
     }
   }, [activeSession, isStreaming]);
 
-  const personaOptions = useMemo(
-    () =>
-      personas.map((persona) => ({
-        id: persona.id,
-        label: persona.displayName
-      })),
-    [personas]
-  );
-
-  const agencyOptions = useMemo(
-    () =>
-      agencies.map((agency) => ({
-        id: agency.id,
-        label: agency.name
-      })),
-    [agencies]
-  );
-
-  const workflowOptions = useMemo(
-    () =>
-      workflowDefinitions.map((definition) => ({
-        id: definition.id,
-        label: definition.displayName
-      })),
-    [workflowDefinitions]
-  );
+  // Remove unused options - session determines target
 
   const processSubmission = (values: RequestComposerPayload) => {
-    setStreaming(true);
-    if (values.targetType === "agency") {
-      setActiveAgency(values.agencyId ?? null);
+    if (!activeSession) {
+      console.error('No active session selected');
+      return;
     }
-    onSubmit(values);
+    
+    setStreaming(true);
+    // Use the active session's type and IDs
+    const payload: RequestComposerPayload = {
+      ...values,
+      targetType: activeSession.targetType,
+      personaId: activeSession.personaId,
+      agencyId: activeSession.agencyId,
+    };
+    onSubmit(payload);
     // Clear the input after submit (both Enter and button)
     form.setValue("input", "");
     // Reset to a new example prompt for next request
@@ -202,83 +117,36 @@ export function RequestComposer({ onSubmit, disabled = false }: RequestComposerP
       </header>
       <form onSubmit={handleSubmit} className="flex flex-1 flex-col gap-4" aria-busy={isStreaming} aria-live="polite">
         <fieldset disabled={isStreaming}>
-        <fieldset className="flex flex-wrap items-center gap-4 text-xs text-slate-600 dark:text-slate-400">
-          <legend className="sr-only">{t("requestComposer.form.targetLegend")}</legend>
-          {targetOptions.map((option) => (
-            <label key={option.value} className="inline-flex items-center gap-2">
-              <input
-                type="radio"
-                value={option.value}
-                {...form.register("targetType")}
-                disabled={disabled || (option.value === "agency" && agencies.length === 0)}
-                className="h-3 w-3 border-slate-300 bg-white text-sky-600 focus:ring-sky-500 disabled:opacity-30 dark:border-white/20 dark:bg-slate-950 dark:text-sky-500"
-              />
-              <span className="uppercase">{option.label}</span>
-            </label>
-          ))}
-          {agencies.length === 0 && (
-            <span className="text-[10px] uppercase tracking-[0.4em] text-slate-500 dark:text-slate-500">
-              {t("requestComposer.guidance.createAgency")}
-            </span>
-          )}
-        </fieldset>
-
-        {targetType === "persona" ? (
-          <label className="space-y-2 text-sm text-slate-700 dark:text-slate-300">
-            {t("requestComposer.form.persona.label")}
-            <select
-              {...form.register("personaId")}
-              className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-sky-500 focus:outline-none dark:border-white/10 dark:bg-slate-950/60 dark:text-slate-100"
-            >
-              <option value="" disabled>
-                {t("requestComposer.form.persona.placeholder")}
-              </option>
-              {personaOptions.map((persona) => (
-                <option key={persona.id} value={persona.id}>
-                  {persona.label}
-                </option>
-              ))}
-            </select>
-            {errors.personaId && <p className="text-xs text-rose-300">{errors.personaId.message}</p>}
-          </label>
-        ) : (
-          <div className="space-y-4">
-            <label className="space-y-2 text-sm text-slate-700 dark:text-slate-300">
-              {t("requestComposer.form.agency.label")}
-              <select
-                {...form.register("agencyId", {
-                  onChange: (event) => setActiveAgency(event.target.value || null)
-                })}
-                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-sky-500 focus:outline-none dark:border-white/10 dark:bg-slate-950/60 dark:text-slate-100"
-              >
-                <option value="" disabled>
-                  {t("requestComposer.form.agency.placeholder")}
-                </option>
-                {agencyOptions.map((agency) => (
-                  <option key={agency.id} value={agency.id}>
-                    {agency.label}
-                  </option>
-                ))}
-              </select>
-              {errors.agencyId && <p className="text-xs text-rose-300">{errors.agencyId.message}</p>}
-            </label>
-            <label className="space-y-2 text-sm text-slate-700 dark:text-slate-300">
-              {t("requestComposer.form.workflow.label")}
-              <select
-                {...form.register("workflowId")}
-                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-sky-500 focus:outline-none dark:border-white/10 dark:bg-slate-950/60 dark:text-slate-100"
-              >
-                <option value="">
-                  {workflowsLoading ? t("requestComposer.form.workflow.loading") : t("requestComposer.form.workflow.none")}
-                </option>
-                {workflowOptions.map((workflow) => (
-                  <option key={workflow.id} value={workflow.id}>
-                    {workflow.label}
-                  </option>
-                ))}
-              </select>
-              <p className="text-xs text-slate-500 dark:text-slate-500">{t("requestComposer.form.workflow.hint")}</p>
-            </label>
+        {/* Session Info Display */}
+        {activeSession && (
+          <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm dark:border-white/10 dark:bg-slate-950/40">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  {activeSession.targetType === 'agency' ? 'Agency Session' : 'Persona Session'}
+                </p>
+                <p className="font-medium text-slate-900 dark:text-slate-100">{activeSession.displayName}</p>
+              </div>
+              {activeSession.targetType === 'agency' && (
+                <Users className="h-4 w-4 text-sky-600 dark:text-sky-400" />
+              )}
+            </div>
+            {activeSession.targetType === 'agency' && workflowDefinitions.length > 0 && (
+              <label className="mt-3 block space-y-1">
+                <span className="text-xs text-slate-500 dark:text-slate-400">Workflow (optional)</span>
+                <select
+                  {...form.register("workflowId")}
+                  className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 focus:border-sky-500 focus:outline-none dark:border-white/10 dark:bg-slate-950/60 dark:text-slate-100"
+                >
+                  <option value="">No workflow</option>
+                  {workflowDefinitions.map((workflow) => (
+                    <option key={workflow.id} value={workflow.id}>
+                      {workflow.displayName}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            )}
           </div>
         )}
 
@@ -313,12 +181,6 @@ export function RequestComposer({ onSubmit, disabled = false }: RequestComposerP
         </label>
 
 
-        {targetType === "agency" && (
-          <p className="inline-flex items-center gap-2 rounded-xl border border-sky-200 bg-sky-50 px-4 py-2 text-xs text-sky-700 dark:border-sky-500/30 dark:bg-sky-500/10 dark:text-sky-100">
-            <Users className="h-3 w-3 text-sky-600 dark:text-sky-300" />
-            {t("requestComposer.form.workflow.agencyNotice")}
-          </p>
-        )}
 
         <div className="mt-auto flex flex-col gap-3 text-xs text-slate-600 dark:text-slate-400">
           <button
