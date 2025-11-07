@@ -35,14 +35,11 @@ import {
   XMarkIcon,                // For close button
   MagnifyingGlassIcon,      // For search input
   SparklesIcon,             // For header title icon
-  FunnelIcon,               // For filter section indication
   PlusCircleIcon,           // For "Create Agent" (disabled)
   ArrowUpTrayIcon,          // For "Import Agent" (disabled)
-  AdjustmentsHorizontalIcon // Alternative for filter/category indication
 } from '@heroicons/vue/24/outline';
 import AgentCard from './AgentCard.vue'; // The component to display each agent
 import PersonaWizard from './PersonaWizard.vue';
-import GuardrailManager from './GuardrailManager.vue';
 
 /**
  * @props - Component properties.
@@ -380,7 +377,7 @@ const handleCardInteraction = (payload: { type: string; data?: any }): void => {
         <PersonaWizard 
           :open="showPersonaWizard" 
           @close="showPersonaWizard = false"
-          @created="handlePersonaCreated"
+          @created="(persona) => handlePersonaCreated(persona)"
         />
 
         <!-- Create modal -->
