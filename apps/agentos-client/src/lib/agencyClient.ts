@@ -31,6 +31,7 @@
 
 import { AgentOS } from '@agentos/core';
 import { createAgentOSStorage } from '@framers/sql-storage-adapter/agentos';
+import type { StorageAdapter } from '@framers/sql-storage-adapter';
 import type { AgentOSResponse } from '@/types/agentos';
 
 /** Configuration for a single agent role */
@@ -69,11 +70,13 @@ async function getAgentOS(): Promise<AgentOS> {
     return agentOSInstance;
   }
 
-  // Create storage adapter with IndexedDB
-  const storageAdapter = await createAgentOSStorage({
-    dbName: 'agentos-client-db',
-    adapterKind: 'indexeddb',
+  // Create storage adapter with IndexedDB (auto-detects browser environment)
+  const agentosStorage = await createAgentOSStorage({
+    platform: 'auto', // Auto-detects web/browser and uses IndexedDB
   });
+
+  // Get underlying StorageAdapter for AgentOS
+  const storageAdapter: StorageAdapter = agentosStorage.getAdapter();
 
   // Initialize AgentOS with minimal config for client-side use
   agentOSInstance = new AgentOS({
