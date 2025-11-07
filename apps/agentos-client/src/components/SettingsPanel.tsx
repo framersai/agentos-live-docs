@@ -4,6 +4,7 @@ import { dataExport, exportAllData } from '../lib/dataExport';
 import { idbStorage } from '../utils/idbStorage';
 import { useSessionStore } from '@/state/sessionStore';
 import { GuardrailManager, type SerializableGuardrail } from './GuardrailManager';
+import { StorageDashboard } from './StorageDashboard';
 
 type FormState = {
   provider: ProviderKey;
@@ -157,33 +158,6 @@ export function SettingsPanel() {
             <p className="mt-1 text-xs text-slate-500 dark:text-slate-500">Currently informational; server-side enforcement can be enabled later.</p>
           </div>
 
-          <div>
-            <p className="mb-2 text-xs uppercase tracking-[0.35em] text-slate-500 dark:text-slate-400">Data</p>
-            <div className="flex flex-wrap gap-2">
-              <button
-                type="button"
-                onClick={() => exportAllData()}
-                className="rounded-full border border-slate-200 px-3 py-1.5 text-xs text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300"
-              >
-                Export all
-              </button>
-              <button
-                type="button"
-                onClick={() => window.dispatchEvent(new CustomEvent('agentos:open-import'))}
-                className="rounded-full border border-slate-200 px-3 py-1.5 text-xs text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300"
-              >
-                Import…
-              </button>
-              <button
-                type="button"
-                onClick={async () => { await idbStorage.clearAll(); useSessionStore.getState().clearAll(); }}
-                className="rounded-full border border-rose-300 px-3 py-1.5 text-xs text-rose-700 hover:bg-rose-50 dark:border-rose-500/40 dark:text-rose-300"
-              >
-                Clear storage
-              </button>
-            </div>
-            <p className="mt-1 text-xs text-slate-500 dark:text-slate-500">Data is stored locally in your browser (IndexedDB). Export before clearing if needed.</p>
-          </div>
         </div>
       )}
       
@@ -200,6 +174,10 @@ export function SettingsPanel() {
             // TODO: Open config modal
           }}
         />
+      </div>
+
+      <div className="mt-6">
+        <StorageDashboard />
       </div>
     </section>
   );
