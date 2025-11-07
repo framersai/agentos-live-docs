@@ -4,6 +4,7 @@ import { SkipLink } from "@/components/SkipLink";
 import { Sidebar } from "@/components/Sidebar";
 import { SessionInspector } from "@/components/SessionInspector";
 import { RequestComposer, type RequestComposerPayload } from "@/components/RequestComposer";
+import { AgencyComposer } from "@/components/AgencyComposer";
 import { AgencyManager } from "@/components/AgencyManager";
 import { PersonaCatalog } from "@/components/PersonaCatalog";
 import { WorkflowOverview } from "@/components/WorkflowOverview";
@@ -660,7 +661,27 @@ export default function App() {
               <div className="ml-auto" />
                 </div>
               </div>
-              {leftTab === 'compose' && <RequestComposer key={activeSessionId || 'compose'} onSubmit={handleSubmit} />}
+              {leftTab === 'compose' && (
+                activeSession?.targetType === 'agency' ? (
+                  <AgencyComposer
+                    onSubmit={(agencyPayload) => {
+                      const markdownText = agencyPayload.format === 'markdown' && agencyPayload.markdownInput
+                        ? agencyPayload.markdownInput
+                        : agencyPayload.roles.map(r => `[${r.roleId}] ${r.instruction}`).join('\n');
+                      
+                      handleSubmit({
+                        input: markdownText,
+                        targetType: 'agency',
+                        agencyId: activeSession.agencyId,
+                        personaId: undefined,
+                      });
+                    }}
+                    disabled={!backendReady}
+                  />
+                ) : (
+                  <RequestComposer key={activeSessionId || 'compose'} onSubmit={handleSubmit} />
+                )
+              )}
               {leftTab === 'personas' && <PersonaCatalog />}
               {leftTab === 'agency' && <AgencyManager />}
               {leftTab === 'workflows' && <WorkflowOverview />}
