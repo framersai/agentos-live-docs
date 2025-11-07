@@ -7,7 +7,7 @@ import { RequestComposer, type RequestComposerPayload } from "@/components/Reque
 import { AgencyManager } from "@/components/AgencyManager";
 import { PersonaCatalog } from "@/components/PersonaCatalog";
 import { WorkflowOverview } from "@/components/WorkflowOverview";
-import { openAgentOSStream } from "@/lib/agentosClient";
+import { openAgentOSStream, getLlmStatus } from "@/lib/agentosClient";
 import { TourOverlay } from "@/components/TourOverlay";
 import { ThemePanel } from "@/components/ThemePanel";
 import { AboutPanel } from "@/components/AboutPanel";
@@ -19,6 +19,8 @@ import { useSystemTheme } from "@/hooks/useSystemTheme";
 import { useSessionStore } from "@/state/sessionStore";
 import { useTelemetryStore } from "@/state/telemetryStore";
 import React from "react";
+import { Menu } from "lucide-react";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 function TelemetryView() {
   const perSession = useTelemetryStore((s) => s.perSession);
@@ -37,14 +39,34 @@ function TelemetryView() {
   );
 }
 
-function AnalyticsView() {
+function AnalyticsView({ selectedModel, onChangeModel, modelOptions }: { selectedModel?: string; onChangeModel: (model?: string) => void; modelOptions: string[] }) {
   const perSession = useTelemetryStore((s) => s.perSession);
   const activeSessionId = useSessionStore((s) => s.activeSessionId);
   const m = activeSessionId ? perSession[activeSessionId] : undefined;
+  const tokens = m?.finalTokensTotal ?? 0;
+  const estimateUsd = (tokens: number, model?: string) => {
+    // Simple estimate: $0.002 per 1k tokens by default; override for known models if desired
+    const per1k = 0.002;
+    return ((tokens / 1000) * per1k);
+  };
+  const cost = estimateUsd(tokens, selectedModel);
   return (
     <div className="text-xs text-slate-600 dark:text-slate-400">
-      <p>Last session tokens: {m?.finalTokensTotal ?? '-'}</p>
-      <p>Tool calls: {m?.toolCalls ?? 0}</p>
+      <div className="mb-2 flex items-center gap-2">
+        <label className="text-[11px] uppercase tracking-widest text-slate-500">Model</label>
+        <select
+          value={selectedModel || ''}
+          onChange={(e) => onChangeModel(e.target.value || undefined)}
+          className="rounded-md border border-slate-200 bg-white px-2 py-1 text-xs dark:border-white/10 dark:bg-slate-900"
+        >
+          <option value="">System default</option>
+          {modelOptions.map((m) => (
+            <option key={m} value={m}>{m}</option>
+          ))}
+        </select>
+      </div>
+      <p>Last session tokens: {tokens || '-'}</p>
+      <p>Estimated cost: {tokens ? `$${cost.toFixed(4)}` : '-'}</p>
     </div>
   );
 }
@@ -61,9 +83,7 @@ export default function App() {
     { key: "compose", label: "Compose" },
     { key: "agency", label: "Agency" },
     { key: "personas", label: "Personas" },
-    { key: "workflows", label: "Workflows" },
-    { key: "settings", label: "Settings" },
-    { key: "about", label: "About" },
+    { key: "workflows", label: "Workflows" }
   ] as const;
   type LeftTabKey = typeof LEFT_TABS[number]["key"];
   const [leftTab, setLeftTab] = useState<LeftTabKey>("compose");
@@ -71,6 +91,10 @@ export default function App() {
   const [showThemePanel, setShowThemePanel] = useState(false);
   const [showImport, setShowImport] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [showMobileSidebar, setShowMobileSidebar] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(true);
+  const [modelOptions, setModelOptions] = useState<string[]>([]);
+  const [selectedModel, setSelectedModel] = useState<string | undefined>(undefined);
   const welcomeTourDismissed = useUiStore((s) => s.welcomeTourDismissed);
   const welcomeTourSnoozeUntil = useUiStore((s) => s.welcomeTourSnoozeUntil);
   const dismissWelcomeTour = useUiStore((s) => s.dismissWelcomeTour);
@@ -106,12 +130,33 @@ export default function App() {
     }
   });
 
-  const backendReady = Boolean(personasQuery.data && personasQuery.data.length > 0);
+  const backendReady = !personasQuery.isLoading && !personasQuery.isError;
 
   useEffect(() => {
     if (!personasQuery.data) return;
     setPersonas(personasQuery.data);
   }, [personasQuery.data, setPersonas]);
+
+  // Fetch LLM status to populate model options (parse defaults from provider reasons)
+  useEffect(() => {
+    (async () => {
+      try {
+        const status = await getLlmStatus();
+        const providers = status?.providers || {};
+        const models: string[] = [];
+        for (const key of Object.keys(providers)) {
+          const p = providers[key];
+          if (p?.available && typeof p.reason === 'string') {
+            const match = p.reason.match(/default model:\s*([^\)]+)\)/i);
+            if (match && match[1]) models.push(match[1]);
+          }
+        }
+        setModelOptions(models);
+      } catch {
+        setModelOptions([]);
+      }
+    })();
+  }, []);
 
   // Ensure there is at least one default session on first load
   useEffect(() => {
@@ -162,6 +207,49 @@ export default function App() {
     const open = () => setShowImport(true);
     window.addEventListener('agentos:open-import', open as EventListener);
     return () => window.removeEventListener('agentos:open-import', open as EventListener);
+  }, []);
+
+  // Toggle Theme Panel via custom event
+  useEffect(() => {
+    const toggle = () => setShowThemePanel((v) => !v);
+    window.addEventListener('agentos:toggle-theme-panel', toggle as EventListener);
+    return () => window.removeEventListener('agentos:toggle-theme-panel', toggle as EventListener);
+  }, []);
+
+  // Toggle Tour Overlay via custom event
+  useEffect(() => {
+    const toggle = () => setShowTour((v) => !v);
+    window.addEventListener('agentos:toggle-tour', toggle as EventListener);
+    return () => window.removeEventListener('agentos:toggle-tour', toggle as EventListener);
+  }, []);
+
+  // Settings / About as modals
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [showAboutModal, setShowAboutModal] = useState(false);
+  useEffect(() => {
+    const openSettings = () => setShowSettingsModal(true);
+    window.addEventListener('agentos:open-settings', openSettings as EventListener);
+    return () => window.removeEventListener('agentos:open-settings', openSettings as EventListener);
+  }, []);
+  useEffect(() => {
+    const openAbout = () => setShowAboutModal(true);
+    window.addEventListener('agentos:open-about', openAbout as EventListener);
+    return () => window.removeEventListener('agentos:open-about', openAbout as EventListener);
+  }, []);
+
+  // Responsive: track desktop vs mobile and auto-collapse sidebar on small screens
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 1024px)');
+    const apply = (matches: boolean) => {
+      setIsDesktop(matches);
+      if (!matches) {
+        setSidebarCollapsed(false); // sidebar visibility handled by mobile overlay
+      }
+    };
+    apply(mq.matches);
+    const handler = (e: MediaQueryListEvent) => apply(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
   }, []);
 
   // Show welcome tour on first load unless dismissed or snoozed
@@ -263,18 +351,9 @@ export default function App() {
         payload.targetType === "agency" ? agencies.find((item) => item.id === payload.agencyId) ?? null : null;
 
       const remoteIds = personas.filter((p) => p.source === 'remote').map((p) => p.id);
-      const preferred = preferDefaultPersona(remoteIds);
-      const chosenPersona = payload.personaId && remoteIds.includes(payload.personaId) ? payload.personaId : preferred;
-      if (!chosenPersona) {
-        appendEvent(sessionId, {
-          id: crypto.randomUUID(),
-          timestamp: Date.now(),
-          type: 'log',
-          payload: { message: 'No personas available. Load remote personas before streaming.', level: 'error' }
-        });
-        upsertSession({ id: sessionId, status: 'error' });
-        return;
-      }
+      const allIds = personas.map((p) => p.id);
+      const preferred = preferDefaultPersona(remoteIds) ?? personas[0]?.id ?? DEFAULT_PERSONA_ID;
+      const chosenPersona = (payload.personaId && allIds.includes(payload.personaId)) ? payload.personaId : preferred;
       const personaForStream = chosenPersona;
 
       const workflowDefinitionId = payload.workflowId ?? agencyDefinition?.workflowId;
@@ -287,7 +366,7 @@ export default function App() {
             goal: agencyDefinition?.goal,
             participants: (agencyDefinition?.participants ?? []).map((participant) => ({
               roleId: participant.roleId,
-              personaId: participant.personaId && remoteIds.includes(participant.personaId) ? participant.personaId : (preferred ?? chosenPersona),
+              personaId: (participant.personaId && allIds.includes(participant.personaId)) ? participant.personaId : chosenPersona,
             })),
             metadata: agencyDefinition?.metadata
           }
@@ -328,10 +407,16 @@ export default function App() {
           personaId: personaForStream,
           messages: [{ role: "user", content: payload.input }],
           workflowRequest,
-          agencyRequest
+          agencyRequest,
+          model: selectedModel,
         },
         {
           onChunk: (chunk) => {
+            // Debug: surface incoming chunks in console for verification
+            try {
+              // eslint-disable-next-line no-console
+              console.debug('[AgentOS SSE] chunk:', chunk);
+            } catch {}
             appendEvent(sessionId, {
               id: crypto.randomUUID(),
               timestamp: Date.now(),
@@ -370,7 +455,7 @@ export default function App() {
 
       streamHandles.current[sessionId] = cleanup;
     },
-    [agencies, personas, appendEvent, applyAgencySnapshot, applyWorkflowSnapshot, ensureSession, resolveAgencyName, resolvePersonaName, setActiveSession, upsertSession]
+    [agencies, personas, appendEvent, applyAgencySnapshot, applyWorkflowSnapshot, ensureSession, resolveAgencyName, resolvePersonaName, setActiveSession, upsertSession, selectedModel, telemetry, t]
   );
 
   // Removed auto-new-session on tab switch; tabs now only change view and filter.
@@ -378,9 +463,89 @@ export default function App() {
   return (
     <>
       <SkipLink />
+      {/* Top Header */}
+      <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 px-4 py-3 backdrop-blur-sm dark:border-white/10 dark:bg-slate-950/95">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            {!isDesktop && (
+              <button
+                type="button"
+                className="mr-1 inline-flex items-center justify-center rounded-md border border-slate-200 p-1 text-slate-700 hover:bg-slate-50 dark:border-white/10 dark:text-slate-200 dark:hover:bg-slate-900 lg:hidden"
+                aria-label="Open sidebar"
+                onClick={() => setShowMobileSidebar(true)}
+              >
+                <Menu className="h-5 w-5" />
+              </button>
+            )}
+            <a href="https://agentos.sh" target="_blank" rel="noreferrer" className="group flex items-center gap-2">
+            <img src="/logos/agentos-primary-no-tagline.svg" alt="AgentOS" className="block h-7 w-auto transition-transform group-hover:scale-105 dark:hidden" onError={(e) => ((e.currentTarget as HTMLImageElement).style.display='none')} />
+            <img src="/logos/agentos-primary-dark-2x.png" alt="AgentOS" className="hidden h-7 w-auto transition-transform group-hover:scale-105 dark:block" onError={(e) => ((e.currentTarget as HTMLImageElement).style.display='none')} />
+            </a>
+          </div>
+          <nav className="flex items-center gap-4">
+            <a href="https://agentos.sh/docs" target="_blank" rel="noreferrer" className="text-xs text-slate-600 hover:text-sky-600 dark:text-slate-400 dark:hover:text-sky-400">Docs</a>
+            <a href="https://github.com/framersai/agentos" target="_blank" rel="noreferrer" className="text-xs text-slate-600 hover:text-sky-600 dark:text-slate-400 dark:hover:text-sky-400">GitHub</a>
+            <a href="https://vca.chat" target="_blank" rel="noreferrer" className="text-xs text-slate-600 hover:text-sky-600 dark:text-slate-400 dark:hover:text-sky-400">Marketplace</a>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setShowThemePanel(!showThemePanel)}
+                className="rounded-full border border-slate-200 px-2 py-1 text-xs text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300 dark:hover:bg-slate-900"
+                title="Theme settings"
+              >
+                Theme
+              </button>
+              <ThemeToggle />
+            </div>
+          </nav>
+        </div>
+      </header>
+      {showThemePanel && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" role="dialog" aria-modal="true">
+          <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-4 shadow-xl dark:border-white/10 dark:bg-slate-900">
+            <ThemePanel />
+            <div className="mt-3 flex justify-end">
+              <button onClick={() => setShowThemePanel(false)} className="rounded-full border border-slate-200 px-3 py-1 text-xs text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300">Close</button>
+            </div>
+          </div>
+        </div>
+      )}
+      {showSettingsModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" role="dialog" aria-modal="true">
+          <div className="w-full max-w-3xl rounded-2xl border border-slate-200 bg-white p-4 shadow-xl dark:border-white/10 dark:bg-slate-900">
+            <SettingsPanel />
+            <div className="mt-3 flex justify-end">
+              <button onClick={() => setShowSettingsModal(false)} className="rounded-full border border-slate-200 px-3 py-1 text-xs text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300">Close</button>
+            </div>
+          </div>
+        </div>
+      )}
+      {showAboutModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" role="dialog" aria-modal="true">
+          <div className="w-full max-w-3xl rounded-2xl border border-slate-200 bg-white p-4 shadow-xl dark:border-white/10 dark:bg-slate-900">
+            <AboutPanel />
+            <div className="mt-3 flex justify-end">
+              <button onClick={() => setShowAboutModal(false)} className="rounded-full border border-slate-200 px-3 py-1 text-xs text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300">Close</button>
+            </div>
+          </div>
+        </div>
+      )}
       <div className={`${sidebarCollapsed ? 'grid-cols-1' : 'grid-cols-panel'} grid min-h-screen w-full bg-slate-50 text-slate-900 transition-colors duration-300 ease-out dark:bg-slate-950 dark:text-slate-100`}>
         {/* Navigation Sidebar */}
-        {!sidebarCollapsed && <Sidebar onCreateSession={handleCreateSession} onToggleCollapse={() => setSidebarCollapsed(true)} currentTab={leftTab} />}
+        {!sidebarCollapsed && (
+          isDesktop ? (
+            <Sidebar onCreateSession={handleCreateSession} onToggleCollapse={() => setSidebarCollapsed(true)} currentTab={leftTab} onNavigate={(key) => setLeftTab(key)} />
+          ) : (
+            showMobileSidebar && (
+              <div className="fixed inset-0 z-50 flex lg:hidden">
+                <div className="h-full w-80 max-w-[80%] overflow-y-auto border-r border-slate-200 bg-slate-50 dark:border-white/10 dark:bg-slate-950">
+                  <Sidebar onCreateSession={handleCreateSession} onToggleCollapse={() => setShowMobileSidebar(false)} currentTab={leftTab} onNavigate={(key) => { setLeftTab(key); setShowMobileSidebar(false); }} />
+                </div>
+                <button className="flex-1 bg-black/40" aria-label="Close sidebar overlay" onClick={() => setShowMobileSidebar(false)} />
+              </div>
+            )
+          )
+        )}
         
         {/* Main Content Area */}
         <main 
@@ -429,47 +594,10 @@ export default function App() {
                       </button>
                     );
                   })}
-                  <div className="ml-auto flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setShowTour(true)}
-                      className="rounded-full border border-slate-200 px-3 py-1 text-xs text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300"
-                      title="Launch guided tour"
-                    >
-                      Tour
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setShowThemePanel((v) => !v)}
-                      className="rounded-full border border-slate-200 px-3 py-1 text-xs text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300"
-                      title="Theme & appearance"
-                      data-tour="theme-button"
-                    >
-                      Theme
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setShowImport(true)}
-                      className="rounded-full border border-slate-200 px-3 py-1 text-xs text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300"
-                      title="Import JSON"
-                      data-tour="import-button"
-                    >
-                      Import
-                    </button>
-                  </div>
+              <div className="ml-auto" />
                 </div>
               </div>
-              <div className="rounded-xl border border-dashed border-slate-300 bg-white p-3 text-xs text-slate-600 dark:border-white/10 dark:bg-slate-900/50 dark:text-slate-400">
-                Local-only: Changes here live in your browser until you export/import.
-              </div>
-
-              {showThemePanel && <ThemePanel />}
-              {leftTab === "compose" && <RequestComposer key={activeSessionId || 'compose'} onSubmit={handleSubmit} disabled={!backendReady} />}
-              {leftTab === "agency" && <AgencyManager />}
-              {leftTab === "personas" && <PersonaCatalog />}
-              {leftTab === "workflows" && <WorkflowOverview />}
-              {leftTab === "settings" && <SettingsPanel />}
-              {leftTab === "about" && <AboutPanel />}
+              <RequestComposer key={activeSessionId || 'compose'} onSubmit={handleSubmit} contextTab={leftTab as any} />
             </section>
 
             {/* Right Column: Outputs only with placeholders */}
@@ -491,12 +619,22 @@ export default function App() {
                   <p className="text-xs uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">Analytics</p>
                   <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Usage insights</h3>
                 </header>
-                <AnalyticsView />
+                <AnalyticsView selectedModel={selectedModel} onChangeModel={setSelectedModel} modelOptions={modelOptions} />
               </section>
             </aside>
           </div>
         </main>
       </div>
+      {/* Footer with tagline */}
+      <footer className="border-t border-slate-200 bg-white px-6 py-4 text-xs text-slate-500 dark:border-white/10 dark:bg-slate-950 dark:text-slate-400">
+        <div className="mx-auto flex max-w-6xl items-center justify-between">
+          <span className="uppercase tracking-[0.25em]">AgentOS — Cognitive Operating System</span>
+          <div className="flex items-center gap-3">
+            <a href="https://agentos.sh" target="_blank" rel="noreferrer" className="hover:text-sky-600">agentos.sh</a>
+            <a href="https://github.com/framersai/agentos" target="_blank" rel="noreferrer" className="hover:text-sky-600">GitHub</a>
+          </div>
+        </div>
+      </footer>
       <TourOverlay
         open={showTour}
         steps={tourSteps}

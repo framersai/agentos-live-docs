@@ -29,6 +29,7 @@ import { createAgentOSRouter } from './agentos.routes.js';
 import { createAgentOSStreamRouter } from './agentos.stream-router.js';
 import { createAgentOSSqlClient } from './agentos.sql-client.js';
 import { reloadDynamicPersonas } from './agentos.persona-registry.js';
+import { createDefaultGuardrailStack } from './guardrails/index.js';
 
 const isWorkflowStatus = (value: string): value is WorkflowStatus =>
   (Object.values(WorkflowStatus) as string[]).includes(value);
@@ -82,13 +83,66 @@ class AgentOSIntegration {
   }
 
   public async listWorkflowDefinitions(): Promise<WorkflowDefinition[]> {
-    const agentosInstance = await this.getAgentOS();
-    return agentosInstance.listWorkflowDefinitions();
+    try {
+      const agentosInstance = await this.getAgentOS();
+      return agentosInstance.listWorkflowDefinitions();
+    } catch (error) {
+      // Return mock workflow definitions as fallback
+      console.warn('Failed to fetch workflow definitions from AgentOS, returning mock data:', error);
+      return [
+        {
+          id: 'research-and-publish',
+          displayName: 'Research & Publish',
+          description: 'Research a topic and publish findings to Telegram',
+          category: 'productivity' as any,
+          requiredExtensions: ['web-search', 'telegram']
+        } as any,
+        {
+          id: 'monitor-and-alert',
+          displayName: 'Monitor & Alert',
+          description: 'Monitor web for updates and send alerts',
+          category: 'automation' as any,
+          requiredExtensions: ['web-search', 'telegram']
+        } as any,
+        {
+          id: 'content-aggregation',
+          displayName: 'Content Aggregation',
+          description: 'Aggregate content from multiple sources',
+          category: 'research' as any,
+          requiredExtensions: ['web-search']
+        } as any
+      ];
+    }
   }
 
   public async listAvailablePersonas(userId?: string) {
-    const agentosInstance = await this.getAgentOS();
-    return agentosInstance.listAvailablePersonas(userId);
+    try {
+      const agentosInstance = await this.getAgentOS();
+      return agentosInstance.listAvailablePersonas(userId);
+    } catch (error) {
+      // Return mock personas as fallback
+      console.warn('Failed to fetch personas from AgentOS, returning mock data:', error);
+      return [
+        {
+          id: 'researcher',
+          name: 'Research Specialist',
+          description: 'Expert at gathering and analyzing information',
+          features: ['Web search', 'Fact checking', 'Research aggregation']
+        },
+        {
+          id: 'communicator',
+          name: 'Communications Manager',
+          description: 'Handles external communications and publishing',
+          features: ['Telegram messaging', 'Content formatting', 'Notification management']
+        },
+        {
+          id: 'generalist',
+          name: 'General Assistant',
+          description: 'Versatile assistant for various tasks',
+          features: ['Multi-tool usage', 'Task coordination', 'General problem solving']
+        }
+      ];
+    }
   }
 
   public async listWorkflows(options?: { conversationId?: string; status?: string }): Promise<WorkflowInstance[]> {
@@ -330,6 +384,11 @@ async function buildEmbeddedAgentOSConfig(): Promise<AgentOSConfig> {
 
   const prismaClient = await createAgentOSSqlClient();
 
+  // Enable guardrails by default in non-dev environments (or via AGENTOS_ENABLE_GUARDRAILS=true)
+  const guardrailService = (process.env.AGENTOS_ENABLE_GUARDRAILS === 'true' || process.env.NODE_ENV === 'production')
+    ? createDefaultGuardrailStack()
+    : undefined;
+
   return {
     gmiManagerConfig,
     orchestratorConfig,
@@ -344,6 +403,7 @@ async function buildEmbeddedAgentOSConfig(): Promise<AgentOSConfig> {
     authService: createAgentOSAuthAdapter(),
     subscriptionService: createAgentOSSubscriptionAdapter(),
     utilityAIService: undefined,
+    guardrailService,
   };
 }
 

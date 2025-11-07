@@ -1,5 +1,6 @@
-﻿import { Fragment, type ReactNode, useEffect, useMemo, useRef, useState } from "react";
+﻿import { Fragment, type ReactNode, useEffect, useRef, useState } from "react";
 import { clsx } from "clsx";
+import ReactMarkdown from "react-markdown";
 import {
   AgentOSChunkType,
   type AgentOSAgencyUpdateChunk,
@@ -11,13 +12,13 @@ import {
   type AgentOSToolCallRequestChunk,
   type AgentOSResponse
 } from "@/types/agentos";
-import { AlertTriangle, Activity, Terminal, Users, GitBranch } from "lucide-react";
+import { AlertTriangle, Users, GitBranch } from "lucide-react";
 import { useSessionStore } from "@/state/sessionStore";
 import { ArtifactViewer } from "@/components/ArtifactViewer";
 import { exportAllData } from "@/lib/dataExport";
 
 const chunkAccent: Record<string, string> = {
-  [AgentOSChunkType.TEXT_DELTA]: "border-sky-500/40 bg-sky-500/5 text-sky-200",
+  [AgentOSChunkType.TEXT_DELTA]: "border-slate-300 bg-slate-100 text-slate-800 dark:border-white/10 dark:bg-slate-900 dark:text-slate-100",
   [AgentOSChunkType.FINAL_RESPONSE]: "border-emerald-400/40 bg-emerald-400/10 text-emerald-100",
   [AgentOSChunkType.TOOL_CALL_REQUEST]: "border-amber-400/40 bg-amber-400/10 text-amber-100",
   [AgentOSChunkType.TOOL_RESULT_EMISSION]: "border-purple-400/40 bg-purple-400/10 text-purple-100",
@@ -128,7 +129,7 @@ function renderEventBody(type: AgentOSChunkType | "log", payload: unknown): Reac
   if (type === "log") {
     return (
       <div className="flex items-start gap-3 text-sm text-slate-200">
-        <Terminal className="mt-0.5 h-4 w-4" />
+        <Users className="mt-0.5 h-4 w-4" />
         <p>{(payload as { message: string }).message}</p>
       </div>
     );
@@ -161,14 +162,18 @@ function renderEventBody(type: AgentOSChunkType | "log", payload: unknown): Reac
 
   if (type === AgentOSChunkType.SYSTEM_PROGRESS) {
     const prog = payload as AgentOSSystemProgressChunk;
-    const title = prog.progressPercentage != null ? `${prog.message} (${prog.progressPercentage}%)` : prog.message;
     return (
-      <details className="rounded-lg border border-white/10 bg-slate-950/40 p-3 text-xs text-slate-300">
-        <summary className="cursor-pointer select-none text-slate-200">{title}</summary>
-        <pre className="mt-2 max-h-64 overflow-auto whitespace-pre-wrap break-words text-slate-300">
-{JSON.stringify(prog, null, 2)}
-        </pre>
-      </details>
+      <div className="space-y-2">
+        <p className="text-sm text-slate-200">{prog.message}</p>
+        {prog.progressPercentage != null && (
+          <div className="h-2 w-full overflow-hidden rounded-full bg-slate-700">
+            <div
+              className="h-full bg-gradient-to-r from-sky-500 to-sky-400 transition-all duration-300 ease-out"
+              style={{ width: `${Math.min(100, Math.max(0, prog.progressPercentage))}%` }}
+            />
+          </div>
+        )}
+      </div>
     );
   }
 
@@ -193,22 +198,14 @@ function renderEventBody(type: AgentOSChunkType | "log", payload: unknown): Reac
     );
   }
 
+  // Don't render individual FINAL_RESPONSE events - they're aggregated into assistant messages
   if (type === AgentOSChunkType.FINAL_RESPONSE) {
-    const finalPayload = payload as { finalResponseText: string | null; metadata?: Record<string, unknown> };
-    return (
-      <div className="space-y-3 text-sm text-slate-200">
-        {finalPayload.finalResponseText && (
-          <pre className="whitespace-pre-wrap break-words rounded-lg bg-slate-950/60 p-3 text-sm text-slate-100">
-            {finalPayload.finalResponseText}
-          </pre>
-        )}
-        {finalPayload.metadata && (
-          <pre className="max-h-64 overflow-auto whitespace-pre-wrap break-words rounded-lg bg-slate-950/60 p-3 text-xs text-slate-200">
-            {JSON.stringify(finalPayload.metadata, null, 2)}
-          </pre>
-        )}
-      </div>
-    );
+    return null;
+  }
+  
+  // Don't render individual TEXT_DELTA events - they're aggregated into assistant messages  
+  if (type === AgentOSChunkType.TEXT_DELTA) {
+    return null;
   }
 
   return (
@@ -273,11 +270,88 @@ function StreamingText({ text, isActive }: { text: string; isActive: boolean }) 
     };
   }, [text, isActive]);
 
+  if (!displayed && isActive) {
+    return (
+      <div className="flex items-center text-sm text-slate-600 dark:text-slate-300">
+        <span className="mr-2">Thinking</span>
+        <span className="inline-block h-4 w-1 animate-pulse bg-sky-500" />
+      </div>
+    );
+  }
+  
   return (
-    <pre className="whitespace-pre-wrap break-words rounded-lg bg-slate-950/60 p-3 text-sm text-slate-100">
-      {displayed}
-      {isActive && <span className="ml-0.5 inline-block h-4 w-2 animate-pulse rounded-sm bg-sky-400/70 align-baseline" aria-hidden="true" />}
-    </pre>
+    <div className="prose prose-sm prose-slate prose-invert max-w-none text-slate-800 dark:text-slate-100">
+      <ReactMarkdown>{displayed}</ReactMarkdown>
+      {isActive && <span className="ml-0.5 inline-block h-4 w-1 animate-pulse bg-sky-500" aria-hidden="true" />}
+    </div>
+  );
+}
+
+/**
+ * Smooth, dynamic progress bar that animates between reported system progress
+ * percentages and gently advances toward 90% when no updates are received,
+ * snapping to 100% when final arrives.
+ */
+function StreamProgress({
+  updatedAt,
+  lastPercent
+}: {
+  updatedAt: number;
+  lastPercent?: number;
+}) {
+  const [value, setValue] = useState<number>(typeof lastPercent === 'number' ? lastPercent : 10);
+  const [finalized, setFinalized] = useState<boolean>(false);
+
+  // Snap upwards when new reported percent arrives
+  useEffect(() => {
+    if (typeof lastPercent === 'number') {
+      setValue((prev) => Math.max(prev, Math.min(99, lastPercent)));
+    }
+  }, [lastPercent]);
+
+  // Gentle self-advance toward 90% while active
+  useEffect(() => {
+    if (finalized) return;
+    const tick = setInterval(() => {
+      setValue((prev) => {
+        const target = typeof lastPercent === 'number' ? Math.max(90, lastPercent) : 90;
+        const next = prev + Math.max(0.5, (target - prev) * 0.08);
+        return Math.min(target, next);
+      });
+    }, 150);
+    return () => clearInterval(tick);
+  }, [lastPercent, finalized]);
+
+  // When updatedAt stops changing for a short time, assume completion arrived soon
+  useEffect(() => {
+    const t = setTimeout(() => {
+      // If FINAL hasn't arrived yet, do nothing; the parent will re-render on final
+    }, 500);
+    return () => clearTimeout(t);
+  }, [updatedAt]);
+
+  // Expose a helper to allow parent to mark final by percent=100 via lastPercent
+  useEffect(() => {
+    if (typeof lastPercent === 'number' && lastPercent >= 100) {
+      setFinalized(true);
+      setValue(100);
+    }
+  }, [lastPercent]);
+
+  const display = Math.round(Math.min(100, value));
+
+  return (
+    <div className="mb-2">
+      <div className="h-1.5 w-full overflow-hidden rounded bg-slate-700/30 dark:bg-slate-700/50">
+        <div
+          className="h-1.5 rounded bg-sky-500 transition-[width] duration-200 ease-out"
+          style={{ width: `${display}%` }}
+        />
+      </div>
+      <div className="mt-1 text-[11px] text-slate-600 dark:text-slate-400">
+        {display < 100 ? `Processing… (${display}%)` : 'Finalizing…'}
+      </div>
+    </div>
   );
 }
 
@@ -301,14 +375,41 @@ type SimpleRow = {
   payload: AgentOSResponse | { message: string; level?: string };
 };
 
-function buildAggregatedRows(events: ReturnType<typeof useSessionStore>["sessions"][number]["events"]): Array<AggregatedAssistantRow | SimpleRow> {
+function buildAggregatedRows(events: Array<{ id: string; timestamp: number; type: AgentOSChunkType | "log"; payload: AgentOSResponse | { message: string; level?: string } }>): Array<AggregatedAssistantRow | SimpleRow> {
   // Work chronologically to aggregate, then we'll render newest-first as before
   const chronological = [...events].reverse();
   const rows: Array<AggregatedAssistantRow | SimpleRow> = [];
   const byStream: Record<string, AggregatedAssistantRow> = {};
 
   for (const e of chronological) {
-    if (e.type === AgentOSChunkType.TEXT_DELTA) {
+    // Normalize upstream types (backend may send UPPERCASE)
+    const typeNorm = (typeof e.type === 'string' ? (e.type as string).toLowerCase() : e.type) as AgentOSChunkType | 'log';
+    const payloadAny = e.payload as { type?: string; streamId?: string; personaId?: string };
+    const rawType = (payloadAny && typeof payloadAny.type === 'string') ? payloadAny.type.toLowerCase() : String(typeNorm);
+
+    // Treat AgentOS final markers as metadata to close the assistant row, not as visible content
+    if (rawType.includes('final') && rawType.includes('marker')) {
+      const streamId = payloadAny?.streamId;
+      if (streamId) {
+        const row = byStream[streamId] || {
+          kind: "assistant",
+          streamId,
+          personaId: payloadAny.personaId,
+          createdAt: e.timestamp,
+          updatedAt: e.timestamp,
+          text: "",
+          isFinal: true,
+          logLines: [],
+          progressItems: [],
+        };
+        row.updatedAt = e.timestamp;
+        row.isFinal = true;
+        byStream[streamId] = row;
+      }
+      continue;
+    }
+
+    if (typeNorm === AgentOSChunkType.TEXT_DELTA) {
       const chunk = e.payload as AgentOSTextDeltaChunk;
       const row = byStream[chunk.streamId] || {
         kind: "assistant",
@@ -327,7 +428,7 @@ function buildAggregatedRows(events: ReturnType<typeof useSessionStore>["session
       continue;
     }
 
-    if (e.type === AgentOSChunkType.FINAL_RESPONSE) {
+    if (typeNorm === AgentOSChunkType.FINAL_RESPONSE) {
       const chunk = e.payload as AgentOSFinalResponseChunk;
       const row = byStream[chunk.streamId] || {
         kind: "assistant",
@@ -340,7 +441,15 @@ function buildAggregatedRows(events: ReturnType<typeof useSessionStore>["session
         logLines: [],
         progressItems: [],
       };
-      if (chunk.finalResponseText) row.text += chunk.finalResponseText;
+      // Use the final response content ONLY if nothing was streamed yet, and ignore final markers
+      const asAny = chunk as unknown as { content?: string };
+      const candidate = (typeof asAny.content === 'string' && asAny.content.trim().length > 0)
+        ? asAny.content
+        : (typeof chunk.finalResponseText === 'string' ? chunk.finalResponseText : '');
+      const isMarkerPhrase = candidate.trim().toLowerCase() === 'turn processing sequence complete.';
+      if (row.text.trim().length === 0 && candidate.trim().length > 0 && !isMarkerPhrase) {
+        row.text = candidate;
+      }
       row.updatedAt = e.timestamp;
       row.isFinal = true;
       byStream[chunk.streamId] = row;
@@ -349,23 +458,23 @@ function buildAggregatedRows(events: ReturnType<typeof useSessionStore>["session
 
     // For TOOL_* and ERROR, keep brief lines under the assistant's debug section if present
     if (
-      e.type === AgentOSChunkType.TOOL_CALL_REQUEST ||
-      e.type === AgentOSChunkType.TOOL_RESULT_EMISSION ||
-      e.type === AgentOSChunkType.ERROR
+      typeNorm === AgentOSChunkType.TOOL_CALL_REQUEST ||
+      typeNorm === AgentOSChunkType.TOOL_RESULT_EMISSION ||
+      typeNorm === AgentOSChunkType.ERROR
     ) {
       const chunk = e.payload as AgentOSResponse;
-      const streamId = (chunk as any).streamId as string | undefined;
+      const streamId = (chunk as { streamId?: string }).streamId;
       if (streamId && byStream[streamId]) {
         const row = byStream[streamId];
         const stamp = new Date(e.timestamp).toLocaleTimeString();
-        if (e.type === AgentOSChunkType.TOOL_CALL_REQUEST) {
+        if (typeNorm === AgentOSChunkType.TOOL_CALL_REQUEST) {
           const tcr = chunk as AgentOSToolCallRequestChunk;
           row.logLines.push(`[${stamp}] tool_call: ${tcr.toolCalls.map(tc => tc.name).join(', ')}`);
-        } else if (e.type === AgentOSChunkType.TOOL_RESULT_EMISSION) {
+        } else if (typeNorm === AgentOSChunkType.TOOL_RESULT_EMISSION) {
           const tre = chunk as AgentOSToolResultEmissionChunk;
           row.logLines.push(`[${stamp}] tool_result: ${tre.toolName} ${tre.isSuccess ? '✓' : '✕'}`);
-        } else if (e.type === AgentOSChunkType.ERROR) {
-          const err = chunk as any;
+        } else if (typeNorm === AgentOSChunkType.ERROR) {
+          const err = chunk as { message?: string };
           row.logLines.push(`[${stamp}] error: ${err.message || 'Unknown error'}`);
         }
         continue;
@@ -373,9 +482,9 @@ function buildAggregatedRows(events: ReturnType<typeof useSessionStore>["session
     }
 
     // SYSTEM_PROGRESS goes under assistant logs, consolidated
-    if (e.type === AgentOSChunkType.SYSTEM_PROGRESS) {
+    if (typeNorm === AgentOSChunkType.SYSTEM_PROGRESS) {
       const prog = e.payload as AgentOSSystemProgressChunk;
-      const streamId = (prog as any).streamId as string | undefined;
+      const streamId = (prog as { streamId?: string }).streamId;
       if (streamId) {
         const row = byStream[streamId] || {
           kind: "assistant",
@@ -395,8 +504,11 @@ function buildAggregatedRows(events: ReturnType<typeof useSessionStore>["session
       }
     }
 
-    // Fallback: push as a simple row
-    rows.push({ kind: "event", id: e.id, timestamp: e.timestamp, type: e.type, payload: e.payload as any });
+    // Fallback: push as a simple row (skip SYSTEM_PROGRESS as it's aggregated into debug logs)
+    // Note: TEXT_DELTA and FINAL_RESPONSE are already handled above and won't reach here
+    if (typeNorm !== AgentOSChunkType.SYSTEM_PROGRESS) {
+      rows.push({ kind: "event", id: e.id, timestamp: e.timestamp, type: typeNorm as AgentOSChunkType, payload: e.payload });
+    }
   }
 
   // Push all aggregated assistant rows into rows list
@@ -417,10 +529,14 @@ function buildAggregatedRows(events: ReturnType<typeof useSessionStore>["session
 export function SessionInspector() {
   const activeSessionId = useSessionStore((state) => state.activeSessionId);
   const session = useSessionStore((state) => state.sessions.find((item) => item.id === state.activeSessionId));
+  const personas = useSessionStore((state) => state.personas);
   const removeSession = useSessionStore((s) => s.removeSession);
   const upsertSession = useSessionStore((s) => s.upsertSession);
   const [renaming, setRenaming] = useState(false);
   const [nameDraft, setNameDraft] = useState('');
+  const [showRenameModal, setShowRenameModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showClearModal, setShowClearModal] = useState(false);
   const handleExport = () => {
     if (!session) return;
     const payload = {
@@ -447,7 +563,7 @@ export function SessionInspector() {
     const items = [...session.events]
       .reverse()
       .filter((e) => e.type === AgentOSChunkType.AGENCY_UPDATE)
-      .map((e) => ({ timestamp: e.timestamp, ...(e.payload as any) }));
+      .map((e) => ({ timestamp: e.timestamp, ...e.payload }));
     const data = new Blob([JSON.stringify({ sessionId: session.id, agencyUpdates: items }, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(data);
     const a = document.createElement('a');
@@ -464,7 +580,7 @@ export function SessionInspector() {
     const items = [...session.events]
       .reverse()
       .filter((e) => e.type === AgentOSChunkType.WORKFLOW_UPDATE)
-      .map((e) => ({ timestamp: e.timestamp, ...(e.payload as any) }));
+      .map((e) => ({ timestamp: e.timestamp, ...e.payload }));
     const data = new Blob([JSON.stringify({ sessionId: session.id, workflowUpdates: items }, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(data);
     const a = document.createElement('a');
@@ -498,7 +614,48 @@ export function SessionInspector() {
   }
 
   return (
-    <div className="flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white dark:border-white/10 dark:bg-slate-900/50">
+    <div className="relative flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white dark:border-white/10 dark:bg-slate-900/50">
+      {showRenameModal && session && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" role="dialog" aria-modal="true">
+          <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-4 shadow-xl dark:border-white/10 dark:bg-slate-900">
+            <h3 className="mb-2 text-sm font-semibold text-slate-900 dark:text-slate-100">Rename session</h3>
+            <input
+              autoFocus
+              defaultValue={session.displayName}
+              onChange={(e) => setNameDraft(e.target.value)}
+              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-white/10 dark:bg-slate-950"
+            />
+            <div className="mt-3 flex justify-end gap-2">
+              <button onClick={() => setShowRenameModal(false)} className="rounded-full border border-slate-200 px-3 py-1 text-xs text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300">Cancel</button>
+              <button onClick={() => { upsertSession({ id: session.id, displayName: (nameDraft || session.displayName || 'Untitled').trim() }); setShowRenameModal(false); }} className="rounded-full bg-sky-500 px-3 py-1 text-xs font-semibold text-white hover:bg-sky-600">Save</button>
+            </div>
+          </div>
+        </div>
+      )}
+      {showDeleteModal && session && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" role="dialog" aria-modal="true">
+          <div className="w-full max-w-md rounded-2xl border border-rose-200 bg-white p-4 shadow-xl dark:border-rose-900/40 dark:bg-slate-900">
+            <h3 className="mb-2 text-sm font-semibold text-rose-700 dark:text-rose-300">Delete session?</h3>
+            <p className="text-sm text-slate-700 dark:text-slate-300">This action cannot be undone.</p>
+            <div className="mt-3 flex justify-end gap-2">
+              <button onClick={() => setShowDeleteModal(false)} className="rounded-full border border-slate-200 px-3 py-1 text-xs text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300">Cancel</button>
+              <button onClick={() => { removeSession(session.id); setShowDeleteModal(false); }} className="rounded-full bg-rose-600 px-3 py-1 text-xs font-semibold text-white hover:bg-rose-700">Delete</button>
+            </div>
+          </div>
+        </div>
+      )}
+      {showClearModal && session && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" role="dialog" aria-modal="true">
+          <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-4 shadow-xl dark:border-white/10 dark:bg-slate-900">
+            <h3 className="mb-2 text-sm font-semibold text-slate-900 dark:text-slate-100">Clear history?</h3>
+            <p className="text-sm text-slate-700 dark:text-slate-300">This will remove all events from this session.</p>
+            <div className="mt-3 flex justify-end gap-2">
+              <button onClick={() => setShowClearModal(false)} className="rounded-full border border-slate-200 px-3 py-1 text-xs text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300">Cancel</button>
+              <button onClick={() => { upsertSession({ id: session.id, events: [], status: 'idle' }); setShowClearModal(false); }} className="rounded-full bg-sky-500 px-3 py-1 text-xs font-semibold text-white hover:bg-sky-600">Clear</button>
+            </div>
+          </div>
+        </div>
+      )}
       <header className="flex items-center justify-between border-b border-slate-200 px-6 py-4 dark:border-white/5">
         <div>
           <p className="text-xs uppercase tracking-[0.25em] text-slate-500 dark:text-slate-400">Session timeline</p>
@@ -514,16 +671,6 @@ export function SessionInspector() {
         </div>
         <div className="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
           <div className="flex items-center gap-2">
-            {!renaming && (
-              <button
-                type="button"
-                onClick={() => { setNameDraft(session.displayName); setRenaming(true); }}
-                className="rounded-full border border-slate-200 px-3 py-1 text-[10px] uppercase tracking-[0.35em] text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300 dark:hover:border-white/30"
-                title="Rename session"
-              >
-                Rename
-              </button>
-            )}
             <div className="relative">
               <select
                 aria-label="Export"
@@ -534,7 +681,12 @@ export function SessionInspector() {
                   if (v === 'session') handleExport();
                   if (v === 'agency') handleExportAgency();
                   if (v === 'workflow') handleExportWorkflow();
-                  if (v === 'all') exportAllData();
+                  if (v === 'all' && session) {
+                    exportAllData(session, 'json', `agentos-session-${session.id}`);
+                  }
+                  if (v === 'rename') setShowRenameModal(true);
+                  if (v === 'delete') setShowDeleteModal(true);
+                  if (v === 'clear') setShowClearModal(true);
                 }}
               >
                 <option value="">Export…</option>
@@ -542,21 +694,33 @@ export function SessionInspector() {
                 <option value="agency">Agency updates</option>
                 <option value="workflow">Workflow trace</option>
                 <option value="all">All data</option>
+                <option value="rename">Rename session…</option>
+                <option value="delete">Delete session</option>
+                <option value="clear">Clear history</option>
               </select>
             </div>
-            <button
-              type="button"
-              onClick={() => removeSession(session.id)}
-              className="rounded-full border border-rose-300 px-3 py-1 text-[10px] uppercase tracking-[0.35em] text-rose-700 hover:bg-rose-50 dark:border-rose-500/40 dark:text-rose-300"
-              title="Delete session"
-            >
-              Delete
-            </button>
           </div>
         </div>
       </header>
       <div className="flex-1 overflow-y-auto px-6 py-6">
         <div className="space-y-4">
+            {/* Raw stream debug (last 10 events) */}
+            <details className="rounded-xl border border-slate-200 bg-white p-3 text-xs text-slate-600 dark:border-white/10 dark:bg-slate-900/60 dark:text-slate-300">
+              <summary className="cursor-pointer select-none">Stream debug</summary>
+              <div className="mt-2 grid grid-cols-1 gap-1">
+                {[...session.events]
+                  .slice(0, 10)
+                  .map((e) => (
+                    <div key={e.id} className="rounded border border-white/10 bg-slate-950/30 p-2">
+                      <div className="flex items-center justify-between">
+                        <span className="font-mono text-[11px] uppercase">{String(e.type)}</span>
+                        <time className="text-[11px]">{new Date(e.timestamp).toLocaleTimeString()}</time>
+                      </div>
+                      <pre className="mt-1 max-h-40 overflow-auto whitespace-pre-wrap break-words text-[11px]">{JSON.stringify(e.payload, null, 2)}</pre>
+                    </div>
+                  ))}
+              </div>
+            </details>
           {session.events.length === 0 ? (
             <div className="rounded-2xl border border-slate-200 bg-white p-6 text-sm text-slate-600 dark:border-white/10 dark:bg-slate-900/40 dark:text-slate-400">
               Waiting for the first event. Use the composer to send a message or replay a transcript to populate the timeline.
@@ -566,50 +730,62 @@ export function SessionInspector() {
               if (row.kind === "assistant") {
                 const isActive = !row.isFinal;
                 return (
-              <div key={`assistant-${row.streamId}`} className={clsx("rounded-2xl border px-5 py-4", "border-sky-500/40 bg-sky-500/5 text-slate-100 dark:text-slate-100")}> 
+              <div key={`assistant-${row.streamId}`} className={clsx("rounded-2xl border px-5 py-4", "border-slate-300 bg-slate-100 text-slate-800 dark:border-white/10 dark:bg-slate-900 dark:text-slate-100")}> 
                     <header className="mb-3 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-                      <span className="font-semibold uppercase tracking-[0.35em]">Assistant</span>
-                      <time>{new Date(row.updatedAt).toLocaleTimeString()}</time>
+                      <span className="font-semibold uppercase tracking-[0.35em]">{`Agent: ${personas.find(p => p.id === row.personaId)?.displayName || row.personaId || 'Agent'}`}</span>
+                      <div className="flex items-center gap-2">
+                        {row.isFinal && <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[10px] font-bold text-white">✓</span>}
+                        <time>{new Date(row.updatedAt).toLocaleTimeString()}</time>
+                      </div>
                     </header>
+                    {!row.isFinal && (
+                      <StreamProgress
+                        updatedAt={row.updatedAt}
+                        lastPercent={
+                          row.progressItems.length > 0
+                            ? (row.progressItems[row.progressItems.length - 1].payload.progressPercentage ?? undefined)
+                            : undefined
+                        }
+                      />
+                    )}
                     <StreamingText text={row.text} isActive={isActive} />
                 {(row.logLines.length > 0 || row.progressItems.length > 0) && (
-                  <details className="mt-3 rounded-lg border border-white/10 bg-slate-950/40 p-3 text-xs text-slate-300">
-                    <summary className="cursor-pointer select-none text-slate-200">Logs</summary>
-                    {row.logLines.length > 0 && (
-                      <pre className="mt-2 max-h-64 overflow-auto whitespace-pre-wrap break-words text-slate-300">
-{row.logLines.join("\n")}
-                      </pre>
-                    )}
-                    {row.progressItems.length > 0 && (
-                      <div className="mt-3 space-y-2">
-                        <p className="text-[10px] uppercase tracking-[0.35em] text-slate-400">System progress</p>
-                        {row.progressItems.map((item, idx) => {
-                          const title = item.payload.progressPercentage != null
-                            ? `${item.stamp} — ${item.payload.message} (${item.payload.progressPercentage}%)`
-                            : `${item.stamp} — ${item.payload.message}`;
-                          return (
-                            <details key={`${row.streamId}-prog-${idx}`} className="rounded-md border border-white/10 bg-slate-950/30 p-2">
-                              <summary className="cursor-pointer select-none text-slate-200">{title}</summary>
-                              <pre className="mt-2 max-h-48 overflow-auto whitespace-pre-wrap break-words text-slate-300">
-{JSON.stringify(item.payload, null, 2)}
-                              </pre>
-                            </details>
-                          );
-                        })}
-                      </div>
-                    )}
+                  <details className="mt-3 rounded-lg border border-white/10 bg-slate-950/40 p-2 text-xs">
+                    <summary className="cursor-pointer select-none text-xs text-slate-400 hover:text-slate-300">
+                      <span className="font-medium">Logs</span>
+                      <span className="ml-2 text-[10px]">({row.logLines.length + row.progressItems.length} entries)</span>
+                    </summary>
+                    <div className="mt-2 space-y-1">
+                      {row.progressItems.map((item, idx) => (
+                        <div key={`prog-${idx}`} className="font-mono text-[11px] text-blue-400">
+                          [{item.stamp}] {item.payload.message}
+                          {item.payload.progressPercentage != null && ` (${item.payload.progressPercentage}%)`}
+                        </div>
+                      ))}
+                      {row.logLines.map((line, idx) => (
+                        <div key={idx} className="font-mono text-[11px] text-slate-400">{line}</div>
+                      ))}
+                    </div>
                   </details>
                 )}
                   </div>
                 );
               }
 
+              // Skip rendering TEXT_DELTA, FINAL_RESPONSE, SYSTEM_PROGRESS - they're aggregated
+              if (row.type === AgentOSChunkType.TEXT_DELTA || 
+                  row.type === AgentOSChunkType.FINAL_RESPONSE || 
+                  row.type === AgentOSChunkType.SYSTEM_PROGRESS) {
+                return null;
+              }
+
               const chunkClass = chunkAccent[row.type] ?? "border-slate-200 bg-slate-50 text-slate-700 dark:border-white/5 dark:bg-white/5 dark:text-slate-200";
+              const headerLabel = row.type === 'log' ? 'User' : String(row.type).replace(/_/g, ' ');
               return (
                 <Fragment key={row.id}>
                   <div className={clsx("rounded-2xl border px-5 py-4", chunkClass)}>
                     <header className="mb-3 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-                      <span className="font-semibold uppercase tracking-[0.35em]">{row.type}</span>
+                      <span className="font-semibold uppercase tracking-[0.35em]">{headerLabel}</span>
                       <time>{new Date(row.timestamp).toLocaleTimeString()}</time>
                     </header>
                     {renderEventBody(row.type, row.payload)}

@@ -1,16 +1,16 @@
 import { clsx } from "clsx";
-import { Radio, Plus, CheckCircle2, Users } from "lucide-react";
+import { Radio, Plus, CheckCircle2, Users, Github, GitFork, Star, Globe, Store } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useState, useMemo } from "react";
 import { useSessionStore } from "@/state/sessionStore";
 import { AgentOSChunkType } from "@/types/agentos";
 import { LanguageSwitcher } from "./LanguageSwitcher";
-import { ThemeToggle } from "./ThemeToggle";
 
 interface SidebarProps {
   onCreateSession: (opts?: { targetType?: 'persona' | 'agency'; personaId?: string; agencyId?: string; displayName?: string }) => void;
   onToggleCollapse?: () => void;
   currentTab?: 'compose' | 'agency' | 'personas' | 'workflows' | 'settings' | 'about';
+  onNavigate?: (key: 'compose' | 'agency' | 'personas' | 'workflows' | 'settings' | 'about') => void;
 }
 
 const statusBadgeStyles: Record<string, string> = {
@@ -19,7 +19,7 @@ const statusBadgeStyles: Record<string, string> = {
   error: "bg-rose-100 text-rose-700 border border-rose-300 dark:bg-rose-500/10 dark:text-rose-300 dark:border-rose-500/30"
 };
 
-export function Sidebar({ onCreateSession, onToggleCollapse, currentTab }: SidebarProps) {
+export function Sidebar({ onCreateSession, onToggleCollapse, currentTab, onNavigate }: SidebarProps) {
   const { t } = useTranslation();
   const sessions = useSessionStore((state) => state.sessions);
   const activeSessionId = useSessionStore((state) => state.activeSessionId);
@@ -77,17 +77,13 @@ export function Sidebar({ onCreateSession, onToggleCollapse, currentTab }: Sideb
     >
       {/* Header with branding and controls */}
       <header className="flex flex-col gap-3 border-b border-slate-200 px-5 py-4 dark:border-white/5">
-        <a href="https://agentos.sh" target="_blank" rel="noreferrer" className="inline-flex items-center">
-          <img src="/logos/agentos-primary-no-tagline.svg" alt="AgentOS" className="h-8 w-auto" onError={(e) => ((e.currentTarget as HTMLImageElement).style.display='none')} />
-        </a>
+        <div className="flex items-center gap-1">
+          <span className="whitespace-nowrap text-[5px] font-medium uppercase tracking-[0.1em] text-slate-400 dark:text-slate-500">WORKBENCH</span>
+        </div>
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-xs uppercase tracking-[0.3em] text-sky-600 dark:text-sky-400">
-              {t("sidebar.sessionsLabel")}
-            </p>
-            <h1 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-              {t("sidebar.title")}
-            </h1>
+            <p className="text-[10px] uppercase tracking-[0.35em] text-sky-600 dark:text-sky-400">Agent Sessions</p>
+            <h1 className="sr-only">{t("sidebar.title")}</h1>
           </div>
           <button
             onClick={openNew}
@@ -97,11 +93,31 @@ export function Sidebar({ onCreateSession, onToggleCollapse, currentTab }: Sideb
           >
             <Plus className="h-4 w-4" aria-hidden="true" />
           </button>
+          {onToggleCollapse && (
+            <button
+              type="button"
+              onClick={onToggleCollapse}
+              className="ml-2 rounded-full border border-slate-200 px-2 py-1 text-[10px] text-slate-600 transition hover:-translate-y-0.5 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300"
+              title="Hide sidebar"
+              aria-label="Hide sidebar"
+            >
+              ◀
+            </button>
+          )}
         </div>
         
-        {/* Theme and Language Controls */}
+        {/* Quick links (Settings/About) and actions (Tour/Theme/Import) */}
+        <div className="mt-2 flex flex-wrap items-center gap-2" role="navigation" aria-label="Quick links">
+          <button onClick={() => window.dispatchEvent(new CustomEvent('agentos:open-settings'))} className={clsx('rounded-full border px-3 py-1 text-[10px] transition', 'border-slate-200 text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300')}>Settings</button>
+          <button onClick={() => window.dispatchEvent(new CustomEvent('agentos:open-about'))} className={clsx('rounded-full border px-3 py-1 text-[10px] transition', 'border-slate-200 text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300')}>About</button>
+          <span className="mx-1 h-4 w-px bg-slate-200 dark:bg-white/10" aria-hidden="true" />
+          <button onClick={() => window.dispatchEvent(new CustomEvent('agentos:toggle-tour'))} className="rounded-full border border-amber-300 bg-amber-50 px-3 py-1 text-[10px] text-amber-800 transition hover:bg-amber-100 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">Tour</button>
+          <button onClick={() => window.dispatchEvent(new CustomEvent('agentos:toggle-theme-panel'))} className="rounded-full border border-slate-200 px-3 py-1 text-[10px] text-slate-700 transition hover:bg-slate-50 dark:border-white/10 dark:text-slate-200">Theme</button>
+          <button onClick={() => window.dispatchEvent(new CustomEvent('agentos:open-import'))} className="rounded-full border border-emerald-300 bg-emerald-50 px-3 py-1 text-[10px] text-emerald-800 transition hover:bg-emerald-100 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-200">Import</button>
+        </div>
+
+        {/* Language Control */}
         <div className="flex items-center justify-between gap-2" role="toolbar" aria-label={t("sidebar.labels.preferences", { defaultValue: "Preferences" })}>
-          <ThemeToggle />
           <LanguageSwitcher />
         </div>
       </header>
@@ -256,21 +272,67 @@ export function Sidebar({ onCreateSession, onToggleCollapse, currentTab }: Sideb
       {/* Footer links */}
       <footer className="mt-auto border-t border-slate-200 px-5 py-3 text-xs text-slate-600 dark:border-white/5 dark:text-slate-400">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <a href="https://vca.chat" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-sky-600 hover:underline dark:text-sky-300">
-            <span>Marketplace</span>
+          <a
+            href="https://vca.chat"
+            target="_blank"
+            rel="noreferrer"
+            className="group inline-flex items-center gap-2 rounded-lg px-2 py-1 text-sky-600 transition-transform duration-200 hover:-translate-y-0.5 hover:bg-sky-50 hover:text-sky-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2 dark:text-sky-300 dark:hover:bg-slate-900/50 dark:focus-visible:ring-offset-slate-950"
+          >
+            <Store className="h-4 w-4 transition-transform group-hover:scale-110" aria-hidden="true" />
+            <span className="uppercase tracking-[0.35em]">Marketplace</span>
           </a>
-          <div className="flex items-center gap-3">
-            <a href="https://agentos.sh" target="_blank" rel="noreferrer" className="hover:underline">agentos.sh</a>
-            <a href="https://frame.dev" target="_blank" rel="noreferrer" className="hover:underline">frame.dev</a>
-            <a href="https://github.com/framersai/agentos" target="_blank" rel="noreferrer" className="hover:underline">GitHub</a>
-            <a href="https://github.com/framersai/agentos/stargazers" target="_blank" rel="noreferrer" aria-label="Star AgentOS on GitHub">★</a>
-            <a href="https://github.com/framersai/agentos/fork" target="_blank" rel="noreferrer" aria-label="Fork AgentOS on GitHub">⎇</a>
+          <div className="flex items-center gap-2">
+            <a
+              href="https://agentos.sh"
+              target="_blank"
+              rel="noreferrer"
+              className="group inline-flex items-center gap-1 rounded-md px-2 py-1 transition-transform duration-200 hover:-translate-y-0.5 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2 dark:hover:bg-slate-900/50 dark:focus-visible:ring-offset-slate-950"
+            >
+              <Globe className="h-4 w-4" aria-hidden="true" />
+              <span className="hidden sm:inline">agentos.sh</span>
+            </a>
+            <a
+              href="https://frame.dev"
+              target="_blank"
+              rel="noreferrer"
+              className="group inline-flex items-center gap-1 rounded-md px-2 py-1 transition-transform duration-200 hover:-translate-y-0.5 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2 dark:hover:bg-slate-900/50 dark:focus-visible:ring-offset-slate-950"
+            >
+              <Users className="h-4 w-4" aria-hidden="true" />
+              <span className="hidden sm:inline">frame.dev</span>
+            </a>
+            <a
+              href="https://github.com/framersai/agentos"
+              target="_blank"
+              rel="noreferrer"
+              className="group inline-flex items-center gap-1 rounded-md px-2 py-1 transition-transform duration-200 hover:-translate-y-0.5 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2 dark:hover:bg-slate-900/50 dark:focus-visible:ring-offset-slate-950"
+            >
+              <Github className="h-4 w-4" aria-hidden="true" />
+              <span className="hidden sm:inline">GitHub</span>
+            </a>
+            <a
+              href="https://github.com/framersai/agentos/stargazers"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Star AgentOS on GitHub"
+              className="group inline-flex items-center rounded-full p-1 transition-transform duration-200 hover:-translate-y-0.5 hover:bg-yellow-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-yellow-500 focus-visible:ring-offset-2 dark:hover:bg-yellow-950/30 dark:focus-visible:ring-offset-slate-950"
+            >
+              <Star className="h-4 w-4 text-yellow-500 transition-transform group-active:scale-90" aria-hidden="true" />
+            </a>
+            <a
+              href="https://github.com/framersai/agentos/fork"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Fork AgentOS on GitHub"
+              className="group inline-flex items-center rounded-full p-1 transition-transform duration-200 hover:-translate-y-0.5 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2 dark:hover:bg-slate-900/50 dark:focus-visible:ring-offset-slate-950"
+            >
+              <GitFork className="h-4 w-4 transition-transform group-active:scale-90" aria-hidden="true" />
+            </a>
           </div>
           {onToggleCollapse && (
             <button
               type="button"
               onClick={onToggleCollapse}
-              className="ml-auto rounded-full border border-slate-200 px-2 py-0.5 text-xs text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300"
+              className="ml-auto rounded-full border border-slate-200 px-2 py-0.5 text-xs text-slate-600 transition-colors hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2 dark:border-white/10 dark:text-slate-300 dark:focus-visible:ring-offset-slate-950"
               title="Hide sidebar"
             >
               Hide

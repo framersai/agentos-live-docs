@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Paperclip, Play, Sparkle, Users } from "lucide-react";
+import { EXAMPLE_PROMPTS } from "@/constants/examplePrompts";
 import { useTranslation } from "react-i18next";
 import { useWorkflowDefinitions } from "@/hooks/useWorkflowDefinitions";
 import { useSessionStore, type SessionTargetType } from "@/state/sessionStore";
@@ -33,9 +34,10 @@ export type RequestComposerPayload = z.infer<ReturnType<typeof createRequestSche
 interface RequestComposerProps {
   onSubmit: (payload: RequestComposerPayload) => void;
   disabled?: boolean;
+  contextTab?: 'compose' | 'agency' | 'personas' | 'workflows' | 'settings' | 'about';
 }
 
-export function RequestComposer({ onSubmit, disabled = false }: RequestComposerProps) {
+export function RequestComposer({ onSubmit, disabled = false, contextTab = 'compose' }: RequestComposerProps) {
   const { t } = useTranslation();
   const [isStreaming, setStreaming] = useState(false);
   const personas = useSessionStore((state) => state.personas);
@@ -57,9 +59,21 @@ export function RequestComposer({ onSubmit, disabled = false }: RequestComposerP
   const defaultPersonaId = remotePersonas[0]?.id ?? personas[0]?.id ?? "";
   const fallbackAgencyId = agencies[0]?.id ?? "";
   const defaultAgencyId = activeAgencyId ?? fallbackAgencyId;
-  const initialTarget: SessionTargetType = agencies.length > 0 ? "agency" : "persona";
+  const tabPreferredTarget: SessionTargetType | undefined =
+    contextTab === 'agency' ? 'agency' : contextTab === 'personas' ? 'persona' : undefined;
+  const initialTarget: SessionTargetType = tabPreferredTarget ?? (agencies.length > 0 ? "agency" : "persona");
 
   const samplePrompt = t("requestComposer.defaults.samplePrompt");
+  const examplePrompts = useMemo(() => {
+    const arr = [...EXAMPLE_PROMPTS];
+    // Fisher-Yates shuffle (partial is fine)
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    const count = Math.random() < 0.5 ? 3 : 4;
+    return arr.slice(0, count);
+  }, []);
   const replayPrompt = t("requestComposer.actions.replayPlaceholder");
   const requestSchema = useMemo(() => createRequestSchema(t), [t]);
   const targetOptions = useMemo(
@@ -83,10 +97,28 @@ export function RequestComposer({ onSubmit, disabled = false }: RequestComposerP
       targetType: initialTarget,
       personaId: initialTarget === "persona" ? defaultPersonaId : undefined,
       agencyId: initialTarget === "agency" ? defaultAgencyId : undefined,
-      input: samplePrompt,
+      input: examplePrompts[0] || samplePrompt || "Hi",
       mode: "chat"
     }
   });
+  // React to contextTab changes (switch target emphasis)
+  useEffect(() => {
+    if (contextTab === 'agency') {
+      form.setValue('targetType', 'agency', { shouldValidate: true });
+      if (!form.getValues('agencyId')) form.setValue('agencyId', defaultAgencyId, { shouldValidate: false });
+    } else if (contextTab === 'personas') {
+      form.setValue('targetType', 'persona', { shouldValidate: true });
+      if (!form.getValues('personaId')) form.setValue('personaId', defaultPersonaId, { shouldValidate: false });
+    } else if (contextTab === 'workflows') {
+      // Nudge towards persona mode and highlight workflow selection (no validation change here)
+      form.setValue('targetType', 'persona', { shouldValidate: false });
+      if (!form.getValues('personaId')) form.setValue('personaId', defaultPersonaId, { shouldValidate: false });
+      if (!form.getValues('workflowId') && workflowDefinitions[0]?.id) {
+        form.setValue('workflowId', workflowDefinitions[0].id, { shouldValidate: false });
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contextTab, defaultPersonaId, defaultAgencyId, workflowDefinitions]);
 
   const targetType = form.watch("targetType");
   const personaId = form.watch("personaId");
@@ -194,13 +226,8 @@ export function RequestComposer({ onSubmit, disabled = false }: RequestComposerP
         <p className="text-xs uppercase tracking-[0.25em] text-slate-500 dark:text-slate-400">{t("requestComposer.header.title")}</p>
         <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{t("requestComposer.header.subtitle")}</h2>
       </header>
-      <form onSubmit={handleSubmit} className="flex flex-1 flex-col gap-4" aria-busy={disabled} aria-live="polite">
-        {disabled && (
-          <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-2 text-xs text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">
-            Connecting to backend… Please wait.
-          </div>
-        )}
-        <fieldset disabled={disabled || isStreaming} className={disabled ? "pointer-events-none opacity-60" : undefined}>
+      <form onSubmit={handleSubmit} className="flex flex-1 flex-col gap-4" aria-busy={isStreaming} aria-live="polite">
+        <fieldset disabled={isStreaming}>
         <fieldset className="flex flex-wrap items-center gap-4 text-xs text-slate-600 dark:text-slate-400">
           <legend className="sr-only">{t("requestComposer.form.targetLegend")}</legend>
           {targetOptions.map((option) => (
@@ -283,17 +310,31 @@ export function RequestComposer({ onSubmit, disabled = false }: RequestComposerP
 
         <label className="flex flex-1 flex-col space-y-2 text-sm text-slate-700 dark:text-slate-300">
           {t("requestComposer.form.userInput.label")}
+          {examplePrompts.length > 0 && (
+            <div className="flex flex-wrap gap-x-1 gap-y-1 text-[10px] leading-tight text-slate-600 dark:text-slate-400">
+              {examplePrompts.map((ex, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  className="rounded-full border border-slate-200 px-2 py-0 hover:bg-slate-50 dark:border-white/10 dark:hover:bg-slate-900"
+                  onClick={() => form.setValue('input', ex)}
+                >
+                  {ex}
+                </button>
+              ))}
+            </div>
+          )}
           <textarea
-            rows={8}
+            rows={4}
             {...form.register("input")}
             onKeyDown={(e) => {
-              if (disabled || isStreaming) return;
+              if (isStreaming) return;
               if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 void form.handleSubmit(processSubmission)();
               }
             }}
-            className="flex-1 min-h-40 rounded-xl border border-slate-200 bg-white px-3 py-3 text-base text-slate-900 placeholder:text-slate-400 focus:border-sky-500 focus:outline-none dark:border-white/10 dark:bg-slate-950/60 dark:text-slate-100 dark:placeholder:text-slate-500"
+            className="flex-1 min-h-24 rounded-xl border border-slate-200 bg-white px-3 py-2 text-base text-slate-900 placeholder:text-slate-400 focus:border-sky-500 focus:outline-none dark:border-white/10 dark:bg-slate-950/60 dark:text-slate-100 dark:placeholder:text-slate-500"
           />
         </label>
 
@@ -323,7 +364,7 @@ export function RequestComposer({ onSubmit, disabled = false }: RequestComposerP
           <button
             type="submit"
             className="inline-flex items-center justify-center gap-2 rounded-full bg-sky-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-sky-500/30 transition hover:-translate-y-0.5"
-            disabled={disabled || isStreaming}
+            disabled={isStreaming}
           >
             <Play className="h-4 w-4" />
             {isStreaming ? t("requestComposer.actions.streaming") : t("requestComposer.actions.submit")}
