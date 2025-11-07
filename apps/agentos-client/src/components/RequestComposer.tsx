@@ -2,11 +2,12 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Paperclip, Play, Sparkle, Users } from "lucide-react";
+import { Paperclip, Play, Sparkle, Users, ChevronDown, ChevronUp, AlertCircle } from "lucide-react";
 import { EXAMPLE_PROMPTS } from "@/constants/examplePrompts";
 import { useTranslation } from "react-i18next";
 import { useWorkflowDefinitions } from "@/hooks/useWorkflowDefinitions";
 import { useSessionStore, type SessionTargetType } from "@/state/sessionStore";
+import { agentOSConfig } from "@/lib/env";
 
 type Translate = (key: string, options?: Record<string, unknown>) => string;
 
@@ -26,6 +27,7 @@ interface RequestComposerProps {
 export function RequestComposer({ onSubmit, disabled = false }: RequestComposerProps) {
   const { t } = useTranslation();
   const [isStreaming, setStreaming] = useState(false);
+  const [showConnectionDetails, setShowConnectionDetails] = useState(false);
   const personas = useSessionStore((state) => state.personas);
   const agencies = useSessionStore((state) => state.agencies);
   const sessions = useSessionStore((state) => state.sessions);
@@ -191,9 +193,39 @@ export function RequestComposer({ onSubmit, disabled = false }: RequestComposerP
             <Play className="h-4 w-4" />
             {isStreaming ? t("requestComposer.actions.streaming") : t("requestComposer.actions.submit")}
           </button>
-          <div className="flex items-start gap-2 text-xs text-slate-500 dark:text-slate-500">
-            <Sparkle className="mt-0.5 h-3 w-3 text-sky-600 dark:text-sky-400" />
-            {t("requestComposer.footer.localNotice")}
+          <div className="space-y-1">
+            <button
+              type="button"
+              onClick={() => setShowConnectionDetails(!showConnectionDetails)}
+              className="flex items-start gap-2 text-xs text-slate-500 hover:text-slate-700 dark:text-slate-500 dark:hover:text-slate-300 transition-colors"
+            >
+              <AlertCircle className="mt-0.5 h-3 w-3 text-amber-600 dark:text-amber-400" />
+              <span>{t("requestComposer.footer.localNotice")}</span>
+              {showConnectionDetails ? (
+                <ChevronUp className="mt-0.5 h-3 w-3" />
+              ) : (
+                <ChevronDown className="mt-0.5 h-3 w-3" />
+              )}
+            </button>
+            {showConnectionDetails && (
+              <div className="ml-5 rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs text-slate-600 dark:border-white/10 dark:bg-slate-950/50 dark:text-slate-400">
+                <p className="mb-2 font-semibold">Connection Status</p>
+                <p className="mb-2">{t("requestComposer.footer.localNoticeDetails")}</p>
+                <div className="mt-2 space-y-1 font-mono text-[10px]">
+                  <div>
+                    <span className="text-slate-500 dark:text-slate-500">API Endpoint:</span>{" "}
+                    <span className="text-slate-700 dark:text-slate-300">{agentOSConfig.baseUrl}{agentOSConfig.streamPath}</span>
+                  </div>
+                  <div>
+                    <span className="text-slate-500 dark:text-slate-500">Storage:</span>{" "}
+                    <span className="text-slate-700 dark:text-slate-300">IndexedDB (browser local)</span>
+                  </div>
+                </div>
+                <p className="mt-2 text-amber-700 dark:text-amber-400">
+                  ⚠️ If requests fail, ensure your backend is running with <code className="px-1 py-0.5 rounded bg-slate-200 dark:bg-slate-800">AGENTOS_ENABLED=true</code>
+                </p>
+              </div>
+            )}
           </div>
         </div>
         </fieldset>
