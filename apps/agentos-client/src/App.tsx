@@ -597,7 +597,10 @@ export default function App() {
               <div className="ml-auto" />
                 </div>
               </div>
-              <RequestComposer key={activeSessionId || 'compose'} onSubmit={handleSubmit} contextTab={leftTab as any} />
+              {leftTab === 'compose' && <RequestComposer key={activeSessionId || 'compose'} onSubmit={handleSubmit} contextTab={leftTab as any} />}
+              {leftTab === 'agency' && <AgencyManager />}
+              {leftTab === 'personas' && <PersonaCatalog />}
+              {leftTab === 'workflows' && <WorkflowOverview />}
             </section>
 
             {/* Right Column: Outputs only with placeholders */}
