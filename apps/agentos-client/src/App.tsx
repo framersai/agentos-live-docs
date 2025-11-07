@@ -215,18 +215,20 @@ export default function App() {
   // Seed a demo agency if none exists, to make the dashboard usable immediately
   useEffect(() => {
     const remotePersonas = personas.filter((p) => p.source === "remote");
-    if (agencies.length === 0) {
+    if (agencies.length === 0 && remotePersonas.length >= 2) {
       const id = "demo-agency";
       const timestamp = new Date().toISOString();
       addAgency({
         id,
         name: "Demo Agency",
-        goal: "Demonstrate multi-seat coordination",
+        goal: "Multi-GMI coordination (currently limited: only first seat GMI responds until workflow start endpoint is wired)",
         workflowId: undefined,
         participants: [
           { roleId: "lead", personaId: remotePersonas[0]?.id || DEFAULT_PERSONA_ID },
+          { roleId: "researcher", personaId: remotePersonas[1]?.id || DEFAULT_PERSONA_ID },
+          { roleId: "writer", personaId: remotePersonas[0]?.id || DEFAULT_PERSONA_ID },
         ],
-        metadata: { seeded: true },
+        metadata: { seeded: true, note: "Multiple seats configured but parallel execution requires workflow start" },
         createdAt: timestamp,
         updatedAt: timestamp,
       });
