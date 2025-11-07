@@ -48,6 +48,20 @@ export async function configureRouter(): Promise<Router> {
 
   console.log('[router] Configuring API routes...');
 
+  // Global CORS for API (dev convenience)
+  router.use((req: Request, res: Response, next) => {
+    const origin = (req.headers.origin as string) || '*';
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Vary', 'Origin');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept');
+    if (req.method === 'OPTIONS') {
+      res.status(204).end();
+      return;
+    }
+    next();
+  });
+
   try {
     // --- Authentication Routes (These are handled by authMiddleware's internal logic for /api/auth paths) ---
     router.post('/auth/global', postGlobalLogin);
