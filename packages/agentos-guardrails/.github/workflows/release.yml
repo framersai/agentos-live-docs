@@ -1,0 +1,83 @@
+name: Publish Guardrails
+
+on:
+  push:
+    branches: [master, main]
+    paths:
+      - 'registry/**/package.json'
+
+jobs:
+  detect-version-bumps:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      
+      - name: Detect version bumps
+        id: set-matrix
+        run: |
+          CHANGED=$(git diff HEAD~1 HEAD --name-only | grep 'registry/guardrail-.*/package.json' | cut -d'/' -f2 | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          if [ "$CHANGED" = "[]" ] || [ -z "$CHANGED" ]; then
+            echo "matrix={\"guardrail\":[]}" >> $GITHUB_OUTPUT
+          else
+            echo "matrix={\"guardrail\":$CHANGED}" >> $GITHUB_OUTPUT
+          fi
+
+  publish:
+    needs: detect-version-bumps
+    if: needs.detect-version-bumps.outputs.matrix != '{"guardrail":[]}'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJson(needs.detect-version-bumps.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'pnpm'
+      
+      - name: Install dependencies
+        run: |
+          cd registry/${{ matrix.guardrail }}
+          pnpm install
+      
+      - name: Test
+        run: |
+          cd registry/${{ matrix.guardrail }}
+          pnpm test
+      
+      - name: Build
+        run: |
+          cd registry/${{ matrix.guardrail }}
+          pnpm run build
+      
+      - name: Publish to npm
+        run: |
+          cd registry/${{ matrix.guardrail }}
+          pnpm publish --no-git-checks --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ matrix.guardrail }}-v$(jq -r '.version' registry/${{ matrix.guardrail }}/package.json)
+          release_name: ${{ matrix.guardrail }} v$(jq -r '.version' registry/${{ matrix.guardrail }}/package.json)
+          body: |
+            New release for ${{ matrix.guardrail }}
+            
+            Install: `pnpm add $(jq -r '.name' registry/${{ matrix.guardrail }}/package.json)`
+          draft: false
+          prerelease: false
+

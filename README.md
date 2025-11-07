@@ -75,10 +75,68 @@ The repository is organised as a pnpm workspace so the production apps, the Agen
    pnpm --filter @framersai/agentos-client dev     # iterate on the cockpit
    ```
 
+## 🛡️ Guardrails: Agents That "Change Their Mind"
+
+AgentOS guardrails allow agents to inspect and modify their own output mid-stream. Use cases:
+- Content policy enforcement (replace harmful output with safe alternatives)
+- Cost control (abort expensive responses)
+- Quality assurance (flag low-confidence answers)
+
+**Quick setup:**
+```bash
+# Enable guardrails in .env
+AGENTOS_ENABLE_GUARDRAILS=true
+```
+
+**Guardrail Marketplace:** Browse and install curated/community guardrails from [packages/agentos-guardrails](packages/agentos-guardrails)
+
+See [backend/GUARDRAILS_EXAMPLE.md](backend/GUARDRAILS_EXAMPLE.md) for quick examples and [packages/agentos-guardrails/HOW_GUARDRAILS_WORK.md](packages/agentos-guardrails/HOW_GUARDRAILS_WORK.md) for architecture.
+
+---
+
+## 🔍 Search Tool Integration
+
+### Quick Setup
+1. **Get a free API key** from one of these providers:
+   - [Serper.dev](https://serper.dev/signup) - 2,500 free queries (Recommended)
+   - [SerpAPI](https://serpapi.com/users/sign_up) - 100 free searches/month
+   - [Brave Search](https://brave.com/search/api/) - 2,000 free queries/month
+
+2. **Add to backend/.env**:
+   ```bash
+   SERPER_API_KEY=your_api_key_here  # or SERPAPI_API_KEY, BRAVE_SEARCH_API_KEY
+   ```
+
+3. **Available tools** for agents:
+   - `webSearch` - Search the web with filters
+   - `researchAggregator` - Multi-source research
+   - `factCheck` - Verify claims across sources
+
+See [apps/agentos-client/SEARCH_SETUP.md](apps/agentos-client/SEARCH_SETUP.md) for detailed configuration.
+
+---
+
+## 🔧 AgentOS Extensions & Guardrails
+
+**Extensions**: Tools, workflows, and integrations (search, Telegram, etc.)  
+**Guardrails**: Safety, policy, and compliance layers (PII, cost, content filtering)
+
+Both have:
+- 📦 Community registries with curated + community contributions
+- 🤖 Free CI/CD for all contributors (testing, publishing, docs)
+- 📝 Standardized templates and contribution guidelines
+- 🔄 Auto-loading from npm or local packages
+
+**Learn more:**
+- Extensions: [packages/agentos-extensions](packages/agentos-extensions)
+- Guardrails: [packages/agentos-guardrails](packages/agentos-guardrails)
+
+---
+
 ## AgentOS Package Readiness
 
 - `packages/agentos` builds to pure ESM output with declaration maps so it can be published directly.
-- The runtime ships with default `LLMUtilityAI` wiring, explicit tool permission/execution plumbing, and async streaming bridges.
+- The runtime ships with default `LLMUtilityAI` wiring, explicit tool permission/execution plumbing, async streaming bridges, and guardrail policy hooks.
 - Guardrail subsystem now ships end-to-end: `IGuardrailService` contract, dispatcher helpers, `AgentOS.processRequest` integration, and a Vitest harness so hosts can allow/flag/sanitize/block requests via `AgentOSConfig.guardrailService`.
 - Conversation/persona safeguards are aligned with subscription tiers and metadata hooks exposed by the backend.
 - **Documentation** - `pnpm --filter @agentos/core run docs` generates TypeDoc output under `packages/agentos/docs/api` (configuration lives in `packages/agentos/typedoc.json`).
@@ -96,6 +154,13 @@ The repository is organised as a pnpm workspace so the production apps, the Agen
 - Tool responses and workflow steps can emit rich artifacts (JSON, CSV, PDF, audio, images, etc.) by returning `{ data, mimeType, filename }` payloads in tool results.
 - Streaming clients receive these inside `AgentOSResponse` chunks; the workbench renders them via `ArtifactViewer` with copy/download affordances.
 - For non-binary outputs, include direct URLs or structured content—the viewer auto-detects HTTP links, multiline text, and nested arrays/objects.
+
+### Enhanced Debugging & Export
+
+- **Debug Mode**: Toggle in Session Inspector to view detailed telemetry logs
+- **Export Formats**: JSON, CSV, Markdown for session data
+- **Log Filtering**: Filter by errors, tool calls, or agency updates
+- **Real-time Monitoring**: Live telemetry streaming with color-coded chunks
 
 ## Automation & Releases
 

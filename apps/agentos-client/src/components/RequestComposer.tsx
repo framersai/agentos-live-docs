@@ -178,6 +178,8 @@ export function RequestComposer({ onSubmit, disabled = false }: RequestComposerP
       setActiveAgency(values.agencyId ?? null);
     }
     onSubmit(values);
+    // Clear the input after submit (both Enter and button)
+    form.setValue("input", "");
   };
 
   const handleSubmit = form.handleSubmit(processSubmission);

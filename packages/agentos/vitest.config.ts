@@ -10,6 +10,7 @@ export default defineConfig({
     alias: [
       { find: /^@agentos\/core\/(.*)$/, replacement: `${srcDir}/$1` },
       { find: '@agentos/core', replacement: srcDir },
+      { find: '@prisma/client', replacement: path.resolve(__dirname, 'src/stubs/prismaClient.ts') },
     ],
   },
   test: {
