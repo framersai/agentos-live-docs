@@ -8,7 +8,7 @@ import { AgencyComposer } from "@/components/AgencyComposer";
 import { AgencyManager } from "@/components/AgencyManager";
 import { PersonaCatalog } from "@/components/PersonaCatalog";
 import { WorkflowOverview } from "@/components/WorkflowOverview";
-import { openAgentOSStream, getLlmStatus, getAvailableModels } from "@/lib/agentosClient";
+import { openAgentOSStream, getLlmStatus, getAvailableModels, streamAgencyWorkflow, type AgentRoleConfig } from "@/lib/agentosClient";
 import { TourOverlay } from "@/components/TourOverlay";
 import { ThemePanel } from "@/components/ThemePanel";
 import { AboutPanel } from "@/components/AboutPanel";
@@ -152,6 +152,7 @@ export default function App() {
   const applyWorkflowSnapshot = useSessionStore((state) => state.applyWorkflowSnapshot);
   const setPersonas = useSessionStore((state) => state.setPersonas);
   const personaFilters = useSessionStore((state) => state.personaFilters);
+  const remotePersonas = useMemo(() => personas.filter(p => p.source === 'remote'), [personas]);
   const upsertSession = useSessionStore((state) => state.upsertSession);
   const appendEvent = useSessionStore((state) => state.appendEvent);
   const activeSessionId = useSessionStore((state) => state.activeSessionId);
@@ -665,16 +666,93 @@ export default function App() {
                 activeSession?.targetType === 'agency' ? (
                   <AgencyComposer
                     onSubmit={(agencyPayload) => {
-                      const markdownText = agencyPayload.format === 'markdown' && agencyPayload.markdownInput
-                        ? agencyPayload.markdownInput
-                        : agencyPayload.roles.map(r => `[${r.roleId}] ${r.instruction}`).join('\n');
+                      const sessionId = activeSessionId || crypto.randomUUID();
+                      setActiveSession(sessionId);
                       
-                      handleSubmit({
-                        input: markdownText,
+                      // Parse roles from markdown if needed
+                      let roles: AgentRoleConfig[] = agencyPayload.roles;
+                      if (agencyPayload.format === 'markdown' && agencyPayload.markdownInput) {
+                        const lines = agencyPayload.markdownInput.split('\n').filter(l => l.trim());
+                        roles = [];
+                        for (const line of lines) {
+                          const match = line.match(/^\[([^\]]+)\]\s*(.+)$/);
+                          if (match) {
+                            const roleId = match[1].trim().toLowerCase().replace(/\s+/g, '_');
+                            const instruction = match[2].trim();
+                            const persona = remotePersonas[roles.length % remotePersonas.length] || personas[0];
+                            roles.push({
+                              id: crypto.randomUUID(),
+                              roleId,
+                              personaId: persona?.id || 'v_researcher',
+                              instruction,
+                              priority: roles.length + 1,
+                            });
+                          }
+                        }
+                      }
+                      
+                      // Start agency workflow via dedicated endpoint
+                      streamHandles.current[sessionId]?.();
+                      delete streamHandles.current[sessionId];
+                      
+                      upsertSession({
+                        id: sessionId,
                         targetType: 'agency',
-                        agencyId: activeSession.agencyId,
-                        personaId: undefined,
+                        displayName: activeSession?.displayName || 'Agency Workflow',
+                        agencyId: activeSession?.agencyId,
+                        status: 'streaming',
                       });
+                      
+                      appendEvent(sessionId, {
+                        id: crypto.randomUUID(),
+                        timestamp: Date.now(),
+                        type: 'log',
+                        payload: { message: `Starting agency workflow: ${agencyPayload.goal}` },
+                      });
+                      
+                      telemetry.startStream(sessionId);
+                      
+                      const cleanup = streamAgencyWorkflow(
+                        {
+                          goal: agencyPayload.goal,
+                          roles,
+                          userId: 'agentos-workbench-user',
+                          conversationId: sessionId,
+                        },
+                        {
+                          onChunk: (chunk) => {
+                            appendEvent(sessionId, {
+                              id: crypto.randomUUID(),
+                              timestamp: Date.now(),
+                              type: chunk.type,
+                              payload: chunk,
+                            });
+                            telemetry.noteChunk(sessionId, chunk);
+                            
+                            if (chunk.type === 'agency_update') {
+                              applyAgencySnapshot((chunk as AgentOSAgencyUpdateChunk).agency);
+                            }
+                          },
+                          onDone: () => {
+                            upsertSession({ id: sessionId, status: 'idle' });
+                            telemetry.endStream(sessionId);
+                            delete streamHandles.current[sessionId];
+                          },
+                          onError: (error) => {
+                            appendEvent(sessionId, {
+                              id: crypto.randomUUID(),
+                              timestamp: Date.now(),
+                              type: 'log',
+                              payload: { message: `Agency error: ${error.message}`, level: 'error' },
+                            });
+                            upsertSession({ id: sessionId, status: 'error' });
+                            telemetry.endStream(sessionId);
+                            delete streamHandles.current[sessionId];
+                          },
+                        }
+                      );
+                      
+                      streamHandles.current[sessionId] = cleanup;
                     }}
                     disabled={!backendReady}
                   />
