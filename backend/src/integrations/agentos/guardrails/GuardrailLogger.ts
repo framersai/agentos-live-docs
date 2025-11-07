@@ -13,7 +13,7 @@ import {
   GuardrailAction,
   type GuardrailEvaluationResult,
   type GuardrailContext,
-} from '@agentos/core/guardrails/IGuardrailService';
+} from '@agentos/core/core/guardrails/IGuardrailService';
 
 /**
  * Severity level for guardrail events.

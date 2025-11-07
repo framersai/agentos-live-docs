@@ -11,8 +11,8 @@ import {
   type GuardrailInputPayload,
   type GuardrailOutputPayload,
   type IGuardrailService,
-} from '@agentos/core/guardrails/IGuardrailService';
-import { AgentOSResponseChunkType } from '@agentos/core';
+} from '@agentos/core/core/guardrails/IGuardrailService';
+import { AgentOSResponseChunkType } from '@agentos/core/api/types/AgentOSResponse';
 
 /**
  * Configuration for cost ceiling guardrail.
