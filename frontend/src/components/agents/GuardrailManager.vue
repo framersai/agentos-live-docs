@@ -125,7 +125,7 @@ interface GuardrailManagerProps {
   guardrails: SerializableGuardrail[];
 }
 
-const props = defineProps<GuardrailManagerProps>();
+defineProps<GuardrailManagerProps>();
 const emit = defineEmits<{
   toggle: [id: string, enabled: boolean];
   add: [guardrail: SerializableGuardrail];
