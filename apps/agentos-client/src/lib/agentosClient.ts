@@ -278,6 +278,13 @@ class AgentOSClient {
     return response.json();
   }
 
+  async getAvailableModels(): Promise<any[]> {
+    const response = await fetch(`${this.baseUrl}/api/agentos/models`);
+    if (!response.ok) throw new Error('Failed to fetch models');
+    const data = await response.json();
+    return data.models || [];
+  }
+
   // Open a streaming connection to AgentOS
   openAgentOSStream(
     params: {
@@ -363,3 +370,4 @@ export const startAgencyWorkflow = agentosClient.startAgencyWorkflow.bind(agento
 export const connectWebSocket = agentosClient.connectWebSocket.bind(agentosClient);
 export const disconnectWebSocket = agentosClient.disconnectWebSocket.bind(agentosClient);
 export const getLlmStatus = agentosClient.getLlmStatus.bind(agentosClient);
+export const getAvailableModels = agentosClient.getAvailableModels.bind(agentosClient);

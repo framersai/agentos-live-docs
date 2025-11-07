@@ -7,7 +7,7 @@ import { RequestComposer, type RequestComposerPayload } from "@/components/Reque
 import { AgencyManager } from "@/components/AgencyManager";
 import { PersonaCatalog } from "@/components/PersonaCatalog";
 import { WorkflowOverview } from "@/components/WorkflowOverview";
-import { openAgentOSStream, getLlmStatus } from "@/lib/agentosClient";
+import { openAgentOSStream, getLlmStatus, getAvailableModels } from "@/lib/agentosClient";
 import { TourOverlay } from "@/components/TourOverlay";
 import { ThemePanel } from "@/components/ThemePanel";
 import { AboutPanel } from "@/components/AboutPanel";
@@ -44,12 +44,28 @@ function AnalyticsView({ selectedModel, onChangeModel, modelOptions }: { selecte
   const activeSessionId = useSessionStore((s) => s.activeSessionId);
   const m = activeSessionId ? perSession[activeSessionId] : undefined;
   const tokens = m?.finalTokensTotal ?? 0;
-  const estimateUsd = (tokens: number, model?: string) => {
-    // Simple estimate: $0.002 per 1k tokens by default; override for known models if desired
-    const per1k = 0.002;
-    return ((tokens / 1000) * per1k);
+  const promptTokens = m?.finalTokensPrompt ?? 0;
+  const completionTokens = m?.finalTokensCompletion ?? 0;
+  
+  const estimateUsd = (promptTokens: number, completionTokens: number, model?: string) => {
+    // Use model-specific pricing or fallback
+    const modelPricing: Record<string, { input: number; output: number }> = {
+      'gpt-4o-mini': { input: 0.00015, output: 0.0006 },
+      'gpt-4o': { input: 0.005, output: 0.015 },
+      'openai/gpt-4o-mini': { input: 0.00015, output: 0.0006 },
+      'openai/gpt-4o': { input: 0.005, output: 0.015 },
+      'claude-3-haiku-20240307': { input: 0.00025, output: 0.00125 },
+      'anthropic/claude-3-haiku-20240307': { input: 0.00025, output: 0.00125 },
+    };
+    
+    const pricing = modelPricing[model || ''] || { input: 0.0005, output: 0.0015 }; // Default
+    const inputCost = (promptTokens / 1000) * pricing.input;
+    const outputCost = (completionTokens / 1000) * pricing.output;
+    return inputCost + outputCost;
   };
-  const cost = estimateUsd(tokens, selectedModel);
+  
+  const cost = estimateUsd(promptTokens, completionTokens, selectedModel);
+  
   return (
     <div className="text-xs text-slate-600 dark:text-slate-400">
       <div className="mb-2 flex items-center gap-2">
@@ -66,6 +82,7 @@ function AnalyticsView({ selectedModel, onChangeModel, modelOptions }: { selecte
         </select>
       </div>
       <p>Last session tokens: {tokens || '-'}</p>
+      <p>Prompt: {promptTokens || '-'} | Completion: {completionTokens || '-'}</p>
       <p>Estimated cost: {tokens ? `$${cost.toFixed(4)}` : '-'}</p>
     </div>
   );
@@ -138,23 +155,15 @@ export default function App() {
     setPersonas(personasQuery.data);
   }, [personasQuery.data, setPersonas]);
 
-  // Fetch LLM status to populate model options (parse defaults from provider reasons)
+  // Fetch available models from AgentOS
   useEffect(() => {
     let mounted = true;
     (async () => {
       try {
-        const status = await getLlmStatus();
+        const modelData = await getAvailableModels();
         if (!mounted) return;
-        const providers = status?.providers || {};
-        const models: string[] = [];
-        for (const key of Object.keys(providers)) {
-          const p = providers[key];
-          if (p?.available && typeof p.reason === 'string') {
-            const match = p.reason.match(/default model:\s*([^\)]+)\)/i);
-            if (match && match[1]) models.push(match[1]);
-          }
-        }
-        setModelOptions(models);
+        const modelIds = modelData.map((m: any) => m.id);
+        setModelOptions(modelIds);
       } catch {
         if (mounted) setModelOptions([]);
       }
