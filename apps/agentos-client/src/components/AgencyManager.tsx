@@ -29,7 +29,6 @@ export function AgencyManager() {
   const setActiveAgency = useSessionStore((state) => state.setActiveAgency);
 
   // Generate unique default agency name
-  const agencies = useSessionStore((s) => s.agencies);
   const generateDefaultName = () => {
     const base = 'New Agency';
     const existing = agencies.filter(a => a.name.startsWith(base));
