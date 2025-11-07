@@ -205,7 +205,22 @@ export interface AgentOSConfig {
   modelProviderManagerConfig: AIModelProviderManagerConfig;
   /** The default Persona ID to use if none is specified in an interaction. */
   defaultPersonaId: string;
-  /** An instance of the Prisma client for database interactions. */
+  /** An instance of the Prisma client for database interactions.
+   * 
+   * **Optional when `storageAdapter` is provided:**
+   * - If `storageAdapter` is provided, Prisma is only used for server-side features (auth, subscriptions).
+   * - If `storageAdapter` is omitted, Prisma is required for all database operations.
+   * 
+   * **Client-side usage:**
+   * ```typescript
+   * const storage = await createAgentOSStorage({ platform: 'web' });
+   * await agentos.initialize({
+   *   storageAdapter: storage.getAdapter(),
+   *   prisma: mockPrisma,  // Stub for compatibility (can be minimal mock)
+   *   // ...
+   * });
+   * ```
+   */
   prisma: PrismaClient;
   /** An instance of the authentication service, conforming to {@link IAuthService}. */
   authService: IAuthService;
