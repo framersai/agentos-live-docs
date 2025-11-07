@@ -17,7 +17,6 @@ const createRequestSchema = (t: Translate) =>
       personaId: z.string().optional(),
       agencyId: z.string().optional(),
       input: z.string().min(1, t("requestComposer.validation.inputRequired")),
-      mode: z.enum(["chat", "voice"]),
       workflowId: z.string().optional()
     })
     .superRefine((data, ctx) => {
@@ -80,13 +79,6 @@ export function RequestComposer({ onSubmit, disabled = false }: RequestComposerP
     ],
     [t]
   );
-  const modeOptions = useMemo(
-    () => [
-      { value: "chat" as const, label: t("requestComposer.modes.chat") },
-      { value: "voice" as const, label: t("requestComposer.modes.voice") }
-    ],
-    [t]
-  );
 
   const form = useForm<RequestComposerPayload>({
     resolver: zodResolver(requestSchema),
@@ -94,8 +86,7 @@ export function RequestComposer({ onSubmit, disabled = false }: RequestComposerP
       targetType: initialTarget,
       personaId: initialTarget === "persona" ? defaultPersonaId : undefined,
       agencyId: initialTarget === "agency" ? defaultAgencyId : undefined,
-      input: examplePrompts[0] || samplePrompt || "Hi",
-      mode: "chat"
+      input: examplePrompts[0] || samplePrompt || "Hi"
     }
   });
   // Remove contextTab dependency - let user choose persona/agency directly
@@ -321,20 +312,6 @@ export function RequestComposer({ onSubmit, disabled = false }: RequestComposerP
           />
         </label>
 
-        <fieldset className="flex items-center gap-4 text-xs text-slate-600 dark:text-slate-400">
-          <legend className="sr-only">{t("requestComposer.form.modeLegend")}</legend>
-          {modeOptions.map((option) => (
-            <label key={option.value} className="inline-flex items-center gap-2">
-              <input
-                type="radio"
-                value={option.value}
-                {...form.register("mode")}
-                className="h-3 w-3 border-slate-300 bg-white text-sky-600 focus:ring-sky-500 dark:border-white/20 dark:bg-slate-950 dark:text-sky-500"
-              />
-              <span className="uppercase">{option.label}</span>
-            </label>
-          ))}
-        </fieldset>
 
         {targetType === "agency" && (
           <p className="inline-flex items-center gap-2 rounded-xl border border-sky-200 bg-sky-50 px-4 py-2 text-xs text-sky-700 dark:border-sky-500/30 dark:bg-sky-500/10 dark:text-sky-100">
@@ -351,14 +328,6 @@ export function RequestComposer({ onSubmit, disabled = false }: RequestComposerP
           >
             <Play className="h-4 w-4" />
             {isStreaming ? t("requestComposer.actions.streaming") : t("requestComposer.actions.submit")}
-          </button>
-          <button
-            type="button"
-            onClick={handleReplay}
-            className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 px-6 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-white/10 dark:text-slate-200 dark:hover:border-slate-400/40"
-            disabled={disabled || !activeSessionId}
-          >
-            <Paperclip className="h-4 w-4" /> {t("requestComposer.actions.attachTranscript")}
           </button>
           <div className="flex items-start gap-2 text-xs text-slate-500 dark:text-slate-500">
             <Sparkle className="mt-0.5 h-3 w-3 text-sky-600 dark:text-sky-400" />
