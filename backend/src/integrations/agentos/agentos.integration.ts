@@ -61,6 +61,7 @@ class AgentOSIntegration {
     this.router = Router();
     this.router.use(createAgentOSRouter());
     this.router.use(createAgentOSStreamRouter(this));
+    this.router.use('/agency', createAgencyStreamRouter());
     return this.router;
   }
 
