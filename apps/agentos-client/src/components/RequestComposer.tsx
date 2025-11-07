@@ -2,7 +2,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Paperclip, Play, Sparkle, Users, ChevronDown, ChevronUp, AlertCircle } from "lucide-react";
+import { Paperclip, Play, Sparkle, Users, ChevronDown, ChevronUp, AlertCircle, Info, Lock } from "lucide-react";
 import { EXAMPLE_PROMPTS, AGENCY_EXAMPLE_PROMPTS } from "@/constants/examplePrompts";
 import { useTranslation } from "react-i18next";
 import { useWorkflowDefinitions } from "@/hooks/useWorkflowDefinitions";
@@ -122,6 +122,35 @@ export function RequestComposer({ onSubmit, disabled = false }: RequestComposerP
       </header>
       <form onSubmit={handleSubmit} className="flex flex-1 flex-col gap-4" aria-busy={isStreaming} aria-live="polite">
         <fieldset disabled={isStreaming}>
+        {/* Single Action Constraint Info */}
+        {isStreaming && activeSession && (
+          <div className="flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 p-2.5 text-xs text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">
+            <Lock className="mt-0.5 h-3.5 w-3.5 flex-shrink-0" />
+            <div>
+              <p className="font-semibold">Single Action Mode Active</p>
+              <p className="mt-0.5 text-[11px] opacity-90">
+                This session processes one request at a time. New requests are queued until the current one completes.
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
+                    tooltip?.classList.toggle('hidden');
+                  }}
+                  className="ml-1 underline"
+                >
+                  Learn more
+                </button>
+                <span className="ml-1 hidden text-[10px] opacity-75">
+                  AgentOS supports concurrent conversations (up to 1000 parallel streams), but this UI currently enforces 
+                  single-action mode to prevent conversation state conflicts. Future updates will enable multi-threaded discussions 
+                  where each thread maintains separate context.
+                </span>
+              </p>
+            </div>
+          </div>
+        )}
+        
         {/* Session Info Display */}
         {activeSession && (
           <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm dark:border-white/10 dark:bg-slate-950/40">
