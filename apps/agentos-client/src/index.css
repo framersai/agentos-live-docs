@@ -160,6 +160,44 @@ a:hover {
 
 /* Utility classes for theme-aware components */
 @layer utilities {
+  .ui-bg-base {
+    background-color: var(--color-background-primary);
+  }
+
+  .ui-bg-surface {
+    background-color: var(--color-background-secondary);
+  }
+
+  .ui-bg-soft {
+    background-color: color-mix(in oklab, var(--color-background-secondary) 92%, transparent);
+  }
+
+  .ui-text-base {
+    color: var(--color-text-primary);
+  }
+
+  .ui-text-muted {
+    color: var(--color-text-secondary);
+  }
+
+  .ui-border-base {
+    border-color: var(--color-border-primary);
+  }
+
+  .ui-card {
+    @apply rounded-3xl border shadow-panel;
+    background-color: var(--color-background-secondary);
+    border-color: var(--color-border-primary);
+    color: var(--color-text-primary);
+  }
+
+  .ui-card-soft {
+    @apply rounded-2xl border shadow-panel;
+    background-color: color-mix(in oklab, var(--color-background-secondary) 90%, transparent);
+    border-color: color-mix(in oklab, var(--color-border-primary) 80%, transparent);
+    color: var(--color-text-primary);
+  }
+
   .card-panel {
     @apply rounded-2xl border shadow-panel;
     background-color: color-mix(in oklab, var(--color-background-secondary) 85%, transparent);

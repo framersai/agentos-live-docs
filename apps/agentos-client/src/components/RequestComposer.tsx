@@ -86,7 +86,7 @@ export function RequestComposer({ onSubmit, disabled = false }: RequestComposerP
   const handleSubmit = form.handleSubmit(processSubmission);
 
   return (
-    <div className="flex h-full flex-col gap-4 rounded-3xl border border-slate-200 bg-white p-6 dark:border-white/10 dark:bg-slate-900/60" data-tour="composer">
+    <div className="flex h-full flex-col gap-4 ui-card p-6" data-tour="composer">
       <header>
         <p className="text-xs uppercase tracking-[0.25em] text-slate-500 dark:text-slate-400">{t("requestComposer.header.title")}</p>
         <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{t("requestComposer.header.subtitle")}</h2>

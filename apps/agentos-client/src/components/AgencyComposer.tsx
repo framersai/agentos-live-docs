@@ -144,7 +144,7 @@ export function AgencyComposer({ onSubmit, disabled = false }: AgencyComposerPro
   };
 
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-5 dark:border-white/10 dark:bg-slate-900/60">
+    <div className="ui-card p-5">
       <header className="mb-4 flex items-center justify-between">
         <div>
           <p className="text-[10px] uppercase tracking-[0.4em] text-slate-500">Agency Composer</p>
