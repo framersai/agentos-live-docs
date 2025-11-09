@@ -1,0 +1,15 @@
+[submodule "packages/agentos"]
+	path = packages/agentos
+	url = git@github.com:framersai/agentos.git
+[submodule "packages/agentos-extensions"]
+	path = packages/agentos-extensions
+	url = git@github.com:framersai/agentos-extensions.git
+[submodule "packages/agentos-guardrails"]
+	path = packages/agentos-guardrails
+	url = git@github.com:framersai/agentos-guardrails.git
+[submodule "apps/agentos-client"]
+	path = apps/agentos-client
+	url = git@github.com:framersai/agentos-client.git
+[submodule "apps/agentos.sh"]
+	path = apps/agentos.sh
+	url = git@github.com:framersai/agentos.sh.git
