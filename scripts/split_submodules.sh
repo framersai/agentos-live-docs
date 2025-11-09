@@ -124,7 +124,7 @@ normalize_messages() {
   (
     cd "$repo"
     cp -f "$MESSAGE_CALLBACK" ./rename_commits.py
-    "${GIT_FILTER_REPO[@]}" --force --message-callback "from rename_commits import rename_message as f; f(message, metadata)"
+    "${GIT_FILTER_REPO[@]}" --force --message-callback "from rename_commits import rename_message as f; return f(message, metadata)"
   )
 }
 
