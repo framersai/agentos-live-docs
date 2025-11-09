@@ -124,7 +124,7 @@ normalize_messages() {
   (
     cd "$repo"
     cp -f "$MESSAGE_CALLBACK" ./rename_commits.py
-    "${GIT_FILTER_REPO[@]}" --force --message-callback "import importlib.util,sys; spec=importlib.util.spec_from_file_location('rename_commits','./rename_commits.py'); mod=importlib.util.module_from_spec(spec); spec.loader.exec_module(mod); return mod.rename_message(message, metadata)"
+    "${GIT_FILTER_REPO[@]}" --force --message-callback "import importlib.util,sys; spec=importlib.util.spec_from_file_location('rename_commits','./rename_commits.py'); mod=importlib.util.module_from_spec(spec); spec.loader.exec_module(mod); return mod.rename_message(message)"
   )
 }
 

@@ -35,7 +35,7 @@ def normalize_subject(subj: str) -> str:
     subj = re.sub(r"\s+", " ", subj).strip()
     return subj[:120]
 
-def rename_message(message, metadata):  # filter-repo entrypoint
+def rename_message(message, metadata=None):  # filter-repo entrypoint
     if not message:
         return b"chore: empty commit"
     text = message.decode('utf-8', errors='replace').strip()
