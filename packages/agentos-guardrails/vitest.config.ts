@@ -1,5 +1,4 @@
 import { defineConfig } from 'vitest/config';
-import path from 'path';
 
 export default defineConfig({
   test: {
@@ -30,10 +29,7 @@ export default defineConfig({
     include: ['test/**/*.spec.ts'],
     exclude: ['**/node_modules/**', '**/dist/**'],
     testTimeout: 15000
-  },
-  resolve: {
-    alias: {
-      '@agentos/core': path.resolve(__dirname, '../../packages/agentos/src')
-    }
   }
 });
+
+

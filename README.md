@@ -36,6 +36,7 @@ The repository is organised as a pnpm workspace so the production apps, the Agen
 - **Frontend** - Vue 3 + Vite + Tailwind with composition-based state and Supabase-friendly auth (see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)).
 - **Backend** - Modular Express feature folders, optional Supabase + Lemon Squeezy integration, rate-limited public demo routes.
 - **AgentOS runtime** - Session-aware personas, tool permissioning, guardrail policy hooks, retrieval/memory lifecycle policies, async streaming bridges.
+- **Storage adapters** - Cross-platform SQL storage via `@framers/sql-storage-adapter`. IndexedDB (sql.js + browser persistence) for PWAs, better-sqlite3 for Electron, PostgreSQL for cloud, Capacitor for mobile. Full SQLite feature parity including JSON functions, BLOBs, and transactions.
 - **AgentOS surfaces** - `apps/agentos.sh` (marketing) and `apps/agentos-client` (developer cockpit) consume the runtime without touching the proprietary voice UI.
 - **Data flow** - Voice/Text -> `/api/chat` -> AgentOS -> LLM providers with knowledge retrieval and billing-tier enforcement.
 
@@ -130,6 +131,45 @@ Both have:
 **Learn more:**
 - Extensions: [packages/agentos-extensions](packages/agentos-extensions)
 - Guardrails: [packages/agentos-guardrails](packages/agentos-guardrails)
+
+---
+
+## 💾 Storage Adapters & Cross-Platform Persistence
+
+AgentOS uses [`@framers/sql-storage-adapter`](packages/sql-storage-adapter) for cross-platform SQL storage with automatic adapter selection.
+
+### Platform Support
+
+| Platform | Adapter | Features | Best For |
+|----------|---------|----------|----------|
+| **Browser (Web)** | IndexedDB (sql.js + IDB) | Full SQLite via WASM, browser-native persistence, JSON support, transactions | PWAs, offline-first apps, privacy-first deployments |
+| **Desktop (Electron)** | better-sqlite3 | Native performance, WAL mode, file-based | Desktop apps, dev tools |
+| **Mobile (Capacitor)** | Capacitor SQLite | Native SQLite on iOS/Android, encryption | Mobile apps, Ionic |
+| **Cloud (Server)** | PostgreSQL | Multi-tenant, connection pooling, JSONB | Production SaaS, APIs |
+
+### Key Features
+
+- **Auto-detection**: Automatically selects the best adapter for your runtime
+- **Full SQLite parity**: JSON functions (json_extract, json_object), BLOBs, transactions, prepared statements
+- **Graceful degradation**: Falls back to available adapters if preferred one isn't available
+- **Export/import**: Move data between platforms with SQLite file format
+- **Zero config**: Works out of the box with sensible defaults
+
+### Example Usage
+
+```typescript
+import { createDatabase } from '@framers/sql-storage-adapter';
+
+// Auto-detects platform and selects best adapter
+const db = await createDatabase();
+
+// Same API across all platforms
+await db.run('CREATE TABLE sessions (id TEXT PRIMARY KEY, data TEXT)');
+await db.run('INSERT INTO sessions VALUES (?, ?)', ['session-1', JSON.stringify({ events: [] })]);
+const session = await db.get('SELECT * FROM sessions WHERE id = ?', ['session-1']);
+```
+
+**Learn more:** [packages/sql-storage-adapter/README.md](packages/sql-storage-adapter/README.md)
 
 ---
 

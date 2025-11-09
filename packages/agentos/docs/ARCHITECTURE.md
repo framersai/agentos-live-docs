@@ -3132,7 +3132,23 @@ class IntelligentToolSelector {
 
 ## 🛡️ Guardrail Service & Policy Enforcement
 
-AgentOS exposes a dedicated guardrail subsystem enabling agents to **"change their mind" mid-stream** by inspecting and modifying output before delivery. The system lives in `core/guardrails/` and integrates directly into `AgentOS.processRequest`.
+AgentOS exposes a dedicated guardrail subsystem for policy enforcement and content moderation. The system lives in `core/guardrails/` and integrates directly into `AgentOS.processRequest`.
+
+### ⚡ Performance-Optimized Architecture
+
+**Guardrails evaluate FINAL chunks only** to minimize overhead and maintain streaming performance:
+
+- **Input guardrails**: Run once before orchestration (can BLOCK or SANITIZE input)
+- **Output guardrails**: Run once on the final `FINAL_RESPONSE` chunk (can BLOCK, SANITIZE, or FLAG)
+- **Mid-stream evaluation**: Not performed on `TEXT_DELTA` chunks to avoid latency
+
+**Why final-chunk-only?**
+- Evaluating every `TEXT_DELTA` chunk would add 1-500ms latency per chunk
+- Most guardrails need full context to make accurate decisions
+- Final chunk contains complete response text for comprehensive evaluation
+- Cost optimization: Avoids expensive LLM calls on partial content
+
+**For real-time redaction**: Implement client-side filtering or use post-processing hooks if mid-stream sanitization is required.
 
 ### Guardrail Marketplace
 
@@ -3207,6 +3223,24 @@ sequenceDiagram
 | **Sensitive Topic** | `@framersai/guardrail-sensitive-topic` | Harmful content keywords | ~1ms (keyword match) |
 | **Cost Ceiling** | `@framersai/guardrail-cost-ceiling` | Budget enforcement | ~1ms (token math) |
 | **Generic LLM** | `@framersai/guardrail-llm-generic` | Natural-language policies | ~500–2000ms (LLM call) |
+
+### Streaming Architecture & Performance
+
+**Guardrail evaluation flow:**
+```
+User Input → evaluateInputGuardrails() → Orchestration → 
+Stream Generation → TEXT_DELTA chunks (passed through) → 
+FINAL_RESPONSE chunk → evaluateOutputGuardrails() → 
+Sanitized/BLOCKED/FLAGGED chunk → Client
+```
+
+**Performance characteristics:**
+- Input evaluation: ~1-5ms (synchronous, before LLM call)
+- Output evaluation: ~1-500ms depending on guardrail type
+  - Keyword/Regex: ~1ms
+  - LLM-powered: ~500-2000ms (async LLM call)
+- Streaming overhead: **Zero** (only final chunk evaluated)
+- Cost impact: Minimal (no per-chunk LLM calls)
 
 ### Example: Keyword Guardrail
 
