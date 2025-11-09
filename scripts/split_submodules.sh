@@ -255,6 +255,51 @@ ensure_workflows_and_docs() {
   )
 }
 
+ensure_readme_branding() {
+  local repo="$1"
+  local readme="$repo/README.md"
+  [[ -f "$readme" ]] || return 0
+  # Determine logo base path
+  local base
+  if [[ -d "$repo/public/logos" ]]; then
+    base="public/logos"
+  elif [[ -d "$repo/assets/logos" ]]; then
+    base="assets/logos"
+  else
+    base="logos"
+  fi
+  # Pick agentos logo
+  local agentos_logo="$base/agentos-primary-no-tagline.svg"
+  if [[ ! -f "$repo/$agentos_logo" ]]; then
+    if [[ -f "$repo/$base/agentos.svg" ]]; then agentos_logo="$base/agentos.svg"; fi
+    if [[ ! -f "$repo/$agentos_logo" && -f "$repo/$base/agentos-primary-no-tagline-dark-2x.png" ]]; then agentos_logo="$base/agentos-primary-no-tagline-dark-2x.png"; fi
+  fi
+  # Pick frame logo
+  local frame_logo="$base/frame-wordmark.svg"
+  if [[ ! -f "$repo/$frame_logo" && -f "$repo/$base/frame.svg" ]]; then frame_logo="$base/frame.svg"; fi
+  # Avoid duplicate injection
+  if grep -qiE '^<!--\s*BRANDING-LOGOS\s*-->' "$readme"; then
+    return 0
+  fi
+  local tmp="$repo/.readme.tmp"
+  {
+    echo "<!-- BRANDING-LOGOS -->"
+    echo "<p align=\"center\">"
+    echo "  <a href=\"https://agentos.sh\"><img src=\"$agentos_logo\" alt=\"AgentOS\" height=\"64\" /></a>"
+    echo "</p>"
+    echo "<p align=\"center\">"
+    echo "  <a href=\"https://frame.dev\"><img src=\"$frame_logo\" alt=\"Frame\" height=\"28\" /></a>"
+    echo "</p>"
+    echo
+    cat "$readme"
+  } > "$tmp"
+  mv "$tmp" "$readme"
+  (
+    cd "$repo"
+    git add README.md || true
+  )
+}
+
 ensure_community_health() {
   local repo="$1"
   mkdir -p "$repo/.github/ISSUE_TEMPLATE"
@@ -331,6 +376,12 @@ ensure_readme_links() {
 - Marketplace: https://vca.chat
 - GitHub: ${gh_url}
 - npm: ${npm_url}
+## Related Repos
+- AgentOS core: https://github.com/framersai/agentos
+- Extensions: https://github.com/framersai/agentos-extensions
+- Guardrails: https://github.com/framersai/agentos-guardrails
+- Client: https://github.com/framersai/agentos-client
+- Site: https://github.com/framersai/agentos.sh
 ## Contributing & Security
 - Contributing: ./\.github/CONTRIBUTING.md
 - Code of Conduct: ./\.github/CODE_OF_CONDUCT.md
@@ -361,6 +412,12 @@ push_repo() {
     git fetch origin "$branch" || true
     git push origin "$branch" --force-with-lease
     git push origin --tags || true
+    # Try to remove 'main' branch remotely if present
+    git push origin :main || true
+    # If gh CLI is available, set default branch to master
+    if command -v gh >/dev/null 2>&1; then
+      gh repo edit "$(echo "$url" | sed -E 's#(git@github.com:|https://github.com/)##; s/\\.git$//')" --default-branch master || true
+    fi
   )
 }
 
@@ -439,6 +496,7 @@ for entry in "${SUBMODULES[@]}"; do
     ensure_workflows_and_docs "$OUT_REPO"
     ensure_community_health "$OUT_REPO"
     ensure_branding_assets "$OUT_REPO"
+    ensure_readme_branding "$OUT_REPO"
     ensure_readme_links "$OUT_REPO" "$url"
     commit_repo_bootstrap "$OUT_REPO"
   fi
