@@ -257,8 +257,13 @@ ensure_workflows_and_docs() {
 
 ensure_readme_branding() {
   local repo="$1"
+  local mono_path="${2:-}"
   local readme="$repo/README.md"
   [[ -f "$readme" ]] || return 0
+  # Skip branding for sql-storage-adapter per requirements
+  if [[ "$mono_path" == "packages/sql-storage-adapter" ]]; then
+    return 0
+  fi
   # Determine logo base path
   local base
   if [[ -d "$repo/public/logos" ]]; then
@@ -268,11 +273,12 @@ ensure_readme_branding() {
   else
     base="logos"
   fi
-  # Pick agentos logo
-  local agentos_logo="$base/agentos-primary-no-tagline.svg"
+  # Pick agentos logo (prefer transparent with tagline)
+  local agentos_logo="$base/agentos-primary-transparent-2x.png"
   if [[ ! -f "$repo/$agentos_logo" ]]; then
-    if [[ -f "$repo/$base/agentos.svg" ]]; then agentos_logo="$base/agentos.svg"; fi
-    if [[ ! -f "$repo/$agentos_logo" && -f "$repo/$base/agentos-primary-no-tagline-dark-2x.png" ]]; then agentos_logo="$base/agentos-primary-no-tagline-dark-2x.png"; fi
+    if [[ -f "$repo/$base/agentos-primary-transparent-4x.png" ]]; then agentos_logo="$base/agentos-primary-transparent-4x.png"; fi
+    if [[ ! -f "$repo/$agentos_logo" && -f "$repo/$base/agentos-primary-no-tagline.svg" ]]; then agentos_logo="$base/agentos-primary-no-tagline.svg"; fi
+    if [[ ! -f "$repo/$agentos_logo" && -f "$repo/$base/agentos.svg" ]]; then agentos_logo="$base/agentos.svg"; fi
   fi
   # Pick frame logo
   local frame_logo="$base/frame-wordmark.svg"
@@ -318,6 +324,11 @@ ensure_community_health() {
 
 ensure_branding_assets() {
   local repo="$1"
+  local mono_path="${2:-}"
+  # Skip for sql-storage-adapter
+  if [[ "$mono_path" == "packages/sql-storage-adapter" ]]; then
+    return 0
+  fi
   # Source logos from monorepo root 'logos' dir, if present
   local src_logos="./logos"
   [[ -d "$src_logos" ]] || return 0
@@ -495,8 +506,8 @@ for entry in "${SUBMODULES[@]}"; do
     ensure_license "$OUT_REPO" "$license"
     ensure_workflows_and_docs "$OUT_REPO"
     ensure_community_health "$OUT_REPO"
-    ensure_branding_assets "$OUT_REPO"
-    ensure_readme_branding "$OUT_REPO"
+    ensure_branding_assets "$OUT_REPO" "$path"
+    ensure_readme_branding "$OUT_REPO" "$path"
     ensure_readme_links "$OUT_REPO" "$url"
     commit_repo_bootstrap "$OUT_REPO"
   fi
