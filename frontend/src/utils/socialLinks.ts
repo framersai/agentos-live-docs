@@ -14,28 +14,28 @@ export interface SocialLink {
 export const socialLinks: SocialLink[] = [
   {
     name: 'GitHub',
-    url: 'https://github.com/wearetheframers/agentos',
+    url: 'https://github.com/framersai/agentos',
     icon: 'github',
     ariaLabel: 'Visit our GitHub repository',
     color: '#333'
   },
   {
     name: 'Twitter',
-    url: 'https://twitter.com/vca_chat',
+    url: 'https://twitter.com/framersai',
     icon: 'twitter',
     ariaLabel: 'Follow us on Twitter',
     color: '#1DA1F2'
   },
   {
     name: 'LinkedIn',
-    url: 'https://linkedin.com/company/vca-chat',
+    url: 'https://linkedin.com/company/framersai',
     icon: 'linkedin',
     ariaLabel: 'Connect with us on LinkedIn',
     color: '#0A66C2'
   },
   {
     name: 'Discord',
-    url: 'https://discord.gg/vca-chat',
+    url: 'https://discord.gg/framersai',
     icon: 'discord',
     ariaLabel: 'Join our Discord community',
     color: '#5865F2'

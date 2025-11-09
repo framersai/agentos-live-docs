@@ -26,6 +26,8 @@ import { useAgentStore } from '@/store/agent.store';
 import { useAuth } from '@/composables/useAuth';
 import { useUiStore } from '@/store/ui.store'; // For toast interactions
 import { useMarketplaceStore } from '@/store/marketplace.store';
+import { userAgentsAPI } from '@/utils/api';
+import { track } from '@/utils/analytics';
 import type { MarketplaceAgentSummaryFE } from '@/utils/api';
 
 // Icons
@@ -33,12 +35,11 @@ import {
   XMarkIcon,                // For close button
   MagnifyingGlassIcon,      // For search input
   SparklesIcon,             // For header title icon
-  FunnelIcon,               // For filter section indication
   PlusCircleIcon,           // For "Create Agent" (disabled)
   ArrowUpTrayIcon,          // For "Import Agent" (disabled)
-  AdjustmentsHorizontalIcon // Alternative for filter/category indication
 } from '@heroicons/vue/24/outline';
 import AgentCard from './AgentCard.vue'; // The component to display each agent
+import PersonaWizard from './PersonaWizard.vue';
 
 /**
  * @props - Component properties.
@@ -67,6 +68,57 @@ const agentStore = useAgentStore();
 const auth = useAuth();
 const uiStore = useUiStore(); // For potential toast interactions if not handled by App.vue
 const marketplaceStore = useMarketplaceStore();
+const isCreateOpen = ref(false);
+const isImportOpen = ref(false);
+const showPersonaWizard = ref(false);
+const createLabel = ref('');
+const createSlug = ref('');
+const createInFlight = ref(false);
+
+async function handleCreateAgent(): Promise<void> {
+  if (!createLabel.value.trim()) return;
+  try {
+    createInFlight.value = true;
+    await userAgentsAPI.create({ label: createLabel.value.trim(), slug: createSlug.value || null, config: {} });
+    track({ action: 'agent_create', category: 'agents', label: 'hub' });
+    uiStore.addNotification?.({ type: 'success', title: 'Agent created', message: 'Your agent was created.' });
+    isCreateOpen.value = false;
+    createLabel.value = '';
+    createSlug.value = '';
+  } catch (e: any) {
+    uiStore.addNotification?.({ type: 'error', title: 'Create failed', message: e?.message || 'Unable to create agent.' });
+  } finally {
+    createInFlight.value = false;
+  }
+}
+
+function handlePersonaCreated(persona: any): void {
+  // Add to local store or send to backend
+  console.log('Persona created:', persona);
+  uiStore.addNotification?.({ type: 'success', title: 'Persona created', message: `${persona.displayName} was created with ${persona.metadata?.guardrails?.length || 0} guardrails and ${persona.metadata?.extensions?.length || 0} extensions.` });
+}
+
+function handleImportFile(ev: Event): void {
+  const input = ev.target as HTMLInputElement;
+  const file = input.files?.[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = async () => {
+    try {
+      const json = JSON.parse(String(reader.result || '{}')) as { label?: string; slug?: string | null; config?: Record<string, unknown> };
+      const label = (json.label || 'Imported Agent').toString();
+      await userAgentsAPI.create({ label, slug: (json.slug ?? null) as string | null, config: json.config || {} });
+      track({ action: 'agent_import', category: 'agents', label: 'hub' });
+      uiStore.addNotification?.({ type: 'success', title: 'Agent imported', message: label });
+      isImportOpen.value = false;
+    } catch (e: any) {
+      uiStore.addNotification?.({ type: 'error', title: 'Import failed', message: e?.message || 'Invalid agent file.' });
+    } finally {
+      input.value = '';
+    }
+  };
+  reader.readAsText(file);
+}
 
 /** @ref {Ref<IAgentDefinition[]>} allAgentsFromService - Stores the canonical list of all agents fetched from the service. */
 const allAgentsFromService: Ref<IAgentDefinition[]> = ref([...agentService.getAllAgents()]);
@@ -313,13 +365,51 @@ const handleCardInteraction = (payload: { type: string; data?: any }): void => {
         </div>
 
         <footer class="agent-hub-footer-ephemeral">
-            <button class="btn btn-secondary-ephemeral btn-sm-ephemeral" disabled title="Feature coming soon">
-                <PlusCircleIcon class="icon-sm mr-1.5" /> Create New Agent
+            <button class="btn btn-secondary-ephemeral btn-sm-ephemeral" @click="showPersonaWizard = true">
+                <PlusCircleIcon class="icon-sm mr-1.5" /> Create Persona
             </button>
-            <button class="btn btn-secondary-ephemeral btn-sm-ephemeral" disabled title="Feature coming soon">
-                <ArrowUpTrayIcon class="icon-sm mr-1.5" /> Import Agent
+            <button class="btn btn-secondary-ephemeral btn-sm-ephemeral" @click="isImportOpen = true">
+                <ArrowUpTrayIcon class="icon-sm mr-1.5" /> Import agent
             </button>
         </footer>
+
+        <!-- Persona Wizard -->
+        <PersonaWizard 
+          :open="showPersonaWizard" 
+          @close="showPersonaWizard = false"
+          @created="(persona) => handlePersonaCreated(persona)"
+        />
+
+        <!-- Create modal -->
+        <div v-if="isCreateOpen" class="agent-hub-overlay" @mousedown.self="isCreateOpen=false" role="dialog" aria-modal="true">
+          <div class="agent-hub-panel card-neo-raised-ephemeral p-6 max-w-md mx-auto my-10">
+            <h3 class="text-lg font-semibold text-slate-100 mb-4">Create agent</h3>
+            <label class="space-y-1 block text-sm">
+              <span class="text-slate-400">Label</span>
+              <input v-model="createLabel" class="w-full rounded-lg border border-white/10 bg-slate-950/80 px-3 py-2 text-sm text-slate-100 focus:border-sky-500 focus:outline-none" placeholder="My agent" />
+            </label>
+            <label class="space-y-1 block text-sm mt-3">
+              <span class="text-slate-400">Slug (optional)</span>
+              <input v-model="createSlug" class="w-full rounded-lg border border-white/10 bg-slate-950/80 px-3 py-2 text-sm text-slate-100 focus:border-sky-500 focus:outline-none" placeholder="my-agent" />
+            </label>
+            <div class="mt-4 flex gap-2">
+              <button class="btn btn-primary-ephemeral" :disabled="createInFlight || !createLabel.trim()" @click="handleCreateAgent">Create</button>
+              <button class="btn btn-secondary-ephemeral" @click="isCreateOpen=false">Cancel</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Import modal -->
+        <div v-if="isImportOpen" class="agent-hub-overlay" @mousedown.self="isImportOpen=false" role="dialog" aria-modal="true">
+          <div class="agent-hub-panel card-neo-raised-ephemeral p-6 max-w-md mx-auto my-10">
+            <h3 class="text-lg font-semibold text-slate-100 mb-4">Import agent</h3>
+            <input type="file" accept="application/json" @change="handleImportFile" class="w-full text-sm" />
+            <p class="text-xs text-slate-400 mt-2">Upload a JSON file with fields: label, slug (optional), config (object).</p>
+            <div class="mt-4 flex gap-2">
+              <button class="btn btn-secondary-ephemeral" @click="isImportOpen=false">Close</button>
+            </div>
+          </div>
+        </div>
 
       </div>
     </div>

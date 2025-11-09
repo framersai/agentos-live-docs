@@ -1,0 +1,41 @@
+{
+  "name": "@framersai/guardrail-pii-redactor",
+  "version": "1.0.0",
+  "description": "Redacts personally identifiable information (SSN, email, phone, credit card) from agent inputs and outputs. Supports real-time streaming redaction.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint src --ext .ts",
+    "typecheck": "tsc --noEmit",
+    "docs": "typedoc --out docs src/index.ts",
+    "clean": "rimraf dist"
+  },
+  "keywords": ["agentos", "guardrail", "safety", "pii", "privacy", "redaction"],
+  "author": "Frame.dev",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/framersai/agentos-guardrails.git",
+    "directory": "registry/curated/safety/guardrail-pii-redactor"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "@agentos/core": "^0.1.0"
+  },
+  "devDependencies": {
+    "@agentos/core": "workspace:*",
+    "@types/node": "^20.12.12",
+    "eslint": "^9.11.0",
+    "rimraf": "^5.0.7",
+    "typedoc": "^0.25.13",
+    "typescript": "^5.4.5",
+    "vitest": "^1.6.0"
+  }
+}
+

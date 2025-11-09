@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import type { Request, Response } from 'express';
 import type { AgentOSInput, AgentOSResponse } from '@agentos/core';
-import { agentosChatAdapterEnabled } from './agentos.chat-adapter.js';
+import { agentosChatAdapterEnabled, processAgentOSChatRequest } from './agentos.chat-adapter.js';
 
 type StreamHandler = (input: AgentOSInput, onChunk: (chunk: AgentOSResponse) => Promise<void> | void) => Promise<void>;
 
@@ -18,7 +18,7 @@ export const createAgentOSStreamRouter = (integration: AgentOSStreamIntegration)
       return;
     }
 
-    const { userId, conversationId, mode } = req.query as Record<string, string>;
+    const { userId, conversationId, mode, model } = req.query as Record<string, string>;
     let messages: Array<{ role: string; content: string }> = [];
     if (typeof req.query.messages === 'string') {
       try {
@@ -75,20 +75,78 @@ export const createAgentOSStreamRouter = (integration: AgentOSStreamIntegration)
       (agentosInput as any).agencyRequest = agencyRequest;
     }
 
+    if (typeof model === 'string' && model.trim().length > 0) {
+      (agentosInput as any).options = { ...((agentosInput as any).options || {}), overrideModelId: model };
+    }
+
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
     if (typeof res.flushHeaders === 'function') {
       res.flushHeaders();
     }
 
+    let emittedText = false;
+
     try {
-      await integration.processThroughAgentOSStream(agentosInput, async (chunk) => {
+      await integration.processThroughAgentOSStream(agentosInput, async (chunk: any) => {
+        if (chunk?.type === 'text_delta' && typeof chunk.textDelta === 'string' && chunk.textDelta.trim().length > 0) {
+          emittedText = true;
+        } else if (chunk?.type === 'final_response') {
+          const text = (typeof chunk.finalResponseText === 'string' ? chunk.finalResponseText : '')
+            || (typeof chunk.content === 'string' ? chunk.content : '');
+          if (text.trim().length > 0) emittedText = true;
+        }
         res.write('data: ' + JSON.stringify(chunk) + '\n\n');
         const flush = (res as any).flush;
         if (typeof flush === 'function') {
           flush.call(res);
         }
       });
+
+      if (!emittedText) {
+        // Fallback to a single-shot chat response (real LLM if configured)
+        try {
+          const result = await processAgentOSChatRequest({
+            userId,
+            conversationId,
+            mode,
+            messages,
+          });
+          const fallbackChunk: any = {
+            type: 'final_response',
+            streamId: conversationId,
+            gmiInstanceId: mode,
+            personaId: mode,
+            isFinal: true,
+            timestamp: new Date().toISOString(),
+            finalResponseText: result.content || '',
+            usage: result.usage
+              ? {
+                  promptTokens: (result.usage as any).prompt_tokens ?? 0,
+                  completionTokens: (result.usage as any).completion_tokens ?? 0,
+                  totalTokens: (result.usage as any).total_tokens ?? 0,
+                }
+              : undefined,
+            metadata: { modelId: result.model },
+          };
+          res.write('data: ' + JSON.stringify(fallbackChunk) + '\n\n');
+        } catch (fallbackError: any) {
+          // Log the actual error
+          console.warn('[AgentOS Stream] Fallback chat request failed:', fallbackError.message || fallbackError);
+          // Send error response with helpful message
+          const errorChunk = {
+            type: 'final_response',
+            streamId: conversationId,
+            gmiInstanceId: mode,
+            personaId: mode,
+            isFinal: true,
+            timestamp: new Date().toISOString(),
+            finalResponseText: `⚠️ AgentOS processing completed but no response was generated.\n\n**Possible causes:**\n- No LLM provider configured (check OPENAI_API_KEY or ANTHROPIC_API_KEY in backend .env)\n- Agency requests require workflow start endpoint (not yet wired - only first seat GMI responds)\n- Backend error: ${fallbackError.message || 'Unknown error'}\n\n**Next steps:**\n1. Check backend logs for errors\n2. Verify LLM provider keys are set\n3. For agency mode: use /workflows/start endpoint (not yet wired to this UI)`,
+          } as any;
+          res.write('data: ' + JSON.stringify(errorChunk) + '\n\n');
+        }
+      }
+
       res.write('event: done\ndata: {}\n\n');
       res.end();
     } catch (error: any) {

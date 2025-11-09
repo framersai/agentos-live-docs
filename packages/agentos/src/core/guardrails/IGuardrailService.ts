@@ -83,6 +83,40 @@ export interface GuardrailOutputPayload {
 }
 
 /**
+ * Configuration for guardrail evaluation behavior.
+ */
+export interface GuardrailConfig {
+  /**
+   * If true, evaluates TEXT_DELTA chunks during streaming (real-time redaction).
+   * If false, only evaluates FINAL_RESPONSE chunks (default, faster, lower cost).
+   * 
+   * **Performance Impact:**
+   * - Streaming evaluation: Adds 1-500ms latency per TEXT_DELTA chunk
+   * - Final-only evaluation: Adds 1-500ms latency once per response
+   * 
+   * **Cost Impact:**
+   * - Streaming evaluation: May trigger LLM calls per chunk (if using LLM-powered guardrails)
+   * - Final-only evaluation: Single evaluation per response
+   * 
+   * **Use Cases:**
+   * - Streaming: Real-time PII redaction, immediate blocking of harmful content
+   * - Final-only: Cost-sensitive deployments, policy checks that need full context
+   * 
+   * @default false
+   */
+  evaluateStreamingChunks?: boolean;
+  
+  /**
+   * Maximum number of streaming chunks to evaluate per request.
+   * Only applies when evaluateStreamingChunks is true.
+   * Set to limit cost/performance impact of streaming evaluation.
+   * 
+   * @default undefined (no limit)
+   */
+  maxStreamingEvaluations?: number;
+}
+
+/**
  * Contract that host applications can implement to inject
  * custom guardrail logic (moderation, policy enforcement, censorship).
  *
@@ -91,6 +125,11 @@ export interface GuardrailOutputPayload {
  */
 export interface IGuardrailService {
   /**
+   * Optional configuration for guardrail evaluation behavior.
+   */
+  config?: GuardrailConfig;
+  
+  /**
    * Evaluate user input before the orchestration pipeline executes.
    * Returning {@link GuardrailAction.BLOCK} will prevent the request from being processed.
    */
@@ -98,7 +137,15 @@ export interface IGuardrailService {
 
   /**
    * Inspect the agent's response chunks before they are streamed to the client.
-   * You can flag, sanitise, or block the final chunk.
+   * You can flag, sanitise, or block chunks.
+   * 
+   * **Evaluation Timing:**
+   * - If `config.evaluateStreamingChunks === true`: Called for every TEXT_DELTA chunk
+   * - Otherwise: Called only for FINAL_RESPONSE chunks
+   * 
+   * **Performance Note:**
+   * Streaming evaluation adds latency per chunk. Use final-only evaluation unless
+   * real-time redaction is required.
    */
   evaluateOutput?(payload: GuardrailOutputPayload): Promise<GuardrailEvaluationResult | null>;
 }

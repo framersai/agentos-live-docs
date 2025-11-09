@@ -6,6 +6,16 @@ import { marketplaceService } from '../marketplace/marketplace.service.js';
 import { userAgentsRepository } from './userAgents.repository.js';
 import { getAppDatabase, generateId } from '../../core/database/appDatabase.js';
 
+interface HttpError extends Error {
+  statusCode?: number;
+}
+
+const createHttpError = (statusCode: number, message: string): HttpError => {
+  const error = new Error(message) as HttpError;
+  error.statusCode = statusCode;
+  return error;
+};
+
 export interface AgentBundlePayload {
   version: string;
   persona: {
@@ -85,14 +95,10 @@ const readPrompt = (definition: AgentOSPersonaDefinition): string => {
 export const agentBundlesService = {
   async importBundle(userId: string, bundle: AgentBundlePayload): Promise<{ submissionId: string }> {
     if (!bundle?.persona?.id || !bundle.persona.prompt) {
-      const error: any = new Error('Bundle persona.id and persona.prompt are required.');
-      error.statusCode = 400;
-      throw error;
+      throw createHttpError(400, 'Bundle persona.id and persona.prompt are required.');
     }
     if (bundle.version !== '1.0') {
-      const error: any = new Error('Unsupported bundle version. Expected "1.0".');
-      error.statusCode = 400;
-      throw error;
+      throw createHttpError(400, 'Unsupported bundle version. Expected "1.0".');
     }
 
     const db = getAppDatabase();
@@ -142,9 +148,7 @@ export const agentBundlesService = {
     await reloadDynamicPersonas();
     const agent = await userAgentsRepository.getById(userId, agentId);
     if (!agent) {
-      const error: any = new Error('Agent not found.');
-      error.statusCode = 404;
-      throw error;
+      throw createHttpError(404, 'Agent not found.');
     }
 
     const personaId =
@@ -157,9 +161,7 @@ export const agentBundlesService = {
       listAgentOSPersonas().find((persona) => persona.agentIds.includes(personaId));
 
     if (!personaDefinition) {
-      const error: any = new Error(`Persona "${personaId}" not found.`);
-      error.statusCode = 404;
-      throw error;
+      throw createHttpError(404, `Persona "${personaId}" not found.`);
     }
 
     const prompt = readPrompt(personaDefinition);

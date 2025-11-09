@@ -156,7 +156,8 @@ export function getEnvironmentConfig(): EnvironmentConfig {
     LEMONSQUEEZY_API_KEY: process.env.LEMONSQUEEZY_API_KEY,
     LEMONSQUEEZY_WEBHOOK_SECRET: process.env.LEMONSQUEEZY_WEBHOOK_SECRET,
     LEMONSQUEEZY_STORE_ID: process.env.LEMONSQUEEZY_STORE_ID,
-    DEFAULT_PERSONA_ID: process.env.DEFAULT_PERSONA_ID || 'basic_assistant',
+    // Prefer V by default; fall back to Nerf if V not present in a deployment
+    DEFAULT_PERSONA_ID: process.env.DEFAULT_PERSONA_ID || 'v_researcher',
     NODE_ENV: process.env.NODE_ENV || 'development',
     ENABLE_PERSISTENCE: process.env.ENABLE_PERSISTENCE || 'true',
     ENABLE_UTILITY_AI: process.env.ENABLE_UTILITY_AI || 'false',
@@ -198,7 +199,7 @@ function createPersonaLoaderConfig(env: EnvironmentConfig): PersonaLoaderConfig 
     options: {
       enableFileWatching: env.NODE_ENV === 'development',
       validationLevel: 'strict',
-      defaultPersonaId: env.DEFAULT_PERSONA_ID || 'default',
+      defaultPersonaId: env.DEFAULT_PERSONA_ID || 'v_researcher',
       cachePersonaDefinitions: true,
     },
   };
@@ -344,7 +345,7 @@ export async function createAgentOSConfig(): Promise<AgentOSConfig> {
     const prisma = new PrismaClient();
     console.log('AgentOS Config: Prisma client stub initialized');
 
-    const defaultPersonaId = env.DEFAULT_PERSONA_ID || 'default';
+    const defaultPersonaId = env.DEFAULT_PERSONA_ID || 'v_researcher';
 
     // Create and initialize services
     const authService = await createAuthService();

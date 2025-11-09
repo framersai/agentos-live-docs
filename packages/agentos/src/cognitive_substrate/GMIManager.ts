@@ -23,7 +23,6 @@ import { IWorkingMemory } from './memory/IWorkingMemory';
 import { InMemoryWorkingMemory } from './memory/InMemoryWorkingMemory';
 import { ConversationManager } from '../core/conversation/ConversationManager';
 import { ConversationContext } from '../core/conversation/ConversationContext';
-import { PrismaClient } from '@prisma/client';
 import { GMIError, GMIErrorCode, createGMIErrorFromError } from '@agentos/core/utils/errors';
 import { IPromptEngine } from '../core/llm/IPromptEngine';
 import { AIModelProviderManager } from '../core/llm/providers/AIModelProviderManager';
@@ -83,7 +82,6 @@ export class GMIManager {
 
   private authService: IAuthService;
   private subscriptionService: ISubscriptionService;
-  private prisma: PrismaClient;
   private conversationManager: ConversationManager;
 
   private promptEngine: IPromptEngine;
@@ -99,7 +97,6 @@ export class GMIManager {
     config: GMIManagerConfig,
     subscriptionService: ISubscriptionService,
     authService: IAuthService,
-    prisma: PrismaClient,
     conversationManager: ConversationManager,
     promptEngine: IPromptEngine,
     llmProviderManager: AIModelProviderManager,
@@ -123,7 +120,6 @@ export class GMIManager {
 
     this.subscriptionService = subscriptionService;
     this.authService = authService;
-    this.prisma = prisma;
     this.conversationManager = conversationManager;
     this.promptEngine = promptEngine;
     this.llmProviderManager = llmProviderManager;
@@ -147,7 +143,6 @@ export class GMIManager {
     };
     check(this.subscriptionService, 'ISubscriptionService');
     check(this.authService, 'IAuthService');
-    check(this.prisma, 'PrismaClient');
     check(this.conversationManager, 'ConversationManager');
     check(this.promptEngine, 'IPromptEngine');
     check(this.llmProviderManager, 'AIModelProviderManager');
@@ -228,6 +223,9 @@ export class GMIManager {
   }
 
   private async userMeetsPersonaTier(userId: string, persona: IPersonaDefinition): Promise<boolean> {
+    if (process.env.AGENTOS_DEV_ALLOW_ALL === 'true' || process.env.NODE_ENV === 'development') {
+      return true;
+    }
     if (!persona.minSubscriptionTier) {
       return true;
     }

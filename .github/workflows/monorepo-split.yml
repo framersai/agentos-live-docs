@@ -1,0 +1,63 @@
+name: Monorepo split and push submodules
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Run without pushing or modifying submodules'
+        required: false
+        default: 'false'
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'scripts/**'
+      - '.github/workflows/monorepo-split.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  split:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Use GH_PAT for GitHub pushes
+        if: ${{ secrets.GH_PAT != '' }}
+        run: |
+          # Route SSH-style remotes through HTTPS with PAT
+          git config --global url."https://x-access-token:${{ secrets.GH_PAT }}@github.com/".insteadOf "git@github.com:"
+          git config --global url."https://x-access-token:${{ secrets.GH_PAT }}@github.com/".insteadOf "ssh://git@github.com/"
+      - name: Ensure bash available
+        run: bash --version
+      - name: Run split script
+        env:
+          COPYRIGHT_HOLDER: Framers
+          WEBSITE: https://frame.dev
+          EMAIL: team@frame.dev
+          YEAR_OVERRIDE: "2025"
+        run: |
+          set -euo pipefail
+          chmod +x scripts/split_submodules.sh
+          if [[ "${{ github.event.inputs.dry_run || 'false' }}" == "true" ]]; then
+            scripts/split_submodules.sh --dry-run
+          else
+            scripts/split_submodules.sh
+          fi
+      - name: Commit submodule updates (if any)
+        run: |
+          set -e
+          if ! git diff --quiet || ! git diff --cached --quiet; then
+            git add .gitmodules || true
+            git add -A
+            git commit -m "chore(ci): update submodules after split" || echo "No changes to commit."
+            git push
+          fi
+
+

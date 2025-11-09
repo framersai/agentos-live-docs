@@ -3130,49 +3130,247 @@ class IntelligentToolSelector {
 
 ---
 
-## ??? Guardrail Service & Policy Enforcement
+## 🛡️ Guardrail Service & Policy Enforcement
 
+AgentOS exposes a dedicated guardrail subsystem for policy enforcement and content moderation. The system lives in `core/guardrails/` and integrates directly into `AgentOS.processRequest`.
 
+### ⚡ Performance-Optimized Architecture
 
-AgentOS now exposes a dedicated guardrail subsystem so hosts can plug in policy and moderation engines without modifying the orchestration stack. The feature lives in `core/guardrails/` and is composed of the `IGuardrailService` contract plus dispatcher helpers that sit in front of `AgentOS.processRequest`.
+**Guardrails evaluate FINAL chunks only** to minimize overhead and maintain streaming performance:
 
+- **Input guardrails**: Run once before orchestration (can BLOCK or SANITIZE input)
+- **Output guardrails**: Run once on the final `FINAL_RESPONSE` chunk (can BLOCK, SANITIZE, or FLAG)
+- **Mid-stream evaluation**: Not performed on `TEXT_DELTA` chunks to avoid latency
 
+**Why final-chunk-only?**
+- Evaluating every `TEXT_DELTA` chunk would add 1-500ms latency per chunk
+- Most guardrails need full context to make accurate decisions
+- Final chunk contains complete response text for comprehensive evaluation
+- Cost optimization: Avoids expensive LLM calls on partial content
 
-### IGuardrailService at a glance
+**For real-time redaction**: Implement client-side filtering or use post-processing hooks if mid-stream sanitization is required.
 
-- `evaluateInput(payload: GuardrailInputPayload)` runs before orchestration executes. Return `null` to continue, or a `GuardrailEvaluationResult` describing one of four actions:
+### Guardrail Marketplace
 
-  - `ALLOW` ÃƒÂ¯Ã‚Â¿Ã‚Â½ pass the request through untouched.
+**AgentOS now has a community-driven guardrail registry**: [packages/agentos-guardrails](../../agentos-guardrails)
 
-  - `FLAG` ÃƒÂ¯Ã‚Â¿Ã‚Â½ allow but capture metadata for audit/analytics.
+- 📦 **Curated guardrails**: Keyword/PII filters, cost ceilings, sensitive topic blockers
+- 🌍 **Community contributions**: MIT-licensed, tested, CI/CD-automated
+- 🤖 **LLM-powered guardrails**: Natural-language policy evaluation (e.g., "block medical advice")
+- 🆓 **Free CI/CD**: Automated testing, npm publishing, coverage reporting for contributors
 
-  - `SANITIZE` ÃƒÂ¯Ã‚Â¿Ã‚Â½ replace `payload.input.textInput` with `modifiedText` before streaming continues.
+**Installation:**
+```bash
+pnpm add @framersai/guardrail-keyword
+pnpm add @framersai/guardrail-llm-generic
+```
 
-  - `BLOCK` ÃƒÂ¯Ã‚Â¿Ã‚Â½ stop execution and emit an error chunk back to the host.
+**Auto-loading:**
+```typescript
+const config: AgentOSConfig = {
+  guardrailConfig: {
+    loadCurated: true,      // Load vetted guardrails automatically
+    loadCommunity: false,   // Opt-in for community guardrails
+    autoInstall: true,      // Install missing packages from registry
+  },
+};
+```
 
-- `evaluateOutput(payload: GuardrailOutputPayload)` runs against the final streamed chunk. The same actions apply; sanitize replaces `finalResponseText`, and block converts the stream into a guardrail error.
+### IGuardrailService Interface
 
-- `GuardrailContext` carries caller identifiers (user, session, persona, conversation) plus arbitrary metadata so policy engines can reason over entitlements or request history.
+All guardrails implement this contract:
 
+```typescript
+export interface IGuardrailService {
+  /** Evaluate user input BEFORE orchestration */
+  evaluateInput?(payload: GuardrailInputPayload): Promise<GuardrailEvaluationResult | null>;
+  
+  /** Evaluate agent output BEFORE streaming (agent "changes mind" here) */
+  evaluateOutput?(payload: GuardrailOutputPayload): Promise<GuardrailEvaluationResult | null>;
+}
+```
 
+**Actions:**
+- `ALLOW` → Pass content unchanged
+- `FLAG` → Allow but log for analytics/audit
+- `SANITIZE` → Replace content with safe alternative (agent "changes its mind")
+- `BLOCK` → Terminate stream and emit error
 
-### Dispatcher-powered workflow
+### Agent "Changing Its Mind" Flow
 
-- `evaluateInputGuardrails` (see `core/guardrails/guardrailDispatcher.ts`) calls the service, applies sanitize results, and forwards evaluation metadata.
+```mermaid
+sequenceDiagram
+    participant User
+    participant Agent
+    participant Guardrail
+    participant Client
 
-- If a block action is returned, `createGuardrailBlockedStream` short-circuits orchestration and emits a terminal `ERROR` chunk with guardrail details.
+    User->>Agent: "How to build explosives?"
+    Agent->>Agent: Generate detailed answer (LLM computed)
+    Agent->>Guardrail: evaluateOutput(finalChunk)
+    Guardrail->>Guardrail: Detect "explosives" keyword
+    Guardrail->>Agent: SANITIZE: Replace with safe text
+    Agent->>Client: Stream: "I cannot assist with that topic..."
+    Client->>User: Displays safe replacement
+    Note over Agent,Client: Original harmful answer discarded
+```
 
-- `wrapOutputGuardrails` decorates the streaming generator: final chunks are inspected, sanitized chunks are rewritten, and guardrail metadata is folded into `AgentOSResponse.metadata.guardrail` for downstream consumers.
+### Available Guardrails
 
+| Type | Package | Use Case | Performance |
+|------|---------|----------|-------------|
+| **Keyword** | `@framersai/guardrail-keyword` | Exact/regex/PII patterns | ~1ms (regex-based) |
+| **Sensitive Topic** | `@framersai/guardrail-sensitive-topic` | Harmful content keywords | ~1ms (keyword match) |
+| **Cost Ceiling** | `@framersai/guardrail-cost-ceiling` | Budget enforcement | ~1ms (token math) |
+| **Generic LLM** | `@framersai/guardrail-llm-generic` | Natural-language policies | ~500–2000ms (LLM call) |
 
+### Streaming Architecture & Performance
 
-### Host integration & config
+**Guardrail evaluation flow:**
+```
+User Input → evaluateInputGuardrails() → Orchestration → 
+Stream Generation → TEXT_DELTA chunks (passed through) → 
+FINAL_RESPONSE chunk → evaluateOutputGuardrails() → 
+Sanitized/BLOCKED/FLAGGED chunk → Client
+```
 
-- Provide the service via `AgentOSConfig.guardrailService`. Leaving it undefined skips guardrail evaluation entirely to keep backwards compatibility.
+**Performance characteristics:**
+- Input evaluation: ~1-5ms (synchronous, before LLM call)
+- Output evaluation: ~1-500ms depending on guardrail type
+  - Keyword/Regex: ~1ms
+  - LLM-powered: ~500-2000ms (async LLM call)
+- Streaming overhead: **Zero** (only final chunk evaluated)
+- Cost impact: Minimal (no per-chunk LLM calls)
 
-- Guardrail metadata is designed to be logged or surfaced to clients alongside the normal stream so hosts can render safety banners, capture analytics, or perform secondary review.
+### Example: Keyword Guardrail
 
-- Dispatcher helpers feed directly into `AgentOS.processRequest`, and the Vitest guardrail harness exercises allow/sanitize/block flows with a fake policy service.
+```typescript
+import { KeywordGuardrail } from '@framersai/guardrail-keyword';
+
+const piiGuard = new KeywordGuardrail({
+  patterns: [
+    { regex: /\b\d{3}-\d{2}-\d{4}\b/, action: 'sanitize', replacement: '[SSN]' },
+    { text: 'password', action: 'sanitize', replacement: '****', caseSensitive: false },
+  ],
+  evaluateInput: false,
+  evaluateOutput: true, // Redact PII from agent output
+});
+
+const config: AgentOSConfig = {
+  guardrailService: piiGuard,
+};
+```
+
+**What happens:**
+1. User: "What's my SSN 123-45-6789?"
+2. Agent: "Your SSN is 123-45-6789."
+3. Guardrail detects pattern → replaces with `[SSN]`
+4. User sees: "Your SSN is [SSN]."
+
+### Example: LLM-Powered Guardrail
+
+```typescript
+import { GenericLLMGuardrail } from '@framersai/guardrail-llm-generic';
+
+const medicalGuard = new GenericLLMGuardrail({
+  policyDescription: "Block any request asking for medical diagnosis or treatment advice",
+  violationAction: 'block',
+  evaluateInput: true,
+  evaluateOutput: false,
+});
+```
+
+**What happens:**
+1. User: "I have a headache and fever. What should I do?"
+2. Guardrail sends to LLM: "Does this violate the medical advice policy?"
+3. LLM: `{ "violates": true, "reason": "Requesting diagnosis" }`
+4. Guardrail blocks request
+5. User sees: "Request blocked by policy."
+
+### Dispatcher Workflow
+
+- **`evaluateInputGuardrails`** (`core/guardrails/guardrailDispatcher.ts`): Runs before orchestration, applies SANITIZE/BLOCK
+- **`createGuardrailBlockedStream`**: Emits terminal ERROR chunk when BLOCK is returned
+- **`wrapOutputGuardrails`**: Wraps stream generator, inspects final chunks, applies SANITIZE/BLOCK
+
+### Metadata & Audit Trail
+
+Guardrail decisions are stored in `chunk.metadata.guardrail`:
+
+```json
+{
+  "type": "final_response",
+  "finalResponseText": "[SSN] was redacted.",
+  "metadata": {
+    "guardrail": {
+      "output": [
+        {
+          "action": "sanitize",
+          "reason": "Pattern detected: \"123-45-6789\"",
+          "reasonCode": "KEYWORD_OUTPUT_SANITIZE",
+          "metadata": {
+            "matchedText": "123-45-6789",
+            "patternType": "regex",
+            "originalText": "Your SSN is 123-45-6789."
+          }
+        }
+      ]
+    }
+  }
+}
+```
+
+**Use in UI:**
+- Display "⚠️ Content filtered" banner
+- Track guardrail trigger rates in analytics
+- Allow admins to review original content
+
+### Host Integration
+
+Provide guardrails via `AgentOSConfig`:
+
+```typescript
+import { composeGuardrails } from '@framersai/agentos-guardrails';
+import { KeywordGuardrail } from '@framersai/guardrail-keyword';
+import { CostCeilingGuardrail } from '@framersai/guardrail-cost-ceiling';
+
+const guardStack = composeGuardrails([
+  new KeywordGuardrail({ /* config */ }),
+  new CostCeilingGuardrail({ /* config */ }),
+]);
+
+const config: AgentOSConfig = {
+  guardrailService: guardStack, // ← Wire here
+};
+```
+
+**Environment control:**
+```bash
+# Enable guardrails (default in production)
+AGENTOS_ENABLE_GUARDRAILS=true
+
+# Load curated guardrails from registry
+AGENTOS_LOAD_CURATED_GUARDRAILS=true
+```
+
+### Testing
+
+Guardrail integration tests: `packages/agentos/tests/core/guardrails.integration.spec.ts`
+
+```bash
+pnpm --filter @agentos/core test guardrails
+```
+
+Custom guardrail tests: See template at `packages/agentos-guardrails/templates/keyword-template/test/`
+
+### Further Reading
+
+- **Registry**: [packages/agentos-guardrails](../../agentos-guardrails)
+- **How They Work**: [packages/agentos-guardrails/HOW_GUARDRAILS_WORK.md](../../agentos-guardrails/HOW_GUARDRAILS_WORK.md)
+- **Contributing**: [packages/agentos-guardrails/CONTRIBUTING.md](../../agentos-guardrails/CONTRIBUTING.md)
+- **Schemas**: [packages/agentos-guardrails/GUARDRAIL_SCHEMAS.md](../../agentos-guardrails/GUARDRAIL_SCHEMAS.md)
+- **Core interface**: `packages/agentos/src/core/guardrails/IGuardrailService.ts`
+- **Dispatcher**: `packages/agentos/src/core/guardrails/guardrailDispatcher.ts`
 
 
 
@@ -4715,6 +4913,6 @@ This completes the comprehensive deep dive into AgentOS's multi-agent coordinati
 - **Conversation linkage**: Workflow instances may link to `conversationId`, but the schema treats conversations as optionalÃƒÂ¯Ã‚Â¿Ã‚Â½automations can be launched from CLI/schedulers while still inheriting context when present. See `docs/WORKFLOWS.md` for authoring and configuration details.
 \n### Agency runtime overview
 - WorkflowRuntime listens for workflow events and schedules Agency-backed tasks using a bounded queue so multi-seat assistants remain responsive.
-- AgencyRegistry tracks the seats (role ? GMI instance) attached to each Agency, allowing several GMIs to collaborate behind a single fa�ade.
+- AgencyRegistry tracks the seats (role ? GMI instance) attached to each Agency, allowing several GMIs to collaborate behind a single fa�ade.
 - PersonaOverlayManager evaluates \\WorkflowDefinition.roles[*].evolutionRules\\ and produces overlays that adjust persona traits, moods, or metadata without mutating the base persona definitions.
 - Streaming clients now receive AGENCY_UPDATE chunks in addition to WORKFLOW_UPDATE, enabling the UI to render Agency rosters and seat state changes in real time.
