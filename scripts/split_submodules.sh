@@ -23,12 +23,12 @@ set -euo pipefail
 # license: "mit" or "apache-2.0"
 # You can add/remove entries as needed; non-existent paths are skipped gracefully.
 SUBMODULES=(
-  "packages/agentos|git@github.com:framersai/agentos.git|main|apache-2.0"
-  "packages/agentos-extensions|git@github.com:framersai/agentos-extensions.git|main|mit"
-  "packages/agentos-guardrails|git@github.com:framersai/agentos-guardrails.git|main|mit"
-  "apps/agentos-client|git@github.com:framersai/agentos-client.git|main|mit"
-  "apps/agentos.sh|git@github.com:framersai/agentos.sh.git|main|mit"
-  "packages/sql-storage-adapter|git@github.com:framersai/sql-storage-adapter.git|main|mit"
+  "packages/agentos|git@github.com:framersai/agentos.git|master|apache-2.0"
+  "packages/agentos-extensions|git@github.com:framersai/agentos-extensions.git|master|mit"
+  "packages/agentos-guardrails|git@github.com:framersai/agentos-guardrails.git|master|mit"
+  "apps/agentos-client|git@github.com:framersai/agentos-client.git|master|mit"
+  "apps/agentos.sh|git@github.com:framersai/agentos.sh.git|master|mit"
+  "packages/sql-storage-adapter|git@github.com:framersai/sql-storage-adapter.git|master|mit"
 )
 
 # Default options (overridable via flags)
@@ -36,7 +36,7 @@ DRY_RUN=0
 WITH_TEMPLATES=1
 REWRITE_MESSAGES=1
 ADD_SUBMODULES=1
-DEFAULT_BRANCH="main"
+DEFAULT_BRANCH="master"
 FALLBACK_SNAPSHOT=1   # If no history extracted for path, create a fresh snapshot repo
 COPYRIGHT_HOLDER="${COPYRIGHT_HOLDER:-Framers}"
 WEBSITE="${WEBSITE:-https://frame.dev}"
@@ -371,7 +371,8 @@ link_submodule() {
     git -C "$path" remote set-url origin "$url" || true
     return
   fi
-  git rm -r --cached --quiet -- "$path" || true
+  # Remove tracked files and working tree to make room for the submodule
+  git rm -r --quiet -- "$path" || true
   git submodule add "$url" "$path"
 }
 
