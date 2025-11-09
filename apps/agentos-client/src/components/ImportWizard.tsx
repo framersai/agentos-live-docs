@@ -96,7 +96,7 @@ export function ImportWizard({ open, onClose }: ImportWizardProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-      <div className="w-full max-w-xl rounded-3xl border border-slate-200 bg-white p-6 shadow-xl dark:border-white/10 dark:bg-slate-900">
+      <div className="w-full max-w-xl rounded-3xl border ui-border-base ui-bg-surface p-6 shadow-xl">
         <header className="mb-3 flex items-center justify-between">
           <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Import</h3>
           <button

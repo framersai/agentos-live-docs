@@ -582,10 +582,9 @@ export function SessionInspector() {
       : agencyDefinition?.goal;
   const workflowIdentifier = agencySnapshot?.workflowId ?? agencyDefinition?.workflowId;
   const timelineContainerClass = clsx(
-    "relative flex max-h-[calc(100vh-6rem)] flex-col overflow-hidden rounded-3xl border border-slate-200 dark:border-white/10",
-    isAgencySession
-      ? "bg-gradient-to-b from-white via-slate-50 to-white text-slate-900 dark:from-slate-950 dark:via-slate-900 dark:text-slate-100"
-      : "bg-white text-slate-900 dark:bg-slate-900/50 dark:text-slate-100"
+    "ui-card relative flex max-h-[calc(100vh-6rem)] flex-col overflow-hidden",
+    isAgencySession &&
+      "bg-gradient-to-b from-white via-slate-50 to-white text-slate-900 dark:from-slate-950 dark:via-slate-900 dark:text-slate-100"
   );
   const timelineScrollRef = useRef<HTMLDivElement | null>(null);
   const persistSessionSnapshot = useCallback((sessionId: string) => {

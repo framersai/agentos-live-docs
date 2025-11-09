@@ -30,7 +30,7 @@ export function ThemePanel() {
   ];
 
   return (
-    <section className="rounded-3xl border border-slate-200 bg-white p-5 dark:border-white/10 dark:bg-slate-900/60">
+    <section className="ui-card p-5">
       <header className="mb-3 flex items-center justify-between">
         <div>
           <p className="text-[10px] uppercase tracking-[0.35em] text-slate-500 dark:text-slate-400">Theme</p>

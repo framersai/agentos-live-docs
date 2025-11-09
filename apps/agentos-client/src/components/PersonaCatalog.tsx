@@ -106,7 +106,7 @@ export function PersonaCatalog() {
   };
 
   return (
-    <section className="flex max-h-[calc(100vh-6rem)] flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white p-5 transition-colors duration-300 dark:border-white/10 dark:bg-slate-900/60">
+    <section className="flex max-h-[calc(100vh-6rem)] flex-col overflow-hidden ui-card p-5 transition-colors duration-300">
       <header className="mb-4 flex items-center justify-between">
         <div>
           <p className="text-[10px] uppercase tracking-[0.4em] text-slate-500 dark:text-slate-400">Persona catalog</p>

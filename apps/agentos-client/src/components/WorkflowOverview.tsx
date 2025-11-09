@@ -71,7 +71,7 @@ export function WorkflowOverview() {
 
   if (workflows.length === 0) {
     return (
-      <section className="rounded-3xl border border-slate-200 bg-white p-5 dark:border-white/10 dark:bg-slate-900/60">
+      <section className="ui-card p-5">
         <p className="text-xs uppercase tracking-[0.35em] text-slate-500 dark:text-slate-400">Workflow overview</p>
         <p className="mt-3 text-sm text-slate-600 dark:text-slate-400">No workflow updates yet. Launch an automation to populate this panel.</p>
       </section>
@@ -79,7 +79,7 @@ export function WorkflowOverview() {
   }
 
   return (
-    <section className="rounded-3xl border border-slate-200 bg-white p-5 dark:border-white/10 dark:bg-slate-900/60">
+    <section className="ui-card p-5">
       <header className="mb-4 flex items-center justify-between">
         <div>
           <p className="text-[10px] uppercase tracking-[0.4em] text-slate-500 dark:text-slate-500">Workflow overview</p>
