@@ -1,360 +1,366 @@
 /**
  * @fileoverview Multi-GMI Agency Workflow Executor
- * @description Coordinates parallel execution of multiple GMI instances within an agency workflow.
- * 
- * **Architecture:**
- * - Creates one GMI instance per role/seat in the agency
- * - Executes agent tasks in parallel using ConcurrencyQueue (max 4 concurrent)
- * - Streams AGENCY_UPDATE chunks showing seat states in real-time
- * - Consolidates outputs into structured formats (JSON, CSV, markdown)
- * 
- * **Key Concepts:**
- * - **Agency**: A collective of GMI instances working toward a shared goal
- * - **Seat**: A role within the agency assigned to a specific persona/GMI
- * - **Workflow**: The execution plan defining tasks and dependencies
- * - **Parallel Execution**: Multiple GMIs process tasks simultaneously
- * 
- * @example Basic Agency Execution
- * ```typescript
- * const executor = new MultiGMIAgencyExecutor(dependencies);
- * 
- * const result = await executor.executeAgency({
- *   goal: "Analyze data and create report",
- *   roles: [
- *     { roleId: "analyst", personaId: "v_researcher", instruction: "Calculate statistics" },
- *     { roleId: "writer", personaId: "nerf_generalist", instruction: "Format as markdown" }
- *   ],
- *   userId: "user-123",
- *   conversationId: "conv-456"
- * });
- * 
- * console.log(result.consolidatedOutput); // Combined outputs from all GMIs
- * ```
- * 
- * @module backend/integrations/agentos/MultiGMIAgencyExecutor
+ * @description Coordinates multiple persona seats by invoking AgentOS for each role and
+ * streaming back Agency/Workflow chunks in real time.
  */
 
 import { v4 as uuidv4 } from 'uuid';
-import type { AgentOS, AgentOSResponse, AgentOSResponseChunkType } from '@agentos/core';
-import type { IGMI, GMITurnInput, GMIOutput } from '@agentos/core/cognitive_substrate/IGMI';
+import type {
+  AgentOS,
+  AgentOSInput,
+  AgentOSResponse,
+  AgentOSResponseChunkType,
+  AgentOSAgencyUpdateChunk,
+} from '@agentos/core';
+import type { CostAggregator } from '@agentos/core/cognitive_substrate/IGMI';
 
-/**
- * Configuration for a single agent role within an agency.
- */
+/** Captures the configuration for a single agency seat. */
 export interface AgentRoleConfig {
-  /** Unique role identifier (e.g., "researcher", "writer", "analyst") */
   roleId: string;
-  /** Persona ID to use for this role's GMI */
   personaId: string;
-  /** Specific instruction/task for this agent */
   instruction: string;
-  /** Execution priority (lower numbers execute first) */
   priority?: number;
-  /** Additional metadata for this role */
   metadata?: Record<string, unknown>;
 }
 
-/**
- * Input for executing a multi-GMI agency workflow.
- */
+/** Input payload when launching a multi-seat execution. */
 export interface AgencyExecutionInput {
-  /** High-level goal for the entire agency */
   goal: string;
-  /** Array of agent roles to coordinate */
   roles: AgentRoleConfig[];
-  /** User initiating the workflow */
   userId: string;
-  /** Conversation/session identifier for tracking */
   conversationId: string;
-  /** Optional workflow definition ID to use */
   workflowDefinitionId?: string;
-  /** Desired output format */
   outputFormat?: 'json' | 'csv' | 'markdown' | 'text';
-  /** Additional metadata */
   metadata?: Record<string, unknown>;
 }
 
-/**
- * Output from a single GMI's execution within the agency.
- */
-interface GMIExecutionResult {
+interface GmiExecutionResult {
   roleId: string;
   personaId: string;
   gmiInstanceId: string;
   output: string;
-  usage?: {
-    promptTokens: number;
-    completionTokens: number;
-    totalTokens: number;
-  };
+  usage?: CostAggregator;
   metadata?: Record<string, unknown>;
   error?: string;
 }
 
-/**
- * Consolidated result from multi-GMI agency execution.
- */
+/** Aggregated result returned to callers. */
 export interface AgencyExecutionResult {
   agencyId: string;
   goal: string;
-  /** Individual outputs from each GMI */
-  gmiResults: GMIExecutionResult[];
-  /** Consolidated output combining all GMI results */
+  gmiResults: GmiExecutionResult[];
   consolidatedOutput: string;
-  /** Output in requested format */
   formattedOutput?: {
     format: 'json' | 'csv' | 'markdown' | 'text';
     content: string;
   };
-  /** Total execution time in milliseconds */
   durationMs: number;
-  /** Aggregate token usage */
-  totalUsage: {
-    promptTokens: number;
-    completionTokens: number;
-    totalTokens: number;
-  };
+  totalUsage: CostAggregator;
 }
 
-/**
- * Dependencies required for MultiGMIAgencyExecutor.
- */
 export interface MultiGMIAgencyExecutorDependencies {
-  /** AgentOS instance for GMI management and streaming */
   agentOS: AgentOS;
-  /** Optional callback for streaming chunks (AGENCY_UPDATE, etc.) */
   onChunk?: (chunk: AgentOSResponse) => Promise<void> | void;
 }
 
-/**
- * Executes multi-GMI agency workflows with parallel coordination.
- * 
- * **How it works:**
- * 1. **Parse roles**: Convert role configs into GMI initialization parameters
- * 2. **Create GMIs**: Instantiate one GMI per role via GMIManager
- * 3. **Execute in parallel**: Use Promise.all to process agent tasks concurrently
- * 4. **Stream updates**: Emit AGENCY_UPDATE chunks showing seat states
- * 5. **Consolidate outputs**: Combine GMI results into requested format
- * 
- * **Concurrency:**
- * - Executes up to 4 GMIs in parallel by default
- * - Can be configured via ConcurrencyQueue
- * - Respects task dependencies if workflow definition is provided
- * 
- * **Error Handling:**
- * - Individual GMI failures don't stop other agents
- * - Failed seats are marked with error messages
- * - Partial results are still consolidated
- */
+interface SeatSnapshot {
+  roleId: string;
+  personaId: string;
+  gmiInstanceId?: string;
+  status: 'pending' | 'running' | 'completed' | 'failed';
+  metadata?: Record<string, unknown>;
+}
+
+/** Utility function limiting concurrency for async tasks. */
+async function runWithConcurrency<T>(factories: Array<() => Promise<T>>, limit: number): Promise<T[]> {
+  const results: T[] = new Array(factories.length);
+  let cursor = 0;
+
+  const worker = async (): Promise<void> => {
+    while (true) {
+      const current = cursor++;
+      if (current >= factories.length) {
+        break;
+      }
+      results[current] = await factories[current]();
+    }
+  };
+
+  const workers = Array.from({ length: Math.min(limit, factories.length) }, () => worker());
+  await Promise.all(workers);
+  return results;
+}
+
 export class MultiGMIAgencyExecutor {
-  constructor(private readonly deps: MultiGMIAgencyExecutorDependencies) {}
+  private readonly deps: MultiGMIAgencyExecutorDependencies;
+
+  constructor(deps: MultiGMIAgencyExecutorDependencies) {
+    this.deps = deps;
+  }
 
   /**
-   * Executes a multi-GMI agency workflow.
-   * 
-   * @param input - Agency execution configuration
-   * @returns Consolidated results from all GMI executions
-   * 
-   * @example Execute parallel analysis workflow
-   * ```typescript
-   * const result = await executor.executeAgency({
-   *   goal: "Analyze performance metrics",
-   *   roles: [
-   *     { roleId: "data_analyst", personaId: "v_researcher", instruction: "Calculate p50, p95, p99 latency" },
-   *     { roleId: "optimizer", personaId: "nerf_generalist", instruction: "Suggest 3 performance improvements" },
-   *     { roleId: "reporter", personaId: "v_researcher", instruction: "Create markdown summary" }
-   *   ],
-   *   userId: "user-123",
-   *   conversationId: "conv-456",
-   *   outputFormat: "markdown"
-   * });
-   * ```
+   * Executes an agency workflow by invoking AgentOS for every seat.
    */
   public async executeAgency(input: AgencyExecutionInput): Promise<AgencyExecutionResult> {
     const startTime = Date.now();
     const agencyId = `agency_${uuidv4()}`;
-    
-    // Sort roles by priority (lower = higher priority)
-    const sortedRoles = [...input.roles].sort((a, b) => (a.priority || 999) - (b.priority || 999));
-    
-    // Execute all GMIs in parallel
-    const gmiPromises = sortedRoles.map((role) =>
-      this.executeGMIForRole({
-        role,
-        agencyId,
-        goal: input.goal,
-        userId: input.userId,
-        conversationId: input.conversationId,
-      })
-    );
-    
-    // Wait for all GMIs to complete (or fail)
-    const gmiResults = await Promise.allSettled(gmiPromises);
-    
-    // Extract successful results and errors
-    const successfulResults: GMIExecutionResult[] = [];
-    const failedResults: GMIExecutionResult[] = [];
-    
-    gmiResults.forEach((result, index) => {
-      const role = sortedRoles[index];
-      if (result.status === 'fulfilled') {
-        successfulResults.push(result.value);
-      } else {
-        failedResults.push({
+    const seatMap = new Map<string, SeatSnapshot>();
+
+    input.roles.forEach((role) => {
+      seatMap.set(role.roleId, {
+        roleId: role.roleId,
+        personaId: role.personaId,
+        status: 'pending',
+        metadata: role.metadata,
+      });
+    });
+
+    await this.emitAgencyUpdate(agencyId, input.conversationId, seatMap, { goal: input.goal, status: 'pending' });
+
+    const participants = input.roles.map((role) => ({ roleId: role.roleId, personaId: role.personaId }));
+    const factories = input.roles.map((role) => async () => {
+      await this.updateSeatStatus(agencyId, input.conversationId, seatMap, role.roleId, 'running');
+
+      try {
+        const result = await this.executeSeat({
+          role,
+          agencyId,
+          goal: input.goal,
+          userId: input.userId,
+          conversationId: input.conversationId,
+          workflowDefinitionId: input.workflowDefinitionId,
+          participants,
+          metadata: input.metadata,
+        });
+
+        seatMap.set(role.roleId, {
           roleId: role.roleId,
           personaId: role.personaId,
-          gmiInstanceId: `failed_${role.roleId}`,
-          output: '',
-          error: result.reason?.message || 'Unknown error',
+          gmiInstanceId: result.gmiInstanceId,
+          status: result.error ? 'failed' : 'completed',
+          metadata: { ...role.metadata, error: result.error },
         });
+        await this.updateSeatStatus(agencyId, input.conversationId, seatMap, role.roleId, result.error ? 'failed' : 'completed');
+        return result;
+      } catch (error) {
+        seatMap.set(role.roleId, {
+          roleId: role.roleId,
+          personaId: role.personaId,
+          status: 'failed',
+          metadata: { ...role.metadata, error: error instanceof Error ? error.message : String(error) },
+        });
+        await this.updateSeatStatus(agencyId, input.conversationId, seatMap, role.roleId, 'failed');
+        return {
+          roleId: role.roleId,
+          personaId: role.personaId,
+          gmiInstanceId: `gmi_failed_${uuidv4()}`,
+          output: '',
+          error: error instanceof Error ? error.message : String(error),
+        };
       }
     });
-    
-    const allResults = [...successfulResults, ...failedResults];
-    
-    // Consolidate outputs
-    const consolidatedOutput = this.consolidateOutputs(allResults, input.outputFormat || 'markdown');
-    const formattedOutput = this.formatOutput(allResults, input.outputFormat || 'markdown');
-    
-    // Calculate total usage
-    const totalUsage = allResults.reduce(
-      (sum, r) => ({
-        promptTokens: sum.promptTokens + (r.usage?.promptTokens || 0),
-        completionTokens: sum.completionTokens + (r.usage?.completionTokens || 0),
-        totalTokens: sum.totalTokens + (r.usage?.totalTokens || 0),
-      }),
-      { promptTokens: 0, completionTokens: 0, totalTokens: 0 }
-    );
-    
-    return {
+
+    const concurrencyLimit = Math.min(4, Math.max(1, factories.length));
+    const gmiResults = await runWithConcurrency(factories, concurrencyLimit);
+
+    const consolidatedOutput = this.consolidateOutputs(gmiResults, input.outputFormat ?? 'markdown');
+    const formattedOutput = this.formatOutput(gmiResults, input.outputFormat ?? 'markdown');
+    const totalUsage = this.aggregateUsage(gmiResults);
+
+    await this.emitAgencyUpdate(agencyId, input.conversationId, seatMap, {
+      goal: input.goal,
+      status: 'completed',
+    });
+
+    const result: AgencyExecutionResult = {
       agencyId,
       goal: input.goal,
-      gmiResults: allResults,
+      gmiResults,
       consolidatedOutput,
       formattedOutput,
       durationMs: Date.now() - startTime,
       totalUsage,
     };
+
+    return result;
   }
 
-  /**
-   * Executes a single GMI for a specific role within the agency.
-   * 
-   * @param params - Role configuration and context
-   * @returns Execution result for this GMI
-   * @private
-   */
-  private async executeGMIForRole(params: {
+  private async executeSeat(params: {
     role: AgentRoleConfig;
     agencyId: string;
     goal: string;
     userId: string;
     conversationId: string;
-  }): Promise<GMIExecutionResult> {
+    workflowDefinitionId?: string;
+    participants: Array<{ roleId: string; personaId?: string }>;
+    metadata?: Record<string, unknown>;
+  }): Promise<GmiExecutionResult> {
     const { role, agencyId, goal, userId, conversationId } = params;
-    
-    // Build instruction combining agency goal and role-specific task
-    const fullInstruction = `**Agency Goal:** ${goal}\n\n**Your Role (${role.roleId}):** ${role.instruction}`;
-    
-    // Create temporary session for this GMI
-    const sessionId = `${conversationId}_${role.roleId}`;
-    
-    try {
-      // Execute GMI turn (this should go through AgentOS.processRequest)
-      // For now, we'll use a simplified approach
-      // TODO: Wire through actual AgentOS streaming with proper GMI instances
-      
-      const output = await this.mockGMIExecution(role, fullInstruction);
-      
-      return {
-        roleId: role.roleId,
-        personaId: role.personaId,
-        gmiInstanceId: `gmi_${role.roleId}_${Date.now()}`,
-        output,
-        usage: {
-          promptTokens: 100,
-          completionTokens: 200,
-          totalTokens: 300,
-        },
-      };
-    } catch (error) {
-      throw new Error(`GMI execution failed for role ${role.roleId}: ${error instanceof Error ? error.message : String(error)}`);
+    const seatSessionId = `${conversationId}:${role.roleId}:${uuidv4()}`;
+    const instruction = `You are participating in a multi-agent agency.
+Goal: ${goal}
+Role (${role.roleId}): ${role.instruction}`;
+
+    const agentosInput: AgentOSInput = {
+      userId,
+      sessionId: seatSessionId,
+      conversationId,
+      selectedPersonaId: role.personaId,
+      textInput: instruction,
+      options: { streamUICommands: true },
+      agencyRequest: {
+        agencyId,
+        goal,
+        metadata: params.metadata,
+        participants: params.participants,
+      },
+      workflowRequest: params.workflowDefinitionId
+        ? {
+            definitionId: params.workflowDefinitionId,
+            workflowId: `${params.workflowDefinitionId}-${agencyId}`,
+            conversationId,
+          }
+        : undefined,
+    };
+
+    let aggregatedText = '';
+    let finalResponseText: string | null = null;
+    let usage: CostAggregator | undefined;
+    let gmiInstanceId = `gmi_${role.roleId}_${uuidv4()}`;
+
+    const stream = this.deps.agentOS.processRequest(agentosInput);
+    for await (const chunk of stream) {
+      gmiInstanceId = chunk.gmiInstanceId ?? gmiInstanceId;
+
+      switch (chunk.type) {
+        case AgentOSResponseChunkType.TEXT_DELTA:
+          aggregatedText += chunk.textDelta ?? '';
+          break;
+        case AgentOSResponseChunkType.FINAL_RESPONSE:
+          finalResponseText = chunk.finalResponseText ?? finalResponseText;
+          usage = chunk.usage ?? usage;
+          break;
+        default:
+          break;
+      }
+
+      await this.deps.onChunk?.(chunk);
     }
+
+    const output = (finalResponseText ?? aggregatedText).trim();
+    return {
+      roleId: role.roleId,
+      personaId: role.personaId,
+      gmiInstanceId,
+      output,
+      usage,
+      metadata: role.metadata,
+    };
   }
 
-  /**
-   * Temporary mock GMI execution until full AgentOS streaming is wired.
-   * @private
-   * @deprecated Will be replaced with actual AgentOS.processRequest call
-   */
-  private async mockGMIExecution(role: AgentRoleConfig, instruction: string): Promise<string> {
-    // This is a placeholder - in production this should call AgentOS.processRequest
-    return `[${role.roleId}] Processing: ${instruction}\n\nMock output from ${role.personaId}`;
+  private async updateSeatStatus(
+    agencyId: string,
+    conversationId: string,
+    seatMap: Map<string, SeatSnapshot>,
+    roleId: string,
+    status: SeatSnapshot['status'],
+  ): Promise<void> {
+    const snapshot = seatMap.get(roleId);
+    if (!snapshot) {
+      return;
+    }
+    snapshot.status = status;
+    seatMap.set(roleId, snapshot);
+    await this.emitAgencyUpdate(agencyId, conversationId, seatMap);
   }
 
-  /**
-   * Consolidates outputs from multiple GMIs into a single coherent response.
-   * 
-   * @param results - Array of GMI execution results
-   * @param format - Desired output format
-   * @returns Consolidated text combining all GMI outputs
-   * @private
-   */
-  private consolidateOutputs(results: GMIExecutionResult[], format: string): string {
+  private async emitAgencyUpdate(
+    agencyId: string,
+    conversationId: string,
+    seatMap: Map<string, SeatSnapshot>,
+    metadata?: Record<string, unknown>,
+  ): Promise<void> {
+    if (!this.deps.onChunk) {
+      return;
+    }
+
+    const seats = Array.from(seatMap.values()).map((seat) => ({
+      roleId: seat.roleId,
+      personaId: seat.personaId,
+      gmiInstanceId: seat.gmiInstanceId ?? 'pending',
+      metadata: { ...seat.metadata, status: seat.status },
+    }));
+
+    const allTerminal = seats.every((seat) => {
+      const status = (seat.metadata?.status as string | undefined) ?? 'pending';
+      return status === 'completed' || status === 'failed';
+    });
+
+    const chunk: AgentOSAgencyUpdateChunk = {
+      type: AgentOSResponseChunkType.AGENCY_UPDATE,
+      streamId: conversationId,
+      gmiInstanceId: `agency:${agencyId}`,
+      personaId: `agency:${agencyId}`,
+      isFinal: allTerminal,
+      timestamp: new Date().toISOString(),
+      agency: {
+        agencyId,
+        workflowId: metadata?.workflowId as string | undefined,
+        conversationId,
+        seats,
+        metadata,
+      },
+    };
+
+    await this.deps.onChunk(chunk);
+  }
+
+  private consolidateOutputs(results: GmiExecutionResult[], format: string): string {
     const sections = results.map((result) => {
       const header = `## ${result.roleId.toUpperCase().replace(/_/g, ' ')}`;
       const persona = `*Persona: ${result.personaId}*`;
-      const output = result.error ? `❌ **Error:** ${result.error}` : result.output;
-      
-      return `${header}\n${persona}\n\n${output}`;
+      const body = result.error ? `**Warning:** ${result.error}` : result.output;
+      return `${header}\n${persona}\n\n${body}`;
     });
-    
     return `# Agency Coordination Results\n\n${sections.join('\n\n---\n\n')}`;
   }
 
-  /**
-   * Formats consolidated output into requested structure (JSON, CSV, markdown, text).
-   * 
-   * @param results - Array of GMI execution results
-   * @param format - Desired output format
-   * @returns Formatted output object
-   * @private
-   */
-  private formatOutput(
-    results: GMIExecutionResult[],
-    format: 'json' | 'csv' | 'markdown' | 'text'
-  ): { format: string; content: string } {
+  private formatOutput(results: GmiExecutionResult[], format: 'json' | 'csv' | 'markdown' | 'text') {
     switch (format) {
       case 'json':
-        return {
-          format: 'json',
-          content: JSON.stringify(results, null, 2),
-        };
-      
-      case 'csv':
-        const headers = 'roleId,personaId,status,output';
-        const rows = results.map((r) =>
-          `"${r.roleId}","${r.personaId}","${r.error ? 'failed' : 'success'}","${r.output.replace(/"/g, '""')}"`
+        return { format: 'json', content: JSON.stringify(results, null, 2) };
+      case 'csv': {
+        const rows = results.map(
+          (r) =>
+            `"${r.roleId.replace(/"/g, '""')}","${r.personaId.replace(/"/g, '""')}","${
+              r.error ? 'failed' : 'success'
+            }","${(r.output || r.error || '').replace(/"/g, '""')}"`,
         );
         return {
           format: 'csv',
-          content: `${headers}\n${rows.join('\n')}`,
+          content: ['roleId,personaId,status,output', ...rows].join('\n'),
         };
-      
+      }
       case 'markdown':
-        return {
-          format: 'markdown',
-          content: this.consolidateOutputs(results, 'markdown'),
-        };
-      
+        return { format: 'markdown', content: this.consolidateOutputs(results, 'markdown') };
       case 'text':
       default:
-        const lines = results.map((r) => `[${r.roleId}] ${r.output}`);
         return {
           format: 'text',
-          content: lines.join('\n\n'),
+          content: results.map((r) => `[${r.roleId}] ${r.output || r.error || ''}`).join('\n\n'),
         };
     }
   }
-}
 
+  private aggregateUsage(results: GmiExecutionResult[]): CostAggregator {
+    return results.reduce<CostAggregator>(
+      (acc, result) => ({
+        promptTokens: acc.promptTokens + (result.usage?.promptTokens ?? 0),
+        completionTokens: acc.completionTokens + (result.usage?.completionTokens ?? 0),
+        totalTokens: acc.totalTokens + (result.usage?.totalTokens ?? 0),
+        totalCostUSD: acc.totalCostUSD + (result.usage?.totalCostUSD ?? 0),
+      }),
+      { promptTokens: 0, completionTokens: 0, totalTokens: 0, totalCostUSD: 0 },
+    );
+  }
+}

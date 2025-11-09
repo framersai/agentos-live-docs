@@ -68,6 +68,7 @@ Content-Type: application/json
 - **Authentication:** the default server has no auth. Add your own checks before dispatching to AgentOS (for example, verify API keys or bearer tokens).
 - **CORS:** enable/disable via `AgentOSServerConfig.enableCors` and `corsOrigin`.
 - **Streaming:** the example buffers all chunks and returns them in one response. For real-time streaming, hook the async generator returned by `processRequest` to Server-Sent Events or WebSockets.
+- **Secrets:** the `/api/agentos/stream` handler accepts an `apiKeys` query parameter (JSON string) so browsers can forward user-provided API keys via `AgentOSInput.userApiKeys`.
 - **Additional routes:** extend the handler to surface conversations, feedback, or other AgentOS facade methods as needed.
 
 Because the server avoids external dependencies, it can be deployed as-is for local testing or embedded in another Node.js app with minimal friction. Use it as a starting point before layering in features from the full Voice Chat Assistant backend (rate limiting, Supabase auth, billing, etc.).

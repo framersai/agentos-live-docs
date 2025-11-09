@@ -29,6 +29,7 @@ export interface AgentOSPersonaDefinition {
   tags: string[];
   toolsetIds: string[];
   minAccessLevel?: AgentOSAccessLevel;
+  requiredSecrets?: string[];
 }
 
 const TOOLSETS: Record<string, AgentOSToolset> = {
@@ -72,6 +73,7 @@ const PERSONAS: AgentOSPersonaDefinition[] = [
     promptPath: resolvePromptPath('nerf_chat'),
     tags: ['concise', 'q&a', 'daily-helper'],
     toolsetIds: [],
+    requiredSecrets: ['openrouter.apiKey'],
   },
   {
     personaId: 'v_researcher',
@@ -83,6 +85,7 @@ const PERSONAS: AgentOSPersonaDefinition[] = [
     promptPath: resolvePromptPath('v_default_assistant'),
     tags: ['research', 'analysis', 'deep-dive'],
     toolsetIds: [],
+    requiredSecrets: ['openrouter.apiKey'],
   },
   {
     personaId: 'code_pilot',
@@ -95,6 +98,7 @@ const PERSONAS: AgentOSPersonaDefinition[] = [
     tags: ['code', 'debugging', 'snippets'],
     toolsetIds: ['coding_core'],
     minAccessLevel: 'metered',
+    requiredSecrets: ['openrouter.apiKey'],
   },
   {
     personaId: 'systems_architect',
@@ -107,6 +111,7 @@ const PERSONAS: AgentOSPersonaDefinition[] = [
     tags: ['architecture', 'diagrams', 'tradeoffs'],
     toolsetIds: [],
     minAccessLevel: 'metered',
+    requiredSecrets: ['openrouter.apiKey'],
   },
   {
     personaId: 'meeting_maestro',
@@ -118,6 +123,7 @@ const PERSONAS: AgentOSPersonaDefinition[] = [
     promptPath: resolvePromptPath('meeting'),
     tags: ['meetings', 'notes', 'productivity'],
     toolsetIds: [],
+    requiredSecrets: ['openrouter.apiKey'],
   },
   {
     personaId: 'echo_diary',
@@ -129,6 +135,7 @@ const PERSONAS: AgentOSPersonaDefinition[] = [
     promptPath: resolvePromptPath('diary'),
     tags: ['journaling', 'reflection', 'personal'],
     toolsetIds: ['diary_reflection'],
+    requiredSecrets: ['openrouter.apiKey'],
   },
   {
     personaId: 'interview_coach',
@@ -140,6 +147,7 @@ const PERSONAS: AgentOSPersonaDefinition[] = [
     promptPath: resolvePromptPath('coding_interviewer'),
     tags: ['interview', 'practice', 'feedback'],
     toolsetIds: [],
+    requiredSecrets: ['openrouter.apiKey'],
   },
   {
     personaId: 'professor_astra',
@@ -151,6 +159,7 @@ const PERSONAS: AgentOSPersonaDefinition[] = [
     promptPath: resolvePromptPath('tutor'),
     tags: ['learning', 'tutor', 'education'],
     toolsetIds: ['tutor_learning'],
+    requiredSecrets: ['openrouter.apiKey'],
   },
   {
     personaId: 'lc_audit',
@@ -163,6 +172,7 @@ const PERSONAS: AgentOSPersonaDefinition[] = [
     tags: ['leetcode', 'audit', 'algorithms'],
     toolsetIds: [],
     minAccessLevel: 'metered',
+    requiredSecrets: ['openrouter.apiKey'],
   },
 ];
 

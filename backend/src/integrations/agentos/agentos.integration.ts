@@ -31,6 +31,11 @@ import { createAgencyStreamRouter } from './agentos.agency-stream-router.js';
 import { createAgentOSSqlClient } from './agentos.sql-client.js';
 import { reloadDynamicPersonas } from './agentos.persona-registry.js';
 import { createDefaultGuardrailStack } from './guardrails/index.js';
+import {
+  MultiGMIAgencyExecutor,
+  type AgencyExecutionInput,
+  type AgencyExecutionResult,
+} from './MultiGMIAgencyExecutor.js';
 
 const isWorkflowStatus = (value: string): value is WorkflowStatus =>
   (Object.values(WorkflowStatus) as string[]).includes(value);
@@ -97,21 +102,24 @@ class AgentOSIntegration {
           displayName: 'Research & Publish',
           description: 'Research a topic and publish findings to Telegram',
           category: 'productivity' as any,
-          requiredExtensions: ['web-search', 'telegram']
+          requiredExtensions: ['web-search', 'telegram'],
+          metadata: { requiredSecrets: ['openrouter.apiKey'] }
         } as any,
         {
           id: 'monitor-and-alert',
           displayName: 'Monitor & Alert',
           description: 'Monitor web for updates and send alerts',
           category: 'automation' as any,
-          requiredExtensions: ['web-search', 'telegram']
+          requiredExtensions: ['web-search', 'telegram'],
+          metadata: { requiredSecrets: ['openrouter.apiKey'] }
         } as any,
         {
           id: 'content-aggregation',
           displayName: 'Content Aggregation',
           description: 'Aggregate content from multiple sources',
           category: 'research' as any,
-          requiredExtensions: ['web-search']
+          requiredExtensions: ['web-search'],
+          metadata: { requiredSecrets: ['openrouter.apiKey'] }
         } as any
       ];
     }
@@ -210,6 +218,15 @@ class AgentOSIntegration {
       console.info('[AgentOS][Workflow] Cancelled workflow', { workflowId, reason });
     }
     return updated;
+  }
+
+  public async executeAgencyWorkflow(
+    input: AgencyExecutionInput,
+    onChunk?: (chunk: AgentOSResponse) => Promise<void> | void,
+  ): Promise<AgencyExecutionResult> {
+    const agentosInstance = await this.getAgentOS();
+    const executor = new MultiGMIAgencyExecutor({ agentOS: agentosInstance, onChunk });
+    return executor.executeAgency(input);
   }
 
   private async getAgentOS(): Promise<AgentOS> {

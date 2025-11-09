@@ -49,6 +49,19 @@ export const createAgentOSStreamRouter = (integration: AgentOSStreamIntegration)
       }
     }
 
+    let userApiKeys: Record<string, string> | undefined;
+    if (typeof req.query.apiKeys === 'string') {
+      try {
+        const parsed = JSON.parse(req.query.apiKeys);
+        if (parsed && typeof parsed === 'object') {
+          userApiKeys = parsed as Record<string, string>;
+        }
+      } catch {
+        res.status(400).json({ message: 'Invalid apiKeys payload.' });
+        return;
+      }
+    }
+
     if (!userId || !conversationId || !mode || !Array.isArray(messages)) {
       res.status(400).json({ message: 'Missing agentOS streaming payload fields.' });
       return;
@@ -66,6 +79,9 @@ export const createAgentOSStreamRouter = (integration: AgentOSStreamIntegration)
         streamUICommands: true,
       },
     };
+    if (userApiKeys) {
+      agentosInput.userApiKeys = userApiKeys;
+    }
 
     if (workflowRequest && typeof workflowRequest === 'object') {
       (agentosInput as any).workflowRequest = workflowRequest;

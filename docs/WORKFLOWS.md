@@ -11,6 +11,12 @@ AgentOS now exposes a workflow engine so hosts can define automations, task grap
 - **Task Graph** â€“ Directed acyclic graph of tasks with dependency edges, executors, retry policies, and output schemas.
 - **Workflow Store** â€“ Pluggable persistence layer responsible for saving instances, tasks, and audit events.
 - **Workflow Engine** â€“ Runtime that loads workflow descriptors from the extension registry, creates instances, coordinates progression, and emits streaming updates.
+### Agency telemetry baked into workflow instances
+
+- `WorkflowInstance.agencyState` now records a `WorkflowAgencySeatSnapshot` per role. Each snapshot includes the latest `gmiInstanceId`, persona assignment, metadata (e.g., last output preview, status), and a bounded seat history sourced from the `AgencyRegistry`.
+- `WorkflowRuntime.syncWorkflowAgencyState` persists that structure so the workflow store can serve rich telemetry even if the client reconnects mid-run.
+- The `WORKFLOW_UPDATE` payloads echo the same structure, enabling the Session Inspector, Workflow Overview, and backend exports to show per-seat progress without extra APIs.
+
 
 ---
 
@@ -70,6 +76,7 @@ Descriptors may specify:
 - Task-level `policyTags` to reuse guardrail stacks or permission policies.
 - `requiresConversationContext` to indicate whether a conversation must exist before instantiation.
 - `roles[*].personaId` / `personaTraits` and `roles[*].evolutionRules` so Agencies can adapt persona behaviour over time.
+- `metadata.requiredSecrets` listing the secret IDs (API keys) a workflow depends on. AgentOS and the client workbench surface these requirements and block execution when the user has not provided the necessary keys.
 
 ---
 
