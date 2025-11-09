@@ -1,6 +1,6 @@
 export function AboutPanel() {
   return (
-    <section className="rounded-3xl border border-slate-200 bg-white p-5 dark:border-white/10 dark:bg-slate-900/60">
+    <section className="ui-card p-5">
       <header className="mb-3">
         <p className="text-[10px] uppercase tracking-[0.35em] text-slate-500 dark:text-slate-400">About</p>
         <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">AgentOS Client</h3>

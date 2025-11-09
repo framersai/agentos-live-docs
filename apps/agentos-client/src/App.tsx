@@ -782,7 +782,7 @@ export default function App() {
           </div>
         </div>
       )}
-      <div className={`${sidebarCollapsed ? 'grid-cols-1' : 'grid-cols-panel'} grid min-h-screen w-full bg-slate-50 text-slate-900 transition-colors duration-300 ease-out dark:bg-slate-950 dark:text-slate-100`}>
+      <div className={`${sidebarCollapsed ? 'grid-cols-1' : 'grid-cols-panel'} grid min-h-screen w-full ui-bg-base ui-text-base transition-colors duration-300 ease-out`}>
         {/* Navigation Sidebar */}
         {!sidebarCollapsed && (
           isDesktop ? (
@@ -790,7 +790,7 @@ export default function App() {
           ) : (
             showMobileSidebar && (
               <div className="fixed inset-0 z-50 flex lg:hidden">
-                <div className="h-full w-80 max-w-[80%] overflow-y-auto border-r border-slate-200 bg-slate-50 dark:border-white/10 dark:bg-slate-950">
+                <div className="h-full w-80 max-w-[80%] overflow-y-auto border-r ui-border-base ui-bg-surface">
                   <Sidebar onCreateSession={handleCreateSession} onToggleCollapse={() => setShowMobileSidebar(false)} onNavigate={(key) => { setLeftTab(key); setShowMobileSidebar(false); }} />
                 </div>
                 <button className="flex-1 bg-black/40" aria-label="Close sidebar overlay" onClick={() => setShowMobileSidebar(false)} />
@@ -802,7 +802,7 @@ export default function App() {
         {/* Main Content Area */}
         <main 
           id="main-content"
-          className="flex min-w-0 flex-col gap-6 overflow-y-auto bg-white p-6 transition-colors duration-300 dark:bg-slate-950"
+          className="flex min-w-0 flex-col gap-6 overflow-y-auto ui-bg-surface p-6 transition-colors duration-300"
           role="main"
           aria-label={t("app.labels.mainContent", { defaultValue: "Main content area" })}
         >
@@ -824,7 +824,7 @@ export default function App() {
               <div
                 role="tablist"
                 aria-label="Left panel tabs"
-                className="rounded-3xl border border-slate-200 bg-white p-2 text-sm dark:border-white/10 dark:bg-slate-900/60"
+                className="ui-card p-2 text-sm"
                 data-tour="tabs"
               >
                 <div className="flex flex-wrap items-center gap-1 sm:gap-2">
@@ -992,14 +992,14 @@ export default function App() {
               <SessionInspector />
               <div className="border-t border-slate-200 dark:border-white/10 md:hidden" />
               <div className="grid gap-4 sm:grid-cols-2 md:block md:space-y-6">
-                <section className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-5 dark:border-white/10 dark:bg-slate-900/60">
+                <section className="ui-card p-4 sm:p-5">
                   <header className="mb-2">
                     <p className="text-xs uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">Stream status</p>
                     <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Live telemetry</h3>
                   </header>
                   <TelemetryView />
                 </section>
-                <section className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-5 dark:border-white/10 dark:bg-slate-900/60">
+                <section className="ui-card p-4 sm:p-5">
                   <header className="mb-2">
                     <p className="text-xs uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">Analytics</p>
                     <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Usage insights</h3>
