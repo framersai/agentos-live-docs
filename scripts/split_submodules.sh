@@ -373,6 +373,10 @@ link_submodule() {
   fi
   # Remove tracked files and working tree to make room for the submodule
   git rm -r --quiet -- "$path" || true
+  # Force-remove any leftover directory/files (Windows can leave artifacts)
+  if [[ -d "$path" || -f "$path" ]]; then
+    rm -rf -- "$path" 2>/dev/null || true
+  fi
   git submodule add "$url" "$path"
 }
 
