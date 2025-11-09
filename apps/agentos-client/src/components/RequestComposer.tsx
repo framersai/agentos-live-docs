@@ -2,11 +2,11 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Paperclip, Play, Sparkle, Users, ChevronDown, ChevronUp, AlertCircle, Info, Lock } from "lucide-react";
+import { Play, Users, ChevronDown, ChevronUp, AlertCircle, Lock } from "lucide-react";
 import { EXAMPLE_PROMPTS, AGENCY_EXAMPLE_PROMPTS } from "@/constants/examplePrompts";
 import { useTranslation } from "react-i18next";
 import { useWorkflowDefinitions } from "@/hooks/useWorkflowDefinitions";
-import { useSessionStore, type SessionTargetType } from "@/state/sessionStore";
+import { useSessionStore } from "@/state/sessionStore";
 import { agentOSConfig } from "@/lib/env";
 
 type Translate = (key: string, options?: Record<string, unknown>) => string;
@@ -28,26 +28,12 @@ export function RequestComposer({ onSubmit, disabled = false }: RequestComposerP
   const { t } = useTranslation();
   const [isStreaming, setStreaming] = useState(false);
   const [showConnectionDetails, setShowConnectionDetails] = useState(false);
-  const personas = useSessionStore((state) => state.personas);
-  const agencies = useSessionStore((state) => state.agencies);
   const sessions = useSessionStore((state) => state.sessions);
   const activeSessionId = useSessionStore((state) => state.activeSessionId);
-  const activeAgencyId = useSessionStore((state) => state.activeAgencyId);
-  const setActiveAgency = useSessionStore((state) => state.setActiveAgency);
-  const { data: workflowDefinitions = [], isLoading: workflowsLoading } = useWorkflowDefinitions();
+  const { data: workflowDefinitions = [] } = useWorkflowDefinitions();
 
   const activeSession = sessions.find((item) => item.id === activeSessionId) ?? null;
 
-  const remotePersonas = useMemo(() => {
-    const items = personas.filter((p) => p.source === "remote");
-    // Prefer V then Nerf in ordering
-    const score = (id: string) => (id === "v_researcher" ? 0 : id === "nerf_generalist" ? 1 : 2);
-    return items.sort((a, b) => score(a.id) - score(b.id));
-  }, [personas]);
-  const defaultPersonaId = remotePersonas[0]?.id ?? personas[0]?.id ?? "";
-  const fallbackAgencyId = agencies[0]?.id ?? "";
-  const defaultAgencyId = activeAgencyId ?? fallbackAgencyId;
-  const initialTarget: SessionTargetType = agencies.length > 0 ? "agency" : "persona";
 
   const samplePrompt = t("requestComposer.defaults.samplePrompt");
   const examplePrompts = useMemo(() => {
@@ -62,7 +48,6 @@ export function RequestComposer({ onSubmit, disabled = false }: RequestComposerP
     const count = Math.random() < 0.5 ? 3 : 4;
     return arr.slice(0, count);
   }, [activeSession?.targetType]);
-  const replayPrompt = t("requestComposer.actions.replayPlaceholder");
   const requestSchema = useMemo(() => createRequestSchema(t), [t]);
 
   const form = useForm<RequestComposerPayload>({
@@ -72,7 +57,6 @@ export function RequestComposer({ onSubmit, disabled = false }: RequestComposerP
     }
   });
 
-  const workflowId = form.watch("workflowId");
   const { errors } = form.formState;
 
   // Remove all the complex form logic - session determines the target
@@ -87,32 +71,19 @@ export function RequestComposer({ onSubmit, disabled = false }: RequestComposerP
 
   const processSubmission = (values: RequestComposerPayload) => {
     if (!activeSession) {
-      console.error('No active session selected');
+      console.error("No active session selected");
       return;
     }
-    
+
     setStreaming(true);
-    // Use the active session's type and IDs
-    const payload: RequestComposerPayload = {
-      ...values,
-      targetType: activeSession.targetType,
-      personaId: activeSession.personaId,
-      agencyId: activeSession.agencyId,
-    };
-    onSubmit(payload);
-    // Clear the input after submit (both Enter and button)
+    onSubmit(values);
     form.setValue("input", "");
-    // Reset to a new example prompt for next request (use appropriate prompt list)
-    const promptSource = activeSession.targetType === 'agency' ? AGENCY_EXAMPLE_PROMPTS : EXAMPLE_PROMPTS;
+    const promptSource = activeSession.targetType === "agency" ? AGENCY_EXAMPLE_PROMPTS : EXAMPLE_PROMPTS;
     const nextPrompt = promptSource[Math.floor(Math.random() * promptSource.length)];
     setTimeout(() => form.setValue("input", nextPrompt), 100);
   };
 
   const handleSubmit = form.handleSubmit(processSubmission);
-
-  const handleReplay = () => {
-    void form.handleSubmit((values) => processSubmission({ ...values, input: replayPrompt }))();
-  };
 
   return (
     <div className="flex h-full flex-col gap-4 rounded-3xl border border-slate-200 bg-white p-6 dark:border-white/10 dark:bg-slate-900/60" data-tour="composer">
@@ -121,7 +92,7 @@ export function RequestComposer({ onSubmit, disabled = false }: RequestComposerP
         <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{t("requestComposer.header.subtitle")}</h2>
       </header>
       <form onSubmit={handleSubmit} className="flex flex-1 flex-col gap-4" aria-busy={isStreaming} aria-live="polite">
-        <fieldset disabled={isStreaming}>
+        <fieldset disabled={isStreaming || disabled}>
         {/* Single Action Constraint Info */}
         {isStreaming && activeSession && (
           <div className="flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 p-2.5 text-xs text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">
@@ -129,23 +100,8 @@ export function RequestComposer({ onSubmit, disabled = false }: RequestComposerP
             <div>
               <p className="font-semibold">Single Action Mode Active</p>
               <p className="mt-0.5 text-[11px] opacity-90">
-                This session processes one request at a time. New requests are queued until the current one completes.
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
-                    tooltip?.classList.toggle('hidden');
-                  }}
-                  className="ml-1 underline"
-                >
-                  Learn more
-                </button>
-                <span className="ml-1 hidden text-[10px] opacity-75">
-                  AgentOS supports concurrent conversations (up to 1000 parallel streams), but this UI currently enforces 
-                  single-action mode to prevent conversation state conflicts. Future updates will enable multi-threaded discussions 
-                  where each thread maintains separate context.
-                </span>
+                Persona sessions intentionally process one request at a time. Launch an Agency session when you need concurrent seats
+                or parallel workflows.
               </p>
             </div>
           </div>
@@ -201,17 +157,20 @@ export function RequestComposer({ onSubmit, disabled = false }: RequestComposerP
             </div>
           )}
           <textarea
-            rows={4}
+            rows={6}
             {...form.register("input")}
             onKeyDown={(e) => {
               if (isStreaming) return;
-              if (e.key === 'Enter' && !e.shiftKey) {
+              if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
                 void form.handleSubmit(processSubmission)();
               }
             }}
-            className="flex-1 min-h-24 rounded-xl border border-slate-200 bg-white px-3 py-2 text-base text-slate-900 placeholder:text-slate-400 focus:border-sky-500 focus:outline-none dark:border-white/10 dark:bg-slate-950/60 dark:text-slate-100 dark:placeholder:text-slate-500"
+            className="flex-1 min-h-32 rounded-xl border border-slate-200 bg-white px-3 py-2 text-base text-slate-900 placeholder:text-slate-400 focus:border-sky-500 focus:outline-none dark:border-white/10 dark:bg-slate-950/60 dark:text-slate-100 dark:placeholder:text-slate-500"
           />
+          {errors.input && (
+            <p className="text-xs text-rose-600 dark:text-rose-300">{errors.input.message}</p>
+          )}
         </label>
 
 

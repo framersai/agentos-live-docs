@@ -41,21 +41,15 @@ export const EXAMPLE_PROMPTS: string[] = [
  * Currently only first seat responds (workflow start endpoint not wired).
  */
 export const AGENCY_EXAMPLE_PROMPTS: string[] = [
-  "[Mathematician] Calculate fibonacci(30), [Analyst] identify pattern in sequence, [Teacher] explain recursion vs iteration tradeoffs",
-  "[Researcher] List 10 sorting algorithms with O(n) notation, [Coder] implement quicksort in TypeScript, [Tester] write test cases",
-  "[Architect] Design REST API for todo app (CRUD endpoints), [Developer] write OpenAPI 3.0 spec, [QA] create curl test commands",
-  "[Linguist] Analyze etymology of 'serendipity', [Poet] write haiku about it, [Teacher] create 3 example sentences",
-  "[Chef] Create recipe for chocolate chip cookies (exact measurements), [Nutritionist] calculate calories per cookie, [Writer] format as markdown card",
-  "[Cartographer] List all continents by size (km²), [Statistician] calculate total land area, [Visualizer] create ASCII art world map",
-  "[Economist] Explain compound interest formula, [Calculator] compute $5000 at 7% for 15 years monthly, [Teacher] show work step-by-step",
-  "[Chemist] Write balanced equation for photosynthesis, [Biologist] explain each molecule's role, [Artist] create ASCII diagram of process",
-  "[Physicist] Derive E=mc², [Mathematician] show dimensional analysis, [Teacher] explain each symbol with units",
-  "[Cryptographer] Generate 3 UUID v4s, [Analyst] calculate collision probability for 1 billion UUIDs, [Developer] write validation regex",
-  "[Astronomer] List planets by distance from sun (million km), [Mathematician] calculate orbital period ratios, [Writer] create comparison table",
-  "[Musician] Explain musical intervals (semitones), [Mathematician] calculate frequency ratio for perfect fifth, [Teacher] show on piano keyboard ASCII art",
-  "[Logician] Create truth table for (A AND B) OR C, [Programmer] implement as TypeScript function, [Tester] generate all 8 test cases",
-  "[Geometer] Calculate area/volume formulas for sphere, [Mathematician] derive them from calculus, [Visualizer] create ASCII cross-section",
-  "[Colorist] Convert RGB(72, 209, 204) to HSL and hex, [Designer] suggest 5 complementary colors, [Developer] write CSS with color variables",
+  "[Intel Lead] Scan GitHub changelog for Prisma 6 breaking changes, [Migration Engineer] draft upgrade checklist, [Writer] format customer-ready advisory, [QA] create regression test list",
+  "[Research Coordinator] Summarize three latest AI safety papers, [Data Modeler] extract comparable metrics into table, [Debate Lead] highlight disagreements, [Comms] craft executive briefing",
+  "[Market Analyst] Gather ARR + headcount for top 5 SaaS observability vendors, [Finance] model 12-month runway scenarios, [Strategist] outline 3 positioning bets, [Writer] deliver board memo",
+  "[SRE Captain] Parse attached incident log JSON for repeating signatures, [Debugger] map chain of failure, [Playbook Author] propose mitigation tasks per team, [Communicator] draft status email",
+  "[Growth Researcher] Audit landing page copy for accessibility, [Experiment Lead] propose 3 multivariate tests, [Localization] adapt hero copy for ES/FR/JP, [Designer] supply updated style tokens",
+  "[Threat Hunter] Review MITRE ATT&CK techniques relevant to new CVE, [Detection Engineer] draft Sigma rule, [Blue Team Lead] prepare response checklist, [Advocate] craft customer advisory",
+  "[Product Trio] [PM] outline jobs-to-be-done for shared workspace, [Designer] produce layout wireframe in ASCII grid, [Engineer] note integration points, [Doc Lead] compose changelog entry",
+  "[Compliance Analyst] Match SOC2 control IDs to evidence list, [Auditor] flag gaps + owners, [Automation Lead] suggest scripts/webhooks to auto-collect evidence, [Writer] output meeting agenda",
+  "[Data Squad] [Collector] ingest provided CSV + clean missing data, [Statistician] compute variance + outliers, [Forecaster] fit ARIMA baseline, [Storyteller] narrate insight summary paragraph",
+  "[AI Lab] [Prompt Engineer] craft rubric for evaluating travel itineraries, [Researcher] pull comparison data for Rome/Berlin/Tokyo, [Itinerary Planner] assemble 3-day plans, [Critic] rate each vs rubric"
 ];
-
 

@@ -20,7 +20,6 @@ interface GuardrailManagerProps {
   personaId?: string;
   guardrails: SerializableGuardrail[];
   onToggle: (id: string, enabled: boolean) => void;
-  onAdd: (guardrail: SerializableGuardrail) => void;
   onRemove: (id: string) => void;
   onConfigure: (id: string) => void;
 }
@@ -38,7 +37,6 @@ export function GuardrailManager({
   personaId,
   guardrails,
   onToggle,
-  onAdd,
   onRemove,
   onConfigure,
 }: GuardrailManagerProps) {
@@ -65,7 +63,7 @@ export function GuardrailManager({
 
       {guardrails.length === 0 ? (
         <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-center text-xs text-slate-500 dark:border-white/10 dark:bg-slate-950/40 dark:text-slate-400">
-          No guardrails configured. Click "Add" to install from the registry.
+          No guardrails configured. Click &ldquo;Add&rdquo; to install from the registry.
         </div>
       ) : (
         <div className="space-y-2">

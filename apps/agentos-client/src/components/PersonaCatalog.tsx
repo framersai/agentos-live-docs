@@ -2,7 +2,7 @@
 import { clsx } from "clsx";
 import { PlusCircle, Sparkles, Trash2, Wand2, Edit3 } from "lucide-react";
 import { useSessionStore, type PersonaDefinition } from "@/state/sessionStore";
-import { usePersonas } from "@/hooks/usePersonas";
+import { persistPersonaRow } from "@/lib/storageBridge";
 import { PersonaWizard } from "./PersonaWizard";
 import { PersonaEditor } from "./PersonaEditor";
 
@@ -101,11 +101,12 @@ export function PersonaCatalog() {
       traits: toList(draft.traits)
     };
     addPersona(persona);
+    void persistPersonaRow(persona);
     setDraft(defaultDraft);
   };
 
   return (
-    <section className="rounded-3xl border border-slate-200 bg-white p-5 transition-colors duration-300 dark:border-white/10 dark:bg-slate-900/60">
+    <section className="flex max-h-[calc(100vh-6rem)] flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white p-5 transition-colors duration-300 dark:border-white/10 dark:bg-slate-900/60">
       <header className="mb-4 flex items-center justify-between">
         <div>
           <p className="text-[10px] uppercase tracking-[0.4em] text-slate-500 dark:text-slate-400">Persona catalog</p>
@@ -134,7 +135,7 @@ export function PersonaCatalog() {
           <div className="w-full max-w-md rounded-2xl border border-rose-200 bg-white p-4 shadow-xl dark:border-rose-900/40 dark:bg-slate-900">
             <h3 className="mb-2 text-sm font-semibold text-rose-700 dark:text-rose-300">Delete persona?</h3>
             <p className="text-sm text-slate-700 dark:text-slate-300">
-              This will permanently delete "{personas.find(p => p.id === showDeleteModal)?.displayName}" from your local storage. This action cannot be undone.
+              This will permanently delete &ldquo;{personas.find(p => p.id === showDeleteModal)?.displayName}&rdquo; from your local storage. This action cannot be undone.
             </p>
             <div className="mt-4 flex justify-end gap-2">
               <button 
@@ -161,7 +162,7 @@ export function PersonaCatalog() {
         This catalog merges server-provided personas (remote, read-only) with ones you create locally (saved in your browser). Deleting removes only local personas. Remote personas refresh from the server.
       </div>
 
-      <div className="mb-4 space-y-3">
+      <div className="mb-4 space-y-3 flex-shrink-0">
         <label className="flex flex-col gap-2 text-xs uppercase tracking-[0.35em] text-slate-500 dark:text-slate-400">
           Search personas
           <input
@@ -208,7 +209,7 @@ export function PersonaCatalog() {
         )}
       </div>
 
-      <div className="space-y-4">
+      <div className="min-h-0 flex-1 overflow-y-auto space-y-4">
         <ul className="grid grid-cols-1 gap-3 text-sm text-slate-700 lg:grid-cols-2 dark:text-slate-200">
           {visiblePersonas.map((persona) => (
             <li key={persona.id} className="flex flex-col rounded-2xl border border-slate-200 bg-white p-3 dark:border-white/5 dark:bg-slate-950/50">

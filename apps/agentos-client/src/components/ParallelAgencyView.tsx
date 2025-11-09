@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { Card } from './ui/Card';
 import { Button } from './ui/Button';
 import { Badge } from './ui/Badge';
@@ -43,7 +43,19 @@ interface WorkflowTask {
   executor: string;
   status: 'pending' | 'running' | 'complete' | 'error';
   dependencies: string[];
-  result?: any;
+  result?: unknown;
+}
+
+interface WorkflowUpdateEvent {
+  type: 'task_start' | 'task_complete' | 'task_error' | 'agent_thinking' | 'agent_action' | 'workflow_complete';
+  taskId?: string;
+  executor?: string;
+  taskName?: string;
+  progress?: number;
+  agentId?: string;
+  thought?: string;
+  action?: string;
+  error?: string;
 }
 
 export const ParallelAgencyView: React.FC = () => {
@@ -136,7 +148,7 @@ export const ParallelAgencyView: React.FC = () => {
     });
   };
 
-  const handleWorkflowUpdate = (update: any) => {
+  const handleWorkflowUpdate = (update: WorkflowUpdateEvent) => {
     switch (update.type) {
       case 'task_start':
         updateTaskStatus(update.taskId, 'running');

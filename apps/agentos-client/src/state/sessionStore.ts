@@ -61,7 +61,7 @@ export interface AgentSession {
   events: SessionEvent[];
 }
 
-type SessionUpdate = Partial<Omit<AgentSession, "id">> & Pick<AgentSession, "id">;
+export type SessionUpdate = Partial<Omit<AgentSession, "id">> & Pick<AgentSession, "id">;
 
 /**
  * Local client state persisted to IndexedDB via a minimal storage wrapper.
@@ -90,6 +90,8 @@ interface SessionState {
   setPersonaFilters: (filters: Partial<PersonaFilters>) => void;
   applyAgencySnapshot: (agency: AgentOSAgencyUpdateChunk["agency"]) => void;
   applyWorkflowSnapshot: (workflow: AgentOSWorkflowUpdateChunk["workflow"]) => void;
+  removeWorkflowSnapshot: (workflowId: string) => void;
+  clearWorkflowSnapshots: () => void;
   /** Deletes one session by id. */
   removeSession: (sessionId: string) => void;
   /** Clears all local data (personas reset to defaults). */
@@ -136,7 +138,7 @@ const storageShim: Storage = {
   length: 0
 };
 
-const persistedStorage = createJSONStorage(() => (typeof window !== "undefined" ? (idbStorage as any) : storageShim));
+const persistedStorage = createJSONStorage<SessionState>(() => (typeof window !== "undefined" ? (idbStorage as Storage) : storageShim));
 
 export const useSessionStore = create<SessionState>()(
   persist(
@@ -181,7 +183,10 @@ export const useSessionStore = create<SessionState>()(
             session.id === sessionId
               ? {
                   ...session,
-                  events: [event, ...session.events].slice(0, 200)
+                  events:
+                    session.events.length >= 200
+                      ? [...session.events.slice(1), event]
+                      : [...session.events, event]
                 }
               : session
           );
@@ -311,7 +316,14 @@ export const useSessionStore = create<SessionState>()(
             ...state.workflowSnapshots,
             [workflow.workflowId]: workflow
           }
-        }))
+        })),
+      removeWorkflowSnapshot: (workflowId) =>
+        set((state) => {
+          const next = { ...state.workflowSnapshots };
+          delete next[workflowId];
+          return { workflowSnapshots: next };
+        }),
+      clearWorkflowSnapshots: () => set(() => ({ workflowSnapshots: {} }))
     }),
     {
       name: "agentos-client-state",
@@ -322,7 +334,9 @@ export const useSessionStore = create<SessionState>()(
         sessions: state.sessions,
         activeSessionId: state.activeSessionId,
         activeAgencyId: state.activeAgencyId,
-        personaFilters: state.personaFilters
+        personaFilters: state.personaFilters,
+        workflowSnapshots: state.workflowSnapshots,
+        agencySessions: state.agencySessions
       })
     }
   )

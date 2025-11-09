@@ -1,4 +1,4 @@
-﻿import { useCallback, useEffect, useRef, useState } from "react";
+﻿import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { SkipLink } from "@/components/SkipLink";
 import { Sidebar } from "@/components/Sidebar";
@@ -8,7 +8,8 @@ import { AgencyComposer } from "@/components/AgencyComposer";
 import { AgencyManager } from "@/components/AgencyManager";
 import { PersonaCatalog } from "@/components/PersonaCatalog";
 import { WorkflowOverview } from "@/components/WorkflowOverview";
-import { openAgentOSStream, getLlmStatus, getAvailableModels, streamAgencyWorkflow, type AgentRoleConfig } from "@/lib/agentosClient";
+import { openAgentOSStream, getAvailableModels, type AgentRoleConfig, type AgentOSModelInfo } from "@/lib/agentosClient";
+import { bootstrapStorage, persistSessionEventRow, persistSessionRow } from "@/lib/storageBridge";
 import { TourOverlay } from "@/components/TourOverlay";
 import { ThemePanel } from "@/components/ThemePanel";
 import { AboutPanel } from "@/components/AboutPanel";
@@ -17,9 +18,8 @@ import { ImportWizard } from "@/components/ImportWizard";
 import { useUiStore } from "@/state/uiStore";
 import { usePersonas } from "@/hooks/usePersonas";
 import { useSystemTheme } from "@/hooks/useSystemTheme";
-import { useSessionStore } from "@/state/sessionStore";
+import { useSessionStore, type AgentSession, type SessionEvent, type SessionUpdate } from "@/state/sessionStore";
 import { useTelemetryStore } from "@/state/telemetryStore";
-import React from "react";
 import { Menu } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
@@ -40,11 +40,16 @@ function TelemetryView() {
   );
 }
 
-function AnalyticsView({ selectedModel, onChangeModel, modelOptions, modelData }: { 
-  selectedModel?: string; 
-  onChangeModel: (model?: string) => void; 
-  modelOptions: string[]; 
-  modelData: any[];
+function AnalyticsView({
+  selectedModel,
+  onChangeModel,
+  modelOptions,
+  modelData
+}: {
+  selectedModel?: string;
+  onChangeModel: (model?: string) => void;
+  modelOptions: string[];
+  modelData: AgentOSModelInfo[];
 }) {
   const perSession = useTelemetryStore((s) => s.perSession);
   const activeSessionId = useSessionStore((s) => s.activeSessionId);
@@ -112,6 +117,9 @@ import {
 } from "@/types/agentos";
 
 const DEFAULT_PERSONA_ID = "nerf_generalist";
+const DEMO_PERSONA_SESSION_ID = "demo-persona-session";
+const DEMO_AGENCY_ID = "demo-agency";
+const DEMO_AGENCY_SESSION_ID = "demo-agency-session";
 
 export default function App() {
   const LEFT_TABS = [
@@ -125,11 +133,12 @@ export default function App() {
   const [showTour, setShowTour] = useState(false);
   const [showThemePanel, setShowThemePanel] = useState(false);
   const [showImport, setShowImport] = useState(false);
+  const [storageReady, setStorageReady] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [showMobileSidebar, setShowMobileSidebar] = useState(false);
   const [isDesktop, setIsDesktop] = useState(true);
   const [modelOptions, setModelOptions] = useState<string[]>([]);
-  const [modelData, setModelData] = useState<any[]>([]);
+  const [modelData, setModelData] = useState<AgentOSModelInfo[]>([]);
   const [selectedModel, setSelectedModel] = useState<string | undefined>(undefined);
   const welcomeTourDismissed = useUiStore((s) => s.welcomeTourDismissed);
   const welcomeTourSnoozeUntil = useUiStore((s) => s.welcomeTourSnoozeUntil);
@@ -145,6 +154,7 @@ export default function App() {
   const { t } = useTranslation();
   useSystemTheme();
   const personas = useSessionStore((state) => state.personas);
+  const addPersona = useSessionStore((state) => state.addPersona);
   const agencies = useSessionStore((state) => state.agencies);
   const sessions = useSessionStore((state) => state.sessions);
   const addAgency = useSessionStore((state) => state.addAgency);
@@ -157,6 +167,30 @@ export default function App() {
   const appendEvent = useSessionStore((state) => state.appendEvent);
   const activeSessionId = useSessionStore((state) => state.activeSessionId);
   const setActiveSession = useSessionStore((state) => state.setActiveSession);
+  const syncSessionToStorage = useCallback((sessionId: string) => {
+    const snapshot = useSessionStore.getState().sessions.find((item) => item.id === sessionId);
+    if (snapshot) {
+      void persistSessionRow(snapshot);
+    }
+  }, []);
+  const syncEventToStorage = useCallback((sessionId: string, event: SessionEvent) => {
+    const snapshot = useSessionStore.getState().sessions.find((item) => item.id === sessionId);
+    if (snapshot) {
+      void persistSessionEventRow(snapshot, event);
+    }
+  }, []);
+  const commitSession = useCallback((update: SessionUpdate) => {
+    upsertSession(update);
+    syncSessionToStorage(update.id);
+  }, [upsertSession, syncSessionToStorage]);
+  const pushEvent = useCallback((sessionId: string, event: SessionEvent) => {
+    appendEvent(sessionId, event);
+    syncEventToStorage(sessionId, event);
+  }, [appendEvent, syncEventToStorage]);
+  
+  const activeSession = useMemo(() => {
+    return activeSessionId ? sessions.find(s => s.id === activeSessionId) : undefined;
+  }, [activeSessionId, sessions]);
 
   const streamHandles = useRef<Record<string, () => void>>({});
   const telemetry = useTelemetryStore();
@@ -175,6 +209,32 @@ export default function App() {
     setPersonas(personasQuery.data);
   }, [personasQuery.data, setPersonas]);
 
+  // Bootstrap persisted sessions/personas from the SQL storage adapter
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const { sessions: storedSessions, personas: storedPersonas } = await bootstrapStorage();
+        if (cancelled) return;
+        if (storedPersonas.length > 0) {
+          storedPersonas.forEach((persona) => addPersona(persona));
+        }
+        if (storedSessions.length > 0) {
+          storedSessions.forEach((session) => upsertSession(session));
+        }
+      } catch (error) {
+        console.error("[AgentOS Client] Failed to bootstrap storage", error);
+      } finally {
+        if (!cancelled) {
+          setStorageReady(true);
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [addPersona, upsertSession]);
+
   // Fetch available models from AgentOS
   useEffect(() => {
     let mounted = true;
@@ -182,8 +242,15 @@ export default function App() {
       try {
         const models = await getAvailableModels();
         if (!mounted) return;
-        setModelData(models);
-        const modelIds = models.map((m: any) => m.id);
+        const rawModels: AgentOSModelInfo[] = Array.isArray(models) ? (models as AgentOSModelInfo[]) : [];
+        const normalisedModels = rawModels.map((model) => ({
+          id: model.id ?? crypto.randomUUID(),
+          displayName: model.displayName,
+          provider: model.provider,
+          pricing: model.pricing
+        }));
+        setModelData(normalisedModels);
+        const modelIds = normalisedModels.map((m) => m.id);
         setModelOptions(modelIds);
       } catch {
         if (mounted) {
@@ -195,58 +262,81 @@ export default function App() {
     return () => { mounted = false; };
   }, []);
 
-  // Ensure there is at least one default V persona session on first load
-  useEffect(() => {
-    if (sessions.length > 0) return;
-    const vResearcher = personas.find((p) => p.id === 'v_researcher');
-    const firstRemote = personas.find((p) => p.source === 'remote');
-    const defaultPersona = vResearcher || firstRemote;
-    if (!defaultPersona) return; // wait until remote personas are loaded
-    const sessionId = crypto.randomUUID();
-    upsertSession({
-      id: sessionId,
-      targetType: 'persona',
-      displayName: defaultPersona.displayName || 'V Session',
-      personaId: defaultPersona.id,
-      status: 'idle',
-      events: [],
-    });
-    setActiveSession(sessionId);
-  }, [sessions.length, personas, upsertSession, setActiveSession]);
+  const preferDefaultPersona = useCallback((ids: string[]): string | undefined => {
+    if (ids.includes('v_researcher')) return 'v_researcher';
+    if (ids.includes('nerf_generalist')) return 'nerf_generalist';
+    return ids[0];
+  }, []);
 
-  // Seed a demo agency if none exists, to make the dashboard usable immediately
-  useEffect(() => {
-    const remotePersonas = personas.filter((p) => p.source === "remote");
-    if (agencies.length === 0 && remotePersonas.length >= 2) {
-      const agencyId = "demo-agency";
-      const timestamp = new Date().toISOString();
-      addAgency({
-        id: agencyId,
-        name: "Demo Agency",
-        goal: "Multi-GMI coordination (currently limited: only first seat GMI responds until workflow start endpoint is wired)",
-        workflowId: undefined,
-        participants: [
-          { roleId: "lead", personaId: remotePersonas[0]?.id || DEFAULT_PERSONA_ID },
-          { roleId: "researcher", personaId: remotePersonas[1]?.id || DEFAULT_PERSONA_ID },
-          { roleId: "writer", personaId: remotePersonas[0]?.id || DEFAULT_PERSONA_ID },
-        ],
-        metadata: { seeded: true, note: "Multiple seats configured but parallel execution requires workflow start" },
-        createdAt: timestamp,
-        updatedAt: timestamp,
-      });
-      
-      // Create a session for this demo agency
-      const sessionId = crypto.randomUUID();
-      upsertSession({
-        id: sessionId,
-        targetType: 'agency',
-        displayName: 'Demo Agency Session',
-        agencyId: agencyId,
-        status: 'idle',
-        events: [],
+  const ensureDemoPersonaSession = useCallback(() => {
+    if (!storageReady) return;
+    const hasDemo = sessions.some((session) => session.id === DEMO_PERSONA_SESSION_ID);
+    const remoteIds = personas.filter((p) => p.source === "remote").map((p) => p.id);
+    const personaId = preferDefaultPersona(remoteIds) ?? personas[0]?.id ?? null;
+    if (!personaId) return;
+
+    if (!hasDemo) {
+      commitSession({
+        id: DEMO_PERSONA_SESSION_ID,
+        targetType: "persona",
+        displayName: "Demo Persona Session",
+        personaId,
+        status: "idle",
+        events: []
       });
     }
-  }, [agencies.length, personas, addAgency, upsertSession]);
+
+    if (!activeSessionId) {
+      setActiveSession(DEMO_PERSONA_SESSION_ID);
+    }
+  }, [storageReady, sessions, personas, preferDefaultPersona, activeSessionId, commitSession, setActiveSession]);
+
+  useEffect(() => {
+    ensureDemoPersonaSession();
+  }, [ensureDemoPersonaSession]);
+
+  // Seed a demo agency if none exists, to make the dashboard usable immediately
+  const ensureDemoAgencySession = useCallback(() => {
+    if (!storageReady) return;
+    const remotePersonas = personas.filter((p) => p.source === "remote");
+    if (remotePersonas.length < 1) return;
+    let demoAgency = agencies.find((agency) => agency.id === DEMO_AGENCY_ID) ?? null;
+    if (!demoAgency) {
+      const timestamp = new Date().toISOString();
+      const participants = [
+        { roleId: "lead", personaId: remotePersonas[0]?.id ?? DEFAULT_PERSONA_ID },
+        { roleId: "researcher", personaId: remotePersonas[1]?.id ?? remotePersonas[0]?.id ?? DEFAULT_PERSONA_ID },
+        { roleId: "writer", personaId: remotePersonas[0]?.id ?? DEFAULT_PERSONA_ID }
+      ];
+      const seededAgency = {
+        id: DEMO_AGENCY_ID,
+        name: "Demo Agency",
+        goal: "Multi-GMI coordination demo",
+        workflowId: undefined,
+        participants,
+        metadata: { seeded: true },
+        createdAt: timestamp,
+        updatedAt: timestamp
+      };
+      addAgency(seededAgency);
+      demoAgency = seededAgency;
+    }
+    const hasDemoSession = sessions.some((session) => session.id === DEMO_AGENCY_SESSION_ID);
+    if (!hasDemoSession && demoAgency) {
+      commitSession({
+        id: DEMO_AGENCY_SESSION_ID,
+        targetType: "agency",
+        displayName: demoAgency.name,
+        agencyId: demoAgency.id,
+        status: "idle",
+        events: []
+      });
+    }
+  }, [storageReady, agencies, personas, addAgency, commitSession, sessions]);
+
+  useEffect(() => {
+    ensureDemoAgencySession();
+  }, [ensureDemoAgencySession]);
 
   useEffect(() => {
     if (personasQuery.error) {
@@ -291,7 +381,7 @@ export default function App() {
 
   // Responsive: track desktop vs mobile and auto-collapse sidebar on small screens
   useEffect(() => {
-    const mq = window.matchMedia('(min-width: 1024px)');
+    const mq = window.matchMedia('(min-width: 768px)'); // md breakpoint
     const apply = (matches: boolean) => {
       setIsDesktop(matches);
       if (!matches) {
@@ -337,105 +427,140 @@ export default function App() {
     [agencies, t]
   );
 
-  const ensureSession = useCallback(
-    (payload: RequestComposerPayload) => {
-      // Use existing active session if it matches target type, otherwise create new
-      if (activeSessionId) {
-        const existing = sessions.find(s => s.id === activeSessionId);
-        if (existing && existing.targetType === payload.targetType) {
-          // Reuse existing session
-          return activeSessionId;
-        }
+  const ensureActiveSession = useCallback((): AgentSession => {
+    if (activeSessionId) {
+      const existing = sessions.find((session) => session.id === activeSessionId);
+      if (existing) {
+        return existing;
       }
-      
-      // Create new session for different type or if none active
+    }
+
+    const remoteIds = personas.filter((p) => p.source === "remote").map((p) => p.id);
+    const personaId = preferDefaultPersona(remoteIds) ?? personas[0]?.id ?? DEFAULT_PERSONA_ID;
+    const fallback: AgentSession = {
+      id: crypto.randomUUID(),
+      targetType: "persona",
+      displayName: resolvePersonaName(personaId),
+      personaId,
+      status: "idle",
+      events: []
+    };
+    commitSession(fallback);
+    setActiveSession(fallback.id);
+    return fallback;
+  }, [activeSessionId, sessions, personas, preferDefaultPersona, resolvePersonaName, setActiveSession, commitSession]);
+
+  const handleCreateSession = useCallback(
+    (opts?: { targetType?: 'persona' | 'agency'; personaId?: string; agencyId?: string; displayName?: string }) => {
       const sessionId = crypto.randomUUID();
-      const displayName = payload.targetType === "agency"
-        ? resolveAgencyName(payload.agencyId)
-        : resolvePersonaName(payload.personaId);
-      
-      upsertSession({
+      const remoteIds = personas.filter((p) => p.source === "remote").map((p) => p.id);
+      const fallbackPersonaId = preferDefaultPersona(remoteIds) ?? personas[0]?.id ?? DEFAULT_PERSONA_ID;
+      const rawPersonaId = opts?.personaId?.trim();
+      const personaId =
+        rawPersonaId && personas.some((p) => p.id === rawPersonaId) ? rawPersonaId : fallbackPersonaId;
+      const fallbackAgencyId = agencies[0]?.id;
+      const rawAgencyId = opts?.agencyId?.trim();
+      let targetType: 'persona' | 'agency' = opts?.targetType ?? "persona";
+      const agencyId = targetType === "agency" ? (rawAgencyId || fallbackAgencyId) : undefined;
+      if (targetType === "agency" && !agencyId) {
+        targetType = "persona";
+      }
+
+      const baseName =
+        targetType === "agency"
+          ? resolveAgencyName(agencyId)
+          : resolvePersonaName(personaId);
+      const existing = sessions.filter((session) => session.displayName.startsWith(baseName)).length;
+      const displayName =
+        opts?.displayName ?? (existing === 0 ? baseName : `${baseName} ${existing + 1}`);
+
+      commitSession({
         id: sessionId,
-        targetType: payload.targetType,
-        displayName: displayName + ` (${new Date().toLocaleTimeString()})`,
-        personaId: payload.targetType === "persona" ? payload.personaId : undefined,
-        agencyId: payload.targetType === "agency" ? payload.agencyId : undefined,
+        targetType,
+        displayName,
+        personaId: targetType === "persona" ? personaId : undefined,
+        agencyId: targetType === "agency" ? agencyId : undefined,
         status: "idle",
         events: []
       });
       setActiveSession(sessionId);
       return sessionId;
     },
-    [activeSessionId, sessions, resolveAgencyName, resolvePersonaName, setActiveSession, upsertSession]
+    [agencies, personas, sessions, setActiveSession, commitSession, preferDefaultPersona, resolveAgencyName, resolvePersonaName]
   );
-
-  const preferDefaultPersona = useCallback((ids: string[]): string | undefined => {
-    if (ids.includes('v_researcher')) return 'v_researcher';
-    if (ids.includes('nerf_generalist')) return 'nerf_generalist';
-    return ids[0];
-  }, []);
-
-  const handleCreateSession = useCallback((opts?: { targetType?: 'persona' | 'agency'; personaId?: string; agencyId?: string; displayName?: string }) => {
-    const sessionId = crypto.randomUUID();
-    const remoteIds = personas.filter((p) => p.source === 'remote').map((p) => p.id);
-    const personaId = opts?.personaId ?? (preferDefaultPersona(remoteIds) ?? personas[0]?.id ?? DEFAULT_PERSONA_ID);
-    const agencyId = opts?.agencyId ?? agencies[0]?.id;
-    const targetType = opts?.targetType ?? "persona"; // Default to persona
-    
-    // Generate unique numbered name
-    const personaName = personas.find(p => p.id === personaId)?.displayName || 'Session';
-    const base = targetType === 'agency' ? (agencies.find(a => a.id === agencyId)?.name || 'Agency') : personaName;
-    const existing = sessions.filter((s) => s.displayName.startsWith(base)).length;
-    const name = existing === 0 ? base : `${base} ${existing + 1}`;
-    
-    upsertSession({
-      id: sessionId,
-      targetType,
-      displayName: opts?.displayName ?? name,
-      personaId: targetType === "persona" ? personaId : undefined,
-      agencyId: targetType === "agency" ? agencyId : undefined,
-      status: "idle",
-      events: []
-    });
-    setActiveSession(sessionId);
-  }, [agencies, personas, sessions, setActiveSession, upsertSession, preferDefaultPersona]);
 
   const handleSubmit = useCallback(
     (payload: RequestComposerPayload) => {
-      const sessionId = ensureSession(payload);
+      const session = ensureActiveSession();
+      const sessionId = session.id;
+
+      const remoteIds = personas.filter((p) => p.source === "remote").map((p) => p.id);
+      const allPersonaIds = personas.map((p) => p.id);
+      const preferredPersonaId = preferDefaultPersona(remoteIds) ?? personas[0]?.id ?? DEFAULT_PERSONA_ID;
+
+      let effectiveTarget: 'persona' | 'agency' = session.targetType;
+      let agencyId = session.agencyId ?? null;
+      if (effectiveTarget === "agency") {
+        if (agencyId && agencies.some((agency) => agency.id === agencyId)) {
+          // valid agency
+        } else if (agencies.length > 0) {
+          agencyId = agencies[0]?.id ?? null;
+        } else {
+          effectiveTarget = "persona";
+          agencyId = null;
+        }
+      }
+
+      let personaId =
+        session.personaId && allPersonaIds.includes(session.personaId) ? session.personaId : preferredPersonaId;
+      if (!personaId) {
+        personaId = preferredPersonaId;
+      }
+
+      if (session.targetType !== effectiveTarget || session.agencyId !== agencyId) {
+        commitSession({
+          id: sessionId,
+          targetType: effectiveTarget,
+          agencyId: agencyId ?? undefined
+        });
+      }
+
       setActiveSession(sessionId);
 
       streamHandles.current[sessionId]?.();
       delete streamHandles.current[sessionId];
 
       const displayName =
-        payload.targetType === "agency" ? resolveAgencyName(payload.agencyId) : resolvePersonaName(payload.personaId);
+        effectiveTarget === "agency" ? resolveAgencyName(agencyId) : resolvePersonaName(personaId);
       const timestamp = Date.now();
 
       const agencyDefinition =
-        payload.targetType === "agency" ? agencies.find((item) => item.id === payload.agencyId) ?? null : null;
-
-      const remoteIds = personas.filter((p) => p.source === 'remote').map((p) => p.id);
-      const allIds = personas.map((p) => p.id);
-      const preferred = preferDefaultPersona(remoteIds) ?? personas[0]?.id ?? DEFAULT_PERSONA_ID;
-      const chosenPersona = (payload.personaId && allIds.includes(payload.personaId)) ? payload.personaId : preferred;
-      const personaForStream = chosenPersona;
+        effectiveTarget === "agency" && agencyId
+          ? agencies.find((item) => item.id === agencyId) ?? null
+          : null;
 
       const workflowDefinitionId = payload.workflowId ?? agencyDefinition?.workflowId;
       const workflowInstanceId = workflowDefinitionId ? `${workflowDefinitionId}-${sessionId}` : undefined;
 
-      const agencyRequest = payload.targetType === "agency"
-        ? {
-            agencyId: payload.agencyId,
-            workflowId: workflowInstanceId ?? undefined,
-            goal: agencyDefinition?.goal,
-            participants: (agencyDefinition?.participants ?? []).map((participant) => ({
-              roleId: participant.roleId,
-              personaId: (participant.personaId && allIds.includes(participant.personaId)) ? participant.personaId : chosenPersona,
-            })),
-            metadata: agencyDefinition?.metadata
-          }
-        : undefined;
+      const agencyRequest =
+        effectiveTarget === "agency" && agencyDefinition
+          ? {
+              agencyId,
+              workflowId: workflowInstanceId ?? undefined,
+              goal: agencyDefinition.goal,
+              participants: (agencyDefinition.participants ?? []).map((participant) => ({
+                roleId: participant.roleId,
+                personaId:
+                  participant.personaId && allPersonaIds.includes(participant.personaId)
+                    ? participant.personaId
+                    : personaId,
+              })),
+              metadata: {
+                ...agencyDefinition.metadata,
+                sourceSessionId: sessionId,
+              },
+            }
+          : undefined;
 
       const workflowRequest = workflowDefinitionId
         ? {
@@ -446,16 +571,16 @@ export default function App() {
           }
         : undefined;
 
-      upsertSession({
+      commitSession({
         id: sessionId,
-        targetType: payload.targetType,
+        targetType: effectiveTarget,
         displayName,
-        personaId: payload.targetType === "persona" ? payload.personaId : undefined,
-        agencyId: payload.targetType === "agency" ? payload.agencyId : undefined,
+        personaId: effectiveTarget === "persona" ? personaId : undefined,
+        agencyId: effectiveTarget === "agency" ? agencyId ?? undefined : undefined,
         status: "streaming"
       });
 
-      appendEvent(sessionId, {
+      pushEvent(sessionId, {
         id: crypto.randomUUID(),
         timestamp,
         type: "log",
@@ -469,20 +594,21 @@ export default function App() {
       const cleanup = openAgentOSStream(
         {
           sessionId,
-          personaId: personaForStream,
+          personaId,
           messages: [{ role: "user", content: payload.input }],
           workflowRequest,
           agencyRequest,
-          model: selectedModel,
+          model: selectedModel
         },
         {
           onChunk: (chunk) => {
-            // Debug: surface incoming chunks in console for verification
             try {
               // eslint-disable-next-line no-console
-              console.debug('[AgentOS SSE] chunk:', chunk);
-            } catch {}
-            appendEvent(sessionId, {
+              console.debug("[AgentOS SSE] chunk:", chunk);
+            } catch {
+              // no-op
+            }
+            pushEvent(sessionId, {
               id: crypto.randomUUID(),
               timestamp: Date.now(),
               type: chunk.type,
@@ -500,18 +626,18 @@ export default function App() {
             }
           },
           onDone: () => {
-            upsertSession({ id: sessionId, status: "idle" });
+            commitSession({ id: sessionId, status: "idle" });
             telemetry.endStream(sessionId);
             delete streamHandles.current[sessionId];
           },
           onError: (error) => {
-            appendEvent(sessionId, {
+            pushEvent(sessionId, {
               id: crypto.randomUUID(),
               timestamp: Date.now(),
               type: "log",
               payload: { message: t("app.logs.streamError", { message: error.message }), level: "error" }
             });
-            upsertSession({ id: sessionId, status: "error" });
+            commitSession({ id: sessionId, status: "error" });
             telemetry.endStream(sessionId);
             delete streamHandles.current[sessionId];
           }
@@ -520,7 +646,22 @@ export default function App() {
 
       streamHandles.current[sessionId] = cleanup;
     },
-    [agencies, personas, appendEvent, applyAgencySnapshot, applyWorkflowSnapshot, ensureSession, resolveAgencyName, resolvePersonaName, setActiveSession, upsertSession, selectedModel, telemetry, t]
+    [
+      agencies,
+      personas,
+      applyAgencySnapshot,
+      applyWorkflowSnapshot,
+      ensureActiveSession,
+      preferDefaultPersona,
+      resolveAgencyName,
+      resolvePersonaName,
+      setActiveSession,
+      commitSession,
+      pushEvent,
+      selectedModel,
+      telemetry,
+      t
+    ]
   );
 
   // Removed auto-new-session on tab switch; tabs now only change view and filter.
@@ -543,8 +684,8 @@ export default function App() {
               </button>
             )}
             <a href="https://agentos.sh" target="_blank" rel="noreferrer" className="group flex items-center gap-2">
-            <img src="/logos/agentos-primary-no-tagline.svg" alt="AgentOS" className="block h-7 w-auto transition-transform group-hover:scale-105 dark:hidden" onError={(e) => ((e.currentTarget as HTMLImageElement).style.display='none')} />
-            <img src="/logos/agentos-primary-dark-2x.png" alt="AgentOS" className="hidden h-7 w-auto transition-transform group-hover:scale-105 dark:block" onError={(e) => ((e.currentTarget as HTMLImageElement).style.display='none')} />
+            <img src="/logos/agentos-primary-no-tagline.svg" alt="AgentOS" className="block h-10 w-auto transition-transform group-hover:scale-105 dark:hidden" onError={(e) => ((e.currentTarget as HTMLImageElement).style.display='none')} />
+            <img src="/logos/agentos-primary-no-tagline.svg" alt="AgentOS" className="hidden h-10 w-auto transition-transform group-hover:scale-105 dark:block" style={{ filter: 'brightness(0) invert(1)' }} onError={(e) => ((e.currentTarget as HTMLImageElement).style.display='none')} />
             </a>
           </div>
           <nav className="flex items-center gap-4">
@@ -576,21 +717,67 @@ export default function App() {
         </div>
       )}
       {showSettingsModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" role="dialog" aria-modal="true">
-          <div className="w-full max-w-3xl rounded-2xl border border-slate-200 bg-white p-4 shadow-xl dark:border-white/10 dark:bg-slate-900">
-            <SettingsPanel />
-            <div className="mt-3 flex justify-end">
-              <button onClick={() => setShowSettingsModal(false)} className="rounded-full border border-slate-200 px-3 py-1 text-xs text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300">Close</button>
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" 
+          role="dialog" 
+          aria-modal="true"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setShowSettingsModal(false);
+            }
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') {
+              setShowSettingsModal(false);
+            }
+          }}
+        >
+          <div className="flex h-full max-h-[90vh] w-full max-w-3xl flex-col rounded-2xl border border-slate-200 bg-white shadow-xl dark:border-white/10 dark:bg-slate-900">
+            <div className="flex-1 overflow-y-auto p-4">
+              <SettingsPanel />
+            </div>
+            <div className="border-t border-slate-200 p-4 dark:border-white/10">
+              <div className="flex justify-end">
+                <button 
+                  onClick={() => setShowSettingsModal(false)} 
+                  className="rounded-full border border-slate-200 px-3 py-1 text-xs text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300"
+                >
+                  Close
+                </button>
+              </div>
             </div>
           </div>
         </div>
       )}
       {showAboutModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" role="dialog" aria-modal="true">
-          <div className="w-full max-w-3xl rounded-2xl border border-slate-200 bg-white p-4 shadow-xl dark:border-white/10 dark:bg-slate-900">
-            <AboutPanel />
-            <div className="mt-3 flex justify-end">
-              <button onClick={() => setShowAboutModal(false)} className="rounded-full border border-slate-200 px-3 py-1 text-xs text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300">Close</button>
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" 
+          role="dialog" 
+          aria-modal="true"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setShowAboutModal(false);
+            }
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') {
+              setShowAboutModal(false);
+            }
+          }}
+        >
+          <div className="flex h-full max-h-[90vh] w-full max-w-3xl flex-col rounded-2xl border border-slate-200 bg-white shadow-xl dark:border-white/10 dark:bg-slate-900">
+            <div className="flex-1 overflow-y-auto p-4">
+              <AboutPanel />
+            </div>
+            <div className="border-t border-slate-200 p-4 dark:border-white/10">
+              <div className="flex justify-end">
+                <button 
+                  onClick={() => setShowAboutModal(false)} 
+                  className="rounded-full border border-slate-200 px-3 py-1 text-xs text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300"
+                >
+                  Close
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -599,12 +786,12 @@ export default function App() {
         {/* Navigation Sidebar */}
         {!sidebarCollapsed && (
           isDesktop ? (
-            <Sidebar onCreateSession={handleCreateSession} onToggleCollapse={() => setSidebarCollapsed(true)} currentTab={leftTab} onNavigate={(key) => setLeftTab(key)} />
+            <Sidebar onCreateSession={handleCreateSession} onToggleCollapse={() => setSidebarCollapsed(true)} onNavigate={(key) => setLeftTab(key)} />
           ) : (
             showMobileSidebar && (
               <div className="fixed inset-0 z-50 flex lg:hidden">
                 <div className="h-full w-80 max-w-[80%] overflow-y-auto border-r border-slate-200 bg-slate-50 dark:border-white/10 dark:bg-slate-950">
-                  <Sidebar onCreateSession={handleCreateSession} onToggleCollapse={() => setShowMobileSidebar(false)} currentTab={leftTab} onNavigate={(key) => { setLeftTab(key); setShowMobileSidebar(false); }} />
+                  <Sidebar onCreateSession={handleCreateSession} onToggleCollapse={() => setShowMobileSidebar(false)} onNavigate={(key) => { setLeftTab(key); setShowMobileSidebar(false); }} />
                 </div>
                 <button className="flex-1 bg-black/40" aria-label="Close sidebar overlay" onClick={() => setShowMobileSidebar(false)} />
               </div>
@@ -615,7 +802,7 @@ export default function App() {
         {/* Main Content Area */}
         <main 
           id="main-content"
-          className="flex flex-col gap-6 overflow-y-auto bg-white p-6 transition-colors duration-300 dark:bg-slate-950"
+          className="flex min-w-0 flex-col gap-6 overflow-y-auto bg-white p-6 transition-colors duration-300 dark:bg-slate-950"
           role="main"
           aria-label={t("app.labels.mainContent", { defaultValue: "Main content area" })}
         >
@@ -631,7 +818,7 @@ export default function App() {
               </button>
             </div>
           )}
-          <div className="flex flex-1 flex-col gap-6 xl:grid xl:grid-cols-[1fr_2fr]">
+          <div className="flex min-w-0 flex-1 min-h-0 flex-col gap-6 md:grid md:grid-cols-[1fr_2fr]">
             {/* Left Column: Tabbed coordination */}
             <section className="flex h-full flex-col gap-4" aria-label={t("app.labels.leftPanel", { defaultValue: "Composer and coordination" })}>
               <div
@@ -695,7 +882,7 @@ export default function App() {
                       streamHandles.current[sessionId]?.();
                       delete streamHandles.current[sessionId];
                       
-                      upsertSession({
+                      commitSession({
                         id: sessionId,
                         targetType: 'agency',
                         displayName: activeSession?.displayName || 'Agency Workflow',
@@ -703,7 +890,7 @@ export default function App() {
                         status: 'streaming',
                       });
                       
-                      appendEvent(sessionId, {
+                      pushEvent(sessionId, {
                         id: crypto.randomUUID(),
                         timestamp: Date.now(),
                         type: 'log',
@@ -712,45 +899,77 @@ export default function App() {
                       
                       telemetry.startStream(sessionId);
                       
-                      const cleanup = streamAgencyWorkflow(
-                        {
-                          goal: agencyPayload.goal,
-                          roles,
-                          userId: 'agentos-workbench-user',
-                          conversationId: sessionId,
-                        },
-                        {
-                          onChunk: (chunk) => {
-                            appendEvent(sessionId, {
-                              id: crypto.randomUUID(),
-                              timestamp: Date.now(),
-                              type: chunk.type,
-                              payload: chunk,
-                            });
-                            telemetry.noteChunk(sessionId, chunk);
-                            
-                            if (chunk.type === 'agency_update') {
-                              applyAgencySnapshot((chunk as AgentOSAgencyUpdateChunk).agency);
-                            }
-                          },
-                          onDone: () => {
-                            upsertSession({ id: sessionId, status: 'idle' });
-                            telemetry.endStream(sessionId);
-                            delete streamHandles.current[sessionId];
-                          },
-                          onError: (error) => {
-                            appendEvent(sessionId, {
-                              id: crypto.randomUUID(),
-                              timestamp: Date.now(),
-                              type: 'log',
-                              payload: { message: `Agency error: ${error.message}`, level: 'error' },
-                            });
-                            upsertSession({ id: sessionId, status: 'error' });
-                            telemetry.endStream(sessionId);
-                            delete streamHandles.current[sessionId];
-                          },
+                      // Use backend API endpoint for agency workflows
+                      const params = new URLSearchParams({
+                        userId: 'agentos-workbench-user',
+                        conversationId: sessionId,
+                        goal: agencyPayload.goal,
+                        roles: JSON.stringify(roles.map(r => ({
+                          roleId: r.roleId,
+                          personaId: r.personaId,
+                          instruction: r.instruction,
+                          priority: r.priority,
+                        }))),
+                        outputFormat: agencyPayload.outputFormat || 'markdown',
+                      });
+
+                      const baseUrl = import.meta.env.VITE_API_URL || (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3001');
+                      const eventSource = new EventSource(`${baseUrl}/api/agentos/agency/stream?${params.toString()}`);
+
+                      const cleanup = () => {
+                        eventSource.close();
+                        delete streamHandles.current[sessionId];
+                      };
+
+                      eventSource.onmessage = (event) => {
+                        try {
+                          const chunk = JSON.parse(event.data);
+                          
+                          pushEvent(sessionId, {
+                            id: crypto.randomUUID(),
+                            timestamp: Date.now(),
+                            type: chunk.type as AgentOSChunkType,
+                            payload: chunk,
+                          });
+                          telemetry.noteChunk(sessionId, chunk);
+                          
+                          if (chunk.type === 'agency_update') {
+                            applyAgencySnapshot((chunk as AgentOSAgencyUpdateChunk).agency);
+                          }
+                        } catch (error) {
+                          console.error('[Agency Stream] Failed to parse chunk:', error);
                         }
-                      );
+                      };
+
+                      eventSource.addEventListener('done', () => {
+                        commitSession({ id: sessionId, status: 'idle' });
+                        telemetry.endStream(sessionId);
+                        cleanup();
+                      });
+
+                      eventSource.addEventListener('error', () => {
+                        pushEvent(sessionId, {
+                          id: crypto.randomUUID(),
+                          timestamp: Date.now(),
+                          type: 'log',
+                          payload: { message: 'Agency stream connection error', level: 'error' },
+                        });
+                        commitSession({ id: sessionId, status: 'error' });
+                        telemetry.endStream(sessionId);
+                        cleanup();
+                      });
+
+                      eventSource.onerror = (error) => {
+                        pushEvent(sessionId, {
+                          id: crypto.randomUUID(),
+                          timestamp: Date.now(),
+                          type: 'log',
+                          payload: { message: `Agency stream error: ${error.type}`, level: 'error' },
+                        });
+                        commitSession({ id: sessionId, status: 'error' });
+                        telemetry.endStream(sessionId);
+                        cleanup();
+                      };
                       
                       streamHandles.current[sessionId] = cleanup;
                     }}
@@ -767,12 +986,12 @@ export default function App() {
 
             {/* Right Column: Outputs - Stack on mobile, side-by-side on desktop */}
             <aside
-              className="flex h-full flex-col gap-4 xl:gap-6"
+              className="flex min-w-0 h-full max-h-[calc(100vh-6rem)] flex-col gap-4 md:gap-6"
               aria-label={t("app.labels.outputsPanel", { defaultValue: "Outputs and results" })}
             >
               <SessionInspector />
-              <div className="border-t border-slate-200 dark:border-white/10 xl:hidden" />
-              <div className="grid gap-4 sm:grid-cols-2 xl:block xl:space-y-6">
+              <div className="border-t border-slate-200 dark:border-white/10 md:hidden" />
+              <div className="grid gap-4 sm:grid-cols-2 md:block md:space-y-6">
                 <section className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-5 dark:border-white/10 dark:bg-slate-900/60">
                   <header className="mb-2">
                     <p className="text-xs uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">Stream status</p>
