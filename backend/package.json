@@ -15,7 +15,7 @@
     "test": "node --test --import tsx --experimental-specifier-resolution=node src/__tests__/appDatabase.test.ts"
   },
   "dependencies": {
-    "@agentos/core": "workspace:*",
+    "@framers/agentos": "workspace:*",
     "@framers/sql-storage-adapter": "workspace:*",
     "@supabase/supabase-js": "^2.45.1",
     "@types/jsonwebtoken": "^9.0.10",

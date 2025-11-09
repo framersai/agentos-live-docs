@@ -33,7 +33,7 @@
                                           "@agentos/core/*":  [
                                                                   "../packages/agentos/dist/*"
                                                               ],
-                                          "@agentos/core":  [
+                                          "@framers/agentos":  [
                                                                 "../packages/agentos/dist/index.d.ts"
                                                             ],
                                           "@framers/sql-storage-adapter": [
