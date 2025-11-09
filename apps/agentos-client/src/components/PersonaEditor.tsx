@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Save, X, Edit3, Shield, Plug, Settings2, Tag, User, FileText } from 'lucide-react';
+import { Save, X, Shield, Plug, Settings2, User } from 'lucide-react';
 import { useSessionStore, type PersonaDefinition } from '@/state/sessionStore';
 import type { SerializableGuardrail } from './GuardrailManager';
 
@@ -19,7 +19,7 @@ export function PersonaEditor({ persona, onClose }: PersonaEditorProps) {
     baseSystemPrompt: persona.metadata?.baseSystemPrompt as string || '',
     modelPreference: persona.metadata?.modelPreference as string || '',
     costSavingStrategy: persona.metadata?.costSavingStrategy as string || '',
-    maxTokens: persona.metadata?.maxTokens as number || '',
+    maxTokens: typeof persona.metadata?.maxTokens === 'number' ? persona.metadata.maxTokens : '',
     guardrails: persona.metadata?.guardrails as SerializableGuardrail[] || [],
     extensions: persona.metadata?.extensions as string[] || [],
   });
@@ -176,7 +176,13 @@ export function PersonaEditor({ persona, onClose }: PersonaEditorProps) {
                 <input
                   type="number"
                   value={draft.maxTokens}
-                  onChange={(e) => setDraft(d => ({ ...d, maxTokens: parseInt(e.target.value) || '' as any }))}
+                  onChange={(e) => {
+                    const numeric = Number(e.target.value);
+                    setDraft((d) => ({
+                      ...d,
+                      maxTokens: Number.isNaN(numeric) || e.target.value === '' ? '' : numeric
+                    }));
+                  }}
                   className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-white/10 dark:bg-slate-950"
                   placeholder="8192"
                 />

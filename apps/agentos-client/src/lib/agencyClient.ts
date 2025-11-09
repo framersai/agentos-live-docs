@@ -30,8 +30,6 @@
  */
 
 import { AgentOS } from '@agentos/core';
-import { createAgentOSStorageAdapter } from './agentosStorage';
-import type { StorageAdapter } from '@framers/sql-storage-adapter';
 import type { AgentOSResponse } from '@/types/agentos';
 
 /** Configuration for a single agent role */
@@ -58,36 +56,34 @@ export interface AgencyStreamCallbacks {
   onError?: (error: Error) => void;
 }
 
-// Singleton AgentOS instance (initialized lazily)
-let agentOSInstance: AgentOS | null = null;
-
 /**
  * Gets or creates the AgentOS instance for standalone client-side use.
  * Uses IndexedDB storage adapter for persistence.
+ * 
+ * NOTE: Client-side AgentOS initialization requires full config (gmiManagerConfig, orchestratorConfig, etc.).
+ * This is currently disabled - use backend API instead via agentosClient.ts.
  */
 async function getAgentOS(): Promise<AgentOS> {
-  if (agentOSInstance) {
-    return agentOSInstance;
-  }
-
-  // Create storage adapter with IndexedDB (browser)
-  const storageAdapter: StorageAdapter = await createAgentOSStorageAdapter('agentos-client-db');
-
-  // Initialize AgentOS with minimal config for client-side use
-  agentOSInstance = new AgentOS({
-    storageAdapter,
-    // No Prisma needed - using storageAdapter for persistence
-    // No auth/subscription services needed for standalone client
-    logger: {
-      debug: (...args: any[]) => console.debug('[AgentOS]', ...args),
-      info: (...args: any[]) => console.info('[AgentOS]', ...args),
-      warn: (...args: any[]) => console.warn('[AgentOS]', ...args),
-      error: (...args: any[]) => console.error('[AgentOS]', ...args),
-    },
-  });
-
-  await agentOSInstance.initialize();
-  return agentOSInstance;
+  throw new Error(
+    'Client-side AgentOS initialization is not yet supported. ' +
+    'Please use the backend API via agentosClient.ts instead. ' +
+    'For agency workflows, use the /api/agentos/agency/stream endpoint.'
+  );
+  
+  // TODO: Implement full AgentOS config for client-side use if needed
+  // This requires providing all required config fields:
+  // - gmiManagerConfig
+  // - orchestratorConfig
+  // - promptEngineConfig
+  // - toolOrchestratorConfig
+  // - toolPermissionManagerConfig
+  // - conversationManagerConfig
+  // - streamingManagerConfig
+  // - modelProviderManagerConfig
+  // - defaultPersonaId
+  // - authService (can be mock for client-side)
+  // - subscriptionService (can be mock for client-side)
+  // - prisma (optional if storageAdapter provided)
 }
 
 /**

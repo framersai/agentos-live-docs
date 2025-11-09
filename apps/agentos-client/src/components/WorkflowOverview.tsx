@@ -32,6 +32,8 @@ export function WorkflowOverview() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const workflowSnapshots = useSessionStore((state) => state.workflowSnapshots);
+  const removeWorkflowSnapshot = useSessionStore((state) => state.removeWorkflowSnapshot);
+  const clearWorkflowSnapshots = useSessionStore((state) => state.clearWorkflowSnapshots);
   const { data: workflowDefinitions = [] } = useWorkflowDefinitions();
 
   const workflows = useMemo(() => Object.values(workflowSnapshots), [workflowSnapshots]);
@@ -57,6 +59,16 @@ export function WorkflowOverview() {
     ? (Object.entries(selectedWorkflow.tasks ?? {}) as Array<[string, WorkflowTaskSnapshot]>)
     : [];
 
+  const handleClearHistory = () => {
+    if (workflows.length === 0) {
+      return;
+    }
+    if (window.confirm("Clear all stored workflow telemetry?")) {
+      clearWorkflowSnapshots();
+      setSelectedId(null);
+    }
+  };
+
   if (workflows.length === 0) {
     return (
       <section className="rounded-3xl border border-slate-200 bg-white p-5 dark:border-white/10 dark:bg-slate-900/60">
@@ -73,7 +85,17 @@ export function WorkflowOverview() {
           <p className="text-[10px] uppercase tracking-[0.4em] text-slate-500 dark:text-slate-500">Workflow overview</p>
           <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Active automations</h3>
         </div>
-        <div className="rounded-full border border-slate-200 px-3 py-1 text-xs text-slate-600 dark:border-white/10 dark:text-slate-400">{workflows.length} tracked</div>
+        <div className="flex items-center gap-2">
+          <div className="rounded-full border border-slate-200 px-3 py-1 text-xs text-slate-600 dark:border-white/10 dark:text-slate-400">{workflows.length} tracked</div>
+          <button
+            type="button"
+            onClick={handleClearHistory}
+            disabled={workflows.length === 0}
+            className="rounded-full border border-slate-200 px-3 py-1 text-xs text-slate-600 transition disabled:opacity-40 dark:border-white/10 dark:text-slate-300"
+          >
+            Clear history
+          </button>
+        </div>
       </header>
 
       <div className="mb-4 flex flex-wrap gap-2 text-xs text-slate-600 dark:text-slate-300">
@@ -118,10 +140,25 @@ export function WorkflowOverview() {
                   </h4>
                   <p className="text-xs text-slate-500 dark:text-slate-500">Workflow #{workflow.workflowId}</p>
                 </div>
-                <span className={clsx("inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.3em]", statusClass)}>
-                  <Activity className="h-3 w-3" />
-                  {formatStatus(workflow.status)}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className={clsx("inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.3em]", statusClass)}>
+                    <Activity className="h-3 w-3" />
+                    {formatStatus(workflow.status)}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      removeWorkflowSnapshot(workflow.workflowId);
+                      if (selectedId === workflow.workflowId) {
+                        setSelectedId(null);
+                      }
+                    }}
+                    className="rounded-full border border-slate-200 px-3 py-1 text-[10px] text-slate-500 hover:bg-slate-50 dark:border-white/10 dark:text-slate-400 dark:hover:border-white/30"
+                  >
+                    Archive
+                  </button>
+                </div>
               </div>
               <dl className="mt-3 grid gap-3 text-xs text-slate-600 dark:text-slate-300 sm:grid-cols-2">
                 <div className="flex items-center gap-2">

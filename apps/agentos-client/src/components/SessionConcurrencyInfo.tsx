@@ -1,6 +1,6 @@
 /**
  * @fileoverview Session Concurrency Info Component
- * @description Explains current single-action constraint and future concurrent conversation support.
+ * @description Explains the single-action persona model and how to use Agency sessions for concurrency.
  */
 
 import { Info, Lock, Unlock, MessageSquare, Users, Zap } from 'lucide-react';
@@ -19,11 +19,10 @@ interface SessionConcurrencyInfoProps {
  * - While streaming, new requests are queued/blocked
  * - Prevents conversation state conflicts
  * 
- * **Future Concurrent Conversations:**
- * - Multiple parallel conversations within same session
- * - Each conversation maintains separate context
- * - AgentOS supports up to 1000 concurrent streams
- * - Multiple clients can subscribe to same stream
+ * **Agency Concurrency:**
+ * - Agency workflows spin up multiple persona seats concurrently
+ * - Each seat streams independently with shared goals
+ * - Ideal for parallel research, review, or specialized tasks
  * 
  * **Benefits:**
  * - Ask follow-up questions while previous request processes
@@ -60,35 +59,33 @@ export function SessionConcurrencyInfo({ sessionStatus, className = '' }: Sessio
           <div>
             <h4 className="mb-1.5 flex items-center gap-1.5 font-semibold text-slate-800 dark:text-slate-100">
               <Lock className="h-3 w-3" />
-              Current Behavior
+              Persona Sessions
             </h4>
             <p className="text-slate-600 dark:text-slate-400">
-              This session processes <strong>one action at a time</strong>. While a request is streaming, 
-              new requests are blocked to prevent conversation state conflicts and ensure coherent responses.
+              Persona sessions intentionally run <strong>one action at a time</strong>. This keeps turn order predictable, avoids
+              overlapping tool calls, and maintains a single conversational thread.
             </p>
           </div>
 
-          {/* Future Concurrent Support */}
+          {/* Agency concurrency */}
           <div>
             <h4 className="mb-1.5 flex items-center gap-1.5 font-semibold text-slate-800 dark:text-slate-100">
               <Unlock className="h-3 w-3" />
-              Concurrent Conversations (Future)
+              Agency Concurrency (Available Now)
             </h4>
             <p className="mb-2 text-slate-600 dark:text-slate-400">
-              AgentOS supports <strong>concurrent conversations</strong> within the same session:
+              Need parallel progress? Launch an <strong>Agency session</strong>. Each seat gets its own stream and the
+              workflow runtime coordinates concurrency safely. Perfect for research + review + writing teams.
             </p>
             <ul className="ml-4 list-disc space-y-1 text-slate-600 dark:text-slate-400">
               <li>
-                <strong>Multiple parallel threads:</strong> Ask follow-up questions while previous requests process
+                <strong>Parallel seats:</strong> Assign unique personas to each role and let them work simultaneously.
               </li>
               <li>
-                <strong>Separate conversation contexts:</strong> Each thread maintains its own history and state
+                <strong>Live coordination:</strong> Agency updates show seat status, progress, and hand-offs in real time.
               </li>
               <li>
-                <strong>Up to 1000 concurrent streams:</strong> AgentOS can handle many simultaneous interactions
-              </li>
-              <li>
-                <strong>Multi-client subscriptions:</strong> Multiple UI components can listen to the same stream
+                <strong>Purpose-built for concurrency:</strong> The workflow engine handles ordering, retries, and streaming.
               </li>
             </ul>
           </div>
@@ -103,13 +100,13 @@ export function SessionConcurrencyInfo({ sessionStatus, className = '' }: Sessio
               <div className="flex items-start gap-2">
                 <MessageSquare className="mt-0.5 h-3 w-3 flex-shrink-0 text-sky-500" />
                 <span className="text-slate-600 dark:text-slate-400">
-                  Multi-threaded discussions with the same persona
+                  Persona conversations stay coherent—no overlapping answers or tool calls.
                 </span>
               </div>
               <div className="flex items-start gap-2">
                 <Users className="mt-0.5 h-3 w-3 flex-shrink-0 text-purple-500" />
                 <span className="text-slate-600 dark:text-slate-400">
-                  Parallel agency workflows without blocking
+                  Agency sessions deliver real concurrency with independent seat streams.
                 </span>
               </div>
             </div>
@@ -121,9 +118,9 @@ export function SessionConcurrencyInfo({ sessionStatus, className = '' }: Sessio
               Technical Details
             </p>
             <p className="mt-1 text-slate-600 dark:text-slate-400">
-              AgentOS uses <code className="rounded bg-slate-100 px-1 dark:bg-slate-800">StreamingManager</code> with 
-              configurable concurrency limits. Each conversation thread gets a unique <code className="rounded bg-slate-100 px-1 dark:bg-slate-800">conversationId</code> 
-              while sharing the same <code className="rounded bg-slate-100 px-1 dark:bg-slate-800">sessionId</code> for UI grouping.
+              Persona sessions serialize turns via <code className="rounded bg-slate-100 px-1 dark:bg-slate-800">StreamingManager</code>. 
+              Agency sessions route through <code className="rounded bg-slate-100 px-1 dark:bg-slate-800">WorkflowRuntime</code>, which spins up multiple seats,
+              each with its own <code className="rounded bg-slate-100 px-1 dark:bg-slate-800">conversationId</code> and shared <code className="rounded bg-slate-100 px-1 dark:bg-slate-800">agencyId</code>.
             </p>
           </div>
         </div>

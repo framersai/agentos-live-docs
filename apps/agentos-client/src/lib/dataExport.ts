@@ -7,7 +7,7 @@ export class DataExport {
   /**
    * Export data as JSON file
    */
-  exportJSON(data: any, filename: string): void {
+  exportJSON(data: unknown, filename: string): void {
     try {
       const jsonStr = JSON.stringify(data, null, 2);
       const blob = new Blob([jsonStr], { type: 'application/json' });
@@ -21,14 +21,14 @@ export class DataExport {
   /**
    * Export data as CSV file
    */
-  exportCSV(data: Record<string, any>[], filename: string): void {
+  exportCSV(rows: Array<Record<string, unknown>>, filename: string): void {
     try {
-      if (!data || data.length === 0) {
+      if (!rows || rows.length === 0) {
         throw new Error('No data to export');
       }
 
       // Get headers from first object
-      const headers = Object.keys(data[0]);
+      const headers = Object.keys(rows[0]);
       
       // Build CSV content
       const csvRows = [];
@@ -37,7 +37,7 @@ export class DataExport {
       csvRows.push(headers.map(h => this.escapeCsvValue(h)).join(','));
       
       // Add data rows
-      for (const row of data) {
+      for (const row of rows) {
         const values = headers.map(header => {
           const value = row[header];
           return this.escapeCsvValue(value);
@@ -87,7 +87,7 @@ export class DataExport {
     sessionId?: string;
     personaId?: string;
     messages: Array<{ role: string; content: string; timestamp?: string }>;
-    telemetry?: any[];
+    telemetry?: Array<Record<string, unknown>>;
   }): string {
     const lines: string[] = [];
     
@@ -145,7 +145,7 @@ export class DataExport {
   /**
    * Escape CSV value
    */
-  private escapeCsvValue(value: any): string {
+  private escapeCsvValue(value: unknown): string {
     if (value === null || value === undefined) {
       return '';
     }
@@ -182,7 +182,7 @@ export class DataExport {
 export const dataExport = new DataExport();
 
 // Helper function to export all data types at once
-export function exportAllData(data: any, format: 'json' | 'csv' | 'markdown' | 'text', filename?: string) {
+export function exportAllData(data: unknown, format: 'json' | 'csv' | 'markdown' | 'text', filename?: string) {
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
   const defaultFilename = filename || `export-${timestamp}`;
   

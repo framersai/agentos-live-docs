@@ -1,4 +1,6 @@
-﻿import { io, Socket } from 'socket.io-client';
+import type { AgentOSResponse } from "@/types/agentos";
+import type { PersonaDefinition } from "@/state/sessionStore";
+import type { WorkflowDefinition } from "@/types/workflow";
 
 interface Extension {
   id: string;
@@ -17,13 +19,50 @@ interface Tool {
   name: string;
   description: string;
   extension: string;
-  inputSchema?: any;
-  outputSchema?: any;
+  inputSchema?: Record<string, unknown>;
+  outputSchema?: Record<string, unknown>;
   hasSideEffects?: boolean;
 }
 
+export interface AgentOSModelInfo {
+  id: string;
+  displayName?: string;
+  provider?: string;
+  pricing?: {
+    inputCostPer1K?: number;
+    outputCostPer1K?: number;
+  };
+}
+
+type WorkflowRequestPayload = {
+  definitionId: string;
+  workflowId?: string;
+  conversationId?: string;
+  metadata?: Record<string, unknown>;
+};
+
+type AgencyParticipantPayload = {
+  roleId: string;
+  personaId?: string;
+  instruction?: string;
+  priority?: number;
+};
+
+type AgencyRequestPayload = {
+  agencyId?: string;
+  workflowId?: string;
+  goal?: string;
+  participants?: AgencyParticipantPayload[];
+  metadata?: Record<string, unknown>;
+};
+
+type StreamOptions = {
+  model?: string;
+  workflowRequest?: WorkflowRequestPayload;
+  agencyRequest?: AgencyRequestPayload;
+};
+
 class AgentOSClient {
-  private socket: Socket | null = null;
   private baseUrl: string;
 
   constructor() {
@@ -68,12 +107,10 @@ class AgentOSClient {
     personaId: string,
     message: string,
     sessionId?: string,
-    includeTools = true,
-    includeGuardrails = false,
-    onChunk?: (chunk: any) => void,
+    onChunk?: (chunk: AgentOSResponse) => void,
     onComplete?: () => void,
     onError?: (error: Error) => void,
-    opts?: { model?: string; workflowRequest?: any; agencyRequest?: any }
+    opts?: StreamOptions
   ) {
     try {
       // Use GET SSE via stream router by default
@@ -104,9 +141,13 @@ class AgentOSClient {
       }
 
       let buffer = '';
-      while (true) {
+      let doneReading = false;
+      while (!doneReading) {
         const { done, value } = await reader.read();
-        if (done) break;
+        if (done) {
+          doneReading = true;
+          break;
+        }
 
         buffer += decoder.decode(value, { stream: true });
         const lines = buffer.split('\n');
@@ -147,34 +188,34 @@ class AgentOSClient {
     }
   }
 
-  async listPersonas(): Promise<any[]> {
+  async listPersonas(): Promise<PersonaDefinition[]> {
     const response = await fetch(`${this.baseUrl}/api/agentos/personas?userId=agentos-workbench-user`);
     if (!response.ok) {
       throw new Error('Failed to fetch personas');
     }
     const data = await response.json();
     // Handle both array response and object with personas field
-    return Array.isArray(data) ? data : (data.personas || []);
+    return (Array.isArray(data) ? data : (data.personas || [])) as PersonaDefinition[];
   }
 
-  async listWorkflows(): Promise<any[]> {
+  async listWorkflows(): Promise<WorkflowDefinition[]> {
     const response = await fetch(`${this.baseUrl}/api/agentos/workflows/definitions`);
     if (!response.ok) {
       throw new Error('Failed to fetch workflows');
     }
     const data = await response.json();
     // Handle both array response and object with definitions field
-    return Array.isArray(data) ? data : (data.definitions || []);
+    return (Array.isArray(data) ? data : (data.definitions || [])) as WorkflowDefinition[];
   }
 
   // Alias for backwards compatibility
-  async listWorkflowDefinitions(): Promise<any[]> {
+  async listWorkflowDefinitions(): Promise<WorkflowDefinition[]> {
     return this.listWorkflows();
   }
 
   async executeAgency(
     agencyId: string,
-    input: any
+    input: unknown
   ): Promise<Response> {
     const response = await fetch(`${this.baseUrl}/api/agentos/agency/execute`, {
       method: 'POST',
@@ -231,7 +272,7 @@ class AgentOSClient {
     }
   }
 
-  async executeTool(toolId: string, input: any): Promise<any> {
+  async executeTool(toolId: string, input: unknown): Promise<unknown> {
     const response = await fetch(`${this.baseUrl}/api/agentos/tools/execute`, {
       method: 'POST',
       headers: {
@@ -251,7 +292,7 @@ class AgentOSClient {
     return response.json();
   }
 
-  async startAgencyWorkflow(input: any): Promise<any> {
+  async startAgencyWorkflow(input: unknown): Promise<unknown> {
     const response = await fetch(`${this.baseUrl}/api/agentos/agency/workflow/start`, {
       method: 'POST',
       headers: {
@@ -272,17 +313,18 @@ class AgentOSClient {
   }
 
   // Diagnostics
-  async getLlmStatus(): Promise<any> {
+  async getLlmStatus(): Promise<Record<string, unknown>> {
     const response = await fetch(`${this.baseUrl}/api/system/llm-status`);
     if (!response.ok) throw new Error('Failed to fetch LLM status');
     return response.json();
   }
 
-  async getAvailableModels(): Promise<any[]> {
+  async getAvailableModels(): Promise<AgentOSModelInfo[]> {
     const response = await fetch(`${this.baseUrl}/api/agentos/models`);
     if (!response.ok) throw new Error('Failed to fetch models');
     const data = await response.json();
-    return data.models || [];
+    const models = Array.isArray(data?.models) ? data.models : [];
+    return models as AgentOSModelInfo[];
   }
 
   // Open a streaming connection to AgentOS
@@ -291,12 +333,12 @@ class AgentOSClient {
       sessionId: string;
       personaId: string;
       messages: Array<{ role: string; content: string }>;
-      workflowRequest?: any;
-      agencyRequest?: any;
+      workflowRequest?: WorkflowRequestPayload;
+      agencyRequest?: AgencyRequestPayload;
       model?: string;
     },
     handlers: {
-      onChunk?: (chunk: any) => void;
+      onChunk?: (chunk: AgentOSResponse) => void;
       onDone?: () => void;
       onError?: (error: Error) => void;
     }
@@ -309,10 +351,8 @@ class AgentOSClient {
       params.personaId,
       params.messages[params.messages.length - 1].content,
       params.sessionId,
-      true, // includeTools
-      false, // includeGuardrails
       handlers.onChunk,
-      handlers.onDone, // onComplete
+      handlers.onDone,
       handlers.onError,
       { model: params.model, workflowRequest: params.workflowRequest, agencyRequest: params.agencyRequest }
     );
@@ -323,33 +363,9 @@ class AgentOSClient {
     };
   }
 
-  // WebSocket methods for real-time communication
-  connectWebSocket(onMessage?: (data: any) => void): Socket {
-    if (!this.socket) {
-      this.socket = io(this.baseUrl);
-
-      this.socket.on('connect', () => {
-        console.log('Connected to AgentOS WebSocket');
-      });
-
-      this.socket.on('message', (data) => {
-        onMessage?.(data);
-      });
-
-      this.socket.on('error', (error) => {
-        console.error('WebSocket error:', error);
-      });
-    }
-
-    return this.socket;
-  }
-
-  disconnectWebSocket() {
-    if (this.socket) {
-      this.socket.disconnect();
-      this.socket = null;
-    }
-  }
+  // WebSocket methods are not currently used - app uses SSE instead
+  // If WebSocket support is needed in the future, add socket.io-client back
+  // and use dynamic imports to avoid Node.js module issues
 }
 
 export const agentosClient = new AgentOSClient();
@@ -370,7 +386,5 @@ export const getAvailableTools = agentosClient.getAvailableTools.bind(agentosCli
 export const installExtension = agentosClient.installExtension.bind(agentosClient);
 export const executeTool = agentosClient.executeTool.bind(agentosClient);
 export const startAgencyWorkflow = agentosClient.startAgencyWorkflow.bind(agentosClient);
-export const connectWebSocket = agentosClient.connectWebSocket.bind(agentosClient);
-export const disconnectWebSocket = agentosClient.disconnectWebSocket.bind(agentosClient);
 export const getLlmStatus = agentosClient.getLlmStatus.bind(agentosClient);
 export const getAvailableModels = agentosClient.getAvailableModels.bind(agentosClient);

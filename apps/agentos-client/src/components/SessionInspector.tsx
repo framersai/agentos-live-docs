@@ -1,4 +1,4 @@
-﻿import { Fragment, type ReactNode, useEffect, useRef, useState } from "react";
+import { Fragment, type ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { clsx } from "clsx";
 import ReactMarkdown from "react-markdown";
 import {
@@ -12,20 +12,29 @@ import {
   type AgentOSToolCallRequestChunk,
   type AgentOSResponse
 } from "@/types/agentos";
-import { AlertTriangle, Users, GitBranch } from "lucide-react";
+import { AlertTriangle, Users, GitBranch, Sparkles } from "lucide-react";
 import { useSessionStore } from "@/state/sessionStore";
 import { ArtifactViewer } from "@/components/ArtifactViewer";
 import { exportAllData } from "@/lib/dataExport";
+import { clearSessionEvents, deleteSessionRow, persistSessionRow } from "@/lib/storageBridge";
 import { SessionConcurrencyInfo } from "./SessionConcurrencyInfo";
 
 const chunkAccent: Record<string, string> = {
   [AgentOSChunkType.TEXT_DELTA]: "border-slate-300 bg-slate-100 text-slate-800 dark:border-white/10 dark:bg-slate-900 dark:text-slate-100",
-  [AgentOSChunkType.FINAL_RESPONSE]: "border-emerald-400/40 bg-emerald-400/10 text-emerald-100",
-  [AgentOSChunkType.TOOL_CALL_REQUEST]: "border-amber-400/40 bg-amber-400/10 text-amber-100",
-  [AgentOSChunkType.TOOL_RESULT_EMISSION]: "border-purple-400/40 bg-purple-400/10 text-purple-100",
-  [AgentOSChunkType.ERROR]: "border-rose-500/40 bg-rose-500/10 text-rose-100",
-  [AgentOSChunkType.AGENCY_UPDATE]: "border-sky-400/40 bg-sky-400/10 text-sky-100",
-  [AgentOSChunkType.WORKFLOW_UPDATE]: "border-indigo-400/40 bg-indigo-400/10 text-indigo-100"
+  [AgentOSChunkType.FINAL_RESPONSE]: "border-emerald-400/40 bg-emerald-400/10 text-emerald-100 dark:text-emerald-100",
+  [AgentOSChunkType.TOOL_CALL_REQUEST]: "border-amber-400/40 bg-amber-400/10 text-amber-100 dark:text-amber-100",
+  [AgentOSChunkType.TOOL_RESULT_EMISSION]: "border-purple-400/40 bg-purple-400/10 text-purple-100 dark:text-purple-100",
+  [AgentOSChunkType.ERROR]: "border-rose-500/40 bg-rose-500/10 text-rose-100 dark:text-rose-100",
+  [AgentOSChunkType.AGENCY_UPDATE]: "border-sky-400/60 bg-sky-50 text-sky-900 dark:border-sky-400/40 dark:bg-sky-400/10 dark:text-sky-100",
+  [AgentOSChunkType.WORKFLOW_UPDATE]: "border-indigo-400/60 bg-indigo-50 text-indigo-900 dark:border-indigo-400/40 dark:bg-indigo-400/10 dark:text-indigo-100"
+};
+
+const seatStatusAccent: Record<string, string> = {
+  running: "bg-emerald-500/20 text-emerald-100",
+  complete: "bg-emerald-600/20 text-emerald-100",
+  awaiting_input: "bg-amber-500/20 text-amber-100",
+  pending: "bg-slate-500/20 text-slate-200",
+  errored: "bg-rose-500/20 text-rose-100"
 };
 
 function formatStatus(status: string): string {
@@ -44,37 +53,37 @@ function renderWorkflowUpdate(chunk: AgentOSWorkflowUpdateChunk) {
     <div className="space-y-3 text-sm leading-relaxed">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-xs uppercase tracking-[0.35em] text-slate-400">Workflow</p>
-          <p className="text-slate-100">{chunk.workflow.definitionId}</p>
+          <p className="text-xs uppercase tracking-[0.35em] text-slate-500 dark:text-slate-400">Workflow</p>
+          <p className="text-slate-900 dark:text-slate-100">{chunk.workflow.definitionId}</p>
         </div>
-        <span className="text-xs text-slate-400">{formatStatus(chunk.workflow.status)}</span>
+        <span className="text-xs text-slate-600 dark:text-slate-300">{formatStatus(chunk.workflow.status)}</span>
       </div>
-      <dl className="grid gap-2 text-xs text-slate-200 sm:grid-cols-2">
+      <dl className="grid gap-2 text-xs text-slate-600 dark:text-slate-300 sm:grid-cols-2">
         <div>
-          <dt className="uppercase tracking-[0.35em] text-slate-400">Workflow Id</dt>
-          <dd className="truncate text-slate-100">{chunk.workflow.workflowId}</dd>
+          <dt className="uppercase tracking-[0.35em] text-slate-500 dark:text-slate-400">Workflow Id</dt>
+          <dd className="truncate text-slate-900 dark:text-slate-100">{chunk.workflow.workflowId}</dd>
         </div>
         {goal && (
           <div>
-            <dt className="uppercase tracking-[0.35em] text-slate-400">Goal</dt>
-            <dd className="truncate text-slate-100">{goal}</dd>
+            <dt className="uppercase tracking-[0.35em] text-slate-500 dark:text-slate-400">Goal</dt>
+            <dd className="truncate text-slate-900 dark:text-slate-100">{goal}</dd>
           </div>
         )}
       </dl>
       {tasks.length > 0 && (
         <div className="space-y-2">
-          <p className="text-[10px] uppercase tracking-[0.35em] text-slate-500">Tasks</p>
+          <p className="text-[10px] uppercase tracking-[0.35em] text-slate-500 dark:text-slate-400">Tasks</p>
           <ul className="space-y-2">
             {tasks.map(([taskId, taskSnapshot]) => (
               <li
                 key={taskId}
-                className="flex items-center justify-between rounded-lg border border-white/10 bg-slate-950/60 px-3 py-2 text-xs text-slate-200"
+                className="flex items-center justify-between rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs text-slate-700 dark:border-white/10 dark:bg-slate-950/60 dark:text-slate-200"
               >
                 <div className="flex items-center gap-2">
-                  <GitBranch className="h-3 w-3 text-slate-500" />
+                  <GitBranch className="h-3 w-3 text-slate-500 dark:text-slate-400" />
                   <span>{taskId}</span>
                 </div>
-                <span className="text-slate-400">{formatStatus(taskSnapshot.status)}</span>
+                <span className="text-slate-500 dark:text-slate-300">{formatStatus(taskSnapshot.status)}</span>
               </li>
             ))}
           </ul>
@@ -92,32 +101,32 @@ function renderAgencyUpdate(chunk: AgentOSAgencyUpdateChunk) {
       : null;
   return (
     <div className="space-y-3 text-sm leading-relaxed">
-      <div className="flex items-center gap-2 font-semibold text-slate-100">
-        <Users className="h-4 w-4 text-sky-200" />
+      <div className="flex items-center gap-2 font-semibold text-sky-900 dark:text-slate-100">
+        <Users className="h-4 w-4 text-sky-600 dark:text-sky-200" />
         Agency {chunk.agency.agencyId}
       </div>
-      {goal && <p className="text-slate-200">{goal}</p>}
-      <dl className="grid gap-2 text-xs text-slate-200 sm:grid-cols-2">
+      {goal && <p className="text-slate-700 dark:text-slate-200">{goal}</p>}
+      <dl className="grid gap-2 text-xs text-slate-600 dark:text-slate-200 sm:grid-cols-2">
         <div>
-          <dt className="uppercase tracking-[0.35em] text-slate-400">Workflow</dt>
-          <dd className="truncate text-slate-100">{chunk.agency.workflowId}</dd>
+          <dt className="uppercase tracking-[0.35em] text-slate-500 dark:text-slate-400">Workflow</dt>
+          <dd className="truncate text-slate-900 dark:text-slate-100">{chunk.agency.workflowId}</dd>
         </div>
         {chunk.agency.conversationId && (
           <div>
-            <dt className="uppercase tracking-[0.35em] text-slate-400">Conversation</dt>
-            <dd className="truncate text-slate-100">{chunk.agency.conversationId}</dd>
+            <dt className="uppercase tracking-[0.35em] text-slate-500 dark:text-slate-400">Conversation</dt>
+            <dd className="truncate text-slate-900 dark:text-slate-100">{chunk.agency.conversationId}</dd>
           </div>
         )}
       </dl>
       <div className="space-y-2">
         {seats.length === 0 ? (
-          <p className="text-xs text-slate-300">No registered seats yet.</p>
+          <p className="text-xs text-slate-500 dark:text-slate-300">No registered seats yet.</p>
         ) : (
           seats.map((seat) => (
-            <div key={seat.roleId} className="rounded-lg border border-white/10 bg-slate-950/40 p-3">
-              <p className="text-xs font-semibold uppercase tracking-[0.35em] text-slate-300">{seat.roleId}</p>
-              <p className="text-sm text-slate-100">{seat.personaId}</p>
-              <p className="text-xs text-slate-400">GMI: {seat.gmiInstanceId}</p>
+            <div key={seat.roleId} className="rounded-lg border border-sky-200 bg-sky-50/50 p-3 dark:border-white/10 dark:bg-slate-950/40">
+              <p className="text-xs font-semibold uppercase tracking-[0.35em] text-sky-700 dark:text-slate-300">{seat.roleId}</p>
+              <p className="text-sm text-slate-900 dark:text-slate-100">{seat.personaId}</p>
+              <p className="text-xs text-slate-600 dark:text-slate-400">GMI: {seat.gmiInstanceId}</p>
             </div>
           ))
         )}
@@ -220,55 +229,55 @@ function renderEventBody(type: AgentOSChunkType | "log", payload: unknown): Reac
  * Animated streaming text renderer. It animates towards the provided `text` string.
  */
 function StreamingText({ text, isActive }: { text: string; isActive: boolean }) {
-  const [displayed, setDisplayed] = useState("");
-  const displayedRef = useRef("");
-  const timerRef = useRef<number | null>(null);
+  const [displayed, setDisplayed] = useState(text);
+  const [showCursor, setShowCursor] = useState(isActive);
+  const renderedRef = useRef(text);
+  const rafRef = useRef<number | null>(null);
 
   useEffect(() => {
-    const current = displayedRef.current;
+    return () => {
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = null;
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    setShowCursor(isActive);
+  }, [isActive]);
+
+  useEffect(() => {
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
+
+    const current = renderedRef.current;
     const target = text;
 
-    // If target shrank (shouldn't happen), snap
-    if (!target.startsWith(current)) {
-      displayedRef.current = target;
+    if (!isActive || target.length <= current.length || !target.startsWith(current)) {
+      renderedRef.current = target;
       setDisplayed(target);
       return;
     }
 
-    // If already up-to-date
-    if (current === target) {
-      if (!isActive && timerRef.current) {
-        clearInterval(timerRef.current);
-        timerRef.current = null;
-      }
-      return;
-    }
-
-    // Animate only the delta
     const delta = target.slice(current.length);
-    const chunkSize = Math.max(1, Math.min(3, Math.floor(delta.length / 24))); // smooth chunks
-    let index = 0;
-
-    if (timerRef.current) clearInterval(timerRef.current);
-    timerRef.current = window.setInterval(() => {
-      index += chunkSize;
-      const next = current + delta.slice(0, Math.min(index, delta.length));
-      displayedRef.current = next;
-      setDisplayed(next);
-      if (index >= delta.length) {
-        if (timerRef.current) {
-          clearInterval(timerRef.current);
-          timerRef.current = null;
-        }
-      }
-    }, 16); // ~60fps
-
-    return () => {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-        timerRef.current = null;
+    let revealed = 0;
+    const step = () => {
+      const chunkSize = Math.max(1, Math.ceil(delta.length / 18));
+      revealed = Math.min(delta.length, revealed + chunkSize);
+      const nextValue = current + delta.slice(0, revealed);
+      renderedRef.current = nextValue;
+      setDisplayed(nextValue);
+      if (revealed < delta.length) {
+        rafRef.current = requestAnimationFrame(step);
+      } else {
+        rafRef.current = null;
       }
     };
+
+    rafRef.current = requestAnimationFrame(step);
   }, [text, isActive]);
 
   if (!displayed && isActive) {
@@ -279,11 +288,11 @@ function StreamingText({ text, isActive }: { text: string; isActive: boolean }) 
       </div>
     );
   }
-  
+
   return (
     <div className="prose prose-sm max-w-none dark:prose-invert prose-headings:text-slate-900 dark:prose-headings:text-slate-100 prose-p:text-slate-800 dark:prose-p:text-slate-200 prose-li:text-slate-800 dark:prose-li:text-slate-200 prose-strong:text-slate-900 dark:prose-strong:text-slate-100 prose-code:text-slate-800 dark:prose-code:text-slate-200 prose-pre:bg-slate-900 dark:prose-pre:bg-slate-950 prose-pre:text-slate-100">
       <ReactMarkdown>{displayed}</ReactMarkdown>
-      {isActive && <span className="ml-0.5 inline-block h-4 w-1 animate-pulse bg-sky-500" aria-hidden="true" />}
+      {showCursor && <span className="ml-0.5 inline-block h-4 w-1 animate-pulse bg-sky-500" aria-hidden="true" />}
     </div>
   );
 }
@@ -521,7 +530,7 @@ function buildAggregatedRows(events: Array<{ id: string; timestamp: number; type
   rows.sort((a, b) => {
     const ta = a.kind === "assistant" ? a.updatedAt : a.timestamp;
     const tb = b.kind === "assistant" ? b.updatedAt : b.timestamp;
-    return tb - ta;
+    return ta - tb;
   });
 
   return rows;
@@ -531,6 +540,8 @@ export function SessionInspector() {
   const activeSessionId = useSessionStore((state) => state.activeSessionId);
   const session = useSessionStore((state) => state.sessions.find((item) => item.id === state.activeSessionId));
   const personas = useSessionStore((state) => state.personas);
+  const agencies = useSessionStore((state) => state.agencies);
+  const agencySessionsState = useSessionStore((state) => state.agencySessions);
   const removeSession = useSessionStore((s) => s.removeSession);
   const upsertSession = useSessionStore((s) => s.upsertSession);
   const [renaming, setRenaming] = useState(false);
@@ -538,6 +549,59 @@ export function SessionInspector() {
   const [showRenameModal, setShowRenameModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showClearModal, setShowClearModal] = useState(false);
+  const isAgencySession = session?.targetType === "agency";
+  const agencySnapshot =
+    isAgencySession && session?.agencyId ? agencySessionsState[session.agencyId] ?? null : null;
+  const agencyDefinition =
+    isAgencySession && session?.agencyId ? agencies.find((agency) => agency.id === session.agencyId) ?? null : null;
+  const seatSnapshots =
+    isAgencySession
+      ? agencySnapshot?.seats?.map((seat) => ({
+          roleId: seat.roleId,
+          personaId: seat.personaId,
+          gmiInstanceId: seat.gmiInstanceId,
+          status: typeof seat.metadata?.status === "string" ? seat.metadata.status : undefined,
+          notes: typeof seat.metadata?.notes === "string" ? seat.metadata.notes : undefined
+        })) ??
+        agencyDefinition?.participants.map((participant) => ({
+          roleId: participant.roleId,
+          personaId: participant.personaId ?? "unassigned",
+          gmiInstanceId: "pending",
+          status: "pending",
+          notes: participant.notes
+        })) ??
+        []
+      : [];
+  const lastAgencyEvent =
+    isAgencySession && session
+      ? session.events.find((event) => event.type === AgentOSChunkType.AGENCY_UPDATE)
+      : null;
+  const agencyGoal =
+    isAgencySession && agencySnapshot?.metadata && typeof agencySnapshot.metadata.goal === "string"
+      ? agencySnapshot.metadata.goal
+      : agencyDefinition?.goal;
+  const workflowIdentifier = agencySnapshot?.workflowId ?? agencyDefinition?.workflowId;
+  const timelineContainerClass = clsx(
+    "relative flex max-h-[calc(100vh-6rem)] flex-col overflow-hidden rounded-3xl border border-slate-200 dark:border-white/10",
+    isAgencySession
+      ? "bg-gradient-to-b from-white via-slate-50 to-white text-slate-900 dark:from-slate-950 dark:via-slate-900 dark:text-slate-100"
+      : "bg-white text-slate-900 dark:bg-slate-900/50 dark:text-slate-100"
+  );
+  const timelineScrollRef = useRef<HTMLDivElement | null>(null);
+  const persistSessionSnapshot = useCallback((sessionId: string) => {
+    const latest = useSessionStore.getState().sessions.find((item) => item.id === sessionId);
+    if (latest) {
+      void persistSessionRow(latest);
+    }
+  }, []);
+  useEffect(() => {
+    const container = timelineScrollRef.current;
+    if (!container) return;
+    requestAnimationFrame(() => {
+      container.scrollTo({ top: container.scrollHeight, behavior: "smooth" });
+    });
+  }, [session?.id, session?.events.length]);
+
   const handleExport = () => {
     if (!session) return;
     const payload = {
@@ -595,7 +659,7 @@ export function SessionInspector() {
 
   if (!activeSessionId || !session) {
     return (
-      <div className="flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white dark:border-white/10 dark:bg-slate-900/50">
+      <div className="flex max-h-[calc(100vh-6rem)] flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white dark:border-white/10 dark:bg-slate-900/50">
         <header className="flex items-center justify-between border-b border-slate-200 px-6 py-4 dark:border-white/5">
           <div>
             <p className="text-xs uppercase tracking-[0.25em] text-slate-500 dark:text-slate-400">Session timeline</p>
@@ -603,7 +667,7 @@ export function SessionInspector() {
           </div>
           <div className="text-xs text-slate-500 dark:text-slate-400"></div>
         </header>
-        <div className="flex-1 overflow-y-auto px-6 py-6">
+        <div className="min-h-0 flex-1 overflow-y-auto px-6 py-6">
           <div className="space-y-4">
             <div className="rounded-2xl border border-slate-200 bg-white p-6 text-sm text-slate-600 dark:border-white/10 dark:bg-slate-900/40 dark:text-slate-400">
               Waiting for the first event. Use the left panel to compose a request.
@@ -615,7 +679,7 @@ export function SessionInspector() {
   }
 
   return (
-    <div className="relative flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white dark:border-white/10 dark:bg-slate-900/50">
+    <div className={timelineContainerClass}>
       {showRenameModal && session && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" role="dialog" aria-modal="true">
           <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-4 shadow-xl dark:border-white/10 dark:bg-slate-900">
@@ -628,7 +692,17 @@ export function SessionInspector() {
             />
             <div className="mt-3 flex justify-end gap-2">
               <button onClick={() => setShowRenameModal(false)} className="rounded-full border border-slate-200 px-3 py-1 text-xs text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300">Cancel</button>
-              <button onClick={() => { upsertSession({ id: session.id, displayName: (nameDraft || session.displayName || 'Untitled').trim() }); setShowRenameModal(false); }} className="rounded-full bg-sky-500 px-3 py-1 text-xs font-semibold text-white hover:bg-sky-600">Save</button>
+              <button
+                onClick={() => {
+                  const nextName = (nameDraft || session.displayName || 'Untitled').trim();
+                  upsertSession({ id: session.id, displayName: nextName });
+                  persistSessionSnapshot(session.id);
+                  setShowRenameModal(false);
+                }}
+                className="rounded-full bg-sky-500 px-3 py-1 text-xs font-semibold text-white hover:bg-sky-600"
+              >
+                Save
+              </button>
             </div>
           </div>
         </div>
@@ -640,7 +714,16 @@ export function SessionInspector() {
             <p className="text-sm text-slate-700 dark:text-slate-300">This action cannot be undone.</p>
             <div className="mt-3 flex justify-end gap-2">
               <button onClick={() => setShowDeleteModal(false)} className="rounded-full border border-slate-200 px-3 py-1 text-xs text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300">Cancel</button>
-              <button onClick={() => { removeSession(session.id); setShowDeleteModal(false); }} className="rounded-full bg-rose-600 px-3 py-1 text-xs font-semibold text-white hover:bg-rose-700">Delete</button>
+              <button
+                onClick={() => {
+                  removeSession(session.id);
+                  void deleteSessionRow(session.id);
+                  setShowDeleteModal(false);
+                }}
+                className="rounded-full bg-rose-600 px-3 py-1 text-xs font-semibold text-white hover:bg-rose-700"
+              >
+                Delete
+              </button>
             </div>
           </div>
         </div>
@@ -652,7 +735,17 @@ export function SessionInspector() {
             <p className="text-sm text-slate-700 dark:text-slate-300">This will remove all events from this session.</p>
             <div className="mt-3 flex justify-end gap-2">
               <button onClick={() => setShowClearModal(false)} className="rounded-full border border-slate-200 px-3 py-1 text-xs text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300">Cancel</button>
-              <button onClick={() => { upsertSession({ id: session.id, events: [], status: 'idle' }); setShowClearModal(false); }} className="rounded-full bg-sky-500 px-3 py-1 text-xs font-semibold text-white hover:bg-sky-600">Clear</button>
+              <button
+                onClick={() => {
+                  upsertSession({ id: session.id, events: [], status: 'idle' });
+                  void clearSessionEvents(session.id);
+                  persistSessionSnapshot(session.id);
+                  setShowClearModal(false);
+                }}
+                className="rounded-full bg-sky-500 px-3 py-1 text-xs font-semibold text-white hover:bg-sky-600"
+              >
+                Clear
+              </button>
             </div>
           </div>
         </div>
@@ -665,7 +758,18 @@ export function SessionInspector() {
           ) : (
             <div className="flex items-center gap-2">
               <input value={nameDraft} onChange={(e) => setNameDraft(e.target.value)} className="rounded border border-slate-200 bg-white px-2 py-1 text-sm dark:border-white/10 dark:bg-slate-900" />
-              <button type="button" onClick={() => { upsertSession({ id: session.id, displayName: nameDraft || 'Untitled' }); setRenaming(false); }} className="rounded-full border border-slate-200 px-2 py-0.5 text-xs text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300">Save</button>
+              <button
+                type="button"
+                onClick={() => {
+                  const nextName = (nameDraft || 'Untitled').trim();
+                  upsertSession({ id: session.id, displayName: nextName });
+                  persistSessionSnapshot(session.id);
+                  setRenaming(false);
+                }}
+                className="rounded-full border border-slate-200 px-2 py-0.5 text-xs text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300"
+              >
+                Save
+              </button>
               <button type="button" onClick={() => setRenaming(false)} className="rounded-full border border-slate-200 px-2 py-0.5 text-xs text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-300">Cancel</button>
             </div>
           )}
@@ -703,13 +807,87 @@ export function SessionInspector() {
           </div>
         </div>
       </header>
-      <div className="flex-1 overflow-y-auto px-6 py-6">
+      <div ref={timelineScrollRef} className="min-h-0 flex-1 overflow-y-auto px-6 py-6">
         <div className="space-y-4">
           {/* Session Concurrency Info */}
           <SessionConcurrencyInfo sessionStatus={session.status} />
-          
+
+          {isAgencySession && (
+            <section className="rounded-2xl border border-slate-200 bg-white p-4 text-slate-900 shadow-lg dark:border-sky-500/40 dark:bg-slate-950/80 dark:text-slate-100">
+              <header className="mb-3 flex items-center justify-between">
+                <div>
+                  <p className="text-[10px] uppercase tracking-[0.4em] text-slate-500 dark:text-slate-400">Agency overview</p>
+                  <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
+                    {agencyDefinition?.name ?? session.displayName}
+                  </h3>
+                </div>
+                <div className="inline-flex items-center gap-2 text-xs text-slate-500 dark:text-slate-300">
+                  <Sparkles className="h-4 w-4 text-sky-500 dark:text-sky-400" />
+                  {agencySnapshot ? "Live telemetry" : "Awaiting updates"}
+                </div>
+              </header>
+              <dl className="grid gap-3 text-xs text-slate-600 dark:text-slate-300 md:grid-cols-3">
+                <div>
+                  <dt className="uppercase tracking-[0.35em] text-slate-500 dark:text-slate-400">Agency</dt>
+                  <dd className="mt-1 font-semibold text-slate-900 dark:text-slate-100">{session.agencyId ?? "—"}</dd>
+                </div>
+                <div>
+                  <dt className="uppercase tracking-[0.35em] text-slate-500 dark:text-slate-400">Workflow</dt>
+                  <dd className="mt-1 font-semibold text-slate-900 dark:text-slate-100">{workflowIdentifier ?? "Not attached"}</dd>
+                </div>
+                <div>
+                  <dt className="uppercase tracking-[0.35em] text-slate-500 dark:text-slate-400">Last update</dt>
+                  <dd className="mt-1 font-semibold text-slate-900 dark:text-slate-100">
+                    {lastAgencyEvent ? new Date(lastAgencyEvent.timestamp).toLocaleTimeString() : "—"}
+                  </dd>
+                </div>
+              </dl>
+              {agencyGoal && <p className="mt-3 text-sm text-slate-700 dark:text-slate-200">{agencyGoal}</p>}
+              <div className="mt-4 grid gap-3 lg:grid-cols-2">
+                {seatSnapshots.length === 0 ? (
+                  <p className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-600 dark:border-slate-600 dark:bg-slate-900/40 dark:text-slate-300">
+                    Configure participants for this agency to see seat telemetry.
+                  </p>
+                ) : (
+                  seatSnapshots.map((seat) => {
+                    const personaName =
+                      personas.find((persona) => persona.id === seat.personaId)?.displayName ?? seat.personaId ?? "Unassigned";
+                    const statusKey = (seat.status ?? "pending").toLowerCase();
+                    const statusClass = seatStatusAccent[statusKey] ?? seatStatusAccent.pending;
+                    return (
+                      <div
+                        key={`${seat.roleId}-${seat.gmiInstanceId}-${personaName}`}
+                        className="rounded-2xl border border-slate-200 bg-white p-3 dark:border-white/10 dark:bg-white/5"
+                      >
+                        <div className="flex items-center justify-between">
+                          <p className="text-[11px] font-semibold uppercase tracking-[0.4em] text-slate-500 dark:text-slate-300">
+                            {seat.roleId}
+                          </p>
+                          <span className={clsx("rounded-full px-2 py-0.5 text-[10px] uppercase", statusClass)}>
+                            {statusKey.replace(/_/g, " ")}
+                          </span>
+                        </div>
+                        <p className="mt-1 text-sm font-semibold text-slate-900 dark:text-white">{personaName}</p>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                          {seat.notes ?? (seat.gmiInstanceId !== "pending" ? seat.gmiInstanceId : "Awaiting assignment")}
+                        </p>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+            </section>
+          )}
+
           {/* Raw stream debug (last 10 events) */}
-            <details className="rounded-xl border border-slate-200 bg-white p-3 text-xs text-slate-600 dark:border-white/10 dark:bg-slate-900/60 dark:text-slate-300">
+            <details
+              className={clsx(
+                "rounded-xl border p-3 text-xs",
+                isAgencySession
+                  ? "border-white/10 bg-slate-900/60 text-slate-200"
+                  : "border-slate-200 bg-white text-slate-600 dark:border-white/10 dark:bg-slate-900/60 dark:text-slate-300"
+              )}
+            >
               <summary className="cursor-pointer select-none">Stream debug</summary>
               <div className="mt-2 grid grid-cols-1 gap-1">
                 {[...session.events]

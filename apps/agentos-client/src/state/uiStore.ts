@@ -17,7 +17,7 @@ export const useUiStore = create<UiState>()(
       dismissWelcomeTour: () => set({ welcomeTourDismissed: true, welcomeTourSnoozeUntil: null }),
       snoozeWelcomeTour: (hours = 24) => set({ welcomeTourSnoozeUntil: Date.now() + hours * 60 * 60 * 1000 }),
     }),
-    { name: 'agentos-client-ui', storage: createJSONStorage(() => (idbStorage as any)) }
+    { name: 'agentos-client-ui', storage: createJSONStorage(() => idbStorage as Storage) }
   )
 );
 

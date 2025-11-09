@@ -12,9 +12,8 @@
  */
 
 import { useState, useMemo } from 'react';
-import { Plus, Trash2, Users, Hash, Workflow, Sparkles, Code } from 'lucide-react';
+import { Plus, Trash2, Users, Hash, Sparkles, Code } from 'lucide-react';
 import { useSessionStore } from '@/state/sessionStore';
-import { useWorkflowDefinitions } from '@/hooks/useWorkflowDefinitions';
 
 /** Single agent role configuration for the agency */
 interface AgentRoleConfig {
@@ -31,6 +30,7 @@ interface AgencyComposerProps {
     roles: AgentRoleConfig[];
     format: 'structured' | 'markdown';
     markdownInput?: string;
+    outputFormat?: 'json' | 'csv' | 'markdown' | 'text';
   }) => void;
   disabled?: boolean;
 }
@@ -66,10 +66,10 @@ export function AgencyComposer({ onSubmit, disabled = false }: AgencyComposerPro
   const [roles, setRoles] = useState<AgentRoleConfig[]>([]);
   const [markdownInput, setMarkdownInput] = useState(MARKDOWN_EXAMPLES[0]);
   const [currentExample, setCurrentExample] = useState(0);
+  const [outputFormat, setOutputFormat] = useState<'json' | 'csv' | 'markdown' | 'text'>('markdown');
   
   const personas = useSessionStore((state) => state.personas);
   const remotePersonas = useMemo(() => personas.filter((p) => p.source === 'remote'), [personas]);
-  const { data: workflowDefinitions = [] } = useWorkflowDefinitions();
 
   const addRole = () => {
     const nextPriority = roles.length + 1;
@@ -131,12 +131,14 @@ export function AgencyComposer({ onSubmit, disabled = false }: AgencyComposerPro
         roles: parsedRoles,
         format: 'markdown',
         markdownInput,
+        outputFormat,
       });
     } else {
       onSubmit({
         goal,
         roles,
         format: 'structured',
+        outputFormat,
       });
     }
   };
@@ -271,6 +273,26 @@ export function AgencyComposer({ onSubmit, disabled = false }: AgencyComposerPro
             )}
           </div>
         )}
+
+        {/* Output Format Selection */}
+        <label className="block space-y-1">
+          <span className="text-xs uppercase tracking-[0.35em] text-slate-500 dark:text-slate-400">
+            Output Format
+          </span>
+          <select
+            value={outputFormat}
+            onChange={(e) => setOutputFormat(e.target.value as 'json' | 'csv' | 'markdown' | 'text')}
+            className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-sky-500 focus:outline-none dark:border-white/10 dark:bg-slate-950/80 dark:text-slate-100"
+          >
+            <option value="markdown">Markdown (default)</option>
+            <option value="json">JSON</option>
+            <option value="csv">CSV</option>
+            <option value="text">Plain Text</option>
+          </select>
+          <p className="text-xs text-slate-500 dark:text-slate-500">
+            Requested format for consolidated agency output. Agents will format their responses accordingly.
+          </p>
+        </label>
 
         <button
           type="submit"

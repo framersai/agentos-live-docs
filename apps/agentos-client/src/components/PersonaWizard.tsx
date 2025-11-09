@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { X, ArrowRight, ArrowLeft, Check, Shield, Plug, Settings2, FileText } from 'lucide-react';
 import { useSessionStore, type PersonaDefinition } from '@/state/sessionStore';
+import { persistPersonaRow } from "@/lib/storageBridge";
 import type { SerializableGuardrail } from './GuardrailManager';
 
 interface PersonaWizardProps {
@@ -93,6 +94,7 @@ export function PersonaWizard({ open, onClose }: PersonaWizardProps) {
     };
 
     addPersona(persona);
+    void persistPersonaRow(persona);
     onClose();
     // Reset with new unique name
     setDraft({

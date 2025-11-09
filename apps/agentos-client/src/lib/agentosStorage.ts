@@ -4,8 +4,7 @@
  * This is AgentOS-specific code that lives in agentos-client, not in sql-storage-adapter.
  */
 
-import { resolveStorageAdapter, type StorageAdapter } from '@framers/sql-storage-adapter';
-import { IndexedDbAdapter } from '@framers/sql-storage-adapter';
+import { IndexedDbAdapter, type StorageAdapter } from '@framers/sql-storage-adapter';
 
 /**
  * AgentOS schema SQL for conversations, sessions, personas, etc.
@@ -91,9 +90,20 @@ CREATE INDEX IF NOT EXISTS idx_telemetry_timestamp ON telemetry(timestamp);
  */
 export async function createAgentOSStorageAdapter(dbName = 'agentos-client-db'): Promise<StorageAdapter> {
   // Use IndexedDB adapter directly for browser
+  // Configure sql.js to load WASM file correctly in Vite
   const adapter = new IndexedDbAdapter({
     dbName,
     autoSave: true,
+    sqlJsConfig: {
+      // Configure WASM file location for Vite
+      locateFile: (file: string) => {
+        // Vite serves files from public directory at root
+        if (file.endsWith('.wasm')) {
+          return `/sql-wasm.wasm`;
+        }
+        return file;
+      }
+    }
   });
 
   await adapter.open();

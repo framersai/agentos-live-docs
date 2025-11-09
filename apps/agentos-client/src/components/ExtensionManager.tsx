@@ -5,19 +5,17 @@ import { Input } from './ui/Input';
 import { Badge } from './ui/Badge';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from './ui/Tabs';
 import { agentosClient } from '../lib/agentosClient';
-import { 
-  Package, 
-  Settings, 
-  Search, 
-  Download, 
-  Check, 
+import {
+  Package,
+  Search,
+  Download,
+  Check,
   AlertCircle,
   Code,
   Shield,
   Zap,
   RefreshCw,
-  ChevronRight,
-  ExternalLink
+  ChevronRight
 } from 'lucide-react';
 
 interface Extension {
@@ -41,8 +39,8 @@ interface Tool {
   name: string;
   description: string;
   extension: string;
-  inputSchema?: any;
-  outputSchema?: any;
+  inputSchema?: Record<string, unknown>;
+  outputSchema?: Record<string, unknown>;
   hasSideEffects?: boolean;
 }
 
@@ -99,8 +97,9 @@ export const ExtensionManager: React.FC = () => {
       const input = JSON.parse(testInput);
       const result = await agentosClient.executeTool(selectedTool.id, input);
       setTestOutput(JSON.stringify(result, null, 2));
-    } catch (error: any) {
-      setTestOutput(`Error: ${error.message}`);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      setTestOutput(`Error: ${message}`);
     }
   };
 

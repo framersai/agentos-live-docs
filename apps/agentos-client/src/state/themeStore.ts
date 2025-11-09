@@ -46,7 +46,7 @@ const applyPalette = (palette: Palette) => {
 
 export const useThemeStore = create<ThemeState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       theme: 'system',
       actualTheme: getSystemTheme(),
       appearance: 'default',
@@ -74,7 +74,7 @@ export const useThemeStore = create<ThemeState>()(
           applyTheme(actualTheme);
           state.actualTheme = actualTheme;
           applyAppearance(state.appearance ?? 'default');
-          applyPalette((state as any).palette ?? 'default');
+          applyPalette(state.palette ?? 'default');
         }
       },
     }

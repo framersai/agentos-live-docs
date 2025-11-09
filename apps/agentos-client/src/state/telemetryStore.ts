@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { AgentOSChunkType, type AgentOSResponse, type AgentOSFinalResponseChunk, type AgentOSTextDeltaChunk, type AgentOSToolCallRequestChunk, type AgentOSToolResultEmissionChunk } from "@/types/agentos";
+import { AgentOSChunkType, type AgentOSResponse, type AgentOSFinalResponseChunk, type AgentOSTextDeltaChunk, type AgentOSToolCallRequestChunk } from "@/types/agentos";
 
 export interface TelemetryMetrics {
   startedAt?: number;
@@ -22,7 +22,7 @@ interface TelemetryState {
   endStream: (sessionId: string) => void;
 }
 
-export const useTelemetryStore = create<TelemetryState>()((set, get) => ({
+export const useTelemetryStore = create<TelemetryState>()((set) => ({
   perSession: {},
   currentSessionId: undefined,
   startStream: (sessionId) => {
@@ -57,10 +57,6 @@ export const useTelemetryStore = create<TelemetryState>()((set, get) => ({
           next.toolCalls = (next.toolCalls || 0) + (c.toolCalls?.length || 1);
           break;
         }
-        case AgentOSChunkType.TOOL_RESULT_EMISSION: {
-          const _ = chunk as AgentOSToolResultEmissionChunk;
-          break;
-        }
         case AgentOSChunkType.ERROR: {
           next.errors = (next.errors || 0) + 1;
           break;
@@ -83,7 +79,7 @@ export const useTelemetryStore = create<TelemetryState>()((set, get) => ({
   endStream: (sessionId) => {
     set((state) => {
       const prev = state.perSession[sessionId];
-      if (!prev) return {} as any;
+      if (!prev) return state;
       const durationMs = prev.startedAt ? (Date.now() - prev.startedAt) : prev.durationMs;
       return { perSession: { ...state.perSession, [sessionId]: { ...prev, durationMs } } };
     });

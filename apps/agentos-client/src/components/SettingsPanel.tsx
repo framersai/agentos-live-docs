@@ -1,8 +1,5 @@
 import { useEffect, useState } from 'react';
-import { fetchUserSettings, updateUserSettings, type ProviderKey } from '../lib/settingsClient';
-import { dataExport, exportAllData } from '../lib/dataExport';
-import { idbStorage } from '../utils/idbStorage';
-import { useSessionStore } from '@/state/sessionStore';
+import { fetchUserSettings, updateUserSettings, type ProviderKey, type ProviderUpdatePayload } from '../lib/settingsClient';
 import { GuardrailManager, type SerializableGuardrail } from './GuardrailManager';
 import { StorageDashboard } from './StorageDashboard';
 
@@ -15,6 +12,8 @@ type FormState = {
   rpm: string;
 };
 
+type LimitsPayload = { rpm?: number };
+
 export function SettingsPanel() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -25,8 +24,8 @@ export function SettingsPanel() {
       id: 'guardrail-pii',
       type: '@framersai/guardrail-keyword',
       displayName: 'PII Protection',
-      description: 'Redacts SSN, email, phone from output',
-      enabled: true,
+      description: 'Redacts SSN, email, phone from output (evaluates final chunk only for performance)',
+      enabled: false, // Disabled by default - requires implementation
       config: {},
       priority: 10,
       uiMetadata: { category: 'privacy', icon: 'shield-check', color: '#10b981' }
@@ -53,7 +52,7 @@ export function SettingsPanel() {
   const onSave = async () => {
     setSaving(true);
     try {
-      const providers: any = {};
+      const providers: ProviderUpdatePayload = {};
       if (form.openaiKey || form.openaiModel) providers.openai = {};
       if (form.openaiKey) providers.openai.apiKey = form.openaiKey;
       if (form.openaiModel) providers.openai.model = form.openaiModel;
@@ -61,7 +60,7 @@ export function SettingsPanel() {
       if (form.anthropicKey) providers.anthropic.apiKey = form.anthropicKey;
       if (form.anthropicModel) providers.anthropic.model = form.anthropicModel;
 
-      const limits: any = {};
+      const limits: LimitsPayload = {};
       if (form.rpm) limits.rpm = Number(form.rpm);
 
       await updateUserSettings({ providers, limits });
@@ -167,7 +166,6 @@ export function SettingsPanel() {
           onToggle={(id, enabled) => {
             setGuardrails((prev) => prev.map((g) => (g.id === id ? { ...g, enabled } : g)));
           }}
-          onAdd={(g) => setGuardrails((prev) => [...prev, g])}
           onRemove={(id) => setGuardrails((prev) => prev.filter((g) => g.id !== id))}
           onConfigure={(id) => {
             console.log('Configure guardrail:', id);

@@ -55,7 +55,6 @@ export function TourOverlay({ open, steps, onClose, onDontShowAgain, onRemindLat
       window.removeEventListener('resize', onResize);
       window.removeEventListener('scroll', onResize, true);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, index, step?.selector]);
 
   // Track tooltip element height for better placement

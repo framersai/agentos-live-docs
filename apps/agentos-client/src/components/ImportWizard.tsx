@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
-import { useSessionStore, type PersonaDefinition, type AgencyDefinition, type AgentSession } from '@/state/sessionStore';
+import { useSessionStore, type PersonaDefinition, type AgencyDefinition, type AgentSession, type SessionEvent } from '@/state/sessionStore';
+import { persistPersonaRow, persistSessionEventRow, persistSessionRow } from "@/lib/storageBridge";
 
 interface ImportWizardProps {
   open: boolean;
@@ -29,23 +30,24 @@ export function ImportWizard({ open, onClose }: ImportWizardProps) {
       let personasImported = 0;
       let agenciesImported = 0;
       let sessionsImported = 0;
+      const asRecordArray = (value: unknown): Record<string, unknown>[] =>
+        Array.isArray(value) ? (value as Record<string, unknown>[]) : [];
 
-      const tryArray = (value: unknown): any[] => (Array.isArray(value) ? value : []);
-
-      for (const p of tryArray(json.personas)) {
+      for (const p of asRecordArray(json.personas)) {
         const persona: PersonaDefinition = {
           id: String(p.id || crypto.randomUUID()),
           displayName: String(p.displayName || p.name || 'Imported persona'),
           description: typeof p.description === 'string' ? p.description : undefined,
-          tags: Array.isArray(p.tags) ? p.tags : [],
-          traits: Array.isArray(p.traits) ? p.traits : [],
+          tags: Array.isArray(p.tags) ? (p.tags as string[]) : [],
+          traits: Array.isArray(p.traits) ? (p.traits as string[]) : [],
           source: 'local',
         };
         addPersona(persona);
+        void persistPersonaRow(persona);
         personasImported += 1;
       }
 
-      for (const a of tryArray(json.agencies)) {
+      for (const a of asRecordArray(json.agencies)) {
         const agency: AgencyDefinition = {
           id: String(a.id || `agency-${crypto.randomUUID().slice(0, 8)}`),
           name: String(a.name || 'Imported agency'),
@@ -60,7 +62,14 @@ export function ImportWizard({ open, onClose }: ImportWizardProps) {
         agenciesImported += 1;
       }
 
-      for (const s of tryArray(json.sessions)) {
+      for (const s of asRecordArray(json.sessions)) {
+        const rawEvents = Array.isArray(s.events) ? (s.events as Record<string, unknown>[]) : [];
+        const events: SessionEvent[] = rawEvents.map((event) => ({
+          id: typeof event.id === "string" ? event.id : crypto.randomUUID(),
+          timestamp: typeof event.timestamp === "number" ? event.timestamp : Date.now(),
+          type: typeof event.type === "string" ? (event.type as SessionEvent["type"]) : "log",
+          payload: event.payload ?? { message: "Imported event" }
+        }));
         const session: AgentSession = {
           id: String(s.id || crypto.randomUUID()),
           targetType: s.targetType === 'agency' ? 'agency' : 'persona',
@@ -68,15 +77,20 @@ export function ImportWizard({ open, onClose }: ImportWizardProps) {
           personaId: s.personaId,
           agencyId: s.agencyId,
           status: 'idle',
-          events: Array.isArray(s.events) ? s.events : [],
+          events
         };
         upsertSession(session);
+        await persistSessionRow(session);
+        for (const event of events) {
+          await persistSessionEventRow(session, event);
+        }
         sessionsImported += 1;
       }
 
       setMessage(`Imported ${personasImported} persona(s), ${agenciesImported} agency(ies), ${sessionsImported} session(s).`);
-    } catch (err: any) {
-      setMessage(`Import failed: ${err?.message || String(err)}`);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : String(err);
+      setMessage(`Import failed: ${message}`);
     }
   };
 

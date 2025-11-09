@@ -1,9 +1,10 @@
-﻿import { FormEvent, useMemo, useState, useEffect } from "react";
-import { Circle, Plus, Trash2, Users, RefreshCcw } from "lucide-react";
+import { FormEvent, useMemo, useState, useEffect } from "react";
+import { Circle, Plus, Trash2, Users, RefreshCcw, Sparkles } from "lucide-react";
 import { useSessionStore } from "@/state/sessionStore";
 import type { AgentOSAgencyUpdateChunk } from "@/types/agentos";
 import { useWorkflowDefinitions } from "@/hooks/useWorkflowDefinitions";
 import type { WorkflowDefinition } from "@/types/workflow";
+import { AgencyWizard } from "./AgencyWizard";
 
 function slugify(value: string) {
   return value
@@ -27,6 +28,7 @@ export function AgencyManager() {
   const addAgency = useSessionStore((state) => state.addAgency);
   const removeAgency = useSessionStore((state) => state.removeAgency);
   const setActiveAgency = useSessionStore((state) => state.setActiveAgency);
+  const [showWizard, setShowWizard] = useState(false);
 
   // Generate unique default agency name
   const generateDefaultName = () => {
@@ -84,6 +86,12 @@ export function AgencyManager() {
       setGoal(selectedWorkflow.description);
     }
   }, [goal, participants, personas, selectedWorkflow]);
+
+  useEffect(() => {
+    const handler = () => setShowWizard(true);
+    window.addEventListener("agentos:open-agency-wizard", handler as EventListener);
+    return () => window.removeEventListener("agentos:open-agency-wizard", handler as EventListener);
+  }, []);
 
   const handleParticipantChange = (index: number, field: keyof ParticipantDraft, value: string) => {
     setParticipants((prev) => {
@@ -148,14 +156,25 @@ export function AgencyManager() {
   const workflowRoleHints = selectedWorkflow?.roles ?? [];
 
   return (
-    <section className="rounded-3xl border border-slate-200 bg-white p-5 dark:border-white/10 dark:bg-slate-900/60" data-tour="agency-manager">
+    <>
+      <section className="rounded-3xl border border-slate-200 bg-white p-5 dark:border-white/10 dark:bg-slate-900/60" data-tour="agency-manager">
       <header className="mb-4 flex items-center justify-between">
         <div>
           <p className="text-[10px] uppercase tracking-[0.4em] text-slate-500 dark:text-slate-500">Agency manager</p>
           <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Coordinate multi-seat collectives</h3>
         </div>
-        <div className="rounded-full border border-slate-200 px-3 py-1 text-xs text-slate-600 dark:border-sky-500/20 dark:bg-sky-500/10 dark:text-sky-200">
-          {agencies.length} agencies
+        <div className="flex items-center gap-2">
+          <div className="rounded-full border border-slate-200 px-3 py-1 text-xs text-slate-600 dark:border-sky-500/20 dark:bg-sky-500/10 dark:text-sky-200">
+            {agencies.length} agencies
+          </div>
+          <button
+            type="button"
+            onClick={() => setShowWizard(true)}
+            className="inline-flex items-center gap-1 rounded-full border border-slate-200 px-3 py-1 text-[10px] font-semibold text-slate-600 transition hover:bg-slate-50 dark:border-white/10 dark:text-slate-200 dark:hover:bg-slate-900"
+          >
+            <Sparkles className="h-3.5 w-3.5 text-sky-500" />
+            Wizard
+          </button>
         </div>
       </header>
 
@@ -347,7 +366,9 @@ export function AgencyManager() {
           </button>
         </form>
       </div>
-    </section>
+      </section>
+      <AgencyWizard open={showWizard} onClose={() => setShowWizard(false)} />
+    </>
   );
 }
 
