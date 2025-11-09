@@ -14,6 +14,7 @@ import path from 'path'
 
 const projectRoot = path.resolve(__dirname, '..')
 const promptsDir = path.resolve(projectRoot, 'prompts')
+const docsDir = path.resolve(projectRoot, 'docs')
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -60,6 +61,7 @@ export default defineConfig({
         // Allow serving files from the parent directory (which should be the main project root)
         // This is necessary for import.meta.glob('../../../../prompts/*.md') to work from within src/views
         promptsDir,
+        docsDir,
       ],
     },
   },

@@ -418,5 +418,40 @@ export default {
     planHintCreator: 'Creator - {price}/mese - API personale dopo ~{tokens} token/giorno',
     planHintOrganization: 'Organization - {price}/mese - pool condiviso ~{tokens} token/giorno',
     rolloverNote: 'I piani Creator e Organization passano alle chiavi API personali una volta consumata la quota giornaliera della piattaforma, mantenendo la reportistica. Gli amministratori possono assegnare limiti per membro dal pannello del team.'
+  },
+  onboarding: {
+    tour: {
+      heading: 'Welcome back, {name}!',
+      subtitle: 'Here’s a quick tour to get your workspace shipping agencies and personas immediately.',
+      defaultName: 'back',
+      steps: {
+        seed: {
+          title: 'Seed personas & secrets',
+          description: 'Pick a marketplace persona (or import your own) and satisfy required API keys directly from the Credentials panel.',
+          badge: '5 min'
+        },
+        agency: {
+          title: 'Draft your first agency',
+          description: 'Use the Agency Manager to assign personas to roles, connect workflows, and define the shared mission.',
+          badge: 'Roles & guardrails'
+        },
+        workflow: {
+          title: 'Launch a workflow',
+          description: 'Kick off automations from the Workflow launcher or via API and watch the live telemetry stream.',
+          badge: 'Streaming ready'
+        }
+      },
+      ctaPrimary: 'Launch guided setup',
+      ctaSecondary: 'Remind me later'
+    },
+    tutorials: {
+      eyebrow: 'Guided tutorials',
+      heading: 'Master agencies, workflows, and local-first tooling',
+      description: 'Curated markdown guides from the AgentOS docs. Read inline or open the original source.',
+      hide: 'Hide tutorials',
+      nowReading: 'Now reading',
+      close: 'Close tutorial'
+    }
   }
+
 };
