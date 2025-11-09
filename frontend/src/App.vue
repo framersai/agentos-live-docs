@@ -43,6 +43,8 @@ import { agentService } from '@/services/agent.service';
 import { systemAPI, type LlmStatusResponseFE } from '@/utils/api';
 import { isAxiosError } from 'axios';
 import { i18n } from '@/i18n';
+import CapabilityBanner from '@/components/system/CapabilityBanner.vue';
+import { useConnectivityStore } from '@/store/connectivity.store';
 
 // Icons for Toasts
 import {
@@ -71,6 +73,7 @@ provide('loading', readonly({
 }));
 const isLocaleTransitioning = ref(false);
 const localeTransitionTimer = ref<number | null>(null);
+const connectivityStore = useConnectivityStore();
 
 /**
  * @computed showAppFooter
@@ -301,6 +304,30 @@ onMounted(async () => {
 
   themeManager.initialize();    // Initializes theme from storage or system preference
   await uiStore.initializeUiState();  // Initializes UI store state, including listeners for fullscreen etc.
+  // Initialize platform detection (storage adapter kind & capabilities) for feature gating
+  try {
+    const { usePlatformStore } = await import('./store/platform.store');
+    const platform = usePlatformStore();
+    await platform.initialize();
+  } catch (e) {
+    console.warn('[App.vue] Platform store init failed; proceeding in degraded mode.', e);
+  }
+
+  // Capture AgentOS workflow/agency updates for export parity
+  try {
+    const { useAgentosEventsStore } = await import('./store/agentosEvents.store');
+    const eventsStore = useAgentosEventsStore();
+    const onWorkflow = (ev: CustomEvent) => {
+      eventsStore.addWorkflowUpdate({ timestamp: Date.now(), workflow: ev.detail?.workflow, metadata: ev.detail?.metadata });
+    };
+    const onAgency = (ev: CustomEvent) => {
+      eventsStore.addAgencyUpdate({ timestamp: Date.now(), agency: ev.detail?.agency, metadata: ev.detail?.metadata });
+    };
+    window.addEventListener('vca:workflow-update', onWorkflow as EventListener);
+    window.addEventListener('vca:agency-update', onAgency as EventListener);
+  } catch (e) {
+    console.warn('[App.vue] AgentOS events store init failed.', e);
+  }
 
   auth.checkAuthStatus(); // Check auth status first thing (not async!)
   await voiceSettingsManager.initialize(); // Initialize voice settings
@@ -346,6 +373,19 @@ onMounted(async () => {
       });
       localStorage.setItem(hasVisitedKey, 'true');
     }, 1200); // Delay welcome toast slightly
+  }
+});
+
+// Initialize connectivity listeners and show availability toasts on changes
+try {
+  connectivityStore.initialize();
+} catch {}
+
+watch(() => connectivityStore.isOnline, (online) => {
+  if (online) {
+    addToast({ type: 'success', title: 'Online', message: 'Cloud features and syncing are available where supported.' });
+  } else {
+    addToast({ type: 'warning', title: 'Offline mode', message: 'Local features available; cloud/team features paused until connection is restored.' });
   }
 });
 
@@ -425,6 +465,9 @@ onBeforeUnmount(() => {
         @show-prior-chat-log="handleShowPriorChatLog"
         class="app-layout-header-ephemeral"
       />
+
+      <!-- Capability banner summarizing available/unavailable features per platform & connectivity -->
+      <CapabilityBanner />
 
       <main id="main-app-content" class="app-layout-main-content-ephemeral">
         <router-view v-slot="{ Component, route: currentRoute }">

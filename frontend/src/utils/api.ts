@@ -1016,6 +1016,8 @@ export const workflowAPI = {
 
 export const systemAPI = {
   getLlmStatus: (): Promise<AxiosResponse<LlmStatusResponseFE>> => api.get('/system/llm-status'),
+  getStorageStatus: (): Promise<AxiosResponse<{ status: 'ok'|'degraded'; kind: string; capabilities: string[]; persistence: boolean; message?: string }>> =>
+    api.get('/system/storage-status'),
 };
 
 export default api;

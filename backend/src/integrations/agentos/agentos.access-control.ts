@@ -8,6 +8,9 @@ export const compareAccessLevels = (userLevel: AgentOSAccessLevel, required: Age
 };
 
 export const resolveUserAccessLevel = (userId: string): AgentOSAccessLevel => {
+  if (process.env.NODE_ENV === 'development' || process.env.AGENTOS_DEV_ACCESS === 'unlimited') {
+    return 'unlimited';
+  }
   try {
     const snapshot = creditAllocationService.getSnapshot(userId);
     switch (snapshot.allocationKey) {

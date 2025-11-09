@@ -1,0 +1,26 @@
+{
+  "id": "guardrail-TEMPLATE_NAME",
+  "kind": "guardrail",
+  "version": "1.0.0",
+  "displayName": "TEMPLATE_DISPLAYNAME",
+  "description": "TEMPLATE_DESCRIPTION",
+  "category": "safety",
+  "author": "TEMPLATE_AUTHOR <TEMPLATE_EMAIL>",
+  "license": "MIT",
+  "repository": "https://github.com/framersai/agentos-guardrails",
+  "configuration": {
+    "schema": {
+      "type": "object",
+      "properties": {
+        "exampleField": {
+          "type": "string",
+          "description": "Description of this config field"
+        }
+      },
+      "required": ["exampleField"]
+    }
+  },
+  "capabilities": ["input-eval", "output-eval"],
+  "tags": ["template", "starter"]
+}
+

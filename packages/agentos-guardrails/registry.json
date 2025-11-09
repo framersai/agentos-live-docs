@@ -1,0 +1,59 @@
+{
+  "version": "1.0.0",
+  "updated": "2025-11-07T02:30:00Z",
+  "guardrails": {
+    "curated": [
+      {
+        "id": "guardrail-keyword",
+        "package": "@framersai/guardrail-keyword",
+        "version": "1.0.0",
+        "displayName": "Keyword & Pattern Filter",
+        "description": "Exact match, regex, and PII pattern detection with sanitization",
+        "category": "safety",
+        "verified": true,
+        "capabilities": ["input-eval", "output-eval", "regex", "case-insensitive"],
+        "repository": "https://github.com/framersai/agentos-guardrails/tree/master/registry/curated/safety/keyword"
+      },
+      {
+        "id": "guardrail-sensitive-topic",
+        "package": "@framersai/guardrail-sensitive-topic",
+        "version": "1.0.0",
+        "displayName": "Sensitive Topic Filter",
+        "description": "Detects and blocks harmful topics (violence, self-harm, illegal activity)",
+        "category": "safety",
+        "verified": true,
+        "capabilities": ["input-eval", "output-eval", "keyword-based"],
+        "repository": "https://github.com/framersai/agentos-guardrails/tree/master/registry/curated/safety/sensitive-topic"
+      },
+      {
+        "id": "guardrail-cost-ceiling",
+        "package": "@framersai/guardrail-cost-ceiling",
+        "version": "1.0.0",
+        "displayName": "Cost Ceiling",
+        "description": "Aborts responses exceeding token usage budget",
+        "category": "budget",
+        "verified": true,
+        "capabilities": ["output-eval", "token-tracking"],
+        "repository": "https://github.com/framersai/agentos-guardrails/tree/master/registry/curated/budget/cost-ceiling"
+      },
+      {
+        "id": "guardrail-llm-generic",
+        "package": "@framersai/guardrail-llm-generic",
+        "version": "1.0.0",
+        "displayName": "Generic LLM Reasoner",
+        "description": "Uses LLM to evaluate content against natural-language policies",
+        "category": "custom",
+        "verified": true,
+        "capabilities": ["input-eval", "output-eval", "llm-powered", "adaptive"],
+        "repository": "https://github.com/framersai/agentos-guardrails/tree/master/registry/curated/custom/llm-generic"
+      }
+    ],
+    "community": []
+  },
+  "stats": {
+    "totalCurated": 4,
+    "totalCommunity": 0,
+    "totalDownloads": 0
+  }
+}
+

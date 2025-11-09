@@ -10,6 +10,7 @@ export default defineConfig({
     alias: [
       { find: /^@agentos\/core\/(.*)$/, replacement: `${srcDir}/$1` },
       { find: '@agentos/core', replacement: srcDir },
+      { find: '@prisma/client', replacement: path.resolve(__dirname, 'src/stubs/prismaClient.ts') },
     ],
   },
   test: {
@@ -17,7 +18,9 @@ export default defineConfig({
     environment: 'node',
     include: ['tests/**/*.spec.ts', 'src/**/*.spec.ts'],
     coverage: {
-      reporter: ['text', 'html'],
+      reporter: ['text', 'html', 'lcov'],
+      reportsDirectory: 'coverage',
+      all: true,
     },
   },
 });

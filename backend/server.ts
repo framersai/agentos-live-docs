@@ -1,10 +1,10 @@
 // File: backend/server.ts
 /**
- * @file Main backend server setup for Voice Chat Assistant.
- * @description Initializes Express app, configures middleware, sets up routes,
- * and starts the HTTP server.
- * @version 1.3.0 - Added rateLimiter initialization and graceful shutdown.
- */
+ * @file Main backend server setup for Voice Chat Assistant.
+ * @description Initializes Express app, configures middleware, sets up routes,
+ * and starts the HTTP server.
+ * @version 1.3.0 - Added rateLimiter initialization and graceful shutdown.
+ */
 
 import express, { Express, Request, Response, NextFunction } from 'express';
 import dotenv from 'dotenv';
@@ -26,10 +26,23 @@ import { setLlmBootstrapStatus, getLlmBootstrapStatus, mapAvailabilityToStatus }
 import { sqliteMemoryAdapter } from './src/core/memory/SqliteMemoryAdapter.js'; // Import for shutdown
 import { initializeAppDatabase, closeAppDatabase } from './src/core/database/appDatabase.js';
 import { schedulePredictiveTtsPrewarm } from './src/core/audio/ttsPrewarm.service.js';
+import { createLogger, getErrorMessage } from './utils/logger.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, '..');
+const logger = createLogger('Server');
+const bootstrapLogger = logger.child('Bootstrap');
+const llmLogger = logger.child('LLM');
+const middlewareLogger = logger.child('Middleware');
+const routerLogger = logger.child('Router');
+const frontendLogger = logger.child('Frontend');
+const httpLogger = logger.child('Http');
+const shutdownLogger = logger.child('Shutdown');
+const storageLogger = logger.child('Storage');
+const costLogger = logger.child('Costs');
+const rateLimiterLogger = logger.child('RateLimiter');
+const i18nLogger = logger.child('i18n');
 
 const envCandidatePaths = [
   path.join(projectRoot, '.env'),
@@ -40,10 +53,10 @@ for (const candidate of envCandidatePaths) {
   try {
     if (fs.existsSync(candidate)) {
       dotenv.config({ path: candidate });
-      console.log(`[Bootstrap] Loaded environment variables from ${candidate}`);
+      bootstrapLogger.info('Loaded environment variables from %s', candidate);
     }
   } catch (error) {
-    console.warn(`[Bootstrap] Failed to load env file at ${candidate}:`, error);
+    bootstrapLogger.warn('Failed to load env file at %s:', candidate, error);
   }
 }
 
@@ -64,13 +77,14 @@ app.set('trust proxy', 1);
 // --- Middleware Configuration ---
 const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
 app.use(cors({
-  origin: [
-    frontendUrl,
-    'http://localhost:5173', // Default Vite dev port, useful for flexibility
-    ...(process.env.ADDITIONAL_CORS_ORIGINS ? process.env.ADDITIONAL_CORS_ORIGINS.split(',') : [])
-  ],
-  credentials: true,
-  exposedHeaders: ['X-RateLimit-Limit-Day-IP', 'X-RateLimit-Remaining-Day-IP', 'X-RateLimit-Reset-Day-IP', 'X-RateLimit-Status'],
+  origin: [
+    frontendUrl,
+    'http://localhost:5173', // Default Vite dev port, useful for flexibility
+    'http://localhost:5175', // Vite dev port used by agentos-client
+    ...(process.env.ADDITIONAL_CORS_ORIGINS ? process.env.ADDITIONAL_CORS_ORIGINS.split(',') : []),
+  ],
+  credentials: true,
+  exposedHeaders: ['X-RateLimit-Limit-Day-IP', 'X-RateLimit-Remaining-Day-IP', 'X-RateLimit-Reset-Day-IP', 'X-RateLimit-Status'],
 }));
 
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
@@ -80,7 +94,7 @@ app.use(cookieParser());
 
 // --- Server Initialization and Middleware Application ---
 async function startServer() {
-  console.log('[Bootstrap] Initializing application services...');
+  bootstrapLogger.info('Initializing application services...');
   try {
     await initializeAppDatabase();
     await initializeLlmServices();
@@ -94,7 +108,7 @@ async function startServer() {
     });
   } catch (error) {
     if (error instanceof NoLlmProviderConfiguredError) {
-      console.error('[LLM Startup] No configured providers detected. Running in degraded mode.', error.availability);
+      llmLogger.error('No configured providers detected. Running in degraded mode.', error.availability);
       setLlmBootstrapStatus({
         ready: false,
         code: 'NO_LLM_PROVIDER',
@@ -116,19 +130,19 @@ async function startServer() {
 
   await sqliteMemoryAdapter.initialize();
   await rateLimiter.initialize();
-  console.log('[Bootstrap] Core services initialized.');
+  bootstrapLogger.info('Core services initialized.');
 
   const i18nHandlers = await setupI18nMiddleware();
   app.use(i18nHandlers);
-  console.log('[i18n] Middleware configured.');
+  i18nLogger.info('Middleware configured.');
 
   app.use('/api', optionalAuthMiddleware);
   app.use('/api', rateLimiter.middleware());
-  console.log('[Security] Authentication and rate limiting configured for /api.');
+  middlewareLogger.info('Authentication and rate limiting configured for /api.');
 
   const apiRouter = await configureRouter();
   app.use('/api', apiRouter);
-  console.log('[Router] API routes configured under /api');
+  routerLogger.info('API routes configured under /api');
 
   app.get('/health', (req: Request, res: Response) => {
     res.status(200).json({
@@ -153,9 +167,9 @@ async function startServer() {
           next();
         }
       });
-      console.log(`[Frontend] Serving static assets from ${frontendBuildPath}`);
+      frontendLogger.info('Serving static assets from %s', frontendBuildPath);
     } else {
-      console.warn(`[Frontend] SERVE_FRONTEND is true, but index.html not found at ${indexPath}`);
+      frontendLogger.warn('SERVE_FRONTEND is true, but index.html not found at %s', indexPath);
     }
   }
 
@@ -172,7 +186,7 @@ async function startServer() {
   });
 
   app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    console.error("[Server] Unhandled application error:", err.stack || err);
+    httpLogger.error('Unhandled application error:', err.stack || err);
     if (!res.headersSent) {
       res.status(500).json({
         message: 'Internal Server Error',
@@ -184,32 +198,51 @@ async function startServer() {
   });
 
   server = app.listen(PORT, () => {
-    console.log(`[Server] Listening on port ${PORT}`);
-    console.log(`[Server] Frontend URL (configured): ${frontendUrl}`);
-    console.log(`[Server] Node ENV: ${process.env.NODE_ENV || 'development'}`);
+    httpLogger.info('Listening on port %s', PORT);
+    httpLogger.info('Frontend URL (configured): %s', frontendUrl);
+    httpLogger.info('Node ENV: %s', process.env.NODE_ENV || 'development');
     if (process.env.ENABLE_SQLITE_MEMORY === 'true') {
-      console.log('[Storage] SQLite memory persistence: ENABLED');
+      storageLogger.info('SQLite memory persistence: ENABLED');
     } else {
-      console.warn('[Storage] SQLite memory persistence: DISABLED (server is stateless regarding conversation history)');
+      storageLogger.warn('SQLite memory persistence: DISABLED (server is stateless regarding conversation history)');
     }
     if (process.env.DISABLE_COST_LIMITS === 'true') {
-      console.warn('[Costs] Cost limits: DISABLED.');
+      costLogger.warn('Cost limits: DISABLED.');
     }
     if (process.env.REDIS_URL) {
-      console.log(`[RateLimiter] Redis configured at ${process.env.REDIS_URL}.`);
+      rateLimiterLogger.info('Redis configured at %s.', process.env.REDIS_URL);
     } else {
-      console.warn('[RateLimiter] REDIS_URL not provided. Using in-memory store.');
+      rateLimiterLogger.warn('REDIS_URL not provided. Using in-memory store.');
     }
     const llmStatusAtStart = getLlmBootstrapStatus();
     if (!llmStatusAtStart.ready) {
-      console.warn('[LLM Startup] Server running without an active LLM provider. Configure provider credentials to enable chat endpoints.');
+      llmLogger.warn('Server running without an active LLM provider. Configure provider credentials to enable chat endpoints.');
     }
-    schedulePredictiveTtsPrewarm();
-    console.log(`[Server] Ready at http://localhost:${PORT}`);
+    // Optional: TTS prewarm can be noisy; enable via PREWARM_TTS=true
+    if (process.env.PREWARM_TTS === 'true') {
+      schedulePredictiveTtsPrewarm();
+    } else {
+      httpLogger.info('TTS prewarm: disabled (set PREWARM_TTS=true to enable)');
+    }
+    httpLogger.info('Ready at http://localhost:%s', PORT);
+
+    // Quick links (clickable)
+    const base = `http://localhost:${PORT}`;
+    const links = [
+      `${base}/health`,
+      `${base}/api/test`,
+      `${base}/api/system/llm-status`,
+      `${base}/api/system/storage-status`,
+      `${base}/api/docs`,
+      `${base}/api/agentos/personas`,
+      `${base}/api/agentos/workflows/definitions`
+    ];
+    console.log('\n\x1b[36m› Quick links:\x1b[0m');
+    for (const url of links) console.log('  -', url);
   }).on('error', (error: NodeJS.ErrnoException) => {
-    console.error('[Server] Failed to start:', error);
+    httpLogger.error('Failed to start:', error);
     if (error.code === 'EADDRINUSE') {
-      console.error(`Port ${PORT} is already in use.`);
+      httpLogger.error('Port %s is already in use.', PORT);
     }
     process.exit(1);
   });
@@ -219,47 +252,42 @@ async function startServer() {
 }
 
 async function gracefulShutdown(signal: string) {
-  console.log(`\n🚦 Received ${signal}. Starting graceful shutdown...`);
-  
-  // Stop accepting new connections
+  shutdownLogger.info('\n🚦 Received %s. Starting graceful shutdown...', signal);
+
   if (server) {
     server.close(async () => {
-      console.log('🔌 HTTP server closed.');
-      
-      // Disconnect services
+      shutdownLogger.info('🔌 HTTP server closed.');
+
       try {
         await rateLimiter.disconnectStore();
-        console.log('🛡️ Rate limiter store disconnected.');
-      } catch (e) {
-        console.error('Error disconnecting rate limiter:', e);
+        rateLimiterLogger.info('🛡️ Rate limiter store disconnected.');
+      } catch (error) {
+        rateLimiterLogger.error('Error disconnecting rate limiter: %s', getErrorMessage(error));
       }
 
       try {
-        await sqliteMemoryAdapter.disconnect(); // Assuming it has a disconnect method
-        console.log('💾 SQLite Memory Adapter disconnected.');
-      } catch (e) {
-        console.error('Error disconnecting SQLite adapter:', e);
+        await sqliteMemoryAdapter.disconnect();
+        storageLogger.info('💾 SQLite Memory Adapter disconnected.');
+      } catch (error) {
+        storageLogger.error('Error disconnecting SQLite adapter: %s', getErrorMessage(error));
       }
 
       try {
         await closeAppDatabase();
-      } catch (e) {
-        console.error('Error closing application database:', e);
+      } catch (error) {
+        storageLogger.error('Error closing application database: %s', getErrorMessage(error));
       }
-      
-      // Add any other service disconnections here
-      
-      console.log('👋 Graceful shutdown complete. Exiting.');
+
+      shutdownLogger.info('👋 Graceful shutdown complete. Exiting.');
       process.exit(0);
     });
 
-    // If server hasn't finished in a timeout, force close
     setTimeout(() => {
-      console.error('⏰ Graceful shutdown timeout. Forcing exit.');
+      shutdownLogger.error('⏰ Graceful shutdown timeout. Forcing exit.');
       process.exit(1);
-    }, 10000); // 10 seconds timeout
+    }, 10000);
   } else {
-    process.exit(0); // If server wasn't even started
+    process.exit(0);
   }
 }
 
@@ -267,7 +295,7 @@ async function gracefulShutdown(signal: string) {
 process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
 
-startServer().catch(error => {
-  console.error('💥 Failed to start server due to unhandled error during initialization:', error);
+startServer().catch((error: unknown) => {
+  bootstrapLogger.error('💥 Failed to start server due to unhandled error during initialization: %s', getErrorMessage(error));
   process.exit(1);
 });

@@ -60,6 +60,13 @@ export interface PlanCatalogEntry {
     requiresContact?: boolean;
     hiddenOnMarketing?: boolean;
     tier?: PlanTier;
+    agentLimits?: {
+      maxActiveAgents: number;
+      monthlyCreationAllowance: number;
+      knowledgeDocumentsPerAgent: number;
+      agencySeats?: number;
+      agencyLaunchesPerWeek?: number;
+    };
   };
 }
 
@@ -206,7 +213,7 @@ export const PLAN_CATALOG: Record<PlanId, PlanCatalogEntry> = {
     usage: buildUsageProfile(
       1.485,
       'optional',
-      'Shared pool ˜135K GPT-4o tokens / day (~3.8M GPT-4o mini). Admin allocates optional per-seat caps.',
+      'Shared pool ï¿½135K GPT-4o tokens / day (~3.8M GPT-4o mini). Admin allocates optional per-seat caps.',
     ),
     bullets: [
       'Everything in Creator for up to 5 seats (more seats via add-ons)',

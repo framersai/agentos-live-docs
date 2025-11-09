@@ -1,5 +1,22 @@
 ﻿# AgentOS Architecture
 
+## 12. AgentOS telemetry and export parity (optional)
+
+- `packages/agentos/src/core/workflows/runtime/WorkflowRuntime.ts` emits `WORKFLOW_UPDATE` and `AGENCY_UPDATE` chunks so clients can stream per-seat and per-workflow progress.
+- The reference frontend listens for `vca:workflow-update` and `vca:agency-update` custom DOM events and persists a rolling window of updates in `frontend/src/store/agentosEvents.store.ts`. Users can export these streams as JSON from the Settings page for audits and troubleshooting.
+- Hosts may persist these events server-side for long-term analytics. If you self-host, consider retention and privacy policies appropriate for your environment.
+
+## 13. RBAC and capability gating
+
+- Organization roles are defined as `admin`, `builder`, and `viewer`.
+  - `admin`: manage organization settings, seats, roles, and invites; publish marketplace listings on behalf of the org.
+  - `builder`: contribute agents and content within the org but cannot modify roles or publish publicly unless elevated.
+  - `viewer`: read-only access to org content where applicable.
+- Enforcement lives in the organization service (`backend/src/features/organization/organization.service.ts`) and repository. Admin-only operations include inviting/removing members, changing roles, and raising visibility of marketplace items to `public` or `published` when owned by an organization.
+- Marketplace RBAC: create/update routes check org membership and require `admin` to publish or set `public` visibility (`backend/src/features/marketplace/marketplace.routes.ts`).
+- UI gating: the Vue client hides team management when organizations are not supported by the current storage adapter (e.g., offline SQLite/sql.js). The platform capability is detected via `/api/system/storage-status` and exposed through `frontend/src/store/platform.store.ts`.
+- Capability detection and graceful degradation: persistence, multi-tenancy, and cloud-only features are surfaced or hidden based on the active adapter (PostgreSQL for cloud, SQLite/Capacitor/sql.js for desktop/mobile/browser). See `docs/PLATFORM_FEATURE_MATRIX.md` for details.
+
 `@agentos/core` is the modular runtime that powers the orchestration stack inside Frame.dev products. It encapsulates persona management, tool routing, streaming, conversation memory, retrieval augmentation, and error handling behind a single TypeScript package that can be embedded in any host application (web, desktop, mobile, or server-side).
 
 This document describes how the package is organised, the flow of an interaction, and the extension points you can use when wiring AgentOS into a host environment.

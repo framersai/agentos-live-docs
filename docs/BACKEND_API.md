@@ -75,6 +75,7 @@ Routes require authentication.
 |--------|------|-------------|
 | `GET` | `/rate-limit/status` | Public endpoint summarizing remaining unauthenticated quota (based on IP). |
 | `GET` | `/system/llm-status` | Health check for configured LLM providers. |
+| `GET` | `/system/storage-status` | Returns active storage adapter kind and capability flags (used for feature gating). |
 
 ## Misc
 
@@ -87,3 +88,29 @@ Routes require authentication.
 - All paths listed above are relative to `/api`.
 - Optional auth is applied globally before the router; strict auth (`authMiddleware`) is applied per-route as needed.
 - When AgentOS is enabled, `/api/chat` currently falls back to the AgentOS adapter, and `/api/agentos/*` surfaces direct access for SSE clients.
+
+## Marketplace
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/marketplace/agents` | List marketplace agents. Supports optional `visibility`, `status`, `ownerId`, `organizationId`, `includeDrafts` query params. |
+| `GET` | `/marketplace/agents/:id` | Get a marketplace agent by ID. |
+| `POST` | `/marketplace/agents` | Create a marketplace agent listing. Requires authentication. If `organizationId` is set, user must be an active member. Publishing (`status=published`) or `visibility=public` requires org `admin` role. |
+| `PATCH` | `/marketplace/agents/:id` | Update a listing. Owner (user-owned) or org member (org-owned). Publishing or `public` visibility requires org `admin`. |
+
+RBAC notes:
+- Org-owned listings enforce membership checks; publishing and public visibility require `admin`.
+- See `backend/src/features/marketplace/marketplace.routes.ts` for enforcement details.
+
+## User Agents
+
+Routes require authentication.
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/agents` | List user-owned agents. |
+| `GET` | `/agents/plan/snapshot` | Get the user’s agent plan snapshot (limits and current usage). |
+| `GET` | `/agents/:agentId` | Get a user agent by ID. |
+| `POST` | `/agents` | Create a new user agent (subject to plan limits). |
+| `PATCH` | `/agents/:agentId` | Update agent attributes (label, slug, status, config, archive). |
+| `DELETE` | `/agents/:agentId` | Delete a user agent. |

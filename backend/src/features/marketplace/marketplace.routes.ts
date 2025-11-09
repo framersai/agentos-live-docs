@@ -1,7 +1,24 @@
+/**
+ * @file marketplace.routes.ts
+ * @description Public and authenticated routes for marketplace listings with org-aware RBAC.
+ *
+ * RBAC rules:
+ * - Listing creation under an organization requires active membership.
+ * - Publishing (status = 'published') or visibility = 'public' requires org 'admin'.
+ * - User-owned listings can be managed by the owner user.
+ *
+ * Query params for GET /marketplace/agents:
+ * - visibility: 'public' | 'invite' | 'unlisted' | 'org' (single or comma-separated)
+ * - status: 'pending' | 'draft' | 'published' | 'retired' (single or comma-separated)
+ * - ownerId: filter by owner user id
+ * - organizationId: filter by owning organization id
+ * - includeDrafts: boolean (default: false)
+ */
 import { Router } from 'express';
 import type { Request, Response, NextFunction } from 'express';
 import { marketplaceService } from './marketplace.service.js';
 import type { MarketplaceVisibility, MarketplaceStatus } from './marketplace.service.js';
+import { findMemberByUser, type OrganizationRole } from '../organization/organization.repository.js';
 
 const VISIBILITY_VALUES: readonly MarketplaceVisibility[] = ['public', 'invite', 'unlisted', 'org'];
 const STATUS_VALUES: readonly MarketplaceStatus[] = ['pending', 'draft', 'published', 'retired'];
@@ -75,6 +92,24 @@ marketplaceRouter.post('/agents', async (req: Request, res: Response, next: Next
       return;
     }
     const input = req.body ?? {};
+    // RBAC: if creating under an organization, require membership; publishing requires admin
+    const orgId: string | null = typeof input.organizationId === 'string' ? input.organizationId : null;
+    if (orgId) {
+      const membership = await findMemberByUser(orgId, userId);
+      if (!membership || membership.status !== 'active') {
+        res.status(403).json({ message: 'Not a member of the specified organization.' });
+        return;
+      }
+      const isAdmin = membership.role === 'admin';
+      const requestedStatus: MarketplaceStatus | undefined = input.status;
+      const requestedVisibility: MarketplaceVisibility | undefined = input.visibility;
+      if ((requestedStatus === 'published') || (requestedVisibility === 'public')) {
+        if (!isAdmin) {
+          res.status(403).json({ message: 'Admin role required to publish or set public visibility.' });
+          return;
+        }
+      }
+    }
     const agent = await marketplaceService.createAgent({
       id: input.id,
       personaId: input.personaId,
@@ -109,6 +144,32 @@ marketplaceRouter.patch('/agents/:id', async (req: Request, res: Response, next:
     if (!userId) {
       res.status(401).json({ message: 'Authentication required.' });
       return;
+    }
+    const existing = await marketplaceService.getAgentById(req.params.id);
+    if (!existing) {
+      res.status(404).json({ message: 'Marketplace agent not found.' });
+      return;
+    }
+    if (existing.organizationId) {
+      const membership = await findMemberByUser(existing.organizationId, userId);
+      if (!membership || membership.status !== 'active') {
+        res.status(403).json({ message: 'Not a member of the owning organization.' });
+        return;
+      }
+      const isAdmin = membership.role === 'admin';
+      const requestedStatus: MarketplaceStatus | undefined = req.body?.status;
+      const requestedVisibility: MarketplaceVisibility | undefined = req.body?.visibility;
+      if ((requestedStatus === 'published') || (requestedVisibility === 'public')) {
+        if (!isAdmin) {
+          res.status(403).json({ message: 'Admin role required to publish or set public visibility.' });
+          return;
+        }
+      }
+    } else {
+      if (existing.ownerUserId && existing.ownerUserId !== userId) {
+        res.status(403).json({ message: 'Only the owner can modify this listing.' });
+        return;
+      }
     }
     const agent = await marketplaceService.updateAgent(req.params.id, {
       label: req.body?.label,
