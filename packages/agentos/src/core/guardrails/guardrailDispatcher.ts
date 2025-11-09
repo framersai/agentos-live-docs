@@ -125,7 +125,12 @@ export async function* createGuardrailBlockedStream(
 
 /**
  * Wraps a response stream and applies guardrail checks before yielding chunks
- * to the host. Only final chunks are evaluated to minimise overhead.
+ * to the host. 
+ * 
+ * **Evaluation Strategy:**
+ * - Guardrails with `config.evaluateStreamingChunks === true` evaluate TEXT_DELTA chunks (real-time)
+ * - All guardrails evaluate FINAL_RESPONSE chunks (final check)
+ * - This allows cost/performance tradeoffs per guardrail
  */
 export async function* wrapOutputGuardrails(
   service: IGuardrailService | IGuardrailService[] | undefined,
@@ -139,9 +144,20 @@ export async function* wrapOutputGuardrails(
     ? [service]
     : [];
 
+  // Separate guardrails by evaluation mode
+  const streamingGuardrails = services.filter(
+    (svc) => svc.config?.evaluateStreamingChunks === true && typeof svc.evaluateOutput === 'function'
+  );
+  const finalOnlyGuardrails = services.filter(
+    (svc) => svc.config?.evaluateStreamingChunks !== true && typeof svc.evaluateOutput === 'function'
+  );
+
   const guardrailEnabled = services.some((svc) => typeof svc.evaluateOutput === 'function');
   const serializedInputEvaluations = (options.inputEvaluations ?? []).map(serializeEvaluation);
   let inputMetadataApplied = serializedInputEvaluations.length === 0;
+  
+  // Track streaming evaluations for rate limiting
+  const streamingEvaluationCounts = new Map<string, number>();
 
   for await (const chunk of stream) {
     let currentChunk = chunk;
@@ -151,6 +167,63 @@ export async function* wrapOutputGuardrails(
       inputMetadataApplied = true;
     }
 
+    // Evaluate streaming chunks (TEXT_DELTA) if guardrails are configured for it
+    if (
+      streamingGuardrails.length > 0 &&
+      chunk.type === AgentOSResponseChunkType.TEXT_DELTA &&
+      !chunk.isFinal
+    ) {
+      const outputEvaluations: GuardrailEvaluationResult[] = [];
+      let workingChunk = currentChunk;
+
+      for (const svc of streamingGuardrails) {
+        const svcId = (svc as any).id || 'unknown';
+        const currentCount = streamingEvaluationCounts.get(svcId) || 0;
+        const maxEvals = svc.config?.maxStreamingEvaluations;
+
+        // Skip if rate limit reached
+        if (maxEvals !== undefined && currentCount >= maxEvals) {
+          continue;
+        }
+
+        let evaluation: GuardrailEvaluationResult | null = null;
+        try {
+          evaluation = await svc.evaluateOutput?.({ context, chunk: workingChunk });
+          streamingEvaluationCounts.set(svcId, currentCount + 1);
+        } catch (error) {
+          console.warn('[AgentOS][Guardrails] evaluateOutput (streaming) failed.', error);
+        }
+
+        if (!evaluation) {
+          continue;
+        }
+
+        outputEvaluations.push(evaluation);
+
+        if (evaluation.action === GuardrailAction.BLOCK) {
+          yield* createGuardrailBlockedStream(context, evaluation, options);
+          return;
+        }
+
+        // For TEXT_DELTA chunks, sanitize modifies the textDelta field
+        if (evaluation.action === GuardrailAction.SANITIZE && evaluation.modifiedText !== undefined) {
+          workingChunk = {
+            ...(workingChunk as any),
+            textDelta: evaluation.modifiedText,
+          };
+        }
+      }
+
+      if (outputEvaluations.length > 0) {
+        workingChunk = withGuardrailMetadata(workingChunk, {
+          output: outputEvaluations.map(serializeEvaluation),
+        });
+      }
+
+      currentChunk = workingChunk;
+    }
+
+    // Evaluate final chunks (all guardrails)
     if (guardrailEnabled && chunk.isFinal) {
       const outputEvaluations: GuardrailEvaluationResult[] = [];
       let workingChunk = currentChunk;
@@ -164,7 +237,7 @@ export async function* wrapOutputGuardrails(
         try {
           evaluation = await svc.evaluateOutput({ context, chunk: workingChunk });
         } catch (error) {
-          console.warn('[AgentOS][Guardrails] evaluateOutput failed.', error);
+          console.warn('[AgentOS][Guardrails] evaluateOutput (final) failed.', error);
         }
 
         if (!evaluation) {

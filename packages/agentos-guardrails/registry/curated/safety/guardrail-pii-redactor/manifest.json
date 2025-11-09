@@ -1,0 +1,81 @@
+{
+  "id": "guardrail-pii-redactor",
+  "kind": "guardrail",
+  "version": "1.0.0",
+  "displayName": "PII Redactor",
+  "description": "Redacts personally identifiable information (SSN, email, phone, credit card) from agent inputs and outputs. Supports real-time streaming redaction.",
+  "category": "safety",
+  "author": "Frame.dev <team@frame.dev>",
+  "license": "MIT",
+  "repository": "https://github.com/framersai/agentos-guardrails",
+  "configuration": {
+    "schema": {
+      "type": "object",
+      "properties": {
+        "enableStreamingRedaction": {
+          "type": "boolean",
+          "description": "Enable real-time redaction during streaming (evaluates TEXT_DELTA chunks). Adds ~1-5ms latency per chunk. Default: false (final-only evaluation).",
+          "default": false
+        },
+        "maxStreamingEvaluations": {
+          "type": "number",
+          "description": "Maximum number of streaming chunks to evaluate per request. Only applies when enableStreamingRedaction is true.",
+          "minimum": 1
+        },
+        "evaluateInput": {
+          "type": "boolean",
+          "description": "Whether to evaluate user input for PII.",
+          "default": true
+        },
+        "evaluateOutput": {
+          "type": "boolean",
+          "description": "Whether to evaluate agent output for PII.",
+          "default": true
+        },
+        "replacementText": {
+          "type": "string",
+          "description": "Custom replacement text for redacted PII.",
+          "default": "[REDACTED]"
+        },
+        "patterns": {
+          "type": "object",
+          "properties": {
+            "ssn": {
+              "type": "boolean",
+              "description": "Redact Social Security Numbers (SSN)",
+              "default": true
+            },
+            "email": {
+              "type": "boolean",
+              "description": "Redact email addresses",
+              "default": true
+            },
+            "phone": {
+              "type": "boolean",
+              "description": "Redact phone numbers",
+              "default": true
+            },
+            "creditCard": {
+              "type": "boolean",
+              "description": "Redact credit card numbers",
+              "default": true
+            },
+            "ipAddress": {
+              "type": "boolean",
+              "description": "Redact IP addresses",
+              "default": false
+            },
+            "macAddress": {
+              "type": "boolean",
+              "description": "Redact MAC addresses",
+              "default": false
+            }
+          }
+        }
+      }
+    }
+  },
+  "capabilities": ["input-eval", "output-eval", "streaming-eval"],
+  "tags": ["pii", "privacy", "redaction", "safety", "compliance"]
+}
+
