@@ -7,9 +7,8 @@
  * @version 1.2.1 - Renamed jwtMiddleware to authMiddleware.
  */
 
-import express, { Router, Request, Response } from 'express';
+import { Router, Request, Response } from 'express';
 import path from 'path';
-import { fileURLToPath } from 'url';
 // Import the strict authMiddleware
 import { authMiddleware } from '../middleware/auth';
 import { isAgentOSEnabled, getAgentOSRouter } from '../src/integrations/agentos/agentos.integration';
@@ -34,10 +33,8 @@ import * as promptApiRoutes from '../src/features/prompts/prompt.routes.js';
 import type { RateLimitInfo, RateLimitInfoAuthenticated, RateLimitInfoPublic } from '@shared/rateLimitTypes';
 import { postCheckoutSession, postLemonWebhook, getCheckoutStatus } from '../src/features/billing/billing.routes';
 import * as organizationRoutes from '../src/features/organization/organization.routes';
-import { getLlmStatus as getSystemLlmStatus, getStorageStatus as getSystemStorageStatus } from '../src/features/system/system.routes';
-import { getUserSettings, putUserSettings } from '../src/features/settings/userSettings.routes';
+import { getLlmStatus as getSystemLlmStatus } from '../src/features/system/system.routes';
 import { marketplaceRouter } from '../src/features/marketplace/marketplace.routes.js';
-import { userAgentsRouter } from '../src/features/agents/userAgents.routes.js';
 
 /**
  * Configures and returns the main API router with all routes registered.
@@ -47,20 +44,6 @@ export async function configureRouter(): Promise<Router> {
   const router = Router();
 
   console.log('[router] Configuring API routes...');
-
-  // Global CORS for API (dev convenience)
-  router.use((req: Request, res: Response, next) => {
-    const origin = (req.headers.origin as string) || '*';
-    res.setHeader('Access-Control-Allow-Origin', origin);
-    res.setHeader('Vary', 'Origin');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept');
-    if (req.method === 'OPTIONS') {
-      res.status(204).end();
-      return;
-    }
-    next();
-  });
 
   try {
     // --- Authentication Routes (These are handled by authMiddleware's internal logic for /api/auth paths) ---
@@ -73,15 +56,8 @@ export async function configureRouter(): Promise<Router> {
 
     router.get('/prompts/:filename', promptApiRoutes.GET);
     router.get('/system/llm-status', getSystemLlmStatus);
-    router.get('/system/storage-status', getSystemStorageStatus);
     router.use('/marketplace', marketplaceRouter);
-    router.use('/agents', authMiddleware, userAgentsRouter);
     console.log('[router] Registered system diagnostics routes');
-
-    // --- User Settings (BYOK) ---
-    router.get('/user/settings', getUserSettings);
-    router.put('/user/settings', putUserSettings);
-    console.log('[router] Registered user settings routes');
 
     // --- Publicly Accessible Informational Routes ---
     // This endpoint allows frontend to get info about public rate limits.
@@ -139,10 +115,13 @@ export async function configureRouter(): Promise<Router> {
 
     // --- Documentation Routes ---
     // Serve auto-generated documentation
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirnameResolved = path.dirname(__filename);
-    const docsPath = path.join(__dirnameResolved, '..', '..', 'docs-generated');
-    router.use('/docs', express.static(docsPath));
+    const docsPath = path.join(__dirname, '..', '..', 'docs-generated');
+    router.use('/docs', (req: Request, res: Response, next) => {
+      // Serve static files from docs-generated directory
+      const express = require('express');
+      const staticHandler = express.static(docsPath);
+      staticHandler(req, res, next);
+    });
     console.log('[router] Registered documentation routes at /api/docs');
 
     // --- Core Application Routes ---
