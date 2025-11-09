@@ -46,6 +46,10 @@ import MainContentView from '@/components/agents/common/MainContentView.vue';
 import CompactMessageRenderer from '@/components/layouts/CompactMessageRenderer/CompactMessageRenderer.vue';
 import PersonaToolbar from '@/components/common/PersonaToolbar.vue';
 import WorkflowStatusPanel from '@/components/workflows/WorkflowStatusPanel.vue';
+import SubscriberTourModal from '@/components/onboarding/SubscriberTourModal.vue';
+import TutorialLibrary from '@/components/onboarding/TutorialLibrary.vue';
+import { useOnboardingStore } from '@/store/onboarding.store';
+import { tutorialCatalog } from '@/tutorials/tutorialCatalog';
 
 import { ShieldCheckIcon, CogIcon, UserGroupIcon } from '@heroicons/vue/24/solid';
 const toast = inject<ToastService>('toast');
@@ -53,6 +57,7 @@ const router = useRouter();
 const agentStore = useAgentStore();
 const chatStore = useChatStore();
 const auth = useAuth();
+const onboardingStore = useOnboardingStore();
 const debugLog = createScopedSttLogger('PrivateHome');
 
 const activeAgent = computed<IAgentDefinition | undefined>(() => agentStore.activeAgent);
@@ -95,6 +100,32 @@ const workflowDefinitionsLoading = ref(false);
 const selectedWorkflowDefinitionId = ref<string | null>(null);
 const workflowLaunchPending = ref(false);
 const workflowLoadError = ref<string | null>(null);
+const subscriberTourVisible = ref(false);
+const tutorialEntries = tutorialCatalog;
+
+const subscriptionStatus = computed(() => auth.user.value?.subscriptionStatus?.toString().toLowerCase() ?? 'none');
+const isSubscribed = computed(() => subscriptionStatus.value === 'active');
+const showTutorialLibrary = computed(() => isSubscribed.value && onboardingStore.shouldShowTutorialPanel);
+
+watch(
+  () => auth.user.value?.subscriptionStatus,
+  (status) => {
+    const shouldShow = onboardingStore.handleSubscriptionStatus(status);
+    if (shouldShow && isSubscribed.value) {
+      subscriberTourVisible.value = true;
+    }
+  },
+  { immediate: true },
+);
+
+const handleSubscriberTourComplete = (): void => {
+  onboardingStore.markSubscriberTourComplete();
+  subscriberTourVisible.value = false;
+};
+
+const dismissTutorialPanel = (): void => {
+  onboardingStore.dismissTutorialPanel();
+};
 
 const loadWorkflowDefinitions = async (): Promise<void> => {
   workflowDefinitionsLoading.value = true;
@@ -168,7 +199,7 @@ const activeConversationId = computed(() => {
 
 const activeWorkflowSummary = computed(() => {
   if (!activeConversationId.value) return null;
-  return chatStore.getWorkflowForConversation(activeConversationId.value);
+    return chatStore.getWorkflowForConversation(activeConversationId.value);
 });
 
 const activeAgency = computed(() => {
@@ -453,6 +484,12 @@ watch(isVoiceInputCurrentlyProcessingAudio, (isSttActive) => {
 </script>
 <template>
   <div class="private-home-view-ephemeral">
+    <SubscriberTourModal
+      :visible="subscriberTourVisible"
+      :display-name="auth.user.value?.fullName || auth.user.value?.email || null"
+      @close="subscriberTourVisible = false"
+      @complete="handleSubscriberTourComplete"
+    />
     <UnifiedChatLayout
       :is-llm-processing="isLoadingResponse"
       :is-voice-input-processing="isVoiceInputCurrentlyProcessingAudio"
@@ -582,6 +619,11 @@ watch(isVoiceInputCurrentlyProcessingAudio, (isSttActive) => {
         </div>
       </template>
     </UnifiedChatLayout>
+    <TutorialLibrary
+      v-if="showTutorialLibrary"
+      :tutorials="tutorialEntries"
+      @dismiss="dismissTutorialPanel"
+    />
   </div>
 </template>
 

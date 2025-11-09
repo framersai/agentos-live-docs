@@ -418,5 +418,40 @@ export default {
     planHintCreator: 'Creator - {price}/월 - ~{tokens} 토큰 사용 후 개인 API 키로 전환',
     planHintOrganization: 'Organization - {price}/월 - 공유 할당량 ~{tokens} 토큰/일',
     rolloverNote: 'Creator 및 Organization 플랜은 일일 플랫폼 할당분을 모두 사용하면 자동으로 개인 API 키로 전환되어도 분석 데이터가 유지됩니다. 관리자는 팀 대시보드에서 좌석별 한도를 설정할 수 있습니다.'
+  },
+  onboarding: {
+    tour: {
+      heading: 'Welcome back, {name}!',
+      subtitle: 'Here’s a quick tour to get your workspace shipping agencies and personas immediately.',
+      defaultName: 'back',
+      steps: {
+        seed: {
+          title: 'Seed personas & secrets',
+          description: 'Pick a marketplace persona (or import your own) and satisfy required API keys directly from the Credentials panel.',
+          badge: '5 min'
+        },
+        agency: {
+          title: 'Draft your first agency',
+          description: 'Use the Agency Manager to assign personas to roles, connect workflows, and define the shared mission.',
+          badge: 'Roles & guardrails'
+        },
+        workflow: {
+          title: 'Launch a workflow',
+          description: 'Kick off automations from the Workflow launcher or via API and watch the live telemetry stream.',
+          badge: 'Streaming ready'
+        }
+      },
+      ctaPrimary: 'Launch guided setup',
+      ctaSecondary: 'Remind me later'
+    },
+    tutorials: {
+      eyebrow: 'Guided tutorials',
+      heading: 'Master agencies, workflows, and local-first tooling',
+      description: 'Curated markdown guides from the AgentOS docs. Read inline or open the original source.',
+      hide: 'Hide tutorials',
+      nowReading: 'Now reading',
+      close: 'Close tutorial'
+    }
   }
+
 };
