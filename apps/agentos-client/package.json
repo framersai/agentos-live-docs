@@ -12,30 +12,27 @@
   },
   "dependencies": {
     "@agentos/core": "workspace:*",
-    "@framers/sql-storage-adapter": "workspace:*",
     "@hookform/resolvers": "^3.6.0",
     "@tanstack/react-query": "^5.51.0",
     "clsx": "^2.1.1",
-    "eventemitter3": "^5.0.1",
     "i18next": "^23.11.5",
     "i18next-browser-languagedetector": "^7.1.0",
     "lucide-react": "^0.469.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-hook-form": "^7.53.0",
     "react-i18next": "^15.0.1",
-    "react-markdown": "^10.1.0",
+    "react-hook-form": "^7.53.0",
     "react-router-dom": "^6.26.0",
-    "zod": "^3.23.8",
-    "zustand": "^5.0.0"
+    "zustand": "^5.0.0",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@tailwindcss/forms": "^0.5.9",
-    "@tailwindcss/typography": "^0.5.12",
     "@types/react": "^18.3.6",
     "@types/react-dom": "^18.3.0",
     "@typescript-eslint/eslint-plugin": "^7.15.0",
     "@typescript-eslint/parser": "^7.15.0",
+    "@tailwindcss/forms": "^0.5.9",
+    "@tailwindcss/typography": "^0.5.12",
     "@vitejs/plugin-react-swc": "^3.7.0",
     "autoprefixer": "^10.4.20",
     "eslint": "^8.57.0",
@@ -44,8 +41,7 @@
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.14",
     "typescript": "^5.6.3",
-    "vite": "^5.4.10",
-    "vite-plugin-node-polyfills": "^0.24.0"
+    "vite": "^5.4.10"
   },
   "engines": {
     "node": ">=18.17.0"
