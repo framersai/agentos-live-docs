@@ -17,3 +17,7 @@
 	path = packages/sql-storage-adapter
 	url = git@github.com:framersai/sql-storage-adapter.git
 	branch = master
+[submodule "apps/frame.dev"]
+	path = apps/frame.dev
+	url = https://github.com/framersai/frame.dev.git
+	branch = master
