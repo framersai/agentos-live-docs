@@ -17,10 +17,16 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20' # Use Node.js 20, as specified in package.json
-          cache: 'npm' # Cache npm dependencies for faster builds
+          cache: 'pnpm' # Cache pnpm dependencies for faster builds
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
 
       - name: Install root dependencies
-        run: npm run install-all # Install root package.json dependencies (e.g., concurrently)
+        run: npm run install-all # Uses pnpm under the hood
 
       - name: Build
         run: |
