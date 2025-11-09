@@ -61,6 +61,17 @@ All public exports are defined in `src/index.ts` and surfaced via `dist/` after 
 
 ---
 
+## Local-first workbench runtime
+
+- The `apps/agentos-client` package can embed AgentOS directly in the browser. When `VITE_AGENTOS_RUNTIME_MODE=local`, it:
+  - Boots `@framers/agentos` with the same GMI manager, conversation manager, workflow runtime, and tool orchestrator used on the server, but swaps in an in-memory persona loader backed by the bundled JSON catalog.
+  - Registers local workflow descriptors (`localWorkflowLibrary.ts`) so the Session Inspector and Workflow Overview receive real `WORKFLOW_UPDATE`/`AGENCY_UPDATE` telemetry even without a backend.
+  - Shares the SQL adapter (IndexedDB → sql.js → memory) between Zustand slices (`sessionStore`, `secretStore`, `themeStore`) and AgentOS’ `ConversationManager`, which means session timelines, guardrail traces, and seat history survive page reloads.
+  - Surfaces missing API keys via the shared `extension-secrets.json` catalog before dispatching a turn; workflows/agencies declare their `metadata.requiredSecrets` so the UI can short-circuit when credentials are absent.
+- Remote mode continues to proxy through `/api/agentos` (or whatever `VITE_AGENTOS_BASE_URL` specifies). Switching between modes is a `.env` toggle—no application code changes required.
+
+---
+
 ## 3. Core concepts
 
 ### 3.1 API facade & orchestration

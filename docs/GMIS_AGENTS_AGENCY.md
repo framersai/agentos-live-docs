@@ -22,6 +22,7 @@ This document introduces the core mental model of AgentOS: Generalised Mind Inst
 - Guardrail dispatcher integrating host-provided IGuardrailService (allow/flag/sanitize/block)
 - Conversation memory lifecycle (recency, summarisation, relevancy strategies)
 - Workflow runtime emitting WORKFLOW_UPDATE and AGENCY_UPDATE telemetry
+- Agency telemetry snapshots: per-seat metadata/history is stored in `WorkflowInstance.agencyState` so dashboards can replay progress even after reconnects
 - Storage adapters via SQL Storage Adapter (PostgreSQL, better-sqlite3, Capacitor, sql.js)
 
 See docs/ARCHITECTURE.md for the full module map.
@@ -31,6 +32,17 @@ See docs/ARCHITECTURE.md for the full module map.
 - Multi-GMI Agencies: role-bindings, task graphs, human-in-the-loop approvals (developer preview)
 - Hosted control plane: managed streams, observability, compliance, and billing integrations (roadmap)
 - Pack ecosystem: curated guardrail/tool/workflow packs for common product use-cases
+
+## Agency Streaming Endpoint
+
+The backend now exposes `GET /api/agentos/agency/stream`, powered by the new `MultiGMIAgencyExecutor`. Provide `userId`, `conversationId`, `goal`, and a `roles` JSON array and the server will:
+
+1. Spin up a temporary agency with one seat per role (persona).
+2. Invoke AgentOS concurrently for each seat, streaming their chunks (text/tool activity) verbatim.
+3. Emit synthetic `AGENCY_UPDATE` chunks as seats transition through `pending → running → completed/failed`.
+4. Consolidate the seat outputs into a final `FINAL_RESPONSE` chunk that includes aggregate usage.
+
+Use this endpoint from the workbench (or your own dashboards) to watch how multiple personas collaborate on a shared goal without writing orchestration glue.
 
 ## Licensing
 
