@@ -1,8 +1,5 @@
 module.exports = {
   root: true,
-  env: {
-    node: true
-  },
   parser: "@typescript-eslint/parser",
   plugins: ["@typescript-eslint", "react"],
   extends: [
@@ -15,22 +12,13 @@ module.exports = {
   parserOptions: {
     ecmaVersion: "latest",
     sourceType: "module",
-    project: ["./tsconfig.json"],
-    tsconfigRootDir: __dirname
+    project: ["./tsconfig.json"]
   },
   settings: {
     react: {
       version: "detect"
     }
   },
-  overrides: [
-    {
-      files: ["*.cjs"],
-      parserOptions: {
-        project: null
-      }
-    }
-  ],
   rules: {
     "react/prop-types": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off"
