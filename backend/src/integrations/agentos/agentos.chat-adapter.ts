@@ -20,7 +20,7 @@ import {
   AgentOSFinalResponseChunk,
   AgentOSTextDeltaChunk,
   AgentOSMetadataUpdateChunk,
-} from '@agentos/core';
+} from '@framers/agentos';
 import { sqliteMemoryAdapter } from '../../core/memory/SqliteMemoryAdapter.js';
 import { sqlKnowledgeBaseService } from '../../core/knowledge/SqlKnowledgeBaseService.js';
 import { jsonFileKnowledgeBaseService } from '../../core/knowledge/JsonFileKnowledgeBaseService.js';
@@ -409,4 +409,5 @@ function contextBundleOutputFormatHints(mode: string): string {
       return 'Clear Markdown response with bullet points when helpful.';
   }
 }
+
 

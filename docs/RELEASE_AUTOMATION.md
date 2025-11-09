@@ -1,4 +1,4 @@
-﻿# Release & Mirroring Workflow
+# Release & Mirroring Workflow
 
 This repository stays private. Anything we share publicly (packages, landing page, client workbench) is exported from here.
 
@@ -38,15 +38,15 @@ Steps per target:
 
 One workflow per directory (`mirror-agentos.yml`, `mirror-landing.yml`, etc.). Same pattern, different prefixes/destinations.
 
-### 2. Publish `@agentos/core`
+### 2. Publish `@framers/agentos`
 
 Workflow `publish-agentos.yml`:
 
 1. Trigger on `v*` tags unless `skip-release` is set.
 2. `pnpm install --frozen-lockfile`.
-3. `pnpm --filter @agentos/core build`.
-4. `pnpm --filter @agentos/core test`.
-5. `pnpm --filter @agentos/core publish --access public` with `NPM_TOKEN`.
+3. `pnpm --filter @framers/agentos build`.
+4. `pnpm --filter @framers/agentos test`.
+5. `pnpm --filter @framers/agentos publish --access public` with `NPM_TOKEN`.
 
 Version bumps for the package still happen through PRs before tagging.
 
@@ -70,7 +70,7 @@ Flow mirrors the landing app:
 
 ## Secrets & Hygiene
 
-- Store secrets in this repo's Settings → Secrets:
+- Store secrets in this repo's Settings ? Secrets:
   - `NPM_TOKEN`
   - `AGENTOS_MIRROR_SSH_KEY`
   - `AGENTOS_LANDING_MIRROR_SSH_KEY`
@@ -81,7 +81,7 @@ Flow mirrors the landing app:
 
 ## Manual Checklist Before Tagging
 
-1. Review the release PR from `dev` → `master`.
+1. Review the release PR from `dev` ? `master`.
 2. Confirm the package version is bumped where needed.
 3. Remove any stray `.env` or temporary files.
 4. Merge, tag `master` with `vX.Y.Z`, push the tag.
@@ -103,11 +103,11 @@ Complete these steps before the first release so the workflows can publish and m
      ```bash
      ssh-keygen -t ed25519 -C "agentos mirror" -f ~/.ssh/agentos-mirror
      ```
-   - Add the *public* key (`~/.ssh/agentos-mirror.pub`) to the target repo under **Settings → Deploy keys** and enable “Allow write access”.
-   - Add the *private* key as a secret in this private repo (**Settings → Secrets and variables → Actions**):
-     - `AGENTOS_MIRROR_SSH_KEY` → private key for `framersai/agentos`
-     - `AGENTOS_LANDING_MIRROR_SSH_KEY` → private key for `framersai/agentos.sh`
-     - `AGENTOS_CLIENT_MIRROR_SSH_KEY` → private key for `framersai/agentos-client`
+   - Add the *public* key (`~/.ssh/agentos-mirror.pub`) to the target repo under **Settings ? Deploy keys** and enable �Allow write access�.
+   - Add the *private* key as a secret in this private repo (**Settings ? Secrets and variables ? Actions**):
+     - `AGENTOS_MIRROR_SSH_KEY` ? private key for `framersai/agentos`
+     - `AGENTOS_LANDING_MIRROR_SSH_KEY` ? private key for `framersai/agentos.sh`
+     - `AGENTOS_CLIENT_MIRROR_SSH_KEY` ? private key for `framersai/agentos-client`
 
 3. **Add the npm token**
    - Store a publish-capable npm token as `NPM_TOKEN` in the same secrets panel.
@@ -116,7 +116,7 @@ Complete these steps before the first release so the workflows can publish and m
    - Landing page (`agentos.sh`): choose Vercel, GitHub Pages, S3/CloudFront, etc. Update the deploy workflow once selected.
    - Client workbench: decide whether it ships as a static bundle, desktop app, or container, and extend the workflow accordingly.
 
-Once these are in place, pushing a `v*` tag on `master` (without `[skip-release]`) will publish `@agentos/core` and mirror the apps automatically.
+Once these are in place, pushing a `v*` tag on `master` (without `[skip-release]`) will publish `@framers/agentos` and mirror the apps automatically.
 
 ## Open TODOs
 
@@ -124,4 +124,5 @@ Once these are in place, pushing a `v*` tag on `master` (without `[skip-release]
 - [ ] Pick hosting for `agentos.sh` and document the deploy command.
 - [ ] Decide how the client workbench is hosted (Linode plan, Docker image, etc.).
 - [ ] Add final `rm` patterns for directories that hold secrets once the team audits them.
+
 

@@ -1,4 +1,4 @@
-﻿# Multi-GMI Collaboration & Evolution Notes
+# Multi-GMI Collaboration & Evolution Notes
 
 > Working notes that sit alongside `docs/ARCHITECTURE.md`. Focus: coordinating multiple GMIs asynchronously inside a single Agency identity, evolving their roles, and doing it with the current AgentOS building blocks.
 
@@ -6,7 +6,7 @@
 
 ## 1. Objectives & Non-Goals
 - Enable small Agencies (a handful of coordinated GMIs) to pursue a shared goal asynchronously while the host streams progress (`AgentOSResponseChunkType.WORKFLOW_UPDATE` in `packages/agentos/src/api/types/AgentOSResponse.ts:34`).
-- Keep the conversational faÃ§ade responsive so an Agency can appear as a single â€œassistantâ€ even when multiple GMIs collaborate behind the scenes.
+- Keep the conversational façade responsive so an Agency can appear as a single “assistant” even when multiple GMIs collaborate behind the scenes.
 - Let persona personality and goals evolve mid-run using existing hooks (`TaskContext`, working memory, `metaPrompts`).
 - Deliver the feature as a pack-friendly surface so extension bundles can ship new automation Agencies.
 - Non-goal: build a full-blown agent society. The design targets up to five GMIs per Agency with host-managed guardrails.
@@ -126,5 +126,6 @@ export const nebulaDiscovery: WorkflowDescriptor = {
 - What is the best UX for human approval steps (pause a task, adjust a persona, resume)?
 
 ---
-These notes outline how to extend the current `@agentos/core` runtime to support asynchronous multi-GMI Agencies without rewriting the core architecture. They should evolve into a formal spec once a prototype proves out the runtime loop.
+These notes outline how to extend the current `@framers/agentos` runtime to support asynchronous multi-GMI Agencies without rewriting the core architecture. They should evolve into a formal spec once a prototype proves out the runtime loop.
+
 

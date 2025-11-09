@@ -452,6 +452,39 @@ export default {
       nowReading: 'Now reading',
       close: 'Close tutorial'
     }
+  },
+  onboarding: {
+    tour: {
+      heading: '{name}님, 다시 오신 것을 환영합니다!',
+      subtitle: '이 짧은 투어를 통해 워크스페이스에서 에이전시와 페르소나를 즉시 가동할 수 있습니다.',
+      defaultName: '다시',
+      steps: {
+        seed: {
+          title: '페르소나와 시크릿 준비',
+          description: '마켓플레이스에서 페르소나를 선택하거나 직접 가져오고, Credentials 패널에서 필요한 API 키를 설정하세요.',
+          badge: '약 5분'
+        },
+        agency: {
+          title: '첫 에이전시 만들기',
+          description: 'Agency Manager로 페르소나를 역할에 배정하고, 워크플로를 연결하며, 공동 목표를 정의하세요.',
+          badge: '역할 & 가드레일'
+        },
+        workflow: {
+          title: '워크플로 시작',
+          description: '워크플로 런처 또는 API를 통해 자동화를 실행하고 실시간 텔레메트리를 확인하세요.',
+          badge: '스트리밍 준비'
+        }
+      },
+      ctaPrimary: '가이드형 설정 시작',
+      ctaSecondary: '나중에 알림'
+    },
+    tutorials: {
+      eyebrow: '가이드형 튜토리얼',
+      heading: '에이전시·워크플로·로컬 퍼스트 툴링 마스터하기',
+      description: 'AgentOS 문서에서 가져온 Markdown 가이드를 앱 안에서 읽거나 원문을 열어보세요.',
+      hide: '튜토리얼 숨기기',
+      nowReading: '지금 읽는 중',
+      close: '튜토리얼 닫기'
+    }
   }
-
 };

@@ -1,1 +1,2 @@
-export * from '@agentos/core/utils/errors';
+export * from '@framers/agentos/utils/errors';
+

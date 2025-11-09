@@ -30,7 +30,7 @@
                                           "@prisma/client":  [
                                                                  "../packages/agentos/dist/stubs/prismaClient.d.ts"
                                                              ],
-                                          "@agentos/core/*":  [
+                                          "@framers/agentos/*":  [
                                                                   "../packages/agentos/dist/*"
                                                               ],
                                           "@framers/agentos":  [
@@ -63,3 +63,4 @@
                     "esm":  true
                 }
 }
+

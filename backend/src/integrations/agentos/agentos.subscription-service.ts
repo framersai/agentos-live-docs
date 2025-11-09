@@ -1,4 +1,4 @@
-import type { ISubscriptionService, ISubscriptionTier } from '@agentos/core/services/user_auth/types';
+import type { ISubscriptionService, ISubscriptionTier } from '@framers/agentos/services/user_auth/types';
 import { PLAN_CATALOG, type PlanId } from '../../../shared/planCatalog';
 import { resolveUserAccessLevel, compareAccessLevels } from './agentos.access-control.js';
 import type { AgentOSAccessLevel } from './agentos.persona-registry.js';
@@ -60,4 +60,5 @@ const parseFeatureRequirement = (feature: string): AgentOSAccessLevel | null => 
 };
 
 export const createAgentOSSubscriptionAdapter = (): ISubscriptionService => new AgentOSSubscriptionAdapter();
+
 

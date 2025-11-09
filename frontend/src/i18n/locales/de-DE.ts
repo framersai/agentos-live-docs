@@ -418,7 +418,7 @@ export default {
   onboarding: {
     tour: {
       heading: 'Welcome back, {name}!',
-      subtitle: 'Here�s a quick tour to get your workspace shipping agencies and personas immediately.',
+      subtitle: 'Heres a quick tour to get your workspace shipping agencies and personas immediately.',
       defaultName: 'back',
       steps: {
         seed: {
@@ -448,6 +448,39 @@ export default {
       nowReading: 'Now reading',
       close: 'Close tutorial'
     }
+  },
+  onboarding: {
+    tour: {
+      heading: 'Willkommen zurück, {name}!',
+      subtitle: 'Hier ist eine kurze Tour, damit du sofort Agenturen und Personas in deinem Workspace live schalten kannst.',
+      defaultName: 'zurück',
+      steps: {
+        seed: {
+          title: 'Personas & Secrets vorbereiten',
+          description: 'Wähle eine Marketplace-Persona (oder importiere deine eigene) und hinterlege die benötigten API-Keys direkt im Credentials-Panel.',
+          badge: '5 Min.'
+        },
+        agency: {
+          title: 'Erste Agency erstellen',
+          description: 'Nutze den Agency Manager, um Personas Rollen zuzuweisen, Workflows zu verknüpfen und das gemeinsame Ziel festzulegen.',
+          badge: 'Rollen & Guardrails'
+        },
+        workflow: {
+          title: 'Workflow starten',
+          description: 'Starte Automationen über den Workflow-Launcher oder per API und beobachte den Live-Telemetrie-Stream.',
+          badge: 'Streaming bereit'
+        }
+      },
+      ctaPrimary: 'Geführtes Setup starten',
+      ctaSecondary: 'Später erinnern'
+    },
+    tutorials: {
+      eyebrow: 'Geführte Tutorials',
+      heading: 'Agenturen, Workflows und Local-First-Tooling meistern',
+      description: 'Kurierte Markdown-Guides aus der AgentOS-Dokumentation. Lies sie inline oder öffne die Originalquelle.',
+      hide: 'Tutorials ausblenden',
+      nowReading: 'Aktuell geöffnet',
+      close: 'Tutorial schließen'
+    }
   }
-
 };

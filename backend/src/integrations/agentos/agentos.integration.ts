@@ -1,4 +1,4 @@
-﻿import path from 'path';
+import path from 'path';
 import fs from 'fs';
 import { Router } from 'express';
 import {
@@ -17,12 +17,12 @@ import {
   type WorkflowDefinition,
   type WorkflowInstance,
   WorkflowStatus,
-} from '@agentos/core';
-import type { FileSystemPersonaLoaderConfig } from '@agentos/core/cognitive_substrate/personas/PersonaLoader';
+} from '@framers/agentos';
+import type { FileSystemPersonaLoaderConfig } from '@framers/agentos/cognitive_substrate/personas/PersonaLoader';
 import type {
   IAuthService as AgentOSAuthServiceInterface,
   ISubscriptionService,
-} from '@agentos/core/services/user_auth/types';
+} from '@framers/agentos/services/user_auth/types';
 import { createAgentOSAuthAdapter } from './agentos.auth-service.js';
 import { createAgentOSSubscriptionAdapter } from './agentos.subscription-service.js';
 import { createAgentOSRouter } from './agentos.routes.js';
@@ -433,6 +433,7 @@ function ensureAgentOSEnvDefaults(): void {
     '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef';
   process.env.AGENTOS_DATABASE_URL ??= 'file:./agentos-dev.db';
 }
+
 
 
 

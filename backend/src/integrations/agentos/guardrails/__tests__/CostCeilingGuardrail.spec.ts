@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { CostCeilingGuardrail } from '../CostCeilingGuardrail';
-import { GuardrailAction } from '@agentos/core/guardrails/IGuardrailService';
-import type { GuardrailOutputPayload } from '@agentos/core/guardrails/IGuardrailService';
-import { AgentOSResponseChunkType } from '@agentos/core';
+import { GuardrailAction } from '@framers/agentos/guardrails/IGuardrailService';
+import type { GuardrailOutputPayload } from '@framers/agentos/guardrails/IGuardrailService';
+import { AgentOSResponseChunkType } from '@framers/agentos';
 
 describe('CostCeilingGuardrail', () => {
   it('allows responses under cost ceiling', async () => {
@@ -83,4 +83,5 @@ describe('CostCeilingGuardrail', () => {
     expect(result).toBeNull();
   });
 });
+
 

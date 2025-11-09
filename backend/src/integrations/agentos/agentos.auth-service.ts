@@ -1,4 +1,4 @@
-import type { IAuthService as AgentOSAuthServiceInterface } from '@agentos/core/services/user_auth/types';
+import type { IAuthService as AgentOSAuthServiceInterface } from '@framers/agentos/services/user_auth/types';
 import { verifyToken, hashPassword, verifyPassword } from '../../features/auth/auth.service.js';
 import { verifySupabaseToken, supabaseAuthEnabled } from '../../features/auth/supabaseAuth.service.js';
 
@@ -51,4 +51,5 @@ export class AgentOSAuthAdapter implements AgentOSAuthServiceInterface {
 }
 
 export const createAgentOSAuthAdapter = (): AgentOSAuthServiceInterface => new AgentOSAuthAdapter();
+
 

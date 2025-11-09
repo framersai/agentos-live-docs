@@ -35,6 +35,7 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, './src'),
       '@shared': path.resolve(__dirname, '../shared'),
+      '@docs': docsDir,
       'functions-js': path.resolve(__dirname, './node_modules/@supabase/functions-js'),
       // Optional: Alias for prompts if deep relative paths become cumbersome
       // '#prompts': path.resolve(__dirname, '../prompts') // Assumes prompts is sibling to frontend
@@ -77,6 +78,13 @@ export default defineConfig({
     ],
     // include: ['string-similarity', 'stemmer'] // Optional: force pre-bundling of these if needed,
                                                // but usually not necessary for ESM-friendly libs.
+  },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        silenceDeprecations: ['legacy-js-api', 'global-builtin', 'slash-div'],
+      },
+    },
   },
   build: {
     // Optional: If 'natural' or other CJS deps still cause issues in production build,

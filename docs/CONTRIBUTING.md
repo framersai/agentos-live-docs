@@ -129,7 +129,7 @@ Good documentation is crucial for maintainability:
 * Document all API endpoints
 * Add JSDoc comments to functions and classes
 * Update ARCHITECTURE.md for significant changes
-* For core packages (`@agentos/core`) follow enhanced TSDoc standards below.
+* For core packages (`@framers/agentos`) follow enhanced TSDoc standards below.
 
 ### AgentOS TSDoc Standards
 
@@ -175,3 +175,4 @@ For feature requests:
 4. Include any relevant mockups or examples
 
 Thank you for contributing to Voice Coding Assistant!
+

@@ -10,8 +10,8 @@ export { KeywordGuardrail, type KeywordGuardrailConfig, type KeywordPattern } fr
 export { GuardrailLogger, GuardrailSeverity, type GuardrailLogEntry, type GuardrailLoggerConfig, type EscalationAction } from './GuardrailLogger';
 export { EscalationManager, InterventionStatus, type InterventionRequest, type EscalationManagerConfig } from './EscalationManager';
 
-import type { IGuardrailService } from '@agentos/core/core/guardrails/IGuardrailService';
-import { GuardrailAction } from '@agentos/core/core/guardrails/IGuardrailService';
+import type { IGuardrailService } from '@framers/agentos/core/guardrails/IGuardrailService';
+import { GuardrailAction } from '@framers/agentos/core/guardrails/IGuardrailService';
 import { SensitiveTopicGuardrail, type SensitiveTopicConfig } from './SensitiveTopicGuardrail';
 import { CostCeilingGuardrail, type CostCeilingConfig } from './CostCeilingGuardrail';
 
@@ -72,4 +72,5 @@ export function createDefaultGuardrailStack(opts?: {
     new CostCeilingGuardrail(costConfig),
   ]);
 }
+
 

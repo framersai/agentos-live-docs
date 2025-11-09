@@ -12,8 +12,8 @@ import {
   type GuardrailInputPayload,
   type GuardrailOutputPayload,
   type IGuardrailService,
-} from '@agentos/core/core/guardrails/IGuardrailService';
-import { AgentOSResponseChunkType } from '@agentos/core/api/types/AgentOSResponse';
+} from '@framers/agentos/core/guardrails/IGuardrailService';
+import { AgentOSResponseChunkType } from '@framers/agentos/api/types/AgentOSResponse';
 
 /**
  * Configuration for the sensitive topic guardrail.
@@ -123,4 +123,5 @@ export class SensitiveTopicGuardrail implements IGuardrailService {
     }
   }
 }
+
 

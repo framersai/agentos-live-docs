@@ -83,7 +83,7 @@ SERPER_API_KEY=your_serper_api_key_here
 ```typescript
 // backend/test/extensions.test.ts
 
-import { AgentOS } from '@agentos/core';
+import { AgentOS } from '@framers/agentos';
 import { agentosService } from '../src/integrations/agentos/agentos.integration';
 
 describe('Search Extension Integration', () => {
@@ -230,3 +230,4 @@ The extension automatically handles rate limiting based on provider:
 - SerpAPI: 5 requests/second
 - Brave: 5 requests/second
 - DuckDuckGo: 1 request/second
+
