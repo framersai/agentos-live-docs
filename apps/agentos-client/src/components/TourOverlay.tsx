@@ -119,7 +119,7 @@ export function TourOverlay({ open, steps, onClose, onDontShowAgain, onRemindLat
       <div
         style={tooltipStyle}
         ref={tooltipRef}
-        className="pointer-events-auto rounded-3xl border border-slate-200 bg-white p-6 shadow-xl transition dark:border-white/10 dark:bg-slate-900"
+        className="pointer-events-auto ui-card p-6 shadow-xl transition"
       >
         <header className="mb-3 flex items-center justify-between">
           <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">{step.title}</h3>
