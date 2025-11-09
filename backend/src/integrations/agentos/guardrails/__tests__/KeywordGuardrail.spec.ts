@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { KeywordGuardrail } from '../KeywordGuardrail';
-import { GuardrailAction } from '@agentos/core/guardrails/IGuardrailService';
-import type { GuardrailInputPayload, GuardrailOutputPayload } from '@agentos/core/guardrails/IGuardrailService';
-import { AgentOSResponseChunkType } from '@agentos/core';
+import { GuardrailAction } from '@framers/agentos/guardrails/IGuardrailService';
+import type { GuardrailInputPayload, GuardrailOutputPayload } from '@framers/agentos/guardrails/IGuardrailService';
+import { AgentOSResponseChunkType } from '@framers/agentos';
 
 describe('KeywordGuardrail', () => {
   describe('case-insensitive text matching', () => {
@@ -246,4 +246,5 @@ describe('KeywordGuardrail', () => {
     });
   });
 });
+
 

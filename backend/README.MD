@@ -1,8 +1,8 @@
-﻿# Backend — Voice Chat Assistant API
+# Backend � Voice Chat Assistant API
 
 Node.js + Express + TypeScript server powering chat, STT/TTS, diagrams, rate limiting, billing, and the embedded AgentOS adapter.
 
-**Powered by [`@agentos/core`](https://github.com/wearetheframers/agentos)** — The orchestration runtime for adaptive AI systems.
+**Powered by [`@framers/agentos`](https://github.com/wearetheframers/agentos)** � The orchestration runtime for adaptive AI systems.
 
 ---
 
@@ -15,7 +15,7 @@ pnpm install            # optional, installs every workspace (root command)
 npm run dev             # tsx watch server.ts
 ```
 
-> The backend now depends on `@agentos/core` (from `packages/agentos`). When building for production (`npm run build`), the root script runs the AgentOS package build first so `dist/server.js` can import it.
+> The backend now depends on `@framers/agentos` (from `packages/agentos`). When building for production (`npm run build`), the root script runs the AgentOS package build first so `dist/server.js` can import it.
 
 ### Scripts
 
@@ -29,7 +29,7 @@ npm run dev             # tsx watch server.ts
 
 ## Environment
 
-1. Copy `.env.sample` â†’ `.env` in the repo root (or backend directory). Fill in:
+1. Copy `.env.sample` → `.env` in the repo root (or backend directory). Fill in:
    - `PORT`, `FRONTEND_URL`, `APP_URL`, `NODE_ENV`
    - `AUTH_JWT_SECRET`, `GLOBAL_ACCESS_PASSWORD`
    - LLM keys (`OPENAI_API_KEY`, `OPENROUTER_API_KEY`, optional Anthropic/Ollama)
@@ -47,8 +47,8 @@ npm run dev             # tsx watch server.ts
 - `middleware/optionalAuth.ts` injects `req.user` for public-or-private routes; `middleware/auth.ts` enforces strict JWT/Supabase validation.
 - Feature modules live in `src/features/*` (auth, chat, speech, cost, prompts, billing, organization, system status).
 - Core shared services live under `src/core/*` (LLM providers, cost tracking, audio helpers, memory, context aggregation).
-- AgentOS adapters (`src/integrations/agentos/*`) translate VCAâ€™s auth/plan/rate logic into the AgentOS package interfaces.
-- Legacy `backend/agentos/**` code now lives in `packages/agentos/src/**` (portable package). Backend imports via `@agentos/core/...`.
+- AgentOS adapters (`src/integrations/agentos/*`) translate VCA’s auth/plan/rate logic into the AgentOS package interfaces.
+- Legacy `backend/agentos/**` code now lives in `packages/agentos/src/**` (portable package). Backend imports via `@framers/agentos/...`.
 
 For a detailed endpoint table, see [docs/BACKEND_API.md](../docs/BACKEND_API.md). For diagrams and context strategy, review:
 
@@ -60,7 +60,7 @@ For a detailed endpoint table, see [docs/BACKEND_API.md](../docs/BACKEND_API.md)
 
 ## AgentOS Integration
 
-- The backend consumes the workspace package `@agentos/core` (source in `packages/agentos`).
+- The backend consumes the workspace package `@framers/agentos` (source in `packages/agentos`).
 - `agentos.integration.ts` lazily instantiates the AgentOS orchestrator, wiring our auth + subscription adapters (`agentos.auth-service.ts`, `agentos.subscription-service.ts`) and streaming bridge.
 - `/api/chat` currently short-circuits to `processAgentOSChatRequest` when `AGENTOS_ENABLED=true`. The long-term plan (see [docs/AGENTOS_REINTEGRATION_NOTES.md](../docs/AGENTOS_REINTEGRATION_NOTES.md)) is to route all conversations through `agentosService.processThroughAgentOS()` and expose streaming chunks end-to-end.
 - Building the backend automatically builds the AgentOS package. When working directly on AgentOS, run `npm --prefix packages/agentos run build && npm --prefix backend run build` to ensure the compiled files land in `packages/agentos/dist` before launching `node dist/server.js`.
@@ -92,3 +92,4 @@ For a detailed endpoint table, see [docs/BACKEND_API.md](../docs/BACKEND_API.md)
 - [Plans & Billing](../docs/PLANS_AND_BILLING.md)
 - [AgentOS Integration Notes](../docs/AGENTOS_REINTEGRATION_NOTES.md)
 - [AgentOS Public Repo](https://github.com/wearetheframers/agentos)
+

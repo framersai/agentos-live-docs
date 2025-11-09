@@ -11,7 +11,7 @@ AgentOS guardrails allow agents to "change their mind" mid-stream by inspecting 
 
 ## How Guardrails Work
 
-Guardrails implement the `IGuardrailService` interface from `@agentos/core`:
+Guardrails implement the `IGuardrailService` interface from `@framers/agentos`:
 
 ```typescript
 interface IGuardrailService {
@@ -168,7 +168,7 @@ import {
   type GuardrailOutputPayload,
   type GuardrailEvaluationResult,
   type IGuardrailService,
-} from '@agentos/core/guardrails/IGuardrailService';
+} from '@framers/agentos/guardrails/IGuardrailService';
 
 export class MyCustomGuardrail implements IGuardrailService {
   async evaluateInput(payload: GuardrailInputPayload): Promise<GuardrailEvaluationResult | null> {
@@ -269,4 +269,5 @@ sequenceDiagram
 - Core interface: `packages/agentos/src/core/guardrails/IGuardrailService.ts`
 - Integration tests: `packages/agentos/tests/core/guardrails.integration.spec.ts`
 - Extension template: `packages/agentos-extensions/templates/guardrail/`
+
 

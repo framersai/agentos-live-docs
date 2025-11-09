@@ -2,9 +2,9 @@
  * @file tutorialCatalog.ts
  * @description Curated onboarding tutorials backed by the markdown docs in /docs.
  */
-import workflowsGuide from '../../docs/WORKFLOWS.md?raw';
-import agencyGuide from '../../docs/GMIS_AGENTS_AGENCY.md?raw';
-import clientStorageGuide from '../../docs/CLIENT_STORAGE_AND_EXPORTS.md?raw';
+import workflowsGuide from '@docs/WORKFLOWS.md?raw';
+import agencyGuide from '@docs/GMIS_AGENTS_AGENCY.md?raw';
+import clientStorageGuide from '@docs/CLIENT_STORAGE_AND_EXPORTS.md?raw';
 
 export interface TutorialEntry {
   id: string;

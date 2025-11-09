@@ -501,7 +501,7 @@ export default {
   onboarding: {
     tour: {
       heading: 'Welcome back, {name}!',
-      subtitle: 'Here�s a quick tour to get your workspace shipping agencies and personas immediately.',
+      subtitle: 'Heres a quick tour to get your workspace shipping agencies and personas immediately.',
       defaultName: 'back',
       steps: {
         seed: {
@@ -531,6 +531,39 @@ export default {
       nowReading: 'Now reading',
       close: 'Close tutorial'
     }
+  },
+  onboarding: {
+    tour: {
+      heading: '¡Bienvenido de nuevo, {name}!',
+      subtitle: 'Te mostramos un recorrido rápido para que empieces a coordinar agencias y personas en tu espacio de trabajo al instante.',
+      defaultName: 'de nuevo',
+      steps: {
+        seed: {
+          title: 'Prepara personas y secretos',
+          description: 'Elige una persona del marketplace (o importa la tuya) y completa las API keys necesarias desde el panel de credenciales.',
+          badge: '5 min'
+        },
+        agency: {
+          title: 'Crea tu primera agencia',
+          description: 'Usa el Agency Manager para asignar personas a roles, vincular workflows y definir el objetivo compartido.',
+          badge: 'Roles y guardrails'
+        },
+        workflow: {
+          title: 'Lanza un workflow',
+          description: 'Dispara automatizaciones desde el launcher o vía API y observa el streaming de telemetría en tiempo real.',
+          badge: 'Listo para streaming'
+        }
+      },
+      ctaPrimary: 'Iniciar guía asistida',
+      ctaSecondary: 'Recordar más tarde'
+    },
+    tutorials: {
+      eyebrow: 'Tutoriales guiados',
+      heading: 'Domina agencias, workflows y el modo local-first',
+      description: 'Guías en Markdown tomadas de la documentación de AgentOS. Léelas aquí mismo u abre la fuente original.',
+      hide: 'Ocultar tutoriales',
+      nowReading: 'Leyendo ahora',
+      close: 'Cerrar tutorial'
+    }
   }
-
 };

@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import type { StorageAdapter, StorageRunResult } from '@framers/sql-storage-adapter';
-import type { PrismaClient as AgentOSPrismaClient } from '@agentos/core/stubs/prismaClient';
+import type { PrismaClient as AgentOSPrismaClient } from '@framers/agentos/stubs/prismaClient';
 import { getAppDatabase } from '../../core/database/appDatabase.js';
 
 type ConversationRecord = {
@@ -417,3 +417,4 @@ export async function createAgentOSSqlClient(): Promise<AgentOSPrismaClient> {
   const client = new AgentOSSqlPrismaClient(adapter);
   return client as unknown as AgentOSPrismaClient;
 }
+

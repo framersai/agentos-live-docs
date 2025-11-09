@@ -25,8 +25,8 @@ AgentOS now exposes a workflow engine so hosts can define automations, task grap
 Workflow packs register descriptors through the extension manager, just like tools or guardrails.
 
 ```ts
-import type { WorkflowDescriptor } from '@agentos/core/extensions';
-import { EXTENSION_KIND_WORKFLOW } from '@agentos/core/extensions';
+import type { WorkflowDescriptor } from '@framers/agentos/extensions';
+import { EXTENSION_KIND_WORKFLOW } from '@framers/agentos/extensions';
 
 export const codeReviewWorkflow: WorkflowDescriptor = {
   id: 'workflow.code_review.v1',
@@ -256,4 +256,5 @@ The private console in the Voice Chat Assistant now includes a workflow launcher
 - Additional storage adapters (DynamoDB, Firestore, Redis streams).
 
 Use this guide alongside `docs/ARCHITECTURE.md` and the API reference to integrate workflows safely. Contributions are welcomeâ€”see `packages/agentos/docs/CONTRIBUTING.md` for standards.
+
 

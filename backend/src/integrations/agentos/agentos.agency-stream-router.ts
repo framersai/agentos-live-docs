@@ -10,7 +10,7 @@ import type {
   AgentOSAgencyUpdateChunk,
   AgentOSFinalResponseChunk,
   AgentOSErrorChunk,
-} from '@agentos/core';
+} from '@framers/agentos';
 import type { AgentRoleConfig, AgencyExecutionInput } from './MultiGMIAgencyExecutor.js';
 
 export const createAgencyStreamRouter = (): Router => {
@@ -146,3 +146,4 @@ export const createAgencyStreamRouter = (): Router => {
 
   return router;
 };
+

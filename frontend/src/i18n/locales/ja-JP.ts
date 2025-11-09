@@ -452,6 +452,39 @@ export default {
       nowReading: 'Now reading',
       close: 'Close tutorial'
     }
+  },
+  onboarding: {
+    tour: {
+      heading: '{name} さん、おかえりなさい！',
+      subtitle: 'ワークスペースでエージェンシーとペルソナをすぐに稼働させるためのクイックツアーです。',
+      defaultName: 'おかえり',
+      steps: {
+        seed: {
+          title: 'ペルソナとシークレットを用意',
+          description: 'マーケットプレイスのペルソナを選ぶか独自のペルソナをインポートし、必要な API キーを「Credentials」で設定します。',
+          badge: '約5分'
+        },
+        agency: {
+          title: '最初のエージェンシーを作成',
+          description: 'Agency Manager でロールにペルソナを割り当て、ワークフローを接続し、共通のゴールを設定します。',
+          badge: 'ロール & ガードレール'
+        },
+        workflow: {
+          title: 'ワークフローを起動',
+          description: 'ランチャーまたは API から自動化を実行し、リアルタイムのテレメトリを確認します。',
+          badge: 'ストリーミング対応'
+        }
+      },
+      ctaPrimary: 'ガイド付きセットアップを開始',
+      ctaSecondary: '後で通知'
+    },
+    tutorials: {
+      eyebrow: 'ガイド付きチュートリアル',
+      heading: 'エージェンシー・ワークフロー・ローカル実行をマスター',
+      description: 'AgentOS ドキュメント由来の Markdown ガイド。アプリ内で読むか、元のソースを開けます。',
+      hide: 'チュートリアルを隠す',
+      nowReading: '閲覧中',
+      close: 'チュートリアルを閉じる'
+    }
   }
-
 };

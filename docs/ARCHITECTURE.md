@@ -1,4 +1,4 @@
-ï»¿# AgentOS Architecture
+# AgentOS Architecture
 
 ## 12. AgentOS telemetry and export parity (optional)
 
@@ -17,7 +17,7 @@
 - UI gating: the Vue client hides team management when organizations are not supported by the current storage adapter (e.g., offline SQLite/sql.js). The platform capability is detected via `/api/system/storage-status` and exposed through `frontend/src/store/platform.store.ts`.
 - Capability detection and graceful degradation: persistence, multi-tenancy, and cloud-only features are surfaced or hidden based on the active adapter (PostgreSQL for cloud, SQLite/Capacitor/sql.js for desktop/mobile/browser). See `docs/PLATFORM_FEATURE_MATRIX.md` for details.
 
-`@agentos/core` is the modular runtime that powers the orchestration stack inside Frame.dev products. It encapsulates persona management, tool routing, streaming, conversation memory, retrieval augmentation, and error handling behind a single TypeScript package that can be embedded in any host application (web, desktop, mobile, or server-side).
+`@framers/agentos` is the modular runtime that powers the orchestration stack inside Frame.dev products. It encapsulates persona management, tool routing, streaming, conversation memory, retrieval augmentation, and error handling behind a single TypeScript package that can be embedded in any host application (web, desktop, mobile, or server-side).
 
 This document describes how the package is organised, the flow of an interaction, and the extension points you can use when wiring AgentOS into a host environment.
 
@@ -57,7 +57,7 @@ Each interaction is driven through `AgentOS.processRequest(...)`, which returns 
 | `utils/` | Shared helpers (errors, UUIDs, functional utilities). |
 | `docs/` | Additional package-level design notes and prompts. |
 
-All public exports are defined in `src/index.ts` and surfaced via `dist/` after running `pnpm --filter @agentos/core build`.
+All public exports are defined in `src/index.ts` and surfaced via `dist/` after running `pnpm --filter @framers/agentos build`.
 
 ---
 
@@ -66,9 +66,9 @@ All public exports are defined in `src/index.ts` and surfaced via `dist/` after 
 - The `apps/agentos-client` package can embed AgentOS directly in the browser. When `VITE_AGENTOS_RUNTIME_MODE=local`, it:
   - Boots `@framers/agentos` with the same GMI manager, conversation manager, workflow runtime, and tool orchestrator used on the server, but swaps in an in-memory persona loader backed by the bundled JSON catalog.
   - Registers local workflow descriptors (`localWorkflowLibrary.ts`) so the Session Inspector and Workflow Overview receive real `WORKFLOW_UPDATE`/`AGENCY_UPDATE` telemetry even without a backend.
-  - Shares the SQL adapter (IndexedDB â†’ sql.js â†’ memory) between Zustand slices (`sessionStore`, `secretStore`, `themeStore`) and AgentOSâ€™ `ConversationManager`, which means session timelines, guardrail traces, and seat history survive page reloads.
+  - Shares the SQL adapter (IndexedDB ? sql.js ? memory) between Zustand slices (`sessionStore`, `secretStore`, `themeStore`) and AgentOS’ `ConversationManager`, which means session timelines, guardrail traces, and seat history survive page reloads.
   - Surfaces missing API keys via the shared `extension-secrets.json` catalog before dispatching a turn; workflows/agencies declare their `metadata.requiredSecrets` so the UI can short-circuit when credentials are absent.
-- Remote mode continues to proxy through `/api/agentos` (or whatever `VITE_AGENTOS_BASE_URL` specifies). Switching between modes is a `.env` toggleâ€”no application code changes required.
+- Remote mode continues to proxy through `/api/agentos` (or whatever `VITE_AGENTOS_BASE_URL` specifies). Switching between modes is a `.env` toggle—no application code changes required.
 
 ---
 
@@ -88,7 +88,7 @@ All public exports are defined in `src/index.ts` and surfaced via `dist/` after 
 - **ConversationManager**: maintains conversation contexts, persists messages, and supports summarisation triggers. Works with the streaming manager to deliver incremental updates.
 - **Memory lifecycle manager** (`memory_lifecycle/`): policy engine for pruning or summarising long-term memory. Supports trigger conditions (age, size, schedule) and actions (`archive`, `delete`, `summarize_and_retain`, etc.).
 - **RAG stack** (`rag/`): embedding manager, vector store abstractions, and retrieval augmentor used to plug in host-provided knowledge bases.
-- **MemoryStoreAdapter (generic SQL-backed persistence)**: the backend now uses a unified `MemoryStoreAdapter` (`backend/src/core/memory/MemoryStoreAdapter.ts`) powered by `@framers/sql-storage-adapter`. It auto-detects the best available driver (`better-sqlite3` first for Node performance, then `sql.js` as a pure JS fallback) and conditionally enables persistence via the `ENABLE_SQLITE_MEMORY` env flag. This replaces the old `SqliteMemoryAdapter` namingâ€”logs and exports now use a backend-agnostic label, and future drivers (Capacitor, Supabase/Postgres) can slot in without further refactors.
+- **MemoryStoreAdapter (generic SQL-backed persistence)**: the backend now uses a unified `MemoryStoreAdapter` (`backend/src/core/memory/MemoryStoreAdapter.ts`) powered by `@framers/sql-storage-adapter`. It auto-detects the best available driver (`better-sqlite3` first for Node performance, then `sql.js` as a pure JS fallback) and conditionally enables persistence via the `ENABLE_SQLITE_MEMORY` env flag. This replaces the old `SqliteMemoryAdapter` naming—logs and exports now use a backend-agnostic label, and future drivers (Capacitor, Supabase/Postgres) can slot in without further refactors.
 - **Storage adapter bridge** *(workspace integration)*: the voice-chat backend still supplies a Prisma-compatible facade (`backend/src/integrations/agentos/agentos.sql-client.ts`) for other AgentOS modules needing relational access. Conversation persistence for chat flows prefers the MemoryStoreAdapter; the bridge remains for schema-managed tables and external integrations.
 - **Knowledge base providers**: the workspace now prefers the SQL-backed knowledge service (`SqlKnowledgeBaseService`) and gracefully falls back to the legacy JSON file loader when the database is unavailable.
 
@@ -146,9 +146,9 @@ All public exports are defined in `src/index.ts` and surfaced via `dist/` after 
 
 The monorepo bundles a first-party marketplace that curates AgentOS personas across the landing site and authenticated clients:
 
-- **Data store** â€“ Marketplace metadata lives in the shared SQL adapter (`agentos_marketplace_agents`) and links directly to persona IDs.
-- **Service layer** â€“ `backend/src/features/marketplace/marketplace.service.ts` exposes read-only endpoints (`GET /marketplace/agents`, `GET /marketplace/agents/:id`) and seeds default entries on startup.
-- **Consumers** â€“ The Vue Agent Hub, the marketing marketplace preview, and future partners fetch marketplace data and merge it with local persona definitions, falling back to static seeds if the API is unreachable.
+- **Data store** – Marketplace metadata lives in the shared SQL adapter (`agentos_marketplace_agents`) and links directly to persona IDs.
+- **Service layer** – `backend/src/features/marketplace/marketplace.service.ts` exposes read-only endpoints (`GET /marketplace/agents`, `GET /marketplace/agents/:id`) and seeds default entries on startup.
+- **Consumers** – The Vue Agent Hub, the marketing marketplace preview, and future partners fetch marketplace data and merge it with local persona definitions, falling back to static seeds if the API is unreachable.
 
 See [`docs/MARKETPLACE.md`](./MARKETPLACE.md) for schema details and integration guidance.
 
@@ -188,7 +188,7 @@ const agentos = new AgentOS();
 await agentos.initialize(config);
 ```
 
-Hosts can override any subset; missing services fall back to sensible defaults (e.g., `LLMUtilityAI` is instantiated automatically if none is provided). Guardrails remain opt-inï¿½omit `guardrailService` to skip policy checks or provide an implementation to enable sanitize/block flows.
+Hosts can override any subset; missing services fall back to sensible defaults (e.g., `LLMUtilityAI` is instantiated automatically if none is provided). Guardrails remain opt-in?omit `guardrailService` to skip policy checks or provide an implementation to enable sanitize/block flows.
 
 ---
 
@@ -200,7 +200,7 @@ Hosts can override any subset; missing services fall back to sensible defaults (
 - **Custom vector store / embedding service**: implement `IVectorStore` / `IEmbeddingManager` in `rag/implementations` and register via the config.
 - **Custom memory lifecycle actions**: extend `MemoryLifecycleManager` policies with custom action handlers (e.g., export to long-term storage, call external webhook).
 - **Guardrails**: implement `IGuardrailService` to enforce moderation and policy logic before orchestration executes and as final chunks stream back to the host. Reuse the dispatcher helpers to sanitize or block content and persist audit metadata.
-- **Auth/billing**: supply adapters implementing `IAuthService` and `ISubscriptionService` so the runtime can check entitlements (`@agentos/core/services/user_auth/types`).
+- **Auth/billing**: supply adapters implementing `IAuthService` and `ISubscriptionService` so the runtime can check entitlements (`@framers/agentos/services/user_auth/types`).
 
 ---
 
@@ -215,9 +215,9 @@ Hosts can override any subset; missing services fall back to sensible defaults (
 
 ## 8. Build, test, and docs
 
-- Build: `pnpm --filter @agentos/core build`
-- Tests: `pnpm --filter @agentos/core test` (Vitest)
-- Typedoc: `pnpm --filter @agentos/core run docs` (output in `packages/agentos/docs/api`)
+- Build: `pnpm --filter @framers/agentos build`
+- Tests: `pnpm --filter @framers/agentos test` (Vitest)
+- Typedoc: `pnpm --filter @framers/agentos run docs` (output in `packages/agentos/docs/api`)
 
 Generated TypeDoc mirrors the exported surface and is the authoritative reference for method signatures and configuration objects.
 
@@ -225,19 +225,19 @@ Generated TypeDoc mirrors the exported surface and is the authoritative referenc
 
 ## 9. Security & operational notes
 
-- AgentOS does not ship persistence adapters by defaultâ€”hosts must ensure conversation history, embeddings, and memory stores are secured according to their environment.
+- AgentOS does not ship persistence adapters by default—hosts must ensure conversation history, embeddings, and memory stores are secured according to their environment.
 - Auth and subscription services are host-provided; ensure you surface only the minimal user identifiers required and protect secrets such as service role keys.
-- Guardrail services execute inside the host trust boundaryï¿½log policy outcomes responsibly, avoid exposing sanitized payloads, and ensure blocked/sanitized text cannot be reconstructed by downstream clients.
+- Guardrail services execute inside the host trust boundary?log policy outcomes responsibly, avoid exposing sanitized payloads, and ensure blocked/sanitized text cannot be reconstructed by downstream clients.
 - When running with streaming providers or tool execution, handle backpressure and cancellation (`agentos.cancelStream(streamId)`) to avoid leaking resources.
 
 ---
 
-AgentOS is designed to be embedded in multiple surfacesâ€”server-side APIs, desktop apps, or even mobile runtimes with JS engines. Use this document together with the TypeDoc output and integration examples to adapt the runtime to your productâ€™s needs.
+AgentOS is designed to be embedded in multiple surfaces—server-side APIs, desktop apps, or even mobile runtimes with JS engines. Use this document together with the TypeDoc output and integration examples to adapt the runtime to your product’s needs.
 
 ## 10. Extension roadmap & multi-agent workflows
 - **Default packs**: upcoming `@framers/agentos-pack-defaults` bundles common tools (web search, fetch, calc) and guardrail integrations so hosts can opt-in without bespoke wiring.
 - **Affective cognition**: mood state tracking (global/user/session) will land in core so empathy packs can rewrite prompts and responses safely.
-- **Actions & automations**: planned workflow APIs will let multiple GMIs coordinate on tasks with role-based permissions, goals, and progress trackingï¿½tying into the extension manager for scheduling and policy enforcement.
+- **Actions & automations**: planned workflow APIs will let multiple GMIs coordinate on tasks with role-based permissions, goals, and progress tracking?tying into the extension manager for scheduling and policy enforcement.
 
 
 ## 11. Workflow engine overview
@@ -246,4 +246,5 @@ AgentOS is designed to be embedded in multiple surfacesâ€”server-side APIs, desk
 - **Streaming updates**: workflow progress emits `WORKFLOW_UPDATE` chunks carrying `WorkflowProgressUpdate` payloads, preserving guardrail metadata so hosts can audit multi-stage decisions.
 - **Conversation optionality**: workflows may reference conversation IDs but remain independent. Workflows can be triggered by chat turns, scheduled jobs, or other services. See `docs/WORKFLOWS.md` for authoring guidelines, configuration examples, and storage notes.
 \n## Agency telemetry & marketplace pipeline (optional)\n\n- packages/agentos/src/core/workflows/runtime/WorkflowRuntime.ts now emits both WORKFLOW_UPDATE and AGENCY_UPDATE chunks so clients can stream per-seat progress.\n- ackend/src/features/agents/agencyUsage.service.ts records launches in gency_usage_log, enforces weekly plan limits, and keeps entries for approximately 18 months in the hosted reference app; you can shorten or disable this if you self-host.\n- ackend/src/features/agents/agentBundles.service.ts + gentBundles.routes.ts handle bundle import/export, queue persona submissions in gentos_persona_submissions, and refresh the runtime once approved.\n\n
+
 

@@ -30,8 +30,8 @@ import {
   type GuardrailInputPayload,
   type GuardrailOutputPayload,
   type IGuardrailService,
-} from '@agentos/core/core/guardrails/IGuardrailService';
-import { AgentOSResponseChunkType } from '@agentos/core/api/types/AgentOSResponse';
+} from '@framers/agentos/core/guardrails/IGuardrailService';
+import { AgentOSResponseChunkType } from '@framers/agentos/api/types/AgentOSResponse';
 
 /**
  * Pattern definition for keyword/phrase matching.
@@ -294,4 +294,5 @@ export class KeywordGuardrail implements IGuardrailService {
     return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
 }
+
 

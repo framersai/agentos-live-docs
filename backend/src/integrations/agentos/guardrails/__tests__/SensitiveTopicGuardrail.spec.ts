@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { SensitiveTopicGuardrail } from '../SensitiveTopicGuardrail';
-import { GuardrailAction } from '@agentos/core/guardrails/IGuardrailService';
-import type { GuardrailInputPayload, GuardrailOutputPayload } from '@agentos/core/guardrails/IGuardrailService';
-import { AgentOSResponseChunkType } from '@agentos/core';
+import { GuardrailAction } from '@framers/agentos/guardrails/IGuardrailService';
+import type { GuardrailInputPayload, GuardrailOutputPayload } from '@framers/agentos/guardrails/IGuardrailService';
+import { AgentOSResponseChunkType } from '@framers/agentos';
 
 describe('SensitiveTopicGuardrail', () => {
   it('blocks input containing flagged topics when configured', async () => {
@@ -103,4 +103,5 @@ describe('SensitiveTopicGuardrail', () => {
     expect(result).toBeNull();
   });
 });
+
 

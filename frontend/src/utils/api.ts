@@ -335,11 +335,11 @@ export interface UserAgentKnowledgeDto {
 
 export const userAgentKnowledgeAPI = {
   list: (agentId: string): Promise<AxiosResponse<{ knowledge: UserAgentKnowledgeDto[] }>> =>
-    api.get(/agents//knowledge),
+    api.get(`/agents/${agentId}/knowledge`),
   create: (agentId: string, payload: { type: string; content: string; tags?: string[]; metadata?: Record<string, unknown> }): Promise<AxiosResponse<UserAgentKnowledgeDto>> =>
-    api.post(/agents//knowledge, payload),
+    api.post(`/agents/${agentId}/knowledge`, payload),
   remove: (agentId: string, knowledgeId: string): Promise<AxiosResponse<void>> =>
-    api.delete(/agents//knowledge/),
+    api.delete(`/agents/${agentId}/knowledge/${knowledgeId}`),
 };
 
 export const rateLimitAPI = {

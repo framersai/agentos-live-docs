@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import type { Request, Response } from 'express';
-import type { AgentOSInput, AgentOSResponse } from '@agentos/core';
+import type { AgentOSInput, AgentOSResponse } from '@framers/agentos';
 import { agentosChatAdapterEnabled, processAgentOSChatRequest } from './agentos.chat-adapter.js';
 
 type StreamHandler = (input: AgentOSInput, onChunk: (chunk: AgentOSResponse) => Promise<void> | void) => Promise<void>;
@@ -173,3 +173,4 @@ export const createAgentOSStreamRouter = (integration: AgentOSStreamIntegration)
 
   return router;
 };
+

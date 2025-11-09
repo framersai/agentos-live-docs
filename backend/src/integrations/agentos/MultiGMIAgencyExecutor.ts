@@ -11,8 +11,8 @@ import type {
   AgentOSResponse,
   AgentOSResponseChunkType,
   AgentOSAgencyUpdateChunk,
-} from '@agentos/core';
-import type { CostAggregator } from '@agentos/core/cognitive_substrate/IGMI';
+} from '@framers/agentos';
+import type { CostAggregator } from '@framers/agentos/cognitive_substrate/IGMI';
 
 /** Captures the configuration for a single agency seat. */
 export interface AgentRoleConfig {
@@ -364,3 +364,4 @@ Role (${role.roleId}): ${role.instruction}`;
     );
   }
 }
+

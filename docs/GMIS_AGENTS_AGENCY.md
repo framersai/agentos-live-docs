@@ -46,7 +46,7 @@ Use this endpoint from the workbench (or your own dashboards) to watch how multi
 
 ## Licensing
 
-- AgentOS core (`@agentos/core`): Apache 2.0
+- AgentOS core (`@framers/agentos`): Apache 2.0
 - Reference marketplace and site components (including vca.chat integration): MIT
 
 This split ensures you have strong patent grants and attribution for the engine while keeping the surrounding product surfaces permissive.
@@ -60,4 +60,5 @@ This split ensures you have strong patent grants and attribution for the engine 
 - POST /api/agentos/workflows/start: Start a workflow instance
 
 See docs/BACKEND_API.md for complete request/response shapes and examples.
+
 

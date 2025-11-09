@@ -452,6 +452,39 @@
       nowReading: 'Now reading',
       close: 'Close tutorial'
     }
+  },
+  onboarding: {
+    tour: {
+      heading: 'Bem-vindo de volta, {name}!',
+      subtitle: 'Siga este tour rápido para colocar agências e personas em produção no seu workspace em minutos.',
+      defaultName: 'de volta',
+      steps: {
+        seed: {
+          title: 'Configure personas e segredos',
+          description: 'Escolha uma persona do marketplace (ou importe a sua) e preencha as API keys necessárias no painel de credenciais.',
+          badge: '5 min'
+        },
+        agency: {
+          title: 'Crie sua primeira agência',
+          description: 'Use o Agency Manager para atribuir personas aos papéis, conectar workflows e definir o objetivo compartilhado.',
+          badge: 'Papéis e guardrails'
+        },
+        workflow: {
+          title: 'Inicie um workflow',
+          description: 'Dispare automações pelo launcher ou via API e acompanhe a telemetria em tempo real.',
+          badge: 'Pronto para streaming'
+        }
+      },
+      ctaPrimary: 'Iniciar guia assistido',
+      ctaSecondary: 'Lembrar depois'
+    },
+    tutorials: {
+      eyebrow: 'Tutoriais guiados',
+      heading: 'Domine agências, workflows e o modo local-first',
+      description: 'Tutoriais em Markdown tirados da documentação do AgentOS. Leia no app ou abra a fonte original.',
+      hide: 'Ocultar tutoriais',
+      nowReading: 'Lendo agora',
+      close: 'Fechar tutorial'
+    }
   }
-
 };
