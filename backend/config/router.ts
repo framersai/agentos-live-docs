@@ -7,8 +7,9 @@
  * @version 1.2.1 - Renamed jwtMiddleware to authMiddleware.
  */
 
-import { Router, Request, Response } from 'express';
+import express, { Router, Request, Response } from 'express';
 import path from 'path';
+import { fileURLToPath } from 'url';
 // Import the strict authMiddleware
 import { authMiddleware } from '../middleware/auth';
 import { isAgentOSEnabled, getAgentOSRouter } from '../src/integrations/agentos/agentos.integration';
@@ -44,6 +45,10 @@ export async function configureRouter(): Promise<Router> {
   const router = Router();
 
   console.log('[router] Configuring API routes...');
+
+  // ESM-compatible __dirname
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
 
   try {
     // --- Authentication Routes (These are handled by authMiddleware's internal logic for /api/auth paths) ---
@@ -116,12 +121,8 @@ export async function configureRouter(): Promise<Router> {
     // --- Documentation Routes ---
     // Serve auto-generated documentation
     const docsPath = path.join(__dirname, '..', '..', 'docs-generated');
-    router.use('/docs', (req: Request, res: Response, next) => {
-      // Serve static files from docs-generated directory
-      const express = require('express');
-      const staticHandler = express.static(docsPath);
-      staticHandler(req, res, next);
-    });
+    // Serve static files from docs-generated directory
+    router.use('/docs', express.static(docsPath));
     console.log('[router] Registered documentation routes at /api/docs');
 
     // --- Core Application Routes ---
