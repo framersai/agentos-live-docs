@@ -42,6 +42,7 @@ jobs:
         run: |
           mkdir -p deployment/frontend/dist
           mkdir -p deployment/backend/dist
+          mkdir -p deployment/backend/packs
           mkdir -p deployment/prompts
           mkdir -p deployment/backend/prompts
 
@@ -52,6 +53,21 @@ jobs:
           cp -r backend/dist/* deployment/backend/dist/
           # Copy backend package.json for npm install on server
           cp backend/package.json deployment/backend/package.json
+
+          # Package internal workspace deps into tarballs for npm to consume on the server
+          pnpm --filter "@framers/agentos" pack --pack-destination deployment/backend/packs
+          pnpm --filter "@framers/sql-storage-adapter" pack --pack-destination deployment/backend/packs
+          
+          # Debug: List packed files
+          echo "Packed files:"
+          ls -la deployment/backend/packs/
+
+          # Rewrite workspace:* deps to local file tarballs so npm (no workspaces) can install them
+          node .github/scripts/rewrite-workspace-deps.js deployment/backend/package.json deployment/backend/packs
+          
+          # Debug: Show rewritten package.json dependencies
+          echo "Rewritten backend package.json dependencies:"
+          node -e "console.log(JSON.parse(require('fs').readFileSync('deployment/backend/package.json', 'utf8')).dependencies)"
           # Copy prompts for dynamic loading
           cp -r prompts/* deployment/prompts/
           cp -r prompts/* deployment/backend/prompts/
@@ -135,7 +151,7 @@ jobs:
           sudo ln -s /etc/nginx/sites-available/voice-coding-assistant.conf /etc/nginx/sites-enabled/voice-coding-assistant.conf
 
           # create ssl
-          sudo sh -c mkdir -p /etc/nginx/ssl
+          sudo mkdir -p /etc/nginx/ssl
           sudo sh -c 'printf "%s" "${{ secrets.SSL_CERT }}" > /etc/nginx/ssl/cert.pem'
           sudo sh -c 'printf "%s" "${{ secrets.SSL_KEY }}" > /etc/nginx/ssl/key.pem'
 
