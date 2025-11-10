@@ -6,7 +6,6 @@
 
 import bcrypt from 'bcryptjs';
 import jwt, { type Secret, type SignOptions } from 'jsonwebtoken';
-import type { StringValue } from 'ms';
 import { appConfig, type AuthTokenPayload, type AuthTier, type AuthRole, type AuthModeType } from '../../config/appConfig.js';
 import {
   findUserByEmail,
@@ -44,7 +43,7 @@ export const verifyPassword = async (password: string, hash: string): Promise<bo
 };
 
 const issueToken = (payload: AuthTokenPayload): string => {
-  const options: SignOptions = { expiresIn: appConfig.auth.jwtExpiresIn as StringValue };
+  const options: SignOptions = { expiresIn: appConfig.auth.jwtExpiresIn as string | number };
   return jwt.sign(payload, appConfig.auth.jwtSecret as Secret, options);
 };
 

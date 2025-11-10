@@ -34,7 +34,10 @@ export interface CostCeilingConfig {
  * and replaces the final output with a budget message.
  */
 export class CostCeilingGuardrail implements IGuardrailService {
-  constructor(private readonly config: CostCeilingConfig) {}
+  public readonly config: CostCeilingConfig;
+  constructor(config: CostCeilingConfig) {
+    this.config = config;
+  }
 
   /**
    * Evaluate user input for estimated cost (optional pre-check).

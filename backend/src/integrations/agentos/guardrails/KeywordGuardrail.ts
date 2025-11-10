@@ -121,7 +121,10 @@ export class KeywordGuardrail implements IGuardrailService {
     regex?: RegExp;
   }>;
 
-  constructor(private readonly config: KeywordGuardrailConfig) {
+  public readonly config: KeywordGuardrailConfig;
+
+  constructor(config: KeywordGuardrailConfig) {
+    this.config = config;
     // Pre-compile regex patterns for efficiency
     this.compiledPatterns = config.patterns.map((pattern) => {
       if (pattern.regex) {

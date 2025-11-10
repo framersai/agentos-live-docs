@@ -300,7 +300,7 @@ Role (${role.roleId}): ${role.instruction}`;
       timestamp: new Date().toISOString(),
       agency: {
         agencyId,
-        workflowId: metadata?.workflowId as string | undefined,
+        workflowId: (typeof metadata?.workflowId === 'string' ? (metadata!.workflowId as string) : `workflow:${agencyId}`),
         conversationId,
         seats,
         metadata,
@@ -350,10 +350,10 @@ Role (${role.roleId}): ${role.instruction}`;
   private aggregateUsage(results: GmiExecutionResult[]): CostAggregator {
     return results.reduce<CostAggregator>(
       (acc, result) => ({
-        promptTokens: acc.promptTokens + (result.usage?.promptTokens ?? 0),
-        completionTokens: acc.completionTokens + (result.usage?.completionTokens ?? 0),
-        totalTokens: acc.totalTokens + (result.usage?.totalTokens ?? 0),
-        totalCostUSD: acc.totalCostUSD + (result.usage?.totalCostUSD ?? 0),
+        promptTokens: (acc.promptTokens ?? 0) + (result.usage?.promptTokens ?? 0),
+        completionTokens: (acc.completionTokens ?? 0) + (result.usage?.completionTokens ?? 0),
+        totalTokens: (acc.totalTokens ?? 0) + (result.usage?.totalTokens ?? 0),
+        totalCostUSD: (acc.totalCostUSD ?? 0) + (result.usage?.totalCostUSD ?? 0),
       }),
       { promptTokens: 0, completionTokens: 0, totalTokens: 0, totalCostUSD: 0 },
     );

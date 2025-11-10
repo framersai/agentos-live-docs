@@ -83,7 +83,10 @@ interface GuardrailLLMResponse {
  * ```
  */
 export class GenericLLMGuardrail implements IGuardrailService {
-  constructor(private readonly config: GenericLLMGuardrailConfig) {}
+  public readonly config: GenericLLMGuardrailConfig;
+  constructor(config: GenericLLMGuardrailConfig) {
+    this.config = config;
+  }
 
   /**
    * Evaluate user input using LLM reasoning.

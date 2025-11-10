@@ -63,7 +63,6 @@ export class SqliteMemoryAdapter implements IMemoryAdapter {
       this.db = await resolveStorageAdapter({
         filePath: DB_PATH,
         priority: ['better-sqlite3', 'sqljs'],
-        verbose: process.env.NODE_ENV === 'development'
       });
 
       await this.db.open({ filePath: DB_PATH });

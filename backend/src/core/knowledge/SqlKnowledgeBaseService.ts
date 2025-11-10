@@ -186,8 +186,8 @@ export class SqlKnowledgeBaseService implements IKnowledgeBaseService {
         serialiseJson(payload.tags ?? []),
         payload.content,
         payload.metadata ? JSON.stringify(payload.metadata) : null,
-        payload.createdAt.getTime(),
-        payload.updatedAt.getTime(),
+        (payload.createdAt ?? new Date(now)).getTime(),
+        (payload.updatedAt ?? new Date(now)).getTime(),
       ],
     );
 

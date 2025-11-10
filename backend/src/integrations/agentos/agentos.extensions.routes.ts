@@ -4,7 +4,7 @@
 
 import { Router, Request, Response } from 'express';
 
-const router = Router();
+const router: Router = Router();
 
 // Mock extension data for development
 const mockExtensions = [

@@ -208,9 +208,10 @@ export class GuardrailLogger {
   private determineSeverity(action: GuardrailAction, evaluation: GuardrailEvaluationResult): GuardrailSeverity {
     if (action === GuardrailAction.BLOCK) {
       // BLOCK actions are at least HIGH, possibly CRITICAL
+      const topics = (evaluation.metadata as any)?.detectedTopics as string[] | undefined;
       const isCritical = evaluation.reasonCode?.includes('ILLEGAL') ||
         evaluation.reasonCode?.includes('HARMFUL') ||
-        evaluation.metadata?.detectedTopics?.some((t: string) => ['violence', 'self-harm'].includes(t));
+        (Array.isArray(topics) && topics.some((t) => ['violence', 'self-harm'].includes(t)));
       return isCritical ? GuardrailSeverity.CRITICAL : GuardrailSeverity.HIGH;
     }
 
