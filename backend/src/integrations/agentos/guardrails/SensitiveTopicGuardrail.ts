@@ -35,7 +35,10 @@ export interface SensitiveTopicConfig {
  * the agent "changes its mind" by emitting sanitized or blocked content instead.
  */
 export class SensitiveTopicGuardrail implements IGuardrailService {
-  constructor(private readonly config: SensitiveTopicConfig) {}
+  public readonly config: SensitiveTopicConfig;
+  constructor(config: SensitiveTopicConfig) {
+    this.config = config;
+  }
 
   /**
    * Evaluate user input before it reaches the agent.

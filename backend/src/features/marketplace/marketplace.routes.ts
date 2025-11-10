@@ -85,7 +85,6 @@ marketplaceRouter.get('/agents/:id', async (req: Request, res: Response, next: N
 
 marketplaceRouter.post('/agents', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-  // @ts-expect-error optional auth middleware sets req.user when available
     const userId: string | undefined = req.user?.id;
     if (!userId) {
       res.status(401).json({ message: 'Authentication required.' });
@@ -139,7 +138,6 @@ marketplaceRouter.post('/agents', async (req: Request, res: Response, next: Next
 
 marketplaceRouter.patch('/agents/:id', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-  // @ts-expect-error optional auth middleware sets req.user when available
     const userId: string | undefined = req.user?.id;
     if (!userId) {
       res.status(401).json({ message: 'Authentication required.' });
