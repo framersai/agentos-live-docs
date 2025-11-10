@@ -5,7 +5,7 @@
  * @version 1.0.2 - Fixed TypeScript errors, implemented stubs for missing functions, corrected property names and types.
  */
 import { ref, computed, watch, type Ref, nextTick } from 'vue'; // Added nextTick
-import { v4 as uuidv4 } from 'uuid';
+import { generateId } from '@/utils/ids';
 import { useAgentStore } from '@/store/agent.store';
 import { useChatStore } from '@/store/chat.store';
 import type { IAgentDefinition } from '@/services/agent.service';
@@ -289,7 +289,7 @@ export function useCodingInterviewerAgent(
       ...(settings || {}),
     };
 
-    const newInterviewId = uuidv4();
+    const newInterviewId = generateId();
     activeInterviewSession.value = {
       id: newInterviewId,
       title: `Interview Practice - ${new Date(now).toLocaleDateString()}`,
@@ -574,7 +574,7 @@ export function useCodingInterviewerAgent(
         messages: messagesForLlm,
         mode: agentConfigRef.value.id,
         language: preferredLang,
-        userId: `frontend_user_interviewer_${uuidv4().substring(0,8)}`,
+        userId: `frontend_user_interviewer_${generateId().substring(0,8)}`,
         conversationId: activeInterviewSession.value?.id || chatStore.getCurrentConversationId(agentConfigRef.value.id) || `interview-${Date.now()}`,
         stream: false,
       };
@@ -704,7 +704,7 @@ export function useCodingInterviewerAgent(
     }
 
     if (actionHint === 'generateCodingProblem' || currentStage.value === 'problem_requesting') {
-      const newProblemId = uuidv4();
+      const newProblemId = generateId();
       const problemTitleMatch = llmContent.match(/^#+\s*(.*)/m);
       const problemTitle = problemTitleMatch ? problemTitleMatch[1] : `Problem ${currentProblemNumber.value +1}`;
 
@@ -728,7 +728,7 @@ export function useCodingInterviewerAgent(
       };
 
       const newProblemSession: InterviewProblemSession = {
-          id: uuidv4(),
+          id: generateId(),
           problemId: newProblemId,
           problemDetailsSnapshot: JSON.parse(JSON.stringify(currentProblemDisplay.value)), // Deep clone
           attempts: [],
@@ -746,7 +746,7 @@ export function useCodingInterviewerAgent(
     } else if (actionHint === 'evaluateSolution' || currentStage.value === 'solution_evaluation_pending') {
       if (currentProblemSession.value) {
         const newAttempt: InterviewAttempt = {
-            id: uuidv4(),
+            id: generateId(),
             solutionCode: userSolutionInput.value,
             submittedAt: new Date().toISOString(),
             feedbackMarkdown: llmContent,
@@ -814,7 +814,7 @@ export function useCodingInterviewerAgent(
         currentProblemDisplay.value.statementMarkdown += `\n\n---\n**Error from ${agentDisplayName.value}:**\n${errorMessage}\n---`;
     } else if (currentStage.value === 'problem_requesting') {
         currentProblemDisplay.value = {
-            id: 'error-problem-' + uuidv4(), title: 'Error Fetching Problem',
+            id: 'error-problem-' + generateId(), title: 'Error Fetching Problem',
             statementMarkdown: `Could not fetch a new problem. **Error:** ${errorMessage}`,
             language: activeInterviewSession.value?.settings.targetLanguages[0] || 'N/A',
             difficulty: 'Varies'

@@ -133,7 +133,7 @@ import {
   PlusIcon,
 } from '@heroicons/vue/24/solid';
 import { useAgentStore } from '@/store/agent.store';
-import { v4 as uuidv4 } from 'uuid';
+import { generateId } from '@/utils/ids';
 import type { ToastService } from '@/services/services';
 
 const props = defineProps({
@@ -243,7 +243,7 @@ const updateDraftAttendees = (attendeesString: string): void => {
             .filter(name => name)
             .map(name => {
                 const existingAttendee = props.session?.attendees?.find(a => a.name === name);
-                return existingAttendee ? { ...existingAttendee } : { id: uuidv4(), name };
+                return existingAttendee ? { ...existingAttendee } : { id: generateId(), name };
             });
     }
 };

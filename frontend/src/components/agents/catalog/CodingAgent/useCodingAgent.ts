@@ -7,7 +7,7 @@
  */
 
 import { ref, computed, nextTick, type Ref } from 'vue';
-import { v4 as uuidv4 } from 'uuid';
+import { generateId } from '@/utils/ids';
 // import { marked } from 'marked'; // Not used directly here, CompactMessageRenderer handles rendering
 // import hljs from 'highlight.js'; // Not used directly here
 import { useChatStore } from '@/store/chat.store';
@@ -224,7 +224,7 @@ export function useCodingAgent(
     isProcessingLocal.value = true;
     const now = new Date().toISOString();
     const newSession: CodingSession = {
-      id: uuidv4(),
+      id: generateId(),
       title: newTitle.trim(),
       userInputQuery: currentQuery.value,
       generatedCode: currentCodeSnippet.value || undefined,

@@ -25,7 +25,7 @@ import type { ToastService } from '@/services/services';
 import { marked, type MarkedOptions } from 'marked';
 import hljs from 'highlight.js';
 import { themeManager } from '@/theme/ThemeManager';
-import { v4 as uuidv4 } from 'uuid';
+import { generateId } from '@/utils/ids';
 
 import {
   type AdvancedHistoryConfig,
@@ -264,7 +264,7 @@ export function useTutorAgent(
         mode: `${currentAgentIdStr}-${actionHint}`,
         language: voiceSettingsManager.settings?.preferredCodingLanguage,
         generateDiagram: generateDiagrams,
-        userId: `tutor_user_${uuidv4().substring(0,8)}`,
+        userId: `tutor_user_${generateId()}`,
         conversationId: chatStore.getCurrentConversationId(currentAgentIdStr),
         tutorMode: true,
         tutorLevel: currentTutorLevel.value,
@@ -435,7 +435,7 @@ export function useTutorAgent(
   tutorMarkedRenderer.code = (code: string, infostring: string | undefined): string => {
     const lang = (infostring || '').match(/\S*/)?.[0];
     if (lang === 'mermaid') {
-      const uniqueId = `mermaid-${uuidv4()}`;
+      const uniqueId = `mermaid-${generateId()}`;
       return `<div id="${uniqueId}" class="mermaid" data-mermaid-code="${encodeURIComponent(code)}">${code.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</div>`;
     }
     const languageToUse = lang || 'plaintext';

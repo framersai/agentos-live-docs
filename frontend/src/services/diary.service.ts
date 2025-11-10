@@ -6,7 +6,7 @@
  * @version 1.3.0 - Added tutorial entry creation.
  */
 
-import { v4 as uuidv4 } from 'uuid';
+import { generateId } from '@/utils/ids';
 import { localStorageService, type IStorageService } from './localStorage.service';
 
 export interface DiaryTag {
@@ -76,7 +76,7 @@ class DiaryService {
       };
     } else {
       entryToSave = {
-        id: entryData.id || uuidv4(),
+        id: entryData.id || generateId(),
         title: entryData.title,
         contentMarkdown: entryData.contentMarkdown,
         createdAt: entryData.createdAt || now,

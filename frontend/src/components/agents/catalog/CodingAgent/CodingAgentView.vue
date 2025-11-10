@@ -40,7 +40,7 @@ import {
 } from '@heroicons/vue/24/solid';
 import { marked } from 'marked'; // Used by parseMarkdown if not relying solely on CompactMessageRenderer's internal parsing
 import hljs from 'highlight.js';   // Used by parseMarkdown utility
-import { v4 as uuidv4 } from 'uuid';
+import { generateId } from '@/utils/ids';
 import type { AdvancedHistoryConfig } from '@/services/advancedConversation.manager';
 
 /**
@@ -219,7 +219,7 @@ const saveCurrentWorkAsSession = async (titlePromptText?: string) => {
   isProcessingLocal.value = true;
   const now = new Date().toISOString();
   const newSession: CodingSession = {
-    id: uuidv4(),
+    id: generateId(),
     title: newTitle.trim(),
     userInputQuery: currentQuery.value,
     generatedCode: currentCodeSnippet.value || undefined,
@@ -706,7 +706,7 @@ const parseMarkdown = (md: string | null): string => { // Used for v-html displa
     const highlightedCode = hljs.highlight(code, { language: validLanguage || 'plaintext', ignoreIllegals: true }).value;
     // The copy button here is for direct v-html. CompactMessageRenderer might have its own.
     // Unique ID for button to avoid conflicts if multiple code blocks.
-    const buttonId = `copy-btn-${uuidv4()}`;
+    const buttonId = `copy-btn-${generateId()}`;
     const rawCodeForButton = encodeURIComponent(code); // encode for attribute
 
     // The onclick for this button needs to be handled carefully due to v-html.
