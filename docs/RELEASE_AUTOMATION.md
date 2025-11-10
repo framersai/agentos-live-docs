@@ -1,3 +1,61 @@
+# Release Automation Overview
+
+This repository publishes multiple npm packages from dedicated submodules. Each package owns its own release workflow and semantic-release configuration so that publishing happens **only** when new commits land in that submodule’s `master` branch.
+
+## Packages covered
+
+| Package | Repository | Workflow location |
+|---------|------------|-------------------|
+| `@framers/agentos` | `packages/agentos` | `.github/workflows/release.yml` |
+| `@framers/agentos-extensions` | `packages/agentos-extensions` | `.github/workflows/release.yml` |
+| `@framersai/agentos-guardrails` | `packages/agentos-guardrails` | `.github/workflows/release.yml` |
+| `@framers/sql-storage-adapter` | `packages/sql-storage-adapter` | `.github/workflows/release.yml` |
+
+Each submodule repository mirrors the same pattern:
+
+1. **Branch:** `master` is the release branch. Merging into `master` triggers the release workflow for that package only.
+2. **Build gate:** The workflow installs dependencies and runs the package-specific build step before publishing. A failure aborts the release.
+3. **semantic-release:** We use semantic-release with the Conventional Commits preset. Version bumps are calculated automatically:
+   - `fix:` → patch release.
+   - `feat:` → minor release.
+   - `feat!` or `BREAKING CHANGE:` footer → major release.
+   - Other commit types (docs/chore) do not trigger a release unless marked breaking.
+4. **Outputs:** semantic-release updates `CHANGELOG.md`, publishes to npm, tags the commit (`vX.Y.Z`), creates a GitHub Release, and pushes a `chore(release): X.Y.Z [skip ci]` commit back to `master`.
+
+### Why per-package workflows?
+
+- Keeps publication scoped: updating one package does not trigger releases for others.
+- Maintains independent version histories.
+- Avoids running semantic-release on every monorepo commit.
+
+## Manual release (rare)
+
+If a workflow must be replayed locally:
+
+```bash
+pnpm install
+pnpm run build
+npx semantic-release --dry-run
+npx semantic-release
+```
+
+Run the commands from the submodule root on a clean checkout of `master` with `NPM_TOKEN` available in the environment. In normal operation, letting GitHub Actions handle releases is preferred.
+
+## Secrets
+
+Every submodule repository must define:
+
+- `NPM_TOKEN` – npm automation token with publish permissions.
+
+`GITHUB_TOKEN` is supplied automatically by Actions.
+
+## Conventional commit reminders
+
+- Use short, present-tense descriptions (`fix:`, `feat:`, `chore:`).
+- Include scope when helpful (`feat(parser): ...`).
+- For breaking changes, either add `!` after the type (`feat!:`) or include a `BREAKING CHANGE:` footer.
+
+Consistent commit messages are what allow semantic-release to produce accurate changelogs and version numbers without manual intervention.
 # Release & Mirroring Workflow
 
 This repository stays private. Anything we share publicly (packages, landing page, client workbench) is exported from here.
@@ -103,7 +161,7 @@ Complete these steps before the first release so the workflows can publish and m
      ```bash
      ssh-keygen -t ed25519 -C "agentos mirror" -f ~/.ssh/agentos-mirror
      ```
-   - Add the *public* key (`~/.ssh/agentos-mirror.pub`) to the target repo under **Settings ? Deploy keys** and enable �Allow write access�.
+   - Add the *public* key (`~/.ssh/agentos-mirror.pub`) to the target repo under **Settings ? Deploy keys** and enable �Allow write access�.
    - Add the *private* key as a secret in this private repo (**Settings ? Secrets and variables ? Actions**):
      - `AGENTOS_MIRROR_SSH_KEY` ? private key for `framersai/agentos`
      - `AGENTOS_LANDING_MIRROR_SSH_KEY` ? private key for `framersai/agentos.sh`
