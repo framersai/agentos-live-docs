@@ -11,6 +11,7 @@ import {
   type GuardrailInputPayload,
   type GuardrailOutputPayload,
   type IGuardrailService,
+  type GuardrailConfig,
 } from '@framers/agentos/core/guardrails/IGuardrailService';
 import { AgentOSResponseChunkType } from '@framers/agentos/api/types/AgentOSResponse';
 
@@ -34,9 +35,11 @@ export interface CostCeilingConfig {
  * and replaces the final output with a budget message.
  */
 export class CostCeilingGuardrail implements IGuardrailService {
-  public readonly config: CostCeilingConfig;
-  constructor(config: CostCeilingConfig) {
-    this.config = config;
+  public readonly options: CostCeilingConfig;
+  public readonly config: GuardrailConfig;
+  constructor(options: CostCeilingConfig, runtimeConfig?: GuardrailConfig) {
+    this.options = options;
+    this.config = runtimeConfig ?? {};
   }
 
   /**
@@ -67,11 +70,11 @@ export class CostCeilingGuardrail implements IGuardrailService {
     const promptTokens = usage.promptTokens ?? 0;
     const completionTokens = usage.completionTokens ?? 0;
 
-    const inputCost = (promptTokens / 1000) * this.config.inputTokenPricePer1k;
-    const outputCost = (completionTokens / 1000) * this.config.outputTokenPricePer1k;
+    const inputCost = (promptTokens / 1000) * this.options.inputTokenPricePer1k;
+    const outputCost = (completionTokens / 1000) * this.options.outputTokenPricePer1k;
     const totalCost = inputCost + outputCost;
 
-    if (totalCost <= this.config.maxCostUsd) {
+    if (totalCost <= this.options.maxCostUsd) {
       return {
         action: GuardrailAction.FLAG,
         reason: `Request cost: $${totalCost.toFixed(4)}`,
@@ -83,10 +86,10 @@ export class CostCeilingGuardrail implements IGuardrailService {
     // Agent "changes its mind": replaces expensive output with a budget message
     return {
       action: GuardrailAction.SANITIZE,
-      modifiedText: this.config.budgetExceededText,
-      reason: `Cost ceiling exceeded: $${totalCost.toFixed(4)} > $${this.config.maxCostUsd}`,
+      modifiedText: this.options.budgetExceededText,
+      reason: `Cost ceiling exceeded: $${totalCost.toFixed(4)} > $${this.options.maxCostUsd}`,
       reasonCode: 'COST_CEILING_EXCEEDED',
-      metadata: { totalCost, inputCost, outputCost, ceiling: this.config.maxCostUsd },
+      metadata: { totalCost, inputCost, outputCost, ceiling: this.options.maxCostUsd },
     };
   }
 }

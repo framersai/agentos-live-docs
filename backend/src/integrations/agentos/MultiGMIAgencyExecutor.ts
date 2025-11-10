@@ -323,7 +323,7 @@ Role (${role.roleId}): ${role.instruction}`;
   private formatOutput(results: GmiExecutionResult[], format: 'json' | 'csv' | 'markdown' | 'text') {
     switch (format) {
       case 'json':
-        return { format: 'json', content: JSON.stringify(results, null, 2) };
+        return { format: 'json' as const, content: JSON.stringify(results, null, 2) };
       case 'csv': {
         const rows = results.map(
           (r) =>
@@ -332,16 +332,16 @@ Role (${role.roleId}): ${role.instruction}`;
             }","${(r.output || r.error || '').replace(/"/g, '""')}"`,
         );
         return {
-          format: 'csv',
+          format: 'csv' as const,
           content: ['roleId,personaId,status,output', ...rows].join('\n'),
         };
       }
       case 'markdown':
-        return { format: 'markdown', content: this.consolidateOutputs(results, 'markdown') };
+        return { format: 'markdown' as const, content: this.consolidateOutputs(results, 'markdown') };
       case 'text':
       default:
         return {
-          format: 'text',
+          format: 'text' as const,
           content: results.map((r) => `[${r.roleId}] ${r.output || r.error || ''}`).join('\n\n'),
         };
     }

@@ -12,6 +12,7 @@ import {
   type GuardrailInputPayload,
   type GuardrailOutputPayload,
   type IGuardrailService,
+  type GuardrailConfig,
 } from '@framers/agentos/core/guardrails/IGuardrailService';
 import { AgentOSResponseChunkType } from '@framers/agentos/api/types/AgentOSResponse';
 
@@ -35,9 +36,11 @@ export interface SensitiveTopicConfig {
  * the agent "changes its mind" by emitting sanitized or blocked content instead.
  */
 export class SensitiveTopicGuardrail implements IGuardrailService {
-  public readonly config: SensitiveTopicConfig;
-  constructor(config: SensitiveTopicConfig) {
-    this.config = config;
+  public readonly options: SensitiveTopicConfig;
+  public readonly config: GuardrailConfig;
+  constructor(options: SensitiveTopicConfig, runtimeConfig?: GuardrailConfig) {
+    this.options = options;
+    this.config = runtimeConfig ?? {};
   }
 
   /**
@@ -47,24 +50,24 @@ export class SensitiveTopicGuardrail implements IGuardrailService {
    */
   async evaluateInput(payload: GuardrailInputPayload): Promise<GuardrailEvaluationResult | null> {
     const text = (payload.input.textInput ?? '').toLowerCase();
-    const detected = this.config.flaggedTopics.some((topic) => text.includes(topic.toLowerCase()));
+    const detected = this.options.flaggedTopics.some((topic) => text.includes(topic.toLowerCase()));
 
     if (!detected) {
       return null; // No action needed
     }
 
-    switch (this.config.inputAction) {
+    switch (this.options.inputAction) {
       case 'block':
         return {
           action: GuardrailAction.BLOCK,
           reason: 'Input contains sensitive topics that violate content policy.',
           reasonCode: 'SENSITIVE_INPUT_BLOCKED',
-          metadata: { detectedTopics: this.config.flaggedTopics.filter((t) => text.includes(t.toLowerCase())) },
+          metadata: { detectedTopics: this.options.flaggedTopics.filter((t) => text.includes(t.toLowerCase())) },
         };
       case 'sanitize':
         return {
           action: GuardrailAction.SANITIZE,
-          modifiedText: this.config.replacementText,
+          modifiedText: this.options.replacementText,
           reason: 'Sensitive content detected and sanitized.',
           reasonCode: 'SENSITIVE_INPUT_SANITIZED',
           metadata: { original: payload.input.textInput },
@@ -74,7 +77,7 @@ export class SensitiveTopicGuardrail implements IGuardrailService {
           action: GuardrailAction.FLAG,
           reason: 'Sensitive topic detected (logged for review).',
           reasonCode: 'SENSITIVE_INPUT_FLAGGED',
-          metadata: { detectedTopics: this.config.flaggedTopics.filter((t) => text.includes(t.toLowerCase())) },
+          metadata: { detectedTopics: this.options.flaggedTopics.filter((t) => text.includes(t.toLowerCase())) },
         };
     }
   }
@@ -93,25 +96,25 @@ export class SensitiveTopicGuardrail implements IGuardrailService {
 
     const finalChunk = payload.chunk as any;
     const text = (finalChunk.finalResponseText ?? '').toLowerCase();
-    const detected = this.config.flaggedTopics.some((topic) => text.includes(topic.toLowerCase()));
+    const detected = this.options.flaggedTopics.some((topic) => text.includes(topic.toLowerCase()));
 
     if (!detected) {
       return null;
     }
 
-    switch (this.config.outputAction) {
+    switch (this.options.outputAction) {
       case 'block':
         return {
           action: GuardrailAction.BLOCK,
           reason: 'Agent output contains sensitive topics.',
           reasonCode: 'SENSITIVE_OUTPUT_BLOCKED',
-          metadata: { detectedTopics: this.config.flaggedTopics.filter((t) => text.includes(t.toLowerCase())) },
+          metadata: { detectedTopics: this.options.flaggedTopics.filter((t) => text.includes(t.toLowerCase())) },
         };
       case 'sanitize':
         // Agent "changes its mind" by replacing its own answer
         return {
           action: GuardrailAction.SANITIZE,
-          modifiedText: this.config.replacementText,
+          modifiedText: this.options.replacementText,
           reason: 'Agent output sanitized due to policy violation.',
           reasonCode: 'SENSITIVE_OUTPUT_SANITIZED',
           metadata: { original: finalChunk.finalResponseText },
@@ -121,7 +124,7 @@ export class SensitiveTopicGuardrail implements IGuardrailService {
           action: GuardrailAction.FLAG,
           reason: 'Agent output flagged for sensitive content.',
           reasonCode: 'SENSITIVE_OUTPUT_FLAGGED',
-          metadata: { detectedTopics: this.config.flaggedTopics.filter((t) => text.includes(t.toLowerCase())) },
+          metadata: { detectedTopics: this.options.flaggedTopics.filter((t) => text.includes(t.toLowerCase())) },
         };
     }
   }
