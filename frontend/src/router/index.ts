@@ -63,6 +63,10 @@ const routes: Array<RouteRecordRaw> = [
         redirect: () => `/${getCurrentLocale()}/login`
     },
     {
+        path: '/faq',
+        redirect: () => `/${getCurrentLocale()}/faq`
+    },
+    {
         path: '/settings',
         redirect: () => `/${getCurrentLocale()}/settings`
     },
@@ -161,6 +165,12 @@ const routes: Array<RouteRecordRaw> = [
                 name: 'About',
                 component: About,
                 meta: { title: 'About - Voice Chat Assistant' }
+            },
+            {
+                path: 'faq',
+                name: 'FAQ',
+                component: () => import('@/views/FAQ.vue'),
+                meta: { guest: true, title: 'FAQ - Voice Chat Assistant' }
             }
         ]
     },
