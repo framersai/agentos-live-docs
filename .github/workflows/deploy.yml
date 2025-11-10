@@ -54,9 +54,15 @@ jobs:
           # Copy backend package.json for npm install on server
           cp backend/package.json deployment/backend/package.json
 
+          # Patch nested workspace deps inside AgentOS before packing so npm can resolve them
+          node .github/scripts/patch-agentos-deps-for-pack.js
+
           # Package internal workspace deps into tarballs for npm to consume on the server
           pnpm --filter "@framers/agentos" pack --pack-destination deployment/backend/packs
           pnpm --filter "@framers/sql-storage-adapter" pack --pack-destination deployment/backend/packs
+
+          # Restore AgentOS package.json after packing (so repo stays clean)
+          node .github/scripts/restore-agentos-deps-after-pack.js
           
           # Debug: List packed files
           echo "Packed files:"

@@ -18,9 +18,9 @@ try {
   const files = fs.readdirSync(packsDir);
   console.log('Found pack files:', files);
 
-  // Find tarball files
-  const agentosTgz = files.find(f => /framers-agentos-\d+\.\d+\.\d+\.tgz$/.test(f));
-  const adapterTgz = files.find(f => /framers-sql-storage-adapter-\d+\.\d+\.\d+\.tgz$/.test(f));
+  // Find tarball files (be lenient: allow prereleases or custom tags)
+  const agentosTgz = files.find(f => f.includes('framers-agentos') && f.endsWith('.tgz'));
+  const adapterTgz = files.find(f => f.includes('framers-sql-storage-adapter') && f.endsWith('.tgz'));
 
   console.log('AgentOS tarball:', agentosTgz);
   console.log('SQL Storage Adapter tarball:', adapterTgz);
