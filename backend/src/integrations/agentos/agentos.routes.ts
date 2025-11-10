@@ -4,7 +4,7 @@ import type { Request, Response, NextFunction } from 'express';
 import { agentosService } from './agentos.integration.js';
 import { agencyUsageService } from '../../features/agents/agencyUsage.service.js';
 import extensionRoutes from './agentos.extensions.routes.js';
-import { LlmConfigService } from '../../core/llm/llm.config.service.js';
+import { LlmConfigService, LlmProviderId } from '../../core/llm/llm.config.service.js';
 import { MODEL_PRICING } from '../../../config/models.config.js';
 
 export const createAgentOSRouter = (): Router => {
@@ -57,10 +57,11 @@ export const createAgentOSRouter = (): Router => {
         
         // Check if this model's provider is available
         const modelProvider = config.provider;
-        const isProviderAvailable = modelProvider === 'openai' && availableProviders.includes('openai') ||
-                                   modelProvider === 'openrouter' && availableProviders.includes('openrouter') ||
-                                   modelProvider === 'anthropic' && availableProviders.includes('anthropic') ||
-                                   modelProvider === 'ollama' && availableProviders.includes('ollama');
+        const isProviderAvailable =
+          modelProvider === LlmProviderId.OPENAI && availableProviders.includes(LlmProviderId.OPENAI) ||
+          modelProvider === LlmProviderId.OPENROUTER && availableProviders.includes(LlmProviderId.OPENROUTER) ||
+          modelProvider === LlmProviderId.ANTHROPIC && availableProviders.includes(LlmProviderId.ANTHROPIC) ||
+          modelProvider === LlmProviderId.OLLAMA && availableProviders.includes(LlmProviderId.OLLAMA);
 
         if (isProviderAvailable) {
           models.push({
@@ -76,7 +77,7 @@ export const createAgentOSRouter = (): Router => {
       }
 
       // Add common OpenRouter models if available
-      if (availableProviders.includes('openrouter')) {
+      if (availableProviders.includes(LlmProviderId.OPENROUTER)) {
         const openRouterModels = [
           'meta-llama/llama-3.1-8b-instruct:free',
           'microsoft/wizardlm-2-8x22b',
