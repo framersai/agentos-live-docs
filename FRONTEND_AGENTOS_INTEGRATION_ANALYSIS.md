@@ -2,13 +2,13 @@
 
 **Date:** November 1, 2025  
 **Status:** Investigation Phase  
-**Goal:** Determine if frontend is fully integrated with @agentos/core and @framers/sql-storage-adapter for local-first persistence
+**Goal:** Determine if frontend is fully integrated with @framers/agentos and @framers/sql-storage-adapter for local-first persistence
 
 ---
 
 ## Executive Summary
 
-The **voice-chat-assistant** frontend is currently **NOT integrated** with the public packages (`@agentos/core` and `@framers/sql-storage-adapter`). It operates as a **client application** that makes HTTP requests to a **backend server** for all AI functionality.
+The **voice-chat-assistant** frontend is currently **NOT integrated** with the public packages (`@framers/agentos` and `@framers/sql-storage-adapter`). It operates as a **client application** that makes HTTP requests to a **backend server** for all AI functionality.
 
 ### Current Architecture
 
@@ -43,7 +43,7 @@ The **voice-chat-assistant** frontend is currently **NOT integrated** with the p
 {
   "dependencies": {
     "localforage": "^1.10.0",  // ✅ Used for agent data
-    // ❌ NO @agentos/core
+    // ❌ NO @framers/agentos
     // ❌ NO @framers/sql-storage-adapter
     "axios": "^1.6.2",         // Used for backend API calls
     "vue": "^3.3.8",
@@ -82,7 +82,7 @@ class LocalStorageService implements IStorageService {
 **Storage Technology:**
 - ✅ **IndexedDB** (via localForage)
 - ❌ **NOT** using SQL Storage Adapter
-- ❌ **NOT** using @agentos/core storage interfaces
+- ❌ **NOT** using @framers/agentos storage interfaces
 
 ---
 
@@ -194,7 +194,7 @@ Frontend receives response
 
 ### What's Missing
 
-1. **No @agentos/core Integration**
+1. **No @framers/agentos Integration**
    - Frontend doesn't use AgentOS orchestrator
    - No local GMI (Generative Model Interface) instances
    - No tool orchestration on client side
@@ -224,7 +224,7 @@ Frontend receives response
 ┌─────────────────────────────────────────────────────────────┐
 │                    FRONTEND (Vue 3 App)                     │
 │  ┌────────────────────────────────────────────────────┐    │
-│  │  @agentos/core (Local Orchestrator)                │    │
+│  │  @framers/agentos (Local Orchestrator)                │    │
 │  │  - GMI Manager                                      │    │
 │  │  - Tool Orchestrator                                │    │
 │  │  - Conversation Manager                             │    │
@@ -290,7 +290,7 @@ Frontend receives response
 ┌─────────────────────────────────────────────────────────────┐
 │                    BACKEND (Node.js)                        │
 │  ┌────────────────────────────────────────────────────┐    │
-│  │  @agentos/core (from packages/)                    │    │
+│  │  @framers/agentos (from packages/)                    │    │
 │  │  - Full orchestration                               │    │
 │  │  - LLM integrations                                 │    │
 │  └────────────────────────────────────────────────────┘    │
@@ -311,7 +311,7 @@ Frontend receives response
 
 **Cons:**
 - ❌ Still requires backend for AI
-- ❌ Doesn't fully leverage @agentos/core on frontend
+- ❌ Doesn't fully leverage @framers/agentos on frontend
 - ❌ Data duplication (frontend cache + backend source of truth)
 
 ---
@@ -332,7 +332,7 @@ Frontend receives response
 ┌─────────────────────────────────────────────────────────────┐
 │                    BACKEND (Node.js)                        │
 │  ┌────────────────────────────────────────────────────┐    │
-│  │  @agentos/core (from packages/)                    │    │
+│  │  @framers/agentos (from packages/)                    │    │
 │  │  NOT backend/agentos/ copy                         │    │
 │  └────────────────────────────────────────────────────┘    │
 │  ┌────────────────────────────────────────────────────┐    │
@@ -412,7 +412,7 @@ const response = await chatAPI.sendMessage(payload);
 **Option A (Local-first):**
 ```typescript
 // Frontend uses local orchestrator
-import { AgentOS } from '@agentos/core';
+import { AgentOS } from '@framers/agentos';
 
 const agentOS = new AgentOS(config);
 const response = await agentOS.processRequest(input);
@@ -490,8 +490,8 @@ async function callLLM(text: string) {
 **Goal:** Eliminate duplicate AgentOS code, use `packages/agentos` in backend.
 
 **Tasks:**
-1. ✅ Create workspace dependency: `backend/package.json` → add `"@agentos/core": "workspace:*"`
-2. ✅ Refactor `backend/src/` to import from `@agentos/core`
+1. ✅ Create workspace dependency: `backend/package.json` → add `"@framers/agentos": "workspace:*"`
+2. ✅ Refactor `backend/src/` to import from `@framers/agentos`
 3. ❌ Remove `backend/agentos/` directory
 4. ✅ Update all backend routes to use package version
 5. ✅ Add integration tests
@@ -501,7 +501,7 @@ async function callLLM(text: string) {
 - `backend/package.json`
 - `backend/src/features/chat/chat.routes.ts`
 - `backend/server.ts`
-- All imports from `../../agentos/` → `@agentos/core`
+- All imports from `../../agentos/` → `@framers/agentos`
 
 ---
 
@@ -530,7 +530,7 @@ async function callLLM(text: string) {
 **Goal:** Enable full local-first mode with optional backend.
 
 **Tasks:**
-1. ✅ Add `@agentos/core` to `frontend/package.json`
+1. ✅ Add `@framers/agentos` to `frontend/package.json`
 2. ✅ Create orchestrator initialization service
 3. ✅ Implement API key management UI
 4. ✅ Add CORS proxy for LLM providers (optional)
@@ -575,7 +575,7 @@ async function callLLM(text: string) {
 
 ### Phase 1 (Backend Consolidation)
 - ✅ Zero duplicate AgentOS code
-- ✅ Backend uses `@agentos/core` exclusively
+- ✅ Backend uses `@framers/agentos` exclusively
 - ✅ All existing tests pass
 - ✅ No performance regression
 
@@ -642,9 +642,10 @@ async function callLLM(text: string) {
 
 ### Backend Files Using Embedded AgentOS
 - `backend/agentos/**/*` - ❌ Remove in Phase 1
-- `backend/src/features/chat/chat.routes.ts` - ⚠️ Refactor to use `@agentos/core`
+- `backend/src/features/chat/chat.routes.ts` - ⚠️ Refactor to use `@framers/agentos`
 - `backend/src/core/memory/SqliteMemoryAdapter.ts` - ✅ Already uses storage pattern
 
 ---
 
 **End of Analysis**
+

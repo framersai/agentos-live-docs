@@ -25,7 +25,7 @@ The repository is organised as a pnpm workspace so the production apps, the Agen
 |------|---------|
 | `frontend/` | Vue 3 + Vite SPA that handles voice capture, chat UI, localisation, and Supabase auth. |
 | `backend/` | Express + TypeScript API (auth, billing, orchestration endpoints). |
-| `packages/agentos/` | Publishable TypeScript runtime (`@agentos/core`) powering orchestration, streaming, memory, and tool routing. |
+| `packages/agentos/` | Publishable TypeScript runtime (`@framers/agentos`) powering orchestration, streaming, memory, and tool routing. |
 | `apps/agentos.sh/` | Next.js + Tailwind marketing site for agentos.sh (light/dark, motion, roadmap, launch CTAs). |
 | `apps/agentos-client/` | React + Vite workbench to inspect AgentOS sessions, tool calls, and transcripts. |
 | `docs/` | Architecture notes, configuration, API reference, migration plans. |
@@ -62,15 +62,15 @@ The repository is organised as a pnpm workspace so the production apps, the Agen
    - Solo marketing site preview: `pnpm run dev:landing:solo`
 4. **Build for production**
    ```bash
-   npm run build   # builds frontend, backend, and @agentos/core
+   npm run build   # builds frontend, backend, and @framers/agentos
    npm run start   # starts the compiled backend + preview frontend
    # Optional: pnpm run build:landing && pnpm run build:agentos-client
    ```
 5. **Scoped workflows**
    ```bash
-   pnpm --filter @agentos/core test       # run AgentOS test suite
-   pnpm --filter @agentos/core build      # emit dist/ bundles for publishing
-   pnpm --filter @agentos/core run docs   # generate TypeDoc output
+   pnpm --filter @framers/agentos test       # run AgentOS test suite
+   pnpm --filter @framers/agentos build      # emit dist/ bundles for publishing
+   pnpm --filter @framers/agentos run docs   # generate TypeDoc output
    pnpm --filter @framersai/agentos.sh dev    # work on agentos.sh
    pnpm --filter @framersai/agentos-client dev     # iterate on the cockpit
    ```
@@ -81,14 +81,14 @@ The repository is organised as a pnpm workspace so the production apps, the Agen
 - The runtime ships with default `LLMUtilityAI` wiring, explicit tool permission/execution plumbing, and async streaming bridges.
 - Guardrail subsystem now ships end-to-end: `IGuardrailService` contract, dispatcher helpers, `AgentOS.processRequest` integration, and a Vitest harness so hosts can allow/flag/sanitize/block requests via `AgentOSConfig.guardrailService`.
 - Conversation/persona safeguards are aligned with subscription tiers and metadata hooks exposed by the backend.
-- **Documentation** - `pnpm --filter @agentos/core run docs` generates TypeDoc output under `packages/agentos/docs/api` (configuration lives in `packages/agentos/typedoc.json`).
+- **Documentation** - `pnpm --filter @framers/agentos run docs` generates TypeDoc output under `packages/agentos/docs/api` (configuration lives in `packages/agentos/typedoc.json`).
 - See `packages/agentos/README.md` for package scripts, exports, and the release checklist.
 
 ## AgentOS Surfaces
 
 - **agentos.sh landing** - Next.js marketing site with dual-mode theming, motion, roadmap cards, and launch CTAs.
 - **AgentOS client workbench** - React cockpit for replaying sessions, inspecting streaming telemetry, and iterating on personas/tools without running the full voice UI.
-- Both apps consume the workspace version of `@agentos/core` and can be hosted independently when we cut the repositories under `framersai`.
+- Both apps consume the workspace version of `@framers/agentos` and can be hosted independently when we cut the repositories under `framersai`.
 - Workbench persona catalog now hydrates from `/api/agentos/personas` (filters: `capability`, `tier`, `search`) and caches responses via React Query for faster iteration.
 
 ### Workflow artifacts & media outputs
@@ -110,7 +110,7 @@ The repository is organised as a pnpm workspace so the production apps, the Agen
 - Marketplace integration guide - [`docs/marketplace.md`](docs/marketplace.md)
 - AgentOS migration notes - [`docs/AGENTOS_*`](docs)
 - Workflow & automation guide - [`docs/WORKFLOWS.md`](docs/WORKFLOWS.md)
-- Generated API docs - `pnpm --filter @agentos/core run docs` -> `packages/agentos/docs/api`
+- Generated API docs - `pnpm --filter @framers/agentos run docs` -> `packages/agentos/docs/api`
 
 ### Provider API Migration (generateCompletion*)
 
@@ -159,10 +159,11 @@ See enhanced TSDoc in `packages/agentos/src/core/llm/providers/IProvider.ts` for
 
 1. Create a branch (`git checkout -b feature/amazing`).
 2. Update the relevant package README/docs alongside code changes.
-3. Run the scoped lint/test commands (`npm run lint`, `pnpm --filter @agentos/core test`, etc.).
+3. Run the scoped lint/test commands (`npm run lint`, `pnpm --filter @framers/agentos test`, etc.).
 4. Submit a PR with context. Include screenshots/recordings for UI updates.
 
 ## License
 
 The repository remains private. Individual packages may be published under MIT when we cut public releases�refer to [LICENSE](LICENSE) for the current terms.
+
 

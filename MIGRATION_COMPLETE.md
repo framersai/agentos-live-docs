@@ -128,7 +128,7 @@
 ### Client-Side (Browser)
 ```typescript
 import { createAgentOSStorage } from '@framers/sql-storage-adapter/agentos';
-import { AgentOS } from '@agentos/core';
+import { AgentOS } from '@framers/agentos';
 
 const storage = await createAgentOSStorage({ platform: 'web' });
 
@@ -192,4 +192,5 @@ await agentos.initialize({
 ✅ **Full documentation** and tests
 
 **AgentOS can now run fully client-side with IndexedDB, or scale up to Postgres for multi-user cloud deployments!** 🚀
+
 

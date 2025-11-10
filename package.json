@@ -32,7 +32,7 @@
     "dev:landing": "concurrently \"pnpm --filter ./backend run dev\" \"pnpm --filter @framersai/agentos.sh dev\"",
     "dev:landing:solo": "pnpm --filter @framersai/agentos.sh dev",
     "build": "pnpm run build:agentos && pnpm run build:frontend && pnpm run build:backend",
-    "build:agentos": "pnpm --filter @agentos/core run build",
+    "build:agentos": "pnpm --filter @framers/agentos run build",
     "build:frontend": "pnpm --filter ./frontend run build",
     "build:backend": "pnpm --filter ./backend run build",
     "build:landing": "pnpm --filter @framersai/agentos.sh build",
@@ -42,9 +42,9 @@
     "lint:fix": "eslint . --ext .ts,.tsx,.js,.jsx --fix",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
-    "test": "pnpm -r --filter @agentos/core run test",
-    "test:watch": "pnpm --filter @agentos/core run dev:test",
-    "coverage": "pnpm --filter @agentos/core run test -- --coverage",
+    "test": "pnpm -r --filter @framers/agentos run test",
+    "test:watch": "pnpm --filter @framers/agentos run dev:test",
+    "coverage": "pnpm --filter @framers/agentos run test -- --coverage",
     "docs": "pnpm run docs:library && pnpm run docs:api",
     "docs:library": "typedoc --options typedoc.json",
     "docs:api": "node scripts/generate-api-docs.mjs",
@@ -85,3 +85,4 @@
     ]
   }
 }
+

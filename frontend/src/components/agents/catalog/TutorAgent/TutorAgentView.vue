@@ -122,7 +122,7 @@ import type { ToastService } from '@/services/services';
 import { AcademicCapIcon, ChevronDownIcon, SparklesIcon, CheckCircleIcon, XCircleIcon, LightBulbIcon } from '@heroicons/vue/24/solid';
 import { useTutorAgent } from './useTutorAgent';
 import type { TutorLevel, QuizItemContent, FlashcardContent } from './TutorAgentTypes';
-import { v4 as uuidv4 } from 'uuid';
+import { generateId } from '@/utils/ids';
 
 declare var mermaid: any;
 
@@ -198,7 +198,7 @@ watch(mainContentToDisplay, async (newContentObj, _oldContentObj, onCleanup) => 
                 mermaidElements.forEach(el => {
                     if (!(el as HTMLElement).dataset.mermaidProcessed) {
                         nodesToRun.push(el);
-                        if(!el.id) el.id = `mermaid-runtime-${uuidv4().substring(0,8)}`;
+                        if(!el.id) el.id = `mermaid-runtime-${generateId().substring(0,8)}`;
                         (el as HTMLElement).dataset.mermaidProcessed = 'true';
                     }
                 });

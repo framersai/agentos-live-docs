@@ -173,7 +173,7 @@ function detectPlatform(): Platform {
 
 ```typescript
 import { createAgentOSStorage } from '@framers/sql-storage-adapter/agentos';
-import { AgentOS } from '@agentos/core';
+import { AgentOS } from '@framers/agentos';
 
 const storage = await createAgentOSStorage({ platform: 'web' });
 
@@ -404,4 +404,5 @@ await agentos.initialize({
 - ✅ Ready for production
 
 **TL;DR:** Use `createAgentOSStorage({ platform: 'auto' })` and AgentOS works everywhere. 🚀
+
 

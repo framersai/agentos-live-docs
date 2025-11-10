@@ -7,7 +7,7 @@
  * @version 2.2.2 - Definitions for LLM helper functions restored and TS errors corrected.
  */
 import { ref, computed, watch, type Ref, inject } from 'vue';
-import { v4 as uuidv4 } from 'uuid';
+import { generateId } from '@/utils/ids';
 import JSZip from 'jszip';
 import { useAgentStore } from '@/store/agent.store';
 import { useChatStore, type MainContent } from '@/store/chat.store';
@@ -302,7 +302,7 @@ export function useDiaryAgent(
   }
 
   async function createNewEntry(initialContent: string = ''): Promise<void> {
-    const now = new Date().toISOString(); const newId = uuidv4();
+    const now = new Date().toISOString(); const newId = generateId();
     currentDraft.value = {
       id: newId, title: `Reflections - ${new Date(now).toLocaleDateString()}`, contentMarkdown: initialContent,
       createdAt: now, updatedAt: now, tags: [], isDraft: true,
@@ -340,7 +340,7 @@ export function useDiaryAgent(
     }
     isProcessingLocal.value = true;
     const draftToSave = { ...currentDraft.value, isDraft: false, updatedAt: new Date().toISOString() } as RichDiaryEntry;
-    if (!draftToSave.id) draftToSave.id = uuidv4();
+    if (!draftToSave.id) draftToSave.id = generateId();
     if (!draftToSave.createdAt) draftToSave.createdAt = draftToSave.updatedAt;
     const entryForService = _mapToStorageEntry(draftToSave);
 

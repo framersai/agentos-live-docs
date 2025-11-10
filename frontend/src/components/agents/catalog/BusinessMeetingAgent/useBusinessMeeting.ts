@@ -8,7 +8,7 @@
  * and enhanced documentation. Addresses modularity for V1.
  */
 import { ref, computed, type Ref, inject } from 'vue';
-import { v4 as uuidv4 } from 'uuid';
+import { generateId } from '@/utils/ids';
 import { useChatStore, type MainContent } from '@/store/chat.store';
 import type { IAgentDefinition } from '@/services/agent.service';
 import {
@@ -585,7 +585,7 @@ export function useBusinessMeetingAgent(
   function _mapEntitiesToSession(entities: Partial<ExtractMeetingEntitiesToolOutput>, sessionId: string): Partial<RichMeetingSession> {
     const now = new Date().toISOString();
     const mappedAttendees = (entities.attendees || []).map((a, index) => ({
-        id: uuidv4(), // Ensure unique ID for each attendee
+        id: generateId(), // Ensure unique ID for each attendee
         name: a.name || `Attendee ${index + 1}`,
         role: a.role,
         isPresent: true, // Default assumption
@@ -595,7 +595,7 @@ export function useBusinessMeetingAgent(
     return {
       actionItems: (entities.actionItems || []).map(ai => ({
         ...ai,
-        id: uuidv4(),
+        id: generateId(),
         parentId: sessionId,
         assignedTo: ai.assignedTo || [],
         status: ai.status || config.value.defaultActionItemStatus,
@@ -605,12 +605,12 @@ export function useBusinessMeetingAgent(
       })),
       decisionsMade: (entities.decisionsMade || []).map(d => ({
         ...d,
-        id: uuidv4(),
+        id: generateId(),
         timestamp: d.timestamp || now,
       })),
       keyDiscussionPoints: (entities.keyDiscussionPoints || []).map(dp => ({
         ...dp,
-        id: uuidv4(),
+        id: generateId(),
       })),
       attendees: mappedAttendees,
       title: entities.meetingTitleSuggestion, // Will be undefined if not suggested, handled by caller
@@ -664,7 +664,7 @@ export function useBusinessMeetingAgent(
         throw new Error("LLM did not return a summary.");
       }
 
-      const newSessionId = uuidv4();
+      const newSessionId = generateId();
       const now = new Date().toISOString();
       const mdTitleMatch = summaryMarkdown.match(/^#\s*(.*)/m); // Extract title from markdown H1
       const finalTitle = mdTitleMatch && mdTitleMatch[1] ? mdTitleMatch[1].trim() : tempTitle;
@@ -876,7 +876,7 @@ export function useBusinessMeetingAgent(
     const now = new Date().toISOString();
     const newActionItem: ActionItem = {
         ...itemData,
-        id: uuidv4(),
+        id: generateId(),
         parentId: sessionId,
         status: itemData.status || config.value.defaultActionItemStatus,
         priority: itemData.priority || config.value.defaultActionItemPriority,
