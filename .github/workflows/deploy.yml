@@ -24,7 +24,7 @@ jobs:
           cache-dependency-path: pnpm-lock.yaml
 
       - name: Install root dependencies
-        run: npm run install-all # Uses pnpm under the hood
+        run: pnpm install --no-frozen-lockfile
 
       - name: Build
         run: |
