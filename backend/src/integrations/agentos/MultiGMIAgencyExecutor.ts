@@ -4,7 +4,7 @@
  * streaming back Agency/Workflow chunks in real time.
  */
 
-import { v4 as uuidv4 } from 'uuid';
+import { generateUniqueId as uuidv4 } from '../../utils/ids.js';
 import type { AgentOS, AgentOSInput, AgentOSResponse } from '@framers/agentos';
 import { AgentOSResponseChunkType, type AgentOSAgencyUpdateChunk } from '@framers/agentos';
 import type { CostAggregator } from '@framers/agentos/cognitive_substrate/IGMI';

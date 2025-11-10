@@ -10,7 +10,7 @@
 
 import path from 'path';
 import fs from 'fs';
-import { v4 as uuidv4 } from 'uuid';
+import { generateUniqueId as uuidv4 } from '../../utils/ids.js';
 import { resolveStorageAdapter, type StorageAdapter } from '@framers/sql-storage-adapter';
 import type {
   IMemoryAdapter,

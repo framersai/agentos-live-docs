@@ -8,7 +8,7 @@
 
 import fs from 'fs';
 import path from 'path';
-import { v4 as uuidv4 } from 'uuid';
+import { generateUniqueId as uuidv4 } from '../../utils/ids.js';
 import {
   resolveStorageAdapter,
   type StorageAdapter
