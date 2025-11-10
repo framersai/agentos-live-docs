@@ -160,6 +160,7 @@ export class SqlKnowledgeBaseService implements IKnowledgeBaseService {
     const payload: IKnowledgeItem = {
       id,
       type: itemData.type,
+      // Persist ownership scoping into tags for simple filtering downstream
       tags: itemData.tags ?? [],
       content: itemData.content,
       metadata: itemData.metadata,
@@ -191,6 +192,32 @@ export class SqlKnowledgeBaseService implements IKnowledgeBaseService {
     );
 
     return payload;
+  }
+
+  /**
+   * Lists knowledge items for a given agent scoped to a user by filtering tags.
+   * We encode scoping as tags: `agent:<agentId>` and `owner:<userId>`.
+   */
+  async listByAgent(agentId: string, userId: string): Promise<IKnowledgeItem[]> {
+    const adapter = await this.getAdapter();
+    const rows = await adapter.all<KnowledgeRecord>('SELECT * FROM agentos_knowledge_items');
+    const items = rows.map(hydrateRecord);
+    const agentTag = `agent:${agentId}`.toLowerCase();
+    const ownerTag = `owner:${userId}`.toLowerCase();
+    return items.filter((it) => {
+      const tags = (it.tags ?? []).map((t) => t.toLowerCase());
+      return tags.includes(agentTag) && tags.includes(ownerTag);
+    });
+  }
+
+  async countByAgent(agentId: string, userId: string): Promise<number> {
+    const items = await this.listByAgent(agentId, userId);
+    return items.length;
+    }
+
+  async deleteById(id: string): Promise<void> {
+    const adapter = await this.getAdapter();
+    await adapter.run('DELETE FROM agentos_knowledge_items WHERE id = ?', [id]);
   }
 
   async reloadKnowledgeBase(): Promise<void> {

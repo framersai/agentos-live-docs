@@ -10,9 +10,14 @@ const PUBLIC_AUTH_ROUTES: Array<{ method: string; path: string }> = [
   { method: 'DELETE', path: '/api/auth' },
 ];
 
-declare module 'express-serve-static-core' {
-  interface Request {
-    user?: any;
+declare global {
+  // Augment Express Request safely without relying on express-serve-static-core module name
+  namespace Express {
+    // eslint-disable-next-line @typescript-eslint/no-empty-interface
+    interface Request {
+      // Populated by auth middleware when a user is authenticated
+      user?: any;
+    }
   }
 }
 

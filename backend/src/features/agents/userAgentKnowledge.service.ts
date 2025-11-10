@@ -55,11 +55,10 @@ export const userAgentKnowledgeService = {
 
     const payload = await sqlKnowledgeBaseService.addKnowledgeItem({
       type: input.type,
-      tags: input.tags ?? [],
+      // encode ownership in tags for easy filtering
+      tags: [...(input.tags ?? []), `agent:${agent.id}`, `owner:${userId}`],
       content: input.content,
-      metadata: input.metadata,
-      agentId: agent.id,
-      ownerUserId: userId,
+      metadata: { ...(input.metadata ?? {}), agentId: agent.id, ownerUserId: userId },
     });
 
     return payload;
@@ -68,12 +67,18 @@ export const userAgentKnowledgeService = {
   async remove(userId: string, agentId: string, knowledgeId: string) {
     await ensureAgentOwnership(userId, agentId);
     const existing = await sqlKnowledgeBaseService.getKnowledgeItemById(knowledgeId);
-    if (!existing || existing.agentId !== agentId || existing.ownerUserId !== userId) {
+    const agentTag = `agent:${agentId}`.toLowerCase();
+    const ownerTag = `owner:${userId}`.toLowerCase();
+    const hasScope =
+      !!existing &&
+      (existing.tags ?? []).map((t) => t.toLowerCase()).includes(agentTag) &&
+      (existing.tags ?? []).map((t) => t.toLowerCase()).includes(ownerTag);
+    if (!hasScope) {
       const error: any = new Error('Knowledge document not found.');
       error.statusCode = 404;
       error.code = 'KNOWLEDGE_NOT_FOUND';
       throw error;
     }
-    await sqlKnowledgeBaseService.deleteById(knowledgeId, userId);
+    await sqlKnowledgeBaseService.deleteById(knowledgeId);
   },
 };
