@@ -30,6 +30,7 @@ import {
   type GuardrailInputPayload,
   type GuardrailOutputPayload,
   type IGuardrailService,
+  type GuardrailConfig,
 } from '@framers/agentos/core/guardrails/IGuardrailService';
 import { AgentOSResponseChunkType } from '@framers/agentos/api/types/AgentOSResponse';
 
@@ -121,12 +122,14 @@ export class KeywordGuardrail implements IGuardrailService {
     regex?: RegExp;
   }>;
 
-  public readonly config: KeywordGuardrailConfig;
+  public readonly options: KeywordGuardrailConfig;
+  public readonly config: GuardrailConfig;
 
-  constructor(config: KeywordGuardrailConfig) {
-    this.config = config;
+  constructor(options: KeywordGuardrailConfig, runtimeConfig?: GuardrailConfig) {
+    this.options = options;
+    this.config = runtimeConfig ?? {};
     // Pre-compile regex patterns for efficiency
-    this.compiledPatterns = config.patterns.map((pattern) => {
+    this.compiledPatterns = options.patterns.map((pattern) => {
       if (pattern.regex) {
         const regex = typeof pattern.regex === 'string' ? new RegExp(pattern.regex) : pattern.regex;
         return { original: pattern, regex };
@@ -141,7 +144,7 @@ export class KeywordGuardrail implements IGuardrailService {
    * @returns Guardrail decision or null if no matches
    */
   async evaluateInput(payload: GuardrailInputPayload): Promise<GuardrailEvaluationResult | null> {
-    if (!this.config.evaluateInput) {
+    if (!this.options.evaluateInput) {
       return null;
     }
 
@@ -165,7 +168,7 @@ export class KeywordGuardrail implements IGuardrailService {
    * @returns Guardrail decision or null
    */
   async evaluateOutput(payload: GuardrailOutputPayload): Promise<GuardrailEvaluationResult | null> {
-    if (!this.config.evaluateOutput) {
+    if (!this.options.evaluateOutput) {
       return null;
     }
 
@@ -253,7 +256,7 @@ export class KeywordGuardrail implements IGuardrailService {
     };
 
     if (action === GuardrailAction.SANITIZE) {
-      const replacement = pattern.replacement ?? this.config.defaultReplacement ?? '[REDACTED]';
+      const replacement = pattern.replacement ?? this.options.defaultReplacement ?? '[REDACTED]';
       if (pattern.regex) {
         // Replace all regex matches
         const regex = typeof pattern.regex === 'string' ? new RegExp(pattern.regex, 'g') : new RegExp(pattern.regex.source, pattern.regex.flags.includes('g') ? pattern.regex.flags : pattern.regex.flags + 'g');

@@ -17,6 +17,7 @@ import {
   type GuardrailInputPayload,
   type GuardrailOutputPayload,
   type IGuardrailService,
+  type GuardrailConfig,
 } from '@framers/agentos/core/guardrails/IGuardrailService';
 import { AgentOSResponseChunkType } from '@framers/agentos/api/types/AgentOSResponse';
 import { callLlm } from '../../../core/llm/llm.factory.js';
@@ -83,9 +84,11 @@ interface GuardrailLLMResponse {
  * ```
  */
 export class GenericLLMGuardrail implements IGuardrailService {
-  public readonly config: GenericLLMGuardrailConfig;
-  constructor(config: GenericLLMGuardrailConfig) {
-    this.config = config;
+  public readonly options: GenericLLMGuardrailConfig;
+  public readonly config: GuardrailConfig;
+  constructor(options: GenericLLMGuardrailConfig, runtimeConfig?: GuardrailConfig) {
+    this.options = options;
+    this.config = runtimeConfig ?? {};
   }
 
   /**
@@ -94,7 +97,7 @@ export class GenericLLMGuardrail implements IGuardrailService {
    * @returns Guardrail decision or null if evaluation is disabled
    */
   async evaluateInput(payload: GuardrailInputPayload): Promise<GuardrailEvaluationResult | null> {
-    if (!this.config.evaluateInput) {
+    if (!this.options.evaluateInput) {
       return null;
     }
 
@@ -110,14 +113,14 @@ export class GenericLLMGuardrail implements IGuardrailService {
     }
 
     const action = this.mapViolationAction();
-    const replacementText = this.config.replacementText || llmResult.sanitizedText || 'Input was filtered by policy.';
+    const replacementText = this.options.replacementText || llmResult.sanitizedText || 'Input was filtered by policy.';
 
     return {
       action,
       reason: llmResult.reason || 'Policy violation detected by LLM.',
       reasonCode: 'GENERIC_LLM_INPUT_VIOLATION',
       modifiedText: action === GuardrailAction.SANITIZE ? replacementText : undefined,
-      metadata: { policyDescription: this.config.policyDescription },
+      metadata: { policyDescription: this.options.policyDescription },
     };
   }
 
@@ -128,7 +131,7 @@ export class GenericLLMGuardrail implements IGuardrailService {
    * @returns Guardrail decision or null
    */
   async evaluateOutput(payload: GuardrailOutputPayload): Promise<GuardrailEvaluationResult | null> {
-    if (!this.config.evaluateOutput) {
+    if (!this.options.evaluateOutput) {
       return null;
     }
 
@@ -150,14 +153,14 @@ export class GenericLLMGuardrail implements IGuardrailService {
     }
 
     const action = this.mapViolationAction();
-    const replacementText = this.config.replacementText || llmResult.sanitizedText || 'Output was filtered by policy.';
+    const replacementText = this.options.replacementText || llmResult.sanitizedText || 'Output was filtered by policy.';
 
     return {
       action,
       reason: llmResult.reason || 'Agent output violated policy.',
       reasonCode: 'GENERIC_LLM_OUTPUT_VIOLATION',
       modifiedText: action === GuardrailAction.SANITIZE ? replacementText : undefined,
-      metadata: { policyDescription: this.config.policyDescription, originalText: text.substring(0, 100) },
+      metadata: { policyDescription: this.options.policyDescription, originalText: text.substring(0, 100) },
     };
   }
 
@@ -177,13 +180,13 @@ export class GenericLLMGuardrail implements IGuardrailService {
     try {
       const response = await callLlm(
         messages,
-        this.config.evaluatorModel || 'gpt-4o-mini',
+        this.options.evaluatorModel || 'gpt-4o-mini',
         undefined,
         undefined,
-        this.config.evaluatorUserId || 'guardrail-system',
+        this.options.evaluatorUserId || 'guardrail-system',
       );
 
-      const parsed = this.parseLLMResponse(response.text);
+      const parsed = this.parseLLMResponse(response.text ?? '');
       return parsed;
     } catch (error) {
       console.error('[GenericLLMGuardrail] Failed to evaluate via LLM:', error);
@@ -198,7 +201,7 @@ export class GenericLLMGuardrail implements IGuardrailService {
    */
   private buildEvaluationPrompt(text: string, context: 'user_input' | 'agent_output'): string {
     const contextLabel = context === 'user_input' ? 'user request' : 'AI agent response';
-    const dynamicMode = this.config.useDynamicReplacement && !this.config.replacementText;
+    const dynamicMode = this.options.useDynamicReplacement && !this.options.replacementText;
     
     const dynamicInstructions = dynamicMode
       ? `   - "sanitizedText": (REQUIRED if violates=true) Generate a context-aware, helpful replacement that:
@@ -210,7 +213,7 @@ export class GenericLLMGuardrail implements IGuardrailService {
 
     return `You are a content policy evaluator. Your job is to determine if the following ${contextLabel} violates this policy:
 
-**Policy**: ${this.config.policyDescription}
+**Policy**: ${this.options.policyDescription}
 
 **Instructions**:
 1. Analyze the ${contextLabel} carefully.
@@ -258,7 +261,7 @@ Respond ONLY with valid JSON. No markdown code fences or extra text.`;
    * Maps string action to GuardrailAction enum.
    */
   private mapViolationAction(): GuardrailAction {
-    switch (this.config.violationAction) {
+    switch (this.options.violationAction) {
       case 'block':
         return GuardrailAction.BLOCK;
       case 'sanitize':
