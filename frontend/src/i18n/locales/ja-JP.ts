@@ -419,7 +419,7 @@ export default {
     planHintOrganization: 'Organization - {price}/月 - 共有プール ~{tokens} トークン/日',
     rolloverNote: 'Creator と Organization プランは、プラットフォーム分の割り当てを使い切った後、自分の API キーに切り替えても分析データが残ります。管理者はチームダッシュボードでメンバーごとの上限を設定できます。'
   },
-  onboarding: {
+  onboarding_en: {
     tour: {
       heading: 'Welcome back, {name}!',
       subtitle: 'Here’s a quick tour to get your workspace shipping agencies and personas immediately.',

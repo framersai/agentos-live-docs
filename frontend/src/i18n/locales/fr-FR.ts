@@ -419,7 +419,7 @@ export default {
     planHintOrganization: 'Organization - {price}/mois - pool partagé ~{tokens} jetons/jour',
     rolloverNote: 'Les offres Creator et Organization basculent sur des clés API personnelles une fois le quota quotidien de la plateforme utilisé, tout en conservant les analyses. Les administrateurs peuvent fixer des limites par membre depuis le tableau de bord équipe.'
   },
-  onboarding: {
+  onboarding_en: {
     tour: {
       heading: 'Welcome back, {name}!',
       subtitle: 'Heres a quick tour to get your workspace shipping agencies and personas immediately.',

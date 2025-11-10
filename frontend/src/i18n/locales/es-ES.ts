@@ -498,7 +498,7 @@ export default {
     planHintOrganization: 'Organization - {price}/mes - pool compartido ~{tokens} tokens GPT-4o/día',
     rolloverNote: 'Los planes Creator y Organization pasan a claves API propias después de consumir la asignación diaria de la plataforma, manteniendo la analítica. Los administradores pueden definir límites por miembro en el panel del equipo.'
   },
-  onboarding: {
+  onboarding_en: {
     tour: {
       heading: 'Welcome back, {name}!',
       subtitle: 'Heres a quick tour to get your workspace shipping agencies and personas immediately.',

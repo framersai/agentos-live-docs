@@ -9,7 +9,6 @@ import { useRouter, useRoute } from 'vue-router';
 import { AUTH_TOKEN_KEY } from '@/router';
 import { api, authAPI, rateLimitAPI } from '@/utils/api';
 import { useStorage } from '@vueuse/core';
-import { v4 as uuidv4 } from 'uuid';
 import { createClient, type Session, type SupabaseClient } from '@supabase/supabase-js';
 
 import { useChatStore } from '@/store/chat.store';
@@ -76,12 +75,23 @@ const checkAuthStatus = (): boolean => {
   return isAuthenticatedGlobal.value;
 };
 
+function generateSessionId(): string {
+  try {
+    if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+      return crypto.randomUUID();
+    }
+  } catch {}
+  // Minimal fallback UUID (not RFC-perfect but stable enough for session ids)
+  const s4 = () => Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+  return `${s4()}${s4()}-${s4()}-${s4()}-${s4()}-${s4()}${s4()}${s4()}`;
+}
+
 const getOrGenerateSessionUserId = (): string => {
   if (storedSessionUserId.value) {
     sessionUserIdGlobal.value = storedSessionUserId.value;
     return storedSessionUserId.value;
   }
-  const newId = uuidv4();
+  const newId = generateSessionId();
   storedSessionUserId.value = newId;
   sessionUserIdGlobal.value = newId;
   console.log('[Auth/Session] Generated new session User ID:', newId);

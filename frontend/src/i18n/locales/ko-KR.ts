@@ -419,7 +419,7 @@ export default {
     planHintOrganization: 'Organization - {price}/월 - 공유 할당량 ~{tokens} 토큰/일',
     rolloverNote: 'Creator 및 Organization 플랜은 일일 플랫폼 할당분을 모두 사용하면 자동으로 개인 API 키로 전환되어도 분석 데이터가 유지됩니다. 관리자는 팀 대시보드에서 좌석별 한도를 설정할 수 있습니다.'
   },
-  onboarding: {
+  onboarding_en: {
     tour: {
       heading: 'Welcome back, {name}!',
       subtitle: 'Here’s a quick tour to get your workspace shipping agencies and personas immediately.',
