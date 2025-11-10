@@ -415,7 +415,7 @@ export default {
     choosePlanCta: 'Plan auswählen',
     rolloverNote: 'Die Tarife Creator und Organization wechseln nach Verbrauch des täglichen Plattformkontingents automatisch zu eigenen API-Schlüsseln, wobei Analysen erhalten bleiben. Administratoren können im Team-Dashboard Sitzplatzlimits festlegen.'
   },
-  onboarding: {
+  onboarding_en: {
     tour: {
       heading: 'Welcome back, {name}!',
       subtitle: 'Heres a quick tour to get your workspace shipping agencies and personas immediately.',

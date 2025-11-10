@@ -419,7 +419,7 @@ export default {
     planHintOrganization: 'Organization - {price}/mese - pool condiviso ~{tokens} token/giorno',
     rolloverNote: 'I piani Creator e Organization passano alle chiavi API personali una volta consumata la quota giornaliera della piattaforma, mantenendo la reportistica. Gli amministratori possono assegnare limiti per membro dal pannello del team.'
   },
-  onboarding: {
+  onboarding_en: {
     tour: {
       heading: 'Welcome back, {name}!',
       subtitle: 'Heres a quick tour to get your workspace shipping agencies and personas immediately.',

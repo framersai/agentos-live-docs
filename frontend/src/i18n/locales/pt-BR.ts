@@ -419,7 +419,7 @@
     planHintOrganization: 'Organization - {price}/mês - pool compartilhado ~{tokens} tokens/dia',
     rolloverNote: 'Os planos Creator e Organization passam a usar suas próprias chaves de API após consumir a cota diária da plataforma, mantendo as métricas. Administradores podem definir limites por membro no painel da equipe.'
   },
-  onboarding: {
+  onboarding_en: {
     tour: {
       heading: 'Welcome back, {name}!',
       subtitle: 'Here’s a quick tour to get your workspace shipping agencies and personas immediately.',
