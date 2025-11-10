@@ -5,13 +5,8 @@
  */
 
 import { v4 as uuidv4 } from 'uuid';
-import type {
-  AgentOS,
-  AgentOSInput,
-  AgentOSResponse,
-  AgentOSResponseChunkType,
-  AgentOSAgencyUpdateChunk,
-} from '@framers/agentos';
+import type { AgentOS, AgentOSInput, AgentOSResponse } from '@framers/agentos';
+import { AgentOSResponseChunkType, type AgentOSAgencyUpdateChunk } from '@framers/agentos';
 import type { CostAggregator } from '@framers/agentos/cognitive_substrate/IGMI';
 
 /** Captures the configuration for a single agency seat. */

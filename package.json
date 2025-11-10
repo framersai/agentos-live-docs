@@ -32,7 +32,7 @@
     "dev:landing": "concurrently \"pnpm --filter ./backend run dev\" \"pnpm --filter @framersai/agentos.sh dev\"",
     "dev:landing:solo": "pnpm --filter @framersai/agentos.sh dev",
     "build": "pnpm run build:agentos && pnpm run build:frontend && pnpm run build:backend",
-    "build:agentos": "pnpm --filter @framers/agentos run build",
+    "build:agentos": "pnpm -r --filter \"@framers/*\" run build",
     "build:frontend": "pnpm --filter ./frontend run build",
     "build:backend": "pnpm --filter ./backend run build",
     "build:landing": "pnpm --filter @framersai/agentos.sh build",

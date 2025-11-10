@@ -12,9 +12,11 @@ import { Request, Response, NextFunction } from 'express';
 import { verifyToken, toSessionUserPayload } from '../src/features/auth/auth.service.js';
 import { verifySupabaseToken, supabaseAuthEnabled } from '../src/features/auth/supabaseAuth.service.js';
 
-declare module 'express-serve-static-core' {
-  interface Request {
-    user?: any;
+declare global {
+  namespace Express {
+    interface Request {
+      user?: any;
+    }
   }
 }
 
