@@ -35,6 +35,22 @@ jobs:
           VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}
           EOL
           npm run build
+          
+          # Verify backend build completed successfully
+          if [ ! -f "backend/dist/server.js" ]; then
+              echo "ERROR: backend/dist/server.js not found after build!"
+              exit 1
+          fi
+          
+          # Verify critical backend files exist
+          if [ ! -f "backend/dist/middleware/optionalAuth.js" ]; then
+              echo "ERROR: backend/dist/middleware/optionalAuth.js not found after build!"
+              echo "Backend dist contents:"
+              find backend/dist -type f | head -20
+              exit 1
+          fi
+          
+          echo "Backend build verification passed"
         env:
           NODE_ENV: production
 
@@ -49,8 +65,24 @@ jobs:
           # Copy built frontend assets
           cp -r frontend/dist/* deployment/frontend/dist/
 
-          # Copy built backend assets
-          cp -r backend/dist/* deployment/backend/dist/
+          # Copy built backend assets (preserve directory structure)
+          cp -r backend/dist/* deployment/backend/dist/ 2>&1 || {
+              echo "ERROR: Failed to copy backend/dist files"
+              exit 1
+          }
+          
+          # Verify critical files were copied
+          if [ ! -f "deployment/backend/dist/server.js" ]; then
+              echo "ERROR: server.js not copied to deployment package!"
+              exit 1
+          fi
+          if [ ! -f "deployment/backend/dist/middleware/optionalAuth.js" ]; then
+              echo "ERROR: optionalAuth.js not copied to deployment package!"
+              echo "Files in deployment/backend/dist:"
+              find deployment/backend/dist -type f | head -20
+              exit 1
+          fi
+          
           # Copy backend package.json for npm install on server
           cp backend/package.json deployment/backend/package.json
 
@@ -142,6 +174,16 @@ jobs:
           rm -rf node_modules package-lock.json
           npm cache clean --force
           npm install --production --legacy-peer-deps # Install only production dependencies with legacy peer deps
+          
+          # Verify critical dependencies were installed
+          if [ ! -d "node_modules/express" ]; then
+              echo "ERROR: express not installed in node_modules!"
+              echo "node_modules contents:"
+              ls -la node_modules/ | head -20
+              exit 1
+          fi
+          
+          echo "Dependencies installed successfully"
 
           # 4. Create .env file for the backend
           echo "Creating .env file for backend..."
@@ -187,6 +229,16 @@ jobs:
               ls -la dist/ || echo "dist directory doesn't exist"
               exit 1
           fi
+          
+          # Verify critical middleware file exists
+          if [ ! -f "dist/middleware/optionalAuth.js" ]; then
+              echo "ERROR: dist/middleware/optionalAuth.js not found!"
+              echo "dist directory structure:"
+              find dist -type f | head -30
+              exit 1
+          fi
+          
+          echo "Backend dist files verified"
           
           pm2 stop voice-backend || true
           pm2 delete voice-backend || true
