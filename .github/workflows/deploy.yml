@@ -138,7 +138,10 @@ jobs:
 
           # 3. Install backend dependencies (Node.js direct deploy)
           echo "Installing backend Node.js dependencies on server..."
-          npm install --production # Install only production dependencies
+          # Clean npm cache and remove old node_modules to ensure fresh install
+          rm -rf node_modules package-lock.json
+          npm cache clean --force
+          npm install --production --legacy-peer-deps # Install only production dependencies with legacy peer deps
 
           # 4. Create .env file for the backend
           echo "Creating .env file for backend..."
