@@ -180,6 +180,14 @@ jobs:
 
           # 6. Configure and start backend with PM2
           echo "Configuring and starting backend with PM2..."
+          
+          # Verify backend build exists
+          if [ ! -f "dist/server.js" ]; then
+              echo "ERROR: dist/server.js not found! Backend was not built properly."
+              ls -la dist/ || echo "dist directory doesn't exist"
+              exit 1
+          fi
+          
           pm2 stop voice-backend || true
           pm2 delete voice-backend || true
 
@@ -195,6 +203,12 @@ jobs:
           echo "Verifying Nginx and PM2 status..."
           sudo systemctl is-active nginx || { echo "ERROR: Nginx is not active."; exit 1; }
           pm2 list | grep 'voice-backend' | grep 'online' || { echo "ERROR: Backend PM2 process is not online."; exit 1; }
+          
+          # Show PM2 logs for debugging
+          echo "=== PM2 Process Status ==="
+          pm2 status
+          echo "=== Recent PM2 Logs ==="
+          pm2 logs voice-backend --lines 50 --nostream || true
 
           echo "Waiting for application to become fully responsive via HTTP..."
           ATTEMPTS=0
