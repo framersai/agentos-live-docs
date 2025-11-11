@@ -30,31 +30,6 @@ jobs:
           git clone --depth 1 https://github.com/framersai/agentos-extensions.git packages/agentos-extensions
           git clone --depth 1 https://github.com/framersai/agentos-guardrails.git packages/agentos-guardrails
 
-      - name: Patch sql-storage-adapter ESM types import
-        shell: bash
-        run: |
-          set -euo pipefail
-          FILE=packages/sql-storage-adapter/src/index.ts
-          if [ -f "$FILE" ]; then
-            # Ensure all internal re-exports use explicit .js extensions for Node ESM
-            sed -i "s|\\('./types'\\)|\\1/index.js|g" "$FILE" || true
-            sed -i "s|from '\\./core/database'|from './core/database.js'|g" "$FILE" || true
-            sed -i "s|from '\\./core/resolver'|from './core/resolver.js'|g" "$FILE" || true
-            sed -i "s|from '\\./adapters/betterSqliteAdapter'|from './adapters/betterSqliteAdapter.js'|g" "$FILE" || true
-            sed -i "s|from '\\./adapters/sqlJsAdapter'|from './adapters/sqlJsAdapter.js'|g" "$FILE" || true
-            sed -i "s|from '\\./adapters/indexedDbAdapter'|from './adapters/indexedDbAdapter.js'|g" "$FILE" || true
-            sed -i "s|from '\\./adapters/capacitorSqliteAdapter'|from './adapters/capacitorSqliteAdapter.js'|g" "$FILE" || true
-            sed -i "s|from '\\./adapters/postgresAdapter'|from './adapters/postgresAdapter.js'|g" "$FILE" || true
-            sed -i "s|from '\\./adapters/supabase'|from './adapters/supabase/index.js'|g" "$FILE" || true
-            sed -i "s|from '\\./adapters/baseStorageAdapter'|from './adapters/baseStorageAdapter.js'|g" "$FILE" || true
-            sed -i "s|from '\\./features/backup/cloudBackup'|from './features/backup/cloudBackup.js'|g" "$FILE" || true
-            sed -i "s|from '\\./features/migrations/dataExport'|from './features/migrations/dataExport.js'|g" "$FILE" || true
-            sed -i "s|from '\\./features/migrations/dataImport'|from './features/migrations/dataImport.js'|g" "$FILE" || true
-            sed -i "s|from '\\./features/migrations/migration'|from './features/migrations/migration.js'|g" "$FILE" || true
-            sed -i "s|from '\\./features/sync/syncManager'|from './features/sync/syncManager.js'|g" "$FILE" || true
-            sed -i "s|from '\\./shared/parameterUtils'|from './shared/parameterUtils.js'|g" "$FILE" || true
-          fi
-
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
 
