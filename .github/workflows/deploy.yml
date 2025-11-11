@@ -34,7 +34,7 @@ jobs:
           cat > ./frontend/.env << EOL
           VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}
           EOL
-          npm run build
+          pnpm run build
           
           # Verify backend build completed successfully
           if [ ! -f "backend/dist/server.js" ]; then
@@ -323,8 +323,8 @@ jobs:
           pm2 stop voice-backend || true
           pm2 delete voice-backend || true
 
-          # CHANGE 2: Refer to ecosystem.config.json directly, since you are already in the backend directory
-          pm2 start ecosystem.config.json
+          # Start or reload using ecosystem (ensures node_args and env applied)
+          pm2 startOrReload ecosystem.config.json --update-env
 
           # Save PM2 process list and configure to start on boot
           pm2 save
@@ -364,7 +364,7 @@ jobs:
 
           if [ "$APP_HEALTHY" = false ]; then
               echo "ERROR: Application did not become healthy after $MAX_ATTEMPTS attempts."
-              echo "Review PM2 logs: pm2 logs voice-coding-assistant-backend"
+              echo "Review PM2 logs: pm2 logs voice-backend"
               exit 1
           fi
           echo "Deployment successful and application verified."
