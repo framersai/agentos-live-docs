@@ -11,7 +11,7 @@
     "build:strict": "tsc && tsc-alias",
     "build:agentos": "tsc && tsc-alias",
     "build:shared": "tsc -p ../shared/tsconfig.build.json",
-    "postbuild": "npm run build:shared",
+    "postbuild": "npm run build:shared && node ./scripts/postbuild/flatten-dist.cjs",
     "test": "node --test --import tsx --experimental-specifier-resolution=node src/__tests__/appDatabase.test.ts"
   },
   "dependencies": {
