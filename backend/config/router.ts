@@ -11,8 +11,8 @@ import express, { Router, Request, Response } from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 // Import the strict authMiddleware
-import { authMiddleware } from '../middleware/auth';
-import { isAgentOSEnabled, getAgentOSRouter } from '../src/integrations/agentos/agentos.integration';
+import { authMiddleware } from '../middleware/auth.js';
+import { isAgentOSEnabled, getAgentOSRouter } from '../src/integrations/agentos/agentos.integration.js';
 
 // Import route handlers
 import {
@@ -21,20 +21,20 @@ import {
   getStatus as getAuthStatus,
   deleteSession as deleteAuthSession,
   postRegister,
-} from '../src/features/auth/auth.routes';
-import * as chatApiRoutes from '../src/features/chat/chat.routes';
-import { postDetectLanguage } from '../src/features/chat/language.routes';
-import * as diagramApiRoutes from '../src/features/chat/diagram.routes';
-import * as sttApiRoutes from '../src/features/speech/stt.routes';
-import * as ttsApiRoutes from '../src/features/speech/tts.routes';
-import * as costApiRoutes from '../src/features/cost/cost.routes';
-import { rateLimiter } from '../middleware/ratelimiter'; // For fetching public rate limit status
+} from '../src/features/auth/auth.routes.js';
+import * as chatApiRoutes from '../src/features/chat/chat.routes.js';
+import { postDetectLanguage } from '../src/features/chat/language.routes.js';
+import * as diagramApiRoutes from '../src/features/chat/diagram.routes.js';
+import * as sttApiRoutes from '../src/features/speech/stt.routes.js';
+import * as ttsApiRoutes from '../src/features/speech/tts.routes.js';
+import * as costApiRoutes from '../src/features/cost/cost.routes.js';
+import { rateLimiter } from '../middleware/ratelimiter.js'; // For fetching public rate limit status
 // @ts-ignore - prompt.routes.js is a legacy JS file without type declarations
 import * as promptApiRoutes from '../src/features/prompts/prompt.routes.js';
 import type { RateLimitInfo, RateLimitInfoAuthenticated, RateLimitInfoPublic } from '@shared/rateLimitTypes';
-import { postCheckoutSession, postLemonWebhook, getCheckoutStatus } from '../src/features/billing/billing.routes';
-import * as organizationRoutes from '../src/features/organization/organization.routes';
-import { getLlmStatus as getSystemLlmStatus } from '../src/features/system/system.routes';
+import { postCheckoutSession, postLemonWebhook, getCheckoutStatus } from '../src/features/billing/billing.routes.js';
+import * as organizationRoutes from '../src/features/organization/organization.routes.js';
+import { getLlmStatus as getSystemLlmStatus } from '../src/features/system/system.routes.js';
 import { marketplaceRouter } from '../src/features/marketplace/marketplace.routes.js';
 
 /**
