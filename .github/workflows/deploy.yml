@@ -22,14 +22,13 @@ jobs:
           set -euo pipefail
           echo "Cloning submodules by HTTPS at default branch HEAD..."
           git config --global advice.detachedHead false
-          rm -rf apps/agentos-client apps/agentos.sh apps/frame.dev packages/agentos packages/agentos-extensions packages/agentos-guardrails packages/sql-storage-adapter
+          rm -rf apps/agentos-client apps/agentos.sh apps/frame.dev packages/agentos packages/agentos-extensions packages/agentos-guardrails
           git clone --depth 1 https://github.com/framersai/agentos-client.git apps/agentos-client
           git clone --depth 1 https://github.com/framersai/agentos.sh.git apps/agentos.sh
           git clone --depth 1 https://github.com/framersai/frame.dev.git apps/frame.dev
           git clone --depth 1 https://github.com/framersai/agentos.git packages/agentos
           git clone --depth 1 https://github.com/framersai/agentos-extensions.git packages/agentos-extensions
           git clone --depth 1 https://github.com/framersai/agentos-guardrails.git packages/agentos-guardrails
-          git clone --depth 1 https://github.com/framersai/sql-storage-adapter.git packages/sql-storage-adapter
 
       - name: Patch sql-storage-adapter ESM types import
         shell: bash
