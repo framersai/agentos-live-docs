@@ -9,6 +9,7 @@
   <div
     :class="logoContainerClasses"
     :style="logoContainerStyles"
+    ref="rootEl"
     @click="handleLogoClick"
   >
     <div class="logo-neural-bg" v-if="showNeuralEffect">
@@ -280,7 +281,7 @@ const waveformColor = computed(() =>
 
 // Visual features based on state
 const showNeuralEffect = computed(() =>
-  reactiveStore.neuralActivity > 0.3 && !uiStore.isReducedMotionPreferred // Added  for isReducedMotionPreferred
+  uiStore.effectiveNeuralActivity > 0.3 && !uiStore.isReducedMotionPreferred
 );
 
 const showPulseRing = computed(() =>
@@ -433,19 +434,50 @@ const handleLogoClick = () => {
 
 // Animation loop
 let animationFrameId: number | null = null;
+let lastTick = performance.now();
+const targetFps = 45;
+const minDeltaMs = 1000 / targetFps;
+const isComponentVisible = ref(true);
+const rootEl = ref<HTMLElement | null>(null);
+let visibilityHandler: (() => void) | null = null;
+let intersectionObserver: IntersectionObserver | null = null;
 
-const animate = () => {
-  if (uiStore.isReducedMotionPreferred) return; // Added .value
+const animate = (timestamp?: number) => {
+  if (uiStore.isReducedMotionPreferred || !isComponentVisible.value) return;
 
-  orbitRotation.value += reactiveStore.gradientSpeed * 2;
+  const now = timestamp ?? performance.now();
+  const deltaMs = now - lastTick;
+  if (deltaMs < minDeltaMs) {
+    animationFrameId = requestAnimationFrame(animate);
+    return;
+  }
+  lastTick = now;
+
+  const delta = deltaMs / 16.6667; // normalize vs ~60fps frame
+
+  orbitRotation.value += reactiveStore.gradientSpeed * 2 * delta;
   if (orbitRotation.value > 360) orbitRotation.value -= 360;
 
-  waveformPhase.value += 0.05 * reactiveStore.intensity;
+  waveformPhase.value += 0.05 * reactiveStore.intensity * delta;
 
   const pulseMagnitude = 2 * reactiveStore.pulseIntensity;
   coreRadius.value = 35 + Math.sin(waveformPhase.value * 2) * pulseMagnitude;
 
   animationFrameId = requestAnimationFrame(animate);
+};
+
+const startAnimationIfNeeded = () => {
+  if (animationFrameId != null) return;
+  if (uiStore.isReducedMotionPreferred || !isComponentVisible.value) return;
+  lastTick = performance.now();
+  animationFrameId = requestAnimationFrame(animate);
+};
+
+const stopAnimation = () => {
+  if (animationFrameId != null) {
+    cancelAnimationFrame(animationFrameId);
+    animationFrameId = null;
+  }
 };
 
 // Watch for agent changes
@@ -495,14 +527,53 @@ onMounted(() => {
     });
   }
 
-  if (!uiStore.isReducedMotionPreferred) { // Added .value
-    animationFrameId = requestAnimationFrame(animate);
+  // Visibility and intersection handling to pause work offscreen
+  if (typeof document !== 'undefined') {
+    visibilityHandler = () => {
+      const hidden = document.visibilityState === 'hidden';
+      isComponentVisible.value = !hidden && isComponentVisible.value;
+      if (hidden) {
+        stopAnimation();
+      } else {
+        startAnimationIfNeeded();
+      }
+    };
+    document.addEventListener('visibilitychange', visibilityHandler);
   }
+
+  if (typeof IntersectionObserver !== 'undefined' && rootEl.value) {
+    intersectionObserver = new IntersectionObserver((entries) => {
+      const entry = entries[0];
+      isComponentVisible.value = entry?.isIntersecting ?? true;
+      if (isComponentVisible.value) {
+        startAnimationIfNeeded();
+      } else {
+        stopAnimation();
+      }
+    }, { root: null, threshold: 0.05 });
+    intersectionObserver.observe(rootEl.value);
+  }
+
+  startAnimationIfNeeded();
 });
 
 onUnmounted(() => {
-  if (animationFrameId) {
-    cancelAnimationFrame(animationFrameId);
+  stopAnimation();
+  if (intersectionObserver && rootEl.value) {
+    intersectionObserver.unobserve(rootEl.value);
+  }
+  intersectionObserver?.disconnect();
+  if (visibilityHandler) {
+    document.removeEventListener('visibilitychange', visibilityHandler);
+  }
+});
+
+// React to motion preference changes
+watch(() => uiStore.isReducedMotionPreferred, (reduced) => {
+  if (reduced) {
+    stopAnimation();
+  } else {
+    startAnimationIfNeeded();
   }
 });
 </script>
@@ -519,6 +590,7 @@ onUnmounted(() => {
   min-width: 0;
   cursor: default;
   user-select: none;
+  contain: layout paint style; // isolate for performance
 
   &.is-interactive {
     cursor: pointer;

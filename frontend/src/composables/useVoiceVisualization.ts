@@ -118,6 +118,7 @@ export function useVoiceVisualization(
   const timeDomainData = shallowRef<Uint8Array | null>(null);
   const _isVisualizing = ref(false);
   let animationFrameId: number | null = null;
+  let visibilityHandler: (() => void) | null = null;
 
   let currentAngle = 0;
   let pulseOffset = Math.random() * Math.PI * 2;
@@ -440,6 +441,20 @@ export function useVoiceVisualization(
     if (!canvasRef.value) return;
     if (!_setupAudioProcessing()) return;
     _isVisualizing.value = true;
+
+    // Pause drawing when tab is hidden; resume on visible
+    if (typeof document !== 'undefined' && !visibilityHandler) {
+      visibilityHandler = () => {
+        const hidden = document.visibilityState === 'hidden';
+        if (hidden) {
+          if (animationFrameId) { cancelAnimationFrame(animationFrameId); animationFrameId = null; }
+        } else if (_isVisualizing.value && animationFrameId == null) {
+          _drawLoop();
+        }
+      };
+      document.addEventListener('visibilitychange', visibilityHandler);
+    }
+
     _drawLoop();
     console.log('[VoiceViz] Visualization started with type:', _currentConfig.value.visualizationType);
   };
@@ -511,6 +526,10 @@ export function useVoiceVisualization(
   onUnmounted(() => {
     console.log('[VoiceViz] Unmounting. Cleaning up audio resources.');
     _stopVisualizationInternal();
+    if (visibilityHandler) {
+      document.removeEventListener('visibilitychange', visibilityHandler);
+      visibilityHandler = null;
+    }
     if (sourceNode.value) { try { sourceNode.value.disconnect(); } catch(e) {/*ignore*/} sourceNode.value = null; }
     if (analyserNode.value) { try { analyserNode.value.disconnect(); } catch(e) {/*ignore*/} analyserNode.value = null; }
     if (audioContext.value && audioContext.value.state !== 'closed') {
