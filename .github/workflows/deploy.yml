@@ -10,11 +10,36 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code (including submodules)
+      - name: Checkout code
         uses: actions/checkout@v3
         with:
-          submodules: true
+          submodules: false
           fetch-depth: 0
+
+      - name: Fetch submodules via HTTPS (default branch HEAD)
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Cloning submodules by HTTPS at default branch HEAD..."
+          git config --global advice.detachedHead false
+          rm -rf apps/agentos-client apps/agentos.sh apps/frame.dev packages/agentos packages/agentos-extensions packages/agentos-guardrails packages/sql-storage-adapter
+          git clone --depth 1 https://github.com/framersai/agentos-client.git apps/agentos-client
+          git clone --depth 1 https://github.com/framersai/agentos.sh.git apps/agentos.sh
+          git clone --depth 1 https://github.com/framersai/frame.dev.git apps/frame.dev
+          git clone --depth 1 https://github.com/framersai/agentos.git packages/agentos
+          git clone --depth 1 https://github.com/framersai/agentos-extensions.git packages/agentos-extensions
+          git clone --depth 1 https://github.com/framersai/agentos-guardrails.git packages/agentos-guardrails
+          git clone --depth 1 https://github.com/framersai/sql-storage-adapter.git packages/sql-storage-adapter
+
+      - name: Patch sql-storage-adapter ESM types import
+        shell: bash
+        run: |
+          set -euo pipefail
+          FILE=packages/sql-storage-adapter/src/index.ts
+          if [ -f "$FILE" ]; then
+            # Replace any bare './types' export with explicit './types/index.js'
+            sed -i "s|export \\* from './types';|export \\* from './types/index.js';|g" "$FILE" || true
+          fi
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
