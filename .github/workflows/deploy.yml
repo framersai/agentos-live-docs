@@ -56,21 +56,6 @@ jobs:
             sed -i "s|from '\\./shared/parameterUtils'|from './shared/parameterUtils.js'|g" "$FILE" || true
           fi
 
-      - name: Verify packed adapter uses explicit ESM paths
-        shell: bash
-        run: |
-          set -euo pipefail
-          # After build and pack, ensure tarball index.js has .js extensions
-          ADAPTER_TGZ=$(ls deployment/backend/packs | grep framers-sql-storage-adapter | head -n1 || true)
-          if [ -z "$ADAPTER_TGZ" ]; then
-            echo "Adapter tarball not found in packs dir"; exit 1;
-          fi
-          echo "Inspecting $ADAPTER_TGZ ..."
-          tar -xOf "deployment/backend/packs/$ADAPTER_TGZ" package/dist/index.js | tee /tmp/adapter-index.js > /dev/null
-          grep -q "./types/index.js" /tmp/adapter-index.js || { echo "Missing types/index.js export in adapter dist"; exit 1; }
-          grep -q "./core/database.js" /tmp/adapter-index.js || { echo "Missing .js extension for core/database export"; exit 1; }
-          grep -q "./features/sync/syncManager.js" /tmp/adapter-index.js || { echo "Missing .js extension for features exports"; exit 1; }
-
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
 
@@ -226,6 +211,21 @@ jobs:
 
           # Create a tarball of the deployment package
           cd deployment && tar -czf ../voice-app-deployment.tar.gz .
+
+      - name: Verify packed adapter uses explicit ESM paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          # After pack step above, ensure tarball index.js has .js extensions
+          ADAPTER_TGZ=$(ls deployment/backend/packs | grep framers-sql-storage-adapter | head -n1 || true)
+          if [ -z "$ADAPTER_TGZ" ]; then
+            echo "Adapter tarball not found in packs dir"; exit 1;
+          fi
+          echo "Inspecting $ADAPTER_TGZ ..."
+          tar -xOf "deployment/backend/packs/$ADAPTER_TGZ" package/dist/index.js | tee /tmp/adapter-index.js > /dev/null
+          grep -q "./types/index.js" /tmp/adapter-index.js || { echo "Missing types/index.js export in adapter dist"; exit 1; }
+          grep -q "./core/database.js" /tmp/adapter-index.js || { echo "Missing .js extension for core/database export"; exit 1; }
+          grep -q "./features/sync/syncManager.js" /tmp/adapter-index.js || { echo "Missing .js extension for features exports"; exit 1; }
 
       - name: Install SSH key
         uses: shimataro/ssh-key-action@v2
