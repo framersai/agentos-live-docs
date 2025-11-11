@@ -69,6 +69,7 @@ jobs:
           tar -xOf "deployment/backend/packs/$ADAPTER_TGZ" package/dist/index.js | tee /tmp/adapter-index.js > /dev/null
           grep -q "./types/index.js" /tmp/adapter-index.js || { echo "Missing types/index.js export in adapter dist"; exit 1; }
           grep -q "./core/database.js" /tmp/adapter-index.js || { echo "Missing .js extension for core/database export"; exit 1; }
+          grep -q "./features/sync/syncManager.js" /tmp/adapter-index.js || { echo "Missing .js extension for features exports"; exit 1; }
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -89,6 +90,30 @@ jobs:
           VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}
           EOL
           pnpm run build
+          
+          # Force-patch compiled adapter dist to explicit ESM specifiers (defense-in-depth)
+          if [ -f "packages/sql-storage-adapter/dist/index.js" ]; then
+            echo "Patching compiled adapter dist/index.js to explicit .js specifiers..."
+            sed -i "s|from '\\./types'|from './types/index.js'|g" packages/sql-storage-adapter/dist/index.js || true
+            sed -i "s|from '\\./core/database'|from './core/database.js'|g" packages/sql-storage-adapter/dist/index.js || true
+            sed -i "s|from '\\./core/resolver'|from './core/resolver.js'|g" packages/sql-storage-adapter/dist/index.js || true
+            sed -i "s|from '\\./adapters/betterSqliteAdapter'|from './adapters/betterSqliteAdapter.js'|g" packages/sql-storage-adapter/dist/index.js || true
+            sed -i "s|from '\\./adapters/sqlJsAdapter'|from './adapters/sqlJsAdapter.js'|g" packages/sql-storage-adapter/dist/index.js || true
+            sed -i "s|from '\\./adapters/indexedDbAdapter'|from './adapters/indexedDbAdapter.js'|g" packages/sql-storage-adapter/dist/index.js || true
+            sed -i "s|from '\\./adapters/capacitorSqliteAdapter'|from './adapters/capacitorSqliteAdapter.js'|g" packages/sql-storage-adapter/dist/index.js || true
+            sed -i "s|from '\\./adapters/postgresAdapter'|from './adapters/postgresAdapter.js'|g" packages/sql-storage-adapter/dist/index.js || true
+            sed -i "s|from '\\./adapters/supabase'|from './adapters/supabase/index.js'|g" packages/sql-storage-adapter/dist/index.js || true
+            sed -i "s|from '\\./adapters/baseStorageAdapter'|from './adapters/baseStorageAdapter.js'|g" packages/sql-storage-adapter/dist/index.js || true
+            sed -i "s|from '\\./features/backup/cloudBackup'|from './features/backup/cloudBackup.js'|g" packages/sql-storage-adapter/dist/index.js || true
+            sed -i "s|from '\\./features/migrations/dataExport'|from './features/migrations/dataExport.js'|g" packages/sql-storage-adapter/dist/index.js || true
+            sed -i "s|from '\\./features/migrations/dataImport'|from './features/migrations/dataImport.js'|g" packages/sql-storage-adapter/dist/index.js || true
+            sed -i "s|from '\\./features/migrations/migration'|from './features/migrations/migration.js'|g" packages/sql-storage-adapter/dist/index.js || true
+            sed -i "s|from '\\./features/sync/syncManager'|from './features/sync/syncManager.js'|g" packages/sql-storage-adapter/dist/index.js || true
+            sed -i "s|from '\\./shared/parameterUtils'|from './shared/parameterUtils.js'|g" packages/sql-storage-adapter/dist/index.js || true
+            echo "--- Adapter dist/index.js head ---"
+            head -n 80 packages/sql-storage-adapter/dist/index.js || true
+            echo "----------------------------------"
+          fi
           
           # Verify backend build completed successfully
           if [ ! -f "backend/dist/server.js" ]; then
