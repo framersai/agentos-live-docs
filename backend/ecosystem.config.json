@@ -6,6 +6,7 @@
       "instances": 1,
       "watch": false,
       "ignore_watch": ["node_modules", "logs"],
+      "node_args": ["--experimental-specifier-resolution=node"],
       "output": "/root/.pm2/logs/voice-backend-output.log",
       "error": "/root/.pm2/logs/voice-backend-error.log",
       "env": {
