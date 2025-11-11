@@ -98,6 +98,16 @@ jobs:
               echo "ERROR: auth.js not copied to deployment package!"
               exit 1
           fi
+          if [ ! -f "deployment/backend/dist/src/features/prompts/prompt.routes.js" ]; then
+              echo "ERROR: prompt.routes.js missing from deployment backend dist!"
+              find deployment/backend/dist/src/features -maxdepth 2 -type f
+              exit 1
+          fi
+          if [ ! -f "deployment/backend/dist/utils/logger.js" ]; then
+              echo "ERROR: logger.js missing from deployment backend dist!"
+              find deployment/backend/dist -maxdepth 2 -type f
+              exit 1
+          fi
           
           echo "All critical backend files verified in deployment package"
           
@@ -178,9 +188,24 @@ jobs:
           if [ ! -f "$BACKEND_DIST/middleware/optionalAuth.js" ]; then
               echo "ERROR: optionalAuth.js not found after extraction!"
               echo "Backend dist structure:"
-              find "$BACKEND_DIST" -type f -name "*.js" | head -30
+              find "$BACKEND_DIST" -type f -name '*.js' | head -30
               echo "Middleware directory:"
               ls -la "$BACKEND_DIST/middleware/" || echo "middleware directory doesn't exist"
+              exit 1
+          fi
+          if [ ! -f "$BACKEND_DIST/middleware/auth.js" ]; then
+              echo "ERROR: auth.js not found after extraction!"
+              ls -la "$BACKEND_DIST/middleware/" || echo "middleware directory doesn't exist"
+              exit 1
+          fi
+          if [ ! -f "$BACKEND_DIST/src/features/prompts/prompt.routes.js" ]; then
+              echo "ERROR: prompt.routes.js not found after extraction!"
+              find "$BACKEND_DIST/src/features" -maxdepth 2 -type f
+              exit 1
+          fi
+          if [ ! -f "$BACKEND_DIST/utils/logger.js" ]; then
+              echo "ERROR: logger.js not found after extraction!"
+              find "$BACKEND_DIST/utils" -maxdepth 1 -type f
               exit 1
           fi
           echo "Backend dist files verified after extraction"
@@ -220,6 +245,25 @@ jobs:
           fi
           
           echo "Dependencies installed successfully"
+
+          # Re-verify critical runtime files in case npm install altered the build
+          if [ ! -f "$BACKEND_DIST/middleware/optionalAuth.js" ] || [ ! -f "$BACKEND_DIST/middleware/auth.js" ]; then
+              echo "ERROR: Middleware files missing after npm install!"
+              ls -la "$BACKEND_DIST/middleware/" || echo "middleware directory missing"
+              exit 1
+          fi
+          if [ ! -f "$BACKEND_DIST/utils/logger.js" ]; then
+              echo "ERROR: logger.js missing after npm install!"
+              find "$BACKEND_DIST/utils" -maxdepth 1 -type f
+              exit 1
+          fi
+          if [ ! -f "$BACKEND_DIST/src/features/prompts/prompt.routes.js" ]; then
+              echo "ERROR: prompt.routes.js missing after npm install!"
+              find "$BACKEND_DIST/src/features" -maxdepth 2 -type f
+              exit 1
+          fi
+
+          echo "Post-install verification passed"
 
           # 4. Create .env file for the backend
           echo "Creating .env file for backend..."
