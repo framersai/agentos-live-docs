@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@framers/theme-tokens": "workspace:*",
     "@framers/shared": "workspace:*",
     "@headlessui/vue": "^1.7.16",
     "@heroicons/vue": "^2.2.0",

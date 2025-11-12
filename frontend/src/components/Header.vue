@@ -28,6 +28,7 @@ const AgentHubTrigger  = defineAsyncComponent(() => import('./header/AgentHubTri
 const AgentHub         = defineAsyncComponent(() => import('@/components/agents/AgentHub.vue'));
 const MobileNavPanel   = defineAsyncComponent(() => import('./header/MobileNavPanel.vue'));
 const LanguageSwitcher = defineAsyncComponent(() => import('@/components/LanguageSwitcher.vue'));
+const DarkLightToggle  = defineAsyncComponent(() => import('./header/DarkLightToggle.vue'));
 
 
 import {
@@ -141,6 +142,7 @@ onUnmounted(()=>document.body.classList.remove('overflow-hidden-by-app-overlay')
       <nav class="desk-ctrls" aria-label="Desktop navigation">
         <Suspense><AgentHubTrigger @open-agent-hub="openAgentHub" class="ctrl-btn"/></Suspense>
         <Suspense><ThemeDropdown  class="ctrl-btn"/></Suspense>
+        <Suspense><DarkLightToggle class="ctrl-btn"/></Suspense>
 
         <!-- language switcher -->
         <Suspense><LanguageSwitcher class="lang-switcher-header"/></Suspense>

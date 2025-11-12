@@ -98,6 +98,8 @@ function applyTheme(themeId: string, isUserChoice = false): void {
   }
 
   document.documentElement.setAttribute('data-theme', themeToApply.id);
+  // Ensure Tailwind's dark variants and UA styling are in sync
+  document.documentElement.classList.toggle('dark', !!themeToApply.isDark);
   document.documentElement.style.colorScheme = themeToApply.isDark ? 'dark' : 'light';
 
   _currentThemeId.value = themeToApply.id;

@@ -83,6 +83,39 @@
 // Dedicated styles for print media, if needed.
 // @use '../styles/base/print';
 
+.transition-theme {
+  transition: background-color var(--duration-smooth) var(--ease-out-quad),
+              color var(--duration-smooth) var(--ease-out-quad),
+              border-color var(--duration-smooth) var(--ease-out-quad),
+              box-shadow var(--duration-smooth) var(--ease-out-quad);
+}
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: color-mix(in oklab, var(--color-text-muted) 8%, transparent);
+}
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    color-mix(in oklab, var(--color-text-muted) 16%, transparent) 45%,
+    color-mix(in oklab, var(--color-text-muted) 12%, transparent) 55%,
+    transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.8s linear infinite;
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
 .custom-scrollbar-futuristic {
   &::-webkit-scrollbar {
     width: 0.375rem;
