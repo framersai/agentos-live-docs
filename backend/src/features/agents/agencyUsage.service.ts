@@ -1,7 +1,7 @@
 import { generateId, getAppDatabase } from '../../core/database/appDatabase.js';
 import { getPlanAgentLimits, resolvePlanIdForUser } from './userAgents.service.js';
 import { findUserById } from '../auth/user.repository.js';
-import type { PlanId } from '@shared/planCatalog';
+import type { PlanId } from '@framers/shared/planCatalog';
 
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 const RETENTION_MS = 18 * 30 * 24 * 60 * 60 * 1000; // ~18 months

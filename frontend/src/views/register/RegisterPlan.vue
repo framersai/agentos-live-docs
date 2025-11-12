@@ -4,7 +4,7 @@ import { useRouter, useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useRegistrationStore } from '@/store/registration.store';
 import { usePlans } from '@/composables/usePlans';
-import type { PlanCatalogEntry, PlanId } from '@shared/planCatalog';
+import type { PlanCatalogEntry, PlanId } from '@framers/shared/planCatalog';
 
 const router = useRouter();
 const route = useRoute();

@@ -6,7 +6,7 @@ import { useRegistrationStore } from '@/store/registration.store';
 import { usePlans } from '@/composables/usePlans';
 import { billingAPI } from '@/utils/api';
 import { useAuth } from '@/composables/useAuth';
-import type { PlanCatalogEntry, PlanId } from '@shared/planCatalog';
+import type { PlanCatalogEntry, PlanId } from '@framers/shared/planCatalog';
 
 const router = useRouter();
 const route = useRoute();

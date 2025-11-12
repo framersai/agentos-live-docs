@@ -12,8 +12,8 @@ import axios, {
   type AxiosRequestConfig,
   type AxiosResponse,
 } from 'axios';
-import type { PlanId } from '@shared/planCatalog';
-import type { RateLimitInfo } from '@shared/rateLimitTypes';
+import type { PlanId } from '@framers/shared/planCatalog';
+import type { RateLimitInfo } from '@framers/shared/rateLimitTypes';
 import type {
   WorkflowDefinitionFE,
   WorkflowInstanceFE,

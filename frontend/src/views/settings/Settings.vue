@@ -641,7 +641,7 @@ import { useAgentStore } from '@/store/agent.store';
 import { useUiStore } from '@/store/ui.store';
 import { useChatStore } from '@/store/chat.store';
 import { usePlans } from '@/composables/usePlans';
-import type { PlanId } from '@shared/planCatalog';
+import type { PlanId } from '@framers/shared/planCatalog';
 import { usePlatformStore } from '@/store/platform.store';
 import { useAgentosEventsStore } from '@/store/agentosEvents.store';
 import { userAgentsAPI, type UserAgentDto } from '@/utils/api';

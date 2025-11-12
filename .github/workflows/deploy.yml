@@ -76,7 +76,6 @@ jobs:
           
           mkdir -p deployment/frontend/dist
           mkdir -p deployment/backend/dist
-          mkdir -p deployment/backend/shared
           mkdir -p deployment/backend/packs
           mkdir -p deployment/prompts
           mkdir -p deployment/backend/prompts
@@ -92,10 +91,7 @@ jobs:
               find backend/dist -type f | head -30
               exit 1
           }
-          # Copy backend shared bridge files required at runtime
-          if [ -f "backend/shared/planCatalog.js" ]; then
-            cp backend/shared/planCatalog.js deployment/backend/shared/planCatalog.js
-          fi
+          # No shared bridge files required; plan catalog comes from @framers/shared package
           
           # Verify critical files were copied
           echo "Verifying copied files..."

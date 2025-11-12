@@ -1,4 +1,4 @@
-import { PLAN_CATALOG, type PlanId } from '@shared/planCatalog';
+import { PLAN_CATALOG, type PlanId } from '@framers/shared/planCatalog';
 import { userAgentsRepository } from './userAgents.repository.js';
 import { findUserById } from '../auth/user.repository.js';
 

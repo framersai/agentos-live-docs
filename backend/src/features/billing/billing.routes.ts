@@ -16,8 +16,7 @@ import {
   updateCheckoutSessionRecord,
   findCheckoutSessionById,
 } from './checkout.repository.js';
-// @ts-ignore - shared catalog compiled separately for runtime usage
-import { PLAN_CATALOG, type PlanId, type PlanCatalogEntry } from '../../../shared/planCatalog.js';
+import { PLAN_CATALOG, type PlanId, type PlanCatalogEntry } from '@framers/shared/planCatalog';
 import { findUserById } from '../auth/user.repository.js';
 import { createSessionForUser } from '../auth/auth.service.js';
 

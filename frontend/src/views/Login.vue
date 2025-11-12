@@ -16,7 +16,7 @@ import { useAuth } from '@/composables/useAuth';
 import type { Provider } from '@supabase/supabase-js';
 import { usePlans } from '@/composables/usePlans';
 import { useRegistrationStore } from '@/store/registration.store';
-import type { PlanId } from '@shared/planCatalog';
+import type { PlanId } from '@framers/shared/planCatalog';
 
 type LoginTab = 'global' | 'supabase';
 

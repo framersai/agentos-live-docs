@@ -1,5 +1,5 @@
 import type { ISubscriptionService, ISubscriptionTier } from '@framers/agentos/services/user_auth/types';
-import { PLAN_CATALOG, type PlanId } from '../../../shared/planCatalog';
+import { PLAN_CATALOG, type PlanId } from '@framers/shared/planCatalog';
 import { resolveUserAccessLevel, compareAccessLevels } from './agentos.access-control.js';
 import type { AgentOSAccessLevel } from './agentos.persona-registry.js';
 

@@ -6,7 +6,7 @@ import AnimatedGlyph from '@/components/about/AnimatedGlyph.vue';
 import { usePlans } from '@/composables/usePlans';
 import { useAuth } from '@/composables/useAuth';
 import { useRegistrationStore } from '@/store/registration.store';
-import type { PlanCatalogEntry, PlanId } from '@shared/planCatalog';
+import type { PlanCatalogEntry, PlanId } from '@framers/shared/planCatalog';
 
 const { t } = useI18n();
 const { plans } = usePlans();
