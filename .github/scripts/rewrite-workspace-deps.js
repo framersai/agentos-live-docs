@@ -21,6 +21,7 @@ try {
   // Find tarball files (be lenient: allow prereleases or custom tags)
   const agentosTgz = files.find(f => f.includes('framers-agentos') && f.endsWith('.tgz'));
   const adapterTgz = files.find(f => f.includes('framers-sql-storage-adapter') && f.endsWith('.tgz'));
+  const sharedTgz = files.find(f => f.includes('framers-shared') && f.endsWith('.tgz'));
 
   console.log('AgentOS tarball:', agentosTgz);
   console.log('SQL Storage Adapter tarball:', adapterTgz);
@@ -41,6 +42,12 @@ try {
   if (adapterTgz && pkg.dependencies['@framers/sql-storage-adapter']) {
     pkg.dependencies['@framers/sql-storage-adapter'] = `file:./packs/${adapterTgz}`;
     console.log('Rewrote @framers/sql-storage-adapter dependency');
+    rewritten = true;
+  }
+
+  if (sharedTgz && pkg.dependencies['@framers/shared']) {
+    pkg.dependencies['@framers/shared'] = `file:./packs/${sharedTgz}`;
+    console.log('Rewrote @framers/shared dependency');
     rewritten = true;
   }
 

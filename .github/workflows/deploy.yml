@@ -136,6 +136,7 @@ jobs:
           # Package internal workspace deps into tarballs for npm to consume on the server
           pnpm --filter "@framers/agentos" pack --pack-destination deployment/backend/packs
           pnpm --filter "@framers/sql-storage-adapter" pack --pack-destination deployment/backend/packs
+          pnpm --filter "@framers/shared" pack --pack-destination deployment/backend/packs
 
           # Restore AgentOS package.json after packing (so repo stays clean)
           node .github/scripts/restore-agentos-deps-after-pack.js
