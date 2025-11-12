@@ -42,11 +42,14 @@ jobs:
           # Force-patch compiled workspace dists to explicit ESM specifiers (defense-in-depth)
           node .github/scripts/fix-esm-imports.js packages/sql-storage-adapter/dist || true
           node .github/scripts/fix-esm-imports.js packages/agentos/dist || true
+          node .github/scripts/fix-esm-imports.js backend/dist || true
 
           echo \"--- Adapter dist/index.js head ---\"
           head -n 80 packages/sql-storage-adapter/dist/index.js || true
           echo \"--- AgentOS dist/index.js head ---\"
           head -n 80 packages/agentos/dist/index.js || true
+          echo \"--- Backend dist/server.js head ---\"
+          head -n 40 backend/dist/server.js || true
           
           # Verify backend build completed successfully
           if [ ! -f "backend/dist/server.js" ]; then
@@ -73,6 +76,7 @@ jobs:
           
           mkdir -p deployment/frontend/dist
           mkdir -p deployment/backend/dist
+          mkdir -p deployment/backend/shared
           mkdir -p deployment/backend/packs
           mkdir -p deployment/prompts
           mkdir -p deployment/backend/prompts
@@ -88,6 +92,10 @@ jobs:
               find backend/dist -type f | head -30
               exit 1
           }
+          # Copy backend shared bridge files required at runtime
+          if [ -f "backend/shared/planCatalog.js" ]; then
+            cp backend/shared/planCatalog.js deployment/backend/shared/planCatalog.js
+          fi
           
           # Verify critical files were copied
           echo "Verifying copied files..."
