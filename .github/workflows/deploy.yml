@@ -39,29 +39,14 @@ jobs:
           EOL
           pnpm run build
           
-          # Force-patch compiled adapter dist to explicit ESM specifiers (defense-in-depth)
-          if [ -f "packages/sql-storage-adapter/dist/index.js" ]; then
-            echo "Patching compiled adapter dist/index.js to explicit .js specifiers..."
-            sed -i "s|from '\\./types'|from './types/index.js'|g" packages/sql-storage-adapter/dist/index.js || true
-            sed -i "s|from '\\./core/database'|from './core/database.js'|g" packages/sql-storage-adapter/dist/index.js || true
-            sed -i "s|from '\\./core/resolver'|from './core/resolver.js'|g" packages/sql-storage-adapter/dist/index.js || true
-            sed -i "s|from '\\./adapters/betterSqliteAdapter'|from './adapters/betterSqliteAdapter.js'|g" packages/sql-storage-adapter/dist/index.js || true
-            sed -i "s|from '\\./adapters/sqlJsAdapter'|from './adapters/sqlJsAdapter.js'|g" packages/sql-storage-adapter/dist/index.js || true
-            sed -i "s|from '\\./adapters/indexedDbAdapter'|from './adapters/indexedDbAdapter.js'|g" packages/sql-storage-adapter/dist/index.js || true
-            sed -i "s|from '\\./adapters/capacitorSqliteAdapter'|from './adapters/capacitorSqliteAdapter.js'|g" packages/sql-storage-adapter/dist/index.js || true
-            sed -i "s|from '\\./adapters/postgresAdapter'|from './adapters/postgresAdapter.js'|g" packages/sql-storage-adapter/dist/index.js || true
-            sed -i "s|from '\\./adapters/supabase'|from './adapters/supabase/index.js'|g" packages/sql-storage-adapter/dist/index.js || true
-            sed -i "s|from '\\./adapters/baseStorageAdapter'|from './adapters/baseStorageAdapter.js'|g" packages/sql-storage-adapter/dist/index.js || true
-            sed -i "s|from '\\./features/backup/cloudBackup'|from './features/backup/cloudBackup.js'|g" packages/sql-storage-adapter/dist/index.js || true
-            sed -i "s|from '\\./features/migrations/dataExport'|from './features/migrations/dataExport.js'|g" packages/sql-storage-adapter/dist/index.js || true
-            sed -i "s|from '\\./features/migrations/dataImport'|from './features/migrations/dataImport.js'|g" packages/sql-storage-adapter/dist/index.js || true
-            sed -i "s|from '\\./features/migrations/migration'|from './features/migrations/migration.js'|g" packages/sql-storage-adapter/dist/index.js || true
-            sed -i "s|from '\\./features/sync/syncManager'|from './features/sync/syncManager.js'|g" packages/sql-storage-adapter/dist/index.js || true
-            sed -i "s|from '\\./shared/parameterUtils'|from './shared/parameterUtils.js'|g" packages/sql-storage-adapter/dist/index.js || true
-            echo "--- Adapter dist/index.js head ---"
-            head -n 80 packages/sql-storage-adapter/dist/index.js || true
-            echo "----------------------------------"
-          fi
+          # Force-patch compiled workspace dists to explicit ESM specifiers (defense-in-depth)
+          node .github/scripts/fix-esm-imports.js packages/sql-storage-adapter/dist || true
+          node .github/scripts/fix-esm-imports.js packages/agentos/dist || true
+
+          echo \"--- Adapter dist/index.js head ---\"
+          head -n 80 packages/sql-storage-adapter/dist/index.js || true
+          echo \"--- AgentOS dist/index.js head ---\"
+          head -n 80 packages/agentos/dist/index.js || true
           
           # Verify backend build completed successfully
           if [ ! -f "backend/dist/server.js" ]; then
