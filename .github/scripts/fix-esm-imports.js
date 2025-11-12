@@ -36,9 +36,21 @@ function rewriteFile(filePath) {
   let modified = orig;
   let changed = false;
   const patterns = [
-    /(from\s+['"])(\.{1,2}\/[^'"]+)(['"])/g,
-    /(import\(\s*['"])(\.{1,2}\/[^'"]+)(['"]\s*\))/g,
+    /(from\s+['"])(\.{1,2}\/[^'"#?]+)(['"])/g,
+    /(import\(\s*['"])(\.{1,2}\/[^'"#?]+)(['"]\s*\))/g,
   ];
+
+  // Add JSON import assertion if a .json specifier is present and assertion missing.
+  modified = modified.replace(/from\s+['"](\.\.?(?:\/[^'\"#?]+)+\.json)['"]/g, (m, spec) => {
+    changed = true;
+    return `from '${spec}' assert { type: "json" }`;
+  });
+  // Handle dynamic import of JSON (Node supports assertion-style second arg)
+  modified = modified.replace(/import\(\s*['"](\.\.?(?:\/[^'\"#?]+)+\.json)['"]\s*\)/g, (m, spec) => {
+    changed = true;
+    return `import('${spec}', { assert: { type: "json" } })`;
+  });
+
   for (const pat of patterns) {
     modified = modified.replace(pat, (m, p1, spec, p3) => {
       const rew = resolveSpecifier(filePath, spec);
