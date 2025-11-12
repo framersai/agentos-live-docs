@@ -17,7 +17,7 @@ import {
   type CheckoutSessionRecord,
 } from './checkout.repository.js';
 // @ts-ignore - shared catalog compiled separately for runtime usage
-import { PLAN_CATALOG } from '../../../shared/planCatalog.js';
+import { PLAN_CATALOG } from '@framers/shared/planCatalog';
 
 const LEMON_API_BASE = 'https://api.lemonsqueezy.com/v1';
 
@@ -188,3 +188,4 @@ export const handleSubscriptionWebhook = async (
     expiresAt,
   });
 };
+
