@@ -31,33 +31,54 @@ try {
     pkg.dependencies = {};
   }
 
+  // Helper to find a tgz for a given scoped package name as fallback
+  function findTarballForScopedName(scopedName) {
+    // Convert @framers/pkg or @framers/namespace-pkg to framers-pkg
+    const base = scopedName.replace(/^@/, '').replace('/', '-');
+    return files.find(f => f.startsWith(base) && f.endsWith('.tgz'));
+  }
+
   // Rewrite workspace dependencies
   let rewritten = false;
-  if (agentosTgz && pkg.dependencies['@framers/agentos']) {
-    pkg.dependencies['@framers/agentos'] = `file:./packs/${agentosTgz}`;
-    console.log('Rewrote @framers/agentos dependency');
+  const targets = [
+    ['@framers/agentos', agentosTgz],
+    ['@framers/sql-storage-adapter', adapterTgz],
+    ['@framers/shared', sharedTgz],
+  ];
+
+  for (const [depName, explicitTgz] of targets) {
+    if (!pkg.dependencies[depName]) continue;
+
+    const current = String(pkg.dependencies[depName]);
+    if (current.startsWith('file:./packs/') && current.endsWith('.tgz')) {
+      continue; // already rewritten
+    }
+
+    let chosenTgz = explicitTgz || findTarballForScopedName(depName);
+    if (!chosenTgz) {
+      console.warn(`No tarball found for ${depName} in ${packsDir}. Will keep as-is for now.`);
+      continue;
+    }
+
+    pkg.dependencies[depName] = `file:./packs/${chosenTgz}`;
+    console.log(`Rewrote ${depName} -> file:./packs/${chosenTgz}`);
     rewritten = true;
   }
 
-  if (adapterTgz && pkg.dependencies['@framers/sql-storage-adapter']) {
-    pkg.dependencies['@framers/sql-storage-adapter'] = `file:./packs/${adapterTgz}`;
-    console.log('Rewrote @framers/sql-storage-adapter dependency');
-    rewritten = true;
-  }
+  // Always write the package.json back (so that debug step can show exact state)
+  fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2));
+  console.log('Updated package.json written.');
+  console.log('New dependencies:', pkg.dependencies);
 
-  if (sharedTgz && pkg.dependencies['@framers/shared']) {
-    pkg.dependencies['@framers/shared'] = `file:./packs/${sharedTgz}`;
-    console.log('Rewrote @framers/shared dependency');
-    rewritten = true;
-  }
+  // Hard fail if any of the target deps still use workspace: protocol
+  const offenders = Object.entries(pkg.dependencies || {})
+    .filter(([name, value]) =>
+      ['@framers/agentos', '@framers/sql-storage-adapter', '@framers/shared'].includes(name) &&
+      typeof value === 'string' && value.startsWith('workspace:'));
 
-  if (rewritten) {
-    // Write updated package.json
-    fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2));
-    console.log('Successfully updated package.json');
-    console.log('New dependencies:', pkg.dependencies);
-  } else {
-    console.log('No workspace dependencies found to rewrite');
+  if (offenders.length > 0) {
+    console.error('Found unresolved workspace:* dependencies after rewrite:', offenders);
+    process.exit(1);
   }
 } catch (error) {
   console.error('Error rewriting dependencies:', error);
