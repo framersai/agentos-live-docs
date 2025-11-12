@@ -20,6 +20,22 @@ export default {
   theme: {
     extend: {
       colors: {
+        // Token aliases for cross-app consistency
+        base: {
+          100: 'var(--bg-primary)',
+          200: 'var(--bg-secondary)',
+          300: 'var(--bg-tertiary)',
+        },
+        text: {
+          base: 'var(--text-primary)',
+          secondary: 'var(--text-secondary)',
+          muted: 'var(--text-muted)',
+        },
+        border: {
+          DEFAULT: 'var(--border-primary)',
+          subtle: 'var(--border-subtle)',
+          interactive: 'var(--border-interactive)',
+        },
         // Primary color with shades
         primary: {
           light: 'hsl(var(--color-accent-primary-light-h, var(--color-accent-primary-h)) var(--color-accent-primary-light-s, var(--color-accent-primary-s)) var(--color-accent-primary-light-l, calc(var(--color-accent-primary-l) + 15%)) / <alpha-value>)', // Lighter shade

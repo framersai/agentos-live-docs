@@ -313,6 +313,24 @@ export const useUiStore = defineStore('ui', () => {
       _isThemeTransitioning.value = false;
     }
   };
+
+  /**
+   * Toggle color mode between dark and light using the default theme IDs.
+   * This preserves the design system's pairing of a default dark theme and a default light theme.
+   */
+  const toggleColorMode = async (): Promise<void> => {
+    try {
+      const target = isCurrentThemeDark.value ? 'light' : 'dark';
+      // Let the theme manager pick the appropriate default for the mode
+      themeManager.setThemeFlexible(target);
+      const newThemeId = themeManager.getCurrentThemeId().value as string;
+      // Reuse existing store update path for consistency and effects
+      await setTheme(newThemeId);
+    } catch (error) {
+      console.error('[UIStore] Failed to toggle color mode:', error);
+      addNotification({ type: 'error', title: 'Theme Toggle Failed', message: 'Could not switch color mode.' });
+    }
+  };
   
   // Browser fullscreen management
   const toggleBrowserFullscreen = async () => {
@@ -599,6 +617,7 @@ export const useUiStore = defineStore('ui', () => {
     initializeUiState,
     initializeTheme,
     setTheme,
+    toggleColorMode,
     toggleBrowserFullscreen,
     updatePreferences,
     addNotification,

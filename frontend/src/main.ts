@@ -10,6 +10,7 @@ import App from './App.vue';
 import router from './router'; // Import the router from the new file
 import i18n, { getCurrentLocale, tGlobal } from './i18n'; // tGlobal remains as function export
 import './assets/main.scss';
+import '@framers/theme-tokens/css/tokens.css';
 // Import AUTH_TOKEN_KEY if needed directly in main, though it's mostly used by router/auth logic
 // export const AUTH_TOKEN_KEY = 'vcaAuthToken'; // Already exported from router/index.ts
 

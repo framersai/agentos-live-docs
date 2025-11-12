@@ -16,7 +16,6 @@ import {
   findCheckoutSessionByLemonId,
   type CheckoutSessionRecord,
 } from './checkout.repository.js';
-// @ts-ignore - shared catalog compiled separately for runtime usage
 import { PLAN_CATALOG } from '@framers/shared/planCatalog';
 
 const LEMON_API_BASE = 'https://api.lemonsqueezy.com/v1';
@@ -109,21 +108,42 @@ export const verifyWebhookSignature = (payload: string, signature: string | unde
   return crypto.timingSafeEqual(Buffer.from(signature, 'hex'), Buffer.from(digest, 'hex'));
 };
 
+interface LemonCustomData {
+  user_id?: string;
+  plan_id?: string;
+  checkout_session_id?: string;
+}
+
+interface LemonCheckoutData {
+  custom?: LemonCustomData;
+}
+
+interface LemonRelationships {
+  order?: { data?: { id?: string } };
+  product?: { data?: { id?: string } };
+  checkout?: { data?: { id?: string } };
+  customer?: { data?: { id?: string } };
+}
+
+interface LemonAttributes {
+  status?: string;
+  cancel_at?: string | null;
+  renews_at?: string | null;
+  expires_at?: string | null;
+  user_email?: string;
+  user_email_address?: string;
+  checkout_data?: LemonCheckoutData;
+}
+
+interface LemonDataNode {
+  id?: string;
+  attributes?: LemonAttributes;
+  relationships?: LemonRelationships;
+}
+
 interface LemonSqueezyWebhookData {
   meta?: { event_name?: string };
-  data?: {
-    attributes?: {
-      status?: string;
-      cancel_at?: string | null;
-      renews_at?: string | null;
-      expires_at?: string | null;
-      user_email?: string;
-    };
-    relationships?: {
-      order?: { data?: { id?: string } };
-      product?: { data?: { id?: string } };
-    };
-  };
+  data?: LemonDataNode;
 }
 
 export const handleSubscriptionWebhook = async (
@@ -132,16 +152,16 @@ export const handleSubscriptionWebhook = async (
   parsed: LemonSqueezyWebhookData
 ): Promise<void> => {
   const eventName = parsed.meta?.event_name || 'unknown';
-  const attributes = parsed.data?.attributes ?? {};
-  const relationships = parsed.data?.relationships ?? {};
-  const customData = (attributes as any)?.checkout_data?.custom ?? {};
+  const attributes: LemonAttributes = parsed.data?.attributes ?? {};
+  const relationships: LemonRelationships = parsed.data?.relationships ?? {};
+  const customData: LemonCustomData = attributes.checkout_data?.custom ?? {};
 
   const checkoutSessionId: string | undefined = customData?.checkout_session_id;
   const planId: string | undefined = customData?.plan_id;
-  const userId: string | undefined = customData?.user_id;
-  const lemonCheckoutId: string | undefined = (parsed as any)?.data?.id || (relationships as any)?.checkout?.data?.id;
+  // userId is not currently required downstream
+  const lemonCheckoutId: string | undefined = parsed.data?.id || relationships.checkout?.data?.id;
   const lemonSubscriptionId: string | undefined = relationships.order?.data?.id;
-  const lemonCustomerId: string | undefined = (relationships as any)?.customer?.data?.id;
+  const lemonCustomerId: string | undefined = relationships.customer?.data?.id;
 
   let checkoutStatus: CheckoutSessionRecord['status'] = 'pending';
   const normalizedStatus = (attributes.status || '').toLowerCase();
@@ -169,14 +189,15 @@ export const handleSubscriptionWebhook = async (
 
   await storeLemonSqueezyEvent({ id: eventId, eventName, payload, processed: checkoutStatus === 'paid' });
 
-  const email = (attributes as any)?.user_email || (attributes as any)?.user_email_address || null;
+  const email = attributes.user_email || attributes.user_email_address || null;
   if (!email) {
     return;
   }
 
   const renewsAt = attributes?.renews_at ? Date.parse(attributes.renews_at) : null;
   const expiresAt = attributes?.expires_at ? Date.parse(attributes.expires_at) : null;
-  const plan = planId ? (PLAN_CATALOG as Record<string, any>)[planId] : null;
+  type PlanCatalogItem = { metadata?: { tier?: string } };
+  const plan: PlanCatalogItem | undefined = planId ? (PLAN_CATALOG as Record<string, PlanCatalogItem>)[planId] : undefined;
 
   await upsertUserFromSubscription({
     email,
@@ -188,4 +209,3 @@ export const handleSubscriptionWebhook = async (
     expiresAt,
   });
 };
-
