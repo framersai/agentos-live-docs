@@ -1,0 +1,51 @@
+name: Publish @framers/sql-storage-adapter to npm
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to publish (optional)'
+        required: false
+  push:
+    tags:
+      - 'sql-storage-adapter-v*'
+      - '@framers/sql-storage-adapter@*'
+      - 'sql-storage-adapter@*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+          clean: false
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'pnpm'
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Build sql-storage-adapter
+        run: pnpm --filter @framers/sql-storage-adapter run build
+
+      - name: Publish to npm
+        run: |
+          cd packages/sql-storage-adapter
+          npm whoami || true
+          npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+
