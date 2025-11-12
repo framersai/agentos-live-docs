@@ -1,5 +1,5 @@
 import { computed } from 'vue';
-import { getPublicPlans, PLAN_CATALOG, type PlanCatalogEntry, type PlanId } from '@shared/planCatalog';
+import { getPublicPlans, PLAN_CATALOG, type PlanCatalogEntry, type PlanId } from '@framers/shared/planCatalog';
 
 export interface PlanGrouping {
   featured: PlanCatalogEntry | null;

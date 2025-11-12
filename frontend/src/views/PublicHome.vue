@@ -31,9 +31,9 @@ import CompactMessageRenderer from '@/components/layouts/CompactMessageRenderer/
 import PersonaToolbar from '@/components/common/PersonaToolbar.vue';
 import { usePlans } from '@/composables/usePlans';
 import { useRegistrationStore } from '@/store/registration.store';
-import type { PlanId } from '@shared/planCatalog';
-import type { RateLimitInfo, RateLimitInfoPublic } from '@shared/rateLimitTypes';
-import { isPublicRateLimit } from '@shared/rateLimitTypes';
+import type { PlanId } from '@framers/shared/planCatalog';
+import type { RateLimitInfo, RateLimitInfoPublic } from '@framers/shared/rateLimitTypes';
+import { isPublicRateLimit } from '@framers/shared/rateLimitTypes';
 
 import {
   SparklesIcon,

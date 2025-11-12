@@ -7,7 +7,7 @@
  */
 // cspell:ignore synchronise postbuild KTOKENS normalise
 
-import { GPT4O_COST_PER_KTOKENS, GPT4O_MINI_COST_PER_KTOKENS } from '@shared/planCatalog.js';
+import { GPT4O_COST_PER_KTOKENS, GPT4O_MINI_COST_PER_KTOKENS } from '@framers/shared/planCatalog';
 
 export type CreditServiceCategory = 'llm' | 'speech';
 export type CreditAllocationKey = 'public' | 'metered' | 'unlimited' | 'global';

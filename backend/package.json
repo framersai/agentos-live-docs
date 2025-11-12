@@ -10,11 +10,11 @@
     "build": "tsc -p tsconfig.build.json || echo 'TypeScript compilation had warnings but continuing...' && tsc-alias -p tsconfig.build.json",
     "build:strict": "tsc && tsc-alias",
     "build:agentos": "tsc && tsc-alias",
-    "build:shared": "tsc -p ../shared/tsconfig.build.json",
-    "postbuild": "npm run build:shared && node ./scripts/postbuild/copy-js.cjs && node ./scripts/postbuild/flatten-dist.cjs && node ./scripts/postbuild/ensure-esm-extensions.cjs",
+    "postbuild": "node ./scripts/postbuild/copy-js.cjs && node ./scripts/postbuild/flatten-dist.cjs && node ./scripts/postbuild/ensure-esm-extensions.cjs",
     "test": "node --test --import tsx --experimental-specifier-resolution=node src/__tests__/appDatabase.test.ts"
   },
   "dependencies": {
+    "@framers/shared": "workspace:*",
     "@framers/agentos": "workspace:*",
     "@framers/sql-storage-adapter": "workspace:*",
     "@supabase/supabase-js": "^2.45.1",

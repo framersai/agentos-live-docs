@@ -24,7 +24,8 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "@shared/*": ["../shared/*"],
+      "@framers/shared": ["../packages/shared/src/index.ts"],
+      "@framers/shared/*": ["../packages/shared/src/*"],
       "dompurify": ["./src/types/dompurify"]
     },
     "types": ["node"]

@@ -9,8 +9,11 @@
       "@prisma/client": [
         "../packages/agentos/dist/stubs/prismaClient.d.ts"
       ],
-      "@shared/*": [
-        "../shared/*"
+      "@framers/shared": [
+        "../packages/shared/dist/index.d.ts"
+      ],
+      "@framers/shared/*": [
+        "../packages/shared/dist/*"
       ],
       "@framers/agentos": [
         "../packages/agentos/dist/index.d.ts"

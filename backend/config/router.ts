@@ -31,7 +31,7 @@ import * as costApiRoutes from '../src/features/cost/cost.routes.js';
 import { rateLimiter } from '../middleware/ratelimiter.js'; // For fetching public rate limit status
 // @ts-ignore - prompt.routes.js is a legacy JS file without type declarations
 import * as promptApiRoutes from '../src/features/prompts/prompt.routes.js';
-import type { RateLimitInfo, RateLimitInfoAuthenticated, RateLimitInfoPublic } from '@shared/rateLimitTypes';
+import type { RateLimitInfo, RateLimitInfoAuthenticated, RateLimitInfoPublic } from '@framers/shared/rateLimitTypes';
 import { postCheckoutSession, postLemonWebhook, getCheckoutStatus } from '../src/features/billing/billing.routes.js';
 import * as organizationRoutes from '../src/features/organization/organization.routes.js';
 import { getLlmStatus as getSystemLlmStatus } from '../src/features/system/system.routes.js';
