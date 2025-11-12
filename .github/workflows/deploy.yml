@@ -40,6 +40,7 @@ jobs:
           pnpm run build
           
           # Force-patch compiled workspace dists to explicit ESM specifiers (defense-in-depth)
+          node .github/scripts/fix-esm-imports.js packages/shared/dist || true
           node .github/scripts/fix-esm-imports.js packages/sql-storage-adapter/dist || true
           node .github/scripts/fix-esm-imports.js packages/agentos/dist || true
           node .github/scripts/fix-esm-imports.js backend/dist || true
