@@ -22,7 +22,7 @@ export const createAgencyStreamRouter = (): Router => {
       return;
     }
 
-    const { userId, conversationId, goal, outputFormat, workflowDefinitionId, enableEmergent } = req.query as Record<string, string>;
+    const { userId, conversationId, goal, outputFormat, workflowDefinitionId, enableEmergent, coordinationStrategy } = req.query as Record<string, string>;
 
     let roles: AgentRoleConfig[] = [];
     if (typeof req.query.roles === 'string') {
@@ -94,7 +94,9 @@ export const createAgencyStreamRouter = (): Router => {
         workflowDefinitionId,
         outputFormat: (outputFormat as AgencyExecutionInput['outputFormat']) ?? 'markdown',
         metadata: { initiatedFrom: 'agency-stream-router' },
-        enableEmergentBehavior: enableEmergent === 'true',
+        // Support both new coordinationStrategy and legacy enableEmergent
+        coordinationStrategy: (coordinationStrategy as 'emergent' | 'static') ?? 
+                             (enableEmergent === 'false' ? 'static' : 'emergent'),
       };
 
       const result = await agentosService.executeAgencyWorkflow(executionInput, async (chunk) => {
