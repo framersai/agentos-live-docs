@@ -62,13 +62,14 @@ jobs:
             echo "[debug] Checking repo access with GH_PAT..."
             git ls-remote --heads "${AUTH_URL}"
 
+            # Clone repo if missing, otherwise ensure correct origin URL
             if [ ! -d "$APP_DIR/.git" ]; then
               echo "[deploy] Clone repository..."
               git clone "${AUTH_URL}" "$APP_DIR"
-            else
-              echo "[deploy] Existing repo detected."
-              git -C "$APP_DIR" remote set-url origin "${AUTH_URL}"
             fi
+
+            echo "[deploy] Ensure origin URL is correct..."
+            git -C "$APP_DIR" remote set-url origin "${AUTH_URL}" || true
 
             echo "[deploy] Sync to latest master..."
             git -C "$APP_DIR" fetch --all --prune
