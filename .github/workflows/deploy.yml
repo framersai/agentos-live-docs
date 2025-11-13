@@ -1,3 +1,104 @@
+name: Deploy to Linode (PM2 + Nginx)
+
+on:
+  push:
+    branches: [ master ]
+    paths-ignore:
+      - ".github/**"
+      - "docs/**"
+      - "**/*.md"
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-vca
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout (metadata only)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Deploy to server over SSH
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: ${{ secrets.LINODE_HOST }}
+          username: ${{ secrets.LINODE_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.DEPLOY_PORT || 22 }}
+          script_stop: true
+          command_timeout: 30m
+          script: |
+            set -euo pipefail
+            export DEBIAN_FRONTEND=noninteractive
+            export GH_PAT="${{ secrets.GH_PAT }}"
+
+            echo "[bootstrap] Ensure base packages..."
+            apt-get update -y
+            apt-get install -y --no-install-recommends ca-certificates curl git
+
+            if ! command -v node >/dev/null 2>&1; then
+              echo "[bootstrap] Install Node 20.x..."
+              curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+              apt-get install -y nodejs
+            fi
+
+            echo "[bootstrap] Ensure pnpm + pm2..."
+            npm i -g pnpm pm2
+
+            APP_DIR="$HOME/voice-chat-assistant"
+            REPO_URL="https://github.com/manicinc/voice-chat-assistant.git"
+            AUTH_URL="https://manicinc:${GH_PAT}@github.com/manicinc/voice-chat-assistant.git"
+
+            if [ ! -d "$APP_DIR/.git" ]; then
+              echo "[deploy] Clone repository..."
+              git clone "${AUTH_URL}" "$APP_DIR"
+            else
+              echo "[deploy] Existing repo detected."
+              git -C "$APP_DIR" remote set-url origin "${AUTH_URL}"
+            fi
+
+            echo "[deploy] Sync to latest master..."
+            git -C "$APP_DIR" fetch --all --prune
+            git -C "$APP_DIR" checkout master
+            git -C "$APP_DIR" reset --hard origin/master
+
+            echo "[deploy] Write .env from secret..."
+            # Secrets.ENV should contain full production env (PORT=3333, SERVE_FRONTEND=true, keys, etc.)
+            printf "%s" "${{ secrets.ENV }}" > "$APP_DIR/.env"
+
+            echo "[deploy] Install workspace deps..."
+            cd "$APP_DIR"
+            pnpm install
+
+            echo "[build] Build workspace (AgentOS, frontend, backend)..."
+            pnpm -w build || pnpm run build || true
+
+            echo "[pm2] Start/restart backend..."
+            pm2 delete voice-backend >/dev/null 2>&1 || true
+            pm2 start backend/dist/server.js --name voice-backend --node-args="--experimental-specifier-resolution=node"
+            pm2 save
+
+            echo "[health] GET /health on 3333..."
+            (curl -fsS http://127.0.0.1:3333/health && echo) || true
+
+      - name: Tail PM2 logs (last 120 lines)
+        if: always()
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: ${{ secrets.LINODE_HOST }}
+          username: ${{ secrets.LINODE_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.DEPLOY_PORT || 22 }}
+          script_stop: false
+          command_timeout: 5m
+          script: |
+            pm2 logs voice-backend --lines 120 --nostream || true
+
 name: Deploy Voice Coding Assistant to Linode (Nginx only)
 
 on:
