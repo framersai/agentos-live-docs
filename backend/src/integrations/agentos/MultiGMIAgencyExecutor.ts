@@ -1,13 +1,15 @@
 /**
  * @fileoverview Multi-GMI Agency Workflow Executor
  * @description Coordinates multiple persona seats by invoking AgentOS for each role and
- * streaming back Agency/Workflow chunks in real time.
+ * streaming back Agency/Workflow chunks in real time. Supports emergent behavior with
+ * dynamic task decomposition and adaptive role spawning.
  */
 
 import { generateUniqueId as uuidv4 } from '../../utils/ids.js';
 import type { AgentOS, AgentOSInput, AgentOSResponse } from '@framers/agentos';
 import { AgentOSResponseChunkType, type AgentOSAgencyUpdateChunk } from '@framers/agentos';
 import type { CostAggregator } from '@framers/agentos/cognitive_substrate/IGMI';
+import { EmergentAgencyCoordinator, type EmergentTask, type EmergentRole } from './EmergentAgencyCoordinator.js';
 
 /** Captures the configuration for a single agency seat. */
 export interface AgentRoleConfig {
@@ -27,6 +29,8 @@ export interface AgencyExecutionInput {
   workflowDefinitionId?: string;
   outputFormat?: 'json' | 'csv' | 'markdown' | 'text';
   metadata?: Record<string, unknown>;
+  /** Enable emergent behavior: dynamic task decomposition and role spawning */
+  enableEmergentBehavior?: boolean;
 }
 
 interface GmiExecutionResult {
@@ -51,6 +55,12 @@ export interface AgencyExecutionResult {
   };
   durationMs: number;
   totalUsage: CostAggregator;
+  /** Emergent behavior metadata */
+  emergentMetadata?: {
+    tasksDecomposed: EmergentTask[];
+    rolesSpawned: EmergentRole[];
+    coordinationLog: Array<{ timestamp: string; roleId: string; action: string; details: Record<string, unknown> }>;
+  };
 }
 
 export interface MultiGMIAgencyExecutorDependencies {
@@ -88,20 +98,43 @@ async function runWithConcurrency<T>(factories: Array<() => Promise<T>>, limit: 
 
 export class MultiGMIAgencyExecutor {
   private readonly deps: MultiGMIAgencyExecutorDependencies;
+  private readonly emergentCoordinator: EmergentAgencyCoordinator;
 
   constructor(deps: MultiGMIAgencyExecutorDependencies) {
     this.deps = deps;
+    this.emergentCoordinator = new EmergentAgencyCoordinator({ agentOS: deps.agentOS });
   }
 
   /**
    * Executes an agency workflow by invoking AgentOS for every seat.
+   * Supports emergent behavior with dynamic task decomposition and role spawning.
    */
   public async executeAgency(input: AgencyExecutionInput): Promise<AgencyExecutionResult> {
     const startTime = Date.now();
     const agencyId = `agency_${uuidv4()}`;
-    const seatMap = new Map<string, SeatSnapshot>();
+    
+    let tasks: EmergentTask[] = [];
+    let effectiveRoles: AgentRoleConfig[] = input.roles;
+    let emergentMetadata: AgencyExecutionResult['emergentMetadata'];
 
-    input.roles.forEach((role) => {
+    // If emergent behavior is enabled, decompose goal and assign roles dynamically
+    if (input.enableEmergentBehavior) {
+      console.log(`[MultiGMIAgencyExecutor] Enabling emergent behavior for agency ${agencyId}`);
+      const emergentResult = await this.emergentCoordinator.transformToEmergentAgency(input);
+      tasks = emergentResult.tasks;
+      effectiveRoles = emergentResult.roles;
+      
+      emergentMetadata = {
+        tasksDecomposed: tasks,
+        rolesSpawned: emergentResult.roles,
+        coordinationLog: emergentResult.context.coordinationLog,
+      };
+
+      console.log(`[MultiGMIAgencyExecutor] Decomposed into ${tasks.length} tasks, spawned ${effectiveRoles.length} roles`);
+    }
+
+    const seatMap = new Map<string, SeatSnapshot>();
+    effectiveRoles.forEach((role) => {
       seatMap.set(role.roleId, {
         roleId: role.roleId,
         personaId: role.personaId,
@@ -112,8 +145,8 @@ export class MultiGMIAgencyExecutor {
 
     await this.emitAgencyUpdate(agencyId, input.conversationId, seatMap, { goal: input.goal, status: 'pending' });
 
-    const participants = input.roles.map((role) => ({ roleId: role.roleId, personaId: role.personaId }));
-    const factories = input.roles.map((role) => async () => {
+    const participants = effectiveRoles.map((role) => ({ roleId: role.roleId, personaId: role.personaId }));
+    const factories = effectiveRoles.map((role) => async () => {
       await this.updateSeatStatus(agencyId, input.conversationId, seatMap, role.roleId, 'running');
 
       try {
@@ -175,7 +208,13 @@ export class MultiGMIAgencyExecutor {
       formattedOutput,
       durationMs: Date.now() - startTime,
       totalUsage,
+      emergentMetadata,
     };
+
+    // Cleanup emergent context if used
+    if (input.enableEmergentBehavior) {
+      this.emergentCoordinator.cleanupContext(agencyId);
+    }
 
     return result;
   }

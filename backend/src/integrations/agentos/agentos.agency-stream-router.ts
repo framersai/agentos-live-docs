@@ -22,7 +22,7 @@ export const createAgencyStreamRouter = (): Router => {
       return;
     }
 
-    const { userId, conversationId, goal, outputFormat, workflowDefinitionId } = req.query as Record<string, string>;
+    const { userId, conversationId, goal, outputFormat, workflowDefinitionId, enableEmergent } = req.query as Record<string, string>;
 
     let roles: AgentRoleConfig[] = [];
     if (typeof req.query.roles === 'string') {
@@ -94,6 +94,7 @@ export const createAgencyStreamRouter = (): Router => {
         workflowDefinitionId,
         outputFormat: (outputFormat as AgencyExecutionInput['outputFormat']) ?? 'markdown',
         metadata: { initiatedFrom: 'agency-stream-router' },
+        enableEmergentBehavior: enableEmergent === 'true',
       };
 
       const result = await agentosService.executeAgencyWorkflow(executionInput, async (chunk) => {
@@ -118,6 +119,11 @@ export const createAgencyStreamRouter = (): Router => {
           agencyId,
           roleCount: roles.length,
           outputFormat: result.formattedOutput?.format ?? executionInput.outputFormat ?? 'markdown',
+          emergentBehavior: result.emergentMetadata ? {
+            tasksDecomposed: result.emergentMetadata.tasksDecomposed.length,
+            rolesSpawned: result.emergentMetadata.rolesSpawned.length,
+            coordinationEvents: result.emergentMetadata.coordinationLog.length,
+          } : undefined,
         },
       } as any;
 
