@@ -4,6 +4,7 @@
 
 import { Router, Request, Response } from 'express';
 import { listExtensions, listAvailableTools, invalidateRegistryCache } from './extensions.service.js';
+import { agentosService } from './agentos.integration.js';
 
 const router: Router = Router();
 
@@ -96,16 +97,17 @@ router.get('/extensions/search', async (req: Request, res: Response) => {
 });
 
 /**
- * Execute a specific tool (placeholder echo implementation).
- * Validates that the tool exists in the registry and returns an echoed payload.
+ * Execute a specific tool via AgentOS ToolOrchestrator.
+ * - Validates the tool exists (by id/name) in registry.
+ * - Delegates JSON schema validation to AgentOS ToolExecutor.
  * @route POST /api/agentos/tools/execute
  */
 router.post('/tools/execute', async (req: Request, res: Response) => {
   try {
-    const { toolId, input, userId } = req.body;
+    const { toolId, input, userId, personaId, personaCapabilities, correlationId } = req.body;
     
-    if (!toolId || !input) {
-      return res.status(400).json({ error: 'toolId and input required' });
+    if (!toolId) {
+      return res.status(400).json({ error: 'toolId required' });
     }
 
     // Validate tool exists in registry
@@ -115,17 +117,15 @@ router.post('/tools/execute', async (req: Request, res: Response) => {
       return res.status(404).json({ error: `Tool ${toolId} not found in registry` });
     }
 
-    // Placeholder execution result for now
-    const result = {
-      success: true,
-      output: {
-        toolId: toolId,
-        input: input,
-        message: `Executed ${tool.name} (placeholder)`,
-        timestamp: new Date().toISOString()
-      }
-    };
-    
+    const result = await agentosService.executeToolCall({
+      toolName: toolId,
+      args: input ?? {},
+      userId,
+      personaId,
+      personaCapabilities,
+      correlationId,
+    });
+
     res.json(result);
   } catch (error: any) {
     console.error('Error executing tool:', error);
