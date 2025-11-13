@@ -1,8 +1,22 @@
-# Backend — Voice Chat Assistant API
+<div align="center">
+
+# AgentOS Backend API (Voice Chat Assistant)
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="../logos/agentos-primary-no-tagline-dark-2x.png">
+  <source media="(prefers-color-scheme: light)" srcset="../logos/agentos-primary-no-tagline-light-2x.png">
+  <img src="../logos/agentos-primary-no-tagline-transparent-2x.png" alt="AgentOS" width="260">
+</picture>
+
+### An AgentOS product by <a href="https://frame.dev">Frame.dev</a>
+
+</div>
+
+# Backend â€“ Voice Chat Assistant API
 
 Node.js + Express + TypeScript server powering chat, STT/TTS, diagrams, rate limiting, billing, and the embedded AgentOS adapter.
 
-**Powered by [`@framers/agentos`](https://github.com/wearetheframers/agentos)** — The orchestration runtime for adaptive AI systems.
+**Powered by [`@framers/agentos`](https://github.com/wearetheframers/agentos)** ï¿½ The orchestration runtime for adaptive AI systems.
 
 ---
 
@@ -44,6 +58,24 @@ npm run dev             # tsx watch server.ts
 ## Architecture
 
 - `config/router.ts` wires all `/api/*` routes (auth, chat, STT/TTS, billing, organizations). When `AGENTOS_ENABLED=true`, it also mounts `/api/agentos/chat` + `/api/agentos/stream` via `getAgentOSRouter()`.
+
+## Links
+
+- Website: https://agentos.sh
+- Frame: https://frame.dev
+- Marketplace: https://vca.chat
+- GitHub: https://github.com/framersai/agentos
+- npm: https://www.npmjs.com/org/framers
+
+---
+
+<p align="center">
+  <a href="https://frame.dev">
+    <img src="../logos/frame-logo-green-transparent-4x.png" alt="Frame.dev" height="40" />
+  </a>
+  <br />
+  <sub>AgentOS product by <a href="https://frame.dev">Frame.dev</a></sub>
+</p>
 - `middleware/optionalAuth.ts` injects `req.user` for public-or-private routes; `middleware/auth.ts` enforces strict JWT/Supabase validation.
 - Feature modules live in `src/features/*` (auth, chat, speech, cost, prompts, billing, organization, system status).
 - Core shared services live under `src/core/*` (LLM providers, cost tracking, audio helpers, memory, context aggregation).
