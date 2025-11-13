@@ -16,6 +16,10 @@ test('listExtensions includes curated Web Search extension', async () => {
 	const webSearch = exts.find((e) => e.id === 'com.framers.research.web-search' || e.name.toLowerCase().includes('web search'));
 	assert.ok(webSearch, 'Expected to find Web Search extension in registry');
 	assert.equal(webSearch?.package, '@framers/agentos-research-web-search');
+	// Verify verification metadata passthrough
+	assert.equal(webSearch?.verified, true);
+	assert.ok(webSearch?.verifiedAt);
+	assert.ok(webSearch?.verificationChecklistVersion);
 });
 
 test('listAvailableTools derives tools from registry entries', async () => {

@@ -34,6 +34,9 @@ type RegistryExtension = {
 	npm?: string;
 	repository?: string;
 	verified?: boolean;
+	verifiedAt?: string;
+	verifiedBy?: RegistryAuthor;
+	verificationChecklistVersion?: string;
 	downloads?: number;
 };
 
@@ -59,6 +62,9 @@ export type ExtensionSummary = {
 	description: string;
 	category: string;
 	verified?: boolean;
+	verifiedAt?: string;
+	verifiedBy?: RegistryAuthor;
+	verificationChecklistVersion?: string;
 	installed?: boolean;
 	tools?: string[];
 	author?: RegistryAuthor;
@@ -122,6 +128,9 @@ export async function listExtensions(): Promise<ExtensionSummary[]> {
 				description: ext.description ?? '',
 				category: ext.category ?? group,
 				verified: Boolean(ext.verified),
+				verifiedAt: ext.verifiedAt,
+				verifiedBy: ext.verifiedBy,
+				verificationChecklistVersion: ext.verificationChecklistVersion,
 				installed: false,
 				tools: Array.isArray(ext.tools) ? ext.tools : [],
 				author: ext.author,
