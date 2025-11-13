@@ -54,21 +54,20 @@ export async function createAgencyExecution(params: {
   workflowDefinitionId?: string;
 }): Promise<void> {
   const db = getAppDatabase();
-  const stmt = await db.prepare(`
-    INSERT INTO agency_executions (
+  await db.run(
+    `INSERT INTO agency_executions (
       agency_id, user_id, conversation_id, goal, workflow_definition_id,
       status, started_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?)
-  `);
-
-  await stmt.run(
-    params.agencyId,
-    params.userId,
-    params.conversationId,
-    params.goal,
-    params.workflowDefinitionId ?? null,
-    'running',
-    Date.now(),
+    ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    [
+      params.agencyId,
+      params.userId,
+      params.conversationId,
+      params.goal,
+      params.workflowDefinitionId ?? null,
+      'running',
+      Date.now(),
+    ]
   );
 }
 
@@ -77,8 +76,8 @@ export async function createAgencyExecution(params: {
  */
 export async function updateAgencyExecution(result: AgencyExecutionResult): Promise<void> {
   const db = getAppDatabase();
-  const stmt = await db.prepare(`
-    UPDATE agency_executions
+  await db.run(
+    `UPDATE agency_executions
     SET status = ?,
         completed_at = ?,
         duration_ms = ?,
@@ -88,20 +87,19 @@ export async function updateAgencyExecution(result: AgencyExecutionResult): Prom
         consolidated_output = ?,
         formatted_output = ?,
         emergent_metadata = ?
-    WHERE agency_id = ?
-  `);
-
-  await stmt.run(
-    'completed',
-    Date.now(),
-    result.durationMs,
-    result.totalUsage.totalCostUSD ?? 0,
-    result.totalUsage.totalTokens,
-    result.formattedOutput?.format ?? 'markdown',
-    result.consolidatedOutput,
-    result.formattedOutput?.content ?? null,
-    result.emergentMetadata ? JSON.stringify(result.emergentMetadata) : null,
-    result.agencyId,
+    WHERE agency_id = ?`,
+    [
+      'completed',
+      Date.now(),
+      result.durationMs,
+      result.totalUsage.totalCostUSD ?? 0,
+      result.totalUsage.totalTokens,
+      result.formattedOutput?.format ?? 'markdown',
+      result.consolidatedOutput,
+      result.formattedOutput?.content ?? null,
+      result.emergentMetadata ? JSON.stringify(result.emergentMetadata) : null,
+      result.agencyId,
+    ]
   );
 }
 
@@ -110,13 +108,12 @@ export async function updateAgencyExecution(result: AgencyExecutionResult): Prom
  */
 export async function markAgencyExecutionFailed(agencyId: string, error: string): Promise<void> {
   const db = getAppDatabase();
-  const stmt = await db.prepare(`
-    UPDATE agency_executions
+  await db.run(
+    `UPDATE agency_executions
     SET status = ?, completed_at = ?, error = ?
-    WHERE agency_id = ?
-  `);
-
-  await stmt.run('failed', Date.now(), error, agencyId);
+    WHERE agency_id = ?`,
+    ['failed', Date.now(), error, agencyId]
+  );
 }
 
 /**
@@ -130,13 +127,13 @@ export async function createAgencySeat(params: {
   const db = getAppDatabase();
   const seatId = `seat_${params.agencyId}_${params.roleId}`;
   
-  const stmt = await db.prepare(`
-    INSERT INTO agency_seats (
+  await db.run(
+    `INSERT INTO agency_seats (
       id, agency_id, role_id, persona_id, status, retry_count
-    ) VALUES (?, ?, ?, ?, ?, ?)
-  `);
-
-  await stmt.run(seatId, params.agencyId, params.roleId, params.personaId, 'pending', 0);
+    ) VALUES (?, ?, ?, ?, ?, ?)`,
+    [seatId, params.agencyId, params.roleId, params.personaId, 'pending', 0]
+  );
+  
   return seatId;
 }
 
@@ -207,13 +204,12 @@ export async function updateAgencySeat(params: {
   }
 
   values.push(params.seatId);
-  const stmt = await db.prepare(`
-    UPDATE agency_seats
+  await db.run(
+    `UPDATE agency_seats
     SET ${updates.join(', ')}
-    WHERE id = ?
-  `);
-
-  await stmt.run(...values);
+    WHERE id = ?`,
+    values
+  );
 }
 
 /**
@@ -221,8 +217,7 @@ export async function updateAgencySeat(params: {
  */
 export async function getAgencyExecution(agencyId: string): Promise<AgencyExecutionRecord | null> {
   const db = getAppDatabase();
-  const stmt = await db.prepare('SELECT * FROM agency_executions WHERE agency_id = ?');
-  const row = await stmt.get(agencyId);
+  const row = await db.get('SELECT * FROM agency_executions WHERE agency_id = ?', [agencyId]);
   
   if (!row) {
     return null;
@@ -236,14 +231,14 @@ export async function getAgencyExecution(agencyId: string): Promise<AgencyExecut
  */
 export async function listAgencyExecutions(userId: string, limit = 50): Promise<AgencyExecutionRecord[]> {
   const db = getAppDatabase();
-  const stmt = await db.prepare(`
-    SELECT * FROM agency_executions
+  const rows = await db.all(
+    `SELECT * FROM agency_executions
     WHERE user_id = ?
     ORDER BY started_at DESC
-    LIMIT ?
-  `);
+    LIMIT ?`,
+    [userId, limit]
+  );
   
-  const rows = await stmt.all(userId, limit);
   return rows as AgencyExecutionRecord[];
 }
 
@@ -252,8 +247,7 @@ export async function listAgencyExecutions(userId: string, limit = 50): Promise<
  */
 export async function listAgencySeats(agencyId: string): Promise<AgencySeatRecord[]> {
   const db = getAppDatabase();
-  const stmt = await db.prepare('SELECT * FROM agency_seats WHERE agency_id = ? ORDER BY started_at ASC');
-  const rows = await stmt.all(agencyId);
+  const rows = await db.all('SELECT * FROM agency_seats WHERE agency_id = ? ORDER BY started_at ASC', [agencyId]);
   return rows as AgencySeatRecord[];
 }
 

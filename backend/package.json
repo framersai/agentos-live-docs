@@ -11,7 +11,7 @@
     "build:strict": "tsc && tsc-alias",
     "build:agentos": "tsc && tsc-alias",
     "postbuild": "node ./scripts/postbuild/copy-js.cjs && node ./scripts/postbuild/flatten-dist.cjs && node ./scripts/postbuild/ensure-esm-extensions.cjs",
-    "test": "node --test --import tsx --experimental-specifier-resolution=node src/__tests__/appDatabase.test.ts src/__tests__/extensions.service.test.ts src/__tests__/guardrails.service.test.ts"
+    "test": "node --test --import tsx --experimental-specifier-resolution=node src/__tests__/appDatabase.test.ts src/__tests__/extensions.service.test.ts src/__tests__/guardrails.service.test.ts src/__tests__/agency.integration.test.ts"
   },
   "dependencies": {
     "@framers/shared": "workspace:*",
