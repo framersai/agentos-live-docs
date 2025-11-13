@@ -6,6 +6,7 @@ on:
     branches: [master]
     paths:
       - 'packages/agentos/**'
+      - 'apps/agentos.sh/**'
 
 jobs:
   trigger:
