@@ -20,7 +20,7 @@ jobs:
         with:
           repository: framersai/agentos
           path: agentos
-          token: ${{ secrets.AGENTOS_DOCS_TOKEN }}
+          token: ${{ secrets.GH_PAT }}
 
       - name: Setup Node
         uses: actions/setup-node@v4
