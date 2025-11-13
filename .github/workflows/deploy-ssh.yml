@@ -62,6 +62,7 @@ jobs:
             # Ensure submodules use HTTPs with PAT instead of SSH to avoid host-key issues
             git config --global url."https://manicinc:${GH_PAT}@github.com/".insteadOf "https://github.com/"
             git config --global url."https://manicinc:${GH_PAT}@github.com/".insteadOf "git@github.com:"
+            git config --global url."https://github.com/".insteadOf "git@github.com:"
 
             echo "[debug] Checking repo access with GH_PAT..."
             git ls-remote --heads "${AUTH_URL}"
