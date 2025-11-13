@@ -1,0 +1,50 @@
+name: Deploy static site to Pages
+
+on:
+  push:
+    branches: ["master"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      - name: Prepare artifact
+        run: |
+          mkdir -p dist
+          # Copy only the files we want to deploy
+          cp index.html dist/ 2>/dev/null || true
+          cp *.css dist/ 2>/dev/null || true
+          cp *.html dist/ 2>/dev/null || true
+          cp -r docs dist/ 2>/dev/null || true
+          cp CNAME dist/ 2>/dev/null || true
+          cp .nojekyll dist/ 2>/dev/null || true
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+
