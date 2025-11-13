@@ -257,6 +257,52 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
   await db.exec(
     'CREATE INDEX IF NOT EXISTS idx_agentos_persona_submissions_status ON agentos_persona_submissions(status);',
   );
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS agency_executions (
+      agency_id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL,
+      conversation_id TEXT NOT NULL,
+      goal TEXT NOT NULL,
+      workflow_definition_id TEXT,
+      status TEXT NOT NULL,
+      started_at INTEGER NOT NULL,
+      completed_at INTEGER,
+      duration_ms INTEGER,
+      total_cost_usd REAL,
+      total_tokens INTEGER,
+      output_format TEXT,
+      consolidated_output TEXT,
+      formatted_output TEXT,
+      emergent_metadata TEXT,
+      error TEXT,
+      FOREIGN KEY (user_id) REFERENCES app_users(id) ON DELETE CASCADE
+    );
+  `);
+  await db.exec('CREATE INDEX IF NOT EXISTS idx_agency_executions_user ON agency_executions(user_id, started_at DESC);');
+  await db.exec('CREATE INDEX IF NOT EXISTS idx_agency_executions_conversation ON agency_executions(conversation_id);');
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS agency_seats (
+      id TEXT PRIMARY KEY,
+      agency_id TEXT NOT NULL,
+      role_id TEXT NOT NULL,
+      persona_id TEXT NOT NULL,
+      gmi_instance_id TEXT,
+      status TEXT NOT NULL,
+      started_at INTEGER,
+      completed_at INTEGER,
+      output TEXT,
+      error TEXT,
+      usage_tokens INTEGER,
+      usage_cost_usd REAL,
+      retry_count INTEGER DEFAULT 0,
+      metadata TEXT,
+      FOREIGN KEY (agency_id) REFERENCES agency_executions(agency_id) ON DELETE CASCADE
+    );
+  `);
+  await db.exec('CREATE INDEX IF NOT EXISTS idx_agency_seats_agency ON agency_seats(agency_id);');
+  await db.exec('CREATE INDEX IF NOT EXISTS idx_agency_seats_gmi ON agency_seats(gmi_instance_id);');
   await db.exec(
     'CREATE INDEX IF NOT EXISTS idx_agentos_persona_submissions_persona ON agentos_persona_submissions(persona_id);',
   );

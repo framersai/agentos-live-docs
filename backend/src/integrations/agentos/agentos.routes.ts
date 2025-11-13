@@ -8,6 +8,7 @@ import guardrailRoutes from './agentos.guardrails.routes.js';
 import { createAgencyStreamRouter } from './agentos.agency-stream-router.js';
 import { LlmConfigService, LlmProviderId } from '../../core/llm/llm.config.service.js';
 import { MODEL_PRICING } from '../../../config/models.config.js';
+import { getAgencyExecution, listAgencyExecutions, listAgencySeats } from './agencyPersistence.service.js';
 
 export const createAgentOSRouter = (): Router => {
   const router = Router();
@@ -302,6 +303,42 @@ export const createAgentOSRouter = (): Router => {
         return res.status(404).json({ message: 'Workflow not found.' });
       }
       return res.status(200).json({ workflow: updated });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  // GET /api/agentos/agency/executions - List agency executions for a user
+  router.get('/agency/executions', async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+    try {
+      if (!agentosChatAdapterEnabled()) {
+        return res.status(503).json({ message: 'AgentOS integration disabled', error: 'AGENTOS_DISABLED' });
+      }
+      const { userId, limit } = req.query;
+      if (!userId || typeof userId !== 'string') {
+        return res.status(400).json({ message: 'userId query parameter required' });
+      }
+      const limitNum = limit && typeof limit === 'string' ? parseInt(limit, 10) : 50;
+      const executions = await listAgencyExecutions(userId, limitNum);
+      return res.status(200).json({ executions });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  // GET /api/agentos/agency/executions/:agencyId - Get specific agency execution
+  router.get('/agency/executions/:agencyId', async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+    try {
+      if (!agentosChatAdapterEnabled()) {
+        return res.status(503).json({ message: 'AgentOS integration disabled', error: 'AGENTOS_DISABLED' });
+      }
+      const { agencyId } = req.params;
+      const execution = await getAgencyExecution(agencyId);
+      if (!execution) {
+        return res.status(404).json({ message: 'Agency execution not found' });
+      }
+      const seats = await listAgencySeats(agencyId);
+      return res.status(200).json({ execution, seats });
     } catch (error) {
       next(error);
     }

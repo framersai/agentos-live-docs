@@ -10,6 +10,13 @@ import type { AgentOS, AgentOSInput, AgentOSResponse } from '@framers/agentos';
 import { AgentOSResponseChunkType, type AgentOSAgencyUpdateChunk } from '@framers/agentos';
 import type { CostAggregator } from '@framers/agentos/cognitive_substrate/IGMI';
 import { EmergentAgencyCoordinator, type EmergentTask, type EmergentRole } from './EmergentAgencyCoordinator.js';
+import {
+  createAgencyExecution,
+  updateAgencyExecution,
+  markAgencyExecutionFailed,
+  createAgencySeat,
+  updateAgencySeat,
+} from './agencyPersistence.service.js';
 
 /** Captures the configuration for a single agency seat. */
 export interface AgentRoleConfig {
@@ -66,6 +73,10 @@ export interface AgencyExecutionResult {
 export interface MultiGMIAgencyExecutorDependencies {
   agentOS: AgentOS;
   onChunk?: (chunk: AgentOSResponse) => Promise<void> | void;
+  /** Maximum retry attempts for failed tasks (default: 2) */
+  maxRetries?: number;
+  /** Delay between retries in ms (default: 1000) */
+  retryDelayMs?: number;
 }
 
 interface SeatSnapshot {
@@ -99,10 +110,14 @@ async function runWithConcurrency<T>(factories: Array<() => Promise<T>>, limit: 
 export class MultiGMIAgencyExecutor {
   private readonly deps: MultiGMIAgencyExecutorDependencies;
   private readonly emergentCoordinator: EmergentAgencyCoordinator;
+  private readonly maxRetries: number;
+  private readonly retryDelayMs: number;
 
   constructor(deps: MultiGMIAgencyExecutorDependencies) {
     this.deps = deps;
     this.emergentCoordinator = new EmergentAgencyCoordinator({ agentOS: deps.agentOS });
+    this.maxRetries = deps.maxRetries ?? 2;
+    this.retryDelayMs = deps.retryDelayMs ?? 1000;
   }
 
   /**
@@ -113,6 +128,20 @@ export class MultiGMIAgencyExecutor {
     const startTime = Date.now();
     const agencyId = `agency_${uuidv4()}`;
     
+    // Persist initial agency state
+    try {
+      await createAgencyExecution({
+        agencyId,
+        userId: input.userId,
+        conversationId: input.conversationId,
+        goal: input.goal,
+        workflowDefinitionId: input.workflowDefinitionId,
+      });
+    } catch (error) {
+      console.error(`[MultiGMIAgencyExecutor] Failed to persist agency ${agencyId}:`, error);
+      // Continue execution even if persistence fails
+    }
+
     let tasks: EmergentTask[] = [];
     let effectiveRoles: AgentRoleConfig[] = input.roles;
     let emergentMetadata: AgencyExecutionResult['emergentMetadata'];
@@ -143,49 +172,30 @@ export class MultiGMIAgencyExecutor {
       });
     });
 
+    // Create seat records in database
+    for (const role of effectiveRoles) {
+      try {
+        await createAgencySeat({ agencyId, roleId: role.roleId, personaId: role.personaId });
+      } catch (error) {
+        console.error(`[MultiGMIAgencyExecutor] Failed to persist seat ${role.roleId}:`, error);
+      }
+    }
+
     await this.emitAgencyUpdate(agencyId, input.conversationId, seatMap, { goal: input.goal, status: 'pending' });
 
     const participants = effectiveRoles.map((role) => ({ roleId: role.roleId, personaId: role.personaId }));
     const factories = effectiveRoles.map((role) => async () => {
-      await this.updateSeatStatus(agencyId, input.conversationId, seatMap, role.roleId, 'running');
-
-      try {
-        const result = await this.executeSeat({
-          role,
-          agencyId,
-          goal: input.goal,
-          userId: input.userId,
-          conversationId: input.conversationId,
-          workflowDefinitionId: input.workflowDefinitionId,
-          participants,
-          metadata: input.metadata,
-        });
-
-        seatMap.set(role.roleId, {
-          roleId: role.roleId,
-          personaId: role.personaId,
-          gmiInstanceId: result.gmiInstanceId,
-          status: result.error ? 'failed' : 'completed',
-          metadata: { ...role.metadata, error: result.error },
-        });
-        await this.updateSeatStatus(agencyId, input.conversationId, seatMap, role.roleId, result.error ? 'failed' : 'completed');
-        return result;
-      } catch (error) {
-        seatMap.set(role.roleId, {
-          roleId: role.roleId,
-          personaId: role.personaId,
-          status: 'failed',
-          metadata: { ...role.metadata, error: error instanceof Error ? error.message : String(error) },
-        });
-        await this.updateSeatStatus(agencyId, input.conversationId, seatMap, role.roleId, 'failed');
-        return {
-          roleId: role.roleId,
-          personaId: role.personaId,
-          gmiInstanceId: `gmi_failed_${uuidv4()}`,
-          output: '',
-          error: error instanceof Error ? error.message : String(error),
-        };
-      }
+      return await this.executeSeatWithRetry({
+        role,
+        agencyId,
+        goal: input.goal,
+        userId: input.userId,
+        conversationId: input.conversationId,
+        workflowDefinitionId: input.workflowDefinitionId,
+        participants,
+        metadata: input.metadata,
+        seatMap,
+      });
     });
 
     const concurrencyLimit = Math.min(4, Math.max(1, factories.length));
@@ -211,12 +221,136 @@ export class MultiGMIAgencyExecutor {
       emergentMetadata,
     };
 
+    // Persist final results
+    try {
+      await updateAgencyExecution(result);
+    } catch (error) {
+      console.error(`[MultiGMIAgencyExecutor] Failed to persist results for agency ${agencyId}:`, error);
+    }
+
     // Cleanup emergent context if used
     if (input.enableEmergentBehavior) {
       this.emergentCoordinator.cleanupContext(agencyId);
     }
 
     return result;
+  }
+
+  /**
+   * Executes a seat with automatic retry logic on failure
+   */
+  private async executeSeatWithRetry(params: {
+    role: AgentRoleConfig;
+    agencyId: string;
+    goal: string;
+    userId: string;
+    conversationId: string;
+    workflowDefinitionId?: string;
+    participants: Array<{ roleId: string; personaId?: string }>;
+    metadata?: Record<string, unknown>;
+    seatMap: Map<string, SeatSnapshot>;
+  }): Promise<GmiExecutionResult> {
+    const { role, agencyId, conversationId, seatMap } = params;
+    const seatId = `seat_${agencyId}_${role.roleId}`;
+    let lastError: Error | undefined;
+
+    for (let attempt = 0; attempt <= this.maxRetries; attempt++) {
+      try {
+        await this.updateSeatStatus(agencyId, conversationId, seatMap, role.roleId, 'running');
+        
+        // Persist seat status update
+        try {
+          await updateAgencySeat({
+            seatId,
+            status: 'running',
+            startedAt: Date.now(),
+            retryCount: attempt,
+          });
+        } catch (error) {
+          console.error(`[MultiGMIAgencyExecutor] Failed to persist seat status for ${seatId}:`, error);
+        }
+
+        const result = await this.executeSeat({
+          role: params.role,
+          agencyId: params.agencyId,
+          goal: params.goal,
+          userId: params.userId,
+          conversationId: params.conversationId,
+          workflowDefinitionId: params.workflowDefinitionId,
+          participants: params.participants,
+          metadata: params.metadata,
+        });
+
+        // Success - update seat status
+        seatMap.set(role.roleId, {
+          roleId: role.roleId,
+          personaId: role.personaId,
+          gmiInstanceId: result.gmiInstanceId,
+          status: result.error ? 'failed' : 'completed',
+          metadata: { ...role.metadata, error: result.error, attempts: attempt + 1 },
+        });
+        await this.updateSeatStatus(agencyId, conversationId, seatMap, role.roleId, result.error ? 'failed' : 'completed');
+        
+        // Persist seat results
+        try {
+          await updateAgencySeat({
+            seatId,
+            gmiInstanceId: result.gmiInstanceId,
+            status: result.error ? 'failed' : 'completed',
+            completedAt: Date.now(),
+            output: result.output,
+            error: result.error,
+            usageTokens: result.usage?.totalTokens,
+            usageCostUsd: result.usage?.totalCostUSD,
+            retryCount: attempt,
+          });
+        } catch (error) {
+          console.error(`[MultiGMIAgencyExecutor] Failed to persist seat results for ${seatId}:`, error);
+        }
+        
+        return result;
+      } catch (error) {
+        lastError = error instanceof Error ? error : new Error(String(error));
+        console.error(`[MultiGMIAgencyExecutor] Seat ${role.roleId} failed (attempt ${attempt + 1}/${this.maxRetries + 1}):`, lastError.message);
+
+        if (attempt < this.maxRetries) {
+          console.log(`[MultiGMIAgencyExecutor] Retrying seat ${role.roleId} after ${this.retryDelayMs}ms...`);
+          await new Promise((resolve) => setTimeout(resolve, this.retryDelayMs));
+        }
+      }
+    }
+
+    // All retries exhausted - mark as failed
+    const errorMessage = lastError?.message ?? 'Unknown error';
+    seatMap.set(role.roleId, {
+      roleId: role.roleId,
+      personaId: role.personaId,
+      status: 'failed',
+      metadata: { ...role.metadata, error: errorMessage, attempts: this.maxRetries + 1 },
+    });
+    await this.updateSeatStatus(agencyId, conversationId, seatMap, role.roleId, 'failed');
+
+    // Persist final failure state
+    try {
+      await updateAgencySeat({
+        seatId,
+        status: 'failed',
+        completedAt: Date.now(),
+        error: errorMessage,
+        retryCount: this.maxRetries,
+      });
+    } catch (error) {
+      console.error(`[MultiGMIAgencyExecutor] Failed to persist seat failure for ${seatId}:`, error);
+    }
+
+    return {
+      roleId: role.roleId,
+      personaId: role.personaId,
+      gmiInstanceId: `gmi_failed_${uuidv4()}`,
+      output: '',
+      error: errorMessage,
+      metadata: { attempts: this.maxRetries + 1 },
+    };
   }
 
   private async executeSeat(params: {
