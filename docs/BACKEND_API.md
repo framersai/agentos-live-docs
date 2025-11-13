@@ -27,8 +27,16 @@ All backend routes are prefixed with `/api`. Optional authentication (JWT or Sup
 | Method | Path | Description |
 |--------|------|-------------|
 | `POST` | `/agentos/chat` | AgentOS-direct chat endpoint (expects `{ userId, conversationId, mode, messages }`). Enabled when `AGENTOS_ENABLED=true`. |
-| `GET`  | `/agentos/stream` | SSE stream mirroring `/agentos/chat`. Currently sends final chunk only; streaming milestones will expand incremental updates. |
+| `GET`  | `/agentos/stream` | SSE stream mirroring `/agentos/chat`. Streams incremental updates (AGENCY_UPDATE, WORKFLOW_UPDATE, deltas). |
 | `GET`  | `/agentos/personas` | Lists available personas. Supports `capability`, `tier`, and `search` query filters. |
+| `GET`  | `/agentos/extensions` | Lists available extensions from the local registry (`packages/agentos-extensions/registry.json`). |
+| `GET`  | `/agentos/extensions/tools` | Lists tools derived from extensions (schemas may be omitted). |
+| `GET`  | `/agentos/extensions/search?q=<text>` | Searches the extension registry by name/package/description substring. |
+| `POST` | `/agentos/extensions/install` | Schedules installation of an extension package (placeholder; invalidates cache). |
+| `POST` | `/agentos/extensions/reload` | Invalidates the extensions registry cache. |
+| `POST` | `/agentos/tools/execute` | Executes a tool (placeholder echo implementation until full runtime bridge is enabled). |
+| `GET`  | `/agentos/guardrails` | Lists curated/community guardrails from local registry (`packages/agentos-guardrails/registry.json`). |
+| `POST` | `/agentos/guardrails/reload` | Invalidates the guardrails registry cache. |
 
 - `/agentos/personas` supports optional query parameters:
   - `capability`: repeatable (or comma-separated) capability requirements; the persona must include all requested capabilities.

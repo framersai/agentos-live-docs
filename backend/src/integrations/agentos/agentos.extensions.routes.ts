@@ -3,76 +3,18 @@
  */
 
 import { Router, Request, Response } from 'express';
+import { listExtensions, listAvailableTools, invalidateRegistryCache } from './extensions.service.js';
 
 const router: Router = Router();
 
-// Mock extension data for development
-const mockExtensions = [
-  {
-    id: 'com.framers.research.web-search',
-    name: 'Web Search',
-    package: '@framers/agentos-research-web-search',
-    version: '1.0.0',
-    description: 'Multi-provider web search with research aggregation',
-    category: 'research',
-    verified: true,
-    installed: true,
-    tools: ['webSearch', 'researchAggregator', 'factCheck']
-  },
-  {
-    id: 'com.framers.integrations.telegram',
-    name: 'Telegram Bot',
-    package: '@framers/agentos-integrations-telegram',
-    version: '1.0.0',
-    description: 'Telegram Bot API integration',
-    category: 'integrations',
-    verified: true,
-    installed: false,
-    tools: ['telegramSendMessage', 'telegramSendPhoto', 'telegramGetChatInfo']
-  }
-];
-
-const mockTools = [
-  {
-    id: 'webSearch',
-    name: 'Web Search',
-    description: 'Search the web using multiple providers',
-    extension: '@framers/agentos-research-web-search',
-    inputSchema: {
-      type: 'object',
-      required: ['query'],
-      properties: {
-        query: { type: 'string', description: 'Search query' },
-        maxResults: { type: 'number', default: 10 }
-      }
-    },
-    hasSideEffects: false
-  },
-  {
-    id: 'telegramSendMessage',
-    name: 'Send Telegram Message',
-    description: 'Send a message to a Telegram chat',
-    extension: '@framers/agentos-integrations-telegram',
-    inputSchema: {
-      type: 'object',
-      required: ['chatId', 'text'],
-      properties: {
-        chatId: { type: ['string', 'number'] },
-        text: { type: 'string' }
-      }
-    },
-    hasSideEffects: true
-  }
-];
-
 /**
- * GET /api/agentos/extensions
- * List all available extensions
+ * List all available extensions from the local registry.
+ * @route GET /api/agentos/extensions
  */
 router.get('/extensions', async (req: Request, res: Response) => {
   try {
-    // Return mock extensions for now
-    res.json(mockExtensions);
+    const exts = await listExtensions();
+    res.json(exts);
   } catch (error: any) {
     console.error('Error fetching extensions:', error);
     res.status(500).json({ error: error.message });
@@ -80,13 +22,13 @@ router.get('/extensions', async (req: Request, res: Response) => {
 });
 
 /**
- * GET /api/agentos/extensions/tools
- * List all available tools from loaded extensions
+ * List all available tools derived from the extensions registry.
+ * @route GET /api/agentos/extensions/tools
  */
 router.get('/extensions/tools', async (req: Request, res: Response) => {
   try {
-    // Return mock tools for now
-    res.json(mockTools);
+    const tools = await listAvailableTools();
+    res.json(tools);
   } catch (error: any) {
     console.error('Error fetching tools:', error);
     res.status(500).json({ error: error.message });
@@ -94,8 +36,9 @@ router.get('/extensions/tools', async (req: Request, res: Response) => {
 });
 
 /**
- * POST /api/agentos/extensions/install
- * Install an extension from npm (mock for now)
+ * Schedule installation of an extension package (placeholder).
+ * Currently only invalidates the in-memory registry cache.
+ * @route POST /api/agentos/extensions/install
  */
 router.post('/extensions/install', async (req: Request, res: Response) => {
   try {
@@ -105,13 +48,10 @@ router.post('/extensions/install', async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'Package name required' });
     }
     
-    // Mock installation - mark extension as installed
-    const ext = mockExtensions.find(e => e.package === packageName);
-    if (ext) {
-      ext.installed = true;
-    }
+    // Placeholder: in the future, resolve and install the package, then reload registry/cache.
+    invalidateRegistryCache();
     
-    res.json({ success: true, message: `Extension ${packageName} installed (mock)` });
+    res.json({ success: true, message: `Extension ${packageName} installation scheduled` });
   } catch (error: any) {
     console.error('Error installing extension:', error);
     res.status(500).json({ error: error.message });
@@ -119,12 +59,13 @@ router.post('/extensions/install', async (req: Request, res: Response) => {
 });
 
 /**
- * POST /api/agentos/extensions/reload
- * Reload all extensions
+ * Invalidate the extensions registry cache (forces reload on next request).
+ * @route POST /api/agentos/extensions/reload
  */
 router.post('/extensions/reload', async (req: Request, res: Response) => {
   try {
-    res.json({ success: true, message: 'Extensions reloaded (mock)' });
+    invalidateRegistryCache();
+    res.json({ success: true, message: 'Extensions cache invalidated' });
   } catch (error: any) {
     console.error('Error reloading extensions:', error);
     res.status(500).json({ error: error.message });
@@ -132,16 +73,21 @@ router.post('/extensions/reload', async (req: Request, res: Response) => {
 });
 
 /**
- * GET /api/agentos/extensions/search
- * Search for extensions on npm
+ * Search across the local registry by name, package, or description substring.
+ * @route GET /api/agentos/extensions/search?q=<text>
  */
 router.get('/extensions/search', async (req: Request, res: Response) => {
   try {
     const { q } = req.query;
-    // Return filtered mock extensions based on query
-    const results = mockExtensions.filter(ext => 
-      !q || ext.name.toLowerCase().includes((q as string).toLowerCase())
-    );
+    const exts = await listExtensions();
+    const query = (q as string | undefined)?.toLowerCase() ?? '';
+    const results = query
+      ? exts.filter(ext =>
+          ext.name.toLowerCase().includes(query) ||
+          ext.package.toLowerCase().includes(query) ||
+          (ext.description ?? '').toLowerCase().includes(query)
+        )
+      : exts;
     res.json(results);
   } catch (error: any) {
     console.error('Error searching extensions:', error);
@@ -150,8 +96,9 @@ router.get('/extensions/search', async (req: Request, res: Response) => {
 });
 
 /**
- * POST /api/agentos/tools/execute
- * Execute a specific tool (mock for now)
+ * Execute a specific tool (placeholder echo implementation).
+ * Validates that the tool exists in the registry and returns an echoed payload.
+ * @route POST /api/agentos/tools/execute
  */
 router.post('/tools/execute', async (req: Request, res: Response) => {
   try {
@@ -160,25 +107,26 @@ router.post('/tools/execute', async (req: Request, res: Response) => {
     if (!toolId || !input) {
       return res.status(400).json({ error: 'toolId and input required' });
     }
-    
-    // Mock tool execution
-    const tool = mockTools.find(t => t.id === toolId);
+
+    // Validate tool exists in registry
+    const tools = await listAvailableTools();
+    const tool = tools.find(t => t.id === toolId);
     if (!tool) {
-      return res.status(404).json({ error: `Tool ${toolId} not found` });
+      return res.status(404).json({ error: `Tool ${toolId} not found in registry` });
     }
-    
-    // Return mock result based on tool
-    const mockResult = {
+
+    // Placeholder execution result for now
+    const result = {
       success: true,
       output: {
-        toolId,
-        input,
-        message: `Mock execution of ${tool.name}`,
+        toolId: toolId,
+        input: input,
+        message: `Executed ${tool.name} (placeholder)`,
         timestamp: new Date().toISOString()
       }
     };
     
-    res.json(mockResult);
+    res.json(result);
   } catch (error: any) {
     console.error('Error executing tool:', error);
     res.status(500).json({ error: error.message });

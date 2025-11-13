@@ -4,6 +4,7 @@ import type { Request, Response, NextFunction } from 'express';
 import { agentosService } from './agentos.integration.js';
 import { agencyUsageService } from '../../features/agents/agencyUsage.service.js';
 import extensionRoutes from './agentos.extensions.routes.js';
+import guardrailRoutes from './agentos.guardrails.routes.js';
 import { LlmConfigService, LlmProviderId } from '../../core/llm/llm.config.service.js';
 import { MODEL_PRICING } from '../../../config/models.config.js';
 
@@ -307,6 +308,8 @@ export const createAgentOSRouter = (): Router => {
 
   // Add extension routes
   router.use(extensionRoutes);
+  // Add guardrail routes
+  router.use(guardrailRoutes);
   
   return router;
 };
