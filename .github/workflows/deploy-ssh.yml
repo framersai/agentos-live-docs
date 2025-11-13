@@ -3,10 +3,6 @@ name: Deploy to Linode (PM2 + Nginx) [fixed]
 on:
   push:
     branches: [ master ]
-    paths-ignore:
-      - ".github/**"
-      - "docs/**"
-      - "**/*.md"
   workflow_dispatch:
 
 concurrency:
@@ -29,7 +25,6 @@ jobs:
           host: ${{ secrets.LINODE_HOST }}
           username: ${{ secrets.LINODE_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.DEPLOY_PORT || 22 }}
           script_stop: true
           command_timeout: 30m
           script: |
@@ -122,7 +117,6 @@ jobs:
           host: ${{ secrets.LINODE_HOST }}
           username: ${{ secrets.LINODE_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.DEPLOY_PORT || 22 }}
           script_stop: false
           command_timeout: 5m
           script: |
