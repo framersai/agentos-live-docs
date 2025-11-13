@@ -10,7 +10,7 @@ import type { AgentOS, AgentOSInput, AgentOSResponse } from '@framers/agentos';
 import { AgentOSResponseChunkType, type AgentOSAgencyUpdateChunk } from '@framers/agentos';
 import type { CostAggregator } from '@framers/agentos/cognitive_substrate/IGMI';
 import { EmergentAgencyCoordinator, type EmergentTask, type EmergentRole } from './EmergentAgencyCoordinator.js';
-import { StaticAgencyCoordinator, type StaticAgencyConfig } from './StaticAgencyCoordinator.js';
+import { StaticAgencyCoordinator, type StaticAgencyConfig, type StaticTask } from './StaticAgencyCoordinator.js';
 import {
   createAgencyExecution,
   updateAgencyExecution,
@@ -18,6 +18,14 @@ import {
   createAgencySeat,
   updateAgencySeat,
 } from './agencyPersistence.service.js';
+import {
+  DependencyGraphAnalyzer,
+  type AgencyExecutionMode,
+  type ExecutionModeConfig,
+  type StreamingProgressUpdate,
+  type BatchExecutionResult,
+  type WorkflowAnalysisResult,
+} from './AgencyExecutionModes.js';
 
 /** Captures the configuration for a single agency seat. */
 export interface AgentRoleConfig {
@@ -64,6 +72,11 @@ export interface AgencyExecutionInput {
    * Ignored if coordinationStrategy is 'emergent'.
    */
   staticTasks?: StaticTask[];
+  /**
+   * Execution mode configuration.
+   * @see AgencyExecutionModes for detailed comparison
+   */
+  executionMode?: ExecutionModeConfig;
 }
 
 interface GmiExecutionResult {
@@ -94,6 +107,15 @@ export interface AgencyExecutionResult {
     rolesSpawned: EmergentRole[];
     coordinationLog: Array<{ timestamp: string; roleId: string; action: string; details: Record<string, unknown> }>;
   };
+  /** Queue mode execution metadata */
+  queueMetadata?: {
+    batchResults: BatchExecutionResult[];
+    totalBatches: number;
+    maxParallelism: number;
+    criticalPathLength: number;
+  };
+  /** Workflow analysis (if pre-analyze was enabled) */
+  workflowAnalysis?: WorkflowAnalysisResult;
 }
 
 export interface MultiGMIAgencyExecutorDependencies {
@@ -180,6 +202,7 @@ export class MultiGMIAgencyExecutor {
   private readonly deps: MultiGMIAgencyExecutorDependencies;
   private readonly emergentCoordinator: EmergentAgencyCoordinator;
   private readonly staticCoordinator: StaticAgencyCoordinator;
+  private readonly dependencyAnalyzer: DependencyGraphAnalyzer;
   private readonly maxRetries: number;
   private readonly retryDelayMs: number;
 
@@ -187,13 +210,69 @@ export class MultiGMIAgencyExecutor {
     this.deps = deps;
     this.emergentCoordinator = new EmergentAgencyCoordinator({ agentOS: deps.agentOS });
     this.staticCoordinator = new StaticAgencyCoordinator();
+    this.dependencyAnalyzer = new DependencyGraphAnalyzer();
     this.maxRetries = deps.maxRetries ?? 2;
     this.retryDelayMs = deps.retryDelayMs ?? 1000;
   }
 
   /**
+   * Pre-analyzes a workflow to generate an execution plan.
+   * Useful for preview, cost estimation, or validation before execution.
+   * 
+   * @param input - Agency execution configuration
+   * @returns Workflow analysis with dependency graph and recommendations
+   */
+  public async analyzeWorkflow(input: AgencyExecutionInput): Promise<WorkflowAnalysisResult> {
+    let tasks: (EmergentTask | StaticTask)[] = [];
+
+    // Get tasks based on coordination strategy
+    const strategy: AgencyCoordinationStrategy = 
+      input.coordinationStrategy ?? 
+      (input.enableEmergentBehavior ? 'emergent' : 'emergent');
+
+    if (strategy === 'emergent') {
+      const emergentResult = await this.emergentCoordinator.transformToEmergentAgency(input);
+      tasks = emergentResult.tasks;
+    } else if (strategy === 'static' && input.staticTasks) {
+      tasks = input.staticTasks;
+    } else {
+      // No tasks to analyze
+      throw new Error('Cannot analyze workflow: no tasks available. Provide staticTasks or use emergent strategy.');
+    }
+
+    const graph = this.dependencyAnalyzer.buildGraph(tasks);
+    const executionPlan = this.dependencyAnalyzer.generateExecutionPlan(graph, input.executionMode?.queueConfig);
+    const estimatedDuration = this.dependencyAnalyzer.estimateMinimumDuration(graph);
+    const maxParallelism = this.dependencyAnalyzer.estimateMaxParallelism(graph);
+
+    // Estimate cost based on task count and average per-task cost
+    const estimatedCost = tasks.length * 0.005; // Rough estimate: $0.005 per task
+
+    const recommendations: string[] = [];
+    if (maxParallelism > 4) {
+      recommendations.push(`High parallelism (${maxParallelism} tasks). Consider increasing concurrency limit for faster execution.`);
+    }
+    if (graph.criticalPath.length > 5) {
+      recommendations.push(`Long critical path (${graph.criticalPath.length} tasks). Consider breaking into smaller workflows.`);
+    }
+    if (estimatedCost > 0.1) {
+      recommendations.push(`High estimated cost ($${estimatedCost.toFixed(4)}). Consider using cheaper models or caching.`);
+    }
+
+    return {
+      graph,
+      executionPlan,
+      estimatedDuration,
+      estimatedCost,
+      maxParallelism,
+      recommendations,
+    };
+  }
+
+  /**
    * Executes an agency workflow by invoking AgentOS for every seat.
    * Supports both emergent (adaptive) and static (deterministic) coordination strategies.
+   * Supports both streaming (real-time) and queue (batch) execution modes.
    * 
    * @param input - Agency execution configuration
    * @returns Complete execution result with outputs, costs, and metadata
@@ -285,22 +364,64 @@ export class MultiGMIAgencyExecutor {
     await this.emitAgencyUpdate(agencyId, input.conversationId, seatMap, { goal: input.goal, status: 'pending' });
 
     const participants = effectiveRoles.map((role) => ({ roleId: role.roleId, personaId: role.personaId }));
-    const factories = effectiveRoles.map((role) => async () => {
-      return await this.executeSeatWithRetry({
-        role,
+    
+    // Determine execution mode
+    const executionMode: AgencyExecutionMode = input.executionMode?.mode ?? 'streaming';
+    let gmiResults: GmiExecutionResult[];
+    let queueMetadata: AgencyExecutionResult['queueMetadata'];
+    let workflowAnalysis: WorkflowAnalysisResult | undefined;
+
+    console.log(`[MultiGMIAgencyExecutor] Executing in ${executionMode} mode`);
+
+    if (executionMode === 'queue') {
+      // QUEUE MODE: Pre-analyze dependencies and execute in optimized batches
+      const analysisResult = tasks.length > 0 
+        ? await this.analyzeWorkflow(input)
+        : undefined;
+
+      if (analysisResult) {
+        workflowAnalysis = analysisResult;
+        console.log(`[MultiGMIAgencyExecutor] Workflow Analysis:\n${analysisResult.executionPlan}`);
+        
+        // Execute in dependency-aware batches
+        const batchResults = await this.executeQueueMode({
+          tasks,
+          roles: effectiveRoles,
+          agencyId,
+          input,
+          participants,
+          seatMap,
+          graph: analysisResult.graph,
+        });
+
+        gmiResults = batchResults.results;
+        queueMetadata = {
+          batchResults: batchResults.batches,
+          totalBatches: batchResults.batches.length,
+          maxParallelism: analysisResult.maxParallelism,
+          criticalPathLength: analysisResult.graph.criticalPath.length,
+        };
+      } else {
+        // Fallback to streaming if no tasks to analyze
+        console.warn(`[MultiGMIAgencyExecutor] Queue mode requested but no tasks available. Falling back to streaming.`);
+        gmiResults = await this.executeStreamingMode({
+          roles: effectiveRoles,
+          agencyId,
+          input,
+          participants,
+          seatMap,
+        });
+      }
+    } else {
+      // STREAMING MODE: Execute all seats in parallel immediately (current behavior)
+      gmiResults = await this.executeStreamingMode({
+        roles: effectiveRoles,
         agencyId,
-        goal: input.goal,
-        userId: input.userId,
-        conversationId: input.conversationId,
-        workflowDefinitionId: input.workflowDefinitionId,
+        input,
         participants,
-        metadata: input.metadata,
         seatMap,
       });
-    });
-
-    const concurrencyLimit = Math.min(4, Math.max(1, factories.length));
-    const gmiResults = await runWithConcurrency(factories, concurrencyLimit);
+    }
 
     const consolidatedOutput = this.consolidateOutputs(gmiResults, input.outputFormat ?? 'markdown');
     const formattedOutput = this.formatOutput(gmiResults, input.outputFormat ?? 'markdown');
@@ -320,6 +441,8 @@ export class MultiGMIAgencyExecutor {
       durationMs: Date.now() - startTime,
       totalUsage,
       emergentMetadata,
+      queueMetadata,
+      workflowAnalysis,
     };
 
     // Persist final results
@@ -631,6 +754,200 @@ Role (${role.roleId}): ${role.instruction}`;
       }),
       { promptTokens: 0, completionTokens: 0, totalTokens: 0, totalCostUSD: 0 },
     );
+  }
+
+  /**
+   * STREAMING MODE execution: All seats execute in parallel immediately.
+   * Results stream back as they complete via SSE.
+   * 
+   * **Characteristics:**
+   * - Real-time feedback
+   * - Higher resource usage (keeps connections open)
+   * - More complex error handling
+   * - Best for: Interactive UIs, exploratory work
+   * 
+   * @private
+   */
+  private async executeStreamingMode(params: {
+    roles: AgentRoleConfig[];
+    agencyId: string;
+    input: AgencyExecutionInput;
+    participants: Array<{ roleId: string; personaId?: string }>;
+    seatMap: Map<string, SeatSnapshot>;
+  }): Promise<GmiExecutionResult[]> {
+    console.log(`[MultiGMIAgencyExecutor] Starting streaming mode execution for ${params.roles.length} seats`);
+
+    const factories = params.roles.map((role) => async () => {
+      return await this.executeSeatWithRetry({
+        role,
+        agencyId: params.agencyId,
+        goal: params.input.goal,
+        userId: params.input.userId,
+        conversationId: params.input.conversationId,
+        workflowDefinitionId: params.input.workflowDefinitionId,
+        participants: params.participants,
+        metadata: params.input.metadata,
+        seatMap: params.seatMap,
+      });
+    });
+
+    const concurrencyLimit = Math.min(4, Math.max(1, factories.length));
+    return await runWithConcurrency(factories, concurrencyLimit);
+  }
+
+  /**
+   * QUEUE MODE execution: Pre-analyze dependencies, execute in optimized batches.
+   * Results returned only when all batches complete.
+   * 
+   * **Characteristics:**
+   * - Batch processing with maximum parallelism
+   * - Lower resource usage (no long-lived connections)
+   * - Optimal task ordering based on dependencies
+   * - Best for: Background jobs, scheduled workflows
+   * 
+   * **Process:**
+   * 1. Build dependency graph
+   * 2. Group tasks into batches (by depth)
+   * 3. Optimize task order within each batch
+   * 4. Execute batches sequentially (tasks within batch run in parallel)
+   * 5. Track batch-level metrics
+   * 
+   * @private
+   */
+  private async executeQueueMode(params: {
+    tasks: (EmergentTask | StaticTask)[];
+    roles: AgentRoleConfig[];
+    agencyId: string;
+    input: AgencyExecutionInput;
+    participants: Array<{ roleId: string; personaId?: string }>;
+    seatMap: Map<string, SeatSnapshot>;
+    graph: import('./AgencyExecutionModes.js').DependencyGraph;
+  }): Promise<{ results: GmiExecutionResult[]; batches: BatchExecutionResult[] }> {
+    console.log(`[MultiGMIAgencyExecutor] Starting queue mode execution: ${params.graph.parallelizableBatches.length} batches`);
+
+    const queueConfig = params.input.executionMode?.queueConfig ?? {};
+    const maxParallelBatches = queueConfig.maxParallelBatches ?? 3;
+    const batchDelayMs = queueConfig.batchDelayMs ?? 0;
+    const continueOnFailure = queueConfig.continueOnBatchFailure ?? true;
+
+    const allResults: GmiExecutionResult[] = [];
+    const batchResults: BatchExecutionResult[] = [];
+    const taskToRoleMap = new Map<string, string>();
+
+    // Map tasks to roles
+    for (const task of params.tasks) {
+      const assignedRoleId = 'assignedRoleId' in task ? task.assignedRoleId : undefined;
+      if (assignedRoleId) {
+        taskToRoleMap.set(task.taskId, assignedRoleId);
+      }
+    }
+
+    // Execute batches sequentially
+    for (let batchIndex = 0; batchIndex < params.graph.parallelizableBatches.length; batchIndex++) {
+      const batch = params.graph.parallelizableBatches[batchIndex];
+      const batchId = `batch_${params.agencyId}_${batchIndex + 1}`;
+      const batchStartTime = Date.now();
+
+      console.log(`[MultiGMIAgencyExecutor] Executing batch ${batchIndex + 1}/${params.graph.parallelizableBatches.length}: ${batch.length} tasks`);
+
+      // Optimize task order within batch
+      const optimizedBatch = this.dependencyAnalyzer.optimizeBatchOrder(
+        batch,
+        params.graph.nodes,
+        queueConfig.batchOrderingStrategy
+      );
+
+      // Emit progress update
+      if (params.input.executionMode?.onProgress) {
+        await params.input.executionMode.onProgress({
+          type: 'batch_complete',
+          timestamp: new Date().toISOString(),
+          agencyId: params.agencyId,
+          progress: (batchIndex / params.graph.parallelizableBatches.length) * 100,
+          message: `Starting batch ${batchIndex + 1}/${params.graph.parallelizableBatches.length}`,
+        });
+      }
+
+      // Execute tasks in this batch (in parallel, up to maxParallelBatches limit)
+      const batchFactories = optimizedBatch.slice(0, maxParallelBatches).map((taskId) => async () => {
+        const roleId = taskToRoleMap.get(taskId);
+        if (!roleId) {
+          console.warn(`[MultiGMIAgencyExecutor] Task ${taskId} has no assigned role. Skipping.`);
+          return null;
+        }
+
+        const role = params.roles.find((r) => r.roleId === roleId);
+        if (!role) {
+          console.warn(`[MultiGMIAgencyExecutor] Role ${roleId} not found. Skipping task ${taskId}.`);
+          return null;
+        }
+
+        return await this.executeSeatWithRetry({
+          role,
+          agencyId: params.agencyId,
+          goal: params.input.goal,
+          userId: params.input.userId,
+          conversationId: params.input.conversationId,
+          workflowDefinitionId: params.input.workflowDefinitionId,
+          participants: params.participants,
+          metadata: { ...params.input.metadata, taskId },
+          seatMap: params.seatMap,
+        });
+      });
+
+      try {
+        const batchGmiResults = await Promise.all(batchFactories.map((f) => f()));
+        const validResults = batchGmiResults.filter((r): r is GmiExecutionResult => r !== null);
+        allResults.push(...validResults);
+
+        const batchErrors = validResults.filter((r) => r.error).map((r) => ({ taskId: r.roleId, error: r.error! }));
+
+        batchResults.push({
+          batchId,
+          taskIds: optimizedBatch,
+          startedAt: batchStartTime,
+          completedAt: Date.now(),
+          durationMs: Date.now() - batchStartTime,
+          successCount: validResults.filter((r) => !r.error).length,
+          failureCount: batchErrors.length,
+          totalCost: validResults.reduce((sum, r) => sum + (r.usage?.totalCostUSD ?? 0), 0),
+          errors: batchErrors,
+        });
+
+        console.log(`[MultiGMIAgencyExecutor] Batch ${batchIndex + 1} complete: ${validResults.length} tasks, ${batchErrors.length} errors`);
+
+        // Stop if batch failed and continueOnFailure is false
+        if (batchErrors.length > 0 && !continueOnFailure) {
+          console.error(`[MultiGMIAgencyExecutor] Batch ${batchIndex + 1} failed. Aborting remaining batches.`);
+          break;
+        }
+
+        // Delay between batches if configured
+        if (batchDelayMs > 0 && batchIndex < params.graph.parallelizableBatches.length - 1) {
+          await new Promise((resolve) => setTimeout(resolve, batchDelayMs));
+        }
+      } catch (error) {
+        console.error(`[MultiGMIAgencyExecutor] Batch ${batchIndex + 1} failed:`, error);
+        
+        batchResults.push({
+          batchId,
+          taskIds: optimizedBatch,
+          startedAt: batchStartTime,
+          completedAt: Date.now(),
+          durationMs: Date.now() - batchStartTime,
+          successCount: 0,
+          failureCount: optimizedBatch.length,
+          totalCost: 0,
+          errors: [{ taskId: 'batch', error: error instanceof Error ? error.message : String(error) }],
+        });
+
+        if (!continueOnFailure) {
+          break;
+        }
+      }
+    }
+
+    return { results: allResults, batches: batchResults };
   }
 }
 
