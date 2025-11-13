@@ -1,0 +1,23 @@
+{
+  "name": "@framersai/agentos-live-docs",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Live TypeDoc documentation for AgentOS with agentos.sh styling",
+  "scripts": {
+    "dev": "npx serve . -l 4002",
+    "wrap": "node scripts/wrap-typedoc.mjs"
+  },
+  "dependencies": {
+    "glob": "^10.3.10"
+  },
+  "devDependencies": {
+    "serve": "^14.2.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/framersai/agentos-live-docs"
+  },
+  "license": "MIT"
+}
+

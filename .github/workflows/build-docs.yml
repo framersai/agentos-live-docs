@@ -37,6 +37,16 @@ jobs:
         working-directory: agentos
         run: pnpm install --frozen-lockfile
 
+      - name: Export static chrome from agentos.sh
+        working-directory: agentos/apps/agentos.sh
+        run: node scripts/export-static-chrome.mjs
+          
+      - name: Copy chrome assets to docs repo root
+        run: |
+          cp agentos/apps/agentos.sh/static-doc-shell/*.html .
+          cp agentos/apps/agentos.sh/styles/tokens.css .
+          cp agentos/apps/agentos.sh/app/globals.css .
+
       - name: Generate TypeDoc (preferred script)
         working-directory: agentos
         continue-on-error: true
@@ -62,6 +72,12 @@ jobs:
           else
             echo "No docs output found; keeping placeholder."
           fi
+          
+      - name: Install wrap script dependencies
+        run: pnpm install --no-frozen-lockfile
+        
+      - name: Wrap TypeDoc pages with AgentOS chrome
+        run: pnpm run wrap
 
       - name: Commit and push changes
         run: |
