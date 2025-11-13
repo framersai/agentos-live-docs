@@ -10,6 +10,7 @@ import type { AgentOS, AgentOSInput, AgentOSResponse } from '@framers/agentos';
 import { AgentOSResponseChunkType, type AgentOSAgencyUpdateChunk } from '@framers/agentos';
 import type { CostAggregator } from '@framers/agentos/cognitive_substrate/IGMI';
 import { EmergentAgencyCoordinator, type EmergentTask, type EmergentRole } from './EmergentAgencyCoordinator.js';
+import { StaticAgencyCoordinator, type StaticAgencyConfig } from './StaticAgencyCoordinator.js';
 import {
   createAgencyExecution,
   updateAgencyExecution,
@@ -27,6 +28,19 @@ export interface AgentRoleConfig {
   metadata?: Record<string, unknown>;
 }
 
+/**
+ * Coordination strategy for agency execution.
+ * 
+ * - **emergent** (default): LLM analyzes goal, decomposes tasks, spawns roles adaptively.
+ *   Best for complex, open-ended goals where optimal structure is unclear.
+ *   Higher latency and cost due to planning steps.
+ * 
+ * - **static**: Uses exactly the roles/tasks provided, no decomposition or spawning.
+ *   Best for production workflows with well-defined structures.
+ *   Lower latency and cost, fully deterministic.
+ */
+export type AgencyCoordinationStrategy = 'emergent' | 'static';
+
 /** Input payload when launching a multi-seat execution. */
 export interface AgencyExecutionInput {
   goal: string;
@@ -36,8 +50,20 @@ export interface AgencyExecutionInput {
   workflowDefinitionId?: string;
   outputFormat?: 'json' | 'csv' | 'markdown' | 'text';
   metadata?: Record<string, unknown>;
-  /** Enable emergent behavior: dynamic task decomposition and role spawning */
+  /**
+   * Coordination strategy for this agency execution.
+   * @default 'emergent'
+   */
+  coordinationStrategy?: AgencyCoordinationStrategy;
+  /**
+   * @deprecated Use coordinationStrategy instead. Kept for backwards compatibility.
+   */
   enableEmergentBehavior?: boolean;
+  /**
+   * For static coordination: predefined task definitions.
+   * Ignored if coordinationStrategy is 'emergent'.
+   */
+  staticTasks?: StaticTask[];
 }
 
 interface GmiExecutionResult {
@@ -107,27 +133,82 @@ async function runWithConcurrency<T>(factories: Array<() => Promise<T>>, limit: 
   return results;
 }
 
+/**
+ * Orchestrates multi-agent agency execution with support for both emergent and static coordination.
+ * 
+ * **Emergent Mode** (default):
+ * - LLM decomposes goal into tasks
+ * - Adaptively spawns roles based on capabilities
+ * - Higher latency/cost, more flexible
+ * 
+ * **Static Mode**:
+ * - Uses predefined roles and tasks
+ * - No LLM decomposition
+ * - Lower latency/cost, fully deterministic
+ * 
+ * @example Emergent execution
+ * ```typescript
+ * const executor = new MultiGMIAgencyExecutor({ agentOS });
+ * const result = await executor.executeAgency({
+ *   goal: "Research and publish quantum computing news",
+ *   roles: [{ roleId: "lead", personaId: "generalist", instruction: "Coordinate" }],
+ *   userId: "user123",
+ *   conversationId: "conv456",
+ *   coordinationStrategy: 'emergent' // or omit (default)
+ * });
+ * ```
+ * 
+ * @example Static execution
+ * ```typescript
+ * const result = await executor.executeAgency({
+ *   goal: "Execute predefined workflow",
+ *   roles: [
+ *     { roleId: "researcher", personaId: "research-specialist", instruction: "Research" },
+ *     { roleId: "publisher", personaId: "communications-manager", instruction: "Publish" }
+ *   ],
+ *   userId: "user123",
+ *   conversationId: "conv456",
+ *   coordinationStrategy: 'static',
+ *   staticTasks: [
+ *     { taskId: "task_1", description: "Research", assignedRoleId: "researcher", executionOrder: 1, dependencies: [] },
+ *     { taskId: "task_2", description: "Publish", assignedRoleId: "publisher", executionOrder: 2, dependencies: ["task_1"] }
+ *   ]
+ * });
+ * ```
+ */
 export class MultiGMIAgencyExecutor {
   private readonly deps: MultiGMIAgencyExecutorDependencies;
   private readonly emergentCoordinator: EmergentAgencyCoordinator;
+  private readonly staticCoordinator: StaticAgencyCoordinator;
   private readonly maxRetries: number;
   private readonly retryDelayMs: number;
 
   constructor(deps: MultiGMIAgencyExecutorDependencies) {
     this.deps = deps;
     this.emergentCoordinator = new EmergentAgencyCoordinator({ agentOS: deps.agentOS });
+    this.staticCoordinator = new StaticAgencyCoordinator();
     this.maxRetries = deps.maxRetries ?? 2;
     this.retryDelayMs = deps.retryDelayMs ?? 1000;
   }
 
   /**
    * Executes an agency workflow by invoking AgentOS for every seat.
-   * Supports emergent behavior with dynamic task decomposition and role spawning.
+   * Supports both emergent (adaptive) and static (deterministic) coordination strategies.
+   * 
+   * @param input - Agency execution configuration
+   * @returns Complete execution result with outputs, costs, and metadata
    */
   public async executeAgency(input: AgencyExecutionInput): Promise<AgencyExecutionResult> {
     const startTime = Date.now();
     const agencyId = `agency_${uuidv4()}`;
     
+    // Determine coordination strategy (backwards compatible with enableEmergentBehavior)
+    const strategy: AgencyCoordinationStrategy = 
+      input.coordinationStrategy ?? 
+      (input.enableEmergentBehavior ? 'emergent' : 'emergent'); // Default to emergent
+
+    console.log(`[MultiGMIAgencyExecutor] Starting agency ${agencyId} with ${strategy} coordination`);
+
     // Persist initial agency state
     try {
       await createAgencyExecution({
@@ -146,9 +227,9 @@ export class MultiGMIAgencyExecutor {
     let effectiveRoles: AgentRoleConfig[] = input.roles;
     let emergentMetadata: AgencyExecutionResult['emergentMetadata'];
 
-    // If emergent behavior is enabled, decompose goal and assign roles dynamically
-    if (input.enableEmergentBehavior) {
-      console.log(`[MultiGMIAgencyExecutor] Enabling emergent behavior for agency ${agencyId}`);
+    // Apply coordination strategy
+    if (strategy === 'emergent') {
+      console.log(`[MultiGMIAgencyExecutor] Using emergent coordination for agency ${agencyId}`);
       const emergentResult = await this.emergentCoordinator.transformToEmergentAgency(input);
       tasks = emergentResult.tasks;
       effectiveRoles = emergentResult.roles;
@@ -160,6 +241,26 @@ export class MultiGMIAgencyExecutor {
       };
 
       console.log(`[MultiGMIAgencyExecutor] Decomposed into ${tasks.length} tasks, spawned ${effectiveRoles.length} roles`);
+    } else if (strategy === 'static') {
+      console.log(`[MultiGMIAgencyExecutor] Using static coordination for agency ${agencyId}`);
+      
+      if (!input.staticTasks || input.staticTasks.length === 0) {
+        console.warn(`[MultiGMIAgencyExecutor] Static strategy requested but no staticTasks provided. Using roles as-is.`);
+      } else {
+        // Validate static configuration
+        const staticConfig = this.staticCoordinator.createStaticConfig({
+          goal: input.goal,
+          roles: input.roles,
+          tasks: input.staticTasks,
+        });
+        
+        const validation = this.staticCoordinator.validate(staticConfig);
+        if (!validation.valid) {
+          throw new Error(`Static agency configuration invalid: ${validation.errors.join('; ')}`);
+        }
+        
+        console.log(`[MultiGMIAgencyExecutor] Validated ${staticConfig.tasks.length} static tasks`);
+      }
     }
 
     const seatMap = new Map<string, SeatSnapshot>();
@@ -229,7 +330,7 @@ export class MultiGMIAgencyExecutor {
     }
 
     // Cleanup emergent context if used
-    if (input.enableEmergentBehavior) {
+    if (strategy === 'emergent') {
       this.emergentCoordinator.cleanupContext(agencyId);
     }
 
