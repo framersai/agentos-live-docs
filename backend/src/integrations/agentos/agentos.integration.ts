@@ -229,6 +229,40 @@ class AgentOSIntegration {
     return executor.executeAgency(input);
   }
 
+  /**
+   * Execute a single tool directly via the AgentOS ToolOrchestrator.
+   * Intended for admin/bridge routes that need deterministic tool invocation without LLM mediation.
+   */
+  public async executeToolCall(params: {
+    toolName: string;
+    args: Record<string, unknown>;
+    userId?: string;
+    personaId?: string;
+    personaCapabilities?: string[];
+    correlationId?: string;
+  }): Promise<any> {
+    const agentosInstance = await this.getAgentOS();
+    const orchestrator: any = (agentosInstance as any)?.toolOrchestrator;
+    if (!orchestrator || typeof orchestrator.processToolCall !== 'function') {
+      throw new Error('ToolOrchestrator not available on AgentOS instance.');
+    }
+
+    const requestDetails: any = {
+      toolCallRequest: {
+        id: `tool_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+        name: params.toolName,
+        arguments: params.args ?? {},
+      },
+      gmiId: 'backend-direct',
+      personaId: params.personaId ?? (agentosInstance as any)?.config?.defaultPersonaId ?? 'default_assistant_persona',
+      personaCapabilities: Array.isArray(params.personaCapabilities) ? params.personaCapabilities : [],
+      userContext: { userId: params.userId ?? 'anonymous' },
+      correlationId: params.correlationId,
+    };
+
+    return orchestrator.processToolCall(requestDetails);
+  }
+
   private async getAgentOS(): Promise<AgentOS> {
     if (this.agentos) {
       return this.agentos;
