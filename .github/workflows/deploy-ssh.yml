@@ -59,6 +59,10 @@ jobs:
             APP_DIR="$HOME/voice-chat-assistant"
             AUTH_URL="https://manicinc:${GH_PAT}@github.com/manicinc/voice-chat-assistant.git"
 
+            # Ensure submodules use HTTPs with PAT instead of SSH to avoid host-key issues
+            git config --global url."https://manicinc:${GH_PAT}@github.com/".insteadOf "https://github.com/"
+            git config --global url."https://manicinc:${GH_PAT}@github.com/".insteadOf "git@github.com:"
+
             echo "[debug] Checking repo access with GH_PAT..."
             git ls-remote --heads "${AUTH_URL}"
 
