@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@framers/shared": "workspace:*",
-    "@framers/agentos": "workspace:*",
+    "@framers/agentos": "github:framersai/agentos#main",
     "@framers/sql-storage-adapter": "latest",
     "@supabase/supabase-js": "^2.45.1",
     "@types/jsonwebtoken": "^9.0.10",

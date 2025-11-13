@@ -79,6 +79,9 @@ jobs:
             echo "[deploy] Write .env from secret..."
             printf "%s" "${{ secrets.ENV }}" > "$APP_DIR/.env"
 
+            echo "[deploy] Init/update submodules..."
+            git -C "$APP_DIR" submodule update --init --recursive
+
             echo "[deploy] Install workspace deps..."
             cd "$APP_DIR"
             pnpm install
