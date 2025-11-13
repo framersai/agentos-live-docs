@@ -34,8 +34,12 @@ jobs:
           command_timeout: 30m
           script: |
             set -euo pipefail
+            set -x
             export DEBIAN_FRONTEND=noninteractive
             export GH_PAT="${{ secrets.GH_PAT }}"
+
+            echo "GH_PAT_SET=${GH_PAT:+yes}"
+            node -v || true
 
             echo "[bootstrap] Ensure base packages..."
             apt-get update -y
@@ -49,9 +53,14 @@ jobs:
 
             echo "[bootstrap] Ensure pnpm + pm2..."
             npm i -g pnpm pm2
+            pnpm -v || true
+            pm2 -v || true
 
             APP_DIR="$HOME/voice-chat-assistant"
             AUTH_URL="https://manicinc:${GH_PAT}@github.com/manicinc/voice-chat-assistant.git"
+
+            echo "[debug] Checking repo access with GH_PAT..."
+            git ls-remote --heads "${AUTH_URL}"
 
             if [ ! -d "$APP_DIR/.git" ]; then
               echo "[deploy] Clone repository..."
