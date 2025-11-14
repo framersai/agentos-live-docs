@@ -58,9 +58,8 @@ jobs:
               apt-get install -y nodejs
             fi
 
-            echo "[bootstrap] Ensure pnpm + pm2..."
-            npm i -g pnpm pm2
-            pnpm -v || true
+            echo "[bootstrap] Ensure pm2..."
+            npm i -g pm2
             pm2 -v || true
 
             APP_DIR="$HOME/voice-chat-assistant"
@@ -94,12 +93,16 @@ jobs:
             echo "[deploy] Init/update submodules..."
             git -C "$APP_DIR" submodule update --init --recursive
 
-            echo "[deploy] Install workspace deps..."
+            echo "[deploy] Install workspace deps (npm workspaces)..."
             cd "$APP_DIR"
-            pnpm install
+            if command -v npm >/dev/null 2>&1; then
+              npm ci || npm install
+            else
+              echo "npm not found"; exit 1
+            fi
 
-            echo "[build] Build workspace (AgentOS, frontend, backend)..."
-            pnpm -w build
+            echo "[build] Build workspace..."
+            npm run build
 
             echo "[deploy] Publish frontend static to Nginx root..."
             FRONTEND_DIST="$APP_DIR/frontend/dist"
