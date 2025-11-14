@@ -25,7 +25,7 @@
   },
   "scripts": {
     "clean": "rimraf dist tsconfig.build.tsbuildinfo",
-    "build": "pnpm run clean && tsc -p tsconfig.build.json && node ../../.github/scripts/fix-esm-imports.js dist",
+    "build": "npm run clean && tsc -p tsconfig.build.json && node ../../.github/scripts/fix-esm-imports.js dist",
     "typecheck": "tsc -p tsconfig.build.json --noEmit"
   },
   "devDependencies": {
