@@ -79,11 +79,14 @@ jobs:
             echo "[debug] Checking repo access with GH_PAT..."
             git ls-remote --heads "${AUTH_URL}"
 
-            # Clone repo if missing, otherwise ensure correct origin URL
-            if [ ! -d "$APP_DIR/.git" ]; then
-              echo "[deploy] Clone repository..."
-              git clone "${AUTH_URL}" "$APP_DIR"
+            # Always start from a clean checkout to avoid dirty submodule/node_modules state
+            if [ -d "$APP_DIR" ]; then
+              echo "[deploy] Removing existing checkout to ensure clean workspace..."
+              rm -rf "$APP_DIR"
             fi
+
+            echo "[deploy] Clone repository..."
+            git clone "${AUTH_URL}" "$APP_DIR"
 
             echo "[deploy] Ensure origin URL is correct..."
             git -C "$APP_DIR" remote set-url origin "${AUTH_URL}" || true
