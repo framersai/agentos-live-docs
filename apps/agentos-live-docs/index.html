@@ -3,14 +3,37 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>AgentOS Docs</title>
-    <meta name="description" content="AgentOS documentation. Adaptive AI intelligence for enterprise-ready agents.">
-    <link rel="icon" href="/favicon.svg">
+    <title>AgentOS Documentation | Portable AI Agent Runtime for Adaptive Intelligence</title>
+    <meta name="description" content="API reference and guides for AgentOS—the portable universal runtime for adaptive, emergent, and permanent AI intelligence.">
+    <meta name="keywords" content="AgentOS, AI agents, adaptive intelligence, emergent intelligence, API documentation, TypeScript AI, multi-agent orchestration, enterprise RAG">
+    <link rel="canonical" href="https://docs.agentos.sh/">
+    <link rel="icon" href="https://agentos.sh/favicon.svg">
+    <meta property="og:title" content="AgentOS Documentation">
+    <meta property="og:description" content="API reference and guides for building adaptive, emergent AI agents with AgentOS.">
+    <meta property="og:url" content="https://docs.agentos.sh/">
+    <meta property="og:image" content="https://agentos.sh/og-image.png">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="AgentOS Documentation">
+    <meta name="twitter:description" content="API reference and guides for building adaptive, emergent AI agents.">
+    <meta name="twitter:image" content="https://agentos.sh/og-image.png">
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/tokens.css" />
-    <link rel="stylesheet" href="/site.css" />
+    <link rel="preconnect" href="https://api.github.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "AgentOS Documentation",
+      "url": "https://docs.agentos.sh",
+      "publisher": {
+        "@type": "Organization",
+        "name": "AgentOS",
+        "url": "https://agentos.sh"
+      }
+    }
+    </script>
     <script>
       (function () {
         var key = 'theme';
@@ -31,22 +54,72 @@
     </script>
     <style>
       :root {
-        --bg: #0b0c10;
-        --card: #111319;
-        --text: #e6e8ee;
-        --muted: #a4a9b6;
-        --accent1: #6b7cff;
-        --accent2: #d16cff;
+        color-scheme: light;
+        --color-background-primary: hsl(0, 0%, 100%);
+        --color-background-secondary: hsl(210, 40%, 98%);
+        --color-text-primary: hsl(220, 30%, 10%);
+        --color-text-secondary: hsl(220, 20%, 25%);
+        --color-text-muted: hsl(220, 15%, 38%);
+        --color-accent-primary: hsl(250, 85%, 50%);
+        --color-accent-secondary: hsl(280, 85%, 55%);
+        --color-accent-warm: hsl(30, 92%, 55%);
+        --color-border-subtle: hsl(220, 15%, 94%);
+        --bg: hsl(0, 0%, 100%);
+        --card: hsl(0, 0%, 100%);
+        --text: hsl(220, 30%, 10%);
+        --muted: hsl(220, 15%, 38%);
+        --accent1: hsl(250, 85%, 50%);
+        --accent2: hsl(280, 85%, 55%);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          color-scheme: dark;
+          --color-background-primary: hsl(240, 18%, 2%);
+          --color-background-secondary: hsl(240, 15%, 3%);
+          --color-text-primary: hsl(210, 40%, 98%);
+          --color-text-secondary: hsl(210, 30%, 85%);
+          --color-text-muted: hsl(210, 20%, 65%);
+          --color-accent-primary: hsl(250, 100%, 75%);
+          --color-accent-secondary: hsl(280, 100%, 75%);
+          --color-border-subtle: hsl(222, 40%, 15%);
+          --bg: hsl(240, 18%, 2%);
+          --card: hsl(240, 15%, 4%);
+          --text: hsl(210, 40%, 98%);
+          --muted: hsl(210, 20%, 65%);
+          --accent1: hsl(250, 100%, 75%);
+          --accent2: hsl(280, 100%, 75%);
+        }
+      }
+      .dark {
+        color-scheme: dark;
+        --color-background-primary: hsl(240, 18%, 2%);
+        --color-background-secondary: hsl(240, 15%, 3%);
+        --color-text-primary: hsl(210, 40%, 98%);
+        --color-text-secondary: hsl(210, 30%, 85%);
+        --color-text-muted: hsl(210, 20%, 65%);
+        --color-accent-primary: hsl(250, 100%, 75%);
+        --color-accent-secondary: hsl(280, 100%, 75%);
+        --color-border-subtle: hsl(222, 40%, 15%);
+        --bg: hsl(240, 18%, 2%);
+        --card: hsl(240, 15%, 4%);
+        --text: hsl(210, 40%, 98%);
+        --muted: hsl(210, 20%, 65%);
+        --accent1: hsl(250, 100%, 75%);
+        --accent2: hsl(280, 100%, 75%);
       }
       html, body { height: 100%; }
       body {
         margin: 0;
         font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
         color: var(--text);
+        background: var(--bg);
+        transition: background-color 220ms ease, color 220ms ease;
+      }
+      .dark body {
         background:
-          radial-gradient(60% 40% at 20% 0%, rgba(107,124,255,0.12), transparent 70%),
-          radial-gradient(50% 35% at 100% 100%, rgba(209,108,255,0.12), transparent 70%),
-          linear-gradient(180deg, #0a0b10, #0b0c10);
+          radial-gradient(60% 40% at 20% 0%, hsla(250,100%,70%,0.12), transparent 70%),
+          radial-gradient(50% 35% at 100% 100%, hsla(280,100%,70%,0.12), transparent 70%),
+          linear-gradient(180deg, hsl(240,18%,2%), hsl(240,15%,3%));
       }
       .container {
         min-height: 100%;
@@ -57,14 +130,27 @@
       .card {
         max-width: 760px;
         width: 100%;
-        background: linear-gradient(135deg, rgba(107,124,255,0.05), rgba(209,108,255,0.03));
-        border: 1px solid rgba(230,232,238,0.08);
-        border-radius: 16px;
-        padding: 2rem;
-        box-shadow: 0 20px 60px -15px rgba(107,124,255,0.25);
+        background: var(--card);
+        border: 1px solid var(--color-border-subtle);
+        border-radius: 24px;
+        padding: 3rem;
+        box-shadow: 0 20px 60px -15px hsla(250, 85%, 50%, 0.2);
       }
-      h1 { margin: 0 0 0.5rem; font-size: 2rem; letter-spacing: -0.02em; }
-      p { margin: 0.5rem 0; color: var(--muted); }
+      .dark .card {
+        background: linear-gradient(135deg, hsla(250,100%,75%,0.05), hsla(280,100%,75%,0.03));
+        box-shadow: 0 20px 60px -15px hsla(250, 100%, 75%, 0.3);
+      }
+      h1 { 
+        margin: 0 0 0.5rem; 
+        font-size: 2.5rem; 
+        font-family: 'Space Grotesk', Inter, sans-serif;
+        letter-spacing: -0.02em; 
+        background: linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      p { margin: 0.5rem 0; color: var(--muted); line-height: 1.6; }
       .links { margin-top: 1rem; display: flex; gap: 0.75rem; flex-wrap: wrap; }
       .btn {
         display: inline-flex; align-items: center; gap: 0.5rem;
@@ -72,19 +158,42 @@
         text-decoration: none; transition: transform 220ms ease, box-shadow 220ms ease;
       }
       .btn.primary {
-        color: white; background: linear-gradient(90deg, var(--accent1), var(--accent2));
-        box-shadow: 0 12px 28px -12px rgba(107,124,255,0.45);
+        color: white; 
+        background: linear-gradient(90deg, var(--accent1), var(--accent2));
+        box-shadow: 0 12px 28px -12px hsla(250, 85%, 50%, 0.45);
+      }
+      .dark .btn.primary {
+        box-shadow: 0 12px 28px -12px hsla(250, 100%, 75%, 0.45);
       }
       .btn.secondary {
         color: var(--accent1);
         background:
-          linear-gradient(#0d0f16, #0d0f16) padding-box,
-          linear-gradient(90deg, rgba(107,124,255,0.55), rgba(209,108,255,0.45)) border-box;
+          linear-gradient(var(--card), var(--card)) padding-box,
+          linear-gradient(90deg, var(--color-accent-primary), var(--color-accent-secondary)) border-box;
         border: 2px solid transparent;
       }
-      .btn:hover { transform: translateY(-2px); }
+      .btn:hover { transform: translateY(-2px); box-shadow: 0 16px 36px -16px hsla(250, 85%, 50%, 0.55); }
+      .dark .btn:hover { box-shadow: 0 16px 36px -16px hsla(250, 100%, 75%, 0.55); }
       .note { margin-top: 1rem; font-size: 0.9rem; color: var(--muted); }
       .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          animation-duration: 0.001ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.001ms !important;
+        }
+      }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border-width: 0;
+      }
     </style>
   </head>
   <body>
@@ -125,10 +234,11 @@
       </div>
     </header>
 
+    <a href="#main-content" class="sr-only" style="position:fixed;top:0;left:0;z-index:9999;background:var(--color-accent-primary);color:white;padding:0.5rem 1rem;border-radius:0 0 0.5rem 0;transform:translateY(-200%);transition:transform 220ms ease;" onfocus="this.style.transform='translateY(0)'" onblur="this.style.transform='translateY(-200%)'">Skip to content</a>
     <div class="container" style="padding-top:6rem">
-      <main class="card" role="main" aria-labelledby="title">
+      <main id="main-content" class="card" role="main" aria-labelledby="title">
         <h1 id="title">AgentOS Documentation</h1>
-        <p>Adaptive AI intelligence for enterprise‑ready agents. API reference and guides will live here.</p>
+        <p>API reference and guides for AgentOS—the portable universal runtime for adaptive, emergent, and permanent AI intelligence.</p>
         <div class="links" role="navigation" aria-label="Quick links">
           <a class="btn primary" href="/docs/">
             Open API Reference
@@ -140,7 +250,12 @@
             GitHub
           </a>
         </div>
-        <p class="note">Tip: push generated TypeDoc output into the <span class="mono">/docs</span> folder of this repo. This site is deployed via GitHub Pages.</p>
+        <p class="note">
+          <strong>Portable Intelligence:</strong> AgentOS instances export as Markdown or JSON for transport between agents, conversations, and systems.
+        </p>
+        <p class="note" style="font-size:0.85rem;margin-top:0.5rem;">
+          Tip: Push generated TypeDoc output into the <span class="mono">/docs</span> folder. Deployed via GitHub Pages.
+        </p>
       </main>
     </div>
 
@@ -173,6 +288,7 @@
               <li><a href="https://docs.agentos.sh" target="_blank" rel="noopener noreferrer" class="text-text-secondary hover:text-accent-primary transition-colors">Docs (Guides)</a></li>
               <li><a href="https://docs.agentos.sh/api" target="_blank" rel="noopener noreferrer" class="text-text-secondary hover:text-accent-primary transition-colors">API Reference (TypeDoc/TSDoc)</a></li>
               <li><a href="https://agentos.sh/#code" class="text-text-secondary hover:text-accent-primary transition-colors">Examples</a></li>
+              <li><a href="https://github.com/framersai/agentos/releases" target="_blank" rel="noopener noreferrer" class="text-text-secondary hover:text-accent-primary transition-colors">Release Notes</a></li>
               <li><a href="https://github.com/framersai/agentos" target="_blank" rel="noopener noreferrer" class="text-text-secondary hover:text-accent-primary transition-colors">GitHub</a></li>
               <li><a href="https://discord.gg/framersai" target="_blank" rel="noopener noreferrer" class="text-text-secondary hover:text-accent-primary transition-colors">Discord</a></li>
             </ul>
@@ -181,8 +297,9 @@
             <h3 class="font-bold text-text-primary mb-3">Company</h3>
             <ul class="space-y-2 text-sm">
               <li><a href="https://agentos.sh/about" class="text-text-secondary hover:text-accent-primary transition-colors">About</a></li>
+              <li><a href="https://agentos.sh/faq" class="text-text-secondary hover:text-accent-primary transition-colors">FAQ</a></li>
               <li><a href="https://frame.dev" target="_blank" rel="noopener noreferrer" class="text-text-secondary hover:text-accent-primary transition-colors">Frame.dev</a></li>
-              <li><a href="mailto:team@frame.dev" class="text-text-secondary hover:text-accent-primary transition-colors">team@frame.dev</a></li>
+              <li><a href="mailto:team@frame.dev" class="text-text-secondary hover:text-accent-primary transition-colors">Contact</a></li>
             </ul>
           </div>
           <div>
