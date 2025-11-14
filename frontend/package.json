@@ -27,6 +27,7 @@
     "pinia": "^2.1.7",
     "porter-stemmer": "^0.9.1",
     "postcss-nesting": "^13.0.1",
+    "stemmer": "^2.0.1",
     "string-similarity": "^4.0.4",
     "dompurify": "^3.3.0",
     "vue": "^3.3.8",

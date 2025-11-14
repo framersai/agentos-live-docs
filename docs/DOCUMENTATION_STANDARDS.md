@@ -195,3 +195,4 @@ await agentos.initialize({ authService: new MyAuth() });
 
 **Remember:** Documentation describes the current state. CHANGELOG tracks changes over time.
 
+
