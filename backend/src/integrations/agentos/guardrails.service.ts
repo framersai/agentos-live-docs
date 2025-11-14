@@ -3,8 +3,9 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 /**
- * Lightweight loader for the AgentOS Guardrails registry stored in the monorepo.
- * Serves `/api/agentos/guardrails*` endpoints without mock data.
+ * Lightweight loader for the AgentOS Guardrails from the extensions registry.
+ * Serves `/api/agentos/guardrails*` endpoints.
+ * Guardrails are part of @framers/agentos-extensions.
  * @internal
  */
 
@@ -35,12 +36,14 @@ let cachedRegistry: GuardrailsRegistry | null = null;
 
 /**
  * Resolve absolute path to the guardrails registry JSON in the monorepo.
+ * Guardrails are part of the agentos-extensions registry.
  * @returns Absolute filesystem path to the guardrails registry JSON.
  */
 function getRegistryPath(): string {
 	const __filename = fileURLToPath(import.meta.url);
 	const __dirname = path.dirname(__filename);
-	return path.resolve(__dirname, '../../../../packages/agentos-guardrails/registry.json');
+	// Guardrails are in the extensions registry
+	return path.resolve(__dirname, '../../../../packages/agentos-extensions/registry.json');
 }
 
 /**
