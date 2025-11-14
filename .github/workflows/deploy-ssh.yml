@@ -67,6 +67,8 @@ jobs:
             # PM2 can remain installed via npm globally
             npm i -g pm2
             pm2 -v || true
+            # Ensure TypeScript CLI is globally available for submodules invoking `npx tsc`
+            npm i -g typescript@5.6.3
 
             APP_DIR="$HOME/voice-chat-assistant"
             AUTH_URL="https://manicinc:${GH_PAT}@github.com/manicinc/voice-chat-assistant.git"
