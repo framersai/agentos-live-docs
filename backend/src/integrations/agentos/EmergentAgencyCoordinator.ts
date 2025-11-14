@@ -7,6 +7,7 @@
 import { generateUniqueId as uuidv4 } from '../../utils/ids.js';
 import type { AgentOS, AgentOSInput } from '@framers/agentos';
 import type { AgentRoleConfig, AgencyExecutionInput } from './MultiGMIAgencyExecutor.js';
+import { jsonrepair } from 'jsonrepair';
 
 /**
  * Represents a decomposed task with dependencies and assignment
@@ -56,6 +57,50 @@ export interface EmergentAgencyCoordinatorDeps {
 /**
  * Coordinates emergent multi-agent behavior with dynamic task decomposition and role spawning
  */
+const PLANNER_PERSONA_ID = process.env.AGENTOS_PLANNER_PERSONA_ID ?? 'v_researcher';
+const COORDINATOR_PERSONA_ID = process.env.AGENTOS_COORDINATOR_PERSONA_ID ?? 'v_researcher';
+const DEFAULT_EMERGENT_PERSONA_ID = process.env.AGENTOS_EMERGENT_DEFAULT_PERSONA_ID ?? 'v_researcher';
+
+function sanitizeJsonResponse(raw: string): string {
+  let cleaned = raw.trim();
+  if (cleaned.startsWith('```')) {
+    cleaned = cleaned.replace(/^```json/i, '').replace(/^```/, '');
+    cleaned = cleaned.replace(/```$/, '');
+  }
+  cleaned = cleaned.replace(/Turn processing sequence complete\.?/gi, '').trim();
+  return cleaned;
+}
+
+function tryParseStructuredJson<T>(raw: string): T | null {
+  const cleaned = sanitizeJsonResponse(raw);
+  if (!cleaned) return null;
+
+  const candidates = new Set<string>();
+  candidates.add(cleaned);
+
+  const braceMatch = cleaned.match(/({[\s\S]+})/m);
+  if (braceMatch?.[1]) {
+    candidates.add(braceMatch[1]);
+  }
+
+  for (const candidate of candidates) {
+    const trimmed = candidate.trim();
+    if (!trimmed) continue;
+    try {
+      return JSON.parse(trimmed);
+    } catch {
+      try {
+        const repaired = jsonrepair(trimmed);
+        return JSON.parse(repaired);
+      } catch {
+        continue;
+      }
+    }
+  }
+
+  return null;
+}
+
 export class EmergentAgencyCoordinator {
   private readonly deps: EmergentAgencyCoordinatorDeps;
   private readonly contexts = new Map<string, SharedAgencyContext>();
@@ -91,7 +136,7 @@ Return a JSON array of tasks with this structure:
       userId,
       sessionId: `decompose_${uuidv4()}`,
       conversationId: `decompose_${uuidv4()}`,
-      selectedPersonaId: 'planner',
+      selectedPersonaId: PLANNER_PERSONA_ID,
       textInput: decompositionPrompt,
       options: {
         responseFormat: { type: 'json_object' },
@@ -185,7 +230,7 @@ Return a JSON object with:
       userId,
       sessionId: `assign_${uuidv4()}`,
       conversationId: `assign_${uuidv4()}`,
-      selectedPersonaId: 'coordinator',
+      selectedPersonaId: COORDINATOR_PERSONA_ID,
       textInput: roleAssignmentPrompt,
       options: {
         responseFormat: { type: 'json_object' },
@@ -203,7 +248,13 @@ Return a JSON object with:
     }
 
     try {
-      const parsed = JSON.parse(responseText);
+      const parsed = tryParseStructuredJson<{
+        assignments?: Array<{ taskId: string; roleId: string; reason?: string }>;
+        newRoles?: Array<{ roleId?: string; personaId?: string; instruction?: string; capabilities?: string[] }>;
+      }>(responseText);
+      if (!parsed) {
+        throw new Error('Role assignment response did not contain valid JSON.');
+      }
       const assignments = Array.isArray(parsed.assignments) ? parsed.assignments : [];
       const newRoles = Array.isArray(parsed.newRoles) ? parsed.newRoles : [];
 
@@ -226,7 +277,7 @@ Return a JSON object with:
       for (const newRole of newRoles) {
         emergentRoles.push({
           roleId: newRole.roleId ?? `role_${uuidv4()}`,
-          personaId: newRole.personaId ?? 'generalist',
+          personaId: newRole.personaId ?? DEFAULT_EMERGENT_PERSONA_ID,
           instruction: newRole.instruction ?? '',
           capabilities: Array.isArray(newRole.capabilities) ? newRole.capabilities : [],
           taskIds: tasks.filter((t) => t.assignedRoleId === newRole.roleId).map((t) => t.taskId),
