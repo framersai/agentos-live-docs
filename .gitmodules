@@ -4,9 +4,6 @@
 [submodule "packages/agentos-extensions"]
 	path = packages/agentos-extensions
 	url = git@github.com:framersai/agentos-extensions.git
-[submodule "packages/agentos-guardrails"]
-	path = packages/agentos-guardrails
-	url = git@github.com:framersai/agentos-guardrails.git
 [submodule "apps/agentos-client"]
 	path = apps/agentos-client
 	url = git@github.com:framersai/agentos-client.git
