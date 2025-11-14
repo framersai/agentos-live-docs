@@ -169,7 +169,7 @@ function detectPlatform(): Platform {
 
 ## 🚀 Usage Examples
 
-### Web (agentos-client)
+### Web (agentos-workbench)
 
 ```typescript
 import { createAgentOSStorage } from '@framers/sql-storage-adapter/agentos';
@@ -258,7 +258,7 @@ await storage.open();
 
 ## 📦 What's Already Working
 
-### agentos-client (Web)
+### agentos-workbench (Web)
 
 ✅ **Sessions persist to IndexedDB** (via Zustand + `idbStorage.ts`)
 - Sessions, conversations, personas saved locally

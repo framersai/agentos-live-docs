@@ -27,7 +27,7 @@ The repository is organised as a pnpm workspace so the production apps, the Agen
 | `backend/` | Express + TypeScript API (auth, billing, orchestration endpoints). |
 | `packages/agentos/` | Publishable TypeScript runtime (`@framers/agentos`) powering orchestration, streaming, memory, and tool routing. |
 | `apps/agentos.sh/` | Next.js + Tailwind marketing site for agentos.sh (light/dark, motion, roadmap, launch CTAs). |
-| `apps/agentos-client/` | React + Vite workbench to inspect AgentOS sessions, tool calls, and transcripts. |
+| `apps/agentos-workbench/` | React + Vite workbench to inspect AgentOS sessions, tool calls, and transcripts. |
 | `docs/` | Architecture notes, configuration, API reference, migration plans. |
 | `shared/` | Cross-cutting helpers/constants shared by backend + frontend. |
 
@@ -36,7 +36,7 @@ The repository is organised as a pnpm workspace so the production apps, the Agen
 - **Frontend** - Vue 3 + Vite + Tailwind with composition-based state and Supabase-friendly auth (see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)).
 - **Backend** - Modular Express feature folders, optional Supabase + Lemon Squeezy integration, rate-limited public demo routes.
 - **AgentOS runtime** - Session-aware personas, tool permissioning, guardrail policy hooks, retrieval/memory lifecycle policies, async streaming bridges.
-- **AgentOS surfaces** - `apps/agentos.sh` (marketing) and `apps/agentos-client` (developer cockpit) consume the runtime without touching the proprietary voice UI.
+- **AgentOS surfaces** - `apps/agentos.sh` (marketing) and `apps/agentos-workbench` (developer cockpit) consume the runtime without touching the proprietary voice UI.
 - **Data flow** - Voice/Text -> `/api/chat` -> AgentOS -> LLM providers with knowledge retrieval and billing-tier enforcement.
 
 ## Getting Started
@@ -49,7 +49,7 @@ The repository is organised as a pnpm workspace so the production apps, the Agen
 2. **Configure environment variables**
    - Copy `.env.sample` -> `.env` (backend).
    - Copy `frontend/.env.supabase-stripe.example` -> `frontend/.env.local`.
-   - Optional: copy `apps/agentos-client/.env.example` -> `apps/agentos-client/.env.local` if you need to override the AgentOS proxy paths.
+   - Optional: copy `apps/agentos-workbench/.env.example` -> `apps/agentos-workbench/.env.local` if you need to override the AgentOS proxy paths.
    - Populate values listed in [`CONFIGURATION.md`](CONFIGURATION.md) (ports, JWT secrets, LLM keys, Supabase, Lemon Squeezy, AgentOS flags, etc.).
 3. **Run development servers**
    ```bash
@@ -64,7 +64,7 @@ The repository is organised as a pnpm workspace so the production apps, the Agen
    ```bash
    npm run build   # builds frontend, backend, and @framers/agentos
    npm run start   # starts the compiled backend + preview frontend
-   # Optional: pnpm run build:landing && pnpm run build:agentos-client
+   # Optional: pnpm run build:landing && pnpm run build:agentos-workbench
    ```
 5. **Scoped workflows**
    ```bash
@@ -72,7 +72,7 @@ The repository is organised as a pnpm workspace so the production apps, the Agen
    pnpm --filter @framers/agentos build      # emit dist/ bundles for publishing
    pnpm --filter @framers/agentos run docs   # generate TypeDoc output
    pnpm --filter @framersai/agentos.sh dev    # work on agentos.sh
-   pnpm --filter @framersai/agentos-client dev     # iterate on the cockpit
+   pnpm --filter @framersai/agentos-workbench dev     # iterate on the cockpit
    ```
 
 ## AgentOS Package Readiness
