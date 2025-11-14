@@ -154,7 +154,7 @@ export const agentBundlesService = {
     const personaId =
       (agent.config?.personaId as string | undefined) ??
       (agent.config?.selectedPersonaId as string | undefined) ??
-      'nerf_generalist';
+      'v_researcher';
 
     const personaDefinition =
       listAgentOSPersonas().find((persona) => persona.personaId === personaId) ??

@@ -331,6 +331,28 @@ const ensureColumnExists = async (
   }
 };
 
+const ensureWorkbenchUser = async (db: StorageAdapter): Promise<void> => {
+  const userId = process.env.AGENTOS_WORKBENCH_USER_ID ?? 'agentos-workbench-user';
+  const email = process.env.AGENTOS_WORKBENCH_USER_EMAIL ?? `${userId}@local.dev`;
+
+  const existing = await db.get<{ id: string }>(
+    'SELECT id FROM app_users WHERE id = ? OR email = ? LIMIT 1',
+    [userId, email]
+  );
+  if (existing) {
+    return;
+  }
+
+  const now = Date.now();
+  await db.run(
+    `INSERT INTO app_users (
+      id, email, password_hash, subscription_status, subscription_tier, is_active, created_at, updated_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+    [userId, email, 'workbench-placeholder', 'active', 'unlimited', 1, now, now]
+  );
+  console.log(`[AppDatabase] Seeded default workbench user "${userId}".`);
+};
+
 export const initializeAppDatabase = async (): Promise<void> => {
   if (initPromise) {
     return initPromise;
@@ -366,6 +388,7 @@ export const initializeAppDatabase = async (): Promise<void> => {
           ? 'ALTER TABLE app_users ADD COLUMN subscription_plan_id TEXT'
           : 'ALTER TABLE app_users ADD COLUMN subscription_plan_id TEXT;'
       );
+      await ensureWorkbenchUser(adapter);
     } catch (error) {
       usingInMemory = true;
       console.warn('[AppDatabase] Failed to initialise persistent storage. Falling back to in-memory sql.js.', error);
@@ -374,6 +397,7 @@ export const initializeAppDatabase = async (): Promise<void> => {
         priority: ['sqljs']
       });
       await runInitialSchema(adapter);
+      await ensureWorkbenchUser(adapter);
     }
   })();
 
