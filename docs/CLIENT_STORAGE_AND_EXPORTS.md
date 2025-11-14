@@ -24,7 +24,7 @@ This client stores your data locally in your browser using IndexedDB (via `@fram
 ## Import
 
 - Use Settings → Data → “Import…”.
-- Accepted schema: `agentos-client-export-v1` (produced by this client). Personas, agencies, and sessions are merged into your local store.
+- Accepted schema: `agentos-workbench-export-v1` (produced by this client). Personas, agencies, and sessions are merged into your local store.
 
 ## Clear storage
 

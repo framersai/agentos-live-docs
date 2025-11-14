@@ -132,7 +132,7 @@ VITE_AGENTOS_WORKBENCH_USER_ID=agentos-workbench-user
 
 Restart `npm run dev` after editing Vite environment files.
 
-- The AgentOS workbench (`apps/agentos-client`) inherits these `VITE_AGENTOS_*` keys. Leave `VITE_AGENTOS_BASE_URL` blank to use the backend proxy (`/api/agentos`) or point it directly at a remote AgentOS deployment.
+- The AgentOS workbench (`apps/agentos-workbench`) inherits these `VITE_AGENTOS_*` keys. Leave `VITE_AGENTOS_BASE_URL` blank to use the backend proxy (`/api/agentos`) or point it directly at a remote AgentOS deployment.
 - `VITE_AGENTOS_WITH_CREDENTIALS` controls whether the EventSource includes cookies—set it to `false` when proxying across origins without session auth.
 
 ## 8. Rate Limiting & Demo Mode

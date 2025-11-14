@@ -26,7 +26,7 @@ SUBMODULES=(
   "packages/agentos|git@github.com:framersai/agentos.git|master|apache-2.0"
   "packages/agentos-extensions|git@github.com:framersai/agentos-extensions.git|master|mit"
   "packages/agentos-guardrails|git@github.com:framersai/agentos-guardrails.git|master|mit"
-  "apps/agentos-client|git@github.com:framersai/agentos-client.git|master|mit"
+  "apps/agentos-workbench|git@github.com:framersai/agentos-workbench.git|master|mit"
   "apps/agentos.sh|git@github.com:framersai/agentos.sh.git|master|mit"
   "packages/sql-storage-adapter|git@github.com:framersai/sql-storage-adapter.git|master|mit"
 )
@@ -391,7 +391,7 @@ ensure_readme_links() {
 - AgentOS core: https://github.com/framersai/agentos
 - Extensions: https://github.com/framersai/agentos-extensions
 - Guardrails: https://github.com/framersai/agentos-guardrails
-- Client: https://github.com/framersai/agentos-client
+- Workbench: https://github.com/framersai/agentos-workbench
 - Site: https://github.com/framersai/agentos.sh
 ## Contributing & Security
 - Contributing: ./\.github/CONTRIBUTING.md

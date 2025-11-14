@@ -80,7 +80,7 @@ app.use(cors({
   origin: [
     frontendUrl,
     'http://localhost:5173', // Default Vite dev port, useful for flexibility
-    'http://localhost:5175', // Vite dev port used by agentos-client
+    'http://localhost:5175', // Vite dev port used by agentos-workbench
     ...(process.env.ADDITIONAL_CORS_ORIGINS ? process.env.ADDITIONAL_CORS_ORIGINS.split(',') : []),
   ],
   credentials: true,

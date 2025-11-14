@@ -4,9 +4,6 @@
 [submodule "packages/agentos-extensions"]
 	path = packages/agentos-extensions
 	url = git@github.com:framersai/agentos-extensions.git
-[submodule "apps/agentos-client"]
-	path = apps/agentos-client
-	url = git@github.com:framersai/agentos-client.git
 [submodule "apps/agentos.sh"]
 	path = apps/agentos.sh
 	url = git@github.com:framersai/agentos.sh.git
@@ -18,3 +15,6 @@
 	path = apps/frame.dev
 	url = https://github.com/framersai/frame.dev.git
 	branch = master
+[submodule "apps/agentos-workbench"]
+	path = apps/agentos-workbench
+	url = git@github.com:framersai/agentos-workbench.git

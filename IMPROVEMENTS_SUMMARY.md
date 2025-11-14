@@ -38,7 +38,7 @@ BRAVE_SEARCH_API_KEY=your_api_key_here
 - Ensured AgentOS service methods are properly exposed
 
 ### 3. 📊 Enhanced Logging & Debugging
-**Location**: `apps/agentos-client/src/components/EnhancedSessionInspector.tsx`
+**Location**: `apps/agentos-workbench/src/components/EnhancedSessionInspector.tsx`
 
 **New Features**:
 - **Debug Mode Toggle**: View detailed telemetry logs in console
@@ -52,7 +52,7 @@ BRAVE_SEARCH_API_KEY=your_api_key_here
 - **Copy to Clipboard**: Quick copy of any telemetry data
 
 ### 4. 📤 Data Export Capabilities
-**Location**: `apps/agentos-client/src/lib/dataExport.ts`
+**Location**: `apps/agentos-workbench/src/lib/dataExport.ts`
 
 **Export Formats**:
 - **JSON**: Complete session data with messages and telemetry
@@ -66,7 +66,7 @@ BRAVE_SEARCH_API_KEY=your_api_key_here
 - Automatic file download with appropriate naming
 
 ### 5. 🏢 Agency Workflow Output Display
-**Location**: `apps/agentos-client/src/components/EnhancedSessionInspector.tsx`
+**Location**: `apps/agentos-workbench/src/components/EnhancedSessionInspector.tsx`
 
 **Improvements**:
 - Proper rendering of agency updates
@@ -77,12 +77,12 @@ BRAVE_SEARCH_API_KEY=your_api_key_here
 
 ### 6. 📚 Documentation & Setup Guides
 **New Files**:
-- `apps/agentos-client/SEARCH_SETUP.md`: Complete search API setup guide
+- `apps/agentos-workbench/SEARCH_SETUP.md`: Complete search API setup guide
 - `IMPROVEMENTS_SUMMARY.md`: This summary document
 
 **Updated Files**:
 - `README.md`: Added search tool quick setup section
-- `apps/agentos-client/README.md`: Added export and debugging sections
+- `apps/agentos-workbench/README.md`: Added export and debugging sections
 
 ## 🏗️ Architecture Changes
 
@@ -107,7 +107,7 @@ Added search provider service with:
 ## 🚀 How to Use
 
 ### For Developers
-1. **Set up search API**: Follow [SEARCH_SETUP.md](apps/agentos-client/SEARCH_SETUP.md)
+1. **Set up search API**: Follow [SEARCH_SETUP.md](apps/agentos-workbench/SEARCH_SETUP.md)
 2. **Enable debug mode**: Click bug icon in Session Inspector
 3. **Export data**: Use JSON/CSV/Markdown buttons in toolbar
 4. **Filter logs**: Use filter buttons for specific log types
