@@ -102,20 +102,21 @@ jobs:
             echo "[deploy] Init/update submodules..."
             git -C "$APP_DIR" submodule update --init --recursive
 
-            echo "[install] Install workspace dependencies (backend + frontend) with pnpm..."
+            echo "[install] Install workspace dependencies with pnpm..."
             if command -v pnpm >/dev/null 2>&1; then
-              pnpm -C "$APP_DIR" install --frozen-lockfile \
-                --filter "voice-chat-assistant-backend..." \
-                --filter "voice-chat-assistant-frontend..."
+              pnpm -C "$APP_DIR" install --frozen-lockfile
             else
               echo "pnpm not found"; exit 1
             fi
 
+            echo "[packages] Build internal workspace libraries (shared + storage + agentos)..."
+            pnpm -C "$APP_DIR" --filter "@framers/shared" run build
+            pnpm -C "$APP_DIR" --filter "@framers/sql-storage-adapter" run build
+            pnpm -C "$APP_DIR" --filter "@framers/agentos" run build
+
             echo "[backend] Build..."
             if [ -d "$APP_DIR/backend" ]; then
               pnpm -C "$APP_DIR" --filter "voice-chat-assistant-backend" run build
-              # Remove dev deps for backend to save space
-              pnpm -C "$APP_DIR" --filter "voice-chat-assistant-backend" prune --prod || true
             else
               echo "[warn] backend directory not found at $APP_DIR/backend"
             fi
