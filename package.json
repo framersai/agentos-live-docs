@@ -1,89 +1,39 @@
 {
-  "name": "voice-chat-assistant",
-  "version": "0.1.0",
+  "name": "openstrand",
+  "version": "1.0.0",
   "private": true,
-  "description": "Voice-first assistant monorepo (backend, VCA frontend, landing app, AgentOS core library)",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/manicinc/voice-chat-assistant.git"
-  },
-  "bugs": {
-    "url": "https://github.com/manicinc/voice-chat-assistant/issues"
-  },
-  "homepage": "https://github.com/manicinc/voice-chat-assistant#readme",
+  "description": "OpenStrand monorepo - AI-native knowledge infrastructure.",
   "license": "MIT",
-  "packageManager": "pnpm@10.15.1",
   "engines": {
-    "node": ">=18.18.0",
-    "pnpm": ">=8"
+    "node": ">=18.17.0"
+  },
+  "scripts": {
+    "dev": "concurrently --kill-others-on-fail --prefix-colors bgBlue.bold,bgGreen.bold,bgMagenta.bold --names backend,frontend,admin \"npm run dev --workspace=@framers/openstrand-teams-backend\" \"npm run dev --workspace=openstrand-app\" \"npm run dev --workspace=openstrand-admin\"",
+    "dev:admin": "npm run dev --workspace openstrand-admin",
+    "dev:plugin": "npm run dev:plugin --workspace @framers/openstrand-plugins",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "format": "npm run format --workspaces --if-present",
+    "format:check": "npm run format:check --workspaces --if-present",
+    "typecheck": "npm run type-check --workspaces --if-present",
+    "clean": "rimraf .devcache node_modules packages/**/dist packages/**/node_modules openstrand-app/.next openstrand-app/node_modules openstrand-admin/.next openstrand-admin/node_modules"
   },
   "workspaces": [
-    "backend",
-    "frontend",
-    "packages/*",
-    "apps/*"
+    "openstrand-app",
+    "openstrand-admin",
+    "packages/*"
   ],
-  "scripts": {
-    "prepare": "husky install",
-    "install-all": "pnpm install",
-    "dev": "pnpm run dev:workbench",
-    "dev:vca": "concurrently \"pnpm --filter ./backend run dev\" \"pnpm --filter ./frontend run dev\"",
-    "dev:workbench": "concurrently \"pnpm --filter ./backend run dev\" \"pnpm --filter @framersai/agentos-client dev\"",
-    "dev:landing": "concurrently \"pnpm --filter ./backend run dev\" \"pnpm --filter @framersai/agentos.sh dev\"",
-    "dev:landing:solo": "pnpm --filter @framersai/agentos.sh dev",
-    "build": "pnpm run build:agentos && pnpm run build:frontend && pnpm run build:backend",
-    "build:agentos": "pnpm -r --filter \"@framers/*\" run build",
-    "build:frontend": "pnpm --filter ./frontend run build",
-    "build:backend": "pnpm --filter ./backend run build",
-    "build:landing": "pnpm --filter @framersai/agentos.sh build",
-    "start:prod": "pnpm run build && concurrently \"pnpm --filter ./backend start\" \"pnpm --filter ./frontend run preview -- --host 0.0.0.0\"",
-    "typecheck": "pnpm -r run typecheck",
-    "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
-    "lint:fix": "eslint . --ext .ts,.tsx,.js,.jsx --fix",
-    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
-    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
-    "test": "pnpm -r --filter @framers/agentos run test",
-    "test:watch": "pnpm --filter @framers/agentos run dev:test",
-    "coverage": "pnpm --filter @framers/agentos run test -- --coverage",
-    "docs": "pnpm run docs:library && pnpm run docs:api",
-    "docs:library": "typedoc --options typedoc.json",
-    "docs:api": "node scripts/generate-api-docs.mjs",
-    "docs:serve": "npx http-server docs-generated -p 8080 -o",
-    "clean": "pnpm -r exec rimraf dist"
-  },
   "devDependencies": {
-    "@types/natural": "^5.1.5",
-    "@types/node": "^20.12.12",
-    "@typescript-eslint/eslint-plugin": "^6.0.0",
-    "@typescript-eslint/parser": "^6.0.0",
     "concurrently": "^8.2.2",
-    "eslint": "^8.57.0",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-prettier": "^5.1.3",
-    "husky": "^9.0.11",
-    "postcss-nesting": "^13.0.1",
-    "prettier": "^3.3.2",
-    "typedoc": "^0.28.14",
-    "typedoc-plugin-markdown": "^4.9.0"
+    "rimraf": "^5.0.5",
+    "semantic-release": "^24.0.0",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/github": "^10.3.2",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/npm": "^12.0.1",
+    "@semantic-release/commit-analyzer": "^13.0.0",
+    "@semantic-release/release-notes-generator": "^13.0.0"
   },
-  "dependencies": {
-    "highlight.js": "^11.11.1",
-    "jszip": "^3.10.1",
-    "pino": "^9.3.0",
-    "stemmer": "^2.0.1"
-  },
-  "keywords": [
-    "voice",
-    "assistant",
-    "speech",
-    "agentos",
-    "multilingual",
-    "ai"
-  ],
-  "lint-staged": {
-    "**/*.{ts,js,json,md}": [
-      "prettier --write"
-    ]
-  }
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }
-
