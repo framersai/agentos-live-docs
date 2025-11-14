@@ -113,7 +113,13 @@ jobs:
 
             echo "[packages] Build internal workspace libraries (shared + storage + agentos)..."
             pnpm -C "$APP_DIR" --filter "@framers/shared" run build
-            pnpm -C "$APP_DIR" --filter "@framers/sql-storage-adapter" run build
+
+            ADAPTER_DIR="$APP_DIR/packages/sql-storage-adapter"
+            echo "[packages] Build sql-storage-adapter without npx dependency..."
+            pnpm --dir "$ADAPTER_DIR" run clean
+            pnpm --dir "$ADAPTER_DIR" exec tsc -p tsconfig.build.json
+            pnpm --dir "$ADAPTER_DIR" exec node scripts/fix-esm-imports.mjs
+
             pnpm -C "$APP_DIR" --filter "@framers/agentos" run build
 
             echo "[backend] Build..."
