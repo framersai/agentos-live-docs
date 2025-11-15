@@ -138,9 +138,8 @@ Return a JSON array of tasks with this structure:
       conversationId: `decompose_${uuidv4()}`,
       selectedPersonaId: PLANNER_PERSONA_ID,
       textInput: decompositionPrompt,
-      options: {
-        responseFormat: { type: 'json_object' },
-      },
+      // TODO: add responseFormat once ProcessingOptions supports it
+      options: {},
     };
 
     let responseText = '';
@@ -232,9 +231,8 @@ Return a JSON object with:
       conversationId: `assign_${uuidv4()}`,
       selectedPersonaId: COORDINATOR_PERSONA_ID,
       textInput: roleAssignmentPrompt,
-      options: {
-        responseFormat: { type: 'json_object' },
-      },
+      // TODO: add responseFormat once ProcessingOptions supports it
+      options: {},
     };
 
     let responseText = '';
