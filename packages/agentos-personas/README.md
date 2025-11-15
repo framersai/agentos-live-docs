@@ -1,4 +1,22 @@
+<div align="center">
+
+<p align="center">
+  <a href="https://agentos.sh"><img src="../../logos/agentos-primary-no-tagline-transparent-2x.png" alt="AgentOS" height="64" /></a>
+  &nbsp;&nbsp;&nbsp;
+  <a href="https://frame.dev" target="_blank" rel="noopener"><img src="../../logos/frame-logo-green-no-tagline.svg" alt="Frame.dev" height="40" /></a>
+</p>
+
 # @framersai/agentos-personas
+
+Curated personas and marketplace for AgentOS, part of the Frame.dev ecosystem.
+
+*The OS for humans, the codex of humanity.*
+
+[Frame.dev](https://frame.dev) • [AgentOS](https://agentos.sh)
+
+</div>
+
+---
 
 Curated personas and marketplace for AgentOS. This package contains AI agent personalities that can be loaded dynamically into AgentOS.
 

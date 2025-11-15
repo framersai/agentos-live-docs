@@ -8,7 +8,15 @@
   <img src="../logos/agentos-primary-no-tagline-transparent-2x.png" alt="AgentOS" width="260">
 </picture>
 
-### An AgentOS product by <a href="https://frame.dev">Frame.dev</a>
+<p align="center">
+  <a href="https://frame.dev" target="_blank" rel="noopener"><img src="../logos/frame-logo-green-no-tagline.svg" alt="Frame.dev" height="40" /></a>
+</p>
+
+<p align="center"><em>The OS for humans, the codex of humanity.</em></p>
+
+<p align="center">
+  <a href="https://frame.dev">Frame.dev</a> • <a href="https://agentos.sh">AgentOS</a> • <a href="https://vca.chat">VCA</a>
+</p>
 
 </div>
 

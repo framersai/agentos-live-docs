@@ -1,8 +1,26 @@
+<div align="center">
+
+<p align="center">
+  <a href="https://agentos.sh"><img src="../logos/agentos-primary-no-tagline-transparent-2x.png" alt="AgentOS" height="64" /></a>
+  &nbsp;&nbsp;&nbsp;
+  <a href="https://frame.dev" target="_blank" rel="noopener"><img src="../logos/frame-logo-green-no-tagline.svg" alt="Frame.dev" height="40" /></a>
+</p>
+
 # Frontend (Voice Chat Assistant UI)
+
+Multi-agent cockpit UI for Voice Chat Assistant, powered by AgentOS and part of the Frame.dev ecosystem.
+
+*The OS for humans, the codex of humanity.*
+
+[Frame.dev](https://frame.dev) • [AgentOS](https://agentos.sh)
+
+</div>
+
+---
 
 This package contains the Vue 3 + Vite front-end for Voice Chat Assistant. It serves as the multi-agent cockpit for voice conversations, diagramming, transcription and, when enabled, the embedded AgentOS orchestration path.
 
-**Built with [`@framers/agentos`](https://github.com/wearetheframers/agentos)** � Adaptive agent runtime with streaming, tooling, and observability.
+**Built with [`@framers/agentos`](https://github.com/framersai/agentos)** – adaptive agent runtime with streaming, tooling, and observability.
 
 ---
 
