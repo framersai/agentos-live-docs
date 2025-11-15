@@ -1,24 +1,17 @@
-<div align="center">
-  <img src="../../logos/frame-logo-green-no-tagline.svg" alt="Authentication" width="150">
-
 # Authentication Guide
 
-**Secure access to Frame.dev APIs**
+Secure access to Frame.dev APIs.
 
-</div>
+## Overview
 
----
+Frame.dev supports multiple authentication methods:
 
-## 🔐 Overview
-
-Frame.dev supports multiple authentication methods to suit different use cases:
-
-1. **API Keys** - Simple, secure tokens for server-side applications
-2. **OAuth 2.0** - Industry-standard flow for user authorization
-3. **JWT Tokens** - For self-hosted deployments and custom auth
+1. **API Keys** - Simple tokens for server-side applications
+2. **OAuth 2.0** - Standard flow for user authorization
+3. **JWT Tokens** - For self-hosted deployments
 4. **Session Tokens** - For browser-based applications
 
-## 🔑 API Key Authentication
+## API Key Authentication
 
 ### When to Use
 
@@ -29,18 +22,16 @@ Frame.dev supports multiple authentication methods to suit different use cases:
 
 ### Getting API Keys
 
-#### Via Dashboard
-
+Via Dashboard:
 1. Log in to [frame.dev](https://frame.dev)
 2. Navigate to Dashboard → API Keys
 3. Click "Create New Key"
 4. Set permissions and expiry
 5. Copy the key (shown only once)
 
-#### Via CLI
-
+Via CLI:
 ```bash
-# Install Frame CLI
+# Install CLI
 npm install -g @framersai/cli
 
 # Login
@@ -55,22 +46,19 @@ frame api-keys create \
 
 ### Using API Keys
 
-#### HTTP Header
-
+HTTP Header:
 ```http
 GET /v1/vaults
 Authorization: Bearer frm_live_1234567890abcdef
 ```
 
-#### cURL Example
-
+cURL:
 ```bash
 curl -X GET https://api.frame.dev/v1/vaults \
   -H "Authorization: Bearer frm_live_1234567890abcdef"
 ```
 
-#### SDK Example
-
+SDK:
 ```typescript
 import { FrameClient } from '@framersai/sdk';
 
@@ -90,17 +78,15 @@ const client = new FrameClient({
 ### Key Rotation
 
 ```typescript
-// Rotate API key programmatically
 const newKey = await client.apiKeys.rotate('key_id', {
   expiresIn: '90d',
   maintainPermissions: true
 });
 
-// Update your application
 process.env.FRAME_API_KEY = newKey.secret;
 ```
 
-## 🔄 OAuth 2.0 Authentication
+## OAuth 2.0 Authentication
 
 ### When to Use
 
@@ -112,33 +98,27 @@ process.env.FRAME_API_KEY = newKey.secret;
 ### OAuth Flow
 
 ```
-┌─────────────┐                                ┌─────────────┐
-│             │                                │             │
-│   Client    │                                │  Frame.dev  │
-│             │                                │             │
-└─────┬───────┘                                └──────┬──────┘
-      │                                               │
-      │  1. Authorization Request                     │
-      │─────────────────────────────────────────────>│
-      │                                               │
-      │  2. User Authorization                        │
-      │<─────────────────────────────────────────────│
-      │                                               │
-      │  3. Authorization Code                        │
-      │<─────────────────────────────────────────────│
-      │                                               │
-      │  4. Exchange Code for Token                  │
-      │─────────────────────────────────────────────>│
-      │                                               │
-      │  5. Access Token                             │
-      │<─────────────────────────────────────────────│
-      │                                               │
+Client                                Frame.dev
+  │                                       │
+  │  1. Authorization Request             │
+  │─────────────────────────────────────>│
+  │                                       │
+  │  2. User Authorization                │
+  │<─────────────────────────────────────│
+  │                                       │
+  │  3. Authorization Code                │
+  │<─────────────────────────────────────│
+  │                                       │
+  │  4. Exchange Code for Token           │
+  │─────────────────────────────────────>│
+  │                                       │
+  │  5. Access Token                      │
+  │<─────────────────────────────────────│
 ```
 
 ### Implementation
 
-#### 1. Register Your Application
-
+1. Register Application:
 ```http
 POST /v1/oauth/applications
 Content-Type: application/json
@@ -154,8 +134,7 @@ Authorization: Bearer YOUR_API_KEY
 }
 ```
 
-#### 2. Authorization Request
-
+2. Authorization Request:
 ```typescript
 const authUrl = new URL('https://frame.dev/oauth/authorize');
 authUrl.searchParams.append('client_id', CLIENT_ID);
@@ -164,22 +143,18 @@ authUrl.searchParams.append('response_type', 'code');
 authUrl.searchParams.append('scope', 'read:vaults write:strands');
 authUrl.searchParams.append('state', generateState());
 
-// Redirect user to authUrl
 window.location.href = authUrl.toString();
 ```
 
-#### 3. Handle Callback
-
+3. Handle Callback:
 ```typescript
 app.get('/callback', async (req, res) => {
   const { code, state } = req.query;
   
-  // Verify state
   if (state !== savedState) {
     return res.status(400).send('Invalid state');
   }
   
-  // Exchange code for token
   const response = await fetch('https://api.frame.dev/v1/oauth/token', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -193,14 +168,11 @@ app.get('/callback', async (req, res) => {
   });
   
   const { access_token, refresh_token } = await response.json();
-  
-  // Store tokens securely
   await saveTokens(access_token, refresh_token);
 });
 ```
 
-#### 4. Use Access Token
-
+4. Use Access Token:
 ```typescript
 const client = new FrameClient({
   accessToken: access_token
@@ -245,7 +217,7 @@ async function refreshAccessToken(refreshToken: string) {
 | `write:profile` | Modify user profile |
 | `admin` | Full administrative access |
 
-## 🎫 JWT Authentication
+## JWT Authentication
 
 ### When to Use
 
@@ -256,15 +228,17 @@ async function refreshAccessToken(refreshToken: string) {
 
 ### JWT Structure
 
-```typescript
-// Header
+Header:
+```json
 {
   "alg": "RS256",
   "typ": "JWT",
   "kid": "key-id"
 }
+```
 
-// Payload
+Payload:
+```json
 {
   "sub": "user-id",
   "iss": "https://your-auth-server.com",
@@ -320,13 +294,12 @@ fetch('https://api.frame.dev/v1/vaults', {
 ### JWT Validation
 
 Frame.dev validates JWTs by:
-
 1. Verifying signature with public key
 2. Checking expiration
 3. Validating issuer and audience
 4. Verifying permissions
 
-## 🍪 Session Authentication
+## Session Authentication
 
 ### When to Use
 
@@ -337,7 +310,6 @@ Frame.dev validates JWTs by:
 ### Creating Sessions
 
 ```typescript
-// Login endpoint
 app.post('/api/login', async (req, res) => {
   const { email, password } = req.body;
   
@@ -349,7 +321,6 @@ app.post('/api/login', async (req, res) => {
   
   const { sessionToken } = await response.json();
   
-  // Set secure cookie
   res.cookie('frame_session', sessionToken, {
     httpOnly: true,
     secure: true,
@@ -362,7 +333,7 @@ app.post('/api/login', async (req, res) => {
 ### Using Sessions
 
 ```typescript
-// Include session cookie in requests
+// Include session cookie
 fetch('https://api.frame.dev/v1/vaults', {
   credentials: 'include'
 });
@@ -376,25 +347,23 @@ const client = new FrameClient({
 });
 ```
 
-## 🔒 Security Best Practices
+## Security Best Practices
 
-### 1. Secure Storage
+### Secure Storage
 
-```typescript
-// Never store tokens in:
-// ❌ localStorage (XSS vulnerable)
-// ❌ sessionStorage (XSS vulnerable)
-// ❌ Plain text files
-// ❌ Version control
+Never store tokens in:
+- localStorage (XSS vulnerable)
+- sessionStorage (XSS vulnerable)
+- Plain text files
+- Version control
 
-// Secure storage options:
-// ✅ Environment variables (server-side)
-// ✅ Secure key management services
-// ✅ Encrypted databases
-// ✅ HttpOnly cookies (browser)
-```
+Secure storage options:
+- Environment variables (server-side)
+- Secure key management services
+- Encrypted databases
+- HttpOnly cookies (browser)
 
-### 2. Token Rotation
+### Token Rotation
 
 ```typescript
 class TokenManager {
@@ -403,7 +372,6 @@ class TokenManager {
   async initialize() {
     await this.refreshToken();
     
-    // Refresh token before expiry
     this.refreshTimer = setInterval(
       () => this.refreshToken(),
       50 * 60 * 1000 // 50 minutes
@@ -417,7 +385,7 @@ class TokenManager {
 }
 ```
 
-### 3. Least Privilege
+### Least Privilege
 
 ```typescript
 // Request only necessary scopes
@@ -427,10 +395,9 @@ const client = new FrameClient({
 });
 ```
 
-### 4. Request Signing
+### Request Signing
 
 ```typescript
-// Sign requests for additional security
 import crypto from 'crypto';
 
 function signRequest(method: string, path: string, body: any) {
@@ -449,7 +416,7 @@ function signRequest(method: string, path: string, body: any) {
 }
 ```
 
-## 🚨 Error Handling
+## Error Handling
 
 ### Common Auth Errors
 
@@ -461,28 +428,24 @@ function signRequest(method: string, path: string, body: any) {
 | `INVALID_CREDENTIALS` | Wrong username/password | Verify credentials |
 | `RATE_LIMITED` | Too many auth attempts | Wait and retry |
 
-### Error Handling Example
+### Example
 
 ```typescript
 try {
   await client.vaults.list();
 } catch (error) {
   if (error.code === 'EXPIRED_TOKEN') {
-    // Refresh token
     const newToken = await refreshToken();
     client.setToken(newToken);
-    
-    // Retry request
     await client.vaults.list();
   } else if (error.code === 'INSUFFICIENT_SCOPE') {
-    // Request additional permissions
     const authUrl = getAuthUrl(['additional:scope']);
     window.location.href = authUrl;
   }
 }
 ```
 
-## 🔧 Testing Authentication
+## Testing Authentication
 
 ### Test Endpoints
 
@@ -502,35 +465,10 @@ Authorization: Bearer YOUR_TOKEN
 
 ### Test Tokens
 
-For development, use test tokens:
-
+For development:
 ```bash
 # Generate test token
 frame auth test-token \
   --scopes "read:vaults,write:strands" \
   --expires "24h"
 ```
-
-## 📚 Additional Resources
-
-- [OAuth 2.0 Specification](https://oauth.net/2/)
-- [JWT Best Practices](https://tools.ietf.org/html/rfc8725)
-- [Frame.dev Security](https://frame.dev/security)
-- [API Key Management](https://frame.dev/docs/api-keys)
-
----
-
-<div align="center">
-  <br/>
-  <p>
-    <a href="https://frame.dev">Frame.dev</a> •
-    <a href="https://frame.dev/codex">Frame Codex</a> •
-    <a href="https://openstrand.ai">OpenStrand</a>
-  </p>
-  <p>
-    <a href="https://github.com/framersai">GitHub</a> •
-    <a href="https://twitter.com/framersai">Twitter</a>
-  </p>
-  <br/>
-  <sub>Secure your API access</sub>
-</div>
