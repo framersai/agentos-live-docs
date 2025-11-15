@@ -106,7 +106,7 @@ jobs:
 
             echo "[install] Install workspace dependencies with pnpm..."
             if command -v pnpm >/dev/null 2>&1; then
-              pnpm -C "$APP_DIR" install --frozen-lockfile
+              pnpm -C "$APP_DIR" install --no-frozen-lockfile
             else
               echo "pnpm not found"; exit 1
             fi
