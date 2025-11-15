@@ -160,14 +160,16 @@ jobs:
 
             echo "[health] GET /health on ${PORT:-3333} (with retries)..."
             health_ok=0
-            for attempt in $(seq 1 10); do
+            health_attempts=${BACKEND_HEALTH_ATTEMPTS:-20}
+            health_sleep=${BACKEND_HEALTH_SLEEP:-5}
+            for attempt in $(seq 1 $health_attempts); do
               if curl -fsS "http://127.0.0.1:${PORT:-3333}/health" >/dev/null 2>&1 ; then
                 health_ok=1
                 echo "[health] backend is up after attempt ${attempt}."
                 break
               fi
-              echo "[health] attempt ${attempt} failed; retrying in 3s..."
-              sleep 3
+              echo "[health] attempt ${attempt}/${health_attempts} failed; retrying in ${health_sleep}s..."
+              sleep "$health_sleep"
             done
             if [ "$health_ok" -ne 1 ]; then
               echo "[health] backend failed to start after retries"; exit 1
