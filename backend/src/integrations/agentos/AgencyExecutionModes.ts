@@ -202,8 +202,9 @@ export class DependencyGraphAnalyzer {
 
     // Initialize nodes
     for (const task of tasks) {
-      const taskId = 'taskId' in task ? task.taskId : task.taskId;
-      const deps = 'dependencies' in task ? task.dependencies : [];
+      // All task variants share taskId & dependencies, no need for conditional narrowing
+      const taskId = task.taskId;
+      const deps = task.dependencies ?? [];
       const priority = 'priority' in task ? task.priority : 5;
 
       nodes.set(taskId, {
