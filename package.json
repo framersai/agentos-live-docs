@@ -12,6 +12,7 @@
     "dev:admin": "npm run dev --workspace openstrand-admin",
     "dev:plugin": "npm run dev:plugin --workspace @framers/openstrand-plugins",
     "build": "npm run build --workspaces --if-present",
+    "install:hooks": "node scripts/installHooks.mjs",
     "test": "npm run test --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present",
     "format": "npm run format --workspaces --if-present",
