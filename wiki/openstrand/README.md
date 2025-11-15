@@ -1,6 +1,8 @@
 # OpenStrand
 
-AI-native personal knowledge management system.
+AI-native personal knowledge management system built on Frame Codex.
+
+*The OS for humans, the codex of humanity.*
 
 ## Overview
 

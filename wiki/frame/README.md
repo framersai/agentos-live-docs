@@ -1,6 +1,8 @@
 # Frame.dev
 
-AI infrastructure for adaptive intelligence and denoising the web.
+AI infrastructure for adaptive intelligence, superintelligence, and denoising the web.
+
+*The OS for humans, the codex of humanity.*
 
 ## Mission
 

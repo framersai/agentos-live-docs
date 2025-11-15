@@ -1,6 +1,8 @@
 # Frame.dev API Documentation
 
-Integration guide for Frame ecosystem APIs.
+Integration guide for Frame ecosystem APIs powering AI agents and superintelligence.
+
+*The OS for humans, the codex of humanity.*
 
 > **🚧 Work in Progress**
 > 
