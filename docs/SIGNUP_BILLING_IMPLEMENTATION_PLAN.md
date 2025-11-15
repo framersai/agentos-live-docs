@@ -9,7 +9,7 @@ owner: manicinc/product
 
 1. Deliver a production-ready registration flow that:
    - Collects user credentials (email + password) and creates a Supabase user.
-   - Allows visitors to select a pricing tier and complete payment via Stripe.
+   - Allows visitors to select a pricing tier and complete payment via Stripe (or Lemon Squeezy if configured).
    - Activates the purchased plan automatically after checkout (via webhook + backend sync).
 2. Replace demo placeholders on the landing page with live plan cards that deep-link into the registration flow.
 3. Improve i18n polish on marketing pages (strings in locale files, fade transitions already in place).

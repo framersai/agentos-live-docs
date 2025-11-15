@@ -2,6 +2,10 @@
 
 This note defines the commercial plans, daily token budgets, and billing integrations for Voice Chat Assistant. All plan metadata lives in `shared/planCatalog.ts` so both backend and frontend read the same source of truth.
 
+> **AgentOS core vs billing**
+> 
+> AgentOS core (`@framers/agentos`) does not implement billing or plan logic. It only consumes an `ISubscriptionService` interface (typically backed by your backend and plan catalog) to decide whether a user can access a given persona or tool. Everything in this document applies to the **SaaS app and backend**, not to the core library itself.
+
 ## Plan Catalog Overview
 
 | Plan | Monthly Price | Usage Allocation | Daily Platform Allowance | BYO Keys | Audience |

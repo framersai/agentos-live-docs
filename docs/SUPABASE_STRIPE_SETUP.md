@@ -59,7 +59,7 @@ Restart both frontend and backend after editing the env files so the values are 
 
 # 2. Stripe Configuration
 
-We use Stripe Checkout instead of Lemon Squeezy. Each catalog plan in `shared/planCatalog.ts` has entries for Stripe product and price IDs.
+Stripe is the primary billing provider for the reference app. Each catalog plan in `shared/planCatalog.ts` has entries for Stripe product and price IDs. AgentOS core does not talk to Stripe directly – the backend handles all checkout and webhook flows.
 
 1. In the Stripe dashboard (test mode is fine for dev), create Products & Prices for each plan you expose (`free` has no Checkout).  
 2. Copy the Product ID (`prod_...`) and Price ID (`price_...`) for each plan tier.  
