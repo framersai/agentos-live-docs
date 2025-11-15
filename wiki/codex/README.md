@@ -1,83 +1,57 @@
-<div align="center">
-  <img src="../../logos/frame-logo-green-no-tagline.svg" alt="Frame Codex" width="150">
-
 # Frame Codex
 
-**The codex of humanity for LLM knowledge retrieval**
+Knowledge repository for LLM retrieval.
 
-[Browse Codex](https://frame.dev/codex) • [GitHub](https://github.com/framersai/codex) • [Contribute](#contributing)
+## Overview
 
-</div>
-
----
-
-## 📚 What is Frame Codex?
-
-Frame Codex is an open-source, structured knowledge repository designed to be the definitive source of high-quality information for AI systems. It serves as a "codex of humanity" - a comprehensive collection of human knowledge optimized for Large Language Model (LLM) retrieval and understanding.
+Frame Codex is an open-source, structured knowledge repository designed for Large Language Model consumption. It serves as a comprehensive collection of human knowledge organized for efficient AI retrieval.
 
 ### Key Principles
 
-- **🌍 Open & Accessible** - Free for all to use, modify, and distribute
-- **🎯 AI-Optimized** - Structured for efficient LLM consumption
-- **✅ Quality-First** - Curated, verified, and maintained content
-- **🔗 Interconnected** - Rich relationships between knowledge units
-- **📈 Scalable** - Designed for millions of knowledge entries
+- Open and accessible
+- AI-optimized structure
+- Quality-focused content
+- Interconnected relationships
+- Scalable architecture
 
-## 🏗️ Architecture
+## Architecture
 
-Frame Codex uses a three-tier knowledge organization system:
+Frame Codex uses three-tier knowledge organization:
 
 ```
-┌─────────────────────────────────────────────┐
-│                   WEAVE                      │
-│          (Knowledge Universe)                │
-│  ┌─────────────────────────────────────┐   │
-│  │              LOOM                    │   │
-│  │       (Topic Collection)             │   │
-│  │  ┌─────────────────────────────┐   │   │
-│  │  │         STRAND               │   │   │
-│  │  │   (Atomic Knowledge Unit)    │   │   │
-│  │  └─────────────────────────────┘   │   │
-│  └─────────────────────────────────────┘   │
-└─────────────────────────────────────────────┘
+WEAVE (Knowledge Universe)
+└── LOOM (Topic Collection)  
+    └── STRAND (Atomic Knowledge Unit)
 ```
 
 ### Terminology
 
-- **Strand**: The atomic unit of knowledge (document, image, media, or asset file)
-- **Loom**: A curated collection of related strands forming a topic or module
-- **Weave**: An entire universe of strands with no relationships to other weaves
+- **Strand**: Atomic unit of knowledge (document, image, media, asset)
+- **Loom**: Curated collection of related strands
+- **Weave**: Complete universe of strands with no cross-weave relationships
 
-## 🗂️ Repository Structure
+## Repository Structure
 
 ```
 codex/
 ├── weaves/                 # Knowledge universes
-│   ├── science/           # Science weave
-│   │   ├── weave.yaml    # Weave manifest
-│   │   └── looms/        # Topic collections
-│   │       ├── physics/
-│   │       ├── biology/
-│   │       └── chemistry/
-│   ├── technology/        # Technology weave
-│   └── humanities/        # Humanities weave
+│   ├── science/
+│   ├── technology/
+│   └── humanities/
 ├── schema/                # Data schemas
-│   ├── weave.schema.yaml
-│   ├── loom.schema.yaml
-│   └── strand.schema.yaml
-├── scripts/              # Build and maintenance scripts
+├── scripts/              # Build scripts
 ├── assets/               # Shared assets
-└── index.json           # Generated search index
+└── index.json           # Search index
 ```
 
-## 📝 Data Schemas
+## Data Schemas
 
-### Strand Schema (Frontmatter)
+### Strand Frontmatter
 
 ```yaml
 ---
-id: "uuid-here"
-slug: "human-readable-slug"
+id: "uuid"
+slug: "url-safe-slug"
 title: "Knowledge Title"
 summary: "Brief description"
 version: "1.0.0"
@@ -85,74 +59,65 @@ contentType: "text/markdown"
 difficulty: "intermediate"
 taxonomy:
   subjects: ["AI", "Machine Learning"]
-  topics: ["Neural Networks", "Deep Learning"]
-  subtopics: ["Transformers", "Attention Mechanisms"]
+  topics: ["Neural Networks"]
+  subtopics: ["Transformers"]
 relationships:
   - type: "prerequisite"
     target: "strand-id"
-  - type: "related"
-    target: "another-strand-id"
 publishing:
   author: "Author Name"
   created: "2024-01-01"
-  modified: "2024-01-15"
   license: "CC-BY-4.0"
 ---
-
-# Content begins here...
 ```
 
-### Loom Schema
+### Loom Manifest
 
 ```yaml
 slug: "topic-slug"
-title: "Topic Title"
+title: "Topic Title"  
 summary: "Topic overview"
 tags: ["tag1", "tag2"]
 ordering:
-  type: "sequential"  # or "hierarchical", "graph"
-  sequence: ["strand-1", "strand-2", "strand-3"]
+  type: "sequential"
+  sequence: ["strand-1", "strand-2"]
 relationships:
   - type: "parent"
     target: "parent-loom"
-  - type: "sibling"
-    target: "related-loom"
 ```
 
-### Weave Schema
+### Weave Configuration
 
 ```yaml
-slug: "weave-identifier"
-title: "Knowledge Universe Title"
-description: "Comprehensive description"
+slug: "weave-id"
+title: "Knowledge Universe"
+description: "Description"
 maintainedBy:
   organization: "Frame.dev"
   contact: "codex@frame.dev"
 license: "CC-BY-4.0"
-tags: ["education", "reference", "ai-training"]
+tags: ["education", "reference"]
 ```
 
-## 🚀 Usage
+## Usage
 
 ### For AI/LLM Integration
 
 ```python
-# Example: Loading Frame Codex for RAG
 import requests
-import json
 
-# Fetch the index
+# Fetch index
 index = requests.get('https://raw.githubusercontent.com/framersai/codex/main/index.json').json()
 
-# Search for content
+# Search content
 def search_codex(query, index):
     results = []
     for item in index['strands']:
-        if query.lower() in item['title'].lower() or query.lower() in item['summary'].lower():
+        if query.lower() in item['title'].lower():
             results.append(item)
     return results
 
-# Retrieve specific strand
+# Retrieve strand
 def get_strand(weave, loom, strand):
     url = f"https://raw.githubusercontent.com/framersai/codex/main/weaves/{weave}/looms/{loom}/strands/{strand}.md"
     return requests.get(url).text
@@ -161,19 +126,15 @@ def get_strand(weave, loom, strand):
 ### For OpenStrand Integration
 
 ```typescript
-// Configure OpenStrand to use Frame Codex
 const config = {
-  sources: [
-    {
-      type: 'frame-codex',
-      url: 'https://github.com/framersai/codex',
-      weaves: ['technology', 'science'],  // Subscribe to specific weaves
-      syncInterval: 3600  // Hourly sync
-    }
-  ]
+  sources: [{
+    type: 'frame-codex',
+    url: 'https://github.com/framersai/codex',
+    weaves: ['technology', 'science'],
+    syncInterval: 3600
+  }]
 };
 
-// Import into your knowledge base
 await openstrand.import({
   source: 'frame-codex',
   options: {
@@ -183,147 +144,85 @@ await openstrand.import({
 });
 ```
 
-## 🤝 Contributing
+## Contributing
 
 ### How to Contribute
 
-1. **Fork the repository**
-   ```bash
-   git clone https://github.com/framersai/codex.git
-   cd codex
-   ```
-
-2. **Create a new branch**
-   ```bash
-   git checkout -b add-knowledge-topic
-   ```
-
-3. **Add your content**
-   - Follow the schema specifications
-   - Ensure high quality and accuracy
-   - Include proper citations
-
-4. **Submit a pull request**
-   - Clear description of additions
-   - Reference any related issues
-   - Pass all validation checks
+1. Fork the repository
+2. Create a new branch
+3. Add content following schemas
+4. Submit pull request
 
 ### Content Guidelines
 
-- **Accuracy**: Ensure all information is correct and up-to-date
-- **Clarity**: Write for both humans and AI systems
-- **Structure**: Follow the schema strictly
-- **Citations**: Include sources for all claims
-- **Licensing**: Ensure content is properly licensed
+- Ensure accuracy
+- Write clearly
+- Follow structure
+- Include citations
+- Proper licensing
 
 ### Quality Standards
 
-- ✅ Factually accurate
-- ✅ Well-structured
-- ✅ Properly formatted
-- ✅ Free of bias
-- ✅ Accessible language
+- Factually accurate
+- Well-structured  
+- Properly formatted
+- Unbiased
+- Accessible language
 
-## 🔧 API Access
+## API Access
 
 ### REST API
 
 ```http
 # Get weave index
 GET https://api.frame.dev/codex/v1/weaves
-Authorization: Bearer {token}
 
-# Search across all content
+# Search content
 GET https://api.frame.dev/codex/v1/search?q=machine+learning
-Authorization: Bearer {token}
 
 # Get specific strand
 GET https://api.frame.dev/codex/v1/weaves/{weave}/looms/{loom}/strands/{strand}
-Authorization: Bearer {token}
 ```
 
-### GraphQL API
+### GraphQL
 
 ```graphql
-query SearchCodex($query: String!, $weaves: [String!]) {
-  searchCodex(query: $query, weaves: $weaves) {
+query SearchCodex($query: String!) {
+  searchCodex(query: $query) {
     strands {
       id
       title
       summary
       weave
       loom
-      relationships {
-        type
-        target {
-          id
-          title
-        }
-      }
-    }
-    facets {
-      weaves
-      subjects
-      topics
     }
   }
 }
 ```
 
-## 📊 Statistics
+## Tools
 
-Current Codex Statistics:
-- **Weaves**: 3 major knowledge universes
-- **Looms**: 50+ topic collections
-- **Strands**: 10,000+ knowledge units
-- **Contributors**: 100+ active contributors
-- **Languages**: English (primary), translations coming
-
-## 🛠️ Tools & Utilities
-
-### Build Index
 ```bash
+# Build index
 npm run build-index
-```
 
-### Validate Schemas
-```bash
+# Validate schemas
 npm run validate
-```
 
-### Check Links
-```bash
+# Check links
 npm run check-links
 ```
 
-## 📄 License
+## License
 
-Frame Codex is released under the Creative Commons Attribution 4.0 International License (CC-BY-4.0). This means you are free to:
-- Share — copy and redistribute the material
-- Adapt — remix, transform, and build upon the material
+Frame Codex content is licensed under CC-BY-4.0. You are free to:
+- Share - copy and redistribute
+- Adapt - remix and transform
 
-As long as you give appropriate credit.
+With attribution requirement.
 
-## 🔗 Links
+## Links
 
-- **Browse Online**: [frame.dev/codex](https://frame.dev/codex)
-- **GitHub**: [github.com/framersai/codex](https://github.com/framersai/codex)
-- **OpenStrand**: [openstrand.ai](https://openstrand.ai)
-- **Frame.dev**: [frame.dev](https://frame.dev)
-
----
-
-<div align="center">
-  <br/>
-  <p>
-    <a href="https://frame.dev">Frame.dev</a> •
-    <a href="https://frame.dev/codex">Frame Codex</a> •
-    <a href="https://openstrand.ai">OpenStrand</a>
-  </p>
-  <p>
-    <a href="https://github.com/framersai">GitHub</a> •
-    <a href="https://twitter.com/framersai">Twitter</a>
-  </p>
-  <br/>
-  <sub>Building humanity's knowledge repository for the AI age</sub>
-</div>
+- Browse: [frame.dev/codex](https://frame.dev/codex)
+- GitHub: [github.com/framersai/codex](https://github.com/framersai/codex)
+- OpenStrand: [openstrand.ai](https://openstrand.ai)

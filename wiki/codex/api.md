@@ -1,35 +1,28 @@
-<div align="center">
-  <img src="../../logos/frame-logo-green-no-tagline.svg" alt="Frame Codex API" width="150">
-
 # Frame Codex API Reference
 
-**RESTful and GraphQL APIs for accessing Frame Codex content**
+REST and GraphQL APIs for accessing Frame Codex content.
 
-</div>
+## Overview
 
----
+The Frame Codex API provides programmatic access to the knowledge repository:
 
-## 🚀 Overview
-
-The Frame Codex API provides programmatic access to the knowledge repository. Available in both REST and GraphQL formats, the API enables:
-
-- Search across all knowledge content
+- Search across all content
 - Retrieve specific strands, looms, and weaves
 - Access relationship graphs
 - Subscribe to content updates
 - Contribute new content (authenticated)
 
-## 🔑 Authentication
+## Authentication
 
 ### API Keys
 
-All API requests require authentication via API key:
+All requests require authentication:
 
 ```http
 Authorization: Bearer YOUR_API_KEY
 ```
 
-Get your API key at [frame.dev/account/api](https://frame.dev/account/api)
+Get API keys at [frame.dev/account/api](https://frame.dev/account/api)
 
 ### Rate Limits
 
@@ -39,7 +32,7 @@ Get your API key at [frame.dev/account/api](https://frame.dev/account/api)
 | Pro | 1,000 | 10,000 | 100/min |
 | Enterprise | Unlimited | Unlimited | Custom |
 
-## 🔌 REST API
+## REST API
 
 ### Base URL
 
@@ -51,13 +44,11 @@ https://api.frame.dev/codex/v1
 
 #### Search Content
 
-Search across all strands in the Codex.
-
 ```http
 GET /search
 ```
 
-**Parameters:**
+Parameters:
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | q | string | Yes | Search query |
@@ -68,13 +59,13 @@ GET /search
 | limit | integer | No | Results per page (default: 20, max: 100) |
 | offset | integer | No | Pagination offset |
 
-**Example Request:**
+Example:
 ```bash
 curl -X GET "https://api.frame.dev/codex/v1/search?q=machine+learning&weaves=technology&limit=10" \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 
-**Example Response:**
+Response:
 ```json
 {
   "results": [
@@ -82,7 +73,7 @@ curl -X GET "https://api.frame.dev/codex/v1/search?q=machine+learning&weaves=tec
       "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
       "slug": "transformer-architecture",
       "title": "Understanding Transformer Architecture",
-      "summary": "A comprehensive guide to the Transformer architecture...",
+      "summary": "A comprehensive guide...",
       "weave": "technology",
       "loom": "machine-learning",
       "difficulty": "intermediate",
@@ -94,11 +85,6 @@ curl -X GET "https://api.frame.dev/codex/v1/search?q=machine+learning&weaves=tec
     "weaves": {
       "technology": 35,
       "science": 7
-    },
-    "difficulties": {
-      "beginner": 10,
-      "intermediate": 25,
-      "advanced": 7
     }
   }
 }
@@ -106,160 +92,61 @@ curl -X GET "https://api.frame.dev/codex/v1/search?q=machine+learning&weaves=tec
 
 #### Get Weave
 
-Retrieve information about a specific weave.
-
 ```http
 GET /weaves/{slug}
 ```
 
-**Example Request:**
+Example:
 ```bash
 curl -X GET "https://api.frame.dev/codex/v1/weaves/technology" \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 
-**Example Response:**
-```json
-{
-  "slug": "technology",
-  "title": "Technology & Computer Science",
-  "description": "A comprehensive collection of knowledge...",
-  "maintainedBy": {
-    "organization": "Frame.dev Community",
-    "contact": "tech-weave@frame.dev"
-  },
-  "license": "CC-BY-4.0",
-  "statistics": {
-    "loomCount": 42,
-    "strandCount": 3847,
-    "lastUpdated": "2024-11-15T00:00:00Z"
-  }
-}
-```
-
 #### List Looms
-
-Get all looms within a weave.
 
 ```http
 GET /weaves/{weave}/looms
 ```
 
-**Parameters:**
+Parameters:
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | tags | array | No | Filter by tags |
 | difficulty | string | No | Filter by difficulty |
 
-**Example Request:**
-```bash
-curl -X GET "https://api.frame.dev/codex/v1/weaves/technology/looms?tags=ai,ml" \
-  -H "Authorization: Bearer YOUR_API_KEY"
-```
-
 #### Get Loom
-
-Retrieve a specific loom with its strands.
 
 ```http
 GET /weaves/{weave}/looms/{loom}
 ```
 
-**Example Request:**
-```bash
-curl -X GET "https://api.frame.dev/codex/v1/weaves/technology/looms/machine-learning" \
-  -H "Authorization: Bearer YOUR_API_KEY"
-```
-
-**Example Response:**
-```json
-{
-  "slug": "machine-learning",
-  "title": "Machine Learning Fundamentals",
-  "summary": "A comprehensive introduction to machine learning...",
-  "tags": ["artificial-intelligence", "data-science"],
-  "ordering": {
-    "type": "sequential",
-    "sequence": ["introduction", "supervised-learning", "neural-networks"]
-  },
-  "strands": [
-    {
-      "slug": "introduction",
-      "title": "Introduction to Machine Learning",
-      "summary": "Basic concepts and terminology..."
-    }
-  ]
-}
-```
+Response includes loom metadata and strand list.
 
 #### Get Strand
-
-Retrieve a specific strand's content and metadata.
 
 ```http
 GET /weaves/{weave}/looms/{loom}/strands/{strand}
 ```
 
-**Parameters:**
+Parameters:
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | format | string | No | Response format: json, markdown, html |
 | include_relationships | boolean | No | Include full relationship data |
 
-**Example Request:**
-```bash
-curl -X GET "https://api.frame.dev/codex/v1/weaves/technology/looms/machine-learning/strands/transformer-architecture?format=json" \
-  -H "Authorization: Bearer YOUR_API_KEY"
-```
-
 #### Get Relationships
-
-Get the relationship graph for a strand.
 
 ```http
 GET /strands/{id}/relationships
 ```
 
-**Parameters:**
+Parameters:
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | depth | integer | No | Graph traversal depth (default: 1, max: 3) |
 | types | array | No | Filter by relationship types |
 
-**Example Request:**
-```bash
-curl -X GET "https://api.frame.dev/codex/v1/strands/f47ac10b-58cc-4372-a567-0e02b2c3d479/relationships?depth=2" \
-  -H "Authorization: Bearer YOUR_API_KEY"
-```
-
-**Example Response:**
-```json
-{
-  "root": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
-  "nodes": [
-    {
-      "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
-      "title": "Understanding Transformer Architecture",
-      "type": "strand"
-    },
-    {
-      "id": "a1b2c3d4-58cc-4372-a567-0e02b2c3d479",
-      "title": "Basic Neural Networks",
-      "type": "strand"
-    }
-  ],
-  "edges": [
-    {
-      "from": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
-      "to": "a1b2c3d4-58cc-4372-a567-0e02b2c3d479",
-      "type": "prerequisite",
-      "description": "Basic neural networks understanding required"
-    }
-  ]
-}
-```
-
-## 📊 GraphQL API
+## GraphQL API
 
 ### Endpoint
 
@@ -271,7 +158,6 @@ https://api.frame.dev/codex/graphql
 
 ```graphql
 type Query {
-  # Search across all content
   search(
     query: String!
     weaves: [String!]
@@ -282,17 +168,14 @@ type Query {
     offset: Int
   ): SearchResults!
   
-  # Get specific content
   weave(slug: String!): Weave
   loom(weave: String!, slug: String!): Loom
   strand(id: ID!): Strand
   
-  # List content
   weaves: [Weave!]!
   looms(weave: String!, tags: [String!]): [Loom!]!
   strands(weave: String!, loom: String!): [Strand!]!
   
-  # Relationships
   relationships(
     strandId: ID!
     depth: Int
@@ -307,7 +190,6 @@ type Weave {
   maintainedBy: Maintainer!
   license: String!
   tags: [String!]!
-  statistics: WeaveStats!
   looms: [Loom!]!
 }
 
@@ -360,8 +242,7 @@ enum RelationshipType {
 
 ### Example Queries
 
-#### Search Query
-
+Search:
 ```graphql
 query SearchCodex($query: String!) {
   search(query: $query, limit: 10) {
@@ -375,22 +256,11 @@ query SearchCodex($query: String!) {
       score
     }
     total
-    facets {
-      weaves {
-        slug
-        count
-      }
-      difficulties {
-        level
-        count
-      }
-    }
   }
 }
 ```
 
-#### Get Strand with Relationships
-
+Get Strand with Relationships:
 ```graphql
 query GetStrand($id: ID!) {
   strand(id: $id) {
@@ -410,38 +280,14 @@ query GetStrand($id: ID!) {
         title
         summary
       }
-      description
     }
   }
 }
 ```
 
-#### Browse Weave Hierarchy
+## Webhooks
 
-```graphql
-query BrowseWeave($weaveSlug: String!) {
-  weave(slug: $weaveSlug) {
-    title
-    description
-    looms {
-      slug
-      title
-      summary
-      strands {
-        slug
-        title
-        difficulty
-      }
-    }
-  }
-}
-```
-
-## 🔄 Webhooks
-
-Subscribe to content changes via webhooks.
-
-### Configure Webhook
+Subscribe to content changes:
 
 ```http
 POST /webhooks
@@ -457,8 +303,7 @@ Content-Type: application/json
 }
 ```
 
-### Webhook Payload
-
+Webhook payload:
 ```json
 {
   "event": "strand.created",
@@ -466,14 +311,14 @@ Content-Type: application/json
   "data": {
     "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
     "slug": "new-ml-technique",
-    "title": "Revolutionary ML Technique Discovered",
+    "title": "Revolutionary ML Technique",
     "weave": "technology",
     "loom": "machine-learning"
   }
 }
 ```
 
-## 🛠️ SDKs & Libraries
+## SDKs
 
 ### JavaScript/TypeScript
 
@@ -518,7 +363,7 @@ results = client.search('transformer architecture',
 strand = client.get_strand('technology', 'ml', 'transformers')
 ```
 
-## 🚨 Error Handling
+## Error Handling
 
 ### Error Response Format
 
@@ -546,27 +391,10 @@ strand = client.get_strand('technology', 'ml', 'transformers')
 | VALIDATION_ERROR | 400 | Invalid request parameters |
 | INTERNAL_ERROR | 500 | Server error |
 
-## 📈 Best Practices
+## Best Practices
 
-1. **Cache responses** when possible to reduce API calls
-2. **Use pagination** for large result sets
-3. **Request only needed fields** in GraphQL
-4. **Handle rate limits** gracefully with exponential backoff
-5. **Subscribe to webhooks** instead of polling for updates
-
----
-
-<div align="center">
-  <br/>
-  <p>
-    <a href="https://frame.dev">Frame.dev</a> •
-    <a href="https://frame.dev/codex">Frame Codex</a> •
-    <a href="https://openstrand.ai">OpenStrand</a>
-  </p>
-  <p>
-    <a href="https://github.com/framersai">GitHub</a> •
-    <a href="https://twitter.com/framersai">Twitter</a>
-  </p>
-  <br/>
-  <sub>Access the world's knowledge programmatically</sub>
-</div>
+1. Cache responses when possible
+2. Use pagination for large result sets
+3. Request only needed fields in GraphQL
+4. Handle rate limits with exponential backoff
+5. Subscribe to webhooks instead of polling

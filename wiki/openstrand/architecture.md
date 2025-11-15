@@ -1,96 +1,71 @@
-<div align="center">
-  <img src="../../logos/openstrand-logo.svg" alt="OpenStrand Architecture" width="150">
-
 # OpenStrand Architecture
 
-**Comprehensive technical design specification**
+Technical design specification for OpenStrand.
 
-</div>
+## System Overview
 
----
-
-## 🏗️ System Overview
-
-OpenStrand is an AI-native knowledge infrastructure designed for personal knowledge management. It combines local-first principles with cloud capabilities, offering seamless AI integration and advanced knowledge graph features.
+OpenStrand is an AI-native knowledge infrastructure for personal knowledge management. It combines local-first principles with cloud capabilities, offering AI integration and knowledge graph features.
 
 ### Design Principles
 
-1. **Local-First, Cloud-Ready**: Data sovereignty with optional sync
-2. **AI-Native**: Built for AI integration from the ground up
-3. **Privacy-Focused**: User-controlled data and encryption
-4. **Extensible**: Plugin architecture for customization
-5. **Developer-Friendly**: Clean APIs and SDKs
+1. Local-first, cloud-ready: Data sovereignty with optional sync
+2. AI-native: Built for AI integration from the ground up
+3. Privacy-focused: User-controlled data and encryption
+4. Extensible: Plugin architecture for customization
+5. Developer-friendly: Clean APIs and SDKs
 
-## 📊 High-Level Architecture
+## High-Level Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                        Client Applications                        │
-│  ┌──────────────┐  ┌──────────────┐  ┌───────────────────────┐ │
-│  │   Web App    │  │ Desktop App  │  │    Mobile Apps        │ │
-│  │  (Next.js)   │  │  (Electron)  │  │  (React Native)       │ │
-│  └──────────────┘  └──────────────┘  └───────────────────────┘ │
-└─────────────────────────────────┬───────────────────────────────┘
-                                  │
-┌─────────────────────────────────┴───────────────────────────────┐
-│                         OpenStrand SDK                           │
-│  ┌──────────────┐  ┌──────────────┐  ┌───────────────────────┐ │
-│  │  Core API    │  │ Sync Engine  │  │   Plugin System       │ │
-│  └──────────────┘  └──────────────┘  └───────────────────────┘ │
-└─────────────────────────────────┬───────────────────────────────┘
-                                  │
-┌─────────────────────────────────┴───────────────────────────────┐
-│                      Backend Services                            │
-│  ┌──────────────┐  ┌──────────────┐  ┌───────────────────────┐ │
-│  │ Fastify API  │  │   Workers    │  │   AI Services         │ │
-│  └──────────────┘  └──────────────┘  └───────────────────────┘ │
-└─────────────────────────────────┬───────────────────────────────┘
-                                  │
-┌─────────────────────────────────┴───────────────────────────────┐
-│                        Data Layer                                │
-│  ┌──────────────┐  ┌──────────────┐  ┌───────────────────────┐ │
-│  │ PostgreSQL/  │  │   Vector     │  │   Object Storage      │ │
-│  │   PGlite     │  │   Store      │  │     (S3/Local)        │ │
-│  └──────────────┘  └──────────────┘  └───────────────────────┘ │
-└─────────────────────────────────────────────────────────────────┘
+Client Applications
+├── Web App (Next.js)
+├── Desktop App (Electron)
+└── Mobile Apps (React Native)
+
+OpenStrand SDK
+├── Core API
+├── Sync Engine
+└── Plugin System
+
+Backend Services
+├── Fastify API
+├── Workers
+└── AI Services
+
+Data Layer
+├── PostgreSQL/PGlite
+├── Vector Store
+└── Object Storage
 ```
 
-## 🗄️ Data Architecture
+## Data Architecture
 
-### Core Data Models
+### Core Models
 
 #### Strand (Knowledge Atom)
 
 ```typescript
 interface Strand {
-  // Identification
-  id: string;                    // UUID v7 for time-ordering
-  slug: string;                  // URL-safe identifier
-  
-  // Content
+  id: string;                    // UUID v7
+  slug: string;
   title: string;
-  content: Content;              // Polymorphic content
+  content: Content;              // Polymorphic
   contentType: ContentType;      // MIME type
   
-  // Metadata
   created: Date;
   modified: Date;
   accessed: Date;
-  version: number;               // Optimistic locking
+  version: number;
   
-  // Organization
-  loomId?: string;              // Parent loom
-  tags: string[];               // Flat tags
+  loomId?: string;
+  tags: string[];
   
-  // AI Features
-  embedding?: Float32Array;      // Vector embedding
-  summary?: string;             // AI-generated summary
+  embedding?: Float32Array;
+  summary?: string;
   
-  // Relationships
-  links: Link[];                // Outgoing links
-  backlinks: Link[];           // Incoming links
+  links: Link[];
+  backlinks: Link[];
   
-  // Sync
   syncStatus: SyncStatus;
   syncMetadata?: SyncMetadata;
 }
@@ -105,22 +80,18 @@ interface Loom {
   title: string;
   description: string;
   
-  // Hierarchy
-  parentId?: string;            // Parent loom
+  parentId?: string;
   path: string;                 // Materialized path
   
-  // Content
-  strandIds: string[];          // Ordered strands
-  childLoomIds: string[];       // Sub-looms
+  strandIds: string[];
+  childLoomIds: string[];
   
-  // Metadata
   created: Date;
   modified: Date;
-  color?: string;               // Visual customization
-  icon?: string;                // Emoji or icon ID
+  color?: string;
+  icon?: string;
   
-  // Settings
-  defaultView: ViewType;        // List, graph, kanban
+  defaultView: ViewType;
   sortOrder: SortOrder;
   filters: Filter[];
 }
@@ -134,12 +105,10 @@ interface Weave {
   name: string;
   description: string;
   
-  // Access
   ownerId: string;
   visibility: 'private' | 'shared' | 'public';
   permissions: Permission[];
   
-  // Statistics
   stats: {
     strandCount: number;
     loomCount: number;
@@ -147,7 +116,6 @@ interface Weave {
     lastModified: Date;
   };
   
-  // Configuration
   settings: WeaveSettings;
   aiConfig: AIConfiguration;
   syncConfig: SyncConfiguration;
@@ -159,7 +127,6 @@ interface Weave {
 #### PostgreSQL Schema
 
 ```sql
--- Core tables
 CREATE TABLE weaves (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name TEXT NOT NULL,
@@ -175,7 +142,7 @@ CREATE TABLE looms (
     parent_id UUID REFERENCES looms(id),
     slug TEXT NOT NULL,
     title TEXT NOT NULL,
-    path TEXT NOT NULL, -- Materialized path for hierarchy
+    path TEXT NOT NULL,
     metadata JSONB DEFAULT '{}',
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW(),
@@ -188,10 +155,10 @@ CREATE TABLE strands (
     loom_id UUID REFERENCES looms(id) ON DELETE SET NULL,
     slug TEXT NOT NULL,
     title TEXT NOT NULL,
-    content JSONB NOT NULL, -- Structured content
-    content_text TEXT, -- Plain text for FTS
+    content JSONB NOT NULL,
+    content_text TEXT,
     content_type TEXT NOT NULL,
-    embedding vector(1536), -- OpenAI ada-002 dimensions
+    embedding vector(1536),
     metadata JSONB DEFAULT '{}',
     version INT DEFAULT 1,
     created_at TIMESTAMPTZ DEFAULT NOW(),
@@ -199,7 +166,6 @@ CREATE TABLE strands (
     UNIQUE(weave_id, slug)
 );
 
--- Relationships
 CREATE TABLE links (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     source_id UUID REFERENCES strands(id) ON DELETE CASCADE,
@@ -210,7 +176,7 @@ CREATE TABLE links (
     UNIQUE(source_id, target_id, link_type)
 );
 
--- Indexes for performance
+-- Performance indexes
 CREATE INDEX idx_strands_weave_loom ON strands(weave_id, loom_id);
 CREATE INDEX idx_strands_embedding ON strands USING ivfflat (embedding vector_cosine_ops);
 CREATE INDEX idx_strands_content_text ON strands USING gin(to_tsvector('english', content_text));
@@ -220,7 +186,6 @@ CREATE INDEX idx_looms_path ON looms USING gist(path gist_trgm_ops);
 #### Local Storage (PGlite)
 
 ```typescript
-// PGlite configuration for local-first operation
 const db = new PGlite({
   dataDir: './openstrand-data',
   extensions: {
@@ -229,21 +194,18 @@ const db = new PGlite({
   }
 });
 
-// Automatic migration on startup
 await db.exec(SCHEMA_SQL);
 ```
 
-## 🔄 Sync Architecture
+## Sync Architecture
 
-### Conflict-Free Replicated Data Types (CRDTs)
+### Conflict-Free Replicated Data Types
 
 ```typescript
-// CRDT implementation for collaborative editing
 class StrandCRDT {
   private clock: VectorClock;
   private operations: Operation[];
   
-  // Apply local operation
   applyLocal(op: Operation): void {
     this.clock.increment(this.replicaId);
     op.timestamp = this.clock.copy();
@@ -251,7 +213,6 @@ class StrandCRDT {
     this.integrate(op);
   }
   
-  // Merge remote operations
   merge(remote: Operation[]): void {
     for (const op of remote) {
       if (!this.hasOperation(op)) {
@@ -267,10 +228,8 @@ class StrandCRDT {
 ### Sync Protocol
 
 ```typescript
-// Merkle tree for efficient sync
 class SyncEngine {
   async sync(remote: RemoteEndpoint): Promise<SyncResult> {
-    // 1. Exchange Merkle roots
     const localRoot = await this.getMerkleRoot();
     const remoteRoot = await remote.getMerkleRoot();
     
@@ -278,14 +237,10 @@ class SyncEngine {
       return { status: 'up-to-date' };
     }
     
-    // 2. Find differences
     const diff = await this.findDifferences(remote);
-    
-    // 3. Exchange changes
     const localChanges = await this.getChanges(diff.missing);
     const remoteChanges = await remote.getChanges(diff.extra);
     
-    // 4. Apply changes
     await this.applyChanges(remoteChanges);
     await remote.applyChanges(localChanges);
     
@@ -294,7 +249,7 @@ class SyncEngine {
 }
 ```
 
-## 🤖 AI Integration
+## AI Integration
 
 ### Embedding Pipeline
 
@@ -304,23 +259,17 @@ class EmbeddingService {
   private cache: EmbeddingCache;
   
   async embedStrand(strand: Strand): Promise<Float32Array> {
-    // Check cache
     const cached = await this.cache.get(strand.id, strand.version);
     if (cached) return cached;
     
-    // Prepare content
     const text = this.extractText(strand);
-    const chunks = this.chunkText(text, 8000); // Token limit
+    const chunks = this.chunkText(text, 8000);
     
-    // Generate embeddings
     const embeddings = await Promise.all(
       chunks.map(chunk => this.model.embed(chunk))
     );
     
-    // Combine embeddings (weighted average)
     const combined = this.combineEmbeddings(embeddings);
-    
-    // Cache result
     await this.cache.set(strand.id, strand.version, combined);
     
     return combined;
@@ -332,19 +281,10 @@ class EmbeddingService {
 
 ```typescript
 interface AIService {
-  // Semantic search
   search(query: string, options: SearchOptions): Promise<SearchResult[]>;
-  
-  // Similar content
   findSimilar(strand: Strand, limit: number): Promise<Strand[]>;
-  
-  // Chat with context
   chat(prompt: string, context: Context): Promise<ChatResponse>;
-  
-  // Content generation
   generate(prompt: string, template: Template): Promise<string>;
-  
-  // Summarization
   summarize(content: string, style: SummaryStyle): Promise<string>;
 }
 ```
@@ -354,23 +294,17 @@ interface AIService {
 ```typescript
 class RAGService {
   async answer(question: string, weave: Weave): Promise<Answer> {
-    // 1. Embed question
     const questionEmbedding = await this.embed(question);
     
-    // 2. Retrieve relevant strands
     const relevant = await this.vectorSearch(
       questionEmbedding,
       weave.id,
       { limit: 10, threshold: 0.7 }
     );
     
-    // 3. Rerank results
     const reranked = await this.rerank(question, relevant);
-    
-    // 4. Build context
     const context = this.buildContext(reranked);
     
-    // 5. Generate answer
     const answer = await this.llm.complete({
       system: 'You are a helpful assistant...',
       prompt: `Context: ${context}\n\nQuestion: ${question}`,
@@ -386,7 +320,7 @@ class RAGService {
 }
 ```
 
-## 🔌 Plugin Architecture
+## Plugin Architecture
 
 ### Plugin Interface
 
@@ -396,11 +330,9 @@ interface Plugin {
   name: string;
   version: string;
   
-  // Lifecycle
   activate(context: PluginContext): Promise<void>;
   deactivate(): Promise<void>;
   
-  // Hooks
   hooks?: {
     beforeStrandCreate?: (strand: Strand) => Promise<Strand>;
     afterStrandCreate?: (strand: Strand) => Promise<void>;
@@ -408,19 +340,15 @@ interface Plugin {
     renderStrand?: (strand: Strand) => Promise<ReactNode>;
   };
   
-  // Commands
   commands?: Command[];
-  
-  // UI Extensions
   panels?: Panel[];
   statusBarItems?: StatusBarItem[];
 }
 ```
 
-### Plugin Examples
+### Example Plugin
 
 ```typescript
-// Link preview plugin
 class LinkPreviewPlugin implements Plugin {
   id = 'link-preview';
   name = 'Link Preview';
@@ -430,8 +358,7 @@ class LinkPreviewPlugin implements Plugin {
       id: 'link-preview.fetch',
       title: 'Fetch Link Preview',
       execute: async (url: string) => {
-        const preview = await this.fetchPreview(url);
-        return preview;
+        return await this.fetchPreview(url);
       }
     });
     
@@ -446,13 +373,12 @@ class LinkPreviewPlugin implements Plugin {
 }
 ```
 
-## 🔒 Security Architecture
+## Security Architecture
 
 ### Encryption
 
 ```typescript
 class EncryptionService {
-  // Client-side encryption before sync
   async encryptStrand(strand: Strand, key: CryptoKey): Promise<EncryptedStrand> {
     const iv = crypto.getRandomValues(new Uint8Array(12));
     const plaintext = JSON.stringify(strand);
@@ -471,7 +397,6 @@ class EncryptionService {
     };
   }
   
-  // Derive key from password
   async deriveKey(password: string, salt: Uint8Array): Promise<CryptoKey> {
     const keyMaterial = await crypto.subtle.importKey(
       'raw',
@@ -501,46 +426,38 @@ class EncryptionService {
 
 ```typescript
 interface AccessControl {
-  // Check permissions
   canRead(user: User, resource: Resource): boolean;
   canWrite(user: User, resource: Resource): boolean;
   canDelete(user: User, resource: Resource): boolean;
   
-  // Grant/revoke access
   grant(user: User, resource: Resource, permission: Permission): void;
   revoke(user: User, resource: Resource, permission: Permission): void;
   
-  // Share with encryption
   share(resource: Resource, recipient: User, permissions: Permission[]): ShareLink;
 }
 ```
 
-## 📊 Performance Optimizations
+## Performance Optimizations
 
-### Indexing Strategy
+### Indexing
 
 ```typescript
 class IndexingService {
-  // Incremental indexing
   async indexStrand(strand: Strand): Promise<void> {
-    // Full-text search index
     await this.fts.index(strand.id, {
       title: strand.title,
       content: this.extractText(strand),
       tags: strand.tags
     });
     
-    // Vector index
     const embedding = await this.embedder.embed(strand);
     await this.vectorDB.upsert(strand.id, embedding);
     
-    // Graph edges
     for (const link of strand.links) {
       await this.graph.addEdge(strand.id, link.targetId, link.type);
     }
   }
   
-  // Batch operations
   async reindexWeave(weaveId: string): Promise<void> {
     const strands = await this.db.getStrandsByWeave(weaveId);
     
@@ -552,7 +469,7 @@ class IndexingService {
 }
 ```
 
-### Caching Strategy
+### Caching
 
 ```typescript
 class CacheService {
@@ -560,11 +477,9 @@ class CacheService {
   private disk: DiskCache;
   
   async get<T>(key: string): Promise<T | null> {
-    // L1: Memory cache
     const memoryHit = this.memory.get(key);
     if (memoryHit) return memoryHit;
     
-    // L2: Disk cache
     const diskHit = await this.disk.get(key);
     if (diskHit) {
       this.memory.set(key, diskHit);
@@ -574,7 +489,6 @@ class CacheService {
     return null;
   }
   
-  // Cache warming
   async warmCache(weaveId: string): Promise<void> {
     const popular = await this.getPopularStrands(weaveId);
     const embeddings = await this.vectorDB.getBatch(
@@ -588,12 +502,11 @@ class CacheService {
 }
 ```
 
-## 🚀 Deployment Architecture
+## Deployment Architecture
 
-### Container Architecture
+### Container Configuration
 
 ```yaml
-# docker-compose.yml
 version: '3.8'
 
 services:
@@ -627,34 +540,8 @@ services:
 
 ### Scaling Strategy
 
-1. **Horizontal Scaling**
-   - API servers behind load balancer
-   - Read replicas for database
-   - Distributed vector index
-
-2. **Edge Deployment**
-   - CDN for static assets
-   - Edge functions for auth
-   - Regional data centers
-
-3. **Performance Targets**
-   - < 50ms search latency
-   - < 200ms AI response
-   - 99.9% uptime SLA
-
----
-
-<div align="center">
-  <br/>
-  <p>
-    <a href="https://frame.dev">Frame.dev</a> •
-    <a href="https://frame.dev/codex">Frame Codex</a> •
-    <a href="https://openstrand.ai">OpenStrand</a>
-  </p>
-  <p>
-    <a href="https://github.com/framersai">GitHub</a> •
-    <a href="https://twitter.com/framersai">Twitter</a>
-  </p>
-  <br/>
-  <sub>Building the future of personal knowledge management</sub>
-</div>
+1. Horizontal scaling: API servers behind load balancer
+2. Read replicas for database
+3. Distributed vector index
+4. CDN for static assets
+5. Regional data centers

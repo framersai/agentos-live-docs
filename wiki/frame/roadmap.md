@@ -1,91 +1,76 @@
-<div align="center">
-  <img src="../../logos/frame-logo-green-no-tagline.svg" alt="Frame.dev" width="150">
-
 # Frame.dev Roadmap
 
-**Building the future of AI-powered knowledge infrastructure**
+Development roadmap for Frame.dev ecosystem.
 
-</div>
+## Current Quarter (Q4 2024)
 
----
+### Recently Shipped
+- Frame Codex v1.0 - Initial release
+- OpenStrand Alpha - Early access program
+- API v1 - REST and GraphQL endpoints
+- Web Viewer - frame.dev/codex interface
 
-## 🎯 2024-2025 Vision
+### In Progress
 
-Our roadmap focuses on three pillars:
-1. **Open Infrastructure** - Building blocks for the AI ecosystem
-2. **Knowledge Intelligence** - Advanced understanding and retrieval
-3. **Developer Experience** - Tools that developers love
-
-## 📅 Current Quarter (Q4 2024)
-
-### ✅ Recently Shipped
-
-- **Frame Codex v1.0** - Initial release of the knowledge repository
-- **OpenStrand Alpha** - Early access program launched
-- **API v1** - REST and GraphQL endpoints
-- **Web Viewer** - frame.dev/codex interface
-
-### 🚧 In Progress
-
-#### Frame Codex Enhancements
-- [ ] Advanced search with semantic understanding
-- [ ] Collaborative editing features
-- [ ] Version control UI
-- [ ] Import wizards for popular formats
+#### Frame Codex
+- Advanced search with semantic understanding
+- Collaborative editing features
+- Version control UI
+- Import wizards for popular formats
 
 #### OpenStrand Beta
-- [ ] Local-first sync engine
-- [ ] Knowledge graph visualization
-- [ ] AI assistant integration
-- [ ] Mobile app (iOS/Android)
+- Local-first sync engine
+- Knowledge graph visualization
+- AI assistant integration
+- Mobile applications
 
 #### Developer Tools
-- [ ] SDK for Python, JavaScript, Go
-- [ ] CLI tools for automation
-- [ ] VS Code extension
-- [ ] GitHub Actions integration
+- SDKs for Python, JavaScript, Go
+- CLI tools for automation
+- VS Code extension
+- GitHub Actions integration
 
-## 🔮 Q1 2025
+## Q1 2025
 
 ### Knowledge Intelligence
-- **Smart Summarization** - AI-powered content digests
-- **Relationship Discovery** - Automatic link suggestions
-- **Topic Modeling** - Understand content themes
-- **Duplicate Detection** - Find similar content
+- Smart summarization capabilities
+- Relationship discovery
+- Topic modeling
+- Duplicate detection
 
 ### Platform Features
-- **Team Workspaces** - Collaborative knowledge management
-- **Access Control** - Fine-grained permissions
-- **Audit Logging** - Complete activity tracking
-- **Backup/Restore** - Enterprise-grade reliability
+- Team workspaces
+- Access control
+- Audit logging
+- Backup/restore
 
 ### Integrations
-- **Notion Import** - Full workspace migration
-- **Obsidian Sync** - Bidirectional sync
-- **Slack Bot** - Knowledge in your workflow
-- **API Webhooks** - Real-time notifications
+- Notion import
+- Obsidian sync
+- Slack bot
+- API webhooks
 
-## 🚀 Q2 2025
+## Q2 2025
 
 ### Frame OS Preview
-- **Agent Runtime** - Execute AI agents safely
-- **Resource Management** - CPU/memory limits
-- **Sandboxing** - Secure execution environment
-- **Agent Marketplace** - Share and discover agents
+- Agent runtime
+- Resource management
+- Sandboxing
+- Agent marketplace
 
 ### Enterprise Features
-- **SSO/SAML** - Enterprise authentication
-- **Advanced RBAC** - Custom roles and permissions
-- **Compliance Tools** - GDPR, HIPAA readiness
-- **SLA Support** - 99.9% uptime guarantee
+- SSO/SAML authentication
+- Advanced RBAC
+- Compliance tools
+- SLA support
 
 ### AI Capabilities
-- **Custom Models** - Fine-tune on your data
-- **Multi-modal** - Images, audio, video support
-- **Real-time RAG** - Live document updates
-- **Federated Learning** - Privacy-preserving AI
+- Custom model support
+- Multi-modal content
+- Real-time RAG
+- Federated learning
 
-## 🌟 Q3-Q4 2025
+## Q3-Q4 2025
 
 ### Next-Generation Features
 
@@ -105,11 +90,11 @@ Our roadmap focuses on three pillars:
 - Edge deployment
 - Multi-region replication
 - Offline-first architecture
-- 100ms global latency
+- Global latency optimization
 
-## 🔬 Research & Development
+## Research Areas
 
-### Active Research Areas
+### Active Research
 
 1. **Quantum-Resistant Encryption**
    - Future-proof security
@@ -123,78 +108,47 @@ Our roadmap focuses on three pillars:
 
 3. **Semantic Compression**
    - Meaning-preserving compression
-   - 100x size reduction
+   - Size reduction techniques
    - Instant decompression
 
-## 🎓 Community Initiatives
+## Community Initiatives
 
 ### Open Source Projects
-- **Frame Core** - Base libraries (MIT licensed)
-- **Codex Schemas** - Standard formats
-- **Integration Hub** - Community connectors
-- **Model Zoo** - Curated AI models
+- Frame Core libraries (MIT license)
+- Codex schemas
+- Integration hub
+- Model zoo
 
 ### Education
-- **Frame Academy** - Free courses
-- **Certification Program** - Professional credentials
-- **University Partnerships** - Academic research
-- **Hackathons** - Quarterly events
+- Frame Academy courses
+- Certification program
+- University partnerships
+- Quarterly hackathons
 
 ### Ecosystem Growth
-- **Developer Grants** - $1M fund
-- **Startup Program** - Free credits
-- **Partner Network** - Integration partners
-- **Community Forum** - Knowledge sharing
+- Developer grants program
+- Startup program
+- Partner network
+- Community forum
 
-## 📊 Success Metrics
+## Get Involved
 
-### 2024 Goals
-- ✅ 10,000+ developers using Frame.dev
-- ✅ 1M+ strands in Frame Codex
-- 🎯 99.9% API uptime
-- 🎯 <100ms search latency
-
-### 2025 Targets
-- 🎯 100,000+ active developers
-- 🎯 10M+ strands indexed
-- 🎯 1,000+ enterprise customers
-- 🎯 $10M ARR
-
-## 🤝 Get Involved
-
-### How to Contribute
-1. **Star our repos** on GitHub
-2. **Join the beta** at frame.dev
-3. **Share feedback** via GitHub issues
-4. **Build integrations** using our APIs
+### Contributing
+1. Star repositories on GitHub
+2. Join beta at frame.dev
+3. Share feedback via issues
+4. Build integrations
 
 ### Stay Updated
-- **Blog**: [frame.dev/blog](https://frame.dev/blog)
-- **Newsletter**: Monthly updates
-- **Twitter**: [@framersai](https://twitter.com/framersai)
-- **Discord**: Coming Q1 2025
+- Blog: frame.dev/blog
+- Newsletter: Monthly updates
+- Twitter: @framersai
+- Discord: Coming Q1 2025
 
-## 📝 Commitment to Transparency
+## Commitment to Transparency
 
-We believe in building in public. This roadmap is:
+This roadmap is:
 - Updated monthly
 - Based on user feedback
 - Subject to change
 - Always improving
-
----
-
-<div align="center">
-  <br/>
-  <p>
-    <a href="https://frame.dev">Frame.dev</a> •
-    <a href="https://frame.dev/codex">Frame Codex</a> •
-    <a href="https://openstrand.ai">OpenStrand</a>
-  </p>
-  <p>
-    <a href="https://github.com/framersai">GitHub</a> •
-    <a href="https://twitter.com/framersai">Twitter</a>
-  </p>
-  <br/>
-  <sub>The future is being built today</sub>
-</div>
