@@ -52,15 +52,15 @@ All backend routes are prefixed with `/api`. Optional authentication (JWT or Sup
 | `POST` | `/tts` | Text-to-speech synthesis (OpenAI voice). |
 | `GET`  | `/tts/voices` | Lists available voice models. |
 
-## Billing & Cost
+## Billing & cost
 
 | Method | Path | Description |
 |--------|------|-------------|
 | `GET`  | `/cost` | Returns authenticated user’s session cost snapshot. Requires `authMiddleware`. |
 | `POST` | `/cost` | Resets/updates cost session metadata. Requires `authMiddleware`. |
-| `POST` | `/billing/checkout` | Creates Stripe checkout session. Requires authentication. |
+| `POST` | `/billing/checkout` | Creates a checkout session for the selected plan. Requires authentication. |
 | `GET`  | `/billing/status/:checkoutId` | Fetches latest checkout status after redirect. |
-| `POST` | `/billing/webhook` | Stripe webhook receiver (no auth). |
+| `POST` | `/billing/webhook` | Webhook receiver for your billing provider (Stripe or Lemon Squeezy). No auth; secured via provider signature. |
 
 ## Organizations
 
