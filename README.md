@@ -9,6 +9,8 @@
 
 [Frame.dev](https://frame.dev) • [OpenStrand](https://openstrand.ai) • [Documentation](./wiki/README.md)
 
+**AI Infrastructure for Superintelligence.**
+
 </div>
 
 ---

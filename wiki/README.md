@@ -2,6 +2,8 @@
 
 *The OS for humans, the codex of humanity.*
 
+**AI Infrastructure for Knowledge and Superintelligence.**
+
 Documentation for Frame.dev ecosystem components.
 
 ## Navigation

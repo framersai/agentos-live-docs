@@ -1,6 +1,8 @@
 # Frame Codex
 
-Knowledge repository for LLM retrieval.
+Knowledge repository for LLM retrieval and superintelligence.
+
+*The OS for humans, the codex of humanity.*
 
 ## Overview
 
