@@ -5,6 +5,8 @@
 
 **AI Infrastructure for Knowledge**
 
+*The OS for humans, the codex of humanity.*
+
 [Frame.dev](https://frame.dev) • [OpenStrand](https://openstrand.ai) • [Documentation](./wiki/README.md)
 
 </div>

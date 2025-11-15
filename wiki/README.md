@@ -1,5 +1,7 @@
 # Frame.dev Wiki
 
+*The OS for humans, the codex of humanity.*
+
 Documentation for Frame.dev ecosystem components.
 
 ## Navigation
