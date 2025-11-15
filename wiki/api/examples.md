@@ -2,6 +2,10 @@
 
 Practical examples for common use cases.
 
+> **🚧 Work in Progress**
+> 
+> These code examples demonstrate planned API functionality. The Frame.dev API is under development and these examples are for reference only.
+
 ## Quick Start
 
 ### Initialize Client
