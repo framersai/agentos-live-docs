@@ -121,6 +121,10 @@ jobs:
             pnpm --dir "$ADAPTER_DIR" exec node scripts/fix-esm-imports.mjs
 
             pnpm -C "$APP_DIR" --filter "@framers/agentos" run build
+            if [ ! -f "$APP_DIR/packages/agentos/dist/api/AgentOS.js" ]; then
+              echo "[agentos] dist/api/AgentOS.js missing after build; aborting deploy"
+              exit 1
+            fi
 
             echo "[backend] Build..."
             if [ -d "$APP_DIR/backend" ]; then
