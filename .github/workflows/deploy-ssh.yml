@@ -158,9 +158,19 @@ jobs:
             pm2 start "$APP_DIR/backend/dist/server.js" --name voice-backend --node-args="--experimental-specifier-resolution=node"
             pm2 save
 
-            echo "[health] GET /health on 3333..."
-            if ! curl -fsS http://127.0.0.1:3333/health ; then
-              echo "[health] backend failed to start"; exit 1
+            echo "[health] GET /health on ${PORT:-3333} (with retries)..."
+            health_ok=0
+            for attempt in $(seq 1 10); do
+              if curl -fsS "http://127.0.0.1:${PORT:-3333}/health" >/dev/null 2>&1 ; then
+                health_ok=1
+                echo "[health] backend is up after attempt ${attempt}."
+                break
+              fi
+              echo "[health] attempt ${attempt} failed; retrying in 3s..."
+              sleep 3
+            done
+            if [ "$health_ok" -ne 1 ]; then
+              echo "[health] backend failed to start after retries"; exit 1
             fi
 
             echo "[cleanup] Prune pnpm store and apt caches to free space..."
