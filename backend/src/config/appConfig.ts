@@ -40,10 +40,10 @@ export interface AuthTokenPayload {
   [key: string]: unknown;
 }
 
-const requiredEnv = (key: string, fallback?: string): string => {
-  const value = process.env[key] ?? fallback;
+const requiredEnv = (key: string, value: string | undefined): string => {
   if (!value) {
-    throw new Error(`Missing required environment variable: ${key}`);
+    console.warn(`[Config] Required env var "${key}" missing. Using insecure fallback value. Set it in production!`);
+    return `missing_${key}_${Math.random().toString(36).slice(2, 10)}`;
   }
   return value;
 };
