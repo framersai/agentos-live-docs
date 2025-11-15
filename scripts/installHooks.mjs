@@ -32,7 +32,7 @@ function ensureDir(p) {
   if (!fs.existsSync(p)) fs.mkdirSync(p, { recursive: true })
 }
 
-const hookContent = `#!/usr/bin/env sh
+const preCommitContent = `#!/usr/bin/env sh
 # Auto-installed by scripts/installHooks.mjs
 # Run the free local secret scanner before commit
 
@@ -55,11 +55,34 @@ fi
 node "$SCAN"
 `
 
+const prePushContent = `#!/usr/bin/env sh
+# Auto-installed by scripts/installHooks.mjs
+# Run the free local secret scanner on commits being pushed
+
+set -e
+
+# find the pre-push scanner relative to this repo/subrepo
+if [ -f "scripts/scanPrePush.mjs" ]; then
+  SCAN="scripts/scanPrePush.mjs"
+elif [ -f "../scripts/scanPrePush.mjs" ]; then
+  SCAN="../scripts/scanPrePush.mjs"
+elif [ -f "../../scripts/scanPrePush.mjs" ]; then
+  SCAN="../../scripts/scanPrePush.mjs"
+elif [ -f "../../../scripts/scanPrePush.mjs" ]; then
+  SCAN="../../../scripts/scanPrePush.mjs"
+else
+  # If not found, allow push (repo may not include the script)
+  exit 0
+fi
+
+node "$SCAN" "$@"
+`
+
 function installHookIntoGitDir(gitdir, kind = 'pre-commit') {
   const hooksDir = path.join(gitdir, 'hooks')
   ensureDir(hooksDir)
   const hookPath = path.join(hooksDir, kind)
-  fs.writeFileSync(hookPath, hookContent, { encoding: 'utf8' })
+  fs.writeFileSync(hookPath, kind === 'pre-push' ? prePushContent : preCommitContent, { encoding: 'utf8' })
   try {
     // On Windows this is a no-op, but harmless
     fs.chmodSync(hookPath, 0o755)
@@ -86,8 +109,9 @@ const installed = []
 // Root repo
 const rootGitDir = readGitDir(repoRoot)
 if (rootGitDir) {
-  const p = installHookIntoGitDir(rootGitDir, 'pre-commit')
-  installed.push(p)
+  const p1 = installHookIntoGitDir(rootGitDir, 'pre-commit')
+  const p2 = installHookIntoGitDir(rootGitDir, 'pre-push')
+  installed.push(p1, p2)
 }
 
 // Submodules
@@ -95,14 +119,15 @@ for (const subPath of getSubmodulePaths()) {
   const abs = path.resolve(repoRoot, subPath)
   const gd = readGitDir(abs)
   if (!gd) continue // uninitialized submodule
-  const p = installHookIntoGitDir(gd, 'pre-commit')
-  installed.push(p)
+  const p1 = installHookIntoGitDir(gd, 'pre-commit')
+  const p2 = installHookIntoGitDir(gd, 'pre-push')
+  installed.push(p1, p2)
 }
 
 console.log('[installHooks] Installed pre-commit hook(s):')
-for (const p of installed) {
-  console.log(` - ${p}`)
-}
+for (const p of installed.filter((x) => x.endsWith('pre-commit'))) console.log(` - ${p}`)
+console.log('[installHooks] Installed pre-push hook(s):')
+for (const p of installed.filter((x) => x.endsWith('pre-push'))) console.log(` - ${p}`)
 if (installed.length === 0) {
   console.log('[installHooks] No .git directories found. Did you clone with submodules?')
 }
