@@ -2,6 +2,12 @@
 
 Integration guide for Frame ecosystem APIs.
 
+> **🚧 Work in Progress**
+> 
+> The Frame.dev API is currently under active development. This documentation serves as a reference for planned features and is subject to change. Some endpoints may not be available yet.
+> 
+> For current access to Frame Codex data, visit our [GitHub repository](https://github.com/framersai/codex) where all knowledge is publicly available.
+
 ## Overview
 
 Frame ecosystem provides APIs for building AI-powered knowledge applications:

@@ -2,6 +2,10 @@
 
 Secure access to Frame.dev APIs.
 
+> **🚧 Work in Progress**
+> 
+> The Frame.dev API authentication system is currently under development. This documentation describes planned authentication methods and is subject to change.
+
 ## Overview
 
 Frame.dev supports multiple authentication methods:
