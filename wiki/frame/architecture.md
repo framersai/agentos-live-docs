@@ -1,63 +1,39 @@
-<div align="center">
-  <img src="../../logos/frame-logo-green-no-tagline.svg" alt="Frame.dev" width="150">
-
 # Frame.dev Architecture
 
-**Technical foundation for AI-powered knowledge infrastructure**
+Technical architecture for Frame.dev's AI-powered knowledge infrastructure.
 
-</div>
+## System Architecture
 
----
-
-## 🏗️ System Architecture
-
-Frame.dev's architecture is designed for scalability, extensibility, and AI-native operations.
+Frame.dev uses a layered architecture optimized for scalability and AI operations.
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                        Client Layer                          │
-│  ┌─────────────┐  ┌──────────────┐  ┌──────────────────┐  │
-│  │   Web Apps   │  │  Native Apps  │  │   API Clients    │  │
-│  └─────────────┘  └──────────────┘  └──────────────────┘  │
-└─────────────────────────────────────────────────────────────┘
-                              │
-┌─────────────────────────────────────────────────────────────┐
-│                        API Gateway                           │
-│  ┌──────────────┐  ┌──────────────┐  ┌─────────────────┐  │
-│  │     Auth      │  │ Rate Limiting │  │   Load Balancer  │  │
-│  └──────────────┘  └──────────────┘  └─────────────────┘  │
-└─────────────────────────────────────────────────────────────┘
-                              │
-┌─────────────────────────────────────────────────────────────┐
-│                     Core Services                            │
-│  ┌──────────────┐  ┌──────────────┐  ┌─────────────────┐  │
-│  │  Knowledge    │  │      AI       │  │   Integration    │  │
-│  │   Service     │  │   Service     │  │    Service       │  │
-│  └──────────────┘  └──────────────┘  └─────────────────┘  │
-└─────────────────────────────────────────────────────────────┘
-                              │
-┌─────────────────────────────────────────────────────────────┐
-│                      Data Layer                              │
-│  ┌──────────────┐  ┌──────────────┐  ┌─────────────────┐  │
-│  │  PostgreSQL  │  │ Vector Store  │  │  Object Storage  │  │
-│  │   (PGlite)   │  │   (pgvector)  │  │     (S3/R2)      │  │
-│  └──────────────┘  └──────────────┘  └─────────────────┘  │
-└─────────────────────────────────────────────────────────────┘
+Client Layer
+├── Web Applications
+├── Native Applications  
+└── API Clients
+
+API Gateway
+├── Authentication
+├── Rate Limiting
+└── Load Balancing
+
+Core Services
+├── Knowledge Service
+├── AI Service
+└── Integration Service
+
+Data Layer
+├── PostgreSQL (PGlite for local)
+├── Vector Store (pgvector)
+└── Object Storage
 ```
 
-## 🔧 Core Components
+## Core Components
 
-### 1. Knowledge Service
+### Knowledge Service
 
-The heart of Frame.dev's architecture, managing all knowledge operations.
+Manages all knowledge operations using a graph database approach.
 
-**Key Features:**
-- **Graph Database**: Neo4j-inspired property graph on PostgreSQL
-- **Content Processing**: Multi-format ingestion (20+ formats)
-- **Semantic Search**: Vector embeddings with pgvector
-- **Version Control**: Git-like branching for knowledge
-
-**Architecture:**
 ```typescript
 interface KnowledgeService {
   // Core operations
@@ -74,37 +50,38 @@ interface KnowledgeService {
 }
 ```
 
-### 2. AI Service
+Key features:
+- Property graph on PostgreSQL
+- Multi-format content ingestion
+- Vector embeddings with pgvector
+- Git-like version control for knowledge
 
-Manages all AI/ML operations and model orchestration.
+### AI Service
 
-**Components:**
-- **Model Registry**: Track available models and capabilities
-- **Inference Pipeline**: Optimized for low-latency responses
-- **RAG Engine**: Retrieval-Augmented Generation
-- **Fine-tuning**: Custom model adaptation
+Handles AI/ML operations and model orchestration.
 
-**Flow:**
+Components:
+- Model registry for tracking available models
+- Inference pipeline optimized for low latency
+- RAG (Retrieval-Augmented Generation) engine
+- Fine-tuning capabilities
+
+Processing flow:
 ```
 Query → Embedding → Vector Search → Context Assembly → LLM → Response
-         ↓              ↓                ↓                ↓
-    [Embedding]    [pgvector]    [Knowledge Graph]   [Model Hub]
 ```
 
-### 3. Integration Service
+### Integration Service
 
-Connects to external data sources and services.
+Connects to external data sources:
+- Document formats: Markdown, Notion, Obsidian, Roam
+- Code repositories: GitHub, GitLab
+- Media: Images, audio, video with transcription
+- APIs: REST, GraphQL, webhooks
 
-**Supported Integrations:**
-- **Documents**: Markdown, Org, Notion, Obsidian, Roam
-- **Code**: GitHub, GitLab, Bitbucket
-- **Media**: Images, Audio, Video transcription
-- **APIs**: REST, GraphQL, Webhooks
+## Data Models
 
-## 🗄️ Data Models
-
-### Strand (Atomic Knowledge Unit)
-
+### Strand
 ```typescript
 interface Strand {
   id: UUID;
@@ -120,7 +97,6 @@ interface Strand {
     contentType: ContentType;
     created: Date;
     modified: Date;
-    author: string;
   };
   taxonomy: {
     subjects: string[];
@@ -131,8 +107,7 @@ interface Strand {
 }
 ```
 
-### Loom (Knowledge Collection)
-
+### Loom
 ```typescript
 interface Loom {
   id: UUID;
@@ -145,8 +120,7 @@ interface Loom {
 }
 ```
 
-### Weave (Knowledge Universe)
-
+### Weave
 ```typescript
 interface Weave {
   slug: string;
@@ -158,48 +132,38 @@ interface Weave {
 }
 ```
 
-## 🔒 Security Architecture
+## Security Architecture
 
-### Authentication & Authorization
-
-- **OAuth 2.0 / OpenID Connect** for third-party auth
-- **JWT tokens** for session management
-- **Role-Based Access Control (RBAC)**
-- **API key management** for service accounts
+### Authentication
+- OAuth 2.0 / OpenID Connect
+- JWT tokens for sessions
+- Role-based access control
+- API key management
 
 ### Data Security
-
-- **Encryption at rest** (AES-256)
-- **TLS 1.3** for all communications
-- **End-to-end encryption** for sensitive content
-- **Zero-knowledge architecture** for private vaults
+- Encryption at rest (AES-256)
+- TLS 1.3 for communications
+- End-to-end encryption options
+- Zero-knowledge architecture for private vaults
 
 ### Privacy
+- Local-first defaults
+- Selective sync
+- Data portability
+- GDPR compliance
 
-- **Local-first defaults** - data stays on device
-- **Selective sync** - choose what goes to cloud
-- **Data portability** - export everything
-- **GDPR compliant** - right to deletion
-
-## 🚀 Deployment Architecture
+## Deployment Architecture
 
 ### Cloud-Native Design
 
 ```yaml
-# Kubernetes deployment example
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: frame-knowledge-service
 spec:
   replicas: 3
-  selector:
-    matchLabels:
-      app: knowledge-service
   template:
-    metadata:
-      labels:
-        app: knowledge-service
     spec:
       containers:
       - name: service
@@ -213,21 +177,19 @@ spec:
 ```
 
 ### Scaling Strategy
+- Horizontal scaling for API services
+- Read replicas for database
+- CDN for static assets
+- Edge computing for low latency
 
-- **Horizontal scaling** for API services
-- **Read replicas** for database
-- **CDN** for static assets
-- **Edge computing** for low-latency
+## API Design
 
-## 🔌 API Design
-
-### RESTful Principles
+### REST
 
 ```http
-# Create a strand
+# Create strand
 POST /api/v1/strands
 Content-Type: application/json
-Authorization: Bearer {token}
 
 {
   "title": "Knowledge Title",
@@ -237,12 +199,11 @@ Authorization: Bearer {token}
   }
 }
 
-# Search knowledge
+# Search
 GET /api/v1/search?q=AI+architecture&limit=10
-Authorization: Bearer {token}
 ```
 
-### GraphQL Alternative
+### GraphQL
 
 ```graphql
 query SearchKnowledge($query: String!, $limit: Int) {
@@ -263,12 +224,9 @@ query SearchKnowledge($query: String!, $limit: Int) {
 }
 ```
 
-## 🔄 Event-Driven Architecture
-
-### Event Bus
+## Event-Driven Architecture
 
 ```typescript
-// Event definitions
 interface KnowledgeEvent {
   type: 'strand.created' | 'strand.updated' | 'strand.linked';
   timestamp: Date;
@@ -276,53 +234,15 @@ interface KnowledgeEvent {
   metadata: EventMetadata;
 }
 
-// Event handling
 eventBus.on('strand.created', async (event) => {
   await indexingService.index(event.payload);
   await notificationService.notify(event.payload.author);
 });
 ```
 
-## 📊 Monitoring & Observability
+## Monitoring
 
-### Metrics
-
-- **Application metrics** via Prometheus
-- **Distributed tracing** with OpenTelemetry
-- **Log aggregation** using ELK stack
-- **Real-time dashboards** in Grafana
-
-### Health Checks
-
-```typescript
-// Health check endpoint
-app.get('/health', async (req, res) => {
-  const checks = await Promise.all([
-    database.ping(),
-    redis.ping(),
-    vectorStore.ping()
-  ]);
-  
-  res.json({
-    status: checks.every(c => c.ok) ? 'healthy' : 'degraded',
-    services: checks
-  });
-});
-```
-
----
-
-<div align="center">
-  <br/>
-  <p>
-    <a href="https://frame.dev">Frame.dev</a> •
-    <a href="https://frame.dev/codex">Frame Codex</a> •
-    <a href="https://openstrand.ai">OpenStrand</a>
-  </p>
-  <p>
-    <a href="https://github.com/framersai">GitHub</a> •
-    <a href="https://twitter.com/framersai">Twitter</a>
-  </p>
-  <br/>
-  <sub>Building scalable knowledge infrastructure</sub>
-</div>
+- Application metrics via Prometheus
+- Distributed tracing with OpenTelemetry
+- Log aggregation using ELK stack
+- Health checks at `/health` endpoint

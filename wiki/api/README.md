@@ -1,65 +1,59 @@
-<div align="center">
-  <img src="../../logos/frame-logo-green-no-tagline.svg" alt="Frame.dev APIs" width="150">
-
 # Frame.dev API Documentation
 
-**Complete integration guide for the Frame ecosystem**
+Integration guide for Frame ecosystem APIs.
 
-</div>
+## Overview
 
----
+Frame ecosystem provides APIs for building AI-powered knowledge applications:
 
-## 🚀 Overview
+- Developer-friendly interfaces
+- Low latency, high throughput
+- Industry-standard authentication
+- Scalable from single users to enterprise
+- Consistent patterns across services
 
-The Frame ecosystem provides comprehensive APIs for building AI-powered knowledge applications. Our APIs are designed to be:
-
-- **🔧 Developer-Friendly**: Clean, intuitive interfaces with excellent documentation
-- **🚀 Performant**: Low latency, high throughput, global edge deployment
-- **🔒 Secure**: Industry-standard authentication and encryption
-- **📊 Scalable**: Handle from single users to enterprise deployments
-- **🔄 Consistent**: Unified patterns across all services
-
-## 🗺️ API Ecosystem
+## API Ecosystem
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│                    Frame.dev APIs                        │
-├─────────────────────┬───────────────────┬───────────────┤
-│   Frame Codex API   │  OpenStrand API   │  Frame AI API │
-│  (Knowledge Base)   │     (PKMS)        │  (AI Services)│
-├─────────────────────┴───────────────────┴───────────────┤
-│                   Core Services                          │
-│     Auth  │  Storage  │  Search  │  Sync  │  Analytics │
-└─────────────────────────────────────────────────────────┘
+Frame.dev APIs
+├── Frame Codex API (Knowledge Base)
+├── OpenStrand API (PKMS)
+└── Frame AI API (AI Services)
+
+Core Services
+├── Auth
+├── Storage
+├── Search
+├── Sync
+└── Analytics
 ```
 
-## 🔑 Getting Started
+## Getting Started
 
-### 1. Create an Account
+### Create Account
 
-Sign up at [frame.dev](https://frame.dev) to get your API credentials.
+Sign up at [frame.dev](https://frame.dev) for API credentials.
 
-### 2. Get API Keys
+### Get API Keys
 
 ```bash
-# Using the CLI
+# CLI
 frame auth login
 frame api-keys create --name "My App"
 
-# Or via dashboard
+# Dashboard
 # Visit https://frame.dev/dashboard/api-keys
 ```
 
-### 3. Make Your First Request
+### First Request
 
 ```bash
-# Test your API key
+# Test API key
 curl -X GET https://api.frame.dev/v1/status \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 
 ```javascript
-// Using JavaScript SDK
 import { FrameClient } from '@framersai/sdk';
 
 const client = new FrameClient({
@@ -67,43 +61,38 @@ const client = new FrameClient({
 });
 
 const status = await client.getStatus();
-console.log('API Status:', status);
 ```
 
-## 📚 Available APIs
+## Available APIs
 
-### [Frame Codex API](../codex/api.md)
+### Frame Codex API
 
 Access the knowledge repository programmatically.
 
-**Key Features:**
-- Search across all knowledge strands
-- Retrieve weaves, looms, and strands
+Features:
+- Search across knowledge strands
+- Retrieve weaves, looms, strands
 - Access relationship graphs
 - Subscribe to content updates
 
-**Example:**
 ```typescript
-// Search the Codex
 const results = await codex.search('quantum computing', {
   weaves: ['technology'],
   limit: 10
 });
 ```
 
-### [OpenStrand API](../openstrand/api.md)
+### OpenStrand API
 
 Build personal knowledge management applications.
 
-**Key Features:**
+Features:
 - Manage vaults and strands
 - AI-powered search and chat
 - Real-time collaboration
 - Plugin development
 
-**Example:**
 ```typescript
-// Create a knowledge strand
 const strand = await vault.strands.create({
   title: 'Meeting Notes',
   content: 'Discussion points...',
@@ -113,31 +102,28 @@ const strand = await vault.strands.create({
 
 ### Frame AI API
 
-Powerful AI services for knowledge processing.
+AI services for knowledge processing.
 
-**Key Features:**
+Features:
 - Text generation and completion
 - Semantic search and embeddings
 - Document summarization
 - Knowledge synthesis
 
-**Example:**
 ```typescript
-// Generate embeddings
 const embeddings = await ai.embed('Understanding quantum mechanics');
 
-// Synthesize knowledge
 const synthesis = await ai.synthesize({
   question: 'What are the key AI trends?',
   sources: ['strand-1', 'strand-2']
 });
 ```
 
-## 🔐 Authentication
+## Authentication
 
 ### API Key Authentication
 
-Most straightforward for server-side applications.
+For server-side applications.
 
 ```http
 Authorization: Bearer YOUR_API_KEY
@@ -151,23 +137,21 @@ const client = new FrameClient({
 
 ### OAuth 2.0
 
-For user-facing applications requiring user consent.
+For user-facing applications.
 
 ```typescript
-// Initialize OAuth flow
 const authUrl = client.oauth.getAuthorizationUrl({
   clientId: 'YOUR_CLIENT_ID',
   redirectUri: 'http://localhost:3000/callback',
   scopes: ['read:vaults', 'write:strands']
 });
 
-// Handle callback
 const tokens = await client.oauth.exchangeCode(code);
 ```
 
-### JWT (Self-Hosted)
+### JWT
 
-For self-hosted deployments with custom auth.
+For self-hosted deployments.
 
 ```typescript
 const token = jwt.sign(
@@ -180,7 +164,7 @@ const client = new FrameClient({
 });
 ```
 
-## 🌐 REST API Conventions
+## REST API Conventions
 
 ### Base URLs
 
@@ -196,7 +180,6 @@ const client = new FrameClient({
 POST /v1/resource
 Content-Type: application/json
 Authorization: Bearer YOUR_API_KEY
-X-Request-ID: unique-request-id
 
 {
   "field": "value"
@@ -235,10 +218,6 @@ X-Request-ID: unique-request-id
         "message": "Title is required"
       }
     ]
-  },
-  "meta": {
-    "requestId": "unique-request-id",
-    "timestamp": "2024-11-15T10:30:00Z"
   }
 }
 ```
@@ -248,6 +227,8 @@ X-Request-ID: unique-request-id
 ```http
 GET /v1/resources?limit=20&offset=40
 ```
+
+Response includes pagination metadata:
 
 ```json
 {
@@ -259,36 +240,16 @@ GET /v1/resources?limit=20&offset=40
       "offset": 40,
       "hasMore": true
     }
-  },
-  "links": {
-    "first": "/v1/resources?limit=20&offset=0",
-    "prev": "/v1/resources?limit=20&offset=20",
-    "next": "/v1/resources?limit=20&offset=60",
-    "last": "/v1/resources?limit=20&offset=80"
   }
 }
 ```
 
-## 📊 GraphQL API
+## GraphQL API
 
 ### Endpoint
 
 ```
 https://api.frame.dev/graphql
-```
-
-### Schema Exploration
-
-```graphql
-# Introspection query
-{
-  __schema {
-    types {
-      name
-      description
-    }
-  }
-}
 ```
 
 ### Example Query
@@ -331,44 +292,22 @@ subscription OnStrandUpdated($vaultId: ID!) {
 }
 ```
 
-## 🔄 Webhooks
+## Webhooks
 
-### Configuring Webhooks
+### Configuration
 
 ```http
 POST /v1/webhooks
 Content-Type: application/json
-Authorization: Bearer YOUR_API_KEY
 
 {
   "url": "https://your-app.com/webhook",
-  "events": [
-    "strand.created",
-    "strand.updated",
-    "vault.shared"
-  ],
+  "events": ["strand.created", "strand.updated"],
   "secret": "webhook-secret"
 }
 ```
 
-### Webhook Payload
-
-```json
-{
-  "id": "evt_123",
-  "type": "strand.created",
-  "created": "2024-11-15T10:30:00Z",
-  "data": {
-    "object": {
-      "id": "strand_456",
-      "title": "New Strand",
-      "vaultId": "vault_789"
-    }
-  }
-}
-```
-
-### Verifying Webhooks
+### Verification
 
 ```typescript
 import crypto from 'crypto';
@@ -383,18 +322,17 @@ function verifyWebhook(payload: string, signature: string, secret: string): bool
 }
 ```
 
-## ⚡ Rate Limits
+## Rate Limits
 
-### Rate Limit Headers
+### Headers
 
 ```http
 X-RateLimit-Limit: 1000
 X-RateLimit-Remaining: 999
 X-RateLimit-Reset: 1699999999
-X-RateLimit-Policy: 1000;w=3600
 ```
 
-### Handling Rate Limits
+### Handling
 
 ```typescript
 async function makeRequest(url: string, options: RequestInit) {
@@ -405,35 +343,31 @@ async function makeRequest(url: string, options: RequestInit) {
     const delay = retryAfter ? parseInt(retryAfter) * 1000 : 60000;
     
     await new Promise(resolve => setTimeout(resolve, delay));
-    return makeRequest(url, options); // Retry
+    return makeRequest(url, options);
   }
   
   return response;
 }
 ```
 
-## 🛠️ SDKs & Libraries
+## SDKs
 
 ### Official SDKs
 
 | Language | Package | Documentation |
 |----------|---------|---------------|
-| JavaScript/TypeScript | `@framersai/sdk` | [Docs](./sdk-js.md) |
-| Python | `frame-sdk` | [Docs](./sdk-python.md) |
-| Go | `github.com/framersai/go-sdk` | [Docs](./sdk-go.md) |
-| Ruby | `frame-ruby` | [Docs](./sdk-ruby.md) |
+| JavaScript/TypeScript | `@framersai/sdk` | [Docs](./examples.md) |
+| Python | `frame-sdk` | [Docs](./examples.md) |
+| Go | `github.com/framersai/go-sdk` | [Docs](./examples.md) |
+| Ruby | `frame-ruby` | [Docs](./examples.md) |
 
 ### Community SDKs
 
-| Language | Repository | Maintainer |
-|----------|------------|------------|
-| Rust | [frame-rust](https://github.com/community/frame-rust) | Community |
-| Java | [frame-java](https://github.com/community/frame-java) | Community |
-| PHP | [frame-php](https://github.com/community/frame-php) | Community |
+Available for Rust, Java, and PHP through community maintainers.
 
-## 📈 Best Practices
+## Best Practices
 
-### 1. Use Idempotency Keys
+### Use Idempotency Keys
 
 ```typescript
 const response = await client.strands.create({
@@ -444,7 +378,7 @@ const response = await client.strands.create({
 });
 ```
 
-### 2. Implement Exponential Backoff
+### Implement Exponential Backoff
 
 ```typescript
 async function retryWithBackoff(fn: Function, maxRetries = 3) {
@@ -459,28 +393,19 @@ async function retryWithBackoff(fn: Function, maxRetries = 3) {
 }
 ```
 
-### 3. Batch Operations
+### Batch Operations
 
 ```typescript
+// Use batch operations
+await client.strands.createBatch(items);
+
 // Instead of multiple calls
 for (const item of items) {
   await client.strands.create(item);
 }
-
-// Use batch operations
-await client.strands.createBatch(items);
 ```
 
-### 4. Use Field Filtering
-
-```typescript
-// Only request needed fields
-const strand = await client.strands.get(id, {
-  fields: ['id', 'title', 'summary']
-});
-```
-
-### 5. Cache Appropriately
+### Cache Appropriately
 
 ```typescript
 const cache = new Map();
@@ -493,14 +418,13 @@ async function getCachedStrand(id: string) {
   const strand = await client.strands.get(id);
   cache.set(id, strand);
   
-  // Clear cache after TTL
   setTimeout(() => cache.delete(id), 5 * 60 * 1000);
   
   return strand;
 }
 ```
 
-## 🚨 Error Handling
+## Error Handling
 
 ### Error Codes
 
@@ -513,7 +437,7 @@ async function getCachedStrand(id: string) {
 | `RATE_LIMITED` | 429 | Too many requests |
 | `INTERNAL_ERROR` | 500 | Server error |
 
-### Error Handling Example
+### Example
 
 ```typescript
 try {
@@ -525,43 +449,24 @@ try {
         console.log('Strand not found');
         break;
       case 'RATE_LIMITED':
-        console.log(`Rate limited. Retry after ${error.retryAfter}s`);
+        console.log(`Retry after ${error.retryAfter}s`);
         break;
-      default:
-        console.error('API Error:', error.message);
     }
   }
 }
 ```
 
-## 📞 Support
+## Support
 
 ### Resources
 
-- **Documentation**: [docs.frame.dev](https://docs.frame.dev)
-- **API Status**: [status.frame.dev](https://status.frame.dev)
-- **Community Forum**: [community.frame.dev](https://community.frame.dev)
-- **GitHub Issues**: [github.com/framersai/api-issues](https://github.com/framersai/api-issues)
+- Documentation: [docs.frame.dev](https://docs.frame.dev)
+- API Status: [status.frame.dev](https://status.frame.dev)
+- Community: [community.frame.dev](https://community.frame.dev)
+- GitHub: [github.com/framersai/api-issues](https://github.com/framersai/api-issues)
 
 ### Contact
 
-- **Support**: [support@frame.dev](mailto:support@frame.dev)
-- **Enterprise**: [enterprise@frame.dev](mailto:enterprise@frame.dev)
-- **Security**: [security@frame.dev](mailto:security@frame.dev)
-
----
-
-<div align="center">
-  <br/>
-  <p>
-    <a href="https://frame.dev">Frame.dev</a> •
-    <a href="https://frame.dev/codex">Frame Codex</a> •
-    <a href="https://openstrand.ai">OpenStrand</a>
-  </p>
-  <p>
-    <a href="https://github.com/framersai">GitHub</a> •
-    <a href="https://twitter.com/framersai">Twitter</a>
-  </p>
-  <br/>
-  <sub>Build with confidence on Frame.dev APIs</sub>
-</div>
+- Support: support@frame.dev
+- Enterprise: enterprise@frame.dev
+- Security: security@frame.dev

@@ -1,26 +1,16 @@
-<div align="center">
-  <img src="../../logos/openstrand-logo.svg" alt="OpenStrand API" width="150">
-
 # OpenStrand API Reference
 
-**Complete API documentation for developers**
+API documentation for OpenStrand SDK.
 
-</div>
-
----
-
-## 🚀 Getting Started
+## Getting Started
 
 ### Installation
 
 ```bash
-# npm
 npm install @openstrand/sdk
-
-# yarn
+# or
 yarn add @openstrand/sdk
-
-# pnpm
+# or
 pnpm add @openstrand/sdk
 ```
 
@@ -29,20 +19,16 @@ pnpm add @openstrand/sdk
 ```typescript
 import { OpenStrand } from '@openstrand/sdk';
 
-// Initialize client
 const openstrand = new OpenStrand({
   apiKey: 'your-api-key',
-  baseUrl: 'https://api.openstrand.ai', // or self-hosted URL
-  version: 'v1'
+  baseUrl: 'https://api.openstrand.ai'
 });
 
-// Create a vault
 const vault = await openstrand.createVault({
   name: 'My Knowledge Base',
   description: 'Personal knowledge management'
 });
 
-// Create a strand
 const strand = await vault.strands.create({
   title: 'My First Note',
   content: 'This is my first note in OpenStrand!',
@@ -50,17 +36,17 @@ const strand = await vault.strands.create({
 });
 ```
 
-## 📚 Core Concepts
+## Core Concepts
 
 ### Authentication
 
 ```typescript
-// API Key authentication
+// API Key
 const client = new OpenStrand({
   apiKey: process.env.OPENSTRAND_API_KEY
 });
 
-// OAuth authentication
+// OAuth
 const client = new OpenStrand({
   oauth: {
     clientId: process.env.CLIENT_ID,
@@ -69,7 +55,7 @@ const client = new OpenStrand({
   }
 });
 
-// JWT authentication (self-hosted)
+// JWT (self-hosted)
 const client = new OpenStrand({
   auth: {
     type: 'jwt',
@@ -95,50 +81,42 @@ try {
         // Refresh token
         break;
       case 'RATE_LIMITED':
-        // Retry after delay
         const retryAfter = error.retryAfter;
+        // Retry after delay
         break;
     }
   }
 }
 ```
 
-## 🗄️ Vault API
+## Vault API
 
 ### Vault Management
 
 ```typescript
 class VaultAPI {
-  // List all vaults
   async list(options?: {
     limit?: number;
     offset?: number;
     orderBy?: 'created' | 'modified' | 'name';
   }): Promise<PaginatedResponse<Vault>>;
   
-  // Create a vault
   async create(data: {
     name: string;
     description?: string;
     settings?: VaultSettings;
   }): Promise<Vault>;
   
-  // Get vault by ID
   async get(id: string): Promise<Vault>;
   
-  // Update vault
   async update(id: string, data: Partial<Vault>): Promise<Vault>;
   
-  // Delete vault
   async delete(id: string): Promise<void>;
   
-  // Get vault statistics
   async getStats(id: string): Promise<VaultStats>;
   
-  // Export vault
   async export(id: string, format: 'json' | 'markdown' | 'opml'): Promise<Blob>;
   
-  // Import data into vault
   async import(id: string, data: File | Blob, options?: ImportOptions): Promise<ImportResult>;
 }
 ```
@@ -147,7 +125,6 @@ class VaultAPI {
 
 ```typescript
 interface VaultSettings {
-  // AI configuration
   ai: {
     provider: 'openai' | 'anthropic' | 'local';
     model: string;
@@ -158,7 +135,6 @@ interface VaultSettings {
     };
   };
   
-  // Sync configuration
   sync: {
     enabled: boolean;
     interval: number;
@@ -166,7 +142,6 @@ interface VaultSettings {
     conflictResolution: 'manual' | 'latest' | 'merge';
   };
   
-  // Privacy settings
   privacy: {
     telemetry: boolean;
     crashReports: boolean;
@@ -175,13 +150,12 @@ interface VaultSettings {
 }
 ```
 
-## 📝 Strand API
+## Strand API
 
 ### Strand Management
 
 ```typescript
 class StrandAPI {
-  // Create a strand
   async create(data: {
     title: string;
     content: Content;
@@ -191,14 +165,12 @@ class StrandAPI {
     metadata?: Record<string, any>;
   }): Promise<Strand>;
   
-  // Get strand by ID
   async get(id: string, options?: {
     includeContent?: boolean;
     includeRelationships?: boolean;
     includeVersions?: boolean;
   }): Promise<Strand>;
   
-  // Update strand
   async update(id: string, data: {
     title?: string;
     content?: Content;
@@ -206,10 +178,8 @@ class StrandAPI {
     metadata?: Record<string, any>;
   }): Promise<Strand>;
   
-  // Delete strand
   async delete(id: string): Promise<void>;
   
-  // List strands
   async list(options?: {
     loomId?: string;
     tags?: string[];
@@ -220,10 +190,8 @@ class StrandAPI {
     orderBy?: StrandOrderBy;
   }): Promise<PaginatedResponse<Strand>>;
   
-  // Get strand versions
   async getVersions(id: string): Promise<StrandVersion[]>;
   
-  // Revert to version
   async revert(id: string, version: number): Promise<Strand>;
 }
 ```
@@ -236,20 +204,20 @@ const textStrand = await vault.strands.create({
   title: 'Text Note',
   content: {
     type: 'text',
-    data: 'This is plain text content'
+    data: 'Plain text content'
   }
 });
 
-// Markdown content
+// Markdown
 const mdStrand = await vault.strands.create({
   title: 'Markdown Note',
   content: {
     type: 'markdown',
-    data: '# Heading\n\nThis is **markdown** content'
+    data: '# Heading\n\n**markdown** content'
   }
 });
 
-// Structured content
+// Structured
 const structuredStrand = await vault.strands.create({
   title: 'Structured Data',
   content: {
@@ -262,7 +230,7 @@ const structuredStrand = await vault.strands.create({
   }
 });
 
-// Binary content
+// Binary
 const imageStrand = await vault.strands.create({
   title: 'Profile Picture',
   content: {
@@ -273,13 +241,12 @@ const imageStrand = await vault.strands.create({
 });
 ```
 
-## 🧵 Loom API
+## Loom API
 
 ### Loom Management
 
 ```typescript
 class LoomAPI {
-  // Create a loom
   async create(data: {
     name: string;
     description?: string;
@@ -289,22 +256,18 @@ class LoomAPI {
     settings?: LoomSettings;
   }): Promise<Loom>;
   
-  // Get loom
   async get(id: string, options?: {
     includeStrands?: boolean;
     includeChildren?: boolean;
     includeStats?: boolean;
   }): Promise<Loom>;
   
-  // Update loom
   async update(id: string, data: Partial<Loom>): Promise<Loom>;
   
-  // Delete loom
   async delete(id: string, options?: {
     deleteStrands?: boolean;
   }): Promise<void>;
   
-  // List looms
   async list(options?: {
     parentId?: string;
     search?: string;
@@ -312,10 +275,8 @@ class LoomAPI {
     offset?: number;
   }): Promise<PaginatedResponse<Loom>>;
   
-  // Move loom
   async move(id: string, newParentId: string | null): Promise<Loom>;
   
-  // Get loom path
   async getPath(id: string): Promise<Loom[]>;
 }
 ```
@@ -323,7 +284,6 @@ class LoomAPI {
 ### Loom Organization
 
 ```typescript
-// Create nested structure
 const projectLoom = await vault.looms.create({
   name: 'My Project',
   icon: '📁'
@@ -341,18 +301,16 @@ const notesLoom = await vault.looms.create({
   icon: '📝'
 });
 
-// Get loom hierarchy
 const path = await vault.looms.getPath(notesLoom.id);
 // Returns: [projectLoom, notesLoom]
 ```
 
-## 🔗 Relationship API
+## Relationship API
 
 ### Link Management
 
 ```typescript
 class RelationshipAPI {
-  // Create link
   async createLink(data: {
     sourceId: string;
     targetId: string;
@@ -360,24 +318,20 @@ class RelationshipAPI {
     metadata?: Record<string, any>;
   }): Promise<Link>;
   
-  // Get links for strand
   async getLinks(strandId: string, options?: {
     direction?: 'outgoing' | 'incoming' | 'both';
     types?: LinkType[];
     limit?: number;
   }): Promise<Link[]>;
   
-  // Delete link
   async deleteLink(id: string): Promise<void>;
   
-  // Get related strands
   async getRelated(strandId: string, options?: {
     depth?: number;
     types?: LinkType[];
     limit?: number;
   }): Promise<RelatedStrand[]>;
   
-  // Find path between strands
   async findPath(sourceId: string, targetId: string, options?: {
     maxDepth?: number;
     types?: LinkType[];
@@ -400,24 +354,22 @@ enum LinkType {
   CUSTOM = 'custom'
 }
 
-// Create different link types
 await vault.relationships.createLink({
   sourceId: strand1.id,
   targetId: strand2.id,
   type: LinkType.REFERENCE,
   metadata: {
-    context: 'Used as source for statistics'
+    context: 'Used as source'
   }
 });
 ```
 
-## 🔍 Search API
+## Search API
 
 ### Search Operations
 
 ```typescript
 class SearchAPI {
-  // Semantic search
   async search(query: string, options?: {
     vaultId?: string;
     loomIds?: string[];
@@ -429,10 +381,8 @@ class SearchAPI {
     threshold?: number;
   }): Promise<SearchResults>;
   
-  // Keyword search
   async searchKeywords(keywords: string[], options?: SearchOptions): Promise<SearchResults>;
   
-  // Advanced search with filters
   async advancedSearch(filters: {
     must?: SearchClause[];
     should?: SearchClause[];
@@ -440,14 +390,12 @@ class SearchAPI {
     filter?: FilterClause[];
   }): Promise<SearchResults>;
   
-  // Get similar strands
   async findSimilar(strandId: string, options?: {
     limit?: number;
     threshold?: number;
     inLoom?: string;
   }): Promise<SimilarityResult[]>;
   
-  // Search suggestions
   async suggest(prefix: string, options?: {
     types?: ('strands' | 'tags' | 'looms')[];
     limit?: number;
@@ -460,7 +408,7 @@ class SearchAPI {
 ```typescript
 // Semantic search
 const results = await vault.search('quantum computing applications', {
-  loomIds: ['physics', 'computer-science'],
+  loomIds: ['physics'],
   threshold: 0.7,
   limit: 20
 });
@@ -480,20 +428,19 @@ const advanced = await vault.search.advancedSearch({
   ]
 });
 
-// Find similar content
+// Find similar
 const similar = await vault.search.findSimilar(strand.id, {
   limit: 10,
   threshold: 0.8
 });
 ```
 
-## 🤖 AI API
+## AI API
 
 ### AI Operations
 
 ```typescript
 class AIAPI {
-  // Chat with knowledge base
   async chat(messages: ChatMessage[], options?: {
     context?: {
       strandIds?: string[];
@@ -507,7 +454,6 @@ class AIAPI {
     stream?: boolean;
   }): Promise<ChatResponse | AsyncIterable<ChatChunk>>;
   
-  // Generate content
   async generate(prompt: string, options?: {
     template?: string;
     variables?: Record<string, any>;
@@ -515,13 +461,11 @@ class AIAPI {
     maxTokens?: number;
   }): Promise<GeneratedContent>;
   
-  // Summarize content
   async summarize(strandIds: string[], options?: {
     style?: 'brief' | 'detailed' | 'bullets';
     maxLength?: number;
   }): Promise<Summary>;
   
-  // Extract information
   async extract(strandId: string, schema: {
     [key: string]: {
       type: 'string' | 'number' | 'boolean' | 'array';
@@ -530,7 +474,6 @@ class AIAPI {
     };
   }): Promise<ExtractedData>;
   
-  // Analyze connections
   async analyzeConnections(strandIds: string[]): Promise<ConnectionAnalysis>;
 }
 ```
@@ -556,7 +499,7 @@ for await (const chunk of response) {
   process.stdout.write(chunk.content);
 }
 
-// Generate study guide
+// Generate content
 const studyGuide = await vault.ai.generate(
   'Create a study guide for {{topic}}',
   {
@@ -570,50 +513,46 @@ const studyGuide = await vault.ai.generate(
 const extracted = await vault.ai.extract(strand.id, {
   mainTopic: {
     type: 'string',
-    description: 'The main topic of the document'
+    description: 'Main topic'
   },
   keyPoints: {
     type: 'array',
-    description: 'Key points or takeaways'
+    description: 'Key points'
   },
   sentiment: {
     type: 'string',
-    description: 'Overall sentiment: positive, negative, or neutral'
+    description: 'Sentiment: positive/negative/neutral'
   }
 });
 ```
 
-## 🔄 Sync API
+## Sync API
 
 ### Sync Operations
 
 ```typescript
 class SyncAPI {
-  // Get sync status
   async getStatus(): Promise<SyncStatus>;
   
-  // Trigger sync
   async sync(options?: {
     force?: boolean;
     direction?: 'push' | 'pull' | 'both';
   }): Promise<SyncResult>;
   
-  // Get sync history
   async getHistory(options?: {
     limit?: number;
     since?: Date;
   }): Promise<SyncEvent[]>;
   
-  // Resolve conflicts
   async getConflicts(): Promise<SyncConflict[]>;
+  
   async resolveConflict(conflictId: string, resolution: 'local' | 'remote' | 'merge'): Promise<void>;
   
-  // Configure sync
   async configure(settings: SyncSettings): Promise<void>;
 }
 ```
 
-## 🔌 Plugin API
+## Plugin API
 
 ### Plugin Development
 
@@ -625,11 +564,9 @@ interface Plugin {
   author: string;
   description?: string;
   
-  // Lifecycle hooks
   activate(context: PluginContext): Promise<void>;
   deactivate(): Promise<void>;
   
-  // Optional capabilities
   commands?: Command[];
   hooks?: PluginHooks;
   ui?: UIContributions;
@@ -637,20 +574,16 @@ interface Plugin {
 }
 
 interface PluginContext {
-  // OpenStrand APIs
   vault: VaultAPI;
   strands: StrandAPI;
   ai: AIAPI;
   
-  // Plugin APIs
   storage: PluginStorage;
   events: EventEmitter;
   
-  // UI APIs
   showMessage(message: string, type?: 'info' | 'warning' | 'error'): void;
   showInputBox(options: InputBoxOptions): Promise<string | undefined>;
   
-  // Register contributions
   registerCommand(command: Command): Disposable;
   registerHook(event: string, handler: Function): Disposable;
 }
@@ -666,7 +599,6 @@ const citationPlugin: Plugin = {
   author: 'OpenStrand Community',
   
   async activate(context: PluginContext) {
-    // Register command
     context.registerCommand({
       id: 'citation.insert',
       title: 'Insert Citation',
@@ -683,69 +615,34 @@ const citationPlugin: Plugin = {
       }
     });
     
-    // Register hook
     context.registerHook('beforeStrandSave', async (strand) => {
-      // Auto-format citations
       strand.content = await this.formatCitations(strand.content);
       return strand;
     });
-  },
-  
-  async deactivate() {
-    // Cleanup
   }
 };
 ```
 
-## 📊 Analytics API
-
-### Analytics Operations
-
-```typescript
-class AnalyticsAPI {
-  // Get vault statistics
-  async getStats(vaultId: string, options?: {
-    period?: 'day' | 'week' | 'month' | 'year';
-    metrics?: Metric[];
-  }): Promise<VaultStats>;
-  
-  // Get activity timeline
-  async getActivity(options?: {
-    limit?: number;
-    types?: ActivityType[];
-    since?: Date;
-  }): Promise<Activity[]>;
-  
-  // Get insights
-  async getInsights(): Promise<Insights>;
-  
-  // Export analytics
-  async export(format: 'csv' | 'json'): Promise<Blob>;
-}
-```
-
-## 🚀 WebSocket API
+## WebSocket API
 
 ### Real-time Updates
 
 ```typescript
-// Connect to WebSocket
 const ws = openstrand.connect();
 
-// Subscribe to events
 ws.on('strand:created', (strand) => {
-  console.log('New strand created:', strand.title);
+  console.log('New strand:', strand.title);
 });
 
 ws.on('strand:updated', (strand) => {
-  console.log('Strand updated:', strand.title);
+  console.log('Updated:', strand.title);
 });
 
 ws.on('sync:progress', (progress) => {
-  console.log(`Sync progress: ${progress.percent}%`);
+  console.log(`Sync: ${progress.percent}%`);
 });
 
-// Join collaborative session
+// Collaborative session
 const session = await ws.joinSession('strand-id');
 
 session.on('user:joined', (user) => {
@@ -761,46 +658,40 @@ session.on('content:changed', (change) => {
 });
 ```
 
-## 📦 SDK Configuration
+## SDK Configuration
 
 ### Advanced Configuration
 
 ```typescript
 const openstrand = new OpenStrand({
-  // API configuration
   apiKey: 'your-api-key',
   baseUrl: 'https://api.openstrand.ai',
   version: 'v1',
   
-  // Request configuration
-  timeout: 30000, // 30 seconds
+  timeout: 30000,
   retries: 3,
   retryDelay: 1000,
   
-  // Cache configuration
   cache: {
     enabled: true,
-    ttl: 300, // 5 minutes
-    storage: 'memory' // or 'localStorage'
+    ttl: 300,
+    storage: 'memory'
   },
   
-  // Debug configuration
   debug: {
     enabled: true,
-    logLevel: 'info', // 'error' | 'warn' | 'info' | 'debug'
+    logLevel: 'info',
     logRequests: true,
     logResponses: false
   },
   
-  // Custom headers
   headers: {
     'X-Custom-Header': 'value'
   },
   
-  // Interceptors
   interceptors: {
     request: async (config) => {
-      // Modify request config
+      // Modify request
       return config;
     },
     response: async (response) => {
@@ -814,20 +705,3 @@ const openstrand = new OpenStrand({
   }
 });
 ```
-
----
-
-<div align="center">
-  <br/>
-  <p>
-    <a href="https://frame.dev">Frame.dev</a> •
-    <a href="https://frame.dev/codex">Frame Codex</a> •
-    <a href="https://openstrand.ai">OpenStrand</a>
-  </p>
-  <p>
-    <a href="https://github.com/framersai">GitHub</a> •
-    <a href="https://twitter.com/framersai">Twitter</a>
-  </p>
-  <br/>
-  <sub>Build amazing knowledge applications</sub>
-</div>

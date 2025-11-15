@@ -1,61 +1,48 @@
-<div align="center">
-  <img src="../../logos/frame-logo-green-no-tagline.svg" alt="Frame Codex" width="150">
-
 # Contributing to Frame Codex
 
-**Help build humanity's knowledge repository**
+Guide for contributing to Frame Codex.
 
-</div>
+## Overview
 
----
+Frame Codex is a community-driven project. We welcome contributions:
+- New knowledge content
+- Technical improvements
+- Documentation enhancements
+- Translations
+- Bug fixes
 
-## 🎯 Overview
+## Quick Start
 
-Frame Codex is a community-driven project. We welcome contributions of all kinds:
-- 📝 New knowledge content
-- 🔧 Technical improvements
-- 📚 Documentation enhancements
-- 🌍 Translations
-- 🐛 Bug fixes
-
-## 🚀 Quick Start
-
-1. **Fork the repository**
+1. Fork the repository
    ```bash
    git clone https://github.com/framersai/codex.git
    cd codex
    ```
 
-2. **Create a branch**
+2. Create a branch
    ```bash
    git checkout -b add-quantum-computing-strand
    ```
 
-3. **Make your changes**
-   - Follow the schemas
-   - Validate your content
-   - Test thoroughly
+3. Make changes following schemas
+4. Validate content
+5. Submit pull request
 
-4. **Submit a pull request**
-   - Clear description
-   - Reference any issues
-   - Pass all checks
-
-## 📝 Content Contributions
+## Content Contributions
 
 ### Adding a New Strand
 
-1. **Choose the right weave and loom**
+1. Choose the right location:
    ```
    weaves/
-   └── technology/          # Choose appropriate weave
+   └── technology/          # Choose weave
        └── looms/
            └── quantum/     # Find or create loom
                └── strands/
                    └── your-strand.md  # Add here
    ```
 
-2. **Use the strand template**
+2. Use strand template:
    ```bash
    npm run create -- --type=strand \
      --weave=technology \
@@ -63,27 +50,25 @@ Frame Codex is a community-driven project. We welcome contributions of all kinds
      --title="Quantum Entanglement Explained"
    ```
 
-3. **Fill in the frontmatter**
+3. Fill frontmatter:
    ```yaml
    ---
-   id: "generate-uuid-here"
+   id: "generate-uuid"
    slug: "quantum-entanglement"
    title: "Quantum Entanglement Explained"
-   summary: "A comprehensive guide to quantum entanglement, covering the fundamental principles, experimental verification, and practical applications in quantum computing and cryptography."
+   summary: "Comprehensive guide to quantum entanglement covering principles, verification, and applications."
    version: "1.0.0"
    contentType: "text/markdown"
    difficulty: "intermediate"
    
    taxonomy:
      subjects: ["Physics", "Quantum Mechanics"]
-     topics: ["Quantum Entanglement", "Quantum Computing"]
-     subtopics: ["Bell's Theorem", "EPR Paradox"]
+     topics: ["Quantum Entanglement"]
+     subtopics: ["Bell's Theorem"]
    
    relationships:
      - type: "prerequisite"
-       target: "quantum-mechanics-basics-uuid"
-     - type: "related"
-       target: "quantum-cryptography-uuid"
+       target: "quantum-basics-uuid"
    
    publishing:
      author: "Your Name"
@@ -92,97 +77,72 @@ Frame Codex is a community-driven project. We welcome contributions of all kinds
    ---
    ```
 
-4. **Write high-quality content**
-   - Clear explanations
-   - Accurate information
-   - Proper citations
-   - Examples when helpful
+4. Write quality content with clear explanations, accurate information, and proper citations.
 
 ### Adding a New Loom
 
-1. **Create loom directory**
+1. Create loom directory:
    ```bash
    mkdir -p weaves/technology/looms/your-loom/strands
    ```
 
-2. **Create loom.yaml**
+2. Create loom.yaml:
    ```yaml
    slug: your-loom
    title: "Your Loom Title"
-   summary: "Comprehensive description of what this loom covers..."
+   summary: "Description of what this loom covers..."
    tags: ["relevant", "tags"]
    ordering:
      type: sequential
-     sequence: []  # Will be populated with strands
+     sequence: []
    ```
 
 ### Content Guidelines
 
-#### ✅ DO:
-- Write for both humans and AI
-- Include examples and analogies
-- Cite credible sources
-- Use clear, accessible language
+Write for both humans and AI:
+- Include examples
+- Cite sources
+- Use clear language
 - Structure content logically
-- Add helpful diagrams (with alt text)
+- Add diagrams with alt text
 
-#### ❌ DON'T:
-- Copy content without attribution
-- Include personal opinions as facts
-- Use jargon without explanation
-- Submit incomplete content
-- Ignore schema requirements
-- Add promotional content
+Avoid:
+- Copying without attribution
+- Personal opinions as facts
+- Unexplained jargon
+- Incomplete content
+- Schema violations
+- Promotional content
 
 ### Quality Standards
 
-All content must meet these standards:
+Content must be:
+- Factually accurate
+- Well-structured
+- Easy to understand
+- Complete coverage
+- Properly formatted
 
-1. **Accuracy**
-   - Factually correct
-   - Up-to-date information
-   - Verified sources
-
-2. **Clarity**
-   - Well-structured
-   - Easy to understand
-   - Good examples
-
-3. **Completeness**
-   - Covers topic thoroughly
-   - Includes prerequisites
-   - Links to related content
-
-4. **Formatting**
-   - Follows markdown standards
-   - Proper heading hierarchy
-   - Code blocks with language tags
-
-## 🔧 Technical Contributions
+## Technical Contributions
 
 ### Development Setup
 
-1. **Install dependencies**
-   ```bash
-   npm install
-   ```
+```bash
+# Install dependencies
+npm install
 
-2. **Run validation**
-   ```bash
-   npm run validate
-   ```
+# Run validation
+npm run validate
 
-3. **Build index**
-   ```bash
-   npm run build-index
-   ```
+# Build index
+npm run build-index
+```
 
 ### Code Standards
-
-- **TypeScript** for scripts
-- **ES Modules** for imports
-- **Prettier** for formatting
-- **ESLint** for linting
+- TypeScript for scripts
+- ES Modules
+- Prettier formatting
+- ESLint rules
 
 ### Testing
 
@@ -200,14 +160,14 @@ npm run test:links
 npm run test:content
 ```
 
-## 🌍 Translations
+## Translations
 
-Help make Frame Codex accessible globally:
+Help make Frame Codex globally accessible:
 
-1. **Create language directory**
+1. Create language directory:
    ```
-   weaves/technology/looms/ml/strands/
-   ├── transformer.md         # Original (English)
+   strands/
+   ├── transformer.md         # Original
    └── i18n/
        ├── es/
        │   └── transformer.md # Spanish
@@ -215,32 +175,30 @@ Help make Frame Codex accessible globally:
            └── transformer.md # Chinese
    ```
 
-2. **Translate frontmatter**
+2. Translate frontmatter:
    ```yaml
-   ---
-   # Keep IDs and slugs unchanged
-   id: "same-uuid-as-original"
+   # Keep IDs unchanged
+   id: "same-uuid"
    slug: "transformer-architecture"
    
-   # Translate these fields
-   title: "Comprendre l'Architecture Transformer"
-   summary: "Un guide complet..."
+   # Translate these
+   title: "Architecture Transformer"
+   summary: "Guide complet..."
    
-   # Add language marker
+   # Add marker
    language: "fr"
    translatedFrom: "en"
-   ---
    ```
 
-## 📋 Pull Request Process
+## Pull Request Process
 
 ### Before Submitting
 
-- [ ] Content follows all schemas
-- [ ] Validation passes (`npm run validate`)
-- [ ] Links are valid (`npm run check-links`)
-- [ ] Commit messages are clear
-- [ ] Branch is up-to-date with main
+- [ ] Content follows schemas
+- [ ] Validation passes
+- [ ] Links are valid
+- [ ] Clear commit messages
+- [ ] Branch is up-to-date
 
 ### PR Template
 
@@ -249,7 +207,7 @@ Help make Frame Codex accessible globally:
 Brief description of changes
 
 ## Type of Change
-- [ ] New content (strand/loom/weave)
+- [ ] New content
 - [ ] Content update
 - [ ] Bug fix
 - [ ] Documentation
@@ -260,41 +218,20 @@ Brief description of changes
 - [ ] Tests pass
 - [ ] Documentation updated
 - [ ] Related issues linked
-
-## Screenshots (if applicable)
-Add screenshots for UI changes
 ```
 
 ### Review Process
 
-1. **Automated checks** run immediately
-2. **Community review** within 48 hours
-3. **Maintainer approval** for merge
-4. **Auto-deployment** after merge
+1. Automated checks run immediately
+2. Community review within 48 hours
+3. Maintainer approval for merge
+4. Auto-deployment after merge
 
-## 🏆 Recognition
-
-### Contributor Levels
-
-- 🌱 **Seedling** (1-5 contributions)
-- 🌿 **Sprout** (6-20 contributions)
-- 🌳 **Tree** (21-50 contributions)
-- 🌲 **Forest** (50+ contributions)
-
-### Hall of Fame
-
-Top contributors are featured:
-- Monthly spotlight on blog
-- Special Discord role
-- Early access to features
-- Codex contributor badge
-
-## 📚 Resources
+## Resources
 
 ### Documentation
 - [Schema Reference](./schema.md)
 - [API Documentation](./api.md)
-- [Style Guide](./style-guide.md)
 
 ### Tools
 - [UUID Generator](https://www.uuidgenerator.net/)
@@ -302,48 +239,30 @@ Top contributors are featured:
 - [Schema Validator](https://www.jsonschemavalidator.net/)
 
 ### Community
-- [Discord Server](https://discord.gg/framecodex)
-- [GitHub Discussions](https://github.com/framersai/codex/discussions)
-- [Twitter Updates](https://twitter.com/framersai)
+- GitHub Discussions
+- Discord Server
+- Twitter Updates
 
-## ⚖️ License
+## License
 
-By contributing to Frame Codex, you agree that your contributions will be licensed under the Creative Commons Attribution 4.0 International License (CC-BY-4.0).
+By contributing, you agree that contributions will be licensed under CC-BY-4.0.
 
-## 🤝 Code of Conduct
+## Code of Conduct
 
-Frame Codex follows the [Contributor Covenant Code of Conduct](https://www.contributor-covenant.org/). Please read and adhere to it.
+Frame Codex follows the Contributor Covenant Code of Conduct.
 
-### Our Standards
+Standards:
+- Respectful communication
+- Inclusive environment
+- Constructive feedback
+- Collaborative approach
+- Professional conduct
 
-- **Respectful** communication
-- **Inclusive** environment
-- **Constructive** feedback
-- **Collaborative** approach
-- **Professional** conduct
-
-## ❓ Getting Help
+## Getting Help
 
 Need assistance?
 
-1. **Check existing issues** on GitHub
-2. **Ask in Discord** #help channel
-3. **Read the FAQ** in wiki
-4. **Email us** at codex@frame.dev
-
----
-
-<div align="center">
-  <br/>
-  <p>
-    <a href="https://frame.dev">Frame.dev</a> •
-    <a href="https://frame.dev/codex">Frame Codex</a> •
-    <a href="https://openstrand.ai">OpenStrand</a>
-  </p>
-  <p>
-    <a href="https://github.com/framersai">GitHub</a> •
-    <a href="https://twitter.com/framersai">Twitter</a>
-  </p>
-  <br/>
-  <sub>Together, we're building the future of knowledge</sub>
-</div>
+1. Check existing issues
+2. Ask in Discord
+3. Read the FAQ
+4. Email codex@frame.dev

@@ -1,154 +1,128 @@
-<div align="center">
-  <img src="../../logos/openstrand-logo.svg" alt="OpenStrand" width="150">
-
 # OpenStrand
 
-**AI-native personal knowledge management system**
+AI-native personal knowledge management system.
 
-[Website](https://openstrand.ai) • [GitHub](https://github.com/framersai/openstrand) • [Documentation](#documentation)
+## Overview
 
-</div>
-
----
-
-## 🧠 What is OpenStrand?
-
-OpenStrand is a revolutionary personal knowledge management system (PKMS) that seamlessly integrates AI capabilities with local-first architecture. Built on top of Frame Codex, it provides an intuitive interface for capturing, connecting, and discovering knowledge.
+OpenStrand is a personal knowledge management system (PKMS) that integrates AI capabilities with local-first architecture. Built on Frame Codex, it provides an interface for capturing, connecting, and discovering knowledge.
 
 ### Core Philosophy
 
-- **🏠 Local-First**: Your data stays on your device by default
-- **🤖 AI-Native**: Built from the ground up with AI integration
-- **🔗 Connected**: Knowledge graph visualization and semantic linking
-- **🚀 Fast**: Instant search and retrieval with vector embeddings
-- **🔒 Private**: End-to-end encryption for cloud sync
+- Local-first: Data stays on your device by default
+- AI-native: Built with AI integration from the start
+- Connected: Knowledge graph visualization and semantic linking
+- Fast: Instant search with vector embeddings
+- Private: End-to-end encryption for cloud sync
 
-## ✨ Key Features
+## Key Features
 
 ### Knowledge Management
 
-- **Universal Import**: Support for 20+ formats including Markdown, Notion, Obsidian, Roam, and more
-- **Smart Organization**: AI-powered categorization and tagging
-- **Visual Knowledge Graph**: Interactive 3D visualization of connections
-- **Block References**: Transclusion and block-level linking
-- **Version History**: Git-like branching and merging for notes
+- Universal import: 20+ formats including Markdown, Notion, Obsidian, Roam
+- Smart organization: AI-powered categorization and tagging
+- Visual knowledge graph: Interactive 3D visualization
+- Block references: Transclusion and block-level linking
+- Version history: Git-like branching and merging
 
 ### AI Integration
 
-- **Semantic Search**: Find information by meaning, not just keywords
-- **AI Assistant**: Context-aware chat that understands your knowledge base
-- **Smart Suggestions**: AI-powered link and tag recommendations
-- **Content Generation**: AI-assisted writing with your knowledge as context
-- **Knowledge Synthesis**: Discover insights across your notes
+- Semantic search: Find by meaning, not just keywords
+- AI assistant: Context-aware chat with your knowledge base
+- Smart suggestions: AI-powered link and tag recommendations
+- Content generation: AI-assisted writing with context
+- Knowledge synthesis: Discover insights across notes
 
 ### Technical Features
 
-- **TypeScript Monorepo**: Modern, type-safe architecture
-- **Database Abstraction**: PostgreSQL in cloud, PGlite locally
-- **Real-time Sync**: Conflict-free replicated data types (CRDTs)
-- **Plugin System**: Extensible architecture for custom workflows
-- **API-First**: REST and GraphQL APIs for integration
+- TypeScript monorepo architecture
+- Database abstraction: PostgreSQL in cloud, PGlite locally
+- Real-time sync: Conflict-free replicated data types
+- Plugin system: Extensible architecture
+- API-first: REST and GraphQL APIs
 
-## 🏗️ Architecture Overview
+## Architecture Overview
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                     OpenStrand Client                        │
-│  ┌─────────────┐  ┌──────────────┐  ┌──────────────────┐  │
-│  │   Next.js   │  │    Editor     │  │  Knowledge Graph │  │
-│  │   Web App   │  │  Components   │  │   Visualization  │  │
-│  └─────────────┘  └──────────────┘  └──────────────────┘  │
-└────────────────────────────┬────────────────────────────────┘
-                             │
-┌────────────────────────────┴────────────────────────────────┐
-│                    OpenStrand SDK                            │
-│  ┌──────────────┐  ┌──────────────┐  ┌─────────────────┐  │
-│  │   Core API   │  │     Sync      │  │       AI         │  │
-│  │   Methods    │  │    Engine     │  │   Integration    │  │
-│  └──────────────┘  └──────────────┘  └─────────────────┘  │
-└────────────────────────────┬────────────────────────────────┘
-                             │
-┌────────────────────────────┴────────────────────────────────┐
-│                   OpenStrand Server                          │
-│  ┌──────────────┐  ┌──────────────┐  ┌─────────────────┐  │
-│  │   Fastify    │  │  PostgreSQL   │  │     Vector      │  │
-│  │     API      │  │   Database    │  │      Store      │  │
-│  └──────────────┘  └──────────────┘  └─────────────────┘  │
-└────────────────────────────┬────────────────────────────────┘
-                             │
-┌────────────────────────────┴────────────────────────────────┐
-│                      Frame Codex                             │
-│                  (Knowledge Repository)                      │
-└─────────────────────────────────────────────────────────────┘
+OpenStrand Client
+├── Next.js Web App
+├── Editor Components
+└── Knowledge Graph Visualization
+
+OpenStrand SDK
+├── Core API Methods
+├── Sync Engine
+└── AI Integration
+
+OpenStrand Server
+├── Fastify API
+├── PostgreSQL Database
+└── Vector Store
+
+Frame Codex (Knowledge Repository)
 ```
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Installation
 
 ```bash
-# Clone the repository
+# Clone repository
 git clone https://github.com/framersai/openstrand.git
 cd openstrand
 
 # Install dependencies
 npm install
 
-# Start development servers
+# Start development
 npm run dev
 ```
 
 ### Quick Start
 
-1. **Create your first vault**
-   ```typescript
-   import { OpenStrand } from '@openstrand/sdk';
-   
-   const os = new OpenStrand();
-   const vault = await os.createVault('My Knowledge');
-   ```
+```typescript
+import { OpenStrand } from '@openstrand/sdk';
 
-2. **Import existing notes**
-   ```typescript
-   await vault.import({
-     source: './obsidian-vault',
-     format: 'obsidian'
-   });
-   ```
+const os = new OpenStrand();
+const vault = await os.createVault('My Knowledge');
 
-3. **Search your knowledge**
-   ```typescript
-   const results = await vault.search('machine learning concepts');
-   ```
+// Import notes
+await vault.import({
+  source: './obsidian-vault',
+  format: 'obsidian'
+});
 
-## 📚 Core Concepts
+// Search knowledge
+const results = await vault.search('machine learning concepts');
+```
 
-### Strands, Looms, and Weaves
+## Core Concepts
 
-OpenStrand adopts Frame Codex's organizational model:
+### Knowledge Organization
 
-- **Strand**: Atomic unit of knowledge (note, document, image, etc.)
-- **Loom**: Collection of related strands (project, topic, course)
-- **Weave**: Complete knowledge universe (personal vault, team workspace)
+OpenStrand uses Frame Codex's model:
+
+- **Strand**: Atomic knowledge unit (note, document, image)
+- **Loom**: Collection of related strands (project, topic)
+- **Weave**: Complete knowledge universe (vault, workspace)
 
 ### Local-First Architecture
 
 ```typescript
-// Data stays local by default
+// Data stays local
 const strand = await vault.createStrand({
-  title: 'My Private Thoughts',
-  content: 'This stays on my device...',
-  syncEnabled: false  // No cloud sync
+  title: 'Private Thoughts',
+  content: 'This stays on device...',
+  syncEnabled: false
 });
 
-// Selective sync when needed
+// Selective sync
 await strand.enableSync({
   encrypted: true,
   shareWith: ['team@example.com']
 });
 ```
 
-### AI-Powered Features
+### AI Features
 
 ```typescript
 // Semantic search
@@ -157,9 +131,9 @@ const similar = await vault.findSimilar(strand, {
   limit: 10
 });
 
-// AI chat with context
-const response = await vault.chat('Summarize my notes on quantum computing', {
-  context: ['physics-loom', 'research-papers']
+// AI chat
+const response = await vault.chat('Summarize quantum computing notes', {
+  context: ['physics-loom']
 });
 
 // Smart suggestions
@@ -170,37 +144,37 @@ const suggestions = await strand.getSuggestions({
 });
 ```
 
-## 🛠️ Development
+## Development
 
 ### Project Structure
 
 ```
 openstrand/
 ├── apps/
-│   ├── web/          # Next.js web application
-│   └── desktop/      # Electron desktop app (planned)
+│   ├── web/          # Next.js application
+│   └── desktop/      # Electron app (planned)
 ├── packages/
-│   ├── core/         # Core business logic
+│   ├── core/         # Business logic
 │   ├── sdk/          # TypeScript SDK
-│   ├── ui/           # Shared UI components
+│   ├── ui/           # UI components
 │   └── sync/         # Sync engine
-├── server/           # Fastify API server
+├── server/           # Fastify API
 └── docs/            # Documentation
 ```
 
 ### Technology Stack
 
-- **Frontend**: Next.js, React, TypeScript, Tailwind CSS
-- **Backend**: Fastify, PostgreSQL, Redis
-- **AI/ML**: OpenAI, Anthropic, local models via Ollama
-- **Search**: pgvector for embeddings, MeiliSearch for full-text
-- **Visualization**: D3.js, Three.js for 3D graphs
+- Frontend: Next.js, React, TypeScript, Tailwind
+- Backend: Fastify, PostgreSQL, Redis
+- AI/ML: OpenAI, Anthropic, Ollama
+- Search: pgvector, MeiliSearch
+- Visualization: D3.js, Three.js
 
-## 🔌 Integrations
+## Integrations
 
 ### Import Sources
 
-- Markdown files (.md)
+- Markdown files
 - Notion export
 - Obsidian vault
 - Roam Research
@@ -211,7 +185,6 @@ openstrand/
 - PDFs
 - Web pages
 - YouTube transcripts
-- And more...
 
 ### Export Formats
 
@@ -224,76 +197,45 @@ openstrand/
 
 ### Third-Party Services
 
-- **AI Providers**: OpenAI, Anthropic, Cohere, local models
-- **Storage**: Local filesystem, S3-compatible, IPFS
-- **Sync**: WebDAV, Git, proprietary sync
-- **Publishing**: Static sites, blogs, wikis
+- AI Providers: OpenAI, Anthropic, Cohere, local models
+- Storage: Local filesystem, S3-compatible, IPFS
+- Sync: WebDAV, Git, proprietary sync
+- Publishing: Static sites, blogs, wikis
 
-## 🔐 Security & Privacy
+## Security & Privacy
 
 ### Data Protection
 
-- **Encryption**: AES-256 for data at rest
-- **Transport**: TLS 1.3 for all communications
-- **Zero-Knowledge**: Optional E2E encryption for cloud sync
-- **Local Storage**: SQLite/PGlite with encryption
+- Encryption: AES-256 at rest
+- Transport: TLS 1.3
+- Zero-knowledge: Optional E2E encryption
+- Local storage: SQLite/PGlite with encryption
 
 ### Privacy Features
 
-- **No Telemetry**: No usage tracking by default
-- **Local AI**: Option to use local models
-- **Data Ownership**: Export everything, anytime
-- **Right to Delete**: Complete data removal
+- No telemetry by default
+- Local AI options
+- Export everything
+- Complete data removal
 
-## 📖 Documentation
+## Documentation
 
-- [Architecture](./architecture.md) - Technical deep dive
-- [Features](./features.md) - Detailed feature documentation
-- [API Reference](./api.md) - SDK and API documentation
-- [Plugins](./plugins.md) - Plugin development guide
+- [Architecture](./architecture.md) - Technical design
+- [Features](./features.md) - Feature documentation
+- [API Reference](./api.md) - SDK and API docs
+- [Plugins](./plugins.md) - Plugin development
 
-## 🗺️ Roadmap
+## Community
 
-### Current Focus (v0.3.0)
-- [ ] Mobile apps (iOS/Android)
-- [ ] Collaborative features
-- [ ] Plugin marketplace
-- [ ] Advanced AI features
+- GitHub: [github.com/framersai/openstrand](https://github.com/framersai/openstrand)
+- Discord: [discord.gg/openstrand](https://discord.gg/openstrand)
+- Twitter: [@openstrand](https://twitter.com/openstrand)
+- Forum: [community.openstrand.ai](https://community.openstrand.ai)
 
-### Future Plans
-- Real-time collaboration
-- Voice notes with transcription
-- AR/VR knowledge exploration
-- Federated knowledge networks
+## License
 
-## 🤝 Community
-
-- **GitHub**: [github.com/framersai/openstrand](https://github.com/framersai/openstrand)
-- **Discord**: [discord.gg/openstrand](https://discord.gg/openstrand)
-- **Twitter**: [@openstrand](https://twitter.com/openstrand)
-- **Forum**: [community.openstrand.ai](https://community.openstrand.ai)
-
-## 📄 License
-
-OpenStrand is available under dual licensing:
-- **Community Edition**: MIT License
-- **Enterprise Edition**: Commercial license with support
+OpenStrand is available under:
+- Community Edition: MIT License
+- Enterprise Edition: Commercial license
 
 See [LICENSE](https://github.com/framersai/openstrand/LICENSE) for details.
-
----
-
-<div align="center">
-  <br/>
-  <p>
-    <a href="https://frame.dev">Frame.dev</a> •
-    <a href="https://frame.dev/codex">Frame Codex</a> •
-    <a href="https://openstrand.ai">OpenStrand</a>
-  </p>
-  <p>
-    <a href="https://github.com/framersai">GitHub</a> •
-    <a href="https://twitter.com/framersai">Twitter</a>
-  </p>
-  <br/>
-  <sub>Your second brain, powered by AI</sub>
-</div>
