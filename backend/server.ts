@@ -117,14 +117,16 @@ async function startServer() {
         providers: mapAvailabilityToStatus(error.availability),
       });
     } else {
+      const msg = (error as Error)?.message || 'Failed to initialize LLM services.';
+      llmLogger.error('LLM initialization failed, continuing in degraded mode: %s', msg);
       setLlmBootstrapStatus({
         ready: false,
         code: 'LLM_INIT_FAILURE',
-        message: (error as Error)?.message || 'Failed to initialize LLM services.',
+        message: msg,
         timestamp: new Date().toISOString(),
         providers: {},
       });
-      throw error;
+      // Do NOT rethrow here; backend should still start so /health works even if LLM is misconfigured.
     }
   }
 
