@@ -1,35 +1,47 @@
 <div align="center">
+  <img src="logos/frame-logo-green-no-tagline.svg" alt="Frame.dev" width="200">
 
-# Voice Chat Assistant
+# Frame.dev Ecosystem
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="logos/agentos-primary-no-tagline-dark-2x.png">
-  <source media="(prefers-color-scheme: light)" srcset="logos/agentos-primary-no-tagline-light-2x.png">
-  <img src="logos/agentos-primary-no-tagline-transparent-2x.png" alt="AgentOS" width="300">
-</picture>
+**AI Infrastructure for Knowledge**
 
-### Powered by [AgentOS](https://agentos.sh)
+[Frame.dev](https://frame.dev) • [OpenStrand](https://openstrand.ai) • [Documentation](./wiki/README.md)
 
 </div>
 
-Voice-first coding assistant built by [Frame.dev / framersai](https://github.com/framersai).
+---
+
+This repository contains the Frame.dev ecosystem projects, including [Frame.dev](https://frame.dev), [Frame Codex](https://frame.dev/codex), and [OpenStrand](https://openstrand.ai).
 
 > **Internal / Proprietary**
 > This workspace is for Frame.dev only. Do not redistribute snippets, assets, or binaries outside the organisation without approval.
 
 The repository is organised as a pnpm workspace so the production apps, the AgentOS runtime, and the new AgentOS-facing experiences can evolve together or ship independently.
 
-## Monorepo at a Glance
+## 🌟 Projects
+
+### Core Projects
+
+| Project | Description | Documentation |
+|---------|-------------|---------------|
+| **[Frame.dev](https://frame.dev)** | AI infrastructure company homepage | [Wiki](./wiki/frame/README.md) |
+| **[Frame Codex](https://github.com/framersai/codex)** | Open-source knowledge repository for LLMs | [Wiki](./wiki/codex/README.md) |
+| **[OpenStrand](https://openstrand.ai)** | AI-native personal knowledge management | [Wiki](./wiki/openstrand/README.md) |
+
+### Monorepo Structure
 
 | Path | Purpose |
 |------|---------|
-| `frontend/` | Vue 3 + Vite SPA that handles voice capture, chat UI, localisation, and Supabase auth. |
-| `backend/` | Express + TypeScript API (auth, billing, orchestration endpoints). |
-| `packages/agentos/` | Publishable TypeScript runtime (`@framers/agentos`) powering orchestration, streaming, memory, and tool routing. |
-| `apps/agentos.sh/` | Next.js + Tailwind marketing site for agentos.sh (light/dark, motion, roadmap, launch CTAs). |
-| `apps/agentos-workbench/` | React + Vite workbench to inspect AgentOS sessions, tool calls, and transcripts. |
-| `docs/` | Architecture notes, configuration, API reference, migration plans. |
-| `shared/` | Cross-cutting helpers/constants shared by backend + frontend. |
+| `apps/frame.dev/` | Frame.dev marketing site (Next.js + Tailwind) |
+| `apps/codex/` | Frame Codex data repository (git submodule) |
+| `wiki/` | Comprehensive documentation for all projects |
+| `frontend/` | Vue 3 + Vite SPA for voice assistant |
+| `backend/` | Express + TypeScript API server |
+| `packages/agentos/` | TypeScript runtime (`@framers/agentos`) |
+| `apps/agentos.sh/` | AgentOS marketing site |
+| `apps/agentos-workbench/` | Developer workbench for AgentOS |
+| `docs/` | Technical documentation and migration guides |
+| `shared/` | Shared utilities and constants |
 
 ## Architecture Highlights
 
@@ -39,7 +51,33 @@ The repository is organised as a pnpm workspace so the production apps, the Agen
 - **AgentOS surfaces** - `apps/agentos.sh` (marketing) and `apps/agentos-workbench` (developer cockpit) consume the runtime without touching the proprietary voice UI.
 - **Data flow** - Voice/Text -> `/api/chat` -> AgentOS -> LLM providers with knowledge retrieval and billing-tier enforcement.
 
+## 🚀 Quick Links
+
+- **📚 [Full Documentation](./wiki/README.md)** - Comprehensive guides for all projects
+- **🔧 [API Reference](./wiki/api/README.md)** - Integration documentation
+- **🌐 [Frame.dev](https://frame.dev)** - AI infrastructure platform
+- **📖 [Frame Codex](https://frame.dev/codex)** - Browse the knowledge repository
+- **🧠 [OpenStrand](https://openstrand.ai)** - Personal knowledge management
+
 ## Getting Started
+
+### Frame.dev Development
+
+```bash
+# Clone with submodules (includes Frame Codex)
+git clone --recursive https://github.com/manicinc/voice-chat-assistant.git
+cd voice-chat-assistant
+
+# Install dependencies
+pnpm install
+
+# Start Frame.dev site
+cd apps/frame.dev
+npm run dev
+# Visit http://localhost:3000
+```
+
+### General Development
 
 1. **Install dependencies**
    ```bash
@@ -164,6 +202,21 @@ See enhanced TSDoc in `packages/agentos/src/core/llm/providers/IProvider.ts` for
 
 ## License
 
-The repository remains private. Individual packages may be published under MIT when we cut public releases�refer to [LICENSE](LICENSE) for the current terms.
+The repository remains private. Individual packages may be published under MIT when we cut public releases—refer to [LICENSE](LICENSE) for the current terms.
 
+---
 
+<div align="center">
+  <br/>
+  <p>
+    <a href="https://frame.dev">Frame.dev</a> •
+    <a href="https://frame.dev/codex">Frame Codex</a> •
+    <a href="https://openstrand.ai">OpenStrand</a>
+  </p>
+  <p>
+    <a href="https://github.com/framersai">GitHub</a> •
+    <a href="https://twitter.com/framersai">Twitter</a>
+  </p>
+  <br/>
+  <sub>Built with ❤️ by the Frame.dev team</sub>
+</div>
