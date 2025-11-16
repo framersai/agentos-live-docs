@@ -482,17 +482,17 @@ Write your content in Markdown format..."
                     </div>
 
                     {/* AI Enhancement */}
-                    <div className="p-4 bg-gradient-to-br from-violet-50 to-purple-50 dark:from-violet-900/10 dark:to-purple-900/10 rounded-xl border border-violet-200 dark:border-violet-800">
+                    <div className="p-4 bg-gradient-to-br from-emerald-50 to-sky-50 dark:from-emerald-900/10 dark:to-sky-900/10 rounded-xl border border-emerald-200 dark:border-emerald-800">
                       <label className="flex items-center gap-3">
                         <input
                           type="checkbox"
                           checked={form.enableAI}
                           onChange={(e) => setForm({ ...form, enableAI: e.target.checked })}
-                          className="w-5 h-5 rounded border-gray-300 text-violet-600 focus:ring-violet-500"
+                          className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
                         />
                         <div className="flex-1">
                           <div className="flex items-center gap-2">
-                            <Sparkles className="w-4 h-4 text-violet-600 dark:text-violet-400" />
+                            <Sparkles className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                             <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
                               Enable AI Enhancement
                             </span>

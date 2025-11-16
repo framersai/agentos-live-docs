@@ -64,22 +64,30 @@ export function useGithubTree(): UseGithubTreeResult {
     try {
       let rawEntries: Array<{ name: string; type: string; path: string; size?: number }> = []
 
-      // Try GraphQL first (better rate limits with PAT, no cost)
-      try {
-        rawEntries = await fetchGithubTree(
-          REPO_CONFIG.OWNER,
-          REPO_CONFIG.NAME,
-          REPO_CONFIG.BRANCH
-        )
-      } catch (graphqlError) {
-        console.warn('GraphQL fetch failed, falling back to REST:', graphqlError)
-        // Fallback to REST API (unauth limit: 60/hr)
-        rawEntries = await fetchGithubTreeREST(
-          REPO_CONFIG.OWNER,
-          REPO_CONFIG.NAME,
-          REPO_CONFIG.BRANCH
-        )
+      // Branch resolution: try explicit branch, then fallback to 'main' if that fails
+      const branchCandidates = [REPO_CONFIG.BRANCH, 'main']
+
+      let fetchSucceeded = false
+      for (const branch of branchCandidates) {
+        try {
+          rawEntries = await fetchGithubTree(REPO_CONFIG.OWNER, REPO_CONFIG.NAME, branch)
+          REPO_CONFIG.BRANCH = branch as any // cache resolved branch (mutable for session)
+          fetchSucceeded = true
+          break
+        } catch (graphqlError) {
+          console.warn(`GraphQL fetch failed for branch "${branch}":`, graphqlError)
+          try {
+            rawEntries = await fetchGithubTreeREST(REPO_CONFIG.OWNER, REPO_CONFIG.NAME, branch)
+            REPO_CONFIG.BRANCH = branch as any
+            fetchSucceeded = true
+            break
+          } catch (restError) {
+            console.warn(`REST fetch failed for branch "${branch}":`, restError)
+          }
+        }
       }
+
+      if (!fetchSucceeded) throw new Error('Unable to fetch Git tree from either master or main branch')
 
       // Convert to GitTreeItem format
       const items: GitTreeItem[] = rawEntries.map((entry) => ({
