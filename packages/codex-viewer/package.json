@@ -21,7 +21,10 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "lint": "vitest run",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "keywords": [
     "codex",
@@ -58,7 +61,8 @@
     "@types/react": "^18.3.12",
     "@types/react-syntax-highlighter": "^15.5.13",
     "tsup": "^8.3.5",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^1.6.0"
   }
 }
 
