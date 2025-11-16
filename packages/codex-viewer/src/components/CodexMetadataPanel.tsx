@@ -80,7 +80,7 @@ export default function CodexMetadataPanel({
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b-2 border-gray-300 dark:border-gray-700 bg-gradient-to-r from-gray-100 to-gray-50 dark:from-gray-800 dark:to-gray-900">
         <h4 className="text-sm font-bold flex items-center gap-2 text-gray-800 dark:text-gray-200 uppercase tracking-wide">
-          <Info className="w-4 h-4 text-purple-600" />
+          <Info className="w-4 h-4 text-emerald-600" />
           Metadata & Relations
         </h4>
         <button
@@ -138,7 +138,7 @@ export default function CodexMetadataPanel({
                       (tag: string) => (
                         <span
                           key={tag}
-                          className="inline-flex items-center gap-1 px-2 py-1 text-xs rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-200 border border-purple-200 dark:border-purple-800 font-medium"
+                          className="inline-flex items-center gap-1 px-2 py-1 text-xs rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-200 border border-emerald-200 dark:border-emerald-800 font-medium"
                         >
                           {tag.trim()}
                         </span>
@@ -248,18 +248,18 @@ export default function CodexMetadataPanel({
             <label className="flex items-center gap-2 cursor-pointer group touch-manipulation min-h-[44px]">
               <input
                 type="checkbox"
-                className="w-4 h-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+                className="w-4 h-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
               />
-              <span className="text-xs text-gray-700 dark:text-gray-300 group-hover:text-purple-600">
+              <span className="text-xs text-gray-700 dark:text-gray-300 group-hover:text-emerald-600">
                 Highlight in graph
               </span>
             </label>
             <label className="flex items-center gap-2 cursor-pointer group touch-manipulation min-h-[44px]">
               <input
                 type="checkbox"
-                className="w-4 h-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+                className="w-4 h-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
               />
-              <span className="text-xs text-gray-700 dark:text-gray-300 group-hover:text-purple-600">
+              <span className="text-xs text-gray-700 dark:text-gray-300 group-hover:text-emerald-600">
                 Show same-tag strands
               </span>
             </label>

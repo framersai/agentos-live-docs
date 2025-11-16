@@ -119,7 +119,7 @@ function SearchResultsPanelComponent({
                 BM25 {formatScore(result.bm25Score)}
               </div>
               {typeof result.semanticScore === 'number' && (
-                <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-purple-100 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-800 text-purple-800 dark:text-purple-200">
+                <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200">
                   Semantic {formatScore(result.semanticScore)}
                 </div>
               )}

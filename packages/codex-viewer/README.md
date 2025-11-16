@@ -79,7 +79,8 @@ The viewer uses Tailwind CSS with custom analog-inspired design tokens. You can 
 
 ## Content Structure
 
-The viewer expects a GitHub repo with this structure:
+The viewer expects a GitHub repo that follows the Frame Codex hierarchy — a **Fabric** (the whole repo) composed of
+multiple **Weaves**, each containing **Looms** and **Strands**:
 
 ```
 weaves/

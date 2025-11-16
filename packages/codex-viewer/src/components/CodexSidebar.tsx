@@ -218,7 +218,7 @@ export default function CodexSidebar({
     if (knowledgeTreeLoading) {
       return (
         <div className="flex items-center justify-center py-8">
-          <Loader2 className="w-6 h-6 animate-spin text-purple-600" />
+          <Loader2 className="w-6 h-6 animate-spin text-emerald-600" />
         </div>
       )
     }
@@ -275,7 +275,7 @@ export default function CodexSidebar({
     if (loading && files.length === 0) {
       return (
         <div className="flex items-center justify-center py-8">
-          <Loader2 className="w-6 h-6 animate-spin text-purple-600" />
+          <Loader2 className="w-6 h-6 animate-spin text-emerald-600" />
         </div>
       )
     }

@@ -37,7 +37,7 @@ export default function MobileToggle({ isOpen, onToggle }: MobileToggleProps) {
   return (
     <motion.button
       onClick={onToggle}
-      className="md:hidden fixed bottom-6 right-6 z-50 p-4 bg-purple-600 hover:bg-purple-700 active:bg-purple-800 text-white rounded-full shadow-2xl transition-all touch-manipulation"
+      className="md:hidden fixed bottom-6 right-6 z-50 p-4 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white rounded-full shadow-2xl transition-all touch-manipulation"
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       aria-label={isOpen ? 'Close sidebar' : 'Open sidebar'}

@@ -26,9 +26,9 @@ export const REPO_CONFIG = {
   OWNER: process.env.NEXT_PUBLIC_CODEX_REPO_OWNER || 'framersai',
   /** Repository name (public, safe for client) */
   NAME: process.env.NEXT_PUBLIC_CODEX_REPO_NAME || 'codex',
-  /** Default branch (public, safe for client) */
-  BRANCH: process.env.NEXT_PUBLIC_CODEX_REPO_BRANCH || 'main',
-} as const
+  /** Preferred branch (public, safe for client). Defaults to 'master' but may be mutated at runtime if only 'main' exists. */
+  BRANCH: (process.env.NEXT_PUBLIC_CODEX_REPO_BRANCH || 'master') as string,
+} as { OWNER: string; NAME: string; BRANCH: string }
 
 /**
  * GitHub API endpoints
@@ -93,7 +93,9 @@ export const LEVEL_STYLES: Record<NodeLevel, LevelStyle> = {
   },
   strand: {
     label: 'Strand',
-    className: 'bg-gradient-to-br from-purple-400/20 to-violet-400/20 text-purple-900 dark:from-purple-500/10 dark:to-violet-500/10 dark:text-purple-300 border-2 border-purple-500/30 dark:border-purple-400/30',
+    // Use green / blue / red accent instead of purple
+    className:
+      'bg-gradient-to-br from-emerald-400/20 via-sky-400/20 to-rose-400/20 text-emerald-900 dark:from-emerald-500/10 dark:via-sky-500/10 dark:to-rose-500/10 dark:text-emerald-300 border-2 border-emerald-500/30 dark:border-emerald-400/30',
     icon: Code,
   },
   folder: {
