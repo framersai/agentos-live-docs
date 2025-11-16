@@ -37,7 +37,6 @@ jobs:
             exit 0
           fi
           npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # Authentication uses GitHub OIDC trusted publishing; no token needed
 
 

@@ -1,0 +1,308 @@
+/**
+ * Metadata and relations panel for Frame Codex viewer
+ * Displays frontmatter metadata, backlinks, and graph controls
+ * @module codex/CodexMetadataPanel
+ */
+
+'use client'
+
+import React from 'react'
+import { X, Info, Hash, Link2, Clock } from 'lucide-react'
+import type { StrandMetadata, GitHubFile } from './types'
+import BacklinkList from '../backlink-list'
+
+interface CodexMetadataPanelProps {
+  /** Whether panel is open */
+  isOpen: boolean
+  /** Close panel callback */
+  onClose: () => void
+  /** Current file metadata */
+  metadata: StrandMetadata
+  /** Current file */
+  currentFile: GitHubFile | null
+  /** All files (for backlink detection) */
+  allFiles: GitHubFile[]
+  /** Pre-computed extractive summary + last indexed date from Codex index */
+  summaryInfo?: {
+    summary?: string
+    lastIndexed?: string
+  }
+}
+
+/**
+ * Right-hand metadata and relations panel
+ * 
+ * @remarks
+ * - Displays parsed YAML frontmatter as styled chips
+ * - Shows backlinks to current file
+ * - Provides graph visualization controls
+ * - Keyboard shortcut: 'm' to toggle
+ * - Mobile: Becomes bottom sheet on small screens
+ * - Analog styling: Paper texture, inner shadow, thick border
+ * 
+ * @example
+ * ```tsx
+ * <CodexMetadataPanel
+ *   isOpen={metaOpen}
+ *   onClose={() => setMetaOpen(false)}
+ *   metadata={fileMetadata}
+ *   currentFile={selectedFile}
+ *   allFiles={files}
+ * />
+ * ```
+ */
+export default function CodexMetadataPanel({
+  isOpen,
+  onClose,
+  metadata,
+  currentFile,
+  allFiles,
+  summaryInfo,
+}: CodexMetadataPanelProps) {
+  if (!isOpen || !currentFile) return null
+
+  return (
+    <div
+      className={`
+        hidden lg:flex flex-col
+        border-l-2 border-gray-300 dark:border-gray-700
+        bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-950
+        transition-all duration-300 ease-in-out
+        ${isOpen ? 'w-80' : 'w-0'}
+        overflow-hidden
+        shadow-[-4px_0_12px_rgba(0,0,0,0.08)]
+      `}
+      style={{
+        backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' /%3E%3C/filter%3E%3Crect width='60' height='60' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E")`,
+        backgroundSize: '60px 60px',
+      }}
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between px-4 py-3 border-b-2 border-gray-300 dark:border-gray-700 bg-gradient-to-r from-gray-100 to-gray-50 dark:from-gray-800 dark:to-gray-900">
+        <h4 className="text-sm font-bold flex items-center gap-2 text-gray-800 dark:text-gray-200 uppercase tracking-wide">
+          <Info className="w-4 h-4 text-purple-600" />
+          Metadata & Relations
+        </h4>
+        <button
+          onClick={onClose}
+          className="p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors"
+          aria-label="Close metadata panel"
+          title="Close (m)"
+        >
+          <X className="w-4 h-4" />
+        </button>
+      </div>
+
+      {/* Scrollable Content */}
+      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-6 overscroll-contain">
+        {/* Summary Section (auto-generated, extractive) */}
+        {summaryInfo?.summary && (
+          <div>
+            <h5 className="text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-gray-400 mb-3 flex items-center gap-1">
+              <Info className="w-3 h-3 text-cyan-600 dark:text-cyan-400" />
+              Summary
+            </h5>
+            <p className="text-xs text-gray-700 dark:text-gray-300 leading-relaxed">
+              {summaryInfo.summary}
+            </p>
+            {summaryInfo.lastIndexed && (
+              <p className="mt-2 inline-flex items-center gap-1 text-[10px] text-gray-500 dark:text-gray-400">
+                <Clock className="w-3 h-3" />
+                Extractive summary generated{' '}
+                {new Date(summaryInfo.lastIndexed).toLocaleDateString(undefined, {
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric',
+                })}
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Metadata Section */}
+        <div>
+          <h5 className="text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-gray-400 mb-3 flex items-center gap-1">
+            <Hash className="w-3 h-3" />
+            Metadata
+          </h5>
+          {Object.keys(metadata).length === 0 ? (
+            <p className="text-xs text-gray-500 dark:text-gray-400 italic">No metadata available</p>
+          ) : (
+            <div className="space-y-3">
+              {/* Tags */}
+              {metadata.tags && (
+                <div>
+                  <p className="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Tags</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {(Array.isArray(metadata.tags) ? metadata.tags : metadata.tags.split(',')).map(
+                      (tag: string) => (
+                        <span
+                          key={tag}
+                          className="inline-flex items-center gap-1 px-2 py-1 text-xs rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-200 border border-purple-200 dark:border-purple-800 font-medium"
+                        >
+                          {tag.trim()}
+                        </span>
+                      )
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Difficulty */}
+              {metadata.difficulty && (
+                <div>
+                  <p className="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Difficulty</p>
+                  <span className="inline-block px-2.5 py-1 text-xs rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 border border-blue-200 dark:border-blue-800 font-medium capitalize">
+                    {metadata.difficulty}
+                  </span>
+                </div>
+              )}
+
+              {/* Version */}
+              {metadata.version && (
+                <div>
+                  <p className="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Version</p>
+                  <span className="inline-block px-2.5 py-1 text-xs font-mono rounded-lg bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-300 dark:border-gray-700">
+                    v{metadata.version}
+                  </span>
+                </div>
+              )}
+
+              {/* Taxonomy */}
+              {metadata.taxonomy && (
+                <div>
+                  <p className="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Taxonomy</p>
+                  <div className="space-y-2">
+                    {metadata.taxonomy.subjects && metadata.taxonomy.subjects.length > 0 && (
+                      <div>
+                        <p className="text-[10px] uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">
+                          Subjects
+                        </p>
+                        <div className="flex flex-wrap gap-1">
+                          {metadata.taxonomy.subjects.map((subject) => (
+                            <span
+                              key={subject}
+                              className="px-2 py-0.5 text-xs rounded bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-200 border border-amber-200 dark:border-amber-800"
+                            >
+                              {subject}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {metadata.taxonomy.topics && metadata.taxonomy.topics.length > 0 && (
+                      <div>
+                        <p className="text-[10px] uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">
+                          Topics
+                        </p>
+                        <div className="flex flex-wrap gap-1">
+                          {metadata.taxonomy.topics.map((topic) => (
+                            <span
+                              key={topic}
+                              className="px-2 py-0.5 text-xs rounded bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 border border-blue-200 dark:border-blue-800"
+                            >
+                              {topic}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Content Type */}
+              {metadata.contentType && (
+                <div>
+                  <p className="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Content Type</p>
+                  <span className="inline-block px-2.5 py-1 text-xs rounded-lg bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 border border-green-200 dark:border-green-800 font-medium capitalize">
+                    {metadata.contentType}
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Divider */}
+        <div className="border-t-2 border-gray-300 dark:border-gray-700" />
+
+        {/* Backlinks Section */}
+        <div>
+          <h5 className="text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-gray-400 mb-3 flex items-center gap-1">
+            <Link2 className="w-3 h-3" />
+            Backlinks
+          </h5>
+          <BacklinkList currentPath={currentFile.path} files={allFiles} />
+        </div>
+
+        {/* Divider */}
+        <div className="border-t-2 border-gray-300 dark:border-gray-700" />
+
+        {/* Graph Controls */}
+        <div>
+          <h5 className="text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-gray-400 mb-3">
+            Graph Controls
+          </h5>
+          <div className="space-y-2">
+            <label className="flex items-center gap-2 cursor-pointer group touch-manipulation min-h-[44px]">
+              <input
+                type="checkbox"
+                className="w-4 h-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+              />
+              <span className="text-xs text-gray-700 dark:text-gray-300 group-hover:text-purple-600">
+                Highlight in graph
+              </span>
+            </label>
+            <label className="flex items-center gap-2 cursor-pointer group touch-manipulation min-h-[44px]">
+              <input
+                type="checkbox"
+                className="w-4 h-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+              />
+              <span className="text-xs text-gray-700 dark:text-gray-300 group-hover:text-purple-600">
+                Show same-tag strands
+              </span>
+            </label>
+          </div>
+        </div>
+
+        {/* Keyboard Shortcuts */}
+        <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+          <p className="text-xs font-semibold text-gray-600 dark:text-gray-400 mb-2">Shortcuts</p>
+          <div className="space-y-1 text-xs text-gray-500 dark:text-gray-400">
+            <p>
+              <kbd className="px-1.5 py-0.5 bg-gray-200 dark:bg-gray-800 rounded font-mono text-xs border border-gray-300 dark:border-gray-700">
+                m
+              </kbd>{' '}
+              Toggle this panel
+            </p>
+            <p>
+              <kbd className="px-1.5 py-0.5 bg-gray-200 dark:bg-gray-800 rounded font-mono text-xs border border-gray-300 dark:border-gray-700">
+                /
+              </kbd>{' '}
+              Focus search
+            </p>
+            <p>
+              <kbd className="px-1.5 py-0.5 bg-gray-200 dark:bg-gray-800 rounded font-mono text-xs border border-gray-300 dark:border-gray-700">
+                g
+              </kbd>{' '}
+              <kbd className="px-1.5 py-0.5 bg-gray-200 dark:bg-gray-800 rounded font-mono text-xs border border-gray-300 dark:border-gray-700">
+                h
+              </kbd>{' '}
+              Go home
+            </p>
+            <p>
+              <kbd className="px-1.5 py-0.5 bg-gray-200 dark:bg-gray-800 rounded font-mono text-xs border border-gray-300 dark:border-gray-700">
+                s
+              </kbd>{' '}
+              Toggle sidebar (mobile)
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+
+
