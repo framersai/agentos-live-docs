@@ -190,8 +190,8 @@ function MyApp() {
 
 ```bash
 # Clone the repo
-git clone https://github.com/manicinc/voice-chat-assistant
-cd voice-chat-assistant/packages/codex-viewer
+git clone https://github.com/framersai/frame.dev
+cd frame.dev/packages/codex-viewer
 
 # Install dependencies
 pnpm install
@@ -215,7 +215,7 @@ MIT © [Framers AI](https://frame.dev)
 
 - [Documentation](https://frame.dev/codex)
 - [Starter Template](https://github.com/framersai/codex-template)
-- [GitHub](https://github.com/manicinc/voice-chat-assistant/tree/master/packages/codex-viewer)
+- [GitHub](https://github.com/framersai/frame.dev/tree/master/packages/codex-viewer)
 - [NPM](https://www.npmjs.com/package/@framers/codex-viewer)
-- [Issues](https://github.com/manicinc/voice-chat-assistant/issues)
+- [Issues](https://github.com/framersai/frame.dev/issues)
 

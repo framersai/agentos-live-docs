@@ -41,7 +41,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/manicinc/voice-chat-assistant",
+    "url": "https://github.com/framersai/frame.dev",
     "directory": "packages/codex-viewer"
   },
   "peerDependencies": {
