@@ -8,7 +8,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Home, ChevronRight, Loader2, ExternalLink, FileText, GitBranch, X, Moon, Sun } from 'lucide-react'
+import { Home, ChevronRight, Loader2, ExternalLink, FileText, GitBranch, X, Moon, Sun, LifeBuoy } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useTheme } from 'next-themes'
@@ -70,6 +70,8 @@ interface CodexSidebarProps {
   onToggleCaseSensitive: () => void
   /** Reset search filters */
   onResetSearch: () => void
+  /** Open help panel */
+  onOpenHelp: () => void
 }
 
 /**
@@ -127,6 +129,7 @@ export default function CodexSidebar({
   onToggleSearchContent,
   onToggleCaseSensitive,
   onResetSearch,
+  onOpenHelp,
 }: CodexSidebarProps) {
   const { theme, setTheme } = useTheme()
   
@@ -386,8 +389,8 @@ export default function CodexSidebar({
           md:translate-x-0
           fixed md:relative
           inset-y-0 left-0
-          w-[80vw] sm:w-[320px] md:w-80 lg:w-96
-          max-w-[400px]
+          w-[74vw] sm:w-[280px] md:w-72 lg:w-80
+          max-w-[360px]
           bg-gray-50 dark:bg-gray-900 
           md:border-r border-gray-200 dark:border-gray-800 
           flex flex-col flex-shrink-0
@@ -587,8 +590,20 @@ export default function CodexSidebar({
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900">
-          <div className="flex items-center justify-between text-xs text-gray-500">
+        <div className="p-4 border-t border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 space-y-3">
+          <button
+            onClick={() => {
+              onOpenHelp()
+              if (window.innerWidth < 768) {
+                onClose()
+              }
+            }}
+            className="w-full inline-flex items-center justify-center gap-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-900/60 text-[11px] font-semibold text-gray-700 dark:text-gray-200 py-2 hover:border-cyan-400 hover:text-cyan-600 dark:hover:text-cyan-300 transition-colors"
+          >
+            <LifeBuoy className="w-4 h-4" />
+            Tutorials & Help
+          </button>
+          <div className="flex items-center justify-between text-[11px] text-gray-500 dark:text-gray-400">
             <span>{files.length} items</span>
             <a
               href={`https://github.com/${REPO_CONFIG.OWNER}/${REPO_CONFIG.NAME}`}

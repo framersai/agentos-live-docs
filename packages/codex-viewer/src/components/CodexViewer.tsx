@@ -27,7 +27,6 @@ import MobileToggle from './ui/MobileToggle'
 import BookmarksPanel from './ui/BookmarksPanel'
 import PreferencesModal from './ui/PreferencesModal'
 import TutorialTour from './ui/TutorialTour'
-import HelpMenu from './ui/HelpMenu'
 import HelpInfoPanel from './ui/HelpInfoPanel'
 import MobileBottomNav from './ui/MobileBottomNav'
 import KnowledgeGraphView from './ui/KnowledgeGraphView'
@@ -515,7 +514,7 @@ export default function FrameCodexViewer({
   const activeSearchQuery = searchQuery.trim()
 
   const content = (
-    <div className="frame-codex-viewer flex-1 flex">
+    <div className="frame-codex-viewer flex-1 flex overflow-hidden">
       {/* Mobile Toggle Button */}
       <MobileToggle isOpen={sidebarOpen} onToggle={() => setSidebarOpen((v) => !v)} />
 
@@ -547,6 +546,7 @@ export default function FrameCodexViewer({
         onToggleSearchContent={toggleSearchContent}
         onToggleCaseSensitive={toggleCaseSensitive}
         onResetSearch={handleSearchReset}
+        onOpenHelp={() => setHelpOpen(true)}
       />
 
       {/* Main content area with toolbar and content */}
@@ -646,9 +646,6 @@ export default function FrameCodexViewer({
           onSkip={() => setActiveTutorial(null)}
         />
       )}
-
-      {/* Help Menu (floating button) */}
-      <HelpMenu onStartTutorial={(id) => setActiveTutorial(id)} />
 
       {/* Help/Info Panel */}
       <HelpInfoPanel isOpen={helpOpen} onClose={() => setHelpOpen(false)} />
