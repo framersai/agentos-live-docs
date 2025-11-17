@@ -146,6 +146,37 @@ await openstrand.import({
 });
 ```
 
+### Codex Viewer Package (`@framers/codex-viewer`)
+
+In addition to the content repository, Frame Codex ships with a reusable React viewer so you can embed the same analog-style, semantic-search-enabled UI in your own apps.
+
+The viewer lives in this monorepo under `packages/codex-viewer/` and is designed to be published as an npm package: `@framers/codex-viewer`.
+
+#### Basic React Usage
+
+```tsx
+import { CodexViewer } from '@framers/codex-viewer'
+import '@framers/codex-viewer/styles.css'
+
+export default function App() {
+  return (
+    <CodexViewer
+      owner="framersai"
+      repo="codex"
+      branch="main"
+    />
+  )
+}
+```
+
+Key properties:
+
+- **owner / repo / branch** – point the viewer at any public GitHub repo that follows the `weaves/` structure.
+- **basePath** – root directory for weaves (defaults to `weaves`).
+- **enableSearch / enableMetadata** – toggle semantic search and metadata panel.
+
+The Frame.dev site (`apps/frame.dev`) consumes this package locally so the marketing site and the Codex viewer share the same theme and behavior while keeping the content repository (`framersai/codex`) clean and focused on data.
+
 ## Contributing
 
 ### How to Contribute

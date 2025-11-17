@@ -62,6 +62,13 @@ export default function Home() {
                 <Github className="h-4 w-4" />
                 View source
               </Link>
+              <Link
+                href="/codex/openstrand/overview"
+                className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-white/80 px-5 py-2.5 text-sm font-semibold text-amber-700 shadow hover:-translate-y-0.5"
+              >
+                <BookMarked className="h-4 w-4" />
+                View static strand
+              </Link>
             </div>
           </div>
           <div className="rounded-2xl border border-gray-200/80 bg-white/80 p-5 shadow-lg backdrop-blur">

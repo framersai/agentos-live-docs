@@ -27,8 +27,9 @@ The site will be available on `http://localhost:3000`. Override env vars via `do
 ```
 codex-template
 ├─ app/                     # Next.js App Router entry
-│  ├─ layout.tsx            # Imports @framers/codex-viewer CSS + fonts
-│  └─ page.tsx              # Hero, instructions, embedded viewer
+│  ├─ (marketing)/page.tsx  # Hero, instructions, embedded viewer
+│  ├─ codex/[...slug]/      # Static strand renderer (SSR + ISR)
+│  └─ api/                  # OG generator + ISR webhook
 ├─ components/
 │  └─ EmbeddedCodex.tsx     # Client component that renders <CodexViewer />
 ├─ weaves/                  # Your knowledge fabric (OpenStrand docs mirrored here)
@@ -68,19 +69,35 @@ Set up environment variables (copy `env.example` → `.env.local`):
 | `NEXT_PUBLIC_CODEX_REPO_OWNER` | GitHub org or user | `framersai` |
 | `NEXT_PUBLIC_CODEX_REPO_NAME` | Repository to read (`weaves/` lives here) | `codex-template` |
 | `NEXT_PUBLIC_CODEX_REPO_BRANCH` | Branch to pull from | `main` |
+| `NEXT_PUBLIC_SITE_URL` | Absolute URL for canonical + OG links | `http://localhost:3000` |
+| `REVALIDATE_SECRET` | Shared secret for `/api/revalidate-codex` | _(set manually)_ |
+| `CODEX_PRERENDER_LIMIT` | (Optional) # of strands to pre-render at build time | `100` |
 
 > Codex content is streamed directly from GitHub’s Content + Trees API. Push your markdown first, then run the template locally or deploy to Vercel/Netlify.
+
+### Static strand pages + SEO
+
+- Each markdown file under `weaves/**` automatically compiles to `/codex/<slug...>` using App Router, SSR, and 1-hour ISR (`revalidate = 3600`).
+- `generateMetadata()` reads frontmatter + markdown to output `<title>`, Open Graph/Twitter cards, canonical links, and JSON-LD article metadata.
+- The first inline `<img>` (markdown or HTML) becomes the OG background. If no image exists, the generator falls back to `/og/codex-generic.png`.
+- `/api/og` (Edge) renders cards with the weave badge, title, summary, and Frame logo. Pass `image`/`summary` via query params (handled automatically by the strand pages).
+- `next-sitemap` runs after every `pnpm build`, emitting `/sitemap.xml`, `/robots.txt`, and `/sitemap-codex.xml` entries for every strand.
+- Need to refresh a single strand post-publish? Hit `POST /api/revalidate-codex` with `{ "secret": "...", "slug": "openstrand/schema/hierarchy" }`. The endpoint revalidates that page + the sitemap.
+
+Read the full rationale in [`docs/CODEX_SEO_PLAYBOOK.md`](../../docs/CODEX_SEO_PLAYBOOK.md).
 
 ## Deployment
 
 1. Push your fork/template repo to GitHub.
 2. Connect to Vercel, Netlify, or your host of choice.
-3. Set the three `NEXT_PUBLIC_CODEX_*` env vars in your hosting dashboard.
-4. Deploy. The `/` route includes the embedded viewer; link directly to `/` or mount under `/codex` if you integrate into a larger site.
+3. Set the `NEXT_PUBLIC_CODEX_*`, `NEXT_PUBLIC_SITE_URL`, and `REVALIDATE_SECRET` env vars in your hosting dashboard.
+4. Optional: wire a GitHub Action to POST to `/api/revalidate-codex` after every content push (see `.github/workflows/revalidate.yml` for a starting point).
+5. Deploy. The `/` route includes the embedded viewer; `/codex/**` serves static HTML for crawlers and deep-links.
 
 ## Extending
 
 - Add more weaves/looms/strands by dropping folders + markdown files under `weaves/`.
+- Want custom OG art? Replace `/public/og/codex-generic.png` and/or extend `app/api/og/route.ts`.
 - Enable analytics exactly like `frame.dev` by embedding the `Analytics` component from the main repo (optional).
 - Want mobile/desktop installability? Add a `public/manifest.json` (see `apps/frame.dev/public/manifest.json` for reference).
 

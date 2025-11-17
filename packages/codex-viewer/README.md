@@ -43,7 +43,7 @@ export default function App() {
 }
 ```
 
-> Want a complete site scaffold? Fork [`framersai/codex-template`](https://github.com/framersai/codex-template) (source mirrored in `examples/codex-template/`). It includes hero copy, environment setup, and two sample weaves.
+> Want a complete site scaffold? Fork [`framersai/codex-template`](https://github.com/framersai/codex-template) (source mirrored in `packages/codex-viewer/examples/codex-template/`). It includes hero copy, environment setup, and two sample weaves.
 
 ## Props
 
