@@ -12,6 +12,7 @@
     "dev:admin": "npm run dev --workspace openstrand-admin",
     "dev:plugin": "npm run dev:plugin --workspace @framers/openstrand-plugins",
     "build": "npm run build --workspaces --if-present",
+    "prepare": "husky install",
     "install:hooks": "node scripts/installHooks.mjs",
     "test": "npm run test --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present",
@@ -26,6 +27,12 @@
     "packages/*"
   ],
   "devDependencies": {
+    "secretlint": "^7.0.0",
+    "@secretlint/secretlint-rule-preset-recommend": "^7.0.0",
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.9",
+    "remark-cli": "^12.0.1",
+    "remark-preset-lint-recommended": "^6.1.2",
     "concurrently": "^8.2.2",
     "rimraf": "^5.0.5",
     "semantic-release": "^24.0.0",
@@ -35,6 +42,12 @@
     "@semantic-release/npm": "^12.0.1",
     "@semantic-release/commit-analyzer": "^13.0.0",
     "@semantic-release/release-notes-generator": "^13.0.0"
+  },
+  "lint-staged": {
+    "*.{js,ts,tsx,vue}": "npm run format:check",
+    "*.json": "npm run format:check",
+    "*.md": "remark . --quiet --frail",
+    "*": "secretlint --maskSecrets"
   },
   "packageManager": "pnpm@10.15.1"
 }
