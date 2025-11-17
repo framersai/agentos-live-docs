@@ -1,24 +1,27 @@
+# Voice-Chat-Assistant Monorepo
+
 <div align="center">
-  <img src="logos/frame-logo-green-no-tagline.svg" alt="Frame.dev" width="200">
-
-# Frame.dev Ecosystem
-
-**AI Infrastructure for Knowledge**
-
-[Frame.dev](https://frame.dev) • [OpenStrand](https://openstrand.ai) • [Documentation](./wiki/README.md)
-
-**AI Infrastructure for Superintelligence.**
-
+  <img src="logos/frame-logo-green-no-tagline.svg" alt="Frame.dev" width="180" />
 </div>
+
+> Conversational AI playground built on **AgentOS** + **Frame Codex**.  
+> Everything you need to run the Voice Chat Assistant (VCA) stack locally ‑ backend, Vue front-end, Next.js marketing sites, Codex knowledge base, and shared packages.
+
+This monorepo is the **source of truth** for:
+
+* `frontend/` – Vite + Vue voice-chat UI
+* `backend/` – Express + TypeScript API server with AgentOS runtime
+* `packages/` – publishable libraries (`@framers/agentos`, `@framers/codex-viewer`, etc.)
+* `apps/` – marketing / docs sites (`frame.dev`, `agentos.sh`, workbench)
+* `wiki/` – developer & product documentation
+
+It also hosts the Frame.dev ecosystem projects so the assistant, marketing surfaces, and reused packages stay in sync.
 
 ---
 
-This repository contains the Frame.dev ecosystem projects, including [Frame.dev](https://frame.dev), [Frame Codex](https://frame.dev/codex), and [OpenStrand](https://openstrand.ai).
+[Documentation](./wiki/README.md) • [Frame.dev](https://frame.dev) • [OpenStrand](https://openstrand.ai)
 
-> **Internal / Proprietary**
-> This workspace is for Frame.dev only. Do not redistribute snippets, assets, or binaries outside the organisation without approval.
-
-The repository is organised as a pnpm workspace so the production apps, the AgentOS runtime, and the new AgentOS-facing experiences can evolve together or ship independently.
+---
 
 ## 🌟 Projects
 
@@ -63,9 +66,9 @@ The repository is organised as a pnpm workspace so the production apps, the Agen
 - **PWA-ready** – `apps/frame.dev` exposes a web app manifest (`/manifest.json`) so the Codex experience can be installed as a desktop/mobile app without Electron. See `apps/frame.dev/app/layout.tsx` for the manifest and theme-color wiring.
 - **Anonymous analytics** – Frame.dev optionally uses GA4 + Microsoft Clarity for anonymous, GDPR-compliant usage telemetry. Environment variables (`NEXT_PUBLIC_GA_MEASUREMENT_ID`, `NEXT_PUBLIC_CLARITY_PROJECT_ID`) are documented in `apps/frame.dev/ENV_VARS.md`, and the implementation lives in `apps/frame.dev/components/Analytics.tsx`. The privacy policy is available at `/privacy` in the Frame.dev app and explicitly states that no PII is collected.
 
-## 🚀 Quick Links
+# 🚀 Quick Links
 
-- **📚 [Full Documentation](./wiki/README.md)** - Comprehensive guides for all projects
+- **📚 Voice-Chat-Assistant Docs** – see [`wiki/`](./wiki/README.md)
 - **🔧 [API Reference](./wiki/api/README.md)** - Integration documentation
 - **🌐 [Frame.dev](https://frame.dev)** - AI infrastructure platform
 - **📖 [Frame Codex](https://frame.dev/codex)** - Browse the knowledge repository
@@ -139,97 +142,4 @@ npm run dev
 
 - **agentos.sh landing** - Next.js marketing site with dual-mode theming, motion, roadmap cards, and launch CTAs.
 - **AgentOS client workbench** - React cockpit for replaying sessions, inspecting streaming telemetry, and iterating on personas/tools without running the full voice UI.
-- Both apps consume the workspace version of `@framers/agentos` and can be hosted independently when we cut the repositories under `framersai`.
-- Workbench persona catalog now hydrates from `/api/agentos/personas` (filters: `capability`, `tier`, `search`) and caches responses via React Query for faster iteration.
-
-### Workflow artifacts & media outputs
-
-- Tool responses and workflow steps can emit rich artifacts (JSON, CSV, PDF, audio, images, etc.) by returning `{ data, mimeType, filename }` payloads in tool results.
-- Streaming clients receive these inside `AgentOSResponse` chunks; the workbench renders them via `ArtifactViewer` with copy/download affordances.
-- For non-binary outputs, include direct URLs or structured content—the viewer auto-detects HTTP links, multiline text, and nested arrays/objects.
-
-## Automation & Releases
-
-- Release workflow details live in [docs/RELEASE_AUTOMATION.md](docs/RELEASE_AUTOMATION.md).
-- Tags named `vX.Y.Z` on `master` trigger publishes, mirrors, and deploys unless the release PR carries the `skip-release` label.
-
-## Documentation & References
-
-- Architecture deep-dive - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
-- Configuration catalogue - [`CONFIGURATION.md`](CONFIGURATION.md)
-- Backend API reference - [`docs/BACKEND_API.md`](docs/BACKEND_API.md)
-- Marketplace integration guide - [`docs/marketplace.md`](docs/marketplace.md)
-- AgentOS migration notes - [`docs/AGENTOS_*`](docs)
-- Workflow & automation guide - [`docs/WORKFLOWS.md`](docs/WORKFLOWS.md)
-- Generated API docs - `pnpm --filter @framers/agentos run docs` -> `packages/agentos/docs/api`
-
-### Provider API Migration (generateCompletion*)
-
-The AgentOS core provider contract was modernized to unify legacy `generate` / `generateStream` calls under
-`generateCompletion` and `generateCompletionStream` with a richer, streaming-friendly response shape.
-
-Key Changes:
-1. Unified Response Type: `ModelCompletionResponse` now represents both full non-streaming replies and individual streaming chunks.
-2. Delta Semantics: Streaming chunks carry incremental `responseTextDelta` values (append-only) and `toolCallsDeltas[]` for gradual function argument assembly. Concatenate all deltas per choice to reconstruct final content.
-3. Terminal Chunk: Exactly one streamed chunk sets `isFinal: true` (success or error). Token usage (`usage.totalTokens`) and any error envelope appear here.
-4. Error Handling: Errors during streaming emit a final chunk with `error` populated rather than throwing mid-generator, ensuring predictable teardown.
-5. Tool Calls: OpenAI-style tool/function calls surface as incremental JSON argument fragments via `arguments_delta`. Accumulate, then parse into a full JSON object upon finalization.
-6. Embeddings: Embedding generation unaffected aside from optional cost metadata field (`costUSD`).
-
-Refactor Checklist for Host Code:
-- Replace old `provider.generate(...)` with `provider.generateCompletion(modelId, messages, options)`.
-- Replace old streaming usage with `for await (const chunk of provider.generateCompletionStream(...)) { ... }`.
-- Maintain a per-request accumulator: `fullText += chunk.responseTextDelta ?? ''`.
-- Reconstruct tool calls: group deltas by `index` (and later stable `id`) accumulating `arguments_delta` strings.
-- Use `chunk.isFinal` gate to perform commit operations (persist transcript, bill usage, update UI status indicators).
-- Prefer `chunk.usage?.totalTokens` only after `isFinal` to avoid partial token confusion.
-
-Example Streaming Loop:
-```ts
-let fullText = '';
-const toolBuffers: Record<number, string> = {};
-for await (const chunk of provider.generateCompletionStream(modelId, messages, opts)) {
-   if (chunk.responseTextDelta) fullText += chunk.responseTextDelta;
-   if (chunk.toolCallsDeltas) {
-      for (const d of chunk.toolCallsDeltas) {
-         toolBuffers[d.index] = (toolBuffers[d.index] || '') + (d.function?.arguments_delta || '');
-      }
-   }
-   if (chunk.isFinal) {
-      const parsedTools = Object.entries(toolBuffers).map(([idx, acc]) => ({ index: Number(idx), arguments: safeJson(acc) }));
-      console.log('Final text:', fullText);
-      console.log('Parsed tools:', parsedTools);
-   }
-}
-function safeJson(raw: string) { try { return JSON.parse(raw); } catch { return raw; } }
-```
-
-See enhanced TSDoc in `packages/agentos/src/core/llm/providers/IProvider.ts` for invariants and error semantics.
-
-## Contributing
-
-1. Create a branch (`git checkout -b feature/amazing`).
-2. Update the relevant package README/docs alongside code changes.
-3. Run the scoped lint/test commands (`npm run lint`, `pnpm --filter @framers/agentos test`, etc.).
-4. Submit a PR with context. Include screenshots/recordings for UI updates.
-
-## License
-
-The repository remains private. Individual packages may be published under MIT when we cut public releases—refer to [LICENSE](LICENSE) for the current terms.
-
----
-
-<div align="center">
-  <br/>
-  <p>
-    <a href="https://frame.dev">Frame.dev</a> •
-    <a href="https://frame.dev/codex">Frame Codex</a> •
-    <a href="https://openstrand.ai">OpenStrand</a>
-  </p>
-  <p>
-    <a href="https://github.com/framersai">GitHub</a> •
-    <a href="https://twitter.com/framersai">Twitter</a>
-  </p>
-  <br/>
-  <sub>Built with ❤️ by the Frame.dev team</sub>
-</div>
+- Both apps consume the workspace version of `
