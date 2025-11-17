@@ -5,8 +5,6 @@
 
 **AI Infrastructure for Knowledge**
 
-*The OS for humans, the codex of humanity.*
-
 [Frame.dev](https://frame.dev) • [OpenStrand](https://openstrand.ai) • [Documentation](./wiki/README.md)
 
 **AI Infrastructure for Superintelligence.**
@@ -42,6 +40,7 @@ The repository is organised as a pnpm workspace so the production apps, the Agen
 | `frontend/` | Vue 3 + Vite SPA for voice assistant |
 | `backend/` | Express + TypeScript API server |
 | `packages/agentos/` | TypeScript runtime (`@framers/agentos`) |
+| `packages/codex-viewer/` | Embeddable React viewer for Frame Codex (`@framers/codex-viewer`) |
 | `apps/agentos.sh/` | AgentOS marketing site |
 | `apps/agentos-workbench/` | Developer workbench for AgentOS |
 | `docs/` | Technical documentation and migration guides |
@@ -49,11 +48,20 @@ The repository is organised as a pnpm workspace so the production apps, the Agen
 
 ## Architecture Highlights
 
-- **Frontend** - Vue 3 + Vite + Tailwind with composition-based state and Supabase-friendly auth (see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)).
+- **Frontend (voice assistant)** - Vue 3 + Vite + Tailwind with composition-based state and Supabase-friendly auth (see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)).
 - **Backend** - Modular Express feature folders, optional Supabase + Lemon Squeezy integration, rate-limited public demo routes.
 - **AgentOS runtime** - Session-aware personas, tool permissioning, guardrail policy hooks, retrieval/memory lifecycle policies, async streaming bridges.
 - **AgentOS surfaces** - `apps/agentos.sh` (marketing) and `apps/agentos-workbench` (developer cockpit) consume the runtime without touching the proprietary voice UI.
 - **Data flow** - Voice/Text -> `/api/chat` -> AgentOS -> LLM providers with knowledge retrieval and billing-tier enforcement.
+
+### Frame Codex & Codex Viewer
+
+- **Codex content** lives in the separate [`framersai/codex`](https://github.com/framersai/codex) repository, pulled into this workspace under `apps/codex/` as a submodule for indexing and analysis.
+- **Codex viewer UI** is implemented as a standalone React package in `packages/codex-viewer/` and consumed by `apps/frame.dev`. The package is designed to be published as `@framers/codex-viewer` so anyone can embed the same analog-style, semantic-search-enabled viewer in their own React/Next.js apps.
+- **Codex template** – The `examples/codex-template/` folder (mirrored publicly at [`framersai/codex-template`](https://github.com/framersai/codex-template)) is the canonical starter repo for shipping Codex deployments. It contains a Next.js site with hero copy, placeholder weaves/looms/strands, Docker/Compose definitions, and links back to `packages/codex-viewer`.
+- **Shared theming** – `apps/frame.dev/tailwind.config.ts` extends the Codex viewer Tailwind preset so the marketing site and the viewer share cohesive typography, colors, and analog “paper” styling while still allowing Codex-specific flourishes.
+- **PWA-ready** – `apps/frame.dev` exposes a web app manifest (`/manifest.json`) so the Codex experience can be installed as a desktop/mobile app without Electron. See `apps/frame.dev/app/layout.tsx` for the manifest and theme-color wiring.
+- **Anonymous analytics** – Frame.dev optionally uses GA4 + Microsoft Clarity for anonymous, GDPR-compliant usage telemetry. Environment variables (`NEXT_PUBLIC_GA_MEASUREMENT_ID`, `NEXT_PUBLIC_CLARITY_PROJECT_ID`) are documented in `apps/frame.dev/ENV_VARS.md`, and the implementation lives in `apps/frame.dev/components/Analytics.tsx`. The privacy policy is available at `/privacy` in the Frame.dev app and explicitly states that no PII is collected.
 
 ## 🚀 Quick Links
 
@@ -61,6 +69,7 @@ The repository is organised as a pnpm workspace so the production apps, the Agen
 - **🔧 [API Reference](./wiki/api/README.md)** - Integration documentation
 - **🌐 [Frame.dev](https://frame.dev)** - AI infrastructure platform
 - **📖 [Frame Codex](https://frame.dev/codex)** - Browse the knowledge repository
+- **🧰 [Codex Template](https://github.com/framersai/codex-template)** - Starter site + sample weaves
 - **🧠 [OpenStrand](https://openstrand.ai)** - Personal knowledge management
 
 ## Getting Started
@@ -69,8 +78,8 @@ The repository is organised as a pnpm workspace so the production apps, the Agen
 
 ```bash
 # Clone with submodules (includes Frame Codex)
-git clone --recursive https://github.com/manicinc/voice-chat-assistant.git
-cd voice-chat-assistant
+git clone --recursive https://github.com/framersai/frame.dev.git
+cd frame.dev
 
 # Install dependencies
 pnpm install

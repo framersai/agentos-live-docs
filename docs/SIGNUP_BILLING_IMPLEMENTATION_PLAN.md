@@ -66,7 +66,7 @@ Landing ➜ “Explore Memberships” ➜ /register (Step 1: Account)
 - Stripe client wrapper:
   - create checkout
   - verify webhook signature (already partially implemented).
-- Notification queue (optional) to email `team@manic.agency` for new signup (future).
+- Notification queue (optional) to email `team@frame.dev` for new signup (future).
 
 ## 3.4 Docs
 
