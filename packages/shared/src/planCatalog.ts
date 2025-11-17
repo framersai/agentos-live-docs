@@ -8,7 +8,14 @@
  * Each paid tier allocates 35-45% of the monthly price to variable AI usage. The rest covers
  * infrastructure, human ops, and profit. Daily allowance = (monthly price * allocation %) / 30.
  */
-export type PlanId = 'global-pass' | 'free' | 'basic' | 'creator' | 'organization';
+export type PlanId =
+  | 'global-pass'
+  | 'free'
+  | 'basic'
+  | 'creator'
+  | 'organization'
+  | 'codex-free'
+  | 'codex-pro';
 export type PlanTier = 'metered' | 'unlimited';
 
 export type ByoApiKeyPolicy = 'disallowed' | 'optional' | 'required';
@@ -81,7 +88,7 @@ const toNearestToken = (usd: number, costPerKTokens: number): number => {
 const buildUsageProfile = (
   dailyUsdAllowance: number,
   byoApiKeys: ByoApiKeyPolicy,
-  notes?: string,
+  notes?: string
 ): PlanUsageProfile => ({
   dailyUsdAllowance,
   approxGpt4oTokensPerDay: toNearestToken(dailyUsdAllowance, GPT4O_COST_PER_KTOKENS),
@@ -98,14 +105,19 @@ export const PLAN_CATALOG: Record<PlanId, PlanCatalogEntry> = {
     headline: 'Unlimited passphrase-login access for internal communities',
     monthlyPriceUsd: 0,
     usageAllocationPct: 0.0,
-    usage: buildUsageProfile(0.35, 'disallowed', 'IP-scoped allowance resets nightly at 00:00 UTC.'),
+    usage: buildUsageProfile(
+      0.35,
+      'disallowed',
+      'IP-scoped allowance resets nightly at 00:00 UTC.'
+    ),
     bullets: [
       'Invite-only access controlled by rotating passphrases',
       'Shared usage tracked per IP with nightly reset',
       'Full model catalogue; limited by community allocation',
       'Best suited for ambassadors, hackathons, or beta cohorts',
     ],
-    targetAudience: 'Internal testers, community partners, or promo cohorts that do not require billing.',
+    targetAudience:
+      'Internal testers, community partners, or promo cohorts that do not require billing.',
     checkout: [],
     public: false,
     metadata: {
@@ -120,7 +132,11 @@ export const PLAN_CATALOG: Record<PlanId, PlanCatalogEntry> = {
     headline: 'Try Voice Chat Assistant with GPT-4o mini',
     monthlyPriceUsd: 0,
     usageAllocationPct: 0,
-    usage: buildUsageProfile(0.02, 'disallowed', 'Optimised for GPT-4o mini; roughly 45 prompts per day.'),
+    usage: buildUsageProfile(
+      0.02,
+      'disallowed',
+      'Optimised for GPT-4o mini; roughly 45 prompts per day.'
+    ),
     bullets: [
       'Access to GPT-4o mini (text + diagrams)',
       '~1,800 GPT-4o tokens / day (or ~51K GPT-4o mini tokens)',
@@ -141,7 +157,11 @@ export const PLAN_CATALOG: Record<PlanId, PlanCatalogEntry> = {
     headline: 'Personal plan with premium models and smart rate limits',
     monthlyPriceUsd: 9,
     usageAllocationPct: 0.35,
-    usage: buildUsageProfile(0.105, 'disallowed', 'Covers ~9,500 GPT-4o tokens / day (~285K GPT-4o mini).'),
+    usage: buildUsageProfile(
+      0.105,
+      'disallowed',
+      'Covers ~9,500 GPT-4o tokens / day (~285K GPT-4o mini).'
+    ),
     bullets: [
       'GPT-4o mini + GPT-4o access with automatic model selection',
       'Daily platform allowance ~9,500 GPT-4o tokens',
@@ -176,7 +196,7 @@ export const PLAN_CATALOG: Record<PlanId, PlanCatalogEntry> = {
     usage: buildUsageProfile(
       0.24,
       'optional',
-      'House allowance covers ~21,800 GPT-4o tokens / day (~615K GPT-4o mini). BYO keys extend usage afterwards.',
+      'House allowance covers ~21,800 GPT-4o tokens / day (~615K GPT-4o mini). BYO keys extend usage afterwards.'
     ),
     bullets: [
       'All Basic features plus GPT-4o Realtime + structured generation',
@@ -213,7 +233,7 @@ export const PLAN_CATALOG: Record<PlanId, PlanCatalogEntry> = {
     usage: buildUsageProfile(
       1.485,
       'optional',
-      'Shared pool �135K GPT-4o tokens / day (~3.8M GPT-4o mini). Admin allocates optional per-seat caps.',
+      'Shared pool �135K GPT-4o tokens / day (~3.8M GPT-4o mini). Admin allocates optional per-seat caps.'
     ),
     bullets: [
       'Everything in Creator for up to 5 seats (more seats via add-ons)',
@@ -240,12 +260,79 @@ export const PLAN_CATALOG: Record<PlanId, PlanCatalogEntry> = {
       tier: 'metered',
     },
   },
+  'codex-free': {
+    id: 'codex-free',
+    slug: 'codex-free',
+    displayName: 'Codex Free',
+    headline: 'Private doc ingestion with doc-level summaries',
+    monthlyPriceUsd: 0,
+    usageAllocationPct: 0.05,
+    usage: buildUsageProfile(
+      0.015,
+      'disallowed',
+      'Doc-level extractive summary, up to 500 MB hosted storage, and 20 hosted generations / month.'
+    ),
+    bullets: [
+      'Ingest private strands with automatic doc-level summaries',
+      'LLM-driven classification + tagging preview (per doc)',
+      '500 MB encrypted storage for uploads and derived assets',
+      '20 hosted generations (image/podcast) per month',
+    ],
+    targetAudience: 'Founders and researchers testing Codex workflows without advanced features.',
+    checkout: [],
+    public: true,
+    metadata: {
+      hiddenOnMarketing: true,
+      tier: 'metered',
+    },
+  },
+  'codex-pro': {
+    id: 'codex-pro',
+    slug: 'codex-pro',
+    displayName: 'Codex Pro',
+    headline: 'Block-level summarisation, Socratic notes, and hosted generations',
+    monthlyPriceUsd: 9.99,
+    usageAllocationPct: 0.35,
+    usage: buildUsageProfile(
+      0.12,
+      'disallowed',
+      'Block summaries + Socratic notes, 10 GB storage, 200 hosted generations / month.'
+    ),
+    bullets: [
+      'Block-by-block summaries with highlight + reading time',
+      'Socratic note suggestions and strand-to-strand linking',
+      'Podcast + image generation with premium models',
+      '10 GB encrypted storage and 200 hosted generations / month',
+    ],
+    targetAudience: 'Research teams and power users who need advanced Codex intelligence.',
+    checkout: [
+      {
+        provider: 'lemonsqueezy',
+        productEnvVar: 'LEMONSQUEEZY_CODEX_PRO_PRODUCT_ID',
+        variantEnvVar: 'LEMONSQUEEZY_CODEX_PRO_VARIANT_ID',
+      },
+      {
+        provider: 'stripe',
+        productEnvVar: 'STRIPE_CODEX_PRO_PRODUCT_ID',
+        priceEnvVar: 'STRIPE_CODEX_PRO_PRICE_ID',
+      },
+    ],
+    public: true,
+    metadata: {
+      featured: true,
+      tier: 'metered',
+    },
+  },
 };
 
 export const PUBLIC_PLAN_ORDER: PlanId[] = ['free', 'basic', 'creator', 'organization'];
 
 export const getPublicPlans = (): PlanCatalogEntry[] =>
-  PUBLIC_PLAN_ORDER.map((id) => PLAN_CATALOG[id]).filter((plan) => plan.public);
+  PUBLIC_PLAN_ORDER.map(id => PLAN_CATALOG[id]).filter(plan => plan.public);
+
+export const CODEX_PLAN_ORDER: PlanId[] = ['codex-free', 'codex-pro'];
+
+export const getCodexPlans = (): PlanCatalogEntry[] => CODEX_PLAN_ORDER.map(id => PLAN_CATALOG[id]);
 
 export const findPlanById = (id: PlanId): PlanCatalogEntry => PLAN_CATALOG[id];
 
@@ -257,21 +344,31 @@ export interface PlanRolloverExplanation {
 export const PLAN_ROLLOVER_RULES: PlanRolloverExplanation[] = [
   {
     planId: 'basic',
-    description: 'Usage stops when the daily platform allowance is exhausted. No BYO API keys allowed.',
+    description:
+      'Usage stops when the daily platform allowance is exhausted. No BYO API keys allowed.',
   },
   {
     planId: 'creator',
-    description: 'Platform allowance is consumed first, then requests fall back to user-supplied API keys with clear UI badges.',
+    description:
+      'Platform allowance is consumed first, then requests fall back to user-supplied API keys with clear UI badges.',
   },
   {
     planId: 'organization',
-    description: 'Shared workspace allowance is consumed first; admins can enforce seat-level soft caps before BYO keys engage.',
+    description:
+      'Shared workspace allowance is consumed first; admins can enforce seat-level soft caps before BYO keys engage.',
   },
   {
     planId: 'global-pass',
     description: 'Allowance is enforced per IP. Admins rotate passphrases manually when required.',
   },
+  {
+    planId: 'codex-free',
+    description:
+      'Doc-level summarisation only, 500 MB storage, and up to 20 hosted generations per month. Upgrade to unlock block insights.',
+  },
+  {
+    planId: 'codex-pro',
+    description:
+      'Full Codex intelligence: block summaries, Socratic notes, 10 GB storage, and premium podcast/image generations.',
+  },
 ];
-
-
-
