@@ -64,11 +64,11 @@ export default function CodexMetadataPanel({
   return (
     <div
       className={`
-        hidden lg:flex flex-col
-        border-l-2 border-gray-300 dark:border-gray-700
-        bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-950
+        hidden lg:flex flex-col flex-shrink-0
+        border-l border-gray-200 dark:border-gray-800
+        bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-950 dark:to-gray-900
         transition-all duration-300 ease-in-out
-        ${isOpen ? 'w-80' : 'w-0'}
+        ${isOpen ? 'w-64 xl:w-72' : 'w-0'}
         overflow-hidden
         shadow-[-4px_0_12px_rgba(0,0,0,0.08)]
       `}
@@ -78,8 +78,8 @@ export default function CodexMetadataPanel({
       }}
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b-2 border-gray-300 dark:border-gray-700 bg-gradient-to-r from-gray-100 to-gray-50 dark:from-gray-800 dark:to-gray-900">
-        <h4 className="text-sm font-bold flex items-center gap-2 text-gray-800 dark:text-gray-200 uppercase tracking-wide">
+      <div className="flex items-center justify-between px-3 py-2.5 border-b border-gray-200 dark:border-gray-800 bg-gradient-to-r from-gray-100 to-gray-50 dark:from-gray-900 dark:to-gray-950">
+        <h4 className="text-[11px] font-semibold flex items-center gap-1.5 text-gray-800 dark:text-gray-200 uppercase tracking-[0.2em]">
           <Info className="w-4 h-4 text-emerald-600" />
           Metadata & Relations
         </h4>
@@ -94,15 +94,15 @@ export default function CodexMetadataPanel({
       </div>
 
       {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-6 overscroll-contain">
+      <div className="flex-1 overflow-y-auto px-3 py-3 space-y-5 overscroll-contain text-[12px] leading-snug">
         {/* Summary Section (auto-generated, extractive) */}
         {summaryInfo?.summary && (
           <div>
-            <h5 className="text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-gray-400 mb-3 flex items-center gap-1">
+            <h5 className="text-[10px] font-semibold uppercase tracking-[0.25em] text-gray-500 dark:text-gray-400 mb-2 flex items-center gap-1">
               <Info className="w-3 h-3 text-cyan-600 dark:text-cyan-400" />
               Summary
             </h5>
-            <p className="text-xs text-gray-700 dark:text-gray-300 leading-relaxed">
+            <p className="text-[12px] text-gray-700 dark:text-gray-300 leading-snug">
               {summaryInfo.summary}
             </p>
             {summaryInfo.lastIndexed && (
@@ -121,7 +121,7 @@ export default function CodexMetadataPanel({
 
         {/* Metadata Section */}
         <div>
-          <h5 className="text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-gray-400 mb-3 flex items-center gap-1">
+          <h5 className="text-[10px] font-semibold uppercase tracking-[0.25em] text-gray-500 dark:text-gray-400 mb-2 flex items-center gap-1">
             <Hash className="w-3 h-3" />
             Metadata
           </h5>
@@ -132,13 +132,13 @@ export default function CodexMetadataPanel({
               {/* Tags */}
               {metadata.tags && (
                 <div>
-                  <p className="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Tags</p>
-                  <div className="flex flex-wrap gap-1.5">
+                  <p className="text-[11px] font-semibold text-gray-700 dark:text-gray-300 mb-1">Tags</p>
+                  <div className="flex flex-wrap gap-1">
                     {(Array.isArray(metadata.tags) ? metadata.tags : metadata.tags.split(',')).map(
                       (tag: string) => (
                         <span
                           key={tag}
-                          className="inline-flex items-center gap-1 px-2 py-1 text-xs rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-200 border border-emerald-200 dark:border-emerald-800 font-medium"
+                          className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[11px] rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-200 border border-emerald-200 dark:border-emerald-800 font-medium"
                         >
                           {tag.trim()}
                         </span>
@@ -151,8 +151,8 @@ export default function CodexMetadataPanel({
               {/* Difficulty */}
               {metadata.difficulty && (
                 <div>
-                  <p className="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Difficulty</p>
-                  <span className="inline-block px-2.5 py-1 text-xs rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 border border-blue-200 dark:border-blue-800 font-medium capitalize">
+                  <p className="text-[11px] font-semibold text-gray-700 dark:text-gray-300 mb-1">Difficulty</p>
+                  <span className="inline-block px-2 py-0.5 text-[11px] rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 border border-blue-200 dark:border-blue-800 font-medium capitalize">
                     {metadata.difficulty}
                   </span>
                 </div>
@@ -161,8 +161,8 @@ export default function CodexMetadataPanel({
               {/* Version */}
               {metadata.version && (
                 <div>
-                  <p className="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Version</p>
-                  <span className="inline-block px-2.5 py-1 text-xs font-mono rounded-lg bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-300 dark:border-gray-700">
+                  <p className="text-[11px] font-semibold text-gray-700 dark:text-gray-300 mb-1">Version</p>
+                  <span className="inline-block px-2 py-0.5 text-[11px] font-mono rounded-lg bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-300 dark:border-gray-700">
                     v{metadata.version}
                   </span>
                 </div>
