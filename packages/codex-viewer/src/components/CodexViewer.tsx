@@ -227,7 +227,7 @@ export default function FrameCodexViewer({
 
     const fetchSummaryIndex = async () => {
       try {
-        const indexUrl = `${API_ENDPOINTS.RAW}/codex-index.json`
+        const indexUrl = API_ENDPOINTS.raw('codex-index.json')
         const response = await fetch(indexUrl)
         if (!response.ok) {
           // 404 is expected for non-Frame codex repos or when index isn't built yet
@@ -343,7 +343,7 @@ export default function FrameCodexViewer({
       setError(null)
 
       try {
-        const response = await fetch(`${API_ENDPOINTS.CONTENTS}/${path}`)
+        const response = await fetch(API_ENDPOINTS.contents(path))
         if (!response.ok) {
           throw new Error(`Failed to fetch: ${response.statusText}`)
         }
@@ -462,7 +462,7 @@ export default function FrameCodexViewer({
         sha: '',
         url: '',
         html_url: `https://github.com/${REPO_CONFIG.OWNER}/${REPO_CONFIG.NAME}/blob/${REPO_CONFIG.BRANCH}/${normalizedPath}`,
-        download_url: `${API_ENDPOINTS.RAW}/${normalizedPath}`,
+        download_url: API_ENDPOINTS.raw(normalizedPath),
       }
 
       if (parentDir !== currentPath) {

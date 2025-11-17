@@ -15,6 +15,9 @@ import { buildKnowledgeTree } from '../utils'
 import { REPO_CONFIG } from '../constants'
 import { fetchGithubTree, fetchGithubTreeREST } from '../lib/githubGraphql'
 
+let graphQlWarningLogged = false
+let restWarningLogged = false
+
 interface UseGithubTreeResult {
   /** Hierarchical knowledge tree */
   tree: KnowledgeTreeNode[]
@@ -64,30 +67,37 @@ export function useGithubTree(): UseGithubTreeResult {
     try {
       let rawEntries: Array<{ name: string; type: string; path: string; size?: number }> = []
 
-      // Branch resolution: try explicit branch, then fallback to 'main' if that fails
-      const branchCandidates = [REPO_CONFIG.BRANCH, 'main']
+      const branchCandidates = Array.from(new Set(['master', 'main', REPO_CONFIG.BRANCH].filter(Boolean)))
 
       let fetchSucceeded = false
+      let lastError: unknown = null
       for (const branch of branchCandidates) {
         try {
           rawEntries = await fetchGithubTree(REPO_CONFIG.OWNER, REPO_CONFIG.NAME, branch)
-          REPO_CONFIG.BRANCH = branch as any // cache resolved branch (mutable for session)
+          REPO_CONFIG.BRANCH = branch
           fetchSucceeded = true
           break
         } catch (graphqlError) {
-          console.warn(`GraphQL fetch failed for branch "${branch}":`, graphqlError)
+          if (!graphQlWarningLogged) {
+            console.warn('Codex GitHub GraphQL unavailable, switching to REST.', graphqlError)
+            graphQlWarningLogged = true
+          }
           try {
             rawEntries = await fetchGithubTreeREST(REPO_CONFIG.OWNER, REPO_CONFIG.NAME, branch)
-            REPO_CONFIG.BRANCH = branch as any
+            REPO_CONFIG.BRANCH = branch
             fetchSucceeded = true
             break
           } catch (restError) {
-            console.warn(`REST fetch failed for branch "${branch}":`, restError)
+            lastError = restError
+            if (!restWarningLogged) {
+              console.warn('Codex GitHub REST fallback failed, trying next branch.', restError)
+              restWarningLogged = true
+            }
           }
         }
       }
 
-      if (!fetchSucceeded) throw new Error('Unable to fetch Git tree from either master or main branch')
+      if (!fetchSucceeded) throw (lastError ?? new Error('Unable to fetch Git tree from GitHub.'))
 
       // Convert to GitTreeItem format
       const items: GitTreeItem[] = rawEntries.map((entry) => ({
