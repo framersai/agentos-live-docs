@@ -3,7 +3,7 @@
  * @module codex/ui/PreferencesModal
  * 
  * @remarks
- * - Theme selection (light/dark/sepia)
+ * - Theme selection (light/dark/sepia light/sepia dark)
  * - Font size slider
  * - Tree density options
  * - Default sidebar mode
@@ -14,9 +14,46 @@
 
 import React from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Sun, Moon, Book, Type, LayoutGrid, Sidebar, Trash2 } from 'lucide-react'
+import { X, Sun, Moon, Palette, Sparkles, Type, LayoutGrid, Sidebar, Trash2 } from 'lucide-react'
 import type { UserPreferences } from '../lib/localStorage'
 import { clearCodexCache, getCodexCacheStats, type CodexCacheStats } from '../lib/codexCache'
+
+const THEME_PRESETS: Array<{
+  id: UserPreferences['theme']
+  label: string
+  description: string
+  swatch: string
+  icon: JSX.Element
+}> = [
+  {
+    id: 'light',
+    label: 'Light',
+    description: 'Crisp paper',
+    swatch: 'from-slate-50 via-white to-slate-100 text-slate-900',
+    icon: <Sun className="w-5 h-5 text-amber-500" />,
+  },
+  {
+    id: 'dark',
+    label: 'Dark',
+    description: 'Midnight glass',
+    swatch: 'from-slate-900 via-slate-800 to-slate-900 text-slate-100',
+    icon: <Moon className="w-5 h-5 text-cyan-200" />,
+  },
+  {
+    id: 'sepia-light',
+    label: 'Sepia Light',
+    description: 'Notebook glow',
+    swatch: 'from-amber-50 via-orange-50 to-amber-100 text-amber-900',
+    icon: <Palette className="w-5 h-5 text-amber-700" />,
+  },
+  {
+    id: 'sepia-dark',
+    label: 'Sepia Dark',
+    description: 'Candlelight',
+    swatch: 'from-amber-900 via-stone-900 to-stone-950 text-amber-100',
+    icon: <Sparkles className="w-5 h-5 text-amber-200" />,
+  },
+]
 
 interface PreferencesModalProps {
   /** Whether modal is open */
@@ -145,24 +182,30 @@ export default function PreferencesModal({
                 <div>
                   <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                     <Sun className="w-4 h-4" />
-                    Theme
+                    Theme & Atmosphere
                   </label>
-                  <div className="grid grid-cols-3 gap-3">
-                    {(['light', 'dark', 'sepia'] as const).map((theme) => (
+                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                    {THEME_PRESETS.map((preset) => (
                       <button
-                        key={theme}
-                        onClick={() => onThemeChange(theme)}
+                        key={preset.id}
+                        onClick={() => onThemeChange(preset.id)}
                         className={`p-4 rounded-lg border-2 transition-all ${
-                          preferences.theme === theme
-                            ? 'border-gray-900 dark:border-gray-100 bg-gray-200 dark:bg-gray-700'
+                          preferences.theme === preset.id
+                            ? 'border-frame-green/70 bg-gray-100/70 dark:bg-gray-800'
                             : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
                         }`}
                       >
-                        <div className="flex items-center justify-center gap-2">
-                          {theme === 'light' && <Sun className="w-5 h-5" />}
-                          {theme === 'dark' && <Moon className="w-5 h-5" />}
-                          {theme === 'sepia' && <Book className="w-5 h-5" />}
-                          <span className="capitalize text-sm font-medium">{theme}</span>
+                        <div className="flex items-center justify-start gap-3">
+                          <span
+                            className={`flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br ${preset.swatch} shadow-inner`}
+                            aria-hidden
+                          >
+                            {preset.icon}
+                          </span>
+                          <div className="text-left">
+                            <span className="text-sm font-semibold capitalize">{preset.label}</span>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">{preset.description}</p>
+                          </div>
                         </div>
                       </button>
                     ))}

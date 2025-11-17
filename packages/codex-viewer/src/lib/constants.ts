@@ -30,16 +30,25 @@ export const REPO_CONFIG = {
   BRANCH: (process.env.NEXT_PUBLIC_CODEX_REPO_BRANCH || 'master') as string,
 } as { OWNER: string; NAME: string; BRANCH: string }
 
+const joinPath = (base: string, path?: string) => {
+  if (!path) return base
+  const sanitized = path.replace(/^\/+/, '')
+  return `${base}/${sanitized}`
+}
+
 /**
  * GitHub API endpoints
  */
 export const API_ENDPOINTS = {
-  /** Contents API base URL */
-  CONTENTS: `https://api.github.com/repos/${REPO_CONFIG.OWNER}/${REPO_CONFIG.NAME}/contents`,
-  /** Git tree API URL (recursive) */
-  TREE: `https://api.github.com/repos/${REPO_CONFIG.OWNER}/${REPO_CONFIG.NAME}/git/trees/${REPO_CONFIG.BRANCH}?recursive=1`,
-  /** Raw content base URL */
-  RAW: `https://raw.githubusercontent.com/${REPO_CONFIG.OWNER}/${REPO_CONFIG.NAME}/${REPO_CONFIG.BRANCH}`,
+  contents: (path = '') =>
+    `${joinPath(
+      `https://api.github.com/repos/${REPO_CONFIG.OWNER}/${REPO_CONFIG.NAME}/contents`,
+      path
+    )}?ref=${encodeURIComponent(REPO_CONFIG.BRANCH)}`,
+  tree: () =>
+    `https://api.github.com/repos/${REPO_CONFIG.OWNER}/${REPO_CONFIG.NAME}/git/trees/${REPO_CONFIG.BRANCH}?recursive=1`,
+  raw: (path = '') =>
+    joinPath(`https://raw.githubusercontent.com/${REPO_CONFIG.OWNER}/${REPO_CONFIG.NAME}/${REPO_CONFIG.BRANCH}`, path),
 } as const
 
 /**

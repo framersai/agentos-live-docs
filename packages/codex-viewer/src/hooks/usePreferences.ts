@@ -4,7 +4,7 @@
  * 
  * @remarks
  * - Stores preferences in localStorage (client-side only)
- * - Theme (light/dark/sepia), font size, tree density, sidebar defaults
+ * - Theme (light/dark/sepia light/sepia dark), font size, tree density, sidebar defaults
  * - Auto-applies theme and font size to document
  * - No tracking or server sync
  * 
@@ -18,13 +18,21 @@
  * ```
  */
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useLayoutEffect } from 'react'
 import type { UserPreferences } from '../lib/localStorage'
 import {
   getPreferences,
   updatePreferences as savePreferences,
   resetPreferences as clearPreferences,
 } from '../lib/localStorage'
+
+type ThemePreference = UserPreferences['theme']
+const THEME_CLASSES: ThemePreference[] = ['light', 'dark', 'sepia-light', 'sepia-dark']
+const DETECTION_ORDER: ThemePreference[] = ['sepia-dark', 'dark', 'sepia-light', 'light']
+const DARK_THEMES: ThemePreference[] = ['dark', 'sepia-dark']
+
+const isThemePreference = (value: string | null | undefined): value is ThemePreference =>
+  !!value && THEME_CLASSES.includes(value as ThemePreference)
 
 interface UsePreferencesResult {
   /** Current preferences */
@@ -59,10 +67,11 @@ interface UsePreferencesResult {
  *   
  *   return (
  *     <>
- *       <select value={preferences.theme} onChange={(e) => updateTheme(e.target.value)}>
+ *       <select value={preferences.theme} onChange={(e) => updateTheme(e.target.value as UserPreferences['theme'])}>
  *         <option value="light">Light</option>
  *         <option value="dark">Dark</option>
- *         <option value="sepia">Sepia</option>
+ *         <option value="sepia-light">Sepia Light</option>
+ *         <option value="sepia-dark">Sepia Dark</option>
  *       </select>
  *       
  *       <input
@@ -80,17 +89,83 @@ interface UsePreferencesResult {
  * }
  * ```
  */
+function detectHostTheme(): ThemePreference | null {
+  if (typeof document === 'undefined') return null
+  for (const theme of DETECTION_ORDER) {
+    if (document.documentElement.classList.contains(theme)) return theme
+  }
+  return null
+}
+
+function readExternalTheme(): ThemePreference | null {
+  if (typeof window === 'undefined') return null
+  try {
+    const stored = window.localStorage.getItem('theme')
+    if (isThemePreference(stored)) return stored
+    if (stored === 'system') {
+      return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+    }
+  } catch {
+    // Ignore storage access errors
+  }
+  return null
+}
+
 export function usePreferences(): UsePreferencesResult {
   const [preferences, setPreferences] = useState<UserPreferences>(() => getPreferences())
+
+  useLayoutEffect(() => {
+    const hostTheme = readExternalTheme() ?? detectHostTheme()
+    if (!hostTheme) return
+
+    setPreferences((current) => {
+      if (current.theme === hostTheme) return current
+      const next = { ...current, theme: hostTheme }
+      savePreferences(next)
+      return next
+    })
+  }, [])
+
+  useEffect(() => {
+    if (typeof document === 'undefined' || typeof window === 'undefined') return
+
+    const syncFromHost = () => {
+      const hostTheme = detectHostTheme()
+      if (!hostTheme) return
+      setPreferences((current) => {
+        if (current.theme === hostTheme) return current
+        const next = { ...current, theme: hostTheme }
+        savePreferences(next)
+        return next
+      })
+    }
+
+    const observer = new MutationObserver(syncFromHost)
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
+
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key !== 'theme') return
+      syncFromHost()
+    }
+
+    window.addEventListener('storage', handleStorage)
+
+    return () => {
+      observer.disconnect()
+      window.removeEventListener('storage', handleStorage)
+    }
+  }, [])
 
   // Apply theme class to document
   useEffect(() => {
     if (typeof document === 'undefined') return
 
-    // Remove all theme classes
-    document.documentElement.classList.remove('light', 'dark', 'sepia')
-    // Add current theme
-    document.documentElement.classList.add(preferences.theme)
+    const root = document.documentElement
+    root.classList.remove(...THEME_CLASSES, 'dark')
+    root.classList.add(preferences.theme)
+    if (DARK_THEMES.includes(preferences.theme)) {
+      root.classList.add('dark')
+    }
   }, [preferences.theme])
 
   // Apply font size to document
@@ -99,8 +174,9 @@ export function usePreferences(): UsePreferencesResult {
     document.documentElement.style.setProperty('--codex-font-scale', preferences.fontSize.toString())
   }, [preferences.fontSize])
 
-  const updateTheme = useCallback((theme: UserPreferences['theme']) => {
-    const updated = { ...getPreferences(), theme }
+  const updateTheme = useCallback((theme: ThemePreference) => {
+    const nextTheme = isThemePreference(theme) ? theme : 'light'
+    const updated = { ...getPreferences(), theme: nextTheme }
     savePreferences(updated)
     setPreferences(updated)
   }, [])
@@ -132,9 +208,13 @@ export function usePreferences(): UsePreferencesResult {
   }, [])
 
   const updateMultiple = useCallback((updates: Partial<UserPreferences>) => {
-    const updated = { ...getPreferences(), ...updates }
-    savePreferences(updated)
-    setPreferences(updated)
+    const current = getPreferences()
+    const next: UserPreferences = { ...current, ...updates }
+    if (updates.theme && !isThemePreference(updates.theme)) {
+      next.theme = current.theme
+    }
+    savePreferences(next)
+    setPreferences(next)
   }, [])
 
   const reset = useCallback(() => {

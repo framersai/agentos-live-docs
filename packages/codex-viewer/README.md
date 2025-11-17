@@ -43,6 +43,8 @@ export default function App() {
 }
 ```
 
+> Want a complete site scaffold? Fork [`framersai/codex-template`](https://github.com/framersai/codex-template) (source mirrored in `examples/codex-template/`). It includes hero copy, environment setup, and two sample weaves.
+
 ## Props
 
 | Prop | Type | Default | Description |
@@ -212,6 +214,7 @@ MIT © [Framers AI](https://frame.dev)
 ## Links
 
 - [Documentation](https://frame.dev/codex)
+- [Starter Template](https://github.com/framersai/codex-template)
 - [GitHub](https://github.com/manicinc/voice-chat-assistant/tree/master/packages/codex-viewer)
 - [NPM](https://www.npmjs.com/package/@framers/codex-viewer)
 - [Issues](https://github.com/manicinc/voice-chat-assistant/issues)
