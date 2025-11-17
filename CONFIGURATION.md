@@ -182,3 +182,20 @@ For more operational notes and deployment tips, review [`PRODUCTION_SETUP.md`](P
 | `PERSONA_DEFINITIONS_PATH` | Path used by the voice UI stack to discover persona JSON files (defaults to `./backend/agentos/...`). |
 
 > AgentOS defaults to in-memory persistence so you can experiment locally without running Prisma migrations. When you are ready to back it with a proper database, point `AGENTOS_DATABASE_URL` at your Prisma datasource and swap the stub for a real client.
+
+## 12. Frame.dev & Codex Analytics (Optional)
+
+The `apps/frame.dev` Next.js site (which hosts the Frame Codex viewer) supports optional, anonymous analytics. These are **off by default** and only enabled when the environment variables below are set.
+
+> Analytics are implemented in `apps/frame.dev/components/Analytics.tsx` and documented in `apps/frame.dev/ENV_VARS.md`. The `/privacy` route in the Frame.dev app describes the data handling and GDPR compliance in human-readable form.
+
+| Variable | Description |
+| --- | --- |
+| `NEXT_PUBLIC_GA_MEASUREMENT_ID` | **Optional.** Google Analytics 4 measurement ID (e.g. `G-XXXXXXX`). IP anonymization is enabled, Google Signals and ad personalization are disabled. |
+| `NEXT_PUBLIC_CLARITY_PROJECT_ID` | **Optional.** Microsoft Clarity project ID used for anonymous UX heatmaps and session recordings with masked inputs. |
+
+Notes:
+
+- If these values are **unset**, no analytics scripts are loaded at all.
+- If the browser sends a `Do Not Track` signal (`DNT: 1`), the Analytics component will respect it and skip initialization even when IDs are present.
+- These variables are **frontend-only** and safe to expose because they are purely identifiers, not secrets.
