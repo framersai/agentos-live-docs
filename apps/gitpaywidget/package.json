@@ -1,0 +1,23 @@
+{
+  "name": "@manicinc/gitpaywidget",
+  "version": "0.1.0-alpha.0",
+  "private": true,
+  "description": "Plug-and-play payment widget & orchestrator for static sites (Stripe, Lemon Squeezy, crypto).",
+  "scripts": {
+    "dev": "echo 'GitPayWidget app scaffold coming soon' && exit 0",
+    "build": "echo 'TBD'",
+    "lint": "echo 'TBD'",
+    "test": "echo 'TBD'"
+  },
+  "keywords": [
+    "payments",
+    "stripe",
+    "lemon-squeezy",
+    "widget",
+    "github-pages",
+    "static",
+    "checkout"
+  ],
+  "author": "Manic Agency LLC <team@manic.agency>",
+  "license": "MIT"
+}
