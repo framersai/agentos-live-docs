@@ -40,10 +40,31 @@ The widget → calls **api.gitpaywidget.com** → orchestrates the right provide
 
 ```bash
 pnpm install
+cp apps/gitpaywidget/env.example apps/gitpaywidget/.env.local
+# Fill SUPABASE_URL / SERVICE_ROLE key and provider secrets
 pnpm --filter @manicinc/gitpaywidget dev
 ```
 
-This directory currently contains only docs; the Next.js code will land shortly.
+Tables live in Supabase (see `supabase/schema.sql`).
+
+### Building & deploying
+
+```bash
+# Build widget bundle for CDN
+pnpm --filter @gitpaywidget/widget build
+
+# Production Next.js app
+docker-compose -f docker-compose.prod.yml up -d
+```
+
+**Nginx** reverse-proxy serves the app at `gitpaywidget.com`. Configure DNS A record → your Linode/VPS IP, then add SSL via Let's Encrypt (certbot).
+
+### Performance tips
+
+- Widget JS is < 5 kB gzipped; lazy-loads SDK on first interaction.
+- Next.js config enables `optimizePackageImports` for widget/SDK treeshaking.
+- Dynamic OG image (`opengraph-image.tsx`) generates branded social cards on demand.
+- Sitemap + robots ensure SEO indexing of public pages only.
 
 ---
 
@@ -54,3 +75,34 @@ MIT – free & open source. Commercial hosting & concierge support available fro
 ---
 
 **Built by** Manic Agency LLC – we craft vibrant, playful, and deeply technical products.
+
+---
+
+### Embedding the widget
+
+```html
+<!-- Coming soon: CDN bundle. During alpha import via npm -->
+<script type="module">
+  import { renderGitPayWidget } from '@gitpaywidget/widget';
+
+  renderGitPayWidget({
+    project: 'your-org/your-site',
+    plans: [
+      {
+        id: 'free',
+        label: 'Starter',
+        price: '$0',
+        description: 'Evaluate',
+        features: ['Doc summaries'],
+      },
+      {
+        id: 'pro',
+        label: 'Pro',
+        price: '$9.99',
+        description: 'Production',
+        features: ['Block summaries'],
+      },
+    ],
+  });
+</script>
+```

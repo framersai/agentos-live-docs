@@ -1,51 +1,16 @@
 {
   "$schema": "https://typedoc.org/schema.json",
-  "name": "AgentOS - API Reference",
   "entryPoints": [
-    "./packages/agentos/src/index.ts"
+    "packages/gitpaywidget-sdk/src/index.ts",
+    "packages/gitpaywidget-widget/src/index.ts",
+    "packages/payments-core/src/index.ts"
   ],
-  "entryPointStrategy": "expand",
-  "tsconfig": "./packages/agentos/tsconfig.json",
-  "out": "./docs-generated/library",
-  "theme": "default",
-  "excludePrivate": false,
-  "excludeProtected": false,
-  "excludeExternals": true,
-  "exclude": [
-    "**/node_modules/**",
-    "**/*.spec.ts",
-    "**/*.test.ts",
-    "**/tests/**",
-    "**/__tests__/**",
-    "**/dist/**",
-    "**/build/**",
-    "**/coverage/**",
-    "**/frontend/**",
-    "**/apps/**",
-    "**/backend/**",
-    "**/shared/**"
-  ],
-  "readme": "./README.md",
+  "out": "apps/gitpaywidget/public/docs",
+  "plugin": [],
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "readme": "apps/gitpaywidget/README.md",
+  "name": "GitPayWidget API Documentation",
   "includeVersion": true,
-  "categorizeByGroup": true,
-  "categoryOrder": [
-    "AgentOS Core",
-    "Cognitive Substrate",
-    "Streaming",
-    "Prompts",
-    "Tools",
-    "Audio/VAD",
-    "Memory",
-    "Backend Services",
-    "Utilities",
-    "*"
-  ],
-  "sort": ["source-order"],
-  "navigation": {
-    "includeCategories": true,
-    "includeGroups": true
-  },
-  "gitRevision": "dev",
-  "githubPages": false,
-  "hideGenerator": false
+  "categorizeByGroup": true
 }

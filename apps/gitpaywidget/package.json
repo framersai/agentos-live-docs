@@ -4,10 +4,14 @@
   "private": true,
   "description": "Plug-and-play payment widget & orchestrator for static sites (Stripe, Lemon Squeezy, crypto).",
   "scripts": {
-    "dev": "echo 'GitPayWidget app scaffold coming soon' && exit 0",
-    "build": "echo 'TBD'",
-    "lint": "echo 'TBD'",
-    "test": "echo 'TBD'"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "docs": "typedoc --out public/docs packages/gitpaywidget-sdk/src packages/gitpaywidget-widget/src"
   },
   "keywords": [
     "payments",
@@ -19,5 +23,26 @@
     "checkout"
   ],
   "author": "Manic Agency LLC <team@manic.agency>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@gitpaywidget/widget": "workspace:*",
+    "@supabase/auth-helpers-nextjs": "^0.10.0",
+    "@supabase/supabase-js": "^2.45.0",
+    "next": "^14.2.15",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.15.0",
+    "@types/react": "^18.3.6",
+    "@types/react-dom": "^18.3.0",
+    "@types/supertest": "^6.0.2",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.47",
+    "supertest": "^6.3.4",
+    "tailwindcss": "^3.4.14",
+    "typedoc": "^0.25.13",
+    "typescript": "^5.6.3",
+    "vitest": "^1.6.0"
+  }
 }

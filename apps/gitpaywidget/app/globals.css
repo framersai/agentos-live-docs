@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono&display=swap');
+
+:root {
+  /* GitPayWidget Brand Colors */
+  --gpw-purple-primary: #8b5cf6;
+  --gpw-purple-secondary: #ec4899;
+  --gpw-purple-tertiary: #7c3aed;
+  --gpw-accent-yellow: #fbbf24;
+
+  /* Typography */
+  --gpw-font-display: 'Caveat', cursive;
+  --gpw-font-body: 'Space Grotesk', sans-serif;
+  --gpw-font-mono: 'JetBrains Mono', monospace;
+
+  /* Spacing */
+  --gpw-space-xs: 0.25rem;
+  --gpw-space-sm: 0.5rem;
+  --gpw-space-md: 1rem;
+  --gpw-space-lg: 2rem;
+  --gpw-space-xl: 3rem;
+}
+
+html {
+  font-family: var(--gpw-font-body);
+}
+
+body {
+  @apply bg-white text-ink-900 dark:bg-ink-900 dark:text-white;
+}
