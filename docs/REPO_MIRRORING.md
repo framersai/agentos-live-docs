@@ -6,11 +6,12 @@ push it to the public repository under the `framersai` organisation.
 
 ## Current mappings
 
-| Path                | Public repo                              |
-| ------------------- | ---------------------------------------- |
-| `packages/agentos`  | `git@github.com:framersai/agentos.git`   |
-| `apps/agentos.sh`   | `git@github.com:framersai/agentos.sh.git`|
+| Path                  | Public repo                                   |
+| --------------------- | --------------------------------------------- |
+| `packages/agentos`    | `git@github.com:framersai/agentos.git`        |
+| `apps/agentos.sh`     | `git@github.com:framersai/agentos.sh.git`     |
 | `apps/agentos-client` | `git@github.com:framersai/agentos-client.git` |
+| `apps/frame.dev`      | `git@github.com:framersai/frame.dev.git`      |
 
 > `packages/sql-storage-adapter` is intentionally excluded for now.
 
@@ -43,7 +44,6 @@ history centrally.
   automation can run the same script.
 
 The rest of the release automation lives in `docs/RELEASE_AUTOMATION.md`.
-
 
 ## Fresh repository bootstrap
 
