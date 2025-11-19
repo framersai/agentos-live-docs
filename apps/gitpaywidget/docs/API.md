@@ -17,9 +17,11 @@ Most endpoints require Supabase session authentication via cookies. The SDK hand
 Fetch widget theme settings for a project (used by the widget for auto-theming).
 
 **Parameters:**
+
 - `slug` (path): Project slug (e.g., `acme/site`)
 
 **Response:**
+
 ```json
 {
   "accent_hex": "#8b5cf6",
@@ -29,6 +31,7 @@ Fetch widget theme settings for a project (used by the widget for auto-theming).
 ```
 
 **Status Codes:**
+
 - `200`: Success
 - `404`: Project not found
 
@@ -41,6 +44,7 @@ Fetch widget theme settings for a project (used by the widget for auto-theming).
 Create a hosted checkout session with Stripe or Lemon Squeezy.
 
 **Request Body:**
+
 ```json
 {
   "project": "acme/site",
@@ -53,6 +57,7 @@ Create a hosted checkout session with Stripe or Lemon Squeezy.
 ```
 
 **Response:**
+
 ```json
 {
   "checkoutUrl": "https://checkout.stripe.com/c/pay/cs_test_...",
@@ -62,6 +67,7 @@ Create a hosted checkout session with Stripe or Lemon Squeezy.
 ```
 
 **Status Codes:**
+
 - `200`: Checkout session created
 - `404`: Project not found or no provider keys configured
 - `500`: Provider API error
@@ -75,6 +81,7 @@ Create a hosted checkout session with Stripe or Lemon Squeezy.
 List all projects owned by the authenticated user.
 
 **Response:**
+
 ```json
 {
   "projects": [
@@ -89,6 +96,7 @@ List all projects owned by the authenticated user.
 ```
 
 **Status Codes:**
+
 - `200`: Success
 - `401`: Not authenticated
 
@@ -99,6 +107,7 @@ List all projects owned by the authenticated user.
 Create a new project.
 
 **Request Body:**
+
 ```json
 {
   "name": "My Landing Page",
@@ -107,6 +116,7 @@ Create a new project.
 ```
 
 **Response:**
+
 ```json
 {
   "id": "cuid...",
@@ -117,6 +127,7 @@ Create a new project.
 ```
 
 **Status Codes:**
+
 - `201`: Project created
 - `400`: Invalid slug or name
 - `409`: Slug already exists
@@ -129,6 +140,7 @@ Create a new project.
 Update project name or slug.
 
 **Request Body:**
+
 ```json
 {
   "name": "Updated Name",
@@ -137,6 +149,7 @@ Update project name or slug.
 ```
 
 **Response:**
+
 ```json
 {
   "id": "cuid...",
@@ -146,6 +159,7 @@ Update project name or slug.
 ```
 
 **Status Codes:**
+
 - `200`: Updated
 - `404`: Project not found
 - `403`: Not the owner
@@ -158,6 +172,7 @@ Update project name or slug.
 Delete a project and all associated provider keys.
 
 **Response:**
+
 ```json
 {
   "success": true
@@ -165,6 +180,7 @@ Delete a project and all associated provider keys.
 ```
 
 **Status Codes:**
+
 - `200`: Deleted
 - `404`: Project not found
 - `403`: Not the owner
@@ -179,6 +195,7 @@ Delete a project and all associated provider keys.
 List provider credentials for a project (returns masked summaries, not decrypted secrets).
 
 **Response:**
+
 ```json
 {
   "keys": [
@@ -191,6 +208,7 @@ List provider credentials for a project (returns masked summaries, not decrypted
 ```
 
 **Status Codes:**
+
 - `200`: Success
 - `404`: Project not found
 - `403`: Not the owner
@@ -203,6 +221,7 @@ List provider credentials for a project (returns masked summaries, not decrypted
 Store or update encrypted provider credentials.
 
 **Request Body:**
+
 ```json
 {
   "provider": "stripe",
@@ -211,6 +230,7 @@ Store or update encrypted provider credentials.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true
@@ -218,6 +238,7 @@ Store or update encrypted provider credentials.
 ```
 
 **Status Codes:**
+
 - `200`: Saved
 - `400`: Invalid provider or malformed secret
 - `404`: Project not found
@@ -233,6 +254,7 @@ Store or update encrypted provider credentials.
 Fetch revenue and conversion metrics for a project.
 
 **Response:**
+
 ```json
 {
   "mrr": 249900,
@@ -243,11 +265,13 @@ Fetch revenue and conversion metrics for a project.
 ```
 
 **Fields:**
+
 - `mrr`: Monthly recurring revenue in cents
 - `checkoutsToday`: Number of checkout sessions created today
 - `conversionRate`: Percentage of visitors who complete checkout (0-1)
 
 **Status Codes:**
+
 - `200`: Success
 - `404`: Project not found
 - `403`: Not the owner
@@ -262,6 +286,7 @@ Fetch revenue and conversion metrics for a project.
 Get widget theme settings (authenticated version).
 
 **Response:**
+
 ```json
 {
   "accent_hex": "#8b5cf6",
@@ -271,6 +296,7 @@ Get widget theme settings (authenticated version).
 ```
 
 **Status Codes:**
+
 - `200`: Success
 - `404`: Project not found
 - `403`: Not the owner
@@ -283,6 +309,7 @@ Get widget theme settings (authenticated version).
 Update widget theme settings.
 
 **Request Body:**
+
 ```json
 {
   "accent_hex": "#ec4899",
@@ -292,6 +319,7 @@ Update widget theme settings.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true
@@ -299,6 +327,7 @@ Update widget theme settings.
 ```
 
 **Status Codes:**
+
 - `200`: Updated
 - `400`: Invalid hex color
 - `404`: Project not found
@@ -314,10 +343,12 @@ Update widget theme settings.
 Receive webhook events from Stripe or Lemon Squeezy.
 
 **Headers:**
+
 - `X-GPW-Provider` (optional): `stripe` | `lemonsqueezy` (auto-detected if omitted)
 - Provider-specific signature headers (e.g., `Stripe-Signature`)
 
 **Response:**
+
 ```json
 {
   "received": true
@@ -325,6 +356,7 @@ Receive webhook events from Stripe or Lemon Squeezy.
 ```
 
 **Status Codes:**
+
 - `200`: Event processed
 - `400`: Invalid signature or payload
 
@@ -343,6 +375,7 @@ All errors follow this format:
 ```
 
 Common status codes:
+
 - `400`: Bad request (invalid params)
 - `401`: Unauthenticated
 - `403`: Forbidden (not the owner)
@@ -368,4 +401,3 @@ Questions? Contact **team@manic.agency**
 ---
 
 **Built by** Manic Agency LLC
-

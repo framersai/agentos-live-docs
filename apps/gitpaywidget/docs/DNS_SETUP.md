@@ -29,21 +29,25 @@ This guide walks you through configuring your domain (purchased on Porkbun) to w
 Add the following records in **Cloudflare DNS**:
 
 ### A Record (IPv4)
-| Type | Name | Content          | Proxy Status | TTL  |
-|------|------|------------------|--------------|------|
-| A    | @    | 50.116.33.200    | Proxied ☁️   | Auto |
+
+| Type | Name | Content       | Proxy Status | TTL  |
+| ---- | ---- | ------------- | ------------ | ---- |
+| A    | @    | 50.116.33.200 | Proxied ☁️   | Auto |
 
 ### AAAA Record (IPv6)
-| Type | Name | Content                          | Proxy Status | TTL  |
-|------|------|----------------------------------|--------------|------|
-| AAAA | @    | 2600:3c02::2000:a4ff:feba:6730   | Proxied ☁️   | Auto |
+
+| Type | Name | Content                        | Proxy Status | TTL  |
+| ---- | ---- | ------------------------------ | ------------ | ---- |
+| AAAA | @    | 2600:3c02::2000:a4ff:feba:6730 | Proxied ☁️   | Auto |
 
 ### CNAME for www (optional)
-| Type  | Name | Content            | Proxy Status | TTL  |
-|-------|------|--------------------|--------------|------|
-| CNAME | www  | gitpaywidget.com   | Proxied ☁️   | Auto |
 
-**Important:** 
+| Type  | Name | Content          | Proxy Status | TTL  |
+| ----- | ---- | ---------------- | ------------ | ---- |
+| CNAME | www  | gitpaywidget.com | Proxied ☁️   | Auto |
+
+**Important:**
+
 - ✅ Enable **"Proxied"** (orange cloud) for DDoS protection, caching, and SSL
 - 🔒 If you want full control over SSL (e.g., Let's Encrypt on Linode), use **"DNS only"** (gray cloud)
 
@@ -111,12 +115,14 @@ certbot --nginx -d gitpaywidget.com -d www.gitpaywidget.com
 ```
 
 Certbot will:
+
 - Auto-detect your Nginx config
 - Obtain SSL cert from Let's Encrypt
 - Update `/etc/nginx/sites-available/default` to use HTTPS
 - Set up auto-renewal
 
 Test renewal:
+
 ```bash
 certbot renew --dry-run
 ```
@@ -156,6 +162,7 @@ server {
 ```
 
 Reload Nginx:
+
 ```bash
 nginx -t
 systemctl reload nginx
@@ -166,6 +173,7 @@ systemctl reload nginx
 ## Step 8: Test Your Site
 
 Visit:
+
 - https://gitpaywidget.com → should load the landing page
 - https://gitpaywidget.com/dashboard → should redirect to login
 - https://gitpaywidget.com/widget-demo → should show the demo
@@ -175,6 +183,7 @@ Visit:
 ## Cloudflare Optimizations (Optional)
 
 ### Page Rules
+
 Create rules to optimize caching:
 
 1. **Cache static assets**:
@@ -187,7 +196,9 @@ Create rules to optimize caching:
    - Cache Level: Bypass
 
 ### Firewall Rules
+
 Block bad bots:
+
 - Challenge traffic from countries you don't expect
 - Rate-limit `/api/checkout` to prevent abuse
 
@@ -196,16 +207,19 @@ Block bad bots:
 ## Troubleshooting
 
 ### DNS not resolving
+
 - Wait up to 24 hours for full propagation
 - Check nameservers: `dig gitpaywidget.com NS`
 - Ensure Porkbun shows Cloudflare nameservers
 
 ### SSL errors
+
 - If using Cloudflare proxy: set SSL mode to **Full (strict)**
 - Run certbot on Linode: `certbot --nginx -d gitpaywidget.com`
 - Check cert expiry: `certbot certificates`
 
 ### 502 Bad Gateway
+
 - Ensure Docker containers are running: `docker-compose -f docker-compose.prod.yml ps`
 - Check app logs: `docker-compose -f docker-compose.prod.yml logs -f app`
 - Verify Nginx is proxying to correct port (3000)
@@ -215,6 +229,7 @@ Block bad bots:
 ## Need Help?
 
 Contact **team@manic.agency** with:
+
 - Domain name
 - Error screenshots
 - Output of `docker-compose logs`
@@ -222,4 +237,3 @@ Contact **team@manic.agency** with:
 ---
 
 **Built by** Manic Agency LLC
-

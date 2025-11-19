@@ -43,6 +43,7 @@ Your project slug will be used in the widget embed code.
 4. Paste your API keys as JSON:
 
 ### Stripe Example
+
 ```json
 {
   "secretKey": "sk_test_...",
@@ -52,6 +53,7 @@ Your project slug will be used in the widget embed code.
 ```
 
 ### Lemon Squeezy Example
+
 ```json
 {
   "apiKey": "...",
@@ -69,6 +71,7 @@ Your project slug will be used in the widget embed code.
 ## Step 4: Customize Theme (Optional)
 
 In the **"Widget Theme"** section:
+
 - **Accent color**: `#8b5cf6` (or your brand color)
 - **CTA label**: `Get started` (or `Subscribe`, `Buy now`, etc.)
 - **Custom CSS**: Add overrides for `.gpw-plan-card`, `.gpw-plan-button`, etc.
@@ -86,7 +89,7 @@ npm install @gitpaywidget/widget @gitpaywidget/sdk
 ```
 
 ```typescript
-import { renderGitPayWidget } from '@gitpaywidget/widget'
+import { renderGitPayWidget } from '@gitpaywidget/widget';
 
 renderGitPayWidget({
   project: 'myusername/mysite',
@@ -96,19 +99,19 @@ renderGitPayWidget({
       label: 'Free',
       price: '$0',
       description: 'Try it out',
-      features: ['5 documents', 'Basic support']
+      features: ['5 documents', 'Basic support'],
     },
     {
       id: 'pro',
       label: 'Pro',
       price: '$9.99/mo',
       description: 'Full power',
-      features: ['Unlimited documents', 'Priority support', 'API access']
-    }
+      features: ['Unlimited documents', 'Priority support', 'API access'],
+    },
   ],
   autoTheme: true,
-  mount: document.getElementById('pricing')
-})
+  mount: document.getElementById('pricing'),
+});
 ```
 
 ### Option B: Static HTML (CDN)
@@ -116,39 +119,39 @@ renderGitPayWidget({
 ```html
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="UTF-8">
-  <title>My Site</title>
-</head>
-<body>
-  <div id="pricing"></div>
+  <head>
+    <meta charset="UTF-8" />
+    <title>My Site</title>
+  </head>
+  <body>
+    <div id="pricing"></div>
 
-  <script type="module">
-    import { renderGitPayWidget } from 'https://cdn.gitpaywidget.com/v0/widget.js'
+    <script type="module">
+      import { renderGitPayWidget } from 'https://cdn.gitpaywidget.com/v0/widget.js';
 
-    renderGitPayWidget({
-      project: 'myusername/mysite',
-      plans: [
-        {
-          id: 'free',
-          label: 'Free',
-          price: '$0',
-          description: 'For individuals',
-          features: ['Basic features']
-        },
-        {
-          id: 'pro',
-          label: 'Pro',
-          price: '$9.99/mo',
-          description: 'For teams',
-          features: ['Advanced features', 'Support']
-        }
-      ],
-      autoTheme: true,
-      mount: document.getElementById('pricing')
-    })
-  </script>
-</body>
+      renderGitPayWidget({
+        project: 'myusername/mysite',
+        plans: [
+          {
+            id: 'free',
+            label: 'Free',
+            price: '$0',
+            description: 'For individuals',
+            features: ['Basic features'],
+          },
+          {
+            id: 'pro',
+            label: 'Pro',
+            price: '$9.99/mo',
+            description: 'For teams',
+            features: ['Advanced features', 'Support'],
+          },
+        ],
+        autoTheme: true,
+        mount: document.getElementById('pricing'),
+      });
+    </script>
+  </body>
 </html>
 ```
 
@@ -189,15 +192,18 @@ renderGitPayWidget({
 ## Common Issues
 
 ### Widget not rendering
+
 - Check browser console for errors
 - Verify project slug matches exactly
 - Ensure `<script type="module">` is present
 
 ### Checkout returns 404
+
 - Confirm provider keys are saved in dashboard
 - Check `/api/projects/:slug/keys` returns your provider
 
 ### Webhook not firing
+
 - Verify webhook URL is `https://gitpaywidget.com/api/webhook` (not `http://`)
 - Check Stripe/Lemon dashboard for webhook delivery logs
 - Ensure webhook secret matches what's in dashboard
@@ -220,4 +226,3 @@ Need help integrating? Contact **team@manic.agency**
 ---
 
 **Built by** Manic Agency LLC
-
