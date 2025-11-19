@@ -3,6 +3,7 @@ packages:
   - frontend
   - packages/*
   - apps/*
+  - codex-extensions
 
 ignoredBuiltDependencies:
   - '@parcel/watcher'

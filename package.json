@@ -51,6 +51,6 @@
   },
   "packageManager": "pnpm@10.15.1",
   "dependencies": {
-    "@framers/codex-extensions": "git+https://github.com/jddunn/codex-extensions.git#main"
+    "@framers/codex-extensions": "workspace:*"
   }
 }

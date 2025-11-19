@@ -12,6 +12,7 @@ declare -A TARGETS=(
   ["packages/agentos"]="git@github.com:framersai/agentos.git"
   ["apps/agentos.sh"]="git@github.com:framersai/agentos.sh.git"
   ["apps/agentos-workbench"]="git@github.com:framersai/agentos-workbench.git"
+  ["apps/frame.dev"]="git@github.com:framersai/frame.dev.git"
 )
 
 PUSH=false
