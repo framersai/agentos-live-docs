@@ -40,7 +40,33 @@ pnpm --filter @gitpaywidget/widget build
 
 Outputs to `packages/gitpaywidget-widget/dist/` → upload `widget.js` + `widget.css` to your CDN or `/public`.
 
-### 3. Docker production stack
+### 3. Upload persistent .env file
+
+**IMPORTANT:** The `.env` file must persist on the server (it's in `.gitignore` and NOT deployed via CI/CD).
+
+**One-time SCP upload from your local machine:**
+
+```bash
+scp -i ~/.ssh/linode_root apps/gitpaywidget/.env.production root@50.116.33.200:/opt/gitpaywidget/apps/gitpaywidget/.env
+```
+
+Then SSH in to fill real secrets:
+
+```bash
+ssh -i ~/.ssh/linode_root root@50.116.33.200
+nano /opt/gitpaywidget/apps/gitpaywidget/.env
+```
+
+Fill in:
+
+- Supabase URL + keys
+- `KEY_ENCRYPTION_SECRET` (generate with `openssl rand -hex 32`)
+- Stripe/Lemon live keys
+- Admin credentials (email + password)
+
+Save and exit.
+
+### 4. Docker production stack
 
 ```bash
 docker-compose -f docker-compose.prod.yml up -d
