@@ -60,9 +60,26 @@ sudo certbot --nginx -d gitpaywidget.com
 
 Certbot auto-updates `deployment/nginx.conf` to listen on 443 + redirect http→https.
 
-### 5. Verify
+### 5. Seed Admin User
 
-Visit `https://gitpaywidget.com` → you should see the landing page. `/dashboard` requires GitHub OAuth (configure in Supabase Auth settings).
+After first deployment, hit the init endpoint to create the admin account:
+
+```bash
+curl https://gitpaywidget.com/api/init
+```
+
+This creates `team@manic.agency` with password `manicmania4949` (from `.env`).
+
+### 6. Verify
+
+Visit `https://gitpaywidget.com` → you should see the landing page.
+
+Login at `/login` with:
+
+- Email: `team@manic.agency`
+- Password: `manicmania4949` (or whatever you set in `ADMIN_PASSWORD`)
+
+You'll be redirected to `/dashboard` where you can manage projects.
 
 ---
 

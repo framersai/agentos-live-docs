@@ -47,6 +47,8 @@ pnpm --filter @manicinc/gitpaywidget dev
 
 Tables live in Supabase (see `supabase/schema.sql`).
 
+**Admin user**: On first boot, the app seeds `team@manic.agency` (password from `ADMIN_PASSWORD` env). Hit `/api/init` after deployment or set `ADMIN_SEED_ON_BOOT=true` in `.env`.
+
 ### Building & deploying
 
 ```bash
