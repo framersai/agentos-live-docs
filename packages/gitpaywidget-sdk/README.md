@@ -19,21 +19,19 @@ pnpm add @gitpaywidget/sdk
 ### Basic Setup
 
 ```typescript
-import { initWidget } from '@gitpaywidget/sdk'
+import { initWidget } from '@gitpaywidget/sdk';
 
 initWidget({
   project: 'your-org/your-site',
   plan: 'pro',
-  endpoint: 'https://gitpaywidget.com/api' // optional, defaults to production
-})
+  endpoint: 'https://gitpaywidget.com/api', // optional, defaults to production
+});
 ```
 
 This automatically attaches click handlers to all buttons with `data-gpw-project` and `data-gpw-plan` attributes:
 
 ```html
-<button data-gpw-project="your-org/your-site" data-gpw-plan="pro">
-  Subscribe to Pro
-</button>
+<button data-gpw-project="your-org/your-site" data-gpw-plan="pro">Subscribe to Pro</button>
 ```
 
 ---
@@ -64,20 +62,20 @@ Initialize the GitPayWidget SDK and attach checkout listeners.
 #### Example
 
 ```typescript
-import { initWidget } from '@gitpaywidget/sdk'
+import { initWidget } from '@gitpaywidget/sdk';
 
 initWidget({
   project: 'acme/landing',
   plan: 'starter',
-  onSuccess: (sessionId) => {
-    console.log('Checkout started:', sessionId)
+  onSuccess: sessionId => {
+    console.log('Checkout started:', sessionId);
     // Track analytics, show confirmation, etc.
   },
-  onError: (err) => {
-    console.error('Checkout failed:', err)
-    alert('Unable to start checkout. Please try again.')
-  }
-})
+  onError: err => {
+    console.error('Checkout failed:', err);
+    alert('Unable to start checkout. Please try again.');
+  },
+});
 ```
 
 ---
@@ -95,25 +93,25 @@ initWidget({
 <button id="checkout-btn">Subscribe</button>
 
 <script type="module">
-  import { initWidget } from '@gitpaywidget/sdk'
-  
-  const selector = document.getElementById('plan-selector')
-  const btn = document.getElementById('checkout-btn')
-  
+  import { initWidget } from '@gitpaywidget/sdk';
+
+  const selector = document.getElementById('plan-selector');
+  const btn = document.getElementById('checkout-btn');
+
   btn.addEventListener('click', () => {
-    btn.dataset.gpwPlan = selector.value
-  })
-  
-  initWidget({ project: 'acme/app' })
+    btn.dataset.gpwPlan = selector.value;
+  });
+
+  initWidget({ project: 'acme/app' });
 </script>
 ```
 
 ### Custom Checkout Flow
 
 ```typescript
-import { createCheckout } from '@gitpaywidget/sdk'
+import { createCheckout } from '@gitpaywidget/sdk';
 
-const checkoutButton = document.querySelector('#custom-checkout')
+const checkoutButton = document.querySelector('#custom-checkout');
 
 checkoutButton.addEventListener('click', async () => {
   try {
@@ -122,16 +120,16 @@ checkoutButton.addEventListener('click', async () => {
       plan: 'enterprise',
       metadata: {
         userId: '12345',
-        campaign: 'black-friday'
-      }
-    })
-    
+        campaign: 'black-friday',
+      },
+    });
+
     // Redirect user to hosted checkout
-    window.location.href = checkoutUrl
+    window.location.href = checkoutUrl;
   } catch (error) {
-    console.error('Checkout failed:', error)
+    console.error('Checkout failed:', error);
   }
-})
+});
 ```
 
 ---
@@ -141,11 +139,7 @@ checkoutButton.addEventListener('click', async () => {
 The SDK is written in TypeScript and exports all relevant types:
 
 ```typescript
-import type { 
-  WidgetOptions, 
-  CheckoutRequest, 
-  CheckoutResponse 
-} from '@gitpaywidget/sdk'
+import type { WidgetOptions, CheckoutRequest, CheckoutResponse } from '@gitpaywidget/sdk';
 ```
 
 ---
@@ -174,4 +168,3 @@ Questions or issues? Contact **team@manic.agency** or file an issue at https://g
 ---
 
 **Built by** Manic Agency LLC
-
