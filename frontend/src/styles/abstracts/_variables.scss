@@ -73,11 +73,11 @@ $radius-retro-default: var(--radius-retro, 0px); // SCSS fallback for retro them
 // Layout Dimensions & Visual Defaults
 // -----------------------------------------------------------------------------
 $site-max-width: var(--site-max-width, 1440px);
-$header-height-default: var(--header-height-default, 64px);
-$header-height-desktop: var(--header-height-desktop, 64px);
-$header-height-mobile: var(--header-height-mobile, 56px);
-$footer-height-default: var(--footer-height-default, 56px);
-$footer-height-mobile: var(--footer-height-mobile, 48px);
+$header-height-default: var(--header-height-default, 52px);
+$header-height-desktop: var(--header-height-desktop, 52px);
+$header-height-mobile: var(--header-height-mobile, 48px);
+$footer-height-default: var(--footer-height-default, 32px);
+$footer-height-mobile: var(--footer-height-mobile, 32px);
 $chat-log-height-default: var(--chat-log-height-default, 200px);
 $chat-log-height-expanded: var(--chat-log-height-expanded, 600px);
 $MAX_EPHEMERAL_MESSAGES_EXPANDED: 10;
