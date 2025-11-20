@@ -1,0 +1,39 @@
+name: I18n Sync Check
+
+on:
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'apps/agentos.sh/messages/**'
+  pull_request:
+    branches: [ main, master ]
+    paths:
+      - 'apps/agentos.sh/messages/**'
+
+jobs:
+  check-translations:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    - name: Run Key Sync Check
+      run: node scripts/sync-i18n-keys.js
+
+    - name: Check for changes
+      run: |
+        if [[ `git status --porcelain apps/agentos.sh/messages/*.json` ]]; then
+          echo "Error: Translation files are not in sync with en.json."
+          echo "Please run 'node scripts/sync-i18n-keys.js' locally and commit the changes."
+          git diff apps/agentos.sh/messages/*.json
+          exit 1
+        else
+          echo "All translation files are synced."
+        fi
+
