@@ -1,0 +1,26 @@
+Failed to start or connect to the Nx Daemon process.
+
+Messages from the log:
+    at startServer (c:\Users\johnn\Documents\voice-chat-assistant\node_modules\nx\src\daemon\server\server.js:413:12)
+    at async c:\Users\johnn\Documents\voice-chat-assistant\node_modules\nx\src\daemon\server\start.js:8:9
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1944:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:82:21) {
+  code: 'EADDRINUSE',
+  errno: -4091,
+  syscall: 'listen',
+  address: '\\\\.\\pipe\\nx\\C:\\Users\\johnn\\AppData\\Local\\Temp\\d1784967e19ce2b03467\\d.sock',
+  port: -1
+}
+
+Node.js v20.19.4
+[NX v22.1.0 Daemon Server] - 2025-11-20T00:30:12.152Z - Closed a connection. Number of open connections: 0
+[NX v22.1.0 Daemon Server] - 2025-11-20T00:30:12.181Z - [WATCHER]: Stopping the watcher for c:\Users\johnn\Documents\voice-chat-assistant (sources)
+[NX v22.1.0 Daemon Server] - 2025-11-20T00:30:12.182Z - [WATCHER]: Stopping the watcher for c:\Users\johnn\Documents\voice-chat-assistant (sources)
+[NX v22.1.0 Daemon Server] - 2025-11-20T00:30:12.182Z - [WATCHER]: Stopping the watcher for c:\Users\johnn\Documents\voice-chat-assistant (sources)
+[NX v22.1.0 Daemon Server] - 2025-11-20T00:30:12.183Z - [WATCHER]: Stopping the watcher for c:\Users\johnn\Documents\voice-chat-assistant (outputs)
+[NX v22.1.0 Daemon Server] - 2025-11-20T00:30:12.185Z - Server stopped because: "this process is no longer the current daemon (native)"
+
+
+
+More information: c:\Users\johnn\Documents\voice-chat-assistant\.nx\workspace-data\d\daemon.log
