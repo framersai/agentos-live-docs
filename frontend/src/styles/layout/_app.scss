@@ -16,8 +16,8 @@
 .app-shell-ephemeral {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; // Fallback
-  min-height: 100dvh; // Use dynamic viewport height for better mobile experience
+  height: 100vh; // Strict constraint
+  height: 100dvh; // Dynamic viewport height for mobile
   background-color: hsl(var(--color-bg-primary-h, var.$default-color-bg-primary-h), var(--color-bg-primary-s, var.$default-color-bg-primary-s), var(--color-bg-primary-l, var.$default-color-bg-primary-l));
   color: hsl(var(--color-text-primary-h, var.$default-color-text-primary-h), var(--color-text-primary-s, var.$default-color-text-primary-s), var(--color-text-primary-l, var.$default-color-text-primary-l));
   overflow: hidden; // The shell itself should not scroll; internal elements will.
@@ -29,6 +29,7 @@
   flex-direction: column;
   flex-grow: 1; // This layout takes up all available space within .app-shell-ephemeral
   width: 100%;
+  height: 100%; // Ensure full height usage
   overflow: hidden; // This container also should not scroll; its children will manage scrolling.
                     // This is important for positioning fixed/sticky children correctly relative to viewport if needed,
                     // or for ensuring children that manage their own overflow (like main content) behave as expected.

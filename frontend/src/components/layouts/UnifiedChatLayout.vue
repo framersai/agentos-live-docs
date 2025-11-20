@@ -1,37 +1,42 @@
-﻿// File: frontend/src/components/layouts/UnifiedChatLayout.vue
-/**
- * @file UnifiedChatLayout.vue
- * @description A unified layout component for chat-centric views.
- * Manages overall page structure, full-height behavior, themed background effects,
- * and dynamic sizing for fixed/sticky child elements like EphemeralChatLog and VoiceInput.
- *
- * @component UnifiedChatLayout
- * @props {boolean} isVoiceInputProcessing - Indicates if voice input is currently being processed.
- * @props {boolean} [isLlmProcessing=false] - Indicates if LLM is currently processing a response.
- * @props {string} [currentAgentInputPlaceholder] - Placeholder text for VoiceInput.
- * @props {boolean} [showEphemeralLog=true] - Controls visibility of EphemeralChatLog.
- *
- * @emits transcription - Emits transcribed text from VoiceInput.
- * @emits voice-input-processing - Emits processing state of VoiceInput.
- *
- * @version 2.2.1 - Fixed prop mismatch: Added isLlmProcessing prop to properly pass LLM state to VoiceInput.
- * Previously incorrectly passed isVoiceInputProcessing as LLM processing state.
- */
+﻿// File: frontend/src/components/layouts/UnifiedChatLayout.vue /** * @file UnifiedChatLayout.vue *
+@description A unified layout component for chat-centric views. * Manages overall page structure,
+full-height behavior, themed background effects, * and dynamic sizing for fixed/sticky child
+elements like EphemeralChatLog and VoiceInput. * * @component UnifiedChatLayout * @props {boolean}
+isVoiceInputProcessing - Indicates if voice input is currently being processed. * @props {boolean}
+[isLlmProcessing=false] - Indicates if LLM is currently processing a response. * @props {string}
+[currentAgentInputPlaceholder] - Placeholder text for VoiceInput. * @props {boolean}
+[showEphemeralLog=true] - Controls visibility of EphemeralChatLog. * * @emits transcription - Emits
+transcribed text from VoiceInput. * @emits voice-input-processing - Emits processing state of
+VoiceInput. * * @version 2.2.1 - Fixed prop mismatch: Added isLlmProcessing prop to properly pass
+LLM state to VoiceInput. * Previously incorrectly passed isVoiceInputProcessing as LLM processing
+state. */
 <script setup lang="ts">
-import { ref, computed, type CSSProperties, onMounted, onUnmounted, type Ref, nextTick, watch } from 'vue';
+import {
+  ref,
+  computed,
+  type CSSProperties,
+  onMounted,
+  onUnmounted,
+  type Ref,
+  nextTick,
+  watch,
+} from 'vue';
 import EphemeralChatLog from '@/components/EphemeralChatLog.vue';
 import VoiceInput from '@/components/voice-input/VoiceInput.vue';
 import { useUiStore } from '@/store/ui.store';
 
-const props = withDefaults(defineProps<{
-  isVoiceInputProcessing: boolean;
-  isLlmProcessing?: boolean;
-  currentAgentInputPlaceholder?: string;
-  showEphemeralLog?: boolean;
-}>(), {
-  showEphemeralLog: true, // Default to true if not provided
-  isLlmProcessing: false, // Default to false if not provided
-});
+const props = withDefaults(
+  defineProps<{
+    isVoiceInputProcessing: boolean;
+    isLlmProcessing?: boolean;
+    currentAgentInputPlaceholder?: string;
+    showEphemeralLog?: boolean;
+  }>(),
+  {
+    showEphemeralLog: true, // Default to true if not provided
+    isLlmProcessing: false, // Default to false if not provided
+  }
+);
 
 const emit = defineEmits<{
   (e: 'transcription', value: string): void;
@@ -51,7 +56,7 @@ const handleVoiceProcessing = (status: boolean): void => {
   emit('voice-input-processing', status);
 };
 
-const numOrbitingShapes = computed(() => uiStore.isReducedMotionPreferred ? 2 : 6); // Reduced count for subtlety
+const numOrbitingShapes = computed(() => (uiStore.isReducedMotionPreferred ? 2 : 6)); // Reduced count for subtlety
 
 const orbitStyleProvider = (_index: number): CSSProperties => ({
   animationDuration: `${50 + Math.random() * 70}s`, // Slower, more ambient
@@ -69,7 +74,8 @@ const shapeStyleProvider = (_index: number): CSSProperties => {
     height: `${30 + Math.random() * 80}px`,
     backgroundColor: `hsla(var(${accentVar1}-h), var(${accentVar1}-s), var(${accentVar1}-l), ${0.03 + Math.random() * 0.08})`, // More translucent
     animationDuration: `${35 + Math.random() * 45}s`,
-    borderRadius: Math.random() > 0.3 ? '50%' : `${Math.random()*40 + 10}% ${Math.random()*40 + 10}%`, // More varied shapes
+    borderRadius:
+      Math.random() > 0.3 ? '50%' : `${Math.random() * 40 + 10}% ${Math.random() * 40 + 10}%`, // More varied shapes
     filter: `blur(${4 + Math.random() * 6}px) saturate(1.1)`, // Slightly more blur
     boxShadow: `0 0 ${8 + Math.random() * 15}px hsla(var(${accentVar2}-h), var(${accentVar2}-s), var(${accentVar2}-l), 0.06)`, // Softer shadow
   };
@@ -89,14 +95,21 @@ const updateDynamicLayoutHeights = async () => {
 
   // Header height (usually fixed, but good to measure for robustness)
   const headerEl = document.querySelector('.app-layout-header-ephemeral') as HTMLElement; // Global header
-  const headerHeight = headerEl?.offsetHeight || parseFloat(root.style.getPropertyValue('--header-actual-height')) || 60;
+  const headerHeight =
+    headerEl?.offsetHeight ||
+    parseFloat(root.style.getPropertyValue('--header-actual-height')) ||
+    60;
   root.style.setProperty('--header-actual-height', `${headerHeight}px`); // Still global for App.vue
 
   if (!wrapperEl) return;
 
   // Ephemeral Log height
   let ephemeralLogHeight = 0;
-  if (props.showEphemeralLog && ephemeralLogRef.value?.$el && ephemeralLogRef.value.$el instanceof HTMLElement) {
+  if (
+    props.showEphemeralLog &&
+    ephemeralLogRef.value?.$el &&
+    ephemeralLogRef.value.$el instanceof HTMLElement
+  ) {
     ephemeralLogHeight = ephemeralLogRef.value.$el.offsetHeight;
   }
   wrapperEl.style.setProperty('--ephemeral-log-actual-height', `${ephemeralLogHeight}px`);
@@ -108,7 +121,8 @@ const updateDynamicLayoutHeights = async () => {
     voiceInputHeight = voiceInputSectionRef.value.offsetHeight;
   } else {
     // Fallback: read from style if previously set, or use a sensible default
-    voiceInputHeight = parseFloat(wrapperEl.style.getPropertyValue('--voice-input-actual-height')) || 110; // Adjusted default
+    voiceInputHeight =
+      parseFloat(wrapperEl.style.getPropertyValue('--voice-input-actual-height')) || 80; // Adjusted default
   }
   wrapperEl.style.setProperty('--voice-input-actual-height', `${voiceInputHeight}px`);
   // console.log(`[UCL] VoiceInput section height set on wrapper: ${voiceInputHeight}px`);
@@ -124,7 +138,9 @@ const setupResizeObserverForElement = (
 ) => {
   if (typeof ResizeObserver === 'undefined' || !resizeObserverInstance) return;
 
-  const targetElement = isEphemeralLog ? (elRef.value as InstanceType<typeof EphemeralChatLog>)?.$el : elRef.value as HTMLElement;
+  const targetElement = isEphemeralLog
+    ? (elRef.value as InstanceType<typeof EphemeralChatLog>)?.$el
+    : (elRef.value as HTMLElement);
 
   if (targetElement && targetElement instanceof HTMLElement) {
     if (!observedElementsMap.has(targetElement)) {
@@ -132,7 +148,8 @@ const setupResizeObserverForElement = (
       observedElementsMap.set(targetElement, elementName);
       // console.log(`[UCL] ResizeObserver: Now observing ${elementName}.`);
     }
-  } else if (targetElement && observedElementsMap.has(targetElement)) { // Element became invalid after being observed
+  } else if (targetElement && observedElementsMap.has(targetElement)) {
+    // Element became invalid after being observed
     resizeObserverInstance.unobserve(targetElement);
     observedElementsMap.delete(targetElement);
     // console.log(`[UCL] ResizeObserver: Unobserved ${elementName} (became invalid).`);
@@ -144,23 +161,28 @@ const teardownResizeObserverForElement = (
   _elementName: string,
   isEphemeralLog: boolean = false
 ) => {
-    if (typeof ResizeObserver === 'undefined' || !resizeObserverInstance) return;
-    const targetElement = isEphemeralLog ? (elRef.value as InstanceType<typeof EphemeralChatLog>)?.$el : elRef.value as HTMLElement;
+  if (typeof ResizeObserver === 'undefined' || !resizeObserverInstance) return;
+  const targetElement = isEphemeralLog
+    ? (elRef.value as InstanceType<typeof EphemeralChatLog>)?.$el
+    : (elRef.value as HTMLElement);
 
-    if (targetElement && targetElement instanceof HTMLElement && observedElementsMap.has(targetElement)) {
-        resizeObserverInstance.unobserve(targetElement);
-        observedElementsMap.delete(targetElement);
-        // console.log(`[UCL] ResizeObserver: Explicitly unobserved ${elementName}.`);
-    }
+  if (
+    targetElement &&
+    targetElement instanceof HTMLElement &&
+    observedElementsMap.has(targetElement)
+  ) {
+    resizeObserverInstance.unobserve(targetElement);
+    observedElementsMap.delete(targetElement);
+    // console.log(`[UCL] ResizeObserver: Explicitly unobserved ${elementName}.`);
+  }
 };
-
 
 onMounted(async () => {
   await updateDynamicLayoutHeights(); // Initial calculation
   window.addEventListener('resize', updateDynamicLayoutHeights); // Fallback for general resizes
 
   if (typeof ResizeObserver !== 'undefined') {
-    resizeObserverInstance = new ResizeObserver(async (_entries) => {
+    resizeObserverInstance = new ResizeObserver(async _entries => {
       // console.log('[UCL] ResizeObserver detected changes:', entries.map(e => observedElementsMap.get(e.target)));
       await updateDynamicLayoutHeights(); // Recalculate all relevant heights on any observed change
     });
@@ -187,34 +209,38 @@ onUnmounted(() => {
 });
 
 // Watch for dynamic changes in visibility of EphemeralChatLog
-watch(() => props.showEphemeralLog, async (newValue, oldValue) => {
+watch(
+  () => props.showEphemeralLog,
+  async (newValue, oldValue) => {
     if (newValue === oldValue) return;
     // console.log(`[UCL] showEphemeralLog changed: ${oldValue} -> ${newValue}.`);
     await nextTick(); // Allow DOM to update based on v-if
 
     if (newValue) {
-        setupResizeObserverForElement(ephemeralLogRef, 'EphemeralChatLog', true);
+      setupResizeObserverForElement(ephemeralLogRef, 'EphemeralChatLog', true);
     } else {
-        teardownResizeObserverForElement(ephemeralLogRef, 'EphemeralChatLog', true);
-        // If log is hidden, its height becomes 0 for layout calculation
-        if(layoutWrapperRef.value) layoutWrapperRef.value.style.setProperty('--ephemeral-log-actual-height', `0px`);
+      teardownResizeObserverForElement(ephemeralLogRef, 'EphemeralChatLog', true);
+      // If log is hidden, its height becomes 0 for layout calculation
+      if (layoutWrapperRef.value)
+        layoutWrapperRef.value.style.setProperty('--ephemeral-log-actual-height', `0px`);
     }
     await updateDynamicLayoutHeights(); // Recalculate layout paddings
-}, { flush: 'post' });
+  },
+  { flush: 'post' }
+);
 
 // Watch the refs themselves in case they are initially null then populated
-watch(voiceInputSectionRef, async (newEl) => {
-    if (newEl) setupResizeObserverForElement(voiceInputSectionRef, 'VoiceInputSection');
-    await updateDynamicLayoutHeights();
+watch(voiceInputSectionRef, async newEl => {
+  if (newEl) setupResizeObserverForElement(voiceInputSectionRef, 'VoiceInputSection');
+  await updateDynamicLayoutHeights();
 });
 
-watch(ephemeralLogRef, async (newEl) => {
-    if (props.showEphemeralLog && newEl?.$el) {
-        setupResizeObserverForElement(ephemeralLogRef, 'EphemeralChatLog', true);
-    }
-    await updateDynamicLayoutHeights();
+watch(ephemeralLogRef, async newEl => {
+  if (props.showEphemeralLog && newEl?.$el) {
+    setupResizeObserverForElement(ephemeralLogRef, 'EphemeralChatLog', true);
+  }
+  await updateDynamicLayoutHeights();
 });
-
 </script>
 
 <template>
@@ -233,9 +259,14 @@ watch(ephemeralLogRef, async (newEl) => {
       </template>
     </div>
 
-    <EphemeralChatLog v-if="props.showEphemeralLog" ref="ephemeralLogRef" class="unified-ephemeral-log-section" />
+    <EphemeralChatLog
+      v-if="props.showEphemeralLog"
+      ref="ephemeralLogRef"
+      class="unified-ephemeral-log-section"
+    />
 
     <div class="unified-main-content-area">
+      <slot name="above-main-content" />
       <slot name="main-content">
         <div class="p-4 text-center text-color-muted">Agent content appears here.</div>
       </slot>

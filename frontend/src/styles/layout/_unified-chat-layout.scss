@@ -24,10 +24,10 @@
   // EphemeralChatLog is part of the normal flow at the top if shown.
   // padding-top: env(safe-area-inset-top, 0px);
   // Side padding for the entire layout.
-  padding-top: var.$spacing-lg; // Space for log if needed
-  padding-left: var.$spacing-lg; // Standard side padding for layout
-  padding-right: var.$spacing-lg;
-  padding-bottom: var.$spacing-lg; // Space for sticky voice input
+  padding-top: var.$spacing-sm; // Space for log if needed
+  padding-left: var.$spacing-sm; // Standard side padding for layout
+  padding-right: var.$spacing-sm;
+  padding-bottom: var.$spacing-sm; // Space for sticky voice input
   // padding-left: env(safe-area-inset-left, 0px);
   // padding-right: env(safe-area-inset-right, 0px);
   
@@ -74,7 +74,7 @@
   @apply flex-grow flex flex-col relative overflow-y-auto overflow-x-hidden min-h-0;
   // Padding to prevent content from being overlapped by the sticky .unified-voice-input-section
   // The --voice-input-actual-height variable is set by the UnifiedChatLayout.vue script.
-  padding-bottom: calc(var(--voice-input-actual-height, 110px) + #{var.$spacing-sm}); // Ensure space + small gap
+  padding-bottom: calc(var(--voice-input-actual-height, 80px) + #{var.$spacing-xs}); // Tightened gap
   padding-left: var.$spacing-sm; // Standard side padding for content within this area
   padding-right: var.$spacing-sm;
 
@@ -87,8 +87,8 @@
   // On wider screens, content within might have its own max-width and centering.
   // This container provides the scroll.
   @media (min-width: var.$breakpoint-xl) {
-    padding-left: var.$spacing-lg;
-    padding-right: var.$spacing-lg;
+    padding-left: var.$spacing-md; // Reduced from lg
+    padding-right: var.$spacing-md; // Reduced from lg
   }
 }
 
@@ -111,8 +111,8 @@
   padding-right: var.$spacing-sm;
 
   @media (min-width: var.$breakpoint-xl) {
-    padding-left: var.$spacing-lg;
-    padding-right: var.$spacing-lg;
+    padding-left: var.$spacing-md; // Reduced from lg
+    padding-right: var.$spacing-md; // Reduced from lg
   }
 
   // Optional: Add a subtle separator line or shadow above the voice input area
