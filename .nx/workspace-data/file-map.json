@@ -2,7 +2,9 @@
   "version": "6.0",
   "nxVersion": "22.1.0",
   "pathMappings": {
-    "@prisma/client": ["./packages/agentos/src/stubs/prismaClient.ts"]
+    "@prisma/client": [
+      "./packages/agentos/src/stubs/prismaClient.ts"
+    ]
   },
   "nxJsonPlugins": [],
   "pluginsConfig": {
@@ -13,684 +15,604 @@
   "fileMap": {
     "nonProjectFiles": [
       {
-        "file": "logos/codex/frame-codex-grey-dark-no-subtitle.svg",
-        "hash": "11120232379881965373"
-      },
-      {
-        "file": "logos/gitpaywidget/gitpaywidget-purple-white-2x (1).png",
-        "hash": "14674412272476066534"
-      },
-      {
-        "file": "logos/agentos-icon-transparent-256x256.png",
-        "hash": "18211132525185452842"
-      },
-      {
-        "file": "SECURITY.md",
-        "hash": "4959010801621404017"
-      },
-      {
-        "file": "nx.json",
-        "hash": "4652193541654472734"
-      },
-      {
-        "file": "logos/codex/frame-codex-grey-transparent-icon-right-no-subtitle-4x.png",
-        "hash": "8678934911161992511"
-      },
-      {
-        "file": "docs/PLANS_AND_BILLING.md",
-        "hash": "3379277486888289888"
-      },
-      {
-        "file": "scripts/templates/workflows/node-ci.yml",
-        "hash": "3895491127383210414"
-      },
-      {
-        "file": "logos/codex/frame-codex-vertical-green-transparent-4x.png",
-        "hash": "1365558053126791242"
-      },
-      {
-        "file": "logos/codex/codex-square-black-white-1024x1024.png",
-        "hash": "11942754463163519463"
-      },
-      {
-        "file": "logos/agentos-primary-no-tagline-light-2x.png",
-        "hash": "15326606965876731974"
-      },
-      {
-        "file": "pnpm-lock.yaml",
-        "hash": "17642390179146438063"
-      },
-      {
-        "file": "logos/codex/codex-green-dark-icon-right.svg",
-        "hash": "11843849344188941945"
-      },
-      {
-        "file": "scripts/installHooks.mjs",
-        "hash": "11002311645964918742"
-      },
-      {
-        "file": "wiki/openstrand/architecture.md",
-        "hash": "13518636644272283416"
-      },
-      {
-        "file": "tsconfig.json",
-        "hash": "17965891042568671894"
-      },
-      {
-        "file": "wiki/frame/README.md",
-        "hash": "813899875146894943"
-      },
-      {
-        "file": "prompts/nerf_chat.md",
-        "hash": "4394747360966149876"
-      },
-      {
-        "file": "logos/codex/frame-codex-grey-dark.svg",
-        "hash": "10080314702754003496"
-      },
-      {
-        "file": "docs/BACKEND_API.md",
-        "hash": "14366265562967168381"
-      },
-      {
-        "file": "filter-repo-replacements.txt",
-        "hash": "3541213482034152921"
-      },
-      {
-        "file": "logos/frame-logo-green-transparent-4x.png",
-        "hash": "9659384771699566772"
-      },
-      {
-        "file": "docs/AGENTOS_MULTILINGUAL_ARCHITECTURE.md",
-        "hash": "15813403542194079158"
-      },
-      {
-        "file": ".lintstagedrc.json",
-        "hash": "10764476420939452098"
-      },
-      {
-        "file": "logos/gitpaywidget/gitpaywidget-purple-playful-dark.svg",
-        "hash": "17482561483642277525"
-      },
-      {
-        "file": "logos/codex/frame-codex-icon-black-512x512.png",
-        "hash": "4407788083954087485"
-      },
-      {
-        "file": "docs/EXTENSION_SYSTEM_STATUS.md",
-        "hash": "6013363763252899941"
-      },
-      {
-        "file": "logos/brand.html",
-        "hash": "17339627173430782416"
-      },
-      {
-        "file": "logos/codex/frame-square-navy-800x800-transparent.png",
-        "hash": "13355339655419878915"
-      },
-      {
-        "file": "docs/PLATFORM_FEATURE_MATRIX.md",
-        "hash": "3726071711229611503"
-      },
-      {
-        "file": "logos/codex/frame-codex-black-white-4x.png",
-        "hash": "3838584426133937969"
-      },
-      {
-        "file": "logos/codex/codex-vertical-black-transparent-no-subtitle-4x.png",
-        "hash": "13866831125444725664"
-      },
-      {
-        "file": "docs/V0_1_0_RELEASE_NOTES.md",
-        "hash": "16278166553049562186"
-      },
-      {
-        "file": "scripts/setup-linode.sh",
-        "hash": "829096018192363633"
-      },
-      {
-        "file": "codecov.yml",
-        "hash": "6406402924852805478"
-      },
-      {
-        "file": ".github/workflows/deploy.yml",
-        "hash": "17315485619467794304"
-      },
-      {
-        "file": "docs/REFACTOR_STATUS_FINAL.md",
-        "hash": "7551865540186774744"
-      },
-      {
-        "file": "docs/SUPABASE_STRIPE_SETUP.md",
-        "hash": "3624401188615210967"
-      },
-      {
-        "file": "docs/SAAS_STARTER_SETUP.md",
-        "hash": "13905128790000367445"
-      },
-      {
-        "file": "scripts/vca-dump.sh",
-        "hash": "4895280937129796738"
-      },
-      {
-        "file": "docs/AGENTOS_SERVER_API.md",
-        "hash": "224822734897646674"
-      },
-      {
-        "file": "logos/gitpaywidget/gitpaywidget-purple-playful-dark (1).svg",
-        "hash": "12548511726170580181"
-      },
-      {
-        "file": "content/blog/2024-01-20-getting-started-agentos.md",
-        "hash": "8499978023879454105"
-      },
-      {
-        "file": "scripts/commit-app-sh-submodule.sh",
-        "hash": "7151086458972370528"
-      },
-      {
-        "file": "logos/codex/frame-codex-vertical-grey-transparent-4x.png",
-        "hash": "6363979074570249495"
-      },
-      {
-        "file": "logos/codex/codex-grey-dark-no-subtitle-4x.png",
-        "hash": "8659923442152444131"
-      },
-      {
-        "file": "logos/codex/codex-green-transparent-no-subtitle-4x.png",
-        "hash": "10899928312513899949"
-      },
-      {
-        "file": "logos/codex/codex-green-dark-no-subtitle-4x.png",
-        "hash": "8659923442152444131"
-      },
-      {
-        "file": "logos/gitpaywidget/gitpaywidget-purple-white-2x.png",
-        "hash": "7558825976879076001"
-      },
-      {
-        "file": "wiki/api/README.md",
-        "hash": "10199574392063138689"
-      },
-      {
-        "file": "deploy-vercel.md",
-        "hash": "5089019306049630234"
-      },
-      {
-        "file": "content/blog/2024-01-15-design-philosophy-agentos.md",
-        "hash": "14789304286385352391"
-      },
-      {
-        "file": "logos/gitpaywidget/gitpaywidget-icon-purple.svg",
-        "hash": "15504644301747205528"
-      },
-      {
-        "file": "logos/codex/frame-codex-vertical-black-dark.svg",
-        "hash": "17817602934985470004"
-      },
-      {
-        "file": "wiki/openstrand/api.md",
-        "hash": "10528707478526921107"
-      },
-      {
-        "file": ".github/scripts/patch-agentos-deps-for-pack.js",
-        "hash": "7601063767966923264"
-      },
-      {
-        "file": ".github/scripts/rewrite-workspace-deps.js",
-        "hash": "13411278688842373662"
-      },
-      {
-        "file": ".prettierrc.json",
-        "hash": "16825297411016576538"
-      },
-      {
-        "file": "logos/codex/codex-black-transparent-no-subtitle-4x.png",
-        "hash": "54554309471064842"
-      },
-      {
-        "file": ".github/scripts/fix-esm-imports.js",
-        "hash": "10690006270399731363"
-      },
-      {
-        "file": "logos/codex/frame-codex-grey-white-icon-right-4x.png",
-        "hash": "6178567793881586312"
-      },
-      {
-        "file": ".github/workflows/mirror-agentos.yml",
-        "hash": "15901001066780037165"
-      },
-      {
-        "file": "logos/gitpaywidget/gitpaywidget-purple-transparent-4x.png",
-        "hash": "11910710172111577757"
-      },
-      {
-        "file": "pnpm-workspace.yaml",
-        "hash": "11613308172569485119"
-      },
-      {
-        "file": "docs/MULTI_GMI_COLLABORATION.md",
-        "hash": "9142735420304556136"
-      },
-      {
-        "file": "prompts/tutor.md",
-        "hash": "9376949167660829055"
-      },
-      {
-        "file": "logos/openstrand-logo-gradient.svg",
-        "hash": "17359654540361237697"
-      },
-      {
-        "file": "scripts/commit-root-sync.sh",
-        "hash": "3278869478056786214"
-      },
-      {
-        "file": "logos/codex/frame-codex-icon-black-1024x1024.png",
-        "hash": "7217341448505993390"
-      },
-      {
-        "file": "logos/codex/frame-codex-black-white-no-subtitle-4x.png",
-        "hash": "8624779668618427133"
-      },
-      {
-        "file": "scripts/generate-api-docs.mjs",
-        "hash": "10348209437713914306"
-      },
-      {
-        "file": "logos/codex/frame-codex-grey-dark-4x.png",
-        "hash": "6392693771500080720"
-      },
-      {
-        "file": "logos/codex/codex-grey-transparent-icon-right-no-subtitle-4x (1).png",
-        "hash": "8009667776604962195"
-      },
-      {
-        "file": "prompts/v_default_assistant.md",
-        "hash": "11739016834561199709"
-      },
-      {
-        "file": "logos/codex/frame-codex-grey-white-4x.png",
-        "hash": "17686781507525500603"
-      },
-      {
-        "file": "logos/gitpaywidget/gitpaywidget-icon-purple-white-512x512.png",
-        "hash": "14236437032290126308"
-      },
-      {
-        "file": "docs/AGENTOS_REINTEGRATION_NOTES.md",
-        "hash": "10703970146576092642"
-      },
-      {
-        "file": "scripts/templates/licenses/LICENSE-APACHE-2.0",
-        "hash": "1202577156436340802"
-      },
-      {
-        "file": "wiki/frame/architecture.md",
-        "hash": "16907928412256926785"
-      },
-      {
-        "file": "logos/codex/frame-codex-icon-green-1024x1024.png",
-        "hash": "4913011952813683169"
-      },
-      {
-        "file": ".husky/pre-commit",
-        "hash": "15316813045709350048"
-      },
-      {
-        "file": "wiki/openstrand/README.md",
-        "hash": "9145043562971832640"
-      },
-      {
-        "file": "logos/codex/codex-grey-dark-no-subtitle.svg",
-        "hash": "10712486606213528775"
-      },
-      {
-        "file": "logos/agentos-primary-no-tagline-transparent-4x.png",
-        "hash": "9920701470536349581"
-      },
-      {
-        "file": "docs/FINAL_VERIFICATION_CHECKLIST.md",
-        "hash": "5122417665516981213"
-      },
-      {
-        "file": "wiki/api/examples.md",
-        "hash": "5726737623351644704"
-      },
-      {
-        "file": "docs/WORKFLOWS.md",
-        "hash": "10451830122954996662"
-      },
-      {
-        "file": ".gitignore",
-        "hash": "17179694532513678898"
-      },
-      {
-        "file": "docs/AGENTOS_LANDING_IMPLEMENTATION.md",
-        "hash": "12279402925746429948"
-      },
-      {
-        "file": "STATUS_REPORT.md",
-        "hash": "2269880001976644891"
-      },
-      {
-        "file": "wiki/codex/contributing.md",
-        "hash": "1786411395659466080"
-      },
-      {
-        "file": "logos/codex/frame-codex-grey-dark-icon-right-4x.png",
-        "hash": "8993515889084141076"
-      },
-      {
-        "file": "logos/codex/frame-codex-grey-transparent-4x.png",
-        "hash": "1945601644803590181"
-      },
-      {
-        "file": "logos/openstrand-logo.svg",
-        "hash": "17328183740683786715"
-      },
-      {
-        "file": "logos/codex/frame-codex-vertical-black-transparent-4x.png",
-        "hash": "10537856128758114068"
-      },
-      {
-        "file": ".github/workflows/monorepo-ci.yml",
-        "hash": "15667121426369688637"
-      },
-      {
-        "file": "tempAgentOSText.txt",
-        "hash": "6801485530142360642"
-      },
-      {
         "file": "app/[locale]/page-redesigned.tsx",
         "hash": "149661591119185440"
-      },
-      {
-        "file": "logos/gitpaywidget/gitpaywidget-vertical-purple-playful (1).svg",
-        "hash": "5410242448600071493"
-      },
-      {
-        "file": ".cspell.json",
-        "hash": "14923660446953548356"
-      },
-      {
-        "file": "typedoc.json",
-        "hash": "1857366138814205860"
-      },
-      {
-        "file": "docs/GMIS_AGENTS_AGENCY.md",
-        "hash": "10866236520547314448"
-      },
-      {
-        "file": "logos/codex/frame-codex-black-transparent-no-subtitle-4x.png",
-        "hash": "2225622412232781292"
-      },
-      {
-        "file": "docs/EXTENSIONS_VERIFICATION.md",
-        "hash": "950450209494688413"
-      },
-      {
-        "file": "logos/codex/frame-codex-green-dark.svg",
-        "hash": "12333464485210908666"
-      },
-      {
-        "file": "prompts/context_aggregator_v1.md",
-        "hash": "803486634254450040"
-      },
-      {
-        "file": "docs/EXTENSION_REFACTORING_PLAN.md",
-        "hash": "10037420142712903725"
-      },
-      {
-        "file": "docs/RBAC.md",
-        "hash": "4292479268958846360"
-      },
-      {
-        "file": "DEPLOY_TOUCH",
-        "hash": "5335023952612182043"
-      },
-      {
-        "file": "logos/codex/codex-green-white-icon-right-no-subtitle-4x.png",
-        "hash": "5014787069671163746"
-      },
-      {
-        "file": "scripts/make-transparent.js",
-        "hash": "18266254594130338452"
-      },
-      {
-        "file": "scripts/mirror-subtrees.sh",
-        "hash": "16182739084941607280"
-      },
-      {
-        "file": "logos/agentos-icon-transparent-128x128.png",
-        "hash": "17068365796055054085"
-      },
-      {
-        "file": "wiki/codex/api.md",
-        "hash": "11078212854699832005"
-      },
-      {
-        "file": "logos/frame-codex.html",
-        "hash": "4630380866868975038"
-      },
-      {
-        "file": "logos/frame-logo-green-no-tagline.svg",
-        "hash": "2446460867831236346"
-      },
-      {
-        "file": "logos/codex/codex-green-transparent-4x.png",
-        "hash": "7419135196920756396"
-      },
-      {
-        "file": "docs/CONTRIBUTING.md",
-        "hash": "1820877282582208874"
-      },
-      {
-        "file": "logos/codex/frame-codex-vertical-black.svg",
-        "hash": "5772908161670416369"
-      },
-      {
-        "file": "docs/CODEX_INTERNAL_SPEC.md",
-        "hash": "15147697632466838017"
-      },
-      {
-        "file": "prompts/meeting.md",
-        "hash": "2375007492300491252"
-      },
-      {
-        "file": "README.md",
-        "hash": "16705225511525680810"
-      },
-      {
-        "file": "logos/codex/frame-codex-square-black-white-1024x1024.png",
-        "hash": "11951511655858446893"
-      },
-      {
-        "file": "prompts/system_design.md",
-        "hash": "10857115910162344060"
-      },
-      {
-        "file": "logos/codex/codex-green-transparent-icon-right-no-subtitle-4x.png",
-        "hash": "12509667015213475655"
-      },
-      {
-        "file": "logos/frame-square-black-1024x1024-transparent.png",
-        "hash": "13418691637038696338"
-      },
-      {
-        "file": "logos/codex/frame-codex-vertical-black-no-subtitle.svg",
-        "hash": "16209440289195368851"
-      },
-      {
-        "file": ".secretlintrc.json",
-        "hash": "12336600977459259867"
-      },
-      {
-        "file": "logos/codex/frame-codex-square-black-transparent-512x512.png",
-        "hash": "1545661325898273054"
-      },
-      {
-        "file": "logos/codex/frame-codex-grey-dark-icon-right.svg",
-        "hash": "98481984493672960"
-      },
-      {
-        "file": "logos/codex/frame-codex-icon-black.svg",
-        "hash": "9011733331246633464"
-      },
-      {
-        "file": "scripts/rename_commits.py",
-        "hash": "2379031762747265610"
-      },
-      {
-        "file": "docs/MULTI_GMI_IMPLEMENTATION_PLAN.md",
-        "hash": "10846653095951383141"
-      },
-      {
-        "file": "logos/codex/codex-green-dark-icon-right-no-subtitle-4x.png",
-        "hash": "5730197482338142288"
-      },
-      {
-        "file": "logos/gitpaywidget/gitpaywidget-vertical-purple-transparent-4x.png",
-        "hash": "9730045580542261288"
-      },
-      {
-        "file": "logos/codex/frame-codex-grey-transparent-no-subtitle-4x.png",
-        "hash": "11292342125570606590"
-      },
-      {
-        "file": "logos/gitpaywidget/gitpaywidget-icon-purple-trans-1024x1024.png",
-        "hash": "8402285111511488168"
-      },
-      {
-        "file": "logos/codex/frame-codex-grey-dark-icon-right-no-subtitle.svg",
-        "hash": "16640337048913505726"
-      },
-      {
-        "file": "docs/DOCUMENTATION_STANDARDS.md",
-        "hash": "13718201974859736893"
-      },
-      {
-        "file": "logos/gitpaywidget/gitpaywidget-icon-purple-dark-512x512.png",
-        "hash": "14539886635515294613"
-      },
-      {
-        "file": "docs/ARCHITECTURE_DIAGRAM.md",
-        "hash": "15915522034908264682"
-      },
-      {
-        "file": "logos/gitpaywidget/gitpaywidget-purple-transparent-4x (1).png",
-        "hash": "6629271046387648805"
-      },
-      {
-        "file": "prompts/general_chat.md",
-        "hash": "4394747360966149876"
-      },
-      {
-        "file": "logos/codex/codex-square-green-white-1024x1024.png",
-        "hash": "16032492560872637364"
-      },
-      {
-        "file": "package-lock.json",
-        "hash": "4060958951898468545"
-      },
-      {
-        "file": "logos/gitpaywidget/gitpaywidget-vertical-purple-white-2x.png",
-        "hash": "17331551440053009518"
       },
       {
         "file": "logos/agentos-primary-transparent-4x.png",
         "hash": "14018990848396554838"
       },
       {
-        "file": "logos/codex/frame-codex-vertical-grey-dark-no-subtitle.svg",
-        "hash": "17568743171272722731"
+        "file": "scripts/templates/community/CODE_OF_CONDUCT.md",
+        "hash": "4666575213184983709"
       },
       {
-        "file": "SQL_STORAGE_ADAPTER_SETUP.md",
-        "hash": "14815054219818525120"
+        "file": "logos/codex/codex-green-white-icon-right-no-subtitle-4x.png",
+        "hash": "5014787069671163746"
       },
       {
-        "file": "logos/agentos-primary-light-2x.png",
-        "hash": "18139143424666806251"
+        "file": "logos/frame-logo-green-transparent-4x.png",
+        "hash": "9659384771699566772"
       },
       {
-        "file": ".env.sample",
-        "hash": "15575845973669716624"
+        "file": "logos/codex/codex-green-dark-icon-right-no-subtitle.svg",
+        "hash": "18176441410605529958"
       },
       {
-        "file": "docs/RELEASE_AUTOMATION.md",
-        "hash": "5379183822181487711"
+        "file": "logos/gitpaywidget/gitpaywidget-purple-playful-dark.svg",
+        "hash": "17482561483642277525"
       },
       {
-        "file": "update-locales.js",
-        "hash": "1262343997113643647"
+        "file": "logos/agentos-primary-dark-2x.png",
+        "hash": "11112510811776575072"
       },
       {
-        "file": "logos/codex/codex-green-dark-icon-right-4x.png",
-        "hash": "4692515795193639153"
+        "file": "logos/codex/frame-codex-icon-black-1024x1024.png",
+        "hash": "7217341448505993390"
       },
       {
-        "file": "docs/MISSION_ACCOMPLISHED.md",
-        "hash": "2721962218210047530"
+        "file": "logos/codex/frame-square-green-512x512-white (1).png",
+        "hash": "10150525091469823531"
       },
       {
-        "file": "logos/codex/codex-grey-white-icon-right-no-subtitle-4x.png",
-        "hash": "1368433261154392910"
+        "file": "scripts/templates/community/ISSUE_TEMPLATE/feature_request.yml",
+        "hash": "17353095223216111040"
       },
       {
-        "file": "logos/codex/frame-codex-grey-dark-icon-right-no-subtitle-4x.png",
-        "hash": "7702873742488673706"
+        "file": "package.json",
+        "hash": "1473584476547131304"
       },
       {
-        "file": ".env.supabase-stripe.example",
-        "hash": "15657277187108632068"
+        "file": "README.md",
+        "hash": "16705225511525680810"
       },
       {
-        "file": "scripts/templates/workflows/pages-typedoc.yml",
-        "hash": "9703906842286433094"
+        "file": "logos/gitpaywidget/gitpaywidget-purple-playful-dark (1).svg",
+        "hash": "12548511726170580181"
       },
       {
-        "file": "logos/codex/frame-codex-black-dark-no-subtitle.svg",
-        "hash": "8388079065205106124"
+        "file": ".github/scripts/patch-agentos-deps-for-pack.js",
+        "hash": "7601063767966923264"
       },
       {
-        "file": "logos/codex/codex-black-white-no-subtitle-4x.png",
-        "hash": "5861251855445926142"
-      },
-      {
-        "file": ".prettierignore",
-        "hash": "13660027511601190719"
-      },
-      {
-        "file": "deployment/nginx.conf",
-        "hash": "13990812424868028303"
-      },
-      {
-        "file": ".gitmodules",
-        "hash": "3366639224188196077"
-      },
-      {
-        "file": "scripts/scanSecrets.mjs",
-        "hash": "3376361208362895995"
-      },
-      {
-        "file": "logos/codex/codex-vertical-green-dark.svg",
-        "hash": "8364365471077909841"
-      },
-      {
-        "file": "logos/codex/frame-codex-green-dark-icon-right-4x.png",
-        "hash": "8993515889084141076"
+        "file": ".github/workflows/publish-agentos.yml",
+        "hash": "10840097040770669202"
       },
       {
         "file": "logos/codex/frame-codex-green-dark-4x.png",
         "hash": "6392693771500080720"
       },
       {
-        "file": "logos/codex/codex-grey-dark-icon-right-no-subtitle.svg",
-        "hash": "20330997559908147"
+        "file": "logos/gitpaywidget/gitpaywidget-purple-dark-2x.png",
+        "hash": "3298323511212076693"
+      },
+      {
+        "file": "logos/frame-square-black-1024x1024-transparent.png",
+        "hash": "13418691637038696338"
+      },
+      {
+        "file": "docs/DESIGN_SYSTEM.md",
+        "hash": "11713141880340338965"
+      },
+      {
+        "file": "logos/codex/frame-codex-vertical-green-transparent-4x.png",
+        "hash": "1365558053126791242"
+      },
+      {
+        "file": "logos/agentos-primary-no-tagline-light-2x.png",
+        "hash": "15326606965876731974"
+      },
+      {
+        "file": ".dockerignore",
+        "hash": "3944331366564698098"
+      },
+      {
+        "file": "scripts/templates/community/SECURITY.md",
+        "hash": "3225326949691996450"
+      },
+      {
+        "file": "prompts/coding_interviewer.md",
+        "hash": "8388925220277934033"
+      },
+      {
+        "file": "logos/openstrand-logo-mono.svg",
+        "hash": "1175784049485624962"
+      },
+      {
+        "file": "logos/codex/codex-green-dark.svg",
+        "hash": "2970764348465936854"
+      },
+      {
+        "file": "logos/gitpaywidget/gitpaywidget-vertical-purple-playful.svg",
+        "hash": "4042751820413787637"
+      },
+      {
+        "file": "id_rsa",
+        "hash": "16710757317583447988"
+      },
+      {
+        "file": "GIT_STATUS_REPORT.md",
+        "hash": "16676734780447691037"
+      },
+      {
+        "file": "docs/MARKETPLACE.md",
+        "hash": "13330519905276474836"
+      },
+      {
+        "file": "logos/codex/frame-codex-vertical-black-no-subtitle.svg",
+        "hash": "16209440289195368851"
+      },
+      {
+        "file": "scripts/templates/workflows/pages-typedoc.yml",
+        "hash": "9703906842286433094"
+      },
+      {
+        "file": "wiki/openstrand/architecture.md",
+        "hash": "13518636644272283416"
+      },
+      {
+        "file": "scripts/split_submodules.ps1",
+        "hash": "1726625998549039673"
+      },
+      {
+        "file": "scripts/mirror-subtrees.sh",
+        "hash": "16182739084941607280"
+      },
+      {
+        "file": "logos/codex/frame-codex-vertical-grey-transparent-no-subtitle-4x.png",
+        "hash": "17783568663278834553"
+      },
+      {
+        "file": "scripts/templates/typedoc.json",
+        "hash": "12122338177216906529"
+      },
+      {
+        "file": "docs/POST_REFACTOR_TODO.md",
+        "hash": "1920890468835456609"
+      },
+      {
+        "file": "docs/LEGAL_RETENTION_NOTES.md",
+        "hash": "16729251388283454782"
+      },
+      {
+        "file": "docs/REPO_MIRRORING.md",
+        "hash": "11897801081392626092"
+      },
+      {
+        "file": "logos/frame-dev-brand-vertical.html",
+        "hash": "16150998813684756992"
+      },
+      {
+        "file": "prompts/_language_context_template.md",
+        "hash": "211577472708963088"
+      },
+      {
+        "file": "logos/codex/codex-vertical-black-transparent-no-subtitle-4x.png",
+        "hash": "13866831125444725664"
+      },
+      {
+        "file": ".github/workflows/mirror-agentos.yml",
+        "hash": "15901001066780037165"
+      },
+      {
+        "file": "logos/agentos-icon-transparent-128x128.png",
+        "hash": "17068365796055054085"
+      },
+      {
+        "file": "logos/codex/codex-grey-dark-no-subtitle.svg",
+        "hash": "10712486606213528775"
+      },
+      {
+        "file": "logos/codex/codex-square-green-white-1024x1024.png",
+        "hash": "16032492560872637364"
+      },
+      {
+        "file": "scripts/make-transparent.js",
+        "hash": "18266254594130338452"
+      },
+      {
+        "file": "logos/codex/frame-codex-green-white-icon-right-4x.png",
+        "hash": "16911260594739208350"
+      },
+      {
+        "file": "logos/codex/frame-codex-square-black-white-1024x1024.png",
+        "hash": "11951511655858446893"
+      },
+      {
+        "file": "logos/codex/codex-green-transparent-no-subtitle-4x.png",
+        "hash": "10899928312513899949"
+      },
+      {
+        "file": "wiki/openstrand/README.md",
+        "hash": "9145043562971832640"
+      },
+      {
+        "file": "logos/frame-square-green-512x512-white.png",
+        "hash": "15331543078775144709"
+      },
+      {
+        "file": "logos/codex/frame-codex-black-dark-4x.png",
+        "hash": "6392693771500080720"
+      },
+      {
+        "file": "logos/codex/codex-square-grey-white-1024x1024.png",
+        "hash": "18134759506253421101"
+      },
+      {
+        "file": "logos/codex/frame-square-navy-800x800-transparent.png",
+        "hash": "13355339655419878915"
+      },
+      {
+        "file": "logos/gitpaywidget/gitpaywidget-purple-white-2x (1).png",
+        "hash": "14674412272476066534"
+      },
+      {
+        "file": "logos/codex/codex-grey-transparent-no-subtitle-4x.png",
+        "hash": "12149183208567496427"
       },
       {
         "file": "logos/codex/frame-codex-vertical-black-dark-no-subtitle.svg",
         "hash": "13557537124025044933"
+      },
+      {
+        "file": "logos/codex/frame-codex-grey-dark-icon-right-no-subtitle-4x.png",
+        "hash": "7702873742488673706"
+      },
+      {
+        "file": "logos/codex/frame-codex-grey-dark-4x.png",
+        "hash": "6392693771500080720"
+      },
+      {
+        "file": "logos/codex/codex-black-no-subtitle.svg",
+        "hash": "17027466964665666637"
+      },
+      {
+        "file": "docs/UX_AVAILABILITY_RULES.md",
+        "hash": "18292272772657679553"
+      },
+      {
+        "file": ".env.supabase-stripe.example",
+        "hash": "15657277187108632068"
+      },
+      {
+        "file": "docs/MULTILINGUAL_PROVIDERS.md",
+        "hash": "16323683076610349671"
+      },
+      {
+        "file": ".github/workflows/monorepo-ci.yml",
+        "hash": "10700602715865259099"
+      },
+      {
+        "file": "logos/codex/codex-green-dark-no-subtitle.svg",
+        "hash": "13118790993243894788"
+      },
+      {
+        "file": "docs/ARCHITECTURE_DIAGRAM.md",
+        "hash": "15915522034908264682"
+      },
+      {
+        "file": ".github/scripts/restore-agentos-deps-after-pack.js",
+        "hash": "10367289308650316164"
+      },
+      {
+        "file": "logos/codex/frame-codex-grey-dark-no-subtitle-4x.png",
+        "hash": "15267851923053107522"
+      },
+      {
+        "file": "wiki/README.md",
+        "hash": "13309125679268610159"
+      },
+      {
+        "file": "pnpm-workspace.yaml",
+        "hash": "11613308172569485119"
+      },
+      {
+        "file": "logos/codex/codex-green-dark-no-subtitle-4x.png",
+        "hash": "8659923442152444131"
+      },
+      {
+        "file": "wiki/frame/roadmap.md",
+        "hash": "9741146674843646743"
+      },
+      {
+        "file": "typedoc.json",
+        "hash": "1857366138814205860"
+      },
+      {
+        "file": "logos/codex/codex-vertical-green-transparent-no-subtitle-4x.png",
+        "hash": "12524877270386243299"
+      },
+      {
+        "file": "docs/README_REFACTOR.md",
+        "hash": "2886284120549075901"
+      },
+      {
+        "file": "logos/gitpaywidget/gitpaywidget-vertical-purple-playful (1).svg",
+        "hash": "5410242448600071493"
+      },
+      {
+        "file": "logos/codex/frame-codex-grey-white-icon-right-4x.png",
+        "hash": "6178567793881586312"
+      },
+      {
+        "file": "logos/codex/codex-vertical-black-no-subtitle.svg",
+        "hash": "11015479868050903083"
+      },
+      {
+        "file": "logos/codex/codex-green-transparent-4x.png",
+        "hash": "7419135196920756396"
+      },
+      {
+        "file": "PRODUCTION_SETUP.md",
+        "hash": "17490340870055944753"
+      },
+      {
+        "file": "docs/DOCUMENTATION_STANDARDS.md",
+        "hash": "13718201974859736893"
+      },
+      {
+        "file": ".lintstagedrc.json",
+        "hash": "10764476420939452098"
+      },
+      {
+        "file": "logos/codex/frame-codex-black-white-4x.png",
+        "hash": "3838584426133937969"
+      },
+      {
+        "file": "logos/gitpaywidget/gitpaywidget-purple-transparent-4x (1).png",
+        "hash": "6629271046387648805"
+      },
+      {
+        "file": "logos/codex/frame-codex-grey-dark-icon-right-no-subtitle.svg",
+        "hash": "16640337048913505726"
+      },
+      {
+        "file": "scripts/fix-extensions-master.sh",
+        "hash": "10178344137437479427"
+      },
+      {
+        "file": "MIGRATION_COMPLETE.md",
+        "hash": "5801595571810024587"
+      },
+      {
+        "file": "prompts/system_design.md",
+        "hash": "10857115910162344060"
+      },
+      {
+        "file": ".github/workflows/deploy-ssh.yml",
+        "hash": "7108525614354938175"
+      },
+      {
+        "file": "logos/codex/frame-codex-green-dark.svg",
+        "hash": "12333464485210908666"
+      },
+      {
+        "file": "logos/brand.html",
+        "hash": "17339627173430782416"
+      },
+      {
+        "file": "docs/CODEX_SEO_PLAYBOOK.md",
+        "hash": "7768747314108931405"
+      },
+      {
+        "file": "scripts/vca-dump.sh",
+        "hash": "4895280937129796738"
+      },
+      {
+        "file": "logos/codex/frame-codex-vertical-green-dark.svg",
+        "hash": "11318909405862035627"
+      },
+      {
+        "file": "docs/LANGUAGE_AND_CONTEXT_DOCUMENTATION.md",
+        "hash": "2157580858030063501"
+      },
+      {
+        "file": "update-locales.js",
+        "hash": "1262343997113643647"
+      },
+      {
+        "file": "content/blog/2024-01-20-getting-started-agentos.md",
+        "hash": "8499978023879454105"
+      },
+      {
+        "file": "SECURITY.md",
+        "hash": "4959010801621404017"
+      },
+      {
+        "file": "logos/agentos-icon-transparent-512x512.png",
+        "hash": "4613732819662862389"
+      },
+      {
+        "file": "logos/codex/frame-codex-grey-transparent-icon-right-no-subtitle-4x.png",
+        "hash": "8678934911161992511"
+      },
+      {
+        "file": "logos/codex/codex-grey-white-icon-right-no-subtitle-4x.png",
+        "hash": "1368433261154392910"
+      },
+      {
+        "file": "logos/codex/codex-green-transparent-icon-right-4x.png",
+        "hash": "4703222132059006006"
+      },
+      {
+        "file": "docs/AGENTOS_SERVER_API.md",
+        "hash": "224822734897646674"
+      },
+      {
+        "file": "logos/codex/frame-codex-vertical-grey-dark-no-subtitle.svg",
+        "hash": "17568743171272722731"
+      },
+      {
+        "file": "docs/AGENTOS_LANDING_ADDENDUM.md",
+        "hash": "7895226975138054468"
+      },
+      {
+        "file": "docs/EXTENSION_SYSTEM_STATUS.md",
+        "hash": "6013363763252899941"
+      },
+      {
+        "file": "docs/PLANS_AND_BILLING.md",
+        "hash": "3379277486888289888"
+      },
+      {
+        "file": "tsconfig.json",
+        "hash": "17965891042568671894"
+      },
+      {
+        "file": "agentos-live-docs/.github/workflows/build-docs.yml",
+        "hash": "2964406206425184500"
+      },
+      {
+        "file": "logos/codex/frame-codex-vertical-black-transparent-no-subtitle-4x.png",
+        "hash": "7254509983509234925"
+      },
+      {
+        "file": "prompts/tutor.md",
+        "hash": "9376949167660829055"
+      },
+      {
+        "file": "logos/codex/frame-codex-icon-grey-1024x1024.png",
+        "hash": "10074679916041515243"
+      },
+      {
+        "file": "docs/SAAS_STARTER_SETUP.md",
+        "hash": "13905128790000367445"
+      },
+      {
+        "file": "wiki/codex/README.md",
+        "hash": "5840580086749875800"
+      },
+      {
+        "file": "logos/frame-codex.html",
+        "hash": "4630380866868975038"
+      },
+      {
+        "file": "logos/codex/codex-grey-white-no-subtitle-4x.png",
+        "hash": "2848962880754085190"
+      },
+      {
+        "file": "logos/agentos-primary-no-tagline-transparent-2x.png",
+        "hash": "7980015274849425327"
+      },
+      {
+        "file": "deployment/nginx.conf",
+        "hash": "13990812424868028303"
+      },
+      {
+        "file": ".prettierignore",
+        "hash": "13660027511601190719"
+      },
+      {
+        "file": "scripts/split_submodules.sh",
+        "hash": "3155622381447233696"
+      },
+      {
+        "file": "docs/RBAC.md",
+        "hash": "4292479268958846360"
+      },
+      {
+        "file": "wiki/api/authentication.md",
+        "hash": "10940379669097315866"
+      },
+      {
+        "file": "logos/codex/frame-codex-grey-transparent-4x.png",
+        "hash": "1945601644803590181"
+      },
+      {
+        "file": "logos/codex/frame-codex-black.svg",
+        "hash": "6554414916276188672"
+      },
+      {
+        "file": "docs/CLIENT_STORAGE_AND_EXPORTS.md",
+        "hash": "10368054425036833955"
+      },
+      {
+        "file": "prompts/coding.md",
+        "hash": "3631555987622241968"
+      },
+      {
+        "file": "scripts/rename_commits.py",
+        "hash": "2379031762747265610"
+      },
+      {
+        "file": "logos/gitpaywidget/gitpaywidget-vertical-purple-white-2x.png",
+        "hash": "17331551440053009518"
+      },
+      {
+        "file": ".env.sample",
+        "hash": "15575845973669716624"
+      },
+      {
+        "file": "scripts/commit-app-sh-submodule.sh",
+        "hash": "7151086458972370528"
+      },
+      {
+        "file": "logos/codex/frame-codex-icon-black-1024x1024 (1).png",
+        "hash": "7217341448505993390"
+      },
+      {
+        "file": "scripts/push-apps-workbench.sh",
+        "hash": "2278746080147656017"
+      },
+      {
+        "file": "logos/codex/frame-codex-grey-dark.svg",
+        "hash": "10080314702754003496"
+      },
+      {
+        "file": "logos/codex/frame-codex-vertical-grey-dark.svg",
+        "hash": "14966334663958412908"
+      },
+      {
+        "file": "scripts/installHooks.mjs",
+        "hash": "11002311645964918742"
+      },
+      {
+        "file": "logos/codex/frame-codex-grey-white-4x.png",
+        "hash": "17686781507525500603"
+      },
+      {
+        "file": "logos/codex/codex-grey-dark-icon-right-no-subtitle-4x.png",
+        "hash": "5730197482338142288"
+      },
+      {
+        "file": "logos/codex/frame-codex-icon-green-1024x1024 (1).png",
+        "hash": "4913011952813683169"
+      },
+      {
+        "file": "logos/codex/frame-codex-grey-transparent-no-subtitle-4x.png",
+        "hash": "11292342125570606590"
+      },
+      {
+        "file": ".github/workflows/deploy.yml",
+        "hash": "17315485619467794304"
+      },
+      {
+        "file": "logos/gitpaywidget/gitpaywidget-icon-purple.svg",
+        "hash": "15504644301747205528"
+      },
+      {
+        "file": "logos/codex/codex-grey-transparent-icon-right-no-subtitle-4x (1).png",
+        "hash": "8009667776604962195"
+      },
+      {
+        "file": "docs/ARCHITECTURE.md",
+        "hash": "8584231134856955327"
+      },
+      {
+        "file": "logos/codex/frame-codex-green-transparent-4x.png",
+        "hash": "12712601089568678154"
+      },
+      {
+        "file": ".secretlintignore",
+        "hash": "3612883262842356620"
+      },
+      {
+        "file": "docs/V0_1_0_FINAL_AUDIT.md",
+        "hash": "3980862801299554353"
+      },
+      {
+        "file": "logos/codex/codex-green-dark-4x.png",
+        "hash": "7126365609925589879"
       },
       {
         "file": "logos/gitpaywidget/gitpaywidget-purple-dark-2x (1).png",
@@ -701,136 +623,160 @@
         "hash": "4415374697568620402"
       },
       {
-        "file": "logos/codex/codex-green-dark-icon-right-no-subtitle.svg",
-        "hash": "18176441410605529958"
+        "file": "logos/codex/frame-codex-green-dark-icon-right-4x.png",
+        "hash": "8993515889084141076"
+      },
+      {
+        "file": "codecov.yml",
+        "hash": "6406402924852805478"
+      },
+      {
+        "file": "logos/agentos-primary-transparent-2x.png",
+        "hash": "3100898377573355095"
+      },
+      {
+        "file": "docs/FINAL_VERIFICATION_CHECKLIST.md",
+        "hash": "5122417665516981213"
+      },
+      {
+        "file": "logos/gitpaywidget/gitpaywidget-vertical-purple-playful-dark (1).svg",
+        "hash": "13439539483270161458"
+      },
+      {
+        "file": "docs/AGENTOS_REINTEGRATION_NOTES.md",
+        "hash": "10703970146576092642"
+      },
+      {
+        "file": "logos/codex/codex-green-dark-icon-right-4x.png",
+        "hash": "4692515795193639153"
+      },
+      {
+        "file": "scripts/generate-api-docs.mjs",
+        "hash": "10348209437713914306"
+      },
+      {
+        "file": "logos/codex/frame-codex-grey-transparent-icon-right-4x.png",
+        "hash": "6794359534365187863"
+      },
+      {
+        "file": "logos/codex/frame-codex-vertical-black-dark.svg",
+        "hash": "17817602934985470004"
+      },
+      {
+        "file": "DEPLOY_TOUCH",
+        "hash": "5335023952612182043"
       },
       {
         "file": "logos/codex/codex-green-white-no-subtitle-4x.png",
         "hash": "4919128847458220422"
       },
       {
-        "file": ".github/workflows/mirror-frame-dev.yml",
-        "hash": "8130055916480350215"
+        "file": "docker-compose.prod.yml",
+        "hash": "11857345023405604943"
       },
       {
-        "file": "logos/frame-square-black-dark.svg",
-        "hash": "16024811223306105820"
+        "file": "logos/codex/codex-grey-transparent-icon-right-no-subtitle-4x.png",
+        "hash": "8009667776604962195"
       },
       {
-        "file": "agentos-live-docs/.github/workflows/build-docs.yml",
-        "hash": "2964406206425184500"
+        "file": "logos/codex/codex-green-dark-icon-right.svg",
+        "hash": "11843849344188941945"
       },
       {
-        "file": "scripts/templates/community/ISSUE_TEMPLATE/feature_request.yml",
-        "hash": "17353095223216111040"
+        "file": "logos/gitpaywidget/gitpaywidget-vertical-purple-dark-2x.png",
+        "hash": "6083177229251869291"
       },
       {
-        "file": "logos/codex/codex-green-dark-no-subtitle.svg",
-        "hash": "13118790993243894788"
-      },
-      {
-        "file": "scripts/templates/licenses/LICENSE-MIT",
-        "hash": "10639934178160976651"
-      },
-      {
-        "file": "e pnpm install --no-frozen-lockfile on server",
-        "hash": "4699891281000355743"
-      },
-      {
-        "file": "logos/codex/frame-codex-icon-green.svg",
-        "hash": "6982734011126006282"
-      },
-      {
-        "file": "GIT_STATUS_REPORT.md",
-        "hash": "16676734780447691037"
-      },
-      {
-        "file": "logos/codex/frame-codex-square-black-transparent-1024x1024.png",
-        "hash": "10973289985504001926"
-      },
-      {
-        "file": ".eslintrc.json",
-        "hash": "18333464252529489487"
-      },
-      {
-        "file": "docs/EXTENSION_ARCHITECTURE_FINAL.md",
-        "hash": "3211146181674497727"
-      },
-      {
-        "file": "prompts/_language_context_template.md",
-        "hash": "211577472708963088"
-      },
-      {
-        "file": ".github/workflows/trigger-docs.yml",
-        "hash": "14603806117898201069"
-      },
-      {
-        "file": "ter",
-        "hash": "9444487591621092390"
-      },
-      {
-        "file": "wiki/codex/README.md",
-        "hash": "5840580086749875800"
-      },
-      {
-        "file": "logos/codex/frame-codex-grey-white-icon-right-no-subtitle-4x.png",
-        "hash": "12607827334010748857"
-      },
-      {
-        "file": "IMPROVEMENTS_SUMMARY.md",
-        "hash": "13494352847787861714"
-      },
-      {
-        "file": "logos/gitpaywidget/gitpaywidget-vertical-purple-playful.svg",
-        "hash": "4042751820413787637"
-      },
-      {
-        "file": "scripts/commit-apps.sh",
-        "hash": "10099434299449928635"
-      },
-      {
-        "file": "docs/REACTIVE-SYSTEM.md",
-        "hash": "5794115108144631983"
-      },
-      {
-        "file": "wiki/frame/roadmap.md",
-        "hash": "9741146674843646743"
-      },
-      {
-        "file": "logos/codex/codex-vertical-green-transparent-4x.png",
-        "hash": "10453389609794856924"
-      },
-      {
-        "file": "logos/codex/frame-codex-green-white-icon-right-4x.png",
-        "hash": "16911260594739208350"
-      },
-      {
-        "file": "logos/agentos-primary-no-tagline-transparent-2x.png",
-        "hash": "7980015274849425327"
-      },
-      {
-        "file": "docs/AUTH_EXTRACTION_SUMMARY.md",
-        "hash": "17249383690957240728"
-      },
-      {
-        "file": "docs/AGENTOS_LANDING_ADDENDUM.md",
-        "hash": "7895226975138054468"
+        "file": "logos/codex/frame-codex-grey-white-no-subtitle-4x.png",
+        "hash": "9087487915243178142"
       },
       {
         "file": "logos/codex/frame-codex-square-grey-white-1024x1024 (1).png",
         "hash": "15703516111272902005"
       },
       {
-        "file": "logos/codex/codex-grey-transparent-no-subtitle-4x.png",
-        "hash": "12149183208567496427"
+        "file": "logos/codex/frame-codex-icon-black.svg",
+        "hash": "9011733331246633464"
       },
       {
-        "file": "prompts/lc_audit_aide.md",
-        "hash": "10384619968526784373"
+        "file": "logos/openstrand-logo.svg",
+        "hash": "17328183740683786715"
       },
       {
-        "file": "logos/codex/frame-codex-vertical-grey-dark.svg",
-        "hash": "14966334663958412908"
+        "file": "logos/codex/frame-codex-black-dark-no-subtitle.svg",
+        "hash": "8388079065205106124"
+      },
+      {
+        "file": "logos/frame-dev-brand.html",
+        "hash": "6493327936166904387"
+      },
+      {
+        "file": "logos/codex/frame-codex-green-white-4x.png",
+        "hash": "11180028702953270236"
+      },
+      {
+        "file": "logos/codex/codex-grey-dark-no-subtitle-4x.png",
+        "hash": "8659923442152444131"
+      },
+      {
+        "file": "logos/codex/frame-codex-black-transparent-4x.png",
+        "hash": "15123695718151562617"
+      },
+      {
+        "file": "wiki/codex/contributing.md",
+        "hash": "1786411395659466080"
+      },
+      {
+        "file": "prompts/nerf_chat.md",
+        "hash": "4394747360966149876"
+      },
+      {
+        "file": "docs/MULTI_GMI_IMPLEMENTATION_PLAN.md",
+        "hash": "10846653095951383141"
+      },
+      {
+        "file": "logos/codex/frame-codex-green-dark-icon-right.svg",
+        "hash": "10412145265371120637"
+      },
+      {
+        "file": "docs/AGENTOS_MULTILINGUAL_ARCHITECTURE.md",
+        "hash": "15813403542194079158"
+      },
+      {
+        "file": "scripts/templates/workflows/node-ci.yml",
+        "hash": "3895491127383210414"
+      },
+      {
+        "file": "logos/frame-square-black-dark.svg",
+        "hash": "16024811223306105820"
+      },
+      {
+        "file": "logos/codex/codex-black-dark-no-subtitle.svg",
+        "hash": "12012443512824267148"
+      },
+      {
+        "file": "scripts/templates/licenses/LICENSE-APACHE-2.0",
+        "hash": "1202577156436340802"
+      },
+      {
+        "file": "INDEXEDDB_INTEGRATION_SUMMARY.md",
+        "hash": "4146562818931286779"
+      },
+      {
+        "file": "logos/gitpaywidget/gitpaywidget-icon-purple-white-512x512.png",
+        "hash": "14236437032290126308"
+      },
+      {
+        "file": "deploy-vercel.md",
+        "hash": "5089019306049630234"
+      },
+      {
+        "file": "docs/WORKFLOWS.md",
+        "hash": "10451830122954996662"
+      },
+      {
+        "file": "scripts/commit-submodules.sh",
+        "hash": "11278174090490601901"
       },
       {
         "file": "logos/codex/frame-codex-black-no-subtitle.svg",
@@ -841,540 +787,596 @@
         "hash": "7281610979776711952"
       },
       {
-        "file": "logos/openstrand-logo-mono.svg",
-        "hash": "1175784049485624962"
-      },
-      {
-        "file": "logos/codex/codex-grey-no-subtitle.svg",
-        "hash": "3741117853354835826"
-      },
-      {
-        "file": "logos/gitpaywidget/gitpaywidget-vertical-purple-dark-2x.png",
-        "hash": "6083177229251869291"
-      },
-      {
-        "file": ".github/workflows/deploy-ssh.yml",
-        "hash": "7108525614354938175"
-      },
-      {
-        "file": "logos/codex/frame-codex-icon-grey-1024x1024 (1).png",
-        "hash": "10074679916041515243"
-      },
-      {
-        "file": "docs/LANGUAGE_AND_CONTEXT_DOCUMENTATION.md",
-        "hash": "2157580858030063501"
-      },
-      {
-        "file": "update_lemon_upsert.py",
-        "hash": "6146403964813025712"
-      },
-      {
-        "file": "prompts/coding.md",
-        "hash": "3631555987622241968"
-      },
-      {
         "file": "wiki/codex/schema.md",
         "hash": "5517185846941102645"
       },
       {
-        "file": "scripts/push-apps-agentos-sh.sh",
-        "hash": "9028880235116284489"
-      },
-      {
-        "file": ".secretlintignore",
-        "hash": "3612883262842356620"
-      },
-      {
-        "file": "scripts/rewrite-extensions-history.sh",
-        "hash": "894314757603667369"
-      },
-      {
-        "file": "wiki/README.md",
-        "hash": "13309125679268610159"
-      },
-      {
-        "file": "logos/codex/frame-codex-black-dark-no-subtitle-4x.png",
-        "hash": "15267851923053107522"
-      },
-      {
-        "file": "docs/POST_REFACTOR_TODO.md",
-        "hash": "1920890468835456609"
-      },
-      {
-        "file": "logos/codex/codex-grey-dark-icon-right-no-subtitle-4x.png",
-        "hash": "5730197482338142288"
-      },
-      {
-        "file": "logos/codex/codex-green-transparent-icon-right-4x.png",
-        "hash": "4703222132059006006"
-      },
-      {
-        "file": "logos/codex/frame-codex-black-transparent-4x.png",
-        "hash": "15123695718151562617"
-      },
-      {
-        "file": "scripts/split_submodules.sh",
-        "hash": "3155622381447233696"
-      },
-      {
-        "file": "wiki/openstrand/features.md",
-        "hash": "6754544654332052471"
-      },
-      {
-        "file": "logos/codex/codex-vertical-black-dark-no-subtitle.svg",
-        "hash": "10291358402028554983"
-      },
-      {
-        "file": "logos/agentos-primary-dark-2x.png",
-        "hash": "11112510811776575072"
-      },
-      {
-        "file": "docs/EMERGENT_AGENCY_SYSTEM.md",
-        "hash": "7879693943798469593"
-      },
-      {
-        "file": "docs/CODEX_SEO_PLAYBOOK.md",
-        "hash": "7768747314108931405"
-      },
-      {
-        "file": "logos/codex/frame-codex-grey-transparent-icon-right-4x.png",
-        "hash": "6794359534365187863"
-      },
-      {
-        "file": "logos/agentos-primary-transparent-2x.png",
-        "hash": "3100898377573355095"
-      },
-      {
-        "file": "docs/TTS_OPTIMIZATION_GUIDE.md",
-        "hash": "7864013854486057225"
-      },
-      {
-        "file": "scripts/templates/workflows/node-publish-on-tag.yml",
-        "hash": "15145722064917089090"
-      },
-      {
-        "file": ".github/workflows/mirror-agentos-client.yml",
-        "hash": "450314042816123045"
-      },
-      {
-        "file": "scripts/commit-submodules.sh",
-        "hash": "11278174090490601901"
-      },
-      {
-        "file": ".dockerignore",
-        "hash": "3944331366564698098"
-      },
-      {
-        "file": "wiki/api/authentication.md",
-        "hash": "10940379669097315866"
-      },
-      {
-        "file": "logos/codex/frame-codex-icon-green-1024x1024 (1).png",
-        "hash": "4913011952813683169"
-      },
-      {
-        "file": "docker-compose.prod.yml",
-        "hash": "11857345023405604943"
-      },
-      {
-        "file": "logos/codex/frame-codex-black-dark.svg",
-        "hash": "2305987535388859324"
-      },
-      {
-        "file": "docs/DESIGN_SYSTEM.md",
-        "hash": "11713141880340338965"
-      },
-      {
-        "file": "docs/MULTILINGUAL_PROVIDERS.md",
-        "hash": "16323683076610349671"
-      },
-      {
-        "file": "id_rsa",
-        "hash": "16710757317583447988"
-      },
-      {
-        "file": "docker-compose.yml",
-        "hash": "17235073780406163019"
-      },
-      {
-        "file": ".github/workflows/mirror-agentos-landing.yml",
-        "hash": "11218734627836690975"
-      },
-      {
-        "file": "logos/codex/codex-green-white-4x.png",
-        "hash": "15246441882277679250"
-      },
-      {
-        "file": "docs/ARCHITECTURE.md",
-        "hash": "8584231134856955327"
-      },
-      {
-        "file": "logos/codex/codex-vertical-grey-dark-no-subtitle.svg",
-        "hash": "12002995718401754549"
-      },
-      {
-        "file": "logos/gitpaywidget/gitpaywidget.html",
-        "hash": "17443652618897061310"
-      },
-      {
-        "file": "docs/V0_1_0_FINAL_AUDIT.md",
-        "hash": "3980862801299554353"
-      },
-      {
-        "file": "logos/frame-square-black.svg",
-        "hash": "18313094622139576484"
-      },
-      {
-        "file": "logos/codex/frame-codex-green-transparent-icon-right-4x.png",
-        "hash": "11243061311843923352"
-      },
-      {
-        "file": "scripts/push-apps-workbench.sh",
-        "hash": "2278746080147656017"
-      },
-      {
-        "file": "scripts/fix-extensions-master.sh",
-        "hash": "10178344137437479427"
-      },
-      {
-        "file": "docs/UX_AVAILABILITY_RULES.md",
-        "hash": "18292272772657679553"
-      },
-      {
-        "file": "docs/REPO_MIRRORING.md",
-        "hash": "11897801081392626092"
-      },
-      {
-        "file": "docs/IMPLEMENTATION_COMPLETE.md",
-        "hash": "17429165955795795420"
-      },
-      {
-        "file": "package.json",
-        "hash": "1473584476547131304"
-      },
-      {
-        "file": "FRONTEND_AGENTOS_INTEGRATION_ANALYSIS.md",
-        "hash": "16877015067714372742"
-      },
-      {
-        "file": "logos/codex/frame-codex-green-transparent-4x.png",
-        "hash": "12712601089568678154"
-      },
-      {
-        "file": "scripts/split_submodules.ps1",
-        "hash": "1726625998549039673"
-      },
-      {
-        "file": "logos/agentos-icon-transparent-512x512.png",
-        "hash": "4613732819662862389"
-      },
-      {
-        "file": "scripts/templates/community/pull_request_template.md",
-        "hash": "1644504350635363263"
-      },
-      {
-        "file": ".codex-todo",
-        "hash": "7844169992349031893"
-      },
-      {
-        "file": "logos/codex/frame-codex-square-green-white-1024x1024.png",
-        "hash": "1547672223806802596"
-      },
-      {
-        "file": "logos/agentos-icon.svg",
-        "hash": "6142963447062708699"
-      },
-      {
-        "file": "logos/agentos-primary-no-tagline.svg",
-        "hash": "16367742698825748837"
-      },
-      {
-        "file": "logos/codex/frame-codex-vertical-black-transparent-no-subtitle-4x.png",
-        "hash": "7254509983509234925"
-      },
-      {
-        "file": "docs/README_REFACTOR.md",
-        "hash": "2886284120549075901"
-      },
-      {
-        "file": "docs/AGENCY_EXECUTION_MODES.md",
-        "hash": "10797121518086642361"
-      },
-      {
-        "file": "logos/codex/codex-green-dark-4x.png",
-        "hash": "7126365609925589879"
+        "file": "docs/RELEASE_AUTOMATION.md",
+        "hash": "5379183822181487711"
       },
       {
         "file": "docs/STORAGE_ADAPTER_DESIGN.md",
         "hash": "17623309204762820981"
       },
       {
-        "file": "docs/CREATING_NEW_AGENT.md",
-        "hash": "1736231766782139564"
+        "file": "logos/codex/frame-codex-square-black-transparent-512x512.png",
+        "hash": "1545661325898273054"
       },
       {
-        "file": "logos/codex/codex-black-dark-no-subtitle.svg",
-        "hash": "12012443512824267148"
+        "file": "nx.json",
+        "hash": "11374736015359213276"
       },
       {
-        "file": "logos/codex/frame-codex-icon-grey-1024x1024.png",
+        "file": ".github/scripts/fix-esm-imports.js",
+        "hash": "10690006270399731363"
+      },
+      {
+        "file": "logos/codex/frame-codex-icon-grey-1024x1024 (1).png",
         "hash": "10074679916041515243"
       },
       {
-        "file": "scripts/templates/community/SECURITY.md",
-        "hash": "3225326949691996450"
+        "file": "logos/agentos-icon-transparent-256x256.png",
+        "hash": "18211132525185452842"
       },
       {
-        "file": "logos/codex/frame-codex-grey-white-no-subtitle-4x.png",
-        "hash": "9087487915243178142"
-      },
-      {
-        "file": "logos/codex/frame-codex-green-dark-icon-right.svg",
-        "hash": "10412145265371120637"
-      },
-      {
-        "file": "logos/codex/codex-vertical-green-transparent-no-subtitle-4x.png",
-        "hash": "12524877270386243299"
-      },
-      {
-        "file": "logos/codex/frame-codex-green-white-4x.png",
-        "hash": "11180028702953270236"
-      },
-      {
-        "file": "logos/codex/frame-square-green-512x512-white (1).png",
-        "hash": "10150525091469823531"
-      },
-      {
-        "file": "INDEXEDDB_INTEGRATION_SUMMARY.md",
-        "hash": "4146562818931286779"
-      },
-      {
-        "file": "config/knowledge_base.json",
-        "hash": "7640930105431368970"
-      },
-      {
-        "file": "logos/codex/codex-green-dark.svg",
-        "hash": "2970764348465936854"
-      },
-      {
-        "file": "logos/codex/codex-grey-transparent-icon-right-no-subtitle-4x.png",
-        "hash": "8009667776604962195"
-      },
-      {
-        "file": "docs/LEGAL_RETENTION_NOTES.md",
-        "hash": "16729251388283454782"
-      },
-      {
-        "file": "scripts/commit-batch.sh",
-        "hash": "4278273851117503974"
-      },
-      {
-        "file": "sample.ts",
-        "hash": "722698641277785837"
-      },
-      {
-        "file": "logos/frame-square-green-512x512-white.png",
-        "hash": "15331543078775144709"
-      },
-      {
-        "file": "scripts/scanPrePush.mjs",
-        "hash": "5281791423431456957"
-      },
-      {
-        "file": "scripts/templates/community/CONTRIBUTING.md",
-        "hash": "9938927516686500286"
-      },
-      {
-        "file": "MIGRATION_COMPLETE.md",
-        "hash": "5801595571810024587"
-      },
-      {
-        "file": "logos/codex/frame-codex-black.svg",
-        "hash": "6554414916276188672"
-      },
-      {
-        "file": "vercel.json",
-        "hash": "2599605767288513563"
-      },
-      {
-        "file": "docs/agentos/RELEASING.md",
-        "hash": "10370760511449343290"
-      },
-      {
-        "file": "scripts/templates/community/CODE_OF_CONDUCT.md",
-        "hash": "4666575213184983709"
-      },
-      {
-        "file": "pnpm-lock.yaml.bak",
-        "hash": "6959190624937875605"
-      },
-      {
-        "file": "logos/gitpaywidget/gitpaywidget-purple-playful.svg",
-        "hash": "6632317732392443006"
-      },
-      {
-        "file": "docs/SIGNUP_BILLING_IMPLEMENTATION_PLAN.md",
-        "hash": "8178438655029459837"
-      },
-      {
-        "file": "scripts/generate-api-docs.js",
-        "hash": "10809977200007693517"
+        "file": "FRONTEND_AGENTOS_INTEGRATION_ANALYSIS.md",
+        "hash": "16877015067714372742"
       },
       {
         "file": "logos/openstrand-icon-dark-1024.png",
         "hash": "18167428058761041770"
       },
       {
-        "file": "logos/codex/codex-black-no-subtitle.svg",
-        "hash": "17027466964665666637"
+        "file": "filter-repo-replacements.txt",
+        "hash": "3541213482034152921"
       },
       {
-        "file": "logos/codex/codex-vertical-grey-transparent-no-subtitle-4x.png",
-        "hash": "7904969701010744361"
+        "file": "scripts/setup-linode.sh",
+        "hash": "829096018192363633"
       },
       {
-        "file": "prompts/diary.md",
-        "hash": "1463348274262355188"
+        "file": "pnpm-lock.yaml.bak",
+        "hash": "6959190624937875605"
       },
       {
-        "file": "logos/codex/codex-square-green-white-1024x1024 (2).png",
-        "hash": "14776902088559163383"
+        "file": "scripts/templates/licenses/LICENSE-MIT",
+        "hash": "10639934178160976651"
       },
       {
-        "file": ".github/workflows/publish-sql-storage-adapter.yml",
-        "hash": "10801361068190894370"
+        "file": "logos/frame-square-black.svg",
+        "hash": "18313094622139576484"
       },
       {
-        "file": "logos/codex/codex-black-dark-no-subtitle-4x.png",
-        "hash": "8659923442152444131"
+        "file": "prompts/lc_audit_aide.md",
+        "hash": "10384619968526784373"
       },
       {
-        "file": "logos/gitpaywidget/gitpaywidget-purple-dark-2x.png",
-        "hash": "3298323511212076693"
+        "file": "logos/codex/frame-codex-black-white-no-subtitle-4x.png",
+        "hash": "8624779668618427133"
       },
       {
-        "file": "logos/codex/codex-green-white-icon-right-4x.png",
-        "hash": "9988098342314217062"
+        "file": "docs/EXTENSION_ARCHITECTURE_FINAL.md",
+        "hash": "3211146181674497727"
       },
       {
-        "file": "logos/codex/frame-codex-grey-dark-no-subtitle-4x.png",
-        "hash": "15267851923053107522"
+        "file": "logos/codex/frame-codex-grey-dark-icon-right.svg",
+        "hash": "98481984493672960"
       },
       {
-        "file": "scripts/templates/typedoc.json",
-        "hash": "12122338177216906529"
+        "file": "logos/gitpaywidget/gitpaywidget-icon-purple-trans-1024x1024.png",
+        "hash": "8402285111511488168"
       },
       {
-        "file": "logos/codex/frame-codex-vertical-grey-transparent-no-subtitle-4x.png",
-        "hash": "17783568663278834553"
-      },
-      {
-        "file": "docs/REFACTOR_COMPLETE_SUMMARY.md",
-        "hash": "1758333781902102678"
-      },
-      {
-        "file": "logos/codex/codex-square-grey-white-1024x1024.png",
-        "hash": "18134759506253421101"
-      },
-      {
-        "file": "logos/frame-dev-brand-vertical.html",
-        "hash": "16150998813684756992"
-      },
-      {
-        "file": "logos/codex/codex-grey-white-no-subtitle-4x.png",
-        "hash": "2848962880754085190"
-      },
-      {
-        "file": "PRODUCTION_SETUP.md",
-        "hash": "17490340870055944753"
-      },
-      {
-        "file": "production-commands.sh",
-        "hash": "3943380789871675900"
-      },
-      {
-        "file": ".github/scripts/restore-agentos-deps-after-pack.js",
-        "hash": "10367289308650316164"
+        "file": ".prettierrc.json",
+        "hash": "16825297411016576538"
       },
       {
         "file": "scripts/templates/community/ISSUE_TEMPLATE/bug_report.yml",
         "hash": "5310421666331456098"
       },
       {
+        "file": "SQL_STORAGE_ADAPTER_SETUP.md",
+        "hash": "14815054219818525120"
+      },
+      {
+        "file": "docs/SUPABASE_STRIPE_SETUP.md",
+        "hash": "3624401188615210967"
+      },
+      {
+        "file": "logos/codex/frame-codex-vertical-black.svg",
+        "hash": "5772908161670416369"
+      },
+      {
+        "file": "logos/frame-logo-green-no-tagline.svg",
+        "hash": "2446460867831236346"
+      },
+      {
+        "file": "docs/CREATING_NEW_AGENT.md",
+        "hash": "1736231766782139564"
+      },
+      {
+        "file": "IMPROVEMENTS_SUMMARY.md",
+        "hash": "13494352847787861714"
+      },
+      {
         "file": "logos/codex/codex-square-green-white-1024x1024 (1).png",
         "hash": "16032492560872637364"
       },
       {
-        "file": "logos/codex/frame-codex-square-grey-white-1024x1024.png",
-        "hash": "16681849653722649031"
+        "file": "logos/gitpaywidget/gitpaywidget.html",
+        "hash": "17443652618897061310"
       },
       {
-        "file": "CONFIGURATION.md",
-        "hash": "3011350259250709052"
+        "file": "prompts/v_default_assistant.md",
+        "hash": "11739016834561199709"
       },
       {
-        "file": "logos/agentos-primary-no-tagline-dark-2x.png",
-        "hash": "7509578314135008035"
+        "file": "wiki/frame/architecture.md",
+        "hash": "16907928412256926785"
       },
       {
-        "file": "docs/MARKETPLACE.md",
-        "hash": "13330519905276474836"
+        "file": "logos/codex/frame-codex-black-dark-no-subtitle-4x.png",
+        "hash": "15267851923053107522"
       },
       {
-        "file": "logos/frame-wordmark.svg",
-        "hash": "10076107641709845332"
+        "file": "update_lemon_upsert.py",
+        "hash": "6146403964813025712"
       },
       {
-        "file": "logos/frame-dev-brand.html",
-        "hash": "6493327936166904387"
+        "file": "logos/codex/codex-vertical-green-dark.svg",
+        "hash": "8364365471077909841"
       },
       {
-        "file": "scripts/vca-bootstrap.sh",
-        "hash": "10594538425824511974"
+        "file": "config/knowledge_base.json",
+        "hash": "7640930105431368970"
+      },
+      {
+        "file": "content/blog/2024-01-15-design-philosophy-agentos.md",
+        "hash": "14789304286385352391"
+      },
+      {
+        "file": "docs/EXTENSIONS_VERIFICATION.md",
+        "hash": "950450209494688413"
+      },
+      {
+        "file": "docs/CODEX_INTERNAL_SPEC.md",
+        "hash": "15147697632466838017"
+      },
+      {
+        "file": "docs/IMPLEMENTATION_COMPLETE.md",
+        "hash": "17429165955795795420"
+      },
+      {
+        "file": "prompts/meeting.md",
+        "hash": "2375007492300491252"
+      },
+      {
+        "file": "logos/gitpaywidget/gitpaywidget-vertical-purple-transparent-4x.png",
+        "hash": "9730045580542261288"
+      },
+      {
+        "file": "docs/MULTI_GMI_COLLABORATION.md",
+        "hash": "9142735420304556136"
+      },
+      {
+        "file": "docs/PLATFORM_FEATURE_MATRIX.md",
+        "hash": "3726071711229611503"
+      },
+      {
+        "file": ".codex-todo",
+        "hash": "7844169992349031893"
+      },
+      {
+        "file": "wiki/openstrand/api.md",
+        "hash": "10528707478526921107"
+      },
+      {
+        "file": "logos/codex/frame-codex-green-transparent-icon-right-4x.png",
+        "hash": "11243061311843923352"
+      },
+      {
+        "file": "logos/codex/codex-vertical-black-dark-no-subtitle.svg",
+        "hash": "10291358402028554983"
       },
       {
         "file": "logos/codex/frame-codex-icon-grey.svg",
         "hash": "10747181229575203248"
       },
       {
-        "file": "logos/codex/frame-codex-icon-black-1024x1024 (1).png",
-        "hash": "7217341448505993390"
+        "file": "logos/codex/codex-black-transparent-no-subtitle-4x.png",
+        "hash": "54554309471064842"
       },
       {
-        "file": "prompts/coding_interviewer.md",
-        "hash": "8388925220277934033"
+        "file": "tempAgentOSText.txt",
+        "hash": "6801485530142360642"
       },
       {
-        "file": "logos/codex/codex-vertical-black-no-subtitle.svg",
-        "hash": "11015479868050903083"
+        "file": "logos/codex/frame-codex-grey-white-icon-right-no-subtitle-4x.png",
+        "hash": "12607827334010748857"
       },
       {
-        "file": "scripts/author_rewrite.py",
-        "hash": "12262480733359443266"
+        "file": "docs/REFACTOR_COMPLETE_SUMMARY.md",
+        "hash": "1758333781902102678"
       },
       {
-        "file": "logos/codex/frame-codex-vertical-green-dark.svg",
-        "hash": "11318909405862035627"
+        "file": "docs/AGENTOS_LANDING_IMPLEMENTATION.md",
+        "hash": "12279402925746429948"
+      },
+      {
+        "file": ".github/workflows/mirror-agentos-landing.yml",
+        "hash": "11218734627836690975"
+      },
+      {
+        "file": "wiki/api/README.md",
+        "hash": "10199574392063138689"
+      },
+      {
+        "file": "scripts/commit-apps.sh",
+        "hash": "10099434299449928635"
+      },
+      {
+        "file": ".gitignore",
+        "hash": "17179694532513678898"
+      },
+      {
+        "file": "logos/gitpaywidget/gitpaywidget-icon-purple-dark-512x512.png",
+        "hash": "14539886635515294613"
+      },
+      {
+        "file": ".secretlintrc.json",
+        "hash": "12336600977459259867"
+      },
+      {
+        "file": "prompts/general_chat.md",
+        "hash": "4394747360966149876"
+      },
+      {
+        "file": "logos/codex/codex-grey-no-subtitle.svg",
+        "hash": "3741117853354835826"
+      },
+      {
+        "file": "scripts/scanPrePush.mjs",
+        "hash": "5281791423431456957"
+      },
+      {
+        "file": "logos/codex/codex-vertical-green-transparent-4x.png",
+        "hash": "10453389609794856924"
+      },
+      {
+        "file": "logos/gitpaywidget/gitpaywidget-purple-transparent-4x.png",
+        "hash": "11910710172111577757"
+      },
+      {
+        "file": "logos/openstrand-logo-gradient.svg",
+        "hash": "17359654540361237697"
+      },
+      {
+        "file": ".github/scripts/rewrite-workspace-deps.js",
+        "hash": "13411278688842373662"
+      },
+      {
+        "file": "package-lock.json",
+        "hash": "4060958951898468545"
+      },
+      {
+        "file": "scripts/rewrite-extensions-history.sh",
+        "hash": "894314757603667369"
+      },
+      {
+        "file": "docs/SIGNUP_BILLING_IMPLEMENTATION_PLAN.md",
+        "hash": "8178438655029459837"
+      },
+      {
+        "file": ".github/workflows/mirror-agentos-client.yml",
+        "hash": "450314042816123045"
+      },
+      {
+        "file": "scripts/templates/community/CONTRIBUTING.md",
+        "hash": "9938927516686500286"
+      },
+      {
+        "file": "docs/MISSION_ACCOMPLISHED.md",
+        "hash": "2721962218210047530"
+      },
+      {
+        "file": "logos/codex/frame-codex-icon-black-512x512.png",
+        "hash": "4407788083954087485"
+      },
+      {
+        "file": "logos/codex/frame-codex-black-dark.svg",
+        "hash": "2305987535388859324"
+      },
+      {
+        "file": "docs/EMERGENT_AGENCY_SYSTEM.md",
+        "hash": "7879693943798469593"
+      },
+      {
+        "file": ".husky/pre-commit",
+        "hash": "15316813045709350048"
+      },
+      {
+        "file": "production-commands.sh",
+        "hash": "3943380789871675900"
+      },
+      {
+        "file": "docker-compose.yml",
+        "hash": "17235073780406163019"
+      },
+      {
+        "file": "docs/TTS_OPTIMIZATION_GUIDE.md",
+        "hash": "7864013854486057225"
+      },
+      {
+        "file": "logos/codex/codex-grey-dark-icon-right-no-subtitle.svg",
+        "hash": "20330997559908147"
+      },
+      {
+        "file": "pnpm-lock.yaml",
+        "hash": "17642390179146438063"
+      },
+      {
+        "file": "sample.ts",
+        "hash": "722698641277785837"
+      },
+      {
+        "file": "logos/codex/frame-codex-icon-green-1024x1024.png",
+        "hash": "4913011952813683169"
+      },
+      {
+        "file": "ter",
+        "hash": "9444487591621092390"
+      },
+      {
+        "file": "docs/V0_1_0_RELEASE_NOTES.md",
+        "hash": "16278166553049562186"
+      },
+      {
+        "file": "logos/codex/codex-black-white-no-subtitle-4x.png",
+        "hash": "5861251855445926142"
       },
       {
         "file": "guardrail.patch",
         "hash": "3469471622303453489"
       },
       {
-        "file": "logos/codex/frame-codex-black-dark-4x.png",
-        "hash": "6392693771500080720"
+        "file": "docs/AUTH_EXTRACTION_SUMMARY.md",
+        "hash": "17249383690957240728"
       },
       {
-        "file": ".github/workflows/publish-agentos.yml",
-        "hash": "10840097040770669202"
+        "file": "wiki/frame/README.md",
+        "hash": "813899875146894943"
       },
       {
-        "file": "docs/CLIENT_STORAGE_AND_EXPORTS.md",
-        "hash": "10368054425036833955"
+        "file": "logos/codex/codex-green-white-icon-right-4x.png",
+        "hash": "9988098342314217062"
       },
       {
-        "file": "logos/gitpaywidget/gitpaywidget-vertical-purple-playful-dark (1).svg",
-        "hash": "13439539483270161458"
+        "file": "logos/codex/frame-codex-square-grey-white-1024x1024.png",
+        "hash": "16681849653722649031"
+      },
+      {
+        "file": "logos/codex/frame-codex-square-green-white-1024x1024.png",
+        "hash": "1547672223806802596"
+      },
+      {
+        "file": "logos/codex/codex-black-dark-no-subtitle-4x.png",
+        "hash": "8659923442152444131"
+      },
+      {
+        "file": "logos/codex/codex-square-black-white-1024x1024.png",
+        "hash": "11942754463163519463"
+      },
+      {
+        "file": "scripts/templates/community/pull_request_template.md",
+        "hash": "1644504350635363263"
+      },
+      {
+        "file": "scripts/author_rewrite.py",
+        "hash": "12262480733359443266"
+      },
+      {
+        "file": "scripts/commit-batch.sh",
+        "hash": "4278273851117503974"
+      },
+      {
+        "file": "logos/codex/frame-codex-vertical-black-transparent-4x.png",
+        "hash": "10537856128758114068"
+      },
+      {
+        "file": "prompts/context_aggregator_v1.md",
+        "hash": "803486634254450040"
+      },
+      {
+        "file": "scripts/commit-root-sync.sh",
+        "hash": "3278869478056786214"
+      },
+      {
+        "file": "logos/gitpaywidget/gitpaywidget-purple-playful.svg",
+        "hash": "6632317732392443006"
+      },
+      {
+        "file": "logos/codex/frame-codex-grey-dark-icon-right-4x.png",
+        "hash": "8993515889084141076"
+      },
+      {
+        "file": "logos/agentos-primary-no-tagline-transparent-4x.png",
+        "hash": "9920701470536349581"
+      },
+      {
+        "file": ".github/workflows/trigger-docs.yml",
+        "hash": "14603806117898201069"
+      },
+      {
+        "file": "logos/frame-wordmark.svg",
+        "hash": "10076107641709845332"
+      },
+      {
+        "file": "wiki/codex/api.md",
+        "hash": "11078212854699832005"
+      },
+      {
+        "file": "logos/codex/frame-codex-icon-green.svg",
+        "hash": "6982734011126006282"
+      },
+      {
+        "file": "docs/CONTRIBUTING.md",
+        "hash": "1820877282582208874"
+      },
+      {
+        "file": "e pnpm install --no-frozen-lockfile on server",
+        "hash": "4699891281000355743"
+      },
+      {
+        "file": ".github/workflows/mirror-frame-dev.yml",
+        "hash": "8130055916480350215"
+      },
+      {
+        "file": "docs/REFACTOR_STATUS_FINAL.md",
+        "hash": "7551865540186774744"
+      },
+      {
+        "file": "STATUS_REPORT.md",
+        "hash": "2269880001976644891"
+      },
+      {
+        "file": "docs/REACTIVE-SYSTEM.md",
+        "hash": "5794115108144631983"
+      },
+      {
+        "file": ".eslintrc.json",
+        "hash": "18333464252529489487"
+      },
+      {
+        "file": "logos/codex/frame-codex-vertical-grey-transparent-4x.png",
+        "hash": "6363979074570249495"
+      },
+      {
+        "file": "logos/codex/frame-codex-black-transparent-no-subtitle-4x.png",
+        "hash": "2225622412232781292"
+      },
+      {
+        "file": "logos/agentos-icon.svg",
+        "hash": "6142963447062708699"
+      },
+      {
+        "file": "logos/agentos-primary-no-tagline-dark-2x.png",
+        "hash": "7509578314135008035"
+      },
+      {
+        "file": ".gitmodules",
+        "hash": "3366639224188196077"
+      },
+      {
+        "file": "scripts/generate-api-docs.js",
+        "hash": "10809977200007693517"
+      },
+      {
+        "file": "docs/BACKEND_API.md",
+        "hash": "14366265562967168381"
+      },
+      {
+        "file": "prompts/diary.md",
+        "hash": "1463348274262355188"
+      },
+      {
+        "file": "logos/agentos-primary-light-2x.png",
+        "hash": "18139143424666806251"
+      },
+      {
+        "file": "scripts/push-apps-agentos-sh.sh",
+        "hash": "9028880235116284489"
+      },
+      {
+        "file": "logos/codex/frame-codex-square-black-transparent-1024x1024.png",
+        "hash": "10973289985504001926"
+      },
+      {
+        "file": "logos/codex/codex-vertical-grey-transparent-no-subtitle-4x.png",
+        "hash": "7904969701010744361"
+      },
+      {
+        "file": "wiki/openstrand/features.md",
+        "hash": "6754544654332052471"
+      },
+      {
+        "file": "docs/GMIS_AGENTS_AGENCY.md",
+        "hash": "10866236520547314448"
+      },
+      {
+        "file": "vercel.json",
+        "hash": "2599605767288513563"
+      },
+      {
+        "file": "logos/gitpaywidget/gitpaywidget-purple-white-2x.png",
+        "hash": "7558825976879076001"
+      },
+      {
+        "file": "logos/codex/codex-square-green-white-1024x1024 (2).png",
+        "hash": "14776902088559163383"
+      },
+      {
+        "file": "docs/EXTENSION_REFACTORING_PLAN.md",
+        "hash": "10037420142712903725"
+      },
+      {
+        "file": "logos/codex/codex-green-white-4x.png",
+        "hash": "15246441882277679250"
+      },
+      {
+        "file": "CONFIGURATION.md",
+        "hash": "3011350259250709052"
+      },
+      {
+        "file": "logos/codex/codex-vertical-grey-dark-no-subtitle.svg",
+        "hash": "12002995718401754549"
+      },
+      {
+        "file": ".cspell.json",
+        "hash": "14923660446953548356"
+      },
+      {
+        "file": "logos/codex/codex-green-dark-icon-right-no-subtitle-4x.png",
+        "hash": "5730197482338142288"
+      },
+      {
+        "file": "logos/codex/codex-green-transparent-icon-right-no-subtitle-4x.png",
+        "hash": "12509667015213475655"
+      },
+      {
+        "file": "wiki/api/examples.md",
+        "hash": "5726737623351644704"
+      },
+      {
+        "file": ".github/workflows/publish-sql-storage-adapter.yml",
+        "hash": "10801361068190894370"
+      },
+      {
+        "file": "docs/AGENCY_EXECUTION_MODES.md",
+        "hash": "10797121518086642361"
+      },
+      {
+        "file": "logos/codex/frame-codex-grey-dark-no-subtitle.svg",
+        "hash": "11120232379881965373"
+      },
+      {
+        "file": "scripts/vca-bootstrap.sh",
+        "hash": "10594538425824511974"
+      },
+      {
+        "file": "docs/agentos/RELEASING.md",
+        "hash": "10370760511449343290"
+      },
+      {
+        "file": "logos/agentos-primary-no-tagline.svg",
+        "hash": "16367742698825748837"
+      },
+      {
+        "file": "scripts/templates/workflows/node-publish-on-tag.yml",
+        "hash": "15145722064917089090"
+      },
+      {
+        "file": "scripts/scanSecrets.mjs",
+        "hash": "3376361208362895995"
       }
     ],
     "projectFileMap": {
@@ -1654,6 +1656,18 @@
         {
           "file": "apps/agentos.sh/components/ui/toast.tsx",
           "hash": "17452954164348633107"
+        },
+        {
+          "file": "apps/agentos.sh/content/blog/adaptive-vs-emergent.md",
+          "hash": "14274698872725706242"
+        },
+        {
+          "file": "apps/agentos.sh/content/blog/announcing-agentos.md",
+          "hash": "17325986198351193374"
+        },
+        {
+          "file": "apps/agentos.sh/content/careers/senior-ai-engineer.md",
+          "hash": "15875991369895635562"
         },
         {
           "file": "apps/agentos.sh/docs/I18N_IMPLEMENTATION.md",
@@ -1945,7 +1959,10 @@
         {
           "file": "packages/gitpaywidget-sdk/package.json",
           "hash": "8460834339967218567",
-          "deps": ["npm:typescript", "npm:rimraf@6.1.0"]
+          "deps": [
+            "npm:typescript",
+            "npm:rimraf@6.1.0"
+          ]
         },
         {
           "file": "packages/gitpaywidget-sdk/src/index.ts",
@@ -1964,7 +1981,10 @@
         {
           "file": "packages/shared/package.json",
           "hash": "8762557038094155015",
-          "deps": ["npm:rimraf@6.1.0", "npm:typescript"]
+          "deps": [
+            "npm:rimraf@6.1.0",
+            "npm:typescript"
+          ]
         },
         {
           "file": "packages/shared/src/index.ts",
@@ -8219,7 +8239,10 @@
         {
           "file": "apps/agentos-live-docs/package.json",
           "hash": "3409299266123663809",
-          "deps": ["npm:serve", "npm:glob"]
+          "deps": [
+            "npm:serve",
+            "npm:glob"
+          ]
         },
         {
           "file": "apps/agentos-live-docs/robots.txt",
@@ -8729,7 +8752,10 @@
         {
           "file": "codex-extensions/package.json",
           "hash": "15615064970647337382",
-          "deps": ["npm:react", "npm:typescript"]
+          "deps": [
+            "npm:react",
+            "npm:typescript"
+          ]
         },
         {
           "file": "codex-extensions/src/config.ts",
@@ -8772,7 +8798,11 @@
         {
           "file": "packages/payments-core/package.json",
           "hash": "14871703483195961386",
-          "deps": ["npm:typescript", "npm:rimraf@6.1.0", "npm:stripe"]
+          "deps": [
+            "npm:typescript",
+            "npm:rimraf@6.1.0",
+            "npm:stripe"
+          ]
         },
         {
           "file": "packages/payments-core/src/index.ts",
@@ -8813,7 +8843,12 @@
         {
           "file": "packages/gitpaywidget-widget/package.json",
           "hash": "3042953409217257487",
-          "deps": ["npm:tsup", "npm:typescript", "npm:rimraf@6.1.0", "@gitpaywidget/sdk"]
+          "deps": [
+            "npm:tsup",
+            "npm:typescript",
+            "npm:rimraf@6.1.0",
+            "@gitpaywidget/sdk"
+          ]
         },
         {
           "file": "packages/gitpaywidget-widget/src/index.ts",

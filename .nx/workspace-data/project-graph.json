@@ -93,8 +93,14 @@
             },
             "configurations": {},
             "parallelism": true,
-            "dependsOn": ["^build"],
-            "outputs": ["{projectRoot}/dist", "{projectRoot}/.next", "{projectRoot}/out"]
+            "dependsOn": [
+              "^build"
+            ],
+            "outputs": [
+              "{projectRoot}/dist",
+              "{projectRoot}/.next",
+              "{projectRoot}/out"
+            ]
           },
           "prepublishOnly": {
             "executor": "nx:run-script",
@@ -119,7 +125,11 @@
             },
             "configurations": {},
             "parallelism": true,
-            "inputs": ["default", "{workspaceRoot}/.eslintrc.json", "{workspaceRoot}/.eslintrc.js"],
+            "inputs": [
+              "default",
+              "{workspaceRoot}/.eslintrc.json",
+              "{workspaceRoot}/.eslintrc.js"
+            ],
             "cache": true
           },
           "lint:fix": {
@@ -182,7 +192,11 @@
             },
             "configurations": {},
             "parallelism": true,
-            "inputs": ["default", "^default", "{workspaceRoot}/jest.preset.js"],
+            "inputs": [
+              "default",
+              "^default",
+              "{workspaceRoot}/jest.preset.js"
+            ],
             "cache": true
           },
           "test:watch": {
@@ -245,7 +259,10 @@
             "configurations": {},
             "parallelism": true,
             "cache": true,
-            "outputs": ["{projectRoot}/docs", "{projectRoot}/public/docs"]
+            "outputs": [
+              "{projectRoot}/docs",
+              "{projectRoot}/public/docs"
+            ]
           },
           "docs:clean": {
             "executor": "nx:run-script",
@@ -281,10 +298,15 @@
       "data": {
         "root": "packages/gitpaywidget-widget",
         "name": "@gitpaywidget/widget",
-        "tags": ["npm:public"],
+        "tags": [
+          "npm:public"
+        ],
         "metadata": {
           "targetGroups": {
-            "NPM Scripts": ["build", "clean"]
+            "NPM Scripts": [
+              "build",
+              "clean"
+            ]
           },
           "description": "Embeddable payment widget for GitPayWidget projects.",
           "js": {
@@ -306,8 +328,14 @@
             },
             "configurations": {},
             "parallelism": true,
-            "dependsOn": ["^build"],
-            "outputs": ["{projectRoot}/dist", "{projectRoot}/.next", "{projectRoot}/out"]
+            "dependsOn": [
+              "^build"
+            ],
+            "outputs": [
+              "{projectRoot}/dist",
+              "{projectRoot}/.next",
+              "{projectRoot}/out"
+            ]
           },
           "clean": {
             "executor": "nx:run-script",
@@ -331,7 +359,13 @@
       "data": {
         "root": "packages/agentos-extensions",
         "name": "@framers/agentos-extensions",
-        "tags": ["npm:public", "npm:agentos", "npm:extensions", "npm:tools", "npm:plugins"],
+        "tags": [
+          "npm:public",
+          "npm:agentos",
+          "npm:extensions",
+          "npm:tools",
+          "npm:plugins"
+        ],
         "metadata": {
           "targetGroups": {
             "NPM Scripts": [
@@ -372,7 +406,11 @@
             },
             "configurations": {},
             "parallelism": true,
-            "inputs": ["default", "^default", "{workspaceRoot}/jest.preset.js"],
+            "inputs": [
+              "default",
+              "^default",
+              "{workspaceRoot}/jest.preset.js"
+            ],
             "cache": true
           },
           "test:coverage": {
@@ -398,8 +436,14 @@
             },
             "configurations": {},
             "parallelism": true,
-            "dependsOn": ["^build"],
-            "outputs": ["{projectRoot}/dist", "{projectRoot}/.next", "{projectRoot}/out"]
+            "dependsOn": [
+              "^build"
+            ],
+            "outputs": [
+              "{projectRoot}/dist",
+              "{projectRoot}/.next",
+              "{projectRoot}/out"
+            ]
           },
           "lint": {
             "executor": "nx:run-script",
@@ -412,7 +456,11 @@
             },
             "configurations": {},
             "parallelism": true,
-            "inputs": ["default", "{workspaceRoot}/.eslintrc.json", "{workspaceRoot}/.eslintrc.js"],
+            "inputs": [
+              "default",
+              "{workspaceRoot}/.eslintrc.json",
+              "{workspaceRoot}/.eslintrc.js"
+            ],
             "cache": true
           },
           "clean": {
@@ -463,7 +511,10 @@
             "configurations": {},
             "parallelism": true,
             "cache": true,
-            "outputs": ["{projectRoot}/docs", "{projectRoot}/public/docs"]
+            "outputs": [
+              "{projectRoot}/docs",
+              "{projectRoot}/public/docs"
+            ]
           }
         },
         "implicitDependencies": []
@@ -475,10 +526,20 @@
       "data": {
         "root": "packages/agentos-personas",
         "name": "@framersai/agentos-personas",
-        "tags": ["npm:public", "npm:agentos", "npm:personas", "npm:ai-agents", "npm:personalities"],
+        "tags": [
+          "npm:public",
+          "npm:agentos",
+          "npm:personas",
+          "npm:ai-agents",
+          "npm:personalities"
+        ],
         "metadata": {
           "targetGroups": {
-            "NPM Scripts": ["build", "validate", "create-persona"]
+            "NPM Scripts": [
+              "build",
+              "validate",
+              "create-persona"
+            ]
           },
           "description": "Curated personas and marketplace for AgentOS",
           "js": {
@@ -507,8 +568,14 @@
             },
             "configurations": {},
             "parallelism": true,
-            "dependsOn": ["^build"],
-            "outputs": ["{projectRoot}/dist", "{projectRoot}/.next", "{projectRoot}/out"]
+            "dependsOn": [
+              "^build"
+            ],
+            "outputs": [
+              "{projectRoot}/dist",
+              "{projectRoot}/.next",
+              "{projectRoot}/out"
+            ]
           },
           "validate": {
             "executor": "nx:run-script",
@@ -544,10 +611,16 @@
       "data": {
         "root": "packages/gitpaywidget-sdk",
         "name": "@gitpaywidget/sdk",
-        "tags": ["npm:public"],
+        "tags": [
+          "npm:public"
+        ],
         "metadata": {
           "targetGroups": {
-            "NPM Scripts": ["clean", "build", "typecheck"]
+            "NPM Scripts": [
+              "clean",
+              "build",
+              "typecheck"
+            ]
           },
           "description": "Client-side SDK for embedding GitPayWidget on any static site.",
           "js": {
@@ -586,8 +659,14 @@
             },
             "configurations": {},
             "parallelism": true,
-            "dependsOn": ["^build"],
-            "outputs": ["{projectRoot}/dist", "{projectRoot}/.next", "{projectRoot}/out"]
+            "dependsOn": [
+              "^build"
+            ],
+            "outputs": [
+              "{projectRoot}/dist",
+              "{projectRoot}/.next",
+              "{projectRoot}/out"
+            ]
           },
           "typecheck": {
             "executor": "nx:run-script",
@@ -612,10 +691,15 @@
       "data": {
         "root": "apps/agentos-live-docs",
         "name": "@framersai/agentos-live-docs",
-        "tags": ["npm:private"],
+        "tags": [
+          "npm:private"
+        ],
         "metadata": {
           "targetGroups": {
-            "NPM Scripts": ["dev", "wrap"]
+            "NPM Scripts": [
+              "dev",
+              "wrap"
+            ]
           },
           "description": "Live TypeDoc documentation for AgentOS with agentos.sh styling",
           "js": {
@@ -659,10 +743,20 @@
       "data": {
         "root": "apps/agentos-workbench",
         "name": "@framersai/agentos-workbench",
-        "tags": ["npm:private"],
+        "tags": [
+          "npm:private"
+        ],
         "metadata": {
           "targetGroups": {
-            "NPM Scripts": ["dev", "build", "preview", "typecheck", "lint", "e2e", "e2e:report"]
+            "NPM Scripts": [
+              "dev",
+              "build",
+              "preview",
+              "typecheck",
+              "lint",
+              "e2e",
+              "e2e:report"
+            ]
           },
           "description": "Developer cockpit for AgentOS sessions: inspect personas, debug tool calls, and replay streaming transcripts.",
           "js": {
@@ -695,8 +789,14 @@
             },
             "configurations": {},
             "parallelism": true,
-            "dependsOn": ["^build"],
-            "outputs": ["{projectRoot}/dist", "{projectRoot}/.next", "{projectRoot}/out"]
+            "dependsOn": [
+              "^build"
+            ],
+            "outputs": [
+              "{projectRoot}/dist",
+              "{projectRoot}/.next",
+              "{projectRoot}/out"
+            ]
           },
           "preview": {
             "executor": "nx:run-script",
@@ -734,7 +834,11 @@
             },
             "configurations": {},
             "parallelism": true,
-            "inputs": ["default", "{workspaceRoot}/.eslintrc.json", "{workspaceRoot}/.eslintrc.js"],
+            "inputs": [
+              "default",
+              "{workspaceRoot}/.eslintrc.json",
+              "{workspaceRoot}/.eslintrc.js"
+            ],
             "cache": true
           },
           "e2e": {
@@ -771,10 +875,15 @@
       "data": {
         "root": "packages/payments-core",
         "name": "@gitpaywidget/payments-core",
-        "tags": ["npm:private"],
+        "tags": [
+          "npm:private"
+        ],
         "metadata": {
           "targetGroups": {
-            "NPM Scripts": ["clean", "build"]
+            "NPM Scripts": [
+              "clean",
+              "build"
+            ]
           },
           "description": "Provider-agnostic payment abstraction used by GitPayWidget backend.",
           "js": {
@@ -813,8 +922,14 @@
             },
             "configurations": {},
             "parallelism": true,
-            "dependsOn": ["^build"],
-            "outputs": ["{projectRoot}/dist", "{projectRoot}/.next", "{projectRoot}/out"]
+            "dependsOn": [
+              "^build"
+            ],
+            "outputs": [
+              "{projectRoot}/dist",
+              "{projectRoot}/.next",
+              "{projectRoot}/out"
+            ]
           }
         },
         "implicitDependencies": []
@@ -840,7 +955,14 @@
         ],
         "metadata": {
           "targetGroups": {
-            "NPM Scripts": ["build", "dev", "typecheck", "lint", "test", "test:watch"]
+            "NPM Scripts": [
+              "build",
+              "dev",
+              "typecheck",
+              "lint",
+              "test",
+              "test:watch"
+            ]
           },
           "description": "Embeddable GitHub-based knowledge viewer with analog paper styling, semantic search, and wiki features",
           "js": {
@@ -870,8 +992,14 @@
             },
             "configurations": {},
             "parallelism": true,
-            "dependsOn": ["^build"],
-            "outputs": ["{projectRoot}/dist", "{projectRoot}/.next", "{projectRoot}/out"]
+            "dependsOn": [
+              "^build"
+            ],
+            "outputs": [
+              "{projectRoot}/dist",
+              "{projectRoot}/.next",
+              "{projectRoot}/out"
+            ]
           },
           "dev": {
             "executor": "nx:run-script",
@@ -909,7 +1037,11 @@
             },
             "configurations": {},
             "parallelism": true,
-            "inputs": ["default", "{workspaceRoot}/.eslintrc.json", "{workspaceRoot}/.eslintrc.js"],
+            "inputs": [
+              "default",
+              "{workspaceRoot}/.eslintrc.json",
+              "{workspaceRoot}/.eslintrc.js"
+            ],
             "cache": true
           },
           "test": {
@@ -923,7 +1055,11 @@
             },
             "configurations": {},
             "parallelism": true,
-            "inputs": ["default", "^default", "{workspaceRoot}/jest.preset.js"],
+            "inputs": [
+              "default",
+              "^default",
+              "{workspaceRoot}/jest.preset.js"
+            ],
             "cache": true
           },
           "test:watch": {
@@ -948,7 +1084,9 @@
       "data": {
         "root": "packages/theme-tokens",
         "name": "@framers/theme-tokens",
-        "tags": ["npm:public"],
+        "tags": [
+          "npm:public"
+        ],
         "metadata": {
           "targetGroups": {},
           "description": "Shared theme tokens (CSS variables) for Framers apps",
@@ -1022,8 +1160,14 @@
             },
             "configurations": {},
             "parallelism": true,
-            "dependsOn": ["^build"],
-            "outputs": ["{projectRoot}/dist", "{projectRoot}/.next", "{projectRoot}/out"]
+            "dependsOn": [
+              "^build"
+            ],
+            "outputs": [
+              "{projectRoot}/dist",
+              "{projectRoot}/.next",
+              "{projectRoot}/out"
+            ]
           },
           "start": {
             "executor": "nx:run-script",
@@ -1048,7 +1192,11 @@
             },
             "configurations": {},
             "parallelism": true,
-            "inputs": ["default", "{workspaceRoot}/.eslintrc.json", "{workspaceRoot}/.eslintrc.js"],
+            "inputs": [
+              "default",
+              "{workspaceRoot}/.eslintrc.json",
+              "{workspaceRoot}/.eslintrc.js"
+            ],
             "cache": true
           },
           "typecheck": {
@@ -1075,7 +1223,11 @@
             },
             "configurations": {},
             "parallelism": true,
-            "inputs": ["default", "^default", "{workspaceRoot}/jest.preset.js"],
+            "inputs": [
+              "default",
+              "^default",
+              "{workspaceRoot}/jest.preset.js"
+            ],
             "cache": true
           },
           "test:watch": {
@@ -1102,7 +1254,10 @@
             "configurations": {},
             "parallelism": true,
             "cache": true,
-            "outputs": ["{projectRoot}/docs", "{projectRoot}/public/docs"]
+            "outputs": [
+              "{projectRoot}/docs",
+              "{projectRoot}/public/docs"
+            ]
           }
         },
         "implicitDependencies": []
@@ -1173,8 +1328,14 @@
             },
             "configurations": {},
             "parallelism": true,
-            "dependsOn": ["^build"],
-            "outputs": ["{projectRoot}/dist", "{projectRoot}/.next", "{projectRoot}/out"]
+            "dependsOn": [
+              "^build"
+            ],
+            "outputs": [
+              "{projectRoot}/dist",
+              "{projectRoot}/.next",
+              "{projectRoot}/out"
+            ]
           },
           "typecheck": {
             "executor": "nx:run-script",
@@ -1200,7 +1361,11 @@
             },
             "configurations": {},
             "parallelism": true,
-            "inputs": ["default", "{workspaceRoot}/.eslintrc.json", "{workspaceRoot}/.eslintrc.js"],
+            "inputs": [
+              "default",
+              "{workspaceRoot}/.eslintrc.json",
+              "{workspaceRoot}/.eslintrc.js"
+            ],
             "cache": true
           },
           "test": {
@@ -1214,7 +1379,11 @@
             },
             "configurations": {},
             "parallelism": true,
-            "inputs": ["default", "^default", "{workspaceRoot}/jest.preset.js"],
+            "inputs": [
+              "default",
+              "^default",
+              "{workspaceRoot}/jest.preset.js"
+            ],
             "cache": true
           },
           "dev:test": {
@@ -1253,7 +1422,10 @@
             "configurations": {},
             "parallelism": true,
             "cache": true,
-            "outputs": ["{projectRoot}/docs", "{projectRoot}/public/docs"]
+            "outputs": [
+              "{projectRoot}/docs",
+              "{projectRoot}/public/docs"
+            ]
           },
           "docs:watch": {
             "executor": "nx:run-script",
@@ -1287,7 +1459,11 @@
         ],
         "metadata": {
           "targetGroups": {
-            "NPM Scripts": ["build", "dev", "prepublishOnly"]
+            "NPM Scripts": [
+              "build",
+              "dev",
+              "prepublishOnly"
+            ]
           },
           "description": "Premium theme and plugin extensions for Frame Codex (private, internal use)",
           "js": {
@@ -1313,8 +1489,14 @@
             },
             "configurations": {},
             "parallelism": true,
-            "dependsOn": ["^build"],
-            "outputs": ["{projectRoot}/dist", "{projectRoot}/.next", "{projectRoot}/out"]
+            "dependsOn": [
+              "^build"
+            ],
+            "outputs": [
+              "{projectRoot}/dist",
+              "{projectRoot}/.next",
+              "{projectRoot}/out"
+            ]
           },
           "dev": {
             "executor": "nx:run-script",
@@ -1350,10 +1532,16 @@
       "data": {
         "root": "packages/shared",
         "name": "@framers/shared",
-        "tags": ["npm:private"],
+        "tags": [
+          "npm:private"
+        ],
         "metadata": {
           "targetGroups": {
-            "NPM Scripts": ["clean", "build", "typecheck"]
+            "NPM Scripts": [
+              "clean",
+              "build",
+              "typecheck"
+            ]
           },
           "description": "Internal shared utilities and types (plan catalog, rate limit types) for the Framers monorepo.",
           "js": {
@@ -1401,8 +1589,14 @@
             },
             "configurations": {},
             "parallelism": true,
-            "dependsOn": ["^build"],
-            "outputs": ["{projectRoot}/dist", "{projectRoot}/.next", "{projectRoot}/out"]
+            "dependsOn": [
+              "^build"
+            ],
+            "outputs": [
+              "{projectRoot}/dist",
+              "{projectRoot}/.next",
+              "{projectRoot}/out"
+            ]
           },
           "typecheck": {
             "executor": "nx:run-script",
@@ -1427,7 +1621,9 @@
       "data": {
         "root": "apps/agentos.sh",
         "name": "@framersai/agentos.sh",
-        "tags": ["npm:private"],
+        "tags": [
+          "npm:private"
+        ],
         "metadata": {
           "targetGroups": {
             "NPM Scripts": [
@@ -1486,8 +1682,14 @@
             },
             "configurations": {},
             "parallelism": true,
-            "dependsOn": ["^build"],
-            "outputs": ["{projectRoot}/dist", "{projectRoot}/.next", "{projectRoot}/out"]
+            "dependsOn": [
+              "^build"
+            ],
+            "outputs": [
+              "{projectRoot}/dist",
+              "{projectRoot}/.next",
+              "{projectRoot}/out"
+            ]
           },
           "copy:docs": {
             "executor": "nx:run-script",
@@ -1536,7 +1738,11 @@
             },
             "configurations": {},
             "parallelism": true,
-            "inputs": ["default", "{workspaceRoot}/.eslintrc.json", "{workspaceRoot}/.eslintrc.js"],
+            "inputs": [
+              "default",
+              "{workspaceRoot}/.eslintrc.json",
+              "{workspaceRoot}/.eslintrc.js"
+            ],
             "cache": true
           },
           "typecheck": {
@@ -1586,10 +1792,18 @@
       "data": {
         "root": "apps/frame.dev",
         "name": "@framersai/frame.dev",
-        "tags": ["npm:private"],
+        "tags": [
+          "npm:private"
+        ],
         "metadata": {
           "targetGroups": {
-            "NPM Scripts": ["dev", "build", "start", "lint", "typecheck"]
+            "NPM Scripts": [
+              "dev",
+              "build",
+              "start",
+              "lint",
+              "typecheck"
+            ]
           },
           "description": "Frame - Denoising the web. The OS for your life.",
           "js": {
@@ -1622,8 +1836,14 @@
             },
             "configurations": {},
             "parallelism": true,
-            "dependsOn": ["^build"],
-            "outputs": ["{projectRoot}/dist", "{projectRoot}/.next", "{projectRoot}/out"]
+            "dependsOn": [
+              "^build"
+            ],
+            "outputs": [
+              "{projectRoot}/dist",
+              "{projectRoot}/.next",
+              "{projectRoot}/out"
+            ]
           },
           "start": {
             "executor": "nx:run-script",
@@ -1648,7 +1868,11 @@
             },
             "configurations": {},
             "parallelism": true,
-            "inputs": ["default", "{workspaceRoot}/.eslintrc.json", "{workspaceRoot}/.eslintrc.js"],
+            "inputs": [
+              "default",
+              "{workspaceRoot}/.eslintrc.json",
+              "{workspaceRoot}/.eslintrc.js"
+            ],
             "cache": true
           },
           "typecheck": {
@@ -1674,7 +1898,9 @@
       "data": {
         "root": "apps/codex",
         "name": "@framersai/codex",
-        "tags": ["npm:private"],
+        "tags": [
+          "npm:private"
+        ],
         "metadata": {
           "targetGroups": {
             "NPM Scripts": [
@@ -1781,7 +2007,11 @@
             },
             "configurations": {},
             "parallelism": true,
-            "inputs": ["default", "^default", "{workspaceRoot}/jest.preset.js"],
+            "inputs": [
+              "default",
+              "^default",
+              "{workspaceRoot}/jest.preset.js"
+            ],
             "cache": true
           },
           "test:watch": {
@@ -1830,10 +2060,16 @@
       "data": {
         "root": "frontend",
         "name": "voice-chat-assistant-frontend",
-        "tags": ["npm:private"],
+        "tags": [
+          "npm:private"
+        ],
         "metadata": {
           "targetGroups": {
-            "NPM Scripts": ["dev", "build", "preview"]
+            "NPM Scripts": [
+              "dev",
+              "build",
+              "preview"
+            ]
           },
           "js": {
             "packageName": "voice-chat-assistant-frontend",
@@ -1865,8 +2101,14 @@
             },
             "configurations": {},
             "parallelism": true,
-            "dependsOn": ["^build"],
-            "outputs": ["{projectRoot}/dist", "{projectRoot}/.next", "{projectRoot}/out"]
+            "dependsOn": [
+              "^build"
+            ],
+            "outputs": [
+              "{projectRoot}/dist",
+              "{projectRoot}/.next",
+              "{projectRoot}/out"
+            ]
           },
           "preview": {
             "executor": "nx:run-script",
@@ -1890,7 +2132,9 @@
       "data": {
         "root": "backend",
         "name": "voice-chat-assistant-backend",
-        "tags": ["npm:public"],
+        "tags": [
+          "npm:public"
+        ],
         "metadata": {
           "targetGroups": {
             "NPM Scripts": [
@@ -1947,8 +2191,14 @@
             },
             "configurations": {},
             "parallelism": true,
-            "dependsOn": ["^build"],
-            "outputs": ["{projectRoot}/dist", "{projectRoot}/.next", "{projectRoot}/out"]
+            "dependsOn": [
+              "^build"
+            ],
+            "outputs": [
+              "{projectRoot}/dist",
+              "{projectRoot}/.next",
+              "{projectRoot}/out"
+            ]
           },
           "build:strict": {
             "executor": "nx:run-script",
@@ -1997,7 +2247,11 @@
             },
             "configurations": {},
             "parallelism": true,
-            "inputs": ["default", "^default", "{workspaceRoot}/jest.preset.js"],
+            "inputs": [
+              "default",
+              "^default",
+              "{workspaceRoot}/jest.preset.js"
+            ],
             "cache": true
           }
         },
@@ -51296,5 +51550,5 @@
   },
   "version": "6.0",
   "errors": [],
-  "computedAt": 1763604746957
+  "computedAt": 1763605051514
 }
