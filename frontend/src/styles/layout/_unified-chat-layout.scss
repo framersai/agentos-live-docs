@@ -24,10 +24,10 @@
   // EphemeralChatLog is part of the normal flow at the top if shown.
   // padding-top: env(safe-area-inset-top, 0px);
   // Side padding for the entire layout.
-  padding-top: var.$spacing-sm; // Reduced from lg
-  padding-left: 0; // Removed to allow full width for children, who manage their own padding
-  padding-right: 0;
-  padding-bottom: 0; // Handled by inner elements
+  padding-top: var.$spacing-lg; // Space for log if needed
+  padding-left: var.$spacing-lg; // Standard side padding for layout
+  padding-right: var.$spacing-lg;
+  padding-bottom: var.$spacing-lg; // Space for sticky voice input
   // padding-left: env(safe-area-inset-left, 0px);
   // padding-right: env(safe-area-inset-right, 0px);
   
