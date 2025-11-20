@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 10.15.1
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
+      - name: Lint
+        run: pnpm --filter @manicinc/gitpaywidget lint
+      
+      - name: Type check
+        run: pnpm --filter @manicinc/gitpaywidget typecheck
+      
+      - name: Run tests
+        run: pnpm --filter @manicinc/gitpaywidget test
+        env:
+          NODE_ENV: test
+      
+      - name: Build widget
+        run: pnpm --filter @gitpaywidget/widget build
+      
+      - name: Build SDK
+        run: pnpm --filter @gitpaywidget/sdk build

@@ -4,7 +4,7 @@
     "default": {
       "runner": "nx/tasks-runners/default",
       "options": {
-        "cacheableOperations": ["build", "test", "lint", "typecheck", "doc", "docs"]
+        "cacheableOperations": ["build", "test", "lint", "typecheck", "doc"]
       }
     }
   },
@@ -25,10 +25,6 @@
       "cache": true
     },
     "doc": {
-      "cache": true,
-      "outputs": ["{projectRoot}/docs", "{projectRoot}/public/docs"]
-    },
-    "docs": {
       "cache": true,
       "outputs": ["{projectRoot}/docs", "{projectRoot}/public/docs"]
     }
