@@ -1,0 +1,55 @@
+name: Monorepo CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+permissions:
+  contents: read
+  actions: read
+  checks: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 10.15.1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Derive appropriate SHAs for base and head
+        uses: nrwl/nx-set-shas@v4
+        with:
+          main-branch-name: main
+
+      - name: Lint Affected
+        run: pnpm nx affected -t lint --parallel=3
+
+      - name: Typecheck Affected
+        run: pnpm nx affected -t typecheck --parallel=3
+
+      - name: Test Affected
+        run: pnpm nx affected -t test --parallel=3
+        env:
+          CI: true
+
+      - name: Build Affected
+        run: pnpm nx affected -t build --parallel=3
+
+      - name: Generate Docs for Affected
+        run: pnpm nx affected -t docs --parallel=3
+
