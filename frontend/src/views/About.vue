@@ -1,10 +1,7 @@
-// File: frontend/src/views/About.vue
-/**
- * @file About.vue - Ephemeral Harmony Theme
- * @description Composes the About page using dedicated section components.
- */
+// File: frontend/src/views/About.vue /** * @file About.vue - Ephemeral Harmony Theme * @description
+Composes the About page using dedicated section components. */
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, onMounted, onBeforeUnmount } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import logoSvg from '@/assets/logo.svg';
 import { useAuth } from '@/composables/useAuth';
@@ -21,11 +18,86 @@ import AboutFooterSection from '@/components/about/AboutFooterSection.vue';
 const router = useRouter();
 const route = useRoute();
 const auth = useAuth();
+const activeLocale = computed(() => (route.params.locale as string) || 'en-US');
 const isGuestSession = computed(() => !auth.isAuthenticated.value);
 
+const aboutMetaTitle = 'About Voice Chat Assistant & AgentOS';
+const aboutMetaDescription =
+  'Voice Chat Assistant is built by The Framers and AgentOS team—AI/NLP engineers, product designers, and game designers creating open-source, AGI-ready tooling.';
+const aboutMetaKeywords =
+  'Voice Chat Assistant, AgentOS, Framers, AGI, AI engineers, NLP, multi-agent, product designers, Frame.dev';
+
+type MetaAttr = 'name' | 'property';
+type MetaEntry = { attr: MetaAttr; key: string; value: string };
+
+const metaSnapshots: Array<{
+  element: HTMLMetaElement;
+  attr: MetaAttr;
+  key: string;
+  previous: string | null;
+  created: boolean;
+}> = [];
+let previousDocumentTitle = '';
+
+const updateMetaTag = (entry: MetaEntry) => {
+  if (typeof document === 'undefined') return;
+  let element = document.head.querySelector<HTMLMetaElement>(`meta[${entry.attr}="${entry.key}"]`);
+  let created = false;
+  if (!element) {
+    element = document.createElement('meta');
+    element.setAttribute(entry.attr, entry.key);
+    document.head.appendChild(element);
+    created = true;
+  }
+  metaSnapshots.push({
+    element,
+    attr: entry.attr,
+    key: entry.key,
+    previous: element.getAttribute('content'),
+    created,
+  });
+  element.setAttribute('content', entry.value);
+};
+
+onMounted(() => {
+  if (typeof document === 'undefined') return;
+  previousDocumentTitle = document.title;
+  metaSnapshots.length = 0;
+
+  const aboutUrl = `https://voice-chat-assistant.com/${activeLocale.value}/about`;
+  const entries: MetaEntry[] = [
+    { attr: 'name', key: 'description', value: aboutMetaDescription },
+    { attr: 'name', key: 'keywords', value: aboutMetaKeywords },
+    { attr: 'property', key: 'og:title', value: aboutMetaTitle },
+    { attr: 'property', key: 'og:description', value: aboutMetaDescription },
+    { attr: 'property', key: 'og:url', value: aboutUrl },
+    { attr: 'name', key: 'twitter:title', value: aboutMetaTitle },
+    { attr: 'name', key: 'twitter:description', value: aboutMetaDescription },
+  ];
+
+  entries.forEach(updateMetaTag);
+  document.title = `${aboutMetaTitle} | Voice Chat Assistant`;
+});
+
+onBeforeUnmount(() => {
+  if (typeof document === 'undefined') return;
+  metaSnapshots.forEach(({ element, previous, created }) => {
+    if (created) {
+      element.remove();
+    } else if (previous !== null) {
+      element.setAttribute('content', previous);
+    } else {
+      element.removeAttribute('content');
+    }
+  });
+  metaSnapshots.length = 0;
+  if (previousDocumentTitle) {
+    document.title = previousDocumentTitle;
+  }
+});
+
 const goHome = (): void => {
-  const locale = (route.params.locale as string) || 'en-US';
-  router.push({ name: 'PublicHome', params: { locale } });
+  router.push({ name: 'PublicHome', params: { locale: activeLocale.value } });
 };
 </script>
 
