@@ -3,7 +3,7 @@ name: Trigger docs rebuild
 on:
   workflow_dispatch:
   push:
-    branches: [master]
+    branches: [master, dev, main, develop]
     paths:
       - 'packages/agentos/**'
       - 'apps/agentos.sh/**'
