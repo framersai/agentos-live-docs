@@ -26,7 +26,8 @@ export default {
     register: {
       eyebrow: 'Lavora più velocemente con un workspace su misura',
       headline: 'Configura il tuo account in pochi minuti.',
-      subheadline: 'Scegli il piano più adatto, completa il pagamento sicuro e inizia subito a usare Voice Chat Assistant.',
+      subheadline:
+        'Scegli il piano più adatto, completa il pagamento sicuro e inizia subito a usare Voice Chat Assistant.',
       steps: {
         account: 'Account',
         plan: 'Piano',
@@ -46,7 +47,8 @@ export default {
         passwordLabel: 'Crea una password',
         passwordPlaceholder: 'Almeno 8 caratteri',
         passwordHint: 'Utilizza almeno 8 caratteri con un numero o un simbolo.',
-        termsLabel: 'Accetto i <a href="https://voice-chat-assistant.com/terms" target="_blank" rel="noopener">Termini di servizio</a> e l’<a href="https://voice-chat-assistant.com/privacy" target="_blank" rel="noopener">Informativa sulla privacy</a>.',
+        termsLabel:
+          'Accetto i <a href="https://voice-chat-assistant.com/terms" target="_blank" rel="noopener">Termini di servizio</a> e l’<a href="https://voice-chat-assistant.com/privacy" target="_blank" rel="noopener">Informativa sulla privacy</a>.',
         errors: {
           missingFields: 'Inserisci e-mail e password per continuare.',
           mustAcceptTerms: 'Devi accettare i termini per creare un account.',
@@ -55,30 +57,36 @@ export default {
       },
       plan: {
         title: 'Scegli il workspace giusto per te',
-        subtitle: 'Ogni piano include strumenti vocali, memoria adattiva e risposte in streaming. Puoi effettuare l’upgrade quando hai bisogno di più posti o token.',
+        subtitle:
+          'Ogni piano include strumenti vocali, memoria adattiva e risposte in streaming. Puoi effettuare l’upgrade quando hai bisogno di più posti o token.',
         choose: 'Seleziona questo piano',
         featuredBadge: 'Consigliato',
       },
       payment: {
         title: 'Rivedi e completa il pagamento sicuro',
-        subtitle: 'Verrai reindirizzato al portale di pagamento Lemon Squeezy. I tuoi dati di fatturazione sono criptati e gestiti in sicurezza.',
+        subtitle:
+          'Verrai reindirizzato al portale di pagamento Lemon Squeezy. I tuoi dati di fatturazione sono criptati e gestiti in sicurezza.',
         cta: 'Procedi al pagamento sicuro',
         summary: {
           email: 'E-mail dell’account',
           billing: 'Cadenza di fatturazione',
-          billingNote: 'Addebito mensile. Puoi annullare in qualsiasi momento da Impostazioni -> Fatturazione.',
+          billingNote:
+            'Addebito mensile. Puoi annullare in qualsiasi momento da Impostazioni -> Fatturazione.',
         },
         placeholders: {
-          checkoutLink: 'Sessione di checkout creata (messaggio dimostrativo). Implementa la reindirizzazione a Lemon Squeezy a breve.',
+          checkoutLink:
+            'Sessione di checkout creata (messaggio dimostrativo). Implementa la reindirizzazione a Lemon Squeezy a breve.',
         },
         errors: {
           missingPlan: 'Seleziona un piano prima di continuare.',
-          generic: 'Non è stato possibile creare la sessione di pagamento. Riprova o contatta il supporto.',
+          generic:
+            'Non è stato possibile creare la sessione di pagamento. Riprova o contatta il supporto.',
         },
       },
       success: {
         title: 'Tutto pronto!',
-        subtitle: 'È stata inviata un’e-mail di conferma a {email}. Ora puoi accedere con il tuo nuovo account.',
+        subtitle:
+          'È stata inviata un’e-mail di conferma a {email}. Ora puoi accedere con il tuo nuovo account.',
         placeholderEmail: 'la tua casella di posta',
         cta: 'Vai al login',
         support: 'Hai bisogno di aiuto?',
@@ -97,7 +105,30 @@ export default {
     allRightsReserved: 'Tutti i diritti riservati',
     logs: 'Registri',
     source: 'Fonte',
-    guestDemoMode: 'Modalità ospite/demo'
+    guestDemoMode: 'Modalità ospite/demo',
+  },
+  footer: {
+    company: 'Company',
+    product: 'Product',
+    resources: 'Resources',
+    legal: 'Legal',
+    links: {
+      about: 'About',
+      careers: 'Careers',
+      frame: 'Frame.dev',
+      contact: 'Contact',
+      features: 'Features',
+      proWorkspace: 'Pro Workspace',
+      marketplace: 'Marketplace',
+      docs: 'Docs',
+      api: 'API Reference',
+      blog: 'Blog',
+      faq: 'FAQ',
+      security: 'Security',
+      privacy: 'Privacy Policy',
+      terms: 'Terms of Service',
+      sitemap: 'Sitemap',
+    },
   },
   auth: {
     loginTitle: 'Accedi',
@@ -116,11 +147,12 @@ export default {
     globalPasswordLabel: 'Global password',
     globalAccessFooter: 'Shared usage is rate limited per IP address.',
     standardAccessTitle: 'Personal Account (Subscription)',
-    standardAccessDescription: 'Sign in with your subscription account to manage billing and personalized credits.',
+    standardAccessDescription:
+      'Sign in with your subscription account to manage billing and personalized credits.',
     standardAccessFooter: 'Active subscription required for personal workspaces.',
     globalPasswordRequired: 'Global password is required.',
     missingCredentials: 'Email and password are required.',
-    orContinueWith: 'Or continue with'
+    orContinueWith: 'Or continue with',
   },
   voice: {
     recording: 'Registrazione...',
@@ -135,7 +167,7 @@ export default {
     stopRecording: 'Interrompi registrazione',
     microphoneAccess: 'Accesso al microfono richiesto',
     noSpeechDetected: 'Nessun discorso rilevato',
-    transcriptionComplete: 'Trascrizione completata'
+    transcriptionComplete: 'Trascrizione completata',
   },
   chat: {
     thinking: 'Pensando...',
@@ -144,11 +176,11 @@ export default {
     sendMessage: 'Invia messaggio',
     newChat: 'Nuova chat',
     clearHistory: 'Cancella cronologia',
-    typingIndicator: 'L\'IA sta scrivendo...',
+    typingIndicator: "L'IA sta scrivendo...",
     copyCode: 'Copia codice',
     codeCopied: 'Codice copiato negli appunti',
     retry: 'Riprova',
-    regenerate: 'Rigenera risposta'
+    regenerate: 'Rigenera risposta',
   },
   modes: {
     coding: 'Domande di Programmazione',
@@ -158,7 +190,7 @@ export default {
     meetingSummary: 'Riepilogo Riunioni',
     meetingSummaryDesc: 'Riassumi riunioni ed estrai punti chiave',
     general: 'Generale',
-    generalDesc: 'Conversazione generale e domande'
+    generalDesc: 'Conversazione generale e domande',
   },
   cost: {
     title: 'Utilizzo API',
@@ -167,7 +199,7 @@ export default {
     threshold: 'Soglia Costi',
     warning: 'Avvicinandosi al limite dei costi',
     exceeded: 'Limite dei costi superato',
-    reset: 'Resetta contatore'
+    reset: 'Resetta contatore',
   },
   settings: {
     title: 'Impostazioni',
@@ -188,7 +220,7 @@ export default {
     languageSettings: 'Impostazioni Lingua',
     selectLanguage: 'Seleziona la tua lingua preferita',
     themeSettings: 'Impostazioni Tema',
-    selectTheme: 'Seleziona tema'
+    selectTheme: 'Seleziona tema',
   },
   errors: {
     general: 'Si è verificato un errore',
@@ -198,7 +230,7 @@ export default {
     forbidden: 'Vietato',
     serverError: 'Errore del server',
     timeout: 'Richiesta scaduta',
-    offline: 'Sembri essere offline'
+    offline: 'Sembri essere offline',
   },
   navigation: {
     dashboard: 'Dashboard',
@@ -209,19 +241,19 @@ export default {
     about: 'Informazioni',
     profile: 'Profilo',
     logout: 'Esci',
-    exploreAssistants: 'Esplora Assistenti'
+    exploreAssistants: 'Esplora Assistenti',
   },
   status: {
     online: 'Online',
     degraded: 'Degradato',
     offline: 'Offline',
-    checking: 'Controllo'
+    checking: 'Controllo',
   },
   agent: {
     defaultName: 'Assistente',
     ready: '{name} è pronto',
     defaultPlaceholder: 'Come posso aiutarti oggi?',
-    typing: '{name} sta scrivendo...'
+    typing: '{name} sta scrivendo...',
   },
   meetingSummaries: {
     title: 'Riepiloghi Riunioni',
@@ -232,14 +264,14 @@ export default {
     exportAll: 'Esporta Tutti i Riepiloghi (JSON)',
     searchPlaceholder: 'Cerca riepiloghi...',
     tags: 'Etichette (seleziona qualsiasi):',
-    actionItemAssignee: 'Assegnatario Elemento d\'Azione:',
+    actionItemAssignee: "Assegnatario Elemento d'Azione:",
     anyAssignee: 'Qualsiasi Assegnatario',
     sortBy: 'Ordina per:',
     lastUpdated: 'Ultimo Aggiornamento',
     meetingDate: 'Data Riunione',
     dateCreated: 'Data Creazione',
     titleSort: 'Titolo',
-    openActionItems: 'Elementi d\'Azione Aperti',
+    openActionItems: "Elementi d'Azione Aperti",
     order: 'Ordine:',
     descending: 'Decrescente',
     ascending: 'Crescente',
@@ -251,62 +283,69 @@ export default {
     archiveSummary: 'Archivia Riepilogo',
     unarchiveSummary: 'Desarchivia Riepilogo',
     deleteSummary: 'Elimina Riepilogo',
-    clearAllHistory: 'Cancella Tutta la Cronologia'
+    clearAllHistory: 'Cancella Tutta la Cronologia',
   },
   agents: {
     nerf: {
       name: 'Nerf',
       description: 'La tua IA generale amichevole ed efficiente per domande rapide e informazioni.',
-      longDescription: 'Nerf è progettato per domande e risposte dirette, fatti rapidi, definizioni e spiegazioni semplici. Punta alla chiarezza e concisione, rendendolo ideale per richieste quotidiane.',
-      placeholder: 'Chiedi qualsiasi cosa a Nerf...'
+      longDescription:
+        'Nerf è progettato per domande e risposte dirette, fatti rapidi, definizioni e spiegazioni semplici. Punta alla chiarezza e concisione, rendendolo ideale per richieste quotidiane.',
+      placeholder: 'Chiedi qualsiasi cosa a Nerf...',
     },
     codePilot: {
       name: 'CodePilot',
       description: 'Assistenza esperta nella programmazione, debug e spiegazioni in più linguaggi.',
-      placeholder: 'Chiedi a CodePilot riguardo al codice...'
+      placeholder: 'Chiedi a CodePilot riguardo al codice...',
     },
     architectron: {
       name: 'Architectron',
-      description: 'Progetta e diagramma collaborativamente architetture software e sistemi complessi.',
-      placeholder: 'Descrivi il sistema da progettare...'
+      description:
+        'Progetta e diagramma collaborativamente architetture software e sistemi complessi.',
+      placeholder: 'Descrivi il sistema da progettare...',
     },
     meetingScribe: {
       name: 'Segretario Riunioni',
-      description: 'Elabora le tue note o trascrizioni di riunioni in riassunti chiari e strutturati con punti d\'azione.',
-      placeholder: 'Incolla note o detta la discussione per il riassunto...'
+      description:
+        "Elabora le tue note o trascrizioni di riunioni in riassunti chiari e strutturati con punti d'azione.",
+      placeholder: 'Incolla note o detta la discussione per il riassunto...',
     },
     echo: {
       name: 'Echo',
-      description: 'Il tuo diario AI personale ed empatico per riflessione e organizzazione dei pensieri.',
-      placeholder: 'Condividi i tuoi pensieri con Echo...'
+      description:
+        'Il tuo diario AI personale ed empatico per riflessione e organizzazione dei pensieri.',
+      placeholder: 'Condividi i tuoi pensieri con Echo...',
     },
     aiInterviewer: {
       name: 'Intervistatore AI',
-      description: 'Simula un colloquio tecnico di programmazione, fornendo problemi e valutando soluzioni.',
-      placeholder: 'Pronto per il tuo colloquio di programmazione simulato?'
+      description:
+        'Simula un colloquio tecnico di programmazione, fornendo problemi e valutando soluzioni.',
+      placeholder: 'Pronto per il tuo colloquio di programmazione simulato?',
     },
     professorAstra: {
       name: 'Professor Astra',
       description: 'Il tuo tutor AI adattivo per esplorare argomenti e padroneggiare concetti.',
-      placeholder: 'Quale argomento impareremo oggi?'
+      placeholder: 'Quale argomento impareremo oggi?',
     },
     lcAudit: {
       name: 'LC-Audit',
       description: 'Analisi approfondita dei problemi LeetCode e assistente per colloqui.',
-      placeholder: 'Fornisci il contesto del problema per l\'analisi LC-Audit...'
-    }
+      placeholder: "Fornisci il contesto del problema per l'analisi LC-Audit...",
+    },
   },
   vAgent: {
     name: 'V',
     online: '{name} Online',
-    description: 'Assistente AI avanzato, dinamico e perspicace per compiti complessi ed esplorazioni.',
-    longDescription: 'V è un\'AI potente e poliedrica progettata per impegnarsi in discussioni sfumate, sintetizzare informazioni complesse e fornire risposte complete e ben articolate. Ideale per approfondimenti, brainstorming creativo e pensiero strategico.',
-    placeholder: 'Poni la tua domanda o esplorazione complessa a V...'
+    description:
+      'Assistente AI avanzato, dinamico e perspicace per compiti complessi ed esplorazioni.',
+    longDescription:
+      "V è un'AI potente e poliedrica progettata per impegnarsi in discussioni sfumate, sintetizzare informazioni complesse e fornire risposte complete e ben articolate. Ideale per approfondimenti, brainstorming creativo e pensiero strategico.",
+    placeholder: 'Poni la tua domanda o esplorazione complessa a V...',
   },
   usage: {
     unlimitedAccessLabel: 'Accesso illimitato',
     unlimitedTokensRemaining: '~{remaining} token rimasti su ~{total} oggi',
-    calculatingUsage: 'Calcolo dell\'utilizzo...'
+    calculatingUsage: "Calcolo dell'utilizzo...",
   },
   organization: {
     loading: 'Loading team data...',
@@ -417,74 +456,85 @@ export default {
     planHintBasic: 'Basic - {price}/mese - ~{tokens} token GPT-4o/giorno',
     planHintCreator: 'Creator - {price}/mese - API personale dopo ~{tokens} token/giorno',
     planHintOrganization: 'Organization - {price}/mese - pool condiviso ~{tokens} token/giorno',
-    rolloverNote: 'I piani Creator e Organization passano alle chiavi API personali una volta consumata la quota giornaliera della piattaforma, mantenendo la reportistica. Gli amministratori possono assegnare limiti per membro dal pannello del team.'
+    rolloverNote:
+      'I piani Creator e Organization passano alle chiavi API personali una volta consumata la quota giornaliera della piattaforma, mantenendo la reportistica. Gli amministratori possono assegnare limiti per membro dal pannello del team.',
   },
   onboarding_en: {
     tour: {
       heading: 'Welcome back, {name}!',
-      subtitle: 'Heres a quick tour to get your workspace shipping agencies and personas immediately.',
+      subtitle:
+        'Heres a quick tour to get your workspace shipping agencies and personas immediately.',
       defaultName: 'back',
       steps: {
         seed: {
           title: 'Seed personas & secrets',
-          description: 'Pick a marketplace persona (or import your own) and satisfy required API keys directly from the Credentials panel.',
-          badge: '5 min'
+          description:
+            'Pick a marketplace persona (or import your own) and satisfy required API keys directly from the Credentials panel.',
+          badge: '5 min',
         },
         agency: {
           title: 'Draft your first agency',
-          description: 'Use the Agency Manager to assign personas to roles, connect workflows, and define the shared mission.',
-          badge: 'Roles & guardrails'
+          description:
+            'Use the Agency Manager to assign personas to roles, connect workflows, and define the shared mission.',
+          badge: 'Roles & guardrails',
         },
         workflow: {
           title: 'Launch a workflow',
-          description: 'Kick off automations from the Workflow launcher or via API and watch the live telemetry stream.',
-          badge: 'Streaming ready'
-        }
+          description:
+            'Kick off automations from the Workflow launcher or via API and watch the live telemetry stream.',
+          badge: 'Streaming ready',
+        },
       },
       ctaPrimary: 'Launch guided setup',
-      ctaSecondary: 'Remind me later'
+      ctaSecondary: 'Remind me later',
     },
     tutorials: {
       eyebrow: 'Guided tutorials',
       heading: 'Master agencies, workflows, and local-first tooling',
-      description: 'Curated markdown guides from the AgentOS docs. Read inline or open the original source.',
+      description:
+        'Curated markdown guides from the AgentOS docs. Read inline or open the original source.',
       hide: 'Hide tutorials',
       nowReading: 'Now reading',
-      close: 'Close tutorial'
-    }
+      close: 'Close tutorial',
+    },
   },
   onboarding: {
     tour: {
       heading: 'Bentornato, {name}!',
-      subtitle: 'Ti mostriamo un tour veloce per mettere subito in funzione agenzie e personae nel tuo workspace.',
+      subtitle:
+        'Ti mostriamo un tour veloce per mettere subito in funzione agenzie e personae nel tuo workspace.',
       defaultName: 'di nuovo',
       steps: {
         seed: {
           title: 'Configura personae e segreti',
-          description: 'Scegli una persona dal marketplace (o importa la tua) e inserisci le API key richieste dal pannello credenziali.',
-          badge: '5 min'
+          description:
+            'Scegli una persona dal marketplace (o importa la tua) e inserisci le API key richieste dal pannello credenziali.',
+          badge: '5 min',
         },
         agency: {
           title: 'Crea la tua prima agency',
-          description: 'Con l’Agency Manager assegni le personae ai ruoli, colleghi i workflow e definisci l’obiettivo comune.',
-          badge: 'Ruoli e guardrail'
+          description:
+            'Con l’Agency Manager assegni le personae ai ruoli, colleghi i workflow e definisci l’obiettivo comune.',
+          badge: 'Ruoli e guardrail',
         },
         workflow: {
           title: 'Avvia un workflow',
-          description: 'Lancia le automazioni dal workflow launcher o via API e monitora la telemetria in tempo reale.',
-          badge: 'Streaming pronto'
-        }
+          description:
+            'Lancia le automazioni dal workflow launcher o via API e monitora la telemetria in tempo reale.',
+          badge: 'Streaming pronto',
+        },
       },
       ctaPrimary: 'Avvia guida assistita',
-      ctaSecondary: 'Ricordamelo più tardi'
+      ctaSecondary: 'Ricordamelo più tardi',
     },
     tutorials: {
       eyebrow: 'Tutorial guidati',
       heading: 'Padroneggia agency, workflow e tooling local-first',
-      description: 'Guide in Markdown tratte dalla documentazione AgentOS. Leggile qui oppure apri la fonte originale.',
+      description:
+        'Guide in Markdown tratte dalla documentazione AgentOS. Leggile qui oppure apri la fonte originale.',
       hide: 'Nascondi tutorial',
       nowReading: 'In lettura',
-      close: 'Chiudi tutorial'
-    }
-  }
+      close: 'Chiudi tutorial',
+    },
+  },
 };

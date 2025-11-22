@@ -26,7 +26,8 @@ export default {
     register: {
       eyebrow: '専用ワークスペースで開発スピードを加速',
       headline: '数分でアカウントをセットアップ。',
-      subheadline: '最適なプランを選び、安全な決済を完了して、すぐに Voice Chat Assistant を使い始めましょう。',
+      subheadline:
+        '最適なプランを選び、安全な決済を完了して、すぐに Voice Chat Assistant を使い始めましょう。',
       steps: {
         account: 'アカウント',
         plan: 'プラン',
@@ -40,13 +41,15 @@ export default {
       },
       account: {
         title: 'アカウントを作成',
-        subtitle: '請求書やリカバリー通知を受け取れるよう、仕事用メールアドレスの利用をおすすめします。',
+        subtitle:
+          '請求書やリカバリー通知を受け取れるよう、仕事用メールアドレスの利用をおすすめします。',
         emailLabel: 'メールアドレス',
         emailPlaceholder: 'you@example.com',
         passwordLabel: 'パスワードを作成',
         passwordPlaceholder: '8文字以上',
         passwordHint: '8文字以上で、数字または記号を1文字以上含めてください。',
-        termsLabel: '<a href="https://voice-chat-assistant.com/terms" target="_blank" rel="noopener">利用規約</a>と<a href="https://voice-chat-assistant.com/privacy" target="_blank" rel="noopener">プライバシーポリシー</a>に同意します。',
+        termsLabel:
+          '<a href="https://voice-chat-assistant.com/terms" target="_blank" rel="noopener">利用規約</a>と<a href="https://voice-chat-assistant.com/privacy" target="_blank" rel="noopener">プライバシーポリシー</a>に同意します。',
         errors: {
           missingFields: '続行するにはメールアドレスとパスワードを入力してください。',
           mustAcceptTerms: 'アカウント作成には規約への同意が必要です。',
@@ -55,13 +58,15 @@ export default {
       },
       plan: {
         title: 'あなたに合ったワークスペースを選択',
-        subtitle: 'すべてのプランに音声ファーストのツール、適応型メモリ、ストリーミング応答が含まれます。必要に応じてシート数やトークンを増やせます。',
+        subtitle:
+          'すべてのプランに音声ファーストのツール、適応型メモリ、ストリーミング応答が含まれます。必要に応じてシート数やトークンを増やせます。',
         choose: 'このプランを選択',
         featuredBadge: 'おすすめ',
       },
       payment: {
         title: '内容を確認し、安全に決済',
-        subtitle: 'Lemon Squeezy の決済ページに移動します。請求情報は暗号化され、安全に処理されます。',
+        subtitle:
+          'Lemon Squeezy の決済ページに移動します。請求情報は暗号化され、安全に処理されます。',
         cta: '安全な決済へ進む',
         summary: {
           email: 'アカウントメール',
@@ -69,11 +74,13 @@ export default {
           billingNote: '月額課金。設定 -> 請求 からいつでも解約できます。',
         },
         placeholders: {
-          checkoutLink: 'チェックアウトセッションを作成しました（デモメッセージ）。この後 Lemon Squeezy にリダイレクトします。',
+          checkoutLink:
+            'チェックアウトセッションを作成しました（デモメッセージ）。この後 Lemon Squeezy にリダイレクトします。',
         },
         errors: {
           missingPlan: '続行する前にプランを選択してください。',
-          generic: 'チェックアウトセッションを作成できませんでした。再試行するかサポートへご連絡ください。',
+          generic:
+            'チェックアウトセッションを作成できませんでした。再試行するかサポートへご連絡ください。',
         },
       },
       success: {
@@ -97,7 +104,30 @@ export default {
     allRightsReserved: '全著作権所有',
     logs: 'ログ',
     source: 'ソース',
-    guestDemoMode: 'ゲスト / デモモード'
+    guestDemoMode: 'ゲスト / デモモード',
+  },
+  footer: {
+    company: 'Company',
+    product: 'Product',
+    resources: 'Resources',
+    legal: 'Legal',
+    links: {
+      about: 'About',
+      careers: 'Careers',
+      frame: 'Frame.dev',
+      contact: 'Contact',
+      features: 'Features',
+      proWorkspace: 'Pro Workspace',
+      marketplace: 'Marketplace',
+      docs: 'Docs',
+      api: 'API Reference',
+      blog: 'Blog',
+      faq: 'FAQ',
+      security: 'Security',
+      privacy: 'Privacy Policy',
+      terms: 'Terms of Service',
+      sitemap: 'Sitemap',
+    },
   },
   auth: {
     loginTitle: 'サインイン',
@@ -116,11 +146,12 @@ export default {
     globalPasswordLabel: 'Global password',
     globalAccessFooter: 'Shared usage is rate limited per IP address.',
     standardAccessTitle: 'Personal Account (Subscription)',
-    standardAccessDescription: 'Sign in with your subscription account to manage billing and personalized credits.',
+    standardAccessDescription:
+      'Sign in with your subscription account to manage billing and personalized credits.',
     standardAccessFooter: 'Active subscription required for personal workspaces.',
     globalPasswordRequired: 'Global password is required.',
     missingCredentials: 'Email and password are required.',
-    orContinueWith: 'Or continue with'
+    orContinueWith: 'Or continue with',
   },
   voice: {
     recording: '録音中...',
@@ -135,7 +166,7 @@ export default {
     stopRecording: '録音停止',
     microphoneAccess: 'マイクアクセスが必要です',
     noSpeechDetected: '音声が検出されませんでした',
-    transcriptionComplete: '文字起こし完了'
+    transcriptionComplete: '文字起こし完了',
   },
   chat: {
     thinking: '考え中...',
@@ -148,7 +179,7 @@ export default {
     copyCode: 'コードをコピー',
     codeCopied: 'コードをクリップボードにコピーしました',
     retry: '再試行',
-    regenerate: '回答を再生成'
+    regenerate: '回答を再生成',
   },
   modes: {
     coding: 'プログラミングQ&A',
@@ -158,7 +189,7 @@ export default {
     meetingSummary: '会議要約',
     meetingSummaryDesc: '会議の要約と重要なポイントの抽出',
     general: '一般',
-    generalDesc: '一般的な会話と質問'
+    generalDesc: '一般的な会話と質問',
   },
   cost: {
     title: 'API使用量',
@@ -167,7 +198,7 @@ export default {
     threshold: 'コストしきい値',
     warning: 'コスト制限に近づいています',
     exceeded: 'コスト制限を超過しました',
-    reset: 'カウンターをリセット'
+    reset: 'カウンターをリセット',
   },
   settings: {
     title: '設定',
@@ -188,7 +219,7 @@ export default {
     languageSettings: '言語設定',
     selectLanguage: 'お好みの言語を選択してください',
     themeSettings: 'テーマ設定',
-    selectTheme: 'テーマを選択'
+    selectTheme: 'テーマを選択',
   },
   errors: {
     general: 'エラーが発生しました',
@@ -198,7 +229,7 @@ export default {
     forbidden: '禁止されています',
     serverError: 'サーバーエラー',
     timeout: 'リクエストがタイムアウトしました',
-    offline: 'オフラインのようです'
+    offline: 'オフラインのようです',
   },
   navigation: {
     dashboard: 'ダッシュボード',
@@ -209,19 +240,19 @@ export default {
     about: 'について',
     profile: 'プロフィール',
     logout: 'ログアウト',
-    exploreAssistants: 'アシスタントを探索'
+    exploreAssistants: 'アシスタントを探索',
   },
   status: {
     online: 'オンライン',
     degraded: '低下',
     offline: 'オフライン',
-    checking: '確認中'
+    checking: '確認中',
   },
   agent: {
     defaultName: 'アシスタント',
     ready: '{name}の準備ができました',
     defaultPlaceholder: '今日はどのようなお手伝いをいたしましょうか？',
-    typing: '{name}が入力中です...'
+    typing: '{name}が入力中です...',
   },
   meetingSummaries: {
     title: '会議要約',
@@ -251,62 +282,64 @@ export default {
     archiveSummary: '要約をアーカイブ',
     unarchiveSummary: 'アーカイブを解除',
     deleteSummary: '要約を削除',
-    clearAllHistory: '全履歴をクリア'
+    clearAllHistory: '全履歴をクリア',
   },
   agents: {
     nerf: {
       name: 'Nerf',
       description: 'クイック質問と情報提供のための親しみやすく効率的な汎用AI。',
-      longDescription: 'Nerfは、直接的な質疑応答、素早い事実確認、定義、簡単な説明に特化しています。明確性と簡潔性を重視し、日常的な問い合わせに最適です。',
-      placeholder: 'Nerfに何でも聞いてください...'
+      longDescription:
+        'Nerfは、直接的な質疑応答、素早い事実確認、定義、簡単な説明に特化しています。明確性と簡潔性を重視し、日常的な問い合わせに最適です。',
+      placeholder: 'Nerfに何でも聞いてください...',
     },
     codePilot: {
       name: 'CodePilot',
       description: '複数の言語でのコーディング、デバッグ、解説の専門支援。',
-      placeholder: 'CodePilotにコードについて質問してください...'
+      placeholder: 'CodePilotにコードについて質問してください...',
     },
     architectron: {
       name: 'Architectron',
       description: '複雑なソフトウェアとシステムアーキテクチャを協力して設計・図式化。',
-      placeholder: '設計するシステムを説明してください...'
+      placeholder: '設計するシステムを説明してください...',
     },
     meetingScribe: {
       name: 'ミーティングスクライブ',
       description: '会議のメモや記録を、アクションアイテム付きの明確で構造化された要約に処理。',
-      placeholder: 'メモを貼り付けるか、要約する議論を口述してください...'
+      placeholder: 'メモを貼り付けるか、要約する議論を口述してください...',
     },
     echo: {
       name: 'Echo',
       description: '反省と思考整理のための個人的で共感的なAI日記・記録係。',
-      placeholder: 'Echoにあなたの思いを共有してください...'
+      placeholder: 'Echoにあなたの思いを共有してください...',
     },
     aiInterviewer: {
       name: 'AIインタビュアー',
       description: '技術コーディング面接をシミュレートし、問題を提供して解答を評価。',
-      placeholder: 'モック・コーディング面接の準備はできていますか？'
+      placeholder: 'モック・コーディング面接の準備はできていますか？',
     },
     professorAstra: {
       name: 'アストラ教授',
       description: '主題探索と概念習得のための適応型AIチューター。',
-      placeholder: '今日はどのトピックを学びましょうか？'
+      placeholder: '今日はどのトピックを学びましょうか？',
     },
     lcAudit: {
       name: 'LC-Audit',
       description: 'LeetCode問題の詳細分析と面接補助。',
-      placeholder: 'LC-Audit分析用の問題コンテキストを提供してください...'
-    }
+      placeholder: 'LC-Audit分析用の問題コンテキストを提供してください...',
+    },
   },
   vAgent: {
     name: 'V',
     online: '{name} オンライン',
     description: '複雑なタスクと探索のための高度でダイナミックかつ洞察力のあるAIアシスタント。',
-    longDescription: 'Vは、ニュアンスのある議論に参加し、複雑な情報を統合し、包括的で適切に表現された回答を提供するように設計された強力な博学AIです。深掘り、創造的ブレインストーミング、戦略的思考に最適です。',
-    placeholder: 'Vに複雑な質問や探索を投げかけてください...'
+    longDescription:
+      'Vは、ニュアンスのある議論に参加し、複雑な情報を統合し、包括的で適切に表現された回答を提供するように設計された強力な博学AIです。深掘り、創造的ブレインストーミング、戦略的思考に最適です。',
+    placeholder: 'Vに複雑な質問や探索を投げかけてください...',
   },
   usage: {
     unlimitedAccessLabel: '無制限アクセス',
     unlimitedTokensRemaining: '本日の残りトークン: ~{total} 中 ~{remaining}',
-    calculatingUsage: '使用状況を計算しています...'
+    calculatingUsage: '使用状況を計算しています...',
   },
   organization: {
     loading: 'Loading team data...',
@@ -417,74 +450,85 @@ export default {
     planHintBasic: 'Basic - {price}/月 - ~{tokens} GPT-4o トークン/日',
     planHintCreator: 'Creator - {price}/月 - ~{tokens} トークン利用後にAPIキーへ切替',
     planHintOrganization: 'Organization - {price}/月 - 共有プール ~{tokens} トークン/日',
-    rolloverNote: 'Creator と Organization プランは、プラットフォーム分の割り当てを使い切った後、自分の API キーに切り替えても分析データが残ります。管理者はチームダッシュボードでメンバーごとの上限を設定できます。'
+    rolloverNote:
+      'Creator と Organization プランは、プラットフォーム分の割り当てを使い切った後、自分の API キーに切り替えても分析データが残ります。管理者はチームダッシュボードでメンバーごとの上限を設定できます。',
   },
   onboarding_en: {
     tour: {
       heading: 'Welcome back, {name}!',
-      subtitle: 'Here’s a quick tour to get your workspace shipping agencies and personas immediately.',
+      subtitle:
+        'Here’s a quick tour to get your workspace shipping agencies and personas immediately.',
       defaultName: 'back',
       steps: {
         seed: {
           title: 'Seed personas & secrets',
-          description: 'Pick a marketplace persona (or import your own) and satisfy required API keys directly from the Credentials panel.',
-          badge: '5 min'
+          description:
+            'Pick a marketplace persona (or import your own) and satisfy required API keys directly from the Credentials panel.',
+          badge: '5 min',
         },
         agency: {
           title: 'Draft your first agency',
-          description: 'Use the Agency Manager to assign personas to roles, connect workflows, and define the shared mission.',
-          badge: 'Roles & guardrails'
+          description:
+            'Use the Agency Manager to assign personas to roles, connect workflows, and define the shared mission.',
+          badge: 'Roles & guardrails',
         },
         workflow: {
           title: 'Launch a workflow',
-          description: 'Kick off automations from the Workflow launcher or via API and watch the live telemetry stream.',
-          badge: 'Streaming ready'
-        }
+          description:
+            'Kick off automations from the Workflow launcher or via API and watch the live telemetry stream.',
+          badge: 'Streaming ready',
+        },
       },
       ctaPrimary: 'Launch guided setup',
-      ctaSecondary: 'Remind me later'
+      ctaSecondary: 'Remind me later',
     },
     tutorials: {
       eyebrow: 'Guided tutorials',
       heading: 'Master agencies, workflows, and local-first tooling',
-      description: 'Curated markdown guides from the AgentOS docs. Read inline or open the original source.',
+      description:
+        'Curated markdown guides from the AgentOS docs. Read inline or open the original source.',
       hide: 'Hide tutorials',
       nowReading: 'Now reading',
-      close: 'Close tutorial'
-    }
+      close: 'Close tutorial',
+    },
   },
   onboarding: {
     tour: {
       heading: '{name} さん、おかえりなさい！',
-      subtitle: 'ワークスペースでエージェンシーとペルソナをすぐに稼働させるためのクイックツアーです。',
+      subtitle:
+        'ワークスペースでエージェンシーとペルソナをすぐに稼働させるためのクイックツアーです。',
       defaultName: 'おかえり',
       steps: {
         seed: {
           title: 'ペルソナとシークレットを用意',
-          description: 'マーケットプレイスのペルソナを選ぶか独自のペルソナをインポートし、必要な API キーを「Credentials」で設定します。',
-          badge: '約5分'
+          description:
+            'マーケットプレイスのペルソナを選ぶか独自のペルソナをインポートし、必要な API キーを「Credentials」で設定します。',
+          badge: '約5分',
         },
         agency: {
           title: '最初のエージェンシーを作成',
-          description: 'Agency Manager でロールにペルソナを割り当て、ワークフローを接続し、共通のゴールを設定します。',
-          badge: 'ロール & ガードレール'
+          description:
+            'Agency Manager でロールにペルソナを割り当て、ワークフローを接続し、共通のゴールを設定します。',
+          badge: 'ロール & ガードレール',
         },
         workflow: {
           title: 'ワークフローを起動',
-          description: 'ランチャーまたは API から自動化を実行し、リアルタイムのテレメトリを確認します。',
-          badge: 'ストリーミング対応'
-        }
+          description:
+            'ランチャーまたは API から自動化を実行し、リアルタイムのテレメトリを確認します。',
+          badge: 'ストリーミング対応',
+        },
       },
       ctaPrimary: 'ガイド付きセットアップを開始',
-      ctaSecondary: '後で通知'
+      ctaSecondary: '後で通知',
     },
     tutorials: {
       eyebrow: 'ガイド付きチュートリアル',
       heading: 'エージェンシー・ワークフロー・ローカル実行をマスター',
-      description: 'AgentOS ドキュメント由来の Markdown ガイド。アプリ内で読むか、元のソースを開けます。',
+      description:
+        'AgentOS ドキュメント由来の Markdown ガイド。アプリ内で読むか、元のソースを開けます。',
       hide: 'チュートリアルを隠す',
       nowReading: '閲覧中',
-      close: 'チュートリアルを閉じる'
-    }
-  }
+      close: 'チュートリアルを閉じる',
+    },
+  },
 };

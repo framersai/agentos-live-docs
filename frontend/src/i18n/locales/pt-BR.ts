@@ -26,7 +26,8 @@
     register: {
       eyebrow: 'Construa mais rápido com um workspace feito para você',
       headline: 'Configure sua conta em minutos.',
-      subheadline: 'Escolha o plano ideal, conclua o pagamento seguro e comece a usar o Voice Chat Assistant imediatamente.',
+      subheadline:
+        'Escolha o plano ideal, conclua o pagamento seguro e comece a usar o Voice Chat Assistant imediatamente.',
       steps: {
         account: 'Conta',
         plan: 'Plano',
@@ -46,7 +47,8 @@
         passwordLabel: 'Crie uma senha',
         passwordPlaceholder: 'No mínimo 8 caracteres',
         passwordHint: 'Use 8+ caracteres com pelo menos um número ou símbolo.',
-        termsLabel: 'Concordo com os <a href="https://voice-chat-assistant.com/terms" target="_blank" rel="noopener">Termos de Serviço</a> e a <a href="https://voice-chat-assistant.com/privacy" target="_blank" rel="noopener">Política de Privacidade</a>.',
+        termsLabel:
+          'Concordo com os <a href="https://voice-chat-assistant.com/terms" target="_blank" rel="noopener">Termos de Serviço</a> e a <a href="https://voice-chat-assistant.com/privacy" target="_blank" rel="noopener">Política de Privacidade</a>.',
         errors: {
           missingFields: 'Informe e-mail e senha para continuar.',
           mustAcceptTerms: 'Você precisa aceitar os termos para criar uma conta.',
@@ -55,30 +57,36 @@
       },
       plan: {
         title: 'Escolha o workspace ideal para você',
-        subtitle: 'Todos os planos incluem ferramentas de voz, memória adaptativa e respostas em streaming. Faça upgrade quando precisar de mais assentos ou tokens.',
+        subtitle:
+          'Todos os planos incluem ferramentas de voz, memória adaptativa e respostas em streaming. Faça upgrade quando precisar de mais assentos ou tokens.',
         choose: 'Selecionar este plano',
         featuredBadge: 'Recomendado',
       },
       payment: {
         title: 'Revise e finalize o pagamento seguro',
-        subtitle: 'Você será redirecionado ao portal de pagamento da Lemon Squeezy. Suas informações de faturamento são criptografadas e tratadas com segurança.',
+        subtitle:
+          'Você será redirecionado ao portal de pagamento da Lemon Squeezy. Suas informações de faturamento são criptografadas e tratadas com segurança.',
         cta: 'Ir para o pagamento seguro',
         summary: {
           email: 'E-mail da conta',
           billing: 'Ciclo de cobrança',
-          billingNote: 'Cobrança mensal. Cancele a qualquer momento em Configurações -> Faturamento.',
+          billingNote:
+            'Cobrança mensal. Cancele a qualquer momento em Configurações -> Faturamento.',
         },
         placeholders: {
-          checkoutLink: 'Sessão de checkout criada (mensagem de demonstração). Implemente a redireção para a Lemon Squeezy em seguida.',
+          checkoutLink:
+            'Sessão de checkout criada (mensagem de demonstração). Implemente a redireção para a Lemon Squeezy em seguida.',
         },
         errors: {
           missingPlan: 'Escolha um plano antes de continuar.',
-          generic: 'Não foi possível criar a sessão de checkout. Tente novamente ou contate o suporte.',
+          generic:
+            'Não foi possível criar a sessão de checkout. Tente novamente ou contate o suporte.',
         },
       },
       success: {
         title: 'Tudo pronto!',
-        subtitle: 'Enviamos uma confirmação para {email}. Agora você pode entrar com sua nova conta.',
+        subtitle:
+          'Enviamos uma confirmação para {email}. Agora você pode entrar com sua nova conta.',
         placeholderEmail: 'sua caixa de entrada',
         cta: 'Ir para login',
         support: 'Precisa de ajuda?',
@@ -97,7 +105,30 @@
     allRightsReserved: 'Todos os direitos reservados',
     logs: 'Registros',
     source: 'Fonte',
-    guestDemoMode: 'Modo convidado / demo'
+    guestDemoMode: 'Modo convidado / demo',
+  },
+  footer: {
+    company: 'Company',
+    product: 'Product',
+    resources: 'Resources',
+    legal: 'Legal',
+    links: {
+      about: 'About',
+      careers: 'Careers',
+      frame: 'Frame.dev',
+      contact: 'Contact',
+      features: 'Features',
+      proWorkspace: 'Pro Workspace',
+      marketplace: 'Marketplace',
+      docs: 'Docs',
+      api: 'API Reference',
+      blog: 'Blog',
+      faq: 'FAQ',
+      security: 'Security',
+      privacy: 'Privacy Policy',
+      terms: 'Terms of Service',
+      sitemap: 'Sitemap',
+    },
   },
   auth: {
     loginTitle: 'Entrar',
@@ -116,7 +147,8 @@
     globalPasswordLabel: 'Global password',
     globalAccessFooter: 'Shared usage is rate limited per IP address.',
     standardAccessTitle: 'Personal Account (Subscription)',
-    standardAccessDescription: 'Sign in with your subscription account to manage billing and personalized credits.',
+    standardAccessDescription:
+      'Sign in with your subscription account to manage billing and personalized credits.',
     standardAccessFooter: 'Active subscription required for personal workspaces.',
     globalPasswordRequired: 'Global password is required.',
     missingCredentials: 'Email and password are required.',
@@ -135,7 +167,7 @@
     stopRecording: 'Parar gravaÃ§Ã£o',
     microphoneAccess: 'Acesso ao microfone necessÃ¡rio',
     noSpeechDetected: 'Nenhuma fala detectada',
-    transcriptionComplete: 'TranscriÃ§Ã£o concluÃ­da'
+    transcriptionComplete: 'TranscriÃ§Ã£o concluÃ­da',
   },
   chat: {
     thinking: 'Pensando...',
@@ -148,7 +180,7 @@
     copyCode: 'Copiar cÃ³digo',
     codeCopied: 'CÃ³digo copiado para a Ã¡rea de transferÃªncia',
     retry: 'Tentar novamente',
-    regenerate: 'Regenerar resposta'
+    regenerate: 'Regenerar resposta',
   },
   modes: {
     coding: 'Perguntas de ProgramaÃ§Ã£o',
@@ -158,7 +190,7 @@
     meetingSummary: 'Resumo de ReuniÃµes',
     meetingSummaryDesc: 'Resumir reuniÃµes e extrair pontos-chave',
     general: 'Geral',
-    generalDesc: 'Conversas gerais e perguntas'
+    generalDesc: 'Conversas gerais e perguntas',
   },
   cost: {
     title: 'Uso da API',
@@ -167,7 +199,7 @@
     threshold: 'Limite de Custo',
     warning: 'Aproximando-se do limite de custo',
     exceeded: 'Limite de custo excedido',
-    reset: 'Redefinir contador'
+    reset: 'Redefinir contador',
   },
   settings: {
     title: 'ConfiguraÃ§Ãµes',
@@ -188,7 +220,7 @@
     languageSettings: 'ConfiguraÃ§Ãµes de Idioma',
     selectLanguage: 'Selecione seu idioma preferido',
     themeSettings: 'ConfiguraÃ§Ãµes de Tema',
-    selectTheme: 'Selecionar tema'
+    selectTheme: 'Selecionar tema',
   },
   errors: {
     general: 'Ocorreu um erro',
@@ -198,7 +230,7 @@
     forbidden: 'Proibido',
     serverError: 'Erro do servidor',
     timeout: 'Tempo limite da requisiÃ§Ã£o esgotado',
-    offline: 'VocÃª parece estar offline'
+    offline: 'VocÃª parece estar offline',
   },
   navigation: {
     dashboard: 'Painel',
@@ -209,19 +241,19 @@
     about: 'Sobre',
     profile: 'Perfil',
     logout: 'Sair',
-    exploreAssistants: 'Explorar Assistentes'
+    exploreAssistants: 'Explorar Assistentes',
   },
   status: {
     online: 'Online',
     degraded: 'Degradado',
     offline: 'Offline',
-    checking: 'Verificando'
+    checking: 'Verificando',
   },
   agent: {
     defaultName: 'Assistente',
     ready: '{name} estÃ¡ pronto',
     defaultPlaceholder: 'Como posso ajudÃ¡-lo hoje?',
-    typing: '{name} estÃ¡ digitando...'
+    typing: '{name} estÃ¡ digitando...',
   },
   meetingSummaries: {
     title: 'Resumos de ReuniÃµes',
@@ -251,62 +283,70 @@
     archiveSummary: 'Arquivar Resumo',
     unarchiveSummary: 'Desarquivar Resumo',
     deleteSummary: 'Excluir Resumo',
-    clearAllHistory: 'Limpar Todo o HistÃ³rico'
+    clearAllHistory: 'Limpar Todo o HistÃ³rico',
   },
   agents: {
     nerf: {
       name: 'Nerf',
       description: 'Sua IA geral amigÃ¡vel e eficiente para perguntas rÃ¡pidas e informaÃ§Ãµes.',
-      longDescription: 'Nerf Ã© projetado para perguntas e respostas diretas, fatos rÃ¡pidos, definiÃ§Ãµes e explicaÃ§Ãµes simples. Visa clareza e concisÃ£o, sendo ideal para consultas cotidianas.',
-      placeholder: 'Pergunte qualquer coisa ao Nerf...'
+      longDescription:
+        'Nerf Ã© projetado para perguntas e respostas diretas, fatos rÃ¡pidos, definiÃ§Ãµes e explicaÃ§Ãµes simples. Visa clareza e concisÃ£o, sendo ideal para consultas cotidianas.',
+      placeholder: 'Pergunte qualquer coisa ao Nerf...',
     },
     codePilot: {
       name: 'CodePilot',
-      description: 'AssistÃªncia especializada em codificaÃ§Ã£o, depuraÃ§Ã£o e explicaÃ§Ãµes em mÃºltiplas linguagens.',
-      placeholder: 'Pergunte ao CodePilot sobre cÃ³digo...'
+      description:
+        'AssistÃªncia especializada em codificaÃ§Ã£o, depuraÃ§Ã£o e explicaÃ§Ãµes em mÃºltiplas linguagens.',
+      placeholder: 'Pergunte ao CodePilot sobre cÃ³digo...',
     },
     architectron: {
       name: 'Architectron',
-      description: 'Projete e diagramme colaborativamente arquiteturas de software e sistemas complexos.',
-      placeholder: 'Descreva o sistema a ser projetado...'
+      description:
+        'Projete e diagramme colaborativamente arquiteturas de software e sistemas complexos.',
+      placeholder: 'Descreva o sistema a ser projetado...',
     },
     meetingScribe: {
       name: 'Escriba de ReuniÃµes',
-      description: 'Processa suas notas ou transcriÃ§Ãµes de reuniÃµes em resumos claros e estruturados com itens de aÃ§Ã£o.',
-      placeholder: 'Cole notas ou dite a discussÃ£o para resumo...'
+      description:
+        'Processa suas notas ou transcriÃ§Ãµes de reuniÃµes em resumos claros e estruturados com itens de aÃ§Ã£o.',
+      placeholder: 'Cole notas ou dite a discussÃ£o para resumo...',
     },
     echo: {
       name: 'Echo',
-      description: 'Seu diÃ¡rio de IA pessoal e empÃ¡tico para reflexÃ£o e organizaÃ§Ã£o de pensamentos.',
-      placeholder: 'Compartilhe seus pensamentos com Echo...'
+      description:
+        'Seu diÃ¡rio de IA pessoal e empÃ¡tico para reflexÃ£o e organizaÃ§Ã£o de pensamentos.',
+      placeholder: 'Compartilhe seus pensamentos com Echo...',
     },
     aiInterviewer: {
       name: 'Entrevistador IA',
-      description: 'Simula uma entrevista tÃ©cnica de programaÃ§Ã£o, fornecendo problemas e avaliando soluÃ§Ãµes.',
-      placeholder: 'Pronto para sua entrevista de programaÃ§Ã£o simulada?'
+      description:
+        'Simula uma entrevista tÃ©cnica de programaÃ§Ã£o, fornecendo problemas e avaliando soluÃ§Ãµes.',
+      placeholder: 'Pronto para sua entrevista de programaÃ§Ã£o simulada?',
     },
     professorAstra: {
       name: 'Professor Astra',
       description: 'Seu tutor de IA adaptativo para explorar assuntos e dominar conceitos.',
-      placeholder: 'Que tÃ³pico vamos aprender hoje?'
+      placeholder: 'Que tÃ³pico vamos aprender hoje?',
     },
     lcAudit: {
       name: 'LC-Audit',
       description: 'AnÃ¡lise aprofundada de problemas do LeetCode e assistente de entrevistas.',
-      placeholder: 'ForneÃ§a contexto do problema para anÃ¡lise LC-Audit...'
-    }
+      placeholder: 'ForneÃ§a contexto do problema para anÃ¡lise LC-Audit...',
+    },
   },
   vAgent: {
     name: 'V',
     online: '{name} Online',
-    description: 'Assistente de IA avanÃ§ado, dinÃ¢mico e perspicaz para tarefas complexas e exploraÃ§Ãµes.',
-    longDescription: 'V Ã© uma IA poderosa e polÃ­mata projetada para se envolver em discussÃµes nuanÃ§adas, sintetizar informaÃ§Ãµes complexas e fornecer respostas abrangentes e bem articuladas. Ideal para mergulhos profundos, brainstorming criativo e pensamento estratÃ©gico.',
-    placeholder: 'Apresente sua consulta ou exploraÃ§Ã£o complexa para V...'
+    description:
+      'Assistente de IA avanÃ§ado, dinÃ¢mico e perspicaz para tarefas complexas e exploraÃ§Ãµes.',
+    longDescription:
+      'V Ã© uma IA poderosa e polÃ­mata projetada para se envolver em discussÃµes nuanÃ§adas, sintetizar informaÃ§Ãµes complexas e fornecer respostas abrangentes e bem articuladas. Ideal para mergulhos profundos, brainstorming criativo e pensamento estratÃ©gico.',
+    placeholder: 'Apresente sua consulta ou exploraÃ§Ã£o complexa para V...',
   },
   usage: {
     unlimitedAccessLabel: 'Acesso ilimitado',
     unlimitedTokensRemaining: '~{remaining} tokens restantes de ~{total} hoje',
-    calculatingUsage: 'Calculando uso...'
+    calculatingUsage: 'Calculando uso...',
   },
   organization: {
     loading: 'Loading team data...',
@@ -417,74 +457,85 @@
     planHintBasic: 'Basic - {price}/mês - ~{tokens} tokens GPT-4o/dia',
     planHintCreator: 'Creator - {price}/mês - usa API própria após ~{tokens} tokens/dia',
     planHintOrganization: 'Organization - {price}/mês - pool compartilhado ~{tokens} tokens/dia',
-    rolloverNote: 'Os planos Creator e Organization passam a usar suas próprias chaves de API após consumir a cota diária da plataforma, mantendo as métricas. Administradores podem definir limites por membro no painel da equipe.'
+    rolloverNote:
+      'Os planos Creator e Organization passam a usar suas próprias chaves de API após consumir a cota diária da plataforma, mantendo as métricas. Administradores podem definir limites por membro no painel da equipe.',
   },
   onboarding_en: {
     tour: {
       heading: 'Welcome back, {name}!',
-      subtitle: 'Here’s a quick tour to get your workspace shipping agencies and personas immediately.',
+      subtitle:
+        'Here’s a quick tour to get your workspace shipping agencies and personas immediately.',
       defaultName: 'back',
       steps: {
         seed: {
           title: 'Seed personas & secrets',
-          description: 'Pick a marketplace persona (or import your own) and satisfy required API keys directly from the Credentials panel.',
-          badge: '5 min'
+          description:
+            'Pick a marketplace persona (or import your own) and satisfy required API keys directly from the Credentials panel.',
+          badge: '5 min',
         },
         agency: {
           title: 'Draft your first agency',
-          description: 'Use the Agency Manager to assign personas to roles, connect workflows, and define the shared mission.',
-          badge: 'Roles & guardrails'
+          description:
+            'Use the Agency Manager to assign personas to roles, connect workflows, and define the shared mission.',
+          badge: 'Roles & guardrails',
         },
         workflow: {
           title: 'Launch a workflow',
-          description: 'Kick off automations from the Workflow launcher or via API and watch the live telemetry stream.',
-          badge: 'Streaming ready'
-        }
+          description:
+            'Kick off automations from the Workflow launcher or via API and watch the live telemetry stream.',
+          badge: 'Streaming ready',
+        },
       },
       ctaPrimary: 'Launch guided setup',
-      ctaSecondary: 'Remind me later'
+      ctaSecondary: 'Remind me later',
     },
     tutorials: {
       eyebrow: 'Guided tutorials',
       heading: 'Master agencies, workflows, and local-first tooling',
-      description: 'Curated markdown guides from the AgentOS docs. Read inline or open the original source.',
+      description:
+        'Curated markdown guides from the AgentOS docs. Read inline or open the original source.',
       hide: 'Hide tutorials',
       nowReading: 'Now reading',
-      close: 'Close tutorial'
-    }
+      close: 'Close tutorial',
+    },
   },
   onboarding: {
     tour: {
       heading: 'Bem-vindo de volta, {name}!',
-      subtitle: 'Siga este tour rápido para colocar agências e personas em produção no seu workspace em minutos.',
+      subtitle:
+        'Siga este tour rápido para colocar agências e personas em produção no seu workspace em minutos.',
       defaultName: 'de volta',
       steps: {
         seed: {
           title: 'Configure personas e segredos',
-          description: 'Escolha uma persona do marketplace (ou importe a sua) e preencha as API keys necessárias no painel de credenciais.',
-          badge: '5 min'
+          description:
+            'Escolha uma persona do marketplace (ou importe a sua) e preencha as API keys necessárias no painel de credenciais.',
+          badge: '5 min',
         },
         agency: {
           title: 'Crie sua primeira agência',
-          description: 'Use o Agency Manager para atribuir personas aos papéis, conectar workflows e definir o objetivo compartilhado.',
-          badge: 'Papéis e guardrails'
+          description:
+            'Use o Agency Manager para atribuir personas aos papéis, conectar workflows e definir o objetivo compartilhado.',
+          badge: 'Papéis e guardrails',
         },
         workflow: {
           title: 'Inicie um workflow',
-          description: 'Dispare automações pelo launcher ou via API e acompanhe a telemetria em tempo real.',
-          badge: 'Pronto para streaming'
-        }
+          description:
+            'Dispare automações pelo launcher ou via API e acompanhe a telemetria em tempo real.',
+          badge: 'Pronto para streaming',
+        },
       },
       ctaPrimary: 'Iniciar guia assistido',
-      ctaSecondary: 'Lembrar depois'
+      ctaSecondary: 'Lembrar depois',
     },
     tutorials: {
       eyebrow: 'Tutoriais guiados',
       heading: 'Domine agências, workflows e o modo local-first',
-      description: 'Tutoriais em Markdown tirados da documentação do AgentOS. Leia no app ou abra a fonte original.',
+      description:
+        'Tutoriais em Markdown tirados da documentação do AgentOS. Leia no app ou abra a fonte original.',
       hide: 'Ocultar tutoriais',
       nowReading: 'Lendo agora',
-      close: 'Fechar tutorial'
-    }
-  }
+      close: 'Fechar tutorial',
+    },
+  },
 };
