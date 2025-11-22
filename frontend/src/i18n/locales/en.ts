@@ -37,7 +37,7 @@ export default {
     allRightsReserved: 'All rights reserved',
     logs: 'Logs',
     source: 'Source',
-    guestDemoMode: 'Guest / Demo Mode'
+    guestDemoMode: 'Guest / Demo Mode',
   },
   auth: {
     loginTitle: 'Sign In',
@@ -56,11 +56,12 @@ export default {
     globalPasswordLabel: 'Global password',
     globalAccessFooter: 'Shared usage is rate limited per IP address.',
     standardAccessTitle: 'Personal Account (Subscription)',
-    standardAccessDescription: 'Sign in with your subscription account to manage billing and personalized credits.',
+    standardAccessDescription:
+      'Sign in with your subscription account to manage billing and personalized credits.',
     standardAccessFooter: 'Active subscription required for personal workspaces.',
     globalPasswordRequired: 'Global password is required.',
     missingCredentials: 'Email and password are required.',
-    orContinueWith: 'Or continue with'
+    orContinueWith: 'Or continue with',
   },
   voice: {
     recording: 'Recording...',
@@ -125,10 +126,13 @@ export default {
     pushToTalkShort: 'Hold mic to record, release to review',
     continuousShort: 'Mic stays on & transcribes continuously',
     voiceActivationShort: 'Say "V" to activate, then speak',
-    pushToTalkDescription: 'Hold the microphone button to record your message. Recording stops when you release the button. Perfect for quick, intentional voice inputs without background noise.',
-    continuousDescription: 'Click once to start recording and click again to stop. The microphone stays active between clicks, allowing for longer recordings without holding a button.',
-    voiceActivationDescription: 'Automatically detects when you start and stop speaking. No button interaction needed - just speak naturally and the system will capture your voice when it detects sound.',
-    selectAudioModeDescription: 'Select an audio input mode for voice recording.'
+    pushToTalkDescription:
+      'Hold the microphone button to record your message. Recording stops when you release the button. Perfect for quick, intentional voice inputs without background noise.',
+    continuousDescription:
+      'Click once to start recording and click again to stop. The microphone stays active between clicks, allowing for longer recordings without holding a button.',
+    voiceActivationDescription:
+      'Automatically detects when you start and stop speaking. No button interaction needed - just speak naturally and the system will capture your voice when it detects sound.',
+    selectAudioModeDescription: 'Select an audio input mode for voice recording.',
   },
   chat: {
     thinking: 'Thinking...',
@@ -141,7 +145,7 @@ export default {
     copyCode: 'Copy code',
     codeCopied: 'Code copied to clipboard',
     retry: 'Retry',
-    regenerate: 'Regenerate response'
+    regenerate: 'Regenerate response',
   },
   modes: {
     coding: 'Coding Q&A',
@@ -151,7 +155,7 @@ export default {
     meetingSummary: 'Meeting Summary',
     meetingSummaryDesc: 'Summarize meetings and extract key points',
     general: 'General',
-    generalDesc: 'General conversation and questions'
+    generalDesc: 'General conversation and questions',
   },
   meeting: {
     title: 'Meeting Recorder & Summarizer',
@@ -187,7 +191,7 @@ export default {
     exportAll: 'Export All',
     importMeetings: 'Import Meetings',
     clearAll: 'Clear All Meetings',
-    toggleFilters: 'Toggle Filters'
+    toggleFilters: 'Toggle Filters',
   },
   cost: {
     title: 'API Usage',
@@ -196,7 +200,7 @@ export default {
     threshold: 'Cost Threshold',
     warning: 'Approaching cost limit',
     exceeded: 'Cost limit exceeded',
-    reset: 'Reset Counter'
+    reset: 'Reset Counter',
   },
   settings: {
     title: 'Settings',
@@ -229,7 +233,8 @@ export default {
     fixedResponseLanguage: 'Fixed Response Language',
     fixedResponseLanguageDesc: 'Language to always respond in',
     preventRepetition: 'Prevent Repetitive Responses',
-    preventRepetitionDesc: 'Actively prevent the assistant from repeating previous answers in the conversation',
+    preventRepetitionDesc:
+      'Actively prevent the assistant from repeating previous answers in the conversation',
     preventRepetitionOn: 'Repetition prevention is ON',
     preventRepetitionOff: 'Repetition prevention is OFF',
     conversationContextMode: 'Conversation Context Mode',
@@ -240,15 +245,17 @@ export default {
     maxHistoryMessages: 'Maximum History Messages',
     maxHistoryMessagesDesc: 'Keep last {count} messages in conversation history',
     advancedMemory: 'Advanced Chat History & Context Management',
-    advancedMemoryDesc: 'Enable sophisticated context management (e.g., summarization, relevancy scoring) for richer LLM interactions. Disable for simpler, recency-based history.',
+    advancedMemoryDesc:
+      'Enable sophisticated context management (e.g., summarization, relevancy scoring) for richer LLM interactions. Disable for simpler, recency-based history.',
     advancedMemoryOn: 'Advanced memory management is ON',
     advancedMemoryOff: 'Advanced memory management is OFF',
 
     // STT Language Detection
     sttAutoDetectLanguage: 'Auto-Detect STT Language',
-    sttAutoDetectLanguageDesc: 'Let the browser automatically detect the spoken language (experimental)',
+    sttAutoDetectLanguageDesc:
+      'Let the browser automatically detect the spoken language (experimental)',
     sttAutoDetectOn: 'STT auto-detection is ON',
-    sttAutoDetectOff: 'STT auto-detection is OFF'
+    sttAutoDetectOff: 'STT auto-detection is OFF',
   },
   errors: {
     general: 'An error occurred',
@@ -258,7 +265,7 @@ export default {
     forbidden: 'Forbidden',
     serverError: 'Server error',
     timeout: 'Request timed out',
-    offline: 'You appear to be offline'
+    offline: 'You appear to be offline',
   },
   navigation: {
     dashboard: 'Dashboard',
@@ -269,19 +276,19 @@ export default {
     about: 'About',
     profile: 'Profile',
     logout: 'Logout',
-    exploreAssistants: 'Explore Assistants'
+    exploreAssistants: 'Explore Assistants',
   },
   status: {
     online: 'Online',
     degraded: 'Degraded',
     offline: 'Offline',
-    checking: 'Checking'
+    checking: 'Checking',
   },
   agent: {
     defaultName: 'Assistant',
     ready: '{name} is ready',
     defaultPlaceholder: 'How can I assist you today?',
-    typing: '{name} is typing...'
+    typing: '{name} is typing...',
   },
   meetingSummaries: {
     title: 'Meeting Summaries',
@@ -311,62 +318,114 @@ export default {
     archiveSummary: 'Archive Summary',
     unarchiveSummary: 'Unarchive Summary',
     deleteSummary: 'Delete Summary',
-    clearAllHistory: 'Clear All History'
+    clearAllHistory: 'Clear All History',
   },
   agents: {
     nerf: {
       name: 'Nerf',
       description: 'Your friendly and efficient general AI for quick questions and information.',
-      longDescription: 'Nerf is designed for straightforward Q&A, quick facts, definitions, and simple explanations. It aims for clarity and conciseness, making it a great go-to for everyday inquiries.',
-      placeholder: 'Ask Nerf anything...'
+      longDescription:
+        'Nerf is designed for straightforward Q&A, quick facts, definitions, and simple explanations. It aims for clarity and conciseness, making it a great go-to for everyday inquiries.',
+      placeholder: 'Ask Nerf anything...',
     },
     codePilot: {
       name: 'CodePilot',
-      description: 'Expert coding assistance, debugging, and explanations across multiple languages.',
-      placeholder: 'Ask CodePilot about code...'
+      description:
+        'Expert coding assistance, debugging, and explanations across multiple languages.',
+      placeholder: 'Ask CodePilot about code...',
     },
     architectron: {
       name: 'Architectron',
       description: 'Collaboratively design and diagram complex software and system architectures.',
-      placeholder: 'Describe the system to design...'
+      placeholder: 'Describe the system to design...',
     },
     meetingScribe: {
       name: 'Meeting Scribe',
-      description: 'Processes your meeting notes or transcripts into clear, structured summaries with action items.',
-      placeholder: 'Paste notes or dictate discussion for summary...'
+      description:
+        'Processes your meeting notes or transcripts into clear, structured summaries with action items.',
+      placeholder: 'Paste notes or dictate discussion for summary...',
     },
     echo: {
       name: 'Echo',
-      description: 'Your personal, empathetic AI diary and notetaker for reflection and organizing thoughts.',
-      placeholder: 'Share your thoughts with Echo...'
+      description:
+        'Your personal, empathetic AI diary and notetaker for reflection and organizing thoughts.',
+      placeholder: 'Share your thoughts with Echo...',
     },
     aiInterviewer: {
       name: 'AI Interviewer',
-      description: 'Simulates a technical coding interview, providing problems and evaluating solutions.',
-      placeholder: 'Ready for your mock coding interview?'
+      description:
+        'Simulates a technical coding interview, providing problems and evaluating solutions.',
+      placeholder: 'Ready for your mock coding interview?',
     },
     professorAstra: {
       name: 'Professor Astra',
       description: 'Your adaptive AI tutor for exploring subjects and mastering concepts.',
-      placeholder: 'What topic shall we learn today?'
+      placeholder: 'What topic shall we learn today?',
     },
     lcAudit: {
       name: 'LC-Audit',
       description: 'In-depth LeetCode problem analysis and interview aide.',
-      placeholder: 'Provide problem context for LC-Audit analysis...'
-    }
+      placeholder: 'Provide problem context for LC-Audit analysis...',
+    },
   },
   vAgent: {
     name: 'V',
     online: '{name} Online',
-    description: 'Advanced, dynamic, and insightful AI assistant for complex tasks and explorations.',
-    longDescription: 'V is a powerful, polymathic AI designed to engage in nuanced discussions, synthesize complex information, and provide comprehensive, well-articulated responses. Ideal for deep dives, creative brainstorming, and strategic thinking.',
-    placeholder: 'Pose your complex query or exploration to V...'
+    description:
+      'Advanced, dynamic, and insightful AI assistant for complex tasks and explorations.',
+    longDescription:
+      'V is a powerful, polymathic AI designed to engage in nuanced discussions, synthesize complex information, and provide comprehensive, well-articulated responses. Ideal for deep dives, creative brainstorming, and strategic thinking.',
+    placeholder: 'Pose your complex query or exploration to V...',
+  },
+  about: {
+    title: 'About Voice Chat Assistant',
+    subtitle: 'The Framers Collective',
+    missionTitle: 'Our Mission',
+    missionTagline:
+      "As The Framers, we're building the infrastructure for a world where artificial general intelligence enhances human potential. Through Frame.dev and our open source projects, we're creating tools that bridge today's AI capabilities with tomorrow's AGI reality.",
+    sections: {
+      framers: {
+        title: 'The Framers Collective',
+        subtitle: 'Building AGI-Ready Tools',
+        description:
+          'We are The Framers - AI/NLP engineers, game designers, and product architects creating next-generation open source technology as the world shifts towards AGI.',
+        features: [
+          'Cross-disciplinary expertise',
+          'Human-centered AI design',
+          'Frame.dev innovation lab',
+          'AGI-aligned architectures',
+        ],
+      },
+      openSource: {
+        title: 'Open Source Excellence',
+        subtitle: 'Transparency & Collaboration',
+        description:
+          'Every line of code we write is open, auditable, and extensible. We believe the path to beneficial AGI requires radical transparency and global collaboration.',
+        features: [
+          'MIT licensed everything',
+          'Public development process',
+          'Community-driven features',
+          'No vendor lock-in',
+        ],
+      },
+      infrastructure: {
+        title: 'AGI-Ready Infrastructure',
+        subtitle: "Built for What's Coming",
+        description:
+          "Our tools are designed not just for today's AI, but for the superintelligent systems of tomorrow. Scalable, modular, and ready for the intelligence explosion.",
+        features: [
+          'Multi-agent orchestration',
+          'Distributed memory systems',
+          'Real-time streaming architecture',
+          'Persona-based intelligence',
+        ],
+      },
+    },
   },
   usage: {
     unlimitedAccessLabel: 'Unlimited Access',
     unlimitedTokensRemaining: '~{remaining} tokens left of ~{total} today',
-    calculatingUsage: 'Calculating usage...'
+    calculatingUsage: 'Calculating usage...',
   },
   organization: {
     loading: 'Loading team data...',
@@ -459,7 +518,8 @@ export default {
   register: {
     eyebrow: 'Build faster with a tailored workspace',
     headline: 'Set up your account in minutes.',
-    subheadline: 'Choose a plan that fits, complete secure checkout, and start collaborating with Voice Chat Assistant immediately.',
+    subheadline:
+      'Choose a plan that fits, complete secure checkout, and start collaborating with Voice Chat Assistant immediately.',
     steps: {
       account: 'Account',
       plan: 'Plan',
@@ -479,7 +539,8 @@ export default {
       passwordLabel: 'Create a password',
       passwordPlaceholder: 'At least 8 characters',
       passwordHint: 'Use 8+ characters with at least one number or symbol.',
-      termsLabel: 'I agree to the <a href="https://voice-chat-assistant.com/terms" target="_blank" rel="noopener">Terms of Service</a> and <a href="https://voice-chat-assistant.com/privacy" target="_blank" rel="noopener">Privacy Policy</a>.',
+      termsLabel:
+        'I agree to the <a href="https://voice-chat-assistant.com/terms" target="_blank" rel="noopener">Terms of Service</a> and <a href="https://voice-chat-assistant.com/privacy" target="_blank" rel="noopener">Privacy Policy</a>.',
       errors: {
         missingFields: 'Enter an email and password to continue.',
         mustAcceptTerms: 'You need to accept the terms to create an account.',
@@ -488,13 +549,15 @@ export default {
     },
     plan: {
       title: 'Pick the workspace that fits you best',
-      subtitle: 'Every plan includes intelligent voice-first tooling, adaptive memory, and streaming responses. Upgrade when you need more seats or tokens.',
+      subtitle:
+        'Every plan includes intelligent voice-first tooling, adaptive memory, and streaming responses. Upgrade when you need more seats or tokens.',
       choose: 'Select this plan',
       featuredBadge: 'Recommended',
     },
     payment: {
       title: 'Review & secure checkout',
-      subtitle: "You'll be taken to our Lemon Squeezy payment portal. Billing information is encrypted and handled securely.",
+      subtitle:
+        "You'll be taken to our Lemon Squeezy payment portal. Billing information is encrypted and handled securely.",
       cta: 'Continue to secure checkout',
       summary: {
         email: 'Account email',
@@ -502,7 +565,8 @@ export default {
         billingNote: 'Charged monthly. Cancel anytime from Settings -> Billing.',
       },
       placeholders: {
-        checkoutLink: 'Checkout session created (demo placeholder). Implement Lemon Squeezy redirect next.',
+        checkoutLink:
+          'Checkout session created (demo placeholder). Implement Lemon Squeezy redirect next.',
       },
       errors: {
         missingPlan: 'Choose a plan before continuing.',
@@ -511,7 +575,8 @@ export default {
     },
     success: {
       title: "You're all set!",
-      subtitle: 'A confirmation email is on the way to {email}. You can now sign in with your new account.',
+      subtitle:
+        'A confirmation email is on the way to {email}. You can now sign in with your new account.',
       placeholderEmail: 'your inbox',
       cta: 'Go to login',
       support: 'Need help?',
@@ -538,40 +603,46 @@ export default {
     planHintBasic: 'Basic - {price}/mo - ~{tokens} GPT-4o tokens/day',
     planHintCreator: 'Creator - {price}/mo - BYO after ~{tokens} GPT-4o tokens/day',
     planHintOrganization: 'Organization - {price}/mo - shared pool ~{tokens} GPT-4o tokens/day',
-    rolloverNote: 'Creator and Organization plans switch to personal API keys after the daily house allowance is consumed, keeping analytics intact. Organization admins can allocate seat caps from the team dashboard.'
+    rolloverNote:
+      'Creator and Organization plans switch to personal API keys after the daily house allowance is consumed, keeping analytics intact. Organization admins can allocate seat caps from the team dashboard.',
   },
   onboarding: {
     tour: {
       heading: 'Welcome back, {name}!',
-      subtitle: 'Here’s a quick tour to get your workspace shipping agencies and personas immediately.',
+      subtitle:
+        'Here’s a quick tour to get your workspace shipping agencies and personas immediately.',
       defaultName: 'back',
       steps: {
         seed: {
           title: 'Seed personas & secrets',
-          description: 'Pick a marketplace persona (or import your own) and satisfy required API keys directly from the Credentials panel.',
-          badge: '5 min'
+          description:
+            'Pick a marketplace persona (or import your own) and satisfy required API keys directly from the Credentials panel.',
+          badge: '5 min',
         },
         agency: {
           title: 'Draft your first agency',
-          description: 'Use the Agency Manager to assign personas to roles, connect workflows, and define the shared mission.',
-          badge: 'Roles & guardrails'
+          description:
+            'Use the Agency Manager to assign personas to roles, connect workflows, and define the shared mission.',
+          badge: 'Roles & guardrails',
         },
         workflow: {
           title: 'Launch a workflow',
-          description: 'Kick off automations from the Workflow launcher or via API and watch the live telemetry stream.',
-          badge: 'Streaming ready'
-        }
+          description:
+            'Kick off automations from the Workflow launcher or via API and watch the live telemetry stream.',
+          badge: 'Streaming ready',
+        },
       },
       ctaPrimary: 'Launch guided setup',
-      ctaSecondary: 'Remind me later'
+      ctaSecondary: 'Remind me later',
     },
     tutorials: {
       eyebrow: 'Guided tutorials',
       heading: 'Master agencies, workflows, and local-first tooling',
-      description: 'Curated markdown guides from the AgentOS docs. Read inline or open the original source.',
+      description:
+        'Curated markdown guides from the AgentOS docs. Read inline or open the original source.',
       hide: 'Hide tutorials',
       nowReading: 'Now reading',
-      close: 'Close tutorial'
-    }
-  }
+      close: 'Close tutorial',
+    },
+  },
 };
