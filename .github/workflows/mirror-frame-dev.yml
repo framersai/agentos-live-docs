@@ -46,6 +46,8 @@ jobs:
         env:
           DESTINATION_REPO: git@github.com:framersai/frame.dev.git
         run: |
-          git push --force "$DESTINATION_REPO" mirror-frame-dev-temp:main
+          git push --force "$DESTINATION_REPO" mirror-frame-dev-temp:master
+          # Keep older mirrors that still expect a `main` branch in sync
+          git push --force "$DESTINATION_REPO" mirror-frame-dev-temp:main || true
           git branch -D mirror-frame-dev-temp
         if: steps.control.outputs.skip != 'true'

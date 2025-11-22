@@ -2,9 +2,9 @@ name: Monorepo CI
 
 on:
   push:
-    branches: [main, master, develop]
+    branches: [master, dev, main, develop]
   pull_request:
-    branches: [main, master, develop]
+    branches: [master, dev, main, develop]
 
 permissions:
   contents: read

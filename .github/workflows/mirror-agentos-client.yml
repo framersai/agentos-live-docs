@@ -47,6 +47,7 @@ jobs:
         env:
           DESTINATION_REPO: git@github.com:wearetheframers/agentos-client.git
         run: |
-          git push --force "$DESTINATION_REPO" mirror-client-temp:main
+          git push --force "$DESTINATION_REPO" mirror-client-temp:master
+          git push --force "$DESTINATION_REPO" mirror-client-temp:main || true
           git branch -D mirror-client-temp
         if: steps.control.outputs.skip != 'true'

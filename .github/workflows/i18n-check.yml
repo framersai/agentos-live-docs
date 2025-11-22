@@ -2,11 +2,11 @@ name: I18n Sync Check
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ master, dev, main, develop ]
     paths:
       - 'apps/agentos.sh/messages/**'
   pull_request:
-    branches: [ main, master ]
+    branches: [ master, dev, main, develop ]
     paths:
       - 'apps/agentos.sh/messages/**'
 
