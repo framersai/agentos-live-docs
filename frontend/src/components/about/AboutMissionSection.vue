@@ -14,47 +14,50 @@ interface MissionItem {
 
 const missionItems = ref<MissionItem[]>([
   {
-    title: 'Research & Innovation',
-    subtitle: 'Pushing AI Boundaries',
-    description: 'We\'re pioneering multi-modal AI interactions that adapt to human workflows, not the other way around.',
+    title: 'The Framers Collective',
+    subtitle: 'Building AGI-Ready Tools',
+    description:
+      'We are The Framers - AI/NLP engineers, game designers, and product architects creating next-generation open source technology as the world shifts towards AGI.',
     features: [
-      'Real-time speech synthesis & recognition',
-      'Context-aware conversation memory',
-      'Adaptive persona modeling',
-      'Neural pathway visualization'
+      'Cross-disciplinary expertise',
+      'Human-centered AI design',
+      'Frame.dev innovation lab',
+      'AGI-aligned architectures',
     ],
     iconName: 'rocket',
     accentVar: '--color-accent-primary',
-    gradient: 'linear-gradient(135deg, hsla(335, 80%, 72%, 0.2), hsla(345, 75%, 80%, 0.1))'
+    gradient: 'linear-gradient(135deg, hsla(335, 80%, 72%, 0.2), hsla(345, 75%, 80%, 0.1))',
   },
   {
-    title: 'Open Source First',
-    subtitle: 'Community-Driven Development',
-    description: 'Building transparent, extensible AI tools that everyone can understand, modify, and improve.',
+    title: 'Open Source Excellence',
+    subtitle: 'Transparency & Collaboration',
+    description:
+      'Every line of code we write is open, auditable, and extensible. We believe the path to beneficial AGI requires radical transparency and global collaboration.',
     features: [
-      'MIT licensed codebase',
-      'Modular architecture',
-      'Community contributions',
-      'Public development roadmap'
+      'MIT licensed everything',
+      'Public development process',
+      'Community-driven features',
+      'No vendor lock-in',
     ],
     iconName: 'people',
     accentVar: '--color-accent-secondary',
-    gradient: 'linear-gradient(135deg, hsla(260, 75%, 78%, 0.2), hsla(270, 85%, 65%, 0.1))'
+    gradient: 'linear-gradient(135deg, hsla(260, 75%, 78%, 0.2), hsla(270, 85%, 65%, 0.1))',
   },
   {
-    title: 'Accessible AI for All',
-    subtitle: 'Democratizing Intelligence',
-    description: 'Making superintelligent tools available to everyone, regardless of technical expertise or resources.',
+    title: 'AGI-Ready Infrastructure',
+    subtitle: "Built for What's Coming",
+    description:
+      "Our tools are designed not just for today's AI, but for the superintelligent systems of tomorrow. Scalable, modular, and ready for the intelligence explosion.",
     features: [
-      'Free tier with generous limits',
-      'Multi-language support',
-      'Voice-first accessibility',
-      'Affordable scaling options'
+      'Multi-agent orchestration',
+      'Distributed memory systems',
+      'Real-time streaming architecture',
+      'Persona-based intelligence',
     ],
     iconName: 'prism',
     accentVar: '--color-info',
-    gradient: 'linear-gradient(135deg, hsla(180, 95%, 60%, 0.2), hsla(200, 70%, 94%, 0.1))'
-  }
+    gradient: 'linear-gradient(135deg, hsla(180, 95%, 60%, 0.2), hsla(200, 70%, 94%, 0.1))',
+  },
 ]);
 
 const sectionRef = ref<HTMLElement | null>(null);
@@ -67,7 +70,7 @@ onMounted(() => {
   }
 
   const observer = new IntersectionObserver(
-    (entries) => {
+    entries => {
       const entry = entries[0];
       if (entry?.isIntersecting) {
         cardsVisible.value = true;
@@ -89,9 +92,9 @@ onMounted(() => {
         Our Mission
       </h3>
       <p class="mission-tagline">
-        We believe in a future where AI amplifies human creativity, accelerates innovation,
-        and remains accessible to everyone. Through open research and community collaboration,
-        we're building tools that transform ideas into reality.
+        As The Framers, we're building the infrastructure for a world where artificial general
+        intelligence enhances human potential. Through Frame.dev and our open source projects, we're
+        creating tools that bridge today's AI capabilities with tomorrow's AGI reality.
       </p>
     </div>
 
@@ -103,17 +106,13 @@ onMounted(() => {
         :style="{
           '--card-gradient': item.gradient,
           '--card-accent': `hsl(var(${item.accentVar}-h), var(${item.accentVar}-s), var(${item.accentVar}-l))`,
-          '--stagger-delay': `${index * 150}ms`
+          '--stagger-delay': `${index * 150}ms`,
         }"
       >
         <div class="mission-card-header">
           <div class="mission-icon-container">
             <div class="mission-icon-bg"></div>
-            <AnimatedGlyph
-              :name="item.iconName"
-              class="mission-card-icon"
-              :size="48"
-            />
+            <AnimatedGlyph :name="item.iconName" class="mission-card-icon" :size="48" />
           </div>
           <div class="mission-card-titles">
             <h4 class="mission-card-title">{{ item.title }}</h4>
@@ -159,8 +158,8 @@ onMounted(() => {
       >
         <defs>
           <linearGradient id="mission-gradient-1" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style="stop-color:hsla(335, 80%, 72%, 0.1)" />
-            <stop offset="100%" style="stop-color:hsla(345, 75%, 80%, 0.05)" />
+            <stop offset="0%" style="stop-color: hsla(335, 80%, 72%, 0.1)" />
+            <stop offset="100%" style="stop-color: hsla(345, 75%, 80%, 0.05)" />
           </linearGradient>
           <filter id="mission-blur">
             <feGaussianBlur in="SourceGraphic" stdDeviation="3" />
@@ -207,11 +206,28 @@ onMounted(() => {
 }
 
 @keyframes iconGlow {
-  0%, 100% {
-    filter: drop-shadow(0 0 10px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.5));
+  0%,
+  100% {
+    filter: drop-shadow(
+      0 0 10px
+        hsla(
+          var(--color-accent-primary-h),
+          var(--color-accent-primary-s),
+          var(--color-accent-primary-l),
+          0.5
+        )
+    );
   }
   50% {
-    filter: drop-shadow(0 0 20px hsla(var(--color-accent-primary-h), var(--color-accent-primary-s), var(--color-accent-primary-l), 0.8));
+    filter: drop-shadow(
+      0 0 20px
+        hsla(
+          var(--color-accent-primary-h),
+          var(--color-accent-primary-s),
+          var(--color-accent-primary-l),
+          0.8
+        )
+    );
   }
 }
 
@@ -220,7 +236,12 @@ onMounted(() => {
   margin: 0 auto;
   font-size: 1.125rem;
   line-height: 1.7;
-  color: hsla(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l), 0.9);
+  color: hsla(
+    var(--color-text-secondary-h),
+    var(--color-text-secondary-s),
+    var(--color-text-secondary-l),
+    0.9
+  );
   font-weight: 400;
 }
 
@@ -246,7 +267,12 @@ onMounted(() => {
   position: relative;
   background: linear-gradient(
     135deg,
-    hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.6),
+    hsla(
+      var(--color-bg-secondary-h),
+      var(--color-bg-secondary-s),
+      var(--color-bg-secondary-l),
+      0.6
+    ),
     hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.3)
   );
   backdrop-filter: blur(20px);
@@ -309,11 +335,7 @@ onMounted(() => {
 .mission-icon-bg {
   position: absolute;
   inset: -8px;
-  background: radial-gradient(
-    circle,
-    var(--card-accent),
-    transparent 70%
-  );
+  background: radial-gradient(circle, var(--card-accent), transparent 70%);
   opacity: 0.2;
   border-radius: 50%;
   filter: blur(8px);
@@ -368,7 +390,12 @@ onMounted(() => {
 .mission-card-description {
   margin-bottom: 1.75rem;
   line-height: 1.6;
-  color: hsla(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l), 0.95);
+  color: hsla(
+    var(--color-text-secondary-h),
+    var(--color-text-secondary-s),
+    var(--color-text-secondary-l),
+    0.95
+  );
   font-size: 0.975rem;
   position: relative;
 }
@@ -388,11 +415,20 @@ onMounted(() => {
   align-items: center;
   gap: 0.75rem;
   font-size: 0.9rem;
-  color: hsla(var(--color-text-secondary-h), var(--color-text-secondary-s), var(--color-text-secondary-l), 0.85);
+  color: hsla(
+    var(--color-text-secondary-h),
+    var(--color-text-secondary-s),
+    var(--color-text-secondary-l),
+    0.85
+  );
   transition: color 0.3s ease;
 
   &:hover {
-    color: hsl(var(--color-text-primary-h), var(--color-text-primary-s), var(--color-text-primary-l));
+    color: hsl(
+      var(--color-text-primary-h),
+      var(--color-text-primary-s),
+      var(--color-text-primary-l)
+    );
 
     .feature-check-icon {
       color: var(--card-accent);
@@ -414,11 +450,7 @@ onMounted(() => {
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(
-    circle,
-    var(--card-accent),
-    transparent 40%
-  );
+  background: radial-gradient(circle, var(--card-accent), transparent 40%);
   opacity: 0;
   filter: blur(40px);
   transition: opacity 0.4s ease;
@@ -466,8 +498,18 @@ onMounted(() => {
   .mission-card-enhanced {
     background: linear-gradient(
       135deg,
-      hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), calc(var(--color-bg-secondary-l) + 5%), 0.7),
-      hsla(var(--color-bg-secondary-h), var(--color-bg-secondary-s), var(--color-bg-secondary-l), 0.4)
+      hsla(
+        var(--color-bg-secondary-h),
+        var(--color-bg-secondary-s),
+        calc(var(--color-bg-secondary-l) + 5%),
+        0.7
+      ),
+      hsla(
+        var(--color-bg-secondary-h),
+        var(--color-bg-secondary-s),
+        var(--color-bg-secondary-l),
+        0.4
+      )
     );
   }
 }
