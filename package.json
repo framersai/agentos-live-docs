@@ -51,6 +51,5 @@
   },
   "packageManager": "pnpm@10.15.1",
   "dependencies": {
-    "@framers/codex-extensions": "workspace:*"
   }
 }
