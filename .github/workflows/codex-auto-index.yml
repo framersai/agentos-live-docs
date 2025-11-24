@@ -1,0 +1,53 @@
+name: Codex Auto-Index
+
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [frame-deploy-complete]
+
+jobs:
+  build-index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+          cache-dependency-path: apps/codex/pnpm-lock.yaml
+
+      - name: Install codex dependencies
+        run: |
+          cd apps/codex
+          pnpm install --frozen-lockfile
+
+      - name: Build codex-index.json
+        run: |
+          cd apps/codex
+          pnpm run index
+
+      - name: Build codex-search.json
+        run: |
+          cd apps/codex
+          pnpm run build:search
+
+      - name: Commit and push search assets
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add apps/codex/codex-index.json apps/codex/codex-search.json apps/codex/codex-report.json
+          if ! git diff --cached --quiet; then
+            git commit -m "ci(codex): update search index [skip ci]"
+            git push
+          else
+            echo "No changes to commit."
+          fi
+
