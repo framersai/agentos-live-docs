@@ -29,6 +29,8 @@ interface UseGithubTreeResult {
   totalStrands: number
   /** Total number of top-level weaves */
   totalWeaves: number
+  /** Branch that successfully resolved */
+  resolvedBranch: string
   /** Refetch the tree */
   refetch: () => Promise<void>
 }
@@ -59,6 +61,19 @@ export function useGithubTree(): UseGithubTreeResult {
   const [error, setError] = useState<string | null>(null)
   const [totalStrands, setTotalStrands] = useState(0)
   const [totalWeaves, setTotalWeaves] = useState(0)
+  const [resolvedBranch, setResolvedBranch] = useState(REPO_CONFIG.BRANCH)
+
+  const hasClientPat = (): boolean => {
+    if (typeof window === 'undefined') return false
+    try {
+      const raw = window.localStorage?.getItem('frame-codex-preferences')
+      if (!raw) return false
+      const prefs = JSON.parse(raw)
+      return typeof prefs?.githubPAT === 'string' && prefs.githubPAT.trim().length > 0
+    } catch {
+      return false
+    }
+  }
 
   const fetchTree = async () => {
     setLoading(true)
@@ -68,31 +83,37 @@ export function useGithubTree(): UseGithubTreeResult {
       let rawEntries: Array<{ name: string; type: string; path: string; size?: number }> = []
 
       const branchCandidates = Array.from(new Set(['master', 'main', REPO_CONFIG.BRANCH].filter(Boolean)))
+      const patAvailable = hasClientPat()
 
       let fetchSucceeded = false
       let lastError: unknown = null
       for (const branch of branchCandidates) {
-        try {
-          rawEntries = await fetchGithubTree(REPO_CONFIG.OWNER, REPO_CONFIG.NAME, branch)
-          REPO_CONFIG.BRANCH = branch
-          fetchSucceeded = true
-          break
-        } catch (graphqlError) {
-          if (!graphQlWarningLogged) {
-            console.warn('Codex GitHub GraphQL unavailable, switching to REST.', graphqlError)
-            graphQlWarningLogged = true
-          }
+        if (patAvailable) {
           try {
-            rawEntries = await fetchGithubTreeREST(REPO_CONFIG.OWNER, REPO_CONFIG.NAME, branch)
+            rawEntries = await fetchGithubTree(REPO_CONFIG.OWNER, REPO_CONFIG.NAME, branch)
             REPO_CONFIG.BRANCH = branch
+            setResolvedBranch(branch)
             fetchSucceeded = true
             break
-          } catch (restError) {
-            lastError = restError
-            if (!restWarningLogged) {
-              console.warn('Codex GitHub REST fallback failed, trying next branch.', restError)
-              restWarningLogged = true
+          } catch (graphqlError) {
+            if (!graphQlWarningLogged) {
+              console.warn('Codex GitHub GraphQL unavailable, switching to REST.', graphqlError)
+              graphQlWarningLogged = true
             }
+          }
+        }
+
+        try {
+          rawEntries = await fetchGithubTreeREST(REPO_CONFIG.OWNER, REPO_CONFIG.NAME, branch)
+          REPO_CONFIG.BRANCH = branch
+          setResolvedBranch(branch)
+          fetchSucceeded = true
+          break
+        } catch (restError) {
+          lastError = restError
+          if (!restWarningLogged) {
+            console.warn('Codex GitHub REST fallback failed, trying next branch.', restError)
+            restWarningLogged = true
           }
         }
       }
@@ -139,6 +160,7 @@ export function useGithubTree(): UseGithubTreeResult {
     error,
     totalStrands,
     totalWeaves,
+    resolvedBranch,
     refetch: fetchTree,
   }
 }
