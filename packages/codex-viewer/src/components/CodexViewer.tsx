@@ -6,7 +6,7 @@
 
 'use client'
 
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 import type { GitHubFile, SidebarMode, FrameCodexViewerProps } from './types'
@@ -133,7 +133,9 @@ export default function FrameCodexViewer({
     error: knowledgeTreeError,
     totalStrands: totalTreeStrands,
     totalWeaves: totalTreeWeaves,
+    resolvedBranch,
   } = useGithubTree()
+  const activeBranchRef = useRef(REPO_CONFIG.BRANCH)
 
   // Bookmarks and history
   const {
@@ -198,6 +200,15 @@ export default function FrameCodexViewer({
     threshold: 100,
   })
 
+  useEffect(() => {
+    if (resolvedBranch && activeBranchRef.current !== resolvedBranch) {
+      activeBranchRef.current = resolvedBranch
+      if (REPO_CONFIG.BRANCH !== resolvedBranch) {
+        REPO_CONFIG.BRANCH = resolvedBranch
+      }
+    }
+  }, [resolvedBranch])
+
   /**
    * Update URL when navigation changes (page mode only)
    */
@@ -226,7 +237,7 @@ export default function FrameCodexViewer({
 
     const fetchSummaryIndex = async () => {
       try {
-        const indexUrl = API_ENDPOINTS.raw('codex-index.json')
+        const indexUrl = API_ENDPOINTS.raw('codex-index.json', activeBranchRef.current)
         const response = await fetch(indexUrl)
         if (!response.ok) {
           // 404 is expected for non-Frame codex repos or when index isn't built yet
@@ -340,23 +351,46 @@ export default function FrameCodexViewer({
     async (path: string = '') => {
       setLoading(true)
       setError(null)
+      const branchCandidates = Array.from(
+        new Set(
+          [resolvedBranch, activeBranchRef.current, 'master', 'main', REPO_CONFIG.BRANCH].filter(
+            (value): value is string => Boolean(value && value.length)
+          )
+        )
+      )
+      let lastError: Error | null = null
 
       try {
-        const response = await fetch(API_ENDPOINTS.contents(path))
-        if (!response.ok) {
-          throw new Error(`Failed to fetch: ${response.statusText}`)
+        for (const branch of branchCandidates) {
+          try {
+            const response = await fetch(API_ENDPOINTS.contents(path, branch))
+            if (!response.ok) {
+              throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`)
+            }
+
+            const data = await response.json()
+            const filtered = data.filter((item: GitHubFile) => !shouldIgnorePath(item.name))
+            const sortedData = filtered.sort((a: GitHubFile, b: GitHubFile) => {
+              if (a.type !== b.type) return a.type === 'dir' ? -1 : 1
+              return a.name.localeCompare(b.name)
+            })
+
+            setFiles(sortedData)
+            setCurrentPath(path)
+            updateURL(path)
+            if (branch && branch !== REPO_CONFIG.BRANCH) {
+              REPO_CONFIG.BRANCH = branch
+            }
+            if (activeBranchRef.current !== branch) {
+              activeBranchRef.current = branch
+            }
+            return
+          } catch (err) {
+            lastError = err instanceof Error ? err : new Error('Failed to fetch repository contents')
+          }
         }
 
-        const data = await response.json()
-        const filtered = data.filter((item: GitHubFile) => !shouldIgnorePath(item.name))
-        const sortedData = filtered.sort((a: GitHubFile, b: GitHubFile) => {
-          if (a.type !== b.type) return a.type === 'dir' ? -1 : 1
-          return a.name.localeCompare(b.name)
-        })
-
-        setFiles(sortedData)
-        setCurrentPath(path)
-        updateURL(path)
+        throw lastError ?? new Error('Failed to fetch repository contents')
       } catch (err) {
         console.error('Error fetching contents:', err)
         setError(err instanceof Error ? err.message : 'Failed to fetch repository contents')
@@ -364,7 +398,7 @@ export default function FrameCodexViewer({
         setLoading(false)
       }
     },
-    [updateURL]
+    [resolvedBranch, updateURL]
   )
 
   /**
@@ -461,7 +495,7 @@ export default function FrameCodexViewer({
         sha: '',
         url: '',
         html_url: `https://github.com/${REPO_CONFIG.OWNER}/${REPO_CONFIG.NAME}/blob/${REPO_CONFIG.BRANCH}/${normalizedPath}`,
-        download_url: API_ENDPOINTS.raw(normalizedPath),
+        download_url: API_ENDPOINTS.raw(normalizedPath, activeBranchRef.current),
       }
 
       if (parentDir !== currentPath) {

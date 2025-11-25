@@ -6,7 +6,7 @@
 
 'use client'
 
-import React from 'react'
+import React, { useMemo } from 'react'
 import { X, Info, Hash, Link2, Clock } from 'lucide-react'
 import type { StrandMetadata, GitHubFile } from './types'
 import BacklinkList from '../backlink-list'
@@ -29,28 +29,11 @@ interface CodexMetadataPanelProps {
   }
 }
 
-/**
- * Right-hand metadata and relations panel
- * 
- * @remarks
- * - Displays parsed YAML frontmatter as styled chips
- * - Shows backlinks to current file
- * - Provides graph visualization controls
- * - Keyboard shortcut: 'm' to toggle
- * - Mobile: Becomes bottom sheet on small screens
- * - Analog styling: Paper texture, inner shadow, thick border
- * 
- * @example
- * ```tsx
- * <CodexMetadataPanel
- *   isOpen={metaOpen}
- *   onClose={() => setMetaOpen(false)}
- *   metadata={fileMetadata}
- *   currentFile={selectedFile}
- *   allFiles={files}
- * />
- * ```
- */
+const formatDifficultyLabel = (key: string): string =>
+  key
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, (char) => char.toUpperCase())
+
 export default function CodexMetadataPanel({
   isOpen,
   onClose,
@@ -59,6 +42,16 @@ export default function CodexMetadataPanel({
   allFiles,
   summaryInfo,
 }: CodexMetadataPanelProps) {
+  const difficultyValue = metadata.difficulty
+  const difficultyEntries = useMemo(() => {
+    if (!difficultyValue || typeof difficultyValue !== 'object' || Array.isArray(difficultyValue)) {
+      return null
+    }
+    return Object.entries(difficultyValue).filter(
+      ([, value]) => value !== undefined && value !== null && value !== ''
+    )
+  }, [difficultyValue])
+
   if (!isOpen || !currentFile) return null
 
   return (
@@ -149,12 +142,26 @@ export default function CodexMetadataPanel({
               )}
 
               {/* Difficulty */}
-              {metadata.difficulty && (
+              {difficultyValue && (
                 <div>
                   <p className="text-[11px] font-semibold text-gray-700 dark:text-gray-300 mb-1">Difficulty</p>
-                  <span className="inline-block px-2 py-0.5 text-[11px] rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 border border-blue-200 dark:border-blue-800 font-medium capitalize">
-                    {metadata.difficulty}
-                  </span>
+                  {difficultyEntries ? (
+                    <div className="grid grid-cols-2 gap-2 text-[11px]">
+                      {difficultyEntries.map(([key, value]) => (
+                        <div
+                          key={key}
+                          className="flex items-center justify-between px-2 py-1 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800"
+                        >
+                          <span className="text-gray-500 dark:text-gray-400">{formatDifficultyLabel(key)}</span>
+                          <span className="font-mono text-blue-800 dark:text-blue-200">{String(value)}</span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <span className="inline-block px-2 py-0.5 text-[11px] rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 border border-blue-200 dark:border-blue-800 font-medium capitalize">
+                      {typeof difficultyValue === 'string' ? difficultyValue : ''}
+                    </span>
+                  )}
                 </div>
               )}
 
