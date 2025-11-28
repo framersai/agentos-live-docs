@@ -39,16 +39,23 @@ codex-template
 └─ package.json             # Next.js + @framers/codex-viewer dependency
 ```
 
-### Weave schema overview
+### Weave schema overview (4-tier hierarchy)
 
-| Layer | Description | Example in repo |
-| --- | --- | --- |
-| Fabric | Entire knowledge base (`weaves/`) | this repo |
-| Weave | Top-level collection | `weaves/openstrand` |
-| Loom | Folder inside a weave | `weaves/openstrand/schema` |
-| Strand | Markdown file | `weaves/openstrand/schema/hierarchy.md` |
+| Layer  | Description                       | Example in repo                         | Graph Color   |
+| ------ | --------------------------------- | --------------------------------------- | ------------- |
+| Fabric | Entire knowledge base (`weaves/`) | this repo                               | Zinc/Gray     |
+| Weave  | Top-level collection              | `weaves/openstrand`                     | Amber/Gold    |
+| Loom   | Folder inside a weave             | `weaves/openstrand/schema`              | Cyan/Blue     |
+| Strand | Markdown file                     | `weaves/openstrand/schema/hierarchy.md` | Violet/Purple |
 
 Each `loom.yaml` contains metadata (title, summary, tags). Each strand can include YAML frontmatter; the viewer parses and surfaces it in the metadata panel.
+
+### New in v2.0
+
+- **Knowledge Graph**: Interactive D3.js visualization at `/codex/graph`
+- **Sidebar Graph**: Contextual graph view for navigation
+- **Outline/TOC**: Dynamic table of contents with reading metrics
+- **NLP Analysis**: Client-side entity extraction and auto-tagging
 
 ### OpenStrand content mirrored
 
@@ -64,14 +71,14 @@ Feel free to keep these strands as living docs or replace them with your own kno
 
 Set up environment variables (copy `env.example` → `.env.local`):
 
-| Variable | Description | Default |
-| --- | --- | --- |
-| `NEXT_PUBLIC_CODEX_REPO_OWNER` | GitHub org or user | `framersai` |
-| `NEXT_PUBLIC_CODEX_REPO_NAME` | Repository to read (`weaves/` lives here) | `codex-template` |
-| `NEXT_PUBLIC_CODEX_REPO_BRANCH` | Branch to pull from | `main` |
-| `NEXT_PUBLIC_SITE_URL` | Absolute URL for canonical + OG links | `http://localhost:3000` |
-| `REVALIDATE_SECRET` | Shared secret for `/api/revalidate-codex` | _(set manually)_ |
-| `CODEX_PRERENDER_LIMIT` | (Optional) # of strands to pre-render at build time | `100` |
+| Variable                        | Description                                         | Default                 |
+| ------------------------------- | --------------------------------------------------- | ----------------------- |
+| `NEXT_PUBLIC_CODEX_REPO_OWNER`  | GitHub org or user                                  | `framersai`             |
+| `NEXT_PUBLIC_CODEX_REPO_NAME`   | Repository to read (`weaves/` lives here)           | `codex-template`        |
+| `NEXT_PUBLIC_CODEX_REPO_BRANCH` | Branch to pull from                                 | `main`                  |
+| `NEXT_PUBLIC_SITE_URL`          | Absolute URL for canonical + OG links               | `http://localhost:3000` |
+| `REVALIDATE_SECRET`             | Shared secret for `/api/revalidate-codex`           | _(set manually)_        |
+| `CODEX_PRERENDER_LIMIT`         | (Optional) # of strands to pre-render at build time | `100`                   |
 
 > Codex content is streamed directly from GitHub’s Content + Trees API. Push your markdown first, then run the template locally or deploy to Vercel/Netlify.
 
@@ -112,4 +119,3 @@ Read the full rationale in [`docs/CODEX_SEO_PLAYBOOK.md`](../../docs/CODEX_SEO_P
 ## License
 
 MIT © Frame.dev — feel free to fork, remix, and deploy.
-
