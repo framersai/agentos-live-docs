@@ -50,7 +50,7 @@ codex-template
 
 Each `loom.yaml` contains metadata (title, summary, tags). Each strand can include YAML frontmatter; the viewer parses and surfaces it in the metadata panel.
 
-### New in v2.0
+### Built-in visualization
 
 - **Knowledge Graph**: Interactive D3.js visualization at `/codex/graph`
 - **Sidebar Graph**: Contextual graph view for navigation

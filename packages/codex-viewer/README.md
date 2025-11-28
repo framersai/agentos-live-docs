@@ -20,8 +20,6 @@
 - ⌨️ **Keyboard Navigation**: Full Vim-style + standard shortcuts
 - 🔐 **Privacy-First**: No tracking, all processing client-side
 
-### New in v2.0
-
 - 🕸️ **D3.js Graph Views**: Interactive force-directed knowledge graphs
   - Sidebar graph (contextual to current selection)
   - Full fabric graph at `/codex/graph`
