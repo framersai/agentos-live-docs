@@ -12,13 +12,23 @@
 - 🔍 **Smart Search**: BM25 + semantic re-ranking with client-side embeddings
 - 🎨 **Retro-Futuristic**: Terminal themes, analog paper styling, Art Deco elements
 - 🌓 **6 Themes**: Light, Dark, Sepia (light/dark), Terminal (green/amber)
-- 📱 **Fully Responsive**: Mobile-first with touch gestures and swipe navigation
-- 🔗 **Wiki Features**: Cross-references, backlinks, metadata panel, graph view
+- 📱 **Fully Responsive**: Mobile-first with smart breakpoint layouts
+- 🔗 **Wiki Features**: Cross-references, backlinks, metadata panel
 - ⚡ **Ultra-Fast**: SQL-cached, incremental updates, sub-100ms search
 - 🎯 **Zero Config**: Works instantly with sensible defaults
 - 🎙️ **Text-to-Speech**: Free client-side read-aloud with radial audio controls
 - ⌨️ **Keyboard Navigation**: Full Vim-style + standard shortcuts
 - 🔐 **Privacy-First**: No tracking, all processing client-side
+
+### New in v2.0
+
+- 🕸️ **D3.js Graph Views**: Interactive force-directed knowledge graphs
+  - Sidebar graph (contextual to current selection)
+  - Full fabric graph at `/codex/graph`
+  - Compact relation view in metadata panel
+- 📑 **Outline/TOC Mode**: Dynamic table of contents with reading metrics
+- 🧠 **NLP Content Analysis**: Client-side entity extraction, auto-tagging, health scoring
+- 📐 **Smart Responsive Layouts**: Preset layouts for mobile → ultrawide screens
 
 ## Installation
 
