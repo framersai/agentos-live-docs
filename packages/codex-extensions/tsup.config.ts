@@ -17,17 +17,3 @@ export default defineConfig({
   splitting: true,
   minify: false,
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
