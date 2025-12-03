@@ -68,11 +68,26 @@ export function PluginWindow({
   const [isResizing, setIsResizing] = useState(false);
   const [resizeDirection, setResizeDirection] = useState<string | null>(null);
   const [isMaximized, setIsMaximized] = useState(false);
-  const [preMaximizeState, setPreMaximizeState] = useState<{ position: Position; size: Size } | null>(null);
+  const [preMaximizeState, setPreMaximizeState] = useState<{
+    position: Position;
+    size: Size;
+  } | null>(null);
 
   const windowRef = useRef<HTMLDivElement>(null);
-  const dragStartRef = useRef<{ x: number; y: number; startX: number; startY: number }>({ x: 0, y: 0, startX: 0, startY: 0 });
-  const resizeStartRef = useRef<{ width: number; height: number; x: number; y: number; startX: number; startY: number }>({
+  const dragStartRef = useRef<{ x: number; y: number; startX: number; startY: number }>({
+    x: 0,
+    y: 0,
+    startX: 0,
+    startY: 0,
+  });
+  const resizeStartRef = useRef<{
+    width: number;
+    height: number;
+    x: number;
+    y: number;
+    startX: number;
+    startY: number;
+  }>({
     width: 0,
     height: 0,
     x: 0,
@@ -84,33 +99,39 @@ export function PluginWindow({
   const isDark = theme.includes('dark');
 
   // Drag handlers
-  const handleDragStart = useCallback((e: React.MouseEvent) => {
-    if (isMaximized) return;
-    setIsDragging(true);
-    dragStartRef.current = {
-      x: position.x,
-      y: position.y,
-      startX: e.clientX,
-      startY: e.clientY,
-    };
-  }, [position, isMaximized]);
+  const handleDragStart = useCallback(
+    (e: React.MouseEvent) => {
+      if (isMaximized) return;
+      setIsDragging(true);
+      dragStartRef.current = {
+        x: position.x,
+        y: position.y,
+        startX: e.clientX,
+        startY: e.clientY,
+      };
+    },
+    [position, isMaximized]
+  );
 
   // Resize handlers
-  const handleResizeStart = useCallback((e: React.MouseEvent, direction: string) => {
-    if (isMaximized) return;
-    e.preventDefault();
-    e.stopPropagation();
-    setIsResizing(true);
-    setResizeDirection(direction);
-    resizeStartRef.current = {
-      width: size.width,
-      height: size.height,
-      x: position.x,
-      y: position.y,
-      startX: e.clientX,
-      startY: e.clientY,
-    };
-  }, [size, position, isMaximized]);
+  const handleResizeStart = useCallback(
+    (e: React.MouseEvent, direction: string) => {
+      if (isMaximized) return;
+      e.preventDefault();
+      e.stopPropagation();
+      setIsResizing(true);
+      setResizeDirection(direction);
+      resizeStartRef.current = {
+        width: size.width,
+        height: size.height,
+        x: position.x,
+        y: position.y,
+        startX: e.clientX,
+        startY: e.clientY,
+      };
+    },
+    [size, position, isMaximized]
+  );
 
   // Mouse move/up handlers
   useEffect(() => {
@@ -227,12 +248,12 @@ export function PluginWindow({
         onDoubleClick={handleTitleDoubleClick}
       >
         <div className="flex items-center gap-2 select-none">
-          <span className={`text-sm font-medium ${isDark ? 'text-white' : 'text-zinc-900'}`}>
+          <span
+            className={`text-sm font-medium ${isDark ? 'text-white' : 'text-zinc-900'}`}
+          >
             {plugin.name}
           </span>
-          {plugin.verified && (
-            <span className="text-xs text-green-500">✓</span>
-          )}
+          {plugin.verified && <span className="text-xs text-green-500">✓</span>}
         </div>
 
         <div className="flex items-center gap-1" onMouseDown={e => e.stopPropagation()}>
@@ -242,17 +263,28 @@ export function PluginWindow({
               onClick={onPinToggle}
               className={`
                 p-1.5 rounded transition-colors
-                ${isPinned
-                  ? 'text-cyan-500'
-                  : isDark
-                    ? 'text-zinc-400 hover:text-white hover:bg-zinc-700'
-                    : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-200'
+                ${
+                  isPinned
+                    ? 'text-cyan-500'
+                    : isDark
+                      ? 'text-zinc-400 hover:text-white hover:bg-zinc-700'
+                      : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-200'
                 }
               `}
               title={isPinned ? 'Unpin' : 'Pin on top'}
             >
-              <svg className="w-4 h-4" fill={isPinned ? 'currentColor' : 'none'} viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+              <svg
+                className="w-4 h-4"
+                fill={isPinned ? 'currentColor' : 'none'}
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
+                />
               </svg>
             </button>
           )}
@@ -267,8 +299,18 @@ export function PluginWindow({
               `}
               title="Minimize"
             >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M20 12H4"
+                />
               </svg>
             </button>
           )}
@@ -282,11 +324,26 @@ export function PluginWindow({
             `}
             title={isMaximized ? 'Restore' : 'Maximize'}
           >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
               {isMaximized ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3"
+                />
               ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"
+                />
               )}
             </svg>
           </button>
@@ -300,8 +357,18 @@ export function PluginWindow({
             `}
             title="Close"
           >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
@@ -356,14 +423,3 @@ export function PluginWindow({
 }
 
 export default PluginWindow;
-
-
-
-
-
-
-
-
-
-
-

@@ -59,9 +59,7 @@ export function PluginSlotProvider({
 }) {
   const value = useMemo(() => ({ enabledPlugins, theme }), [enabledPlugins, theme]);
   return (
-    <PluginSlotContext.Provider value={value}>
-      {children}
-    </PluginSlotContext.Provider>
+    <PluginSlotContext.Provider value={value}>{children}</PluginSlotContext.Provider>
   );
 }
 
@@ -71,12 +69,12 @@ export function PluginSlotProvider({
 
 /**
  * Plugin Slot - Renders all plugin components registered for this slot
- * 
+ *
  * @example
  * ```tsx
  * // In your layout
  * <PluginSlot name="toolbar-right" />
- * 
+ *
  * // Plugin registers to this slot:
  * const plugin: ViewerPlugin = {
  *   slots: [{
@@ -104,7 +102,7 @@ export function PluginSlot({
 
     for (const plugin of enabledPlugins) {
       if (!plugin.slots) continue;
-      
+
       for (const slot of plugin.slots) {
         if (slot.name === name) {
           components.push({ plugin, slot });
@@ -132,11 +130,7 @@ export function PluginSlot({
             pluginId={plugin.manifest.id}
             pluginName={plugin.manifest.name}
           >
-            <Component
-              {...componentProps}
-              pluginId={plugin.manifest.id}
-              theme={theme}
-            />
+            <Component {...componentProps} pluginId={plugin.manifest.id} theme={theme} />
           </PluginErrorBoundary>
         );
       })}
@@ -159,7 +153,10 @@ interface PluginErrorBoundaryState {
   error?: Error;
 }
 
-class PluginErrorBoundary extends React.Component<PluginErrorBoundaryProps, PluginErrorBoundaryState> {
+class PluginErrorBoundary extends React.Component<
+  PluginErrorBoundaryProps,
+  PluginErrorBoundaryState
+> {
   constructor(props: PluginErrorBoundaryProps) {
     super(props);
     this.state = { hasError: false };
@@ -170,7 +167,11 @@ class PluginErrorBoundary extends React.Component<PluginErrorBoundaryProps, Plug
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error(`[PluginSlot] Error in plugin "${this.props.pluginName}" (${this.props.pluginId}):`, error, errorInfo);
+    console.error(
+      `[PluginSlot] Error in plugin "${this.props.pluginName}" (${this.props.pluginId}):`,
+      error,
+      errorInfo
+    );
   }
 
   render() {
@@ -198,22 +199,14 @@ export function usePluginSlot(
   component: React.ComponentType<unknown>,
   priority: number = 0
 ): PluginSlotType {
-  return useMemo(() => ({
-    name: slotName,
-    component,
-    priority,
-  }), [slotName, component, priority]);
+  return useMemo(
+    () => ({
+      name: slotName,
+      component,
+      priority,
+    }),
+    [slotName, component, priority]
+  );
 }
 
 export default PluginSlot;
-
-
-
-
-
-
-
-
-
-
-

@@ -278,9 +278,3 @@ Ensure you're using the theme selector in preferences (`Cmd/Ctrl + ,`). Some com
 ---
 
 _Last updated: December 2024_
-
-
-
-
-
-
