@@ -50,9 +50,19 @@ export default function DocsPage() {
           description="Key management, webhooks, HTTPS"
           href="/docs/security"
         />
+        <DocCard
+          title="📦 Widget Reference"
+          description="Embeddable widget configuration"
+          href="/docs/widget"
+        />
+        <DocCard
+          title="⚙️ SDK Reference"
+          description="TypeScript SDK for checkout integration"
+          href="/docs/sdk"
+        />
       </nav>
 
-      <section className="rounded-3xl border border-ink-200/70 p-8 space-y-6">
+      <section className="rounded-3xl border border-gpw-border p-8 space-y-6">
         <h2 className="text-3xl font-bold">SDK Packages</h2>
         <div className="grid gap-6 md:grid-cols-2">
           <PackageCard

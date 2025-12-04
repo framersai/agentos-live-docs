@@ -22,7 +22,7 @@ const faqs = [
   },
   {
     question: 'How much does it cost?',
-    answer: 'We have a free tier that includes 1 project and 1,000 checkouts/month. Paid plans start at $19/month for unlimited checkouts. We don\'t take a percentage of your revenue—what you charge is what you keep (minus your payment provider\'s fees).',
+    answer: 'GitPayWidget is free to start with a 1% platform fee per transaction. For creators who want zero fees, our Pro plan is a one-time $250 lifetime license that removes all platform fees forever, plus gives you full analytics, custom branding, and priority support. You only pay your payment provider\'s standard fees (Stripe ~2.9% + 30¢).',
   },
   {
     question: 'Does it work with any static site host?',
