@@ -44,6 +44,28 @@ export interface IAgentCapability {
   showEphemeralChatLog?: boolean;
   // Add the new optional textAnimationConfig capability
   textAnimationConfig?: Partial<TextRevealConfig>;
+  /**
+   * Enable RAG (Retrieval Augmented Generation) memory for this agent.
+   * When enabled, conversations and knowledge can be stored and retrieved semantically.
+   */
+  ragEnabled?: boolean;
+  /**
+   * RAG memory configuration for the agent.
+   */
+  ragConfig?: {
+    /** Automatically ingest conversation turns into RAG memory */
+    autoIngestConversations?: boolean;
+    /** Triggers that initiate RAG retrieval */
+    retrievalTriggers?: ('always' | 'keyword' | 'semantic' | 'explicit')[];
+    /** Maximum number of chunks to retrieve per query */
+    maxRetrievedChunks?: number;
+    /** Minimum similarity score for retrieved chunks (0-1) */
+    similarityThreshold?: number;
+    /** Collection ID for this agent's RAG memory (defaults to agent-{agentId}) */
+    collectionId?: string;
+    /** Categories of memory to use */
+    memoryCategories?: ('conversation_memory' | 'knowledge_base' | 'user_notes')[];
+  };
 }
 
 export type AgentCategory = 'General' | 'Coding' | 'Productivity' | 'Learning' | 'Auditing' | 'Experimental' | 'Utility';
