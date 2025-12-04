@@ -23,4 +23,4 @@
 	url = https://github.com/framersai/codex.git
 [submodule "apps/gitpaywidget"]
 	path = apps/gitpaywidget
-	url = git@github.com:manicinc/gitpaywidget.git
+	url = https://github.com/manicinc/gitpaywidget.git
