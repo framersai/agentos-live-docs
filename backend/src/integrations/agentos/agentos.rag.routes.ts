@@ -14,6 +14,7 @@
 
 import { Router, type Request, type Response, type NextFunction } from 'express';
 import { agentosChatAdapterEnabled } from './agentos.chat-adapter.js';
+import { ragService } from './agentos.rag.service.js';
 
 /**
  * Request payload for document ingestion into RAG memory.
@@ -174,30 +175,25 @@ export const createAgentOSRagRouter = (): Router => {
         });
       }
 
-      // Generate document ID if not provided
-      const documentId = body.documentId || `doc_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
-      const collectionId = body.collectionId || 'default';
-
-      // TODO: Integrate with actual RetrievalAugmentor when AgentOS RAG services are wired
-      // For now, return a stub response indicating the endpoint is ready but RAG is not yet initialized
-      console.log('[RAG Routes] Ingest request received:', {
-        documentId,
-        collectionId,
-        contentLength: body.content.length,
+      // Ingest using the RAG service
+      const result = await ragService.ingestDocument({
+        documentId: body.documentId,
+        content: body.content,
+        collectionId: body.collectionId,
         category: body.category,
-        hasMetadata: !!body.metadata,
+        metadata: body.metadata,
+        chunkingOptions: body.chunkingOptions,
       });
 
-      // Stub response - will be replaced with actual RAG integration
       const response: RagIngestResponse = {
-        success: true,
-        documentId,
-        chunksCreated: 0, // Will be populated by actual ingestion
-        collectionId,
-        message: 'RAG ingestion endpoint ready. Full integration pending AgentOS RAG service initialization.',
+        success: result.success,
+        documentId: result.documentId,
+        chunksCreated: result.chunksCreated,
+        collectionId: result.collectionId,
+        message: result.error || (result.success ? 'Document ingested successfully' : 'Ingestion failed'),
       };
 
-      return res.status(201).json(response);
+      return res.status(result.success ? 201 : 500).json(response);
     } catch (error) {
       next(error);
     }
@@ -231,23 +227,22 @@ export const createAgentOSRagRouter = (): Router => {
         });
       }
 
-      const startTime = Date.now();
-
-      // TODO: Integrate with actual RetrievalAugmentor when AgentOS RAG services are wired
-      console.log('[RAG Routes] Query request received:', {
-        queryLength: body.query.length,
-        topK: body.topK,
+      // Query using the RAG service
+      const result = await ragService.query({
+        query: body.query,
         collectionIds: body.collectionIds,
-        hasFilters: !!body.filters,
+        topK: body.topK,
+        similarityThreshold: body.similarityThreshold,
+        filters: body.filters,
+        includeMetadata: body.includeMetadata,
       });
 
-      // Stub response - will be replaced with actual RAG integration
       const response: RagQueryResponse = {
-        success: true,
-        query: body.query,
-        chunks: [], // Will be populated by actual retrieval
-        totalResults: 0,
-        processingTimeMs: Date.now() - startTime,
+        success: result.success,
+        query: result.query,
+        chunks: result.chunks,
+        totalResults: result.totalResults,
+        processingTimeMs: result.processingTimeMs,
       };
 
       return res.status(200).json(response);
@@ -275,22 +270,32 @@ export const createAgentOSRagRouter = (): Router => {
 
       const { collectionId, agentId, userId, limit, offset } = req.query;
 
-      console.log('[RAG Routes] List documents request:', {
-        collectionId,
-        agentId,
-        userId,
-        limit,
-        offset,
+      // Get documents from RAG service
+      const documents = ragService.listDocuments({
+        collectionId: collectionId as string | undefined,
+        agentId: agentId as string | undefined,
+        userId: userId as string | undefined,
       });
 
-      // Stub response - will be replaced with actual RAG integration
+      // Apply pagination
+      const limitNum = Number(limit) || 50;
+      const offsetNum = Number(offset) || 0;
+      const paginatedDocs = documents.slice(offsetNum, offsetNum + limitNum);
+
       const response = {
         success: true,
-        documents: [] as RagDocumentSummary[],
-        total: 0,
-        limit: Number(limit) || 50,
-        offset: Number(offset) || 0,
-        message: 'RAG documents endpoint ready. Full integration pending.',
+        documents: paginatedDocs.map(doc => ({
+          documentId: doc.documentId,
+          collectionId: doc.collectionId,
+          chunkCount: doc.chunkCount,
+          category: doc.category,
+          metadata: doc.metadata,
+          createdAt: new Date(doc.createdAt).toISOString(),
+          updatedAt: new Date(doc.createdAt).toISOString(),
+        })) as RagDocumentSummary[],
+        total: documents.length,
+        limit: limitNum,
+        offset: offsetNum,
       };
 
       return res.status(200).json(response);
@@ -325,14 +330,20 @@ export const createAgentOSRagRouter = (): Router => {
         });
       }
 
-      console.log('[RAG Routes] Delete document request:', { documentId });
+      const deleted = await ragService.deleteDocument(documentId);
 
-      // TODO: Integrate with actual RetrievalAugmentor
-      // Stub response
+      if (!deleted) {
+        return res.status(404).json({
+          success: false,
+          documentId,
+          message: 'Document not found',
+        });
+      }
+
       return res.status(200).json({
         success: true,
         documentId,
-        message: 'Document deletion endpoint ready. Full integration pending.',
+        message: 'Document deleted successfully',
       });
     } catch (error) {
       next(error);
@@ -357,21 +368,11 @@ export const createAgentOSRagRouter = (): Router => {
       }
 
       const { agentId } = req.query;
-
-      console.log('[RAG Routes] Stats request:', { agentId });
-
-      // Stub response - will be replaced with actual RAG integration
-      const response: RagStatsResponse = {
-        totalDocuments: 0,
-        totalChunks: 0,
-        collections: [],
-        storageUsedBytes: 0,
-      };
+      const stats = ragService.getStats(agentId as string | undefined);
 
       return res.status(200).json({
         success: true,
-        ...response,
-        message: 'RAG stats endpoint ready. Full integration pending.',
+        ...stats,
       });
     } catch (error) {
       next(error);
@@ -395,7 +396,7 @@ export const createAgentOSRagRouter = (): Router => {
         });
       }
 
-      const { collectionId, displayName, metadata } = req.body;
+      const { collectionId, displayName } = req.body;
 
       if (!collectionId || typeof collectionId !== 'string') {
         return res.status(400).json({
@@ -405,18 +406,13 @@ export const createAgentOSRagRouter = (): Router => {
         });
       }
 
-      console.log('[RAG Routes] Create collection request:', {
-        collectionId,
-        displayName,
-        hasMetadata: !!metadata,
-      });
+      ragService.createCollection(collectionId, displayName);
 
-      // Stub response
       return res.status(201).json({
         success: true,
         collectionId,
         displayName: displayName || collectionId,
-        message: 'Collection creation endpoint ready. Full integration pending.',
+        message: 'Collection created successfully',
       });
     } catch (error) {
       next(error);
@@ -427,7 +423,7 @@ export const createAgentOSRagRouter = (): Router => {
    * GET /collections
    * List all collections in RAG memory.
    */
-  router.get('/collections', async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+  router.get('/collections', async (_req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
       if (!agentosChatAdapterEnabled()) {
         return res.status(503).json({
@@ -437,13 +433,11 @@ export const createAgentOSRagRouter = (): Router => {
         });
       }
 
-      console.log('[RAG Routes] List collections request');
+      const collections = ragService.listCollections();
 
-      // Stub response
       return res.status(200).json({
         success: true,
-        collections: [],
-        message: 'Collections list endpoint ready. Full integration pending.',
+        collections,
       });
     } catch (error) {
       next(error);
@@ -474,13 +468,20 @@ export const createAgentOSRagRouter = (): Router => {
         });
       }
 
-      console.log('[RAG Routes] Delete collection request:', { collectionId });
+      const deleted = ragService.deleteCollection(collectionId);
 
-      // Stub response
+      if (!deleted) {
+        return res.status(404).json({
+          success: false,
+          collectionId,
+          message: 'Collection not found',
+        });
+      }
+
       return res.status(200).json({
         success: true,
         collectionId,
-        message: 'Collection deletion endpoint ready. Full integration pending.',
+        message: 'Collection deleted successfully',
       });
     } catch (error) {
       next(error);
@@ -494,14 +495,23 @@ export const createAgentOSRagRouter = (): Router => {
   router.get('/health', async (_req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
       const isEnabled = agentosChatAdapterEnabled();
+      const ragAvailable = ragService.isAvailable();
+      const stats = ragAvailable ? ragService.getStats() : null;
 
       return res.status(200).json({
-        status: isEnabled ? 'ready' : 'disabled',
-        ragServiceInitialized: false, // Will be true when RAG services are wired
-        vectorStoreConnected: false,
-        embeddingServiceAvailable: false,
+        status: isEnabled && ragAvailable ? 'ready' : isEnabled ? 'initializing' : 'disabled',
+        ragServiceInitialized: ragAvailable,
+        vectorStoreConnected: ragAvailable, // In-memory store is always "connected"
+        embeddingServiceAvailable: false, // Embeddings not yet integrated
+        stats: stats ? {
+          totalDocuments: stats.totalDocuments,
+          totalChunks: stats.totalChunks,
+          collectionCount: stats.collections.length,
+        } : null,
         message: isEnabled
-          ? 'RAG routes mounted. Full service integration pending.'
+          ? ragAvailable
+            ? 'RAG service ready (in-memory store)'
+            : 'RAG service initializing'
           : 'AgentOS integration is disabled.',
       });
     } catch (error) {
