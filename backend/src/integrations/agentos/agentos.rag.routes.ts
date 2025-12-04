@@ -14,7 +14,7 @@
 
 import { Router, type Request, type Response, type NextFunction } from 'express';
 import { agentosChatAdapterEnabled } from './agentos.chat-adapter.js';
-import { ragService } from './agentos.rag.service.js';
+import { ragService, type RagMemoryStats } from './agentos.rag.service.js';
 
 /**
  * Request payload for document ingestion into RAG memory.
@@ -154,50 +154,55 @@ export const createAgentOSRagRouter = (): Router => {
    * @description Processes text content, generates embeddings, and stores
    * in the configured vector store. Supports chunking strategies and metadata.
    */
-  router.post('/ingest', async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
-    try {
-      if (!agentosChatAdapterEnabled()) {
-        return res.status(503).json({
-          success: false,
-          message: 'AgentOS integration disabled',
-          error: 'AGENTOS_DISABLED',
+  router.post(
+    '/ingest',
+    async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+      try {
+        if (!agentosChatAdapterEnabled()) {
+          return res.status(503).json({
+            success: false,
+            message: 'AgentOS integration disabled',
+            error: 'AGENTOS_DISABLED',
+          });
+        }
+
+        const body = req.body as RagIngestRequest;
+
+        // Validate required fields
+        if (!body.content || typeof body.content !== 'string' || body.content.trim().length === 0) {
+          return res.status(400).json({
+            success: false,
+            message: 'content is required and must be a non-empty string',
+            error: 'INVALID_PAYLOAD',
+          });
+        }
+
+        // Ingest using the RAG service
+        const result = await ragService.ingestDocument({
+          documentId: body.documentId,
+          content: body.content,
+          collectionId: body.collectionId,
+          category: body.category,
+          metadata: body.metadata,
+          chunkingOptions: body.chunkingOptions,
         });
+
+        const response: RagIngestResponse = {
+          success: result.success,
+          documentId: result.documentId,
+          chunksCreated: result.chunksCreated,
+          collectionId: result.collectionId,
+          message:
+            result.error ||
+            (result.success ? 'Document ingested successfully' : 'Ingestion failed'),
+        };
+
+        return res.status(result.success ? 201 : 500).json(response);
+      } catch (error) {
+        next(error);
       }
-
-      const body = req.body as RagIngestRequest;
-
-      // Validate required fields
-      if (!body.content || typeof body.content !== 'string' || body.content.trim().length === 0) {
-        return res.status(400).json({
-          success: false,
-          message: 'content is required and must be a non-empty string',
-          error: 'INVALID_PAYLOAD',
-        });
-      }
-
-      // Ingest using the RAG service
-      const result = await ragService.ingestDocument({
-        documentId: body.documentId,
-        content: body.content,
-        collectionId: body.collectionId,
-        category: body.category,
-        metadata: body.metadata,
-        chunkingOptions: body.chunkingOptions,
-      });
-
-      const response: RagIngestResponse = {
-        success: result.success,
-        documentId: result.documentId,
-        chunksCreated: result.chunksCreated,
-        collectionId: result.collectionId,
-        message: result.error || (result.success ? 'Document ingested successfully' : 'Ingestion failed'),
-      };
-
-      return res.status(result.success ? 201 : 500).json(response);
-    } catch (error) {
-      next(error);
     }
-  });
+  );
 
   /**
    * POST /query
@@ -206,50 +211,53 @@ export const createAgentOSRagRouter = (): Router => {
    * @description Generates embedding for the query, performs similarity search,
    * and returns the most relevant chunks from the vector store.
    */
-  router.post('/query', async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
-    try {
-      if (!agentosChatAdapterEnabled()) {
-        return res.status(503).json({
-          success: false,
-          message: 'AgentOS integration disabled',
-          error: 'AGENTOS_DISABLED',
+  router.post(
+    '/query',
+    async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+      try {
+        if (!agentosChatAdapterEnabled()) {
+          return res.status(503).json({
+            success: false,
+            message: 'AgentOS integration disabled',
+            error: 'AGENTOS_DISABLED',
+          });
+        }
+
+        const body = req.body as RagQueryRequest;
+
+        // Validate required fields
+        if (!body.query || typeof body.query !== 'string' || body.query.trim().length === 0) {
+          return res.status(400).json({
+            success: false,
+            message: 'query is required and must be a non-empty string',
+            error: 'INVALID_PAYLOAD',
+          });
+        }
+
+        // Query using the RAG service
+        const result = await ragService.query({
+          query: body.query,
+          collectionIds: body.collectionIds,
+          topK: body.topK,
+          similarityThreshold: body.similarityThreshold,
+          filters: body.filters,
+          includeMetadata: body.includeMetadata,
         });
+
+        const response: RagQueryResponse = {
+          success: result.success,
+          query: result.query,
+          chunks: result.chunks,
+          totalResults: result.totalResults,
+          processingTimeMs: result.processingTimeMs,
+        };
+
+        return res.status(200).json(response);
+      } catch (error) {
+        next(error);
       }
-
-      const body = req.body as RagQueryRequest;
-
-      // Validate required fields
-      if (!body.query || typeof body.query !== 'string' || body.query.trim().length === 0) {
-        return res.status(400).json({
-          success: false,
-          message: 'query is required and must be a non-empty string',
-          error: 'INVALID_PAYLOAD',
-        });
-      }
-
-      // Query using the RAG service
-      const result = await ragService.query({
-        query: body.query,
-        collectionIds: body.collectionIds,
-        topK: body.topK,
-        similarityThreshold: body.similarityThreshold,
-        filters: body.filters,
-        includeMetadata: body.includeMetadata,
-      });
-
-      const response: RagQueryResponse = {
-        success: result.success,
-        query: result.query,
-        chunks: result.chunks,
-        totalResults: result.totalResults,
-        processingTimeMs: result.processingTimeMs,
-      };
-
-      return res.status(200).json(response);
-    } catch (error) {
-      next(error);
     }
-  });
+  );
 
   /**
    * GET /documents
@@ -258,51 +266,54 @@ export const createAgentOSRagRouter = (): Router => {
    * @description Returns a paginated list of documents stored in RAG memory,
    * optionally filtered by collection, agent, or user.
    */
-  router.get('/documents', async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
-    try {
-      if (!agentosChatAdapterEnabled()) {
-        return res.status(503).json({
-          success: false,
-          message: 'AgentOS integration disabled',
-          error: 'AGENTOS_DISABLED',
+  router.get(
+    '/documents',
+    async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+      try {
+        if (!agentosChatAdapterEnabled()) {
+          return res.status(503).json({
+            success: false,
+            message: 'AgentOS integration disabled',
+            error: 'AGENTOS_DISABLED',
+          });
+        }
+
+        const { collectionId, agentId, userId, limit, offset } = req.query;
+
+        // Get documents from RAG service
+        const documents = await ragService.listDocuments({
+          collectionId: collectionId as string | undefined,
+          agentId: agentId as string | undefined,
+          userId: userId as string | undefined,
         });
+
+        // Apply pagination
+        const limitNum = Number(limit) || 50;
+        const offsetNum = Number(offset) || 0;
+        const paginatedDocs = documents.slice(offsetNum, offsetNum + limitNum);
+
+        const response = {
+          success: true,
+          documents: paginatedDocs.map(doc => ({
+            documentId: doc.documentId,
+            collectionId: doc.collectionId,
+            chunkCount: doc.chunkCount,
+            category: doc.category,
+            metadata: doc.metadata,
+            createdAt: new Date(doc.createdAt).toISOString(),
+            updatedAt: new Date(doc.createdAt).toISOString(),
+          })) as RagDocumentSummary[],
+          total: documents.length,
+          limit: limitNum,
+          offset: offsetNum,
+        };
+
+        return res.status(200).json(response);
+      } catch (error) {
+        next(error);
       }
-
-      const { collectionId, agentId, userId, limit, offset } = req.query;
-
-      // Get documents from RAG service
-      const documents = await ragService.listDocuments({
-        collectionId: collectionId as string | undefined,
-        agentId: agentId as string | undefined,
-        userId: userId as string | undefined,
-      });
-
-      // Apply pagination
-      const limitNum = Number(limit) || 50;
-      const offsetNum = Number(offset) || 0;
-      const paginatedDocs = documents.slice(offsetNum, offsetNum + limitNum);
-
-      const response = {
-        success: true,
-        documents: paginatedDocs.map(doc => ({
-          documentId: doc.documentId,
-          collectionId: doc.collectionId,
-          chunkCount: doc.chunkCount,
-          category: doc.category,
-          metadata: doc.metadata,
-          createdAt: new Date(doc.createdAt).toISOString(),
-          updatedAt: new Date(doc.createdAt).toISOString(),
-        })) as RagDocumentSummary[],
-        total: documents.length,
-        limit: limitNum,
-        offset: offsetNum,
-      };
-
-      return res.status(200).json(response);
-    } catch (error) {
-      next(error);
     }
-  });
+  );
 
   /**
    * DELETE /documents/:documentId
@@ -310,45 +321,48 @@ export const createAgentOSRagRouter = (): Router => {
    *
    * @description Removes a document and all its chunks from the vector store.
    */
-  router.delete('/documents/:documentId', async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
-    try {
-      if (!agentosChatAdapterEnabled()) {
-        return res.status(503).json({
-          success: false,
-          message: 'AgentOS integration disabled',
-          error: 'AGENTOS_DISABLED',
-        });
-      }
+  router.delete(
+    '/documents/:documentId',
+    async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+      try {
+        if (!agentosChatAdapterEnabled()) {
+          return res.status(503).json({
+            success: false,
+            message: 'AgentOS integration disabled',
+            error: 'AGENTOS_DISABLED',
+          });
+        }
 
-      const { documentId } = req.params;
+        const { documentId } = req.params;
 
-      if (!documentId) {
-        return res.status(400).json({
-          success: false,
-          message: 'documentId is required',
-          error: 'INVALID_PARAMS',
-        });
-      }
+        if (!documentId) {
+          return res.status(400).json({
+            success: false,
+            message: 'documentId is required',
+            error: 'INVALID_PARAMS',
+          });
+        }
 
-      const deleted = await ragService.deleteDocument(documentId);
+        const deleted = await ragService.deleteDocument(documentId);
 
-      if (!deleted) {
-        return res.status(404).json({
-          success: false,
+        if (!deleted) {
+          return res.status(404).json({
+            success: false,
+            documentId,
+            message: 'Document not found',
+          });
+        }
+
+        return res.status(200).json({
+          success: true,
           documentId,
-          message: 'Document not found',
+          message: 'Document deleted successfully',
         });
+      } catch (error) {
+        next(error);
       }
-
-      return res.status(200).json({
-        success: true,
-        documentId,
-        message: 'Document deleted successfully',
-      });
-    } catch (error) {
-      next(error);
     }
-  });
+  );
 
   /**
    * GET /stats
@@ -357,28 +371,31 @@ export const createAgentOSRagRouter = (): Router => {
    * @description Returns aggregate statistics about RAG memory usage,
    * including document counts, chunk counts, and storage usage.
    */
-  router.get('/stats', async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
-    try {
-      if (!agentosChatAdapterEnabled()) {
-        return res.status(503).json({
-          success: false,
-          message: 'AgentOS integration disabled',
-          error: 'AGENTOS_DISABLED',
+  router.get(
+    '/stats',
+    async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+      try {
+        if (!agentosChatAdapterEnabled()) {
+          return res.status(503).json({
+            success: false,
+            message: 'AgentOS integration disabled',
+            error: 'AGENTOS_DISABLED',
+          });
+        }
+
+        const { agentId } = req.query;
+        const stats = await ragService.getStats(agentId as string | undefined);
+
+        return res.status(200).json({
+          success: true,
+          storageAdapter: ragService.getAdapterKind(),
+          ...stats,
         });
+      } catch (error) {
+        next(error);
       }
-
-      const { agentId } = req.query;
-      const stats = await ragService.getStats(agentId as string | undefined);
-
-      return res.status(200).json({
-        success: true,
-        storageAdapter: ragService.getAdapterKind(),
-        ...stats,
-      });
-    } catch (error) {
-      next(error);
     }
-  });
+  );
 
   /**
    * POST /collections
@@ -387,163 +404,176 @@ export const createAgentOSRagRouter = (): Router => {
    * @description Creates a new collection for organizing documents.
    * Collections provide isolation between different agents or use cases.
    */
-  router.post('/collections', async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
-    try {
-      if (!agentosChatAdapterEnabled()) {
-        return res.status(503).json({
-          success: false,
-          message: 'AgentOS integration disabled',
-          error: 'AGENTOS_DISABLED',
+  router.post(
+    '/collections',
+    async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+      try {
+        if (!agentosChatAdapterEnabled()) {
+          return res.status(503).json({
+            success: false,
+            message: 'AgentOS integration disabled',
+            error: 'AGENTOS_DISABLED',
+          });
+        }
+
+        const { collectionId, displayName } = req.body;
+
+        if (!collectionId || typeof collectionId !== 'string') {
+          return res.status(400).json({
+            success: false,
+            message: 'collectionId is required',
+            error: 'INVALID_PAYLOAD',
+          });
+        }
+
+        await ragService.createCollection(collectionId, displayName);
+
+        return res.status(201).json({
+          success: true,
+          collectionId,
+          displayName: displayName || collectionId,
+          message: 'Collection created successfully',
         });
+      } catch (error) {
+        next(error);
       }
-
-      const { collectionId, displayName } = req.body;
-
-      if (!collectionId || typeof collectionId !== 'string') {
-        return res.status(400).json({
-          success: false,
-          message: 'collectionId is required',
-          error: 'INVALID_PAYLOAD',
-        });
-      }
-
-      await ragService.createCollection(collectionId, displayName);
-
-      return res.status(201).json({
-        success: true,
-        collectionId,
-        displayName: displayName || collectionId,
-        message: 'Collection created successfully',
-      });
-    } catch (error) {
-      next(error);
     }
-  });
+  );
 
   /**
    * GET /collections
    * List all collections in RAG memory.
    */
-  router.get('/collections', async (_req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
-    try {
-      if (!agentosChatAdapterEnabled()) {
-        return res.status(503).json({
-          success: false,
-          message: 'AgentOS integration disabled',
-          error: 'AGENTOS_DISABLED',
+  router.get(
+    '/collections',
+    async (_req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+      try {
+        if (!agentosChatAdapterEnabled()) {
+          return res.status(503).json({
+            success: false,
+            message: 'AgentOS integration disabled',
+            error: 'AGENTOS_DISABLED',
+          });
+        }
+
+        const collections = await ragService.listCollections();
+
+        return res.status(200).json({
+          success: true,
+          collections,
         });
+      } catch (error) {
+        next(error);
       }
-
-      const collections = await ragService.listCollections();
-
-      return res.status(200).json({
-        success: true,
-        collections,
-      });
-    } catch (error) {
-      next(error);
     }
-  });
+  );
 
   /**
    * DELETE /collections/:collectionId
    * Delete a collection and all its documents.
    */
-  router.delete('/collections/:collectionId', async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
-    try {
-      if (!agentosChatAdapterEnabled()) {
-        return res.status(503).json({
-          success: false,
-          message: 'AgentOS integration disabled',
-          error: 'AGENTOS_DISABLED',
-        });
-      }
+  router.delete(
+    '/collections/:collectionId',
+    async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+      try {
+        if (!agentosChatAdapterEnabled()) {
+          return res.status(503).json({
+            success: false,
+            message: 'AgentOS integration disabled',
+            error: 'AGENTOS_DISABLED',
+          });
+        }
 
-      const { collectionId } = req.params;
+        const { collectionId } = req.params;
 
-      if (!collectionId) {
-        return res.status(400).json({
-          success: false,
-          message: 'collectionId is required',
-          error: 'INVALID_PARAMS',
-        });
-      }
+        if (!collectionId) {
+          return res.status(400).json({
+            success: false,
+            message: 'collectionId is required',
+            error: 'INVALID_PARAMS',
+          });
+        }
 
-      const deleted = await ragService.deleteCollection(collectionId);
+        const deleted = await ragService.deleteCollection(collectionId);
 
-      if (!deleted) {
-        return res.status(404).json({
-          success: false,
+        if (!deleted) {
+          return res.status(404).json({
+            success: false,
+            collectionId,
+            message: 'Collection not found',
+          });
+        }
+
+        return res.status(200).json({
+          success: true,
           collectionId,
-          message: 'Collection not found',
+          message: 'Collection deleted successfully',
         });
+      } catch (error) {
+        next(error);
       }
-
-      return res.status(200).json({
-        success: true,
-        collectionId,
-        message: 'Collection deleted successfully',
-      });
-    } catch (error) {
-      next(error);
     }
-  });
+  );
 
   /**
    * GET /health
    * Check RAG service health.
    */
-  router.get('/health', async (_req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
-    try {
-      const isEnabled = agentosChatAdapterEnabled();
-      
-      // Try to initialize if not already
-      let ragAvailable = ragService.isAvailable();
-      let adapterKind = 'not-initialized';
-      let stats = null;
-      
-      if (isEnabled && !ragAvailable) {
-        try {
-          await ragService.initialize();
-          ragAvailable = ragService.isAvailable();
-        } catch (initError) {
-          console.warn('[RAG Routes] Health check init failed:', initError);
-        }
-      }
+  router.get(
+    '/health',
+    async (_req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+      try {
+        const isEnabled = agentosChatAdapterEnabled();
 
-      if (ragAvailable) {
-        adapterKind = ragService.getAdapterKind();
-        try {
-          stats = await ragService.getStats();
-        } catch (statsError) {
-          console.warn('[RAG Routes] Stats fetch failed:', statsError);
-        }
-      }
+        // Try to initialize if not already
+        let ragAvailable = ragService.isAvailable();
+        let adapterKind = 'not-initialized';
+        let stats: RagMemoryStats | null = null;
 
-      return res.status(200).json({
-        status: isEnabled && ragAvailable ? 'ready' : isEnabled ? 'initializing' : 'disabled',
-        ragServiceInitialized: ragAvailable,
-        storageAdapter: adapterKind,
-        vectorStoreConnected: ragAvailable,
-        embeddingServiceAvailable: false, // Embeddings not yet integrated (using keyword matching)
-        stats: stats ? {
-          totalDocuments: stats.totalDocuments,
-          totalChunks: stats.totalChunks,
-          collectionCount: stats.collections.length,
-        } : null,
-        message: isEnabled
-          ? ragAvailable
-            ? `RAG service ready (using ${adapterKind} storage)`
-            : 'RAG service initializing'
-          : 'AgentOS integration is disabled.',
-      });
-    } catch (error) {
-      next(error);
+        if (isEnabled && !ragAvailable) {
+          try {
+            await ragService.initialize();
+            ragAvailable = ragService.isAvailable();
+          } catch (initError) {
+            console.warn('[RAG Routes] Health check init failed:', initError);
+          }
+        }
+
+        if (ragAvailable) {
+          adapterKind = ragService.getAdapterKind();
+          try {
+            stats = await ragService.getStats();
+          } catch (statsError) {
+            console.warn('[RAG Routes] Stats fetch failed:', statsError);
+          }
+        }
+
+        return res.status(200).json({
+          status: isEnabled && ragAvailable ? 'ready' : isEnabled ? 'initializing' : 'disabled',
+          ragServiceInitialized: ragAvailable,
+          storageAdapter: adapterKind,
+          vectorStoreConnected: ragAvailable,
+          embeddingServiceAvailable: false, // Embeddings not yet integrated (using keyword matching)
+          stats: stats
+            ? {
+                totalDocuments: stats.totalDocuments,
+                totalChunks: stats.totalChunks,
+                collectionCount: stats.collections.length,
+              }
+            : null,
+          message: isEnabled
+            ? ragAvailable
+              ? `RAG service ready (using ${adapterKind} storage)`
+              : 'RAG service initializing'
+            : 'AgentOS integration is disabled.',
+        });
+      } catch (error) {
+        next(error);
+      }
     }
-  });
+  );
 
   return router;
 };
 
 export default createAgentOSRagRouter;
-
