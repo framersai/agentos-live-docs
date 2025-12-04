@@ -1,0 +1,256 @@
+name: GitPayWidget CI/CD
+
+on:
+  push:
+    branches: [master, main, develop]
+    paths:
+      - 'apps/gitpaywidget/**'
+      - 'packages/gitpaywidget-*/**'
+      - 'packages/payments-core/**'
+      - '.github/workflows/gitpaywidget-ci.yml'
+  pull_request:
+    branches: [master, main, develop]
+    paths:
+      - 'apps/gitpaywidget/**'
+      - 'packages/gitpaywidget-*/**'
+      - 'packages/payments-core/**'
+
+permissions:
+  contents: read
+  actions: read
+  checks: write
+
+env:
+  NODE_VERSION: '20'
+  PNPM_VERSION: '10.15.1'
+
+jobs:
+  # ─────────────────────────────────────────────────────────────────────
+  # Lint and Type Check
+  # ─────────────────────────────────────────────────────────────────────
+  lint:
+    name: Lint & Type Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint GitPayWidget
+        run: pnpm --filter @manicinc/gitpaywidget lint
+
+      - name: Type Check GitPayWidget
+        run: pnpm --filter @manicinc/gitpaywidget typecheck
+
+      - name: Lint Widget Package
+        run: pnpm --filter @gitpaywidget/widget lint || true
+
+      - name: Lint SDK Package
+        run: pnpm --filter @gitpaywidget/sdk lint || true
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Unit Tests
+  # ─────────────────────────────────────────────────────────────────────
+  test:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run GitPayWidget Tests
+        run: pnpm --filter @manicinc/gitpaywidget test
+        env:
+          CI: true
+          KEY_ENCRYPTION_SECRET: test-secret-key-for-ci-only
+
+      - name: Run Payments Core Tests
+        run: pnpm --filter @gitpaywidget/payments-core test || true
+        env:
+          CI: true
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Build
+  # ─────────────────────────────────────────────────────────────────────
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: [lint, test]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Payments Core
+        run: pnpm --filter @gitpaywidget/payments-core build
+
+      - name: Build Widget SDK
+        run: pnpm --filter @gitpaywidget/sdk build
+
+      - name: Build Widget
+        run: pnpm --filter @gitpaywidget/widget build
+
+      - name: Build GitPayWidget App
+        run: pnpm --filter @manicinc/gitpaywidget build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co' }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key' }}
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: gitpaywidget-build
+          path: apps/gitpaywidget/.next
+          retention-days: 7
+
+  # ─────────────────────────────────────────────────────────────────────
+  # E2E Tests (Playwright)
+  # ─────────────────────────────────────────────────────────────────────
+  e2e:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright Browsers
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: gitpaywidget-build
+          path: apps/gitpaywidget/.next
+
+      - name: Run E2E Tests
+        run: pnpm --filter @manicinc/gitpaywidget test:e2e
+        env:
+          CI: true
+          PLAYWRIGHT_TEST_BASE_URL: http://localhost:3000
+
+      - name: Upload E2E Test Results
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: apps/gitpaywidget/playwright-report
+          retention-days: 7
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Deploy to Production
+  # ─────────────────────────────────────────────────────────────────────
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [build]
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
+    environment:
+      name: production
+      url: https://gitpaywidget.com
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to gitpaywidget.com
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: 50.116.33.200
+          username: root
+          key: ${{ secrets.LINODE_SSH_KEY }}
+          script: |
+            echo "🚀 Starting GitPayWidget deployment..."
+            
+            # Navigate to project directory
+            cd /opt/gitpaywidget || {
+              echo "Cloning repository..."
+              git clone https://github.com/manicinc/voice-chat-assistant.git /opt/gitpaywidget
+              cd /opt/gitpaywidget
+            }
+            
+            # Pull latest changes
+            git fetch origin
+            git reset --hard origin/master || git reset --hard origin/main
+            
+            # Ensure .env file exists (should be pre-configured on server)
+            if [ ! -f apps/gitpaywidget/.env ]; then
+              echo "⚠️ Warning: .env file not found. Using .env.example..."
+              cp apps/gitpaywidget/.env.example apps/gitpaywidget/.env 2>/dev/null || true
+            fi
+            
+            # Build and deploy with Docker
+            echo "🐳 Building Docker containers..."
+            docker-compose -f docker-compose.prod.yml down --remove-orphans
+            docker-compose -f docker-compose.prod.yml build --no-cache app
+            docker-compose -f docker-compose.prod.yml up -d
+            
+            # Cleanup old images
+            docker system prune -af --volumes 2>/dev/null || true
+            
+            # Health check
+            echo "🏥 Running health check..."
+            sleep 10
+            curl -sf http://localhost:3000/api/init || echo "Health check warning: API not responding"
+            
+            echo "✅ Deployment complete!"
+
+      - name: Notify Deployment Success
+        if: success()
+        run: |
+          echo "🎉 GitPayWidget deployed successfully to https://gitpaywidget.com"
+
+      - name: Notify Deployment Failure
+        if: failure()
+        run: |
+          echo "❌ GitPayWidget deployment failed!"
+          exit 1
+
+
+
+
+

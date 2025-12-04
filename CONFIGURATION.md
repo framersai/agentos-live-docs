@@ -4,33 +4,33 @@ This guide summarises all environment variables and runtime options available in
 
 ## 1. Core Settings
 
-| Variable | Description |
-| --- | --- |
-| `PORT` | Backend server port (default `3001`). |
-| `NODE_ENV` | Environment mode (`development` or `production`). |
-| `FRONTEND_URL` | Base URL for the frontend, used in CORS and cookies. |
-| `APP_URL` | Public URL for backend if different from origin (used in emails/webhooks). |
-| `LOG_LEVEL` | `debug`, `info`, `warn`, or `error`. |
+| Variable       | Description                                                                |
+| -------------- | -------------------------------------------------------------------------- |
+| `PORT`         | Backend server port (default `3001`).                                      |
+| `NODE_ENV`     | Environment mode (`development` or `production`).                          |
+| `FRONTEND_URL` | Base URL for the frontend, used in CORS and cookies.                       |
+| `APP_URL`      | Public URL for backend if different from origin (used in emails/webhooks). |
+| `LOG_LEVEL`    | `debug`, `info`, `warn`, or `error`.                                       |
 
 ## 2. Authentication
 
-| Variable | Description |
-| --- | --- |
-| `AUTH_JWT_SECRET` | 64+ byte secret for issuing global JWTs. |
-| `GLOBAL_ACCESS_PASSWORD` | Shared passphrase for unlimited global access. Optional but recommended even when Supabase is enabled. |
-| `GLOBAL_LOGIN_RATE_WINDOW_MINUTES` | Sliding window for rate limiting global passphrase attempts. |
-| `GLOBAL_LOGIN_RATE_MAX_ATTEMPTS` | Maximum attempts per window for the shared passphrase. |
-| `PASSWORD` | Legacy fallback for `GLOBAL_ACCESS_PASSWORD`. |
+| Variable                           | Description                                                                                            |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `AUTH_JWT_SECRET`                  | 64+ byte secret for issuing global JWTs.                                                               |
+| `GLOBAL_ACCESS_PASSWORD`           | Shared passphrase for unlimited global access. Optional but recommended even when Supabase is enabled. |
+| `GLOBAL_LOGIN_RATE_WINDOW_MINUTES` | Sliding window for rate limiting global passphrase attempts.                                           |
+| `GLOBAL_LOGIN_RATE_MAX_ATTEMPTS`   | Maximum attempts per window for the shared passphrase.                                                 |
+| `PASSWORD`                         | Legacy fallback for `GLOBAL_ACCESS_PASSWORD`.                                                          |
 
 ### Supabase (Optional)
 
-| Variable | Description |
-| --- | --- |
-| `SUPABASE_URL` | Supabase project URL used by the backend. |
-| `SUPABASE_SERVICE_ROLE_KEY` | Service-role key for verifying Supabase JWTs. **Never expose to the frontend.** |
-| `SUPABASE_ANON_KEY` | Optional. Only required when you need the backend to perform Supabase client operations. |
-| `VITE_SUPABASE_URL` | Supabase project URL for the frontend. |
-| `VITE_SUPABASE_ANON_KEY` | Public anon key for the frontend Supabase client. |
+| Variable                    | Description                                                                              |
+| --------------------------- | ---------------------------------------------------------------------------------------- |
+| `SUPABASE_URL`              | Supabase project URL used by the backend.                                                |
+| `SUPABASE_SERVICE_ROLE_KEY` | Service-role key for verifying Supabase JWTs. **Never expose to the frontend.**          |
+| `SUPABASE_ANON_KEY`         | Optional. Only required when you need the backend to perform Supabase client operations. |
+| `VITE_SUPABASE_URL`         | Supabase project URL for the frontend.                                                   |
+| `VITE_SUPABASE_ANON_KEY`    | Public anon key for the frontend Supabase client.                                        |
 
 When Supabase values are supplied, the backend will:
 
@@ -71,33 +71,34 @@ STRIPE_ORG_PRICE_ID=
 Frontend builds need the matching IDs (prefixed with `VITE_...`) in `frontend/.env` or `frontend/.env.local` so buttons render accurate CTAs. See [.env.sample](.env.sample) for the full list.
 
 When billing is configured, webhooks update `app_users` with subscription state. Creator and Organization plans roll into BYO keys once the daily platform allowance is consumed; the rollover rules live in `shared/planCatalog.ts`. Full rationale lives in [`docs/PLANS_AND_BILLING.md`](docs/PLANS_AND_BILLING.md).
+
 ## 4. Language & Context Controls
 
-| Variable | Description |
-| --- | --- |
-| `DEFAULT_RESPONSE_LANGUAGE_MODE` | `auto`, `fixed`, or `follow-stt`. |
-| `ENABLE_LANGUAGE_DETECTION` | Enable automatic language detection for responses. |
-| `DEFAULT_FIXED_RESPONSE_LANGUAGE` | Language code when using `fixed` mode. |
-| `MAX_CONTEXT_MESSAGES` | Maximum chat turns kept in context. |
-| `CONVERSATION_CONTEXT_STRATEGY` | `minimal`, `smart`, or `full`. |
-| `PREVENT_REPETITIVE_RESPONSES` | Toggle repetition avoidance. |
-| `DISABLE_COST_LIMITS` | Set to `true` to bypass cost thresholds during development. |
+| Variable                          | Description                                                 |
+| --------------------------------- | ----------------------------------------------------------- |
+| `DEFAULT_RESPONSE_LANGUAGE_MODE`  | `auto`, `fixed`, or `follow-stt`.                           |
+| `ENABLE_LANGUAGE_DETECTION`       | Enable automatic language detection for responses.          |
+| `DEFAULT_FIXED_RESPONSE_LANGUAGE` | Language code when using `fixed` mode.                      |
+| `MAX_CONTEXT_MESSAGES`            | Maximum chat turns kept in context.                         |
+| `CONVERSATION_CONTEXT_STRATEGY`   | `minimal`, `smart`, or `full`.                              |
+| `PREVENT_REPETITIVE_RESPONSES`    | Toggle repetition avoidance.                                |
+| `DISABLE_COST_LIMITS`             | Set to `true` to bypass cost thresholds during development. |
 
 ## 5. LLM Providers
 
-| Variable | Description |
-| --- | --- |
-| `OPENAI_API_KEY` | Required for GPT and Whisper features. |
-| `OPENROUTER_API_KEY` | Optional additional model access. |
-| `ANTHROPIC_API_KEY` | Optional Claude support. |
-| `MODEL_PREF_*` | Default model routing per feature (see `.env.sample`). |
+| Variable             | Description                                            |
+| -------------------- | ------------------------------------------------------ |
+| `OPENAI_API_KEY`     | Required for GPT and Whisper features.                 |
+| `OPENROUTER_API_KEY` | Optional additional model access.                      |
+| `ANTHROPIC_API_KEY`  | Optional Claude support.                               |
+| `MODEL_PREF_*`       | Default model routing per feature (see `.env.sample`). |
 
 ## 6. Storage & Database
 
-| Variable | Description |
-| --- | --- |
-| `DATABASE_URL` | PostgreSQL connection string (production). |
-| `DB_CLIENT` | `postgresql` or `sqlite`. |
+| Variable               | Description                                                   |
+| ---------------------- | ------------------------------------------------------------- |
+| `DATABASE_URL`         | PostgreSQL connection string (production).                    |
+| `DB_CLIENT`            | `postgresql` or `sqlite`.                                     |
 | `ENABLE_SQLITE_MEMORY` | Set to `true` to run SQLite in memory for ephemeral sessions. |
 
 `app_users` now includes a `supabase_user_id` column. Run the provided migration or ensure the column exists before enabling Supabase in production.
@@ -142,10 +143,10 @@ Restart `npm run dev` after editing Vite environment files.
 
 The backend honours:
 
-| Variable | Description |
-| --- | --- |
-| `RATE_LIMIT_PUBLIC_DAILY` | Daily requests per IP for the public demo. |
-| `GLOBAL_COST_THRESHOLD_USD_PER_MONTH` | Safety valve for total spend. |
+| Variable                              | Description                                |
+| ------------------------------------- | ------------------------------------------ |
+| `RATE_LIMIT_PUBLIC_DAILY`             | Daily requests per IP for the public demo. |
+| `GLOBAL_COST_THRESHOLD_USD_PER_MONTH` | Safety valve for total spend.              |
 
 ## 9. Voice, Audio & Speech
 
@@ -165,21 +166,22 @@ See `.env.sample` for toggles such as `DEFAULT_SPEECH_PREFERENCE_STT`, `DEFAULT_
 - **Supabase OAuth redirect loops**: Confirm the redirect URL matches your frontend origin including protocol and port.
 
 For more operational notes and deployment tips, review [`PRODUCTION_SETUP.md`](PRODUCTION_SETUP.md) and the architecture document.
+
 ## 11. AgentOS Experimental Integration
 
-| Variable | Description |
-| --- | --- |
-| `AGENTOS_ENABLED` | Enable the embedded AgentOS router (`/api/agentos/*`). Defaults to `false`. |
-| `AGENTOS_DEFAULT_PERSONA_ID` | Fallback persona ID when the client does not specify one. |
-| `AGENTOS_DEFAULT_MODEL_ID` | Preferred model ID for AgentOS orchestrations (e.g., `gpt-4o-mini`). |
-| `AGENTOS_API_KEY_ENCRYPTION_KEY_HEX` | 64-character hex string used by the internal API-key vault stub. |
-| `AGENTOS_DATABASE_URL` | SQLite connection string used by the AgentOS persistence stub. |
-| `AGENTOS_MAX_TOOL_CALL_ITERATIONS` | Safeguard for chained tool invocations per turn. |
-| `AGENTOS_MAX_CONCURRENT_STREAMS` | Streaming fan-out limit for SSE responses. |
-| `AGENTOS_TURN_TIMEOUT_MS` | Timeout applied to a single AgentOS turn before failover. |
-| `AGENTOS_STREAM_INACTIVITY_TIMEOUT_MS` | Idle timeout for SSE clients. |
-| `AGENTOS_PERSONA_PATH` | Optional override to load persona definitions from a custom directory. |
-| `PERSONA_DEFINITIONS_PATH` | Path used by the voice UI stack to discover persona JSON files (defaults to `./backend/agentos/...`). |
+| Variable                               | Description                                                                                           |
+| -------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `AGENTOS_ENABLED`                      | Enable the embedded AgentOS router (`/api/agentos/*`). Defaults to `false`.                           |
+| `AGENTOS_DEFAULT_PERSONA_ID`           | Fallback persona ID when the client does not specify one.                                             |
+| `AGENTOS_DEFAULT_MODEL_ID`             | Preferred model ID for AgentOS orchestrations (e.g., `gpt-4o-mini`).                                  |
+| `AGENTOS_API_KEY_ENCRYPTION_KEY_HEX`   | 64-character hex string used by the internal API-key vault stub.                                      |
+| `AGENTOS_DATABASE_URL`                 | SQLite connection string used by the AgentOS persistence stub.                                        |
+| `AGENTOS_MAX_TOOL_CALL_ITERATIONS`     | Safeguard for chained tool invocations per turn.                                                      |
+| `AGENTOS_MAX_CONCURRENT_STREAMS`       | Streaming fan-out limit for SSE responses.                                                            |
+| `AGENTOS_TURN_TIMEOUT_MS`              | Timeout applied to a single AgentOS turn before failover.                                             |
+| `AGENTOS_STREAM_INACTIVITY_TIMEOUT_MS` | Idle timeout for SSE clients.                                                                         |
+| `AGENTOS_PERSONA_PATH`                 | Optional override to load persona definitions from a custom directory.                                |
+| `PERSONA_DEFINITIONS_PATH`             | Path used by the voice UI stack to discover persona JSON files (defaults to `./backend/agentos/...`). |
 
 > AgentOS defaults to in-memory persistence so you can experiment locally without running Prisma migrations. When you are ready to back it with a proper database, point `AGENTOS_DATABASE_URL` at your Prisma datasource and swap the stub for a real client.
 
@@ -189,10 +191,10 @@ The `apps/frame.dev` Next.js site (which hosts the Frame Codex viewer) supports 
 
 > Analytics are implemented in `apps/frame.dev/components/Analytics.tsx` and documented in `apps/frame.dev/ENV_VARS.md`. The `/privacy` route in the Frame.dev app describes the data handling and GDPR compliance in human-readable form.
 
-| Variable | Description |
-| --- | --- |
-| `NEXT_PUBLIC_GA_MEASUREMENT_ID` | **Optional.** Google Analytics 4 measurement ID (e.g. `G-XXXXXXX`). IP anonymization is enabled, Google Signals and ad personalization are disabled. |
-| `NEXT_PUBLIC_CLARITY_PROJECT_ID` | **Optional.** Microsoft Clarity project ID used for anonymous UX heatmaps and session recordings with masked inputs. |
+| Variable                         | Description                                                                                                                                          |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_GA_MEASUREMENT_ID`  | **Optional.** Google Analytics 4 measurement ID (e.g. `G-XXXXXXX`). IP anonymization is enabled, Google Signals and ad personalization are disabled. |
+| `NEXT_PUBLIC_CLARITY_PROJECT_ID` | **Optional.** Microsoft Clarity project ID used for anonymous UX heatmaps and session recordings with masked inputs.                                 |
 
 Notes:
 
@@ -206,22 +208,22 @@ The monorepo uses GitHub Actions for CI/CD. Configure these secrets in your repo
 
 ### Required Secrets
 
-| Secret | Description | Used By |
-| --- | --- | --- |
-| `GH_PAT` | GitHub Personal Access Token with `repo` scope. Required for cloning private submodules in CI. Create at [github.com/settings/tokens](https://github.com/settings/tokens/new?scopes=repo). | CodeQL, Codex Auto-Index, all workflows with submodules |
-| `SSH_PRIVATE_KEY` | OpenSSH private key for deployment server access. Must start with `BEGIN OPENSSH PRIVATE KEY`. | deploy-ssh.yml |
-| `LINODE_HOST` | Hostname or IP of the deployment server. | deploy-ssh.yml |
-| `LINODE_USER` | SSH username for deployment server. | deploy-ssh.yml |
-| `NPM_TOKEN` | npm access token for publishing packages. Create at [npmjs.com/settings/tokens](https://www.npmjs.com/settings/~/tokens). | publish-agentos.yml, publish-sql-storage-adapter.yml |
+| Secret            | Description                                                                                                                                                                                | Used By                                                 |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------- |
+| `GH_PAT`          | GitHub Personal Access Token with `repo` scope. Required for cloning private submodules in CI. Create at [github.com/settings/tokens](https://github.com/settings/tokens/new?scopes=repo). | CodeQL, Codex Auto-Index, all workflows with submodules |
+| `SSH_PRIVATE_KEY` | OpenSSH private key for deployment server access. Must start with `BEGIN OPENSSH PRIVATE KEY`.                                                                                             | deploy-ssh.yml                                          |
+| `LINODE_HOST`     | Hostname or IP of the deployment server.                                                                                                                                                   | deploy-ssh.yml                                          |
+| `LINODE_USER`     | SSH username for deployment server.                                                                                                                                                        | deploy-ssh.yml                                          |
+| `NPM_TOKEN`       | npm access token for publishing packages. Create at [npmjs.com/settings/tokens](https://www.npmjs.com/settings/~/tokens).                                                                  | publish-agentos.yml, publish-sql-storage-adapter.yml    |
 
 ### Mirror Workflow Secrets (for public repo mirrors)
 
 These are **optional** and only needed if you want to mirror subpackages to separate public repositories.
 
-| Secret | Description | Used By |
-| --- | --- | --- |
-| `FRAME_DEV_MIRROR_SSH_KEY` | Deploy key with write access to `framersai/frame.dev`. | mirror-frame-dev.yml |
-| `AGENTOS_MIRROR_SSH_KEY` | Deploy key with write access to `framersai/agentos`. | mirror-agentos.yml |
+| Secret                           | Description                                             | Used By                    |
+| -------------------------------- | ------------------------------------------------------- | -------------------------- |
+| `FRAME_DEV_MIRROR_SSH_KEY`       | Deploy key with write access to `framersai/frame.dev`.  | mirror-frame-dev.yml       |
+| `AGENTOS_MIRROR_SSH_KEY`         | Deploy key with write access to `framersai/agentos`.    | mirror-agentos.yml         |
 | `AGENTOS_LANDING_MIRROR_SSH_KEY` | Deploy key with write access to `framersai/agentos.sh`. | mirror-agentos-landing.yml |
 
 ### Creating Deploy Keys for Mirrors
@@ -238,6 +240,7 @@ For each mirror workflow:
 ### GH_PAT Permissions
 
 Your `GH_PAT` token needs these scopes:
+
 - `repo` – Full control of private repositories (required for submodule access)
 - `workflow` – Update GitHub Action workflows (optional, for workflow updates)
 
@@ -245,14 +248,14 @@ Your `GH_PAT` token needs these scopes:
 
 The monorepo references these submodule repositories under the `framersai` organization:
 
-| Submodule | Repository | Visibility |
-| --- | --- | --- |
-| `packages/agentos` | `framersai/agentos` | Private |
-| `packages/agentos-extensions` | `framersai/agentos-extensions` | Private |
-| `packages/sql-storage-adapter` | `framersai/sql-storage-adapter` | Private |
-| `apps/frame.dev` | `framersai/frame.dev` | Private (mirrored to public) |
-| `apps/agentos.sh` | `framersai/agentos.sh` | Private |
-| `apps/agentos-workbench` | `framersai/agentos-workbench` | Private |
-| `apps/codex` | `framersai/codex` | Public |
+| Submodule                      | Repository                      | Visibility                   |
+| ------------------------------ | ------------------------------- | ---------------------------- |
+| `packages/agentos`             | `framersai/agentos`             | Private                      |
+| `packages/agentos-extensions`  | `framersai/agentos-extensions`  | Private                      |
+| `packages/sql-storage-adapter` | `framersai/sql-storage-adapter` | Private                      |
+| `apps/frame.dev`               | `framersai/frame.dev`           | Private (mirrored to public) |
+| `apps/agentos.sh`              | `framersai/agentos.sh`          | Private                      |
+| `apps/agentos-workbench`       | `framersai/agentos-workbench`   | Private                      |
+| `apps/codex`                   | `framersai/codex`               | Public                       |
 
 **Important:** Ensure your `GH_PAT` has access to all private repositories in the `framersai` organization, or the CI workflows will fail to clone submodules.

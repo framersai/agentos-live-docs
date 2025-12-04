@@ -2,32 +2,36 @@
 
 import { useEffect, useState } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import type { Metadata } from 'next';
+import Link from 'next/link';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Spinner } from '@/components/ui/spinner';
-
-export const metadata: Metadata = {
-  title: 'Dashboard',
-  description: 'Manage GitPayWidget projects, provider keys, analytics, and widget theme settings.',
-  robots: { index: false, follow: false },
-  alternates: { canonical: '/dashboard' },
-};
-
-interface ProviderKeySummary {
-  provider: string;
-  updatedAt: string;
-}
+import { 
+  OnboardingWizard, 
+  AnalyticsCards, 
+  RevenueChart, 
+  ProjectSelector, 
+  ProviderKeysForm, 
+  ThemeSettings, 
+  QuickActions,
+  CryptoComingSoon,
+  TestModeToggle,
+} from '@/components/dashboard';
 
 interface Project {
   slug: string;
   name: string;
+  created_at: string;
 }
 
 interface ProjectAnalytics {
   mrr: number;
   checkoutsToday: number;
+  checkoutsThisMonth: number;
   conversionRate: number;
+  activeSubscriptions: number;
+  churnRate: number;
   updatedAt: string;
+  revenueHistory: Array<{ date: string; amount: number }>;
 }
 
 interface ProjectSettings {
@@ -36,291 +40,267 @@ interface ProjectSettings {
   custom_css?: string;
 }
 
-/**
- * Dashboard controlling provider credentials & analytics for a selected project.
- */
+interface ProviderKey {
+  provider: string;
+  updatedAt: string;
+  isTestMode?: boolean;
+}
+
 export default function Dashboard() {
   const supabase = createClientComponentClient();
-  const [keys, setKeys] = useState<ProviderKeySummary[]>([]);
-  const [secret, setSecret] = useState('');
-  const [provider, setProvider] = useState('stripe');
+  
+  // State
+  const [email, setEmail] = useState<string | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
   const [analytics, setAnalytics] = useState<ProjectAnalytics | null>(null);
-  const [email, setEmail] = useState<string | null>(null);
   const [settings, setSettings] = useState<ProjectSettings>({});
-  const [settingsSaving, setSettingsSaving] = useState(false);
+  const [keys, setKeys] = useState<ProviderKey[]>([]);
+  
+  // Loading states
+  const [loadingUser, setLoadingUser] = useState(true);
   const [loadingProjects, setLoadingProjects] = useState(true);
-  const [loadingKeys, setLoadingKeys] = useState(false);
   const [loadingAnalytics, setLoadingAnalytics] = useState(false);
-  const [savingSecret, setSavingSecret] = useState(false);
+  
+  // Onboarding
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [onboardingComplete, setOnboardingComplete] = useState(false);
 
-  const refreshKeys = async (slug: string) => {
-    setLoadingKeys(true);
-    const res = await fetch(`/api/projects/${encodeURIComponent(slug)}/keys`);
-    const json = await res.json();
-    setKeys(json.keys ?? []);
-    setLoadingKeys(false);
-  };
-
-  const refreshAnalytics = async (slug: string) => {
-    setLoadingAnalytics(true);
-    const res = await fetch(`/api/projects/${encodeURIComponent(slug)}/analytics`);
-    if (!res.ok) {
-      setAnalytics(null);
-    } else {
-      const json = await res.json();
-      setAnalytics(json);
-    }
-    setLoadingAnalytics(false);
-  };
-
-  const loadProjects = async () => {
-    setLoadingProjects(true);
-    const res = await fetch('/api/projects');
-    if (!res.ok) {
-      setLoadingProjects(false);
-      return;
-    }
-    const json = await res.json();
-    const list: Project[] = json.projects ?? [];
-    setProjects(list);
-    setLoadingProjects(false);
-    if (list.length === 0) return;
-    const stored = typeof window !== 'undefined' ? localStorage.getItem('gpw:lastProject') : null;
-    const slug = stored && list.find(p => p.slug === stored) ? stored : list[0].slug;
-    setSelectedProject(slug);
-  };
-
+  // Fetch user
   useEffect(() => {
-    void loadProjects();
-    supabase.auth.getUser().then(({ data }) => setEmail(data.user?.email ?? null));
+    const fetchUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      setEmail(data.user?.email ?? null);
+      setLoadingUser(false);
+      
+      // Check if first-time user
+      const onboardingDone = localStorage.getItem('gpw:onboarding-complete');
+      if (!onboardingDone) {
+        setShowOnboarding(true);
+      }
+    };
+    fetchUser();
+  }, [supabase.auth]);
+
+  // Fetch projects
+  useEffect(() => {
+    const fetchProjects = async () => {
+      setLoadingProjects(true);
+      const res = await fetch('/api/projects');
+      if (res.ok) {
+        const json = await res.json();
+        const list: Project[] = json.projects ?? [];
+        setProjects(list);
+        
+        if (list.length > 0) {
+          const stored = localStorage.getItem('gpw:lastProject');
+          const slug = stored && list.find(p => p.slug === stored) ? stored : list[0].slug;
+          setSelectedProject(slug);
+        }
+      }
+      setLoadingProjects(false);
+    };
+    fetchProjects();
   }, []);
 
+  // Fetch project data when selected project changes
   useEffect(() => {
     if (!selectedProject) return;
-    void refreshKeys(selectedProject);
-    void refreshAnalytics(selectedProject);
-    fetch(`/api/projects/${encodeURIComponent(selectedProject)}/settings`)
-      .then(res => res.json())
-      .then(json => setSettings(json ?? {}));
+    
     localStorage.setItem('gpw:lastProject', selectedProject);
+    
+    const fetchProjectData = async () => {
+      setLoadingAnalytics(true);
+      
+      // Fetch analytics, settings, and keys in parallel
+      const [analyticsRes, settingsRes, keysRes] = await Promise.all([
+        fetch(`/api/projects/${encodeURIComponent(selectedProject)}/analytics`),
+        fetch(`/api/projects/${encodeURIComponent(selectedProject)}/settings`),
+        fetch(`/api/projects/${encodeURIComponent(selectedProject)}/keys`),
+      ]);
+      
+      if (analyticsRes.ok) {
+        const json = await analyticsRes.json();
+        setAnalytics(json);
+      }
+      
+      if (settingsRes.ok) {
+        const json = await settingsRes.json();
+        setSettings(json ?? {});
+      }
+      
+      if (keysRes.ok) {
+        const json = await keysRes.json();
+        setKeys(json.keys ?? []);
+      }
+      
+      setLoadingAnalytics(false);
+    };
+    
+    fetchProjectData();
   }, [selectedProject]);
 
-  const submit = async () => {
-    if (!selectedProject) return;
-    setSavingSecret(true);
-    await fetch(`/api/projects/${encodeURIComponent(selectedProject)}/keys`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ provider, secret }),
-    });
-    setSecret('');
-    setSavingSecret(false);
-    await refreshKeys(selectedProject);
-  };
-
-  const signOut = async () => {
+  const handleSignOut = async () => {
     await supabase.auth.signOut();
-    location.href = '/login';
+    window.location.href = '/login';
   };
 
-  const saveSettings = async () => {
-    if (!selectedProject) return;
-    setSettingsSaving(true);
-    await fetch(`/api/projects/${encodeURIComponent(selectedProject)}/settings`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(settings),
-    });
-    setSettingsSaving(false);
+  const handleOnboardingComplete = () => {
+    setShowOnboarding(false);
+    setOnboardingComplete(true);
+    localStorage.setItem('gpw:onboarding-complete', 'true');
   };
+
+  // Show onboarding wizard for new users
+  if (showOnboarding && !loadingProjects) {
+    return (
+      <OnboardingWizard
+        onComplete={handleOnboardingComplete}
+        hasProjects={projects.length > 0}
+      />
+    );
+  }
 
   return (
-    <section className="mx-auto max-w-4xl px-4 pb-24 pt-12 space-y-8 sm:px-6">
-      <div className="flex flex-col gap-4 rounded-3xl border border-ink-200/60 bg-white/90 p-6 shadow-gpw-card backdrop-blur">
-        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+    <div className="min-h-screen bg-gpw-bg-base pt-20">
+      <div className="gpw-container py-8">
+        {/* Header */}
+        <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
           <div>
-            <p className="text-xs uppercase tracking-[0.3em] text-ink-500">GitPayWidget Studio</p>
-            <h1 className="font-display text-4xl text-transparent bg-clip-text bg-gpw-gradient motion-safe:animate-fade-in">
-              Dashboard (alpha)
-            </h1>
-            <p className="text-ink-600 dark:text-ink-300">
-              Manage projects, secrets, and paywall analytics.
+            <p className="text-xs uppercase tracking-[0.2em] text-gpw-text-muted mb-1">
+              GitPayWidget Studio
             </p>
+            <h1 className="text-3xl sm:text-4xl font-bold">
+              <span className="gpw-text-gradient">Dashboard</span>
+            </h1>
           </div>
-          <a
-            href="/projects"
-            className="self-start rounded-full border border-gpw-primary/30 px-4 py-2 text-sm font-semibold text-gpw-primary transition hover:-translate-y-0.5"
-          >
-            View projects →
-          </a>
-        </div>
-        <div className="flex flex-col gap-3 text-sm text-ink-500 xs:flex-row xs:items-center xs:justify-between">
-          <span className="rounded-full bg-ink-50 px-3 py-1 text-xs font-semibold text-ink-600">
-            {email ?? 'Loading account…'}
-          </span>
-          <button
-            onClick={signOut}
-            className="text-gpw-primary underline-offset-4 transition hover:text-gpw-tertiary hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gpw-primary"
-          >
-            Sign out
-          </button>
-        </div>
-      </div>
-
-      <div className="rounded-3xl border border-ink-200/70 p-6 space-y-4 shadow-gpw-card bg-white/90 backdrop-blur">
-        <h2 className="text-xl font-semibold">Project</h2>
-        <select
-          value={selectedProject ?? ''}
-          onChange={e => setSelectedProject(e.target.value)}
-          className="rounded-xl border px-3 py-2 focus:ring-2 focus:ring-gpw-primary/40"
-          disabled={projects.length === 0 || loadingProjects}
-          aria-busy={loadingProjects}
-        >
-          {loadingProjects ? <option>Loading projects…</option> : null}
-          {projects.map(project => (
-            <option key={project.slug} value={project.slug}>
-              {project.name} ({project.slug})
-            </option>
-          ))}
-        </select>
-        <p className="text-sm text-ink-500">Secrets below apply to the selected project.</p>
-      </div>
-
-      {loadingAnalytics ? (
-        <div className="grid gap-4 md:grid-cols-3">
-          {[...Array(3)].map((_, idx) => (
-            <Skeleton key={idx} className="h-32 rounded-2xl" />
-          ))}
-        </div>
-      ) : analytics ? (
-        <div className="grid gap-4 md:grid-cols-3">
-          <div className="rounded-2xl border border-ink-200/60 bg-white/80 p-4 text-left shadow-sm">
-            <p className="text-sm text-ink-500">Monthly Recurring Revenue</p>
-            <p className="text-3xl font-semibold">${(analytics.mrr / 100).toFixed(2)}</p>
+          
+          <div className="flex items-center gap-3">
+            {loadingUser ? (
+              <Skeleton className="h-9 w-32 rounded-full" />
+            ) : (
+              <>
+                <span className="hidden sm:inline-flex gpw-badge-primary">
+                  {email}
+                </span>
+                <button
+                  onClick={handleSignOut}
+                  className="gpw-btn-ghost text-sm"
+                >
+                  Sign out
+                </button>
+              </>
+            )}
           </div>
-          <div className="rounded-2xl border border-ink-200/60 bg-white/80 p-4 text-left shadow-sm">
-            <p className="text-sm text-ink-500">Checkouts today</p>
-            <p className="text-3xl font-semibold">{analytics.checkoutsToday}</p>
-          </div>
-          <div className="rounded-2xl border border-ink-200/60 bg-white/80 p-4 text-left shadow-sm">
-            <p className="text-sm text-ink-500">Conversion rate</p>
-            <p className="text-3xl font-semibold">{(analytics.conversionRate * 100).toFixed(1)}%</p>
-          </div>
+        </header>
+
+        {/* Project selector */}
+        <div className="mb-8">
+          <ProjectSelector
+            projects={projects}
+            selectedProject={selectedProject}
+            onSelect={setSelectedProject}
+            loading={loadingProjects}
+          />
         </div>
-      ) : null}
 
-      <div className="rounded-3xl border border-ink-200/70 bg-white/90 p-6 shadow-gpw-card backdrop-blur space-y-4">
-        <h2 className="text-xl font-semibold">Provider credentials</h2>
-        <p className="text-sm text-ink-500">
-          Paste Stripe/Lemon secrets (JSON). We encrypt them with AES-256-GCM before storage.
-        </p>
-        <label className="flex flex-col text-left text-sm font-semibold gap-1">
-          Provider
-          <select
-            value={provider}
-            onChange={e => setProvider(e.target.value)}
-            className="rounded-xl border px-3 py-2 focus:ring-2 focus:ring-gpw-primary/40"
-          >
-            <option value="stripe">Stripe</option>
-            <option value="lemonsqueezy">Lemon Squeezy</option>
-          </select>
-        </label>
-        <label className="flex flex-col text-left text-sm font-semibold gap-1">
-          Secret JSON
-          <textarea
-            value={secret}
-            onChange={e => setSecret(e.target.value)}
-            rows={4}
-            className="rounded-xl border px-3 py-2 font-mono text-sm focus:ring-2 focus:ring-gpw-primary/40"
-            placeholder='{"secretKey":"sk_live_...","priceId":"price_123"}'
-          />
-        </label>
-        <button
-          onClick={submit}
-          className="inline-flex items-center justify-center gap-2 rounded-full bg-gpw-primary px-5 py-2 font-semibold text-white shadow-lg shadow-gpw-primary/30 transition hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gpw-primary"
-          disabled={!selectedProject || savingSecret}
-        >
-          {savingSecret ? (
-            <>
-              <Spinner size={18} />
-              Saving
-            </>
-          ) : (
-            'Save secret'
-          )}
-        </button>
-      </div>
-
-      <div className="rounded-3xl border border-ink-200/70 p-6 space-y-4 shadow-gpw-card bg-white/90 backdrop-blur">
-        <h2 className="text-xl font-semibold">Widget Theme</h2>
-        <label className="flex flex-col gap-1 text-sm font-semibold text-left">
-          Accent color (hex)
-          <input
-            value={settings.accent_hex ?? ''}
-            onChange={e => setSettings(prev => ({ ...prev, accent_hex: e.target.value }))}
-            className="rounded-xl border px-3 py-2 focus:ring-2 focus:ring-gpw-primary/40"
-            placeholder="#8b5cf6"
-          />
-        </label>
-        <label className="flex flex-col gap-1 text-sm font-semibold text-left">
-          CTA label
-          <input
-            value={settings.cta_label ?? ''}
-            onChange={e => setSettings(prev => ({ ...prev, cta_label: e.target.value }))}
-            className="rounded-xl border px-3 py-2 focus:ring-2 focus:ring-gpw-primary/40"
-            placeholder="Get started"
-          />
-        </label>
-        <label className="flex flex-col gap-1 text-sm font-semibold text-left">
-          Custom CSS (optional)
-          <textarea
-            value={settings.custom_css ?? ''}
-            onChange={e => setSettings(prev => ({ ...prev, custom_css: e.target.value }))}
-            rows={3}
-            className="rounded-xl border px-3 py-2 font-mono text-sm focus:ring-2 focus:ring-gpw-primary/40"
-          />
-        </label>
-        <button
-          onClick={saveSettings}
-          disabled={settingsSaving}
-          className="inline-flex items-center gap-2 rounded-full bg-gpw-primary px-5 py-2 font-semibold text-white shadow-lg shadow-gpw-primary/30"
-        >
-          {settingsSaving ? (
-            <>
-              <Spinner size={18} />
-              Saving…
-            </>
-          ) : (
-            'Save theme'
-          )}
-        </button>
-      </div>
-
-      <div className="space-y-2">
-        <h2 className="text-xl font-semibold">Saved keys</h2>
-        {loadingKeys ? (
-          <div className="space-y-2">
-            <Skeleton className="h-16 rounded-2xl" />
-            <Skeleton className="h-16 rounded-2xl" />
+        {/* Main content */}
+        {!selectedProject && !loadingProjects ? (
+          <div className="gpw-card p-12 text-center">
+            <div className="w-16 h-16 rounded-2xl bg-gpw-purple-500/10 flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-gpw-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+            </div>
+            <h2 className="text-xl font-semibold mb-2">Create your first project</h2>
+            <p className="text-gpw-text-muted mb-6">
+              Get started by creating a project to connect your payment providers.
+            </p>
+            <Link href="/projects" className="gpw-btn-primary">
+              Create Project
+            </Link>
           </div>
         ) : (
-          <ul className="space-y-2">
-            {keys.map(key => (
-              <li
-                key={key.provider}
-                className="flex items-center justify-between rounded-2xl border border-ink-200/60 bg-white/80 px-4 py-3 shadow-sm"
-              >
-                <span className="font-semibold capitalize">{key.provider}</span>
-                <span className="text-sm text-ink-500">
-                  {new Date(key.updatedAt).toLocaleString()}
-                </span>
-              </li>
-            ))}
-          </ul>
+          <div className="space-y-8">
+            {/* Quick actions */}
+            <QuickActions projectSlug={selectedProject} />
+
+            {/* Analytics overview */}
+            <section>
+              <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <svg className="w-5 h-5 text-gpw-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+                Analytics Overview
+              </h2>
+              <AnalyticsCards
+                analytics={analytics}
+                loading={loadingAnalytics}
+              />
+            </section>
+
+            {/* Revenue chart */}
+            <section>
+              <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <svg className="w-5 h-5 text-gpw-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
+                </svg>
+                Revenue Trend
+              </h2>
+              <RevenueChart
+                data={analytics?.revenueHistory}
+                loading={loadingAnalytics}
+              />
+            </section>
+
+            {/* Two-column layout for settings */}
+            <div className="grid lg:grid-cols-2 gap-8">
+              {/* Provider keys */}
+              <section>
+                <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  <svg className="w-5 h-5 text-gpw-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                  </svg>
+                  Provider Keys
+                </h2>
+                <ProviderKeysForm
+                  projectSlug={selectedProject}
+                  existingKeys={keys}
+                  onKeysUpdated={(newKeys) => setKeys(newKeys)}
+                />
+              </section>
+
+              {/* Theme settings */}
+              <section>
+                <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  <svg className="w-5 h-5 text-gpw-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                  </svg>
+                  Widget Theme
+                </h2>
+                <ThemeSettings
+                  projectSlug={selectedProject}
+                  settings={settings}
+                  onSettingsUpdated={(newSettings) => setSettings(newSettings)}
+                />
+              </section>
+            </div>
+
+            {/* Crypto Coming Soon section */}
+            <section>
+              <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <svg className="w-5 h-5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Crypto Payments
+              </h2>
+              <CryptoComingSoon 
+                onNotifyMe={(email) => console.log('Notify:', email)} 
+              />
+            </section>
+          </div>
         )}
       </div>
-    </section>
+    </div>
   );
 }
