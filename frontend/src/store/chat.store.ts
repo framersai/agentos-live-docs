@@ -21,8 +21,26 @@ import { voiceSettingsManager } from '@/services/voice.settings.service';
 import { chatAPI, type ChatMessageFE, type ProcessedHistoryMessageFE, type ILlmToolCallFE as ApiLlmToolCall, type ChatMessagePayloadFE } from '@/utils/api';
 import type { WorkflowInstanceFE, WorkflowEventFE, WorkflowProgressUpdateFE, WorkflowUpdateEventDetail } from '@/types/workflow';
 import type { AgencySnapshotFE, AgencyUpdateEventDetail } from '@/types/agency';
+import type { RagRetrievedChunkFE } from '@/utils/api';
 
 export interface ILlmToolCallUI extends ApiLlmToolCall {}
+
+/**
+ * RAG retrieval context associated with a message.
+ * Stores the chunks that were retrieved to provide context for a response.
+ */
+export interface MessageRagContext {
+  /** The query that triggered retrieval */
+  query: string;
+  /** Retrieved chunks with content and scores */
+  chunks: RagRetrievedChunkFE[];
+  /** Total results found (may be more than returned) */
+  totalResults: number;
+  /** Processing time in milliseconds */
+  processingTimeMs?: number;
+  /** Timestamp when retrieval occurred */
+  retrievedAt: number;
+}
 
 export interface ChatMessage {
   id: string;
@@ -68,6 +86,9 @@ export const useChatStore = defineStore('chat', () => {
   const agencyByConversation = ref<Record<string, string>>({});
   const languageDetectionSessionKey = 'vca_language_detection_complete_v1';
   const languageDetectionInFlight = ref(false);
+  
+  /** RAG retrieval context keyed by message ID */
+  const ragContextByMessage = ref<Record<string, MessageRagContext>>({});
 
   const history = computed(() => readonly(messageHistory.value));
   
@@ -240,9 +261,66 @@ export const useChatStore = defineStore('chat', () => {
     }
   }
 
+  /**
+   * Set RAG retrieval context for a specific message.
+   * @param messageId - The ID of the message to associate context with
+   * @param context - The RAG retrieval context
+   */
+  function setRagContextForMessage(messageId: string, context: Omit<MessageRagContext, 'retrievedAt'>): void {
+    ragContextByMessage.value = {
+      ...ragContextByMessage.value,
+      [messageId]: {
+        ...context,
+        retrievedAt: Date.now(),
+      },
+    };
+  }
+
+  /**
+   * Get RAG retrieval context for a specific message.
+   * @param messageId - The ID of the message
+   * @returns The RAG context if available, otherwise null
+   */
+  function getRagContextForMessage(messageId: string): MessageRagContext | null {
+    return ragContextByMessage.value[messageId] ?? null;
+  }
+
+  /**
+   * Clear RAG context for a specific message or all messages for an agent.
+   * @param messageIdOrAgentId - Message ID or Agent ID to clear context for
+   * @param isAgentId - If true, clears all RAG context for messages from this agent
+   */
+  function clearRagContext(messageIdOrAgentId?: string, isAgentId = false): void {
+    if (!messageIdOrAgentId) {
+      ragContextByMessage.value = {};
+      return;
+    }
+
+    if (isAgentId) {
+      // Clear RAG context for all messages belonging to this agent
+      const agentMessages = messageHistory.value
+        .filter(msg => msg.agentId === messageIdOrAgentId)
+        .map(msg => msg.id);
+      
+      const updatedContext = { ...ragContextByMessage.value };
+      for (const msgId of agentMessages) {
+        delete updatedContext[msgId];
+      }
+      ragContextByMessage.value = updatedContext;
+    } else {
+      // Clear RAG context for a specific message
+      if (ragContextByMessage.value[messageIdOrAgentId]) {
+        const { [messageIdOrAgentId]: _removed, ...rest } = ragContextByMessage.value;
+        ragContextByMessage.value = rest;
+      }
+    }
+  }
+
   function clearAgentData(agentId?: AgentId | null): void {
     if (agentId) {
       const conversationId = conversationIds.value[agentId];
+      // Clear RAG context for this agent's messages before clearing message history
+      clearRagContext(agentId, true);
       messageHistory.value = messageHistory.value.filter(msg => msg.agentId !== agentId);
       clearMainContentForAgent(agentId);
       if (conversationId) {
@@ -288,6 +366,7 @@ export const useChatStore = defineStore('chat', () => {
       workflowByConversation.value = {};
       agencySessions.value = {};
       agencyByConversation.value = {};
+      ragContextByMessage.value = {};
     }
   }
   function clearAllAgentData(): void { clearAgentData(); }
@@ -475,6 +554,7 @@ export const useChatStore = defineStore('chat', () => {
     isMainContentStreaming: readonly(isMainContentStreaming),
     streamingMainContentText: readonly(streamingMainContentText),
     agentPersonas: readonly(agentPersonas),
+    ragContextByMessage: readonly(ragContextByMessage),
     getCurrentMainContentDataForAgent,
     getMainContentForAgent,
     getMessagesForAgent,
@@ -499,5 +579,9 @@ export const useChatStore = defineStore('chat', () => {
     getWorkflowEventsForWorkflow,
     getAgencyForConversation,
     isAgentAwaitingTts: (agentId: AgentId) => !!ttsPendingMap.value[agentId],
+    // RAG context management
+    setRagContextForMessage,
+    getRagContextForMessage,
+    clearRagContext,
   };
 });
