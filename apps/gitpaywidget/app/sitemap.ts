@@ -48,6 +48,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'daily' as const,
       priority: 0.8,
     },
+    {
+      url: `${baseUrl}/changelog`,
+      lastModified: now,
+      changeFrequency: 'weekly' as const,
+      priority: 0.6,
+    },
+    {
+      url: `${baseUrl}/security`,
+      lastModified: now,
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+    },
   ];
 
   // Documentation pages
@@ -58,6 +70,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/docs/api',
     '/docs/theming',
     '/docs/dns',
+    '/docs/security',
+    '/docs/sdk',
+    '/docs/widget',
   ].map((path) => ({
     url: `${baseUrl}${path}`,
     lastModified: now,
@@ -65,7 +80,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  // Blog posts (in production, fetch dynamically from CMS or filesystem)
+  // Blog posts
   const blogPosts = [
     'introducing-gitpaywidget',
     'stripe-vs-lemonsqueezy',
@@ -84,6 +99,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const legalPages = [
     '/privacy',
     '/terms',
+    '/cookies',
+    '/acceptable-use',
+    '/refund',
   ].map((path) => ({
     url: `${baseUrl}${path}`,
     lastModified: now,

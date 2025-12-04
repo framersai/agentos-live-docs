@@ -2,17 +2,19 @@ import Link from 'next/link';
 
 const plans = [
   {
-    name: 'Starter',
+    name: 'Free',
     price: 'Free',
     period: 'forever',
-    description: 'Perfect for side projects and experimentation',
+    description: 'Start accepting payments today with zero upfront cost',
     features: [
-      '1 project',
-      '1,000 checkouts/month',
-      'Basic analytics',
-      'Community support',
+      'Unlimited projects',
+      'Unlimited checkouts',
+      '1% platform fee per transaction',
+      'Basic analytics dashboard',
+      'Stripe & Lemon Squeezy support',
       'Standard widget themes',
       'Email notifications',
+      'Community support via Discord',
     ],
     cta: 'Get Started Free',
     ctaHref: '/login',
@@ -20,42 +22,25 @@ const plans = [
   },
   {
     name: 'Pro',
-    price: '$19',
-    period: '/month',
-    description: 'For growing products and serious creators',
+    price: '$250',
+    period: 'one-time',
+    description: 'Lifetime license for serious creators & founders',
     features: [
-      '10 projects',
-      'Unlimited checkouts',
-      'Advanced analytics',
+      'Everything in Free, plus:',
+      '0% platform fee forever',
+      'Full analytics dashboard',
+      'Custom branding & white-label',
       'Priority email support',
-      'Custom branding',
-      'Webhook events',
-      'A/B testing',
-      'Test mode toggle',
+      'Webhook event forwarding',
+      'A/B testing for pricing',
+      'Test/Live mode toggle',
+      'Crypto payments (coming soon)',
+      'Lifetime updates included',
     ],
-    cta: 'Start Free Trial',
+    cta: 'Buy Lifetime License',
     ctaHref: '/login?plan=pro',
     highlighted: true,
-    badge: 'Most Popular',
-  },
-  {
-    name: 'Team',
-    price: '$49',
-    period: '/month',
-    description: 'For agencies and development teams',
-    features: [
-      'Unlimited projects',
-      'Team member access',
-      'White-label widget',
-      'Phone & chat support',
-      'Custom integrations',
-      'SLA guarantee',
-      'Dedicated success manager',
-      'Invoice billing',
-    ],
-    cta: 'Contact Sales',
-    ctaHref: '/contact?plan=team',
-    highlighted: false,
+    badge: 'Best Value',
   },
 ];
 
@@ -74,7 +59,7 @@ export function PricingSection() {
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {plans.map((plan) => (
             <div
               key={plan.name}

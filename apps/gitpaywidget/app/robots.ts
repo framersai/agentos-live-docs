@@ -28,6 +28,8 @@ export default function robots(): MetadataRoute.Robots {
           '/pricing',
           '/about',
           '/faq',
+          '/security',
+          '/changelog',
         ],
       },
       {
@@ -37,6 +39,7 @@ export default function robots(): MetadataRoute.Robots {
           '/docs/',
           '/blog/',
           '/pricing',
+          '/changelog',
         ],
       },
       {
@@ -45,6 +48,16 @@ export default function robots(): MetadataRoute.Robots {
       },
       {
         userAgent: 'Anthropic-AI',
+        allow: [
+          '/',
+          '/docs/',
+          '/blog/',
+          '/pricing',
+          '/faq',
+        ],
+      },
+      {
+        userAgent: 'Claude-Web',
         allow: [
           '/',
           '/docs/',

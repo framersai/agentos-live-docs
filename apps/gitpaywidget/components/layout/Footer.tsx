@@ -11,19 +11,22 @@ const footerLinks = {
     { label: 'Documentation', href: '/docs' },
     { label: 'Quick Start', href: '/docs/quickstart' },
     { label: 'API Reference', href: '/docs/api' },
-    { label: 'Integration Guide', href: '/docs/integration' },
+    { label: 'Widget Guide', href: '/docs/widget' },
+    { label: 'SDK Reference', href: '/docs/sdk' },
   ],
   resources: [
     { label: 'Blog', href: '/blog' },
     { label: 'FAQ', href: '/faq' },
-    { label: 'Support', href: '/contact' },
-    { label: 'Status', href: 'https://status.gitpaywidget.com', external: true },
-  ],
-  company: [
     { label: 'About', href: '/about' },
     { label: 'Contact', href: '/contact' },
-    { label: 'Privacy', href: '/privacy' },
-    { label: 'Terms', href: '/terms' },
+    { label: 'Security', href: '/security' },
+  ],
+  legal: [
+    { label: 'Privacy Policy', href: '/privacy' },
+    { label: 'Terms of Service', href: '/terms' },
+    { label: 'Cookie Policy', href: '/cookies' },
+    { label: 'Acceptable Use', href: '/acceptable-use' },
+    { label: 'Refund Policy', href: '/refund' },
   ],
 };
 
@@ -166,10 +169,10 @@ export function Footer() {
 
           <div>
             <h3 className="text-sm font-semibold uppercase tracking-wider text-gpw-text-primary mb-4">
-              Company
+              Legal
             </h3>
             <ul className="space-y-3">
-              {footerLinks.company.map((link) => (
+              {footerLinks.legal.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
