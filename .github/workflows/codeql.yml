@@ -1,17 +1,31 @@
 name: "CodeQL"
 
+# CodeQL requires GitHub Advanced Security (paid for private repos)
+# This workflow is DISABLED by default. To enable:
+# 1. Enable GitHub Advanced Security in repo settings
+# 2. Change 'workflow_dispatch' to include push/pull_request triggers
+#
+# For free alternatives, consider:
+# - ESLint with security plugins (eslint-plugin-security)
+# - Snyk (free tier available)
+# - npm audit / pnpm audit
+
 on:
-  push:
-    branches: [ "master", "dev", "main", "develop" ]
-  pull_request:
-    branches: [ "master", "dev", "main", "develop" ]
-  schedule:
-    - cron: '27 3 * * 1'
+  # Manual trigger only - uncomment push/pull_request when Advanced Security is enabled
+  workflow_dispatch:
+  # push:
+  #   branches: [ "master", "dev", "main", "develop" ]
+  # pull_request:
+  #   branches: [ "master", "dev", "main", "develop" ]
+  # schedule:
+  #   - cron: '27 3 * * 1'
 
 jobs:
   analyze:
     name: Analyze (${{ matrix.language }})
     runs-on: ubuntu-latest
+    # Skip if Advanced Security is not available (prevents CI failures)
+    continue-on-error: true
     permissions:
       actions: read
       contents: read
@@ -48,3 +62,12 @@ jobs:
       uses: github/codeql-action/analyze@v3
       with:
         category: "/language:${{matrix.language}}"
+        # Don't fail if upload fails (Advanced Security not enabled)
+        upload: false
+      continue-on-error: true
+
+    - name: Upload SARIF (if Advanced Security enabled)
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: ../results
+      continue-on-error: true
