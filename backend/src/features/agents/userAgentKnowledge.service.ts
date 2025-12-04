@@ -12,7 +12,10 @@ import { sqlKnowledgeBaseService } from '../../core/knowledge/SqlKnowledgeBaseSe
 import { userAgentsRepository } from './userAgents.repository.js';
 import { getPlanAgentLimits, resolvePlanIdForUser } from './userAgents.service.js';
 import { findUserById } from '../auth/user.repository.js';
-import { ragService } from '../../integrations/agentos/agentos.rag.service.js';
+import {
+  ragService,
+  type RagIngestionResult,
+} from '../../integrations/agentos/agentos.rag.service.js';
 
 /**
  * Input for creating a knowledge document.
@@ -59,7 +62,9 @@ const assertKnowledgeCapacity = async (userId: string, agentId: string) => {
 
   const current = await sqlKnowledgeBaseService.countByAgent(agentId, userId);
   if (current >= allowance) {
-    const error: any = new Error('Knowledge document limit reached for this agent. Upgrade your plan to add more.');
+    const error: any = new Error(
+      'Knowledge document limit reached for this agent. Upgrade your plan to add more.'
+    );
     error.statusCode = 403;
     error.code = 'KNOWLEDGE_LIMIT_REACHED';
     throw error;
@@ -115,7 +120,7 @@ export const userAgentKnowledgeService = {
 
     // Ingest into RAG memory if requested (default: true)
     const shouldIngestToRag = input.ingestToRag !== false;
-    let ragIngestionResult = null;
+    let ragIngestionResult: RagIngestionResult | null = null;
 
     if (shouldIngestToRag && ragService.isAvailable()) {
       try {
@@ -175,8 +180,8 @@ export const userAgentKnowledgeService = {
     const ownerTag = `owner:${userId}`.toLowerCase();
     const hasScope =
       !!existing &&
-      (existing.tags ?? []).map((t) => t.toLowerCase()).includes(agentTag) &&
-      (existing.tags ?? []).map((t) => t.toLowerCase()).includes(ownerTag);
+      (existing.tags ?? []).map(t => t.toLowerCase()).includes(agentTag) &&
+      (existing.tags ?? []).map(t => t.toLowerCase()).includes(ownerTag);
     if (!hasScope) {
       const error: any = new Error('Knowledge document not found.');
       error.statusCode = 404;
