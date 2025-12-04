@@ -6,6 +6,7 @@ import { agencyUsageService } from '../../features/agents/agencyUsage.service.js
 import extensionRoutes from './agentos.extensions.routes.js';
 import guardrailRoutes from './agentos.guardrails.routes.js';
 import { createAgencyStreamRouter } from './agentos.agency-stream-router.js';
+import { createAgentOSRagRouter } from './agentos.rag.routes.js';
 import { LlmConfigService, LlmProviderId } from '../../core/llm/llm.config.service.js';
 import { MODEL_PRICING } from '../../../config/models.config.js';
 import { getAgencyExecution, listAgencyExecutions, listAgencySeats } from './agencyPersistence.service.js';
@@ -348,6 +349,8 @@ export const createAgentOSRouter = (): Router => {
   router.use(extensionRoutes);
   // Add guardrail routes
   router.use(guardrailRoutes);
+  // Add RAG routes
+  router.use('/rag', createAgentOSRagRouter());
   // Agency streaming routes
   router.use('/agency', createAgencyStreamRouter());
   

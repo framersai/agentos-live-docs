@@ -1020,6 +1020,244 @@ export const systemAPI = {
     api.get('/system/storage-status'),
 };
 
+// ============================================================================
+// RAG (Retrieval Augmented Generation) API
+// ============================================================================
+
+/**
+ * Request payload for document ingestion into RAG memory.
+ */
+export interface RagIngestPayloadFE {
+  /** Unique identifier for the document (auto-generated if not provided) */
+  documentId?: string;
+  /** Text content to ingest */
+  content: string;
+  /** Collection/namespace to store the document in */
+  collectionId?: string;
+  /** Document metadata for filtering and attribution */
+  metadata?: {
+    agentId?: string;
+    userId?: string;
+    type?: string;
+    tags?: string[];
+    source?: string;
+    [key: string]: unknown;
+  };
+  /** Category of memory */
+  category?: 'conversation_memory' | 'knowledge_base' | 'user_notes' | 'system' | 'custom';
+  /** Chunking configuration */
+  chunkingOptions?: {
+    chunkSize?: number;
+    chunkOverlap?: number;
+    strategy?: 'fixed' | 'semantic' | 'sentence';
+  };
+}
+
+/**
+ * Response from document ingestion.
+ */
+export interface RagIngestResponseFE {
+  success: boolean;
+  documentId: string;
+  chunksCreated: number;
+  collectionId: string;
+  message?: string;
+}
+
+/**
+ * Request payload for querying RAG memory.
+ */
+export interface RagQueryPayloadFE {
+  /** The query text to find relevant context for */
+  query: string;
+  /** Collection(s) to search in */
+  collectionIds?: string[];
+  /** Maximum number of chunks to retrieve */
+  topK?: number;
+  /** Minimum similarity score threshold (0-1) */
+  similarityThreshold?: number;
+  /** Metadata filters */
+  filters?: {
+    agentId?: string;
+    userId?: string;
+    category?: string;
+    tags?: string[];
+    [key: string]: unknown;
+  };
+  /** Include document metadata in results */
+  includeMetadata?: boolean;
+}
+
+/**
+ * A single retrieved chunk from RAG query.
+ */
+export interface RagRetrievedChunkFE {
+  /** Unique chunk identifier */
+  chunkId: string;
+  /** Parent document identifier */
+  documentId: string;
+  /** The text content of the chunk */
+  content: string;
+  /** Similarity score (0-1) */
+  score: number;
+  /** Chunk metadata */
+  metadata?: Record<string, unknown>;
+}
+
+/**
+ * Response from RAG query.
+ */
+export interface RagQueryResponseFE {
+  success: boolean;
+  query: string;
+  chunks: RagRetrievedChunkFE[];
+  totalResults: number;
+  processingTimeMs: number;
+}
+
+/**
+ * Document summary for listing.
+ */
+export interface RagDocumentSummaryFE {
+  documentId: string;
+  collectionId: string;
+  chunkCount: number;
+  category?: string;
+  metadata?: Record<string, unknown>;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/**
+ * RAG memory statistics.
+ */
+export interface RagStatsResponseFE {
+  success: boolean;
+  totalDocuments: number;
+  totalChunks: number;
+  collections: Array<{
+    collectionId: string;
+    documentCount: number;
+    chunkCount: number;
+  }>;
+  storageUsedBytes?: number;
+  lastIngestionAt?: string;
+  message?: string;
+}
+
+/**
+ * RAG health check response.
+ */
+export interface RagHealthResponseFE {
+  status: 'ready' | 'disabled' | 'error';
+  ragServiceInitialized: boolean;
+  vectorStoreConnected: boolean;
+  embeddingServiceAvailable: boolean;
+  message?: string;
+}
+
+/**
+ * RAG API client for frontend-backend communication.
+ * Provides methods for document ingestion, retrieval queries, and memory management.
+ *
+ * @example
+ * // Ingest a document
+ * const result = await ragAPI.ingest({
+ *   content: 'Some important information...',
+ *   metadata: { agentId: 'my-agent', tags: ['important'] }
+ * });
+ *
+ * @example
+ * // Query for relevant context
+ * const context = await ragAPI.query({
+ *   query: 'What is the important information?',
+ *   topK: 5
+ * });
+ */
+export const ragAPI = {
+  /**
+   * Ingest a document into RAG memory.
+   * @param payload - Document content and metadata
+   * @returns Ingestion result with document ID and chunk count
+   */
+  ingest: (payload: RagIngestPayloadFE): Promise<AxiosResponse<RagIngestResponseFE>> =>
+    api.post('/agentos/rag/ingest', payload),
+
+  /**
+   * Query RAG memory for relevant context.
+   * @param payload - Query text and search parameters
+   * @returns Retrieved chunks with similarity scores
+   */
+  query: (payload: RagQueryPayloadFE): Promise<AxiosResponse<RagQueryResponseFE>> =>
+    api.post('/agentos/rag/query', payload),
+
+  /**
+   * List documents in RAG memory.
+   * @param params - Optional filters (collectionId, agentId, userId, limit, offset)
+   * @returns Paginated list of document summaries
+   */
+  listDocuments: (params?: {
+    collectionId?: string;
+    agentId?: string;
+    userId?: string;
+    limit?: number;
+    offset?: number;
+  }): Promise<AxiosResponse<{ success: boolean; documents: RagDocumentSummaryFE[]; total: number }>> =>
+    api.get('/agentos/rag/documents', { params }),
+
+  /**
+   * Delete a document from RAG memory.
+   * @param documentId - ID of the document to delete
+   * @returns Deletion confirmation
+   */
+  deleteDocument: (documentId: string): Promise<AxiosResponse<{ success: boolean; documentId: string }>> =>
+    api.delete(`/agentos/rag/documents/${documentId}`),
+
+  /**
+   * Get RAG memory statistics.
+   * @param agentId - Optional agent ID to filter stats
+   * @returns Memory usage statistics
+   */
+  getStats: (agentId?: string): Promise<AxiosResponse<RagStatsResponseFE>> =>
+    api.get('/agentos/rag/stats', { params: agentId ? { agentId } : undefined }),
+
+  /**
+   * Create a new collection/namespace in RAG memory.
+   * @param collectionId - Unique collection identifier
+   * @param displayName - Human-readable name
+   * @param metadata - Optional collection metadata
+   * @returns Created collection info
+   */
+  createCollection: (
+    collectionId: string,
+    displayName?: string,
+    metadata?: Record<string, unknown>
+  ): Promise<AxiosResponse<{ success: boolean; collectionId: string; displayName: string }>> =>
+    api.post('/agentos/rag/collections', { collectionId, displayName, metadata }),
+
+  /**
+   * List all collections in RAG memory.
+   * @returns List of collections
+   */
+  listCollections: (): Promise<AxiosResponse<{ success: boolean; collections: Array<{ collectionId: string; displayName?: string; documentCount?: number }> }>> =>
+    api.get('/agentos/rag/collections'),
+
+  /**
+   * Delete a collection and all its documents.
+   * @param collectionId - ID of the collection to delete
+   * @returns Deletion confirmation
+   */
+  deleteCollection: (collectionId: string): Promise<AxiosResponse<{ success: boolean; collectionId: string }>> =>
+    api.delete(`/agentos/rag/collections/${collectionId}`),
+
+  /**
+   * Check RAG service health.
+   * @returns Health status of RAG components
+   */
+  getHealth: (): Promise<AxiosResponse<RagHealthResponseFE>> =>
+    api.get('/agentos/rag/health'),
+};
+
 export default api;
 
 
