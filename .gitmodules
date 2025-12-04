@@ -1,15 +1,15 @@
 [submodule "packages/agentos"]
 	path = packages/agentos
-	url = git@github.com:framersai/agentos.git
+	url = https://github.com/framersai/agentos.git
 [submodule "packages/agentos-extensions"]
 	path = packages/agentos-extensions
-	url = git@github.com:framersai/agentos-extensions.git
+	url = https://github.com/framersai/agentos-extensions.git
 [submodule "apps/agentos.sh"]
 	path = apps/agentos.sh
-	url = git@github.com:framersai/agentos.sh.git
+	url = https://github.com/framersai/agentos.sh.git
 [submodule "packages/sql-storage-adapter"]
 	path = packages/sql-storage-adapter
-	url = git@github.com:framersai/sql-storage-adapter.git
+	url = https://github.com/framersai/sql-storage-adapter.git
 	branch = master
 [submodule "apps/frame.dev"]
 	path = apps/frame.dev
@@ -17,7 +17,7 @@
 	branch = master
 [submodule "apps/agentos-workbench"]
 	path = apps/agentos-workbench
-	url = git@github.com:framersai/agentos-workbench.git
+	url = https://github.com/framersai/agentos-workbench.git
 [submodule "apps/codex"]
 	path = apps/codex
 	url = https://github.com/framersai/codex.git

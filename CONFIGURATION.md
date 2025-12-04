@@ -199,3 +199,60 @@ Notes:
 - If these values are **unset**, no analytics scripts are loaded at all.
 - If the browser sends a `Do Not Track` signal (`DNT: 1`), the Analytics component will respect it and skip initialization even when IDs are present.
 - These variables are **frontend-only** and safe to expose because they are purely identifiers, not secrets.
+
+## 13. GitHub Actions CI/CD Secrets
+
+The monorepo uses GitHub Actions for CI/CD. Configure these secrets in your repository settings under **Settings → Secrets and variables → Actions**.
+
+### Required Secrets
+
+| Secret | Description | Used By |
+| --- | --- | --- |
+| `GH_PAT` | GitHub Personal Access Token with `repo` scope. Required for cloning private submodules in CI. Create at [github.com/settings/tokens](https://github.com/settings/tokens/new?scopes=repo). | CodeQL, Codex Auto-Index, all workflows with submodules |
+| `SSH_PRIVATE_KEY` | OpenSSH private key for deployment server access. Must start with `BEGIN OPENSSH PRIVATE KEY`. | deploy-ssh.yml |
+| `LINODE_HOST` | Hostname or IP of the deployment server. | deploy-ssh.yml |
+| `LINODE_USER` | SSH username for deployment server. | deploy-ssh.yml |
+| `NPM_TOKEN` | npm access token for publishing packages. Create at [npmjs.com/settings/tokens](https://www.npmjs.com/settings/~/tokens). | publish-agentos.yml, publish-sql-storage-adapter.yml |
+
+### Mirror Workflow Secrets (for public repo mirrors)
+
+These are **optional** and only needed if you want to mirror subpackages to separate public repositories.
+
+| Secret | Description | Used By |
+| --- | --- | --- |
+| `FRAME_DEV_MIRROR_SSH_KEY` | Deploy key with write access to `framersai/frame.dev`. | mirror-frame-dev.yml |
+| `AGENTOS_MIRROR_SSH_KEY` | Deploy key with write access to `framersai/agentos`. | mirror-agentos.yml |
+| `AGENTOS_LANDING_MIRROR_SSH_KEY` | Deploy key with write access to `framersai/agentos.sh`. | mirror-agentos-landing.yml |
+
+### Creating Deploy Keys for Mirrors
+
+For each mirror workflow:
+
+1. Generate a new SSH key pair:
+   ```bash
+   ssh-keygen -t ed25519 -C "deploy-key-mirror" -f mirror-key -N ""
+   ```
+2. Add the **public key** (`mirror-key.pub`) as a deploy key in the target repository (Settings → Deploy keys → Add deploy key) with **write access**.
+3. Add the **private key** (`mirror-key`) as a secret in the voice-chat-assistant repository.
+
+### GH_PAT Permissions
+
+Your `GH_PAT` token needs these scopes:
+- `repo` – Full control of private repositories (required for submodule access)
+- `workflow` – Update GitHub Action workflows (optional, for workflow updates)
+
+### Submodule Repositories
+
+The monorepo references these submodule repositories under the `framersai` organization:
+
+| Submodule | Repository | Visibility |
+| --- | --- | --- |
+| `packages/agentos` | `framersai/agentos` | Private |
+| `packages/agentos-extensions` | `framersai/agentos-extensions` | Private |
+| `packages/sql-storage-adapter` | `framersai/sql-storage-adapter` | Private |
+| `apps/frame.dev` | `framersai/frame.dev` | Private (mirrored to public) |
+| `apps/agentos.sh` | `framersai/agentos.sh` | Private |
+| `apps/agentos-workbench` | `framersai/agentos-workbench` | Private |
+| `apps/codex` | `framersai/codex` | Public |
+
+**Important:** Ensure your `GH_PAT` has access to all private repositories in the `framersai` organization, or the CI workflows will fail to clone submodules.
