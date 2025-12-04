@@ -11,7 +11,13 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "docs": "typedoc --out public/docs packages/gitpaywidget-sdk/src packages/gitpaywidget-widget/src"
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:report": "playwright show-report",
+    "test:all": "pnpm test && pnpm test:e2e",
+    "docs": "typedoc",
+    "docs:api": "typedoc --options typedoc.json"
   },
   "keywords": [
     "payments",
@@ -20,20 +26,28 @@
     "widget",
     "github-pages",
     "static",
-    "checkout"
+    "checkout",
+    "vibe-coding",
+    "no-code",
+    "developer-tools"
   ],
   "author": "Manic Agency LLC <team@manic.agency>",
   "license": "MIT",
   "dependencies": {
+    "@gitpaywidget/payments-core": "workspace:*",
     "@gitpaywidget/widget": "workspace:*",
     "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/supabase-js": "^2.45.0",
     "next": "^14.2.15",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-markdown": "^9.0.1"
+    "react-markdown": "^9.0.1",
+    "resend": "^2.1.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "@tailwindcss/forms": "^0.5.7",
+    "@tailwindcss/typography": "^0.5.12",
     "@types/node": "^20.15.0",
     "@types/react": "^18.3.6",
     "@types/react-dom": "^18.3.0",

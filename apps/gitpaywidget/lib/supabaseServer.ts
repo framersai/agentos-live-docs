@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 /**
  * Singleton Supabase client using the service-role key.
@@ -11,3 +11,17 @@ export const supabaseAdmin = createClient(
     auth: { autoRefreshToken: false, persistSession: false },
   }
 );
+
+/**
+ * Create a new Supabase server client instance.
+ * Useful for operations that need a fresh client.
+ */
+export function createServerClient(): SupabaseClient {
+  return createClient(
+    process.env.SUPABASE_URL || '',
+    process.env.SUPABASE_SERVICE_ROLE_KEY || '',
+    {
+      auth: { autoRefreshToken: false, persistSession: false },
+    }
+  );
+}

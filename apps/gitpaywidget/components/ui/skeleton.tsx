@@ -2,9 +2,11 @@ interface SkeletonProps {
   className?: string;
 }
 
-/**
- * Animated gray placeholder used during loading states.
- */
 export function Skeleton({ className = '' }: SkeletonProps) {
-  return <div className={`animate-pulse rounded-md bg-ink-100 dark:bg-ink-700 ${className}`} />;
+  return (
+    <div
+      className={`animate-pulse bg-gradient-to-r from-gpw-purple-100 via-gpw-purple-50 to-gpw-purple-100 dark:from-gpw-purple-900/40 dark:via-gpw-purple-800/30 dark:to-gpw-purple-900/40 rounded-lg ${className}`}
+      aria-hidden="true"
+    />
+  );
 }

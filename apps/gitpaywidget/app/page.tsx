@@ -1,14 +1,22 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import { HeroSection } from '@/components/landing/HeroSection';
+import { FeaturesSection } from '@/components/landing/FeaturesSection';
+import { HowItWorksSection } from '@/components/landing/HowItWorksSection';
+import { WidgetPreviewSection } from '@/components/landing/WidgetPreviewSection';
+import { IntegrationsSection } from '@/components/landing/IntegrationsSection';
+import { PricingSection } from '@/components/landing/PricingSection';
+import { TestimonialsSection } from '@/components/landing/TestimonialsSection';
+import { FAQSection } from '@/components/landing/FAQSection';
+import { CTASection } from '@/components/landing/CTASection';
 
 export const metadata: Metadata = {
-  title: 'Simple payments for GitHub Pages',
+  title: 'GitPayWidget – Accept Payments on GitHub Pages & Static Sites',
   description:
-    'GitPayWidget lets any static site accept Stripe and Lemon Squeezy checkouts with a single script tag.',
+    'The easiest way to accept Stripe, Lemon Squeezy, and crypto payments on any static site. One script tag. Zero backend. Perfect for vibe coding.',
   openGraph: {
-    title: 'GitPayWidget – Accept Stripe + Lemon Squeezy on GitHub Pages',
-    description: 'Showcase your pricing, embed the widget, and go live in minutes.',
+    title: 'GitPayWidget – Payments for Static Sites & GitHub Pages',
+    description: 'Accept Stripe & Lemon Squeezy checkouts with a single script tag. No backend required.',
     url: '/',
     images: ['/og-image.png'],
   },
@@ -17,36 +25,18 @@ export const metadata: Metadata = {
   },
 };
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-10 px-6 py-20 text-center">
-      <Image src="/logo.svg" alt="GitPayWidget" width={160} height={160} />
-
-      <h1 className="font-display text-6xl text-gpw-primary">GitPayWidget</h1>
-      <p className="max-w-xl text-lg text-ink-600 dark:text-ink-300">
-        Accept payments on any GitHub-hosted page with a single&nbsp;snippet.
-      </p>
-
-      <pre className="rounded-xl bg-ink-900/90 p-4 text-left text-sm text-white shadow-lg">
-        {`<script src="https://cdn.gitpaywidget.com/v0/widget.js"
-        data-project="my-org/my-project"
-        data-plan="pro"></script>`}
-      </pre>
-
-      <div className="flex flex-wrap justify-center gap-4">
-        <Link
-          href="#pricing"
-          className="rounded-full bg-gpw-primary px-6 py-3 font-semibold text-white shadow-frame-glow hover:bg-gpw-purple-tertiary"
-        >
-          See pricing
-        </Link>
-        <Link
-          href="mailto:team@manic.agency"
-          className="rounded-full border border-gpw-primary px-6 py-3 font-semibold text-gpw-primary hover:bg-gpw-primary/10"
-        >
-          Contact us
-        </Link>
-      </div>
-    </main>
+    <>
+      <HeroSection />
+      <FeaturesSection />
+      <HowItWorksSection />
+      <WidgetPreviewSection />
+      <IntegrationsSection />
+      <PricingSection />
+      <TestimonialsSection />
+      <FAQSection />
+      <CTASection />
+    </>
   );
 }
