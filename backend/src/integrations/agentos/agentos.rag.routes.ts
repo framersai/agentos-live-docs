@@ -271,7 +271,7 @@ export const createAgentOSRagRouter = (): Router => {
       const { collectionId, agentId, userId, limit, offset } = req.query;
 
       // Get documents from RAG service
-      const documents = ragService.listDocuments({
+      const documents = await ragService.listDocuments({
         collectionId: collectionId as string | undefined,
         agentId: agentId as string | undefined,
         userId: userId as string | undefined,
@@ -368,10 +368,11 @@ export const createAgentOSRagRouter = (): Router => {
       }
 
       const { agentId } = req.query;
-      const stats = ragService.getStats(agentId as string | undefined);
+      const stats = await ragService.getStats(agentId as string | undefined);
 
       return res.status(200).json({
         success: true,
+        storageAdapter: ragService.getAdapterKind(),
         ...stats,
       });
     } catch (error) {
@@ -406,7 +407,7 @@ export const createAgentOSRagRouter = (): Router => {
         });
       }
 
-      ragService.createCollection(collectionId, displayName);
+      await ragService.createCollection(collectionId, displayName);
 
       return res.status(201).json({
         success: true,
@@ -433,7 +434,7 @@ export const createAgentOSRagRouter = (): Router => {
         });
       }
 
-      const collections = ragService.listCollections();
+      const collections = await ragService.listCollections();
 
       return res.status(200).json({
         success: true,
@@ -468,7 +469,7 @@ export const createAgentOSRagRouter = (): Router => {
         });
       }
 
-      const deleted = ragService.deleteCollection(collectionId);
+      const deleted = await ragService.deleteCollection(collectionId);
 
       if (!deleted) {
         return res.status(404).json({
@@ -495,14 +496,36 @@ export const createAgentOSRagRouter = (): Router => {
   router.get('/health', async (_req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
       const isEnabled = agentosChatAdapterEnabled();
-      const ragAvailable = ragService.isAvailable();
-      const stats = ragAvailable ? ragService.getStats() : null;
+      
+      // Try to initialize if not already
+      let ragAvailable = ragService.isAvailable();
+      let adapterKind = 'not-initialized';
+      let stats = null;
+      
+      if (isEnabled && !ragAvailable) {
+        try {
+          await ragService.initialize();
+          ragAvailable = ragService.isAvailable();
+        } catch (initError) {
+          console.warn('[RAG Routes] Health check init failed:', initError);
+        }
+      }
+
+      if (ragAvailable) {
+        adapterKind = ragService.getAdapterKind();
+        try {
+          stats = await ragService.getStats();
+        } catch (statsError) {
+          console.warn('[RAG Routes] Stats fetch failed:', statsError);
+        }
+      }
 
       return res.status(200).json({
         status: isEnabled && ragAvailable ? 'ready' : isEnabled ? 'initializing' : 'disabled',
         ragServiceInitialized: ragAvailable,
-        vectorStoreConnected: ragAvailable, // In-memory store is always "connected"
-        embeddingServiceAvailable: false, // Embeddings not yet integrated
+        storageAdapter: adapterKind,
+        vectorStoreConnected: ragAvailable,
+        embeddingServiceAvailable: false, // Embeddings not yet integrated (using keyword matching)
         stats: stats ? {
           totalDocuments: stats.totalDocuments,
           totalChunks: stats.totalChunks,
@@ -510,7 +533,7 @@ export const createAgentOSRagRouter = (): Router => {
         } : null,
         message: isEnabled
           ? ragAvailable
-            ? 'RAG service ready (in-memory store)'
+            ? `RAG service ready (using ${adapterKind} storage)`
             : 'RAG service initializing'
           : 'AgentOS integration is disabled.',
       });
