@@ -315,38 +315,98 @@ onMounted(async () => {
 </template>
 
 <style scoped lang="scss">
+// ============================================================================
+// Mobile-First Responsive Admin Dashboard Styles
+// ============================================================================
+
+// Touch target minimum (WCAG 2.1)
+$touch-target-min: 44px;
+
+// Breakpoints
+$bp-xs: 320px;
+$bp-sm: 480px;
+$bp-md: 768px;
+$bp-lg: 1024px;
+$bp-xl: 1280px;
+
 .admin-dashboard {
-  padding: 1.5rem;
+  padding: 1rem;
   max-width: 1400px;
   margin: 0 auto;
+  // Safe area for notched devices
+  padding-left: max(env(safe-area-inset-left), 1rem);
+  padding-right: max(env(safe-area-inset-right), 1rem);
+  padding-bottom: max(env(safe-area-inset-bottom), 1rem);
+
+  @media (min-width: $bp-md) {
+    padding: 1.5rem;
+  }
 }
+
+// ============================================================================
+// Header - Mobile Responsive
+// ============================================================================
 
 .dashboard-header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  gap: 1rem;
   margin-bottom: 1.5rem;
+
+  @media (min-width: $bp-sm) {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
 
   h1 {
     color: var(--color-text);
+    font-size: clamp(1.25rem, 4vw, 1.5rem);
+  }
+
+  p {
+    display: none;
+
+    @media (min-width: $bp-sm) {
+      display: block;
+    }
   }
 }
 
 .btn-refresh {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
-  padding: 0.5rem 1rem;
+  min-height: $touch-target-min;
+  padding: 0.75rem 1.25rem;
   background: var(--color-surface-elevated);
   border: 1px solid var(--color-divider);
   border-radius: 0.5rem;
   color: var(--color-text);
   cursor: pointer;
   transition: all 0.2s;
+  font-size: 1rem;
+  // Full width on mobile
+  width: 100%;
 
-  &:hover:not(:disabled) {
+  @media (min-width: $bp-sm) {
+    width: auto;
+    padding: 0.5rem 1rem;
+  }
+
+  // Touch-friendly: only apply hover on non-touch devices
+  @media (hover: hover) {
+    &:hover:not(:disabled) {
+      background: var(--color-accent-subtle);
+      border-color: var(--color-accent);
+    }
+  }
+
+  // Active state for touch feedback
+  &:active:not(:disabled) {
+    transform: scale(0.98);
     background: var(--color-accent-subtle);
-    border-color: var(--color-accent);
   }
 
   &:disabled {
@@ -355,72 +415,168 @@ onMounted(async () => {
   }
 
   .icon {
-    width: 1rem;
-    height: 1rem;
+    width: 1.25rem;
+    height: 1.25rem;
+
+    @media (min-width: $bp-sm) {
+      width: 1rem;
+      height: 1rem;
+    }
   }
 }
+
+// ============================================================================
+// Error Banner
+// ============================================================================
 
 .error-banner {
   background: rgba(239, 68, 68, 0.15);
   border: 1px solid rgba(239, 68, 68, 0.3);
   color: rgb(239, 68, 68);
-  padding: 0.75rem 1rem;
+  padding: 1rem;
   border-radius: 0.5rem;
   margin-bottom: 1rem;
+  font-size: 0.875rem;
 }
+
+// ============================================================================
+// Metrics Grid - Responsive Cards
+// ============================================================================
 
 .metrics-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 1rem;
+  // 2 columns on mobile, scales up
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
   margin-bottom: 1.5rem;
+
+  @media (min-width: $bp-sm) {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+
+  @media (min-width: $bp-lg) {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  // Landscape phone: show 3 columns
+  @media (max-height: 500px) and (orientation: landscape) {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+  }
 }
 
 .metric-card {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 1rem;
-  padding: 1rem;
+  text-align: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
   background: var(--color-surface-elevated);
   border: 1px solid var(--color-divider);
   border-radius: 0.75rem;
+  // Touch feedback
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  @media (min-width: $bp-md) {
+    flex-direction: row;
+    text-align: left;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  // Landscape phone adjustments
+  @media (max-height: 500px) and (orientation: landscape) {
+    flex-direction: row;
+    padding: 0.5rem;
+    gap: 0.5rem;
+  }
 }
 
 .metric-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 3rem;
-  height: 3rem;
+  width: 2.5rem;
+  height: 2.5rem;
   border-radius: 0.5rem;
+  flex-shrink: 0;
+
+  @media (min-width: $bp-md) {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  svg {
+    width: 1.25rem;
+    height: 1.25rem;
+
+    @media (min-width: $bp-md) {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+  }
 }
 
 .metric-content {
   display: flex;
   flex-direction: column;
+  min-width: 0; // Prevent overflow
 }
 
 .metric-value {
-  font-size: 1.5rem;
+  font-size: clamp(1rem, 3vw, 1.5rem);
   font-weight: 600;
   color: var(--color-text);
+  line-height: 1.2;
 }
 
 .metric-label {
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   color: var(--color-text-muted);
-}
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
-.content-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-  margin-bottom: 1.5rem;
-
-  @media (max-width: 900px) {
-    grid-template-columns: 1fr;
+  @media (min-width: $bp-md) {
+    font-size: 0.75rem;
   }
 }
+
+// ============================================================================
+// Content Grid - Stack on Mobile
+// ============================================================================
+
+.content-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+
+  @media (min-width: $bp-lg) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  // Landscape tablet: side by side
+  @media (min-width: $bp-md) and (orientation: landscape) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+}
+
+// ============================================================================
+// Panel Component
+// ============================================================================
 
 .panel {
   background: var(--color-surface-elevated);
@@ -431,75 +587,166 @@ onMounted(async () => {
 
 .panel-header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
   border-bottom: 1px solid var(--color-divider);
+
+  @media (min-width: $bp-sm) {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+  }
+
+  h2 {
+    font-size: clamp(0.95rem, 2.5vw, 1.125rem);
+  }
 }
 
 .empty-state {
-  padding: 2rem;
+  padding: 2rem 1rem;
   text-align: center;
   color: var(--color-text-muted);
 }
+
+// ============================================================================
+// Evaluation List - Mobile Optimized
+// ============================================================================
 
 .eval-list {
   list-style: none;
   padding: 0;
   margin: 0;
+  max-height: 300px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+
+  @media (min-width: $bp-md) {
+    max-height: 350px;
+  }
 }
 
 .eval-item {
   display: grid;
-  grid-template-columns: auto 1fr auto auto;
-  gap: 1rem;
-  align-items: center;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  gap: 0.5rem 0.75rem;
   padding: 0.75rem 1rem;
   border-bottom: 1px solid var(--color-divider);
+  // Touch feedback
+  transition: background 0.15s ease;
+
+  &:active {
+    background: var(--color-surface);
+  }
+
+  @media (min-width: $bp-sm) {
+    grid-template-columns: auto 1fr auto auto;
+    grid-template-rows: auto;
+    gap: 1rem;
+  }
 
   &:last-child {
     border-bottom: none;
   }
 }
 
-.status-badge {
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.25rem;
-  font-size: 0.75rem;
-  font-weight: 500;
-  text-transform: capitalize;
+.eval-status {
+  grid-row: 1;
+  grid-column: 1;
 }
 
 .eval-info {
+  grid-row: 1;
+  grid-column: 2;
   display: flex;
   flex-direction: column;
+  min-width: 0;
+}
+
+.eval-results {
+  grid-row: 2;
+  grid-column: 1;
+  font-family: monospace;
+  font-size: 0.875rem;
+
+  @media (min-width: $bp-sm) {
+    grid-row: 1;
+    grid-column: 3;
+  }
+}
+
+.eval-score {
+  grid-row: 2;
+  grid-column: 2;
+  font-weight: 600;
+  text-align: right;
+
+  @media (min-width: $bp-sm) {
+    grid-row: 1;
+    grid-column: 4;
+    text-align: left;
+  }
+}
+
+.status-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-transform: capitalize;
+  white-space: nowrap;
+
+  @media (min-width: $bp-sm) {
+    font-size: 0.75rem;
+  }
 }
 
 .eval-name {
   font-weight: 500;
   color: var(--color-text);
+  font-size: 0.875rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  @media (min-width: $bp-md) {
+    font-size: 1rem;
+  }
 }
 
-.eval-results {
-  font-family: monospace;
-}
-
-.eval-score {
-  font-weight: 600;
-}
+// ============================================================================
+// Period Selector - Touch Friendly
+// ============================================================================
 
 .period-selector {
   display: flex;
   gap: 0.25rem;
+  // Full width on mobile
+  width: 100%;
+
+  @media (min-width: $bp-sm) {
+    width: auto;
+  }
 
   button {
-    padding: 0.25rem 0.75rem;
+    flex: 1;
+    min-height: $touch-target-min;
+    padding: 0.5rem 0.75rem;
     background: transparent;
     border: 1px solid var(--color-divider);
-    border-radius: 0.25rem;
+    border-radius: 0.375rem;
     color: var(--color-text-muted);
     cursor: pointer;
     transition: all 0.2s;
+    font-size: 0.875rem;
+
+    @media (min-width: $bp-sm) {
+      flex: none;
+      min-height: auto;
+      padding: 0.25rem 0.75rem;
+    }
 
     &.active {
       background: var(--color-accent);
@@ -507,80 +754,149 @@ onMounted(async () => {
       color: white;
     }
 
-    &:hover:not(.active) {
+    // Touch-friendly hover
+    @media (hover: hover) {
+      &:hover:not(.active) {
+        background: var(--color-surface);
+      }
+    }
+
+    &:active:not(.active) {
       background: var(--color-surface);
+      transform: scale(0.98);
     }
   }
 }
 
+// ============================================================================
+// Usage Summary - Responsive
+// ============================================================================
+
 .usage-summary {
-  display: flex;
-  justify-content: space-around;
-  padding: 1rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  padding: 0.75rem;
   border-bottom: 1px solid var(--color-divider);
+
+  @media (min-width: $bp-sm) {
+    padding: 1rem;
+    gap: 1rem;
+  }
 }
 
 .usage-stat {
   display: flex;
   flex-direction: column;
   align-items: center;
+  text-align: center;
 }
 
 .stat-value {
-  font-size: 1.25rem;
+  font-size: clamp(0.875rem, 3vw, 1.25rem);
   font-weight: 600;
   color: var(--color-text);
+  line-height: 1.2;
 }
 
 .stat-label {
-  font-size: 0.75rem;
+  font-size: 0.6rem;
   color: var(--color-text-muted);
+  white-space: nowrap;
+
+  @media (min-width: $bp-sm) {
+    font-size: 0.75rem;
+  }
 }
+
+// ============================================================================
+// Usage Chart - Touch Scrollable
+// ============================================================================
 
 .usage-chart {
   display: flex;
   justify-content: space-around;
   align-items: flex-end;
-  height: 120px;
-  padding: 1rem;
+  height: 100px;
+  padding: 0.75rem;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  @media (min-width: $bp-sm) {
+    height: 120px;
+    padding: 1rem;
+  }
 }
 
 .chart-bar {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.375rem;
   flex: 1;
+  min-width: 36px;
+
+  @media (min-width: $bp-sm) {
+    gap: 0.5rem;
+    min-width: 44px;
+  }
 }
 
 .bar-fill {
-  width: 24px;
+  width: 18px;
   background: linear-gradient(to top, var(--color-accent), var(--color-accent-hover));
   border-radius: 4px 4px 0 0;
   min-height: 4px;
   transition: height 0.3s ease;
+
+  @media (min-width: $bp-sm) {
+    width: 24px;
+  }
 }
 
 .bar-label {
-  font-size: 0.7rem;
+  font-size: 0.6rem;
   color: var(--color-text-muted);
+
+  @media (min-width: $bp-sm) {
+    font-size: 0.7rem;
+  }
 }
+
+// ============================================================================
+// System Status - Mobile Layout
+// ============================================================================
 
 .system-status {
   display: flex;
-  gap: 2rem;
+  flex-direction: column;
+  gap: 0.75rem;
   padding: 1rem;
   background: var(--color-surface-elevated);
   border: 1px solid var(--color-divider);
   border-radius: 0.75rem;
+
+  @media (min-width: $bp-sm) {
+    flex-direction: row;
+    gap: 2rem;
+  }
 }
 
 .status-item {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.875rem;
+  font-size: 0.8rem;
   color: var(--color-text-secondary);
+
+  @media (min-width: $bp-sm) {
+    font-size: 0.875rem;
+  }
 }
 
 .status-indicator {
@@ -588,6 +904,7 @@ onMounted(async () => {
   height: 8px;
   border-radius: 50%;
   background: var(--color-text-muted);
+  flex-shrink: 0;
 
   &.online {
     background: rgb(34, 197, 94);
@@ -599,6 +916,10 @@ onMounted(async () => {
     box-shadow: 0 0 8px rgba(250, 204, 21, 0.5);
   }
 }
+
+// ============================================================================
+// Utility Classes
+// ============================================================================
 
 .text-muted {
   color: var(--color-text-muted);
@@ -614,5 +935,47 @@ onMounted(async () => {
 
 .text-yellow-400 {
   color: rgb(250, 204, 21);
+}
+
+// ============================================================================
+// Animation
+// ============================================================================
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+// ============================================================================
+// Dark Mode Color Adjustments
+// ============================================================================
+
+@media (prefers-color-scheme: dark) {
+  .bg-blue-500\/20 {
+    background-color: rgba(59, 130, 246, 0.2);
+  }
+  .bg-green-500\/20 {
+    background-color: rgba(34, 197, 94, 0.2);
+  }
+  .bg-purple-500\/20 {
+    background-color: rgba(168, 85, 247, 0.2);
+  }
+  .bg-yellow-500\/20 {
+    background-color: rgba(234, 179, 8, 0.2);
+  }
+  .bg-emerald-500\/20 {
+    background-color: rgba(16, 185, 129, 0.2);
+  }
+  .bg-rose-500\/20 {
+    background-color: rgba(244, 63, 94, 0.2);
+  }
 }
 </style>
