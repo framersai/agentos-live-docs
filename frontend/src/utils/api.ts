@@ -1760,4 +1760,129 @@ export const planningAPI = {
     api.get('/agentos/planning/stats'),
 };
 
+// ============================================================================
+// Admin Metrics API
+// ============================================================================
+
+/**
+ * System metrics summary.
+ */
+export interface SystemMetricsFE {
+  activeUsers: number;
+  totalConversations: number;
+  totalMessages: number;
+  avgResponseTimeMs: number;
+  agentsDeployed: number;
+  evaluationRunsTotal: number;
+  evaluationPassRate: number;
+  marketplaceInstalls: number;
+  errorRate: number;
+  uptime: number;
+}
+
+/**
+ * Evaluation run summary.
+ */
+export interface EvaluationRunSummaryFE {
+  id: string;
+  name: string;
+  status: 'pending' | 'running' | 'completed' | 'failed';
+  startedAt: string;
+  completedAt?: string;
+  totalTests: number;
+  passedTests: number;
+  failedTests: number;
+  averageScore: number;
+  duration?: number;
+}
+
+/**
+ * Usage metrics for a time period.
+ */
+export interface UsageMetricsFE {
+  period: string;
+  conversations: number;
+  messages: number;
+  tokensUsed: number;
+  costUSD: number;
+}
+
+/**
+ * Admin API client for system metrics and evaluation management.
+ *
+ * @example
+ * // Get system metrics
+ * const metrics = await adminAPI.getSystemMetrics();
+ *
+ * @example
+ * // Run an evaluation
+ * const run = await adminAPI.runEvaluation('agent-id', ['test-1', 'test-2']);
+ */
+export const adminAPI = {
+  /**
+   * Get system-wide metrics.
+   * @returns System metrics summary
+   */
+  getSystemMetrics: (): Promise<AxiosResponse<SystemMetricsFE>> => api.get('/admin/metrics/system'),
+
+  /**
+   * Get evaluation run history.
+   * @param params - Optional filters (limit, status)
+   * @returns List of evaluation runs
+   */
+  getEvaluationRuns: (params?: {
+    limit?: number;
+    status?: string;
+  }): Promise<AxiosResponse<EvaluationRunSummaryFE[]>> =>
+    api.get('/admin/metrics/evaluations', { params }),
+
+  /**
+   * Get usage history over time.
+   * @param period - Time period granularity
+   * @returns Usage metrics by period
+   */
+  getUsageHistory: (period?: 'day' | 'week' | 'month'): Promise<AxiosResponse<UsageMetricsFE[]>> =>
+    api.get('/admin/metrics/usage', { params: { period } }),
+
+  /**
+   * Start a new evaluation run.
+   * @param agentId - Agent to evaluate
+   * @param testCaseIds - Test cases to run
+   * @returns Started evaluation run
+   */
+  runEvaluation: (
+    agentId: string,
+    testCaseIds: string[]
+  ): Promise<AxiosResponse<EvaluationRunSummaryFE>> =>
+    api.post('/admin/evaluation/run', { agentId, testCaseIds }),
+
+  /**
+   * Get detailed results for an evaluation run.
+   * @param runId - Evaluation run ID
+   * @returns Detailed test results
+   */
+  getEvaluationResults: (
+    runId: string
+  ): Promise<
+    AxiosResponse<{
+      runId: string;
+      results: Array<{
+        testCaseId: string;
+        testCaseName: string;
+        passed: boolean;
+        score: number;
+        actualOutput?: string;
+        error?: string;
+        duration: number;
+        metrics: Array<{
+          name: string;
+          score: number;
+          threshold: number;
+          passed: boolean;
+        }>;
+      }>;
+    }>
+  > => api.get(`/admin/evaluation/runs/${runId}/results`),
+};
+
 export default api;
