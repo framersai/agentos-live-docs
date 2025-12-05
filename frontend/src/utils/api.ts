@@ -31,16 +31,21 @@ type AgentOSClientMode = 'proxy' | 'direct';
 
 const AGENTOS_FRONTEND_ENABLED: boolean =
   String(import.meta.env.VITE_AGENTOS_ENABLED ?? 'false').toLowerCase() === 'true';
-const AGENTOS_CLIENT_MODE: AgentOSClientMode =
-  (import.meta.env.VITE_AGENTOS_CLIENT_MODE ?? 'proxy').toLowerCase() as AgentOSClientMode;
+const AGENTOS_CLIENT_MODE: AgentOSClientMode = (
+  import.meta.env.VITE_AGENTOS_CLIENT_MODE ?? 'proxy'
+).toLowerCase() as AgentOSClientMode;
 
 const normalizeAgentOSPath = (value: string): string => {
   if (!value) return '/agentos/chat';
   return value.startsWith('/') ? value : `/${value}`;
 };
 
-const AGENTOS_CHAT_PATH = normalizeAgentOSPath(import.meta.env.VITE_AGENTOS_CHAT_PATH ?? '/agentos/chat');
-const AGENTOS_STREAM_PATH = normalizeAgentOSPath(import.meta.env.VITE_AGENTOS_STREAM_PATH ?? '/agentos/stream');
+const AGENTOS_CHAT_PATH = normalizeAgentOSPath(
+  import.meta.env.VITE_AGENTOS_CHAT_PATH ?? '/agentos/chat'
+);
+const AGENTOS_STREAM_PATH = normalizeAgentOSPath(
+  import.meta.env.VITE_AGENTOS_STREAM_PATH ?? '/agentos/stream'
+);
 const SHOULD_USE_AGENTOS_ROUTES = AGENTOS_FRONTEND_ENABLED && AGENTOS_CLIENT_MODE === 'direct';
 
 /**
@@ -79,7 +84,9 @@ const emitWorkflowUpdate = (detail: WorkflowUpdateEventDetail): void => {
   if (typeof window === 'undefined') {
     return;
   }
-  window.dispatchEvent(new CustomEvent<WorkflowUpdateEventDetail>('vca:workflow-update', { detail }));
+  window.dispatchEvent(
+    new CustomEvent<WorkflowUpdateEventDetail>('vca:workflow-update', { detail })
+  );
 };
 
 const emitAgencyUpdate = (detail: AgencyUpdateEventDetail): void => {
@@ -89,7 +96,6 @@ const emitAgencyUpdate = (detail: AgencyUpdateEventDetail): void => {
   window.dispatchEvent(new CustomEvent<AgencyUpdateEventDetail>('vca:agency-update', { detail }));
 };
 
-
 const getAuthToken = (): string | null => {
   if (typeof window === 'undefined') return null;
   return localStorage.getItem(AUTH_TOKEN_KEY) || sessionStorage.getItem(AUTH_TOKEN_KEY);
@@ -98,7 +104,7 @@ const getAuthToken = (): string | null => {
 export const getAuthHeaders = (): Record<string, string> => {
   const token = getAuthToken();
   if (token) {
-    return { 'Authorization': `Bearer ${token}` };
+    return { Authorization: `Bearer ${token}` };
   }
   return {};
 };
@@ -141,7 +147,7 @@ api.interceptors.response.use(
         {
           baseURL,
           headers: error.response?.headers,
-        },
+        }
       );
 
       if (status >= 500) {
@@ -158,7 +164,7 @@ api.interceptors.response.use(
             : url;
           console.warn(
             '[API Service] 502 Bad Gateway detected. Verify the backend/API host is reachable and VITE_API_BASE_URL is correct.',
-            { baseURL, resolvedUrl },
+            { baseURL, resolvedUrl }
           );
         }
       }
@@ -172,8 +178,13 @@ api.interceptors.response.use(
         if (api.defaults.headers.common['Authorization']) {
           delete api.defaults.headers.common['Authorization'];
         }
-        console.warn('[API Service] Unauthorized (401) with existing token. Cleared token. Redirecting to login.');
-        if (window.location.pathname !== '/login' && !window.location.pathname.startsWith('/welcome')) {
+        console.warn(
+          '[API Service] Unauthorized (401) with existing token. Cleared token. Redirecting to login.'
+        );
+        if (
+          window.location.pathname !== '/login' &&
+          !window.location.pathname.startsWith('/welcome')
+        ) {
           window.location.href = `/login?sessionExpired=true&reason=unauthorized&redirectTo=${encodeURIComponent(window.location.pathname + window.location.search)}`;
         }
       } else {
@@ -229,12 +240,19 @@ export interface LogoutResponseFE {
 }
 
 export const authAPI = {
-  loginGlobal: (payload: { password: string; rememberMe?: boolean }): Promise<AxiosResponse<AuthResponseFE>> =>
-    api.post('/auth/global', payload),
-  loginStandard: (payload: { email: string; password: string; rememberMe?: boolean }): Promise<AxiosResponse<AuthResponseFE>> =>
-    api.post('/auth/login', payload),
-  register: (payload: { email: string; password: string }): Promise<AxiosResponse<AuthResponseFE>> =>
-    api.post('/auth/register', payload),
+  loginGlobal: (payload: {
+    password: string;
+    rememberMe?: boolean;
+  }): Promise<AxiosResponse<AuthResponseFE>> => api.post('/auth/global', payload),
+  loginStandard: (payload: {
+    email: string;
+    password: string;
+    rememberMe?: boolean;
+  }): Promise<AxiosResponse<AuthResponseFE>> => api.post('/auth/login', payload),
+  register: (payload: {
+    email: string;
+    password: string;
+  }): Promise<AxiosResponse<AuthResponseFE>> => api.post('/auth/register', payload),
   checkStatus: (): Promise<AxiosResponse<AuthResponseFE>> => api.get('/auth'),
   logout: (): Promise<AxiosResponse<LogoutResponseFE>> => api.delete('/auth'),
 };
@@ -261,7 +279,7 @@ export interface BillingCheckoutStatusResponseFE {
 export const billingAPI = {
   createCheckoutSession: (
     payload: BillingCheckoutRequest,
-    options?: { token?: string },
+    options?: { token?: string }
   ): Promise<AxiosResponse<BillingCheckoutResponseFE>> => {
     const config: AxiosRequestConfig | undefined = options?.token
       ? { headers: { Authorization: `Bearer ${options.token}` } }
@@ -270,7 +288,7 @@ export const billingAPI = {
   },
   getCheckoutStatus: (
     checkoutId: string,
-    options?: { token?: string },
+    options?: { token?: string }
   ): Promise<AxiosResponse<BillingCheckoutStatusResponseFE>> => {
     const config: AxiosRequestConfig | undefined = options?.token
       ? { headers: { Authorization: `Bearer ${options.token}` } }
@@ -307,18 +325,25 @@ export interface AgentPlanSnapshotDto {
 }
 
 export const userAgentsAPI = {
-  list: (): Promise<AxiosResponse<{ agents: UserAgentDto[] }>> =>
-    api.get('/agents'),
-  get: (agentId: string): Promise<AxiosResponse<UserAgentDto>> =>
-    api.get('/agents/' + agentId),
-  snapshot: (): Promise<AxiosResponse<AgentPlanSnapshotDto>> =>
-    api.get('/agents/plan/snapshot'),
-  create: (payload: { label: string; slug?: string | null; config: Record<string, unknown> }): Promise<AxiosResponse<UserAgentDto>> =>
-    api.post('/agents', payload),
-  update: (agentId: string, payload: Partial<{ label: string; slug: string | null; status: string; config: Record<string, unknown>; archived: boolean }>): Promise<AxiosResponse<UserAgentDto>> =>
-    api.patch('/agents/' + agentId, payload),
-  remove: (agentId: string): Promise<AxiosResponse<void>> =>
-    api.delete('/agents/' + agentId),
+  list: (): Promise<AxiosResponse<{ agents: UserAgentDto[] }>> => api.get('/agents'),
+  get: (agentId: string): Promise<AxiosResponse<UserAgentDto>> => api.get('/agents/' + agentId),
+  snapshot: (): Promise<AxiosResponse<AgentPlanSnapshotDto>> => api.get('/agents/plan/snapshot'),
+  create: (payload: {
+    label: string;
+    slug?: string | null;
+    config: Record<string, unknown>;
+  }): Promise<AxiosResponse<UserAgentDto>> => api.post('/agents', payload),
+  update: (
+    agentId: string,
+    payload: Partial<{
+      label: string;
+      slug: string | null;
+      status: string;
+      config: Record<string, unknown>;
+      archived: boolean;
+    }>
+  ): Promise<AxiosResponse<UserAgentDto>> => api.patch('/agents/' + agentId, payload),
+  remove: (agentId: string): Promise<AxiosResponse<void>> => api.delete('/agents/' + agentId),
 };
 
 export interface UserAgentKnowledgeDto {
@@ -336,15 +361,17 @@ export interface UserAgentKnowledgeDto {
 export const userAgentKnowledgeAPI = {
   list: (agentId: string): Promise<AxiosResponse<{ knowledge: UserAgentKnowledgeDto[] }>> =>
     api.get(`/agents/${agentId}/knowledge`),
-  create: (agentId: string, payload: { type: string; content: string; tags?: string[]; metadata?: Record<string, unknown> }): Promise<AxiosResponse<UserAgentKnowledgeDto>> =>
+  create: (
+    agentId: string,
+    payload: { type: string; content: string; tags?: string[]; metadata?: Record<string, unknown> }
+  ): Promise<AxiosResponse<UserAgentKnowledgeDto>> =>
     api.post(`/agents/${agentId}/knowledge`, payload),
   remove: (agentId: string, knowledgeId: string): Promise<AxiosResponse<void>> =>
     api.delete(`/agents/${agentId}/knowledge/${knowledgeId}`),
 };
 
 export const rateLimitAPI = {
-  getStatus: (): Promise<AxiosResponse<RateLimitInfo>> =>
-    api.get('/rate-limit/status'),
+  getStatus: (): Promise<AxiosResponse<RateLimitInfo>> => api.get('/rate-limit/status'),
 };
 
 export interface ChatMessageFE {
@@ -386,7 +413,7 @@ export interface ChatMessagePayloadFE {
   };
   workflowRequest?: WorkflowInvocationRequestFE | null;
   tools?: LlmToolFE[];
-  tool_choice?: "none" | "auto" | { type: "function"; function: { name: string; } };
+  tool_choice?: 'none' | 'auto' | { type: 'function'; function: { name: string } };
 }
 
 export interface PersonaUpdatePayloadFE {
@@ -399,11 +426,14 @@ export interface PersonaUpdatePayloadFE {
 export interface SessionCostDetailsFE {
   userId: string;
   sessionCost: number;
-  costsByService: Record<string, {
-    totalCost: number;
-    count: number;
-    details?: Array<{ model?: string; cost: number; timestamp: string}>
-  }>;
+  costsByService: Record<
+    string,
+    {
+      totalCost: number;
+      count: number;
+      details?: Array<{ model?: string; cost: number; timestamp: string }>;
+    }
+  >;
   sessionStartTime: string;
   entryCount: number;
   globalMonthlyCost: number;
@@ -470,7 +500,10 @@ const isAgentOSAdapterResult = (value: any): value is AgentOSChatAdapterResult =
   );
 };
 
-const adaptAgentOSResponse = (result: AgentOSChatAdapterResult, mode?: string): ChatResponseDataFE => {
+const adaptAgentOSResponse = (
+  result: AgentOSChatAdapterResult,
+  mode?: string
+): ChatResponseDataFE => {
   const usage = result.usage
     ? {
         prompt_tokens: result.usage.promptTokens ?? null,
@@ -496,11 +529,12 @@ const ensureAgentOSPayload = (payload: ChatMessagePayloadFE): AgentOSChatPayload
   const fallbackMode = payload.mode || 'default';
   const userId = (payload.userId && payload.userId.trim()) || `agentos-user-${fallbackMode}`;
   const conversationId =
-    (payload.conversationId && payload.conversationId.trim()) || `agentos-conv-${fallbackMode}-${Date.now()}`;
+    (payload.conversationId && payload.conversationId.trim()) ||
+    `agentos-conv-${fallbackMode}-${Date.now()}`;
 
   const simplifiedMessages = (payload.messages || [])
     .filter((msg): msg is ChatMessageFE => Boolean(msg && msg.role))
-    .map((msg) => ({
+    .map(msg => ({
       role: msg.role,
       content: msg.content ?? '',
       name: msg.name,
@@ -537,7 +571,9 @@ const buildAgentOSStreamQuery = (payload: AgentOSChatPayload): string => {
   return params.toString();
 };
 
-const postAgentOSChat = async (payload: ChatMessagePayloadFE): Promise<AxiosResponse<ChatResponseDataFE>> => {
+const postAgentOSChat = async (
+  payload: ChatMessagePayloadFE
+): Promise<AxiosResponse<ChatResponseDataFE>> => {
   const agentosPayload = ensureAgentOSPayload(payload);
   const response = await api.post<AgentOSChatAdapterResult>(AGENTOS_CHAT_PATH, agentosPayload);
   const normalized = adaptAgentOSResponse(response.data, agentosPayload.mode);
@@ -559,10 +595,14 @@ export const chatAPI = {
     return response;
   },
 
-  updatePersona: (payload: PersonaUpdatePayloadFE): Promise<AxiosResponse<{ persona: string | null; agentId: string; conversationId: string }>> =>
+  updatePersona: (
+    payload: PersonaUpdatePayloadFE
+  ): Promise<AxiosResponse<{ persona: string | null; agentId: string; conversationId: string }>> =>
     api.post('/chat/persona', payload),
 
-  detectLanguage: (messages: Array<{ role: 'user' | 'assistant'; content: string }>): Promise<AxiosResponse<{ language: string | null; confidence: number | null }>> =>
+  detectLanguage: (
+    messages: Array<{ role: 'user' | 'assistant'; content: string }>
+  ): Promise<AxiosResponse<{ language: string | null; confidence: number | null }>> =>
     api.post('/chat/detect-language', { messages }),
 
   sendMessageStream: async (
@@ -606,10 +646,14 @@ export const chatAPI = {
           message: `Request failed with status ${response.status}`,
           error: response.statusText,
         }));
-        throw new Error(`API Error: ${response.status} ${errorBody.message || errorBody.error || response.statusText}`);
+        throw new Error(
+          `API Error: ${response.status} ${errorBody.message || errorBody.error || response.statusText}`
+        );
       }
       if (!response.body) {
-        throw new Error('Stream body is null, which is unexpected for a successful stream response.');
+        throw new Error(
+          'Stream body is null, which is unexpected for a successful stream response.'
+        );
       }
 
       const reader = response.body.getReader();
@@ -624,10 +668,21 @@ export const chatAPI = {
             try {
               const finalDataObject = JSON.parse(buffer);
               finalResponseData = finalDataObject;
-              if (finalDataObject && typeof finalDataObject === 'object' && finalDataObject.content) {
+              if (
+                finalDataObject &&
+                typeof finalDataObject === 'object' &&
+                finalDataObject.content
+              ) {
                 onChunkReceived(finalDataObject.content);
-              } else if (finalDataObject && typeof finalDataObject === 'object' && !finalDataObject.content) {
-                console.info('[API Service] Stream ended with metadata (from buffer):', finalDataObject);
+              } else if (
+                finalDataObject &&
+                typeof finalDataObject === 'object' &&
+                !finalDataObject.content
+              ) {
+                console.info(
+                  '[API Service] Stream ended with metadata (from buffer):',
+                  finalDataObject
+                );
               } else {
                 onChunkReceived(buffer);
               }
@@ -681,11 +736,21 @@ export const chatAPI = {
               }
             } catch (e) {
               console.warn('[API Service] Stream: Failed to parse JSON data event:', jsonData, e);
-              if (jsonData && !line.startsWith('event:') && !line.startsWith('id:') && !line.startsWith(':')) {
+              if (
+                jsonData &&
+                !line.startsWith('event:') &&
+                !line.startsWith('id:') &&
+                !line.startsWith(':')
+              ) {
                 onChunkReceived(jsonData);
               }
             }
-          } else if (line && !line.startsWith('event:') && !line.startsWith('id:') && !line.startsWith(':')) {
+          } else if (
+            line &&
+            !line.startsWith('event:') &&
+            !line.startsWith('id:') &&
+            !line.startsWith(':')
+          ) {
             console.warn('[API Service] Stream: Received non-SSE formatted line:', line);
             onChunkReceived(line);
           }
@@ -783,7 +848,7 @@ export type TTSRequestPayloadFE = {
   speed?: number;
   languageCode?: string;
   providerId?: string;
-}
+};
 
 export interface TTSVoiceFE {
   id: string;
@@ -823,8 +888,9 @@ export interface ResetCostResponseFE {
 
 export const costAPI = {
   getSessionCost: (): Promise<AxiosResponse<SessionCostDetailsFE>> => api.get('/cost'),
-  resetSessionCost: (data: ResetCostPayloadFE = { action: 'reset' }): Promise<AxiosResponse<ResetCostResponseFE>> =>
-    api.post('/cost', data),
+  resetSessionCost: (
+    data: ResetCostPayloadFE = { action: 'reset' }
+  ): Promise<AxiosResponse<ResetCostResponseFE>> => api.post('/cost', data),
 };
 
 export interface DiagramRequestPayloadFE {
@@ -913,39 +979,51 @@ export interface OrganizationSummaryFE {
 }
 
 export const organizationAPI = {
-  list: (): Promise<AxiosResponse<{ organizations: OrganizationSummaryFE[] }>> => api.get('/organizations'),
-  create: (data: { name: string; seatLimit?: number; planId?: string; slug?: string | null }): Promise<AxiosResponse<{ organization: OrganizationSummaryFE }>> =>
+  list: (): Promise<AxiosResponse<{ organizations: OrganizationSummaryFE[] }>> =>
+    api.get('/organizations'),
+  create: (data: {
+    name: string;
+    seatLimit?: number;
+    planId?: string;
+    slug?: string | null;
+  }): Promise<AxiosResponse<{ organization: OrganizationSummaryFE }>> =>
     api.post('/organizations', data),
   update: (
     organizationId: string,
-    data: { name?: string; seatLimit?: number },
+    data: { name?: string; seatLimit?: number }
   ): Promise<AxiosResponse<{ organization: OrganizationSummaryFE }>> =>
     api.patch(`/organizations/${organizationId}`, data),
   createInvite: (
     organizationId: string,
-    data: { email: string; role?: 'admin' | 'builder' | 'viewer'; expiresAt?: number | null },
-  ): Promise<AxiosResponse<{ organization: OrganizationSummaryFE; invite: OrganizationInviteFE }>> =>
-    api.post(`/organizations/${organizationId}/invites`, data),
+    data: { email: string; role?: 'admin' | 'builder' | 'viewer'; expiresAt?: number | null }
+  ): Promise<
+    AxiosResponse<{ organization: OrganizationSummaryFE; invite: OrganizationInviteFE }>
+  > => api.post(`/organizations/${organizationId}/invites`, data),
   revokeInvite: (
     organizationId: string,
-    inviteId: string,
+    inviteId: string
   ): Promise<AxiosResponse<{ organization: OrganizationSummaryFE }>> =>
     api.delete(`/organizations/${organizationId}/invites/${inviteId}`),
   updateMember: (
     organizationId: string,
     memberId: string,
-    data: { role?: 'admin' | 'builder' | 'viewer'; dailyUsageCapUsd?: number | null; seatUnits?: number },
+    data: {
+      role?: 'admin' | 'builder' | 'viewer';
+      dailyUsageCapUsd?: number | null;
+      seatUnits?: number;
+    }
   ): Promise<AxiosResponse<{ organization: OrganizationSummaryFE }>> =>
     api.patch(`/organizations/${organizationId}/members/${memberId}`, data),
   removeMember: (
     organizationId: string,
-    memberId: string,
+    memberId: string
   ): Promise<AxiosResponse<{ organization: OrganizationSummaryFE | null }>> =>
     api.delete(`/organizations/${organizationId}/members/${memberId}`),
   acceptInvite: (
-    token: string,
-  ): Promise<AxiosResponse<{ organization: OrganizationSummaryFE; invite: OrganizationInviteFE }>> =>
-    api.post(`/organizations/invites/${token}/accept`, {}),
+    token: string
+  ): Promise<
+    AxiosResponse<{ organization: OrganizationSummaryFE; invite: OrganizationInviteFE }>
+  > => api.post(`/organizations/invites/${token}/accept`, {}),
 };
 
 export interface MarketplaceAgentSummaryFE {
@@ -1009,15 +1087,22 @@ export interface LlmStatusResponseFE {
 
 export const workflowAPI = {
   listDefinitions: (): Promise<AxiosResponse<{ definitions: WorkflowDefinitionFE[] }>> =>
-    api.get("/agentos/workflows/definitions"),
+    api.get('/agentos/workflows/definitions'),
   start: (data: StartWorkflowPayloadFE): Promise<AxiosResponse<{ workflow: WorkflowInstanceFE }>> =>
-    api.post("/agentos/workflows/start", data),
+    api.post('/agentos/workflows/start', data),
 };
 
 export const systemAPI = {
   getLlmStatus: (): Promise<AxiosResponse<LlmStatusResponseFE>> => api.get('/system/llm-status'),
-  getStorageStatus: (): Promise<AxiosResponse<{ status: 'ok'|'degraded'; kind: string; capabilities: string[]; persistence: boolean; message?: string }>> =>
-    api.get('/system/storage-status'),
+  getStorageStatus: (): Promise<
+    AxiosResponse<{
+      status: 'ok' | 'degraded';
+      kind: string;
+      capabilities: string[];
+      persistence: boolean;
+      message?: string;
+    }>
+  > => api.get('/system/storage-status'),
 };
 
 // ============================================================================
@@ -1202,15 +1287,18 @@ export const ragAPI = {
     userId?: string;
     limit?: number;
     offset?: number;
-  }): Promise<AxiosResponse<{ success: boolean; documents: RagDocumentSummaryFE[]; total: number }>> =>
-    api.get('/agentos/rag/documents', { params }),
+  }): Promise<
+    AxiosResponse<{ success: boolean; documents: RagDocumentSummaryFE[]; total: number }>
+  > => api.get('/agentos/rag/documents', { params }),
 
   /**
    * Delete a document from RAG memory.
    * @param documentId - ID of the document to delete
    * @returns Deletion confirmation
    */
-  deleteDocument: (documentId: string): Promise<AxiosResponse<{ success: boolean; documentId: string }>> =>
+  deleteDocument: (
+    documentId: string
+  ): Promise<AxiosResponse<{ success: boolean; documentId: string }>> =>
     api.delete(`/agentos/rag/documents/${documentId}`),
 
   /**
@@ -1239,27 +1327,437 @@ export const ragAPI = {
    * List all collections in RAG memory.
    * @returns List of collections
    */
-  listCollections: (): Promise<AxiosResponse<{ success: boolean; collections: Array<{ collectionId: string; displayName?: string; documentCount?: number }> }>> =>
-    api.get('/agentos/rag/collections'),
+  listCollections: (): Promise<
+    AxiosResponse<{
+      success: boolean;
+      collections: Array<{ collectionId: string; displayName?: string; documentCount?: number }>;
+    }>
+  > => api.get('/agentos/rag/collections'),
 
   /**
    * Delete a collection and all its documents.
    * @param collectionId - ID of the collection to delete
    * @returns Deletion confirmation
    */
-  deleteCollection: (collectionId: string): Promise<AxiosResponse<{ success: boolean; collectionId: string }>> =>
+  deleteCollection: (
+    collectionId: string
+  ): Promise<AxiosResponse<{ success: boolean; collectionId: string }>> =>
     api.delete(`/agentos/rag/collections/${collectionId}`),
 
   /**
    * Check RAG service health.
    * @returns Health status of RAG components
    */
-  getHealth: (): Promise<AxiosResponse<RagHealthResponseFE>> =>
-    api.get('/agentos/rag/health'),
+  getHealth: (): Promise<AxiosResponse<RagHealthResponseFE>> => api.get('/agentos/rag/health'),
+};
+
+// ============================================================================
+// Human-in-the-Loop (HITL) API
+// ============================================================================
+
+/**
+ * Severity levels for HITL requests.
+ */
+export type HitlSeverityFE = 'low' | 'medium' | 'high' | 'critical';
+
+/**
+ * Status of a HITL request.
+ */
+export type HitlStatusFE =
+  | 'pending'
+  | 'approved'
+  | 'rejected'
+  | 'clarified'
+  | 'escalated'
+  | 'completed'
+  | 'timed_out';
+
+/**
+ * Types of HITL interactions.
+ */
+export type HitlTypeFE =
+  | 'approval'
+  | 'clarification'
+  | 'output_review'
+  | 'escalation'
+  | 'feedback'
+  | 'workflow_checkpoint';
+
+/**
+ * Base interface for all HITL interactions.
+ */
+export interface HitlInteractionFE {
+  /** Unique interaction ID */
+  interactionId: string;
+  /** ID of the initiating agent/GMI */
+  initiatorId: string;
+  /** Type of interaction */
+  type: HitlTypeFE;
+  /** Current status */
+  status: HitlStatusFE;
+  /** Severity level */
+  severity?: HitlSeverityFE;
+  /** Short title/summary */
+  title?: string;
+  /** Detailed instructions */
+  instructions?: string;
+  /** Creation timestamp */
+  createdAt: string;
+  /** Last update timestamp */
+  updatedAt: string;
+  /** Assigned user ID */
+  assigneeId?: string;
+  /** Additional metadata */
+  metadata?: Record<string, unknown>;
+  /** Due date */
+  dueDate?: string;
+}
+
+/**
+ * Approval request with proposed content.
+ */
+export interface HitlApprovalRequestFE extends HitlInteractionFE {
+  type: 'approval';
+  /** Content requiring approval */
+  proposedContent: string | Record<string, unknown>;
+  /** Alternative options */
+  alternatives?: Array<string | Record<string, unknown>>;
+  /** Justification */
+  justification?: string;
+  /** Expected impact */
+  expectedImpact?: string;
+}
+
+/**
+ * Clarification request with optional choices.
+ */
+export interface HitlClarificationRequestFE extends HitlInteractionFE {
+  type: 'clarification';
+  /** Question to answer */
+  question: string;
+  /** Context for the question */
+  context?: string | Record<string, unknown>;
+  /** Multiple choice options */
+  options?: string[];
+}
+
+/**
+ * Escalation request with problem details.
+ */
+export interface HitlEscalationRequestFE extends HitlInteractionFE {
+  type: 'escalation';
+  /** Reason for escalation */
+  reason: string;
+  /** Problem description */
+  problemDescription: string;
+  /** Suggested actions */
+  suggestedActions?: string[];
+  /** Relevant data */
+  relevantData?: Record<string, unknown>;
+}
+
+/**
+ * Response payload for approval.
+ */
+export interface HitlApprovalResponseFE {
+  interactionId: string;
+  approved: boolean;
+  comments?: string;
+  chosenAlternative?: string | Record<string, unknown>;
+}
+
+/**
+ * Response payload for clarification.
+ */
+export interface HitlClarificationResponseFE {
+  interactionId: string;
+  answer: string;
+  selectedOption?: string;
+}
+
+/**
+ * Response payload for escalation.
+ */
+export interface HitlEscalationResponseFE {
+  interactionId: string;
+  resolution: string;
+  resolvedSuccessfully?: boolean;
+}
+
+/**
+ * Feedback submission payload.
+ */
+export interface HitlFeedbackPayloadFE {
+  agentId: string;
+  feedbackType: 'correction' | 'positive' | 'negative' | 'suggestion';
+  aspect?: string;
+  content: string;
+  importance?: number;
+  context?: Record<string, unknown>;
+}
+
+/**
+ * HITL statistics response.
+ */
+export interface HitlStatsResponseFE {
+  totalInteractions: number;
+  pendingInteractions: number;
+  approvedInteractions: number;
+  rejectedInteractions: number;
+  clarifiedInteractions: number;
+  escalatedInteractions: number;
+  completedInteractions: number;
+  timedOutInteractions: number;
+  averageResolutionTimeMs: number;
+  interactionsByType: Record<HitlTypeFE, number>;
+  interactionsByStatus: Record<HitlStatusFE, number>;
+}
+
+/**
+ * HITL API client for Human-in-the-Loop operations.
+ *
+ * @example
+ * // List pending approvals
+ * const pending = await hitlAPI.listPendingInteractions({ type: 'approval' });
+ *
+ * @example
+ * // Approve a request
+ * await hitlAPI.approve({ interactionId: 'abc123', approved: true, comments: 'Looks good!' });
+ */
+export const hitlAPI = {
+  /**
+   * List all pending HITL interactions.
+   * @param params - Optional filters (type, assigneeId, limit)
+   * @returns List of pending interactions
+   */
+  listPendingInteractions: (params?: {
+    type?: HitlTypeFE;
+    assigneeId?: string;
+    limit?: number;
+  }): Promise<AxiosResponse<{ success: boolean; interactions: HitlInteractionFE[] }>> =>
+    api.get('/agentos/hitl/approvals', { params }),
+
+  /**
+   * Get a specific interaction by ID.
+   * @param interactionId - The interaction ID
+   * @returns The interaction details
+   */
+  getInteraction: (
+    interactionId: string
+  ): Promise<AxiosResponse<{ success: boolean; interaction: HitlInteractionFE }>> =>
+    api.get(`/agentos/hitl/approvals/${interactionId}`),
+
+  /**
+   * Approve or reject an approval request.
+   * @param response - Approval response with decision
+   * @returns Updated interaction
+   */
+  approve: (
+    response: HitlApprovalResponseFE
+  ): Promise<AxiosResponse<{ success: boolean; interaction: HitlApprovalRequestFE }>> =>
+    response.approved
+      ? api.post(`/agentos/hitl/approvals/${response.interactionId}/approve`, response)
+      : api.post(`/agentos/hitl/approvals/${response.interactionId}/reject`, response),
+
+  /**
+   * Respond to a clarification request.
+   * @param response - Clarification response with answer
+   * @returns Updated interaction
+   */
+  clarify: (
+    response: HitlClarificationResponseFE
+  ): Promise<AxiosResponse<{ success: boolean; interaction: HitlClarificationRequestFE }>> =>
+    api.post(`/agentos/hitl/clarifications/${response.interactionId}/respond`, response),
+
+  /**
+   * Resolve an escalation.
+   * @param response - Resolution details
+   * @returns Updated interaction
+   */
+  resolveEscalation: (
+    response: HitlEscalationResponseFE
+  ): Promise<AxiosResponse<{ success: boolean; interaction: HitlEscalationRequestFE }>> =>
+    api.post(`/agentos/hitl/escalations/${response.interactionId}/resolve`, response),
+
+  /**
+   * Submit feedback for an agent.
+   * @param payload - Feedback details
+   * @returns Submitted feedback confirmation
+   */
+  submitFeedback: (
+    payload: HitlFeedbackPayloadFE
+  ): Promise<AxiosResponse<{ success: boolean; feedbackId: string }>> =>
+    api.post('/agentos/hitl/feedback', payload),
+
+  /**
+   * Get HITL statistics.
+   * @returns Statistics about HITL interactions
+   */
+  getStats: (): Promise<AxiosResponse<HitlStatsResponseFE>> => api.get('/agentos/hitl/stats'),
+};
+
+// ============================================================================
+// Planning Engine API
+// ============================================================================
+
+/**
+ * Plan status.
+ */
+export type PlanStatusFE = 'draft' | 'executing' | 'paused' | 'completed' | 'failed';
+
+/**
+ * Plan step action type.
+ */
+export type PlanStepActionTypeFE =
+  | 'tool_call'
+  | 'gmi_action'
+  | 'human_input'
+  | 'sub_plan'
+  | 'reflection'
+  | 'communication';
+
+/**
+ * A single step in an execution plan.
+ */
+export interface PlanStepFE {
+  stepId: string;
+  description: string;
+  actionType: PlanStepActionTypeFE;
+  toolId?: string;
+  toolArgs?: Record<string, unknown>;
+  targetGmiIdOrRole?: string;
+  instructions?: string;
+  dependsOn?: string[];
+  estimatedCost?: { tokens?: number; usd?: number };
+  status?: 'pending' | 'executing' | 'completed' | 'failed' | 'skipped';
+  result?: unknown;
+  error?: string;
+}
+
+/**
+ * An execution plan.
+ */
+export interface ExecutionPlanFE {
+  planId: string;
+  goal: string;
+  steps: PlanStepFE[];
+  status: PlanStatusFE;
+  confidenceScore?: number;
+  estimatedTokens?: number;
+  estimatedCostUSD?: number;
+  createdAt: string;
+  updatedAt: string;
+  completedAt?: string;
+  currentStepIndex?: number;
+  metadata?: Record<string, unknown>;
+}
+
+/**
+ * Request to generate a plan.
+ */
+export interface GeneratePlanRequestFE {
+  goal: string;
+  context?: Record<string, unknown>;
+  constraints?: string[];
+  maxSteps?: number;
+}
+
+/**
+ * Planning statistics.
+ */
+export interface PlanningStatsFE {
+  totalPlans: number;
+  byStatus: Record<PlanStatusFE, number>;
+  avgConfidence: number;
+  avgSteps: number;
+}
+
+/**
+ * Planning Engine API client.
+ *
+ * @example
+ * // Generate a plan
+ * const plan = await planningAPI.generatePlan({ goal: 'Research and summarize AI trends' });
+ *
+ * @example
+ * // Execute a plan
+ * await planningAPI.execute(plan.data.plan.planId);
+ */
+export const planningAPI = {
+  /**
+   * List all plans.
+   * @param params - Optional filters (status, limit)
+   * @returns List of plans
+   */
+  listPlans: (params?: {
+    status?: PlanStatusFE;
+    limit?: number;
+  }): Promise<AxiosResponse<{ success: boolean; plans: ExecutionPlanFE[] }>> =>
+    api.get('/agentos/planning/plans', { params }),
+
+  /**
+   * Get a specific plan by ID.
+   * @param planId - The plan ID
+   * @returns The plan details
+   */
+  getPlan: (planId: string): Promise<AxiosResponse<{ success: boolean; plan: ExecutionPlanFE }>> =>
+    api.get(`/agentos/planning/plans/${planId}`),
+
+  /**
+   * Generate a new execution plan.
+   * @param request - Plan generation parameters
+   * @returns Generated plan
+   */
+  generatePlan: (
+    request: GeneratePlanRequestFE
+  ): Promise<AxiosResponse<{ success: boolean; plan: ExecutionPlanFE }>> =>
+    api.post('/agentos/planning/plans', request),
+
+  /**
+   * Start executing a plan.
+   * @param planId - The plan ID
+   * @returns Updated plan with execution status
+   */
+  execute: (planId: string): Promise<AxiosResponse<{ success: boolean; plan: ExecutionPlanFE }>> =>
+    api.post(`/agentos/planning/plans/${planId}/execute`),
+
+  /**
+   * Pause plan execution.
+   * @param planId - The plan ID
+   * @returns Updated plan
+   */
+  pause: (planId: string): Promise<AxiosResponse<{ success: boolean; plan: ExecutionPlanFE }>> =>
+    api.post(`/agentos/planning/plans/${planId}/pause`),
+
+  /**
+   * Refine a plan with feedback.
+   * @param planId - The plan ID
+   * @param feedback - Refinement feedback
+   * @returns Refined plan
+   */
+  refine: (
+    planId: string,
+    feedback: {
+      stepId?: string;
+      feedback: string;
+    }
+  ): Promise<AxiosResponse<{ success: boolean; plan: ExecutionPlanFE }>> =>
+    api.post(`/agentos/planning/plans/${planId}/refine`, feedback),
+
+  /**
+   * Delete a plan.
+   * @param planId - The plan ID
+   * @returns Deletion confirmation
+   */
+  deletePlan: (planId: string): Promise<AxiosResponse<{ success: boolean; planId: string }>> =>
+    api.delete(`/agentos/planning/plans/${planId}`),
+
+  /**
+   * Get planning statistics.
+   * @returns Statistics about plans
+   */
+  getStats: (): Promise<AxiosResponse<{ success: boolean; stats: PlanningStatsFE }>> =>
+    api.get('/agentos/planning/stats'),
 };
 
 export default api;
-
-
-
-
