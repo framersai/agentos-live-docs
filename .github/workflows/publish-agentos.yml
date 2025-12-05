@@ -1,13 +1,15 @@
-name: Publish @framers/agentos
+name: Publish @framers/agentos (Monorepo)
+
+# This workflow is for the MONOREPO only
+# The standalone repo (framersai/agentos) has its own workflows
 
 on:
-  push:
-    branches:
-      - master
-      - main
-    paths:
-      - 'packages/agentos/**'
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish (e.g., 0.1.0)'
+        required: false
+        type: string
 
 jobs:
   release:
