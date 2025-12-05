@@ -1,59 +1,43 @@
 name: Publish @framers/agentos (Monorepo)
 
-# This workflow is for the MONOREPO only
-# The standalone repo (framersai/agentos) has its own workflows
+# MANUAL RELEASE ONLY - syncs monorepo agentos to standalone repo
+# For actual npm publishing, use the standalone repo workflow
 
 on:
   workflow_dispatch:
     inputs:
-      version:
-        description: 'Version to publish (e.g., 0.1.0)'
+      sync_only:
+        description: 'Sync to standalone repo only (no publish)'
         required: false
-        type: string
+        type: boolean
+        default: true
 
 jobs:
-  release:
+  sync:
+    name: Sync to standalone repo
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      issues: write
-      pull-requests: write
-      id-token: write
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          persist-credentials: false
+          submodules: true
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          registry-url: 'https://registry.npmjs.org'
-
-      - name: Install PNPM
-        uses: pnpm/action-setup@v2
-        with:
-          version: 9
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Build sql-storage-adapter (dependency)
-        run: pnpm --filter @framers/sql-storage-adapter build
-        continue-on-error: true
-
-      - name: Build @framers/agentos
-        run: pnpm --filter @framers/agentos build
-
-      - name: Test @framers/agentos
-        run: pnpm --filter @framers/agentos test
-
-      - name: Semantic Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Sync agentos submodule
         run: |
           cd packages/agentos
-          npx semantic-release
+          git fetch origin
+          git checkout master
+          git pull origin master
+          echo "Synced packages/agentos to latest master"
+
+      - name: Show sync status
+        run: |
+          cd packages/agentos
+          echo "=== Latest commits ==="
+          git log --oneline -5
+          echo ""
+          echo "=== Package version ==="
+          grep '"version"' package.json
+          echo ""
+          echo "To release, go to:"
+          echo "https://github.com/framersai/agentos/actions/workflows/release.yml"
