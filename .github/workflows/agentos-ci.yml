@@ -54,7 +54,6 @@ jobs:
 
       - name: Lint @framers/agentos
         run: pnpm --filter @framers/agentos lint
-        continue-on-error: true
 
       - name: Test with coverage
         run: pnpm --filter @framers/agentos test -- --coverage
