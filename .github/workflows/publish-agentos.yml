@@ -2,90 +2,56 @@ name: Publish @framers/agentos
 
 on:
   push:
-    tags:
-      - 'agentos-v*'
+    branches:
+      - master
+      - main
+    paths:
+      - 'packages/agentos/**'
   workflow_dispatch:
-    inputs:
-      version:
-        description: 'Version to publish (e.g., 0.1.0)'
-        required: false
-        type: string
 
 jobs:
-  publish:
+  release:
     runs-on: ubuntu-latest
-    environment: release
     permissions:
       contents: write
+      issues: write
+      pull-requests: write
       id-token: write
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Check for skip-release marker
-        id: control
-        shell: bash
-        run: |
-          if git log -1 --pretty=%B | grep -qi '\[skip-release\]'; then
-            echo "skip=true" >> "$GITHUB_OUTPUT"
-            echo "Skipping publish because [skip-release] was found in the commit history."
-          else
-            echo "skip=false" >> "$GITHUB_OUTPUT"
-          fi
+          persist-credentials: false
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org'
-        if: steps.control.outputs.skip != 'true'
 
       - name: Install PNPM
         uses: pnpm/action-setup@v2
         with:
           version: 9
-        if: steps.control.outputs.skip != 'true'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-        if: steps.control.outputs.skip != 'true'
 
       - name: Build sql-storage-adapter (dependency)
         run: pnpm --filter @framers/sql-storage-adapter build
-        if: steps.control.outputs.skip != 'true'
+        continue-on-error: true
 
       - name: Build @framers/agentos
         run: pnpm --filter @framers/agentos build
-        if: steps.control.outputs.skip != 'true'
 
       - name: Test @framers/agentos
         run: pnpm --filter @framers/agentos test
-        if: steps.control.outputs.skip != 'true'
 
-      - name: Publish @framers/agentos to npm
+      - name: Semantic Release
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           cd packages/agentos
-          npm publish --access public
-        if: steps.control.outputs.skip != 'true'
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
-        with:
-          name: "@framers/agentos ${{ github.ref_name }}"
-          body: |
-            ## @framers/agentos ${{ github.ref_name }}
-            
-            Install via npm:
-            ```bash
-            npm install @framers/agentos
-            ```
-            
-            See [CHANGELOG.md](packages/agentos/CHANGELOG.md) for details.
-          draft: false
-          prerelease: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        if: steps.control.outputs.skip != 'true' && startsWith(github.ref, 'refs/tags/')
+          npx semantic-release
