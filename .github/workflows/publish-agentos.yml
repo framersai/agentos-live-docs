@@ -1,14 +1,23 @@
-name: Publish @wearetheframers/agentos
+name: Publish @framers/agentos
 
 on:
   push:
     tags:
-      - 'v*'
+      - 'agentos-v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish (e.g., 0.1.0)'
+        required: false
+        type: string
 
 jobs:
   publish:
     runs-on: ubuntu-latest
     environment: release
+    permissions:
+      contents: write
+      id-token: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -42,16 +51,41 @@ jobs:
         run: pnpm install --frozen-lockfile
         if: steps.control.outputs.skip != 'true'
 
-      - name: Build @agentos/core
-        run: pnpm --filter @agentos/core build
+      - name: Build sql-storage-adapter (dependency)
+        run: pnpm --filter @framers/sql-storage-adapter build
         if: steps.control.outputs.skip != 'true'
 
-      - name: Test @agentos/core
-        run: pnpm --filter @agentos/core test
+      - name: Build @framers/agentos
+        run: pnpm --filter @framers/agentos build
         if: steps.control.outputs.skip != 'true'
 
-      - name: Publish package
+      - name: Test @framers/agentos
+        run: pnpm --filter @framers/agentos test
+        if: steps.control.outputs.skip != 'true'
+
+      - name: Publish @framers/agentos to npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: pnpm --filter @agentos/core publish --access public
+        run: |
+          cd packages/agentos
+          npm publish --access public
         if: steps.control.outputs.skip != 'true'
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: "@framers/agentos ${{ github.ref_name }}"
+          body: |
+            ## @framers/agentos ${{ github.ref_name }}
+            
+            Install via npm:
+            ```bash
+            npm install @framers/agentos
+            ```
+            
+            See [CHANGELOG.md](packages/agentos/CHANGELOG.md) for details.
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: steps.control.outputs.skip != 'true' && startsWith(github.ref, 'refs/tags/')
