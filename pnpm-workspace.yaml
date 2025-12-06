@@ -3,6 +3,7 @@ packages:
   - frontend
   - packages/*
   - apps/*
+  - apps/**
   - codex-extensions
 
 ignoredBuiltDependencies:

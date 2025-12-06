@@ -429,8 +429,8 @@ export interface SessionCostDetailsFE {
   costsByService: Record<
     string,
     {
-      totalCost: number;
-      count: number;
+    totalCost: number;
+    count: number;
       details?: Array<{ model?: string; cost: number; timestamp: string }>;
     }
   >;
