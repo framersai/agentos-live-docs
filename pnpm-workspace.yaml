@@ -5,6 +5,8 @@ packages:
   - apps/*
   - apps/**
   - codex-extensions
+  - '!packages/codex-viewer/**'
+  - '!apps/frame.dev/packages/codex-viewer/**'
 
 ignoredBuiltDependencies:
   - '@parcel/watcher'
