@@ -12,7 +12,8 @@
     "sourceType": "module",
     "ecmaFeatures": {
       "jsx": true
-    }
+    },
+    "project": null
   },
   "plugins": ["@typescript-eslint"],
   "rules": {
