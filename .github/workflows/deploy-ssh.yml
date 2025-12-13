@@ -3,6 +3,10 @@ name: Deploy to Linode (PM2 + Nginx) [fixed]
 on:
   push:
     branches: [ master, dev, main, develop ]
+    paths-ignore:
+      - 'apps/agentos-live-docs/**'
+      - 'apps/agentos.sh/**'
+      - 'apps/frame.dev/**'
   workflow_dispatch:
 
 concurrency:
