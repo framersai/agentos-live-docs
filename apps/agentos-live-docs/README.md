@@ -10,7 +10,7 @@
 
 Adaptive AI intelligence for enterprise-ready agents, documented as part of the Frame.dev ecosystem.
 
-*The OS for humans, the codex of humanity.*
+_The OS for humans, the codex of humanity._
 
 [Frame.dev](https://frame.dev) • [AgentOS](https://agentos.sh) • [Docs](https://docs.agentos.sh)
 
@@ -32,9 +32,11 @@ This repository hosts the public documentation site at `https://docs.agentos.sh`
 Pages is deployed via GitHub Actions on push to `master`. To publish:
 
 1. Generate TypeDoc artifacts in your AgentOS repo:
+
    ```bash
    pnpm --filter @framers/agentos run docs
    ```
+
    Copy the generated static output into this repo’s `docs/` directory.
 
 2. Commit and push to `master`:
@@ -46,4 +48,4 @@ Pages is deployed via GitHub Actions on push to `master`. To publish:
 
 MIT © FramersAI / Frame.dev
 
-
+# Test
