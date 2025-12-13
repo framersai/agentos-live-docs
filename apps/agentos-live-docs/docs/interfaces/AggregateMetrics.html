@@ -1,117 +1,254 @@
-<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>AggregateMetrics | @framers/agentos - v0.1.2</title><meta name="description" content="Documentation for @framers/agentos"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script defer src="../assets/main.js"></script><script async src="../assets/icons.js" id="tsd-icons-script"></script><script async src="../assets/search.js" id="tsd-search-script"></script><script async src="../assets/navigation.js" id="tsd-nav-script"></script></head><body>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" href="/favicon.ico">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <title>AgentOS API Reference</title>
-  <style>
+<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>AggregateMetrics | @framers/agentos - v1.0.1</title><meta name="description" content="Documentation for @framers/agentos"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script defer src="../assets/main.js"></script><script async src="../assets/icons.js" id="tsd-icons-script"></script><script async src="../assets/search.js" id="tsd-search-script"></script><script async src="../assets/navigation.js" id="tsd-nav-script"></script><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-background-primary: #ffffff;
+    --color-background-secondary: #f8fafc;
+    --color-background-elevated: #f1f5f9;
+    --color-text-primary: #0f172a;
+    --color-text-secondary: #475569;
+    --color-text-muted: #94a3b8;
+    --color-accent-primary: #6366f1;
+    --color-accent-hover: #4f46e5;
+    --color-border-subtle: #e2e8f0;
+  }
+  @media (prefers-color-scheme: dark) {
     :root {
-      --color-background-primary: #ffffff;
-      --color-background-secondary: #f8fafc;
-      --color-background-elevated: #f1f5f9;
-      --color-text-primary: #0f172a;
-      --color-text-secondary: #475569;
-      --color-text-muted: #94a3b8;
-      --color-accent-primary: #6366f1;
-      --color-accent-hover: #4f46e5;
-      --color-border-subtle: #e2e8f0;
+      --color-background-primary: #020617;
+      --color-background-secondary: #0f172a;
+      --color-background-elevated: #1e293b;
+      --color-text-primary: #f8fafc;
+      --color-text-secondary: #cbd5e1;
+      --color-text-muted: #64748b;
+      --color-accent-primary: #818cf8;
+      --color-accent-hover: #a5b4fc;
+      --color-border-subtle: #1e293b;
     }
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --color-background-primary: #020617;
-        --color-background-secondary: #0f172a;
-        --color-background-elevated: #1e293b;
-        --color-text-primary: #f8fafc;
-        --color-text-secondary: #cbd5e1;
-        --color-text-muted: #64748b;
-        --color-accent-primary: #818cf8;
-        --color-accent-hover: #a5b4fc;
-        --color-border-subtle: #1e293b;
-      }
+  }
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+    background: var(--color-background-primary) !important;
+    color: var(--color-text-primary) !important;
+  }
+  .agentos-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--color-border-subtle);
+    padding: 0.75rem 1.5rem;
+  }
+  @media (prefers-color-scheme: dark) {
+    .agentos-header { background: rgba(2, 6, 23, 0.95); }
+  }
+  .agentos-header-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .agentos-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--color-text-primary);
+  }
+  .agentos-logo svg { width: 32px; height: 32px; }
+  .agentos-nav {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  .agentos-nav a {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: color 0.15s ease;
+  }
+  .agentos-nav a:hover { color: var(--color-accent-primary); }
+  .agentos-nav a.active { color: var(--color-accent-primary); font-weight: 600; }
+  .agentos-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white !important;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all 0.15s ease;
+  }
+  .agentos-cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  }
+  .github-icon { display: flex; align-items: center; }
+  .agentos-footer {
+    border-top: 1px solid var(--color-border-subtle);
+    background: var(--color-background-secondary);
+    padding: 3rem 1.5rem;
+    margin-top: 4rem;
+  }
+  .agentos-footer-inner { max-width: 1400px; margin: 0 auto; }
+  .agentos-footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+  .agentos-footer h4 { font-weight: 700; margin-bottom: 1rem; color: var(--color-text-primary); }
+  .agentos-footer ul { list-style: none; padding: 0; margin: 0; }
+  .agentos-footer li { margin-bottom: 0.5rem; }
+  .agentos-footer a { color: var(--color-text-secondary); text-decoration: none; font-size: 0.875rem; }
+  .agentos-footer a:hover { color: var(--color-accent-primary); }
+  /* TypeDoc Overrides */
+  .tsd-page-toolbar { background: var(--color-background-secondary) !important; border-bottom: 1px solid var(--color-border-subtle) !important; }
+  .tsd-page-title { background: var(--color-background-primary) !important; }
+  .col-content { background: var(--color-background-primary) !important; }
+  .col-sidebar { background: var(--color-background-secondary) !important; border-right: 1px solid var(--color-border-subtle) !important; }
+  .tsd-navigation { background: var(--color-background-secondary) !important; }
+  .tsd-kind-icon { color: var(--color-accent-primary) !important; }
+  a { color: var(--color-accent-primary); }
+  code { background: var(--color-background-elevated) !important; padding: 0.125rem 0.375rem; border-radius: 0.25rem; font-size: 0.875em; }
+  pre { background: #1e1e1e !important; border: 1px solid var(--color-border-subtle); border-radius: 0.5rem; padding: 1rem !important; }
+  h1, h2, h3, h4, h5 { color: var(--color-text-primary) !important; }
+  p, li { color: var(--color-text-secondary) !important; }
+  @media (max-width: 768px) { .agentos-nav-links { display: none; } }
+</style>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-background-primary: #ffffff;
+    --color-background-secondary: #f8fafc;
+    --color-background-elevated: #f1f5f9;
+    --color-text-primary: #0f172a;
+    --color-text-secondary: #475569;
+    --color-text-muted: #94a3b8;
+    --color-accent-primary: #6366f1;
+    --color-accent-hover: #4f46e5;
+    --color-border-subtle: #e2e8f0;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-background-primary: #020617;
+      --color-background-secondary: #0f172a;
+      --color-background-elevated: #1e293b;
+      --color-text-primary: #f8fafc;
+      --color-text-secondary: #cbd5e1;
+      --color-text-muted: #64748b;
+      --color-accent-primary: #818cf8;
+      --color-accent-hover: #a5b4fc;
+      --color-border-subtle: #1e293b;
     }
-    * { box-sizing: border-box; }
-    body {
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      background: var(--color-background-primary);
-      color: var(--color-text-primary);
-      margin: 0;
-      line-height: 1.6;
-    }
-    .agentos-header {
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      background: rgba(255, 255, 255, 0.9);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--color-border-subtle);
-      padding: 0.75rem 1.5rem;
-    }
-    @media (prefers-color-scheme: dark) {
-      .agentos-header { background: rgba(2, 6, 23, 0.9); }
-    }
-    .agentos-header-inner {
-      max-width: 1400px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .agentos-logo {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      text-decoration: none;
-      font-weight: 700;
-      font-size: 1.25rem;
-      color: var(--color-text-primary);
-    }
-    .agentos-logo svg { width: 32px; height: 32px; }
-    .agentos-nav {
-      display: flex;
-      align-items: center;
-      gap: 1.5rem;
-    }
-    .agentos-nav a {
-      color: var(--color-text-secondary);
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 0.875rem;
-      transition: color 0.15s ease;
-    }
-    .agentos-nav a:hover { color: var(--color-accent-primary); }
-    .agentos-nav a.active { color: var(--color-accent-primary); font-weight: 600; }
-    .agentos-cta {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.5rem 1rem;
-      background: linear-gradient(135deg, var(--color-accent-primary), #8b5cf6);
-      color: white !important;
-      border-radius: 0.5rem;
-      font-weight: 600;
-      font-size: 0.875rem;
-      transition: all 0.15s ease;
-    }
-    .agentos-cta:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-    }
-    .github-icon { display: flex; align-items: center; }
-    /* TypeDoc Overrides */
-    .tsd-page-toolbar { background: var(--color-background-secondary) !important; border-bottom: 1px solid var(--color-border-subtle) !important; }
-    .tsd-page-title { background: var(--color-background-primary) !important; padding: 2rem 0 !important; }
-    .col-content { background: var(--color-background-primary) !important; }
-    .col-sidebar { background: var(--color-background-secondary) !important; }
-    a { color: var(--color-accent-primary); }
-    code { background: var(--color-background-elevated); padding: 0.125rem 0.375rem; border-radius: 0.25rem; font-size: 0.875em; }
-    pre { background: var(--color-background-secondary) !important; border: 1px solid var(--color-border-subtle); border-radius: 0.5rem; padding: 1rem !important; }
-    @media (max-width: 768px) { .agentos-nav-links { display: none; } }
-  </style>
-</head>
-<body>
+  }
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+    background: var(--color-background-primary) !important;
+    color: var(--color-text-primary) !important;
+  }
+  .agentos-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--color-border-subtle);
+    padding: 0.75rem 1.5rem;
+  }
+  @media (prefers-color-scheme: dark) {
+    .agentos-header { background: rgba(2, 6, 23, 0.95); }
+  }
+  .agentos-header-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .agentos-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--color-text-primary);
+  }
+  .agentos-logo svg { width: 32px; height: 32px; }
+  .agentos-nav {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  .agentos-nav a {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: color 0.15s ease;
+  }
+  .agentos-nav a:hover { color: var(--color-accent-primary); }
+  .agentos-nav a.active { color: var(--color-accent-primary); font-weight: 600; }
+  .agentos-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white !important;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all 0.15s ease;
+  }
+  .agentos-cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  }
+  .github-icon { display: flex; align-items: center; }
+  .agentos-footer {
+    border-top: 1px solid var(--color-border-subtle);
+    background: var(--color-background-secondary);
+    padding: 3rem 1.5rem;
+    margin-top: 4rem;
+  }
+  .agentos-footer-inner { max-width: 1400px; margin: 0 auto; }
+  .agentos-footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+  .agentos-footer h4 { font-weight: 700; margin-bottom: 1rem; color: var(--color-text-primary); }
+  .agentos-footer ul { list-style: none; padding: 0; margin: 0; }
+  .agentos-footer li { margin-bottom: 0.5rem; }
+  .agentos-footer a { color: var(--color-text-secondary); text-decoration: none; font-size: 0.875rem; }
+  .agentos-footer a:hover { color: var(--color-accent-primary); }
+  /* TypeDoc Overrides */
+  .tsd-page-toolbar { background: var(--color-background-secondary) !important; border-bottom: 1px solid var(--color-border-subtle) !important; }
+  .tsd-page-title { background: var(--color-background-primary) !important; }
+  .col-content { background: var(--color-background-primary) !important; }
+  .col-sidebar { background: var(--color-background-secondary) !important; border-right: 1px solid var(--color-border-subtle) !important; }
+  .tsd-navigation { background: var(--color-background-secondary) !important; }
+  .tsd-kind-icon { color: var(--color-accent-primary) !important; }
+  a { color: var(--color-accent-primary); }
+  code { background: var(--color-background-elevated) !important; padding: 0.125rem 0.375rem; border-radius: 0.25rem; font-size: 0.875em; }
+  pre { background: #1e1e1e !important; border: 1px solid var(--color-border-subtle); border-radius: 0.5rem; padding: 1rem !important; }
+  h1, h2, h3, h4, h5 { color: var(--color-text-primary) !important; }
+  p, li { color: var(--color-text-secondary) !important; }
+  @media (max-width: 768px) { .agentos-nav-links { display: none; } }
+</style>
+
+</head><body>
 <header class="agentos-header">
   <div class="agentos-header-inner">
     <a href="https://agentos.sh" class="agentos-logo">
@@ -125,13 +262,13 @@
     </a>
     <nav class="agentos-nav">
       <span class="agentos-nav-links">
-        <a href="https://agentos.sh/about">About</a>
-        <a href="https://agentos.sh/#features">Features</a>
-        <a href="https://agentos.sh/blog">Blog</a>
+        <a href="https://agentos.sh/en/about">About</a>
+        <a href="https://agentos.sh/en/#features">Features</a>
+        <a href="https://agentos.sh/en/blog">Blog</a>
         <a href="/" class="active">API Docs</a>
-        <a href="https://agentos.sh/guides">Guides</a>
+        <a href="https://agentos.sh/en/guides">Guides</a>
       </span>
-      <a href="https://github.com/framersai/agentos" target="_blank" rel="noopener noreferrer" class="github-icon">
+      <a href="https://github.com/framersai/agentos" target="_blank" rel="noopener noreferrer" class="github-icon" title="GitHub">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
       </a>
       <a href="https://agentos.sh" class="agentos-cta">Get Started</a>
@@ -140,47 +277,10 @@
 </header>
 
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" href="/favicon.ico">
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  <title>AgentOS Documentation</title>
-  <style>
-    :root {
-      --color-background-primary: #f8fafc;
-      --color-background-secondary: #f1f5f9;
-      --color-text-primary: #0f172a;
-      --color-accent-primary: #6366f1;
-      --color-border-subtle: #e2e8f0;
-    }
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --color-background-primary: #020617;
-        --color-background-secondary: #0f172a;
-        --color-text-primary: #f8fafc;
-        --color-accent-primary: #818cf8;
-        --color-border-subtle: #1e293b;
-      }
-    }
-    body {
-      font-family: var(--font-inter), system-ui, sans-serif;
-      background: var(--color-background-primary);
-      color: var(--color-text-primary);
-      margin: 0;
-    }
-    /* TypeDoc Overrides */
-    .tsd-page-toolbar { background: var(--color-background-secondary) !important; border-bottom: 1px solid var(--color-border-subtle); }
-    .tsd-page-title { background: var(--color-background-primary) !important; }
-  </style>
-</head>
-<body>
 
 
 <script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";document.body.style.display="none";setTimeout(() => app?app.showPage():document.body.style.removeProperty("display"),500)</script><div class="container container-main"><div class="col-content"><div class="tsd-page-title"><ul class="tsd-breadcrumb"><li><a href="../modules.html">@framers/agentos</a></li><li><a href="AggregateMetrics.html">AggregateMetrics</a></li></ul><h1>Interface AggregateMetrics</h1></div><section class="tsd-panel tsd-comment"><div class="tsd-comment tsd-typography"><p>Aggregate metrics across a run.</p>
-</div><div class="tsd-comment tsd-typography"></div></section><div class="tsd-signature"><span class="tsd-signature-keyword">interface </span><span class="tsd-kind-interface">AggregateMetrics</span> <span class="tsd-signature-symbol">{ </span><br/><span>    </span><a class="tsd-kind-property" href="AggregateMetrics.html#totalTests">totalTests</a><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><a class="tsd-kind-property" href="AggregateMetrics.html#passedTests">passedTests</a><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><a class="tsd-kind-property" href="AggregateMetrics.html#failedTests">failedTests</a><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><a class="tsd-kind-property" href="AggregateMetrics.html#passRate">passRate</a><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><a class="tsd-kind-property" href="AggregateMetrics.html#avgScore">avgScore</a><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><a class="tsd-kind-property" href="AggregateMetrics.html#scoreStdDev">scoreStdDev</a><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><a class="tsd-kind-property" href="AggregateMetrics.html#avgLatencyMs">avgLatencyMs</a><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><a class="tsd-kind-property" href="AggregateMetrics.html#p50LatencyMs">p50LatencyMs</a><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><a class="tsd-kind-property" href="AggregateMetrics.html#p95LatencyMs">p95LatencyMs</a><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><a class="tsd-kind-property" href="AggregateMetrics.html#p99LatencyMs">p99LatencyMs</a><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><a class="tsd-kind-property" href="AggregateMetrics.html#totalTokens">totalTokens</a><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><a class="tsd-kind-property" href="AggregateMetrics.html#totalCostUsd">totalCostUsd</a><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><a class="tsd-kind-property" href="AggregateMetrics.html#byCategory">byCategory</a><span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-symbol">{ </span><br/><span>        </span><span class="tsd-kind-property">passRate</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>        </span><span class="tsd-kind-property">avgScore</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>        </span><span class="tsd-kind-property">count</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span></div><aside class="tsd-sources"><ul><li>Defined in <a href="https://github.com/framersai/agentos/blob/86e204dcac60aab2e6aa7cd064ffa98e986fe76d/src/core/evaluation/IEvaluator.ts#L162">core/evaluation/IEvaluator.ts:162</a></li></ul></aside><section class="tsd-panel-group tsd-index-group"><section class="tsd-panel tsd-index-panel"><details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary"><h5 class="tsd-index-heading uppercase" role="button" aria-expanded="false" tabIndex="0"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="../assets/icons.svg#icon-chevronSmall"></use></svg> Index</h5></summary><div class="tsd-accordion-details"><section class="tsd-index-section"><h3 class="tsd-index-heading">Properties</h3><div class="tsd-index-list"><a href="AggregateMetrics.html#totalTests" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-1024"></use></svg><span>total<wbr/>Tests</span></a>
+</div><div class="tsd-comment tsd-typography"></div></section><div class="tsd-signature"><span class="tsd-signature-keyword">interface </span><span class="tsd-kind-interface">AggregateMetrics</span> <span class="tsd-signature-symbol">{ </span><br/><span>    </span><a class="tsd-kind-property" href="AggregateMetrics.html#totalTests">totalTests</a><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><a class="tsd-kind-property" href="AggregateMetrics.html#passedTests">passedTests</a><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><a class="tsd-kind-property" href="AggregateMetrics.html#failedTests">failedTests</a><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><a class="tsd-kind-property" href="AggregateMetrics.html#passRate">passRate</a><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><a class="tsd-kind-property" href="AggregateMetrics.html#avgScore">avgScore</a><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><a class="tsd-kind-property" href="AggregateMetrics.html#scoreStdDev">scoreStdDev</a><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><a class="tsd-kind-property" href="AggregateMetrics.html#avgLatencyMs">avgLatencyMs</a><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><a class="tsd-kind-property" href="AggregateMetrics.html#p50LatencyMs">p50LatencyMs</a><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><a class="tsd-kind-property" href="AggregateMetrics.html#p95LatencyMs">p95LatencyMs</a><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><a class="tsd-kind-property" href="AggregateMetrics.html#p99LatencyMs">p99LatencyMs</a><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><a class="tsd-kind-property" href="AggregateMetrics.html#totalTokens">totalTokens</a><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><a class="tsd-kind-property" href="AggregateMetrics.html#totalCostUsd">totalCostUsd</a><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><a class="tsd-kind-property" href="AggregateMetrics.html#byCategory">byCategory</a><span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-symbol">{ </span><br/><span>        </span><span class="tsd-kind-property">passRate</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>        </span><span class="tsd-kind-property">avgScore</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>        </span><span class="tsd-kind-property">count</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span></div><aside class="tsd-sources"><ul><li>Defined in <a href="https://github.com/framersai/agentos/blob/4daf1ff809a5c936bf67a54703b9a61046d53f8d/src/core/evaluation/IEvaluator.ts#L162">core/evaluation/IEvaluator.ts:162</a></li></ul></aside><section class="tsd-panel-group tsd-index-group"><section class="tsd-panel tsd-index-panel"><details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary"><h5 class="tsd-index-heading uppercase" role="button" aria-expanded="false" tabIndex="0"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="../assets/icons.svg#icon-chevronSmall"></use></svg> Index</h5></summary><div class="tsd-accordion-details"><section class="tsd-index-section"><h3 class="tsd-index-heading">Properties</h3><div class="tsd-index-list"><a href="AggregateMetrics.html#totalTests" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-1024"></use></svg><span>total<wbr/>Tests</span></a>
 <a href="AggregateMetrics.html#passedTests" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-1024"></use></svg><span>passed<wbr/>Tests</span></a>
 <a href="AggregateMetrics.html#failedTests" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-1024"></use></svg><span>failed<wbr/>Tests</span></a>
 <a href="AggregateMetrics.html#passRate" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-1024"></use></svg><span>pass<wbr/>Rate</span></a>
@@ -194,52 +294,53 @@
 <a href="AggregateMetrics.html#totalCostUsd" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-1024"></use></svg><span>total<wbr/>Cost<wbr/>Usd</span></a>
 <a href="AggregateMetrics.html#byCategory" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-1024"></use></svg><span>by<wbr/>Category?</span></a>
 </div></section></div></details></section></section><section class="tsd-panel-group tsd-member-group"><h2>Properties</h2><section class="tsd-panel tsd-member"><a id="totalTests" class="tsd-anchor"></a><h3 class="tsd-anchor-link"><span>total<wbr/>Tests</span><a href="#totalTests" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><div class="tsd-signature"><span class="tsd-kind-property">total<wbr/>Tests</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><div class="tsd-comment tsd-typography"><p>Total test cases</p>
-</div><div class="tsd-comment tsd-typography"></div><aside class="tsd-sources"><ul><li>Defined in <a href="https://github.com/framersai/agentos/blob/86e204dcac60aab2e6aa7cd064ffa98e986fe76d/src/core/evaluation/IEvaluator.ts#L164">core/evaluation/IEvaluator.ts:164</a></li></ul></aside></section><section class="tsd-panel tsd-member"><a id="passedTests" class="tsd-anchor"></a><h3 class="tsd-anchor-link"><span>passed<wbr/>Tests</span><a href="#passedTests" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><div class="tsd-signature"><span class="tsd-kind-property">passed<wbr/>Tests</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><div class="tsd-comment tsd-typography"><p>Passed tests</p>
-</div><div class="tsd-comment tsd-typography"></div><aside class="tsd-sources"><ul><li>Defined in <a href="https://github.com/framersai/agentos/blob/86e204dcac60aab2e6aa7cd064ffa98e986fe76d/src/core/evaluation/IEvaluator.ts#L166">core/evaluation/IEvaluator.ts:166</a></li></ul></aside></section><section class="tsd-panel tsd-member"><a id="failedTests" class="tsd-anchor"></a><h3 class="tsd-anchor-link"><span>failed<wbr/>Tests</span><a href="#failedTests" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><div class="tsd-signature"><span class="tsd-kind-property">failed<wbr/>Tests</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><div class="tsd-comment tsd-typography"><p>Failed tests</p>
-</div><div class="tsd-comment tsd-typography"></div><aside class="tsd-sources"><ul><li>Defined in <a href="https://github.com/framersai/agentos/blob/86e204dcac60aab2e6aa7cd064ffa98e986fe76d/src/core/evaluation/IEvaluator.ts#L168">core/evaluation/IEvaluator.ts:168</a></li></ul></aside></section><section class="tsd-panel tsd-member"><a id="passRate" class="tsd-anchor"></a><h3 class="tsd-anchor-link"><span>pass<wbr/>Rate</span><a href="#passRate" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><div class="tsd-signature"><span class="tsd-kind-property">pass<wbr/>Rate</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><div class="tsd-comment tsd-typography"><p>Pass rate (0-1)</p>
-</div><div class="tsd-comment tsd-typography"></div><aside class="tsd-sources"><ul><li>Defined in <a href="https://github.com/framersai/agentos/blob/86e204dcac60aab2e6aa7cd064ffa98e986fe76d/src/core/evaluation/IEvaluator.ts#L170">core/evaluation/IEvaluator.ts:170</a></li></ul></aside></section><section class="tsd-panel tsd-member"><a id="avgScore" class="tsd-anchor"></a><h3 class="tsd-anchor-link"><span>avg<wbr/>Score</span><a href="#avgScore" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><div class="tsd-signature"><span class="tsd-kind-property">avg<wbr/>Score</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><div class="tsd-comment tsd-typography"><p>Average score (0-1)</p>
-</div><div class="tsd-comment tsd-typography"></div><aside class="tsd-sources"><ul><li>Defined in <a href="https://github.com/framersai/agentos/blob/86e204dcac60aab2e6aa7cd064ffa98e986fe76d/src/core/evaluation/IEvaluator.ts#L172">core/evaluation/IEvaluator.ts:172</a></li></ul></aside></section><section class="tsd-panel tsd-member"><a id="scoreStdDev" class="tsd-anchor"></a><h3 class="tsd-anchor-link"><span>score<wbr/>Std<wbr/>Dev</span><a href="#scoreStdDev" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><div class="tsd-signature"><span class="tsd-kind-property">score<wbr/>Std<wbr/>Dev</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><div class="tsd-comment tsd-typography"><p>Score standard deviation</p>
-</div><div class="tsd-comment tsd-typography"></div><aside class="tsd-sources"><ul><li>Defined in <a href="https://github.com/framersai/agentos/blob/86e204dcac60aab2e6aa7cd064ffa98e986fe76d/src/core/evaluation/IEvaluator.ts#L174">core/evaluation/IEvaluator.ts:174</a></li></ul></aside></section><section class="tsd-panel tsd-member"><a id="avgLatencyMs" class="tsd-anchor"></a><h3 class="tsd-anchor-link"><span>avg<wbr/>Latency<wbr/>Ms</span><a href="#avgLatencyMs" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><div class="tsd-signature"><span class="tsd-kind-property">avg<wbr/>Latency<wbr/>Ms</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><div class="tsd-comment tsd-typography"><p>Average latency ms</p>
-</div><div class="tsd-comment tsd-typography"></div><aside class="tsd-sources"><ul><li>Defined in <a href="https://github.com/framersai/agentos/blob/86e204dcac60aab2e6aa7cd064ffa98e986fe76d/src/core/evaluation/IEvaluator.ts#L176">core/evaluation/IEvaluator.ts:176</a></li></ul></aside></section><section class="tsd-panel tsd-member"><a id="p50LatencyMs" class="tsd-anchor"></a><h3 class="tsd-anchor-link"><span>p50<wbr/>Latency<wbr/>Ms</span><a href="#p50LatencyMs" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><div class="tsd-signature"><span class="tsd-kind-property">p50<wbr/>Latency<wbr/>Ms</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><div class="tsd-comment tsd-typography"><p>P50 latency</p>
-</div><div class="tsd-comment tsd-typography"></div><aside class="tsd-sources"><ul><li>Defined in <a href="https://github.com/framersai/agentos/blob/86e204dcac60aab2e6aa7cd064ffa98e986fe76d/src/core/evaluation/IEvaluator.ts#L178">core/evaluation/IEvaluator.ts:178</a></li></ul></aside></section><section class="tsd-panel tsd-member"><a id="p95LatencyMs" class="tsd-anchor"></a><h3 class="tsd-anchor-link"><span>p95<wbr/>Latency<wbr/>Ms</span><a href="#p95LatencyMs" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><div class="tsd-signature"><span class="tsd-kind-property">p95<wbr/>Latency<wbr/>Ms</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><div class="tsd-comment tsd-typography"><p>P95 latency</p>
-</div><div class="tsd-comment tsd-typography"></div><aside class="tsd-sources"><ul><li>Defined in <a href="https://github.com/framersai/agentos/blob/86e204dcac60aab2e6aa7cd064ffa98e986fe76d/src/core/evaluation/IEvaluator.ts#L180">core/evaluation/IEvaluator.ts:180</a></li></ul></aside></section><section class="tsd-panel tsd-member"><a id="p99LatencyMs" class="tsd-anchor"></a><h3 class="tsd-anchor-link"><span>p99<wbr/>Latency<wbr/>Ms</span><a href="#p99LatencyMs" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><div class="tsd-signature"><span class="tsd-kind-property">p99<wbr/>Latency<wbr/>Ms</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><div class="tsd-comment tsd-typography"><p>P99 latency</p>
-</div><div class="tsd-comment tsd-typography"></div><aside class="tsd-sources"><ul><li>Defined in <a href="https://github.com/framersai/agentos/blob/86e204dcac60aab2e6aa7cd064ffa98e986fe76d/src/core/evaluation/IEvaluator.ts#L182">core/evaluation/IEvaluator.ts:182</a></li></ul></aside></section><section class="tsd-panel tsd-member"><a id="totalTokens" class="tsd-anchor"></a><h3 class="tsd-anchor-link"><span>total<wbr/>Tokens</span><a href="#totalTokens" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><div class="tsd-signature"><span class="tsd-kind-property">total<wbr/>Tokens</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><div class="tsd-comment tsd-typography"><p>Total tokens used</p>
-</div><div class="tsd-comment tsd-typography"></div><aside class="tsd-sources"><ul><li>Defined in <a href="https://github.com/framersai/agentos/blob/86e204dcac60aab2e6aa7cd064ffa98e986fe76d/src/core/evaluation/IEvaluator.ts#L184">core/evaluation/IEvaluator.ts:184</a></li></ul></aside></section><section class="tsd-panel tsd-member"><a id="totalCostUsd" class="tsd-anchor"></a><h3 class="tsd-anchor-link"><span>total<wbr/>Cost<wbr/>Usd</span><a href="#totalCostUsd" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><div class="tsd-signature"><span class="tsd-kind-property">total<wbr/>Cost<wbr/>Usd</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><div class="tsd-comment tsd-typography"><p>Total estimated cost</p>
-</div><div class="tsd-comment tsd-typography"></div><aside class="tsd-sources"><ul><li>Defined in <a href="https://github.com/framersai/agentos/blob/86e204dcac60aab2e6aa7cd064ffa98e986fe76d/src/core/evaluation/IEvaluator.ts#L186">core/evaluation/IEvaluator.ts:186</a></li></ul></aside></section><section class="tsd-panel tsd-member"><a id="byCategory" class="tsd-anchor"></a><h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>by<wbr/>Category</span><a href="#byCategory" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><div class="tsd-signature"><span class="tsd-kind-property">by<wbr/>Category</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-symbol">{ </span><br/><span>    </span><span class="tsd-kind-property">passRate</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><span class="tsd-kind-property">avgScore</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><span class="tsd-kind-property">count</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">&gt;</span></div><div class="tsd-comment tsd-typography"><p>Metrics by category</p>
-</div><div class="tsd-type-declaration"><h4>Type declaration</h4><ul class="tsd-parameters"><li class="tsd-parameter"><h5><span class="tsd-kind-property">pass<wbr/>Rate</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5></li><li class="tsd-parameter"><h5><span class="tsd-kind-property">avg<wbr/>Score</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5></li><li class="tsd-parameter"><h5><span class="tsd-kind-property">count</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5></li></ul></div><div class="tsd-comment tsd-typography"></div><aside class="tsd-sources"><ul><li>Defined in <a href="https://github.com/framersai/agentos/blob/86e204dcac60aab2e6aa7cd064ffa98e986fe76d/src/core/evaluation/IEvaluator.ts#L188">core/evaluation/IEvaluator.ts:188</a></li></ul></aside></section></section></div><div class="col-sidebar"><div class="page-menu"><div class="tsd-navigation settings"><details class="tsd-index-accordion"><summary class="tsd-accordion-summary"><h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>Settings</h3></summary><div class="tsd-accordion-details"><div class="tsd-filter-visibility"><h4 class="uppercase">Member Visibility</h4><form><ul id="tsd-filter-options"><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-protected" name="protected" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Protected</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-alpha" name="alpha"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Alpha</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-beta" name="beta"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Beta</span></label></li></ul></form></div><div class="tsd-theme-toggle"><h4 class="uppercase">Theme</h4><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div><details open class="tsd-index-accordion tsd-page-navigation"><summary class="tsd-accordion-summary"><h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>On This Page</h3></summary><div class="tsd-accordion-details"><a href="#totalTests" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-1024"></use></svg><span>total<wbr/>Tests</span></a><a href="#passedTests" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-1024"></use></svg><span>passed<wbr/>Tests</span></a><a href="#failedTests" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-1024"></use></svg><span>failed<wbr/>Tests</span></a><a href="#passRate" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-1024"></use></svg><span>pass<wbr/>Rate</span></a><a href="#avgScore" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-1024"></use></svg><span>avg<wbr/>Score</span></a><a href="#scoreStdDev" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-1024"></use></svg><span>score<wbr/>Std<wbr/>Dev</span></a><a href="#avgLatencyMs" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-1024"></use></svg><span>avg<wbr/>Latency<wbr/>Ms</span></a><a href="#p50LatencyMs" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-1024"></use></svg><span>p50<wbr/>Latency<wbr/>Ms</span></a><a href="#p95LatencyMs" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-1024"></use></svg><span>p95<wbr/>Latency<wbr/>Ms</span></a><a href="#p99LatencyMs" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-1024"></use></svg><span>p99<wbr/>Latency<wbr/>Ms</span></a><a href="#totalTokens" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-1024"></use></svg><span>total<wbr/>Tokens</span></a><a href="#totalCostUsd" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-1024"></use></svg><span>total<wbr/>Cost<wbr/>Usd</span></a><a href="#byCategory" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-1024"></use></svg><span>by<wbr/>Category</span></a></div></details></div><div class="site-menu"><nav id="tsd-sidebar-links" class="tsd-navigation"><a href="./ARCHITECTURE.md">Architecture</a><a href="./CHANGELOG.md">Changelog</a><a href="./PLANNING_ENGINE.md">Planning Engine</a><a href="./HUMAN_IN_THE_LOOP.md">Human-in-the-Loop</a><a href="./AGENT_COMMUNICATION.md">Agent Communication</a><a href="./EVALUATION_FRAMEWORK.md">Evaluation Framework</a></nav><nav class="tsd-navigation"><a href="../modules.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-1"></use></svg><span>@framers/agentos - v0.1.2</span></a><ul class="tsd-small-nested-navigation" id="tsd-nav-container" data-base=".."><li>Loading...</li></ul></nav></div></div></div><div class="overlay"></div>
+</div><div class="tsd-comment tsd-typography"></div><aside class="tsd-sources"><ul><li>Defined in <a href="https://github.com/framersai/agentos/blob/4daf1ff809a5c936bf67a54703b9a61046d53f8d/src/core/evaluation/IEvaluator.ts#L164">core/evaluation/IEvaluator.ts:164</a></li></ul></aside></section><section class="tsd-panel tsd-member"><a id="passedTests" class="tsd-anchor"></a><h3 class="tsd-anchor-link"><span>passed<wbr/>Tests</span><a href="#passedTests" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><div class="tsd-signature"><span class="tsd-kind-property">passed<wbr/>Tests</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><div class="tsd-comment tsd-typography"><p>Passed tests</p>
+</div><div class="tsd-comment tsd-typography"></div><aside class="tsd-sources"><ul><li>Defined in <a href="https://github.com/framersai/agentos/blob/4daf1ff809a5c936bf67a54703b9a61046d53f8d/src/core/evaluation/IEvaluator.ts#L166">core/evaluation/IEvaluator.ts:166</a></li></ul></aside></section><section class="tsd-panel tsd-member"><a id="failedTests" class="tsd-anchor"></a><h3 class="tsd-anchor-link"><span>failed<wbr/>Tests</span><a href="#failedTests" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><div class="tsd-signature"><span class="tsd-kind-property">failed<wbr/>Tests</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><div class="tsd-comment tsd-typography"><p>Failed tests</p>
+</div><div class="tsd-comment tsd-typography"></div><aside class="tsd-sources"><ul><li>Defined in <a href="https://github.com/framersai/agentos/blob/4daf1ff809a5c936bf67a54703b9a61046d53f8d/src/core/evaluation/IEvaluator.ts#L168">core/evaluation/IEvaluator.ts:168</a></li></ul></aside></section><section class="tsd-panel tsd-member"><a id="passRate" class="tsd-anchor"></a><h3 class="tsd-anchor-link"><span>pass<wbr/>Rate</span><a href="#passRate" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><div class="tsd-signature"><span class="tsd-kind-property">pass<wbr/>Rate</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><div class="tsd-comment tsd-typography"><p>Pass rate (0-1)</p>
+</div><div class="tsd-comment tsd-typography"></div><aside class="tsd-sources"><ul><li>Defined in <a href="https://github.com/framersai/agentos/blob/4daf1ff809a5c936bf67a54703b9a61046d53f8d/src/core/evaluation/IEvaluator.ts#L170">core/evaluation/IEvaluator.ts:170</a></li></ul></aside></section><section class="tsd-panel tsd-member"><a id="avgScore" class="tsd-anchor"></a><h3 class="tsd-anchor-link"><span>avg<wbr/>Score</span><a href="#avgScore" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><div class="tsd-signature"><span class="tsd-kind-property">avg<wbr/>Score</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><div class="tsd-comment tsd-typography"><p>Average score (0-1)</p>
+</div><div class="tsd-comment tsd-typography"></div><aside class="tsd-sources"><ul><li>Defined in <a href="https://github.com/framersai/agentos/blob/4daf1ff809a5c936bf67a54703b9a61046d53f8d/src/core/evaluation/IEvaluator.ts#L172">core/evaluation/IEvaluator.ts:172</a></li></ul></aside></section><section class="tsd-panel tsd-member"><a id="scoreStdDev" class="tsd-anchor"></a><h3 class="tsd-anchor-link"><span>score<wbr/>Std<wbr/>Dev</span><a href="#scoreStdDev" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><div class="tsd-signature"><span class="tsd-kind-property">score<wbr/>Std<wbr/>Dev</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><div class="tsd-comment tsd-typography"><p>Score standard deviation</p>
+</div><div class="tsd-comment tsd-typography"></div><aside class="tsd-sources"><ul><li>Defined in <a href="https://github.com/framersai/agentos/blob/4daf1ff809a5c936bf67a54703b9a61046d53f8d/src/core/evaluation/IEvaluator.ts#L174">core/evaluation/IEvaluator.ts:174</a></li></ul></aside></section><section class="tsd-panel tsd-member"><a id="avgLatencyMs" class="tsd-anchor"></a><h3 class="tsd-anchor-link"><span>avg<wbr/>Latency<wbr/>Ms</span><a href="#avgLatencyMs" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><div class="tsd-signature"><span class="tsd-kind-property">avg<wbr/>Latency<wbr/>Ms</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><div class="tsd-comment tsd-typography"><p>Average latency ms</p>
+</div><div class="tsd-comment tsd-typography"></div><aside class="tsd-sources"><ul><li>Defined in <a href="https://github.com/framersai/agentos/blob/4daf1ff809a5c936bf67a54703b9a61046d53f8d/src/core/evaluation/IEvaluator.ts#L176">core/evaluation/IEvaluator.ts:176</a></li></ul></aside></section><section class="tsd-panel tsd-member"><a id="p50LatencyMs" class="tsd-anchor"></a><h3 class="tsd-anchor-link"><span>p50<wbr/>Latency<wbr/>Ms</span><a href="#p50LatencyMs" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><div class="tsd-signature"><span class="tsd-kind-property">p50<wbr/>Latency<wbr/>Ms</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><div class="tsd-comment tsd-typography"><p>P50 latency</p>
+</div><div class="tsd-comment tsd-typography"></div><aside class="tsd-sources"><ul><li>Defined in <a href="https://github.com/framersai/agentos/blob/4daf1ff809a5c936bf67a54703b9a61046d53f8d/src/core/evaluation/IEvaluator.ts#L178">core/evaluation/IEvaluator.ts:178</a></li></ul></aside></section><section class="tsd-panel tsd-member"><a id="p95LatencyMs" class="tsd-anchor"></a><h3 class="tsd-anchor-link"><span>p95<wbr/>Latency<wbr/>Ms</span><a href="#p95LatencyMs" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><div class="tsd-signature"><span class="tsd-kind-property">p95<wbr/>Latency<wbr/>Ms</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><div class="tsd-comment tsd-typography"><p>P95 latency</p>
+</div><div class="tsd-comment tsd-typography"></div><aside class="tsd-sources"><ul><li>Defined in <a href="https://github.com/framersai/agentos/blob/4daf1ff809a5c936bf67a54703b9a61046d53f8d/src/core/evaluation/IEvaluator.ts#L180">core/evaluation/IEvaluator.ts:180</a></li></ul></aside></section><section class="tsd-panel tsd-member"><a id="p99LatencyMs" class="tsd-anchor"></a><h3 class="tsd-anchor-link"><span>p99<wbr/>Latency<wbr/>Ms</span><a href="#p99LatencyMs" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><div class="tsd-signature"><span class="tsd-kind-property">p99<wbr/>Latency<wbr/>Ms</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><div class="tsd-comment tsd-typography"><p>P99 latency</p>
+</div><div class="tsd-comment tsd-typography"></div><aside class="tsd-sources"><ul><li>Defined in <a href="https://github.com/framersai/agentos/blob/4daf1ff809a5c936bf67a54703b9a61046d53f8d/src/core/evaluation/IEvaluator.ts#L182">core/evaluation/IEvaluator.ts:182</a></li></ul></aside></section><section class="tsd-panel tsd-member"><a id="totalTokens" class="tsd-anchor"></a><h3 class="tsd-anchor-link"><span>total<wbr/>Tokens</span><a href="#totalTokens" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><div class="tsd-signature"><span class="tsd-kind-property">total<wbr/>Tokens</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><div class="tsd-comment tsd-typography"><p>Total tokens used</p>
+</div><div class="tsd-comment tsd-typography"></div><aside class="tsd-sources"><ul><li>Defined in <a href="https://github.com/framersai/agentos/blob/4daf1ff809a5c936bf67a54703b9a61046d53f8d/src/core/evaluation/IEvaluator.ts#L184">core/evaluation/IEvaluator.ts:184</a></li></ul></aside></section><section class="tsd-panel tsd-member"><a id="totalCostUsd" class="tsd-anchor"></a><h3 class="tsd-anchor-link"><span>total<wbr/>Cost<wbr/>Usd</span><a href="#totalCostUsd" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><div class="tsd-signature"><span class="tsd-kind-property">total<wbr/>Cost<wbr/>Usd</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><div class="tsd-comment tsd-typography"><p>Total estimated cost</p>
+</div><div class="tsd-comment tsd-typography"></div><aside class="tsd-sources"><ul><li>Defined in <a href="https://github.com/framersai/agentos/blob/4daf1ff809a5c936bf67a54703b9a61046d53f8d/src/core/evaluation/IEvaluator.ts#L186">core/evaluation/IEvaluator.ts:186</a></li></ul></aside></section><section class="tsd-panel tsd-member"><a id="byCategory" class="tsd-anchor"></a><h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>by<wbr/>Category</span><a href="#byCategory" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3><div class="tsd-signature"><span class="tsd-kind-property">by<wbr/>Category</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-symbol">{ </span><br/><span>    </span><span class="tsd-kind-property">passRate</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><span class="tsd-kind-property">avgScore</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><span class="tsd-kind-property">count</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">&gt;</span></div><div class="tsd-comment tsd-typography"><p>Metrics by category</p>
+</div><div class="tsd-type-declaration"><h4>Type declaration</h4><ul class="tsd-parameters"><li class="tsd-parameter"><h5><span class="tsd-kind-property">pass<wbr/>Rate</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5></li><li class="tsd-parameter"><h5><span class="tsd-kind-property">avg<wbr/>Score</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5></li><li class="tsd-parameter"><h5><span class="tsd-kind-property">count</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5></li></ul></div><div class="tsd-comment tsd-typography"></div><aside class="tsd-sources"><ul><li>Defined in <a href="https://github.com/framersai/agentos/blob/4daf1ff809a5c936bf67a54703b9a61046d53f8d/src/core/evaluation/IEvaluator.ts#L188">core/evaluation/IEvaluator.ts:188</a></li></ul></aside></section></section></div><div class="col-sidebar"><div class="page-menu"><div class="tsd-navigation settings"><details class="tsd-index-accordion"><summary class="tsd-accordion-summary"><h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>Settings</h3></summary><div class="tsd-accordion-details"><div class="tsd-filter-visibility"><h4 class="uppercase">Member Visibility</h4><form><ul id="tsd-filter-options"><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-protected" name="protected" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Protected</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-alpha" name="alpha"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Alpha</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-beta" name="beta"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Beta</span></label></li></ul></form></div><div class="tsd-theme-toggle"><h4 class="uppercase">Theme</h4><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div><details open class="tsd-index-accordion tsd-page-navigation"><summary class="tsd-accordion-summary"><h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>On This Page</h3></summary><div class="tsd-accordion-details"><a href="#totalTests" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-1024"></use></svg><span>total<wbr/>Tests</span></a><a href="#passedTests" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-1024"></use></svg><span>passed<wbr/>Tests</span></a><a href="#failedTests" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-1024"></use></svg><span>failed<wbr/>Tests</span></a><a href="#passRate" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-1024"></use></svg><span>pass<wbr/>Rate</span></a><a href="#avgScore" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-1024"></use></svg><span>avg<wbr/>Score</span></a><a href="#scoreStdDev" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-1024"></use></svg><span>score<wbr/>Std<wbr/>Dev</span></a><a href="#avgLatencyMs" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-1024"></use></svg><span>avg<wbr/>Latency<wbr/>Ms</span></a><a href="#p50LatencyMs" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-1024"></use></svg><span>p50<wbr/>Latency<wbr/>Ms</span></a><a href="#p95LatencyMs" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-1024"></use></svg><span>p95<wbr/>Latency<wbr/>Ms</span></a><a href="#p99LatencyMs" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-1024"></use></svg><span>p99<wbr/>Latency<wbr/>Ms</span></a><a href="#totalTokens" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-1024"></use></svg><span>total<wbr/>Tokens</span></a><a href="#totalCostUsd" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-1024"></use></svg><span>total<wbr/>Cost<wbr/>Usd</span></a><a href="#byCategory" class=""><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-1024"></use></svg><span>by<wbr/>Category</span></a></div></details></div><div class="site-menu"><nav id="tsd-sidebar-links" class="tsd-navigation"><a href="./ARCHITECTURE.md">Architecture</a><a href="./CHANGELOG.md">Changelog</a><a href="./PLANNING_ENGINE.md">Planning Engine</a><a href="./HUMAN_IN_THE_LOOP.md">Human-in-the-Loop</a><a href="./AGENT_COMMUNICATION.md">Agent Communication</a><a href="./EVALUATION_FRAMEWORK.md">Evaluation Framework</a></nav><nav class="tsd-navigation"><a href="../modules.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-1"></use></svg><span>@framers/agentos - v1.0.1</span></a><ul class="tsd-small-nested-navigation" id="tsd-nav-container" data-base=".."><li>Loading...</li></ul></nav></div></div></div><div class="overlay"></div>
 
 
-<footer style="border-top: 1px solid var(--color-border-subtle); background: var(--color-background-secondary); padding: 3rem 1.5rem; margin-top: 4rem;">
-  <div style="max-width: 1400px; margin: 0 auto;">
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
+
+<footer class="agentos-footer">
+  <div class="agentos-footer-inner">
+    <div class="agentos-footer-grid">
       <div>
-        <h4 style="font-weight: 700; margin-bottom: 1rem; color: var(--color-text-primary);">AgentOS</h4>
+        <h4>AgentOS</h4>
         <p style="color: var(--color-text-secondary); font-size: 0.875rem; line-height: 1.6;">
           The open-source framework for building intelligent AI agent systems. MIT Licensed.
         </p>
       </div>
       <div>
-        <h4 style="font-weight: 600; margin-bottom: 1rem; color: var(--color-text-primary); font-size: 0.875rem;">Resources</h4>
-        <ul style="list-style: none; padding: 0; margin: 0;">
-          <li style="margin-bottom: 0.5rem;"><a href="https://agentos.sh/guides" style="color: var(--color-text-secondary); text-decoration: none; font-size: 0.875rem;">Guides</a></li>
-          <li style="margin-bottom: 0.5rem;"><a href="/" style="color: var(--color-text-secondary); text-decoration: none; font-size: 0.875rem;">API Reference</a></li>
-          <li style="margin-bottom: 0.5rem;"><a href="https://agentos.sh/blog" style="color: var(--color-text-secondary); text-decoration: none; font-size: 0.875rem;">Blog</a></li>
+        <h4 style="font-size: 0.875rem;">Resources</h4>
+        <ul>
+          <li><a href="https://agentos.sh/en/guides">Guides</a></li>
+          <li><a href="/">API Reference</a></li>
+          <li><a href="https://agentos.sh/en/blog">Blog</a></li>
         </ul>
       </div>
       <div>
-        <h4 style="font-weight: 600; margin-bottom: 1rem; color: var(--color-text-primary); font-size: 0.875rem;">Community</h4>
-        <ul style="list-style: none; padding: 0; margin: 0;">
-          <li style="margin-bottom: 0.5rem;"><a href="https://github.com/framersai/agentos" style="color: var(--color-text-secondary); text-decoration: none; font-size: 0.875rem;">GitHub</a></li>
-          <li style="margin-bottom: 0.5rem;"><a href="https://discord.gg/agentos" style="color: var(--color-text-secondary); text-decoration: none; font-size: 0.875rem;">Discord</a></li>
-          <li style="margin-bottom: 0.5rem;"><a href="https://twitter.com/agentos_ai" style="color: var(--color-text-secondary); text-decoration: none; font-size: 0.875rem;">Twitter</a></li>
+        <h4 style="font-size: 0.875rem;">Community</h4>
+        <ul>
+          <li><a href="https://github.com/framersai/agentos">GitHub</a></li>
+          <li><a href="https://discord.gg/agentos">Discord</a></li>
+          <li><a href="https://twitter.com/agentos_ai">Twitter</a></li>
         </ul>
       </div>
       <div>
-        <h4 style="font-weight: 600; margin-bottom: 1rem; color: var(--color-text-primary); font-size: 0.875rem;">Legal</h4>
-        <ul style="list-style: none; padding: 0; margin: 0;">
-          <li style="margin-bottom: 0.5rem;"><a href="https://agentos.sh/privacy" style="color: var(--color-text-secondary); text-decoration: none; font-size: 0.875rem;">Privacy Policy</a></li>
-          <li style="margin-bottom: 0.5rem;"><a href="https://agentos.sh/terms" style="color: var(--color-text-secondary); text-decoration: none; font-size: 0.875rem;">Terms of Service</a></li>
-          <li style="margin-bottom: 0.5rem;"><a href="https://github.com/framersai/agentos/blob/master/LICENSE" style="color: var(--color-text-secondary); text-decoration: none; font-size: 0.875rem;">MIT License</a></li>
+        <h4 style="font-size: 0.875rem;">Legal</h4>
+        <ul>
+          <li><a href="https://agentos.sh/privacy">Privacy Policy</a></li>
+          <li><a href="https://agentos.sh/terms">Terms of Service</a></li>
+          <li><a href="https://github.com/framersai/agentos/blob/master/LICENSE">MIT License</a></li>
         </ul>
       </div>
     </div>
@@ -249,11 +350,5 @@
     </div>
   </div>
 </footer>
-</body>
-</html>
-
-</body>
-</html>
-
 
 </body></html>
