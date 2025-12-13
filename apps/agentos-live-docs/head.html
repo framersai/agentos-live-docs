@@ -116,8 +116,24 @@
   .tsd-navigation { background: var(--color-background-secondary) !important; }
   .tsd-kind-icon { color: var(--color-accent-primary) !important; }
   a { color: var(--color-accent-primary); }
-  code { background: var(--color-background-elevated) !important; padding: 0.125rem 0.375rem; border-radius: 0.25rem; font-size: 0.875em; }
-  pre { background: #1e1e1e !important; border: 1px solid var(--color-border-subtle); border-radius: 0.5rem; padding: 1rem !important; }
+  code { 
+    background: var(--color-background-elevated) !important; 
+    color: var(--color-text-primary) !important;
+    padding: 0.125rem 0.375rem; 
+    border-radius: 0.25rem; 
+    font-size: 0.875em; 
+  }
+  pre { 
+    background: var(--color-background-elevated) !important; 
+    color: var(--color-text-primary) !important;
+    border: 1px solid var(--color-border-subtle); 
+    border-radius: 0.5rem; 
+    padding: 1rem !important; 
+  }
+  pre code {
+    background: transparent !important;
+    color: inherit !important;
+  }
   h1, h2, h3, h4, h5 { color: var(--color-text-primary) !important; }
   p, li { color: var(--color-text-secondary) !important; }
   @media (max-width: 768px) { .agentos-nav-links { display: none; } }
