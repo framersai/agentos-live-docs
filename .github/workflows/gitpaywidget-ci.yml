@@ -169,7 +169,7 @@ jobs:
         run: pnpm exec playwright install --with-deps chromium
 
       - name: Download Build Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: gitpaywidget-build
           path: apps/gitpaywidget/.next
