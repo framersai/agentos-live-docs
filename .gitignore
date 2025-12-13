@@ -60,3 +60,5 @@ ssl/
 
 # Claude AI
 .claude/
+# Generated API docs (lives in agentos-live-docs)
+packages/agentos/docs/api/
