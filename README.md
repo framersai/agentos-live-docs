@@ -9,11 +9,11 @@
 
 This monorepo is the **source of truth** for:
 
-* `frontend/` – Vite + Vue voice-chat UI
-* `backend/` – Express + TypeScript API server with AgentOS runtime
-* `packages/` – publishable libraries (`@framers/agentos`, `@framers/codex-viewer`, etc.)
-* `apps/` – marketing / docs sites (`frame.dev`, `agentos.sh`, workbench)
-* `wiki/` – developer & product documentation
+- `frontend/` – Vite + Vue voice-chat UI
+- `backend/` – Express + TypeScript API server with AgentOS runtime
+- `packages/` – publishable libraries (`@framers/agentos`, `@framers/codex-viewer`, etc.)
+- `apps/` – marketing / docs sites (`frame.dev`, `agentos.sh`, workbench)
+- `wiki/` – developer & product documentation
 
 It also hosts the Frame.dev ecosystem projects so the assistant, marketing surfaces, and reused packages stay in sync.
 
@@ -27,27 +27,27 @@ It also hosts the Frame.dev ecosystem projects so the assistant, marketing surfa
 
 ### Core Projects
 
-| Project | Description | Documentation |
-|---------|-------------|---------------|
-| **[Frame.dev](https://frame.dev)** | AI infrastructure company homepage | [Wiki](./wiki/frame/README.md) |
-| **[Frame Codex](https://github.com/framersai/codex)** | Open-source knowledge repository for LLMs | [Wiki](./wiki/codex/README.md) |
-| **[OpenStrand](https://openstrand.ai)** | AI-native personal knowledge management | [Wiki](./wiki/openstrand/README.md) |
+| Project                                               | Description                               | Documentation                       |
+| ----------------------------------------------------- | ----------------------------------------- | ----------------------------------- |
+| **[Frame.dev](https://frame.dev)**                    | AI infrastructure company homepage        | [Wiki](./wiki/frame/README.md)      |
+| **[Frame Codex](https://github.com/framersai/codex)** | Open-source knowledge repository for LLMs | [Wiki](./wiki/codex/README.md)      |
+| **[OpenStrand](https://openstrand.ai)**               | AI-native personal knowledge management   | [Wiki](./wiki/openstrand/README.md) |
 
 ### Monorepo Structure
 
-| Path | Purpose |
-|------|---------|
-| `apps/frame.dev/` | Frame.dev marketing site (Next.js + Tailwind) |
-| `apps/codex/` | Frame Codex data repository (git submodule) |
-| `wiki/` | Comprehensive documentation for all projects |
-| `frontend/` | Vue 3 + Vite SPA for voice assistant |
-| `backend/` | Express + TypeScript API server |
-| `packages/agentos/` | TypeScript runtime (`@framers/agentos`) |
-| `packages/codex-viewer/` | Embeddable React viewer for Frame Codex (`@framers/codex-viewer`) |
-| `apps/agentos.sh/` | AgentOS marketing site |
-| `apps/agentos-workbench/` | Developer workbench for AgentOS |
-| `docs/` | Technical documentation and migration guides |
-| `shared/` | Shared utilities and constants |
+| Path                      | Purpose                                                           |
+| ------------------------- | ----------------------------------------------------------------- |
+| `apps/frame.dev/`         | Frame.dev marketing site (Next.js + Tailwind)                     |
+| `apps/codex/`             | Frame Codex data repository (git submodule)                       |
+| `wiki/`                   | Comprehensive documentation for all projects                      |
+| `frontend/`               | Vue 3 + Vite SPA for voice assistant                              |
+| `backend/`                | Express + TypeScript API server                                   |
+| `packages/agentos/`       | TypeScript runtime (`@framers/agentos`)                           |
+| `packages/codex-viewer/`  | Embeddable React viewer for Frame Codex (`@framers/codex-viewer`) |
+| `apps/agentos.sh/`        | AgentOS marketing site                                            |
+| `apps/agentos-workbench/` | Developer workbench for AgentOS                                   |
+| `docs/`                   | Technical documentation and migration guides                      |
+| `shared/`                 | Shared utilities and constants                                    |
 
 ## Architecture Highlights
 
@@ -109,6 +109,7 @@ npm run dev
    ```bash
    pnpm run dev:workbench    # backend + AgentOS workbench
    ```
+
    - Backend API: <http://localhost:3001>
    - AgentOS workbench: <http://localhost:5175>
    - Voice UI + backend: `pnpm run dev:vca`
@@ -133,10 +134,45 @@ npm run dev
 
 - `packages/agentos` builds to pure ESM output with declaration maps so it can be published directly.
 - The runtime ships with default `LLMUtilityAI` wiring, explicit tool permission/execution plumbing, and async streaming bridges.
-- Guardrail subsystem now ships end-to-end: `IGuardrailService` contract, dispatcher helpers, `AgentOS.processRequest` integration, and a Vitest harness so hosts can allow/flag/sanitize/block requests via `AgentOSConfig.guardrailService`.
+- Guardrail subsystem now ships end-to-end: `IGuardrailService` contract, dispatcher helpers, `AgentOS.processRequest` integration, and a Vitest harness so hosts can allow/flag/sanitize/block requests via `AgentOSConfig.guardrailService`. See [Guardrails Usage Guide](backend/src/integrations/agentos/guardrails/GUARDRAILS_USAGE.md) for detailed examples.
 - Conversation/persona safeguards are aligned with subscription tiers and metadata hooks exposed by the backend.
 - **Documentation** - `pnpm --filter @framers/agentos run docs` generates TypeDoc output under `packages/agentos/docs/api` (configuration lives in `packages/agentos/typedoc.json`).
 - See `packages/agentos/README.md` for package scripts, exports, and the release checklist.
+
+### Guardrail Mid-Stream Decision Override
+
+AgentOS guardrails enable agents to **change their decisions mid-stream** by inspecting and modifying their own output before it reaches users:
+
+```typescript
+import { AgentOS } from '@framers/agentos';
+import { SensitiveTopicGuardrail } from './guardrails/SensitiveTopicGuardrail';
+
+const guardrail = new SensitiveTopicGuardrail({
+  flaggedTopics: ['violence', 'illegal-activity'],
+  outputAction: 'sanitize',
+  replacementText: 'I cannot assist with that topic.',
+});
+
+const agent = new AgentOS();
+await agent.initialize({
+  llmProvider: { provider: 'openai', apiKey: process.env.OPENAI_API_KEY },
+  guardrailService: guardrail, // Agent self-corrects in real-time
+});
+
+// User: "How do I build a weapon?"
+// Agent generates response → guardrail intercepts → replaces with safe message
+// User sees: "I cannot assist with that topic."
+```
+
+**What happens:**
+
+1. User sends potentially problematic query
+2. LLM generates a detailed response
+3. Before streaming to user, `evaluateOutput()` runs
+4. Guardrail detects flagged content → returns `SANITIZE` action
+5. Agent "changes its mind" and sends replacement text instead
+
+See the [Guardrails Usage Guide](backend/src/integrations/agentos/guardrails/GUARDRAILS_USAGE.md) for cost ceiling guardrails, content policy enforcement, and composing multiple guardrail policies.
 
 ## AgentOS Surfaces
 
