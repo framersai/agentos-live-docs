@@ -97,11 +97,11 @@ importers:
   apps/agentos-workbench:
     dependencies:
       '@framers/agentos':
-        specifier: ^1.0.1
-        version: 1.0.1(@framers/sql-storage-adapter@0.4.2(@aws-sdk/client-s3@3.922.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@6.2.1))(better-sqlite3@12.4.1)(pg@8.16.3))(typescript@5.9.3)
+        specifier: workspace:*
+        version: link:../../packages/agentos
       '@framers/sql-storage-adapter':
-        specifier: ^0.4.2
-        version: 0.4.2(@aws-sdk/client-s3@3.922.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@6.2.1))(better-sqlite3@12.4.1)(pg@8.16.3)
+        specifier: workspace:*
+        version: link:../../packages/sql-storage-adapter
       '@framers/theme-tokens':
         specifier: ^0.1.0
         version: 0.1.0
@@ -353,8 +353,8 @@ importers:
   apps/frame.dev:
     dependencies:
       '@framers/sql-storage-adapter':
-        specifier: ^0.4.2
-        version: 0.4.2(@aws-sdk/client-s3@3.922.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@6.2.1))(better-sqlite3@12.4.1)(pg@8.16.3)
+        specifier: workspace:*
+        version: link:../../packages/sql-storage-adapter
       '@huggingface/transformers':
         specifier: ^3.8.0
         version: 3.8.0
@@ -1998,15 +1998,6 @@ packages:
   '@formatjs/intl-localematcher@0.6.2':
     resolution: {integrity: sha512-XOMO2Hupl0wdd172Y06h6kLpBz6Dv+J4okPLl4LPtzbr8f66WbIoy4ev98EBuZ6ZK4h5ydTN6XneT4QVpD7cdA==}
 
-  '@framers/agentos@1.0.1':
-    resolution: {integrity: sha512-s1ceXvHYeVZajpYcrzlyGoDpsciPljm9xUNF3KHiDdLaKpsAodo+NSGhwYwBj8+BjsGiT4tiygi99MTTY5urwg==}
-    peerDependencies:
-      '@framers/sql-storage-adapter': '>=0.4.0'
-      typescript: '>=5.0.0'
-    peerDependenciesMeta:
-      '@framers/sql-storage-adapter':
-        optional: true
-
   '@framers/sql-storage-adapter@0.3.5':
     resolution: {integrity: sha512-aQUMi+EIbfz+TPLpJjsnC1PXVF6B3jAVP97sJkV4kaM66E06TQTUXT5nbMYTSiLc0Cr3MVoGYu7QhZHKYj9B4Q==}
     peerDependencies:
@@ -2026,23 +2017,6 @@ packages:
 
   '@framers/sql-storage-adapter@0.4.1':
     resolution: {integrity: sha512-dA/qnJqoJMWNmcJ8QWTTSjJ2KWBo3GbOgBQYnWw1/XEXCupSXDxOi5vW6antm6aF9t2eg9JwW5Zmpsr/cR37Gg==}
-    peerDependencies:
-      '@aws-sdk/client-s3': ^3.0.0
-      '@capacitor-community/sqlite': ^6.0.0
-      better-sqlite3: ^12.0.0
-      pg: ^8.13.1
-    peerDependenciesMeta:
-      '@aws-sdk/client-s3':
-        optional: true
-      '@capacitor-community/sqlite':
-        optional: true
-      better-sqlite3:
-        optional: true
-      pg:
-        optional: true
-
-  '@framers/sql-storage-adapter@0.4.2':
-    resolution: {integrity: sha512-CRc3ywezZ3DU0hyTYyzc8DxSqNT8QX8jwBmryhAZ08lnTpDsVzclK/gATCcG/lOdSkMm6GOZn7NIfhqGa29AYQ==}
     peerDependencies:
       '@aws-sdk/client-s3': ^3.0.0
       '@capacitor-community/sqlite': ^6.0.0
@@ -12321,30 +12295,6 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  '@framers/agentos@1.0.1(@framers/sql-storage-adapter@0.4.2(@aws-sdk/client-s3@3.922.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@6.2.1))(better-sqlite3@12.4.1)(pg@8.16.3))(typescript@5.9.3)':
-    dependencies:
-      ajv: 8.17.1
-      ajv-formats: 3.0.1(ajv@8.17.1)
-      axios: 1.12.2
-      lru-cache: 11.2.2
-      natural: 6.12.0
-      pino: 9.14.0
-      typescript: 5.9.3
-      uuid: 11.1.0
-    optionalDependencies:
-      '@framers/sql-storage-adapter': 0.4.2(@aws-sdk/client-s3@3.922.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@6.2.1))(better-sqlite3@12.4.1)(pg@8.16.3)
-    transitivePeerDependencies:
-      - '@aws-sdk/credential-providers'
-      - '@mongodb-js/zstd'
-      - debug
-      - gcp-metadata
-      - kerberos
-      - mongodb-client-encryption
-      - pg-native
-      - snappy
-      - socks
-      - supports-color
-
   '@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.922.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@6.2.1))(better-sqlite3@12.4.1)(pg@8.16.3)':
     dependencies:
       sql.js: 1.13.0
@@ -12355,15 +12305,6 @@ snapshots:
       pg: 8.16.3
 
   '@framers/sql-storage-adapter@0.4.1(@aws-sdk/client-s3@3.922.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@6.2.1))(better-sqlite3@12.4.1)(pg@8.16.3)':
-    dependencies:
-      sql.js: 1.13.0
-    optionalDependencies:
-      '@aws-sdk/client-s3': 3.922.0
-      '@capacitor-community/sqlite': 6.0.2(@capacitor/core@6.2.1)
-      better-sqlite3: 12.4.1
-      pg: 8.16.3
-
-  '@framers/sql-storage-adapter@0.4.2(@aws-sdk/client-s3@3.922.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@6.2.1))(better-sqlite3@12.4.1)(pg@8.16.3)':
     dependencies:
       sql.js: 1.13.0
     optionalDependencies:
