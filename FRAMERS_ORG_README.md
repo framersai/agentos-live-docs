@@ -27,11 +27,10 @@ Open source, local-first, AI-native, and yours. All built on **OpenStrand** and 
   <img src="https://raw.githubusercontent.com/framersai/.github/master/profile/agentos-icon.svg" alt="AgentOS" width="120" />
 </div>
 
-**Adaptive AI Agency Runtime**  
+**Adaptive AI Agency Runtime**
 Build AI agents that adapt their personas dynamically, collaborate with each other, and perform emergent behaviors.
 
 - **[agentos](https://github.com/framersai/agentos)** - Core runtime & cognitive substrate [![npm](https://img.shields.io/npm/v/@framers/agentos?style=flat-square&logo=npm)](https://www.npmjs.com/package/@framers/agentos)
-- **[agentos.sh](https://agentos.sh)** - Marketing, documentation & playground [![Website](https://img.shields.io/badge/Live-agentos.sh-00C896?style=flat-square)](https://agentos.sh)
 - **[agentos-workbench](https://github.com/framersai/agentos-workbench)** - Full-featured client-side app for building and testing agents
 - **[agentos-extensions](https://github.com/framersai/agentos-extensions)** - Extension marketplace & samples
 
@@ -72,8 +71,9 @@ Curated, semantic knowledge infrastructure for AI retrieval and reasoning.
 
 ---
 
-### 🌐 Frame Ecosystem
+### 🌐 Community & Landing Pages
 
+- **[agentos.sh](https://agentos.sh)** - AgentOS marketing, documentation & playground [![Website](https://img.shields.io/badge/Live-agentos.sh-00C896?style=flat-square)](https://agentos.sh)
 - **[frame.dev](https://github.com/framersai/frame.dev)** - Main website, landing pages, and documentation hub [![Website](https://img.shields.io/badge/Live-frame.dev-00C896?style=flat-square)](https://frame.dev)
 
 ---
