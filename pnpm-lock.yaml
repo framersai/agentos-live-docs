@@ -352,6 +352,9 @@ importers:
 
   apps/frame.dev:
     dependencies:
+      '@anthropic-ai/sdk':
+        specifier: ^0.32.0
+        version: 0.32.1
       '@framers/sql-storage-adapter':
         specifier: ^0.5.0
         version: 0.5.0(@aws-sdk/client-s3@3.922.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@6.2.1))(better-sqlite3@12.4.1)(pg@8.16.3)
@@ -430,6 +433,9 @@ importers:
       d3:
         specifier: ^7.9.0
         version: 7.9.0
+      fast-xml-parser:
+        specifier: ^5.2.5
+        version: 5.2.5
       framer-motion:
         specifier: ^11.0.23
         version: 11.18.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -439,6 +445,9 @@ importers:
       gray-matter:
         specifier: ^4.0.3
         version: 4.0.3
+      he:
+        specifier: ^1.2.0
+        version: 1.2.0
       html2canvas:
         specifier: ^1.4.1
         version: 1.4.1
@@ -448,6 +457,9 @@ importers:
       jspdf:
         specifier: ^2.5.2
         version: 2.5.2
+      jszip:
+        specifier: ^3.10.1
+        version: 3.10.1
       lowlight:
         specifier: ^3.3.0
         version: 3.3.0
@@ -1145,6 +1157,9 @@ packages:
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
+
+  '@anthropic-ai/sdk@0.32.1':
+    resolution: {integrity: sha512-U9JwTrDvdQ9iWuABVsMLj8nJVwAyQz6QXvgLsVhryhCEPkLsbcP/MXxm+jYcAwLoV8ESbaTTjnD4kuAFa+Hyjg==}
 
   '@aws-crypto/crc32@5.2.0':
     resolution: {integrity: sha512-nLbCWqQNgUiwwtFsen1AdzAtvuLRsQS8rYgMuxCrdKf9kOssamGLuPwyTY9wyYblNr9+1XM8v6zoDTPPSIeANg==}
@@ -11216,6 +11231,18 @@ snapshots:
     dependencies:
       '@jridgewell/gen-mapping': 0.3.13
       '@jridgewell/trace-mapping': 0.3.31
+
+  '@anthropic-ai/sdk@0.32.1':
+    dependencies:
+      '@types/node': 18.19.130
+      '@types/node-fetch': 2.6.13
+      abort-controller: 3.0.0
+      agentkeepalive: 4.6.0
+      form-data-encoder: 1.7.2
+      formdata-node: 4.4.1
+      node-fetch: 2.7.0
+    transitivePeerDependencies:
+      - encoding
 
   '@aws-crypto/crc32@5.2.0':
     dependencies:
