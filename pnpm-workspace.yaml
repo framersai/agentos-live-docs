@@ -1,6 +1,7 @@
 packages:
   - backend
   - frontend
+  - electron
   - packages/*
   - apps/*
   - apps/**

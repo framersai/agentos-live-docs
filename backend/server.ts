@@ -297,7 +297,17 @@ async function gracefulShutdown(signal: string) {
 process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
 
-startServer().catch((error: unknown) => {
-  bootstrapLogger.error('💥 Failed to start server due to unhandled error during initialization: %s', getErrorMessage(error));
-  process.exit(1);
-});
+// Export for Electron embedding
+export { startServer, gracefulShutdown };
+
+// Only auto-start when run directly (not imported by Electron)
+// Check if this module is being run directly vs imported
+const isMainModule = import.meta.url === `file://${process.argv[1]}` ||
+  import.meta.url === `file:///${process.argv[1]?.replace(/\\/g, '/')}`;
+
+if (isMainModule) {
+  startServer().catch((error: unknown) => {
+    bootstrapLogger.error('💥 Failed to start server due to unhandled error during initialization: %s', getErrorMessage(error));
+    process.exit(1);
+  });
+}
