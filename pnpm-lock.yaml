@@ -352,6 +352,9 @@ importers:
 
   apps/fabric-mobile:
     dependencies:
+      '@capacitor-community/electron':
+        specifier: ^5.0.1
+        version: 5.0.1
       '@capacitor-community/sqlite':
         specifier: ^6.0.2
         version: 6.0.2(@capacitor/core@6.2.1)
@@ -510,7 +513,7 @@ importers:
         specifier: ^4.0.3
         version: 4.0.3
       hast-util-to-html:
-        specifier: ^9.0.5
+        specifier: ^9.0.4
         version: 9.0.5
       he:
         specifier: ^1.2.0
@@ -1456,6 +1459,9 @@ packages:
 
   '@braintree/sanitize-url@6.0.4':
     resolution: {integrity: sha512-s3jaWicZd0pkP0jf5ysyHUI/RE7MHos6qlToFcGWXVp+ykHOy77OUMrfbgJ9it2C5bow7OIQwYYaHjk9XlBQ2A==}
+
+  '@capacitor-community/electron@5.0.1':
+    resolution: {integrity: sha512-4/x12ycTq0Kq8JIn/BmIBdFVP5Cqw8iA6SU6YfFjmONfjW3OELwsB3zwLxOwAjLxnjyCMOBHl4ci9E5jLgZgAQ==}
 
   '@capacitor-community/sqlite@6.0.2':
     resolution: {integrity: sha512-sj+2SPLu7E/3dM3xxcWwfNomG+aQHuN96/EFGrOtp4Dv30/2y5oIPyi6hZGjQGjPc5GDNoTQwW7vxWNzybjuMg==}
@@ -6753,6 +6759,9 @@ packages:
     engines: {node: '>=14.0.0'}
     hasBin: true
 
+  electron-is-dev@2.0.0:
+    resolution: {integrity: sha512-3X99K852Yoqu9AcW50qz3ibYBWY79/pBhlMCab8ToEWS48R0T9tyxRiQhwylE7zQdXrMnx2JKqUJyMPmt5FBqA==}
+
   electron-log@5.4.3:
     resolution: {integrity: sha512-sOUsM3LjZdugatazSQ/XTyNcw8dfvH1SYhXWiJyfYodAAKOZdHs0txPiLDXFzOZbhXgAgshQkshH2ccq0feyLQ==}
     engines: {node: '>= 14'}
@@ -7345,6 +7354,10 @@ packages:
   fs-extra@10.1.0:
     resolution: {integrity: sha512-oRXApq54ETRj4eMiFzGnHWGy+zo5raudjuxN0b8H7s/RU2oW0Wvsx9O0ACRN/kRq9E8Vu/ReskGB5o3ji+FzHQ==}
     engines: {node: '>=12'}
+
+  fs-extra@11.1.1:
+    resolution: {integrity: sha512-MGIE4HOvQCeUCzmlHs0vXpih4ysz4wg9qiSAu6cd42lVwPbTM1TjV7RusoyQqMmk/95gdQZX72u+YW+c3eEpFQ==}
+    engines: {node: '>=14.14'}
 
   fs-extra@11.3.2:
     resolution: {integrity: sha512-Xr9F6z6up6Ws+NjzMCZc6WXg2YFRlrLP9NQDO3VQrWrfiojdhS56TzueT88ze0uBdCTwEIhQ3ptnmKeWGFAe0A==}
@@ -12717,6 +12730,21 @@ snapshots:
   '@bcoe/v8-coverage@0.2.3': {}
 
   '@braintree/sanitize-url@6.0.4': {}
+
+  '@capacitor-community/electron@5.0.1':
+    dependencies:
+      '@capacitor/cli': 6.2.1
+      '@capacitor/core': 6.2.1
+      '@ionic/utils-fs': 3.1.7
+      chalk: 4.1.2
+      electron-is-dev: 2.0.0
+      events: 3.3.0
+      fs-extra: 11.1.1
+      keyv: 4.5.4
+      mime-types: 2.1.35
+      ora: 5.4.1
+    transitivePeerDependencies:
+      - supports-color
 
   '@capacitor-community/sqlite@6.0.2(@capacitor/core@6.2.1)':
     dependencies:
@@ -18593,6 +18621,8 @@ snapshots:
       - electron-builder-squirrel-windows
       - supports-color
 
+  electron-is-dev@2.0.0: {}
+
   electron-log@5.4.3: {}
 
   electron-publish@24.13.1:
@@ -19560,6 +19590,12 @@ snapshots:
   fs-constants@1.0.0: {}
 
   fs-extra@10.1.0:
+    dependencies:
+      graceful-fs: 4.2.11
+      jsonfile: 6.2.0
+      universalify: 2.0.1
+
+  fs-extra@11.1.1:
     dependencies:
       graceful-fs: 4.2.11
       jsonfile: 6.2.0
