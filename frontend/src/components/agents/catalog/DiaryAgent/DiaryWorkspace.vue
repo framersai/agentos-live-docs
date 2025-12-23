@@ -166,18 +166,13 @@
       </div>
 
       <div class="content-area-v2">
-        <div v-if="isEditing" class="markdown-editor-v2">
-          <textarea
-            v-model="editableFields.contentMarkdown"
-            placeholder="Share your thoughts, reflections, or details of your day..."
-            class="form-textarea-futuristic large-text-area"
-            aria-label="Diary Entry Content"
-            @input="throttledUpdateDraft"
-          ></textarea>
-          <div class="editor-toolbar-v2">
-            <span class="text-xs text-[var(--color-text-muted)]">Markdown supported.</span>
-          </div>
-        </div>
+        <MarkdownEditor
+          v-if="isEditing"
+          v-model="editableFields.contentMarkdown"
+          placeholder="Share your thoughts, reflections, or details of your day..."
+          class="markdown-editor-enhanced"
+          @update:modelValue="throttledUpdateDraft"
+        />
         <div v-else class="markdown-display-v2 prose prose-sm sm:prose-base diary-prose-theme max-w-none">
            <CompactMessageRenderer
             v-if="effectiveEntry.contentMarkdown"
@@ -201,6 +196,7 @@
 import { ref, computed, watch, type PropType } from 'vue';
 import type { RichDiaryEntry, DiaryViewMode, MoodRating, DiaryEntryLocation } from './DiaryAgentTypes'; // MoodRating imported
 import CompactMessageRenderer from '@/components/layouts/CompactMessageRenderer/CompactMessageRenderer.vue';
+import MarkdownEditor from '@/components/shared/MarkdownEditor/MarkdownEditor.vue';
 import { useAgentStore } from '@/store/agent.store';
 import {
   PencilSquareIcon, CheckIcon, XMarkIcon, TrashIcon, SparklesIcon,
@@ -413,20 +409,16 @@ const handleCancelEditClick = () => {
   @apply flex-grow flex flex-col overflow-hidden pt-2;
 }
 
-.markdown-editor-v2 {
-  @apply flex-grow flex flex-col;
-  .form-textarea-futuristic.large-text-area {
-    @apply w-full flex-grow p-3 rounded-lg text-sm resize-none border-2 min-h-[250px] leading-relaxed;
-    background-color: hsla(var(--diary-bg-h), var(--diary-bg-s), var(--diary-bg-l), 0.95);
-    color: var(--color-text-primary);
-    border-color: hsla(var(--diary-accent-h), var(--diary-accent-s), var(--diary-accent-l), 0.25);
-    @include mixins.custom-scrollbar-for-themed-panel('--diary');
-    &:focus {
-      border-color: hsl(var(--diary-accent-h), var(--diary-accent-s), var(--diary-accent-l));
-      box-shadow: 0 0 0 2.5px hsla(var(--diary-accent-h), var(--diary-accent-s), var(--diary-accent-l), 0.3);
-    }
+.markdown-editor-enhanced {
+  @apply flex-grow;
+  border: 2px solid hsla(var(--diary-accent-h), var(--diary-accent-s), var(--diary-accent-l), 0.2);
+  border-radius: 8px;
+  overflow: hidden;
+
+  &:focus-within {
+    border-color: hsl(var(--diary-accent-h), var(--diary-accent-s), var(--diary-accent-l));
+    box-shadow: 0 0 0 2.5px hsla(var(--diary-accent-h), var(--diary-accent-s), var(--diary-accent-l), 0.25);
   }
-  .editor-toolbar-v2 { @apply p-1.5 text-right border-t mt-1 shrink-0; border-top-color: hsla(var(--diary-accent-h), var(--diary-accent-s), var(--diary-accent-l), 0.15); }
 }
 
 .markdown-display-v2 {

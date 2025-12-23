@@ -32,7 +32,14 @@
     "dompurify": "^3.3.0",
     "vue": "^3.3.8",
     "vue-i18n": "^9.14.5",
-    "vue-router": "^4.2.5"
+    "vue-router": "^4.2.5",
+    "@codemirror/view": "^6.34.3",
+    "@codemirror/state": "^6.4.1",
+    "@codemirror/lang-markdown": "^6.3.1",
+    "@codemirror/theme-one-dark": "^6.1.2",
+    "@codemirror/language-data": "^6.5.1",
+    "@lezer/common": "^1.2.3",
+    "@lezer/highlight": "^1.2.1"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.10",

@@ -288,14 +288,155 @@ export function stripFrontmatter(content: string): string {
         startIndex = i
       } else {
         frontmatterEnded = true
-        // Return everything after the closing ---
-        return lines.slice(i + 1).join('\n').trim()
+        // Skip empty lines immediately after frontmatter
+        let nextContentIndex = i + 1
+        while (nextContentIndex < lines.length && !lines[nextContentIndex].trim()) {
+          nextContentIndex++
+        }
+        // Return content starting from first non-empty line after frontmatter
+        return lines.slice(nextContentIndex).join('\n')
       }
     }
   }
 
   // No frontmatter found, return original
   return content
+}
+
+/**
+ * Parse YAML frontmatter from markdown content
+ * Returns both the parsed metadata and the content without frontmatter
+ * @param content - Markdown content with optional frontmatter
+ * @returns Object with metadata and content
+ *
+ * @example
+ * ```ts
+ * const md = `---
+ * title: "Hello World"
+ * tags: [test, demo]
+ * ---
+ * # Content`
+ *
+ * const { metadata, content } = parseFrontmatter(md)
+ * // metadata: { title: "Hello World", tags: ["test", "demo"] }
+ * // content: "# Content"
+ * ```
+ */
+export function parseFrontmatter(content: string): {
+  metadata: Record<string, any>
+  content: string
+  hasFrontmatter: boolean
+} {
+  const lines = content.split('\n')
+  let inFrontmatter = false
+  let frontmatterLines: string[] = []
+  let contentStartIndex = 0
+
+  for (let i = 0; i < lines.length; i++) {
+    if (lines[i].trim() === '---') {
+      if (!inFrontmatter && i === 0) {
+        // Start of frontmatter (must be at beginning)
+        inFrontmatter = true
+      } else if (inFrontmatter) {
+        // End of frontmatter
+        // Skip empty lines after frontmatter
+        contentStartIndex = i + 1
+        while (contentStartIndex < lines.length && !lines[contentStartIndex].trim()) {
+          contentStartIndex++
+        }
+
+        // Parse the frontmatter YAML
+        const yamlContent = frontmatterLines.join('\n')
+        let metadata: Record<string, any> = {}
+
+        try {
+          // Simple YAML parsing for common cases
+          // For production, consider using a library like js-yaml
+          metadata = parseSimpleYAML(yamlContent)
+        } catch (error) {
+          console.warn('Failed to parse frontmatter:', error)
+        }
+
+        return {
+          metadata,
+          content: lines.slice(contentStartIndex).join('\n'),
+          hasFrontmatter: true,
+        }
+      }
+    } else if (inFrontmatter) {
+      frontmatterLines.push(lines[i])
+    }
+  }
+
+  // No valid frontmatter found
+  return {
+    metadata: {},
+    content,
+    hasFrontmatter: false,
+  }
+}
+
+/**
+ * Simple YAML parser for common frontmatter patterns
+ * Handles: strings, numbers, booleans, arrays
+ * @param yaml - YAML string to parse
+ * @returns Parsed object
+ */
+function parseSimpleYAML(yaml: string): Record<string, any> {
+  const result: Record<string, any> = {}
+  const lines = yaml.split('\n')
+
+  for (const line of lines) {
+    const trimmed = line.trim()
+    if (!trimmed || trimmed.startsWith('#')) continue
+
+    const colonIndex = trimmed.indexOf(':')
+    if (colonIndex === -1) continue
+
+    const key = trimmed.substring(0, colonIndex).trim()
+    let value = trimmed.substring(colonIndex + 1).trim()
+
+    // Remove quotes
+    if ((value.startsWith('"') && value.endsWith('"')) ||
+        (value.startsWith("'") && value.endsWith("'"))) {
+      value = value.slice(1, -1)
+    }
+
+    // Parse arrays [a, b, c]
+    if (value.startsWith('[') && value.endsWith(']')) {
+      const items = value.slice(1, -1).split(',').map(item => item.trim())
+      result[key] = items.map(item => {
+        // Remove quotes from array items
+        if ((item.startsWith('"') && item.endsWith('"')) ||
+            (item.startsWith("'") && item.endsWith("'"))) {
+          return item.slice(1, -1)
+        }
+        return item
+      })
+      continue
+    }
+
+    // Parse booleans
+    if (value === 'true') {
+      result[key] = true
+      continue
+    }
+    if (value === 'false') {
+      result[key] = false
+      continue
+    }
+
+    // Parse numbers
+    if (!isNaN(Number(value)) && value !== '') {
+      result[key] = Number(value)
+      continue
+    }
+
+    // String value
+    result[key] = value
+  }
+
+  return result
 }
 
 /**
