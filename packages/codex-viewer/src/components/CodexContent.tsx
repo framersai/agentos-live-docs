@@ -6,18 +6,20 @@
 
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import rehypeRaw from 'rehype-raw'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
-import { Loader2, Link2, ExternalLink, Book, FileText, Code } from 'lucide-react'
+import { Loader2, Link2, ExternalLink, Book, FileText, Code, Edit3 } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import type { GitHubFile, StrandMetadata } from './types'
-import { isMarkdownFile, rewriteImageUrl, stripFrontmatter } from './utils'
+import { isMarkdownFile, rewriteImageUrl, stripFrontmatter, parseFrontmatter } from './utils'
 import { REPO_CONFIG } from './constants'
+import CodexEditMode from './CodexEditMode'
+import FrontmatterDisplay from './FrontmatterDisplay'
 
 interface CodexContentProps {
   /** Currently selected file */
@@ -36,6 +38,10 @@ interface CodexContentProps {
   onFetchFile: (file: GitHubFile) => void
   /** Current pathname (for URL building) */
   pathname: string
+  /** Whether editing is enabled (optional) */
+  editable?: boolean
+  /** Callback when file is saved (optional) */
+  onSave?: (content: string) => Promise<void>
 }
 
 /**
@@ -72,7 +78,59 @@ export default function CodexContent({
   onNavigate,
   onFetchFile,
   pathname,
+  editable = false,
+  onSave,
 }: CodexContentProps) {
+  // Edit mode state
+  const [isEditing, setIsEditing] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
+
+  // Parse frontmatter from content
+  const { metadata: frontmatterData, content: contentWithoutFrontmatter, hasFrontmatter } =
+    parseFrontmatter(content)
+
+  /**
+   * Handle save operation
+   */
+  const handleSave = async (newContent: string) => {
+    if (!onSave) return
+
+    setIsSaving(true)
+    setSaveError(null)
+
+    try {
+      await onSave(newContent)
+      setIsEditing(false)
+    } catch (error) {
+      setSaveError(error instanceof Error ? error.message : 'Failed to save file')
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  /**
+   * Handle cancel operation
+   */
+  const handleCancel = () => {
+    setIsEditing(false)
+    setSaveError(null)
+  }
+
+  // If in edit mode, render CodexEditMode
+  if (isEditing && file && editable && onSave) {
+    return (
+      <CodexEditMode
+        file={file}
+        initialContent={content}
+        onSave={handleSave}
+        onCancel={handleCancel}
+        isSaving={isSaving}
+        error={saveError}
+      />
+    )
+  }
+
   return (
     <div className="codex-content flex-1 bg-white dark:bg-gray-950 overflow-hidden flex flex-col relative pb-0 md:pb-0">
       {/* Analog Paper Texture Overlay */}
@@ -118,6 +176,16 @@ export default function CodexContent({
                 </div>
               </div>
               <div className="flex items-center gap-2">
+                {/* Edit Button (if editable) */}
+                {editable && isMarkdownFile(file.name) && (
+                  <button
+                    onClick={() => setIsEditing(true)}
+                    className="p-2 hover:bg-cyan-100 dark:hover:bg-cyan-900/30 rounded-lg transition-colors text-cyan-600 dark:text-cyan-400"
+                    title="Edit file"
+                  >
+                    <Edit3 className="w-5 h-5" />
+                  </button>
+                )}
                 {/* Copy Link */}
                 <button
                   onClick={() => {
@@ -152,6 +220,12 @@ export default function CodexContent({
                 </div>
               ) : isMarkdownFile(file.name) ? (
                 <article className="prose prose-sm sm:prose-base lg:prose-lg prose-gray dark:prose-invert max-w-none">
+                  {/* Frontmatter Display */}
+                  <FrontmatterDisplay
+                    metadata={frontmatterData}
+                    hasFrontmatter={hasFrontmatter}
+                  />
+
                   <ReactMarkdown
                     remarkPlugins={[remarkGfm]}
                     rehypePlugins={[rehypeRaw]}
@@ -263,7 +337,7 @@ export default function CodexContent({
                       },
                      }}
                    >
-                     {stripFrontmatter(content)}
+                     {contentWithoutFrontmatter}
                    </ReactMarkdown>
                  </article>
               ) : (
