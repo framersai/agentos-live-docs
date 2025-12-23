@@ -11,13 +11,15 @@
 
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Bookmark, Clock, Trash2, Star, Highlighter } from 'lucide-react'
+import { X, Bookmark, Clock, Trash2, Star, Highlighter, Download, FileJson, FileText, FileCode } from 'lucide-react'
 import type { Bookmark as BookmarkType, HistoryEntry } from '../lib/localStorage'
 import type { Highlight } from '../lib/highlightTypes'
 import HighlightCard from './HighlightCard'
 import { useHighlights } from '../hooks/useHighlights'
+import { exportHighlights, exportBookmarks, exportHistory, exportAll, type ExportFormat } from '../lib/exportUtils'
+import { useGroups } from '../hooks/useGroups'
 
 interface BookmarksPanelProps {
   /** Whether panel is open */
@@ -71,6 +73,53 @@ export default function BookmarksPanel({
 }: BookmarksPanelProps) {
   const [activeTab, setActiveTab] = useState<'bookmarks' | 'highlights' | 'history'>('bookmarks')
   const { highlights, loading: highlightsLoading, updateHighlight, deleteHighlight } = useHighlights({ autoLoad: isOpen })
+  const { groups } = useGroups()
+  const [showExportMenu, setShowExportMenu] = useState(false)
+  const exportMenuRef = useRef<HTMLDivElement>(null)
+
+  /**
+   * Close export menu when clicking outside
+   */
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (exportMenuRef.current && !exportMenuRef.current.contains(e.target as Node)) {
+        setShowExportMenu(false)
+      }
+    }
+
+    if (showExportMenu) {
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside)
+      }
+    }
+  }, [showExportMenu])
+
+  /**
+   * Handle export based on active tab and format
+   */
+  const handleExport = (format: ExportFormat) => {
+    switch (activeTab) {
+      case 'bookmarks':
+        exportBookmarks(bookmarks, format)
+        break
+      case 'highlights':
+        exportHighlights(highlights, format)
+        break
+      case 'history':
+        exportHistory(history, format)
+        break
+    }
+    setShowExportMenu(false)
+  }
+
+  /**
+   * Handle export all data
+   */
+  const handleExportAll = () => {
+    exportAll(highlights, bookmarks, history, groups)
+    setShowExportMenu(false)
+  }
 
   if (!isOpen) return null
 
@@ -100,13 +149,85 @@ export default function BookmarksPanel({
             {activeTab === 'highlights' && 'Highlights'}
             {activeTab === 'history' && 'Recent'}
           </h2>
-          <button
-            onClick={onClose}
-            className="p-2 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg transition-colors"
-            aria-label="Close bookmarks panel"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            {/* Export button with dropdown */}
+            <div className="relative" ref={exportMenuRef}>
+              <button
+                onClick={() => setShowExportMenu(!showExportMenu)}
+                className="p-2 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                aria-label="Export data"
+                title="Export data"
+              >
+                <Download className="w-5 h-5" />
+              </button>
+
+              {/* Export dropdown menu */}
+              <AnimatePresence>
+                {showExportMenu && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95, y: -10 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95, y: -10 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute right-0 top-full mt-2 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl z-10 overflow-hidden"
+                  >
+                    {/* Export current tab */}
+                    <div className="p-2 border-b border-gray-200 dark:border-gray-700">
+                      <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 px-2 py-1">
+                        Export {activeTab === 'bookmarks' ? 'Bookmarks' : activeTab === 'highlights' ? 'Highlights' : 'History'}
+                      </p>
+                      <button
+                        onClick={() => handleExport('json')}
+                        className="w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
+                      >
+                        <FileJson className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                        <span>Export as JSON</span>
+                      </button>
+                      <button
+                        onClick={() => handleExport('csv')}
+                        className="w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
+                      >
+                        <FileText className="w-4 h-4 text-green-600 dark:text-green-400" />
+                        <span>Export as CSV</span>
+                      </button>
+                      <button
+                        onClick={() => handleExport('markdown')}
+                        className="w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
+                      >
+                        <FileCode className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                        <span>Export as Markdown</span>
+                      </button>
+                    </div>
+
+                    {/* Export all */}
+                    <div className="p-2">
+                      <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 px-2 py-1">
+                        Export Everything
+                      </p>
+                      <button
+                        onClick={handleExportAll}
+                        className="w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-gradient-to-r hover:from-cyan-50 hover:to-purple-50 dark:hover:from-cyan-900/20 dark:hover:to-purple-900/20 rounded transition-colors"
+                      >
+                        <Download className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
+                        <span>Export All Data (JSON)</span>
+                      </button>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 px-3 py-1">
+                        Includes highlights, bookmarks, history, and groups
+                      </p>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            <button
+              onClick={onClose}
+              className="p-2 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg transition-colors"
+              aria-label="Close bookmarks panel"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         {/* Tabs */}
