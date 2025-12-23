@@ -72,18 +72,22 @@
         :read-only="readonly"
         :theme="isDarkMode ? 'dark' : 'light'"
         :auto-save-interval="autoSaveInterval"
+        :on-editor-ready="handleEditorReady"
       />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { applyReactInVue } from 'veaury'
-import TldrawWrapperReact from './TldrawWrapper'
+import TldrawWrapperReact, { type TldrawWrapperHandle } from './TldrawWrapper'
 
 // Wrap React component for use in Vue
 const TldrawComponent = applyReactInVue(TldrawWrapperReact)
+
+// Store editor handle for export functions
+const editorHandle = ref<TldrawWrapperHandle | null>(null)
 
 interface Props {
   modelValue: string
@@ -116,6 +120,13 @@ const isDarkMode = computed(() => {
 })
 
 /**
+ * Handle editor ready callback from TldrawWrapper
+ */
+function handleEditorReady(handle: TldrawWrapperHandle) {
+  editorHandle.value = handle
+}
+
+/**
  * Handle canvas data changes
  */
 function handleCanvasChange(data: string) {
@@ -129,19 +140,98 @@ function handleCanvasChange(data: string) {
 }
 
 /**
- * Export canvas to PNG
+ * Export canvas to PNG and download
  */
-function exportToPNG() {
-  // TODO: Implement PNG export using tldraw's export API
-  console.log('Export to PNG')
+async function exportToPNG() {
+  if (!editorHandle.value) {
+    console.warn('Canvas editor not ready')
+    return null
+  }
+
+  const dataUrl = await editorHandle.value.exportToPNG({ scale: 2 })
+  if (!dataUrl) {
+    console.warn('No content to export')
+    return null
+  }
+
+  // Trigger download
+  const link = document.createElement('a')
+  link.href = dataUrl
+  link.download = `canvas-${Date.now()}.png`
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+
+  return dataUrl
 }
 
 /**
- * Export canvas to SVG
+ * Export canvas to SVG and download
  */
-function exportToSVG() {
-  // TODO: Implement SVG export using tldraw's export API
-  console.log('Export to SVG')
+async function exportToSVG() {
+  if (!editorHandle.value) {
+    console.warn('Canvas editor not ready')
+    return null
+  }
+
+  const svgString = await editorHandle.value.exportToSVG()
+  if (!svgString) {
+    console.warn('No content to export')
+    return null
+  }
+
+  // Trigger download
+  const blob = new Blob([svgString], { type: 'image/svg+xml' })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = `canvas-${Date.now()}.svg`
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+  URL.revokeObjectURL(url)
+
+  return svgString
+}
+
+/**
+ * Get PNG as data URL (for embedding in markdown)
+ */
+async function getPNGDataUrl(): Promise<string | null> {
+  if (!editorHandle.value) return null
+  return await editorHandle.value.exportToPNG({ scale: 2 })
+}
+
+/**
+ * Get SVG as string (for embedding in markdown)
+ */
+async function getSVGString(): Promise<string | null> {
+  if (!editorHandle.value) return null
+  return await editorHandle.value.exportToSVG()
+}
+
+/**
+ * Get canvas snapshot data
+ */
+function getSnapshot(): string | null {
+  if (!editorHandle.value) return null
+  return editorHandle.value.getSnapshot()
+}
+
+/**
+ * Check if canvas has content
+ */
+function hasContent(): boolean {
+  if (!editorHandle.value) return false
+  return editorHandle.value.hasContent()
+}
+
+/**
+ * Check if canvas has handwriting
+ */
+function hasHandwriting(): boolean {
+  if (!editorHandle.value) return false
+  return editorHandle.value.hasHandwriting()
 }
 
 /**
@@ -152,6 +242,9 @@ function clearCanvas() {
     return
   }
 
+  if (editorHandle.value) {
+    editorHandle.value.clear()
+  }
   emit('update:modelValue', '')
   hasUnsavedChanges.value = false
 }
@@ -167,6 +260,11 @@ function toggleFullscreen() {
 defineExpose({
   exportToPNG,
   exportToSVG,
+  getPNGDataUrl,
+  getSVGString,
+  getSnapshot,
+  hasContent,
+  hasHandwriting,
   clearCanvas,
 })
 </script>

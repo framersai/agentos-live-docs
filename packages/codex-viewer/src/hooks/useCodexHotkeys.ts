@@ -1,7 +1,7 @@
 /**
  * Hook for keyboard shortcuts in Codex viewer
  * @module codex/hooks/useCodexHotkeys
- * 
+ *
  * @remarks
  * Keyboard shortcuts:
  * - `m` - Toggle metadata panel
@@ -9,6 +9,8 @@
  * - `g h` - Navigate home
  * - `s` - Toggle sidebar (mobile)
  * - `b` - Toggle bookmarks panel
+ * - `h` - Toggle highlights (opens bookmarks panel with highlights tab)
+ * - `g` - Open group manager
  * - `,` - Open preferences/settings
  * - `?` - Toggle help/info panel
  */
@@ -27,6 +29,10 @@ interface HotkeyHandlers {
   onToggleSidebar?: () => void
   /** Handler for toggling bookmarks panel (default: 'b') */
   onToggleBookmarks?: () => void
+  /** Handler for toggling highlights (default: 'h') */
+  onToggleHighlights?: () => void
+  /** Handler for opening group manager (default: 'g') */
+  onOpenGroupManager?: () => void
   /** Handler for opening preferences (default: ',') */
   onOpenPreferences?: () => void
   /** Handler for toggling help panel (default: '?') */
@@ -109,6 +115,14 @@ export function useCodexHotkeys(handlers: HotkeyHandlers): void {
       } else if (event.key === 'b' && handlers.onToggleBookmarks) {
         event.preventDefault()
         handlers.onToggleBookmarks()
+        sequenceBuffer = ''
+      } else if (event.key === 'h' && handlers.onToggleHighlights) {
+        event.preventDefault()
+        handlers.onToggleHighlights()
+        sequenceBuffer = ''
+      } else if (event.key === 'g' && handlers.onOpenGroupManager) {
+        event.preventDefault()
+        handlers.onOpenGroupManager()
         sequenceBuffer = ''
       } else if (event.key === ',' && handlers.onOpenPreferences) {
         event.preventDefault()

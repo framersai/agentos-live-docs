@@ -10,6 +10,7 @@
 import type { Ref, ComputedRef } from 'vue';
 import type { AgentId, IAgentDefinition } from '@/services/agent.service';
 import type { ChatMessageFE } from '@/utils/api';
+import type { DiaryAttachment, CanvasAttachment } from './AttachmentTypes';
 
 // --- Core Diary Data Structures ---
 
@@ -109,6 +110,7 @@ export interface RichDiaryEntry {
   id: string;
   title: string;
   contentMarkdown: string;
+  /** @deprecated Use richAttachments instead. Kept for backward compatibility. */
   canvasData?: string; // tldraw JSON snapshot for infinite canvas/whiteboard
   summary?: string;
   createdAt: string;
@@ -121,7 +123,10 @@ export interface RichDiaryEntry {
   isFavorite?: boolean;
   isDraft?: boolean;
   analysis?: DiaryEntryAnalysis;
+  /** @deprecated Use richAttachments instead. Kept for backward compatibility. */
   attachments?: DiaryMediaAttachment[];
+  /** New unified attachment system supporting canvas, images, audio, etc. */
+  richAttachments?: DiaryAttachment[];
   linkedEntryIds?: string[];
   schemaVersion: number;
   source?: 'user_typed' | 'voice_dictation' | 'llm_assisted';

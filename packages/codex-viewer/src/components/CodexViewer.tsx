@@ -37,6 +37,14 @@ import { useSearchFilter } from './hooks/useSearchFilter'
 import { getSearchEngine } from '../lib/search/engine'
 import type { CodexSearchResult } from '../lib/search/types'
 import SearchResultsPanel from './ui/SearchResultsPanel'
+import HighlightSelector from '../ui/HighlightSelector'
+import BlockHighlighter from '../ui/BlockHighlighter'
+import GroupManager from '../ui/GroupManager'
+import MigrationPrompt from '../ui/MigrationPrompt'
+import { useHighlights } from '../hooks/useHighlights'
+import { useGroups } from '../hooks/useGroups'
+import { checkMigrationStatus, migrateLocalStorageToSQL } from '../lib/migrationUtils'
+import { generateDefaultGroups } from '../lib/groupGenerator'
 
 /**
  * Main Frame Codex viewer component
@@ -125,6 +133,9 @@ export default function FrameCodexViewer({
   const [semanticSupported, setSemanticSupported] = useState(false)
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
+  const [groupManagerOpen, setGroupManagerOpen] = useState(false)
+  const [showMigrationPrompt, setShowMigrationPrompt] = useState(false)
+  const contentContainerRef = useRef<HTMLDivElement>(null)
 
   // Knowledge tree
   const {
@@ -162,10 +173,48 @@ export default function FrameCodexViewer({
     reset: resetPreferences,
   } = usePreferences()
 
+  // Highlights management
+  const {
+    highlights,
+    loading: highlightsLoading,
+    reload: reloadHighlights,
+  } = useHighlights({ filePath: selectedFile?.path })
+
+  // Groups management
+  const { groups, reload: reloadGroups } = useGroups()
+
   // Apply preferences
   useEffect(() => {
     setSidebarMode(preferences.defaultSidebarMode)
   }, [preferences.defaultSidebarMode])
+
+  // Check for migration on mount
+  useEffect(() => {
+    const checkMigration = async () => {
+      const migrationComplete = await checkMigrationStatus()
+      if (!migrationComplete) {
+        setShowMigrationPrompt(true)
+      }
+    }
+
+    checkMigration()
+  }, [])
+
+  // Generate default groups when knowledge tree loads
+  useEffect(() => {
+    const initializeGroups = async () => {
+      if (knowledgeTree.length > 0) {
+        try {
+          await generateDefaultGroups(knowledgeTree)
+          await reloadGroups()
+        } catch (err) {
+          console.error('[CodexViewer] Failed to generate default groups:', err)
+        }
+      }
+    }
+
+    initializeGroups()
+  }, [knowledgeTree, reloadGroups])
 
   // Keyboard shortcuts
   useCodexHotkeys({
@@ -179,6 +228,8 @@ export default function FrameCodexViewer({
     onToggleBookmarks: () => setBookmarksOpen((v) => !v),
     onOpenPreferences: () => setPreferencesOpen(true),
     onToggleHelp: () => setHelpOpen((v) => !v),
+    onToggleHighlights: () => setBookmarksOpen(true),
+    onOpenGroupManager: () => setGroupManagerOpen(true),
   })
 
   // Mobile swipe gestures
@@ -617,16 +668,40 @@ export default function FrameCodexViewer({
         )}
 
         {/* Content Area */}
-        <CodexContent
-          file={selectedFile}
-          content={fileContent}
-          metadata={fileMetadata}
-          loading={loading}
-          currentPath={currentPath}
-          onNavigate={fetchContents}
-          onFetchFile={fetchFileContent}
-          pathname={pathname}
-        />
+        <div ref={contentContainerRef} className="flex-1 overflow-auto">
+          <CodexContent
+            file={selectedFile}
+            content={fileContent}
+            metadata={fileMetadata}
+            loading={loading}
+            currentPath={currentPath}
+            onNavigate={fetchContents}
+            onFetchFile={fetchFileContent}
+            pathname={pathname}
+          />
+
+          {/* Highlight Selection Components */}
+          {selectedFile && contentContainerRef.current && (
+            <>
+              <HighlightSelector
+                filePath={selectedFile.path}
+                containerRef={contentContainerRef}
+                onHighlightCreated={(id) => {
+                  reloadHighlights()
+                  console.log('[CodexViewer] Highlight created:', id)
+                }}
+              />
+              <BlockHighlighter
+                filePath={selectedFile.path}
+                containerRef={contentContainerRef}
+                onHighlightCreated={(id) => {
+                  reloadHighlights()
+                  console.log('[CodexViewer] Block highlight created:', id)
+                }}
+              />
+            </>
+          )}
+        </div>
       </div>
 
       {/* Metadata Panel */}
@@ -708,6 +783,23 @@ export default function FrameCodexViewer({
         isOpen={contributeOpen}
         onClose={() => setContributeOpen(false)}
         currentPath={currentPath}
+      />
+
+      {/* Group Manager */}
+      <GroupManager
+        isOpen={groupManagerOpen}
+        onClose={() => setGroupManagerOpen(false)}
+      />
+
+      {/* Migration Prompt */}
+      <MigrationPrompt
+        isOpen={showMigrationPrompt}
+        onClose={() => setShowMigrationPrompt(false)}
+        onMigrationComplete={async () => {
+          setShowMigrationPrompt(false)
+          await reloadGroups()
+          await reloadHighlights()
+        }}
       />
 
       {/* Mobile Bottom Navigation */}
