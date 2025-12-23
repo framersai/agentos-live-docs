@@ -166,21 +166,90 @@
       </div>
 
       <div class="content-area-v2">
+        <!-- Content Mode Toggle (Only in Edit Mode) -->
+        <div v-if="isEditing" class="content-mode-toggle">
+          <button
+            @click="contentMode = 'text'"
+            :class="{ active: contentMode === 'text' }"
+            class="mode-btn"
+          >
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+              <line x1="16" y1="13" x2="8" y2="13" />
+              <line x1="16" y1="17" x2="8" y2="17" />
+              <line x1="10" y1="9" x2="8" y2="9" />
+            </svg>
+            Text
+          </button>
+          <button
+            @click="contentMode = 'canvas'"
+            :class="{ active: contentMode === 'canvas' }"
+            class="mode-btn"
+          >
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+              <circle cx="8.5" cy="8.5" r="1.5" />
+              <polyline points="21 15 16 10 5 21" />
+            </svg>
+            Canvas
+          </button>
+          <button
+            @click="contentMode = 'both'"
+            :class="{ active: contentMode === 'both' }"
+            class="mode-btn"
+          >
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <rect x="3" y="3" width="7" height="7" />
+              <rect x="14" y="3" width="7" height="7" />
+              <rect x="14" y="14" width="7" height="7" />
+              <rect x="3" y="14" width="7" height="7" />
+            </svg>
+            Both
+          </button>
+        </div>
+
+        <!-- Text Editor (when mode is 'text' or 'both') -->
         <MarkdownEditor
-          v-if="isEditing"
+          v-if="isEditing && (contentMode === 'text' || contentMode === 'both')"
           v-model="editableFields.contentMarkdown"
           placeholder="Share your thoughts, reflections, or details of your day..."
-          class="markdown-editor-enhanced"
+          :class="['markdown-editor-enhanced', contentMode === 'both' ? 'half-height' : 'full-height']"
           @update:modelValue="throttledUpdateDraft"
         />
-        <div v-else class="markdown-display-v2 prose prose-sm sm:prose-base diary-prose-theme max-w-none">
-           <CompactMessageRenderer
-            v-if="effectiveEntry.contentMarkdown"
-            :key="(effectiveEntry.id || 'draft') + '-content-' + effectiveEntry.updatedAt"
-            :content="effectiveEntry.contentMarkdown"
-            :mode="`${agentIdForRenderer}-diaryEntry`"
-          />
-          <p v-else class="italic text-[var(--color-text-muted)]">This entry has no textual content yet.</p>
+
+        <!-- Canvas Editor (when mode is 'canvas' or 'both') -->
+        <CanvasEditor
+          v-if="isEditing && (contentMode === 'canvas' || contentMode === 'both')"
+          v-model="editableFields.canvasData"
+          :class="['canvas-editor-enhanced', contentMode === 'both' ? 'half-height' : 'full-height']"
+          @update:modelValue="throttledUpdateDraft"
+        />
+
+        <!-- View Mode Display -->
+        <div v-if="!isEditing" class="content-display-v2">
+          <!-- Text Content -->
+          <div v-if="effectiveEntry.contentMarkdown" class="markdown-display-v2 prose prose-sm sm:prose-base diary-prose-theme max-w-none">
+            <CompactMessageRenderer
+              :key="(effectiveEntry.id || 'draft') + '-content-' + effectiveEntry.updatedAt"
+              :content="effectiveEntry.contentMarkdown"
+              :mode="`${agentIdForRenderer}-diaryEntry`"
+            />
+          </div>
+
+          <!-- Canvas Content -->
+          <div v-if="effectiveEntry.canvasData" class="canvas-display-v2">
+            <CanvasEditor
+              :model-value="effectiveEntry.canvasData"
+              :readonly="true"
+              class="full-height"
+            />
+          </div>
+
+          <!-- Empty State -->
+          <p v-if="!effectiveEntry.contentMarkdown && !effectiveEntry.canvasData" class="italic text-[var(--color-text-muted)]">
+            This entry has no content yet.
+          </p>
         </div>
       </div>
     </template>
@@ -193,10 +262,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, type PropType } from 'vue';
+import { ref, computed, watch, onMounted, onBeforeUnmount, type PropType } from 'vue';
 import type { RichDiaryEntry, DiaryViewMode, MoodRating, DiaryEntryLocation } from './DiaryAgentTypes'; // MoodRating imported
 import CompactMessageRenderer from '@/components/layouts/CompactMessageRenderer/CompactMessageRenderer.vue';
 import MarkdownEditor from '@/components/shared/MarkdownEditor/MarkdownEditor.vue';
+import CanvasEditor from '@/components/shared/CanvasEditor/CanvasEditor.vue';
 import { useAgentStore } from '@/store/agent.store';
 import {
   PencilSquareIcon, CheckIcon, XMarkIcon, TrashIcon, SparklesIcon,
@@ -231,10 +301,14 @@ const isEditing = computed(() => props.viewMode === 'edit_entry' || props.viewMo
 const isComposingNew = computed(() => props.viewMode === 'compose_new_entry');
 const canEditCurrentView = computed(() => props.viewMode === 'view_entry' && props.entry && !props.entry.isDraft);
 
+// Content mode: 'text', 'canvas', or 'both'
+const contentMode = ref<'text' | 'canvas' | 'both'>('text');
+
 // Local reactive state for editable fields
 const editableFields = ref({
   title: '',
   contentMarkdown: '',
+  canvasData: '',
   tags: '', // Comma-separated string for input
   mood: '',
   moodRating: undefined as MoodRating | undefined,
@@ -251,17 +325,30 @@ watch(
       editableFields.value = {
         title: currentEntry.title || '',
         contentMarkdown: currentEntry.contentMarkdown || '',
+        canvasData: currentEntry.canvasData || '',
         tags: (currentEntry.tags || []).join(', '),
         mood: currentEntry.mood || '',
         moodRating: currentEntry.moodRating,
         locationName: currentEntry.location?.name || '',
         weather: currentEntry.weather || '',
       };
+
+      // Set content mode based on existing data
+      const hasText = !!currentEntry.contentMarkdown
+      const hasCanvas = !!currentEntry.canvasData
+      if (hasText && hasCanvas) {
+        contentMode.value = 'both'
+      } else if (hasCanvas) {
+        contentMode.value = 'canvas'
+      } else {
+        contentMode.value = 'text'
+      }
     } else if (!editingNow && props.viewMode === 'view_entry' && currentEntry) {
       // When switching back to view_entry, ensure editableFields reflects the (potentially non-draft) entry
        editableFields.value = {
         title: currentEntry.title || '',
         contentMarkdown: currentEntry.contentMarkdown || '',
+        canvasData: currentEntry.canvasData || '',
         tags: (currentEntry.tags || []).join(', '),
         mood: currentEntry.mood || '',
         moodRating: currentEntry.moodRating,
@@ -280,6 +367,7 @@ const throttledUpdateDraft = () => {
       const draftUpdate: Partial<RichDiaryEntry> = {
         title: editableFields.value.title,
         contentMarkdown: editableFields.value.contentMarkdown,
+        canvasData: editableFields.value.canvasData || undefined,
         tags: editableFields.value.tags.split(',').map(t => t.trim()).filter(t => t),
         mood: editableFields.value.mood.trim() || undefined,
         moodRating: editableFields.value.moodRating || undefined, // Ensure it can be undefined
@@ -331,6 +419,43 @@ const handleCancelEditClick = () => {
     // The watcher for props.entry will then reset editableFields to the view_entry state.
     emit('edit-entry'); // Effectively, this signals to stop editing and revert to view mode
 };
+
+// Keyboard shortcuts handler
+function handleKeyboardShortcuts(event: KeyboardEvent) {
+  const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0
+  const modKey = isMac ? event.metaKey : event.ctrlKey
+
+  // Cmd/Ctrl + S: Save entry
+  if (modKey && event.key === 's') {
+    event.preventDefault()
+    if (isEditing.value && props.canSave) {
+      emit('save-entry')
+    }
+  }
+  // Escape: Cancel editing
+  else if (event.key === 'Escape') {
+    if (isEditing.value && props.viewMode === 'edit_entry') {
+      handleCancelEditClick()
+    }
+  }
+  // Cmd/Ctrl + E: Toggle edit mode
+  else if (modKey && event.key === 'e') {
+    event.preventDefault()
+    if (!isEditing.value && canEditCurrentView.value) {
+      handleEditClick()
+    }
+  }
+}
+
+// Add keyboard shortcuts on mount
+onMounted(() => {
+  window.addEventListener('keydown', handleKeyboardShortcuts)
+})
+
+// Remove keyboard shortcuts on unmount
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleKeyboardShortcuts)
+})
 
 </script>
 
@@ -456,5 +581,158 @@ const handleCancelEditClick = () => {
   border: 4px solid hsla(var(--diary-accent-h), var(--diary-accent-s), var(--diary-accent-l), 0.2);
   border-top-color: hsl(var(--diary-accent-h), var(--diary-accent-s), var(--diary-accent-l));
   @apply rounded-full w-12 h-12 animate-spin;
+}
+
+// Content mode toggle
+.content-mode-toggle {
+  @apply flex items-center gap-1 mb-3 p-1 rounded-md;
+  background-color: hsla(var(--diary-bg-h), var(--diary-bg-s), calc(var(--diary-bg-l) + 2%), 0.8);
+  width: fit-content;
+
+  .mode-btn {
+    @apply flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-all;
+    color: var(--color-text-secondary);
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+
+    .icon {
+      @apply w-4 h-4;
+      stroke-width: 2;
+    }
+
+    &:hover {
+      color: var(--color-text-primary);
+      background-color: hsla(var(--diary-accent-h), var(--diary-accent-s), var(--diary-accent-l), 0.05);
+    }
+
+    &.active {
+      color: hsl(var(--diary-accent-h), var(--diary-accent-s), var(--diary-accent-l));
+      background-color: hsla(var(--diary-accent-h), var(--diary-accent-s), var(--diary-accent-l), 0.15);
+    }
+  }
+}
+
+// Editor height classes
+.full-height {
+  @apply flex-grow;
+  height: 100%;
+}
+
+.half-height {
+  height: 50%;
+  min-height: 300px;
+}
+
+// Canvas editor styles
+.canvas-editor-enhanced {
+  border: 2px solid hsla(var(--diary-accent-h), var(--diary-accent-s), var(--diary-accent-l), 0.2);
+  border-radius: 8px;
+  overflow: hidden;
+
+  &:focus-within {
+    border-color: hsl(var(--diary-accent-h), var(--diary-accent-s), var(--diary-accent-l));
+    box-shadow: 0 0 0 2.5px hsla(var(--diary-accent-h), var(--diary-accent-s), var(--diary-accent-l), 0.25);
+  }
+}
+
+// Content display in view mode
+.content-display-v2 {
+  @apply flex-grow flex flex-col gap-4 overflow-y-auto;
+  @include mixins.custom-scrollbar-for-themed-panel('--diary');
+}
+
+.canvas-display-v2 {
+  @apply flex-grow;
+  min-height: 400px;
+  border: 2px solid hsla(var(--diary-accent-h), var(--diary-accent-s), var(--diary-accent-l), 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+// Mobile responsive enhancements
+@media (max-width: 768px) {
+  .content-mode-toggle {
+    @apply w-full justify-center;
+
+    .mode-btn {
+      @apply flex-1 justify-center px-2;
+      min-height: 44px; // iOS recommended touch target size
+
+      .icon {
+        @apply w-5 h-5;
+      }
+    }
+  }
+
+  .half-height {
+    height: 45%; // Slightly smaller on mobile for better split view
+    min-height: 250px;
+  }
+
+  .canvas-display-v2 {
+    min-height: 300px; // Smaller min-height on mobile
+  }
+
+  // Make editors more touch-friendly
+  .markdown-editor-enhanced,
+  .canvas-editor-enhanced {
+    border-width: 1px; // Thinner borders on mobile
+
+    &:focus-within {
+      border-width: 2px;
+    }
+  }
+
+  // Adjust workspace padding for mobile
+  .diary-workspace-v2 {
+    @apply p-2 gap-2;
+  }
+
+  // Stack metadata items vertically on small screens
+  .metadata-section-v2 {
+    @apply flex-col items-start;
+
+    .meta-item-v2 {
+      @apply w-full;
+    }
+
+    .form-input-futuristic.extra-small {
+      @apply max-w-full;
+    }
+  }
+
+  // Make action buttons stack on mobile
+  .entry-actions-v2 {
+    @apply w-full justify-start;
+
+    button {
+      @apply flex-1;
+      min-height: 44px; // iOS recommended touch target
+    }
+  }
+}
+
+// Extra small devices (phones in portrait)
+@media (max-width: 480px) {
+  .content-mode-toggle {
+    .mode-btn {
+      @apply px-1.5 text-xs;
+
+      span {
+        @apply hidden; // Hide text labels on very small screens
+      }
+    }
+  }
+
+  // Full screen editors on very small devices
+  .half-height {
+    height: 50vh;
+    min-height: 200px;
+  }
+
+  .title-input-group-v2 .form-input-futuristic.large-title {
+    @apply text-lg; // Smaller title font on small screens
+  }
 }
 </style>

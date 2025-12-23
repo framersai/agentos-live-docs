@@ -40,6 +40,17 @@
             </svg>
             <span>Preview</span>
           </button>
+          <button
+            @click="viewMode = 'wysiwyg'"
+            :class="{ active: viewMode === 'wysiwyg' }"
+            class="mode-btn"
+            title="WYSIWYG Editor (Ctrl+4)"
+          >
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
+            </svg>
+            <span>WYSIWYG</span>
+          </button>
         </div>
       </div>
 
@@ -107,15 +118,29 @@
           <p>Preview will appear here</p>
         </div>
       </div>
+
+      <!-- WYSIWYG Pane -->
+      <div
+        v-show="viewMode === 'wysiwyg'"
+        class="wysiwyg-pane"
+        :style="{ fontSize: `${fontScale}%` }"
+      >
+        <WysiwygEditor
+          v-model="editableContent"
+          :placeholder="placeholder"
+          :font-scale="fontScale"
+        />
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, nextTick } from 'vue'
+import { ref, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useCodeMirror } from './useCodeMirror'
 import { useScrollSync } from './useScrollSync'
 import CompactMessageRenderer from '@/components/layouts/CompactMessageRenderer/CompactMessageRenderer.vue'
+import WysiwygEditor from './WysiwygEditor.vue'
 
 interface Props {
   modelValue: string
@@ -134,10 +159,13 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>()
 
-// View mode: 'edit', 'split', or 'preview'
-const viewMode = ref<'edit' | 'split' | 'preview'>('split')
+// View mode: 'edit', 'split', 'preview', or 'wysiwyg'
+const viewMode = ref<'edit' | 'split' | 'preview' | 'wysiwyg'>('split')
 const fontScale = ref(100)
 const scrollSyncEnabled = ref(true)
+
+// Editable content for WYSIWYG mode (synced with modelValue)
+const editableContent = ref(props.modelValue)
 
 // Refs
 const editorRef = ref<HTMLElement | null>(null)
@@ -183,8 +211,19 @@ watch(
       await nextTick()
       updateLineMapping(newValue, previewRef.value)
     }
+    // Sync with WYSIWYG editor content
+    if (editableContent.value !== newValue) {
+      editableContent.value = newValue
+    }
   }
 )
+
+// Watch WYSIWYG content changes and emit to parent
+watch(editableContent, (newValue) => {
+  if (newValue !== props.modelValue) {
+    emit('update:modelValue', newValue)
+  }
+})
 
 // Watch for view mode changes and restore scroll position
 watch(viewMode, (newMode) => {
@@ -249,10 +288,49 @@ function decreaseFontSize() {
   }
 }
 
+// Keyboard shortcuts
+function handleKeyboardShortcuts(event: KeyboardEvent) {
+  const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0
+  const modKey = isMac ? event.metaKey : event.ctrlKey
+
+  if (!modKey) return
+
+  // Cmd/Ctrl + 1: Edit mode
+  if (event.key === '1') {
+    event.preventDefault()
+    viewMode.value = 'edit'
+  }
+  // Cmd/Ctrl + 2: Split mode
+  else if (event.key === '2') {
+    event.preventDefault()
+    viewMode.value = 'split'
+  }
+  // Cmd/Ctrl + 3: Preview mode
+  else if (event.key === '3') {
+    event.preventDefault()
+    viewMode.value = 'preview'
+  }
+  // Cmd/Ctrl + 4: WYSIWYG mode
+  else if (event.key === '4') {
+    event.preventDefault()
+    viewMode.value = 'wysiwyg'
+  }
+  // Cmd/Ctrl + +: Increase font size
+  else if (event.key === '=' || event.key === '+') {
+    event.preventDefault()
+    increaseFontSize()
+  }
+  // Cmd/Ctrl + -: Decrease font size
+  else if (event.key === '-') {
+    event.preventDefault()
+    decreaseFontSize()
+  }
+}
+
 // Load preferences from localStorage on mount
 onMounted(() => {
   const savedViewMode = localStorage.getItem('markdown-editor-view-mode')
-  if (savedViewMode === 'edit' || savedViewMode === 'split' || savedViewMode === 'preview') {
+  if (savedViewMode === 'edit' || savedViewMode === 'split' || savedViewMode === 'preview' || savedViewMode === 'wysiwyg') {
     viewMode.value = savedViewMode
   }
 
@@ -275,6 +353,14 @@ onMounted(() => {
       updateLineMapping(props.modelValue, previewRef.value!)
     })
   }
+
+  // Add keyboard shortcuts listener
+  window.addEventListener('keydown', handleKeyboardShortcuts)
+})
+
+// Cleanup on unmount
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleKeyboardShortcuts)
 })
 
 // Expose methods for parent component
@@ -399,6 +485,11 @@ defineExpose({
 .preview-pane {
   @apply p-4;
   background-color: hsla(var(--diary-bg-h), var(--diary-bg-s), calc(var(--diary-bg-l) + 1%), 0.5);
+}
+
+.wysiwyg-pane {
+  @apply flex-1 overflow-y-auto;
+  position: relative;
 }
 
 .preview-empty {

@@ -109,6 +109,7 @@ export interface RichDiaryEntry {
   id: string;
   title: string;
   contentMarkdown: string;
+  canvasData?: string; // tldraw JSON snapshot for infinite canvas/whiteboard
   summary?: string;
   createdAt: string;
   updatedAt: string;
