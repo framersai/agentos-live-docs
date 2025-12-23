@@ -119,10 +119,11 @@ export const LEVEL_STYLES: Record<NodeLevel, LevelStyle> = {
  */
 export const DEFAULT_SEARCH_OPTIONS = {
   query: '',
+  mode: 'files' as const,
   searchNames: true,
   searchContent: false,
   caseSensitive: false,
-} as const
+}
 
 /**
  * Pagination configuration
@@ -156,5 +157,11 @@ export const HOTKEYS = {
   GO_HOME: 'g h',
   /** Toggle sidebar (mobile) */
   TOGGLE_SIDEBAR: 's',
+  /** Toggle bookmarks/highlights panel */
+  TOGGLE_BOOKMARKS: 'b',
+  /** Toggle highlights panel */
+  TOGGLE_HIGHLIGHTS: 'h',
+  /** Highlight selected text */
+  HIGHLIGHT_SELECTION: 'ctrl+h',
 } as const
 

@@ -13,8 +13,11 @@
 
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Bookmark, Clock, Trash2, Star } from 'lucide-react'
+import { X, Bookmark, Clock, Trash2, Star, Highlighter } from 'lucide-react'
 import type { Bookmark as BookmarkType, HistoryEntry } from '../lib/localStorage'
+import type { Highlight } from '../lib/highlightTypes'
+import HighlightCard from './HighlightCard'
+import { useHighlights } from '../hooks/useHighlights'
 
 interface BookmarksPanelProps {
   /** Whether panel is open */
@@ -66,7 +69,8 @@ export default function BookmarksPanel({
   onClearBookmarks,
   onClearHistory,
 }: BookmarksPanelProps) {
-  const [activeTab, setActiveTab] = useState<'bookmarks' | 'history'>('bookmarks')
+  const [activeTab, setActiveTab] = useState<'bookmarks' | 'highlights' | 'history'>('bookmarks')
+  const { highlights, loading: highlightsLoading, updateHighlight, deleteHighlight } = useHighlights({ autoLoad: isOpen })
 
   if (!isOpen) return null
 
@@ -92,7 +96,9 @@ export default function BookmarksPanel({
         {/* Header */}
         <div className="p-4 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
           <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">
-            {activeTab === 'bookmarks' ? 'Bookmarks' : 'Recent'}
+            {activeTab === 'bookmarks' && 'Bookmarks'}
+            {activeTab === 'highlights' && 'Highlights'}
+            {activeTab === 'history' && 'Recent'}
           </h2>
           <button
             onClick={onClose}
@@ -107,28 +113,44 @@ export default function BookmarksPanel({
         <div className="flex border-b border-gray-200 dark:border-gray-800">
           <button
             onClick={() => setActiveTab('bookmarks')}
-            className={`flex-1 py-3 px-4 text-sm font-medium transition-colors ${
+            className={`flex-1 py-3 px-2 text-sm font-medium transition-colors ${
               activeTab === 'bookmarks'
+                ? 'text-purple-600 dark:text-purple-400 border-b-2 border-purple-600 dark:border-purple-400'
+                : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+            }`}
+          >
+            <div className="flex items-center justify-center gap-1">
+              <Bookmark className="w-4 h-4" />
+              <span className="hidden sm:inline">Bookmarks</span>
+              <span className="text-xs">({bookmarks.length})</span>
+            </div>
+          </button>
+          <button
+            onClick={() => setActiveTab('highlights')}
+            className={`flex-1 py-3 px-2 text-sm font-medium transition-colors ${
+              activeTab === 'highlights'
                 ? 'text-amber-600 dark:text-amber-400 border-b-2 border-amber-600 dark:border-amber-400'
                 : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
             }`}
           >
-            <div className="flex items-center justify-center gap-2">
-              <Bookmark className="w-4 h-4" />
-              <span>Bookmarks ({bookmarks.length})</span>
+            <div className="flex items-center justify-center gap-1">
+              <Highlighter className="w-4 h-4" />
+              <span className="hidden sm:inline">Highlights</span>
+              <span className="text-xs">({highlights.length})</span>
             </div>
           </button>
           <button
             onClick={() => setActiveTab('history')}
-            className={`flex-1 py-3 px-4 text-sm font-medium transition-colors ${
+            className={`flex-1 py-3 px-2 text-sm font-medium transition-colors ${
               activeTab === 'history'
                 ? 'text-cyan-600 dark:text-cyan-400 border-b-2 border-cyan-600 dark:border-cyan-400'
                 : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
             }`}
           >
-            <div className="flex items-center justify-center gap-2">
+            <div className="flex items-center justify-center gap-1">
               <Clock className="w-4 h-4" />
-              <span>Recent ({history.length})</span>
+              <span className="hidden sm:inline">Recent</span>
+              <span className="text-xs">({history.length})</span>
             </div>
           </button>
         </div>
@@ -187,6 +209,33 @@ export default function BookmarksPanel({
                     </button>
                   </div>
                 </>
+              )}
+            </div>
+          ) : activeTab === 'highlights' ? (
+            <div>
+              {highlightsLoading ? (
+                <div className="p-8 text-center text-gray-500">
+                  <div className="animate-spin w-8 h-8 border-2 border-amber-600 border-t-transparent rounded-full mx-auto mb-4" />
+                  <p className="text-sm">Loading highlights...</p>
+                </div>
+              ) : highlights.length === 0 ? (
+                <div className="p-8 text-center text-gray-500">
+                  <Highlighter className="w-12 h-12 mx-auto mb-4 opacity-30" />
+                  <p className="text-sm">No highlights yet</p>
+                  <p className="text-xs mt-2">Select text to create your first highlight</p>
+                </div>
+              ) : (
+                <div className="space-y-2 p-2">
+                  {highlights.map((highlight) => (
+                    <HighlightCard
+                      key={highlight.id}
+                      highlight={highlight}
+                      onNavigate={onNavigate}
+                      onEdit={(h) => console.log('Edit:', h)}
+                      onDelete={deleteHighlight}
+                    />
+                  ))}
+                </div>
               )}
             </div>
           ) : (

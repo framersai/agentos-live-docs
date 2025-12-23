@@ -5,16 +5,18 @@
 
 'use client'
 
-import { Search, SlidersHorizontal, X } from 'lucide-react'
+import { Search, SlidersHorizontal, X, File, Highlighter, Bookmark } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useState } from 'react'
-import type { SearchOptions } from '../types'
+import type { SearchOptions, SearchMode } from '../types'
 
 interface SearchBarProps {
   /** Current search options */
   options: SearchOptions
   /** Update search query */
   onQueryChange: (query: string) => void
+  /** Change search mode */
+  onModeChange: (mode: SearchMode) => void
   /** Toggle search in names */
   onToggleSearchNames: () => void
   /** Toggle search in content */
@@ -56,6 +58,7 @@ interface SearchBarProps {
 export default function SearchBar({
   options,
   onQueryChange,
+  onModeChange,
   onToggleSearchNames,
   onToggleSearchContent,
   onToggleCaseSensitive,
@@ -80,6 +83,46 @@ export default function SearchBar({
 
   return (
     <div className="space-y-2">
+      {/* Mode Switcher Tabs */}
+      <div className="flex gap-2">
+        <button
+          onClick={() => onModeChange('files')}
+          className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-all ${
+            options.mode === 'files'
+              ? 'bg-cyan-600 text-white shadow-lg shadow-cyan-500/30'
+              : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+          }`}
+          aria-label="Search files"
+        >
+          <File className="w-4 h-4" />
+          <span>Files</span>
+        </button>
+        <button
+          onClick={() => onModeChange('highlights')}
+          className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-all ${
+            options.mode === 'highlights'
+              ? 'bg-amber-600 text-white shadow-lg shadow-amber-500/30'
+              : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+          }`}
+          aria-label="Search highlights"
+        >
+          <Highlighter className="w-4 h-4" />
+          <span>Highlights</span>
+        </button>
+        <button
+          onClick={() => onModeChange('bookmarks')}
+          className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-all ${
+            options.mode === 'bookmarks'
+              ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/30'
+              : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+          }`}
+          aria-label="Search bookmarks"
+        >
+          <Bookmark className="w-4 h-4" />
+          <span>Bookmarks</span>
+        </button>
+      </div>
+
       {/* Search Input */}
       <div className="relative">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />

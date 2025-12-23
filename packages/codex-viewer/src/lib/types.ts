@@ -113,23 +113,41 @@ export interface StrandMetadata {
 }
 
 /**
+ * Search mode for switching between different content types
+ */
+export type SearchMode = 'files' | 'highlights' | 'bookmarks'
+
+/**
+ * Highlight colors
+ */
+export type HighlightColor = 'yellow' | 'green' | 'blue' | 'pink' | 'purple' | 'orange'
+
+/**
  * Search filter options
  */
 export interface SearchOptions {
   /** Search query string */
   query: string
-  /** Search in file names */
+  /** Search mode: files, highlights, or bookmarks */
+  mode: SearchMode
+  /** Search in file names (files mode) */
   searchNames: boolean
-  /** Search in file content (full-text) */
+  /** Search in file content (full-text, files mode) */
   searchContent: boolean
   /** Case-sensitive search */
   caseSensitive: boolean
-  /** Filter by difficulty */
+  /** Filter by difficulty (files mode) */
   difficulty?: 'beginner' | 'intermediate' | 'advanced'
-  /** Filter by tags */
+  /** Filter by tags (files mode) */
   tags?: string[]
-  /** Filter by subjects */
+  /** Filter by subjects (files mode) */
   subjects?: string[]
+  /** Filter by highlight color (highlights mode) */
+  highlightColor?: HighlightColor
+  /** Filter by category tag (highlights mode) */
+  highlightCategory?: string
+  /** Filter by group ID (highlights/bookmarks mode) */
+  groupId?: string
 }
 
 /**
