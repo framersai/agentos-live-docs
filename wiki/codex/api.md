@@ -1,14 +1,14 @@
-# Frame Codex API Reference
+# Quarry API Reference
 
-REST and GraphQL APIs for accessing Frame Codex content.
+REST and GraphQL APIs for accessing Quarry content.
 
 > **🚧 Work in Progress**
 >
-> The Frame Codex API is currently under development. For immediate access to Codex data, use our public GitHub repository at [github.com/framersai/codex](https://github.com/framersai/codex) where all content is freely available.
+> The Quarry API is currently under development. For immediate access to Quarry data, use our public GitHub repository at [github.com/framersai/quarry](https://github.com/framersai/quarry) where all content is freely available.
 
 ## Overview
 
-The Frame Codex API provides programmatic access to the knowledge repository:
+The Quarry API provides programmatic access to the knowledge repository:
 
 - Search across all content
 - Retrieve specific strands, looms, and weaves

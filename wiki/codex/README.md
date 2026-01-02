@@ -1,4 +1,4 @@
-# Frame Codex
+# Quarry
 
 Knowledge repository for LLM retrieval and superintelligence.
 
@@ -6,7 +6,7 @@ _The OS for humans, the codex of humanity._
 
 ## Overview
 
-Frame Codex is an open-source, structured knowledge repository designed for Large Language Model consumption. It serves as a comprehensive collection of human knowledge organized for efficient AI retrieval.
+Quarry is an open-source, structured knowledge repository designed for Large Language Model consumption. It serves as a comprehensive collection of human knowledge organized for efficient AI retrieval.
 
 ### Key Principles
 
@@ -18,7 +18,7 @@ Frame Codex is an open-source, structured knowledge repository designed for Larg
 
 ## Architecture
 
-Frame Codex uses three-tier knowledge organization:
+Quarry uses three-tier knowledge organization:
 
 ```
 WEAVE (Knowledge Universe)
@@ -208,7 +208,7 @@ await openstrand.import({
 
 ### Codex Viewer Package (`@framers/codex-viewer`)
 
-In addition to the content repository, Frame Codex ships with a reusable React viewer so you can embed the same analog-style, semantic-search-enabled UI in your own apps.
+In addition to the content repository, Quarry ships with a reusable React viewer so you can embed the same analog-style, semantic-search-enabled UI in your own apps.
 
 The viewer lives in this monorepo under `packages/codex-viewer/` and is designed to be published as an npm package: `@framers/codex-viewer`.
 
@@ -302,7 +302,7 @@ npm run check-links
 
 ## License
 
-Frame Codex content is licensed under CC-BY-4.0. You are free to:
+Quarry content is licensed under CC-BY-4.0. You are free to:
 
 - Share - copy and redistribute
 - Adapt - remix and transform

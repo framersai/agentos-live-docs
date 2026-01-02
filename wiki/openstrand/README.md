@@ -1,12 +1,12 @@
 # OpenStrand
 
-AI-native personal knowledge management system built on Frame Codex.
+AI-native personal knowledge management system built on Quarry.
 
-*The OS for humans, the codex of humanity.*
+_The OS for humans, the codex of humanity._
 
 ## Overview
 
-OpenStrand is a personal knowledge management system (PKMS) that integrates AI capabilities with local-first architecture. Built on Frame Codex, it provides an interface for capturing, connecting, and discovering knowledge.
+OpenStrand is a personal knowledge management system (PKMS) that integrates AI capabilities with local-first architecture. Built on Quarry, it provides an interface for capturing, connecting, and discovering knowledge.
 
 ### Core Philosophy
 
@@ -60,7 +60,7 @@ OpenStrand Server
 ├── PostgreSQL Database
 └── Vector Store
 
-Frame Codex (Knowledge Repository)
+Quarry (Knowledge Repository)
 ```
 
 ## Getting Started
@@ -90,7 +90,7 @@ const vault = await os.createVault('My Knowledge');
 // Import notes
 await vault.import({
   source: './obsidian-vault',
-  format: 'obsidian'
+  format: 'obsidian',
 });
 
 // Search knowledge
@@ -101,7 +101,7 @@ const results = await vault.search('machine learning concepts');
 
 ### Knowledge Organization
 
-OpenStrand uses Frame Codex's model:
+OpenStrand uses Quarry's model:
 
 - **Strand**: Atomic knowledge unit (note, document, image)
 - **Loom**: Collection of related strands (project, topic)
@@ -114,13 +114,13 @@ OpenStrand uses Frame Codex's model:
 const strand = await vault.createStrand({
   title: 'Private Thoughts',
   content: 'This stays on device...',
-  syncEnabled: false
+  syncEnabled: false,
 });
 
 // Selective sync
 await strand.enableSync({
   encrypted: true,
-  shareWith: ['team@example.com']
+  shareWith: ['team@example.com'],
 });
 ```
 
@@ -130,19 +130,19 @@ await strand.enableSync({
 // Semantic search
 const similar = await vault.findSimilar(strand, {
   threshold: 0.8,
-  limit: 10
+  limit: 10,
 });
 
 // AI chat
 const response = await vault.chat('Summarize quantum computing notes', {
-  context: ['physics-loom']
+  context: ['physics-loom'],
 });
 
 // Smart suggestions
 const suggestions = await strand.getSuggestions({
   links: true,
   tags: true,
-  relatedContent: true
+  relatedContent: true,
 });
 ```
 
@@ -195,7 +195,7 @@ openstrand/
 - PDF
 - OPML
 - JSON
-- Frame Codex format
+- Quarry format
 
 ### Third-Party Services
 
@@ -237,6 +237,7 @@ openstrand/
 ## License
 
 OpenStrand is available under:
+
 - Community Edition: MIT License
 - Enterprise Edition: Commercial license
 

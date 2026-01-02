@@ -1,10 +1,10 @@
-# Frame Codex Schema Reference
+# Quarry Schema Reference
 
 Schema specifications for Weaves, Looms, and Strands.
 
 ## Overview
 
-Frame Codex uses a hierarchical schema system. Each level has specific fields and validation rules to ensure consistency across the repository.
+Quarry uses a hierarchical schema system. Each level has specific fields and validation rules to ensure consistency across the repository.
 
 ## Weave Schema
 
