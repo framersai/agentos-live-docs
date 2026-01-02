@@ -3,7 +3,7 @@
 REST and GraphQL APIs for accessing Frame Codex content.
 
 > **🚧 Work in Progress**
-> 
+>
 > The Frame Codex API is currently under development. For immediate access to Codex data, use our public GitHub repository at [github.com/framersai/codex](https://github.com/framersai/codex) where all content is freely available.
 
 ## Overview
@@ -30,11 +30,11 @@ Get API keys at [frame.dev/account/api](https://frame.dev/account/api)
 
 ### Rate Limits
 
-| Tier | Requests/Hour | Requests/Day | Burst |
-|------|---------------|--------------|-------|
-| Free | 100 | 1,000 | 10/min |
-| Pro | 1,000 | 10,000 | 100/min |
-| Enterprise | Unlimited | Unlimited | Custom |
+| Tier       | Requests/Hour | Requests/Day | Burst   |
+| ---------- | ------------- | ------------ | ------- |
+| Free       | 100           | 1,000        | 10/min  |
+| Pro        | 1,000         | 10,000       | 100/min |
+| Enterprise | Unlimited     | Unlimited    | Custom  |
 
 ## REST API
 
@@ -64,12 +64,14 @@ Parameters:
 | offset | integer | No | Pagination offset |
 
 Example:
+
 ```bash
 curl -X GET "https://api.frame.dev/codex/v1/search?q=machine+learning&weaves=technology&limit=10" \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 
 Response:
+
 ```json
 {
   "results": [
@@ -101,6 +103,7 @@ GET /weaves/{slug}
 ```
 
 Example:
+
 ```bash
 curl -X GET "https://api.frame.dev/codex/v1/weaves/technology" \
   -H "Authorization: Bearer YOUR_API_KEY"
@@ -171,20 +174,16 @@ type Query {
     limit: Int
     offset: Int
   ): SearchResults!
-  
+
   weave(slug: String!): Weave
   loom(weave: String!, slug: String!): Loom
   strand(id: ID!): Strand
-  
+
   weaves: [Weave!]!
   looms(weave: String!, tags: [String!]): [Loom!]!
   strands(weave: String!, loom: String!): [Strand!]!
-  
-  relationships(
-    strandId: ID!
-    depth: Int
-    types: [RelationshipType!]
-  ): RelationshipGraph!
+
+  relationships(strandId: ID!, depth: Int, types: [RelationshipType!]): RelationshipGraph!
 }
 
 type Weave {
@@ -214,11 +213,18 @@ type Strand {
   summary: String!
   content: String!
   version: String!
+  strandType: StrandType!
   contentType: String!
   difficulty: Difficulty!
   taxonomy: Taxonomy!
   relationships: [StrandRelationship!]!
   publishing: Publishing!
+
+  # Zettelkasten workflow fields
+  maturity: NoteMaturity
+  qualityChecks: QualityChecks
+  isMOC: Boolean
+  mocConfig: MOCConfig
 }
 
 type SearchResults {
@@ -241,12 +247,60 @@ enum RelationshipType {
   REFERENCES
   CONTRADICTS
   UPDATES
+  EXTENDS
+  SUPPORTS
+  EXAMPLE_OF
+  IMPLEMENTS
+  QUESTIONS
+  REFINES
+  APPLIES
+  SUMMARIZES
+  CUSTOM
+}
+
+enum NoteMaturityStatus {
+  FLEETING
+  LITERATURE
+  PERMANENT
+  EVERGREEN
+}
+
+enum StrandType {
+  FILE
+  FOLDER
+  SUPERNOTE
+  MOC
+}
+
+type NoteMaturity {
+  status: NoteMaturityStatus!
+  lastRefinedAt: DateTime
+  refinementCount: Int
+  futureValue: String
+}
+
+type QualityChecks {
+  hasContext: Boolean
+  hasConnections: Boolean
+  isAtomic: Boolean
+  isSelfContained: Boolean
+  isVerified: Boolean
+  hasSources: Boolean
+}
+
+type MOCConfig {
+  topic: String!
+  scope: String!
+  autoUpdate: Boolean
+  sections: [String!]
+  strandOrder: [String!]
 }
 ```
 
 ### Example Queries
 
 Search:
+
 ```graphql
 query SearchCodex($query: String!) {
   search(query: $query, limit: 10) {
@@ -265,6 +319,7 @@ query SearchCodex($query: String!) {
 ```
 
 Get Strand with Relationships:
+
 ```graphql
 query GetStrand($id: ID!) {
   strand(id: $id) {
@@ -308,6 +363,7 @@ Content-Type: application/json
 ```
 
 Webhook payload:
+
 ```json
 {
   "event": "strand.created",
@@ -334,13 +390,13 @@ npm install @framersai/codex-sdk
 import { CodexClient } from '@framersai/codex-sdk';
 
 const client = new CodexClient({
-  apiKey: 'YOUR_API_KEY'
+  apiKey: 'YOUR_API_KEY',
 });
 
 // Search
 const results = await client.search('transformer architecture', {
   weaves: ['technology'],
-  limit: 10
+  limit: 10,
 });
 
 // Get specific content
@@ -359,7 +415,7 @@ from frame_codex import CodexClient
 client = CodexClient(api_key='YOUR_API_KEY')
 
 # Search
-results = client.search('transformer architecture', 
+results = client.search('transformer architecture',
                        weaves=['technology'],
                        limit=10)
 
@@ -386,14 +442,14 @@ strand = client.get_strand('technology', 'ml', 'transformers')
 
 ### Common Error Codes
 
-| Code | HTTP Status | Description |
-|------|-------------|-------------|
-| UNAUTHORIZED | 401 | Invalid or missing API key |
-| FORBIDDEN | 403 | Insufficient permissions |
-| RESOURCE_NOT_FOUND | 404 | Requested resource not found |
-| RATE_LIMIT_EXCEEDED | 429 | Too many requests |
-| VALIDATION_ERROR | 400 | Invalid request parameters |
-| INTERNAL_ERROR | 500 | Server error |
+| Code                | HTTP Status | Description                  |
+| ------------------- | ----------- | ---------------------------- |
+| UNAUTHORIZED        | 401         | Invalid or missing API key   |
+| FORBIDDEN           | 403         | Insufficient permissions     |
+| RESOURCE_NOT_FOUND  | 404         | Requested resource not found |
+| RATE_LIMIT_EXCEEDED | 429         | Too many requests            |
+| VALIDATION_ERROR    | 400         | Invalid request parameters   |
+| INTERNAL_ERROR      | 500         | Server error                 |
 
 ## Best Practices
 

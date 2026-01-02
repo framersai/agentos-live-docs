@@ -13,7 +13,7 @@ A Weave represents a knowledge universe. Strands from different weaves have no r
 ### Schema Definition
 
 ```yaml
-$schema: "http://json-schema.org/draft-07/schema#"
+$schema: 'http://json-schema.org/draft-07/schema#'
 type: object
 required:
   - slug
@@ -24,19 +24,19 @@ required:
 properties:
   slug:
     type: string
-    pattern: "^[a-z0-9-]+$"
-    description: "URL-safe identifier"
-  
+    pattern: '^[a-z0-9-]+$'
+    description: 'URL-safe identifier'
+
   title:
     type: string
     minLength: 1
     maxLength: 100
-  
+
   description:
     type: string
     minLength: 50
     maxLength: 500
-  
+
   maintainedBy:
     type: object
     required:
@@ -48,11 +48,11 @@ properties:
       contact:
         type: string
         format: email
-  
+
   license:
     type: string
-    enum: ["CC-BY-4.0", "CC-BY-SA-4.0", "CC0-1.0", "MIT", "Apache-2.0"]
-  
+    enum: ['CC-BY-4.0', 'CC-BY-SA-4.0', 'CC0-1.0', 'MIT', 'Apache-2.0']
+
   tags:
     type: array
     items:
@@ -84,7 +84,7 @@ A Loom is a curated collection of related Strands.
 ### Schema Definition
 
 ```yaml
-$schema: "http://json-schema.org/draft-07/schema#"
+$schema: 'http://json-schema.org/draft-07/schema#'
 type: object
 required:
   - slug
@@ -94,23 +94,23 @@ required:
 properties:
   slug:
     type: string
-    pattern: "^[a-z0-9-]+$"
-  
+    pattern: '^[a-z0-9-]+$'
+
   title:
     type: string
     minLength: 1
     maxLength: 100
-  
+
   summary:
     type: string
     minLength: 50
     maxLength: 300
-  
+
   tags:
     type: array
     items:
       type: string
-  
+
   ordering:
     type: object
     required:
@@ -118,18 +118,18 @@ properties:
     properties:
       type:
         type: string
-        enum: ["sequential", "hierarchical", "graph"]
-      
+        enum: ['sequential', 'hierarchical', 'graph']
+
       sequence:
         type: array
         items:
           type: string
-        description: "For sequential ordering"
-      
+        description: 'For sequential ordering'
+
       hierarchy:
         type: object
-        description: "For hierarchical ordering"
-      
+        description: 'For hierarchical ordering'
+
       graph:
         type: object
         properties:
@@ -141,7 +141,7 @@ properties:
             type: array
             items:
               type: object
-  
+
   relationships:
     type: array
     items:
@@ -149,16 +149,16 @@ properties:
       properties:
         type:
           type: string
-          enum: ["parent", "child", "sibling", "prerequisite", "next"]
+          enum: ['parent', 'child', 'sibling', 'prerequisite', 'next']
         target:
           type: string
-  
+
   metadata:
     type: object
     properties:
       difficulty:
         type: string
-        enum: ["beginner", "intermediate", "advanced", "expert"]
+        enum: ['beginner', 'intermediate', 'advanced', 'expert']
       estimatedTime:
         type: string
       prerequisites:
@@ -194,10 +194,10 @@ relationships:
 
 metadata:
   difficulty: intermediate
-  estimatedTime: "20 hours"
+  estimatedTime: '20 hours'
   prerequisites:
-    - "Basic programming"
-    - "Mathematics"
+    - 'Basic programming'
+    - 'Mathematics'
 ```
 
 ## Strand Schema
@@ -207,7 +207,7 @@ A Strand is the atomic unit of knowledge.
 ### Frontmatter Schema
 
 ```yaml
-$schema: "http://json-schema.org/draft-07/schema#"
+$schema: 'http://json-schema.org/draft-07/schema#'
 type: object
 required:
   - id
@@ -222,40 +222,114 @@ properties:
   id:
     type: string
     format: uuid
-  
+
   slug:
     type: string
-    pattern: "^[a-z0-9-]+$"
-  
+    pattern: '^[a-z0-9-]+$'
+
   title:
     type: string
     minLength: 1
     maxLength: 200
-  
+
   summary:
     type: string
     minLength: 50
     maxLength: 500
-  
+
   version:
     type: string
     pattern: "^\\d+\\.\\d+\\.\\d+$"
-  
+
+  strandType:
+    type: string
+    enum: ['file', 'folder', 'supernote', 'moc']
+    description: 'Type of strand - file, folder, supernote, or moc (map of content)'
+
   contentType:
     type: string
-    enum: 
-      - "text/markdown"
-      - "text/plain"
-      - "image/png"
-      - "image/jpeg"
-      - "video/mp4"
-      - "audio/mp3"
-      - "application/pdf"
-  
+    enum:
+      - 'text/markdown'
+      - 'text/plain'
+      - 'image/png'
+      - 'image/jpeg'
+      - 'video/mp4'
+      - 'audio/mp3'
+      - 'application/pdf'
+
   difficulty:
     type: string
-    enum: ["beginner", "intermediate", "advanced", "expert"]
-  
+    enum: ['beginner', 'intermediate', 'advanced', 'expert']
+
+  # === Zettelkasten Workflow Fields ===
+
+  maturity:
+    type: object
+    description: 'Note maturity tracking for Zettelkasten-style progression'
+    properties:
+      status:
+        type: string
+        enum: ['fleeting', 'literature', 'permanent', 'evergreen']
+        description: 'fleeting=quick capture, literature=from sources, permanent=refined, evergreen=core concept'
+      lastRefinedAt:
+        type: string
+        format: date
+      refinementCount:
+        type: integer
+        minimum: 0
+      futureValue:
+        type: string
+        enum: ['low', 'medium', 'high', 'core']
+
+  qualityChecks:
+    type: object
+    description: 'Quality assessment checklist for Zettelkasten notes'
+    properties:
+      hasContext:
+        type: boolean
+        description: 'Does the note explain why the content matters?'
+      hasConnections:
+        type: boolean
+        description: 'Does the note link to related notes?'
+      isAtomic:
+        type: boolean
+        description: 'Is the note focused on a single idea?'
+      isSelfContained:
+        type: boolean
+        description: 'Can future-self understand without external context?'
+      isVerified:
+        type: boolean
+        description: 'Has the note been reviewed for accuracy?'
+      hasSources:
+        type: boolean
+        description: 'Does the note cite sources where applicable?'
+
+  isMOC:
+    type: boolean
+    description: 'Whether this strand is a Map of Content (structure note)'
+
+  mocConfig:
+    type: object
+    description: 'Configuration for MOC (Map of Content) structure notes'
+    properties:
+      topic:
+        type: string
+        description: 'Primary topic this MOC covers'
+      scope:
+        type: string
+        enum: ['subject', 'topic', 'project', 'custom']
+      autoUpdate:
+        type: boolean
+        description: 'Whether to auto-update linked strands'
+      sections:
+        type: array
+        items:
+          type: string
+      strandOrder:
+        type: array
+        items:
+          type: string
+
   taxonomy:
     type: object
     required:
@@ -267,18 +341,18 @@ properties:
         items:
           type: string
         minItems: 1
-      
+
       topics:
         type: array
         items:
           type: string
         minItems: 1
-      
+
       subtopics:
         type: array
         items:
           type: string
-  
+
   relationships:
     type: array
     items:
@@ -289,21 +363,30 @@ properties:
       properties:
         type:
           type: string
-          enum: 
-            - "prerequisite"
-            - "related"
-            - "follows"
-            - "references"
-            - "contradicts"
-            - "updates"
-        
+          enum:
+            - 'prerequisite'
+            - 'related'
+            - 'follows'
+            - 'references'
+            - 'contradicts'
+            - 'updates'
+            - 'extends'
+            - 'supports'
+            - 'example-of'
+            - 'implements'
+            - 'questions'
+            - 'refines'
+            - 'applies'
+            - 'summarizes'
+
         target:
           type: string
-          description: "UUID of related strand"
-        
-        description:
+          description: 'UUID or path of related strand'
+
+        context:
           type: string
-  
+          description: 'Explanation of why this connection exists (link context)'
+
   publishing:
     type: object
     required:
@@ -313,27 +396,27 @@ properties:
     properties:
       author:
         type: string
-      
+
       contributors:
         type: array
         items:
           type: string
-      
+
       created:
         type: string
         format: date
-      
+
       modified:
         type: string
         format: date
-      
+
       reviewed:
         type: string
         format: date
-      
+
       license:
         type: string
-      
+
       citations:
         type: array
         items:
@@ -355,53 +438,128 @@ properties:
 
 ```markdown
 ---
-id: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
-slug: "transformer-architecture"
-title: "Understanding Transformer Architecture"
+id: 'f47ac10b-58cc-4372-a567-0e02b2c3d479'
+slug: 'transformer-architecture'
+title: 'Understanding Transformer Architecture'
 summary: |
   Guide to Transformer architecture covering self-attention, positional
   encoding, and encoder-decoder structure.
-version: "2.1.0"
-contentType: "text/markdown"
-difficulty: "intermediate"
+version: '2.1.0'
+strandType: 'file'
+contentType: 'text/markdown'
+difficulty: 'intermediate'
+
+# Zettelkasten workflow fields
+maturity:
+  status: 'permanent'
+  lastRefinedAt: '2024-11-15'
+  refinementCount: 3
+  futureValue: 'high'
+
+qualityChecks:
+  hasContext: true
+  hasConnections: true
+  isAtomic: true
+  isSelfContained: true
+  isVerified: true
+  hasSources: true
 
 taxonomy:
   subjects:
-    - "Artificial Intelligence"
-    - "Computer Science"
+    - 'Artificial Intelligence'
+    - 'Computer Science'
   topics:
-    - "Neural Networks"
-    - "Natural Language Processing"
+    - 'Neural Networks'
+    - 'Natural Language Processing'
   subtopics:
-    - "Attention Mechanisms"
-    - "Transformer Models"
+    - 'Attention Mechanisms'
+    - 'Transformer Models'
 
 relationships:
-  - type: "prerequisite"
-    target: "a1b2c3d4-58cc-4372-a567-0e02b2c3d479"
-    description: "Basic neural networks required"
-  - type: "related"
-    target: "e5f6g7h8-58cc-4372-a567-0e02b2c3d479"
-    description: "BERT builds on transformers"
+  - type: 'prerequisite'
+    target: 'a1b2c3d4-58cc-4372-a567-0e02b2c3d479'
+    context: 'Basic neural networks required before understanding transformers'
+  - type: 'extends'
+    target: 'e5f6g7h8-58cc-4372-a567-0e02b2c3d479'
+    context: 'BERT builds on transformer architecture with bidirectional encoding'
+  - type: 'supports'
+    target: 'i9j0k1l2-58cc-4372-a567-0e02b2c3d479'
+    context: 'Provides theoretical foundation for GPT models'
 
 publishing:
-  author: "Dr. Jane Smith"
+  author: 'Dr. Jane Smith'
   contributors:
-    - "John Doe"
-    - "Frame.dev Community"
-  created: "2024-01-15"
-  modified: "2024-11-15"
-  license: "CC-BY-4.0"
+    - 'John Doe'
+    - 'Frame.dev Community'
+  created: '2024-01-15'
+  modified: '2024-11-15'
+  license: 'CC-BY-4.0'
   citations:
-    - title: "Attention Is All You Need"
-      author: "Vaswani et al."
-      url: "https://arxiv.org/abs/1706.03762"
-      date: "2017-06-12"
+    - title: 'Attention Is All You Need'
+      author: 'Vaswani et al.'
+      url: 'https://arxiv.org/abs/1706.03762'
+      date: '2017-06-12'
 ---
 
 # Understanding Transformer Architecture
 
 [Content begins here...]
+```
+
+### MOC (Map of Content) Example
+
+```markdown
+---
+id: 'm0c12345-58cc-4372-a567-0e02b2c3d479'
+slug: 'neural-networks-moc'
+title: 'Neural Networks - Map of Content'
+summary: |
+  Entry point for all neural network content. Organizes strands by topic
+  and provides learning paths for different skill levels.
+version: '1.0.0'
+strandType: 'moc'
+isMOC: true
+
+mocConfig:
+  topic: 'Neural Networks'
+  scope: 'topic'
+  autoUpdate: true
+  sections:
+    - 'Fundamentals'
+    - 'Architectures'
+    - 'Applications'
+  strandOrder:
+    - 'perceptron-basics'
+    - 'backpropagation'
+    - 'transformer-architecture'
+    - 'bert-overview'
+
+maturity:
+  status: 'evergreen'
+  refinementCount: 12
+  futureValue: 'core'
+
+qualityChecks:
+  hasContext: true
+  hasConnections: true
+  isAtomic: false # MOCs are not atomic by nature
+  isSelfContained: true
+
+taxonomy:
+  subjects:
+    - 'Artificial Intelligence'
+  topics:
+    - 'Neural Networks'
+
+publishing:
+  author: 'Frame.dev Community'
+  created: '2024-01-01'
+  license: 'CC-BY-4.0'
+---
+
+# Neural Networks - Map of Content
+
+This MOC organizes all neural network content...
 ```
 
 ## Schema Validation
@@ -462,6 +620,7 @@ npm run validate -- --staged
 ### Schema Evolution
 
 Principles for schema changes:
+
 1. Backward compatibility - new fields are optional
 2. Migration scripts for breaking changes
 3. Version tracking in meta files

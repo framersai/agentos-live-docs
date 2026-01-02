@@ -9,7 +9,12 @@
 
 export type PluginType = 'codex' | 'viewer';
 
-export type CodexPluginCategory = 'indexer' | 'validator' | 'transformer' | 'analyzer' | 'exporter';
+export type CodexPluginCategory =
+  | 'indexer'
+  | 'validator'
+  | 'transformer'
+  | 'analyzer'
+  | 'exporter';
 
 export type ViewerPluginCategory =
   | 'ui-component'
@@ -225,6 +230,64 @@ export interface CodexExporter {
   export(strands: StrandData[], options?: ExportOptions): Promise<ExportResult>;
 }
 
+// ============================================================================
+// Zettelkasten Workflow Types
+// ============================================================================
+
+export type NoteMaturityStatus = 'fleeting' | 'literature' | 'permanent' | 'evergreen';
+
+export interface NoteMaturity {
+  status: NoteMaturityStatus;
+  lastRefinedAt?: string;
+  refinementCount?: number;
+  futureValue?: 'low' | 'medium' | 'high' | 'core';
+}
+
+export interface NoteQualityChecks {
+  hasContext?: boolean;
+  hasConnections?: boolean;
+  isAtomic?: boolean;
+  isSelfContained?: boolean;
+  isVerified?: boolean;
+  hasSources?: boolean;
+}
+
+export type MOCScope = 'subject' | 'topic' | 'project' | 'custom';
+
+export interface MOCConfig {
+  topic: string;
+  scope: MOCScope;
+  autoUpdate?: boolean;
+  sections?: string[];
+  strandOrder?: string[];
+}
+
+export type StrandType = 'file' | 'folder' | 'supernote' | 'moc';
+
+export type StrandRelationType =
+  | 'extends'
+  | 'contrasts'
+  | 'supports'
+  | 'example-of'
+  | 'implements'
+  | 'questions'
+  | 'refines'
+  | 'applies'
+  | 'summarizes'
+  | 'prerequisite'
+  | 'related'
+  | 'follows'
+  | 'references'
+  | 'contradicts'
+  | 'updates'
+  | 'custom';
+
+export interface StrandRelationship {
+  type: StrandRelationType;
+  target: string;
+  context?: string;
+}
+
 export interface StrandMetadata {
   path: string;
   title?: string;
@@ -232,6 +295,14 @@ export interface StrandMetadata {
   frontmatter?: Record<string, unknown>;
   weave?: string;
   loom?: string;
+
+  // Zettelkasten workflow fields
+  strandType?: StrandType;
+  maturity?: NoteMaturity;
+  qualityChecks?: NoteQualityChecks;
+  isMOC?: boolean;
+  mocConfig?: MOCConfig;
+  relationships?: StrandRelationship[];
 }
 
 export interface StrandData extends StrandMetadata {
@@ -366,7 +437,13 @@ export interface ViewerKeybinding {
 // Theme Types
 // ============================================================================
 
-export type ThemeCategory = 'light' | 'dark' | 'sepia' | 'terminal' | 'high-contrast' | 'custom';
+export type ThemeCategory =
+  | 'light'
+  | 'dark'
+  | 'sepia'
+  | 'terminal'
+  | 'high-contrast'
+  | 'custom';
 
 export interface ThemeColors {
   // Background
@@ -594,8 +671,5 @@ export type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
 };
 
-export type AsyncReturnType<T extends (...args: unknown[]) => Promise<unknown>> = T extends (
-  ...args: unknown[]
-) => Promise<infer R>
-  ? R
-  : never;
+export type AsyncReturnType<T extends (...args: unknown[]) => Promise<unknown>> =
+  T extends (...args: unknown[]) => Promise<infer R> ? R : never;

@@ -10,28 +10,28 @@ OpenStrand imports from 20+ sources while preserving structure and metadata.
 
 #### Supported Formats
 
-| Format | Extension | Features Preserved |
-|--------|-----------|-------------------|
-| Markdown | .md | Links, tags, frontmatter |
-| Notion | .html, .csv | Databases, relations, properties |
-| Obsidian | Vault folder | Plugin data, graph structure |
-| Roam Research | .json | Block refs, queries |
-| Org-mode | .org | TODO states, properties |
-| OneNote | .one | Sections, notebooks |
-| Evernote | .enex | Tags, notebooks, attachments |
-| Apple Notes | Via API | Folders, attachments |
-| Google Docs | Via API | Comments, suggestions |
-| PDF | .pdf | Annotations, bookmarks |
-| Word | .docx | Styles, comments |
-| Plain Text | .txt | Basic import |
-| HTML | .html | Structure, links |
-| OPML | .opml | Outline structure |
-| JSON | .json | Structured data |
-| CSV | .csv | Tabular data |
-| Images | .jpg, .png | EXIF data, OCR |
-| Audio | .mp3, .m4a | Transcription |
-| Video | .mp4, .mov | Transcription, keyframes |
-| Web Pages | URL | Clean article extraction |
+| Format        | Extension    | Features Preserved               |
+| ------------- | ------------ | -------------------------------- |
+| Markdown      | .md          | Links, tags, frontmatter         |
+| Notion        | .html, .csv  | Databases, relations, properties |
+| Obsidian      | Vault folder | Plugin data, graph structure     |
+| Roam Research | .json        | Block refs, queries              |
+| Org-mode      | .org         | TODO states, properties          |
+| OneNote       | .one         | Sections, notebooks              |
+| Evernote      | .enex        | Tags, notebooks, attachments     |
+| Apple Notes   | Via API      | Folders, attachments             |
+| Google Docs   | Via API      | Comments, suggestions            |
+| PDF           | .pdf         | Annotations, bookmarks           |
+| Word          | .docx        | Styles, comments                 |
+| Plain Text    | .txt         | Basic import                     |
+| HTML          | .html        | Structure, links                 |
+| OPML          | .opml        | Outline structure                |
+| JSON          | .json        | Structured data                  |
+| CSV           | .csv         | Tabular data                     |
+| Images        | .jpg, .png   | EXIF data, OCR                   |
+| Audio         | .mp3, .m4a   | Transcription                    |
+| Video         | .mp4, .mov   | Transcription, keyframes         |
+| Web Pages     | URL          | Clean article extraction         |
 
 #### Import Example
 
@@ -46,14 +46,14 @@ const results = await importer.import({
   sources: [
     { path: './obsidian-vault', format: 'obsidian' },
     { path: './notion-export.zip', format: 'notion' },
-    { path: './pdfs/*.pdf', format: 'pdf' }
+    { path: './pdfs/*.pdf', format: 'pdf' },
   ],
   options: {
     preserveStructure: true,
     extractImages: true,
     generateEmbeddings: true,
-    deduplication: 'content-hash'
-  }
+    deduplication: 'content-hash',
+  },
 });
 ```
 
@@ -65,13 +65,13 @@ const results = await importer.import({
 const capture = await openstrand.quickCapture({
   content: 'Meeting notes from discussion',
   tags: ['meeting', 'team'],
-  loom: 'work-notes'
+  loom: 'work-notes',
 });
 
 const enhanced = await capture.enhance({
   generateSummary: true,
   extractTasks: true,
-  suggestLinks: true
+  suggestLinks: true,
 });
 ```
 
@@ -83,8 +83,8 @@ const clip = await openstrand.clipWeb({
   options: {
     fullPage: false,
     simplify: true,
-    extractMetadata: true
-  }
+    extractMetadata: true,
+  },
 });
 ```
 
@@ -96,7 +96,7 @@ const voice = await openstrand.recordVoice();
 const strand = await voice.save({
   enhanceTranscription: true,
   generateSummary: true,
-  detectSpeakers: true
+  detectSpeakers: true,
 });
 ```
 
@@ -113,13 +113,13 @@ const results = await vault.search('quantum computing ideas', {
     looms: ['physics', 'research'],
     tags: ['quantum'],
     dateRange: { from: '2024-01-01' },
-    contentTypes: ['text/markdown', 'application/pdf']
+    contentTypes: ['text/markdown', 'application/pdf'],
   },
   includeArchived: false,
-  limit: 20
+  limit: 20,
 });
 
-results.items.forEach(item => {
+results.items.forEach((item) => {
   console.log(`${item.title} (${item.score})`);
   console.log(`Relevant: ${item.explanation}`);
   console.log(`Excerpts: ${item.highlights}`);
@@ -129,18 +129,17 @@ results.items.forEach(item => {
 ### Advanced Queries
 
 ```typescript
-const query = vault.query()
+const query = vault
+  .query()
   .where('contentType', 'equals', 'text/markdown')
-  .and(q => q
-    .where('tags', 'contains', 'important')
-    .or('title', 'matches', /^Project/)
-  )
+  .and((q) => q.where('tags', 'contains', 'important').or('title', 'matches', /^Project/))
   .orderBy('modified', 'desc')
   .limit(50);
 
 const results = await query.execute();
 
-const connected = await vault.graph()
+const connected = await vault
+  .graph()
   .from('strand-id')
   .follow('links', { types: ['related', 'references'] })
   .depth(3)
@@ -157,16 +156,16 @@ suggester.on('typing', async (text) => {
   const suggestions = await suggester.suggest(text, {
     links: true,
     tags: true,
-    completions: true
+    completions: true,
   });
-  
+
   return suggestions;
 });
 
 const related = await strand.findRelated({
   method: 'embedding',
   limit: 10,
-  threshold: 0.7
+  threshold: 0.7,
 });
 ```
 
@@ -183,11 +182,11 @@ const response = await chat.send('Explain quantum physics concepts from my notes
   context: {
     looms: ['physics'],
     timeRange: 'last-month',
-    includeRelated: true
+    includeRelated: true,
   },
   style: 'academic',
   maxTokens: 1000,
-  temperature: 0.7
+  temperature: 0.7,
 });
 
 await chat.send('Create a study guide from these concepts?');
@@ -203,12 +202,12 @@ const writer = strand.createWriter();
 const continuation = await writer.continue({
   length: 'paragraph',
   style: 'match',
-  creativity: 0.7
+  creativity: 0.7,
 });
 
 const rewritten = await writer.rewrite(selectedText, {
   goal: 'clarify',
-  preserveMeaning: true
+  preserveMeaning: true,
 });
 
 const generated = await vault.generate({
@@ -216,8 +215,8 @@ const generated = await vault.generate({
   variables: {
     date: '2024-11-15',
     attendees: ['Alice', 'Bob'],
-    topics: ['Q4 Planning']
-  }
+    topics: ['Q4 Planning'],
+  },
 });
 ```
 
@@ -228,17 +227,124 @@ const synthesis = await vault.synthesize({
   question: 'What are the main themes in my research?',
   sources: {
     looms: ['research', 'papers'],
-    minScore: 0.6
+    minScore: 0.6,
   },
   output: {
     format: 'report',
-    sections: ['overview', 'key-findings', 'connections', 'gaps']
-  }
+    sections: ['overview', 'key-findings', 'connections', 'gaps'],
+  },
 });
 
 const insights = await vault.analyzeGraph({
   metrics: ['centrality', 'clusters', 'bridges'],
-  visualize: true
+  visualize: true,
+});
+```
+
+## Zettelkasten Workflow
+
+### Note Maturity Tracking
+
+Track note evolution through the Zettelkasten lifecycle.
+
+```typescript
+// Set note maturity status
+await strand.setMaturity({
+  status: 'literature', // fleeting, literature, permanent, evergreen
+  futureValue: 'high', // low, medium, high, core
+});
+
+// Promote note to next stage
+await strand.promoteMaturity();
+
+// Get notes by maturity stage
+const fleeting = await vault.query().where('maturity.status', 'equals', 'fleeting').execute();
+
+// Find notes ready for refinement
+const needsReview = await vault
+  .query()
+  .where('maturity.status', 'equals', 'literature')
+  .and('maturity.lastRefinedAt', 'olderThan', '30d')
+  .execute();
+```
+
+### Link Context (Semantic Relationships)
+
+Add meaning to your links with relationship types and context.
+
+```typescript
+// Create a typed relationship
+await strand.linkTo('target-strand', {
+  type: 'extends', // extends, contrasts, supports, example-of, implements, questions
+  context: 'Builds on the core concepts from this foundation',
+});
+
+// Get all relationships by type
+const extensions = await strand.getRelationships({
+  type: 'extends',
+  direction: 'outgoing',
+});
+
+// Find contrasting viewpoints
+const contrasts = await vault.getRelationshipsByType('contrasts');
+```
+
+**Link Context Syntax in Markdown:**
+
+```markdown
+This concept [[target-note::extends|builds on the foundation of X]]
+Here's a counterpoint [[other-note::contrasts|but this view disagrees]]
+For example, see [[example-note::example-of|practical application]]
+```
+
+### Maps of Content (MOC)
+
+Create structure notes that organize related content.
+
+```typescript
+// Create a MOC
+const moc = await vault.createMOC({
+  topic: 'Machine Learning',
+  scope: 'topic', // subject, topic, project
+  autoUpdate: true,
+  sections: ['Fundamentals', 'Architectures', 'Applications'],
+});
+
+// Generate MOC from taxonomy
+const generatedMocs = await vault.generateMOCs({
+  level: 'topic',
+  minStrands: 5,
+  includeMaturity: true,
+});
+
+// Auto-update MOC when strands change
+moc.on('strandAdded', async (strand) => {
+  await moc.refresh();
+});
+```
+
+### Quality Checks
+
+Ensure notes meet Zettelkasten quality standards.
+
+```typescript
+// Check note quality
+const quality = await strand.checkQuality();
+// Returns: { hasContext, hasConnections, isAtomic, isSelfContained }
+
+// Find notes needing improvement
+const needsWork = await vault
+  .query()
+  .where('qualityChecks.hasConnections', 'equals', false)
+  .or('qualityChecks.isSelfContained', 'equals', false)
+  .execute();
+
+// Set quality flags
+await strand.setQualityChecks({
+  hasContext: true,
+  hasConnections: true,
+  isAtomic: true,
+  isSelfContained: true,
 });
 ```
 
@@ -250,28 +356,28 @@ const insights = await vault.analyzeGraph({
 const graph = vault.createGraph({
   renderer: 'three.js',
   dimensions: 3,
-  
+
   nodeColors: {
     byProperty: 'contentType',
-    scheme: 'category10'
+    scheme: 'category10',
   },
-  
+
   nodeSize: {
     byProperty: 'connections',
-    scale: 'log'
+    scale: 'log',
   },
-  
+
   physics: {
     charge: -300,
     linkDistance: 50,
-    gravity: 0.1
+    gravity: 0.1,
   },
-  
+
   filters: {
     minConnections: 2,
     looms: ['selected'],
-    timeRange: 'last-year'
-  }
+    timeRange: 'last-year',
+  },
 });
 
 graph.on('nodeClick', (node) => {
@@ -290,21 +396,17 @@ const important = await vault.graph.analyze({
   metrics: {
     pageRank: true,
     betweenness: true,
-    clustering: true
+    clustering: true,
   },
-  top: 20
+  top: 20,
 });
 
 const communities = await vault.graph.detectCommunities({
   algorithm: 'louvain',
-  minSize: 5
+  minSize: 5,
 });
 
-const path = await vault.graph.shortestPath(
-  'strand-id-1',
-  'strand-id-2',
-  { maxLength: 5 }
-);
+const path = await vault.graph.shortestPath('strand-id-1', 'strand-id-2', { maxLength: 5 });
 ```
 
 ## Sync & Collaboration
@@ -315,22 +417,22 @@ const path = await vault.graph.shortestPath(
 await vault.configureSync({
   include: {
     looms: ['shared', 'public'],
-    tags: ['sync']
+    tags: ['sync'],
   },
-  
+
   exclude: {
     tags: ['private', 'local-only'],
-    contentTypes: ['application/pdf']
+    contentTypes: ['application/pdf'],
   },
-  
+
   encryption: {
     enabled: true,
     method: 'e2e',
-    keyDerivation: 'argon2id'
+    keyDerivation: 'argon2id',
   },
-  
+
   conflictResolution: 'manual',
-  interval: 300
+  interval: 300,
 });
 ```
 
@@ -341,8 +443,8 @@ const workspace = await vault.createWorkspace('Team Research', {
   members: ['alice@example.com', 'bob@example.com'],
   permissions: {
     alice: 'admin',
-    bob: 'editor'
-  }
+    bob: 'editor',
+  },
 });
 
 workspace.on('presence', (presence) => {
@@ -367,13 +469,13 @@ await openstrand.setTheme({
     background: '#0a0a0a',
     foreground: '#e0e0e0',
     primary: '#7c3aed',
-    secondary: '#10b981'
+    secondary: '#10b981',
   },
   fonts: {
     ui: 'Inter',
     editor: 'JetBrains Mono',
-    serif: 'Crimson Text'
-  }
+    serif: 'Crimson Text',
+  },
 });
 
 await openstrand.injectCSS(`
@@ -391,27 +493,27 @@ await openstrand.plugins.install('@community/citation-manager');
 
 await openstrand.plugins.configure('citation-manager', {
   style: 'apa',
-  autoFormat: true
+  autoFormat: true,
 });
 
 const myPlugin = {
   id: 'my-plugin',
   name: 'My Custom Plugin',
   version: '1.0.0',
-  
+
   activate(context) {
     context.registerCommand({
       id: 'my-plugin.hello',
       title: 'Say Hello',
-      execute: () => alert('Hello!')
+      execute: () => alert('Hello!'),
     });
-    
+
     context.ui.statusBar.add({
       text: 'My Plugin',
       tooltip: 'Click for options',
-      onClick: () => this.showOptions()
+      onClick: () => this.showOptions(),
     });
-  }
+  },
 };
 
 await openstrand.plugins.register(myPlugin);
@@ -424,31 +526,31 @@ const workflow = await vault.createWorkflow({
   name: 'Daily Review',
   triggers: {
     schedule: '0 9 * * *',
-    manual: true
+    manual: true,
   },
-  
+
   steps: [
     {
       action: 'query',
       params: {
         filter: 'modified:today',
-        sort: 'modified:desc'
-      }
+        sort: 'modified:desc',
+      },
     },
     {
       action: 'generate',
       params: {
         template: 'daily-summary',
-        output: 'daily-notes'
-      }
+        output: 'daily-notes',
+      },
     },
     {
       action: 'notify',
       params: {
-        message: 'Daily review ready'
-      }
-    }
-  ]
+        message: 'Daily review ready',
+      },
+    },
+  ],
 });
 ```
 
@@ -463,20 +565,20 @@ await vault.enableEncryption({
     algorithm: 'argon2id',
     iterations: 3,
     memory: 64 * 1024,
-    parallelism: 2
-  }
+    parallelism: 2,
+  },
 });
 
 await strand.encrypt({
   password: 'strong-password',
-  hint: 'First pet + birth year'
+  hint: 'First pet + birth year',
 });
 
 const shareLink = await strand.share({
   expiresIn: '7d',
   password: 'share-password',
   permissions: ['read'],
-  maxViews: 10
+  maxViews: 10,
 });
 ```
 
@@ -487,17 +589,17 @@ await loom.setPermissions({
   public: false,
   users: {
     'alice@example.com': ['read', 'write'],
-    'bob@example.com': ['read']
+    'bob@example.com': ['read'],
   },
   groups: {
-    'research-team': ['read', 'write', 'share']
-  }
+    'research-team': ['read', 'write', 'share'],
+  },
 });
 
 const auditLog = await vault.getAuditLog({
   actions: ['read', 'write', 'delete', 'share'],
   users: ['alice@example.com'],
-  dateRange: { from: '2024-10-01' }
+  dateRange: { from: '2024-10-01' },
 });
 ```
 
@@ -509,18 +611,18 @@ const auditLog = await vault.getAuditLog({
 await openstrand.registerDevice({
   name: 'MacBook Pro',
   type: 'desktop',
-  syncEnabled: true
+  syncEnabled: true,
 });
 
 await openstrand.configureDeviceSync({
-  'iPhone': {
+  iPhone: {
     downloadImages: false,
-    offlineLooms: ['quick-notes', 'todos']
+    offlineLooms: ['quick-notes', 'todos'],
   },
-  'iPad': {
+  iPad: {
     fullSync: true,
-    priority: 'wifi'
-  }
+    priority: 'wifi',
+  },
 });
 ```
 

@@ -2,7 +2,7 @@
 
 Knowledge repository for LLM retrieval and superintelligence.
 
-*The OS for humans, the codex of humanity.*
+_The OS for humans, the codex of humanity._
 
 ## Overview
 
@@ -22,7 +22,7 @@ Frame Codex uses three-tier knowledge organization:
 
 ```
 WEAVE (Knowledge Universe)
-└── LOOM (Topic Collection)  
+└── LOOM (Topic Collection)
     └── STRAND (Atomic Knowledge Unit)
 ```
 
@@ -52,53 +52,111 @@ codex/
 
 ```yaml
 ---
-id: "uuid"
-slug: "url-safe-slug"
-title: "Knowledge Title"
-summary: "Brief description"
-version: "1.0.0"
-contentType: "text/markdown"
-difficulty: "intermediate"
+id: 'uuid'
+slug: 'url-safe-slug'
+title: 'Knowledge Title'
+summary: 'Brief description'
+version: '1.0.0'
+strandType: 'file' # file, folder, supernote, or moc
+contentType: 'text/markdown'
+difficulty: 'intermediate'
+
+# Zettelkasten workflow fields
+maturity:
+  status: 'permanent' # fleeting, literature, permanent, evergreen
+  lastRefinedAt: '2024-11-15'
+  refinementCount: 3
+  futureValue: 'high' # low, medium, high, core
+
+qualityChecks:
+  hasContext: true
+  hasConnections: true
+  isAtomic: true
+  isSelfContained: true
+
 taxonomy:
-  subjects: ["AI", "Machine Learning"]
-  topics: ["Neural Networks"]
-  subtopics: ["Transformers"]
+  subjects: ['AI', 'Machine Learning']
+  topics: ['Neural Networks']
+  subtopics: ['Transformers']
+
+# Enhanced relationships with context
 relationships:
-  - type: "prerequisite"
-    target: "strand-id"
+  - type: 'prerequisite'
+    target: 'strand-id'
+    context: 'Basic neural network concepts required'
+  - type: 'extends'
+    target: 'attention-mechanisms'
+    context: 'Builds on attention mechanism fundamentals'
+
 publishing:
-  author: "Author Name"
-  created: "2024-01-01"
-  license: "CC-BY-4.0"
+  author: 'Author Name'
+  created: '2024-01-01'
+  license: 'CC-BY-4.0'
+---
+```
+
+### MOC (Map of Content) Frontmatter
+
+```yaml
+---
+id: 'moc-uuid'
+slug: 'neural-networks-moc'
+title: 'Neural Networks - Map of Content'
+strandType: 'moc'
+isMOC: true
+
+mocConfig:
+  topic: 'Neural Networks'
+  scope: 'topic' # subject, topic, project
+  autoUpdate: true
+  sections:
+    - 'Fundamentals'
+    - 'Architectures'
+    - 'Applications'
+
+maturity:
+  status: 'evergreen'
+  futureValue: 'core'
+
+qualityChecks:
+  hasContext: true
+  hasConnections: true
+  isAtomic: false # MOCs are not atomic
+  isSelfContained: true
+
+publishing:
+  author: 'Frame.dev Community'
+  created: '2024-01-01'
+  license: 'CC-BY-4.0'
 ---
 ```
 
 ### Loom Manifest
 
 ```yaml
-slug: "topic-slug"
-title: "Topic Title"  
-summary: "Topic overview"
-tags: ["tag1", "tag2"]
+slug: 'topic-slug'
+title: 'Topic Title'
+summary: 'Topic overview'
+tags: ['tag1', 'tag2']
 ordering:
-  type: "sequential"
-  sequence: ["strand-1", "strand-2"]
+  type: 'sequential'
+  sequence: ['strand-1', 'strand-2']
 relationships:
-  - type: "parent"
-    target: "parent-loom"
+  - type: 'parent'
+    target: 'parent-loom'
 ```
 
 ### Weave Configuration
 
 ```yaml
-slug: "weave-id"
-title: "Knowledge Universe"
-description: "Description"
+slug: 'weave-id'
+title: 'Knowledge Universe'
+description: 'Description'
 maintainedBy:
-  organization: "Frame.dev"
-  contact: "codex@frame.dev"
-license: "CC-BY-4.0"
-tags: ["education", "reference"]
+  organization: 'Frame.dev'
+  contact: 'codex@frame.dev'
+license: 'CC-BY-4.0'
+tags: ['education', 'reference']
 ```
 
 ## Usage
@@ -129,20 +187,22 @@ def get_strand(weave, loom, strand):
 
 ```typescript
 const config = {
-  sources: [{
-    type: 'frame-codex',
-    url: 'https://github.com/framersai/codex',
-    weaves: ['technology', 'science'],
-    syncInterval: 3600
-  }]
+  sources: [
+    {
+      type: 'frame-codex',
+      url: 'https://github.com/framersai/codex',
+      weaves: ['technology', 'science'],
+      syncInterval: 3600,
+    },
+  ],
 };
 
 await openstrand.import({
   source: 'frame-codex',
   options: {
     preserveStructure: true,
-    includeRelationships: true
-  }
+    includeRelationships: true,
+  },
 });
 ```
 
@@ -155,17 +215,11 @@ The viewer lives in this monorepo under `packages/codex-viewer/` and is designed
 #### Basic React Usage
 
 ```tsx
-import { CodexViewer } from '@framers/codex-viewer'
-import '@framers/codex-viewer/styles.css'
+import { CodexViewer } from '@framers/codex-viewer';
+import '@framers/codex-viewer/styles.css';
 
 export default function App() {
-  return (
-    <CodexViewer
-      owner="framersai"
-      repo="codex"
-      branch="main"
-    />
-  )
+  return <CodexViewer owner="framersai" repo="codex" branch="main" />;
 }
 ```
 
@@ -197,7 +251,7 @@ The Frame.dev site (`apps/frame.dev`) consumes this package locally so the marke
 ### Quality Standards
 
 - Factually accurate
-- Well-structured  
+- Well-structured
 - Properly formatted
 - Unbiased
 - Accessible language
@@ -249,6 +303,7 @@ npm run check-links
 ## License
 
 Frame Codex content is licensed under CC-BY-4.0. You are free to:
+
 - Share - copy and redistribute
 - Adapt - remix and transform
 
