@@ -296,6 +296,14 @@ export interface StrandMetadata {
   weave?: string;
   loom?: string;
 
+  // Vocabulary classification fields
+  /** Vocabulary-classified skills (e.g., react, python, docker) */
+  skills?: string[];
+  /** Vocabulary-classified subjects (e.g., technology, science) */
+  subjects?: string[];
+  /** Vocabulary-classified topics (e.g., architecture, troubleshooting) */
+  topics?: string[];
+
   // Zettelkasten workflow fields
   strandType?: StrandType;
   maturity?: NoteMaturity;
@@ -342,6 +350,14 @@ export interface AnalysisResult {
   entities?: NamedEntity[];
   sentiment?: number;
   readability?: ReadabilityScore;
+  /** Vocabulary-classified skills (e.g., react, python, docker) */
+  skills?: string[];
+  /** Vocabulary-classified subjects (e.g., technology, science) */
+  subjects?: string[];
+  /** Vocabulary-classified topics (e.g., architecture, troubleshooting) */
+  topics?: string[];
+  /** Vocabulary-classified difficulty level */
+  difficulty?: string;
   custom?: Record<string, unknown>;
 }
 
