@@ -9,7 +9,7 @@ Frame.dev uses a layered architecture optimized for scalability and AI operation
 ```
 Client Layer
 ├── Web Applications
-├── Native Applications  
+├── Native Applications
 └── API Clients
 
 API Gateway
@@ -39,11 +39,11 @@ interface KnowledgeService {
   // Core operations
   createStrand(data: StrandData): Promise<Strand>;
   linkStrands(source: UUID, target: UUID, type: LinkType): Promise<Link>;
-  
+
   // Search & retrieval
   search(query: string, options: SearchOptions): Promise<SearchResults>;
   getRelated(strandId: UUID, depth: number): Promise<KnowledgeGraph>;
-  
+
   // Versioning
   createBranch(name: string): Promise<Branch>;
   merge(source: Branch, target: Branch): Promise<MergeResult>;
@@ -51,6 +51,7 @@ interface KnowledgeService {
 ```
 
 Key features:
+
 - Property graph on PostgreSQL
 - Multi-format content ingestion
 - Vector embeddings with pgvector
@@ -61,12 +62,14 @@ Key features:
 Handles AI/ML operations and model orchestration.
 
 Components:
+
 - Model registry for tracking available models
 - Inference pipeline optimized for low latency
 - RAG (Retrieval-Augmented Generation) engine
 - Fine-tuning capabilities
 
 Processing flow:
+
 ```
 Query → Embedding → Vector Search → Context Assembly → LLM → Response
 ```
@@ -74,6 +77,7 @@ Query → Embedding → Vector Search → Context Assembly → LLM → Response
 ### Integration Service
 
 Connects to external data sources:
+
 - Document formats: Markdown, Notion, Obsidian, Roam
 - Code repositories: GitHub, GitLab
 - Media: Images, audio, video with transcription
@@ -82,6 +86,7 @@ Connects to external data sources:
 ## Data Models
 
 ### Strand
+
 ```typescript
 interface Strand {
   id: UUID;
@@ -108,6 +113,7 @@ interface Strand {
 ```
 
 ### Loom
+
 ```typescript
 interface Loom {
   id: UUID;
@@ -121,6 +127,7 @@ interface Loom {
 ```
 
 ### Weave
+
 ```typescript
 interface Weave {
   slug: string;
@@ -135,18 +142,21 @@ interface Weave {
 ## Security Architecture
 
 ### Authentication
+
 - OAuth 2.0 / OpenID Connect
 - JWT tokens for sessions
 - Role-based access control
 - API key management
 
 ### Data Security
+
 - Encryption at rest (AES-256)
 - TLS 1.3 for communications
 - End-to-end encryption options
 - Zero-knowledge architecture for private vaults
 
 ### Privacy
+
 - Local-first defaults
 - Selective sync
 - Data portability
@@ -166,17 +176,18 @@ spec:
   template:
     spec:
       containers:
-      - name: service
-        image: framersai/knowledge-service:latest
-        env:
-        - name: DATABASE_URL
-          valueFrom:
-            secretKeyRef:
-              name: db-secret
-              key: url
+        - name: service
+          image: framersai/knowledge-service:latest
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: url
 ```
 
 ### Scaling Strategy
+
 - Horizontal scaling for API services
 - Read replicas for database
 - CDN for static assets
