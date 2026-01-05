@@ -24,3 +24,6 @@
 [submodule "apps/gitpaywidget"]
 	path = apps/gitpaywidget
 	url = https://github.com/manicinc/gitpaywidget.git
+[submodule "packages/quarry-plugins"]
+	path = packages/quarry-plugins
+	url = https://github.com/framersai/quarry-plugins.git
