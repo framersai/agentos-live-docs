@@ -3,32 +3,31 @@
 This note defines the commercial plans, daily token budgets, and billing integrations for Voice Chat Assistant. All plan metadata lives in `shared/planCatalog.ts` so both backend and frontend read the same source of truth.
 
 > **AgentOS core vs billing**
-> 
+>
 > AgentOS core (`@framers/agentos`) does not implement billing or plan logic. It only consumes an `ISubscriptionService` interface (typically backed by your backend and plan catalog) to decide whether a user can access a given persona or tool. Everything in this document applies to the **SaaS app and backend**, not to the core library itself.
 
 ## Plan Catalog Overview
 
-| Plan | Monthly Price | Usage Allocation | Daily Platform Allowance | BYO Keys | Audience |
-| --- | --- | --- | --- | --- | --- |
-| Global Lifetime Access | Invite-only | Internal allocation | ~31,800 GPT-4o tokens (USD 0.35) | No | Internal cohorts |
-| Free | $0 | N/A | ~1,800 GPT-4o tokens (~51K GPT-4o mini) | No | Product evaluation |
-| Basic | $9 | 35% -> USD 0.105/day | ~9,500 GPT-4o tokens | No | Individual developers |
-| Creator | $18 | 40% -> USD 0.24/day | ~21,800 GPT-4o tokens | Optional after allowance | Freelancers and builders |
-| Organization | $99 | 45% -> USD 1.485/day | ~135,000 GPT-4o tokens (shared) | Optional after allowance | Teams (>= five seats) |
+| Plan                   | Monthly Price | Usage Allocation     | Daily Platform Allowance                | BYO Keys                 | Audience                 |
+| ---------------------- | ------------- | -------------------- | --------------------------------------- | ------------------------ | ------------------------ |
+| Global Lifetime Access | Invite-only   | Internal allocation  | ~31,800 GPT-4o tokens (USD 0.35)        | No                       | Internal cohorts         |
+| Free                   | $0            | N/A                  | ~1,800 GPT-4o tokens (~51K GPT-4o mini) | No                       | Product evaluation       |
+| Basic                  | $9            | 35% -> USD 0.105/day | ~9,500 GPT-4o tokens                    | No                       | Individual developers    |
+| Creator                | $18           | 40% -> USD 0.24/day  | ~21,800 GPT-4o tokens                   | Optional after allowance | Freelancers and builders |
+| Organization           | $99           | 45% -> USD 1.485/day | ~135,000 GPT-4o tokens (shared)         | Optional after allowance | Teams (>= five seats)    |
 
 ## Custom Agent Limits & Feature Flags
 
 User-managed agents are now a first-class feature. Each plan ships explicit limits that are exported from `shared/planCatalog.ts`, persisted through `backend/src/features/agents/**`, and surfaced in the client dashboard (`frontend/src/views/agents/AgentDashboard.vue`).
 
-| Plan | Max Active Custom Agents | Monthly Agent Creations | Knowledge Docs / Agent | Agency Launches / Week | Feature Flags & Seats |
-| --- | --- | --- | --- | --- |
-| Free | 1 (session/IP scoped) | 1 | 5 | 0 | `custom-agent-lite` - GPT-4o mini only, limited RAG bundle, no tool chaining |
-| Basic (VCA Basic) | 3 | 3 | 25 | 1 | `custom-agents`, 1 agency seat for sharing |
-| Creator (VCA Premium) | 8 | 8 | 100 | 3 | `custom-agents`, `agency-lite`, `advanced-models`, 3 agency seats |
-| Organization | 50 | 50 | 500 | 7 | `custom-agents`, `agency-pro`, `team-management`, `advanced-models`, 10 agency seats |
+| Plan                  | Max Active Custom Agents | Monthly Agent Creations | Knowledge Docs / Agent | Agency Launches / Week | Feature Flags & Seats                                                                |
+| --------------------- | ------------------------ | ----------------------- | ---------------------- | ---------------------- | ------------------------------------------------------------------------------------ |
+| Free                  | 1 (session/IP scoped)    | 1                       | 5                      | 0                      | `custom-agent-lite` - GPT-4o mini only, limited RAG bundle, no tool chaining         |
+| Basic (VCA Basic)     | 3                        | 3                       | 25                     | 1                      | `custom-agents`, 1 agency seat for sharing                                           |
+| Creator (VCA Premium) | 8                        | 8                       | 100                    | 3                      | `custom-agents`, `agency-lite`, `advanced-models`, 3 agency seats                    |
+| Organization          | 50                       | 50                      | 500                    | 7                      | `custom-agents`, `agency-pro`, `team-management`, `advanced-models`, 10 agency seats |
 
 Agency launches are an example quota you can use for hosted plans. The reference implementation enforces a 7-day rolling window via `agency_usage_log`, but self-hosted deployments can change or remove the check.
-
 
 - Free users manage a single lightweight agent that is bound to their session and IP. The dashboard guides them toward upgrading once they hit the creation limit or request premium models/RAG scopes.
 - Monthly creation tracking is persisted in `user_agent_creation_log`; active agent slots live in `user_agents`. Both tables are initialised by `AppDatabase.ensureSchema()` and gated by the new quota helpers in `UserAgentService`.
@@ -41,8 +40,8 @@ Agency launches are an example quota you can use for hosted plans. The reference
    - GPT-4o mini blended cost per 1K tokens ~ USD 0.00039 (40% input @ 0.00015 + 60% output @ 0.00060).
 2. **Budget allocation**
    - Basic allocates 35% of revenue to usage, Creator 40%, Organization 45%.
-   - Daily allowance = (monthly price * allocation percentage) / 30.
-   - Approximate GPT-4o tokens = floor((daily allowance USD / 0.011) * 1000).
+   - Daily allowance = (monthly price \* allocation percentage) / 30.
+   - Approximate GPT-4o tokens = floor((daily allowance USD / 0.011) \* 1000).
 3. **Margins**
    - Gross margin stays above ~55% for each paid tier while funding the built-in usage budget.
    - Creator and Organization tiers fall back to bring-your-own keys after the house allowance is used.
@@ -108,6 +107,7 @@ For the frontend, mirror the IDs using `VITE_LEMONSQUEEZY_*` and `VITE_STRIPE_*`
 7. Optional: visit **Checkout > Advanced Settings** to set `success_url` and `cancel_url` so they match your environment defaults.
 
 The IDs are short numeric strings (for example `123456`) and are visible without calling the API.
+
 ## Stripe Checklist (Optional)
 
 1. Create the same three products and monthly price IDs.
@@ -143,3 +143,100 @@ The IDs are short numeric strings (for example `123456`) and are visible without
 - Add an admin tool for global passphrase rotation.
 - Expand telemetry dashboards to show platform vs BYO spend per plan.
 
+---
+
+## Quarry Pro - Stripe Configuration
+
+Quarry is a separate product with its own Stripe pricing. This section documents the setup for self-hosted Quarry deployments.
+
+### Product Details
+
+| Field            | Value                                   |
+| ---------------- | --------------------------------------- |
+| **Product ID**   | `prod_TjRWbCphp957L4`                   |
+| **Product Name** | Quarry Pro                              |
+| **Description**  | AI-native personal knowledge management |
+
+### Pricing Tiers (Updated January 2026)
+
+| Plan              | Price ID                         | Price    | Notes                                                   |
+| ----------------- | -------------------------------- | -------- | ------------------------------------------------------- |
+| Free              | N/A                              | $0       | Open source MIT license                                 |
+| Pro Monthly       | `price_1SlyduCBrYnyjAOOlYvgIcx2` | $9/month | BYOK, includes cloud sync. Grandfathered (normally $18) |
+| Pro Annual        | `price_1Sm1OFCBrYnyjAOO7SFJdLJZ` | $79/year | Save 27% vs monthly                                     |
+| Lifetime          | `price_1Sm1OFCBrYnyjAOOgZNAjakB` | $199     | One-time purchase (Beta: $99)                           |
+| Cloud Sync Add-on | TBD                              | $3/month | For Lifetime users (discounted from $9)                 |
+
+### Grandfathered Pricing Strategy
+
+All beta pricing is **grandfathered**—early adopters keep their price forever:
+
+1. **Pro Monthly**: $9/month during beta, $18/month after launch
+   - Early subscribers keep $9/month forever
+2. **Lifetime**: $99 during beta, $199 after launch
+   - Beta purchasers keep $99 price forever
+3. **Cloud Sync Add-on**: $3/month for Lifetime users (discounted from $9)
+4. **Team Features**: Coming free for all premium users who purchase during beta
+
+### Environment Variables
+
+Add these to your production `.env`:
+
+```bash
+# Required
+STRIPE_SECRET_KEY=sk_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+STRIPE_WEBHOOK_SECRET=whsec_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+# Quarry Pro Price IDs
+STRIPE_QUARRY_PRO_PRODUCT_ID=prod_TjRWbCphp957L4
+STRIPE_QUARRY_PRO_MONTHLY=price_1SlyduCBrYnyjAOOlYvgIcx2
+STRIPE_QUARRY_PRO_ANNUAL=price_1Sm1OFCBrYnyjAOO7SFJdLJZ
+STRIPE_QUARRY_PRO_LIFETIME=price_1Sm1OFCBrYnyjAOOgZNAjakB
+```
+
+### Promotional Coupons
+
+All coupons apply to lifetime purchases.
+
+| Code           | Discount     | Final Price | Limit     | Use Case                         |
+| -------------- | ------------ | ----------- | --------- | -------------------------------- |
+| (default beta) | $100 off     | $99         | Unlimited | Standard beta pricing            |
+| `EARLYBIRD`    | $150 off     | $49         | 499       | First 499 customers              |
+| `STUDENT`      | $30 off beta | $69         | 1 each    | Student discount (from $99 beta) |
+
+### Student Discount Workflow
+
+1. Student emails `team@frame.dev` from `.edu` address
+2. Subject line should include: "Student Discount"
+3. Admin verifies email is legitimate .edu domain
+4. Admin creates coupon in Stripe:
+   - Go to [Coupons → Create](https://dashboard.stripe.com/coupons/create)
+   - Type: Fixed amount
+   - Amount: $30 off
+   - Duration: Once
+   - Max redemptions: 1
+5. Send coupon code to student (applies to $99 beta = $69 final)
+
+### Webhook Configuration
+
+Configure webhook at `https://quarry.space/api/billing/webhook` for these events:
+
+- `checkout.session.completed`
+- `customer.subscription.created`
+- `customer.subscription.updated`
+- `customer.subscription.deleted`
+- `invoice.paid`
+- `invoice.payment_failed`
+
+### Code Reference
+
+The Stripe service reads price IDs from environment variables:
+
+```typescript
+// apps/frame.dev/lib/api/services/stripeService.ts
+const STRIPE_PRICES = {
+  monthly: process.env.STRIPE_QUARRY_PRO_MONTHLY || process.env.STRIPE_PRICE_MONTHLY,
+  annual: process.env.STRIPE_QUARRY_PRO_ANNUAL || process.env.STRIPE_PRICE_ANNUAL,
+  lifetime: process.env.STRIPE_QUARRY_PRO_LIFETIME || process.env.STRIPE_PRICE_LIFETIME,
+};
+```
