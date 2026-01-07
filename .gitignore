@@ -3,6 +3,9 @@
 # Only ignore deployment-specific .env (contains passwords)
 deployment/quarry/.env
 
+# Root .env file (contains API keys)
+.env
+
 # Node.js
 node_modules/
 npm-debug.log*
@@ -62,3 +65,9 @@ ssl/
 .claude/
 # Generated API docs (lives in agentos-live-docs)
 packages/agentos/docs/api/
+
+# Media catalog temporary downloads (raw images before processing)
+scripts/media-catalog/downloads/
+
+# Prompt image originals (gitignored, optimized versions in public/prompts)
+apps/frame.dev/prompts-originals/

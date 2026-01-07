@@ -52,6 +52,7 @@
     "rimraf": "^5.0.5",
     "secretlint": "^7.0.0",
     "semantic-release": "^24.0.0",
+    "tsx": "^4.21.0",
     "typescript": "^5.4.0",
     "typescript-eslint": "^8.0.0"
   },
@@ -68,7 +69,10 @@
     "*": "secretlint --maskSecrets"
   },
   "packageManager": "pnpm@10.15.1",
-  "dependencies": {},
+  "dependencies": {
+    "color-thief-node": "^1.0.4",
+    "sharp": "^0.33.5"
+  },
   "pnpm": {
     "overrides": {
       "@types/react": "^18.3.12",
