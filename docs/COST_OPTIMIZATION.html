@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgentOS Cost Optimization Guide - AgentOS Documentation</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/highlight.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-background-primary: #ffffff;
+    --color-background-secondary: #f8fafc;
+    --color-background-elevated: #f1f5f9;
+    --color-text-primary: #0f172a;
+    --color-text-secondary: #475569;
+    --color-text-muted: #94a3b8;
+    --color-accent-primary: #6366f1;
+    --color-accent-hover: #4f46e5;
+    --color-border-subtle: #e2e8f0;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-background-primary: #020617;
+      --color-background-secondary: #0f172a;
+      --color-background-elevated: #1e293b;
+      --color-text-primary: #f8fafc;
+      --color-text-secondary: #cbd5e1;
+      --color-text-muted: #64748b;
+      --color-accent-primary: #818cf8;
+      --color-accent-hover: #a5b4fc;
+      --color-border-subtle: #1e293b;
+    }
+  }
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+    background: var(--color-background-primary) !important;
+    color: var(--color-text-primary) !important;
+  }
+  .agentos-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--color-border-subtle);
+    padding: 0.75rem 1.5rem;
+  }
+  @media (prefers-color-scheme: dark) {
+    .agentos-header { background: rgba(2, 6, 23, 0.95); }
+  }
+  .agentos-header-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .agentos-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--color-text-primary);
+  }
+  .agentos-logo svg { width: 32px; height: 32px; }
+  .agentos-nav {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  .agentos-nav a {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: color 0.15s ease;
+  }
+  .agentos-nav a:hover { color: var(--color-accent-primary); }
+  .agentos-nav a.active { color: var(--color-accent-primary); font-weight: 600; }
+  .agentos-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white !important;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all 0.15s ease;
+  }
+  .agentos-cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  }
+  .github-icon { display: flex; align-items: center; }
+  .agentos-footer {
+    border-top: 1px solid var(--color-border-subtle);
+    background: var(--color-background-secondary);
+    padding: 3rem 1.5rem;
+    margin-top: 4rem;
+  }
+  .agentos-footer-inner { max-width: 1400px; margin: 0 auto; }
+  .agentos-footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+  .agentos-footer h4 { font-weight: 700; margin-bottom: 1rem; color: var(--color-text-primary); }
+  .agentos-footer ul { list-style: none; padding: 0; margin: 0; }
+  .agentos-footer li { margin-bottom: 0.5rem; }
+  .agentos-footer a { color: var(--color-text-secondary); text-decoration: none; font-size: 0.875rem; }
+  .agentos-footer a:hover { color: var(--color-accent-primary); }
+  /* TypeDoc Overrides */
+  .tsd-page-toolbar { background: var(--color-background-secondary) !important; border-bottom: 1px solid var(--color-border-subtle) !important; }
+  .tsd-page-title { background: var(--color-background-primary) !important; }
+  .col-content { background: var(--color-background-primary) !important; }
+  .col-sidebar { background: var(--color-background-secondary) !important; border-right: 1px solid var(--color-border-subtle) !important; }
+  .tsd-navigation { background: var(--color-background-secondary) !important; }
+  .tsd-kind-icon { color: var(--color-accent-primary) !important; }
+  a { color: var(--color-accent-primary); }
+  code { 
+    background: var(--color-background-elevated) !important; 
+    color: var(--color-text-primary) !important;
+    padding: 0.125rem 0.375rem; 
+    border-radius: 0.25rem; 
+    font-size: 0.875em; 
+  }
+  pre { 
+    background: var(--color-background-elevated) !important; 
+    color: var(--color-text-primary) !important;
+    border: 1px solid var(--color-border-subtle); 
+    border-radius: 0.5rem; 
+    padding: 1rem !important; 
+  }
+  pre code {
+    background: transparent !important;
+    color: inherit !important;
+  }
+  h1, h2, h3, h4, h5 { color: var(--color-text-primary) !important; }
+  p, li { color: var(--color-text-secondary) !important; }
+  @media (max-width: 768px) { .agentos-nav-links { display: none; } }
+</style>
+
+  <style>
+    .md-content {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+    }
+    .md-content h1 { font-size: 2.25rem; font-weight: 800; margin-bottom: 1.5rem; border-bottom: 2px solid var(--color-border-subtle); padding-bottom: 0.75rem; }
+    .md-content h2 { font-size: 1.5rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; }
+    .md-content h3 { font-size: 1.25rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; }
+    .md-content p { line-height: 1.7; margin-bottom: 1rem; }
+    .md-content ul, .md-content ol { margin-bottom: 1rem; padding-left: 1.5rem; }
+    .md-content li { margin-bottom: 0.5rem; line-height: 1.6; }
+    .md-content pre { overflow-x: auto; margin: 1.5rem 0; }
+    .md-content code { font-family: 'SF Mono', 'Consolas', monospace; font-size: 0.875em; }
+    .md-content blockquote { border-left: 4px solid var(--color-accent-primary); padding-left: 1rem; margin: 1.5rem 0; color: var(--color-text-secondary); }
+    .md-content table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+    .md-content th, .md-content td { padding: 0.75rem; border: 1px solid var(--color-border-subtle); text-align: left; }
+    .md-content th { background: var(--color-background-secondary); font-weight: 600; }
+    .md-content img { max-width: 100%; height: auto; border-radius: 0.5rem; }
+    .md-content a { color: var(--color-accent-primary); text-decoration: none; }
+    .md-content a:hover { text-decoration: underline; }
+    .md-content hr { border: none; border-top: 1px solid var(--color-border-subtle); margin: 2rem 0; }
+    /* Mermaid diagram support */
+    .mermaid { background: var(--color-background-secondary); padding: 1rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+  </style>
+</head>
+<body>
+<header class="agentos-header">
+  <div class="agentos-header-inner">
+    <a href="https://agentos.sh" class="agentos-logo">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="40" height="40" rx="10" fill="url(#lg)"/>
+        <path d="M20 8L28 14V26L20 32L12 26V14L20 8Z" stroke="white" stroke-width="2" fill="none"/>
+        <circle cx="20" cy="20" r="4" fill="white"/>
+        <defs><linearGradient id="lg" x1="0" y1="0" x2="40" y2="40"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs>
+      </svg>
+      AgentOS
+    </a>
+    <nav class="agentos-nav">
+      <span class="agentos-nav-links">
+        <a href="https://agentos.sh/en/about">About</a>
+        <a href="https://agentos.sh/en/#features">Features</a>
+        <a href="https://agentos.sh/en/blog">Blog</a>
+        <a href="/" class="active">API Docs</a>
+        <a href="https://agentos.sh/en/guides">Guides</a>
+      </span>
+      <a href="https://github.com/framersai/agentos" target="_blank" rel="noopener noreferrer" class="github-icon" title="GitHub">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+      </a>
+      <a href="https://agentos.sh" class="agentos-cta">Get Started</a>
+    </nav>
+  </div>
+</header>
+
+<main class="md-content">
+<h1>AgentOS Cost Optimization Guide</h1>
+<blockquote>
+<p>Comprehensive guide for optimizing LLM costs, configuring performance tiers, and implementing sensible defaults across the AgentOS framework.</p>
+</blockquote>
+<hr>
+<h2>Table of Contents</h2>
+<ol>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#cost-factors">Cost Factors</a></li>
+<li><a href="#optimization-strategies">Optimization Strategies</a></li>
+<li><a href="#performance-tiers">Performance Tiers</a></li>
+<li><a href="#model-selection">Model Selection</a></li>
+<li><a href="#rag-cost-optimization">RAG Cost Optimization</a></li>
+<li><a href="#storage-cost-optimization">Storage Cost Optimization</a></li>
+<li><a href="#configuration-reference">Configuration Reference</a></li>
+<li><a href="#monitoring--budgets">Monitoring &amp; Budgets</a></li>
+</ol>
+<hr>
+<h2>Overview</h2>
+<p>AgentOS is designed to be <strong>cost-conscious by default</strong> while allowing fine-grained control for users who need it. This guide covers:</p>
+<ul>
+<li><strong>LLM Costs</strong>: Token usage, model selection, caching</li>
+<li><strong>RAG Costs</strong>: Embedding generation, vector storage, retrieval</li>
+<li><strong>Storage Costs</strong>: Database operations, sync bandwidth</li>
+<li><strong>Compute Costs</strong>: Tool execution, streaming overhead</li>
+</ul>
+<h3>Key Principles</h3>
+<ol>
+<li><strong>Sensible Defaults</strong>: Out-of-box configuration minimizes cost while maintaining quality</li>
+<li><strong>Configurable Tradeoffs</strong>: Choose between speed, cost, and accuracy</li>
+<li><strong>Transparency</strong>: Built-in metrics for cost tracking</li>
+<li><strong>Graceful Degradation</strong>: Falls back to cheaper options when possible</li>
+</ol>
+<hr>
+<h2>Cost Factors</h2>
+<h3>LLM Token Costs (Approximate)</h3>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Input (per 1K)</th>
+<th>Output (per 1K)</th>
+<th>Context Window</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GPT-4o</td>
+<td>$0.005</td>
+<td>$0.015</td>
+<td>128K</td>
+</tr>
+<tr>
+<td>GPT-4o-mini</td>
+<td>$0.00015</td>
+<td>$0.0006</td>
+<td>128K</td>
+</tr>
+<tr>
+<td>Claude 3.5 Sonnet</td>
+<td>$0.003</td>
+<td>$0.015</td>
+<td>200K</td>
+</tr>
+<tr>
+<td>Claude 3 Haiku</td>
+<td>$0.00025</td>
+<td>$0.00125</td>
+<td>200K</td>
+</tr>
+<tr>
+<td>Gemini 1.5 Pro</td>
+<td>$0.00125</td>
+<td>$0.005</td>
+<td>1M</td>
+</tr>
+<tr>
+<td>Gemini 1.5 Flash</td>
+<td>$0.000075</td>
+<td>$0.0003</td>
+<td>1M</td>
+</tr>
+</tbody></table>
+<h3>Embedding Costs</h3>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Cost (per 1K tokens)</th>
+<th>Dimensions</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>text-embedding-3-small</td>
+<td>$0.00002</td>
+<td>1536</td>
+</tr>
+<tr>
+<td>text-embedding-3-large</td>
+<td>$0.00013</td>
+<td>3072</td>
+</tr>
+<tr>
+<td>text-embedding-ada-002</td>
+<td>$0.0001</td>
+<td>1536</td>
+</tr>
+</tbody></table>
+<h3>Storage Costs</h3>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>Cost</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Local SQLite</td>
+<td>Free</td>
+<td>Included in app</td>
+</tr>
+<tr>
+<td>Supabase (Free)</td>
+<td>Free</td>
+<td>500MB, 2 projects</td>
+</tr>
+<tr>
+<td>Supabase (Pro)</td>
+<td>$25/mo</td>
+<td>8GB included</td>
+</tr>
+<tr>
+<td>Pinecone (Starter)</td>
+<td>Free</td>
+<td>100K vectors</td>
+</tr>
+<tr>
+<td>Pinecone (Standard)</td>
+<td>$70/mo</td>
+<td>1M vectors</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Optimization Strategies</h2>
+<h3>1. Model Tiering</h3>
+<p>Route different tasks to appropriate models:</p>
+<pre><code class="language-typescript">import { AgentOS, AgentOSConfig } from &#39;@framers/agentos&#39;;
+
+const config: AgentOSConfig = {
+  modelRouting: {
+    // Use cheap models for simple tasks
+    simple: {
+      model: &#39;gpt-4o-mini&#39;,
+      maxTokens: 500,
+    },
+    // Use powerful models for complex reasoning
+    complex: {
+      model: &#39;gpt-4o&#39;,
+      maxTokens: 2000,
+    },
+    // Use very cheap for classification/routing
+    routing: {
+      model: &#39;gpt-4o-mini&#39;,
+      maxTokens: 100,
+    },
+  },
+  
+  // Auto-route based on task complexity
+  autoRouting: {
+    enabled: true,
+    complexityThreshold: 0.7, // 0-1 scale
+    fallbackModel: &#39;gpt-4o-mini&#39;,
+  },
+};
+
+const agentos = new AgentOS();
+await agentos.initialize(config);
+</code></pre>
+<h3>2. Context Window Management</h3>
+<p>Minimize tokens by smart context management:</p>
+<pre><code class="language-typescript">const config: AgentOSConfig = {
+  contextManagement: {
+    // Max tokens for conversation history
+    maxHistoryTokens: 4000,
+    
+    // Max tokens for RAG context
+    maxRAGContextTokens: 2000,
+    
+    // Summarization strategy for long conversations
+    summarizationStrategy: &#39;progressive&#39;, // &#39;none&#39; | &#39;progressive&#39; | &#39;aggressive&#39;
+    
+    // When to summarize (percentage of max tokens)
+    summarizeThreshold: 0.8,
+    
+    // Use cheaper model for summarization
+    summarizationModel: &#39;gpt-4o-mini&#39;,
+  },
+};
+</code></pre>
+<h3>3. Response Caching</h3>
+<p>Cache common responses to avoid repeated LLM calls:</p>
+<pre><code class="language-typescript">const config: AgentOSConfig = {
+  caching: {
+    enabled: true,
+    
+    // Cache identical prompts
+    promptCache: {
+      enabled: true,
+      ttlSeconds: 3600, // 1 hour
+      maxEntries: 1000,
+    },
+    
+    // Cache semantic similarity (fuzzy matching)
+    semanticCache: {
+      enabled: true,
+      similarityThreshold: 0.95, // Very high similarity required
+      ttlSeconds: 7200, // 2 hours
+    },
+    
+    // Cache tool results
+    toolResultCache: {
+      enabled: true,
+      ttlSeconds: 300, // 5 minutes
+    },
+  },
+};
+</code></pre>
+<h3>4. Streaming Optimization</h3>
+<p>Optimize streaming for cost and latency:</p>
+<pre><code class="language-typescript">const config: AgentOSConfig = {
+  streaming: {
+    // Enable streaming (better UX, same cost)
+    enabled: true,
+    
+    // Batch small chunks (reduce overhead)
+    batchingEnabled: true,
+    batchIntervalMs: 50,
+    
+    // Auto-stop on user interruption (save tokens)
+    interruptionHandling: &#39;stop&#39;, // &#39;stop&#39; | &#39;complete&#39; | &#39;summarize&#39;
+  },
+};
+</code></pre>
+<h3>5. Tool Execution Optimization</h3>
+<p>Minimize tool call overhead:</p>
+<pre><code class="language-typescript">const config: AgentOSConfig = {
+  toolExecution: {
+    // Parallel tool execution (faster, same cost)
+    parallelExecution: true,
+    maxConcurrent: 5,
+    
+    // Cache tool results
+    cacheResults: true,
+    cacheTtlSeconds: 300,
+    
+    // Limit tool iterations (prevent runaway costs)
+    maxIterations: 10,
+    
+    // Timeout for individual tools
+    timeoutMs: 30000,
+  },
+};
+</code></pre>
+<hr>
+<h2>Performance Tiers</h2>
+<h3>Tier Configuration</h3>
+<pre><code class="language-typescript">type PerformanceTier = &#39;economy&#39; | &#39;balanced&#39; | &#39;performance&#39; | &#39;custom&#39;;
+
+const TIER_DEFAULTS = {
+  economy: {
+    defaultModel: &#39;gpt-4o-mini&#39;,
+    maxTokensPerTurn: 500,
+    cachingEnabled: true,
+    summarizationEnabled: true,
+    toolParallelization: false,
+    ragEnabled: false,
+  },
+  balanced: {
+    defaultModel: &#39;gpt-4o-mini&#39;,
+    maxTokensPerTurn: 1000,
+    cachingEnabled: true,
+    summarizationEnabled: true,
+    toolParallelization: true,
+    ragEnabled: true,
+  },
+  performance: {
+    defaultModel: &#39;gpt-4o&#39;,
+    maxTokensPerTurn: 4000,
+    cachingEnabled: false,
+    summarizationEnabled: false,
+    toolParallelization: true,
+    ragEnabled: true,
+  },
+};
+</code></pre>
+<h3>Usage</h3>
+<pre><code class="language-typescript">import { AgentOS } from &#39;@framers/agentos&#39;;
+
+// Economy tier: Minimize costs
+const economyAgent = new AgentOS();
+await economyAgent.initialize({
+  performanceTier: &#39;economy&#39;,
+});
+
+// Balanced tier: Default, good for most use cases
+const balancedAgent = new AgentOS();
+await balancedAgent.initialize({
+  performanceTier: &#39;balanced&#39;,
+});
+
+// Performance tier: Maximum capability
+const performanceAgent = new AgentOS();
+await performanceAgent.initialize({
+  performanceTier: &#39;performance&#39;,
+});
+
+// Custom tier: Full control
+const customAgent = new AgentOS();
+await customAgent.initialize({
+  performanceTier: &#39;custom&#39;,
+  defaultModel: &#39;claude-3-haiku&#39;,
+  maxTokensPerTurn: 2000,
+  cachingEnabled: true,
+  // ... other options
+});
+</code></pre>
+<h3>Tier Comparison</h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Economy</th>
+<th>Balanced</th>
+<th>Performance</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Default Model</td>
+<td>gpt-4o-mini</td>
+<td>gpt-4o-mini</td>
+<td>gpt-4o</td>
+</tr>
+<tr>
+<td>Max Tokens</td>
+<td>500</td>
+<td>1000</td>
+<td>4000</td>
+</tr>
+<tr>
+<td>Caching</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>RAG</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Tool Parallel</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Est. Cost/1K turns</td>
+<td>~$0.10</td>
+<td>~$0.50</td>
+<td>~$5.00</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Model Selection</h2>
+<h3>Automatic Model Selection</h3>
+<p>AgentOS can automatically select models based on task complexity:</p>
+<pre><code class="language-typescript">const config: AgentOSConfig = {
+  modelSelection: {
+    strategy: &#39;auto&#39;, // &#39;fixed&#39; | &#39;auto&#39; | &#39;user-preference&#39;
+    
+    // Complexity detection
+    complexityDetection: {
+      // Use fast classifier to estimate complexity
+      classifier: &#39;rule-based&#39;, // &#39;rule-based&#39; | &#39;ml&#39; | &#39;llm&#39;
+      
+      // Factors considered
+      factors: [
+        &#39;messageLength&#39;,      // Longer = more complex
+        &#39;technicalTerms&#39;,     // Technical vocabulary
+        &#39;questionType&#39;,       // &#39;factual&#39; vs &#39;analytical&#39;
+        &#39;toolRequirements&#39;,   // Tools needed
+        &#39;contextDependency&#39;,  // Needs history?
+      ],
+    },
+    
+    // Model mapping by complexity
+    complexityMapping: {
+      low: &#39;gpt-4o-mini&#39;,      // 0.0 - 0.3
+      medium: &#39;gpt-4o-mini&#39;,   // 0.3 - 0.7
+      high: &#39;gpt-4o&#39;,          // 0.7 - 1.0
+    },
+  },
+};
+</code></pre>
+<h3>Provider Fallback</h3>
+<p>Configure fallback providers for reliability and cost:</p>
+<pre><code class="language-typescript">const config: AgentOSConfig = {
+  providers: {
+    primary: {
+      name: &#39;openai&#39;,
+      models: [&#39;gpt-4o&#39;, &#39;gpt-4o-mini&#39;],
+      apiKey: process.env.OPENAI_API_KEY,
+    },
+    fallback: [
+      {
+        name: &#39;anthropic&#39;,
+        models: [&#39;claude-3-haiku&#39;],
+        apiKey: process.env.ANTHROPIC_API_KEY,
+        // Use when primary fails or is expensive
+        conditions: {
+          onPrimaryFailure: true,
+          onPrimaryOverBudget: true,
+        },
+      },
+    ],
+  },
+};
+</code></pre>
+<hr>
+<h2>RAG Cost Optimization</h2>
+<h3>Embedding Strategy</h3>
+<pre><code class="language-typescript">const config: AgentOSConfig = {
+  rag: {
+    embedding: {
+      // Use smaller, cheaper embeddings
+      model: &#39;text-embedding-3-small&#39;, // vs &#39;large&#39;
+      dimensions: 1536,
+      
+      // Batch embeddings (reduce API calls)
+      batchSize: 100,
+      
+      // Cache embeddings (don&#39;t re-embed same content)
+      cacheEnabled: true,
+      cacheTtlDays: 30,
+      
+      // Content deduplication (skip identical content)
+      deduplication: true,
+    },
+  },
+};
+</code></pre>
+<h3>Retrieval Optimization</h3>
+<pre><code class="language-typescript">const config: AgentOSConfig = {
+  rag: {
+    retrieval: {
+      // Limit retrieved documents
+      topK: 5, // Don&#39;t retrieve more than needed
+      
+      // Minimum relevance threshold
+      minScore: 0.7, // Skip low-relevance results
+      
+      // Hybrid search (lexical + semantic)
+      hybridSearch: {
+        enabled: true,
+        // Lexical is free, semantic costs embeddings
+        lexicalWeight: 0.3,
+        semanticWeight: 0.7,
+      },
+      
+      // Progressive retrieval (start small, expand if needed)
+      progressive: {
+        enabled: true,
+        initialK: 3,
+        maxK: 10,
+        expansionThreshold: 0.5, // Expand if avg score &lt; threshold
+      },
+    },
+  },
+};
+</code></pre>
+<h3>Vector Store Selection</h3>
+<pre><code class="language-typescript">const config: AgentOSConfig = {
+  rag: {
+    vectorStore: {
+      // Use local store for development (free)
+      development: {
+        type: &#39;in-memory&#39;,
+      },
+      
+      // Use efficient hosted store for production
+      production: {
+        type: &#39;pinecone&#39;,
+        index: &#39;production&#39;,
+        // Serverless = cheaper for low traffic
+        serverless: true,
+      },
+    },
+  },
+};
+</code></pre>
+<hr>
+<h2>Storage Cost Optimization</h2>
+<p>AgentOS integrates with <code>@framers/sql-storage-adapter</code> for local-first storage:</p>
+<pre><code class="language-typescript">import { AgentOS } from &#39;@framers/agentos&#39;;
+import { createDatabase } from &#39;@framers/sql-storage-adapter&#39;;
+
+// Use efficient storage tier
+const db = await createDatabase({
+  priority: [&#39;indexeddb&#39;, &#39;sqljs&#39;], // Free local storage
+  performance: {
+    tier: &#39;efficient&#39;,
+    batchWrites: true,
+    cacheEnabled: true,
+  },
+});
+
+const config: AgentOSConfig = {
+  storage: {
+    // Use local storage (free) for:
+    conversations: db,
+    personas: db,
+    preferences: db,
+    
+    // Only use cloud for synced data
+    sync: {
+      enabled: true,
+      strategy: &#39;incremental&#39;, // Only sync changes
+      interval: 60000, // 1 minute
+    },
+  },
+};
+</code></pre>
+<hr>
+<h2>Configuration Reference</h2>
+<h3>Full Configuration Schema</h3>
+<pre><code class="language-typescript">interface AgentOSCostConfig {
+  // Performance tier preset
+  performanceTier?: &#39;economy&#39; | &#39;balanced&#39; | &#39;performance&#39; | &#39;custom&#39;;
+  
+  // Model configuration
+  models?: {
+    default?: string;
+    routing?: string;
+    summarization?: string;
+    embedding?: string;
+  };
+  
+  // Token limits
+  limits?: {
+    maxTokensPerTurn?: number;
+    maxTokensPerDay?: number;
+    maxCostPerDay?: number; // USD
+    maxToolIterations?: number;
+  };
+  
+  // Caching
+  caching?: {
+    promptCache?: boolean;
+    semanticCache?: boolean;
+    toolCache?: boolean;
+    embeddingCache?: boolean;
+  };
+  
+  // Context management
+  context?: {
+    maxHistoryTokens?: number;
+    maxRAGTokens?: number;
+    summarizationEnabled?: boolean;
+  };
+  
+  // RAG settings
+  rag?: {
+    enabled?: boolean;
+    topK?: number;
+    minScore?: number;
+    hybridSearch?: boolean;
+  };
+  
+  // Tool execution
+  tools?: {
+    parallelExecution?: boolean;
+    maxConcurrent?: number;
+    cacheResults?: boolean;
+    timeoutMs?: number;
+  };
+}
+</code></pre>
+<h3>Environment Variables</h3>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>AGENTOS_PERFORMANCE_TIER</code></td>
+<td>Preset tier</td>
+<td><code>balanced</code></td>
+</tr>
+<tr>
+<td><code>AGENTOS_DEFAULT_MODEL</code></td>
+<td>Default LLM model</td>
+<td><code>gpt-4o-mini</code></td>
+</tr>
+<tr>
+<td><code>AGENTOS_MAX_TOKENS_PER_TURN</code></td>
+<td>Token limit per turn</td>
+<td><code>1000</code></td>
+</tr>
+<tr>
+<td><code>AGENTOS_MAX_COST_PER_DAY</code></td>
+<td>Daily cost limit (USD)</td>
+<td><code>10.00</code></td>
+</tr>
+<tr>
+<td><code>AGENTOS_CACHING_ENABLED</code></td>
+<td>Enable all caching</td>
+<td><code>true</code></td>
+</tr>
+<tr>
+<td><code>AGENTOS_RAG_ENABLED</code></td>
+<td>Enable RAG</td>
+<td><code>true</code></td>
+</tr>
+<tr>
+<td><code>AGENTOS_RAG_TOP_K</code></td>
+<td>RAG retrieval count</td>
+<td><code>5</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Monitoring &amp; Budgets</h2>
+<h3>Cost Tracking</h3>
+<pre><code class="language-typescript">const agentos = new AgentOS();
+
+// Subscribe to cost events
+agentos.on(&#39;cost:turn&#39;, (event) =&gt; {
+  console.log(`Turn cost: $${event.cost.toFixed(4)}`);
+  console.log(`  - Input tokens: ${event.inputTokens}`);
+  console.log(`  - Output tokens: ${event.outputTokens}`);
+  console.log(`  - Model: ${event.model}`);
+});
+
+agentos.on(&#39;cost:daily&#39;, (event) =&gt; {
+  console.log(`Daily total: $${event.total.toFixed(2)}`);
+  if (event.total &gt; event.budget * 0.8) {
+    console.warn(&#39;Approaching daily budget limit!&#39;);
+  }
+});
+
+// Get usage summary
+const usage = await agentos.getUsageSummary({
+  period: &#39;day&#39;, // &#39;hour&#39; | &#39;day&#39; | &#39;week&#39; | &#39;month&#39;
+});
+
+console.log(`
+Usage Summary:
+  Total cost: $${usage.cost.toFixed(2)}
+  Total turns: ${usage.turns}
+  Total tokens: ${usage.tokens}
+  Avg cost/turn: $${(usage.cost / usage.turns).toFixed(4)}
+`);
+</code></pre>
+<h3>Budget Enforcement</h3>
+<pre><code class="language-typescript">const config: AgentOSConfig = {
+  budgets: {
+    // Hard limits (will reject requests)
+    hardLimits: {
+      perTurn: 0.10,      // Max $0.10 per turn
+      perHour: 5.00,      // Max $5 per hour
+      perDay: 20.00,      // Max $20 per day
+    },
+    
+    // Soft limits (will warn and downgrade)
+    softLimits: {
+      perHour: 3.00,      // Warn at $3/hour
+      perDay: 15.00,      // Warn at $15/day
+    },
+    
+    // Actions when limits reached
+    limitActions: {
+      softLimit: &#39;downgrade-model&#39;, // Switch to cheaper model
+      hardLimit: &#39;reject&#39;,           // Reject request
+    },
+  },
+};
+</code></pre>
+<hr>
+<h2>Best Practices</h2>
+<h3>1. Start with Economy Tier</h3>
+<pre><code class="language-typescript">// Development and testing
+const dev = new AgentOS();
+await dev.initialize({ performanceTier: &#39;economy&#39; });
+</code></pre>
+<h3>2. Use Model Tiering in Production</h3>
+<pre><code class="language-typescript">// Route simple queries to cheap models
+const prod = new AgentOS();
+await prod.initialize({
+  modelRouting: {
+    simple: { model: &#39;gpt-4o-mini&#39; },
+    complex: { model: &#39;gpt-4o&#39; },
+  },
+  autoRouting: { enabled: true },
+});
+</code></pre>
+<h3>3. Enable Caching</h3>
+<pre><code class="language-typescript">// Cache everything possible
+const cached = new AgentOS();
+await cached.initialize({
+  caching: {
+    promptCache: true,
+    semanticCache: true,
+    toolCache: true,
+    embeddingCache: true,
+  },
+});
+</code></pre>
+<h3>4. Set Budget Limits</h3>
+<pre><code class="language-typescript">// Always set limits in production
+const safe = new AgentOS();
+await safe.initialize({
+  budgets: {
+    hardLimits: { perDay: 50.00 },
+    limitActions: { hardLimit: &#39;reject&#39; },
+  },
+});
+</code></pre>
+<h3>5. Monitor Usage</h3>
+<pre><code class="language-typescript">// Track costs in real-time
+agentos.on(&#39;cost:turn&#39;, (e) =&gt; metrics.record(&#39;agentos.cost&#39;, e.cost));
+</code></pre>
+<hr>
+<h2>Summary</h2>
+<table>
+<thead>
+<tr>
+<th>Strategy</th>
+<th>Savings</th>
+<th>Implementation</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Use economy tier</td>
+<td>80-90%</td>
+<td><code>performanceTier: &#39;economy&#39;</code></td>
+</tr>
+<tr>
+<td>Model tiering</td>
+<td>50-70%</td>
+<td>Route by complexity</td>
+</tr>
+<tr>
+<td>Caching</td>
+<td>20-40%</td>
+<td>Enable all caches</td>
+</tr>
+<tr>
+<td>Context limits</td>
+<td>20-30%</td>
+<td>Set max tokens</td>
+</tr>
+<tr>
+<td>RAG optimization</td>
+<td>30-50%</td>
+<td>Hybrid search, low topK</td>
+</tr>
+<tr>
+<td>Budget enforcement</td>
+<td>Unlimited</td>
+<td>Hard limits</td>
+</tr>
+</tbody></table>
+<hr>
+<p align="center">
+  Built and maintained by <a href="https://frame.dev" target="_blank" rel="noopener"><strong>Frame.dev</strong></a>
+</p>
+
+
+
+
+</main>
+<footer class="agentos-footer">
+  <div class="agentos-footer-inner">
+    <div class="agentos-footer-grid">
+      <div>
+        <h4>AgentOS</h4>
+        <p style="color: var(--color-text-secondary); font-size: 0.875rem; line-height: 1.6;">
+          The open-source framework for building intelligent AI agent systems. MIT Licensed.
+        </p>
+      </div>
+      <div>
+        <h4 style="font-size: 0.875rem;">Resources</h4>
+        <ul>
+          <li><a href="https://agentos.sh/en/guides">Guides</a></li>
+          <li><a href="/">API Reference</a></li>
+          <li><a href="https://agentos.sh/en/blog">Blog</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="font-size: 0.875rem;">Community</h4>
+        <ul>
+          <li><a href="https://github.com/framersai/agentos">GitHub</a></li>
+          <li><a href="https://discord.gg/agentos">Discord</a></li>
+          <li><a href="https://twitter.com/agentos_ai">Twitter</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="font-size: 0.875rem;">Legal</h4>
+        <ul>
+          <li><a href="https://agentos.sh/privacy">Privacy Policy</a></li>
+          <li><a href="https://agentos.sh/terms">Terms of Service</a></li>
+          <li><a href="https://github.com/framersai/agentos/blob/master/LICENSE">MIT License</a></li>
+        </ul>
+      </div>
+    </div>
+    <div style="border-top: 1px solid var(--color-border-subtle); padding-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+      <p style="color: var(--color-text-muted); font-size: 0.875rem; margin: 0;">© 2025 Frame.dev. All rights reserved.</p>
+      <p style="color: var(--color-text-muted); font-size: 0.75rem; margin: 0;">Built with TypeDoc • Powered by AgentOS</p>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({ startOnLoad: true, theme: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default' });
+</script>
+</body>
+</html>

@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgentOS Evaluation Framework - AgentOS Documentation</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/highlight.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-background-primary: #ffffff;
+    --color-background-secondary: #f8fafc;
+    --color-background-elevated: #f1f5f9;
+    --color-text-primary: #0f172a;
+    --color-text-secondary: #475569;
+    --color-text-muted: #94a3b8;
+    --color-accent-primary: #6366f1;
+    --color-accent-hover: #4f46e5;
+    --color-border-subtle: #e2e8f0;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-background-primary: #020617;
+      --color-background-secondary: #0f172a;
+      --color-background-elevated: #1e293b;
+      --color-text-primary: #f8fafc;
+      --color-text-secondary: #cbd5e1;
+      --color-text-muted: #64748b;
+      --color-accent-primary: #818cf8;
+      --color-accent-hover: #a5b4fc;
+      --color-border-subtle: #1e293b;
+    }
+  }
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+    background: var(--color-background-primary) !important;
+    color: var(--color-text-primary) !important;
+  }
+  .agentos-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--color-border-subtle);
+    padding: 0.75rem 1.5rem;
+  }
+  @media (prefers-color-scheme: dark) {
+    .agentos-header { background: rgba(2, 6, 23, 0.95); }
+  }
+  .agentos-header-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .agentos-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--color-text-primary);
+  }
+  .agentos-logo svg { width: 32px; height: 32px; }
+  .agentos-nav {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  .agentos-nav a {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: color 0.15s ease;
+  }
+  .agentos-nav a:hover { color: var(--color-accent-primary); }
+  .agentos-nav a.active { color: var(--color-accent-primary); font-weight: 600; }
+  .agentos-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white !important;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all 0.15s ease;
+  }
+  .agentos-cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  }
+  .github-icon { display: flex; align-items: center; }
+  .agentos-footer {
+    border-top: 1px solid var(--color-border-subtle);
+    background: var(--color-background-secondary);
+    padding: 3rem 1.5rem;
+    margin-top: 4rem;
+  }
+  .agentos-footer-inner { max-width: 1400px; margin: 0 auto; }
+  .agentos-footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+  .agentos-footer h4 { font-weight: 700; margin-bottom: 1rem; color: var(--color-text-primary); }
+  .agentos-footer ul { list-style: none; padding: 0; margin: 0; }
+  .agentos-footer li { margin-bottom: 0.5rem; }
+  .agentos-footer a { color: var(--color-text-secondary); text-decoration: none; font-size: 0.875rem; }
+  .agentos-footer a:hover { color: var(--color-accent-primary); }
+  /* TypeDoc Overrides */
+  .tsd-page-toolbar { background: var(--color-background-secondary) !important; border-bottom: 1px solid var(--color-border-subtle) !important; }
+  .tsd-page-title { background: var(--color-background-primary) !important; }
+  .col-content { background: var(--color-background-primary) !important; }
+  .col-sidebar { background: var(--color-background-secondary) !important; border-right: 1px solid var(--color-border-subtle) !important; }
+  .tsd-navigation { background: var(--color-background-secondary) !important; }
+  .tsd-kind-icon { color: var(--color-accent-primary) !important; }
+  a { color: var(--color-accent-primary); }
+  code { 
+    background: var(--color-background-elevated) !important; 
+    color: var(--color-text-primary) !important;
+    padding: 0.125rem 0.375rem; 
+    border-radius: 0.25rem; 
+    font-size: 0.875em; 
+  }
+  pre { 
+    background: var(--color-background-elevated) !important; 
+    color: var(--color-text-primary) !important;
+    border: 1px solid var(--color-border-subtle); 
+    border-radius: 0.5rem; 
+    padding: 1rem !important; 
+  }
+  pre code {
+    background: transparent !important;
+    color: inherit !important;
+  }
+  h1, h2, h3, h4, h5 { color: var(--color-text-primary) !important; }
+  p, li { color: var(--color-text-secondary) !important; }
+  @media (max-width: 768px) { .agentos-nav-links { display: none; } }
+</style>
+
+  <style>
+    .md-content {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+    }
+    .md-content h1 { font-size: 2.25rem; font-weight: 800; margin-bottom: 1.5rem; border-bottom: 2px solid var(--color-border-subtle); padding-bottom: 0.75rem; }
+    .md-content h2 { font-size: 1.5rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; }
+    .md-content h3 { font-size: 1.25rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; }
+    .md-content p { line-height: 1.7; margin-bottom: 1rem; }
+    .md-content ul, .md-content ol { margin-bottom: 1rem; padding-left: 1.5rem; }
+    .md-content li { margin-bottom: 0.5rem; line-height: 1.6; }
+    .md-content pre { overflow-x: auto; margin: 1.5rem 0; }
+    .md-content code { font-family: 'SF Mono', 'Consolas', monospace; font-size: 0.875em; }
+    .md-content blockquote { border-left: 4px solid var(--color-accent-primary); padding-left: 1rem; margin: 1.5rem 0; color: var(--color-text-secondary); }
+    .md-content table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+    .md-content th, .md-content td { padding: 0.75rem; border: 1px solid var(--color-border-subtle); text-align: left; }
+    .md-content th { background: var(--color-background-secondary); font-weight: 600; }
+    .md-content img { max-width: 100%; height: auto; border-radius: 0.5rem; }
+    .md-content a { color: var(--color-accent-primary); text-decoration: none; }
+    .md-content a:hover { text-decoration: underline; }
+    .md-content hr { border: none; border-top: 1px solid var(--color-border-subtle); margin: 2rem 0; }
+    /* Mermaid diagram support */
+    .mermaid { background: var(--color-background-secondary); padding: 1rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+  </style>
+</head>
+<body>
+<header class="agentos-header">
+  <div class="agentos-header-inner">
+    <a href="https://agentos.sh" class="agentos-logo">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="40" height="40" rx="10" fill="url(#lg)"/>
+        <path d="M20 8L28 14V26L20 32L12 26V14L20 8Z" stroke="white" stroke-width="2" fill="none"/>
+        <circle cx="20" cy="20" r="4" fill="white"/>
+        <defs><linearGradient id="lg" x1="0" y1="0" x2="40" y2="40"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs>
+      </svg>
+      AgentOS
+    </a>
+    <nav class="agentos-nav">
+      <span class="agentos-nav-links">
+        <a href="https://agentos.sh/en/about">About</a>
+        <a href="https://agentos.sh/en/#features">Features</a>
+        <a href="https://agentos.sh/en/blog">Blog</a>
+        <a href="/" class="active">API Docs</a>
+        <a href="https://agentos.sh/en/guides">Guides</a>
+      </span>
+      <a href="https://github.com/framersai/agentos" target="_blank" rel="noopener noreferrer" class="github-icon" title="GitHub">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+      </a>
+      <a href="https://agentos.sh" class="agentos-cta">Get Started</a>
+    </nav>
+  </div>
+</header>
+
+<main class="md-content">
+<h1>AgentOS Evaluation Framework</h1>
+<h2>Overview</h2>
+<p>The Evaluation Framework provides systematic tools for measuring, benchmarking, and improving agent performance. It enables developers to:</p>
+<ul>
+<li><strong>Define test cases</strong> with expected outputs and grading criteria</li>
+<li><strong>Run evaluations</strong> against agent functions with configurable concurrency</li>
+<li><strong>Score outputs</strong> using built-in or custom scorers</li>
+<li><strong>Compare runs</strong> to track improvements or regressions</li>
+<li><strong>Generate reports</strong> in JSON, Markdown, or HTML formats</li>
+</ul>
+<h2>Quick Start</h2>
+<pre><code class="language-typescript">import { Evaluator } from &#39;@framers/agentos&#39;;
+import type { EvalTestCase } from &#39;@framers/agentos&#39;;
+
+const evaluator = new Evaluator();
+
+// Define test cases
+const testCases: EvalTestCase[] = [
+  {
+    id: &#39;math-1&#39;,
+    name: &#39;Basic Addition&#39;,
+    input: &#39;What is 2 + 2?&#39;,
+    expectedOutput: &#39;4&#39;,
+    criteria: [
+      { name: &#39;correctness&#39;, description: &#39;Contains correct answer&#39;, weight: 1, scorer: &#39;contains&#39; }
+    ]
+  },
+  {
+    id: &#39;greeting-1&#39;,
+    name: &#39;Greeting Response&#39;,
+    input: &#39;Hello!&#39;,
+    expectedOutput: &#39;Hello! How can I help you today?&#39;,
+    criteria: [
+      { name: &#39;politeness&#39;, description: &#39;Polite response&#39;, weight: 1, scorer: &#39;contains&#39; },
+      { name: &#39;similarity&#39;, description: &#39;Similar to expected&#39;, weight: 2, scorer: &#39;levenshtein&#39; }
+    ]
+  }
+];
+
+// Define your agent function
+async function myAgent(input: string): Promise&lt;string&gt; {
+  // Your GMI or agent logic here
+  return `Response to: ${input}`;
+}
+
+// Run evaluation
+const run = await evaluator.runEvaluation(
+  &#39;My Agent Evaluation v1.0&#39;,
+  testCases,
+  myAgent,
+  { concurrency: 5, timeoutMs: 30000 }
+);
+
+// Generate report
+const report = await evaluator.generateReport(run.runId, &#39;markdown&#39;);
+console.log(report);
+</code></pre>
+<h2>Built-in Scorers</h2>
+<p>The framework includes several built-in scorers:</p>
+<table>
+<thead>
+<tr>
+<th>Scorer</th>
+<th>Description</th>
+<th>Best For</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>exact_match</code></td>
+<td>Returns 1 if strings are identical (case-insensitive)</td>
+<td>Precise answers</td>
+</tr>
+<tr>
+<td><code>contains</code></td>
+<td>Returns 1 if actual contains expected</td>
+<td>Checking for key terms</td>
+</tr>
+<tr>
+<td><code>levenshtein</code></td>
+<td>Normalized edit distance (0-1)</td>
+<td>Typo tolerance</td>
+</tr>
+<tr>
+<td><code>semantic_similarity</code></td>
+<td>Word overlap score (0-1)</td>
+<td>General similarity</td>
+</tr>
+<tr>
+<td><code>bleu</code></td>
+<td>BLEU score approximation</td>
+<td>Translation quality</td>
+</tr>
+<tr>
+<td><code>rouge</code></td>
+<td>ROUGE-L F1 score</td>
+<td>Summarization quality</td>
+</tr>
+</tbody></table>
+<h3>Using Scorers Directly</h3>
+<pre><code class="language-typescript">// Score individual outputs
+const score = await evaluator.score(&#39;levenshtein&#39;, &#39;actual output&#39;, &#39;expected output&#39;);
+console.log(`Similarity: ${(score * 100).toFixed(1)}%`);
+</code></pre>
+<h2>Custom Scorers</h2>
+<p>Register custom scorers for domain-specific evaluation:</p>
+<pre><code class="language-typescript">// Register a custom scorer
+evaluator.registerScorer(&#39;json_valid&#39;, (actual, expected) =&gt; {
+  try {
+    JSON.parse(actual);
+    return 1;
+  } catch {
+    return 0;
+  }
+});
+
+// Use in test cases
+const testCase: EvalTestCase = {
+  id: &#39;json-1&#39;,
+  name: &#39;JSON Output&#39;,
+  input: &#39;Generate JSON for user profile&#39;,
+  expectedOutput: &#39;{&quot;name&quot;: &quot;John&quot;, &quot;age&quot;: 30}&#39;,
+  criteria: [
+    { name: &#39;valid_json&#39;, description: &#39;Output is valid JSON&#39;, weight: 1, scorer: &#39;json_valid&#39; },
+    { name: &#39;similar&#39;, description: &#39;Similar structure&#39;, weight: 2, scorer: &#39;levenshtein&#39; }
+  ]
+};
+</code></pre>
+<h2>Configuration Options</h2>
+<pre><code class="language-typescript">interface EvalConfig {
+  concurrency?: number;      // Parallel test execution (default: 3)
+  timeoutMs?: number;        // Timeout per test (default: 60000)
+  retries?: number;          // Retry count on failure (default: 1)
+  continueOnError?: boolean; // Continue if a test fails (default: true)
+  thresholds?: {
+    pass?: number;           // Minimum score to pass (default: 0.7)
+    warn?: number;           // Warning threshold (default: 0.5)
+  };
+}
+</code></pre>
+<h2>Test Case Structure</h2>
+<pre><code class="language-typescript">interface EvalTestCase {
+  id: string;                    // Unique identifier
+  name: string;                  // Human-readable name
+  input: string;                 // Input to the agent
+  expectedOutput?: string;       // Expected output
+  referenceOutputs?: string[];   // Alternative acceptable outputs
+  context?: string;              // Additional context for the agent
+  criteria?: EvalCriterion[];    // Grading criteria
+  tags?: string[];               // Categorization tags
+  metadata?: Record&lt;string, unknown&gt;;
+}
+</code></pre>
+<h2>Comparing Runs</h2>
+<p>Track improvements across versions:</p>
+<pre><code class="language-typescript">const runV1 = await evaluator.runEvaluation(&#39;v1.0&#39;, testCases, agentV1);
+const runV2 = await evaluator.runEvaluation(&#39;v2.0&#39;, testCases, agentV2);
+
+const comparison = await evaluator.compareRuns(runV1.runId, runV2.runId);
+
+console.log(&#39;Improvements:&#39;, comparison.summary.improved);
+console.log(&#39;Regressions:&#39;, comparison.summary.regressed);
+
+for (const metric of comparison.metrics) {
+  const trend = metric.improved ? &#39;📈&#39; : &#39;📉&#39;;
+  console.log(`${trend} ${metric.name}: ${metric.delta.toFixed(2)} (${metric.percentChange.toFixed(1)}%)`);
+}
+</code></pre>
+<h2>Aggregate Metrics</h2>
+<p>Each evaluation run includes aggregate metrics:</p>
+<pre><code class="language-typescript">interface AggregateMetrics {
+  totalTests: number;
+  passedTests: number;
+  failedTests: number;
+  passRate: number;        // 0-1
+  avgScore: number;        // 0-1
+  scoreStdDev: number;     // Standard deviation
+  avgLatencyMs: number;
+  p50LatencyMs: number;    // Median
+  p95LatencyMs: number;    // 95th percentile
+  p99LatencyMs: number;    // 99th percentile
+  totalTokens: number;     // If provided
+  totalCostUsd: number;    // If provided
+}
+</code></pre>
+<h2>Integration with GMI</h2>
+<p>Evaluate GMI responses:</p>
+<pre><code class="language-typescript">import { GMIManager } from &#39;@framers/agentos&#39;;
+
+const gmiManager = new GMIManager();
+const gmi = await gmiManager.createGMI(myPersona);
+
+// Create wrapper function for evaluation
+async function gmiAgent(input: string): Promise&lt;string&gt; {
+  let response = &#39;&#39;;
+  for await (const chunk of gmi.processTurnStream({ message: input })) {
+    if (chunk.content) {
+      response += chunk.content;
+    }
+  }
+  return response;
+}
+
+const run = await evaluator.runEvaluation(&#39;GMI Evaluation&#39;, testCases, gmiAgent);
+</code></pre>
+<h2>Best Practices</h2>
+<ol>
+<li><strong>Start with representative test cases</strong> - Cover common user queries and edge cases</li>
+<li><strong>Use multiple criteria</strong> - Combine exactness and semantic measures</li>
+<li><strong>Weight criteria appropriately</strong> - Prioritize what matters most</li>
+<li><strong>Track baselines</strong> - Store run IDs to compare against</li>
+<li><strong>Automate in CI/CD</strong> - Run evaluations on each deployment</li>
+<li><strong>Review failures</strong> - Manually inspect failing cases for insights</li>
+</ol>
+<h2>Report Formats</h2>
+<h3>JSON</h3>
+<pre><code class="language-bash"># Programmatic analysis
+const report = await evaluator.generateReport(run.runId, &#39;json&#39;);
+const data = JSON.parse(report);
+</code></pre>
+<h3>Markdown</h3>
+<pre><code class="language-bash"># Documentation and GitHub
+const report = await evaluator.generateReport(run.runId, &#39;markdown&#39;);
+</code></pre>
+<h3>HTML</h3>
+<pre><code class="language-bash"># Visual reports
+const report = await evaluator.generateReport(run.runId, &#39;html&#39;);
+fs.writeFileSync(&#39;report.html&#39;, report);
+</code></pre>
+<h2>LLM-as-Judge</h2>
+<p>For semantic evaluation using GPT-4 or other models:</p>
+<pre><code class="language-typescript">import { LLMJudge, CRITERIA_PRESETS } from &#39;@framers/agentos&#39;;
+
+const judge = new LLMJudge({
+  llmProvider: aiModelProviderManager,
+  modelId: &#39;gpt-4-turbo&#39;,
+  temperature: 0.1,
+});
+
+// Single judgment
+const result = await judge.judge(
+  &#39;What is photosynthesis?&#39;,
+  &#39;Photosynthesis is how plants make food from sunlight.&#39;,
+  &#39;Photosynthesis is the process by which plants convert light energy into chemical energy.&#39;
+);
+
+console.log(`Score: ${result.score}`);
+console.log(`Reasoning: ${result.reasoning}`);
+console.log(`Feedback: ${result.feedback.join(&#39;, &#39;)}`);
+
+// Use preset criteria
+const codeResult = await judge.judge(
+  &#39;Write a function to reverse a string&#39;,
+  actualCode,
+  expectedCode,
+  CRITERIA_PRESETS.codeGeneration
+);
+
+// Compare two outputs
+const comparison = await judge.compare(
+  &#39;Summarize this article&#39;,
+  summaryA,
+  summaryB,
+  CRITERIA_PRESETS.summarization
+);
+console.log(`Winner: ${comparison.winner}`);
+
+// Register as custom scorer
+evaluator.registerScorer(&#39;llm_judge&#39;, judge.createScorer());
+</code></pre>
+<h3>Available Criteria Presets</h3>
+<table>
+<thead>
+<tr>
+<th>Preset</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>codeGeneration</code></td>
+<td>Evaluate generated code</td>
+</tr>
+<tr>
+<td><code>summarization</code></td>
+<td>Evaluate summaries</td>
+</tr>
+<tr>
+<td><code>questionAnswering</code></td>
+<td>Evaluate Q&amp;A responses</td>
+</tr>
+<tr>
+<td><code>creativeWriting</code></td>
+<td>Evaluate creative content</td>
+</tr>
+<tr>
+<td><code>safety</code></td>
+<td>Evaluate for harmlessness</td>
+</tr>
+</tbody></table>
+<h2>Future Enhancements</h2>
+<ul>
+<li><strong>Human Evaluation UI</strong>: Collect human judgments in agentos-workbench</li>
+<li><strong>Persistent Storage</strong>: Store runs in SQL database</li>
+<li><strong>Regression Detection</strong>: Automatic alerting on performance drops</li>
+<li><strong>A/B Testing</strong>: Compare agent variants statistically</li>
+</ul>
+
+</main>
+<footer class="agentos-footer">
+  <div class="agentos-footer-inner">
+    <div class="agentos-footer-grid">
+      <div>
+        <h4>AgentOS</h4>
+        <p style="color: var(--color-text-secondary); font-size: 0.875rem; line-height: 1.6;">
+          The open-source framework for building intelligent AI agent systems. MIT Licensed.
+        </p>
+      </div>
+      <div>
+        <h4 style="font-size: 0.875rem;">Resources</h4>
+        <ul>
+          <li><a href="https://agentos.sh/en/guides">Guides</a></li>
+          <li><a href="/">API Reference</a></li>
+          <li><a href="https://agentos.sh/en/blog">Blog</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="font-size: 0.875rem;">Community</h4>
+        <ul>
+          <li><a href="https://github.com/framersai/agentos">GitHub</a></li>
+          <li><a href="https://discord.gg/agentos">Discord</a></li>
+          <li><a href="https://twitter.com/agentos_ai">Twitter</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="font-size: 0.875rem;">Legal</h4>
+        <ul>
+          <li><a href="https://agentos.sh/privacy">Privacy Policy</a></li>
+          <li><a href="https://agentos.sh/terms">Terms of Service</a></li>
+          <li><a href="https://github.com/framersai/agentos/blob/master/LICENSE">MIT License</a></li>
+        </ul>
+      </div>
+    </div>
+    <div style="border-top: 1px solid var(--color-border-subtle); padding-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+      <p style="color: var(--color-text-muted); font-size: 0.875rem; margin: 0;">© 2025 Frame.dev. All rights reserved.</p>
+      <p style="color: var(--color-text-muted); font-size: 0.75rem; margin: 0;">Built with TypeDoc • Powered by AgentOS</p>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({ startOnLoad: true, theme: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default' });
+</script>
+</body>
+</html>

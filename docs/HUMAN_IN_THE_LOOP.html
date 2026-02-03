@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Human-in-the-Loop (HITL) Guide - AgentOS Documentation</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/highlight.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-background-primary: #ffffff;
+    --color-background-secondary: #f8fafc;
+    --color-background-elevated: #f1f5f9;
+    --color-text-primary: #0f172a;
+    --color-text-secondary: #475569;
+    --color-text-muted: #94a3b8;
+    --color-accent-primary: #6366f1;
+    --color-accent-hover: #4f46e5;
+    --color-border-subtle: #e2e8f0;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-background-primary: #020617;
+      --color-background-secondary: #0f172a;
+      --color-background-elevated: #1e293b;
+      --color-text-primary: #f8fafc;
+      --color-text-secondary: #cbd5e1;
+      --color-text-muted: #64748b;
+      --color-accent-primary: #818cf8;
+      --color-accent-hover: #a5b4fc;
+      --color-border-subtle: #1e293b;
+    }
+  }
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+    background: var(--color-background-primary) !important;
+    color: var(--color-text-primary) !important;
+  }
+  .agentos-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--color-border-subtle);
+    padding: 0.75rem 1.5rem;
+  }
+  @media (prefers-color-scheme: dark) {
+    .agentos-header { background: rgba(2, 6, 23, 0.95); }
+  }
+  .agentos-header-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .agentos-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--color-text-primary);
+  }
+  .agentos-logo svg { width: 32px; height: 32px; }
+  .agentos-nav {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  .agentos-nav a {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: color 0.15s ease;
+  }
+  .agentos-nav a:hover { color: var(--color-accent-primary); }
+  .agentos-nav a.active { color: var(--color-accent-primary); font-weight: 600; }
+  .agentos-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white !important;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all 0.15s ease;
+  }
+  .agentos-cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  }
+  .github-icon { display: flex; align-items: center; }
+  .agentos-footer {
+    border-top: 1px solid var(--color-border-subtle);
+    background: var(--color-background-secondary);
+    padding: 3rem 1.5rem;
+    margin-top: 4rem;
+  }
+  .agentos-footer-inner { max-width: 1400px; margin: 0 auto; }
+  .agentos-footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+  .agentos-footer h4 { font-weight: 700; margin-bottom: 1rem; color: var(--color-text-primary); }
+  .agentos-footer ul { list-style: none; padding: 0; margin: 0; }
+  .agentos-footer li { margin-bottom: 0.5rem; }
+  .agentos-footer a { color: var(--color-text-secondary); text-decoration: none; font-size: 0.875rem; }
+  .agentos-footer a:hover { color: var(--color-accent-primary); }
+  /* TypeDoc Overrides */
+  .tsd-page-toolbar { background: var(--color-background-secondary) !important; border-bottom: 1px solid var(--color-border-subtle) !important; }
+  .tsd-page-title { background: var(--color-background-primary) !important; }
+  .col-content { background: var(--color-background-primary) !important; }
+  .col-sidebar { background: var(--color-background-secondary) !important; border-right: 1px solid var(--color-border-subtle) !important; }
+  .tsd-navigation { background: var(--color-background-secondary) !important; }
+  .tsd-kind-icon { color: var(--color-accent-primary) !important; }
+  a { color: var(--color-accent-primary); }
+  code { 
+    background: var(--color-background-elevated) !important; 
+    color: var(--color-text-primary) !important;
+    padding: 0.125rem 0.375rem; 
+    border-radius: 0.25rem; 
+    font-size: 0.875em; 
+  }
+  pre { 
+    background: var(--color-background-elevated) !important; 
+    color: var(--color-text-primary) !important;
+    border: 1px solid var(--color-border-subtle); 
+    border-radius: 0.5rem; 
+    padding: 1rem !important; 
+  }
+  pre code {
+    background: transparent !important;
+    color: inherit !important;
+  }
+  h1, h2, h3, h4, h5 { color: var(--color-text-primary) !important; }
+  p, li { color: var(--color-text-secondary) !important; }
+  @media (max-width: 768px) { .agentos-nav-links { display: none; } }
+</style>
+
+  <style>
+    .md-content {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+    }
+    .md-content h1 { font-size: 2.25rem; font-weight: 800; margin-bottom: 1.5rem; border-bottom: 2px solid var(--color-border-subtle); padding-bottom: 0.75rem; }
+    .md-content h2 { font-size: 1.5rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; }
+    .md-content h3 { font-size: 1.25rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; }
+    .md-content p { line-height: 1.7; margin-bottom: 1rem; }
+    .md-content ul, .md-content ol { margin-bottom: 1rem; padding-left: 1.5rem; }
+    .md-content li { margin-bottom: 0.5rem; line-height: 1.6; }
+    .md-content pre { overflow-x: auto; margin: 1.5rem 0; }
+    .md-content code { font-family: 'SF Mono', 'Consolas', monospace; font-size: 0.875em; }
+    .md-content blockquote { border-left: 4px solid var(--color-accent-primary); padding-left: 1rem; margin: 1.5rem 0; color: var(--color-text-secondary); }
+    .md-content table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+    .md-content th, .md-content td { padding: 0.75rem; border: 1px solid var(--color-border-subtle); text-align: left; }
+    .md-content th { background: var(--color-background-secondary); font-weight: 600; }
+    .md-content img { max-width: 100%; height: auto; border-radius: 0.5rem; }
+    .md-content a { color: var(--color-accent-primary); text-decoration: none; }
+    .md-content a:hover { text-decoration: underline; }
+    .md-content hr { border: none; border-top: 1px solid var(--color-border-subtle); margin: 2rem 0; }
+    /* Mermaid diagram support */
+    .mermaid { background: var(--color-background-secondary); padding: 1rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+  </style>
+</head>
+<body>
+<header class="agentos-header">
+  <div class="agentos-header-inner">
+    <a href="https://agentos.sh" class="agentos-logo">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="40" height="40" rx="10" fill="url(#lg)"/>
+        <path d="M20 8L28 14V26L20 32L12 26V14L20 8Z" stroke="white" stroke-width="2" fill="none"/>
+        <circle cx="20" cy="20" r="4" fill="white"/>
+        <defs><linearGradient id="lg" x1="0" y1="0" x2="40" y2="40"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs>
+      </svg>
+      AgentOS
+    </a>
+    <nav class="agentos-nav">
+      <span class="agentos-nav-links">
+        <a href="https://agentos.sh/en/about">About</a>
+        <a href="https://agentos.sh/en/#features">Features</a>
+        <a href="https://agentos.sh/en/blog">Blog</a>
+        <a href="/" class="active">API Docs</a>
+        <a href="https://agentos.sh/en/guides">Guides</a>
+      </span>
+      <a href="https://github.com/framersai/agentos" target="_blank" rel="noopener noreferrer" class="github-icon" title="GitHub">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+      </a>
+      <a href="https://agentos.sh" class="agentos-cta">Get Started</a>
+    </nav>
+  </div>
+</header>
+
+<main class="md-content">
+<h1>Human-in-the-Loop (HITL) Guide</h1>
+<h2>Overview</h2>
+<p>The Human-in-the-Loop (HITL) system in AgentOS enables structured collaboration between AI agents and human operators. This ensures human oversight for critical decisions while maintaining efficient autonomous operation.</p>
+<h2>Why HITL?</h2>
+<p>Modern AI agents are powerful but not infallible. HITL provides:</p>
+<ol>
+<li><strong>Safety</strong>: Human approval for high-risk actions</li>
+<li><strong>Quality</strong>: Human review of important outputs</li>
+<li><strong>Adaptability</strong>: Human input for ambiguous situations</li>
+<li><strong>Learning</strong>: Feedback loops for continuous improvement</li>
+</ol>
+<h2>Core Concepts</h2>
+<h3>Request Types</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Purpose</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Approval</strong></td>
+<td>Authorize high-risk actions</td>
+<td>&quot;Delete 5000 user records?&quot;</td>
+</tr>
+<tr>
+<td><strong>Clarification</strong></td>
+<td>Resolve ambiguity</td>
+<td>&quot;Which report format do you prefer?&quot;</td>
+</tr>
+<tr>
+<td><strong>Edit</strong></td>
+<td>Review and modify outputs</td>
+<td>&quot;Please review this email draft&quot;</td>
+</tr>
+<tr>
+<td><strong>Escalation</strong></td>
+<td>Transfer control to human</td>
+<td>&quot;I&#39;m uncertain how to proceed&quot;</td>
+</tr>
+<tr>
+<td><strong>Checkpoint</strong></td>
+<td>Progress review points</td>
+<td>&quot;Phase 1 complete, continue?&quot;</td>
+</tr>
+</tbody></table>
+<h3>Severity Levels</h3>
+<pre><code class="language-typescript">type ActionSeverity = &#39;low&#39; | &#39;medium&#39; | &#39;high&#39; | &#39;critical&#39;;
+</code></pre>
+<ul>
+<li><strong>Low</strong>: Informational, auto-approve after timeout OK</li>
+<li><strong>Medium</strong>: Important, requires attention within hours</li>
+<li><strong>High</strong>: Significant risk, requires prompt attention</li>
+<li><strong>Critical</strong>: Urgent, immediate human response required</li>
+</ul>
+<h2>Quick Start</h2>
+<h3>1. Initialize the Manager</h3>
+<pre><code class="language-typescript">import { HumanInteractionManager } from &#39;@framers/agentos/core/hitl&#39;;
+
+const hitlManager = new HumanInteractionManager({
+  // Default timeout: 5 minutes
+  defaultTimeoutMs: 300000,
+  
+  // Auto-reject timed-out requests (optional)
+  autoRejectOnTimeout: false,
+  
+  // Notification handler (required for production)
+  notificationHandler: async (notification) =&gt; {
+    // Send to Slack, email, or UI
+    await notifyHuman(notification);
+  },
+});
+</code></pre>
+<h3>2. Request Approval</h3>
+<pre><code class="language-typescript">// Before a risky action
+const decision = await hitlManager.requestApproval({
+  actionId: &#39;batch-delete-001&#39;,
+  description: &#39;Delete all inactive accounts older than 2 years&#39;,
+  severity: &#39;critical&#39;,
+  category: &#39;data_modification&#39;,
+  agentId: &#39;cleanup-agent&#39;,
+  context: {
+    accountCount: 5000,
+    criteria: &#39;inactive &gt; 2 years&#39;,
+    estimatedStorage: &#39;50GB&#39;,
+  },
+  reversible: false,
+  potentialConsequences: [
+    &#39;Permanent data loss&#39;,
+    &#39;User complaints if accounts are needed&#39;,
+  ],
+  alternatives: [
+    {
+      alternativeId: &#39;archive&#39;,
+      description: &#39;Archive instead of delete&#39;,
+      tradeoffs: &#39;Uses storage but preserves data&#39;,
+    },
+  ],
+});
+
+if (decision.approved) {
+  await executeDeletion();
+} else {
+  console.log(`Rejected: ${decision.rejectionReason}`);
+  if (decision.selectedAlternativeId === &#39;archive&#39;) {
+    await executeArchive();
+  }
+}
+</code></pre>
+<h3>3. Request Clarification</h3>
+<pre><code class="language-typescript">const response = await hitlManager.requestClarification({
+  requestId: &#39;clarify-format-001&#39;,
+  question: &#39;Which output format should I use for the quarterly report?&#39;,
+  context: &#39;Generating Q4 2024 financial report&#39;,
+  agentId: &#39;report-agent&#39;,
+  clarificationType: &#39;preference&#39;,
+  options: [
+    { optionId: &#39;pdf&#39;, label: &#39;PDF Document&#39; },
+    { optionId: &#39;excel&#39;, label: &#39;Excel Spreadsheet&#39; },
+    { optionId: &#39;slides&#39;, label: &#39;PowerPoint Presentation&#39; },
+  ],
+  allowFreeform: true,
+});
+
+const format = response.selectedOptionId || response.freeformResponse;
+await generateReport(format);
+</code></pre>
+<h3>4. Handle Escalations</h3>
+<pre><code class="language-typescript">// When agent is uncertain
+const decision = await hitlManager.escalate({
+  escalationId: &#39;esc-001&#39;,
+  reason: &#39;low_confidence&#39;,
+  explanation: &#39;Multiple conflicting data sources found&#39;,
+  agentId: &#39;research-agent&#39;,
+  currentState: { step: 3, progress: 0.4 },
+  attemptedActions: [
+    &#39;Queried primary database&#39;,
+    &#39;Checked secondary source&#39;,
+    &#39;Cross-referenced external API&#39;,
+  ],
+  recommendations: [
+    &#39;Manual verification of source reliability&#39;,
+    &#39;Contact domain expert&#39;,
+    &#39;Use most recent source only&#39;,
+  ],
+  urgency: &#39;high&#39;,
+});
+
+switch (decision.type) {
+  case &#39;human_takeover&#39;:
+    // Human will handle directly
+    break;
+  case &#39;agent_continue&#39;:
+    // Continue with human guidance
+    await continueWithGuidance(decision.guidance);
+    break;
+  case &#39;abort&#39;:
+    // Stop the task
+    await abortTask(decision.reason);
+    break;
+  case &#39;delegate&#39;:
+    // Hand off to another agent
+    await handoffTo(decision.targetAgentId, decision.instructions);
+    break;
+}
+</code></pre>
+<h3>5. Workflow Checkpoints</h3>
+<pre><code class="language-typescript">// During long-running workflows
+const checkpointDecision = await hitlManager.checkpoint({
+  checkpointId: &#39;cp-phase-1&#39;,
+  workflowId: &#39;migration-workflow&#39;,
+  currentPhase: &#39;Data Validation&#39;,
+  progress: 0.5,
+  completedWork: [
+    &#39;Exported 50,000 records&#39;,
+    &#39;Validated schema compatibility&#39;,
+  ],
+  upcomingWork: [
+    &#39;Transform data formats&#39;,
+    &#39;Import to new system&#39;,
+    &#39;Verify integrity&#39;,
+  ],
+  issues: [&#39;3 records have invalid dates&#39;],
+});
+
+if (checkpointDecision.decision === &#39;continue&#39;) {
+  await continueWorkflow();
+} else if (checkpointDecision.decision === &#39;modify&#39;) {
+  // Apply modifications
+  if (checkpointDecision.modifications?.skipSteps) {
+    await skipSteps(checkpointDecision.modifications.skipSteps);
+  }
+}
+</code></pre>
+<h3>6. Collect Feedback</h3>
+<pre><code class="language-typescript">// Record human feedback for learning
+await hitlManager.recordFeedback({
+  feedbackId: &#39;fb-001&#39;,
+  agentId: &#39;writer-agent&#39;,
+  feedbackType: &#39;correction&#39;,
+  aspect: &#39;style&#39;,
+  content: &#39;The tone was too formal. Use more casual language for this audience.&#39;,
+  importance: 4,
+  context: { taskType: &#39;social-media-post&#39; },
+  providedBy: &#39;marketing-lead&#39;,
+});
+
+// Query feedback history
+const feedbackHistory = await hitlManager.getFeedbackHistory(&#39;writer-agent&#39;, {
+  type: &#39;correction&#39;,
+  limit: 10,
+});
+</code></pre>
+<h2>Notification Handlers</h2>
+<h3>Slack Integration</h3>
+<pre><code class="language-typescript">const slackHandler = async (notification) =&gt; {
+  const urgencyEmoji = {
+    critical: &#39;🚨&#39;,
+    high: &#39;⚠️&#39;,
+    medium: &#39;📋&#39;,
+    low: &#39;ℹ️&#39;,
+  };
+
+  await slack.chat.postMessage({
+    channel: &#39;#agent-approvals&#39;,
+    text: `${urgencyEmoji[notification.urgency]} ${notification.summary}`,
+    blocks: [
+      {
+        type: &#39;section&#39;,
+        text: { type: &#39;mrkdwn&#39;, text: notification.summary },
+      },
+      {
+        type: &#39;actions&#39;,
+        elements: [
+          {
+            type: &#39;button&#39;,
+            text: { type: &#39;plain_text&#39;, text: &#39;Review&#39; },
+            url: notification.actionUrl,
+          },
+        ],
+      },
+    ],
+  });
+};
+</code></pre>
+<h3>Email Integration</h3>
+<pre><code class="language-typescript">const emailHandler = async (notification) =&gt; {
+  await sendEmail({
+    to: &#39;approvals@company.com&#39;,
+    subject: `[${notification.urgency.toUpperCase()}] Agent Request: ${notification.type}`,
+    html: `
+      &lt;h2&gt;${notification.summary}&lt;/h2&gt;
+      &lt;p&gt;Agent: ${notification.agentId}&lt;/p&gt;
+      &lt;p&gt;Expires: ${notification.expiresAt?.toLocaleString() || &#39;No expiry&#39;}&lt;/p&gt;
+      &lt;a href=&quot;${notification.actionUrl}&quot;&gt;Take Action&lt;/a&gt;
+    `,
+  });
+};
+</code></pre>
+<h2>API Reference</h2>
+<h3>REST Endpoints</h3>
+<pre><code>GET    /api/agentos/hitl/approvals              # List pending approvals
+POST   /api/agentos/hitl/approvals              # Create approval request
+POST   /api/agentos/hitl/approvals/:id/approve  # Approve action
+POST   /api/agentos/hitl/approvals/:id/reject   # Reject action
+
+GET    /api/agentos/hitl/clarifications         # List clarifications
+POST   /api/agentos/hitl/clarifications         # Request clarification
+POST   /api/agentos/hitl/clarifications/:id/respond  # Submit response
+
+GET    /api/agentos/hitl/escalations            # List escalations
+POST   /api/agentos/hitl/escalations            # Create escalation
+POST   /api/agentos/hitl/escalations/:id/resolve  # Resolve escalation
+
+GET    /api/agentos/hitl/feedback               # Get feedback history
+POST   /api/agentos/hitl/feedback               # Submit feedback
+
+GET    /api/agentos/hitl/stats                  # Get HITL statistics
+</code></pre>
+<h3>Statistics</h3>
+<pre><code class="language-typescript">const stats = hitlManager.getStatistics();
+// {
+//   totalApprovalRequests: 150,
+//   approvalRate: 0.87,           // 87% approved
+//   totalClarifications: 45,
+//   avgResponseTimeMs: 180000,    // 3 minutes average
+//   totalEscalations: 12,
+//   escalationsByReason: {
+//     low_confidence: 8,
+//     safety_concern: 2,
+//     ethical_concern: 2,
+//   },
+//   pendingRequests: 3,
+//   timedOutRequests: 5,
+// }
+</code></pre>
+<h2>Best Practices</h2>
+<h3>1. Right-Size Approval Requirements</h3>
+<p>Don&#39;t require approval for everything:</p>
+<pre><code class="language-typescript">// ✅ Good: Critical actions need approval
+if (actionImpact === &#39;critical&#39; || !isReversible) {
+  await hitlManager.requestApproval(action);
+}
+
+// ❌ Bad: Approving trivial actions
+await hitlManager.requestApproval({
+  description: &#39;Send a thank you email&#39;,
+  severity: &#39;low&#39;, // Don&#39;t require approval for this
+});
+</code></pre>
+<h3>2. Provide Rich Context</h3>
+<p>Help humans make informed decisions:</p>
+<pre><code class="language-typescript">// ✅ Good: Rich context
+{
+  description: &#39;Update pricing for 50 products&#39;,
+  context: {
+    productCount: 50,
+    averageChange: &#39;+5%&#39;,
+    affectedRevenue: &#39;$500,000/month&#39;,
+    competitorComparison: &#39;Still 10% below market&#39;,
+    customerImpact: &#39;Existing contracts unaffected&#39;,
+  },
+  potentialConsequences: [
+    &#39;May affect conversion rates&#39;,
+    &#39;Requires website update&#39;,
+  ],
+}
+
+// ❌ Bad: Minimal context
+{
+  description: &#39;Change prices&#39;,
+  context: {},
+}
+</code></pre>
+<h3>3. Set Appropriate Timeouts</h3>
+<p>Match timeout to urgency and human availability:</p>
+<pre><code class="language-typescript">// Critical: Short timeout
+requestApproval({ severity: &#39;critical&#39;, timeoutMs: 60000 }); // 1 min
+
+// Standard: Reasonable timeout
+requestApproval({ severity: &#39;medium&#39;, timeoutMs: 3600000 }); // 1 hour
+
+// Low priority: Longer timeout
+requestApproval({ severity: &#39;low&#39;, timeoutMs: 86400000 }); // 24 hours
+</code></pre>
+<h3>4. Use Feedback for Learning</h3>
+<p>Connect feedback to agent improvement:</p>
+<pre><code class="language-typescript">// Collect feedback
+await hitlManager.recordFeedback({
+  agentId: &#39;writer-agent&#39;,
+  feedbackType: &#39;correction&#39;,
+  aspect: &#39;accuracy&#39;,
+  content: &#39;Statistics were outdated&#39;,
+});
+
+// Use feedback in prompts
+const recentFeedback = await hitlManager.getFeedbackHistory(agentId, {
+  type: &#39;correction&#39;,
+  limit: 5,
+});
+
+const systemPrompt = `
+Previous corrections:
+${recentFeedback.map(f =&gt; `- ${f.content}`).join(&#39;\n&#39;)}
+Please avoid these issues.
+`;
+</code></pre>
+<h2>Troubleshooting</h2>
+<h3>Requests Timing Out</h3>
+<ol>
+<li>Check notification handler is working</li>
+<li>Verify human operators are receiving notifications</li>
+<li>Adjust timeout values based on response patterns</li>
+<li>Enable <code>autoRejectOnTimeout</code> for non-critical requests</li>
+</ol>
+<h3>Missing Responses</h3>
+<ol>
+<li>Check <code>getPendingRequests()</code> for stuck requests</li>
+<li>Implement monitoring for pending request age</li>
+<li>Set up alerts for escalations that haven&#39;t been resolved</li>
+</ol>
+<h3>Performance Issues</h3>
+<ol>
+<li>Batch related approvals when possible</li>
+<li>Use appropriate severity levels to prioritize</li>
+<li>Consider pre-approved action patterns for common cases</li>
+</ol>
+<h2>Related Documentation</h2>
+<ul>
+<li><a href="./PLANNING_ENGINE.html">Planning Engine</a> - Autonomous goal pursuit</li>
+<li><a href="./AGENT_COMMUNICATION.html">Agent Communication</a> - Inter-agent messaging</li>
+<li><a href="./ARCHITECTURE.html">Architecture</a> - Full system overview</li>
+</ul>
+
+</main>
+<footer class="agentos-footer">
+  <div class="agentos-footer-inner">
+    <div class="agentos-footer-grid">
+      <div>
+        <h4>AgentOS</h4>
+        <p style="color: var(--color-text-secondary); font-size: 0.875rem; line-height: 1.6;">
+          The open-source framework for building intelligent AI agent systems. MIT Licensed.
+        </p>
+      </div>
+      <div>
+        <h4 style="font-size: 0.875rem;">Resources</h4>
+        <ul>
+          <li><a href="https://agentos.sh/en/guides">Guides</a></li>
+          <li><a href="/">API Reference</a></li>
+          <li><a href="https://agentos.sh/en/blog">Blog</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="font-size: 0.875rem;">Community</h4>
+        <ul>
+          <li><a href="https://github.com/framersai/agentos">GitHub</a></li>
+          <li><a href="https://discord.gg/agentos">Discord</a></li>
+          <li><a href="https://twitter.com/agentos_ai">Twitter</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="font-size: 0.875rem;">Legal</h4>
+        <ul>
+          <li><a href="https://agentos.sh/privacy">Privacy Policy</a></li>
+          <li><a href="https://agentos.sh/terms">Terms of Service</a></li>
+          <li><a href="https://github.com/framersai/agentos/blob/master/LICENSE">MIT License</a></li>
+        </ul>
+      </div>
+    </div>
+    <div style="border-top: 1px solid var(--color-border-subtle); padding-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+      <p style="color: var(--color-text-muted); font-size: 0.875rem; margin: 0;">© 2025 Frame.dev. All rights reserved.</p>
+      <p style="color: var(--color-text-muted); font-size: 0.75rem; margin: 0;">Built with TypeDoc • Powered by AgentOS</p>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({ startOnLoad: true, theme: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default' });
+</script>
+</body>
+</html>

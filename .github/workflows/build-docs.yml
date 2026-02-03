@@ -95,6 +95,9 @@ jobs:
         
       - name: Wrap TypeDoc pages with AgentOS chrome
         run: pnpm run wrap
+        
+      - name: Convert markdown documentation to HTML
+        run: pnpm run convert-md
 
       - name: Commit and push changes
         run: |
