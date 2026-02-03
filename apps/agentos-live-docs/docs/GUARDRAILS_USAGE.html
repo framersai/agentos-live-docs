@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guardrails Usage Guide - AgentOS Documentation</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/highlight.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-background-primary: #ffffff;
+    --color-background-secondary: #f8fafc;
+    --color-background-elevated: #f1f5f9;
+    --color-text-primary: #0f172a;
+    --color-text-secondary: #475569;
+    --color-text-muted: #94a3b8;
+    --color-accent-primary: #6366f1;
+    --color-accent-hover: #4f46e5;
+    --color-border-subtle: #e2e8f0;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-background-primary: #020617;
+      --color-background-secondary: #0f172a;
+      --color-background-elevated: #1e293b;
+      --color-text-primary: #f8fafc;
+      --color-text-secondary: #cbd5e1;
+      --color-text-muted: #64748b;
+      --color-accent-primary: #818cf8;
+      --color-accent-hover: #a5b4fc;
+      --color-border-subtle: #1e293b;
+    }
+  }
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+    background: var(--color-background-primary) !important;
+    color: var(--color-text-primary) !important;
+  }
+  .agentos-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--color-border-subtle);
+    padding: 0.75rem 1.5rem;
+  }
+  @media (prefers-color-scheme: dark) {
+    .agentos-header { background: rgba(2, 6, 23, 0.95); }
+  }
+  .agentos-header-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .agentos-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--color-text-primary);
+  }
+  .agentos-logo svg { width: 32px; height: 32px; }
+  .agentos-nav {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  .agentos-nav a {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: color 0.15s ease;
+  }
+  .agentos-nav a:hover { color: var(--color-accent-primary); }
+  .agentos-nav a.active { color: var(--color-accent-primary); font-weight: 600; }
+  .agentos-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white !important;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all 0.15s ease;
+  }
+  .agentos-cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  }
+  .github-icon { display: flex; align-items: center; }
+  .agentos-footer {
+    border-top: 1px solid var(--color-border-subtle);
+    background: var(--color-background-secondary);
+    padding: 3rem 1.5rem;
+    margin-top: 4rem;
+  }
+  .agentos-footer-inner { max-width: 1400px; margin: 0 auto; }
+  .agentos-footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+  .agentos-footer h4 { font-weight: 700; margin-bottom: 1rem; color: var(--color-text-primary); }
+  .agentos-footer ul { list-style: none; padding: 0; margin: 0; }
+  .agentos-footer li { margin-bottom: 0.5rem; }
+  .agentos-footer a { color: var(--color-text-secondary); text-decoration: none; font-size: 0.875rem; }
+  .agentos-footer a:hover { color: var(--color-accent-primary); }
+  /* TypeDoc Overrides */
+  .tsd-page-toolbar { background: var(--color-background-secondary) !important; border-bottom: 1px solid var(--color-border-subtle) !important; }
+  .tsd-page-title { background: var(--color-background-primary) !important; }
+  .col-content { background: var(--color-background-primary) !important; }
+  .col-sidebar { background: var(--color-background-secondary) !important; border-right: 1px solid var(--color-border-subtle) !important; }
+  .tsd-navigation { background: var(--color-background-secondary) !important; }
+  .tsd-kind-icon { color: var(--color-accent-primary) !important; }
+  a { color: var(--color-accent-primary); }
+  code { 
+    background: var(--color-background-elevated) !important; 
+    color: var(--color-text-primary) !important;
+    padding: 0.125rem 0.375rem; 
+    border-radius: 0.25rem; 
+    font-size: 0.875em; 
+  }
+  pre { 
+    background: var(--color-background-elevated) !important; 
+    color: var(--color-text-primary) !important;
+    border: 1px solid var(--color-border-subtle); 
+    border-radius: 0.5rem; 
+    padding: 1rem !important; 
+  }
+  pre code {
+    background: transparent !important;
+    color: inherit !important;
+  }
+  h1, h2, h3, h4, h5 { color: var(--color-text-primary) !important; }
+  p, li { color: var(--color-text-secondary) !important; }
+  @media (max-width: 768px) { .agentos-nav-links { display: none; } }
+</style>
+
+  <style>
+    .md-content {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+    }
+    .md-content h1 { font-size: 2.25rem; font-weight: 800; margin-bottom: 1.5rem; border-bottom: 2px solid var(--color-border-subtle); padding-bottom: 0.75rem; }
+    .md-content h2 { font-size: 1.5rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; }
+    .md-content h3 { font-size: 1.25rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; }
+    .md-content p { line-height: 1.7; margin-bottom: 1rem; }
+    .md-content ul, .md-content ol { margin-bottom: 1rem; padding-left: 1.5rem; }
+    .md-content li { margin-bottom: 0.5rem; line-height: 1.6; }
+    .md-content pre { overflow-x: auto; margin: 1.5rem 0; }
+    .md-content code { font-family: 'SF Mono', 'Consolas', monospace; font-size: 0.875em; }
+    .md-content blockquote { border-left: 4px solid var(--color-accent-primary); padding-left: 1rem; margin: 1.5rem 0; color: var(--color-text-secondary); }
+    .md-content table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+    .md-content th, .md-content td { padding: 0.75rem; border: 1px solid var(--color-border-subtle); text-align: left; }
+    .md-content th { background: var(--color-background-secondary); font-weight: 600; }
+    .md-content img { max-width: 100%; height: auto; border-radius: 0.5rem; }
+    .md-content a { color: var(--color-accent-primary); text-decoration: none; }
+    .md-content a:hover { text-decoration: underline; }
+    .md-content hr { border: none; border-top: 1px solid var(--color-border-subtle); margin: 2rem 0; }
+    /* Mermaid diagram support */
+    .mermaid { background: var(--color-background-secondary); padding: 1rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+  </style>
+</head>
+<body>
+<header class="agentos-header">
+  <div class="agentos-header-inner">
+    <a href="https://agentos.sh" class="agentos-logo">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="40" height="40" rx="10" fill="url(#lg)"/>
+        <path d="M20 8L28 14V26L20 32L12 26V14L20 8Z" stroke="white" stroke-width="2" fill="none"/>
+        <circle cx="20" cy="20" r="4" fill="white"/>
+        <defs><linearGradient id="lg" x1="0" y1="0" x2="40" y2="40"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs>
+      </svg>
+      AgentOS
+    </a>
+    <nav class="agentos-nav">
+      <span class="agentos-nav-links">
+        <a href="https://agentos.sh/en/about">About</a>
+        <a href="https://agentos.sh/en/#features">Features</a>
+        <a href="https://agentos.sh/en/blog">Blog</a>
+        <a href="/" class="active">API Docs</a>
+        <a href="https://agentos.sh/en/guides">Guides</a>
+      </span>
+      <a href="https://github.com/framersai/agentos" target="_blank" rel="noopener noreferrer" class="github-icon" title="GitHub">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+      </a>
+      <a href="https://agentos.sh" class="agentos-cta">Get Started</a>
+    </nav>
+  </div>
+</header>
+
+<main class="md-content">
+<h1>Guardrails Usage Guide</h1>
+<p>Guardrails are safety mechanisms that intercept and evaluate content before it enters or exits the AgentOS pipeline. They enable content filtering, PII redaction, policy enforcement, and mid-stream decision overrides.</p>
+<h2>Overview</h2>
+<p>Guardrails intercept content at two points:</p>
+<ol>
+<li><strong>Input Guardrails</strong> - Evaluate user messages before orchestration</li>
+<li><strong>Output Guardrails</strong> - Evaluate agent responses before streaming to client</li>
+</ol>
+<pre><code>User Input → [Input Guardrails] → Orchestration → [Output Guardrails] → Client
+</code></pre>
+<h2>Quick Start</h2>
+<pre><code class="language-typescript">import { AgentOS } from &#39;@framers/agentos&#39;;
+import {
+  IGuardrailService,
+  GuardrailAction,
+  type GuardrailInputPayload,
+  type GuardrailOutputPayload,
+  type GuardrailEvaluationResult,
+} from &#39;@framers/agentos/core/guardrails&#39;;
+
+// Simple content filter
+class ContentFilter implements IGuardrailService {
+  async evaluateInput({ input }: GuardrailInputPayload): Promise&lt;GuardrailEvaluationResult | null&gt; {
+    if (input.textInput?.toLowerCase().includes(&#39;prohibited&#39;)) {
+      return {
+        action: GuardrailAction.BLOCK,
+        reason: &#39;Content violates usage policy&#39;,
+        reasonCode: &#39;CONTENT_POLICY_001&#39;,
+      };
+    }
+    return null; // Allow
+  }
+}
+
+// Initialize with guardrail
+const agent = new AgentOS();
+await agent.initialize({
+  llmProvider: { provider: &#39;openai&#39;, apiKey: process.env.OPENAI_API_KEY },
+  guardrailService: new ContentFilter(),
+});
+</code></pre>
+<h2>Guardrail Actions</h2>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ALLOW</code></td>
+<td>Pass content unchanged</td>
+</tr>
+<tr>
+<td><code>FLAG</code></td>
+<td>Pass content, record metadata for audit</td>
+</tr>
+<tr>
+<td><code>SANITIZE</code></td>
+<td>Replace content with modified version</td>
+</tr>
+<tr>
+<td><code>BLOCK</code></td>
+<td>Reject/terminate the interaction</td>
+</tr>
+</tbody></table>
+<h2>Mid-Stream Decision Override (&quot;Changing Mind&quot;)</h2>
+<p>Guardrails can evaluate streaming chunks in real-time and &quot;change their mind&quot; about allowing content. This enables:</p>
+<ul>
+<li>Stopping generation when cost ceiling is exceeded</li>
+<li>Blocking harmful content as it&#39;s being generated</li>
+<li>Redacting sensitive information mid-stream</li>
+</ul>
+<h3>Example 1: Cost Ceiling Guardrail</h3>
+<p>Stop generation when the response exceeds a token budget:</p>
+<pre><code class="language-typescript">class CostCeilingGuardrail implements IGuardrailService {
+  // Enable streaming evaluation
+  config = {
+    evaluateStreamingChunks: true,
+    maxStreamingEvaluations: 100  // Rate limit
+  };
+
+  private tokenCount = 0;
+  private readonly maxTokens = 1000;
+
+  async evaluateOutput({ chunk }: GuardrailOutputPayload): Promise&lt;GuardrailEvaluationResult | null&gt; {
+    // Only evaluate text chunks
+    if (chunk.type !== &#39;TEXT_DELTA&#39; || !chunk.textDelta) {
+      return null;
+    }
+
+    // Estimate tokens (rough: 1 token ≈ 4 chars)
+    this.tokenCount += Math.ceil(chunk.textDelta.length / 4);
+
+    if (this.tokenCount &gt; this.maxTokens) {
+      // &quot;Change mind&quot; - stop generating mid-stream
+      return {
+        action: GuardrailAction.BLOCK,
+        reason: &#39;Response exceeded token budget. Please refine your request.&#39;,
+        reasonCode: &#39;COST_CEILING_EXCEEDED&#39;,
+        metadata: { tokensUsed: this.tokenCount, limit: this.maxTokens },
+      };
+    }
+
+    return null;
+  }
+}
+</code></pre>
+<h3>Example 2: Real-Time PII Redaction</h3>
+<p>Redact sensitive information as it streams:</p>
+<pre><code class="language-typescript">class PIIRedactionGuardrail implements IGuardrailService {
+  config = {
+    evaluateStreamingChunks: true,
+    maxStreamingEvaluations: 200
+  };
+
+  private readonly patterns = [
+    { regex: /\b\d{3}-\d{2}-\d{4}\b/g, replacement: &#39;[SSN REDACTED]&#39; },
+    { regex: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g, replacement: &#39;[EMAIL REDACTED]&#39; },
+    { regex: /\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b/g, replacement: &#39;[CARD REDACTED]&#39; },
+  ];
+
+  async evaluateOutput({ chunk }: GuardrailOutputPayload): Promise&lt;GuardrailEvaluationResult | null&gt; {
+    if (chunk.type !== &#39;TEXT_DELTA&#39; || !chunk.textDelta) {
+      return null;
+    }
+
+    let text = chunk.textDelta;
+    let modified = false;
+
+    for (const { regex, replacement } of this.patterns) {
+      const newText = text.replace(regex, replacement);
+      if (newText !== text) {
+        text = newText;
+        modified = true;
+      }
+    }
+
+    if (modified) {
+      return {
+        action: GuardrailAction.SANITIZE,
+        modifiedText: text,
+        reasonCode: &#39;PII_REDACTED&#39;,
+      };
+    }
+
+    return null;
+  }
+}
+</code></pre>
+<h3>Example 3: Content Policy Mid-Stream</h3>
+<p>Block harmful content as it&#39;s being generated:</p>
+<pre><code class="language-typescript">class ContentPolicyGuardrail implements IGuardrailService {
+  config = { evaluateStreamingChunks: true };
+
+  private readonly prohibitedPatterns = [
+    /how to make.*bomb/i,
+    /instructions for.*weapon/i,
+    // ... more patterns
+  ];
+
+  private accumulatedText = &#39;&#39;;
+
+  async evaluateOutput({ chunk }: GuardrailOutputPayload): Promise&lt;GuardrailEvaluationResult | null&gt; {
+    if (chunk.type === &#39;TEXT_DELTA&#39; &amp;&amp; chunk.textDelta) {
+      this.accumulatedText += chunk.textDelta;
+
+      for (const pattern of this.prohibitedPatterns) {
+        if (pattern.test(this.accumulatedText)) {
+          return {
+            action: GuardrailAction.BLOCK,
+            reason: &#39;Response contains content that violates our usage policy.&#39;,
+            reasonCode: &#39;CONTENT_POLICY_VIOLATION&#39;,
+          };
+        }
+      }
+    }
+
+    return null;
+  }
+}
+</code></pre>
+<h2>Cross-Agent Guardrails</h2>
+<p>Cross-agent guardrails enable one agent (supervisor) to monitor and intervene in other agents&#39; outputs. This is useful for:</p>
+<ul>
+<li>Supervisor patterns in multi-agent systems</li>
+<li>Quality gates across an agency</li>
+<li>Organization-wide policy enforcement</li>
+</ul>
+<h3>Supervisor Pattern</h3>
+<pre><code class="language-typescript">import {
+  ICrossAgentGuardrailService,
+  GuardrailAction,
+  type CrossAgentOutputPayload,
+  type GuardrailEvaluationResult,
+} from &#39;@framers/agentos/core/guardrails&#39;;
+
+class SupervisorGuardrail implements ICrossAgentGuardrailService {
+  // Observe specific worker agents (empty = all agents)
+  observeAgentIds = [&#39;worker-analyst&#39;, &#39;worker-writer&#39;];
+
+  // Allow this guardrail to block/modify other agents&#39; streams
+  canInterruptOthers = true;
+
+  // Evaluate streaming chunks in real-time
+  config = { evaluateStreamingChunks: true };
+
+  async evaluateCrossAgentOutput({
+    sourceAgentId,
+    chunk,
+    context,
+  }: CrossAgentOutputPayload): Promise&lt;GuardrailEvaluationResult | null&gt; {
+    // Check for confidential information leakage
+    if (chunk.type === &#39;TEXT_DELTA&#39; &amp;&amp; chunk.textDelta?.includes(&#39;CONFIDENTIAL&#39;)) {
+      return {
+        action: GuardrailAction.BLOCK,
+        reason: `Agent ${sourceAgentId} attempted to expose confidential information`,
+        reasonCode: &#39;CROSS_AGENT_CONFIDENTIAL_LEAK&#39;,
+        metadata: {
+          blockedAgent: sourceAgentId,
+          supervisor: &#39;supervisor-agent&#39;
+        },
+      };
+    }
+
+    return null;
+  }
+}
+</code></pre>
+<h3>Quality Gate Guardrail</h3>
+<pre><code class="language-typescript">class QualityGateGuardrail implements ICrossAgentGuardrailService {
+  observeAgentIds = []; // Observe all agents
+  canInterruptOthers = true;
+
+  async evaluateCrossAgentOutput({
+    sourceAgentId,
+    chunk,
+  }: CrossAgentOutputPayload): Promise&lt;GuardrailEvaluationResult | null&gt; {
+    // Only evaluate final responses
+    if (chunk.type !== &#39;FINAL_RESPONSE&#39;) {
+      return null;
+    }
+
+    const response = chunk.finalResponseText;
+
+    // Check response quality
+    if (response &amp;&amp; response.length &lt; 50) {
+      return {
+        action: GuardrailAction.FLAG,
+        reason: &#39;Response may be too brief&#39;,
+        reasonCode: &#39;QUALITY_WARNING&#39;,
+        metadata: {
+          responseLength: response.length,
+          agent: sourceAgentId
+        },
+      };
+    }
+
+    return null;
+  }
+}
+</code></pre>
+<h2>Configuration Options</h2>
+<h3>GuardrailConfig</h3>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>evaluateStreamingChunks</code></td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>Evaluate TEXT_DELTA chunks (real-time) vs only FINAL_RESPONSE</td>
+</tr>
+<tr>
+<td><code>maxStreamingEvaluations</code></td>
+<td><code>number</code></td>
+<td><code>undefined</code></td>
+<td>Rate limit streaming evaluations per request</td>
+</tr>
+</tbody></table>
+<h3>Performance Considerations</h3>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Latency</th>
+<th>Cost</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Final-only</strong> (default)</td>
+<td>+1-500ms once</td>
+<td>Low</td>
+<td>Policy checks needing full context</td>
+</tr>
+<tr>
+<td><strong>Streaming</strong></td>
+<td>+1-500ms per chunk</td>
+<td>High</td>
+<td>Real-time PII redaction, immediate blocking</td>
+</tr>
+</tbody></table>
+<h2>Using Multiple Guardrails</h2>
+<p>Multiple guardrails are evaluated in sequence. Each can modify the content before passing to the next:</p>
+<pre><code class="language-typescript">const guardrails = [
+  new PIIRedactionGuardrail(),     // First: redact PII
+  new ContentPolicyGuardrail(),    // Second: check policy
+  new CostCeilingGuardrail(),      // Third: enforce budget
+];
+
+await agent.initialize({
+  llmProvider: llmConfig,
+  guardrailService: guardrails,  // Array of guardrails
+});
+</code></pre>
+<p><strong>Evaluation Order:</strong></p>
+<ol>
+<li>Input guardrails run in array order before orchestration</li>
+<li>If any returns <code>BLOCK</code>, processing stops</li>
+<li>If any returns <code>SANITIZE</code>, modified input passes to next guardrail</li>
+<li>Output guardrails wrap the stream in array order</li>
+</ol>
+<h2>API Reference</h2>
+<h3>IGuardrailService</h3>
+<pre><code class="language-typescript">interface IGuardrailService {
+  config?: GuardrailConfig;
+  evaluateInput?(payload: GuardrailInputPayload): Promise&lt;GuardrailEvaluationResult | null&gt;;
+  evaluateOutput?(payload: GuardrailOutputPayload): Promise&lt;GuardrailEvaluationResult | null&gt;;
+}
+</code></pre>
+<h3>ICrossAgentGuardrailService</h3>
+<pre><code class="language-typescript">interface ICrossAgentGuardrailService extends IGuardrailService {
+  observeAgentIds?: string[];      // Agents to observe (empty = all)
+  canInterruptOthers?: boolean;    // Can BLOCK/SANITIZE other agents
+  evaluateCrossAgentOutput?(payload: CrossAgentOutputPayload): Promise&lt;GuardrailEvaluationResult | null&gt;;
+}
+</code></pre>
+<h3>GuardrailAction</h3>
+<pre><code class="language-typescript">enum GuardrailAction {
+  ALLOW = &#39;allow&#39;,      // Pass unchanged
+  FLAG = &#39;flag&#39;,        // Pass, record metadata
+  SANITIZE = &#39;sanitize&#39;, // Replace content
+  BLOCK = &#39;block&#39;,      // Reject/terminate
+}
+</code></pre>
+<h3>GuardrailEvaluationResult</h3>
+<pre><code class="language-typescript">interface GuardrailEvaluationResult {
+  action: GuardrailAction;
+  reason?: string;           // User-facing message
+  reasonCode?: string;       // Machine-readable code
+  metadata?: Record&lt;string, unknown&gt;;
+  modifiedText?: string | null;  // For SANITIZE action
+}
+</code></pre>
+<h2>Best Practices</h2>
+<ol>
+<li><strong>Start with final-only evaluation</strong> - Enable streaming only when real-time filtering is required</li>
+<li><strong>Use rate limiting</strong> - Set <code>maxStreamingEvaluations</code> to control costs</li>
+<li><strong>Be specific with reason codes</strong> - Use consistent, machine-readable codes for analytics</li>
+<li><strong>Log FLAG actions</strong> - Use FLAG for monitoring without blocking user experience</li>
+<li><strong>Test edge cases</strong> - Test with partial PII, edge cases in streaming chunks</li>
+<li><strong>Consider latency</strong> - Each streaming evaluation adds latency to user experience</li>
+</ol>
+<h2>Related Documentation</h2>
+<ul>
+<li><a href="./ARCHITECTURE.html">Architecture Overview</a></li>
+<li><a href="./HUMAN_IN_THE_LOOP.html">Human-in-the-Loop</a></li>
+<li><a href="./AGENT_COMMUNICATION.html">Agent Communication</a></li>
+</ul>
+
+</main>
+<footer class="agentos-footer">
+  <div class="agentos-footer-inner">
+    <div class="agentos-footer-grid">
+      <div>
+        <h4>AgentOS</h4>
+        <p style="color: var(--color-text-secondary); font-size: 0.875rem; line-height: 1.6;">
+          The open-source framework for building intelligent AI agent systems. MIT Licensed.
+        </p>
+      </div>
+      <div>
+        <h4 style="font-size: 0.875rem;">Resources</h4>
+        <ul>
+          <li><a href="https://agentos.sh/en/guides">Guides</a></li>
+          <li><a href="/">API Reference</a></li>
+          <li><a href="https://agentos.sh/en/blog">Blog</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="font-size: 0.875rem;">Community</h4>
+        <ul>
+          <li><a href="https://github.com/framersai/agentos">GitHub</a></li>
+          <li><a href="https://discord.gg/agentos">Discord</a></li>
+          <li><a href="https://twitter.com/agentos_ai">Twitter</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="font-size: 0.875rem;">Legal</h4>
+        <ul>
+          <li><a href="https://agentos.sh/privacy">Privacy Policy</a></li>
+          <li><a href="https://agentos.sh/terms">Terms of Service</a></li>
+          <li><a href="https://github.com/framersai/agentos/blob/master/LICENSE">MIT License</a></li>
+        </ul>
+      </div>
+    </div>
+    <div style="border-top: 1px solid var(--color-border-subtle); padding-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+      <p style="color: var(--color-text-muted); font-size: 0.875rem; margin: 0;">© 2025 Frame.dev. All rights reserved.</p>
+      <p style="color: var(--color-text-muted); font-size: 0.75rem; margin: 0;">Built with TypeDoc • Powered by AgentOS</p>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({ startOnLoad: true, theme: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default' });
+</script>
+</body>
+</html>

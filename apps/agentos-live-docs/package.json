@@ -6,10 +6,14 @@
   "description": "Live TypeDoc documentation for AgentOS with agentos.sh styling",
   "scripts": {
     "dev": "npx serve . -l 4002",
-    "wrap": "node scripts/wrap-typedoc.mjs"
+    "wrap": "node scripts/wrap-typedoc.mjs",
+    "convert-md": "node scripts/convert-markdown.mjs",
+    "build": "npm run convert-md && npm run wrap"
   },
   "dependencies": {
-    "glob": "^10.3.10"
+    "glob": "^10.3.10",
+    "marked": "^12.0.0",
+    "highlight.js": "^11.9.0"
   },
   "devDependencies": {
     "serve": "^14.2.1"
@@ -20,4 +24,3 @@
   },
   "license": "MIT"
 }
-

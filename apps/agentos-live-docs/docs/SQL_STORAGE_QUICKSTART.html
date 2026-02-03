@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgentOS + SQL Storage Adapter Integration - Quick Start Guide - AgentOS Documentation</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/highlight.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-background-primary: #ffffff;
+    --color-background-secondary: #f8fafc;
+    --color-background-elevated: #f1f5f9;
+    --color-text-primary: #0f172a;
+    --color-text-secondary: #475569;
+    --color-text-muted: #94a3b8;
+    --color-accent-primary: #6366f1;
+    --color-accent-hover: #4f46e5;
+    --color-border-subtle: #e2e8f0;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-background-primary: #020617;
+      --color-background-secondary: #0f172a;
+      --color-background-elevated: #1e293b;
+      --color-text-primary: #f8fafc;
+      --color-text-secondary: #cbd5e1;
+      --color-text-muted: #64748b;
+      --color-accent-primary: #818cf8;
+      --color-accent-hover: #a5b4fc;
+      --color-border-subtle: #1e293b;
+    }
+  }
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+    background: var(--color-background-primary) !important;
+    color: var(--color-text-primary) !important;
+  }
+  .agentos-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--color-border-subtle);
+    padding: 0.75rem 1.5rem;
+  }
+  @media (prefers-color-scheme: dark) {
+    .agentos-header { background: rgba(2, 6, 23, 0.95); }
+  }
+  .agentos-header-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .agentos-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--color-text-primary);
+  }
+  .agentos-logo svg { width: 32px; height: 32px; }
+  .agentos-nav {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  .agentos-nav a {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: color 0.15s ease;
+  }
+  .agentos-nav a:hover { color: var(--color-accent-primary); }
+  .agentos-nav a.active { color: var(--color-accent-primary); font-weight: 600; }
+  .agentos-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white !important;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all 0.15s ease;
+  }
+  .agentos-cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  }
+  .github-icon { display: flex; align-items: center; }
+  .agentos-footer {
+    border-top: 1px solid var(--color-border-subtle);
+    background: var(--color-background-secondary);
+    padding: 3rem 1.5rem;
+    margin-top: 4rem;
+  }
+  .agentos-footer-inner { max-width: 1400px; margin: 0 auto; }
+  .agentos-footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+  .agentos-footer h4 { font-weight: 700; margin-bottom: 1rem; color: var(--color-text-primary); }
+  .agentos-footer ul { list-style: none; padding: 0; margin: 0; }
+  .agentos-footer li { margin-bottom: 0.5rem; }
+  .agentos-footer a { color: var(--color-text-secondary); text-decoration: none; font-size: 0.875rem; }
+  .agentos-footer a:hover { color: var(--color-accent-primary); }
+  /* TypeDoc Overrides */
+  .tsd-page-toolbar { background: var(--color-background-secondary) !important; border-bottom: 1px solid var(--color-border-subtle) !important; }
+  .tsd-page-title { background: var(--color-background-primary) !important; }
+  .col-content { background: var(--color-background-primary) !important; }
+  .col-sidebar { background: var(--color-background-secondary) !important; border-right: 1px solid var(--color-border-subtle) !important; }
+  .tsd-navigation { background: var(--color-background-secondary) !important; }
+  .tsd-kind-icon { color: var(--color-accent-primary) !important; }
+  a { color: var(--color-accent-primary); }
+  code { 
+    background: var(--color-background-elevated) !important; 
+    color: var(--color-text-primary) !important;
+    padding: 0.125rem 0.375rem; 
+    border-radius: 0.25rem; 
+    font-size: 0.875em; 
+  }
+  pre { 
+    background: var(--color-background-elevated) !important; 
+    color: var(--color-text-primary) !important;
+    border: 1px solid var(--color-border-subtle); 
+    border-radius: 0.5rem; 
+    padding: 1rem !important; 
+  }
+  pre code {
+    background: transparent !important;
+    color: inherit !important;
+  }
+  h1, h2, h3, h4, h5 { color: var(--color-text-primary) !important; }
+  p, li { color: var(--color-text-secondary) !important; }
+  @media (max-width: 768px) { .agentos-nav-links { display: none; } }
+</style>
+
+  <style>
+    .md-content {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+    }
+    .md-content h1 { font-size: 2.25rem; font-weight: 800; margin-bottom: 1.5rem; border-bottom: 2px solid var(--color-border-subtle); padding-bottom: 0.75rem; }
+    .md-content h2 { font-size: 1.5rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; }
+    .md-content h3 { font-size: 1.25rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; }
+    .md-content p { line-height: 1.7; margin-bottom: 1rem; }
+    .md-content ul, .md-content ol { margin-bottom: 1rem; padding-left: 1.5rem; }
+    .md-content li { margin-bottom: 0.5rem; line-height: 1.6; }
+    .md-content pre { overflow-x: auto; margin: 1.5rem 0; }
+    .md-content code { font-family: 'SF Mono', 'Consolas', monospace; font-size: 0.875em; }
+    .md-content blockquote { border-left: 4px solid var(--color-accent-primary); padding-left: 1rem; margin: 1.5rem 0; color: var(--color-text-secondary); }
+    .md-content table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+    .md-content th, .md-content td { padding: 0.75rem; border: 1px solid var(--color-border-subtle); text-align: left; }
+    .md-content th { background: var(--color-background-secondary); font-weight: 600; }
+    .md-content img { max-width: 100%; height: auto; border-radius: 0.5rem; }
+    .md-content a { color: var(--color-accent-primary); text-decoration: none; }
+    .md-content a:hover { text-decoration: underline; }
+    .md-content hr { border: none; border-top: 1px solid var(--color-border-subtle); margin: 2rem 0; }
+    /* Mermaid diagram support */
+    .mermaid { background: var(--color-background-secondary); padding: 1rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+  </style>
+</head>
+<body>
+<header class="agentos-header">
+  <div class="agentos-header-inner">
+    <a href="https://agentos.sh" class="agentos-logo">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="40" height="40" rx="10" fill="url(#lg)"/>
+        <path d="M20 8L28 14V26L20 32L12 26V14L20 8Z" stroke="white" stroke-width="2" fill="none"/>
+        <circle cx="20" cy="20" r="4" fill="white"/>
+        <defs><linearGradient id="lg" x1="0" y1="0" x2="40" y2="40"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs>
+      </svg>
+      AgentOS
+    </a>
+    <nav class="agentos-nav">
+      <span class="agentos-nav-links">
+        <a href="https://agentos.sh/en/about">About</a>
+        <a href="https://agentos.sh/en/#features">Features</a>
+        <a href="https://agentos.sh/en/blog">Blog</a>
+        <a href="/" class="active">API Docs</a>
+        <a href="https://agentos.sh/en/guides">Guides</a>
+      </span>
+      <a href="https://github.com/framersai/agentos" target="_blank" rel="noopener noreferrer" class="github-icon" title="GitHub">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+      </a>
+      <a href="https://agentos.sh" class="agentos-cta">Get Started</a>
+    </nav>
+  </div>
+</header>
+
+<main class="md-content">
+<h1>AgentOS + SQL Storage Adapter Integration - Quick Start Guide</h1>
+<h2>🎯 TL;DR</h2>
+<p><strong>Should we integrate?</strong> ✅ <strong>YES - High Value</strong></p>
+<p><strong>When?</strong> <strong>Phase 1 (Memory) now</strong>, Phase 2 (App DB) later, Phase 3 (Core) optional</p>
+<p><strong>Effort?</strong> 2-3 weeks for Phase 1, 6-8 weeks total for Phases 1-2</p>
+<hr>
+<h2>💡 Why This Matters</h2>
+<h3>Current Problems</h3>
+<ol>
+<li>❌ <strong>SQLite-only</strong> - Can&#39;t run on mobile (Capacitor), edge (Supabase), or production PostgreSQL</li>
+<li>❌ <strong>No backups</strong> - Critical conversation data not backed up to cloud</li>
+<li>❌ <strong>Multiple storage systems</strong> - better-sqlite3, Prisma, LocalForage all doing the same thing differently</li>
+<li>❌ <strong>Hard to scale</strong> - Migrating dev → production requires rewriting storage layer</li>
+</ol>
+<h3>What sql-storage-adapter Solves</h3>
+<ol>
+<li>✅ <strong>One API, many backends</strong> - SQLite (dev), PostgreSQL (prod), Supabase (edge), Capacitor (mobile)</li>
+<li>✅ <strong>Cloud backups</strong> - Automatic S3/R2 backups with compression and retention</li>
+<li>✅ <strong>Unified codebase</strong> - Same code works everywhere</li>
+<li>✅ <strong>Easy migrations</strong> - Built-in tools to export/import data between systems</li>
+</ol>
+<hr>
+<h2>📋 Integration Plan (Recommended)</h2>
+<h3>Phase 1: Conversation Memory (HIGH PRIORITY)</h3>
+<p><strong>Goal</strong>: Replace <code>SqliteMemoryAdapter</code> with sql-storage-adapter</p>
+<p><strong>Scope</strong>:</p>
+<ul>
+<li><code>backend/src/core/memory/SqliteMemoryAdapter.ts</code> → new <code>StorageAdapterMemory.ts</code></li>
+<li>Keep same <code>IMemoryAdapter</code> interface (no breaking changes)</li>
+<li>Add cloud backup to S3/R2</li>
+</ul>
+<p><strong>Timeline</strong>: 2-3 weeks</p>
+<p><strong>Benefits</strong>:</p>
+<ul>
+<li>✅ Conversations backed up to cloud</li>
+<li>✅ Works on mobile apps (Capacitor SQLite plugin)</li>
+<li>✅ Easy PostgreSQL migration for production</li>
+<li>✅ Supabase support for edge deployments</li>
+</ul>
+<p><strong>Code Change</strong>:</p>
+<pre><code class="language-typescript">// OLD:
+import Database from &#39;better-sqlite3&#39;;
+const db = new Database(&#39;./memory.db&#39;);
+
+// NEW:
+import { createDatabase } from &#39;@framers/sql-storage-adapter&#39;;
+const db = await createDatabase({ type: &#39;sqlite&#39;, path: &#39;./memory.db&#39; });
+// Same code works with postgres: type: &#39;postgres&#39;, connection: &#39;postgresql://...&#39;
+</code></pre>
+<hr>
+<h3>Phase 2: App Database (MEDIUM PRIORITY)</h3>
+<p><strong>Goal</strong>: Replace <code>appDatabase.ts</code> with sql-storage-adapter</p>
+<p><strong>Scope</strong>:</p>
+<ul>
+<li><code>backend/src/core/database/appDatabase.ts</code> → new <code>StorageAdapterDatabase.ts</code></li>
+<li>Update all repositories (users, organizations, billing)</li>
+<li>Add cloud backup for user data</li>
+</ul>
+<p><strong>Timeline</strong>: 2-3 weeks</p>
+<p><strong>Benefits</strong>:</p>
+<ul>
+<li>✅ Organizations work in PostgreSQL</li>
+<li>✅ User data backed up to cloud</li>
+<li>✅ Multi-tenant production deployments</li>
+</ul>
+<hr>
+<h3>Phase 3: AgentOS Core (OPTIONAL)</h3>
+<p><strong>Goal</strong>: Use sql-storage-adapter for GMI state, RAG metadata, lifecycle events</p>
+<p><strong>Scope</strong>:</p>
+<ul>
+<li>New <code>AgentOSStorageManager</code> class</li>
+<li>Schema for <code>gmi_instances</code>, <code>rag_data_sources</code>, <code>memory_lifecycle_events</code></li>
+<li>Integration with GMI for persistence</li>
+</ul>
+<p><strong>Timeline</strong>: 2-4 weeks</p>
+<p><strong>Benefits</strong>:</p>
+<ul>
+<li>✅ GMI state survives restarts</li>
+<li>✅ Cross-session memory</li>
+<li>✅ Consistent with rest of system</li>
+</ul>
+<hr>
+<h2>🚀 Quick Start (Phase 1 Only)</h2>
+<h3>1. Install Package</h3>
+<pre><code class="language-bash">cd packages/sql-storage-adapter
+pnpm add @framers/sql-storage-adapter
+</code></pre>
+<h3>2. Create New Adapter</h3>
+<p><strong>File</strong>: <code>backend/src/core/memory/StorageAdapterMemory.ts</code></p>
+<pre><code class="language-typescript">import { createDatabase, StorageAdapter } from &#39;@framers/sql-storage-adapter&#39;;
+import { IMemoryAdapter } from &#39;./IMemoryAdapter&#39;;
+
+export class StorageAdapterMemory implements IMemoryAdapter {
+  private db: StorageAdapter | null = null;
+  
+  async initialize(): Promise&lt;void&gt; {
+    this.db = await createDatabase({
+      type: process.env.DATABASE_URL ? &#39;postgres&#39; : &#39;sqlite&#39;,
+      connection: process.env.DATABASE_URL || &#39;./db_data/memory.db&#39;,
+    });
+    
+    // Create schema (same as before)
+    await this.db.exec(`
+      CREATE TABLE IF NOT EXISTS conversations (...);
+      CREATE TABLE IF NOT EXISTS conversation_turns (...);
+    `);
+  }
+  
+  async storeConversationTurn(...) {
+    // Use this.db.run() instead of direct DB access
+  }
+  
+  async retrieveConversationTurns(...) {
+    // Use this.db.all() instead of direct DB access
+  }
+  
+  // Implement other IMemoryAdapter methods
+}
+</code></pre>
+<h3>3. Enable Cloud Backups</h3>
+<pre><code class="language-typescript">import { createCloudBackupManager } from &#39;@framers/sql-storage-adapter&#39;;
+import { S3Client } from &#39;@aws-sdk/client-s3&#39;;
+
+const s3 = new S3Client({ region: &#39;us-east-1&#39; });
+const backup = createCloudBackupManager(this.db, s3, &#39;agentos-memory&#39;, {
+  interval: 3600000,  // 1 hour
+  maxBackups: 168,    // 1 week
+  options: { compression: &#39;gzip&#39; }
+});
+
+backup.start();
+</code></pre>
+<h3>4. Environment Variables</h3>
+<pre><code class="language-bash"># Development (SQLite)
+DATABASE_TYPE=sqlite
+
+# Production (PostgreSQL)
+DATABASE_TYPE=postgres
+DATABASE_URL=postgresql://user:pass@localhost:5432/agentos
+
+# Cloud Backups
+ENABLE_CLOUD_BACKUPS=true
+AWS_REGION=us-east-1
+AWS_ACCESS_KEY_ID=...
+AWS_SECRET_ACCESS_KEY=...
+S3_BACKUP_BUCKET=agentos-backups
+</code></pre>
+<h3>5. Migration Script</h3>
+<pre><code class="language-bash">npm run migrate:memory-to-storage-adapter
+</code></pre>
+<hr>
+<h2>✅ Success Checklist</h2>
+<h3>Before Production</h3>
+<ul>
+<li><input disabled="" type="checkbox"> All unit tests passing</li>
+<li><input disabled="" type="checkbox"> Integration tests with SQLite</li>
+<li><input disabled="" type="checkbox"> Integration tests with PostgreSQL</li>
+<li><input disabled="" type="checkbox"> Migration script tested with production data copy</li>
+<li><input disabled="" type="checkbox"> Cloud backups working (test restore)</li>
+<li><input disabled="" type="checkbox"> Performance tests (query speed, backup speed)</li>
+<li><input disabled="" type="checkbox"> Documentation updated</li>
+<li><input disabled="" type="checkbox"> Team trained on new system</li>
+</ul>
+<h3>After Production</h3>
+<ul>
+<li><input disabled="" type="checkbox"> Monitor backup success rate (should be &gt;99.9%)</li>
+<li><input disabled="" type="checkbox"> Monitor query performance (should be within 10% of baseline)</li>
+<li><input disabled="" type="checkbox"> Monitor S3 costs</li>
+<li><input disabled="" type="checkbox"> No data loss incidents</li>
+<li><input disabled="" type="checkbox"> Zero user-reported issues</li>
+</ul>
+<hr>
+<h2>🔧 Troubleshooting</h2>
+<h3>&quot;Module not found: @framers/sql-storage-adapter&quot;</h3>
+<pre><code class="language-bash">cd packages/sql-storage-adapter
+pnpm install
+pnpm build
+</code></pre>
+<h3>&quot;Database locked&quot; errors</h3>
+<p>sql-storage-adapter uses WAL mode by default, which prevents locking. If you still see errors:</p>
+<pre><code class="language-typescript">await db.exec(&#39;PRAGMA busy_timeout = 5000;&#39;);
+</code></pre>
+<h3>Cloud backup failures</h3>
+<p>Check S3 credentials and permissions:</p>
+<pre><code class="language-bash">aws s3 ls s3://agentos-backups/  # Should list backups
+</code></pre>
+<h3>Performance slower than expected</h3>
+<p>Enable indexes:</p>
+<pre><code class="language-sql">CREATE INDEX idx_conversation_turns_conv ON conversation_turns(conversationId, timestamp);
+CREATE INDEX idx_conversations_user ON conversations(userId, lastActivity DESC);
+</code></pre>
+<hr>
+<h2>📊 Expected Results</h2>
+<h3>Performance</h3>
+<ul>
+<li><strong>SQLite queries</strong>: Same speed (uses better-sqlite3 under the hood)</li>
+<li><strong>PostgreSQL queries</strong>: Similar to direct pg usage</li>
+<li><strong>Backup creation</strong>: ~5-10 seconds for 10k conversations</li>
+<li><strong>Backup restore</strong>: ~10-20 seconds for 10k conversations</li>
+</ul>
+<h3>Storage</h3>
+<ul>
+<li><strong>Gzip compression</strong>: 40-60% reduction in backup size</li>
+<li><strong>S3 costs</strong>: ~$0.023/GB/month (standard), ~$0.015/GB/month (R2)</li>
+<li><strong>Example</strong>: 1GB of conversations = ~$0.02/month with R2</li>
+</ul>
+<h3>Reliability</h3>
+<ul>
+<li><strong>Backup success rate</strong>: &gt;99.9%</li>
+<li><strong>Data loss incidents</strong>: 0</li>
+<li><strong>Migration success rate</strong>: 100%</li>
+</ul>
+<hr>
+<h2>📞 Support</h2>
+<h3>Questions?</h3>
+<ul>
+<li><strong>Full Analysis</strong>: See <code>SQL_STORAGE_INTEGRATION_ANALYSIS.md</code></li>
+<li><strong>sql-storage-adapter Docs</strong>: <code>packages/sql-storage-adapter/README.md</code></li>
+<li><strong>Examples</strong>: <code>packages/sql-storage-adapter/examples/</code></li>
+</ul>
+<h3>Need Help?</h3>
+<ol>
+<li>Check existing <code>IMemoryAdapter</code> interface - new adapter must match it exactly</li>
+<li>Look at <code>SqliteMemoryAdapter</code> implementation - copy the same logic, just use <code>db.run()</code> instead of <code>prepare().run()</code></li>
+<li>Test with SQLite first, then try PostgreSQL</li>
+<li>Start without cloud backups, add them once basic storage works</li>
+</ol>
+<hr>
+<p><strong>Ready to start?</strong> Begin with Phase 1 - conversation memory integration. It&#39;s the highest-value, lowest-risk starting point.</p>
+
+</main>
+<footer class="agentos-footer">
+  <div class="agentos-footer-inner">
+    <div class="agentos-footer-grid">
+      <div>
+        <h4>AgentOS</h4>
+        <p style="color: var(--color-text-secondary); font-size: 0.875rem; line-height: 1.6;">
+          The open-source framework for building intelligent AI agent systems. MIT Licensed.
+        </p>
+      </div>
+      <div>
+        <h4 style="font-size: 0.875rem;">Resources</h4>
+        <ul>
+          <li><a href="https://agentos.sh/en/guides">Guides</a></li>
+          <li><a href="/">API Reference</a></li>
+          <li><a href="https://agentos.sh/en/blog">Blog</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="font-size: 0.875rem;">Community</h4>
+        <ul>
+          <li><a href="https://github.com/framersai/agentos">GitHub</a></li>
+          <li><a href="https://discord.gg/agentos">Discord</a></li>
+          <li><a href="https://twitter.com/agentos_ai">Twitter</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="font-size: 0.875rem;">Legal</h4>
+        <ul>
+          <li><a href="https://agentos.sh/privacy">Privacy Policy</a></li>
+          <li><a href="https://agentos.sh/terms">Terms of Service</a></li>
+          <li><a href="https://github.com/framersai/agentos/blob/master/LICENSE">MIT License</a></li>
+        </ul>
+      </div>
+    </div>
+    <div style="border-top: 1px solid var(--color-border-subtle); padding-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+      <p style="color: var(--color-text-muted); font-size: 0.875rem; margin: 0;">© 2025 Frame.dev. All rights reserved.</p>
+      <p style="color: var(--color-text-muted); font-size: 0.75rem; margin: 0;">Built with TypeDoc • Powered by AgentOS</p>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({ startOnLoad: true, theme: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default' });
+</script>
+</body>
+</html>
