@@ -27,3 +27,6 @@
 [submodule "packages/quarry-plugins"]
 	path = packages/quarry-plugins
 	url = https://github.com/framersai/quarry-plugins.git
+[submodule "apps/wunderland-sol"]
+	path = apps/wunderland-sol
+	url = https://github.com/manicinc/wunderland-sol.git
