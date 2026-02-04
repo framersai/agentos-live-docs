@@ -1,7 +1,10 @@
 import { Module, Global, OnModuleInit } from '@nestjs/common';
 import { drizzle, BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
-import Database from 'better-sqlite3';
+import * as BetterSqlite3 from 'better-sqlite3';
 import * as schema from './schema';
+
+// Handle CommonJS/ESM interop
+const Database = (BetterSqlite3 as any).default || BetterSqlite3;
 import { existsSync, mkdirSync } from 'fs';
 import { dirname } from 'path';
 
