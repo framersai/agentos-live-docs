@@ -6,14 +6,14 @@ async function bootstrap() {
 
   // Enable CORS for frontend
   app.enableCors({
-    origin: 'http://localhost:3000',
+    origin: ['http://localhost:3020'],
     credentials: true,
   });
 
   // Global prefix for all routes
   app.setGlobalPrefix('api');
 
-  const port = process.env.PORT || 3001;
+  const port = process.env.PORT || 3021;
   await app.listen(port);
   console.log(`Backend running on http://localhost:${port}`);
 }

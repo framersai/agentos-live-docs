@@ -7,7 +7,7 @@ import type {
   ExperimentStats,
 } from './types';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3021/api';
 
 /**
  * Generic fetch wrapper with error handling.
