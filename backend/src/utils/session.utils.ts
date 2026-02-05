@@ -20,15 +20,20 @@ const extractClientIp = (req: Request): string => {
   const ipFromHeader = Array.isArray(forwardedFor)
     ? forwardedFor[0]
     : forwardedFor?.split(',')[0]?.trim();
-  const candidate = ipFromHeader || req.headers['x-real-ip'] as string || req.ip || req.socket?.remoteAddress || '';
+  const candidate =
+    ipFromHeader ||
+    (req.headers['x-real-ip'] as string) ||
+    req.ip ||
+    req.socket?.remoteAddress ||
+    '';
   return candidate || 'unknown';
 };
 
 /**
  * Resolves the identifier that should be used for session-bound activities such as cost tracking.
  * Preference order:
- *   1. Explicit userId supplied by the client (if trusted).
- *   2. Authenticated user id injected by auth middleware.
+ *   1. Authenticated user id injected by auth middleware.
+ *   2. (Optional) Explicit *public* userId supplied by the client (demo-mode only).
  *   3. A deterministic hashed id derived from the caller's IP address.
  *
  * @param req Express request.
@@ -36,13 +41,23 @@ const extractClientIp = (req: Request): string => {
  * @returns A stable identifier suitable for cost/session tracking.
  */
 export const resolveSessionUserId = (req: Request, explicitUserId?: string | null): string => {
-  if (explicitUserId && typeof explicitUserId === 'string' && explicitUserId.trim().length > 0) {
-    return explicitUserId.trim();
+  const userContext = (req as any)?.user;
+  const authenticatedUserId =
+    userContext?.authenticated && typeof userContext?.id === 'string' ? userContext.id : null;
+  if (authenticatedUserId) {
+    return authenticatedUserId;
   }
 
-  const authenticatedUserId = (req as any)?.user?.id;
-  if (authenticatedUserId && typeof authenticatedUserId === 'string') {
-    return authenticatedUserId;
+  // Never trust arbitrary client-provided identifiers for authenticated namespaces.
+  // For unauthenticated callers we allow only the "public_*" namespace for demo flows.
+  if (explicitUserId && typeof explicitUserId === 'string') {
+    const trimmed = explicitUserId.trim();
+    const isPublicId =
+      trimmed === `${PUBLIC_PREFIX}_unknown` ||
+      new RegExp(`^${PUBLIC_PREFIX}_[a-f0-9]{16}$`, 'i').test(trimmed);
+    if (isPublicId) {
+      return trimmed;
+    }
   }
 
   const clientIp = extractClientIp(req);
@@ -56,4 +71,3 @@ export const resolveSessionUserId = (req: Request, explicitUserId?: string | nul
  * Exposes the IP extraction for logging or other utilities.
  */
 export const getClientIp = (req: Request): string => extractClientIp(req);
-

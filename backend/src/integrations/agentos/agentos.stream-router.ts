@@ -2,8 +2,20 @@ import { Router } from 'express';
 import type { Request, Response } from 'express';
 import type { AgentOSInput, AgentOSResponse } from '@framers/agentos';
 import { agentosChatAdapterEnabled, processAgentOSChatRequest } from './agentos.chat-adapter.js';
+import { resolveSessionUserId } from '../../utils/session.utils.js';
+import { applyLongTermMemoryDefaults } from './agentos.memory-defaults.js';
+import {
+  OrganizationAuthzError,
+  requireActiveOrganizationMember,
+  requireOrganizationRole,
+} from '../../features/organization/organization.authz.js';
+import { getOrganizationSettings } from '../../features/organization/organization.repository.js';
+import { resolveOrganizationMemorySettings } from '../../features/organization/organization.settings.js';
 
-type StreamHandler = (input: AgentOSInput, onChunk: (chunk: AgentOSResponse) => Promise<void> | void) => Promise<void>;
+type StreamHandler = (
+  input: AgentOSInput,
+  onChunk: (chunk: AgentOSResponse) => Promise<void> | void
+) => Promise<void>;
 
 interface AgentOSStreamIntegration {
   processThroughAgentOSStream: StreamHandler;
@@ -12,47 +24,74 @@ interface AgentOSStreamIntegration {
 export const createAgentOSStreamRouter = (integration: AgentOSStreamIntegration): Router => {
   const router = Router();
 
-  router.get('/stream', async (req: Request, res: Response) => {
+  const handleStreamRequest = async (req: Request, res: Response): Promise<void> => {
     if (!agentosChatAdapterEnabled()) {
       res.status(503).json({ message: 'AgentOS streaming disabled', error: 'AGENTOS_DISABLED' });
       return;
     }
 
-    const { userId, conversationId, mode, model } = req.query as Record<string, string>;
+    const source = req.method === 'POST' ? (req.body ?? {}) : (req.query ?? {});
+    const requestedUserId = typeof source.userId === 'string' ? source.userId : null;
+    const effectiveUserId = resolveSessionUserId(req, requestedUserId);
+    const userContext = (req as any)?.user;
+    const isAuthenticated = Boolean(userContext?.authenticated);
+
+    const organizationId =
+      typeof source.organizationId === 'string' ? source.organizationId : undefined;
+    const orgId =
+      typeof organizationId === 'string' && organizationId.trim().length > 0
+        ? organizationId.trim()
+        : undefined;
+    const conversationId = typeof source.conversationId === 'string' ? source.conversationId : '';
+    const mode = typeof source.mode === 'string' ? source.mode : '';
+    const model = typeof source.model === 'string' ? source.model : undefined;
+
     let messages: Array<{ role: string; content: string }> = [];
-    if (typeof req.query.messages === 'string') {
+    if (Array.isArray(source.messages)) {
+      messages = source.messages as Array<{ role: string; content: string }>;
+    } else if (typeof source.messages === 'string') {
       try {
-        messages = JSON.parse(req.query.messages);
+        messages = JSON.parse(source.messages);
       } catch {
         res.status(400).json({ message: 'Invalid messages payload.' });
         return;
       }
     }
 
-    let workflowRequest: unknown;
-    if (typeof req.query.workflowRequest === 'string') {
+    let workflowRequest: unknown = source.workflowRequest;
+    if (typeof workflowRequest === 'string') {
       try {
-        workflowRequest = JSON.parse(req.query.workflowRequest);
+        workflowRequest = JSON.parse(workflowRequest);
       } catch {
         res.status(400).json({ message: 'Invalid workflowRequest payload.' });
         return;
       }
     }
 
-    let agencyRequest: unknown;
-    if (typeof req.query.agencyRequest === 'string') {
+    let agencyRequest: unknown = source.agencyRequest;
+    if (typeof agencyRequest === 'string') {
       try {
-        agencyRequest = JSON.parse(req.query.agencyRequest);
+        agencyRequest = JSON.parse(agencyRequest);
       } catch {
         res.status(400).json({ message: 'Invalid agencyRequest payload.' });
         return;
       }
     }
 
-    let userApiKeys: Record<string, string> | undefined;
-    if (typeof req.query.apiKeys === 'string') {
+    let memoryControl: unknown = source.memoryControl;
+    if (typeof memoryControl === 'string') {
       try {
-        const parsed = JSON.parse(req.query.apiKeys);
+        memoryControl = JSON.parse(memoryControl);
+      } catch {
+        res.status(400).json({ message: 'Invalid memoryControl payload.' });
+        return;
+      }
+    }
+
+    let userApiKeys: Record<string, string> | undefined;
+    if (typeof source.apiKeys === 'string') {
+      try {
+        const parsed = JSON.parse(source.apiKeys);
         if (parsed && typeof parsed === 'object') {
           userApiKeys = parsed as Record<string, string>;
         }
@@ -60,21 +99,103 @@ export const createAgentOSStreamRouter = (integration: AgentOSStreamIntegration)
         res.status(400).json({ message: 'Invalid apiKeys payload.' });
         return;
       }
+    } else if (source.apiKeys && typeof source.apiKeys === 'object') {
+      userApiKeys = source.apiKeys as Record<string, string>;
     }
 
-    if (!userId || !conversationId || !mode || !Array.isArray(messages)) {
+    const longTermMemory = (memoryControl as any)?.longTermMemory ?? null;
+    const scopes = longTermMemory?.scopes ?? {};
+    const wantsUserScope = Boolean((scopes as any)?.user);
+    const wantsPersonaScope = Boolean((scopes as any)?.persona);
+    const wantsOrgRead = Boolean((scopes as any)?.organization);
+    const wantsOrgWrite = Boolean(longTermMemory?.shareWithOrganization);
+    const wantsOrgScope = wantsOrgRead || wantsOrgWrite;
+    const wantsAnyPrivilegedScope = wantsUserScope || wantsPersonaScope || wantsOrgScope;
+
+    if ((orgId || wantsAnyPrivilegedScope) && !isAuthenticated) {
+      res.status(401).json({
+        message: 'Authentication required for organization/user/persona scoped memory.',
+        error: 'AUTH_REQUIRED',
+      });
+      return;
+    }
+
+    if (wantsOrgScope && !orgId) {
+      res.status(400).json({
+        message: 'organizationId is required when enabling organization-scoped memory.',
+        error: 'ORGANIZATION_ID_REQUIRED',
+      });
+      return;
+    }
+
+    if (orgId) {
+      try {
+        await requireActiveOrganizationMember(orgId, effectiveUserId);
+        if (wantsOrgWrite) {
+          await requireOrganizationRole(orgId, effectiveUserId, 'admin');
+        }
+      } catch (error: any) {
+        if (error instanceof OrganizationAuthzError) {
+          res.status(error.status).json({ message: error.message, error: error.code });
+          return;
+        }
+        throw error;
+      }
+    }
+
+    const orgMemorySettings = orgId
+      ? resolveOrganizationMemorySettings(await getOrganizationSettings(orgId))
+      : null;
+
+    if (orgId && orgMemorySettings && !orgMemorySettings.enabled && wantsOrgScope) {
+      res.status(403).json({
+        message: 'Organization-scoped memory is disabled for this organization.',
+        error: 'ORG_MEMORY_DISABLED',
+      });
+      return;
+    }
+
+    if (orgId && orgMemorySettings && wantsOrgWrite && !orgMemorySettings.allowWrites) {
+      res.status(403).json({
+        message: 'Organization-scoped memory publishing is disabled for this organization.',
+        error: 'ORG_MEMORY_WRITES_DISABLED',
+      });
+      return;
+    }
+
+    if (!conversationId || !mode) {
       res.status(400).json({ message: 'Missing agentOS streaming payload fields.' });
       return;
     }
 
-    const lastUserMessage = [...messages].reverse().find((msg) => msg.role === 'user')?.content ?? null;
+    const explicitTextInput =
+      typeof source.textInput === 'string' && source.textInput.trim().length > 0
+        ? source.textInput
+        : null;
+    const lastUserMessage =
+      explicitTextInput ??
+      [...messages].reverse().find((msg) => msg.role === 'user')?.content ??
+      null;
 
     const agentosInput: AgentOSInput = {
-      userId,
+      userId: effectiveUserId,
+      organizationId:
+        typeof organizationId === 'string' && organizationId.trim().length > 0
+          ? organizationId.trim()
+          : undefined,
       sessionId: conversationId,
       conversationId,
       selectedPersonaId: mode,
       textInput: lastUserMessage ?? null,
+      memoryControl: applyLongTermMemoryDefaults({
+        memoryControl,
+        organizationId: orgId ?? null,
+        defaultOrganizationScope: Boolean(
+          orgId && orgMemorySettings?.enabled && orgMemorySettings?.defaultRetrievalEnabled
+        ),
+        defaultUserScope: isAuthenticated,
+        defaultPersonaScope: isAuthenticated,
+      }),
       options: {
         streamUICommands: true,
       },
@@ -92,7 +213,10 @@ export const createAgentOSStreamRouter = (integration: AgentOSStreamIntegration)
     }
 
     if (typeof model === 'string' && model.trim().length > 0) {
-      (agentosInput as any).options = { ...((agentosInput as any).options || {}), overrideModelId: model };
+      (agentosInput as any).options = {
+        ...((agentosInput as any).options || {}),
+        overrideModelId: model,
+      };
     }
 
     res.setHeader('Content-Type', 'text/event-stream');
@@ -105,11 +229,16 @@ export const createAgentOSStreamRouter = (integration: AgentOSStreamIntegration)
 
     try {
       await integration.processThroughAgentOSStream(agentosInput, async (chunk: any) => {
-        if (chunk?.type === 'text_delta' && typeof chunk.textDelta === 'string' && chunk.textDelta.trim().length > 0) {
+        if (
+          chunk?.type === 'text_delta' &&
+          typeof chunk.textDelta === 'string' &&
+          chunk.textDelta.trim().length > 0
+        ) {
           emittedText = true;
         } else if (chunk?.type === 'final_response') {
-          const text = (typeof chunk.finalResponseText === 'string' ? chunk.finalResponseText : '')
-            || (typeof chunk.content === 'string' ? chunk.content : '');
+          const text =
+            (typeof chunk.finalResponseText === 'string' ? chunk.finalResponseText : '') ||
+            (typeof chunk.content === 'string' ? chunk.content : '');
           if (text.trim().length > 0) emittedText = true;
         }
         res.write('data: ' + JSON.stringify(chunk) + '\n\n');
@@ -123,10 +252,20 @@ export const createAgentOSStreamRouter = (integration: AgentOSStreamIntegration)
         // Fallback to a single-shot chat response (real LLM if configured)
         try {
           const result = await processAgentOSChatRequest({
-            userId,
+            userId: effectiveUserId,
+            organizationId,
             conversationId,
             mode,
             messages,
+            memoryControl: applyLongTermMemoryDefaults({
+              memoryControl,
+              organizationId: orgId ?? null,
+              defaultOrganizationScope: Boolean(
+                orgId && orgMemorySettings?.enabled && orgMemorySettings?.defaultRetrievalEnabled
+              ),
+              defaultUserScope: isAuthenticated,
+              defaultPersonaScope: isAuthenticated,
+            }),
           });
           const fallbackChunk: any = {
             type: 'final_response',
@@ -136,6 +275,7 @@ export const createAgentOSStreamRouter = (integration: AgentOSStreamIntegration)
             isFinal: true,
             timestamp: new Date().toISOString(),
             finalResponseText: result.content || '',
+            finalResponseTextPlain: result.contentPlain || '',
             usage: result.usage
               ? {
                   promptTokens: (result.usage as any).prompt_tokens ?? 0,
@@ -148,7 +288,10 @@ export const createAgentOSStreamRouter = (integration: AgentOSStreamIntegration)
           res.write('data: ' + JSON.stringify(fallbackChunk) + '\n\n');
         } catch (fallbackError: any) {
           // Log the actual error
-          console.warn('[AgentOS Stream] Fallback chat request failed:', fallbackError.message || fallbackError);
+          console.warn(
+            '[AgentOS Stream] Fallback chat request failed:',
+            fallbackError.message || fallbackError
+          );
           // Send error response with helpful message
           const errorChunk = {
             type: 'final_response',
@@ -166,11 +309,17 @@ export const createAgentOSStreamRouter = (integration: AgentOSStreamIntegration)
       res.write('event: done\ndata: {}\n\n');
       res.end();
     } catch (error: any) {
-      res.write('event: error\ndata: ' + JSON.stringify({ message: error?.message ?? 'AgentOS error' }) + '\n\n');
+      res.write(
+        'event: error\ndata: ' +
+          JSON.stringify({ message: error?.message ?? 'AgentOS error' }) +
+          '\n\n'
+      );
       res.end();
     }
-  });
+  };
+
+  router.get('/stream', handleStreamRequest);
+  router.post('/stream', handleStreamRequest);
 
   return router;
 };
-

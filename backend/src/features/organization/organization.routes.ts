@@ -9,8 +9,10 @@ import {
   acceptOrganizationInvite,
   createOrganizationForUser,
   getOrganizationsForUser,
+  getOrganizationSettingsForUser,
   inviteUserToOrganization,
   OrganizationServiceError,
+  patchOrganizationSettingsForUser,
   removeOrganizationMember,
   revokeOrganizationInvite,
   updateOrganizationDetails,
@@ -106,7 +108,11 @@ export const deleteInvite = async (req: Request, res: Response): Promise<void> =
     return;
   }
   try {
-    const summary = await revokeOrganizationInvite(req.params.organizationId, req.params.inviteId, userId);
+    const summary = await revokeOrganizationInvite(
+      req.params.organizationId,
+      req.params.inviteId,
+      userId
+    );
     res.status(200).json({ organization: summary });
   } catch (error) {
     handleServiceError(res, error);
@@ -120,11 +126,16 @@ export const patchMember = async (req: Request, res: Response): Promise<void> =>
     return;
   }
   try {
-    const summary = await updateOrganizationMember(req.params.organizationId, req.params.memberId, userId, {
-      role: req.body?.role,
-      dailyUsageCapUsd: req.body?.dailyUsageCapUsd,
-      seatUnits: req.body?.seatUnits,
-    });
+    const summary = await updateOrganizationMember(
+      req.params.organizationId,
+      req.params.memberId,
+      userId,
+      {
+        role: req.body?.role,
+        dailyUsageCapUsd: req.body?.dailyUsageCapUsd,
+        seatUnits: req.body?.seatUnits,
+      }
+    );
     res.status(200).json({ organization: summary });
   } catch (error) {
     handleServiceError(res, error);
@@ -138,7 +149,11 @@ export const deleteMember = async (req: Request, res: Response): Promise<void> =
     return;
   }
   try {
-    const result = await removeOrganizationMember(req.params.organizationId, req.params.memberId, userId);
+    const result = await removeOrganizationMember(
+      req.params.organizationId,
+      req.params.memberId,
+      userId
+    );
     res.status(200).json(result);
   } catch (error) {
     handleServiceError(res, error);
@@ -153,6 +168,38 @@ export const postAcceptInvite = async (req: Request, res: Response): Promise<voi
   }
   try {
     const result = await acceptOrganizationInvite(req.params.token, userId);
+    res.status(200).json(result);
+  } catch (error) {
+    handleServiceError(res, error);
+  }
+};
+
+export const getOrganizationSettings = async (req: Request, res: Response): Promise<void> => {
+  const userId = getSessionUserId(req);
+  if (!userId) {
+    res.status(401).json({ message: 'Authentication required.', code: 'NOT_AUTHENTICATED' });
+    return;
+  }
+  try {
+    const result = await getOrganizationSettingsForUser(req.params.organizationId, userId);
+    res.status(200).json(result);
+  } catch (error) {
+    handleServiceError(res, error);
+  }
+};
+
+export const patchOrganizationSettings = async (req: Request, res: Response): Promise<void> => {
+  const userId = getSessionUserId(req);
+  if (!userId) {
+    res.status(401).json({ message: 'Authentication required.', code: 'NOT_AUTHENTICATED' });
+    return;
+  }
+  try {
+    const result = await patchOrganizationSettingsForUser(
+      req.params.organizationId,
+      userId,
+      req.body
+    );
     res.status(200).json(result);
   } catch (error) {
     handleServiceError(res, error);

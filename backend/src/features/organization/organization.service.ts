@@ -17,6 +17,7 @@ import {
   findMemberByUser,
   findOrganizationById,
   findPendingInviteByEmail,
+  getOrganizationSettings,
   listOrganizationInvites,
   listOrganizationMembers,
   listOrganizationsForUser,
@@ -31,7 +32,14 @@ import {
   updateInvite,
   updateMember,
   updateOrganization,
+  updateOrganizationSettings,
 } from './organization.repository.js';
+import {
+  mergeOrganizationSettings,
+  resolveOrganizationMemorySettings,
+  type OrganizationSettings,
+  type ResolvedOrganizationMemorySettings,
+} from './organization.settings.js';
 
 export class OrganizationServiceError extends Error {
   code: string;
@@ -95,6 +103,12 @@ export interface OrganizationSummary {
   invites: OrganizationInviteSummary[];
 }
 
+export interface OrganizationSettingsSummary {
+  organizationId: string;
+  settings: OrganizationSettings;
+  resolvedMemory: ResolvedOrganizationMemorySettings;
+}
+
 const normalizeEmail = (email: string): string => email.trim().toLowerCase();
 
 const getOrganizationOrThrow = async (organizationId: string): Promise<OrganizationRecord> => {
@@ -105,18 +119,32 @@ const getOrganizationOrThrow = async (organizationId: string): Promise<Organizat
   return organization;
 };
 
-const ensureMembership = async (organizationId: string, userId: string): Promise<OrganizationMemberRecord> => {
+const ensureMembership = async (
+  organizationId: string,
+  userId: string
+): Promise<OrganizationMemberRecord> => {
   const member = await findMemberByUser(organizationId, userId);
   if (!member || member.status !== 'active') {
-    throw new OrganizationServiceError('NOT_MEMBER', 'You are not a member of this organization.', 403);
+    throw new OrganizationServiceError(
+      'NOT_MEMBER',
+      'You are not a member of this organization.',
+      403
+    );
   }
   return member;
 };
 
-const ensureAdminAccess = async (organizationId: string, userId: string): Promise<OrganizationMemberRecord> => {
+const ensureAdminAccess = async (
+  organizationId: string,
+  userId: string
+): Promise<OrganizationMemberRecord> => {
   const membership = await ensureMembership(organizationId, userId);
   if (membership.role !== 'admin') {
-    throw new OrganizationServiceError('NOT_AUTHORIZED', 'Admin privileges are required for this action.', 403);
+    throw new OrganizationServiceError(
+      'NOT_AUTHORIZED',
+      'Admin privileges are required for this action.',
+      403
+    );
   }
   return membership;
 };
@@ -124,7 +152,7 @@ const ensureAdminAccess = async (organizationId: string, userId: string): Promis
 const ensureSeatCapacity = async (
   organization: OrganizationRecord,
   seatsNeeded: number,
-  options: { pendingAdjustment?: number } = {},
+  options: { pendingAdjustment?: number } = {}
 ): Promise<{ activeSeats: number; pendingInvites: number }> => {
   const [activeSeats, pendingInvitesRaw] = await Promise.all([
     countActiveSeatUnits(organization.id),
@@ -136,13 +164,16 @@ const ensureSeatCapacity = async (
     throw new OrganizationServiceError(
       'SEAT_LIMIT_EXCEEDED',
       `Seat cap of ${organization.seatLimit} would be exceeded (projected ${projected}).`,
-      409,
+      409
     );
   }
   return { activeSeats, pendingInvites: adjustedPending };
 };
 
-const toMemberSummary = (member: OrganizationMemberRecord, viewerId: string): OrganizationMemberSummary => ({
+const toMemberSummary = (
+  member: OrganizationMemberRecord,
+  viewerId: string
+): OrganizationMemberSummary => ({
   id: member.id,
   userId: member.userId,
   email: member.userEmail ?? null,
@@ -158,9 +189,10 @@ const toMemberSummary = (member: OrganizationMemberRecord, viewerId: string): Or
 const buildOrganizationSummary = async (
   organization: OrganizationRecord,
   viewerUserId: string,
-  membershipOverride?: OrganizationMemberRecord | null,
+  membershipOverride?: OrganizationMemberRecord | null
 ): Promise<OrganizationSummary> => {
-  const viewerMembership = membershipOverride ?? (await findMemberByUser(organization.id, viewerUserId)) ?? null;
+  const viewerMembership =
+    membershipOverride ?? (await findMemberByUser(organization.id, viewerUserId)) ?? null;
   const viewerIsAdmin = viewerMembership?.role === 'admin';
 
   const [members, invites, activeSeats, pendingInvites] = await Promise.all([
@@ -229,9 +261,9 @@ export const getOrganizationsForUser = async (userId: string): Promise<Organizat
           updatedAt: organization.updatedAt,
         },
         userId,
-        membership,
+        membership
       );
-    }),
+    })
   );
 };
 
@@ -240,7 +272,7 @@ export const getOrganizationsForUser = async (userId: string): Promise<Organizat
  */
 export const createOrganizationForUser = async (
   ownerUserId: string,
-  input: { name: string; seatLimit?: number; planId?: string; slug?: string | null },
+  input: { name: string; seatLimit?: number; planId?: string; slug?: string | null }
 ): Promise<OrganizationSummary> => {
   const normalizedName = input.name?.trim();
   if (!normalizedName) {
@@ -272,29 +304,86 @@ export const createOrganizationForUser = async (
 };
 
 /**
+ * Returns organization-level settings (memory, access controls, etc.) for members.
+ */
+export const getOrganizationSettingsForUser = async (
+  organizationId: string,
+  actingUserId: string
+): Promise<OrganizationSettingsSummary> => {
+  await getOrganizationOrThrow(organizationId);
+  await ensureMembership(organizationId, actingUserId);
+
+  const settings = (await getOrganizationSettings(organizationId)) ?? {};
+  return {
+    organizationId,
+    settings,
+    resolvedMemory: resolveOrganizationMemorySettings(settings),
+  };
+};
+
+/**
+ * Updates organization-level settings. Admin-only.
+ */
+export const patchOrganizationSettingsForUser = async (
+  organizationId: string,
+  actingUserId: string,
+  patch: unknown
+): Promise<OrganizationSettingsSummary> => {
+  await getOrganizationOrThrow(organizationId);
+  await ensureAdminAccess(organizationId, actingUserId);
+
+  const current = (await getOrganizationSettings(organizationId)) ?? {};
+  const merged = mergeOrganizationSettings(current, patch);
+
+  // Normalise / validate memory settings (drops unknown categories, etc.).
+  const resolvedMemory = resolveOrganizationMemorySettings(merged);
+  merged.memory ??= {};
+  merged.memory.longTermMemory ??= {};
+  if (resolvedMemory.allowedCategories === null) {
+    delete merged.memory.longTermMemory.allowedCategories;
+  } else {
+    merged.memory.longTermMemory.allowedCategories = resolvedMemory.allowedCategories;
+  }
+
+  await updateOrganizationSettings(organizationId, merged);
+
+  return {
+    organizationId,
+    settings: merged,
+    resolvedMemory,
+  };
+};
+
+/**
  * Updates organization attributes (name, seat limit) when performed by an admin.
  */
 export const updateOrganizationDetails = async (
   organizationId: string,
   actingUserId: string,
-  updates: { name?: string; seatLimit?: number },
+  updates: { name?: string; seatLimit?: number }
 ): Promise<OrganizationSummary> => {
   const organization = await getOrganizationOrThrow(organizationId);
   const adminMembership = await ensureAdminAccess(organizationId, actingUserId);
 
   const seatLimit =
-    updates.seatLimit === undefined || updates.seatLimit === null ? undefined : Number(updates.seatLimit);
+    updates.seatLimit === undefined || updates.seatLimit === null
+      ? undefined
+      : Number(updates.seatLimit);
 
   if (seatLimit !== undefined) {
     if (!Number.isFinite(seatLimit) || seatLimit < 1) {
-      throw new OrganizationServiceError('INVALID_SEAT_LIMIT', 'Seat limit must be at least 1.', 400);
+      throw new OrganizationServiceError(
+        'INVALID_SEAT_LIMIT',
+        'Seat limit must be at least 1.',
+        400
+      );
     }
     const activeSeats = await countActiveSeatUnits(organizationId);
     if (seatLimit < activeSeats) {
       throw new OrganizationServiceError(
         'SEAT_LIMIT_TOO_LOW',
         `Seat limit cannot be lower than the ${activeSeats} active seats.`,
-        409,
+        409
       );
     }
   }
@@ -317,7 +406,7 @@ export const updateOrganizationDetails = async (
 export const inviteUserToOrganization = async (
   organizationId: string,
   inviterUserId: string,
-  input: { email: string; role?: OrganizationRole; expiresAt?: number | null },
+  input: { email: string; role?: OrganizationRole; expiresAt?: number | null }
 ): Promise<{ organization: OrganizationSummary; invite: OrganizationInviteRecord }> => {
   const organization = await getOrganizationOrThrow(organizationId);
   const adminMembership = await ensureAdminAccess(organizationId, inviterUserId);
@@ -332,14 +421,20 @@ export const inviteUserToOrganization = async (
     throw new OrganizationServiceError(
       'INVITE_ALREADY_EXISTS',
       'An invite for this email address is already pending.',
-      409,
+      409
     );
   }
 
   const members = await listOrganizationMembers(organizationId);
-  const existingMember = members.find((member) => member.userEmail?.toLowerCase() === normalizedEmail);
+  const existingMember = members.find(
+    (member) => member.userEmail?.toLowerCase() === normalizedEmail
+  );
   if (existingMember) {
-    throw new OrganizationServiceError('ALREADY_MEMBER', 'This user is already part of the organization.', 409);
+    throw new OrganizationServiceError(
+      'ALREADY_MEMBER',
+      'This user is already part of the organization.',
+      409
+    );
   }
 
   await ensureSeatCapacity(organization, 1);
@@ -363,7 +458,7 @@ export const inviteUserToOrganization = async (
 export const revokeOrganizationInvite = async (
   organizationId: string,
   inviteId: string,
-  actingUserId: string,
+  actingUserId: string
 ): Promise<OrganizationSummary> => {
   const organization = await getOrganizationOrThrow(organizationId);
   const adminMembership = await ensureAdminAccess(organizationId, actingUserId);
@@ -373,7 +468,11 @@ export const revokeOrganizationInvite = async (
   }
 
   if (invite.status !== 'pending') {
-    throw new OrganizationServiceError('INVITE_NOT_PENDING', 'Only pending invites can be revoked.', 409);
+    throw new OrganizationServiceError(
+      'INVITE_NOT_PENDING',
+      'Only pending invites can be revoked.',
+      409
+    );
   }
 
   await updateInvite(inviteId, { status: 'revoked', revokedAt: Date.now() });
@@ -389,7 +488,7 @@ export const updateOrganizationMember = async (
   organizationId: string,
   memberId: string,
   actingUserId: string,
-  updates: { role?: OrganizationRole; dailyUsageCapUsd?: number | null; seatUnits?: number },
+  updates: { role?: OrganizationRole; dailyUsageCapUsd?: number | null; seatUnits?: number }
 ): Promise<OrganizationSummary> => {
   const organization = await getOrganizationOrThrow(organizationId);
   const actingMembership = await ensureMembership(organizationId, actingUserId);
@@ -403,26 +502,44 @@ export const updateOrganizationMember = async (
   const actingIsAdmin = actingMembership.role === 'admin';
 
   if (!actingIsAdmin && !isSelf) {
-    throw new OrganizationServiceError('NOT_AUTHORIZED', 'You are not permitted to modify this member.', 403);
+    throw new OrganizationServiceError(
+      'NOT_AUTHORIZED',
+      'You are not permitted to modify this member.',
+      403
+    );
   }
 
   if (updates.role && !actingIsAdmin) {
-    throw new OrganizationServiceError('NOT_AUTHORIZED', 'Only admins can change member roles.', 403);
+    throw new OrganizationServiceError(
+      'NOT_AUTHORIZED',
+      'Only admins can change member roles.',
+      403
+    );
   }
 
   if (updates.role && targetMember.role === 'admin' && updates.role !== 'admin') {
     const adminCount = await countActiveAdmins(organizationId);
     if (adminCount <= 1) {
-      throw new OrganizationServiceError('LAST_ADMIN', 'At least one active admin must remain.', 409);
+      throw new OrganizationServiceError(
+        'LAST_ADMIN',
+        'At least one active admin must remain.',
+        409
+      );
     }
   }
 
   const seatUnits =
-    updates.seatUnits === undefined || updates.seatUnits === null ? undefined : Number(updates.seatUnits);
+    updates.seatUnits === undefined || updates.seatUnits === null
+      ? undefined
+      : Number(updates.seatUnits);
 
   if (seatUnits !== undefined) {
     if (!Number.isFinite(seatUnits) || seatUnits < 1) {
-      throw new OrganizationServiceError('INVALID_SEAT_UNITS', 'Seat allocation must be at least 1.', 400);
+      throw new OrganizationServiceError(
+        'INVALID_SEAT_UNITS',
+        'Seat allocation must be at least 1.',
+        400
+      );
     }
     if (targetMember.status === 'active') {
       const activeSeats = await countActiveSeatUnits(organizationId);
@@ -431,7 +548,7 @@ export const updateOrganizationMember = async (
         throw new OrganizationServiceError(
           'SEAT_LIMIT_EXCEEDED',
           `Increasing seats would exceed the organization cap of ${organization.seatLimit}.`,
-          409,
+          409
         );
       }
     }
@@ -448,7 +565,7 @@ export const updateOrganizationMember = async (
     throw new OrganizationServiceError(
       'INVALID_USAGE_CAP',
       'dailyUsageCapUsd must be a numeric value or null.',
-      400,
+      400
     );
   }
 
@@ -470,7 +587,7 @@ export const updateOrganizationMember = async (
   return buildOrganizationSummary(
     refreshedOrg,
     actingUserId,
-    actingIsAdmin ? actingMembership : updatedMember ?? actingMembership,
+    actingIsAdmin ? actingMembership : (updatedMember ?? actingMembership)
   );
 };
 
@@ -480,7 +597,7 @@ export const updateOrganizationMember = async (
 export const removeOrganizationMember = async (
   organizationId: string,
   memberId: string,
-  actingUserId: string,
+  actingUserId: string
 ): Promise<{ organization: OrganizationSummary | null }> => {
   const organization = await getOrganizationOrThrow(organizationId);
   const actingMembership = await findMemberByUser(organizationId, actingUserId);
@@ -494,13 +611,21 @@ export const removeOrganizationMember = async (
   const actingIsAdmin = actingMembership?.role === 'admin';
 
   if (!removingSelf && !actingIsAdmin) {
-    throw new OrganizationServiceError('NOT_AUTHORIZED', 'Only admins can remove other members.', 403);
+    throw new OrganizationServiceError(
+      'NOT_AUTHORIZED',
+      'Only admins can remove other members.',
+      403
+    );
   }
 
   if (targetMember.role === 'admin') {
     const adminCount = await countActiveAdmins(organizationId);
     if (adminCount <= 1) {
-      throw new OrganizationServiceError('LAST_ADMIN', 'Organization must retain at least one active admin.', 409);
+      throw new OrganizationServiceError(
+        'LAST_ADMIN',
+        'Organization must retain at least one active admin.',
+        409
+      );
     }
   }
 
@@ -512,7 +637,11 @@ export const removeOrganizationMember = async (
 
   const refreshedOrg = await getOrganizationOrThrow(organizationId);
   return {
-    organization: await buildOrganizationSummary(refreshedOrg, actingUserId, actingMembership ?? null),
+    organization: await buildOrganizationSummary(
+      refreshedOrg,
+      actingUserId,
+      actingMembership ?? null
+    ),
   };
 };
 
@@ -521,7 +650,7 @@ export const removeOrganizationMember = async (
  */
 export const acceptOrganizationInvite = async (
   token: string,
-  userId: string,
+  userId: string
 ): Promise<{ organization: OrganizationSummary; invite: OrganizationInviteRecord }> => {
   const invite = await findInviteByToken(token);
   if (!invite) {

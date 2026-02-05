@@ -24,6 +24,9 @@
     ],
     "@typescript-eslint/no-empty-function": "off",
     "@typescript-eslint/no-require-imports": "off",
+    "@typescript-eslint/no-empty-object-type": "warn",
+    "@typescript-eslint/ban-ts-comment": "warn",
+    "no-useless-escape": "warn",
     "no-console": ["warn", { "allow": ["warn", "error", "info"] }],
     "prefer-const": "warn",
     "no-var": "error"

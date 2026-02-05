@@ -61,6 +61,12 @@ export interface IStoredConversationTurn {
 export interface IMemoryRetrievalOptions {
   /** Maximum number of turns to retrieve. */
   limit?: number;
+  /**
+   * When `limit` is set, control which edge of the conversation to fetch.
+   * - `true` (default): fetch the most recent turns.
+   * - `false`: fetch the oldest turns matching the filters.
+   */
+  fetchMostRecent?: boolean;
   /** Retrieve turns before this timestamp (milliseconds epoch). */
   beforeTimestamp?: number;
   /** Retrieve turns after this timestamp (milliseconds epoch). */
@@ -99,7 +105,11 @@ export interface IMemoryAdapter {
    * @returns {Promise<string>} A promise that resolves to the storageId of the stored turn.
    * @throws {Error} If storing the turn fails.
    */
-  storeConversationTurn(userId: string, conversationId: string, turnData: Omit<IStoredConversationTurn, 'storageId' | 'conversationId'>): Promise<string>;
+  storeConversationTurn(
+    userId: string,
+    conversationId: string,
+    turnData: Omit<IStoredConversationTurn, 'storageId' | 'conversationId'>
+  ): Promise<string>;
 
   /**
    * Retrieves conversation turns for a given user and conversation ID.
@@ -110,7 +120,11 @@ export interface IMemoryAdapter {
    * @param {IMemoryRetrievalOptions} [options] - Optional filtering and retrieval options.
    * @returns {Promise<IStoredConversationTurn[]>} A promise that resolves to an array of stored turns.
    */
-  retrieveConversationTurns(userId: string, conversationId: string, options?: IMemoryRetrievalOptions): Promise<IStoredConversationTurn[]>;
+  retrieveConversationTurns(
+    userId: string,
+    conversationId: string,
+    options?: IMemoryRetrievalOptions
+  ): Promise<IStoredConversationTurn[]>;
 
   /**
    * Retrieves all conversation sessions for a user.
@@ -120,7 +134,20 @@ export interface IMemoryAdapter {
    * @param {number} [offset=0] - Offset for pagination.
    * @returns {Promise<Array<{ conversationId: string; lastActivity: number; agentId?: string; summary?: string; turnCount?: number }>>}
    */
-  listUserConversations(userId: string, limit?: number, offset?: number): Promise<Array<{ conversationId: string; lastActivity: number; agentId?: string; summary?: string; turnCount?: number; persona?: string | null }>>;
+  listUserConversations(
+    userId: string,
+    limit?: number,
+    offset?: number
+  ): Promise<
+    Array<{
+      conversationId: string;
+      lastActivity: number;
+      agentId?: string;
+      summary?: string;
+      turnCount?: number;
+      persona?: string | null;
+    }>
+  >;
 
   /**
    * Stores or clears a custom persona override for a conversation.
@@ -135,7 +162,7 @@ export interface IMemoryAdapter {
     conversationId: string,
     agentId: string,
     persona: string | null,
-    timestamp?: number,
+    timestamp?: number
   ): Promise<void>;
 
   /**
@@ -146,7 +173,6 @@ export interface IMemoryAdapter {
    */
   getConversationPersona(userId: string, conversationId: string): Promise<string | null>;
 
-  
   /**
    * (Optional / Future) Generates or updates a summary for a given conversation or a segment of it.
    * @async
@@ -155,7 +181,11 @@ export interface IMemoryAdapter {
    * @param {string} [segmentId] - Optional ID of a specific segment within the conversation to summarize.
    * @returns {Promise<string>} A promise that resolves to the generated summary.
    */
-  summarizeConversation?(userId: string, conversationId: string, segmentId?: string): Promise<string>;
+  summarizeConversation?(
+    userId: string,
+    conversationId: string,
+    segmentId?: string
+  ): Promise<string>;
 
   /**
    * (Optional / Future) Deletes a conversation and all its turns.
@@ -183,21 +213,28 @@ export interface IMemoryAdapter {
    * @param {number} [limit=10] - Max number of results to return.
    * @returns {Promise<IStoredConversationTurn[]>} Relevant conversation turns.
    */
-  searchHistory?(userId: string, searchQuery: string, limit?: number): Promise<IStoredConversationTurn[]>;
+  searchHistory?(
+    userId: string,
+    searchQuery: string,
+    limit?: number
+  ): Promise<IStoredConversationTurn[]>;
 
   /**
-  * Prunes old or less relevant conversation turns for a user to manage storage.
-  * @async
-  * @param {string} userId - The user ID whose history needs pruning.
-  * @param {object} [criteria] - Optional criteria for pruning.
-  * @returns {Promise<{ prunedTurnsCount: number; remainingTurnsCount: number }>}
-  */
-  pruneHistory(userId: string, criteria?: Record<string, any>): Promise<{ prunedTurnsCount: number; remainingTurnsCount: number }>;
+   * Prunes old or less relevant conversation turns for a user to manage storage.
+   * @async
+   * @param {string} userId - The user ID whose history needs pruning.
+   * @param {object} [criteria] - Optional criteria for pruning.
+   * @returns {Promise<{ prunedTurnsCount: number; remainingTurnsCount: number }>}
+   */
+  pruneHistory(
+    userId: string,
+    criteria?: Record<string, any>
+  ): Promise<{ prunedTurnsCount: number; remainingTurnsCount: number }>;
 
   /**
-  * Closes the connection to the memory store.
-  * @async
-  * @returns {Promise<void>}
-  */
+   * Closes the connection to the memory store.
+   * @async
+   * @returns {Promise<void>}
+   */
   disconnect(): Promise<void>;
 }

@@ -5,6 +5,7 @@
  */
 
 import { getAppDatabase, generateId } from '../../core/database/appDatabase.js';
+import type { OrganizationSettings } from './organization.settings.js';
 
 export type OrganizationRole = 'admin' | 'builder' | 'viewer';
 export type OrganizationMemberStatus = 'active' | 'invited' | 'suspended';
@@ -17,6 +18,7 @@ interface OrganizationRow {
   owner_user_id: string;
   seat_limit: number;
   plan_id: string;
+  settings_json?: string | null;
   created_at: number;
   updated_at: number;
 }
@@ -68,6 +70,10 @@ export interface OrganizationRecord {
   planId: string;
   createdAt: number;
   updatedAt: number;
+}
+
+interface OrganizationSettingsRow {
+  settings_json: string | null;
 }
 
 export interface OrganizationMemberRecord {
@@ -142,7 +148,9 @@ export interface OrganizationWithMembershipRecord extends OrganizationRecord {
 /**
  * Retrieves an organization by identifier.
  */
-export const findOrganizationById = async (organizationId: string): Promise<OrganizationRecord | null> => {
+export const findOrganizationById = async (
+  organizationId: string
+): Promise<OrganizationRecord | null> => {
   const db = getAppDatabase();
   const row = await db.get<OrganizationRow>(
     `
@@ -182,7 +190,7 @@ export const createOrganization = async (data: {
       plan_id: data.planId ?? 'organization',
       created_at: now,
       updated_at: now,
-    },
+    }
   );
 
   return (await findOrganizationById(id)) as OrganizationRecord;
@@ -193,7 +201,7 @@ export const createOrganization = async (data: {
  */
 export const updateOrganization = async (
   organizationId: string,
-  updates: { name?: string; slug?: string | null; seatLimit?: number; planId?: string | null },
+  updates: { name?: string; slug?: string | null; seatLimit?: number; planId?: string | null }
 ): Promise<OrganizationRecord | null> => {
   const db = getAppDatabase();
   const now = Date.now();
@@ -214,19 +222,75 @@ export const updateOrganization = async (
       seat_limit: updates.seatLimit ?? null,
       plan_id: updates.planId ?? null,
       updated_at: now,
-    },
+    }
   );
 
   return await findOrganizationById(organizationId);
 };
 
+function parseSettings(value: string | null): OrganizationSettings | null {
+  if (!value || typeof value !== 'string') return null;
+  try {
+    const parsed = JSON.parse(value) as unknown;
+    return parsed && typeof parsed === 'object' ? (parsed as OrganizationSettings) : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Returns the stored organization settings payload (or null if unset).
+ */
+export const getOrganizationSettings = async (
+  organizationId: string
+): Promise<OrganizationSettings | null> => {
+  const db = getAppDatabase();
+  const row = await db.get<OrganizationSettingsRow>(
+    `
+      SELECT settings_json
+      FROM organizations
+      WHERE id = ?
+      LIMIT 1
+    `,
+    [organizationId]
+  );
+  return row ? parseSettings(row.settings_json) : null;
+};
+
+/**
+ * Upserts organization settings JSON on the organizations row.
+ */
+export const updateOrganizationSettings = async (
+  organizationId: string,
+  settings: OrganizationSettings
+): Promise<void> => {
+  const db = getAppDatabase();
+  const now = Date.now();
+  await db.run(
+    `
+      UPDATE organizations
+         SET settings_json = @settings_json,
+             updated_at = @updated_at
+       WHERE id = @id
+    `,
+    {
+      id: organizationId,
+      settings_json: JSON.stringify(settings ?? {}),
+      updated_at: now,
+    }
+  );
+};
+
 /**
  * Lists organizations the user belongs to, including membership metadata.
  */
-export const listOrganizationsForUser = async (userId: string): Promise<OrganizationWithMembershipRecord[]> => {
+export const listOrganizationsForUser = async (
+  userId: string
+): Promise<OrganizationWithMembershipRecord[]> => {
   const db = getAppDatabase();
-  const rows = (await db.all<OrganizationWithMemberRow>(
-    `
+  const rows =
+    (await db.all<OrganizationWithMemberRow>(
+      `
       SELECT
         o.*,
         m.id as member_id,
@@ -241,8 +305,8 @@ export const listOrganizationsForUser = async (userId: string): Promise<Organiza
       WHERE m.user_id = ?
       ORDER BY o.created_at DESC
     `,
-    [userId]
-  )) ?? [];
+      [userId]
+    )) ?? [];
 
   return rows.map((row) => ({
     ...mapOrganization(row),
@@ -291,7 +355,7 @@ export const addMember = async (data: {
       daily_usage_cap_usd: data.dailyUsageCapUsd ?? null,
       created_at: now,
       updated_at: now,
-    },
+    }
   );
 
   return (await findMemberById(id)) as OrganizationMemberRecord;
@@ -300,7 +364,9 @@ export const addMember = async (data: {
 /**
  * Retrieves a member by primary key.
  */
-export const findMemberById = async (memberId: string): Promise<OrganizationMemberRecord | null> => {
+export const findMemberById = async (
+  memberId: string
+): Promise<OrganizationMemberRecord | null> => {
   const db = getAppDatabase();
   const row = await db.get<OrganizationMemberRow>(
     `
@@ -318,7 +384,10 @@ export const findMemberById = async (memberId: string): Promise<OrganizationMemb
 /**
  * Finds a membership record by organization and user pair.
  */
-export const findMemberByUser = async (organizationId: string, userId: string): Promise<OrganizationMemberRecord | null> => {
+export const findMemberByUser = async (
+  organizationId: string,
+  userId: string
+): Promise<OrganizationMemberRecord | null> => {
   const db = getAppDatabase();
   const row = await db.get<OrganizationMemberRow>(
     `
@@ -336,18 +405,21 @@ export const findMemberByUser = async (organizationId: string, userId: string): 
 /**
  * Lists all members for a given organization.
  */
-export const listOrganizationMembers = async (organizationId: string): Promise<OrganizationMemberRecord[]> => {
+export const listOrganizationMembers = async (
+  organizationId: string
+): Promise<OrganizationMemberRecord[]> => {
   const db = getAppDatabase();
-  const rows = (await db.all<OrganizationMemberRow>(
-    `
+  const rows =
+    (await db.all<OrganizationMemberRow>(
+      `
       SELECT m.*, u.email as user_email
       FROM organization_members m
       LEFT JOIN app_users u ON u.id = m.user_id
       WHERE m.organization_id = ?
       ORDER BY m.created_at ASC
     `,
-    [organizationId]
-  )) ?? [];
+      [organizationId]
+    )) ?? [];
   return rows.map(mapMember);
 };
 
@@ -364,7 +436,12 @@ export const removeMember = async (memberId: string): Promise<void> => {
  */
 export const updateMember = async (
   memberId: string,
-  updates: { role?: OrganizationRole; status?: OrganizationMemberStatus; seatUnits?: number; dailyUsageCapUsd?: number | null },
+  updates: {
+    role?: OrganizationRole;
+    status?: OrganizationMemberStatus;
+    seatUnits?: number;
+    dailyUsageCapUsd?: number | null;
+  }
 ): Promise<OrganizationMemberRecord | null> => {
   const db = getAppDatabase();
   const now = Date.now();
@@ -385,7 +462,7 @@ export const updateMember = async (
       seat_units: updates.seatUnits ?? null,
       daily_usage_cap_usd: updates.dailyUsageCapUsd ?? null,
       updated_at: now,
-    },
+    }
   );
 
   return await findMemberById(memberId);
@@ -453,7 +530,7 @@ export const createInvite = async (data: {
       expires_at: data.expiresAt ?? null,
       inviter_user_id: data.inviterUserId,
       created_at: now,
-    },
+    }
   );
 
   return (await findInviteById(id)) as OrganizationInviteRecord;
@@ -462,7 +539,9 @@ export const createInvite = async (data: {
 /**
  * Fetches an invite by its primary key.
  */
-export const findInviteById = async (inviteId: string): Promise<OrganizationInviteRecord | null> => {
+export const findInviteById = async (
+  inviteId: string
+): Promise<OrganizationInviteRecord | null> => {
   const db = getAppDatabase();
   const row = await db.get<OrganizationInviteRow>(
     `
@@ -478,7 +557,9 @@ export const findInviteById = async (inviteId: string): Promise<OrganizationInvi
 /**
  * Retrieves an invite via its token.
  */
-export const findInviteByToken = async (token: string): Promise<OrganizationInviteRecord | null> => {
+export const findInviteByToken = async (
+  token: string
+): Promise<OrganizationInviteRecord | null> => {
   const db = getAppDatabase();
   const row = await db.get<OrganizationInviteRow>(
     `
@@ -494,7 +575,10 @@ export const findInviteByToken = async (token: string): Promise<OrganizationInvi
 /**
  * Gets a pending invite for a user email.
  */
-export const findPendingInviteByEmail = async (organizationId: string, email: string): Promise<OrganizationInviteRecord | null> => {
+export const findPendingInviteByEmail = async (
+  organizationId: string,
+  email: string
+): Promise<OrganizationInviteRecord | null> => {
   const db = getAppDatabase();
   const row = await db.get<OrganizationInviteRow>(
     `
@@ -510,16 +594,19 @@ export const findPendingInviteByEmail = async (organizationId: string, email: st
 /**
  * Lists invites for an organization.
  */
-export const listOrganizationInvites = async (organizationId: string): Promise<OrganizationInviteRecord[]> => {
+export const listOrganizationInvites = async (
+  organizationId: string
+): Promise<OrganizationInviteRecord[]> => {
   const db = getAppDatabase();
-  const rows = (await db.all<OrganizationInviteRow>(
-    `
+  const rows =
+    (await db.all<OrganizationInviteRow>(
+      `
       SELECT * FROM organization_invites
       WHERE organization_id = ?
       ORDER BY created_at DESC
     `,
-    [organizationId]
-  )) ?? [];
+      [organizationId]
+    )) ?? [];
   return rows.map(mapInvite);
 };
 
@@ -533,7 +620,7 @@ export const updateInvite = async (
     expiresAt?: number | null;
     acceptedAt?: number | null;
     revokedAt?: number | null;
-  },
+  }
 ): Promise<OrganizationInviteRecord | null> => {
   const db = getAppDatabase();
   await db.run(
@@ -551,7 +638,7 @@ export const updateInvite = async (
       expires_at: updates.expiresAt ?? null,
       accepted_at: updates.acceptedAt ?? null,
       revoked_at: updates.revokedAt ?? null,
-    },
+    }
   );
 
   return await findInviteById(inviteId);

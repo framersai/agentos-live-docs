@@ -28,6 +28,39 @@ export class SqliteMemoryAdapter implements IMemoryAdapter {
   private db: StorageAdapter | null = null;
   private isEnabled: boolean = SQLITE_MEMORY_ENABLED;
 
+  private async ensureConversationSummaryColumns(): Promise<void> {
+    if (!this.db) {
+      return;
+    }
+
+    try {
+      const columns = await this.db.all<{ name: string }>('PRAGMA table_info(conversations);');
+      const hasSummaryUptoColumn = columns.some(
+        (column) => column.name === 'summary_upto_timestamp'
+      );
+      const hasSummaryUpdatedAtColumn = columns.some(
+        (column) => column.name === 'summary_updated_at'
+      );
+
+      if (!hasSummaryUptoColumn) {
+        console.log(
+          '[SqliteMemoryAdapter] Adding missing summary_upto_timestamp column to conversations table.'
+        );
+        await this.db.exec('ALTER TABLE conversations ADD COLUMN summary_upto_timestamp INTEGER;');
+      }
+
+      if (!hasSummaryUpdatedAtColumn) {
+        console.log(
+          '[SqliteMemoryAdapter] Adding missing summary_updated_at column to conversations table.'
+        );
+        await this.db.exec('ALTER TABLE conversations ADD COLUMN summary_updated_at INTEGER;');
+      }
+    } catch (error) {
+      console.error('[SqliteMemoryAdapter] Failed to ensure summary columns exist:', error);
+      throw error;
+    }
+  }
+
   private async ensureConversationPersonaColumn(): Promise<void> {
     if (!this.db) {
       return;
@@ -35,8 +68,8 @@ export class SqliteMemoryAdapter implements IMemoryAdapter {
 
     try {
       const columns = await this.db.all<{ name: string }>('PRAGMA table_info(conversations);');
-      const hasPersonaColumn = columns.some(column => column.name === 'persona');
-      
+      const hasPersonaColumn = columns.some((column) => column.name === 'persona');
+
       if (!hasPersonaColumn) {
         console.log('[SqliteMemoryAdapter] Adding missing persona column to conversations table.');
         await this.db.exec('ALTER TABLE conversations ADD COLUMN persona TEXT;');
@@ -49,7 +82,9 @@ export class SqliteMemoryAdapter implements IMemoryAdapter {
 
   public async initialize(): Promise<void> {
     if (!this.isEnabled) {
-      console.log('[SqliteMemoryAdapter] SQLite memory is DISABLED via ENABLE_SQLITE_MEMORY environment variable.');
+      console.log(
+        '[SqliteMemoryAdapter] SQLite memory is DISABLED via ENABLE_SQLITE_MEMORY environment variable.'
+      );
       return;
     }
 
@@ -67,7 +102,7 @@ export class SqliteMemoryAdapter implements IMemoryAdapter {
 
       await this.db.open({ filePath: DB_PATH });
       console.log(`[SqliteMemoryAdapter] Connected using ${this.db.kind} adapter: ${DB_PATH}`);
-      
+
       // Create conversations table
       await this.db.exec(`
         CREATE TABLE IF NOT EXISTS conversations (
@@ -77,14 +112,21 @@ export class SqliteMemoryAdapter implements IMemoryAdapter {
           createdAt INTEGER NOT NULL,
           lastActivity INTEGER NOT NULL,
           summary TEXT,
+          summary_upto_timestamp INTEGER,
+          summary_updated_at INTEGER,
           title TEXT,
           persona TEXT
         );
       `);
-      
-      await this.db.exec('CREATE INDEX IF NOT EXISTS idx_conversations_user_activity ON conversations (userId, lastActivity);');
-      await this.db.exec('CREATE INDEX IF NOT EXISTS idx_conversations_user_id ON conversations (userId);');
+
+      await this.db.exec(
+        'CREATE INDEX IF NOT EXISTS idx_conversations_user_activity ON conversations (userId, lastActivity);'
+      );
+      await this.db.exec(
+        'CREATE INDEX IF NOT EXISTS idx_conversations_user_id ON conversations (userId);'
+      );
       await this.ensureConversationPersonaColumn();
+      await this.ensureConversationSummaryColumns();
 
       // Create conversation_turns table
       await this.db.exec(`
@@ -108,9 +150,15 @@ export class SqliteMemoryAdapter implements IMemoryAdapter {
         );
       `);
 
-      await this.db.exec('CREATE INDEX IF NOT EXISTS idx_turns_conversation ON conversation_turns (conversationId);');
-      await this.db.exec('CREATE INDEX IF NOT EXISTS idx_turns_timestamp ON conversation_turns (timestamp);');
-      await this.db.exec('CREATE INDEX IF NOT EXISTS idx_turns_user ON conversation_turns (userId);');
+      await this.db.exec(
+        'CREATE INDEX IF NOT EXISTS idx_turns_conversation ON conversation_turns (conversationId);'
+      );
+      await this.db.exec(
+        'CREATE INDEX IF NOT EXISTS idx_turns_timestamp ON conversation_turns (timestamp);'
+      );
+      await this.db.exec(
+        'CREATE INDEX IF NOT EXISTS idx_turns_user ON conversation_turns (userId);'
+      );
 
       console.log('[SqliteMemoryAdapter] Memory database initialized successfully');
     } catch (error) {
@@ -130,8 +178,16 @@ export class SqliteMemoryAdapter implements IMemoryAdapter {
 
     const storageId = uuidv4();
     const {
-      agentId, role, content, timestamp, model,
-      usage, tool_calls, tool_call_id, metadata, summary,
+      agentId,
+      role,
+      content,
+      timestamp,
+      model,
+      usage,
+      tool_calls,
+      tool_call_id,
+      metadata,
+      summary,
     } = turnData;
 
     try {
@@ -151,7 +207,13 @@ export class SqliteMemoryAdapter implements IMemoryAdapter {
           tool_calls, tool_call_id, metadata, summary
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
-          storageId, userId, conversationId, agentId, role, content, timestamp,
+          storageId,
+          userId,
+          conversationId,
+          agentId,
+          role,
+          content,
+          timestamp,
           model,
           usage?.prompt_tokens ?? null,
           usage?.completion_tokens ?? null,
@@ -159,7 +221,7 @@ export class SqliteMemoryAdapter implements IMemoryAdapter {
           tool_calls ? JSON.stringify(tool_calls) : null,
           tool_call_id,
           metadata ? JSON.stringify(metadata) : null,
-          summary
+          summary,
         ]
       );
 
@@ -184,9 +246,26 @@ export class SqliteMemoryAdapter implements IMemoryAdapter {
       let query = `
         SELECT * FROM conversation_turns
         WHERE userId = ? AND conversationId = ?
-        ORDER BY timestamp ASC
       `;
       const params: any[] = [userId, conversationId];
+
+      if (typeof options?.beforeTimestamp === 'number') {
+        query += ` AND timestamp < ?`;
+        params.push(options.beforeTimestamp);
+      }
+
+      if (typeof options?.afterTimestamp === 'number') {
+        query += ` AND timestamp > ?`;
+        params.push(options.afterTimestamp);
+      }
+
+      if (options?.agentId) {
+        query += ` AND agentId = ?`;
+        params.push(options.agentId);
+      }
+
+      const shouldSelectMostRecent = Boolean(options?.limit) && options?.fetchMostRecent !== false;
+      query += ` ORDER BY timestamp ${shouldSelectMostRecent ? 'DESC' : 'ASC'}`;
 
       if (options?.limit) {
         query += ` LIMIT ?`;
@@ -194,28 +273,121 @@ export class SqliteMemoryAdapter implements IMemoryAdapter {
       }
 
       const rows = await this.db.all<any>(query, params);
+      const orderedRows = shouldSelectMostRecent ? rows.reverse() : rows;
 
-      return rows.map(row => ({
+      return orderedRows.map((row) => ({
         storageId: row.storageId,
         conversationId: row.conversationId,
         agentId: row.agentId,
         role: row.role,
-        content: row.content,
+        content: options?.preferSummariesForOlder && row.summary ? row.summary : row.content,
         timestamp: row.timestamp,
         model: row.model,
         usage: {
           prompt_tokens: row.prompt_tokens,
           completion_tokens: row.completion_tokens,
-          total_tokens: row.total_tokens
+          total_tokens: row.total_tokens,
         },
         tool_calls: row.tool_calls ? JSON.parse(row.tool_calls) : undefined,
         tool_call_id: row.tool_call_id,
         metadata: row.metadata ? JSON.parse(row.metadata) : undefined,
-        summary: row.summary
+        summary: row.summary,
       }));
     } catch (error) {
-      console.error(`[SqliteMemoryAdapter] Error retrieving conversation ${conversationId}:`, error);
+      console.error(
+        `[SqliteMemoryAdapter] Error retrieving conversation ${conversationId}:`,
+        error
+      );
       return [];
+    }
+  }
+
+  public async getConversationSummaryState(
+    userId: string,
+    conversationId: string
+  ): Promise<{
+    summary: string | null;
+    summaryUptoTimestamp: number | null;
+    summaryUpdatedAt: number | null;
+  }> {
+    if (!this.isEnabled || !this.db) {
+      return { summary: null, summaryUptoTimestamp: null, summaryUpdatedAt: null };
+    }
+
+    try {
+      const row = await this.db.get<{
+        summary: string | null;
+        summary_upto_timestamp: number | null;
+        summary_updated_at: number | null;
+      }>(
+        'SELECT summary, summary_upto_timestamp, summary_updated_at FROM conversations WHERE userId = ? AND conversationId = ?',
+        [userId, conversationId]
+      );
+
+      return {
+        summary: row?.summary ?? null,
+        summaryUptoTimestamp: row?.summary_upto_timestamp ?? null,
+        summaryUpdatedAt: row?.summary_updated_at ?? null,
+      };
+    } catch (error) {
+      console.error(
+        `[SqliteMemoryAdapter] Error getting summary for conv ${conversationId}:`,
+        error
+      );
+      return { summary: null, summaryUptoTimestamp: null, summaryUpdatedAt: null };
+    }
+  }
+
+  public async setConversationSummaryState(
+    userId: string,
+    conversationId: string,
+    agentId: string,
+    state: {
+      summary: string | null;
+      summaryUptoTimestamp: number | null;
+      summaryUpdatedAt?: number | null;
+    },
+    timestamp: number = Date.now()
+  ): Promise<void> {
+    if (!this.isEnabled || !this.db) {
+      return;
+    }
+
+    try {
+      await this.db.run(
+        `INSERT INTO conversations (
+          conversationId,
+          userId,
+          agentId,
+          createdAt,
+          lastActivity,
+          summary,
+          summary_upto_timestamp,
+          summary_updated_at
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(conversationId) DO UPDATE SET
+          summary=excluded.summary,
+          summary_upto_timestamp=excluded.summary_upto_timestamp,
+          summary_updated_at=excluded.summary_updated_at,
+          lastActivity=excluded.lastActivity`,
+        [
+          conversationId,
+          userId,
+          agentId,
+          timestamp,
+          timestamp,
+          state.summary,
+          state.summaryUptoTimestamp,
+          state.summaryUpdatedAt ?? timestamp,
+        ]
+      );
+    } catch (error) {
+      console.error(
+        `[SqliteMemoryAdapter] Error setting summary for conv ${conversationId}:`,
+        error
+      );
+      throw error;
     }
   }
 
@@ -223,7 +395,17 @@ export class SqliteMemoryAdapter implements IMemoryAdapter {
     userId: string,
     limit: number = 20,
     offset: number = 0
-  ): Promise<Array<{ conversationId: string; lastActivity: number; agentId?: string; summary?: string; title?: string; turnCount?: number; persona?: string | null }>> {
+  ): Promise<
+    Array<{
+      conversationId: string;
+      lastActivity: number;
+      agentId?: string;
+      summary?: string;
+      title?: string;
+      turnCount?: number;
+      persona?: string | null;
+    }>
+  > {
     if (!this.isEnabled || !this.db) {
       return [];
     }
@@ -241,14 +423,14 @@ export class SqliteMemoryAdapter implements IMemoryAdapter {
         [userId, limit, offset]
       );
 
-      return rows.map(row => ({
+      return rows.map((row) => ({
         conversationId: row.conversationId,
         lastActivity: row.lastActivity,
         agentId: row.agentId,
         summary: row.summary,
         title: row.title,
         turnCount: row.turnCount,
-        persona: row.persona
+        persona: row.persona,
       }));
     } catch (error) {
       console.error(`[SqliteMemoryAdapter] Error listing conversations for user ${userId}:`, error);
@@ -261,7 +443,7 @@ export class SqliteMemoryAdapter implements IMemoryAdapter {
     conversationId: string,
     agentId: string,
     persona: string | null,
-    timestamp: number = Date.now(),
+    timestamp: number = Date.now()
   ): Promise<void> {
     if (!this.isEnabled || !this.db) {
       return;
@@ -275,12 +457,18 @@ export class SqliteMemoryAdapter implements IMemoryAdapter {
         [conversationId, userId, agentId, timestamp, timestamp, persona]
       );
     } catch (error) {
-      console.error(`[SqliteMemoryAdapter] Error setting persona for conv ${conversationId}:`, error);
+      console.error(
+        `[SqliteMemoryAdapter] Error setting persona for conv ${conversationId}:`,
+        error
+      );
       throw error;
     }
   }
 
-  public async getConversationPersona(userId: string, conversationId: string): Promise<string | null> {
+  public async getConversationPersona(
+    userId: string,
+    conversationId: string
+  ): Promise<string | null> {
     if (!this.isEnabled || !this.db) {
       return null;
     }
@@ -292,7 +480,10 @@ export class SqliteMemoryAdapter implements IMemoryAdapter {
       );
       return row?.persona ?? null;
     } catch (error) {
-      console.error(`[SqliteMemoryAdapter] Error getting persona for conv ${conversationId}:`, error);
+      console.error(
+        `[SqliteMemoryAdapter] Error getting persona for conv ${conversationId}:`,
+        error
+      );
       return null;
     }
   }
@@ -312,10 +503,10 @@ export class SqliteMemoryAdapter implements IMemoryAdapter {
       );
 
       if (criteria?.beforeTimestamp) {
-        await this.db.run(
-          'DELETE FROM conversation_turns WHERE userId = ? AND timestamp < ?',
-          [userId, criteria.beforeTimestamp]
-        );
+        await this.db.run('DELETE FROM conversation_turns WHERE userId = ? AND timestamp < ?', [
+          userId,
+          criteria.beforeTimestamp,
+        ]);
       }
 
       const afterCount = await this.db.get<{ count: number }>(
@@ -325,7 +516,7 @@ export class SqliteMemoryAdapter implements IMemoryAdapter {
 
       return {
         prunedTurnsCount: (beforeCount?.count ?? 0) - (afterCount?.count ?? 0),
-        remainingTurnsCount: afterCount?.count ?? 0
+        remainingTurnsCount: afterCount?.count ?? 0,
       };
     } catch (error) {
       console.error(`[SqliteMemoryAdapter] Error pruning history for user ${userId}:`, error);

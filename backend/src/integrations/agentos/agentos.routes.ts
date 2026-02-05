@@ -5,12 +5,22 @@ import { agentosService } from './agentos.integration.js';
 import { agencyUsageService } from '../../features/agents/agencyUsage.service.js';
 import extensionRoutes from './agentos.extensions.routes.js';
 import guardrailRoutes from './agentos.guardrails.routes.js';
+import provenanceRoutes from './agentos.provenance.routes.js';
 import { createAgencyStreamRouter } from './agentos.agency-stream-router.js';
 import { createAgentOSRagRouter } from './agentos.rag.routes.js';
 import planningRoutes from './agentos.planning.routes.js';
 import hitlRoutes from './agentos.hitl.routes.js';
 import { LlmConfigService, LlmProviderId } from '../../core/llm/llm.config.service.js';
 import { MODEL_PRICING } from '../../../config/models.config.js';
+import { resolveSessionUserId } from '../../utils/session.utils.js';
+import {
+  OrganizationAuthzError,
+  requireActiveOrganizationMember,
+  requireOrganizationRole,
+} from '../../features/organization/organization.authz.js';
+import { applyLongTermMemoryDefaults } from './agentos.memory-defaults.js';
+import { getOrganizationSettings } from '../../features/organization/organization.repository.js';
+import { resolveOrganizationMemorySettings } from '../../features/organization/organization.settings.js';
 import {
   getAgencyExecution,
   listAgencyExecutions,
@@ -108,7 +118,7 @@ export const createAgentOSRouter = (): Router => {
           ];
 
           for (const modelId of openRouterModels) {
-            if (!models.some(m => m.id === modelId)) {
+            if (!models.some((m) => m.id === modelId)) {
               models.push({
                 id: modelId,
                 displayName:
@@ -116,7 +126,7 @@ export const createAgentOSRouter = (): Router => {
                     .split('/')
                     .pop()
                     ?.replace(/-/g, ' ')
-                    .replace(/\b\w/g, l => l.toUpperCase()) || modelId,
+                    .replace(/\b\w/g, (l) => l.toUpperCase()) || modelId,
                 provider: 'openrouter',
                 pricing: MODEL_PRICING[modelId]
                   ? {
@@ -148,16 +158,94 @@ export const createAgentOSRouter = (): Router => {
             .json({ message: 'AgentOS integration disabled', error: 'AGENTOS_DISABLED' });
         }
 
-        const { userId, conversationId, mode, messages } = req.body ?? {};
-        if (!userId || !conversationId || !mode || !Array.isArray(messages)) {
+        const { userId, organizationId, conversationId, mode, messages, memoryControl } =
+          req.body ?? {};
+        if (!conversationId || !mode || !Array.isArray(messages)) {
           return res.status(400).json({ message: 'Missing agentOS chat payload fields.' });
         }
 
+        const effectiveUserId = resolveSessionUserId(
+          req,
+          typeof userId === 'string' ? userId : null
+        );
+        const userContext = (req as any)?.user;
+        const isAuthenticated = Boolean(userContext?.authenticated);
+
+        const orgId =
+          typeof organizationId === 'string' && organizationId.trim().length > 0
+            ? organizationId.trim()
+            : undefined;
+
+        const longTermMemory = (memoryControl as any)?.longTermMemory ?? null;
+        const scopes = longTermMemory?.scopes ?? {};
+        const wantsUserScope = Boolean((scopes as any)?.user);
+        const wantsPersonaScope = Boolean((scopes as any)?.persona);
+        const wantsOrgRead = Boolean((scopes as any)?.organization);
+        const wantsOrgWrite = Boolean(longTermMemory?.shareWithOrganization);
+        const wantsOrgScope = wantsOrgRead || wantsOrgWrite;
+        const wantsAnyPrivilegedScope = wantsUserScope || wantsPersonaScope || wantsOrgScope;
+
+        if ((orgId || wantsAnyPrivilegedScope) && !isAuthenticated) {
+          return res.status(401).json({
+            message: 'Authentication required for organization/user/persona scoped memory.',
+            error: 'AUTH_REQUIRED',
+          });
+        }
+
+        if (wantsOrgScope && !orgId) {
+          return res.status(400).json({
+            message: 'organizationId is required when enabling organization-scoped memory.',
+            error: 'ORGANIZATION_ID_REQUIRED',
+          });
+        }
+
+        if (orgId) {
+          try {
+            await requireActiveOrganizationMember(orgId, effectiveUserId);
+            if (wantsOrgWrite) {
+              await requireOrganizationRole(orgId, effectiveUserId, 'admin');
+            }
+          } catch (error: any) {
+            if (error instanceof OrganizationAuthzError) {
+              return res.status(error.status).json({ message: error.message, error: error.code });
+            }
+            throw error;
+          }
+        }
+
+        const orgMemorySettings = orgId
+          ? resolveOrganizationMemorySettings(await getOrganizationSettings(orgId))
+          : null;
+
+        if (orgId && orgMemorySettings && !orgMemorySettings.enabled && wantsOrgScope) {
+          return res.status(403).json({
+            message: 'Organization-scoped memory is disabled for this organization.',
+            error: 'ORG_MEMORY_DISABLED',
+          });
+        }
+
+        if (orgId && orgMemorySettings && wantsOrgWrite && !orgMemorySettings.allowWrites) {
+          return res.status(403).json({
+            message: 'Organization-scoped memory publishing is disabled for this organization.',
+            error: 'ORG_MEMORY_WRITES_DISABLED',
+          });
+        }
+
         const result = await processAgentOSChatRequest({
-          userId,
+          userId: effectiveUserId,
+          organizationId,
           conversationId,
           mode,
           messages,
+          memoryControl: applyLongTermMemoryDefaults({
+            memoryControl,
+            organizationId: orgId ?? null,
+            defaultOrganizationScope: Boolean(
+              orgId && orgMemorySettings?.enabled && orgMemorySettings?.defaultRetrievalEnabled
+            ),
+            defaultUserScope: isAuthenticated,
+            defaultPersonaScope: isAuthenticated,
+          }),
         });
 
         return res.status(200).json(result);
@@ -181,15 +269,19 @@ export const createAgentOSRouter = (): Router => {
           if (!value) return [];
           const rawValues = Array.isArray(value) ? value : String(value).split(',');
           return rawValues
-            .map(entry => entry?.toString().trim().toLowerCase())
+            .map((entry) => entry?.toString().trim().toLowerCase())
             .filter((entry): entry is string => Boolean(entry && entry.length > 0));
         };
 
         const userIdParam = req.query.userId;
+        const userContext = (req as any)?.user;
+        const authenticatedUserId =
+          userContext?.authenticated && typeof userContext?.id === 'string' ? userContext.id : null;
         const userId =
-          typeof userIdParam === 'string' && userIdParam.trim().length > 0
+          authenticatedUserId ??
+          (typeof userIdParam === 'string' && userIdParam.trim().length > 0
             ? userIdParam
-            : undefined;
+            : undefined);
         const requestedCapabilities = parseMultiParam(req.query.capability);
         const requestedTiers = parseMultiParam(req.query.tier);
         const searchTerm =
@@ -208,7 +300,9 @@ export const createAgentOSRouter = (): Router => {
 
           if (
             requestedCapabilities.length > 0 &&
-            !requestedCapabilities.every(capability => normalizedCapabilities.includes(capability))
+            !requestedCapabilities.every((capability) =>
+              normalizedCapabilities.includes(capability)
+            )
           ) {
             return false;
           }
@@ -228,7 +322,7 @@ export const createAgentOSRouter = (): Router => {
 
             if (
               tierCandidates.length === 0 ||
-              !tierCandidates.some(tier => requestedTiers.includes(tier))
+              !tierCandidates.some((tier) => requestedTiers.includes(tier))
             ) {
               return false;
             }
@@ -245,8 +339,8 @@ export const createAgentOSRouter = (): Router => {
               haystack.push(...persona.activationKeywords.map(String));
 
             const matchesSearch = haystack
-              .map(entry => entry.toLowerCase())
-              .some(entry => entry.includes(searchTerm));
+              .map((entry) => entry.toLowerCase())
+              .some((entry) => entry.includes(searchTerm));
 
             if (!matchesSearch) {
               return false;
@@ -415,6 +509,8 @@ export const createAgentOSRouter = (): Router => {
   router.use(extensionRoutes);
   // Add guardrail routes
   router.use(guardrailRoutes);
+  // Provenance / immutability routes
+  router.use('/provenance', provenanceRoutes);
   // Add RAG routes
   router.use('/rag', createAgentOSRagRouter());
   // Agency streaming routes

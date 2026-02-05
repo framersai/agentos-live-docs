@@ -7,9 +7,9 @@
  */
 
 import express from 'express';
-import type { Request, Response } from 'express';
+import type { Request, Response, Router } from 'express';
 
-const router = express.Router();
+const router: Router = express.Router();
 
 // =============================================================================
 // Types
@@ -417,11 +417,11 @@ router.get('/feedback', (req: Request, res: Response) => {
   let filtered = feedbackHistory;
 
   if (agentId) {
-    filtered = filtered.filter(f => f.agentId === agentId);
+    filtered = filtered.filter((f) => f.agentId === agentId);
   }
 
   if (type) {
-    filtered = filtered.filter(f => f.feedbackType === type);
+    filtered = filtered.filter((f) => f.feedbackType === type);
   }
 
   res.json({

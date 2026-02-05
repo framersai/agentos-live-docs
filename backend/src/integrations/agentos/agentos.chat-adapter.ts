@@ -1,152 +1,70 @@
-import fs from 'fs';
-import { isAgentOSEnabled } from './agentos.integration.js';
-import { callLlm } from '../../core/llm/llm.factory.js';
-import type { IChatMessage, ILlmTool } from '../../core/llm/llm.interfaces.js';
-import {
-  resolveAgentOSPersona,
-  listAgentOSToolsets,
-  type AgentOSPersonaDefinition,
-  type AgentOSToolset,
-  type AgentOSAccessLevel,
-} from './agentos.persona-registry.js';
-import {
-  resolveUserAccessLevel,
-  assertPersonaAccess,
-  filterToolsetsByAccess,
-} from './agentos.access-control.js';
 import {
   AgentOSResponse,
   AgentOSResponseChunkType,
-  AgentOSFinalResponseChunk,
-  AgentOSTextDeltaChunk,
-  AgentOSMetadataUpdateChunk,
+  type AgentOSFinalResponseChunk,
+  type AgentOSMetadataUpdateChunk,
+  type AgentOSTextDeltaChunk,
+  type AgentOSInput,
+  type AgentOSMemoryControl,
 } from '@framers/agentos';
-import { sqliteMemoryAdapter } from '../../core/memory/SqliteMemoryAdapter.js';
-import { sqlKnowledgeBaseService } from '../../core/knowledge/SqlKnowledgeBaseService.js';
-import { jsonFileKnowledgeBaseService } from '../../core/knowledge/JsonFileKnowledgeBaseService.js';
-import type { IKnowledgeBaseService } from '../../core/knowledge/IKnowledgeBaseService.js';
-import { llmContextAggregatorService } from '../../core/context/LLMContextAggregatorService.js';
-import type { IStoredConversationTurn } from '../../core/memory/IMemoryAdapter.js';
-import type { IContextBundle } from '../../core/context/IContextAggregatorService.js';
+import { isAgentOSEnabled, agentosService } from './agentos.integration.js';
+import {
+  resolveAgentOSPersona,
+  type AgentOSPersonaDefinition,
+} from './agentos.persona-registry.js';
+import { resolveUserAccessLevel, assertPersonaAccess } from './agentos.access-control.js';
 
 export interface AgentOSChatAdapterRequest {
   userId: string;
+  organizationId?: string | null;
   conversationId: string;
   mode: string;
   messages: Array<{ role: string; content: string }>;
+  memoryControl?: AgentOSMemoryControl | null;
 }
 
 export interface AgentOSChatAdapterResult {
   content: string;
+  contentPlain?: string;
   model: string;
   usage?: Record<string, number>;
   conversationId: string;
   persona?: string | null;
   personaLabel?: string | null;
+  metadata?: Record<string, any>;
 }
 
 export const agentosChatAdapterEnabled = (): boolean => isAgentOSEnabled();
 
-const TOOLSET_MAP: Map<string, AgentOSToolset> = new Map(
-  listAgentOSToolsets().map((toolset) => [toolset.id, toolset]),
-);
+const LEGACY_PERSONA_ID_MAP: Record<string, string> = {
+  // Legacy personas that exist in the old prompt registry but not (yet) as first-class AgentOS personas.
+  code_pilot: 'voice_assistant_persona',
+  systems_architect: 'atlas_systems_architect',
+  meeting_maestro: 'voice_assistant_persona',
+  echo_diary: 'voice_assistant_persona',
+  professor_astra: 'voice_assistant_persona',
+  interview_coach: 'voice_assistant_persona',
+  lc_audit: 'voice_assistant_persona',
+};
 
-const PROMPT_CACHE: Map<string, string> = new Map();
-const CONTEXT_SNIPPET_LIMIT = parseInt(process.env.DEFAULT_HISTORY_MESSAGES_FOR_FALLBACK_CONTEXT || '12', 10);
-
-let cachedKnowledgeService: IKnowledgeBaseService | null = null;
-
-async function resolveKnowledgeService(): Promise<IKnowledgeBaseService> {
-  if (cachedKnowledgeService) {
-    return cachedKnowledgeService;
-  }
-
-  try {
-    await sqlKnowledgeBaseService.initialize();
-    cachedKnowledgeService = sqlKnowledgeBaseService;
-    return cachedKnowledgeService;
-  } catch (error) {
-    console.warn('[AgentOS][Knowledge] SQL knowledge base unavailable, falling back to JSON file store.', error);
-  }
-
-  try {
-    await jsonFileKnowledgeBaseService.initialize();
-  } catch (error) {
-    console.error('[AgentOS][Knowledge] Failed to initialise fallback JSON knowledge base.', error);
-    throw error;
-  }
-
-  cachedKnowledgeService = jsonFileKnowledgeBaseService;
-  return cachedKnowledgeService;
-}
-
-export async function processAgentOSChatRequest(
-  payload: AgentOSChatAdapterRequest,
-): Promise<AgentOSChatAdapterResult> {
-  const persona = resolveAgentOSPersona(payload.mode);
-  const userAccessLevel = resolveUserAccessLevel(payload.userId);
-  assertPersonaAccess(persona, userAccessLevel);
-  const { userMessage, memoryTurns, contextBundle } = await buildContextForAgentOS(payload, persona);
-  const systemPrompt = renderPersonaPrompt(persona, contextBundle);
-  const history = buildMessageHistory(systemPrompt, memoryTurns, userMessage);
-  const tools = flattenToolsets(persona.toolsetIds, userAccessLevel);
-
-  const llmResponse = await callLlm(
-    history,
-    undefined,
-    tools.length
-      ? {
-          tools,
-        }
-      : undefined,
-    undefined,
-    payload.userId,
-  );
-
-  const promptTokens = llmResponse.usage?.prompt_tokens ?? 0;
-  const completionTokens = llmResponse.usage?.completion_tokens ?? 0;
-  const totalTokens = llmResponse.usage?.total_tokens ?? promptTokens + completionTokens;
-
-  const syntheticChunk: AgentOSResponse = {
-    type: AgentOSResponseChunkType.FINAL_RESPONSE,
-    streamId: payload.conversationId,
-    gmiInstanceId: persona.personaId,
-    personaId: persona.personaId,
-    isFinal: true,
-    timestamp: new Date().toISOString(),
-    metadata: { modelId: llmResponse.model },
-    finalResponseText: llmResponse.text,
-    usage: {
-      promptTokens,
-      completionTokens,
-      totalTokens,
-      totalCostUSD: (llmResponse as any).usage?.total_cost_usd,
-    },
-    activePersonaDetails: {
-      id: persona.personaId,
-      label: persona.label,
-    },
-  };
-
-  return summarizeAgentOSChunks(
-    [syntheticChunk],
-    payload.conversationId,
-    persona.personaId,
-    persona.label,
-  );
+function mapPersonaIdToAgentOS(persona: AgentOSPersonaDefinition): string {
+  const mapped = LEGACY_PERSONA_ID_MAP[persona.personaId];
+  return mapped || persona.personaId;
 }
 
 function summarizeAgentOSChunks(
   chunks: AgentOSResponse[],
   conversationId: string,
   fallbackPersonaId?: string,
-  fallbackPersonaLabel?: string,
+  fallbackPersonaLabel?: string
 ): AgentOSChatAdapterResult {
   let responseText = '';
+  let responseTextPlain: string | null = null;
   let modelName = 'agentos';
   let usage: Record<string, number> | undefined;
   let persona: string | null = null;
   let personaLabel: string | null = null;
+  const metadata: Record<string, any> = {};
 
   for (const chunk of chunks) {
     switch (chunk.type) {
@@ -155,10 +73,23 @@ function summarizeAgentOSChunks(
         responseText += delta.textDelta ?? '';
         break;
       }
+      case AgentOSResponseChunkType.METADATA_UPDATE: {
+        const metaChunk = chunk as AgentOSMetadataUpdateChunk;
+        if (metaChunk.updates && typeof metaChunk.updates === 'object') {
+          Object.assign(metadata, metaChunk.updates);
+        }
+        if (metaChunk.metadata?.modelId) {
+          modelName = metaChunk.metadata.modelId;
+        }
+        break;
+      }
       case AgentOSResponseChunkType.FINAL_RESPONSE: {
         const finalChunk = chunk as AgentOSFinalResponseChunk;
-        if (finalChunk.finalResponseText) {
+        if (typeof finalChunk.finalResponseText === 'string') {
           responseText = finalChunk.finalResponseText;
+        }
+        if (typeof (finalChunk as any).finalResponseTextPlain === 'string') {
+          responseTextPlain = (finalChunk as any).finalResponseTextPlain;
         }
         modelName = finalChunk.metadata?.modelId ?? modelName;
         if (finalChunk.usage) {
@@ -169,21 +100,15 @@ function summarizeAgentOSChunks(
           };
         }
         persona = finalChunk.activePersonaDetails?.id ?? persona;
-        personaLabel = finalChunk.activePersonaDetails?.label ?? finalChunk.activePersonaDetails?.name ?? personaLabel;
-        break;
-      }
-      case AgentOSResponseChunkType.METADATA_UPDATE: {
-        const metaChunk = chunk as AgentOSMetadataUpdateChunk;
-        if (metaChunk.updates?.modelId) {
-          modelName = metaChunk.updates.modelId;
-        }
+        personaLabel =
+          finalChunk.activePersonaDetails?.label ??
+          finalChunk.activePersonaDetails?.name ??
+          personaLabel;
         break;
       }
       case AgentOSResponseChunkType.ERROR: {
         throw new Error(
-          `AgentOS error: ${(chunk as any).code ?? 'unknown'} - ${
-            (chunk as any).message ?? 'no message'
-          }`,
+          `AgentOS error: ${(chunk as any).code ?? 'unknown'} - ${(chunk as any).message ?? 'no message'}`
         );
       }
       default:
@@ -193,221 +118,61 @@ function summarizeAgentOSChunks(
 
   return {
     content: responseText.trim(),
+    contentPlain:
+      responseTextPlain && responseTextPlain.trim().length > 0
+        ? responseTextPlain.trim()
+        : undefined,
     model: modelName,
     usage,
     conversationId,
     persona: persona ?? fallbackPersonaId ?? null,
     personaLabel: personaLabel ?? fallbackPersonaLabel ?? null,
+    metadata: Object.keys(metadata).length > 0 ? metadata : undefined,
   };
 }
 
-function loadPersonaPrompt(persona: AgentOSPersonaDefinition): string {
-  if (PROMPT_CACHE.has(persona.promptPath)) {
-    return PROMPT_CACHE.get(persona.promptPath)!;
+export async function processAgentOSChatRequest(
+  payload: AgentOSChatAdapterRequest
+): Promise<AgentOSChatAdapterResult> {
+  if (!agentosChatAdapterEnabled()) {
+    throw new Error('AgentOS integration not enabled. Set AGENTOS_ENABLED=true.');
   }
 
-  let rawPrompt = '';
-  try {
-    rawPrompt = fs.readFileSync(persona.promptPath, 'utf-8');
-  } catch (error) {
-    console.error('[AgentOS][PersonaPrompt] Unable to read prompt file:', persona.promptPath, error);
-    rawPrompt = `You are ${persona.label}, an AI assistant focused on ${persona.category}. Respond in Markdown.`;
-  }
+  const requestedPersona = resolveAgentOSPersona(payload.mode);
+  const userAccessLevel = resolveUserAccessLevel(payload.userId);
+  assertPersonaAccess(requestedPersona, userAccessLevel);
 
-  const rendered = applyPromptTemplate(rawPrompt, persona);
-  PROMPT_CACHE.set(persona.promptPath, rendered);
-  return rendered;
-}
+  const explicitText =
+    payload.messages && Array.isArray(payload.messages)
+      ? [...payload.messages].reverse().find((m) => m.role === 'user')?.content
+      : undefined;
+  const userMessage =
+    typeof explicitText === 'string' && explicitText.trim().length > 0 ? explicitText : null;
 
-function applyPromptTemplate(template: string, persona: AgentOSPersonaDefinition): string {
-  const replacements: Record<string, string> = {
-    '{{AGENT_NAME}}': persona.label,
-    '{{AGENT_LABEL}}': persona.label,
-    '{{MODE}}': persona.category,
-    '{{LANGUAGE}}': 'English',
-    '{{GENERATE_DIAGRAM}}': persona.tags.some((tag) => tag.includes('diagram')) ? 'true' : 'false',
-    '{{AGENT_CONTEXT_JSON}}': JSON.stringify({
-      personaId: persona.personaId,
-      label: persona.label,
-      category: persona.category,
-      tags: persona.tags,
-    }),
-    '{{ADDITIONAL_INSTRUCTIONS}}': '',
-    '{{RECENT_TOPICS_SUMMARY}}': '',
-    '{{USER_QUERY}}': '',
-    '{{TUTOR_LEVEL}}': 'intermediate',
+  const selectedPersonaId = mapPersonaIdToAgentOS(requestedPersona);
+
+  const agentosInput: AgentOSInput = {
+    userId: payload.userId,
+    organizationId: payload.organizationId ?? undefined,
+    sessionId: payload.conversationId,
+    conversationId: payload.conversationId,
+    selectedPersonaId,
+    textInput: userMessage,
+    memoryControl: payload.memoryControl ?? undefined,
+    options: {
+      streamUICommands: true,
+      customFlags: {
+        mode: payload.mode,
+        adapter: 'api_chat',
+      },
+    },
   };
 
-  let rendered = template;
-  for (const [token, value] of Object.entries(replacements)) {
-    rendered = rendered.replace(new RegExp(token, 'g'), value);
-  }
-  return rendered;
+  const chunks = await agentosService.processThroughAgentOS(agentosInput);
+  return summarizeAgentOSChunks(
+    chunks,
+    payload.conversationId,
+    selectedPersonaId,
+    requestedPersona.label
+  );
 }
-
-function buildMessageHistory(
-  systemPrompt: string,
-  memoryTurns: Array<{ role: 'user' | 'assistant' | 'system' | 'tool'; content: string }>,
-  latestUserMessage: string,
-): IChatMessage[] {
-  const history: IChatMessage[] = [{ role: 'system', content: systemPrompt }];
-  history.push(...memoryTurns);
-  history.push({ role: 'user', content: latestUserMessage });
-  return history;
-}
-
-function normalizeRole(role: string): IChatMessage['role'] | null {
-  switch (role) {
-    case 'system':
-    case 'assistant':
-    case 'user':
-    case 'tool':
-      return role;
-    default:
-      return null;
-  }
-}
-
-function flattenToolsets(toolsetIds: string[], userLevel: AgentOSAccessLevel): ILlmTool[] {
-  const tools: ILlmTool[] = [];
-  const selectedToolsets = toolsetIds
-    .map((id) => TOOLSET_MAP.get(id))
-    .filter((toolset): toolset is AgentOSToolset => Boolean(toolset));
-  const permittedToolsets = filterToolsetsByAccess(selectedToolsets, userLevel);
-  for (const toolset of permittedToolsets) {
-    tools.push(...toolset.tools);
-  }
-  return tools;
-}
-
-async function buildContextForAgentOS(
-  payload: AgentOSChatAdapterRequest,
-  persona: AgentOSPersonaDefinition,
-): Promise<{
-  userMessage: string;
-  memoryTurns: Array<{ role: 'user' | 'assistant' | 'system' | 'tool'; content: string }>;
-  contextBundle?: IContextBundle;
-}> {
-  const conversationId = payload.conversationId;
-  const currentUserMessage =
-    [...payload.messages]
-      .reverse()
-      .find((msg) => msg.role === 'user')?.content ?? '';
-
-  let storedTurns: IStoredConversationTurn[] = [];
-  try {
-    storedTurns = await sqliteMemoryAdapter.retrieveConversationTurns(
-      payload.userId,
-      conversationId,
-      { limit: CONTEXT_SNIPPET_LIMIT },
-    );
-  } catch (error) {
-    console.error('[AgentOS][MemoryBridge] Failed to retrieve conversation history:', error);
-  }
-
-  const memoryMessages = storedTurns.map((turn) => ({
-    role: normalizeRole(turn.role) ?? 'system',
-    content:
-      turn.summary ||
-      turn.content ||
-      `[${turn.role.toUpperCase()} context omitted due to empty content]`,
-  }));
-
-  let contextBundle: IContextBundle | undefined;
-  try {
-    const knowledgeService = await resolveKnowledgeService();
-    const knowledgeItems = await knowledgeService.searchKnowledgeBase(currentUserMessage, 3);
-    const knowledgeSnippets = knowledgeItems.map((it) => ({
-      id: it.id,
-      type: it.type,
-      content: it.content.substring(0, 300) + (it.content.length > 300 ? '...' : ''),
-    }));
-
-    contextBundle = await llmContextAggregatorService.generateContextBundle({
-      currentUserFocus: {
-        query: currentUserMessage,
-        intent: persona.category,
-        mode: persona.category,
-        metadata: { personaId: persona.personaId },
-      },
-      conversationHistory: memoryMessages.map((msg) => ({
-        role: msg.role,
-        content: msg.content,
-      })),
-      userProfile: {
-        preferences: {
-          currentAgentMode: persona.category,
-        },
-      },
-      systemState: {
-        currentTaskContext: `User interacting with ${persona.label}`,
-        responseConstraints: contextBundleOutputFormatHints(persona.category),
-        sharedKnowledgeSnippets: knowledgeSnippets,
-      },
-    });
-  } catch (error) {
-    console.error('[AgentOS][ContextAggregator] Failed to build context bundle:', error);
-  }
-
-  return {
-    userMessage: currentUserMessage,
-    memoryTurns: memoryMessages,
-    contextBundle,
-  };
-}
-
-function renderPersonaPrompt(
-  persona: AgentOSPersonaDefinition,
-  contextBundle?: IContextBundle,
-): string {
-  const basePrompt = loadPersonaPrompt(persona);
-  if (!contextBundle) {
-    return basePrompt;
-  }
-
-  const bundleSummary = [
-    `Context Bundle (v${contextBundle.version})`,
-    `Primary Task: ${contextBundle.primaryTask.description} (intent: ${contextBundle.primaryTask.derivedIntent})`,
-    `Required Output: ${contextBundle.primaryTask.requiredOutputFormat}`,
-    contextBundle.relevantHistorySummary.length
-      ? `Recent History:\n${contextBundle.relevantHistorySummary
-          .map((item) => `- ${item.speaker}: ${item.summary}`)
-          .join('\n')}`
-      : 'Recent History: (none)',
-    contextBundle.keyInformationFromDocuments.length
-      ? `Knowledge Snippets:\n${contextBundle.keyInformationFromDocuments
-          .map((doc) => `- ${doc.source}: ${doc.snippet}`)
-          .join('\n')}`
-      : 'Knowledge Snippets: (none)',
-    contextBundle.criticalSystemContext?.customPersona
-      ? `Custom Persona: ${contextBundle.criticalSystemContext.customPersona}`
-      : '',
-    `Discernment Outcome: ${contextBundle.discernmentOutcome}`,
-  ]
-    .filter(Boolean)
-    .join('\n\n');
-
-  return `${basePrompt}\n\n${bundleSummary}`;
-}
-
-function contextBundleOutputFormatHints(mode: string): string {
-  switch (mode.toLowerCase()) {
-    case 'coding':
-    case 'codingassistant':
-      return 'Markdown with code blocks and explanations.';
-    case 'systemdesigner':
-    case 'system_design':
-      return 'Architecture Markdown with Mermaid diagrams.';
-    case 'meeting':
-    case 'businessmeeting':
-      return 'Meeting summary with action items.';
-    case 'diary':
-      return 'Empathetic tone, structured diary entry.';
-    case 'tutor':
-      return 'Slide-style Markdown with optional quizzes.';
-    default:
-      return 'Clear Markdown response with bullet points when helpful.';
-  }
-}
-
-

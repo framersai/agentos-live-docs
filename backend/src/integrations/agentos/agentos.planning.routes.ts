@@ -7,9 +7,9 @@
  */
 
 import express from 'express';
-import type { Request, Response } from 'express';
+import type { Request, Response, Router } from 'express';
 
-const router = express.Router();
+const router: Router = express.Router();
 
 // =============================================================================
 // Types
@@ -82,7 +82,7 @@ router.get('/plans', (req: Request, res: Response) => {
 
   let filtered = planList;
   if (status) {
-    filtered = filtered.filter(p => p.status === status);
+    filtered = filtered.filter((p) => p.status === status);
   }
 
   res.json({
@@ -348,11 +348,11 @@ router.get('/stats', (req: Request, res: Response) => {
     data: {
       total: planList.length,
       byStatus: {
-        draft: planList.filter(p => p.status === 'draft').length,
-        executing: planList.filter(p => p.status === 'executing').length,
-        paused: planList.filter(p => p.status === 'paused').length,
-        completed: planList.filter(p => p.status === 'completed').length,
-        failed: planList.filter(p => p.status === 'failed').length,
+        draft: planList.filter((p) => p.status === 'draft').length,
+        executing: planList.filter((p) => p.status === 'executing').length,
+        paused: planList.filter((p) => p.status === 'paused').length,
+        completed: planList.filter((p) => p.status === 'completed').length,
+        failed: planList.filter((p) => p.status === 'failed').length,
       },
       avgConfidence:
         planList.length > 0

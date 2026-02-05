@@ -1,5 +1,6 @@
 import path from 'path';
 import fs from 'fs';
+import { fileURLToPath } from 'url';
 import { Router } from 'express';
 import {
   AgentOS,
@@ -8,6 +9,7 @@ import {
   type AgentOSInput,
   type AgentOSOrchestratorConfig,
   type GMIManagerConfig,
+  profiles,
   type PromptEngineConfig,
   type ToolOrchestratorConfig,
   type ToolPermissionManagerConfig,
@@ -17,28 +19,240 @@ import {
   type WorkflowDefinition,
   type WorkflowInstance,
   WorkflowStatus,
+  type ProvenanceSystemConfig,
 } from '@framers/agentos';
+import {
+  createProvenancePack,
+  type ProvenancePackResult,
+} from '@framers/agentos/extensions/packs/provenance-pack';
 import type { FileSystemPersonaLoaderConfig } from '@framers/agentos/cognitive_substrate/personas/PersonaLoader';
 import type {
   IAuthService as AgentOSAuthServiceInterface,
   ISubscriptionService,
 } from '@framers/agentos/services/user_auth/types';
+import { PrismaClient } from '@framers/agentos/stubs/prismaClient';
 import { createAgentOSAuthAdapter } from './agentos.auth-service.js';
 import { createAgentOSSubscriptionAdapter } from './agentos.subscription-service.js';
 import { createAgentOSRouter } from './agentos.routes.js';
 import { createAgentOSStreamRouter } from './agentos.stream-router.js';
 import { createAgencyStreamRouter } from './agentos.agency-stream-router.js';
-import { createAgentOSSqlClient } from './agentos.sql-client.js';
 import { reloadDynamicPersonas } from './agentos.persona-registry.js';
 import { createDefaultGuardrailStack } from './guardrails/index.js';
+import { createRollingSummaryMemorySink } from './agentos.rolling-memory-sink.js';
+import { createLongTermMemoryRetriever } from './agentos.long-term-memory-retriever.js';
 import {
   MultiGMIAgencyExecutor,
   type AgencyExecutionInput,
   type AgencyExecutionResult,
 } from './MultiGMIAgencyExecutor.js';
+import { getAppDatabase } from '../../core/database/appDatabase.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __projectRoot = path.resolve(path.dirname(__filename), '../../../..');
 
 const isWorkflowStatus = (value: string): value is WorkflowStatus =>
   (Object.values(WorkflowStatus) as string[]).includes(value);
+
+type MetapromptPresetsConfigFile = {
+  version?: string;
+  routing?: any;
+  presets?: any[];
+  rules?: any[];
+  addonPrompts?: Record<string, string>;
+  memoryCompaction?: {
+    profiles?: Record<string, any>;
+    defaultProfile?: string;
+    defaultProfileByMode?: Record<string, string>;
+  };
+};
+
+function resolveMetapromptPresetsConfigPath(): string | null {
+  const override = process.env.METAPROMPT_PRESETS_PATH;
+  const candidates = [
+    override && override.trim()
+      ? path.isAbsolute(override)
+        ? override
+        : path.resolve(__projectRoot, override)
+      : null,
+    path.join(__projectRoot, 'config', 'metaprompt-presets.json'),
+  ].filter(Boolean) as string[];
+
+  for (const candidate of candidates) {
+    if (fs.existsSync(candidate)) return candidate;
+  }
+  return null;
+}
+
+function loadMetapromptPresetsConfig(): MetapromptPresetsConfigFile | null {
+  const configPath = resolveMetapromptPresetsConfigPath();
+  if (!configPath) return null;
+  try {
+    const raw = fs.readFileSync(configPath, 'utf-8');
+    const parsed = JSON.parse(raw) as MetapromptPresetsConfigFile;
+    return parsed && typeof parsed === 'object' ? parsed : null;
+  } catch (error) {
+    console.warn(`[AgentOS] Failed to load metaprompt-presets config at ${configPath}.`, error);
+    return null;
+  }
+}
+
+function loadPromptFileIfExists(promptPath: string): string | null {
+  try {
+    if (!fs.existsSync(promptPath)) return null;
+    const raw = fs.readFileSync(promptPath, 'utf-8');
+    const trimmed = raw.trim();
+    return trimmed.length > 0 ? trimmed : null;
+  } catch {
+    return null;
+  }
+}
+
+function resolveAddonPromptContent(key: string): string | null {
+  const normalized = String(key || '').trim();
+  if (!normalized) return null;
+  if (normalized.startsWith('_meta/')) {
+    const name = normalized.slice('_meta/'.length);
+    return loadPromptFileIfExists(path.join(__projectRoot, 'prompts', '_meta', `${name}.md`));
+  }
+  return loadPromptFileIfExists(path.join(__projectRoot, 'prompts', `${normalized}.md`));
+}
+
+function buildPromptProfileConfigFromMetapromptPresets(
+  parsed: MetapromptPresetsConfigFile
+): AgentOSOrchestratorConfig['promptProfileConfig'] | null {
+  if (!parsed?.routing || !Array.isArray(parsed?.presets) || !Array.isArray(parsed?.rules)) {
+    return null;
+  }
+
+  const routing = parsed.routing as any;
+  if (!routing?.defaultPresetId || typeof routing.defaultPresetId !== 'string') {
+    return null;
+  }
+
+  const presets = (parsed.presets as any[])
+    .filter((p) => p && typeof p.id === 'string')
+    .map((p) => ({
+      id: String(p.id),
+      label: typeof p.label === 'string' ? p.label : undefined,
+      description: typeof p.description === 'string' ? p.description : undefined,
+      addonPromptKeys: Array.isArray(p.addonPromptKeys) ? p.addonPromptKeys.map(String) : [],
+    }));
+
+  const rules = (parsed.rules as any[])
+    .filter((r) => r && typeof r.id === 'string' && typeof r.presetId === 'string')
+    .map((r) => ({
+      id: String(r.id),
+      priority: Number(r.priority ?? 0),
+      presetId: String(r.presetId),
+      modes: Array.isArray(r.modes) ? r.modes.map(String) : undefined,
+      anyKeywords: Array.isArray(r.anyKeywords) ? r.anyKeywords.map(String) : undefined,
+      allKeywords: Array.isArray(r.allKeywords) ? r.allKeywords.map(String) : undefined,
+      minMessageChars: typeof r.minMessageChars === 'number' ? r.minMessageChars : undefined,
+      maxMessageChars: typeof r.maxMessageChars === 'number' ? r.maxMessageChars : undefined,
+    }));
+
+  const addonKeys = new Set<string>();
+  for (const preset of presets) {
+    for (const key of preset.addonPromptKeys || []) {
+      if (typeof key === 'string' && key.trim()) addonKeys.add(key.trim());
+    }
+  }
+
+  const addonPrompts: Record<string, string> = { ...(parsed.addonPrompts || {}) };
+  for (const key of addonKeys) {
+    if (addonPrompts[key]) continue;
+    const content = resolveAddonPromptContent(key);
+    if (content) addonPrompts[key] = content;
+  }
+
+  return {
+    version: typeof parsed.version === 'string' ? parsed.version : '1.0.0',
+    routing: {
+      reviewEveryNTurns: Number(routing.reviewEveryNTurns ?? 6),
+      forceReviewOnCompaction: Boolean(routing.forceReviewOnCompaction ?? true),
+      defaultPresetId: routing.defaultPresetId,
+      defaultPresetByMode:
+        routing.defaultPresetByMode && typeof routing.defaultPresetByMode === 'object'
+          ? routing.defaultPresetByMode
+          : undefined,
+    },
+    presets,
+    rules,
+    addonPrompts,
+  } as any;
+}
+
+function buildRollingSummaryProfilesFromMetapromptPresets(
+  parsed: MetapromptPresetsConfigFile
+): AgentOSOrchestratorConfig['rollingSummaryCompactionProfilesConfig'] | null {
+  const section = parsed?.memoryCompaction;
+  const profilesRaw =
+    section?.profiles && typeof section.profiles === 'object' ? section.profiles : null;
+  if (!profilesRaw) return null;
+
+  const openRouterAvailable = Boolean(process.env.OPENROUTER_API_KEY?.trim());
+  const openAiAvailable = Boolean(process.env.OPENAI_API_KEY?.trim());
+
+  const profiles: Record<string, any> = {};
+  for (const [profileId, profile] of Object.entries(profilesRaw)) {
+    if (!profile || typeof profile !== 'object') continue;
+    const enabled = Boolean((profile as any).enabled);
+    const rawModelId =
+      typeof (profile as any).modelId === 'string'
+        ? String((profile as any).modelId)
+        : 'gpt-4o-mini';
+    let modelId = rawModelId;
+    let providerId: string | undefined;
+    if (rawModelId.includes('/')) {
+      if (openRouterAvailable) {
+        providerId = 'openrouter';
+      } else if (openAiAvailable) {
+        providerId = 'openai';
+        modelId = rawModelId.split('/').slice(-1)[0];
+      }
+    }
+    const cooldownMs = Number((profile as any).cooldownMs ?? 60_000);
+    const tail = Number((profile as any).tailTurnsToKeep ?? 12);
+    const min = Number((profile as any).minTurnsToSummarize ?? 12);
+    const max = Number((profile as any).maxTurnsToSummarizePerPass ?? 48);
+    const maxTokens = Number((profile as any).maxSummaryTokens ?? 900);
+
+    const promptKey =
+      typeof (profile as any).promptKey === 'string' ? String((profile as any).promptKey) : null;
+    const systemPrompt = promptKey
+      ? (loadPromptFileIfExists(path.join(__projectRoot, 'prompts', `${promptKey}.md`)) ??
+        undefined)
+      : undefined;
+
+    profiles[profileId] = {
+      config: {
+        enabled,
+        providerId,
+        modelId,
+        cooldownMs: Math.max(0, cooldownMs),
+        headMessagesToKeep: 2,
+        tailMessagesToKeep: Math.max(0, tail),
+        minMessagesToSummarize: Math.max(0, min),
+        maxMessagesToSummarizePerPass: Math.max(1, max),
+        maxOutputTokens: Math.max(64, maxTokens),
+        temperature: 0.1,
+      },
+      systemPrompt,
+    };
+  }
+
+  const defaultProfileId =
+    typeof section?.defaultProfile === 'string' ? section.defaultProfile : 'off';
+
+  return {
+    defaultProfileId,
+    defaultProfileByMode:
+      section?.defaultProfileByMode && typeof section.defaultProfileByMode === 'object'
+        ? section.defaultProfileByMode
+        : undefined,
+    profiles,
+  } as any;
+}
 
 /**
  * AgentOS is still incubating inside the Voice Chat Assistant monorepo.
@@ -49,6 +263,10 @@ class AgentOSIntegration {
   private agentos?: AgentOS;
   private router?: Router;
   private initializing?: Promise<void>;
+  private provenancePack?: ReturnType<typeof createProvenancePack>;
+  private provenanceConfig?: ProvenanceSystemConfig;
+  private provenanceAgentId?: string;
+  private provenanceTablePrefix?: string;
 
   public isEnabled(): boolean {
     return process.env.AGENTOS_ENABLED === 'true';
@@ -56,7 +274,9 @@ class AgentOSIntegration {
 
   public async getRouter(): Promise<Router> {
     if (!this.isEnabled()) {
-      throw new Error('AgentOS integration not enabled. Set AGENTOS_ENABLED=true to mount these routes.');
+      throw new Error(
+        'AgentOS integration not enabled. Set AGENTOS_ENABLED=true to mount these routes.'
+      );
     }
     if (this.router) {
       return this.router;
@@ -81,7 +301,7 @@ class AgentOSIntegration {
 
   public async processThroughAgentOSStream(
     input: AgentOSInput,
-    onChunk: (chunk: AgentOSResponse) => Promise<void> | void,
+    onChunk: (chunk: AgentOSResponse) => Promise<void> | void
   ): Promise<void> {
     const agentosInstance = await this.getAgentOS();
     for await (const chunk of agentosInstance.processRequest(input)) {
@@ -90,74 +310,22 @@ class AgentOSIntegration {
   }
 
   public async listWorkflowDefinitions(): Promise<WorkflowDefinition[]> {
-    try {
-      const agentosInstance = await this.getAgentOS();
-      return agentosInstance.listWorkflowDefinitions();
-    } catch (error) {
-      // Return mock workflow definitions as fallback
-      console.warn('Failed to fetch workflow definitions from AgentOS, returning mock data:', error);
-      return [
-        {
-          id: 'research-and-publish',
-          displayName: 'Research & Publish',
-          description: 'Research a topic and publish findings to Telegram',
-          category: 'productivity' as any,
-          requiredExtensions: ['web-search', 'telegram'],
-          metadata: { requiredSecrets: ['openrouter.apiKey'] }
-        } as any,
-        {
-          id: 'monitor-and-alert',
-          displayName: 'Monitor & Alert',
-          description: 'Monitor web for updates and send alerts',
-          category: 'automation' as any,
-          requiredExtensions: ['web-search', 'telegram'],
-          metadata: { requiredSecrets: ['openrouter.apiKey'] }
-        } as any,
-        {
-          id: 'content-aggregation',
-          displayName: 'Content Aggregation',
-          description: 'Aggregate content from multiple sources',
-          category: 'research' as any,
-          requiredExtensions: ['web-search'],
-          metadata: { requiredSecrets: ['openrouter.apiKey'] }
-        } as any
-      ];
-    }
+    const agentosInstance = await this.getAgentOS();
+    return agentosInstance.listWorkflowDefinitions();
   }
 
   public async listAvailablePersonas(userId?: string) {
-    try {
-      const agentosInstance = await this.getAgentOS();
-      return agentosInstance.listAvailablePersonas(userId);
-    } catch (error) {
-      // Return mock personas as fallback
-      console.warn('Failed to fetch personas from AgentOS, returning mock data:', error);
-      return [
-        {
-          id: 'researcher',
-          name: 'Research Specialist',
-          description: 'Expert at gathering and analyzing information',
-          features: ['Web search', 'Fact checking', 'Research aggregation']
-        },
-        {
-          id: 'communicator',
-          name: 'Communications Manager',
-          description: 'Handles external communications and publishing',
-          features: ['Telegram messaging', 'Content formatting', 'Notification management']
-        },
-        {
-          id: 'generalist',
-          name: 'General Assistant',
-          description: 'Versatile assistant for various tasks',
-          features: ['Multi-tool usage', 'Task coordination', 'General problem solving']
-        }
-      ];
-    }
+    const agentosInstance = await this.getAgentOS();
+    return agentosInstance.listAvailablePersonas(userId);
   }
 
-  public async listWorkflows(options?: { conversationId?: string; status?: string }): Promise<WorkflowInstance[]> {
+  public async listWorkflows(options?: {
+    conversationId?: string;
+    status?: string;
+  }): Promise<WorkflowInstance[]> {
     const agentosInstance = await this.getAgentOS();
-    const statuses = options?.status && isWorkflowStatus(options.status) ? [options.status] : undefined;
+    const statuses =
+      options?.status && isWorkflowStatus(options.status) ? [options.status] : undefined;
     return agentosInstance.listWorkflows({
       conversationId: options?.conversationId,
       statuses,
@@ -211,9 +379,15 @@ class AgentOSIntegration {
     return agentosInstance.getWorkflow(workflowId);
   }
 
-  public async cancelWorkflow(workflowId: string, reason?: string): Promise<WorkflowInstance | null> {
+  public async cancelWorkflow(
+    workflowId: string,
+    reason?: string
+  ): Promise<WorkflowInstance | null> {
     const agentosInstance = await this.getAgentOS();
-    const updated = await agentosInstance.updateWorkflowStatus(workflowId, WorkflowStatus.CANCELLED);
+    const updated = await agentosInstance.updateWorkflowStatus(
+      workflowId,
+      WorkflowStatus.CANCELLED
+    );
     if (updated && reason) {
       console.info('[AgentOS][Workflow] Cancelled workflow', { workflowId, reason });
     }
@@ -222,7 +396,7 @@ class AgentOSIntegration {
 
   public async executeAgencyWorkflow(
     input: AgencyExecutionInput,
-    onChunk?: (chunk: AgentOSResponse) => Promise<void> | void,
+    onChunk?: (chunk: AgentOSResponse) => Promise<void> | void
   ): Promise<AgencyExecutionResult> {
     const agentosInstance = await this.getAgentOS();
     const executor = new MultiGMIAgencyExecutor({ agentOS: agentosInstance, onChunk });
@@ -254,13 +428,39 @@ class AgentOSIntegration {
         arguments: params.args ?? {},
       },
       gmiId: 'backend-direct',
-      personaId: params.personaId ?? (agentosInstance as any)?.config?.defaultPersonaId ?? 'v_researcher',
-      personaCapabilities: Array.isArray(params.personaCapabilities) ? params.personaCapabilities : [],
+      personaId:
+        params.personaId ?? (agentosInstance as any)?.config?.defaultPersonaId ?? 'v_researcher',
+      personaCapabilities: Array.isArray(params.personaCapabilities)
+        ? params.personaCapabilities
+        : [],
       userContext: { userId: params.userId ?? 'anonymous' },
       correlationId: params.correlationId,
     };
 
     return orchestrator.processToolCall(requestDetails);
+  }
+
+  /**
+   * Get the active provenance runtime state, if configured.
+   * This is used by the provenance HTTP routes to expose anchors and verification.
+   */
+  public async getProvenanceRuntime(): Promise<{
+    agentId: string;
+    tablePrefix: string;
+    config: ProvenanceSystemConfig;
+    result: ProvenancePackResult | null;
+  } | null> {
+    await this.getAgentOS();
+    if (!this.provenancePack || !this.provenanceConfig || !this.provenanceAgentId) {
+      return null;
+    }
+
+    return {
+      agentId: this.provenanceAgentId,
+      tablePrefix: this.provenanceTablePrefix ?? '',
+      config: this.provenanceConfig,
+      result: this.provenancePack.getResult(),
+    };
   }
 
   private async getAgentOS(): Promise<AgentOS> {
@@ -280,9 +480,13 @@ class AgentOSIntegration {
   private async initializeAgentOS(): Promise<void> {
     ensureAgentOSEnvDefaults();
     await reloadDynamicPersonas();
-    const config = await buildEmbeddedAgentOSConfig();
+    const embedded = await buildEmbeddedAgentOSConfig();
+    this.provenancePack = embedded.provenance?.pack;
+    this.provenanceConfig = embedded.provenance?.config;
+    this.provenanceAgentId = embedded.provenance?.agentId;
+    this.provenanceTablePrefix = embedded.provenance?.tablePrefix;
     const agentos = new AgentOS();
-    await agentos.initialize(config);
+    await agentos.initialize(embedded.config);
     this.agentos = agentos;
   }
 }
@@ -299,10 +503,35 @@ const resolveDefaultPersonaDir = (): string => {
 
   const candidates = [
     path.resolve(process.cwd(), 'agentos', 'cognitive_substrate', 'personas', 'definitions'),
-    path.resolve(process.cwd(), 'packages', 'agentos', 'src', 'cognitive_substrate', 'personas', 'definitions'),
-    path.resolve(process.cwd(), '..', 'packages', 'agentos', 'src', 'cognitive_substrate', 'personas', 'definitions'),
+    path.resolve(
+      process.cwd(),
+      'packages',
+      'agentos',
+      'src',
+      'cognitive_substrate',
+      'personas',
+      'definitions'
+    ),
+    path.resolve(
+      process.cwd(),
+      '..',
+      'packages',
+      'agentos',
+      'src',
+      'cognitive_substrate',
+      'personas',
+      'definitions'
+    ),
     path.resolve(process.cwd(), '..', 'agentos', 'cognitive_substrate', 'personas', 'definitions'),
-    path.resolve(process.cwd(), '..', 'backend', 'agentos', 'cognitive_substrate', 'personas', 'definitions'),
+    path.resolve(
+      process.cwd(),
+      '..',
+      'backend',
+      'agentos',
+      'cognitive_substrate',
+      'personas',
+      'definitions'
+    ),
   ];
 
   for (const candidate of candidates) {
@@ -311,7 +540,9 @@ const resolveDefaultPersonaDir = (): string => {
     }
   }
 
-  console.warn('[AgentOS] Persona definitions directory not found. Using default path with expectation that it will be created.');
+  console.warn(
+    '[AgentOS] Persona definitions directory not found. Using default path with expectation that it will be created.'
+  );
   return candidates[0];
 };
 
@@ -323,12 +554,54 @@ export const getAgentOSRouter = async (): Promise<Router> => agentOSIntegration.
 
 export const agentosService = agentOSIntegration;
 
+type EmbeddedAgentOSConfigBuildResult = {
+  config: AgentOSConfig;
+  provenance?: {
+    pack: ReturnType<typeof createProvenancePack>;
+    config: ProvenanceSystemConfig;
+    agentId: string;
+    tablePrefix: string;
+  };
+};
+
 /**
  * Builds an AgentOS configuration that stores conversation state via the shared
  * SQL storage adapter (through the AgentOS Prisma shim) and honours existing
  * environment variable configuration.
  */
-async function buildEmbeddedAgentOSConfig(): Promise<AgentOSConfig> {
+async function buildEmbeddedAgentOSConfig(): Promise<EmbeddedAgentOSConfigBuildResult> {
+  const desiredPersistence = process.env.AGENTOS_ENABLE_PERSISTENCE === 'true';
+  let storageAdapter: ReturnType<typeof getAppDatabase> | undefined;
+  if (desiredPersistence) {
+    try {
+      storageAdapter = getAppDatabase();
+    } catch (error) {
+      console.warn(
+        '[AgentOS] Persistence requested but app database is not initialized; continuing without persistence.',
+        error
+      );
+    }
+  }
+  const persistenceEnabled = desiredPersistence && Boolean(storageAdapter);
+
+  const provenanceRequested = process.env.AGENTOS_PROVENANCE_ENABLED === 'true';
+  const provenanceEnabled = provenanceRequested && Boolean(storageAdapter);
+  if (provenanceRequested && !storageAdapter) {
+    console.warn(
+      '[AgentOS][Provenance] Enabled via env but no storage adapter is available. Set AGENTOS_ENABLE_PERSISTENCE=true and initialize the app database.'
+    );
+  }
+
+  const hasOpenAI = Boolean(process.env.OPENAI_API_KEY?.trim());
+  const hasOpenRouter = Boolean(process.env.OPENROUTER_API_KEY?.trim());
+  const defaultProviderId =
+    process.env.AGENTOS_DEFAULT_PROVIDER_ID || (hasOpenRouter ? 'openrouter' : 'openai');
+  const defaultModelId =
+    process.env.AGENTOS_DEFAULT_MODEL_ID ||
+    (defaultProviderId === 'openrouter'
+      ? process.env.MODEL_PREF_OPENROUTER_DEFAULT || 'openai/gpt-4o-mini'
+      : 'gpt-4o-mini');
+
   const gmiManagerConfig: GMIManagerConfig = {
     personaLoaderConfig: {
       loaderType: 'file_system',
@@ -337,16 +610,31 @@ async function buildEmbeddedAgentOSConfig(): Promise<AgentOSConfig> {
     defaultGMIInactivityCleanupMinutes: Number(process.env.AGENTOS_GMI_INACTIVITY_MINUTES ?? 60),
     defaultWorkingMemoryType: 'in_memory',
     defaultGMIBaseConfigDefaults: {
-      defaultLlmProviderId: process.env.AGENTOS_DEFAULT_PROVIDER_ID || 'openai',
-      defaultLlmModelId: process.env.AGENTOS_DEFAULT_MODEL_ID || 'gpt-4o-mini',
+      defaultLlmProviderId: defaultProviderId,
+      defaultLlmModelId: defaultModelId,
     },
   };
 
   const orchestratorConfig: AgentOSOrchestratorConfig = {
     maxToolCallIterations: Number(process.env.AGENTOS_MAX_TOOL_CALL_ITERATIONS ?? 4),
     defaultAgentTurnTimeoutMs: Number(process.env.AGENTOS_TURN_TIMEOUT_MS ?? 120_000),
-    enableConversationalPersistence: process.env.AGENTOS_ENABLE_PERSISTENCE === 'true',
+    enableConversationalPersistence: persistenceEnabled,
   };
+
+  const metapromptPresets = loadMetapromptPresetsConfig();
+  const promptProfileConfig = metapromptPresets
+    ? buildPromptProfileConfigFromMetapromptPresets(metapromptPresets)
+    : null;
+  if (promptProfileConfig) {
+    orchestratorConfig.promptProfileConfig = promptProfileConfig;
+  }
+
+  const rollingSummaryProfilesConfig = metapromptPresets
+    ? buildRollingSummaryProfilesFromMetapromptPresets(metapromptPresets)
+    : null;
+  if (rollingSummaryProfilesConfig) {
+    orchestratorConfig.rollingSummaryCompactionProfilesConfig = rollingSummaryProfilesConfig;
+  }
 
   const promptEngineConfig: PromptEngineConfig = {
     defaultTemplateName: 'openai_chat',
@@ -408,43 +696,197 @@ async function buildEmbeddedAgentOSConfig(): Promise<AgentOSConfig> {
     },
     maxActiveConversationsInMemory: Number(process.env.AGENTOS_MAX_ACTIVE_CONVERSATIONS ?? 100),
     inactivityTimeoutMs: Number(process.env.AGENTOS_INACTIVITY_TIMEOUT_MS ?? 3_600_000),
-    persistenceEnabled: true,
+    persistenceEnabled,
   };
 
   const streamingManagerConfig: StreamingManagerConfig = {
     maxConcurrentStreams: Number(process.env.AGENTOS_MAX_CONCURRENT_STREAMS ?? 100),
-    defaultStreamInactivityTimeoutMs: Number(process.env.AGENTOS_STREAM_INACTIVITY_TIMEOUT_MS ?? 300_000),
+    defaultStreamInactivityTimeoutMs: Number(
+      process.env.AGENTOS_STREAM_INACTIVITY_TIMEOUT_MS ?? 300_000
+    ),
     maxClientsPerStream: Number(process.env.AGENTOS_MAX_CLIENTS_PER_STREAM ?? 5),
     onClientSendErrorBehavior: 'log_and_continue',
   };
 
   const openAiBaseUrl = process.env.AGENTOS_OPENAI_BASE_URL || 'https://api.openai.com/v1';
+  const openAiApiKey = process.env.OPENAI_API_KEY?.trim();
+  const openRouterApiKey = process.env.OPENROUTER_API_KEY?.trim();
+  const ollamaBaseUrl = process.env.OLLAMA_BASE_URL?.trim();
 
-  const modelProviderManagerConfig: AIModelProviderManagerConfig = {
-    providers: [
-      {
-        providerId: 'openai',
-        enabled: Boolean(process.env.OPENAI_API_KEY),
-        isDefault: true,
-        config: {
-          apiKey: process.env.OPENAI_API_KEY || 'missing-openai-key',
-          baseURL: openAiBaseUrl,
-          defaultModelId: process.env.AGENTOS_DEFAULT_MODEL_ID || 'gpt-4o-mini',
-        },
+  const providers: AIModelProviderManagerConfig['providers'] = [];
+
+  if (openAiApiKey) {
+    providers.push({
+      providerId: 'openai',
+      enabled: true,
+      isDefault: true,
+      config: {
+        apiKey: openAiApiKey,
+        baseURL: openAiBaseUrl,
+        defaultModelId: process.env.AGENTOS_DEFAULT_MODEL_ID || 'gpt-4o-mini',
       },
-    ],
-  };
+    });
+  }
 
-  const prismaClient = await createAgentOSSqlClient();
+  if (openRouterApiKey) {
+    providers.push({
+      providerId: 'openrouter',
+      enabled: true,
+      isDefault: !openAiApiKey,
+      config: {
+        apiKey: openRouterApiKey,
+        baseURL: process.env.OPENROUTER_API_BASE_URL || 'https://openrouter.ai/api/v1',
+        defaultModelId: process.env.MODEL_PREF_OPENROUTER_DEFAULT || 'openai/gpt-4o-mini',
+      },
+    });
+  }
+
+  if (ollamaBaseUrl) {
+    providers.push({
+      providerId: 'ollama',
+      enabled: true,
+      isDefault: !openAiApiKey && !openRouterApiKey,
+      config: {
+        baseURL: ollamaBaseUrl,
+        defaultModelId: process.env.MODEL_PREF_OLLAMA_DEFAULT || 'llama3.2',
+      },
+    });
+  }
+
+  if (providers.length > 0 && !providers.some((p) => Boolean(p.isDefault))) {
+    providers[0].isDefault = true;
+  }
+
+  const modelProviderManagerConfig: AIModelProviderManagerConfig = { providers };
+
+  const prismaClient = new PrismaClient();
 
   // Enable guardrails by default in non-dev environments (or via AGENTOS_ENABLE_GUARDRAILS=true)
-  const guardrailService = (process.env.AGENTOS_ENABLE_GUARDRAILS === 'true' || process.env.NODE_ENV === 'production')
-    ? createDefaultGuardrailStack()
-    : undefined;
+  const guardrailService =
+    process.env.AGENTOS_ENABLE_GUARDRAILS === 'true' || process.env.NODE_ENV === 'production'
+      ? createDefaultGuardrailStack()
+      : undefined;
 
-  return {
+  const parseJsonEnv = (name: string): Record<string, unknown> | undefined => {
+    const raw = process.env[name];
+    if (!raw || !raw.trim()) {
+      return undefined;
+    }
+    try {
+      const parsed = JSON.parse(raw);
+      return parsed && typeof parsed === 'object' ? (parsed as Record<string, unknown>) : undefined;
+    } catch (error) {
+      console.warn(`[AgentOS][Provenance] Failed to parse ${name} as JSON.`, error);
+      return undefined;
+    }
+  };
+
+  const buildProvenanceConfigFromEnv = () => {
+    const keySource =
+      process.env.AGENTOS_PROVENANCE_PRIVATE_KEY_BASE64 &&
+      process.env.AGENTOS_PROVENANCE_PUBLIC_KEY_BASE64
+        ? {
+            type: 'import' as const,
+            privateKeyBase64: process.env.AGENTOS_PROVENANCE_PRIVATE_KEY_BASE64,
+            publicKeyBase64: process.env.AGENTOS_PROVENANCE_PUBLIC_KEY_BASE64,
+          }
+        : { type: 'generate' as const };
+
+    const profileId = (process.env.AGENTOS_PROVENANCE_PROFILE || 'mutable-dev')
+      .trim()
+      .toLowerCase();
+
+    const resolveBaseProfile = (): ProvenanceSystemConfig => {
+      switch (profileId) {
+        case 'mutable':
+        case 'mutable-dev':
+          return profiles.mutableDev();
+        case 'revisioned':
+        case 'revisioned-verified':
+          return profiles.revisionedVerified();
+        case 'sealed':
+        case 'sealed-autonomous':
+          return profiles.sealedAutonomous();
+        case 'sealed-auditable':
+        case 'auditable':
+          return profiles.sealedAuditable(process.env.AGENTOS_PROVENANCE_ANCHOR_ENDPOINT);
+        default:
+          console.warn(
+            `[AgentOS][Provenance] Unknown AGENTOS_PROVENANCE_PROFILE '${profileId}'. Falling back to 'mutable-dev'.`
+          );
+          return profiles.mutableDev();
+      }
+    };
+
+    const baseProfile = resolveBaseProfile();
+
+    const anchorType = (process.env.AGENTOS_PROVENANCE_ANCHOR_TYPE || '').trim();
+    const anchorOptions = parseJsonEnv('AGENTOS_PROVENANCE_ANCHOR_OPTIONS_JSON');
+    const anchorTarget =
+      anchorType && anchorType !== 'none'
+        ? {
+            type: anchorType as any,
+            endpoint: process.env.AGENTOS_PROVENANCE_ANCHOR_ENDPOINT,
+            options:
+              anchorOptions ??
+              (process.env.AGENTOS_PROVENANCE_ANCHOR_ENDPOINT
+                ? { endpoint: process.env.AGENTOS_PROVENANCE_ANCHOR_ENDPOINT }
+                : undefined),
+          }
+        : baseProfile.provenance.anchorTarget;
+
+    const anchorIntervalEnv = process.env.AGENTOS_PROVENANCE_ANCHOR_INTERVAL_MS;
+    const anchorBatchSizeEnv = process.env.AGENTOS_PROVENANCE_ANCHOR_BATCH_SIZE;
+    const anchorIntervalMs =
+      anchorIntervalEnv != null ? Number(anchorIntervalEnv) : baseProfile.anchorIntervalMs;
+    const anchorBatchSize =
+      anchorBatchSizeEnv != null ? Number(anchorBatchSizeEnv) : baseProfile.anchorBatchSize;
+
+    return profiles.custom(baseProfile, {
+      provenance: {
+        enabled: true,
+        signatureMode: (process.env.AGENTOS_PROVENANCE_SIGNATURE_MODE as any) || 'every-event',
+        hashAlgorithm: 'sha256',
+        keySource,
+        anchorTarget,
+      },
+      anchorIntervalMs: Number.isFinite(anchorIntervalMs) ? anchorIntervalMs : 0,
+      anchorBatchSize: Number.isFinite(anchorBatchSize) ? anchorBatchSize : 50,
+    });
+  };
+
+  let provenancePack: ReturnType<typeof createProvenancePack> | undefined;
+  let provenanceConfig: ProvenanceSystemConfig | undefined;
+  let provenanceAgentId: string | undefined;
+  let provenanceTablePrefix: string | undefined;
+  const extensionManifest =
+    provenanceEnabled && storageAdapter
+      ? (() => {
+          provenanceConfig = buildProvenanceConfigFromEnv();
+          provenanceAgentId = process.env.AGENTOS_PROVENANCE_AGENT_ID || 'voice-chat-assistant';
+          provenanceTablePrefix = process.env.AGENTOS_PROVENANCE_TABLE_PREFIX || 'agentos_';
+          provenancePack = createProvenancePack(
+            provenanceConfig,
+            storageAdapter,
+            provenanceAgentId,
+            provenanceTablePrefix
+          );
+          return {
+            packs: [
+              {
+                factory: () => provenancePack!,
+                identifier: 'embedded:provenance-pack',
+              },
+            ],
+          };
+        })()
+      : undefined;
+
+  const config: AgentOSConfig = {
     gmiManagerConfig,
     orchestratorConfig,
+    rollingSummaryMemorySink: createRollingSummaryMemorySink(),
+    longTermMemoryRetriever: createLongTermMemoryRetriever(),
     promptEngineConfig,
     toolOrchestratorConfig,
     toolPermissionManagerConfig,
@@ -453,10 +895,25 @@ async function buildEmbeddedAgentOSConfig(): Promise<AgentOSConfig> {
     modelProviderManagerConfig,
     defaultPersonaId: process.env.AGENTOS_DEFAULT_PERSONA_ID || 'v_researcher',
     prisma: prismaClient,
+    storageAdapter,
+    extensionManifest,
     authService: createAgentOSAuthAdapter(),
     subscriptionService: createAgentOSSubscriptionAdapter(),
     utilityAIService: undefined,
     guardrailService,
+  };
+
+  return {
+    config,
+    provenance:
+      provenancePack && provenanceConfig && provenanceAgentId
+        ? {
+            pack: provenancePack,
+            config: provenanceConfig,
+            agentId: provenanceAgentId,
+            tablePrefix: provenanceTablePrefix ?? '',
+          }
+        : undefined,
   };
 }
 
@@ -467,10 +924,3 @@ function ensureAgentOSEnvDefaults(): void {
     '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef';
   process.env.AGENTOS_DATABASE_URL ??= 'file:./agentos-dev.db';
 }
-
-
-
-
-
-
-
