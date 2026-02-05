@@ -77,6 +77,8 @@ export interface ExperimentStats {
   experimentId: string;
   totalTests: number;
   totalGraders: number;
+  passed: number;
+  failed: number;
   passRate: number;
   graderStats: Array<{
     graderId: string;

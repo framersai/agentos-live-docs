@@ -2,13 +2,16 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Sun, Moon, Database, Gauge, FlaskConical } from 'lucide-react';
+import { Sun, Moon, Database, Gauge, FlaskConical, Info, Settings, BarChart3 } from 'lucide-react';
 import { useTheme } from './ThemeProvider';
 
 const tabs = [
   { name: 'Datasets', href: '/datasets', icon: Database },
   { name: 'Graders', href: '/graders', icon: Gauge },
   { name: 'Experiments', href: '/experiments', icon: FlaskConical },
+  { name: 'Stats', href: '/stats', icon: BarChart3 },
+  { name: 'Settings', href: '/settings', icon: Settings },
+  { name: 'About', href: '/about', icon: Info },
 ];
 
 export function Navigation() {
@@ -16,15 +19,16 @@ export function Navigation() {
   const { theme, toggleTheme } = useTheme();
 
   return (
-    <header className="border-b border-border">
+    <header className="bg-card border-b border-border" style={{ boxShadow: 'var(--shadow-sm)' }}>
       <div className="container mx-auto px-4 max-w-6xl">
-        <div className="flex h-16 items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="font-mono text-lg font-semibold">
+        <div className="flex h-14 items-center justify-between">
+          <Link
+            href="/"
+            className="font-mono text-sm font-semibold tracking-tight text-muted-foreground hover:text-foreground transition-colors"
+          >
             eval-harness
           </Link>
 
-          {/* Tabs */}
           <nav className="flex items-center gap-1">
             {tabs.map((tab) => {
               const isActive = pathname.startsWith(tab.href);
@@ -35,30 +39,31 @@ export function Navigation() {
                   key={tab.href}
                   href={tab.href}
                   className={`
-                    flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md transition-colors
+                    flex items-center gap-2 px-3 py-1.5 text-sm font-medium transition-all
                     ${isActive
                       ? 'bg-foreground text-background'
                       : 'text-muted-foreground hover:text-foreground hover:bg-muted'
                     }
                   `}
+                  style={{ borderRadius: 'var(--radius)' }}
                 >
                   <Icon className="h-4 w-4" />
-                  {tab.name}
+                  <span className="hidden sm:inline">{tab.name}</span>
                 </Link>
               );
             })}
           </nav>
 
-          {/* Theme toggle */}
           <button
             onClick={toggleTheme}
-            className="btn-ghost p-2 rounded-md"
+            className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            style={{ borderRadius: 'var(--radius)' }}
             aria-label="Toggle theme"
           >
             {theme === 'light' ? (
-              <Moon className="h-5 w-5" />
+              <Moon className="h-4 w-4" />
             ) : (
-              <Sun className="h-5 w-5" />
+              <Sun className="h-4 w-4" />
             )}
           </button>
         </div>
