@@ -72,14 +72,14 @@ curl -X POST http://localhost:3021/api/presets/seed
 ```
 
 This creates:
-- 4 datasets (math, geography, RAG context, sentiment classification)
+- 4 datasets (math, geography, context-grounded Q&A, sentiment classification)
 - 14 graders (exact match, LLM judges, semantic similarity, faithfulness, regex, JSON schema, etc.)
 
 Then load candidate presets individually:
 
 ```bash
 # Load all 6 candidate presets
-for id in qa-basic qa-rag json-extractor classifier summarizer http-api; do
+for id in qa-basic qa-context json-extractor classifier summarizer http-api; do
   curl -X POST http://localhost:3021/api/presets/candidates/$id/load
 done
 ```
@@ -114,7 +114,7 @@ Go to **Datasets** tab. You can:
 **Load a preset:**
 - `Basic Math` — 5 arithmetic questions with exact answers
 - `Geography Facts` — 5 capital city / geography questions
-- `RAG with Context` — 3 questions with provided context (for faithfulness testing)
+- `Q&A with Context` — 3 questions with provided context (for faithfulness testing)
 - `Sentiment Classification` — 5 text snippets with positive/negative/neutral labels
 
 **Create manually:**
@@ -123,7 +123,7 @@ Go to **Datasets** tab. You can:
 3. Add test cases with:
    - **Input**: The prompt or question
    - **Expected Output**: Ground truth answer (optional — not needed if you're just generating and grading)
-   - **Context**: Reference text for faithfulness/RAG testing (optional)
+   - **Context**: Reference text for faithfulness grading (optional)
    - **Metadata**: JSON object with custom fields (optional — e.g. `{"difficulty": "hard", "topic": "math"}`)
 
 **Import data:**
@@ -196,7 +196,7 @@ Go to **Candidates** tab. A candidate defines **how to produce output** for each
 | Preset | Type | Template | Best For |
 |--------|------|----------|----------|
 | `Q&A Basic` | llm_prompt | `{{input}}` | General knowledge |
-| `Q&A with Context (RAG)` | llm_prompt | `Context:\n{{context}}\n\nQuestion: {{input}}` | RAG pipelines |
+| `Q&A with Context` | llm_prompt | `Context:\n{{context}}\n\nQuestion: {{input}}` | Context-grounded Q&A |
 | `JSON Extractor` | llm_prompt | `{{input}}` (temp=0) | Structured extraction |
 | `Text Classifier` | llm_prompt | `{{input}}` (temp=0) | Classification tasks |
 | `Text Summarizer` | llm_prompt | `{{input}}` | Summarization quality |
@@ -313,7 +313,7 @@ POST /api/presets/candidates/qa-basic/load
 **Dataset Presets** (4):
 - `math-basic` — 5 arithmetic questions
 - `factual-geography` — 5 geography questions
-- `rag-context` — 3 questions with context
+- `context-qa` — 3 questions with provided context
 - `sentiment-classification` — 5 sentiment examples
 
 **Grader Presets** (14):
@@ -328,7 +328,7 @@ POST /api/presets/candidates/qa-basic/load
 - `context-relevancy-default`
 
 **Candidate Presets** (6):
-- `qa-basic`, `qa-rag`, `json-extractor`, `classifier`, `summarizer`, `http-api`
+- `qa-basic`, `qa-context`, `json-extractor`, `classifier`, `summarizer`, `http-api`
 
 ---
 
@@ -433,21 +433,23 @@ Interactive Swagger docs: `http://localhost:3021/api/docs`
 
 ## Example Workflows
 
-### Workflow 1: Test a RAG Pipeline
+### Workflow 1: Test Faithfulness with Provided Context
 
 ```bash
-# 1. Load RAG dataset and graders
-curl -X POST localhost:3021/api/presets/datasets/rag-context/load
+# 1. Load context-grounded dataset and faithfulness grader
+curl -X POST localhost:3021/api/presets/datasets/context-qa/load
 curl -X POST localhost:3021/api/presets/graders/faithfulness-strict/load
 
-# 2. Create a RAG candidate
-curl -X POST localhost:3021/api/presets/candidates/qa-rag/load
+# 2. Create a context Q&A candidate
+curl -X POST localhost:3021/api/presets/candidates/qa-context/load
 
 # 3. Run experiment
 curl -X POST localhost:3021/api/experiments \
   -H "Content-Type: application/json" \
   -d '{"datasetId":"DATASET_ID","candidateIds":["CANDIDATE_ID"],"graderIds":["GRADER_ID"]}'
 ```
+
+> **Note:** Context is pre-loaded in test cases. Dynamic retrieval (RAG) is planned but not yet implemented — see `backend/src/retrieval/` for the interface stubs.
 
 ### Workflow 2: Compare Two Prompt Variants
 

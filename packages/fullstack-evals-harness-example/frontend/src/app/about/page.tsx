@@ -105,13 +105,13 @@ export default function AboutPage() {
             <p className="text-muted-foreground leading-relaxed">
               Datasets are collections of test cases. Each test case has an <code>input</code> (the prompt),
               an optional <code>expectedOutput</code> (ground truth), optional <code>context</code>
-              (for RAG/faithfulness testing), and optional <code>metadata</code> (custom fields as JSON).
+              (for faithfulness testing), and optional <code>metadata</code> (custom fields as JSON).
             </p>
             <p className="text-muted-foreground leading-relaxed mt-3">
               <strong>7 built-in presets:</strong> Prompt Injection Red Team (8 adversarial attack categories),
               Code Review (security bug detection), Multi-Step Reasoning (chain-of-thought problems),
               Hallucination Traps (fictional questions), Research Paper Extraction (5 real AI papers with expected JSON),
-              RAG with Context (faithfulness testing),
+              Q&A with Context (faithfulness testing),
               and Sentiment Classification. You can also create datasets manually, import JSON/CSV,
               or generate synthetic test cases via LLM.
             </p>
@@ -143,7 +143,7 @@ export default function AboutPage() {
               This enables running the same prompt across GPT-4o, Claude, and Llama in a single experiment.
             </p>
             <p className="text-muted-foreground leading-relaxed mt-3">
-              <strong>10 built-in presets</strong> including Q&A Basic, Q&A RAG, JSON Extractor,
+              <strong>10 built-in presets</strong> including Q&A Basic, Q&A with Context, JSON Extractor,
               Strict JSON Extractor (grounded extraction with null-not-fabricate rules), Loose JSON Extractor (inferential, for comparison),
               Classifier, Summarizer, HTTP API, Hardened Assistant (with injection defenses), and Naive Assistant (no defenses, for comparison).
             </p>
@@ -167,7 +167,7 @@ export default function AboutPage() {
               <li><strong>LLM Judge</strong> — LLM evaluates output against a custom rubric</li>
               <li><strong>Faithfulness</strong> — RAGAS-inspired claim extraction and context verification</li>
               <li><strong>Answer Relevancy</strong> — RAGAS-inspired question-answer alignment</li>
-              <li><strong>Context Relevancy</strong> — Evaluate retrieval quality in RAG pipelines</li>
+              <li><strong>Context Relevancy</strong> — Evaluate context quality for grounded Q&A</li>
             </ul>
             <p className="text-muted-foreground leading-relaxed mt-3">
               <strong>18 built-in presets</strong> including Injection Resistance Judge (evaluates prompt injection defense),
@@ -375,7 +375,7 @@ Candidate C: "Llama 3 (Local)"
               <li>Multi-Step Reasoning</li>
               <li>Hallucination Traps</li>
               <li>Research Paper Extraction</li>
-              <li>RAG with Context</li>
+              <li>Q&A with Context</li>
               <li>Sentiment Classification</li>
             </ul>
           </div>
@@ -399,7 +399,7 @@ Candidate C: "Llama 3 (Local)"
             <h3 className="font-bold uppercase text-sm">10 Candidate Presets</h3>
             <ul className="mt-3 space-y-1 text-sm text-muted-foreground">
               <li>Q&A Basic</li>
-              <li>Q&A RAG (Context-grounded)</li>
+              <li>Q&A with Context (grounded)</li>
               <li>JSON Extractor</li>
               <li>Strict JSON Extractor</li>
               <li>Loose JSON Extractor</li>

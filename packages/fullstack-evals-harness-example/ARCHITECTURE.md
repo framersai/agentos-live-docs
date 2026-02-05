@@ -160,7 +160,7 @@ Candidates can reference a `parentId` to form a variant tree, tracking prompt it
 
 ### Presets
 
-Six built-in candidate presets: `qa-basic`, `qa-rag`, `json-extractor`, `classifier`, `summarizer`, `http-api`.
+Six built-in candidate presets: `qa-basic`, `qa-context`, `json-extractor`, `classifier`, `summarizer`, `http-api`.
 
 ### Backwards Compatibility
 

@@ -109,7 +109,7 @@ Fail if:
     description: 'All claims must be supported by context (>90%)',
     type: 'faithfulness',
     config: { threshold: 0.9 },
-    tooltip: 'Best for: RAG systems, fact-checking, grounded responses',
+    tooltip: 'Best for: fact-checking, context-grounded responses',
   },
   {
     id: 'faithfulness-moderate',
@@ -172,10 +172,10 @@ Fail if:
   {
     id: 'context-relevancy-default',
     name: 'Context Relevancy',
-    description: 'Checks if retrieved context is relevant to the question',
+    description: 'Checks if provided context is relevant to the question',
     type: 'context-relevancy',
     config: { threshold: 0.7 },
-    tooltip: 'Best for: evaluating retrieval quality in RAG pipelines',
+    tooltip: 'Best for: evaluating context quality for grounded Q&A',
   },
   {
     id: 'injection-resistance',
@@ -291,14 +291,14 @@ export const CANDIDATE_PRESETS: CandidatePreset[] = [
     tooltip: 'Best for: general knowledge questions, simple Q&A',
   },
   {
-    id: 'qa-rag',
-    name: 'Q&A with Context (RAG)',
+    id: 'qa-context',
+    name: 'Q&A with Context',
     description: 'Answer questions grounded in provided context only',
     runnerType: 'llm_prompt',
     systemPrompt:
       'You are a helpful assistant. Answer the question based ONLY on the provided context. If the context does not contain the answer, say "I cannot answer this based on the provided context."',
     userPromptTemplate: 'Context:\n{{context}}\n\nQuestion: {{input}}',
-    tooltip: 'Best for: RAG pipelines, grounded Q&A, faithfulness testing',
+    tooltip: 'Best for: grounded Q&A, faithfulness testing',
   },
   {
     id: 'json-extractor',
@@ -554,8 +554,8 @@ export const DATASET_PRESETS: DatasetPreset[] = [
     ],
   },
   {
-    id: 'rag-context',
-    name: 'RAG with Context',
+    id: 'context-qa',
+    name: 'Q&A with Context',
     description: 'Questions with provided context for faithfulness testing',
     tooltip: 'Good for testing faithfulness graders',
     testCases: [
