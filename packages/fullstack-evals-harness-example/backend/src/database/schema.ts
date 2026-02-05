@@ -83,6 +83,17 @@ export const experimentResults = sqliteTable('experiment_results', {
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
 });
 
+/**
+ * Settings store runtime configuration.
+ * Used for LLM provider settings, API keys, etc.
+ */
+export const settings = sqliteTable('settings', {
+  id: text('id').primaryKey(),
+  key: text('key').notNull().unique(),
+  value: text('value').notNull(),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
+});
+
 // Type exports for use in services
 export type Dataset = typeof datasets.$inferSelect;
 export type NewDataset = typeof datasets.$inferInsert;
@@ -94,3 +105,5 @@ export type Experiment = typeof experiments.$inferSelect;
 export type NewExperiment = typeof experiments.$inferInsert;
 export type ExperimentResult = typeof experimentResults.$inferSelect;
 export type NewExperimentResult = typeof experimentResults.$inferInsert;
+export type Settings = typeof settings.$inferSelect;
+export type NewSettings = typeof settings.$inferInsert;
