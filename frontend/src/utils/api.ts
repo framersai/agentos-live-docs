@@ -395,6 +395,7 @@ export interface ChatMessagePayloadFE {
   messages: ChatMessageFE[];
   processedHistory?: ProcessedHistoryMessageFE[];
   mode: string;
+  organizationId?: string | null;
   language?: string;
   generateDiagram?: boolean;
   userId?: string;
@@ -406,6 +407,19 @@ export interface ChatMessagePayloadFE {
   interviewMode?: boolean;
   stream?: boolean;
   personaOverride?: string | null;
+  /**
+   * Controls AgentOS long-term memory persistence (per conversation).
+   * This is forwarded to AgentOS when routing through `/api/agentos/*` or `/api/chat` (AgentOS proxy).
+   */
+  memoryControl?: {
+    longTermMemory?: {
+      enabled?: boolean;
+      scopes?: Partial<Record<'conversation' | 'user' | 'persona' | 'organization', boolean>>;
+      shareWithOrganization?: boolean;
+      storeAtomicDocs?: boolean;
+      allowedCategories?: string[];
+    };
+  } | null;
   tool_response?: {
     tool_call_id: string;
     tool_name: string;
@@ -429,8 +443,8 @@ export interface SessionCostDetailsFE {
   costsByService: Record<
     string,
     {
-    totalCost: number;
-    count: number;
+      totalCost: number;
+      count: number;
       details?: Array<{ model?: string; cost: number; timestamp: string }>;
     }
   >;
@@ -444,6 +458,7 @@ export interface SessionCostDetailsFE {
 interface BaseChatResponseDataFE {
   model: string;
   usage?: ILlmUsageFE;
+  metadata?: Record<string, any> | null;
   sessionCost: SessionCostDetailsFE | null;
   costOfThisCall: number | null;
   conversationId: string;
@@ -480,14 +495,17 @@ interface AgentOSChatAdapterResult {
   conversationId: string;
   persona?: string | null;
   personaLabel?: string | null;
+  metadata?: Record<string, any>;
 }
 
 interface AgentOSChatPayload {
   userId: string;
+  organizationId?: string | null;
   conversationId: string;
   mode: string;
   messages: Array<Pick<ChatMessageFE, 'role' | 'content' | 'name' | 'tool_call_id'>>;
   workflowRequest?: WorkflowInvocationRequestFE | null;
+  memoryControl?: ChatMessagePayloadFE['memoryControl'];
 }
 
 const isAgentOSAdapterResult = (value: any): value is AgentOSChatAdapterResult => {
@@ -517,11 +535,64 @@ const adaptAgentOSResponse = (
     message: result.content,
     model: result.model,
     usage,
+    metadata: result.metadata ?? null,
     conversationId: result.conversationId,
     sessionCost: null,
     costOfThisCall: null,
     persona: result.persona ?? null,
     discernment: { provider: 'agentos', mode },
+  };
+};
+
+const isAgentOSFinalResponseChunk = (
+  value: any
+): value is {
+  type: 'final_response';
+  streamId: string;
+  finalResponseText: string | null;
+  usage?: {
+    promptTokens?: number;
+    completionTokens?: number;
+    totalTokens?: number;
+    totalCostUSD?: number;
+  };
+  metadata?: Record<string, any>;
+  personaId?: string;
+  activePersonaDetails?: { id?: string } | null;
+} => {
+  return (
+    value &&
+    typeof value === 'object' &&
+    value.type === 'final_response' &&
+    typeof value.streamId === 'string' &&
+    Object.prototype.hasOwnProperty.call(value, 'finalResponseText')
+  );
+};
+
+const adaptAgentOSStreamFinalResponse = (chunk: any, mode?: string): ChatResponseDataFE => {
+  const usage = chunk?.usage
+    ? {
+        prompt_tokens: chunk.usage.promptTokens ?? null,
+        completion_tokens: chunk.usage.completionTokens ?? null,
+        total_tokens: chunk.usage.totalTokens ?? null,
+      }
+    : undefined;
+
+  const personaId = chunk?.activePersonaDetails?.id ?? chunk?.personaId ?? null;
+
+  return {
+    type: 'text_response',
+    content: typeof chunk?.finalResponseText === 'string' ? chunk.finalResponseText : null,
+    message: typeof chunk?.finalResponseText === 'string' ? chunk.finalResponseText : undefined,
+    model: chunk?.metadata?.modelId ?? 'agentos',
+    usage,
+    metadata: chunk?.metadata ?? null,
+    conversationId: chunk?.streamId ?? '',
+    sessionCost: null,
+    costOfThisCall:
+      typeof chunk?.usage?.totalCostUSD === 'number' ? chunk.usage.totalCostUSD : null,
+    persona: typeof personaId === 'string' ? personaId : null,
+    discernment: { provider: 'agentos', mode, stream: true },
   };
 };
 
@@ -534,7 +605,7 @@ const ensureAgentOSPayload = (payload: ChatMessagePayloadFE): AgentOSChatPayload
 
   const simplifiedMessages = (payload.messages || [])
     .filter((msg): msg is ChatMessageFE => Boolean(msg && msg.role))
-    .map(msg => ({
+    .map((msg) => ({
       role: msg.role,
       content: msg.content ?? '',
       name: msg.name,
@@ -543,10 +614,12 @@ const ensureAgentOSPayload = (payload: ChatMessagePayloadFE): AgentOSChatPayload
 
   return {
     userId,
+    organizationId: payload.organizationId ?? null,
     conversationId,
     mode: fallbackMode,
     messages: simplifiedMessages,
     workflowRequest: payload.workflowRequest ?? null,
+    memoryControl: payload.memoryControl ?? null,
   };
 };
 
@@ -565,8 +638,14 @@ const buildAgentOSStreamQuery = (payload: AgentOSChatPayload): string => {
   params.set('conversationId', payload.conversationId);
   params.set('mode', payload.mode);
   params.set('messages', JSON.stringify(payload.messages));
+  if (payload.organizationId) {
+    params.set('organizationId', payload.organizationId);
+  }
   if (payload.workflowRequest) {
     params.set('workflowRequest', JSON.stringify(payload.workflowRequest));
+  }
+  if (payload.memoryControl) {
+    params.set('memoryControl', JSON.stringify(payload.memoryControl));
   }
   return params.toString();
 };
@@ -614,18 +693,18 @@ export const chatAPI = {
     const payload = { ...payloadData, stream: true };
     const directAgentOS = shouldRouteThroughAgentOS(payload);
     const agentosPayload = directAgentOS ? ensureAgentOSPayload(payload) : null;
-    const streamUrl = directAgentOS
-      ? `${joinWithApiBase(AGENTOS_STREAM_PATH)}?${buildAgentOSStreamQuery(agentosPayload!)}`
-      : `${API_BASE_URL}/chat`;
+    const streamUrl = directAgentOS ? joinWithApiBase(AGENTOS_STREAM_PATH) : `${API_BASE_URL}/chat`;
 
     const fetchOptions: RequestInit = directAgentOS
       ? {
-          method: 'GET',
+          method: 'POST',
           headers: {
+            'Content-Type': 'application/json',
             ...getAuthHeaders(),
             'X-Client-Version': '1.4.1',
             Accept: 'text/event-stream',
           },
+          body: JSON.stringify(agentosPayload),
         }
       : {
           method: 'POST',
@@ -660,6 +739,8 @@ export const chatAPI = {
       const decoder = new TextDecoder();
       let buffer = '';
       let finalResponseData: any;
+      let emittedText = false;
+      let agentosMetadata: Record<string, any> = {};
       // eslint-disable-next-line no-constant-condition
       while (true) {
         const { done, value } = await reader.read();
@@ -718,8 +799,41 @@ export const chatAPI = {
                     },
                   });
                 }
+              } else if (parsedChunk.type === 'metadata_update') {
+                if (parsedChunk.updates && typeof parsedChunk.updates === 'object') {
+                  agentosMetadata = { ...agentosMetadata, ...parsedChunk.updates };
+                }
+              } else if (
+                parsedChunk.type === 'text_delta' &&
+                typeof parsedChunk.textDelta === 'string'
+              ) {
+                emittedText = emittedText || parsedChunk.textDelta.trim().length > 0;
+                onChunkReceived(parsedChunk.textDelta);
+              } else if (isAgentOSFinalResponseChunk(parsedChunk)) {
+                finalResponseData = adaptAgentOSStreamFinalResponse(
+                  parsedChunk,
+                  agentosPayload?.mode
+                );
+                if (finalResponseData && typeof finalResponseData === 'object') {
+                  finalResponseData.metadata = {
+                    ...agentosMetadata,
+                    ...(parsedChunk.metadata && typeof parsedChunk.metadata === 'object'
+                      ? parsedChunk.metadata
+                      : {}),
+                  };
+                }
+                if (
+                  !emittedText &&
+                  typeof parsedChunk.finalResponseText === 'string' &&
+                  parsedChunk.finalResponseText.trim().length > 0
+                ) {
+                  emittedText = true;
+                  onChunkReceived(parsedChunk.finalResponseText);
+                }
               } else if (parsedChunk.type === 'chunk' && typeof parsedChunk.content === 'string') {
                 onChunkReceived(parsedChunk.content);
+              } else if (parsedChunk.type === 'error' && typeof parsedChunk.message === 'string') {
+                throw new Error(parsedChunk.message);
               } else if (parsedChunk.type === 'tool_call_delta') {
                 console.log('[API Service] Stream: Tool call delta received:', parsedChunk);
               } else if (parsedChunk.type === 'final_response_metadata') {
@@ -727,7 +841,7 @@ export const chatAPI = {
               } else if (parsedChunk.content && typeof parsedChunk.content === 'string') {
                 onChunkReceived(parsedChunk.content);
               } else if (directAgentOS && isAgentOSAdapterResult(parsedChunk)) {
-                finalResponseData = parsedChunk;
+                finalResponseData = adaptAgentOSResponse(parsedChunk as any, agentosPayload?.mode);
                 if (parsedChunk.content) {
                   onChunkReceived(parsedChunk.content);
                 }

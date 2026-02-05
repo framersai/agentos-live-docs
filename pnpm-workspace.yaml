@@ -2,6 +2,7 @@ packages:
   - backend
   - frontend
   - packages/*
+  - packages/agentos-extensions/registry/curated/provenance/anchor-providers
   - apps/*
   - apps/**
   - codex-extensions

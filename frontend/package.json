@@ -35,7 +35,10 @@
     "vue-router": "^4.2.5",
     "@codemirror/view": "^6.34.3",
     "@codemirror/state": "^6.4.1",
+    "@codemirror/commands": "^6.10.1",
+    "@codemirror/language": "^6.12.1",
     "@codemirror/lang-markdown": "^6.3.1",
+    "@codemirror/autocomplete": "^6.20.0",
     "@codemirror/theme-one-dark": "^6.1.2",
     "@codemirror/language-data": "^6.5.1",
     "@lezer/common": "^1.2.3",
@@ -44,6 +47,8 @@
     "@tiptap/starter-kit": "^2.10.3",
     "tiptap-markdown": "^0.8.10",
     "tldraw": "^2.4.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "veaury": "^2.3.4"
   },
   "devDependencies": {

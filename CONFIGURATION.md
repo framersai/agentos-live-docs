@@ -84,6 +84,40 @@ When billing is configured, webhooks update `app_users` with subscription state.
 | `PREVENT_REPETITIVE_RESPONSES`    | Toggle repetition avoidance.                                |
 | `DISABLE_COST_LIMITS`             | Set to `true` to bypass cost thresholds during development. |
 
+### Prompt Profiles & Rolling Memory (Optional)
+
+Prompt profiles (dynamic “meta presets”) and rolling memory live in `config/metaprompt-presets.json`.
+
+- When `AGENTOS_ENABLED=true`, AgentOS loads this config and applies prompt-profile routing + rolling memory inside the AgentOS orchestrator.
+- The `MEMORY_COMPACTION_*` env vars below apply to the legacy (non‑AgentOS) `/api/chat` path and are optional overrides (useful for deploy-time kill switches or emergency tuning).
+
+| Variable                               | Description                                                                |
+| -------------------------------------- | -------------------------------------------------------------------------- |
+| `METAPROMPT_PRESETS_PATH`              | Optional path override for `config/metaprompt-presets.json`.               |
+| `MEMORY_COMPACTION_ENABLED`            | Enable rolling conversation summary/compaction (`true`/`false`).           |
+| `MEMORY_COMPACTION_MODEL_ID`           | Model used for compaction (defaults to the utility model / `gpt-4o-mini`). |
+| `MEMORY_COMPACTION_PROMPT_KEY`         | Prompt template key under `prompts/` (default `memory_compactor_v2_json`). |
+| `MEMORY_COMPACTION_TAIL_TURNS`         | How many most-recent turns to keep verbatim (default `12`).                |
+| `MEMORY_COMPACTION_MIN_TURNS`          | Minimum turns to summarize in one pass (default `12`).                     |
+| `MEMORY_COMPACTION_MAX_TURNS_PER_PASS` | Max turns summarized per compaction pass (default `48`).                   |
+| `MEMORY_COMPACTION_COOLDOWN_MS`        | Cooldown between compaction passes per conversation (default `60000`).     |
+| `MEMORY_COMPACTION_MAX_SUMMARY_TOKENS` | Max tokens for the rolling summary output (default `900`).                 |
+
+See `docs/METAPROMPT_PRESETS.md` for details.
+
+Per-conversation long-term memory controls (opt-out, user/org scope) are **request fields**, not env vars:
+
+- `organizationId`
+- `memoryControl.longTermMemory`
+
+AgentOS persists the resolved `memoryControl.longTermMemory` policy in `ConversationContext` metadata so it sticks across turns. For security, `organizationId` is **not** persisted; callers should assert org context on each request after verifying membership/permissions.
+
+Backend default behavior (Voice Chat Assistant):
+
+- If `organizationId` is present, the backend enables org-scoped long-term memory retrieval by default (`scopes.organization=true`) unless explicitly disabled in `memoryControl.longTermMemory.scopes`.
+- If authenticated, the backend enables user + persona long-term memory retrieval by default (`scopes.user=true`, `scopes.persona=true`) unless explicitly disabled in `memoryControl.longTermMemory.scopes`.
+- Organization admins can manage org-level memory defaults/kill-switches via `GET/PATCH /api/organizations/:organizationId/settings`.
+
 ## 5. LLM Providers
 
 | Variable             | Description                                            |
@@ -169,21 +203,33 @@ For more operational notes and deployment tips, review [`PRODUCTION_SETUP.md`](P
 
 ## 11. AgentOS Experimental Integration
 
-| Variable                               | Description                                                                                           |
-| -------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| `AGENTOS_ENABLED`                      | Enable the embedded AgentOS router (`/api/agentos/*`). Defaults to `false`.                           |
-| `AGENTOS_DEFAULT_PERSONA_ID`           | Fallback persona ID when the client does not specify one.                                             |
-| `AGENTOS_DEFAULT_MODEL_ID`             | Preferred model ID for AgentOS orchestrations (e.g., `gpt-4o-mini`).                                  |
-| `AGENTOS_API_KEY_ENCRYPTION_KEY_HEX`   | 64-character hex string used by the internal API-key vault stub.                                      |
-| `AGENTOS_DATABASE_URL`                 | SQLite connection string used by the AgentOS persistence stub.                                        |
-| `AGENTOS_MAX_TOOL_CALL_ITERATIONS`     | Safeguard for chained tool invocations per turn.                                                      |
-| `AGENTOS_MAX_CONCURRENT_STREAMS`       | Streaming fan-out limit for SSE responses.                                                            |
-| `AGENTOS_TURN_TIMEOUT_MS`              | Timeout applied to a single AgentOS turn before failover.                                             |
-| `AGENTOS_STREAM_INACTIVITY_TIMEOUT_MS` | Idle timeout for SSE clients.                                                                         |
-| `AGENTOS_PERSONA_PATH`                 | Optional override to load persona definitions from a custom directory.                                |
-| `PERSONA_DEFINITIONS_PATH`             | Path used by the voice UI stack to discover persona JSON files (defaults to `./backend/agentos/...`). |
+| Variable                                 | Description                                                                                           |
+| ---------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `AGENTOS_ENABLED`                        | Enable the embedded AgentOS router (`/api/agentos/*`). Defaults to `false`.                           |
+| `AGENTOS_ENABLE_PERSISTENCE`             | Persist AgentOS conversations via the shared app database (`true`/`false`).                           |
+| `AGENTOS_DEFAULT_PERSONA_ID`             | Fallback persona ID when the client does not specify one.                                             |
+| `AGENTOS_DEFAULT_MODEL_ID`               | Preferred model ID for AgentOS orchestrations (e.g., `gpt-4o-mini`).                                  |
+| `AGENTOS_API_KEY_ENCRYPTION_KEY_HEX`     | 64-character hex string used by the internal API-key vault stub.                                      |
+| `AGENTOS_DATABASE_URL`                   | SQLite connection string used by the AgentOS persistence stub.                                        |
+| `AGENTOS_MAX_TOOL_CALL_ITERATIONS`       | Safeguard for chained tool invocations per turn.                                                      |
+| `AGENTOS_MAX_CONCURRENT_STREAMS`         | Streaming fan-out limit for SSE responses.                                                            |
+| `AGENTOS_TURN_TIMEOUT_MS`                | Timeout applied to a single AgentOS turn before failover.                                             |
+| `AGENTOS_STREAM_INACTIVITY_TIMEOUT_MS`   | Idle timeout for SSE clients.                                                                         |
+| `AGENTOS_PERSONA_PATH`                   | Optional override to load persona definitions from a custom directory.                                |
+| `PERSONA_DEFINITIONS_PATH`               | Path used by the voice UI stack to discover persona JSON files (defaults to `./backend/agentos/...`). |
+| `AGENTOS_PROVENANCE_ENABLED`             | Enable provenance/audit hooks for AgentOS persistence (`true`/`false`). Requires persistence.         |
+| `AGENTOS_PROVENANCE_AGENT_ID`            | Signing identity for provenance events (default: `voice-chat-assistant`).                             |
+| `AGENTOS_PROVENANCE_TABLE_PREFIX`        | Prefix for provenance tables (default: `agentos_`).                                                   |
+| `AGENTOS_PROVENANCE_SIGNATURE_MODE`      | `every-event` (default) or `anchor-only`.                                                             |
+| `AGENTOS_PROVENANCE_PRIVATE_KEY_BASE64`  | Optional Ed25519 private key (base64) for stable signing across restarts.                             |
+| `AGENTOS_PROVENANCE_PUBLIC_KEY_BASE64`   | Optional Ed25519 public key (base64). Required when importing a private key.                          |
+| `AGENTOS_PROVENANCE_ANCHOR_TYPE`         | External anchor target type (`none` default; e.g. `rekor`, `ethereum`, `opentimestamps`).             |
+| `AGENTOS_PROVENANCE_ANCHOR_ENDPOINT`     | Optional endpoint (e.g. Rekor server URL or Ethereum RPC URL).                                        |
+| `AGENTOS_PROVENANCE_ANCHOR_OPTIONS_JSON` | JSON string forwarded to the anchor provider factory as `options`.                                    |
+| `AGENTOS_PROVENANCE_ANCHOR_INTERVAL_MS`  | Anchor interval in ms (default `0` = disabled).                                                       |
+| `AGENTOS_PROVENANCE_ANCHOR_BATCH_SIZE`   | Minimum events per anchor batch (default `50`).                                                       |
 
-> AgentOS defaults to in-memory persistence so you can experiment locally without running Prisma migrations. When you are ready to back it with a proper database, point `AGENTOS_DATABASE_URL` at your Prisma datasource and swap the stub for a real client.
+> AgentOS persistence in this monorepo uses the shared app database (SQLite by default). Enable it with `AGENTOS_ENABLE_PERSISTENCE=true` and ensure the backend calls `initializeAppDatabase()` during startup.
 
 ## 12. Frame.dev & Codex Analytics (Optional)
 
