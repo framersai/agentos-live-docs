@@ -2,12 +2,13 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Sun, Moon, Database, Gauge, FlaskConical, Info, Settings, BarChart3 } from 'lucide-react';
+import { Sun, Moon, Database, Gauge, Bot, FlaskConical, Info, Settings, BarChart3 } from 'lucide-react';
 import { useTheme } from './ThemeProvider';
 
 const tabs = [
   { name: 'Datasets', href: '/datasets', icon: Database },
   { name: 'Graders', href: '/graders', icon: Gauge },
+  { name: 'Candidates', href: '/candidates', icon: Bot },
   { name: 'Experiments', href: '/experiments', icon: FlaskConical },
   { name: 'Stats', href: '/stats', icon: BarChart3 },
   { name: 'Settings', href: '/settings', icon: Settings },
