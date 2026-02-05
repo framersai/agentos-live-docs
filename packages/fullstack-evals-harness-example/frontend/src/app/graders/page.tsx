@@ -83,6 +83,14 @@ const GRADER_TYPES: {
     inspiration: 'From the RAGAS framework (Es et al., 2023). Evaluates whether retrieved passages contain information needed to answer the question, measuring retrieval quality.',
     reference: 'https://arxiv.org/abs/2309.15217',
   },
+  {
+    value: 'promptfoo',
+    label: 'Promptfoo',
+    description: 'Wraps promptfoo\'s 40+ assertion types including RAGAS-style metrics',
+    category: 'llm-powered',
+    inspiration: 'Delegates to promptfoo\'s battle-tested assertion engine. Supports context-faithfulness, answer-relevance, context-relevance, context-recall, llm-rubric, similar, and 40+ more. MIT licensed, used by Shopify/Discord/Microsoft.',
+    reference: 'https://promptfoo.dev/docs/configuration/expected-outputs/',
+  },
 ];
 
 function Tooltip({ text }: { text: string }) {
@@ -314,7 +322,7 @@ export default function GradersPage() {
           <p>
             A <strong className="text-foreground">grader</strong> defines how to score a candidate&apos;s output against the expected answer. Each grader has a type that determines its evaluation method.
           </p>
-          <div className="grid gap-2 md:grid-cols-2">
+          <div className="grid gap-2 md:grid-cols-3">
             <div className="border border-border p-3 rounded-md">
               <strong className="text-foreground text-xs uppercase">Deterministic</strong>
               <ul className="mt-1 space-y-0.5 text-xs">
@@ -325,14 +333,25 @@ export default function GradersPage() {
               </ul>
             </div>
             <div className="border border-border p-3 rounded-md">
-              <strong className="text-foreground text-xs uppercase">LLM-Powered</strong>
+              <strong className="text-foreground text-xs uppercase">LLM-Powered (Built-in)</strong>
               <ul className="mt-1 space-y-0.5 text-xs">
                 <li><strong>LLM Judge</strong> — evaluates against a rubric (<a href="https://arxiv.org/abs/2306.05685" target="_blank" rel="noopener" className="underline hover:text-foreground">LLM-as-Judge</a>)</li>
                 <li><strong>Semantic Similarity</strong> — embedding cosine distance (<a href="https://arxiv.org/abs/1908.10084" target="_blank" rel="noopener" className="underline hover:text-foreground">Sentence-BERT</a>)</li>
                 <li><strong>Faithfulness</strong> — claims grounded in context (<a href="https://arxiv.org/abs/2309.15217" target="_blank" rel="noopener" className="underline hover:text-foreground">RAGAS</a>)</li>
-                <li><strong>Answer Relevancy</strong> — answer-question alignment (<a href="https://arxiv.org/abs/2309.15217" target="_blank" rel="noopener" className="underline hover:text-foreground">RAGAS</a>)</li>
-                <li><strong>Context Relevancy</strong> — context quality for Q&A (<a href="https://arxiv.org/abs/2309.15217" target="_blank" rel="noopener" className="underline hover:text-foreground">RAGAS</a>)</li>
+                <li><strong>Answer/Context Relevancy</strong> — alignment metrics (<a href="https://arxiv.org/abs/2309.15217" target="_blank" rel="noopener" className="underline hover:text-foreground">RAGAS</a>)</li>
               </ul>
+            </div>
+            <div className="border border-border p-3 rounded-md bg-blue-500/5">
+              <strong className="text-foreground text-xs uppercase">Promptfoo-Backed</strong>
+              <ul className="mt-1 space-y-0.5 text-xs">
+                <li><strong>context-faithfulness</strong> — hallucination detection</li>
+                <li><strong>answer-relevance</strong> — query alignment</li>
+                <li><strong>context-recall</strong> — ground truth coverage</li>
+                <li><strong>llm-rubric</strong> — flexible LLM judge</li>
+                <li><strong>similar</strong> — embedding similarity</li>
+                <li className="text-muted-foreground/70">+ 40 more assertion types</li>
+              </ul>
+              <a href="https://promptfoo.dev" target="_blank" rel="noopener" className="text-[10px] underline hover:text-foreground mt-1 inline-block">promptfoo.dev</a>
             </div>
           </div>
           <div className="border-t border-border pt-3 space-y-2">
@@ -348,10 +367,10 @@ export default function GradersPage() {
                 <li><a href="https://arxiv.org/abs/1606.05250" target="_blank" rel="noopener" className="underline hover:text-foreground">SQuAD</a> — Rajpurkar et al. 2016. Reading comprehension benchmark with EM/F1 metrics</li>
                 <li><a href="https://arxiv.org/abs/2211.09110" target="_blank" rel="noopener" className="underline hover:text-foreground">HELM</a> — Liang et al. 2022. Holistic evaluation of language models</li>
               </ul>
-              <p className="font-medium text-foreground/70 mt-2">Frameworks Referenced</p>
+              <p className="font-medium text-foreground/70 mt-2">Frameworks Used</p>
               <ul className="space-y-0.5">
-                <li><a href="https://promptfoo.dev" target="_blank" rel="noopener" className="underline hover:text-foreground">promptfoo</a> — Inspired our dataset &times; candidates &times; graders evaluation matrix and the LLM Judge assertion pattern</li>
-                <li><a href="https://docs.confident-ai.com" target="_blank" rel="noopener" className="underline hover:text-foreground">DeepEval</a> — Python-based eval framework; inspired RAGAS metric implementations</li>
+                <li><a href="https://promptfoo.dev" target="_blank" rel="noopener" className="underline hover:text-foreground">promptfoo</a> — <strong>Our assertion engine</strong> for RAGAS-style metrics, LLM-as-judge, and 40+ evaluation types. MIT licensed, used by Shopify/Discord/Microsoft.</li>
+                <li><a href="https://docs.confident-ai.com" target="_blank" rel="noopener" className="underline hover:text-foreground">DeepEval</a> — Python-based eval framework; inspired our architecture</li>
               </ul>
             </div>
           </div>

@@ -136,19 +136,16 @@ export default function AboutPage() {
               <h3 className="font-bold text-xl uppercase">Graders</h3>
             </div>
             <p className="text-muted-foreground leading-relaxed">
-              Evaluation criteria. Each grader scores output as pass/fail with a reason and
-              a 0-1 score.
+              YAML files in <code>backend/graders/</code>. Each grader scores output as pass/fail with
+              a reason and a 0-1 score. Two categories:
             </p>
             <ul className="list-brutal mt-4 text-muted-foreground">
-              <li><strong>Faithfulness</strong> — RAGAS-inspired claim extraction and context verification (strict 90%, moderate 70%)</li>
-              <li><strong>LLM Judge</strong> — LLM evaluates output against a custom rubric</li>
-              <li><strong>Semantic Similarity</strong> — Embedding cosine similarity (high 85%, moderate 70%)</li>
-              <li><strong>JSON Schema</strong> — Validates structured output against a schema</li>
-              <li><strong>Extraction Completeness</strong> — LLM evaluates extraction quality and grounding</li>
+              <li><strong>Built-in</strong> — Faithfulness, LLM Judge, Semantic Similarity, JSON Schema, Contains, Regex, Exact Match</li>
+              <li><strong>Promptfoo-backed</strong> — RAGAS-style metrics (context-faithfulness, answer-relevance, context-relevance, context-recall), LLM rubric, similarity via <a href="https://promptfoo.dev" className="underline">promptfoo</a>&apos;s 40+ assertion types</li>
             </ul>
             <p className="text-muted-foreground leading-relaxed mt-3">
-              <strong>7 presets</strong> covering these types. Each prompt file declares which graders
-              to use with weights and a rationale.
+              <strong>13 presets included.</strong> Each prompt file declares which graders to use
+              with weights and a rationale. Edit YAML files directly or use the UI.
             </p>
           </div>
 
@@ -228,15 +225,15 @@ grader_rationale: Faithfulness is highest — the full format must stay grounded
             description="OpenAI, Anthropic, and Ollama. Configure globally in Settings."
           />
           <TechCard
+            icon={TestTube}
+            title="Promptfoo"
+            description="MIT-licensed assertion engine for RAGAS-style metrics, LLM-as-judge, and 40+ evaluation types."
+            link="https://promptfoo.dev"
+          />
+          <TechCard
             icon={Zap}
             title="SSE Streaming"
             description="Real-time experiment progress via Server-Sent Events."
-          />
-          <TechCard
-            icon={TestTube}
-            title="Jest Testing"
-            description="Unit tests for prompt loader, template utils, and grader logic."
-            link="https://jestjs.io"
           />
         </div>
       </section>
@@ -267,11 +264,17 @@ grader_rationale: Faithfulness is highest — the full format must stay grounded
             </p>
           </AccordionItem>
 
-          <AccordionItem title="What is RAGAS-inspired faithfulness?">
+          <AccordionItem title="What are RAGAS-style metrics?">
             <p className="text-muted-foreground leading-relaxed">
-              Extracts atomic claims from the LLM&apos;s response, then verifies each against the
-              provided context. Score = percentage of verifiable claims. Strict requires 90%+,
-              moderate requires 70%+.
+              We use <a href="https://promptfoo.dev" className="link">promptfoo</a>&apos;s implementation
+              of RAGAS-style metrics: <strong>context-faithfulness</strong> (hallucination detection),{' '}
+              <strong>answer-relevance</strong> (query alignment), <strong>context-relevance</strong>{' '}
+              (retrieval quality), and <strong>context-recall</strong> (ground truth coverage).
+            </p>
+            <p className="text-muted-foreground leading-relaxed mt-3">
+              Why promptfoo? RAGAS metrics are complex (claim extraction + NLI verification). Rather
+              than reimplement, we delegate to promptfoo&apos;s battle-tested assertions—MIT licensed,
+              used by Shopify/Discord/Microsoft.
             </p>
             <p className="text-muted-foreground leading-relaxed mt-3">
               <a href="https://arxiv.org/abs/2309.15217" target="_blank" rel="noopener noreferrer" className="link">
@@ -310,13 +313,28 @@ grader_rationale: Faithfulness is highest — the full format must stay grounded
 
       {/* References */}
       <section>
-        <h2 className="section-title">References</h2>
+        <h2 className="section-title">References &amp; Why We Chose Them</h2>
 
         <div className="mt-8 space-y-4">
           <div className="card p-5">
+            <h3 className="font-bold uppercase">Promptfoo</h3>
+            <p className="text-muted-foreground mt-2 text-sm">
+              <strong>Our assertion engine.</strong> We use promptfoo for RAGAS-style metrics,
+              LLM-as-judge, semantic similarity, and 40+ assertion types. Why? MIT licensed,
+              battle-tested by Shopify/Discord/Microsoft, saves us from reimplementing complex
+              claim extraction + NLI verification.
+            </p>
+            <a href="https://promptfoo.dev" target="_blank" rel="noopener noreferrer" className="link text-sm mt-2 inline-flex items-center gap-1">
+              promptfoo.dev <ExternalLink className="h-3 w-3" />
+            </a>
+          </div>
+
+          <div className="card p-5">
             <h3 className="font-bold uppercase">RAGAS</h3>
             <p className="text-muted-foreground mt-2 text-sm">
-              Faithfulness, answer relevance, and context relevance metrics for RAG evaluation.
+              <strong>Research foundation.</strong> Es et al. 2023 introduced faithfulness,
+              answer relevancy, and context relevancy metrics for RAG evaluation. We use
+              promptfoo&apos;s production-ready implementation of these metrics.
             </p>
             <a href="https://arxiv.org/abs/2309.15217" target="_blank" rel="noopener noreferrer" className="link text-sm mt-2 inline-flex items-center gap-1">
               arxiv.org/abs/2309.15217 <ExternalLink className="h-3 w-3" />
@@ -324,12 +342,25 @@ grader_rationale: Faithfulness is highest — the full format must stay grounded
           </div>
 
           <div className="card p-5">
-            <h3 className="font-bold uppercase">Promptfoo</h3>
+            <h3 className="font-bold uppercase">LLM-as-Judge</h3>
             <p className="text-muted-foreground mt-2 text-sm">
-              Open-source LLM testing framework. Inspired the dataset &times; candidates &times; graders matrix.
+              Zheng et al. 2023 demonstrated using LLMs for evaluation with rubrics. Our
+              <code className="text-xs">llm-judge</code> and <code className="text-xs">promptfoo llm-rubric</code>{' '}
+              graders implement this pattern for open-ended quality assessment.
             </p>
-            <a href="https://promptfoo.dev" target="_blank" rel="noopener noreferrer" className="link text-sm mt-2 inline-flex items-center gap-1">
-              promptfoo.dev <ExternalLink className="h-3 w-3" />
+            <a href="https://arxiv.org/abs/2306.05685" target="_blank" rel="noopener noreferrer" className="link text-sm mt-2 inline-flex items-center gap-1">
+              arxiv.org/abs/2306.05685 <ExternalLink className="h-3 w-3" />
+            </a>
+          </div>
+
+          <div className="card p-5">
+            <h3 className="font-bold uppercase">Sentence-BERT</h3>
+            <p className="text-muted-foreground mt-2 text-sm">
+              Reimers &amp; Gurevych 2019. Our semantic similarity graders use embedding
+              cosine distance to compare meaning beyond surface-level string matching.
+            </p>
+            <a href="https://arxiv.org/abs/1908.10084" target="_blank" rel="noopener noreferrer" className="link text-sm mt-2 inline-flex items-center gap-1">
+              arxiv.org/abs/1908.10084 <ExternalLink className="h-3 w-3" />
             </a>
           </div>
         </div>

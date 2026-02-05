@@ -34,7 +34,8 @@ export type GraderType =
   | 'regex'
   | 'json-schema'
   | 'answer-relevancy'
-  | 'context-relevancy';
+  | 'context-relevancy'
+  | 'promptfoo';
 
 export interface Grader {
   id: string;
