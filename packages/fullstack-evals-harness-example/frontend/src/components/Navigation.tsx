@@ -115,7 +115,7 @@ export function Navigation() {
                     <ExternalLink className="h-3 w-3 ml-auto" />
                   </a>
                   <a
-                    href="https://github.com/jddunn/voice-chat-assistant"
+                    href="https://github.com/jddunn/full-stack-eval-harness-example"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-2 px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
