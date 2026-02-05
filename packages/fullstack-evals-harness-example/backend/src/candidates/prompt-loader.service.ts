@@ -32,7 +32,11 @@ export class PromptLoaderService implements OnModuleInit {
 
   constructor() {
     // prompts/ directory lives next to src/ in the backend package
-    this.promptsDir = path.resolve(__dirname, '..', '..', 'prompts');
+    // In compiled dist: __dirname = dist/src/candidates/, so go up 3 levels
+    // In tests (ts-jest): __dirname = src/candidates/, so go up 2 levels
+    const candidate = path.resolve(__dirname, '..', '..', '..', 'prompts');
+    const fallback = path.resolve(__dirname, '..', '..', 'prompts');
+    this.promptsDir = fs.existsSync(candidate) ? candidate : fallback;
   }
 
   onModuleInit() {
