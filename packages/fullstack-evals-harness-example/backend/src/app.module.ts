@@ -7,7 +7,7 @@ import { ExperimentsModule } from './experiments/experiments.module';
 import { LlmModule } from './llm/llm.module';
 import { PresetsModule } from './presets/presets.module';
 import { SettingsModule } from './settings/settings.module';
-import { PromptsModule } from './prompts/prompts.module';
+import { CandidatesModule } from './candidates/candidates.module';
 
 @Module({
   imports: [
@@ -18,10 +18,10 @@ import { PromptsModule } from './prompts/prompts.module';
     LlmModule,
     DatasetsModule,
     GradersModule,
+    CandidatesModule,
     ExperimentsModule,
     PresetsModule,
     SettingsModule,
-    PromptsModule,
   ],
 })
 export class AppModule {}

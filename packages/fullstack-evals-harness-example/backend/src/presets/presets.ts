@@ -179,6 +179,84 @@ Fail if:
   },
 ];
 
+export interface CandidatePreset {
+  id: string;
+  name: string;
+  description: string;
+  runnerType: 'llm_prompt' | 'http_endpoint';
+  systemPrompt?: string;
+  userPromptTemplate?: string;
+  modelConfig?: Record<string, unknown>;
+  endpointUrl?: string;
+  endpointMethod?: string;
+  endpointBodyTemplate?: string;
+  tooltip: string;
+}
+
+export const CANDIDATE_PRESETS: CandidatePreset[] = [
+  {
+    id: 'qa-basic',
+    name: 'Q&A Basic',
+    description: 'Simple question answering with no special instructions',
+    runnerType: 'llm_prompt',
+    systemPrompt: 'You are a helpful assistant. Answer questions concisely and accurately.',
+    userPromptTemplate: '{{input}}',
+    tooltip: 'Best for: general knowledge questions, simple Q&A',
+  },
+  {
+    id: 'qa-rag',
+    name: 'Q&A with Context (RAG)',
+    description: 'Answer questions grounded in provided context only',
+    runnerType: 'llm_prompt',
+    systemPrompt:
+      'You are a helpful assistant. Answer the question based ONLY on the provided context. If the context does not contain the answer, say "I cannot answer this based on the provided context."',
+    userPromptTemplate: 'Context:\n{{context}}\n\nQuestion: {{input}}',
+    tooltip: 'Best for: RAG pipelines, grounded Q&A, faithfulness testing',
+  },
+  {
+    id: 'json-extractor',
+    name: 'JSON Extractor',
+    description: 'Extract structured data as JSON from input text',
+    runnerType: 'llm_prompt',
+    systemPrompt:
+      'You are a data extraction assistant. Extract structured data from the input and return it as valid JSON. Only return the JSON object, no other text.',
+    userPromptTemplate: '{{input}}',
+    modelConfig: { temperature: 0 },
+    tooltip: 'Best for: structured output testing, data extraction',
+  },
+  {
+    id: 'classifier',
+    name: 'Text Classifier',
+    description: 'Classify input text into categories',
+    runnerType: 'llm_prompt',
+    systemPrompt:
+      'You are a text classifier. Classify the input into exactly one category. Respond with ONLY the category name, nothing else.',
+    userPromptTemplate: '{{input}}',
+    modelConfig: { temperature: 0 },
+    tooltip: 'Best for: sentiment analysis, topic classification',
+  },
+  {
+    id: 'summarizer',
+    name: 'Text Summarizer',
+    description: 'Summarize input text concisely',
+    runnerType: 'llm_prompt',
+    systemPrompt:
+      'You are a summarization assistant. Provide a concise summary of the input in 1-3 sentences. Be factual and include key points.',
+    userPromptTemplate: '{{input}}',
+    tooltip: 'Best for: summarization quality testing',
+  },
+  {
+    id: 'http-api',
+    name: 'HTTP API Endpoint',
+    description: 'Call an external HTTP API with test case input',
+    runnerType: 'http_endpoint',
+    endpointUrl: 'http://localhost:8080/api/predict',
+    endpointMethod: 'POST',
+    endpointBodyTemplate: '{"input": "{{input}}", "context": "{{context}}"}',
+    tooltip: 'Best for: testing your own API endpoints, external services',
+  },
+];
+
 export const DATASET_PRESETS: DatasetPreset[] = [
   {
     id: 'math-basic',
