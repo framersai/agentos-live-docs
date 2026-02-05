@@ -116,11 +116,46 @@ All graders extend this base. The interface is minimal—input, output, optional
 
 | Type | Description | Inspired By |
 |------|-------------|-------------|
-| `llm-judge` | Evaluates against a custom rubric | LLM-as-Judge (Zheng et al., 2023), promptfoo |
+| `llm-judge` | Evaluates against a custom rubric | LLM-as-Judge (Zheng et al., 2023) |
 | `semantic-similarity` | Embedding cosine distance | Sentence-BERT (Reimers & Gurevych, 2019) |
 | `faithfulness` | Claims grounded in context | RAGAS (Es et al., 2023) |
 | `answer-relevancy` | Answer-question alignment | RAGAS (Es et al., 2023) |
 | `context-relevancy` | Context quality for Q&A | RAGAS (Es et al., 2023) |
+
+**Promptfoo-Backed Graders:**
+
+| Type | Description | Inspired By |
+|------|-------------|-------------|
+| `promptfoo` | Wraps promptfoo's 40+ assertion types | promptfoo (MIT licensed) |
+
+The `promptfoo` grader type delegates to promptfoo's battle-tested assertion engine. Configure the `assertion` in the grader's config:
+
+```yaml
+# RAGAS metrics via promptfoo
+type: promptfoo
+config:
+  assertion: context-faithfulness  # or answer-relevance, context-relevance, context-recall
+  threshold: 0.7
+
+# LLM-as-judge via promptfoo
+type: promptfoo
+config:
+  assertion: llm-rubric
+  threshold: 0.7
+rubric: "Evaluate accuracy, helpfulness, and clarity."
+
+# Semantic similarity via promptfoo
+type: promptfoo
+config:
+  assertion: similar
+  threshold: 0.8
+```
+
+**Why promptfoo?** Rather than reimplementing complex metrics like RAGAS (claim extraction + NLI verification), we delegate to promptfoo's production-tested implementations. Benefits:
+- MIT licensed, actively maintained
+- Used by Shopify, Discord, Microsoft
+- 40+ assertion types including all RAGAS metrics
+- Saves significant development and maintenance effort
 
 ### Research References
 
@@ -129,10 +164,8 @@ All graders extend this base. The interface is minimal—input, output, optional
 - **Sentence-BERT** — Reimers & Gurevych 2019. Sentence embeddings for semantic similarity. https://arxiv.org/abs/1908.10084
 - **SQuAD** — Rajpurkar et al. 2016. Reading comprehension benchmark introducing EM/F1 metrics. https://arxiv.org/abs/1606.05250
 - **HELM** — Liang et al. 2022. Holistic evaluation of language models. https://arxiv.org/abs/2211.09110
-- **promptfoo** — Open-source LLM eval framework. Inspired the dataset x candidates x graders matrix and the LLM Judge assertion pattern. https://promptfoo.dev
+- **promptfoo** — Open-source LLM eval framework. Provides the assertion engine for the `promptfoo` grader type, including all RAGAS metrics. https://promptfoo.dev
 - **DeepEval** — Python-based eval framework with similar RAGAS metric implementations. https://docs.confident-ai.com/
-
-**Note:** `@mastra/core` is listed as a dependency but not currently used in the evaluation engine.
 
 ---
 
