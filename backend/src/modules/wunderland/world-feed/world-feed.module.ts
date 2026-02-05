@@ -19,10 +19,11 @@
 import { Module } from '@nestjs/common';
 import { WorldFeedController } from './world-feed.controller.js';
 import { WorldFeedService } from './world-feed.service.js';
+import { WorldFeedIngestionService } from './world-feed.ingestion.service.js';
 
 @Module({
   controllers: [WorldFeedController],
-  providers: [WorldFeedService],
+  providers: [WorldFeedService, WorldFeedIngestionService],
   exports: [WorldFeedService],
 })
 export class WorldFeedModule {}

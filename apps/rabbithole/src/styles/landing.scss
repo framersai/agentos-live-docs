@@ -622,6 +622,231 @@
 }
 
 // ============================================================================
+// PRICING
+// ============================================================================
+
+.pricing {
+    padding: $sp-32 0;
+
+    &__grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: $sp-6;
+        margin-bottom: $sp-10;
+        align-items: start;
+
+        @media (max-width: 1024px) {
+            grid-template-columns: 1fr;
+            max-width: 480px;
+            margin: 0 auto $sp-10;
+        }
+    }
+
+    &__addon {
+        @include neumorphic-panel;
+        padding: $sp-6 $sp-8;
+        text-align: center;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    &__addon-title {
+        font-family: $font-display;
+        font-size: 1.125rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: $sp-2;
+    }
+
+    &__addon-desc {
+        color: $text-muted;
+        line-height: 1.6;
+        margin-bottom: $sp-3;
+    }
+
+    &__addon-price {
+        font-family: $font-display;
+        font-size: 1.5rem;
+        font-weight: 700;
+        @include holographic-text;
+    }
+}
+
+.pricing-card {
+    @include neumorphic-panel;
+    padding: $sp-8;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: all $transition-slow;
+
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: $shadow-neumorphic-float;
+    }
+
+    &--highlighted {
+        @include holographic-border;
+
+        @media (min-width: 1025px) {
+            transform: scale(1.04);
+
+            &:hover {
+                transform: scale(1.04) translateY(-4px);
+            }
+        }
+    }
+
+    &__badge {
+        position: absolute;
+        top: -12px;
+        right: $sp-4;
+    }
+
+    &__name {
+        font-family: $font-display;
+        font-size: 1.25rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: $sp-2;
+    }
+
+    &__price {
+        font-family: $font-display;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: $sp-1;
+    }
+
+    &__period {
+        @include mono-text;
+        color: $text-dim;
+        font-size: 0.875rem;
+        margin-left: $sp-1;
+    }
+
+    &__description {
+        color: $text-muted;
+        margin-bottom: $sp-6;
+        line-height: 1.6;
+    }
+
+    &__features {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 $sp-8;
+        flex: 1;
+    }
+
+    &__feature {
+        padding: $sp-2 0;
+        color: $text-muted;
+        display: flex;
+        align-items: center;
+        gap: $sp-3;
+        font-size: 0.9375rem;
+
+        &::before {
+            content: '\2713';
+            color: $holo-emerald;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+    }
+
+    &__note {
+        @include mono-text;
+        color: $text-dim;
+        text-align: center;
+        margin-top: $sp-3;
+        font-size: 0.75rem;
+    }
+}
+
+// ============================================================================
+// ABOUT PAGE
+// ============================================================================
+
+.about-hero {
+    padding: 140px 0 $sp-16;
+}
+
+.about-content {
+    max-width: 720px;
+
+    &__title {
+        @include brutalist-heading;
+        font-size: clamp(2.5rem, 7vw, 5rem);
+        margin-bottom: $sp-10;
+
+        .line {
+            display: block;
+
+            &--muted {
+                color: $text-dim;
+            }
+
+            &--holographic {
+                @include holographic-text;
+            }
+        }
+    }
+
+    &__body {
+        p {
+            color: $text-muted;
+            line-height: 1.8;
+            margin-bottom: $sp-6;
+            font-size: 1.0625rem;
+        }
+
+        .heading-3 {
+            margin-top: $sp-10;
+            margin-bottom: $sp-4;
+        }
+    }
+}
+
+.about-links {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: $sp-4;
+    margin-top: $sp-6;
+
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+    }
+
+    &__item {
+        padding: $sp-5;
+        display: flex;
+        flex-direction: column;
+        gap: $sp-2;
+        transition: all $transition-base;
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: $shadow-neumorphic-float;
+        }
+    }
+
+    &__name {
+        font-family: $font-display;
+        font-weight: 700;
+        font-size: 1rem;
+        @include holographic-text;
+    }
+
+    &__desc {
+        @include mono-text;
+        color: $text-dim;
+        font-size: 0.75rem;
+    }
+}
+
+// ============================================================================
 // PAGE WRAPPER
 // ============================================================================
 

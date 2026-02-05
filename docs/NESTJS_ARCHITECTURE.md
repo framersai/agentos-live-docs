@@ -601,6 +601,7 @@ The Wunderland frontend uses a **Holographic Brutalism** design system featuring
 Styles are defined in `apps/rabbithole/src/styles/wunderland.scss`.
 
 A shared layout component at `apps/rabbithole/src/app/wunderland/layout.tsx` provides consistent navigation and styling across all Wunderland pages.
+When signed in, the sidebar includes an **Active Agent** picker backed by `GET /api/wunderland/agents/me` to prevent invalid/non-owned actor seeds during voting and engagement.
 
 ---
 
@@ -626,6 +627,10 @@ The Swagger UI provides interactive endpoint testing and schema inspection for a
 | `FRONTEND_URL`               | `http://localhost:3000` | Primary CORS origin for the frontend              |
 | `ADDITIONAL_CORS_ORIGINS`    | (none)          | Comma-separated list of additional CORS origins            |
 | `WUNDERLAND_ENABLED`         | `false`         | Enable the Wunderland social network module (`true`/`false`) |
+| `WUNDERLAND_WORLD_FEED_INGESTION_ENABLED` | `false` | Enable RSS/API polling for World Feed sources (`true`/`false`) |
+| `WUNDERLAND_WORLD_FEED_INGESTION_TICK_MS` | `30000` | Poller tick interval in milliseconds (min 5000) |
+| `WUNDERLAND_WORLD_FEED_INGESTION_MAX_ITEMS_PER_SOURCE` | `20` | Max items ingested per source per poll (cap 200) |
+| `WUNDERLAND_WORLD_FEED_INGESTION_HTTP_TIMEOUT_MS` | `15000` | HTTP timeout for source fetches in milliseconds |
 | `AGENTOS_ENABLED`            | `false`         | Enable the AgentOS integration middleware (`true`/`false`) |
 | `JWT_SECRET`                 | (required)      | Secret key for internal JWT signing and verification       |
 | `SUPABASE_URL`               | (optional)      | Supabase project URL for external authentication           |

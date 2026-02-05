@@ -4,6 +4,7 @@ import '@/styles/landing.scss';
 import '@/styles/wunderland.scss';
 import RabbitVortex from '@/components/RabbitVortex';
 import LookingGlassCTA from '@/components/LookingGlassCTA';
+import { PricingSection } from '@/components/PricingSection';
 import { RabbitHoleLogo, Footer } from '@/components/brand';
 import { LanternToggle } from '@/components/LanternToggle';
 
@@ -25,6 +26,8 @@ export default function LandingPage() {
           <div className="nav__links">
             <a href="#features" className="nav__link">Features</a>
             <a href="#how-it-works" className="nav__link">How It Works</a>
+            <a href="#pricing" className="nav__link">Pricing</a>
+            <a href="/about" className="nav__link">About</a>
             <a href="https://docs.wunderland.sh" className="nav__link" target="_blank" rel="noopener">Docs</a>
           </div>
 
@@ -230,6 +233,9 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* Pricing */}
+      <PricingSection />
 
       {/* CTA */}
       <section className="cta">

@@ -1,15 +1,20 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import '@/styles/wunderland.scss';
 import WunderlandNav from '@/components/wunderland/WunderlandNav';
+import { WunderlandAPIError, wunderlandAPI, type WunderlandAgentSummary } from '@/lib/wunderland-api';
 
 export default function WunderlandLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
   const [activeSeedId, setActiveSeedId] = useState('');
   const [hasAuthToken, setHasAuthToken] = useState(false);
+  const [ownedAgents, setOwnedAgents] = useState<WunderlandAgentSummary[]>([]);
+  const [ownedAgentsLoading, setOwnedAgentsLoading] = useState(false);
+  const [ownedAgentsError, setOwnedAgentsError] = useState('');
 
   // Close sidebar on route change (mobile)
   useEffect(() => {
@@ -50,6 +55,44 @@ export default function WunderlandLayout({ children }: { children: React.ReactNo
     }
   }, []);
 
+  // Load user-owned agents for seed picking.
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadOwnedAgents() {
+      if (!hasAuthToken) {
+        setOwnedAgents([]);
+        setOwnedAgentsLoading(false);
+        setOwnedAgentsError('');
+        return;
+      }
+
+      setOwnedAgentsLoading(true);
+      setOwnedAgentsError('');
+      try {
+        const res = await wunderlandAPI.agentRegistry.listMine({ page: 1, limit: 100 });
+        if (cancelled) return;
+        setOwnedAgents(res.items);
+      } catch (err) {
+        if (cancelled) return;
+        if (err instanceof WunderlandAPIError && err.status === 401) {
+          setOwnedAgentsError('Session expired. Please sign in again.');
+          setOwnedAgents([]);
+        } else {
+          setOwnedAgentsError(err instanceof Error ? err.message : 'Failed to load your agents.');
+          setOwnedAgents([]);
+        }
+      } finally {
+        if (!cancelled) setOwnedAgentsLoading(false);
+      }
+    }
+
+    void loadOwnedAgents();
+    return () => {
+      cancelled = true;
+    };
+  }, [hasAuthToken]);
+
   const persistActiveSeed = useCallback((value: string) => {
     setActiveSeedId(value);
     try {
@@ -59,6 +102,21 @@ export default function WunderlandLayout({ children }: { children: React.ReactNo
       // ignore
     }
   }, []);
+
+  // Normalize the active seed when signed in: it must be a user-owned agent.
+  useEffect(() => {
+    if (!hasAuthToken) return;
+    if (ownedAgentsLoading) return;
+    if (ownedAgents.length === 0) {
+      if (activeSeedId) persistActiveSeed('');
+      return;
+    }
+
+    const owned = new Set(ownedAgents.map((a) => a.seedId));
+    if (!activeSeedId || !owned.has(activeSeedId)) {
+      persistActiveSeed(ownedAgents[0]?.seedId ?? '');
+    }
+  }, [hasAuthToken, ownedAgentsLoading, ownedAgents, activeSeedId, persistActiveSeed]);
 
   const logout = useCallback(async () => {
     try {
@@ -152,7 +210,7 @@ export default function WunderlandLayout({ children }: { children: React.ReactNo
                   color: '#8888a0',
                 }}
               >
-                Active Seed
+                Active Agent
               </div>
               {hasAuthToken && (
                 <button className="btn btn--ghost btn--sm" onClick={logout} type="button">
@@ -160,22 +218,74 @@ export default function WunderlandLayout({ children }: { children: React.ReactNo
                 </button>
               )}
             </div>
-            <input
-              value={activeSeedId}
-              onChange={(e) => persistActiveSeed(e.target.value)}
-              placeholder="seed_..."
-              aria-label="Active Seed ID"
-              style={{
-                width: '100%',
-                padding: '6px 10px',
-                background: 'rgba(0,0,0,0.3)',
-                border: '1px solid rgba(255,255,255,0.06)',
-                borderRadius: 6,
-                color: '#e8e8ff',
-                fontFamily: "'IBM Plex Mono', monospace",
-                fontSize: '0.6875rem',
-              }}
-            />
+            {hasAuthToken ? (
+              <>
+                <select
+                  value={activeSeedId}
+                  onChange={(e) => persistActiveSeed(e.target.value)}
+                  aria-label="Active Agent Seed ID"
+                  disabled={ownedAgentsLoading || ownedAgents.length === 0}
+                  style={{
+                    width: '100%',
+                    padding: '6px 10px',
+                    background: 'rgba(0,0,0,0.3)',
+                    border: '1px solid rgba(255,255,255,0.06)',
+                    borderRadius: 6,
+                    color: '#e8e8ff',
+                    fontFamily: "'IBM Plex Mono', monospace",
+                    fontSize: '0.6875rem',
+                    cursor: ownedAgentsLoading || ownedAgents.length === 0 ? 'not-allowed' : 'pointer',
+                  }}
+                >
+                  {ownedAgentsLoading ? (
+                    <option value="">Loading…</option>
+                  ) : ownedAgents.length === 0 ? (
+                    <option value="">No agents registered</option>
+                  ) : (
+                    ownedAgents.map((agent) => (
+                      <option key={agent.seedId} value={agent.seedId}>
+                        {agent.displayName} ({agent.seedId})
+                      </option>
+                    ))
+                  )}
+                </select>
+
+                {ownedAgentsError && (
+                  <div
+                    style={{
+                      fontFamily: "'IBM Plex Mono', monospace",
+                      fontSize: '0.625rem',
+                      color: '#ff6b6b',
+                    }}
+                  >
+                    {ownedAgentsError}
+                  </div>
+                )}
+
+                {!ownedAgentsLoading && ownedAgents.length === 0 && (
+                  <Link href="/wunderland/register" className="btn btn--primary btn--sm">
+                    Register an agent
+                  </Link>
+                )}
+              </>
+            ) : (
+              <input
+                value={activeSeedId}
+                onChange={(e) => persistActiveSeed(e.target.value)}
+                placeholder="seed_..."
+                aria-label="Active Seed ID"
+                style={{
+                  width: '100%',
+                  padding: '6px 10px',
+                  background: 'rgba(0,0,0,0.3)',
+                  border: '1px solid rgba(255,255,255,0.06)',
+                  borderRadius: 6,
+                  color: '#e8e8ff',
+                  fontFamily: "'IBM Plex Mono', monospace",
+                  fontSize: '0.6875rem',
+                }}
+              />
+            )}
             {!hasAuthToken && (
               <div
                 style={{

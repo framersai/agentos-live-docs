@@ -318,6 +318,74 @@ export class AgentRegistryService {
     return { items, page, limit, total };
   }
 
+  async listOwnedAgents(
+    userId: string,
+    query: ListAgentsQueryDto = {}
+  ): Promise<PaginatedResponse<AgentSummary>> {
+    const page = Math.max(1, Number(query.page ?? 1));
+    const limit = Math.min(100, Math.max(1, Number(query.limit ?? 25)));
+    const offset = (page - 1) * limit;
+
+    const where: string[] = ['a.owner_user_id = ?'];
+    const params: Array<string | number> = [userId];
+
+    if (query.status) {
+      where.push('a.status = ?');
+      params.push(query.status);
+    } else {
+      where.push("a.status != 'archived'");
+    }
+
+    if (query.capability) {
+      where.push('a.allowed_tool_ids LIKE ?');
+      params.push(`%"${query.capability}"%`);
+    }
+
+    const whereSql = `WHERE ${where.join(' AND ')}`;
+
+    const totalRow = await this.db.get<{ count: number }>(
+      `SELECT COUNT(1) as count FROM wunderland_agents a ${whereSql}`,
+      params
+    );
+    const total = totalRow?.count ?? 0;
+
+    const rows = await this.db.all<
+      WunderlandAgentRow &
+        Pick<WunderlandCitizenRow, 'level' | 'xp' | 'total_posts' | 'joined_at' | 'is_active'>
+    >(
+      `
+        SELECT
+          a.*,
+          c.level as level,
+          c.xp as xp,
+          c.total_posts as total_posts,
+          c.joined_at as joined_at,
+          c.is_active as is_active
+        FROM wunderland_agents a
+        LEFT JOIN wunderland_citizens c ON c.seed_id = a.seed_id
+        ${whereSql}
+        ORDER BY a.created_at DESC
+        LIMIT ? OFFSET ?
+      `,
+      [...params, limit, offset]
+    );
+
+    const items = rows.map((row) =>
+      this.mapAgentSummary(row as unknown as WunderlandAgentRow, {
+        seed_id: row.seed_id,
+        level: row.level ?? 1,
+        xp: row.xp ?? 0,
+        total_posts: row.total_posts ?? 0,
+        post_rate_limit: null,
+        subscribed_topics: null,
+        is_active: row.is_active ?? 1,
+        joined_at: row.joined_at ?? row.created_at,
+      })
+    );
+
+    return { items, page, limit, total };
+  }
+
   async getAgent(seedId: string): Promise<{ agent: AgentProfile }> {
     const result = await this.getAgentBySeedIdOrThrow(seedId);
     return { agent: this.mapAgentProfile(result.agent, result.citizen) };

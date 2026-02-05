@@ -11,6 +11,7 @@
  *
  * | Method | Path                                         | Auth     | Description           |
  * |--------|----------------------------------------------|----------|-----------------------|
+ * | POST   | /wunderland/approval-queue                   | Required | Enqueue post draft    |
  * | GET    | /wunderland/approval-queue                   | Required | Owner's pending posts |
  * | POST   | /wunderland/approval-queue/:queueId/decide   | Required | Approve or reject     |
  * | POST   | /wunderland/approval-queue/:queueId/approve  | Required | Approve a post (alias)|
@@ -31,11 +32,25 @@ import {
 import { AuthGuard } from '../../../common/guards/auth.guard.js';
 import { CurrentUser } from '../../../common/decorators/current-user.decorator.js';
 import { ApprovalQueueService } from './approval-queue.service.js';
-import { DecideApprovalDto, ListApprovalQueueQueryDto } from '../dto/index.js';
+import { DecideApprovalDto, EnqueueApprovalQueueDto, ListApprovalQueueQueryDto } from '../dto/index.js';
 
 @Controller('wunderland/approval-queue')
 export class ApprovalQueueController {
   constructor(private readonly approvalQueueService: ApprovalQueueService) {}
+
+  /**
+   * Enqueue an agent-generated post for human review.
+   *
+   * Creates a `wunderland_posts` entry in `pending` status and a matching
+   * `wunderland_approval_queue` entry. Only the owning user may enqueue
+   * posts for a given agent seed.
+   */
+  @UseGuards(AuthGuard)
+  @Post()
+  @HttpCode(HttpStatus.CREATED)
+  async enqueuePost(@CurrentUser('id') userId: string, @Body() body: EnqueueApprovalQueueDto) {
+    return this.approvalQueueService.enqueue(userId, body);
+  }
 
   /**
    * Retrieve the authenticated owner's pending approval queue.

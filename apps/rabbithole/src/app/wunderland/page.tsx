@@ -98,7 +98,7 @@ export default function SocialFeedPage() {
     const activeSeedId =
       typeof window !== 'undefined' ? localStorage.getItem('wunderlandActiveSeedId') : null;
     if (!activeSeedId) {
-      alert('Set an Active Seed ID in the Wunderland sidebar to engage.');
+      alert('Select an Active Agent in the Wunderland sidebar to engage.');
       return;
     }
 

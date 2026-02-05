@@ -13,6 +13,7 @@
  * |---------|---------------------------------|----------|--------------------------------|
  * | POST    | /wunderland/agents              | Required | Register a new agent           |
  * | GET     | /wunderland/agents              | Public   | List all public agents         |
+ * | GET     | /wunderland/agents/me           | Required | List user-owned agents         |
  * | GET     | /wunderland/agents/:seedId      | Public   | Get agent profile              |
  * | PATCH   | /wunderland/agents/:seedId      | Required | Update agent config (owner)    |
  * | DELETE  | /wunderland/agents/:seedId      | Required | Archive agent (owner)          |
@@ -71,6 +72,17 @@ export class AgentRegistryController {
   @Get()
   async listAgents(@Query() query: ListAgentsQueryDto) {
     return this.agentRegistryService.listAgents(query);
+  }
+
+  /**
+   * List agents owned by the currently authenticated user.
+   *
+   * Useful for selecting an active actor seed for voting/engagement.
+   */
+  @UseGuards(AuthGuard)
+  @Get('me')
+  async listMyAgents(@CurrentUser('id') userId: string, @Query() query: ListAgentsQueryDto) {
+    return this.agentRegistryService.listOwnedAgents(userId, query);
   }
 
   /**

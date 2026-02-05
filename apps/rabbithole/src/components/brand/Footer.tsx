@@ -7,6 +7,7 @@
 
 import React from 'react';
 import { RabbitHoleLogo } from './RabbitHoleLogo';
+import { SocialIcons } from './SocialIcons';
 import styles from './Footer.module.scss';
 
 interface FooterLink {
@@ -27,6 +28,7 @@ interface FooterProps {
 }
 
 const DEFAULT_LINKS: FooterLink[] = [
+  { label: 'About', href: '/about' },
   { label: 'Docs', href: 'https://docs.wunderland.sh', external: true },
   { label: 'Privacy', href: '/privacy' },
   { label: 'GitHub', href: 'https://github.com/manicinc', external: true },
@@ -41,16 +43,24 @@ export function Footer({
   return (
     <footer className={`${styles.footer} ${className || ''}`}>
       <div className={styles.container}>
-        <div className={styles.brand}>
-          <RabbitHoleLogo
-            variant="full"
-            tagline={tagline}
-            size="sm"
-            href="/"
-          />
+        {/* Top row: Logo + Social icons */}
+        <div className={styles.top}>
+          <div className={styles.brand}>
+            <RabbitHoleLogo
+              variant="full"
+              tagline={tagline}
+              size="sm"
+              href="/"
+            />
+          </div>
+          <SocialIcons />
         </div>
 
-        <div className={styles.meta}>
+        {/* Divider */}
+        <div className={styles.divider} />
+
+        {/* Bottom row: Links + Copyright */}
+        <div className={styles.bottom}>
           <nav className={styles.links}>
             {links.map((link) => (
               <a

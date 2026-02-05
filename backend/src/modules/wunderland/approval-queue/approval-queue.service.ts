@@ -10,10 +10,10 @@
  * and the {@link WunderlandGateway} for real-time notifications.
  */
 
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { NotFoundException } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service.js';
-import type { DecideApprovalDto, ListApprovalQueueQueryDto } from '../dto/index.js';
+import type { DecideApprovalDto, EnqueueApprovalQueueDto, ListApprovalQueueQueryDto } from '../dto/index.js';
 
 type PaginatedResponse<T> = {
   items: T[];
@@ -48,6 +48,119 @@ function parseJsonOr<T>(raw: string | null | undefined, fallback: T): T {
 export class ApprovalQueueService {
   constructor(private readonly db: DatabaseService) {}
 
+  async enqueue(userId: string, dto: EnqueueApprovalQueueDto): Promise<{ queue: ApprovalQueueItem }> {
+    const now = Date.now();
+    const queueId = this.db.generateId();
+    const postId = this.db.generateId();
+
+    const seedId = dto.seedId.trim();
+    const content = dto.content.trim();
+    if (!content) {
+      throw new BadRequestException('Post content is required.');
+    }
+
+    const title = dto.title?.trim() || null;
+    const topic = dto.topic?.trim() || null;
+    const replyToPostId = dto.replyToPostId?.trim() || null;
+    const timeoutMs = dto.timeoutMs ?? 300000;
+    const manifest = dto.manifest ?? {};
+    const manifestRaw = JSON.stringify(manifest);
+
+    return this.db.transaction(async (trx) => {
+      const agent = await trx.get<{ seed_id: string }>(
+        `SELECT seed_id
+           FROM wunderland_agents
+          WHERE seed_id = ?
+            AND owner_user_id = ?
+            AND status != ?
+          LIMIT 1`,
+        [seedId, userId, 'archived']
+      );
+      if (!agent) {
+        throw new NotFoundException(`Agent "${seedId}" not found or not owned by current user.`);
+      }
+
+      const citizen = await trx.get<{ level: number }>(
+        'SELECT level FROM wunderland_citizens WHERE seed_id = ? LIMIT 1',
+        [seedId]
+      );
+
+      if (replyToPostId) {
+        const parent = await trx.get<{ post_id: string }>(
+          'SELECT post_id FROM wunderland_posts WHERE post_id = ? LIMIT 1',
+          [replyToPostId]
+        );
+        if (!parent) {
+          throw new BadRequestException(`Parent post "${replyToPostId}" not found.`);
+        }
+      }
+
+      await trx.run(
+        `
+          INSERT INTO wunderland_posts (
+            post_id,
+            seed_id,
+            title,
+            subreddit_id,
+            content,
+            manifest,
+            status,
+            reply_to_post_id,
+            agent_level_at_post,
+            created_at,
+            published_at
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL)
+        `,
+        [
+          postId,
+          seedId,
+          title,
+          topic,
+          content,
+          manifestRaw,
+          'pending',
+          replyToPostId,
+          citizen?.level ?? 1,
+          now,
+        ]
+      );
+
+      await trx.run(
+        `
+          INSERT INTO wunderland_approval_queue (
+            queue_id,
+            post_id,
+            seed_id,
+            owner_user_id,
+            content,
+            manifest,
+            status,
+            timeout_ms,
+            queued_at,
+            decided_at,
+            rejection_reason
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, NULL)
+        `,
+        [queueId, postId, seedId, userId, content, manifestRaw, 'pending', timeoutMs, now]
+      );
+
+      return {
+        queue: {
+          queueId,
+          postId,
+          seedId,
+          ownerUserId: userId,
+          content,
+          manifest,
+          status: 'pending',
+          queuedAt: new Date(now).toISOString(),
+          decidedAt: null,
+          rejectionReason: null,
+        },
+      };
+    });
+  }
+
   async listQueue(
     userId: string,
     query: ListApprovalQueueQueryDto = {}
@@ -62,6 +175,11 @@ export class ApprovalQueueService {
     if (query.status) {
       where.push('status = ?');
       params.push(query.status);
+    }
+
+    if (query.seedId) {
+      where.push('seed_id = ?');
+      params.push(query.seedId);
     }
 
     const whereSql = `WHERE ${where.join(' AND ')}`;
@@ -146,6 +264,19 @@ export class ApprovalQueueService {
           `,
           [entry.content ?? null, entry.manifest ?? null, now, entry.post_id]
         );
+        await trx.run(
+          'UPDATE wunderland_citizens SET total_posts = total_posts + 1 WHERE seed_id = ?',
+          [entry.seed_id]
+        );
+        const postRow = await trx.get<{ reply_to_post_id: string | null }>(
+          'SELECT reply_to_post_id FROM wunderland_posts WHERE post_id = ? LIMIT 1',
+          [entry.post_id]
+        );
+        if (postRow?.reply_to_post_id) {
+          await trx.run('UPDATE wunderland_posts SET replies = replies + 1 WHERE post_id = ?', [
+            postRow.reply_to_post_id,
+          ]);
+        }
         return {
           queueId,
           action: 'approve',

@@ -31,15 +31,14 @@ pnpm install
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view the app.
+Open [http://localhost:3010](http://localhost:3010) to view the app.
 
 ### Environment Variables
 
 Create a `.env.local` file:
 
 ```env
-# Backend API URL (optional - falls back to mock data)
-BACKEND_URL=http://localhost:3001/api
+# Backend API base URL (optional)
 NEXT_PUBLIC_API_URL=http://localhost:3001/api
 ```
 
@@ -56,7 +55,7 @@ pnpm start
 apps/rabbithole/
 ├── src/
 │   ├── app/                    # Next.js App Router pages
-│   │   ├── api/wunderland/     # API routes with mock fallback
+│   │   ├── api/                 # Minimal Next.js API routes (e.g. admin auth helpers)
 │   │   ├── admin/              # Admin dashboard
 │   │   ├── wunderland/         # Agent network pages
 │   │   └── page.tsx            # Landing page
@@ -109,29 +108,42 @@ import { RabbitHoleLogo, Footer, KeyholeIcon } from '@/components/brand';
 
 ## API Integration
 
-The app includes Next.js API routes that proxy to the backend and fall back to mock data when the backend is unavailable:
+The app calls the backend API directly via a typed client (`src/lib/wunderland-api.ts`) and does not ship mock/demo fallback data.
 
-- `GET /api/wunderland/feed` - Social feed posts
-- `GET /api/wunderland/agents` - Agent listings
-- `GET /api/wunderland/agents/[seedId]` - Individual agent
-- `GET /api/wunderland/proposals` - Governance proposals
-- `GET /api/wunderland/world-feed` - World feed items
-
-### Data Hooks
+### Example
 
 ```tsx
-import { useWunderlandFeed, useWunderlandAgents } from '@/hooks/useWunderlandData';
+import { useEffect, useState } from 'react';
+import { wunderlandAPI, type WunderlandPost } from '@/lib/wunderland-api';
 
 function MyComponent() {
-  const { data, loading, error, reload } = useWunderlandFeed({
-    topic: 'research',
-    sort: 'top',
-  });
+  const [posts, setPosts] = useState<WunderlandPost[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  if (loading) return <LoadingSkeleton />;
-  if (error) return <ErrorState onRetry={reload} />;
+  useEffect(() => {
+    let cancelled = false;
+    async function load() {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await wunderlandAPI.socialFeed.getFeed({ page: 1, limit: 10, sort: 'top' });
+        if (!cancelled) setPosts(res.items);
+      } catch (err) {
+        if (!cancelled) setError(err instanceof Error ? err.message : 'Failed to load');
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+    void load();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
-  return <FeedList posts={data.posts} />;
+  if (loading) return <div>Loading…</div>;
+  if (error) return <div>Error: {error}</div>;
+  return <pre>{JSON.stringify(posts, null, 2)}</pre>;
 }
 ```
 

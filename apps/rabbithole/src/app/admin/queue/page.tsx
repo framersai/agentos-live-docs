@@ -6,6 +6,7 @@ import '@/styles/admin.scss';
 import {
   WunderlandAPIError,
   wunderlandAPI,
+  type WunderlandAgentSummary,
   type WunderlandApprovalQueueItem,
 } from '@/lib/wunderland-api';
 import { formatRelativeTime } from '@/lib/wunderland-ui';
@@ -23,10 +24,52 @@ export default function ApprovalQueuePage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [actingQueueId, setActingQueueId] = useState<string | null>(null);
 
+  const [ownedAgents, setOwnedAgents] = useState<WunderlandAgentSummary[]>([]);
+  const [ownedAgentsLoading, setOwnedAgentsLoading] = useState(false);
+  const [draftSeedId, setDraftSeedId] = useState('');
+  const [draftTitle, setDraftTitle] = useState('');
+  const [draftContent, setDraftContent] = useState('');
+  const [draftTopic, setDraftTopic] = useState('');
+  const [draftManifest, setDraftManifest] = useState('');
+  const [draftBusy, setDraftBusy] = useState(false);
+  const [draftError, setDraftError] = useState('');
+  const [draftSuccess, setDraftSuccess] = useState('');
+
   useEffect(() => {
     if (typeof window === 'undefined') return;
     setHasToken(Boolean(localStorage.getItem('vcaAuthToken')));
   }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function loadOwnedAgents() {
+      if (!hasToken) {
+        setOwnedAgents([]);
+        setOwnedAgentsLoading(false);
+        return;
+      }
+
+      setOwnedAgentsLoading(true);
+      try {
+        const res = await wunderlandAPI.agentRegistry.listMine({ page: 1, limit: 100 });
+        if (cancelled) return;
+        setOwnedAgents(res.items);
+        if (!draftSeedId && res.items.length > 0) {
+          setDraftSeedId(res.items[0]!.seedId);
+        }
+      } catch (err) {
+        if (cancelled) return;
+        setOwnedAgents([]);
+      } finally {
+        if (!cancelled) setOwnedAgentsLoading(false);
+      }
+    }
+
+    void loadOwnedAgents();
+    return () => {
+      cancelled = true;
+    };
+  }, [hasToken]);
 
   const refresh = async () => {
     setLoading(true);
@@ -63,6 +106,60 @@ export default function ApprovalQueuePage() {
       return haystack.includes(q);
     });
   }, [items, searchQuery]);
+
+  const enqueueDraft = async () => {
+    setDraftError('');
+    setDraftSuccess('');
+
+    const seedId = draftSeedId.trim();
+    if (!seedId) {
+      setDraftError('Select an agent.');
+      return;
+    }
+
+    const content = draftContent.trim();
+    if (!content) {
+      setDraftError('Content is required.');
+      return;
+    }
+
+    let manifest: Record<string, unknown> | undefined;
+    if (draftManifest.trim()) {
+      try {
+        const parsed = JSON.parse(draftManifest) as unknown;
+        if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+          setDraftError('Manifest must be a JSON object.');
+          return;
+        }
+        manifest = parsed as Record<string, unknown>;
+      } catch {
+        setDraftError('Manifest must be valid JSON.');
+        return;
+      }
+    }
+
+    setDraftBusy(true);
+    try {
+      await wunderlandAPI.approvalQueue.enqueue({
+        seedId,
+        title: draftTitle.trim() || undefined,
+        content,
+        topic: draftTopic.trim() || undefined,
+        manifest,
+      });
+      setDraftTitle('');
+      setDraftContent('');
+      setDraftTopic('');
+      setDraftManifest('');
+      setDraftSuccess('Draft enqueued.');
+      await refresh();
+    } catch (err) {
+      if (err instanceof WunderlandAPIError) setDraftError(err.message);
+      else setDraftError(err instanceof Error ? err.message : 'Failed to enqueue draft');
+    } finally {
+      setDraftBusy(false);
+    }
+  };
 
   const decide = async (item: WunderlandApprovalQueueItem, action: 'approve' | 'reject') => {
     setError('');
@@ -188,6 +285,78 @@ export default function ApprovalQueuePage() {
             </Link>
           </div>
         </div>
+
+        {hasToken && (
+          <div className="panel panel--holographic" style={{ padding: '1rem', marginBottom: '1rem' }}>
+            <div style={{ fontWeight: 700, marginBottom: 10 }}>Enqueue Draft (Dev)</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                <select
+                  className="filters__select"
+                  disabled={ownedAgentsLoading || ownedAgents.length === 0}
+                  value={draftSeedId}
+                  onChange={(e) => setDraftSeedId(e.target.value)}
+                  style={{ flex: 1, minWidth: 240 }}
+                >
+                  {ownedAgentsLoading ? (
+                    <option value="">Loading agents…</option>
+                  ) : ownedAgents.length === 0 ? (
+                    <option value="">No agents registered</option>
+                  ) : (
+                    ownedAgents.map((agent) => (
+                      <option key={agent.seedId} value={agent.seedId}>
+                        {agent.displayName} ({agent.seedId})
+                      </option>
+                    ))
+                  )}
+                </select>
+                <input
+                  className="filters__select"
+                  placeholder="Topic (optional)"
+                  value={draftTopic}
+                  onChange={(e) => setDraftTopic(e.target.value)}
+                  style={{ flex: 1, minWidth: 180 }}
+                />
+              </div>
+
+              <input
+                className="filters__select"
+                placeholder="Title (optional)"
+                value={draftTitle}
+                onChange={(e) => setDraftTitle(e.target.value)}
+              />
+              <textarea
+                className="filters__select"
+                placeholder="Content"
+                value={draftContent}
+                onChange={(e) => setDraftContent(e.target.value)}
+                style={{ minHeight: 120, resize: 'vertical' }}
+              />
+              <textarea
+                className="filters__select"
+                placeholder="Manifest JSON (optional)"
+                value={draftManifest}
+                onChange={(e) => setDraftManifest(e.target.value)}
+                style={{ minHeight: 80, resize: 'vertical' }}
+              />
+
+              {draftError && (
+                <div className="badge badge--coral" style={{ justifyContent: 'center' }}>
+                  {draftError}
+                </div>
+              )}
+              {draftSuccess && (
+                <div className="badge badge--emerald" style={{ justifyContent: 'center' }}>
+                  {draftSuccess}
+                </div>
+              )}
+
+              <button className="btn btn--primary btn--sm" onClick={enqueueDraft} disabled={draftBusy}>
+                {draftBusy ? 'Enqueueing…' : 'Enqueue Draft'}
+              </button>
+            </div>
+          </div>
+        )}
 
         <div
           style={{

@@ -6,3 +6,4 @@
 export { KeyholeIcon } from './KeyholeIcon';
 export { RabbitHoleLogo } from './RabbitHoleLogo';
 export { Footer } from './Footer';
+export { SocialIcons } from './SocialIcons';

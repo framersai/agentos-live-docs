@@ -15,7 +15,11 @@ export type PlanId =
   | 'creator'
   | 'organization'
   | 'codex-free'
-  | 'codex-pro';
+  | 'codex-pro'
+  | 'rh-pro-monthly'
+  | 'rh-pro-annual'
+  | 'rh-lifetime'
+  | 'rh-assistant-addon';
 export type PlanTier = 'metered' | 'unlimited';
 
 export type ByoApiKeyPolicy = 'disallowed' | 'optional' | 'required';
@@ -325,6 +329,106 @@ export const PLAN_CATALOG: Record<PlanId, PlanCatalogEntry> = {
   },
 };
 
+  'rh-pro-monthly': {
+    id: 'rh-pro-monthly',
+    slug: 'rh-pro-monthly',
+    displayName: 'Pro Monthly',
+    headline: 'Full platform access with human assistant hours',
+    monthlyPriceUsd: 29.99,
+    usageAllocationPct: 0,
+    usage: buildUsageProfile(0, 'disallowed', 'Human assistant hours, not AI token-based.'),
+    bullets: [
+      'Full platform access',
+      '3 hours/week human assistant',
+      'Priority task routing',
+      'All AI agent integrations',
+      'PII protection included',
+    ],
+    targetAudience: 'Individual professionals needing AI-human collaboration.',
+    checkout: [
+      {
+        provider: 'stripe',
+        productEnvVar: 'STRIPE_RH_PRO_MONTHLY_PRODUCT_ID',
+        priceEnvVar: 'STRIPE_RH_PRO_MONTHLY_PRICE_ID',
+      },
+    ],
+    public: true,
+    metadata: { featured: true },
+  },
+  'rh-pro-annual': {
+    id: 'rh-pro-annual',
+    slug: 'rh-pro-annual',
+    displayName: 'Pro Annual',
+    headline: 'Save 31% with annual billing — includes human assistant hours',
+    monthlyPriceUsd: 20.75,
+    usageAllocationPct: 0,
+    usage: buildUsageProfile(0, 'disallowed', 'Human assistant hours, not AI token-based.'),
+    bullets: [
+      'Everything in Pro Monthly',
+      '3 hours/week human assistant',
+      'Save $110.88/year vs monthly',
+      'Priority support',
+    ],
+    targetAudience: 'Committed users who want the best value.',
+    checkout: [
+      {
+        provider: 'stripe',
+        productEnvVar: 'STRIPE_RH_PRO_ANNUAL_PRODUCT_ID',
+        priceEnvVar: 'STRIPE_RH_PRO_ANNUAL_PRICE_ID',
+      },
+    ],
+    public: true,
+  },
+  'rh-lifetime': {
+    id: 'rh-lifetime',
+    slug: 'rh-lifetime',
+    displayName: 'Lifetime',
+    headline: 'One-time purchase for lifetime platform access',
+    monthlyPriceUsd: 0,
+    usageAllocationPct: 0,
+    usage: buildUsageProfile(0, 'disallowed', 'Lifetime access, no recurring fees.'),
+    bullets: [
+      'Lifetime platform access',
+      'All AI agent integrations',
+      'PII protection & RBAC',
+      'All future updates included',
+    ],
+    targetAudience: 'Early adopters who want permanent access.',
+    checkout: [
+      {
+        provider: 'stripe',
+        productEnvVar: 'STRIPE_RH_LIFETIME_PRODUCT_ID',
+        priceEnvVar: 'STRIPE_RH_LIFETIME_PRICE_ID',
+      },
+    ],
+    public: true,
+  },
+  'rh-assistant-addon': {
+    id: 'rh-assistant-addon',
+    slug: 'rh-assistant-addon',
+    displayName: 'Human Assistant Add-on',
+    headline: '3 hours/week of human assistant support for Lifetime members',
+    monthlyPriceUsd: 12.5,
+    usageAllocationPct: 0,
+    usage: buildUsageProfile(0, 'disallowed', '$150/year billed annually.'),
+    bullets: [
+      '3 hours/week human assistant',
+      'Priority task routing',
+      'Available for Lifetime plan members',
+    ],
+    targetAudience: 'Lifetime members who want human assistant hours.',
+    checkout: [
+      {
+        provider: 'stripe',
+        productEnvVar: 'STRIPE_RH_ASSISTANT_ADDON_PRODUCT_ID',
+        priceEnvVar: 'STRIPE_RH_ASSISTANT_ADDON_PRICE_ID',
+      },
+    ],
+    public: true,
+    metadata: { hiddenOnMarketing: true },
+  },
+};
+
 export const PUBLIC_PLAN_ORDER: PlanId[] = ['free', 'basic', 'creator', 'organization'];
 
 export const getPublicPlans = (): PlanCatalogEntry[] =>
@@ -335,6 +439,10 @@ export const CODEX_PLAN_ORDER: PlanId[] = ['codex-free', 'codex-pro'];
 export const getCodexPlans = (): PlanCatalogEntry[] => CODEX_PLAN_ORDER.map(id => PLAN_CATALOG[id]);
 
 export const findPlanById = (id: PlanId): PlanCatalogEntry => PLAN_CATALOG[id];
+
+export const RH_PLAN_ORDER: PlanId[] = ['rh-pro-monthly', 'rh-pro-annual', 'rh-lifetime'];
+
+export const getRhPlans = (): PlanCatalogEntry[] => RH_PLAN_ORDER.map(id => PLAN_CATALOG[id]);
 
 export interface PlanRolloverExplanation {
   planId: PlanId;

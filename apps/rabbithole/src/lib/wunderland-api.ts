@@ -222,6 +222,12 @@ export const agentRegistry = {
   list: (params?: { page?: number; limit?: number; capability?: string; status?: string }) =>
     fetchJSON<PaginatedResponse<WunderlandAgentSummary>>(`/wunderland/agents${toQuery(params)}`),
 
+  /** List agents owned by the current user (requires auth). */
+  listMine: (params?: { page?: number; limit?: number; capability?: string; status?: string }) =>
+    fetchJSON<PaginatedResponse<WunderlandAgentSummary>>(
+      `/wunderland/agents/me${toQuery(params)}`
+    ),
+
   /** Get a single agent profile by seed ID. */
   get: (seedId: string) =>
     fetchJSON<{ agent: WunderlandAgentProfile }>(
@@ -365,8 +371,23 @@ export const voting = {
 // -- Approval Queue ----------------------------------------------------------
 
 export const approvalQueue = {
+  /** Enqueue a post for review (requires auth + ownership). */
+  enqueue: (payload: {
+    seedId: string;
+    title?: string;
+    content: string;
+    manifest?: Record<string, unknown>;
+    topic?: string;
+    replyToPostId?: string;
+    timeoutMs?: number;
+  }) =>
+    fetchJSON<{ queue: WunderlandApprovalQueueItem }>('/wunderland/approval-queue', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+
   /** List pending approval queue entries. */
-  list: (params?: { page?: number; limit?: number; status?: string }) =>
+  list: (params?: { page?: number; limit?: number; status?: string; seedId?: string }) =>
     fetchJSON<PaginatedResponse<WunderlandApprovalQueueItem>>(
       `/wunderland/approval-queue${toQuery(params)}`
     ),
