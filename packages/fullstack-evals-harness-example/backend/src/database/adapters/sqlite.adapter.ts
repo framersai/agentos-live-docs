@@ -11,12 +11,14 @@ import {
   Dataset,
   TestCase,
   Grader,
+  PromptTemplate,
   Experiment,
   ExperimentResult,
   Settings,
   InsertDataset,
   InsertTestCase,
   InsertGrader,
+  InsertPromptTemplate,
   InsertExperiment,
   InsertExperimentResult,
 } from '../interfaces/db-adapter.interface';
@@ -76,11 +78,23 @@ export class SqliteAdapter implements IDbAdapter {
         updated_at INTEGER NOT NULL
       );
 
+      CREATE TABLE IF NOT EXISTS prompt_templates (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        description TEXT,
+        system_prompt TEXT,
+        user_prompt TEXT NOT NULL,
+        variables TEXT,
+        created_at INTEGER NOT NULL,
+        updated_at INTEGER NOT NULL
+      );
+
       CREATE TABLE IF NOT EXISTS experiments (
         id TEXT PRIMARY KEY,
         name TEXT,
         dataset_id TEXT NOT NULL REFERENCES datasets(id),
         grader_ids TEXT NOT NULL,
+        prompt_template_id TEXT REFERENCES prompt_templates(id),
         status TEXT NOT NULL,
         created_at INTEGER NOT NULL,
         completed_at INTEGER
@@ -110,6 +124,18 @@ export class SqliteAdapter implements IDbAdapter {
       CREATE INDEX IF NOT EXISTS idx_settings_key ON settings(key);
     `);
 
+    // Migration: add prompt_template_id to experiments if missing
+    try {
+      const cols = this.sqlite.pragma(`table_info(experiments)`);
+      if (!cols.find((c: any) => c.name === 'prompt_template_id')) {
+        this.sqlite.exec(
+          `ALTER TABLE experiments ADD COLUMN prompt_template_id TEXT REFERENCES prompt_templates(id)`
+        );
+      }
+    } catch {
+      /* table may not exist yet */
+    }
+
     console.log('SQLite database initialized at:', this.filePath);
   }
 
@@ -128,10 +154,7 @@ export class SqliteAdapter implements IDbAdapter {
   }
 
   async findDatasetById(id: string): Promise<Dataset | null> {
-    const [result] = await this.db
-      .select()
-      .from(schema.datasets)
-      .where(eq(schema.datasets.id, id));
+    const [result] = await this.db.select().from(schema.datasets).where(eq(schema.datasets.id, id));
     return result || null;
   }
 
@@ -142,19 +165,14 @@ export class SqliteAdapter implements IDbAdapter {
 
   async updateDataset(
     id: string,
-    updates: Partial<Omit<Dataset, 'id' | 'createdAt'>>,
+    updates: Partial<Omit<Dataset, 'id' | 'createdAt'>>
   ): Promise<Dataset | null> {
-    await this.db
-      .update(schema.datasets)
-      .set(updates)
-      .where(eq(schema.datasets.id, id));
+    await this.db.update(schema.datasets).set(updates).where(eq(schema.datasets.id, id));
     return this.findDatasetById(id);
   }
 
   async deleteDataset(id: string): Promise<boolean> {
-    const result = await this.db
-      .delete(schema.datasets)
-      .where(eq(schema.datasets.id, id));
+    const result = await this.db.delete(schema.datasets).where(eq(schema.datasets.id, id));
     return true;
   }
 
@@ -163,10 +181,7 @@ export class SqliteAdapter implements IDbAdapter {
   // ============================================================
 
   async findTestCasesByDatasetId(datasetId: string): Promise<TestCase[]> {
-    return this.db
-      .select()
-      .from(schema.testCases)
-      .where(eq(schema.testCases.datasetId, datasetId));
+    return this.db.select().from(schema.testCases).where(eq(schema.testCases.datasetId, datasetId));
   }
 
   async findTestCaseById(id: string): Promise<TestCase | null> {
@@ -184,12 +199,9 @@ export class SqliteAdapter implements IDbAdapter {
 
   async updateTestCase(
     id: string,
-    updates: Partial<Omit<TestCase, 'id' | 'datasetId' | 'createdAt'>>,
+    updates: Partial<Omit<TestCase, 'id' | 'datasetId' | 'createdAt'>>
   ): Promise<TestCase | null> {
-    await this.db
-      .update(schema.testCases)
-      .set(updates)
-      .where(eq(schema.testCases.id, id));
+    await this.db.update(schema.testCases).set(updates).where(eq(schema.testCases.id, id));
     return this.findTestCaseById(id);
   }
 
@@ -212,19 +224,13 @@ export class SqliteAdapter implements IDbAdapter {
   }
 
   async findGraderById(id: string): Promise<Grader | null> {
-    const [result] = await this.db
-      .select()
-      .from(schema.graders)
-      .where(eq(schema.graders.id, id));
+    const [result] = await this.db.select().from(schema.graders).where(eq(schema.graders.id, id));
     return result || null;
   }
 
   async findGradersByIds(ids: string[]): Promise<Grader[]> {
     if (ids.length === 0) return [];
-    return this.db
-      .select()
-      .from(schema.graders)
-      .where(inArray(schema.graders.id, ids));
+    return this.db.select().from(schema.graders).where(inArray(schema.graders.id, ids));
   }
 
   async insertGrader(grader: InsertGrader): Promise<Grader> {
@@ -234,17 +240,51 @@ export class SqliteAdapter implements IDbAdapter {
 
   async updateGrader(
     id: string,
-    updates: Partial<Omit<Grader, 'id' | 'createdAt'>>,
+    updates: Partial<Omit<Grader, 'id' | 'createdAt'>>
   ): Promise<Grader | null> {
-    await this.db
-      .update(schema.graders)
-      .set(updates)
-      .where(eq(schema.graders.id, id));
+    await this.db.update(schema.graders).set(updates).where(eq(schema.graders.id, id));
     return this.findGraderById(id);
   }
 
   async deleteGrader(id: string): Promise<boolean> {
     await this.db.delete(schema.graders).where(eq(schema.graders.id, id));
+    return true;
+  }
+
+  // ============================================================
+  // Prompt Templates
+  // ============================================================
+
+  async findAllPromptTemplates(): Promise<PromptTemplate[]> {
+    return this.db.select().from(schema.promptTemplates);
+  }
+
+  async findPromptTemplateById(id: string): Promise<PromptTemplate | null> {
+    const [result] = await this.db
+      .select()
+      .from(schema.promptTemplates)
+      .where(eq(schema.promptTemplates.id, id));
+    return result || null;
+  }
+
+  async insertPromptTemplate(template: InsertPromptTemplate): Promise<PromptTemplate> {
+    await this.db.insert(schema.promptTemplates).values(template);
+    return template as PromptTemplate;
+  }
+
+  async updatePromptTemplate(
+    id: string,
+    updates: Partial<Omit<PromptTemplate, 'id' | 'createdAt'>>
+  ): Promise<PromptTemplate | null> {
+    await this.db
+      .update(schema.promptTemplates)
+      .set(updates)
+      .where(eq(schema.promptTemplates.id, id));
+    return this.findPromptTemplateById(id);
+  }
+
+  async deletePromptTemplate(id: string): Promise<boolean> {
+    await this.db.delete(schema.promptTemplates).where(eq(schema.promptTemplates.id, id));
     return true;
   }
 
@@ -271,12 +311,9 @@ export class SqliteAdapter implements IDbAdapter {
 
   async updateExperiment(
     id: string,
-    updates: Partial<Omit<Experiment, 'id' | 'createdAt'>>,
+    updates: Partial<Omit<Experiment, 'id' | 'createdAt'>>
   ): Promise<Experiment | null> {
-    await this.db
-      .update(schema.experiments)
-      .set(updates)
-      .where(eq(schema.experiments.id, id));
+    await this.db.update(schema.experiments).set(updates).where(eq(schema.experiments.id, id));
     return this.findExperimentById(id);
   }
 
@@ -333,9 +370,8 @@ export class SqliteAdapter implements IDbAdapter {
 
     const finalByGrader: Record<string, { total: number; passed: number; avgScore: number }> = {};
     for (const [graderId, data] of Object.entries(byGrader)) {
-      const avgScore = data.scores.length > 0
-        ? data.scores.reduce((a, b) => a + b, 0) / data.scores.length
-        : 0;
+      const avgScore =
+        data.scores.length > 0 ? data.scores.reduce((a, b) => a + b, 0) / data.scores.length : 0;
       finalByGrader[graderId] = {
         total: data.total,
         passed: data.passed,

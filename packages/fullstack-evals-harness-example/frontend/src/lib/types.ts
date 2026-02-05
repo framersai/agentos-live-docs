@@ -22,7 +22,16 @@ export interface TestCase {
   createdAt: string;
 }
 
-export type GraderType = 'exact-match' | 'llm-judge' | 'semantic-similarity' | 'faithfulness';
+export type GraderType =
+  | 'exact-match'
+  | 'llm-judge'
+  | 'semantic-similarity'
+  | 'faithfulness'
+  | 'contains'
+  | 'regex'
+  | 'json-schema'
+  | 'answer-relevancy'
+  | 'context-relevancy';
 
 export interface Grader {
   id: string;

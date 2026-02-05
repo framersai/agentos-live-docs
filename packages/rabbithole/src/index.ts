@@ -42,6 +42,12 @@ export * from './pii/index.js';
 // Auth exports
 export * from './auth/index.js';
 
+// Admin exports (Task Queue, RBAC, Human Assistants)
+export * from './admin/index.js';
+
+// TTS exports
+export * from './tts/index.js';
+
 // Re-export commonly used items at top level
 export {
   SlackAdapter,

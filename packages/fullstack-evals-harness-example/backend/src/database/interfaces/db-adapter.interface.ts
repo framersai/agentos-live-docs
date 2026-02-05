@@ -38,11 +38,23 @@ export interface Grader {
   updatedAt: Date;
 }
 
+export interface PromptTemplate {
+  id: string;
+  name: string;
+  description: string | null;
+  systemPrompt: string | null;
+  userPrompt: string;
+  variables: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface Experiment {
   id: string;
   name: string | null;
   datasetId: string;
   graderIds: string;
+  promptTemplateId: string | null;
   status: string;
   createdAt: Date;
   completedAt: Date | null;
@@ -100,11 +112,23 @@ export interface InsertGrader {
   updatedAt: Date;
 }
 
+export interface InsertPromptTemplate {
+  id: string;
+  name: string;
+  description?: string | null;
+  systemPrompt?: string | null;
+  userPrompt: string;
+  variables?: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface InsertExperiment {
   id: string;
   name?: string | null;
   datasetId: string;
   graderIds: string;
+  promptTemplateId?: string | null;
   status: string;
   createdAt: Date;
   completedAt?: Date | null;
@@ -142,14 +166,20 @@ export interface IDbAdapter {
   findAllDatasets(): Promise<Dataset[]>;
   findDatasetById(id: string): Promise<Dataset | null>;
   insertDataset(dataset: InsertDataset): Promise<Dataset>;
-  updateDataset(id: string, updates: Partial<Omit<Dataset, 'id' | 'createdAt'>>): Promise<Dataset | null>;
+  updateDataset(
+    id: string,
+    updates: Partial<Omit<Dataset, 'id' | 'createdAt'>>
+  ): Promise<Dataset | null>;
   deleteDataset(id: string): Promise<boolean>;
 
   // Test Cases
   findTestCasesByDatasetId(datasetId: string): Promise<TestCase[]>;
   findTestCaseById(id: string): Promise<TestCase | null>;
   insertTestCase(testCase: InsertTestCase): Promise<TestCase>;
-  updateTestCase(id: string, updates: Partial<Omit<TestCase, 'id' | 'datasetId' | 'createdAt'>>): Promise<TestCase | null>;
+  updateTestCase(
+    id: string,
+    updates: Partial<Omit<TestCase, 'id' | 'datasetId' | 'createdAt'>>
+  ): Promise<TestCase | null>;
   deleteTestCase(id: string): Promise<boolean>;
   countTestCasesByDatasetId(datasetId: string): Promise<number>;
 
@@ -158,14 +188,30 @@ export interface IDbAdapter {
   findGraderById(id: string): Promise<Grader | null>;
   findGradersByIds(ids: string[]): Promise<Grader[]>;
   insertGrader(grader: InsertGrader): Promise<Grader>;
-  updateGrader(id: string, updates: Partial<Omit<Grader, 'id' | 'createdAt'>>): Promise<Grader | null>;
+  updateGrader(
+    id: string,
+    updates: Partial<Omit<Grader, 'id' | 'createdAt'>>
+  ): Promise<Grader | null>;
   deleteGrader(id: string): Promise<boolean>;
+
+  // Prompt Templates
+  findAllPromptTemplates(): Promise<PromptTemplate[]>;
+  findPromptTemplateById(id: string): Promise<PromptTemplate | null>;
+  insertPromptTemplate(template: InsertPromptTemplate): Promise<PromptTemplate>;
+  updatePromptTemplate(
+    id: string,
+    updates: Partial<Omit<PromptTemplate, 'id' | 'createdAt'>>
+  ): Promise<PromptTemplate | null>;
+  deletePromptTemplate(id: string): Promise<boolean>;
 
   // Experiments
   findAllExperiments(): Promise<Experiment[]>;
   findExperimentById(id: string): Promise<Experiment | null>;
   insertExperiment(experiment: InsertExperiment): Promise<Experiment>;
-  updateExperiment(id: string, updates: Partial<Omit<Experiment, 'id' | 'createdAt'>>): Promise<Experiment | null>;
+  updateExperiment(
+    id: string,
+    updates: Partial<Omit<Experiment, 'id' | 'createdAt'>>
+  ): Promise<Experiment | null>;
   deleteExperiment(id: string): Promise<boolean>;
 
   // Experiment Results

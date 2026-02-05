@@ -4,6 +4,7 @@ import { Subject, Observable } from 'rxjs';
 import { DB_ADAPTER, IDbAdapter } from '../database/db.module';
 import { DatasetsService } from '../datasets/datasets.service';
 import { GradersService } from '../graders/graders.service';
+import { PromptsService } from '../prompts/prompts.service';
 import { LlmService } from '../llm/llm.service';
 import { createGrader, GraderType, EvalInput } from '../eval-engine';
 
@@ -11,10 +12,11 @@ export interface CreateExperimentDto {
   name?: string;
   datasetId: string;
   graderIds: string[];
+  promptTemplateId?: string;
 }
 
 export interface ExperimentProgress {
-  type: 'progress' | 'result' | 'complete' | 'error';
+  type: 'progress' | 'generation' | 'result' | 'complete' | 'error';
   experimentId: string;
   testCaseId?: string;
   graderId?: string;
@@ -25,6 +27,7 @@ export interface ExperimentProgress {
     score: number;
     reason: string;
   };
+  generatedOutput?: string;
   error?: string;
 }
 
@@ -37,7 +40,8 @@ export class ExperimentsService {
     private db: IDbAdapter,
     private datasetsService: DatasetsService,
     private gradersService: GradersService,
-    private llmService: LlmService,
+    private promptsService: PromptsService,
+    private llmService: LlmService
   ) {}
 
   /**
@@ -77,16 +81,23 @@ export class ExperimentsService {
     const dataset = await this.datasetsService.findOne(dto.datasetId);
     const graders = await this.gradersService.findMany(dto.graderIds);
 
+    // Fetch prompt template if provided
+    let promptTemplate: Awaited<ReturnType<typeof this.promptsService.findOne>> | null = null;
+    if (dto.promptTemplateId) {
+      promptTemplate = await this.promptsService.findOne(dto.promptTemplateId);
+    }
+
     const experiment = await this.db.insertExperiment({
       id: nanoid(),
       name: dto.name || `Experiment ${new Date().toISOString().slice(0, 16)}`,
       datasetId: dto.datasetId,
       graderIds: JSON.stringify(dto.graderIds),
+      promptTemplateId: dto.promptTemplateId || null,
       status: 'pending',
       createdAt: new Date(),
     });
 
-    this.runExperiment(experiment.id, dataset, graders);
+    this.runExperiment(experiment.id, dataset, graders, promptTemplate);
 
     return {
       ...experiment,
@@ -114,7 +125,7 @@ export class ExperimentsService {
   private async runExperiment(
     experimentId: string,
     dataset: Awaited<ReturnType<typeof this.datasetsService.findOne>>,
-    graders: Awaited<ReturnType<typeof this.gradersService.findMany>>,
+    graders: Awaited<ReturnType<typeof this.gradersService.findMany>>
   ) {
     const subject = this.experimentStreams.get(experimentId) || new Subject<ExperimentProgress>();
     this.experimentStreams.set(experimentId, subject);
@@ -148,7 +159,7 @@ export class ExperimentsService {
                 rubric: graderDef.rubric || undefined,
                 config: graderDef.config || undefined,
               },
-              this.llmService,
+              this.llmService
             );
 
             const evalInput: EvalInput = {

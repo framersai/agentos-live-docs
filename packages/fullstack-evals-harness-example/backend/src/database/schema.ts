@@ -46,8 +46,24 @@ export const graders = sqliteTable('graders', {
 });
 
 /**
+ * Prompt templates define system/user prompts with {{variable}} substitution.
+ * Used to generate LLM outputs before grading.
+ */
+export const promptTemplates = sqliteTable('prompt_templates', {
+  id: text('id').primaryKey(),
+  name: text('name').notNull(),
+  description: text('description'),
+  systemPrompt: text('system_prompt'),
+  userPrompt: text('user_prompt').notNull(),
+  variables: text('variables'), // JSON array of variable names
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
+});
+
+/**
  * Experiments run graders against datasets.
  * Status tracks progress: pending -> running -> completed | failed.
+ * Optional promptTemplateId enables LLM generation before grading.
  */
 export const experiments = sqliteTable('experiments', {
   id: text('id').primaryKey(),
@@ -56,6 +72,7 @@ export const experiments = sqliteTable('experiments', {
     .notNull()
     .references(() => datasets.id),
   graderIds: text('grader_ids').notNull(), // JSON array of grader IDs
+  promptTemplateId: text('prompt_template_id').references(() => promptTemplates.id),
   status: text('status').notNull(), // 'pending' | 'running' | 'completed' | 'failed'
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
   completedAt: integer('completed_at', { mode: 'timestamp' }),
@@ -105,5 +122,7 @@ export type Experiment = typeof experiments.$inferSelect;
 export type NewExperiment = typeof experiments.$inferInsert;
 export type ExperimentResult = typeof experimentResults.$inferSelect;
 export type NewExperimentResult = typeof experimentResults.$inferInsert;
+export type PromptTemplate = typeof promptTemplates.$inferSelect;
+export type NewPromptTemplate = typeof promptTemplates.$inferInsert;
 export type Settings = typeof settings.$inferSelect;
 export type NewSettings = typeof settings.$inferInsert;
