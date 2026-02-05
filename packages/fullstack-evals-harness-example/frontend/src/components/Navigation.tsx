@@ -50,29 +50,6 @@ export function Navigation() {
           </Link>
 
           <nav className="flex items-center gap-1">
-            {tabs.map((tab) => {
-              const isActive = pathname.startsWith(tab.href);
-              const Icon = tab.icon;
-
-              return (
-                <Link
-                  key={tab.href}
-                  href={tab.href}
-                  className={`
-                    flex items-center gap-2 px-3 py-1.5 text-sm font-medium transition-all
-                    ${isActive
-                      ? 'bg-foreground text-background'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-muted'
-                    }
-                  `}
-                  style={{ borderRadius: 'var(--radius)' }}
-                >
-                  <Icon className="h-4 w-4" />
-                  <span className="hidden sm:inline">{tab.name}</span>
-                </Link>
-              );
-            })}
-
             {/* About dropdown */}
             <div className="relative" ref={dropdownRef}>
               <button
@@ -93,7 +70,7 @@ export function Navigation() {
 
               {aboutOpen && (
                 <div
-                  className="absolute right-0 top-full mt-1 w-52 bg-card border border-border shadow-lg z-50 py-1"
+                  className="absolute left-0 top-full mt-1 w-52 bg-card border border-border shadow-lg z-50 py-1"
                   style={{ borderRadius: 'var(--radius)' }}
                 >
                   <Link
@@ -127,6 +104,29 @@ export function Navigation() {
                 </div>
               )}
             </div>
+
+            {tabs.map((tab) => {
+              const isActive = pathname.startsWith(tab.href);
+              const Icon = tab.icon;
+
+              return (
+                <Link
+                  key={tab.href}
+                  href={tab.href}
+                  className={`
+                    flex items-center gap-2 px-3 py-1.5 text-sm font-medium transition-all
+                    ${isActive
+                      ? 'bg-foreground text-background'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                    }
+                  `}
+                  style={{ borderRadius: 'var(--radius)' }}
+                >
+                  <Icon className="h-4 w-4" />
+                  <span className="hidden sm:inline">{tab.name}</span>
+                </Link>
+              );
+            })}
           </nav>
 
           <button
