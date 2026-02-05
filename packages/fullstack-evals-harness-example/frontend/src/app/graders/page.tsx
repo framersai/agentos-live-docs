@@ -123,6 +123,7 @@ export default function GradersPage() {
     description: '',
     type: 'exact-match' as GraderType,
     rubric: '',
+    threshold: '',
   });
 
   useEffect(() => {
@@ -179,11 +180,15 @@ export default function GradersPage() {
   function openForm(grader?: Grader) {
     if (grader) {
       setEditingGrader(grader);
+      const threshold = grader.config && typeof grader.config === 'object' && 'threshold' in grader.config
+        ? String(grader.config.threshold)
+        : '';
       setFormData({
         name: grader.name,
         description: grader.description || '',
         type: grader.type,
         rubric: grader.rubric || '',
+        threshold,
       });
     } else {
       setEditingGrader(null);
@@ -192,6 +197,7 @@ export default function GradersPage() {
         description: '',
         type: 'exact-match',
         rubric: '',
+        threshold: '',
       });
     }
     setShowForm(true);
@@ -200,12 +206,24 @@ export default function GradersPage() {
   async function saveGrader() {
     if (!formData.name.trim()) return;
 
+    // Build config object with threshold if provided
+    const config: Record<string, unknown> = {};
+    if (formData.threshold.trim()) {
+      const thresholdNum = parseFloat(formData.threshold);
+      if (!isNaN(thresholdNum) && thresholdNum >= 0 && thresholdNum <= 1) {
+        config.threshold = thresholdNum;
+      }
+    }
+
     try {
       if (editingGrader) {
+        // Merge with existing config
+        const mergedConfig = { ...editingGrader.config, ...config };
         await gradersApi.update(editingGrader.id, {
           name: formData.name.trim(),
           description: formData.description.trim() || undefined,
           rubric: formData.rubric.trim() || undefined,
+          config: Object.keys(mergedConfig).length > 0 ? mergedConfig : undefined,
         });
       } else {
         await gradersApi.create({
@@ -213,6 +231,7 @@ export default function GradersPage() {
           description: formData.description.trim() || undefined,
           type: formData.type,
           rubric: formData.rubric.trim() || undefined,
+          config: Object.keys(config).length > 0 ? config : undefined,
         });
       }
       setShowForm(false);
@@ -520,38 +539,6 @@ export default function GradersPage() {
         </div>
       )}
 
-      {/* Grader Type Reference Cards */}
-      <div className="space-y-3">
-        <h2 className="text-lg font-semibold">Grader Type Reference</h2>
-        <p className="text-sm text-muted-foreground">
-          All available evaluation techniques and the research that inspired them.
-        </p>
-        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-          {GRADER_TYPES.map((type) => (
-            <div key={type.value} className="card p-4 space-y-2">
-              <div className="flex items-center justify-between">
-                <h3 className="text-sm font-medium">{type.label}</h3>
-                <span className={`badge text-[10px] ${type.category === 'llm-powered' ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400' : 'bg-muted text-muted-foreground'}`}>
-                  {type.category === 'llm-powered' ? 'LLM-Powered' : 'Deterministic'}
-                </span>
-              </div>
-              <p className="text-xs text-muted-foreground">{type.description}</p>
-              <p className="text-xs text-muted-foreground/80">{type.inspiration}</p>
-              {type.reference && (
-                <a
-                  href={type.reference}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs text-muted-foreground underline hover:text-foreground inline-flex items-center gap-1"
-                >
-                  Research paper <ExternalLink className="h-3 w-3" />
-                </a>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-
       {/* Create/Edit Modal */}
       {showForm && (
         <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50">
@@ -604,6 +591,24 @@ export default function GradersPage() {
                   </select>
                 </div>
               )}
+
+              <div>
+                <label className="text-sm font-medium block mb-1 flex items-center gap-2">
+                  Threshold
+                  <span className="text-muted-foreground font-normal">(0.0 - 1.0)</span>
+                  <Tooltip text="Score threshold for pass/fail. Common values: 0.7 (moderate), 0.85 (high), 0.9 (strict)" />
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  max="1"
+                  step="0.05"
+                  value={formData.threshold}
+                  onChange={(e) => setFormData({ ...formData, threshold: e.target.value })}
+                  placeholder="0.7"
+                  className="input w-32"
+                />
+              </div>
 
               {needsRubric && (
                 <div>

@@ -14,8 +14,15 @@ import {
   FileText,
   RotateCcw,
 } from 'lucide-react';
-import { promptsApi, datasetsApi } from '@/lib/api';
+import { promptsApi, datasetsApi, settingsApi } from '@/lib/api';
 import type { Candidate, Dataset } from '@/lib/types';
+
+interface LlmSettings {
+  provider?: string;
+  model?: string;
+  temperature?: number;
+  maxTokens?: number;
+}
 
 interface EditableCandidate {
   name: string;
@@ -36,7 +43,7 @@ interface EditableCandidate {
   notes: string;
 }
 
-function toEditable(c: Candidate): EditableCandidate {
+function toEditable(c: Candidate, settings?: LlmSettings): EditableCandidate {
   // Serialize weighted grader list back to "id:weight, id2:weight2" format
   const graderStr = c.recommendedGraders
     ? c.recommendedGraders
@@ -47,16 +54,21 @@ function toEditable(c: Candidate): EditableCandidate {
         .join(', ')
     : '';
 
+  // Use settings as defaults for model config if candidate doesn't have its own values
   return {
     name: c.name || '',
     description: c.description || '',
     runnerType: c.runnerType || 'llm_prompt',
     systemPrompt: c.systemPrompt || '',
     userPromptTemplate: c.userPromptTemplate || '',
-    temperature: c.modelConfig?.temperature !== undefined ? String(c.modelConfig.temperature) : '',
-    maxTokens: c.modelConfig?.maxTokens !== undefined ? String(c.modelConfig.maxTokens) : '',
-    provider: (c.modelConfig?.provider as string) || '',
-    model: (c.modelConfig?.model as string) || '',
+    temperature: c.modelConfig?.temperature !== undefined
+      ? String(c.modelConfig.temperature)
+      : (settings?.temperature !== undefined ? String(settings.temperature) : ''),
+    maxTokens: c.modelConfig?.maxTokens !== undefined
+      ? String(c.modelConfig.maxTokens)
+      : (settings?.maxTokens !== undefined ? String(settings.maxTokens) : ''),
+    provider: (c.modelConfig?.provider as string) || settings?.provider || '',
+    model: (c.modelConfig?.model as string) || settings?.model || '',
     endpointUrl: c.endpointUrl || '',
     endpointMethod: c.endpointMethod || '',
     endpointBodyTemplate: c.endpointBodyTemplate || '',
@@ -80,6 +92,7 @@ export default function CandidateDetailPage({
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [llmDefaults, setLlmDefaults] = useState<LlmSettings | null>(null);
   const [showTest, setShowTest] = useState(false);
   const [testInput, setTestInput] = useState('');
   const [testResult, setTestResult] = useState<{
@@ -92,12 +105,15 @@ export default function CandidateDetailPage({
   useEffect(() => {
     async function load() {
       try {
-        const [c, ds] = await Promise.all([
+        const [c, ds, settings] = await Promise.all([
           promptsApi.get(id),
           datasetsApi.list(),
+          settingsApi.getLlmSettings().catch(() => null),
         ]);
         setCandidate(c);
-        const e = toEditable(c);
+        setLlmDefaults(settings);
+        // Use settings as defaults for model config fields if candidate doesn't have values
+        const e = toEditable(c, settings || undefined);
         setEdited(e);
         setOriginal(e);
         setDatasets(ds);

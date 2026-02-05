@@ -9,6 +9,7 @@ import {
   Plus,
   X,
   FileText,
+  Info,
 } from 'lucide-react';
 import Link from 'next/link';
 import { datasetsApi, promptsApi } from '@/lib/api';
@@ -28,6 +29,18 @@ function toEditable(tc: TestCase): EditableCase {
     context: tc.context || '',
     metadata: tc.metadata ? JSON.stringify(tc.metadata) : '',
   };
+}
+
+function Tooltip({ text }: { text: string }) {
+  return (
+    <div className="group relative inline-block ml-1">
+      <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
+      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-foreground text-background text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 w-64 text-left">
+        {text}
+        <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-foreground" />
+      </div>
+    </div>
+  );
 }
 
 export default function DatasetDetailPage({
@@ -244,9 +257,25 @@ export default function DatasetDetailPage({
           <thead>
             <tr>
               <th className="w-10">#</th>
-              <th>Input</th>
-              <th>Expected Output</th>
-              <th>Context</th>
+              <th>
+                <span className="flex items-center">
+                  Input
+                  <Tooltip text="Required. The query or prompt that will be sent to the LLM candidate during evaluation." />
+                </span>
+              </th>
+              <th>
+                <span className="flex items-center">
+                  Expected Output
+                  <Tooltip text="Optional. The ground truth answer used by graders like exact-match, contains, and semantic-similarity to compare against the LLM's response." />
+                </span>
+              </th>
+              <th>
+                <span className="flex items-center">
+                  Context
+                  <span className="text-muted-foreground text-xs font-normal ml-1">(optional)</span>
+                  <Tooltip text="Optional. Supporting context for RAGAS-style faithfulness evaluation. Provides the source material the LLM should reference — used to detect hallucinations (claims not supported by context)." />
+                </span>
+              </th>
               <th className="w-10"></th>
             </tr>
           </thead>
