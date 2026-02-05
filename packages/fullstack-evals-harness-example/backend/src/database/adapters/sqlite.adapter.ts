@@ -140,13 +140,17 @@ export class SqliteAdapter implements IDbAdapter {
 
       CREATE INDEX IF NOT EXISTS idx_test_cases_dataset ON test_cases(dataset_id);
       CREATE INDEX IF NOT EXISTS idx_results_experiment ON experiment_results(experiment_id);
-      CREATE INDEX IF NOT EXISTS idx_results_candidate ON experiment_results(candidate_id);
       CREATE INDEX IF NOT EXISTS idx_candidates_parent ON candidates(parent_id);
       CREATE INDEX IF NOT EXISTS idx_settings_key ON settings(key);
     `);
 
-    // Migrations for existing databases
+    // Migrations for existing databases (must run before indexes on new columns)
     this.migrateColumns();
+
+    // Indexes on migrated columns (safe after migration)
+    this.sqlite.exec(`
+      CREATE INDEX IF NOT EXISTS idx_results_candidate ON experiment_results(candidate_id);
+    `);
 
     console.log('SQLite database initialized at:', this.filePath);
   }
