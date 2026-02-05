@@ -7,11 +7,13 @@ A lightweight evaluation harness for running AI graders against test cases. Buil
 
 ## What It Does
 
-Create datasets of test cases, define graders (evaluation criteria), and run experiments to see how your AI outputs hold up.
+Create datasets of test cases, define graders (evaluation criteria), build candidates (prompt templates or API endpoints), and run experiments to see how your AI outputs hold up.
 
-- **Datasets**: Tables of test cases with input/expected output
+- **Datasets**: Tables of test cases with input/expected output/context/metadata
 - **Graders**: Evaluation criteria (exact match, LLM judge, semantic similarity, faithfulness)
-- **Experiments**: Run graders against datasets, see pass/fail results in real-time
+- **Candidates**: How to produce output — LLM prompt templates with `{{variable}}` substitution, or HTTP endpoints
+- **Experiments**: Run `dataset × candidates × graders`, see results stream in real-time
+- **Comparison**: A/B compare candidates — pass rate deltas, improved/regressed case counts
 
 ---
 
@@ -87,26 +89,62 @@ Switch to the **Graders** tab. Create evaluation criteria:
 - **Semantic Similarity**: Embedding-based similarity threshold
 - **Faithfulness**: Checks if output is faithful to provided context (RAGAS-inspired)
 
-### 3. Run an Experiment
+### 3. Create Candidates
+
+Go to the **Candidates** tab. A candidate defines how to produce output for each test case:
+
+- **LLM Prompt**: System prompt + user prompt template with `{{input}}`, `{{context}}`, `{{metadata.field}}` substitution
+- **HTTP Endpoint**: Call an external API and extract the response
+
+Load from presets (qa-basic, qa-rag, json-extractor, classifier, summarizer, http-api) or create your own. Use the inline test panel to verify output before running experiments.
+
+Candidates support variant lineage — create variations of existing candidates to track prompt iteration history.
+
+### 4. Run an Experiment
 
 Go to the **Experiments** tab:
 
 1. Select a dataset
-2. Select one or more graders
-3. Click **Run**
-4. Watch results stream in real-time
+2. Select one or more candidates (optional — without candidates, graders evaluate expectedOutput directly)
+3. Select one or more graders
+4. Click **Run**
+5. Watch results stream in real-time
 
-Results show pass/fail per grader. Hover for the reason.
+Results show a matrix of candidates × graders per test case. Hover for score, reason, generated output, and latency.
+
+### 5. Compare Candidates
+
+After running an experiment with multiple candidates, use the comparison endpoint to see:
+
+- Pass rate delta between baseline and challenger
+- Count of improved, regressed, and unchanged cases
+- Per-test-case side-by-side results
 
 ---
 
 ## Project Structure
 
 ```
-├── frontend/          # Next.js app
-├── backend/           # NestJS API
-├── ARCHITECTURE.md    # Design decisions and references
-└── README.md          # You are here
+├── frontend/                    # Next.js 15 app
+│   └── src/app/
+│       ├── datasets/            # Dataset + test case CRUD
+│       ├── graders/             # Grader CRUD + presets
+│       ├── candidates/          # Candidate CRUD + test panel
+│       ├── experiments/         # Run experiments + results
+│       ├── stats/               # Aggregate metrics
+│       ├── settings/            # Runtime LLM config
+│       └── about/               # Docs and references
+├── backend/                     # NestJS API
+│   └── src/
+│       ├── database/            # IDbAdapter + SQLite implementation
+│       ├── candidates/          # CRUD + runner service
+│       ├── experiments/         # Run loop + SSE streaming
+│       ├── graders/             # Grader evaluation logic
+│       ├── llm/                 # Provider-agnostic LLM layer
+│       ├── presets/             # Seed data + synthetic generation
+│       └── settings/            # Runtime configuration
+├── ARCHITECTURE.md              # Design decisions and references
+└── README.md                    # You are here
 ```
 
 See [ARCHITECTURE.md](./ARCHITECTURE.md) for technical details.
