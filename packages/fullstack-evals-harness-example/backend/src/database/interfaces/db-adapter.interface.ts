@@ -38,13 +38,20 @@ export interface Grader {
   updatedAt: Date;
 }
 
-export interface PromptTemplate {
+export interface Candidate {
   id: string;
   name: string;
   description: string | null;
+  runnerType: string; // 'llm_prompt' | 'http_endpoint'
   systemPrompt: string | null;
-  userPrompt: string;
-  variables: string | null;
+  userPromptTemplate: string | null;
+  modelConfig: string | null; // JSON: {provider?, model?, temperature?, maxTokens?}
+  endpointUrl: string | null;
+  endpointMethod: string | null;
+  endpointHeaders: string | null; // JSON
+  endpointBodyTemplate: string | null;
+  parentId: string | null;
+  variantLabel: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -54,7 +61,7 @@ export interface Experiment {
   name: string | null;
   datasetId: string;
   graderIds: string;
-  promptTemplateId: string | null;
+  candidateIds: string | null; // JSON array, nullable for legacy
   status: string;
   createdAt: Date;
   completedAt: Date | null;
@@ -65,11 +72,22 @@ export interface ExperimentResult {
   experimentId: string;
   testCaseId: string;
   graderId: string;
+  candidateId: string | null;
   pass: boolean;
   score: number | null;
   reason: string | null;
   output: string | null;
+  generatedOutput: string | null;
+  latencyMs: number | null;
   createdAt: Date;
+}
+
+export interface MetadataSchema {
+  id: string;
+  datasetId: string;
+  schemaJson: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface Settings {
@@ -112,13 +130,20 @@ export interface InsertGrader {
   updatedAt: Date;
 }
 
-export interface InsertPromptTemplate {
+export interface InsertCandidate {
   id: string;
   name: string;
   description?: string | null;
+  runnerType: string;
   systemPrompt?: string | null;
-  userPrompt: string;
-  variables?: string | null;
+  userPromptTemplate?: string | null;
+  modelConfig?: string | null;
+  endpointUrl?: string | null;
+  endpointMethod?: string | null;
+  endpointHeaders?: string | null;
+  endpointBodyTemplate?: string | null;
+  parentId?: string | null;
+  variantLabel?: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -128,7 +153,7 @@ export interface InsertExperiment {
   name?: string | null;
   datasetId: string;
   graderIds: string;
-  promptTemplateId?: string | null;
+  candidateIds?: string | null;
   status: string;
   createdAt: Date;
   completedAt?: Date | null;
@@ -139,11 +164,22 @@ export interface InsertExperimentResult {
   experimentId: string;
   testCaseId: string;
   graderId: string;
+  candidateId?: string | null;
   pass: boolean;
   score?: number | null;
   reason?: string | null;
   output?: string | null;
+  generatedOutput?: string | null;
+  latencyMs?: number | null;
   createdAt: Date;
+}
+
+export interface InsertMetadataSchema {
+  id: string;
+  datasetId: string;
+  schemaJson: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface InsertSettings {
@@ -194,15 +230,17 @@ export interface IDbAdapter {
   ): Promise<Grader | null>;
   deleteGrader(id: string): Promise<boolean>;
 
-  // Prompt Templates
-  findAllPromptTemplates(): Promise<PromptTemplate[]>;
-  findPromptTemplateById(id: string): Promise<PromptTemplate | null>;
-  insertPromptTemplate(template: InsertPromptTemplate): Promise<PromptTemplate>;
-  updatePromptTemplate(
+  // Candidates
+  findAllCandidates(): Promise<Candidate[]>;
+  findCandidateById(id: string): Promise<Candidate | null>;
+  findCandidatesByIds(ids: string[]): Promise<Candidate[]>;
+  findCandidateVariants(parentId: string): Promise<Candidate[]>;
+  insertCandidate(candidate: InsertCandidate): Promise<Candidate>;
+  updateCandidate(
     id: string,
-    updates: Partial<Omit<PromptTemplate, 'id' | 'createdAt'>>
-  ): Promise<PromptTemplate | null>;
-  deletePromptTemplate(id: string): Promise<boolean>;
+    updates: Partial<Omit<Candidate, 'id' | 'createdAt'>>
+  ): Promise<Candidate | null>;
+  deleteCandidate(id: string): Promise<boolean>;
 
   // Experiments
   findAllExperiments(): Promise<Experiment[]>;
@@ -225,7 +263,21 @@ export interface IDbAdapter {
     passed: number;
     failed: number;
     byGrader: Record<string, { total: number; passed: number; avgScore: number }>;
+    byCandidate: Record<
+      string,
+      {
+        total: number;
+        passed: number;
+        avgScore: number;
+        byGrader: Record<string, { total: number; passed: number; avgScore: number }>;
+      }
+    >;
   }>;
+
+  // Metadata Schemas
+  findMetadataSchemaByDatasetId(datasetId: string): Promise<MetadataSchema | null>;
+  upsertMetadataSchema(datasetId: string, schemaJson: string): Promise<MetadataSchema>;
+  deleteMetadataSchema(datasetId: string): Promise<boolean>;
 
   // Settings
   findAllSettings(): Promise<Settings[]>;
