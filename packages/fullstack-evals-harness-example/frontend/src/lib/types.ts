@@ -58,6 +58,8 @@ export interface Candidate {
     model?: string;
     temperature?: number;
     maxTokens?: number;
+    apiKey?: string;
+    baseUrl?: string;
   };
   endpointUrl?: string;
   endpointMethod?: string;

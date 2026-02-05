@@ -32,7 +32,14 @@ export default function CandidatesPage() {
   const [formRunnerType, setFormRunnerType] = useState<CandidateRunnerType>('llm_prompt');
   const [formSystemPrompt, setFormSystemPrompt] = useState('');
   const [formUserTemplate, setFormUserTemplate] = useState('');
-  const [formModelConfig, setFormModelConfig] = useState('');
+  // Model config fields (structured instead of raw JSON)
+  const [formProvider, setFormProvider] = useState('');
+  const [formModel, setFormModel] = useState('');
+  const [formTemperature, setFormTemperature] = useState('');
+  const [formMaxTokens, setFormMaxTokens] = useState('');
+  const [formApiKey, setFormApiKey] = useState('');
+  const [formBaseUrl, setFormBaseUrl] = useState('');
+  // HTTP endpoint fields
   const [formEndpointUrl, setFormEndpointUrl] = useState('');
   const [formEndpointMethod, setFormEndpointMethod] = useState('POST');
   const [formEndpointHeaders, setFormEndpointHeaders] = useState('');
@@ -69,7 +76,12 @@ export default function CandidatesPage() {
     setFormRunnerType('llm_prompt');
     setFormSystemPrompt('');
     setFormUserTemplate('');
-    setFormModelConfig('');
+    setFormProvider('');
+    setFormModel('');
+    setFormTemperature('');
+    setFormMaxTokens('');
+    setFormApiKey('');
+    setFormBaseUrl('');
     setFormEndpointUrl('');
     setFormEndpointMethod('POST');
     setFormEndpointHeaders('');
@@ -83,7 +95,12 @@ export default function CandidatesPage() {
     setFormRunnerType(candidate.runnerType);
     setFormSystemPrompt(candidate.systemPrompt || '');
     setFormUserTemplate(candidate.userPromptTemplate || '');
-    setFormModelConfig(candidate.modelConfig ? JSON.stringify(candidate.modelConfig, null, 2) : '');
+    setFormProvider(candidate.modelConfig?.provider || '');
+    setFormModel(candidate.modelConfig?.model || '');
+    setFormTemperature(candidate.modelConfig?.temperature !== undefined ? String(candidate.modelConfig.temperature) : '');
+    setFormMaxTokens(candidate.modelConfig?.maxTokens !== undefined ? String(candidate.modelConfig.maxTokens) : '');
+    setFormApiKey(candidate.modelConfig?.apiKey || '');
+    setFormBaseUrl(candidate.modelConfig?.baseUrl || '');
     setFormEndpointUrl(candidate.endpointUrl || '');
     setFormEndpointMethod(candidate.endpointMethod || 'POST');
     setFormEndpointHeaders(
@@ -104,13 +121,16 @@ export default function CandidatesPage() {
     if (formRunnerType === 'llm_prompt') {
       data.systemPrompt = formSystemPrompt || undefined;
       data.userPromptTemplate = formUserTemplate || undefined;
-      if (formModelConfig) {
-        try {
-          data.modelConfig = JSON.parse(formModelConfig);
-        } catch {
-          alert('Invalid JSON in model config');
-          return;
-        }
+      // Build modelConfig from structured fields (only include non-empty values)
+      const modelConfig: Record<string, unknown> = {};
+      if (formProvider) modelConfig.provider = formProvider;
+      if (formModel) modelConfig.model = formModel;
+      if (formTemperature !== '') modelConfig.temperature = parseFloat(formTemperature);
+      if (formMaxTokens !== '') modelConfig.maxTokens = parseInt(formMaxTokens, 10);
+      if (formApiKey) modelConfig.apiKey = formApiKey;
+      if (formBaseUrl) modelConfig.baseUrl = formBaseUrl;
+      if (Object.keys(modelConfig).length > 0) {
+        data.modelConfig = modelConfig;
       }
     } else {
       data.endpointUrl = formEndpointUrl || undefined;
@@ -318,6 +338,11 @@ export default function CandidatesPage() {
                     variant
                   </span>
                 )}
+                {candidate.modelConfig?.provider && (
+                  <span className="badge bg-muted text-muted-foreground">
+                    {candidate.modelConfig.provider}
+                  </span>
+                )}
                 {candidate.modelConfig?.model && (
                   <span className="badge bg-muted text-muted-foreground">
                     {candidate.modelConfig.model}
@@ -474,19 +499,86 @@ export default function CandidatesPage() {
                       className="input w-full mt-1 min-h-[80px] resize-y font-mono text-sm"
                     />
                   </div>
-                  <div>
+                  <div className="border border-border p-4 space-y-3" style={{ borderRadius: 'var(--radius)' }}>
                     <label className="text-sm font-medium">
                       Model Config
                       <span className="text-muted-foreground font-normal ml-2">
-                        JSON (optional overrides)
+                        Override global settings per candidate
                       </span>
                     </label>
-                    <textarea
-                      value={formModelConfig}
-                      onChange={(e) => setFormModelConfig(e.target.value)}
-                      placeholder={'{"temperature": 0, "model": "gpt-4o-mini"}'}
-                      className="input w-full mt-1 min-h-[60px] resize-y font-mono text-sm"
-                    />
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="text-xs text-muted-foreground">Provider</label>
+                        <select
+                          value={formProvider}
+                          onChange={(e) => setFormProvider(e.target.value)}
+                          className="input w-full mt-1"
+                        >
+                          <option value="">(use global default)</option>
+                          <option value="openai">OpenAI</option>
+                          <option value="anthropic">Anthropic</option>
+                          <option value="ollama">Ollama</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="text-xs text-muted-foreground">Model</label>
+                        <input
+                          type="text"
+                          value={formModel}
+                          onChange={(e) => setFormModel(e.target.value)}
+                          placeholder={
+                            formProvider === 'anthropic' ? 'claude-sonnet-4-5-20250929'
+                            : formProvider === 'ollama' ? 'llama3:8b'
+                            : 'gpt-4o-mini'
+                          }
+                          className="input w-full mt-1"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs text-muted-foreground">Temperature</label>
+                        <input
+                          type="number"
+                          value={formTemperature}
+                          onChange={(e) => setFormTemperature(e.target.value)}
+                          placeholder="0.7"
+                          min="0"
+                          max="2"
+                          step="0.1"
+                          className="input w-full mt-1"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs text-muted-foreground">Max Tokens</label>
+                        <input
+                          type="number"
+                          value={formMaxTokens}
+                          onChange={(e) => setFormMaxTokens(e.target.value)}
+                          placeholder="1024"
+                          min="1"
+                          className="input w-full mt-1"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-xs text-muted-foreground">API Key (override)</label>
+                      <input
+                        type="password"
+                        value={formApiKey}
+                        onChange={(e) => setFormApiKey(e.target.value)}
+                        placeholder="Leave empty to use global key"
+                        className="input w-full mt-1"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs text-muted-foreground">Base URL (override)</label>
+                      <input
+                        type="text"
+                        value={formBaseUrl}
+                        onChange={(e) => setFormBaseUrl(e.target.value)}
+                        placeholder={formProvider === 'ollama' ? 'http://localhost:11434' : 'Leave empty for default'}
+                        className="input w-full mt-1"
+                      />
+                    </div>
                   </div>
                 </>
               )}

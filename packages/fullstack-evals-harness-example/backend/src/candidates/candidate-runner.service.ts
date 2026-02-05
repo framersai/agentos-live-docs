@@ -74,13 +74,17 @@ export class CandidateRunnerService {
       ? this.candidatesService.renderTemplate(candidate.systemPrompt, vars)
       : undefined;
 
-    // Model config overrides
+    // Model config overrides (provider/model for multi-model comparison)
     const modelConfig = candidate.modelConfig || {};
 
     return this.llmService.complete(userPrompt, {
       systemPrompt,
       temperature: modelConfig.temperature,
       maxTokens: modelConfig.maxTokens,
+      provider: modelConfig.provider,
+      model: modelConfig.model,
+      apiKey: modelConfig.apiKey,
+      baseUrl: modelConfig.baseUrl,
     });
   }
 

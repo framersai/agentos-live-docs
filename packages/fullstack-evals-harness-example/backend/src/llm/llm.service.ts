@@ -8,11 +8,16 @@ export type LlmProvider = 'openai' | 'anthropic' | 'ollama';
 
 /**
  * Options for completion requests.
+ * Provider/model/apiKey/baseUrl allow per-candidate overrides of global settings.
  */
 export interface CompletionOptions {
   temperature?: number;
   maxTokens?: number;
   systemPrompt?: string;
+  provider?: LlmProvider;
+  model?: string;
+  apiKey?: string;
+  baseUrl?: string;
 }
 
 /**
@@ -37,9 +42,20 @@ export class LlmService {
 
   /**
    * Generate a text completion using the configured provider.
+   * Per-candidate overrides (provider, model, apiKey, baseUrl) take precedence over global settings.
    */
   async complete(prompt: string, options: CompletionOptions = {}): Promise<string> {
-    const settings = await this.getSettings();
+    const globalSettings = await this.getSettings();
+
+    // Merge per-candidate overrides with global settings
+    const settings: LlmSettings = {
+      ...globalSettings,
+      ...(options.provider && { provider: options.provider }),
+      ...(options.model && { model: options.model }),
+      ...(options.apiKey && { apiKey: options.apiKey }),
+      ...(options.baseUrl && { baseUrl: options.baseUrl }),
+    };
+
     const temperature = options.temperature ?? settings.temperature ?? 0.7;
     const maxTokens = options.maxTokens ?? settings.maxTokens ?? 1024;
     const systemPrompt = options.systemPrompt;
