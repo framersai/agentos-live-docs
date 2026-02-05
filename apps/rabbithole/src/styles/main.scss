@@ -1,0 +1,862 @@
+// ============================================================================
+// RABBITHOLE - HOLOGRAPHIC NEUMORPHIC BRUTALISM
+// Premium · 3D · Holographic · Refined Digital Brutalism
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// DESIGN TOKENS
+// ----------------------------------------------------------------------------
+
+// Deep void backgrounds
+$void-abyss: #030305;
+$void-deep: #080810;
+$void-surface: #0e0e18;
+$void-elevated: #151520;
+$void-raised: #1c1c28;
+$void-hover: #242432;
+
+// Holographic spectrum
+$holo-cyan: #00f5ff;
+$holo-magenta: #ff00f5;
+$holo-gold: #ffd700;
+$holo-violet: #8b5cf6;
+$holo-emerald: #10ffb0;
+$holo-coral: #ff6b6b;
+
+// Gradient definitions
+$gradient-holographic: linear-gradient(135deg, $holo-cyan, $holo-violet, $holo-magenta);
+$gradient-gold: linear-gradient(135deg, #ffd700, #ff8c00);
+$gradient-cyber: linear-gradient(135deg, $holo-cyan 0%, transparent 50%);
+$gradient-surface: linear-gradient(145deg, rgba(255, 255, 255, 0.03), rgba(0, 0, 0, 0.1));
+
+// Text
+$text-pure: #ffffff;
+$text-bright: #e8e8f0;
+$text-muted: #8888a0;
+$text-dim: #505068;
+
+// Typography - Modern Sleek Hierarchy
+$font-display: 'Outfit', 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+$font-body: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+$font-mono: 'IBM Plex Mono', 'SF Mono', 'Monaco', monospace;
+
+// Spacing
+$sp-1: 0.25rem;
+$sp-2: 0.5rem;
+$sp-3: 0.75rem;
+$sp-4: 1rem;
+$sp-5: 1.25rem;
+$sp-6: 1.5rem;
+$sp-8: 2rem;
+$sp-10: 2.5rem;
+$sp-12: 3rem;
+$sp-16: 4rem;
+$sp-20: 5rem;
+$sp-24: 6rem;
+$sp-32: 8rem;
+
+// ----------------------------------------------------------------------------
+// RABBIT HOLE BRAND TOKENS
+// ----------------------------------------------------------------------------
+
+// Champagne Gold
+$rh-gold: #c9a227;
+$rh-gold-light: #e8d48a;
+$rh-gold-dark: #8b6914;
+
+// Obsidian
+$rh-obsidian: #1a1625;
+$rh-obsidian-deep: #08050a;
+$rh-obsidian-mid: #12101a;
+
+// Light Backgrounds
+$rh-cream: #f8f6f2;
+$rh-warm: #f5f0e8;
+
+// Brand Typography
+$rh-font-display: 'Cormorant Garamond', Georgia, serif;
+$rh-font-body: 'Tenor Sans', 'Helvetica Neue', sans-serif;
+
+// 3D Depth Shadows - Enhanced for maximum depth perception
+$shadow-depth-sm: 4px 4px 8px rgba(0, 0, 0, 0.5),
+    -2px -2px 6px rgba(255, 255, 255, 0.015),
+    0 2px 4px rgba(0, 0, 0, 0.4);
+
+$shadow-neumorphic-up: 10px 10px 30px rgba(0, 0, 0, 0.75),
+    -6px -6px 20px rgba(255, 255, 255, 0.02),
+    0 4px 8px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+
+$shadow-neumorphic-down: inset 6px 6px 16px rgba(0, 0, 0, 0.7),
+    inset -4px -4px 12px rgba(255, 255, 255, 0.015),
+    inset 0 2px 4px rgba(0, 0, 0, 0.4);
+
+$shadow-neumorphic-float: 16px 16px 48px rgba(0, 0, 0, 0.85),
+    -8px -8px 32px rgba(255, 255, 255, 0.02),
+    0 8px 16px rgba(0, 0, 0, 0.6),
+    0 0 100px rgba($holo-cyan, 0.08);
+
+$shadow-holographic: 0 0 50px rgba($holo-cyan, 0.2),
+    0 0 100px rgba($holo-magenta, 0.12),
+    0 0 150px rgba($holo-violet, 0.08),
+    0 12px 40px rgba(0, 0, 0, 0.6);
+
+// 3D Border effect
+$border-3d-light: 1px solid rgba(255, 255, 255, 0.06);
+$border-3d-dark: 1px solid rgba(0, 0, 0, 0.4);
+
+// Radius
+$radius-sm: 4px;
+$radius-md: 8px;
+$radius-lg: 12px;
+$radius-xl: 20px;
+
+// Transitions
+$ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+$transition-fast: 150ms $ease-out-expo;
+$transition-base: 250ms $ease-out-expo;
+$transition-slow: 400ms $ease-out-expo;
+
+// ----------------------------------------------------------------------------
+// MIXINS
+// ----------------------------------------------------------------------------
+
+@mixin neumorphic-panel {
+    background: linear-gradient(145deg, $void-elevated, darken($void-elevated, 3%));
+    border-top: $border-3d-light;
+    border-left: $border-3d-light;
+    border-right: $border-3d-dark;
+    border-bottom: $border-3d-dark;
+    box-shadow: $shadow-neumorphic-up;
+    border-radius: $radius-lg;
+}
+
+@mixin neumorphic-inset {
+    background: linear-gradient(145deg, darken($void-deep, 2%), $void-deep);
+    border-top: 1px solid rgba(0, 0, 0, 0.5);
+    border-left: 1px solid rgba(0, 0, 0, 0.4);
+    border-right: 1px solid rgba(255, 255, 255, 0.02);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+    box-shadow: $shadow-neumorphic-down;
+    border-radius: $radius-md;
+}
+
+@mixin holographic-border {
+    position: relative;
+
+    &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        padding: 1px;
+        border-radius: inherit;
+        background: $gradient-holographic;
+        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        mask-composite: xor;
+        -webkit-mask-composite: xor;
+        opacity: 0.4;
+        transition: opacity $transition-base;
+    }
+
+    &:hover::before {
+        opacity: 0.8;
+    }
+}
+
+@mixin holographic-text {
+    background: $gradient-holographic;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+@mixin glass-panel {
+    background: rgba($void-elevated, 0.8);
+    backdrop-filter: blur(20px) saturate(1.5);
+    -webkit-backdrop-filter: blur(20px) saturate(1.5);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+@mixin brutalist-heading {
+    font-family: $font-display;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1.0;
+    text-transform: none;
+}
+
+@mixin mono-text {
+    font-family: $font-mono;
+    font-size: 0.8125rem;
+    letter-spacing: 0.03em;
+}
+
+@mixin glow-pulse($color) {
+    animation: glow-pulse-#{unique-id()} 3s ease-in-out infinite;
+
+    @keyframes glow-pulse-#{unique-id()} {
+
+        0%,
+        100% {
+            box-shadow: 0 0 20px rgba($color, 0.2), 0 0 40px rgba($color, 0.1);
+        }
+
+        50% {
+            box-shadow: 0 0 30px rgba($color, 0.3), 0 0 60px rgba($color, 0.15);
+        }
+    }
+}
+
+// Brand: Champagne Gold gradient
+@mixin gold-gradient {
+    background: linear-gradient(135deg, $rh-gold-dark 0%, $rh-gold 25%, $rh-gold-light 50%, $rh-gold 75%, $rh-gold-dark 100%);
+}
+
+@mixin gold-text {
+    @include gold-gradient;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+// ----------------------------------------------------------------------------
+// CSS VARIABLES
+// ----------------------------------------------------------------------------
+
+:root {
+    --color-void: #{$void-abyss};
+    --color-surface: #{$void-surface};
+    --color-elevated: #{$void-elevated};
+    --color-accent: #{$holo-cyan};
+    --color-text: #{$text-pure};
+    --color-text-muted: #{$text-muted};
+
+    // Rabbit Hole Brand
+    --rh-gold: #{$rh-gold};
+    --rh-gold-light: #{$rh-gold-light};
+    --rh-gold-dark: #{$rh-gold-dark};
+    --rh-obsidian: #{$rh-obsidian};
+    --rh-obsidian-deep: #{$rh-obsidian-deep};
+    --rh-obsidian-mid: #{$rh-obsidian-mid};
+    --rh-cream: #{$rh-cream};
+    --rh-warm: #{$rh-warm};
+}
+
+// ----------------------------------------------------------------------------
+// BASE RESET
+// ----------------------------------------------------------------------------
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+body {
+    background: $void-abyss;
+    color: $text-pure;
+    font-family: $font-body;
+    font-size: 1rem;
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+::selection {
+    background: rgba($holo-cyan, 0.3);
+    color: $text-pure;
+}
+
+:focus-visible {
+    outline: 2px solid $holo-cyan;
+    outline-offset: 2px;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+// Custom scrollbar
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: $void-deep;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, $void-raised, $void-hover);
+    border-radius: 3px;
+
+    &:hover {
+        background: linear-gradient(180deg, $void-hover, $text-dim);
+    }
+}
+
+// ----------------------------------------------------------------------------
+// BUTTONS
+// ----------------------------------------------------------------------------
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: $sp-2;
+    padding: $sp-3 $sp-6;
+    font-family: $font-mono;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: $radius-md;
+    cursor: pointer;
+    transition: all $transition-base;
+    position: relative;
+    overflow: hidden;
+
+    &--primary {
+        background: $holo-cyan;
+        color: $void-abyss;
+        box-shadow:
+            0 4px 16px rgba($holo-cyan, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+
+        &::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.15), transparent);
+            pointer-events: none;
+        }
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow:
+                0 8px 32px rgba($holo-cyan, 0.4),
+                0 0 60px rgba($holo-cyan, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        &:active {
+            transform: translateY(0);
+        }
+    }
+
+    &--secondary {
+        @include neumorphic-panel;
+        color: $text-bright;
+
+        &:hover {
+            background: $void-raised;
+            box-shadow: $shadow-neumorphic-float;
+        }
+    }
+
+    &--ghost {
+        background: transparent;
+        color: $text-muted;
+        border: 1px solid transparent;
+
+        &:hover {
+            color: $text-pure;
+            background: rgba(255, 255, 255, 0.03);
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+    }
+
+    &--holographic {
+        @include holographic-border;
+        background: rgba($holo-cyan, 0.1);
+        color: $holo-cyan;
+
+        &:hover {
+            background: rgba($holo-cyan, 0.15);
+            box-shadow: $shadow-holographic;
+        }
+    }
+
+    &--lg {
+        padding: $sp-4 $sp-8;
+        font-size: 0.875rem;
+        border-radius: $radius-lg;
+    }
+
+    &--sm {
+        padding: $sp-2 $sp-4;
+        font-size: 0.75rem;
+    }
+}
+
+// ----------------------------------------------------------------------------
+// PANELS
+// ----------------------------------------------------------------------------
+
+.panel {
+    @include neumorphic-panel;
+    padding: $sp-6;
+
+    &--inset {
+        @include neumorphic-inset;
+    }
+
+    &--glass {
+        @include glass-panel;
+        box-shadow: $shadow-neumorphic-up;
+    }
+
+    &--holographic {
+        @include holographic-border;
+        @include neumorphic-panel;
+    }
+
+    &--float {
+        box-shadow: $shadow-neumorphic-float;
+
+        &:hover {
+            transform: translateY(-4px);
+            box-shadow: $shadow-holographic;
+        }
+    }
+}
+
+// ----------------------------------------------------------------------------
+// BADGES
+// ----------------------------------------------------------------------------
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: $sp-1;
+    padding: $sp-1 $sp-3;
+    font-family: $font-mono;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-radius: $radius-sm;
+
+    &--cyan {
+        background: rgba($holo-cyan, 0.12);
+        color: $holo-cyan;
+        border: 1px solid rgba($holo-cyan, 0.25);
+        box-shadow: 0 0 12px rgba($holo-cyan, 0.1);
+    }
+
+    &--gold {
+        background: rgba($holo-gold, 0.12);
+        color: $holo-gold;
+        border: 1px solid rgba($holo-gold, 0.25);
+        box-shadow: 0 0 12px rgba($holo-gold, 0.1);
+    }
+
+    &--emerald {
+        background: rgba($holo-emerald, 0.12);
+        color: $holo-emerald;
+        border: 1px solid rgba($holo-emerald, 0.25);
+        box-shadow: 0 0 12px rgba($holo-emerald, 0.1);
+    }
+
+    &--coral {
+        background: rgba($holo-coral, 0.12);
+        color: $holo-coral;
+        border: 1px solid rgba($holo-coral, 0.25);
+        box-shadow: 0 0 12px rgba($holo-coral, 0.1);
+    }
+
+    &--violet {
+        background: rgba($holo-violet, 0.12);
+        color: $holo-violet;
+        border: 1px solid rgba($holo-violet, 0.25);
+        box-shadow: 0 0 12px rgba($holo-violet, 0.1);
+    }
+
+    &--neutral {
+        background: rgba($text-muted, 0.1);
+        color: $text-muted;
+        border: 1px solid rgba($text-muted, 0.2);
+    }
+}
+
+// ----------------------------------------------------------------------------
+// STAT CARDS
+// ----------------------------------------------------------------------------
+
+.stat {
+    @include neumorphic-panel;
+    padding: $sp-5;
+    position: relative;
+    overflow: hidden;
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: $gradient-holographic;
+        opacity: 0.6;
+    }
+
+    &__label {
+        @include mono-text;
+        color: $text-muted;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: $sp-2;
+    }
+
+    &__value {
+        font-family: $font-display;
+        font-size: 2.5rem;
+        font-weight: 700;
+        line-height: 1;
+        @include holographic-text;
+    }
+
+    &__delta {
+        @include mono-text;
+        margin-top: $sp-2;
+
+        &--up {
+            color: $holo-emerald;
+        }
+
+        &--down {
+            color: $holo-coral;
+        }
+    }
+
+    &--cyan::after {
+        background: $holo-cyan;
+    }
+
+    &--gold::after {
+        background: $gradient-gold;
+    }
+
+    &--emerald::after {
+        background: $holo-emerald;
+    }
+
+    &--coral::after {
+        background: $holo-coral;
+    }
+}
+
+// ----------------------------------------------------------------------------
+// TYPOGRAPHY
+// ----------------------------------------------------------------------------
+
+.heading-display {
+    @include brutalist-heading;
+    font-size: clamp(3rem, 10vw, 8rem);
+}
+
+.heading-1 {
+    @include brutalist-heading;
+    font-size: clamp(2rem, 5vw, 4rem);
+}
+
+.heading-2 {
+    @include brutalist-heading;
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.heading-3 {
+    font-family: $font-display;
+    font-weight: 600;
+    font-size: 1.25rem;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+}
+
+.text-holographic {
+    @include holographic-text;
+}
+
+.text-mono {
+    @include mono-text;
+}
+
+.text-label {
+    @include mono-text;
+    font-size: 0.6875rem;
+    color: $text-dim;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+}
+
+// ----------------------------------------------------------------------------
+// LAYOUT
+// ----------------------------------------------------------------------------
+
+.container {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 $sp-6;
+
+    @media (max-width: 640px) {
+        padding: 0 $sp-4;
+    }
+}
+
+.grid {
+    display: grid;
+    gap: $sp-6;
+
+    &--2 {
+        grid-template-columns: repeat(2, 1fr);
+
+        @media (max-width: 768px) {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    &--3 {
+        grid-template-columns: repeat(3, 1fr);
+
+        @media (max-width: 1024px) {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        @media (max-width: 640px) {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    &--4 {
+        grid-template-columns: repeat(4, 1fr);
+
+        @media (max-width: 1200px) {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        @media (max-width: 640px) {
+            grid-template-columns: 1fr;
+        }
+    }
+}
+
+// Holographic divider
+.divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba($holo-cyan, 0.3) 20%, rgba($holo-magenta, 0.3) 80%, transparent);
+    margin: $sp-12 0;
+}
+
+// Grid background pattern
+.grid-bg {
+    position: fixed;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba($text-dim, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba($text-dim, 0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: -1;
+}
+
+// Radial glow
+.glow-orb {
+    position: fixed;
+    width: 800px;
+    height: 800px;
+    border-radius: 50%;
+    filter: blur(120px);
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0.15;
+
+    &--cyan {
+        background: radial-gradient(circle, $holo-cyan, transparent 70%);
+        top: -200px;
+        right: -200px;
+    }
+
+    &--magenta {
+        background: radial-gradient(circle, $holo-magenta, transparent 70%);
+        bottom: -200px;
+        left: -200px;
+    }
+}
+
+// ============================================================================
+// LIGHT MODE OVERRIDES
+// ============================================================================
+
+html.light {
+    // Light backgrounds
+    --bg-void: #{$rh-cream};
+    --bg-surface: #ffffff;
+    --bg-elevated: #f0f1f3;
+    --text-primary: #1a1a2e;
+    --text-secondary: rgba(26, 26, 46, 0.6);
+    --text-dim: rgba(26, 26, 46, 0.4);
+
+    body {
+        background: $rh-cream;
+        color: #1a1a2e;
+    }
+
+    .landing {
+        background: linear-gradient(135deg, $rh-cream 0%, $rh-warm 100%);
+    }
+
+    .grid-bg {
+        background-image:
+            linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+    }
+
+    .glow-orb {
+        opacity: 0.08;
+    }
+
+    .nav {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    }
+
+    .nav__link {
+        color: rgba(26, 26, 46, 0.6);
+
+        &:hover {
+            color: $rh-gold-dark;
+        }
+    }
+
+    .btn--ghost {
+        color: rgba(26, 26, 46, 0.7);
+        border-color: rgba(0, 0, 0, 0.1);
+
+        &:hover {
+            background: rgba(0, 0, 0, 0.04);
+            color: #1a1a2e;
+        }
+    }
+
+    .btn--primary {
+        background: linear-gradient(135deg, $rh-gold-dark, $rh-gold);
+        color: white;
+
+        &:hover {
+            background: linear-gradient(135deg, darken($rh-gold-dark, 5%), $rh-gold);
+        }
+    }
+
+    .hero__eyebrow {
+        color: $rh-gold-dark;
+        background: rgba($rh-gold, 0.1);
+        border-color: rgba($rh-gold, 0.2);
+    }
+
+    .hero__title {
+        .line--muted {
+            color: rgba(26, 26, 46, 0.5);
+        }
+    }
+
+    .hero__subtitle {
+        color: rgba(26, 26, 46, 0.6);
+    }
+
+    .stats__item {
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .stats__label {
+        color: rgba(26, 26, 46, 0.5);
+    }
+
+    .feature-card {
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+
+        &:hover {
+            border-color: rgba($rh-gold, 0.3);
+            box-shadow: 0 8px 30px rgba($rh-gold, 0.1);
+        }
+    }
+
+    .feature-card__icon {
+        background: rgba($rh-gold, 0.08);
+        color: $rh-gold-dark;
+    }
+
+    .feature-card__title {
+        color: #1a1a2e;
+    }
+
+    .feature-card__description {
+        color: rgba(26, 26, 46, 0.6);
+    }
+
+    .features__title {
+        color: #1a1a2e;
+    }
+
+    .features__subtitle {
+        color: rgba(26, 26, 46, 0.5);
+    }
+
+    .terminal {
+        background: #1a1a2e;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .cta__title {
+        color: #1a1a2e;
+    }
+
+    .cta__subtitle {
+        color: rgba(26, 26, 46, 0.6);
+    }
+
+    .cta__input {
+        background: rgba(255, 255, 255, 0.9);
+        border-color: rgba(0, 0, 0, 0.1);
+        color: #1a1a2e;
+
+        &::placeholder {
+            color: rgba(26, 26, 46, 0.4);
+        }
+    }
+
+    footer {
+        background: rgba(255, 255, 255, 0.8);
+        border-top: 1px solid rgba(0, 0, 0, 0.06);
+    }
+
+    .text-holographic {
+        background: linear-gradient(135deg, $rh-gold-dark, $rh-gold, $rh-gold-light);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    ::selection {
+        background: rgba($rh-gold, 0.2);
+        color: #1a1a2e;
+    }
+}

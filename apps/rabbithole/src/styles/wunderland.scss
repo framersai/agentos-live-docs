@@ -1,0 +1,1135 @@
+// ============================================================================
+// WUNDERLAND PAGE STYLES
+// Autonomous Agent Documentation & Deployment Guide
+// ============================================================================
+
+@use 'main' as *;
+
+// Violet and emerald orbs for Wunderland
+.glow-orb--violet {
+    background: radial-gradient(circle, rgba($holo-violet, 0.15) 0%, transparent 70%);
+    top: 20%;
+    right: 10%;
+    width: 600px;
+    height: 600px;
+}
+
+.glow-orb--emerald {
+    background: radial-gradient(circle, rgba($holo-emerald, 0.1) 0%, transparent 70%);
+    bottom: 20%;
+    left: 5%;
+    width: 500px;
+    height: 500px;
+}
+
+// Hero section
+.wunderland-hero {
+    padding: $sp-32 0 $sp-16;
+    text-align: center;
+    position: relative;
+
+    &__badge {
+        display: inline-flex;
+        align-items: center;
+        gap: $sp-2;
+        padding: $sp-2 $sp-4;
+        background: rgba($holo-emerald, 0.1);
+        border: 1px solid rgba($holo-emerald, 0.3);
+        border-radius: $radius-xl;
+        font-family: $font-mono;
+        font-size: 0.75rem;
+        color: $holo-emerald;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: $sp-6;
+    }
+
+    &__title {
+        @include brutalist-heading;
+        font-size: clamp(2.5rem, 6vw, 4.5rem);
+        margin-bottom: $sp-6;
+        line-height: 1.1;
+    }
+
+    &__subtitle {
+        font-size: 1.25rem;
+        color: $text-muted;
+        max-width: 600px;
+        margin: 0 auto $sp-8;
+        line-height: 1.6;
+    }
+
+    &__actions {
+        display: flex;
+        gap: $sp-4;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+}
+
+.pulse-dot {
+    width: 8px;
+    height: 8px;
+    background: $holo-emerald;
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+    box-shadow: 0 0 10px rgba($holo-emerald, 0.5);
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.6;
+        transform: scale(1.2);
+    }
+}
+
+// Features pills
+.wunderland-features {
+    padding: $sp-8 0;
+
+    &__grid {
+        display: flex;
+        gap: $sp-4;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+}
+
+.feature-pill {
+    display: flex;
+    align-items: center;
+    gap: $sp-3;
+    padding: $sp-3 $sp-5;
+    @include neumorphic-panel;
+    border-radius: $radius-xl;
+
+    &__icon {
+        font-size: 1.5rem;
+    }
+
+    &__text {
+        display: flex;
+        flex-direction: column;
+
+        strong {
+            font-size: 0.875rem;
+            color: $text-pure;
+        }
+
+        span {
+            font-size: 0.75rem;
+            color: $text-muted;
+        }
+    }
+}
+
+// Section styling
+.wunderland-section {
+    padding: $sp-16 0;
+
+    &--alt {
+        background: rgba($void-elevated, 0.5);
+    }
+}
+
+.section-title {
+    @include brutalist-heading;
+    font-size: 2rem;
+    margin-bottom: $sp-10;
+    display: flex;
+    align-items: center;
+    gap: $sp-4;
+}
+
+.section-number {
+    @include holographic-text;
+    font-family: $font-mono;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+// Quickstart grid
+.quickstart-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: $sp-6;
+}
+
+.quickstart-step {
+    @include neumorphic-panel;
+    padding: $sp-6;
+    position: relative;
+
+    &__number {
+        position: absolute;
+        top: -$sp-3;
+        left: $sp-4;
+        width: 32px;
+        height: 32px;
+        background: $holo-cyan;
+        color: $void-abyss;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: $font-mono;
+        font-weight: 700;
+        font-size: 0.875rem;
+    }
+
+    h3 {
+        font-family: $font-display;
+        font-size: 1.125rem;
+        margin-bottom: $sp-4;
+        margin-top: $sp-2;
+    }
+}
+
+.terminal--compact {
+    margin-top: $sp-4;
+
+    .terminal__body {
+        padding: $sp-3;
+        font-size: 0.8125rem;
+    }
+
+    code {
+        color: $holo-cyan;
+    }
+
+    .terminal__output {
+        margin-top: $sp-2;
+        font-size: 0.75rem;
+        color: $text-muted;
+    }
+
+    .terminal__success {
+        color: $holo-emerald;
+    }
+}
+
+// Auth options
+.auth-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: $sp-6;
+}
+
+.auth-card {
+    @include neumorphic-panel;
+    padding: $sp-6;
+
+    &--anonymous {
+        border-color: rgba($holo-violet, 0.3);
+    }
+
+    &__header {
+        display: flex;
+        align-items: center;
+        gap: $sp-3;
+        margin-bottom: $sp-4;
+
+        h3 {
+            font-family: $font-display;
+            font-size: 1.25rem;
+        }
+    }
+
+    &__icon {
+        width: 32px;
+        height: 32px;
+        color: $holo-cyan;
+    }
+
+    &__description {
+        color: $text-muted;
+        margin-bottom: $sp-4;
+        line-height: 1.6;
+    }
+
+    &__features {
+        margin-bottom: $sp-4;
+    }
+}
+
+.auth-feature {
+    display: flex;
+    align-items: center;
+    gap: $sp-2;
+    font-size: 0.875rem;
+    margin-bottom: $sp-2;
+
+    &__check {
+        color: $holo-emerald;
+    }
+}
+
+// Architecture diagram
+.architecture-diagram {
+    @include neumorphic-panel;
+    padding: $sp-8;
+    margin-bottom: $sp-8;
+}
+
+.arch-layer {
+    text-align: center;
+    margin-bottom: $sp-6;
+
+    &__title {
+        font-family: $font-mono;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: $text-muted;
+        margin-bottom: $sp-4;
+    }
+
+    &--agents .arch-layer__title {
+        color: $holo-cyan;
+    }
+
+    &--gateway .arch-layer__title {
+        color: $holo-gold;
+    }
+
+    &--humans .arch-layer__title {
+        color: $holo-emerald;
+    }
+}
+
+.arch-nodes {
+    display: flex;
+    justify-content: center;
+    gap: $sp-4;
+    flex-wrap: wrap;
+}
+
+.arch-node {
+    @include neumorphic-inset;
+    padding: $sp-4 $sp-5;
+    text-align: center;
+    min-width: 100px;
+
+    &--large {
+        min-width: 300px;
+        padding: $sp-5 $sp-6;
+    }
+
+    &__icon {
+        font-size: 1.5rem;
+        margin-bottom: $sp-2;
+    }
+
+    &__label {
+        font-family: $font-display;
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin-bottom: $sp-1;
+    }
+
+    &__sublabel {
+        font-size: 0.7rem;
+        color: $text-muted;
+    }
+
+    &__badge {
+        display: inline-block;
+        margin-top: $sp-2;
+        padding: $sp-1 $sp-2;
+        background: rgba($holo-cyan, 0.1);
+        border: 1px solid rgba($holo-cyan, 0.3);
+        border-radius: $radius-sm;
+        font-family: $font-mono;
+        font-size: 0.625rem;
+        color: $holo-cyan;
+        text-transform: uppercase;
+    }
+}
+
+.arch-connector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: $sp-4 0;
+
+    &__line {
+        width: 2px;
+        height: 40px;
+        background: linear-gradient(180deg, $holo-cyan, $holo-violet);
+        border-radius: 1px;
+    }
+
+    &__label {
+        font-family: $font-mono;
+        font-size: 0.6875rem;
+        color: $text-dim;
+        margin-top: $sp-2;
+    }
+}
+
+.arch-principles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: $sp-6;
+}
+
+.arch-principle {
+    h4 {
+        @include holographic-text;
+        font-family: $font-display;
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: $sp-2;
+    }
+
+    p {
+        font-size: 0.875rem;
+        color: $text-muted;
+        line-height: 1.5;
+    }
+}
+
+// Templates
+.templates-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: $sp-6;
+}
+
+.template-card {
+    @include neumorphic-panel;
+    padding: $sp-6;
+    transition: transform $transition-base, box-shadow $transition-base;
+
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: $shadow-neumorphic-float;
+    }
+
+    &__header {
+        display: flex;
+        align-items: center;
+        gap: $sp-3;
+        margin-bottom: $sp-3;
+
+        h3 {
+            font-family: $font-display;
+            font-size: 1.125rem;
+        }
+    }
+
+    &__icon {
+        font-size: 1.5rem;
+    }
+
+    p {
+        font-size: 0.875rem;
+        color: $text-muted;
+        line-height: 1.5;
+        margin-bottom: $sp-4;
+    }
+
+    &__tech {
+        display: flex;
+        gap: $sp-2;
+        flex-wrap: wrap;
+        margin-bottom: $sp-4;
+
+        span {
+            padding: $sp-1 $sp-2;
+            background: rgba($holo-violet, 0.1);
+            border: 1px solid rgba($holo-violet, 0.2);
+            border-radius: $radius-sm;
+            font-family: $font-mono;
+            font-size: 0.6875rem;
+            color: $holo-violet;
+        }
+    }
+}
+
+// CTA section
+.wunderland-cta {
+    padding: $sp-20 0;
+    text-align: center;
+    background: linear-gradient(180deg, transparent, rgba($holo-violet, 0.05));
+
+    &__title {
+        @include brutalist-heading;
+        font-size: clamp(1.75rem, 4vw, 2.5rem);
+        margin-bottom: $sp-4;
+    }
+
+    &__subtitle {
+        font-size: 1.125rem;
+        color: $text-muted;
+        margin-bottom: $sp-8;
+    }
+
+    &__actions {
+        display: flex;
+        gap: $sp-4;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+}
+
+// ============================================================================
+// LOOKING GLASS CTA COMPONENT STYLES
+// ============================================================================
+
+.looking-glass-cta {
+    display: flex;
+    align-items: center;
+    gap: $sp-6;
+    padding: $sp-5 $sp-6;
+    @include neumorphic-panel;
+    text-decoration: none;
+    transition: all $transition-base;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+
+    &:hover {
+        transform: translateY(-4px) scale(1.02);
+        box-shadow: $shadow-holographic;
+    }
+
+    &--clicked {
+        animation: portal-enter 0.8s ease-out forwards;
+    }
+
+    &__frame {
+        width: 100px;
+        height: 70px;
+        position: relative;
+        border-radius: $radius-lg;
+        overflow: hidden;
+        flex-shrink: 0;
+    }
+
+    &__corner {
+        position: absolute;
+        width: 12px;
+        height: 12px;
+        border: 2px solid rgba($holo-gold, 0.6);
+        z-index: 2;
+
+        &--tl {
+            top: 0;
+            left: 0;
+            border-right: none;
+            border-bottom: none;
+            border-radius: $radius-sm 0 0 0;
+        }
+
+        &--tr {
+            top: 0;
+            right: 0;
+            border-left: none;
+            border-bottom: none;
+            border-radius: 0 $radius-sm 0 0;
+        }
+
+        &--bl {
+            bottom: 0;
+            left: 0;
+            border-right: none;
+            border-top: none;
+            border-radius: 0 0 0 $radius-sm;
+        }
+
+        &--br {
+            bottom: 0;
+            right: 0;
+            border-left: none;
+            border-top: none;
+            border-radius: 0 0 $radius-sm 0;
+        }
+    }
+
+    &__mirror {
+        position: absolute;
+        inset: 4px;
+        background: linear-gradient(145deg, rgba($void-deep, 0.9), rgba(0, 0, 0, 0.95));
+        border-radius: $radius-md;
+        overflow: hidden;
+    }
+
+    &__reflection {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg,
+                rgba(255, 255, 255, 0.08) 0%,
+                transparent 40%,
+                rgba($holo-cyan, 0.05) 60%,
+                transparent 100%);
+        pointer-events: none;
+    }
+
+    &__swirl {
+        position: absolute;
+        inset: 0;
+        opacity: 0.8;
+        transition: opacity $transition-base;
+    }
+
+    &:hover &__swirl {
+        opacity: 1;
+    }
+
+    &__particles {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+    }
+
+    &__particle {
+        position: absolute;
+        width: 3px;
+        height: 3px;
+        background: $holo-cyan;
+        border-radius: 50%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(var(--angle)) translateX(var(--distance));
+        opacity: 0;
+        animation: particle-orbit 3s ease-in-out infinite;
+        animation-delay: var(--delay);
+    }
+
+    &__ripple {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background: rgba($holo-cyan, 0.5);
+        border-radius: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        animation: ripple-expand 0.8s ease-out forwards;
+        pointer-events: none;
+    }
+
+    &__content {
+        display: flex;
+        flex-direction: column;
+        gap: $sp-1;
+        flex: 1;
+    }
+
+    &__label {
+        font-family: $font-mono;
+        font-size: 0.6875rem;
+        color: $holo-cyan;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+    }
+
+    &__title {
+        @include holographic-text;
+        font-family: $font-display;
+        font-size: 1.5rem;
+        font-weight: 700;
+    }
+
+    &__subtitle {
+        font-size: 0.8125rem;
+        color: $text-muted;
+    }
+
+    &__arrow {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        color: $text-muted;
+        transition: all $transition-base;
+    }
+
+    &:hover &__arrow {
+        color: $holo-cyan;
+        transform: translateX(4px);
+    }
+}
+
+@keyframes particle-orbit {
+
+    0%,
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) rotate(var(--angle)) translateX(var(--distance)) scale(0.5);
+    }
+
+    50% {
+        opacity: 0.8;
+        transform: translate(-50%, -50%) rotate(calc(var(--angle) + 180deg)) translateX(calc(var(--distance) + 10px)) scale(1);
+    }
+}
+
+@keyframes ripple-expand {
+    from {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 1;
+    }
+
+    to {
+        transform: translate(-50%, -50%) scale(20);
+        opacity: 0;
+    }
+}
+
+@keyframes portal-enter {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(0.95);
+    }
+
+    100% {
+        transform: scale(1.5);
+        opacity: 0;
+    }
+}
+
+// ============================================================================
+// WUNDERLAND LAYOUT & SIDEBAR
+// ============================================================================
+
+.wunderland-layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    min-height: 100vh;
+
+    @media (max-width: 1024px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.wunderland-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 260px;
+    height: 100vh;
+    background: linear-gradient(180deg, $void-elevated, $void-deep);
+    border-right: 1px solid rgba(255, 255, 255, 0.04);
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+    overflow-y: auto;
+
+    @media (max-width: 1024px) {
+        transform: translateX(-100%);
+        transition: transform 0.3s $ease-out-expo;
+
+        &--open {
+            transform: translateX(0);
+        }
+    }
+
+    &__brand {
+        padding: $sp-6;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    &__logo {
+        width: 40px;
+        height: 40px;
+        @include neumorphic-panel;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        @include holographic-text;
+        font-family: $font-display;
+        font-weight: 700;
+        font-size: 1.25rem;
+    }
+
+    &__footer {
+        margin-top: auto;
+        padding: $sp-4 $sp-6;
+        border-top: 1px solid rgba(255, 255, 255, 0.04);
+        font-size: 0.75rem;
+        color: $text-dim;
+    }
+}
+
+.wunderland-sidebar-toggle {
+    display: none;
+    position: fixed;
+    top: $sp-4;
+    left: $sp-4;
+    z-index: 101;
+    width: 44px;
+    height: 44px;
+    @include neumorphic-panel;
+    align-items: center;
+    justify-content: center;
+    color: $text-muted;
+    cursor: pointer;
+
+    @media (max-width: 1024px) {
+        display: flex;
+    }
+
+    &:hover {
+        color: $holo-cyan;
+    }
+}
+
+.wunderland-sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 99;
+
+    @media (max-width: 1024px) {
+        &--visible {
+            display: block;
+        }
+    }
+}
+
+.wunderland-main {
+    margin-left: 260px;
+    padding: $sp-8;
+    min-height: 100vh;
+
+    @media (max-width: 1024px) {
+        margin-left: 0;
+        padding: $sp-16 $sp-4 $sp-8;
+    }
+}
+
+.wunderland-nav {
+    padding: $sp-4 $sp-2;
+
+    &__item {
+        display: flex;
+        align-items: center;
+        gap: $sp-3;
+        padding: $sp-3 $sp-4;
+        margin-bottom: $sp-1;
+        border-radius: $radius-md;
+        color: $text-muted;
+        font-size: 0.875rem;
+        transition: all $transition-fast;
+        cursor: pointer;
+
+        &:hover {
+            background: rgba(255, 255, 255, 0.03);
+            color: $text-bright;
+        }
+
+        &--active {
+            background: rgba($holo-cyan, 0.08);
+            color: $holo-cyan;
+        }
+
+        svg {
+            width: 20px;
+            height: 20px;
+        }
+    }
+}
+
+// ============================================================================
+// WUNDERLAND HEADER
+// ============================================================================
+
+.wunderland-header {
+    margin-bottom: $sp-8;
+
+    &__title {
+        @include brutalist-heading;
+        font-size: 2rem;
+        margin-bottom: $sp-2;
+    }
+
+    &__subtitle {
+        color: $text-muted;
+        font-size: 1rem;
+    }
+}
+
+// ============================================================================
+// FEED FILTERS
+// ============================================================================
+
+.feed-filters {
+    display: flex;
+    align-items: center;
+    gap: $sp-4;
+    margin-bottom: $sp-6;
+    padding: $sp-4;
+    @include neumorphic-panel;
+    flex-wrap: wrap;
+
+    &__group {
+        display: flex;
+        gap: $sp-2;
+    }
+
+    &__btn {
+        padding: $sp-2 $sp-4;
+        background: transparent;
+        border: 1px solid transparent;
+        border-radius: $radius-md;
+        font-family: $font-mono;
+        font-size: 0.75rem;
+        color: $text-muted;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        cursor: pointer;
+        transition: all $transition-fast;
+
+        &:hover {
+            background: rgba(255, 255, 255, 0.03);
+            color: $text-bright;
+        }
+
+        &--active {
+            background: rgba($holo-cyan, 0.1);
+            border-color: rgba($holo-cyan, 0.3);
+            color: $holo-cyan;
+        }
+    }
+
+    &__separator {
+        width: 1px;
+        height: 24px;
+        background: rgba(255, 255, 255, 0.06);
+    }
+
+    &__search {
+        margin-left: auto;
+    }
+}
+
+// ============================================================================
+// POST CARD
+// ============================================================================
+
+.post-card {
+    @include neumorphic-panel;
+    padding: $sp-6;
+    margin-bottom: $sp-4;
+    transition: transform $transition-base, box-shadow $transition-base;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: $shadow-neumorphic-float;
+    }
+
+    &__header {
+        display: flex;
+        align-items: flex-start;
+        gap: $sp-3;
+        margin-bottom: $sp-4;
+    }
+
+    &__avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: $font-display;
+        font-weight: 700;
+        font-size: 1.25rem;
+        flex-shrink: 0;
+        cursor: pointer;
+        transition: transform $transition-fast;
+
+        &:hover {
+            transform: scale(1.05);
+        }
+    }
+
+    &__meta {
+        flex: 1;
+        min-width: 0;
+    }
+
+    &__author {
+        display: flex;
+        align-items: center;
+        gap: $sp-2;
+        flex-wrap: wrap;
+    }
+
+    &__name {
+        font-family: $font-display;
+        font-weight: 600;
+        font-size: 1rem;
+        color: $text-pure;
+        transition: color $transition-fast;
+
+        &:hover {
+            color: $holo-cyan;
+        }
+    }
+
+    &__proof-icon {
+        display: inline-flex;
+        color: $holo-emerald;
+    }
+
+    &__timestamp {
+        font-family: $font-mono;
+        font-size: 0.6875rem;
+        color: $text-dim;
+        margin-left: auto;
+        flex-shrink: 0;
+    }
+
+    &__content {
+        margin-bottom: $sp-4;
+        line-height: 1.7;
+        color: $text-bright;
+
+        p {
+            margin: 0;
+        }
+    }
+}
+
+// ============================================================================
+// LEVEL BADGE
+// ============================================================================
+
+.level-badge {
+    display: inline-block;
+    padding: $sp-1 $sp-2;
+    border-radius: $radius-sm;
+    font-family: $font-mono;
+    font-size: 0.625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+
+    &--1 {
+        background: rgba($text-muted, 0.1);
+        color: $text-muted;
+        border: 1px solid rgba($text-muted, 0.2);
+    }
+
+    &--2 {
+        background: rgba($holo-emerald, 0.1);
+        color: $holo-emerald;
+        border: 1px solid rgba($holo-emerald, 0.2);
+    }
+
+    &--3 {
+        background: rgba($holo-cyan, 0.1);
+        color: $holo-cyan;
+        border: 1px solid rgba($holo-cyan, 0.2);
+    }
+
+    &--4 {
+        background: rgba($holo-gold, 0.1);
+        color: $holo-gold;
+        border: 1px solid rgba($holo-gold, 0.2);
+    }
+
+    &--5 {
+        background: rgba($holo-magenta, 0.1);
+        color: $holo-magenta;
+        border: 1px solid rgba($holo-magenta, 0.2);
+    }
+
+    &--6 {
+        background: rgba($holo-coral, 0.1);
+        color: $holo-coral;
+        border: 1px solid rgba($holo-coral, 0.2);
+        box-shadow: 0 0 12px rgba($holo-coral, 0.15);
+    }
+}
+
+// ============================================================================
+// ENGAGEMENT BAR
+// ============================================================================
+
+.engagement-bar {
+    display: flex;
+    gap: $sp-6;
+    padding-top: $sp-4;
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+
+    &__action {
+        display: flex;
+        align-items: center;
+        gap: $sp-2;
+        background: none;
+        border: none;
+        color: $text-dim;
+        cursor: pointer;
+        transition: all $transition-fast;
+
+        &:hover {
+            color: $holo-cyan;
+
+            svg {
+                transform: scale(1.1);
+            }
+        }
+
+        svg {
+            width: 18px;
+            height: 18px;
+            transition: transform $transition-fast;
+        }
+    }
+
+    &__count {
+        font-family: $font-mono;
+        font-size: 0.75rem;
+    }
+}
+
+// ============================================================================
+// EMPTY STATE
+// ============================================================================
+
+.empty-state {
+    @include neumorphic-panel;
+    padding: $sp-12;
+    text-align: center;
+
+    &__icon {
+        width: 56px;
+        height: 56px;
+        margin: 0 auto $sp-4;
+        @include neumorphic-inset;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: $text-dim;
+        border-radius: 50%;
+    }
+
+    &__title {
+        font-family: $font-display;
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: $sp-2;
+    }
+
+    &__description {
+        color: $text-muted;
+        font-size: 0.9375rem;
+        max-width: 300px;
+        margin: 0 auto;
+    }
+}

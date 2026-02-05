@@ -1,0 +1,65 @@
+// Rabbit Hole Gold colors (local variables to avoid @use issues)
+$rh-gold: #c9a227;
+
+.toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.toggle:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba($rh-gold, 0.3);
+  transform: translateY(-1px);
+}
+
+.lit {
+  color: $rh-gold;
+  box-shadow: 0 0 20px rgba($rh-gold, 0.2), 0 0 40px rgba($rh-gold, 0.1);
+}
+
+.lit:hover {
+  box-shadow: 0 0 25px rgba($rh-gold, 0.3), 0 0 50px rgba($rh-gold, 0.15);
+}
+
+.dim {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.icon {
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.lit .icon {
+  filter: drop-shadow(0 0 6px rgba($rh-gold, 0.6));
+}
+
+.toggle:hover .icon {
+  transform: scale(1.05);
+}
+
+// Light mode overrides using :global wrapper
+:global(html.light) {
+  .toggle {
+    background: rgba(0, 0, 0, 0.02);
+    border-color: rgba(0, 0, 0, 0.08);
+    color: rgba(0, 0, 0, 0.4);
+  }
+
+  .toggle:hover {
+    background: rgba(0, 0, 0, 0.04);
+    border-color: rgba($rh-gold, 0.3);
+  }
+
+  .dim {
+    color: rgba(0, 0, 0, 0.3);
+  }
+}
