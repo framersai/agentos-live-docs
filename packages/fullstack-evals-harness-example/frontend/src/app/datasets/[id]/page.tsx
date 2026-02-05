@@ -1,10 +1,34 @@
 'use client';
 
-import { useState, useEffect, use } from 'react';
-import { ArrowLeft, Download, FileJson, FileSpreadsheet } from 'lucide-react';
+import { useState, useEffect, use, useCallback } from 'react';
+import {
+  ArrowLeft,
+  FileJson,
+  FileSpreadsheet,
+  Save,
+  Plus,
+  X,
+  FileText,
+} from 'lucide-react';
 import Link from 'next/link';
 import { datasetsApi } from '@/lib/api';
-import type { Dataset } from '@/lib/types';
+import type { Dataset, TestCase } from '@/lib/types';
+
+interface EditableCase {
+  input: string;
+  expectedOutput: string;
+  context: string;
+  metadata: string;
+}
+
+function toEditable(tc: TestCase): EditableCase {
+  return {
+    input: tc.input,
+    expectedOutput: tc.expectedOutput || '',
+    context: tc.context || '',
+    metadata: tc.metadata ? JSON.stringify(tc.metadata) : '',
+  };
+}
 
 export default function DatasetDetailPage({
   params,
@@ -14,6 +38,9 @@ export default function DatasetDetailPage({
   const { id } = use(params);
   const [dataset, setDataset] = useState<Dataset | null>(null);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [editedCases, setEditedCases] = useState<EditableCase[]>([]);
+  const [originalCases, setOriginalCases] = useState<EditableCase[]>([]);
 
   useEffect(() => {
     loadDataset();
@@ -23,10 +50,78 @@ export default function DatasetDetailPage({
     try {
       const data = await datasetsApi.get(id);
       setDataset(data);
+      const cases = (data.testCases || []).map(toEditable);
+      setEditedCases(cases);
+      setOriginalCases(cases);
     } catch (error) {
       console.error('Failed to load dataset:', error);
     } finally {
       setLoading(false);
+    }
+  }
+
+  const isDirty = useCallback(() => {
+    if (editedCases.length !== originalCases.length) return true;
+    return editedCases.some(
+      (ec, i) =>
+        ec.input !== originalCases[i].input ||
+        ec.expectedOutput !== originalCases[i].expectedOutput ||
+        ec.context !== originalCases[i].context ||
+        ec.metadata !== originalCases[i].metadata,
+    );
+  }, [editedCases, originalCases]);
+
+  function updateCase(index: number, field: keyof EditableCase, value: string) {
+    setEditedCases((prev) => {
+      const next = [...prev];
+      next[index] = { ...next[index], [field]: value };
+      return next;
+    });
+  }
+
+  function addRow() {
+    setEditedCases((prev) => [
+      ...prev,
+      { input: '', expectedOutput: '', context: '', metadata: '' },
+    ]);
+  }
+
+  function removeRow(index: number) {
+    setEditedCases((prev) => prev.filter((_, i) => i !== index));
+  }
+
+  async function handleSave() {
+    setSaving(true);
+    try {
+      const testCases = editedCases
+        .filter((ec) => ec.input.trim())
+        .map((ec) => {
+          let metadata: Record<string, unknown> | undefined;
+          if (ec.metadata.trim()) {
+            try {
+              metadata = JSON.parse(ec.metadata);
+            } catch {
+              // ignore invalid JSON
+            }
+          }
+          return {
+            input: ec.input,
+            expectedOutput: ec.expectedOutput || undefined,
+            context: ec.context || undefined,
+            metadata,
+          };
+        });
+
+      const updated = await datasetsApi.update(id, { testCases });
+      setDataset(updated);
+      const cases = (updated.testCases || []).map(toEditable);
+      setEditedCases(cases);
+      setOriginalCases(cases);
+    } catch (error) {
+      console.error('Failed to save:', error);
+      alert('Failed to save dataset. Check the console for details.');
+    } finally {
+      setSaving(false);
     }
   }
 
@@ -49,8 +144,11 @@ export default function DatasetDetailPage({
     );
   }
 
+  const dirty = isDirty();
+
   return (
     <div className="space-y-6">
+      {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Link href="/datasets" className="btn-ghost p-2">
@@ -64,6 +162,15 @@ export default function DatasetDetailPage({
           </div>
         </div>
         <div className="flex gap-2">
+          <button
+            onClick={handleSave}
+            disabled={!dirty || saving}
+            className="btn-primary"
+            title="Save changes to CSV on disk"
+          >
+            <Save className="h-4 w-4 mr-2" />
+            {saving ? 'Saving...' : 'Save to Disk'}
+          </button>
           <a
             href={datasetsApi.exportCsvUrl(id)}
             download
@@ -85,53 +192,89 @@ export default function DatasetDetailPage({
         </div>
       </div>
 
-      <p className="text-sm text-muted-foreground">
-        {dataset.testCases?.length || 0} test cases
-        {dataset.source === 'file' && (
-          <> &middot; loaded from <code className="text-xs">{id}.csv</code></>
+      {/* File info */}
+      <div className="flex items-center gap-4 text-sm text-muted-foreground">
+        <span>{editedCases.length} test cases</span>
+        {dataset.filePath && (
+          <span className="flex items-center gap-1">
+            <FileText className="h-3.5 w-3.5" />
+            <code className="text-xs">{dataset.filePath}</code>
+          </span>
         )}
-      </p>
+        {dataset.metaPath && (
+          <span>
+            <code className="text-xs">{dataset.metaPath}</code>
+          </span>
+        )}
+        {dirty && (
+          <span className="text-amber-500 font-medium">Unsaved changes</span>
+        )}
+      </div>
 
-      {dataset.testCases && dataset.testCases.length > 0 ? (
-        <div className="card overflow-hidden">
-          <table className="table">
-            <thead>
-              <tr>
-                <th className="w-12">#</th>
-                <th className="w-1/3">Input</th>
-                <th className="w-1/3">Expected Output</th>
-                <th className="w-1/4">Context</th>
+      {/* Editable test cases table */}
+      <div className="card overflow-hidden">
+        <table className="table">
+          <thead>
+            <tr>
+              <th className="w-10">#</th>
+              <th>Input</th>
+              <th>Expected Output</th>
+              <th>Context</th>
+              <th className="w-10"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {editedCases.map((ec, idx) => (
+              <tr key={idx} className="group">
+                <td className="text-muted-foreground text-xs align-top pt-3">
+                  {idx + 1}
+                </td>
+                <td className="p-1">
+                  <textarea
+                    value={ec.input}
+                    onChange={(e) => updateCase(idx, 'input', e.target.value)}
+                    className="input min-h-[60px] resize-y text-sm font-mono w-full"
+                    placeholder="Input text..."
+                  />
+                </td>
+                <td className="p-1">
+                  <textarea
+                    value={ec.expectedOutput}
+                    onChange={(e) =>
+                      updateCase(idx, 'expectedOutput', e.target.value)
+                    }
+                    className="input min-h-[60px] resize-y text-sm font-mono w-full"
+                    placeholder="Expected output..."
+                  />
+                </td>
+                <td className="p-1">
+                  <textarea
+                    value={ec.context}
+                    onChange={(e) => updateCase(idx, 'context', e.target.value)}
+                    className="input min-h-[60px] resize-y text-sm font-mono w-full"
+                    placeholder="Context..."
+                  />
+                </td>
+                <td className="align-top pt-2">
+                  <button
+                    onClick={() => removeRow(idx)}
+                    className="btn-ghost p-1 text-muted-foreground opacity-0 group-hover:opacity-100 hover:text-red-500 transition-opacity"
+                    title="Remove row"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {dataset.testCases.map((tc, idx) => (
-                <tr key={tc.id}>
-                  <td className="text-muted-foreground text-xs">{idx + 1}</td>
-                  <td>
-                    <pre className="text-sm whitespace-pre-wrap font-mono">
-                      {tc.input}
-                    </pre>
-                  </td>
-                  <td>
-                    <pre className="text-sm whitespace-pre-wrap font-mono text-muted-foreground">
-                      {tc.expectedOutput || '—'}
-                    </pre>
-                  </td>
-                  <td>
-                    <pre className="text-sm whitespace-pre-wrap font-mono text-muted-foreground max-w-[300px] truncate">
-                      {tc.context || '—'}
-                    </pre>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ) : (
-        <div className="card p-12 text-center">
-          <p className="text-muted-foreground">No test cases in this dataset</p>
-        </div>
-      )}
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Add row button */}
+      <button onClick={addRow} className="btn-secondary w-full">
+        <Plus className="h-4 w-4 mr-2" />
+        Add Test Case
+      </button>
     </div>
   );
 }

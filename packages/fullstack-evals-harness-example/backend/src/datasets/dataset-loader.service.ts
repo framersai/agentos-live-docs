@@ -7,6 +7,8 @@ export interface LoadedDataset {
   name: string;
   description: string | null;
   source: 'file';
+  filePath: string;
+  metaPath: string | null;
   testCaseCount: number;
   testCases: LoadedTestCase[];
 }
@@ -59,11 +61,15 @@ export class DatasetLoaderService implements OnModuleInit {
         const meta = this.loadMeta(id);
         const testCases = this.parseCsv(id, csvContent);
 
+        const hasMetaFile = fs.existsSync(path.join(this.datasetsDir, `${id}.meta.json`));
+
         const dataset: LoadedDataset = {
           id,
           name: meta.name || this.idToName(id),
           description: meta.description || null,
           source: 'file',
+          filePath: `datasets/${id}.csv`,
+          metaPath: hasMetaFile ? `datasets/${id}.meta.json` : null,
           testCaseCount: testCases.length,
           testCases,
         };
@@ -123,17 +129,93 @@ export class DatasetLoaderService implements OnModuleInit {
     const testCases = this.parseCsv(id, csvContent);
     const loadedMeta = this.loadMeta(id);
 
+    const hasMeta = meta && (meta.name || meta.description);
     const dataset: LoadedDataset = {
       id,
       name: loadedMeta.name || this.idToName(id),
       description: loadedMeta.description || null,
       source: 'file',
+      filePath: `datasets/${id}.csv`,
+      metaPath: hasMeta ? `datasets/${id}.meta.json` : null,
       testCaseCount: testCases.length,
       testCases,
     };
 
     this.datasets.set(id, dataset);
     this.logger.log(`Imported dataset "${id}" with ${testCases.length} test cases`);
+    return dataset;
+  }
+
+  /**
+   * Update a dataset: rewrite CSV (and optionally meta.json) on disk.
+   */
+  updateDataset(
+    id: string,
+    data: {
+      name?: string;
+      description?: string;
+      testCases?: Array<{
+        input: string;
+        expectedOutput?: string;
+        context?: string;
+        metadata?: Record<string, unknown>;
+      }>;
+    },
+  ): LoadedDataset {
+    const existing = this.datasets.get(id);
+    if (!existing) {
+      throw new NotFoundException(`Dataset "${id}" not found`);
+    }
+
+    // Rewrite CSV if testCases provided
+    if (data.testCases) {
+      const esc = (val: string) => '"' + (val || '').replace(/"/g, '""') + '"';
+      const lines = ['input,expected_output,context,metadata'];
+      for (const tc of data.testCases) {
+        const metaStr = tc.metadata ? JSON.stringify(tc.metadata) : '';
+        lines.push(
+          [
+            esc(tc.input),
+            esc(tc.expectedOutput || ''),
+            esc(tc.context || ''),
+            esc(metaStr),
+          ].join(','),
+        );
+      }
+      const csvPath = path.join(this.datasetsDir, `${id}.csv`);
+      fs.writeFileSync(csvPath, lines.join('\n') + '\n', 'utf-8');
+    }
+
+    // Update meta.json if name or description changed
+    if (data.name !== undefined || data.description !== undefined) {
+      const currentMeta = this.loadMeta(id);
+      const newMeta = {
+        name: data.name ?? currentMeta.name,
+        description: data.description ?? currentMeta.description,
+      };
+      const metaPath = path.join(this.datasetsDir, `${id}.meta.json`);
+      fs.writeFileSync(metaPath, JSON.stringify(newMeta, null, 2) + '\n', 'utf-8');
+    }
+
+    // Re-read from disk to get clean state
+    const csvContent = fs.readFileSync(path.join(this.datasetsDir, `${id}.csv`), 'utf-8');
+    const meta = this.loadMeta(id);
+    const testCases = this.parseCsv(id, csvContent);
+    const hasMetaFile = fs.existsSync(path.join(this.datasetsDir, `${id}.meta.json`));
+
+    const dataset: LoadedDataset = {
+      id,
+      name: meta.name || this.idToName(id),
+      description: meta.description || null,
+      source: 'file',
+      filePath: `datasets/${id}.csv`,
+      metaPath: hasMetaFile ? `datasets/${id}.meta.json` : null,
+      testCaseCount: testCases.length,
+      testCases,
+    };
+
+    this.datasets.set(id, dataset);
+    this.logger.log(`Updated dataset "${id}" (${testCases.length} test cases)`);
     return dataset;
   }
 

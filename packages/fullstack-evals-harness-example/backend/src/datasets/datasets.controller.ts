@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Post,
+  Put,
   Body,
   Param,
   Res,
@@ -49,6 +50,27 @@ export class DatasetsController {
       name: body.name,
       description: body.description,
     });
+  }
+
+  /**
+   * Update a dataset: rewrite CSV and/or meta.json on disk.
+   */
+  @Put(':id')
+  update(
+    @Param('id') id: string,
+    @Body()
+    body: {
+      name?: string;
+      description?: string;
+      testCases?: Array<{
+        input: string;
+        expectedOutput?: string;
+        context?: string;
+        metadata?: Record<string, unknown>;
+      }>;
+    },
+  ) {
+    return this.datasetsService.update(id, body);
   }
 
   /**

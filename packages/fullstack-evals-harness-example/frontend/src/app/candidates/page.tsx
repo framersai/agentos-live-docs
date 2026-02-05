@@ -211,7 +211,7 @@ Your system prompt text goes here.`}</pre>
 
               <div className="flex flex-wrap gap-2">
                 <span className="badge bg-muted text-muted-foreground font-mono text-xs">
-                  {candidate.id}.md
+                  prompts/{candidate.id}.md
                 </span>
                 <span className="badge bg-muted text-muted-foreground">
                   {candidate.runnerType === 'llm_prompt' ? 'LLM Prompt' : 'HTTP Endpoint'}

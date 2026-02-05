@@ -14,6 +14,8 @@ export class DatasetsService {
       name: ds.name,
       description: ds.description,
       source: ds.source,
+      filePath: ds.filePath,
+      metaPath: ds.metaPath,
       testCaseCount: ds.testCaseCount,
     }));
   }
@@ -30,6 +32,25 @@ export class DatasetsService {
    */
   reload() {
     return this.loader.loadAll();
+  }
+
+  /**
+   * Update a dataset: rewrite CSV and/or meta.json on disk.
+   */
+  update(
+    id: string,
+    data: {
+      name?: string;
+      description?: string;
+      testCases?: Array<{
+        input: string;
+        expectedOutput?: string;
+        context?: string;
+        metadata?: Record<string, unknown>;
+      }>;
+    },
+  ) {
+    return this.loader.updateDataset(id, data);
   }
 
   /**

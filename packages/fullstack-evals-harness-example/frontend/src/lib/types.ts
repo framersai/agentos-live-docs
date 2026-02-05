@@ -7,6 +7,8 @@ export interface Dataset {
   name: string;
   description?: string;
   source?: 'file';
+  filePath?: string;
+  metaPath?: string | null;
   testCaseCount?: number;
   testCases?: TestCase[];
   createdAt?: string;

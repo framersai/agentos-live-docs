@@ -40,6 +40,21 @@ export const datasetsApi = {
 
   get: (id: string) => fetchApi<Dataset>(`/datasets/${id}`),
 
+  update: (id: string, data: {
+    name?: string;
+    description?: string;
+    testCases?: Array<{
+      input: string;
+      expectedOutput?: string;
+      context?: string;
+      metadata?: Record<string, unknown>;
+    }>;
+  }) =>
+    fetchApi<Dataset>(`/datasets/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+
   reload: () =>
     fetchApi<{ loaded: number }>('/datasets/reload', { method: 'POST' }),
 

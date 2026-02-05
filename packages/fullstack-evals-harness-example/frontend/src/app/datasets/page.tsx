@@ -235,6 +235,8 @@ export default function DatasetsPage() {
                     </p>
                   )}
                   <p className="text-xs text-muted-foreground mt-1">
+                    <code className="text-[11px]">{dataset.filePath || `${dataset.id}.csv`}</code>
+                    {' · '}
                     {dataset.testCaseCount || 0} test cases
                   </p>
                 </div>
