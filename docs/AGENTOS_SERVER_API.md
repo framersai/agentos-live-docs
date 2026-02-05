@@ -4,17 +4,18 @@ The `packages/agentos/src/server/AgentOSServer.ts` module ships with a minimal H
 
 The server exposes three endpoints:
 
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/health` | Basic liveness probe. Returns `{ "status": "ok" }` when the process is ready to accept requests. |
-| `GET` | `/api/agentos/personas?userId=<id>` | Returns the personas the current user can access. Useful for rendering selector UIs before initiating a chat session. |
-| `POST` | `/api/agentos/chat` | Accepts a minimal chat payload, forwards it through `AgentOS.processRequest`, and returns the streamed chunks as a JSON array. |
+| Method | Path                                | Description                                                                                                                    |
+| ------ | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `GET`  | `/health`                           | Basic liveness probe. Returns `{ "status": "ok" }` when the process is ready to accept requests.                               |
+| `GET`  | `/api/agentos/personas?userId=<id>` | Returns the personas the current user can access. Useful for rendering selector UIs before initiating a chat session.          |
+| `POST` | `/api/agentos/chat`                 | Accepts a minimal chat payload, forwards it through `AgentOS.processRequest`, and returns the streamed chunks as a JSON array. |
 
 ## Request/response examples
 
 ### GET `/health`
 
 #### Response
+
 ```json
 {
   "status": "ok",
@@ -29,6 +30,7 @@ GET /api/agentos/personas?userId=user-123
 ```
 
 #### Response
+
 ```json
 {
   "personas": [
@@ -46,19 +48,32 @@ Content-Type: application/json
 
 {
   "userId": "user-123",
+  "organizationId": "org-123",
   "sessionId": "session-1",
-  "personaId": "coding-core",
-  "text": "Help me write a unit test for this function."
+  "selectedPersonaId": "coding-core",
+  "textInput": "Help me write a unit test for this function.",
+  "memoryControl": {
+    "longTermMemory": {
+      "enabled": true,
+      "scopes": { "conversation": true, "user": true }
+    }
+  }
 }
 ```
 
 #### Response
+
 ```json
 {
   "chunks": [
     { "type": "system_progress", "message": "Persona coding-core ready.", "...": "..." },
     { "type": "text_delta", "textDelta": "Sure, let's start by..." },
-    { "type": "final_response", "finalResponseText": "Here's a sample Vitest case you can adapt...", "...": "..." }
+    {
+      "type": "final_response",
+      "finalResponseText": "Here's a sample Vitest case you can adapt...",
+      "finalResponseTextPlain": "Here's a sample Vitest case you can adapt...",
+      "...": "..."
+    }
   ]
 }
 ```
