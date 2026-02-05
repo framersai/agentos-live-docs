@@ -5,6 +5,8 @@ import { DatasetsModule } from './datasets/datasets.module';
 import { GradersModule } from './graders/graders.module';
 import { ExperimentsModule } from './experiments/experiments.module';
 import { LlmModule } from './llm/llm.module';
+import { PresetsModule } from './presets/presets.module';
+import { SettingsModule } from './settings/settings.module';
 
 @Module({
   imports: [
@@ -16,6 +18,8 @@ import { LlmModule } from './llm/llm.module';
     DatasetsModule,
     GradersModule,
     ExperimentsModule,
+    PresetsModule,
+    SettingsModule,
   ],
 })
 export class AppModule {}
