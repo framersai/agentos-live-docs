@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Plus, Trash2, Edit2 } from 'lucide-react';
-import { gradersApi } from '@/lib/api';
+import { Plus, Trash2, Edit2, Sparkles, Info } from 'lucide-react';
+import { gradersApi, presetsApi, type GraderPreset } from '@/lib/api';
 import type { Grader, GraderType } from '@/lib/types';
 
 const GRADER_TYPES: { value: GraderType; label: string; description: string }[] = [
@@ -28,11 +28,26 @@ const GRADER_TYPES: { value: GraderType; label: string; description: string }[] 
   },
 ];
 
+function Tooltip({ text }: { text: string }) {
+  return (
+    <div className="group relative inline-block">
+      <Info className="h-4 w-4 text-muted-foreground cursor-help" />
+      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-foreground text-background text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50 max-w-xs text-center">
+        {text}
+        <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-foreground" />
+      </div>
+    </div>
+  );
+}
+
 export default function GradersPage() {
   const [graders, setGraders] = useState<Grader[]>([]);
+  const [presets, setPresets] = useState<GraderPreset[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [showPresets, setShowPresets] = useState(false);
   const [editingGrader, setEditingGrader] = useState<Grader | null>(null);
+  const [loadingPreset, setLoadingPreset] = useState<string | null>(null);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -44,6 +59,7 @@ export default function GradersPage() {
 
   useEffect(() => {
     loadGraders();
+    loadPresets();
   }, []);
 
   async function loadGraders() {
@@ -54,6 +70,28 @@ export default function GradersPage() {
       console.error('Failed to load graders:', error);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function loadPresets() {
+    try {
+      const data = await presetsApi.getGraderPresets();
+      setPresets(data);
+    } catch (error) {
+      console.error('Failed to load presets:', error);
+    }
+  }
+
+  async function loadPreset(preset: GraderPreset) {
+    setLoadingPreset(preset.id);
+    try {
+      await presetsApi.loadGraderPreset(preset.id);
+      await loadGraders();
+      setShowPresets(false);
+    } catch (error) {
+      console.error('Failed to load preset:', error);
+    } finally {
+      setLoadingPreset(null);
     }
   }
 
@@ -134,18 +172,59 @@ export default function GradersPage() {
             Define evaluation criteria for your test cases
           </p>
         </div>
-        <button onClick={() => openForm()} className="btn-primary">
-          <Plus className="h-4 w-4 mr-2" />
-          New Grader
-        </button>
+        <div className="flex gap-2">
+          <div className="relative">
+            <button
+              onClick={() => setShowPresets(!showPresets)}
+              className="btn-secondary"
+            >
+              <Sparkles className="h-4 w-4 mr-2" />
+              Load Preset
+            </button>
+
+            {showPresets && (
+              <div className="absolute right-0 mt-2 w-80 card p-2 z-50 shadow-xl max-h-96 overflow-y-auto">
+                <div className="text-xs text-muted-foreground px-2 py-1 mb-1">
+                  Quick-load pre-configured graders
+                </div>
+                {presets.map((preset) => (
+                  <button
+                    key={preset.id}
+                    onClick={() => loadPreset(preset)}
+                    disabled={loadingPreset === preset.id}
+                    className="w-full text-left px-3 py-2 rounded-md hover:bg-muted/50 transition-colors disabled:opacity-50"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="font-medium text-sm">{preset.name}</span>
+                      <Tooltip text={preset.tooltip} />
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      {preset.description}
+                    </p>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+          <button onClick={() => openForm()} className="btn-primary">
+            <Plus className="h-4 w-4 mr-2" />
+            New Grader
+          </button>
+        </div>
       </div>
 
       {graders.length === 0 ? (
         <div className="card p-12 text-center">
           <p className="text-muted-foreground">No graders yet</p>
-          <button onClick={() => openForm()} className="btn-secondary mt-4">
-            Create your first grader
-          </button>
+          <div className="flex gap-2 justify-center mt-4">
+            <button onClick={() => setShowPresets(true)} className="btn-secondary">
+              <Sparkles className="h-4 w-4 mr-2" />
+              Load a preset
+            </button>
+            <button onClick={() => openForm()} className="btn-secondary">
+              Create from scratch
+            </button>
+          </div>
         </div>
       ) : (
         <div className="grid gap-4 md:grid-cols-2">
@@ -160,6 +239,9 @@ export default function GradersPage() {
                       <span className="badge bg-muted text-muted-foreground">
                         {typeInfo?.label || grader.type}
                       </span>
+                      {typeInfo && (
+                        <Tooltip text={typeInfo.description} />
+                      )}
                     </div>
                     {grader.description && (
                       <p className="text-sm text-muted-foreground mt-1">
@@ -227,7 +309,10 @@ export default function GradersPage() {
 
               {!editingGrader && (
                 <div>
-                  <label className="text-sm font-medium block mb-1">Type</label>
+                  <label className="text-sm font-medium block mb-1 flex items-center gap-2">
+                    Type
+                    <Tooltip text="Choose how the grader evaluates responses" />
+                  </label>
                   <select
                     value={formData.type}
                     onChange={(e) =>
@@ -246,11 +331,12 @@ export default function GradersPage() {
 
               {needsRubric && (
                 <div>
-                  <label className="text-sm font-medium block mb-1">
+                  <label className="text-sm font-medium block mb-1 flex items-center gap-2">
                     Rubric
-                    <span className="text-muted-foreground font-normal ml-1">
+                    <span className="text-muted-foreground font-normal">
                       (required for LLM Judge)
                     </span>
+                    <Tooltip text="Instructions the LLM uses to evaluate responses. Be specific about what passes and fails." />
                   </label>
                   <textarea
                     value={formData.rubric}
@@ -278,6 +364,14 @@ export default function GradersPage() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Click outside to close presets dropdown */}
+      {showPresets && (
+        <div
+          className="fixed inset-0 z-40"
+          onClick={() => setShowPresets(false)}
+        />
       )}
     </div>
   );

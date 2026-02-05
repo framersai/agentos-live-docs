@@ -4,38 +4,69 @@
 
 @layer base {
   :root {
-    --background: 0 0% 98%;
-    --foreground: 0 0% 8%;
+    --background: 0 0% 96%;
+    --foreground: 0 0% 9%;
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 8%;
-    --muted: 0 0% 94%;
+    --card-foreground: 0 0% 9%;
+    --muted: 0 0% 92%;
     --muted-foreground: 0 0% 40%;
     --accent: 0 0% 94%;
-    --accent-foreground: 0 0% 8%;
-    --border: 0 0% 88%;
-    --input: 0 0% 88%;
-    --ring: 0 0% 8%;
-    --radius: 0.75rem;
-    --success: 160 84% 39%;
-    --error: 0 72% 51%;
-    --glow: 0 0% 60%;
+    --accent-foreground: 0 0% 9%;
+    --border: 0 0% 85%;
+    --border-strong: 0 0% 70%;
+    --input: 0 0% 100%;
+    --ring: 0 0% 9%;
+    --radius: 2px;
+    --success: 152 60% 36%;
+    --error: 0 65% 48%;
+
+    /* Layered shadows for real depth */
+    --shadow-sm:
+      0 1px 1px hsl(0 0% 0% / 0.04),
+      0 2px 4px hsl(0 0% 0% / 0.04);
+    --shadow-md:
+      0 1px 2px hsl(0 0% 0% / 0.06),
+      0 4px 8px hsl(0 0% 0% / 0.06),
+      0 8px 16px hsl(0 0% 0% / 0.04);
+    --shadow-lg:
+      0 2px 4px hsl(0 0% 0% / 0.04),
+      0 8px 16px hsl(0 0% 0% / 0.06),
+      0 16px 32px hsl(0 0% 0% / 0.06),
+      0 32px 64px hsl(0 0% 0% / 0.04);
+    --shadow-inner: inset 0 2px 4px hsl(0 0% 0% / 0.06);
+    --shadow-ring: 0 0 0 3px hsl(0 0% 9% / 0.08);
   }
 
   .dark {
-    --background: 0 0% 3%;
-    --foreground: 0 0% 92%;
-    --card: 0 0% 6%;
-    --card-foreground: 0 0% 92%;
-    --muted: 0 0% 12%;
+    --background: 0 0% 7%;
+    --foreground: 0 0% 93%;
+    --card: 0 0% 10%;
+    --card-foreground: 0 0% 93%;
+    --muted: 0 0% 14%;
     --muted-foreground: 0 0% 55%;
-    --accent: 0 0% 14%;
-    --accent-foreground: 0 0% 92%;
-    --border: 0 0% 18%;
-    --input: 0 0% 14%;
-    --ring: 0 0% 75%;
-    --success: 160 84% 45%;
-    --error: 0 72% 55%;
-    --glow: 0 0% 40%;
+    --accent: 0 0% 16%;
+    --accent-foreground: 0 0% 93%;
+    --border: 0 0% 20%;
+    --border-strong: 0 0% 30%;
+    --input: 0 0% 12%;
+    --ring: 0 0% 80%;
+    --success: 152 60% 45%;
+    --error: 0 65% 55%;
+
+    --shadow-sm:
+      0 1px 1px hsl(0 0% 0% / 0.2),
+      0 2px 4px hsl(0 0% 0% / 0.15);
+    --shadow-md:
+      0 1px 2px hsl(0 0% 0% / 0.25),
+      0 4px 8px hsl(0 0% 0% / 0.2),
+      0 8px 16px hsl(0 0% 0% / 0.15);
+    --shadow-lg:
+      0 2px 4px hsl(0 0% 0% / 0.2),
+      0 8px 16px hsl(0 0% 0% / 0.25),
+      0 16px 32px hsl(0 0% 0% / 0.2),
+      0 32px 64px hsl(0 0% 0% / 0.15);
+    --shadow-inner: inset 0 2px 4px hsl(0 0% 0% / 0.3);
+    --shadow-ring: 0 0 0 3px hsl(0 0% 93% / 0.1);
   }
 }
 
@@ -49,248 +80,326 @@
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 
-  /* Smooth transitions for theme switching */
   html {
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
 }
 
 @layer components {
-  /* Card with subtle glow on hover */
+  /* ===========================================
+     CARDS - Elevated surfaces
+     =========================================== */
   .card {
-    @apply bg-card rounded-xl border border-border relative overflow-hidden;
-    @apply transition-all duration-300 ease-out;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    @apply bg-card relative;
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
   }
 
   .card:hover {
-    box-shadow:
-      0 4px 20px rgba(0,0,0,0.06),
-      0 0 0 1px hsl(var(--border));
+    box-shadow: var(--shadow-lg);
   }
 
-  .dark .card:hover {
-    box-shadow:
-      0 4px 30px rgba(255,255,255,0.03),
-      0 0 40px rgba(255,255,255,0.02),
-      0 0 0 1px hsl(var(--border));
+  .card-flat {
+    @apply bg-card relative;
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
   }
 
-  /* Luminescent button base */
+  .card-inset {
+    @apply bg-muted relative;
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-inner);
+  }
+
+  /* ===========================================
+     BUTTONS
+     =========================================== */
   .btn {
-    @apply inline-flex items-center justify-center rounded-lg px-5 py-2.5 text-sm font-medium;
-    @apply transition-all duration-200 ease-out;
-    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
+    @apply inline-flex items-center justify-center px-4 py-2.5 text-sm font-semibold;
+    @apply focus-visible:outline-none;
     @apply disabled:pointer-events-none disabled:opacity-40;
+    border-radius: var(--radius);
+    transition: all 0.15s ease;
     position: relative;
-    overflow: hidden;
   }
 
-  /* Shimmer effect overlay */
-  .btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(255,255,255,0.15),
-      transparent
-    );
-    transition: left 0.5s ease;
-  }
-
-  .btn:hover::before {
-    left: 100%;
-  }
-
-  /* Primary button - luminescent glow */
   .btn-primary {
     @apply btn bg-foreground text-background;
-    box-shadow:
-      0 1px 2px rgba(0,0,0,0.1),
-      0 0 0 1px rgba(0,0,0,0.05);
+    box-shadow: var(--shadow-sm);
   }
 
   .btn-primary:hover {
+    box-shadow: var(--shadow-md);
     transform: translateY(-1px);
-    box-shadow:
-      0 4px 12px rgba(0,0,0,0.15),
-      0 0 20px hsl(var(--glow) / 0.2);
   }
 
-  .dark .btn-primary {
-    box-shadow:
-      0 1px 2px rgba(0,0,0,0.3),
-      0 0 15px rgba(255,255,255,0.05);
+  .btn-primary:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
   }
 
-  .dark .btn-primary:hover {
-    box-shadow:
-      0 4px 20px rgba(0,0,0,0.4),
-      0 0 30px rgba(255,255,255,0.1),
-      0 0 60px rgba(255,255,255,0.05);
+  .btn-primary:focus-visible {
+    box-shadow: var(--shadow-sm), var(--shadow-ring);
   }
 
-  /* Secondary button */
   .btn-secondary {
-    @apply btn bg-muted text-foreground border border-border;
+    @apply btn bg-card text-foreground;
+    border: 1px solid hsl(var(--border-strong));
+    box-shadow: var(--shadow-sm);
   }
 
   .btn-secondary:hover {
-    @apply bg-accent;
+    @apply bg-muted;
+    box-shadow: var(--shadow-md);
     transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   }
 
-  .dark .btn-secondary:hover {
-    box-shadow: 0 2px 15px rgba(255,255,255,0.03);
+  .btn-secondary:active {
+    transform: translateY(0);
+    box-shadow: none;
+    @apply bg-accent;
   }
 
-  /* Ghost button */
+  .btn-secondary:focus-visible {
+    box-shadow: var(--shadow-sm), var(--shadow-ring);
+  }
+
   .btn-ghost {
-    @apply btn text-muted-foreground;
+    @apply inline-flex items-center justify-center px-3 py-2 text-sm font-medium;
+    @apply text-muted-foreground;
+    border-radius: var(--radius);
+    transition: all 0.15s ease;
   }
 
   .btn-ghost:hover {
-    @apply bg-muted text-foreground;
+    @apply text-foreground bg-muted;
   }
 
-  /* Input with subtle focus glow */
+  .btn-ghost:focus-visible {
+    box-shadow: var(--shadow-ring);
+  }
+
+  /* ===========================================
+     INPUTS
+     =========================================== */
   .input {
-    @apply flex h-11 w-full rounded-lg border border-input bg-background px-4 py-2 text-sm;
-    @apply ring-offset-background placeholder:text-muted-foreground;
-    @apply transition-all duration-200;
-    @apply focus-visible:outline-none focus-visible:border-foreground/30;
+    @apply flex h-11 w-full bg-input px-3 py-2 text-sm;
+    @apply placeholder:text-muted-foreground;
     @apply disabled:cursor-not-allowed disabled:opacity-50;
+    border: 1px solid hsl(var(--border-strong));
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-inner);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
   }
 
   .input:focus {
-    box-shadow: 0 0 0 3px hsl(var(--foreground) / 0.06);
+    outline: none;
+    border-color: hsl(var(--foreground) / 0.4);
+    box-shadow: var(--shadow-inner), var(--shadow-ring);
   }
 
-  .dark .input:focus {
-    box-shadow: 0 0 0 3px hsl(var(--foreground) / 0.1);
+  textarea.input {
+    min-height: 100px;
+    resize: vertical;
   }
 
-  /* Badge with glow effect */
+  select.input {
+    @apply cursor-pointer appearance-none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23666' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+  }
+
+  .dark select.input {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23999' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  }
+
+  /* ===========================================
+     BADGES
+     =========================================== */
   .badge {
-    @apply inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold;
-    @apply transition-all duration-200;
+    @apply inline-flex items-center px-2.5 py-1 text-xs font-semibold;
+    border-radius: var(--radius);
   }
 
   .badge-pass {
     @apply badge;
-    background: hsl(var(--success) / 0.12);
+    background: hsl(var(--success) / 0.15);
     color: hsl(var(--success));
-    box-shadow: 0 0 10px hsl(var(--success) / 0.1);
+    border: 1px solid hsl(var(--success) / 0.3);
   }
 
   .badge-fail {
     @apply badge;
-    background: hsl(var(--error) / 0.12);
+    background: hsl(var(--error) / 0.15);
     color: hsl(var(--error));
-    box-shadow: 0 0 10px hsl(var(--error) / 0.1);
+    border: 1px solid hsl(var(--error) / 0.3);
   }
 
-  /* Grader type badges */
   .badge-type {
-    @apply badge bg-muted text-muted-foreground border border-border;
+    @apply badge bg-muted text-muted-foreground;
+    border: 1px solid hsl(var(--border));
   }
 
-  /* Table with better styling */
+  .badge-neutral {
+    @apply badge bg-accent text-foreground;
+    border: 1px solid hsl(var(--border));
+  }
+
+  /* ===========================================
+     TABLES
+     =========================================== */
   .table {
     @apply w-full text-sm;
   }
 
   .table th {
-    @apply border-b-2 border-border px-4 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground;
+    @apply px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide;
+    @apply text-muted-foreground bg-muted/50;
+    border-bottom: 1px solid hsl(var(--border-strong));
   }
 
   .table td {
-    @apply border-b border-border/50 px-4 py-4;
+    @apply px-4 py-3.5;
+    border-bottom: 1px solid hsl(var(--border));
   }
 
   .table tbody tr {
-    @apply transition-colors duration-150;
+    @apply transition-colors duration-100;
   }
 
   .table tbody tr:hover {
-    @apply bg-muted/30;
+    @apply bg-muted/40;
   }
 
-  /* Section headers */
+  /* ===========================================
+     CHIPS
+     =========================================== */
+  .chip {
+    @apply px-3 py-2 text-sm font-medium cursor-pointer;
+    border: 1px solid hsl(var(--border-strong));
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    transition: all 0.15s ease;
+  }
+
+  .chip:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+  }
+
+  .chip.selected {
+    @apply bg-foreground text-background;
+    border-color: hsl(var(--foreground));
+    box-shadow: var(--shadow-sm);
+    transform: none;
+  }
+
+  /* ===========================================
+     TOOLTIPS
+     =========================================== */
+  .tooltip {
+    @apply absolute z-50 px-3 py-2 text-xs font-medium;
+    @apply bg-foreground text-background;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    max-width: 280px;
+  }
+
+  /* ===========================================
+     PROGRESS
+     =========================================== */
+  .progress-bar {
+    @apply h-2 bg-muted overflow-hidden;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-inner);
+  }
+
+  .progress-fill {
+    @apply h-full bg-foreground;
+    transition: width 0.3s ease;
+  }
+
+  /* ===========================================
+     MODALS
+     =========================================== */
+  .modal-backdrop {
+    @apply fixed inset-0 z-50;
+    background: hsl(var(--background) / 0.85);
+    backdrop-filter: blur(4px);
+  }
+
+  .modal-content {
+    @apply bg-card;
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+  }
+
+  /* ===========================================
+     SECTION HEADERS
+     =========================================== */
   .section-title {
-    @apply text-2xl font-semibold tracking-tight;
+    @apply text-2xl font-bold tracking-tight;
   }
 
   .section-subtitle {
     @apply text-muted-foreground mt-1;
   }
 
-  /* Tooltip styling */
-  .tooltip {
-    @apply absolute z-50 px-3 py-2 text-xs rounded-lg;
-    @apply bg-foreground text-background;
-    @apply shadow-lg;
-    max-width: 280px;
+  /* ===========================================
+     ACCORDION
+     =========================================== */
+  .accordion-item {
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    margin-bottom: 0.5rem;
+    overflow: hidden;
   }
 
-  .dark .tooltip {
-    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  .accordion-trigger {
+    @apply w-full px-4 py-3.5 text-left font-semibold;
+    @apply bg-card flex items-center justify-between;
+    cursor: pointer;
+    transition: background 0.15s ease;
   }
 
-  /* Progress bar with glow */
-  .progress-bar {
-    @apply h-2 bg-muted rounded-full overflow-hidden;
+  .accordion-trigger:hover {
+    @apply bg-muted/50;
   }
 
-  .progress-fill {
-    @apply h-full bg-foreground rounded-full;
-    @apply transition-all duration-300 ease-out;
-    box-shadow: 0 0 10px hsl(var(--foreground) / 0.3);
+  .accordion-trigger[data-state="open"] {
+    @apply bg-muted/50;
+    border-bottom: 1px solid hsl(var(--border));
   }
 
-  /* Modal backdrop */
-  .modal-backdrop {
-    @apply fixed inset-0 z-50;
-    background: hsl(var(--background) / 0.8);
-    backdrop-filter: blur(8px);
+  .accordion-content {
+    @apply px-4 py-4 bg-card;
   }
 
-  /* Select/dropdown styling */
-  select.input {
-    @apply cursor-pointer appearance-none;
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-    background-position: right 0.75rem center;
-    background-repeat: no-repeat;
-    background-size: 1.25em 1.25em;
-    padding-right: 2.5rem;
+  /* ===========================================
+     DIVIDERS
+     =========================================== */
+  .divider {
+    @apply my-8;
+    border: none;
+    border-top: 1px solid hsl(var(--border));
   }
 
-  /* Chip/tag for grader selection */
-  .chip {
-    @apply px-4 py-2 text-sm rounded-lg border transition-all duration-200 cursor-pointer;
-    @apply border-border text-muted-foreground;
+  .divider-dashed {
+    @apply my-8;
+    border: none;
+    border-top: 1px dashed hsl(var(--border-strong));
   }
 
-  .chip:hover {
-    @apply border-foreground/30 text-foreground;
-  }
-
-  .chip.selected {
-    @apply bg-foreground text-background border-foreground;
-    box-shadow: 0 0 15px hsl(var(--glow) / 0.15);
-  }
-
-  .dark .chip.selected {
-    box-shadow: 0 0 20px rgba(255,255,255,0.1);
-  }
-
-  /* Empty state */
+  /* ===========================================
+     EMPTY STATE
+     =========================================== */
   .empty-state {
     @apply py-16 text-center;
   }
@@ -299,17 +408,125 @@
     @apply w-12 h-12 mx-auto text-muted-foreground/40 mb-4;
   }
 
-  /* Pulse animation for running state */
-  @keyframes pulse-glow {
+  /* ===========================================
+     LINKS
+     =========================================== */
+  .link {
+    @apply font-medium underline underline-offset-4 decoration-1;
+    text-decoration-color: hsl(var(--muted-foreground));
+    transition: text-decoration-color 0.15s ease;
+  }
+
+  .link:hover {
+    text-decoration-color: hsl(var(--foreground));
+  }
+
+  /* ===========================================
+     CODE
+     =========================================== */
+  code {
+    @apply px-1.5 py-0.5 font-mono text-sm bg-muted;
+    border-radius: var(--radius);
+  }
+
+  pre {
+    @apply p-4 overflow-x-auto bg-muted font-mono text-sm;
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+  }
+
+  /* ===========================================
+     BLOCKQUOTE
+     =========================================== */
+  blockquote {
+    @apply pl-4 py-1 my-4 italic text-muted-foreground;
+    border-left: 3px solid hsl(var(--border-strong));
+  }
+
+  /* ===========================================
+     LISTS
+     =========================================== */
+  .list-styled {
+    @apply space-y-1.5;
+  }
+
+  .list-styled li {
+    @apply pl-5 relative;
+  }
+
+  .list-styled li::before {
+    content: "—";
+    @apply absolute left-0 text-muted-foreground;
+  }
+
+  /* ===========================================
+     SCROLLBAR
+     =========================================== */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.3);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.5);
+  }
+
+  /* ===========================================
+     ANIMATIONS
+     =========================================== */
+  @keyframes pulse-subtle {
     0%, 100% {
-      box-shadow: 0 0 5px hsl(var(--foreground) / 0.2);
+      opacity: 1;
     }
     50% {
-      box-shadow: 0 0 20px hsl(var(--foreground) / 0.4);
+      opacity: 0.7;
     }
   }
 
   .running {
-    animation: pulse-glow 2s ease-in-out infinite;
+    animation: pulse-subtle 2s ease-in-out infinite;
+  }
+
+  /* ===========================================
+     FOCUS & ACCESSIBILITY
+     =========================================== */
+  :focus-visible {
+    outline: 2px solid hsl(var(--foreground));
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* ===========================================
+     MOBILE
+     =========================================== */
+  @media (max-width: 640px) {
+    .btn {
+      @apply px-3 py-2 text-sm;
+    }
+
+    .section-title {
+      @apply text-xl;
+    }
+
+    .table th,
+    .table td {
+      @apply px-3 py-2.5;
+    }
   }
 }
