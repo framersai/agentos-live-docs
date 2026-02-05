@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Plus, Trash2, Edit2, Sparkles, Info } from 'lucide-react';
+import { Plus, Trash2, Edit2, Sparkles, Info, ChevronDown } from 'lucide-react';
 import { gradersApi, presetsApi, type GraderPreset } from '@/lib/api';
 import type { Grader, GraderType } from '@/lib/types';
 
@@ -71,6 +71,7 @@ export default function GradersPage() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [showPresets, setShowPresets] = useState(false);
+  const [showGuide, setShowGuide] = useState(false);
   const [editingGrader, setEditingGrader] = useState<Grader | null>(null);
   const [loadingPreset, setLoadingPreset] = useState<string | null>(null);
 
@@ -199,7 +200,11 @@ export default function GradersPage() {
         </div>
         <div className="flex gap-2">
           <div className="relative">
-            <button onClick={() => setShowPresets(!showPresets)} className="btn-secondary">
+            <button
+              onClick={() => setShowPresets(!showPresets)}
+              className="btn-secondary"
+              title="Load a pre-configured grader with scoring rules already set up"
+            >
               <Sparkles className="h-4 w-4 mr-2" />
               Load Preset
             </button>
@@ -226,12 +231,59 @@ export default function GradersPage() {
               </div>
             )}
           </div>
-          <button onClick={() => openForm()} className="btn-primary">
+          <button
+            onClick={() => openForm()}
+            className="btn-primary"
+            title="Create a custom grader with your own evaluation criteria"
+          >
             <Plus className="h-4 w-4 mr-2" />
             New Grader
           </button>
         </div>
       </div>
+
+      {/* Expandable guide */}
+      <button
+        onClick={() => setShowGuide(!showGuide)}
+        className="w-full text-left px-4 py-3 card flex items-center justify-between text-sm hover:bg-muted/50 transition-colors"
+      >
+        <span className="flex items-center gap-2 text-muted-foreground">
+          <Info className="h-4 w-4" />
+          How graders work
+        </span>
+        <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${showGuide ? 'rotate-180' : ''}`} />
+      </button>
+      {showGuide && (
+        <div className="card p-5 space-y-3 text-sm text-muted-foreground">
+          <p>
+            A <strong className="text-foreground">grader</strong> defines how to score a candidate&apos;s output against the expected answer. Each grader has a type that determines its evaluation method.
+          </p>
+          <div className="grid gap-2 md:grid-cols-2">
+            <div className="border border-border p-3 rounded-md">
+              <strong className="text-foreground text-xs uppercase">Deterministic</strong>
+              <ul className="mt-1 space-y-0.5 text-xs">
+                <li><strong>Exact Match</strong> — binary string equality</li>
+                <li><strong>Contains</strong> — checks for required keywords</li>
+                <li><strong>Regex</strong> — pattern matching</li>
+                <li><strong>JSON Schema</strong> — validates JSON structure</li>
+              </ul>
+            </div>
+            <div className="border border-border p-3 rounded-md">
+              <strong className="text-foreground text-xs uppercase">LLM-Powered</strong>
+              <ul className="mt-1 space-y-0.5 text-xs">
+                <li><strong>LLM Judge</strong> — evaluates against a custom rubric</li>
+                <li><strong>Semantic Similarity</strong> — embedding cosine distance</li>
+                <li><strong>Faithfulness</strong> — claims grounded in context</li>
+                <li><strong>Answer Relevancy</strong> — answer-question alignment</li>
+                <li><strong>Context Relevancy</strong> — context quality for Q&A</li>
+              </ul>
+            </div>
+          </div>
+          <p className="border-t border-border pt-3">
+            <strong className="text-foreground">18 presets</strong> are available covering all types. For open-ended evaluation, use <strong>LLM Judge</strong> with a custom rubric describing what passes and fails. For structured output, combine <strong>JSON Schema</strong> (validates structure) with <strong>LLM Judge</strong> (evaluates content quality).
+          </p>
+        </div>
+      )}
 
       {graders.length === 0 ? (
         <div className="card p-12 text-center">
@@ -275,12 +327,14 @@ export default function GradersPage() {
                     <button
                       onClick={() => openForm(grader)}
                       className="btn-ghost p-2 text-muted-foreground"
+                      title="Edit grader"
                     >
                       <Edit2 className="h-4 w-4" />
                     </button>
                     <button
                       onClick={() => deleteGrader(grader.id)}
                       className="btn-ghost p-2 text-muted-foreground hover:text-error"
+                      title="Delete grader"
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>

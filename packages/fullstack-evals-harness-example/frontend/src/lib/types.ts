@@ -67,8 +67,14 @@ export interface Candidate {
   endpointBodyTemplate?: string;
   parentId?: string;
   variantLabel?: string;
-  createdAt: string;
-  updatedAt: string;
+  recommendedGraders?: string[];
+  graderWeights?: Record<string, number>;
+  recommendedDatasets?: string[];
+  graderRationale?: string;
+  notes?: string;
+  source?: 'file';
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface Experiment {
@@ -134,6 +140,7 @@ export interface ExperimentStats {
     total: number;
     passed: number;
     avgScore: number;
+    weightedScore?: number;
     passRate: number;
     byGrader: Array<{
       graderId: string;

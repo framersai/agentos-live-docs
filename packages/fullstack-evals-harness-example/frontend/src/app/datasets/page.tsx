@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Plus, Trash2, ChevronRight, Sparkles, Wand2, Info } from 'lucide-react';
+import { Plus, Trash2, ChevronRight, Sparkles, Wand2, Info, ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 import { datasetsApi, presetsApi, type DatasetPreset } from '@/lib/api';
 import type { Dataset } from '@/lib/types';
@@ -32,6 +32,7 @@ export default function DatasetsPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showPresets, setShowPresets] = useState(false);
   const [showSyntheticModal, setShowSyntheticModal] = useState(false);
+  const [showGuide, setShowGuide] = useState(false);
   const [loadingPreset, setLoadingPreset] = useState<string | null>(null);
   const [generatingSynthetic, setGeneratingSynthetic] = useState(false);
 
@@ -165,6 +166,7 @@ export default function DatasetsPage() {
             <button
               onClick={() => setShowPresets(!showPresets)}
               className="btn-secondary"
+              title="Load a pre-built dataset with curated test cases"
             >
               <Sparkles className="h-4 w-4 mr-2" />
               Load Preset
@@ -197,16 +199,55 @@ export default function DatasetsPage() {
           <button
             onClick={() => setShowSyntheticModal(true)}
             className="btn-secondary"
+            title="Use AI to auto-generate test cases from a topic description"
           >
             <Wand2 className="h-4 w-4 mr-2" />
             Generate
           </button>
-          <button onClick={() => setShowCreateModal(true)} className="btn-primary">
+          <button
+            onClick={() => setShowCreateModal(true)}
+            className="btn-primary"
+            title="Create an empty dataset and add test cases manually"
+          >
             <Plus className="h-4 w-4 mr-2" />
             New Dataset
           </button>
         </div>
       </div>
+
+      {/* Expandable guide */}
+      <button
+        onClick={() => setShowGuide(!showGuide)}
+        className="w-full text-left px-4 py-3 card flex items-center justify-between text-sm hover:bg-muted/50 transition-colors"
+      >
+        <span className="flex items-center gap-2 text-muted-foreground">
+          <Info className="h-4 w-4" />
+          How datasets work
+        </span>
+        <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${showGuide ? 'rotate-180' : ''}`} />
+      </button>
+      {showGuide && (
+        <div className="card p-5 space-y-3 text-sm text-muted-foreground">
+          <p>
+            A <strong className="text-foreground">dataset</strong> is a collection of test cases. Each test case has:
+          </p>
+          <ul className="list-disc ml-5 space-y-1">
+            <li><strong className="text-foreground">input</strong> — the prompt or question sent to your LLM</li>
+            <li><strong className="text-foreground">expectedOutput</strong> — the ground-truth answer to compare against</li>
+            <li><strong className="text-foreground">context</strong> (optional) — supporting text for faithfulness/RAG testing</li>
+            <li><strong className="text-foreground">metadata</strong> (optional) — custom JSON fields for template interpolation</li>
+          </ul>
+          <p className="border-t border-border pt-3">
+            <strong className="text-foreground">Three ways to create:</strong>{' '}
+            <strong>Load Preset</strong> loads a curated dataset with test cases included (7 presets covering injection testing, code review, reasoning, hallucination traps, extraction, and more).{' '}
+            <strong>Generate</strong> uses AI to create test cases from a topic description.{' '}
+            <strong>New Dataset</strong> creates an empty dataset you fill in manually.
+          </p>
+          <p>
+            Click a dataset to view its test cases, edit them, or add new ones.
+          </p>
+        </div>
+      )}
 
       {datasets.length === 0 ? (
         <div className="card p-12 text-center">
