@@ -1,0 +1,287 @@
+import { Injectable, Logger, OnModuleInit, NotFoundException } from '@nestjs/common';
+import * as fs from 'fs';
+import * as path from 'path';
+
+export interface LoadedDataset {
+  id: string;
+  name: string;
+  description: string | null;
+  source: 'file';
+  testCaseCount: number;
+  testCases: LoadedTestCase[];
+}
+
+export interface LoadedTestCase {
+  id: string;
+  datasetId: string;
+  input: string;
+  expectedOutput: string | null;
+  context: string | null;
+  metadata: Record<string, unknown> | null;
+}
+
+@Injectable()
+export class DatasetLoaderService implements OnModuleInit {
+  private readonly logger = new Logger(DatasetLoaderService.name);
+  private datasets = new Map<string, LoadedDataset>();
+  private datasetsDir: string;
+
+  constructor() {
+    // datasets/ directory lives next to src/ in the backend package
+    // In compiled dist: __dirname = dist/src/datasets/, so go up 3 levels
+    // In tests (ts-jest): __dirname = src/datasets/, so go up 2 levels
+    const candidate = path.resolve(__dirname, '..', '..', '..', 'datasets');
+    const fallback = path.resolve(__dirname, '..', '..', 'datasets');
+    this.datasetsDir = fs.existsSync(candidate) ? candidate : fallback;
+  }
+
+  onModuleInit() {
+    this.loadAll();
+  }
+
+  /**
+   * Read all .csv files from the datasets directory and parse them.
+   */
+  loadAll(): { loaded: number } {
+    this.datasets.clear();
+
+    if (!fs.existsSync(this.datasetsDir)) {
+      this.logger.warn(`Datasets directory not found: ${this.datasetsDir}`);
+      return { loaded: 0 };
+    }
+
+    const files = fs.readdirSync(this.datasetsDir).filter((f) => f.endsWith('.csv'));
+
+    for (const file of files) {
+      try {
+        const id = file.replace(/\.csv$/, '');
+        const csvContent = fs.readFileSync(path.join(this.datasetsDir, file), 'utf-8');
+        const meta = this.loadMeta(id);
+        const testCases = this.parseCsv(id, csvContent);
+
+        const dataset: LoadedDataset = {
+          id,
+          name: meta.name || this.idToName(id),
+          description: meta.description || null,
+          source: 'file',
+          testCaseCount: testCases.length,
+          testCases,
+        };
+
+        this.datasets.set(id, dataset);
+      } catch (err) {
+        this.logger.error(`Failed to parse ${file}: ${err}`);
+      }
+    }
+
+    this.logger.log(`Loaded ${this.datasets.size} datasets from ${this.datasetsDir}`);
+    return { loaded: this.datasets.size };
+  }
+
+  findAll(): LoadedDataset[] {
+    return Array.from(this.datasets.values());
+  }
+
+  findOne(id: string): LoadedDataset {
+    const dataset = this.datasets.get(id);
+    if (!dataset) {
+      throw new NotFoundException(`Dataset "${id}" not found`);
+    }
+    return dataset;
+  }
+
+  findMany(ids: string[]): LoadedDataset[] {
+    return ids.map((id) => this.findOne(id));
+  }
+
+  /**
+   * Import a CSV file: write to disk, then reload into memory.
+   */
+  importCsv(
+    filename: string,
+    csvContent: string,
+    meta?: { name?: string; description?: string },
+  ): LoadedDataset {
+    const id = filename.replace(/\.csv$/, '');
+    const csvPath = path.join(this.datasetsDir, `${id}.csv`);
+
+    // Ensure directory exists
+    if (!fs.existsSync(this.datasetsDir)) {
+      fs.mkdirSync(this.datasetsDir, { recursive: true });
+    }
+
+    // Write CSV file
+    fs.writeFileSync(csvPath, csvContent, 'utf-8');
+
+    // Write meta.json if provided
+    if (meta && (meta.name || meta.description)) {
+      const metaPath = path.join(this.datasetsDir, `${id}.meta.json`);
+      fs.writeFileSync(metaPath, JSON.stringify(meta, null, 2) + '\n', 'utf-8');
+    }
+
+    // Parse and store
+    const testCases = this.parseCsv(id, csvContent);
+    const loadedMeta = this.loadMeta(id);
+
+    const dataset: LoadedDataset = {
+      id,
+      name: loadedMeta.name || this.idToName(id),
+      description: loadedMeta.description || null,
+      source: 'file',
+      testCaseCount: testCases.length,
+      testCases,
+    };
+
+    this.datasets.set(id, dataset);
+    this.logger.log(`Imported dataset "${id}" with ${testCases.length} test cases`);
+    return dataset;
+  }
+
+  /**
+   * Load optional .meta.json sidecar for a dataset.
+   */
+  private loadMeta(id: string): { name?: string; description?: string } {
+    const metaPath = path.join(this.datasetsDir, `${id}.meta.json`);
+    if (fs.existsSync(metaPath)) {
+      try {
+        return JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
+      } catch {
+        this.logger.warn(`Failed to parse ${id}.meta.json`);
+      }
+    }
+    return {};
+  }
+
+  /**
+   * Convert a kebab-case ID to a human-readable name.
+   */
+  private idToName(id: string): string {
+    return id
+      .split('-')
+      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(' ');
+  }
+
+  /**
+   * Parse a CSV string into test cases.
+   * Handles RFC 4180: quoted fields, escaped double-quotes, newlines in quotes.
+   * Expected columns: input, expected_output, context, metadata
+   */
+  parseCsv(datasetId: string, content: string): LoadedTestCase[] {
+    const rows = this.parseRawCsv(content);
+    if (rows.length < 2) return []; // Need header + at least 1 data row
+
+    const header = rows[0].map((h) => h.trim().toLowerCase());
+    const inputIdx = header.indexOf('input');
+    const expectedIdx = header.indexOf('expected_output');
+    const contextIdx = header.indexOf('context');
+    const metadataIdx = header.indexOf('metadata');
+
+    if (inputIdx === -1) {
+      throw new Error('CSV missing required "input" column');
+    }
+
+    const testCases: LoadedTestCase[] = [];
+
+    for (let i = 1; i < rows.length; i++) {
+      const row = rows[i];
+      const input = row[inputIdx]?.trim();
+      if (!input) continue; // Skip empty rows
+
+      const expectedRaw = expectedIdx >= 0 ? row[expectedIdx]?.trim() : null;
+      const contextRaw = contextIdx >= 0 ? row[contextIdx]?.trim() : null;
+      const metadataRaw = metadataIdx >= 0 ? row[metadataIdx]?.trim() : null;
+
+      let metadata: Record<string, unknown> | null = null;
+      if (metadataRaw) {
+        try {
+          metadata = JSON.parse(metadataRaw);
+        } catch {
+          // Not valid JSON — ignore
+        }
+      }
+
+      testCases.push({
+        id: `${datasetId}-${i - 1}`,
+        datasetId,
+        input,
+        expectedOutput: expectedRaw || null,
+        context: contextRaw || null,
+        metadata,
+      });
+    }
+
+    return testCases;
+  }
+
+  /**
+   * RFC 4180 CSV parser. Returns array of rows, each row an array of field strings.
+   * Handles: quoted fields, escaped double-quotes (""), newlines within quoted fields.
+   */
+  private parseRawCsv(content: string): string[][] {
+    const rows: string[][] = [];
+    let currentRow: string[] = [];
+    let currentField = '';
+    let inQuotes = false;
+    let i = 0;
+
+    while (i < content.length) {
+      const ch = content[i];
+
+      if (inQuotes) {
+        if (ch === '"') {
+          // Check for escaped quote ""
+          if (i + 1 < content.length && content[i + 1] === '"') {
+            currentField += '"';
+            i += 2;
+          } else {
+            // End of quoted field
+            inQuotes = false;
+            i++;
+          }
+        } else {
+          currentField += ch;
+          i++;
+        }
+      } else {
+        if (ch === '"') {
+          inQuotes = true;
+          i++;
+        } else if (ch === ',') {
+          currentRow.push(currentField);
+          currentField = '';
+          i++;
+        } else if (ch === '\n' || (ch === '\r' && i + 1 < content.length && content[i + 1] === '\n')) {
+          currentRow.push(currentField);
+          currentField = '';
+          if (currentRow.some((f) => f.trim())) {
+            rows.push(currentRow);
+          }
+          currentRow = [];
+          i += ch === '\r' ? 2 : 1;
+        } else if (ch === '\r') {
+          currentRow.push(currentField);
+          currentField = '';
+          if (currentRow.some((f) => f.trim())) {
+            rows.push(currentRow);
+          }
+          currentRow = [];
+          i++;
+        } else {
+          currentField += ch;
+          i++;
+        }
+      }
+    }
+
+    // Handle last field/row
+    if (currentField || currentRow.length > 0) {
+      currentRow.push(currentField);
+      if (currentRow.some((f) => f.trim())) {
+        rows.push(currentRow);
+      }
+    }
+
+    return rows;
+  }
+}

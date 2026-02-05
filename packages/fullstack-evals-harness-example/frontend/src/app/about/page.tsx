@@ -103,12 +103,12 @@ export default function AboutPage() {
               <h3 className="font-bold text-xl uppercase">Datasets</h3>
             </div>
             <p className="text-muted-foreground leading-relaxed">
-              Collections of test cases. Each has an <code>input</code>,
-              optional <code>expectedOutput</code>, optional <code>context</code> (for faithfulness),
-              and optional <code>metadata</code>. Create manually, import JSON/CSV, or load presets.
+              CSV files in <code>backend/datasets/</code>. Each row has <code>input</code>,
+              <code>expected_output</code>, optional <code>context</code> (for faithfulness),
+              and optional <code>metadata</code>. Upload new CSVs via the UI or drop files in the directory.
             </p>
             <p className="text-muted-foreground leading-relaxed mt-3">
-              <strong>2 presets:</strong> Research Paper Extraction (5 real AI paper abstracts) and
+              <strong>2 included:</strong> Research Paper Extraction (5 real AI paper abstracts) and
               Q&A with Context (3 grounded questions).
             </p>
           </div>
@@ -248,7 +248,17 @@ grader_rationale: Faithfulness is highest — the full format must stay grounded
         <h2 className="section-title">FAQ</h2>
 
         <div className="mt-8">
-          <AccordionItem title="How do I add or edit a prompt?" defaultOpen>
+          <AccordionItem title="How do I add a dataset?" defaultOpen>
+            <p className="text-muted-foreground leading-relaxed">
+              Place a <code>.csv</code> file in <code>backend/datasets/</code> with
+              columns: <code>input</code>, <code>expected_output</code>, <code>context</code>, <code>metadata</code>.
+              Click &ldquo;Reload from Disk&rdquo; in the Datasets tab, or use &ldquo;Upload CSV&rdquo;
+              to import directly. An optional <code>.meta.json</code> sidecar provides a display name
+              and description.
+            </p>
+          </AccordionItem>
+
+          <AccordionItem title="How do I add or edit a prompt?">
             <p className="text-muted-foreground leading-relaxed">
               Create a <code>.md</code> file in <code>backend/prompts/</code> with YAML frontmatter
               (name, description, runner, user_template, recommended_graders with weights,

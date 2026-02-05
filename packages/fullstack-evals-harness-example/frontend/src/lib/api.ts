@@ -34,14 +34,22 @@ async function fetchApi<T>(
   return response.json();
 }
 
-// Dataset API
+// Dataset API (read-only — datasets are loaded from CSV files on disk)
 export const datasetsApi = {
   list: () => fetchApi<Dataset[]>('/datasets'),
 
   get: (id: string) => fetchApi<Dataset>(`/datasets/${id}`),
 
-  create: (data: { name: string; description?: string }) =>
-    fetchApi<Dataset>('/datasets', {
+  reload: () =>
+    fetchApi<{ loaded: number }>('/datasets/reload', { method: 'POST' }),
+
+  importCsv: (data: {
+    filename: string;
+    csv: string;
+    name?: string;
+    description?: string;
+  }) =>
+    fetchApi<Dataset>('/datasets/import', {
       method: 'POST',
       body: JSON.stringify(data),
     }),
@@ -49,46 +57,6 @@ export const datasetsApi = {
   // Export URLs (for download links)
   exportJsonUrl: (id: string) => `${API_BASE}/datasets/${id}/export/json`,
   exportCsvUrl: (id: string) => `${API_BASE}/datasets/${id}/export/csv`,
-
-  // Import test cases
-  importTestCases: (
-    datasetId: string,
-    testCases: Array<{ input: string; expectedOutput?: string; context?: string }>,
-  ) =>
-    fetchApi<{ imported: number; testCases: TestCase[] }>(`/datasets/${datasetId}/import`, {
-      method: 'POST',
-      body: JSON.stringify({ testCases }),
-    }),
-
-  update: (id: string, data: { name?: string; description?: string }) =>
-    fetchApi<Dataset>(`/datasets/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(data),
-    }),
-
-  delete: (id: string) =>
-    fetchApi<{ deleted: boolean }>(`/datasets/${id}`, { method: 'DELETE' }),
-
-  addTestCase: (datasetId: string, data: Omit<TestCase, 'id' | 'datasetId' | 'createdAt'>) =>
-    fetchApi<TestCase>(`/datasets/${datasetId}/cases`, {
-      method: 'POST',
-      body: JSON.stringify(data),
-    }),
-
-  updateTestCase: (
-    datasetId: string,
-    caseId: string,
-    data: Partial<Omit<TestCase, 'id' | 'datasetId' | 'createdAt'>>,
-  ) =>
-    fetchApi<TestCase>(`/datasets/${datasetId}/cases/${caseId}`, {
-      method: 'PUT',
-      body: JSON.stringify(data),
-    }),
-
-  deleteTestCase: (datasetId: string, caseId: string) =>
-    fetchApi<{ deleted: boolean }>(`/datasets/${datasetId}/cases/${caseId}`, {
-      method: 'DELETE',
-    }),
 };
 
 // Grader API
@@ -180,32 +148,15 @@ export interface GraderPreset {
   tooltip: string;
 }
 
-export interface DatasetPreset {
-  id: string;
-  name: string;
-  description: string;
-  testCases: Array<{
-    input: string;
-    expectedOutput: string;
-    context?: string;
-  }>;
-  tooltip: string;
-}
-
-// Presets API
+// Presets API (graders only — datasets are CSV files)
 export const presetsApi = {
   getGraderPresets: () => fetchApi<GraderPreset[]>('/presets/graders'),
-
-  getDatasetPresets: () => fetchApi<DatasetPreset[]>('/presets/datasets'),
 
   loadGraderPreset: (id: string) =>
     fetchApi<Grader>(`/presets/graders/${id}/load`, { method: 'POST' }),
 
-  loadDatasetPreset: (id: string) =>
-    fetchApi<Dataset>(`/presets/datasets/${id}/load`, { method: 'POST' }),
-
   seedAll: () =>
-    fetchApi<{ graders: Grader[]; datasets: Dataset[] }>('/presets/seed', {
+    fetchApi<{ graders: Grader[] }>('/presets/seed', {
       method: 'POST',
     }),
 

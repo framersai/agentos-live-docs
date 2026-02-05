@@ -24,14 +24,14 @@ graph LR
 
 This matters for a skills demo: SQLite means zero setup (no Docker, no database server), but the code is production-ready if you want to scale later.
 
-Schema uses straightforward relational design:
-- `datasets` → `test_cases` (one-to-many)
-- `datasets` → `metadata_schemas` (one-to-one, optional JSON Schema for test case metadata)
-- `candidates` — standalone, with optional `parent_id` for variant lineage
-- `experiments` → `experiment_results` (one-to-many)
-- `experiment_results` references `test_cases`, `graders`, and optionally `candidates`
+**Source data** lives on disk: datasets as CSV files in `backend/datasets/`, prompts as markdown in `backend/prompts/`. **Runtime data** lives in SQLite: experiments, results, graders, settings.
 
-Custom fields on test cases are stored as JSON in a `metadata` column. Metadata schemas can be defined per-dataset to validate and auto-detect field types.
+Schema uses straightforward relational design:
+- `experiments` → `experiment_results` (one-to-many)
+- `experiment_results` references test case IDs (CSV-derived), `graders`, and optionally candidates
+- `graders` — standalone entities created from presets or manually
+
+Dataset and test case tables exist in the schema but are unused — the `DatasetLoaderService` reads CSV files directly.
 
 ### Database Adapter Interface
 
@@ -240,12 +240,12 @@ The backend exposes a REST API with OpenAPI/Swagger documentation available at `
 
 ```mermaid
 graph TD
-    A["/api/datasets"] --> B[CRUD + import/export]
+    A["/api/datasets"] --> B[Read-only + reload + import CSV]
     C["/api/graders"] --> D[CRUD operations]
-    K["/api/candidates"] --> L[CRUD + test + variants]
+    K["/api/prompts"] --> L[Read-only + test + reload]
     E["/api/experiments"] --> F[Run + SSE stream + compare]
     G["/api/settings"] --> H[Runtime LLM config]
-    I["/api/presets"] --> J[Grader, dataset, candidate presets + synthetic generation]
+    I["/api/presets"] --> J[Grader presets + synthetic generation]
 ```
 
 ---

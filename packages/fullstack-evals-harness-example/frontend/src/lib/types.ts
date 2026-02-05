@@ -6,10 +6,11 @@ export interface Dataset {
   id: string;
   name: string;
   description?: string;
-  createdAt: string;
-  updatedAt: string;
+  source?: 'file';
   testCaseCount?: number;
   testCases?: TestCase[];
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface TestCase {
@@ -19,7 +20,7 @@ export interface TestCase {
   expectedOutput?: string;
   context?: string;
   metadata?: Record<string, unknown>;
-  createdAt: string;
+  createdAt?: string;
 }
 
 export type GraderType =

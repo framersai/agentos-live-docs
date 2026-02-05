@@ -22,7 +22,7 @@ Experiments (orchestrate the full run)
 Stats (aggregate pass rates, scores, comparisons)
 ```
 
-Datasets and graders are stored in SQLite. Candidates are **markdown files** on disk — edit the `.md` file, click "Reload from Disk" in the UI. Presets for graders and datasets can be loaded with one click.
+Datasets are **CSV files** in `backend/datasets/` — portable, git-trackable, and editable in any spreadsheet app. Candidates are **markdown files** in `backend/prompts/`. Graders and experiment results live in SQLite.
 
 ### The Core Loop
 
@@ -83,10 +83,9 @@ curl -X POST http://localhost:3021/api/presets/seed
 ```
 
 This creates:
-- 2 datasets (Q&A with Context, Research Paper Extraction)
 - 7 graders (faithfulness, LLM judge, semantic similarity, JSON schema, extraction completeness)
 
-Prompts are already loaded from `backend/prompts/` on startup (6 included). Or use the UI: go to each tab and click "Load Preset" dropdown.
+Datasets are loaded automatically from `backend/datasets/` on startup (2 included). Prompts are loaded from `backend/prompts/` (6 included). Or use the UI to load grader presets individually.
 
 ---
 
@@ -109,40 +108,33 @@ Settings are stored in the database — no `.env` file needed. Changes take effe
 
 **For local testing without API keys**: Use Ollama with a local model. Set Provider=`ollama`, Base URL=`http://localhost:11434`, Model=`llama3:8b`.
 
-### Step 2: Create or Load Datasets
+### Step 2: Datasets
 
-Go to **Datasets** tab. You can:
+Go to **Datasets** tab. Datasets are CSV files in `backend/datasets/`.
 
-**Load a preset:**
-- `Q&A with Context` — 3 questions with provided context (for faithfulness testing)
-- `Research Paper Extraction` — 5 real AI paper abstracts for structured JSON extraction
+**2 included:**
+- `context-qa.csv` — 3 questions with provided context (for faithfulness testing)
+- `research-paper-extraction.csv` — 5 real AI paper abstracts for structured JSON extraction
 
-**Create manually:**
-1. Click "New Dataset"
-2. Name it and add a description
-3. Add test cases with:
-   - **Input**: The prompt or question
-   - **Expected Output**: Ground truth answer (optional — not needed if you're just generating and grading)
-   - **Context**: Reference text for faithfulness grading (optional)
-   - **Metadata**: JSON object with custom fields (optional — e.g. `{"difficulty": "hard", "topic": "math"}`)
-
-**Import data:**
-- JSON import: `POST /api/datasets/:id/import` with array of test cases
-- Export: Download as JSON or CSV from the dataset detail page
-
-**Synthetic generation:**
-Use the API to generate test cases with an LLM:
-
-```bash
-curl -X POST http://localhost:3021/api/presets/synthetic/dataset \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "Physics Questions",
-    "topic": "basic physics",
-    "style": "factual",
-    "count": 10
-  }'
+**CSV format** — 4 columns:
+```csv
+input,expected_output,context,metadata
+"What is 2+2?","4","","{"difficulty":"easy"}"
 ```
+
+**Add a dataset:**
+- Place a `.csv` file in `backend/datasets/` and click "Reload from Disk"
+- Or use "Upload CSV" in the UI to import directly
+- Or use "Generate" to create synthetic test cases with an LLM
+
+**Optional sidecar** — `my-dataset.meta.json`:
+```json
+{"name": "My Dataset", "description": "Description of the dataset"}
+```
+
+Without a sidecar, the name is derived from the filename (hyphens → spaces, title case).
+
+**Export:** Download as JSON or CSV from the dataset detail page.
 
 ### Step 3: Create or Load Graders
 
@@ -277,31 +269,25 @@ curl http://localhost:3021/api/experiments/EXPERIMENT_ID/export/csv -o results.c
 
 ## Presets System
 
-Presets are JSON objects hardcoded in `backend/src/presets/presets.ts`. When loaded, they create real entities in SQLite.
+Grader presets are defined in `backend/src/presets/presets.ts`. When loaded, they create grader entities in SQLite.
 
 ### Loading Presets
 
-**Seed all at once** (graders + datasets):
+**Seed all graders at once:**
 ```bash
 POST /api/presets/seed
 ```
 
 **Load individually:**
 ```bash
-# List available presets
+# List available grader presets
 GET /api/presets/graders
-GET /api/presets/datasets
 
-# Load a specific preset
+# Load a specific grader
 POST /api/presets/graders/faithfulness-strict/load
-POST /api/presets/datasets/context-qa/load
 ```
 
 ### Available Presets
-
-**Dataset Presets** (2):
-- `context-qa` — 3 questions with provided context (for faithfulness testing)
-- `research-paper-extraction` — 5 real AI paper abstracts for structured JSON extraction
 
 **Grader Presets** (7):
 - `faithfulness-strict` (90%), `faithfulness-moderate` (70%)
@@ -309,6 +295,9 @@ POST /api/presets/datasets/context-qa/load
 - `semantic-high` (85%), `semantic-moderate` (70%)
 - `json-extraction-schema` — validates paper extraction JSON
 - `extraction-completeness` — LLM judge for extraction quality
+
+**Dataset Files** (2 in `backend/datasets/`):
+Loaded automatically on startup. Add more by placing CSV files in the directory.
 
 **Prompt Files** (6 in `backend/prompts/`):
 Loaded automatically on startup. See the Candidates tab or the `.md` files for details.
@@ -321,20 +310,15 @@ Base URL: `http://localhost:3021/api`
 
 Interactive Swagger docs: `http://localhost:3021/api/docs`
 
-### Datasets
+### Datasets (read-only — loaded from CSV files)
 | Method | Path | Description |
 |--------|------|-------------|
 | GET | `/datasets` | List all datasets |
 | GET | `/datasets/:id` | Get dataset with test cases |
-| POST | `/datasets` | Create dataset `{name, description}` |
-| PUT | `/datasets/:id` | Update dataset |
-| DELETE | `/datasets/:id` | Delete dataset and test cases |
-| POST | `/datasets/:id/cases` | Add test case `{input, expectedOutput, context, metadata}` |
-| PUT | `/datasets/:id/cases/:caseId` | Update test case |
-| DELETE | `/datasets/:id/cases/:caseId` | Delete test case |
+| POST | `/datasets/reload` | Re-read all CSV files from disk |
+| POST | `/datasets/import` | Upload CSV `{filename, csv, name?, description?}` |
 | GET | `/datasets/:id/export/json` | Export as JSON |
 | GET | `/datasets/:id/export/csv` | Export as CSV |
-| POST | `/datasets/:id/import` | Import test cases |
 
 ### Graders
 | Method | Path | Description |
@@ -369,12 +353,10 @@ Interactive Swagger docs: `http://localhost:3021/api/docs`
 | Method | Path | Description |
 |--------|------|-------------|
 | GET | `/presets/graders` | List grader presets |
-| GET | `/presets/datasets` | List dataset presets |
 | POST | `/presets/graders/:id/load` | Create grader from preset |
-| POST | `/presets/datasets/:id/load` | Create dataset + cases from preset |
-| POST | `/presets/seed` | Load all grader + dataset presets |
+| POST | `/presets/seed` | Load all grader presets |
 | POST | `/presets/synthetic/generate` | Generate test cases with LLM |
-| POST | `/presets/synthetic/dataset` | Generate full synthetic dataset |
+| POST | `/presets/synthetic/dataset` | Generate and save as CSV |
 
 ### Settings
 | Method | Path | Description |
@@ -392,20 +374,20 @@ Interactive Swagger docs: `http://localhost:3021/api/docs`
 ### Workflow 1: Test Faithfulness with Provided Context
 
 ```bash
-# 1. Load context-grounded dataset and faithfulness grader
-curl -X POST localhost:3021/api/presets/datasets/context-qa/load
+# 1. Datasets are loaded from CSV on startup — context-qa is included
+# Load the faithfulness grader preset
 curl -X POST localhost:3021/api/presets/graders/faithfulness-strict/load
 
 # 2. Use the analyst-full candidate (already loaded from disk)
 # Or reload prompts: curl -X POST localhost:3021/api/prompts/reload
 
-# 3. Run experiment
+# 3. Run experiment (dataset ID = CSV filename without extension)
 curl -X POST localhost:3021/api/experiments \
   -H "Content-Type: application/json" \
-  -d '{"datasetId":"DATASET_ID","candidateIds":["CANDIDATE_ID"],"graderIds":["GRADER_ID"]}'
+  -d '{"datasetId":"context-qa","candidateIds":["analyst-full"],"graderIds":["GRADER_ID"]}'
 ```
 
-> **Note:** Context is pre-loaded in test cases. Dynamic retrieval (RAG) is planned but not yet implemented — see `backend/src/retrieval/` for the interface stubs.
+> **Note:** Context is pre-loaded in test cases. Dynamic retrieval (RAG) is planned but not yet implemented.
 
 ### Workflow 2: Compare Two Prompt Variants
 
@@ -441,7 +423,7 @@ curl -X POST localhost:3021/api/experiments \
 ├── frontend/                    # Next.js 15 app
 │   └── src/
 │       ├── app/
-│       │   ├── datasets/        # Dataset + test case CRUD
+│       │   ├── datasets/        # Read-only CSV dataset viewer + export
 │       │   ├── graders/         # Grader CRUD + presets
 │       │   ├── candidates/      # Read-only prompt viewer + test panel
 │       │   ├── experiments/     # Run experiments + results + weighted scores
@@ -450,15 +432,17 @@ curl -X POST localhost:3021/api/experiments \
 │       ├── components/          # Navigation, ThemeProvider
 │       └── lib/                 # API client, types
 ├── backend/
+│   ├── datasets/                # CSV dataset files + optional .meta.json sidecars
 │   ├── prompts/                 # 6 markdown prompt files (candidates)
 │   └── src/
 │       ├── database/            # IDbAdapter interface + SQLite implementation
+│       ├── datasets/            # DatasetLoaderService (reads CSV files from disk)
 │       ├── candidates/          # PromptLoaderService + CandidateRunnerService
 │       ├── experiments/         # Experiment orchestrator + SSE + weighted stats
 │       ├── eval-engine/         # Grader implementations (9 types)
 │       ├── graders/             # Grader CRUD
 │       ├── llm/                 # Provider-agnostic LLM layer
-│       ├── presets/             # Seed graders/datasets + synthetic generation
+│       ├── presets/             # Seed graders + synthetic generation
 │       ├── settings/            # Runtime configuration
 │       └── main.ts              # App bootstrap, CORS, Swagger
 └── README.md                    # This file
@@ -481,6 +465,9 @@ Tests cover:
 ---
 
 ## FAQ
+
+**How do I add a dataset?**
+Place a `.csv` file in `backend/datasets/` with columns: `input`, `expected_output`, `context`, `metadata`. Click "Reload from Disk" in the Datasets tab. Or use "Upload CSV" in the UI.
 
 **How do I add a new prompt?**
 Create a `.md` file in `backend/prompts/` with frontmatter (see format above), then click "Reload from Disk" in the Candidates tab.
