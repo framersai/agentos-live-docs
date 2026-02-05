@@ -4,7 +4,7 @@ import { Subject, Observable } from 'rxjs';
 import { DB_ADAPTER, IDbAdapter } from '../database/db.module';
 import { DatasetsService } from '../datasets/datasets.service';
 import { GradersService } from '../graders/graders.service';
-import { CandidatesService } from '../candidates/candidates.service';
+import { PromptLoaderService, LoadedPrompt } from '../candidates/prompt-loader.service';
 import { CandidateRunnerService } from '../candidates/candidate-runner.service';
 import { LlmService } from '../llm/llm.service';
 import { createGrader, GraderType, EvalInput } from '../eval-engine';
@@ -42,7 +42,7 @@ export class ExperimentsService {
     private db: IDbAdapter,
     private datasetsService: DatasetsService,
     private gradersService: GradersService,
-    private candidatesService: CandidatesService,
+    private promptLoaderService: PromptLoaderService,
     private candidateRunnerService: CandidateRunnerService,
     private llmService: LlmService
   ) {}
@@ -89,7 +89,7 @@ export class ExperimentsService {
     // Fetch candidates if provided
     let candidates: any[] = [];
     if (dto.candidateIds && dto.candidateIds.length > 0) {
-      candidates = await this.candidatesService.findMany(dto.candidateIds);
+      candidates = this.promptLoaderService.findMany(dto.candidateIds);
     }
 
     const experiment = await this.db.insertExperiment({
@@ -404,19 +404,44 @@ export class ExperimentsService {
         ...data,
         passRate: data.total > 0 ? data.passed / data.total : 0,
       })),
-      candidateStats: Object.entries(stats.byCandidate).map(([candidateId, data]) => ({
-        candidateId,
-        total: data.total,
-        passed: data.passed,
-        avgScore: data.avgScore,
-        passRate: data.total > 0 ? data.passed / data.total : 0,
-        byGrader: Object.entries(data.byGrader).map(([gid, gdata]) => ({
+      candidateStats: Object.entries(stats.byCandidate).map(([candidateId, data]) => {
+        const byGraderArray = Object.entries(data.byGrader).map(([gid, gdata]) => ({
           graderId: gid,
           ...gdata,
           passRate: gdata.total > 0 ? gdata.passed / gdata.total : 0,
-        })),
-      })),
+        }));
+
+        // Compute weighted aggregate score using prompt's grader weights
+        const prompt = this.tryFindPrompt(candidateId);
+        const weights = prompt?.graderWeights || {};
+        let weightedSum = 0;
+        let weightTotal = 0;
+        for (const gs of byGraderArray) {
+          const w = weights[gs.graderId] || 1.0;
+          weightedSum += gs.avgScore * w;
+          weightTotal += w;
+        }
+        const weightedScore = weightTotal > 0 ? weightedSum / weightTotal : data.avgScore;
+
+        return {
+          candidateId,
+          total: data.total,
+          passed: data.passed,
+          avgScore: data.avgScore,
+          weightedScore,
+          passRate: data.total > 0 ? data.passed / data.total : 0,
+          byGrader: byGraderArray,
+        };
+      }),
     };
+  }
+
+  private tryFindPrompt(candidateId: string): LoadedPrompt | null {
+    try {
+      return this.promptLoaderService.findOne(candidateId);
+    } catch {
+      return null;
+    }
   }
 
   /**
