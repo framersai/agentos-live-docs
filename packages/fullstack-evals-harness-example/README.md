@@ -1,8 +1,7 @@
 # Fullstack Evals Harness
 
-A lightweight evaluation harness for running AI graders against test cases. Built with Next.js, NestJS, and Mastra.
+A lightweight evaluation harness for running AI graders against test cases. Built with Next.js and NestJS.
 
-**Author**: Johnny Dunn
 
 ---
 
@@ -118,11 +117,11 @@ See [ARCHITECTURE.md](./ARCHITECTURE.md) for technical details.
 
 | Layer | Tech |
 |-------|------|
-| Frontend | Next.js 15, Tailwind, shadcn/ui |
+| Frontend | Next.js 15, Tailwind |
 | Backend | NestJS |
-| Database | Drizzle ORM + SQLite |
-| LLM | Mastra SDK (OpenAI, Anthropic, Ollama) |
-| Testing | Jest |
+| Database | SQLite (adapter pattern for Postgres) |
+| LLM | OpenAI, Anthropic, Ollama |
+| Docs | Swagger/OpenAPI at `/api/docs` |
 
 ---
 

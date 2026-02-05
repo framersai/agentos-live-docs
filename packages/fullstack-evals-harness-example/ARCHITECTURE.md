@@ -8,17 +8,11 @@ Technical design decisions and rationale for the eval harness.
 
 This harness evaluates AI outputs against test cases using configurable graders. The architecture prioritizes simplicity, extensibility, and developer experience.
 
-```
-┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-│   Frontend  │────▶│   Backend   │────▶│   Database  │
-│  (Next.js)  │◀────│  (NestJS)   │◀────│  (SQLite)   │
-└─────────────┘     └──────┬──────┘     └─────────────┘
-                          │
-                          ▼
-                   ┌─────────────┐
-                   │  LLM Layer  │
-                   │  (Mastra)   │
-                   └─────────────┘
+```mermaid
+graph LR
+    A[Frontend<br/>Next.js] <--> B[Backend<br/>NestJS]
+    B <--> C[Database<br/>SQLite/Postgres]
+    B --> D[LLM Layer<br/>OpenAI/Anthropic/Ollama]
 ```
 
 ---
@@ -35,6 +29,27 @@ Schema uses straightforward relational design:
 - `experiment_results` references both `test_cases` and `graders`
 
 Custom fields on test cases are stored as JSON in a `metadata` column—flexible without schema migrations.
+
+### Database Adapter Interface
+
+The database layer uses an adapter pattern for dialect-agnostic operations:
+
+```mermaid
+classDiagram
+    class IDbAdapter {
+        <<interface>>
+        +initialize()
+        +findAllDatasets()
+        +insertDataset()
+        +findAllGraders()
+        +insertGrader()
+        +getExperimentStats()
+        +upsertSetting()
+    }
+
+    IDbAdapter <|.. SqliteAdapter
+    IDbAdapter <|.. PostgresAdapter
+```
 
 **References:**
 - Drizzle ORM: https://orm.drizzle.team/
@@ -63,6 +78,14 @@ abstract class BaseGrader {
 All graders extend this base. The interface is intentionally minimal—input, output, optional expected, returns pass/fail with a reason.
 
 ### Grader Types
+
+```mermaid
+graph TD
+    A[BaseGrader] --> B[ExactMatchGrader]
+    A --> C[LLMJudgeGrader]
+    A --> D[SemanticSimilarityGrader]
+    A --> E[FaithfulnessGrader]
+```
 
 **ExactMatchGrader**
 Simplest grader. Compares output to expected string. Supports case-insensitive matching and whitespace normalization as options.
@@ -94,9 +117,17 @@ This catches hallucinations—outputs that sound plausible but aren't grounded i
 
 ---
 
-## LLM Layer: Why Mastra?
+## LLM Layer
 
-Mastra provides a clean abstraction over multiple LLM providers (OpenAI, Anthropic, Ollama, etc.). Instead of writing provider-specific code, we configure via environment variables and Mastra handles the rest.
+The LLM service provides a unified interface over multiple providers (OpenAI, Anthropic, Ollama). Provider switching happens via environment variables or runtime settings—no code changes required.
+
+```mermaid
+graph LR
+    A[LlmService] --> B{Provider}
+    B -->|openai| C[OpenAI API]
+    B -->|anthropic| D[Anthropic API]
+    B -->|ollama| E[Ollama Local]
+```
 
 Key benefits:
 - Provider switching without code changes
@@ -106,28 +137,37 @@ Key benefits:
 
 For local development, Ollama integration lets you run models without API costs or rate limits.
 
-**References:**
-- Mastra docs: https://mastra.ai/docs
-
 ---
 
 ## Real-Time Updates: Why SSE?
 
-When running experiments, users need to see progress as each grader completes. Three approaches exist:
+When running experiments, users need to see progress as each grader completes.
 
-**Polling** — Client repeatedly asks "done yet?" every N seconds. Simple but wasteful. Creates server load and introduces latency (always up to N seconds behind). Fine for prototypes, suboptimal for a polished feel.
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Server
+    participant Grader
 
-**WebSockets** — Full bidirectional communication. Overkill here. The client doesn't need to send anything during an experiment—it just watches. WebSockets also require connection upgrades, manual reconnection handling, and sometimes hit issues with corporate proxies (different protocol).
+    Client->>Server: POST /experiments (run)
+    Server-->>Client: SSE connection opened
+    loop Each test case
+        Server->>Grader: evaluate()
+        Grader-->>Server: result
+        Server-->>Client: SSE event (result)
+    end
+    Server-->>Client: SSE event (complete)
+```
 
-**SSE (Server-Sent Events)** — Server pushes updates over a long-lived HTTP connection. Client listens via the native `EventSource` API. Advantages:
+**Polling** — Client repeatedly asks "done yet?" every N seconds. Simple but wasteful. Creates server load and introduces latency.
 
+**WebSockets** — Full bidirectional communication. Overkill here. The client doesn't need to send anything during an experiment.
+
+**SSE (Server-Sent Events)** — Server pushes updates over a long-lived HTTP connection. Advantages:
 - One-way is exactly what we need (server → client)
-- Auto-reconnect is built into the browser API
+- Auto-reconnect built into browser API
 - Runs over plain HTTP—no proxy issues
 - NestJS has a simple `@Sse()` decorator
-- Less cognitive overhead than WebSockets
-
-The tradeoff: if we later need the client to send messages during the stream (cancel mid-run, adjust parameters), we'd add a separate endpoint or switch to WebSockets. For now, SSE fits cleanly.
 
 **References:**
 - MDN EventSource: https://developer.mozilla.org/en-US/docs/Web/API/EventSource
@@ -135,20 +175,38 @@ The tradeoff: if we later need the client to send messages during the stream (ca
 
 ---
 
+## API Documentation
+
+The backend exposes a REST API with OpenAPI/Swagger documentation available at `/api/docs`.
+
+```mermaid
+graph TD
+    A["/api/datasets"] --> B[CRUD operations]
+    C["/api/graders"] --> D[CRUD operations]
+    E["/api/experiments"] --> F[Run + SSE stream]
+    G["/api/settings"] --> H[Runtime config]
+    I["/api/presets"] --> J[Load templates]
+```
+
+---
+
 ## Frontend Design
 
-The UI uses shadcn/ui components with custom Tailwind styling. The aesthetic is clean and monochromatic—no distracting colors, focus on the data.
+The UI uses Tailwind CSS with a clean monochromatic design—focus on the data.
 
-Three tabs map directly to the domain model:
+Six tabs:
 - **Datasets**: CRUD for test cases
 - **Graders**: CRUD for evaluation criteria
 - **Experiments**: Run and view results
+- **Stats**: Aggregate metrics and trends
+- **Settings**: Runtime LLM configuration
+- **About**: Documentation and references
 
-State persists across tab switches. In-memory for the demo, but the architecture supports full database persistence.
+State persists in SQLite. Settings can be configured at runtime without .env changes.
 
 **References:**
-- shadcn/ui: https://ui.shadcn.com/
 - Tailwind CSS: https://tailwindcss.com/
+- Next.js: https://nextjs.org/docs
 
 ---
 
@@ -158,17 +216,15 @@ State persists across tab switches. In-memory for the demo, but the architecture
 
 **Integration tests** cover full CRUD flows and experiment execution against a test SQLite database.
 
-Jest is the test runner—industry standard, good NestJS integration, familiar to most TypeScript developers.
+Jest is the test runner—industry standard, good NestJS integration.
 
 ---
 
 ## References
 
 - Drizzle ORM: https://orm.drizzle.team/
-- Mastra: https://mastra.ai/docs
 - promptfoo: https://promptfoo.dev/docs
 - RAGAS: https://arxiv.org/abs/2309.15217
 - DeepEval: https://docs.confident-ai.com/
-- shadcn/ui: https://ui.shadcn.com/
 - NestJS: https://docs.nestjs.com/
 - Next.js: https://nextjs.org/docs
