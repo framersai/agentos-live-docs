@@ -83,8 +83,8 @@ curl -X POST http://localhost:3021/api/presets/seed
 ```
 
 This creates:
-- 4 datasets (math, geography, context-grounded Q&A, sentiment classification)
-- 14 graders (exact match, LLM judges, semantic similarity, faithfulness, regex, JSON schema, etc.)
+- 2 datasets (Q&A with Context, Research Paper Extraction)
+- 7 graders (faithfulness, LLM judge, semantic similarity, JSON schema, extraction completeness)
 
 Prompts are already loaded from `backend/prompts/` on startup (6 included). Or use the UI: go to each tab and click "Load Preset" dropdown.
 
@@ -114,10 +114,8 @@ Settings are stored in the database — no `.env` file needed. Changes take effe
 Go to **Datasets** tab. You can:
 
 **Load a preset:**
-- `Basic Math` — 5 arithmetic questions with exact answers
-- `Geography Facts` — 5 capital city / geography questions
 - `Q&A with Context` — 3 questions with provided context (for faithfulness testing)
-- `Sentiment Classification` — 5 text snippets with positive/negative/neutral labels
+- `Research Paper Extraction` — 5 real AI paper abstracts for structured JSON extraction
 
 **Create manually:**
 1. Click "New Dataset"
@@ -148,25 +146,18 @@ curl -X POST http://localhost:3021/api/presets/synthetic/dataset \
 
 ### Step 3: Create or Load Graders
 
-Go to **Graders** tab. 14 presets available:
-
-**Deterministic graders (no LLM needed):**
-- `Exact Match (Strict)` — case-sensitive string comparison
-- `Exact Match (Flexible)` — case-insensitive
-- `Contains All Keywords` — output must include all specified terms
-- `Contains Any Keyword` — output must include at least one
-- `Regex Pattern Match` — output matches a regex (e.g. `\d{4}-\d{2}-\d{2}` for dates)
-- `JSON Schema Validation` — output must be valid JSON matching a schema
+Go to **Graders** tab. 7 presets available:
 
 **LLM-powered graders (require configured LLM):**
-- `Helpfulness Judge` — LLM evaluates if response is helpful and accurate
-- `Safety Judge` — LLM checks for harmful/inappropriate content
-- `Semantic Match (High)` — embedding cosine similarity > 85%
-- `Semantic Match (Moderate)` — embedding cosine similarity > 70%
 - `Faithfulness (Strict)` — RAGAS-inspired, 90%+ claims must be context-supported
 - `Faithfulness (Moderate)` — 70%+ claims supported
-- `Answer Relevancy` — checks if answer is on-topic
-- `Context Relevancy` — checks if retrieved context is relevant
+- `Helpfulness Judge` — LLM evaluates if response is helpful and accurate
+- `Semantic Match (High)` — embedding cosine similarity > 85%
+- `Semantic Match (Moderate)` — embedding cosine similarity > 70%
+- `Extraction Completeness` — LLM evaluates extraction quality and grounding
+
+**Deterministic grader:**
+- `Paper Extraction Schema` — validates JSON output against the research paper schema
 
 **Custom graders:**
 Create your own with any type. For LLM Judge, write a custom rubric describing pass/fail criteria.
@@ -300,32 +291,24 @@ POST /api/presets/seed
 # List available presets
 GET /api/presets/graders
 GET /api/presets/datasets
-GET /api/presets/candidates
 
 # Load a specific preset
-POST /api/presets/graders/exact-match-strict/load
-POST /api/presets/datasets/math-basic/load
-POST /api/presets/candidates/analyst-full/load
+POST /api/presets/graders/faithfulness-strict/load
+POST /api/presets/datasets/context-qa/load
 ```
 
 ### Available Presets
 
-**Dataset Presets** (4):
-- `math-basic` — 5 arithmetic questions
-- `factual-geography` — 5 geography questions
-- `context-qa` — 3 questions with provided context
-- `sentiment-classification` — 5 sentiment examples
+**Dataset Presets** (2):
+- `context-qa` — 3 questions with provided context (for faithfulness testing)
+- `research-paper-extraction` — 5 real AI paper abstracts for structured JSON extraction
 
-**Grader Presets** (14+):
-- `exact-match-strict`, `exact-match-flexible`
-- `llm-judge-helpful`, `llm-judge-safety`
-- `semantic-high` (85%), `semantic-moderate` (70%)
+**Grader Presets** (7):
 - `faithfulness-strict` (90%), `faithfulness-moderate` (70%)
-- `contains-all`, `contains-any`
-- `regex-pattern`, `no-injection-markers`
-- `json-schema-basic`, `json-extraction-schema`
-- `injection-resistance`, `extraction-completeness`
-- `answer-relevancy-default`, `context-relevancy-default`
+- `llm-judge-helpful`
+- `semantic-high` (85%), `semantic-moderate` (70%)
+- `json-extraction-schema` — validates paper extraction JSON
+- `extraction-completeness` — LLM judge for extraction quality
 
 **Prompt Files** (6 in `backend/prompts/`):
 Loaded automatically on startup. See the Candidates tab or the `.md` files for details.

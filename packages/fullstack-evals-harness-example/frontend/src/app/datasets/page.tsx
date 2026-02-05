@@ -239,7 +239,7 @@ export default function DatasetsPage() {
           </ul>
           <p className="border-t border-border pt-3">
             <strong className="text-foreground">Three ways to create:</strong>{' '}
-            <strong>Load Preset</strong> loads a curated dataset with test cases included (7 presets covering injection testing, code review, reasoning, hallucination traps, extraction, and more).{' '}
+            <strong>Load Preset</strong> loads a curated dataset with test cases included (2 presets: Q&A with Context and Research Paper Extraction).{' '}
             <strong>Generate</strong> uses AI to create test cases from a topic description.{' '}
             <strong>New Dataset</strong> creates an empty dataset you fill in manually.
           </p>

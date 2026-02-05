@@ -257,7 +257,7 @@ The UI uses Tailwind CSS with a clean monochromatic design—focus on the data.
 Seven tabs:
 - **Datasets**: CRUD for test cases, import/export (JSON/CSV)
 - **Graders**: CRUD for evaluation criteria, preset loading
-- **Candidates**: CRUD for prompt templates and HTTP endpoints, inline test panel, preset loading
+- **Candidates**: Read-only file-based prompt viewer, inline test panel
 - **Experiments**: Run `dataset × candidates × graders`, multi-candidate results table, candidate comparison
 - **Stats**: Aggregate metrics and trends
 - **Settings**: Runtime LLM configuration (provider, model, API key)
