@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, Body } from '@nestjs/common';
+import { Controller, Get, Post, Put, Param, Body } from '@nestjs/common';
 import { PromptLoaderService } from './prompt-loader.service';
 import { CandidateRunnerService } from './candidate-runner.service';
 
@@ -31,6 +31,33 @@ export class PromptsController {
       metadata: body.metadata,
     });
     return result;
+  }
+
+  @Put(':id')
+  updatePrompt(
+    @Param('id') id: string,
+    @Body()
+    body: {
+      name?: string;
+      description?: string;
+      runnerType?: 'llm_prompt' | 'http_endpoint';
+      systemPrompt?: string;
+      userPromptTemplate?: string;
+      temperature?: number;
+      maxTokens?: number;
+      provider?: string;
+      model?: string;
+      endpointUrl?: string;
+      endpointMethod?: string;
+      endpointBodyTemplate?: string;
+      recommendedGraders?: string[];
+      graderWeights?: Record<string, number>;
+      recommendedDatasets?: string[];
+      graderRationale?: string;
+      notes?: string;
+    },
+  ) {
+    return this.promptLoader.updatePrompt(id, body);
   }
 
   @Post('reload')

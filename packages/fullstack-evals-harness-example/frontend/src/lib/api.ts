@@ -100,13 +100,40 @@ export const gradersApi = {
 
   delete: (id: string) =>
     fetchApi<{ deleted: boolean }>(`/graders/${id}`, { method: 'DELETE' }),
+
+  reload: () =>
+    fetchApi<{ loaded: number }>('/graders/reload', { method: 'POST' }),
 };
 
-// Prompts API (read-only — prompts are loaded from markdown files on disk)
+// Prompts API (loaded from markdown files on disk)
 export const promptsApi = {
   list: () => fetchApi<Candidate[]>('/prompts'),
 
   get: (id: string) => fetchApi<Candidate>(`/prompts/${id}`),
+
+  update: (id: string, data: {
+    name?: string;
+    description?: string;
+    runnerType?: 'llm_prompt' | 'http_endpoint';
+    systemPrompt?: string;
+    userPromptTemplate?: string;
+    temperature?: number;
+    maxTokens?: number;
+    provider?: string;
+    model?: string;
+    endpointUrl?: string;
+    endpointMethod?: string;
+    endpointBodyTemplate?: string;
+    recommendedGraders?: string[];
+    graderWeights?: Record<string, number>;
+    recommendedDatasets?: string[];
+    graderRationale?: string;
+    notes?: string;
+  }) =>
+    fetchApi<Candidate>(`/prompts/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
 
   test: (id: string, data: { input: string; context?: string; metadata?: Record<string, unknown> }) =>
     fetchApi<{ output: string; latencyMs: number; error?: string }>(`/prompts/${id}/test`, {

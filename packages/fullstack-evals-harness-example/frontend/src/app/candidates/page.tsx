@@ -11,6 +11,7 @@ import {
   ChevronDown,
   FileText,
 } from 'lucide-react';
+import Link from 'next/link';
 import { promptsApi } from '@/lib/api';
 import type { Candidate } from '@/lib/types';
 
@@ -176,7 +177,7 @@ Your system prompt text goes here.`}</pre>
           {candidates.map((candidate) => (
             <div key={candidate.id} className="card p-4 space-y-3">
               <div className="flex items-start justify-between">
-                <div className="flex items-center gap-2">
+                <Link href={`/candidates/${candidate.id}`} className="flex items-center gap-2 hover:opacity-80 transition-opacity">
                   {candidate.runnerType === 'llm_prompt' ? (
                     <Bot className="h-5 w-5 text-muted-foreground" />
                   ) : (
@@ -188,7 +189,7 @@ Your system prompt text goes here.`}</pre>
                       <p className="text-xs text-muted-foreground">{candidate.description}</p>
                     )}
                   </div>
-                </div>
+                </Link>
                 <div className="flex items-center gap-1">
                   <button
                     onClick={() => {

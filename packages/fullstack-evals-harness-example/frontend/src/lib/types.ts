@@ -43,6 +43,10 @@ export interface Grader {
   type: GraderType;
   rubric?: string;
   config?: Record<string, unknown>;
+  inspiration?: string;
+  reference?: string;
+  source?: 'file';
+  filePath?: string;
   createdAt: string;
   updatedAt: string;
 }

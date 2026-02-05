@@ -24,14 +24,13 @@ graph LR
 
 This matters for a skills demo: SQLite means zero setup (no Docker, no database server), but the code is production-ready if you want to scale later.
 
-**Source data** lives on disk: datasets as CSV files in `backend/datasets/`, prompts as markdown in `backend/prompts/`. **Runtime data** lives in SQLite: experiments, results, graders, settings.
+**Source data** lives on disk: datasets as CSV files in `backend/datasets/`, prompts as markdown in `backend/prompts/`, graders as YAML in `backend/graders/`. **Runtime data** lives in SQLite: experiments, results, settings.
 
 Schema uses straightforward relational design:
 - `experiments` → `experiment_results` (one-to-many)
-- `experiment_results` references test case IDs (CSV-derived), `graders`, and optionally candidates
-- `graders` — standalone entities created from presets or manually
+- `experiment_results` references test case IDs (CSV-derived), grader IDs (YAML-derived), and optionally candidates
 
-Dataset and test case tables exist in the schema but are unused — the `DatasetLoaderService` reads CSV files directly.
+Dataset, test case, and grader tables exist in the schema but are unused — the `DatasetLoaderService`, `PromptLoaderService`, and `GraderLoaderService` read files directly.
 
 ### Database Adapter Interface
 
@@ -69,7 +68,22 @@ SQLite adapter includes `migrateColumns()` for seamless upgrades of existing dat
 
 ## Grader System
 
-The grader system draws inspiration from several established evaluation frameworks, adapted into a clean TypeScript implementation.
+Graders are YAML files in `backend/graders/`. The `GraderLoaderService` reads them on startup and provides CRUD operations that write back to YAML. Each grader defines an evaluation strategy, configuration, and optionally the research that inspired it.
+
+### Storage Format
+
+```yaml
+# backend/graders/faithfulness-strict.yaml
+name: Faithfulness (Strict)
+description: All claims must be supported by context (>90%)
+type: faithfulness
+config:
+  threshold: 0.9
+inspiration: |
+  RAGAS framework (Es et al., 2023). Extracts atomic claims from the output
+  and verifies each is supported by the provided context.
+reference: https://arxiv.org/abs/2309.15217
+```
 
 ### Base Abstraction
 
@@ -81,49 +95,44 @@ interface GraderResult {
 }
 
 abstract class BaseGrader {
-  abstract evaluate(input: string, output: string, expected?: string): Promise<GraderResult>;
+  abstract evaluate(input: EvalInput): Promise<GraderResult>;
 }
 ```
 
-All graders extend this base. The interface is intentionally minimal—input, output, optional expected, returns pass/fail with a reason.
+All graders extend this base. The interface is minimal—input, output, optional expected/context, returns pass/fail with a reason.
 
 ### Grader Types
 
-```mermaid
-graph TD
-    A[BaseGrader] --> B[ExactMatchGrader]
-    A --> C[LLMJudgeGrader]
-    A --> D[SemanticSimilarityGrader]
-    A --> E[FaithfulnessGrader]
-```
+**Deterministic Graders:**
 
-**ExactMatchGrader**
-Simplest grader. Compares output to expected string. Supports case-insensitive matching and whitespace normalization as options.
+| Type | Description | Inspired By |
+|------|-------------|-------------|
+| `exact-match` | Binary string equality | SQuAD EM metric (Rajpurkar et al., 2016) |
+| `contains` | Checks for required substrings | HELM (Liang et al., 2022) |
+| `regex` | Pattern matching | Standard eval pattern |
+| `json-schema` | Validates JSON structure | Function calling benchmarks |
 
-**LLMJudgeGrader**
-Uses an LLM to evaluate output against a user-provided rubric. The prompt template asks the model to return a structured response with pass/fail and reasoning. This pattern is common in prompt engineering workflows where deterministic matching isn't sufficient.
+**LLM-Powered Graders:**
 
-Inspired by promptfoo's LLM assertion pattern (https://promptfoo.dev/docs/configuration/expected-outputs#llm-rubric).
+| Type | Description | Inspired By |
+|------|-------------|-------------|
+| `llm-judge` | Evaluates against a custom rubric | LLM-as-Judge (Zheng et al., 2023), promptfoo |
+| `semantic-similarity` | Embedding cosine distance | Sentence-BERT (Reimers & Gurevych, 2019) |
+| `faithfulness` | Claims grounded in context | RAGAS (Es et al., 2023) |
+| `answer-relevancy` | Answer-question alignment | RAGAS (Es et al., 2023) |
+| `context-relevancy` | Context quality for Q&A | RAGAS (Es et al., 2023) |
 
-**SemanticSimilarityGrader**
-Generates embeddings for both output and expected, then computes cosine similarity. Pass if similarity exceeds a configurable threshold (default: 0.8). Useful when exact wording doesn't matter but meaning should align.
+### Research References
 
-Uses the same embedding model as the LLM provider (OpenAI's text-embedding-3-small, or local alternatives via Ollama).
+- **RAGAS** — Es et al. 2023. "Automated Evaluation of Retrieval Augmented Generation." Faithfulness, answer relevancy, and context relevancy metrics. https://arxiv.org/abs/2309.15217
+- **LLM-as-Judge** — Zheng et al. 2023. "Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena." Rubric-based LLM evaluation. https://arxiv.org/abs/2306.05685
+- **Sentence-BERT** — Reimers & Gurevych 2019. Sentence embeddings for semantic similarity. https://arxiv.org/abs/1908.10084
+- **SQuAD** — Rajpurkar et al. 2016. Reading comprehension benchmark introducing EM/F1 metrics. https://arxiv.org/abs/1606.05250
+- **HELM** — Liang et al. 2022. Holistic evaluation of language models. https://arxiv.org/abs/2211.09110
+- **promptfoo** — Open-source LLM eval framework. Inspired the dataset x candidates x graders matrix and the LLM Judge assertion pattern. https://promptfoo.dev
+- **DeepEval** — Python-based eval framework with similar RAGAS metric implementations. https://docs.confident-ai.com/
 
-**FaithfulnessGrader**
-Inspired by the RAGAS framework's faithfulness metric. The process:
-
-1. Extract factual claims from the output
-2. For each claim, verify whether it's supported by the provided context
-3. Score = (supported claims) / (total claims)
-4. Pass if score exceeds threshold
-
-This catches hallucinations—outputs that sound plausible but aren't grounded in the source material.
-
-**References:**
-- RAGAS paper: https://arxiv.org/abs/2309.15217
-- RAGAS docs: https://docs.ragas.io/en/stable/concepts/metrics/faithfulness.html
-- DeepEval (similar patterns): https://docs.confident-ai.com/
+**Note:** `@mastra/core` is listed as a dependency but not currently used in the evaluation engine.
 
 ---
 
@@ -240,12 +249,12 @@ The backend exposes a REST API with OpenAPI/Swagger documentation available at `
 
 ```mermaid
 graph TD
-    A["/api/datasets"] --> B[Read-only + reload + import CSV]
-    C["/api/graders"] --> D[CRUD operations]
-    K["/api/prompts"] --> L[Read-only + test + reload]
+    A["/api/datasets"] --> B[CRUD + reload + import CSV]
+    C["/api/graders"] --> D[CRUD + reload from YAML]
+    K["/api/prompts"] --> L[CRUD + test + reload from MD]
     E["/api/experiments"] --> F[Run + SSE stream + compare]
     G["/api/settings"] --> H[Runtime LLM config]
-    I["/api/presets"] --> J[Grader presets + synthetic generation]
+    I["/api/presets"] --> J[Grader templates + synthetic generation]
 ```
 
 ---
@@ -255,15 +264,15 @@ graph TD
 The UI uses Tailwind CSS with a clean monochromatic design—focus on the data.
 
 Seven tabs:
-- **Datasets**: CRUD for test cases, import/export (JSON/CSV)
-- **Graders**: CRUD for evaluation criteria, preset loading
-- **Candidates**: Read-only file-based prompt viewer, inline test panel
+- **Datasets**: Inline editing, import/export (JSON/CSV), file paths, linked prompts
+- **Graders**: YAML-based with expandable details, research references, reload from disk
+- **Candidates**: Full detail page with frontmatter editing, save to disk, inline test panel
 - **Experiments**: Run `dataset × candidates × graders`, multi-candidate results table, candidate comparison
 - **Stats**: Aggregate metrics and trends
 - **Settings**: Runtime LLM configuration (provider, model, API key)
 - **About**: Documentation and references
 
-State persists in SQLite. Settings can be configured at runtime without .env changes.
+Source data (datasets, prompts, graders) is file-based. Runtime data (experiments, results, settings) persists in SQLite.
 
 **References:**
 - Tailwind CSS: https://tailwindcss.com/

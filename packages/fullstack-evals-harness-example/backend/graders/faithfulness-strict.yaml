@@ -1,0 +1,9 @@
+name: Faithfulness (Strict)
+description: All claims must be supported by context (>90%)
+type: faithfulness
+config:
+  threshold: 0.9
+inspiration: |
+  RAGAS framework (Es et al., 2023). Extracts atomic claims from the output
+  and verifies each is supported by the provided context.
+reference: https://arxiv.org/abs/2309.15217

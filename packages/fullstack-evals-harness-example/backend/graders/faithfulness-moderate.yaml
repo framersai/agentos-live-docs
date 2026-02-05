@@ -1,0 +1,9 @@
+name: Faithfulness (Moderate)
+description: Most claims must be supported by context (>70%)
+type: faithfulness
+config:
+  threshold: 0.7
+inspiration: |
+  RAGAS framework (Es et al., 2023). Looser variant allowing some inference
+  beyond what's explicitly stated in context.
+reference: https://arxiv.org/abs/2309.15217

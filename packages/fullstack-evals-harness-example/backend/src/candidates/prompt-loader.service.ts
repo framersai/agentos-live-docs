@@ -87,6 +87,101 @@ export class PromptLoaderService implements OnModuleInit {
   }
 
   /**
+   * Update a prompt's .md file on disk and reload it in memory.
+   */
+  updatePrompt(
+    id: string,
+    data: {
+      name?: string;
+      description?: string;
+      runnerType?: 'llm_prompt' | 'http_endpoint';
+      systemPrompt?: string;
+      userPromptTemplate?: string;
+      temperature?: number;
+      maxTokens?: number;
+      provider?: string;
+      model?: string;
+      endpointUrl?: string;
+      endpointMethod?: string;
+      endpointBodyTemplate?: string;
+      recommendedGraders?: string[];
+      graderWeights?: Record<string, number>;
+      recommendedDatasets?: string[];
+      graderRationale?: string;
+      notes?: string;
+    },
+  ): LoadedPrompt {
+    const existing = this.findOne(id);
+
+    // Merge fields
+    const name = data.name ?? existing.name;
+    const description = data.description ?? existing.description;
+    const runner = data.runnerType ?? existing.runnerType;
+    const userTemplate = data.userPromptTemplate ?? existing.userPromptTemplate;
+    const systemPrompt = data.systemPrompt ?? existing.systemPrompt ?? '';
+
+    // Model config
+    const temperature = data.temperature ?? (existing.modelConfig?.temperature as number | undefined);
+    const maxTokens = data.maxTokens ?? (existing.modelConfig?.maxTokens as number | undefined);
+    const provider = data.provider ?? (existing.modelConfig?.provider as string | undefined);
+    const model = data.model ?? (existing.modelConfig?.model as string | undefined);
+
+    // Endpoint fields
+    const endpointUrl = data.endpointUrl ?? existing.endpointUrl;
+    const endpointMethod = data.endpointMethod ?? existing.endpointMethod;
+    const endpointBodyTemplate = data.endpointBodyTemplate ?? existing.endpointBodyTemplate;
+
+    // Recommendations
+    const recGraders = data.recommendedGraders ?? existing.recommendedGraders;
+    const graderWeights = data.graderWeights ?? existing.graderWeights;
+    const recDatasets = data.recommendedDatasets ?? existing.recommendedDatasets;
+    const graderRationale = data.graderRationale ?? existing.graderRationale;
+    const notes = data.notes ?? existing.notes;
+
+    // Build frontmatter lines
+    const lines: string[] = [];
+    lines.push(`name: ${name}`);
+    if (description) lines.push(`description: ${description}`);
+    lines.push(`runner: ${runner}`);
+    if (temperature !== undefined) lines.push(`temperature: ${temperature}`);
+    if (maxTokens !== undefined) lines.push(`max_tokens: ${maxTokens}`);
+    if (provider) lines.push(`provider: ${provider}`);
+    if (model) lines.push(`model: ${model}`);
+    if (userTemplate) lines.push(`user_template: "${userTemplate}"`);
+    if (endpointUrl) lines.push(`endpoint_url: ${endpointUrl}`);
+    if (endpointMethod) lines.push(`endpoint_method: ${endpointMethod}`);
+    if (endpointBodyTemplate) lines.push(`endpoint_body_template: ${endpointBodyTemplate}`);
+
+    // Serialize weighted grader list: "id:weight, id2:weight2"
+    if (recGraders.length > 0) {
+      const parts = recGraders.map((g) => {
+        const w = graderWeights[g];
+        return w != null && w !== 1 ? `${g}:${w}` : g;
+      });
+      lines.push(`recommended_graders: ${parts.join(', ')}`);
+    }
+    if (recDatasets.length > 0) {
+      lines.push(`recommended_datasets: ${recDatasets.join(', ')}`);
+    }
+    if (graderRationale) lines.push(`grader_rationale: ${graderRationale}`);
+    if (notes) lines.push(`notes: ${notes}`);
+
+    // Assemble file content
+    const content = `---\n${lines.join('\n')}\n---\n${systemPrompt}\n`;
+
+    // Write to disk
+    const filePath = path.join(this.promptsDir, `${id}.md`);
+    fs.writeFileSync(filePath, content, 'utf-8');
+
+    // Re-parse and store in memory
+    const updated = this.parseMarkdown(`${id}.md`, content);
+    this.prompts.set(id, updated);
+
+    this.logger.log(`Updated prompt ${id} on disk`);
+    return updated;
+  }
+
+  /**
    * Parse a markdown file with simple frontmatter into a LoadedPrompt.
    *
    * Format:
