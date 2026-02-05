@@ -254,7 +254,7 @@ Your system prompt text goes here.`}</pre>
                     <div className="flex flex-wrap items-center gap-1 text-muted-foreground">
                       <span className="opacity-60">Datasets:</span>
                       {candidate.recommendedDatasets.map((d) => (
-                        <span key={d} className="badge bg-muted/50 text-muted-foreground text-[10px]">{d}</span>
+                        <a key={d} href={`/datasets/${d}`} className="badge bg-muted/50 text-muted-foreground text-[10px] hover:text-foreground hover:bg-muted transition-colors">{d}</a>
                       ))}
                     </div>
                   )}

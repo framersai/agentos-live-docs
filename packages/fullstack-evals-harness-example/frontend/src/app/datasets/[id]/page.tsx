@@ -11,8 +11,8 @@ import {
   FileText,
 } from 'lucide-react';
 import Link from 'next/link';
-import { datasetsApi } from '@/lib/api';
-import type { Dataset, TestCase } from '@/lib/types';
+import { datasetsApi, promptsApi } from '@/lib/api';
+import type { Dataset, TestCase, Candidate } from '@/lib/types';
 
 interface EditableCase {
   input: string;
@@ -41,9 +41,11 @@ export default function DatasetDetailPage({
   const [saving, setSaving] = useState(false);
   const [editedCases, setEditedCases] = useState<EditableCase[]>([]);
   const [originalCases, setOriginalCases] = useState<EditableCase[]>([]);
+  const [linkedPrompts, setLinkedPrompts] = useState<Candidate[]>([]);
 
   useEffect(() => {
     loadDataset();
+    loadLinkedPrompts();
   }, [id]);
 
   async function loadDataset() {
@@ -57,6 +59,15 @@ export default function DatasetDetailPage({
       console.error('Failed to load dataset:', error);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function loadLinkedPrompts() {
+    try {
+      const all = await promptsApi.list();
+      setLinkedPrompts(all.filter((p) => p.recommendedDatasets?.includes(id)));
+    } catch {
+      // non-critical
     }
   }
 
@@ -210,6 +221,22 @@ export default function DatasetDetailPage({
           <span className="text-amber-500 font-medium">Unsaved changes</span>
         )}
       </div>
+
+      {/* Linked prompts */}
+      {linkedPrompts.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2 text-sm">
+          <span className="text-muted-foreground">Used by:</span>
+          {linkedPrompts.map((p) => (
+            <a
+              key={p.id}
+              href={`/candidates/${p.id}`}
+              className="badge bg-muted text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-colors text-xs"
+            >
+              {p.name}
+            </a>
+          ))}
+        </div>
+      )}
 
       {/* Editable test cases table */}
       <div className="card overflow-hidden">
