@@ -1,6 +1,6 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { LlmService } from '../llm/llm.service';
-import { CandidatesService } from './candidates.service';
+import { renderTemplate } from './template-utils';
 
 export interface CandidateRunResult {
   output: string;
@@ -17,10 +17,7 @@ export interface TestCaseInput {
 
 @Injectable()
 export class CandidateRunnerService {
-  constructor(
-    private llmService: LlmService,
-    private candidatesService: CandidatesService
-  ) {}
+  constructor(private llmService: LlmService) {}
 
   /**
    * Run a candidate against a single test case.
@@ -67,11 +64,11 @@ export class CandidateRunnerService {
     }
 
     const userPrompt = candidate.userPromptTemplate
-      ? this.candidatesService.renderTemplate(candidate.userPromptTemplate, vars)
+      ? renderTemplate(candidate.userPromptTemplate, vars)
       : testCase.input;
 
     const systemPrompt = candidate.systemPrompt
-      ? this.candidatesService.renderTemplate(candidate.systemPrompt, vars)
+      ? renderTemplate(candidate.systemPrompt, vars)
       : undefined;
 
     // Model config overrides (provider/model for multi-model comparison)
@@ -112,7 +109,7 @@ export class CandidateRunnerService {
           context: testCase.context || '',
           expected: testCase.expectedOutput || '',
         };
-        body = this.candidatesService.renderTemplate(candidate.endpointBodyTemplate, vars);
+        body = renderTemplate(candidate.endpointBodyTemplate, vars);
       } else {
         body = JSON.stringify({
           input: testCase.input,
