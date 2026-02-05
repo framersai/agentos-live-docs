@@ -160,7 +160,7 @@ Candidates can reference a `parentId` to form a variant tree, tracking prompt it
 
 ### Presets
 
-Six built-in candidate presets: `qa-basic`, `qa-context`, `json-extractor`, `classifier`, `summarizer`, `http-api`.
+Candidates are now file-based markdown prompts in `backend/prompts/`. Six included: `analyst-full`, `analyst-citations`, `summarizer`, `json-extractor-strict`, `json-extractor-loose`, `text-rewriter`.
 
 ### Backwards Compatibility
 

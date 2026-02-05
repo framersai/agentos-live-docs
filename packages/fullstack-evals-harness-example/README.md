@@ -22,15 +22,26 @@ Experiments (orchestrate the full run)
 Stats (aggregate pass rates, scores, comparisons)
 ```
 
-All entities are stored in SQLite and managed through the UI or REST API. Every entity type has presets you can load with one click, or seed all at once.
+Datasets and graders are stored in SQLite. Candidates are **markdown files** on disk — edit the `.md` file, click "Reload from Disk" in the UI. Presets for graders and datasets can be loaded with one click.
 
 ### The Core Loop
 
 1. A **Dataset** contains test cases: `{input, expectedOutput, context, metadata}`
-2. A **Candidate** defines how to produce output: either an LLM prompt template or an HTTP endpoint
+2. A **Candidate** is a markdown prompt file in `backend/prompts/` defining how to produce output (LLM prompt or HTTP endpoint)
 3. A **Grader** defines how to evaluate: exact match, LLM judge, semantic similarity, faithfulness, etc.
 4. An **Experiment** = `dataset × candidates × graders` — runs each test case through each candidate, then grades every output with every grader
-5. **Stats** show pass rates, scores, and deltas per grader and per candidate
+5. **Stats** show pass rates, weighted scores, and deltas per grader and per candidate
+
+### Weighted Grader Scoring
+
+Each prompt file specifies recommended graders with weights:
+
+```
+recommended_graders: faithfulness-strict:0.4, extraction-completeness:0.3, llm-judge-helpful:0.3
+grader_rationale: Faithfulness is highest — the full format must stay grounded.
+```
+
+The experiment stats endpoint computes both `avgScore` (equal-weight) and `weightedScore` (using the prompt's configured weights) per candidate. Without explicit weights, all graders default to `1.0` (equal weighting).
 
 Without candidates, experiments fall back to grading `expectedOutput` directly (useful for testing grader behavior).
 
@@ -75,16 +86,7 @@ This creates:
 - 4 datasets (math, geography, context-grounded Q&A, sentiment classification)
 - 14 graders (exact match, LLM judges, semantic similarity, faithfulness, regex, JSON schema, etc.)
 
-Then load candidate presets individually:
-
-```bash
-# Load all 6 candidate presets
-for id in qa-basic qa-context json-extractor classifier summarizer http-api; do
-  curl -X POST http://localhost:3021/api/presets/candidates/$id/load
-done
-```
-
-Or use the UI: go to each tab and click "Load Preset" dropdown.
+Prompts are already loaded from `backend/prompts/` on startup (6 included). Or use the UI: go to each tab and click "Load Preset" dropdown.
 
 ---
 
@@ -169,44 +171,42 @@ Go to **Graders** tab. 14 presets available:
 **Custom graders:**
 Create your own with any type. For LLM Judge, write a custom rubric describing pass/fail criteria.
 
-### Step 4: Create or Load Candidates
+### Step 4: Prompt Files (Candidates)
 
-Go to **Candidates** tab. A candidate defines **how to produce output** for each test case.
+Go to **Candidates** tab. Candidates are markdown files in `backend/prompts/` — a read-only view in the UI.
 
-**Two runner types:**
+**Prompt file format:**
+```markdown
+---
+name: Full Structured Analyst
+description: Comprehensive analysis with integrity rules
+runner: llm_prompt
+temperature: 0
+user_template: "{{input}}"
+recommended_graders: faithfulness-strict:0.4, extraction-completeness:0.3, llm-judge-helpful:0.3
+recommended_datasets: research-paper-extraction, context-qa
+grader_rationale: Faithfulness is highest — the full format must stay grounded.
+notes: Compare against analyst-citations for structured vs citation-focused output.
+---
+You are a technical analyst...
+```
 
-**LLM Prompt** (`llm_prompt`):
-- System prompt: instructions for the model
-- User prompt template: supports variable substitution:
-  - `{{input}}` — test case input
-  - `{{context}}` — test case context
-  - `{{expected}}` — expected output (useful for few-shot examples)
-  - `{{metadata.field}}` — dot-notation access to metadata JSON fields
-- Model config overrides: per-candidate provider, model, temperature, maxTokens
+**Template variables:** `{{input}}`, `{{context}}`, `{{expected}}`, `{{metadata.field}}`
 
-**HTTP Endpoint** (`http_endpoint`):
-- Endpoint URL: the API to call
-- Method: GET or POST
-- Headers: JSON object of custom headers
-- Body template: JSON with `{{variable}}` substitution
-- Response parsing: auto-extracts `output`, `response`, `text`, or `result` from JSON response
+**6 prompts included:**
 
-**6 presets available:**
+| Prompt | Type | Purpose |
+|--------|------|---------|
+| `analyst-full` | Analysis | Full structured (7 output sections) |
+| `analyst-citations` | Analysis | Citation-focused with bracket format |
+| `summarizer` | Summarization | Concise text summarization |
+| `json-extractor-strict` | Extraction | Grounded JSON extraction, temp 0 |
+| `json-extractor-loose` | Extraction | Inferential extraction, temp 0.3 |
+| `text-rewriter` | Rewriting | Style rewrite preserving meaning |
 
-| Preset | Type | Template | Best For |
-|--------|------|----------|----------|
-| `Q&A Basic` | llm_prompt | `{{input}}` | General knowledge |
-| `Q&A with Context` | llm_prompt | `Context:\n{{context}}\n\nQuestion: {{input}}` | Context-grounded Q&A |
-| `JSON Extractor` | llm_prompt | `{{input}}` (temp=0) | Structured extraction |
-| `Text Classifier` | llm_prompt | `{{input}}` (temp=0) | Classification tasks |
-| `Text Summarizer` | llm_prompt | `{{input}}` | Summarization quality |
-| `HTTP API Endpoint` | http_endpoint | POST to localhost:8080 | Testing real APIs |
+**To add a new prompt:** Create a `.md` file in `backend/prompts/` and click "Reload from Disk" in the UI. To edit, change the file and reload.
 
-**Testing candidates inline:**
-Each candidate has a "Test" button. Enter sample input, click play, see the output and latency. This lets you verify a candidate works before committing to a full experiment run.
-
-**Variant lineage:**
-Create a variant of an existing candidate to track prompt iteration. The variant gets a `parentId` linking back to the original, and a `variantLabel` describing what changed (e.g. "added chain-of-thought", "lowered temperature to 0").
+**Testing inline:** Each prompt has a "Test" button. Enter sample input, click play, see the output and latency.
 
 ### Step 5: Run an Experiment
 
@@ -305,7 +305,7 @@ GET /api/presets/candidates
 # Load a specific preset
 POST /api/presets/graders/exact-match-strict/load
 POST /api/presets/datasets/math-basic/load
-POST /api/presets/candidates/qa-basic/load
+POST /api/presets/candidates/analyst-full/load
 ```
 
 ### Available Presets
@@ -316,19 +316,19 @@ POST /api/presets/candidates/qa-basic/load
 - `context-qa` — 3 questions with provided context
 - `sentiment-classification` — 5 sentiment examples
 
-**Grader Presets** (14):
+**Grader Presets** (14+):
 - `exact-match-strict`, `exact-match-flexible`
 - `llm-judge-helpful`, `llm-judge-safety`
 - `semantic-high` (85%), `semantic-moderate` (70%)
 - `faithfulness-strict` (90%), `faithfulness-moderate` (70%)
 - `contains-all`, `contains-any`
-- `regex-pattern`
-- `json-schema-basic`
-- `answer-relevancy-default`
-- `context-relevancy-default`
+- `regex-pattern`, `no-injection-markers`
+- `json-schema-basic`, `json-extraction-schema`
+- `injection-resistance`, `extraction-completeness`
+- `answer-relevancy-default`, `context-relevancy-default`
 
-**Candidate Presets** (6):
-- `qa-basic`, `qa-context`, `json-extractor`, `classifier`, `summarizer`, `http-api`
+**Prompt Files** (6 in `backend/prompts/`):
+Loaded automatically on startup. See the Candidates tab or the `.md` files for details.
 
 ---
 
@@ -362,38 +362,13 @@ Interactive Swagger docs: `http://localhost:3021/api/docs`
 | PUT | `/graders/:id` | Update grader |
 | DELETE | `/graders/:id` | Delete grader |
 
-### Candidates
+### Prompts (Candidates — read-only, file-based)
 | Method | Path | Description |
 |--------|------|-------------|
-| GET | `/candidates` | List all candidates |
-| GET | `/candidates/:id` | Get candidate |
-| POST | `/candidates` | Create candidate (see body below) |
-| PUT | `/candidates/:id` | Update candidate |
-| DELETE | `/candidates/:id` | Delete candidate |
-| GET | `/candidates/:id/variants` | Get variant lineage |
-| POST | `/candidates/:id/test` | Test with `{input, context?, metadata?}` |
-
-**Create candidate body (LLM):**
-```json
-{
-  "name": "My Prompt",
-  "runnerType": "llm_prompt",
-  "systemPrompt": "You are helpful.",
-  "userPromptTemplate": "{{input}}",
-  "modelConfig": {"temperature": 0.5}
-}
-```
-
-**Create candidate body (HTTP):**
-```json
-{
-  "name": "My API",
-  "runnerType": "http_endpoint",
-  "endpointUrl": "https://my-api.com/predict",
-  "endpointMethod": "POST",
-  "endpointBodyTemplate": "{\"input\": \"{{input}}\"}"
-}
-```
+| GET | `/prompts` | List all loaded prompts |
+| GET | `/prompts/:id` | Get prompt by filename ID |
+| POST | `/prompts/:id/test` | Test with `{input, context?, metadata?}` |
+| POST | `/prompts/reload` | Re-read all .md files from disk |
 
 ### Experiments
 | Method | Path | Description |
@@ -412,10 +387,8 @@ Interactive Swagger docs: `http://localhost:3021/api/docs`
 |--------|------|-------------|
 | GET | `/presets/graders` | List grader presets |
 | GET | `/presets/datasets` | List dataset presets |
-| GET | `/presets/candidates` | List candidate presets |
 | POST | `/presets/graders/:id/load` | Create grader from preset |
 | POST | `/presets/datasets/:id/load` | Create dataset + cases from preset |
-| POST | `/presets/candidates/:id/load` | Create candidate from preset |
 | POST | `/presets/seed` | Load all grader + dataset presets |
 | POST | `/presets/synthetic/generate` | Generate test cases with LLM |
 | POST | `/presets/synthetic/dataset` | Generate full synthetic dataset |
@@ -440,8 +413,8 @@ Interactive Swagger docs: `http://localhost:3021/api/docs`
 curl -X POST localhost:3021/api/presets/datasets/context-qa/load
 curl -X POST localhost:3021/api/presets/graders/faithfulness-strict/load
 
-# 2. Create a context Q&A candidate
-curl -X POST localhost:3021/api/presets/candidates/qa-context/load
+# 2. Use the analyst-full candidate (already loaded from disk)
+# Or reload prompts: curl -X POST localhost:3021/api/prompts/reload
 
 # 3. Run experiment
 curl -X POST localhost:3021/api/experiments \
@@ -487,26 +460,62 @@ curl -X POST localhost:3021/api/experiments \
 │       ├── app/
 │       │   ├── datasets/        # Dataset + test case CRUD
 │       │   ├── graders/         # Grader CRUD + presets
-│       │   ├── candidates/      # Candidate CRUD + test panel
-│       │   ├── experiments/     # Run experiments + results
-│       │   ├── stats/           # Aggregate metrics
+│       │   ├── candidates/      # Read-only prompt viewer + test panel
+│       │   ├── experiments/     # Run experiments + results + weighted scores
 │       │   ├── settings/        # Runtime LLM config
 │       │   └── about/           # Docs and references
 │       ├── components/          # Navigation, ThemeProvider
 │       └── lib/                 # API client, types
-├── backend/                     # NestJS API
+├── backend/
+│   ├── prompts/                 # 6 markdown prompt files (candidates)
 │   └── src/
 │       ├── database/            # IDbAdapter interface + SQLite implementation
-│       ├── candidates/          # CRUD + CandidateRunnerService
-│       ├── experiments/         # Experiment orchestrator + SSE
-│       ├── eval-engine/         # Grader implementations
+│       ├── candidates/          # PromptLoaderService + CandidateRunnerService
+│       ├── experiments/         # Experiment orchestrator + SSE + weighted stats
+│       ├── eval-engine/         # Grader implementations (9 types)
 │       ├── graders/             # Grader CRUD
 │       ├── llm/                 # Provider-agnostic LLM layer
-│       ├── presets/             # Seed data + synthetic generation
+│       ├── presets/             # Seed graders/datasets + synthetic generation
 │       ├── settings/            # Runtime configuration
 │       └── main.ts              # App bootstrap, CORS, Swagger
-├── ARCHITECTURE.md              # Design decisions + references
 └── README.md                    # This file
 ```
 
-See [ARCHITECTURE.md](./ARCHITECTURE.md) for design rationale and diagrams.
+---
+
+## Testing
+
+```bash
+cd backend
+npm test                                      # All tests
+npm test -- --testPathPattern=candidates       # Prompt loader + template utils
+```
+
+Tests cover:
+- **template-utils**: variable substitution, dot notation, edge cases
+- **prompt-loader**: file loading, weight parsing, rationale parsing, findMany
+
+---
+
+## FAQ
+
+**How do I add a new prompt?**
+Create a `.md` file in `backend/prompts/` with frontmatter (see format above), then click "Reload from Disk" in the Candidates tab.
+
+**How do I change a prompt?**
+Edit the `.md` file directly and click "Reload from Disk". No database migration needed.
+
+**What are grader weights?**
+Weights control how much each grader contributes to a candidate's weighted aggregate score. Format: `grader-id:0.4`. Higher weight = more influence. Default weight is `1.0` if not specified.
+
+**How does the weighted score work?**
+`weightedScore = sum(graderAvgScore * graderWeight) / sum(graderWeights)`. When all weights are equal, `weightedScore == avgScore`.
+
+**Can I use Ollama / local models?**
+Yes. Go to Settings, set provider to "ollama", set the base URL (default `http://localhost:11434`), and select your model.
+
+**How do I run an A/B test?**
+Create an experiment with 2+ candidates, same dataset and graders. After completion, use the compare endpoint: `GET /api/experiments/:id/compare?baseline=X&challenger=Y`
+
+**What grader should I use?**
+Each prompt file includes `recommended_graders` with weights and a `grader_rationale` explaining why. Start there.
