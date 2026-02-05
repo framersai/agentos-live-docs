@@ -1,867 +1,1219 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { WunderlandAPIError, wunderlandAPI } from '@/lib/wunderland-api';
 
 const HEXACO_TRAITS = [
-    { key: 'honestyHumility', label: 'Honesty-Humility', description: 'Fairness, sincerity, and modesty in interactions' },
-    { key: 'emotionality', label: 'Emotionality', description: 'Empathy, anxiety sensitivity, and emotional awareness' },
-    { key: 'extraversion', label: 'Extraversion', description: 'Social boldness, liveliness, and sociability' },
-    { key: 'agreeableness', label: 'Agreeableness', description: 'Patience, flexibility, and tolerance' },
-    { key: 'conscientiousness', label: 'Conscientiousness', description: 'Organization, diligence, and perfectionism' },
-    { key: 'openness', label: 'Openness to Experience', description: 'Creativity, unconventionality, and intellectual curiosity' },
+  {
+    key: 'honesty',
+    label: 'Honesty-Humility',
+    description: 'Fairness, sincerity, and modesty in interactions',
+  },
+  {
+    key: 'emotionality',
+    label: 'Emotionality',
+    description: 'Empathy, anxiety sensitivity, and emotional awareness',
+  },
+  {
+    key: 'extraversion',
+    label: 'Extraversion',
+    description: 'Social boldness, liveliness, and sociability',
+  },
+  {
+    key: 'agreeableness',
+    label: 'Agreeableness',
+    description: 'Patience, flexibility, and tolerance',
+  },
+  {
+    key: 'conscientiousness',
+    label: 'Conscientiousness',
+    description: 'Organization, diligence, and perfectionism',
+  },
+  {
+    key: 'openness',
+    label: 'Openness to Experience',
+    description: 'Creativity, unconventionality, and intellectual curiosity',
+  },
 ];
 
 const AVATAR_COLORS = [
-    { name: 'Cyan', color: '#00f5ff' },
-    { name: 'Violet', color: '#8b5cf6' },
-    { name: 'Magenta', color: '#ff00f5' },
-    { name: 'Gold', color: '#ffd700' },
-    { name: 'Emerald', color: '#10ffb0' },
-    { name: 'Coral', color: '#ff6b6b' },
+  { name: 'Cyan', color: '#00f5ff' },
+  { name: 'Violet', color: '#8b5cf6' },
+  { name: 'Magenta', color: '#ff00f5' },
+  { name: 'Gold', color: '#ffd700' },
+  { name: 'Emerald', color: '#10ffb0' },
+  { name: 'Coral', color: '#ff6b6b' },
 ];
 
 const TOOLS = [
-    { key: 'web_search', label: 'Web Search', description: 'Search the internet for information' },
-    { key: 'code_execution', label: 'Code Execution', description: 'Execute code in sandboxed environments' },
-    { key: 'file_access', label: 'File Access', description: 'Read and write files in workspace' },
-    { key: 'api_calls', label: 'API Calls', description: 'Make HTTP requests to external services' },
-    { key: 'database_query', label: 'Database Query', description: 'Query structured data stores' },
+  { key: 'web_search', label: 'Web Search', description: 'Search the internet for information' },
+  {
+    key: 'code_execution',
+    label: 'Code Execution',
+    description: 'Execute code in sandboxed environments',
+  },
+  { key: 'file_access', label: 'File Access', description: 'Read and write files in workspace' },
+  { key: 'api_calls', label: 'API Calls', description: 'Make HTTP requests to external services' },
+  { key: 'database_query', label: 'Database Query', description: 'Query structured data stores' },
 ];
 
 const SECURITY_OPTIONS = [
-    { key: 'preLLMClassifier', label: 'Pre-LLM Classifier', description: 'Pattern-based injection and jailbreak detection before LLM processing' },
-    { key: 'dualLLMAuditor', label: 'Dual-LLM Auditor', description: 'Separate auditor model verifies primary model outputs' },
-    { key: 'outputSigning', label: 'Output Signing', description: 'HMAC-SHA256 cryptographic signing of all agent outputs' },
-    { key: 'provenanceChain', label: 'Provenance Chain', description: 'Full intent chain audit trail for every action' },
+  {
+    key: 'preLLMClassifier',
+    label: 'Pre-LLM Classifier',
+    description: 'Pattern-based injection and jailbreak detection before LLM processing',
+  },
+  {
+    key: 'dualLLMAuditor',
+    label: 'Dual-LLM Auditor',
+    description: 'Separate auditor model verifies primary model outputs',
+  },
+  {
+    key: 'outputSigning',
+    label: 'Output Signing',
+    description: 'HMAC-SHA256 cryptographic signing of all agent outputs',
+  },
+  {
+    key: 'provenanceChain',
+    label: 'Provenance Chain',
+    description: 'Full intent chain audit trail for every action',
+  },
 ];
 
 const STEP_LABELS = ['Identity', 'Personality', 'Capabilities', 'Security', 'Review'];
 
 function RadarChart({ traits }: { traits: Record<string, number> }) {
-    const center = 100;
-    const radius = 75;
-    const traitKeys = HEXACO_TRAITS.map(t => t.key);
-    const angleStep = (2 * Math.PI) / traitKeys.length;
+  const center = 100;
+  const radius = 75;
+  const traitKeys = HEXACO_TRAITS.map((t) => t.key);
+  const angleStep = (2 * Math.PI) / traitKeys.length;
 
-    const getPoint = (index: number, value: number) => {
-        const angle = angleStep * index - Math.PI / 2;
-        return {
-            x: center + radius * value * Math.cos(angle),
-            y: center + radius * value * Math.sin(angle),
-        };
+  const getPoint = (index: number, value: number) => {
+    const angle = angleStep * index - Math.PI / 2;
+    return {
+      x: center + radius * value * Math.cos(angle),
+      y: center + radius * value * Math.sin(angle),
     };
+  };
 
-    const gridLevels = [0.2, 0.4, 0.6, 0.8, 1.0];
+  const gridLevels = [0.2, 0.4, 0.6, 0.8, 1.0];
 
-    const shapePoints = traitKeys
-        .map((key, i) => {
-            const p = getPoint(i, traits[key] ?? 0.5);
+  const shapePoints = traitKeys
+    .map((key, i) => {
+      const p = getPoint(i, traits[key] ?? 0.5);
+      return `${p.x},${p.y}`;
+    })
+    .join(' ');
+
+  const labelOffset = 14;
+
+  return (
+    <svg viewBox="0 0 200 200" style={{ width: '100%', maxWidth: 260 }}>
+      {/* Grid rings */}
+      {gridLevels.map((level) => {
+        const points = traitKeys
+          .map((_, i) => {
+            const p = getPoint(i, level);
             return `${p.x},${p.y}`;
-        })
-        .join(' ');
+          })
+          .join(' ');
+        return (
+          <polygon
+            key={level}
+            points={points}
+            fill="none"
+            stroke="rgba(136,136,160,0.15)"
+            strokeWidth="0.5"
+          />
+        );
+      })}
 
-    const labelOffset = 14;
+      {/* Axis lines */}
+      {traitKeys.map((_, i) => {
+        const p = getPoint(i, 1);
+        return (
+          <line
+            key={i}
+            x1={center}
+            y1={center}
+            x2={p.x}
+            y2={p.y}
+            stroke="rgba(136,136,160,0.1)"
+            strokeWidth="0.5"
+          />
+        );
+      })}
 
-    return (
-        <svg viewBox="0 0 200 200" style={{ width: '100%', maxWidth: 260 }}>
-            {/* Grid rings */}
-            {gridLevels.map(level => {
-                const points = traitKeys
-                    .map((_, i) => {
-                        const p = getPoint(i, level);
-                        return `${p.x},${p.y}`;
-                    })
-                    .join(' ');
-                return (
-                    <polygon
-                        key={level}
-                        points={points}
-                        fill="none"
-                        stroke="rgba(136,136,160,0.15)"
-                        strokeWidth="0.5"
-                    />
-                );
-            })}
+      {/* Data shape */}
+      <polygon
+        points={shapePoints}
+        fill="rgba(0,245,255,0.12)"
+        stroke="#00f5ff"
+        strokeWidth="1.5"
+        style={{ filter: 'drop-shadow(0 0 4px rgba(0,245,255,0.3))' }}
+      />
 
-            {/* Axis lines */}
-            {traitKeys.map((_, i) => {
-                const p = getPoint(i, 1);
-                return (
-                    <line
-                        key={i}
-                        x1={center}
-                        y1={center}
-                        x2={p.x}
-                        y2={p.y}
-                        stroke="rgba(136,136,160,0.1)"
-                        strokeWidth="0.5"
-                    />
-                );
-            })}
+      {/* Data points */}
+      {traitKeys.map((key, i) => {
+        const p = getPoint(i, traits[key] ?? 0.5);
+        return (
+          <circle
+            key={key}
+            cx={p.x}
+            cy={p.y}
+            r="3"
+            fill="#00f5ff"
+            style={{ filter: 'drop-shadow(0 0 3px rgba(0,245,255,0.5))' }}
+          />
+        );
+      })}
 
-            {/* Data shape */}
-            <polygon
-                points={shapePoints}
-                fill="rgba(0,245,255,0.12)"
-                stroke="#00f5ff"
-                strokeWidth="1.5"
-                style={{ filter: 'drop-shadow(0 0 4px rgba(0,245,255,0.3))' }}
-            />
-
-            {/* Data points */}
-            {traitKeys.map((key, i) => {
-                const p = getPoint(i, traits[key] ?? 0.5);
-                return (
-                    <circle
-                        key={key}
-                        cx={p.x}
-                        cy={p.y}
-                        r="3"
-                        fill="#00f5ff"
-                        style={{ filter: 'drop-shadow(0 0 3px rgba(0,245,255,0.5))' }}
-                    />
-                );
-            })}
-
-            {/* Labels */}
-            {HEXACO_TRAITS.map((trait, i) => {
-                const p = getPoint(i, 1);
-                const dx = p.x - center;
-                const dy = p.y - center;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                const nx = dx / dist;
-                const ny = dy / dist;
-                const lx = p.x + nx * labelOffset;
-                const ly = p.y + ny * labelOffset;
-                const anchor = Math.abs(nx) < 0.1 ? 'middle' : nx > 0 ? 'start' : 'end';
-                return (
-                    <text
-                        key={trait.key}
-                        x={lx}
-                        y={ly}
-                        textAnchor={anchor}
-                        dominantBaseline="middle"
-                        fill="#8888a0"
-                        fontFamily="'IBM Plex Mono', monospace"
-                        fontSize="8"
-                        letterSpacing="0.05em"
-                    >
-                        {trait.label.charAt(0)}
-                    </text>
-                );
-            })}
-        </svg>
-    );
+      {/* Labels */}
+      {HEXACO_TRAITS.map((trait, i) => {
+        const p = getPoint(i, 1);
+        const dx = p.x - center;
+        const dy = p.y - center;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const nx = dx / dist;
+        const ny = dy / dist;
+        const lx = p.x + nx * labelOffset;
+        const ly = p.y + ny * labelOffset;
+        const anchor = Math.abs(nx) < 0.1 ? 'middle' : nx > 0 ? 'start' : 'end';
+        return (
+          <text
+            key={trait.key}
+            x={lx}
+            y={ly}
+            textAnchor={anchor}
+            dominantBaseline="middle"
+            fill="#8888a0"
+            fontFamily="'IBM Plex Mono', monospace"
+            fontSize="8"
+            letterSpacing="0.05em"
+          >
+            {trait.label.charAt(0)}
+          </text>
+        );
+      })}
+    </svg>
+  );
 }
 
 export default function RegisterPage() {
-    const [step, setStep] = useState(1);
+  const [step, setStep] = useState(1);
+  const router = useRouter();
 
-    // Step 1: Identity
-    const [name, setName] = useState('');
-    const [bio, setBio] = useState('');
-    const [avatarColor, setAvatarColor] = useState('#00f5ff');
+  // Step 1: Identity
+  const [seedId, setSeedId] = useState('');
+  const [name, setName] = useState('');
+  const [bio, setBio] = useState('');
+  const [avatarColor, setAvatarColor] = useState('#00f5ff');
 
-    // Step 2: Personality
-    const [traits, setTraits] = useState<Record<string, number>>({
-        honestyHumility: 0.7,
-        emotionality: 0.5,
-        extraversion: 0.6,
-        agreeableness: 0.65,
-        conscientiousness: 0.8,
-        openness: 0.75,
-    });
+  // Step 2: Personality
+  const [traits, setTraits] = useState<Record<string, number>>({
+    honesty: 0.7,
+    emotionality: 0.5,
+    extraversion: 0.6,
+    agreeableness: 0.65,
+    conscientiousness: 0.8,
+    openness: 0.75,
+  });
 
-    // Step 3: Capabilities
-    const [systemPrompt, setSystemPrompt] = useState('');
-    const [selectedTools, setSelectedTools] = useState<string[]>(['web_search']);
+  // Step 3: Capabilities
+  const [systemPrompt, setSystemPrompt] = useState('');
+  const [selectedTools, setSelectedTools] = useState<string[]>(['web_search']);
 
-    // Step 4: Security
-    const [security, setSecurity] = useState<Record<string, boolean>>({
-        preLLMClassifier: true,
-        dualLLMAuditor: true,
-        outputSigning: true,
-        provenanceChain: false,
-    });
-    const [storagePolicy, setStoragePolicy] = useState('encrypted');
+  // Step 4: Security
+  const [security, setSecurity] = useState<Record<string, boolean>>({
+    preLLMClassifier: true,
+    dualLLMAuditor: true,
+    outputSigning: true,
+    provenanceChain: false,
+  });
+  const [storagePolicy, setStoragePolicy] = useState('encrypted');
 
-    // Validation
-    const [errors, setErrors] = useState<Record<string, string>>({});
+  // Validation
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
-    const validateStep = (s: number): boolean => {
-        const newErrors: Record<string, string> = {};
-        if (s === 1) {
-            if (!name.trim()) newErrors.name = 'Agent name is required';
-            if (name.trim().length > 0 && name.trim().length < 2) newErrors.name = 'Name must be at least 2 characters';
-        }
-        if (s === 3) {
-            if (!systemPrompt.trim()) newErrors.systemPrompt = 'System prompt is required';
-        }
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+  const validateStep = (s: number): boolean => {
+    const newErrors: Record<string, string> = {};
+
+    const validateIdentity = () => {
+      if (!seedId.trim()) newErrors.seedId = 'Seed ID is required';
+      const normalizedSeed = seedId.trim();
+      if (normalizedSeed.length > 0 && normalizedSeed.length < 3)
+        newErrors.seedId = 'Seed ID must be at least 3 characters';
+      if (normalizedSeed.length > 64) newErrors.seedId = 'Seed ID must be 64 characters or fewer';
+      if (/\s/.test(normalizedSeed)) newErrors.seedId = 'Seed ID cannot contain spaces';
+
+      if (!name.trim()) newErrors.name = 'Agent name is required';
+      if (name.trim().length > 0 && name.trim().length < 2)
+        newErrors.name = 'Name must be at least 2 characters';
     };
 
-    const handleNext = () => {
-        if (validateStep(step)) {
-            setStep(Math.min(step + 1, 5));
-        }
+    const validateCapabilities = () => {
+      if (!systemPrompt.trim()) newErrors.systemPrompt = 'System prompt is required';
     };
 
-    const handleBack = () => {
-        setErrors({});
-        setStep(Math.max(step - 1, 1));
-    };
+    if (s === 1 || s === 5) validateIdentity();
+    if (s === 3 || s === 5) validateCapabilities();
 
-    const toggleTool = (key: string) => {
-        setSelectedTools(prev =>
-            prev.includes(key)
-                ? prev.filter(t => t !== key)
-                : [...prev, key]
-        );
-    };
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
-    const toggleSecurity = (key: string) => {
-        setSecurity(prev => ({ ...prev, [key]: !prev[key] }));
-    };
+  const handleNext = () => {
+    if (validateStep(step)) {
+      setStep(Math.min(step + 1, 5));
+    }
+  };
 
-    const handleRegister = () => {
-        alert('Agent registration submitted! (Demo mode - no API call made)');
-    };
+  const handleBack = () => {
+    setErrors({});
+    setStep(Math.max(step - 1, 1));
+  };
 
-    return (
-        <div>
-            <div className="wunderland-header">
-                <h2 className="wunderland-header__title">Register New Agent</h2>
-                <p className="wunderland-header__subtitle">
-                    Deploy an autonomous agent with HEXACO personality, security pipeline, and tool access
-                </p>
-            </div>
-
-            {/* Step Progress Indicator */}
-            <div className="register-form__progress">
-                {STEP_LABELS.map((label, i) => {
-                    const stepNum = i + 1;
-                    const isCompleted = step > stepNum;
-                    const isActive = step === stepNum;
-                    return (
-                        <span key={label} style={{ display: 'contents' }}>
-                            <button
-                                onClick={() => {
-                                    if (isCompleted) setStep(stepNum);
-                                }}
-                                style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    alignItems: 'center',
-                                    gap: '0.25rem',
-                                    background: 'none',
-                                    border: 'none',
-                                    cursor: isCompleted ? 'pointer' : 'default',
-                                }}
-                            >
-                                <span
-                                    className={`register-form__progress-dot${isActive ? ' register-form__progress-dot--active' : ''}${isCompleted ? ' register-form__progress-dot--completed' : ''}`}
-                                />
-                                <span
-                                    style={{
-                                        fontFamily: "'IBM Plex Mono', monospace",
-                                        fontSize: '0.5625rem',
-                                        textTransform: 'uppercase',
-                                        letterSpacing: '0.08em',
-                                        color: isActive ? '#00f5ff' : isCompleted ? '#10ffb0' : '#505068',
-                                    }}
-                                >
-                                    {label}
-                                </span>
-                            </button>
-                            {i < STEP_LABELS.length - 1 && (
-                                <span
-                                    className={`register-form__progress-line${isCompleted ? ' register-form__progress-line--completed' : ''}`}
-                                />
-                            )}
-                        </span>
-                    );
-                })}
-            </div>
-
-            <div className="register-form">
-                {/* Step 1: Identity */}
-                {step === 1 && (
-                    <div className="register-form__step">
-                        <div className="register-form__step-header">
-                            <div className="register-form__step-number">1</div>
-                            <div>
-                                <div className="register-form__step-title">Identity</div>
-                                <div className="register-form__step-description">Name, bio, and visual identity for your agent</div>
-                            </div>
-                        </div>
-
-                        <div className="register-form__field">
-                            <label className="register-form__label">Agent Name *</label>
-                            <input
-                                type="text"
-                                className="register-form__input"
-                                placeholder="e.g., Nova-7, ArchiveBot, PolicyWatcher..."
-                                value={name}
-                                onChange={e => setName(e.target.value)}
-                            />
-                            {errors.name && (
-                                <div style={{ color: '#ff6b6b', fontSize: '0.75rem', marginTop: '0.25rem', fontFamily: "'IBM Plex Mono', monospace" }}>
-                                    {errors.name}
-                                </div>
-                            )}
-                        </div>
-
-                        <div className="register-form__field">
-                            <label className="register-form__label">Bio</label>
-                            <textarea
-                                className="register-form__textarea"
-                                placeholder="Describe your agent's purpose and capabilities..."
-                                value={bio}
-                                onChange={e => setBio(e.target.value)}
-                                rows={4}
-                            />
-                        </div>
-
-                        <div className="register-form__field">
-                            <label className="register-form__label">Avatar Color</label>
-                            <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginTop: '0.5rem' }}>
-                                {AVATAR_COLORS.map(ac => (
-                                    <button
-                                        key={ac.color}
-                                        onClick={() => setAvatarColor(ac.color)}
-                                        title={ac.name}
-                                        style={{
-                                            width: 48,
-                                            height: 48,
-                                            borderRadius: '50%',
-                                            background: ac.color,
-                                            border: avatarColor === ac.color
-                                                ? '3px solid #fff'
-                                                : '3px solid transparent',
-                                            cursor: 'pointer',
-                                            boxShadow: avatarColor === ac.color
-                                                ? `0 0 20px ${ac.color}`
-                                                : 'none',
-                                            transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
-                                            position: 'relative',
-                                        }}
-                                    />
-                                ))}
-                            </div>
-                            <div style={{ marginTop: '0.5rem', fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.6875rem', color: '#505068' }}>
-                                Selected: {AVATAR_COLORS.find(c => c.color === avatarColor)?.name}
-                            </div>
-                        </div>
-
-                        {/* Preview */}
-                        <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '1rem',
-                            padding: '1rem',
-                            marginTop: '1.5rem',
-                            background: 'rgba(255,255,255,0.02)',
-                            borderRadius: '8px',
-                            border: '1px solid rgba(255,255,255,0.04)',
-                        }}>
-                            <div style={{
-                                width: 52,
-                                height: 52,
-                                borderRadius: '50%',
-                                background: avatarColor,
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                fontFamily: "'Outfit', sans-serif",
-                                fontWeight: 700,
-                                fontSize: '1.25rem',
-                                color: '#030305',
-                                flexShrink: 0,
-                            }}>
-                                {name ? name.charAt(0).toUpperCase() : '?'}
-                            </div>
-                            <div>
-                                <div style={{ fontWeight: 600, fontSize: '1rem', fontFamily: "'Outfit', sans-serif" }}>
-                                    {name || 'Agent Name'}
-                                </div>
-                                <div style={{ fontSize: '0.8125rem', color: '#8888a0', marginTop: '0.125rem' }}>
-                                    {bio ? (bio.length > 80 ? bio.slice(0, 80) + '...' : bio) : 'No bio provided'}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {/* Step 2: Personality */}
-                {step === 2 && (
-                    <div className="register-form__step">
-                        <div className="register-form__step-header">
-                            <div className="register-form__step-number">2</div>
-                            <div>
-                                <div className="register-form__step-title">Personality</div>
-                                <div className="register-form__step-description">HEXACO personality traits shape agent behavior and communication style</div>
-                            </div>
-                        </div>
-
-                        {HEXACO_TRAITS.map(trait => (
-                            <div className="trait-slider" key={trait.key}>
-                                <div className="trait-slider__header">
-                                    <span className="trait-slider__label">{trait.label}</span>
-                                    <span className="trait-slider__value">{(traits[trait.key] ?? 0.5).toFixed(2)}</span>
-                                </div>
-                                <div className="trait-slider__track" style={{ position: 'relative' }}>
-                                    <div
-                                        className="trait-slider__fill"
-                                        style={{ width: `${(traits[trait.key] ?? 0.5) * 100}%` }}
-                                    />
-                                    <input
-                                        type="range"
-                                        min="0"
-                                        max="1"
-                                        step="0.01"
-                                        value={traits[trait.key] ?? 0.5}
-                                        onChange={e => setTraits(prev => ({ ...prev, [trait.key]: parseFloat(e.target.value) }))}
-                                        style={{
-                                            position: 'absolute',
-                                            top: 0,
-                                            left: 0,
-                                            width: '100%',
-                                            height: '100%',
-                                            opacity: 0,
-                                            cursor: 'pointer',
-                                            margin: 0,
-                                        }}
-                                    />
-                                </div>
-                                <div className="trait-slider__description">{trait.description}</div>
-                            </div>
-                        ))}
-
-                        {/* Radar Chart Preview */}
-                        <div style={{
-                            marginTop: '1.5rem',
-                            padding: '1.5rem',
-                            background: 'linear-gradient(145deg, rgba(8,8,16,0.8), rgba(8,8,16,1))',
-                            borderRadius: '8px',
-                            border: '1px solid rgba(255,255,255,0.04)',
-                            textAlign: 'center',
-                        }}>
-                            <div style={{
-                                fontFamily: "'IBM Plex Mono', monospace",
-                                fontSize: '0.625rem',
-                                color: '#505068',
-                                textTransform: 'uppercase',
-                                letterSpacing: '0.12em',
-                                marginBottom: '1rem',
-                            }}>
-                                Personality Radar Preview
-                            </div>
-                            <RadarChart traits={traits} />
-                            <div style={{
-                                display: 'flex',
-                                flexWrap: 'wrap',
-                                gap: '0.5rem',
-                                justifyContent: 'center',
-                                marginTop: '0.75rem',
-                            }}>
-                                {HEXACO_TRAITS.map(t => (
-                                    <span key={t.key} style={{
-                                        fontFamily: "'IBM Plex Mono', monospace",
-                                        fontSize: '0.5625rem',
-                                        color: '#505068',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '0.25rem',
-                                    }}>
-                                        <span style={{
-                                            width: 6,
-                                            height: 6,
-                                            borderRadius: '50%',
-                                            background: '#00f5ff',
-                                            display: 'inline-block',
-                                        }} />
-                                        {t.label.charAt(0)} = {t.label}
-                                    </span>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {/* Step 3: Capabilities */}
-                {step === 3 && (
-                    <div className="register-form__step">
-                        <div className="register-form__step-header">
-                            <div className="register-form__step-number">3</div>
-                            <div>
-                                <div className="register-form__step-title">Capabilities</div>
-                                <div className="register-form__step-description">System prompt and allowed tools for your agent</div>
-                            </div>
-                        </div>
-
-                        <div className="register-form__field">
-                            <label className="register-form__label">System Prompt *</label>
-                            <textarea
-                                className="register-form__textarea"
-                                placeholder="You are an autonomous research agent that monitors academic papers and summarizes key findings. You operate with high conscientiousness and prioritize accuracy over speed..."
-                                value={systemPrompt}
-                                onChange={e => setSystemPrompt(e.target.value)}
-                                rows={6}
-                            />
-                            {errors.systemPrompt && (
-                                <div style={{ color: '#ff6b6b', fontSize: '0.75rem', marginTop: '0.25rem', fontFamily: "'IBM Plex Mono', monospace" }}>
-                                    {errors.systemPrompt}
-                                </div>
-                            )}
-                        </div>
-
-                        <div className="register-form__field">
-                            <label className="register-form__label">Allowed Tools</label>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.5rem' }}>
-                                {TOOLS.map(tool => {
-                                    const isSelected = selectedTools.includes(tool.key);
-                                    return (
-                                        <button
-                                            key={tool.key}
-                                            onClick={() => toggleTool(tool.key)}
-                                            style={{
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: '0.75rem',
-                                                padding: '0.75rem 1rem',
-                                                background: isSelected ? 'rgba(0,245,255,0.05)' : 'linear-gradient(145deg, rgba(8,8,16,0.8), rgba(8,8,16,1))',
-                                                border: isSelected ? '1px solid rgba(0,245,255,0.2)' : '1px solid rgba(255,255,255,0.04)',
-                                                borderRadius: '8px',
-                                                cursor: 'pointer',
-                                                textAlign: 'left',
-                                                color: 'inherit',
-                                                transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
-                                            }}
-                                        >
-                                            <span style={{
-                                                width: 20,
-                                                height: 20,
-                                                borderRadius: '4px',
-                                                border: isSelected ? '2px solid #00f5ff' : '2px solid #1c1c28',
-                                                background: isSelected ? 'rgba(0,245,255,0.2)' : 'transparent',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                                flexShrink: 0,
-                                                color: '#00f5ff',
-                                                fontSize: '0.75rem',
-                                            }}>
-                                                {isSelected && (
-                                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                                                        <polyline points="20 6 9 17 4 12" />
-                                                    </svg>
-                                                )}
-                                            </span>
-                                            <div>
-                                                <div style={{ fontWeight: 500, fontSize: '0.9375rem' }}>{tool.label}</div>
-                                                <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.6875rem', color: '#505068', marginTop: '0.125rem' }}>
-                                                    {tool.description}
-                                                </div>
-                                            </div>
-                                        </button>
-                                    );
-                                })}
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {/* Step 4: Security */}
-                {step === 4 && (
-                    <div className="register-form__step">
-                        <div className="register-form__step-header">
-                            <div className="register-form__step-number">4</div>
-                            <div>
-                                <div className="register-form__step-title">Security</div>
-                                <div className="register-form__step-description">Configure the 3-layer security pipeline and storage policy</div>
-                            </div>
-                        </div>
-
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                            {SECURITY_OPTIONS.map(opt => (
-                                <div key={opt.key} style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'space-between',
-                                    padding: '1rem 1.25rem',
-                                    background: 'linear-gradient(145deg, #151520, #121218)',
-                                    borderRadius: '8px',
-                                    border: '1px solid rgba(255,255,255,0.04)',
-                                }}>
-                                    <div>
-                                        <div style={{ fontWeight: 600, fontSize: '0.9375rem', marginBottom: '0.125rem' }}>
-                                            {opt.label}
-                                        </div>
-                                        <div style={{ fontSize: '0.8125rem', color: '#8888a0' }}>
-                                            {opt.description}
-                                        </div>
-                                    </div>
-                                    <button
-                                        onClick={() => toggleSecurity(opt.key)}
-                                        style={{
-                                            width: 48,
-                                            height: 26,
-                                            borderRadius: 13,
-                                            background: security[opt.key] ? 'rgba(0,245,255,0.2)' : 'linear-gradient(145deg, rgba(8,8,16,0.8), rgba(8,8,16,1))',
-                                            border: security[opt.key] ? '1px solid rgba(0,245,255,0.3)' : '1px solid rgba(255,255,255,0.04)',
-                                            cursor: 'pointer',
-                                            position: 'relative',
-                                            flexShrink: 0,
-                                            transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
-                                        }}
-                                    >
-                                        <span style={{
-                                            width: 20,
-                                            height: 20,
-                                            borderRadius: '50%',
-                                            background: security[opt.key] ? '#00f5ff' : '#505068',
-                                            position: 'absolute',
-                                            top: 2,
-                                            left: security[opt.key] ? 25 : 3,
-                                            transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
-                                            boxShadow: security[opt.key] ? '0 0 12px rgba(0,245,255,0.4)' : 'none',
-                                        }} />
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
-
-                        <div className="register-form__field" style={{ marginTop: '1.5rem' }}>
-                            <label className="register-form__label">Storage Policy</label>
-                            <select
-                                className="register-form__input"
-                                value={storagePolicy}
-                                onChange={e => setStoragePolicy(e.target.value)}
-                                style={{
-                                    appearance: 'none',
-                                    cursor: 'pointer',
-                                    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238888a0' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`,
-                                    backgroundRepeat: 'no-repeat',
-                                    backgroundPosition: 'right 12px center',
-                                    paddingRight: '2rem',
-                                }}
-                            >
-                                <option value="sealed">Sealed - Immutable after creation</option>
-                                <option value="encrypted">Encrypted - AES-256 at rest</option>
-                                <option value="public">Public - Open and auditable</option>
-                            </select>
-                        </div>
-                    </div>
-                )}
-
-                {/* Step 5: Review */}
-                {step === 5 && (
-                    <div className="register-form__step">
-                        <div className="register-form__step-header">
-                            <div className="register-form__step-number">5</div>
-                            <div>
-                                <div className="register-form__step-title">Review</div>
-                                <div className="register-form__step-description">Verify your agent configuration before deployment</div>
-                            </div>
-                        </div>
-
-                        {/* Identity Review */}
-                        <div style={{ marginBottom: '1.5rem' }}>
-                            <div style={{
-                                fontFamily: "'IBM Plex Mono', monospace",
-                                fontSize: '0.6875rem',
-                                color: '#00f5ff',
-                                textTransform: 'uppercase',
-                                letterSpacing: '0.12em',
-                                marginBottom: '0.75rem',
-                            }}>
-                                Identity
-                            </div>
-                            <div style={{
-                                padding: '1rem',
-                                background: 'linear-gradient(145deg, rgba(8,8,16,0.8), rgba(8,8,16,1))',
-                                borderRadius: '8px',
-                                border: '1px solid rgba(255,255,255,0.04)',
-                            }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                    <div style={{
-                                        width: 44,
-                                        height: 44,
-                                        borderRadius: '50%',
-                                        background: avatarColor,
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        fontWeight: 700,
-                                        color: '#030305',
-                                        flexShrink: 0,
-                                    }}>
-                                        {name ? name.charAt(0).toUpperCase() : '?'}
-                                    </div>
-                                    <div>
-                                        <div style={{ fontWeight: 600 }}>{name || 'Unnamed Agent'}</div>
-                                        <div style={{ fontSize: '0.8125rem', color: '#8888a0' }}>{bio || 'No bio'}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Personality Review */}
-                        <div style={{ marginBottom: '1.5rem' }}>
-                            <div style={{
-                                fontFamily: "'IBM Plex Mono', monospace",
-                                fontSize: '0.6875rem',
-                                color: '#00f5ff',
-                                textTransform: 'uppercase',
-                                letterSpacing: '0.12em',
-                                marginBottom: '0.75rem',
-                            }}>
-                                HEXACO Personality
-                            </div>
-                            <div style={{
-                                padding: '1rem',
-                                background: 'linear-gradient(145deg, rgba(8,8,16,0.8), rgba(8,8,16,1))',
-                                borderRadius: '8px',
-                                border: '1px solid rgba(255,255,255,0.04)',
-                            }}>
-                                {HEXACO_TRAITS.map(t => (
-                                    <div key={t.key} style={{
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        padding: '0.375rem 0',
-                                        borderBottom: '1px solid rgba(255,255,255,0.03)',
-                                    }}>
-                                        <span style={{ color: '#8888a0', fontSize: '0.875rem' }}>{t.label}</span>
-                                        <span style={{ fontWeight: 600, fontSize: '0.875rem', fontFamily: "'IBM Plex Mono', monospace" }}>
-                                            {(traits[t.key] ?? 0.5).toFixed(2)}
-                                        </span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Capabilities Review */}
-                        <div style={{ marginBottom: '1.5rem' }}>
-                            <div style={{
-                                fontFamily: "'IBM Plex Mono', monospace",
-                                fontSize: '0.6875rem',
-                                color: '#00f5ff',
-                                textTransform: 'uppercase',
-                                letterSpacing: '0.12em',
-                                marginBottom: '0.75rem',
-                            }}>
-                                Capabilities
-                            </div>
-                            <div style={{
-                                padding: '1rem',
-                                background: 'linear-gradient(145deg, rgba(8,8,16,0.8), rgba(8,8,16,1))',
-                                borderRadius: '8px',
-                                border: '1px solid rgba(255,255,255,0.04)',
-                            }}>
-                                <div style={{
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    padding: '0.375rem 0',
-                                    borderBottom: '1px solid rgba(255,255,255,0.03)',
-                                }}>
-                                    <span style={{ color: '#8888a0', fontSize: '0.875rem' }}>System Prompt</span>
-                                    <span style={{ fontSize: '0.875rem', maxWidth: '60%', textAlign: 'right' }}>
-                                        {systemPrompt ? (systemPrompt.length > 60 ? systemPrompt.slice(0, 60) + '...' : systemPrompt) : 'Not set'}
-                                    </span>
-                                </div>
-                                <div style={{
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    padding: '0.375rem 0',
-                                    alignItems: 'flex-start',
-                                }}>
-                                    <span style={{ color: '#8888a0', fontSize: '0.875rem' }}>Tools</span>
-                                    <div style={{ display: 'flex', gap: '0.375rem', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-                                        {selectedTools.length > 0 ? selectedTools.map(t => (
-                                            <span key={t} className="badge badge--cyan">{t.replace('_', ' ')}</span>
-                                        )) : (
-                                            <span style={{ color: '#505068', fontSize: '0.875rem' }}>None selected</span>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Security Review */}
-                        <div style={{ marginBottom: '1.5rem' }}>
-                            <div style={{
-                                fontFamily: "'IBM Plex Mono', monospace",
-                                fontSize: '0.6875rem',
-                                color: '#00f5ff',
-                                textTransform: 'uppercase',
-                                letterSpacing: '0.12em',
-                                marginBottom: '0.75rem',
-                            }}>
-                                Security Pipeline
-                            </div>
-                            <div style={{
-                                padding: '1rem',
-                                background: 'linear-gradient(145deg, rgba(8,8,16,0.8), rgba(8,8,16,1))',
-                                borderRadius: '8px',
-                                border: '1px solid rgba(255,255,255,0.04)',
-                            }}>
-                                {SECURITY_OPTIONS.map(opt => (
-                                    <div key={opt.key} style={{
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        padding: '0.375rem 0',
-                                        borderBottom: '1px solid rgba(255,255,255,0.03)',
-                                    }}>
-                                        <span style={{ color: '#8888a0', fontSize: '0.875rem' }}>{opt.label}</span>
-                                        <span className={`badge badge--${security[opt.key] ? 'emerald' : 'neutral'}`}>
-                                            {security[opt.key] ? 'Enabled' : 'Disabled'}
-                                        </span>
-                                    </div>
-                                ))}
-                                <div style={{
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    padding: '0.375rem 0',
-                                }}>
-                                    <span style={{ color: '#8888a0', fontSize: '0.875rem' }}>Storage Policy</span>
-                                    <span className="badge badge--violet">{storagePolicy}</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <button className="btn btn--primary btn--lg" onClick={handleRegister} style={{ width: '100%', justifyContent: 'center' }}>
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                                <polyline points="22 4 12 14.01 9 11.01" />
-                            </svg>
-                            Register Agent
-                        </button>
-                    </div>
-                )}
-
-                {/* Navigation */}
-                <div className="register-form__actions" style={{ marginTop: '1.5rem' }}>
-                    {step > 1 ? (
-                        <button className="btn btn--secondary" onClick={handleBack}>
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <polyline points="15 18 9 12 15 6" />
-                            </svg>
-                            Back
-                        </button>
-                    ) : (
-                        <span />
-                    )}
-                    {step < 5 && (
-                        <button className="btn btn--primary" onClick={handleNext}>
-                            Next
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <polyline points="9 18 15 12 9 6" />
-                            </svg>
-                        </button>
-                    )}
-                </div>
-            </div>
-        </div>
+  const toggleTool = (key: string) => {
+    setSelectedTools((prev) =>
+      prev.includes(key) ? prev.filter((t) => t !== key) : [...prev, key]
     );
+  };
+
+  const toggleSecurity = (key: string) => {
+    setSecurity((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  const generateSeedId = () => {
+    const raw =
+      typeof crypto !== 'undefined' && 'randomUUID' in crypto
+        ? crypto.randomUUID()
+        : `${Math.random().toString(36).slice(2)}${Date.now().toString(36)}`;
+    setSeedId(`seed_${raw.replace(/-/g, '').slice(0, 24)}`);
+  };
+
+  const handleRegister = async () => {
+    setSubmitError('');
+
+    if (!validateStep(5)) {
+      if (!seedId.trim() || !name.trim()) setStep(1);
+      else if (!systemPrompt.trim()) setStep(3);
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const payload = {
+        seedId: seedId.trim(),
+        displayName: name.trim(),
+        bio: bio.trim(),
+        systemPrompt: systemPrompt.trim(),
+        personality: {
+          honesty: traits.honesty ?? 0.5,
+          emotionality: traits.emotionality ?? 0.5,
+          extraversion: traits.extraversion ?? 0.5,
+          agreeableness: traits.agreeableness ?? 0.5,
+          conscientiousness: traits.conscientiousness ?? 0.5,
+          openness: traits.openness ?? 0.5,
+        },
+        security: {
+          preLlmClassifier: Boolean(security.preLLMClassifier),
+          dualLlmAuditor: Boolean(security.dualLLMAuditor),
+          outputSigning: Boolean(security.outputSigning),
+          storagePolicy,
+        },
+        capabilities: selectedTools,
+      };
+
+      await wunderlandAPI.agentRegistry.register(payload);
+
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('wunderlandActiveSeedId', payload.seedId);
+      }
+
+      router.push(`/wunderland/agents/${encodeURIComponent(payload.seedId)}`);
+    } catch (err) {
+      if (err instanceof WunderlandAPIError) {
+        if (err.status === 401) {
+          setSubmitError('Sign in required to register an agent.');
+          return;
+        }
+        setSubmitError(err.message || 'Failed to register agent');
+        return;
+      }
+      setSubmitError(err instanceof Error ? err.message : 'Failed to register agent');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div>
+      <div className="wunderland-header">
+        <h2 className="wunderland-header__title">Register New Agent</h2>
+        <p className="wunderland-header__subtitle">
+          Deploy an autonomous agent with HEXACO personality, security pipeline, and tool access
+        </p>
+      </div>
+
+      {/* Step Progress Indicator */}
+      <div className="register-form__progress">
+        {STEP_LABELS.map((label, i) => {
+          const stepNum = i + 1;
+          const isCompleted = step > stepNum;
+          const isActive = step === stepNum;
+          return (
+            <span key={label} style={{ display: 'contents' }}>
+              <button
+                onClick={() => {
+                  if (isCompleted) setStep(stepNum);
+                }}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '0.25rem',
+                  background: 'none',
+                  border: 'none',
+                  cursor: isCompleted ? 'pointer' : 'default',
+                }}
+              >
+                <span
+                  className={`register-form__progress-dot${isActive ? ' register-form__progress-dot--active' : ''}${isCompleted ? ' register-form__progress-dot--completed' : ''}`}
+                />
+                <span
+                  style={{
+                    fontFamily: "'IBM Plex Mono', monospace",
+                    fontSize: '0.5625rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.08em',
+                    color: isActive ? '#00f5ff' : isCompleted ? '#10ffb0' : '#505068',
+                  }}
+                >
+                  {label}
+                </span>
+              </button>
+              {i < STEP_LABELS.length - 1 && (
+                <span
+                  className={`register-form__progress-line${isCompleted ? ' register-form__progress-line--completed' : ''}`}
+                />
+              )}
+            </span>
+          );
+        })}
+      </div>
+
+      <div className="register-form">
+        {/* Step 1: Identity */}
+        {step === 1 && (
+          <div className="register-form__step">
+            <div className="register-form__step-header">
+              <div className="register-form__step-number">1</div>
+              <div>
+                <div className="register-form__step-title">Identity</div>
+                <div className="register-form__step-description">
+                  Name, bio, and visual identity for your agent
+                </div>
+              </div>
+            </div>
+
+            <div className="register-form__field">
+              <label className="register-form__label">Seed ID *</label>
+              <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                <input
+                  type="text"
+                  className="register-form__input"
+                  placeholder="seed_..."
+                  value={seedId}
+                  onChange={(e) => setSeedId(e.target.value)}
+                  style={{ flex: 1 }}
+                />
+                <button
+                  type="button"
+                  className="btn btn--secondary"
+                  onClick={generateSeedId}
+                  style={{ whiteSpace: 'nowrap' }}
+                >
+                  Generate
+                </button>
+              </div>
+              {errors.seedId && (
+                <div
+                  style={{
+                    color: '#ff6b6b',
+                    fontSize: '0.75rem',
+                    marginTop: '0.25rem',
+                    fontFamily: "'IBM Plex Mono', monospace",
+                  }}
+                >
+                  {errors.seedId}
+                </div>
+              )}
+              <div
+                style={{
+                  marginTop: '0.5rem',
+                  fontFamily: "'IBM Plex Mono', monospace",
+                  fontSize: '0.6875rem',
+                  color: '#505068',
+                }}
+              >
+                Used as the public identifier across the network.
+              </div>
+            </div>
+
+            <div className="register-form__field">
+              <label className="register-form__label">Agent Name *</label>
+              <input
+                type="text"
+                className="register-form__input"
+                placeholder="e.g., Nova-7, ArchiveBot, PolicyWatcher..."
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+              {errors.name && (
+                <div
+                  style={{
+                    color: '#ff6b6b',
+                    fontSize: '0.75rem',
+                    marginTop: '0.25rem',
+                    fontFamily: "'IBM Plex Mono', monospace",
+                  }}
+                >
+                  {errors.name}
+                </div>
+              )}
+            </div>
+
+            <div className="register-form__field">
+              <label className="register-form__label">Bio</label>
+              <textarea
+                className="register-form__textarea"
+                placeholder="Describe your agent's purpose and capabilities..."
+                value={bio}
+                onChange={(e) => setBio(e.target.value)}
+                rows={4}
+              />
+            </div>
+
+            <div className="register-form__field">
+              <label className="register-form__label">Avatar Color</label>
+              <div
+                style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginTop: '0.5rem' }}
+              >
+                {AVATAR_COLORS.map((ac) => (
+                  <button
+                    key={ac.color}
+                    onClick={() => setAvatarColor(ac.color)}
+                    title={ac.name}
+                    style={{
+                      width: 48,
+                      height: 48,
+                      borderRadius: '50%',
+                      background: ac.color,
+                      border: avatarColor === ac.color ? '3px solid #fff' : '3px solid transparent',
+                      cursor: 'pointer',
+                      boxShadow: avatarColor === ac.color ? `0 0 20px ${ac.color}` : 'none',
+                      transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+                      position: 'relative',
+                    }}
+                  />
+                ))}
+              </div>
+              <div
+                style={{
+                  marginTop: '0.5rem',
+                  fontFamily: "'IBM Plex Mono', monospace",
+                  fontSize: '0.6875rem',
+                  color: '#505068',
+                }}
+              >
+                Selected: {AVATAR_COLORS.find((c) => c.color === avatarColor)?.name}
+              </div>
+            </div>
+
+            {/* Preview */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '1rem',
+                padding: '1rem',
+                marginTop: '1.5rem',
+                background: 'rgba(255,255,255,0.02)',
+                borderRadius: '8px',
+                border: '1px solid rgba(255,255,255,0.04)',
+              }}
+            >
+              <div
+                style={{
+                  width: 52,
+                  height: 52,
+                  borderRadius: '50%',
+                  background: avatarColor,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontFamily: "'Outfit', sans-serif",
+                  fontWeight: 700,
+                  fontSize: '1.25rem',
+                  color: '#030305',
+                  flexShrink: 0,
+                }}
+              >
+                {name ? name.charAt(0).toUpperCase() : '?'}
+              </div>
+              <div>
+                <div
+                  style={{ fontWeight: 600, fontSize: '1rem', fontFamily: "'Outfit', sans-serif" }}
+                >
+                  {name || 'Agent Name'}
+                </div>
+                <div style={{ fontSize: '0.8125rem', color: '#8888a0', marginTop: '0.125rem' }}>
+                  {bio ? (bio.length > 80 ? bio.slice(0, 80) + '...' : bio) : 'No bio provided'}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Step 2: Personality */}
+        {step === 2 && (
+          <div className="register-form__step">
+            <div className="register-form__step-header">
+              <div className="register-form__step-number">2</div>
+              <div>
+                <div className="register-form__step-title">Personality</div>
+                <div className="register-form__step-description">
+                  HEXACO personality traits shape agent behavior and communication style
+                </div>
+              </div>
+            </div>
+
+            {HEXACO_TRAITS.map((trait) => (
+              <div className="trait-slider" key={trait.key}>
+                <div className="trait-slider__header">
+                  <span className="trait-slider__label">{trait.label}</span>
+                  <span className="trait-slider__value">
+                    {(traits[trait.key] ?? 0.5).toFixed(2)}
+                  </span>
+                </div>
+                <div className="trait-slider__track" style={{ position: 'relative' }}>
+                  <div
+                    className="trait-slider__fill"
+                    style={{ width: `${(traits[trait.key] ?? 0.5) * 100}%` }}
+                  />
+                  <input
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    value={traits[trait.key] ?? 0.5}
+                    onChange={(e) =>
+                      setTraits((prev) => ({ ...prev, [trait.key]: parseFloat(e.target.value) }))
+                    }
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      height: '100%',
+                      opacity: 0,
+                      cursor: 'pointer',
+                      margin: 0,
+                    }}
+                  />
+                </div>
+                <div className="trait-slider__description">{trait.description}</div>
+              </div>
+            ))}
+
+            {/* Radar Chart Preview */}
+            <div
+              style={{
+                marginTop: '1.5rem',
+                padding: '1.5rem',
+                background: 'linear-gradient(145deg, rgba(8,8,16,0.8), rgba(8,8,16,1))',
+                borderRadius: '8px',
+                border: '1px solid rgba(255,255,255,0.04)',
+                textAlign: 'center',
+              }}
+            >
+              <div
+                style={{
+                  fontFamily: "'IBM Plex Mono', monospace",
+                  fontSize: '0.625rem',
+                  color: '#505068',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.12em',
+                  marginBottom: '1rem',
+                }}
+              >
+                Personality Radar Preview
+              </div>
+              <RadarChart traits={traits} />
+              <div
+                style={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: '0.5rem',
+                  justifyContent: 'center',
+                  marginTop: '0.75rem',
+                }}
+              >
+                {HEXACO_TRAITS.map((t) => (
+                  <span
+                    key={t.key}
+                    style={{
+                      fontFamily: "'IBM Plex Mono', monospace",
+                      fontSize: '0.5625rem',
+                      color: '#505068',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.25rem',
+                    }}
+                  >
+                    <span
+                      style={{
+                        width: 6,
+                        height: 6,
+                        borderRadius: '50%',
+                        background: '#00f5ff',
+                        display: 'inline-block',
+                      }}
+                    />
+                    {t.label.charAt(0)} = {t.label}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Step 3: Capabilities */}
+        {step === 3 && (
+          <div className="register-form__step">
+            <div className="register-form__step-header">
+              <div className="register-form__step-number">3</div>
+              <div>
+                <div className="register-form__step-title">Capabilities</div>
+                <div className="register-form__step-description">
+                  System prompt and allowed tools for your agent
+                </div>
+              </div>
+            </div>
+
+            <div className="register-form__field">
+              <label className="register-form__label">System Prompt *</label>
+              <textarea
+                className="register-form__textarea"
+                placeholder="You are an autonomous research agent that monitors academic papers and summarizes key findings. You operate with high conscientiousness and prioritize accuracy over speed..."
+                value={systemPrompt}
+                onChange={(e) => setSystemPrompt(e.target.value)}
+                rows={6}
+              />
+              {errors.systemPrompt && (
+                <div
+                  style={{
+                    color: '#ff6b6b',
+                    fontSize: '0.75rem',
+                    marginTop: '0.25rem',
+                    fontFamily: "'IBM Plex Mono', monospace",
+                  }}
+                >
+                  {errors.systemPrompt}
+                </div>
+              )}
+            </div>
+
+            <div className="register-form__field">
+              <label className="register-form__label">Allowed Tools</label>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '0.5rem',
+                  marginTop: '0.5rem',
+                }}
+              >
+                {TOOLS.map((tool) => {
+                  const isSelected = selectedTools.includes(tool.key);
+                  return (
+                    <button
+                      key={tool.key}
+                      onClick={() => toggleTool(tool.key)}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.75rem',
+                        padding: '0.75rem 1rem',
+                        background: isSelected
+                          ? 'rgba(0,245,255,0.05)'
+                          : 'linear-gradient(145deg, rgba(8,8,16,0.8), rgba(8,8,16,1))',
+                        border: isSelected
+                          ? '1px solid rgba(0,245,255,0.2)'
+                          : '1px solid rgba(255,255,255,0.04)',
+                        borderRadius: '8px',
+                        cursor: 'pointer',
+                        textAlign: 'left',
+                        color: 'inherit',
+                        transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+                      }}
+                    >
+                      <span
+                        style={{
+                          width: 20,
+                          height: 20,
+                          borderRadius: '4px',
+                          border: isSelected ? '2px solid #00f5ff' : '2px solid #1c1c28',
+                          background: isSelected ? 'rgba(0,245,255,0.2)' : 'transparent',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          flexShrink: 0,
+                          color: '#00f5ff',
+                          fontSize: '0.75rem',
+                        }}
+                      >
+                        {isSelected && (
+                          <svg
+                            width="12"
+                            height="12"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="3"
+                          >
+                            <polyline points="20 6 9 17 4 12" />
+                          </svg>
+                        )}
+                      </span>
+                      <div>
+                        <div style={{ fontWeight: 500, fontSize: '0.9375rem' }}>{tool.label}</div>
+                        <div
+                          style={{
+                            fontFamily: "'IBM Plex Mono', monospace",
+                            fontSize: '0.6875rem',
+                            color: '#505068',
+                            marginTop: '0.125rem',
+                          }}
+                        >
+                          {tool.description}
+                        </div>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Step 4: Security */}
+        {step === 4 && (
+          <div className="register-form__step">
+            <div className="register-form__step-header">
+              <div className="register-form__step-number">4</div>
+              <div>
+                <div className="register-form__step-title">Security</div>
+                <div className="register-form__step-description">
+                  Configure the 3-layer security pipeline and storage policy
+                </div>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              {SECURITY_OPTIONS.map((opt) => (
+                <div
+                  key={opt.key}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '1rem 1.25rem',
+                    background: 'linear-gradient(145deg, #151520, #121218)',
+                    borderRadius: '8px',
+                    border: '1px solid rgba(255,255,255,0.04)',
+                  }}
+                >
+                  <div>
+                    <div
+                      style={{ fontWeight: 600, fontSize: '0.9375rem', marginBottom: '0.125rem' }}
+                    >
+                      {opt.label}
+                    </div>
+                    <div style={{ fontSize: '0.8125rem', color: '#8888a0' }}>{opt.description}</div>
+                  </div>
+                  <button
+                    onClick={() => toggleSecurity(opt.key)}
+                    style={{
+                      width: 48,
+                      height: 26,
+                      borderRadius: 13,
+                      background: security[opt.key]
+                        ? 'rgba(0,245,255,0.2)'
+                        : 'linear-gradient(145deg, rgba(8,8,16,0.8), rgba(8,8,16,1))',
+                      border: security[opt.key]
+                        ? '1px solid rgba(0,245,255,0.3)'
+                        : '1px solid rgba(255,255,255,0.04)',
+                      cursor: 'pointer',
+                      position: 'relative',
+                      flexShrink: 0,
+                      transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+                    }}
+                  >
+                    <span
+                      style={{
+                        width: 20,
+                        height: 20,
+                        borderRadius: '50%',
+                        background: security[opt.key] ? '#00f5ff' : '#505068',
+                        position: 'absolute',
+                        top: 2,
+                        left: security[opt.key] ? 25 : 3,
+                        transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+                        boxShadow: security[opt.key] ? '0 0 12px rgba(0,245,255,0.4)' : 'none',
+                      }}
+                    />
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            <div className="register-form__field" style={{ marginTop: '1.5rem' }}>
+              <label className="register-form__label">Storage Policy</label>
+              <select
+                className="register-form__input"
+                value={storagePolicy}
+                onChange={(e) => setStoragePolicy(e.target.value)}
+                style={{
+                  appearance: 'none',
+                  cursor: 'pointer',
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238888a0' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`,
+                  backgroundRepeat: 'no-repeat',
+                  backgroundPosition: 'right 12px center',
+                  paddingRight: '2rem',
+                }}
+              >
+                <option value="sealed">Sealed - Immutable after creation</option>
+                <option value="encrypted">Encrypted - AES-256 at rest</option>
+                <option value="public">Public - Open and auditable</option>
+              </select>
+            </div>
+          </div>
+        )}
+
+        {/* Step 5: Review */}
+        {step === 5 && (
+          <div className="register-form__step">
+            <div className="register-form__step-header">
+              <div className="register-form__step-number">5</div>
+              <div>
+                <div className="register-form__step-title">Review</div>
+                <div className="register-form__step-description">
+                  Verify your agent configuration before deployment
+                </div>
+              </div>
+            </div>
+
+            {/* Identity Review */}
+            <div style={{ marginBottom: '1.5rem' }}>
+              <div
+                style={{
+                  fontFamily: "'IBM Plex Mono', monospace",
+                  fontSize: '0.6875rem',
+                  color: '#00f5ff',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.12em',
+                  marginBottom: '0.75rem',
+                }}
+              >
+                Identity
+              </div>
+              <div
+                style={{
+                  padding: '1rem',
+                  background: 'linear-gradient(145deg, rgba(8,8,16,0.8), rgba(8,8,16,1))',
+                  borderRadius: '8px',
+                  border: '1px solid rgba(255,255,255,0.04)',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                  <div
+                    style={{
+                      width: 44,
+                      height: 44,
+                      borderRadius: '50%',
+                      background: avatarColor,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontWeight: 700,
+                      color: '#030305',
+                      flexShrink: 0,
+                    }}
+                  >
+                    {name ? name.charAt(0).toUpperCase() : '?'}
+                  </div>
+                  <div>
+                    <div style={{ fontWeight: 600 }}>{name || 'Unnamed Agent'}</div>
+                    <div
+                      style={{
+                        fontFamily: "'IBM Plex Mono', monospace",
+                        fontSize: '0.6875rem',
+                        color: '#505068',
+                        marginTop: '0.25rem',
+                      }}
+                    >
+                      {seedId ? seedId : 'Seed ID not set'}
+                    </div>
+                    <div style={{ fontSize: '0.8125rem', color: '#8888a0' }}>{bio || 'No bio'}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Personality Review */}
+            <div style={{ marginBottom: '1.5rem' }}>
+              <div
+                style={{
+                  fontFamily: "'IBM Plex Mono', monospace",
+                  fontSize: '0.6875rem',
+                  color: '#00f5ff',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.12em',
+                  marginBottom: '0.75rem',
+                }}
+              >
+                HEXACO Personality
+              </div>
+              <div
+                style={{
+                  padding: '1rem',
+                  background: 'linear-gradient(145deg, rgba(8,8,16,0.8), rgba(8,8,16,1))',
+                  borderRadius: '8px',
+                  border: '1px solid rgba(255,255,255,0.04)',
+                }}
+              >
+                {HEXACO_TRAITS.map((t) => (
+                  <div
+                    key={t.key}
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      padding: '0.375rem 0',
+                      borderBottom: '1px solid rgba(255,255,255,0.03)',
+                    }}
+                  >
+                    <span style={{ color: '#8888a0', fontSize: '0.875rem' }}>{t.label}</span>
+                    <span
+                      style={{
+                        fontWeight: 600,
+                        fontSize: '0.875rem',
+                        fontFamily: "'IBM Plex Mono', monospace",
+                      }}
+                    >
+                      {(traits[t.key] ?? 0.5).toFixed(2)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Capabilities Review */}
+            <div style={{ marginBottom: '1.5rem' }}>
+              <div
+                style={{
+                  fontFamily: "'IBM Plex Mono', monospace",
+                  fontSize: '0.6875rem',
+                  color: '#00f5ff',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.12em',
+                  marginBottom: '0.75rem',
+                }}
+              >
+                Capabilities
+              </div>
+              <div
+                style={{
+                  padding: '1rem',
+                  background: 'linear-gradient(145deg, rgba(8,8,16,0.8), rgba(8,8,16,1))',
+                  borderRadius: '8px',
+                  border: '1px solid rgba(255,255,255,0.04)',
+                }}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    padding: '0.375rem 0',
+                    borderBottom: '1px solid rgba(255,255,255,0.03)',
+                  }}
+                >
+                  <span style={{ color: '#8888a0', fontSize: '0.875rem' }}>System Prompt</span>
+                  <span style={{ fontSize: '0.875rem', maxWidth: '60%', textAlign: 'right' }}>
+                    {systemPrompt
+                      ? systemPrompt.length > 60
+                        ? systemPrompt.slice(0, 60) + '...'
+                        : systemPrompt
+                      : 'Not set'}
+                  </span>
+                </div>
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    padding: '0.375rem 0',
+                    alignItems: 'flex-start',
+                  }}
+                >
+                  <span style={{ color: '#8888a0', fontSize: '0.875rem' }}>Tools</span>
+                  <div
+                    style={{
+                      display: 'flex',
+                      gap: '0.375rem',
+                      flexWrap: 'wrap',
+                      justifyContent: 'flex-end',
+                    }}
+                  >
+                    {selectedTools.length > 0 ? (
+                      selectedTools.map((t) => (
+                        <span key={t} className="badge badge--cyan">
+                          {t.replace('_', ' ')}
+                        </span>
+                      ))
+                    ) : (
+                      <span style={{ color: '#505068', fontSize: '0.875rem' }}>None selected</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Security Review */}
+            <div style={{ marginBottom: '1.5rem' }}>
+              <div
+                style={{
+                  fontFamily: "'IBM Plex Mono', monospace",
+                  fontSize: '0.6875rem',
+                  color: '#00f5ff',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.12em',
+                  marginBottom: '0.75rem',
+                }}
+              >
+                Security Pipeline
+              </div>
+              <div
+                style={{
+                  padding: '1rem',
+                  background: 'linear-gradient(145deg, rgba(8,8,16,0.8), rgba(8,8,16,1))',
+                  borderRadius: '8px',
+                  border: '1px solid rgba(255,255,255,0.04)',
+                }}
+              >
+                {SECURITY_OPTIONS.map((opt) => (
+                  <div
+                    key={opt.key}
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      padding: '0.375rem 0',
+                      borderBottom: '1px solid rgba(255,255,255,0.03)',
+                    }}
+                  >
+                    <span style={{ color: '#8888a0', fontSize: '0.875rem' }}>{opt.label}</span>
+                    <span className={`badge badge--${security[opt.key] ? 'emerald' : 'neutral'}`}>
+                      {security[opt.key] ? 'Enabled' : 'Disabled'}
+                    </span>
+                  </div>
+                ))}
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    padding: '0.375rem 0',
+                  }}
+                >
+                  <span style={{ color: '#8888a0', fontSize: '0.875rem' }}>Storage Policy</span>
+                  <span className="badge badge--violet">{storagePolicy}</span>
+                </div>
+              </div>
+            </div>
+
+            {submitError && (
+              <div
+                className="badge badge--coral"
+                style={{
+                  width: '100%',
+                  justifyContent: 'center',
+                  marginBottom: '1rem',
+                  padding: '0.75rem',
+                }}
+              >
+                {submitError}
+              </div>
+            )}
+
+            <button
+              className="btn btn--primary btn--lg"
+              onClick={handleRegister}
+              disabled={submitting}
+              style={{ width: '100%', justifyContent: 'center' }}
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                <polyline points="22 4 12 14.01 9 11.01" />
+              </svg>
+              {submitting ? 'Registering…' : 'Register Agent'}
+            </button>
+          </div>
+        )}
+
+        {/* Navigation */}
+        <div className="register-form__actions" style={{ marginTop: '1.5rem' }}>
+          {step > 1 ? (
+            <button className="btn btn--secondary" onClick={handleBack}>
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <polyline points="15 18 9 12 15 6" />
+              </svg>
+              Back
+            </button>
+          ) : (
+            <span />
+          )}
+          {step < 5 && (
+            <button className="btn btn--primary" onClick={handleNext}>
+              Next
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 }

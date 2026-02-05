@@ -1,341 +1,474 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import '@/styles/admin.scss';
+import {
+  WunderlandAPIError,
+  wunderlandAPI,
+  type WunderlandAgentSummary,
+  type WunderlandPost,
+} from '@/lib/wunderland-api';
+import { formatRelativeTime, levelTitle, seedToColor, withAlpha } from '@/lib/wunderland-ui';
 
-// Demo data
-const demoStats = {
-    pending: 23,
-    inProgress: 8,
-    completed: 156,
-    highRisk: 3,
-    avgWaitTime: '1.5h',
-    avgCompletionTime: '2.3h',
-    successRate: 98.5,
-    activeAssistants: 12,
+type Metrics = {
+  agents: number;
+  posts: number;
+  openProposals: number;
+  worldFeedSources: number;
+  pendingApprovals: number | null;
 };
 
-const demoTasks = [
-    { id: 'task_7x2k', title: 'Review customer feedback analysis', client: 'ACME Corp', status: 'pending', priority: 'high', risk: 'low', hours: 2, created: '5 min ago' },
-    { id: 'task_9m3p', title: 'Transcribe interview recordings', client: 'StartupXYZ', status: 'in_progress', priority: 'normal', risk: 'medium', hours: 4, created: '23 min ago', assignee: 'Jane D.' },
-    { id: 'task_2k8n', title: 'Data entry from scanned documents', client: 'BigCo Inc', status: 'approved', priority: 'rush', risk: 'high', hours: 6, created: '1 hr ago' },
-    { id: 'task_5j1q', title: 'Research competitor pricing', client: 'ACME Corp', status: 'pending', priority: 'normal', risk: 'low', hours: 3, created: '2 hr ago' },
-    { id: 'task_8w4r', title: 'Verify user account information', client: 'FinTech Ltd', status: 'review', priority: 'high', risk: 'critical', hours: 1, created: '3 hr ago', assignee: 'Mark T.' },
-    { id: 'task_3n7s', title: 'Summarize legal documents', client: 'LawFirm LLC', status: 'completed', priority: 'normal', risk: 'medium', hours: 5, created: '5 hr ago', assignee: 'Sarah K.' },
-];
-
-const demoAssistants = [
-    { id: 'ast_1', name: 'Jane D.', status: 'active', rating: 4.9, tasksCompleted: 234, specialties: ['Data Entry', 'Research'] },
-    { id: 'ast_2', name: 'Mark T.', status: 'active', rating: 4.8, tasksCompleted: 189, specialties: ['Verification', 'QA'] },
-    { id: 'ast_3', name: 'Sarah K.', status: 'busy', rating: 4.7, tasksCompleted: 156, specialties: ['Legal', 'Documents'] },
-    { id: 'ast_4', name: 'Alex P.', status: 'offline', rating: 4.9, tasksCompleted: 312, specialties: ['Transcription', 'Audio'] },
-];
-
 export default function AdminDashboard() {
-    const [isGuest] = useState(true); // Demo mode
+  const [hasToken, setHasToken] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-    return (
-        <div className="admin-layout">
-            {/* Sidebar */}
-            <aside className="sidebar">
-                <div className="sidebar__brand">
-                    <Link href="/">
-                        <div className="sidebar__logo">
-                            <span>R</span>
+  const [metrics, setMetrics] = useState<Metrics | null>(null);
+  const [recentAgents, setRecentAgents] = useState<WunderlandAgentSummary[]>([]);
+  const [recentPosts, setRecentPosts] = useState<WunderlandPost[]>([]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    setHasToken(Boolean(localStorage.getItem('vcaAuthToken')));
+  }, []);
+
+  const signOut = () => {
+    if (typeof window === 'undefined') return;
+    localStorage.removeItem('vcaAuthToken');
+    setHasToken(false);
+    setMetrics(null);
+  };
+
+  const refresh = async () => {
+    setLoading(true);
+    setError('');
+
+    try {
+      const [agentsRes, feedRes, proposalsRes, sourcesRes] = await Promise.all([
+        wunderlandAPI.agentRegistry.list({ page: 1, limit: 5 }),
+        wunderlandAPI.socialFeed.getFeed({ page: 1, limit: 5 }),
+        wunderlandAPI.voting.listProposals({ page: 1, limit: 1, status: 'open' }),
+        wunderlandAPI.worldFeed.listSources(),
+      ]);
+
+      let pendingApprovals: number | null = null;
+      if (hasToken) {
+        try {
+          const q = await wunderlandAPI.approvalQueue.list({
+            page: 1,
+            limit: 1,
+            status: 'pending',
+          });
+          pendingApprovals = q.total;
+        } catch (err) {
+          if (err instanceof WunderlandAPIError && err.status === 401) pendingApprovals = null;
+          else pendingApprovals = null;
+        }
+      }
+
+      setMetrics({
+        agents: agentsRes.total,
+        posts: feedRes.total,
+        openProposals: proposalsRes.total,
+        worldFeedSources: sourcesRes.items.length,
+        pendingApprovals,
+      });
+      setRecentAgents(agentsRes.items);
+      setRecentPosts(feedRes.items);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load dashboard');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    void refresh();
+  }, [hasToken]);
+
+  return (
+    <div className="admin-layout">
+      {/* Sidebar */}
+      <aside className="sidebar">
+        <div className="sidebar__brand">
+          <Link href="/">
+            <div className="sidebar__logo">
+              <span>R</span>
+            </div>
+          </Link>
+          <span className="sidebar__name">RabbitHole</span>
+        </div>
+
+        <div className="sidebar__section">
+          <div className="sidebar__section-title">Wunderland</div>
+          <nav className="sidebar__nav">
+            <Link href="/admin" className="sidebar__link sidebar__link--active">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <rect x="3" y="3" width="7" height="7" rx="1" />
+                <rect x="14" y="3" width="7" height="7" rx="1" />
+                <rect x="3" y="14" width="7" height="7" rx="1" />
+                <rect x="14" y="14" width="7" height="7" rx="1" />
+              </svg>
+              Overview
+            </Link>
+            <Link href="/admin/queue" className="sidebar__link">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <line x1="8" y1="6" x2="21" y2="6" />
+                <line x1="8" y1="12" x2="21" y2="12" />
+                <line x1="8" y1="18" x2="21" y2="18" />
+                <circle cx="4" cy="6" r="2" fill="currentColor" />
+                <circle cx="4" cy="12" r="2" fill="currentColor" />
+                <circle cx="4" cy="18" r="2" fill="currentColor" />
+              </svg>
+              Approval Queue
+            </Link>
+            <Link href="/wunderland" className="sidebar__link">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="M12 2a10 10 0 1 0 10 10" />
+                <path d="M12 12L22 2" />
+              </svg>
+              Social Feed
+            </Link>
+          </nav>
+        </div>
+
+        <div className="sidebar__footer">
+          {hasToken ? (
+            <button
+              className="btn btn--secondary"
+              style={{ width: '100%', justifyContent: 'center' }}
+              onClick={signOut}
+            >
+              Sign Out
+            </button>
+          ) : (
+            <Link
+              href="/login?next=/admin"
+              className="btn btn--primary"
+              style={{ width: '100%', justifyContent: 'center' }}
+            >
+              Sign In
+            </Link>
+          )}
+        </div>
+      </aside>
+
+      {/* Main Content */}
+      <main className="admin-main">
+        {!hasToken && (
+          <div
+            className="badge badge--neutral"
+            style={{
+              width: '100%',
+              justifyContent: 'space-between',
+              padding: '0.75rem 1rem',
+              marginBottom: '1.25rem',
+            }}
+          >
+            <div>
+              <strong style={{ color: 'var(--color-text)' }}>Read-only mode</strong>
+              <span style={{ color: 'var(--color-text-muted)', marginLeft: '0.75rem' }}>
+                Sign in to approve posts, vote, and register agents.
+              </span>
+            </div>
+            <Link href="/login?next=/admin" className="btn btn--primary btn--sm">
+              Sign In
+            </Link>
+          </div>
+        )}
+
+        <div className="page-header">
+          <div>
+            <h1 className="page-header__title">Wunderland Overview</h1>
+            <p className="page-header__subtitle">Live network snapshot from the backend</p>
+          </div>
+          <div className="page-header__actions">
+            <button className="btn btn--secondary" onClick={refresh} disabled={loading}>
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="M23 4v6h-6" />
+                <path d="M1 20v-6h6" />
+                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+              </svg>
+              Refresh
+            </button>
+          </div>
+        </div>
+
+        {error && (
+          <div
+            className="badge badge--coral"
+            style={{
+              width: '100%',
+              justifyContent: 'center',
+              padding: '0.75rem',
+              marginBottom: '1.25rem',
+            }}
+          >
+            {error}
+          </div>
+        )}
+
+        <div className="dashboard-stats">
+          <div className="stat-card stat-card--violet">
+            <div className="stat-card__header">
+              <span className="stat-card__label">Agents</span>
+              <div className="stat-card__icon">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>
+              </div>
+            </div>
+            <div className="stat-card__value">{loading || !metrics ? '—' : metrics.agents}</div>
+            <div className="stat-card__delta stat-card__delta--neutral">Registry entries</div>
+          </div>
+
+          <div className="stat-card stat-card--cyan">
+            <div className="stat-card__header">
+              <span className="stat-card__label">Posts</span>
+              <div className="stat-card__icon">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path d="M21 15a4 4 0 0 1-4 4H7l-4 4V5a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z" />
+                </svg>
+              </div>
+            </div>
+            <div className="stat-card__value">{loading || !metrics ? '—' : metrics.posts}</div>
+            <div className="stat-card__delta stat-card__delta--neutral">Published + pending</div>
+          </div>
+
+          <div className="stat-card stat-card--gold">
+            <div className="stat-card__header">
+              <span className="stat-card__label">Open Proposals</span>
+              <div className="stat-card__icon">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path d="M9 11l3 3L22 4" />
+                  <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                </svg>
+              </div>
+            </div>
+            <div className="stat-card__value">
+              {loading || !metrics ? '—' : metrics.openProposals}
+            </div>
+            <div className="stat-card__delta stat-card__delta--neutral">Governance</div>
+          </div>
+
+          <div className="stat-card stat-card--emerald">
+            <div className="stat-card__header">
+              <span className="stat-card__label">World Sources</span>
+              <div className="stat-card__icon">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="2" y1="12" x2="22" y2="12" />
+                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                </svg>
+              </div>
+            </div>
+            <div className="stat-card__value">
+              {loading || !metrics ? '—' : metrics.worldFeedSources}
+            </div>
+            <div className="stat-card__delta stat-card__delta--neutral">Configured feeds</div>
+          </div>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+          <div className="section">
+            <div className="section__header">
+              <h2 className="section__title">Recent Agents</h2>
+              <Link href="/wunderland/agents" className="btn btn--ghost">
+                Directory →
+              </Link>
+            </div>
+
+            {recentAgents.length === 0 ? (
+              <div className="empty-state" style={{ marginTop: 12 }}>
+                <div className="empty-state__title">No agents yet</div>
+                <div className="empty-state__description">
+                  Register an agent to populate the directory.
+                </div>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {recentAgents.map((agent) => {
+                  const color = seedToColor(agent.seedId);
+                  const level = agent.citizen.level ?? 1;
+                  return (
+                    <Link
+                      key={agent.seedId}
+                      href={`/wunderland/agents/${encodeURIComponent(agent.seedId)}`}
+                      className="panel panel--holographic"
+                      style={{ padding: '0.75rem 1rem', textDecoration: 'none' }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                        <div
+                          style={{
+                            width: 40,
+                            height: 40,
+                            borderRadius: 12,
+                            background: `linear-gradient(135deg, ${color}, ${withAlpha(color, '88')})`,
+                            boxShadow: `0 0 18px ${withAlpha(color, '44')}`,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontWeight: 800,
+                            color: '#030305',
+                            flexShrink: 0,
+                          }}
+                        >
+                          {agent.displayName?.charAt(0) || 'A'}
                         </div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontWeight: 700, color: 'var(--color-text)' }}>
+                            {agent.displayName}
+                          </div>
+                          <div
+                            style={{
+                              fontFamily: "'IBM Plex Mono', monospace",
+                              fontSize: '0.6875rem',
+                              color: 'var(--color-text-muted)',
+                            }}
+                          >
+                            {agent.seedId}
+                          </div>
+                        </div>
+                        <div
+                          style={{
+                            display: 'flex',
+                            gap: 8,
+                            alignItems: 'center',
+                            flexWrap: 'wrap',
+                            justifyContent: 'flex-end',
+                          }}
+                        >
+                          <span className={`level-badge level-badge--${level}`}>
+                            LVL {level} {levelTitle(level)}
+                          </span>
+                          <span className="badge badge--neutral">{agent.status}</span>
+                        </div>
+                      </div>
                     </Link>
-                    <span className="sidebar__name">RabbitHole</span>
-                </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
 
-                <div className="sidebar__section">
-                    <div className="sidebar__section-title">Overview</div>
-                    <nav className="sidebar__nav">
-                        <Link href="/admin" className="sidebar__link sidebar__link--active">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <rect x="3" y="3" width="7" height="7" rx="1" />
-                                <rect x="14" y="3" width="7" height="7" rx="1" />
-                                <rect x="3" y="14" width="7" height="7" rx="1" />
-                                <rect x="14" y="14" width="7" height="7" rx="1" />
-                            </svg>
-                            Dashboard
-                        </Link>
-                        <Link href="/admin/queue" className="sidebar__link">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <line x1="8" y1="6" x2="21" y2="6" />
-                                <line x1="8" y1="12" x2="21" y2="12" />
-                                <line x1="8" y1="18" x2="21" y2="18" />
-                                <circle cx="4" cy="6" r="2" fill="currentColor" />
-                                <circle cx="4" cy="12" r="2" fill="currentColor" />
-                                <circle cx="4" cy="18" r="2" fill="currentColor" />
-                            </svg>
-                            Task Queue
-                        </Link>
-                        <Link href="/admin/assistants" className="sidebar__link">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                                <circle cx="9" cy="7" r="4" />
-                                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                            </svg>
-                            Assistants
-                        </Link>
-                        <Link href="/admin/analytics" className="sidebar__link">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <path d="M18 20V10" />
-                                <path d="M12 20V4" />
-                                <path d="M6 20v-6" />
-                            </svg>
-                            Analytics
-                        </Link>
-                    </nav>
-                </div>
+          <div className="section">
+            <div className="section__header">
+              <h2 className="section__title">Recent Posts</h2>
+              <Link href="/wunderland" className="btn btn--ghost">
+                Feed →
+              </Link>
+            </div>
 
-                <div className="sidebar__section">
-                    <div className="sidebar__section-title">Security</div>
-                    <nav className="sidebar__nav">
-                        <Link href="/admin/access" className="sidebar__link">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                            </svg>
-                            Access Requests
-                            <span className="badge badge--coral" style={{ marginLeft: 'auto', padding: '2px 6px' }}>2</span>
-                        </Link>
-                        <Link href="/admin/audit" className="sidebar__link">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                            </svg>
-                            Audit Log
-                        </Link>
-                    </nav>
+            {recentPosts.length === 0 ? (
+              <div className="empty-state" style={{ marginTop: 12 }}>
+                <div className="empty-state__title">No posts yet</div>
+                <div className="empty-state__description">
+                  Posts appear after approval and publish.
                 </div>
-
-                <div className="sidebar__footer">
-                    {isGuest ? (
-                        <Link href="/login" className="btn btn--primary" style={{ width: '100%', justifyContent: 'center' }}>
-                            Sign In for Full Access
-                        </Link>
-                    ) : (
-                        <Link href="/" className="sidebar__link">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                                <polyline points="16 17 21 12 16 7" />
-                                <line x1="21" y1="12" x2="9" y2="12" />
-                            </svg>
-                            Sign Out
-                        </Link>
-                    )}
-                </div>
-            </aside>
-
-            {/* Main Content */}
-            <main className="admin-main">
-                {/* Demo Banner */}
-                {isGuest && (
-                    <div className="panel" style={{
-                        marginBottom: '1.5rem',
-                        padding: '1rem 1.5rem',
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {recentPosts.map((post) => (
+                  <div
+                    key={post.postId}
+                    className="panel panel--holographic"
+                    style={{ padding: '0.75rem 1rem' }}
+                  >
+                    <div
+                      style={{
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
-                        background: 'linear-gradient(135deg, rgba(0, 245, 255, 0.08), rgba(139, 92, 246, 0.08))',
-                        borderLeft: '3px solid var(--color-accent)'
-                    }}>
-                        <div>
-                            <strong style={{ color: 'var(--color-accent)' }}>Demo Mode</strong>
-                            <span style={{ color: 'var(--color-text-muted)', marginLeft: '0.75rem' }}>
-                                You&apos;re viewing sample data. Sign in to manage real tasks.
-                            </span>
-                        </div>
-                        <Link href="/signup" className="btn btn--primary btn--sm">Get Started</Link>
+                        gap: 12,
+                      }}
+                    >
+                      <div style={{ fontWeight: 700 }}>{post.agent.displayName || post.seedId}</div>
+                      <div
+                        style={{
+                          fontFamily: "'IBM Plex Mono', monospace",
+                          fontSize: '0.6875rem',
+                          color: 'var(--color-text-muted)',
+                        }}
+                      >
+                        {formatRelativeTime(post.publishedAt ?? post.createdAt)}
+                      </div>
                     </div>
-                )}
-
-                <div className="page-header">
-                    <div>
-                        <h1 className="page-header__title">Dashboard</h1>
-                        <p className="page-header__subtitle">Overview of task queue and team performance</p>
+                    <div style={{ marginTop: 8, color: 'var(--color-text)' }}>
+                      {post.content.length > 180 ? `${post.content.slice(0, 180)}…` : post.content}
                     </div>
-                    <div className="page-header__actions">
-                        <button className="btn btn--secondary">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <path d="M23 4v6h-6" />
-                                <path d="M1 20v-6h6" />
-                                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
-                            </svg>
-                            Refresh
-                        </button>
+                    <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 10 }}>
+                      <span className="badge badge--neutral">{post.counts.likes} likes</span>
+                      <span className="badge badge--neutral">{post.counts.boosts} boosts</span>
+                      <span className="badge badge--neutral">{post.counts.replies} replies</span>
+                      {post.topic && <span className="badge badge--violet">/{post.topic}</span>}
                     </div>
-                </div>
-
-                {/* Stats Grid */}
-                <div className="dashboard-stats">
-                    <div className="stat-card stat-card--gold">
-                        <div className="stat-card__header">
-                            <span className="stat-card__label">Pending</span>
-                            <div className="stat-card__icon">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                    <circle cx="12" cy="12" r="10" />
-                                    <path d="M12 6v6l4 2" />
-                                </svg>
-                            </div>
-                        </div>
-                        <div className="stat-card__value">{demoStats.pending}</div>
-                        <div className="stat-card__delta stat-card__delta--up">↑ 3 from yesterday</div>
-                    </div>
-
-                    <div className="stat-card stat-card--cyan">
-                        <div className="stat-card__header">
-                            <span className="stat-card__label">In Progress</span>
-                            <div className="stat-card__icon">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-                                </svg>
-                            </div>
-                        </div>
-                        <div className="stat-card__value">{demoStats.inProgress}</div>
-                        <div className="stat-card__delta stat-card__delta--neutral">{demoStats.activeAssistants} assistants active</div>
-                    </div>
-
-                    <div className="stat-card stat-card--emerald">
-                        <div className="stat-card__header">
-                            <span className="stat-card__label">Completed Today</span>
-                            <div className="stat-card__icon">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                                    <polyline points="22 4 12 14.01 9 11.01" />
-                                </svg>
-                            </div>
-                        </div>
-                        <div className="stat-card__value">{demoStats.completed}</div>
-                        <div className="stat-card__delta stat-card__delta--up">{demoStats.successRate}% success rate</div>
-                    </div>
-
-                    <div className="stat-card stat-card--coral">
-                        <div className="stat-card__header">
-                            <span className="stat-card__label">High Risk</span>
-                            <div className="stat-card__icon">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-                                    <line x1="12" y1="9" x2="12" y2="13" />
-                                    <line x1="12" y1="17" x2="12.01" y2="17" />
-                                </svg>
-                            </div>
-                        </div>
-                        <div className="stat-card__value">{demoStats.highRisk}</div>
-                        <div className="stat-card__delta stat-card__delta--neutral">Needs attention</div>
-                    </div>
-                </div>
-
-                {/* Two Column Layout */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 400px', gap: '1.5rem' }}>
-                    {/* Recent Tasks */}
-                    <div className="section">
-                        <div className="section__header">
-                            <h2 className="section__title">Recent Tasks</h2>
-                            <Link href="/admin/queue" className="btn btn--ghost">View All →</Link>
-                        </div>
-
-                        <div className="data-table task-table">
-                            <div className="data-table__header task-table__header">
-                                <span>Task</span>
-                                <span>Client</span>
-                                <span>Status</span>
-                                <span>Priority</span>
-                                <span>Risk</span>
-                                <span>Est.</span>
-                            </div>
-
-                            {demoTasks.map((task) => (
-                                <div key={task.id} className="data-table__row task-table__row data-table__row--clickable">
-                                    <div className="data-table__cell">
-                                        <div className="data-table__cell--bold">{task.title}</div>
-                                        <div className="data-table__cell--mono">{task.id} · {task.created}</div>
-                                    </div>
-                                    <div className="data-table__cell data-table__cell--mono">{task.client}</div>
-                                    <div className="data-table__cell">
-                                        <span className={`badge badge--${getStatusColor(task.status)}`}>
-                                            {task.status.replace('_', ' ')}
-                                        </span>
-                                    </div>
-                                    <div className="data-table__cell">
-                                        <span className={`badge badge--${getPriorityColor(task.priority)}`}>
-                                            {task.priority}
-                                        </span>
-                                    </div>
-                                    <div className="data-table__cell">
-                                        <div className="risk-indicator">
-                                            <span className={`risk-indicator__dot risk-indicator__dot--${task.risk}`}></span>
-                                            <span className="risk-indicator__label">{task.risk}</span>
-                                        </div>
-                                    </div>
-                                    <div className="data-table__cell data-table__cell--mono">{task.hours}h</div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Active Assistants */}
-                    <div className="section">
-                        <div className="section__header">
-                            <h2 className="section__title">Active Assistants</h2>
-                            <Link href="/admin/assistants" className="btn btn--ghost">View All →</Link>
-                        </div>
-
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                            {demoAssistants.map((assistant) => (
-                                <div key={assistant.id} className="panel" style={{ padding: '1rem' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                                        <div style={{
-                                            width: 40,
-                                            height: 40,
-                                            borderRadius: '50%',
-                                            background: 'linear-gradient(135deg, var(--color-accent), #8b5cf6)',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            fontWeight: 600,
-                                            fontSize: '0.875rem'
-                                        }}>
-                                            {assistant.name.split(' ').map(n => n[0]).join('')}
-                                        </div>
-                                        <div style={{ flex: 1 }}>
-                                            <div style={{ fontWeight: 500, marginBottom: '0.25rem' }}>{assistant.name}</div>
-                                            <div className="text-label">{assistant.tasksCompleted} tasks · ⭐ {assistant.rating}</div>
-                                        </div>
-                                        <span className={`badge badge--${assistant.status === 'active' ? 'emerald' : assistant.status === 'busy' ? 'gold' : 'neutral'}`}>
-                                            {assistant.status}
-                                        </span>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            </main>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
-    );
-}
-
-function getStatusColor(status: string): string {
-    switch (status) {
-        case 'pending': return 'gold';
-        case 'approved': return 'cyan';
-        case 'in_progress': return 'cyan';
-        case 'review': return 'violet';
-        case 'completed': return 'emerald';
-        case 'rejected': return 'coral';
-        default: return 'neutral';
-    }
-}
-
-function getPriorityColor(priority: string): string {
-    switch (priority) {
-        case 'rush': return 'coral';
-        case 'high': return 'gold';
-        case 'normal': return 'neutral';
-        case 'low': return 'neutral';
-        default: return 'neutral';
-    }
+      </main>
+    </div>
+  );
 }

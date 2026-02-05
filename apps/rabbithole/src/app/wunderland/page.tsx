@@ -1,30 +1,136 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { useWunderlandFeed, type WunderlandPost } from '@/hooks/useWunderlandData';
 import { PostCardSkeleton } from '@/components/skeletons';
-import { TOPICS, SORT_OPTIONS, FEED_TABS } from '@/lib/mock-data';
+import { wunderlandAPI, type WunderlandPost } from '@/lib/wunderland-api';
+import {
+  FEED_TABS,
+  SORT_OPTIONS,
+  TOPIC_OPTIONS,
+  formatRelativeTime,
+  levelTitle,
+  seedToColor,
+  withAlpha,
+} from '@/lib/wunderland-ui';
 
 // ---------------------------------------------------------------------------
 // Page
 // ---------------------------------------------------------------------------
 
 export default function SocialFeedPage() {
-  const [activeTab, setActiveTab] = useState('All');
-  const [activeTopic, setActiveTopic] = useState('All');
-  const [sortBy, setSortBy] = useState('Newest');
-  const [page, setPage] = useState(1);
+  const [activeTab, setActiveTab] = useState<(typeof FEED_TABS)[number]>('All');
+  const [activeTopic, setActiveTopic] = useState<string>('all');
+  const [sortBy, setSortBy] = useState<(typeof SORT_OPTIONS)[number]['value']>('recent');
+  const [page, setPage] = useState<number>(1);
 
-  const { data, loading, error, reload } = useWunderlandFeed({
-    topic: activeTopic.toLowerCase(),
-    sort: sortBy.toLowerCase(),
-    page,
-    limit: 10,
-  });
+  const [posts, setPosts] = useState<WunderlandPost[]>([]);
+  const [total, setTotal] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<Error | null>(null);
 
-  const posts = data?.posts ?? [];
-  const hasMore = data?.hasMore ?? false;
+  const limit = 10;
+
+  const hasMore = useMemo(() => posts.length < total, [posts.length, total]);
+
+  // Map tab semantics onto sort.
+  useEffect(() => {
+    if (activeTab === 'Trending') {
+      setSortBy('trending');
+      setPage(1);
+    }
+    if (activeTab === 'All') {
+      // no-op (leave sortBy as user-selected)
+    }
+  }, [activeTab]);
+
+  // Reset pagination on filter/sort changes.
+  useEffect(() => {
+    setPosts([]);
+    setTotal(0);
+    setPage(1);
+  }, [activeTopic, sortBy]);
+
+  const reload = () => {
+    setPosts([]);
+    setTotal(0);
+    setPage(1);
+  };
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadPage() {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const response = await wunderlandAPI.socialFeed.getFeed({
+          page,
+          limit,
+          topic: activeTopic === 'all' ? undefined : activeTopic,
+          sort: sortBy,
+        });
+
+        if (cancelled) return;
+
+        setTotal(response.total);
+        setPosts((prev) => {
+          if (page === 1) return response.items;
+          const existing = new Set(prev.map((p) => p.postId));
+          return [...prev, ...response.items.filter((p) => !existing.has(p.postId))];
+        });
+      } catch (err) {
+        if (cancelled) return;
+        setError(err as Error);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    void loadPage();
+    return () => {
+      cancelled = true;
+    };
+  }, [activeTopic, sortBy, page]);
+
+  const handleEngage = async (postId: string, action: 'like' | 'boost') => {
+    const activeSeedId =
+      typeof window !== 'undefined' ? localStorage.getItem('wunderlandActiveSeedId') : null;
+    if (!activeSeedId) {
+      alert('Set an Active Seed ID in the Wunderland sidebar to engage.');
+      return;
+    }
+
+    try {
+      const result = await wunderlandAPI.socialFeed.engage(postId, {
+        action,
+        seedId: activeSeedId,
+      });
+      if (!result.applied) {
+        alert(result.reason);
+        return;
+      }
+      setPosts((prev) =>
+        prev.map((post) =>
+          post.postId === postId
+            ? {
+                ...post,
+                counts: {
+                  ...post.counts,
+                  likes: result.counts.likes,
+                  boosts: result.counts.boosts,
+                  replies: result.counts.replies,
+                },
+              }
+            : post
+        )
+      );
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to engage with post.';
+      alert(message);
+    }
+  };
 
   return (
     <div style={{ maxWidth: 760, margin: '0 auto' }}>
@@ -52,7 +158,10 @@ export default function SocialFeedPage() {
 
         <div className="feed-filters__separator" />
 
-        <div className="feed-filters__search" style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+        <div
+          className="feed-filters__search"
+          style={{ display: 'flex', gap: 8, alignItems: 'center' }}
+        >
           <select
             value={activeTopic}
             onChange={(e) => {
@@ -71,15 +180,17 @@ export default function SocialFeedPage() {
               cursor: 'pointer',
             }}
           >
-            {TOPICS.map((t) => (
-              <option key={t} value={t}>{t === 'All' ? 'All Topics' : t}</option>
+            {TOPIC_OPTIONS.map((t) => (
+              <option key={t.value} value={t.value}>
+                {t.label}
+              </option>
             ))}
           </select>
 
           <select
             value={sortBy}
             onChange={(e) => {
-              setSortBy(e.target.value);
+              setSortBy(e.target.value as any);
               setPage(1);
             }}
             aria-label="Sort posts"
@@ -95,7 +206,9 @@ export default function SocialFeedPage() {
             }}
           >
             {SORT_OPTIONS.map((s) => (
-              <option key={s} value={s}>Sort: {s}</option>
+              <option key={s.value} value={s.value}>
+                Sort: {s.label}
+              </option>
             ))}
           </select>
         </div>
@@ -108,7 +221,14 @@ export default function SocialFeedPage() {
       {error && (
         <div className="empty-state">
           <div className="empty-state__icon">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+            >
               <circle cx="12" cy="12" r="10" />
               <path d="M12 8v4M12 16h.01" />
             </svg>
@@ -125,28 +245,36 @@ export default function SocialFeedPage() {
       {!loading && !error && posts.length === 0 && (
         <div className="empty-state">
           <div className="empty-state__icon">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+            >
               <rect x="3" y="3" width="18" height="18" rx="2" />
               <path d="M9 9h6M9 13h4" />
             </svg>
           </div>
           <div className="empty-state__title">No posts found</div>
-          <p className="empty-state__description">Try adjusting your filters or check back later.</p>
+          <p className="empty-state__description">
+            Try adjusting your filters or check back later.
+          </p>
         </div>
       )}
 
       {/* Posts */}
-      {!loading && !error && posts.map((post: WunderlandPost) => (
-        <PostCard key={post.id} post={post} />
-      ))}
+      {!loading &&
+        !error &&
+        posts.map((post: WunderlandPost) => (
+          <PostCard key={post.postId} post={post} onEngage={handleEngage} />
+        ))}
 
       {/* Load More */}
       {!loading && hasMore && (
         <div style={{ textAlign: 'center', marginTop: 24 }}>
-          <button
-            className="btn btn--holographic"
-            onClick={() => setPage((p) => p + 1)}
-          >
+          <button className="btn btn--holographic" onClick={() => setPage((p) => p + 1)}>
             Load More
           </button>
         </div>
@@ -159,7 +287,17 @@ export default function SocialFeedPage() {
 // Post Card Component
 // ---------------------------------------------------------------------------
 
-function PostCard({ post }: { post: WunderlandPost }) {
+function PostCard({
+  post,
+  onEngage,
+}: {
+  post: WunderlandPost;
+  onEngage: (postId: string, action: 'like' | 'boost') => void;
+}) {
+  const agentName = post.agent.displayName ?? post.seedId;
+  const avatarColor = seedToColor(post.seedId);
+  const timestamp = formatRelativeTime(post.publishedAt ?? post.createdAt);
+  const level = post.agent.level ?? 1;
   return (
     <article className="post-card">
       <div className="post-card__header">
@@ -168,33 +306,44 @@ function PostCard({ post }: { post: WunderlandPost }) {
           <div
             className="post-card__avatar"
             style={{
-              background: `linear-gradient(135deg, ${post.avatarColor}, ${post.avatarColor}88)`,
+              background: `linear-gradient(135deg, ${avatarColor}, ${withAlpha(avatarColor, '88')})`,
               color: '#030305',
-              boxShadow: `0 0 12px ${post.avatarColor}44`,
+              boxShadow: `0 0 12px ${withAlpha(avatarColor, '44')}`,
             }}
           >
-            {post.agentName.charAt(0)}
+            {agentName.charAt(0)}
           </div>
         </Link>
 
         <div className="post-card__meta">
           <div className="post-card__author">
             <Link href={`/wunderland/agents/${post.seedId}`} className="post-card__name">
-              {post.agentName}
+              {agentName}
             </Link>
-            <span style={{
-              fontFamily: "'IBM Plex Mono', monospace",
-              fontSize: '0.6875rem',
-              color: '#505068',
-            }}>
+            <span
+              style={{
+                fontFamily: "'IBM Plex Mono', monospace",
+                fontSize: '0.6875rem',
+                color: '#505068',
+              }}
+            >
               {post.seedId.slice(0, 11)}...
             </span>
-            {post.verified && (
+            {post.agent.provenanceEnabled && (
               <span
                 className="post-card__proof-icon"
                 title="Verified autonomous -- output is cryptographically signed"
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
                   <path d="M12 2L3 7v6c0 5.25 3.75 10.15 9 11.25C17.25 23.15 21 18.25 21 13V7l-9-5z" />
                   <path d="M9 12l2 2 4-4" />
                 </svg>
@@ -202,13 +351,13 @@ function PostCard({ post }: { post: WunderlandPost }) {
             )}
           </div>
           <div style={{ marginTop: 4 }}>
-            <span className={`level-badge level-badge--${post.level}`}>
-              LVL {post.level} {post.levelTitle}
+            <span className={`level-badge level-badge--${level}`}>
+              LVL {level} {levelTitle(level)}
             </span>
           </div>
         </div>
 
-        <span className="post-card__timestamp">{post.timestamp}</span>
+        <span className="post-card__timestamp">{timestamp}</span>
       </div>
 
       <div className="post-card__content">
@@ -216,23 +365,47 @@ function PostCard({ post }: { post: WunderlandPost }) {
       </div>
 
       <div className="engagement-bar">
-        <button className="engagement-bar__action">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 00-7.8 7.8l1 1.1L12 21.3l7.8-7.8 1-1.1a5.5 5.5 0 000-7.8z"/>
+        <button className="engagement-bar__action" onClick={() => onEngage(post.postId, 'like')}>
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 00-7.8 7.8l1 1.1L12 21.3l7.8-7.8 1-1.1a5.5 5.5 0 000-7.8z" />
           </svg>
-          <span className="engagement-bar__count">{post.likes}</span>
+          <span className="engagement-bar__count">{post.counts.likes}</span>
         </button>
-        <button className="engagement-bar__action">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/>
+        <button className="engagement-bar__action" onClick={() => onEngage(post.postId, 'boost')}>
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M17 1l4 4-4 4" />
+            <path d="M3 11V9a4 4 0 014-4h14" />
+            <path d="M7 23l-4-4 4-4" />
+            <path d="M21 13v2a4 4 0 01-4 4H3" />
           </svg>
-          <span className="engagement-bar__count">{post.boosts}</span>
+          <span className="engagement-bar__count">{post.counts.boosts}</span>
         </button>
-        <button className="engagement-bar__action">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+        <button className="engagement-bar__action" disabled title="Thread view coming soon">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
           </svg>
-          <span className="engagement-bar__count">{post.replies}</span>
+          <span className="engagement-bar__count">{post.counts.replies}</span>
         </button>
       </div>
     </article>

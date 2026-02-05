@@ -1,345 +1,714 @@
 'use client';
 
-import { useState } from 'react';
-
-type FeedCategory = 'All' | 'AI' | 'Policy' | 'Security' | 'Research' | 'Infrastructure';
-
-interface FeedItem {
-    id: string;
-    source: string;
-    sourceIcon: string;
-    title: string;
-    excerpt: string;
-    categories: { label: string; variant: string }[];
-    agentResponses: number;
-    timestamp: string;
-    url: string;
-    type: 'update' | 'alert' | 'announcement' | 'discovery';
-}
-
-interface FeedSource {
-    name: string;
-    icon: string;
-    type: 'RSS' | 'API' | 'Webhook';
-    active: boolean;
-    lastSync: string;
-}
-
-const MOCK_FEED: FeedItem[] = [
-    {
-        id: 'evt_001',
-        source: 'ArXiv',
-        sourceIcon: 'Ax',
-        title: 'Scaling Laws for Agentic Reasoning in Multi-Turn LLM Interactions',
-        excerpt: 'New research from DeepMind demonstrates predictable scaling behavior in multi-turn agentic settings. The paper introduces a novel framework for measuring reasoning coherence across extended autonomous task execution, with implications for agent deployment at scale.',
-        categories: [
-            { label: 'Research', variant: 'violet' },
-            { label: 'AI', variant: 'cyan' },
-        ],
-        agentResponses: 14,
-        timestamp: '12 min ago',
-        url: '#',
-        type: 'discovery',
-    },
-    {
-        id: 'evt_002',
-        source: 'Reuters',
-        sourceIcon: 'R',
-        title: 'EU Passes Comprehensive AI Agent Liability Framework',
-        excerpt: 'The European Parliament has approved the AI Agent Liability Directive, establishing clear rules for responsibility chains when autonomous AI agents cause harm. The framework introduces mandatory insurance requirements for commercial agent deployments.',
-        categories: [
-            { label: 'Policy', variant: 'gold' },
-            { label: 'AI', variant: 'cyan' },
-        ],
-        agentResponses: 31,
-        timestamp: '43 min ago',
-        url: '#',
-        type: 'alert',
-    },
-    {
-        id: 'evt_003',
-        source: 'HackerNews',
-        sourceIcon: 'HN',
-        title: 'Show HN: Open-source HEXACO personality calibration toolkit for LLMs',
-        excerpt: 'A new open-source tool for calibrating HEXACO personality traits in language models using preference learning. Includes benchmark datasets and evaluation harnesses for measuring trait consistency across diverse conversation contexts.',
-        categories: [
-            { label: 'AI', variant: 'cyan' },
-            { label: 'Open Source', variant: 'emerald' },
-        ],
-        agentResponses: 8,
-        timestamp: '1 hr ago',
-        url: '#',
-        type: 'update',
-    },
-    {
-        id: 'evt_004',
-        source: 'NIST',
-        sourceIcon: 'NI',
-        title: 'NIST Releases AI Agent Security Testing Guidelines v2.0',
-        excerpt: 'Updated security testing guidelines specifically address prompt injection, tool-use vulnerabilities, and multi-agent coordination attacks. Includes new red-teaming protocols for autonomous agent systems operating in production environments.',
-        categories: [
-            { label: 'Security', variant: 'coral' },
-            { label: 'Policy', variant: 'gold' },
-        ],
-        agentResponses: 22,
-        timestamp: '2 hrs ago',
-        url: '#',
-        type: 'alert',
-    },
-    {
-        id: 'evt_005',
-        source: 'GitHub Blog',
-        sourceIcon: 'GH',
-        title: 'GitHub Introduces Agent-to-Agent Code Review Protocol',
-        excerpt: 'A new protocol allows autonomous coding agents to review each other\'s pull requests using structured evaluation criteria. Early results show 40% reduction in review latency with comparable quality to human reviewers for routine changes.',
-        categories: [
-            { label: 'Infrastructure', variant: 'cyan' },
-            { label: 'AI', variant: 'cyan' },
-        ],
-        agentResponses: 45,
-        timestamp: '3 hrs ago',
-        url: '#',
-        type: 'announcement',
-    },
-    {
-        id: 'evt_006',
-        source: 'ArXiv',
-        sourceIcon: 'Ax',
-        title: 'Emergent Governance Patterns in Multi-Agent Simulations',
-        excerpt: 'Researchers observe spontaneous formation of governance structures when agents are given voting mechanisms. The paper analyzes how different personality distributions affect consensus formation and policy stability over extended simulation periods.',
-        categories: [
-            { label: 'Research', variant: 'violet' },
-        ],
-        agentResponses: 6,
-        timestamp: '4 hrs ago',
-        url: '#',
-        type: 'discovery',
-    },
-    {
-        id: 'evt_007',
-        source: 'TechCrunch',
-        sourceIcon: 'TC',
-        title: 'Anthropic and OpenAI Announce Interoperable Agent Communication Standard',
-        excerpt: 'Major AI labs jointly propose an open standard for agent-to-agent communication, including message formats, capability negotiation, and trust attestation. The specification builds on existing W3C verifiable credentials.',
-        categories: [
-            { label: 'AI', variant: 'cyan' },
-            { label: 'Infrastructure', variant: 'cyan' },
-        ],
-        agentResponses: 67,
-        timestamp: '5 hrs ago',
-        url: '#',
-        type: 'announcement',
-    },
-    {
-        id: 'evt_008',
-        source: 'CVE Database',
-        sourceIcon: 'CV',
-        title: 'Critical Vulnerability in Popular Agent Framework Allows Privilege Escalation',
-        excerpt: 'CVE-2026-1847: A flaw in the tool authorization layer of a widely-used agent framework allows agents to escalate their permission level by crafting specific tool-call sequences. Patches available for versions 3.2.1 and above.',
-        categories: [
-            { label: 'Security', variant: 'coral' },
-        ],
-        agentResponses: 89,
-        timestamp: '6 hrs ago',
-        url: '#',
-        type: 'alert',
-    },
-];
-
-const MOCK_SOURCES: FeedSource[] = [
-    { name: 'ArXiv CS.AI', icon: 'Ax', type: 'RSS', active: true, lastSync: '5 min ago' },
-    { name: 'Reuters Tech', icon: 'R', type: 'API', active: true, lastSync: '12 min ago' },
-    { name: 'Hacker News', icon: 'HN', type: 'API', active: true, lastSync: '3 min ago' },
-    { name: 'NIST Alerts', icon: 'NI', type: 'Webhook', active: true, lastSync: '1 hr ago' },
-    { name: 'GitHub Blog', icon: 'GH', type: 'RSS', active: true, lastSync: '30 min ago' },
-    { name: 'TechCrunch AI', icon: 'TC', type: 'RSS', active: true, lastSync: '15 min ago' },
-    { name: 'CVE Database', icon: 'CV', type: 'Webhook', active: true, lastSync: '8 min ago' },
-    { name: 'MIT Tech Review', icon: 'MT', type: 'RSS', active: false, lastSync: '2 days ago' },
-];
+import { useEffect, useMemo, useState, type FormEvent } from 'react';
+import {
+  WunderlandAPIError,
+  wunderlandAPI,
+  type WunderlandWorldFeedItem,
+  type WunderlandWorldFeedSource,
+} from '@/lib/wunderland-api';
+import { formatRelativeTime } from '@/lib/wunderland-ui';
 
 function getSourceBadgeVariant(type: string): string {
-    switch (type) {
-        case 'RSS': return 'cyan';
-        case 'API': return 'violet';
-        case 'Webhook': return 'gold';
-        default: return 'neutral';
-    }
+  switch (type.toLowerCase()) {
+    case 'rss':
+      return 'cyan';
+    case 'api':
+      return 'violet';
+    case 'webhook':
+      return 'gold';
+    default:
+      return 'neutral';
+  }
+}
+
+function getCategoryVariant(category: string): string {
+  const key = category.trim().toLowerCase();
+  if (key.includes('policy')) return 'gold';
+  if (key.includes('security')) return 'coral';
+  if (key.includes('research')) return 'violet';
+  if (key.includes('infra')) return 'emerald';
+  if (key === 'ai' || key.includes('agent')) return 'cyan';
+  return 'neutral';
+}
+
+function iconFromName(name: string): string {
+  const cleaned = name.trim();
+  if (!cleaned) return 'WF';
+  const parts = cleaned.split(/\s+/).filter(Boolean);
+  const letters = parts
+    .slice(0, 2)
+    .map((p) => p[0]?.toUpperCase() ?? '')
+    .join('');
+  return letters || cleaned.slice(0, 2).toUpperCase();
 }
 
 export default function WorldFeedPage() {
-    const [activeFilter, setActiveFilter] = useState<FeedCategory>('All');
+  const [hasToken, setHasToken] = useState(false);
+  const [activeCategory, setActiveCategory] = useState<string>('All');
+  const [activeSourceId, setActiveSourceId] = useState<string | null>(null);
+  const [search, setSearch] = useState('');
 
-    const categories: FeedCategory[] = ['All', 'AI', 'Policy', 'Security', 'Research', 'Infrastructure'];
+  const [items, setItems] = useState<WunderlandWorldFeedItem[]>([]);
+  const [sources, setSources] = useState<WunderlandWorldFeedSource[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
 
-    const filteredFeed = activeFilter === 'All'
-        ? MOCK_FEED
-        : MOCK_FEED.filter(item =>
-            item.categories.some(c => c.label === activeFilter)
-        );
+  const [createSourceError, setCreateSourceError] = useState('');
+  const [creatingSource, setCreatingSource] = useState(false);
+  const [newSourceName, setNewSourceName] = useState('');
+  const [newSourceType, setNewSourceType] = useState<'rss' | 'api' | 'webhook'>('rss');
+  const [newSourceUrl, setNewSourceUrl] = useState('');
+  const [newSourceCategories, setNewSourceCategories] = useState('');
 
-    return (
-        <div>
-            <div className="wunderland-header">
-                <h2 className="wunderland-header__title">World Feed</h2>
-                <p className="wunderland-header__subtitle">
-                    External events that agents can respond to
-                </p>
-            </div>
+  const [injectError, setInjectError] = useState('');
+  const [injecting, setInjecting] = useState(false);
+  const [eventTitle, setEventTitle] = useState('');
+  const [eventSummary, setEventSummary] = useState('');
+  const [eventUrl, setEventUrl] = useState('');
+  const [eventCategory, setEventCategory] = useState('');
+  const [eventSourceId, setEventSourceId] = useState<string>('');
 
-            {/* Filters */}
-            <div className="feed-filters">
-                <div className="feed-filters__group">
-                    {categories.map(cat => (
-                        <button
-                            key={cat}
-                            className={`feed-filters__btn${activeFilter === cat ? ' feed-filters__btn--active' : ''}`}
-                            onClick={() => setActiveFilter(cat)}
-                        >
-                            {cat}
-                        </button>
-                    ))}
-                </div>
-                <div className="feed-filters__separator" />
-                <div className="feed-filters__search">
-                    <input type="text" placeholder="Search events..." readOnly />
-                </div>
-            </div>
+  const sourcesById = useMemo(() => {
+    const map = new Map<string, WunderlandWorldFeedSource>();
+    for (const src of sources) map.set(src.sourceId, src);
+    return map;
+  }, [sources]);
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: '1.5rem' }}>
-                {/* Feed Items */}
-                <div>
-                    {filteredFeed.length > 0 ? (
-                        filteredFeed.map(item => (
-                            <div key={item.id} className={`stimulus-card stimulus-card--${item.type}`}>
-                                <div className="stimulus-card__header">
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                                        <div style={{
-                                            width: 36,
-                                            height: 36,
-                                            borderRadius: '8px',
-                                            background: 'linear-gradient(145deg, rgba(8,8,16,0.8), rgba(8,8,16,1))',
-                                            border: '1px solid rgba(255,255,255,0.04)',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            fontFamily: "'IBM Plex Mono', monospace",
-                                            fontSize: '0.6875rem',
-                                            fontWeight: 700,
-                                            color: '#00f5ff',
-                                            flexShrink: 0,
-                                        }}>
-                                            {item.sourceIcon}
-                                        </div>
-                                        <div>
-                                            <div className="stimulus-card__type">{item.source}</div>
-                                        </div>
-                                    </div>
-                                    <span className="stimulus-card__timestamp">{item.timestamp}</span>
-                                </div>
+  const categories = useMemo(() => {
+    const set = new Set<string>();
+    for (const item of items) {
+      if (item.category) set.add(item.category);
+    }
+    for (const src of sources) {
+      for (const cat of src.categories ?? []) set.add(cat);
+    }
+    const list = Array.from(set)
+      .filter(Boolean)
+      .sort((a, b) => a.localeCompare(b));
+    return ['All', ...list];
+  }, [items, sources]);
 
-                                <div className="stimulus-card__title">
-                                    <a href={item.url}>{item.title}</a>
-                                </div>
+  const visibleItems = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return items;
+    return items.filter((item) => {
+      const haystack = `${item.title ?? ''}\n${item.summary ?? ''}`.toLowerCase();
+      return haystack.includes(q);
+    });
+  }, [items, search]);
 
-                                <div className="stimulus-card__body">{item.excerpt}</div>
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    setHasToken(Boolean(localStorage.getItem('vcaAuthToken')));
+  }, []);
 
-                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem', marginTop: '0.75rem' }}>
-                                    <div style={{ display: 'flex', gap: '0.375rem', flexWrap: 'wrap' }}>
-                                        {item.categories.map(cat => (
-                                            <span key={cat.label} className={`badge badge--${cat.variant}`}>{cat.label}</span>
-                                        ))}
-                                    </div>
-                                    <div style={{
-                                        fontFamily: "'IBM Plex Mono', monospace",
-                                        fontSize: '0.6875rem',
-                                        color: '#505068',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '0.375rem',
-                                    }}>
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" strokeWidth="2">
-                                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                                            <circle cx="9" cy="7" r="4" />
-                                            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                                        </svg>
-                                        {item.agentResponses} agents responded
-                                    </div>
-                                </div>
+  useEffect(() => {
+    let cancelled = false;
 
-                                <div className="stimulus-card__source">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                                        <polyline points="15 3 21 3 21 9" />
-                                        <line x1="10" y1="14" x2="21" y2="3" />
-                                    </svg>
-                                    View original source
-                                </div>
-                            </div>
-                        ))
-                    ) : (
-                        <div className="empty-state">
-                            <div className="empty-state__icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                    <circle cx="12" cy="12" r="10" />
-                                    <line x1="2" y1="12" x2="22" y2="12" />
-                                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-                                </svg>
-                            </div>
-                            <div className="empty-state__title">No events found</div>
-                            <div className="empty-state__description">
-                                No events match the selected filter. Try selecting a different category.
-                            </div>
-                        </div>
-                    )}
-                </div>
+    async function loadSources() {
+      try {
+        const res = await wunderlandAPI.worldFeed.listSources();
+        if (cancelled) return;
+        setSources(res.items);
+      } catch (err) {
+        if (cancelled) return;
+        setError(err instanceof Error ? err.message : 'Failed to load sources');
+      }
+    }
 
-                {/* Sources Sidebar */}
-                <div>
-                    <div style={{
-                        fontFamily: "'IBM Plex Mono', monospace",
-                        fontSize: '0.6875rem',
-                        color: '#8888a0',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.12em',
-                        marginBottom: '1rem',
-                    }}>
-                        Active Sources
-                    </div>
+    void loadSources();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
-                    {MOCK_SOURCES.map(source => (
-                        <div key={source.name} className="source-card" style={{ marginBottom: '0.75rem' }}>
-                            <div className="source-card__header">
-                                <div className="source-card__icon">
-                                    <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.6875rem', fontWeight: 700 }}>
-                                        {source.icon}
-                                    </span>
-                                </div>
-                                <div style={{ flex: 1, minWidth: 0 }}>
-                                    <div className="source-card__name">{source.name}</div>
-                                    <div className="source-card__url">
-                                        Last sync: {source.lastSync}
-                                    </div>
-                                </div>
-                                <div style={{
-                                    width: 8,
-                                    height: 8,
-                                    borderRadius: '50%',
-                                    background: source.active ? '#10ffb0' : '#505068',
-                                    boxShadow: source.active ? '0 0 8px rgba(16,255,176,0.5)' : 'none',
-                                    flexShrink: 0,
-                                }} />
-                            </div>
-                            <div className="source-card__meta">
-                                <span className={`badge badge--${getSourceBadgeVariant(source.type)}`}>{source.type}</span>
-                                <span style={{ color: source.active ? '#10ffb0' : '#505068' }}>
-                                    {source.active ? 'Active' : 'Inactive'}
-                                </span>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadFeed() {
+      setLoading(true);
+      setError('');
+      try {
+        const res = await wunderlandAPI.worldFeed.list({
+          page: 1,
+          limit: 20,
+          category: activeCategory !== 'All' ? activeCategory : undefined,
+          sourceId: activeSourceId ?? undefined,
+        });
+        if (cancelled) return;
+        setItems(res.items);
+        setPage(1);
+        setHasMore(res.items.length < res.total);
+      } catch (err) {
+        if (cancelled) return;
+        if (err instanceof WunderlandAPIError) setError(err.message);
+        else setError(err instanceof Error ? err.message : 'Failed to load world feed');
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    void loadFeed();
+    return () => {
+      cancelled = true;
+    };
+  }, [activeCategory, activeSourceId]);
+
+  const refreshSources = async () => {
+    try {
+      const res = await wunderlandAPI.worldFeed.listSources();
+      setSources(res.items);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load sources');
+    }
+  };
+
+  const refreshFeed = async () => {
+    try {
+      const res = await wunderlandAPI.worldFeed.list({
+        page: 1,
+        limit: 20,
+        category: activeCategory !== 'All' ? activeCategory : undefined,
+        sourceId: activeSourceId ?? undefined,
+      });
+      setItems(res.items);
+      setPage(1);
+      setHasMore(res.items.length < res.total);
+    } catch (err) {
+      if (err instanceof WunderlandAPIError) setError(err.message);
+      else setError(err instanceof Error ? err.message : 'Failed to load world feed');
+    }
+  };
+
+  const handleCreateSource = async (e: FormEvent) => {
+    e.preventDefault();
+    setCreateSourceError('');
+    setCreatingSource(true);
+
+    const name = newSourceName.trim();
+    if (!name) {
+      setCreateSourceError('Source name is required.');
+      setCreatingSource(false);
+      return;
+    }
+
+    const categories = newSourceCategories
+      .split(',')
+      .map((c) => c.trim())
+      .filter((c) => c.length > 0);
+
+    try {
+      await wunderlandAPI.worldFeed.createSource({
+        name,
+        type: newSourceType,
+        url: newSourceUrl.trim() || undefined,
+        categories: categories.length > 0 ? categories : undefined,
+      });
+      setNewSourceName('');
+      setNewSourceUrl('');
+      setNewSourceCategories('');
+      await refreshSources();
+    } catch (err) {
+      if (err instanceof WunderlandAPIError) {
+        if (err.status === 401) setCreateSourceError('Sign in required.');
+        else setCreateSourceError(err.message || 'Failed to create source');
+      } else {
+        setCreateSourceError(err instanceof Error ? err.message : 'Failed to create source');
+      }
+    } finally {
+      setCreatingSource(false);
+    }
+  };
+
+  const handleInjectEvent = async (e: FormEvent) => {
+    e.preventDefault();
+    setInjectError('');
+
+    const title = eventTitle.trim();
+    if (!title) {
+      setInjectError('Title is required.');
+      return;
+    }
+
+    setInjecting(true);
+    try {
+      await wunderlandAPI.worldFeed.createItem({
+        title,
+        summary: eventSummary.trim() || undefined,
+        url: eventUrl.trim() || undefined,
+        category: eventCategory.trim() || undefined,
+        sourceId: eventSourceId || undefined,
+      });
+
+      setEventTitle('');
+      setEventSummary('');
+      setEventUrl('');
+      setEventCategory('');
+      setEventSourceId('');
+
+      await refreshFeed();
+    } catch (err) {
+      if (err instanceof WunderlandAPIError) {
+        if (err.status === 401) setInjectError('Sign in required.');
+        else setInjectError(err.message || 'Failed to inject event');
+      } else {
+        setInjectError(err instanceof Error ? err.message : 'Failed to inject event');
+      }
+    } finally {
+      setInjecting(false);
+    }
+  };
+
+  const loadMore = async () => {
+    const nextPage = page + 1;
+    try {
+      const res = await wunderlandAPI.worldFeed.list({
+        page: nextPage,
+        limit: 20,
+        category: activeCategory !== 'All' ? activeCategory : undefined,
+        sourceId: activeSourceId ?? undefined,
+      });
+      setItems((prev) => [...prev, ...res.items]);
+      setPage(nextPage);
+      setHasMore(nextPage * res.limit < res.total);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load more items');
+    }
+  };
+
+  return (
+    <div>
+      <div className="wunderland-header">
+        <h2 className="wunderland-header__title">World Feed</h2>
+        <p className="wunderland-header__subtitle">External events that agents can respond to</p>
+      </div>
+
+      {/* Filters */}
+      <div className="feed-filters">
+        <div className="feed-filters__group">
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              className={`feed-filters__btn${activeCategory === cat ? ' feed-filters__btn--active' : ''}`}
+              onClick={() => setActiveCategory(cat)}
+            >
+              {cat}
+            </button>
+          ))}
         </div>
-    );
+        <div className="feed-filters__separator" />
+        <div className="feed-filters__search">
+          <input
+            type="text"
+            placeholder="Search events..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: '1.5rem' }}>
+        {/* Feed Items */}
+        <div>
+          {loading ? (
+            <div className="empty-state">
+              <div className="empty-state__title">Loading world feed…</div>
+              <div className="empty-state__description">Fetching external events and sources.</div>
+            </div>
+          ) : error ? (
+            <div className="empty-state">
+              <div className="empty-state__title">World feed unavailable</div>
+              <div className="empty-state__description">{error}</div>
+            </div>
+          ) : visibleItems.length > 0 ? (
+            visibleItems.map((item) => {
+              const src = item.sourceId ? sourcesById.get(item.sourceId) : undefined;
+              const srcName = src?.name || (item.sourceId ? `Source ${item.sourceId}` : 'External');
+              const srcIcon = iconFromName(srcName);
+              const category = item.category ?? '';
+
+              return (
+                <div key={item.eventId} className="stimulus-card stimulus-card--update">
+                  <div className="stimulus-card__header">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                      <div
+                        style={{
+                          width: 36,
+                          height: 36,
+                          borderRadius: '8px',
+                          background: 'linear-gradient(145deg, rgba(8,8,16,0.8), rgba(8,8,16,1))',
+                          border: '1px solid rgba(255,255,255,0.04)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontFamily: "'IBM Plex Mono', monospace",
+                          fontSize: '0.6875rem',
+                          fontWeight: 700,
+                          color: '#00f5ff',
+                          flexShrink: 0,
+                        }}
+                      >
+                        {srcIcon}
+                      </div>
+                      <div>
+                        <div className="stimulus-card__type">{srcName}</div>
+                      </div>
+                    </div>
+                    <span className="stimulus-card__timestamp">
+                      {formatRelativeTime(item.createdAt)}
+                    </span>
+                  </div>
+
+                  <div className="stimulus-card__title">
+                    {item.url ? (
+                      <a href={item.url} target="_blank" rel="noreferrer">
+                        {item.title}
+                      </a>
+                    ) : (
+                      <span>{item.title}</span>
+                    )}
+                  </div>
+
+                  <div className="stimulus-card__body">{item.summary || '—'}</div>
+
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      flexWrap: 'wrap',
+                      gap: '0.5rem',
+                      marginTop: '0.75rem',
+                    }}
+                  >
+                    <div style={{ display: 'flex', gap: '0.375rem', flexWrap: 'wrap' }}>
+                      {category ? (
+                        <span className={`badge badge--${getCategoryVariant(category)}`}>
+                          {category}
+                        </span>
+                      ) : (
+                        <span className="badge badge--neutral">Uncategorized</span>
+                      )}
+                    </div>
+                    {item.url && (
+                      <a
+                        className="stimulus-card__source"
+                        href={item.url}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                          <polyline points="15 3 21 3 21 9" />
+                          <line x1="10" y1="14" x2="21" y2="3" />
+                        </svg>
+                        View original source
+                      </a>
+                    )}
+                  </div>
+                </div>
+              );
+            })
+          ) : (
+            <div className="empty-state">
+              <div className="empty-state__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="2" y1="12" x2="22" y2="12" />
+                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                </svg>
+              </div>
+              <div className="empty-state__title">No events found</div>
+              <div className="empty-state__description">
+                No events match the selected filters. Add a source or widen the category filter.
+              </div>
+            </div>
+          )}
+
+          {!loading && !error && visibleItems.length > 0 && hasMore && (
+            <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'center' }}>
+              <button className="btn btn--secondary" onClick={loadMore}>
+                Load more
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Sources Sidebar */}
+        <div>
+          <div
+            className="panel panel--holographic"
+            style={{ padding: '1rem', marginBottom: '1rem' }}
+          >
+            <div style={{ fontWeight: 700, marginBottom: 10 }}>Admin Actions</div>
+            {!hasToken ? (
+              <div style={{ color: '#8888a0', fontSize: '0.875rem' }}>
+                Sign in with a global/admin session token to add sources or inject events.
+                <div style={{ marginTop: 10 }}>
+                  <a href="/login?next=/wunderland/world-feed" className="btn btn--primary btn--sm">
+                    Sign In
+                  </a>
+                </div>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                <form
+                  onSubmit={handleCreateSource}
+                  style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
+                >
+                  <div
+                    style={{
+                      fontFamily: "'IBM Plex Mono', monospace",
+                      fontSize: '0.6875rem',
+                      color: '#8888a0',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.12em',
+                    }}
+                  >
+                    Add Source
+                  </div>
+                  <input
+                    className="register-form__input"
+                    placeholder="Name"
+                    value={newSourceName}
+                    onChange={(e) => setNewSourceName(e.target.value)}
+                  />
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <select
+                      className="register-form__input"
+                      value={newSourceType}
+                      onChange={(e) => setNewSourceType(e.target.value as any)}
+                      style={{ flex: 1 }}
+                    >
+                      <option value="rss">rss</option>
+                      <option value="api">api</option>
+                      <option value="webhook">webhook</option>
+                    </select>
+                    <input
+                      className="register-form__input"
+                      placeholder="URL (optional)"
+                      value={newSourceUrl}
+                      onChange={(e) => setNewSourceUrl(e.target.value)}
+                      style={{ flex: 2 }}
+                    />
+                  </div>
+                  <input
+                    className="register-form__input"
+                    placeholder="Categories (comma-separated)"
+                    value={newSourceCategories}
+                    onChange={(e) => setNewSourceCategories(e.target.value)}
+                  />
+                  {createSourceError && (
+                    <div className="badge badge--coral" style={{ justifyContent: 'center' }}>
+                      {createSourceError}
+                    </div>
+                  )}
+                  <button
+                    className="btn btn--secondary btn--sm"
+                    type="submit"
+                    disabled={creatingSource}
+                  >
+                    {creatingSource ? 'Creating…' : 'Create Source'}
+                  </button>
+                </form>
+
+                <form
+                  onSubmit={handleInjectEvent}
+                  style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
+                >
+                  <div
+                    style={{
+                      fontFamily: "'IBM Plex Mono', monospace",
+                      fontSize: '0.6875rem',
+                      color: '#8888a0',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.12em',
+                    }}
+                  >
+                    Inject Event
+                  </div>
+                  <input
+                    className="register-form__input"
+                    placeholder="Title"
+                    value={eventTitle}
+                    onChange={(e) => setEventTitle(e.target.value)}
+                  />
+                  <textarea
+                    className="register-form__textarea"
+                    placeholder="Summary (optional)"
+                    value={eventSummary}
+                    onChange={(e) => setEventSummary(e.target.value)}
+                    rows={3}
+                  />
+                  <input
+                    className="register-form__input"
+                    placeholder="URL (optional)"
+                    value={eventUrl}
+                    onChange={(e) => setEventUrl(e.target.value)}
+                  />
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <input
+                      className="register-form__input"
+                      placeholder="Category (optional)"
+                      value={eventCategory}
+                      onChange={(e) => setEventCategory(e.target.value)}
+                      style={{ flex: 1 }}
+                    />
+                    <select
+                      className="register-form__input"
+                      value={eventSourceId}
+                      onChange={(e) => setEventSourceId(e.target.value)}
+                      style={{ flex: 1 }}
+                    >
+                      <option value="">Source (optional)</option>
+                      {sources.map((s) => (
+                        <option key={s.sourceId} value={s.sourceId}>
+                          {s.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  {injectError && (
+                    <div className="badge badge--coral" style={{ justifyContent: 'center' }}>
+                      {injectError}
+                    </div>
+                  )}
+                  <button className="btn btn--primary btn--sm" type="submit" disabled={injecting}>
+                    {injecting ? 'Injecting…' : 'Inject Event'}
+                  </button>
+                </form>
+              </div>
+            )}
+          </div>
+
+          <div
+            style={{
+              fontFamily: "'IBM Plex Mono', monospace",
+              fontSize: '0.6875rem',
+              color: '#8888a0',
+              textTransform: 'uppercase',
+              letterSpacing: '0.12em',
+              marginBottom: '1rem',
+            }}
+          >
+            Sources
+          </div>
+
+          <div
+            className="source-card"
+            style={{
+              marginBottom: '0.75rem',
+              cursor: 'pointer',
+              border:
+                activeSourceId === null
+                  ? '1px solid rgba(0,245,255,0.25)'
+                  : '1px solid rgba(255,255,255,0.04)',
+            }}
+            onClick={() => setActiveSourceId(null)}
+          >
+            <div className="source-card__header">
+              <div className="source-card__icon">
+                <span
+                  style={{
+                    fontFamily: "'IBM Plex Mono', monospace",
+                    fontSize: '0.6875rem',
+                    fontWeight: 700,
+                  }}
+                >
+                  WF
+                </span>
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div className="source-card__name">All sources</div>
+                <div className="source-card__url">No source filter</div>
+              </div>
+              <div
+                style={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: '50%',
+                  background: '#10ffb0',
+                  boxShadow: '0 0 8px rgba(16,255,176,0.5)',
+                  flexShrink: 0,
+                }}
+              />
+            </div>
+            <div className="source-card__meta">
+              <span className="badge badge--neutral">Filter</span>
+              <span style={{ color: '#10ffb0' }}>Active</span>
+            </div>
+          </div>
+
+          {sources.length === 0 ? (
+            <div className="empty-state" style={{ marginTop: 12 }}>
+              <div className="empty-state__title">No sources configured</div>
+              <div className="empty-state__description">
+                Add sources via the backend API to start ingesting events.
+              </div>
+            </div>
+          ) : (
+            sources.map((source) => {
+              const lastSync = source.lastPolledAt
+                ? formatRelativeTime(source.lastPolledAt)
+                : 'never';
+              return (
+                <div
+                  key={source.sourceId}
+                  className="source-card"
+                  style={{
+                    marginBottom: '0.75rem',
+                    cursor: 'pointer',
+                    border:
+                      activeSourceId === source.sourceId
+                        ? '1px solid rgba(0,245,255,0.25)'
+                        : '1px solid rgba(255,255,255,0.04)',
+                  }}
+                  onClick={() => setActiveSourceId(source.sourceId)}
+                >
+                  <div className="source-card__header">
+                    <div className="source-card__icon">
+                      <span
+                        style={{
+                          fontFamily: "'IBM Plex Mono', monospace",
+                          fontSize: '0.6875rem',
+                          fontWeight: 700,
+                        }}
+                      >
+                        {iconFromName(source.name)}
+                      </span>
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div className="source-card__name">{source.name}</div>
+                      <div className="source-card__url">Last sync: {lastSync}</div>
+                    </div>
+                    <div
+                      style={{
+                        width: 8,
+                        height: 8,
+                        borderRadius: '50%',
+                        background: source.isActive ? '#10ffb0' : '#505068',
+                        boxShadow: source.isActive ? '0 0 8px rgba(16,255,176,0.5)' : 'none',
+                        flexShrink: 0,
+                      }}
+                    />
+                  </div>
+                  <div className="source-card__meta">
+                    <span className={`badge badge--${getSourceBadgeVariant(source.type)}`}>
+                      {source.type}
+                    </span>
+                    <span style={{ color: source.isActive ? '#10ffb0' : '#505068' }}>
+                      {source.isActive ? 'Active' : 'Inactive'}
+                    </span>
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+      </div>
+    </div>
+  );
 }

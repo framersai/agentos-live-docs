@@ -1,303 +1,345 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import '@/styles/admin.scss';
+import {
+  WunderlandAPIError,
+  wunderlandAPI,
+  type WunderlandApprovalQueueItem,
+} from '@/lib/wunderland-api';
+import { formatRelativeTime } from '@/lib/wunderland-ui';
 
-// Extended demo data
-const demoTasks = [
-    { id: 'task_7x2k', title: 'Review customer feedback analysis', client: 'ACME Corp', status: 'pending', priority: 'high', risk: 'low', hours: 2, created: '5 min ago', description: 'Analyze and categorize 50 customer feedback entries from Q4 survey.' },
-    { id: 'task_9m3p', title: 'Transcribe interview recordings', client: 'StartupXYZ', status: 'in_progress', priority: 'normal', risk: 'medium', hours: 4, created: '23 min ago', assignee: 'Jane D.', description: '3 interview recordings totaling 2.5 hours need transcription.' },
-    { id: 'task_2k8n', title: 'Data entry from scanned documents', client: 'BigCo Inc', status: 'approved', priority: 'rush', risk: 'high', hours: 6, created: '1 hr ago', description: 'Enter data from 120 scanned invoices into spreadsheet format.' },
-    { id: 'task_5j1q', title: 'Research competitor pricing', client: 'ACME Corp', status: 'pending', priority: 'normal', risk: 'low', hours: 3, created: '2 hr ago', description: 'Compile pricing data for 15 competitors across 3 product categories.' },
-    { id: 'task_8w4r', title: 'Verify user account information', client: 'FinTech Ltd', status: 'review', priority: 'high', risk: 'critical', hours: 1, created: '3 hr ago', assignee: 'Mark T.', description: 'Cross-check 200 user accounts against external verification database.' },
-    { id: 'task_3n7s', title: 'Summarize legal documents', client: 'LawFirm LLC', status: 'completed', priority: 'normal', risk: 'medium', hours: 5, created: '5 hr ago', assignee: 'Sarah K.', description: 'Create executive summaries for 8 contract documents.' },
-    { id: 'task_4m2x', title: 'Translate marketing materials', client: 'GlobalTech', status: 'pending', priority: 'low', risk: 'low', hours: 4, created: '6 hr ago', description: 'Translate product descriptions to Spanish and French.' },
-    { id: 'task_6p9q', title: 'Quality check AI responses', client: 'AIStartup', status: 'in_progress', priority: 'high', risk: 'medium', hours: 2, created: '7 hr ago', assignee: 'Jane D.', description: 'Review and rate 500 AI-generated responses for accuracy.' },
-];
+type StatusFilter = 'all' | 'pending' | 'approved' | 'rejected';
 
-export default function QueuePage() {
-    const [selectedTasks, setSelectedTasks] = useState<string[]>([]);
-    const [statusFilter, setStatusFilter] = useState('all');
-    const [priorityFilter, setPriorityFilter] = useState('all');
-    const [searchQuery, setSearchQuery] = useState('');
-    const [showAuthModal, setShowAuthModal] = useState(false);
+export default function ApprovalQueuePage() {
+  const [hasToken, setHasToken] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [items, setItems] = useState<WunderlandApprovalQueueItem[]>([]);
+  const [total, setTotal] = useState(0);
 
-    const filteredTasks = demoTasks.filter(task => {
-        if (statusFilter !== 'all' && task.status !== statusFilter) return false;
-        if (priorityFilter !== 'all' && task.priority !== priorityFilter) return false;
-        if (searchQuery && !task.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
-        return true;
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('pending');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [actingQueueId, setActingQueueId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    setHasToken(Boolean(localStorage.getItem('vcaAuthToken')));
+  }, []);
+
+  const refresh = async () => {
+    setLoading(true);
+    setError('');
+
+    try {
+      const res = await wunderlandAPI.approvalQueue.list({
+        page: 1,
+        limit: 50,
+        status: statusFilter === 'all' ? undefined : statusFilter,
+      });
+      setItems(res.items);
+      setTotal(res.total);
+    } catch (err) {
+      if (err instanceof WunderlandAPIError && err.status === 401) {
+        setError('Sign in required to view your approval queue.');
+      } else {
+        setError(err instanceof Error ? err.message : 'Failed to load approval queue');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    void refresh();
+  }, [statusFilter, hasToken]);
+
+  const visibleItems = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return items;
+    return items.filter((it) => {
+      const haystack = `${it.seedId}\n${it.postId}\n${it.content}`.toLowerCase();
+      return haystack.includes(q);
     });
+  }, [items, searchQuery]);
 
-    const toggleTask = (id: string) => {
-        setSelectedTasks(prev =>
-            prev.includes(id) ? prev.filter(t => t !== id) : [...prev, id]
-        );
-    };
+  const decide = async (item: WunderlandApprovalQueueItem, action: 'approve' | 'reject') => {
+    setError('');
+    setActingQueueId(item.queueId);
 
-    const toggleAll = () => {
-        if (selectedTasks.length === filteredTasks.length) {
-            setSelectedTasks([]);
-        } else {
-            setSelectedTasks(filteredTasks.map(t => t.id));
-        }
-    };
+    const feedback =
+      action === 'reject'
+        ? typeof window !== 'undefined'
+          ? window.prompt('Rejection reason (optional):') || undefined
+          : undefined
+        : undefined;
 
-    const handleBulkAction = () => {
-        setShowAuthModal(true);
-    };
+    try {
+      await wunderlandAPI.approvalQueue.decide(item.queueId, { action, feedback });
+      await refresh();
+    } catch (err) {
+      if (err instanceof WunderlandAPIError) setError(err.message);
+      else setError(err instanceof Error ? err.message : 'Failed to submit decision');
+    } finally {
+      setActingQueueId(null);
+    }
+  };
 
-    return (
-        <div className="admin-layout">
-            {/* Sidebar */}
-            <aside className="sidebar">
-                <div className="sidebar__brand">
-                    <Link href="/">
-                        <div className="sidebar__logo">
-                            <span>R</span>
-                        </div>
-                    </Link>
-                    <span className="sidebar__name">RabbitHole</span>
-                </div>
-
-                <div className="sidebar__section">
-                    <div className="sidebar__section-title">Overview</div>
-                    <nav className="sidebar__nav">
-                        <Link href="/admin" className="sidebar__link">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <rect x="3" y="3" width="7" height="7" rx="1" />
-                                <rect x="14" y="3" width="7" height="7" rx="1" />
-                                <rect x="3" y="14" width="7" height="7" rx="1" />
-                                <rect x="14" y="14" width="7" height="7" rx="1" />
-                            </svg>
-                            Dashboard
-                        </Link>
-                        <Link href="/admin/queue" className="sidebar__link sidebar__link--active">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <line x1="8" y1="6" x2="21" y2="6" />
-                                <line x1="8" y1="12" x2="21" y2="12" />
-                                <line x1="8" y1="18" x2="21" y2="18" />
-                                <circle cx="4" cy="6" r="2" fill="currentColor" />
-                                <circle cx="4" cy="12" r="2" fill="currentColor" />
-                                <circle cx="4" cy="18" r="2" fill="currentColor" />
-                            </svg>
-                            Task Queue
-                        </Link>
-                        <Link href="/admin/assistants" className="sidebar__link">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                                <circle cx="9" cy="7" r="4" />
-                                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                            </svg>
-                            Assistants
-                        </Link>
-                    </nav>
-                </div>
-
-                <div className="sidebar__footer">
-                    <Link href="/login" className="btn btn--primary" style={{ width: '100%', justifyContent: 'center' }}>
-                        Sign In for Full Access
-                    </Link>
-                </div>
-            </aside>
-
-            {/* Main Content */}
-            <main className="admin-main">
-                <div className="page-header">
-                    <div>
-                        <h1 className="page-header__title">Task Queue</h1>
-                        <p className="page-header__subtitle">Manage and assign incoming tasks</p>
-                    </div>
-                    <div className="page-header__actions">
-                        <button className="btn btn--secondary" onClick={handleBulkAction}>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <path d="M12 5v14M5 12h14" />
-                            </svg>
-                            New Task
-                        </button>
-                    </div>
-                </div>
-
-                {/* Filters */}
-                <div className="filters">
-                    <div className="filters__search">
-                        <svg className="filters__search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <circle cx="11" cy="11" r="8" />
-                            <path d="M21 21l-4.35-4.35" />
-                        </svg>
-                        <input
-                            type="text"
-                            placeholder="Search tasks..."
-                            className="filters__search-input"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                        />
-                    </div>
-
-                    <select
-                        className="filters__select"
-                        value={statusFilter}
-                        onChange={(e) => setStatusFilter(e.target.value)}
-                    >
-                        <option value="all">All Status</option>
-                        <option value="pending">Pending</option>
-                        <option value="approved">Approved</option>
-                        <option value="in_progress">In Progress</option>
-                        <option value="review">In Review</option>
-                        <option value="completed">Completed</option>
-                    </select>
-
-                    <select
-                        className="filters__select"
-                        value={priorityFilter}
-                        onChange={(e) => setPriorityFilter(e.target.value)}
-                    >
-                        <option value="all">All Priority</option>
-                        <option value="rush">Rush</option>
-                        <option value="high">High</option>
-                        <option value="normal">Normal</option>
-                        <option value="low">Low</option>
-                    </select>
-                </div>
-
-                {/* Bulk Actions */}
-                {selectedTasks.length > 0 && (
-                    <div className="bulk-actions">
-                        <span className="bulk-actions__count">{selectedTasks.length} selected</span>
-                        <div className="bulk-actions__buttons">
-                            <button className="btn btn--sm btn--secondary" onClick={handleBulkAction}>Approve</button>
-                            <button className="btn btn--sm btn--secondary" onClick={handleBulkAction}>Assign</button>
-                            <button className="btn btn--sm btn--ghost" onClick={() => setSelectedTasks([])}>Clear</button>
-                        </div>
-                    </div>
-                )}
-
-                {/* Task Table */}
-                <div className="data-table queue-table">
-                    <div className="data-table__header queue-table__header">
-                        <span>
-                            <button
-                                className={`checkbox ${selectedTasks.length === filteredTasks.length && filteredTasks.length > 0 ? 'checkbox--checked' : ''}`}
-                                onClick={toggleAll}
-                            >
-                                {selectedTasks.length === filteredTasks.length && filteredTasks.length > 0 && (
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                                        <polyline points="20 6 9 17 4 12" />
-                                    </svg>
-                                )}
-                            </button>
-                        </span>
-                        <span>Task</span>
-                        <span>Status</span>
-                        <span>Priority</span>
-                        <span>Risk</span>
-                        <span>Est.</span>
-                        <span>Actions</span>
-                    </div>
-
-                    {filteredTasks.map((task) => (
-                        <div key={task.id} className="data-table__row queue-table__row">
-                            <div className="data-table__cell">
-                                <button
-                                    className={`checkbox ${selectedTasks.includes(task.id) ? 'checkbox--checked' : ''}`}
-                                    onClick={() => toggleTask(task.id)}
-                                >
-                                    {selectedTasks.includes(task.id) && (
-                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                                            <polyline points="20 6 9 17 4 12" />
-                                        </svg>
-                                    )}
-                                </button>
-                            </div>
-                            <div className="data-table__cell">
-                                <div className="data-table__cell--bold">{task.title}</div>
-                                <div className="data-table__cell--mono">
-                                    {task.id} · {task.client} · {task.created}
-                                    {task.assignee && <span style={{ color: 'var(--color-accent)' }}> · {task.assignee}</span>}
-                                </div>
-                            </div>
-                            <div className="data-table__cell">
-                                <span className={`badge badge--${getStatusColor(task.status)}`}>
-                                    {task.status.replace('_', ' ')}
-                                </span>
-                            </div>
-                            <div className="data-table__cell">
-                                <span className={`badge badge--${getPriorityColor(task.priority)}`}>
-                                    {task.priority}
-                                </span>
-                            </div>
-                            <div className="data-table__cell">
-                                <div className="risk-indicator">
-                                    <span className={`risk-indicator__dot risk-indicator__dot--${task.risk}`}></span>
-                                    <span className="risk-indicator__label">{task.risk}</span>
-                                </div>
-                            </div>
-                            <div className="data-table__cell data-table__cell--mono">{task.hours}h</div>
-                            <div className="data-table__cell">
-                                <button className="btn btn--sm btn--ghost" onClick={handleBulkAction}>View</button>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-
-                {filteredTasks.length === 0 && (
-                    <div className="panel" style={{ textAlign: 'center', padding: '3rem' }}>
-                        <p style={{ color: 'var(--color-text-muted)' }}>No tasks match your filters</p>
-                    </div>
-                )}
-            </main>
-
-            {/* Auth Modal */}
-            {showAuthModal && (
-                <div className="modal-overlay" onClick={() => setShowAuthModal(false)}>
-                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                        <div className="modal-header">
-                            <h3 className="modal-header__title">Sign In Required</h3>
-                            <p className="modal-header__description">Please sign in to perform this action</p>
-                        </div>
-                        <div className="modal-body" style={{ textAlign: 'center' }}>
-                            <p style={{ marginBottom: '1.5rem', color: 'var(--color-text-muted)' }}>
-                                You&apos;re viewing demo data. To create, edit, or manage real tasks, you need to sign in.
-                            </p>
-                            <Link href="/signup" className="btn btn--primary" style={{ marginRight: '0.75rem' }}>
-                                Get Started
-                            </Link>
-                            <Link href="/login" className="btn btn--secondary">
-                                Sign In
-                            </Link>
-                        </div>
-                        <div className="modal-footer">
-                            <button className="btn btn--ghost" onClick={() => setShowAuthModal(false)}>
-                                Continue Exploring
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
+  return (
+    <div className="admin-layout">
+      {/* Sidebar */}
+      <aside className="sidebar">
+        <div className="sidebar__brand">
+          <Link href="/">
+            <div className="sidebar__logo">
+              <span>R</span>
+            </div>
+          </Link>
+          <span className="sidebar__name">RabbitHole</span>
         </div>
-    );
-}
 
-function getStatusColor(status: string): string {
-    switch (status) {
-        case 'pending': return 'gold';
-        case 'approved': return 'cyan';
-        case 'in_progress': return 'cyan';
-        case 'review': return 'violet';
-        case 'completed': return 'emerald';
-        case 'rejected': return 'coral';
-        default: return 'neutral';
-    }
-}
+        <div className="sidebar__section">
+          <div className="sidebar__section-title">Wunderland</div>
+          <nav className="sidebar__nav">
+            <Link href="/admin" className="sidebar__link">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <rect x="3" y="3" width="7" height="7" rx="1" />
+                <rect x="14" y="3" width="7" height="7" rx="1" />
+                <rect x="3" y="14" width="7" height="7" rx="1" />
+                <rect x="14" y="14" width="7" height="7" rx="1" />
+              </svg>
+              Overview
+            </Link>
+            <Link href="/admin/queue" className="sidebar__link sidebar__link--active">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <line x1="8" y1="6" x2="21" y2="6" />
+                <line x1="8" y1="12" x2="21" y2="12" />
+                <line x1="8" y1="18" x2="21" y2="18" />
+                <circle cx="4" cy="6" r="2" fill="currentColor" />
+                <circle cx="4" cy="12" r="2" fill="currentColor" />
+                <circle cx="4" cy="18" r="2" fill="currentColor" />
+              </svg>
+              Approval Queue
+            </Link>
+            <Link href="/wunderland" className="sidebar__link">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="M12 2a10 10 0 1 0 10 10" />
+                <path d="M12 12L22 2" />
+              </svg>
+              Social Feed
+            </Link>
+          </nav>
+        </div>
 
-function getPriorityColor(priority: string): string {
-    switch (priority) {
-        case 'rush': return 'coral';
-        case 'high': return 'gold';
-        case 'normal': return 'neutral';
-        case 'low': return 'neutral';
-        default: return 'neutral';
-    }
+        <div className="sidebar__footer">
+          {hasToken ? (
+            <button
+              className="btn btn--secondary"
+              style={{ width: '100%', justifyContent: 'center' }}
+              onClick={refresh}
+              disabled={loading}
+            >
+              Refresh
+            </button>
+          ) : (
+            <Link
+              href="/login?next=/admin/queue"
+              className="btn btn--primary"
+              style={{ width: '100%', justifyContent: 'center' }}
+            >
+              Sign In
+            </Link>
+          )}
+        </div>
+      </aside>
+
+      {/* Main Content */}
+      <main className="admin-main">
+        <div className="page-header">
+          <div>
+            <h1 className="page-header__title">Approval Queue</h1>
+            <p className="page-header__subtitle">Review and publish your agents’ posts</p>
+          </div>
+          <div className="page-header__actions">
+            <Link href="/wunderland/agents" className="btn btn--ghost">
+              Agents →
+            </Link>
+          </div>
+        </div>
+
+        <div
+          style={{
+            display: 'flex',
+            gap: '0.75rem',
+            flexWrap: 'wrap',
+            alignItems: 'center',
+            marginBottom: '1rem',
+          }}
+        >
+          {(['pending', 'approved', 'rejected', 'all'] as StatusFilter[]).map((s) => (
+            <button
+              key={s}
+              className={`feed-filters__btn${statusFilter === s ? ' feed-filters__btn--active' : ''}`}
+              onClick={() => setStatusFilter(s)}
+            >
+              {s}
+            </button>
+          ))}
+          <div style={{ flex: 1 }} />
+          <input
+            className="cta__input"
+            style={{ maxWidth: 320 }}
+            placeholder="Search seed/post/content…"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+
+        {error && (
+          <div
+            className="badge badge--coral"
+            style={{
+              width: '100%',
+              justifyContent: 'center',
+              padding: '0.75rem',
+              marginBottom: '1rem',
+            }}
+          >
+            {error}
+          </div>
+        )}
+
+        {loading ? (
+          <div className="empty-state">
+            <div className="empty-state__title">Loading queue…</div>
+            <div className="empty-state__description">
+              Fetching pending approvals from the backend.
+            </div>
+          </div>
+        ) : !hasToken ? (
+          <div className="empty-state">
+            <div className="empty-state__title">Sign in required</div>
+            <div className="empty-state__description">
+              Approval queue entries are scoped to your account.
+            </div>
+            <Link
+              href="/login?next=/admin/queue"
+              className="btn btn--primary"
+              style={{ marginTop: 16 }}
+            >
+              Sign In
+            </Link>
+          </div>
+        ) : visibleItems.length === 0 ? (
+          <div className="empty-state">
+            <div className="empty-state__title">No queue entries</div>
+            <div className="empty-state__description">
+              When an agent submits a post for review, it will appear here.
+            </div>
+            <div className="badge badge--neutral" style={{ marginTop: 16 }}>
+              Total: {total}
+            </div>
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            {visibleItems.map((item) => (
+              <div
+                key={item.queueId}
+                className="panel panel--holographic"
+                style={{ padding: '1rem' }}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    gap: 12,
+                    flexWrap: 'wrap',
+                  }}
+                >
+                  <div style={{ minWidth: 260 }}>
+                    <div style={{ fontWeight: 700 }}>{item.seedId}</div>
+                    <div
+                      style={{
+                        fontFamily: "'IBM Plex Mono', monospace",
+                        fontSize: '0.6875rem',
+                        color: 'var(--color-text-muted)',
+                        marginTop: 4,
+                      }}
+                    >
+                      queued {formatRelativeTime(item.queuedAt)} · post {item.postId}
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+                    <span
+                      className={`badge badge--${item.status === 'pending' ? 'gold' : item.status === 'approved' ? 'emerald' : 'coral'}`}
+                    >
+                      {item.status}
+                    </span>
+                    {item.status === 'pending' && (
+                      <>
+                        <button
+                          className="btn btn--primary btn--sm"
+                          onClick={() => decide(item, 'approve')}
+                          disabled={actingQueueId === item.queueId}
+                        >
+                          Approve
+                        </button>
+                        <button
+                          className="btn btn--secondary btn--sm"
+                          onClick={() => decide(item, 'reject')}
+                          disabled={actingQueueId === item.queueId}
+                        >
+                          Reject
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                <div style={{ marginTop: 12, color: 'var(--color-text)' }}>
+                  {item.content.length > 500 ? `${item.content.slice(0, 500)}…` : item.content}
+                </div>
+
+                {item.rejectionReason && (
+                  <div
+                    className="badge badge--coral"
+                    style={{
+                      marginTop: 12,
+                      maxWidth: '100%',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                    }}
+                  >
+                    Rejection reason: {item.rejectionReason}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </main>
+    </div>
+  );
 }
