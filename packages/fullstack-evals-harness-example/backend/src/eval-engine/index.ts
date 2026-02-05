@@ -8,6 +8,7 @@ export * from './regex.grader';
 export * from './json-schema.grader';
 export * from './answer-relevancy.grader';
 export * from './context-relevancy.grader';
+export * from './promptfoo.grader';
 
 import { BaseGrader, GraderConfig } from './base.grader';
 import { ExactMatchGrader } from './exact-match.grader';
@@ -19,6 +20,7 @@ import { RegexGrader } from './regex.grader';
 import { JsonSchemaGrader } from './json-schema.grader';
 import { AnswerRelevancyGrader } from './answer-relevancy.grader';
 import { ContextRelevancyGrader } from './context-relevancy.grader';
+import { PromptfooGrader } from './promptfoo.grader';
 import { LlmService } from '../llm/llm.service';
 
 export type GraderType =
@@ -30,7 +32,8 @@ export type GraderType =
   | 'regex'
   | 'json-schema'
   | 'answer-relevancy'
-  | 'context-relevancy';
+  | 'context-relevancy'
+  | 'promptfoo';
 
 /**
  * Factory function to create grader instances based on type.
@@ -38,7 +41,7 @@ export type GraderType =
 export function createGrader(
   type: GraderType,
   config: GraderConfig,
-  llmService: LlmService
+  llmService: LlmService,
 ): BaseGrader {
   switch (type) {
     case 'exact-match':
@@ -67,6 +70,10 @@ export function createGrader(
 
     case 'context-relevancy':
       return new ContextRelevancyGrader(config, llmService);
+
+    case 'promptfoo':
+      // Promptfoo uses OPENAI_API_KEY from environment
+      return new PromptfooGrader(config, process.env.OPENAI_API_KEY);
 
     default:
       throw new Error(`Unknown grader type: ${type}`);
