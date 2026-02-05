@@ -206,16 +206,10 @@ async function bootstrap(): Promise<void> {
   process.on('SIGTERM', () => shutdown('SIGTERM'));
 }
 
-// ── Auto-start when run directly ───────────────────────────────────────────
-const isMainModule =
-  import.meta.url === `file://${process.argv[1]}` ||
-  import.meta.url === `file:///${process.argv[1]?.replace(/\\/g, '/')}`;
-
-if (isMainModule) {
-  bootstrap().catch((error: unknown) => {
-    logger.error('Failed to start server: %s', getErrorMessage(error));
-    process.exit(1);
-  });
-}
+// ── Auto-start ────────────────────────────────────────────────────────────────
+bootstrap().catch((error: unknown) => {
+  logger.error('Failed to start server: %s', getErrorMessage(error));
+  process.exit(1);
+});
 
 export { bootstrap };

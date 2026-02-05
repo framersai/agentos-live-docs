@@ -11,7 +11,6 @@ import type { Request, Response } from 'express';
 import { Public } from '../../common/decorators/public.decorator.js';
 import { getLlmStatus, getStorageStatus } from '../../features/system/system.routes.js';
 import { getLlmBootstrapStatus } from '../../core/llm/llm.status.js';
-// @ts-expect-error -- prompt.routes is a plain .js file with no type declarations
 import { GET as getPromptFile } from '../../features/prompts/prompt.routes.js';
 
 /**
