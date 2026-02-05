@@ -42,7 +42,7 @@ const GRADER_TYPES: {
     label: 'Faithfulness',
     description: 'Checks if output is faithful to provided context',
     category: 'llm-powered',
-    inspiration: 'From the RAGAS framework (Es et al., 2023). Extracts atomic claims from the output and verifies each is supported by the provided context, measuring hallucination rate.',
+    inspiration: 'RAGAS-style metric (Es et al., 2023). Extracts atomic claims from the output and verifies each is supported by the provided context, measuring hallucination rate.',
     reference: 'https://arxiv.org/abs/2309.15217',
   },
   {
@@ -72,7 +72,7 @@ const GRADER_TYPES: {
     label: 'Answer Relevancy',
     description: 'Measures if the answer is relevant to the question',
     category: 'llm-powered',
-    inspiration: 'From the RAGAS framework (Es et al., 2023). Generates hypothetical questions from the answer and measures cosine similarity to the original question. Penalizes vague or off-topic responses.',
+    inspiration: 'RAGAS-style metric (Es et al., 2023). Generates hypothetical questions from the answer and measures cosine similarity to the original question. Penalizes vague or off-topic responses.',
     reference: 'https://arxiv.org/abs/2309.15217',
   },
   {
@@ -80,7 +80,7 @@ const GRADER_TYPES: {
     label: 'Context Relevancy',
     description: 'Measures if retrieved context is relevant to the question',
     category: 'llm-powered',
-    inspiration: 'From the RAGAS framework (Es et al., 2023). Evaluates whether retrieved passages contain information needed to answer the question, measuring retrieval quality.',
+    inspiration: 'RAGAS-style metric (Es et al., 2023). Evaluates whether retrieved passages contain information needed to answer the question, measuring retrieval quality.',
     reference: 'https://arxiv.org/abs/2309.15217',
   },
   {
@@ -337,8 +337,8 @@ export default function GradersPage() {
               <ul className="mt-1 space-y-0.5 text-xs">
                 <li><strong>LLM Judge</strong> — evaluates against a rubric (<a href="https://arxiv.org/abs/2306.05685" target="_blank" rel="noopener" className="underline hover:text-foreground">LLM-as-Judge</a>)</li>
                 <li><strong>Semantic Similarity</strong> — embedding cosine distance (<a href="https://arxiv.org/abs/1908.10084" target="_blank" rel="noopener" className="underline hover:text-foreground">Sentence-BERT</a>)</li>
-                <li><strong>Faithfulness</strong> — claims grounded in context (<a href="https://arxiv.org/abs/2309.15217" target="_blank" rel="noopener" className="underline hover:text-foreground">RAGAS</a>)</li>
-                <li><strong>Answer/Context Relevancy</strong> — alignment metrics (<a href="https://arxiv.org/abs/2309.15217" target="_blank" rel="noopener" className="underline hover:text-foreground">RAGAS</a>)</li>
+                <li><strong>Faithfulness</strong> — claims grounded in context (<a href="https://arxiv.org/abs/2309.15217" target="_blank" rel="noopener" className="underline hover:text-foreground">RAGAS-style</a>)</li>
+                <li><strong>Answer/Context Relevancy</strong> — alignment metrics (<a href="https://arxiv.org/abs/2309.15217" target="_blank" rel="noopener" className="underline hover:text-foreground">RAGAS-style</a>)</li>
               </ul>
             </div>
             <div className="border border-border p-3 rounded-md bg-blue-500/5">
