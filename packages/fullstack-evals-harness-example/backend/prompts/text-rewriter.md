@@ -4,7 +4,7 @@ description: Rewrite input text in a different style while preserving meaning
 runner: llm_prompt
 user_template: '{{input}}'
 recommended_graders: semantic-similarity:0.7, llm-judge-helpful:0.3
-recommended_datasets: context-qa
+recommended_datasets: text-rewriting, context-qa
 grader_rationale: Semantic similarity is the core measure — moderate threshold (>70%) rewards creative rewrites while ensuring meaning preservation. High threshold (>85%) penalizes too-divergent rewrites. Helpfulness judges readability.
 notes: Use semantic-similarity to measure output distance from input. Lower similarity = more creative rewrite. Higher = safer paraphrase. Tune threshold based on desired rewrite aggressiveness.
 ---

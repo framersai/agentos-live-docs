@@ -6,7 +6,7 @@ user_template: '{{input}}'
 parent_prompt: summarizer
 variant: concise
 recommended_graders: semantic-similarity:0.5, faithfulness:0.3, llm-judge-helpful:0.2
-recommended_datasets: research-paper-extraction
+recommended_datasets: summarization, research-paper-extraction
 grader_rationale: Semantic similarity is critical — a one-sentence summary must capture the core meaning. Faithfulness ensures no hallucination in the compressed output. Helpfulness is secondary.
 notes: Compare against base summarizer to measure information retention at minimal length.
 ---

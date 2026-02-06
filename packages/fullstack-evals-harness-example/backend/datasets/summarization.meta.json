@@ -1,0 +1,4 @@
+{
+  "name": "Summarization",
+  "description": "News articles and research findings for summarization evaluation. Tests whether models produce accurate, concise, and faithful summaries."
+}

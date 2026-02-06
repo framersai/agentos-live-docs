@@ -22,7 +22,9 @@ Experiments (orchestrate the full run)
 Experiment analytics (pass rates, weighted scores, comparisons)
 ```
 
-Datasets are **CSV files** in `backend/datasets/` — portable, git-trackable, and editable in any spreadsheet app. Candidates are **markdown files** in `backend/prompts/`. Graders and experiment results live in SQLite.
+Datasets are **CSV files** in `backend/datasets/` — portable, git-trackable, and editable in any spreadsheet app. Candidates are **markdown files** in `backend/prompts/`. Graders are **YAML files** in `backend/graders/`. All three are file-based: editable on disk, in the UI, or via API — changes write back to disk immediately.
+
+**SQLite stores only runtime data**: experiment runs, results, and settings. You can safely delete the database and start fresh — all definitions reload from disk automatically.
 
 ### The Core Loop
 
@@ -37,7 +39,7 @@ Datasets are **CSV files** in `backend/datasets/` — portable, git-trackable, a
 Each prompt file specifies recommended graders with weights:
 
 ```
-recommended_graders: faithfulness-strict:0.4, extraction-completeness:0.3, llm-judge-helpful:0.3
+recommended_graders: faithfulness:0.4, extraction-completeness:0.3, llm-judge-helpful:0.3
 grader_rationale: Faithfulness is highest — the full format must stay grounded.
 ```
 
@@ -85,7 +87,7 @@ curl -X POST http://localhost:3021/api/presets/seed
 This creates:
 - 7 graders (faithfulness, LLM judge, semantic similarity, JSON schema, extraction completeness)
 
-Datasets are loaded automatically from `backend/datasets/` on startup (2 included). Prompts are loaded from `backend/prompts/` (6 included). Or use the UI to load grader presets individually.
+Datasets are loaded automatically from `backend/datasets/` on startup (4 included). Prompts are loaded from `backend/prompts/` (7 included: 4 base + 3 variants). Graders are loaded from `backend/graders/` (10 included). Or use the UI to load grader presets individually.
 
 ---
 
@@ -112,9 +114,11 @@ Settings are stored in the database — no `.env` file needed. Changes take effe
 
 Go to **Datasets** tab. Datasets are CSV files in `backend/datasets/`.
 
-**2 included:**
-- `context-qa.csv` — 3 questions with provided context (for faithfulness testing)
+**4 included:**
+- `context-qa.csv` — 8 questions with provided context (for faithfulness testing)
 - `research-paper-extraction.csv` — 5 real AI paper abstracts for structured JSON extraction
+- `summarization.csv` — 6 news/research passages for summarization evaluation
+- `text-rewriting.csv` — 6 dense/technical passages for rewriting evaluation
 
 **CSV format** — 4 columns:
 ```csv
@@ -138,21 +142,19 @@ Without a sidecar, the name is derived from the filename (hyphens → spaces, ti
 
 ### Step 3: Create or Load Graders
 
-Go to **Graders** tab. Graders are loaded from `backend/graders/*.yaml` (13 included in this repo), and 7 quick-load templates are available under `/api/presets/graders`.
+Go to **Graders** tab. Graders are **YAML files** in `backend/graders/` (10 included). All CRUD operations write back to YAML on disk. 7 quick-load templates are also available under `/api/presets/graders`.
 
 **LLM-powered graders (require configured LLM):**
-- `Faithfulness (Strict)` — RAGAS-inspired, 90%+ claims must be context-supported
-- `Faithfulness (Moderate)` — 70%+ claims supported
+- `Faithfulness` — RAGAS-style, checks claims are grounded in context (threshold adjustable in UI)
 - `Helpfulness Judge` — LLM evaluates if response is helpful and accurate
-- `Semantic Match (High)` — embedding cosine similarity > 85%
-- `Semantic Match (Moderate)` — embedding cosine similarity > 70%
+- `Semantic Similarity` — embedding cosine distance (threshold adjustable in UI)
 - `Extraction Completeness` — LLM evaluates extraction quality and grounding
 
 **Deterministic grader:**
 - `Paper Extraction Schema` — validates JSON output against the research paper schema
 
 **Custom graders:**
-Create your own with any type. For LLM Judge, write a custom rubric describing pass/fail criteria.
+Create your own with any type. Thresholds are adjustable per grader in the UI — no need for duplicate strict/moderate variants. For LLM Judge, write a custom rubric describing pass/fail criteria.
 
 ### Step 4: Prompt Files (Candidates)
 
@@ -166,7 +168,7 @@ description: Comprehensive analysis with integrity rules
 runner: llm_prompt
 temperature: 0
 user_template: "{{input}}"
-recommended_graders: faithfulness-strict:0.4, extraction-completeness:0.3, llm-judge-helpful:0.3
+recommended_graders: faithfulness:0.4, extraction-completeness:0.3, llm-judge-helpful:0.3
 recommended_datasets: research-paper-extraction, context-qa
 grader_rationale: Faithfulness is highest — the full format must stay grounded.
 notes: Compare against analyst-citations for structured vs citation-focused output.
@@ -176,20 +178,31 @@ You are a technical analyst...
 
 **Template variables:** `{{input}}`, `{{context}}`, `{{expected}}`, `{{metadata.field}}`
 
-**6 prompts included:**
+**7 prompts included (4 base + 3 variants):**
 
-| Prompt | Type | Purpose |
-|--------|------|---------|
-| `analyst-full` | Analysis | Full structured (7 output sections) |
-| `analyst-citations` | Analysis | Citation-focused with bracket format |
-| `summarizer` | Summarization | Concise text summarization |
-| `json-extractor-strict` | Extraction | Grounded JSON extraction, temp 0 |
-| `json-extractor-loose` | Extraction | Inferential extraction, temp 0.3 |
-| `text-rewriter` | Rewriting | Style rewrite preserving meaning |
+| Prompt | Type | Purpose | Datasets |
+|--------|------|---------|----------|
+| `analyst-full` | Analysis | Multi-lens structured analysis (7 output sections) | research-paper-extraction, context-qa |
+| `analyst-citations` | Analysis | Variant: citation-grounded with bracket format | research-paper-extraction, context-qa |
+| `json-extractor-strict` | Extraction | Grounded JSON extraction, temp 0, nulls for unknowns | research-paper-extraction |
+| `json-extractor-loose` | Extraction | Variant: inferential extraction, fills gaps with reasoning | research-paper-extraction |
+| `summarizer` | Summarization | Balanced 1-3 sentence summary | summarization, research-paper-extraction |
+| `summarizer-concise` | Summarization | Variant: ultra-concise single sentence | summarization, research-paper-extraction |
+| `text-rewriter` | Rewriting | Style rewrite preserving meaning | text-rewriting, context-qa |
+
+**Key comparisons to try:**
+- **Strict vs Loose extraction** — same schema, but strict leaves null for unknowns while loose infers. Faithfulness grader catches the difference.
+- **Analyst-full vs analyst-citations** — structured multi-lens analysis vs citation-grounded evidence. Which scores higher on faithfulness?
+- **Summarizer vs summarizer-concise** — does brevity hurt faithfulness or semantic similarity?
 
 **To add a new prompt:** Create a `.md` file in `backend/prompts/` and click "Reload from Disk" in the UI. To edit, change the file and reload.
 
-**Prompt variations:** In the Candidates tab, use `+` for a manual variant clone or `AI` to generate multiple variants at once. AI generation accepts per-run config (count/instructions/model params) and defaults to current Settings values when fields are left blank.
+**Prompt variants:** Variants are regular `.md` files in the same `backend/prompts/` directory, named `{parent}-{label}.md`. Create them via:
+- **Manual**: Click `+ Variant` on a parent card, edit the system prompt
+- **AI Generate**: Click `AI Gen`, configure count/instructions/model, generate in batch
+- **Disk**: Create a `.md` file with `parent_prompt: parent-id` and `variant: label` in frontmatter
+
+All methods immediately write a `.md` file to disk. Edit variants the same way as any prompt — change the file or use the UI. Delete by removing the file or using the UI delete button.
 
 **Testing inline:** Each prompt has a "Test" button. Enter sample input, click play, see the output and latency.
 
@@ -284,17 +297,20 @@ POST /api/presets/graders/faithfulness-strict/load
 ### Available Presets
 
 **Grader Presets** (7):
-- `faithfulness-strict` (90%), `faithfulness-moderate` (70%)
+- `faithfulness` — RAGAS-style context faithfulness (threshold adjustable)
 - `llm-judge-helpful`
-- `semantic-high` (85%), `semantic-moderate` (70%)
+- `semantic-similarity` — embedding cosine similarity (threshold adjustable)
 - `json-extraction-schema` — validates paper extraction JSON
 - `extraction-completeness` — LLM judge for extraction quality
 
-**Dataset Files** (2 in `backend/datasets/`):
+**Dataset Files** (4 in `backend/datasets/`):
 Loaded automatically on startup. Add more by placing CSV files in the directory.
 
-**Prompt Files** (6 in `backend/prompts/`):
-Loaded automatically on startup. See the Candidates tab or the `.md` files for details.
+**Grader Files** (10 in `backend/graders/`):
+Loaded automatically on startup. All CRUD operations write back to YAML. Thresholds are adjustable per grader in the UI.
+
+**Prompt Files** (7 in `backend/prompts/`, 4 base + 3 variants):
+Loaded automatically on startup. Variants live alongside parents in the same directory. See the Candidates tab or the `.md` files for details.
 
 ---
 
@@ -430,7 +446,8 @@ curl -X POST localhost:3021/api/experiments \
 │       └── lib/                 # API client, types
 ├── backend/
 │   ├── datasets/                # CSV dataset files + optional .meta.json sidecars
-│   ├── prompts/                 # 6 markdown prompt files (candidates)
+│   ├── graders/                 # 10 YAML grader files (editable, CRUD writes back to YAML)
+│   ├── prompts/                 # 7 markdown prompt files (4 base + 3 variants, CRUD writes back to .md)
 │   └── src/
 │       ├── database/            # IDbAdapter interface + SQLite implementation
 │       ├── datasets/            # DatasetLoaderService (reads CSV files from disk)
@@ -486,3 +503,9 @@ Create an experiment with 2+ candidates, same dataset and graders. After complet
 
 **What grader should I use?**
 Each prompt file includes `recommended_graders` with weights and a `grader_rationale` explaining why. Start there.
+
+**What's stored on disk vs SQLite?**
+Disk: datasets (CSV), prompts (markdown), graders (YAML) — these are the source of truth for all definitions. SQLite: experiment runs, experiment results, and settings only. You can delete the SQLite database and start fresh without losing any prompts, graders, or datasets.
+
+**Are AI-generated variants saved to disk?**
+Yes. Every variant (manual or AI-generated) is immediately written as a `.md` file in `backend/prompts/`. They're regular files you can edit, delete, or version-control like any other prompt.

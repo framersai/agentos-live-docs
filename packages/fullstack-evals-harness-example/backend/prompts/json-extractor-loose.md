@@ -3,6 +3,8 @@ name: Loose JSON Extractor (Inferential)
 description: Extraction with inference — fills gaps using reasoning. For comparison with strict mode.
 runner: llm_prompt
 temperature: 0.3
+parent_prompt: json-extractor-strict
+variant: loose
 user_template: "Extract structured information from the following document:\n\n{{input}}"
 recommended_graders: json-extraction-schema:0.4, extraction-completeness:0.4, faithfulness:0.2
 recommended_datasets: research-paper-extraction

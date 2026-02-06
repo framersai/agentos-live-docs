@@ -1,0 +1,4 @@
+{
+  "name": "Text Rewriting",
+  "description": "Dense or technical passages for rewriting evaluation. Tests whether models preserve meaning while improving clarity and readability."
+}

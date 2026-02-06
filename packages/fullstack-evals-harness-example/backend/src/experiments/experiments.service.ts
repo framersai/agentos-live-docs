@@ -92,6 +92,19 @@ export class ExperimentsService {
       candidates = this.promptLoaderService.findMany(dto.candidateIds);
     }
 
+    // Ensure dataset exists in SQLite (file-based datasets skip the DB)
+    const existingRow = await this.db.findDatasetById(dto.datasetId);
+    if (!existingRow) {
+      const now = new Date();
+      await this.db.insertDataset({
+        id: dataset.id,
+        name: dataset.name,
+        description: dataset.description || null,
+        createdAt: now,
+        updatedAt: now,
+      });
+    }
+
     const experiment = await this.db.insertExperiment({
       id: randomUUID(),
       name: dto.name || `Experiment ${new Date().toISOString().slice(0, 16)}`,

@@ -24,13 +24,37 @@ graph LR
 
 This matters for a skills demo: SQLite means zero setup (no Docker, no database server), but the code is production-ready if you want to scale later.
 
-**Source data** lives on disk: datasets as CSV files in `backend/datasets/`, prompts as markdown in `backend/prompts/`, graders as YAML in `backend/graders/`. **Runtime data** lives in SQLite: experiments, results, settings.
+### Storage Model: Disk vs SQLite
+
+There are two categories of data, stored in different places:
+
+**Disk (source of truth for definitions)** — human-editable, git-trackable:
+
+| What | Format | Directory | Editable via |
+|------|--------|-----------|-------------|
+| Datasets | `.csv` + optional `.meta.json` | `backend/datasets/` | Any text editor, spreadsheet, or UI upload |
+| Candidates (prompts) | `.md` with YAML frontmatter | `backend/prompts/` | Text editor, UI detail page, or AI variant generation |
+| Graders | `.yaml` | `backend/graders/` | Text editor or UI |
+
+All CRUD operations (create, update, delete) write back to disk immediately. The `DatasetLoaderService`, `PromptLoaderService`, and `GraderLoaderService` read files on startup and keep an in-memory cache that stays in sync with disk writes.
+
+**Variants** are regular `.md` files stored alongside their parent in `backend/prompts/`. The naming convention is `{parent-id}-{label}.md` (e.g., `summarizer-concise.md` is a variant of `summarizer.md`). They can be created manually, via the UI, or via AI generation — all methods write a `.md` file to disk. Delete a variant by removing its file or using the UI delete button.
+
+**SQLite (runtime data only)** — not human-editable, disposable:
+
+| What | Purpose |
+|------|---------|
+| `experiments` | Experiment run configs (dataset, candidates, graders, status) |
+| `experiment_results` | Individual grader evaluations per test case per candidate |
+| `settings` | Runtime LLM config (provider, model, API key, temperature) |
+
+The database file lives at `backend/data/evals.sqlite` (configurable via `DATABASE_PATH`). You can safely delete it to start fresh — all definitions (prompts, graders, datasets) live on disk and reload automatically.
+
+Schema tables for datasets, test cases, graders, and candidates exist but are unused — the loader services read from disk directly.
 
 Schema uses straightforward relational design:
 - `experiments` → `experiment_results` (one-to-many)
 - `experiment_results` references test case IDs (CSV-derived), grader IDs (YAML-derived), and optionally candidates
-
-Dataset, test case, and grader tables exist in the schema but are unused — the `DatasetLoaderService`, `PromptLoaderService`, and `GraderLoaderService` read files directly.
 
 ### Database Adapter Interface
 
@@ -73,16 +97,14 @@ Graders are YAML files in `backend/graders/`. The `GraderLoaderService` reads th
 ### Storage Format
 
 ```yaml
-# backend/graders/faithfulness-strict.yaml
-name: Faithfulness (Strict)
-description: All claims must be supported by context (>90%)
-type: faithfulness
+# backend/graders/faithfulness.yaml
+name: Faithfulness
+description: Checks that response claims are grounded in provided context.
+  Adjust threshold in the UI.
+type: promptfoo
 config:
-  threshold: 0.9
-inspiration: |
-  RAGAS framework (Es et al., 2023). Extracts atomic claims from the output
-  and verifies each is supported by the provided context.
-reference: https://arxiv.org/abs/2309.15217
+  assertion: context-faithfulness
+  threshold: 0.8
 ```
 
 ### Base Abstraction
@@ -203,7 +225,7 @@ Variants can be created manually or generated in batches via `POST /api/prompts/
 
 ### Presets
 
-Candidates are now file-based markdown prompts in `backend/prompts/`. Six included: `analyst-full`, `analyst-citations`, `summarizer`, `json-extractor-strict`, `json-extractor-loose`, `text-rewriter`.
+Candidates are file-based markdown prompts in `backend/prompts/`. Seven included (4 base + 3 variants): `analyst-full`, `analyst-citations`, `json-extractor-strict`, `json-extractor-loose`, `summarizer`, `summarizer-concise`, `text-rewriter`.
 
 ### Backwards Compatibility
 
