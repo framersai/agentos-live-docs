@@ -1,10 +1,13 @@
 /**
  * @file KeyholeIcon.tsx
  * @description Rabbit Hole brand icon - keyhole with rabbit silhouette
- * Uses champagne gold gradient that works on both light and dark backgrounds
+ * Uses champagne gold gradient, theme-aware inner cutout for light/dark modes
  */
 
+'use client';
+
 import React from 'react';
+import { useTheme } from '@/components/ThemeProvider';
 
 interface KeyholeIconProps {
   size?: number;
@@ -13,8 +16,16 @@ interface KeyholeIconProps {
 }
 
 export function KeyholeIcon({ size = 64, className, id = 'keyhole' }: KeyholeIconProps) {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   // Unique ID prefix to avoid gradient conflicts when multiple icons are rendered
   const gradientId = `${id}-${size}`;
+
+  // In dark mode: cream cutout contrasts against dark bg
+  // In light mode: dark obsidian cutout contrasts against light bg
+  const innerColors = isLight
+    ? { start: '#1a1625', mid: '#12101a', end: '#08050a' }
+    : { start: '#faf7f2', mid: '#f5f0e8', end: '#ede8e0' };
 
   return (
     <svg
@@ -36,11 +47,11 @@ export function KeyholeIcon({ size = 64, className, id = 'keyhole' }: KeyholeIco
           <stop offset="100%" stopColor="#8b6914" />
         </linearGradient>
 
-        {/* Inner cutout - warm cream with subtle gradient */}
+        {/* Inner cutout - adapts to theme for contrast */}
         <linearGradient id={`innerGrad-${gradientId}`} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#faf7f2" />
-          <stop offset="50%" stopColor="#f5f0e8" />
-          <stop offset="100%" stopColor="#ede8e0" />
+          <stop offset="0%" stopColor={innerColors.start} />
+          <stop offset="50%" stopColor={innerColors.mid} />
+          <stop offset="100%" stopColor={innerColors.end} />
         </linearGradient>
       </defs>
 

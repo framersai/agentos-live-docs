@@ -739,6 +739,33 @@
     &__brand {
         padding: $sp-6;
         border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        display: flex;
+        align-items: center;
+        gap: $sp-3;
+    }
+
+    &__title {
+        font-family: $font-display;
+        font-weight: 700;
+        font-size: 1.125rem;
+        letter-spacing: 0.05em;
+    }
+
+    &__subtitle {
+        @include mono-text;
+        font-size: 0.625rem;
+        color: $text-dim;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+    }
+
+    &__footer-text {
+        @include mono-text;
+        font-size: 0.5625rem;
+        color: $text-dim;
+        margin-top: $sp-4;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
     }
 
     &__logo {
@@ -813,6 +840,16 @@
 
 .wunderland-nav {
     padding: $sp-4 $sp-2;
+
+    &__section-title {
+        @include mono-text;
+        font-size: 0.625rem;
+        color: $text-dim;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        padding: $sp-2 $sp-4;
+        margin-bottom: $sp-1;
+    }
 
     &__item {
         display: flex;
@@ -1131,5 +1168,478 @@
         font-size: 0.9375rem;
         max-width: 300px;
         margin: 0 auto;
+    }
+}
+
+// ============================================================================
+// WUNDERLAND LIGHT MODE OVERRIDES
+// ============================================================================
+
+html.light {
+    // Sidebar
+    .wunderland-sidebar {
+        background: linear-gradient(180deg, #ffffff, #f5f3ef);
+        border-right: 1px solid rgba(0, 0, 0, 0.06);
+    }
+
+    .wunderland-sidebar__brand {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    }
+
+    .wunderland-sidebar__logo {
+        background: #ffffff;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+
+        span {
+            background: linear-gradient(135deg, $rh-gold-dark, $rh-gold, $rh-gold-light);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    }
+
+    .wunderland-sidebar__title {
+        color: #1a1a2e;
+    }
+
+    .wunderland-sidebar__subtitle {
+        color: rgba(26, 26, 46, 0.4);
+    }
+
+    .wunderland-sidebar__footer {
+        border-top: 1px solid rgba(0, 0, 0, 0.06);
+        color: rgba(26, 26, 46, 0.4);
+    }
+
+    .wunderland-sidebar__footer-text {
+        color: rgba(26, 26, 46, 0.3);
+    }
+
+    .wunderland-nav__section-title {
+        color: rgba(26, 26, 46, 0.35);
+    }
+
+    .wunderland-sidebar-toggle {
+        background: #ffffff;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        color: rgba(26, 26, 46, 0.5);
+
+        &:hover {
+            color: $rh-gold-dark;
+        }
+    }
+
+    .wunderland-sidebar-overlay--visible {
+        background: rgba(0, 0, 0, 0.3);
+    }
+
+    // Navigation items
+    .wunderland-nav__item {
+        color: rgba(26, 26, 46, 0.6);
+
+        &:hover {
+            background: rgba(0, 0, 0, 0.03);
+            color: #1a1a2e;
+        }
+
+        &--active {
+            background: rgba($rh-gold, 0.08);
+            color: $rh-gold-dark;
+        }
+    }
+
+    // Header
+    .wunderland-header__title {
+        color: #1a1a2e;
+    }
+
+    .wunderland-header__subtitle {
+        color: rgba(26, 26, 46, 0.6);
+    }
+
+    // Hero
+    .wunderland-hero__badge {
+        background: rgba(22, 163, 74, 0.08);
+        border-color: rgba(22, 163, 74, 0.2);
+        color: #16a34a;
+    }
+
+    .wunderland-hero__title {
+        color: #1a1a2e;
+    }
+
+    .wunderland-hero__subtitle {
+        color: rgba(26, 26, 46, 0.6);
+    }
+
+    .pulse-dot {
+        background: #16a34a;
+        box-shadow: 0 0 10px rgba(22, 163, 74, 0.5);
+    }
+
+    // Feature pills
+    .feature-pill {
+        background: #ffffff;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+
+        &__text {
+            strong {
+                color: #1a1a2e;
+            }
+
+            span {
+                color: rgba(26, 26, 46, 0.5);
+            }
+        }
+    }
+
+    // Sections
+    .wunderland-section--alt {
+        background: rgba(0, 0, 0, 0.02);
+    }
+
+    .section-title {
+        color: #1a1a2e;
+    }
+
+    .section-number {
+        background: linear-gradient(135deg, $rh-gold-dark, $rh-gold, $rh-gold-light);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    // Quickstart
+    .quickstart-step {
+        background: #ffffff;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+
+        &__number {
+            background: $rh-gold;
+            color: white;
+        }
+
+        h3 {
+            color: #1a1a2e;
+        }
+    }
+
+    .terminal--compact code {
+        color: $rh-gold-dark;
+    }
+
+    // Auth cards
+    .auth-card {
+        background: #ffffff;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+
+        &__icon {
+            color: $rh-gold-dark;
+        }
+
+        &__header h3 {
+            color: #1a1a2e;
+        }
+
+        &__description {
+            color: rgba(26, 26, 46, 0.6);
+        }
+    }
+
+    .auth-feature__check {
+        color: #16a34a;
+    }
+
+    // Architecture diagram
+    .architecture-diagram {
+        background: #ffffff;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    }
+
+    .arch-layer__title {
+        color: rgba(26, 26, 46, 0.5);
+    }
+
+    .arch-layer--agents .arch-layer__title {
+        color: $rh-gold-dark;
+    }
+
+    .arch-layer--gateway .arch-layer__title {
+        color: #d97706;
+    }
+
+    .arch-layer--humans .arch-layer__title {
+        color: #16a34a;
+    }
+
+    .arch-node {
+        background: #f5f5f7;
+        border: 1px solid rgba(0, 0, 0, 0.04);
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.04);
+
+        &__label {
+            color: #1a1a2e;
+        }
+
+        &__sublabel {
+            color: rgba(26, 26, 46, 0.5);
+        }
+
+        &__badge {
+            background: rgba($rh-gold, 0.08);
+            border-color: rgba($rh-gold, 0.2);
+            color: $rh-gold-dark;
+        }
+    }
+
+    .arch-connector__line {
+        background: linear-gradient(180deg, $rh-gold, $rh-gold-dark);
+    }
+
+    .arch-connector__label {
+        color: rgba(26, 26, 46, 0.4);
+    }
+
+    .arch-principle {
+        h4 {
+            background: linear-gradient(135deg, $rh-gold-dark, $rh-gold, $rh-gold-light);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        p {
+            color: rgba(26, 26, 46, 0.6);
+        }
+    }
+
+    // Templates
+    .template-card {
+        background: #ffffff;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+
+        &:hover {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        &__header h3 {
+            color: #1a1a2e;
+        }
+
+        p {
+            color: rgba(26, 26, 46, 0.6);
+        }
+
+        &__tech span {
+            background: rgba(139, 92, 246, 0.06);
+            border-color: rgba(139, 92, 246, 0.15);
+            color: #7c3aed;
+        }
+    }
+
+    // Wunderland CTA
+    .wunderland-cta {
+        background: linear-gradient(180deg, transparent, rgba($rh-gold, 0.04));
+
+        &__title {
+            color: #1a1a2e;
+        }
+
+        &__subtitle {
+            color: rgba(26, 26, 46, 0.6);
+        }
+    }
+
+    // Looking Glass CTA
+    .looking-glass-cta {
+        background: #ffffff;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+
+        &:hover {
+            box-shadow: 0 8px 24px rgba($rh-gold, 0.12);
+        }
+
+        &__label {
+            color: $rh-gold-dark;
+        }
+
+        &__title {
+            background: linear-gradient(135deg, $rh-gold-dark, $rh-gold, $rh-gold-light);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        &__subtitle {
+            color: rgba(26, 26, 46, 0.5);
+        }
+
+        &__arrow {
+            color: rgba(26, 26, 46, 0.4);
+        }
+
+        &:hover &__arrow {
+            color: $rh-gold-dark;
+        }
+
+        &__mirror {
+            background: linear-gradient(145deg, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.92));
+        }
+
+        &__particle {
+            background: $rh-gold;
+        }
+
+        &__corner {
+            border-color: rgba($rh-gold, 0.5);
+        }
+    }
+
+    // Feed filters
+    .feed-filters {
+        background: #ffffff;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+
+        &__btn {
+            color: rgba(26, 26, 46, 0.6);
+
+            &:hover {
+                background: rgba(0, 0, 0, 0.03);
+                color: #1a1a2e;
+            }
+
+            &--active {
+                background: rgba($rh-gold, 0.08);
+                border-color: rgba($rh-gold, 0.2);
+                color: $rh-gold-dark;
+            }
+        }
+
+        &__separator {
+            background: rgba(0, 0, 0, 0.08);
+        }
+    }
+
+    // Post card
+    .post-card {
+        background: #ffffff;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+
+        &:hover {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        &__name {
+            color: #1a1a2e;
+
+            &:hover {
+                color: $rh-gold-dark;
+            }
+        }
+
+        &__timestamp {
+            color: rgba(26, 26, 46, 0.4);
+        }
+
+        &__content {
+            color: #2a2a3e;
+        }
+
+        &__proof-icon {
+            color: #16a34a;
+        }
+    }
+
+    // Level badges
+    .level-badge {
+        &--1 {
+            background: rgba(0, 0, 0, 0.04);
+            color: rgba(26, 26, 46, 0.5);
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        &--2 {
+            background: rgba(22, 163, 74, 0.06);
+            color: #16a34a;
+            border-color: rgba(22, 163, 74, 0.15);
+        }
+
+        &--3 {
+            background: rgba($rh-gold, 0.06);
+            color: $rh-gold-dark;
+            border-color: rgba($rh-gold, 0.15);
+        }
+
+        &--4 {
+            background: rgba(217, 119, 6, 0.06);
+            color: #d97706;
+            border-color: rgba(217, 119, 6, 0.15);
+        }
+
+        &--5 {
+            background: rgba(139, 92, 246, 0.06);
+            color: #7c3aed;
+            border-color: rgba(139, 92, 246, 0.15);
+        }
+
+        &--6 {
+            background: rgba(220, 38, 38, 0.06);
+            color: #dc2626;
+            border-color: rgba(220, 38, 38, 0.15);
+            box-shadow: none;
+        }
+    }
+
+    // Engagement bar
+    .engagement-bar {
+        border-top: 1px solid rgba(0, 0, 0, 0.06);
+
+        &__action {
+            color: rgba(26, 26, 46, 0.4);
+
+            &:hover {
+                color: $rh-gold-dark;
+            }
+        }
+    }
+
+    // Empty state
+    .empty-state {
+        background: #ffffff;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+
+        &__icon {
+            background: #f5f5f7;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.04);
+            color: rgba(26, 26, 46, 0.3);
+        }
+
+        &__title {
+            color: #1a1a2e;
+        }
+
+        &__description {
+            color: rgba(26, 26, 46, 0.5);
+        }
+    }
+
+    // Glow orbs (subtle in light)
+    .glow-orb--violet {
+        opacity: 0.04;
+    }
+
+    .glow-orb--emerald {
+        opacity: 0.04;
     }
 }
