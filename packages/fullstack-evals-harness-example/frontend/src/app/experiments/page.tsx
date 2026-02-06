@@ -53,6 +53,10 @@ export default function ExperimentsPage() {
   const [comparison, setComparison] = useState<CandidateComparison | null>(null);
   const [comparing, setComparing] = useState(false);
   const [compareError, setCompareError] = useState<string | null>(null);
+  const [expandedExperiments, setExpandedExperiments] = useState<Set<string>>(new Set());
+  const [expandedData, setExpandedData] = useState<
+    Map<string, { experiment: Experiment; dataset: Dataset | null; stats: ExperimentStats | null }>
+  >(new Map());
 
   useEffect(() => {
     loadData();
@@ -71,6 +75,23 @@ export default function ExperimentsPage() {
       setSelectedCandidates(recommended);
     }
   }, [selectedDataset, candidates]);
+
+  // Auto-select recommended graders when candidates change
+  useEffect(() => {
+    if (selectedCandidates.length === 0 || graders.length === 0) return;
+    const recommended = new Set<string>();
+    for (const candidateId of selectedCandidates) {
+      const candidate = candidates.find((c) => c.id === candidateId);
+      if (candidate?.recommendedGraders) {
+        for (const graderId of candidate.recommendedGraders) {
+          recommended.add(graderId);
+        }
+      }
+    }
+    if (recommended.size > 0) {
+      setSelectedGraders(Array.from(recommended));
+    }
+  }, [selectedCandidates, candidates, graders]);
 
   async function loadData() {
     try {
@@ -203,6 +224,39 @@ export default function ExperimentsPage() {
     } catch (error) {
       console.error('Failed to load experiment:', error);
       toast('Failed to load experiment', 'error');
+    }
+  }
+
+  async function toggleExpandExperiment(experimentId: string) {
+    const next = new Set(expandedExperiments);
+    if (next.has(experimentId)) {
+      next.delete(experimentId);
+      setExpandedExperiments(next);
+      return;
+    }
+    next.add(experimentId);
+    setExpandedExperiments(next);
+
+    // Load data if not already cached
+    if (!expandedData.has(experimentId)) {
+      try {
+        const [experiment, stats] = await Promise.all([
+          experimentsApi.get(experimentId),
+          experimentsApi.getStats(experimentId),
+        ]);
+        let dataset: Dataset | null = null;
+        try {
+          dataset = await datasetsApi.get(experiment.datasetId);
+        } catch {
+          // dataset may have been deleted
+        }
+        setExpandedData((prev) => new Map(prev).set(experimentId, { experiment, dataset, stats }));
+      } catch (error) {
+        console.error('Failed to load experiment:', error);
+        toast('Failed to load experiment details', 'error');
+        next.delete(experimentId);
+        setExpandedExperiments(new Set(next));
+      }
     }
   }
 
@@ -1061,30 +1115,39 @@ export default function ExperimentsPage() {
               const dataset = datasets.find((d) => d.id === exp.datasetId);
               const hasCands = exp.candidateIds && exp.candidateIds.length > 0;
               const ts = exp.createdAt ? new Date(exp.createdAt).toLocaleString() : null;
+              const isExpanded = expandedExperiments.has(exp.id);
+              const expData = expandedData.get(exp.id);
               return (
                 <div
                   key={exp.id}
                   className={`
-                    card p-3 hover:bg-muted/50 transition-colors
+                    card hover:bg-muted/50 transition-colors overflow-hidden
                     ${activeExperiment?.id === exp.id ? 'ring-2 ring-foreground' : ''}
                   `}
                 >
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between p-3">
                     <button
-                      onClick={() => viewExperiment(exp.id)}
+                      onClick={() => toggleExpandExperiment(exp.id)}
                       className="text-left flex-1 min-w-0"
                     >
-                      <p className="font-medium">{exp.name || 'Experiment'}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {dataset?.name || 'Unknown dataset'} · {exp.graderIds.length} grader(s)
-                        {hasCands && ` · ${exp.candidateIds!.length} candidate(s)`}
-                      </p>
-                      {ts && (
-                        <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
-                          <Clock className="h-3 w-3" />
-                          {ts}
-                        </p>
-                      )}
+                      <div className="flex items-center gap-2">
+                        <ChevronDown
+                          className={`h-4 w-4 text-muted-foreground transition-transform flex-shrink-0 ${isExpanded ? 'rotate-180' : ''}`}
+                        />
+                        <div className="min-w-0">
+                          <p className="font-medium">{exp.name || 'Experiment'}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {dataset?.name || 'Unknown dataset'} · {exp.graderIds.length} grader(s)
+                            {hasCands && ` · ${exp.candidateIds!.length} candidate(s)`}
+                          </p>
+                          {ts && (
+                            <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
+                              <Clock className="h-3 w-3" />
+                              {ts}
+                            </p>
+                          )}
+                        </div>
+                      </div>
                     </button>
                     <div className="flex items-center gap-2 flex-shrink-0 ml-2">
                       <span
@@ -1115,6 +1178,13 @@ export default function ExperimentsPage() {
                         <Download className="h-3.5 w-3.5" />
                       </a>
                       <button
+                        onClick={() => viewExperiment(exp.id)}
+                        title="Load into results view"
+                        className="p-1.5 text-muted-foreground hover:text-foreground rounded hover:bg-muted transition-colors"
+                      >
+                        <Play className="h-3.5 w-3.5" />
+                      </button>
+                      <button
                         onClick={async (e) => {
                           e.stopPropagation();
                           if (!confirm(`Delete experiment "${exp.name || exp.id}"?`)) return;
@@ -1138,6 +1208,139 @@ export default function ExperimentsPage() {
                       </button>
                     </div>
                   </div>
+
+                  {/* Expanded inline results */}
+                  {isExpanded && (
+                    <div className="border-t border-border">
+                      {!expData ? (
+                        <div className="p-4 text-center text-muted-foreground text-sm">
+                          <Loader2 className="h-4 w-4 animate-spin inline mr-2" />
+                          Loading results...
+                        </div>
+                      ) : (
+                        <>
+                          {/* Score summary */}
+                          {expData.stats?.candidateStats &&
+                            expData.stats.candidateStats.length > 0 && (
+                              <div className="px-4 py-2 bg-muted/30 flex flex-wrap gap-4 text-sm">
+                                {expData.stats.candidateStats
+                                  .sort(
+                                    (a, b) =>
+                                      (b.weightedScore ?? b.avgScore) -
+                                      (a.weightedScore ?? a.avgScore)
+                                  )
+                                  .map((cs, i) => {
+                                    const candidate = candidates.find(
+                                      (c) => c.id === cs.candidateId
+                                    );
+                                    return (
+                                      <span key={cs.candidateId}>
+                                        {i === 0 && (
+                                          <span className="badge badge-pass mr-1">Best</span>
+                                        )}
+                                        <span className="font-medium">
+                                          {candidate?.name || cs.candidateId}
+                                        </span>
+                                        <span className="text-muted-foreground ml-1">
+                                          {(cs.avgScore * 100).toFixed(0)}%
+                                        </span>
+                                        <span className="text-muted-foreground ml-1">
+                                          ({cs.passed}/{cs.total})
+                                        </span>
+                                      </span>
+                                    );
+                                  })}
+                              </div>
+                            )}
+
+                          {/* Results table */}
+                          {expData.experiment.results &&
+                          expData.experiment.results.length > 0 &&
+                          expData.dataset ? (
+                            <div className="overflow-x-auto max-h-96 overflow-y-auto">
+                              <table className="table text-xs">
+                                <thead className="sticky top-0 bg-card">
+                                  <tr>
+                                    <th>Input</th>
+                                    {exp.candidateIds && exp.candidateIds.length > 0
+                                      ? exp.candidateIds.map((cId) =>
+                                          exp.graderIds.map((gId) => {
+                                            const c = candidates.find((x) => x.id === cId);
+                                            const g = graders.find((x) => x.id === gId);
+                                            return (
+                                              <th key={`${cId}-${gId}`}>
+                                                <div>
+                                                  <div className="font-medium">
+                                                    {c?.name || cId.slice(0, 8)}
+                                                  </div>
+                                                  <div className="text-muted-foreground font-normal">
+                                                    {g?.name || gId.slice(0, 8)}
+                                                  </div>
+                                                </div>
+                                              </th>
+                                            );
+                                          })
+                                        )
+                                      : exp.graderIds.map((gId) => {
+                                          const g = graders.find((x) => x.id === gId);
+                                          return <th key={gId}>{g?.name || gId}</th>;
+                                        })}
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {expData.dataset.testCases?.map((tc) => (
+                                    <tr key={tc.id}>
+                                      <td className="font-mono max-w-[180px] truncate">
+                                        {tc.input}
+                                      </td>
+                                      {exp.candidateIds && exp.candidateIds.length > 0
+                                        ? exp.candidateIds.map((cId) =>
+                                            exp.graderIds.map((gId) => {
+                                              const result = expData.experiment.results?.find(
+                                                (r) =>
+                                                  r.testCaseId === tc.id &&
+                                                  r.graderId === gId &&
+                                                  r.candidateId === cId
+                                              );
+                                              return (
+                                                <td key={`${cId}-${gId}`}>
+                                                  {result ? (
+                                                    <ResultCell result={result} />
+                                                  ) : (
+                                                    <span className="text-muted-foreground">-</span>
+                                                  )}
+                                                </td>
+                                              );
+                                            })
+                                          )
+                                        : exp.graderIds.map((gId) => {
+                                            const result = expData.experiment.results?.find(
+                                              (r) => r.testCaseId === tc.id && r.graderId === gId
+                                            );
+                                            return (
+                                              <td key={gId}>
+                                                {result ? (
+                                                  <ResultCell result={result} />
+                                                ) : (
+                                                  <span className="text-muted-foreground">-</span>
+                                                )}
+                                              </td>
+                                            );
+                                          })}
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+                          ) : (
+                            <div className="p-4 text-center text-muted-foreground text-sm">
+                              {expData.dataset ? 'No results' : 'Dataset not found'}
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  )}
                 </div>
               );
             })}

@@ -1,11 +1,11 @@
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
-import { Logger } from '@nestjs/common';
 
 async function bootstrap() {
-  const logger = new Logger('Bootstrap');
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: ['error', 'warn'],
+  });
 
   // Enable CORS for frontend
   app.enableCors({
@@ -62,8 +62,8 @@ No authentication required for local development.
 
   const port = Number(process.env.PORT) || 3021;
   await app.listen(port);
-  logger.log(`Backend running on http://localhost:${port}`);
-  logger.log(`API docs available at http://localhost:${port}/api/docs`);
+  console.log(`Backend running on http://localhost:${port}`);
+  console.log(`API docs available at http://localhost:${port}/api/docs`);
 }
 
 bootstrap();

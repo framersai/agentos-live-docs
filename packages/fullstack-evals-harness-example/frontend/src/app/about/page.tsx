@@ -94,47 +94,62 @@ export default function AboutPage() {
       <section>
         <h2 className="section-title">How It Works</h2>
         <p className="section-subtitle">
-          Four core concepts: <strong>Datasets</strong> provide test cases,{' '}
-          <strong>Candidates</strong> (prompt files) generate outputs, <strong>Graders</strong>{' '}
-          evaluate quality, <strong>Experiments</strong> orchestrate runs and show results.
+          <strong>Candidates are the hub.</strong> Each prompt file declares which datasets and
+          graders to use in its YAML frontmatter. Datasets and graders are standalone resources
+          &mdash; candidates link them together. Experiments run the matrix and stream scored
+          results.
         </p>
 
         <div className="mt-8 space-y-6">
-          <div className="card p-6">
+          <div className="card p-6 border-l-4 border-l-foreground">
             <div className="flex items-center gap-3 mb-4">
               <span className="bg-foreground text-background px-3 py-1 text-sm font-bold">01</span>
-              <h3 className="font-bold text-xl uppercase">Datasets</h3>
+              <h3 className="font-bold text-xl uppercase">Candidates (The Hub)</h3>
             </div>
             <p className="text-muted-foreground leading-relaxed">
-              CSV files in <code>backend/datasets/</code>. Each row has <code>input</code>,
-              <code>expected_output</code>, optional <code>context</code> (for faithfulness), and
-              optional <code>metadata</code>. Upload new CSVs via the UI or drop files in the
-              directory.
+              Markdown files organized in <strong>family folders</strong> under{' '}
+              <code>backend/prompts/</code>. Each folder contains a <code>base.md</code> (parent)
+              and variant files. IDs are auto-derived: folder name = parent ID,{' '}
+              <code>{'{folder}-{filename}'}</code> = variant ID.
             </p>
             <p className="text-muted-foreground leading-relaxed mt-3">
-              <strong>Included examples:</strong> context QA, paper extraction, summarization, and
-              rewriting (see <code>backend/datasets/</code>).
+              <strong>Frontmatter links everything:</strong> Each candidate&apos;s YAML frontmatter
+              declares <code>recommended_graders</code> (with weights) and{' '}
+              <code>recommended_datasets</code>. When you select a dataset in the Experiments tab,
+              matching candidates auto-select, and their recommended graders auto-select too.
+            </p>
+            <pre className="mt-3 text-xs bg-muted p-3 rounded overflow-x-auto">
+              {`---
+name: Full Structured Analyst
+runner: llm_prompt
+recommended_graders: faithfulness:0.6, llm-judge-helpful:0.4
+recommended_datasets: context-qa
+grader_rationale: Faithfulness is highest — must stay grounded in context.
+---
+You are a technical analyst...`}
+            </pre>
+            <p className="text-muted-foreground leading-relaxed mt-3">
+              <strong>Included:</strong> Q&amp;A assistant, structured analyst + citation variant,
+              strict/loose JSON extractors, summarizer variants (concise, bullets, verbose), and
+              text rewriter variants (formal, casual). Create variants from the UI or edit files
+              directly.
             </p>
           </div>
 
           <div className="card p-6">
             <div className="flex items-center gap-3 mb-4">
               <span className="bg-foreground text-background px-3 py-1 text-sm font-bold">02</span>
-              <h3 className="font-bold text-xl uppercase">Candidates</h3>
+              <h3 className="font-bold text-xl uppercase">Datasets</h3>
             </div>
             <p className="text-muted-foreground leading-relaxed">
-              Markdown files organized in <strong>family folders</strong> under{' '}
-              <code>backend/prompts/</code>. Each folder contains a <code>base.md</code> (parent)
-              and variant files. IDs are auto-derived: folder name = parent ID,{' '}
-              <code>{'{folder}-{filename}'}</code> = variant ID. Each file has YAML frontmatter
-              (name, description, runner type, templates, recommended graders with weights,
-              rationale) and a system prompt body.
+              CSV files in <code>backend/datasets/</code>. Each row has <code>input</code>,
+              <code>expected_output</code>, optional <code>context</code> (for faithfulness), and
+              optional <code>metadata</code>. Upload new CSVs via the UI or drop files in the
+              directory. Candidates reference datasets by ID in their{' '}
+              <code>recommended_datasets</code> frontmatter field.
             </p>
             <p className="text-muted-foreground leading-relaxed mt-3">
-              <strong>Included examples:</strong> Q&amp;A assistant, structured analyst +
-              citation-focused variant, strict/loose JSON extractors, summarizer variants (concise,
-              bullets, verbose), and text rewriter variants (formal, casual). See{' '}
-              <code>backend/prompts/</code>. Create variants from the UI or edit files directly.
+              <strong>Included:</strong> context QA, paper extraction, summarization, and rewriting.
             </p>
           </div>
 
@@ -145,7 +160,8 @@ export default function AboutPage() {
             </div>
             <p className="text-muted-foreground leading-relaxed">
               YAML files in <code>backend/graders/</code>. Each grader scores output as pass/fail
-              with a reason and a 0-1 score. Two categories:
+              with a reason and a 0-1 score. Candidates reference graders by ID in their{' '}
+              <code>recommended_graders</code> frontmatter field (with weights). Two categories:
             </p>
             <ul className="list-brutal mt-4 text-muted-foreground">
               <li>
