@@ -10,6 +10,7 @@ import {
   X,
   FileText,
   Info,
+  ChevronDown,
 } from 'lucide-react';
 import Link from 'next/link';
 import { datasetsApi, promptsApi } from '@/lib/api';
@@ -20,6 +21,7 @@ interface EditableCase {
   expectedOutput: string;
   context: string;
   metadata: string;
+  customFields: Record<string, string>;
 }
 
 function toEditable(tc: TestCase): EditableCase {
@@ -28,7 +30,23 @@ function toEditable(tc: TestCase): EditableCase {
     expectedOutput: tc.expectedOutput || '',
     context: tc.context || '',
     metadata: tc.metadata ? JSON.stringify(tc.metadata) : '',
+    customFields: { ...(tc.customFields || {}) },
   };
+}
+
+function extractCustomColumns(testCases: TestCase[]): string[] {
+  return Array.from(
+    new Set(testCases.flatMap((tc) => Object.keys(tc.customFields || {}))),
+  );
+}
+
+function normalizeCases(cases: EditableCase[], customColumns: string[]): EditableCase[] {
+  return cases.map((testCase) => ({
+    ...testCase,
+    customFields: Object.fromEntries(
+      customColumns.map((column) => [column, testCase.customFields[column] || '']),
+    ),
+  }));
 }
 
 function Tooltip({ text }: { text: string }) {
@@ -54,7 +72,9 @@ export default function DatasetDetailPage({
   const [saving, setSaving] = useState(false);
   const [editedCases, setEditedCases] = useState<EditableCase[]>([]);
   const [originalCases, setOriginalCases] = useState<EditableCase[]>([]);
+  const [customColumns, setCustomColumns] = useState<string[]>([]);
   const [linkedPrompts, setLinkedPrompts] = useState<Candidate[]>([]);
+  const [showMeta, setShowMeta] = useState(false);
 
   useEffect(() => {
     loadDataset();
@@ -65,7 +85,12 @@ export default function DatasetDetailPage({
     try {
       const data = await datasetsApi.get(id);
       setDataset(data);
-      const cases = (data.testCases || []).map(toEditable);
+      const detectedCustomColumns = extractCustomColumns(data.testCases || []);
+      const cases = normalizeCases(
+        (data.testCases || []).map(toEditable),
+        detectedCustomColumns,
+      );
+      setCustomColumns(detectedCustomColumns);
       setEditedCases(cases);
       setOriginalCases(cases);
     } catch (error) {
@@ -85,14 +110,7 @@ export default function DatasetDetailPage({
   }
 
   const isDirty = useCallback(() => {
-    if (editedCases.length !== originalCases.length) return true;
-    return editedCases.some(
-      (ec, i) =>
-        ec.input !== originalCases[i].input ||
-        ec.expectedOutput !== originalCases[i].expectedOutput ||
-        ec.context !== originalCases[i].context ||
-        ec.metadata !== originalCases[i].metadata,
-    );
+    return JSON.stringify(editedCases) !== JSON.stringify(originalCases);
   }, [editedCases, originalCases]);
 
   function updateCase(index: number, field: keyof EditableCase, value: string) {
@@ -106,12 +124,67 @@ export default function DatasetDetailPage({
   function addRow() {
     setEditedCases((prev) => [
       ...prev,
-      { input: '', expectedOutput: '', context: '', metadata: '' },
+      {
+        input: '',
+        expectedOutput: '',
+        context: '',
+        metadata: '',
+        customFields: Object.fromEntries(customColumns.map((column) => [column, ''])),
+      },
     ]);
   }
 
   function removeRow(index: number) {
     setEditedCases((prev) => prev.filter((_, i) => i !== index));
+  }
+
+  function addCustomColumn() {
+    const name = prompt('Custom field name');
+    if (!name) return;
+
+    const normalizedName = name.trim();
+    if (!normalizedName) return;
+
+    const reserved = ['input', 'expected_output', 'context', 'metadata'];
+    if (reserved.includes(normalizedName.toLowerCase())) {
+      alert(`"${normalizedName}" is reserved. Choose another field name.`);
+      return;
+    }
+
+    if (customColumns.includes(normalizedName)) {
+      alert(`"${normalizedName}" already exists.`);
+      return;
+    }
+
+    setCustomColumns((prev) => [...prev, normalizedName]);
+    setEditedCases((prev) =>
+      prev.map((testCase) => ({
+        ...testCase,
+        customFields: { ...testCase.customFields, [normalizedName]: '' },
+      })),
+    );
+  }
+
+  function removeCustomColumn(column: string) {
+    setCustomColumns((prev) => prev.filter((c) => c !== column));
+    setEditedCases((prev) =>
+      prev.map((testCase) => {
+        const next = { ...testCase.customFields };
+        delete next[column];
+        return { ...testCase, customFields: next };
+      }),
+    );
+  }
+
+  function updateCustomField(index: number, column: string, value: string) {
+    setEditedCases((prev) => {
+      const next = [...prev];
+      next[index] = {
+        ...next[index],
+        customFields: { ...next[index].customFields, [column]: value },
+      };
+      return next;
+    });
   }
 
   async function handleSave() {
@@ -133,12 +206,18 @@ export default function DatasetDetailPage({
             expectedOutput: ec.expectedOutput || undefined,
             context: ec.context || undefined,
             metadata,
+            customFields: { ...ec.customFields },
           };
         });
 
       const updated = await datasetsApi.update(id, { testCases });
       setDataset(updated);
-      const cases = (updated.testCases || []).map(toEditable);
+      const detectedCustomColumns = extractCustomColumns(updated.testCases || []);
+      const cases = normalizeCases(
+        (updated.testCases || []).map(toEditable),
+        detectedCustomColumns,
+      );
+      setCustomColumns(detectedCustomColumns);
       setEditedCases(cases);
       setOriginalCases(cases);
     } catch (error) {
@@ -226,14 +305,37 @@ export default function DatasetDetailPage({
           </span>
         )}
         {dataset.metaPath && (
-          <span>
+          <button
+            onClick={() => setShowMeta(!showMeta)}
+            className="flex items-center gap-1 hover:text-foreground transition-colors"
+          >
+            <FileJson className="h-3.5 w-3.5" />
             <code className="text-xs">{dataset.metaPath}</code>
-          </span>
+            <ChevronDown className={`h-3 w-3 transition-transform ${showMeta ? 'rotate-180' : ''}`} />
+          </button>
         )}
         {dirty && (
           <span className="text-amber-500 font-medium">Unsaved changes</span>
         )}
       </div>
+
+      {/* Dataset metadata JSON */}
+      {showMeta && dataset.metaPath && (
+        <div className="card p-4">
+          <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">
+            Dataset Configuration
+          </h4>
+          <pre className="text-xs font-mono bg-muted/50 p-3 rounded overflow-x-auto">
+{JSON.stringify({
+  name: dataset.name,
+  description: dataset.description || null,
+  filePath: dataset.filePath,
+  metaPath: dataset.metaPath,
+  testCaseCount: dataset.testCaseCount || editedCases.length,
+}, null, 2)}
+          </pre>
+        </div>
+      )}
 
       {/* Linked prompts */}
       {linkedPrompts.length > 0 && (
@@ -276,6 +378,27 @@ export default function DatasetDetailPage({
                   <Tooltip text="Optional. Supporting context for RAGAS-style faithfulness evaluation. Provides the source material the LLM should reference — used to detect hallucinations (claims not supported by context)." />
                 </span>
               </th>
+              <th>
+                <span className="flex items-center">
+                  Metadata JSON
+                  <span className="text-muted-foreground text-xs font-normal ml-1">(optional)</span>
+                  <Tooltip text="Optional JSON object. Useful for extra per-row context, labels, or task settings." />
+                </span>
+              </th>
+              {customColumns.map((column) => (
+                <th key={column}>
+                  <div className="flex items-center gap-1">
+                    <span>{column}</span>
+                    <button
+                      onClick={() => removeCustomColumn(column)}
+                      className="btn-ghost p-0.5 text-muted-foreground hover:text-red-500"
+                      title={`Remove "${column}" column`}
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </div>
+                </th>
+              ))}
               <th className="w-10"></th>
             </tr>
           </thead>
@@ -311,6 +434,24 @@ export default function DatasetDetailPage({
                     placeholder="Context..."
                   />
                 </td>
+                <td className="p-1">
+                  <textarea
+                    value={ec.metadata}
+                    onChange={(e) => updateCase(idx, 'metadata', e.target.value)}
+                    className="input min-h-[60px] resize-y text-sm font-mono w-full"
+                    placeholder='{"difficulty":"easy"}'
+                  />
+                </td>
+                {customColumns.map((column) => (
+                  <td key={column} className="p-1">
+                    <input
+                      value={ec.customFields[column] || ''}
+                      onChange={(e) => updateCustomField(idx, column, e.target.value)}
+                      className="input h-10 text-sm font-mono w-full"
+                      placeholder={`${column}...`}
+                    />
+                  </td>
+                ))}
                 <td className="align-top pt-2">
                   <button
                     onClick={() => removeRow(idx)}
@@ -326,11 +467,17 @@ export default function DatasetDetailPage({
         </table>
       </div>
 
-      {/* Add row button */}
-      <button onClick={addRow} className="btn-secondary w-full">
-        <Plus className="h-4 w-4 mr-2" />
-        Add Test Case
-      </button>
+      {/* Add row / column controls */}
+      <div className="flex gap-2">
+        <button onClick={addRow} className="btn-secondary flex-1">
+          <Plus className="h-4 w-4 mr-2" />
+          Add Test Case
+        </button>
+        <button onClick={addCustomColumn} className="btn-secondary">
+          <Plus className="h-4 w-4 mr-2" />
+          Add Custom Field
+        </button>
+      </div>
     </div>
   );
 }
