@@ -763,6 +763,130 @@
         margin-top: $sp-3;
         font-size: 0.75rem;
     }
+
+    &--enterprise {
+        position: relative;
+        border: 1px solid transparent;
+        background-clip: padding-box;
+
+        &::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: inherit;
+            background: linear-gradient(135deg, #8b6914, #c9a227, #e8d48a, #c9a227, #8b6914);
+            z-index: -1;
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            padding: 1px;
+        }
+
+        &:hover {
+            box-shadow: 0 8px 32px rgba(201, 162, 39, 0.2), 0 0 60px rgba(201, 162, 39, 0.08);
+        }
+
+        .pricing-card__name {
+            background: linear-gradient(135deg, #c9a227, #e8d48a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .pricing-card__price {
+            background: linear-gradient(135deg, #c9a227, #e8d48a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .pricing-card__feature::before {
+            color: #c9a227;
+        }
+    }
+}
+
+// ============================================================================
+// CONTACT PAGE
+// ============================================================================
+
+.contact-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 1rem;
+
+    &__panel {
+        width: 100%;
+        max-width: 520px;
+        padding: 2.5rem;
+    }
+
+    &__header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    &__field {
+        margin-bottom: 1.25rem;
+    }
+
+    &__radio-group {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+
+    &__radio-label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+        @include mono-text;
+        color: $text-muted;
+        font-size: 0.8125rem;
+
+        input[type='radio'] {
+            accent-color: $holo-cyan;
+        }
+    }
+
+    &__textarea {
+        @include neumorphic-inset;
+        width: 100%;
+        min-height: 120px;
+        padding: $sp-4 $sp-5;
+        font-family: $font-mono;
+        font-size: 0.875rem;
+        color: $text-pure;
+        border: 1px solid transparent;
+        outline: none;
+        resize: vertical;
+        transition: all $transition-base;
+
+        &::placeholder {
+            color: $text-dim;
+        }
+
+        &:focus {
+            border-color: rgba($holo-cyan, 0.3);
+            box-shadow: 0 0 20px rgba($holo-cyan, 0.1);
+        }
+    }
+
+    &__success {
+        text-align: center;
+        padding: 2rem 0;
+
+        h2 {
+            margin-bottom: 0.75rem;
+        }
+
+        p {
+            color: $text-muted;
+            line-height: 1.6;
+        }
+    }
 }
 
 // ============================================================================
@@ -854,4 +978,246 @@
     min-height: 100vh;
     position: relative;
     overflow: hidden;
+}
+
+// ============================================================================
+// LIGHT MODE OVERRIDES
+// ============================================================================
+
+html.light {
+    .nav {
+        background: rgba(248, 246, 242, 0.85);
+        border-bottom-color: rgba(0, 0, 0, 0.06);
+        backdrop-filter: blur(12px);
+
+        &__link {
+            color: #6b6b7b;
+
+            &:hover {
+                color: #1a1a2e;
+            }
+        }
+    }
+
+    .hero {
+        &__eyebrow {
+            color: #8b6914;
+        }
+
+        &__title .line--muted {
+            color: #9090a0;
+        }
+
+        &__subtitle {
+            color: #6b6b7b;
+        }
+
+        &__cube {
+            &::before {
+                border-color: rgba(139, 105, 20, 0.15);
+                box-shadow: 0 0 60px rgba(139, 105, 20, 0.08);
+            }
+
+            &::after {
+                border-color: rgba(139, 92, 246, 0.15);
+                box-shadow: 0 0 60px rgba(139, 92, 246, 0.08);
+            }
+        }
+    }
+
+    .stats {
+        background: #f0ede7;
+        border-top-color: rgba(0, 0, 0, 0.06);
+        border-bottom-color: rgba(0, 0, 0, 0.06);
+
+        &::before {
+            background: linear-gradient(90deg, transparent, rgba(139, 105, 20, 0.3) 50%, transparent);
+        }
+
+        &__item {
+            background: #faf8f4;
+            box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.06), -2px -2px 8px rgba(255, 255, 255, 0.8);
+        }
+
+        &__label {
+            color: #6b6b7b;
+        }
+    }
+
+    .features__subtitle {
+        color: #6b6b7b;
+    }
+
+    .feature-card {
+        background: #faf8f4;
+        box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.06), -2px -2px 8px rgba(255, 255, 255, 0.8);
+
+        &__icon {
+            background: #f0ede7;
+            box-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.06), inset -2px -2px 6px rgba(255, 255, 255, 0.8);
+            color: #8b6914;
+        }
+
+        &__description {
+            color: #6b6b7b;
+        }
+
+        &:hover .feature-card__icon {
+            box-shadow: 0 0 30px rgba(139, 105, 20, 0.15);
+        }
+    }
+
+    // Terminal stays dark in light mode for contrast
+    .terminal {
+        background: #1a1a2e;
+
+        &__header {
+            background: #12101a;
+            border-bottom-color: rgba(255, 255, 255, 0.06);
+        }
+    }
+
+    .cta {
+        background: #f0ede7;
+        border-top-color: rgba(0, 0, 0, 0.06);
+
+        &::before {
+            background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.2) 50%, transparent);
+        }
+
+        &__subtitle {
+            color: #6b6b7b;
+        }
+
+        &__portal {
+            background: #faf8f4;
+            box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.06), -2px -2px 8px rgba(255, 255, 255, 0.8);
+        }
+
+        &__portal-desc {
+            color: #6b6b7b;
+        }
+
+        &__input {
+            background: #f0ede7;
+            box-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.06), inset -2px -2px 6px rgba(255, 255, 255, 0.8);
+            color: #1a1a2e;
+
+            &::placeholder {
+                color: #9090a0;
+            }
+
+            &:focus {
+                border-color: rgba(139, 105, 20, 0.3);
+                box-shadow: 0 0 20px rgba(139, 105, 20, 0.08);
+            }
+        }
+    }
+
+    .footer {
+        border-top-color: rgba(0, 0, 0, 0.06);
+
+        &__copyright {
+            color: #9090a0;
+        }
+
+        &__link {
+            color: #9090a0;
+
+            &:hover {
+                color: #8b6914;
+            }
+        }
+    }
+
+    .pricing {
+        &__addon {
+            background: #faf8f4;
+            box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.06), -2px -2px 8px rgba(255, 255, 255, 0.8);
+        }
+
+        &__addon-desc {
+            color: #6b6b7b;
+        }
+    }
+
+    .pricing-card {
+        background: #faf8f4;
+        box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.06), -2px -2px 8px rgba(255, 255, 255, 0.8);
+
+        &__description {
+            color: #6b6b7b;
+        }
+
+        &__period {
+            color: #9090a0;
+        }
+
+        &__feature {
+            color: #6b6b7b;
+
+            &::before {
+                color: #16a34a;
+            }
+        }
+
+        &__note {
+            color: #9090a0;
+        }
+    }
+
+    .pricing-card--enterprise {
+        &::before {
+            background: linear-gradient(135deg, #8b6914, #c9a227, #e8d48a, #c9a227, #8b6914);
+        }
+
+        &:hover {
+            box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.08), 0 8px 32px rgba(139, 105, 20, 0.12);
+        }
+    }
+
+    .contact-page {
+        &__textarea {
+            background: #f0ede7;
+            box-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.06), inset -2px -2px 6px rgba(255, 255, 255, 0.8);
+            color: #1a1a2e;
+
+            &::placeholder {
+                color: #9090a0;
+            }
+
+            &:focus {
+                border-color: rgba(139, 105, 20, 0.3);
+                box-shadow: 0 0 20px rgba(139, 105, 20, 0.08);
+            }
+        }
+
+        &__radio-label {
+            color: #6b6b7b;
+
+            input[type='radio'] {
+                accent-color: #8b6914;
+            }
+        }
+    }
+
+    .about-content {
+        &__title .line--muted {
+            color: #9090a0;
+        }
+
+        &__body p {
+            color: #6b6b7b;
+        }
+    }
+
+    .about-links__item {
+        &:hover {
+            box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.08), -2px -2px 8px rgba(255, 255, 255, 0.8);
+        }
+    }
+
+    .about-links__desc {
+        color: #9090a0;
+    }
 }

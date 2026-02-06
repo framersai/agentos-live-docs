@@ -9,62 +9,70 @@ export interface PricingTier {
   highlighted?: boolean;
   badge?: string;
   note?: string;
+  ctaType?: 'checkout' | 'contact';
+  ctaHref?: string;
 }
+
+export const TRIAL_DAYS = 3;
 
 export const PRICING_TIERS: PricingTier[] = [
   {
-    id: 'rh-pro-monthly',
-    name: 'Pro',
-    price: '$29.99',
-    period: '/month',
-    description: 'Everything you need for AI-human collaboration',
+    id: 'starter',
+    name: 'Starter',
+    price: '$19',
+    period: '/mo',
+    description: 'Launch your first managed Wunderbot quickly',
     features: [
-      'Full platform access',
-      '3 hours/week human assistant',
-      'Priority task routing',
-      'All AI agent integrations',
-      'PII protection & RBAC',
-      'Real-time WebSocket updates',
+      `${TRIAL_DAYS}-day free trial`,
+      '1 managed Wunderbot AI assistant',
+      '500 AI messages/mo included',
+      'No API key needed to get started',
+      'All Tier 1 integrations',
+      'Managed hosting',
+      'Community + AI support',
     ],
-    cta: 'Start Pro',
+    cta: `Start ${TRIAL_DAYS}-day trial`,
+  },
+  {
+    id: 'pro',
+    name: 'Pro',
+    price: '$49',
+    period: '/mo',
+    description: 'Scale to multiple production agents with premium integrations',
+    badge: 'MOST POPULAR',
+    features: [
+      `${TRIAL_DAYS}-day free trial`,
+      'Up to 5 Wunderbot AI assistants',
+      '2,500 AI messages/mo included',
+      'No API key needed to get started',
+      'All Tier 1 + premium integrations',
+      'Encrypted credential vault',
+      'BYO API key for unlimited messages',
+      'Custom agent personalities',
+      'Priority 24/7 support',
+    ],
+    cta: `Start ${TRIAL_DAYS}-day trial`,
     highlighted: true,
   },
   {
-    id: 'rh-pro-annual',
-    name: 'Pro Annual',
-    price: '$249',
-    period: '/year',
-    description: 'Save 31% with annual billing',
-    badge: 'BEST VALUE',
+    id: 'enterprise',
+    name: 'Enterprise',
+    price: 'Custom',
+    period: '',
+    description: 'Dedicated infrastructure and white-glove support for large teams',
+    badge: 'ENTERPRISE',
     features: [
-      'Everything in Pro Monthly',
-      '3 hours/week human assistant',
-      'Save $110.88/year vs monthly',
-      'Priority support',
+      'Unlimited Wunderbot AI assistants',
+      'Unlimited AI messages',
+      'On-site / self-hosted deployment',
+      'Custom integrations & API access',
+      'Dedicated account manager',
+      'Team pricing & volume discounts',
+      'SLA guarantees',
+      'SSO / SAML authentication',
     ],
-    cta: 'Start Annual',
-  },
-  {
-    id: 'rh-lifetime',
-    name: 'Lifetime',
-    price: '$499',
-    period: 'one-time',
-    description: 'Platform access forever, no recurring fees',
-    features: [
-      'Lifetime platform access',
-      'All AI agent integrations',
-      'PII protection & RBAC',
-      'All future updates included',
-    ],
-    cta: 'Get Lifetime Access',
-    note: 'Add human assistant hours for $150/year',
+    cta: 'Contact Sales',
+    ctaType: 'contact',
+    ctaHref: '/contact',
   },
 ];
-
-export const ASSISTANT_ADDON = {
-  id: 'rh-assistant-addon',
-  name: 'Human Assistant Add-on',
-  price: '$150',
-  period: '/year',
-  description: '3 hours/week of human assistant support. Available for Lifetime plan members.',
-};
