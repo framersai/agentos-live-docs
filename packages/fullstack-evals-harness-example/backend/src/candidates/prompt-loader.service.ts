@@ -143,6 +143,8 @@ export class PromptLoaderService implements OnModuleInit {
     lines.push(`name: ${name}`);
     if (description) lines.push(`description: ${description}`);
     lines.push(`runner: ${runner}`);
+    if (existing.parentId) lines.push(`parent_prompt: ${existing.parentId}`);
+    if (existing.variantLabel) lines.push(`variant: ${existing.variantLabel}`);
     if (temperature !== undefined) lines.push(`temperature: ${temperature}`);
     if (maxTokens !== undefined) lines.push(`max_tokens: ${maxTokens}`);
     if (provider) lines.push(`provider: ${provider}`);
@@ -266,8 +268,8 @@ export class PromptLoaderService implements OnModuleInit {
       endpointMethod: fm.endpoint_method || null,
       endpointHeaders: null,
       endpointBodyTemplate: fm.endpoint_body_template || null,
-      parentId: null,
-      variantLabel: null,
+      parentId: fm.parent_prompt || null,
+      variantLabel: fm.variant || null,
       recommendedGraders: graderResult.ids,
       graderWeights: graderResult.weights,
       recommendedDatasets: parseList(fm.recommended_datasets),
