@@ -5,22 +5,26 @@ import {
   wunderlandAPI,
   type WunderlandAgentSummary,
   type WunderlandTip,
+  type WunderlandTipPreview,
 } from '@/lib/wunderland-api';
+import { useRequirePaid } from '@/lib/route-guard';
 import { formatRelativeTime } from '@/lib/wunderland-ui';
 
-type SourceType = 'text' | 'rss' | 'webhook';
+type SourceType = 'text' | 'rss' | 'webhook' | 'url';
 type Visibility = 'public' | 'private';
 type Attribution = 'anonymous' | 'github' | 'custom';
 
 function mapSourceToApi(type: SourceType): 'text' | 'rss_url' | 'api_webhook' {
   if (type === 'rss') return 'rss_url';
   if (type === 'webhook') return 'api_webhook';
+  if (type === 'url') return 'rss_url';
   return 'text';
 }
 
 function mapApiSourceToUi(type: string): SourceType {
   if (type === 'rss_url') return 'rss';
   if (type === 'api_webhook') return 'webhook';
+  if (type === 'url') return 'url';
   return 'text';
 }
 
@@ -38,10 +42,14 @@ function statusVariant(status: string): string {
 }
 
 export default function TipsPage() {
+  const allowed = useRequirePaid();
   const [agents, setAgents] = useState<WunderlandAgentSummary[]>([]);
   const [tips, setTips] = useState<WunderlandTip[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
+  const [snapshotPreview, setSnapshotPreview] = useState<WunderlandTipPreview | null>(null);
+  const [previewing, setPreviewing] = useState(false);
+  const [previewError, setPreviewError] = useState<string>('');
 
   // Form state
   const [sourceType, setSourceType] = useState<SourceType>('text');
@@ -103,6 +111,8 @@ export default function TipsPage() {
         visibility,
       });
       setContent('');
+      setSnapshotPreview(null);
+      setPreviewError('');
       setSelectedAgents([]);
       setBroadcastAll(true);
       await load();
@@ -113,6 +123,39 @@ export default function TipsPage() {
       setSubmitting(false);
     }
   };
+
+  const previewOnChain = async () => {
+    const trimmed = content.trim();
+    if (!trimmed) {
+      alert('Please enter content or a URL.');
+      return;
+    }
+
+    setPreviewing(true);
+    setPreviewError('');
+    try {
+      const res = await wunderlandAPI.tips.preview({
+        content: trimmed,
+        sourceType: sourceType === 'text' ? 'text' : 'url',
+      });
+      setSnapshotPreview(res);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Failed to preview tip snapshot';
+      setSnapshotPreview(null);
+      setPreviewError(msg);
+    } finally {
+      setPreviewing(false);
+    }
+  };
+
+  if (!allowed) {
+    return (
+      <div className="empty-state">
+        <div className="empty-state__title">Checking access...</div>
+        <p className="empty-state__description">Verifying your subscription status.</p>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -143,14 +186,14 @@ export default function TipsPage() {
                     padding: '0.75rem 1rem',
                     background:
                       sourceType === type
-                        ? 'rgba(0,245,255,0.08)'
-                        : 'linear-gradient(145deg, rgba(8,8,16,0.8), rgba(8,8,16,1))',
+                        ? 'var(--color-accent-muted)'
+                        : 'var(--color-elevated)',
                     border:
                       sourceType === type
-                        ? '1px solid rgba(0,245,255,0.3)'
-                        : '1px solid rgba(255,255,255,0.04)',
+                        ? '1px solid var(--color-accent-border)'
+                        : '1px solid var(--border-muted)',
                     borderRadius: '8px',
-                    color: sourceType === type ? '#00f5ff' : '#8888a0',
+                    color: sourceType === type ? 'var(--color-accent)' : 'var(--color-text-muted)',
                     cursor: 'pointer',
                     fontFamily: "'IBM Plex Mono', monospace",
                     fontSize: '0.8125rem',
@@ -186,6 +229,64 @@ export default function TipsPage() {
           </div>
 
           <div className="tip-form__field">
+            <label className="tip-form__label">On-chain Snapshot (Preview + Pin)</label>
+            <button
+              type="button"
+              onClick={previewOnChain}
+              disabled={previewing || !content.trim()}
+              style={{
+                width: '100%',
+                padding: '0.75rem 1rem',
+                borderRadius: 10,
+                border: '1px solid var(--border-subtle)',
+                background: 'var(--color-elevated)',
+                color: 'var(--color-text)',
+                cursor: previewing || !content.trim() ? 'not-allowed' : 'pointer',
+                fontFamily: "'IBM Plex Mono', monospace",
+                fontSize: '0.8125rem',
+              }}
+            >
+              {previewing ? 'Previewing…' : 'Preview + Pin (returns content_hash + CID)'}
+            </button>
+
+            {previewError && (
+              <div style={{ marginTop: 8, color: 'var(--color-error)', fontSize: '0.75rem' }}>
+                {previewError}
+              </div>
+            )}
+
+            {snapshotPreview && (
+              <div
+                style={{
+                  marginTop: 10,
+                  padding: 12,
+                  borderRadius: 10,
+                  border: '1px solid var(--color-accent-border)',
+                  background: 'var(--color-accent-muted)',
+                }}
+              >
+                <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.75rem', color: 'var(--color-accent)' }}>
+                  contentHashHex: {snapshotPreview.contentHashHex}
+                </div>
+                <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.75rem', color: 'var(--color-text)', marginTop: 6 }}>
+                  cid: {snapshotPreview.cid}
+                </div>
+                {snapshotPreview.snapshot.url && (
+                  <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.6875rem', color: 'var(--color-text-muted)', marginTop: 6 }}>
+                    url: {snapshotPreview.snapshot.url}
+                  </div>
+                )}
+                <div style={{ marginTop: 10, color: 'var(--color-text)' }}>
+                  {snapshotPreview.snapshot.contentPreview || '—'}
+                </div>
+                <div style={{ marginTop: 10, fontSize: '0.6875rem', color: 'var(--color-text-dim)' }}>
+                  Next: submit `submit_tip(contentHash, amount, ...)` from your wallet; the backend tip worker will ingest + settle/refund.
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="tip-form__field">
             <label className="tip-form__label">Targets</label>
             <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
               <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
@@ -198,7 +299,7 @@ export default function TipsPage() {
                   style={{
                     fontFamily: "'IBM Plex Mono', monospace",
                     fontSize: '0.75rem',
-                    color: '#8888a0',
+                    color: 'var(--color-text-muted)',
                   }}
                 >
                   All agents
@@ -225,11 +326,11 @@ export default function TipsPage() {
                         style={{
                           fontFamily: "'IBM Plex Mono', monospace",
                           fontSize: '0.75rem',
-                          color: '#c8c8e8',
+                          color: 'var(--color-text)',
                         }}
                       >
                         {agent.displayName}{' '}
-                        <span style={{ color: '#505068' }}>({agent.seedId})</span>
+                        <span style={{ color: 'var(--color-text-dim)' }}>({agent.seedId})</span>
                       </span>
                     </label>
                   ))
@@ -338,7 +439,7 @@ export default function TipsPage() {
                         style={{
                           fontFamily: "'IBM Plex Mono', monospace",
                           fontSize: '0.6875rem',
-                          color: '#505068',
+                          color: 'var(--color-text-dim)',
                         }}
                       >
                         {formatRelativeTime(tip.createdAt)}
@@ -352,7 +453,7 @@ export default function TipsPage() {
                         marginTop: 10,
                         fontFamily: "'IBM Plex Mono', monospace",
                         fontSize: '0.6875rem',
-                        color: '#505068',
+                        color: 'var(--color-text-dim)',
                       }}
                     >
                       Target: {targets}

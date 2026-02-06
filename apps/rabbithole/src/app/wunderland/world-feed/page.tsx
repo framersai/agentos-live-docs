@@ -347,7 +347,7 @@ export default function WorldFeedPage() {
                           fontFamily: "'IBM Plex Mono', monospace",
                           fontSize: '0.6875rem',
                           fontWeight: 700,
-                          color: '#00f5ff',
+                          color: 'var(--color-accent)',
                           flexShrink: 0,
                         }}
                       >
@@ -445,7 +445,7 @@ export default function WorldFeedPage() {
           >
             <div style={{ fontWeight: 700, marginBottom: 10 }}>Admin Actions</div>
             {!hasToken ? (
-              <div style={{ color: '#8888a0', fontSize: '0.875rem' }}>
+              <div style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>
                 Sign in with a global/admin session token to add sources or inject events.
                 <div style={{ marginTop: 10 }}>
                   <a href="/login?next=/wunderland/world-feed" className="btn btn--primary btn--sm">
@@ -463,7 +463,7 @@ export default function WorldFeedPage() {
                     style={{
                       fontFamily: "'IBM Plex Mono', monospace",
                       fontSize: '0.6875rem',
-                      color: '#8888a0',
+                      color: 'var(--color-text-muted)',
                       textTransform: 'uppercase',
                       letterSpacing: '0.12em',
                     }}
@@ -523,7 +523,7 @@ export default function WorldFeedPage() {
                     style={{
                       fontFamily: "'IBM Plex Mono', monospace",
                       fontSize: '0.6875rem',
-                      color: '#8888a0',
+                      color: 'var(--color-text-muted)',
                       textTransform: 'uppercase',
                       letterSpacing: '0.12em',
                     }}
@@ -588,7 +588,7 @@ export default function WorldFeedPage() {
             style={{
               fontFamily: "'IBM Plex Mono', monospace",
               fontSize: '0.6875rem',
-              color: '#8888a0',
+              color: 'var(--color-text-muted)',
               textTransform: 'uppercase',
               letterSpacing: '0.12em',
               marginBottom: '1rem',
@@ -630,7 +630,7 @@ export default function WorldFeedPage() {
                   width: 8,
                   height: 8,
                   borderRadius: '50%',
-                  background: '#10ffb0',
+                  background: 'var(--color-success)',
                   boxShadow: '0 0 8px rgba(16,255,176,0.5)',
                   flexShrink: 0,
                 }}
@@ -638,7 +638,7 @@ export default function WorldFeedPage() {
             </div>
             <div className="source-card__meta">
               <span className="badge badge--neutral">Filter</span>
-              <span style={{ color: '#10ffb0' }}>Active</span>
+              <span style={{ color: 'var(--color-success)' }}>Active</span>
             </div>
           </div>
 
@@ -689,7 +689,7 @@ export default function WorldFeedPage() {
                         width: 8,
                         height: 8,
                         borderRadius: '50%',
-                        background: source.isActive ? '#10ffb0' : '#505068',
+                        background: source.isActive ? 'var(--color-success)' : 'var(--color-text-dim)',
                         boxShadow: source.isActive ? '0 0 8px rgba(16,255,176,0.5)' : 'none',
                         flexShrink: 0,
                       }}
@@ -699,7 +699,7 @@ export default function WorldFeedPage() {
                     <span className={`badge badge--${getSourceBadgeVariant(source.type)}`}>
                       {source.type}
                     </span>
-                    <span style={{ color: source.isActive ? '#10ffb0' : '#505068' }}>
+                    <span style={{ color: source.isActive ? 'var(--color-success)' : 'var(--color-text-dim)' }}>
                       {source.isActive ? 'Active' : 'Inactive'}
                     </span>
                   </div>

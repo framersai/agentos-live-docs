@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { WunderlandAPIError, wunderlandAPI } from '@/lib/wunderland-api';
+import { useRequirePaid } from '@/lib/route-guard';
 
 const HEXACO_TRAITS = [
   {
@@ -201,6 +202,7 @@ function RadarChart({ traits }: { traits: Record<string, number> }) {
 }
 
 export default function RegisterPage() {
+  const allowed = useRequirePaid();
   const [step, setStep] = useState(1);
   const router = useRouter();
 
@@ -349,6 +351,15 @@ export default function RegisterPage() {
     }
   };
 
+  if (!allowed) {
+    return (
+      <div className="empty-state">
+        <div className="empty-state__title">Checking access...</div>
+        <p className="empty-state__description">Verifying your subscription status.</p>
+      </div>
+    );
+  }
+
   return (
     <div>
       <div className="wunderland-header">
@@ -389,7 +400,7 @@ export default function RegisterPage() {
                     fontSize: '0.5625rem',
                     textTransform: 'uppercase',
                     letterSpacing: '0.08em',
-                    color: isActive ? '#00f5ff' : isCompleted ? '#10ffb0' : '#505068',
+                    color: isActive ? 'var(--color-accent)' : isCompleted ? 'var(--color-success)' : 'var(--color-text-dim)',
                   }}
                 >
                   {label}
@@ -442,7 +453,7 @@ export default function RegisterPage() {
               {errors.seedId && (
                 <div
                   style={{
-                    color: '#ff6b6b',
+                    color: 'var(--color-error)',
                     fontSize: '0.75rem',
                     marginTop: '0.25rem',
                     fontFamily: "'IBM Plex Mono', monospace",
@@ -456,7 +467,7 @@ export default function RegisterPage() {
                   marginTop: '0.5rem',
                   fontFamily: "'IBM Plex Mono', monospace",
                   fontSize: '0.6875rem',
-                  color: '#505068',
+                  color: 'var(--color-text-dim)',
                 }}
               >
                 Used as the public identifier across the network.
@@ -475,7 +486,7 @@ export default function RegisterPage() {
               {errors.name && (
                 <div
                   style={{
-                    color: '#ff6b6b',
+                    color: 'var(--color-error)',
                     fontSize: '0.75rem',
                     marginTop: '0.25rem',
                     fontFamily: "'IBM Plex Mono', monospace",
@@ -526,7 +537,7 @@ export default function RegisterPage() {
                   marginTop: '0.5rem',
                   fontFamily: "'IBM Plex Mono', monospace",
                   fontSize: '0.6875rem',
-                  color: '#505068',
+                  color: 'var(--color-text-dim)',
                 }}
               >
                 Selected: {AVATAR_COLORS.find((c) => c.color === avatarColor)?.name}
@@ -541,9 +552,9 @@ export default function RegisterPage() {
                 gap: '1rem',
                 padding: '1rem',
                 marginTop: '1.5rem',
-                background: 'rgba(255,255,255,0.02)',
+                background: 'var(--overlay-light)',
                 borderRadius: '8px',
-                border: '1px solid rgba(255,255,255,0.04)',
+                border: '1px solid var(--border-muted)',
               }}
             >
               <div
@@ -558,7 +569,7 @@ export default function RegisterPage() {
                   fontFamily: "'Outfit', sans-serif",
                   fontWeight: 700,
                   fontSize: '1.25rem',
-                  color: '#030305',
+                  color: 'var(--color-void)',
                   flexShrink: 0,
                 }}
               >
@@ -570,7 +581,7 @@ export default function RegisterPage() {
                 >
                   {name || 'Agent Name'}
                 </div>
-                <div style={{ fontSize: '0.8125rem', color: '#8888a0', marginTop: '0.125rem' }}>
+                <div style={{ fontSize: '0.8125rem', color: 'var(--color-text-muted)', marginTop: '0.125rem' }}>
                   {bio ? (bio.length > 80 ? bio.slice(0, 80) + '...' : bio) : 'No bio provided'}
                 </div>
               </div>
@@ -634,9 +645,9 @@ export default function RegisterPage() {
               style={{
                 marginTop: '1.5rem',
                 padding: '1.5rem',
-                background: 'linear-gradient(145deg, rgba(8,8,16,0.8), rgba(8,8,16,1))',
+                background: 'var(--color-elevated)',
                 borderRadius: '8px',
-                border: '1px solid rgba(255,255,255,0.04)',
+                border: '1px solid var(--border-muted)',
                 textAlign: 'center',
               }}
             >
@@ -644,7 +655,7 @@ export default function RegisterPage() {
                 style={{
                   fontFamily: "'IBM Plex Mono', monospace",
                   fontSize: '0.625rem',
-                  color: '#505068',
+                  color: 'var(--color-text-dim)',
                   textTransform: 'uppercase',
                   letterSpacing: '0.12em',
                   marginBottom: '1rem',
@@ -668,7 +679,7 @@ export default function RegisterPage() {
                     style={{
                       fontFamily: "'IBM Plex Mono', monospace",
                       fontSize: '0.5625rem',
-                      color: '#505068',
+                      color: 'var(--color-text-dim)',
                       display: 'flex',
                       alignItems: 'center',
                       gap: '0.25rem',
@@ -679,7 +690,7 @@ export default function RegisterPage() {
                         width: 6,
                         height: 6,
                         borderRadius: '50%',
-                        background: '#00f5ff',
+                        background: 'var(--color-accent)',
                         display: 'inline-block',
                       }}
                     />
@@ -716,7 +727,7 @@ export default function RegisterPage() {
               {errors.systemPrompt && (
                 <div
                   style={{
-                    color: '#ff6b6b',
+                    color: 'var(--color-error)',
                     fontSize: '0.75rem',
                     marginTop: '0.25rem',
                     fontFamily: "'IBM Plex Mono', monospace",
@@ -749,11 +760,11 @@ export default function RegisterPage() {
                         gap: '0.75rem',
                         padding: '0.75rem 1rem',
                         background: isSelected
-                          ? 'rgba(0,245,255,0.05)'
-                          : 'linear-gradient(145deg, rgba(8,8,16,0.8), rgba(8,8,16,1))',
+                          ? 'var(--color-accent-muted)'
+                          : 'var(--color-elevated)',
                         border: isSelected
-                          ? '1px solid rgba(0,245,255,0.2)'
-                          : '1px solid rgba(255,255,255,0.04)',
+                          ? '1px solid var(--color-accent-border)'
+                          : '1px solid var(--border-muted)',
                         borderRadius: '8px',
                         cursor: 'pointer',
                         textAlign: 'left',
@@ -766,13 +777,13 @@ export default function RegisterPage() {
                           width: 20,
                           height: 20,
                           borderRadius: '4px',
-                          border: isSelected ? '2px solid #00f5ff' : '2px solid #1c1c28',
-                          background: isSelected ? 'rgba(0,245,255,0.2)' : 'transparent',
+                          border: isSelected ? '2px solid var(--color-accent)' : '2px solid var(--color-surface)',
+                          background: isSelected ? 'var(--color-accent-muted)' : 'transparent',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
                           flexShrink: 0,
-                          color: '#00f5ff',
+                          color: 'var(--color-accent)',
                           fontSize: '0.75rem',
                         }}
                       >
@@ -795,7 +806,7 @@ export default function RegisterPage() {
                           style={{
                             fontFamily: "'IBM Plex Mono', monospace",
                             fontSize: '0.6875rem',
-                            color: '#505068',
+                            color: 'var(--color-text-dim)',
                             marginTop: '0.125rem',
                           }}
                         >
@@ -832,9 +843,9 @@ export default function RegisterPage() {
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     padding: '1rem 1.25rem',
-                    background: 'linear-gradient(145deg, #151520, #121218)',
+                    background: 'var(--color-elevated)',
                     borderRadius: '8px',
-                    border: '1px solid rgba(255,255,255,0.04)',
+                    border: '1px solid var(--border-muted)',
                   }}
                 >
                   <div>
@@ -843,7 +854,7 @@ export default function RegisterPage() {
                     >
                       {opt.label}
                     </div>
-                    <div style={{ fontSize: '0.8125rem', color: '#8888a0' }}>{opt.description}</div>
+                    <div style={{ fontSize: '0.8125rem', color: 'var(--color-text-muted)' }}>{opt.description}</div>
                   </div>
                   <button
                     onClick={() => toggleSecurity(opt.key)}
@@ -852,11 +863,11 @@ export default function RegisterPage() {
                       height: 26,
                       borderRadius: 13,
                       background: security[opt.key]
-                        ? 'rgba(0,245,255,0.2)'
-                        : 'linear-gradient(145deg, rgba(8,8,16,0.8), rgba(8,8,16,1))',
+                        ? 'var(--color-accent-muted)'
+                        : 'var(--color-elevated)',
                       border: security[opt.key]
-                        ? '1px solid rgba(0,245,255,0.3)'
-                        : '1px solid rgba(255,255,255,0.04)',
+                        ? '1px solid var(--color-accent-border)'
+                        : '1px solid var(--border-muted)',
                       cursor: 'pointer',
                       position: 'relative',
                       flexShrink: 0,
@@ -868,12 +879,12 @@ export default function RegisterPage() {
                         width: 20,
                         height: 20,
                         borderRadius: '50%',
-                        background: security[opt.key] ? '#00f5ff' : '#505068',
+                        background: security[opt.key] ? 'var(--color-accent)' : 'var(--color-text-dim)',
                         position: 'absolute',
                         top: 2,
                         left: security[opt.key] ? 25 : 3,
                         transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
-                        boxShadow: security[opt.key] ? '0 0 12px rgba(0,245,255,0.4)' : 'none',
+                        boxShadow: security[opt.key] ? '0 0 12px color-mix(in srgb, var(--color-accent) 40%, transparent)' : 'none',
                       }}
                     />
                   </button>
@@ -923,7 +934,7 @@ export default function RegisterPage() {
                 style={{
                   fontFamily: "'IBM Plex Mono', monospace",
                   fontSize: '0.6875rem',
-                  color: '#00f5ff',
+                  color: 'var(--color-accent)',
                   textTransform: 'uppercase',
                   letterSpacing: '0.12em',
                   marginBottom: '0.75rem',
@@ -934,9 +945,9 @@ export default function RegisterPage() {
               <div
                 style={{
                   padding: '1rem',
-                  background: 'linear-gradient(145deg, rgba(8,8,16,0.8), rgba(8,8,16,1))',
+                  background: 'var(--color-elevated)',
                   borderRadius: '8px',
-                  border: '1px solid rgba(255,255,255,0.04)',
+                  border: '1px solid var(--border-muted)',
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -950,7 +961,7 @@ export default function RegisterPage() {
                       alignItems: 'center',
                       justifyContent: 'center',
                       fontWeight: 700,
-                      color: '#030305',
+                      color: 'var(--color-void)',
                       flexShrink: 0,
                     }}
                   >
@@ -962,13 +973,13 @@ export default function RegisterPage() {
                       style={{
                         fontFamily: "'IBM Plex Mono', monospace",
                         fontSize: '0.6875rem',
-                        color: '#505068',
+                        color: 'var(--color-text-dim)',
                         marginTop: '0.25rem',
                       }}
                     >
                       {seedId ? seedId : 'Seed ID not set'}
                     </div>
-                    <div style={{ fontSize: '0.8125rem', color: '#8888a0' }}>{bio || 'No bio'}</div>
+                    <div style={{ fontSize: '0.8125rem', color: 'var(--color-text-muted)' }}>{bio || 'No bio'}</div>
                   </div>
                 </div>
               </div>
@@ -980,7 +991,7 @@ export default function RegisterPage() {
                 style={{
                   fontFamily: "'IBM Plex Mono', monospace",
                   fontSize: '0.6875rem',
-                  color: '#00f5ff',
+                  color: 'var(--color-accent)',
                   textTransform: 'uppercase',
                   letterSpacing: '0.12em',
                   marginBottom: '0.75rem',
@@ -991,9 +1002,9 @@ export default function RegisterPage() {
               <div
                 style={{
                   padding: '1rem',
-                  background: 'linear-gradient(145deg, rgba(8,8,16,0.8), rgba(8,8,16,1))',
+                  background: 'var(--color-elevated)',
                   borderRadius: '8px',
-                  border: '1px solid rgba(255,255,255,0.04)',
+                  border: '1px solid var(--border-muted)',
                 }}
               >
                 {HEXACO_TRAITS.map((t) => (
@@ -1003,10 +1014,10 @@ export default function RegisterPage() {
                       display: 'flex',
                       justifyContent: 'space-between',
                       padding: '0.375rem 0',
-                      borderBottom: '1px solid rgba(255,255,255,0.03)',
+                      borderBottom: '1px solid var(--border-muted)',
                     }}
                   >
-                    <span style={{ color: '#8888a0', fontSize: '0.875rem' }}>{t.label}</span>
+                    <span style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>{t.label}</span>
                     <span
                       style={{
                         fontWeight: 600,
@@ -1027,7 +1038,7 @@ export default function RegisterPage() {
                 style={{
                   fontFamily: "'IBM Plex Mono', monospace",
                   fontSize: '0.6875rem',
-                  color: '#00f5ff',
+                  color: 'var(--color-accent)',
                   textTransform: 'uppercase',
                   letterSpacing: '0.12em',
                   marginBottom: '0.75rem',
@@ -1038,9 +1049,9 @@ export default function RegisterPage() {
               <div
                 style={{
                   padding: '1rem',
-                  background: 'linear-gradient(145deg, rgba(8,8,16,0.8), rgba(8,8,16,1))',
+                  background: 'var(--color-elevated)',
                   borderRadius: '8px',
-                  border: '1px solid rgba(255,255,255,0.04)',
+                  border: '1px solid var(--border-muted)',
                 }}
               >
                 <div
@@ -1048,10 +1059,10 @@ export default function RegisterPage() {
                     display: 'flex',
                     justifyContent: 'space-between',
                     padding: '0.375rem 0',
-                    borderBottom: '1px solid rgba(255,255,255,0.03)',
+                    borderBottom: '1px solid var(--border-muted)',
                   }}
                 >
-                  <span style={{ color: '#8888a0', fontSize: '0.875rem' }}>System Prompt</span>
+                  <span style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>System Prompt</span>
                   <span style={{ fontSize: '0.875rem', maxWidth: '60%', textAlign: 'right' }}>
                     {systemPrompt
                       ? systemPrompt.length > 60
@@ -1068,7 +1079,7 @@ export default function RegisterPage() {
                     alignItems: 'flex-start',
                   }}
                 >
-                  <span style={{ color: '#8888a0', fontSize: '0.875rem' }}>Tools</span>
+                  <span style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>Tools</span>
                   <div
                     style={{
                       display: 'flex',
@@ -1084,7 +1095,7 @@ export default function RegisterPage() {
                         </span>
                       ))
                     ) : (
-                      <span style={{ color: '#505068', fontSize: '0.875rem' }}>None selected</span>
+                      <span style={{ color: 'var(--color-text-dim)', fontSize: '0.875rem' }}>None selected</span>
                     )}
                   </div>
                 </div>
@@ -1097,7 +1108,7 @@ export default function RegisterPage() {
                 style={{
                   fontFamily: "'IBM Plex Mono', monospace",
                   fontSize: '0.6875rem',
-                  color: '#00f5ff',
+                  color: 'var(--color-accent)',
                   textTransform: 'uppercase',
                   letterSpacing: '0.12em',
                   marginBottom: '0.75rem',
@@ -1108,9 +1119,9 @@ export default function RegisterPage() {
               <div
                 style={{
                   padding: '1rem',
-                  background: 'linear-gradient(145deg, rgba(8,8,16,0.8), rgba(8,8,16,1))',
+                  background: 'var(--color-elevated)',
                   borderRadius: '8px',
-                  border: '1px solid rgba(255,255,255,0.04)',
+                  border: '1px solid var(--border-muted)',
                 }}
               >
                 {SECURITY_OPTIONS.map((opt) => (
@@ -1120,10 +1131,10 @@ export default function RegisterPage() {
                       display: 'flex',
                       justifyContent: 'space-between',
                       padding: '0.375rem 0',
-                      borderBottom: '1px solid rgba(255,255,255,0.03)',
+                      borderBottom: '1px solid var(--border-muted)',
                     }}
                   >
-                    <span style={{ color: '#8888a0', fontSize: '0.875rem' }}>{opt.label}</span>
+                    <span style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>{opt.label}</span>
                     <span className={`badge badge--${security[opt.key] ? 'emerald' : 'neutral'}`}>
                       {security[opt.key] ? 'Enabled' : 'Disabled'}
                     </span>
@@ -1136,7 +1147,7 @@ export default function RegisterPage() {
                     padding: '0.375rem 0',
                   }}
                 >
-                  <span style={{ color: '#8888a0', fontSize: '0.875rem' }}>Storage Policy</span>
+                  <span style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>Storage Policy</span>
                   <span className="badge badge--violet">{storagePolicy}</span>
                 </div>
               </div>

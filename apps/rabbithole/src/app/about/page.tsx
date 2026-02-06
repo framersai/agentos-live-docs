@@ -3,6 +3,7 @@
 import '@/styles/landing.scss';
 import { RabbitHoleLogo, Footer } from '@/components/brand';
 import { LanternToggle } from '@/components/LanternToggle';
+import { TRIAL_DAYS } from '@/config/pricing';
 
 export default function AboutPage() {
   return (
@@ -24,7 +25,7 @@ export default function AboutPage() {
           <div className="nav__actions">
             <LanternToggle />
             <a href="/login" className="btn btn--ghost">Sign In</a>
-            <a href="/signup" className="btn btn--primary">Get Started</a>
+            <a href="/pricing" className="btn btn--primary">Start Trial</a>
           </div>
         </div>
       </nav>
@@ -66,10 +67,12 @@ export default function AboutPage() {
 
               <h2 className="heading-3">Plans &amp; Pricing</h2>
               <p>
-                We offer flexible plans starting at <strong>$29.99/month</strong> with 3
-                hours/week of complimentary human assistant support. Annual billing saves
-                31%, and our <strong>$499 lifetime</strong> plan gives you permanent platform
-                access with an optional assistant add-on for $150/year.
+                We offer transparent plans starting at <strong>$19/month</strong> for one managed
+                Wunderbot, with a <strong>$49/month Pro</strong> tier for multi-agent teams,
+                premium integrations, and encrypted credential vault support.
+              </p>
+              <p>
+                Every paid plan includes a <strong>{TRIAL_DAYS}-day free trial</strong>.
               </p>
               <p>
                 <a href="/#pricing" className="btn btn--secondary">View Pricing</a>

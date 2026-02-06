@@ -6,15 +6,42 @@ import { usePathname } from 'next/navigation';
 import '@/styles/wunderland.scss';
 import WunderlandNav from '@/components/wunderland/WunderlandNav';
 import { WunderlandAPIError, wunderlandAPI, type WunderlandAgentSummary } from '@/lib/wunderland-api';
+import {
+  WunderlandSettingsProvider,
+  useWunderlandSettings,
+  type VerificationMode,
+} from '@/lib/wunderland-settings';
+import { AuthProvider, useAuth } from '@/lib/auth-context';
 
 export default function WunderlandLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <AuthProvider>
+      <WunderlandSettingsProvider>
+        <WunderlandLayoutInner>{children}</WunderlandLayoutInner>
+      </WunderlandSettingsProvider>
+    </AuthProvider>
+  );
+}
+
+function WunderlandLayoutInner({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
   const [activeSeedId, setActiveSeedId] = useState('');
-  const [hasAuthToken, setHasAuthToken] = useState(false);
+  const { isAuthenticated, isPaid, isDemo, logout: authLogout } = useAuth();
   const [ownedAgents, setOwnedAgents] = useState<WunderlandAgentSummary[]>([]);
   const [ownedAgentsLoading, setOwnedAgentsLoading] = useState(false);
   const [ownedAgentsError, setOwnedAgentsError] = useState('');
+  const [billingBusy, setBillingBusy] = useState(false);
+  const [billingError, setBillingError] = useState('');
+  const {
+    chainProofsEnabled,
+    verificationMode,
+    setVerificationMode,
+    solanaRpcUrl,
+    setSolanaRpcUrl,
+    ipfsGatewayUrl,
+    setIpfsGatewayUrl,
+  } = useWunderlandSettings();
 
   // Close sidebar on route change (mobile)
   useEffect(() => {
@@ -44,12 +71,11 @@ export default function WunderlandLayout({ children }: { children: React.ReactNo
     };
   }, [sidebarOpen]);
 
-  // Load persisted active seed + auth state
+  // Load persisted active seed
   useEffect(() => {
     try {
       const storedSeed = localStorage.getItem('wunderlandActiveSeedId') || '';
       setActiveSeedId(storedSeed);
-      setHasAuthToken(Boolean(localStorage.getItem('vcaAuthToken')));
     } catch {
       // ignore (e.g. private mode)
     }
@@ -60,7 +86,7 @@ export default function WunderlandLayout({ children }: { children: React.ReactNo
     let cancelled = false;
 
     async function loadOwnedAgents() {
-      if (!hasAuthToken) {
+      if (!isAuthenticated) {
         setOwnedAgents([]);
         setOwnedAgentsLoading(false);
         setOwnedAgentsError('');
@@ -91,7 +117,7 @@ export default function WunderlandLayout({ children }: { children: React.ReactNo
     return () => {
       cancelled = true;
     };
-  }, [hasAuthToken]);
+  }, [isAuthenticated]);
 
   const persistActiveSeed = useCallback((value: string) => {
     setActiveSeedId(value);
@@ -105,7 +131,7 @@ export default function WunderlandLayout({ children }: { children: React.ReactNo
 
   // Normalize the active seed when signed in: it must be a user-owned agent.
   useEffect(() => {
-    if (!hasAuthToken) return;
+    if (!isAuthenticated) return;
     if (ownedAgentsLoading) return;
     if (ownedAgents.length === 0) {
       if (activeSeedId) persistActiveSeed('');
@@ -116,15 +142,24 @@ export default function WunderlandLayout({ children }: { children: React.ReactNo
     if (!activeSeedId || !owned.has(activeSeedId)) {
       persistActiveSeed(ownedAgents[0]?.seedId ?? '');
     }
-  }, [hasAuthToken, ownedAgentsLoading, ownedAgents, activeSeedId, persistActiveSeed]);
+  }, [isAuthenticated, ownedAgentsLoading, ownedAgents, activeSeedId, persistActiveSeed]);
 
-  const logout = useCallback(async () => {
+  const logout = useCallback(() => {
+    authLogout();
+  }, [authLogout]);
+
+  const openBillingPortal = useCallback(async () => {
+    setBillingBusy(true);
+    setBillingError('');
     try {
-      localStorage.removeItem('vcaAuthToken');
-    } catch {
-      // ignore
+      const res = await wunderlandAPI.billing.getPortalUrl();
+      if (res?.url) window.location.href = res.url;
+      else throw new Error('Billing portal unavailable.');
+    } catch (err) {
+      setBillingError(err instanceof Error ? err.message : 'Billing portal unavailable.');
+    } finally {
+      setBillingBusy(false);
     }
-    setHasAuthToken(false);
   }, []);
 
   const toggleSidebar = useCallback(() => {
@@ -207,18 +242,18 @@ export default function WunderlandLayout({ children }: { children: React.ReactNo
                 style={{
                   fontFamily: "'IBM Plex Mono', monospace",
                   fontSize: '0.6875rem',
-                  color: '#8888a0',
+                  color: 'var(--color-text-muted)',
                 }}
               >
                 Active Agent
               </div>
-              {hasAuthToken && (
+              {isAuthenticated && (
                 <button className="btn btn--ghost btn--sm" onClick={logout} type="button">
                   Sign out
                 </button>
               )}
             </div>
-            {hasAuthToken ? (
+            {isAuthenticated ? (
               <>
                 <select
                   value={activeSeedId}
@@ -228,10 +263,10 @@ export default function WunderlandLayout({ children }: { children: React.ReactNo
                   style={{
                     width: '100%',
                     padding: '6px 10px',
-                    background: 'rgba(0,0,0,0.3)',
-                    border: '1px solid rgba(255,255,255,0.06)',
+                    background: 'var(--input-bg)',
+                    border: 'var(--border-subtle)',
                     borderRadius: 6,
-                    color: '#e8e8ff',
+                    color: 'var(--color-text)',
                     fontFamily: "'IBM Plex Mono', monospace",
                     fontSize: '0.6875rem',
                     cursor: ownedAgentsLoading || ownedAgents.length === 0 ? 'not-allowed' : 'pointer',
@@ -255,10 +290,44 @@ export default function WunderlandLayout({ children }: { children: React.ReactNo
                     style={{
                       fontFamily: "'IBM Plex Mono', monospace",
                       fontSize: '0.625rem',
-                      color: '#ff6b6b',
+                      color: 'var(--color-error)',
                     }}
                   >
                     {ownedAgentsError}
+                  </div>
+                )}
+
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                  {isPaid ? (
+                    <button
+                      type="button"
+                      className="btn btn--ghost btn--sm"
+                      onClick={() => void openBillingPortal()}
+                      disabled={billingBusy}
+                      style={{ flex: 1 }}
+                    >
+                      {billingBusy ? 'Opening…' : 'Manage subscription'}
+                    </button>
+                  ) : (
+                    <Link
+                      href="/pricing"
+                      className="btn btn--primary btn--sm"
+                      style={{ flex: 1, textDecoration: 'none', textAlign: 'center' }}
+                    >
+                      Start trial
+                    </Link>
+                  )}
+                </div>
+
+                {billingError && (
+                  <div
+                    style={{
+                      fontFamily: "'IBM Plex Mono', monospace",
+                      fontSize: '0.625rem',
+                      color: 'var(--color-error)',
+                    }}
+                  >
+                    {billingError}
                   </div>
                 )}
 
@@ -269,32 +338,121 @@ export default function WunderlandLayout({ children }: { children: React.ReactNo
                 )}
               </>
             ) : (
-              <input
-                value={activeSeedId}
-                onChange={(e) => persistActiveSeed(e.target.value)}
-                placeholder="seed_..."
-                aria-label="Active Seed ID"
-                style={{
-                  width: '100%',
-                  padding: '6px 10px',
-                  background: 'rgba(0,0,0,0.3)',
-                  border: '1px solid rgba(255,255,255,0.06)',
-                  borderRadius: 6,
-                  color: '#e8e8ff',
-                  fontFamily: "'IBM Plex Mono', monospace",
-                  fontSize: '0.6875rem',
-                }}
-              />
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <div
+                  style={{
+                    fontFamily: "'IBM Plex Mono', monospace",
+                    fontSize: '0.625rem',
+                    color: 'var(--color-text-dim)',
+                    lineHeight: 1.4,
+                  }}
+                >
+                  Sign in to create agents, vote, and engage with the network.
+                </div>
+                <Link
+                  href="/login"
+                  className="btn btn--primary btn--sm"
+                  style={{ textDecoration: 'none', textAlign: 'center' }}
+                >
+                  Sign in
+                </Link>
+                <Link
+                  href="/signup"
+                  className="btn btn--ghost btn--sm"
+                  style={{ textDecoration: 'none', textAlign: 'center' }}
+                >
+                  Create account
+                </Link>
+              </div>
             )}
-            {!hasAuthToken && (
+
+            {chainProofsEnabled && (
               <div
                 style={{
-                  fontFamily: "'IBM Plex Mono', monospace",
-                  fontSize: '0.625rem',
-                  color: '#505068',
+                  marginTop: 12,
+                  paddingTop: 12,
+                  borderTop: '1px solid rgba(255,255,255,0.06)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 10,
                 }}
               >
-                Sign in required for register/vote/engage.
+                <div
+                  style={{
+                    fontFamily: "'IBM Plex Mono', monospace",
+                    fontSize: '0.6875rem',
+                    color: 'var(--color-text-muted)',
+                  }}
+                >
+                  Verification
+                </div>
+
+                <select
+                  value={verificationMode}
+                  onChange={(e) => setVerificationMode(e.target.value as VerificationMode)}
+                  aria-label="Verification mode"
+                  style={{
+                    width: '100%',
+                    padding: '6px 10px',
+                    background: 'var(--input-bg)',
+                    border: 'var(--border-subtle)',
+                    borderRadius: 6,
+                    color: 'var(--color-text)',
+                    fontFamily: "'IBM Plex Mono', monospace",
+                    fontSize: '0.6875rem',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <option value="fast">Fast (Node)</option>
+                  <option value="trustless">Trustless (IPFS + Solana)</option>
+                </select>
+
+                {verificationMode === 'trustless' && (
+                  <>
+                    <input
+                      value={solanaRpcUrl}
+                      onChange={(e) => setSolanaRpcUrl(e.target.value)}
+                      placeholder="Solana RPC URL"
+                      aria-label="Solana RPC URL"
+                      style={{
+                        width: '100%',
+                        padding: '6px 10px',
+                        background: 'var(--input-bg)',
+                        border: 'var(--border-subtle)',
+                        borderRadius: 6,
+                        color: 'var(--color-text)',
+                        fontFamily: "'IBM Plex Mono', monospace",
+                        fontSize: '0.6875rem',
+                      }}
+                    />
+                    <input
+                      value={ipfsGatewayUrl}
+                      onChange={(e) => setIpfsGatewayUrl(e.target.value)}
+                      placeholder="IPFS Gateway URL"
+                      aria-label="IPFS Gateway URL"
+                      style={{
+                        width: '100%',
+                        padding: '6px 10px',
+                        background: 'var(--input-bg)',
+                        border: 'var(--border-subtle)',
+                        borderRadius: 6,
+                        color: 'var(--color-text)',
+                        fontFamily: "'IBM Plex Mono', monospace",
+                        fontSize: '0.6875rem',
+                      }}
+                    />
+                    <div
+                      style={{
+                        fontFamily: "'IBM Plex Mono', monospace",
+                        fontSize: '0.625rem',
+                        color: 'var(--color-text-dim)',
+                        lineHeight: 1.4,
+                      }}
+                    >
+                      Slower, but verifies hashes against IPFS and on-chain PDAs.
+                    </div>
+                  </>
+                )}
               </div>
             )}
           </div>

@@ -3,11 +3,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { wunderlandAPI, type WunderlandAgentSummary } from '@/lib/wunderland-api';
+import { useAuth } from '@/lib/auth-context';
 import { levelTitle, seedToColor, withAlpha } from '@/lib/wunderland-ui';
 
 const FILTER_PILLS = ['All', 'Active', 'By Level', 'Verified Only'] as const;
 
 export default function AgentDirectoryPage() {
+  const { isDemo } = useAuth();
   const [agents, setAgents] = useState<WunderlandAgentSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
@@ -67,10 +69,40 @@ export default function AgentDirectoryPage() {
       <div className="wunderland-header">
         <h2 className="wunderland-header__title">Agent Directory</h2>
         <p className="wunderland-header__subtitle">
-          <span style={{ color: '#00f5ff', fontWeight: 600 }}>{filtered.length}</span> agents
+          <span style={{ color: 'var(--color-accent)', fontWeight: 600 }}>{filtered.length}</span> agents
           registered
         </p>
       </div>
+
+      {isDemo && (
+        <div
+          style={{
+            padding: '12px 16px',
+            marginBottom: 16,
+            background: 'var(--color-accent-muted)',
+            border: '1px solid var(--color-accent-border)',
+            borderRadius: 10,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: 10,
+          }}
+        >
+          <span
+            style={{
+              fontFamily: "'IBM Plex Mono', monospace",
+              fontSize: '0.75rem',
+              color: 'var(--color-text-muted)',
+            }}
+          >
+            Browsing live public agents — sign in to register and manage your own autonomous agents.
+          </span>
+          <Link href="/login" className="btn btn--primary btn--sm" style={{ textDecoration: 'none' }}>
+            Get started
+          </Link>
+        </div>
+      )}
 
       <div
         className="feed-filters"
@@ -144,7 +176,7 @@ export default function AgentDirectoryPage() {
                         {agent.provenance.enabled && (
                           <span
                             title="Provenance enabled"
-                            style={{ marginLeft: 6, color: '#10ffb0' }}
+                            style={{ marginLeft: 6, color: 'var(--color-success)' }}
                           >
                             ✓
                           </span>

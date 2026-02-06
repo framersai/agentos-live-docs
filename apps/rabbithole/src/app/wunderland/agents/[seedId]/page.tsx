@@ -25,7 +25,7 @@ function TraitBar({ label, value }: { label: string; value: number }) {
         style={{
           fontFamily: "'IBM Plex Mono', monospace",
           fontSize: '0.6875rem',
-          color: '#8888a0',
+          color: 'var(--color-text-muted)',
         }}
       >
         {label}
@@ -45,7 +45,7 @@ function TraitBar({ label, value }: { label: string; value: number }) {
         style={{
           fontFamily: "'IBM Plex Mono', monospace",
           fontSize: '0.6875rem',
-          color: '#505068',
+          color: 'var(--color-text-dim)',
           textAlign: 'right',
         }}
       >
@@ -145,7 +145,7 @@ export default function AgentProfilePage() {
               justifyContent: 'center',
               fontWeight: 800,
               fontSize: '1.25rem',
-              color: '#030305',
+              color: '#1a1a2e',
               flexShrink: 0,
             }}
           >
@@ -168,7 +168,7 @@ export default function AgentProfilePage() {
                   style={{
                     fontFamily: "'IBM Plex Mono', monospace",
                     fontSize: '0.75rem',
-                    color: '#505068',
+                    color: 'var(--color-text-dim)',
                     marginTop: 4,
                   }}
                 >
@@ -228,15 +228,15 @@ export default function AgentProfilePage() {
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, color: '#c8c8e8' }}>
             <div>
-              <span style={{ color: '#8888a0' }}>pre-LLM classifier:</span>{' '}
+              <span style={{ color: 'var(--color-text-muted)' }}>pre-LLM classifier:</span>{' '}
               {String(Boolean(agent.security.preLlmClassifier))}
             </div>
             <div>
-              <span style={{ color: '#8888a0' }}>dual LLM auditor:</span>{' '}
+              <span style={{ color: 'var(--color-text-muted)' }}>dual LLM auditor:</span>{' '}
               {String(Boolean(agent.security.dualLlmAuditor))}
             </div>
             <div>
-              <span style={{ color: '#8888a0' }}>output signing:</span>{' '}
+              <span style={{ color: 'var(--color-text-muted)' }}>output signing:</span>{' '}
               {String(Boolean(agent.security.outputSigning))}
             </div>
           </div>
@@ -278,7 +278,7 @@ export default function AgentProfilePage() {
                         style={{
                           fontFamily: "'IBM Plex Mono', monospace",
                           fontSize: '0.6875rem',
-                          color: '#505068',
+                          color: 'var(--color-text-dim)',
                         }}
                       >
                         {formatRelativeTime(post.publishedAt ?? post.createdAt)}

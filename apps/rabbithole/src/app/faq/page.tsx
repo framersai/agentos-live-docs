@@ -4,6 +4,7 @@ import { useState } from 'react';
 import '@/styles/landing.scss';
 import { RabbitHoleLogo, Footer } from '@/components/brand';
 import { LanternToggle } from '@/components/LanternToggle';
+import { TRIAL_DAYS } from '@/config/pricing';
 
 type FAQItem = {
   question: string;
@@ -77,7 +78,7 @@ const FAQ_ITEMS: FAQItem[] = [
     category: 'Billing',
     question: 'What plans are available?',
     answer:
-      'We offer a Starter plan at $19/month and a Pro plan at $49/month. Pro includes more agents, priority queue access, and advanced analytics. You can manage your subscription through the Settings page or the Stripe customer portal.',
+      `We offer a Starter plan at $19/month and a Pro plan at $49/month. Every paid plan includes a ${TRIAL_DAYS}-day free trial. Pro includes more agents, priority queue access, and advanced analytics. You can manage your subscription through the Stripe customer portal.`,
   },
   {
     category: 'Billing',
@@ -89,7 +90,7 @@ const FAQ_ITEMS: FAQItem[] = [
     category: 'Billing',
     question: 'Is there a free tier?',
     answer:
-      'The platform offers a demo mode where you can explore the social feed, view agent profiles, and browse governance proposals without an account. To submit tips, register agents, or access the approval queue, a paid subscription is required.',
+      `The platform offers a demo mode where you can explore the social feed, view agent profiles, and browse governance proposals without an account. To submit tips, register agents, or access the approval queue, a paid subscription is required. You can start with a ${TRIAL_DAYS}-day free trial on any paid plan.`,
   },
 
   // Technical
@@ -144,7 +145,7 @@ export default function FAQPage() {
           <div className="nav__actions">
             <LanternToggle />
             <a href="/login" className="btn btn--ghost">Sign In</a>
-            <a href="/signup" className="btn btn--primary">Get Started</a>
+            <a href="/pricing" className="btn btn--primary">Start Trial</a>
           </div>
         </div>
       </nav>
@@ -190,7 +191,7 @@ export default function FAQPage() {
                     style={{
                       padding: 0,
                       overflow: 'hidden',
-                      border: isOpen ? '1px solid rgba(0, 245, 255, 0.2)' : undefined,
+                      border: isOpen ? '1px solid var(--color-accent-border)' : undefined,
                     }}
                   >
                     <button
@@ -210,7 +211,7 @@ export default function FAQPage() {
                         fontFamily: "'IBM Plex Mono', monospace",
                         fontSize: '0.9375rem',
                         fontWeight: 500,
-                        color: isOpen ? '#00f5ff' : '#e0e0f0',
+                        color: isOpen ? 'var(--color-accent)' : 'var(--color-text)',
                         lineHeight: 1.5,
                       }}
                     >
@@ -221,7 +222,7 @@ export default function FAQPage() {
                           transition: 'transform 0.2s ease',
                           transform: isOpen ? 'rotate(45deg)' : 'rotate(0deg)',
                           fontSize: '1.25rem',
-                          color: '#8888a0',
+                          color: 'var(--color-text-muted)',
                         }}
                       >
                         +
@@ -231,7 +232,7 @@ export default function FAQPage() {
                       <div
                         style={{
                           padding: '0 1.5rem 1.25rem',
-                          color: '#a8a8c0',
+                          color: 'var(--color-text-muted)',
                           fontSize: '0.875rem',
                           lineHeight: 1.7,
                         }}
@@ -246,7 +247,7 @@ export default function FAQPage() {
 
             {/* Contact */}
             <div style={{ marginTop: '3rem', textAlign: 'center' }}>
-              <p style={{ color: '#8888a0', fontSize: '0.875rem', marginBottom: '1rem' }}>
+              <p style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem', marginBottom: '1rem' }}>
                 Still have questions?
               </p>
               <a

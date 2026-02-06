@@ -1,7 +1,9 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
 import { wunderlandAPI, type WunderlandProposal } from '@/lib/wunderland-api';
+import { useAuth } from '@/lib/auth-context';
 import { formatRelativeTime, seedToColor, withAlpha } from '@/lib/wunderland-ui';
 
 function getStatusBadge(status: string): { label: string; variant: string } {
@@ -22,6 +24,7 @@ function getStatusBadge(status: string): { label: string; variant: string } {
 }
 
 export default function GovernancePage() {
+  const { isDemo } = useAuth();
   const [proposals, setProposals] = useState<WunderlandProposal[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
@@ -63,6 +66,10 @@ export default function GovernancePage() {
   );
 
   const cast = async (proposalId: string, option: 'For' | 'Against' | 'Abstain') => {
+    if (isDemo) {
+      alert('Sign in with a paid subscription to vote on proposals.');
+      return;
+    }
     const activeSeedId =
       typeof window !== 'undefined' ? localStorage.getItem('wunderlandActiveSeedId') : null;
     if (!activeSeedId) {
@@ -92,6 +99,36 @@ export default function GovernancePage() {
         <h2 className="wunderland-header__title">Governance</h2>
         <p className="wunderland-header__subtitle">Proposals voted on by citizen agents</p>
       </div>
+
+      {isDemo && (
+        <div
+          style={{
+            padding: '12px 16px',
+            marginBottom: 16,
+            background: 'var(--color-accent-muted)',
+            border: '1px solid var(--color-accent-border)',
+            borderRadius: 10,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: 10,
+          }}
+        >
+          <span
+            style={{
+              fontFamily: "'IBM Plex Mono', monospace",
+              fontSize: '0.75rem',
+              color: 'var(--color-text-muted)',
+            }}
+          >
+            Viewing live public proposals — sign in with an active plan to vote and submit proposals.
+          </span>
+          <Link href="/login" className="btn btn--primary btn--sm" style={{ textDecoration: 'none' }}>
+            Sign in
+          </Link>
+        </div>
+      )}
 
       <div
         style={{
@@ -171,7 +208,7 @@ export default function GovernancePage() {
                         justifyContent: 'center',
                         fontFamily: "'IBM Plex Mono', monospace",
                         fontWeight: 800,
-                        color: '#030305',
+                        color: 'var(--color-void)',
                       }}
                       title={proposal.proposerSeedId}
                     >
@@ -209,7 +246,7 @@ export default function GovernancePage() {
                           justifyContent: 'space-between',
                           fontFamily: "'IBM Plex Mono', monospace",
                           fontSize: '0.6875rem',
-                          color: '#8888a0',
+                          color: 'var(--color-text-muted)',
                         }}
                       >
                         <span>For</span>
@@ -220,7 +257,7 @@ export default function GovernancePage() {
                       <div
                         style={{
                           height: 8,
-                          background: 'rgba(255,255,255,0.06)',
+                          background: 'var(--overlay-medium)',
                           borderRadius: 999,
                           marginTop: 6,
                         }}
@@ -230,7 +267,7 @@ export default function GovernancePage() {
                             height: 8,
                             width: `${forPct}%`,
                             borderRadius: 999,
-                            background: 'rgba(16,255,176,0.35)',
+                            background: 'color-mix(in srgb, var(--color-success) 35%, transparent)',
                           }}
                         />
                       </div>
@@ -242,7 +279,7 @@ export default function GovernancePage() {
                           justifyContent: 'space-between',
                           fontFamily: "'IBM Plex Mono', monospace",
                           fontSize: '0.6875rem',
-                          color: '#8888a0',
+                          color: 'var(--color-text-muted)',
                         }}
                       >
                         <span>Against</span>
@@ -253,7 +290,7 @@ export default function GovernancePage() {
                       <div
                         style={{
                           height: 8,
-                          background: 'rgba(255,255,255,0.06)',
+                          background: 'var(--overlay-medium)',
                           borderRadius: 999,
                           marginTop: 6,
                         }}
@@ -263,7 +300,7 @@ export default function GovernancePage() {
                             height: 8,
                             width: `${againstPct}%`,
                             borderRadius: 999,
-                            background: 'rgba(255,107,107,0.35)',
+                            background: 'color-mix(in srgb, var(--color-error) 35%, transparent)',
                           }}
                         />
                       </div>
@@ -275,7 +312,7 @@ export default function GovernancePage() {
                           justifyContent: 'space-between',
                           fontFamily: "'IBM Plex Mono', monospace",
                           fontSize: '0.6875rem',
-                          color: '#8888a0',
+                          color: 'var(--color-text-muted)',
                         }}
                       >
                         <span>Abstain</span>
@@ -286,7 +323,7 @@ export default function GovernancePage() {
                       <div
                         style={{
                           height: 8,
-                          background: 'rgba(255,255,255,0.06)',
+                          background: 'var(--overlay-medium)',
                           borderRadius: 999,
                           marginTop: 6,
                         }}
@@ -296,7 +333,7 @@ export default function GovernancePage() {
                             height: 8,
                             width: `${abstainPct}%`,
                             borderRadius: 999,
-                            background: 'rgba(136,136,160,0.25)',
+                            background: 'color-mix(in srgb, var(--color-text-muted) 25%, transparent)',
                           }}
                         />
                       </div>
@@ -312,7 +349,7 @@ export default function GovernancePage() {
                     gap: '0.5rem',
                     marginTop: '1rem',
                     paddingTop: '1rem',
-                    borderTop: '1px solid rgba(255,255,255,0.04)',
+                    borderTop: '1px solid var(--border-muted)',
                     flexWrap: 'wrap',
                   }}
                 >
@@ -330,9 +367,9 @@ export default function GovernancePage() {
                         className="btn btn--sm"
                         disabled={busy}
                         style={{
-                          background: 'rgba(16,255,176,0.1)',
-                          color: '#10ffb0',
-                          border: '1px solid rgba(16,255,176,0.25)',
+                          background: 'color-mix(in srgb, var(--color-success) 10%, transparent)',
+                          color: 'var(--color-success)',
+                          border: '1px solid color-mix(in srgb, var(--color-success) 25%, transparent)',
                         }}
                         onClick={() => cast(proposal.proposalId, 'For')}
                       >
@@ -342,9 +379,9 @@ export default function GovernancePage() {
                         className="btn btn--sm"
                         disabled={busy}
                         style={{
-                          background: 'rgba(255,107,107,0.1)',
-                          color: '#ff6b6b',
-                          border: '1px solid rgba(255,107,107,0.25)',
+                          background: 'color-mix(in srgb, var(--color-error) 10%, transparent)',
+                          color: 'var(--color-error)',
+                          border: '1px solid color-mix(in srgb, var(--color-error) 25%, transparent)',
                         }}
                         onClick={() => cast(proposal.proposalId, 'Against')}
                       >
@@ -354,9 +391,9 @@ export default function GovernancePage() {
                         className="btn btn--sm"
                         disabled={busy}
                         style={{
-                          background: 'rgba(136,136,160,0.1)',
-                          color: '#8888a0',
-                          border: '1px solid rgba(136,136,160,0.2)',
+                          background: 'color-mix(in srgb, var(--color-text-muted) 10%, transparent)',
+                          color: 'var(--color-text-muted)',
+                          border: '1px solid color-mix(in srgb, var(--color-text-muted) 20%, transparent)',
                         }}
                         onClick={() => cast(proposal.proposalId, 'Abstain')}
                       >
