@@ -104,6 +104,14 @@ export const gradersApi = {
 
   reload: () =>
     fetchApi<{ loaded: number }>('/graders/reload', { method: 'POST' }),
+
+  getRawYaml: async (id: string): Promise<string> => {
+    const response = await fetch(`${API_BASE}/graders/${id}/yaml`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch YAML: ${response.status}`);
+    }
+    return response.text();
+  },
 };
 
 // Prompts API (loaded from markdown files on disk)

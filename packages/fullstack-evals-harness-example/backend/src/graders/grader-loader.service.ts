@@ -195,6 +195,22 @@ export class GraderLoaderService implements OnModuleInit {
     this.logger.log(`Deleted grader ${id}`);
   }
 
+  /**
+   * Return the raw YAML content of a grader file from disk.
+   */
+  getRawYaml(id: string): string {
+    this.findOne(id); // throws if not found
+    const yamlPath = path.join(this.gradersDir, `${id}.yaml`);
+    if (fs.existsSync(yamlPath)) {
+      return fs.readFileSync(yamlPath, 'utf-8');
+    }
+    const ymlPath = path.join(this.gradersDir, `${id}.yml`);
+    if (fs.existsSync(ymlPath)) {
+      return fs.readFileSync(ymlPath, 'utf-8');
+    }
+    throw new NotFoundException(`YAML file for grader "${id}" not found`);
+  }
+
   private parseYaml(filename: string, content: string): LoadedGrader {
     const id = filename.replace(/\.(yaml|yml)$/, '');
     const data = yaml.load(content) as YamlGraderFile;

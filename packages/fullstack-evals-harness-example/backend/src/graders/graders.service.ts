@@ -34,6 +34,10 @@ export class GradersService {
     return this.loader.findMany(ids);
   }
 
+  getRawYaml(id: string): string {
+    return this.loader.getRawYaml(id);
+  }
+
   create(dto: CreateGraderDto): LoadedGrader {
     const id = dto.name
       .toLowerCase()

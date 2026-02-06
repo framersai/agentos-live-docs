@@ -1,7 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Plus, Trash2, Edit2, Sparkles, Info, ChevronDown, ExternalLink, RefreshCw } from 'lucide-react';
+import { Plus, Sparkles, Info, ChevronDown, RefreshCw } from 'lucide-react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { gradersApi, presetsApi, type GraderPreset } from '@/lib/api';
 import { useToast } from '@/components/Toast';
 import type { Grader, GraderType } from '@/lib/types';
@@ -84,6 +86,7 @@ function Tooltip({ text }: { text: string }) {
 
 export default function GradersPage() {
   const { toast } = useToast();
+  const router = useRouter();
   const [graders, setGraders] = useState<Grader[]>([]);
   const [presets, setPresets] = useState<GraderPreset[]>([]);
   const [loading, setLoading] = useState(true);
@@ -91,17 +94,13 @@ export default function GradersPage() {
   const [showForm, setShowForm] = useState(false);
   const [showPresets, setShowPresets] = useState(false);
   const [showGuide, setShowGuide] = useState(false);
-  const [expandedGraderId, setExpandedGraderId] = useState<string | null>(null);
-  const [editingGrader, setEditingGrader] = useState<Grader | null>(null);
   const [loadingPreset, setLoadingPreset] = useState<string | null>(null);
 
-  // Form state
+  // Create form state (simplified — no edit, just name/type/description then redirect)
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    type: 'exact-match' as GraderType,
-    rubric: '',
-    threshold: '',
+    type: 'llm-judge' as GraderType,
   });
 
   useEffect(() => {
@@ -145,9 +144,13 @@ export default function GradersPage() {
   async function loadPreset(preset: GraderPreset) {
     setLoadingPreset(preset.id);
     try {
-      await presetsApi.loadGraderPreset(preset.id);
+      const created = await presetsApi.loadGraderPreset(preset.id);
       await loadGraders();
       setShowPresets(false);
+      // Navigate to the new grader's detail page
+      if (created && created.id) {
+        router.push(`/graders/${created.id}`);
+      }
     } catch (error) {
       console.error('Failed to load preset:', error);
     } finally {
@@ -155,83 +158,21 @@ export default function GradersPage() {
     }
   }
 
-  function openForm(grader?: Grader) {
-    if (grader) {
-      setEditingGrader(grader);
-      const threshold = grader.config && typeof grader.config === 'object' && 'threshold' in grader.config
-        ? String(grader.config.threshold)
-        : '';
-      setFormData({
-        name: grader.name,
-        description: grader.description || '',
-        type: grader.type,
-        rubric: grader.rubric || '',
-        threshold,
-      });
-    } else {
-      setEditingGrader(null);
-      setFormData({
-        name: '',
-        description: '',
-        type: 'exact-match',
-        rubric: '',
-        threshold: '',
-      });
-    }
-    setShowForm(true);
-  }
-
-  async function saveGrader() {
+  async function createGrader() {
     if (!formData.name.trim()) return;
 
-    // Build config object with threshold if provided
-    const config: Record<string, unknown> = {};
-    if (formData.threshold.trim()) {
-      const thresholdNum = parseFloat(formData.threshold);
-      if (!isNaN(thresholdNum) && thresholdNum >= 0 && thresholdNum <= 1) {
-        config.threshold = thresholdNum;
-      }
-    }
-
     try {
-      if (editingGrader) {
-        // Merge with existing config
-        const mergedConfig = { ...editingGrader.config, ...config };
-        await gradersApi.update(editingGrader.id, {
-          name: formData.name.trim(),
-          description: formData.description.trim() || undefined,
-          rubric: formData.rubric.trim() || undefined,
-          config: Object.keys(mergedConfig).length > 0 ? mergedConfig : undefined,
-        });
-      } else {
-        await gradersApi.create({
-          name: formData.name.trim(),
-          description: formData.description.trim() || undefined,
-          type: formData.type,
-          rubric: formData.rubric.trim() || undefined,
-          config: Object.keys(config).length > 0 ? config : undefined,
-        });
-      }
+      const created = await gradersApi.create({
+        name: formData.name.trim(),
+        description: formData.description.trim() || undefined,
+        type: formData.type,
+      });
       setShowForm(false);
-      setEditingGrader(null);
-      loadGraders();
+      router.push(`/graders/${created.id}`);
     } catch (error) {
-      console.error('Failed to save grader:', error);
+      console.error('Failed to create grader:', error);
     }
   }
-
-  async function deleteGrader(id: string) {
-    if (!confirm('Delete this grader?')) return;
-
-    try {
-      await gradersApi.delete(id);
-      loadGraders();
-    } catch (error) {
-      console.error('Failed to delete grader:', error);
-    }
-  }
-
-  const needsRubric = formData.type === 'llm-judge';
 
   if (loading) {
     return (
@@ -247,7 +188,7 @@ export default function GradersPage() {
         <div>
           <h1 className="text-2xl font-semibold">Graders</h1>
           <p className="text-muted-foreground mt-1">
-            YAML files loaded from <code className="text-xs">backend/graders/</code>. Edit files or use the UI.
+            YAML files loaded from <code className="text-xs">backend/graders/</code>. Click a grader to edit.
           </p>
         </div>
         <div className="flex gap-2">
@@ -264,10 +205,10 @@ export default function GradersPage() {
             <button
               onClick={() => setShowPresets(!showPresets)}
               className="btn-secondary"
-              title="Create a new grader from a pre-configured template"
+              title="Load a pre-configured grader from built-in presets"
             >
               <Sparkles className="h-4 w-4 mr-2" />
-              From Template
+              Load Preset
             </button>
 
             {showPresets && (
@@ -293,7 +234,10 @@ export default function GradersPage() {
             )}
           </div>
           <button
-            onClick={() => openForm()}
+            onClick={() => {
+              setFormData({ name: '', description: '', type: 'llm-judge' });
+              setShowForm(true);
+            }}
             className="btn-primary"
             title="Create a custom grader with your own evaluation criteria"
           >
@@ -374,7 +318,13 @@ export default function GradersPage() {
               <Sparkles className="h-4 w-4 mr-2" />
               Load a preset
             </button>
-            <button onClick={() => openForm()} className="btn-secondary">
+            <button
+              onClick={() => {
+                setFormData({ name: '', description: '', type: 'llm-judge' });
+                setShowForm(true);
+              }}
+              className="btn-secondary"
+            >
               Create from scratch
             </button>
           </div>
@@ -383,9 +333,12 @@ export default function GradersPage() {
         <div className="grid gap-4 md:grid-cols-2">
           {graders.map((grader) => {
             const typeInfo = GRADER_TYPES.find((t) => t.value === grader.type);
-            const isExpanded = expandedGraderId === grader.id;
             return (
-              <div key={grader.id} className="card overflow-hidden">
+              <Link
+                key={grader.id}
+                href={`/graders/${grader.id}`}
+                className="card overflow-hidden hover:bg-muted/30 transition-colors block"
+              >
                 <div className="p-4">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
@@ -396,37 +349,21 @@ export default function GradersPage() {
                         </span>
                       </div>
                       {grader.description && (
-                        <p className="text-sm text-muted-foreground mt-1">{grader.description}</p>
+                        <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{grader.description}</p>
                       )}
-                    </div>
-                    <div className="flex gap-1 ml-4">
-                      <button
-                        onClick={() => openForm(grader)}
-                        className="btn-ghost p-2 text-muted-foreground"
-                        title="Edit grader"
-                      >
-                        <Edit2 className="h-4 w-4" />
-                      </button>
-                      <button
-                        onClick={() => deleteGrader(grader.id)}
-                        className="btn-ghost p-2 text-muted-foreground hover:text-error"
-                        title="Delete grader"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
                     </div>
                   </div>
 
                   {/* Config summary badges */}
                   <div className="flex flex-wrap gap-1.5 mt-2">
-                    {grader.filePath && (
-                      <span className="badge bg-muted text-muted-foreground font-mono text-xs">
-                        {grader.filePath}
-                      </span>
-                    )}
                     {grader.config && typeof grader.config === 'object' && 'threshold' in grader.config && (
                       <span className="badge bg-muted text-muted-foreground text-xs">
                         threshold: {String(grader.config.threshold)}
+                      </span>
+                    )}
+                    {grader.config && typeof grader.config === 'object' && 'assertion' in grader.config && (
+                      <span className="badge bg-muted text-muted-foreground text-xs">
+                        {String(grader.config.assertion)}
                       </span>
                     )}
                     {grader.rubric && (
@@ -439,83 +376,24 @@ export default function GradersPage() {
                         has schema
                       </span>
                     )}
+                    {grader.filePath && (
+                      <span className="badge bg-muted text-muted-foreground font-mono text-[10px]">
+                        {grader.filePath}
+                      </span>
+                    )}
                   </div>
                 </div>
-
-                {/* Expandable details */}
-                <button
-                  onClick={() => setExpandedGraderId(isExpanded ? null : grader.id)}
-                  className="w-full text-left px-4 py-2 border-t border-border flex items-center justify-between text-xs text-muted-foreground hover:bg-muted/50 transition-colors"
-                >
-                  <span>Details & Research</span>
-                  <ChevronDown className={`h-3 w-3 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
-                </button>
-
-                {isExpanded && (
-                  <div className="px-4 pb-4 space-y-3 border-t border-border">
-                    {/* Rubric */}
-                    {grader.rubric && (
-                      <div className="mt-3">
-                        <p className="text-xs font-medium text-muted-foreground mb-1">Rubric</p>
-                        <pre className="text-xs text-muted-foreground bg-muted/50 p-2 rounded font-mono whitespace-pre-wrap max-h-40 overflow-y-auto">
-                          {grader.rubric}
-                        </pre>
-                      </div>
-                    )}
-
-                    {/* Config */}
-                    {grader.config && Object.keys(grader.config).length > 0 && (
-                      <div>
-                        <p className="text-xs font-medium text-muted-foreground mb-1">Configuration</p>
-                        <pre className="text-xs text-muted-foreground bg-muted/50 p-2 rounded font-mono whitespace-pre-wrap max-h-40 overflow-y-auto">
-                          {JSON.stringify(grader.config, null, 2)}
-                        </pre>
-                      </div>
-                    )}
-
-                    {/* Research inspiration — prefer grader's own data from YAML, fall back to type constant */}
-                    {(grader.inspiration || typeInfo?.inspiration) && (
-                      <div>
-                        <p className="text-xs font-medium text-muted-foreground mb-1">Technique & Inspiration</p>
-                        <p className="text-xs text-muted-foreground">{grader.inspiration || typeInfo?.inspiration}</p>
-                        {(grader.reference || typeInfo?.reference) && (
-                          <a
-                            href={grader.reference || typeInfo?.reference}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-xs text-muted-foreground underline hover:text-foreground mt-1 inline-flex items-center gap-1"
-                          >
-                            Paper <ExternalLink className="h-3 w-3" />
-                          </a>
-                        )}
-                      </div>
-                    )}
-
-                    {/* File info + Metadata */}
-                    <div className="text-[11px] text-muted-foreground/60 pt-1 border-t border-border space-y-0.5">
-                      {grader.filePath && (
-                        <div><code>{grader.filePath}</code></div>
-                      )}
-                      <div>
-                        ID: <code>{grader.id}</code>
-                        {grader.createdAt && <> &middot; Created: {new Date(grader.createdAt).toLocaleDateString()}</>}
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
+              </Link>
             );
           })}
         </div>
       )}
 
-      {/* Create/Edit Modal */}
+      {/* Create Modal (simplified — name, type, description, then redirect to detail page) */}
       {showForm && (
         <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="card p-6 w-full max-w-lg">
-            <h2 className="text-lg font-semibold mb-4">
-              {editingGrader ? 'Edit Grader' : 'Create Grader'}
-            </h2>
+            <h2 className="text-lg font-semibold mb-4">Create Grader</h2>
             <div className="space-y-4">
               <div>
                 <label className="text-sm font-medium block mb-1">Name</label>
@@ -530,6 +408,26 @@ export default function GradersPage() {
               </div>
 
               <div>
+                <label className="text-sm font-medium block mb-1 flex items-center gap-2">
+                  Type
+                  <Tooltip text="Choose how the grader evaluates responses. Cannot be changed after creation." />
+                </label>
+                <select
+                  value={formData.type}
+                  onChange={(e) =>
+                    setFormData({ ...formData, type: e.target.value as GraderType })
+                  }
+                  className="input"
+                >
+                  {GRADER_TYPES.map((type) => (
+                    <option key={type.value} value={type.value}>
+                      {type.label} — {type.description}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
                 <label className="text-sm font-medium block mb-1">Description</label>
                 <input
                   type="text"
@@ -540,76 +438,23 @@ export default function GradersPage() {
                 />
               </div>
 
-              {!editingGrader && (
-                <div>
-                  <label className="text-sm font-medium block mb-1 flex items-center gap-2">
-                    Type
-                    <Tooltip text="Choose how the grader evaluates responses" />
-                  </label>
-                  <select
-                    value={formData.type}
-                    onChange={(e) =>
-                      setFormData({ ...formData, type: e.target.value as GraderType })
-                    }
-                    className="input"
-                  >
-                    {GRADER_TYPES.map((type) => (
-                      <option key={type.value} value={type.value}>
-                        {type.label} — {type.description}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
-
-              <div>
-                <label className="text-sm font-medium block mb-1 flex items-center gap-2">
-                  Threshold
-                  <span className="text-muted-foreground font-normal">(0.0 - 1.0)</span>
-                  <Tooltip text="Score threshold for pass/fail. Common values: 0.7 (moderate), 0.85 (high), 0.9 (strict)" />
-                </label>
-                <input
-                  type="number"
-                  min="0"
-                  max="1"
-                  step="0.05"
-                  value={formData.threshold}
-                  onChange={(e) => setFormData({ ...formData, threshold: e.target.value })}
-                  placeholder="0.7"
-                  className="input w-32"
-                />
-              </div>
-
-              {needsRubric && (
-                <div>
-                  <label className="text-sm font-medium block mb-1 flex items-center gap-2">
-                    Rubric
-                    <span className="text-muted-foreground font-normal">
-                      (required for LLM Judge)
-                    </span>
-                    <Tooltip text="Instructions the LLM uses to evaluate responses. Be specific about what passes and fails." />
-                  </label>
-                  <textarea
-                    value={formData.rubric}
-                    onChange={(e) => setFormData({ ...formData, rubric: e.target.value })}
-                    placeholder="The response should be accurate, concise, and helpful..."
-                    className="input min-h-[100px] resize-y"
-                  />
-                </div>
-              )}
+              <p className="text-xs text-muted-foreground">
+                After creating, you&apos;ll be taken to the detail page to configure rubric, threshold, and other settings.
+              </p>
 
               <div className="flex gap-2 justify-end pt-2">
                 <button
-                  onClick={() => {
-                    setShowForm(false);
-                    setEditingGrader(null);
-                  }}
+                  onClick={() => setShowForm(false)}
                   className="btn-secondary"
                 >
                   Cancel
                 </button>
-                <button onClick={saveGrader} className="btn-primary">
-                  {editingGrader ? 'Save' : 'Create'}
+                <button
+                  onClick={createGrader}
+                  disabled={!formData.name.trim()}
+                  className="btn-primary"
+                >
+                  Create & Configure
                 </button>
               </div>
             </div>
