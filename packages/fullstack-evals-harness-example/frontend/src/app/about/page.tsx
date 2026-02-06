@@ -266,19 +266,24 @@ grader_rationale: Faithfulness is highest — the full format must stay grounded
 
           <AccordionItem title="What are RAGAS-style metrics?">
             <p className="text-muted-foreground leading-relaxed">
-              We use <a href="https://promptfoo.dev" className="link">promptfoo</a>&apos;s implementation
-              of RAGAS-style metrics: <strong>context-faithfulness</strong> (hallucination detection),{' '}
-              <strong>answer-relevance</strong> (query alignment), <strong>context-relevance</strong>{' '}
-              (retrieval quality), and <strong>context-recall</strong> (ground truth coverage).
+              RAGAS-style metrics evaluate RAG (Retrieval-Augmented Generation) systems. We provide
+              <strong> two options</strong>:
             </p>
-            <p className="text-muted-foreground leading-relaxed mt-3">
-              Why promptfoo? RAGAS metrics are complex (claim extraction + NLI verification). Rather
-              than reimplement, we delegate to promptfoo&apos;s battle-tested assertions—MIT licensed,
-              used by Shopify/Discord/Microsoft.
-            </p>
+            <ul className="list-brutal mt-3 text-muted-foreground">
+              <li>
+                <strong>Built-in graders</strong> — Our own implementations of <code>faithfulness</code>,{' '}
+                <code>answer-relevancy</code>, and <code>context-relevancy</code>. These use your
+                configured LLM provider (Settings) and perform claim extraction + NLI verification.
+              </li>
+              <li>
+                <strong>Promptfoo-backed</strong> — The <code>promptfoo</code> grader type can use
+                assertions like <code>context-faithfulness</code>, <code>answer-relevance</code>,{' '}
+                <code>context-recall</code>. Requires OPENAI_API_KEY in environment.
+              </li>
+            </ul>
             <p className="text-muted-foreground leading-relaxed mt-3">
               <a href="https://arxiv.org/abs/2309.15217" target="_blank" rel="noopener noreferrer" className="link">
-                RAGAS paper <ExternalLink className="inline h-3 w-3" />
+                RAGAS paper (Es et al., 2023) <ExternalLink className="inline h-3 w-3" />
               </a>
             </p>
           </AccordionItem>
