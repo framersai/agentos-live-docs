@@ -391,6 +391,87 @@ case 'retrieval-quality':
 - **LLM provider** (`backend/src/llm/llm.service.ts`): All graders get LLM access through this service. It reads provider config from Settings (stored in SQLite). Supports `complete()` for text and `embed()` for embeddings.
 - **Candidate runners** (`backend/src/candidates/candidate-runner.service.ts`): Currently supports `llm_prompt` (call an LLM) and `http_endpoint` (call an external API). Add new runner types to evaluate custom pipelines.
 
+### Database Adapter: How It Works
+
+The harness uses a **database adapter pattern** to keep all persistence logic behind a single interface, making the storage backend swappable without touching any service code.
+
+**Architecture:**
+
+```
+                      ┌──────────────────────────┐
+                      │    NestJS Services        │
+                      │  (Experiments, Graders,   │
+                      │   Datasets, Settings)     │
+                      └─────────┬────────────────┘
+                                │ @Inject(DB_ADAPTER)
+                      ┌─────────▼────────────────┐
+                      │      IDbAdapter           │
+                      │  (TypeScript interface)   │
+                      │  ~40 methods: CRUD for    │
+                      │  all 7 entity types +     │
+                      │  aggregate queries        │
+                      └─────────┬────────────────┘
+                                │ implements
+              ┌─────────────────┼─────────────────┐
+              │                 │                   │
+     ┌────────▼──────┐  ┌──────▼───────┐  ┌───────▼──────┐
+     │ SqliteAdapter  │  │ PostgresAdptr│  │  MySQLAdptr  │
+     │ (implemented)  │  │  (planned)   │  │  (planned)   │
+     └────────┬──────┘  └──────────────┘  └──────────────┘
+              │ uses
+     ┌────────▼──────────────────────────┐
+     │  Drizzle ORM + better-sqlite3     │
+     └───────────────────────────────────┘
+```
+
+**Libraries in the stack:**
+
+| Library                                                      | Role                    | Why                                                                                                                                                                          |
+| ------------------------------------------------------------ | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Drizzle ORM](https://orm.drizzle.team)                      | Type-safe query builder | Zero-overhead, SQL-first ORM. Schema definitions in `schema.ts` generate full TypeScript types. No code generation step needed — types flow from the schema at compile time. |
+| [better-sqlite3](https://github.com/WiseLibs/better-sqlite3) | SQLite driver           | Synchronous, high-performance native bindings for SQLite. No async overhead for local-first use.                                                                             |
+| NestJS `@Global()` module + DI                               | Adapter injection       | `DatabaseModule` is a global module that provides `DB_ADAPTER` token. Services inject it via `@Inject(DB_ADAPTER)` and only see the `IDbAdapter` interface.                  |
+
+**How the adapter is wired:**
+
+1. **Schema layer** (`backend/src/database/schema.ts`): Drizzle table definitions for all 7 entities (datasets, test_cases, graders, candidates, experiments, experiment_results, metadata_schemas, settings). These define column types, foreign keys, and cascading deletes. Drizzle infers TypeScript types from these definitions (`typeof table.$inferSelect`).
+
+2. **Interface layer** (`backend/src/database/interfaces/db-adapter.interface.ts`): The `IDbAdapter` interface defines ~40 methods covering CRUD for every entity, aggregate queries (experiment stats grouped by grader and candidate), upserts (settings, metadata schemas), and lifecycle (`initialize()`, `close()`). Entity types here are plain TypeScript interfaces that map to the Drizzle schema — they're the contract that any adapter must satisfy.
+
+3. **Adapter layer** (`backend/src/database/adapters/sqlite.adapter.ts`): The `SqliteAdapter` implements `IDbAdapter` using Drizzle's query builder on top of better-sqlite3. Key details:
+   - `initialize()` creates all tables via raw SQL `CREATE TABLE IF NOT EXISTS`, then runs column migrations for backwards compatibility
+   - Migrations use SQLite's `PRAGMA table_info()` to check if columns exist before `ALTER TABLE ADD COLUMN`
+   - Timestamps are stored as Unix integers (not ISO strings) — Drizzle's `{ mode: 'timestamp' }` handles conversion
+   - `getExperimentStats()` computes per-grader and per-candidate aggregate stats in application code (not SQL aggregates) for portability
+
+4. **Module layer** (`backend/src/database/db.module.ts`): `DatabaseModule` uses a factory provider that reads `DB_TYPE` from env to select the adapter. Currently only `sqlite` is implemented; `postgres` throws a descriptive error. The module is `@Global()` so any NestJS service can inject `DB_ADAPTER` without importing `DatabaseModule` explicitly.
+
+**To add a PostgreSQL adapter:**
+
+```typescript
+// backend/src/database/adapters/postgres.adapter.ts
+import { drizzle } from 'drizzle-orm/node-postgres';
+import { Pool } from 'pg';
+
+export class PostgresAdapter implements IDbAdapter {
+  private pool: Pool;
+  private db: ReturnType<typeof drizzle>;
+
+  async initialize() {
+    this.pool = new Pool({ connectionString: process.env.DATABASE_URL });
+    this.db = drizzle(this.pool, { schema: pgSchema }); // pgSchema uses pgTable() instead of sqliteTable()
+    // Run migrations...
+  }
+
+  // Implement all ~40 IDbAdapter methods using Drizzle queries
+  // The queries are nearly identical to SqliteAdapter — Drizzle abstracts dialect differences
+}
+```
+
+Then add the `case 'postgres':` branch in `db.module.ts`'s factory and set `DB_TYPE=postgres` + `DATABASE_URL=...` in your `.env`.
+
+**Why this matters:** The entire eval engine, experiment runner, settings service, and all CRUD controllers are database-agnostic. They only depend on `IDbAdapter`. Swapping from SQLite to Postgres (or any other database) requires implementing one file — the adapter — and changing one env variable. No service code changes.
+
 ### Key Files Reference
 
 | File                                                      | Role                                                                 |

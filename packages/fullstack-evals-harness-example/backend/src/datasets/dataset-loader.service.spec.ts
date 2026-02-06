@@ -18,9 +18,11 @@ describe('DatasetLoaderService', () => {
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 
-  it('loads CSV files from datasetsDir (including meta.json + custom columns)', () => {
+  it('loads datasets from subdirectories (data.csv + meta.yaml + custom columns)', () => {
+    const subDir = path.join(tmpDir, 'demo');
+    fs.mkdirSync(subDir);
     fs.writeFileSync(
-      path.join(tmpDir, 'demo.csv'),
+      path.join(subDir, 'data.csv'),
       [
         'input,expected_output,context,metadata,difficulty',
         '"q1","a1","ctx","{""k"":1}","hard"',
@@ -28,8 +30,8 @@ describe('DatasetLoaderService', () => {
       'utf-8'
     );
     fs.writeFileSync(
-      path.join(tmpDir, 'demo.meta.json'),
-      JSON.stringify({ name: 'Demo Dataset', description: 'For tests' }),
+      path.join(subDir, 'meta.yaml'),
+      'name: Demo Dataset\ndescription: For tests\n',
       'utf-8'
     );
 
@@ -40,8 +42,8 @@ describe('DatasetLoaderService', () => {
     expect(dataset.name).toBe('Demo Dataset');
     expect(dataset.description).toBe('For tests');
     expect(dataset.source).toBe('file');
-    expect(dataset.filePath).toBe('datasets/demo.csv');
-    expect(dataset.metaPath).toBe('datasets/demo.meta.json');
+    expect(dataset.filePath).toBe('datasets/demo/data.csv');
+    expect(dataset.metaPath).toBe('datasets/demo/meta.yaml');
     expect(dataset.testCaseCount).toBe(1);
 
     const tc = dataset.testCases[0];
@@ -54,9 +56,59 @@ describe('DatasetLoaderService', () => {
     expect(tc.customFields).toEqual({ difficulty: 'hard' });
   });
 
+  it('skips subdirectories without data.csv', () => {
+    const subDir = path.join(tmpDir, 'empty-dir');
+    fs.mkdirSync(subDir);
+    fs.writeFileSync(path.join(subDir, 'meta.yaml'), 'name: No CSV\n', 'utf-8');
+
+    const result = service.loadAll();
+    expect(result.loaded).toBe(0);
+  });
+
   it('throws NotFoundException for unknown ID', () => {
     service.loadAll();
     expect(() => service.findOne('nonexistent')).toThrow();
+  });
+
+  it('imports a dataset into a subfolder', () => {
+    const csv = 'input,expected_output\n"q1","a1"\n';
+    const dataset = service.importCsv('my-import', csv, {
+      name: 'Imported',
+      description: 'From upload',
+    });
+
+    expect(dataset.id).toBe('my-import');
+    expect(dataset.name).toBe('Imported');
+    expect(dataset.filePath).toBe('datasets/my-import/data.csv');
+    expect(dataset.metaPath).toBe('datasets/my-import/meta.yaml');
+
+    // Verify files on disk
+    expect(fs.existsSync(path.join(tmpDir, 'my-import', 'data.csv'))).toBe(true);
+    expect(fs.existsSync(path.join(tmpDir, 'my-import', 'meta.yaml'))).toBe(true);
+  });
+
+  it('updates a dataset in its subfolder', () => {
+    // Setup initial dataset
+    const subDir = path.join(tmpDir, 'updatable');
+    fs.mkdirSync(subDir);
+    fs.writeFileSync(path.join(subDir, 'data.csv'), 'input,expected_output\n"q1","a1"\n', 'utf-8');
+    fs.writeFileSync(
+      path.join(subDir, 'meta.yaml'),
+      'name: Original\ndescription: Before update\n',
+      'utf-8'
+    );
+    service.loadAll();
+
+    // Update name and test cases
+    const updated = service.updateDataset('updatable', {
+      name: 'Updated',
+      testCases: [{ input: 'new-q', expectedOutput: 'new-a' }],
+    });
+
+    expect(updated.name).toBe('Updated');
+    expect(updated.testCaseCount).toBe(1);
+    expect(updated.testCases[0].input).toBe('new-q');
+    expect(updated.filePath).toBe('datasets/updatable/data.csv');
   });
 
   describe('CSV parsing', () => {

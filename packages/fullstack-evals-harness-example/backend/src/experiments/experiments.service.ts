@@ -14,6 +14,10 @@ export interface CreateExperimentDto {
   datasetId: string;
   graderIds: string[];
   candidateIds?: string[];
+  modelConfig?: {
+    provider?: string;
+    model?: string;
+  };
 }
 
 export interface ExperimentProgress {
@@ -52,11 +56,22 @@ export class ExperimentsService {
    */
   async findAll() {
     const experiments = await this.db.findAllExperiments();
-    return experiments.map((e) => ({
-      ...e,
-      graderIds: JSON.parse(e.graderIds),
-      candidateIds: e.candidateIds ? JSON.parse(e.candidateIds) : null,
-    }));
+    const results = await Promise.all(
+      experiments.map(async (e) => {
+        const stats = await this.db.getExperimentStats(e.id);
+        return {
+          ...e,
+          graderIds: JSON.parse(e.graderIds),
+          candidateIds: e.candidateIds ? JSON.parse(e.candidateIds) : null,
+          modelConfig: e.modelConfig ? JSON.parse(e.modelConfig) : null,
+          passRate: stats.total > 0 ? stats.passed / stats.total : null,
+          totalResults: stats.total,
+          passed: stats.passed,
+          failed: stats.failed,
+        };
+      })
+    );
+    return results;
   }
 
   /**
@@ -75,6 +90,7 @@ export class ExperimentsService {
       ...experiment,
       graderIds: JSON.parse(experiment.graderIds),
       candidateIds: experiment.candidateIds ? JSON.parse(experiment.candidateIds) : null,
+      modelConfig: experiment.modelConfig ? JSON.parse(experiment.modelConfig) : null,
       results,
     };
   }
@@ -160,11 +176,12 @@ export class ExperimentsService {
       datasetId: dto.datasetId,
       graderIds: JSON.stringify(dto.graderIds),
       candidateIds: candidates.length > 0 ? JSON.stringify(dto.candidateIds) : null,
+      modelConfig: dto.modelConfig ? JSON.stringify(dto.modelConfig) : null,
       status: 'pending',
       createdAt: new Date(),
     });
 
-    this.runExperiment(experiment.id, dataset, graders, candidates);
+    this.runExperiment(experiment.id, dataset, graders, candidates, dto.modelConfig);
 
     return {
       ...experiment,
@@ -196,13 +213,19 @@ export class ExperimentsService {
     experimentId: string,
     dataset: Awaited<ReturnType<typeof this.datasetsService.findOne>>,
     graders: Awaited<ReturnType<typeof this.gradersService.findMany>>,
-    candidates: any[]
+    candidates: any[],
+    modelConfig?: { provider?: string; model?: string }
   ) {
     const subject = this.experimentStreams.get(experimentId) || new Subject<ExperimentProgress>();
     this.experimentStreams.set(experimentId, subject);
 
     try {
       await this.db.updateExperiment(experimentId, { status: 'running' });
+
+      // Resolve model metadata for results storage
+      const globalSettings = await this.llmService.getFullSettings();
+      const resolvedProvider = modelConfig?.provider || globalSettings.provider || 'openai';
+      const resolvedModel = modelConfig?.model || globalSettings.model || '';
 
       const testCases = dataset.testCases;
       const hasCandidates = candidates.length > 0;
@@ -235,7 +258,18 @@ export class ExperimentsService {
               ...(testCase.customFields || {}),
             };
 
-            const runResult = await this.candidateRunnerService.run(candidate, {
+            // Merge experiment-level model config into candidate
+            const candidateWithModel = modelConfig
+              ? {
+                  ...candidate,
+                  modelConfig: {
+                    ...(modelConfig || {}),
+                    ...(candidate.modelConfig || {}),
+                  },
+                }
+              : candidate;
+
+            const runResult = await this.candidateRunnerService.run(candidateWithModel, {
               input: testCase.input,
               expectedOutput: testCase.expectedOutput || undefined,
               context: testCase.context || undefined,
@@ -281,6 +315,8 @@ export class ExperimentsService {
                   output: testCase.expectedOutput || '',
                   generatedOutput,
                   latencyMs: runResult.latencyMs,
+                  modelProvider: resolvedProvider,
+                  modelName: resolvedModel,
                   createdAt: new Date(),
                 });
 
@@ -358,6 +394,8 @@ export class ExperimentsService {
                   output: testCase.expectedOutput || '',
                   generatedOutput,
                   latencyMs: runResult.latencyMs,
+                  modelProvider: resolvedProvider,
+                  modelName: resolvedModel,
                   createdAt: new Date(),
                 });
 
@@ -388,6 +426,8 @@ export class ExperimentsService {
                   output: testCase.expectedOutput || '',
                   generatedOutput,
                   latencyMs: runResult.latencyMs,
+                  modelProvider: resolvedProvider,
+                  modelName: resolvedModel,
                   createdAt: new Date(),
                 });
 

@@ -17,9 +17,10 @@ import {
   Trash2,
   X,
   Info,
+  Wand2,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { promptsApi, datasetsApi, settingsApi } from '@/lib/api';
+import { promptsApi, datasetsApi, presetsApi, settingsApi } from '@/lib/api';
 import { useToast } from '@/components/Toast';
 import { Tooltip } from '@/components/Tooltip';
 import type { Candidate, Dataset } from '@/lib/types';
@@ -144,6 +145,16 @@ export default function CandidateDetailPage({ params }: { params: Promise<{ id: 
   const [generatingVariants, setGeneratingVariants] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  // Generate dataset modal
+  const [genDatasetModal, setGenDatasetModal] = useState(false);
+  const [genDatasetForm, setGenDatasetForm] = useState({
+    name: '',
+    topic: '',
+    count: 5,
+    style: 'qa' as 'qa' | 'classification' | 'extraction' | 'rag',
+    customInstructions: '',
+  });
+  const [generatingDataset, setGeneratingDataset] = useState(false);
 
   const loadData = useCallback(async () => {
     try {
@@ -175,6 +186,10 @@ export default function CandidateDetailPage({ params }: { params: Promise<{ id: 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
+        if (genDatasetModal) {
+          setGenDatasetModal(false);
+          return;
+        }
         if (aiVariantModal) {
           setAiVariantModal(false);
           return;
@@ -191,7 +206,7 @@ export default function CandidateDetailPage({ params }: { params: Promise<{ id: 
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [aiVariantModal, variantModal, confirmDelete]);
+  }, [genDatasetModal, aiVariantModal, variantModal, confirmDelete]);
 
   const isDirty = useCallback(() => {
     if (!edited || !original) return false;
@@ -376,6 +391,39 @@ export default function CandidateDetailPage({ params }: { params: Promise<{ id: 
       toast(err instanceof Error ? err.message : 'Failed to delete', 'error');
       setDeleting(false);
       setConfirmDelete(false);
+    }
+  };
+
+  const openGenDatasetModal = () => {
+    setGenDatasetForm({
+      name: `${candidate?.name || id} Dataset`,
+      topic: candidate?.description || '',
+      count: 5,
+      style: 'qa',
+      customInstructions: '',
+    });
+    setGenDatasetModal(true);
+  };
+
+  const handleGenerateDataset = async () => {
+    if (!genDatasetForm.name.trim() || !genDatasetForm.topic.trim()) return;
+    setGeneratingDataset(true);
+    try {
+      await presetsApi.generateSyntheticDataset({
+        name: genDatasetForm.name.trim(),
+        topic: genDatasetForm.topic.trim(),
+        count: genDatasetForm.count,
+        style: genDatasetForm.style,
+        customInstructions: genDatasetForm.customInstructions.trim() || undefined,
+        forCandidateId: id,
+      });
+      setGenDatasetModal(false);
+      toast('Dataset generated and linked to this candidate', 'success');
+      await loadData(); // Refresh to show new dataset in sidebar
+    } catch (err) {
+      toast(err instanceof Error ? err.message : 'Failed to generate dataset', 'error');
+    } finally {
+      setGeneratingDataset(false);
     }
   };
 
@@ -785,19 +833,19 @@ export default function CandidateDetailPage({ params }: { params: Promise<{ id: 
           </div>
 
           {/* Linked datasets */}
-          {linkedDatasets.length > 0 && (
-            <div className="card p-4 space-y-2">
-              <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide flex items-center gap-1.5">
-                Linked Datasets
-                <span className="group relative inline-block">
-                  <Info className="h-3.5 w-3.5 cursor-help opacity-60" />
-                  <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-foreground text-background text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-normal z-50 w-56 text-center font-normal normal-case tracking-normal">
-                    Datasets this candidate is designed to run against. Select one when creating an
-                    experiment.
-                    <span className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-foreground" />
-                  </span>
+          <div className="card p-4 space-y-2">
+            <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide flex items-center gap-1.5">
+              Linked Datasets
+              <span className="group relative inline-block">
+                <Info className="h-3.5 w-3.5 cursor-help opacity-60" />
+                <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-foreground text-background text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-normal z-50 w-56 text-center font-normal normal-case tracking-normal">
+                  Datasets this candidate is designed to run against. Select one when creating an
+                  experiment.
+                  <span className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-foreground" />
                 </span>
-              </h3>
+              </span>
+            </h3>
+            {linkedDatasets.length > 0 ? (
               <div className="space-y-1">
                 {linkedDatasets.map((d) => (
                   <Link
@@ -810,8 +858,18 @@ export default function CandidateDetailPage({ params }: { params: Promise<{ id: 
                   </Link>
                 ))}
               </div>
+            ) : (
+              <p className="text-xs text-muted-foreground">No datasets linked yet.</p>
+            )}
+            <div className="pt-1">
+              <button
+                onClick={openGenDatasetModal}
+                className="btn-ghost text-xs px-2 py-1 flex items-center gap-1"
+              >
+                <Wand2 className="h-3 w-3" /> Generate Dataset
+              </button>
             </div>
-          )}
+          </div>
 
           {/* Variants list */}
           {!isVariant && variants.length > 0 && (
@@ -1021,6 +1079,119 @@ export default function CandidateDetailPage({ params }: { params: Promise<{ id: 
                   disabled={creatingVariant || !variantForm.label.trim()}
                 >
                   {creatingVariant ? 'Creating...' : 'Create Variant'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Generate Dataset Modal */}
+      {genDatasetModal && (
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="card p-6 w-full max-w-md">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold flex items-center gap-2">
+                <Wand2 className="h-5 w-5" />
+                Generate Dataset
+              </h2>
+              <button onClick={() => setGenDatasetModal(false)} className="btn-ghost p-1">
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <p className="text-sm text-muted-foreground mb-4">
+              Generate a synthetic dataset for <strong>{candidate.name}</strong>. It will be
+              auto-linked to this candidate.
+            </p>
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm font-medium block mb-1">Dataset Name</label>
+                <input
+                  type="text"
+                  value={genDatasetForm.name}
+                  onChange={(e) => setGenDatasetForm({ ...genDatasetForm, name: e.target.value })}
+                  className="input"
+                  autoFocus
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium block mb-1">Topic</label>
+                <input
+                  type="text"
+                  value={genDatasetForm.topic}
+                  onChange={(e) => setGenDatasetForm({ ...genDatasetForm, topic: e.target.value })}
+                  placeholder="e.g., Basic arithmetic, Python programming"
+                  className="input"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium block mb-1">Style</label>
+                  <select
+                    value={genDatasetForm.style}
+                    onChange={(e) =>
+                      setGenDatasetForm({
+                        ...genDatasetForm,
+                        style: e.target.value as typeof genDatasetForm.style,
+                      })
+                    }
+                    className="input"
+                  >
+                    <option value="qa">Q&A</option>
+                    <option value="classification">Classification</option>
+                    <option value="extraction">Extraction</option>
+                    <option value="rag">RAG</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-sm font-medium block mb-1">Count</label>
+                  <input
+                    type="number"
+                    min={1}
+                    max={20}
+                    value={genDatasetForm.count}
+                    onChange={(e) =>
+                      setGenDatasetForm({
+                        ...genDatasetForm,
+                        count: parseInt(e.target.value) || 5,
+                      })
+                    }
+                    className="input"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="text-sm font-medium block mb-1">
+                  Custom Instructions (optional)
+                </label>
+                <textarea
+                  value={genDatasetForm.customInstructions}
+                  onChange={(e) =>
+                    setGenDatasetForm({
+                      ...genDatasetForm,
+                      customInstructions: e.target.value,
+                    })
+                  }
+                  placeholder="e.g., Focus on edge cases, include multi-step questions"
+                  className="input min-h-[80px] resize-y"
+                />
+              </div>
+              <div className="flex gap-2 justify-end">
+                <button
+                  onClick={() => setGenDatasetModal(false)}
+                  className="btn-secondary"
+                  disabled={generatingDataset}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleGenerateDataset}
+                  className="btn-primary"
+                  disabled={
+                    generatingDataset || !genDatasetForm.name.trim() || !genDatasetForm.topic.trim()
+                  }
+                >
+                  {generatingDataset ? 'Generating...' : 'Generate'}
                 </button>
               </div>
             </div>

@@ -15,7 +15,8 @@ import {
   Clock,
 } from 'lucide-react';
 import Link from 'next/link';
-import { datasetsApi, gradersApi, promptsApi, experimentsApi } from '@/lib/api';
+import { datasetsApi, gradersApi, promptsApi, experimentsApi, settingsApi } from '@/lib/api';
+import type { LlmSettings } from '@/lib/api';
 import { Tooltip } from '@/components/Tooltip';
 import { useToast } from '@/components/Toast';
 import type {
@@ -43,6 +44,11 @@ export default function ExperimentsPage() {
   const [isRunning, setIsRunning] = useState(false);
   const [progress, setProgress] = useState<{ current: number; total: number } | null>(null);
   const [showGuide, setShowGuide] = useState(false);
+
+  // Model selection state
+  const [llmDefaults, setLlmDefaults] = useState<LlmSettings | null>(null);
+  const [selectedProvider, setSelectedProvider] = useState('');
+  const [selectedModel, setSelectedModel] = useState('');
 
   // Results view
   const [activeExperiment, setActiveExperiment] = useState<Experiment | null>(null);
@@ -95,12 +101,14 @@ export default function ExperimentsPage() {
 
   async function loadData() {
     try {
-      const [datasetsData, gradersData, candidatesData, experimentsData] = await Promise.all([
-        datasetsApi.list(),
-        gradersApi.list(),
-        promptsApi.list(),
-        experimentsApi.list(),
-      ]);
+      const [datasetsData, gradersData, candidatesData, experimentsData, llmSettings] =
+        await Promise.all([
+          datasetsApi.list(),
+          gradersApi.list(),
+          promptsApi.list(),
+          experimentsApi.list(),
+          settingsApi.getLlmSettings().catch(() => null),
+        ]);
       setDatasets(datasetsData);
       setGraders(gradersData);
       setCandidates(candidatesData);
@@ -108,6 +116,7 @@ export default function ExperimentsPage() {
         prev.filter((id) => candidatesData.some((candidate) => candidate.id === id))
       );
       setExperiments(experimentsData);
+      if (llmSettings) setLlmDefaults(llmSettings);
     } catch (error) {
       console.error('Failed to load data:', error);
     } finally {
@@ -152,10 +161,19 @@ export default function ExperimentsPage() {
     setProgress(null);
 
     try {
+      const modelConfig =
+        selectedProvider || selectedModel
+          ? {
+              provider: selectedProvider || undefined,
+              model: selectedModel || undefined,
+            }
+          : undefined;
+
       const experiment = await experimentsApi.create({
         datasetId: selectedDataset,
         graderIds: selectedGraders,
         candidateIds: selectedCandidates.length > 0 ? selectedCandidates : undefined,
+        modelConfig,
       });
 
       // Connect to SSE stream for progress
@@ -576,6 +594,59 @@ export default function ExperimentsPage() {
           </div>
         </div>
 
+        {/* Model selection */}
+        <div>
+          <label className="text-sm font-medium block mb-2 flex items-center gap-2">
+            Model
+            <span className="text-muted-foreground text-xs font-normal">(optional override)</span>
+            <Tooltip text="Override the LLM provider/model for this experiment. Defaults to your global Settings if not specified." />
+          </label>
+          <div className="grid gap-3 md:grid-cols-2">
+            <div>
+              <select
+                value={selectedProvider}
+                onChange={(e) => {
+                  const newProvider = e.target.value;
+                  setSelectedProvider(newProvider);
+                  setSelectedModel('');
+                }}
+                className="input"
+                disabled={isRunning}
+              >
+                <option value="">Default ({llmDefaults?.provider || 'openai'})</option>
+                <option value="openai">OpenAI</option>
+                <option value="anthropic">Anthropic</option>
+                <option value="ollama">Ollama</option>
+              </select>
+            </div>
+            <div>
+              <select
+                value={selectedModel}
+                onChange={(e) => setSelectedModel(e.target.value)}
+                className="input"
+                disabled={isRunning}
+              >
+                <option value="">
+                  Default (
+                  {llmDefaults?.model ||
+                    MODEL_OPTIONS[selectedProvider || llmDefaults?.provider || 'openai']?.[0] ||
+                    'gpt-4.1'}
+                  )
+                </option>
+                {(
+                  MODEL_OPTIONS[selectedProvider || llmDefaults?.provider || 'openai'] ||
+                  MODEL_OPTIONS.openai
+                ).map((m) => (
+                  <option key={m} value={m}>
+                    {m}
+                    {MODEL_PRICING[m] ? ` (${MODEL_PRICING[m]})` : ''}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+
         {/* Candidate selection */}
         {candidates.length > 0 && (
           <div>
@@ -811,6 +882,12 @@ export default function ExperimentsPage() {
             <p className="text-sm text-muted-foreground">
               Dataset: {activeDataset.name} · Status: {activeExperiment.status}
               {hasCandidates && ` · ${activeExperiment.candidateIds!.length} candidate(s)`}
+              {activeExperiment.modelConfig?.provider && (
+                <span className="ml-2">
+                  · Model: {activeExperiment.modelConfig.provider}
+                  {activeExperiment.modelConfig.model && `/${activeExperiment.modelConfig.model}`}
+                </span>
+              )}
               {activeExperiment.createdAt && (
                 <span className="ml-2">
                   · <Clock className="h-3 w-3 inline-block" />{' '}
@@ -1139,11 +1216,39 @@ export default function ExperimentsPage() {
                           <p className="text-sm text-muted-foreground">
                             {dataset?.name || 'Unknown dataset'} · {exp.graderIds.length} grader(s)
                             {hasCands && ` · ${exp.candidateIds!.length} candidate(s)`}
+                            {exp.passRate != null && (
+                              <span
+                                className={`ml-2 font-medium ${
+                                  exp.passRate >= 0.8
+                                    ? 'text-green-600'
+                                    : exp.passRate >= 0.5
+                                      ? 'text-yellow-600'
+                                      : 'text-red-600'
+                                }`}
+                              >
+                                {(exp.passRate * 100).toFixed(0)}% pass
+                              </span>
+                            )}
+                            {exp.totalResults != null && exp.totalResults > 0 && (
+                              <span className="ml-1 text-xs">
+                                ({exp.passed}/{exp.totalResults})
+                              </span>
+                            )}
                           </p>
-                          {ts && (
+                          {(ts || exp.modelConfig) && (
                             <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
-                              <Clock className="h-3 w-3" />
-                              {ts}
+                              {ts && (
+                                <>
+                                  <Clock className="h-3 w-3" />
+                                  {ts}
+                                </>
+                              )}
+                              {exp.modelConfig?.model && (
+                                <span className="ml-2">
+                                  {exp.modelConfig.provider && `${exp.modelConfig.provider}/`}
+                                  {exp.modelConfig.model}
+                                </span>
+                              )}
                             </p>
                           )}
                         </div>
@@ -1360,6 +1465,8 @@ function ResultCell({
     reason?: string;
     generatedOutput?: string;
     latencyMs?: number;
+    modelProvider?: string;
+    modelName?: string;
   };
 }) {
   return (
@@ -1369,13 +1476,19 @@ function ResultCell({
         {result.pass ? 'Pass' : 'Fail'}
       </span>
 
-      <div className="absolute hidden group-hover:block z-10 bottom-full left-0 mb-2 w-72 p-2 bg-card border border-border rounded-md shadow-lg text-xs">
+      <div className="absolute hidden group-hover:block z-50 top-full left-0 mt-2 w-72 p-2 bg-card border border-border rounded-md shadow-lg text-xs">
         <p className="font-medium mb-1">
           Score: {((result.score || 0) * 100).toFixed(0)}%
           {result.latencyMs !== undefined && (
             <span className="text-muted-foreground ml-2">{result.latencyMs}ms</span>
           )}
         </p>
+        {(result.modelProvider || result.modelName) && (
+          <p className="text-muted-foreground mb-1">
+            Model: {result.modelProvider && <span>{result.modelProvider}/</span>}
+            {result.modelName || 'default'}
+          </p>
+        )}
         <p className="text-muted-foreground">{result.reason}</p>
         {result.generatedOutput && (
           <div className="mt-2 pt-2 border-t border-border">
@@ -1390,3 +1503,63 @@ function ResultCell({
     </div>
   );
 }
+
+// Model options and pricing (shared with candidates page)
+const MODEL_OPTIONS: Record<string, string[]> = {
+  openai: [
+    'gpt-5.2',
+    'gpt-5.1',
+    'gpt-5',
+    'gpt-5-mini',
+    'gpt-5-nano',
+    'gpt-4.1',
+    'gpt-4.1-mini',
+    'gpt-4.1-nano',
+    'gpt-4o',
+    'gpt-4o-mini',
+    'o3',
+    'o4-mini',
+    'o3-mini',
+    'o1',
+  ],
+  anthropic: [
+    'claude-opus-4-6',
+    'claude-opus-4-5-20251101',
+    'claude-sonnet-4-5-20250929',
+    'claude-sonnet-4-20250514',
+    'claude-haiku-4-5-20251001',
+    'claude-haiku-3-5',
+  ],
+  ollama: [
+    'dolphin-llama3:8b',
+    'llama3.2:3b',
+    'llama3:8b',
+    'mistral',
+    'codellama',
+    'gemma:7b',
+    'phi3',
+  ],
+};
+
+const MODEL_PRICING: Record<string, string> = {
+  'gpt-5.2': 'in: $1.75 · out: $14 /1M tok',
+  'gpt-5.1': 'in: $1.25 · out: $10 /1M tok',
+  'gpt-5': 'in: $1.25 · out: $10 /1M tok',
+  'gpt-5-mini': 'in: $0.25 · out: $2 /1M tok',
+  'gpt-5-nano': 'in: $0.05 · out: $0.40 /1M tok',
+  'gpt-4.1': 'in: $2 · out: $8 /1M tok',
+  'gpt-4.1-mini': 'in: $0.40 · out: $1.60 /1M tok',
+  'gpt-4.1-nano': 'in: $0.10 · out: $0.40 /1M tok',
+  'gpt-4o': 'in: $2.50 · out: $10 /1M tok',
+  'gpt-4o-mini': 'in: $0.15 · out: $0.60 /1M tok',
+  o3: 'in: $2 · out: $8 /1M tok',
+  'o4-mini': 'in: $1.10 · out: $4.40 /1M tok',
+  'o3-mini': 'in: $0.55 · out: $2.20 /1M tok',
+  o1: 'in: $15 · out: $60 /1M tok',
+  'claude-opus-4-6': 'in: $5 · out: $25 /1M tok',
+  'claude-opus-4-5-20251101': 'in: $5 · out: $25 /1M tok',
+  'claude-sonnet-4-5-20250929': 'in: $3 · out: $15 /1M tok',
+  'claude-sonnet-4-20250514': 'in: $3 · out: $15 /1M tok',
+  'claude-haiku-4-5-20251001': 'in: $1 · out: $5 /1M tok',
+  'claude-haiku-3-5': 'in: $0.80 · out: $4 /1M tok',
+};

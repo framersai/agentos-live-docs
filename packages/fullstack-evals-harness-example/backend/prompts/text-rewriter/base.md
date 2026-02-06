@@ -3,9 +3,9 @@ name: Text Rewriter
 description: Rewrite input text in a different style while preserving meaning
 runner: llm_prompt
 user_template: '{{input}}'
-recommended_graders: faithfulness:0.5, llm-judge-helpful:0.3, semantic-similarity:0.2
+recommended_graders: faithfulness:0.6, semantic-similarity:0.4
 recommended_datasets: text-rewriting, text-rewriting-research
-grader_rationale: Faithfulness checks the rewrite doesn't introduce unsupported claims (grounded in the original text via the dataset's context column). Helpfulness rewards clarity and readability. Semantic similarity is a light check against the reference rewrite (many rewrites can be valid).
+grader_rationale: Faithfulness checks the rewrite doesn't introduce or lose meaning (grounded in the original text via the dataset's context column). Semantic similarity checks the rewrite conveys the same information as the reference output.
 notes: For rewriting, set each row's context to the original text so faithfulness can catch meaning drift and hallucinated details. Use semantic similarity as a rough proxy against a single reference rewrite, not as the only measure.
 ---
 

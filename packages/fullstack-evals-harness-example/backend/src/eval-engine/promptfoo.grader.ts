@@ -48,48 +48,55 @@ export class PromptfooGrader extends BaseGrader {
   }
 
   async evaluate(evalInput: EvalInput): Promise<GraderResult> {
-    const { input, output, expected, context } = evalInput;
+    const { input, output: rawOutput, expected, context } = evalInput;
+    const output = String(rawOutput || '');
 
     try {
-      const { evaluate } = await import('promptfoo');
+      const { assertions: pf } = await import('promptfoo');
 
-      // Build the promptfoo assertion based on type
+      // Get provider config for LLM-based assertions
+      const providerConfig = await this.getProviderConfig();
+      const grading: any = {};
+      if (providerConfig.provider) {
+        grading.provider = providerConfig.provider;
+      }
+      // Set env vars so promptfoo can find API keys
+      if (providerConfig.env) {
+        for (const [k, v] of Object.entries(providerConfig.env)) {
+          process.env[k] = v;
+        }
+      }
+
+      // Build the assertion object
       const assertion = this.buildAssertion(expected);
 
-      // Get provider config from LlmService settings
-      const providerConfig = await this.getProviderConfig();
-
-      // Run promptfoo evaluation
-      // We use an "echo" provider that just returns the output we already have
-      const result = await evaluate({
-        prompts: [output], // The output we're evaluating
-        providers: [
-          {
-            id: () => 'echo',
-            callApi: async () => ({ output }),
-          } as any, // Custom echo provider
-        ],
-        tests: [
-          {
-            vars: {
-              query: input,
-              context: context || '',
-              expected: expected || '',
-            },
-            assert: [assertion as any],
+      // Use promptfoo's runAssertion directly — avoids the broken evaluate() + nunjucks path
+      const result = await pf.runAssertion({
+        prompt: input,
+        provider: { id: () => 'echo' } as any,
+        assertion: assertion as any,
+        test: {
+          vars: {
+            query: input,
+            context: context || '',
+            expected: expected || '',
           },
-        ],
-        // Pass provider env vars
-        env: providerConfig.env,
-        // Default provider for LLM-based assertions
-        defaultTest: {
-          options: {
-            provider: providerConfig.provider,
-          },
+          assert: [assertion as any],
+          options: { provider: providerConfig.provider },
+        } as any,
+        vars: {
+          query: input,
+          context: context || '',
+          expected: expected || '',
+        },
+        latencyMs: 0,
+        providerResponse: {
+          output,
+          cost: 0,
         },
       });
 
-      return this.parsePromptfooResult(result);
+      return this.parseRunAssertionResult(result);
     } catch (error) {
       return {
         pass: false,
@@ -200,38 +207,23 @@ export class PromptfooGrader extends BaseGrader {
   }
 
   /**
-   * Parse promptfoo's evaluation result into our GraderResult format.
+   * Parse promptfoo runAssertion result into our GraderResult format.
    */
-  private parsePromptfooResult(result: any): GraderResult {
-    // Get the first (and only) test result
-    const testResult = result.results?.[0];
-
-    if (!testResult) {
+  private parseRunAssertionResult(result: any): GraderResult {
+    if (!result) {
       return {
         pass: false,
         score: 0,
-        reason: 'No results from promptfoo evaluation',
+        reason: 'No result from promptfoo assertion',
       };
     }
 
-    // Get assertion results
-    const assertionResult = testResult.gradingResult;
-
-    if (!assertionResult) {
-      return {
-        pass: testResult.success,
-        score: testResult.success ? 1 : 0,
-        reason: testResult.error || 'Evaluation completed',
-      };
-    }
-
-    // Build reason from component results
     const reasons: string[] = [];
-    if (assertionResult.reason) {
-      reasons.push(assertionResult.reason);
+    if (result.reason) {
+      reasons.push(result.reason);
     }
-    if (assertionResult.componentResults) {
-      for (const component of assertionResult.componentResults) {
+    if (result.componentResults) {
+      for (const component of result.componentResults) {
         if (component.reason) {
           reasons.push(component.reason);
         }
@@ -239,11 +231,10 @@ export class PromptfooGrader extends BaseGrader {
     }
 
     return {
-      pass: assertionResult.pass,
-      score: assertionResult.score ?? (assertionResult.pass ? 1 : 0),
+      pass: result.pass ?? false,
+      score: result.score ?? (result.pass ? 1 : 0),
       reason:
-        reasons.join('. ') ||
-        `${this.assertion} evaluation: ${assertionResult.pass ? 'passed' : 'failed'}`,
+        reasons.join('. ') || `${this.assertion} evaluation: ${result.pass ? 'passed' : 'failed'}`,
     };
   }
 }

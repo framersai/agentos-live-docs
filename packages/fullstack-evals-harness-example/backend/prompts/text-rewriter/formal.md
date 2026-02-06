@@ -3,9 +3,9 @@ name: Formal Text Rewriter
 description: Rewrite text in a formal, professional tone
 runner: llm_prompt
 user_template: '{{input}}'
-recommended_graders: faithfulness:0.5, llm-judge-helpful:0.3, semantic-similarity:0.2
+recommended_graders: faithfulness:0.6, semantic-similarity:0.4
 recommended_datasets: text-rewriting, text-rewriting-research
-grader_rationale: Same core weights as the base rewriter. Faithfulness ensures no new facts are introduced. Helpfulness rewards clarity and professionalism. Semantic similarity is a light check against a single reference rewrite.
+grader_rationale: Faithfulness ensures no meaning is introduced or lost. Semantic similarity checks the rewrite conveys the same information as the reference output.
 notes: Compare against base rewriter and casual variant. Formal output should use domain-appropriate vocabulary and a professional register. If you want stricter/looser similarity, adjust the semantic-similarity grader threshold in the Graders UI.
 ---
 

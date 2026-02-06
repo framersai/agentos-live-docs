@@ -49,7 +49,7 @@ export class DatasetsService {
         metadata?: Record<string, unknown>;
         customFields?: Record<string, string>;
       }>;
-    },
+    }
   ) {
     return this.loader.updateDataset(id, data);
   }
@@ -60,7 +60,7 @@ export class DatasetsService {
   importCsv(
     filename: string,
     csv: string,
-    meta?: { name?: string; description?: string },
+    meta?: { name?: string; description?: string; synthetic?: boolean }
   ) {
     return this.loader.importCsv(filename, csv, meta);
   }

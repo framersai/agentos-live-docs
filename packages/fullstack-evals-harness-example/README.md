@@ -81,7 +81,7 @@ backend/prompts/
 | `analyst/`        | Structured Analyst    | `citations`                     | context-qa                | faithfulness:0.6, helpful:0.4                 |
 | `json-extractor/` | Strict JSON Extractor | `loose`                         | research-paper-extraction | schema:0.4, completeness:0.4, faithful:0.2    |
 | `summarizer/`     | Summarizer            | `concise`, `bullets`, `verbose` | summarization             | helpful:0.4, similarity:0.3, faithful:0.3     |
-| `text-rewriter/`  | Text Rewriter         | `formal`, `casual`              | text-rewriting            | faithfulness:0.5, helpful:0.3, similarity:0.2 |
+| `text-rewriter/`  | Text Rewriter         | `formal`, `casual`              | text-rewriting            | faithfulness:0.6, similarity:0.4              |
 
 **Recommended graders & datasets:** Each prompt declares `recommended_graders` with weights and `recommended_datasets` in its frontmatter. Any grader can be used with any prompt — the recommendations control **weighted scoring**. When an experiment runs, results include both an equal-weight average and a weighted score using each prompt's declared weights, so you can see what matters most for each candidate.
 

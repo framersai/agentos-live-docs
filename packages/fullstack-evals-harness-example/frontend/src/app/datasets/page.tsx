@@ -32,6 +32,7 @@ export default function DatasetsPage() {
     count: 5,
     style: 'qa' as 'qa' | 'classification' | 'extraction' | 'rag',
     customInstructions: '',
+    forCandidateId: '' as string,
   });
 
   useEffect(() => {
@@ -108,6 +109,7 @@ export default function DatasetsPage() {
         count: syntheticForm.count,
         style: syntheticForm.style,
         customInstructions: syntheticForm.customInstructions.trim() || undefined,
+        forCandidateId: syntheticForm.forCandidateId || undefined,
       });
       setSyntheticForm({
         name: '',
@@ -115,6 +117,7 @@ export default function DatasetsPage() {
         count: 5,
         style: 'qa',
         customInstructions: '',
+        forCandidateId: '',
       });
       setShowSyntheticModal(false);
       loadDatasets();
@@ -200,13 +203,13 @@ export default function DatasetsPage() {
             <code>expected_output</code>, <code>context</code>, <code>metadata</code>.
           </p>
           <p>
-            <strong className="text-foreground">To add a dataset:</strong> Place a <code>.csv</code>{' '}
-            file in the datasets directory and click &ldquo;Reload from Disk&rdquo;, or use
-            &ldquo;Upload CSV&rdquo; to import directly.
+            <strong className="text-foreground">To add a dataset:</strong> Create a subfolder in the
+            datasets directory with a <code>data.csv</code> file and click &ldquo;Reload from
+            Disk&rdquo;, or use &ldquo;Upload CSV&rdquo; to import directly.
           </p>
           <p>
-            An optional <code>.meta.json</code> sidecar provides the dataset name and description.
-            Without it, the name is derived from the filename.
+            An optional <code>meta.yaml</code> in the subfolder provides the dataset name and
+            description. Without it, the name is derived from the folder name.
           </p>
           <p>
             <strong className="text-foreground">Generate</strong> uses AI to create test cases and
@@ -241,7 +244,15 @@ export default function DatasetsPage() {
                 className="flex-1 flex items-center gap-4 hover:opacity-80"
               >
                 <div>
-                  <h3 className="font-medium">{dataset.name}</h3>
+                  <h3 className="font-medium flex items-center gap-2">
+                    {dataset.name}
+                    {dataset.synthetic && (
+                      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-purple-500/10 text-purple-400 border border-purple-500/20 rounded text-[11px] font-medium">
+                        <Wand2 className="h-3 w-3" />
+                        AI Generated
+                      </span>
+                    )}
+                  </h3>
                   {dataset.description && (
                     <p className="text-sm text-muted-foreground mt-0.5">{dataset.description}</p>
                   )}
@@ -293,6 +304,44 @@ export default function DatasetsPage() {
                   className="input"
                   autoFocus
                 />
+              </div>
+              <div>
+                <label className="text-sm font-medium block mb-1 flex items-center gap-2">
+                  For Candidate (optional)
+                  <Tooltip text="Link this dataset to a candidate prompt. The dataset will auto-appear in its recommended datasets." />
+                </label>
+                <select
+                  value={syntheticForm.forCandidateId}
+                  onChange={(e) => {
+                    const candidateId = e.target.value;
+                    const candidate = candidates.find((c) => c.id === candidateId);
+                    setSyntheticForm({
+                      ...syntheticForm,
+                      forCandidateId: candidateId,
+                      // Auto-fill topic from candidate description if topic is empty
+                      ...(candidateId && candidate?.description && !syntheticForm.topic
+                        ? { topic: candidate.description }
+                        : {}),
+                    });
+                  }}
+                  className="input"
+                >
+                  <option value="">None (standalone dataset)</option>
+                  {candidates
+                    .filter((c) => !c.parentId)
+                    .map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.name}
+                      </option>
+                    ))}
+                  {candidates
+                    .filter((c) => c.parentId)
+                    .map((c) => (
+                      <option key={c.id} value={c.id}>
+                        &nbsp;&nbsp;{c.variantLabel ? `↳ ${c.name}` : c.name}
+                      </option>
+                    ))}
+                </select>
               </div>
               <div>
                 <label className="text-sm font-medium block mb-1 flex items-center gap-2">

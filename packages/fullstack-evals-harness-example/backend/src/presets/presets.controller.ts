@@ -3,13 +3,15 @@ import { GRADER_PRESETS } from './presets';
 import { GradersService } from '../graders/graders.service';
 import { DatasetsService } from '../datasets/datasets.service';
 import { SyntheticService, SyntheticGenerationRequest } from './synthetic.service';
+import { PromptLoaderService } from '../candidates/prompt-loader.service';
 
 @Controller('presets')
 export class PresetsController {
   constructor(
     private gradersService: GradersService,
     private datasetsService: DatasetsService,
-    private syntheticService: SyntheticService
+    private syntheticService: SyntheticService,
+    private promptLoaderService: PromptLoaderService
   ) {}
 
   /**
@@ -87,12 +89,17 @@ export class PresetsController {
   }
 
   /**
-   * Generate synthetic test cases and save as a CSV dataset
+   * Generate synthetic test cases and save as a CSV dataset.
+   * Optionally link to a candidate prompt via forCandidateId.
    */
   @Post('synthetic/dataset')
   async generateSyntheticDataset(
     @Body()
-    body: SyntheticGenerationRequest & { name: string; description?: string }
+    body: SyntheticGenerationRequest & {
+      name: string;
+      description?: string;
+      forCandidateId?: string;
+    }
   ) {
     const testCases = await this.syntheticService.generateTestCases(body);
 
@@ -112,9 +119,27 @@ export class PresetsController {
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-|-$/g, '');
 
-    return this.datasetsService.importCsv(filename, lines.join('\n') + '\n', {
+    const dataset = this.datasetsService.importCsv(filename, lines.join('\n') + '\n', {
       name: body.name,
       description: body.description || `Synthetic ${body.style} dataset: ${body.topic}`,
+      synthetic: true,
     });
+
+    // Auto-link dataset to candidate's recommended_datasets
+    if (body.forCandidateId) {
+      try {
+        const candidate = this.promptLoaderService.findOne(body.forCandidateId);
+        const existing = candidate.recommendedDatasets || [];
+        if (!existing.includes(dataset.id)) {
+          this.promptLoaderService.updatePrompt(body.forCandidateId, {
+            recommendedDatasets: [...existing, dataset.id],
+          });
+        }
+      } catch {
+        // Candidate not found — skip linking, still return dataset
+      }
+    }
+
+    return dataset;
   }
 }

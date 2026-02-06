@@ -90,6 +90,8 @@ export class ExperimentsController {
       'experiment_name',
       'dataset_id',
       'status',
+      'model_provider',
+      'model_name',
       'experiment_created_at',
       'test_case_id',
       'candidate_id',
@@ -112,6 +114,8 @@ export class ExperimentsController {
             `"${(exp.name || '').replace(/"/g, '""')}"`,
             exp.datasetId,
             exp.status,
+            r.modelProvider || '',
+            r.modelName || '',
             exp.createdAt?.toISOString() || '',
             r.testCaseId,
             r.candidateId || '',
@@ -193,6 +197,8 @@ export class ExperimentsController {
       'output',
       'generated_output',
       'latency_ms',
+      'model_provider',
+      'model_name',
       'created_at',
     ];
 
@@ -207,6 +213,8 @@ export class ExperimentsController {
       `"${(r.output || '').replace(/"/g, '""')}"`,
       `"${(r.generatedOutput || '').replace(/"/g, '""')}"`,
       r.latencyMs?.toString() || '',
+      r.modelProvider || '',
+      r.modelName || '',
       r.createdAt?.toISOString() || '',
     ]);
 

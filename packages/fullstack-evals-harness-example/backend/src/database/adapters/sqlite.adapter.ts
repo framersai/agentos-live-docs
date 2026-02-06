@@ -178,6 +178,21 @@ export class SqliteAdapter implements IDbAdapter {
         column: 'latency_ms',
         sql: 'ALTER TABLE experiment_results ADD COLUMN latency_ms INTEGER',
       },
+      {
+        table: 'experiments',
+        column: 'model_config',
+        sql: 'ALTER TABLE experiments ADD COLUMN model_config TEXT',
+      },
+      {
+        table: 'experiment_results',
+        column: 'model_provider',
+        sql: 'ALTER TABLE experiment_results ADD COLUMN model_provider TEXT',
+      },
+      {
+        table: 'experiment_results',
+        column: 'model_name',
+        sql: 'ALTER TABLE experiment_results ADD COLUMN model_name TEXT',
+      },
     ];
 
     for (const migration of migrations) {

@@ -203,6 +203,7 @@ export const experimentsApi = {
     datasetId: string;
     graderIds: string[];
     candidateIds?: string[];
+    modelConfig?: { provider?: string; model?: string };
   }) =>
     fetchApi<Experiment>('/experiments', {
       method: 'POST',
@@ -273,6 +274,7 @@ export const presetsApi = {
     count: number;
     style: 'qa' | 'classification' | 'extraction' | 'rag';
     customInstructions?: string;
+    forCandidateId?: string;
   }) =>
     fetchApi<Dataset>('/presets/synthetic/dataset', {
       method: 'POST',
