@@ -55,6 +55,20 @@ export default function ExperimentsPage() {
     loadData();
   }, []);
 
+  // Auto-select recommended candidates when dataset changes
+  useEffect(() => {
+    if (!selectedDataset || candidates.length === 0) return;
+    const recommended: string[] = [];
+    for (const c of candidates) {
+      if (c.recommendedDatasets?.includes(selectedDataset)) {
+        recommended.push(c.id);
+      }
+    }
+    if (recommended.length > 0) {
+      setSelectedCandidates(recommended);
+    }
+  }, [selectedDataset, candidates]);
+
   async function loadData() {
     try {
       const [datasetsData, gradersData, candidatesData, experimentsData] = await Promise.all([
@@ -219,6 +233,27 @@ export default function ExperimentsPage() {
     });
   }
 
+  // Compute recommended datasets from selected candidates
+  const recommendedDatasetIds: Set<string> = new Set();
+  for (const candidateId of selectedCandidates) {
+    const candidate = candidates.find((c) => c.id === candidateId);
+    if (candidate?.recommendedDatasets) {
+      for (const dsId of candidate.recommendedDatasets) {
+        recommendedDatasetIds.add(dsId);
+      }
+    }
+  }
+
+  // Compute which candidates match the selected dataset
+  const candidatesForDataset: Set<string> = new Set();
+  if (selectedDataset) {
+    for (const candidate of candidates) {
+      if (candidate.recommendedDatasets?.includes(selectedDataset)) {
+        candidatesForDataset.add(candidate.id);
+      }
+    }
+  }
+
   const selectedDatasetMeta = datasets.find((dataset) => dataset.id === selectedDataset);
   const selectedCaseCount = selectedDatasetMeta?.testCaseCount || 0;
   const candidateRunCount = selectedCandidates.length > 0 ? selectedCandidates.length : 1;
@@ -364,10 +399,22 @@ export default function ExperimentsPage() {
           <div className="border-t border-border pt-3 space-y-2">
             <p className="text-foreground font-medium">Suggested first experiments:</p>
             <ul className="list-disc ml-5 space-y-1 text-xs">
-              <li><strong>Extraction quality:</strong> Research Paper Extraction dataset + Strict JSON Extractor + Loose JSON Extractor candidates + Paper Extraction Schema + Extraction Completeness Judge graders.</li>
-              <li><strong>Grounding check:</strong> Q&amp;A with Context dataset + analyst-full candidate + Faithfulness (Strict) grader.</li>
-              <li><strong>Prompt comparison:</strong> Same dataset/graders, two candidate prompts. Compare pass rates side-by-side.</li>
+              <li><strong>Extraction quality:</strong> Research Paper Extraction dataset + Strict JSON Extractor + Loose JSON Extractor candidates + Paper Extraction Schema + Extraction Completeness graders. Compare strict (nulls for unknowns) vs loose (infers missing data).</li>
+              <li><strong>Summarization:</strong> Summarization dataset + Summarizer + Concise Summarizer candidates + Faithfulness + Semantic Similarity graders. Does brevity hurt faithfulness?</li>
+              <li><strong>Grounding check:</strong> Q&amp;A with Context dataset + Full Structured Analyst + Citation-Focused Analyst candidates + Faithfulness grader. Which analysis style scores higher on grounding?</li>
             </ul>
+          </div>
+          <div className="border-t border-border pt-3 space-y-1">
+            <p className="text-foreground font-medium">Where is data stored?</p>
+            <p className="text-xs">
+              <strong className="text-foreground">Disk (definitions):</strong> Datasets (<code>backend/datasets/*.csv</code>),
+              prompts (<code>backend/prompts/*.md</code>), graders (<code>backend/graders/*.yaml</code>).
+              All editable on disk or via the UI — changes write back to files immediately.
+            </p>
+            <p className="text-xs">
+              <strong className="text-foreground">SQLite (runtime only):</strong> Experiment runs, results, and settings.
+              You can delete the database and start fresh — all definitions reload from disk automatically.
+            </p>
           </div>
         </div>
       )}
@@ -379,7 +426,7 @@ export default function ExperimentsPage() {
         <div className="grid gap-4 md:grid-cols-2">
           <div>
             <label className="text-sm font-medium block mb-2 flex items-center gap-2">
-              Dataset
+              Dataset <span className="text-red-400 text-xs">*</span>
               <Tooltip text="The test cases to evaluate. Each has input, expected output, and optional context." />
             </label>
             {datasets.length === 0 ? (
@@ -387,25 +434,33 @@ export default function ExperimentsPage() {
                 No datasets available. Create one first.
               </p>
             ) : (
-              <select
-                value={selectedDataset}
-                onChange={(e) => setSelectedDataset(e.target.value)}
-                className="input"
-                disabled={isRunning}
-              >
-                <option value="">Select a dataset...</option>
-                {datasets.map((ds) => (
-                  <option key={ds.id} value={ds.id}>
-                    {ds.name} ({ds.testCaseCount || 0} cases)
-                  </option>
-                ))}
-              </select>
+              <>
+                <select
+                  value={selectedDataset}
+                  onChange={(e) => setSelectedDataset(e.target.value)}
+                  className="input"
+                  disabled={isRunning}
+                >
+                  <option value="">Select a dataset...</option>
+                  {datasets.map((ds) => (
+                    <option key={ds.id} value={ds.id}>
+                      {recommendedDatasetIds.size > 0 && recommendedDatasetIds.has(ds.id) ? '\u2605 ' : ''}
+                      {ds.name} ({ds.testCaseCount || 0} cases)
+                    </option>
+                  ))}
+                </select>
+                {recommendedDatasetIds.size > 0 && (
+                  <p className="text-xs text-muted-foreground mt-1">
+                    <span className="text-foreground">{'\u2605'}</span> Recommended for selected candidates
+                  </p>
+                )}
+              </>
             )}
           </div>
 
           <div>
             <label className="text-sm font-medium block mb-2 flex items-center gap-2">
-              Graders
+              Graders <span className="text-red-400 text-xs">*</span>
               <Tooltip text="How to score outputs. Toggle one or more. Each grader runs independently on every test case." />
             </label>
             {graders.length === 0 ? (
@@ -441,9 +496,8 @@ export default function ExperimentsPage() {
         {candidates.length > 0 && (
           <div>
             <label className="text-sm font-medium block mb-2 flex items-center gap-2">
-              Candidates
-              <span className="text-muted-foreground font-normal">(optional)</span>
-              <Tooltip text="Select candidates to generate outputs. Without candidates, graders evaluate the expected output directly." />
+              Candidates <span className="text-red-400 text-xs">*</span>
+              <Tooltip text="Prompt configurations that generate output for each test case. Select one or more to compare." />
             </label>
             <div className="flex items-center gap-2 mb-2">
               <button
@@ -460,10 +514,26 @@ export default function ExperimentsPage() {
               >
                 Clear
               </button>
+              {candidatesForDataset.size > 0 && selectedDataset && (
+                <button
+                  onClick={() => setSelectedCandidates(Array.from(candidatesForDataset))}
+                  disabled={isRunning}
+                  className="btn-secondary px-3 py-1 text-xs"
+                >
+                  Select recommended
+                </button>
+              )}
               <span className="text-xs text-muted-foreground">
                 {selectedCandidates.length} selected
               </span>
             </div>
+            {candidatesForDataset.size > 0 && selectedDataset && selectedCandidates.length === 0 && (
+              <p className="text-xs text-muted-foreground mb-2">
+                <span className="text-foreground">{'\u2605'}</span>{' '}
+                {candidatesForDataset.size} candidate{candidatesForDataset.size !== 1 ? 's' : ''} designed for{' '}
+                <strong className="text-foreground">{selectedDatasetMeta?.name || selectedDataset}</strong>
+              </p>
+            )}
             <div className="space-y-3">
               {candidateFamilies.map((family) => {
                 const familyIds = family.members.map((member) => member.id);
@@ -495,6 +565,7 @@ export default function ExperimentsPage() {
                       {family.members.map((candidate) => {
                         const isSelected = selectedCandidates.includes(candidate.id);
                         const isVariant = Boolean(candidate.parentId);
+                        const matchesDataset = candidatesForDataset.has(candidate.id);
 
                         return (
                           <button
@@ -506,6 +577,8 @@ export default function ExperimentsPage() {
                               ${
                                 isSelected
                                   ? 'bg-foreground text-background border-foreground'
+                                  : matchesDataset && selectedDataset
+                                  ? 'border-foreground/30 bg-muted/50 hover:border-foreground/50'
                                   : 'border-border hover:border-foreground/50'
                               }
                               ${isRunning ? 'opacity-50 cursor-not-allowed' : ''}
@@ -519,6 +592,9 @@ export default function ExperimentsPage() {
                                 ({candidate.variantLabel || 'variant'})
                               </span>
                             )}
+                            {matchesDataset && selectedDataset && !isSelected && (
+                              <span className="text-[10px] opacity-50">{'\u2605'}</span>
+                            )}
                           </button>
                         );
                       })}
@@ -528,8 +604,8 @@ export default function ExperimentsPage() {
               })}
             </div>
             {selectedCandidates.length === 0 && (
-              <p className="text-xs text-muted-foreground mt-1">
-                Without candidates, graders evaluate expectedOutput directly
+              <p className="text-xs text-red-400/80 mt-1">
+                Select at least one candidate to run the experiment
               </p>
             )}
           </div>
@@ -538,7 +614,7 @@ export default function ExperimentsPage() {
         <div className="flex items-center gap-4">
           <button
             onClick={runExperiment}
-            disabled={!selectedDataset || selectedGraders.length === 0 || isRunning}
+            disabled={!selectedDataset || selectedGraders.length === 0 || selectedCandidates.length === 0 || isRunning}
             className="btn-primary"
             title="Run all test cases through selected candidates and grade the outputs"
           >
