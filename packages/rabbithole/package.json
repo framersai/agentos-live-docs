@@ -22,14 +22,6 @@
       "import": "./dist/pii/index.js",
       "types": "./dist/pii/index.d.ts"
     },
-    "./permissions": {
-      "import": "./dist/permissions/index.js",
-      "types": "./dist/permissions/index.d.ts"
-    },
-    "./approval": {
-      "import": "./dist/approval/index.js",
-      "types": "./dist/approval/index.d.ts"
-    },
     "./auth": {
       "import": "./dist/auth/index.js",
       "types": "./dist/auth/index.d.ts"
@@ -42,7 +34,7 @@
       "import": "./dist/ui/index.js",
       "types": "./dist/ui/index.d.ts"
     },
-    "./ui/styles.css": "./dist/ui/styles.css",
+    "./ui/styles.css": "./src/ui/styles.css",
     "./tts": {
       "import": "./dist/tts/index.js",
       "types": "./dist/tts/index.d.ts"
@@ -82,13 +74,14 @@
     "url": "https://github.com/jddunn"
   },
   "license": "MIT",
-  "homepage": "https://github.com/jddunn/wunderland",
+  "homepage": "https://github.com/framersai/voice-chat-assistant/tree/master/packages/rabbithole",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jddunn/wunderland.git"
+    "url": "git+https://github.com/framersai/voice-chat-assistant.git",
+    "directory": "packages/rabbithole"
   },
   "bugs": {
-    "url": "https://github.com/jddunn/wunderland/issues"
+    "url": "https://github.com/framersai/voice-chat-assistant/issues"
   },
   "engines": {
     "node": ">=18.0.0"

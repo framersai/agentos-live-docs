@@ -327,7 +327,6 @@ export const PLAN_CATALOG: Record<PlanId, PlanCatalogEntry> = {
       tier: 'metered',
     },
   },
-};
 
   'rh-pro-monthly': {
     id: 'rh-pro-monthly',
@@ -432,17 +431,18 @@ export const PLAN_CATALOG: Record<PlanId, PlanCatalogEntry> = {
 export const PUBLIC_PLAN_ORDER: PlanId[] = ['free', 'basic', 'creator', 'organization'];
 
 export const getPublicPlans = (): PlanCatalogEntry[] =>
-  PUBLIC_PLAN_ORDER.map(id => PLAN_CATALOG[id]).filter(plan => plan.public);
+  PUBLIC_PLAN_ORDER.map((id) => PLAN_CATALOG[id]).filter((plan) => plan.public);
 
 export const CODEX_PLAN_ORDER: PlanId[] = ['codex-free', 'codex-pro'];
 
-export const getCodexPlans = (): PlanCatalogEntry[] => CODEX_PLAN_ORDER.map(id => PLAN_CATALOG[id]);
+export const getCodexPlans = (): PlanCatalogEntry[] =>
+  CODEX_PLAN_ORDER.map((id) => PLAN_CATALOG[id]);
 
 export const findPlanById = (id: PlanId): PlanCatalogEntry => PLAN_CATALOG[id];
 
 export const RH_PLAN_ORDER: PlanId[] = ['rh-pro-monthly', 'rh-pro-annual', 'rh-lifetime'];
 
-export const getRhPlans = (): PlanCatalogEntry[] => RH_PLAN_ORDER.map(id => PLAN_CATALOG[id]);
+export const getRhPlans = (): PlanCatalogEntry[] => RH_PLAN_ORDER.map((id) => PLAN_CATALOG[id]);
 
 export interface PlanRolloverExplanation {
   planId: PlanId;
