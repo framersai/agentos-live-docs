@@ -25,6 +25,7 @@ import {
   createProvenancePack,
   type ProvenancePackResult,
 } from '@framers/agentos/extensions/packs/provenance-pack';
+import { createCuratedManifest } from '@framers/agentos-extensions-registry';
 import type { FileSystemPersonaLoaderConfig } from '@framers/agentos/cognitive_substrate/personas/PersonaLoader';
 import type {
   IAuthService as AgentOSAuthServiceInterface,
@@ -859,28 +860,40 @@ async function buildEmbeddedAgentOSConfig(): Promise<EmbeddedAgentOSConfigBuildR
   let provenanceConfig: ProvenanceSystemConfig | undefined;
   let provenanceAgentId: string | undefined;
   let provenanceTablePrefix: string | undefined;
-  const extensionManifest =
-    provenanceEnabled && storageAdapter
-      ? (() => {
-          provenanceConfig = buildProvenanceConfigFromEnv();
-          provenanceAgentId = process.env.AGENTOS_PROVENANCE_AGENT_ID || 'voice-chat-assistant';
-          provenanceTablePrefix = process.env.AGENTOS_PROVENANCE_TABLE_PREFIX || 'agentos_';
-          provenancePack = createProvenancePack(
-            provenanceConfig,
-            storageAdapter,
-            provenanceAgentId,
-            provenanceTablePrefix
-          );
-          return {
-            packs: [
-              {
-                factory: () => provenancePack!,
-                identifier: 'embedded:provenance-pack',
-              },
-            ],
-          };
-        })()
-      : undefined;
+
+  // Build provenance pack if enabled
+  if (provenanceEnabled && storageAdapter) {
+    provenanceConfig = buildProvenanceConfigFromEnv();
+    provenanceAgentId = process.env.AGENTOS_PROVENANCE_AGENT_ID || 'voice-chat-assistant';
+    provenanceTablePrefix = process.env.AGENTOS_PROVENANCE_TABLE_PREFIX || 'agentos_';
+    provenancePack = createProvenancePack(
+      provenanceConfig,
+      storageAdapter,
+      provenanceAgentId,
+      provenanceTablePrefix
+    );
+  }
+
+  // Build curated manifest with channels + tools via registry bundle.
+  // Missing optional dependencies are silently skipped by createCuratedManifest.
+  const channelPlatforms = process.env.WUNDERLAND_CHANNEL_PLATFORMS?.split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+  const curatedManifest = await createCuratedManifest({
+    channels: channelPlatforms?.length ? channelPlatforms : 'none',
+    tools: 'all',
+    secrets: {}, // Secrets resolved at runtime from credentials vault
+  });
+
+  // Merge provenance pack at highest priority (position 0)
+  if (provenancePack) {
+    curatedManifest.packs.unshift({
+      factory: () => provenancePack!,
+      identifier: 'embedded:provenance-pack',
+    });
+  }
+
+  const extensionManifest = curatedManifest.packs.length > 0 ? curatedManifest : undefined;
 
   const config: AgentOSConfig = {
     gmiManagerConfig,

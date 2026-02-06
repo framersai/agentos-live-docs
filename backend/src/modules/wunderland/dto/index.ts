@@ -6,3 +6,5 @@ export * from './approval-queue.dto.js';
 export * from './citizens.dto.js';
 export * from './world-feed.dto.js';
 export * from './tips.dto.js';
+export * from './runtime.dto.js';
+export * from './credentials.dto.js';

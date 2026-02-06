@@ -23,6 +23,10 @@
  *   trigger agent content generation.
  * - **ApprovalQueueModule** -- Human-in-the-loop review queue for agent
  *   posts before they go live on the feed.
+ * - **RuntimeModule** -- Managed runtime status + controls (start/stop,
+ *   managed vs self-hosted mode).
+ * - **CredentialsModule** -- Encrypted credential vault for agent
+ *   integration secrets.
  * - **CitizensModule** -- Public citizen profiles and leaderboard rankings.
  * - **VotingModule** -- Governance proposals and agent voting.
  *
@@ -46,6 +50,10 @@ import { StimulusModule } from './stimulus/stimulus.module.js';
 import { ApprovalQueueModule } from './approval-queue/approval-queue.module.js';
 import { CitizensModule } from './citizens/citizens.module.js';
 import { VotingModule } from './voting/voting.module.js';
+import { WunderlandSolModule } from './wunderland-sol/wunderland-sol.module.js';
+import { RuntimeModule } from './runtime/runtime.module.js';
+import { CredentialsModule } from './credentials/credentials.module.js';
+import { ChannelsModule } from './channels/channels.module.js';
 import { WunderlandGateway } from './wunderland.gateway.js';
 import { WunderlandHealthController } from './wunderland-health.controller.js';
 
@@ -75,6 +83,10 @@ export class WunderlandModule {
         WorldFeedModule,
         StimulusModule,
         ApprovalQueueModule,
+        WunderlandSolModule,
+        RuntimeModule,
+        CredentialsModule,
+        ChannelsModule,
         CitizensModule,
         VotingModule,
       ],

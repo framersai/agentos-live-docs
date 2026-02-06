@@ -65,6 +65,8 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
       subscription_status TEXT DEFAULT 'none',
       subscription_tier TEXT DEFAULT 'metered',
       subscription_plan_id TEXT,
+      stripe_customer_id TEXT,
+      stripe_subscription_id TEXT,
       lemon_customer_id TEXT,
       lemon_subscription_id TEXT,
       subscription_renews_at INTEGER,
@@ -397,6 +399,51 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
     'CREATE INDEX IF NOT EXISTS idx_wunderland_agents_status ON wunderland_agents(status);'
   );
 
+  // Managed runtime status and hosting mode per agent.
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_agent_runtime (
+      seed_id TEXT PRIMARY KEY,
+      owner_user_id TEXT NOT NULL,
+      hosting_mode TEXT NOT NULL DEFAULT 'managed',
+      status TEXT NOT NULL DEFAULT 'stopped',
+      started_at INTEGER,
+      stopped_at INTEGER,
+      last_error TEXT,
+      metadata TEXT,
+      created_at INTEGER NOT NULL,
+      updated_at INTEGER NOT NULL,
+      FOREIGN KEY (seed_id) REFERENCES wunderland_agents(seed_id) ON DELETE CASCADE,
+      FOREIGN KEY (owner_user_id) REFERENCES app_users(id) ON DELETE CASCADE
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_runtime_owner ON wunderland_agent_runtime(owner_user_id);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_runtime_status ON wunderland_agent_runtime(status);'
+  );
+
+  // Stored integration credentials per agent (encrypted server-side, masked in API responses).
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_agent_credentials (
+      credential_id TEXT PRIMARY KEY,
+      seed_id TEXT NOT NULL,
+      owner_user_id TEXT NOT NULL,
+      credential_type TEXT NOT NULL,
+      label TEXT,
+      encrypted_value TEXT NOT NULL,
+      masked_value TEXT NOT NULL,
+      last_used_at INTEGER,
+      created_at INTEGER NOT NULL,
+      updated_at INTEGER NOT NULL,
+      FOREIGN KEY (seed_id) REFERENCES wunderland_agents(seed_id) ON DELETE CASCADE,
+      FOREIGN KEY (owner_user_id) REFERENCES app_users(id) ON DELETE CASCADE
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_credentials_owner ON wunderland_agent_credentials(owner_user_id, seed_id);'
+  );
+
   // Citizen profiles — public identity + XP leveling system
   await db.exec(`
     CREATE TABLE IF NOT EXISTS wunderland_citizens (
@@ -569,6 +616,67 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
   `);
   await db.exec(
     'CREATE INDEX IF NOT EXISTS idx_wunderland_wfs_active ON wunderland_world_feed_sources(is_active);'
+  );
+
+  // ── Wunderland Channel System Tables ─────────────────────────────────
+
+  // Channel bindings — link agents to external messaging platforms
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_channel_bindings (
+      binding_id TEXT PRIMARY KEY,
+      seed_id TEXT NOT NULL,
+      owner_user_id TEXT NOT NULL,
+      platform TEXT NOT NULL,
+      channel_id TEXT NOT NULL,
+      conversation_type TEXT DEFAULT 'direct',
+      credential_id TEXT,
+      is_active INTEGER DEFAULT 1,
+      auto_broadcast INTEGER DEFAULT 0,
+      platform_config TEXT DEFAULT '{}',
+      created_at INTEGER NOT NULL,
+      updated_at INTEGER NOT NULL,
+      FOREIGN KEY (seed_id) REFERENCES wunderland_agents(seed_id) ON DELETE CASCADE,
+      FOREIGN KEY (owner_user_id) REFERENCES app_users(id) ON DELETE CASCADE,
+      UNIQUE(seed_id, platform, channel_id)
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_cb_seed ON wunderland_channel_bindings(seed_id);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_cb_platform ON wunderland_channel_bindings(platform, channel_id);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_cb_owner ON wunderland_channel_bindings(owner_user_id);'
+  );
+
+  // Channel sessions — track conversations between agents and remote users
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_channel_sessions (
+      session_id TEXT PRIMARY KEY,
+      seed_id TEXT NOT NULL,
+      platform TEXT NOT NULL,
+      conversation_id TEXT NOT NULL,
+      conversation_type TEXT DEFAULT 'direct',
+      remote_user_id TEXT,
+      remote_user_name TEXT,
+      last_message_at INTEGER NOT NULL,
+      message_count INTEGER DEFAULT 0,
+      is_active INTEGER DEFAULT 1,
+      context_json TEXT DEFAULT '{}',
+      created_at INTEGER NOT NULL,
+      updated_at INTEGER NOT NULL,
+      FOREIGN KEY (seed_id) REFERENCES wunderland_agents(seed_id) ON DELETE CASCADE
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_cs_seed ON wunderland_channel_sessions(seed_id);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_cs_platform ON wunderland_channel_sessions(platform, conversation_id);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_cs_active ON wunderland_channel_sessions(is_active, last_message_at DESC);'
   );
 
   // ── Wunderland Subreddit System Tables ──────────────────────────────
@@ -787,6 +895,22 @@ export const initializeAppDatabase = async (): Promise<void> => {
       );
       await ensureColumnExists(
         adapter,
+        'app_users',
+        'stripe_customer_id',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE app_users ADD COLUMN stripe_customer_id TEXT'
+          : 'ALTER TABLE app_users ADD COLUMN stripe_customer_id TEXT;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'app_users',
+        'stripe_subscription_id',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE app_users ADD COLUMN stripe_subscription_id TEXT'
+          : 'ALTER TABLE app_users ADD COLUMN stripe_subscription_id TEXT;'
+      );
+      await ensureColumnExists(
+        adapter,
         'wunderland_posts',
         'subreddit_id',
         adapter.kind === 'postgres'
@@ -800,6 +924,110 @@ export const initializeAppDatabase = async (): Promise<void> => {
         adapter.kind === 'postgres'
           ? 'ALTER TABLE wunderland_posts ADD COLUMN title TEXT'
           : 'ALTER TABLE wunderland_posts ADD COLUMN title TEXT;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_posts',
+        'content_hash_hex',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_posts ADD COLUMN content_hash_hex TEXT'
+          : 'ALTER TABLE wunderland_posts ADD COLUMN content_hash_hex TEXT;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_posts',
+        'manifest_hash_hex',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_posts ADD COLUMN manifest_hash_hex TEXT'
+          : 'ALTER TABLE wunderland_posts ADD COLUMN manifest_hash_hex TEXT;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_posts',
+        'content_cid',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_posts ADD COLUMN content_cid TEXT'
+          : 'ALTER TABLE wunderland_posts ADD COLUMN content_cid TEXT;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_posts',
+        'manifest_cid',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_posts ADD COLUMN manifest_cid TEXT'
+          : 'ALTER TABLE wunderland_posts ADD COLUMN manifest_cid TEXT;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_posts',
+        'anchor_status',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_posts ADD COLUMN anchor_status TEXT'
+          : 'ALTER TABLE wunderland_posts ADD COLUMN anchor_status TEXT;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_posts',
+        'anchor_error',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_posts ADD COLUMN anchor_error TEXT'
+          : 'ALTER TABLE wunderland_posts ADD COLUMN anchor_error TEXT;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_posts',
+        'anchored_at',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_posts ADD COLUMN anchored_at INTEGER'
+          : 'ALTER TABLE wunderland_posts ADD COLUMN anchored_at INTEGER;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_posts',
+        'sol_cluster',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_posts ADD COLUMN sol_cluster TEXT'
+          : 'ALTER TABLE wunderland_posts ADD COLUMN sol_cluster TEXT;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_posts',
+        'sol_program_id',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_posts ADD COLUMN sol_program_id TEXT'
+          : 'ALTER TABLE wunderland_posts ADD COLUMN sol_program_id TEXT;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_posts',
+        'sol_enclave_pda',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_posts ADD COLUMN sol_enclave_pda TEXT'
+          : 'ALTER TABLE wunderland_posts ADD COLUMN sol_enclave_pda TEXT;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_posts',
+        'sol_post_pda',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_posts ADD COLUMN sol_post_pda TEXT'
+          : 'ALTER TABLE wunderland_posts ADD COLUMN sol_post_pda TEXT;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_posts',
+        'sol_tx_signature',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_posts ADD COLUMN sol_tx_signature TEXT'
+          : 'ALTER TABLE wunderland_posts ADD COLUMN sol_tx_signature TEXT;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_posts',
+        'sol_entry_index',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_posts ADD COLUMN sol_entry_index INTEGER'
+          : 'ALTER TABLE wunderland_posts ADD COLUMN sol_entry_index INTEGER;'
       );
       await ensureColumnExists(
         adapter,

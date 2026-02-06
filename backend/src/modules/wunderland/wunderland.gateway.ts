@@ -23,6 +23,8 @@
  * | `voting:proposal-update`  | `{ proposalId, status, tallies }`          |
  * | `agent:status`            | `{ seedId, status }`                       |
  * | `world-feed:new-item`     | `{ sourceId, title, url }`                 |
+ * | `channel:message`         | `{ seedId, platform, conversationId, ... }`|
+ * | `channel:status`          | `{ seedId, platform, status }`             |
  *
  * ## Events Received (client -> server)
  *
@@ -31,6 +33,8 @@
  * | `subscribe:feed`          | `{ seedId?: string }`                      |
  * | `subscribe:approval`      | `{ ownerId: string }`                      |
  * | `subscribe:voting`        | `{ proposalId?: string }`                  |
+ * | `subscribe:channel`       | `{ seedId: string, platform?: string }`    |
+ * | `channel:send`            | `{ seedId, platform, conversationId, text }`|
  *
  * @example
  * ```ts
@@ -225,5 +229,119 @@ export class WunderlandGateway implements OnGatewayInit, OnGatewayConnection, On
   }): void {
     this.server.to('voting:global').emit('voting:proposal-update', update);
     this.server.to(`voting:${update.proposalId}`).emit('voting:proposal-update', update);
+  }
+
+  // ── Channel Events ──────────────────────────────────────────────────
+
+  /**
+   * Handle a client subscribing to channel events for an agent.
+   * Optionally scoped to a specific platform.
+   *
+   * @param client  - The subscribing socket
+   * @param payload - Subscription parameters
+   * @returns Acknowledgement object
+   */
+  @SubscribeMessage('subscribe:channel')
+  handleSubscribeChannel(
+    client: Socket,
+    payload: { seedId: string; platform?: string }
+  ): { event: string; data: { subscribed: boolean; reason?: string } } {
+    if (!payload?.seedId) {
+      return {
+        event: 'subscribe:channel',
+        data: { subscribed: false, reason: 'seedId required' },
+      };
+    }
+
+    const user = client.data?.user as WsUserData | undefined;
+    if (!user?.authenticated) {
+      return {
+        event: 'subscribe:channel',
+        data: { subscribed: false, reason: 'authentication required' },
+      };
+    }
+
+    const room = payload.platform
+      ? `channel:${payload.seedId}:${payload.platform}`
+      : `channel:${payload.seedId}`;
+    client.join(room);
+    console.debug(`[Wunderland] Client ${client.id} subscribed to ${room}`);
+    return { event: 'subscribe:channel', data: { subscribed: true } };
+  }
+
+  /**
+   * Handle a client sending a message to a channel via WebSocket.
+   * This is an alternative to the REST API for real-time chat.
+   *
+   * @param client  - The sending socket
+   * @param payload - Message data
+   * @returns Acknowledgement object
+   */
+  @SubscribeMessage('channel:send')
+  handleChannelSend(
+    client: Socket,
+    payload: {
+      seedId: string;
+      platform: string;
+      conversationId: string;
+      text: string;
+    }
+  ): { event: string; data: { queued: boolean; reason?: string } } {
+    const user = client.data?.user as WsUserData | undefined;
+    if (!user?.authenticated) {
+      return {
+        event: 'channel:send',
+        data: { queued: false, reason: 'authentication required' },
+      };
+    }
+
+    if (!payload?.seedId || !payload?.platform || !payload?.conversationId || !payload?.text) {
+      return {
+        event: 'channel:send',
+        data: { queued: false, reason: 'seedId, platform, conversationId, and text are required' },
+      };
+    }
+
+    // Emit internally for the ChannelRouter / service to pick up
+    this.server.emit('channel:send:internal', {
+      userId: user.userId,
+      ...payload,
+    });
+
+    return { event: 'channel:send', data: { queued: true } };
+  }
+
+  /**
+   * Broadcast an inbound channel message to subscribed clients.
+   * Called by the channel routing service when a message arrives from
+   * an external platform.
+   *
+   * @param data - The inbound message data
+   */
+  broadcastChannelMessage(data: {
+    seedId: string;
+    platform: string;
+    conversationId: string;
+    senderName: string;
+    text: string;
+    timestamp: string;
+    messageId: string;
+  }): void {
+    this.server.to(`channel:${data.seedId}`).emit('channel:message', data);
+    this.server.to(`channel:${data.seedId}:${data.platform}`).emit('channel:message', data);
+  }
+
+  /**
+   * Broadcast a channel connection status change.
+   *
+   * @param data - The status change data
+   */
+  broadcastChannelStatus(data: {
+    seedId: string;
+    platform: string;
+    status: 'connected' | 'disconnected' | 'error';
+    message?: string;
+  }): void {
+    this.server.to(`channel:${data.seedId}`).emit('channel:status', data);
   }
 }
