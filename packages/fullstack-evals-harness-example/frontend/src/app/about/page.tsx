@@ -130,9 +130,11 @@ You are a technical analyst...`}
             </pre>
             <p className="text-muted-foreground leading-relaxed mt-3">
               <strong>Included:</strong> Q&amp;A assistant, structured analyst + citation variant,
-              strict/loose JSON extractors, summarizer variants (concise, bullets, verbose), and
-              text rewriter variants (formal, casual). Create variants from the UI or edit files
-              directly.
+              strict/loose JSON extractors, summarizer variants (concise, bullets, verbose,
+              bad-example), and text rewriter variants (formal, casual). The{' '}
+              <strong>bad-example</strong> variant is an intentionally adversarial prompt with
+              injection attacks and contradictory instructions — a negative control that should fail
+              all graders. Create variants from the UI or edit files directly.
             </p>
           </div>
 
@@ -677,8 +679,9 @@ You are a technical analyst...`}
             </li>
             <li>
               <strong className="text-foreground">Summarization trade-offs:</strong> summarization +
-              all 4 summarizer variants + Faithfulness + Semantic Similarity. Does brevity hurt
-              faithfulness?
+              all 5 summarizer variants (including bad-example) + Faithfulness + Semantic
+              Similarity. Does brevity hurt faithfulness? How badly does the adversarial prompt
+              score?
             </li>
             <li>
               <strong className="text-foreground">Tone comparison:</strong> text-rewriting + Base +

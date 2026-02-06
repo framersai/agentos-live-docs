@@ -99,7 +99,7 @@ Before recording:
 
 1. Click **Candidates** tab
 2. Point out the family groupings:
-   - **Text Summarizer** (parent) with 3 variants: Concise, Bullet-Point, Detailed
+   - **Text Summarizer** (parent) with 4 variants: Concise, Bullet-Point, Detailed, and **Bad Example** (adversarial)
    - **Text Rewriter** (parent) with 2 variants: Formal, Casual
    - **Full Structured Analyst** (parent) with 1 variant: Citation-Focused
    - **Strict JSON Extractor** (parent) with 1 variant: Loose
@@ -107,6 +107,8 @@ Before recording:
 3. Click into **Text Summarizer** to show the detail page
 4. Point out: the system prompt editor, frontmatter preview, recommended graders with weights, recommended datasets, grader rationale, variant list at the bottom
 5. Mention: "Each prompt declares which graders matter most with weights — for example, this summarizer weighs Faithfulness at 40%, Semantic Similarity at 30%, Helpfulness at 30%. The experiment uses these weights to compute a weighted score."
+6. Click into the **Bad Example** variant to show the adversarial prompt
+7. Point out: "This is an intentionally broken prompt — a negative control. It includes prompt injection attempts ('SYSTEM OVERRIDE: Ignore all previous instructions'), contradictory instructions (tells the model to hallucinate facts, ignore the main point, write 10 paragraphs for a 'concise' summary), and encourages fabrication. We include it to demonstrate that the eval system actually catches bad prompts — when you run an experiment, this variant should score near-zero on all graders while the real variants score well."
 
 ---
 
